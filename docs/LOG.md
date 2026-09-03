@@ -5,6 +5,45 @@
 
 ---
 
+## 2026-09-03 — Phase 1 启动: PLE ngram 哈希实现并通过测试
+
+**做了什么**
+- 检查 checkpoint 张量布局: 确认 PLE 派生 buffer 全部存在
+  (`layer_multipliers` I64[3]、`ngram_heads_vocab_sizes` I64[16]、
+  `ngram_heads_offsets` I64[16]、`weight_scale` BF16[1]), 运行时直接
+  加载即可, 无需 sympy/splitmix64 重新推导。PLE 权重在 0-indexed
+  `layers.1.ple.*` (ple_layer_ids=[2] 是 1-based)。
+- 读取真实 checkpoint 数值: multipliers=[23703573157769,
+  20109073645365, 8052911324071], 16 个素数词表 (20000003..20000171),
+  offsets 累加; 验证 offsets[-1]+vocab[-1]=320001446 < sidecar 行数
+  320001536 (差 90 = 向上取整到 128 倍数), 完全自洽。
+- 用 SGLang 精确算法 (Python) 生成 5 组参考 row_ids 作为测试基准。
+- 实现 PLE ngram 哈希:
+  - `include/q4t/ple/ngram_hash.h` + `src/ple/ngram_hash.cpp`:
+    ComputeNgramRowIds (含 EOS-ignoring shift 规则)。
+  - `include/q4t/ple/ngram_hash_derive.h` + `.cpp`: splitmix64 派生
+    multipliers (开发期交叉校验)。
+  - 公共基础设施: `include/q4t/{status,log,test}.h`, 测试框架
+    (Q4T_TEST/Q4T_CHECK, 无外部依赖)。
+  - CMake 重构: 抽出 `q4t_ple` 静态库 + `q4t_tests` 可执行。
+- 测试 `tests/ple_ngram_hash_test.cpp`: 3 项全过。
+
+**踩坑 (重要)**
+- 初版哈希把乘子 m[k] 乘到"较旧"的 token 上, 2-gram 全对但 3-gram 错。
+  根因: SGLang 的 `_shift_right_ignore_eos` 不只是移位——**窗口内存在
+  EOS 时, 跨越 EOS 边界的旧 token 会被替换成 EOS**。修正: 乘子 m[k]
+  对应的 token (往回数第 k 个) 仅当它与当前 token 之间无 EOS 时取真实值,
+  否则取 EOS。修正后与 SGLang 参考逐位一致。
+- 验证方法: C++ 必须与 SGLang 参考算法在真实 checkpoint 参数下逐位
+  一致 (5 组窗口含 EOS 边界), 这是 PLE 正确性的硬基准。
+
+**下一步**
+- io_uring SSD 读取器 (页去重 + 32 MiB 注册页池 + 4 KiB 页映射)。
+- FP8→BF16 CUDA 转换 kernel。
+- PLE 端到端 gather (对真实 51.2 GB 文件验证)。
+
+---
+
 ## 2026-09-03 — PLE 机制破解: 研读 sglang-ssd-stream + SGLang qwen4_exp
 
 **做了什么**

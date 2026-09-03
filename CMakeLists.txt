@@ -42,35 +42,55 @@ add_compile_options(-Wall -Wextra)
 find_package(CUDAToolkit REQUIRED)
 
 # ---------------------------------------------------------------------------
-# q4t core library (grows as modules land)
+# liburing (PLE SSD Stream io_uring reader dependency)
 # ---------------------------------------------------------------------------
-# Sources are added here as modules are implemented. The skeleton ships
-# with the CLI entry point only.
-set(Q4T_SOURCES
-  src/main.cpp)
-
-add_executable(q4t ${Q4T_SOURCES})
-target_include_directories(q4t PRIVATE include)
-target_link_libraries(q4t PRIVATE CUDA::cudart)
-
-# liburing for the PLE SSD Stream io_uring reader (Phase 1).
 find_package(PkgConfig QUIET)
 if(PkgConfig_FOUND)
   pkg_check_modules(LIBURING QUIET liburing)
 endif()
 if(LIBURING_FOUND)
-  target_compile_definitions(q4t PRIVATE Q4T_HAS_LIBURING=1)
-  target_include_directories(q4t PRIVATE ${LIBURING_INCLUDE_DIRS})
-  target_link_libraries(q4t PRIVATE ${LIBURING_LINK_LIBRARIES})
+  set(Q4T_LIBURING_DEFS Q4T_HAS_LIBURING=1)
+  set(Q4T_LIBURING_INC ${LIBURING_INCLUDE_DIRS})
+  set(Q4T_LIBURING_LIBS ${LIBURING_LINK_LIBRARIES})
   message(STATUS "liburing found: ${LIBURING_INCLUDE_DIRS}")
 else()
+  set(Q4T_LIBURING_DEFS "")
+  set(Q4T_LIBURING_INC "")
+  set(Q4T_LIBURING_LIBS "")
   message(STATUS "liburing not found — PLE io_uring reader disabled")
 endif()
 
 # ---------------------------------------------------------------------------
-# Tests (skeleton)
+# q4t_ple — PLE n-gram hash + SSD stream (grows as modules land)
+# ---------------------------------------------------------------------------
+add_library(q4t_ple STATIC
+  src/ple/ngram_hash.cpp
+  src/ple/ngram_hash_derive.cpp)
+target_include_directories(q4t_ple PUBLIC include)
+target_compile_definitions(q4t_ple PRIVATE ${Q4T_LIBURING_DEFS})
+if(Q4T_LIBURING_INC)
+  target_include_directories(q4t_ple PRIVATE ${Q4T_LIBURING_INC})
+endif()
+if(Q4T_LIBURING_LIBS)
+  target_link_libraries(q4t_ple PUBLIC ${Q4T_LIBURING_LIBS})
+endif()
+
+# ---------------------------------------------------------------------------
+# q4t — CLI executable
+# ---------------------------------------------------------------------------
+add_executable(q4t src/main.cpp)
+target_include_directories(q4t PRIVATE include)
+target_link_libraries(q4t PRIVATE q4t_ple CUDA::cudart)
+
+# ---------------------------------------------------------------------------
+# Tests
 # ---------------------------------------------------------------------------
 if(Q4T_BUILD_TESTS)
   enable_testing()
-  # Test targets are registered here as they are implemented.
+  add_executable(q4t_tests
+    tests/ple_ngram_hash_test.cpp
+    tests/test_main.cpp)
+  target_include_directories(q4t_tests PRIVATE include)
+  target_link_libraries(q4t_tests PRIVATE q4t_ple)
+  add_test(NAME q4t_tests COMMAND q4t_tests)
 endif()

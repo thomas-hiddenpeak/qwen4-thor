@@ -23,7 +23,12 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 ## 进行中
 
-- (无)
+- Phase 1 实现:PLE 流式层。
+  - ✅ ngram 哈希 (row_id 计算) 完成并通过测试:与 SGLang 参考逐位一致
+    (含 EOS-ignoring 规则),multipliers 派生与 checkpoint 一致。
+  - ⏳ io_uring SSD 读取器 (页去重 + 注册页池)。
+  - ⏳ FP8→BF16 CUDA 转换 kernel。
+  - ⏳ PLE 端到端 gather (对真实 51.2 GB 文件验证)。
 
 ## 阻塞 / 风险
 
