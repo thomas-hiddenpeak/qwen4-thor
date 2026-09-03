@@ -5,6 +5,31 @@
 
 ---
 
+## 2026-09-03 — IO 层: 权重加载编排 (WeightIndex + WeightLoader)
+
+**做了什么**
+- 实现 `include/q4t/io/weight_loader.h` + `src/io/weight_loader.cpp`:
+  - WeightIndex: 解析 model.safetensors.index.json 的 weight_map
+    (name → shard 文件) + metadata.total_size; ShardGroups() 按 shard
+    分组 (保留 index 顺序)。
+  - WeightLoader: 相对 model_dir 解析 shard 路径, 按需 mmap 打开
+    (SafetensorsFile), LRU 缓存 (max_open_shards, 默认 8); FindTensor /
+    ReadTensor / ReadTensorToDevice 按张量全名读取。
+- 测试 `tests/io_weight_loader_test.cpp`: 3 项 (真实 index 解析: 296347
+  张量 / 197 shard / total_size 83995036096; 读取与直接打开 shard 逐字节
+  一致; LRU 容量 1 时驱逐)。共 22 项测试全绿。
+
+**踩坑**
+- 方法名 `TensorInfo` 与类型 `TensorInfo` 同名触发 `-Wchanges-meaning`
+  (成员函数遮蔽了类型名), 改名为 `FindTensor`。
+- C++ 默认参数不能位于最后一个参数之前 (`Create(..., size_t=8, T** out)`
+  非法), 移除默认值由调用方显式传入。
+
+**下一步**
+- IO 层续: tokenizer (tokenizer.json 解码)。完成后 IO 层齐备, 进入量化层。
+
+---
+
 ## 2026-09-03 — IO 层: config.json 解析 (ModelConfig)
 
 **做了什么**

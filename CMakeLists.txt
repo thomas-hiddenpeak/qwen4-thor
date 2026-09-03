@@ -85,7 +85,8 @@ target_link_libraries(q4t_ple PUBLIC CUDA::cudart)
 add_library(q4t_io STATIC
   src/io/json.cpp
   src/io/safetensors.cpp
-  src/io/model_config.cpp)
+  src/io/model_config.cpp
+  src/io/weight_loader.cpp)
 target_include_directories(q4t_io PUBLIC include)
 target_link_libraries(q4t_io PUBLIC CUDA::cudart)
 
@@ -109,6 +110,7 @@ if(Q4T_BUILD_TESTS)
     tests/io_json_test.cpp
     tests/io_safetensors_test.cpp
     tests/io_model_config_test.cpp
+    tests/io_weight_loader_test.cpp
     tests/test_main.cpp)
   target_include_directories(q4t_tests PRIVATE include)
   target_link_libraries(q4t_tests PRIVATE q4t_ple q4t_io)
