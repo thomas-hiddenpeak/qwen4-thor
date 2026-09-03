@@ -14,6 +14,12 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   SHA-256 待验证)
 - [x] 2026-09-03 参考项目调研 (qwen35-thor / sglang-ssd-stream /
   thor-probe / thor-bench)
+- [x] 2026-09-03 构建骨架验证通过: `q4t version` / `q4t probe` 可运行
+  (probe 正确识别 Thor SM 11.0, 20 SM, 122.9 GB)
+- [x] 2026-09-03 参考项目克隆到 reference/: sglang-ssd-stream
+  (176a522, v0.2.0), qwen35-thor (57e2977)
+- [x] 2026-09-03 GitHub 仓库创建并推送 (thomas-hiddenpeak/qwen4-thor)
+- [x] 2026-09-03 liburing 2.5 安装 (PLE io_uring 依赖)
 
 ## 进行中
 
@@ -33,11 +39,14 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 ## 下一步
 
-1. 克隆 sglang-ssd-stream 到 `reference/`, 研读 PLE SSD Stream 实现
-   (io_uring 读取器、页去重、GPU 重叠、row_id 来源)。
-2. 获取/研读 transformers 5.8 的 `qwen4_exp` 模型实现, 确认 forward
-   pass 中 PLE 的调用位置与 row_id 计算。
-3. 确认理解后, 更新 [MODEL.md](MODEL.md), 然后开始 Phase 1 实现。
+1. 研读 `reference/sglang-ssd-stream` 源码: PLE SSD Stream 实现
+   (io_uring 读取器、页去重、GPU 重叠、row_id 来源、forward 融合位置)。
+2. 研读 transformers 5.8 的 `qwen4_exp` 模型实现 (需获取源码),
+   确认 forward pass 中 PLE 的调用位置与 row_id 计算, 以及
+   `hc_*` / `indexer_*` / `ngram_*` 字段语义。
+3. 确认理解后, 更新 [MODEL.md](MODEL.md) 的 [待确认] 项,
+   然后开始 Phase 1 实现 (建议顺序: IO 层 → 量化层 → PLE 流式层 →
+   模型层 → 引擎层 → 服务层)。
 
 ## 环境
 

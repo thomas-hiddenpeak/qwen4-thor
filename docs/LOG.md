@@ -5,6 +5,36 @@
 
 ---
 
+## 2026-09-03 — 骨架落地: 构建验证 + 参考克隆 + 推送 GitHub
+
+**做了什么**
+- 建立完整目录骨架 (include/q4t, src/{core,io,quant,text,model,
+  runtime,kernels,ple,vision,server,mtp}, tests, tools, reference)。
+- CMake 构建骨架: C++17/CUDA (SM110a), `-Wall -Wextra`,
+  `find_package(CUDAToolkit)`, liburing 检测 (pkg-config)。
+  产物 `build/q4t`。
+- `q4t version` / `q4t probe` 实现并验证: probe 正确识别
+  NVIDIA Thor (CC 11.0, 20 SM, 122.9 GB, L2 32 MB, 228 KB smem/SM,
+  1048 MHz)。`generate` / `serve` / `models` 为 stub (exit 2)。
+- 克隆参考项目到 reference/ (gitignore, 只读):
+  - sglang-ssd-stream @ 176a522 (v0.2.0)
+  - qwen35-thor @ 57e2977 (不含 submodule)
+- 安装 liburing 2.5 (liburing-dev, apt)。
+- git init (main) + 首次提交 + 推送
+  github.com/thomas-hiddenpeak/qwen4-thor (private)。
+
+**踩坑记录**
+- 终端会话 cwd 会被重置回 /home/rm01/Orator, `cd` 不可靠;
+  一律使用绝对路径 (`cmake -S <abs> -B <abs>`, `git -C <abs>`)。
+- CUDA 13 移除了 `cudaDeviceProp::clockRate` / `maxClockRate`,
+  改用 `cudaDeviceGetAttribute(cudaDevAttrClockRate)`。
+
+**下一步**
+- 研读 reference/sglang-ssd-stream (PLE 机制) 与 transformers 5.8
+  的 qwen4_exp 实现, 消解 MODEL.md 中的 [待确认] 项。
+
+---
+
 ## 2026-09-03 — 项目初始化
 
 **做了什么**
