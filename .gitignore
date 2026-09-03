@@ -1,0 +1,28 @@
+# Build artifacts
+build/
+build-*/
+.q4t-work/
+
+# Model weights (never in repo)
+*.safetensors
+*.bin
+*.pt
+*.ckpt
+
+# Reference projects (cloned externally, read-only, not part of this repo)
+reference/
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python (tools only)
+__pycache__/
+*.pyc
+.venv/

@@ -1,0 +1,12 @@
+# Qwen4-Thor C++/CUDA formatting — Google C++ Style, 2-space indent,
+# pointer-left, 80 columns. Applied to .cc/.cu/.h/.cuh.
+---
+Language: Cpp
+BasedOnStyle: Google
+IndentWidth: 2
+ColumnLimit: 80
+PointerAlignment: Left
+DerivePointerAlignment: false
+AccessModifierOffset: -1
+IncludeBlocks: Preserve
+SortIncludes: false
