@@ -20,15 +20,23 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   (176a522, v0.2.0), qwen35-thor (57e2977)
 - [x] 2026-09-03 GitHub 仓库创建并推送 (thomas-hiddenpeak/qwen4-thor)
 - [x] 2026-09-03 liburing 2.5 安装 (PLE io_uring 依赖)
+- [x] 2026-09-03 PLE ngram 哈希 (row_id) 实现 + 测试:与 SGLang 参考
+  逐位一致 (含 EOS-ignoring),multipliers 派生与 checkpoint 一致
+- [x] 2026-09-03 PLE io_uring SSD 读取器实现 + 测试:4KiB 页切片/去重/
+  注册页池/批量波次读取/scatter;真实 51.2 GB sidecar 上 7 行与 pread
+  逐字节一致
 
 ## 进行中
 
 - Phase 1 实现:PLE 流式层。
   - ✅ ngram 哈希 (row_id 计算) 完成并通过测试:与 SGLang 参考逐位一致
     (含 EOS-ignoring 规则),multipliers 派生与 checkpoint 一致。
-  - ⏳ io_uring SSD 读取器 (页去重 + 注册页池)。
+  - ✅ io_uring SSD 读取器 (页去重 + 注册页池) 完成并通过测试:
+    合成文件 4 项单测全过,真实 51.2 GB sidecar 上 7 行 (同页去重/
+    跨页/大偏移/末行) 与 pread 逐字节一致。
   - ⏳ FP8→BF16 CUDA 转换 kernel。
-  - ⏳ PLE 端到端 gather (对真实 51.2 GB 文件验证)。
+  - ⏳ PLE 端到端 gather (ngram 哈希 → reader → 转换 → 投影,
+    对真实 51.2 GB 文件验证)。
 
 ## 阻塞 / 风险
 
@@ -50,14 +58,23 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 - ✅ **hc_*/indexer_*/ngram_* 字段语义确认**:
   hc_count=4 (hyper-connection 4 分支主干), indexer_* = QSA
   稀疏注意力索引器配置, ngram_* = PLE 查找参数。
+- ✅ **PLE io_uring 读取器实现并验证**: 镜像 sglang-ssd-stream 的
+  gather 语义 (行→4KiB 页对齐切片 Piece → 按 page_id 排序去重分组
+  PageGroup → 4096 页/批、256 页/波 io_uring 读 → scatter 到输出;
+  越界行输出置零)。32MiB 注册页池 (mmap + io_uring_register_buffers,
+  失败回退普通读)。真实 51.2 GB sidecar 上 7 行 (0/1 同页、25/26 同页、
+  1000000、320001000、末行 320001535) 与 pread 逐字节一致。
+  坑: `io_uring_submit_and_wait` 成功时返回**提交的 SQE 数**(≥0),
+  非 0; 错误判断须用 `< 0`。
 
 ## 下一步
 
-1. 开始 Phase 1 实现。建议顺序:
+1. 继续 Phase 1 实现。PLE 流式层进度: ngram 哈希 ✅ / io_uring
+   读取器 ✅ / FP8→BF16 转换 ⏳ / 端到端 gather ⏳。建议顺序:
+   - **PLE 流式层 (续)**: FP8→BF16 CUDA 转换 kernel (side stream) +
+     端到端 gather (ngram 哈希 → reader → 转换 → 投影, 对真实文件验证)
    - **IO 层**: safetensors 解析 (mmap) + JSON 配置 + tokenizer
    - **量化层**: NVFP4 W4A4 / FP8 原语
-   - **PLE 流式层**: ngram 哈希 (CPU/GPU) + io_uring 读取器 +
-     页去重 + FP8→BF16 转换 (核心特性, 优先)
    - **模型层**: 48 层 forward (DeltaNet / QSA full-attn / MoE /
      hyper-connection / PLE 融合)
    - **引擎层**: 请求生命周期 + MTP + 采样

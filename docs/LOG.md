@@ -5,6 +5,41 @@
 
 ---
 
+## 2026-09-03 — PLE io_uring SSD 读取器实现并通过真实文件验证
+
+**做了什么**
+- 研读 sglang-ssd-stream 的 `src/lib.rs` gather() 逻辑, 精确理解
+  页切片/去重/批量波次读取/scatter 语义。
+- 实现 PLE SSD 页读取器:
+  - `include/q4t/ple/page_reader.h` + `src/ple/page_reader.cpp`:
+    PlePageReader (Create/Gather/ReadStats)。
+  - 行→4KiB 页对齐切片 (Piece{page_id, output_offset, page_offset, len})
+    → 按 page_id 排序去重分组 (PageGroup) → io_uring 批量读
+    (4096 页/批, 256 页/波) → scatter 到输出; 越界行输出置零。
+  - 32MiB 注册页池: mmap(MAP_PRIVATE|MAP_ANONYMOUS) + MADV_DONTDUMP
+    + io_uring_register_buffers (失败回退普通 Read)。
+  - 文件 POSIX_FADV_RANDOM 提示。
+- 测试 `tests/ple_page_reader_test.cpp`: 4 项 (基本行/页去重/越界置零/
+  跨页行) 全过; 连同 ngram 哈希共 7 项测试全绿。
+- 真实环境验证 (硬性约定 #7): 在真实 51.2 GB sidecar 上读 7 行
+  (0/1 同页、25/26 同页、1000000、320001000、末行 320001535),
+  与直接 pread 逐字节一致; 7 行 → 5 个唯一页 (去重正确)。
+
+**踩坑 (重要)**
+- `io_uring_submit_and_wait` 成功时返回**实际提交的 SQE 数**(≥0),
+  不是 0; 初版用 `!= 0` 判断导致误报失败。正确判断: `< 0`。
+- ring 版 buffer 注册函数是 `io_uring_register_buffers(ring, iov, nr)`,
+  不是全局 `io_uring_register(fd, ...)` (后者是 fd 版)。
+- 终端 cwd 反复被重置到无关目录, `cd` 被工具剥离; 一律用绝对路径
+  (cmake -S /abs -B /abs, git -C /abs)。
+
+**下一步**
+- FP8→BF16 CUDA 转换 kernel (side stream)。
+- PLE 端到端 gather: ngram 哈希 → reader → 转换 → key/value 投影,
+  对真实文件验证。
+
+---
+
 ## 2026-09-03 — Phase 1 启动: PLE ngram 哈希实现并通过测试
 
 **做了什么**
