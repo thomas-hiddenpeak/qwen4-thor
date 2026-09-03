@@ -8,6 +8,7 @@
 ```
 reference/
 ├── sglang-ssd-stream/    # PLE SSD Stream 机制参考 (必读)
+├── sglang-qwen4-exp/     # SGLang qwen4_exp.py 单文件 (PLE/forward 权威参考)
 ├── qwen35-thor/          # 同硬件 Qwen3.5 引擎, 架构模式参考
 ├── thor-probe/           # 硬件探测方法 (可选)
 └── thor-bench/           # 性能基线数据 (可选)
@@ -31,6 +32,19 @@ reference/
   6. 24-32 GB GPU 的 grouped CPU-offload 策略 (专家块预取)
 - 固定 commit: `176a522ef9d6dbb5056ae1f467fe49af0f1258a5` (v0.2.0,
   2026-09-03 克隆, `--depth 1`)
+
+## sglang-qwen4-exp (PLE / forward pass 权威参考)
+
+- 文件: `sglang/srt/models/qwen4_exp.py`
+- 仓库: https://github.com/sgl-project/sglang
+- 固定 commit: `0a79825b7baa3e2aafd54e89097a5aba83d00b4e`
+  (sglang-ssd-stream install.sh 中 aarch64/Thor 配置 pin 的 SGLang 版本)
+- 获取: 2026-09-03 raw.githubusercontent 单文件拉取, 含 PROVENANCE.md
+- 用途: **qwen4_exp forward pass 的最高事实来源**。PLE n-gram 查找
+  (Qwen4ExpNGramEmbedding / Qwen4ExpPLELayer)、hyper-connection、
+  QSA 稀疏注意力、MTP、权重名映射 (load_weights) 均以此为准。
+- 注意: 该文件依赖 SGLang 运行时 (ForwardBatch / req_to_token_pool /
+  qsa 模块等), 不能直接编译; 只作算法与张量布局参考。
 
 ## qwen35-thor (架构模式参考)
 

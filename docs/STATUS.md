@@ -27,26 +27,38 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 ## 阻塞 / 风险
 
-- **PLE 查找机制未完全理解**: 每 token 16 个 row_id 的计算方式、
-  PLE 在 forward pass 中的精确位置, 需从 sglang-ssd-stream 源码
-  (reference/sglang-ssd-stream) 和 transformers 5.8 的 qwen4_exp
-  实现中确认。
-- **qwen4_exp 新字段语义待确认**: `hc_count`/`hc_lowrank`
-  (hyper connection), `indexer_*`/`ngram_*` (ngram 索引),
-  `heads_per_ngram`, `split_ngram_parts` 等。
 - **PLE sidecar SHA-256 未验证** (ssd-stream.json 记录了期望值
   `b070f964...`, 51.2 GB 校验耗时较长, 安排在首次加载前完成)。
+- **QSA 稀疏注意力细节**: indexer 的 top-k 选择算法在 SGLang 的
+  `sglang/srt/layers/attention/qsa/` 模块 (尚未拉取), 实现
+  full_attention 层前需研读。
+- **DeltaNet SSM 细节**: linear_attention 继承 Qwen3.5 的
+  GatedDeltaNet, 实现前需参考 qwen35-thor 的 deltanet 实现。
+
+## 已解决 (2026-09-03)
+
+- ✅ **PLE 查找机制完全理解**: PLE = n-gram 哈希查找表。
+  每 token 取 [t-2,t-1,t] 3-gram 上下文, 16 个 head 各算一个
+  哈希 row_id (splitmix 派生乘子 + 素数词表取模), 查 16 行
+  (160B FP8) 拼成 2560 维嵌入, 经 key/value 投影 + 门控 +
+  depthwise conv 后加到主干。详见 MODEL.md。
+- ✅ **hc_*/indexer_*/ngram_* 字段语义确认**:
+  hc_count=4 (hyper-connection 4 分支主干), indexer_* = QSA
+  稀疏注意力索引器配置, ngram_* = PLE 查找参数。
 
 ## 下一步
 
-1. 研读 `reference/sglang-ssd-stream` 源码: PLE SSD Stream 实现
-   (io_uring 读取器、页去重、GPU 重叠、row_id 来源、forward 融合位置)。
-2. 研读 transformers 5.8 的 `qwen4_exp` 模型实现 (需获取源码),
-   确认 forward pass 中 PLE 的调用位置与 row_id 计算, 以及
-   `hc_*` / `indexer_*` / `ngram_*` 字段语义。
-3. 确认理解后, 更新 [MODEL.md](MODEL.md) 的 [待确认] 项,
-   然后开始 Phase 1 实现 (建议顺序: IO 层 → 量化层 → PLE 流式层 →
-   模型层 → 引擎层 → 服务层)。
+1. 开始 Phase 1 实现。建议顺序:
+   - **IO 层**: safetensors 解析 (mmap) + JSON 配置 + tokenizer
+   - **量化层**: NVFP4 W4A4 / FP8 原语
+   - **PLE 流式层**: ngram 哈希 (CPU/GPU) + io_uring 读取器 +
+     页去重 + FP8→BF16 转换 (核心特性, 优先)
+   - **模型层**: 48 层 forward (DeltaNet / QSA full-attn / MoE /
+     hyper-connection / PLE 融合)
+   - **引擎层**: 请求生命周期 + MTP + 采样
+   - **服务层**: OpenAI 兼容 HTTP API
+2. 实现 full_attention 前, 拉取 SGLang qsa 模块研读 indexer。
+3. 实现 linear_attention 前, 研读 qwen35-thor 的 deltanet 实现。
 
 ## 环境
 

@@ -5,6 +5,51 @@
 
 ---
 
+## 2026-09-03 — PLE 机制破解: 研读 sglang-ssd-stream + SGLang qwen4_exp
+
+**做了什么**
+- 精读 `reference/sglang-ssd-stream` (qwen4.py / backend.py /
+  lib.rs), 并拉取 SGLang `qwen4_exp.py` (commit 0a79825, 即
+  sglang-ssd-stream 为 aarch64/Thor pin 的版本) 固化到
+  `reference/sglang-qwen4-exp/` (含 PROVENANCE.md)。
+- **完全破解 PLE 机制** (详见 MODEL.md):
+  - PLE = **n-gram 哈希查找表**, 不是普通逐层嵌入。
+  - 每 token 取 [t-2,t-1,t] 3-gram 上下文 (前 2 个来自
+    per-request 2-token 历史缓存, EOS 边界不跨越)。
+  - 16 个 head (2 阶 × 8): 每阶用 splitmix64 派生的奇数乘子
+    做 XOR 混合, 对素数词表 (nth_prime_after(20M-1, h+1))
+    取模 + offset → row_id。16 个词表之和 = 320,001,536 = 表行数。
+  - 查 16 行 (160B FP8) → 2560 维 BF16 嵌入 →
+    key_proj(→10240) / value_proj(→2560) → 与主干 4 分支
+    hyper-connection hidden 做门控 (sigmoid 平滑) →
+    depthwise conv1d (k=4, dilation=2, 零初始化, per-request
+    state) → silu → 加到主干 (attn_hyper_connection.mix 之前)。
+  - PLE 在 layer_id=2 (ple_layer_ids=[2]), 主模型 forward 循环
+    中 layer i 执行前 prefetch layer i+1 的 PLE (独立 stream 重叠)。
+- **确认 hc_*/indexer_* 语义**:
+  - hc_count=4: 主干是 4 分支 hyper-connection (GatedResidual,
+    每层 attn/mlp 各一个 mix/combine, 末尾 mixer 合成 2560)。
+  - indexer_*: full_attention 层用 QSA 稀疏注意力 (indexer 算
+    top-k KV 索引, budget=2048, compress_ratio=4), 注意力输出
+    带 sigmoid gate。
+- SSD Stream 读取机制确认: GPU ids → pinned host → 单线程
+  io_uring 批量读 (4KiB 页去重, 32MiB 注册页池, FADV_RANDOM)
+  → 2×16MiB pinned staging 轮转 → 独立 CUDA stream FP8→BF16
+  → consumer wait event。
+
+**为什么重要**
+- PLE 是本项目核心特性, 此前 row_id 计算与融合方式完全未知,
+  是最大技术风险。现已有权威参考 (SGLang 源码), 可精确复刻。
+- 发现 full_attention 是 QSA 稀疏注意力 (非标准 dense GQA),
+  实现复杂度高于预期, 已列入风险。
+
+**下一步**
+- 开始 Phase 1 实现 (顺序: IO → 量化 → PLE 流式 → 模型 → 引擎
+  → 服务)。full_attention 前拉取 SGLang qsa 模块; linear_attn
+  前研读 qwen35-thor deltanet。
+
+---
+
 ## 2026-09-03 — 骨架落地: 构建验证 + 参考克隆 + 推送 GitHub
 
 **做了什么**
