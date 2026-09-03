@@ -5,6 +5,43 @@
 
 ---
 
+## 2026-09-03 — PLE 端到端 gather (PleEmbedding) 实现并通过真实文件验证 ★
+
+**做了什么**
+- 研读 sglang-ssd-stream 的 `reduce` (backend.py: TP=1 时 no-op) 与
+  qwen4.py 的 lookup 准备/收尾, 确认输出布局 = [tokens, 2560]
+  (16 head × 160 直接拼接, reader 已按 token-major 顺序 scatter),
+  `weight_scale` 在 reduce 之后单独乘 (不在 gather 内)。
+- 实现 `include/q4t/ple/ple_embedding.h` + `src/ple/ple_embedding.cpp`:
+  PleEmbedding 编排类, 组合三个已验证构件:
+  - ComputeRowIds (CPU, 纯函数): tokens + 每 token 2-token history →
+    [n_tokens, 16] row_ids (token-major)。
+  - GatherRows: PlePageReader 读 pinned staging → H2D → FP8→BF16 (stream)。
+  - Gather: 组合 (1)+(2), 用 pinned host row_ids scratch 中转。
+  - pinned staging (cudaHostAlloc) + GPU FP8 scratch (cudaMalloc),
+    按 capacity_tokens 预分配。
+- 测试 `tests/ple_e2e_gather_test.cpp`: 2 项 (与 CPU 参考对比全链路布局+
+  数值; capacity 越界守护)。共 11 项测试全绿。
+- **真实环境最终验证 (硬性约定 #7)**: 用真实 checkpoint 参数
+  (multipliers/vocab/offsets/EOS) + 真实 51.2 GB sidecar 跑 Gather,
+  6 token (含 1 个 EOS 边界) × 16 head × 160 字节, 与 pread 真实文件 +
+  e4m3 解码逐字节一致。
+
+**结论**
+- **PLE 流式层 (核心特性) 全部完成**: ngram 哈希 / io_uring 读取器 /
+  FP8→BF16 转换 / 端到端 gather, 每个构件 + 整条链路均在真实
+  checkpoint 参数与真实 51.2 GB 文件上验证通过。
+
+**踩坑**
+- 手动 g++ 链接验证程序时, cuda_runtime.h 在
+  `/usr/local/cuda-13.3/targets/sbsa-linux/include` (非顶层 include),
+  需显式 -I 该路径。
+
+**下一步**
+- IO 层: safetensors 解析 (mmap) + JSON 配置 + tokenizer。
+
+---
+
 ## 2026-09-03 — PLE FP8→BF16 CUDA 转换 kernel 实现并通过 GPU 验证
 
 **做了什么**
