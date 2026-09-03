@@ -66,7 +66,8 @@ endif()
 add_library(q4t_ple STATIC
   src/ple/ngram_hash.cpp
   src/ple/ngram_hash_derive.cpp
-  src/ple/page_reader.cpp)
+  src/ple/page_reader.cpp
+  src/ple/fp8_convert.cu)
 target_include_directories(q4t_ple PUBLIC include)
 target_compile_definitions(q4t_ple PRIVATE ${Q4T_LIBURING_DEFS})
 if(Q4T_LIBURING_INC)
@@ -75,6 +76,7 @@ endif()
 if(Q4T_LIBURING_LIBS)
   target_link_libraries(q4t_ple PUBLIC ${Q4T_LIBURING_LIBS})
 endif()
+target_link_libraries(q4t_ple PUBLIC CUDA::cudart)
 
 # ---------------------------------------------------------------------------
 # q4t — CLI executable
@@ -91,6 +93,7 @@ if(Q4T_BUILD_TESTS)
   add_executable(q4t_tests
     tests/ple_ngram_hash_test.cpp
     tests/ple_page_reader_test.cpp
+    tests/ple_fp8_convert_test.cpp
     tests/test_main.cpp)
   target_include_directories(q4t_tests PRIVATE include)
   target_link_libraries(q4t_tests PRIVATE q4t_ple)

@@ -5,6 +5,37 @@
 
 ---
 
+## 2026-09-03 — PLE FP8→BF16 CUDA 转换 kernel 实现并通过 GPU 验证
+
+**做了什么**
+- 研读 sglang-ssd-stream 的 Triton 转换 kernel (backend.py
+  `_copy_ple_staged_rows_kernel`) 与 PLE 层 forward (qwen4.py),
+  确认: 转换 kernel 只做 **FP8 e4m3 → BF16 纯类型转换**, `weight_scale`
+  在 PLE 层 forward 的 16-head reduce 之后单独乘
+  (`embeddings = reduce(rows) * weight_scale`)。因此 kernel 保持纯转换,
+  与参考一致。
+- 实现 `include/q4t/ple/fp8_convert.h` + `src/ple/fp8_convert.cu`:
+  ConvertFp8ToBf16Async (每线程 1 字节, 用 `__nv_cvt_fp8_to_halfraw`
+  官方 e4m3 解码, 在 side stream 上启动)。
+- CMake: fp8_convert.cu 加入 q4t_ple, 链接 CUDA::cudart (头文件暴露
+  CUDA 运行时)。
+- 测试 `tests/ple_fp8_convert_test.cpp`: 2 项 (与 CPU e4m3fn 参考解码
+  对比 13 个构造字节: 零/次正规/正规/负/最大有限/NaN; 空输入 no-op),
+  真实 GPU 上逐字节一致。共 9 项测试全绿。
+
+**踩坑**
+- `__half` 无 `.x` 成员/默认构造, 需用 `__half(hraw)` 从 `__half_raw`
+  构造。
+- `std::ldexpf` 在 C++17 不可用, 用 `std::ldexp`(double) 转 float。
+- 顺带修复 `ngram_hash_derive.cpp` 的 `-Woverflow` 警告: `1LL << 63`
+  是未定义行为, 改用 `std::numeric_limits<int64_t>::max()`。
+
+**下一步**
+- PLE 端到端 gather: ngram 哈希 → reader → 转换 → weight_scale →
+  key/value 投影, 对真实 51.2 GB 文件验证。
+
+---
+
 ## 2026-09-03 — PLE io_uring SSD 读取器实现并通过真实文件验证
 
 **做了什么**

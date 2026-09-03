@@ -2,6 +2,7 @@
 #include "q4t/ple/ngram_hash_derive.h"
 
 #include <cstdint>
+#include <limits>
 
 namespace q4t {
 namespace ple {
@@ -15,7 +16,7 @@ std::vector<int64_t> DeriveLayerMultipliers(int64_t seed,
                                             int ple_layer_index,
                                             int ngram_size,
                                             int unigram_vocab_size) {
-  const int64_t max_long = (1LL << 63) - 1;
+  const int64_t max_long = std::numeric_limits<int64_t>::max();
   const int64_t vocab = unigram_vocab_size > 0 ? unigram_vocab_size : 1;
   const int64_t m_max = max_long / vocab;
   const int64_t half_bound = m_max / 2 > 0 ? m_max / 2 : 1;

@@ -25,6 +25,9 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 - [x] 2026-09-03 PLE io_uring SSD 读取器实现 + 测试:4KiB 页切片/去重/
   注册页池/批量波次读取/scatter;真实 51.2 GB sidecar 上 7 行与 pread
   逐字节一致
+- [x] 2026-09-03 PLE FP8→BF16 CUDA 转换 kernel 实现 + 测试: 纯 e4m3→
+  BF16 类型转换 (weight_scale 在 PLE 层 forward 的 reduce 之后单独乘,
+  与 SGLang 参考一致), 与 CPU e4m3 参考解码在真实 GPU 上逐字节一致
 
 ## 进行中
 
@@ -34,7 +37,9 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   - ✅ io_uring SSD 读取器 (页去重 + 注册页池) 完成并通过测试:
     合成文件 4 项单测全过,真实 51.2 GB sidecar 上 7 行 (同页去重/
     跨页/大偏移/末行) 与 pread 逐字节一致。
-  - ⏳ FP8→BF16 CUDA 转换 kernel。
+  - ✅ FP8→BF16 CUDA 转换 kernel 完成并通过测试: 纯 e4m3→BF16 类型
+    转换 (weight_scale 在 PLE 层 forward 的 reduce 之后单独乘, 与
+    SGLang 参考一致), 与 CPU e4m3 参考解码在真实 GPU 上逐字节一致。
   - ⏳ PLE 端到端 gather (ngram 哈希 → reader → 转换 → 投影,
     对真实 51.2 GB 文件验证)。
 
@@ -70,9 +75,9 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 ## 下一步
 
 1. 继续 Phase 1 实现。PLE 流式层进度: ngram 哈希 ✅ / io_uring
-   读取器 ✅ / FP8→BF16 转换 ⏳ / 端到端 gather ⏳。建议顺序:
-   - **PLE 流式层 (续)**: FP8→BF16 CUDA 转换 kernel (side stream) +
-     端到端 gather (ngram 哈希 → reader → 转换 → 投影, 对真实文件验证)
+   读取器 ✅ / FP8→BF16 转换 ✅ / 端到端 gather ⏳。建议顺序:
+   - **PLE 流式层 (续)**: 端到端 gather (ngram 哈希 → reader → 转换 →
+     weight_scale → key/value 投影, 对真实文件验证)
    - **IO 层**: safetensors 解析 (mmap) + JSON 配置 + tokenizer
    - **量化层**: NVFP4 W4A4 / FP8 原语
    - **模型层**: 48 层 forward (DeltaNet / QSA full-attn / MoE /
