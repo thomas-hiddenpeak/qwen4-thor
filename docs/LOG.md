@@ -5,6 +5,30 @@
 
 ---
 
+## 2026-09-03 — IO 层: config.json 解析 (ModelConfig)
+
+**做了什么**
+- 实现 `include/q4t/io/model_config.h` + `src/io/model_config.cpp`:
+  把 config.json 的 text_config 超参解析到 `ModelConfig` 结构体, 含
+  RopeParams / MtpConfig / QuantConfig 子结构, 以及派生方法
+  (num_full_attention_layers / IsFullAttention)。
+- 覆盖字段: 核心维度 (48 层 / hidden 2560 / vocab 248320 / 262K ctx)、
+  full attention (24 头 / 2 KV / head_dim 256 / interval 4)、MoE
+  (512 专家 / top-10 / inter 640)、linear attention (DeltaNet 头/维/conv)、
+  QSA indexer (budget 2048 / compress 4)、PLE (ngram 3 / 8 头 / embed
+  2560 / layer_ids [2] / vocab base 2e7)、hyper-connection (hc 4 / lowrank
+  320)、MRoPE (section [11,11,10] / partial 0.25 / theta 1e7)、MTP (1 层
+  full_attention)、NVFP4 量化 (ignore 列表)、token ids。
+- 不变量校验: model_type 必须 qwen4_exp、layer_types 长度 == 层数、
+  至少 1 个 full_attention、ple_embed_dim 是 ngram_heads 的倍数。
+- 测试 `tests/io_model_config_test.cpp`: 2 项 (真实 config.json 全字段
+  断言; 缺失文件报错)。共 19 项测试全绿。
+
+**下一步**
+- IO 层续: tokenizer (tokenizer.json 解码) + 权重加载编排。
+
+---
+
 ## 2026-09-03 — IO 层核心: JSON 解析器 + safetensors mmap 读取器
 
 **做了什么**

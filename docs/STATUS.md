@@ -45,7 +45,9 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   - ✅ 最小 JSON 解析器 (递归下降, 含 \u 转义/数字/对象/数组/错误定位)。
   - ✅ safetensors mmap 读取器 (头解析/张量元数据/按需读字节/H2D),
     在真实模型 scale 文件上验证。
-  - ⏳ config.json 解析 (模型超参 → 结构体)。
+  - ✅ config.json 解析 (ModelConfig 结构体 + 不变量校验), 在真实
+    config.json 上验证全部关键超参 (48 层 / hidden 2560 / MoE 512×10 /
+    PLE / QSA indexer / MRoPE / MTP / NVFP4)。
   - ⏳ tokenizer (tokenizer.json 解码)。
   - ⏳ 权重加载编排 (按 index 把 197 个 shard 的张量映射到模型)。
 
@@ -81,10 +83,10 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 ## 下一步
 
 1. 继续 Phase 1 实现。**PLE 流式层 (核心特性) 已全部完成** ✅。
-   IO 层进度: JSON 解析器 ✅ / safetensors 读取器 ✅ / config 解析 ⏳ /
+   IO 层进度: JSON 解析器 ✅ / safetensors 读取器 ✅ / config 解析 ✅ /
    tokenizer ⏳ / 权重加载编排 ⏳。建议顺序:
-   - **IO 层 (续)**: config.json 解析 (超参→结构体) + tokenizer
-     (tokenizer.json 解码) + 权重加载编排 (按 index 映射 197 个 shard)
+   - **IO 层 (续)**: tokenizer (tokenizer.json 解码) + 权重加载编排
+     (按 index 映射 197 个 shard 的张量到模型)
    - **量化层**: NVFP4 W4A4 / FP8 原语
    - **模型层**: 48 层 forward (DeltaNet / QSA full-attn / MoE /
      hyper-connection / PLE 融合)
