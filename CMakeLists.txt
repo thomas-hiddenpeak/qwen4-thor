@@ -80,6 +80,15 @@ endif()
 target_link_libraries(q4t_ple PUBLIC CUDA::cudart)
 
 # ---------------------------------------------------------------------------
+# q4t_io — file/config/tokenizer IO (safetensors, JSON)
+# ---------------------------------------------------------------------------
+add_library(q4t_io STATIC
+  src/io/json.cpp
+  src/io/safetensors.cpp)
+target_include_directories(q4t_io PUBLIC include)
+target_link_libraries(q4t_io PUBLIC CUDA::cudart)
+
+# ---------------------------------------------------------------------------
 # q4t — CLI executable
 # ---------------------------------------------------------------------------
 add_executable(q4t src/main.cpp)
@@ -96,8 +105,10 @@ if(Q4T_BUILD_TESTS)
     tests/ple_page_reader_test.cpp
     tests/ple_fp8_convert_test.cpp
     tests/ple_e2e_gather_test.cpp
+    tests/io_json_test.cpp
+    tests/io_safetensors_test.cpp
     tests/test_main.cpp)
   target_include_directories(q4t_tests PRIVATE include)
-  target_link_libraries(q4t_tests PRIVATE q4t_ple)
+  target_link_libraries(q4t_tests PRIVATE q4t_ple q4t_io)
   add_test(NAME q4t_tests COMMAND q4t_tests)
 endif()

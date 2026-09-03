@@ -5,6 +5,34 @@
 
 ---
 
+## 2026-09-03 — IO 层核心: JSON 解析器 + safetensors mmap 读取器
+
+**做了什么**
+- 实现 `include/q4t/io/json.h` + `src/io/json.cpp`: 最小递归下降 JSON
+  解析器 (对象/数组/字符串含 \u 转义与 surrogate pair/数字/true/false/
+  null), 产出小型 Json 值类型 (带 GetInt/GetString/GetArray 等访问器),
+  错误带偏移定位。无外部依赖, 复用于所有模型 JSON 文件。
+- 实现 `include/q4t/io/safetensors.h` + `src/io/safetensors.cpp`:
+  mmap 只读 safetensors 读取器。解析 8 字节头长 + JSON 头 + 数据区,
+  提取每张量 dtype/shape/data_offsets; 按需读字节 (ReadTensor) 或
+  H2D (ReadTensorToDevice)。Dtype 支持 F64/F32/F16/BF16/I64..I8/U8/
+  BOOL/F8_E4M3/F8_E5M2。
+- CMake: 独立 `q4t_io` 静态库 (json.cpp + safetensors.cpp, 链接
+  CUDA::cudart)。
+- 测试: `tests/io_json_test.cpp` (4 项: 标量/嵌套数组/字符串转义/错误
+  定位) + `tests/io_safetensors_test.cpp` (2 项: 合成文件解析+读取;
+  真实模型 scale 文件头解析)。共 17 项测试全绿。
+
+**踩坑**
+- C++ raw string 定界符 `R"json(...)json"` 易写错 (结尾须 `)json"`);
+  测试里改用普通转义字符串更清晰。
+- 测试断言字符串字节数时, \u4E2D 解码为 3 字节 UTF-8, 需精确计数。
+
+**下一步**
+- IO 层续: config.json 解析 (超参→结构体) / tokenizer / 权重加载编排。
+
+---
+
 ## 2026-09-03 — PLE 端到端 gather (PleEmbedding) 实现并通过真实文件验证 ★
 
 **做了什么**

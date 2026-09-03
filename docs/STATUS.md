@@ -32,22 +32,22 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   编排 ngram 哈希 → io_uring reader → FP8→BF16, 真实 checkpoint 参数 +
   真实 51.2 GB sidecar 上 6 token × 16 head × 160 字节与 pread+e4m3 逐字节一致
   **→ PLE 流式层 (核心特性) 全部完成**
+- [x] 2026-09-03 IO 层核心: 最小 JSON 解析器 (递归下降, 含 \u 转义) +
+  safetensors mmap 读取器 (头解析/张量元数据/按需读字节/H2D), 在真实
+  模型 scale 文件上验证; 独立 `q4t_io` 静态库
 
 ## 进行中
 
-- Phase 1 实现:PLE 流式层。
-  - ✅ ngram 哈希 (row_id 计算) 完成并通过测试:与 SGLang 参考逐位一致
-    (含 EOS-ignoring 规则),multipliers 派生与 checkpoint 一致。
-  - ✅ io_uring SSD 读取器 (页去重 + 注册页池) 完成并通过测试:
-    合成文件 4 项单测全过,真实 51.2 GB sidecar 上 7 行 (同页去重/
-    跨页/大偏移/末行) 与 pread 逐字节一致。
-  - ✅ FP8→BF16 CUDA 转换 kernel 完成并通过测试: 纯 e4m3→BF16 类型
-    转换 (weight_scale 在 PLE 层 forward 的 reduce 之后单独乘, 与
-    SGLang 参考一致), 与 CPU e4m3 参考解码在真实 GPU 上逐字节一致。
-  - ✅ PLE 端到端 gather 完成并通过真实文件验证: PleEmbedding 编排
-    (ngram 哈希 → io_uring reader → FP8→BF16), 真实 checkpoint 参数 +
-    真实 51.2 GB sidecar 上 6 token × 16 head × 160 字节与 pread+e4m3
-    参考逐字节一致。
+- Phase 1 实现:**PLE 流式层 (核心特性) 已全部完成** ✅ (ngram 哈希 /
+  io_uring 读取器 / FP8→BF16 转换 / 端到端 gather, 均通过真实 checkpoint
+  参数 + 真实 51.2 GB sidecar 验证)。
+- Phase 1 实现:IO 层。
+  - ✅ 最小 JSON 解析器 (递归下降, 含 \u 转义/数字/对象/数组/错误定位)。
+  - ✅ safetensors mmap 读取器 (头解析/张量元数据/按需读字节/H2D),
+    在真实模型 scale 文件上验证。
+  - ⏳ config.json 解析 (模型超参 → 结构体)。
+  - ⏳ tokenizer (tokenizer.json 解码)。
+  - ⏳ 权重加载编排 (按 index 把 197 个 shard 的张量映射到模型)。
 
 ## 阻塞 / 风险
 
@@ -80,10 +80,11 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 ## 下一步
 
-1. 继续 Phase 1 实现。**PLE 流式层 (核心特性) 已全部完成** (ngram 哈希
-   ✅ / io_uring 读取器 ✅ / FP8→BF16 转换 ✅ / 端到端 gather ✅, 均通过
-   真实 checkpoint 参数 + 真实 51.2 GB sidecar 验证)。建议顺序:
-   - **IO 层**: safetensors 解析 (mmap) + JSON 配置 + tokenizer
+1. 继续 Phase 1 实现。**PLE 流式层 (核心特性) 已全部完成** ✅。
+   IO 层进度: JSON 解析器 ✅ / safetensors 读取器 ✅ / config 解析 ⏳ /
+   tokenizer ⏳ / 权重加载编排 ⏳。建议顺序:
+   - **IO 层 (续)**: config.json 解析 (超参→结构体) + tokenizer
+     (tokenizer.json 解码) + 权重加载编排 (按 index 映射 197 个 shard)
    - **量化层**: NVFP4 W4A4 / FP8 原语
    - **模型层**: 48 层 forward (DeltaNet / QSA full-attn / MoE /
      hyper-connection / PLE 融合)
