@@ -86,6 +86,34 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     scale 全 512 expert 校验 / 加载 expert 的 W4A4 GEMM 与 CPU dequant
     参考一致 (max_rel 0.0)。39 项测试全绿。
   **→ MoE 权重 NVFP4 加载完成 (待补: grouped MoE GEMM 调度 + forward 接线)**
+- [x] 2026-09-04 量化层收尾 (2/3 + 3/3): grouped MoE GEMM 调度 +
+  input_scale 接线 (`moe_gemm.h/.cu`)。
+  - **先钉死 NVFP4 scale 约定** (真实 checkpoint 探针): e4m3 存的是
+    "放大后"的块尺度 `= 块尺度 / scale_2` (值 10~20), dequant =
+    `e2m1 * e4m3 * scale_2` (乘, 非除)。由此发现 **act_quant kernel
+    约定 bug**: 它算 `e4m3 = round(块尺度)` (漏除 input_scale), 会让
+    激活重建差 ~1/input_scale (~600×)。修复: 加 `global_scale` 参数,
+    `e4m3 = round(块尺度 / global_scale)`, e2m1 按 `e4m3*global_scale`
+    舍入。CPU 验证: 错误公式 mean|err| 0.79 → 正确 0.075。
+  - `MoERoutedForward(x, expert_ids, router_w, y, weights, ws, ...)`:
+    routed-expert 完整 forward (512 expert top-k)。按专家分组:
+    BuildTokenLists (atomicAdd 计数) → 每 expert: GatherQuant (token 行
+    gather + NVFP4 量化, 用 gu_input_scale) → gate/up GEMM (alpha =
+    gu_ws2*gu_in) → SwiGLU kernel → 中间激活量化 (用 **dn_input_scale**)
+    → down GEMM (alpha = dn_ws2*dn_in) → ScatterAdd (router 权重加权
+    累加到 y)。global scale 在 GEMM alpha 里抵消, 结果 = 真实 dequant
+    matmul。
+  - 测试 `quant_moe_gemm_test.cpp`: 真实 layer-2 权重, M=4 k=3 路由
+    (覆盖 M_e=1/2/3 + 共享 expert), 与完整 CPU 参考 (模拟 FP4 量化 +
+    SwiGLU + 加权求和) 一致, max_rel 1.9e-7 (纯 FP32 求和顺序差)。
+  - **踩坑**: ① gather 位置 (expert e 的 token 须写到 a_packed 开头
+    row 0..M_e-1, 非全局 row e*k+pos); ② router 权重须用 (token,expert)
+    在 top-k 的真实 slot, 非 token 在 expert 列表里的 pos (token_list 存
+    flat 索引 t*k+slot 解决); ③ 中间激活量化须用 down_proj 自己的
+    input_scale (非 gate/up 的)。
+  - 40 项测试全绿, 零警告。
+  **→ 量化层全部完成** ✅ (格式 / swizzle / dequant / act-quant / GEMM /
+  权重加载 / grouped MoE forward, 全部真实 checkpoint 验证)
 
 ## 进行中
 
@@ -118,9 +146,12 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   - ✅ `moe_weights.h/.cpp` routed-expert NVFP4 权重加载编排 (4 大 buffer
     直载 + gate/up 合并 + per-expert swizzled SF + 标量), 4 项真实
     checkpoint 测试 (packed/SF/共享 scale/GEMM 参考) 全过。
-  - ✅ 13 项量化测试 (9 核心 + 4 MoE 加载), 39 项全绿。
-  **→ 量化层核心 + 权重加载完成** ✅ (待补: grouped MoE GEMM 调度 +
-  input_scale 在 forward 接线)
+  - ✅ `moe_gemm.h/.cu` grouped MoE GEMM 调度 (routed-expert 完整 forward:
+    按专家分组 gather+量化 + gate/up GEMM + SwiGLU + down GEMM + 加权
+    scatter-add, input_scale 按 gate/up 与 down 分别接线)。
+  - ✅ 14 项量化测试 (9 核心 + 4 MoE 加载 + 1 MoE forward), 40 项全绿。
+  **→ 量化层全部完成** ✅ (格式 / swizzle / dequant / act-quant / GEMM /
+  权重加载 / grouped MoE forward, 全部真实 checkpoint 验证)
 
 ## 阻塞 / 风险
 
@@ -154,6 +185,23 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   用 CuTe `tile_to_shape(SfAtom, (M,K), Step<_2,_1>)` 探针验证公式,
   16/16 真实形状用例通过 (max_rel < 0.0001)。
 
+- ✅ **NVFP4 scale 约定钉死 + act_quant 约定 bug**: 用真实 gate_proj 权重
+  探针确认: e4m3 存的是"放大后"的块尺度 `= 块尺度 / scale_2` (值 10~20),
+  dequant = `e2m1 * e4m3 * scale_2` (乘)。`e2m1*e4m3*scale_2` → std 0.0127
+  合理, `/scale_2` → std 189430 荒谬。据此发现 act_quant kernel 初版算
+  `e4m3 = round(块尺度)` (漏除 input_scale), 激活重建差 ~1/input_scale
+  (~600×)。修复: 加 `global_scale` 参数, `e4m3 = round(块尺度/global_scale)`,
+  e2m1 按 `e4m3*global_scale` 舍入。CPU 验证 mean|err| 0.79→0.075。教训:
+  "自洽对比" (kernel 与 CPU 参考用同一约定) 抓不到约定级错误, 必须用
+  **独立数据源** (真实 checkpoint 的 e2m1/e4m3/scale_2 数值量级) 钉死约定。
+- ✅ **grouped MoE forward 三个坑**: ① gather 位置 — expert e 的 token 须
+  写到 a_packed 开头 row 0..M_e-1 (GEMM 读前 M_e 行), 非全局 row e*k+pos;
+  ② router 权重 slot — 须用 (token,expert) 在 top-k 的真实 slot, 非 token
+  在 expert 列表里的 pos (token_list 存 flat 索引 t*k+slot 解决); ③ 中间
+  激活 (SwiGLU 输出) 量化须用 down_proj 自己的 input_scale, 非 gate/up 的。
+  另: GEMM 里 global scale 经 alpha 抵消, 结果 = 真实 dequant matmul, CPU
+  参考须按真实 dequant (权重×weight_scale_2, 激活×input_scale) 且不再乘
+  alpha。最终 max_rel 1.9e-7。
 - ✅ **MoE 合并 gate/up 切片步长 bug**: `gu_packed_expert(e)` 初版用
   `e * moe_is * hs/2` (单 proj 步长), 但每 expert 的合并切片含 gate+up
   共 `2*moe_is` 行, 步长应为 `e * moe_is * hs`。错误导致 expert e≥1 的
@@ -185,15 +233,14 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 ## 下一步
 
-1. 继续 Phase 1 实现。**PLE 流式层** ✅, **IO 层** ✅, **量化层核心 +
-   MoE 权重加载** ✅ (NVFP4 W4A4 原生路径 + W4A16 dequant, 39 项测试
-   全绿)。
+1. 继续 Phase 1 实现。**PLE 流式层** ✅, **IO 层** ✅, **量化层** ✅
+   (NVFP4 W4A4 原生路径 + W4A16 dequant + grouped MoE forward, 40 项
+   测试全绿)。
    建议顺序:
-   - **量化层收尾 (续)**: grouped MoE GEMM 调度 (512 expert top-10 +
-     shared expert, 复用 `MoEWeightLayout` + `Fp4Gemm`) / input_scale 在
-     forward 的接线 (激活量化用 per-expert input_scale)。
-   - **模型层**: 48 层 forward (DeltaNet / QSA full-attn / MoE /
-     hyper-connection / PLE 融合)。
+   - **模型层**: 48 层 forward (DeltaNet / QSA full-attn / MoE (routed
+     走 `MoERoutedForward` + shared expert BF16) / hyper-connection / PLE
+     融合)。MoE 的 router (top-k 选择) 与 shared expert (BF16) 在模型层
+     实现, routed 部分直接调 `MoERoutedForward`。
    - **引擎层**: 请求生命周期 + MTP + 采样。
    - **服务层**: OpenAI 兼容 HTTP API。
 2. 实现 full_attention 前, 拉取 SGLang qsa 模块研读 indexer。

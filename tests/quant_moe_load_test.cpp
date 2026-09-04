@@ -304,8 +304,11 @@ Q4T_TEST(moe_load_gemm_matches_reference) {
   void* d_ws = nullptr;
   cudaMalloc(&d_ws, kWorkspace);
 
-  // Random activation [M, hs], quantize to NVFP4 on host (same convention as
-  // the act_quant kernel).
+  // Random activation [M, hs], quantized to NVFP4 on host with the SAME
+  // convention as the act_quant kernel: e4m3 = round(block_scale / input_scale),
+  // e2m1 rounded against (e4m3 * input_scale). The dequant reference below
+  // reconstructs a_recon = e2m1 * e4m3 * input_scale ~= a.
+  const float inv_a = w.gu_input_scale_h[0];
   std::mt19937 rng(99);
   std::normal_distribution<float> dist(0.0f, 1.0f);
   const int groups = kHs / 16;
@@ -313,18 +316,20 @@ Q4T_TEST(moe_load_gemm_matches_reference) {
   std::vector<uint8_t> a_sf_rm(static_cast<size_t>(M) * groups);
   for (int m = 0; m < M; ++m) {
     for (int g = 0; g < groups; ++g) {
+      float a[16];
       float gmax = 0.0f;
-      for (int j = 0; j < 16; ++j)
-        gmax = std::fmax(gmax, std::fabs(dist(rng)));
-      const float gs = gmax > 0.0f ? gmax / 6.0f : 1.0f;
-      const uint8_t sf = q4t::quant::FloatToE4m3(gs);
-      const float inv = E4m3ToFloat(sf) > 0.0f ? 1.0f / E4m3ToFloat(sf) : 0.0f;
+      for (int j = 0; j < 16; ++j) {
+        a[j] = dist(rng);
+        gmax = std::fmax(gmax, std::fabs(a[j]));
+      }
+      const float block_scale = gmax > 0.0f ? gmax / 6.0f : 1.0f;
+      const uint8_t sf = q4t::quant::FloatToE4m3(block_scale / inv_a);
+      const float eff = E4m3ToFloat(sf) * inv_a;
+      const float inv = eff > 0.0f ? 1.0f / eff : 0.0f;
       a_sf_rm[static_cast<size_t>(m) * groups + g] = sf;
       for (int j = 0; j < 8; ++j) {
-        const float v0 = dist(rng) * inv;
-        const float v1 = dist(rng) * inv;
-        const int c0 = q4t::quant::FloatToE2m1Code(v0);
-        const int c1 = q4t::quant::FloatToE2m1Code(v1);
+        const int c0 = q4t::quant::FloatToE2m1Code(a[2 * j] * inv);
+        const int c1 = q4t::quant::FloatToE2m1Code(a[2 * j + 1] * inv);
         a_packed[static_cast<size_t>(m) * (kHs / 2) + g * 8 + j] =
             static_cast<uint8_t>((c1 << 4) | (c0 & 0xF));
       }
@@ -340,9 +345,8 @@ Q4T_TEST(moe_load_gemm_matches_reference) {
   cudaMemcpy(d_asf, a_sf_sw.data(), a_sf_sw.size(), cudaMemcpyHostToDevice);
 
   // CPU reference: dequantize the loaded gate/up weights (expert e) and the
-  // activation, then FP32 GEMM.
+  // activation, then FP32 GEMM. (inv_a was defined above from the same expert.)
   const float inv_w = w.gu_w_scale2_h[e];
-  const float inv_a = w.gu_input_scale_h[e];
   const size_t gu_w_bytes = static_cast<size_t>(2 * kMoeIs) * (kHs / 2);
   std::vector<uint8_t> gu_host(gu_w_bytes);
   cudaMemcpy(gu_host.data(), w.gu_packed_expert(e), gu_w_bytes,

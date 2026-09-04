@@ -5,15 +5,16 @@
 //
 // For each group of 16 elements along K:
 //   gmax        = max |a| in the group
-//   group_scale = gmax / 6.0            (6.0 = max e2m1 magnitude)
-//   e4m3_sf     = round_to_even(group_scale)
-//   e2m1_code   = round_to_even(a / group_scale)
+//   block_scale = gmax / 6.0            (6.0 = max e2m1 magnitude)
+//   e4m3_sf     = round_to_even(block_scale / global_scale)
+//   e2m1_code   = round_to_even(a / (e4m3_sf * global_scale))
 //
 // The per-group e4m3 scale factors are written in the swizzled layout that
 // cuBLASLt CUBLASLT_MATMUL_MATRIX_SCALE_VEC16_UE4M3 expects (see swizzle.h),
 // and the FP4 payload is written row-major [M, K/2]. The FP32 global
-// activation scale (1 / input_scale) is folded into the GEMM alpha by the
-// caller, not applied here.
+// activation scale (= input_scale) is applied by the GEMM via alpha
+// (fp4_gemm.h); the e4m3 here is stored as block_scale / global_scale so the
+// product e2m1 * e4m3 * global_scale reconstructs the activation.
 #include "q4t/quant/act_quant.h"
 
 #include <cuda_bf16.h>
@@ -46,7 +47,7 @@ __device__ __forceinline__ size_t SfOffsetDev(int row, int group,
 __global__ void ActQuantKernel(const uint16_t* __restrict__ bf16,
                                uint8_t* __restrict__ packed_out,
                                uint8_t* __restrict__ sf_out, int M, int K,
-                               int num_g_tiles) {
+                               int num_g_tiles, float global_scale) {
   const int groups = K / 16;
   const size_t total = static_cast<size_t>(M) * groups;
   const size_t idx = static_cast<size_t>(blockIdx.x) * blockDim.x + threadIdx.x;
@@ -63,13 +64,16 @@ __global__ void ActQuantKernel(const uint16_t* __restrict__ bf16,
     a[j] = __bfloat162float(b);
     gmax = fmaxf(gmax, fabsf(a[j]));
   }
-  const float group_scale = gmax > 0.0f ? gmax / 6.0f : 1.0f;
-  // The hardware only sees the e4m3-rounded scale, so the e2m1 codes must be
-  // computed against the rounded value (not the float) to match cuBLASLt
-  // bit-for-bit.
-  const uint8_t sf_code = FloatToE4m3(group_scale);
+  const float block_scale = gmax > 0.0f ? gmax / 6.0f : 1.0f;
+  // Store e4m3 = round(block_scale / global_scale) so that the GEMM alpha
+  // (which multiplies by global_scale) reconstructs the activation.
+  const uint8_t sf_code = FloatToE4m3(block_scale / global_scale);
   const float sf_float = E4m3ToFloat(sf_code);
-  const float inv = sf_float > 0.0f ? 1.0f / sf_float : 0.0f;
+  // The hardware reconstructs a_recon = e2m1 * e4m3 * global_scale, so the
+  // e2m1 codes must be rounded against (e4m3 * global_scale) — the rounded
+  // value, not the float — to match cuBLASLt bit-for-bit.
+  const float eff_scale = sf_float * global_scale;
+  const float inv = eff_scale > 0.0f ? 1.0f / eff_scale : 0.0f;
 
   // Pack 16 e2m1 codes into 8 bytes (low nibble = even index).
   uint8_t bytes[8];
@@ -92,13 +96,14 @@ __global__ void ActQuantKernel(const uint16_t* __restrict__ bf16,
 cudaError_t QuantizeActivationToFp4Async(const uint16_t* bf16,
                                          uint8_t* packed_out,
                                          uint8_t* sf_out, int M, int K,
+                                         float global_scale,
                                          cudaStream_t stream) {
   if (M == 0 || K == 0) return cudaSuccess;
   const size_t total = static_cast<size_t>(M) * (K / 16);
   const int blocks = static_cast<int>((total + kBlock - 1) / kBlock);
   const int num_g_tiles = SfNumGtiles(K);
   ActQuantKernel<<<blocks, kBlock, 0, stream>>>(bf16, packed_out, sf_out, M, K,
-                                                num_g_tiles);
+                                                num_g_tiles, global_scale);
   return cudaGetLastError();
 }
 

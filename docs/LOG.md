@@ -5,6 +5,66 @@
 
 ---
 
+## 2026-09-04 — 量化层收尾 (2/3 + 3/3): grouped MoE GEMM + input_scale 接线
+
+**做了什么**
+- **钉死 NVFP4 scale 约定** (真实 gate_proj 权重探针): e4m3 存"放大后"的
+  块尺度 `= 块尺度 / scale_2` (值 10~20), dequant = `e2m1 * e4m3 * scale_2`
+  (乘)。`e2m1*e4m3*scale_2` → std 0.0127 (合理), `/scale_2` → std 189430
+  (荒谬)。
+- **修复 act_quant kernel 约定 bug**: 初版 `e4m3 = round(块尺度)` (漏除
+  input_scale), 激活重建差 ~1/input_scale (~600×)。`QuantizeActivationToFp4Async`
+  加 `global_scale` 参数: `e4m3 = round(块尺度/global_scale)`, e2m1 按
+  `e4m3*global_scale` 舍入。CPU 验证 mean|err| 0.79 → 0.075。同步更新
+  `quant_fp4_test.cpp` 的 `HostQuantize`/`HostDequant` 与 MoE 测试的内联
+  量化。
+- 新增 `include/q4t/quant/moe_gemm.h` + `src/quant/moe_gemm.cu` (并入
+  `q4t_quant`):
+  - `MoERoutedForward(x, expert_ids, router_w, y, weights, ws, gemm_ws, M, k,
+    stream)`: routed-expert 完整 forward (512 expert top-k)。按专家分组:
+    BuildTokenLists (atomicAdd 计数, token_list 存 flat 索引 t*k+slot) →
+    每 expert: GatherQuant (token 行 gather + NVFP4 量化, gu_input_scale,
+    写到 a_packed 开头 row 0..M_e-1) → gate/up GEMM (alpha =
+    gu_ws2*gu_in) → SwiGLU kernel → 中间激活量化 (dn_input_scale) → down
+    GEMM (alpha = dn_ws2*dn_in) → ScatterAdd (router 权重加权累加到 y)。
+  - `MoEWorkspace`: 单 buffer 切 6 区 (compact/a_packed/a_sf/gu_out/inter/
+    dn_out), `RequiredBytes(M,k,hs,moe_is)` 只依赖 M*k (非 E)。
+  - 新增 `QuantizeFloat32ToFp4Kernel` (SwiGLU 中间激活是 float32, 避免
+    float→bf16 额外舍入)。
+- 测试 `tests/quant_moe_gemm_test.cpp`: 真实 layer-2 权重, M=4 k=3 路由
+  (覆盖 M_e=1/2/3 + 共享 expert), 与完整 CPU 参考 (模拟 FP4 量化 + SwiGLU
+  + 加权求和, 按真实 dequant) 一致, **max_rel 1.9e-7** (纯 FP32 求和顺序
+  差)。40 项测试全绿, 零警告。
+
+**为什么重要**
+- 量化层全部完成: 模型层 MoE 的 routed 部分可直接调 `MoERoutedForward`
+  (router top-k 选择 + shared expert BF16 在模型层实现)。
+- input_scale 接线完成 (3/3): gate/up 输入用 gu_input_scale, down 输入
+  (SwiGLU 输出) 用 down_proj 自己的 input_scale, 各 GEMM alpha 折进各自
+  (weight_scale_2 * input_scale)。
+- 确认 NVFP4 约定 (e4m3 = 块尺度/scale_2, dequant 乘 scale_2) 与
+  act_quant 修复后, 整条 routed-expert 数值链路 (真实权重 + 运行时激活
+  量化 + SwiGLU + 加权求和) 与 CPU 参考逐位一致。
+
+**踩坑**
+- **gather 位置**: expert e 的 token 须写到 a_packed 开头 row 0..M_e-1
+  (GEMM 读前 M_e 行), 初版写全局 row e*k+pos 导致 e≥1 的激活错位。
+- **router 权重 slot**: 须用 (token,expert) 在 top-k 的真实 slot, 非 token
+  在 expert 列表里的 pos (两者不同)。token_list 存 flat 索引 t*k+slot,
+  scatter 用 `router_w[flat]` 解决。
+- **中间激活 input_scale**: SwiGLU 输出是 down_proj 的输入, 须用
+  down_proj 自己的 input_scale (非 gate/up 的)。
+- **CPU 参考的 alpha**: GEMM 里 global scale 经 alpha 抵消, 结果 = 真实
+  dequant matmul。参考须按真实 dequant (权重×weight_scale_2, 激活×
+  input_scale) 且不再乘 alpha, 否则差 ~input_scale 倍。
+
+**下一步**
+- 模型层: 48 层 forward (DeltaNet / QSA full-attn / MoE (routed 走
+  `MoERoutedForward` + shared expert BF16 + router top-k) / hyper-connection
+  / PLE 融合)。
+
+---
+
 ## 2026-09-04 — 量化层收尾 (1/3): NVFP4 routed-expert MoE 权重加载编排
 
 **做了什么**

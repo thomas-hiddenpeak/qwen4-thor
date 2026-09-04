@@ -57,14 +57,17 @@ float RoundToBf16(float v) {
 }
 
 // Host NVFP4 quantization of a row-major [rows, K] float matrix, matching the
-// GPU kernels' convention: group_scale = gmax/6, e4m3-rounded; e2m1 codes
-// rounded against the e4m3-rounded scale.
+// GPU kernels' convention: block_scale = gmax/6; e4m3 = round(block_scale /
+// global_scale); e2m1 codes rounded against (e4m3 * global_scale). This is the
+// convention that makes the GEMM (which multiplies by global_scale via alpha)
+// reconstruct the input.
 struct HostQuant {
   std::vector<uint8_t> packed;  // [rows, K/2]
   std::vector<uint8_t> sf;      // row-major [rows, K/16]
 };
 
-HostQuant HostQuantize(const std::vector<float>& v, int rows, int K) {
+HostQuant HostQuantize(const std::vector<float>& v, int rows, int K,
+                       float global_scale) {
   HostQuant h;
   const int groups = K / 16;
   h.packed.assign(static_cast<size_t>(rows) * (K / 2), 0);
@@ -75,9 +78,10 @@ HostQuant HostQuantize(const std::vector<float>& v, int rows, int K) {
       for (int j = 0; j < 16; ++j)
         gmax = std::fmax(gmax,
                          std::fabs(v[static_cast<size_t>(r) * K + g * 16 + j]));
-      const float gs = gmax > 0.0f ? gmax / 6.0f : 1.0f;
-      const uint8_t sf = FloatToE4m3(gs);
-      const float inv = E4m3ToFloat(sf) > 0.0f ? 1.0f / E4m3ToFloat(sf) : 0.0f;
+      const float block_scale = gmax > 0.0f ? gmax / 6.0f : 1.0f;
+      const uint8_t sf = FloatToE4m3(block_scale / global_scale);
+      const float eff = E4m3ToFloat(sf) * global_scale;
+      const float inv = eff > 0.0f ? 1.0f / eff : 0.0f;
       h.sf[static_cast<size_t>(r) * groups + g] = sf;
       for (int j = 0; j < 8; ++j) {
         const int c0 =
@@ -92,15 +96,16 @@ HostQuant HostQuantize(const std::vector<float>& v, int rows, int K) {
   return h;
 }
 
-// Dequantize a host-quantized NVFP4 matrix back to float [rows, K].
+// Dequantize a host-quantized NVFP4 matrix back to float [rows, K]:
+// recon = e2m1 * e4m3 * global_scale.
 std::vector<float> HostDequant(const HostQuant& h, int rows, int K,
-                               float inv_global) {
+                               float global_scale) {
   const int groups = K / 16;
   std::vector<float> out(static_cast<size_t>(rows) * K, 0.0f);
   for (int r = 0; r < rows; ++r) {
     for (int g = 0; g < groups; ++g) {
       const float gs =
-          E4m3ToFloat(h.sf[static_cast<size_t>(r) * groups + g]) * inv_global;
+          E4m3ToFloat(h.sf[static_cast<size_t>(r) * groups + g]) * global_scale;
       const uint8_t* p = &h.packed[static_cast<size_t>(r) * (K / 2) + g * 8];
       for (int j = 0; j < 8; ++j) {
         out[static_cast<size_t>(r) * K + g * 16 + 2 * j] =
@@ -316,7 +321,10 @@ Q4T_TEST(quant_act_quant_kernel) {
   }
 
   // Host reference must quantize the BF16-rounded values, not the originals.
-  HostQuant hq = HostQuantize(a_bf16f, M, K);
+  // Use a realistic activation global scale (checkpoint input_scale ~ 1.7e-3)
+  // so the e4m3 = round(block_scale / global_scale) path is exercised.
+  const float global_scale = 0.00167f;
+  HostQuant hq = HostQuantize(a_bf16f, M, K, global_scale);
   std::vector<uint8_t> gpu_packed(hq.packed.size(), 0);
   std::vector<uint8_t> gpu_sf(SfBufferSize(M, K), 0);
   uint16_t* d_a;
@@ -326,8 +334,8 @@ Q4T_TEST(quant_act_quant_kernel) {
   cudaMalloc(&d_packed, gpu_packed.size());
   cudaMalloc(&d_sf, gpu_sf.size());
   cudaMemcpy(d_a, a_bf16.data(), a_bf16.size() * 2, cudaMemcpyHostToDevice);
-  if (QuantizeActivationToFp4Async(d_a, d_packed, d_sf, M, K, 0) !=
-      cudaSuccess)
+  if (QuantizeActivationToFp4Async(d_a, d_packed, d_sf, M, K, global_scale,
+                                   0) != cudaSuccess)
     return false;
   if (cudaDeviceSynchronize() != cudaSuccess) return false;
   cudaMemcpy(gpu_packed.data(), d_packed, gpu_packed.size(),
@@ -384,7 +392,7 @@ Q4T_TEST(quant_fp4_gemm_w4a4) {
     // Random weight [N, K] and quantize on host.
     std::vector<float> w(static_cast<size_t>(N) * K);
     for (auto& x : w) x = dist(rng);
-    HostQuant wq = HostQuantize(w, N, K);
+    HostQuant wq = HostQuantize(w, N, K, inv_w_global);
     std::vector<uint8_t> w_sf_sw = SwizzleSf(wq.sf.data(), N, K);
 
     uint8_t* d_w = nullptr;
@@ -398,7 +406,7 @@ Q4T_TEST(quant_fp4_gemm_w4a4) {
       ++total;
       std::vector<float> a(static_cast<size_t>(M) * K);
       for (auto& x : a) x = dist(rng);
-      HostQuant aq = HostQuantize(a, M, K);
+      HostQuant aq = HostQuantize(a, M, K, inv_a_global);
       std::vector<uint8_t> a_sf_sw = SwizzleSf(aq.sf.data(), M, K);
 
       uint8_t* d_a = nullptr;

@@ -121,7 +121,8 @@ endif()
 add_library(q4t_quant STATIC
   src/quant/dequant.cu
   src/quant/act_quant.cu
-  src/quant/moe_weights.cpp)
+  src/quant/moe_weights.cpp
+  src/quant/moe_gemm.cu)
 target_include_directories(q4t_quant PUBLIC include)
 target_link_libraries(q4t_quant PUBLIC q4t_io CUDA::cudart CUDA::cublasLt)
 
@@ -148,6 +149,7 @@ if(Q4T_BUILD_TESTS)
     tests/io_weight_loader_test.cpp
     tests/quant_fp4_test.cpp
     tests/quant_moe_load_test.cpp
+    tests/quant_moe_gemm_test.cpp
     tests/test_main.cpp)
   set(Q4T_TEST_LIBS q4t_ple q4t_io q4t_quant)
   if(Q4T_HAS_ICU)
