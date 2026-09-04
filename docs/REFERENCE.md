@@ -10,6 +10,7 @@ reference/
 ├── sglang-ssd-stream/    # PLE SSD Stream 机制参考 (必读)
 ├── sglang-qwen4-exp/     # SGLang qwen4_exp.py 单文件 (PLE/forward 权威参考)
 ├── qwen35-thor/          # 同硬件 Qwen3.5 引擎, 架构模式参考
+├── Qwen3x-Orin/          # 生产级 tokenizer 参考 (ICU 74 + BPE + golden fixture)
 ├── thor-probe/           # 硬件探测方法 (可选)
 └── thor-bench/           # 性能基线数据 (可选)
 ```
@@ -62,12 +63,38 @@ reference/
 - 固定 commit: `57e29777c2aff8a97f42df6e3d9487b1327f014f`
   (2026-09-03 克隆, `--depth 1`, 不含 submodule)
 
+## Qwen3x-Orin (tokenizer 参考)
+
+- 仓库: https://github.com/thomas-hiddenpeak/Qwen3x-Orin
+- 固定 commit: `1688f50ecc46e6e7c5696bcae541593c1aed6e2f`
+  (2026-09-04 克隆, `--depth 1`)
+- 用途: **生产级 GPT-2 BPE tokenizer 的权威参考实现**
+  (`include/q3x/text/tokenizer.h` + `src/text/tokenizer.cpp`, 1534 行)。
+- **重点研读**:
+  1. ICU 74 用法: `icu::RegexPattern` 编译 `\p{L}\p{M}\p{N}` 预分词正则,
+     `icu::Normalizer2::getNFCInstance` 做 NFC 规范化 (系统已装 ICU 74.2)。
+  2. GPT-2 byte-level 映射 (`initialize_byte_mapping`): 33-126/161-172/
+     174-255 直通, 其余映射到 256+ 扩展码点。
+  3. BPE 优先队列 (`encode_bpe_piece`): 双向链表 + generation 计数 +
+     rank 最小堆, 惰性删除失效候选, 高效正确。
+  4. schema 校验 (fail-closed): 固定 vocab 248044 / merges 247587 /
+     added_tokens 26, 逐字段精确匹配。
+  5. 验证基准: `tests/fixtures/qwen36-27b-tokenizer.json` 用
+     `tokenizers 0.22.2` 生成 golden encode cases (vocab 248044, 与目标
+     模型一致)——可作 q4t tokenizer 的差分测试 oracle。
+- 注意: 不采用其治理机制 (SDD / constitution / proof contract), 仅借鉴
+  tokenizer 算法与 ICU 用法。
+
 ## thor-probe / thor-bench (按需)
 
 - 硬件探测方法与 Thor 性能基线数据 (FP4 GEMM 595 TFLOP/s 等)。
 - Phase 3 性能调优时参考。
+- 固定 commit: thor-probe `481668514756b8decda421290c32dbbc130b897f`,
+  thor-bench `3a33a90579acd5ab58f1df1f96c8df4b941a14a7` (2026-09-04 克隆,
+  `--depth 1`)。
 
 ## 明确不参考
 
 - Qwen3x-Orin 的治理机制 (SDD / constitution / proof contract /
-  evidence chain)。用户明确不采用。仅其 API 设计思路可借鉴。
+  evidence chain)。用户明确不采用。仅其 tokenizer 算法与 API 设计思路
+  可借鉴。

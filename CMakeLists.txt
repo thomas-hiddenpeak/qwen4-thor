@@ -91,6 +91,30 @@ target_include_directories(q4t_io PUBLIC include)
 target_link_libraries(q4t_io PUBLIC CUDA::cudart)
 
 # ---------------------------------------------------------------------------
+# ICU (tokenizer NFC normalization + Unicode pre-tokenize regex)
+# ---------------------------------------------------------------------------
+find_package(PkgConfig QUIET)
+if(PkgConfig_FOUND)
+  pkg_check_modules(ICU QUIET icu-uc icu-i18n)
+endif()
+if(ICU_FOUND)
+  set(Q4T_HAS_ICU 1)
+  message(STATUS "ICU found: ${ICU_VERSION} — tokenizer enabled")
+else()
+  set(Q4T_HAS_ICU 0)
+  message(STATUS "ICU not found — tokenizer disabled")
+endif()
+
+# ---------------------------------------------------------------------------
+# q4t_text — GPT-2 Byte-Level BPE tokenizer (ICU 74 for NFC + \p{L} regex)
+# ---------------------------------------------------------------------------
+if(Q4T_HAS_ICU)
+  add_library(q4t_text STATIC src/text/tokenizer.cpp)
+  target_include_directories(q4t_text PUBLIC include ${ICU_INCLUDE_DIRS})
+  target_link_libraries(q4t_text PUBLIC q4t_io ${ICU_LINK_LIBRARIES})
+endif()
+
+# ---------------------------------------------------------------------------
 # q4t — CLI executable
 # ---------------------------------------------------------------------------
 add_executable(q4t src/main.cpp)
@@ -102,7 +126,7 @@ target_link_libraries(q4t PRIVATE q4t_ple CUDA::cudart)
 # ---------------------------------------------------------------------------
 if(Q4T_BUILD_TESTS)
   enable_testing()
-  add_executable(q4t_tests
+  set(Q4T_TEST_SOURCES
     tests/ple_ngram_hash_test.cpp
     tests/ple_page_reader_test.cpp
     tests/ple_fp8_convert_test.cpp
@@ -112,7 +136,13 @@ if(Q4T_BUILD_TESTS)
     tests/io_model_config_test.cpp
     tests/io_weight_loader_test.cpp
     tests/test_main.cpp)
+  set(Q4T_TEST_LIBS q4t_ple q4t_io)
+  if(Q4T_HAS_ICU)
+    list(APPEND Q4T_TEST_SOURCES tests/text_tokenizer_test.cpp)
+    list(APPEND Q4T_TEST_LIBS q4t_text)
+  endif()
+  add_executable(q4t_tests ${Q4T_TEST_SOURCES})
   target_include_directories(q4t_tests PRIVATE include)
-  target_link_libraries(q4t_tests PRIVATE q4t_ple q4t_io)
+  target_link_libraries(q4t_tests PRIVATE ${Q4T_TEST_LIBS})
   add_test(NAME q4t_tests COMMAND q4t_tests)
 endif()

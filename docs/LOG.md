@@ -5,6 +5,61 @@
 
 ---
 
+## 2026-09-04 — IO 层: tokenizer (GPT-2 Byte-Level BPE) + 参考项目补全
+
+**做了什么**
+- 实现 `include/q4t/text/tokenizer.h` + `src/text/tokenizer.cpp`
+  (独立 `q4t_text` 静态库, 链接 ICU 74):
+  - GPT-2 byte-level 字母表 (33-126/161-172/174-255 直通, 其余映射
+    256+ 扩展码点) + 反向 byte_decoder。
+  - fail-closed schema 校验: 固定 base vocab 248044 / merges 247587,
+    pre_tokenizer (Sequence[Split/Regex, ByteLevel]) / decoder (ByteLevel) /
+    normalizer (NFC) 逐字段精确匹配, added_tokens 动态解析 (目标模型 33 个,
+    id 248044-248076)。
+  - encode: ICU 74 NFC 规范化 → `\p{L}\p{M}\p{N}` 预分词正则切分 →
+    每段 BPE (双向链表 + generation + rank 最小堆, 惰性删除失效候选)。
+    added-token 做**整体子串匹配** (earliest 优先, 同位置 longest 优先),
+    与 transformers/tokenizers 行为一致。
+  - decode: base id → byte 符号串 → byte_decoder 还原字节; added id →
+    content (skip_special_tokens 跳过 special=true 的 added token)。
+- CMake: 新增 `q4t_text` 库 (pkg-config 探测 icu-uc/icu-i18n), 测试段
+  受 `Q4T_HAS_ICU` 保护。
+- 测试 `tests/text_tokenizer_test.cpp`: 4 项 (真实文件加载 + 维度断言 /
+  15 个 golden encode case / round-trip / 特殊 token encode+decode)。
+  共 26 项测试全绿。
+- **差分验证**: 57 个多样化输入 (空串/纯空白/CJK/emoji/NFC 组合字符/
+  特殊标记/长重复/标点/Unicode 符号) 与 python `tokenizers` 库逐位一致,
+  0 不匹配。
+- 参考项目补全: 克隆 Qwen3x-Orin (1688f50, tokenizer 权威参考) /
+  thor-bench (3a33a90) / thor-probe (4816685) 到 reference/, 更新
+  REFERENCE.md (commit + Qwen3x-Orin tokenizer 研读要点)。
+
+**踩坑**
+- **精简 ICU 安装缺 C++ 类头**: 系统 ICU 74.2 只有 C API (`uregex.h` /
+  `uregex_*`), 没有 `regexpattern.h` / `regexmatcher.h` (C++ 类)。改用
+  `uregex_open/setText/find/findNext/start/end/close` C API 实现正则,
+  `UnicodeString` (unistr.h) + `Normalizer2` (normlzr.h) 仍可用。
+- **终端把 ASCII 特殊标记渲染成 CJK**: 目标 tokenizer 的 added token
+  content 实为标准 Qwen ASCII 标记 (248044=<|endoftext|>, 248045=<|im_start|>,
+  248046=<|im_end|>, 248059=</tool_call>), 但终端显示成 CJK 字形, 一度误判为 CJK 内容。
+  教训: 涉及特殊字符时一律用 hexdump / 字节转储确认真实字节, 不信任
+  终端渲染。
+- **heredoc 损坏非 ASCII 字符**: 通过 `python - <<'PY'` 传递含 CJK /
+  特殊标记的字符串时字节被破坏, 产生假的 encode 结果 (一度误判
+  "encode 不做 added-token 匹配")。改用 create_file 写脚本 + 从
+  tokenizer.json 动态读取 added token content, 彻底规避。
+- **CMake 变量 vs 编译定义混淆**: 把 `Q4T_HAS_ICU` 只写进
+  `target_compile_definitions` 字符串, 没作为 CMake 变量 `set()`,
+  导致 `if(Q4T_HAS_ICU)` 恒假, tokenizer 未被编译。
+- `UnicodeString::buffer()` 不存在, 应为 `getBuffer()`; `uregex_*` 的
+  status 参数须传 `UErrorCode*` 指针。
+
+**下一步**
+- IO 层已全部完成。进入**量化层** (NVFP4 W4A4 / FP8 原语), 随后模型层
+  (48 层 forward)。
+
+---
+
 ## 2026-09-03 — IO 层: 权重加载编排 (WeightIndex + WeightLoader)
 
 **做了什么**

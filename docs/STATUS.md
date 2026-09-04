@@ -35,6 +35,15 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 - [x] 2026-09-03 IO 层核心: 最小 JSON 解析器 (递归下降, 含 \u 转义) +
   safetensors mmap 读取器 (头解析/张量元数据/按需读字节/H2D), 在真实
   模型 scale 文件上验证; 独立 `q4t_io` 静态库
+- [x] 2026-09-04 tokenizer (GPT-2 Byte-Level BPE) 实现 + 差分验证:
+  独立 `q4t_text` 库 (ICU 74 NFC 规范化 + `\p{L}` 预分词正则 + 优先队列
+  BPE)。encode 做 added-token 整体子串匹配, decode 走 id→content, 均与
+  transformers/tokenizers 一致。真实 tokenizer.json 上 57 个多样化输入
+  与 python `tokenizers` 库逐位一致 (0 不匹配); 4 个单元测试通过
+  **→ IO 层全部完成**
+- [x] 2026-09-04 参考项目补全: Qwen3x-Orin (1688f50, tokenizer 参考) /
+  thor-bench (3a33a90) / thor-probe (4816685) 克隆到 reference/,
+  REFERENCE.md 更新
 
 ## 进行中
 
@@ -51,7 +60,12 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   - ✅ 权重加载编排 (WeightIndex + WeightLoader): 解析 index.json
     (296347 张量 → 197 shard), 按需 mmap shard + LRU 缓存, 读取与直接
     打开 shard 逐字节一致。
-  - ⏳ tokenizer (tokenizer.json 解码)。
+  - ✅ tokenizer (GPT-2 Byte-Level BPE, ICU 74 NFC + \p{L} 正则):
+    独立 `q4t_text` 库。encode 做 added-token 整体子串匹配 (与
+    transformers/tokenizers 一致), decode 走 id→content。在真实
+    tokenizer.json 上 57 个多样化输入 (空串/CJK/emoji/NFC 组合/特殊
+    标记/长文本) 与 python `tokenizers` 库逐位一致, 0 不匹配。
+  **→ IO 层 (JSON / safetensors / config / 权重 / tokenizer) 全部完成** ✅
 
 ## 阻塞 / 风险
 
@@ -84,10 +98,9 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 ## 下一步
 
-1. 继续 Phase 1 实现。**PLE 流式层 (核心特性) 已全部完成** ✅。
-   IO 层进度: JSON 解析器 ✅ / safetensors 读取器 ✅ / config 解析 ✅ /
-   权重加载编排 ✅ / tokenizer ⏳。建议顺序:
-   - **IO 层 (续)**: tokenizer (tokenizer.json 解码) — 完成后 IO 层齐备
+1. 继续 Phase 1 实现。**PLE 流式层 (核心特性) 已全部完成** ✅,
+   **IO 层已全部完成** ✅ (JSON / safetensors / config / 权重 / tokenizer)。
+   建议顺序:
    - **量化层**: NVFP4 W4A4 / FP8 原语
    - **模型层**: 48 层 forward (DeltaNet / QSA full-attn / MoE /
      hyper-connection / PLE 融合)
@@ -103,5 +116,8 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 | 硬件 | Jetson AGX Thor, SM110a, 20 SM, 122 GB LPDDR5X |
 | 驱动 / CUDA | 595.78 / 13.3 (nvcc 13.3.33) |
 | CMake / GCC | 3.28.3 / 13.3.0 (aarch64) |
+| ICU | 74.2 (tokenizer NFC + 正则; 仅 C API `uregex_*` 可用,
+  精简安装缺 C++ 类头 `regexpattern.h`) |
+| liburing | 2.5 (PLE io_uring) |
 | 模型路径 | `~/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream` (只读) |
 | 磁盘 | NVMe, 约 360 GB 可用 |
