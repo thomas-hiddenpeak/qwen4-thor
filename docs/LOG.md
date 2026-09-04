@@ -5,6 +5,69 @@
 
 ---
 
+## 2026-09-05 — 模型层 (3b/N): full_attention (QSA 稀疏注意力)
+
+**做了什么**
+- 新增 `include/q4t/model/full_attention.h` + `src/model/full_attention.cu`,
+  并入 `q4t_model` (CMake: `q4t_model` 增加 `full_attention.cu`)。实现
+  qwen4_exp 的 full_attention 层 (12 层, 每第 4 层) 的完整 forward
+  (`FullAttentionForward`), GQA (24 q / 2 kv head, head_dim 256) + partial
+  MRoPE (rotary_dim 64 = 0.25*256, theta 1e7) + attn_output_gate + QSA
+  indexer:
+  1. 投影: `qg = x @ W_q^T` [T,12288] (Q+Gate 每 head 交错) +
+     `k = x @ W_k^T` [T,512] + `v = x @ W_v^T` [T,512] (BF16 `Bf16Gemm`)。
+  2. deinterleave qg → q, gate + per-head **centered** RMSNorm(q)
+     (`x*rsqrt(mean(x^2)+eps)*(1+w)`)。
+  3. centered RMSNorm(k) (in place)。
+  4. partial RoPE (前 64 维) 作用在 q, k。
+  5. 写 k, v 进 per-layer KV cache (interleaved per position)。
+  6. QSA indexer: `iq,ik = x @ W_index_qk^T` → GemmaRMSNorm (plain) +
+     partial RoPE → 存 raw ik + 4-token 平均池化 (FP32) → GemmaRMSNorm +
+     RoPE → 压缩 K 缓存 → MQA relu logits `sum_h relu(iq·ck)/sqrt(128)` →
+     block top-512 → 展开 2048 token 索引 (+ tail)。
+  7. 稀疏 GQA 注意力 (online softmax, 按 topk 索引选位置)。
+  8. `attn *= sigmoid(gate)`。
+  9. `out = attn @ W_o^T` [T,2560]。
+- **关键洞察**: 序列 ≤2048 token 时可见压缩 block 数 ≤512 = block_topk,
+  QSA 退化为稠密因果注意力 (topk[t]=[0..t]); 稀疏仅在 >2048 生效。indexer
+  仍完整运行以匹配参考。
+- `LoadFullAttention`: 从 checkpoint 直载 9 个权重
+  (`self_attn.{q,k,v,o}_proj.weight` + `q_norm`/`k_norm` +
+  `indexer.index_qk_proj.weight` + `indexer.{q,k}_layernorm.weight`)。
+- 测试 `tests/model_full_attention_test.cpp`: 真实 layer-3 权重, T=8 (QSA
+  稠密退化区), 与完整 CPU 参考 (投影 + centered RMSNorm + partial RoPE +
+  稠密因果 GQA + sigmoid gate + o_proj) 一致, **out L2 rel 4.6e-3**。44 项
+  测试全绿, 零警告。
+
+**踩坑 (四个, 均已修)**
+- **BF16 位转换 (主 bug)**: 初版 `Bf16ToFloat` 用
+  `__bfloat162float(__nv_bfloat16(x))`。`__nv_bfloat16(uint16_t)` **没有
+  "原始位"构造函数** — u16 被整数提升为 float (如 `0xBF40`=49056 →
+  `49056.0f`) 再转 BF16, 彻底破坏位模式。表现: 连"纯拷贝"
+  `gate=FloatToBf16(qg[...])` 都错 (值全变), q 输出成 2 的幂。诊断时
+  `d_qg` (GEMM 输出) 正确但 `d_gate`/`d_q` 错, 且 memcheck 0 error,
+  极难定位。改用 `memcpy` 位操作 (同 linear_attention.cu) 后全对。教训:
+  BF16 原始位转换必须走 `memcpy`/`reinterpret_cast`, 不能用 `__nv_bfloat16`
+  的值构造。
+- **BuildCompressedKKernel group 索引越界**: `(t+1)/compress` 应为
+  `t/compress`。t=7 时误算 group=2 → g0=8 → 越界读 `positions[8]`
+  (T=8), 污染 CUDA context 致后续 kernel 与诊断拷贝全错。
+  compute-sanitizer 精确定位 (block 7, 0xd80000020 out of bounds)。
+- **稀疏注意力点积**: 初版误用单标量 `qv` 而非全维
+  `sum_j q[j]*K[c][j]`。改为 shared memory 存 q 行 + 全维点积。
+- **topk 选择竞态**: 稀疏路径多写共享 `s_sel` 有竞态, 改单线程串行
+  (稠密路径本就是 0..pos 填充)。
+
+**下一步**
+- 模型层 (4/N): 层组装 — 把 HC mix/combine + linear/full attn + MoE 接线成
+  完整 decoder layer (含 per-layer KV/indexer cache 管理 + PLE 层注入)。
+- (5/N) `hyper_connection_mixer` (use_combine=False) 收尾 mix → lm_head +
+  MTP 1 层。
+- 之后: 长序列 (>2048) QSA 稀疏路径端到端验证 + 拆 `BuildCompressedKKernel`
+  消除跨 block 竞态。
+
+---
+
 ## 2026-09-05 — 模型层 (3a/N): linear_attention (Gated DeltaNet SSM)
 
 **做了什么**

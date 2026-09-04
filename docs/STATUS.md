@@ -183,6 +183,32 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     测试全绿, 零警告。
   **→ 模型层 linear_attention 完成 (待补: full_attention/QSA + 层组装 +
     mixer + MTP)**
+- [x] 2026-09-05 模型层 (3b/N): full_attention (QSA 稀疏注意力)
+  (`full_attention.h/.cu`, 并入 `q4t_model`)。
+  - qwen4_exp 的 full_attention 层 (12 层, 每第 4 层) = GQA (24 q / 2 kv
+    head, head_dim 256) + partial MRoPE (rotary_dim 64 = 0.25*256, theta 1e7)
+    + attn_output_gate + QSA indexer。完整 forward: 投影 (qg [T,12288]
+    Q+Gate 每 head 交错 / k [T,512] / v [T,512]) → deinterleave qg→q,gate +
+    per-head **centered** RMSNorm(q) → centered RMSNorm(k) → partial RoPE
+    (前 64 维) → 写 KV cache → QSA indexer (iq/ik 投影 + GemmaRMSNorm plain
+    + RoPE + 4-token 平均池化压缩 K + MQA relu logits + block top-512 →
+    2048 token 索引) → 稀疏 GQA 注意力 (online softmax) → *sigmoid(gate) →
+    o_proj [T,2560]。
+  - **关键洞察**: 序列 ≤2048 token 时可见压缩 block 数 ≤512 = block_topk,
+    QSA 退化为稠密因果注意力 (topk[t]=[0..t]); 稀疏仅在 >2048 生效。
+    indexer 仍完整运行以匹配参考。
+  - **踩坑 (已修)**: ① **BF16 位转换** — `__nv_bfloat16(uint16_t)` 无"原始
+    位"构造, 会把 u16 整数提升为 float 再转 BF16 破坏位模式 (纯拷贝都错)。
+    改用 `memcpy` 位操作 (同 linear_attention)。② `BuildCompressedKKernel`
+    group 索引 `(t+1)/compress` 应为 `t/compress` (t=7 时越界读 positions[8],
+    污染 CUDA context 致后续 kernel 全错, compute-sanitizer 定位)。③
+    稀疏注意力点积须全维 `sum_j q[j]*K[c][j]` (初版误用单标量 qv)。④
+    topk 选择用单线程串行避免共享内存竞态。
+  - 测试 `model_full_attention_test.cpp`: 真实 layer-3 权重, T=8 (QSA 稠密
+    退化区), 与完整 CPU 参考 (投影 + centered RMSNorm + partial RoPE + 稠密
+    因果 GQA + sigmoid gate + o_proj) 一致, out L2 rel 4.6e-3。44 项测试
+    全绿, 零警告。
+  **→ 模型层 full_attention/QSA 完成 (待补: 层组装 + mixer + MTP)**
 
 ## 进行中
 
@@ -241,24 +267,27 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     投影 + causal conv1d (SiLU) + Gated DeltaNet 递归 (SSM state [48,128,128],
     S 放 smem) + per-head RMSNorm*silu(z) gate + out_proj。真实 layer-2 权重
     验证 (out L2 rel 7.5e-3)。
-  - ⏳ 层内 full_attention (QSA 稀疏注意力) + 层 forward 接线 (HC
-    mix/combine + linear/full attn + MoE 已就绪, 待组装成完整 decoder layer)。
+  - ✅ `full_attention.h/.cu` full_attention (QSA 稀疏注意力): GQA +
+    centered RMSNorm + partial RoPE + attn gate + QSA indexer (压缩 K + MQA
+    logits + block top-512) + 稀疏注意力 (online softmax)。真实 layer-3 权重
+    验证 (out L2 rel 4.6e-3)。
+  - ⏳ 层 forward 接线 (HC mix/combine + linear/full attn + MoE 已就绪,
+    待组装成完整 decoder layer)。
   - ⏳ `hyper_connection_mixer` (use_combine=False) 收尾 mix → lm_head。
   - ⏳ MTP 1 层 (mtp_hc: hc_count+1)。
-  **→ 模型层: HC 主干 + MoE + linear_attention 完成, 待 full_attention/QSA
-    + 层组装**
+  **→ 模型层: HC 主干 + MoE + linear_attention + full_attention/QSA 完成,
+    待层组装**
 
 ## 阻塞 / 风险
 
 - **PLE sidecar SHA-256 未验证** (ssd-stream.json 记录了期望值
   `b070f964...`, 51.2 GB 校验耗时较长, 安排在首次加载前完成)。
-- **QSA 稀疏注意力细节**: indexer 的 top-k 选择算法在 SGLang 的
-  `sglang/srt/layers/attention/qsa/` 模块 (已研读 config/glue/qsa_indexer:
-  compressed 变体 = 4-token 平均池化 → k_layernorm+MRoPE → 压缩 K 缓存 →
-  MQA logits block top-512 → 展开 2048 token 索引 → 稀疏注意力)。实现
-  full_attention 层前需研读 `qsa/mqa.py` 与 `qsa/kernel.py` 的
-  `qsa_mqa_prefill`/`qsa_fast_topk`/`average_pool_qsa_keys`/
-  `expand_qsa_block_indices` 具体 kernel, 并搭建 paged KV + MRoPE 基础设施。
+- **QSA 稀疏路径未端到端验证**: full_attention 已实现并通过 T=8 稠密退化区
+  测试, 但 >2048 token 的稀疏 top-k 路径 (block 选择 + 展开) 尚无独立测试
+  覆盖 (当前 CPU 参考只走稠密)。长序列验证需待层组装 + 长 prefill 场景。
+  另: `BuildCompressedKKernel` 存在跨 block 竞态 (block t 写 idx_raw[pos(t)]
+  同时读更早 block 写的 idx_raw[g0..]), 稠密区无影响, 稀疏区需拆 kernel 或
+  加 grid 同步。
 
 ## 已解决 (2026-09-04)
 
