@@ -5,6 +5,59 @@
 
 ---
 
+## 2026-09-04 — 量化层收尾 (1/3): NVFP4 routed-expert MoE 权重加载编排
+
+**做了什么**
+- 新增 `include/q4t/quant/moe_weights.h` + `src/quant/moe_weights.cpp`
+  (并入 `q4t_quant`):
+  - `MoEWeightLayout`: 每层 4 个大 device buffer — 合并 gate/up packed
+    `[2*E*moe_is, hs/2]` 行主序 e2m1 + E 个 per-expert swizzled SF 块、
+    down packed `[E*hs, moe_is/2]` + E 个 per-expert swizzled SF 块、
+    4 个 per-expert FP32 标量数组 (weight_scale_2 / input_scale, device
+    + host 副本)。提供 `gu_packed_expert(e)` / `gu_sf_expert(e)` /
+    `dn_packed_expert(e)` / `dn_sf_expert(e)` 切片访问器。
+  - `LoadMoEWeights(loader, layer_id, E, hs, moe_is, out, stream)`:
+    单次遍历 512 expert, 直载 packed 权重 (跳过 ~73K 次 per-tensor
+    cudaMalloc), gate+up 的 weight_scale 合并 (gate 行在前) 后 host 端
+    `SwizzleSf`, down 单独 swizzle, 4 个标量 H2D + 存 host 副本。
+- 测试 `tests/quant_moe_load_test.cpp` 4 项 (真实 checkpoint, 无 CUDA /
+  无模型时跳过):
+  - `moe_load_packed_matches_shard`: expert {0,100,511} 的 gate/up/down
+    packed 与 shard 逐字节一致。
+  - `moe_load_sf_unswizzle_matches_shard`: 反 swizzle 后 SF 与源
+    weight_scale 字节一致 (gate/up 合并 + down)。
+  - `moe_load_gate_up_share_scale`: 全 512 expert 校验 gate/up 共享
+    weight_scale_2 / input_scale, 且 host 副本与 device 一致。
+  - `moe_load_gemm_matches_reference`: 加载 expert 0 跑 W4A4 GEMM
+    (M=8, N=1280, K=2560), 与 CPU dequant 参考逐元素一致 (max_rel 0.0)。
+- 全量 39 项测试通过, 零警告。
+
+**为什么重要**
+- MoE 权重 NVFP4 加载打通: 模型层 forward 可直接用 `MoEWeightLayout`
+  的切片指针喂 `Fp4Gemm` (W4A4 routed expert)。gate/up 共享 scale 的
+  约定 (合并成单 GEMM + 单一 alpha) 在加载期固化, 减少 forward 开销。
+- 确认 checkpoint 的 NVFP4 权重 + swizzled scale 直载后, 端到端 GEMM
+  与 CPU dequant 参考一致, 数值链路 (shard → packed/swizzled → GEMM)
+  完全正确。
+
+**踩坑**
+- **合并 gate/up 切片步长 bug**: `gu_packed_expert(e)` 初版用单 proj
+  步长 `e * moe_is * hs/2`, 但每 expert 切片含 gate+up 共 `2*moe_is`
+  行, 步长应为 `e * moe_is * hs`。错误使 expert e≥1 的 gate 覆盖
+  expert e-1 的 up。W4A4 GEMM 测试没抓到 — 它只用 expert 0 (偏移 0)
+  且是 device buffer 自洽对比 (CPU 参考 dequant 同一 buffer)。靠
+  `moe_load_packed_matches_shard` 对多个非零 expert 与 shard 逐字节
+  比对才暴露。教训: 步长/偏移 bug 必须用多个非零索引 + 独立数据源
+  比对, 单点 + 自洽对比会掩盖。
+
+**下一步**
+- 量化层收尾 (2/3): grouped MoE GEMM 调度 (512 expert top-10 + shared
+  expert, 复用 `MoEWeightLayout` + `Fp4Gemm`)。
+- 量化层收尾 (3/3): input_scale 在 forward 接线 (激活量化用 per-expert
+  input_scale)。
+
+---
+
 ## 2026-09-04 — 量化层核心: NVFP4 W4A4 原生路径 + W4A16 dequant
 
 **做了什么**

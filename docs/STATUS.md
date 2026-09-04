@@ -68,6 +68,24 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     round-trip / dequant kernel / 激活量化 kernel / **W4A4 GEMM 8 例**
     (真实 expert 形状 × M=1..256, max_rel < 2e-5)。35 项测试全绿。
   **→ 量化层核心完成 (NVFP4 W4A4 原生路径 + W4A16 dequant 路径)**
+- [x] 2026-09-04 量化层收尾 (1/3): NVFP4 routed-expert MoE 权重加载
+  编排 (`moe_weights.h/.cpp`, 独立于 `q4t_quant`)。
+  - `MoEWeightLayout`: 每层 4 个大 device buffer — 合并 gate/up packed
+    `[2*E*moe_is, hs/2]` 行主序 + per-expert swizzled SF 块、down packed
+    `[E*hs, moe_is/2]` + per-expert swizzled SF 块、4 个 per-expert FP32
+    标量 (weight_scale_2 / input_scale, device + host 副本)。
+  - `LoadMoEWeights`: 单次遍历 512 expert, 直载 packed (跳过 ~73K 次
+    cudaMalloc), gate/up 的 weight_scale 合并后 host 端 swizzle, down
+    单独 swizzle, 标量 H2D + host 副本。
+  - **关键约定**: gate_proj 与 up_proj 每 expert 共享相同
+    weight_scale_2 / input_scale (checkpoint 已验证) → 合并成单个
+    `[2*moe_is, hs]` GEMM 用单一 alpha; 每 expert 的 gate/up 切片步长
+    是 `moe_is*hs` 字节 (2 个 proj 宽), 非 `moe_is*hs/2`。
+  - 测试 `quant_moe_load_test.cpp` 4 项 (真实 checkpoint): packed 权重
+    与 shard 逐字节一致 / SF 反 swizzle 还原到源字节 / gate-up 共享
+    scale 全 512 expert 校验 / 加载 expert 的 W4A4 GEMM 与 CPU dequant
+    参考一致 (max_rel 0.0)。39 项测试全绿。
+  **→ MoE 权重 NVFP4 加载完成 (待补: grouped MoE GEMM 调度 + forward 接线)**
 
 ## 进行中
 
@@ -97,8 +115,12 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   - ✅ `dequant.cu` NVFP4→BF16 (W4A16)。
   - ✅ `act_quant.cu` BF16→NVFP4 运行时激活量化 (W4A4)。
   - ✅ `fp4_gemm.h` cuBLASLt 原生 W4A4 GEMM 封装。
-  - ✅ 9 项测试 (含 W4A4 GEMM 8 例, max_rel < 2e-5), 35 项全绿。
-  **→ 量化层核心完成** ✅ (待补: 权重 NVFP4 加载编排 / grouped MoE GEMM)
+  - ✅ `moe_weights.h/.cpp` routed-expert NVFP4 权重加载编排 (4 大 buffer
+    直载 + gate/up 合并 + per-expert swizzled SF + 标量), 4 项真实
+    checkpoint 测试 (packed/SF/共享 scale/GEMM 参考) 全过。
+  - ✅ 13 项量化测试 (9 核心 + 4 MoE 加载), 39 项全绿。
+  **→ 量化层核心 + 权重加载完成** ✅ (待补: grouped MoE GEMM 调度 +
+  input_scale 在 forward 接线)
 
 ## 阻塞 / 风险
 
@@ -132,6 +154,16 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   用 CuTe `tile_to_shape(SfAtom, (M,K), Step<_2,_1>)` 探针验证公式,
   16/16 真实形状用例通过 (max_rel < 0.0001)。
 
+- ✅ **MoE 合并 gate/up 切片步长 bug**: `gu_packed_expert(e)` 初版用
+  `e * moe_is * hs/2` (单 proj 步长), 但每 expert 的合并切片含 gate+up
+  共 `2*moe_is` 行, 步长应为 `e * moe_is * hs`。错误导致 expert e≥1 的
+  gate 覆盖 expert e-1 的 up。W4A4 GEMM 测试**没抓到** — 它只用 expert 0
+  (偏移 0, 不受步长影响) 且是 device buffer 自洽对比 (CPU 参考也 dequant
+  同一 buffer)。修复后靠 `moe_load_packed_matches_shard` 对 expert
+  {0,100,511} 的 gate/up/down 与 shard 逐字节比对才暴露。教训: ① 步长/
+  偏移类 bug 必须用**多个非零索引** + **与独立数据源 (shard) 比对** 才能
+  抓到, 单点 + 自洽对比会掩盖。
+
 ## 已解决 (2026-09-03)
 
 - ✅ **PLE 查找机制完全理解**: PLE = n-gram 哈希查找表。
@@ -153,12 +185,13 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 ## 下一步
 
-1. 继续 Phase 1 实现。**PLE 流式层** ✅, **IO 层** ✅, **量化层核心** ✅
-   (NVFP4 W4A4 原生路径 + W4A16 dequant, 35 项测试全绿)。
+1. 继续 Phase 1 实现。**PLE 流式层** ✅, **IO 层** ✅, **量化层核心 +
+   MoE 权重加载** ✅ (NVFP4 W4A4 原生路径 + W4A16 dequant, 39 项测试
+   全绿)。
    建议顺序:
-   - **量化层收尾**: 权重 NVFP4 加载编排 (packed + swizzled scale 直载
-     进 4 个大 buffer) / grouped MoE GEMM (512 expert top-10 + shared) /
-     input_scale 在 forward 的接线。
+   - **量化层收尾 (续)**: grouped MoE GEMM 调度 (512 expert top-10 +
+     shared expert, 复用 `MoEWeightLayout` + `Fp4Gemm`) / input_scale 在
+     forward 的接线 (激活量化用 per-expert input_scale)。
    - **模型层**: 48 层 forward (DeltaNet / QSA full-attn / MoE /
      hyper-connection / PLE 融合)。
    - **引擎层**: 请求生命周期 + MTP + 采样。
