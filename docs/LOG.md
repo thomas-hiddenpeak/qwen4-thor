@@ -5,6 +5,127 @@
 
 ---
 
+## 2026-09-05 — 模型层 (2/N): MoE 完整模块 (router + top-k + routed + shared)
+
+**做了什么**
+- 新增 `include/q4t/model/moe.h` + `src/model/moe.cu`, 并入 `q4t_model`
+  (CMake: `q4t_model` 增加 `moe.cu` 并链接 `q4t_quant`)。
+- 实现每层 MLP 的完整 MoE forward (`MoEForward`):
+  1. router GEMM `logits = x @ gate^T` [T,512] (BF16, `Bf16Gemm`)
+  2. top-k kernel: 按 logit 值选 k=10, **在选中的 k 个 logit 上做 softmax
+     归一化** (非全部 E)。对照 qwen35-thor `moe_router_topk_kernel` 确认
+     算法 (qwen4_exp 继承 Qwen3.5 的 MoE 结构, 仅 routed experts 改 NVFP4)。
+  3. routed NVFP4 experts: 调量化层 `MoERoutedForward` (已实现)。
+  4. shared expert (BF16 SwiGLU): gate/up 合并成单 `[2*shared_is, hs]`
+     GEMM → SwiGLU → down GEMM。
+  5. 门控组合: `out = routed + sigmoid(x @ shared_expert_gate) * shared_down`
+     (不加 residual — residual 由外层 Hyper-Connection combine 处理)。
+- `LoadMoEExtra`: 从 checkpoint 直载 5 个 BF16 权重
+  (`mlp.gate` [512,2560] / `mlp.shared_expert.{gate,up}_proj` [640,2560]
+  合并 / `mlp.shared_expert.down_proj` [2560,640] /
+  `mlp.shared_expert_gate` [1,2560])。
+- 测试 `tests/model_moe_test.cpp`: 真实 layer-2 routed NVFP4 + BF16
+  router/shared 权重, T=2 k=10, 与完整 CPU 参考 (top-k + NVFP4 dequant
+  routed + BF16 shared + 门控组合) 一致, **L2 rel 1.7e-3**。42 项测试全绿,
+  零警告。
+
+**踩坑 (三个, 均已修)**
+- **workspace 字节数运算符优先级 bug (段错误根因)**:
+  `MoEForwardWorkspaceBytes` 的 return 写成
+  `(routed+7) & ~size_t(7) + ((scratch+7) & ~size_t(7))`。`+` 优先级高于
+  `&`, 实际解析为 `(routed+7) & (~7 + align8(scratch))`。T=2,k=10 时
+  routed=506880, scratch=40608, 正确应返回 `align8(506880)+align8(40608)
+  = 547488`, 但 bug 算出 `506887 & 40600 = 38472`。于是 buffer 只分配
+  ~38KB, 而 carve 把 scratch 放在 offset 506880 — 全部越界。router GEMM /
+  topk 写到越界地址 (恰好落在相邻已映射内存, 不立即 fault), 直到后续
+  D2H 读越界地址才段错误。修复: 加括号
+  `((routed+7) & ~size_t(7)) + ((scratch+7) & ~size_t(7))`。
+- **cuBLASLt split-K 越界写**: `Bf16Gemm` 对 tall-skinny 形状 (M=2, N=512,
+  K=2560 的 router GEMM) 选 split-K 算法, 其 `splitKreduce_kernel` 在
+  SM110a 越界写 (compute-sanitizer 定位)。修复: 在 heuristic 偏好里设
+  `CUBLASLT_MATMUL_PREF_REDUCTION_SCHEME_MASK = CUBLASLT_REDUCTION_SCHEME_NONE`
+  (0) 禁用所有 reduction scheme (含 split-K)。split-K 只是性能优化, 非
+  split-K 算法始终正确。
+- **测试 CPU 参考的未初始化 buffer**: `shared_gu_h` 把单个
+  `gate_proj.weight` 张量 (640×2560) 读进 `2*shared_is*hs` 大小的 buffer,
+  但 `ReadTensor` 只写张量实际大小, up 半是未初始化垃圾 → shared expert
+  up 投影错误 → L2 rel ~1.75 (与 CUDA 端正确拼接的 gate+up 不一致)。这也
+  解释了为何 workspace 修复前后 L2 rel 都 ~1.75 (shared 垃圾主导误差)。
+  修复: 分别读 gate_proj / up_proj 再拼接, 匹配设备 `shared_gu` 布局。
+
+**为什么重要**
+- MoE 是每层都有的核心组件 (512 routed NVFP4 experts + 1 shared BF16
+  expert + router)。至此模型层有了 HC 主干 + MoE 两个大块, 只剩 attn
+  (full QSA / linear DeltaNet) 与层组装。
+- 教训: ① 位运算与算术混用必须加括号 (`&` 优先级低于 `+`); ② cuBLASLt
+  的 split-K 在 SM110a 有越界写, 生产代码应禁用 (或验证); ③ 从 checkpoint
+  读张量到预分配 buffer 时, buffer 必须与张量实际大小一致, 否则残留垃圾。
+
+**下一步**
+- 模型层 (3/N): attn — full_attention (QSA 稀疏注意力, 需研读 SGLang
+  `sglang/srt/layers/attention/qsa/` indexer top-k 算法) 与
+  linear_attention (DeltaNet SSM, 参考 qwen35-thor deltanet)。
+- 模型层 (4/N): 层组装 — 把 attn/MLP 接进 HC mix/combine, 组装完整
+  decoder layer (对照 qwen4_exp.py `_prepare_qwen4_exp_attn` /
+  `_prepare_qwen4_exp_mlp` / `_postprocess_qwen4_exp_layer`)。
+- 模型层 (5/N): `hyper_connection_mixer` 收尾 + lm_head; MTP 1 层。
+
+---
+
+## 2026-09-04 — 模型层启动 (1/N): Hyper-Connection (GatedResidual) 主干
+
+**做了什么**
+- 新增 `include/q4t/model/hyperconnection.h` + `src/model/hyperconnection.cu`,
+  独立 `q4t_model` 静态库 (CMake 新增 target, 测试链接)。
+- **从 SGLang 权威源码核对公式**: `GatedResidual` 不在 `qwen4_exp.py`
+  (它 `from sglang.srt.layers.hyperconnection import GatedResidual`), 从
+  `python/sglang/srt/layers/hyperconnection.py` (@0a79825) 拉取真实
+  `_mix_compute` / `_combine_compute` / `GroupedGemmaRMSNorm`。确认:
+  - `mix`: `normed = hc_norm(hyper_input)` (per-branch RMSNorm,
+    `hc_per_branch_norm=true` → 10240 维按 4 组各 2560 独立归一, 再乘
+    `(1+weight)`); `gate = sigmoid( W_up @ silu( W_down @ normed / hc ) )`;
+    `mixed = (gate * normed).view(T,hc,hs).mean(-2)`; 返回
+    `(mixed, (hyper_input, normed))`。
+  - `combine`: `inject = 2*sigmoid( W_inject @ normed / hc )`;
+    `out = ( R.view(T,hc,hs) + block_output.unsqueeze(1) *
+    inject.unsqueeze(-1) ).flatten`。
+  - `F.linear(x, W) = x @ W^T` (W 行主序 [N,K])。
+- **修复关键 bug**: mix 低秩门控是 `silu(x / hc)` (先除后 silu), 初版写成
+  `silu(x) / hc`。silu 非线性, 两者差 ~2×, 导致 mix max_rel 2.3。修正
+  `SiluDivKernel` 为 `v = x*inv_hc; out = silu(v)`。
+- 实现 5 个 kernel: `GroupedRmsNormKernel` (per-branch 块归约, 共享内存
+  归约每分支和平方)、`SiluDivKernel`、`MixGateKernel` (gate*normed 跨 4
+  分支均值)、`InjectGateKernel`、`CombineKernel`。低秩 GEMM (down/up/
+  inject) 复用 `q4t::model::Bf16Gemm` (cuBLASLt, FP32 累加)。
+  `LoadHyperConnection` 从 checkpoint 直载 4 权重 (mixer `use_combine=false`
+  时无 block_inject)。
+- 测试 `tests/model_hyperconnection_test.cpp`: 真实 layer-0
+  attn_hyper_connection 权重, 随机 [3, 10240] 输入, mix/combine 与 CPU 参考
+  对比。**CPU 参考模拟 BF16 中间量存储** (normed/down/up/inject 都
+  `Bf16Round`), 用 **L2 相对误差** (对近零值稳健, 不用 max_rel — combine
+  输出含近零值, max_rel 会假性爆到 4.4)。结果 mix L2 rel 3.5e-3 / combine
+  2.3e-3 (BF16 精度内)。41 项测试全绿, 零警告。
+
+**为什么重要**
+- Hyper-Connection 是 qwen4_exp 主干的残差机制 (非普通 residual): 每 token
+  hidden 是 4 分支 × 2560 = 10240 维, 每层 attn/MLP 各一个 GatedResidual
+  做 mix (取 2560 给子模块) / combine (子模块输出按 inject 门控注回 4 分支),
+  模型末尾 mixer (use_combine=False) 把 4 分支 mix 成 2560 给 lm_head。
+  这是模型层的地基, attn/MLP/MoE 都要接进这套 mix/combine。
+- 公式细节 (`silu(x/hc)` vs `silu(x)/hc`) 必须对权威源码逐字核对 — 这类
+  非线性顺序差异自洽对比抓不到, 只有对照真实 SGLang 实现才暴露。
+
+**下一步**
+- 模型层 (2/N): 层内接线 — 把 full_attention (QSA) / linear_attention
+  (DeltaNet) 的输出接进 attn_hyper_connection.combine, MoE 接进
+  mlp_hyper_connection.combine; 需先研读 qwen4_exp.py 的层 forward
+  (1284-1384 行) 与 QSA/DeltaNet 细节。
+- 模型层 (3/N): `hyper_connection_mixer` 收尾 (use_combine=False) →
+  lm_head。
+- 模型层 (4/N): MTP 1 层 (mtp_hc: hc_count+1)。
+
+---
+
 ## 2026-09-04 — 量化层收尾 (2/3 + 3/3): grouped MoE GEMM + input_scale 接线
 
 **做了什么**

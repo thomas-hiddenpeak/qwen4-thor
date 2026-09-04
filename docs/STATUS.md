@@ -114,6 +114,53 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   - 40 项测试全绿, 零警告。
   **→ 量化层全部完成** ✅ (格式 / swizzle / dequant / act-quant / GEMM /
   权重加载 / grouped MoE forward, 全部真实 checkpoint 验证)
+- [x] 2026-09-04 模型层启动 (1/N): Hyper-Connection (GatedResidual) 主干
+  残差 (`hyperconnection.h/.cu`, 独立 `q4t_model` 静态库)。
+  - **权威公式核对**: 从 SGLang `python/sglang/srt/layers/hyperconnection.py`
+    (@0a79825) 拉取真实 `GatedResidual._mix_compute` / `_combine_compute`。
+    `mix`: `normed = GroupedGemmaRMSNorm(hyper_input)` (per-branch,
+    `hc_per_branch_norm=true` → 10240 维按 4 组各 2560 独立 RMSNorm, 再乘
+    `(1+weight)`); `gate = sigmoid( W_up @ silu( W_down @ normed / hc ) )`;
+    `mixed = (gate * normed).view(T,hc,hs).mean(-2)`。`combine`:
+    `inject = 2*sigmoid( W_inject @ normed / hc )`;
+    `out = R.view(T,hc,hs) + block_output.unsqueeze(1) * inject.unsqueeze(-1)`
+    flatten。
+  - **关键 bug (已修)**: mix 的低秩门控是 `silu(x / hc)` (先除后 silu),
+    不是 `silu(x) / hc` — silu 非线性, 两者差 ~2×。初版写错导致 mix
+    max_rel 2.3; 修正后 L2 rel 3.5e-3 (BF16 中间量精度内)。
+  - 实现: `GroupedRmsNormKernel` (per-branch 块归约) + `SiluDivKernel` +
+    `MixGateKernel` (gate*normed 跨 4 分支均值) + `InjectGateKernel` +
+    `CombineKernel`; 低秩 GEMM 复用 `Bf16Gemm` (cuBLASLt)。`LoadHyperConnection`
+    从 checkpoint 直载 4 个权重 (mixer 无 block_inject)。
+  - 测试 `model_hyperconnection_test.cpp`: 真实 layer-0 attn_hyper_connection
+    权重, 随机 [3, 10240] 输入, mix/combine 与 CPU 参考 (模拟 BF16 中间量
+    存储) 对比, mix L2 rel 3.5e-3 / combine 2.3e-3。41 项测试全绿, 零警告。
+  **→ 模型层 HC 主干完成 (待补: 层内 attn/MLP 接线 + mixer + MTP)**
+- [x] 2026-09-05 模型层 (2/N): MoE 完整模块 (`moe.h/.cu`, 并入 `q4t_model`)。
+  - 每层 MLP 的完整 forward: router GEMM (`x @ gate^T` [T,512] BF16) →
+    top-k kernel (按 logit 选 k=10, **在选中的 k 上 softmax** 归一化, 非
+    全部 E — 对照 qwen35-thor `moe_router_topk_kernel` 确认) → routed
+    NVFP4 experts (调量化层 `MoERoutedForward`) → shared expert (BF16
+    SwiGLU, gate/up 合并单 GEMM) → 门控组合
+    `out = routed + sigmoid(x @ shared_expert_gate) * shared_down`
+    (不加 residual, residual 由外层 HC combine 处理)。
+  - `LoadMoEExtra` 从 checkpoint 直载 5 个 BF16 权重 (gate [512,2560] /
+    shared_expert.{gate,up}_proj [640,2560] 合并 / shared_expert.down_proj
+    [2560,640] / shared_expert_gate [1,2560])。
+  - **踩坑 (已修)**: ① `MoEForwardWorkspaceBytes` 运算符优先级 bug —
+    `(routed+7) & ~7 + align8(scratch)` 因 `+` 高于 `&` 算成 ~38KB (正确
+    ~547KB), scratch 全越界; compute-sanitizer 定位到 cuBLASLt
+    splitKreduce_kernel 越界写。② `Bf16Gemm` 对 tall-skinny 形状 (M=2,
+    K=2560) 选 split-K 算法, 其 splitKreduce 在 SM110a 越界写 — 在
+    heuristic 偏好里 `CUBLASLT_MATMUL_PREF_REDUCTION_SCHEME_MASK=NONE`
+    禁用 split-K。③ 测试 CPU 参考把单个 gate_proj 张量读进 2× 大小 buffer,
+    up 半未初始化垃圾 (ReadTensor 只写张量实际大小) — 改分别读 gate/up 再
+    拼接。
+  - 测试 `model_moe_test.cpp`: 真实 layer-2 routed NVFP4 + BF16
+    router/shared 权重, T=2 k=10, 与完整 CPU 参考 (top-k + NVFP4 dequant
+    routed + BF16 shared + 门控组合) 一致, L2 rel 1.7e-3。42 项测试全绿,
+    零警告。
+  **→ 模型层 MoE 完整模块完成 (待补: attn + 层组装 + mixer + MTP)**
 
 ## 进行中
 
@@ -152,6 +199,27 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   - ✅ 14 项量化测试 (9 核心 + 4 MoE 加载 + 1 MoE forward), 40 项全绿。
   **→ 量化层全部完成** ✅ (格式 / swizzle / dequant / act-quant / GEMM /
   权重加载 / grouped MoE forward, 全部真实 checkpoint 验证)
+- Phase 1 实现:模型层 (进行中)。
+  - ✅ `hyperconnection.h/.cu` Hyper-Connection (GatedResidual) 主干残差:
+    `GroupedGemmaRMSNorm` (per-branch) + mix (低秩门控 `silu(x/hc)`) +
+    combine (`2*sigmoid(inject)`)。独立 `q4t_model` 库, 低秩 GEMM 复用
+    `Bf16Gemm`。真实 layer-0 权重验证 mix/combine (L2 rel ~3e-3)。
+  - ✅ `moe.h/.cu` MoE 完整模块 (每层 MLP): router GEMM (`x @ gate^T`
+    [T,512]) + top-k kernel (按 logit 选 k=10, **在选中的 k 上 softmax**
+    归一化, 非全部 E) + routed NVFP4 experts (调 `MoERoutedForward`) +
+    shared expert (BF16 SwiGLU, gate/up 合并单 GEMM) + 门控组合
+    `out = routed + sigmoid(x @ shared_expert_gate) * shared_down`
+    (不加 residual, residual 由 HC combine 处理)。`LoadMoEExtra` 从
+    checkpoint 直载 5 个 BF16 权重 (gate/shared_expert.{gate,up,down}_proj/
+    shared_expert_gate)。
+  - ✅ 测试 `model_moe_test.cpp`: 真实 layer-2 routed NVFP4 + BF16
+    router/shared 权重, T=2 k=10, 与完整 CPU 参考 (top-k + NVFP4 dequant
+    routed + BF16 shared + 门控组合) 一致, L2 rel 1.7e-3。42 项全绿。
+  - ⏳ 层内 attn (full QSA / linear DeltaNet) + 层 forward 接线 (HC
+    mix/combine + MoE 已就绪, 待组装成完整 decoder layer)。
+  - ⏳ `hyper_connection_mixer` (use_combine=False) 收尾 mix → lm_head。
+  - ⏳ MTP 1 层 (mtp_hc: hc_count+1)。
+  **→ 模型层: HC 主干 + MoE 完整模块完成, 待 attn + 层组装**
 
 ## 阻塞 / 风险
 
