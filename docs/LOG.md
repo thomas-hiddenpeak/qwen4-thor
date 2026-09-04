@@ -5,6 +5,51 @@
 
 ---
 
+## 2026-09-04 — 量化层前置验证: cuBLASLt 原生 NVFP4 (W4A4) 跑通
+
+**做了什么**
+- 按用户要求 (利用硬件特性, 不做软件模拟) 验证 cuBLASLt 原生 NVFP4
+  在 Thor SM110a 上是否可用: `CUDA_R_4F_E2M1` 主数据 +
+  `CUBLASLT_MATMUL_MATRIX_SCALE_VEC16_UE4M3` scale 张量, W4A4
+  (权重与激活都 NVFP4, 对应 checkpoint 的 input_scale)。
+- 验证程序 `.q4t-work/fp4_validate.cpp` (throwaway, 不进构建): host 端
+  把随机 BF16 量化成 NVFP4 (group-16 e4m3 scale + e2m1 值 + FP32
+  global scale), 跑 `cublasLtMatmul`, 与 CPU dequant+FP32 GEMM 参考
+  对比。真实 expert 投影形状 (gate/up N=640 K=2560, down N=2560
+  K=640) × M=1,2,4,8,16,64,128,256 共 16 例。
+- **结果: 16/16 通过, max_rel < 0.0001** (纯 FP4 量化噪声, 无布局错误)。
+
+**为什么重要**
+- 确认原生 NVFP4 硬件路径可行, 量化层可以建立在 cuBLASLt 之上而非
+  手写 dequant-to-BF16 (qwen35-thor 走的是 W4A16 软件模拟, 有
+  `TODO: Try native cuBLASLt FP4 path`)。
+- 为 W4A4 (routed expert) 与可能的 prefill GEMM 铺路。
+
+**踩坑 (NVFP4 scale 布局)**
+- **scale 张量不是行主序**。初版用行主序 `[N, K/16]` 上传, matmul 能跑
+  但 0/16 通过 (max_rel 14~72)。根因: `VEC16_UE4M3` 要求硬件
+  tcgen05.mma 的 **128 行 × 64 元素 swizzle atom** 布局 (CUTLASS
+  `SfKMajorAtom`)。
+- 用 CuTe `tile_to_shape(SfAtom, (M,K), Step<_2,_1>)` 探针
+  (`.q4t-work/sf_probe.cpp`) 打印权威 offset 表, 推导出公式:
+  `i=r%32, j=(r%128)/32, ga=g%4, within=i*16+j*4+ga,
+  offset=within+(g/4)*512+(r/128)*((K/16)/4)*512` (g=K/16 组索引)。
+- **物理大小要 padding 到完整 atom**: `ceil(rows/128)*ceil((K/16)/4)*512`。
+  即使 M=8 也按 128 行分配, 否则 offset 写到 20479 而 buffer 只有 8*160
+  字节 → `malloc(): mismatching next->prev_size` 堆越界 abort。
+- 主数据 (FP4 packed) 保持行主序 `[N, K/2]`, 只有 scale 走 swizzle。
+- K 必须是 32 的倍数 (K=16 时 heuristic status=15 NOT_SUPPORTED);
+  真实形状 K=640/2560 均满足。
+- CUTLASS 头文件与 nvcc 13.3 不兼容 (`__CUTLASS_UNUSED` 未声明),
+  探针只 include `cute/tensor.hpp` 手动定义 atom 绕过。
+
+**下一步**
+- 量化层正式实现: e2m1 dequant kernel / 运行时激活量化 (input_scale) /
+  权重 NVFP4 加载 (含 swizzle scale) / cuBLASLt W4A4 GEMM 封装 /
+  grouped MoE GEMM (512 expert top-10)。
+
+---
+
 ## 2026-09-04 — IO 层: tokenizer (GPT-2 Byte-Level BPE) + 参考项目补全
 
 **做了什么**

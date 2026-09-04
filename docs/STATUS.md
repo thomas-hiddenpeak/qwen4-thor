@@ -44,6 +44,14 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 - [x] 2026-09-04 参考项目补全: Qwen3x-Orin (1688f50, tokenizer 参考) /
   thor-bench (3a33a90) / thor-probe (4816685) 克隆到 reference/,
   REFERENCE.md 更新
+- [x] 2026-09-04 量化层前置验证: cuBLASLt 原生 NVFP4 (W4A4) 在 Thor
+  SM110a 上跑通并数值正确。`CUDA_R_4F_E2M1` +
+  `CUBLASLT_MATMUL_MATRIX_SCALE_VEC16_UE4M3`, 真实 expert 投影形状
+  (gate/up N=640 K=2560, down N=2560 K=640) × M=1..256 共 16 例全部
+  通过 (max_rel < 0.0001, 纯 FP4 量化噪声)。关键: scale 张量必须用
+  **128×64 swizzle atom 布局** (非行主序), 物理大小 padding 到完整
+  atom `ceil(rows/128)×ceil((K/16)/4)×512`。主数据保持行主序。
+  **→ 原生 NVFP4 硬件路径确认可行 (用户要求: 利用硬件特性)**
 
 ## 进行中
 
@@ -77,6 +85,18 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 - **DeltaNet SSM 细节**: linear_attention 继承 Qwen3.5 的
   GatedDeltaNet, 实现前需参考 qwen35-thor 的 deltanet 实现。
 
+## 已解决 (2026-09-04)
+
+- ✅ **cuBLASLt 原生 NVFP4 scale 布局破解**: `VEC16_UE4M3` 的 scale
+  张量**不是行主序**, 而是硬件 tcgen05.mma 要求的 **128 行 × 64 元素
+  swizzle atom** (CUTLASS `SfKMajorAtom`)。逻辑坐标 (r 行, g 组, g=K/16)
+  → offset: `i=r%32, j=(r%128)/32, ga=g%4, within=i*16+j*4+ga,
+  offset=within+(g/4)*512+(r/128)*((K/16)/4)*512`。物理大小必须 padding
+  到完整 atom: `ceil(rows/128)*ceil((K/16)/4)*512` (即使 M=8 也按 128
+  行分配, 否则堆越界)。主数据 (FP4 packed) 保持行主序 [N, K/2]。
+  用 CuTe `tile_to_shape(SfAtom, (M,K), Step<_2,_1>)` 探针验证公式,
+  16/16 真实形状用例通过 (max_rel < 0.0001)。
+
 ## 已解决 (2026-09-03)
 
 - ✅ **PLE 查找机制完全理解**: PLE = n-gram 哈希查找表。
@@ -99,9 +119,12 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 ## 下一步
 
 1. 继续 Phase 1 实现。**PLE 流式层 (核心特性) 已全部完成** ✅,
-   **IO 层已全部完成** ✅ (JSON / safetensors / config / 权重 / tokenizer)。
+   **IO 层已全部完成** ✅ (JSON / safetensors / config / 权重 / tokenizer),
+   **量化层前置验证已通过** ✅ (cuBLASLt 原生 NVFP4 W4A4 数值正确)。
    建议顺序:
-   - **量化层**: NVFP4 W4A4 / FP8 原语
+   - **量化层**: NVFP4 W4A4 / FP8 原语 (前置验证已完成, 下一步实现
+     e2m1 dequant kernel / 运行时激活量化 / input_scale 使用 / grouped
+     MoE GEMM)
    - **模型层**: 48 层 forward (DeltaNet / QSA full-attn / MoE /
      hyper-connection / PLE 融合)
    - **引擎层**: 请求生命周期 + MTP + 采样
