@@ -115,11 +115,21 @@ if(Q4T_HAS_ICU)
 endif()
 
 # ---------------------------------------------------------------------------
+# q4t_quant — NVFP4 quantization (e2m1/e4m3, swizzle, dequant, act-quant,
+#             cuBLASLt W4A4 GEMM)
+# ---------------------------------------------------------------------------
+add_library(q4t_quant STATIC
+  src/quant/dequant.cu
+  src/quant/act_quant.cu)
+target_include_directories(q4t_quant PUBLIC include)
+target_link_libraries(q4t_quant PUBLIC CUDA::cudart CUDA::cublasLt)
+
+# ---------------------------------------------------------------------------
 # q4t — CLI executable
 # ---------------------------------------------------------------------------
 add_executable(q4t src/main.cpp)
 target_include_directories(q4t PRIVATE include)
-target_link_libraries(q4t PRIVATE q4t_ple CUDA::cudart)
+target_link_libraries(q4t PRIVATE q4t_ple q4t_quant CUDA::cudart)
 
 # ---------------------------------------------------------------------------
 # Tests
@@ -135,8 +145,9 @@ if(Q4T_BUILD_TESTS)
     tests/io_safetensors_test.cpp
     tests/io_model_config_test.cpp
     tests/io_weight_loader_test.cpp
+    tests/quant_fp4_test.cpp
     tests/test_main.cpp)
-  set(Q4T_TEST_LIBS q4t_ple q4t_io)
+  set(Q4T_TEST_LIBS q4t_ple q4t_io q4t_quant)
   if(Q4T_HAS_ICU)
     list(APPEND Q4T_TEST_SOURCES tests/text_tokenizer_test.cpp)
     list(APPEND Q4T_TEST_LIBS q4t_text)

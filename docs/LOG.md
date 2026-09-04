@@ -5,6 +5,67 @@
 
 ---
 
+## 2026-09-04 — 量化层核心: NVFP4 W4A4 原生路径 + W4A16 dequant
+
+**做了什么**
+- 新增独立 `q4t_quant` 静态库 (CMake 链接 `CUDA::cublasLt`):
+  - `include/q4t/quant/format.h`: e2m1 / UE4M3 编解码。round-to-nearest-
+    even, **无查表** (e2m1 按位分解 + `ldexpf`, e4m3 按位 + `ldexpf`),
+    全部 `__host__ __device__` (host-only TU 用 fallback 宏)。UE4M3 与
+    e4m3fn 正数位布局一致 (max 0x7E=448, 0x7F=NaN), 与 checkpoint
+    F8_E4M3 group scale 一致。
+  - `include/q4t/quant/swizzle.h`: NVFP4 scale 张量 swizzle 布局
+    (128×64 atom) 偏移公式 + 物理大小 padding 计算 + 行主序→swizzle 转换
+    (host 端, 权重加载用)。
+  - `src/quant/dequant.cu`: NVFP4→BF16 dequant kernel (W4A16 路径),
+    每线程一组 16 值, 含 global scale (`W = fp4 × e4m3 × inv_global`)。
+  - `src/quant/act_quant.cu`: BF16→NVFP4 运行时激活量化 kernel (W4A4
+    路径), 每线程一组 16 值: gmax/6 → e4m3-rounded scale → e2m1 按
+    rounded scale 舍入 (与硬件逐位一致), 输出 packed e2m1 (行主序) +
+    swizzled e4m3。
+  - `include/q4t/quant/fp4_gemm.h`: cuBLASLt 原生 W4A4 GEMM 封装
+    (CUDA_R_4F_E2M1 + VEC16_UE4M3, 两个 FP32 global scale 折进 alpha)。
+- 测试 `tests/quant_fp4_test.cpp` 9 项: e2m1 解码表 / e2m1 编码 round-trip
+  (含 tie 与饱和) / e4m3 round-trip (含 448 与单调性) / swizzle 偏移 /
+  swizzle 大小 / swizzle round-trip / dequant kernel / 激活量化 kernel /
+  **W4A4 GEMM 8 例** (真实 expert 形状 N=640 K=2560 与 N=2560 K=640 ×
+  M=1,8,64,256, max_rel < 2e-5)。全量 35 项测试通过, 零警告。
+
+**为什么重要**
+- 量化层核心就绪: 模型层可直接调用 `Fp4Gemm` (W4A4 routed expert) 与
+  `DequantFp4ToBf16` (W4A16 备选), 激活量化 kernel 在 forward 里把 BF16
+  激活转成 NVFP4 喂给 cuBLASLt。
+- 确认 W4A4 数值正确 (max_rel < 2e-5, 纯 FP4 量化噪声), 用户要求的
+  "原生 NVFP4 利用硬件特性" 路径在库级别打通。
+
+**踩坑 (device 端 constexpr 查表)**
+- **constexpr 数组在 device 代码无存储**: `format.h` 初版用
+  `inline constexpr float kE2m1Table[16]` / `kE4m3Pow2[15]` 做运行时索引
+  解码。CMake 构建 (带 `--expt-relaxed-constexpr`) **编译通过**, 但
+  namespace 作用域 constexpr 数组在 device 端没有存储, 运行时索引读到
+  垃圾 → dequant/act_quant kernel 输出全 0。而 W4A4 GEMM 测试仍 PASS
+  (cuBLASLt 用硬件自己的 e4m3 解码, 不调用我的函数), **掩盖了 bug**。
+  修复: 解码改无查表 (按位 + `ldexpf`), 全部 `__host__ __device__`。
+- **教训**: ① device kernel 里不要用运行时索引的 constexpr 数组
+  (编译不报错, 静默错值); ② 单元测试必须直接验证 kernel 输出, 不能只
+  靠端到端 GEMM (会掩盖底层格式错误)。
+- **UE4M3 最大值**: 一度误以为是 0xFF=480 (全 unsigned 范围), 查 CUTLASS
+  `float_ue4m3_t` 注释确认 Range [0:448]、has_NaN: true, 即与 e4m3fn
+  正数布局一致 (0x7E=448, 0x7F=NaN)。
+- **e2m1 tie 边界**: round-to-nearest-even 把中点 (0.25/1.25/2.5/5.0) 归
+  到偶数 mantissa 码 (0/2/4/6), 故这些中点用 `<=`, 其余 (0.75/1.75/3.5)
+  用 `<`。
+- **`__nv_bfloat16` 无 `.x` 成员**: `.x` 在 2-wide 类型上; 单值用
+  `*reinterpret_cast<const uint16_t*>(&b)` 取 bits。
+
+**下一步**
+- 量化层收尾: 权重 NVFP4 加载编排 (packed + swizzled scale 直载进 4 个
+  大 buffer, 参考 qwen35-thor 的 direct-to-packed) / grouped MoE GEMM
+  (512 expert top-10 + shared) / input_scale 在 forward 接线。
+- 然后进入模型层 (48 层 forward)。
+
+---
+
 ## 2026-09-04 — 量化层前置验证: cuBLASLt 原生 NVFP4 (W4A4) 跑通
 
 **做了什么**

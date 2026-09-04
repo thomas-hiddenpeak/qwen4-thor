@@ -52,6 +52,22 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   **128×64 swizzle atom 布局** (非行主序), 物理大小 padding 到完整
   atom `ceil(rows/128)×ceil((K/16)/4)×512`。主数据保持行主序。
   **→ 原生 NVFP4 硬件路径确认可行 (用户要求: 利用硬件特性)**
+- [x] 2026-09-04 量化层核心实现 (独立 `q4t_quant` 静态库):
+  - `format.h`: e2m1 / UE4M3 编解码 (round-to-nearest-even, **无查表**,
+    `__host__ __device__` 双端可用)。UE4M3 与 e4m3fn 正数位布局一致
+    (max 0x7E=448, 0x7F=NaN), 与 checkpoint F8_E4M3 一致。
+  - `swizzle.h`: NVFP4 scale 张量 swizzle 布局 (128×64 atom) + 物理大小
+    padding 计算 + 行主序→swizzle 转换。
+  - `dequant.cu`: NVFP4→BF16 dequant kernel (W4A16 路径, 含 global scale)。
+  - `act_quant.cu`: BF16→NVFP4 运行时激活量化 kernel (W4A4 路径), 输出
+    packed e2m1 + swizzled e4m3, e2m1 按 e4m3-rounded scale 舍入以与硬件
+    逐位一致。
+  - `fp4_gemm.h`: cuBLASLt 原生 W4A4 GEMM 封装 (CUDA_R_4F_E2M1 +
+    VEC16_UE4M3, global scale 折进 alpha)。
+  - 测试 `quant_fp4_test.cpp` 9 项: 格式 round-trip / swizzle 偏移+大小+
+    round-trip / dequant kernel / 激活量化 kernel / **W4A4 GEMM 8 例**
+    (真实 expert 形状 × M=1..256, max_rel < 2e-5)。35 项测试全绿。
+  **→ 量化层核心完成 (NVFP4 W4A4 原生路径 + W4A16 dequant 路径)**
 
 ## 进行中
 
@@ -74,6 +90,15 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     tokenizer.json 上 57 个多样化输入 (空串/CJK/emoji/NFC 组合/特殊
     标记/长文本) 与 python `tokenizers` 库逐位一致, 0 不匹配。
   **→ IO 层 (JSON / safetensors / config / 权重 / tokenizer) 全部完成** ✅
+- Phase 1 实现:量化层核心。
+  - ✅ `format.h` e2m1 / UE4M3 编解码 (round-to-nearest-even, 无查表,
+    `__host__ __device__`)。
+  - ✅ `swizzle.h` NVFP4 scale swizzle 布局 + padding + 转换。
+  - ✅ `dequant.cu` NVFP4→BF16 (W4A16)。
+  - ✅ `act_quant.cu` BF16→NVFP4 运行时激活量化 (W4A4)。
+  - ✅ `fp4_gemm.h` cuBLASLt 原生 W4A4 GEMM 封装。
+  - ✅ 9 项测试 (含 W4A4 GEMM 8 例, max_rel < 2e-5), 35 项全绿。
+  **→ 量化层核心完成** ✅ (待补: 权重 NVFP4 加载编排 / grouped MoE GEMM)
 
 ## 阻塞 / 风险
 
@@ -87,6 +112,16 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 ## 已解决 (2026-09-04)
 
+- ✅ **constexpr 查表数组在 device 端无存储**: `format.h` 初版用
+  `inline constexpr float kE2m1Table[16]` / `kE4m3Pow2[15]` 做运行时索引
+  解码。CMake 构建 (带 `--expt-relaxed-constexpr`) **编译通过**, 但
+  namespace 作用域的 constexpr 数组在 device 代码里**没有存储**, 运行时
+  索引读到垃圾 → dequant/act_quant kernel 输出全 0 或错值, 而 W4A4 GEMM
+  测试仍 PASS (cuBLASLt 用硬件自己的 e4m3 解码, 不调用我的函数), 掩盖了
+  bug。修复: 解码改为**无查表** (e2m1 按位分解 + `ldexpf`, e4m3 按位 +
+  `ldexpf`), 全部 `__host__ __device__`。教训: ① 不要在 device kernel 里
+  用运行时索引的 constexpr 数组; ② 单元测试必须直接验证 kernel 输出,
+  不能只靠端到端 GEMM (会掩盖底层格式错误)。
 - ✅ **cuBLASLt 原生 NVFP4 scale 布局破解**: `VEC16_UE4M3` 的 scale
   张量**不是行主序**, 而是硬件 tcgen05.mma 要求的 **128 行 × 64 元素
   swizzle atom** (CUTLASS `SfKMajorAtom`)。逻辑坐标 (r 行, g 组, g=K/16)
@@ -118,17 +153,16 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 ## 下一步
 
-1. 继续 Phase 1 实现。**PLE 流式层 (核心特性) 已全部完成** ✅,
-   **IO 层已全部完成** ✅ (JSON / safetensors / config / 权重 / tokenizer),
-   **量化层前置验证已通过** ✅ (cuBLASLt 原生 NVFP4 W4A4 数值正确)。
+1. 继续 Phase 1 实现。**PLE 流式层** ✅, **IO 层** ✅, **量化层核心** ✅
+   (NVFP4 W4A4 原生路径 + W4A16 dequant, 35 项测试全绿)。
    建议顺序:
-   - **量化层**: NVFP4 W4A4 / FP8 原语 (前置验证已完成, 下一步实现
-     e2m1 dequant kernel / 运行时激活量化 / input_scale 使用 / grouped
-     MoE GEMM)
+   - **量化层收尾**: 权重 NVFP4 加载编排 (packed + swizzled scale 直载
+     进 4 个大 buffer) / grouped MoE GEMM (512 expert top-10 + shared) /
+     input_scale 在 forward 的接线。
    - **模型层**: 48 层 forward (DeltaNet / QSA full-attn / MoE /
-     hyper-connection / PLE 融合)
-   - **引擎层**: 请求生命周期 + MTP + 采样
-   - **服务层**: OpenAI 兼容 HTTP API
+     hyper-connection / PLE 融合)。
+   - **引擎层**: 请求生命周期 + MTP + 采样。
+   - **服务层**: OpenAI 兼容 HTTP API。
 2. 实现 full_attention 前, 拉取 SGLang qsa 模块研读 indexer。
 3. 实现 linear_attention 前, 研读 qwen35-thor 的 deltanet 实现。
 
