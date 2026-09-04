@@ -5,6 +5,51 @@
 
 ---
 
+## 2026-09-05 — 模型层 (3a/N): linear_attention (Gated DeltaNet SSM)
+
+**做了什么**
+- 新增 `include/q4t/model/linear_attention.h` + `src/model/linear_attention.cu`,
+  并入 `q4t_model`。实现 qwen4_exp 的 linear_attention 层 (36 层, 继承
+  Qwen3.5 GatedDeltaNet) 的完整 forward (`LinearAttentionForward`):
+  1. 投影: `in_proj_qkv` [T,10240] (q|k|v) + `in_proj_z` [T,6144] +
+     `in_proj_a`/`in_proj_b` [T,48] (BF16 `Bf16Gemm`)。
+  2. causal conv1d (kernel 4, SiLU) 作用在 in_qkv 通道, 持久 conv_state
+     [10240, 3]。
+  3. Gated DeltaNet 递归 (SSM state [nv=48, kd=128, vd=128], 每 value head
+     一个 block, S 放 shared memory, 128 线程)。
+  4. 融合 per-head RMSNorm * silu(z) gate。
+  5. `out_proj` [T,2560]。
+- `LoadLinearAttention`: 从 checkpoint 直载 9 个权重
+  (`linear_attn.{in_proj_qkv,in_proj_z,in_proj_a,in_proj_b,conv1d,out_proj,
+  norm}.weight` + `A_log` + `dt_bias`)。
+- 测试 `tests/model_linear_attention_test.cpp`: 真实 layer-2 权重, T=4,
+  零初始 SSM/conv state, 与完整 CPU 参考 (投影 + conv + SSM 递归 + gate +
+  out_proj) 一致, **out L2 rel 7.5e-3 / ssm_state 5.0e-3**。43 项测试全绿,
+  零警告。
+
+**踩坑 (两个, 均已修)**
+- **q/k 归一化误用 RMSNorm**: 参考 kernel 是 L2 风格
+  `k_hat = k / sqrt(sum(k^2) + eps)` (**不除 kd**), q 额外乘 `1/sqrt(kd)`。
+  初版误写成 `sqrt(mean(x^2)+eps)` (多除了 kd), 误差 ~4e-2。
+- **softplus/alpha 指数写错 (主 bug)**: 参考用 `exp2f(x * LOG2E)` (= e^x),
+  初版误写成 `expf(x * LOG2E)` (= e^(1.4427x))。因 t=0 时 S=0 使
+  `delta=v` 不依赖 alpha, 误差随 token 线性增长 (t=0: 7e-8 → t=3: 3e-2),
+  按 token 分解误差后定位。修正为 `expf(x)` 后 GDN 逻辑误差降到 1.2e-5。
+- 另: 中间量 (qkv/z/a/beta/y_ssm) 必须**单独 cudaMalloc**, 不能从
+  `workspace` carve — 同一 `workspace` 还要传给 cuBLASLt 当内部 scratch,
+  会覆盖 GEMM 输出 (与 HC/MoE 的约定一致)。
+
+**下一步**
+- 模型层 (3b/N): full_attention (QSA 稀疏注意力) — 需 paged KV cache +
+  MRoPE (mrope_section [11,11,10] interleaved) + QSA indexer (compressed
+  变体: 4-token 平均池化 → k_layernorm+MRoPE → 压缩 K 缓存 → MQA logits
+  block top-512 → 展开 2048 token 索引 → 稀疏注意力 + attn_output_gate)。
+  最复杂部分, 需研读 SGLang `qsa/` 的 mqa/topk kernel。
+- 之后 (4/N) 层组装 (HC mix/combine + attn + MoE 接线成完整 decoder layer),
+  (5/N) hyper_connection_mixer + lm_head + MTP。
+
+---
+
 ## 2026-09-05 — 模型层 (2/N): MoE 完整模块 (router + top-k + routed + shared)
 
 **做了什么**

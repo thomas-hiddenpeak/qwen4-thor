@@ -161,6 +161,28 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     routed + BF16 shared + 门控组合) 一致, L2 rel 1.7e-3。42 项测试全绿,
     零警告。
   **→ 模型层 MoE 完整模块完成 (待补: attn + 层组装 + mixer + MTP)**
+- [x] 2026-09-05 模型层 (3a/N): linear_attention (Gated DeltaNet SSM)
+  (`linear_attention.h/.cu`, 并入 `q4t_model`)。
+  - qwen4_exp 的 linear_attention 层 (36 层) 继承 Qwen3.5 GatedDeltaNet。
+    完整 forward: 投影 (in_proj_qkv [T,10240] q|k|v + in_proj_z [T,6144] +
+    in_proj_a/b [T,48]) → causal conv1d (kernel 4, SiLU, 持久 conv_state
+    [10240,3]) → Gated DeltaNet 递归 (SSM state [nv=48, kd=128, vd=128],
+    每 value head 一个 block, S 放 shared memory) → 融合 per-head RMSNorm *
+    silu(z) gate → out_proj [T,2560]。qwen4 linear 层**无 attn_output_gate**
+    (与 full attention 不同)。
+  - `LoadLinearAttention` 直载 9 个权重 (in_proj_qkv/z/a/b, conv1d, out_proj,
+    norm, A_log, dt_bias)。
+  - **踩坑 (已修)**: ① q/k 归一化是 L2 风格 `k/sqrt(sum(k^2)+eps)` (**不除
+    kd**), q 额外乘 1/sqrt(kd) — 初版误用 RMSNorm (多除 kd)。② softplus/
+    alpha 指数: 参考 `exp2f(x*LOG2E)` (=e^x), 初版误写 `expf(x*LOG2E)`
+    (=e^(1.4427x)); 因 t=0 时 delta=v 不依赖 alpha, 误差随 token 线性增长,
+    按 token 分解定位。③ 中间量须单独 cudaMalloc, 不能从 workspace carve
+    (workspace 同时是 cuBLASLt scratch)。
+  - 测试 `model_linear_attention_test.cpp`: 真实 layer-2 权重, T=4, 零初始
+    state, 与完整 CPU 参考一致, out L2 rel 7.5e-3 / ssm_state 5.0e-3。43 项
+    测试全绿, 零警告。
+  **→ 模型层 linear_attention 完成 (待补: full_attention/QSA + 层组装 +
+    mixer + MTP)**
 
 ## 进行中
 
@@ -215,21 +237,28 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   - ✅ 测试 `model_moe_test.cpp`: 真实 layer-2 routed NVFP4 + BF16
     router/shared 权重, T=2 k=10, 与完整 CPU 参考 (top-k + NVFP4 dequant
     routed + BF16 shared + 门控组合) 一致, L2 rel 1.7e-3。42 项全绿。
-  - ⏳ 层内 attn (full QSA / linear DeltaNet) + 层 forward 接线 (HC
-    mix/combine + MoE 已就绪, 待组装成完整 decoder layer)。
+  - ✅ `linear_attention.h/.cu` linear_attention (Gated DeltaNet SSM):
+    投影 + causal conv1d (SiLU) + Gated DeltaNet 递归 (SSM state [48,128,128],
+    S 放 smem) + per-head RMSNorm*silu(z) gate + out_proj。真实 layer-2 权重
+    验证 (out L2 rel 7.5e-3)。
+  - ⏳ 层内 full_attention (QSA 稀疏注意力) + 层 forward 接线 (HC
+    mix/combine + linear/full attn + MoE 已就绪, 待组装成完整 decoder layer)。
   - ⏳ `hyper_connection_mixer` (use_combine=False) 收尾 mix → lm_head。
   - ⏳ MTP 1 层 (mtp_hc: hc_count+1)。
-  **→ 模型层: HC 主干 + MoE 完整模块完成, 待 attn + 层组装**
+  **→ 模型层: HC 主干 + MoE + linear_attention 完成, 待 full_attention/QSA
+    + 层组装**
 
 ## 阻塞 / 风险
 
 - **PLE sidecar SHA-256 未验证** (ssd-stream.json 记录了期望值
   `b070f964...`, 51.2 GB 校验耗时较长, 安排在首次加载前完成)。
 - **QSA 稀疏注意力细节**: indexer 的 top-k 选择算法在 SGLang 的
-  `sglang/srt/layers/attention/qsa/` 模块 (尚未拉取), 实现
-  full_attention 层前需研读。
-- **DeltaNet SSM 细节**: linear_attention 继承 Qwen3.5 的
-  GatedDeltaNet, 实现前需参考 qwen35-thor 的 deltanet 实现。
+  `sglang/srt/layers/attention/qsa/` 模块 (已研读 config/glue/qsa_indexer:
+  compressed 变体 = 4-token 平均池化 → k_layernorm+MRoPE → 压缩 K 缓存 →
+  MQA logits block top-512 → 展开 2048 token 索引 → 稀疏注意力)。实现
+  full_attention 层前需研读 `qsa/mqa.py` 与 `qsa/kernel.py` 的
+  `qsa_mqa_prefill`/`qsa_fast_topk`/`average_pool_qsa_keys`/
+  `expand_qsa_block_indices` 具体 kernel, 并搭建 paged KV + MRoPE 基础设施。
 
 ## 已解决 (2026-09-04)
 
