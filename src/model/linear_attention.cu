@@ -11,6 +11,8 @@
 
 #include <cmath>
 #include <cstdint>
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <string>
 #include <vector>
@@ -59,6 +61,33 @@ Status CheckGemm(const Bf16GemmResult& r) {
                         std::to_string((int)r.status) + ")");
   }
   return Status();
+}
+
+// Debug: when Q4T_LIN_DUMP=<tag>, copy the linear-attention intermediates of
+// this call to <tag>.{x,qkv_raw,qkv,y_ssm}.bin (BF16, row-major) so a
+// prefill vs decode comparison can find the first diverging stage. No-op
+// unless the env var is set.
+void DumpLinearIntermediates(const char* tag, const uint16_t* x, int T,
+                             int hs, const uint16_t* qkv_raw,
+                             const uint16_t* qkv, const uint16_t* y_ssm,
+                             int in_qkv, int v_dim) {
+  const char* e = std::getenv("Q4T_LIN_DUMP");
+  if (!e || !*e) return;
+  auto w = [&](const char* name, const uint16_t* src, size_t n) {
+    std::string p = std::string(e) + "." + name + ".bin";
+    std::vector<uint16_t> h(n);
+    cudaMemcpy(h.data(), src, n * sizeof(uint16_t), cudaMemcpyDeviceToHost);
+    FILE* f = std::fopen(p.c_str(), "wb");
+    if (f) {
+      std::fwrite(h.data(), sizeof(uint16_t), n, f);
+      std::fclose(f);
+    }
+  };
+  w("x", x, static_cast<size_t>(T) * hs);
+  w("qkv_raw", qkv_raw, static_cast<size_t>(T) * in_qkv);
+  w("qkv", qkv, static_cast<size_t>(T) * in_qkv);
+  w("y_ssm", y_ssm, static_cast<size_t>(T) * v_dim);
+  (void)tag;
 }
 
 // Causal conv1d over `channels` (the in_qkv channels), kernel width conv_k,
@@ -132,7 +161,7 @@ __global__ void Conv1dUpdateStateKernel(uint16_t* __restrict__ state,
 __global__ void __launch_bounds__(128, 2) GatedDeltaNetKernel(
     const uint16_t* __restrict__ qkv, const uint16_t* __restrict__ a_raw,
     const uint16_t* __restrict__ dt_bias, const uint16_t* __restrict__ A_log,
-    const uint16_t* __restrict__ beta_raw, uint16_t* __restrict__ ssm,
+    const uint16_t* __restrict__ beta_raw, float* __restrict__ ssm,
     uint16_t* __restrict__ y, int T, int nkh, int kd, int nv_per_kh, int vd,
     int token_stride, int nv) {
   const int h_v = blockIdx.x;
@@ -148,9 +177,11 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetKernel(
 
   const int ss_base = h_v * kd * vd;
   const float q_scale = rsqrtf(static_cast<float>(kd));
-  // Load initial state S[kd, vd] -> S_smem (BF16 GMEM -> FP32 SMEM).
-  for (int i = 0; i < kd; ++i)
-    S_smem[i * vd_pad + j] = Bf16ToFloat(ssm[ss_base + i * vd + j]);
+  // Load initial state S[kd, vd] -> S_smem (FP32 GMEM -> FP32 SMEM). The
+  // persistent state is FP32 to match the reference (transformers keeps the
+  // GatedDeltaNet recurrent state in float32 end-to-end); a BF16 state
+  // quantized at every chunk boundary drifts measurably from the reference.
+  for (int i = 0; i < kd; ++i) S_smem[i * vd_pad + j] = ssm[ss_base + i * vd + j];
   __syncthreads();
 
   for (int t = 0; t < T; ++t) {
@@ -215,9 +246,8 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetKernel(
     __syncthreads();
   }
 
-  // Write final state (FP32 SMEM -> BF16 GMEM).
-  for (int i = 0; i < kd; ++i)
-    ssm[ss_base + i * vd + j] = FloatToBf16(S_smem[i * vd_pad + j]);
+  // Write final state (FP32 SMEM -> FP32 GMEM).
+  for (int i = 0; i < kd; ++i) ssm[ss_base + i * vd + j] = S_smem[i * vd_pad + j];
 }
 
 // Fused per-head RMSNorm * gate(z) gate. One block per (token, value head),
@@ -370,7 +400,7 @@ Status LoadLinearAttention(const io::WeightLoader& loader,
 
 Status LinearAttentionForward(const LinearAttentionWeights& w,
                               const uint16_t* x, uint16_t* out,
-                              uint16_t* ssm_state, uint16_t* conv_state, int T,
+                              float* ssm_state, uint16_t* conv_state, int T,
                               void* workspace, size_t workspace_bytes,
                               cudaStream_t stream) {
   const int hs = w.hidden_size;
@@ -500,6 +530,11 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
       return Status::Fail("gdn launch");
     }
   }
+
+  // Debug dump (before the in-place gate): x, qkv_raw, qkv, y_ssm (raw SSM
+  // output). Gated by Q4T_LIN_DUMP.
+  DumpLinearIntermediates("lin", x, T, hs, d_qkv_raw, d_qkv, d_y_ssm, in_qkv,
+                          v_dim);
 
   // 4. Fused per-head RMSNorm * sigmoid(z) gate (in-place on d_y_ssm).
   {

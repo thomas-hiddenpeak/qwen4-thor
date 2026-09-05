@@ -68,7 +68,7 @@ struct DecoderLayer {
   HyperConnectionWeights mlp_hc;
 
   // Per-layer persistent caches (allocated in Load, freed in Free).
-  uint16_t* ssm_state = nullptr;  // linear: [nv, kd, vd]
+  float* ssm_state = nullptr;  // linear: [nv, kd, vd] (FP32, matches reference)
   uint16_t* conv_state = nullptr;  // linear: [in_qkv, conv_k-1]
   uint16_t* kv_cache = nullptr;  // full: paged [n_pages, kKvPageSize, nkv, 2, hd]
   int* page_table = nullptr;  // full: [max_len] logical pos -> physical page

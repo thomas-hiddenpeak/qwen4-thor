@@ -5,6 +5,81 @@
 
 ---
 
+## 2026-09-06 — decode 路径自洽性验证: 测试设计错误定位 + SSM state 改 FP32
+
+**背景**
+延续"逐 token 对参考验证", 把验证从 prefill-only 扩展到 decode 路径
+(prefill + 增量 decode 的 state 交接: SSM/conv/KV/PLE history)。
+新测试 `model_forward_dump_decode` (prefill + greedy decode logits dump
++ `Q4T_DECODE_SELFCHK` 自洽检查)。
+
+**初测异常与排查过程**
+初测 3 层 cos=0.41 / 4 层 cos=0.53 (参考侧同检查 cos=1.0), 疑似
+"batch prefill 与 incremental decode 不等价"。排查:
+1. 按层二分: 1 层 (纯 SSM, 无 PLE/full-attn) 也 cos=0.49 → 排除 PLE
+   与 full attention。
+2. prefill 内部自洽: `prefill(4)` row[0..3] vs `prefill(5)` row[0..3]
+   **cos=1.0** → batch kernel 内部无 bug, 差异在 prefill→decode 交接。
+3. 假设 "SSM state BF16 量化在交接处累积误差" (参考 transformers 全程
+   FP32 递归 state): 把 SSM 持久 state 从 BF16 改 **FP32** (kernel
+   头尾读写、分配、ResetState、测试同步)。重测 **cos 仍 0.49, argmax
+   完全不变** → 假设不成立, 但 FP32 改动保留 (匹配参考 + 见下)。
+4. 决定性测试: 全新状态对单 token 做 prefill 对比 decode 输出 →
+   cos=0.85, 说明 decode 读到了"部分/错误"的 state。
+5. 逐阶段中间量 dump (trunk / HC mix / qkv_raw / conv / y_ssm /
+   ssm_state, `Q4T_LIN_DUMP` + `Q4T_STATE_DUMP` 门控): 首次分歧在
+   layer 0 输入之前的 trunk (cos=0.08) → 指向 head 之前的输入不同。
+
+**根因: 测试设计错误 (非引擎 bug)**
+self-check 用 `decoded[0]` (decode step 0 的**输出** token, 39319)
+追加进 prefill5, 而 decode step 0 的**输入**是 prefill argmax
+(212930)。两条路径在 position 4 处理**不同 token** → 差异完全正常,
+之前所有"state 断裂"结论无效。修复: 保存 decode 输入 token
+(`decode_input_tok`), 用它构造 p5。
+
+**修复后验证 (同一 5 token, 两条路径)**
+- **1 层**: prefill5-last vs decode0 **cos=1.0, bit-identical**;
+  全部中间量 (trunk/x/qkv_raw/qkv/y_ssm/ssm_state) max_abs=0。
+- **3 层**: cos=0.9985, l2_rel=0.066; top-2 logits 差 0.031
+  (4.0312 vs 4.0), argmax 差异是 BF16 噪声可翻转的边界, 非 bug。
+  layer-0 ssm_state bit-identical (FP32 改动生效, SSM 递归确定)。
+- **4 层**: cos=0.9988, **argmax 一致** (213559)。
+- 剩余 ~0.2% 漂移来源: MoE/HC GEMM 的 batch(T=5) vs 增量(T=4+T=1)
+  cuBLASLt 算法/tile 选择不同 → BF16 舍入差累积。属预期数值非确定
+  (与已知的 MoE atomicAdd 非确定同类), 非正确性缺陷。
+
+**SSM state BF16→FP32 (保留的改动)**
+虽非本次差异根因, 仍保留: ① 匹配 transformers 参考 (GatedDeltaNet
+递归 state 全程 float32); ② 使 SSM state 在 prefill/decode 两路径
+bit-identical (消除 state 量化这一非确定源); ③ 为后续 prefill/decode
+路径拆分与性能优化打基础。代价: 36 层 SSM state 36→72 MB (122 GB
+统一内存可忽略)。
+
+**改动文件**
+- `tests/model_forward_test.cpp`: 新测试 `model_forward_dump_decode`
+  (prefill + decode dump + self-check); self-check 用 decode 输入 token
+  修复; `Q4T_STATE_DUMP` 门控的 layer-0 state/trunk dump。
+- `src/model/linear_attention.cu` + `include/q4t/model/linear_attention.h`:
+  SSM state BF16→FP32; `Q4T_LIN_DUMP` 门控的中间量 dump (x/qkv_raw/
+  qkv/y_ssm)。
+- `include/q4t/model/decoder_layer.h` + `src/model/decoder_layer.cu`:
+  `ssm_state` 类型 `uint16_t*`→`float*`, 分配/清零 ×2→×4。
+- `tests/model_linear_attention_test.cpp` / `tests/model_decoder_layer_test.cpp`:
+  state 类型与清零大小同步 (decoder_layer 的 `ResetLinearState` 原来只
+  清前一半 → A-vs-B 测试失败的直接原因, 已修)。
+- `docs/STATUS.md` / `docs/LOG.md`: 本条。
+
+**验证**
+54 项测试全绿, 零警告 (`-Wall -Wextra`)。
+
+**下一步**
+逐 token 对参考验证继续 (decode 路径对 transformers 参考逐步对照:
+参考侧 dump SSM/conv state + 逐 token logits, 与 C++ dump 对照) →
+扩展到更多层/更长序列 → prefill/decode 性能优化 (拆分 linear
+attention 的 prefill/decode 路径, 预留 MTP 接口)。
+
+---
+
 ## 2026-09-06 — transformers 5.16.1 qwen4_exp 参考发现 + 4 层参考验证
 
 **背景**

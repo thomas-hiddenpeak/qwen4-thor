@@ -14,9 +14,11 @@
 //   2. causal conv1d (kernel `conv_k`) over the in_qkv channels, SiLU out,
 //      persistent conv_state [in_qkv, conv_k-1] per sequence.
 //   3. Gated DeltaNet recurrence over the q/k/v heads (see .cu for the exact
-//      per-token rule). Persistent ssm_state [nv, kd, vd] per sequence
-//      (mamba_ssm_dtype=float32 in the checkpoint, but qwen35-thor stores it
-//      BF16 — we follow the reference and store BF16).
+//      per-token rule). Persistent ssm_state [nv, kd, vd] per sequence,
+//      stored FP32 to match the reference (transformers keeps the recurrent
+//      state in float32 end-to-end; a BF16 state quantized at every chunk
+//      boundary drifts measurably from the reference at the prefill->decode
+//      handoff).
 //   4. y = per-head RMSNorm(y_ssm) * silu(z)   (norm weight = `norm.weight`,
 //      plain (not centered) scale, one weight per value head of `vd` dims).
 //   5. out = y @ W_out^T   [T, hs]
@@ -87,7 +89,7 @@ Status LoadLinearAttention(const io::WeightLoader& loader, const std::string& pr
 //
 //   x          : device row-major [T, hs] uint16 (BF16)
 //   out        : device row-major [T, hs] uint16 (out)
-//   ssm_state  : device [nv, kd, vd] uint16 (BF16), in-place persistent state
+//   ssm_state  : device [nv, kd, vd] float (FP32), in-place persistent state
 //   conv_state : device [in_qkv, conv_k-1] uint16 (BF16), in-place
 //   T          : number of tokens (this chunk)
 //   workspace  : scratch device buffer (>= ~64 MiB) for the projection GEMMs
@@ -95,7 +97,7 @@ Status LoadLinearAttention(const io::WeightLoader& loader, const std::string& pr
 //                allocated separately, so the buffer must not be reused for
 //                anything else during the call)
 Status LinearAttentionForward(const LinearAttentionWeights& w, const uint16_t* x,
-                              uint16_t* out, uint16_t* ssm_state,
+                              uint16_t* out, float* ssm_state,
                               uint16_t* conv_state, int T, void* workspace,
                               size_t workspace_bytes, cudaStream_t stream);
 

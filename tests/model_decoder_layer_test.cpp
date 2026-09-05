@@ -100,7 +100,7 @@ uint16_t FloatToBf16(float f) {
 void ResetLinearState(DecoderLayer& layer, cudaStream_t stream) {
   if (layer.ssm_state)
     cudaMemsetAsync(layer.ssm_state, 0,
-                    static_cast<size_t>(48) * 128 * 128 * 2, stream);
+                    static_cast<size_t>(48) * 128 * 128 * 4, stream);
   if (layer.conv_state)
     cudaMemsetAsync(layer.conv_state, 0,
                     static_cast<size_t>(10240) * 3 * 2, stream);

@@ -183,21 +183,25 @@ Q4T_TEST(linear_attention_forward) {
   std::vector<float> x_in(static_cast<size_t>(kT) * kHs);
   for (auto& v : x_in) v = dist(rng);
   std::vector<uint16_t> x_bf = ToBf16(x_in);
-  std::vector<uint16_t> ssm0(static_cast<size_t>(kNv) * kKd * kVd, 0);
+  std::vector<float> ssm0(static_cast<size_t>(kNv) * kKd * kVd, 0.0f);
   std::vector<uint16_t> conv0(static_cast<size_t>(kInQkv) * (kConvK - 1), 0);
 
   // Device buffers.
   uint16_t* d_x = nullptr;
   uint16_t* d_out = nullptr;
-  uint16_t* d_ssm = nullptr;
+  float* d_ssm = nullptr;
   uint16_t* d_conv = nullptr;
   void* d_ws = nullptr;
   const size_t ws_bytes = 64u * 1024u * 1024u;
-  if (cudaMalloc(&d_x, x_bf.size() * sizeof(uint16_t)) != cudaSuccess ||
-      cudaMalloc(&d_out, static_cast<size_t>(kT) * kHs * sizeof(uint16_t)) !=
+  if (cudaMalloc(reinterpret_cast<void**>(&d_x),
+                x_bf.size() * sizeof(uint16_t)) != cudaSuccess ||
+      cudaMalloc(reinterpret_cast<void**>(&d_out),
+                 static_cast<size_t>(kT) * kHs * sizeof(uint16_t)) !=
           cudaSuccess ||
-      cudaMalloc(&d_ssm, ssm0.size() * sizeof(uint16_t)) != cudaSuccess ||
-      cudaMalloc(&d_conv, conv0.size() * sizeof(uint16_t)) != cudaSuccess ||
+      cudaMalloc(reinterpret_cast<void**>(&d_ssm),
+                 ssm0.size() * sizeof(float)) != cudaSuccess ||
+      cudaMalloc(reinterpret_cast<void**>(&d_conv),
+                 conv0.size() * sizeof(uint16_t)) != cudaSuccess ||
       cudaMalloc(&d_ws, ws_bytes) != cudaSuccess) {
     std::printf("  cudaMalloc failed\n");
     w.Free();
@@ -205,7 +209,7 @@ Q4T_TEST(linear_attention_forward) {
   }
   cudaMemcpy(d_x, x_bf.data(), x_bf.size() * sizeof(uint16_t),
              cudaMemcpyHostToDevice);
-  cudaMemcpy(d_ssm, ssm0.data(), ssm0.size() * sizeof(uint16_t),
+  cudaMemcpy(d_ssm, ssm0.data(), ssm0.size() * sizeof(float),
              cudaMemcpyHostToDevice);
   cudaMemcpy(d_conv, conv0.data(), conv0.size() * sizeof(uint16_t),
              cudaMemcpyHostToDevice);
@@ -326,13 +330,11 @@ Q4T_TEST(linear_attention_forward) {
   const float out_err = L2RelErr(FromBf16(out_dev), out_ref);
   std::printf("  out l2_rel_err = %.3e\n", out_err);
 
-  // Compare final SSM state.
-  std::vector<uint16_t> ssm_dev(ssm0.size());
-  cudaMemcpy(ssm_dev.data(), d_ssm, ssm_dev.size() * sizeof(uint16_t),
+  // Compare final SSM state (FP32, no quantization — matches reference).
+  std::vector<float> ssm_dev(ssm0.size());
+  cudaMemcpy(ssm_dev.data(), d_ssm, ssm_dev.size() * sizeof(float),
              cudaMemcpyDeviceToHost);
-  std::vector<float> ssm_ref = S;
-  for (auto& v : ssm_ref) v = Bf16Round(v);  // device writes final S as BF16
-  const float ssm_err = L2RelErr(FromBf16(ssm_dev), ssm_ref);
+  const float ssm_err = L2RelErr(ssm_dev, S);
   std::printf("  ssm_state l2_rel_err = %.3e\n", ssm_err);
 
   // Cleanup.

@@ -60,9 +60,12 @@ cmake --build build --parallel
   PLE 注入 + head/tail + generate + 长序列 QSA 稀疏路径) / serve (OpenAI
   兼容 HTTP API) / **PD-ready 架构** (Paged KV cache + 可分离代码路径 +
   阶段边界 API ModelSequence) / **4 层参考验证** (transformers 5.16.1
-  官方实现, 含首个 full_attention, 4/4 argmax 匹配)。53 项测试全绿,
-  零警告。
+  官方实现, 含首个 full_attention, 4/4 argmax 匹配) / **decode 路径
+  自洽性验证** (prefill/decode 同 token 对照, SSM state 改 FP32,
+  1 层 bit-identical / 4 层 argmax 一致)。54 项测试全绿, 零警告。
 - 下一步 (2026-09-06 与用户确认的顺序): 逐 token 对参考验证 (4 层基线
-  已完成, 继续扩展) → prefill/decode 性能优化 (预留 MTP 接口) → MTP
-  推测解码 (良好基线上, 用户排期) → 多模态图像输入 (transformers 权威
-  参考已就位) → PLE 工作内存/SHA-256 校验。完整多设备 PD 部署归 Phase 2。
+  + decode 自洽性已完成, 继续扩展到 decode 对参考逐步对照/更多层) →
+  prefill/decode 性能优化 (拆分 linear attention 路径, 预留 MTP 接口)
+  → MTP 推测解码 (良好基线上, 用户排期) → 多模态图像输入 (transformers
+  权威参考已就位) → PLE 工作内存/SHA-256 校验。完整多设备 PD 部署归
+  Phase 2。

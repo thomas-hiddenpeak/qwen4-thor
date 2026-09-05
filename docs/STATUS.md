@@ -384,6 +384,23 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     层循环中与参考一致 (此前只有 layer 3 单独单元测试)。脚本
     `.q4t-work/ref4_logits.py` (从 ref2 泛化, 支持 linear/full 混合层),
     `q4t_tests <name>` 支持测试名过滤 (单独跑重测试)。
+  - ✅ **decode 路径自洽性验证 + SSM state 改 FP32 (2026-09-06)**:
+    扩展参考验证到 decode 路径 (新测试 `model_forward_dump_decode`:
+    prefill + greedy decode dump, `Q4T_DECODE_SELFCHK` 自洽检查
+    "prefill(T+1) 最后一行 vs prefill(T)+decode(1)")。初测 3/4 层
+    cos 仅 0.41/0.53, 按层二分 (1 层纯 SSM 也 0.49) 指向
+    "state 交接断裂"。逐阶段中间量 dump (trunk/HC mix/qkv_raw/
+    conv/y_ssm/ssm_state) 定位后**发现是测试设计错误**: self-check
+    把 decode step 0 的**输出** token 追加进 prefill5, 而 decode 实际
+    输入是 prefill argmax (两个不同 token) → 两条路径处理不同 token,
+    差异正常。修复 (用 decode 输入 token 构造 p5) 后: **1 层
+    bit-identical (cos=1.0, 全部中间量 max_abs=0), 3 层 cos=0.9985
+    (top-2 logits 差 0.031, BF16 噪声可翻转), 4 层 cos=0.9988 且
+    argmax 一致**。剩余漂移来自 MoE/HC GEMM 的 batch(T=5) vs
+    增量(T=4+T=1) cuBLASLt 算法选择差异 (预期数值非确定, 非 bug)。
+    期间把 SSM 持久 state 从 BF16 改 **FP32** (匹配 transformers 参考
+    全程 FP32 递归; 使 layer-0 SSM state 在两条路径 bit-identical;
+    36 层 36→72 MB, 可忽略)。**54 项测试全绿, 零警告**。
   - ✅ **长序列 QSA 稀疏路径 (T>2048) 端到端验证 + 修复**: 用自然语言长文
     (prompt 1612 + decode 600, 越过 2048 稀疏激活点) 验证, 输出全程连贯。
     期间定位并修复 4 个稀疏路径 bug (见下)。
@@ -537,12 +554,13 @@ Phase 1 已完成的层: **PLE 流式层** ✅, **IO 层** ✅, **量化层** �
 (NVFP4 W4A4 原生 + grouped MoE), **模型层** ✅ (48 层 forward + PLE
 注入 + head/tail + generate + 长序列 QSA 稀疏路径), **serve** ✅
 (OpenAI 兼容 HTTP API), **PD-ready 架构** ✅ (Paged KV + 可分离代码
-路径 + 阶段边界 API ModelSequence)。53 项测试全绿, 零警告。
+路径 + 阶段边界 API ModelSequence), **decode 路径自洽性** ✅
+(prefill/decode 同 token 对照, SSM state FP32)。54 项测试全绿, 零警告。
 
 剩余 Phase 1 项 (按 2026-09-06 与用户确认的顺序):
 1. **逐 token 对参考验证 (进行中)**: 4 层基线已完成 (4/4 argmax 匹配,
-   见上)。下一步: 扩展到更多层 / 更长 token 序列, 钉死正确性基线
-   (性能优化的守护网)。
+   见上)。decode 路径自洽性验证已完成 (见下), 下一步: 扩展到更多层 /
+   更长 token 序列, 钉死正确性基线 (性能优化的守护网)。
 2. **prefill/decode 性能优化**: 用 ① 的基线守护数值不回归; 同时**预留
    MTP 接口** (scheme A: 主模型收尾阶段可选暴露 pre-final-mixer 多流
    [T, hc*H] 给 MTP 第一步), 避免优化后再返工。

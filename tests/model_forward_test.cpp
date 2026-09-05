@@ -16,12 +16,14 @@
 #include <cuda_bf16.h>
 #include <cuda_runtime.h>
 
+#include <algorithm>
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <fcntl.h>
+#include <fstream>
 #include <string>
 #include <unistd.h>
 #include <vector>
@@ -370,6 +372,244 @@ Q4T_TEST(model_sequence_api) {
 
   cudaFree(d_a);
   cudaFree(d_b);
+  m.Free();
+  return true;
+}
+
+// Dump the C++ prefill + decode logits for a fixed prompt to raw float32
+// files so a Python reference (transformers, DynamicCache) can be compared
+// step-for-step. This exercises the STATE path (KV append / SSM update /
+// conv state / PLE history across the prefill->decode boundary) — the part
+// the prefill-only dump does not cover.
+//
+//   Q4T_MODEL_LAYERS (default 4)
+//   Q4T_DECODE_STEPS (default 4)
+//   Q4T_DECODE_PROMPT_FILE (default /tmp/decode_prompt.txt, one int32 per
+//     line; falls back to {846, 25, 1203, 321})
+//   Q4T_DECODE_OUT (default /tmp/cpp4dec) -> <out>.prefill.bin (T*vocab
+//     f32), <out>.decode.bin (N*vocab f32, one row per step),
+//     <out>.tokens.txt (greedy token per line)
+Q4T_TEST(model_forward_dump_decode) {
+  if (!CudaAvailable()) {
+    std::printf("  (skipped: no CUDA device)\n");
+    return true;
+  }
+  if (!FileExists(kIndex) || !FileExists(kPleSidecar)) {
+    std::printf("  (skipped: model or PLE sidecar not found)\n");
+    return true;
+  }
+
+  const char* out_prefix = std::getenv("Q4T_DECODE_OUT");
+  if (!out_prefix) out_prefix = "/tmp/cpp4dec";
+  const int num_layers = [] {
+    const char* e = std::getenv("Q4T_MODEL_LAYERS");
+    return e ? std::atoi(e) : 4;
+  }();
+  const int n_decode = [] {
+    const char* e = std::getenv("Q4T_DECODE_STEPS");
+    return e ? std::atoi(e) : 4;
+  }();
+
+  // Prompt: read from file (one int32 per line) or use the fixed e2e ids.
+  std::vector<int32_t> prompt = {846, 25, 1203, 321};
+  const char* pf = std::getenv("Q4T_DECODE_PROMPT_FILE");
+  if (pf) {
+    std::ifstream in(pf);
+    if (in) {
+      prompt.clear();
+      int32_t v;
+      while (in >> v) prompt.push_back(v);
+    }
+  }
+  const int T = static_cast<int>(prompt.size());
+  Q4T_CHECK(T > 0);
+
+  ModelConfig cfg;
+  cfg.model_dir = kModelDir;
+  cfg.index_path = kIndex;
+  cfg.num_layers = num_layers;
+  cfg.max_prefill = 8;
+  cfg.ple_sidecar = kPleSidecar;
+
+  Model m;
+  Status s = LoadModel(cfg, &m, nullptr);
+  if (!s.ok()) {
+    std::printf("  load failed: %s\n", s.message().c_str());
+    return false;
+  }
+
+  // d_logits is sized (T+1) rows so the self-check 5-token prefill fits
+  // (prefill writes T rows, decode 1 row, self-check prefill writes T+1).
+  uint16_t* d_logits = nullptr;
+  if (cudaMalloc(reinterpret_cast<void**>(&d_logits),
+                 static_cast<size_t>(T + 1) * cfg.vocab * 2) != cudaSuccess) {
+    std::printf("  cudaMalloc failed\n");
+    m.Free();
+    return false;
+  }
+  std::vector<uint16_t> raw(static_cast<size_t>(T) * cfg.vocab);
+  std::vector<float> out(static_cast<size_t>(T) * cfg.vocab);
+
+  // Optional state/intermediate dump, gated by Q4T_STATE_DUMP.
+  const bool dump_state = [] {
+    const char* e = std::getenv("Q4T_STATE_DUMP");
+    return e && *e;
+  }();
+
+  // Prefill (sequence API: Begin + Prefill).
+  ModelSequence seq;
+  s = ModelBeginSequence(m, &seq, nullptr);
+  Q4T_CHECK(s.ok());
+  if (dump_state)
+    setenv("Q4T_LIN_DUMP", (std::string(out_prefix) + ".lin_p4").c_str(), 1);
+  s = ModelPrefill(m, &seq, prompt.data(), T, d_logits, nullptr);
+  Q4T_CHECK(s.ok());
+  cudaMemcpy(raw.data(), d_logits, raw.size() * 2, cudaMemcpyDeviceToHost);
+  for (size_t i = 0; i < raw.size(); ++i) {
+    uint32_t bits = static_cast<uint32_t>(raw[i]) << 16;
+    std::memcpy(&out[i], &bits, sizeof(float));
+  }
+  std::string prefill_path = std::string(out_prefix) + ".prefill.bin";
+  FILE* fp = std::fopen(prefill_path.c_str(), "wb");
+  Q4T_CHECK(fp != nullptr);
+  std::fwrite(out.data(), sizeof(float), out.size(), fp);
+  std::fclose(fp);
+
+  // Optional state dump: layer 0's ssm_state (FP32 [nv,kd,vd]) and conv_state
+  // (BF16 [in_qkv,conv_k-1]) to files, so a reference (or a different chunking
+  // of the same sequence) can be compared element-for-element at the
+  // prefill->decode handoff. Gated by Q4T_STATE_DUMP.
+  const size_t ssm_elems = static_cast<size_t>(48) * 128 * 128;
+  const size_t conv_elems = static_cast<size_t>(10240) * 3;
+  auto dump_states = [&](const char* tag, int dump_T) {
+    if (!dump_state) return;
+    std::vector<float> ssm(ssm_elems);
+    cudaMemcpy(ssm.data(), m.layers[0].ssm_state,
+               ssm_elems * sizeof(float), cudaMemcpyDeviceToHost);
+    std::string p = std::string(out_prefix) + "." + tag + ".ssm.bin";
+    FILE* f = std::fopen(p.c_str(), "wb");
+    if (f) {
+      std::fwrite(ssm.data(), sizeof(float), ssm_elems, f);
+      std::fclose(f);
+    }
+    std::vector<uint16_t> conv(conv_elems);
+    cudaMemcpy(conv.data(), m.layers[0].conv_state,
+               conv_elems * sizeof(uint16_t), cudaMemcpyDeviceToHost);
+    p = std::string(out_prefix) + "." + tag + ".conv.bin";
+    f = std::fopen(p.c_str(), "wb");
+    if (f) {
+      std::fwrite(conv.data(), sizeof(uint16_t), conv_elems, f);
+      std::fclose(f);
+    }
+    // Dump the initial trunk (ExpandTrunk output) for comparison. With
+    // num_layers=1, m.d_trunk still holds the pre-layer trunk after the
+    // layer loop (the layer writes to m.d_trunk2).
+    const int hc_dim = m.hc_dim();
+    std::vector<uint16_t> trunk(static_cast<size_t>(dump_T) * hc_dim);
+    cudaMemcpy(trunk.data(), m.d_trunk,
+               trunk.size() * sizeof(uint16_t), cudaMemcpyDeviceToHost);
+    p = std::string(out_prefix) + "." + tag + ".trunk.bin";
+    f = std::fopen(p.c_str(), "wb");
+    if (f) {
+      std::fwrite(trunk.data(), sizeof(uint16_t), trunk.size(), f);
+      std::fclose(f);
+    }
+    std::printf("  dumped layer0 state [%s] -> %s.{ssm,conv,trunk}.bin\n",
+                tag, out_prefix);
+  };
+  dump_states("prefill", T);
+
+  // Greedy decode: the first decode token is the argmax of the prefill last
+  // row; each subsequent token is the argmax of the previous step's logits.
+  // (Track `next_tok` explicitly; argmax is the COLUMN index within the row,
+  // so subtract the row's start, not the buffer start.)
+  std::vector<int32_t> decoded(n_decode, -1);
+  std::vector<float> dec_out(static_cast<size_t>(n_decode) * cfg.vocab);
+  const float* last_row = out.data() + static_cast<size_t>(T - 1) * cfg.vocab;
+  int32_t next_tok = static_cast<int32_t>(
+      std::max_element(last_row, last_row + cfg.vocab) - last_row);
+  // The token actually fed to decode step 0 (argmax of the prefill last row).
+  // The self-check below must use THIS token, not decoded[0] (which is the
+  // OUTPUT of decode step 0 — a different token).
+  const int32_t decode_input_tok = next_tok;
+  for (int i = 0; i < n_decode; ++i) {
+    if (dump_state && i == 0)
+      setenv("Q4T_LIN_DUMP", (std::string(out_prefix) + ".lin_d0").c_str(), 1);
+    s = ModelDecodeStepSeq(m, &seq, next_tok, d_logits, nullptr);
+    if (!s.ok()) {
+      std::printf("  decode step %d failed (tok=%d): %s\n", i, next_tok,
+                  s.message().c_str());
+      return false;
+    }
+    if (dump_state && i == 0) unsetenv("Q4T_LIN_DUMP");
+    cudaMemcpy(raw.data(), d_logits, cfg.vocab * 2,
+               cudaMemcpyDeviceToHost);
+    for (int j = 0; j < cfg.vocab; ++j) {
+      uint32_t bits = static_cast<uint32_t>(raw[j]) << 16;
+      std::memcpy(&dec_out[static_cast<size_t>(i) * cfg.vocab + j], &bits,
+                  sizeof(float));
+    }
+    const float* row = dec_out.data() + static_cast<size_t>(i) * cfg.vocab;
+    next_tok = static_cast<int32_t>(
+        std::max_element(row, row + cfg.vocab) - row);
+    decoded[i] = next_tok;
+    if (i == 0) dump_states("decode0", 1);
+  }
+  ModelEndSequence(&seq);
+
+  // Self-consistency (mirrors the reference-side check): a fresh 5-token
+  // prefill (prompt + first decode token) must produce the same last-row
+  // logits as "4-token prefill + 1 decode step". If C++ decode state
+  // handling (KV/SSM/conv/PLE history) is correct these are identical up to
+  // run-to-run noise; a large gap localizes a C++ state bug.
+  if (const char* sc = std::getenv("Q4T_DECODE_SELFCHK"); sc && *sc) {
+    std::vector<int32_t> p5(prompt.begin(), prompt.end());
+    // Use the token actually fed to decode step 0 (the prefill argmax), so
+    // that prefill5 and "prefill4 + decode0" process the same 5 tokens.
+    p5.push_back(decode_input_tok);
+    ModelSequence seq5;
+    s = ModelBeginSequence(m, &seq5, nullptr);
+    Q4T_CHECK(s.ok());
+    if (dump_state)
+      setenv("Q4T_LIN_DUMP", (std::string(out_prefix) + ".lin_p5").c_str(), 1);
+    s = ModelPrefill(m, &seq5, p5.data(), T + 1, d_logits, nullptr);
+    Q4T_CHECK(s.ok());
+    if (dump_state) unsetenv("Q4T_LIN_DUMP");
+    dump_states("prefill5", T + 1);
+    ModelEndSequence(&seq5);
+    std::vector<uint16_t> raw5(static_cast<size_t>(T + 1) * cfg.vocab);
+    cudaMemcpy(raw5.data(), d_logits, raw5.size() * 2, cudaMemcpyDeviceToHost);
+    std::vector<float> out5(static_cast<size_t>(T + 1) * cfg.vocab);
+    for (size_t i = 0; i < raw5.size(); ++i) {
+      uint32_t bits = static_cast<uint32_t>(raw5[i]) << 16;
+      std::memcpy(&out5[i], &bits, sizeof(float));
+    }
+    std::string sc_path = std::string(out_prefix) + ".prefill5.bin";
+    FILE* fs = std::fopen(sc_path.c_str(), "wb");
+    Q4T_CHECK(fs != nullptr);
+    std::fwrite(out5.data(), sizeof(float), out5.size(), fs);
+    std::fclose(fs);
+    std::printf("  dumped selfcheck prefill5 -> %s\n", sc_path.c_str());
+  }
+
+  std::string dec_path = std::string(out_prefix) + ".decode.bin";
+  FILE* fd = std::fopen(dec_path.c_str(), "wb");
+  Q4T_CHECK(fd != nullptr);
+  std::fwrite(dec_out.data(), sizeof(float), dec_out.size(), fd);
+  std::fclose(fd);
+  std::string tok_path = std::string(out_prefix) + ".tokens.txt";
+  FILE* ft = std::fopen(tok_path.c_str(), "wb");
+  Q4T_CHECK(ft != nullptr);
+  for (int i = 0; i < n_decode; ++i)
+    std::fprintf(ft, "%d\n", decoded[i]);
+  std::fclose(ft);
+  std::printf("  dumped prefill %d + decode %d steps -> %s.*\n", T,
+              n_decode, out_prefix);
+  std::printf("  greedy tokens:");
+  for (int i = 0; i < n_decode; ++i) std::printf(" %d", decoded[i]);
+  std::printf("\n");
+
+  cudaFree(d_logits);
   m.Free();
   return true;
 }

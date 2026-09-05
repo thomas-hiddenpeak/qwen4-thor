@@ -93,7 +93,8 @@ void DecoderLayer::Free() {
   freep(page_table);
   freep(idx_raw);
   freep(idx_comp);
-  ssm_state = conv_state = kv_cache = idx_raw = idx_comp = nullptr;
+  ssm_state = nullptr;
+  conv_state = kv_cache = idx_raw = idx_comp = nullptr;
   page_table = nullptr;
   // routed (NVFP4) buffers (MoEWeightLayout has no Free; free manually).
   if (routed.gu_packed) cudaFree(routed.gu_packed);
@@ -127,7 +128,7 @@ void DecoderLayer::ResetState(cudaStream_t stream) const {
   } else {
     if (ssm_state)
       cudaMemsetAsync(ssm_state, 0,
-                      static_cast<size_t>(48) * 128 * 128 * 2, stream);
+                      static_cast<size_t>(48) * 128 * 128 * 4, stream);
     if (conv_state)
       cudaMemsetAsync(conv_state, 0,
                       static_cast<size_t>(10240) * 3 * 2, stream);
@@ -207,12 +208,12 @@ Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
       return Status();
     };
     if (!(s = alloc(reinterpret_cast<void**>(&out->ssm_state),
-                    static_cast<size_t>(nv) * kd * vd * 2)))
+                    static_cast<size_t>(nv) * kd * vd * 4)))
       return s;
     if (!(s = alloc(reinterpret_cast<void**>(&out->conv_state),
                     static_cast<size_t>(in_qkv) * (conv_k - 1) * 2)))
       return s;
-    cudaMemset(out->ssm_state, 0, static_cast<size_t>(nv) * kd * vd * 2);
+    cudaMemset(out->ssm_state, 0, static_cast<size_t>(nv) * kd * vd * 4);
     cudaMemset(out->conv_state, 0,
                static_cast<size_t>(in_qkv) * (conv_k - 1) * 2);
   }
