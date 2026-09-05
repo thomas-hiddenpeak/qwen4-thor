@@ -164,8 +164,18 @@ int RunGenerate(int argc, char** argv) {
   }
   std::vector<uint16_t> h_logits(static_cast<size_t>(vocab));
 
-  s = q4t::model::ModelForward(model, ids.data(), static_cast<int>(ids.size()),
-                               d_logits, nullptr);
+  // PD-ready 阶段边界 API: Begin (reset state) -> Prefill (handoff point)
+  // -> DecodeStepSeq (auto position/history).
+  q4t::model::ModelSequence seq;
+  s = q4t::model::ModelBeginSequence(model, &seq, nullptr);
+  if (!s.ok()) {
+    std::fprintf(stderr, "begin sequence failed: %s\n", s.message().c_str());
+    cudaFree(d_logits);
+    model.Free();
+    return 1;
+  }
+  s = q4t::model::ModelPrefill(model, &seq, ids.data(),
+                               static_cast<int>(ids.size()), d_logits, nullptr);
   if (!s.ok()) {
     std::fprintf(stderr, "prefill failed: %s\n", s.message().c_str());
     cudaFree(d_logits);
@@ -190,7 +200,6 @@ int RunGenerate(int argc, char** argv) {
   };
 
   std::vector<int32_t> generated;
-  int position = static_cast<int>(ids.size());
   int next_token = -1;
   // First decode token comes from the prefill's LAST position (row T-1).
   cudaMemcpy(h_logits.data(), d_logits + static_cast<size_t>(T_prompt - 1) * vocab,
@@ -201,19 +210,17 @@ int RunGenerate(int argc, char** argv) {
     generated.push_back(next_token);
     if (next_token == cfg.eos_token_id) break;
     const int32_t tok_id = next_token;
-    s = q4t::model::ModelDecodeStep(model, tok_id, position, ids.data(),
-                                    d_logits, nullptr);
+    s = q4t::model::ModelDecodeStepSeq(model, &seq, tok_id, d_logits, nullptr);
     if (!s.ok()) {
       std::fprintf(stderr, "decode step %d failed: %s\n", step,
                    s.message().c_str());
       break;
     }
-    ids.push_back(tok_id);  // extend history for the next PLE context
-    ++position;
     cudaMemcpy(h_logits.data(), d_logits, static_cast<size_t>(vocab) * 2,
                cudaMemcpyDeviceToHost);
     next_token = argmax(h_logits.data());
   }
+  q4t::model::ModelEndSequence(&seq);
 
   // 6. Decode and print.
   std::vector<std::uint32_t> gen_u32(generated.begin(), generated.end());

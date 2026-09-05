@@ -5,6 +5,69 @@
 
 ---
 
+## 2026-09-05 — PD-ready 阶段边界 API (ModelSequence) 实现
+
+**背景**
+PD-ready 架构 (用户决定, Phase 1) 的三项可分离性: ① Paged KV cache
+(已完成); ② prefill/decode 可分离代码路径 (现状已满足); ③ **阶段边界
+API** — 引擎把"完成 prefill、交出 KV/SSM 状态"暴露为独立操作, 供 runner
+驱动 prefill 与 decode 为两次调用。本条实现第 ③ 项, 完成 PD-ready
+架构 Phase 1 部分。
+
+**设计: ModelSequence 状态机**
+`ModelSequence` 是轻量 **host-only** 状态机 (不持 device 指针, 便于
+runner 跨进程/跨设备传递):
+- `stage`: `kIdle → kPrefill → kDecode` (End 回 kIdle)。
+- `position`: 已处理 token 数 (prefill 后 = T, 每 decode +1)。
+- `history`: PLE n-gram 上下文用的已见 token 序列 (EOS 填充前缀)。
+
+4 个操作 (均返回 `Status`):
+- `ModelBeginSequence(m, &seq, stream)`: 重置全部 per-layer 状态
+  (SSM/conv/KV/indexer), stage=kPrefill, position=0, history 清空。
+- `ModelPrefill(m, &seq, ids, T, logits, stream)`: 跑完整 prefill
+  (EmbedLookup → ExpandTrunk → 层循环 → HeadForward), stage=kDecode,
+  position=T, history 追加 ids。**这是 KV/SSM 状态就绪的交接点** —
+  runner 可在此把 seq 连同 device 状态交给 decode 端。
+- `ModelDecodeStepSeq(m, &seq, id, logits, stream)`: 单 decode token
+  (T=1, 不重置状态, 绝对 position), 自动维护 position/history。
+- `ModelEndSequence(&seq)`: 重置 kIdle (host-only, 不碰 device)。
+
+**重构 (向后兼容)**
+- 抽出 `ResetAllLayers(const Model&, stream)` (逐层 ResetState) 与
+  `RunPrefill(const Model&, ids, T, logits, stream)` (head + 层循环 +
+  head tail)。`ModelForward` = `ResetAllLayers + RunPrefill` (行为不变,
+  旧调用方不受影响)。
+- `main.cpp` (generate) 与 `chat_server.cpp` (serve) 改用序列 API:
+  Begin → Prefill → 循环 DecodeStepSeq → End。`chat_server` 加
+  `seq.position + 1 >= max_len` 边界检查。
+
+**验证**
+- 测试 `model_sequence_api` (新增, 53 项全绿):
+  - prefill: `ModelForward` vs `Begin+Prefill` logits **逐位一致**。
+  - decode: `ModelForward(3)+ModelDecodeStep` vs
+    `Begin+Prefill(3)+DecodeStepSeq` logits **逐位一致**。
+  - 状态机: kIdle→kPrefill→kDecode→kIdle, position/history 正确。
+- 生成验证 (main.cpp 序列 API 路径): 27 token prompt + 48 decode,
+  输出连贯 (灯塔看守人故事续写)。
+- 零警告 (`-Wall -Wextra`)。
+
+**改动文件**
+- `include/q4t/model/model.h`: `ModelSequence` 结构体 + 4 个 API 声明
+- `src/model/model.cu`: `ResetAllLayers`/`RunPrefill` 抽取 + `ModelForward`
+  重构 + 4 个序列 API 实现
+- `src/main.cpp`: generate 改用序列 API
+- `src/server/chat_server.cpp`: serve 改用序列 API + max_len 边界检查
+- `tests/model_forward_test.cpp`: `model_sequence_api` 测试
+- `docs/STATUS.md` / `docs/LOG.md` / `docs/PHASES.md` / `docs/AGENTS.md`:
+  状态同步
+
+**下一步**
+PD-ready 架构 Phase 1 部分全部完成 (Paged KV + 可分离代码路径 + 阶段
+边界 API)。剩余 Phase 1 项: MTP 1 层 (用户排期) → 多模态图像输入 →
+逐 token 对参考验证 → PLE 工作内存/SHA-256 校验。
+
+---
+
 ## 2026-09-05 — Paged KV cache 实现 + 2 个预先存在越界 bug 修复
 
 **背景**

@@ -361,9 +361,17 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     return best;
   };
 
-  // 2. Prefill.
-  s = model::ModelForward(model_, ids.data(), T, d_logits, nullptr);
+  // 2. Prefill (PD-ready 阶段边界 API: Begin -> Prefill).
+  model::ModelSequence seq;
+  s = model::ModelBeginSequence(model_, &seq, nullptr);
   if (!s.ok()) {
+    cudaFree(d_logits);
+    SendError(fd, 500, "begin sequence failed: " + s.message());
+    return;
+  }
+  s = model::ModelPrefill(model_, &seq, ids.data(), T, d_logits, nullptr);
+  if (!s.ok()) {
+    model::ModelEndSequence(&seq);
     cudaFree(d_logits);
     SendError(fd, 500, "prefill failed: " + s.message());
     return;
@@ -384,7 +392,6 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   }
 
   std::vector<int32_t> generated;
-  int position = T;
   int next_token = -1;
   std::string finish_reason = "stop";
 
@@ -411,22 +418,20 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         WriteAll(fd, SseChunk(id, model_field, "", piece, "", 0));
       }
     }
-    if (position + 1 >= max_len_) {
+    if (seq.position + 1 >= max_len_) {
       finish_reason = "length";
       break;  // cannot decode further without exceeding the KV cache
     }
-    s = model::ModelDecodeStep(model_, tok_id, position, ids.data(), d_logits,
-                               nullptr);
+    s = model::ModelDecodeStepSeq(model_, &seq, tok_id, d_logits, nullptr);
     if (!s.ok()) {
       finish_reason = "stop";
       break;
     }
-    ids.push_back(tok_id);  // extend history for the next PLE context
-    ++position;
     cudaMemcpy(h_logits.data(), d_logits, static_cast<size_t>(vocab) * 2,
                cudaMemcpyDeviceToHost);
     next_token = argmax(h_logits.data());
   }
+  model::ModelEndSequence(&seq);
 
   // 4. Finalize.
   if (stream) {

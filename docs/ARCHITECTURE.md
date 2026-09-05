@@ -109,8 +109,15 @@ Phase 1, 而非等到 Phase 2 连续批处理。
 2. **Paged KV cache**: ✅ 已实现 (2026-09-05)。full_attention 按页组织
    (`kKvPageSize=16`) + 页表间接寻址, 替代连续 KV。恒等映射
    (`page_table[p]=p/16`) 下与旧布局逐位一致。见 PHASES.md 第 3/6 项。
-3. **阶段边界 API**: ⏳ 待实现。引擎暴露"完成 prefill、交出 KV/SSM
-   状态"为独立操作, 使 runner 能把 prefill 与 decode 驱动为两次独立调用。
+3. **阶段边界 API**: ✅ 已实现 (2026-09-05)。`ModelSequence` 是轻量
+   host-only 状态机 (stage: kIdle→kPrefill→kDecode, position, PLE
+   history), 4 个操作: `ModelBeginSequence` (重置 per-layer 状态) →
+   `ModelPrefill` (完成 prefill, **KV/SSM 状态就绪的交接点**) →
+   `ModelDecodeStepSeq` (单 decode token, 自动维护 position/history) →
+   `ModelEndSequence` (重置 kIdle)。使 runner 能把 prefill 与 decode
+   驱动为两次独立调用。`ModelForward` 重构为 `ResetAllLayers +
+   RunPrefill` (向后兼容)。测试 `model_sequence_api` 验证 prefill/decode
+   与旧路径逐位一致。
 4. **MTP 留在 decode 路径内** (draft 依赖 decode 的逐 token 流)。
 
 **Phase 2 的完整 PD 部署 (依赖并发底座)**

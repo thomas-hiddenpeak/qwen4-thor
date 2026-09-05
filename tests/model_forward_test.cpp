@@ -34,6 +34,11 @@ using q4t::model::Model;
 using q4t::model::ModelConfig;
 using q4t::model::ModelDecodeStep;
 using q4t::model::ModelForward;
+using q4t::model::ModelSequence;
+using q4t::model::ModelBeginSequence;
+using q4t::model::ModelPrefill;
+using q4t::model::ModelDecodeStepSeq;
+using q4t::model::ModelEndSequence;
 
 const char* kModelDir =
     "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
@@ -258,6 +263,113 @@ Q4T_TEST(model_decode_step) {
 
   cudaFree(d_prefill);
   cudaFree(d_decode);
+  m.Free();
+  return true;
+}
+
+// PD-ready 阶段边界 API: ModelSequence (Begin -> Prefill -> DecodeStepSeq)
+// must produce bit-identical logits to the legacy ModelForward/ModelDecodeStep
+// path, and the state machine must transition correctly. This is the safety
+// net proving the refactored stage-boundary API is behavior-preserving.
+Q4T_TEST(model_sequence_api) {
+  if (!CudaAvailable()) {
+    std::printf("  (skipped: no CUDA device)\n");
+    return true;
+  }
+  if (!FileExists(kIndex) || !FileExists(kPleSidecar)) {
+    std::printf("  (skipped: model or PLE sidecar not found)\n");
+    return true;
+  }
+
+  const int num_layers = [] {
+    const char* e = std::getenv("Q4T_MODEL_LAYERS");
+    return e ? std::atoi(e) : 2;
+  }();
+
+  ModelConfig cfg;
+  cfg.model_dir = kModelDir;
+  cfg.index_path = kIndex;
+  cfg.num_layers = num_layers;
+  cfg.max_prefill = 8;
+  cfg.ple_sidecar = kPleSidecar;
+
+  Model m;
+  Status s = LoadModel(cfg, &m, nullptr);
+  if (!s.ok()) {
+    std::printf("  load failed: %s\n", s.message().c_str());
+    return false;
+  }
+
+  const int T = 4;
+  const int32_t ids[] = {846, 25, 1203, 321};
+  const int vocab = cfg.vocab;
+
+  uint16_t* d_a = nullptr;  // legacy path
+  uint16_t* d_b = nullptr;  // sequence API path
+  if (cudaMalloc(reinterpret_cast<void**>(&d_a),
+                 static_cast<size_t>(T) * vocab * 2) != cudaSuccess ||
+      cudaMalloc(reinterpret_cast<void**>(&d_b),
+                 static_cast<size_t>(T) * vocab * 2) != cudaSuccess) {
+    std::printf("  cudaMalloc failed\n");
+    m.Free();
+    return false;
+  }
+
+  // --- Prefill equivalence: ModelForward vs Begin+Prefill ---
+  s = ModelForward(m, ids, T, d_a, nullptr);
+  Q4T_CHECK(s.ok());
+  ModelSequence seq;
+  Q4T_CHECK(seq.stage == ModelSequence::Stage::kIdle);
+  s = ModelBeginSequence(m, &seq, nullptr);
+  Q4T_CHECK(s.ok());
+  Q4T_CHECK(seq.stage == ModelSequence::Stage::kPrefill);
+  Q4T_CHECK(seq.position == 0);
+  s = ModelPrefill(m, &seq, ids, T, d_b, nullptr);
+  Q4T_CHECK(s.ok());
+  Q4T_CHECK(seq.stage == ModelSequence::Stage::kDecode);
+  Q4T_CHECK(seq.position == T);
+  Q4T_CHECK(seq.history.size() == static_cast<size_t>(T));
+  std::vector<uint16_t> pa(static_cast<size_t>(T) * vocab);
+  std::vector<uint16_t> pb(static_cast<size_t>(T) * vocab);
+  cudaMemcpy(pa.data(), d_a, pa.size() * 2, cudaMemcpyDeviceToHost);
+  cudaMemcpy(pb.data(), d_b, pb.size() * 2, cudaMemcpyDeviceToHost);
+  bool prefill_identical = (pa == pb);
+  std::printf("  prefill legacy-vs-seq: %s\n",
+              prefill_identical ? "identical" : "DIFFER");
+  Q4T_CHECK(prefill_identical);
+
+  // --- Decode equivalence: ModelDecodeStep vs DecodeStepSeq ---
+  // Legacy: prefill 3, decode the 4th (history = first 3 tokens).
+  s = ModelForward(m, ids, T - 1, d_a, nullptr);
+  Q4T_CHECK(s.ok());
+  s = ModelDecodeStep(m, ids[T - 1], T - 1, ids, d_a, nullptr);
+  Q4T_CHECK(s.ok());
+  // Sequence: prefill 3, decode the 4th (history auto-maintained).
+  s = ModelBeginSequence(m, &seq, nullptr);
+  Q4T_CHECK(s.ok());
+  s = ModelPrefill(m, &seq, ids, T - 1, d_b, nullptr);
+  Q4T_CHECK(s.ok());
+  Q4T_CHECK(seq.position == T - 1);
+  s = ModelDecodeStepSeq(m, &seq, ids[T - 1], d_b, nullptr);
+  Q4T_CHECK(s.ok());
+  Q4T_CHECK(seq.position == T);
+  Q4T_CHECK(seq.history.size() == static_cast<size_t>(T));
+  std::vector<uint16_t> da(vocab), db(vocab);
+  cudaMemcpy(da.data(), d_a, vocab * 2, cudaMemcpyDeviceToHost);
+  cudaMemcpy(db.data(), d_b, vocab * 2, cudaMemcpyDeviceToHost);
+  bool decode_identical = (da == db);
+  std::printf("  decode legacy-vs-seq: %s\n",
+              decode_identical ? "identical" : "DIFFER");
+  Q4T_CHECK(decode_identical);
+
+  // --- State machine: End resets to idle ---
+  ModelEndSequence(&seq);
+  Q4T_CHECK(seq.stage == ModelSequence::Stage::kIdle);
+  Q4T_CHECK(seq.position == 0);
+  Q4T_CHECK(seq.history.empty());
+
+  cudaFree(d_a);
+  cudaFree(d_b);
   m.Free();
   return true;
 }

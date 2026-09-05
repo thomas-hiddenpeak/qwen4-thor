@@ -274,18 +274,19 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
   return HeadForward(m.head, trunk, logits, T, m.d_ws, m.ws_bytes, stream);
 }
 
-Status ModelForward(const Model& m, const int32_t* input_ids, int T,
-                    uint16_t* logits, cudaStream_t stream) {
+// Reset all per-layer persistent state (linear SSM/conv, full KV/indexer)
+// to zero — prepare to process a fresh sequence from the start.
+// const: ResetState only touches device memory, not the object.
+Status ResetAllLayers(const Model& m, cudaStream_t stream) {
+  for (const auto& l : m.layers) l.ResetState(stream);
+  return Status();
+}
+
+// Prefill without reset: assumes per-layer state is already at the sequence
+// start (call ResetAllLayers / ModelBeginSequence first). positions = 0..T-1.
+Status RunPrefill(const Model& m, const int32_t* input_ids, int T,
+                  uint16_t* logits, cudaStream_t stream) {
   const ModelConfig& cfg = m.cfg;
-  if (T <= 0) return Status();
-  if (T > cfg.max_prefill) {
-    return Status::Fail("ModelForward: T exceeds max_prefill");
-  }
-
-  // Prefill of a fresh sequence starts from empty per-layer state (linear
-  // SSM/conv, full KV/indexer). Reset so repeated calls are deterministic.
-  for (auto& l : m.layers) l.ResetState(stream);
-
   // 1. ids + positions.
   if (cudaMemcpyAsync(m.d_ids, input_ids, T * sizeof(int32_t),
                       cudaMemcpyHostToDevice, stream) != cudaSuccess) {
@@ -325,6 +326,20 @@ Status ModelForward(const Model& m, const int32_t* input_ids, int T,
   // 5. Layer loop + head.
   return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), T,
                    logits, stream);
+}
+
+Status ModelForward(const Model& m, const int32_t* input_ids, int T,
+                    uint16_t* logits, cudaStream_t stream) {
+  const ModelConfig& cfg = m.cfg;
+  if (T <= 0) return Status();
+  if (T > cfg.max_prefill) {
+    return Status::Fail("ModelForward: T exceeds max_prefill");
+  }
+  // Prefill of a fresh sequence starts from empty per-layer state (linear
+  // SSM/conv, full KV/indexer). Reset so repeated calls are deterministic.
+  Status s = ResetAllLayers(m, stream);
+  if (!s.ok()) return s;
+  return RunPrefill(m, input_ids, T, logits, stream);
 }
 
 Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
@@ -371,6 +386,74 @@ Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
   // 5. Layer loop + head.
   return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), 1,
                    logits, stream);
+}
+
+// ---------------------------------------------------------------------------
+// PD-ready 阶段边界 API (see model.h).
+// ---------------------------------------------------------------------------
+
+Status ModelBeginSequence(const Model& m, ModelSequence* seq,
+                          cudaStream_t stream) {
+  if (!seq) return Status::Fail("ModelBeginSequence: null seq");
+  Status s = ResetAllLayers(m, stream);
+  if (!s.ok()) return s;
+  seq->stage = ModelSequence::Stage::kPrefill;
+  seq->position = 0;
+  seq->history.clear();
+  return Status();
+}
+
+Status ModelPrefill(const Model& m, ModelSequence* seq,
+                    const int32_t* input_ids, int T, uint16_t* logits,
+                    cudaStream_t stream) {
+  if (!seq) return Status::Fail("ModelPrefill: null seq");
+  if (seq->stage != ModelSequence::Stage::kPrefill) {
+    return Status::Fail("ModelPrefill: sequence not in prefill stage");
+  }
+  const ModelConfig& cfg = m.cfg;
+  if (T <= 0) return Status::Fail("ModelPrefill: T must be > 0");
+  if (T > cfg.max_prefill) {
+    return Status::Fail("ModelPrefill: T exceeds max_prefill");
+  }
+  // Per-layer state was reset by ModelBeginSequence; run the prefill.
+  Status s = RunPrefill(m, input_ids, T, logits, stream);
+  if (!s.ok()) return s;
+  // Handoff point: per-layer KV/SSM state is now ready for decode (or for
+  // PD separation — the runner can take ownership of the state here).
+  seq->stage = ModelSequence::Stage::kDecode;
+  seq->position = T;
+  seq->history.assign(input_ids, input_ids + T);
+  return Status();
+}
+
+Status ModelDecodeStepSeq(const Model& m, ModelSequence* seq,
+                          int32_t token_id, uint16_t* logits,
+                          cudaStream_t stream) {
+  if (!seq) return Status::Fail("ModelDecodeStepSeq: null seq");
+  if (seq->stage != ModelSequence::Stage::kDecode) {
+    return Status::Fail("ModelDecodeStepSeq: sequence not in decode stage");
+  }
+  const ModelConfig& cfg = m.cfg;
+  const int position = seq->position;
+  if (position >= cfg.max_len) {
+    return Status::Fail("ModelDecodeStepSeq: position exceeds max_len");
+  }
+  // history = tokens already seen (prompt + previously decoded); the PLE
+  // n-gram context for this token is the last (ngram_size-1) of them.
+  Status s = ModelDecodeStep(m, token_id, position, seq->history.data(),
+                             logits, stream);
+  if (!s.ok()) return s;
+  // Advance the state machine.
+  seq->position = position + 1;
+  seq->history.push_back(token_id);
+  return Status();
+}
+
+void ModelEndSequence(ModelSequence* seq) {
+  if (!seq) return;
+  seq->stage = ModelSequence::Stage::kIdle;
+  seq->position = 0;
+  seq->history.clear();
 }
 
 }  // namespace model

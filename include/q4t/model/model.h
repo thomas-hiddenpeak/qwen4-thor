@@ -115,5 +115,51 @@ Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
                        const int32_t* history, uint16_t* logits,
                        cudaStream_t stream);
 
+// ---------------------------------------------------------------------------
+// PD-ready 阶段边界 API (Prefill/Decode 可分离, 见 ARCHITECTURE.md)。
+//
+// ModelSequence 是 runner 侧的轻量序列状态机 (host only, 不拥有 device
+// 内存): 跟踪阶段 (prefill -> decode)、绝对 position、PLE n-gram history。
+// 它让 runner 能把 prefill 与 decode 驱动为独立操作:
+//
+//   ModelBeginSequence(seq)          // 重置 per-layer 状态 (KV/SSM/conv),
+//                                    // 阶段 = kPrefill
+//   ModelPrefill(m, seq, ids, T, logits)   // 完成 prefill, 阶段 = kDecode;
+//                                    // 此时 per-layer KV/SSM 状态已就绪,
+//                                    // 可整体交出 (PD 分离的 handoff 点)
+//   ModelDecodeStepSeq(m, seq, tok, logits) // 一个 decode token, 自动维护
+//                                    // position 与 PLE history
+//   ModelEndSequence(seq)            // 序列结束 (状态机复位, 不释放 device
+//                                    // 内存 — 内存归 Model 所有)
+//
+// 与 ModelForward/ModelDecodeStep 等价 (ModelForward = Begin + Prefill),
+// 但阶段边界显式化, 供 runner 的 PD 分离场景驱动。
+struct ModelSequence {
+  enum class Stage { kIdle, kPrefill, kDecode };
+  Stage stage = Stage::kIdle;
+  int position = 0;  // 下一个 token 的绝对 position
+  std::vector<int32_t> history;  // 已见 token (prompt + 已 decode), PLE 上下文
+};
+
+// 重置 per-layer 状态 (KV/SSM/conv 清零), 序列进入 kPrefill 阶段。
+// 等价于 ModelForward 内部的 ResetState 循环。
+Status ModelBeginSequence(const Model& m, ModelSequence* seq,
+                          cudaStream_t stream);
+
+// 完成 prefill: seq 须处于 kPrefill 阶段。input_ids [T] -> logits [T, vocab]
+// (device BF16)。成功后阶段 = kDecode, position = T, history = prompt。
+// 调用返回时 per-layer KV/SSM 状态已就绪 (PD 分离的 handoff 点)。
+Status ModelPrefill(const Model& m, ModelSequence* seq, const int32_t* input_ids,
+                    int T, uint16_t* logits, cudaStream_t stream);
+
+// 一个 decode step: seq 须处于 kDecode 阶段。token_id 写入 position,
+// -> logits [1, vocab]。自动 ++position 并追加 history (PLE 上下文)。
+// 等价于 ModelDecodeStep (history 由 seq 内部维护)。
+Status ModelDecodeStepSeq(const Model& m, ModelSequence* seq, int32_t token_id,
+                          uint16_t* logits, cudaStream_t stream);
+
+// 序列结束: 状态机复位为 kIdle (不释放 device 内存, 内存归 Model 所有)。
+void ModelEndSequence(ModelSequence* seq);
+
 }  // namespace model
 }  // namespace q4t

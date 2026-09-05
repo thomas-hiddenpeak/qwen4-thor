@@ -226,10 +226,7 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     相同零初始状态出发, 输出逐位一致 (A-vs-B L2 rel 0.0)。45 项测试全绿,
     零警告。
   **→ 模型层 decoder layer 组装完成 (待补: PLE 注入 + mixer + MTP + 层循环)**
-
-## 进行中
-
-- ✅ **Paged KV cache (2026-09-05, PD-ready 前提)**: full_attention KV
+- [x] 2026-09-05 **Paged KV cache (PD-ready 前提)**: full_attention KV
   从连续 `[max_len, nkv, 2, hd]` 改为**按页组织 + 页表间接寻址**
   (`kKvPageSize=16`, `page_table[p] = p/16` 恒等映射下与旧布局逐位
   一致)。`WriteKVKernel`/`SparseAttentionKernel` 加页表参数, `DecoderLayer`
@@ -237,9 +234,23 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   52 项测试全绿 (decoder_layer A-vs-B l2_rel 0.0) + 长序列生成验证
   (prompt 1612 + decode 523, 越过 2048 稀疏激活点, 输出全程连贯)。
   期间发现并修复 2 个**预先存在**的越界 bug (见"已解决")。
-- ⏳ **PD-ready 阶段边界 API**: 引擎暴露"完成 prefill、交出 KV/SSM
-  状态"为独立操作 (供 runner 驱动 prefill 与 decode 为两次调用)。
-  Paged KV 已落地, 这是 PD-ready 架构的下一个实质项。
+- [x] 2026-09-05 **PD-ready 阶段边界 API (ModelSequence)**: 引擎把
+  "完成 prefill、交出 KV/SSM 状态"暴露为独立操作, 供 runner 驱动
+  prefill 与 decode 为两次调用。`ModelSequence` 是轻量 host 状态机
+  (stage: kIdle→kPrefill→kDecode, position, PLE history)。4 个操作:
+  `ModelBeginSequence` (重置 per-layer 状态, stage=kPrefill) →
+  `ModelPrefill` (完成 prefill, stage=kDecode, **KV/SSM 状态就绪的
+  交接点**) → `ModelDecodeStepSeq` (单 decode token, 自动维护
+  position/history) → `ModelEndSequence` (重置 kIdle)。`ModelForward`
+  重构为 `ResetAllLayers + RunPrefill` (向后兼容)。`main.cpp` /
+  `chat_server.cpp` 改用序列 API。测试 `model_sequence_api`: prefill
+  legacy-vs-seq 逐位一致 + decode legacy-vs-seq 逐位一致 + 状态机转换
+  校验。53 项测试全绿, 零警告。生成验证 (27+48) 连贯。
+  **→ PD-ready 架构 Phase 1 部分全部完成** (Paged KV + 可分离代码路径 +
+  阶段边界 API; 完整多设备 PD 部署归 Phase 2)
+
+## 进行中
+
 - Phase 1 实现:**PLE 流式层 (核心特性) 已全部完成** ✅ (ngram 哈希 /
   io_uring 读取器 / FP8→BF16 转换 / 端到端 gather, 均通过真实 checkpoint
   参数 + 真实 51.2 GB sidecar 验证)。
@@ -410,11 +421,11 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 ## 阻塞 / 风险
 
-- **PD-ready 架构 (设计目标, Phase 1, 部分完成)**: runner 后期特殊
+- **PD-ready 架构 (Phase 1 可分离性已全部完成)**: runner 后期特殊
   场景需 PD 分离, 架构须早期可分离。Phase 1 落地可分离性:
-  ✅ Paged KV cache (已实现, 见"已完成"); ✅ prefill/decode 可分离
-  代码路径 (现状已满足); ⏳ 阶段边界 API (引擎暴露"完成 prefill、
-  交出 KV/SSM 状态"为独立操作, 待实现)。完整多设备 PD 部署归 Phase 2。
+  ✅ Paged KV cache; ✅ prefill/decode 可分离代码路径; ✅ 阶段边界 API
+  (ModelSequence, 引擎暴露"完成 prefill、交出 KV/SSM 状态"为独立操作)。
+  完整多设备 PD 部署 (连续批处理 + 多请求调度) 归 Phase 2。
   设计见 ARCHITECTURE.md, 范围见 PHASES.md 第 6 项。
 - **PLE sidecar SHA-256 未验证** (ssd-stream.json 记录了期望值
   `b070f964...`, 51.2 GB 校验耗时较长, 安排在首次加载前完成)。
@@ -512,18 +523,20 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 ## 下一步
 
-1. 继续 Phase 1 实现。**PLE 流式层** ✅, **IO 层** ✅, **量化层** ✅
-   (NVFP4 W4A4 原生路径 + W4A16 dequant + grouped MoE forward, 40 项
-   测试全绿)。
-   建议顺序:
-   - **模型层**: 48 层 forward (DeltaNet / QSA full-attn / MoE (routed
-     走 `MoERoutedForward` + shared expert BF16) / hyper-connection / PLE
-     融合)。MoE 的 router (top-k 选择) 与 shared expert (BF16) 在模型层
-     实现, routed 部分直接调 `MoERoutedForward`。
-   - **引擎层**: 请求生命周期 + MTP + 采样。
-   - **服务层**: OpenAI 兼容 HTTP API。
-2. 实现 full_attention 前, 拉取 SGLang qsa 模块研读 indexer。
-3. 实现 linear_attention 前, 研读 qwen35-thor 的 deltanet 实现。
+Phase 1 已完成的层: **PLE 流式层** ✅, **IO 层** ✅, **量化层** ✅
+(NVFP4 W4A4 原生 + grouped MoE), **模型层** ✅ (48 层 forward + PLE
+注入 + head/tail + generate + 长序列 QSA 稀疏路径), **serve** ✅
+(OpenAI 兼容 HTTP API), **PD-ready 架构** ✅ (Paged KV + 可分离代码
+路径 + 阶段边界 API ModelSequence)。53 项测试全绿, 零警告。
+
+剩余 Phase 1 项 (按优先级):
+1. **MTP 1 层** (用户排期, 等整体架构完善后推进)。权威参考:
+   `reference/vllm/vllm/models/qwen4_exp/nvidia/mtp.py`。阻塞已解除
+   (fc_embedding/fc_hidden 形状已对照 vLLM 确认)。
+2. **多模态图像输入** (Phase 1 最大缺口, 架构完善后)。
+3. **逐 token 对参考验证** (C++ vs PyTorch/transformers 全 token 序列
+   对比, 不止 argmax)。
+4. **PLE 工作内存 <100 MiB 验证** + **PLE sidecar SHA-256 校验**。
 
 ## 环境
 

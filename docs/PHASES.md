@@ -73,8 +73,9 @@
 - [ ] 多模态 (图像输入) 可用
 - [x] Paged KV cache 落地 (full_attention 按页组织 + 页表间接寻址,
       替代连续 KV; 2026-09-05 完成, 见 LOG.md)
-- [ ] PD-ready 架构: prefill/decode 可分离路径 (✅ 现状已满足) +
-      阶段边界 API (⏳ 待实现; 完整多设备 PD 部署归 Phase 2)
+- [x] PD-ready 架构: prefill/decode 可分离路径 (✅ 现状已满足) +
+      阶段边界 API (✅ ModelSequence, 2026-09-05 完成, 见 LOG.md;
+      完整多设备 PD 部署归 Phase 2)
 
 ### 明确不做 (Phase 1 范围外)
 
