@@ -9,6 +9,7 @@
 reference/
 ├── sglang-ssd-stream/    # PLE SSD Stream 机制参考 (必读)
 ├── sglang-qwen4-exp/     # SGLang qwen4_exp.py 单文件 (PLE/forward 权威参考)
+├── vllm/                 # vLLM main, 含完整 qwen4_exp 实现 (MTP/QSA/PLE 权威参考)
 ├── qwen35-thor/          # 同硬件 Qwen3.5 引擎, 架构模式参考
 ├── Qwen3x-Orin/          # 生产级 tokenizer 参考 (ICU 74 + BPE + golden fixture)
 ├── thor-probe/           # 硬件探测方法 (可选)
@@ -46,6 +47,35 @@ reference/
   QSA 稀疏注意力、MTP、权重名映射 (load_weights) 均以此为准。
 - 注意: 该文件依赖 SGLang 运行时 (ForwardBatch / req_to_token_pool /
   qsa 模块等), 不能直接编译; 只作算法与张量布局参考。
+
+## vllm (qwen4_exp 完整实现, MTP/QSA 权威参考)
+
+- 仓库: https://github.com/vllm-project/vllm
+- 固定 commit: `2902ca1` (main, 2026-09-05 克隆, `--depth 1`)
+- 用途: **qwen4_exp 的完整 PyTorch 参考实现** (14,192 行), 填补
+  sglang-qwen4-exp 单文件无法覆盖的部分 (依赖 SGLang 运行时)。
+- 关键路径 (`vllm/models/qwen4_exp/`):
+  - `nvidia/mtp.py` (461 行) — **MTP 权威参考** (之前搁置 MTP 的唯一阻塞):
+    `fc_embedding`/`fc_hidden` 均为 per-branch `Linear(H,H)` [2560,2560]
+    (无 10240→2560 降维), `pre_fc_norm_hidden` 对展平多流 [T, hc*H]
+    做 GemmaRMSNorm; 主模型须输出 pre-final-mixer 多流 [T, hc*H] 给
+    MTP 第一步 (scheme A); MTP 层 = full_attention + QSA indexer +
+    512 expert MoE (与主干同构, checkpoint `mtp.layers.0` 即 layer 48)。
+  - `nvidia/ops/qsa_indexer.py` (639 行) — QSA indexer 权威参考:
+    `token_topk = indexer_budget = 2048`, `block_topk = token_topk //
+    compress_ratio = 512`, logits = `sum_h relu(iq·ck)` (无 1/√hd 缩放,
+    单调变换不影响 top-k), expand = top-512 块展开 + **当前 group 因果
+    尾部** `tail_start=((pos+1)//4)*4, tail_count=(pos+1)-tail_start`
+    (与本项目 `TopkSelectKernel` 修复后的语义一致, 已交叉验证)。
+  - `nvidia/ops/qsa.py` (869 行) / `qsa_pre_indexer.py` (508 行) —
+    稀疏注意力 kernel 与 pre-indexer 路径。
+  - `nvidia/ple_layer.py` (927 行) / `common/ple.py` — PLE 层参考。
+  - `nvidia/model.py` (1071 行) — 完整主干 (decoder layer / MoE / 权重
+    映射 `_EXTRA_WEIGHTS_MAPPER`)。
+  - `nvidia/hyperconnection.py` + `ops/hc.py` — HC (GatedResidual) 参考。
+- 注意: vLLM 是 CUDA/ROCm 双后端 (nvidia/ 与 amd/ 目录), 本项目只参考
+  nvidia/ 路径; vLLM 用 paged KV + torch.compile, 本项目是连续 KV +
+  手写 CUDA kernel, 架构不同, 只取算法与张量布局语义。
 
 ## qwen35-thor (架构模式参考)
 

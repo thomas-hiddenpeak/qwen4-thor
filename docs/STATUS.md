@@ -343,11 +343,15 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
       =NaN, 0x78–0x7E = 256–448 有限值), 之前误把所有 exp=15 当 NaN 导致
       参考全 NaN; 实测 checkpoint scale 字节全部 ≤0x7E, 与 C++ 解码一致。
   - ⏳ MTP 1 层 (fc_embedding/fc_hidden + pre_fc_norm + full_attention +
-    BF16 MoE + mtp_hc)。**搁置**: 本地无权威参考 (transformers/SGLang 都
-    跳过 `mtp.*` 权重), 且 `pre_fc_norm_hidden`[10240] → `fc_hidden`[2560,2560]
-    的降维方式无依据 (qwen3_next 前身用单个 `fc[hs,2hs]`, qwen4_exp 改成两个
-    独立 FC, 布局不同)。MTP 是推测解码性能特性, 不影响 greedy 正确性, 待
-    拿到权威 forward 参考再实现。
+    BF16 MoE + mtp_hc)。**用户决定: 等整体架构完善后再推进** (2026-09-05)。
+    阻塞已解除: vLLM main (`reference/vllm`, commit 2902ca1) 含完整
+    qwen4_exp 实现, `nvidia/mtp.py` (461 行) 是 MTP 权威参考 —
+    `fc_embedding`/`fc_hidden` 均为 per-branch `Linear(H,H)` [2560,2560]
+    (**无 10240→2560 降维**, 之前布局歧义已解开), `pre_fc_norm_hidden`
+    [10240] 对展平多流 [T, hc*H] 做 GemmaRMSNorm, 主模型须输出
+    pre-final-mixer 多流 [T, hc*H] 给 MTP 第一步 (scheme A), MTP 层 =
+    full_attention + QSA indexer + 512 expert MoE (与主干同构)。
+    checkpoint 31 个 `mtp.*` 张量形状已逐一对照 vLLM 参考确认一致。
   - ✅ **长序列 QSA 稀疏路径 (T>2048) 端到端验证 + 修复**: 用自然语言长文
     (prompt 1612 + decode 600, 越过 2048 稀疏激活点) 验证, 输出全程连贯。
     期间定位并修复 4 个稀疏路径 bug (见下)。
@@ -397,7 +401,8 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 - **PLE sidecar SHA-256 未验证** (ssd-stream.json 记录了期望值
   `b070f964...`, 51.2 GB 校验耗时较长, 安排在首次加载前完成)。
-- **MTP 无权威参考** (见"进行中" ⏳ 条目), 搁置。
+- **MTP 待用户排期** (权威参考已就位: `reference/vllm/vllm/models/
+  qwen4_exp/nvidia/mtp.py`, 见"进行中" ⏳ 条目), 等整体架构完善后推进。
 - **MoE 贪心非确定性** (见"进行中"长序列条目): `ScatterAddKernel` 的 FP32
   `atomicAdd` 顺序非确定, 运行间 argmax 可能翻转。属 LLM 固有特性 (PyTorch
   同样), 不影响正确性; 如需可复现输出, 可改确定性归约 (代价: 性能)。

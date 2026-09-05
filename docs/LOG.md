@@ -64,6 +64,44 @@ inject`。
 
 ---
 
+## 2026-09-05 — 引入 vLLM main 参考: MTP 权威参考就位 + QSA 语义交叉验证
+
+**做了什么**
+- `reference/vllm` 克隆 vLLM main (commit `2902ca1`, `--depth 1`)。
+  发现 vLLM 含**完整 qwen4_exp 实现** (`vllm/models/qwen4_exp/`, 14,192 行,
+  nvidia/amd 双后端), 填补 sglang-qwen4-exp 单文件 (依赖 SGLang 运行时)
+  无法覆盖的部分。
+- **MTP 阻塞解除**: `nvidia/mtp.py` (461 行) 是 MTP 权威参考。之前困扰的
+  布局歧义解开: `fc_embedding`/`fc_hidden` 均为 per-branch `Linear(H,H)`
+  [2560,2560] (**无 10240→2560 降维** — `fc_hidden` 输入是展平多流
+  [T, hc*H], 每 branch 独立 H→H); `pre_fc_norm_hidden` [10240] 对展平
+  多流做 GemmaRMSNorm; 主模型须输出 pre-final-mixer 多流 [T, hc*H] 给
+  MTP 第一步 (scheme A); MTP 层 = full_attention + QSA indexer + 512
+  expert MoE (与主干同构, checkpoint `mtp.layers.0` 即 layer 48)。
+  checkpoint 31 个 `mtp.*` 张量形状逐一对照 vLLM 参考确认一致
+  (fc_embedding [2560,2560] / fc_hidden [2560,2560] /
+  pre_fc_norm_hidden [10240] / layers.0.self_attn.q_proj [12288,2560] /
+  layers.0.mlp.gate [512,2560] / mixer.down [320,10240])。
+- **QSA 稀疏路径语义交叉验证** (对照 `nvidia/ops/qsa_indexer.py` 639 行,
+  验证本会话刚修的 4 个 bug 方向正确):
+  - `token_topk = indexer_budget = 2048`, `block_topk = 512` ✓
+  - logits = `sum_h relu(iq·ck)` (无 1/√hd 缩放; 单调变换不影响 top-k
+    选择, 本项目含缩放无害) ✓
+  - expand = top-512 块展开 + **当前 group 因果尾部**
+    (`tail_start=((pos+1)//4)*4, tail_count=(pos+1)-tail_start`) — 与
+    `TopkSelectKernel` 修复后语义一致 ✓
+- REFERENCE.md 加 vLLM 条目 (关键路径 + 与本项目架构差异说明)。
+
+**用户决定**
+- MTP 等整体架构完善后再推进 (参考已就位, 随时可启动)。
+
+**下一步**
+- 整体架构完善 (待用户定义范围; 候选: 逐 token 对 SGLang/vLLM 参考
+  验证、serve 并发/批处理、性能优化)。
+- MTP (参考: `reference/vllm/vllm/models/qwen4_exp/nvidia/mtp.py`)。
+
+---
+
 ## 2026-09-05 — serve 命令: OpenAI 兼容 HTTP API
 
 **做了什么**
