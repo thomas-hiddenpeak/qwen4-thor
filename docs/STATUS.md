@@ -317,10 +317,19 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     跨层复用。`DecoderLayer::ResetState` 让 prefill 从空状态开始 (确定性)。
     真实 checkpoint 端到端验证 (head + 2 层含 PLE, T=4, logits 有限/非平凡/
     两次运行逐位一致)。
-  - ⏳ MTP 1 层 (mtp_hc: hc_count+1, full_attention + fc_embedding/fc_hidden)。
-  - ⏳ 全 48 层加载 + 长序列 QSA 稀疏路径 + 逐 token 对 SGLang 参考验证。
+  - ✅ **全 48 层完整模型端到端验证通过**: `Q4T_MODEL_LAYERS=48` 加载全部
+    84 GB 权重 (36 linear + 12 full attention + PLE + head) 无 OOM (Thor
+    122 GB 统一内存), T=4 prefill forward 成功, logits 有限/非平凡/两次运行
+    逐位一致。期间修复 full attention workspace 低估 bug: `AttnWs` 按
+    70 KiB/token 估算, 实际 `FullAttentionForward` carve 是 105 KiB/token,
+    新增 `FullAttentionWorkspaceBytes(w, T)` 精确镜像 carve, 供
+    `DecoderLayerWorkspaceBytes` / `DecoderLayerForward` 使用 (之前 2 层测试
+    全是 linear 层, 未触发)。
+  - ⏳ MTP 1 层 (fc_embedding/fc_hidden + pre_fc_norm + full_attention +
+    BF16 MoE + mtp_hc)。
+  - ⏳ 长序列 QSA 稀疏路径 (T>2048) + 逐 token 对 SGLang 参考验证。
   **→ 模型层: 全部子模块 + decoder layer + PLE 注入 + head/tail + 完整
-    forward 编排完成 (端到端跑通), 待 MTP + 全 48 层 + 长序列验证**
+    forward 编排 + 全 48 层端到端验证完成, 待 MTP + 长序列验证**
 
 ## 阻塞 / 风险
 

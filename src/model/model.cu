@@ -208,10 +208,11 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   // Forward workspace: max over layers (and the head).
   size_t ws = ModelHeadWorkspaceBytes(cfg.max_prefill, cfg.hs);
   for (auto& l : m->layers) {
-    ws = std::max(
-        ws, DecoderLayerWorkspaceBytes(cfg.max_prefill, l.is_full_attention,
-                                       l.has_ple, cfg.hs, cfg.E, cfg.moe_is,
-                                       cfg.shared_is, cfg.topk));
+    ws = std::max(ws, DecoderLayerWorkspaceBytes(cfg.max_prefill,
+                                                l.is_full_attention, l.has_ple,
+                                                cfg.hs, cfg.E, cfg.moe_is,
+                                                cfg.shared_is, cfg.topk,
+                                                &l.full));
   }
   m->ws_bytes = ws;
   if (!(s = alloc(&m->d_ws, ws))) return s;

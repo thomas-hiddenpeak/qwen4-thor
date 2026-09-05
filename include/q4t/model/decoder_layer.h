@@ -85,10 +85,13 @@ struct DecoderLayer {
 
 // Device bytes required for the DecoderLayerForward `workspace` argument for a
 // layer of type `is_full_attention` handling up to `T` tokens. `has_ple` adds
-// the PLE layer's GEMM scratch + carved intermediates.
+// the PLE layer's GEMM scratch + carved intermediates. When `is_full_attention`
+// is true, pass the layer's `full` weights so the attention region is sized by
+// FullAttentionWorkspaceBytes (exact); otherwise `full` may be null.
 size_t DecoderLayerWorkspaceBytes(int T, bool is_full_attention, bool has_ple,
                                   int hs, int E, int moe_is, int shared_is,
-                                  int k);
+                                  int k, const FullAttentionWeights* full =
+                                      nullptr);
 
 // Load one decoder layer's weights from `loader`.
 //

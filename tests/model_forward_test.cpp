@@ -19,6 +19,7 @@
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <fcntl.h>
 #include <string>
@@ -71,10 +72,16 @@ Q4T_TEST(model_forward_e2e) {
     return true;
   }
 
+  const int num_layers = [] {
+    const char* e = std::getenv("Q4T_MODEL_LAYERS");
+    return e ? std::atoi(e) : 2;
+  }();
+
   ModelConfig cfg;
   cfg.model_dir = kModelDir;
   cfg.index_path = kIndex;
-  cfg.num_layers = 2;  // layer 0 (linear) + layer 1 (linear + PLE)
+  cfg.num_layers = num_layers;  // default 2 (layer 0 linear + layer 1 PLE);
+                                // Q4T_MODEL_LAYERS=48 for the full model
   cfg.max_prefill = 8;
   cfg.ple_sidecar = kPleSidecar;
 

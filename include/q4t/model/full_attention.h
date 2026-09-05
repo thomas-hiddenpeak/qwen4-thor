@@ -105,13 +105,20 @@ Status LoadFullAttention(const io::WeightLoader& loader, const std::string& pref
 //              per group of idx_compress tokens), persistent
 //   T        : number of tokens in this chunk (== sequence length for a
 //              single prefill)
-//   workspace: scratch device buffer (>= ~128 MiB) for projections + logits +
-//              topk
+//   workspace: scratch device buffer (>= FullAttentionWorkspaceBytes(T)) for
+//              projections + logits + topk + GEMM scratch
 Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                             uint16_t* out, const int* positions,
                             uint16_t* kv_cache, uint16_t* idx_raw,
                             uint16_t* idx_comp, int T, void* workspace,
                             size_t workspace_bytes, cudaStream_t stream);
+
+// Exact workspace bytes FullAttentionForward carves for `T` tokens: the
+// projection/logits/topk intermediates (256-byte aligned each, sized from the
+// weights' dims) plus a 32 MiB GEMM scratch. Mirrors the carve in
+// FullAttentionForward so callers can size a shared buffer without re-deriving
+// the layout.
+size_t FullAttentionWorkspaceBytes(const FullAttentionWeights& w, int T);
 
 }  // namespace model
 }  // namespace q4t

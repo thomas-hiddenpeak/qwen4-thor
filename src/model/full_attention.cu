@@ -612,6 +612,33 @@ Status LoadFullAttention(const io::WeightLoader& loader,
   return Status();
 }
 
+size_t FullAttentionWorkspaceBytes(const FullAttentionWeights& w, int T) {
+  // Must mirror the carve in FullAttentionForward exactly (256-byte aligned
+  // regions + the 32 MiB GEMM scratch).
+  const int nq = w.nq, nkv = w.nkv, hd = w.hd;
+  const int qg_dim = nq * 2 * hd;
+  const int kv_dim = nkv * hd;
+  const int idx_hd = w.idx_head_dim;
+  const int n_iq = w.idx_n_heads, n_ik = w.idx_kv_heads;
+  const int max_blocks = 2048;  // kMaxT / idx_compress
+  const int max_topk = 2052;    // idx_budget + idx_compress - 1
+  size_t off = 0;
+  auto alloc = [&](size_t bytes) { off += (bytes + 255) & ~size_t(255); };
+  alloc(static_cast<size_t>(T) * qg_dim * 2);  // d_qg
+  alloc(static_cast<size_t>(T) * kv_dim * 2);  // d_k
+  alloc(static_cast<size_t>(T) * kv_dim * 2);  // d_v
+  alloc(static_cast<size_t>(T) * nq * hd * 2);  // d_q
+  alloc(static_cast<size_t>(T) * nq * hd * 2);  // d_gate
+  alloc(static_cast<size_t>(T) * n_iq * idx_hd * 2);  // d_iq
+  alloc(static_cast<size_t>(T) * n_ik * idx_hd * 2);  // d_ik
+  alloc(static_cast<size_t>(T) * idx_hd * 2);         // d_ik_raw
+  alloc(static_cast<size_t>(T) * max_blocks * 4);     // d_logits (f32)
+  alloc(static_cast<size_t>(T) * max_topk * 4);       // d_topk (i32)
+  alloc(static_cast<size_t>(T) * nq * hd * 2);        // d_attn
+  off += 32u * 1024u * 1024u;  // GEMM scratch
+  return off;
+}
+
 Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                             uint16_t* out, const int* positions,
                             uint16_t* kv_cache, uint16_t* idx_raw,

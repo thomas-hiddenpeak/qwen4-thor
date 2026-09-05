@@ -67,8 +67,10 @@ size_t AttnWs(int T, bool is_full) {
 
 size_t DecoderLayerWorkspaceBytes(int T, bool is_full_attention, bool has_ple,
                                   int hs, int E, int moe_is, int shared_is,
-                                  int k) {
-  const size_t attn = AlignUp(AttnWs(T, is_full_attention));
+                                  int k, const FullAttentionWeights* full) {
+  const size_t attn = is_full_attention && full
+                          ? AlignUp(FullAttentionWorkspaceBytes(*full, T))
+                          : AlignUp(AttnWs(T, is_full_attention));
   const size_t moe_carve = AlignUp(
       MoEForwardWorkspaceBytes(T, k, hs, moe_is, shared_is, E));
   size_t total = attn + moe_carve + kGemmWs + kGemmWs;  // + moe gemm + hc scratch
@@ -218,7 +220,9 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   if (T <= 0) return Status();
 
   // Carve the workspace into per-submodule regions.
-  const size_t attn_ws = AttnWs(T, layer.is_full_attention);
+  const size_t attn_ws = layer.is_full_attention
+                             ? FullAttentionWorkspaceBytes(layer.full, T)
+                             : AttnWs(T, false);
   const size_t moe_carve = MoEForwardWorkspaceBytes(
       T, layer.topk, hs, layer.routed.moe_is, layer.mlp.shared_is, layer.routed.E);
   const size_t ple_ws =

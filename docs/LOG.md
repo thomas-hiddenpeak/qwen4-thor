@@ -5,6 +5,41 @@
 
 ---
 
+## 2026-09-05 — 全 48 层完整模型端到端验证通过 (+ full attention workspace 修复)
+
+**做了什么**
+- `model_forward_test` 支持 `Q4T_MODEL_LAYERS` 环境变量 (默认 2)。
+- `Q4T_MODEL_LAYERS=48` 跑通: 加载全部 84 GB 权重 (36 linear + 12 full
+  attention + PLE + head) **无 OOM** (Thor 122 GB 统一内存, 112 GB 可用),
+  T=4 prefill forward 成功, logits 有限/非平凡/两次运行逐位一致。
+  50 项测试全绿, 零警告。
+
+**踩坑 (一个, 已修)**
+- **full attention workspace 低估**: 首次 48 层 forward 报
+  `FullAttentionForward: workspace too small for GEMM`。根因:
+  `decoder_layer.cu` 的 `AttnWs` 按 70 KiB/token 估算 full attention 临时区,
+  但 `FullAttentionForward` 实际 carve 是 52,736 元素/token ≈ 105 KiB/token
+  (d_qg 24576 + d_k/d_v 1024 + d_q/d_gate/d_attn 18432 + d_iq/d_ik/d_ik_raw
+  1536, 加 logits/topk)。之前 2 层测试全是 linear 层, 从未触发 full
+  attention 的 workspace 需求, 所以没暴露。修复: 新增
+  `FullAttentionWorkspaceBytes(w, T)` (full_attention.h/.cu) 精确镜像
+  `FullAttentionForward` 的 carve (256 字节对齐 + 32 MiB GEMM),
+  `DecoderLayerWorkspaceBytes` 加 `const FullAttentionWeights*` 参数、
+  `DecoderLayerForward` 的 carve 都改用它。
+
+**关键事实**
+- 84 GB 权重 + PLE sidecar mmap + 持久 cache (KV/SSM) + workspace 在 Thor
+  122 GB 统一内存内无 OOM, 内存预算确认可行。
+- 48 层加载耗时较长 (NVMe mmap 顺序读 84 GB), 测试可接受。
+
+**下一步**
+- MTP 1 层 (fc_embedding/fc_hidden + pre_fc_norm + full_attention + BF16
+  MoE + mtp_hc)。
+- 长序列 QSA 稀疏路径 (T>2048) 验证。
+- 逐 token 对 SGLang 参考验证 (架构建全后)。
+
+---
+
 ## 2026-09-05 — 模型层 (8/N): 完整模型 forward 编排 (端到端跑通)
 
 **做了什么**
