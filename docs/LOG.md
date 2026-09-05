@@ -5,6 +5,65 @@
 
 ---
 
+## 2026-09-05 — 文档对账 + PD-ready 架构纳入 Phase 1
+
+**背景**
+用户提出三点: ① 参考项目灵活使用 (非锁定), 取其有用部分; ② 文档是
+项目初稿, 应随代码与测试实践演进; ③ 希望 PD 分离架构在第一阶段实现,
+因 runner 后期有特殊场景需要。
+
+**评估结论**
+- ① 同意 — 我们一直如此 (PLE 看 sglang-ssd-stream, MTP/QSA 看 vLLM,
+  MoE 量化看 qwen35-thor), REFERENCE.md 定位"菜单"非"契约"。
+- ② 同意 — AGENTS.md 硬性约定 1 已授权 (代码为最高事实来源)。借此对账
+  发现 4 处文档-实现偏差, 本次一并修正。
+- ③ 接受方向, 修正时间点 — 完整多设备 PD *部署* 依赖并发底座 (Phase 2),
+  单卡 Thor 无独立 prefill/decode 池可分; 但 **PD-ready 架构 (可分离性)**
+  应在 Phase 1 落地, 避免后期返工。关键联动: **Paged KV 从 Phase 2 缺口
+  提升为 Phase 1 硬需求** — 它是 KV 可按页迁移/共享的硬前提, 正是
+  PD-ready 所需。
+
+**文档修正 (4 处偏差 + PD-ready 新增)**
+1. **Paged KV 偏差**: 文档 (PHASES/ARCHITECTURE/MODEL) 写 "Paged KV",
+   实现为连续 KV `[max_len, nkv, 2, hd]` (`full_attention.cu`)。现明确
+   Paged KV 为 Phase 1 硬需求 (PD-ready 前提), 待实现按页组织 + block
+   table。
+2. **参考实现偏差**: PHASES.md 验证项原写 "与 sglang-ssd-stream 对比",
+   改为 "参考实现灵活选用" (PLE→sglang-ssd-stream, MTP/QSA→vLLM,
+   MoE→qwen35-thor), 与 REFERENCE.md 一致。
+3. **验证标准**: 明确 "逐 token 对比" 是初步方向, 正式验证标准体系归
+   Phase 2 (PHASES.md 原已标 "单独讨论")。
+4. **MRoPE 偏差**: 纯文本 (t=h=w=position) 下 MRoPE 退化为标准 partial
+   RoPE (前 64 维), 与当前实现数学等价 (已验证); 完整 3D MRoPE 仅多模态
+   需要, 随图像输入落地。
+
+**PD-ready 架构范围 (Phase 1 vs Phase 2)**
+- Phase 1 落地**架构可分离性** (低成本、零风险):
+  prefill/decode 可分离代码路径 (现状已满足) + **Paged KV cache** +
+  阶段边界 API (引擎能"完成 prefill、交出 KV/SSM 状态"为独立操作) +
+  MTP 留在 decode 路径内。
+- Phase 2 做**完整 PD 部署**: 多设备/多实例、KV 跨设备传输、独立调度池
+  (依赖连续批处理 + 多请求调度)。
+
+**改动文件**
+- PHASES.md: 第 3 项标注 Paged KV 硬需求 + MRoPE 等价性; 新增第 6 项
+  "PD-ready 架构"; 完成标准加 Paged KV + PD-ready 两条; 明确不做加
+  "完整多设备 PD 部署 (Phase 2)"; Phase 2 加完整 PD 部署项。
+- ARCHITECTURE.md: 模块划分标注 (引擎层 PD-ready / 状态层 Paged KV
+  Phase 1 硬需求); 新增 "PD-ready 架构" 小节 (含 Paged KV 为何提前);
+  "与参考项目的关系" 改为灵活选用。
+- MODEL.md: full_attention Paged KV 标注 Phase 1 硬需求; MRoPE 标注
+  纯文本等价性。
+- STATUS.md: 阻塞/风险加 Paged KV 缺口 + PD-ready 设计目标; 进行中加
+  PD-ready 架构设计条目。
+
+**下一步**
+实现 Paged KV cache (full_attention 按页组织 + block table, 替代连续
+KV) — PD-ready 架构的第一个实质代码项。随后: 阶段边界 API、多模态
+图像输入、MTP、逐 token 对参考验证。
+
+---
+
 ## 2026-09-05 — 长序列 QSA 稀疏路径 (T>2048) 端到端验证 + 4 个 bug 修复
 
 **背景**

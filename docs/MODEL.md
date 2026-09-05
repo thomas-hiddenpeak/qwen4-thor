@@ -30,7 +30,8 @@
 ### full_attention (12 层)
 - GQA: 24 Q heads / 2 KV heads, head_dim 256
 - attention_bias=false, dropout 0
-- Paged KV cache 目标
+- Paged KV cache (**Phase 1 硬需求**, PD-ready 前提; 当前实现为
+  连续 KV `[max_len, nkv, 2, hd]`, 待改按页组织 + block table)
 
 ### linear_attention (36 层, DeltaNet SSM)
 - linear_num_key_heads=16, linear_num_value_heads=48
@@ -43,6 +44,9 @@
 - rope_theta=1e7, partial_rotary_factor=0.25
 - mrope_interleaved=true, mrope_section=[11,11,10]
 - (head_dim 256 × 0.25 = 64 维旋转, 3 段 11+11+10=32 对)
+- 纯文本 (t=h=w=position) 下 3D 位置退化为一维, MRoPE 等价于标准
+  partial RoPE (前 64 维), 与当前实现数学等价 (已验证); 完整 3D
+  MRoPE (t/h/w 分离) 仅多模态需要, 随图像输入落地。
 
 ## MoE
 

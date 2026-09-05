@@ -25,9 +25,14 @@
 3. **模型 forward pass (text)**
    - 48 层: 36 linear_attention (DeltaNet SSM, FP32 state) +
      12 full_attention (GQA 24Q/2KV, head_dim 256, Paged KV)
+     - **Paged KV cache 为 Phase 1 硬需求** (原为 Phase 2 目标, 因 PD-ready
+       架构提前, 见第 6 项)。当前实现为连续 KV `[max_len, nkv, 2, hd]`,
+       需改为按页组织 + block table, 使 KV 可按页迁移/共享。
    - MoE: 512 专家 top-10 + shared expert, NVFP4 grouped GEMM
    - PLE 嵌入 (layer 2, 每 token 16 次查找)
    - MRoPE (interleaved, section [11,11,10], partial_rotary 0.25)
+     - 纯文本 (t=h=w=position) 下退化为标准 partial RoPE, 与当前实现
+       数学等价 (已验证); 完整 3D MRoPE 仅多模态需要, 随图像输入落地。
    - MTP 推测解码 (1 层 full_attention draft)
 
 4. **服务与 CLI**
@@ -38,7 +43,23 @@
 
 5. **验证**
    - 验证标准的建设**单独讨论** (见 STATUS.md 阻塞项),
-     初步方向: 与 sglang-ssd-stream 输出对比 (greedy, 逐 token)
+     初步方向: 与参考实现输出对比 (greedy, 逐 token)。
+     参考实现**灵活选用** (非锁定): PLE 机制看 sglang-ssd-stream,
+     MTP/QSA 语义看 vLLM (`reference/vllm`), MoE 量化看 qwen35-thor。
+     逐 token 对比是初步方向, 正式验证标准体系见 Phase 2。
+
+6. **PD-ready 架构 (Prefill/Decode 可分离, 设计目标)**
+   - 背景: runner 后期有特殊场景需 PD 分离, 架构须早期可分离,
+     避免后期返工 (用户决定, 2026-09-05)。
+   - Phase 1 落地**架构可分离性** (低成本、零风险, 非完整多设备分离):
+     - prefill (T 首步) 与 decode (T=1) 保持**可分离代码路径**, 不融合;
+     - **Paged KV cache** (见第 3 项) 使 KV 可按页迁移/共享 — PD-ready 硬前提;
+     - 暴露**阶段边界 API**: 引擎能"完成 prefill、交出 KV/SSM 状态"
+       作为独立操作 (供 runner 驱动 prefill 与 decode 为两次调用);
+     - MTP 留在 decode 路径内。
+   - **完整 PD 分离部署** (多设备/多实例、KV 跨设备传输、独立调度池)
+     归 **Phase 2** (依赖连续批处理 + 多请求调度, 单卡 Thor 无独立
+     prefill/decode 池可分)。Phase 1 只保证架构不堵死该路径。
 
 ### 完成标准
 
@@ -46,14 +67,20 @@
       (文本) 对话, 流式输出正常
 - [ ] PLE SSD Stream 工作内存 < 100 MiB (不含模型权重),
       无 OOM, 无 swap
-- [ ] greedy 生成输出与参考实现 (sglang-ssd-stream) 一致
-      (验证标准以单独讨论结论为准)
+- [ ] greedy 生成输出与参考实现一致 (参考灵活选用, 见第 5 项;
+      验证标准以单独讨论结论为准)
 - [ ] MTP 推测解码可用
 - [ ] 多模态 (图像输入) 可用
+- [ ] Paged KV cache 落地 (full_attention 按页组织 + block table,
+      替代当前连续 KV)
+- [ ] PD-ready 架构: prefill/decode 可分离路径 + 阶段边界 API
+      (完整多设备 PD 部署归 Phase 2)
 
 ### 明确不做 (Phase 1 范围外)
 
 - 连续批处理 / 多请求并发 (Phase 2)
+- 完整多设备/多实例 PD 分离部署 (KV 跨设备传输、独立调度池;
+  Phase 2, 依赖连续批处理。Phase 1 只做 PD-ready 架构, 见第 6 项)
 - 性能调优 (kernel 融合、TMA、PDL 等, Phase 3)
 - 视频输入 (图像先行, 视频 Phase 2)
 
@@ -61,6 +88,8 @@
 
 - 视频输入 (temporal_patch_size=2)
 - 连续批处理、多请求调度
+- **完整 PD 分离部署** (多设备/多实例, KV 跨设备传输, 独立调度池;
+  基于 Phase 1 的 PD-ready 架构 + Paged KV)
 - 长上下文 (262K) 验证
 - 验证标准体系落地
 

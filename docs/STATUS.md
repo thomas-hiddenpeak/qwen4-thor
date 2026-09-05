@@ -229,6 +229,12 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 ## 进行中
 
+- ⏳ **PD-ready 架构设计 (2026-09-05, 用户决定)**: runner 后期特殊
+  场景需 PD 分离, 架构须早期可分离。已把 **Paged KV 从 Phase 2 提前为
+  Phase 1 硬需求** (KV 可迁移前提), 并新增阶段边界 API 设计。文档已对账
+  (PHASES.md 第 6 项 / ARCHITECTURE.md "PD-ready 架构" / MODEL.md /
+  本文阻塞项)。待实现: Paged KV (按页 + block table) + 阶段边界 API。
+  完整多设备 PD 部署归 Phase 2。
 - Phase 1 实现:**PLE 流式层 (核心特性) 已全部完成** ✅ (ngram 哈希 /
   io_uring 读取器 / FP8→BF16 转换 / 端到端 gather, 均通过真实 checkpoint
   参数 + 真实 51.2 GB sidecar 验证)。
@@ -399,6 +405,16 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 ## 阻塞 / 风险
 
+- **Paged KV cache 未实现 (Phase 1 硬需求, 新缺口)**: full_attention
+  当前用连续 KV `[max_len, nkv, 2, hd]` (`full_attention.cu`), 文档
+  (PHASES/ARCHITECTURE/MODEL) 原写 "Paged KV"。因 **PD-ready 架构**
+  (用户决定, 2026-09-05) 把 Paged KV 从 Phase 2 提前为 Phase 1 硬需求 —
+  它是 KV 可按页迁移/共享的前提。待实现: 按页组织 + block table,
+  替代连续 KV。详见 ARCHITECTURE.md "PD-ready 架构" 小节。
+- **PD-ready 架构 (设计目标, Phase 1)**: runner 后期特殊场景需 PD
+  分离, 架构须早期可分离。Phase 1 落地可分离性 (prefill/decode 可分离
+  路径 + 阶段边界 API + Paged KV), 完整多设备 PD 部署归 Phase 2。
+  设计见 ARCHITECTURE.md, 范围见 PHASES.md 第 6 项。
 - **PLE sidecar SHA-256 未验证** (ssd-stream.json 记录了期望值
   `b070f964...`, 51.2 GB 校验耗时较长, 安排在首次加载前完成)。
 - **MTP 待用户排期** (权威参考已就位: `reference/vllm/vllm/models/

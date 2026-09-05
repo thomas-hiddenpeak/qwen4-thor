@@ -24,7 +24,8 @@ q4t (单一可执行)
 ├── CLI 层          version / probe / models / generate / serve
 ├── 服务层          OpenAI 兼容 HTTP (chat/completions, streaming)
 ├── 引擎层          请求生命周期: tokenize → prefill → decode → 采样
-│   ├── Runner      推理循环, 状态机
+│   ├── Runner      推理循环, 状态机 (prefill/decode 可分离路径,
+│   │               见"PD-ready 架构")
 │   ├── Scheduler   (Phase 2: 连续批处理; Phase 1: 单请求)
 │   └── Sampler     greedy / temperature / top-p / top-k
 ├── 模型层          qwen4_exp forward pass
@@ -39,7 +40,8 @@ q4t (单一可执行)
 │   ├── IouringReader  io_uring 并发读 (32 MiB 注册页池)
 │   ├── Staging     2×16 MiB 固定暂存
 │   └── ConvertStream  独立 CUDA stream 上 FP8→BF16
-├── 状态层          Paged KV cache, SSM state (FP32), 请求状态
+├── 状态层          Paged KV cache (Phase 1 硬需求, PD-ready 前提),
+│                   SSM state (FP32), 请求状态
 ├── 量化层          NVFP4 W4A4 / FP8 原语, 反量化
 ├── IO 层           safetensors (mmap 零拷贝), JSON, tokenizer
 └── 核心层          设备探测, SHA-256, 日志
@@ -88,8 +90,36 @@ GPU 层计算掩盖; 仅当读取超过重叠窗口时才同步等待。
 | JSON | 有界解析器 (自研, 参考 Qwen3x-Orin 的 bounded JSON) | 拒绝无界分配 |
 | Tokenizer | 自研 BPE (解析 tokenizer.json) | 无 Python 依赖 |
 
+## PD-ready 架构 (Prefill/Decode 可分离)
+
+> 用户决定 (2026-09-05): runner 后期有特殊场景需 PD 分离, 架构须
+> 早期可分离, 避免后期返工。Phase 1 落地**架构可分离性**,
+> 完整多设备 PD *部署*归 Phase 2。
+
+**为什么 Paged KV 是 Phase 1 硬需求 (而非 Phase 2)**
+PD 分离的价值来自 KV 在 prefill 与 decode 之间**迁移**。连续 KV
+`[max_len, nkv, 2, hd]` 是按绝对位置寻址的整块, 无法按请求切分/迁移;
+Paged KV (按页组织 + block table) 让 KV 成为可独立搬运的页序列,
+是 KV 可迁移/共享/换页的硬前提。因此 Paged KV 随 PD-ready 提前到
+Phase 1, 而非等到 Phase 2 连续批处理。
+
+**Phase 1 落地的可分离性 (低成本、零风险)**
+1. **prefill/decode 可分离代码路径**: prefill (T 首步) 与 decode (T=1)
+   不融合, 各自可独立调用 (现状已满足, 保持)。
+2. **Paged KV cache**: full_attention 改按页组织 + block table,
+   替代当前连续 KV (实现待做, 见 PHASES.md 第 3/6 项)。
+3. **阶段边界 API**: 引擎暴露"完成 prefill、交出 KV/SSM 状态"为独立
+   操作, 使 runner 能把 prefill 与 decode 驱动为两次独立调用。
+4. **MTP 留在 decode 路径内** (draft 依赖 decode 的逐 token 流)。
+
+**Phase 2 的完整 PD 部署 (依赖并发底座)**
+多设备/多实例分离、KV 跨设备传输 (RDMA/NVLink/共享统一内存)、
+独立 prefill/decode 调度池。单卡 Thor 无独立 prefill/decode 池可分,
+完整 PD 分离的收益需多请求并发 (Phase 2 连续批处理) 才能体现。
+
 ## 与参考项目的关系
 
 见 [REFERENCE.md](REFERENCE.md)。核心: 独立实现, 不 fork;
-参考 qwen35-thor 的架构模式与 kernel 设计, 参考
-sglang-ssd-stream 的 PLE 流式机制。
+参考项目**灵活选用** (非锁定), 取其有用部分服务本项目:
+qwen35-thor 的架构模式与 kernel 设计、sglang-ssd-stream 的 PLE 流式
+机制、vLLM (`reference/vllm`) 的 MTP/QSA 语义。
