@@ -229,12 +229,17 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 ## 进行中
 
-- ⏳ **PD-ready 架构设计 (2026-09-05, 用户决定)**: runner 后期特殊
-  场景需 PD 分离, 架构须早期可分离。已把 **Paged KV 从 Phase 2 提前为
-  Phase 1 硬需求** (KV 可迁移前提), 并新增阶段边界 API 设计。文档已对账
-  (PHASES.md 第 6 项 / ARCHITECTURE.md "PD-ready 架构" / MODEL.md /
-  本文阻塞项)。待实现: Paged KV (按页 + block table) + 阶段边界 API。
-  完整多设备 PD 部署归 Phase 2。
+- ✅ **Paged KV cache (2026-09-05, PD-ready 前提)**: full_attention KV
+  从连续 `[max_len, nkv, 2, hd]` 改为**按页组织 + 页表间接寻址**
+  (`kKvPageSize=16`, `page_table[p] = p/16` 恒等映射下与旧布局逐位
+  一致)。`WriteKVKernel`/`SparseAttentionKernel` 加页表参数, `DecoderLayer`
+  持有 `page_table`, `ResetState`/`Free`/`LoadDecoderLayer` 同步更新。
+  52 项测试全绿 (decoder_layer A-vs-B l2_rel 0.0) + 长序列生成验证
+  (prompt 1612 + decode 523, 越过 2048 稀疏激活点, 输出全程连贯)。
+  期间发现并修复 2 个**预先存在**的越界 bug (见"已解决")。
+- ⏳ **PD-ready 阶段边界 API**: 引擎暴露"完成 prefill、交出 KV/SSM
+  状态"为独立操作 (供 runner 驱动 prefill 与 decode 为两次调用)。
+  Paged KV 已落地, 这是 PD-ready 架构的下一个实质项。
 - Phase 1 实现:**PLE 流式层 (核心特性) 已全部完成** ✅ (ngram 哈希 /
   io_uring 读取器 / FP8→BF16 转换 / 端到端 gather, 均通过真实 checkpoint
   参数 + 真实 51.2 GB sidecar 验证)。
@@ -405,15 +410,11 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 ## 阻塞 / 风险
 
-- **Paged KV cache 未实现 (Phase 1 硬需求, 新缺口)**: full_attention
-  当前用连续 KV `[max_len, nkv, 2, hd]` (`full_attention.cu`), 文档
-  (PHASES/ARCHITECTURE/MODEL) 原写 "Paged KV"。因 **PD-ready 架构**
-  (用户决定, 2026-09-05) 把 Paged KV 从 Phase 2 提前为 Phase 1 硬需求 —
-  它是 KV 可按页迁移/共享的前提。待实现: 按页组织 + block table,
-  替代连续 KV。详见 ARCHITECTURE.md "PD-ready 架构" 小节。
-- **PD-ready 架构 (设计目标, Phase 1)**: runner 后期特殊场景需 PD
-  分离, 架构须早期可分离。Phase 1 落地可分离性 (prefill/decode 可分离
-  路径 + 阶段边界 API + Paged KV), 完整多设备 PD 部署归 Phase 2。
+- **PD-ready 架构 (设计目标, Phase 1, 部分完成)**: runner 后期特殊
+  场景需 PD 分离, 架构须早期可分离。Phase 1 落地可分离性:
+  ✅ Paged KV cache (已实现, 见"已完成"); ✅ prefill/decode 可分离
+  代码路径 (现状已满足); ⏳ 阶段边界 API (引擎暴露"完成 prefill、
+  交出 KV/SSM 状态"为独立操作, 待实现)。完整多设备 PD 部署归 Phase 2。
   设计见 ARCHITECTURE.md, 范围见 PHASES.md 第 6 项。
 - **PLE sidecar SHA-256 未验证** (ssd-stream.json 记录了期望值
   `b070f964...`, 51.2 GB 校验耗时较长, 安排在首次加载前完成)。
@@ -422,6 +423,24 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 - **MoE 贪心非确定性** (见"进行中"长序列条目): `ScatterAddKernel` 的 FP32
   `atomicAdd` 顺序非确定, 运行间 argmax 可能翻转。属 LLM 固有特性 (PyTorch
   同样), 不影响正确性; 如需可复现输出, 可改确定性归约 (代价: 性能)。
+
+## 已解决 (2026-09-05)
+
+- ✅ **MoE `BuildTokenListsKernel` 越界 (预先存在, Paged KV 验证时暴露)**:
+  `token_list` 分配为 `[E, k]` (512×10=5120 int), 但 `token_list[e*k+pos]`
+  的 `pos` 是 expert e 累计收到的 token 数 — 一个 expert 最多可被 **M** 个
+  token 选中 (M>k 时越界)。单元测试 M=2 (<k=10) 从不触发; 之前生成运行中
+  OOB 写落已映射统一内存 (静默损坏), Paged KV 加 `page_table` 分配后布局
+  偏移使 OOB 落入未映射区 → hard fault。compute-sanitizer 定位 (3088
+  errors, 全在此 kernel)。修复: `token_list [E,k]→[E,M]`, 三处索引
+  `e*k+row→e*stride+row` (stride=M)。
+- ✅ **`d_logits` 越界 + 读错行 (main.cpp + chat_server.cpp, 预先存在)**:
+  `d_logits` 只分配 `vocab*2` (1 行), 但 prefill lm_head GEMM 输出
+  `[T, vocab]` (T 行) → 越界写 T-1 行 (nvjet kernel illegal address,
+  compute-sanitizer 定位)。且 prefill 后读 `d_logits[0..vocab)` 是**第 0 行**
+  (prompt 首 token logits), 非最后一行 → 首 token 错误。修复: 分配
+  `T*vocab*2`, prefill 后读第 T-1 行 (decode T=1 写第 0 行, 兼容)。
+  验证: 短 prompt (27+64) 连贯 + 长序列 (1612+523, 越过 2048) 全程连贯。
 
 ## 已解决 (2026-09-04)
 

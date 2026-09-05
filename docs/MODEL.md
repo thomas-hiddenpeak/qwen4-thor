@@ -30,8 +30,9 @@
 ### full_attention (12 层)
 - GQA: 24 Q heads / 2 KV heads, head_dim 256
 - attention_bias=false, dropout 0
-- Paged KV cache (**Phase 1 硬需求**, PD-ready 前提; 当前实现为
-  连续 KV `[max_len, nkv, 2, hd]`, 待改按页组织 + block table)
+- Paged KV cache (**Phase 1 硬需求**, PD-ready 前提)。✅ 已实现
+  (2026-09-05): 按页组织 (`kKvPageSize=16`) + 页表间接寻址
+  (`page_table[p] = p/16` 恒等映射下与旧连续布局逐位一致)。
 
 ### linear_attention (36 层, DeltaNet SSM)
 - linear_num_key_heads=16, linear_num_value_heads=48

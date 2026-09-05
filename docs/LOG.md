@@ -5,6 +5,68 @@
 
 ---
 
+## 2026-09-05 — Paged KV cache 实现 + 2 个预先存在越界 bug 修复
+
+**背景**
+PD-ready 架构 (用户决定) 把 Paged KV 从 Phase 2 提前为 Phase 1 硬需求
+(KV 可按页迁移/共享的前提)。本条实现 Paged KV, 并在验证过程中发现
+修复了 2 个**预先存在**的越界 bug。
+
+**Paged KV 实现**
+- 设计: **页表间接寻址**。逻辑位置 p → 物理槽
+  `page_table[p] * kKvPageSize + (p % kKvPageSize)`, `kKvPageSize=16`
+  (每页 32 KiB, nkv=2 hd=256)。恒等映射 (`page_table[p]=p/16`) 下物理
+  偏移 = 逻辑位置, 与旧连续布局**逐位一致** → 52 测试 + 长序列生成即
+  安全网。
+- 改动: `full_attention.h` 加 `kKvPageSize` + `FullAttentionForward` 签名
+  加 `page_table`; `WriteKVKernel`/`SparseAttentionKernel` 用页表寻址;
+  `DecoderLayer` 加 `page_table` 字段; `LoadDecoderLayer` 分配 paged KV
+  (n_pages*16 位置) + 页表 (恒等映射 H2D); `ResetState` 按整块清零;
+  `Free` 释放页表; 测试同步 (恒等页表)。
+- idx_raw/idx_comp (QSA indexer 辅助状态, 非注意力 KV, 体量 ~1/8) 保持
+  连续 — 聚焦 KV 本身。
+- 验证: 52 项测试全绿 (decoder_layer A-vs-B l2_rel **0.000e+00** 逐位
+  一致); 短 prompt (27+64) 连贯; 长序列 (prompt 1612 + decode 523,
+  越过 2048 稀疏激活点) 全程连贯 (故事结尾 + thinking 文学分析)。
+
+**发现并修复的 2 个预先存在越界 bug**
+验证 Paged KV 时长序列生成崩溃 ("decode step 0 failed: H2D id")。
+诊断: 这是**陈旧错误** (prefill 末尾 logits D2H 不查返回值, 错误延迟到
+decode 第一个 H2D 才暴露)。用 compute-sanitizer 确定性定位, 发现**不是
+Paged KV 的 bug**, 而是 2 个预先存在的越界:
+1. **MoE `BuildTokenListsKernel`** (`moe_gemm.cu`): `token_list [E,k]`
+   (5120 int) 但 `token_list[e*k+pos]` 的 pos 是 expert 累计 token 数,
+   expert 可被 M 个 token 选中 (M>k 越界)。测试 M=2 不触发; 之前 OOB
+   落已映射内存静默损坏, Paged KV 加 page_table 后布局偏移 → hard fault。
+   修复: `[E,k]→[E,M]`, 三处索引 `e*k+row→e*M+row`。
+2. **`d_logits` 越界 + 读错行** (`main.cpp` + `chat_server.cpp`): 只分配
+   `vocab*2` (1 行), prefill lm_head GEMM 输出 `[T,vocab]` (T 行) → 越界
+   写 T-1 行 (nvjet illegal address); 且 prefill 后读第 0 行 (prompt 首
+   token logits) 而非最后一行 → 首 token 错。修复: 分配 `T*vocab*2`,
+   读第 T-1 行 (decode T=1 写第 0 行, 兼容)。
+- 教训: ① 陈旧 CUDA 错误会掩盖真实崩溃点, 用 compute-sanitizer 而非
+  猜报错行; ② prefill 输出 `[T,vocab]` 但 logits buffer 按 1 行分配是
+  长期潜伏 bug (统一内存下 OOB 常落已映射区, 不立即 fault); ③ Paged KV
+  这类"逐位等价"重构的价值: 它改变了内存布局, 把潜伏的 OOB 写暴露成
+  hard fault, 帮助揪出 2 个 bug。
+
+**改动文件**
+- `include/q4t/model/full_attention.h`: kKvPageSize + 签名 + 文档
+- `src/model/full_attention.cu`: WriteKVKernel/SparseAttentionKernel 页表
+  寻址 + FullAttentionForward 签名/launch
+- `include/q4t/model/decoder_layer.h`: page_table 字段 + <vector>
+- `src/model/decoder_layer.cu`: 分配/重置/释放/调用点
+- `tests/model_full_attention_test.cpp`: 恒等页表
+- `src/quant/moe_gemm.cu`: BuildTokenListsKernel 越界修复 (6 处)
+- `src/main.cpp` + `src/server/chat_server.cpp`: d_logits 越界 + 读行修复
+- `docs/STATUS.md`: Paged KV 完成 + 2 个已解决 bug + 阻塞项更新
+
+**下一步**
+PD-ready 阶段边界 API (引擎暴露"完成 prefill、交出 KV/SSM 状态"为独立
+操作) → 多模态图像输入 → MTP → 逐 token 对参考验证。
+
+---
+
 ## 2026-09-05 — 文档对账 + PD-ready 架构纳入 Phase 1
 
 **背景**

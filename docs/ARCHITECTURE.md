@@ -40,7 +40,7 @@ q4t (单一可执行)
 │   ├── IouringReader  io_uring 并发读 (32 MiB 注册页池)
 │   ├── Staging     2×16 MiB 固定暂存
 │   └── ConvertStream  独立 CUDA stream 上 FP8→BF16
-├── 状态层          Paged KV cache (Phase 1 硬需求, PD-ready 前提),
+├── 状态层          Paged KV cache (✅ 已实现, PD-ready 前提),
 │                   SSM state (FP32), 请求状态
 ├── 量化层          NVFP4 W4A4 / FP8 原语, 反量化
 ├── IO 层           safetensors (mmap 零拷贝), JSON, tokenizer
@@ -105,11 +105,12 @@ Phase 1, 而非等到 Phase 2 连续批处理。
 
 **Phase 1 落地的可分离性 (低成本、零风险)**
 1. **prefill/decode 可分离代码路径**: prefill (T 首步) 与 decode (T=1)
-   不融合, 各自可独立调用 (现状已满足, 保持)。
-2. **Paged KV cache**: full_attention 改按页组织 + block table,
-   替代当前连续 KV (实现待做, 见 PHASES.md 第 3/6 项)。
-3. **阶段边界 API**: 引擎暴露"完成 prefill、交出 KV/SSM 状态"为独立
-   操作, 使 runner 能把 prefill 与 decode 驱动为两次独立调用。
+   不融合, 各自可独立调用 (✅ 现状已满足, 保持)。
+2. **Paged KV cache**: ✅ 已实现 (2026-09-05)。full_attention 按页组织
+   (`kKvPageSize=16`) + 页表间接寻址, 替代连续 KV。恒等映射
+   (`page_table[p]=p/16`) 下与旧布局逐位一致。见 PHASES.md 第 3/6 项。
+3. **阶段边界 API**: ⏳ 待实现。引擎暴露"完成 prefill、交出 KV/SSM
+   状态"为独立操作, 使 runner 能把 prefill 与 decode 驱动为两次独立调用。
 4. **MTP 留在 decode 路径内** (draft 依赖 decode 的逐 token 流)。
 
 **Phase 2 的完整 PD 部署 (依赖并发底座)**

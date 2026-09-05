@@ -20,6 +20,7 @@
 #include <cstdint>
 #include <cstring>
 #include <string>
+#include <vector>
 
 #include "q4t/status.h"
 
@@ -89,9 +90,11 @@ void DecoderLayer::Free() {
   freep(ssm_state);
   freep(conv_state);
   freep(kv_cache);
+  freep(page_table);
   freep(idx_raw);
   freep(idx_comp);
   ssm_state = conv_state = kv_cache = idx_raw = idx_comp = nullptr;
+  page_table = nullptr;
   // routed (NVFP4) buffers (MoEWeightLayout has no Free; free manually).
   if (routed.gu_packed) cudaFree(routed.gu_packed);
   if (routed.gu_sf) cudaFree(routed.gu_sf);
@@ -106,9 +109,15 @@ void DecoderLayer::Free() {
 
 void DecoderLayer::ResetState(cudaStream_t stream) const {
   if (is_full_attention) {
-    if (kv_cache)
-      cudaMemsetAsync(kv_cache, 0,
-                      static_cast<size_t>(max_len) * 2 * 2 * 256 * 2, stream);
+    // Paged KV: allocation is n_pages * kKvPageSize positions (>= max_len).
+    // Zero the whole allocation (identity mapping makes it bit-identical to
+    // the legacy contiguous zeroing).
+    if (kv_cache) {
+      const int n_pages = (max_len + kKvPageSize - 1) / kKvPageSize;
+      const size_t kv_bytes =
+          static_cast<size_t>(n_pages) * kKvPageSize * 2 * 2 * 256 * 2;
+      cudaMemsetAsync(kv_cache, 0, kv_bytes, stream);
+    }
     if (idx_raw)
       cudaMemsetAsync(idx_raw, 0,
                       static_cast<size_t>(max_len) * 128 * 2, stream);
@@ -161,8 +170,16 @@ Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
       if (cudaMalloc(p, bytes) != cudaSuccess) return Status::Fail("cudaMalloc");
       return Status();
     };
-    if (!(s = alloc(reinterpret_cast<void**>(&out->kv_cache),
-                    static_cast<size_t>(max_len) * nkv * 2 * hd * 2)))
+    // Paged KV: n_pages * kKvPageSize positions (>= max_len).
+    const int n_pages = (max_len + kKvPageSize - 1) / kKvPageSize;
+    const size_t kv_bytes =
+        static_cast<size_t>(n_pages) * kKvPageSize * nkv * 2 * hd * 2;
+    if (!(s = alloc(reinterpret_cast<void**>(&out->kv_cache), kv_bytes)))
+      return s;
+    // Page table: identity mapping (page_table[p] = p / kKvPageSize) makes
+    // the physical layout bit-identical to the legacy contiguous layout.
+    if (!(s = alloc(reinterpret_cast<void**>(&out->page_table),
+                    static_cast<size_t>(max_len) * 4)))
       return s;
     if (!(s = alloc(reinterpret_cast<void**>(&out->idx_raw),
                     static_cast<size_t>(max_len) * idx_hd * 2)))
@@ -170,9 +187,15 @@ Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
     if (!(s = alloc(reinterpret_cast<void**>(&out->idx_comp),
                     static_cast<size_t>(max_len) * idx_hd * 2)))
       return s;
-    cudaMemset(out->kv_cache, 0, static_cast<size_t>(max_len) * nkv * 2 * hd * 2);
+    cudaMemset(out->kv_cache, 0, kv_bytes);
     cudaMemset(out->idx_raw, 0, static_cast<size_t>(max_len) * idx_hd * 2);
     cudaMemset(out->idx_comp, 0, static_cast<size_t>(max_len) * idx_hd * 2);
+    std::vector<int> page_table(max_len);
+    for (int p = 0; p < max_len; ++p) page_table[p] = p / kKvPageSize;
+    if (cudaMemcpy(out->page_table, page_table.data(),
+                   static_cast<size_t>(max_len) * 4,
+                   cudaMemcpyHostToDevice) != cudaSuccess)
+      return Status::Fail("cudaMemcpy page_table failed");
   } else {
     s = LoadLinearAttention(loader, base + ".linear_attn", hs, 16, 48, 128, 128,
                             4, eps, &out->linear, stream);
@@ -322,8 +345,8 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   // 2. attention block.
   if (layer.is_full_attention) {
     s = FullAttentionForward(layer.full, d_mixed, d_block, positions,
-                             layer.kv_cache, layer.idx_raw, layer.idx_comp, T,
-                             d_attn_ws, attn_ws, stream);
+                             layer.kv_cache, layer.page_table, layer.idx_raw,
+                             layer.idx_comp, T, d_attn_ws, attn_ws, stream);
   } else {
     s = LinearAttentionForward(layer.linear, d_mixed, d_block, layer.ssm_state,
                                layer.conv_state, T, d_attn_ws, attn_ws, stream);

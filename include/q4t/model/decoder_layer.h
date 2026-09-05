@@ -27,6 +27,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 #include "q4t/io/weight_loader.h"
 #include "q4t/model/full_attention.h"
@@ -69,7 +70,8 @@ struct DecoderLayer {
   // Per-layer persistent caches (allocated in Load, freed in Free).
   uint16_t* ssm_state = nullptr;  // linear: [nv, kd, vd]
   uint16_t* conv_state = nullptr;  // linear: [in_qkv, conv_k-1]
-  uint16_t* kv_cache = nullptr;  // full: [max_len, nkv, 2, hd]
+  uint16_t* kv_cache = nullptr;  // full: paged [n_pages, kKvPageSize, nkv, 2, hd]
+  int* page_table = nullptr;  // full: [max_len] logical pos -> physical page
   uint16_t* idx_raw = nullptr;  // full: [max_len, idx_hd]
   uint16_t* idx_comp = nullptr;  // full: [max_len, idx_hd]
 

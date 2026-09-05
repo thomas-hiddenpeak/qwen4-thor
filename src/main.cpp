@@ -152,9 +152,12 @@ int RunGenerate(int argc, char** argv) {
 
   // 4. Prefill.
   const int vocab = cfg.vocab;
+  const int T_prompt = static_cast<int>(ids.size());
+  // d_logits must hold T_prompt rows (prefill lm_head GEMM outputs [T, vocab]).
+  // Decode steps write 1 row (T=1) to row 0, which fits within this allocation.
   uint16_t* d_logits = nullptr;
   if (cudaMalloc(reinterpret_cast<void**>(&d_logits),
-                 static_cast<size_t>(vocab) * 2) != cudaSuccess) {
+                 static_cast<size_t>(T_prompt) * vocab * 2) != cudaSuccess) {
     std::fprintf(stderr, "cudaMalloc logits failed\n");
     model.Free();
     return 1;
@@ -189,9 +192,9 @@ int RunGenerate(int argc, char** argv) {
   std::vector<int32_t> generated;
   int position = static_cast<int>(ids.size());
   int next_token = -1;
-  // First decode token comes from the prefill's last position.
-  cudaMemcpy(h_logits.data(), d_logits, static_cast<size_t>(vocab) * 2,
-             cudaMemcpyDeviceToHost);
+  // First decode token comes from the prefill's LAST position (row T-1).
+  cudaMemcpy(h_logits.data(), d_logits + static_cast<size_t>(T_prompt - 1) * vocab,
+             static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost);
   next_token = argmax(h_logits.data());
 
   for (int step = 0; step < max_tokens; ++step) {

@@ -156,15 +156,21 @@ __global__ void PartialRopeKernel(u16* __restrict__ x, int n_heads, int hd,
 }
 
 // ---------------------------------------------------------------------------
-// Kernel 4: write k, v into the KV cache (interleaved per position).
+// Kernel 4: write k, v into the paged KV cache (interleaved per position).
 //
 //   k : [T, nkv, hd], v : [T, nkv, hd]
-//   kv_cache: [max_len, nkv, 2, hd]  (kv[pos, kv, 0, :] = K, [pos,kv,1,:]=V)
+//   kv_cache: [n_pages, kKvPageSize, nkv, 2, hd]
+//   page_table: [max_len] — page_table[pos] = physical page for logical pos
 //   positions: [T]
+// Logical position p lands in physical slot
+//   page_table[p] * kKvPageSize + (p % kKvPageSize).
+// With the identity page table (page_table[p] = p / kKvPageSize) this is
+// bit-identical to the legacy contiguous layout.
 __global__ void WriteKVKernel(const u16* __restrict__ k,
                               const u16* __restrict__ v,
                               u16* __restrict__ kv_cache, int nkv, int hd,
-                              const int* __restrict__ positions, int T) {
+                              const int* __restrict__ positions,
+                              const int* __restrict__ page_table, int T) {
   int idx = blockIdx.x * blockDim.x + threadIdx.x;
   int total = T * nkv * hd;
   if (idx >= total) return;
@@ -173,8 +179,9 @@ __global__ void WriteKVKernel(const u16* __restrict__ k,
   int t = idx / (hd * nkv);
   int pos = positions[t];
   size_t src = (static_cast<size_t>(t) * nkv + h) * hd + d;
+  int slot = page_table[pos] * kKvPageSize + (pos % kKvPageSize);
   size_t dst =
-      (static_cast<size_t>(pos) * nkv + h) * (2 * hd);
+      (static_cast<size_t>(slot) * nkv + h) * (2 * hd);
   kv_cache[dst + d] = k[src];
   kv_cache[dst + hd + d] = v[src];
 }
@@ -463,15 +470,18 @@ __global__ void TopkSelectKernel(f32* __restrict__ logits, int* __restrict__ top
 // Kernel 9: sparse GQA attention over the selected token positions.
 //
 //   q : [T, nq, hd] (RoPE'd), gate applied later
-//   kv_cache: [max_len, nkv, 2, hd] (K at [pos,kv,0,:], V at [pos,kv,1,:])
+//   kv_cache: [n_pages, kKvPageSize, nkv, 2, hd] (paged)
+//   page_table: [max_len] — page_table[pos] = physical page for logical pos
 //   topk : [T, max_topk] int32
 //   out  : [T, nq, hd] (BF16, pre-gate)
 //
 // block = one (t, qh), 256 threads (hd). The query row is staged in shared
 // memory; selected K/V positions are processed in chunks of 16, staged in
-// shared memory, with online (running max/sum) softmax.
+// shared memory, with online (running max/sum) softmax. Each selected logical
+// position p is read from physical slot page_table[p]*kKvPageSize + p%kKvPageSize.
 __global__ void SparseAttentionKernel(const u16* __restrict__ q,
                                       const u16* __restrict__ kv_cache,
+                                      const int* __restrict__ page_table,
                                       const int* __restrict__ topk,
                                       u16* __restrict__ out, int nq, int nkv,
                                       int hd, int max_topk) {
@@ -499,7 +509,8 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
     for (int c = 0; c < chunk; ++c) {
       int p = sel[nsel + c];
       if (p >= 0 && d < hd) {
-        size_t base = (static_cast<size_t>(p) * nkv + kvh) * (2 * hd);
+        int slot = page_table[p] * kKvPageSize + (p % kKvPageSize);
+        size_t base = (static_cast<size_t>(slot) * nkv + kvh) * (2 * hd);
         sK[c * 256 + d] = Bf16ToFloat(kv_cache[base + d]);
         sV[c * 256 + d] = Bf16ToFloat(kv_cache[base + hd + d]);
       }
@@ -679,9 +690,10 @@ size_t FullAttentionWorkspaceBytes(const FullAttentionWeights& w, int T) {
 
 Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                             uint16_t* out, const int* positions,
-                            uint16_t* kv_cache, uint16_t* idx_raw,
-                            uint16_t* idx_comp, int T, void* workspace,
-                            size_t workspace_bytes, cudaStream_t stream) {
+                            uint16_t* kv_cache, const int* page_table,
+                            uint16_t* idx_raw, uint16_t* idx_comp, int T,
+                            void* workspace, size_t workspace_bytes,
+                            cudaStream_t stream) {
   if (T <= 0 || T > kMaxT)
     return Status::Fail("FullAttentionForward: T out of range [1, " +
                         std::to_string(kMaxT) + "]");
@@ -755,9 +767,9 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
       d_q, nq, hd, w.rot_d, d_positions, w.rope_theta, T);
   PartialRopeKernel<2><<<(T * nkv * half + 255) / 256, 256, 0, stream>>>(
       d_k, nkv, hd, w.rot_d, d_positions, w.rope_theta, T);
-  // 5. write k, v into the KV cache
+  // 5. write k, v into the paged KV cache
   WriteKVKernel<<<(T * nkv * hd + 255) / 256, 256, 0, stream>>>(
-      d_k, d_v, kv_cache, nkv, hd, d_positions, T);
+      d_k, d_v, kv_cache, nkv, hd, d_positions, page_table, T);
   // 6. indexer projections: iq = x @ W_iq^T [T,512], ik = x @ W_ik^T [T,128]
   const int iq_dim = n_iq * idx_hd;
   const int ik_dim = n_ik * idx_hd;
@@ -794,9 +806,9 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                                           w.idx_compress, w.idx_block_topk(),
                                           max_blocks, max_topk);
   // 11. sparse GQA attention over the selected positions
-  SparseAttentionKernel<<<T * nq, 256, 0, stream>>>(d_q, kv_cache, d_topk,
-                                                    d_attn, nq, nkv, hd,
-                                                    max_topk);
+  SparseAttentionKernel<<<T * nq, 256, 0, stream>>>(d_q, kv_cache, page_table,
+                                                    d_topk, d_attn, nq, nkv,
+                                                    hd, max_topk);
   // 12. attn *= sigmoid(gate)
   GateMulKernel<<<(T * nq * hd + 255) / 256, 256, 0, stream>>>(
       d_attn, d_gate, T * nq * hd);

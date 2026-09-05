@@ -78,6 +78,16 @@ struct FullAttentionWeights {
   void Free();
 };
 
+// Paged KV cache: the full-attention KV is organized into pages of
+// kKvPageSize positions. A device page table (page_table[p] = physical page
+// index for logical position p) makes the KV a migratable sequence of pages —
+// the PD-ready prerequisite (see ARCHITECTURE.md "PD-ready 架构"). With the
+// identity mapping (page_table[p] = p / kKvPageSize) the physical layout is
+// bit-identical to the legacy contiguous layout, so attention output is
+// unchanged. kKvPageSize=16 -> one page = 16 * nkv * 2 * hd * 2 bytes
+// (32 KiB for nkv=2, hd=256).
+constexpr int kKvPageSize = 16;
+
 // Load one full_attention block's weights from `loader` under
 //   {prefix}.q_proj.weight / k_proj.weight / v_proj.weight / o_proj.weight
 //   {prefix}.q_norm.weight / k_norm.weight
@@ -97,21 +107,29 @@ Status LoadFullAttention(const io::WeightLoader& loader, const std::string& pref
 //   out      : device row-major [T, hs] uint16 (out)
 //   positions: host int [T] absolute token positions (single sequence, so
 //              positions[i] = seq_start + i)
-//   kv_cache : device [max_len, nkv, hd] uint16 (K and V interleaved per
-//              position: kv[pos*2*hd + 0*hd] = K, +hd = V), persistent
+//   kv_cache : device paged KV, [n_pages, kKvPageSize, nkv, 2, hd] uint16
+//              (K and V interleaved per position within a page). Logical
+//              position p maps to physical slot
+//              page_table[p] * kKvPageSize + (p % kKvPageSize). n_pages is
+//              sized for max_len (>= ceil(max_len / kKvPageSize) * kKvPageSize
+//              positions). Persistent.
+//   page_table: device int32 [max_len] — page_table[p] = physical page index
+//              for logical position p. Identity mapping (p / kKvPageSize)
+//              reproduces the legacy contiguous layout bit-for-bit.
 //   idx_raw  : device [max_len, idx_head_dim] uint16 — raw (pre-RoPE) index
-//              keys, persistent
+//              keys, persistent (contiguous by position, not paged)
 //   idx_comp : device [max_len, idx_head_dim] uint16 — compressed keys (one
-//              per group of idx_compress tokens), persistent
+//              per group of idx_compress tokens), persistent (contiguous)
 //   T        : number of tokens in this chunk (== sequence length for a
 //              single prefill)
 //   workspace: scratch device buffer (>= FullAttentionWorkspaceBytes(T)) for
 //              projections + logits + topk + GEMM scratch
 Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                             uint16_t* out, const int* positions,
-                            uint16_t* kv_cache, uint16_t* idx_raw,
-                            uint16_t* idx_comp, int T, void* workspace,
-                            size_t workspace_bytes, cudaStream_t stream);
+                            uint16_t* kv_cache, const int* page_table,
+                            uint16_t* idx_raw, uint16_t* idx_comp, int T,
+                            void* workspace, size_t workspace_bytes,
+                            cudaStream_t stream);
 
 // Exact workspace bytes FullAttentionForward carves for `T` tokens: the
 // projection/logits/topk intermediates (256-byte aligned each, sized from the

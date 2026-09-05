@@ -222,16 +222,22 @@ Q4T_TEST(full_attention_forward) {
   uint16_t* d_x = nullptr;
   uint16_t* d_out = nullptr;
   uint16_t* d_kv = nullptr;
+  int* d_page_table = nullptr;
   uint16_t* d_idx_raw = nullptr;
   uint16_t* d_idx_comp = nullptr;
   void* d_ws = nullptr;
   const size_t ws_bytes = 128u * 1024u * 1024u;
-  const size_t kv_bytes = static_cast<size_t>(kMaxLen) * kNkv * 2 * kHd * 2;
+  const int kPageSize = q4t::model::kKvPageSize;
+  const int n_pages = (kMaxLen + kPageSize - 1) / kPageSize;
+  const size_t kv_bytes =
+      static_cast<size_t>(n_pages) * kPageSize * kNkv * 2 * kHd * 2;
   const size_t idx_bytes = static_cast<size_t>(kMaxLen) * kIdxHd * 2;
   if (cudaMalloc(&d_x, x_bf.size() * sizeof(uint16_t)) != cudaSuccess ||
       cudaMalloc(&d_out, static_cast<size_t>(kT) * kHs * sizeof(uint16_t)) !=
           cudaSuccess ||
       cudaMalloc(&d_kv, kv_bytes) != cudaSuccess ||
+      cudaMalloc(&d_page_table, static_cast<size_t>(kMaxLen) * 4) !=
+          cudaSuccess ||
       cudaMalloc(&d_idx_raw, idx_bytes) != cudaSuccess ||
       cudaMalloc(&d_idx_comp, idx_bytes) != cudaSuccess ||
       cudaMalloc(&d_ws, ws_bytes) != cudaSuccess) {
@@ -242,11 +248,17 @@ Q4T_TEST(full_attention_forward) {
   cudaMemset(d_kv, 0, kv_bytes);
   cudaMemset(d_idx_raw, 0, idx_bytes);
   cudaMemset(d_idx_comp, 0, idx_bytes);
+  // Identity page table: page_table[p] = p / kPageSize (legacy contiguous).
+  std::vector<int> page_table(kMaxLen);
+  for (int p = 0; p < kMaxLen; ++p) page_table[p] = p / kPageSize;
+  cudaMemcpy(d_page_table, page_table.data(),
+             static_cast<size_t>(kMaxLen) * 4, cudaMemcpyHostToDevice);
   cudaMemcpy(d_x, x_bf.data(), x_bf.size() * sizeof(uint16_t),
              cudaMemcpyHostToDevice);
 
-  s = FullAttentionForward(w, d_x, d_out, positions.data(), d_kv, d_idx_raw,
-                           d_idx_comp, kT, d_ws, ws_bytes, nullptr);
+  s = FullAttentionForward(w, d_x, d_out, positions.data(), d_kv,
+                           d_page_table, d_idx_raw, d_idx_comp, kT, d_ws,
+                           ws_bytes, nullptr);
   if (!s.ok()) {
     std::printf("  forward failed: %s\n", s.message().c_str());
     w.Free();
@@ -339,6 +351,7 @@ Q4T_TEST(full_attention_forward) {
   cudaFree(d_x);
   cudaFree(d_out);
   cudaFree(d_kv);
+  cudaFree(d_page_table);
   cudaFree(d_idx_raw);
   cudaFree(d_idx_comp);
   cudaFree(d_ws);

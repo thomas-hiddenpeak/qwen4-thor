@@ -58,7 +58,8 @@ cmake --build build --parallel
 - 已完成: PLE 流式层 (核心特性) / IO 层 (JSON/safetensors/config/权重/
   tokenizer) / 量化层 (NVFP4 W4A4 全套) / 模型层 (48 层完整 forward +
   PLE 注入 + head/tail + generate + 长序列 QSA 稀疏路径) / serve (OpenAI
-  兼容 HTTP API)。52 项测试全绿, 零警告。
-- 下一步: **Paged KV cache** (PD-ready 前提, Phase 1 硬需求, 替代当前
-  连续 KV) → MTP 推测解码 (用户排期) → 多模态图像输入 → 逐 token 对
-  参考验证。完整多设备 PD 部署归 Phase 2。
+  兼容 HTTP API) / **Paged KV cache** (PD-ready 前提, 按页组织 + 页表
+  间接寻址)。52 项测试全绿, 零警告。
+- 下一步: **PD-ready 阶段边界 API** (引擎暴露"完成 prefill、交出
+  KV/SSM 状态"为独立操作) → MTP 推测解码 (用户排期) → 多模态图像输入 →
+  逐 token 对参考验证。完整多设备 PD 部署归 Phase 2。

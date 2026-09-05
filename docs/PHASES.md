@@ -26,8 +26,8 @@
    - 48 层: 36 linear_attention (DeltaNet SSM, FP32 state) +
      12 full_attention (GQA 24Q/2KV, head_dim 256, Paged KV)
      - **Paged KV cache 为 Phase 1 硬需求** (原为 Phase 2 目标, 因 PD-ready
-       架构提前, 见第 6 项)。当前实现为连续 KV `[max_len, nkv, 2, hd]`,
-       需改为按页组织 + block table, 使 KV 可按页迁移/共享。
+       架构提前, 见第 6 项)。✅ 已实现 (2026-09-05): 按页组织
+       (`kKvPageSize=16`) + 页表间接寻址, 使 KV 可按页迁移/共享。
    - MoE: 512 专家 top-10 + shared expert, NVFP4 grouped GEMM
    - PLE 嵌入 (layer 2, 每 token 16 次查找)
    - MRoPE (interleaved, section [11,11,10], partial_rotary 0.25)
@@ -71,10 +71,10 @@
       验证标准以单独讨论结论为准)
 - [ ] MTP 推测解码可用
 - [ ] 多模态 (图像输入) 可用
-- [ ] Paged KV cache 落地 (full_attention 按页组织 + block table,
-      替代当前连续 KV)
-- [ ] PD-ready 架构: prefill/decode 可分离路径 + 阶段边界 API
-      (完整多设备 PD 部署归 Phase 2)
+- [x] Paged KV cache 落地 (full_attention 按页组织 + 页表间接寻址,
+      替代连续 KV; 2026-09-05 完成, 见 LOG.md)
+- [ ] PD-ready 架构: prefill/decode 可分离路径 (✅ 现状已满足) +
+      阶段边界 API (⏳ 待实现; 完整多设备 PD 部署归 Phase 2)
 
 ### 明确不做 (Phase 1 范围外)
 

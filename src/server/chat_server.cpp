@@ -336,9 +336,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
 
   const int vocab = model_.cfg.vocab;
   const int eos = static_cast<int>(model_.cfg.eos_token_id);
+  // d_logits must hold T rows (prefill lm_head GEMM outputs [T, vocab]).
+  // Decode steps write 1 row (T=1) to row 0, which fits within this allocation.
   uint16_t* d_logits = nullptr;
   if (cudaMalloc(reinterpret_cast<void**>(&d_logits),
-                 static_cast<size_t>(vocab) * 2) != cudaSuccess) {
+                 static_cast<size_t>(T) * vocab * 2) != cudaSuccess) {
     SendError(fd, 500, "cudaMalloc logits failed");
     return;
   }
@@ -386,8 +388,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   int next_token = -1;
   std::string finish_reason = "stop";
 
-  cudaMemcpy(h_logits.data(), d_logits, static_cast<size_t>(vocab) * 2,
-             cudaMemcpyDeviceToHost);
+  // First decode token comes from the prefill's LAST position (row T-1).
+  cudaMemcpy(h_logits.data(), d_logits + static_cast<size_t>(T - 1) * vocab,
+             static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost);
   next_token = argmax(h_logits.data());
 
   for (int step = 0; step < max_tokens; ++step) {

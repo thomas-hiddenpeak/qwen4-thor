@@ -43,7 +43,8 @@ __device__ __forceinline__ size_t SfOffsetDev(int row, int group,
 
 // Build per-expert token lists + counts. One thread per (token, slot).
 //   expert_ids [M, k] int32, router_w [M, k] float (unused here).
-//   token_list [E, k] int32 (token index per expert, padded to k),
+//   token_list [E, M] int32 (stride = M: an expert can be selected by up to
+//     M tokens, so the per-expert capacity must be M, not k).
 //   expert_counts [E] int32.
 __global__ void BuildTokenListsKernel(const int32_t* __restrict__ expert_ids,
                                       int M, int k, int E,
@@ -55,7 +56,8 @@ __global__ void BuildTokenListsKernel(const int32_t* __restrict__ expert_ids,
   const int pos = atomicAdd(&expert_counts[e], 1);
   // Store the flat (token, slot) index so the scatter can recover both the
   // token (idx / k) and the router-weight slot (idx % k).
-  token_list[e * k + pos] = idx;
+  // stride = M: worst case all M tokens select the same expert.
+  token_list[e * M + pos] = idx;
 }
 
 // Gather + quantize one expert's tokens: one thread per (row, group of 16).
@@ -68,7 +70,7 @@ __global__ void BuildTokenListsKernel(const int32_t* __restrict__ expert_ids,
 //   a_sf swizzled e4m3 (out).
 __global__ void GatherQuantKernel(
     const uint16_t* __restrict__ x, const int32_t* __restrict__ token_list,
-    int M_e, int e, int k, int hs, int num_g_tiles,
+    int M_e, int e, int k, int stride, int hs, int num_g_tiles,
     const float* __restrict__ input_scale, uint16_t* __restrict__ compact,
     uint8_t* __restrict__ a_packed, uint8_t* __restrict__ a_sf) {
   const int groups = hs / 16;
@@ -76,7 +78,7 @@ __global__ void GatherQuantKernel(
   if (idx >= M_e * groups) return;
   const int row = idx / groups;
   const int g = idx % groups;
-  const int flat = token_list[e * k + row];  // (token, slot) flat index
+  const int flat = token_list[e * stride + row];  // (token, slot) flat index
   const int t = flat / k;
   const float inv_scale = input_scale[e];
 
@@ -164,12 +166,12 @@ __global__ void SwiGLUKernel(const float* __restrict__ gu_out,
 __global__ void ScatterAddKernel(const float* __restrict__ dn_out,
                                  const int32_t* __restrict__ token_list,
                                  const float* __restrict__ router_w, int k,
-                                 int hs, int M_e, int e, float* y) {
+                                 int stride, int hs, int M_e, int e, float* y) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   if (idx >= M_e * hs) return;
   const int row = idx / hs;
   const int c = idx % hs;
-  const int flat = token_list[e * k + row];  // (token, slot) flat index
+  const int flat = token_list[e * stride + row];  // (token, slot) flat index
   const int t = flat / k;
   const float w = router_w[flat];
   atomicAdd(&y[static_cast<size_t>(t) * hs + c], w * dn_out[idx]);
@@ -234,7 +236,9 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
   int32_t* d_token_list = nullptr;
   if (cudaMalloc(&d_counts, E * sizeof(int32_t)) != cudaSuccess)
     return Status::Fail("cudaMalloc counts");
-  if (cudaMalloc(&d_token_list, static_cast<size_t>(E) * k * sizeof(int32_t)) !=
+  // token_list [E, M]: an expert can be selected by up to M tokens (all M
+  // tokens' top-k include it), so per-expert capacity must be M, not k.
+  if (cudaMalloc(&d_token_list, static_cast<size_t>(E) * M * sizeof(int32_t)) !=
       cudaSuccess) {
     cudaFree(d_counts);
     return Status::Fail("cudaMalloc token_list");
@@ -289,7 +293,7 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
       const int total = M_e * (hs / 16);
       const int blocks = (total + kBlock - 1) / kBlock;
       GatherQuantKernel<<<blocks, kBlock, 0, stream>>>(
-          reinterpret_cast<const uint16_t*>(x), d_token_list, M_e, e, k, hs,
+          reinterpret_cast<const uint16_t*>(x), d_token_list, M_e, e, k, M, hs,
           num_g_tiles, weights.gu_input_scale,
           reinterpret_cast<uint16_t*>(ws.compact),
           reinterpret_cast<uint8_t*>(ws.a_packed),
@@ -351,7 +355,7 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
       const int total = M_e * hs;
       const int blocks = (total + kBlock - 1) / kBlock;
       ScatterAddKernel<<<blocks, kBlock, 0, stream>>>(
-          ws.dn_out, d_token_list, router_w, k, hs, M_e, e, y);
+          ws.dn_out, d_token_list, router_w, k, M, hs, M_e, e, y);
     }
   }
 
