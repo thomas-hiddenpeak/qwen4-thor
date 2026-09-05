@@ -166,6 +166,29 @@ inline size_t AlignUp(size_t n, size_t a) { return (n + a - 1) & ~(a - 1); }
 
 }  // namespace
 
+size_t PleLayerWorkspaceBytes(int T, int hc, int hs) {
+  const int hc_dim = hc * hs;
+  const size_t hc_bytes = static_cast<size_t>(T) * hc_dim * sizeof(uint16_t);
+  const size_t hs_bytes = static_cast<size_t>(T) * hs * sizeof(uint16_t);
+  const size_t gate_bytes = static_cast<size_t>(T) * hc * sizeof(uint16_t);
+  // Mirror the carve in PleLayerForward exactly (each offset AlignUp(256)).
+  size_t off = 0;
+  auto carve = [&](size_t bytes) {
+    off = AlignUp(off, 256);
+    off += bytes;
+  };
+  carve(hc_bytes);  // key
+  carve(hs_bytes);  // value
+  carve(hc_bytes);  // key_n
+  carve(hc_bytes);  // query_n
+  carve(gate_bytes);  // gate
+  carve(hc_bytes);  // gated
+  carve(hc_bytes);  // gated_n
+  carve(hc_bytes);  // conv
+  carve(kGemmScratch);  // gemm scratch
+  return off;
+}
+
 void PleLayerWeights::Free() {
   if (key_proj) cudaFree(key_proj);
   if (value_proj) cudaFree(value_proj);

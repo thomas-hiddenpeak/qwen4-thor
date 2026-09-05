@@ -2,7 +2,7 @@
 // one layer's forward:
 //
 //   hyper_input [T, hc*hs]
-//     1. [PLE, layer 2 only]  hyper_input += ple(ple_query)   (not yet wired)
+//     1. [PLE, layer 1 only]  hyper_input += ple(ple_embeddings, hyper_input)
 //     2. mixed_attn, res_a = attn_hc.mix(hyper_input)         [T, hs]
 //     3. attn_out = attn_block(mixed_attn)                    linear or full
 //     4. combined_a = attn_hc.combine(attn_out, res_a)        [T, hc*hs]
@@ -11,14 +11,16 @@
 //     7. out = mlp_hc.combine(mlp_out, res_m)                 [T, hc*hs]
 //
 // The layer owns all sub-block weights (attn + MoE + the two Hyper-Connection
-// GatedResiduals) and the per-layer persistent caches (linear SSM/conv state,
-// full-attention KV + indexer caches). It allocates one device `workspace`
-// (see DecoderLayerWorkspaceBytes) and carves it into per-submodule regions.
+// GatedResiduals + optional PLE) and the per-layer persistent caches (linear
+// SSM/conv state, full-attention KV + indexer caches). It allocates one device
+// `workspace` (see DecoderLayerWorkspaceBytes) and carves it into per-submodule
+// regions.
 //
-// PLE injection (step 1) is NOT yet wired: the PLE layer's short-conv +
-// key/value projection + gated reduce is a separate module (see the SGLang
-// reference Qwen4ExpPLELayer.forward). Until then, run layers with
-// `has_ple == false`.
+// PLE injection (step 1) is wired for layer 1 (checkpoint `ple_layer_ids = [2]`
+// is 1-indexed). The caller passes the gathered n-gram embeddings
+// (`ple_embeddings`, [T, ple_embed_dim] BF16) to DecoderLayerForward; when
+// non-null and `layer.has_ple`, the PLE correction is added to hyper_input
+// before the attention HC mix.
 #pragma once
 
 #include <cuda_runtime.h>
@@ -31,6 +33,7 @@
 #include "q4t/model/hyperconnection.h"
 #include "q4t/model/linear_attention.h"
 #include "q4t/model/moe.h"
+#include "q4t/model/ple_layer.h"
 #include "q4t/quant/moe_weights.h"
 #include "q4t/status.h"
 
@@ -46,11 +49,14 @@ struct DecoderLayer {
   int hc_dim = 10240;
   int topk = 10;  // num_experts_per_tok (MoE router top-k)
   bool is_full_attention = false;  // layer_id % 4 == 3
-  bool has_ple = false;  // layer_id + 1 in ple_layer_ids (not yet wired)
+  bool has_ple = false;  // layer_id + 1 in ple_layer_ids (0-indexed layer 1)
 
   // Attention block (one of the two, the other's weights stay null).
   LinearAttentionWeights linear;
   FullAttentionWeights full;
+
+  // PLE layer (only loaded for the PLE layer; weights stay null otherwise).
+  PleLayerWeights ple;
 
   // MoE (every layer).
   quant::MoEWeightLayout routed;
@@ -74,9 +80,11 @@ struct DecoderLayer {
 };
 
 // Device bytes required for the DecoderLayerForward `workspace` argument for a
-// layer of type `is_full_attention` handling up to `T` tokens.
-size_t DecoderLayerWorkspaceBytes(int T, bool is_full_attention, int hs, int E,
-                                  int moe_is, int shared_is, int k);
+// layer of type `is_full_attention` handling up to `T` tokens. `has_ple` adds
+// the PLE layer's GEMM scratch + carved intermediates.
+size_t DecoderLayerWorkspaceBytes(int T, bool is_full_attention, bool has_ple,
+                                  int hs, int E, int moe_is, int shared_is,
+                                  int k);
 
 // Load one decoder layer's weights from `loader`.
 //
@@ -99,15 +107,17 @@ Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
 
 // Run one decoder layer forward for a single sequence (prefill).
 //
-//   hyper_input : device [T, hc*hs] uint16 (BF16) — the trunk residual
-//   out         : device [T, hc*hs] uint16 (BF16) — updated trunk residual
-//   positions   : host int [T] absolute positions (full attention only)
-//   T           : number of tokens
-//   workspace   : device scratch (>= DecoderLayerWorkspaceBytes)
+//   hyper_input    : device [T, hc*hs] uint16 (BF16) — the trunk residual
+//   ple_embeddings : device [T, ple_embed_dim] uint16 (BF16) gathered n-gram
+//                    embeddings; must be non-null when layer.has_ple
+//   out            : device [T, hc*hs] uint16 (BF16) — updated trunk residual
+//   positions      : host int [T] absolute positions (full attention only)
+//   T              : number of tokens
+//   workspace      : device scratch (>= DecoderLayerWorkspaceBytes)
 Status DecoderLayerForward(const DecoderLayer& layer, const uint16_t* hyper_input,
-                           uint16_t* out, const int* positions, int T,
-                           void* workspace, size_t workspace_bytes,
-                           cudaStream_t stream);
+                           const uint16_t* ple_embeddings, uint16_t* out,
+                           const int* positions, int T, void* workspace,
+                           size_t workspace_bytes, cudaStream_t stream);
 
 }  // namespace model
 }  // namespace q4t

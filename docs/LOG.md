@@ -5,6 +5,45 @@
 
 ---
 
+## 2026-09-05 — 模型层 (6/N): PLE 注入 decoder layer
+
+**做了什么**
+- 把 `PleLayerForward` 接线进 `DecoderLayerForward` (layer 1, 0-indexed,
+  checkpoint `ple_layer_ids=[2]` 是 1-indexed):
+  - `DecoderLayerForward` 新增 `ple_embeddings` 参数 (device [T, ple_embed_dim]
+    BF16, 即 PLE SSD stream 的 ngram gather 结果)。`has_ple` 层在
+    `attn_hc.mix` 之前先算 `trunk = hyper_input + ple(ple_embeddings,
+    hyper_input)`, 后续 attn_hc.mix / attn_hc.combine 都用校正后的 `trunk`
+    (非原始 hyper_input)。非 PLE 层 `trunk` 直接别名 hyper_input, 零开销。
+  - `DecoderLayer` 加 `ple` 成员 (PleLayerWeights); `LoadDecoderLayer` 对
+    layer 1 自动 `LoadPleLayer`; `Free` 释放。
+  - workspace carve 加 PLE 区。新增 `PleLayerWorkspaceBytes(T, hc, hs)`
+    (与 `PleLayerForward` 内部 carve 完全一致, 每个 offset 256 字节对齐),
+    `DecoderLayerWorkspaceBytes` 加 `has_ple` 参数。
+- 测试 `model_decoder_layer_test.cpp` 新增 `decoder_layer_ple_injection`:
+  真实 layer-1 (linear + PLE), 两条独立路径从相同零状态出发 —
+  (A) 生产 `DecoderLayerForward` (带 ple_embeddings), (B) 手动
+  `PleLayerForward` + 元素加法 + 分步子模块 — 输出**逐位一致**
+  (A-vs-B L2 rel 0.0)。47 项测试全绿, 零警告。
+
+**踩坑 (两个, 已修)**
+- **PLE workspace 算小了**: 初版 `PleWs` 用裸字节和, 但 `PleLayerForward`
+  内部 carve 每个 region 边界 `AlignUp(256)`, 实际需要更多 → Route A 报
+  "PLE workspace too small"。修复: 加 `PleLayerWorkspaceBytes`, 用与 carve
+  完全相同的逻辑 (逐 region AlignUp) 计算, decoder layer 与测试都用它。
+- **`PleAddTrunkKernel` 的 `-Wrestrict`**: 原地加法 `o == b` 触发
+  "passing argument to restrict-qualified parameter aliases"。修复: 去掉
+  该 kernel 三个指针的 `__restrict__` (逐元素读后写, 安全; 非热点)。
+
+**下一步**
+- `hyper_connection_mixer` (use_combine=False) 收尾 mix → lm_head。
+- MTP 1 层 (mtp_hc: hc_count+1) + 48 层循环 + embedding/norm → 完整模型
+  forward (PLE 的 ple_embeddings 由 PleEmbedding::Gather 提供, 待层循环
+  对接 SSD stream)。
+- 之后: 长序列 QSA 稀疏路径验证 + 拆 `BuildCompressedKKernel` 竞态。
+
+---
+
 ## 2026-09-05 — 模型层 (5/N): PLE 层 forward
 
 **做了什么**

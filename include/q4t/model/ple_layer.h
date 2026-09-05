@@ -61,6 +61,10 @@ struct PleLayerWeights {
   void Free();
 };
 
+// Device bytes required for the PleLayerForward `workspace` argument for `T`
+// tokens. Mirrors the internal carve (256-byte-aligned region offsets).
+size_t PleLayerWorkspaceBytes(int T, int hc, int hs);
+
 // Load one PLE layer's weights from `loader` under the checkpoint names
 //   {prefix}.key_proj.weight
 //   {prefix}.value_proj.weight

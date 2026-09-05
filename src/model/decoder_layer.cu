@@ -14,9 +14,11 @@
 // cuBLASLt scratch / carved intermediates never alias another's).
 #include "q4t/model/decoder_layer.h"
 
+#include <cuda_bf16.h>
 #include <cuda_runtime.h>
 
 #include <cstdint>
+#include <cstring>
 #include <string>
 
 #include "q4t/status.h"
@@ -29,6 +31,23 @@ constexpr size_t kGemmWs = 32u * 1024u * 1024u;  // cuBLASLt scratch per GEMM
 
 // Align a byte count up to 256 (cuBLASLt wants aligned scratch pointers).
 inline size_t AlignUp(size_t x) { return (x + 255u) & ~size_t(255u); }
+
+// Elementwise BF16 add: o[i] = a[i] + b[i]. Used to form the PLE-corrected
+// trunk (hyper_input + ple_out). No __restrict__ on the pointers because the
+// caller passes o == b (in-place add); each element is read before written, so
+// this is safe. (Trivial kernel, not a hot path.)
+__global__ void PleAddTrunkKernel(const uint16_t* a, const uint16_t* b,
+                                  uint16_t* o, int total) {
+  const int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i >= total) return;
+  uint32_t ba = static_cast<uint32_t>(a[i]) << 16;
+  uint32_t bb = static_cast<uint32_t>(b[i]) << 16;
+  float fa, fb;
+  std::memcpy(&fa, &ba, sizeof(fa));
+  std::memcpy(&fb, &bb, sizeof(fb));
+  const __nv_bfloat16 r = __float2bfloat16_rn(fa + fb);
+  o[i] = *reinterpret_cast<const uint16_t*>(&r);
+}
 
 // Attention-block workspace size for `T` tokens. Full attention carves its
 // intermediates from the workspace (scales with T) plus a GEMM scratch; linear
@@ -46,12 +65,15 @@ size_t AttnWs(int T, bool is_full) {
 
 }  // namespace
 
-size_t DecoderLayerWorkspaceBytes(int T, bool is_full_attention, int hs, int E,
-                                  int moe_is, int shared_is, int k) {
+size_t DecoderLayerWorkspaceBytes(int T, bool is_full_attention, bool has_ple,
+                                  int hs, int E, int moe_is, int shared_is,
+                                  int k) {
   const size_t attn = AlignUp(AttnWs(T, is_full_attention));
   const size_t moe_carve = AlignUp(
       MoEForwardWorkspaceBytes(T, k, hs, moe_is, shared_is, E));
-  return attn + moe_carve + kGemmWs + kGemmWs;  // + moe gemm + hc scratch
+  size_t total = attn + moe_carve + kGemmWs + kGemmWs;  // + moe gemm + hc scratch
+  if (has_ple) total += AlignUp(PleLayerWorkspaceBytes(T, 4, hs));
+  return total;
 }
 
 void DecoderLayer::Free() {
@@ -60,6 +82,7 @@ void DecoderLayer::Free() {
   mlp.Free();
   attn_hc.Free();
   mlp_hc.Free();
+  ple.Free();
   auto freep = [](void* p) { if (p) cudaFree(p); };
   freep(ssm_state);
   freep(conv_state);
@@ -90,6 +113,8 @@ Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
   out->is_full_attention = (layer_id % 4 == 3);
   out->topk = k;
   out->max_len = max_len;
+  // ple_layer_ids = [2] is 1-indexed -> 0-indexed layer 1.
+  out->has_ple = (layer_id == 1);
   const std::string base = "model.language_model.layers." +
                            std::to_string(layer_id);
 
@@ -153,21 +178,31 @@ Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
   s = LoadMoEExtra(loader, base + ".mlp", E, hs, shared_is, &out->mlp, stream);
   if (!s.ok()) return s;
 
+  // 4. PLE layer (layer 1 only).
+  if (out->has_ple) {
+    s = LoadPleLayer(loader, base + ".ple", hc, hs, hs, 4, 3, eps, &out->ple,
+                     stream);
+    if (!s.ok()) return s;
+  }
+
   return Status();
 }
 
 Status DecoderLayerForward(const DecoderLayer& layer,
-                           const uint16_t* hyper_input, uint16_t* out,
+                           const uint16_t* hyper_input,
+                           const uint16_t* ple_embeddings, uint16_t* out,
                            const int* positions, int T, void* workspace,
                            size_t workspace_bytes, cudaStream_t stream) {
-  const int hs = layer.hs, hc_dim = layer.hc_dim;
+  const int hs = layer.hs, hc_dim = layer.hc_dim, hc = layer.hc;
   if (T <= 0) return Status();
 
   // Carve the workspace into per-submodule regions.
   const size_t attn_ws = AttnWs(T, layer.is_full_attention);
   const size_t moe_carve = MoEForwardWorkspaceBytes(
       T, layer.topk, hs, layer.routed.moe_is, layer.mlp.shared_is, layer.routed.E);
-  if (attn_ws + moe_carve + kGemmWs + kGemmWs > workspace_bytes) {
+  const size_t ple_ws =
+      layer.has_ple ? PleLayerWorkspaceBytes(T, hc, hs) : 0;
+  if (attn_ws + moe_carve + kGemmWs + kGemmWs + ple_ws > workspace_bytes) {
     return Status::Fail("DecoderLayerForward: workspace too small");
   }
   char* base = static_cast<char*>(workspace);
@@ -178,6 +213,8 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   void* d_moe_gemm = p;
   p += kGemmWs;
   void* d_hc_ws = p;
+  p += kGemmWs;
+  void* d_ple_ws = p;  // only used when layer.has_ple
 
   // Scratch for the [T, hs] / [T, hc*hs] block activations (cudaMalloc'd,
   // freed at the end — mirrors the HC/linear convention).
@@ -217,10 +254,43 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     return s;
   }
 
-  // 1. attn_hc.mix(hyper_input) -> mixed_attn, res_a.
-  s = HyperConnectionMix(layer.attn_hc, hyper_input, d_mixed, d_res_a, T,
+  // The trunk residual the rest of the layer reads. For the PLE layer this is
+  // a scratch copy (hyper_input is const); otherwise it aliases hyper_input.
+  const uint16_t* d_trunk = hyper_input;
+  uint16_t* d_ple_trunk = nullptr;
+  if (layer.has_ple) {
+    if (cudaMalloc(reinterpret_cast<void**>(&d_ple_trunk),
+                   static_cast<size_t>(T) * hc_dim * 2) != cudaSuccess) {
+      free_all();
+      return Status::Fail("cudaMalloc ple trunk");
+    }
+    // 1. PLE: d_ple_trunk = hyper_input + ple(ple_embeddings, hyper_input).
+    s = PleLayerForward(layer.ple, ple_embeddings, hyper_input, d_ple_trunk, T,
+                        d_ple_ws, ple_ws, stream);
+    if (!s.ok()) {
+      cudaFree(d_ple_trunk);
+      free_all();
+      return s;
+    }
+    {
+      const int total = static_cast<int>(static_cast<size_t>(T) * hc_dim);
+      const int block = 256;
+      PleAddTrunkKernel<<<(total + block - 1) / block, block, 0, stream>>>(
+          hyper_input, d_ple_trunk, d_ple_trunk, total);
+      if (cudaGetLastError() != cudaSuccess) {
+        cudaFree(d_ple_trunk);
+        free_all();
+        return Status::Fail("ple add trunk launch");
+      }
+    }
+    d_trunk = d_ple_trunk;
+  }
+
+  // 2. attn_hc.mix(trunk) -> mixed_attn, res_a.
+  s = HyperConnectionMix(layer.attn_hc, d_trunk, d_mixed, d_res_a, T,
                          d_hc_ws, kGemmWs, stream);
   if (!s.ok()) {
+    if (d_ple_trunk) cudaFree(d_ple_trunk);
     free_all();
     return s;
   }
@@ -237,10 +307,11 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     free_all();
     return s;
   }
-  // 3. attn_hc.combine(attn_out, hyper_input, res_a) -> combined_a.
-  s = HyperConnectionCombine(layer.attn_hc, d_block, hyper_input, d_res_a,
+  // 3. attn_hc.combine(attn_out, trunk, res_a) -> combined_a.
+  s = HyperConnectionCombine(layer.attn_hc, d_block, d_trunk, d_res_a,
                              d_combined, T, d_hc_ws, kGemmWs, stream);
   if (!s.ok()) {
+    if (d_ple_trunk) cudaFree(d_ple_trunk);
     free_all();
     return s;
   }
@@ -248,6 +319,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   s = HyperConnectionMix(layer.mlp_hc, d_combined, d_mixed, d_res_m, T,
                          d_hc_ws, kGemmWs, stream);
   if (!s.ok()) {
+    if (d_ple_trunk) cudaFree(d_ple_trunk);
     free_all();
     return s;
   }
@@ -255,12 +327,14 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   s = MoEForward(d_mixed, layer.routed, layer.mlp, d_block, T, layer.topk,
                  d_moe_ws, moe_carve, d_moe_gemm, kGemmWs, stream);
   if (!s.ok()) {
+    if (d_ple_trunk) cudaFree(d_ple_trunk);
     free_all();
     return s;
   }
   // 6. mlp_hc.combine(mlp_out, combined_a, res_m) -> out.
   s = HyperConnectionCombine(layer.mlp_hc, d_block, d_combined, d_res_m, out, T,
                              d_hc_ws, kGemmWs, stream);
+  if (d_ple_trunk) cudaFree(d_ple_trunk);
   free_all();
   return s;
 }

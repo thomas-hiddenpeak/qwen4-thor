@@ -297,13 +297,17 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     (`sigmoid(sqrt(|dot|/√hs)·sign)`) + depthwise causal conv (kernel=4,
     dilation=ngram_size=3, SiLU) + `out = gated_value + conv_out`。真实
     layer-1 权重验证 (out L2 rel 4.1e-3)。
-  - ⏳ PLE 注入进 decoder layer (layer 1, `attn_hc.mix` 之前): 把
-    `PleLayerForward` 输出加到 hyper_input。PLE 层 forward 模块已就绪,
-    待接线 (需 embedding gather 结果作为输入)。
+  - ✅ PLE 注入进 decoder layer (layer 1, `attn_hc.mix` 之前):
+    `DecoderLayerForward` 新增 `ple_embeddings` 参数, `has_ple` 层先
+    `trunk = hyper_input + PleLayerForward(emb, hyper_input)` 再走
+    attn_hc.mix/combine (combine 用校正后 trunk)。`LoadDecoderLayer` 自动
+    加载 layer 1 的 PLE 权重, workspace carve 加 PLE 区 (256 字节对齐,
+    `PleLayerWorkspaceBytes` 与内部 carve 一致)。真实 layer-1 两条独立路径
+    (生产 vs 手动 PLE+编排) 逐位一致 (A-vs-B L2 rel 0.0)。
   - ⏳ `hyper_connection_mixer` (use_combine=False) 收尾 mix → lm_head。
   - ⏳ MTP 1 层 (mtp_hc: hc_count+1) + 48 层循环 + embedding/norm。
   **→ 模型层: HC + MoE + linear + full/QSA + decoder layer + PLE 层 forward
-    完成, 待 PLE 注入 + mixer + MTP + 层循环**
+    + PLE 注入完成, 待 mixer + MTP + 层循环**
 
 ## 阻塞 / 风险
 
