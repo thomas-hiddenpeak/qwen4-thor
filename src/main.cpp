@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "q4t/model/model.h"
+#include "q4t/server/chat_server.h"
 #include "q4t/text/tokenizer.h"
 
 namespace {
@@ -39,8 +40,9 @@ void PrintUsage(const char* prog) {
       "  models    List catalogued model descriptors\n"
       "  generate  Single greedy generation\n"
       "            (q4t generate \"prompt\" [--max-tokens N])\n"
-      "  serve     OpenAI-compatible HTTP API server (not yet "
-      "implemented)\n",
+      "  serve     OpenAI-compatible HTTP API server\n"
+      "            (q4t serve [--port N] [--model-dir DIR] "
+      "[--max-tokens N])\n",
       prog);
 }
 
@@ -224,6 +226,42 @@ int RunGenerate(int argc, char** argv) {
   return 0;
 }
 
+// OpenAI-compatible HTTP API server: load the model once, then serve
+// /healthz, /v1/models, and /v1/chat/completions (stream + non-stream).
+int RunServe(int argc, char** argv) {
+  const char* kDefaultModelDir =
+      "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
+  q4t::server::ServerOptions opts;
+  opts.model_dir = kDefaultModelDir;
+
+  for (int i = 2; i < argc; ++i) {
+    const std::string a = argv[i];
+    if (a == "--port" && i + 1 < argc) {
+      opts.port = std::atoi(argv[++i]);
+    } else if (a == "--model-dir" && i + 1 < argc) {
+      opts.model_dir = argv[++i];
+    } else if (a == "--max-tokens" && i + 1 < argc) {
+      opts.max_tokens = std::atoi(argv[++i]);
+    } else {
+      std::fprintf(stderr, "Unknown option: %s\n", a.c_str());
+      return 2;
+    }
+  }
+
+  q4t::server::ChatServer server;
+  q4t::Status s = server.Start(opts);
+  if (!s.ok()) {
+    std::fprintf(stderr, "serve start failed: %s\n", s.message().c_str());
+    return 1;
+  }
+  s = server.Run();
+  if (!s.ok()) {
+    std::fprintf(stderr, "serve stopped: %s\n", s.message().c_str());
+    return 1;
+  }
+  return 0;
+}
+
 }  // namespace
 
 int main(int argc, char** argv) {
@@ -242,7 +280,10 @@ int main(int argc, char** argv) {
   if (cmd == "generate") {
     return RunGenerate(argc, argv);
   }
-  if (cmd == "models" || cmd == "serve") {
+  if (cmd == "serve") {
+    return RunServe(argc, argv);
+  }
+  if (cmd == "models") {
     std::fprintf(stderr, "'%s' is not implemented yet (see docs/PHASES.md)\n",
                  cmd.c_str());
     return 2;

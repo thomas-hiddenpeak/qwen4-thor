@@ -343,10 +343,31 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
       =NaN, 0x78–0x7E = 256–448 有限值), 之前误把所有 exp=15 当 NaN 导致
       参考全 NaN; 实测 checkpoint scale 字节全部 ≤0x7E, 与 C++ 解码一致。
   - ⏳ MTP 1 层 (fc_embedding/fc_hidden + pre_fc_norm + full_attention +
-    BF16 MoE + mtp_hc)。
+    BF16 MoE + mtp_hc)。**搁置**: 本地无权威参考 (transformers/SGLang 都
+    跳过 `mtp.*` 权重), 且 `pre_fc_norm_hidden`[10240] → `fc_hidden`[2560,2560]
+    的降维方式无依据 (qwen3_next 前身用单个 `fc[hs,2hs]`, qwen4_exp 改成两个
+    独立 FC, 布局不同)。MTP 是推测解码性能特性, 不影响 greedy 正确性, 待
+    拿到权威 forward 参考再实现。
   - ⏳ 长序列 QSA 稀疏路径 (T>2048) + 逐 token 对 SGLang 参考验证。
   **→ 模型层: 全部子模块 + decoder layer + PLE 注入 + head/tail + 完整
-    forward 编排 + 全 48 层端到端验证完成, 待 MTP + 长序列验证**
+    forward 编排 + 全 48 层端到端验证 + decode + generate 完成, 待 MTP +
+    长序列验证**
+- [x] 2026-09-05 `serve` 命令: OpenAI 兼容 HTTP API (独立 `q4t_server`
+  静态库, POSIX socket, 零第三方依赖)。
+  - 端点: `GET /healthz` → "ok"; `GET /v1/models` → 模型列表;
+    `POST /v1/chat/completions` → chat 补全 (stream 与非 stream)。
+  - 请求解析: 复用 `q4t_io` 的 `ParseJson`/`Json` 读 messages/max_tokens/
+    stream; prompt 由 messages 的 role+content 拼接 (兼容裸 `prompt` 字段)。
+  - 生成: 每请求一次 prefill (重置 per-layer 状态) + greedy argmax decode
+    循环 (EOS/length 停止), 与 `generate` 命令同路径。模型有状态, 所有请求
+    经 `std::mutex` 串行 (并发是 Phase 2)。
+  - 流式: SSE `text/event-stream`, 首 chunk 带 role, 后续带 content delta,
+    末 chunk 带 finish_reason, `data: [DONE]` 结束。非流式: 标准
+    `chat.completion` JSON (id/object/created/model/choices/usage)。
+  - **验证 (真实 curl)**: `/healthz` → ok; `/v1/models` → 正确列表; 非流式
+    "The capital of France is" → 通顺英文 + thinking, 格式正确; 流式
+    "Say hello in one word" → "Hello", SSE 格式正确。52 项测试全绿, 零警告。
+  **→ Phase 1 服务层 (serve) 完成, 待 MTP + 长序列验证**
 
 ## 阻塞 / 风险
 

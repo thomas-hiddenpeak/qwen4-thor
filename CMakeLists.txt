@@ -143,12 +143,20 @@ target_link_libraries(q4t_model PUBLIC q4t_io q4t_quant q4t_ple CUDA::cudart
                     CUDA::cublasLt)
 
 # ---------------------------------------------------------------------------
+# q4t_server — OpenAI-compatible HTTP server (POSIX sockets, no deps)
+# ---------------------------------------------------------------------------
+add_library(q4t_server STATIC src/server/chat_server.cpp)
+target_include_directories(q4t_server PUBLIC include)
+target_link_libraries(q4t_server PUBLIC q4t_model q4t_text q4t_io
+                                        CUDA::cudart)
+
+# ---------------------------------------------------------------------------
 # q4t — CLI executable
 # ---------------------------------------------------------------------------
 add_executable(q4t src/main.cpp)
 target_include_directories(q4t PRIVATE include)
 target_link_libraries(q4t PRIVATE q4t_model q4t_text q4t_ple q4t_quant
-                                  CUDA::cudart)
+                                  q4t_server CUDA::cudart)
 
 # ---------------------------------------------------------------------------
 # Tests

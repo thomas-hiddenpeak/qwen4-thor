@@ -5,6 +5,54 @@
 
 ---
 
+## 2026-09-05 — serve 命令: OpenAI 兼容 HTTP API
+
+**做了什么**
+- 新增独立 `q4t_server` 静态库 (`src/server/chat_server.cpp` +
+  `include/q4t/server/chat_server.h`): 基于 POSIX socket 的极简 HTTP/1.1
+  服务器, 零第三方依赖 (C++17 + libc)。
+- 端点:
+  - `GET /healthz` → 200 "ok"
+  - `GET /v1/models` → OpenAI 模型列表
+  - `POST /v1/chat/completions` → chat 补全, 支持 `stream` (SSE) 与非 stream
+- 请求解析复用 `q4t_io` 的 `ParseJson`/`Json` (读 messages / max_tokens /
+  stream); prompt 由 messages 的 `role: content` 拼接 (兼容裸 `prompt` 字段)。
+- 生成路径与 `generate` 命令完全一致: 每请求一次 prefill (重置 per-layer
+  状态) + greedy argmax decode 循环 (EOS 248044 或 max_tokens 停止)。
+- 流式输出: `text/event-stream`, 首 chunk 带 `role`, 后续 chunk 带
+  `content` delta, 末 chunk 带 `finish_reason`, 以 `data: [DONE]` 结束。
+  非流式: 标准 `chat.completion` JSON (id/object/created/model/choices/usage)。
+- `main.cpp` 加 `RunServe` (`q4t serve [--port N] [--model-dir DIR]
+  [--max-tokens N]`), CMake 加 `q4t_server` 库并链进 `q4t`。
+
+**关键设计**
+- **模型有状态 → 请求串行**: per-layer SSM/conv/KV cache 跨 decode 步持久,
+  所有请求经 `std::mutex` 串行, 每请求从 prefill 开始 (重置状态)。正确但
+  不并发; 连续批处理/多请求并发是 Phase 2 范围。
+- **无第三方 HTTP 库**: 手写 request 解析 (request line + headers +
+  Content-Length body) 与响应 (含 SSE 分块), 避免引入依赖。
+
+**验证 (真实 curl, 48 层模型)**
+- `/healthz` → `ok`; `/v1/models` → 正确列表。
+- 非流式 "The capital of France is" (max_tokens 20) → 通顺英文 + thinking
+  模式, OpenAI 格式正确 (finish_reason=length, usage 计数对)。
+- 流式 "Say hello in one word" (max_tokens 8) → "Hello", SSE 格式正确
+  (role chunk → content chunks → finish_reason chunk → [DONE])。
+- 52 项测试全绿, 零警告。
+
+**下一步**
+- MTP 1 层 — **搁置**: 本地无权威参考 (transformers `qwen4_exp`/`qwen3_next`
+  与 SGLang 都跳过 `mtp.*` 权重; SGLang 上游仓库搜不到 qwen4_exp MTP 实现)。
+  张量布局有歧义: `pre_fc_norm_hidden` 是 [10240] (trunk 维度) 但
+  `fc_hidden` 是 [2560,2560] (输入 2560), 中间降维方式无依据 (qwen3_next
+  前身用单个 `fc[hs,2hs]` cat 后投影, qwen4_exp 改成 `fc_embedding`+`fc_hidden`
+  两个独立 FC)。MTP 是推测解码性能特性, 不影响 greedy 正确性 (已验证通顺),
+  待拿到权威 forward 参考再实现。
+- 长序列 QSA 稀疏路径 (T>2048) 验证。
+- 逐 token 对 SGLang 参考验证 (架构建全后)。
+
+---
+
 ## 2026-09-05 — decode 路径 + generate 命令 + 修复乱码根因 (norm gate 激活)
 
 **做了什么**
