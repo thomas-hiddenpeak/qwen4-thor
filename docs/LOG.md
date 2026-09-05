@@ -5,6 +5,40 @@
 
 ---
 
+## 2026-09-05 — 模型层 (7/N): 模型头/尾 (embedding + mixer + lm_head)
+
+**做了什么**
+- 新增 `include/q4t/model/model_head.h` + `src/model/model_head.cu`, 并入
+  `q4t_model`。实现模型 forward 的头/尾 (层循环之外的部分):
+  - `EmbedLookup`: token_ids [T] → emb [T, hs] (行 gather, embed_tokens
+    [vocab, hs])。
+  - `ExpandTrunk`: emb [T, hs] → trunk [T, hc*hs] (embedding 复制成 hc=4 个
+    相同分支, 即 SGLang `cat([emb]*hc)`, 主干残差初值)。
+  - `HeadForward`: trunk [T, hc*hs] → `hyper_connection_mixer.mix` (
+    use_combine=False 的 GatedResidual, 复用 `HyperConnectionMix`) → [T, hs]
+    → lm_head GEMM (`mixed @ lm_head^T`) → logits [T, vocab]。
+  - `LoadModelHead` 从 checkpoint 直载 embed_tokens / lm_head (各
+    [248320, 2560] BF16) + mixer 三个权重 (hc_norm / mix_down[320,10240] /
+    mix_up[10240,320], 无 block_inject)。
+- 测试 `model_head_test.cpp`:
+  - `model_head_load`: 真实 checkpoint 加载成功 (验证张量名 + shape)。
+  - `model_head_forward`: 合成小权重 (vocab 64 / hs 32 / hc 4 / lowrank 8),
+    EmbedLookup / ExpandTrunk / HeadForward 与完整 CPU 参考 (gather + 复制 +
+    GroupedGemmaRMSNorm + 低秩门控 mix + lm_head GEMM) 对比, logits L2 rel
+    3.2e-3。用合成权重避免把 1.27 GB 的 embed/lm_head 读到主机 (GEMM/mix
+    数值已由 HC/MoE 测试覆盖)。49 项测试全绿, 零警告。
+
+**下一步**
+- MTP 1 层 (mtp_hc: hc_count+1, full_attention) + `mtp.fc_embedding` /
+  `mtp.fc_hidden` / `mtp.pre_fc_norm_*` 接线。
+- 48 层循环 + 完整模型 forward 编排: EmbedLookup → ExpandTrunk → 48×
+  DecoderLayerForward (layer 1 带 PLE) → HeadForward; PLE 的 ple_embeddings
+  由 `PleEmbedding::Gather` 对接 SSD stream (ngram 哈希 → io_uring 读 →
+  FP8→BF16)。
+- 之后: 长序列 QSA 稀疏路径验证 + 拆 `BuildCompressedKKernel` 竞态。
+
+---
+
 ## 2026-09-05 — 模型层 (6/N): PLE 注入 decoder layer
 
 **做了什么**

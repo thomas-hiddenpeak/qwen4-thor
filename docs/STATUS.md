@@ -304,10 +304,17 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     加载 layer 1 的 PLE 权重, workspace carve 加 PLE 区 (256 字节对齐,
     `PleLayerWorkspaceBytes` 与内部 carve 一致)。真实 layer-1 两条独立路径
     (生产 vs 手动 PLE+编排) 逐位一致 (A-vs-B L2 rel 0.0)。
-  - ⏳ `hyper_connection_mixer` (use_combine=False) 收尾 mix → lm_head。
-  - ⏳ MTP 1 层 (mtp_hc: hc_count+1) + 48 层循环 + embedding/norm。
-  **→ 模型层: HC + MoE + linear + full/QSA + decoder layer + PLE 层 forward
-    + PLE 注入完成, 待 mixer + MTP + 层循环**
+  - ✅ `model_head.h/.cu` 模型头/尾: embedding lookup (token→[T,hs]) +
+    主干扩展 (emb 复制成 hc 个分支 → [T,hc*hs]) + 收尾
+    `hyper_connection_mixer.mix` (use_combine=False, 复用 GatedResidual) →
+    [T,hs] + lm_head GEMM → [T,vocab]。真实 checkpoint 加载验证
+    (vocab 248320 / hs 2560), 合成权重 forward 与 CPU 参考一致
+    (logits L2 rel 3.2e-3)。
+  - ⏳ MTP 1 层 (mtp_hc: hc_count+1) + 48 层循环 + 完整模型 forward 编排
+    (embedding → 层循环 → head; PLE 的 ple_embeddings 由 PleEmbedding::Gather
+    对接 SSD stream)。
+  **→ 模型层: 全部子模块 + decoder layer + PLE 注入 + head/tail 完成,
+    待 MTP + 层循环编排**
 
 ## 阻塞 / 风险
 
