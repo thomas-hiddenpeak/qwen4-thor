@@ -102,6 +102,27 @@ void DecoderLayer::Free() {
   routed = quant::MoEWeightLayout();
 }
 
+void DecoderLayer::ResetState(cudaStream_t stream) const {
+  if (is_full_attention) {
+    if (kv_cache)
+      cudaMemsetAsync(kv_cache, 0,
+                      static_cast<size_t>(max_len) * 2 * 2 * 256 * 2, stream);
+    if (idx_raw)
+      cudaMemsetAsync(idx_raw, 0,
+                      static_cast<size_t>(max_len) * 128 * 2, stream);
+    if (idx_comp)
+      cudaMemsetAsync(idx_comp, 0,
+                      static_cast<size_t>(max_len) * 128 * 2, stream);
+  } else {
+    if (ssm_state)
+      cudaMemsetAsync(ssm_state, 0,
+                      static_cast<size_t>(48) * 128 * 128 * 2, stream);
+    if (conv_state)
+      cudaMemsetAsync(conv_state, 0,
+                      static_cast<size_t>(10240) * 3 * 2, stream);
+  }
+}
+
 Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
                         int hc, int lowrank, float eps, int E, int moe_is,
                         int shared_is, int k, int max_len, DecoderLayer* out,

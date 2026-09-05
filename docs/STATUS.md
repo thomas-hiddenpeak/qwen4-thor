@@ -310,11 +310,17 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     [T,hs] + lm_head GEMM → [T,vocab]。真实 checkpoint 加载验证
     (vocab 248320 / hs 2560), 合成权重 forward 与 CPU 参考一致
     (logits L2 rel 3.2e-3)。
-  - ⏳ MTP 1 层 (mtp_hc: hc_count+1) + 48 层循环 + 完整模型 forward 编排
-    (embedding → 层循环 → head; PLE 的 ple_embeddings 由 PleEmbedding::Gather
-    对接 SSD stream)。
-  **→ 模型层: 全部子模块 + decoder layer + PLE 注入 + head/tail 完成,
-    待 MTP + 层循环编排**
+  - ✅ `model.h/.cu` 完整模型 forward 编排 (Phase 1 核心): `Model` 持有 head +
+    48 个 decoder layer + PLE SSD-stream embedding + 持久 buffer。
+    `ModelForward` = EmbedLookup → ExpandTrunk → 层循环 (每层可选 PLE
+    gather→×weight_scale→注入) → HeadForward, trunk ping-pong, 单一 workspace
+    跨层复用。`DecoderLayer::ResetState` 让 prefill 从空状态开始 (确定性)。
+    真实 checkpoint 端到端验证 (head + 2 层含 PLE, T=4, logits 有限/非平凡/
+    两次运行逐位一致)。
+  - ⏳ MTP 1 层 (mtp_hc: hc_count+1, full_attention + fc_embedding/fc_hidden)。
+  - ⏳ 全 48 层加载 + 长序列 QSA 稀疏路径 + 逐 token 对 SGLang 参考验证。
+  **→ 模型层: 全部子模块 + decoder layer + PLE 注入 + head/tail + 完整
+    forward 编排完成 (端到端跑通), 待 MTP + 全 48 层 + 长序列验证**
 
 ## 阻塞 / 风险
 

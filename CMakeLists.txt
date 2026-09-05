@@ -136,9 +136,10 @@ add_library(q4t_model STATIC
   src/model/moe.cu
   src/model/ple_layer.cu
   src/model/decoder_layer.cu
-  src/model/model_head.cu)
+  src/model/model_head.cu
+  src/model/model.cu)
 target_include_directories(q4t_model PUBLIC include)
-target_link_libraries(q4t_model PUBLIC q4t_io q4t_quant CUDA::cudart
+target_link_libraries(q4t_model PUBLIC q4t_io q4t_quant q4t_ple CUDA::cudart
                     CUDA::cublasLt)
 
 # ---------------------------------------------------------------------------
@@ -171,6 +172,7 @@ if(Q4T_BUILD_TESTS)
     tests/model_decoder_layer_test.cpp
     tests/model_ple_layer_test.cpp
     tests/model_head_test.cpp
+    tests/model_forward_test.cpp
     tests/model_moe_test.cpp
     tests/test_main.cpp)
   set(Q4T_TEST_LIBS q4t_ple q4t_io q4t_quant q4t_model)

@@ -77,6 +77,10 @@ struct DecoderLayer {
   int max_len = 2048;
 
   void Free();
+  // Reset the per-layer persistent state (linear SSM/conv, or full KV/indexer)
+  // to zero — i.e. prepare to process a fresh sequence from the start.
+  // const: only touches device memory, not the object's ownership.
+  void ResetState(cudaStream_t stream) const;
 };
 
 // Device bytes required for the DecoderLayerForward `workspace` argument for a

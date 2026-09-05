@@ -5,6 +5,53 @@
 
 ---
 
+## 2026-09-05 — 模型层 (8/N): 完整模型 forward 编排 (端到端跑通)
+
+**做了什么**
+- 新增 `include/q4t/model/model.h` + `src/model/model.cu`, 并入 `q4t_model`
+  (现链接 `q4t_ple`)。实现 Phase 1 核心的完整模型 forward 编排:
+  - `Model` 持有 head + `num_layers` 个 decoder layer + PLE SSD-stream
+    embedding (`PleEmbedding`) + 持久 device buffer (ids/positions/emb/trunk
+    ping-pong/ple_emb/单一 forward workspace)。
+  - `ModelForward` (prefill, 全新序列, positions 0..T-1):
+    `EmbedLookup` → `ExpandTrunk` (emb 复制成 hc 分支) → 层循环 (每层若
+    `has_ple` 则 `PleEmbedding::Gather`(ids, ngram history) → ×weight_scale →
+    注入) → `HeadForward` (mixer.mix + lm_head) → logits [T, vocab]。
+    trunk 在 d_trunk/d_trunk2 间 ping-pong; 单一 workspace 跨层复用 (取各层
+    最大)。
+  - `LoadPleHashParams`: 从 checkpoint 张量加载 PLE ngram 哈希参数
+    (layer_multipliers I64[3] / ngram_heads_vocab_sizes I64[16] /
+    ngram_heads_offsets I64[16]) + weight_scale (BF16[1])。
+  - `DecoderLayer::ResetState` (const): prefill 前把每层持久状态 (linear
+    SSM/conv 或 full KV/indexer) 清零, 使重复调用确定性。
+- 测试 `model_forward_test.cpp` `model_forward_e2e`: 真实 checkpoint 加载
+  head + 前 2 层 (layer 0 linear + layer 1 linear+PLE, 走真实 51 GB PLE SSD
+  sidecar), T=4 prefill 端到端。smoke 检查: logits 有限、非平凡 (max_abs
+  7.56)、两次运行**逐位一致** (确定性)。50 项测试全绿, 零警告。
+
+**踩坑 (两个, 已修)**
+- **确定性失败**: 初版两次 forward 结果不同 — layer 1 是 linear_attention,
+  第一次 forward 更新了 SSM/conv 持久状态, 第二次从不同状态开始。修复:
+  `ModelForward` 开头对每层 `ResetState` (prefill 全新序列从空状态)。
+- **`ResetState` const 性**: `ModelForward` 接收 `const Model&`, 故
+  `ResetState` 需 const (只动 device 内存, 不改对象所有权)。
+
+**关键事实 (PLE SSD stream 对接)**
+- PLE sidecar = `ple/qwen3.8-flash-next-ple-fp8.bin` (51.2 GB, 320001536 行 ×
+  160 字节 FP8 e4m3)。16 个 ngram head × 160 字节 = 2560 = ple_embed_dim。
+- `PleEmbedding::Gather` 输出 [T, 2560] 是 16 head 行**拼接** (SGLang 的
+  `reduce` 单卡是 no-op, 非求和); `weight_scale` (实测 0.0002) 在 PLE 层输入
+  前乘。ngram history = 每 token 前 ngram_size-1 个 token (序列起点 EOS 填充)。
+
+**下一步**
+- MTP 1 层 (mtp_hc: hc_count+1, full_attention + fc_embedding/fc_hidden +
+  pre_fc_norm_*)。
+- 全 48 层加载 (~84 GB) + 长序列 QSA 稀疏路径 (T>2048) 验证。
+- 逐 token 对 SGLang 参考验证 (架构建全后)。
+- 拆 `BuildCompressedKKernel` 竞态。
+
+---
+
 ## 2026-09-05 — 模型层 (7/N): 模型头/尾 (embedding + mixer + lm_head)
 
 **做了什么**
