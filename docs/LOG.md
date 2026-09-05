@@ -5,6 +5,45 @@
 
 ---
 
+## 2026-09-05 — 模型层 (5/N): PLE 层 forward
+
+**做了什么**
+- 新增 `include/q4t/model/ple_layer.h` + `src/model/ple_layer.cu`, 并入
+  `q4t_model`。实现 PLE 层 (Per-Layer Embedding, 核心差异化特性) 的 forward
+  (`PleLayerWeights` + `LoadPleLayer` + `PleLayerForward`):
+  1. `key = embeddings @ key_proj^T` [T, hc*hs] (BF16 GEMM)
+  2. `value = embeddings @ value_proj^T` [T, hs] (BF16 GEMM)
+  3. `key_n = GroupedGemmaRMSNorm(key, norm_key)` (per-branch, group=hs)
+  4. `query_n = GroupedGemmaRMSNorm(hyper_input, norm_query)`
+  5. `gate[b] = sigmoid(sqrt(|Σ_c key_n·query_n|/√hs)·sign)` [T, hc]
+  6. `gated_value[b,c] = gate[b] * value[c]` [T, hc*hs]
+  7. `gated_n = GroupedGemmaRMSNorm(gated_value, norm_conv)`
+  8. `conv_out = silu(depthwise-causal-conv(gated_n))` (kernel=4,
+     dilation=ngram_size=3, 序列前零填充)
+  9. `out = gated_value + conv_out` [T, hc*hs]
+- PLE 权重全 BF16: `key_proj[10240,2560]` / `value_proj[2560,2560]` /
+  `norm_{key,query,conv}[10240]` / `conv1d[10240,1,4]`, 前缀
+  `model.language_model.layers.1.ple`。
+- 测试 `model_ple_layer_test.cpp`: 真实 layer-1 PLE 权重, 随机 embeddings +
+  hyper_input, 与完整 CPU 参考 (投影 + 3×GroupedGemmaRMSNorm + gate +
+  depthwise causal conv) 对比, out L2 rel 4.1e-3 (阈值 3e-2)。46 项测试全绿,
+  零警告。
+
+**更正**
+- 之前条目把 PLE 层写成 "layer 2"。checkpoint `ple_layer_ids = [2]` 是
+  **1-indexed** (SGLang `if (layer_id + 1) in config.ple_layer_ids`), 对应
+  **0-indexed layer 1**, 权重确实在 `layers.1.ple.*`。PLE 层 forward 在
+  0-indexed layer 1 的 `attn_hc.mix` 之前注入。
+
+**下一步**
+- 把 `PleLayerForward` 接线进 `DecoderLayerForward` (layer 1, `attn_hc.mix`
+  之前, 输出加到 hyper_input)。需 embedding gather 结果作为 PLE 输入
+  (PLE SSD stream 的 ngram gather 已就绪, 待与层循环对接)。
+- `hyper_connection_mixer` (use_combine=False) 收尾 mix → lm_head。
+- MTP 1 层 + 48 层循环 + embedding/norm → 完整模型 forward。
+
+---
+
 ## 2026-09-05 — 模型层 (4/N): decoder layer 组装
 
 **做了什么**
