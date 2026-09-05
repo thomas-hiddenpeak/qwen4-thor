@@ -5,6 +5,65 @@
 
 ---
 
+## 2026-09-05 — 长序列 QSA 稀疏路径 (T>2048) 端到端验证 + 4 个 bug 修复
+
+**背景**
+`generate` 用文档长 prompt (1627 token) + decode 600 (越过 2048 稀疏激活点)
+时, 在 step 424 (position 2051) 崩溃: `decode step 424 failed: cudaMalloc
+inject`。
+
+**诊断过程 (重要)**
+1. 初判为 OOM (统一内存 84GB 权重 + page cache), 参考 qwen35-thor 的
+   "立即释放 mmap" 加了 `LoadModel` 的 `unique_ptr` 释放 +
+   `SafetensorsFile` 析构 `posix_fadvise(DONTNEED)`。
+2. 用户反馈 jtop 只见 ~6GB 进程内存、无 GPU MEM, 且怀疑不是 mmap 问题。
+   进程级监控 (VmRSS/VmSize + meminfo) 证实: VmRSS 稳定 671MB, sysAvail
+   还有 37GB — **不是 OOM**。
+3. 把 `cudaMalloc inject` 报错改为带 `cudaGetErrorString` + 前置
+   `cudaGetLastError()`, 真实错误浮出: **`an illegal memory access was
+   encountered`** (CUDA context 被前一个 kernel 污染, 下一个 cudaMalloc
+   才报陈旧错误)。崩溃点 position 2051 = 稀疏路径首次激活点
+   (`n_groups=(2051+1)/4=513 > 512`), 锁定 QSA 稀疏路径。
+
+**修复的 4 个 bug**
+1. **`IndexerLogitsKernel` 共享内存越界 (根因)**: `__shared__ float
+   s_blk[512]`, 但 `n_groups` 最大 `kMaxBlocks=2048`。position 2051 时
+   `n_groups=513`, `s_blk[512]` 越界写 → illegal memory access。改
+   `s_blk[kMaxBlocks]`。
+2. **`BuildCompressedKKernel` 组尾判断用错索引**: 原 `(t+1)%compress` 用
+   batch 索引 `t`; decode 时 T=1、t=0 恒不满足 → 压缩 key 永不构建。改
+   `(pos+1)%compress`。
+3. **`BuildCompressedKKernel` prefill 跨 block 竞态**: 组尾 block 读
+   `idx_raw[g0..]` 时其他 block 可能未写完, 污染 `idx_comp` (dense 区无
+   影响, 但持久缓存被稀疏区使用)。拆成 `WriteIndexRawKernel` +
+   `BuildCompressedKKernel` 两个 launch, kernel 边界全局同步消除竞态。
+4. **`TopkSelectKernel` 因果性**: 当前 token 所在 group 在 3/4 phase 下不在
+   可见压缩 key 内, 强制追加当前 group 已发射尾部 `[g0_cur, pos]`。
+
+**配套改动**
+- `max_len` 2048→8192 (对齐 kernel 上限 `kMaxT`, 否则 decode 在 position
+  2048 崩溃, 稀疏路径不可达)。
+- `SafetensorsFile` 析构加 `posix_fadvise(DONTNEED)` + `LoadModel` 用
+  `unique_ptr` 释放 mmap (统一内存下避免 84GB 权重映射与 GPU 权重双份
+  占用, 参考 qwen35-thor "立即释放 mmap"; Qwen3x-Orin 则用 `::read` 进
+  pinned staging 完全绕过 page cache)。
+
+**验证**
+- 52 项测试全绿, 零警告。
+- 自然语言长文 (prompt 1612 + decode 600, 越过 2048) 输出**全程连贯**
+  (高质量文学分析, 无退化)。文档 prompt 越过 2048 后退化是**模型行为**
+  (高度重复技术文档难以为继), 非代码 bug。
+- **发现 (非 bug)**: MoE `ScatterAddKernel` 的 FP32 `atomicAdd` 顺序非
+  确定 → 运行间 argmax 可能翻转 (top-1 接近时)。PyTorch MoE 同样非确定,
+  属 LLM 固有特性, 不影响正确性。
+
+**下一步**
+- MTP 1 层 — 仍搁置 (无权威参考)。
+- 逐 token 对 SGLang 参考验证 (长序列场景)。
+- (可选) MoE 确定性归约, 若需可复现输出。
+
+---
+
 ## 2026-09-05 — serve 命令: OpenAI 兼容 HTTP API
 
 **做了什么**

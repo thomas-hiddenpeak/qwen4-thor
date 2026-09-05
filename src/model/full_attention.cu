@@ -252,9 +252,28 @@ __global__ void IndexerNormRopeKernel(u16* __restrict__ iq,
 //   idx_raw: [max_len, idx_head_dim]
 //   idx_comp: [max_len, idx_head_dim]
 //   positions: [T]
-__global__ void BuildCompressedKKernel(const u16* __restrict__ ik_raw,
-                                       const u16* __restrict__ ik_norm,
-                                       u16* __restrict__ idx_raw,
+// Split of the former single BuildCompressedKKernel. The raw store and the
+// compressed build are separate kernels so the kernel-boundary global
+// sync guarantees every idx_raw write of the batch is visible before any
+// compressed build reads its group's raw tokens. A single fused kernel had
+// a prefill race: the group-tail block (t=3) could read idx_raw[0..2]
+// before blocks t=0..2 wrote them, silently corrupting idx_comp (harmless
+// for the dense prefill, but those keys persist and are used by the sparse
+// indexer once decode crosses indexer_budget).
+__global__ void WriteIndexRawKernel(const u16* __restrict__ ik_raw,
+                                    u16* __restrict__ idx_raw,
+                                    const int* __restrict__ positions, int T,
+                                    int hd) {
+  int t = blockIdx.x;
+  if (t >= T) return;
+  int pos = positions[t];
+  int d = threadIdx.x;
+  if (d >= hd) return;
+  idx_raw[static_cast<size_t>(pos) * hd + d] = ik_raw[static_cast<size_t>(t) * hd + d];
+}
+
+__global__ void BuildCompressedKKernel(const u16* __restrict__ ik_norm,
+                                       const u16* __restrict__ idx_raw,
                                        u16* __restrict__ idx_comp,
                                        const int* __restrict__ positions, int T,
                                        int hd, int compress, float theta,
@@ -264,14 +283,16 @@ __global__ void BuildCompressedKKernel(const u16* __restrict__ ik_raw,
   int pos = positions[t];
   int d = threadIdx.x;
   if (d >= hd) return;
-  // store raw
-  idx_raw[static_cast<size_t>(pos) * hd + d] = ik_raw[static_cast<size_t>(t) * hd + d];
-  // group completion: token t is the last of its group when (t+1) % compress
-  // == 0. The group index is t / compress (tokens [g0, g0+compress-1]).
-  if ((t + 1) % compress != 0) return;
-  int group = t / compress;  // group index (0-based)
-  int g0 = group * compress;  // first token index in the group
-  // average over the `compress` raw tokens in this group (FP32)
+  // group completion: position `pos` is the last of its group when
+  // (pos+1) % compress == 0. Must use `pos`, not the batch index `t`:
+  // during decode T=1 and t=0 always, so (t+1)%compress never fires and
+  // the compressed key is never built. The group index is pos/compress.
+  if ((pos + 1) % compress != 0) return;
+  int group = pos / compress;  // group index (0-based)
+  int g0 = group * compress;  // first position in the group
+  // average over the `compress` raw tokens in this group (FP32). All of
+  // these raw writes happened in earlier decode steps or in the preceding
+  // WriteIndexRawKernel launch, so they are visible here.
   float acc = 0.f;
   for (int j = 0; j < compress; ++j) {
     acc += Bf16ToFloat(idx_raw[static_cast<size_t>(g0 + j) * hd + d]);
@@ -286,16 +307,17 @@ __global__ void BuildCompressedKKernel(const u16* __restrict__ ik_raw,
   float rs = rsqrtf(head_sum[0] / hd + eps);
   f32 w = Bf16ToFloat(ik_norm[d]);
   float normed = acc * rs * w;
-  // partial RoPE at the group's first position
+  // partial RoPE at the group's first position. Positions are the
+  // contiguous 0..N-1, so the group's first position IS g0. (Reading
+  // positions[g0] would be out of bounds during decode, where the
+  // positions array has a single element.)
   int half = 64 / 2;  // rot_d = 64 for the indexer (idx_head_dim 128, factor .5)
-  float pos0 = static_cast<float>(positions[g0]);
+  float pos0 = static_cast<float>(g0);
   float val;
   if (d < half) {
     float inv_freq = powf(theta, -2.f * d / 64.f);
     float ang = pos0 * inv_freq;
     float c = cosf(ang), s = sinf(ang);
-    f32 b = Bf16ToFloat(ik_norm[d]);  // placeholder, recomputed below
-    (void)b;
     // need the partner (d+half) normed value; recompute it
     float acc2 = 0.f;
     for (int j = 0; j < compress; ++j) {
@@ -347,7 +369,11 @@ __global__ void IndexerLogitsKernel(const u16* __restrict__ iq,
   int n_groups = (pos + 1) / compress;  // visible groups
   if (n_groups > max_blocks) n_groups = max_blocks;
   float inv_sqrt = 1.f / sqrtf(static_cast<float>(hd));
-  __shared__ float s_blk[512];
+  // Must hold up to max_blocks (kMaxBlocks) entries: n_groups reaches
+  // max_blocks once position >= max_blocks * compress (2048 * 4 = 8192).
+  // A smaller buffer (e.g. 512) overflows at position 2051 (n_groups 513),
+  // corrupting shared memory -> illegal memory access.
+  __shared__ float s_blk[kMaxBlocks];
   for (int g = threadIdx.x; g < n_groups; g += blockDim.x) {
     float sum = 0.f;
     for (int h = 0; h < n_iq; ++h) {
@@ -416,6 +442,18 @@ __global__ void TopkSelectKernel(f32* __restrict__ logits, int* __restrict__ top
         int p = best * compress + j;
         if (p <= pos) out[n++] = p;
       }
+    }
+    // Causality: the current token's group is NOT among the visible
+    // compressed keys for 3 of 4 phase values (n_groups = (pos+1)/compress
+    // excludes the in-progress group unless pos is a group tail), so the
+    // top-`block_topk` selection above never covers the current local
+    // context. Force-include the current group's emitted tail
+    // [g0_cur, pos] so the query always attends to its own recent tokens.
+    int cur_g = pos / compress;
+    bool cur_selected = (cur_g < n_groups) && s_sel[cur_g];
+    if (!cur_selected) {
+      int g0_cur = cur_g * compress;
+      for (int p = g0_cur; p <= pos && n < max_topk; ++p) out[n++] = p;
     }
   }
   for (; n < max_topk; ++n) out[n] = -1;
@@ -738,9 +776,14 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   IndexerNormRopeKernel<<<T * (n_iq + n_ik), idx_hd, 0, stream>>>(
       d_iq, w.index_q_norm, d_ik, w.index_k_norm, d_positions, T, n_iq, n_ik,
       idx_hd, w.rot_d, w.rope_theta, w.eps);
-  // 8. store raw index keys + build compressed keys (per completed group)
+  // 8a. store raw index keys (per token).
+  WriteIndexRawKernel<<<T, idx_hd, 0, stream>>>(d_ik_raw, idx_raw, d_positions,
+                                                T, idx_hd);
+  // 8b. build compressed keys for groups completed in this batch. Runs in a
+  // separate launch so the kernel-boundary sync makes every idx_raw write
+  // from 8a visible before the group averages read them (no prefill race).
   BuildCompressedKKernel<<<T, idx_hd, 0, stream>>>(
-      d_ik_raw, w.index_k_norm, idx_raw, idx_comp, d_positions, T, idx_hd,
+      w.index_k_norm, idx_raw, idx_comp, d_positions, T, idx_hd,
       w.idx_compress, w.rope_theta, w.eps);
   // 9. indexer logits over visible compressed blocks
   IndexerLogitsKernel<<<T, 256, 0, stream>>>(d_iq, idx_comp, d_logits,

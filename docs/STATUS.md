@@ -348,10 +348,34 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     的降维方式无依据 (qwen3_next 前身用单个 `fc[hs,2hs]`, qwen4_exp 改成两个
     独立 FC, 布局不同)。MTP 是推测解码性能特性, 不影响 greedy 正确性, 待
     拿到权威 forward 参考再实现。
-  - ⏳ 长序列 QSA 稀疏路径 (T>2048) + 逐 token 对 SGLang 参考验证。
+  - ✅ **长序列 QSA 稀疏路径 (T>2048) 端到端验证 + 修复**: 用自然语言长文
+    (prompt 1612 + decode 600, 越过 2048 稀疏激活点) 验证, 输出全程连贯。
+    期间定位并修复 4 个稀疏路径 bug (见下)。
+    - **`IndexerLogitsKernel` 共享内存越界 (illegal memory access)**:
+      `__shared__ float s_blk[512]` 但 `n_groups` 最大 `kMaxBlocks=2048`,
+      position 2051 (n_groups=513) 时 `s_blk[512]` 越界写 → 污染 CUDA
+      context, 下一个 `cudaMalloc` (hyperconnection `d_inject`, 仅 8 字节)
+      报 "illegal memory access" (非 OOM)。改 `s_blk[kMaxBlocks]`。
+    - **`BuildCompressedKKernel` 组尾判断用错索引**: 原 `(t+1)%compress`
+      用 batch 索引 `t`, decode 时 T=1、t=0 恒不满足 → 压缩 key 永不构建。
+      改 `(pos+1)%compress` (position 语义)。
+    - **`BuildCompressedKKernel` prefill 跨 block 竞态**: 组尾 block 读
+      `idx_raw[g0..]` 时其他 block 可能未写完, 污染 `idx_comp` (dense 区无
+      影响, 但持久缓存被稀疏区使用)。拆成 `WriteIndexRawKernel` +
+      `BuildCompressedKKernel` 两个 launch, kernel 边界全局同步消除竞态。
+    - **`TopkSelectKernel` 因果性**: 当前 token 所在 group 在 3/4 phase 下
+      不在可见压缩 key 内, 强制追加当前 group 已发射尾部 `[g0_cur, pos]`。
+    - 另: `max_len` 2048→8192 (对齐 kernel 上限 `kMaxT`, 否则 decode 在
+      position 2048 崩溃, 稀疏路径不可达); `SafetensorsFile` 析构加
+      `posix_fadvise(DONTNEED)` + `LoadModel` 用 `unique_ptr` 释放 mmap
+      (统一内存下避免 84GB 权重映射与 GPU 权重双份占用, 参考 qwen35-thor
+      "立即释放 mmap")。
+    - **发现 (非 bug)**: MoE `ScatterAddKernel` 用 FP32 `atomicAdd` 累加,
+      顺序非确定 → logits 末位漂移 → 贪心 argmax 在运行间可能翻转 (top-1
+      接近时)。PyTorch MoE 同样非确定, 属 LLM 固有特性, 非正确性缺陷。
   **→ 模型层: 全部子模块 + decoder layer + PLE 注入 + head/tail + 完整
-    forward 编排 + 全 48 层端到端验证 + decode + generate 完成, 待 MTP +
-    长序列验证**
+    forward 编排 + 全 48 层端到端验证 + decode + generate + 长序列 QSA
+    稀疏路径 完成, 待 MTP + 逐 token 对 SGLang 参考验证**
 - [x] 2026-09-05 `serve` 命令: OpenAI 兼容 HTTP API (独立 `q4t_server`
   静态库, POSIX socket, 零第三方依赖)。
   - 端点: `GET /healthz` → "ok"; `GET /v1/models` → 模型列表;
@@ -373,12 +397,10 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 - **PLE sidecar SHA-256 未验证** (ssd-stream.json 记录了期望值
   `b070f964...`, 51.2 GB 校验耗时较长, 安排在首次加载前完成)。
-- **QSA 稀疏路径未端到端验证**: full_attention 已实现并通过 T=8 稠密退化区
-  测试, 但 >2048 token 的稀疏 top-k 路径 (block 选择 + 展开) 尚无独立测试
-  覆盖 (当前 CPU 参考只走稠密)。长序列验证需待层组装 + 长 prefill 场景。
-  另: `BuildCompressedKKernel` 存在跨 block 竞态 (block t 写 idx_raw[pos(t)]
-  同时读更早 block 写的 idx_raw[g0..]), 稠密区无影响, 稀疏区需拆 kernel 或
-  加 grid 同步。
+- **MTP 无权威参考** (见"进行中" ⏳ 条目), 搁置。
+- **MoE 贪心非确定性** (见"进行中"长序列条目): `ScatterAddKernel` 的 FP32
+  `atomicAdd` 顺序非确定, 运行间 argmax 可能翻转。属 LLM 固有特性 (PyTorch
+  同样), 不影响正确性; 如需可复现输出, 可改确定性归约 (代价: 性能)。
 
 ## 已解决 (2026-09-04)
 

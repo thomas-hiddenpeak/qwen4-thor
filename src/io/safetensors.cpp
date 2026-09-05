@@ -74,6 +74,16 @@ SafetensorsFile::SafetensorsFile(Impl* impl) : impl_(impl) {}
 
 SafetensorsFile::~SafetensorsFile() {
   if (!impl_) return;
+  // Evict this shard's clean file pages from the page cache BEFORE unmapping.
+  // On Jetson Thor's 122 GB unified memory, the ~84 GB of mmap'd weight
+  // shards would otherwise stay resident in the page cache (munmap only
+  // drops the mapping, not the clean file pages) and starve the CUDA driver
+  // of the memory it needs for runtime allocations. POSIX_FADV_DONTNEED
+  // actively reclaims them. (Qwen3x-Orin avoids this entirely by reading
+  // shards with ::read into pinned staging instead of mmap.)
+  if (impl_->fd >= 0) {
+    posix_fadvise(impl_->fd, 0, 0, POSIX_FADV_DONTNEED);
+  }
   if (impl_->map) munmap(impl_->map, impl_->map_len);
   if (impl_->fd >= 0) close(impl_->fd);
   delete impl_;

@@ -45,7 +45,10 @@ struct ModelConfig {
   int shared_is = 640;
   int topk = 10;
   int vocab = 248320;
-  int max_len = 2048;  // full-attention cache length
+  // full-attention cache length. Sized to the kernel cap (kMaxT=8192 in
+  // full_attention.cu) and ple_capacity_tokens, so the QSA sparse path
+  // (active once context > indexer_budget) is reachable during decode.
+  int max_len = 8192;
   int max_prefill = 2048;  // sizes the forward workspace
   float eps = 1e-6f;
 

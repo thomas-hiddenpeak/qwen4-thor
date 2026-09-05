@@ -296,10 +296,23 @@ Status HyperConnectionCombine(const HyperConnectionWeights& w,
     return Status();
   }
   const float inv_hc = 1.0f / hc;
+  // Check for a pending async error from a prior kernel (e.g. an illegal
+  // memory access in the attention path). A tiny 8-byte cudaMalloc failing
+  // with 37 GB available is a classic sign of a poisoned context, not a
+  // genuine OOM.
+  const cudaError_t perr = cudaGetLastError();
+  if (perr != cudaSuccess) {
+    return Status::Fail(std::string("pending CUDA error before cudaMalloc "
+                                    "inject: ") +
+                        cudaGetErrorString(perr));
+  }
   uint16_t* d_inject = nullptr;  // [T, hc]
-  if (cudaMalloc(&d_inject, static_cast<size_t>(T) * hc * sizeof(uint16_t)) !=
-      cudaSuccess)
-    return Status::Fail("cudaMalloc inject");
+  const cudaError_t merr =
+      cudaMalloc(&d_inject, static_cast<size_t>(T) * hc * sizeof(uint16_t));
+  if (merr != cudaSuccess) {
+    return Status::Fail(std::string("cudaMalloc inject: ") +
+                        cudaGetErrorString(merr));
+  }
   // 1. inject_raw = normed @ W_inject^T  ([T, hc_dim] x [hc, hc_dim]^T -> [T,
   // hc]).
   Status s = CheckGemm(Bf16Gemm(normed, w.block_inject, d_inject, T, hc,

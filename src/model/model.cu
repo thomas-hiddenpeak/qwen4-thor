@@ -23,6 +23,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <cstring>
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -124,12 +125,25 @@ Status LoadPleHashParams(const io::WeightLoader& loader,
 
 Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   m->cfg = cfg;
-  io::WeightIndex* index = nullptr;
-  Status s = io::WeightIndex::Open(cfg.index_path, &index);
-  if (!s.ok()) return s;
-  io::WeightLoader* loader = nullptr;
-  s = io::WeightLoader::Create(cfg.model_dir, *index, 8, &loader);
-  if (!s.ok()) return s;
+  // RAII: the mmap'd safetensors shards must be released on every exit path.
+  // On Jetson Thor's 122 GB unified memory, keeping the ~84 GB of file
+  // mappings alive alongside the ~84 GB of GPU weights exceeds the budget.
+  // (Same fix as qwen35-thor model.cpp: "统一内存: 立即释放 mmap".)
+  std::unique_ptr<io::WeightIndex> index;
+  {
+    io::WeightIndex* raw = nullptr;
+    Status s = io::WeightIndex::Open(cfg.index_path, &raw);
+    if (!s.ok()) return s;
+    index.reset(raw);
+  }
+  std::unique_ptr<io::WeightLoader> loader;
+  {
+    io::WeightLoader* raw = nullptr;
+    Status s = io::WeightLoader::Create(cfg.model_dir, *index, 8, &raw);
+    if (!s.ok()) return s;
+    loader.reset(raw);
+  }
+  Status s;
 
   const int hc_dim = cfg.hc * cfg.hs;
 
@@ -217,6 +231,11 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   m->ws_bytes = ws;
   if (!(s = alloc(&m->d_ws, ws))) return s;
 
+  // All weights are on GPU. `loader`/`index` (unique_ptr) release the
+  // mmap'd safetensors shards at scope exit, dropping the file mappings
+  // before the decode loop runs. Sync first so every H2D copy has landed
+  // (the reads are async on `stream`).
+  cudaStreamSynchronize(stream);
   return Status();
 }
 
