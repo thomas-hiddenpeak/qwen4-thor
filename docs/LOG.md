@@ -5,6 +5,76 @@
 
 ---
 
+## 2026-09-06 — transformers 5.16.1 qwen4_exp 参考发现 + 4 层参考验证
+
+**背景**
+用户指出 transformers 最新版已包含 qwen4_exp 架构支持, 要求先研读再
+讨论; 并决定 MTP 放到 prefill/decode 性能优化之后、在良好基线上开发。
+本条: ① 确认 transformers 参考资产; ② 逐项对比三个机制; ③ 落地
+"逐 token 对参考验证" 的 4 层基线 (新顺序第 1 项, 性能优化的守护网)。
+
+**transformers 5.16.1 qwen4_exp 参考 (重大发现)**
+refenv 的 transformers 5.16.1 含**完整** qwen4_exp 实现
+(`modeling_qwen4_exp.py` 2707 行): 文本主干 48 层 (GatedDeltaNet / QSA
+indexer / MoE / GatedResidual / PLE) + **视觉 ViT 27 层**
+(`Qwen4ExpVisionModel`) + 多模态融合 (`Qwen4ExpForConditionalGeneration`:
+视觉特征 `masked_scatter` 进 `image_token_id=248056` 占位 + M-RoPE
+`get_rope_index`)。checkpoint 实际含 333 个视觉权重张量
+(`language_model_only: False`)。**无 MTP**: 加载时
+`_keys_to_ignore_on_load_unexpected = [r"^mtp.*"]` 显式跳过 31 个
+`mtp.*` 权重 → MTP 权威参考仍是 vLLM。
+**影响**: 多模态图像输入从"最大缺口且无权威参考"变为"有权威参考";
+逐 token 对参考验证有了强 oracle (此前只有 2 层)。
+
+**三机制逐项对比 (transformers vs 本项目 C++, 全部一致)**
+- **GatedResidual**: grouped RMSNorm × (1+w) / mix (`silu(down/hc)` →
+  `sigmoid(up)` → `mean_b(gate*normed)`) / combine (`2*sigmoid(inject/hc)`)
+  逐项一致。
+- **QSA indexer**: 投影 + plain RMSNorm + partial RoPE (前 64 维) + 压缩 K
+  (FP32 均值 → norm → RoPE at group start) + `sum_h relu(iq·ck)/√hd` +
+  top-block 展开 + 当前 group 因果尾部, 语义一致 (实现方式不同:
+  torch.topk vs 顺序扫描, eager vs online softmax)。
+- **PLE**: multipliers 派生 (splitmix64) / EOS-ignoring shift / 16 head
+  素数词表取模 / gate (`sigmoid(√|dot|·sign)`) / dilated depthwise conv
+  逐项一致。
+- **MoE router**: transformers `softmax(全部512) → topk → 重归一化`
+  (config 默认 `norm_topk_prob=True`) 与本项目 `topk(logits) → 选中 k 上
+  softmax` **数学等价** (softmax 单调, top-k 选择相同; 重归一化 =
+  选中 k 上的 softmax)。
+
+**4 层参考验证 (正确性基线)**
+- 脚本 `.q4t-work/ref4_logits.py` (从 ref2_logits.py 泛化): 支持
+  linear/full 混合层 (按 `cfg.layer_types` 分支加载 linear_attn 或
+  self_attn 权重), NVFP4 dequant 保持 numpy 路径 (checkpoint 的
+  `weight_scale` 是**行主序** [N, K/16] — C++ 加载器在 host 端 swizzle
+  到 128×64 atom, 参考直接解码, 与 `moe_load_packed_matches_shard`
+  测试验证的约定一致), PLE sidecar gather 复用。
+- 约束: refenv torch 是 **CPU-only** (2.14.0+cpu); 全 48 层 MoE dequant
+  (~242 GB) 超 122 GB 统一内存 → 以 **4 层** (layer 0/1/2 linear +
+  layer 3 full_attention/QSA) 为基线 (4 层 dequant ~20 GB, 可承受)。
+- 结果 (T=4, ids={846,25,1203,321}, C++ `Q4T_MODEL_LAYERS=4` dump vs
+  transformers 4 层参考): **4/4 token argmax 匹配**, cos 0.9948–0.9991,
+  l2_rel 4.7e-2–1.2e-1 (NVFP4 量化噪声预期内: C++ 原生 NVFP4 W4A4 硬件
+  vs 参考 FP32 dequant), top-50 重叠 44/50。
+- **关键价值**: 首个 full_attention (QSA) 层在**真实层循环**中与参考一致
+  (此前只有 layer 3 单独单元测试 + 长序列生成连贯性, 无层循环交叉验证)。
+- 附带: `q4t_tests <name-substring>` 测试名过滤 (test_main.cpp), 可单独
+  跑重测试 (如 48 层 dump) 不必全量加载。
+
+**改动文件**
+- `.q4t-work/ref4_logits.py`: 新增 (4 层参考, linear/full 混合)
+- `tests/test_main.cpp`: 测试名过滤参数
+- `docs/REFERENCE.md`: transformers 5.16.1 参考条目 + 三机制对比结论
+- `docs/STATUS.md`: 4 层参考验证完成 + 剩余 Phase 1 项按新顺序更新
+- `docs/LOG.md`: 本条
+
+**下一步**
+逐 token 对参考验证继续 (更长 token 序列 / 更多层, 钉死正确性基线) →
+prefill/decode 性能优化 (预留 MTP 接口) → MTP (良好基线上) → 多模态
+图像输入 (transformers 权威参考已就位) → PLE 工作内存/SHA-256。
+
+---
+
 ## 2026-09-05 — PD-ready 阶段边界 API (ModelSequence) 实现
 
 **背景**

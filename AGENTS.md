@@ -59,6 +59,10 @@ cmake --build build --parallel
   tokenizer) / 量化层 (NVFP4 W4A4 全套) / 模型层 (48 层完整 forward +
   PLE 注入 + head/tail + generate + 长序列 QSA 稀疏路径) / serve (OpenAI
   兼容 HTTP API) / **PD-ready 架构** (Paged KV cache + 可分离代码路径 +
-  阶段边界 API ModelSequence)。53 项测试全绿, 零警告。
-- 下一步: MTP 推测解码 (用户排期) → 多模态图像输入 → 逐 token 对参考
-  验证 → PLE 工作内存/SHA-256 校验。完整多设备 PD 部署归 Phase 2。
+  阶段边界 API ModelSequence) / **4 层参考验证** (transformers 5.16.1
+  官方实现, 含首个 full_attention, 4/4 argmax 匹配)。53 项测试全绿,
+  零警告。
+- 下一步 (2026-09-06 与用户确认的顺序): 逐 token 对参考验证 (4 层基线
+  已完成, 继续扩展) → prefill/decode 性能优化 (预留 MTP 接口) → MTP
+  推测解码 (良好基线上, 用户排期) → 多模态图像输入 (transformers 权威
+  参考已就位) → PLE 工作内存/SHA-256 校验。完整多设备 PD 部署归 Phase 2。

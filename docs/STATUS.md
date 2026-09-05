@@ -374,6 +374,16 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     pre-final-mixer 多流 [T, hc*H] 给 MTP 第一步 (scheme A), MTP 层 =
     full_attention + QSA indexer + 512 expert MoE (与主干同构)。
     checkpoint 31 个 `mtp.*` 张量形状已逐一对照 vLLM 参考确认一致。
+  - ✅ **4 层参考验证 (含首个 full_attention, 2026-09-06)**: 用
+    transformers 5.16.1 官方 qwen4_exp 实现 (CPU torch, 真实权重,
+    NVFP4 numpy dequant, PLE sidecar gather) 跑 4 层 (layer 0/1/2
+    linear + layer 3 full_attention/QSA) 参考 forward, 与 C++
+    `Q4T_MODEL_LAYERS=4` dump 对比: **4/4 token argmax 匹配**, cos
+    0.9948–0.9991, l2_rel 4.7e-2–1.2e-1 (NVFP4 量化噪声预期内),
+    top-50 重叠 44/50。**关键**: 首个 full_attention (QSA) 层在真实
+    层循环中与参考一致 (此前只有 layer 3 单独单元测试)。脚本
+    `.q4t-work/ref4_logits.py` (从 ref2 泛化, 支持 linear/full 混合层),
+    `q4t_tests <name>` 支持测试名过滤 (单独跑重测试)。
   - ✅ **长序列 QSA 稀疏路径 (T>2048) 端到端验证 + 修复**: 用自然语言长文
     (prompt 1612 + decode 600, 越过 2048 稀疏激活点) 验证, 输出全程连贯。
     期间定位并修复 4 个稀疏路径 bug (见下)。
@@ -529,14 +539,21 @@ Phase 1 已完成的层: **PLE 流式层** ✅, **IO 层** ✅, **量化层** �
 (OpenAI 兼容 HTTP API), **PD-ready 架构** ✅ (Paged KV + 可分离代码
 路径 + 阶段边界 API ModelSequence)。53 项测试全绿, 零警告。
 
-剩余 Phase 1 项 (按优先级):
-1. **MTP 1 层** (用户排期, 等整体架构完善后推进)。权威参考:
-   `reference/vllm/vllm/models/qwen4_exp/nvidia/mtp.py`。阻塞已解除
-   (fc_embedding/fc_hidden 形状已对照 vLLM 确认)。
-2. **多模态图像输入** (Phase 1 最大缺口, 架构完善后)。
-3. **逐 token 对参考验证** (C++ vs PyTorch/transformers 全 token 序列
-   对比, 不止 argmax)。
-4. **PLE 工作内存 <100 MiB 验证** + **PLE sidecar SHA-256 校验**。
+剩余 Phase 1 项 (按 2026-09-06 与用户确认的顺序):
+1. **逐 token 对参考验证 (进行中)**: 4 层基线已完成 (4/4 argmax 匹配,
+   见上)。下一步: 扩展到更多层 / 更长 token 序列, 钉死正确性基线
+   (性能优化的守护网)。
+2. **prefill/decode 性能优化**: 用 ① 的基线守护数值不回归; 同时**预留
+   MTP 接口** (scheme A: 主模型收尾阶段可选暴露 pre-final-mixer 多流
+   [T, hc*H] 给 MTP 第一步), 避免优化后再返工。
+3. **MTP 1 层**: 在 ② 的稳定基线上开发 + 测加速比 (用户决定: 性能优化
+   后在良好基线上进行)。权威参考: `reference/vllm/vllm/models/
+   qwen4_exp/nvidia/mtp.py` (transformers 5.16.1 **无** MTP, 加载时
+   显式跳过 mtp.* 权重)。
+4. **多模态图像输入**: transformers 5.16.1 提供权威参考 (Qwen4ExpVision
+   Model 27 层 ViT + masked_scatter 融合 + M-RoPE), 之前"最大缺口且无
+   权威参考"已解除。可与 ②③ 穿插, 不阻塞 MTP。
+5. **PLE 工作内存 <100 MiB 验证** + **PLE sidecar SHA-256 校验**。
 
 ## 环境
 

@@ -79,6 +79,44 @@ reference/
   Paged KV (按页 + 页表间接寻址, PD-ready 前提, 见 ARCHITECTURE.md
   "PD-ready 架构")。
 
+## transformers 5.16.1 (qwen4_exp 官方实现, 文本主干 + 多模态权威参考)
+
+- 位置: `refenv` venv 的 site-packages (`transformers/models/qwen4_exp/`,
+  `modeling_qwen4_exp.py` 2707 行 + `modular_qwen4_exp.py` 1186 行 +
+  `configuration_qwen4_exp.py` 334 行)。**不在 reference/** (pip 包, 非
+  git clone), 版本 5.16.1 (2026-09-06 发现)。
+- 用途: **qwen4_exp 的 HuggingFace 官方实现**, 与 vLLM 互补:
+  - **文本主干完整** (Qwen4ExpTextModel 48 层): GatedDeltaNet / QSA
+    indexer / MoE / GatedResidual / PLE (NGramEmbedding + PLELayer) 全部
+    有 PyTorch 参考, 可作**逐 token 对参考验证**的 oracle (CPU torch 可跑,
+    见 `.q4t-work/ref4_logits.py`)。
+  - **多模态权威参考** (本项目之前缺失): `Qwen4ExpVisionModel` (27 层
+    ViT: patch_embed 16 → 可学习位置嵌入双线性插值 2304 → rotary →
+    vision blocks → patch_merger 2) + `Qwen4ExpForConditionalGeneration`
+    (视觉特征 `masked_scatter` 进 `image_token_id=248056` 占位 + M-RoPE
+    `get_rope_index` 按 `mm_token_type_ids` 算 3D position_ids,
+    `rope_deltas` 缓存供增量 decode)。checkpoint 实际含 333 个视觉权重
+    张量, `language_model_only: False`。
+  - **无 MTP**: `_keys_to_ignore_on_load_unexpected = [r"^mtp.*"]` —
+    加载时显式跳过 31 个 `mtp.*` 权重。MTP 权威参考仍是 vLLM。
+- 与本项目实现的机制对比 (2026-09-06 逐项核对, **全部一致**):
+  - GatedResidual: norm (grouped RMSNorm × (1+w)) / mix
+    (`silu(down/hc)` → `sigmoid(up)` → `mean_b(gate*normed)`) / combine
+    (`2*sigmoid(inject/hc)`) 逐项一致。
+  - QSA indexer: 投影 + plain RMSNorm + partial RoPE (前 64 维) + 压缩 K
+    (FP32 均值 → norm → RoPE at group start) + `sum_h relu(iq·ck)/√hd`
+    + top-block 展开 + 当前 group 因果尾部, 语义一致 (实现方式不同:
+    torch.topk vs 顺序扫描, eager vs online softmax)。
+  - PLE: multipliers 派生 (splitmix64) / EOS-ignoring shift / 16 head
+    素数词表取模 / gate (`sigmoid(√|dot|·sign)`) / dilated depthwise conv
+    逐项一致。
+  - MoE router: transformers `softmax(全部512) → topk → 重归一化`
+    (norm_topk_prob=True 默认) 与本项目 `topk(logits) → 选中 k 上
+    softmax` 数学等价 (softmax 单调, top-k 选择相同)。
+- 注意: refenv 的 torch 是 **CPU-only** (2.14.0+cpu), 参考验证走 CPU
+  路径; 全 48 层 MoE dequant (~242 GB) 超统一内存, 参考验证以 4 层
+  (含首个 full_attention) 为基线 (见 LOG.md 2026-09-06 条目)。
+
 ## qwen35-thor (架构模式参考)
 
 - 仓库: https://github.com/thomas-hiddenpeak/qwen35-thor
