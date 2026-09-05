@@ -147,7 +147,8 @@ target_link_libraries(q4t_model PUBLIC q4t_io q4t_quant q4t_ple CUDA::cudart
 # ---------------------------------------------------------------------------
 add_executable(q4t src/main.cpp)
 target_include_directories(q4t PRIVATE include)
-target_link_libraries(q4t PRIVATE q4t_ple q4t_quant CUDA::cudart)
+target_link_libraries(q4t PRIVATE q4t_model q4t_text q4t_ple q4t_quant
+                                  CUDA::cudart)
 
 # ---------------------------------------------------------------------------
 # Tests

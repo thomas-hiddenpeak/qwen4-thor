@@ -325,6 +325,23 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     新增 `FullAttentionWorkspaceBytes(w, T)` 精确镜像 carve, 供
     `DecoderLayerWorkspaceBytes` / `DecoderLayerForward` 使用 (之前 2 层测试
     全是 linear 层, 未触发)。
+  - ✅ **decode 路径 + `generate` 命令**: `ModelDecodeStep` (T=1, 不 ResetState,
+    绝对 position, PLE history 从 history 数组 EOS 填充) 与 `ModelForward`
+    共享抽取出的 `RunLayers`。`q4t generate "prompt" [--max-tokens N]` =
+    tokenizer encode → LoadModel → prefill → greedy argmax decode 循环
+    (EOS 248044 停止) → tokenizer decode。decode-vs-prefill 自洽测试通过。
+  - ✅ **修复 generate 乱码根因 (linear attention norm gate 激活)**: 对照
+    transformers `Qwen4ExpTextRMSNormGated`, 其激活是
+    `config.output_gate_type` (qwen4_exp = **sigmoid**), 而 C++
+    `NormSiluGateKernel` 误用 `Silu(z)` (conv1d 的 `hidden_act`)。测试 CPU
+    参考也自洽地用了 Silu, 故单元测试一直"通过"。改 `NormGateKernel` 用
+    `Sigmoid(z)` (36/48 层受影响) + 测试参考同步。**验证**: 2 层 C++ 与
+    PyTorch 参考 (transformers `Qwen4ExpTextModel`, 真实权重, PLE sidecar
+    gather) logits **argmax 全匹配** (cos 0.976–0.999); 48 层 generate 输出
+    通顺文本 (含 thinking 模式, 能自我纠正)。
+    - 附带: 参考脚本 e4m3 解码修正 — 专家 scale 是无符号 UE4M3 (仅 0x7F
+      =NaN, 0x78–0x7E = 256–448 有限值), 之前误把所有 exp=15 当 NaN 导致
+      参考全 NaN; 实测 checkpoint scale 字节全部 ≤0x7E, 与 C++ 解码一致。
   - ⏳ MTP 1 层 (fc_embedding/fc_hidden + pre_fc_norm + full_attention +
     BF16 MoE + mtp_hc)。
   - ⏳ 长序列 QSA 稀疏路径 (T>2048) + 逐 token 对 SGLang 参考验证。

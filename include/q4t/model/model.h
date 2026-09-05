@@ -97,9 +97,20 @@ Status LoadPleHashParams(const io::WeightLoader& loader,
 Status LoadModel(const ModelConfig& cfg, Model* out, cudaStream_t stream);
 
 // Run one prefill forward: input_ids [T] (host int32) -> logits [T, vocab]
-// (device BF16). T must be <= cfg.max_prefill.
+// (device BF16). T must be <= cfg.max_prefill. Prefill starts from empty
+// per-layer state (positions 0..T-1).
 Status ModelForward(const Model& m, const int32_t* input_ids, int T,
                     uint16_t* logits, cudaStream_t stream);
+
+// Run one decode step for a single new token: token_id at absolute position
+// `position` -> logits [1, vocab] (device BF16). Per-layer state is NOT reset
+// (it continues from the prior steps, so call ModelForward first for the
+// prompt). `history` is the host int32 array of the tokens already generated
+// before this one (prompt + previously decoded tokens), length >= position;
+// it supplies the PLE n-gram context for the new token.
+Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
+                       const int32_t* history, uint16_t* logits,
+                       cudaStream_t stream);
 
 }  // namespace model
 }  // namespace q4t

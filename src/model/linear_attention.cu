@@ -2,8 +2,8 @@
 // linear_attention.h for the math. Kernels mirror the qwen35-thor reference
 // (reference/qwen35-thor/src/engine/light_ops.cu): a causal conv1d (SiLU) over
 // the in_qkv channels, the Gated DeltaNet recurrence (S held in shared memory,
-// one block per value head), a fused per-head RMSNorm * silu(z) gate, and the
-// output projection.
+// one block per value head), a fused per-head RMSNorm * sigmoid(z) gate
+// (output_gate_type), and the output projection.
 #include "q4t/model/linear_attention.h"
 
 #include <cuda_bf16.h>
@@ -36,6 +36,9 @@ __device__ __forceinline__ uint16_t FloatToBf16(float f) {
 }
 __device__ __forceinline__ float Silu(float v) {
   return v / (1.0f + __expf(-v));
+}
+__device__ __forceinline__ float Sigmoid(float v) {
+  return 1.0f / (1.0f + __expf(-v));
 }
 
 // Block-wide sum reduction over blockDim.x threads (result in shared slot 0).
@@ -217,15 +220,17 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetKernel(
     ssm[ss_base + i * vd + j] = FloatToBf16(S_smem[i * vd_pad + j]);
 }
 
-// Fused per-head RMSNorm * silu(z) gate. One block per (token, value head),
-// 128 threads (one per vd). Mirrors qwen35-thor fused_norm_silu_gate_kernel.
-//   y_ssm : [T, nv, vd] (in-place: becomes rmsnorm(y_ssm) * silu(z))
+// Fused per-head RMSNorm * gate(z) gate. One block per (token, value head),
+// 128 threads (one per vd). The gate activation is `output_gate_type` from the
+// config (sigmoid for qwen4_exp), NOT the conv1d activation (silu). Mirrors
+// transformers Qwen4ExpTextRMSNormGated: weight * rmsnorm(x) * ACT(gate).
+//   y_ssm : [T, nv, vd] (in-place: becomes rmsnorm(y_ssm) * sigmoid(z))
 //   z     : [T, nv, vd]
 //   weight: [vd] (plain scale, not centered)
-__global__ void NormSiluGateKernel(uint16_t* __restrict__ y_ssm,
-                                   const uint16_t* __restrict__ z,
-                                   const uint16_t* __restrict__ weight,
-                                   float eps, int nv, int vd) {
+__global__ void NormGateKernel(uint16_t* __restrict__ y_ssm,
+                               const uint16_t* __restrict__ z,
+                               const uint16_t* __restrict__ weight,
+                               float eps, int nv, int vd) {
   const int token = blockIdx.x;
   const int head = blockIdx.y;
   const int tid = threadIdx.x;
@@ -247,7 +252,7 @@ __global__ void NormSiluGateKernel(uint16_t* __restrict__ y_ssm,
     const float w = Bf16ToFloat(weight[i]);
     const float normalized = y_val * inv_rms * w;
     const float z_val = Bf16ToFloat(z[off + i]);
-    y_ssm[off + i] = FloatToBf16(normalized * Silu(z_val));
+    y_ssm[off + i] = FloatToBf16(normalized * Sigmoid(z_val));
   }
 }
 
@@ -496,11 +501,11 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
     }
   }
 
-  // 4. Fused per-head RMSNorm * silu(z) gate (in-place on d_y_ssm).
+  // 4. Fused per-head RMSNorm * sigmoid(z) gate (in-place on d_y_ssm).
   {
     dim3 grid(T, nv);
-    NormSiluGateKernel<<<grid, 128, 0, stream>>>(d_y_ssm, d_z, w.norm, w.eps,
-                                                 nv, vd);
+    NormGateKernel<<<grid, 128, 0, stream>>>(d_y_ssm, d_z, w.norm, w.eps, nv,
+                                             vd);
     if (cudaGetLastError() != cudaSuccess) {
       free_all();
       return Status::Fail("norm gate launch");

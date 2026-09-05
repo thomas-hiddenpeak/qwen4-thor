@@ -220,10 +220,44 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   return Status();
 }
 
+// Shared layer loop over [0, num_layers), reading `trunk`/`next` (ping-pong)
+// and the per-token PLE embeddings `ple_emb` (null when no PLE layer in range).
+// `ids64` / `hist` are the host int64 token ids and ngram history used to
+// gather the PLE embedding at the PLE layer.
+Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
+                 const int64_t* ids64, const int64_t* hist, int T,
+                 uint16_t* logits, cudaStream_t stream) {
+  const ModelConfig& cfg = m.cfg;
+  const uint16_t* trunk = trunk_in;
+  uint16_t* next = trunk2;
+  for (int l = 0; l < cfg.num_layers; ++l) {
+    const uint16_t* ple_emb = nullptr;
+    if (m.layers[l].has_ple) {
+      Status s =
+          m.ple_emb->Gather(ids64, T, hist, m.d_ple_emb, stream);
+      if (!s.ok()) return s;
+      // Apply the per-table weight_scale (SGLang: embeddings *= weight_scale).
+      const int total = T * static_cast<int>(m.ple_emb->ple_embed_dim());
+      ScaleBf16Kernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
+          m.d_ple_emb, total, m.ple_weight_scale);
+      if (cudaGetLastError() != cudaSuccess) {
+        return Status::Fail("ple scale launch");
+      }
+      ple_emb = m.d_ple_emb;
+    }
+    Status s = DecoderLayerForward(m.layers[l], trunk, ple_emb, next,
+                                   m.d_positions, T, m.d_ws, m.ws_bytes, stream);
+    if (!s.ok()) return s;
+    const uint16_t* t = trunk;
+    trunk = next;
+    next = const_cast<uint16_t*>(t);
+  }
+  return HeadForward(m.head, trunk, logits, T, m.d_ws, m.ws_bytes, stream);
+}
+
 Status ModelForward(const Model& m, const int32_t* input_ids, int T,
                     uint16_t* logits, cudaStream_t stream) {
   const ModelConfig& cfg = m.cfg;
-  const int hc_dim = m.hc_dim();
   if (T <= 0) return Status();
   if (T > cfg.max_prefill) {
     return Status::Fail("ModelForward: T exceeds max_prefill");
@@ -253,47 +287,71 @@ Status ModelForward(const Model& m, const int32_t* input_ids, int T,
   s = ExpandTrunk(m.head, m.d_emb, m.d_trunk, T, stream);
   if (!s.ok()) return s;
 
-  // 4. Layer loop (trunk ping-pongs between d_trunk / d_trunk2).
-  const uint16_t* trunk = m.d_trunk;
-  uint16_t* next = m.d_trunk2;
-  for (int l = 0; l < cfg.num_layers; ++l) {
-    const uint16_t* ple_emb = nullptr;
-    if (m.layers[l].has_ple) {
-      // Build the ngram history (host): for token t, the ngram_size-1
-      // preceding tokens oldest->newest, EOS-filled before the sequence start.
-      const int ngram = m.ple_hash.ngram_size;
-      const int hist_w = ngram - 1;
-      std::vector<int64_t> hist(static_cast<size_t>(T) * hist_w);
-      for (int t = 0; t < T; ++t) {
-        for (int j = 0; j < hist_w; ++j) {
-          const int src = t - (hist_w - j);  // oldest first
-          hist[static_cast<size_t>(t) * hist_w + j] =
-              (src >= 0) ? static_cast<int64_t>(input_ids[src])
-                         : cfg.eos_token_id;
-        }
+  // 4. Build the PLE ngram history (host): for token t, the ngram_size-1
+  //    preceding tokens oldest->newest, EOS-filled before the sequence start.
+  std::vector<int64_t> hist;
+  if (m.ple_emb) {
+    const int hist_w = m.ple_hash.ngram_size - 1;
+    hist.resize(static_cast<size_t>(T) * hist_w);
+    for (int t = 0; t < T; ++t) {
+      for (int j = 0; j < hist_w; ++j) {
+        const int src = t - (hist_w - j);  // oldest first
+        hist[static_cast<size_t>(t) * hist_w + j] =
+            (src >= 0) ? static_cast<int64_t>(input_ids[src])
+                       : cfg.eos_token_id;
       }
-      s = m.ple_emb->Gather(ids64.data(), T, hist.data(), m.d_ple_emb, stream);
-      if (!s.ok()) return s;
-      // Apply the per-table weight_scale (SGLang: embeddings *= weight_scale).
-      const int total = T * static_cast<int>(m.ple_emb->ple_embed_dim());
-      ScaleBf16Kernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
-          m.d_ple_emb, total, m.ple_weight_scale);
-      if (cudaGetLastError() != cudaSuccess) {
-        return Status::Fail("ple scale launch");
-      }
-      ple_emb = m.d_ple_emb;
     }
-    s = DecoderLayerForward(m.layers[l], trunk, ple_emb, next, m.d_positions,
-                            T, m.d_ws, m.ws_bytes, stream);
-    if (!s.ok()) return s;
-    const uint16_t* t = trunk;
-    trunk = next;
-    next = const_cast<uint16_t*>(t);
   }
 
-  // 5. Head (mixer.mix + lm_head).
-  s = HeadForward(m.head, trunk, logits, T, m.d_ws, m.ws_bytes, stream);
-  return s;
+  // 5. Layer loop + head.
+  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), T,
+                   logits, stream);
+}
+
+Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
+                       const int32_t* history, uint16_t* logits,
+                       cudaStream_t stream) {
+  const ModelConfig& cfg = m.cfg;
+  if (position < 0) return Status::Fail("ModelDecodeStep: position < 0");
+  if (position >= cfg.max_len) {
+    return Status::Fail("ModelDecodeStep: position exceeds max_len");
+  }
+
+  // Per-layer state is NOT reset: it continues from the prior steps.
+  // 1. ids + positions (single token at its absolute position).
+  if (cudaMemcpyAsync(m.d_ids, &token_id, sizeof(int32_t),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess) {
+    return Status::Fail("H2D id");
+  }
+  const int pos = position;
+  if (cudaMemcpyAsync(m.d_positions, &pos, sizeof(int), cudaMemcpyHostToDevice,
+                      stream) != cudaSuccess) {
+    return Status::Fail("H2D position");
+  }
+
+  // 2-3. emb + trunk.
+  Status s = EmbedLookup(m.head, m.d_ids, m.d_emb, 1, stream);
+  if (!s.ok()) return s;
+  s = ExpandTrunk(m.head, m.d_emb, m.d_trunk, 1, stream);
+  if (!s.ok()) return s;
+
+  // 4. PLE ngram history for this token: the ngram_size-1 preceding tokens
+  //    (from `history`, oldest->newest), EOS-filled before the start.
+  std::vector<int64_t> ids64(1, static_cast<int64_t>(token_id));
+  std::vector<int64_t> hist;
+  if (m.ple_emb) {
+    const int hist_w = m.ple_hash.ngram_size - 1;
+    hist.resize(hist_w);
+    for (int j = 0; j < hist_w; ++j) {
+      const int src = position - (hist_w - j);  // oldest first
+      hist[j] = (src >= 0) ? static_cast<int64_t>(history[src])
+                           : cfg.eos_token_id;
+    }
+  }
+
+  // 5. Layer loop + head.
+  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), 1,
+                   logits, stream);
 }
 
 }  // namespace model

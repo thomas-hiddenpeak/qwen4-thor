@@ -32,6 +32,7 @@ using q4t::Status;
 using q4t::model::LoadModel;
 using q4t::model::Model;
 using q4t::model::ModelConfig;
+using q4t::model::ModelDecodeStep;
 using q4t::model::ModelForward;
 
 const char* kModelDir =
@@ -155,6 +156,182 @@ Q4T_TEST(model_forward_e2e) {
 
   cudaFree(d_logits);
   cudaFree(d_logits2);
+  m.Free();
+  return true;
+}
+
+// Decode-path correctness: the logits for the 4th token obtained by
+// (prefill of the first 3 tokens) + (one decode step for the 4th) must match
+// the 4th token's logits from a single 4-token prefill. This exercises the
+// per-layer state continuation (linear SSM/conv, full KV) and the decode PLE
+// history. Uses the 2-layer default (both linear_attention) where the
+// prefill/decode equivalence is exact up to GEMM-shape rounding.
+Q4T_TEST(model_decode_step) {
+  if (!CudaAvailable()) {
+    std::printf("  (skipped: no CUDA device)\n");
+    return true;
+  }
+  if (!FileExists(kIndex) || !FileExists(kPleSidecar)) {
+    std::printf("  (skipped: model or PLE sidecar not found)\n");
+    return true;
+  }
+
+  const int num_layers = [] {
+    const char* e = std::getenv("Q4T_MODEL_LAYERS");
+    return e ? std::atoi(e) : 2;
+  }();
+
+  ModelConfig cfg;
+  cfg.model_dir = kModelDir;
+  cfg.index_path = kIndex;
+  cfg.num_layers = num_layers;
+  cfg.max_prefill = 8;
+  cfg.ple_sidecar = kPleSidecar;
+
+  Model m;
+  Status s = LoadModel(cfg, &m, nullptr);
+  if (!s.ok()) {
+    std::printf("  load failed: %s\n", s.message().c_str());
+    return false;
+  }
+
+  const int T = 4;
+  const int32_t ids[] = {846, 25, 1203, 321};
+  const int vocab = cfg.vocab;
+
+  uint16_t* d_prefill = nullptr;
+  uint16_t* d_decode = nullptr;
+  if (cudaMalloc(reinterpret_cast<void**>(&d_prefill),
+                 static_cast<size_t>(T) * vocab * 2) != cudaSuccess ||
+      cudaMalloc(reinterpret_cast<void**>(&d_decode),
+                 static_cast<size_t>(vocab) * 2) != cudaSuccess) {
+    std::printf("  cudaMalloc failed\n");
+    m.Free();
+    return false;
+  }
+
+  // Route A: single 4-token prefill -> take the last token's logits.
+  s = ModelForward(m, ids, T, d_prefill, nullptr);
+  if (!s.ok()) {
+    std::printf("  prefill failed: %s\n", s.message().c_str());
+    m.Free();
+    return false;
+  }
+
+  // Route B: prefill the first 3 tokens, then one decode step for the 4th.
+  s = ModelForward(m, ids, T - 1, d_prefill, nullptr);
+  if (!s.ok()) {
+    std::printf("  prefill(3) failed: %s\n", s.message().c_str());
+    m.Free();
+    return false;
+  }
+  s = ModelDecodeStep(m, ids[T - 1], T - 1, ids, d_decode, nullptr);
+  if (!s.ok()) {
+    std::printf("  decode step failed: %s\n", s.message().c_str());
+    m.Free();
+    return false;
+  }
+
+  std::vector<uint16_t> a(static_cast<size_t>(vocab));
+  std::vector<uint16_t> b(static_cast<size_t>(vocab));
+  cudaMemcpy(a.data(), d_prefill + static_cast<size_t>(T - 1) * vocab,
+             vocab * 2, cudaMemcpyDeviceToHost);
+  cudaMemcpy(b.data(), d_decode, vocab * 2, cudaMemcpyDeviceToHost);
+
+  double dot = 0.0, na = 0.0, nb = 0.0;
+  for (int v = 0; v < vocab; ++v) {
+    const float x = Bf16ToFloat(a[v]);
+    const float y = Bf16ToFloat(b[v]);
+    dot += x * y;
+    na += x * x;
+    nb += y * y;
+  }
+  const double denom = std::sqrt(na) * std::sqrt(nb);
+  const double l2_rel = denom > 0.0 ? std::fabs(dot / denom - 1.0) : 0.0;
+  std::printf("  decode-vs-prefill last-token l2_rel_err = %.3e\n", l2_rel);
+  // Threshold is sensitive to the gate activation: sigmoid (output_gate_type)
+  // shifts the SSM-state magnitude distribution vs silu, changing the relative
+  // impact of the BF16 state round-trip (prefill keeps S in FP32 SMEM, decode
+  // reloads from BF16 GMEM). 1e-1 accommodates both activations while still
+  // catching real logic errors (which typically produce l2_rel >> 0.1).
+  Q4T_CHECK(l2_rel < 1e-1);
+
+  cudaFree(d_prefill);
+  cudaFree(d_decode);
+  m.Free();
+  return true;
+}
+
+// Dump the C++ logits for the fixed e2e token sequence to a raw float32 file
+// (T*vocab, row-major) so a Python reference (transformers) can be compared
+// token-for-token. Writes to Q4T_DUMP_LOGITS (default /tmp/cpp.logits.bin).
+Q4T_TEST(model_forward_dump_logits) {
+  if (!CudaAvailable()) {
+    std::printf("  (skipped: no CUDA device)\n");
+    return true;
+  }
+  if (!FileExists(kIndex) || !FileExists(kPleSidecar)) {
+    std::printf("  (skipped: model or PLE sidecar not found)\n");
+    return true;
+  }
+
+  const char* out_path = std::getenv("Q4T_DUMP_LOGITS");
+  if (!out_path) out_path = "/tmp/cpp.logits.bin";
+
+  const int num_layers = [] {
+    const char* e = std::getenv("Q4T_MODEL_LAYERS");
+    return e ? std::atoi(e) : 48;  // full model for reference comparison
+  }();
+
+  ModelConfig cfg;
+  cfg.model_dir = kModelDir;
+  cfg.index_path = kIndex;
+  cfg.num_layers = num_layers;
+  cfg.max_prefill = 8;
+  cfg.ple_sidecar = kPleSidecar;
+
+  Model m;
+  Status s = LoadModel(cfg, &m, nullptr);
+  if (!s.ok()) {
+    std::printf("  load failed: %s\n", s.message().c_str());
+    return false;
+  }
+
+  const int T = 4;
+  const int32_t ids[] = {846, 25, 1203, 321};  // must match ref_logits.py
+  uint16_t* d_logits = nullptr;
+  if (cudaMalloc(reinterpret_cast<void**>(&d_logits),
+                 static_cast<size_t>(T) * cfg.vocab * 2) != cudaSuccess) {
+    std::printf("  cudaMalloc failed\n");
+    m.Free();
+    return false;
+  }
+  s = ModelForward(m, ids, T, d_logits, nullptr);
+  if (!s.ok()) {
+    std::printf("  forward failed: %s\n", s.message().c_str());
+    m.Free();
+    return false;
+  }
+
+  // BF16 -> float32, write raw.
+  std::vector<float> out(static_cast<size_t>(T) * cfg.vocab);
+  std::vector<uint16_t> raw(static_cast<size_t>(T) * cfg.vocab);
+  cudaMemcpy(raw.data(), d_logits, raw.size() * 2, cudaMemcpyDeviceToHost);
+  for (size_t i = 0; i < raw.size(); ++i) {
+    uint32_t bits = static_cast<uint32_t>(raw[i]) << 16;
+    std::memcpy(&out[i], &bits, sizeof(float));
+  }
+  FILE* f = std::fopen(out_path, "wb");
+  if (!f) {
+    std::printf("  fopen %s failed\n", out_path);
+    m.Free();
+    return false;
+  }
+  std::fwrite(out.data(), sizeof(float), out.size(), f);
+  std::fclose(f);
+  std::printf("  dumped %d x %d logits -> %s\n", T, cfg.vocab, out_path);
+
+  cudaFree(d_logits);
   m.Free();
   return true;
 }

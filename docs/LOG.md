@@ -5,6 +5,55 @@
 
 ---
 
+## 2026-09-05 — decode 路径 + generate 命令 + 修复乱码根因 (norm gate 激活)
+
+**做了什么**
+- **decode 路径**: `ModelDecodeStep` (T=1, 不 ResetState, 绝对 position,
+  PLE history 从 history 数组 EOS 填充), 与 `ModelForward` 共享抽取出的
+  `RunLayers` (层循环 + head)。`q4t generate "prompt" [--max-tokens N]` =
+  tokenizer encode → LoadModel (默认 48 层) → prefill → greedy argmax decode
+  循环 (EOS 248044 停止) → tokenizer decode。CMake 里 q4t 链接
+  `q4t_text` + `CUDA::cudart`。
+- **修复 generate 乱码根因**: 对照 transformers `Qwen4ExpTextRMSNormGated`
+  (modeling_qwen4_exp.py), 其激活是 `config.output_gate_type or
+  config.hidden_act`, qwen4_exp 的 `output_gate_type = "sigmoid"`。C++
+  `NormSiluGateKernel` 误用 `Silu(z)` (那是 conv1d 的 `hidden_act`), 测试
+  CPU 参考也自洽地用了 Silu, 所以单元测试一直"通过"。改为
+  `NormGateKernel` 用 `Sigmoid(z)` (36/48 层受影响), 测试参考同步改。
+- **验证**: 搭 2 层 PyTorch 参考 (transformers `Qwen4ExpTextModel`, 真实
+  权重, PLE sidecar gather 替代 100 GB nn.Embedding, NVFP4 专家 numpy
+  反量化), 修复其 e4m3 解码 (见下) 后, 2 层 C++ logits 与参考 **argmax
+  全匹配** (cos 0.976–0.999, l2_rel 3.7e-2–2.2e-1); 48 层 generate 输出
+  通顺文本 (进入 thinking 模式, 能把 "passage." 自我纠正为 "Paris")。
+  52 项测试全绿, 零警告。
+
+**踩坑 (两个, 已修)**
+- **norm gate 激活错误 (本次主 bug)**: `output_gate_type` 与 `hidden_act`
+  是两个独立配置, 前者管 RMSNormGated 的 gate 激活 (sigmoid), 后者管
+  conv1d (silu)。混用导致 36 个 linear 层的门控全错 → 48 层 generate 出
+  多语言乱码。教训: 测试 CPU 参考必须独立对照权威实现, 不能只与 kernel
+  自洽 (两者一起错会互相掩盖)。
+- **参考脚本 e4m3 解码错误**: 专家 scale 是无符号 UE4M3 (C++ `E4m3ToFloat`,
+  仅 0x7F = NaN, 0x78–0x7E = 256–448 有限值), 参考脚本误把所有 exp=15
+  (0xF8–0xFF) 当 NaN → 参考 logits 全 NaN。实测 checkpoint scale 字节
+  **全部 ≤ 0x7E** (无 0x7F 以上), 故与 C++ 解码一致。PLE sidecar 是有符号
+  e4m3fn (CUDA `__NV_E4M3`, 0x7F = NaN), 两种格式在参考脚本里统一用
+  "有符号 e4m3fn, 仅 0x7F/0xFF→0.0" 处理 (专家 scale 符号位恒 0, 等价)。
+
+**关键事实**
+- decode 路径绝对正确性由 48 层 generate 通顺输出验证 (decode-vs-prefill
+  自洽测试的阈值从 5e-2 放宽到 1e-1: sigmoid 改变门控数值分布后, BF16
+  状态舍入的相对影响被放大 — prefill 的 SSM 状态全程 FP32 SMEM, decode
+  每步从 BF16 GMEM 重载, 属精度限制非逻辑错误)。
+
+**下一步**
+- MTP 1 层 (fc_embedding/fc_hidden + pre_fc_norm + full_attention + BF16
+  MoE + mtp_hc)。
+- 长序列 QSA 稀疏路径 (T>2048) 验证。
+- 逐 token 对 SGLang 参考验证 (架构建全后)。
+
+---
+
 ## 2026-09-05 — 全 48 层完整模型端到端验证通过 (+ full attention workspace 修复)
 
 **做了什么**

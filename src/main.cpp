@@ -13,8 +13,14 @@
 #include <cuda_runtime.h>
 
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
+#include <memory>
 #include <string>
+#include <vector>
+
+#include "q4t/model/model.h"
+#include "q4t/text/tokenizer.h"
 
 namespace {
 
@@ -31,7 +37,8 @@ void PrintUsage(const char* prog) {
       "  version   Print version and build info\n"
       "  probe     Probe the target device\n"
       "  models    List catalogued model descriptors\n"
-      "  generate  Single greedy generation (not yet implemented)\n"
+      "  generate  Single greedy generation\n"
+      "            (q4t generate \"prompt\" [--max-tokens N])\n"
       "  serve     OpenAI-compatible HTTP API server (not yet "
       "implemented)\n",
       prog);
@@ -77,6 +84,146 @@ int RunProbe() {
   return 0;
 }
 
+// Single greedy generation: encode the prompt, run a prefill, then decode
+// token-by-token (argmax) until EOS or --max-tokens, and print the result.
+int RunGenerate(int argc, char** argv) {
+  const char* kDefaultModelDir =
+      "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
+  std::string model_dir = kDefaultModelDir;
+  int max_tokens = 64;
+  std::string prompt;
+
+  for (int i = 2; i < argc; ++i) {
+    const std::string a = argv[i];
+    if (a == "--model-dir" && i + 1 < argc) {
+      model_dir = argv[++i];
+    } else if (a == "--max-tokens" && i + 1 < argc) {
+      max_tokens = std::atoi(argv[++i]);
+    } else if (!a.empty() && a[0] == '-') {
+      std::fprintf(stderr, "Unknown option: %s\n", a.c_str());
+      return 2;
+    } else {
+      if (!prompt.empty()) prompt += " ";
+      prompt += a;
+    }
+  }
+  if (prompt.empty()) {
+    std::fprintf(stderr, "Usage: q4t generate \"prompt\" "
+                         "[--max-tokens N] [--model-dir DIR]\n");
+    return 2;
+  }
+
+  // 1. Tokenizer.
+  q4t::text::TokenizerLimits limits;
+  std::unique_ptr<q4t::text::Tokenizer> tok;
+  q4t::Status s = q4t::text::Tokenizer::Load(
+      model_dir + "/tokenizer.json", limits, &tok);
+  if (!s.ok()) {
+    std::fprintf(stderr, "tokenizer load failed: %s\n", s.message().c_str());
+    return 1;
+  }
+
+  // 2. Model.
+  q4t::model::ModelConfig cfg;
+  cfg.model_dir = model_dir;
+  cfg.index_path = model_dir + "/model.safetensors.index.json";
+  cfg.ple_sidecar =
+      model_dir + "/ple/qwen3.8-flash-next-ple-fp8.bin";
+  q4t::model::Model model;
+  s = q4t::model::LoadModel(cfg, &model, nullptr);
+  if (!s.ok()) {
+    std::fprintf(stderr, "model load failed: %s\n", s.message().c_str());
+    return 1;
+  }
+  std::fprintf(stderr, "[q4t] model loaded (%d layers)\n", cfg.num_layers);
+
+  // 3. Encode prompt.
+  std::vector<std::uint32_t> prompt_ids_u32;
+  s = tok->Encode(prompt, &prompt_ids_u32);
+  if (!s.ok()) {
+    std::fprintf(stderr, "encode failed: %s\n", s.message().c_str());
+    model.Free();
+    return 1;
+  }
+  std::vector<int32_t> ids(prompt_ids_u32.begin(), prompt_ids_u32.end());
+  std::fprintf(stderr, "[q4t] prompt: %zu tokens\n", ids.size());
+
+  // 4. Prefill.
+  const int vocab = cfg.vocab;
+  uint16_t* d_logits = nullptr;
+  if (cudaMalloc(reinterpret_cast<void**>(&d_logits),
+                 static_cast<size_t>(vocab) * 2) != cudaSuccess) {
+    std::fprintf(stderr, "cudaMalloc logits failed\n");
+    model.Free();
+    return 1;
+  }
+  std::vector<uint16_t> h_logits(static_cast<size_t>(vocab));
+
+  s = q4t::model::ModelForward(model, ids.data(), static_cast<int>(ids.size()),
+                               d_logits, nullptr);
+  if (!s.ok()) {
+    std::fprintf(stderr, "prefill failed: %s\n", s.message().c_str());
+    cudaFree(d_logits);
+    model.Free();
+    return 1;
+  }
+
+  // 5. Decode loop (greedy argmax).
+  auto argmax = [&](const uint16_t* h) {
+    int best = 0;
+    float best_v = -1e30f;
+    for (int v = 0; v < vocab; ++v) {
+      const uint32_t bits = static_cast<uint32_t>(h[v]) << 16;
+      float f;
+      std::memcpy(&f, &bits, sizeof(f));
+      if (f > best_v) {
+        best_v = f;
+        best = v;
+      }
+    }
+    return best;
+  };
+
+  std::vector<int32_t> generated;
+  int position = static_cast<int>(ids.size());
+  int next_token = -1;
+  // First decode token comes from the prefill's last position.
+  cudaMemcpy(h_logits.data(), d_logits, static_cast<size_t>(vocab) * 2,
+             cudaMemcpyDeviceToHost);
+  next_token = argmax(h_logits.data());
+
+  for (int step = 0; step < max_tokens; ++step) {
+    generated.push_back(next_token);
+    if (next_token == cfg.eos_token_id) break;
+    const int32_t tok_id = next_token;
+    s = q4t::model::ModelDecodeStep(model, tok_id, position, ids.data(),
+                                    d_logits, nullptr);
+    if (!s.ok()) {
+      std::fprintf(stderr, "decode step %d failed: %s\n", step,
+                   s.message().c_str());
+      break;
+    }
+    ids.push_back(tok_id);  // extend history for the next PLE context
+    ++position;
+    cudaMemcpy(h_logits.data(), d_logits, static_cast<size_t>(vocab) * 2,
+               cudaMemcpyDeviceToHost);
+    next_token = argmax(h_logits.data());
+  }
+
+  // 6. Decode and print.
+  std::vector<std::uint32_t> gen_u32(generated.begin(), generated.end());
+  std::string text;
+  s = tok->Decode(gen_u32, true, &text);
+  if (s.ok()) {
+    std::printf("%s", text.c_str());
+  }
+  std::fprintf(stderr, "\n[q4t] generated %zu tokens\n", generated.size());
+
+  cudaFree(d_logits);
+  model.Free();
+  return 0;
+}
+
 }  // namespace
 
 int main(int argc, char** argv) {
@@ -92,7 +239,10 @@ int main(int argc, char** argv) {
   if (cmd == "probe") {
     return RunProbe();
   }
-  if (cmd == "models" || cmd == "generate" || cmd == "serve") {
+  if (cmd == "generate") {
+    return RunGenerate(argc, argv);
+  }
+  if (cmd == "models" || cmd == "serve") {
     std::fprintf(stderr, "'%s' is not implemented yet (see docs/PHASES.md)\n",
                  cmd.c_str());
     return 2;

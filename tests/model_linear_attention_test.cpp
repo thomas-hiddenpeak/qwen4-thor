@@ -3,8 +3,9 @@
 // random [T, hs] input with zero-initialized SSM/conv state, and compares the
 // output (and final SSM state) against a full CPU reference that mirrors the
 // projections, causal conv1d (SiLU), the Gated DeltaNet recurrence, the
-// per-head RMSNorm*silu gate, and the output projection. Skipped (reported as
-// pass) when CUDA or the real model is absent.
+// per-head RMSNorm*sigmoid gate (output_gate_type), and the output
+// projection. Skipped (reported as pass) when CUDA or the real model is
+// absent.
 #include "q4t/io/weight_loader.h"
 #include "q4t/model/linear_attention.h"
 #include "q4t/test.h"
@@ -300,7 +301,7 @@ Q4T_TEST(linear_attention_forward) {
     }
   }
 
-  // 4. Fused per-head RMSNorm * silu(z) gate.
+  // 4. Fused per-head RMSNorm * sigmoid(z) gate (output_gate_type).
   for (int t = 0; t < kT; ++t) {
     for (int h_v = 0; h_v < kNv; ++h_v) {
       float* yrow = &y_ssm[static_cast<size_t>(t) * kVDim + h_v * kVd];
@@ -310,7 +311,7 @@ Q4T_TEST(linear_attention_forward) {
       const float inv_rms = 1.0f / std::sqrt(sum_sq / kVd + kEps);
       for (int i = 0; i < kVd; ++i) {
         const float normalized = yrow[i] * inv_rms * norm_w[i];
-        yrow[i] = Bf16Round(normalized * Silu(zrow[i]));
+        yrow[i] = Bf16Round(normalized * Sigmoid(zrow[i]));
       }
     }
   }
