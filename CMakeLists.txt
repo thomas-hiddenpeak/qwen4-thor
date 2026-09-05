@@ -133,7 +133,8 @@ add_library(q4t_model STATIC
   src/model/hyperconnection.cu
   src/model/linear_attention.cu
   src/model/full_attention.cu
-  src/model/moe.cu)
+  src/model/moe.cu
+  src/model/decoder_layer.cu)
 target_include_directories(q4t_model PUBLIC include)
 target_link_libraries(q4t_model PUBLIC q4t_io q4t_quant CUDA::cudart
                     CUDA::cublasLt)
@@ -165,6 +166,7 @@ if(Q4T_BUILD_TESTS)
     tests/model_hyperconnection_test.cpp
     tests/model_linear_attention_test.cpp
     tests/model_full_attention_test.cpp
+    tests/model_decoder_layer_test.cpp
     tests/model_moe_test.cpp
     tests/test_main.cpp)
   set(Q4T_TEST_LIBS q4t_ple q4t_io q4t_quant q4t_model)

@@ -209,6 +209,23 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     因果 GQA + sigmoid gate + o_proj) 一致, out L2 rel 4.6e-3。44 项测试
     全绿, 零警告。
   **→ 模型层 full_attention/QSA 完成 (待补: 层组装 + mixer + MTP)**
+- [x] 2026-09-05 模型层 (4/N): decoder layer 组装 (`decoder_layer.h/.cu`,
+  并入 `q4t_model`)。
+  - 把已验证的子模块 (HC mix/combine + linear/full attn + MoE) 接线成完整
+    decoder layer forward: `attn_hc.mix` → attn block → `attn_hc.combine` →
+    `mlp_hc.mix` → MoE → `mlp_hc.combine`。`DecoderLayer` 持有全部子模块
+    权重 + per-layer 持久 cache (linear SSM/conv, full KV/indexer),
+    `LoadDecoderLayer` 按 layer_id 自动选 linear/full 并加载 4 组权重
+    (attn_hc / mlp_hc / attn block / MoE)。
+  - **关键**: 单一 device workspace 按子模块 carve, 每个 offset 必须
+    **256 字节对齐** (cuBLASLt 拒绝未对齐 scratch 指针, 否则 INVALID_VALUE)。
+  - PLE 注入 (layer 2, attn_hc.mix 之前) 尚未接线 (PLE 层 short-conv +
+    key/value proj + gated reduce 是独立模块), 当前 `has_ple=false`。
+  - 测试 `model_decoder_layer_test.cpp`: 真实 layer-0 (linear, 无 PLE),
+    用两条独立路径 (生产 `DecoderLayerForward` vs 手动分步调用子模块) 从
+    相同零初始状态出发, 输出逐位一致 (A-vs-B L2 rel 0.0)。45 项测试全绿,
+    零警告。
+  **→ 模型层 decoder layer 组装完成 (待补: PLE 注入 + mixer + MTP + 层循环)**
 
 ## 进行中
 
@@ -271,12 +288,15 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     centered RMSNorm + partial RoPE + attn gate + QSA indexer (压缩 K + MQA
     logits + block top-512) + 稀疏注意力 (online softmax)。真实 layer-3 权重
     验证 (out L2 rel 4.6e-3)。
-  - ⏳ 层 forward 接线 (HC mix/combine + linear/full attn + MoE 已就绪,
-    待组装成完整 decoder layer)。
+  - ✅ `decoder_layer.h/.cu` decoder layer 组装: HC mix → attn → HC combine
+    → HC mix → MoE → HC combine, 单一 workspace carve (256 字节对齐)。真实
+    layer-0 两条独立路径逐位一致 (A-vs-B L2 rel 0.0)。
+  - ⏳ PLE 层注入 (layer 2, attn_hc.mix 之前): short-conv + key/value proj +
+    gated reduce (PleEmbedding gather 已就绪, 待 PLE 层 forward 模块)。
   - ⏳ `hyper_connection_mixer` (use_combine=False) 收尾 mix → lm_head。
-  - ⏳ MTP 1 层 (mtp_hc: hc_count+1)。
-  **→ 模型层: HC 主干 + MoE + linear_attention + full_attention/QSA 完成,
-    待层组装**
+  - ⏳ MTP 1 层 (mtp_hc: hc_count+1) + 48 层循环 + embedding/norm。
+  **→ 模型层: HC + MoE + linear + full/QSA + decoder layer 组装完成,
+    待 PLE 注入 + mixer + MTP + 层循环**
 
 ## 阻塞 / 风险
 

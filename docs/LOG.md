@@ -5,6 +5,51 @@
 
 ---
 
+## 2026-09-05 — 模型层 (4/N): decoder layer 组装
+
+**做了什么**
+- 新增 `include/q4t/model/decoder_layer.h` + `src/model/decoder_layer.cu`,
+  并入 `q4t_model`。把已验证的子模块接线成完整 decoder layer
+  (`DecoderLayer` + `LoadDecoderLayer` + `DecoderLayerForward`):
+  1. `attn_hc.mix(hyper_input)` → mixed_attn [T,hs] + res_a
+  2. attn block (linear 或 full, 按 `layer_id % 4 == 3` 选)
+  3. `attn_hc.combine(attn_out, hyper_input, res_a)` → combined_a [T,hc*hs]
+  4. `mlp_hc.mix(combined_a)` → mixed_mlp [T,hs] + res_m
+  5. MoE (routed NVFP4 + shared BF16)
+  6. `mlp_hc.combine(mlp_out, combined_a, res_m)` → out [T,hc*hs]
+- `DecoderLayer` 持有全部子模块权重 (attn_hc / mlp_hc / linear|full / MoE
+  routed+extra) + per-layer 持久 cache (linear: ssm_state [48,128,128] +
+  conv_state [10240,3]; full: kv_cache [max_len,2,2,256] + idx_raw/idx_comp
+  [max_len,128])。`LoadDecoderLayer` 按 layer_id 自动选 attn 类型并加载 4 组
+  权重 (HC 前缀 `attn_hyper_connection`/`mlp_hyper_connection`, attn 前缀
+  `linear_attn`/`self_attn`, MoE 前缀 `mlp`)。
+- 单一 device workspace 按子模块 carve (attn / moe / moe-gemm / hc), 每个
+  offset 256 字节对齐。
+- 测试 `tests/model_decoder_layer_test.cpp`: 真实 layer-0 (linear, 无 PLE),
+  用两条独立路径从相同零初始状态出发 — (A) 生产 `DecoderLayerForward`,
+  (B) 手动分步调用子模块 (独立 workspace 布局) — 输出**逐位一致**
+  (A-vs-B L2 rel 0.0)。这验证了层组装的接线 / workspace 划分 / 顺序正确
+  (子模块数值已由各自测试保证)。45 项测试全绿, 零警告。
+
+**踩坑 (一个, 已修)**
+- **workspace carve 未对齐**: route A 报 `Bf16Gemm failed (status=7)`
+  (cuBLAS INVALID_VALUE)。子模块单独测试都通过 (各自 cudaMalloc 独立
+  workspace), 区别在层组装用单一 workspace carve — `MoEForwardWorkspaceBytes`
+  返回的 `moe_carve` 不是 256 字节对齐, 导致后续 `d_moe_gemm`/`d_hc_ws`
+  指针未对齐, cuBLASLt 拒绝。修复: carve 时每个 offset 用 `AlignUp(256)`
+  对齐。教训: 从单一 buffer carve 给 cuBLASLt 的 scratch 时, 每个 region
+  起点必须对齐 (≥256 字节), 不能裸加字节偏移。
+
+**下一步**
+- PLE 层注入 (layer 2, `attn_hc.mix` 之前): SGLang `Qwen4ExpPLELayer.forward`
+  (key/value_proj + gated reduce + short_conv)。`PleEmbedding` gather 已就绪,
+  待 PLE 层 forward 模块 (short-conv + proj + gate)。
+- `hyper_connection_mixer` (use_combine=False) 收尾 mix → lm_head。
+- MTP 1 层 + 48 层循环 + embedding/norm → 完整模型 forward。
+- 之后: 长序列 QSA 稀疏路径验证 + 拆 `BuildCompressedKKernel` 竞态。
+
+---
+
 ## 2026-09-05 — 模型层 (3b/N): full_attention (QSA 稀疏注意力)
 
 **做了什么**
