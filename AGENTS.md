@@ -55,5 +55,10 @@ cmake --build build --parallel
 
 - 阶段: Phase 1 (核心推理引擎 + PLE SSD Stream + HTTP API)
 - 模型下载: 已完成 (140 GB, 含 51.2 GB PLE sidecar)
-- 下一步: 研读 sglang-ssd-stream 源码, 理解 PLE 查找机制与 qwen4_exp
-  forward pass, 然后开始实现
+- 已完成: PLE 流式层 (核心特性) / IO 层 (JSON/safetensors/config/权重/
+  tokenizer) / 量化层 (NVFP4 W4A4 全套) / 模型层 (48 层完整 forward +
+  PLE 注入 + head/tail + generate + 长序列 QSA 稀疏路径) / serve (OpenAI
+  兼容 HTTP API)。52 项测试全绿, 零警告。
+- 下一步: **Paged KV cache** (PD-ready 前提, Phase 1 硬需求, 替代当前
+  连续 KV) → MTP 推测解码 (用户排期) → 多模态图像输入 → 逐 token 对
+  参考验证。完整多设备 PD 部署归 Phase 2。

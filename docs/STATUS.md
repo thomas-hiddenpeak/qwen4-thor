@@ -401,7 +401,7 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   - **验证 (真实 curl)**: `/healthz` → ok; `/v1/models` → 正确列表; 非流式
     "The capital of France is" → 通顺英文 + thinking, 格式正确; 流式
     "Say hello in one word" → "Hello", SSE 格式正确。52 项测试全绿, 零警告。
-  **→ Phase 1 服务层 (serve) 完成, 待 MTP + 长序列验证**
+  **→ Phase 1 服务层 (serve) 完成**
 
 ## 阻塞 / 风险
 

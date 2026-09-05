@@ -74,8 +74,9 @@ reference/
     映射 `_EXTRA_WEIGHTS_MAPPER`)。
   - `nvidia/hyperconnection.py` + `ops/hc.py` — HC (GatedResidual) 参考。
 - 注意: vLLM 是 CUDA/ROCm 双后端 (nvidia/ 与 amd/ 目录), 本项目只参考
-  nvidia/ 路径; vLLM 用 paged KV + torch.compile, 本项目是连续 KV +
-  手写 CUDA kernel, 架构不同, 只取算法与张量布局语义。
+  nvidia/ 路径; vLLM 用 paged KV + torch.compile, 本项目是手写 CUDA
+  kernel, 架构不同, 只取算法与张量布局语义。KV 方面本项目正从连续 KV
+  迁移到 Paged KV (PD-ready 前提, 见 ARCHITECTURE.md "PD-ready 架构")。
 
 ## qwen35-thor (架构模式参考)
 

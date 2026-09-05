@@ -62,6 +62,7 @@ cmake --build build --parallel
 |---|---|
 | [qwen35-thor](https://github.com/thomas-hiddenpeak/qwen35-thor) | 同硬件 Qwen3.5 推理引擎, 架构模式参考 |
 | [sglang-ssd-stream](https://github.com/garnermccloud/sglang-ssd-stream) | PLE SSD Stream 机制参考 |
+| [vllm](https://github.com/vllm-project/vllm) | qwen4_exp 完整实现, MTP/QSA 权威参考 |
 | [thor-probe](https://github.com/thomas-hiddenpeak/thor-probe) | 硬件探测方法 |
 | [thor-bench](https://github.com/thomas-hiddenpeak/thor-bench) | 硬件性能基线 |
 
