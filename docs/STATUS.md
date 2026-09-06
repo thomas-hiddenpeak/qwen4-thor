@@ -440,14 +440,20 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     清零, Free 释放, ResetState 重置), `DepthwiseConvKernel` 在
     `src<0` 时读 `state[c, src+9]` (fresh 序列 state=0 → 等价零填充,
     prefill 路径不变), 新增 `PleConvUpdateStateKernel` 卷积后滑动窗口
-    (同 `Conv1dUpdateStateKernel` 逻辑, state_len=9)。修复后:
-    ① `ple_conv_out` batch vs incremental **bit-identical**
-    (l2_rel 0.103→0.0); ② 3 层 4 步 logits batch vs incremental
-    **4/4 bit-identical** (此前 step 2 l2_rel=0.317); ③ 4 层 greedy
-    第 4 token 10196→36634 (与参考/C++ batch 一致); ④ 自洽检查
-    4/4 cos=1.000000。此前 "MoE/HC GEMM cuBLASLt 算法差" 的归因
-    **错误** — 发散全部来自 PLE conv 缺状态, GEMM 形状差在此序列
-    上实测为 0。**54 项测试全绿, 零警告**。  - ✅ **长序列 QSA 稀疏路径 (T>2048) 端到端验证 + 修复**: 用自然语言长文
+    (同 `Conv1dUpdateStateKernel` 逻辑, state_len=9)。修复后 (两个
+    **不同**的对照, 勿混):
+    **(A) C++ 自洽** (batch prefill vs incremental decode, 均 NVFP4, 测
+    C++ 状态处理): ① `ple_conv_out` batch vs incremental **bit-identical**
+    (l2_rel 0.103→0.0); ② 3 层 4 步 logits **4/4 bit-identical** (此前
+    step 2 l2_rel=0.317); ③ 4 层 8 步自洽 cos 0.9985–1.0, argmax 8/8。
+    **(B) C++ vs 参考** (NVFP4 vs transformers FP32, 同序列, 测不可消除的
+    NVFP4 量化误差): 4 层 8 步对齐序列 **6/8 argmax 匹配** (first-max,
+    与生成一致); 2 个不匹配均为参考侧 near-tie (ref top2 gap 0.020 /
+    0.055, l2_rel 0.10–0.11 的 NVFP4 噪声可翻转), **非状态 bug**。
+    此前 "4/4 argmax 全匹配" 是**修复前**的巧合 (bug 的误差恰好保住了
+    argmax 顺序, 而 l2_rel 比修复后差 4–12 倍)。此前 "MoE/HC GEMM
+    cuBLASLt 算法差" 的归因**错误** — 发散全部来自 PLE conv 缺状态,
+    GEMM 形状差在此序列上实测为 0。**54 项测试全绿, 零警告**。  - ✅ **长序列 QSA 稀疏路径 (T>2048) 端到端验证 + 修复**: 用自然语言长文
     (prompt 1612 + decode 600, 越过 2048 稀疏激活点) 验证, 输出全程连贯。
     期间定位并修复 4 个稀疏路径 bug (见下)。
     - **`IndexerLogitsKernel` 共享内存越界 (illegal memory access)**:

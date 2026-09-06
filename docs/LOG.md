@@ -5,6 +5,50 @@
 
 ---
 
+## 2026-09-06 — 更正: "4/4 argmax 全匹配" 是修复前的巧合; 区分两个对照
+
+**背景**
+上一条 (PLE short-conv 修复) 的 "验证" 把两个**不同**的对照混为一谈,
+且其中 "4/4 argmax 全匹配" 实为**修复前**的测量。本轮用 first-max argmax
+(与生成一致, 非不稳定 argsort) 和**参考侧** top2 gap (非 C++ 侧) 重新
+量化, 并扩展到更长历史 (4 层含首个 full_attention, 8 步 decode)。
+
+**两个对照 (勿混)**
+- **(A) C++ 自洽**: batch prefill vs incremental decode, 均 C++ NVFP4,
+  只测 C++ 状态处理。修复后: 3 层 4 步 logits 4/4 bit-identical;
+  4 层 8 步 cos 0.9985–1.0, argmax 8/8。✅
+- **(B) C++ vs 参考**: C++ NVFP4 vs transformers FP32, 同序列, 测
+  **不可消除**的 NVFP4 量化误差。4 层 8 步对齐序列 **6/8 argmax 匹配**;
+  2 个不匹配均为参考侧 near-tie (ref top2 gap 0.020 / 0.055, 被
+  l2_rel 0.10–0.11 的 NVFP4 噪声翻转), **非状态 bug**。
+
+**更正 (对上一条)**
+1. "4/4 argmax 全匹配" 是**修复前** C++ 在旧序列上的测量 — 巧合: bug 的
+   误差恰好保住了 argmax 顺序, 而 l2_rel 比修复后差 4–12 倍 (step 2
+   0.317 → 修复后 0.0265–0.0800)。**修复后**同序列实为 2/4 (first-max),
+   其中 step 0 是参考侧 near-tie (ref gap 0.0002), step 3 是 C++ 侧精确
+   并列 (94037 = 215981 = 6.84375, first-max 取小索引)。
+2. "near-tie argmax 翻转…非量化噪声" 的表述**不准确**: 对照参考时,
+   near-tie 翻转**就是** NVFP4 量化噪声的下游效应 (参考侧 gap 极小时,
+   不可消除的量化噪声足以翻转)。该表述仅在 (A) 自洽语境下成立。
+3. 此前比较脚本用 `np.argsort()[::-1]` (不稳定, 并列时顺序任意) 而非
+   first-max, 且打印的 "top2 gap" 是 **C++** 侧而非**参考**侧 — 已改。
+
+**更长历史验证 (4 层, 8 步, 对齐序列)**
+- 序列: 846 25 1203 321 31999 213559 220403 30080 36634 172581 95299 862
+- (A) 自洽: 8/8 argmax, cos 0.9985–1.0 ✅
+- (B) vs 参考: 6/8 argmax; step 5 near-tie (ref gap 0.020), step 7
+  中等 gap (0.055) 被噪声翻转。l2_rel 0.036–0.235 (step 1 偏高 0.235,
+  待查是否 full_attention 层量化误差更大)。
+- 修复的 `max_prefill` (原硬编码 8, 自洽 fresh prefill 需 T+N 行) 已改
+  为 `T + n_decode`。
+
+**下一步**
+继续扩展逐 token 对参考验证 (更多层/更长序列, 统计 near-tie 翻转率 vs
+序列长度); 然后进入 prefill/decode 性能优化 (预留 MTP 接口)。
+
+---
+
 ## 2026-09-06 — PLE short-conv 持久状态 bug 修复 (核心特性, 更正归因)
 
 **背景**

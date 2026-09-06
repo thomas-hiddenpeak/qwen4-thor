@@ -382,13 +382,32 @@ Q4T_TEST(model_sequence_api) {
 // conv state / PLE history across the prefill->decode boundary) — the part
 // the prefill-only dump does not cover.
 //
+// TWO DISTINCT COMPARISONS (do not conflate):
+//   (A) C++ SELF-CONSISTENCY (Q4T_DECODE_SELFCHK): a fresh batched prefill
+//       of the full sequence vs the incremental "prefill(T) + N decode
+//       steps", both C++ NVFP4. Tests C++ state handling only. Post PLE
+//       short-conv fix: cos ~0.999-1.0, argmax 8/8 (4 layers, 8 steps).
+//   (B) C++ vs REFERENCE: C++ NVFP4 vs transformers FP32, same sequence.
+//       Tests the NVFP4 quantization error (irreducible). Post fix: 6/8
+//       argmax match (4 layers, 8 steps); the 2 mismatches are a reference
+//       near-tie (ref top2 gap 0.020, flipped by l2_rel 0.109 NVFP4 noise)
+//       and a moderate gap (0.055) — NOT a state bug. The pre-fix "4/4
+//       match" was coincidental (the bug's error happened to preserve the
+//       argmax ordering while l2_rel was 4-12x worse).
+//
 //   Q4T_MODEL_LAYERS (default 4)
 //   Q4T_DECODE_STEPS (default 4)
 //   Q4T_DECODE_PROMPT_FILE (default /tmp/decode_prompt.txt, one int32 per
 //     line; falls back to {846, 25, 1203, 321})
+//   Q4T_DECODE_FIXED_SEQ_FILE (optional): a file with the FULL token
+//     sequence (prompt + every token fed to the decode steps), whitespace-
+//     separated. When given, decode steps feed full_seq[T:T+N] INSTEAD of
+//     greedy argmax — mirrors the reference's fixed mode, letting C++ be
+//     compared on a sequence it did not itself choose.
 //   Q4T_DECODE_OUT (default /tmp/cpp4dec) -> <out>.prefill.bin (T*vocab
 //     f32), <out>.decode.bin (N*vocab f32, one row per step),
-//     <out>.tokens.txt (greedy token per line)
+//     <out>.tokens.txt (greedy token per line), <out>.full_seq.txt
+//     (prompt + tokens fed to decode steps, for the reference's fixed mode)
 Q4T_TEST(model_forward_dump_decode) {
   if (!CudaAvailable()) {
     std::printf("  (skipped: no CUDA device)\n");
@@ -428,7 +447,9 @@ Q4T_TEST(model_forward_dump_decode) {
   cfg.model_dir = kModelDir;
   cfg.index_path = kIndex;
   cfg.num_layers = num_layers;
-  cfg.max_prefill = 8;
+  // Must fit the self-check fresh prefill (T + n_decode rows), not just the
+  // initial prompt prefill.
+  cfg.max_prefill = T + n_decode;
   cfg.ple_sidecar = kPleSidecar;
 
   Model m;
@@ -544,18 +565,43 @@ Q4T_TEST(model_forward_dump_decode) {
   // row; each subsequent token is the argmax of the previous step's logits.
   // (Track `next_tok` explicitly; argmax is the COLUMN index within the row,
   // so subtract the row's start, not the buffer start.)
+  //
+  // Optional fixed-input mode (Q4T_DECODE_FIXED_SEQ_FILE): a file with the
+  // FULL token sequence (prompt + every token fed to the decode steps),
+  // whitespace-separated. When given, the decode steps feed
+  // full_seq[T : T+n_decode] INSTEAD of greedy argmax. This mirrors the
+  // reference script's fixed mode and lets the C++ engine be compared
+  // step-for-step against a reference run on a sequence the C++ engine did
+  // not itself choose (e.g. a pre-fix greedy sequence, to close out a
+  // historical comparison after a fix changed the greedy outputs).
+  std::vector<int32_t> fixed_seq;
+  if (const char* fsf = std::getenv("Q4T_DECODE_FIXED_SEQ_FILE"); fsf) {
+    std::ifstream in(fsf);
+    int32_t v;
+    while (in >> v) fixed_seq.push_back(v);
+    if (static_cast<int>(fixed_seq.size()) < T + n_decode) {
+      std::printf("  fixed seq file too short (%zu < %d)\n",
+                  fixed_seq.size(), T + n_decode);
+      return false;
+    }
+    std::printf("  fixed decode inputs:");
+    for (int i = 0; i < n_decode; ++i)
+      std::printf(" %d", fixed_seq[T + i]);
+    std::printf("\n");
+  }
   std::vector<int32_t> decoded(n_decode, -1);
   std::vector<float> dec_out(static_cast<size_t>(n_decode) * cfg.vocab);
   const float* last_row = out.data() + static_cast<size_t>(T - 1) * cfg.vocab;
   int32_t next_tok = static_cast<int32_t>(
       std::max_element(last_row, last_row + cfg.vocab) - last_row);
-  // decode_input[i] = the token actually FED to decode step i (the OUTPUT of
-  // step i-1, or the prefill argmax for i=0). The self-check below must feed
-  // THESE tokens (not `decoded`, which is the per-step output) so that the
-  // fresh prefill and the incremental path process the identical token
-  // sequence.
+  // decode_input[i] = the token actually FED to decode step i (greedy: the
+  // OUTPUT of step i-1, or the prefill argmax for i=0; fixed mode: the
+  // explicit sequence). The self-check below must feed THESE tokens (not
+  // `decoded`, which is the per-step output) so that the fresh prefill and
+  // the incremental path process the identical token sequence.
   std::vector<int32_t> decode_input(n_decode);
   for (int i = 0; i < n_decode; ++i) {
+    if (!fixed_seq.empty()) next_tok = fixed_seq[T + i];
     decode_input[i] = next_tok;
     if (dump_state && i == 0) {
       setenv("Q4T_LIN_DUMP", (std::string(out_prefix) + ".lin_d0").c_str(), 1);
