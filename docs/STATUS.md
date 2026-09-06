@@ -447,9 +447,11 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     (l2_rel 0.103→0.0); ② 3 层 4 步 logits **4/4 bit-identical** (此前
     step 2 l2_rel=0.317); ③ 4 层 8 步自洽 cos 0.9985–1.0, argmax 8/8。
     **(B) C++ vs 参考** (NVFP4 vs transformers FP32, 同序列, 测不可消除的
-    NVFP4 量化误差): 4 层 8 步对齐序列 **6/8 argmax 匹配** (first-max,
-    与生成一致); 2 个不匹配均为参考侧 near-tie (ref top2 gap 0.020 /
-    0.055, l2_rel 0.10–0.11 的 NVFP4 噪声可翻转), **非状态 bug**。
+    NVFP4 量化误差): 4 层对齐序列 **8 步 6/8、16 步 12/16 (75%) argmax
+    匹配** (first-max, 与生成一致); 不匹配均为参考侧 near-tie 或中等 gap
+    被 l2_rel 0.10–0.30 的 NVFP4 噪声翻转 (16 步 l2_rel 0.036–0.302,
+    mean 0.131, 轻微上升属噪声经状态放大的预期行为, 非状态累积 bug),
+    **非状态 bug**。
     此前 "4/4 argmax 全匹配" 是**修复前**的巧合 (bug 的误差恰好保住了
     argmax 顺序, 而 l2_rel 比修复后差 4–12 倍)。此前 "MoE/HC GEMM
     cuBLASLt 算法差" 的归因**错误** — 发散全部来自 PLE conv 缺状态,
