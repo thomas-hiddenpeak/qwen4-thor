@@ -664,12 +664,22 @@ incremental 残差定性为 MoE 路由边界敏感性, 非状态 bug — 见 E1�
    heuristics 开销 ~64ms (prefill 140→205ms 回归)。修复: warmup 改用
    与真实 prefill 相同的 T, 走 GEMM 预热 cuBLASLt heuristics, prefill
    回到 141ms。
-   **当前瓶颈已转为 GPU 计算** (CPU 开销仅 68ms): GEMV 后 decode GPU
-   时间 ~1290ms, 理论带宽下限 ~26 tok/s (当前 12.2, 还有 ~2× 空间,
-   可能受 MoE expert 权重读取 / PLE SSD 流式 / 非 GEMM kernel 限制)。
-   CUDA Graphs 收益仅剩 ~4%, 降级为可选。同时**预留 MTP 接口**
-   (scheme A: 主模型收尾阶段可选暴露 pre-final-mixer 多流 [T, hc*H]
-   给 MTP 第一步), 避免优化后再返工。
+   **阶段 B profile 定位 (nsys, decode 1290ms GPU busy)**: GEMV 现在是
+   #1 瓶颈 (733ms, 56.8%), 但**大形状已接近带宽极限** (lm_head N=248320
+   241GB/s=100% 峰值, N=12288 229GB/s=95%, N=6144 215GB/s=89%,
+   N=10240 195GB/s=81%; 峰值 240.9GB/s 由 bw_probe 实测)。小形状
+   (N=2560 o_proj/out_proj, N=320 HC mix_down) 仅 53%, 但绝对量小
+   (125+46ms)。GEMV 整体受限于权重读取带宽 (decode 物理下限: 必须读
+   全部 BF16 权重 ~12.4GB/step)。非 GEMV 剩余: nvjet NVFP4 (MoE expert
+   GEMM) 149.5ms / SparseAttention 108.8ms / quant-dequant 88.7ms /
+   RouterTopk 87.5ms / norm 62.1ms。CPU 开销 86.9ms (cudaMemcpyAsync
+   880ms 墙钟但 GPU 重叠, cudaLaunchKernel 196.8ms/57360 次)。
+   **结论: decode 已接近带宽下限 (~12-13 tok/s), 进一步空间有限** —
+   剩余可优化项: ① MoE NVFP4 GEMM 改 M=1 专用 GEMV (149.5ms, 但 NVFP4
+   dequant 复杂); ② 小 N GEMV 优化 (53%→80%, ~30ms); ③ CUDA Graphs
+   减 launch 开销 (~4%)。同时**预留 MTP 接口** (scheme A: 主模型收尾
+   阶段可选暴露 pre-final-mixer 多流 [T, hc*H] 给 MTP 第一步), 避免
+   优化后再返工。
 3. **MTP 1 层**: 在 ② 的稳定基线上开发 + 测加速比 (用户决定: 性能优化
    后在良好基线上进行)。权威参考: `reference/vllm/vllm/models/
    qwen4_exp/nvidia/mtp.py` (transformers 5.16.1 **无** MTP, 加载时

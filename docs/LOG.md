@@ -5,6 +5,48 @@
 
 ---
 
+## 2026-09-06 — 性能优化阶段 B 收尾: decode profile 定位 (GEMV 已近带宽下限)
+
+**背景**
+阶段 B GEMV 落地后 decode 1290ms/16 tok (12.2 tok/s)。需要 profile
+确认下一个瓶颈, 判断是否还有显著优化空间。
+
+**方法**
+nsys profile (Thor 上报告生成慢 ~5min, 需等待; 注意 `pkill -f nsys`
+会误杀自己所在的 shell, 须用精确二进制路径)。导出 sqlite 后用
+`.q4t-work/analyze_decode_b.py` 分析 (基于 Phase A 的 analyze_decode_a3.py,
+加 GEMV 分组 + 按 gridDim.x 分解 + top-20 kernel)。
+
+**结果 (decode 1290ms GPU busy, 利用率 93.7%)**
+- GEMV (Bf16GevKernel) 733ms (56.8%) — #1 瓶颈, 但按形状分解后大形状
+  已近带宽极限: lm_head N=248320/K=2560 241GB/s (100% 峰值),
+  N=12288/K=2560 229GB/s (95%), N=6144/K=2560 215GB/s (89%),
+  N=10240 (HC mix_up K=320 195GB/s + in_proj_qkv K=2560 212GB/s)。
+  峰值 240.9GB/s 由 bw_probe 实测。小形状 N=2560 (o_proj/out_proj,
+  K=6144) 与 N=320 (HC mix_down, K=10240) 仅 53%, 但绝对量小
+  (125+46ms)。
+- 非 GEMV: nvjet NVFP4 (MoE expert GEMM) 149.5ms / SparseAttention
+  108.8ms (avg 566us/次) / quant-dequant 88.7ms / RouterTopk 87.5ms
+  (avg 114us/次) / norm 62.1ms / SSM 15.3ms / MoE glue 7.3ms。
+- CPU 开销 86.9ms: cudaLaunchKernel 196.8ms/57360 次 (3.4us/次, 已低),
+  cudaMemcpyAsync 880ms 墙钟但与 GPU 重叠。
+
+**结论**
+decode 已接近带宽下限 (~12-13 tok/s): 每 step 必须读全部 BF16 权重
+(~12.4GB), GEMV 大形状 81-100% 峰值带宽。剩余可优化项 (按收益排序):
+① MoE NVFP4 GEMM 改 M=1 专用路径 (149.5ms, 但 NVFP4 dequant 复杂,
+   收益上限 ~10%); ② 小 N GEMV 优化 (53%→80%, ~30ms, 收益 ~2%);
+③ CUDA Graphs 减 launch 开销 (~4%)。三者合计上限 ~15%, 不建议继续
+深挖 decode — **性能优化阶段到此收尾, 转向 MTP 推测解码** (MTP 通过
+一次生成多 token 摊薄权重读取, 是突破带宽下限的正路)。
+
+**下一步**
+- 预留 MTP 接口 (scheme A): 主模型收尾阶段可选暴露 pre-final-mixer
+  多流 [T, hc*H] 给 MTP 第一步。
+- MTP 1 层开发 (用户排期, 权威参考 reference/vllm/.../mtp.py)。
+
+---
+
 ## 2026-09-06 — 性能优化阶段 B: M=1 GEMV 专用路径 (decode 10.5→12.2 tok/s, +16%)
 
 **背景**
