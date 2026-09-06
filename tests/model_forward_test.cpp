@@ -389,14 +389,19 @@ Q4T_TEST(model_sequence_api) {
 //       (M=T+N vs M=1 accumulation order), NOT NVFP4 quantization (both
 //       paths share the same quantized weights). Post PLE short-conv fix:
 //       argmax 16/16 but logits l2_rel has a sawtooth spike (step 12: 0.25,
-//       recovers next step). NO STATE BUG — proven by EQUIDISTANCE: both
-//       C++ paths are equidistant from the reference (transformers FP32)
-//       (mean l2 batch 0.1306 vs incr 0.1309), and their mutual distance
-//       (0.0643) is SMALLER than either's distance to the reference. A
-//       state bug would make one path systematically farther. The 0.25
-//       spike is a local near-tie boundary crossing in the differential
-//       (GEMM-shape) mode, washed out by the contractive SSM next step.
-//       Argmax match is necessary but NOT sufficient for state correctness.
+//       recovers next step). NO STATE BUG — proven DIRECTLY by
+//       INCREMENTAL SELF-CONSISTENCY: two all-incremental paths
+//       (Prefill(4)+16xdecode vs Prefill(1)+19xdecode, both M=1 for the
+//       overlap, differing only in the GEMM shape used for positions 1-3)
+//       agree to l2_rel mean 0.000173 (15/16 bit-identical) — the M=1
+//       recurrence is self-consistent and chunking-invariant. Cross-check
+//       by EQUIDISTANCE: both C++ paths are equidistant from the reference
+//       (transformers FP32) (mean l2 batch 0.1306 vs incr 0.1309), and
+//       their mutual distance (0.0643) is SMALLER than either's distance
+//       to the reference. The 0.25 spike is a local near-tie boundary
+//       crossing in the differential (GEMM-shape) mode, washed out by the
+//       contractive SSM next step. Argmax match is necessary but NOT
+//       sufficient for state correctness.
 //   (B) C++ vs REFERENCE: C++ NVFP4 vs transformers FP32, same sequence.
 //       Tests the NVFP4 quantization error (irreducible, common mode).
 //       Post fix: 12/16 argmax match (4 layers, 16 steps); mismatches are

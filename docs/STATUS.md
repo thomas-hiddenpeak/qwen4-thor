@@ -447,16 +447,20 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     (l2_rel 0.103→0.0); ② 3 层 4 步 logits **4/4 bit-identical** (此前
     step 2 l2_rel=0.317); ③ 4 层 16 步自洽 argmax 16/16, 但 logits
     l2_rel 有 sawtooth 尖峰 (step 12 达 0.25, 下一步即恢复)。**无状态
-    bug 的正确证据是等距性实验**: 两条 C++ 路径各自对参考 (transformers
-    FP32) 的 mean l2 **等距** (batch 0.1306 vs incremental 0.1309), 且
-    互差 (0.0643) **小于**各自到参考的距离 — 若某路径有状态 bug, 它会
-    系统性离参考更远。argmax 匹配本身是必要非充分条件 (near-tie 位置
-    argmax 可匹配而 logits 差 0.25)。残差分解: 共模 (两路径 vs 参考)
-    0.13 = NVFP4 量化误差 (不可消除); 差模 (batch vs incremental) 0.064
-    = **GEMM 形状舍入** (M=20 vs M=1 累加顺序, 两路径唯一结构差异),
-    局部 near-tie 尖峰至 0.25。SSM/conv 状态差实测有界 (layer 0
-    bit-identical, layer 2 conv 0.165, 非单调增长), 与 GEMM 形状差经
-    PLE conv 放大一致。
+    bug 的直接证据是增量自洽性实验 (E8)**: 两条全增量路径 (Prefill(4)+
+    16×decode vs Prefill(1)+19×decode, 均 M=1 收尾, 仅 pos 1–3 的 GEMM
+    形状不同) 在 pos 4–19 互差 **l2_rel mean 0.000173, 15/16 bit-
+    identical** — M=1 增量递推自洽, 与分块无关, 状态处理正确。交叉
+    证据 (E7 等距性): 两条 C++ 路径各自对参考 (transformers FP32) 的
+    mean l2 **等距** (batch 0.1306 vs incremental 0.1309), 且互差
+    (0.0643) 小于各自到参考的距离。argmax 匹配本身是必要非充分条件
+    (near-tie 位置 argmax 可匹配而 logits 差 0.25)。残差分解: 共模
+    (两路径 vs 参考) 0.13 = NVFP4 量化误差 (不可消除); 差模 (batch vs
+    incremental) 0.064 = **GEMM 形状舍入** (M=20 vs M=4/M=1 累加顺序,
+    两路径唯一结构差异; E8 证明该差模不经过状态处理逻辑), 局部
+    near-tie 尖峰至 0.25。SSM/conv 状态差实测有界 (layer 0 bit-
+    identical, layer 2 conv 0.165, 非单调增长), 与 GEMM 形状差经 PLE
+    conv 放大一致。
     **(B) C++ vs 参考** (NVFP4 vs transformers FP32, 同序列, 测不可消除的
     NVFP4 量化误差): 4 层对齐序列 **8 步 6/8、16 步 12/16 (75%) argmax
     匹配** (first-max, 与生成一致); 不匹配均为参考侧 near-tie 或中等 gap
