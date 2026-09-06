@@ -5,6 +5,41 @@
 
 ---
 
+## 2026-09-06 — MTP 接口预留 (scheme A: 主模型暴露 pre-final-mixer 多流)
+
+**背景**
+性能优化阶段收尾 (decode 12.2 tok/s, 已近带宽下限)。按 2026-09-06 与用户
+确认的顺序, 下一步是 MTP 推测解码。MTP draft 模型 (reference/vllm/vllm/
+models/qwen4_exp/nvidia/mtp.py) 的 step 0 输入是主模型的
+**pre-final-mixer 多流 [T, hc*H]** (48 层 decoder 循环后、
+hyper_connection_mixer 前的 trunk)。先预留接口 (scheme A), 避免 MTP 开发
+时再返工主模型。
+
+**改动 (最小侵入, 源码兼容)**
+1. `include/q4t/model/model.h` + `src/model/model.cu`: `ModelDecodeStep` /
+   `ModelPrefill` / `ModelDecodeStepSeq` 加可选参数 `trunk_out`
+   (默认 nullptr)。`RunLayers` 末尾 (48 层循环后、`HeadForward` 前) 若
+   `trunk_out` 非 null, 把 pre-final-mixer 多流 [T, hc*hs] (device BF16,
+   行主序) D2D 拷入。现有调用点不传参, 行为不变。
+2. `tests/model_forward_test.cpp` 新增 `model_trunk_out` 测试, 三项验证:
+   ① `trunk_out` 不扰动主路径 logits (identical); ② `trunk_out` 有限非零
+   (max_abs 0.383); ③ 把 `trunk_out` 喂回 `HeadForward` 逐位复现 prefill
+   logits (identical) — 证明 trunk_out 正是 HeadForward 的输入 (MTP 的
+   hidden_states)。
+
+**结果**
+55 项测试全绿 (新增 model_trunk_out), 零警告。
+
+**下一步**
+- MTP 1 层 draft 模型实现 (embed→fc_embedding/fc_hidden→1 层 full_attention
+  decoder layer (带 prev_block_output 注入)→hyper_connection_mixer
+  combine_and_mix, 输出 sample_hidden [T,H] + multi_hidden [T,hc*H])。
+  权重: checkpoint mtp/ 子目录 (mtp_num_hidden_layers=1)。
+- 推测解码循环: 主模型 prefill 暴露 trunk → MTP 多步 draft → 主模型
+  verify → 接受/拒绝。
+
+---
+
 ## 2026-09-06 — 性能优化阶段 B 收尾: decode profile 定位 (GEMV 已近带宽下限)
 
 **背景**

@@ -680,10 +680,24 @@ incremental 残差定性为 MoE 路由边界敏感性, 非状态 bug — 见 E1�
    减 launch 开销 (~4%)。同时**预留 MTP 接口** (scheme A: 主模型收尾
    阶段可选暴露 pre-final-mixer 多流 [T, hc*H] 给 MTP 第一步), 避免
    优化后再返工。
-3. **MTP 1 层**: 在 ② 的稳定基线上开发 + 测加速比 (用户决定: 性能优化
-   后在良好基线上进行)。权威参考: `reference/vllm/vllm/models/
-   qwen4_exp/nvidia/mtp.py` (transformers 5.16.1 **无** MTP, 加载时
-   显式跳过 mtp.* 权重)。
+3. **MTP 1 层 (接口已预留, draft 模型待开发)**: 权威参考:
+   `reference/vllm/vllm/models/qwen4_exp/nvidia/mtp.py`。
+   **scheme A 接口已完成 (2026-09-06)**: `ModelPrefill` /
+   `ModelDecodeStepSeq` 加可选 `trunk_out` 参数 (默认 nullptr, 源码
+   兼容) — 非 null 时在 48 层循环后、`hyper_connection_mixer` 前把
+   pre-final-mixer 多流 `[T, hc*hs]` (BF16) D2D 拷入。这正是 MTP draft
+   的 `hidden_states` 输入 (step 0 用主模型的, 后续 step 复用上一 draft
+   的 `multi_hidden`)。测试 `model_trunk_out`: trunk_out 不扰动 logits
+   + 有限非零 + `HeadForward(trunk_out)` 逐位复现 prefill logits (证明
+   暴露点正确)。55 项测试全绿, 零警告。
+   **待开发**: MTP draft 模型 (embed→pre_fc_norm→fc_embedding [H→H] =
+   prev_block_output; hidden.view(T,hc,H)→pre_fc_norm_hidden→fc_hidden
+   (每分支共享 H→H)→1 层 full_attention decoder layer (带
+   prev_block_output 注入)→mixer.combine_and_mix 出 sample_hidden
+   [T,H] + multi_hidden [T,hc*H]); 权重加载 (checkpoint `mtp/` 子目录,
+   独立 1 层, `mtp.*` remap, fc_embedding/fc_hidden/pre_fc_norm 为新增
+   权重); 单元测试 (对参考数值); 推测解码循环 (draft k 步 + 主模型
+   验证 + 接受/回退)。
 4. **多模态图像输入**: transformers 5.16.1 提供权威参考 (Qwen4ExpVision
    Model 27 层 ViT + masked_scatter 融合 + M-RoPE), 之前"最大缺口且无
    权威参考"已解除。可与 ②③ 穿插, 不阻塞 MTP。

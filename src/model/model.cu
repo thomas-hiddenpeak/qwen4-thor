@@ -243,9 +243,14 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
 // and the per-token PLE embeddings `ple_emb` (null when no PLE layer in range).
 // `ids64` / `hist` are the host int64 token ids and ngram history used to
 // gather the PLE embedding at the PLE layer.
+// `trunk_out` (MTP scheme A hook, optional): if non-null, the pre-final-mixer
+// multi stream [T, hc*hs] (the trunk after the last decoder layer, before
+// hyper_connection_mixer) is copied here. This is the MTP draft model's
+// `hidden_states` input (see reference/vllm/.../nvidia/mtp.py).
 Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                  const int64_t* ids64, const int64_t* hist, int T,
-                 uint16_t* logits, cudaStream_t stream) {
+                 uint16_t* logits, cudaStream_t stream,
+                 uint16_t* trunk_out = nullptr) {
   const ModelConfig& cfg = m.cfg;
   const uint16_t* trunk = trunk_in;
   uint16_t* next = trunk2;
@@ -271,6 +276,16 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
     trunk = next;
     next = const_cast<uint16_t*>(t);
   }
+  // MTP scheme A hook: expose the pre-final-mixer multi stream [T, hc*hs]
+  // (the trunk after the last decoder layer, before hyper_connection_mixer).
+  // Device-to-device copy; the caller owns `trunk_out` (>= T * hc_dim bytes).
+  if (trunk_out) {
+    const size_t bytes = static_cast<size_t>(T) * m.hc_dim() * sizeof(uint16_t);
+    if (cudaMemcpyAsync(trunk_out, trunk, bytes, cudaMemcpyDeviceToDevice,
+                        stream) != cudaSuccess) {
+      return Status::Fail("RunLayers: trunk_out D2D copy");
+    }
+  }
   return HeadForward(m.head, trunk, logits, T, m.d_ws, m.ws_bytes, stream);
 }
 
@@ -284,8 +299,10 @@ Status ResetAllLayers(const Model& m, cudaStream_t stream) {
 
 // Prefill without reset: assumes per-layer state is already at the sequence
 // start (call ResetAllLayers / ModelBeginSequence first). positions = 0..T-1.
+// `trunk_out` (MTP scheme A hook) is forwarded to RunLayers.
 Status RunPrefill(const Model& m, const int32_t* input_ids, int T,
-                  uint16_t* logits, cudaStream_t stream) {
+                  uint16_t* logits, cudaStream_t stream,
+                  uint16_t* trunk_out = nullptr) {
   const ModelConfig& cfg = m.cfg;
   // 1. ids + positions.
   if (cudaMemcpyAsync(m.d_ids, input_ids, T * sizeof(int32_t),
@@ -325,7 +342,7 @@ Status RunPrefill(const Model& m, const int32_t* input_ids, int T,
 
   // 5. Layer loop + head.
   return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), T,
-                   logits, stream);
+                   logits, stream, trunk_out);
 }
 
 Status ModelForward(const Model& m, const int32_t* input_ids, int T,
@@ -344,7 +361,7 @@ Status ModelForward(const Model& m, const int32_t* input_ids, int T,
 
 Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
                        const int32_t* history, uint16_t* logits,
-                       cudaStream_t stream) {
+                       cudaStream_t stream, uint16_t* trunk_out) {
   const ModelConfig& cfg = m.cfg;
   if (position < 0) return Status::Fail("ModelDecodeStep: position < 0");
   if (position >= cfg.max_len) {
@@ -385,7 +402,7 @@ Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
 
   // 5. Layer loop + head.
   return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), 1,
-                   logits, stream);
+                   logits, stream, trunk_out);
 }
 
 // ---------------------------------------------------------------------------
@@ -405,7 +422,7 @@ Status ModelBeginSequence(const Model& m, ModelSequence* seq,
 
 Status ModelPrefill(const Model& m, ModelSequence* seq,
                     const int32_t* input_ids, int T, uint16_t* logits,
-                    cudaStream_t stream) {
+                    cudaStream_t stream, uint16_t* trunk_out) {
   if (!seq) return Status::Fail("ModelPrefill: null seq");
   if (seq->stage != ModelSequence::Stage::kPrefill) {
     return Status::Fail("ModelPrefill: sequence not in prefill stage");
@@ -416,7 +433,7 @@ Status ModelPrefill(const Model& m, ModelSequence* seq,
     return Status::Fail("ModelPrefill: T exceeds max_prefill");
   }
   // Per-layer state was reset by ModelBeginSequence; run the prefill.
-  Status s = RunPrefill(m, input_ids, T, logits, stream);
+  Status s = RunPrefill(m, input_ids, T, logits, stream, trunk_out);
   if (!s.ok()) return s;
   // Handoff point: per-layer KV/SSM state is now ready for decode (or for
   // PD separation — the runner can take ownership of the state here).
@@ -428,7 +445,7 @@ Status ModelPrefill(const Model& m, ModelSequence* seq,
 
 Status ModelDecodeStepSeq(const Model& m, ModelSequence* seq,
                           int32_t token_id, uint16_t* logits,
-                          cudaStream_t stream) {
+                          cudaStream_t stream, uint16_t* trunk_out) {
   if (!seq) return Status::Fail("ModelDecodeStepSeq: null seq");
   if (seq->stage != ModelSequence::Stage::kDecode) {
     return Status::Fail("ModelDecodeStepSeq: sequence not in decode stage");
@@ -441,7 +458,7 @@ Status ModelDecodeStepSeq(const Model& m, ModelSequence* seq,
   // history = tokens already seen (prompt + previously decoded); the PLE
   // n-gram context for this token is the last (ngram_size-1) of them.
   Status s = ModelDecodeStep(m, token_id, position, seq->history.data(),
-                             logits, stream);
+                             logits, stream, trunk_out);
   if (!s.ok()) return s;
   // Advance the state machine.
   seq->position = position + 1;

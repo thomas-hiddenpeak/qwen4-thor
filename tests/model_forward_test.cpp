@@ -41,6 +41,8 @@ using q4t::model::ModelBeginSequence;
 using q4t::model::ModelPrefill;
 using q4t::model::ModelDecodeStepSeq;
 using q4t::model::ModelEndSequence;
+using q4t::model::HeadForward;
+using q4t::model::ModelHeadWorkspaceBytes;
 
 const char* kModelDir =
     "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
@@ -835,6 +837,130 @@ Q4T_TEST(model_forward_dump_logits) {
   std::printf("  dumped %d x %d logits -> %s\n", T, cfg.vocab, out_path);
 
   cudaFree(d_logits);
+  m.Free();
+  return true;
+}
+
+// MTP scheme A hook: trunk_out exposes the pre-final-mixer multi stream
+// [T, hc*hs] (the trunk after the last decoder layer, before
+// hyper_connection_mixer). Verify:
+//   (a) trunk_out does not perturb the main path (logits identical with/without)
+//   (b) trunk_out is finite + non-trivially non-zero
+//   (c) feeding trunk_out back into HeadForward reproduces the prefill logits
+//       (proves trunk_out IS exactly the HeadForward input).
+Q4T_TEST(model_trunk_out) {
+  if (!CudaAvailable()) {
+    std::printf("  (skipped: no CUDA device)\n");
+    return true;
+  }
+  if (!FileExists(kIndex) || !FileExists(kPleSidecar)) {
+    std::printf("  (skipped: model or PLE sidecar not found)\n");
+    return true;
+  }
+
+  const int num_layers = [] {
+    const char* e = std::getenv("Q4T_MODEL_LAYERS");
+    return e ? std::atoi(e) : 2;
+  }();
+
+  ModelConfig cfg;
+  cfg.model_dir = kModelDir;
+  cfg.index_path = kIndex;
+  cfg.num_layers = num_layers;
+  cfg.max_prefill = 8;
+  cfg.ple_sidecar = kPleSidecar;
+
+  Model m;
+  Status s = LoadModel(cfg, &m, nullptr);
+  if (!s.ok()) {
+    std::printf("  load failed: %s\n", s.message().c_str());
+    return false;
+  }
+
+  const int T = 4;
+  const int32_t ids[] = {846, 25, 1203, 321};
+  const int vocab = cfg.vocab;
+  const int hc_dim = m.hc_dim();
+
+  uint16_t* d_logits_a = nullptr;
+  uint16_t* d_logits_b = nullptr;
+  uint16_t* d_trunk = nullptr;
+  if (cudaMalloc(reinterpret_cast<void**>(&d_logits_a),
+                 static_cast<size_t>(T) * vocab * 2) != cudaSuccess ||
+      cudaMalloc(reinterpret_cast<void**>(&d_logits_b),
+                 static_cast<size_t>(T) * vocab * 2) != cudaSuccess ||
+      cudaMalloc(reinterpret_cast<void**>(&d_trunk),
+                 static_cast<size_t>(T) * hc_dim * 2) != cudaSuccess) {
+    std::printf("  cudaMalloc failed\n");
+    m.Free();
+    return false;
+  }
+
+  // (a) prefill without trunk_out (ModelForward = Begin + Prefill).
+  s = ModelForward(m, ids, T, d_logits_a, nullptr);
+  Q4T_CHECK(s.ok());
+  // (b) prefill with trunk_out (PD API: Begin -> Prefill(trunk_out) -> End).
+  ModelSequence seq;
+  s = ModelBeginSequence(m, &seq, nullptr);
+  Q4T_CHECK(s.ok());
+  s = ModelPrefill(m, &seq, ids, T, d_logits_b, nullptr, d_trunk);
+  Q4T_CHECK(s.ok());
+  ModelEndSequence(&seq);
+
+  std::vector<uint16_t> la(static_cast<size_t>(T) * vocab);
+  std::vector<uint16_t> lb(static_cast<size_t>(T) * vocab);
+  cudaMemcpy(la.data(), d_logits_a, la.size() * 2, cudaMemcpyDeviceToHost);
+  cudaMemcpy(lb.data(), d_logits_b, lb.size() * 2, cudaMemcpyDeviceToHost);
+  const bool logits_identical = (la == lb);
+  std::printf("  trunk_out does not perturb logits: %s\n",
+              logits_identical ? "identical" : "DIFFER");
+  Q4T_CHECK(logits_identical);
+
+  // (c) trunk_out is finite + non-trivially non-zero.
+  std::vector<uint16_t> trunk(static_cast<size_t>(T) * hc_dim);
+  cudaMemcpy(trunk.data(), d_trunk, trunk.size() * 2, cudaMemcpyDeviceToHost);
+  double max_abs = 0.0;
+  bool all_finite = true;
+  for (auto b : trunk) {
+    const float x = Bf16ToFloat(b);
+    if (!std::isfinite(x)) all_finite = false;
+    if (std::fabs(x) > max_abs) max_abs = std::fabs(x);
+  }
+  std::printf("  trunk_out: max_abs=%.3f finite=%d (T=%d, hc_dim=%d)\n",
+              max_abs, all_finite ? 1 : 0, T, hc_dim);
+  Q4T_CHECK(all_finite);
+  Q4T_CHECK(max_abs > 1e-3);
+
+  // (d) feeding trunk_out back into HeadForward reproduces the prefill logits.
+  //     Proves trunk_out is exactly the pre-final-mixer multi stream that
+  //     HeadForward consumes (mixer.mix + lm_head).
+  void* d_ws = nullptr;
+  const size_t ws_bytes = ModelHeadWorkspaceBytes(T, cfg.hs);
+  uint16_t* d_logits_c = nullptr;
+  if (cudaMalloc(reinterpret_cast<void**>(&d_ws), ws_bytes) != cudaSuccess ||
+      cudaMalloc(reinterpret_cast<void**>(&d_logits_c),
+                 static_cast<size_t>(T) * vocab * 2) != cudaSuccess) {
+    std::printf("  cudaMalloc ws/logits_c failed\n");
+    m.Free();
+    cudaFree(d_logits_a);
+    cudaFree(d_logits_b);
+    cudaFree(d_trunk);
+    return false;
+  }
+  s = HeadForward(m.head, d_trunk, d_logits_c, T, d_ws, ws_bytes, nullptr);
+  Q4T_CHECK(s.ok());
+  std::vector<uint16_t> lc(static_cast<size_t>(T) * vocab);
+  cudaMemcpy(lc.data(), d_logits_c, lc.size() * 2, cudaMemcpyDeviceToHost);
+  const bool head_reproduces = (lc == lb);
+  std::printf("  HeadForward(trunk_out) == prefill logits: %s\n",
+              head_reproduces ? "identical" : "DIFFER");
+  Q4T_CHECK(head_reproduces);
+
+  cudaFree(d_logits_a);
+  cudaFree(d_logits_b);
+  cudaFree(d_trunk);
+  cudaFree(d_logits_c);
+  cudaFree(d_ws);
   m.Free();
   return true;
 }

@@ -111,9 +111,15 @@ Status ModelForward(const Model& m, const int32_t* input_ids, int T,
 // prompt). `history` is the host int32 array of the tokens already generated
 // before this one (prompt + previously decoded tokens), length >= position;
 // it supplies the PLE n-gram context for the new token.
+//
+// `trunk_out` (MTP scheme A hook, optional): if non-null, the pre-final-mixer
+// multi stream [T, hc*hs] (device BF16, row-major) is copied here — the trunk
+// after the last decoder layer, before hyper_connection_mixer. This is the
+// input the MTP draft model consumes as `hidden_states` (see
+// reference/vllm/vllm/models/qwen4_exp/nvidia/mtp.py). Null = not exposed.
 Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
                        const int32_t* history, uint16_t* logits,
-                       cudaStream_t stream);
+                       cudaStream_t stream, uint16_t* trunk_out = nullptr);
 
 // ---------------------------------------------------------------------------
 // PD-ready 阶段边界 API (Prefill/Decode 可分离, 见 ARCHITECTURE.md)。
@@ -149,14 +155,18 @@ Status ModelBeginSequence(const Model& m, ModelSequence* seq,
 // 完成 prefill: seq 须处于 kPrefill 阶段。input_ids [T] -> logits [T, vocab]
 // (device BF16)。成功后阶段 = kDecode, position = T, history = prompt。
 // 调用返回时 per-layer KV/SSM 状态已就绪 (PD 分离的 handoff 点)。
+// trunk_out: 可选, 非 null 时把 pre-final-mixer 多流 [T, hc*hs] 拷入
+// (MTP scheme A 钩子, 见 ModelDecodeStep 的说明)。
 Status ModelPrefill(const Model& m, ModelSequence* seq, const int32_t* input_ids,
-                    int T, uint16_t* logits, cudaStream_t stream);
+                    int T, uint16_t* logits, cudaStream_t stream,
+                    uint16_t* trunk_out = nullptr);
 
 // 一个 decode step: seq 须处于 kDecode 阶段。token_id 写入 position,
 // -> logits [1, vocab]。自动 ++position 并追加 history (PLE 上下文)。
-// 等价于 ModelDecodeStep (history 由 seq 内部维护)。
+// 等价于 ModelDecodeStep (history 由 seq 内部维护)。trunk_out 同上。
 Status ModelDecodeStepSeq(const Model& m, ModelSequence* seq, int32_t token_id,
-                          uint16_t* logits, cudaStream_t stream);
+                          uint16_t* logits, cudaStream_t stream,
+                          uint16_t* trunk_out = nullptr);
 
 // 序列结束: 状态机复位为 kIdle (不释放 device 内存, 内存归 Model 所有)。
 void ModelEndSequence(ModelSequence* seq);
