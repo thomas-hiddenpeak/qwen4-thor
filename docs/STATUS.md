@@ -644,10 +644,21 @@ incremental 残差定性为 MoE 路由边界敏感性, 非状态 bug — 见 E1�
    等距 0.1306≈0.1309); batch-vs-incremental 残差 = MoE 路由边界敏感
    性 (固有特性, E9/E9c/E10); C++ vs 参考 16 步 12/16 argmax (75%),
    不匹配均为 near-tie 被 NVFP4 噪声翻转。此基线作为性能优化的守护网。
-2. **prefill/decode 性能优化 (进行中)**: 先建性能基线 (参考 thor-bench
-   方法) + profile 定位 top 瓶颈; 用 ① 的基线守护数值不回归; 同时
-   **预留 MTP 接口** (scheme A: 主模型收尾阶段可选暴露 pre-final-mixer
-   多流 [T, hc*H] 给 MTP 第一步), 避免优化后再返工。
+2. **prefill/decode 性能优化 (进行中)**: 基线 decode 6.2 tok/s /
+   prefill 18.4 tok/s。nsys 定位: 基线 GPU 利用率仅 58.8%, CPU 开销
+   1061ms (cuBLASLt 每 GEMM 重建 handle+heuristic + cudaFree 同步)。
+   **阶段 A 已完成 (decode 6.2→10.5 tok/s +69%, prefill 18.4→35.5
+   +93%, GPU 利用率 58.8%→95.7%)**: ① cuBLASLt handle+algo 缓存
+   (`lt_cache.h/.cpp`, Bf16Gemm/Fp4Gemm 按 (M,N,K,ws) 缓存 plan,
+   decode 6.2→8.8); ② 层内 scratch 改 workspace 切分 + forward 路径
+   cudaMalloc/Free 全改 async (cudaFree 1213ms/11165 次 → 169ms/1533
+   次, 8.8→10.5)。54 项测试全绿, 零警告。**当前瓶颈已转为 GPU 计算**
+   (CPU 开销仅 68ms): BF16 M=1 tall-skinny GEMM 占 GPU 时间 72%
+   (nvjet 676ms + cutlass WMMA 404ms, 有效带宽 ~135GB/s vs 峰值
+   273GB/s) → 下一步做 **M=1 GEMV 专用路径** (理论下限 ~26 tok/s);
+   CUDA Graphs 收益仅剩 ~4%, 降级为可选。同时**预留 MTP 接口**
+   (scheme A: 主模型收尾阶段可选暴露 pre-final-mixer 多流 [T, hc*H]
+   给 MTP 第一步), 避免优化后再返工。
 3. **MTP 1 层**: 在 ② 的稳定基线上开发 + 测加速比 (用户决定: 性能优化
    后在良好基线上进行)。权威参考: `reference/vllm/vllm/models/
    qwen4_exp/nvidia/mtp.py` (transformers 5.16.1 **无** MTP, 加载时

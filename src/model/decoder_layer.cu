@@ -193,7 +193,15 @@ size_t DecoderLayerWorkspaceBytes(int T, bool is_full_attention, bool has_ple,
                           : AlignUp(AttnWs(T, is_full_attention));
   const size_t moe_carve = AlignUp(
       MoEForwardWorkspaceBytes(T, k, hs, moe_is, shared_is, E));
-  size_t total = attn + moe_carve + kGemmWs + kGemmWs;  // + moe gemm + hc scratch
+  // Per-layer activation scratch carved from the workspace (avoids 5-6
+  // cudaMalloc/cudaFree per layer per forward): d_mixed + d_block (T*hs*2
+  // each) + d_res_a + d_res_m + d_combined (T*hc_dim*2 each) + d_ple_trunk
+  // (T*hc_dim*2, PLE layer only). hc_count is 4 for qwen4_exp.
+  const size_t hc_dim = static_cast<size_t>(4) * hs;
+  size_t scratch = 2 * static_cast<size_t>(T) * hs * 2;
+  scratch += 3 * static_cast<size_t>(T) * hc_dim * 2;
+  if (has_ple) scratch += static_cast<size_t>(T) * hc_dim * 2;
+  size_t total = attn + moe_carve + kGemmWs + kGemmWs + AlignUp(scratch);
   if (has_ple) total += AlignUp(PleLayerWorkspaceBytes(T, 4, hs));
   return total;
 }
@@ -389,7 +397,15 @@ Status DecoderLayerForward(const DecoderLayer& layer,
       T, layer.topk, hs, layer.routed.moe_is, layer.mlp.shared_is, layer.routed.E);
   const size_t ple_ws =
       layer.has_ple ? PleLayerWorkspaceBytes(T, hc, hs) : 0;
-  if (attn_ws + moe_carve + kGemmWs + kGemmWs + ple_ws > workspace_bytes) {
+  // Per-layer activation scratch (carved from workspace, no cudaMalloc).
+  const size_t scratch_bytes =
+      2 * static_cast<size_t>(T) * hs * 2 +
+      3 * static_cast<size_t>(T) * hc_dim * 2 +
+      (layer.has_ple ? static_cast<size_t>(T) * hc_dim * 2 : 0);
+  const size_t total_ws =
+      AlignUp(attn_ws) + AlignUp(moe_carve) + kGemmWs + kGemmWs +
+      AlignUp(scratch_bytes) + ple_ws;
+  if (total_ws > workspace_bytes) {
     return Status::Fail("DecoderLayerForward: workspace too small");
   }
   char* base = static_cast<char*>(workspace);
@@ -402,62 +418,34 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   void* d_hc_ws = p;
   p += kGemmWs;
   void* d_ple_ws = p;  // only used when layer.has_ple
+  p += ple_ws;  // skip the PLE workspace region before the scratch region
 
-  // Scratch for the [T, hs] / [T, hc*hs] block activations (cudaMalloc'd,
-  // freed at the end — mirrors the HC/linear convention).
-  uint16_t* d_mixed = nullptr;  // [T, hs]
-  uint16_t* d_block = nullptr;  // [T, hs]
-  uint16_t* d_res_a = nullptr;  // [T, hc*hs]
-  uint16_t* d_res_m = nullptr;  // [T, hc*hs]
-  uint16_t* d_combined = nullptr;  // [T, hc*hs]
-  auto malloc5 = [&](uint16_t** p, size_t bytes) -> Status {
-    if (cudaMalloc(reinterpret_cast<void**>(p), bytes) != cudaSuccess)
-      return Status::Fail("cudaMalloc scratch");
-    return Status();
-  };
-  auto free_all = [&]() {
-    cudaFree(d_mixed);
-    cudaFree(d_block);
-    cudaFree(d_res_a);
-    cudaFree(d_res_m);
-    cudaFree(d_combined);
-  };
+  // Scratch pointers carved from the workspace (no cudaMalloc/cudaFree).
+  uint16_t* d_mixed = reinterpret_cast<uint16_t*>(p);
+  p += AlignUp(static_cast<size_t>(T) * hs * 2);
+  uint16_t* d_block = reinterpret_cast<uint16_t*>(p);
+  p += AlignUp(static_cast<size_t>(T) * hs * 2);
+  uint16_t* d_res_a = reinterpret_cast<uint16_t*>(p);
+  p += AlignUp(static_cast<size_t>(T) * hc_dim * 2);
+  uint16_t* d_res_m = reinterpret_cast<uint16_t*>(p);
+  p += AlignUp(static_cast<size_t>(T) * hc_dim * 2);
+  uint16_t* d_combined = reinterpret_cast<uint16_t*>(p);
+  p += AlignUp(static_cast<size_t>(T) * hc_dim * 2);
+
   Status s;
-  if (!(s = malloc5(&d_mixed, static_cast<size_t>(T) * hs * 2))) return s;
-  if (!(s = malloc5(&d_block, static_cast<size_t>(T) * hs * 2))) {
-    free_all();
-    return s;
-  }
-  if (!(s = malloc5(&d_res_a, static_cast<size_t>(T) * hc_dim * 2))) {
-    free_all();
-    return s;
-  }
-  if (!(s = malloc5(&d_res_m, static_cast<size_t>(T) * hc_dim * 2))) {
-    free_all();
-    return s;
-  }
-  if (!(s = malloc5(&d_combined, static_cast<size_t>(T) * hc_dim * 2))) {
-    free_all();
-    return s;
-  }
 
   // The trunk residual the rest of the layer reads. For the PLE layer this is
   // a scratch copy (hyper_input is const); otherwise it aliases hyper_input.
+  // d_ple_trunk is carved from the workspace scratch region (no cudaMalloc).
   const uint16_t* d_trunk = hyper_input;
   uint16_t* d_ple_trunk = nullptr;
   if (layer.has_ple) {
-    if (cudaMalloc(reinterpret_cast<void**>(&d_ple_trunk),
-                   static_cast<size_t>(T) * hc_dim * 2) != cudaSuccess) {
-      free_all();
-      return Status::Fail("cudaMalloc ple trunk");
-    }
+    d_ple_trunk = reinterpret_cast<uint16_t*>(p);
     // 1. PLE: d_ple_trunk = hyper_input + ple(ple_embeddings, hyper_input).
     DumpPleEmbeddings(ple_embeddings, T, layer.ple.ple_embed_dim);
     s = PleLayerForward(layer.ple, ple_embeddings, hyper_input, d_ple_trunk, T,
                         layer.ple_conv_state, d_ple_ws, ple_ws, stream);
     if (!s.ok()) {
-      cudaFree(d_ple_trunk);
-      free_all();
       return s;
     }
     {
@@ -466,8 +454,6 @@ Status DecoderLayerForward(const DecoderLayer& layer,
       PleAddTrunkKernel<<<(total + block - 1) / block, block, 0, stream>>>(
           hyper_input, d_ple_trunk, d_ple_trunk, total);
       if (cudaGetLastError() != cudaSuccess) {
-        cudaFree(d_ple_trunk);
-        free_all();
         return Status::Fail("ple add trunk launch");
       }
     }
@@ -479,8 +465,6 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   s = HyperConnectionMix(layer.attn_hc, d_trunk, d_mixed, d_res_a, T,
                          d_hc_ws, kGemmWs, stream);
   if (!s.ok()) {
-    if (d_ple_trunk) cudaFree(d_ple_trunk);
-    free_all();
     return s;
   }
   // 2. attention block.
@@ -493,31 +477,24 @@ Status DecoderLayerForward(const DecoderLayer& layer,
                                layer.conv_state, T, d_attn_ws, attn_ws, stream);
   }
   if (!s.ok()) {
-    free_all();
     return s;
   }
   // 3. attn_hc.combine(attn_out, trunk, res_a) -> combined_a.
   s = HyperConnectionCombine(layer.attn_hc, d_block, d_trunk, d_res_a,
                              d_combined, T, d_hc_ws, kGemmWs, stream);
   if (!s.ok()) {
-    if (d_ple_trunk) cudaFree(d_ple_trunk);
-    free_all();
     return s;
   }
   // 4. mlp_hc.mix(combined_a) -> mixed_mlp, res_m.
   s = HyperConnectionMix(layer.mlp_hc, d_combined, d_mixed, d_res_m, T,
                          d_hc_ws, kGemmWs, stream);
   if (!s.ok()) {
-    if (d_ple_trunk) cudaFree(d_ple_trunk);
-    free_all();
     return s;
   }
   // 5. MoE.
   s = MoEForward(d_mixed, layer.routed, layer.mlp, d_block, T, layer.topk,
                  d_moe_ws, moe_carve, d_moe_gemm, kGemmWs, stream);
   if (!s.ok()) {
-    if (d_ple_trunk) cudaFree(d_ple_trunk);
-    free_all();
     return s;
   }
   DumpMoeBoundary(d_mixed, d_block, T, hs);
@@ -525,8 +502,6 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   s = HyperConnectionCombine(layer.mlp_hc, d_block, d_combined, d_res_m, out, T,
                              d_hc_ws, kGemmWs, stream);
   DumpLayerOut(out, T, hc_dim);
-  if (d_ple_trunk) cudaFree(d_ple_trunk);
-  free_all();
   return s;
 }
 

@@ -5,6 +5,62 @@
 
 ---
 
+## 2026-09-06 — 性能优化阶段 A: CPU 开销消除 (decode 6.2→10.5 tok/s, +69%)
+
+**背景**
+基线 decode 6.2 tok/s (16 tok / 2575ms), prefill 18.4 tok/s。nsys
+profile 定位: GPU 利用率仅 58.8%, CPU 开销 1061ms — ① 每次 GEMM 调用
+都 `cublasLtCreate` + `AlgoGetHeuristic` + 全套 destroy (heuristic 单次
+10-100µs); ② kernel 间隙 72240 个 (10-50µs 区间占 70%)。
+
+**改动 (3 项, 每项单独构建+54 测试+量收益)**
+1. **cuBLASLt handle+algo 缓存** (`include/q4t/quant/lt_cache.h` +
+   `src/quant/lt_cache.cpp`): 进程级单例 handle (magic static, 不锁) +
+   按 (M,N,K,workspace_bytes) 键控的 plan 缓存 (desc+3 layout+algo)。
+   `Bf16Gemm`/`Fp4Gemm` 命中缓存直接 `cublasLtMatmul`。NVFP4 路径每次
+   调用重指 scale 指针 (per-expert 不同), 且 heuristic 必须在 scale
+   pointer 已设置时运行 (首次构建 plan 时漏设 → 11 项 FP4 测试失败,
+   已修)。decode 2575→1809ms (6.2→8.8 tok/s, +42%)。
+2. **层内 scratch 改 workspace 切分** (`decoder_layer.cu`): 5 个
+   [T,hs]/[T,hc_dim] scratch + PLE trunk 从模型级持久 workspace 切分,
+   消除每层 6 次 cudaMalloc/Free。`DecoderLayerWorkspaceBytes` 同步加
+   scratch 区。收益 ~0% (驱动已缓存小 malloc), 但是 CUDA Graphs 前置。
+3. **forward 路径 cudaMalloc/Free 全改 async** (HC d_down/d_up/d_inject,
+   linear-attn 6 个中间量, MoE d_counts/d_token_list): `cudaFree` 是
+   同步调用 (排空 GPU 队列), 基线 11165 次/1213.8ms 占墙钟 65%。改
+   `cudaMallocAsync/cudaFreeAsync` 后 1533 次/169ms。decode 1809→
+   1530ms (8.8→10.5 tok/s), prefill 158→141ms (31.5→35.5 tok/s)。
+
+**结果**
+| 指标 | 基线 | 阶段 A 后 |
+|---|---|---|
+| decode | 2575ms (6.2 tok/s) | 1530ms (10.5 tok/s) |
+| prefill | 271.6ms (18.4 tok/s) | 140.7ms (35.5 tok/s) |
+| GPU 利用率 | 58.8% | 95.7% |
+| CPU 开销 | 1061ms | 68ms |
+
+54 项测试全绿, 零警告。
+
+**踩坑**
+- ① `GlobalLtHandle()` 初版持 `g_mutex`, 而 `Bf16Gemm` 先锁 `g_mutex`
+  再调它 → 不可重入 mutex 自死锁。gdb 栈定位 (需先
+  `echo 0 > /proc/sys/kernel/yama/ptrace_scope`): 主线程 futex_wait on
+  g_mutex。修复: handle 改 magic static 不锁。
+- ② 死锁期间只 `--target q4t_tests` 重建, `build/q4t` 仍是旧库 →
+  generate 卡 1 小时 (CPU 0% / GPU 0% / futex_wait)。教训: 改库后必须
+  全量 `cmake --build build`。
+- ③ FP4 plan 缓存首次构建时 heuristic 前漏设 scale pointer →
+  `gate/up GEMM failed` 11 项测试失败。
+
+**下一步**
+瓶颈已转为 GPU 计算 (CPU 开销仅 68ms, CUDA Graphs 收益仅剩 ~4%, 降级
+可选)。GPU 时间 top: BF16 M=1 tall-skinny GEMM 1080ms (72%, nvjet
+676 + cutlass WMMA 404, 有效带宽 ~135GB/s vs 峰值 273GB/s) → 做 M=1
+GEMV 专用路径 (理论带宽下限 ~26 tok/s); 其次 SparseAttention 108.7ms /
+RouterTopk 87.4ms (T=1 时单次耗时可疑, 待 profile 细看)。
+
+---
+
 ## 2026-09-06 — E10: MoE 翻转的普适性与传播 (根因链闭合)
 
 **背景**

@@ -234,14 +234,14 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
   std::vector<int32_t> counts_h(E, 0);
   int32_t* d_counts = nullptr;
   int32_t* d_token_list = nullptr;
-  if (cudaMalloc(&d_counts, E * sizeof(int32_t)) != cudaSuccess)
-    return Status::Fail("cudaMalloc counts");
+  if (cudaMallocAsync(&d_counts, E * sizeof(int32_t), stream) != cudaSuccess)
+    return Status::Fail("cudaMallocAsync counts");
   // token_list [E, M]: an expert can be selected by up to M tokens (all M
   // tokens' top-k include it), so per-expert capacity must be M, not k.
-  if (cudaMalloc(&d_token_list, static_cast<size_t>(E) * M * sizeof(int32_t)) !=
-      cudaSuccess) {
-    cudaFree(d_counts);
-    return Status::Fail("cudaMalloc token_list");
+  if (cudaMallocAsync(&d_token_list, static_cast<size_t>(E) * M * sizeof(int32_t),
+                      stream) != cudaSuccess) {
+    cudaFreeAsync(d_counts, stream);
+    return Status::Fail("cudaMallocAsync token_list");
   }
   cudaMemsetAsync(d_counts, 0, E * sizeof(int32_t), stream);
 
@@ -255,21 +255,21 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
         expert_ids, M, k, E, d_counts, d_token_list);
   }
   if (cudaGetLastError() != cudaSuccess) {
-    cudaFree(d_counts);
-    cudaFree(d_token_list);
+    cudaFreeAsync(d_counts, stream);
+    cudaFreeAsync(d_token_list, stream);
     return Status::Fail("kernel launch error");
   }
 
   // 2. Read counts to host (one sync). Token lists stay on device.
   if (cudaMemcpyAsync(counts_h.data(), d_counts, E * sizeof(int32_t),
                       cudaMemcpyDeviceToHost, stream) != cudaSuccess) {
-    cudaFree(d_counts);
-    cudaFree(d_token_list);
+    cudaFreeAsync(d_counts, stream);
+    cudaFreeAsync(d_token_list, stream);
     return Status::Fail("cudaMemcpy counts");
   }
   if (cudaStreamSynchronize(stream) != cudaSuccess) {
-    cudaFree(d_counts);
-    cudaFree(d_token_list);
+    cudaFreeAsync(d_counts, stream);
+    cudaFreeAsync(d_token_list, stream);
     return Status::Fail("stream sync");
   }
 
@@ -300,8 +300,8 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
           reinterpret_cast<uint8_t*>(ws.a_sf));
     }
     if (cudaGetLastError() != cudaSuccess) {
-      cudaFree(d_counts);
-      cudaFree(d_token_list);
+      cudaFreeAsync(d_counts, stream);
+      cudaFreeAsync(d_token_list, stream);
       return Status::Fail("gather quant failed");
     }
 
@@ -310,8 +310,8 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
                       ws.a_packed, ws.a_sf, ws.gu_out, M_e, 2 * moe_is, hs,
                       gu_alpha, 1.0f, gemm_ws, gemm_ws_bytes, stream);
     if (r1.status != CUBLAS_STATUS_SUCCESS || !r1.has_algo) {
-      cudaFree(d_counts);
-      cudaFree(d_token_list);
+      cudaFreeAsync(d_counts, stream);
+      cudaFreeAsync(d_token_list, stream);
       return Status::Fail("gate/up GEMM failed");
     }
 
@@ -335,8 +335,8 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
           dn_in_scale);
     }
     if (cudaGetLastError() != cudaSuccess) {
-      cudaFree(d_counts);
-      cudaFree(d_token_list);
+      cudaFreeAsync(d_counts, stream);
+      cudaFreeAsync(d_token_list, stream);
       return Status::Fail("inter quant failed");
     }
 
@@ -345,8 +345,8 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
                       ws.a_packed, ws.a_sf, ws.dn_out, M_e, hs, moe_is,
                       dn_alpha, 1.0f, gemm_ws, gemm_ws_bytes, stream);
     if (r2.status != CUBLAS_STATUS_SUCCESS || !r2.has_algo) {
-      cudaFree(d_counts);
-      cudaFree(d_token_list);
+      cudaFreeAsync(d_counts, stream);
+      cudaFreeAsync(d_token_list, stream);
       return Status::Fail("down GEMM failed");
     }
 
@@ -359,8 +359,8 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
     }
   }
 
-  cudaFree(d_counts);
-  cudaFree(d_token_list);
+  cudaFreeAsync(d_counts, stream);
+  cudaFreeAsync(d_token_list, stream);
   return Status();
 }
 

@@ -122,7 +122,8 @@ add_library(q4t_quant STATIC
   src/quant/dequant.cu
   src/quant/act_quant.cu
   src/quant/moe_weights.cpp
-  src/quant/moe_gemm.cu)
+  src/quant/moe_gemm.cu
+  src/quant/lt_cache.cpp)
 target_include_directories(q4t_quant PUBLIC include)
 target_link_libraries(q4t_quant PUBLIC q4t_io CUDA::cudart CUDA::cublasLt)
 

@@ -12,6 +12,7 @@
 
 #include <cuda_runtime.h>
 
+#include <chrono>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -166,6 +167,23 @@ int RunGenerate(int argc, char** argv) {
 
   // PD-ready 阶段边界 API: Begin (reset state) -> Prefill (handoff point)
   // -> DecodeStepSeq (auto position/history).
+  // Warm up the CUDA context / cuBLASLt heuristics with a tiny prefill so the
+  // first real prefill isn't inflated by one-time init (kernel load, workspace
+  // alloc, autotune). Must run BEFORE the real ModelBeginSequence: the warmup's
+  // own Begin/Prefill leaves the per-layer state dirty, and the real Begin below
+  // resets it. This is a benchmarking concern, not a correctness one.
+  {
+    std::vector<int32_t> warm(1, ids[0]);
+    uint16_t* d_warm = nullptr;
+    if (cudaMalloc(reinterpret_cast<void**>(&d_warm),
+                   static_cast<size_t>(vocab) * 2) == cudaSuccess) {
+      q4t::model::ModelSequence wseq;
+      q4t::model::ModelBeginSequence(model, &wseq, nullptr);
+      q4t::model::ModelPrefill(model, &wseq, warm.data(), 1, d_warm, nullptr);
+      q4t::model::ModelEndSequence(&wseq);
+      cudaFree(d_warm);
+    }
+  }
   q4t::model::ModelSequence seq;
   s = q4t::model::ModelBeginSequence(model, &seq, nullptr);
   if (!s.ok()) {
@@ -174,6 +192,7 @@ int RunGenerate(int argc, char** argv) {
     model.Free();
     return 1;
   }
+  auto t_prefill_start = std::chrono::steady_clock::now();
   s = q4t::model::ModelPrefill(model, &seq, ids.data(),
                                static_cast<int>(ids.size()), d_logits, nullptr);
   if (!s.ok()) {
@@ -182,6 +201,8 @@ int RunGenerate(int argc, char** argv) {
     model.Free();
     return 1;
   }
+  cudaDeviceSynchronize();
+  auto t_prefill_end = std::chrono::steady_clock::now();
 
   // 5. Decode loop (greedy argmax).
   auto argmax = [&](const uint16_t* h) {
@@ -206,6 +227,7 @@ int RunGenerate(int argc, char** argv) {
              static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost);
   next_token = argmax(h_logits.data());
 
+  auto t_decode_start = std::chrono::steady_clock::now();
   for (int step = 0; step < max_tokens; ++step) {
     generated.push_back(next_token);
     if (next_token == cfg.eos_token_id) break;
@@ -220,6 +242,8 @@ int RunGenerate(int argc, char** argv) {
                cudaMemcpyDeviceToHost);
     next_token = argmax(h_logits.data());
   }
+  cudaDeviceSynchronize();
+  auto t_decode_end = std::chrono::steady_clock::now();
   q4t::model::ModelEndSequence(&seq);
 
   // 6. Decode and print.
@@ -229,7 +253,21 @@ int RunGenerate(int argc, char** argv) {
   if (s.ok()) {
     std::printf("%s", text.c_str());
   }
+  const double prefill_ms = std::chrono::duration<double, std::milli>(
+                                t_prefill_end - t_prefill_start).count();
+  const double decode_ms = std::chrono::duration<double, std::milli>(
+                               t_decode_end - t_decode_start).count();
+  const double prefill_tps =
+      prefill_ms > 0 ? T_prompt / (prefill_ms / 1000.0) : 0.0;
+  const double decode_tps =
+      decode_ms > 0 ? static_cast<double>(generated.size()) / (decode_ms / 1000.0)
+                    : 0.0;
   std::fprintf(stderr, "\n[q4t] generated %zu tokens\n", generated.size());
+  std::fprintf(stderr,
+               "[q4t] perf: prefill %d tok in %.1f ms (%.1f tok/s) | "
+               "decode %zu tok in %.1f ms (%.1f tok/s)\n",
+               T_prompt, prefill_ms, prefill_tps, generated.size(), decode_ms,
+               decode_tps);
 
   cudaFree(d_logits);
   model.Free();

@@ -235,21 +235,21 @@ Status HyperConnectionMix(const HyperConnectionWeights& w,
 
   uint16_t* d_down = nullptr;  // [T, lr]
   uint16_t* d_up = nullptr;  // [T, hc_dim]
-  if (cudaMalloc(&d_down, static_cast<size_t>(T) * lr * sizeof(uint16_t)) !=
-      cudaSuccess)
-    return Status::Fail("cudaMalloc down");
-  if (cudaMalloc(&d_up, static_cast<size_t>(T) * hc_dim * sizeof(uint16_t)) !=
-      cudaSuccess) {
-    cudaFree(d_down);
-    return Status::Fail("cudaMalloc up");
+  if (cudaMallocAsync(&d_down, static_cast<size_t>(T) * lr * sizeof(uint16_t),
+                      stream) != cudaSuccess)
+    return Status::Fail("cudaMallocAsync down");
+  if (cudaMallocAsync(&d_up, static_cast<size_t>(T) * hc_dim * sizeof(uint16_t),
+                      stream) != cudaSuccess) {
+    cudaFreeAsync(d_down, stream);
+    return Status::Fail("cudaMallocAsync up");
   }
 
   // 2. down = normed @ W_down^T  ([T, hc_dim] x [lr, hc_dim]^T -> [T, lr]).
   Status s = CheckGemm(Bf16Gemm(normed, w.mix_down, d_down, T, lr, hc_dim,
                                 1.0f, 0.0f, workspace, workspace_bytes, stream));
   if (!s.ok()) {
-    cudaFree(d_down);
-    cudaFree(d_up);
+    cudaFreeAsync(d_down, stream);
+    cudaFreeAsync(d_up, stream);
     return s;
   }
   // 3. silu(down)/hc in place.
@@ -262,8 +262,8 @@ Status HyperConnectionMix(const HyperConnectionWeights& w,
   s = CheckGemm(Bf16Gemm(d_down, w.mix_up, d_up, T, hc_dim, lr, 1.0f, 0.0f,
                          workspace, workspace_bytes, stream));
   if (!s.ok()) {
-    cudaFree(d_down);
-    cudaFree(d_up);
+    cudaFreeAsync(d_down, stream);
+    cudaFreeAsync(d_up, stream);
     return s;
   }
   // 5. gate + mean.
@@ -272,8 +272,8 @@ Status HyperConnectionMix(const HyperConnectionWeights& w,
     MixGateKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
         d_up, normed, mixed, T, hc, hs);
   }
-  cudaFree(d_down);
-  cudaFree(d_up);
+  cudaFreeAsync(d_down, stream);
+  cudaFreeAsync(d_up, stream);
   return Status();
 }
 
@@ -308,9 +308,10 @@ Status HyperConnectionCombine(const HyperConnectionWeights& w,
   }
   uint16_t* d_inject = nullptr;  // [T, hc]
   const cudaError_t merr =
-      cudaMalloc(&d_inject, static_cast<size_t>(T) * hc * sizeof(uint16_t));
+      cudaMallocAsync(&d_inject, static_cast<size_t>(T) * hc * sizeof(uint16_t),
+                      stream);
   if (merr != cudaSuccess) {
-    return Status::Fail(std::string("cudaMalloc inject: ") +
+    return Status::Fail(std::string("cudaMallocAsync inject: ") +
                         cudaGetErrorString(merr));
   }
   // 1. inject_raw = normed @ W_inject^T  ([T, hc_dim] x [hc, hc_dim]^T -> [T,
@@ -319,7 +320,7 @@ Status HyperConnectionCombine(const HyperConnectionWeights& w,
                                 hc_dim, 1.0f, 0.0f, workspace, workspace_bytes,
                                 stream));
   if (!s.ok()) {
-    cudaFree(d_inject);
+    cudaFreeAsync(d_inject, stream);
     return s;
   }
   // 2. 2*sigmoid(inject/hc) in place.
@@ -334,7 +335,7 @@ Status HyperConnectionCombine(const HyperConnectionWeights& w,
     CombineKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
         block_output, hyper_input, d_inject, out, T, hc, hs);
   }
-  cudaFree(d_inject);
+  cudaFreeAsync(d_inject, stream);
   return Status();
 }
 

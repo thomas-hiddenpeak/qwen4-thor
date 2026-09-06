@@ -460,18 +460,21 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
   uint16_t* d_a = nullptr;
   uint16_t* d_beta = nullptr;
   uint16_t* d_y_ssm = nullptr;
+  // Async alloc/free: cudaFree synchronizes the device (drains the queue),
+  // which dominated decode CPU time (~700 frees/step at ~100us each). The
+  // memory-pool async variants are cheap and CUDA-Graphs-capturable.
   auto free_all = [&]() {
-    cudaFree(d_qkv_raw);
-    cudaFree(d_qkv);
-    cudaFree(d_z);
-    cudaFree(d_a);
-    cudaFree(d_beta);
-    cudaFree(d_y_ssm);
+    cudaFreeAsync(d_qkv_raw, stream);
+    cudaFreeAsync(d_qkv, stream);
+    cudaFreeAsync(d_z, stream);
+    cudaFreeAsync(d_a, stream);
+    cudaFreeAsync(d_beta, stream);
+    cudaFreeAsync(d_y_ssm, stream);
   };
-  auto alloc = [](uint16_t** p, size_t elems) -> Status {
-    if (cudaMalloc(reinterpret_cast<void**>(p), elems * sizeof(uint16_t)) !=
-        cudaSuccess) {
-      return Status::Fail("cudaMalloc failed");
+  auto alloc = [&](uint16_t** p, size_t elems) -> Status {
+    if (cudaMallocAsync(reinterpret_cast<void**>(p),
+                        elems * sizeof(uint16_t), stream) != cudaSuccess) {
+      return Status::Fail("cudaMallocAsync failed");
     }
     return Status();
   };
