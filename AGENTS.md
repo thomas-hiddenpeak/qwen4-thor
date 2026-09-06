@@ -60,14 +60,15 @@ cmake --build build --parallel
   PLE 注入 + head/tail + generate + 长序列 QSA 稀疏路径) / serve (OpenAI
   兼容 HTTP API) / **PD-ready 架构** (Paged KV cache + 可分离代码路径 +
   阶段边界 API ModelSequence) / **4 层参考验证** (transformers 5.16.1
-  官方实现, 含首个 full_attention, 4/4 argmax 匹配) / **decode 路径
-  自洽性验证** (prefill/decode 同 token 对照, SSM state 改 FP32,
-  conv1d 窗口 + PLE short-conv 持久状态两个 decode bug 已修复,
-  C++ batch vs incremental 逐位一致 / 参考 4/4 argmax 匹配)。
-  54 项测试全绿, 零警告。
-- 下一步 (2026-09-06 与用户确认的顺序): 逐 token 对参考验证 (4 层基线
-  + decode 自洽性已完成, 继续扩展到 decode 对参考逐步对照/更多层) →
-  prefill/decode 性能优化 (拆分 linear attention 路径, 预留 MTP 接口)
-  → MTP 推测解码 (良好基线上, 用户排期) → 多模态图像输入 (transformers
+  官方实现, 含首个 full_attention) / **decode 路径正确性 (已闭合)**
+  (conv1d 窗口 + PLE short-conv 持久状态两个 decode bug 已修复;
+  E1–E10 实验链定性 batch vs incremental 残差 = MoE 路由边界敏感性,
+  非状态 bug: 增量自洽 0.000173 / 对参考等距 0.1306≈0.1309 / 全位置
+  MoE 翻转对照; C++ vs 参考 16 步 12/16 argmax, 不匹配均为 near-tie
+  被 NVFP4 噪声翻转)。54 项测试全绿, 零警告。
+- 下一步 (2026-09-06 与用户确认的顺序): 逐 token 对参考验证 (已闭合,
+  作为性能优化守护网) → **prefill/decode 性能优化 (进行中**: 建基线 +
+  profile 定位瓶颈, 拆分 linear attention 路径, 预留 MTP 接口) →
+  MTP 推测解码 (良好基线上, 用户排期) → 多模态图像输入 (transformers
   权威参考已就位) → PLE 工作内存/SHA-256 校验。完整多设备 PD 部署归
   Phase 2。

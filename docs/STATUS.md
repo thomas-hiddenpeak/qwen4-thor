@@ -462,7 +462,11 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     54↔207), 产生 O(1) MoE 输出差, 经后续层传播到 logits (0.25); 非边界
     位置不受影响 (E9: pos 13/15 bit-identical)。E9c 排除 router bug:
     翻转两专家归一化权重完全相同 (0.079047, top-10 最小/边界权重), 即
-    原始 router 分数在 ~1e-3 内的真近并列, 良性 MoE 行为。E8 证明状态处理无 bug;
+    原始 router 分数在 ~1e-3 内的真近并列, 良性 MoE 行为。E10 普适性:
+    16 位置仅 2 处翻转 (pos 12 L2, pos 14 L1), 最大尖峰 pos 16 (0.25)
+    是非翻转位置 — 翻转是稀疏触发器, 残差是此前翻转经 conv 窗口 (4) +
+    SSM 状态 (收缩) 传播的累积效应; 传播模式 (窗口内抬高、窗口外衰减)
+    与状态正确携带差异一致, 强化无状态 bug 结论。E8 证明状态处理无 bug;
     差模来自 MoE 离散路由, 非 SSM/conv 状态逻辑。SSM/conv 状态差实测有
     界 (layer 0 bit-identical, layer 2 conv 0.165, 非单调增长), 与单点
     MoE 翻转经 conv 传播一致。
@@ -628,20 +632,22 @@ Phase 1 已完成的层: **PLE 流式层** ✅, **IO 层** ✅, **量化层** �
 (NVFP4 W4A4 原生 + grouped MoE), **模型层** ✅ (48 层 forward + PLE
 注入 + head/tail + generate + 长序列 QSA 稀疏路径), **serve** ✅
 (OpenAI 兼容 HTTP API), **PD-ready 架构** ✅ (Paged KV + 可分离代码
-路径 + 阶段边界 API ModelSequence), **decode 路径自洽性** ✅
-(prefill/decode 同 token 对照, SSM state FP32, conv1d 窗口 + PLE
-short-conv 持久状态均已修复, batch vs incremental 逐位一致)。
+路径 + 阶段边界 API ModelSequence), **decode 路径正确性** ✅
+(conv1d 窗口 + PLE short-conv 持久状态两个 bug 均已修复; batch vs
+incremental 残差定性为 MoE 路由边界敏感性, 非状态 bug — 见 E1–E10
+实验链, 等距性 + 增量自洽 + 全位置 MoE 翻转对照)。
 54 项测试全绿, 零警告。
 
 剩余 Phase 1 项 (按 2026-09-06 与用户确认的顺序):
-1. **逐 token 对参考验证 (进行中)**: 4 层基线已完成 (4/4 argmax 匹配,
-   见上)。decode 路径自洽性验证已完成 (见下: conv1d 窗口 + PLE
-   short-conv 持久状态两个 bug 均已修复, C++ batch vs incremental
-   逐位一致, 参考对照 4/4 argmax 匹配)。下一步: 扩展到更多层 /
-   更长 token 序列, 钉死正确性基线 (性能优化的守护网)。
-2. **prefill/decode 性能优化**: 用 ① 的基线守护数值不回归; 同时**预留
-   MTP 接口** (scheme A: 主模型收尾阶段可选暴露 pre-final-mixer 多流
-   [T, hc*H] 给 MTP 第一步), 避免优化后再返工。
+1. **逐 token 对参考验证 (已闭合)**: 4 层基线 + decode 自洽性 + E1–E10
+   实验链已完成。正确性结论: 无状态 bug (E8 增量自洽 0.000173 + E7
+   等距 0.1306≈0.1309); batch-vs-incremental 残差 = MoE 路由边界敏感
+   性 (固有特性, E9/E9c/E10); C++ vs 参考 16 步 12/16 argmax (75%),
+   不匹配均为 near-tie 被 NVFP4 噪声翻转。此基线作为性能优化的守护网。
+2. **prefill/decode 性能优化 (进行中)**: 先建性能基线 (参考 thor-bench
+   方法) + profile 定位 top 瓶颈; 用 ① 的基线守护数值不回归; 同时
+   **预留 MTP 接口** (scheme A: 主模型收尾阶段可选暴露 pre-final-mixer
+   多流 [T, hc*H] 给 MTP 第一步), 避免优化后再返工。
 3. **MTP 1 层**: 在 ② 的稳定基线上开发 + 测加速比 (用户决定: 性能优化
    后在良好基线上进行)。权威参考: `reference/vllm/vllm/models/
    qwen4_exp/nvidia/mtp.py` (transformers 5.16.1 **无** MTP, 加载时
