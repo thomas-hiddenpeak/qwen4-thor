@@ -41,21 +41,41 @@
 2. **无状态 bug — 交叉证据 (E7 等距性)**: 若某路径有状态处理错误, 它会
    **系统性**地离参考更远 (l2(path,ref) >> l2(other,ref))。实测等距
    (0.1306 vs 0.1309), 排除。
-3. **残差分解**:
+3. **残差分解 (E9 定根因)**:
    - **共模** (两 C++ 路径 vs 参考): 0.13 = **NVFP4 量化误差** (不可消除,
      两路径共有)。
-   - **差模** (batch vs incremental): 0.064 = **GEMM 形状舍入** (M=20 vs
-     M=4/M=1 的累加顺序差, 两路径唯一结构差异)。E8 证明该差模**不经过
-     状态处理逻辑** (两条增量路径分块不同却一致), 只来自 batch 路径的
-     大 M GEMM 与增量路径的小 M GEMM 在 SSM 输入 (qkv/a/beta) 上的舍入
-     差, 经 SSM 递推传播。
+   - **差模** (batch vs incremental): 0.064 = **MoE 路由边界敏感性**。
+     机制: GEMM 形状差 (M=16 vs M=1) 在 MoE router 分数上产生 ~1e-3 的
+     微小差异; 当某位置恰好落在 top-10 边界附近时, 该微小差异翻转专家
+     选择 (E9b: layer 1 pos 14, expert 54↔207), 产生 O(1) 的 MoE 输出
+     差; 经后续层传播到 logits (0.25)。非边界位置不受影响 (E9: pos
+     13/15 bit-identical)。E8 证明状态处理本身无 bug; 差模来自 MoE 的
+     离散路由, 非 SSM/conv 状态逻辑。
    - step 12 的 0.25 是差模的**局部尖峰** (均值 0.064, 尖峰 0.25), 源于
-     GEMM 形状差在该位置恰好跨越 near-tie 边界 (sawtooth 模式: 尖峰后
-     下一步即恢复, 因 SSM 状态是收缩的)。
+     该位置恰好跨越 MoE 路由边界 (sawtooth 模式: 尖峰后下一步即恢复,
+     因 SSM 状态是收缩的, 单点差异被洗掉)。
 4. **此前文档 "16/16 argmax 匹配 ⇒ 状态正确" 的断言不成立**: 正确证据
    是 **E8 增量自洽性** (0.000173) 与 **E7 等距性** (0.1306 ≈ 0.1309),
    非 argmax 匹配。argmax 匹配是必要非充分条件 (near-tie 位置 argmax
    可能匹配但 logits 差 0.25)。
+
+**实验 E9/E9b (根因): MoE 路由边界翻转**
+- E9: 对比两路径在 pos 13–15 的 `qkv_raw` (conv 输入 = GEMM 输出):
+  layer 0/1 全部 bit-identical; **layer 2 pos 14 l2_rel=0.284** (max_abs
+  3.13), pos 13/15 bit-identical。单点离散跳变, 非 GEMM 形状差 (后者会
+  影响所有位置且幅度 ~1e-3)。
+- E9b: 对比两路径在 pos 13–15 的 MoE top-10 专家选择:
+  **layer 1 pos 14: batch 选 expert 54, incremental 选 expert 207**
+  (9/10 相同, 1 个翻转)。其余所有位置/层 10/10 相同。
+- **根因**: layer 1 MoE router 的 GEMM 形状差 (M=16 vs M=1) 在 pos 14
+  的 router 分数上产生微小差异, 恰好跨越 top-10 边界 → 专家翻转
+  (54↔207) → MoE 输出在 pos 14 不同 (O(1)) → 传播到 layer 2 trunk_in
+  (0.265) → qkv_raw (0.284) → conv state @ pos 16 (0.165) → logits
+  @ pos 16 (0.25)。pos 15 恢复 bit-identical (SSM/conv 收缩, 单点差异
+  下一步即洗掉)。
+- **结论**: 残差是 **MoE 路由边界敏感性** (MoE 模型的固有特性), 非状态
+  bug, 非纯 GEMM 舍入。与 (B) 对照 (C++ vs 参考) 中 near-tie 位置翻转
+  是同一机制。
 
 **辅助实验 (E4/E5): SSM/conv 状态差**
 - pos 20: layer 0 bit-identical, layer 1 SSM 0.000034, layer 2 SSM 0.028 /
@@ -63,8 +83,8 @@
 - pos 16 (驱动 0.25 尖峰的位置): layer 0 bit-identical, layer 1 SSM
   0.000006, layer 2 SSM 0.045 / **conv 0.165** (max_abs 3.13, 值幅度 1.7,
   24× BF16 epsilon)。
-- 状态差**有界** (非单调增长), 集中在 layer 2 (PLE 层), 与 GEMM 形状差
-  经 PLE conv 放大的预期一致。**非状态累积 bug**。
+- 状态差**有界** (非单调增长), 集中在 layer 2, 与 E9 发现的单点 MoE 翻转
+  经 conv 传播一致。**非状态累积 bug**。
 
 **对文档的更正**
 - (A) 自洽的正确表述: "两路径等距于参考 (0.1306 ≈ 0.1309), 互差 0.064

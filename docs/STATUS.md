@@ -454,13 +454,16 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     证据 (E7 等距性): 两条 C++ 路径各自对参考 (transformers FP32) 的
     mean l2 **等距** (batch 0.1306 vs incremental 0.1309), 且互差
     (0.0643) 小于各自到参考的距离。argmax 匹配本身是必要非充分条件
-    (near-tie 位置 argmax 可匹配而 logits 差 0.25)。残差分解: 共模
-    (两路径 vs 参考) 0.13 = NVFP4 量化误差 (不可消除); 差模 (batch vs
-    incremental) 0.064 = **GEMM 形状舍入** (M=20 vs M=4/M=1 累加顺序,
-    两路径唯一结构差异; E8 证明该差模不经过状态处理逻辑), 局部
-    near-tie 尖峰至 0.25。SSM/conv 状态差实测有界 (layer 0 bit-
-    identical, layer 2 conv 0.165, 非单调增长), 与 GEMM 形状差经 PLE
-    conv 放大一致。
+    (near-tie 位置 argmax 可匹配而 logits 差 0.25)。残差分解 (E9 定根
+    因): 共模 (两路径 vs 参考) 0.13 = NVFP4 量化误差 (不可消除); 差模
+    (batch vs incremental) 0.064 = **MoE 路由边界敏感性** — GEMM 形状差
+    (M=16 vs M=1) 在 MoE router 分数上产生 ~1e-3 微小差异, 当某位置恰好
+    落在 top-10 边界附近时翻转专家选择 (E9b: layer 1 pos 14, expert
+    54↔207), 产生 O(1) MoE 输出差, 经后续层传播到 logits (0.25); 非边界
+    位置不受影响 (E9: pos 13/15 bit-identical)。E8 证明状态处理无 bug;
+    差模来自 MoE 离散路由, 非 SSM/conv 状态逻辑。SSM/conv 状态差实测有
+    界 (layer 0 bit-identical, layer 2 conv 0.165, 非单调增长), 与单点
+    MoE 翻转经 conv 传播一致。
     **(B) C++ vs 参考** (NVFP4 vs transformers FP32, 同序列, 测不可消除的
     NVFP4 量化误差): 4 层对齐序列 **8 步 6/8、16 步 12/16 (75%) argmax
     匹配** (first-max, 与生成一致); 不匹配均为参考侧 near-tie 或中等 gap

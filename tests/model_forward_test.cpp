@@ -386,22 +386,24 @@ Q4T_TEST(model_sequence_api) {
 //   (A) C++ SELF-CONSISTENCY (Q4T_DECODE_SELFCHK): a fresh batched prefill
 //       of the full sequence vs the incremental "prefill(T) + N decode
 //       steps", both C++ NVFP4. The residual here is GEMM-shape rounding
-//       (M=T+N vs M=1 accumulation order), NOT NVFP4 quantization (both
-//       paths share the same quantized weights). Post PLE short-conv fix:
-//       argmax 16/16 but logits l2_rel has a sawtooth spike (step 12: 0.25,
-//       recovers next step). NO STATE BUG — proven DIRECTLY by
-//       INCREMENTAL SELF-CONSISTENCY: two all-incremental paths
-//       (Prefill(4)+16xdecode vs Prefill(1)+19xdecode, both M=1 for the
-//       overlap, differing only in the GEMM shape used for positions 1-3)
-//       agree to l2_rel mean 0.000173 (15/16 bit-identical) — the M=1
-//       recurrence is self-consistent and chunking-invariant. Cross-check
-//       by EQUIDISTANCE: both C++ paths are equidistant from the reference
-//       (transformers FP32) (mean l2 batch 0.1306 vs incr 0.1309), and
-//       their mutual distance (0.0643) is SMALLER than either's distance
-//       to the reference. The 0.25 spike is a local near-tie boundary
-//       crossing in the differential (GEMM-shape) mode, washed out by the
-//       contractive SSM next step. Argmax match is necessary but NOT
-//       sufficient for state correctness.
+//       NOT NVFP4 quantization (both paths share the same quantized
+//       weights). Post PLE short-conv fix: argmax 16/16 but logits l2_rel
+//       has a sawtooth spike (step 12: 0.25, recovers next step). NO STATE
+//       BUG — proven DIRECTLY by INCREMENTAL SELF-CONSISTENCY: two
+//       all-incremental paths (Prefill(4)+16xdecode vs Prefill(1)+19xdecode,
+//       both M=1 for the overlap, differing only in the GEMM shape used for
+//       positions 1-3) agree to l2_rel mean 0.000173 (15/16 bit-identical)
+//       — the M=1 recurrence is self-consistent and chunking-invariant.
+//       Cross-check by EQUIDISTANCE: both C++ paths are equidistant from the
+//       reference (transformers FP32) (mean l2 batch 0.1306 vs incr 0.1309).
+//       ROOT CAUSE of the spike (E9/E9b): MoE ROUTING-BOUNDARY SENSITIVITY.
+//       The GEMM shape difference (M=16 vs M=1) perturbs the MoE router
+//       scores by ~1e-3; at a position near a top-10 boundary (layer 1,
+//       pos 14) that flips one expert (54 vs 207), producing an O(1) MoE
+//       output difference that propagates to the logits (0.25). Non-boundary
+//       positions are bit-identical (E9: pos 13/15). The spike is a single
+//       position, washed out by the contractive SSM/conv next step. Argmax
+//       match is necessary but NOT sufficient for state correctness.
 //   (B) C++ vs REFERENCE: C++ NVFP4 vs transformers FP32, same sequence.
 //       Tests the NVFP4 quantization error (irreducible, common mode).
 //       Post fix: 12/16 argmax match (4 layers, 16 steps); mismatches are
@@ -613,14 +615,29 @@ Q4T_TEST(model_forward_dump_decode) {
   // explicit sequence). The self-check below must feed THESE tokens (not
   // `decoded`, which is the per-step output) so that the fresh prefill and
   // the incremental path process the identical token sequence.
+  // Optional per-step linear/MoE/MLP dump (Q4T_STEP_DUMP=1): dumps
+  // intermediates for EVERY decode step (not just step 0), so a
+  // batch-vs-incremental comparison can localize the first diverging
+  // stage at any position (e.g. the qkv_raw feeding the conv state).
+  const bool dump_steps = [] {
+    const char* e = std::getenv("Q4T_STEP_DUMP");
+    return e && *e;
+  }();
   std::vector<int32_t> decode_input(n_decode);
   for (int i = 0; i < n_decode; ++i) {
     if (!fixed_seq.empty()) next_tok = fixed_seq[T + i];
     decode_input[i] = next_tok;
-    if (dump_state && i == 0) {
-      setenv("Q4T_LIN_DUMP", (std::string(out_prefix) + ".lin_d0").c_str(), 1);
-      setenv("Q4T_MOE_DUMP", (std::string(out_prefix) + ".moe_d0").c_str(), 1);
-      setenv("Q4T_MLP_DUMP", (std::string(out_prefix) + ".mlp_d0").c_str(), 1);
+    const bool do_dump = (dump_state && i == 0) || dump_steps;
+    if (do_dump) {
+      std::string tag = dump_steps
+                            ? (std::string(out_prefix) + ".lin_d" +
+                               std::to_string(i))
+                            : (std::string(out_prefix) + ".lin_d0");
+      setenv("Q4T_LIN_DUMP", tag.c_str(), 1);
+      setenv("Q4T_MOE_DUMP", (std::string(out_prefix) + ".moe_d" +
+                               std::to_string(i)).c_str(), 1);
+      setenv("Q4T_MLP_DUMP", (std::string(out_prefix) + ".mlp_d" +
+                               std::to_string(i)).c_str(), 1);
     }
     s = ModelDecodeStepSeq(m, &seq, next_tok, d_logits, nullptr);
     if (!s.ok()) {
@@ -628,7 +645,7 @@ Q4T_TEST(model_forward_dump_decode) {
                   s.message().c_str());
       return false;
     }
-    if (dump_state && i == 0) {
+    if (do_dump) {
       unsetenv("Q4T_LIN_DUMP");
       unsetenv("Q4T_MOE_DUMP");
       unsetenv("Q4T_MLP_DUMP");
