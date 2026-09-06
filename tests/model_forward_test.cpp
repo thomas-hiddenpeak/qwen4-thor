@@ -385,15 +385,24 @@ Q4T_TEST(model_sequence_api) {
 // TWO DISTINCT COMPARISONS (do not conflate):
 //   (A) C++ SELF-CONSISTENCY (Q4T_DECODE_SELFCHK): a fresh batched prefill
 //       of the full sequence vs the incremental "prefill(T) + N decode
-//       steps", both C++ NVFP4. Tests C++ state handling only. Post PLE
-//       short-conv fix: cos ~0.999-1.0, argmax 8/8 (4 layers, 8 steps).
+//       steps", both C++ NVFP4. The residual here is GEMM-shape rounding
+//       (M=T+N vs M=1 accumulation order), NOT NVFP4 quantization (both
+//       paths share the same quantized weights). Post PLE short-conv fix:
+//       argmax 16/16 but logits l2_rel has a sawtooth spike (step 12: 0.25,
+//       recovers next step). NO STATE BUG — proven by EQUIDISTANCE: both
+//       C++ paths are equidistant from the reference (transformers FP32)
+//       (mean l2 batch 0.1306 vs incr 0.1309), and their mutual distance
+//       (0.0643) is SMALLER than either's distance to the reference. A
+//       state bug would make one path systematically farther. The 0.25
+//       spike is a local near-tie boundary crossing in the differential
+//       (GEMM-shape) mode, washed out by the contractive SSM next step.
+//       Argmax match is necessary but NOT sufficient for state correctness.
 //   (B) C++ vs REFERENCE: C++ NVFP4 vs transformers FP32, same sequence.
-//       Tests the NVFP4 quantization error (irreducible). Post fix: 6/8
-//       argmax match (4 layers, 8 steps); the 2 mismatches are a reference
-//       near-tie (ref top2 gap 0.020, flipped by l2_rel 0.109 NVFP4 noise)
-//       and a moderate gap (0.055) — NOT a state bug. The pre-fix "4/4
-//       match" was coincidental (the bug's error happened to preserve the
-//       argmax ordering while l2_rel was 4-12x worse).
+//       Tests the NVFP4 quantization error (irreducible, common mode).
+//       Post fix: 12/16 argmax match (4 layers, 16 steps); mismatches are
+//       reference near-ties flipped by l2_rel 0.10-0.30 NVFP4 noise.
+//       The pre-fix "4/4 match" was coincidental (the bug's error happened
+//       to preserve the argmax ordering while l2_rel was 4-12x worse).
 //
 //   Q4T_MODEL_LAYERS (default 4)
 //   Q4T_DECODE_STEPS (default 4)
