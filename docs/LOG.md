@@ -67,6 +67,12 @@
 - E9b: 对比两路径在 pos 13–15 的 MoE top-10 专家选择:
   **layer 1 pos 14: batch 选 expert 54, incremental 选 expert 207**
   (9/10 相同, 1 个翻转)。其余所有位置/层 10/10 相同。
+- E9c (排除 router bug): 翻转的两个专家在各自路径的**归一化权重完全
+  相同 (0.079047)**, 且是 top-10 中**最小 (第 10 名/边界)** 的权重;
+  其余 9 个专家及权重逐一相同。若 router 有 bug, 翻转专家的权重会显著
+  不同; 实测两者权重相等 → 54 与 207 的原始 router 分数在 ~1e-3 (GEMM
+  形状扰动) 之内, 是 top-10 截断处的**真近并列**, 良性 MoE 行为, 非
+  router bug。
 - **根因**: layer 1 MoE router 的 GEMM 形状差 (M=16 vs M=1) 在 pos 14
   的 router 分数上产生微小差异, 恰好跨越 top-10 边界 → 专家翻转
   (54↔207) → MoE 输出在 pos 14 不同 (O(1)) → 传播到 layer 2 trunk_in

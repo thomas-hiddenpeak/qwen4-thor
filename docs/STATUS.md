@@ -460,7 +460,9 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     (M=16 vs M=1) 在 MoE router 分数上产生 ~1e-3 微小差异, 当某位置恰好
     落在 top-10 边界附近时翻转专家选择 (E9b: layer 1 pos 14, expert
     54↔207), 产生 O(1) MoE 输出差, 经后续层传播到 logits (0.25); 非边界
-    位置不受影响 (E9: pos 13/15 bit-identical)。E8 证明状态处理无 bug;
+    位置不受影响 (E9: pos 13/15 bit-identical)。E9c 排除 router bug:
+    翻转两专家归一化权重完全相同 (0.079047, top-10 最小/边界权重), 即
+    原始 router 分数在 ~1e-3 内的真近并列, 良性 MoE 行为。E8 证明状态处理无 bug;
     差模来自 MoE 离散路由, 非 SSM/conv 状态逻辑。SSM/conv 状态差实测有
     界 (layer 0 bit-identical, layer 2 conv 0.165, 非单调增长), 与单点
     MoE 翻转经 conv 传播一致。
