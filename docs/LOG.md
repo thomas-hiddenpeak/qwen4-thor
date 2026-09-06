@@ -5,6 +5,149 @@
 
 ---
 
+## 2026-09-06 — PLE short-conv 持久状态 bug 修复 (核心特性, 更正归因)
+
+**背景**
+conv1d 窗口修复后, 3 层对齐复跑仍见 batch(M=8) vs incremental(M=4+M=1)
+logits 漂移 (step 2 l2_rel=0.317)。此前归因为 "MoE/HC GEMM 的 cuBLASLt
+算法选择差异 (预期数值非确定)"。本轮用**无参考**的 C++ batch vs
+incremental 逐层/逐阶段中间量对照重新定位, 证明该归因**错误**。
+
+**对照方法论 (关键改进)**
+- C++ 测试写出 `.full_seq.txt` = prompt + decode 实际喂入 token
+  (`decode_input`, 非输出), 参考脚本直接读该文件 → 彻底消除 token 错位
+  (此前手写 full_seq 喂的是 C++ 输出, 错位一步)。
+- 参考 self-check prefill5 用独立 router tag `p5` (此前复用 `d3` tag,
+  5 行覆盖 1 行的 d3 router dump)。
+- 逐层中间量 dump 全部按层加 `_m{li}` 后缀 (此前 `DumpLinearIntermediates`
+  忽略 tag、每层覆盖同名文件, 3 层跑完只剩 layer 2, 曾把 layer 2 的
+  path-dependent 输入误当 layer 0 的, 产生假矛盾)。
+- 新增 dump: `trunk_in` (attn_hc.mix 输入, PLE 层即 PLE-corrected trunk)、
+  `moe_in/moe_out` (MoE 边界)、`out` (层输出 trunk)、`ple_emb` (NVMe
+  gather 输出)、`ple_gated_n/ple_conv_out` (PLE conv 输入/输出)。
+
+**定位 (逐层, 8 个检查点)**
+- layer 0: x/qkv_raw/qkv/y_ssm/moe_in/moe_out/out **全部 bit-identical**
+  → linear-attn 递归 + conv 窗口 + NVFP4 MoE 全对。
+- layer 1 (PLE 层): `ple_emb` (NVMe gather) 与 `ple_gated_n` (conv 输入)
+  **bit-identical**, 但 `ple_conv_out` 发散 l2_rel=0.103 → 发散在 PLE
+  short-conv 内部, 非 n-gram/NVMe, 非 GEMM。
+- 此前 "layer 0 out 精确 ⇒ 发散在 attn_hc.mix" 的结论**错误**: 漏了 PLE
+  层 `PleLayerForward`+`PleAddTrunkKernel` 在 attn_hc.mix 前修改 trunk
+  (用户指出)。补 `trunk_in` dump 后确认 layer 1 trunk_in 已发散 0.070,
+  attn_hc.mix 反而把它缩小 (0.070→0.040)。
+
+**根因**
+参考 `Qwen4ExpTextPLELayer._short_conv` 用 `update_conv_state(state_idx=1)`
+维护 9 元素/通道持久状态 (`short_conv_state_len=(K-1)*dilation=(4-1)*3=9`);
+膨胀卷积 (K=4, dilation=3) 感受野 9, 每 token 需前 9 个 `gated_n`。
+C++ `DepthwiseConvKernel` 无 state 参数, `src<0` 零填充 → decode (T=1)
+只见当前 token, 丢失前序 token 的 gated_n (t-9/t-6/t-3 三个 tap)。同
+linear-attn conv1d 窗口 bug 同类, 但此前只修了 linear-attn 侧。
+
+**修复**
+- 新增 `DecoderLayer::ple_conv_state` [hc*hs, 9] BF16 (Load 分配/清零,
+  Free 释放, ResetState 重置; 仅 PLE 层分配)。
+- `DepthwiseConvKernel` 加 `state`+`state_len` 参数, `src<0` 时读
+  `state[c, src+state_len]` (fresh 序列 state=0 → 等价零填充, prefill 不变)。
+- 新增 `PleConvUpdateStateKernel` (同 `Conv1dUpdateStateKernel` 逻辑,
+  state_len=9), 卷积后滑动窗口。
+- `PleLayerForward` 签名加 `conv_state` 参数; 两处测试调用点更新。
+
+**验证**
+- `ple_conv_out` batch vs incremental: l2_rel 0.103 → **0.0 (bit-identical)**。
+- 3 层 4 步 logits batch vs incremental: 4/4 **bit-identical** (此前 step 2
+  l2_rel=0.317)。
+- 4 层 greedy 第 4 token: 10196 → **36634** (与参考/C++ batch 一致)。
+- 自洽检查 4/4 cos=**1.000000** (此前 0.949–0.998)。
+- 54 项测试全绿, 零警告。
+
+**更正**
+此前 "剩余漂移来自 MoE/HC GEMM 的 batch vs 增量 cuBLASLt 算法选择差异
+(预期数值非确定, 非 bug)" 的归因**错误** — 该序列上 GEMM 形状差实测为 0
+(layer 0 全链路 bit-identical), 发散全部来自 PLE short-conv 缺持久状态。
+"near-tie argmax 翻转" 表象也是此 bug 的下游效应, 非量化噪声。
+
+**下一步**
+扩展逐 token 对参考验证到更多层/更长序列, 钉死正确性基线; 然后进入
+prefill/decode 性能优化 (预留 MTP 接口)。
+
+---
+
+## 2026-09-06 — conv1d 窗口 decode 更新 bug 修复 + 参考逐步对照
+
+**背景**
+延续 decode 路径验证。上一轮 1 步自洽检查 (prefill5 vs decode0) 全部
+通过, 但用户指出三个事实: ① 两路径各自 greedy, 第 5 个输入 token 不同
+(C++ 31999 vs 参考 68153), 之前的 d0/p5 state 对比无效; ② C++ 3 列
+conv cache 对应参考 4 列的最后 3 列; ③ **T=1 时 C++ conv 更新只写最后
+一列, 前两列不左移**。
+
+**复现 (先复现再修复)**
+把自洽检查从 1 步扩展为 N 步: 用 decode 实际喂入的 token 序列
+(`decode_input`, 非 per-step 输出) 做全新 prefill, 对照增量路径最后
+N 行。3 层 4 步复现累积漂移:
+  step 0: cos=0.9985 argmax 159288 vs 217112 (仅 GEMM 路径差)
+  step 1: cos=0.9826 argmax 一致
+  step 2: cos=0.9379 argmax 一致
+  step 3: cos=0.9741 argmax 94037 vs 215981 (翻转)
+cos 随步数下降 + argmax 翻转 → 确认真 bug。
+
+**根因: Conv1dUpdateStateKernel 的 decode 分支**
+T < hist (decode, T=1) 时原实现 `src_t = T - hist + k`, k=0,1 为负
+跳过, k=2 写 input[0] → state 从 [a,b,c] 变 [a,b,d] 而非 [b,c,d]:
+tok3 永久丢失, tok1 永久滞留。首步 decode 的 logits 不受影响 (conv 读
+发生在更新前, 读的是 prefill4 的正确 state), 故 1 步自洽检查抓不到;
+第 2 步起 conv 窗口 = [tok1, tok2, tok_{t-1}, tok_t] (应为
+[tok_{t-3}..tok_t]), 错误累积。
+
+**修复**
+T < hist 时: 先右移旧窗口 `state[k] = state[k+T]` (k < shift,
+shift = hist - T, 升序 k 读高写低原地安全), 再写新 token
+`state[k] = input[k-shift]` (k >= shift)。T >= hist (prefill) 分支
+不变。验证: T=1 [a,b,c]+d→[b,c,d]; T=2 [a,b,c]+[d,e]→[c,d,e]。
+
+**参考逐步对照 (修复后, 同 token 序列)**
+参考脚本 `ref4_decode.py` 加固定 token 序列模式 (第 4 参数喂入 C++ 的
+greedy 序列, 替代参考自己的 greedy) + 增量 decode 后的 full state dump。
+3 层 4 步 (prompt [846,25,1203,321] + 喂入 [31999,217112,12870,179620]):
+- **logits**: 4/4 argmax 全匹配, cos 0.949–0.998 (step 2 偏低是
+  batch M=8 vs 增量 M=4+M=1×4 的 cuBLASLt 算法差, 非 bug; 参考自身
+  同检查 cos=1.0 已验证 oracle 可信)。
+- **state 逐元素** (layer 0): conv 4/8 token 后 C++ vs 参考
+  cos 0.999998/0.999999 (max_abs 0.079/0.149, BF16 量化级); SSM
+  4/8 token 后 cos 0.999995/0.999996 (max_abs ~0.008)。
+- **多步自洽** (C++ 内部): step 1 0.983→0.991, step 3 0.974→0.993,
+  累积漂移消除。
+
+**对照方法论纠正 (本轮确立)**
+1. 参考 `conv_states[0]` 存最后 conv_k=4 个原始输入 (含当前 token),
+   C++ `conv_state` 存 conv_k-1=3 个历史 → 对齐取 `ref[:, 1:]`。
+2. 两路径第 5 个起输入 token 必须显式对齐 (各自 greedy 可能不同):
+   参考喂 C++ 的序列, 或 C++ 喂参考的序列。
+3. 1 步自洽检查抓不到 conv 窗口 bug (首步 conv 读在更新前); N 步
+   (N >= conv_k) 才能暴露。
+
+**改动文件**
+- `src/model/linear_attention.cu`: `Conv1dUpdateStateKernel` decode
+  分支修复 (窗口左移)。
+- `tests/model_forward_test.cpp`: 自洽检查 1 步→N 步 (记录
+  `decode_input`, 全新 prefill 喂 prompt+decode_input, 对照最后 N 行
+  并逐行打印 cos/argmax); d_logits 尺寸 (T+1)→(T+n_decode)。
+- `.q4t-work/ref4_decode.py`: 固定 token 序列模式 + full state dump。
+- `docs/STATUS.md` / `docs/LOG.md`: 本条。
+
+**验证**
+54 项测试全绿, 零警告。
+
+**下一步**
+prefill/decode 性能优化 (拆分 linear attention 的 prefill/decode 路径:
+prefill 用 chunked SSM, decode 用 recurrent; 预留 MTP 接口)。参考
+对照基线已就位 (ref4_decode.py 固定序列模式 + state dump), 性能优化
+用它守护数值不回归。
+
+---
+
 ## 2026-09-06 — decode 路径自洽性验证: 测试设计错误定位 + SSM state 改 FP32
 
 **背景**
@@ -52,8 +195,8 @@ self-check 用 `decoded[0]` (decode step 0 的**输出** token, 39319)
 虽非本次差异根因, 仍保留: ① 匹配 transformers 参考 (GatedDeltaNet
 递归 state 全程 float32); ② 使 SSM state 在 prefill/decode 两路径
 bit-identical (消除 state 量化这一非确定源); ③ 为后续 prefill/decode
-路径拆分与性能优化打基础。代价: 36 层 SSM state 36→72 MB (122 GB
-统一内存可忽略)。
+路径拆分与性能优化打基础。代价: 36 层 SSM state (每层 48×128×128
+元素) 54→108 MiB (122 GB 统一内存可忽略)。
 
 **改动文件**
 - `tests/model_forward_test.cpp`: 新测试 `model_forward_dump_decode`

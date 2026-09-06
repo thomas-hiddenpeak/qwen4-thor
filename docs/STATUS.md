@@ -400,8 +400,54 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     增量(T=4+T=1) cuBLASLt 算法选择差异 (预期数值非确定, 非 bug)。
     期间把 SSM 持久 state 从 BF16 改 **FP32** (匹配 transformers 参考
     全程 FP32 递归; 使 layer-0 SSM state 在两条路径 bit-identical;
-    36 层 36→72 MB, 可忽略)。**54 项测试全绿, 零警告**。
-  - ✅ **长序列 QSA 稀疏路径 (T>2048) 端到端验证 + 修复**: 用自然语言长文
+    36 层 54→108 MiB, 可忽略)。**54 项测试全绿, 零警告**。
+  - ✅ **conv1d 窗口 decode 更新 bug 修复 + 参考逐步对照 (2026-09-06)**:
+    自洽检查从 1 步扩展到 N 步 (用 decode 实际喂入的 token 序列做全新
+    prefill, 对照增量路径最后 N 行) 后, 3 层 4 步复现累积漂移
+    (step 2 cos 0.938, step 3 argmax 翻转)。根因:
+    `Conv1dUpdateStateKernel` 在 T<hist (decode, T=1) 时只写最后一列,
+    窗口不左移 — [a,b,c]+d 变 [a,b,d] 而非 [b,c,d], tok1 永久滞留、
+    tok3 丢失。首步 decode 不受影响 (conv 读发生在更新前), 故 1 步
+    自洽检查抓不到; 第 2 步起 conv 窗口错误。修复: T<hist 时先右移
+    旧窗口 (state[k]=state[k+T], k<shift) 再写新 token。修复后:
+    ① 多步自洽漂移消除 (step 1 0.983→0.991, step 3 0.974→0.993);
+    ② **参考逐步对照** (参考脚本加固定 token 序列模式, 喂入 C++ 的
+    greedy 序列): 3 层 4 步 **4/4 argmax 全匹配**, cos 0.949–0.998
+    (step 2 偏低是 batch M=8 vs 增量 M=4+M=1×4 的 cuBLASLt 算法差,
+    非 bug); ③ **state 逐元素对照**: conv 4/8 token 后 C++ vs 参考
+    cos 0.999998/0.999999 (对齐 cpp == ref[:, 1:]), SSM 4/8 token 后
+    cos 0.999995/0.999996。对照方法论纠正: 参考 conv_states[0] 存
+    最后 conv_k=4 个原始输入 (含当前 token), C++ 存 conv_k-1=3 个
+    历史, 对齐须取参考后 3 列; 两路径第 5 个输入 token 必须显式对齐
+    (各自 greedy 可能不同)。**54 项测试全绿, 零警告**。  - ✅ **PLE short-conv 持久状态 bug 修复 (2026-09-06, 核心特性)**:
+    3 层对齐复跑 (C++ 写出 `.full_seq.txt` = prompt + decode 实际喂入
+    token, 参考直接读, 彻底消除 token 错位) 后, 用逐层/逐阶段中间量
+    dump (trunk_in/x/qkv_raw/qkv/y_ssm/moe_in/moe_out/out/ple_emb/
+    ple_gated_n/ple_conv_out) 做 C++ batch(M=8) vs C++ incremental
+    (M=4+M=1) 的**无参考**对照, 逐层定位发散引入点。结论:
+    ① layer 0 全部 8 个检查点 bit-identical (linear-attn 递归 + conv
+    窗口 + NVFP4 MoE 全对); ② layer 1 (PLE 层) 的 `ple_emb` (NVMe
+    gather 输出) 与 `ple_gated_n` (conv 输入) bit-identical, 但
+    `ple_conv_out` 发散 l2_rel=0.103 → **PLE short-conv 缺持久状态**。
+    根因: 参考 `Qwen4ExpTextPLELayer._short_conv` 用
+    `update_conv_state(state_idx=1)` 维护 9 元素/通道状态
+    (`short_conv_state_len=(K-1)*dilation=(4-1)*3=9`), 膨胀卷积
+    (K=4, dilation=3) 感受野 9, 每个 token 需前 9 个 `gated_n`;
+    C++ `DepthwiseConvKernel` 无 state 参数, `src<0` 零填充 →
+    decode (T=1) 只见当前 token, 丢失前序 token 的 gated_n (同
+    linear-attn conv1d 窗口 bug 同类, 但此前只修了 linear-attn 侧)。
+    修复: 新增 `ple_conv_state` [hc*hs,9] BF16 持久状态 (Load 分配/
+    清零, Free 释放, ResetState 重置), `DepthwiseConvKernel` 在
+    `src<0` 时读 `state[c, src+9]` (fresh 序列 state=0 → 等价零填充,
+    prefill 路径不变), 新增 `PleConvUpdateStateKernel` 卷积后滑动窗口
+    (同 `Conv1dUpdateStateKernel` 逻辑, state_len=9)。修复后:
+    ① `ple_conv_out` batch vs incremental **bit-identical**
+    (l2_rel 0.103→0.0); ② 3 层 4 步 logits batch vs incremental
+    **4/4 bit-identical** (此前 step 2 l2_rel=0.317); ③ 4 层 greedy
+    第 4 token 10196→36634 (与参考/C++ batch 一致); ④ 自洽检查
+    4/4 cos=1.000000。此前 "MoE/HC GEMM cuBLASLt 算法差" 的归因
+    **错误** — 发散全部来自 PLE conv 缺状态, GEMM 形状差在此序列
+    上实测为 0。**54 项测试全绿, 零警告**。  - ✅ **长序列 QSA 稀疏路径 (T>2048) 端到端验证 + 修复**: 用自然语言长文
     (prompt 1612 + decode 600, 越过 2048 稀疏激活点) 验证, 输出全程连贯。
     期间定位并修复 4 个稀疏路径 bug (见下)。
     - **`IndexerLogitsKernel` 共享内存越界 (illegal memory access)**:
@@ -555,11 +601,15 @@ Phase 1 已完成的层: **PLE 流式层** ✅, **IO 层** ✅, **量化层** �
 注入 + head/tail + generate + 长序列 QSA 稀疏路径), **serve** ✅
 (OpenAI 兼容 HTTP API), **PD-ready 架构** ✅ (Paged KV + 可分离代码
 路径 + 阶段边界 API ModelSequence), **decode 路径自洽性** ✅
-(prefill/decode 同 token 对照, SSM state FP32)。54 项测试全绿, 零警告。
+(prefill/decode 同 token 对照, SSM state FP32, conv1d 窗口 + PLE
+short-conv 持久状态均已修复, batch vs incremental 逐位一致)。
+54 项测试全绿, 零警告。
 
 剩余 Phase 1 项 (按 2026-09-06 与用户确认的顺序):
 1. **逐 token 对参考验证 (进行中)**: 4 层基线已完成 (4/4 argmax 匹配,
-   见上)。decode 路径自洽性验证已完成 (见下), 下一步: 扩展到更多层 /
+   见上)。decode 路径自洽性验证已完成 (见下: conv1d 窗口 + PLE
+   short-conv 持久状态两个 bug 均已修复, C++ batch vs incremental
+   逐位一致, 参考对照 4/4 argmax 匹配)。下一步: 扩展到更多层 /
    更长 token 序列, 钉死正确性基线 (性能优化的守护网)。
 2. **prefill/decode 性能优化**: 用 ① 的基线守护数值不回归; 同时**预留
    MTP 接口** (scheme A: 主模型收尾阶段可选暴露 pre-final-mixer 多流

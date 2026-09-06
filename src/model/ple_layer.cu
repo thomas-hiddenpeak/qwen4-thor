@@ -16,6 +16,8 @@
 
 #include <cmath>
 #include <cstdint>
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <string>
 #include <vector>
@@ -123,12 +125,18 @@ __global__ void GatedValueKernel(const uint16_t* __restrict__ gate,
 // Depthwise causal convolution over the token sequence, then SiLU.
 //   conv_out[t, c] = silu( sum_{j=0}^{K-1} conv1d[c, j] *
 //                          gated_n[t - (K-1-j)*dilation, c] )
-// with zero padding before the sequence start (t - (K-1-j)*dilation < 0).
+// Taps before the sequence start (src < 0) read from the persistent
+// `state` ([C, state_len] BF16, oldest-first, state_len = (K-1)*dilation)
+// instead of zero-padding: state[c, src + state_len] is the gated_n value at
+// global position src (the reference _short_conv keeps this 9-element state
+// via update_conv_state). For a fresh sequence the state is zero, so this
+// reduces to zero-padding (the prefill path is unchanged).
 // One thread per (t, c); loops over K taps.
 __global__ void DepthwiseConvKernel(const uint16_t* __restrict__ x,
                                     const uint16_t* __restrict__ conv1d,
-                                    uint16_t* __restrict__ out, int T,
-                                    int C, int K, int dilation) {
+                                    const uint16_t* __restrict__ state,
+                                    uint16_t* __restrict__ out, int T, int C,
+                                    int K, int dilation, int state_len) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   if (idx >= T * C) return;
   const int t = idx / C;
@@ -136,13 +144,52 @@ __global__ void DepthwiseConvKernel(const uint16_t* __restrict__ x,
   float acc = 0.0f;
   for (int j = 0; j < K; ++j) {
     const int src = t - (K - 1 - j) * dilation;
-    if (src < 0) continue;  // zero padding
-    const float xv =
-        Bf16ToFloat(x[static_cast<size_t>(src) * C + c]);
+    float xv;
+    if (src < 0)
+      xv = Bf16ToFloat(state[static_cast<size_t>(c) * state_len + (src + state_len)]);
+    else
+      xv = Bf16ToFloat(x[static_cast<size_t>(src) * C + c]);
     const float w = Bf16ToFloat(conv1d[c * K + j]);
     acc += w * xv;
   }
   out[idx] = FloatToBf16(Silu(acc));
+}
+
+// Update the PLE short-conv state to the last `state_len` gated_n values of
+// (old state + this chunk). Mirrors Conv1dUpdateStateKernel in
+// linear_attention.cu, but with state_len = (K-1)*dilation (9 for K=4, d=3)
+// instead of conv_k-1.
+//
+//   T >= state_len: state[k] = input[T - state_len + k]  (whole window from
+//              the chunk; the prefill path).
+//   T <  state_len (DECODE, e.g. T = 1): the window slides by T. Let
+//              shift = state_len - T.
+//                state[k] = state[k + T]      for k <  shift  (slide the old
+//                                            window; reads a higher index,
+//                                            so ascending k is in-place safe)
+//                state[k] = input[k - shift]  for k >= shift  (the new tokens)
+//              e.g. [0,0,0,0,0,g0,g1,g2,g3] + g4 -> [0,0,0,0,g0,g1,g2,g3,g4].
+__global__ void PleConvUpdateStateKernel(uint16_t* __restrict__ state,
+                                         const uint16_t* __restrict__ input,
+                                         int T, int C, int state_len) {
+  const int c = blockIdx.x * blockDim.x + threadIdx.x;
+  if (c >= C) return;
+  const int shift = state_len - T;  // > 0 only in the decode path (T < state_len)
+  if (shift > 0) {
+    for (int k = 0; k < shift; ++k)
+      state[static_cast<size_t>(c) * state_len + k] =
+          state[static_cast<size_t>(c) * state_len + k + T];
+    for (int k = shift; k < state_len; ++k)
+      state[static_cast<size_t>(c) * state_len + k] =
+          input[static_cast<size_t>(k - shift) * C + c];
+  } else {
+    for (int k = 0; k < state_len; ++k) {
+      const int src = T - state_len + k;
+      if (src >= 0)
+        state[static_cast<size_t>(c) * state_len + k] =
+            input[static_cast<size_t>(src) * C + c];
+    }
+  }
 }
 
 // out[t, c] = gated_value[t, c] + conv_out[t, c].
@@ -160,6 +207,33 @@ Status CheckGemm(const Bf16GemmResult& r) {
                         std::to_string((int)r.status) + ")");
   }
   return Status();
+}
+
+// Debug: when Q4T_MLP_DUMP=<tag>, copy the PLE short-conv INPUT (gated_n,
+// [T, hc_dim] BF16) and OUTPUT (d_conv, [T, hc_dim] BF16) to
+// <tag>.{ple_gated_n,ple_conv_out}.bin. This isolates the PLE conv: if
+// ple_gated_n is identical between the batch and incremental paths but
+// ple_conv_out diverges, the divergence is the conv's missing left context
+// (the C++ DepthwiseConvKernel zero-pads src<0 and has NO persistent state,
+// whereas the reference _short_conv keeps a 9-element state via
+// update_conv_state). Only the PLE layer calls this, so no layer index.
+void DumpPleConv(const uint16_t* gated_n, const uint16_t* conv_out, int T,
+                 int hc_dim) {
+  const char* e = std::getenv("Q4T_MLP_DUMP");
+  if (!e || !*e) return;
+  auto w = [&](const char* name, const uint16_t* src) {
+    std::string p = std::string(e) + "." + name + ".bin";
+    std::vector<uint16_t> h(static_cast<size_t>(T) * hc_dim);
+    cudaMemcpy(h.data(), src, h.size() * sizeof(uint16_t),
+               cudaMemcpyDeviceToHost);
+    FILE* f = std::fopen(p.c_str(), "wb");
+    if (f) {
+      std::fwrite(h.data(), sizeof(uint16_t), h.size(), f);
+      std::fclose(f);
+    }
+  };
+  w("ple_gated_n", gated_n);
+  w("ple_conv_out", conv_out);
 }
 
 inline size_t AlignUp(size_t n, size_t a) { return (n + a - 1) & ~(a - 1); }
@@ -274,8 +348,8 @@ Status LoadPleLayer(const io::WeightLoader& loader, const std::string& prefix,
 
 Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
                        const uint16_t* hyper_input, uint16_t* out, int T,
-                       void* workspace, size_t workspace_bytes,
-                       cudaStream_t stream) {
+                       uint16_t* conv_state, void* workspace,
+                       size_t workspace_bytes, cudaStream_t stream) {
   const int hc = w.hc_count, hs = w.hidden_size, pe = w.ple_embed_dim;
   const int hc_dim = hc * hs;
   const int K = w.conv_kernel, dil = w.conv_dilation;
@@ -348,12 +422,24 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
       reinterpret_cast<uint16_t*>(d_gated), w.norm_conv,
       reinterpret_cast<uint16_t*>(d_gated_n), T, hc, hs, w.eps);
   if (cudaGetLastError() != cudaSuccess) return Status::Fail("ple rmsnorm2");
-  // 8. conv_out = silu(depthwise-causal-conv(gated_n)).
+  // 8. conv_out = silu(depthwise-causal-conv(gated_n)). The dilated conv
+  //    (K, dilation) has receptive field (K-1)*dilation, so the persistent
+  //    state holds that many gated_n values per channel (oldest-first).
+  const int state_len = (K - 1) * dil;
   {
     const int total = T * hc_dim;
     DepthwiseConvKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
-        reinterpret_cast<uint16_t*>(d_gated_n), w.conv1d,
-        reinterpret_cast<uint16_t*>(d_conv), T, hc_dim, K, dil);
+        reinterpret_cast<uint16_t*>(d_gated_n), w.conv1d, conv_state,
+        reinterpret_cast<uint16_t*>(d_conv), T, hc_dim, K, dil, state_len);
+  }
+  DumpPleConv(reinterpret_cast<uint16_t*>(d_gated_n),
+              reinterpret_cast<uint16_t*>(d_conv), T, hc_dim);
+  // 8b. Slide the state to the last state_len gated_n values (old + chunk).
+  {
+    const int blocks = (hc_dim + kBlock - 1) / kBlock;
+    PleConvUpdateStateKernel<<<blocks, kBlock, 0, stream>>>(
+        conv_state, reinterpret_cast<uint16_t*>(d_gated_n), T, hc_dim,
+        state_len);
   }
   // 9. out = gated_value + conv_out.
   {

@@ -62,7 +62,9 @@ cmake --build build --parallel
   阶段边界 API ModelSequence) / **4 层参考验证** (transformers 5.16.1
   官方实现, 含首个 full_attention, 4/4 argmax 匹配) / **decode 路径
   自洽性验证** (prefill/decode 同 token 对照, SSM state 改 FP32,
-  1 层 bit-identical / 4 层 argmax 一致)。54 项测试全绿, 零警告。
+  conv1d 窗口 + PLE short-conv 持久状态两个 decode bug 已修复,
+  C++ batch vs incremental 逐位一致 / 参考 4/4 argmax 匹配)。
+  54 项测试全绿, 零警告。
 - 下一步 (2026-09-06 与用户确认的顺序): 逐 token 对参考验证 (4 层基线
   + decode 自洽性已完成, 继续扩展到 decode 对参考逐步对照/更多层) →
   prefill/decode 性能优化 (拆分 linear attention 路径, 预留 MTP 接口)

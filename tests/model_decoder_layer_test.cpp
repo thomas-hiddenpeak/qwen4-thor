@@ -104,6 +104,9 @@ void ResetLinearState(DecoderLayer& layer, cudaStream_t stream) {
   if (layer.conv_state)
     cudaMemsetAsync(layer.conv_state, 0,
                     static_cast<size_t>(10240) * 3 * 2, stream);
+  if (layer.ple_conv_state)
+    cudaMemsetAsync(layer.ple_conv_state, 0,
+                    static_cast<size_t>(10240) * 9 * 2, stream);
 }
 
 }  // namespace
@@ -419,9 +422,10 @@ Q4T_TEST(decoder_layer_ple_injection) {
     layer.Free();
     return false;
   }
-  // PLE: d_ple_out = ple(emb, hyper).
-  s = PleLayerForward(layer.ple, d_emb, d_hyper, d_ple_out, kT, d_ple_ws,
-                      ple_ws, nullptr);
+  // PLE: d_ple_out = ple(emb, hyper). layer.ple_conv_state is allocated +
+  // zeroed by LoadDecoderLayer (PLE layer) and reset by ResetLinearState.
+  s = PleLayerForward(layer.ple, d_emb, d_hyper, d_ple_out, kT,
+                      layer.ple_conv_state, d_ple_ws, ple_ws, nullptr);
   if (!s.ok()) {
     std::printf("  B ple: %s\n", s.message().c_str());
     return false;

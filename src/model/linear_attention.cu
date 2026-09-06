@@ -64,17 +64,31 @@ Status CheckGemm(const Bf16GemmResult& r) {
 }
 
 // Debug: when Q4T_LIN_DUMP=<tag>, copy the linear-attention intermediates of
-// this call to <tag>.{x,qkv_raw,qkv,y_ssm}.bin (BF16, row-major) so a
+// this call to <tag>_m<idx>.{x,qkv_raw,qkv,y_ssm}.bin (BF16, row-major) so a
 // prefill vs decode comparison can find the first diverging stage. No-op
 // unless the env var is set.
+//
+// Each forward calls LinearAttentionForward once per linear layer, in layer
+// order, so idx (0-based, reset when the tag changes) is the linear-layer
+// index. Without this, every layer overwrote the same <tag>.{...}.bin and the
+// LAST linear layer won — which silently mislabeled layer-0 intermediates as
+// the final layer's (a real artifact that corrupted an earlier localization).
 void DumpLinearIntermediates(const char* tag, const uint16_t* x, int T,
                              int hs, const uint16_t* qkv_raw,
                              const uint16_t* qkv, const uint16_t* y_ssm,
                              int in_qkv, int v_dim) {
   const char* e = std::getenv("Q4T_LIN_DUMP");
   if (!e || !*e) return;
+  static std::string last_tag;
+  static int idx = 0;
+  if (std::string(e) != last_tag) {
+    last_tag = e;
+    idx = 0;
+  }
+  const int li = idx++;
+  const std::string base = std::string(e) + "_m" + std::to_string(li);
   auto w = [&](const char* name, const uint16_t* src, size_t n) {
-    std::string p = std::string(e) + "." + name + ".bin";
+    std::string p = base + "." + name + ".bin";
     std::vector<uint16_t> h(n);
     cudaMemcpy(h.data(), src, n * sizeof(uint16_t), cudaMemcpyDeviceToHost);
     FILE* f = std::fopen(p.c_str(), "wb");
@@ -125,17 +139,39 @@ __global__ void CausalConv1dKernel(const uint16_t* __restrict__ input,
   output[static_cast<size_t>(t) * channels + ch] = FloatToBf16(Silu(acc));
 }
 
-// Update conv_state to the last `hist` inputs of the chunk.
+// Update conv_state to the last `hist` inputs of (old history + chunk).
+//
+//   T >= hist: state[k] = input[T - hist + k]  (whole window from the chunk;
+//              the prefill path, unchanged).
+//   T <  hist (DECODE, e.g. T = 1): the window slides by T. Let
+//              shift = hist - T.
+//                state[k] = state[k + T]      for k <  shift  (slide the old
+//                                            window; reads a higher index,
+//                                            so ascending k is in-place safe)
+//                state[k] = input[k - shift]  for k >= shift  (the new tokens)
+//              e.g. [a,b,c] + d -> [b,c,d]. The old behavior wrote only the
+//              last slot, leaving [a,b,d] — a stale entry that leaks the first
+//              prefill token into every later step's conv window.
 __global__ void Conv1dUpdateStateKernel(uint16_t* __restrict__ state,
                                         const uint16_t* __restrict__ input,
                                         int T, int channels, int conv_k) {
   const int ch = blockIdx.x * blockDim.x + threadIdx.x;
   if (ch >= channels) return;
   const int hist = conv_k - 1;
-  for (int k = 0; k < hist; ++k) {
-    const int src_t = T - hist + k;
-    if (src_t >= 0)
-      state[ch * hist + k] = input[static_cast<size_t>(src_t) * channels + ch];
+  const int shift = hist - T;  // > 0 only in the decode path (T < hist)
+  if (shift > 0) {
+    for (int k = 0; k < shift; ++k)
+      state[ch * hist + k] = state[ch * hist + k + T];
+    for (int k = shift; k < hist; ++k)
+      state[ch * hist + k] =
+          input[static_cast<size_t>(k - shift) * channels + ch];
+  } else {
+    for (int k = 0; k < hist; ++k) {
+      const int src_t = T - hist + k;
+      if (src_t >= 0)
+        state[ch * hist + k] =
+            input[static_cast<size_t>(src_t) * channels + ch];
+    }
   }
 }
 

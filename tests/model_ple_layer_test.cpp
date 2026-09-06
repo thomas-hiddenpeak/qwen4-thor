@@ -162,24 +162,31 @@ Q4T_TEST(ple_layer_forward) {
   for (size_t i = 0; i < emb.size(); ++i) emb_bf[i] = FloatToBf16(emb[i]);
   for (size_t i = 0; i < hyper.size(); ++i) hyper_bf[i] = FloatToBf16(hyper[i]);
 
-  // Device buffers.
+  // Device buffers. d_ple_conv = zeroed short-conv state [hc_dim, (K-1)*dil]
+  // (fresh sequence, so zero == the reference's zero-padded prefill).
   uint16_t* d_emb = nullptr, *d_hyper = nullptr, *d_out = nullptr;
+  uint16_t* d_ple_conv = nullptr;
   void* d_ws = nullptr;
   const size_t kWs = 160 * 1024 * 1024;  // 160 MiB
+  const size_t ple_conv_bytes =
+      size_t(kHcDim) * (w.conv_kernel - 1) * w.conv_dilation * 2;
   if (cudaMalloc(&d_emb, emb_bf.size() * sizeof(uint16_t)) != cudaSuccess ||
       cudaMalloc(&d_hyper, hyper_bf.size() * sizeof(uint16_t)) != cudaSuccess ||
       cudaMalloc(&d_out, size_t(kT) * kHcDim * sizeof(uint16_t)) != cudaSuccess ||
+      cudaMalloc(&d_ple_conv, ple_conv_bytes) != cudaSuccess ||
       cudaMalloc(&d_ws, kWs) != cudaSuccess) {
     std::printf("  cudaMalloc failed\n");
     w.Free();
     return false;
   }
+  cudaMemset(d_ple_conv, 0, ple_conv_bytes);
   cudaMemcpy(d_emb, emb_bf.data(), emb_bf.size() * sizeof(uint16_t),
              cudaMemcpyHostToDevice);
   cudaMemcpy(d_hyper, hyper_bf.data(), hyper_bf.size() * sizeof(uint16_t),
              cudaMemcpyHostToDevice);
 
-  s = PleLayerForward(w, d_emb, d_hyper, d_out, kT, d_ws, kWs, nullptr);
+  s = PleLayerForward(w, d_emb, d_hyper, d_out, kT, d_ple_conv, d_ws, kWs,
+                      nullptr);
   if (!s.ok()) {
     std::printf("  forward failed: %s\n", s.message().c_str());
     w.Free();
@@ -275,6 +282,7 @@ Q4T_TEST(ple_layer_forward) {
   cudaFree(d_emb);
   cudaFree(d_hyper);
   cudaFree(d_out);
+  cudaFree(d_ple_conv);
   cudaFree(d_ws);
   w.Free();
   return true;

@@ -86,11 +86,17 @@ Status LoadPleLayer(const io::WeightLoader& loader, const std::string& prefix,
 //                 hyper-connection input (the "query")
 //   out         : device row-major [T, hc*hs] uint16 (out) — ADD to
 //                 hyper_input to form the PLE-corrected input
+//   conv_state  : persistent short-conv state [hc*hs, (K-1)*dilation] BF16
+//                 (oldest-first), zeroed for a fresh sequence. The dilated
+//                 depthwise conv reads taps before the chunk from this state
+//                 and slides it to the last (K-1)*dilation gated_n values
+//                 after the conv. Matches the reference _short_conv
+//                 (update_conv_state, state_idx=1).
 //   workspace   : scratch device buffer (>= ~32 MiB) for the two GEMMs
 Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
                        const uint16_t* hyper_input, uint16_t* out, int T,
-                       void* workspace, size_t workspace_bytes,
-                       cudaStream_t stream);
+                       uint16_t* conv_state, void* workspace,
+                       size_t workspace_bytes, cudaStream_t stream);
 
 }  // namespace model
 }  // namespace q4t

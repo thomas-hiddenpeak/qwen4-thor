@@ -18,6 +18,8 @@
 #include <cuda_runtime.h>
 
 #include <cstdint>
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <string>
 #include <vector>
@@ -29,6 +31,123 @@ namespace model {
 namespace {
 
 constexpr size_t kGemmWs = 32u * 1024u * 1024u;  // cuBLASLt scratch per GEMM
+
+// Debug: when Q4T_MLP_DUMP=<tag>, copy this layer's trunk at the MoE boundary
+// (moe_in = mlp_hc.mix output = MoE input, moe_out = MoE output) to
+// <tag>_m<idx>.{moe_in,moe_out}.bin (BF16, [T,hs]). Each forward calls
+// DecoderLayerForward once per layer in order, so idx (0-based, reset when the
+// tag changes) is the layer. This isolates the MoE GEMM: if moe_in is exact
+// but moe_out diverges between the batch and incremental paths, the NVFP4 MoE
+// (shape-dependent cuBLASLt) is the source of the batch-vs-incremental gap.
+void DumpMoeBoundary(const uint16_t* moe_in, const uint16_t* moe_out, int T,
+                     int hs) {
+  const char* e = std::getenv("Q4T_MLP_DUMP");
+  if (!e || !*e) return;
+  // Own counter (separate from DumpLayerOut / DumpTrunkBeforeMix) so each
+  // dump's _m<idx> is the layer index regardless of call order within a layer.
+  static std::string last_tag_moe;
+  static int idx_moe = 0;
+  if (std::string(e) != last_tag_moe) {
+    last_tag_moe = e;
+    idx_moe = 0;
+  }
+  const int li = idx_moe++;
+  const std::string base = std::string(e) + "_m" + std::to_string(li);
+  auto w = [&](const char* name, const uint16_t* src) {
+    std::string p = base + "." + name + ".bin";
+    std::vector<uint16_t> h(static_cast<size_t>(T) * hs);
+    cudaMemcpy(h.data(), src, h.size() * sizeof(uint16_t),
+               cudaMemcpyDeviceToHost);
+    FILE* f = std::fopen(p.c_str(), "wb");
+    if (f) {
+      std::fwrite(h.data(), sizeof(uint16_t), h.size(), f);
+      std::fclose(f);
+    }
+  };
+  w("moe_in", moe_in);
+  w("moe_out", moe_out);
+}
+
+// Debug: when Q4T_MLP_DUMP=<tag>, copy this layer's OUTPUT trunk (the residual
+// stream `out`, [T, hc_dim] BF16) to <tag>_m<idx>.out.bin. Used with
+// DumpMoeBoundary to close the loop: if layer 0's moe_out is exact but its
+// `out` diverges, the mlp_hc.combine GEMM is the source; if `out` is exact but
+// the NEXT layer's x diverges, the next attn_hc.mix GEMM is the source.
+void DumpLayerOut(const uint16_t* out, int T, int hc_dim) {
+  const char* e = std::getenv("Q4T_MLP_DUMP");
+  if (!e || !*e) return;
+  static std::string last_tag_out;
+  static int idx_out = 0;
+  if (std::string(e) != last_tag_out) {
+    last_tag_out = e;
+    idx_out = 0;
+  }
+  const int li = idx_out++;
+  const std::string p =
+      std::string(e) + "_m" + std::to_string(li) + ".out.bin";
+  std::vector<uint16_t> h(static_cast<size_t>(T) * hc_dim);
+  cudaMemcpy(h.data(), out, h.size() * sizeof(uint16_t),
+             cudaMemcpyDeviceToHost);
+  FILE* f = std::fopen(p.c_str(), "wb");
+  if (f) {
+    std::fwrite(h.data(), sizeof(uint16_t), h.size(), f);
+    std::fclose(f);
+  }
+}
+
+// Debug: when Q4T_MLP_DUMP=<tag>, copy this layer's trunk BEFORE attn_hc.mix
+// (the input to the HC mix GEMM) to <tag>_m<idx>.trunk_in.bin (BF16, [T,
+// hc_dim]). For PLE layers this is the PLE-corrected trunk (hyper_input +
+// ple_out); for non-PLE layers it's the raw hyper_input. Used to isolate
+// whether the PLE SSD-stream path (n-gram hash → NVMe FP8 lookup → key/value
+// projection GEMMs) or the attn_hc.mix GEMM introduces the batch-vs-
+// incremental divergence. Without this, an exact previous-layer `out` does NOT
+// establish an identical input to the PLE layer's attn_hc.mix, because
+// PleLayerForward + PleAddTrunkKernel modify the trunk in between.
+void DumpTrunkBeforeMix(const uint16_t* trunk, int T, int hc_dim) {
+  const char* e = std::getenv("Q4T_MLP_DUMP");
+  if (!e || !*e) return;
+  static std::string last_tag_trunk;
+  static int idx_trunk = 0;
+  if (std::string(e) != last_tag_trunk) {
+    last_tag_trunk = e;
+    idx_trunk = 0;
+  }
+  const int li = idx_trunk++;
+  const std::string p =
+      std::string(e) + "_m" + std::to_string(li) + ".trunk_in.bin";
+  std::vector<uint16_t> h(static_cast<size_t>(T) * hc_dim);
+  cudaMemcpy(h.data(), trunk, h.size() * sizeof(uint16_t),
+             cudaMemcpyDeviceToHost);
+  FILE* f = std::fopen(p.c_str(), "wb");
+  if (f) {
+    std::fwrite(h.data(), sizeof(uint16_t), h.size(), f);
+    std::fclose(f);
+  }
+}
+
+// Debug: when Q4T_MLP_DUMP=<tag>, copy the raw PLE `embeddings` (the NVMe
+// SSD-stream lookup output, [T, ple_embed_dim] BF16) to <tag>.ple_emb.bin.
+// This is the decisive discriminator for the batch-vs-incremental divergence:
+//   - identical between the two paths  -> the n-gram hash + NVMe gather is
+//     correct, and the divergence is from the PLE projection GEMMs
+//     (key_proj/value_proj, shape-dependent cuBLASLt, same class as HC mix).
+//   - different                        -> a REAL PLE bug in the n-gram history
+//     / NVMe lookup across the prefill->decode boundary.
+// Only the PLE layer calls this, so no layer index is needed.
+void DumpPleEmbeddings(const uint16_t* embeddings, int T, int ple_embed_dim) {
+  const char* e = std::getenv("Q4T_MLP_DUMP");
+  if (!e || !*e) return;
+  const std::string p = std::string(e) + ".ple_emb.bin";
+  std::vector<uint16_t> h(static_cast<size_t>(T) * ple_embed_dim);
+  cudaMemcpy(h.data(), embeddings, h.size() * sizeof(uint16_t),
+             cudaMemcpyDeviceToHost);
+  FILE* f = std::fopen(p.c_str(), "wb");
+  if (f) {
+    std::fwrite(h.data(), sizeof(uint16_t), h.size(), f);
+    std::fclose(f);
+  }
+}
 
 // Align a byte count up to 256 (cuBLASLt wants aligned scratch pointers).
 inline size_t AlignUp(size_t x) { return (x + 255u) & ~size_t(255u); }
@@ -89,12 +208,13 @@ void DecoderLayer::Free() {
   auto freep = [](void* p) { if (p) cudaFree(p); };
   freep(ssm_state);
   freep(conv_state);
+  freep(ple_conv_state);
   freep(kv_cache);
   freep(page_table);
   freep(idx_raw);
   freep(idx_comp);
   ssm_state = nullptr;
-  conv_state = kv_cache = idx_raw = idx_comp = nullptr;
+  conv_state = ple_conv_state = kv_cache = idx_raw = idx_comp = nullptr;
   page_table = nullptr;
   // routed (NVFP4) buffers (MoEWeightLayout has no Free; free manually).
   if (routed.gu_packed) cudaFree(routed.gu_packed);
@@ -133,6 +253,9 @@ void DecoderLayer::ResetState(cudaStream_t stream) const {
       cudaMemsetAsync(conv_state, 0,
                       static_cast<size_t>(10240) * 3 * 2, stream);
   }
+  if (ple_conv_state)
+    cudaMemsetAsync(ple_conv_state, 0,
+                    static_cast<size_t>(10240) * 9 * 2, stream);
 }
 
 Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
@@ -216,6 +339,21 @@ Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
     cudaMemset(out->ssm_state, 0, static_cast<size_t>(nv) * kd * vd * 4);
     cudaMemset(out->conv_state, 0,
                static_cast<size_t>(in_qkv) * (conv_k - 1) * 2);
+  }
+
+  // 3b. PLE short-conv state [hc*hs, (K-1)*dilation] = [10240, 9] BF16.
+  //     Allocated for the PLE layer only (has_ple); zeroed (fresh sequence).
+  if (out->has_ple) {
+    const int hc_dim = hc * hs;
+    const int state_len = (out->ple.conv_kernel - 1) * out->ple.conv_dilation;
+    auto alloc = [](void** p, size_t bytes) -> Status {
+      if (cudaMalloc(p, bytes) != cudaSuccess) return Status::Fail("cudaMalloc");
+      return Status();
+    };
+    if (!(s = alloc(reinterpret_cast<void**>(&out->ple_conv_state),
+                    static_cast<size_t>(hc_dim) * state_len * 2)))
+      return s;
+    cudaMemset(out->ple_conv_state, 0, static_cast<size_t>(hc_dim) * state_len * 2);
   }
 
   // 3. MoE (routed NVFP4 + BF16 router/shared).
@@ -314,8 +452,9 @@ Status DecoderLayerForward(const DecoderLayer& layer,
       return Status::Fail("cudaMalloc ple trunk");
     }
     // 1. PLE: d_ple_trunk = hyper_input + ple(ple_embeddings, hyper_input).
+    DumpPleEmbeddings(ple_embeddings, T, layer.ple.ple_embed_dim);
     s = PleLayerForward(layer.ple, ple_embeddings, hyper_input, d_ple_trunk, T,
-                        d_ple_ws, ple_ws, stream);
+                        layer.ple_conv_state, d_ple_ws, ple_ws, stream);
     if (!s.ok()) {
       cudaFree(d_ple_trunk);
       free_all();
@@ -334,6 +473,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     }
     d_trunk = d_ple_trunk;
   }
+  DumpTrunkBeforeMix(d_trunk, T, hc_dim);
 
   // 2. attn_hc.mix(trunk) -> mixed_attn, res_a.
   s = HyperConnectionMix(layer.attn_hc, d_trunk, d_mixed, d_res_a, T,
@@ -380,9 +520,11 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     free_all();
     return s;
   }
+  DumpMoeBoundary(d_mixed, d_block, T, hs);
   // 6. mlp_hc.combine(mlp_out, combined_a, res_m) -> out.
   s = HyperConnectionCombine(layer.mlp_hc, d_block, d_combined, d_res_m, out, T,
                              d_hc_ws, kGemmWs, stream);
+  DumpLayerOut(out, T, hc_dim);
   if (d_ple_trunk) cudaFree(d_ple_trunk);
   free_all();
   return s;

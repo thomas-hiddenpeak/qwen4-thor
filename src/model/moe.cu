@@ -15,6 +15,8 @@
 
 #include <cmath>
 #include <cstdint>
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <string>
 #include <vector>
@@ -84,6 +86,42 @@ __global__ void RouterTopkKernel(const uint16_t* __restrict__ logits,
   for (int i = 0; i < k; ++i) {
     out_ids[i] = top_ids[i];
     out_w[i] = top_vals[i] * inv;
+  }
+}
+
+// Debug: when Q4T_MOE_DUMP=<tag>, copy this MoE block's router top-k expert
+// ids [T, k] int32 and router weights [T, k] f32 to
+// <tag>_m<idx>.{eid,rw}.bin so a prefill-vs-decode (or C++-vs-reference)
+// comparison can check whether the top-k expert SELECTION flips (a single
+// flipped expert in a 512-expert MoE changes the output far more than the
+// GEMM rounding noise). Each forward calls MoEForward once per layer, in
+// layer order, so idx (0-based, reset when the tag changes) is the layer.
+void DumpRouterTopk(const int32_t* eid, const float* rw, int T, int k) {
+  const char* e = std::getenv("Q4T_MOE_DUMP");
+  if (!e || !*e) return;
+  static std::string last_tag;
+  static int idx = 0;
+  if (std::string(e) != last_tag) {
+    last_tag = e;
+    idx = 0;
+  }
+  const int li = idx++;
+  std::string base = std::string(e) + "_m" + std::to_string(li);
+  std::vector<int32_t> h_eid(static_cast<size_t>(T) * k);
+  cudaMemcpy(h_eid.data(), eid, h_eid.size() * sizeof(int32_t),
+             cudaMemcpyDeviceToHost);
+  FILE* f = std::fopen((base + ".eid.bin").c_str(), "wb");
+  if (f) {
+    std::fwrite(h_eid.data(), sizeof(int32_t), h_eid.size(), f);
+    std::fclose(f);
+  }
+  std::vector<float> h_rw(static_cast<size_t>(T) * k);
+  cudaMemcpy(h_rw.data(), rw, h_rw.size() * sizeof(float),
+             cudaMemcpyDeviceToHost);
+  f = std::fopen((base + ".rw.bin").c_str(), "wb");
+  if (f) {
+    std::fwrite(h_rw.data(), sizeof(float), h_rw.size(), f);
+    std::fclose(f);
   }
 }
 
@@ -270,6 +308,7 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
   // 2. top-k + softmax.
   RouterTopkKernel<<<T, kBlock, 0, stream>>>(d_logits, d_eid, d_rw, T, E, k);
   if (cudaGetLastError() != cudaSuccess) return Status::Fail("topk launch");
+  DumpRouterTopk(d_eid, d_rw, T, k);
   // 3. routed experts (NVFP4).
   if (cudaMemsetAsync(d_routed, 0, static_cast<size_t>(T) * hs * sizeof(float),
                       stream) != cudaSuccess)
