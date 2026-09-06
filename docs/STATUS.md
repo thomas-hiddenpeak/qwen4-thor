@@ -652,10 +652,21 @@ incremental 残差定性为 MoE 路由边界敏感性, 非状态 bug — 见 E1�
    (`lt_cache.h/.cpp`, Bf16Gemm/Fp4Gemm 按 (M,N,K,ws) 缓存 plan,
    decode 6.2→8.8); ② 层内 scratch 改 workspace 切分 + forward 路径
    cudaMalloc/Free 全改 async (cudaFree 1213ms/11165 次 → 169ms/1533
-   次, 8.8→10.5)。54 项测试全绿, 零警告。**当前瓶颈已转为 GPU 计算**
-   (CPU 开销仅 68ms): BF16 M=1 tall-skinny GEMM 占 GPU 时间 72%
-   (nvjet 676ms + cutlass WMMA 404ms, 有效带宽 ~135GB/s vs 峰值
-   273GB/s) → 下一步做 **M=1 GEMV 专用路径** (理论下限 ~26 tok/s);
+   次, 8.8→10.5)。54 项测试全绿, 零警告。
+   **阶段 B 已完成 (M=1 GEMV 专用路径, decode 10.5→12.2 tok/s +16%)**:
+   ③ 新增 `gemv.h/.cu` — M=1 专用 BF16 GEMV kernel (每输出元素一个
+   线程, 沿 K 维向量化读 A 行 + 广播 W 列, 累加到输出; 替代 cuBLASLt
+   对 M=1 tall-skinny GEMM 的低效 nvjet/cutlass WMMA 路径)。Bf16Gemm
+   在 M=1 时分流到 GEMV (M≥2 仍走 cuBLASLt)。decode 10.5→12.2 tok/s
+   (1527→1290 ms/16 tok), prefill 不变 (T=5 走 GEMM)。54 项测试全绿,
+   零警告。**踩坑**: warmup 原用 T=1 走 GEMV 路径 (纯 kernel, 不预热
+   cuBLASLt), 导致真实 prefill (T=5, 首次 cuBLASLt 调用) 付一次性
+   heuristics 开销 ~64ms (prefill 140→205ms 回归)。修复: warmup 改用
+   与真实 prefill 相同的 T, 走 GEMM 预热 cuBLASLt heuristics, prefill
+   回到 141ms。
+   **当前瓶颈已转为 GPU 计算** (CPU 开销仅 68ms): GEMV 后 decode GPU
+   时间 ~1290ms, 理论带宽下限 ~26 tok/s (当前 12.2, 还有 ~2× 空间,
+   可能受 MoE expert 权重读取 / PLE SSD 流式 / 非 GEMM kernel 限制)。
    CUDA Graphs 收益仅剩 ~4%, 降级为可选。同时**预留 MTP 接口**
    (scheme A: 主模型收尾阶段可选暴露 pre-final-mixer 多流 [T, hc*H]
    给 MTP 第一步), 避免优化后再返工。

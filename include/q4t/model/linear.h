@@ -14,6 +14,7 @@
 
 #include <cstdint>
 
+#include "q4t/model/gemv.h"
 #include "q4t/quant/lt_cache.h"
 
 namespace q4t {
@@ -102,6 +103,17 @@ inline Bf16GemmResult Bf16Gemm(const uint16_t* x, const uint16_t* w,
                                float beta, void* workspace,
                                size_t workspace_bytes, cudaStream_t stream) {
   Bf16GemmResult res;
+  // M=1 (decode): dedicated GEMV kernel — reads W at full DRAM bandwidth.
+  // beta must be 0 (all call sites use 0).
+  if (M == 1 && beta == 0.0f) {
+    if (Bf16Gev(x, w, y, N, K, alpha, stream)) {
+      res.status = CUBLAS_STATUS_SUCCESS;
+      res.has_algo = true;
+      return res;
+    }
+    // Unsupported shape (K % 8 != 0) or launch failure: fall through to
+    // the cuBLASLt path.
+  }
   std::lock_guard<std::mutex> lock(quant::LtCacheMutex());
   quant::LtPlan* plan = GetBf16Plan(M, N, K, workspace_bytes);
   if (plan == nullptr || !plan->has_algo) {

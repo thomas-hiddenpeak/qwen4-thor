@@ -173,15 +173,26 @@ int RunGenerate(int argc, char** argv) {
   // own Begin/Prefill leaves the per-layer state dirty, and the real Begin below
   // resets it. This is a benchmarking concern, not a correctness one.
   {
-    std::vector<int32_t> warm(1, ids[0]);
+    // Warmup must use the SAME T as the real prefill so it exercises the
+    // GEMM (cuBLASLt) path and pre-warms the cuBLASLt heuristics for this
+    // exact (M, N, K) shape. A T=1 warmup would take the GEMV path (pure
+    // kernel, no cuBLASLt) and leave the real prefill's first cuBLASLt call
+    // to pay the one-time heuristics overhead.
+    std::vector<int32_t> warm(ids);
     uint16_t* d_warm = nullptr;
     if (cudaMalloc(reinterpret_cast<void**>(&d_warm),
-                   static_cast<size_t>(vocab) * 2) == cudaSuccess) {
+                   static_cast<size_t>(ids.size()) * vocab * 2) == cudaSuccess) {
+      auto t_warm0 = std::chrono::steady_clock::now();
       q4t::model::ModelSequence wseq;
       q4t::model::ModelBeginSequence(model, &wseq, nullptr);
-      q4t::model::ModelPrefill(model, &wseq, warm.data(), 1, d_warm, nullptr);
+      q4t::model::ModelPrefill(model, &wseq, warm.data(),
+                               static_cast<int>(warm.size()), d_warm, nullptr);
       q4t::model::ModelEndSequence(&wseq);
       cudaFree(d_warm);
+      auto t_warm1 = std::chrono::steady_clock::now();
+      std::fprintf(stderr, "[q4t] warmup T=%zu: %.1f ms\n", warm.size(),
+                   std::chrono::duration<double, std::milli>(t_warm1 - t_warm0)
+                       .count());
     }
   }
   q4t::model::ModelSequence seq;

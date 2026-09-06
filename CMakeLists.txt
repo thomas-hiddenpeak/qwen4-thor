@@ -138,7 +138,8 @@ add_library(q4t_model STATIC
   src/model/ple_layer.cu
   src/model/decoder_layer.cu
   src/model/model_head.cu
-  src/model/model.cu)
+  src/model/model.cu
+  src/model/gemv.cu)
 target_include_directories(q4t_model PUBLIC include)
 target_link_libraries(q4t_model PUBLIC q4t_io q4t_quant q4t_ple CUDA::cudart
                     CUDA::cublasLt)

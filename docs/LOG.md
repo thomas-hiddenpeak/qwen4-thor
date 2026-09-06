@@ -5,6 +5,52 @@
 
 ---
 
+## 2026-09-06 — 性能优化阶段 B: M=1 GEMV 专用路径 (decode 10.5→12.2 tok/s, +16%)
+
+**背景**
+阶段 A 后 decode 10.5 tok/s (16 tok / 1527ms), prefill 35.5 tok/s。
+nsys 显示 GPU 利用率 95.7% (CPU 开销仅 68ms), 瓶颈转为 GPU 计算。
+BF16 M=1 tall-skinny GEMM 占 GPU 时间 72% (nvjet 676ms + cutlass WMMA
+404ms), 有效带宽 ~135GB/s (峰值 273GB/s)。cuBLASLt 对 M=1 用 GEMM
+kernel (nvjet/cutlass WMMA) 效率低 — M=1 时每个输出元素只读 1 行 A,
+GEMM tiling 浪费大量算力。理论带宽下限 ~26 tok/s, 当前 10.5, 有 ~2.5×
+空间。
+
+**改动 (2 项)**
+1. **M=1 专用 BF16 GEMV kernel** (`include/q4t/quant/gemv.h` +
+   `src/quant/gemv.cu`): 每输出元素 (row, col) 一个线程, 沿 K 维向量化
+   读 A 行 (bf162) + 广播 W 列, 累加到输出。替代 cuBLASLt 对 M=1
+   tall-skinny GEMM 的低效路径。`Bf16Gemm` 在 M=1 时分流到 GEMV
+   (M≥2 仍走 cuBLASLt)。decode 1527→1290ms (10.5→12.2 tok/s, +16%),
+   prefill 不变 (T=5 走 GEMM)。54 项测试全绿, 零警告。
+2. **warmup 改 T=1→T=5** (`main.cpp`): 原 warmup 用 T=1 走 GEMV 路径
+   (纯 kernel, 不预热 cuBLASLt), 导致真实 prefill (T=5, 首次 cuBLASLt
+   调用) 付一次性 heuristics 开销 ~64ms (prefill 140→205ms 回归)。
+   修复: warmup 改用与真实 prefill 相同的 T, 走 GEMM 预热 cuBLASLt
+   heuristics, prefill 回到 141ms。
+
+**踩坑**
+- GEMV 启用后 prefill 回归 140→205ms (T=5 本不该走 GEMV)。定位:
+  warmup T=1 走 GEMV 不预热 cuBLASLt, 真实 prefill 首次 cuBLASLt 调用
+  付 heuristics 开销。warmup 改 T=5 后 prefill 回到 141ms。
+- GEMV 收益 +16% (非预期 +150%): cuBLASLt 的 nvjet/cutlass WMMA 对
+  M=1 已较优 (135GB/s), GEMV 纯 kernel 带宽 ~150GB/s, 提升有限。
+  剩余空间可能受 MoE expert 权重读取 (NVFP4 GEMM, 非 GEMV) / PLE SSD
+  流式 / 非 GEMM kernel 限制, 需进一步 profile 定位。
+
+**结果**
+- decode: 10.5→12.2 tok/s (+16%, 1527→1290ms/16 tok)
+- prefill: 35.5 tok/s (不变, 141ms/5 tok)
+- 54 项测试全绿, 零警告
+
+**下一步**
+- 进一步 profile decode 1290ms 的 GPU 时间分布 (GEMV 后 MoE NVFP4
+  GEMM / PLE SSD 流式 / 非 GEMM kernel 各占多少), 定位下一个瓶颈。
+- 若 MoE NVFP4 GEMM 是瓶颈, 考虑 M=1 NVFP4 GEMV 专用路径。
+- 预留 MTP 接口 (scheme A)。
+
+---
+
 ## 2026-09-06 — 性能优化阶段 A: CPU 开销消除 (decode 6.2→10.5 tok/s, +69%)
 
 **背景**
