@@ -306,6 +306,12 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
     }
 
     // gate/up GEMM: [M_e, 2*moe_is] = act [M_e, hs] * W_gu [2*moe_is, hs]^T.
+    // Uses cuBLASLt nvjet (tensor cores) for all M_e. A hand-written W4A4
+    // GEMV (fp4_gemv.cu) was tried but is 1.7x slower: the LUT lookups +
+    // e4m3 decodes are compute-bound (~94 GB/s), while nvjet's tensor cores
+    // do the dequant in hardware at 95% DRAM peak (~229 GB/s). The 1.63x
+    // L2 read amplification measured via ncu is L2 traffic (tile re-reads),
+    // not DRAM traffic — L2 is fast enough that it doesn't add time.
     auto r1 = Fp4Gemm(weights.gu_packed_expert(e), weights.gu_sf_expert(e),
                       ws.a_packed, ws.a_sf, ws.gu_out, M_e, 2 * moe_is, hs,
                       gu_alpha, 1.0f, gemm_ws, gemm_ws_bytes, stream);
@@ -341,6 +347,8 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
     }
 
     // down GEMM: [M_e, hs] = inter [M_e, moe_is] * W_dn [hs, moe_is]^T.
+    // (Same nvjet-vs-GEMV trade-off as gate/up above: tensor cores win for
+    // W4A4.)
     auto r2 = Fp4Gemm(weights.dn_packed_expert(e), weights.dn_sf_expert(e),
                       ws.a_packed, ws.a_sf, ws.dn_out, M_e, hs, moe_is,
                       dn_alpha, 1.0f, gemm_ws, gemm_ws_bytes, stream);

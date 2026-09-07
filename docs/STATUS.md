@@ -751,12 +751,28 @@ Phase 2 候选 (完整多设备 PD 部署等, 见 [PHASES.md](PHASES.md)): 完�
    value-desc/id-asc tie-break 保证确定性), kernel 113.5μs→8.3μs
    (13.7×), decode 12.2→12.9 tok/s (2468→2319ms/30tok), 62 项测试
    全绿, MoE l2_rel=0.0016622 不变。
-   **结论: decode 已接近带宽下限 (~12-13 tok/s), 进一步空间有限** —
-   剩余可优化项: ① MoE NVFP4 GEMM 改 M=1 专用手写 FP4 GEMV (攻 nvjet
-   7-12.5% 占用率, 参考 qwen35-thor fp4_gemv_kernel V2); ② 小 N GEMV
-   优化 (53%→80%, f32x2_fma SIMD); ③ PDL (launch gap 仅 4.4%, 收益
-   有限)。同时**预留 MTP 接口** (scheme A: 主模型收尾阶段可选暴露
-   pre-final-mixer 多流 [T, hc*H] 给 MTP 第一步), 避免优化后再返工。
+   **阶段 D 已完成 (GEMV 重写, decode 12.9→14.2 tok/s +10%)**: 参考
+   qwen35-thor `gemv_kernel_scattered` 重写 `Bf16GevKernel`:
+   block-per-output → **warp-per-output** (32 线程算 1 输出, 8
+   warp/block); 标准 FMA → **f32x2_fma** (`fma.rn.f32x2`, SM110a
+   1.97×); x 每次迭代从 L2 读 → **协作加载 SMEM 一次**; 顺序映射 →
+   **散列映射** (DRAM bank); block reduce → **warp reduce**。decode
+   12.9→14.2 tok/s (2319→2115ms/30tok), step span 78.8→71.9ms, 小
+   shape (N=2560) 53%→85% 峰值, 62 项测试全绿, l2_rel 不变。
+   **FP4 GEMV 探索 (负结果, 已回退)**: 为 MoE W4A4 手写
+   `Fp4GevKernel` (SMEM LUT + uint2 向量 + 延迟 group-scale), 正确性
+   验证 max_rel=1.86e-07, **但比 nvjet 慢 1.7×** (17.1μs vs 9.9μs):
+   nvjet tensor core 硬件 dequant 达 229 GB/s (95% DRAM 峰值), 手写
+   LUT 查找仅 94 GB/s (计算受限)。1.63× 是 **L2 流量放大** (tile 重读),
+   非 DRAM 放大, 不增加时间。W4A4 场景 nvjet 已最优, 与 W4A16
+   (qwen35-thor, 激活 BF16 不需 LUT) 不同。
+   **结论: decode 14.2 tok/s, 接近带宽下限** — GEMV 大 shape 已 81-100%
+   峰值, MoE nvjet 已 95% 峰值。剩余可优化项: ① 融合 glue kernel
+   (GEMV+RMSNorm, SwiGLU, 参考 qwen35-thor gemv_rmsnorm_kernel);
+   ② sparse-attn (8.1%) / norm (4.8%) 优化; ③ PDL (launch gap 仅
+   4.4%, 收益有限)。同时**预留 MTP 接口** (scheme A: 主模型收尾阶段
+   可选暴露 pre-final-mixer 多流 [T, hc*H] 给 MTP 第一步), 避免优化后
+   再返工。
 3. **MTP 1 层 (已完成 2026-09-07)**: 权威参考:
    `reference/vllm/vllm/models/qwen4_exp/nvidia/mtp.py`。
    scheme A 接口 (2026-09-06): `ModelPrefill` / `ModelDecodeStepSeq`

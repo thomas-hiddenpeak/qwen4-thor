@@ -5,6 +5,49 @@
 
 ---
 
+## 2026-09-08 — GEMV 重写 (12.9→14.2 tok/s) + FP4 GEMV 探索 (负结果)
+
+**背景**
+用户要求参考 qwen35-thor 的思路 — 为 decode 每个环节写 SM110 定制手写
+kernel, 而不是依赖 cuBLASLt 通用路径。
+
+**GEMV 重写 (已落地, decode 12.9→14.2 tok/s +10%)**
+对照 qwen35-thor `gemv_kernel_scattered` 重写 `Bf16GevKernel`:
+- block-per-output (256 线程算 1 输出) → **warp-per-output** (32 线程算
+  1 输出, 8 warp/block), grid 从 N 改 ceil(N/8)
+- 标准 FMA → **f32x2_fma** (`fma.rn.f32x2`, SM110a 1.97× 标量 FMA 吞吐)
+- x 每次迭代从 L2 读 → **协作加载到 SMEM 一次**
+- 顺序映射 → **散列映射** `out_idx = blockIdx.x + warp_id * num_blocks`
+  (DRAM bank 优化)
+- block reduce (shared barrier) → **warp reduce** (shuffle)
+decode 12.9→14.2 tok/s (2319→2115ms/30tok), decode step span 78.8→71.9ms。
+小 shape (N=2560) 从 53% 提到 85% 峰值带宽; 大 shape (lm_head 100%) 已饱和
+不变。62 项测试全绿, 所有 l2_rel 不变 (确定性归约, 无 atomic)。
+
+**FP4 GEMV 探索 (负结果, 已回退)**
+为 MoE routed expert (W4A4) 写了手写 `Fp4GevKernel` (参考 qwen35-thor
+`fp4_gemv_kernel`, 扩展到 W4A4: 激活也 e2m1, SMEM LUT + uint2 向量加载 +
+延迟 group-scale + warp-per-output)。踩坑: 权重 SF 的 row 是输出索引 n
+(不是 0), 只有激活 SF 才是 row 0 — 修正后 `moe_gemm_routed_forward`
+max_rel=1.86e-07 (几乎逐位一致), 62 项测试全绿。
+**但比 nvjet 慢 1.7×**: Fp4Gev 17.1μs (N=1280) vs nvjet 9.9μs。计算:
+nvjet 2.27MB/9.9μs = **229 GB/s (95% DRAM 峰值)**; Fp4Gev 1.6MB/17.1μs =
+94 GB/s (LUT 查找 + e4m3 解码计算受限)。
+**关键认知**: W4A4 的 nvjet tensor core 把 dequant 放在硬件里做, 已打满
+DRAM 带宽, 手写 LUT 查找赢不了。之前 ncu 测的 1.63× 是 **L2 流量放大**
+(tile 从 L2 重读), 不是 DRAM 放大 — L2 够快, 不增加时间。这和 W4A16
+(qwen35-thor 场景, 激活 BF16 不需 LUT) 不同, 那边手写 kernel 能赢。
+已回退 (移除 fp4_gemv.cu, MoE 仍走 nvjet), 保留 14.2 tok/s。
+
+**下一步**
+1. 融合 glue kernel (GEMV+RMSNorm, SwiGLU) — 参考 qwen35-thor
+   `gemv_rmsnorm_kernel` / light_ops.h, 减 kernel 数 + 中间读写
+2. sparse-attn (8.1%) / norm (4.8%) 优化
+3. MTP 推测解码 (用户之前说暂时往后放, 但 decode 优化接近带宽下限时
+   MTP 是下一个大收益)
+
+---
+
 ## 2026-09-07 — decode 流量根因分析 + RouterTopk 并行化 (12.2→12.9 tok/s)
 
 **背景**
