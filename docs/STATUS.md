@@ -737,12 +737,26 @@ Phase 2 候选 (完整多设备 PD 部署等, 见 [PHASES.md](PHASES.md)): 完�
    GEMM) 149.5ms / SparseAttention 108.8ms / quant-dequant 88.7ms /
    RouterTopk 87.5ms / norm 62.1ms。CPU 开销 86.9ms (cudaMemcpyAsync
    880ms 墙钟但 GPU 重叠, cudaLaunchKernel 196.8ms/57360 次)。
+   **阶段 C 已完成 (decode 流量根因分析 + RouterTopk 并行化,
+   decode 12.2→12.9 tok/s +6%)**: ncu (lts__t_bytes.sum) 实测 decode
+   第 1 步总流量 11.3 GB/step → 138 GB/s (57% 峰值)。GEMV (BF16)
+   8.82 GB/step 理论 7.73 → 1.14× 无放大 (物理下限)。MoE W4A4 nvjet
+   2.18 GB/step 理论 1.34 → 1.63× 读放大 — **证伪 split-K 假设**
+   (Fp4Gemm 加 M==1 禁 split-K 后 ncu 流量完全不变, heuristic 本就选
+   非 split-K 算法; 改动保留为防御性), **真正根因 = nvjet 128×128 GEMM
+   tile 跑 M=1, grid 仅 12-20 blocks on 20 SMs = 7-12.5% 占用率,
+   延迟受限**。RouterTopk 原 thread 0 顺序扫 512 expert (512×k 串行
+   min-find 依赖链) 113.5μs×48=5.8ms/step; 改为 256 线程协作加载
+   shared + k 轮并行 max 归约 (warp shuffle + 跨 warp shared,
+   value-desc/id-asc tie-break 保证确定性), kernel 113.5μs→8.3μs
+   (13.7×), decode 12.2→12.9 tok/s (2468→2319ms/30tok), 62 项测试
+   全绿, MoE l2_rel=0.0016622 不变。
    **结论: decode 已接近带宽下限 (~12-13 tok/s), 进一步空间有限** —
-   剩余可优化项: ① MoE NVFP4 GEMM 改 M=1 专用 GEMV (149.5ms, 但 NVFP4
-   dequant 复杂); ② 小 N GEMV 优化 (53%→80%, ~30ms); ③ CUDA Graphs
-   减 launch 开销 (~4%)。同时**预留 MTP 接口** (scheme A: 主模型收尾
-   阶段可选暴露 pre-final-mixer 多流 [T, hc*H] 给 MTP 第一步), 避免
-   优化后再返工。
+   剩余可优化项: ① MoE NVFP4 GEMM 改 M=1 专用手写 FP4 GEMV (攻 nvjet
+   7-12.5% 占用率, 参考 qwen35-thor fp4_gemv_kernel V2); ② 小 N GEMV
+   优化 (53%→80%, f32x2_fma SIMD); ③ PDL (launch gap 仅 4.4%, 收益
+   有限)。同时**预留 MTP 接口** (scheme A: 主模型收尾阶段可选暴露
+   pre-final-mixer 多流 [T, hc*H] 给 MTP 第一步), 避免优化后再返工。
 3. **MTP 1 层 (已完成 2026-09-07)**: 权威参考:
    `reference/vllm/vllm/models/qwen4_exp/nvidia/mtp.py`。
    scheme A 接口 (2026-09-06): `ModelPrefill` / `ModelDecodeStepSeq`

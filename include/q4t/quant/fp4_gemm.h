@@ -119,6 +119,20 @@ inline Fp4GemmResult Fp4Gemm(const uint8_t* w_packed, const uint8_t* w_sf,
     cublasLtMatmulPreferenceSetAttribute(
         pref, CUBLASLT_MATMUL_PREF_MAX_WORKSPACE_BYTES, &workspace_bytes,
         sizeof(workspace_bytes));
+    // For M==1 (decode GEMV), disable split-K as a defensive measure,
+    // consistent with Bf16Gemm (linear.h). Note: ncu verification shows
+    // the cuBLASLt heuristic already selects a non-split-K algorithm for
+    // these shapes, so this has no measurable effect on current traffic
+    // (2.18 GB/step before and after). The 1.63× L2 read amplification
+    // vs theoretical is caused by nvjet's 128×128 GEMM tile strategy on
+    // M=1 (7-12% occupancy), not by split-K. The proper fix is a
+    // hand-written FP4 GEMV kernel (see qwen35-thor fp4_gemv_kernel).
+    if (M == 1) {
+      uint32_t reduction_mask = CUBLASLT_REDUCTION_SCHEME_NONE;
+      cublasLtMatmulPreferenceSetAttribute(
+          pref, CUBLASLT_MATMUL_PREF_REDUCTION_SCHEME_MASK, &reduction_mask,
+          sizeof(reduction_mask));
+    }
     cublasLtMatmulHeuristicResult_t heur;
     int nres = 0;
     s = cublasLtMatmulAlgoGetHeuristic(handle, np.op, np.la, np.lb, np.lc,

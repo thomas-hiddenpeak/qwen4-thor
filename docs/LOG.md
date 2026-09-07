@@ -5,6 +5,52 @@
 
 ---
 
+## 2026-09-07 — decode 流量根因分析 + RouterTopk 并行化 (12.2→12.9 tok/s)
+
+**背景**
+用户要求分析 decode 阶段 kernel 流量偏大的原因 (非 NVMe, 是 CUDA kernel
+DRAM 流量), 并评估参考 qwen35-thor 手写 kernel 的优化空间。
+
+**流量分析 (ncu lts__t_bytes.sum, decode 第 1 步)**
+- 总流量 11.3 GB/step → 138 GB/s (57% of 240.9 peak)。
+- **GEMV (BF16): 8.82 GB/step, 理论 7.73 → 1.14× 无放大** (lm_head
+  1.28GB vs 理论 1.27GB ✓)。7.7GB 是 BF16 活跃权重的物理下限。
+- **MoE W4A4 nvjet: 2.18 GB/step, 理论 1.34 → 1.63× 读放大**。
+- **证伪 split-K 假设**: 在 `Fp4Gemm` (fp4_gemm.h) 加 M==1 禁 split-K
+  (与 Bf16Gemm 一致) 后 ncu 流量完全不变 (2.180→2.179 GB, kernel 名/
+  每 kernel 均值全同) — heuristic 本就选非 split-K 算法。改动保留为
+  防御性措施, 注释已更正。
+- **真正根因 (grid 分析)**: nvjet 用 128×128 GEMM tile 跑 M=1, grid 仅
+  12-20 blocks on 20 SMs = **7-12.5% 占用率, 延迟受限**。正确修复是
+  手写 FP4 GEMV (qwen35-thor fp4_gemv_kernel V2), T=1 不走 cuBLASLt。
+- GEMV 按 shape 拆 (nsys gridX): N=10240 21.1ms (43.5%, 145.6μs 大
+  shape 已 81-100% 峰值) / N=2560 8.4ms (17.3%, 80μs, ~53%) / lm_head
+  4.8ms / N=320 3.05ms (6.3%, 29μs) — 小 shape 是 GEMV 内部可优化点。
+- PDL (qwen35-thor pdl.h) 收益有限: 实测 decode launch gap 仅 4.4%
+  (3.7ms/step), 72% kernel <10us。
+
+**RouterTopk 并行化 (已落地)**
+- 原实现 thread 0 顺序扫 512 expert (512×k 次依赖 min-find 串行链),
+  113.5μs × 48 层 = 5.8ms/step (6.9%)。shared memory 加载优化只省 3μs,
+  证明瓶颈是串行计算链而非内存。
+- 改为: 256 线程协作加载 512 logits 到 shared, 然后 k 轮并行 max 归约
+  (warp shuffle + 跨 warp shared), (value desc, id asc) tie-break 保证
+  确定性选择。kernel 113.5μs → **8.3μs (13.7×)**。
+- 输出 slot 顺序变为值降序 (原为插入序), 只影响 ScatterAdd atomicAdd
+  的浮点舍入顺序 (同一组 expert/weight 求和), 在测试 l2_rel 容差内。
+- **decode 12.2 → 12.9 tok/s** (2468ms → 2319ms / 30 tok), 62 项测试
+  全绿, MoE l2_rel=0.0016622 不变。
+
+**下一步**
+1. 手写 FP4 GEMV (MoE M==1 路径, 攻 nvjet 7-12.5% 占用率, 预期 MoE
+   9.5ms → ~5.8ms, ~4.5%) — 参考 qwen35-thor dense_gemm_fp4_sm110.cu
+   fp4_gemv_kernel V2 (SMEM LUT + uint2 向量加载 + 延迟 group-scale)。
+2. GEMV 小 shape (N=2560/320, 53% 峰值) — f32x2_fma SIMD (SM110a
+   1.97× FMA 吞吐, qwen35-thor dense_gemm_sm110.cu)。
+3. 融合 (GEMV+RMSNorm, SwiGLU) — qwen35-thor light_ops.h。
+
+---
+
 ## 2026-09-07 — greedy 生成输出与参考实现一致 (L2 噪声保真度验证, Phase 1 最后完成标准)
 
 **背景**

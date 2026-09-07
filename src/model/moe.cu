@@ -42,8 +42,21 @@ __device__ __forceinline__ uint16_t FloatToBf16(float f) {
   return *reinterpret_cast<const uint16_t*>(&b);
 }
 
-// Top-k selection + softmax over the selected k logits. One block per token;
-// thread 0 does the sequential scan (E is small, 512).
+// Top-k selection + softmax over the selected k logits. One block per token.
+//
+// Parallel top-k (was: thread 0 sequential scan, ~113us for E=512 k=10 — the
+// 512×k dependent min-find comparisons form a serial dependency chain that
+// no amount of memory parallelism can hide). The E logits are loaded into
+// shared memory by all 256 threads, then k rounds of parallel max-reduction
+// (warp shuffle + cross-warp shared) pick the top-k values in descending
+// order. Each round masks the selected expert (set to -1e30f) so it is not
+// re-selected. The (value desc, expert_id asc) tie-break makes the selection
+// deterministic.
+//
+// Output slot order is value-descending (vs the old insertion order), so the
+// downstream ScatterAdd atomicAdd accumulation order differs. This only
+// changes floating-point rounding order of the same (expert, weight) sum —
+// well within the test's l2_rel tolerance.
 __global__ void RouterTopkKernel(const uint16_t* __restrict__ logits,
                                  int32_t* __restrict__ expert_ids,
                                  float* __restrict__ router_w, int T, int E,
@@ -51,41 +64,76 @@ __global__ void RouterTopkKernel(const uint16_t* __restrict__ logits,
   const int t = blockIdx.x;
   if (t >= T) return;
   const uint16_t* row = logits + static_cast<size_t>(t) * E;
-  if (threadIdx.x != 0) return;
-  float top_vals[16];
-  int top_ids[16];
+  __shared__ float s_vals[512];
+  __shared__ float s_wv[8];
+  __shared__ int s_wi[8];
+  __shared__ float s_sel_v[16];
+  __shared__ int s_sel_i[16];
+  constexpr int kWarp = 32;
+  const int warp = threadIdx.x / kWarp;
+  const int lane = threadIdx.x % kWarp;
+  const int nwarps = kBlock / kWarp;  // 8
+
+  for (int e = threadIdx.x; e < E; e += kBlock)
+    s_vals[e] = Bf16ToFloat(row[e]);
+  __syncthreads();
+
   for (int i = 0; i < k; ++i) {
-    top_vals[i] = -1e30f;
-    top_ids[i] = 0;
-  }
-  for (int e = 0; e < E; ++e) {
-    const float val = Bf16ToFloat(row[e]);
-    int min_k = 0;
-    float min_val = top_vals[0];
-    for (int i = 1; i < k; ++i) {
-      if (top_vals[i] < min_val) {
-        min_val = top_vals[i];
-        min_k = i;
+    // Strided scan: each thread finds max over its strided subset.
+    float m = -1e30f;
+    int mid = 0;
+    for (int e = threadIdx.x; e < E; e += kBlock) {
+      const float v = s_vals[e];
+      if (v > m || (v == m && e < mid)) {
+        m = v;
+        mid = e;
       }
     }
-    if (val > min_val) {
-      top_vals[min_k] = val;
-      top_ids[min_k] = e;
+    // Warp reduce (max by value, tie-break by id asc).
+#pragma unroll
+    for (int off = 16; off > 0; off >>= 1) {
+      const float om = __shfl_xor_sync(0xffffffffu, m, off);
+      const int oid = __shfl_xor_sync(0xffffffffu, mid, off);
+      if (om > m || (om == m && oid < mid)) {
+        m = om;
+        mid = oid;
+      }
     }
+    if (lane == 0) {
+      s_wv[warp] = m;
+      s_wi[warp] = mid;
+    }
+    __syncthreads();
+    if (threadIdx.x == 0) {
+      float bv = s_wv[0];
+      int bi = s_wi[0];
+      for (int w = 1; w < nwarps; ++w) {
+        if (s_wv[w] > bv || (s_wv[w] == bv && s_wi[w] < bi)) {
+          bv = s_wv[w];
+          bi = s_wi[w];
+        }
+      }
+      s_sel_v[i] = bv;
+      s_sel_i[i] = bi;
+      s_vals[bi] = -1e30f;  // mask so it is not re-selected
+    }
+    __syncthreads();
   }
-  float max_val = top_vals[0];
-  for (int i = 1; i < k; ++i) max_val = fmaxf(max_val, top_vals[i]);
+  // Thread 0: softmax over selected k (from shared memory).
+  if (threadIdx.x != 0) return;
+  float max_val = s_sel_v[0];
+  for (int i = 1; i < k; ++i) max_val = fmaxf(max_val, s_sel_v[i]);
   float sum = 0.0f;
   for (int i = 0; i < k; ++i) {
-    top_vals[i] = __expf(top_vals[i] - max_val);
-    sum += top_vals[i];
+    s_sel_v[i] = __expf(s_sel_v[i] - max_val);
+    sum += s_sel_v[i];
   }
   const float inv = 1.0f / sum;
   int32_t* out_ids = expert_ids + static_cast<size_t>(t) * k;
   float* out_w = router_w + static_cast<size_t>(t) * k;
   for (int i = 0; i < k; ++i) {
-    out_ids[i] = top_ids[i];
-    out_w[i] = top_vals[i] * inv;
+    out_ids[i] = s_sel_i[i];
+    out_w[i] = s_sel_v[i] * inv;
   }
 }
 
