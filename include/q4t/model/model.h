@@ -45,6 +45,7 @@ struct ModelConfig {
   int shared_is = 640;
   int topk = 10;
   int vocab = 248320;
+  int image_token_id = 248056;  // <image> placeholder (vision feature injection)
   // full-attention cache length. Sized to the kernel cap (kMaxT=8192 in
   // full_attention.cu) and ple_capacity_tokens, so the QSA sparse path
   // (active once context > indexer_budget) is reachable during decode.
@@ -78,6 +79,7 @@ struct Model {
   uint16_t* d_trunk = nullptr;  // [max_prefill, hc*hs] (ping)
   uint16_t* d_trunk2 = nullptr;  // [max_prefill, hc*hs] (pong)
   uint16_t* d_ple_emb = nullptr;  // [max_prefill, ple_embed_dim]
+  int* d_img_pos = nullptr;  // [max_prefill] image-token positions (device)
   void* d_ws = nullptr;  // forward workspace (reused across layers)
   size_t ws_bytes = 0;
 
@@ -99,11 +101,59 @@ Status LoadPleHashParams(const io::WeightLoader& loader,
 // On success the caller owns all device memory (free with Model::Free).
 Status LoadModel(const ModelConfig& cfg, Model* out, cudaStream_t stream);
 
+// Vision features for multimodal prefill (see ModelForward / ModelPrefill).
+//
+// The vision tower (q4t_vision) emits [num_image_tokens, hs] BF16 features,
+// one row per <image> placeholder token, in spatial order. Injection mirrors
+// vllm's `_merge_multimodal_embeddings`: every input_ids position equal to
+// cfg.image_token_id is overwritten in the embedding buffer with the next
+// feature row (the i-th image token takes feature row i). `num_tokens` must
+// equal the number of image_token_id occurrences in input_ids.
+struct VisionFeatures {
+  const uint16_t* device = nullptr;  // [num_tokens, hs] device BF16
+  int num_tokens = 0;
+};
+
+// Expand image placeholders for multimodal prefill.
+//
+// The chat template renders each image as a single <image> token
+// (image_token_id). The vision tower, however, emits `grid_h/merge *
+// grid_w/merge` merged feature rows per image, so each placeholder must be
+// expanded to that many image_token_id entries (the injection then overwrites
+// them in order). `counts[i]` is the expansion factor for the i-th image.
+// Returns false if the number of image_token_id occurrences in `ids` does not
+// match `counts.size()` (a placeholder without an image, or vice versa).
+inline bool ExpandImageTokens(const int32_t* ids, int T, int image_token_id,
+                              const std::vector<int>& counts,
+                              std::vector<int32_t>* out) {
+  out->clear();
+  out->reserve(static_cast<size_t>(T) +
+               static_cast<size_t>(counts.size()));
+  size_t img_idx = 0;
+  for (int i = 0; i < T; ++i) {
+    if (ids[i] == image_token_id) {
+      if (img_idx >= counts.size()) return false;
+      const int c = counts[img_idx];
+      if (c <= 0) return false;
+      for (int k = 0; k < c; ++k) out->push_back(image_token_id);
+      ++img_idx;
+    } else {
+      out->push_back(ids[i]);
+    }
+  }
+  return img_idx == counts.size();
+}
+
 // Run one prefill forward: input_ids [T] (host int32) -> logits [T, vocab]
 // (device BF16). T must be <= cfg.max_prefill. Prefill starts from empty
 // per-layer state (positions 0..T-1).
+//
+// `vision` (optional): if non-null and vision->num_tokens > 0, the image
+// token embeddings are replaced with the vision features (see
+// VisionFeatures). Null = pure-text prefill.
 Status ModelForward(const Model& m, const int32_t* input_ids, int T,
-                    uint16_t* logits, cudaStream_t stream);
+                    uint16_t* logits, cudaStream_t stream,
+                    const VisionFeatures* vision = nullptr);
 
 // Run one decode step for a single new token: token_id at absolute position
 // `position` -> logits [1, vocab] (device BF16). Per-layer state is NOT reset
@@ -157,9 +207,12 @@ Status ModelBeginSequence(const Model& m, ModelSequence* seq,
 // 调用返回时 per-layer KV/SSM 状态已就绪 (PD 分离的 handoff 点)。
 // trunk_out: 可选, 非 null 时把 pre-final-mixer 多流 [T, hc*hs] 拷入
 // (MTP scheme A 钩子, 见 ModelDecodeStep 的说明)。
+// vision: 可选, 非 null 且 num_tokens>0 时把 image token 的 embedding 替换为
+// 视觉特征 (见 VisionFeatures)。
 Status ModelPrefill(const Model& m, ModelSequence* seq, const int32_t* input_ids,
                     int T, uint16_t* logits, cudaStream_t stream,
-                    uint16_t* trunk_out = nullptr);
+                    uint16_t* trunk_out = nullptr,
+                    const VisionFeatures* vision = nullptr);
 
 // 一个 decode step: seq 须处于 kDecode 阶段。token_id 写入 position,
 // -> logits [1, vocab]。自动 ++position 并追加 history (PLE 上下文)。
@@ -170,6 +223,35 @@ Status ModelDecodeStepSeq(const Model& m, ModelSequence* seq, int32_t token_id,
 
 // 序列结束: 状态机复位为 kIdle (不释放 device 内存, 内存归 Model 所有)。
 void ModelEndSequence(ModelSequence* seq);
+
+// ---------------------------------------------------------------------------
+// 主模型 recurrent 状态快照 (推测解码回滚用)。
+//
+// 主模型的 per-layer 状态分两类:
+//   - paged (full-attention KV + indexer): 按绝对 position 写入, 单调增长。
+//     推测解码重跑同一 position 会覆盖同一 page, 无需回滚。
+//   - recurrent (linear SSM/conv, PLE conv): 原地递推, 无法按 position 回退。
+//     推测解码验证 k 个 draft token 后若只接受 a<k 个, 必须回滚到验证前的
+//     recurrent 状态再重跑 a 个 token。
+//
+// ModelStateSnapshot 只持有 recurrent 状态 (paged 状态不动)。
+struct ModelStateSnapshot {
+  std::vector<uint8_t> data;  // 所有 recurrent 状态拼接
+  size_t bytes = 0;
+  bool valid = false;
+  void Free();
+};
+
+// 所有 recurrent 状态的 device 字节数 (SSM FP32 + conv BF16 + PLE conv BF16)。
+size_t ModelStateSnapshotBytes(const Model& m);
+
+// 快照当前 recurrent 状态 (device -> host)。验证前调用。
+Status ModelSnapshotState(const Model& m, ModelStateSnapshot* snap,
+                          cudaStream_t stream);
+
+// 恢复 recurrent 状态 (host -> device)。验证后回滚调用。
+Status ModelRestoreState(const Model& m, const ModelStateSnapshot& snap,
+                         cudaStream_t stream);
 
 }  // namespace model
 }  // namespace q4t

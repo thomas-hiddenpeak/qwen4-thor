@@ -49,6 +49,24 @@ __global__ void ScaleBf16Kernel(uint16_t* __restrict__ x, int total,
   x[i] = *reinterpret_cast<const uint16_t*>(&r);
 }
 
+// Replace image-token embeddings with vision features (multimodal injection).
+// d_img_pos[i] = the position of the i-th <image> token in the sequence;
+// vision_src[i*hs .. (i+1)*hs] (device BF16) is copied over d_emb at that
+// position. One thread per (i, j) element. Mirrors vllm's
+// `_merge_multimodal_embeddings` (inputs_embeds[is_multimodal] = mm_embeds).
+__global__ void InjectVisionKernel(const uint16_t* __restrict__ vision_src,
+                                   const int* __restrict__ d_img_pos,
+                                   uint16_t* __restrict__ d_emb, int hs,
+                                   int num_tokens) {
+  const int i = blockIdx.x * blockDim.x + threadIdx.x;
+  const int total = num_tokens * hs;
+  if (i >= total) return;
+  const int tok = i / hs;
+  const int j = i - tok * hs;
+  const int pos = d_img_pos[tok];
+  d_emb[pos * hs + j] = vision_src[i];
+}
+
 }  // namespace
 
 void Model::Free() {
@@ -66,6 +84,7 @@ void Model::Free() {
   freep(d_trunk);
   freep(d_trunk2);
   freep(d_ple_emb);
+  freep(d_img_pos);
   freep(d_ws);
   d_ids = nullptr;
   d_positions = nullptr;
@@ -73,6 +92,7 @@ void Model::Free() {
   d_trunk = nullptr;
   d_trunk2 = nullptr;
   d_ple_emb = nullptr;
+  d_img_pos = nullptr;
   d_ws = nullptr;
   ws_bytes = 0;
 }
@@ -206,6 +226,9 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   if (!(s = alloc(reinterpret_cast<void**>(&m->d_emb),
                   max_t * cfg.hs * 2)))
     return s;
+  if (!(s = alloc(reinterpret_cast<void**>(&m->d_img_pos),
+                  max_t * sizeof(int))))
+    return s;
   if (!(s = alloc(reinterpret_cast<void**>(&m->d_trunk),
                   max_t * hc_dim * 2)))
     return s;
@@ -299,10 +322,12 @@ Status ResetAllLayers(const Model& m, cudaStream_t stream) {
 
 // Prefill without reset: assumes per-layer state is already at the sequence
 // start (call ResetAllLayers / ModelBeginSequence first). positions = 0..T-1.
-// `trunk_out` (MTP scheme A hook) is forwarded to RunLayers.
+// `trunk_out` (MTP scheme A hook) is forwarded to RunLayers. `vision` (optional)
+// replaces image-token embeddings with vision features before ExpandTrunk.
 Status RunPrefill(const Model& m, const int32_t* input_ids, int T,
                   uint16_t* logits, cudaStream_t stream,
-                  uint16_t* trunk_out = nullptr) {
+                  uint16_t* trunk_out = nullptr,
+                  const VisionFeatures* vision = nullptr) {
   const ModelConfig& cfg = m.cfg;
   // 1. ids + positions.
   if (cudaMemcpyAsync(m.d_ids, input_ids, T * sizeof(int32_t),
@@ -318,9 +343,37 @@ Status RunPrefill(const Model& m, const int32_t* input_ids, int T,
     return Status::Fail("H2D positions");
   }
 
-  // 2-3. emb + trunk.
+  // 2. emb.
   Status s = EmbedLookup(m.head, m.d_ids, m.d_emb, T, stream);
   if (!s.ok()) return s;
+
+  // 2b. Multimodal injection: replace image-token embeddings with vision
+  //     features (vllm `_merge_multimodal_embeddings`). The i-th
+  //     image_token_id occurrence takes vision->device row i.
+  if (vision && vision->num_tokens > 0) {
+    std::vector<int> img_pos;
+    img_pos.reserve(static_cast<size_t>(vision->num_tokens));
+    for (int t = 0; t < T; ++t) {
+      if (input_ids[t] == cfg.image_token_id) img_pos.push_back(t);
+    }
+    if (static_cast<int>(img_pos.size()) != vision->num_tokens) {
+      return Status::Fail("vision: image-token count mismatch " +
+                           std::to_string(img_pos.size()) + " vs " +
+                           std::to_string(vision->num_tokens));
+    }
+    if (cudaMemcpyAsync(m.d_img_pos, img_pos.data(),
+                        img_pos.size() * sizeof(int), cudaMemcpyHostToDevice,
+                        stream) != cudaSuccess) {
+      return Status::Fail("H2D img_pos");
+    }
+    const int total = vision->num_tokens * cfg.hs;
+    const int grid = (total + kBlock - 1) / kBlock;
+    InjectVisionKernel<<<grid, kBlock, 0, stream>>>(vision->device, m.d_img_pos,
+                                                    m.d_emb, cfg.hs,
+                                                    vision->num_tokens);
+  }
+
+  // 3. trunk.
   s = ExpandTrunk(m.head, m.d_emb, m.d_trunk, T, stream);
   if (!s.ok()) return s;
 
@@ -346,7 +399,8 @@ Status RunPrefill(const Model& m, const int32_t* input_ids, int T,
 }
 
 Status ModelForward(const Model& m, const int32_t* input_ids, int T,
-                    uint16_t* logits, cudaStream_t stream) {
+                    uint16_t* logits, cudaStream_t stream,
+                    const VisionFeatures* vision) {
   const ModelConfig& cfg = m.cfg;
   if (T <= 0) return Status();
   if (T > cfg.max_prefill) {
@@ -356,7 +410,7 @@ Status ModelForward(const Model& m, const int32_t* input_ids, int T,
   // SSM/conv, full KV/indexer). Reset so repeated calls are deterministic.
   Status s = ResetAllLayers(m, stream);
   if (!s.ok()) return s;
-  return RunPrefill(m, input_ids, T, logits, stream);
+  return RunPrefill(m, input_ids, T, logits, stream, nullptr, vision);
 }
 
 Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
@@ -422,7 +476,8 @@ Status ModelBeginSequence(const Model& m, ModelSequence* seq,
 
 Status ModelPrefill(const Model& m, ModelSequence* seq,
                     const int32_t* input_ids, int T, uint16_t* logits,
-                    cudaStream_t stream, uint16_t* trunk_out) {
+                    cudaStream_t stream, uint16_t* trunk_out,
+                    const VisionFeatures* vision) {
   if (!seq) return Status::Fail("ModelPrefill: null seq");
   if (seq->stage != ModelSequence::Stage::kPrefill) {
     return Status::Fail("ModelPrefill: sequence not in prefill stage");
@@ -433,7 +488,7 @@ Status ModelPrefill(const Model& m, ModelSequence* seq,
     return Status::Fail("ModelPrefill: T exceeds max_prefill");
   }
   // Per-layer state was reset by ModelBeginSequence; run the prefill.
-  Status s = RunPrefill(m, input_ids, T, logits, stream, trunk_out);
+  Status s = RunPrefill(m, input_ids, T, logits, stream, trunk_out, vision);
   if (!s.ok()) return s;
   // Handoff point: per-layer KV/SSM state is now ready for decode (or for
   // PD separation — the runner can take ownership of the state here).
@@ -471,6 +526,111 @@ void ModelEndSequence(ModelSequence* seq) {
   seq->stage = ModelSequence::Stage::kIdle;
   seq->position = 0;
   seq->history.clear();
+}
+
+// ---------------------------------------------------------------------------
+// Recurrent-state snapshot (speculative-decoding rollback). See model.h.
+//
+// The paged full-attention caches (KV + indexer) are written at absolute
+// positions and grow monotonically; a speculative re-run of the same positions
+// overwrites the same pages, so they need no rollback. Only the recurrent
+// state (linear SSM/conv, PLE short-conv) is updated in place and cannot be
+// rewound by position, so it is snapshotted before verification and restored
+// after a partial accept.
+// ---------------------------------------------------------------------------
+
+namespace {
+
+struct RecurrentStateRef {
+  void* dev;
+  size_t bytes;
+};
+
+// Collect every recurrent-state buffer (device pointer + byte size) across all
+// layers, in a stable order. The paged KV/indexer buffers are deliberately
+// excluded (see the note above).
+std::vector<RecurrentStateRef> CollectRecurrentState(const Model& m) {
+  std::vector<RecurrentStateRef> refs;
+  for (const auto& l : m.layers) {
+    if (l.ssm_state) {
+      refs.push_back({l.ssm_state,
+                      static_cast<size_t>(l.linear.nv) * l.linear.kd *
+                          l.linear.vd * 4});
+      refs.push_back({l.conv_state,
+                      static_cast<size_t>(l.linear.in_qkv()) *
+                          (l.linear.conv_k - 1) * 2});
+    }
+    if (l.ple_conv_state) {
+      refs.push_back({l.ple_conv_state,
+                      static_cast<size_t>(l.hc_dim) *
+                          (l.ple.conv_kernel - 1) * l.ple.conv_dilation * 2});
+    }
+  }
+  return refs;
+}
+
+}  // namespace
+
+void ModelStateSnapshot::Free() {
+  data.clear();
+  data.shrink_to_fit();
+  bytes = 0;
+  valid = false;
+}
+
+size_t ModelStateSnapshotBytes(const Model& m) {
+  size_t total = 0;
+  for (const auto& r : CollectRecurrentState(m)) total += r.bytes;
+  return total;
+}
+
+Status ModelSnapshotState(const Model& m, ModelStateSnapshot* snap,
+                          cudaStream_t stream) {
+  if (!snap) return Status::Fail("ModelSnapshotState: null");
+  const auto refs = CollectRecurrentState(m);
+  size_t total = 0;
+  for (const auto& r : refs) total += r.bytes;
+  if (total == 0) {
+    snap->Free();
+    return Status();
+  }
+  snap->data.resize(total);
+  size_t off = 0;
+  for (const auto& r : refs) {
+    if (cudaMemcpyAsync(snap->data.data() + off, r.dev, r.bytes,
+                        cudaMemcpyDeviceToHost, stream) != cudaSuccess) {
+      return Status::Fail("ModelSnapshotState: D2H copy");
+    }
+    off += r.bytes;
+  }
+  // Synchronize so the host buffer is fully populated before the caller uses
+  // it (the snapshot is a host-side copy).
+  if (cudaStreamSynchronize(stream) != cudaSuccess) {
+    return Status::Fail("ModelSnapshotState: sync");
+  }
+  snap->bytes = total;
+  snap->valid = true;
+  return Status();
+}
+
+Status ModelRestoreState(const Model& m, const ModelStateSnapshot& snap,
+                         cudaStream_t stream) {
+  if (!snap.valid) return Status::Fail("ModelRestoreState: invalid snapshot");
+  const auto refs = CollectRecurrentState(m);
+  size_t off = 0;
+  for (const auto& r : refs) {
+    if (cudaMemcpyAsync(r.dev, snap.data.data() + off, r.bytes,
+                        cudaMemcpyHostToDevice, stream) != cudaSuccess) {
+      return Status::Fail("ModelRestoreState: H2D copy");
+    }
+    off += r.bytes;
+  }
+  // Synchronize so the device state is fully restored before the caller runs
+  // the next forward (the re-run reads the recurrent state immediately).
+  if (cudaStreamSynchronize(stream) != cudaSuccess) {
+    return Status::Fail("ModelRestoreState: sync");
+  }
+  return Status();
 }
 
 }  // namespace model
