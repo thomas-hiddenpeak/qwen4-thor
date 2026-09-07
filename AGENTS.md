@@ -75,11 +75,11 @@ cmake --build build --parallel
   processor 逐位一致; serve 层 OpenAI image_url/base64 接入 + 端到端
   图像→特征→注入→生成) / **PLE 工作内存 + SHA-256 (已闭合)** (工作内存
   实测 75.17 MiB < 100 MiB 预算, 无 OOM 无 swap; 51.2 GB sidecar SHA-256
-  与 MODEL.md 期望值逐位一致)。62 项测试全绿, 零警告。
-- 下一步 (2026-09-06 与用户确认的顺序): 逐 token 对参考验证 (已闭合)
-  → prefill/decode 性能优化 (已闭合, decode 接近带宽下限) → MTP 推测
-  解码 (已闭合) → 多模态图像输入 (已闭合: 视觉塔 + 注入 + C++ processor
-  逐位一致 + serve 层 image_url/base64 接入 + 端到端) → **PLE 工作内存/
-  SHA-256 校验 (已闭合)**。Phase 1 完成标准全部闭合; 剩余: greedy 生成
-  输出与参考实现一致 (验证标准以单独讨论结论为准)。完整多设备 PD 部署
-  归 Phase 2。
+  与 MODEL.md 期望值逐位一致) / **greedy 生成输出与参考一致 (已闭合,
+  L2 噪声保真度)** (C++ NVFP4 W4A4 vs transformers 5.16.1 参考, 同一
+  256-token prompt 16 层 prefill logits 对比; 置信位置 argmax 8/8 全对 +
+  108 个翻转全 near-tie + l2_rel 0.207 在 W4A4 噪声带; 无系统性错误,
+  差异纯为量化噪声)。62 项测试全绿, 零警告。
+- **Phase 1 完成标准全部闭合 (2026-09-07)**。下一步进入 Phase 2
+  (完整多设备 PD 部署、48 层长序列端到端、serve 流式输出、MTP 加速比
+  实测等, 见 docs/PHASES.md)。

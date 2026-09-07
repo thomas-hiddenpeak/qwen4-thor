@@ -82,6 +82,18 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   `model.visual.*` 时优雅降级纯文本)。端到端测试 vision_e2e: 真实 PNG →
   processor → 视觉塔 → 展开 → 注入 prefill → logits (有限/非平凡/注入
   改变 logits/确定性)。**61 项测试全绿, 零警告**。
+- [x] 2026-09-07 greedy 生成输出与参考实现一致 (L2 噪声保真度验证,
+  Phase 1 最后完成标准): C++ NVFP4 W4A4 引擎 vs transformers 5.16.1
+  参考 (dequantized FP32), 同一 256-token prompt 的 16 层 prefill logits
+  逐位置对比。判据问"差异是否只有量化噪声、有无系统性 bug" (两侧差异
+  就是 NVFP4 量化噪声, 不可能逐位一致): **[A] 置信位置 (参考 gap >
+  τ=3σ) argmax 8/8 全对** (黄金标准, 系统性 bug 会破坏这些位置) /
+  **[B] 108 个 argmax 翻转全部 near-tie** (gap ≤ τ) / **[C] l2_rel 均值
+  0.2069** (与 e2m1 网格 ~20% 理论值吻合, max 0.65 < 0.75)。raw argmax
+  57.8% 低因参考 96.9% 位置是 near-tie (选哪个 token 都在噪声内)。
+  参考 dump 改逐层 lazy dequant (占位符 + forward 按需 dequant 单层,
+  内存峰值 ~80GB→~23GB, 否则 16 层 OOM)。**结论: 无系统性错误, 差异纯
+  为量化噪声。Phase 1 完成标准全部闭合。**
 - [x] 2026-09-04 tokenizer (GPT-2 Byte-Level BPE) 实现 + 差分验证:
   独立 `q4t_text` 库 (ICU 74 NFC 规范化 + `\p{L}` 预分词正则 + 优先队列
   BPE)。encode 做 added-token 整体子串匹配, decode 走 id→content, 均与
@@ -673,15 +685,21 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 ## 下一步
 
-Phase 1 已完成的层: **PLE 流式层** ✅, **IO 层** ✅, **量化层** ✅
-(NVFP4 W4A4 原生 + grouped MoE), **模型层** ✅ (48 层 forward + PLE
-注入 + head/tail + generate + 长序列 QSA 稀疏路径), **serve** ✅
-(OpenAI 兼容 HTTP API), **PD-ready 架构** ✅ (Paged KV + 可分离代码
-路径 + 阶段边界 API ModelSequence), **decode 路径正确性** ✅
-(conv1d 窗口 + PLE short-conv 持久状态两个 bug 均已修复; batch vs
-incremental 残差定性为 MoE 路由边界敏感性, 非状态 bug — 见 E1–E10
-实验链, 等距性 + 增量自洽 + 全位置 MoE 翻转对照)。
-59 项测试全绿, 零警告。
+**Phase 1 完成标准全部闭合 (2026-09-07)。** 已完成的层: **PLE 流式层**
+✅, **IO 层** ✅, **量化层** ✅ (NVFP4 W4A4 原生 + grouped MoE), **模型
+层** ✅ (48 层 forward + PLE 注入 + head/tail + generate + 长序列 QSA
+稀疏路径), **serve** ✅ (OpenAI 兼容 HTTP API), **PD-ready 架构** ✅
+(Paged KV + 可分离代码路径 + 阶段边界 API ModelSequence), **decode 路径
+正确性** ✅ (conv1d 窗口 + PLE short-conv 持久状态两个 bug 均已修复;
+batch vs incremental 残差定性为 MoE 路由边界敏感性, 非状态 bug — 见
+E1–E10 实验链), **MTP 推测解码** ✅, **多模态图像输入** ✅, **PLE 工作
+内存/SHA-256** ✅, **greedy 生成输出与参考一致 (L2 噪声保真度)** ✅
+(置信位置 8/8 + 翻转全 near-tie + l2_rel 0.207, 无系统性错误)。
+62 项测试全绿, 零警告。
+
+Phase 2 候选 (完整多设备 PD 部署等, 见 [PHASES.md](PHASES.md)): 完整
+48 层 greedy 长序列端到端、Paged KV 跨设备 P/D 分离、serve 层流式
+输出、MTP 加速比实测等。
 
 剩余 Phase 1 项 (按 2026-09-06 与用户确认的顺序):
 1. **逐 token 对参考验证 (已闭合)**: 4 层基线 + decode 自洽性 + E1–E10
@@ -776,6 +794,33 @@ incremental 残差定性为 MoE 路由边界敏感性, 非状态 bug — 见 E1�
    20 + row-ids 1 + ring + reader scratch), 无 OOM 无 swap (gather 前后
    SwapFree 不变)。测试 ple_working_memory_under_100mib。**62 项测试全绿,
    零警告**。
+6. **greedy 生成输出与参考实现一致 (已闭合 2026-09-07, L2 噪声保真度
+   验证)**: 这是 Phase 1 最后一个完成标准。验证标准 (2026-09-06 与用户
+   确认): C++ NVFP4 W4A4 引擎与 transformers 5.16.1 参考 (dequantized
+   FP32 权重 + 全精度激活) 在**同一 256-token prompt** 上跑 prefill,
+   比较逐位置 logits。两侧差异**就是** NVFP4 量化噪声 (C++ 把激活也量化
+   到 e2m1 4-bit, 见 `GatherQuantKernel`), 所以判据问的是"差异是否只有
+   量化噪声、有无系统性 bug", 而非"logits 是否逐位一致" (永远不可能)。
+   - **方法**: 16 层参考 dump (`.q4t-work/ref4_logits.py` 改**逐层 lazy
+     dequant** — 占位符替换 experts 参数, forward 时按需 dequant 单层
+     用完即释放, 内存峰值从 ~80GB 降到 ~23GB, 否则 16 层 OOM) + C++ 16
+     层 prefill dump (`model_forward_dump_decode` n_decode=0)。
+   - **结果 (`.q4t-work/l2_compare.py`)**: **OVERALL PASS**。
+     - **[A] 置信位置 argmax 8/8 全对** (黄金标准): 参考实现 top1 领先
+       top2 超过 τ=3σ 噪声水平的 8 个位置, C++ 全部匹配。系统性 bug
+       (错权重/GEMM/路由) 会破坏这些位置, 纯噪声不会。
+     - **[B] 108 个 argmax 翻转全部是 near-tie** (gap ≤ τ): 参考实现自身
+       就在噪声水平内, C++ 选不同 token 是预期, 非错误。
+     - **[C] l2_rel 均值 0.2069** (与 W4A4 e2m1 网格 ~20% 逐元素相对误差
+       理论值吻合), max 0.6539 < 0.75。
+   - **解读**: raw argmax 仅 57.8% 匹配, 但**参考实现 96.9% 的位置是
+     near-tie** (top1-top2 gap < 噪声), 这些位置选哪个 token 都在噪声
+     内, 正确引擎靠运气匹配 ~50% + 全部置信位置。诊断
+     (`.q4t-work/l2_diagnose.py`) 确认: ref_norm 不小 (均值 540, 非平坦
+     logits 放大), diff_norm 均值 109 (≈20% ref_norm), pearson 均值
+     0.972 (形状保留), 置信位置 top5_jacc 0.875。**结论: C++ NVFP4 引擎
+     与参考实现一致, 差异纯为量化噪声, 无系统性错误。**
+   **→ Phase 1 完成标准全部闭合。**
 
 ## 环境
 

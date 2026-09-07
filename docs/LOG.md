@@ -5,6 +5,49 @@
 
 ---
 
+## 2026-09-07 — greedy 生成输出与参考实现一致 (L2 噪声保真度验证, Phase 1 最后完成标准)
+
+**背景**
+Phase 1 最后一条完成标准 (PHASES.md): "greedy 生成输出与参考实现一致"。
+2026-09-06 与用户确认验证标准: C++ NVFP4 W4A4 引擎与 transformers
+5.16.1 参考 (dequantized FP32 权重 + 全精度激活) 在同一 prompt 上比较
+prefill logits。关键认知: 两侧差异**就是** NVFP4 量化噪声 (C++ 把激活
+也量化到 e2m1 4-bit, `GatherQuantKernel`), 所以判据问"差异是否只有量化
+噪声、有无系统性 bug", 而非"logits 是否逐位一致" (永远不可能)。
+
+**方法**
+1. 参考 dump: `.q4t-work/ref4_logits.py` 改造为**逐层 lazy dequant** —
+   补丁 `Qwen4ExpTextExperts.__init__` 用 1-expert 占位符, 补丁
+   `forward` 在 forward 时按需 dequant 单层专家 (float32, 与参考 eager
+   路径一致)、用完即释放。内存峰值从 16 层全常驻 ~80GB (OOM) 降到
+   ~23GB。4 层 smoke test 验证: lazy vs eager logits max_abs_diff 9.5e-6
+   (float32 GEMM 累加顺序噪声), argmax 4/4 全对。
+2. C++ dump: `model_forward_dump_decode` (Q4T_MODEL_LAYERS=16,
+   n_decode=0) → `/tmp/l2_cpp16.prefill.bin` (256×248320 f32)。
+3. 分析: `.q4t-work/l2_compare.py` (修正判据) + `.q4t-work/l2_diagnose.py`
+   (聚焦诊断)。
+
+**结果 (OVERALL PASS)**
+- **[A] 置信位置 argmax 8/8 全对** (黄金标准): 参考 top1 领先 top2 超过
+  τ=3σ=1.137 的 8 个位置, C++ 全部匹配。系统性 bug (错权重/GEMM/路由)
+  会破坏这些位置, 纯量化噪声不会。
+- **[B] 108 个 argmax 翻转全部 near-tie** (gap ≤ τ): 参考实现自身就在
+  噪声水平内, C++ 选不同 token 是预期。
+- **[C] l2_rel 均值 0.2069** (与 W4A4 e2m1 网格 ~20% 逐元素相对误差
+  理论值吻合), max 0.6539 < 0.75。
+- **解读**: raw argmax 57.8% 匹配看似低, 但参考 96.9% 位置是 near-tie
+  (top1-top2 gap < 噪声), 这些位置选哪个 token 都在噪声内, 正确引擎
+  靠运气匹配 ~50% + 全部置信位置。诊断确认: ref_norm 不小 (均值 540,
+  非平坦 logits 放大 l2_rel), diff_norm 均值 109 (≈20% ref_norm),
+  pearson 均值 0.972 (形状保留), 置信位置 top5_jacc 0.875。
+
+**结论**
+C++ NVFP4 引擎与参考实现一致, 差异纯为量化噪声, **无系统性错误**。
+**Phase 1 完成标准全部闭合。** 下一步: Phase 2 (完整多设备 PD 部署、
+48 层长序列端到端、serve 流式输出、MTP 加速比实测等, 见 PHASES.md)。
+
+---
+
 ## 2026-09-07 — PLE SSD Stream 收尾 (工作内存 <100 MiB 验证 + SHA-256 校验)
 
 **背景**
