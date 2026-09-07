@@ -139,8 +139,12 @@ add_library(q4t_model STATIC
   src/model/decoder_layer.cu
   src/model/model_head.cu
   src/model/model.cu
-  src/model/gemv.cu)
-target_include_directories(q4t_model PUBLIC include)
+  src/model/gemv.cu
+  src/mtp/moe_bf16.cu
+  src/mtp/mtp.cu
+  src/vision/vision.cu
+  src/vision/processor.cpp)
+target_include_directories(q4t_model PUBLIC include third_party)
 target_link_libraries(q4t_model PUBLIC q4t_io q4t_quant q4t_ple CUDA::cudart
                     CUDA::cublasLt)
 
@@ -185,6 +189,12 @@ if(Q4T_BUILD_TESTS)
     tests/model_head_test.cpp
     tests/model_forward_test.cpp
     tests/model_moe_test.cpp
+    tests/mtp_draft_test.cpp
+    tests/mtp_speculative_test.cpp
+    tests/vision_forward_test.cpp
+    tests/model_vision_inject_test.cpp
+    tests/vision_processor_test.cpp
+    tests/vision_e2e_test.cpp
     tests/test_main.cpp)
   set(Q4T_TEST_LIBS q4t_ple q4t_io q4t_quant q4t_model)
   if(Q4T_HAS_ICU)

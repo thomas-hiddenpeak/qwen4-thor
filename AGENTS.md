@@ -65,10 +65,17 @@ cmake --build build --parallel
   E1–E10 实验链定性 batch vs incremental 残差 = MoE 路由边界敏感性,
   非状态 bug: 增量自洽 0.000173 / 对参考等距 0.1306≈0.1309 / 全位置
   MoE 翻转对照; C++ vs 参考 16 步 12/16 argmax, 不匹配均为 near-tie
-  被 NVFP4 噪声翻转)。54 项测试全绿, 零警告。
-- 下一步 (2026-09-06 与用户确认的顺序): 逐 token 对参考验证 (已闭合,
-  作为性能优化守护网) → **prefill/decode 性能优化 (进行中**: 建基线 +
-  profile 定位瓶颈, 拆分 linear attention 路径, 预留 MTP 接口) →
-  MTP 推测解码 (良好基线上, 用户排期) → 多模态图像输入 (transformers
-  权威参考已就位) → PLE 工作内存/SHA-256 校验。完整多设备 PD 部署归
-  Phase 2。
+  被 NVFP4 噪声翻转) / **prefill/decode 性能优化** (decode 6.2→12.2
+  tok/s, prefill 18.4→35.5, 接近带宽下限) / **MTP 推测解码** (draft k
+  步 + 主模型验证 + 接受/回退 + recurrent 状态快照/恢复) / **多模态
+  图像输入 (已闭合)** (27 层 ViT CUDA 实现, CUDA vs numpy l2_rel=
+  0.0317; image token 248056 位置 embedding 替换为视觉特征, 镜像 vllm
+  `_merge_multimodal_embeddings`; C++ 图像 processor: stb 解码 +
+  Pillow 12.3.0 定点 BICUBIC + block-major patchify, 对真实 transformers
+  processor 逐位一致; serve 层 OpenAI image_url/base64 接入 + 端到端
+  图像→特征→注入→生成)。61 项测试全绿, 零警告。
+- 下一步 (2026-09-06 与用户确认的顺序): 逐 token 对参考验证 (已闭合)
+  → prefill/decode 性能优化 (已闭合, decode 接近带宽下限) → MTP 推测
+  解码 (已闭合) → 多模态图像输入 (已闭合: 视觉塔 + 注入 + C++ processor
+  逐位一致 + serve 层 image_url/base64 接入 + 端到端) → **PLE 工作内存/
+  SHA-256 校验 (进行中)**。完整多设备 PD 部署归 Phase 2。

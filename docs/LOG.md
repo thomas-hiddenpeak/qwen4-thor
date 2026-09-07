@@ -5,6 +5,203 @@
 
 ---
 
+## 2026-09-07 — 多模态图像输入收尾 (processor + serve 接入 + 端到端)
+
+**背景**
+视觉塔 + 注入机制 (前两条) 已就绪, 但还缺"图像字节 → pixel_values"的
+预处理, 以及 serve 层 (OpenAI API) 的多模态接入。权威参考:
+transformers 5.16.1 `Qwen2VLImageProcessorPil` (PIL 后端) + Pillow
+12.3.0 `src/libImaging/Resample.c` (BICUBIC 定点插值)。目标: 打通
+"图像字节 → 视觉特征 → 注入 → 生成"全链路。
+
+**改动**
+1. `third_party/stb/stb_image.h`: stb_image v2.30 (公有领域, PNG/JPEG
+   解码)。
+2. `vision/processor.h/.cpp`: C++ 图像 processor。管线: stb 解码
+   (强制 3 通道 RGB) → smart_resize (factor=32, clamp [min_pixels,
+   max_pixels], 与 transformers 逐位一致) → **Pillow 12.3.0 定点
+   BICUBIC** (a=-0.5, PRECISION_BITS=22, 逐位复刻 `Resample.c` 的
+   PrecomputeCoeffs + 两遍水平/垂直, channel-last 布局) → rescale
+   (/255) → normalize ((x-0.5)/0.5) → **block-major patchify**
+   (per-patch [C=3,T=2,P=16,P=16], 单帧重复 T 次)。
+3. `tools/vision_processor_ref.py`: 用真实 `Qwen2VLImageProcessorPil`
+   (refenv) 生成 ground truth (恒等图 A 256x256 + BICUBIC 图 B
+   140x100→320x224, PNG + 纯文本 pixel_values/grid_thw)。
+4. `tests/vision_processor_test.cpp`: 差分测试。恒等图要求
+   max_abs_diff ≤ 1e-6 (实际 0), BICUBIC 图要求 l2_rel ≤ 0.001
+   (实际 0) — **两图均逐位一致**。
+5. `vision/vision.cu` `Allocate`: 改幂等 (重复调用释放旧 workspace,
+   RoPE 表按需重建), 供 serve 层跨请求复用。
+6. `model/model.h`: 新增 `ExpandImageTokens` (每个 image_token_id
+   占位符按 counts 展开为 grid_h/2*grid_w/2 个 image token; 计数不匹配
+   返回 false)。serve 与端到端测试共用。
+7. `server/chat_server.h/.cpp`: serve 层多模态接入。`Start` 加载视觉塔
+   (WeightIndex/WeightLoader → LoadVision, 无 `model.visual.*` 时优雅
+   降级纯文本); `HandleChat` 解析 OpenAI content 数组 (text + image_url
+   部件, base64 data URL) → base64 解码 → `RunVisionPipeline` (processor
+   → H2D BF16 → 视觉塔 → 特征 + per-image 展开计数) → `ExpandImageTokens`
+   → `ModelPrefill` 注入 `VisionFeatures`; 每请求 device buffer 用
+   `cleanup()` 统一释放。
+8. `tests/vision_e2e_test.cpp`: 端到端测试 (真实 PNG → processor →
+   视觉塔 → 展开 → 注入 prefill → logits): 有限/非平凡 + 注入改变
+   logits (diff=14.59) + 确定性 (两次逐位一致)。
+
+**结果**
+61 项测试全绿 (新增 vision_processor + vision_e2e), 零警告。
+- vision_processor: 恒等图 + BICUBIC 图 vs 真实 transformers processor
+  **均逐位一致 (max_abs_diff=0)** — C++ 解码/缩放/归一化/patchify 精确
+  复刻 (含 Pillow 定点 BICUBIC)。
+- vision_e2e: 图像 grid=[1,16,16] L=256 → 64 merged tokens, input_ids
+  5→68 (1 占位符展开 64), 注入改变 logits, 确定性通过。
+
+**踩坑**
+- **channel-planar vs channel-last**: 初版 BICUBIC 假设 channel-planar
+  输入 (`in+c` = 整个通道平面连续), 但 stb 解码是 channel-last
+  ([h,w,3]=RGBRGB...)。恒等图不触发 resize 故 bug 隐藏; BICUBIC 图
+  全错 (l2_rel=1.69)。修复: ResamplePass 加 stride 参数 (in_stride=
+  out_stride=w*3), 通道 c 索引 `buffer[y*stride + x*3 + c]`, 以 `in+c`
+  指针 (按通道字节偏移) + stride w*3 调用。
+- **stb_image_resize.h 404**: 各 GitHub ref 均 404。改为逐位复刻 Pillow
+  12.3.0 `Resample.c` 的定点 BICUBIC (下载成功)。
+- **block-major 排布**: transformers `patchify` 的 `permute(0,2,5,3,6,1,
+  4,7)` 展开为 block-major (hb 最慢)。真实 processor 输出 vs 手动
+  block-major patchify l2_rel=0.0 (逐位), row-major 则 1.12 — 确认
+  block-major。
+- **`<image>` 编码**: Python `tokenizers` 库默认把字面量 `<image>` 编码
+  为 3 个 subword ([27,1742,29]), 但 C++ tokenizer 做 added-token 整体
+  子串匹配 (测试确认 `<|im_start|>`→单 token 248045) → `<image>` 编码为单个
+  248056。serve 层据此在 prompt 中渲染字面量 `<image>` 再展开。
+
+**下一步**
+- PLE 工作内存 <100 MiB 验证 + PLE sidecar SHA-256 校验
+- (可选) 真实图像经 serve 层 curl 端到端验证 (需加载全 48 层模型)
+
+---
+
+## 2026-09-07 — 视觉特征注入主模型 (image token 替换)
+
+**背景**
+视觉塔 (上一条) 产出 [num_image_tokens, 2560] 特征, 但主模型 prefill
+只消费 input_ids 的 embedding, 视觉特征还没接进去。权威参考: vllm
+`_merge_multimodal_embeddings` (reference/vllm/vllm/model_executor/
+models/utils.py) — `inputs_embeds[is_multimodal] = mm_embeds_flat`,
+即把 image token 占位符位置的 embedding 行替换为视觉特征行。视觉输出
+维度 2560 = 主模型 hidden_size, 可直接替换 (无需投影)。
+
+**改动**
+1. `model/model.h`: `ModelConfig.image_token_id` (默认 248056);
+   `Model.d_img_pos` (device buffer, 存 image token 位置); 新增
+   `VisionFeatures` 结构 (device 指针 + num_tokens); `ModelForward` /
+   `ModelPrefill` 加可选 `const VisionFeatures* vision = nullptr`
+   参数 (源码兼容, 现有调用不受影响)。
+2. `model/model.cu`: 新增 `InjectVisionKernel` (每 (i,j) 一线程, 把
+   vision_src 行 i 拷到 d_emb 的 d_img_pos[i] 行); `RunPrefill` 在
+   EmbedLookup 之后、ExpandTrunk 之前扫描 input_ids 找 image token
+   位置, 校验计数 (不匹配报错), H2D 位置 + 启动注入 kernel。
+3. `tests/model_vision_inject_test.cpp`: 机制冒烟测试 (真实 2 层模型
+   含 PLE): ① 计数不匹配 (3 特征 vs 2 image token) 必须报错; ② 注入
+   改变 logits (baseline vs injected max_abs_diff=9.44 > 1e-3, 证明
+   替换真实生效); ③ 两次相同注入逐位一致 (确定性)。
+
+**结果**
+59 项测试全绿 (含 vision_forward + model_vision_inject), 零警告。
+注入机制验证通过: 计数校验 + 注入生效 + 确定性。
+
+**下一步**
+- 真实图像 processor (pixel_values 预处理 + grid_thw 计算) 接入 serve
+  层, 打通"图像字节 → 视觉特征 → 注入 → 生成"全链路
+- PLE 工作内存/SHA-256 校验
+
+---
+
+## 2026-09-07 — 视觉塔 (Qwen3_VisionTransformer) CUDA 实现
+
+**背景**
+按 2026-09-06 确认顺序, MTP 完成后做多模态图像输入。视觉塔
+(Qwen4ExpVisionModel, transformers 5.16.1 权威参考) 是 27 层 ViT:
+patch_embed → bilinear pos_embed → 27 层 block (LN→QKV→2D RoPE→
+双向 attention→proj→residual; LN→MLP→residual) → spatial merger
+(LN→fc1→GELU→fc2)。333 个 `model.visual.*` 张量全在
+model-bf16-00001.safetensors (BF16)。
+
+**改动**
+1. `vision/vision.h/.cu`: 独立视觉塔。VisionConfig (depth=27,
+   hidden=1152, heads=16, head_dim=72, patch=16, merge=2,
+   out_hidden=2560) + VisionWeights (333 张量) + VisionTower
+   (RoPE 表/pos 表/workspace) + LoadVision (权重加载) +
+   VisionForward (完整 27 层 pipeline + merger)。
+2. 关键 kernel: LayerNormKernel (带 bias) / GeluTanhKernel (tanh
+   近似) / ApplyRope2DKernel (2D RoPE, q/k 各半, h/w 位置) /
+   PosEmbedKernel (4 角双线性插值) / AttentionKernel (双向, 每
+   (l,head) 一 block, shared memory softmax)。
+3. `tests/vision_forward_test.cpp`: 端到端测试, 加载
+   tools/vision_ref.json (pixel_values + 期望输出), CUDA forward
+   vs numpy 参考。
+4. `tools/vision_reference.py`: numpy 参考实现 (权威算法来源:
+   transformers Qwen4ExpVisionModel)。
+5. CMakeLists.txt: 加 vision.cu 到 q4t_model + vision_forward_test。
+
+**踩坑 (按发现顺序)**
+- **block-major 顺序**: numpy pos_embed/pos_ids/merger 用
+  `reshape(h/m,m,w/m,m,H).transpose(0,2,1,3,4).flatten()` 的
+  block-major 顺序 (hb 最慢), C++ 初版用 row-major → l2_rel≈1.0。
+  统一为 block-major 后, merger 的 2x2 合并退化为纯 reshape
+  (4 token 已相邻), 删除 MergeKernel。
+- **RNG 不匹配**: `std::mt19937(1234)` ≠ `np.random.default_rng(1234)`
+  (PCG64), 序列完全不同。改为从 vision_ref.json 加载 pixel_values。
+- **numpy 参考 attention bug**: `np.matmul(q, k.transpose(0,2,1))`
+  算的是跨 head 点积 (NH=16=L 掩盖了形状错误), 应为
+  `np.einsum("lhd,jhd->lhj", q, k)`。C++ 一直是对的。
+- **BuildRopeTables 参数 bug (最终根因)**: 传入 `cfg.num_heads`
+  (16) 而非 `cfg.head_dim` (72) → 表宽 4 但 kernel 读 18 → 越界
+  垃圾 → RoPE 全错。
+
+**结果**
+57 项测试全绿 (含 vision_forward), 零警告。
+vision_forward: CUDA vs numpy 参考 l2_rel=0.0317 < 0.05,
+max_abs_diff=0.0110, 逐元素输出高度吻合。
+
+**下一步**
+- 视觉特征注入主模型 (image token 248056 位置替换为视觉特征
+  [h/2*w/2, 2560], 需理解主模型 prefill 如何消费 input embeddings
+  + processor 如何映射 image token 到特征位置)
+- PLE 工作内存/SHA-256 校验
+
+---
+
+## 2026-09-07 — MTP 推测解码实现 (draft k 步 + 主模型验证 + 接受/回退)
+
+**背景**
+按 2026-09-06 与用户确认的顺序, 性能优化已闭合, 下一步是 MTP 推测解码。
+MTP draft 模型 (reference/vllm/vllm/models/qwen4_exp/nvidia/mtp.py) 是
+1 层 full-attention decoder + BF16 MoE, 复用主模型的 embed/lm_head。
+
+**改动**
+1. `mtp/moe_bf16.h/.cu`: BF16 MoE forward (512 routed experts + shared
+   expert, BF16 精度, 与主模型 NVFP4 MoE 不同)。
+2. `mtp/mtp.h/.cu`: MTP 权重加载 + draft forward (embed→fc→decoder
+   layer→mixer) + 推测解码循环 `MtpSpeculativeStep` (draft k 步 + 主模型
+   逐 token 验证 + 接受最长前缀 + bonus token + recurrent 状态回滚)。
+3. `model/model.h/.cu`: 主模型 recurrent 状态快照/恢复 API
+   (`ModelSnapshotState` / `ModelRestoreState`), 用于推测解码回滚。
+   Paged KV/indexer 无需回滚 (按 position 写, 重跑覆盖); 只快照
+   recurrent 状态 (linear SSM/conv, PLE conv)。
+4. `tests/mtp_draft_test.cpp`: MTP draft forward 冒烟测试 (有限/非零/
+   确定性/多步自洽)。
+5. `tests/mtp_speculative_test.cpp`: 推测解码端到端测试 (验证算法机制:
+   状态回滚、seq 推进、trunk 传播)。
+
+**结果**
+56 项测试全绿 (含 mtp_draft_forward + mtp_speculative_step), 零警告。
+推测解码算法机制验证通过: a=0 时 bonus token 正确, seq 推进正确,
+next_trunk 与 trunk_in 一致。
+
+**下一步**
+- 多模态图像输入 (transformers 权威参考已就位)
+- PLE 工作内存/SHA-256 校验
+
+---
+
 ## 2026-09-06 — MTP 接口预留 (scheme A: 主模型暴露 pre-final-mixer 多流)
 
 **背景**

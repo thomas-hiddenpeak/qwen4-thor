@@ -12,12 +12,16 @@
 // decode loop. This is correct but not concurrent; concurrency is Phase 2.
 #pragma once
 
+#include <memory>
 #include <mutex>
 #include <string>
+#include <vector>
 
 #include "q4t/model/model.h"
 #include "q4t/status.h"
 #include "q4t/text/tokenizer.h"
+#include "q4t/vision/processor.h"
+#include "q4t/vision/vision.h"
 
 namespace q4t {
 namespace server {
@@ -53,6 +57,16 @@ class ChatServer {
   void HandleModels(int fd);
   void HandleChat(int fd, const std::string& body);
 
+  // Multimodal pipeline: decode each image_url part, run the image processor
+  // + vision tower, and return the merged visual features (device BF16) plus
+  // the number of <image> tokens each image expands to. `images` is the list
+  // of raw decoded image bytes (PNG/JPEG) in message order; `out_feats`
+  // receives the concatenated feature rows (owned by the caller's device
+  // buffer, freed by the caller) and `out_counts` the per-image token counts.
+  bool RunVisionPipeline(const std::vector<std::string>& images,
+                         uint16_t** out_feats, int* out_num_tokens,
+                         std::vector<int>* out_counts, std::string* err);
+
   std::string model_name_;
   int port_ = 8000;
   int max_tokens_default_ = 256;
@@ -60,6 +74,9 @@ class ChatServer {
   int max_len_ = 2048;
   std::unique_ptr<text::Tokenizer> tok_;
   model::Model model_;
+  // Vision tower (multimodal). Null if the model has no visual weights.
+  std::unique_ptr<vision::VisionTower> vision_tower_;
+  vision::ProcessorConfig proc_cfg_;
   std::mutex mu_;
 };
 

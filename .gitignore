@@ -26,3 +26,11 @@ Thumbs.db
 __pycache__/
 *.pyc
 .venv/
+
+# Regenerable vision reference/debug dumps (tools/vision_processor_ref.py,
+# tools/vision_reference.py; tens of MB, not needed by the test suite —
+# tests skip when absent)
+tools/vision_proc_gt_*.txt
+tools/vision_processor_ref.json
+tools/vision_debug.json
+tools/vision_debug.py

@@ -35,6 +35,34 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 - [x] 2026-09-03 IO 层核心: 最小 JSON 解析器 (递归下降, 含 \u 转义) +
   safetensors mmap 读取器 (头解析/张量元数据/按需读字节/H2D), 在真实
   模型 scale 文件上验证; 独立 `q4t_io` 静态库
+- [x] 2026-09-07 MTP 推测解码实现: BF16 MoE forward + unit-weight HC
+  combine + MTP 权重加载 + draft forward + 推测解码循环 (draft k 步 +
+  主模型验证 + 接受/回退) + 主模型 recurrent 状态快照/恢复 API。
+  56 项测试全绿 (含 mtp_draft_forward + mtp_speculative_step), 零警告。
+- [x] 2026-09-07 视觉塔 (Qwen3_VisionTransformer) CUDA 实现 + 视觉
+  特征注入主模型: 独立 `q4t_vision` 库, 27 层 ViT (patch_embed +
+  bilinear pos_embed + 2D RoPE + 双向 attention + spatial merge), 333
+  个 `model.visual.*` 张量加载; 端到端测试 vision_forward: CUDA vs
+  numpy 参考 l2_rel=0.0317 (BF16 精度范围内)。视觉特征注入:
+  `ModelForward`/`ModelPrefill` 加可选 `VisionFeatures`, image token
+  (248056) 位置 embedding 替换为视觉特征 (镜像 vllm
+  `_merge_multimodal_embeddings`); 测试 model_vision_inject (计数不匹配
+  报错 + 注入改变 logits + 确定性)。59 项测试全绿, 零警告。
+- [x] 2026-09-07 多模态图像输入收尾 (processor + serve 接入 + 端到端):
+  (c) C++ 图像 processor (`q4t/vision/processor.h/.cpp`): stb_image 解码
+  (PNG/JPEG→RGB) + smart_resize (factor=32, clamp [min,max] pixels) +
+  **Pillow 12.3.0 定点 BICUBIC** (a=-0.5, PRECISION_BITS=22, 逐位复刻
+  `Resample.c`) + rescale (/255) + normalize ((x-0.5)/0.5) + **block-major
+  patchify** (per-patch [C=3,T=2,P=16,P=16])。差分测试 vision_processor:
+  真实 transformers 5.16.1 processor ground truth 上, 恒等图 (256x256) 与
+  BICUBIC 图 (140x100→320x224) **均逐位一致 (max_abs_diff=0)**。(d) serve
+  层多模态接入 (`chat_server.cpp`): 解析 OpenAI content 数组 (text +
+  image_url 部件, base64 data URL) → 解码图像 → processor → 视觉塔 →
+  `ExpandImageTokens` (每个 `<image>` 占位符展开为 `grid_h/2*grid_w/2` 个
+  image token) → `ModelPrefill` 注入视觉特征; 视觉塔在 `Start` 加载 (无
+  `model.visual.*` 时优雅降级纯文本)。端到端测试 vision_e2e: 真实 PNG →
+  processor → 视觉塔 → 展开 → 注入 prefill → logits (有限/非平凡/注入
+  改变 logits/确定性)。**61 项测试全绿, 零警告**。
 - [x] 2026-09-04 tokenizer (GPT-2 Byte-Level BPE) 实现 + 差分验证:
   独立 `q4t_text` 库 (ICU 74 NFC 规范化 + `\p{L}` 预分词正则 + 优先队列
   BPE)。encode 做 added-token 整体子串匹配, decode 走 id→content, 均与
@@ -636,7 +664,7 @@ Phase 1 已完成的层: **PLE 流式层** ✅, **IO 层** ✅, **量化层** �
 (conv1d 窗口 + PLE short-conv 持久状态两个 bug 均已修复; batch vs
 incremental 残差定性为 MoE 路由边界敏感性, 非状态 bug — 见 E1–E10
 实验链, 等距性 + 增量自洽 + 全位置 MoE 翻转对照)。
-54 项测试全绿, 零警告。
+59 项测试全绿, 零警告。
 
 剩余 Phase 1 项 (按 2026-09-06 与用户确认的顺序):
 1. **逐 token 对参考验证 (已闭合)**: 4 层基线 + decode 自洽性 + E1–E10
@@ -680,27 +708,51 @@ incremental 残差定性为 MoE 路由边界敏感性, 非状态 bug — 见 E1�
    减 launch 开销 (~4%)。同时**预留 MTP 接口** (scheme A: 主模型收尾
    阶段可选暴露 pre-final-mixer 多流 [T, hc*H] 给 MTP 第一步), 避免
    优化后再返工。
-3. **MTP 1 层 (接口已预留, draft 模型待开发)**: 权威参考:
+3. **MTP 1 层 (已完成 2026-09-07)**: 权威参考:
    `reference/vllm/vllm/models/qwen4_exp/nvidia/mtp.py`。
-   **scheme A 接口已完成 (2026-09-06)**: `ModelPrefill` /
-   `ModelDecodeStepSeq` 加可选 `trunk_out` 参数 (默认 nullptr, 源码
-   兼容) — 非 null 时在 48 层循环后、`hyper_connection_mixer` 前把
-   pre-final-mixer 多流 `[T, hc*hs]` (BF16) D2D 拷入。这正是 MTP draft
-   的 `hidden_states` 输入 (step 0 用主模型的, 后续 step 复用上一 draft
-   的 `multi_hidden`)。测试 `model_trunk_out`: trunk_out 不扰动 logits
-   + 有限非零 + `HeadForward(trunk_out)` 逐位复现 prefill logits (证明
-   暴露点正确)。55 项测试全绿, 零警告。
-   **待开发**: MTP draft 模型 (embed→pre_fc_norm→fc_embedding [H→H] =
-   prev_block_output; hidden.view(T,hc,H)→pre_fc_norm_hidden→fc_hidden
-   (每分支共享 H→H)→1 层 full_attention decoder layer (带
+   scheme A 接口 (2026-09-06): `ModelPrefill` / `ModelDecodeStepSeq`
+   加可选 `trunk_out` 参数暴露 pre-final-mixer 多流 `[T, hc*hs]`。
+   2026-09-07 完成: MTP 权重加载 (checkpoint `mtp/` 子目录, 1 层
+   full_attention decoder + fc_embedding/fc_hidden/pre_fc_norm) + draft
+   forward (embed→pre_fc_norm→fc_embedding; hidden.view(T,hc,H)→
+   pre_fc_norm_hidden→fc_hidden (每分支共享)→1 层 decoder layer (带
    prev_block_output 注入)→mixer.combine_and_mix 出 sample_hidden
-   [T,H] + multi_hidden [T,hc*H]); 权重加载 (checkpoint `mtp/` 子目录,
-   独立 1 层, `mtp.*` remap, fc_embedding/fc_hidden/pre_fc_norm 为新增
-   权重); 单元测试 (对参考数值); 推测解码循环 (draft k 步 + 主模型
-   验证 + 接受/回退)。
-4. **多模态图像输入**: transformers 5.16.1 提供权威参考 (Qwen4ExpVision
-   Model 27 层 ViT + masked_scatter 融合 + M-RoPE), 之前"最大缺口且无
-   权威参考"已解除。可与 ②③ 穿插, 不阻塞 MTP。
+   [T,H] + multi_hidden [T,hc*H]) + 推测解码循环 (draft k 步 + 主模型
+   验证 + 接受/回退 + recurrent 状态快照/恢复)。测试 mtp_draft_forward
+   + mtp_speculative_step 通过。
+4. **多模态图像输入 (已完成 2026-09-07)**: 权威参考:
+   transformers 5.16.1 Qwen4ExpVisionModel (27 层 ViT + 2D RoPE +
+   bilinear pos_embed + spatial merge) + Qwen2VLImageProcessorPil
+   (PIL 后端) + Pillow 12.3.0 `Resample.c` (BICUBIC 定点)。2026-09-07
+   完成四部分:
+   (a) 独立 `q4t_vision` 视觉塔 (patch_embed GEMM + bilinear pos_embed +
+   27 层 block [LN→QKV→2D RoPE→双向 attention→proj→residual; LN→MLP→
+   residual] + merger [LN→fc1→GELU→fc2]), 333 个 `model.visual.*`
+   张量加载; 端到端测试 vision_forward: CUDA vs numpy 参考 l2_rel=
+   0.0317 < 0.05 (BF16 精度范围内)。
+   (b) 视觉特征注入主模型: `ModelForward` / `ModelPrefill` 加可选
+   `VisionFeatures` 参数, `RunPrefill` 在 EmbedLookup 后、ExpandTrunk
+   前把 image token (248056) 位置的 embedding 替换为视觉特征行 (维度
+   2560 = hs, 直接替换, 镜像 vllm `_merge_multimodal_embeddings` 的
+   `inputs_embeds[is_multimodal] = mm_embeds_flat`)。测试
+   model_vision_inject: 计数不匹配报错 + 注入改变 logits + 确定性。
+   (c) **C++ 图像 processor** (`q4t/vision/processor.h/.cpp`): stb_image
+   解码 (PNG/JPEG→RGB) + smart_resize (factor=32, clamp [min,max]
+   pixels) + **Pillow 12.3.0 定点 BICUBIC** (a=-0.5, PRECISION_BITS=22,
+   逐位复刻 `Resample.c` 的 PrecomputeCoeffs + 两遍水平/垂直) + rescale
+   (/255) + normalize ((x-0.5)/0.5) + **block-major patchify**
+   (per-patch [C=3,T=2,P=16,P=16], 单帧重复 T 次)。差分测试
+   vision_processor: 真实 transformers 5.16.1 processor 生成的 ground
+   truth 上, 恒等图 (256x256) 与 BICUBIC 图 (140x100→320x224) **均
+   逐位一致 (max_abs_diff=0)**。
+   (d) **serve 层多模态接入** (`chat_server.cpp`): 解析 OpenAI
+   content 数组 (text + image_url 部件, base64 data URL) → 解码图像字节
+   → processor → 视觉塔 → `ExpandImageTokens` (每个 `<image>` 占位符
+   展开为 `grid_h/2*grid_w/2` 个 image token) → `ModelPrefill` 注入
+   视觉特征。视觉塔在 `Start` 加载 (无 `model.visual.*` 时优雅降级为
+   纯文本)。端到端测试 vision_e2e: 真实 PNG → processor → 视觉塔 →
+   展开 → 注入 prefill → logits (有限/非平凡/注入改变 logits/确定性)。
+   **61 项测试全绿, 零警告**。
 5. **PLE 工作内存 <100 MiB 验证** + **PLE sidecar SHA-256 校验**。
 
 ## 环境

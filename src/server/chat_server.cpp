@@ -16,7 +16,13 @@
 #include <string>
 #include <vector>
 
+#include <cuda_bf16.h>
+#include <cuda_runtime.h>
+
 #include "q4t/io/json.h"
+#include "q4t/io/weight_loader.h"
+#include "q4t/vision/processor.h"
+#include "q4t/vision/vision.h"
 
 namespace q4t {
 namespace server {
@@ -162,9 +168,111 @@ std::string SseChunk(const std::string& id, const std::string& model,
   return "data: " + obj + "\r\n\r\n";
 }
 
+// Decode a base64 string into raw bytes. Whitespace and '=' padding are
+// ignored; both the standard and URL-safe alphabets are accepted. Returns
+// false on an invalid character.
+bool Base64Decode(const std::string& in, std::string* out) {
+  static const std::vector<int8_t> kDec = [] {
+    std::vector<int8_t> t(256, -1);
+    const char* a =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    for (int i = 0; i < 64; ++i) t[static_cast<unsigned char>(a[i])] =
+        static_cast<int8_t>(i);
+    t[static_cast<unsigned char>('-')] = 62;  // url-safe
+    t[static_cast<unsigned char>('_')] = 63;
+    return t;
+  }();
+  out->clear();
+  int val = 0;
+  int bits = -8;
+  for (unsigned char c : in) {
+    if (c == '=' || c == '\n' || c == '\r' || c == ' ' || c == '\t') continue;
+    const int8_t d = kDec[c];
+    if (d < 0) return false;
+    val = (val << 6) | d;
+    bits += 6;
+    if (bits >= 0) {
+      out->push_back(static_cast<char>((val >> bits) & 0xFF));
+      bits -= 8;
+    }
+  }
+  return true;
+}
+
+// Extract raw image bytes from an OpenAI image_url. Supports base64 data URLs
+// ("data:image/png;base64,....") and raw base64 strings. Remote http(s) URLs
+// are rejected (the server performs no network fetches).
+bool DecodeImageUrl(const std::string& url, std::string* out,
+                    std::string* err) {
+  const std::string kData = "data:";
+  const std::string kB64 = "base64,";
+  std::string b64;
+  if (url.rfind(kData, 0) == 0) {
+    const size_t comma = url.find(kB64);
+    if (comma == std::string::npos) {
+      if (err) *err = "unsupported data url (need base64 payload)";
+      return false;
+    }
+    b64 = url.substr(comma + kB64.size());
+  } else if (url.rfind("http://", 0) == 0 || url.rfind("https://", 0) == 0) {
+    if (err) *err = "remote image_url not supported (use a base64 data url)";
+    return false;
+  } else {
+    b64 = url;  // assume a raw base64 payload
+  }
+  if (!Base64Decode(b64, out)) {
+    if (err) *err = "base64 decode failed";
+    return false;
+  }
+  if (out->empty()) {
+    if (err) *err = "empty image payload";
+    return false;
+  }
+  return true;
+}
+
+// Render one message's `content` to a prompt string. Text parts are appended
+// verbatim; image parts append a literal <image> placeholder (the tokenizer
+// encodes it as a single image_token_id) and push the decoded image bytes to
+// `images` in order. Returns false (with err) on a bad image_url; on success
+// the rendered text is returned.
+std::string RenderContent(const io::Json& m, std::vector<std::string>* images,
+                          std::string* err) {
+  std::string out;
+  const io::Json* content = m.Find("content");
+  if (content == nullptr) return out;
+  if (content->IsString()) return content->str;
+  if (!content->IsArray()) return out;
+  for (const io::Json& part : content->array) {
+    const io::Json* text = part.Find("text");
+    if (text != nullptr && text->IsString()) {
+      out += text->str;
+      continue;
+    }
+    const io::Json* iu = part.Find("image_url");
+    if (iu == nullptr) continue;  // unknown part type: skip
+    std::string url;
+    if (iu->IsObject()) {
+      url = iu->GetString("url", "");
+    } else if (iu->IsString()) {
+      url = iu->str;
+    }
+    std::string bytes;
+    if (!DecodeImageUrl(url, &bytes, err)) return std::string();
+    images->push_back(std::move(bytes));
+    out += "<image>";
+  }
+  return out;
+}
+
 }  // namespace
 
-ChatServer::~ChatServer() = default;
+ChatServer::~ChatServer() {
+  if (vision_tower_) {
+    vision_tower_->Free();
+    vision_tower_.reset();
+  }
+}
 
 Status ChatServer::Start(const ServerOptions& opts) {
   text::TokenizerLimits limits;
@@ -183,6 +291,36 @@ Status ChatServer::Start(const ServerOptions& opts) {
     tok_.reset();
     return Status::Fail("model load failed: " + s.message());
   }
+
+  // Load the vision tower (multimodal). Optional: if the checkpoint has no
+  // "model.visual." tensors, skip gracefully (the server then serves text
+  // only and rejects image parts). The loader is read-only (mmap) and is
+  // released after the weights are copied to device.
+  {
+    io::WeightIndex* index = nullptr;
+    s = io::WeightIndex::Open(cfg.index_path, &index);
+    if (s.ok()) {
+      io::WeightLoader* loader = nullptr;
+      s = io::WeightLoader::Create(opts.model_dir, *index, 8, &loader);
+      if (s.ok()) {
+        vision::VisionConfig vcfg;  // defaults match this model's vision_config
+        auto tower = std::make_unique<vision::VisionTower>();
+        std::string verr;
+        if (vision::LoadVision(*loader, vcfg, tower.get(), &verr, nullptr)) {
+          vision_tower_ = std::move(tower);
+          std::fprintf(stderr, "[q4t] vision tower loaded (%d blocks)\n",
+                       vcfg.depth);
+        } else {
+          std::fprintf(stderr,
+                       "[q4t] vision tower unavailable (%s); text-only mode\n",
+                       verr.c_str());
+        }
+        delete loader;
+      }
+      delete index;
+    }
+  }
+
   port_ = opts.port;
   max_tokens_default_ = opts.max_tokens;
   max_prefill_ = cfg.max_prefill;
@@ -271,6 +409,110 @@ void ChatServer::HandleModels(int fd) {
   SendSimple(fd, 200, "OK", body, "application/json");
 }
 
+bool ChatServer::RunVisionPipeline(const std::vector<std::string>& images,
+                                   uint16_t** out_feats, int* out_num_tokens,
+                                   std::vector<int>* out_counts,
+                                   std::string* err) {
+  *out_feats = nullptr;
+  *out_num_tokens = 0;
+  if (vision_tower_ == nullptr) {
+    if (err) *err = "vision tower not loaded (text-only model)";
+    return false;
+  }
+  if (images.empty()) return true;  // nothing to do
+
+  const vision::VisionConfig& cfg = vision_tower_->cfg;
+  const int m = cfg.spatial_merge_size;
+
+  // 1. Process each image (CPU: decode + resize + normalize + patchify).
+  std::vector<vision::ProcessedImage> processed;
+  processed.reserve(images.size());
+  std::vector<vision::ImageShape> shapes;
+  shapes.reserve(images.size());
+  int total_L = 0;
+  for (const auto& img : images) {
+    vision::ProcessedImage pi;
+    std::string perr;
+    if (!vision::ProcessImage(reinterpret_cast<const uint8_t*>(img.data()),
+                              img.size(), proc_cfg_, &pi, &perr)) {
+      if (err) *err = "image process failed: " + perr;
+      return false;
+    }
+    vision::ImageShape sh;
+    sh.h = pi.grid_h;
+    sh.w = pi.grid_w;
+    sh.t = pi.grid_t;
+    shapes.push_back(sh);
+    total_L += pi.L();
+    processed.push_back(std::move(pi));
+  }
+
+  // 2. Build the device pixel buffer (float32 -> BF16, concatenated).
+  const int patch_dim = cfg.in_channels * cfg.temporal_patch_size *
+                        cfg.patch_size * cfg.patch_size;  // 96
+  std::vector<uint16_t> pixels_bf16(static_cast<size_t>(total_L) * patch_dim);
+  {
+    size_t off = 0;
+    for (const auto& pi : processed) {
+      const size_t n = static_cast<size_t>(pi.L()) * patch_dim;
+      for (size_t i = 0; i < n; ++i) {
+        const __nv_bfloat16 b = __float2bfloat16_rn(pi.pixel_values[i]);
+        pixels_bf16[off + i] = *reinterpret_cast<const uint16_t*>(&b);
+      }
+      off += n;
+    }
+  }
+  uint16_t* d_pixels = nullptr;
+  if (cudaMalloc(reinterpret_cast<void**>(&d_pixels),
+                 pixels_bf16.size() * sizeof(uint16_t)) != cudaSuccess) {
+    if (err) *err = "cudaMalloc pixels failed";
+    return false;
+  }
+  if (cudaMemcpy(d_pixels, pixels_bf16.data(),
+                 pixels_bf16.size() * sizeof(uint16_t),
+                 cudaMemcpyHostToDevice) != cudaSuccess) {
+    cudaFree(d_pixels);
+    if (err) *err = "H2D pixels failed";
+    return false;
+  }
+
+  // 3. Allocate the tower workspace + run the forward.
+  if (!vision_tower_->Allocate(shapes, nullptr)) {
+    cudaFree(d_pixels);
+    if (err) *err = "vision Allocate failed";
+    return false;
+  }
+  const size_t out_bytes = vision::VisionOutputBytes(cfg, shapes);
+  uint16_t* d_out = nullptr;
+  if (cudaMalloc(reinterpret_cast<void**>(&d_out), out_bytes) != cudaSuccess) {
+    cudaFree(d_pixels);
+    if (err) *err = "cudaMalloc vision output failed";
+    return false;
+  }
+  std::string ferr;
+  if (!vision::VisionForward(*vision_tower_, d_pixels, shapes, d_out, &ferr,
+                             nullptr)) {
+    cudaFree(d_pixels);
+    cudaFree(d_out);
+    if (err) *err = "VisionForward failed: " + ferr;
+    return false;
+  }
+  cudaFree(d_pixels);
+  cudaDeviceSynchronize();
+
+  // 4. Per-image merged-token counts (the <image> expansion factor).
+  out_counts->clear();
+  int total_tokens = 0;
+  for (const auto& sh : shapes) {
+    const int c = (sh.h / m) * (sh.w / m) * sh.t;
+    out_counts->push_back(c);
+    total_tokens += c;
+  }
+  *out_feats = d_out;
+  *out_num_tokens = total_tokens;
+  return true;
+}
+
 void ChatServer::HandleChat(int fd, const std::string& body) {
   io::Json req;
   Status s = io::ParseJson(body, &req);
@@ -287,18 +529,26 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // stream flag.
   const bool stream = req.GetBool("stream", false);
 
-  // Build the prompt from the messages array (concatenate role + content).
+  // Build the prompt from the messages array. Each message's `content` may be
+  // a plain string or an OpenAI-style array of parts (text + image_url). Image
+  // parts render as a literal <image> placeholder (the tokenizer encodes it as
+  // a single image_token_id) and their decoded bytes are collected in order.
   std::string prompt;
+  std::vector<std::string> images;
   const io::Json* messages = req.GetArray("messages");
   if (messages && messages->IsArray()) {
     for (const io::Json& m : messages->array) {
       const std::string role = m.GetString("role", "");
-      const std::string content = m.GetString("content", "");
       if (!role.empty()) {
         if (!prompt.empty()) prompt += "\n";
         prompt += role + ": ";
       }
-      prompt += content;
+      std::string cerr;
+      prompt += RenderContent(m, &images, &cerr);
+      if (!cerr.empty()) {
+        SendError(fd, 400, cerr);
+        return;
+      }
     }
   } else {
     // Fallback: a bare "prompt" string field.
@@ -320,17 +570,44 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     return;
   }
   std::vector<int32_t> ids(prompt_u32.begin(), prompt_u32.end());
+
+  // 1b. Multimodal: each <image> placeholder (image_token_id) expands to the
+  // number of merged visual tokens for its image, and the vision tower's
+  // features are injected in place of those token embeddings.
+  const int img_id = model_.cfg.image_token_id;
+  uint16_t* d_vfeats = nullptr;
+  model::VisionFeatures vfeats;
+  if (!images.empty()) {
+    std::vector<int> counts;
+    std::string verr;
+    if (!RunVisionPipeline(images, &d_vfeats, &vfeats.num_tokens, &counts,
+                           &verr)) {
+      SendError(fd, 400, verr);
+      return;
+    }
+    std::vector<int32_t> expanded;
+    if (!model::ExpandImageTokens(ids.data(), static_cast<int>(ids.size()),
+                                  img_id, counts, &expanded)) {
+      SendError(fd, 400, "image count mismatch in prompt");
+      cudaFree(d_vfeats);
+      return;
+    }
+    ids = std::move(expanded);
+    vfeats.device = d_vfeats;
+  }
   const int T = static_cast<int>(ids.size());
   if (T > max_prefill_) {
     SendError(fd, 400,
               "prompt too long: " + std::to_string(T) + " tokens > " +
                   std::to_string(max_prefill_) + " max prefill");
+    cudaFree(d_vfeats);
     return;
   }
   if (T >= max_len_) {
     SendError(fd, 400,
               "prompt too long for context: " + std::to_string(T) +
                   " tokens >= " + std::to_string(max_len_) + " max_len");
+    cudaFree(d_vfeats);
     return;
   }
 
@@ -342,8 +619,20 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   if (cudaMalloc(reinterpret_cast<void**>(&d_logits),
                  static_cast<size_t>(T) * vocab * 2) != cudaSuccess) {
     SendError(fd, 500, "cudaMalloc logits failed");
+    cudaFree(d_vfeats);
     return;
   }
+  // Release the per-request device buffers on any exit path.
+  auto cleanup = [&]() {
+    if (d_logits) {
+      cudaFree(d_logits);
+      d_logits = nullptr;
+    }
+    if (d_vfeats) {
+      cudaFree(d_vfeats);
+      d_vfeats = nullptr;
+    }
+  };
   std::vector<uint16_t> h_logits(static_cast<size_t>(vocab));
 
   auto argmax = [&](const uint16_t* h) {
@@ -365,14 +654,17 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   model::ModelSequence seq;
   s = model::ModelBeginSequence(model_, &seq, nullptr);
   if (!s.ok()) {
-    cudaFree(d_logits);
+    cleanup();
     SendError(fd, 500, "begin sequence failed: " + s.message());
     return;
   }
-  s = model::ModelPrefill(model_, &seq, ids.data(), T, d_logits, nullptr);
+  const model::VisionFeatures* vptr =
+      (vfeats.num_tokens > 0) ? &vfeats : nullptr;
+  s = model::ModelPrefill(model_, &seq, ids.data(), T, d_logits, nullptr,
+                          nullptr, vptr);
   if (!s.ok()) {
     model::ModelEndSequence(&seq);
-    cudaFree(d_logits);
+    cleanup();
     SendError(fd, 500, "prefill failed: " + s.message());
     return;
   }
@@ -460,7 +752,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     }
   }
 
-  cudaFree(d_logits);
+  cleanup();
 }
 
 }  // namespace server
