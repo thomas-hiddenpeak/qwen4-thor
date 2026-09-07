@@ -86,6 +86,19 @@ Status PleEmbedding::Create(const Config& config, PleEmbedding** out) {
   return Status();
 }
 
+size_t PleEmbedding::working_memory_bytes() const {
+  size_t total = 0;
+  if (impl_->reader) {
+    total += impl_->reader->pool_bytes();
+    total += kRingBytesEstimate;
+    total += impl_->reader->scratch_bytes();
+  }
+  total += impl_->staging_bytes;
+  total += impl_->gpu_fp8_bytes;
+  total += impl_->host_row_ids_cap * sizeof(int64_t);
+  return total;
+}
+
 size_t PleEmbedding::capacity_tokens() const {
   return impl_->config.capacity_tokens;
 }

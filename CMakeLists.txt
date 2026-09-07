@@ -174,6 +174,7 @@ if(Q4T_BUILD_TESTS)
     tests/ple_page_reader_test.cpp
     tests/ple_fp8_convert_test.cpp
     tests/ple_e2e_gather_test.cpp
+    tests/ple_working_memory_test.cpp
     tests/io_json_test.cpp
     tests/io_safetensors_test.cpp
     tests/io_model_config_test.cpp

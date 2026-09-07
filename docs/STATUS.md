@@ -11,7 +11,7 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 - [x] 2026-09-03 项目初始化: git 仓库、目录骨架、文档体系、构建配置
 - [x] 2026-09-03 模型下载完成 (140 GB, 含 51.2 GB PLE sidecar,
-  SHA-256 待验证)
+  SHA-256 已验证 2026-09-07, 与 MODEL.md 期望值逐位一致)
 - [x] 2026-09-03 参考项目调研 (qwen35-thor / sglang-ssd-stream /
   thor-probe / thor-bench)
 - [x] 2026-09-03 构建骨架验证通过: `q4t version` / `q4t probe` 可运行
@@ -48,6 +48,25 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   (248056) 位置 embedding 替换为视觉特征 (镜像 vllm
   `_merge_multimodal_embeddings`); 测试 model_vision_inject (计数不匹配
   报错 + 注入改变 logits + 确定性)。59 项测试全绿, 零警告。
+- [x] 2026-09-07 PLE SSD Stream 工作内存 <100 MiB 验证 + sidecar
+  SHA-256 校验 (核心特性收尾):
+  - **SHA-256 校验通过**: 真实 51.2 GB sidecar (51,200,245,760 字节 =
+    320,001,536 行 × 160) 的 SHA-256 =
+    `b070f9644adf93794d8a1030584ab705809387e64396a9327a68fa3a3a6666b3`,
+    与 MODEL.md 记录的期望值**逐位一致** (sha256sum, 49s)。
+  - **工作内存实测 75.17 MiB < 100 MiB 预算**: 新增 `PleEmbedding::
+    working_memory_bytes()` + `PlePageReader::pool_bytes()/scratch_bytes()`
+    精确测量接口 (报告真实分配字节数, 非重算常量)。分解: 页池 32 MiB +
+    pinned host staging 20 MiB + GPU FP8 scratch 20 MiB + pinned row-ids
+    1 MiB + io_uring ring ~0.025 MiB + reader scratch ~2 MiB (full-
+    capacity gather 峰值)。生产配置 capacity_tokens=8192, row_bytes=160,
+    ngram_heads=16 (=(ngram_size-1)×heads_per_ngram=2×8)。
+  - **无 OOM, 无 swap**: 真实 full-capacity gather (读真实 sidecar) 前后
+    SwapFree 不变 (413600 kB), MemAvailable 114 GiB 充足。
+  - 测试 `ple_working_memory_under_100mib`: 真实 sidecar + 生产配置,
+    full-capacity gather 触发 scratch 峰值后断言 < 100 MiB。62 项测试
+    全绿, 零警告。
+  **→ PLE SSD Stream 核心特性全部完成 (流式层 + 内存预算 + 完整性校验)**
 - [x] 2026-09-07 多模态图像输入收尾 (processor + serve 接入 + 端到端):
   (c) C++ 图像 processor (`q4t/vision/processor.h/.cpp`): stb_image 解码
   (PNG/JPEG→RGB) + smart_resize (factor=32, clamp [min,max] pixels) +
@@ -560,10 +579,8 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   (ModelSequence, 引擎暴露"完成 prefill、交出 KV/SSM 状态"为独立操作)。
   完整多设备 PD 部署 (连续批处理 + 多请求调度) 归 Phase 2。
   设计见 ARCHITECTURE.md, 范围见 PHASES.md 第 6 项。
-- **PLE sidecar SHA-256 未验证** (ssd-stream.json 记录了期望值
-  `b070f964...`, 51.2 GB 校验耗时较长, 安排在首次加载前完成)。
-- **MTP 待用户排期** (权威参考已就位: `reference/vllm/vllm/models/
-  qwen4_exp/nvidia/mtp.py`, 见"进行中" ⏳ 条目), 等整体架构完善后推进。
+- **MTP 已完成 (2026-09-07)**: draft k 步 + 主模型验证 + 接受/回退 +
+  recurrent 状态快照/恢复, 见"已完成" MTP 条目。
 - **MoE 贪心非确定性** (见"进行中"长序列条目): `ScatterAddKernel` 的 FP32
   `atomicAdd` 顺序非确定, 运行间 argmax 可能翻转。属 LLM 固有特性 (PyTorch
   同样), 不影响正确性; 如需可复现输出, 可改确定性归约 (代价: 性能)。
@@ -753,7 +770,12 @@ incremental 残差定性为 MoE 路由边界敏感性, 非状态 bug — 见 E1�
    纯文本)。端到端测试 vision_e2e: 真实 PNG → processor → 视觉塔 →
    展开 → 注入 prefill → logits (有限/非平凡/注入改变 logits/确定性)。
    **61 项测试全绿, 零警告**。
-5. **PLE 工作内存 <100 MiB 验证** + **PLE sidecar SHA-256 校验**。
+5. **PLE 工作内存 <100 MiB 验证 + PLE sidecar SHA-256 校验 (已完成
+   2026-09-07)**: SHA-256 与 MODEL.md 期望值逐位一致 (51.2 GB, 49s);
+   工作内存实测 75.17 MiB < 100 MiB (页池 32 + staging 20 + GPU scratch
+   20 + row-ids 1 + ring + reader scratch), 无 OOM 无 swap (gather 前后
+   SwapFree 不变)。测试 ple_working_memory_under_100mib。**62 项测试全绿,
+   零警告**。
 
 ## 环境
 

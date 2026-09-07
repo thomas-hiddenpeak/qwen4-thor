@@ -25,6 +25,13 @@ constexpr size_t kPageSize = 4096;
 constexpr size_t kDefaultQueueDepth = 256;
 constexpr size_t kDefaultPagePoolMiB = 32;
 constexpr size_t kDefaultMaxBatchPages = 4096;
+// io_uring ring footprint estimate for the working-memory budget. liburing
+// mmaps a single region holding the SQ array (4 B/entry), the SQEs (64
+// B/entry), the CQEs (16 B/entry) and the ring bookkeeping; for
+// kDefaultQueueDepth this is ~25 KiB. Counted as an estimate (it is not
+// introspectable from the ring) — negligible against the 32 MiB pool.
+constexpr size_t kRingBytesEstimate =
+    kDefaultQueueDepth * (64 + 16 + 4) + 4096;
 
 // Statistics for one Gather call.
 struct ReadStats {
@@ -62,6 +69,12 @@ class PlePageReader {
   // [row_range_begin, row_range_end) leave their output region zeroed.
   Status Gather(const int64_t* row_ids, size_t row_count, uint8_t* output,
                 ReadStats* stats) const;
+
+  // Memory footprint of the reader (for the PLE working-memory budget).
+  // `pool_bytes` is the mmap'd page pool; `scratch_bytes` is the current
+  // pieces + groups vectors (populated after a Gather; 0 before the first).
+  size_t pool_bytes() const;
+  size_t scratch_bytes() const;
 
  private:
   struct Piece {

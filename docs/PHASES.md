@@ -63,14 +63,14 @@
 
 ### 完成标准
 
-- [ ] `q4t serve` 在本机启动, 通过 OpenAI 兼容 API 完成多模态
-      (文本) 对话, 流式输出正常
-- [ ] PLE SSD Stream 工作内存 < 100 MiB (不含模型权重),
-      无 OOM, 无 swap
+- [x] `q4t serve` 在本机启动, 通过 OpenAI 兼容 API 完成多模态
+      (文本 + 图像) 对话, 流式输出正常 (2026-09-07 图像接入, 见 LOG.md)
+- [x] PLE SSD Stream 工作内存 < 100 MiB (不含模型权重),
+      无 OOM, 无 swap (2026-09-07 实测 75.17 MiB, 见 LOG.md)
 - [ ] greedy 生成输出与参考实现一致 (参考灵活选用, 见第 5 项;
       验证标准以单独讨论结论为准)
-- [ ] MTP 推测解码可用
-- [ ] 多模态 (图像输入) 可用
+- [x] MTP 推测解码可用 (2026-09-07, 见 LOG.md)
+- [x] 多模态 (图像输入) 可用 (2026-09-07, 见 LOG.md)
 - [x] Paged KV cache 落地 (full_attention 按页组织 + 页表间接寻址,
       替代连续 KV; 2026-09-05 完成, 见 LOG.md)
 - [x] PD-ready 架构: prefill/decode 可分离路径 (✅ 现状已满足) +

@@ -70,7 +70,7 @@ GPU 层计算掩盖; 仅当读取超过重叠窗口时才同步等待。
 | 项 | 估算 |
 |---|---|
 | 模型权重 (NVFP4 专家 + BF16 其余) | ~90 GB (safetensors 140 GB 含 PLE 51.2 GB; 专家打包后更小, 待实测) |
-| PLE sidecar | 0 (走 SSD, 工作内存 ~64 MiB) |
+| PLE sidecar | 0 (走 SSD, 工作内存 75.17 MiB 实测 2026-09-07, < 100 MiB 预算) |
 | KV cache (12 full-attn 层) | 按预算配置 |
 | SSM state (36 层, FP32) | 按序列配置 |
 | 激活 / 暂存 | 数百 MiB |

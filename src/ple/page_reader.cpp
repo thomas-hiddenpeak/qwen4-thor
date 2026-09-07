@@ -148,6 +148,13 @@ Status PlePageReader::Create(const std::string& path, size_t row_bytes,
   return Status();
 }
 
+size_t PlePageReader::pool_bytes() const {
+  return impl_->pool_len;
+}
+size_t PlePageReader::scratch_bytes() const {
+  return impl_->pieces.size() * sizeof(Piece) +
+         impl_->groups.size() * sizeof(PageGroup);
+}
 Status PlePageReader::Gather(const int64_t* row_ids, size_t row_count,
                               uint8_t* output, ReadStats* stats) const {
   Impl* const impl = impl_;

@@ -5,6 +5,49 @@
 
 ---
 
+## 2026-09-07 — PLE SSD Stream 收尾 (工作内存 <100 MiB 验证 + SHA-256 校验)
+
+**背景**
+PLE 流式层 (核心特性) 功能已完成, 但 Phase 1 还有两条完成标准未闭合:
+① PLE 工作内存 < 100 MiB (不含模型权重), 无 OOM, 无 swap (PHASES.md);
+② PLE sidecar SHA-256 校验 (MODEL.md 记录期望值 `b070f964...`)。
+ARCHITECTURE.md 设计估计工作内存 ~64 MiB (页池 32 MiB 为主)。
+
+**改动**
+1. `ple/page_reader.h/.cpp`: 新增 `pool_bytes()` (页池 mmap 长度) +
+   `scratch_bytes()` (pieces/groups vector 当前大小) 访问器; 新增
+   `kRingBytesEstimate` 常量 (io_uring ring 估算, liburing 内部 mmap 不可
+   直接 introspect, queue_depth=256 时 ~25 KiB, 对 32 MiB 页池可忽略)。
+2. `ple/ple_embedding.h/.cpp`: 新增 `working_memory_bytes()` — 汇总页池 +
+   ring + pinned host staging + GPU FP8 scratch + pinned host row-ids +
+   reader scratch, 报告**真实分配字节数** (非重算常量)。
+3. `tests/ple_working_memory_test.cpp`: 真实 sidecar + 生产配置
+   (capacity_tokens=8192, row_bytes=160, ngram_heads=16) 创建 PleEmbedding,
+   full-capacity gather 触发 reader scratch 峰值 (每 160B 行最多跨 2 页 →
+   ≤2 piece/行), 断言 `working_memory_bytes() < 100 MiB`。
+
+**结果**
+- **SHA-256 校验通过**: 真实 51.2 GB sidecar (51,200,245,760 字节 =
+  320,001,536 行 × 160) `sha256sum` (49s) =
+  `b070f9644adf93794d8a1030584ab705809387e64396a9327a68fa3a3a6666b3`,
+  与 MODEL.md 期望值**逐位一致**。
+- **工作内存实测 75.17 MiB < 100 MiB**: 页池 32 + pinned staging 20 +
+  GPU scratch 20 + row-ids 1 + ring ~0.025 + reader scratch ~2 MiB。
+  比 ARCHITECTURE.md ~64 MiB 估计高, 因实际 ngram_heads=16
+  (=(ngram_size-1)×heads_per_ngram=2×8), staging/GPU scratch 各 20 MiB
+  (非 10)。已修正 ARCHITECTURE.md 估计。
+- **无 OOM, 无 swap**: 真实 full-capacity gather (读真实 sidecar) 前后
+  SwapFree 不变 (413600 kB), MemAvailable 114 GiB 充足 (PLE 75 MiB 远
+  小于物理可用内存, 不触发 swap)。
+- 62 项测试全绿, 零警告。
+
+**下一步**
+- Phase 1 完成标准全部闭合 (serve 多模态 / PLE 内存 / MTP / 图像输入 /
+  Paged KV / PD-ready)。剩余: greedy 生成输出与参考实现一致 (验证标准
+  以单独讨论结论为准, 见 PHASES.md 第 5 项)。
+
+---
+
 ## 2026-09-07 — 多模态图像输入收尾 (processor + serve 接入 + 端到端)
 
 **背景**

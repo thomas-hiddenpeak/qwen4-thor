@@ -74,6 +74,15 @@ class PleEmbedding {
   int64_t eos_token_id() const;
   const NgramHashParams& hash_params() const;
 
+  // Total PLE working-memory footprint in bytes (the SSD-stream budget,
+  // excluding model weights): page pool + io_uring ring + pinned host
+  // staging + GPU FP8 scratch + pinned host row-ids + reader scratch.
+  // `reader_scratch_bytes` is the current pieces/groups size (0 before the
+  // first Gather); the returned total uses it, so call after a Gather for
+  // the peak. On Thor (unified memory) the GPU scratch is the same physical
+  // pool as the host buffers, but it is counted here as its own allocation.
+  size_t working_memory_bytes() const;
+
  private:
   struct Impl;
   explicit PleEmbedding(Impl* impl);
