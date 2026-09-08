@@ -5,6 +5,40 @@
 
 ---
 
+## 2026-09-08 — MoE SwiGLU+QuantF32 融合 (省 1 launch + inter GMEM 往返)
+
+**背景**
+per-expert 循环里 5 个 kernel: GatherQuant + gu GEMM + SwiGLU + QuantF32 +
+dn GEMM + ScatterAdd。其中 SwiGLU (f32→f32) 和 QuantF32 (f32→NVFP4) 是
+纯 glue, 各 launch 一次 (10 expert × 48 层 = 960 次/step), M_e=1 时 kernel
+极小 (40-640 元素), launch 开销主导。
+
+**融合**
+新增 `SwiGLUQuantKernel`: 一线程一 group (16 inter 元素), 先算
+inter=silu(g)*u (group max 线程内局部, 无跨线程 reduce), 再量化到 NVFP4
+(同 QuantizeFloat32ToFp4Kernel 约定)。替代 SwiGLU + QuantF32 两次 launch。
+删掉死代码 QuantizeFloat32ToFp4Kernel + f32 SwiGLUKernel。inter 缓冲区
+不再被写 (SwiGLUQuant 直接 gu_out→a_packed/a_sf), workspace 保留 inter
+分配 (25KB, 无害)。
+
+**结果**
+正确性: 62 项测试全绿, MoE l2_rel=0.0016622 不变 (逐位级一致)。
+decode 14.5 tok/s (14.6 波动范围内): M_e=1 时省 1 次 launch (~1.4μs) 被
+kernel 本身太小 (launch 开销主导) 抵消, 收益有限。
+
+**结论**
+decode 已接近带宽下限 (14.5-14.6 tok/s)。M_e=1 时 MoE glue kernel 都极小,
+launch 开销主导, 进一步融合 (GatherQuant/ScatterAdd prefix-sum 跨 expert)
+收益有限。**下一个数量级收益 = MTP 推测解码** (draft k 步摊薄主模型
+验证成本, 而非单 token 优化)。
+
+**下一步**
+1. MTP 推测解码实测加速比 (接口已预留, 见 STATUS.md)
+2. (可选) GatherQuant/ScatterAdd prefix-sum 跨 expert 单次 launch
+3. (可选) SparseAttention T=1 占用率优化 (grid 仅 24 blocks)
+
+---
+
 ## 2026-09-08 — GroupedRmsNorm warp-per-branch (33→6.4μs, decode 14.0→14.6)
 
 **背景**

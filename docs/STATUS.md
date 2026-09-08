@@ -791,11 +791,17 @@ Phase 2 候选 (完整多设备 PD 部署等, 见 [PHASES.md](PHASES.md)): 完�
    float4 向量化 (16B=8 bf16), blockDim 256→128。hyperconnection +
    ple_layer 两份实现同步改。33μs→6.4μs/call (5.2×), 省 2.9ms/step,
    **decode 14.0→14.6 tok/s (+4%)**, 62 项测试全绿。
-   **当前 kernel 分解 (14.6 tok/s)**: Bf16Gev 48% (N=10240 645 GB/s
-   有效带宽含 L2 复用, 已近上限) / SparseAttention 12% (T=1 grid 仅
-   24 blocks, 15% 占用率, 需大重写) / nvjet FP4 14% (100% DRAM) /
-   glue 12% (GatherQuant 3.7ms + SwiGLU 2.5ms + QuantF32 2.6ms +
-   ScatterAdd 2.6ms, 下一步融合目标)。
+   **阶段 G 已完成 (MoE SwiGLU+QuantF32 融合, 2026-09-08)**: 新增
+   `SwiGLUQuantKernel` (一线程一 group, 先 silu(g)*u 再量化 NVFP4,
+   group max 线程内局部), 替代 SwiGLU + QuantF32 两次 launch, 删死代码
+   QuantizeFloat32ToFp4Kernel。62 项全绿, MoE l2_rel=0.0016622 不变。
+   decode 14.5 tok/s (M_e=1 时 glue kernel 极小, launch 开销主导, 收益
+   有限)。
+   **当前 kernel 分解 (14.5-14.6 tok/s, 接近带宽下限)**: Bf16Gev 48%
+   (N=10240 645 GB/s 有效带宽含 L2 复用, 已近上限) / SparseAttention
+   12% (T=1 grid 仅 24 blocks, 15% 占用率) / nvjet FP4 14% (100% DRAM)
+   / glue ~10% (SwiGLU+Quant 已融合)。**下一步 = MTP 推测解码** (draft
+   k 步摊薄主模型验证成本, 下一个数量级收益; 接口已预留)。
 3. **MTP 1 层 (已完成 2026-09-07)**: 权威参考:
    `reference/vllm/vllm/models/qwen4_exp/nvidia/mtp.py`。
    scheme A 接口 (2026-09-06): `ModelPrefill` / `ModelDecodeStepSeq`

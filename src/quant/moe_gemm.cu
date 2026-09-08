@@ -110,24 +110,32 @@ __global__ void GatherQuantKernel(
   a_sf[SfOffsetDev(row, g, num_g_tiles)] = sf_code;
 }
 
-// Quantize a float32 [rows, K] buffer (the SwiGLU intermediate) to NVFP4,
-// using the same convention as GatherQuantKernel. One thread per (row, group
-// of 16).
-__global__ void QuantizeFloat32ToFp4Kernel(
-    const float* __restrict__ f32, uint8_t* __restrict__ a_packed,
-    uint8_t* __restrict__ a_sf, int rows, int K, int num_g_tiles,
-    float inv_scale) {
-  const int groups = K / 16;
+// SwiGLU + NVFP4 quantize fused: inter = silu(g)*u, then quantize inter to
+// NVFP4 (same convention as QuantizeFloat32ToFp4Kernel). One thread per
+// (row, group of 16) — a group is exactly 16 inter elements, so the per-group
+// max is local to the thread (no cross-thread reduce). Eliminates the
+// separate SwiGLU kernel + the inter f32 round-trip through GMEM.
+//   gu_out [rows, 2*moe_is] f32 (gate | up), a_packed [rows, moe_is/2] u8,
+//   a_sf swizzled e4m3, inv_scale = per-expert down input_scale.
+__global__ void SwiGLUQuantKernel(const float* __restrict__ gu_out,
+                                  uint8_t* __restrict__ a_packed,
+                                  uint8_t* __restrict__ a_sf, int rows,
+                                  int moe_is, int num_g_tiles,
+                                  float inv_scale) {
+  const int groups = moe_is / 16;
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   if (idx >= rows * groups) return;
   const int row = idx / groups;
   const int g = idx % groups;
-  const float* src = f32 + static_cast<size_t>(row) * K + g * 16;
+  const float* gu = gu_out + static_cast<size_t>(row) * 2 * moe_is;
   float a[16];
   float gmax = 0.0f;
 #pragma unroll
   for (int j = 0; j < 16; ++j) {
-    a[j] = src[j];
+    const float gv = gu[g * 16 + j];
+    const float uv = gu[moe_is + g * 16 + j];
+    const float s = 1.0f / (1.0f + __expf(-gv));
+    a[j] = gv * s * uv;
     gmax = fmaxf(gmax, fabsf(a[j]));
   }
   const float block_scale = gmax > 0.0f ? gmax / 6.0f : 1.0f;
@@ -145,20 +153,6 @@ __global__ void QuantizeFloat32ToFp4Kernel(
 #pragma unroll
   for (int j = 0; j < 8; ++j) pdst[j] = bytes[j];
   a_sf[SfOffsetDev(row, g, num_g_tiles)] = sf_code;
-}
-
-// SwiGLU: inter = silu(g) * u. gu_out [rows, 2*moe_is] f32 -> inter [rows,
-// moe_is] f32. One thread per (row, moe_is element).
-__global__ void SwiGLUKernel(const float* __restrict__ gu_out,
-                             float* __restrict__ inter, int rows, int moe_is) {
-  const int idx = blockIdx.x * blockDim.x + threadIdx.x;
-  if (idx >= rows * moe_is) return;
-  const int row = idx / moe_is;
-  const int c = idx % moe_is;
-  const float g = gu_out[static_cast<size_t>(row) * 2 * moe_is + c];
-  const float u = gu_out[static_cast<size_t>(row) * 2 * moe_is + moe_is + c];
-  const float s = 1.0f / (1.0f + __expf(-g));
-  inter[idx] = (g * s) * u;
 }
 
 // Scatter-add: y[t, :] += router_w[t, slot] * dn_out[row, :]. One thread per
@@ -322,22 +316,14 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
       return Status::Fail("gate/up GEMM failed");
     }
 
-    // SwiGLU: [M_e, moe_is].
-    {
-      const int total = M_e * moe_is;
-      const int blocks = (total + kBlock - 1) / kBlock;
-      SwiGLUKernel<<<blocks, kBlock, 0, stream>>>(ws.gu_out, ws.inter, M_e,
-                                                  moe_is);
-    }
-
-    // Quantize inter (float32) -> NVFP4 (reuse a_packed / a_sf, now [M_e,
-    // moe_is]).
+    // SwiGLU + quantize inter -> NVFP4 (fused, one launch; reuses a_packed /
+    // a_sf, now [M_e, moe_is]).
     {
       const int num_g_tiles_dn = SfNumGtiles(moe_is);
       const int total = M_e * (moe_is / 16);
       const int blocks = (total + kBlock - 1) / kBlock;
-      QuantizeFloat32ToFp4Kernel<<<blocks, kBlock, 0, stream>>>(
-          ws.inter, reinterpret_cast<uint8_t*>(ws.a_packed),
+      SwiGLUQuantKernel<<<blocks, kBlock, 0, stream>>>(
+          ws.gu_out, reinterpret_cast<uint8_t*>(ws.a_packed),
           reinterpret_cast<uint8_t*>(ws.a_sf), M_e, moe_is, num_g_tiles_dn,
           dn_in_scale);
     }
