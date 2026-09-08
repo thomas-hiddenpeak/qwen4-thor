@@ -780,6 +780,14 @@ Phase 2 候选 (完整多设备 PD 部署等, 见 [PHASES.md](PHASES.md)): 完�
    streaming/paged attention; ③ PDL (launch gap 仅 4.4%, 收益有限)。
    同时**预留 MTP 接口** (scheme A: 主模型收尾阶段可选暴露
    pre-final-mixer 多流 [T, hc*H] 给 MTP 第一步), 避免优化后再返工。
+   **阶段 E 已完成 (SparseAttention 消除 256× 冗余 dot, 2026-09-08)**:
+   原实现每线程 (256 个) 都对 16 个位置做完整 256-dim dot (j 循环),
+   256 线程算同样的值 = 256× 冗余; 改为每线程 1 FMA partial + warp
+   reduce (5 shfl) + cross-warp shared (8 adds)。62 项测试全绿。
+   decode 维持 14.0-14.2 tok/s (SparseAttention 占 12%, 752μs 瓶颈
+   在 2052 位置 while 循环 + 小 grid, 非 dot 计算, 需大重写才能进一步
+   加速)。当前 kernel 分解: Bf16Gev 48% (大 shape 128 GB/s DRAM 限制,
+   小 shape 85% L2) / SparseAttention 12% / nvjet FP4 14% / glue 12%。
 3. **MTP 1 层 (已完成 2026-09-07)**: 权威参考:
    `reference/vllm/vllm/models/qwen4_exp/nvidia/mtp.py`。
    scheme A 接口 (2026-09-06): `ModelPrefill` / `ModelDecodeStepSeq`

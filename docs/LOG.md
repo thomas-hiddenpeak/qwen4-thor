@@ -5,6 +5,32 @@
 
 ---
 
+## 2026-09-08 — SparseAttention 消除 256× 冗余 dot 计算
+
+**背景**
+nsys 显示 SparseAttentionKernel 752μs/call, 占 decode 12% (9.6ms/step),
+是第二大 kernel。读代码发现原实现每个线程 (256 个) 都对所有 16 个位置
+做完整 256-dim dot product (j 循环), 256 线程算同样的值 = **256× 冗余**。
+
+**修复**
+每线程只算自己 dim 的 partial (1 FMA) + warp reduce (5 shfl) +
+cross-warp shared (8 adds), 消除冗余。SMEM 加 s_partial[8×16] +
+s_dot[16]。
+
+**结果**
+正确性: 62 项测试全绿 (model_full_attention_test 通过)。
+decode 14.0-14.2 tok/s (SparseAttention 只占 12%, 且 752μs 瓶颈
+不在 dot 计算而在 2052 位置的 while 循环 + syncthreads + 小 grid
+(32 blocks on 20 SMs), 后续需更大重写才能进一步加速)。
+
+**下一步**
+1. SparseAttention 大重写: 两遍 attention (先 max 后 softmax) +
+   增大 chunk (64) + 动态 SMEM, 或 decode 专用路径
+2. 融合 glue kernel (GEMV+RMSNorm 3.6ms, GatherQuant+GEMM 3.7ms)
+3. MTP 推测解码
+
+---
+
 ## 2026-09-08 — FP4 GEMV v2/v3 探索 (负结果, 数学证明手写 SIMT 无法赢 nvjet)
 
 **背景**
