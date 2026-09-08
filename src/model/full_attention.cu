@@ -479,6 +479,9 @@ __global__ void TopkSelectKernel(f32* __restrict__ logits, int* __restrict__ top
 // memory; selected K/V positions are processed in chunks of 16, staged in
 // shared memory, with online (running max/sum) softmax. Each selected logical
 // position p is read from physical slot page_table[p]*kKvPageSize + p%kKvPageSize.
+// Optimized: each thread owns dim d. Dot products computed via per-dim
+// partial (1 FMA) + warp reduce (5 shfl) + cross-warp shared (8 adds),
+// eliminating the 256x redundant full-dot computation of the old version.
 __global__ void SparseAttentionKernel(const u16* __restrict__ q,
                                       const u16* __restrict__ kv_cache,
                                       const int* __restrict__ page_table,
@@ -486,14 +489,19 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
                                       u16* __restrict__ out, int nq, int nkv,
                                       int hd, int max_topk) {
   const int CHUNK = 16;
+  const int NWARP = 8;  // 256 threads / 32
   __shared__ float sQ[256];
   __shared__ float sK[CHUNK * 256];
   __shared__ float sV[CHUNK * 256];
+  __shared__ float s_partial[NWARP * CHUNK];  // warp-reduced partial dots
+  __shared__ float s_dot[CHUNK];              // final dot products
   int th = blockIdx.x;
   int t = th / nq;
   int qh = th % nq;
   int kvh = qh / (nq / nkv);
   int d = threadIdx.x;
+  int warp_id = d >> 5;
+  int lane = d & 31;
   // Load the query row into shared memory (all threads).
   if (d < hd) sQ[d] = Bf16ToFloat(q[(static_cast<size_t>(t) * nq + qh) * hd + d]);
   __syncthreads();
@@ -505,7 +513,8 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
   int nsel = 0;
   while (nsel < max_topk) {
     int chunk = min(CHUNK, max_topk - nsel);
-    // Stage K, V for this chunk into shared memory.
+    // Stage K, V for this chunk into shared memory (coalesced: consecutive
+    // threads read consecutive dims).
     for (int c = 0; c < chunk; ++c) {
       int p = sel[nsel + c];
       if (p >= 0 && d < hd) {
@@ -516,29 +525,53 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
       }
     }
     __syncthreads();
-    // Pass 1: new running max.
-    float m_new = m;
-    for (int c = 0; c < chunk; ++c) {
-      int p = sel[nsel + c];
-      if (p < 0) continue;
-      float dot = 0.f;
-      #pragma unroll 4
-      for (int j = 0; j < hd; ++j) dot += sQ[j] * sK[c * 256 + j];
-      m_new = fmaxf(m_new, dot * scale);
+    // Compute dot products: each thread does 1 FMA per position for its dim,
+    // then warp-reduce + cross-warp sum.
+    float partial[CHUNK];
+    #pragma unroll
+    for (int c = 0; c < CHUNK; ++c) {
+      partial[c] = (c < chunk && sel[nsel + c] >= 0)
+                       ? sQ[d] * sK[c * 256 + d]
+                       : 0.f;
     }
-    // Pass 2: rescale + accumulate.
+    // Warp reduce for each position (5 shfl each).
+    #pragma unroll
+    for (int c = 0; c < CHUNK; ++c) {
+      #pragma unroll
+      for (int off = 16; off > 0; off >>= 1)
+        partial[c] += __shfl_xor_sync(0xffffffffu, partial[c], off);
+    }
+    // Lane 0 of each warp writes to shared.
+    if (lane == 0) {
+      #pragma unroll
+      for (int c = 0; c < chunk; ++c) s_partial[warp_id * CHUNK + c] = partial[c];
+    }
+    __syncthreads();
+    // Sum across warps (only needed by one thread per position, but all
+    // threads need the result for V accumulation — use thread 0..15).
+    if (d < chunk) {
+      float s = 0.f;
+      #pragma unroll
+      for (int w = 0; w < NWARP; ++w) s += s_partial[w * CHUNK + d];
+      s_dot[d] = s;
+    }
+    __syncthreads();
+    // Online softmax + V accumulation (each thread owns dim d).
+    float m_new = m;
+    #pragma unroll
+    for (int c = 0; c < chunk; ++c) {
+      if (sel[nsel + c] >= 0) m_new = fmaxf(m_new, s_dot[c] * scale);
+    }
     float alpha = expf(m - m_new);
     float l_new = l * alpha;
     acc *= alpha;
+    #pragma unroll
     for (int c = 0; c < chunk; ++c) {
-      int p = sel[nsel + c];
-      if (p < 0) continue;
-      float dot = 0.f;
-      #pragma unroll 4
-      for (int j = 0; j < hd; ++j) dot += sQ[j] * sK[c * 256 + j];
-      float w = expf(dot * scale - m_new);
-      l_new += w;
-      acc += w * sV[c * 256 + d];
+      if (sel[nsel + c] >= 0) {
+        float w = expf(s_dot[c] * scale - m_new);
+        l_new += w;
+        acc += w * sV[c * 256 + d];
+      }
     }
     m = m_new;
     l = l_new;
