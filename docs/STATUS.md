@@ -759,20 +759,27 @@ Phase 2 候选 (完整多设备 PD 部署等, 见 [PHASES.md](PHASES.md)): 完�
    **散列映射** (DRAM bank); block reduce → **warp reduce**。decode
    12.9→14.2 tok/s (2319→2115ms/30tok), step span 78.8→71.9ms, 小
    shape (N=2560) 53%→85% 峰值, 62 项测试全绿, l2_rel 不变。
-   **FP4 GEMV 探索 (负结果, 已回退)**: 为 MoE W4A4 手写
-   `Fp4GevKernel` (SMEM LUT + uint2 向量 + 延迟 group-scale), 正确性
-   验证 max_rel=1.86e-07, **但比 nvjet 慢 1.7×** (17.1μs vs 9.9μs):
-   nvjet tensor core 硬件 dequant 达 229 GB/s (95% DRAM 峰值), 手写
-   LUT 查找仅 94 GB/s (计算受限)。1.63× 是 **L2 流量放大** (tile 重读),
-   非 DRAM 放大, 不增加时间。W4A4 场景 nvjet 已最优, 与 W4A16
-   (qwen35-thor, 激活 BF16 不需 LUT) 不同。
+   **FP4 GEMV 探索 (负结果, 已回退, v1/v2/v3 三版全败)**: 为 MoE W4A4
+   手写 `Fp4GevKernel` 三个版本 (v1 per-element LUT+ldexpf / v2 256 项
+   product LUT SMEM / v3 16 项 e2m1 LUT 进寄存器 + 每 warp 4 输出),
+   正确性均 max_rel=1.86e-07, **但全部比 nvjet 慢 1.4-2.3×** (17-27μs
+   vs 11.9μs, N=1280)。nvjet tensor core 硬件 dequant 实测 240 GB/s
+   = **100% DRAM 峰值**。数学证明: SM110a 发射上限 152 Ginst/s →
+   跑满 240 GB/s 每字节预算 0.63 条指令, 而 W4A4 反量化每字节需
+   ~5-6 条 (nibble 提取 + LUT + FMA), 超出 ~10× — 只有 tensor core
+   (tcgen05.mma block-scale) 能把 dequant 藏进访存延迟。qwen35-thor
+   手写 FP4 GEMV 能赢是因 W4A16 (激活 BF16 无 LUT), 不可迁移 W4A4。
+   **结论: "全面手写 kernel" 的边界 = BF16 路径 (已全面手写且更优) +
+   FP4 W4A4 GEMM 保留 nvjet (tensor core 领域, 手写 SIMT 数学上无法
+   超越)**。
    **结论: decode 14.2 tok/s, 接近带宽下限** — GEMV 大 shape 已 81-100%
-   峰值, MoE nvjet 已 95% 峰值。剩余可优化项: ① 融合 glue kernel
-   (GEMV+RMSNorm, SwiGLU, 参考 qwen35-thor gemv_rmsnorm_kernel);
-   ② sparse-attn (8.1%) / norm (4.8%) 优化; ③ PDL (launch gap 仅
-   4.4%, 收益有限)。同时**预留 MTP 接口** (scheme A: 主模型收尾阶段
-   可选暴露 pre-final-mixer 多流 [T, hc*H] 给 MTP 第一步), 避免优化后
-   再返工。
+   峰值, MoE nvjet 已 100% DRAM 峰值 (240 GB/s, 实测)。剩余可优化项:
+   ① 融合 glue kernel (GEMV+RMSNorm, SwiGLU+ScatterAdd, GatherQuant+
+   QuantF32, 参考 qwen35-thor gemv_rmsnorm_kernel / light_ops);
+   ② SparseAttention (6.4ms/step, 535μs/次) 对照 qwen35-thor
+   streaming/paged attention; ③ PDL (launch gap 仅 4.4%, 收益有限)。
+   同时**预留 MTP 接口** (scheme A: 主模型收尾阶段可选暴露
+   pre-final-mixer 多流 [T, hc*H] 给 MTP 第一步), 避免优化后再返工。
 3. **MTP 1 层 (已完成 2026-09-07)**: 权威参考:
    `reference/vllm/vllm/models/qwen4_exp/nvidia/mtp.py`。
    scheme A 接口 (2026-09-06): `ModelPrefill` / `ModelDecodeStepSeq`

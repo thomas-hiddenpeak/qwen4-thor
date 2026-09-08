@@ -5,6 +5,57 @@
 
 ---
 
+## 2026-09-08 — FP4 GEMV v2/v3 探索 (负结果, 数学证明手写 SIMT 无法赢 nvjet)
+
+**背景**
+用户要求"全面使用手写 kernel 逐步替代"。当前 decode 只剩 960 个 nvjet
+FP4 GEMM (14.2ms, 21%) 还在 cuBLASLt。v1 (2026-09-08 前一条) 已证明
+per-element LUT+ldexpf 设计计算受限, 本轮继续攻。
+
+**v2: 256 项 product LUT (SMEM) + e4m3 LUT (SMEM) + SMEM 激活**
+正确性 max_rel=1.86e-07 (62 项全绿), 但 19.9μs (N=1280) / 15.9μs
+(N=2560) — 比 v1 更慢。256 项 SMEM 随机查找 bank conflict。
+
+**v3: 16 项 e2m1 LUT 进寄存器 + 每 warp 4 输出 (占用率 12.5%→50%)**
+正确性 max_rel=1.86e-07, 但 26.8μs (N=1280) / 18.2μs (N=2560) — 更慢。
+56 寄存器/线程, 4 输出的 a_vals[16]+sums[4]+w_row[4] 寄存器压力吃掉
+占用率收益。
+
+**最终对比 (N=1280 gu GEMV, 每 decode step 480 次)**
+
+| 实现 | 时间 | 有效带宽 |
+|---|---|---|
+| **nvjet (tensor core)** | **11.9μs** | **240 GB/s = 100% DRAM 峰值** |
+| v1 (LUT+ldexpf) | 17.1μs | 94 GB/s |
+| v2 (product LUT SMEM) | 19.9μs | 80 GB/s |
+| v3 (寄存器 LUT + 4 输出/warp) | 26.8μs | 59 GB/s |
+
+**数学证明 (为什么手写 SIMT 赢不了)**
+SM110a 指令发射上限 ≈ 20 SM × 4 scheduler × 1.9GHz = 152 Ginst/s。
+要跑满 240 GB/s DRAM, 每字节预算只有 0.63 条指令。W4A4 反量化每字节
+至少 ~5-6 条指令 (nibble 提取 2×shl+and + LUT 2× + FMA 1× + 循环),
+**超出预算 ~10×**。只有 tensor core 把 dequant 做在 MMA 硬件内部
+(tcgen05.mma 的 block-scale 路径) 才能把这个开销藏进访存延迟里。
+nvjet 实测 2.86MB/11.9μs = 240 GB/s, 已物理打满 DRAM, 无手写空间。
+qwen35-thor 手写 FP4 GEMV 能赢是因为它 W4A16 (激活 BF16, 无激活 LUT,
+每字节指令数低得多), 不能直接迁移到 W4A4。
+
+**结论**: MoE W4A4 GEMM 保留 nvjet (cuBLASLt), 已是最优。"全面手写
+kernel" 的边界: BF16 路径 (GEMV/norm/attention/glue) 手写已全面落地
+且更优; FP4 W4A4 GEMM 是 tensor core 的领域, 手写 SIMT 数学上无法
+超越。v1/v2/v3 代码已删除 (负结果, 无保留价值)。decode 维持 14.1-
+14.2 tok/s, 62 项测试全绿。
+
+**下一步**
+1. 融合 glue kernel (GEMV+RMSNorm 3.3ms, SwiGLU+ScatterAdd 1.4ms,
+   GatherQuant+QuantF32 4.8ms) — 减中间 GMEM 往返 + launch
+2. SparseAttention (6.4ms, 535μs/次) 对照 qwen35-thor streaming/paged
+   attention 优化
+3. MTP 推测解码 (decode 单 token 优化已接近带宽下限, MTP 是下一个
+   数量级收益)
+
+---
+
 ## 2026-09-08 — GEMV 重写 (12.9→14.2 tok/s) + FP4 GEMV 探索 (负结果)
 
 **背景**
