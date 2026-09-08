@@ -5,6 +5,34 @@
 
 ---
 
+## 2026-09-08 — GroupedRmsNorm warp-per-branch (33→6.4μs, decode 14.0→14.6)
+
+**背景**
+nsys 显示 GroupedRmsNormKernel 33μs/次, 106 次/step = 3.6ms/step (4.4%)。
+T=1 时 grid 仅 1 block, 4 branch **串行** + 每 branch ~10 次 `__syncthreads`
+(44 个 barrier), 20KB 数据却花 33μs = 0.6 GB/s, 纯延迟受限。
+
+**修复**
+block-per-row + branch 串行 → **warp-per-branch**: warp w 处理 branch w,
+4 branch 并行; block reduce (8 次 syncthreads) → **warp shfl reduce**
+(5 次 shfl, 零 barrier); 标量 → **float4 向量化** (16B = 8 bf16,
+n8=hs/8)。blockDim 从 256 改为 32*hc=128。hyperconnection.cu +
+ple_layer.cu 两份独立实现同步改 (mtp.cu 第三份未启用, 暂不动)。
+踩坑: float4 索引初版误用 hs/4 + 只读 p[0..1] (4 bf16) 导致越界读 +
+漏数据, 12 项测试失败; 修正为 n8=hs/8 + p[0..3] (8 bf16) 后全绿。
+
+**结果**
+GroupedRmsNorm 33μs→6.4μs/call (5.2×), 省 ~2.9ms/step。
+decode 14.0→14.6 tok/s (+4%), 62 项测试全绿, 零警告。
+
+**下一步**
+1. MoE glue 融合 (GatherQuant 3.7ms + SwiGLU 2.5ms + QuantF32 2.6ms +
+   ScatterAdd 2.6ms, 参考 qwen35-thor light_ops)
+2. SparseAttention 大重写 (T=1 grid 仅 24 blocks, 15% 占用率)
+3. MTP 推测解码
+
+---
+
 ## 2026-09-08 — SparseAttention 消除 256× 冗余 dot 计算
 
 **背景**

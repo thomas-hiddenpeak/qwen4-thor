@@ -784,10 +784,18 @@ Phase 2 候选 (完整多设备 PD 部署等, 见 [PHASES.md](PHASES.md)): 完�
    原实现每线程 (256 个) 都对 16 个位置做完整 256-dim dot (j 循环),
    256 线程算同样的值 = 256× 冗余; 改为每线程 1 FMA partial + warp
    reduce (5 shfl) + cross-warp shared (8 adds)。62 项测试全绿。
-   decode 维持 14.0-14.2 tok/s (SparseAttention 占 12%, 752μs 瓶颈
-   在 2052 位置 while 循环 + 小 grid, 非 dot 计算, 需大重写才能进一步
-   加速)。当前 kernel 分解: Bf16Gev 48% (大 shape 128 GB/s DRAM 限制,
-   小 shape 85% L2) / SparseAttention 12% / nvjet FP4 14% / glue 12%。
+   **阶段 F 已完成 (GroupedRmsNorm warp-per-branch, 2026-09-08)**:
+   原实现 block-per-row + 4 branch 串行 + 每 branch ~10 次
+   `__syncthreads` (44 barrier), T=1 时 33μs/次 = 0.6 GB/s 纯延迟;
+   改为 warp-per-branch (4 branch 并行, shfl reduce 零 barrier) +
+   float4 向量化 (16B=8 bf16), blockDim 256→128。hyperconnection +
+   ple_layer 两份实现同步改。33μs→6.4μs/call (5.2×), 省 2.9ms/step,
+   **decode 14.0→14.6 tok/s (+4%)**, 62 项测试全绿。
+   **当前 kernel 分解 (14.6 tok/s)**: Bf16Gev 48% (N=10240 645 GB/s
+   有效带宽含 L2 复用, 已近上限) / SparseAttention 12% (T=1 grid 仅
+   24 blocks, 15% 占用率, 需大重写) / nvjet FP4 14% (100% DRAM) /
+   glue 12% (GatherQuant 3.7ms + SwiGLU 2.5ms + QuantF32 2.6ms +
+   ScatterAdd 2.6ms, 下一步融合目标)。
 3. **MTP 1 层 (已完成 2026-09-07)**: 权威参考:
    `reference/vllm/vllm/models/qwen4_exp/nvidia/mtp.py`。
    scheme A 接口 (2026-09-06): `ModelPrefill` / `ModelDecodeStepSeq`

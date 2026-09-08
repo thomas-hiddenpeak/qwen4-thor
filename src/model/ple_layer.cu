@@ -47,7 +47,10 @@ __device__ __forceinline__ float Silu(float v) {
 }
 
 // GroupedGemmaRMSNorm: per-branch (group of `hs`) RMSNorm, then scale by
-// (1 + weight). One block per row; each group reduced independently.
+// (1 + weight). One block per row; each BRANCH is owned by one warp (warp w
+// handles branch w) so the hc branches reduce in parallel via warp shuffles
+// instead of the old sequential block-wide barrier chain (44 __syncthreads).
+// blockDim = 32 * hc. float4-vectorized over hs.
 // (Same op as the hyper-connection norm; re-implemented here to keep this
 // translation unit self-contained.)
 __global__ void GroupedRmsNormKernel(const uint16_t* __restrict__ x,
@@ -56,30 +59,67 @@ __global__ void GroupedRmsNormKernel(const uint16_t* __restrict__ x,
                                      int hs, float eps) {
   const int t = blockIdx.x;
   if (t >= T) return;
-  const uint16_t* row = x + static_cast<size_t>(t) * hc * hs;
-  uint16_t* orow = out + static_cast<size_t>(t) * hc * hs;
-  __shared__ float s_part[kBlock];
-  for (int b = 0; b < hc; ++b) {
-    const uint16_t* g = row + b * hs;
-    float acc = 0.0f;
-    for (int i = threadIdx.x; i < hs; i += blockDim.x) {
-      const float v = Bf16ToFloat(g[i]);
-      acc += v * v;
-    }
-    s_part[threadIdx.x] = acc;
-    __syncthreads();
-    for (int off = blockDim.x / 2; off > 0; off >>= 1) {
-      if (threadIdx.x < off) s_part[threadIdx.x] += s_part[threadIdx.x + off];
-      __syncthreads();
-    }
-    const float rs = rsqrtf(s_part[0] / hs + eps);
-    __syncthreads();
-    for (int i = threadIdx.x; i < hs; i += blockDim.x) {
-      const float v = Bf16ToFloat(g[i]);
-      const float w = Bf16ToFloat(weight[b * hs + i]);
-      orow[b * hs + i] = FloatToBf16(v * rs * (1.0f + w));
-    }
-    __syncthreads();
+  const int b = threadIdx.x >> 5;  // branch = warp id
+  const int lane = threadIdx.x & 31;
+  if (b >= hc) return;
+  const uint16_t* g = x + (static_cast<size_t>(t) * hc + b) * hs;
+  uint16_t* orow = out + (static_cast<size_t>(t) * hc + b) * hs;
+  const uint16_t* wg = weight + static_cast<size_t>(b) * hs;
+  const float4* gv = reinterpret_cast<const float4*>(g);
+  const float4* wv = reinterpret_cast<const float4*>(wg);
+  float4* ov = reinterpret_cast<float4*>(orow);
+  const int n8 = hs / 8;  // float4 = 16 B = 8 bf16
+  // Pass 1: sum of squares for this branch.
+  float acc = 0.f;
+  for (int i = lane; i < n8; i += 32) {
+    const __nv_bfloat162* p = reinterpret_cast<const __nv_bfloat162*>(&gv[i]);
+    float2 v0 = __bfloat1622float2(p[0]);
+    float2 v1 = __bfloat1622float2(p[1]);
+    float2 v2 = __bfloat1622float2(p[2]);
+    float2 v3 = __bfloat1622float2(p[3]);
+    acc += v0.x * v0.x + v0.y * v0.y + v1.x * v1.x + v1.y * v1.y +
+           v2.x * v2.x + v2.y * v2.y + v3.x * v3.x + v3.y * v3.y;
+  }
+  for (int i = n8 * 8 + lane; i < hs; i += 32) {
+    const float v = Bf16ToFloat(g[i]);
+    acc += v * v;
+  }
+#pragma unroll
+  for (int off = 16; off > 0; off >>= 1)
+    acc += __shfl_xor_sync(0xffffffffu, acc, off);
+  const float rs = rsqrtf(acc / hs + eps);
+  // Pass 2: normalize + scale, write back.
+  for (int i = lane; i < n8; i += 32) {
+    const __nv_bfloat162* p = reinterpret_cast<const __nv_bfloat162*>(&gv[i]);
+    const __nv_bfloat162* q = reinterpret_cast<const __nv_bfloat162*>(&wv[i]);
+    float2 v0 = __bfloat1622float2(p[0]);
+    float2 v1 = __bfloat1622float2(p[1]);
+    float2 v2 = __bfloat1622float2(p[2]);
+    float2 v3 = __bfloat1622float2(p[3]);
+    float2 w0 = __bfloat1622float2(q[0]);
+    float2 w1 = __bfloat1622float2(q[1]);
+    float2 w2 = __bfloat1622float2(q[2]);
+    float2 w3 = __bfloat1622float2(q[3]);
+    v0.x *= rs * (1.f + w0.x);
+    v0.y *= rs * (1.f + w0.y);
+    v1.x *= rs * (1.f + w1.x);
+    v1.y *= rs * (1.f + w1.y);
+    v2.x *= rs * (1.f + w2.x);
+    v2.y *= rs * (1.f + w2.y);
+    v3.x *= rs * (1.f + w3.x);
+    v3.y *= rs * (1.f + w3.y);
+    float4 o;
+    __nv_bfloat162* op = reinterpret_cast<__nv_bfloat162*>(&o);
+    op[0] = __floats2bfloat162_rn(v0.x, v0.y);
+    op[1] = __floats2bfloat162_rn(v1.x, v1.y);
+    op[2] = __floats2bfloat162_rn(v2.x, v2.y);
+    op[3] = __floats2bfloat162_rn(v3.x, v3.y);
+    ov[i] = o;
+  }
+  for (int i = n8 * 8 + lane; i < hs; i += 32) {
+    const float v = Bf16ToFloat(g[i]);
+    const float w = Bf16ToFloat(wg[i]);
+    orow[i] = FloatToBf16(v * rs * (1.f + w));
   }
 }
 
@@ -392,12 +432,12 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
                          reinterpret_cast<uint16_t*>(d_value), T, hs, pe, 1.0f,
                          0.0f, d_gemm, kGemmScratch, stream));
   if (!s.ok()) return s;
-  // 3. key_n = GroupedGemmaRMSNorm(key, norm_key).
-  GroupedRmsNormKernel<<<T, kBlock, 0, stream>>>(
+  // 3. key_n = GroupedGemmaRMSNorm(key, norm_key) (warp-per-branch).
+  GroupedRmsNormKernel<<<T, 32 * hc, 0, stream>>>(
       reinterpret_cast<uint16_t*>(d_key), w.norm_key,
       reinterpret_cast<uint16_t*>(d_key_n), T, hc, hs, w.eps);
   // 4. query_n = GroupedGemmaRMSNorm(hyper_input, norm_query).
-  GroupedRmsNormKernel<<<T, kBlock, 0, stream>>>(
+  GroupedRmsNormKernel<<<T, 32 * hc, 0, stream>>>(
       hyper_input, w.norm_query, reinterpret_cast<uint16_t*>(d_query_n), T, hc,
       hs, w.eps);
   if (cudaGetLastError() != cudaSuccess) return Status::Fail("ple rmsnorm");
@@ -418,7 +458,7 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
         reinterpret_cast<uint16_t*>(d_gated), T, hc, hs);
   }
   // 7. gated_n = GroupedGemmaRMSNorm(gated_value, norm_conv).
-  GroupedRmsNormKernel<<<T, kBlock, 0, stream>>>(
+  GroupedRmsNormKernel<<<T, 32 * hc, 0, stream>>>(
       reinterpret_cast<uint16_t*>(d_gated), w.norm_conv,
       reinterpret_cast<uint16_t*>(d_gated_n), T, hc, hs, w.eps);
   if (cudaGetLastError() != cudaSuccess) return Status::Fail("ple rmsnorm2");

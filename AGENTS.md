@@ -65,8 +65,11 @@ cmake --build build --parallel
   E1–E10 实验链定性 batch vs incremental 残差 = MoE 路由边界敏感性,
   非状态 bug: 增量自洽 0.000173 / 对参考等距 0.1306≈0.1309 / 全位置
   MoE 翻转对照; C++ vs 参考 16 步 12/16 argmax, 不匹配均为 near-tie
-  被 NVFP4 噪声翻转) / **prefill/decode 性能优化** (decode 6.2→12.2
-  tok/s, prefill 18.4→35.5, 接近带宽下限) / **MTP 推测解码** (draft k
+  被 NVFP4 噪声翻转) / **prefill/decode 性能优化** (decode 6.2→14.6
+  tok/s, prefill 18.4→35.5, 接近带宽下限; 手写 kernel 全面覆盖 BF16
+  路径: GEMV warp-per-output+f32x2 / GroupedRmsNorm warp-per-branch /
+  SparseAttention 去冗余 / RouterTopk 并行化; FP4 W4A4 GEMM 保留 nvjet
+  tensor core, 已证手写 SIMT 无法超越) / **MTP 推测解码** (draft k
   步 + 主模型验证 + 接受/回退 + recurrent 状态快照/恢复) / **多模态
   图像输入 (已闭合)** (27 层 ViT CUDA 实现, CUDA vs numpy l2_rel=
   0.0317; image token 248056 位置 embedding 替换为视觉特征, 镜像 vllm

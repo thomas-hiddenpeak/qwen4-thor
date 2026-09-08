@@ -408,10 +408,12 @@ __global__ void IndexerLogitsKernel(const u16* __restrict__ iq,
 // logit, expanded to tokens, + the current group's tail tokens.
 //
 //   topk : [T, max_topk] int32 (out) — selected token positions
+//   topk_len : [T] int32 (out) — number of valid (non -1) positions per token
 //   logits: [T, max_blocks] FP32
 //   positions: [T]
 // block = one token t, 256 threads.
 __global__ void TopkSelectKernel(f32* __restrict__ logits, int* __restrict__ topk,
+                                 int* __restrict__ topk_len,
                                  const int* __restrict__ positions, int T,
                                  int compress, int block_topk, int max_blocks,
                                  int max_topk) {
@@ -464,6 +466,7 @@ __global__ void TopkSelectKernel(f32* __restrict__ logits, int* __restrict__ top
     }
   }
   for (; n < max_topk; ++n) out[n] = -1;
+  topk_len[t] = n;
 }
 
 // ---------------------------------------------------------------------------
@@ -486,6 +489,7 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
                                       const u16* __restrict__ kv_cache,
                                       const int* __restrict__ page_table,
                                       const int* __restrict__ topk,
+                                      const int* __restrict__ topk_len,
                                       u16* __restrict__ out, int nq, int nkv,
                                       int hd, int max_topk) {
   const int CHUNK = 16;
@@ -506,13 +510,14 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
   if (d < hd) sQ[d] = Bf16ToFloat(q[(static_cast<size_t>(t) * nq + qh) * hd + d]);
   __syncthreads();
   const int* sel = topk + static_cast<size_t>(t) * max_topk;
+  const int nsel_total = topk_len[t];  // valid positions only (skip -1 tail)
   const float scale = 1.f / sqrtf(static_cast<float>(hd));
   float m = -1e30f;
   float l = 0.f;
   float acc = 0.f;
   int nsel = 0;
-  while (nsel < max_topk) {
-    int chunk = min(CHUNK, max_topk - nsel);
+  while (nsel < nsel_total) {
+    int chunk = min(CHUNK, nsel_total - nsel);
     // Stage K, V for this chunk into shared memory (coalesced: consecutive
     // threads read consecutive dims).
     for (int c = 0; c < chunk; ++c) {
@@ -716,6 +721,7 @@ size_t FullAttentionWorkspaceBytes(const FullAttentionWeights& w, int T) {
   alloc(static_cast<size_t>(T) * idx_hd * 2);         // d_ik_raw
   alloc(static_cast<size_t>(T) * max_blocks * 4);     // d_logits (f32)
   alloc(static_cast<size_t>(T) * max_topk * 4);       // d_topk (i32)
+  alloc(static_cast<size_t>(T) * 4);                  // d_topk_len (i32)
   alloc(static_cast<size_t>(T) * nq * hd * 2);        // d_attn
   off += 32u * 1024u * 1024u;  // GEMM scratch
   return off;
@@ -756,6 +762,7 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   u16* d_ik_raw = static_cast<u16*>(alloc(static_cast<size_t>(T) * idx_hd * 2));
   f32* d_logits = static_cast<f32*>(alloc(static_cast<size_t>(T) * max_blocks * 4));
   int* d_topk = static_cast<int*>(alloc(static_cast<size_t>(T) * max_topk * 4));
+  int* d_topk_len = static_cast<int*>(alloc(static_cast<size_t>(T) * 4));
   u16* d_attn = static_cast<u16*>(alloc(static_cast<size_t>(T) * nq * hd * 2));
   if (off > workspace_bytes)
     return Status::Fail("FullAttentionForward: workspace too small (need " +
@@ -835,13 +842,15 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                                              d_positions, T, n_iq, idx_hd,
                                              w.idx_compress, max_blocks);
   // 10. topk block selection -> token index list
-  TopkSelectKernel<<<T, 256, 0, stream>>>(d_logits, d_topk, d_positions, T,
-                                          w.idx_compress, w.idx_block_topk(),
-                                          max_blocks, max_topk);
-  // 11. sparse GQA attention over the selected positions
+  TopkSelectKernel<<<T, 256, 0, stream>>>(d_logits, d_topk, d_topk_len,
+                                          d_positions, T, w.idx_compress,
+                                          w.idx_block_topk(), max_blocks,
+                                          max_topk);
+  // 11. sparse GQA attention over the selected positions (valid only, via
+  //     topk_len — the -1 tail is not iterated)
   SparseAttentionKernel<<<T * nq, 256, 0, stream>>>(d_q, kv_cache, page_table,
-                                                    d_topk, d_attn, nq, nkv,
-                                                    hd, max_topk);
+                                                    d_topk, d_topk_len, d_attn,
+                                                    nq, nkv, hd, max_topk);
   // 12. attn *= sigmoid(gate)
   GateMulKernel<<<(T * nq * hd + 255) / 256, 256, 0, stream>>>(
       d_attn, d_gate, T * nq * hd);
