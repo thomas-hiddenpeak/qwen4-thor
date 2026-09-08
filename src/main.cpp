@@ -12,6 +12,7 @@
 
 #include <cuda_runtime.h>
 
+#include <algorithm>
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
@@ -21,6 +22,7 @@
 #include <vector>
 
 #include "q4t/model/model.h"
+#include "q4t/mtp/mtp.h"
 #include "q4t/server/chat_server.h"
 #include "q4t/text/tokenizer.h"
 
@@ -94,6 +96,8 @@ int RunGenerate(int argc, char** argv) {
       "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
   std::string model_dir = kDefaultModelDir;
   int max_tokens = 64;
+  bool use_mtp = false;
+  int mtp_k = 3;
   std::string prompt;
 
   for (int i = 2; i < argc; ++i) {
@@ -102,6 +106,10 @@ int RunGenerate(int argc, char** argv) {
       model_dir = argv[++i];
     } else if (a == "--max-tokens" && i + 1 < argc) {
       max_tokens = std::atoi(argv[++i]);
+    } else if (a == "--mtp") {
+      use_mtp = true;
+    } else if (a == "--mtp-k" && i + 1 < argc) {
+      mtp_k = std::atoi(argv[++i]);
     } else if (!a.empty() && a[0] == '-') {
       std::fprintf(stderr, "Unknown option: %s\n", a.c_str());
       return 2;
@@ -140,6 +148,28 @@ int RunGenerate(int argc, char** argv) {
   }
   std::fprintf(stderr, "[q4t] model loaded (%d layers)\n", cfg.num_layers);
 
+  // 2b. MTP draft model (optional, --mtp). Borrowed embed/lm_head from main.
+  q4t::mtp::MtpConfig mcfg;
+  q4t::mtp::MtpModel mtp;
+  bool mtp_loaded = false;
+  if (use_mtp) {
+    mcfg.mtp_dir = model_dir + "/mtp";
+    auto t_mtp0 = std::chrono::steady_clock::now();
+    s = q4t::mtp::LoadMtp(mcfg, model.head.embed_tokens, model.head.lm_head,
+                          &mtp, nullptr);
+    if (!s.ok()) {
+      std::fprintf(stderr, "MTP load failed (falling back to plain decode): "
+                           "%s\n",
+                   s.message().c_str());
+    } else {
+      mtp_loaded = true;
+      auto t_mtp1 = std::chrono::steady_clock::now();
+      std::fprintf(stderr, "[q4t] MTP loaded (k=%d, %.1f ms)\n", mtp_k,
+                   std::chrono::duration<double, std::milli>(t_mtp1 - t_mtp0)
+                       .count());
+    }
+  }
+
   // 3. Encode prompt.
   std::vector<std::uint32_t> prompt_ids_u32;
   s = tok->Encode(prompt, &prompt_ids_u32);
@@ -164,6 +194,28 @@ int RunGenerate(int argc, char** argv) {
     return 1;
   }
   std::vector<uint16_t> h_logits(static_cast<size_t>(vocab));
+
+  // MTP trunk buffers (pre-final-mixer multi stream [hc*hs]).
+  const size_t hc_dim =
+      static_cast<size_t>(mcfg.hc) * static_cast<size_t>(mcfg.hs);
+  uint16_t* d_trunk_full = nullptr;  // [T_prompt, hc_dim] (prefill trunk_out)
+  uint16_t* d_trunk_in = nullptr;    // [hc_dim] (current speculative trunk)
+  uint16_t* d_trunk_next = nullptr;  // [hc_dim] (next speculative trunk)
+  if (mtp_loaded) {
+    if (cudaMalloc(reinterpret_cast<void**>(&d_trunk_full),
+                   static_cast<size_t>(T_prompt) * hc_dim * 2) !=
+            cudaSuccess ||
+        cudaMalloc(reinterpret_cast<void**>(&d_trunk_in), hc_dim * 2) !=
+            cudaSuccess ||
+        cudaMalloc(reinterpret_cast<void**>(&d_trunk_next), hc_dim * 2) !=
+            cudaSuccess) {
+      std::fprintf(stderr, "cudaMalloc trunk failed\n");
+      cudaFree(d_logits);
+      mtp.Free();
+      model.Free();
+      return 1;
+    }
+  }
 
   // PD-ready 阶段边界 API: Begin (reset state) -> Prefill (handoff point)
   // -> DecodeStepSeq (auto position/history).
@@ -205,15 +257,33 @@ int RunGenerate(int argc, char** argv) {
   }
   auto t_prefill_start = std::chrono::steady_clock::now();
   s = q4t::model::ModelPrefill(model, &seq, ids.data(),
-                               static_cast<int>(ids.size()), d_logits, nullptr);
+                               static_cast<int>(ids.size()), d_logits, nullptr,
+                               mtp_loaded ? d_trunk_full : nullptr);
   if (!s.ok()) {
     std::fprintf(stderr, "prefill failed: %s\n", s.message().c_str());
     cudaFree(d_logits);
+    if (mtp_loaded) mtp.Free();
     model.Free();
     return 1;
   }
   cudaDeviceSynchronize();
   auto t_prefill_end = std::chrono::steady_clock::now();
+
+  // MTP init: fresh KV/indexer state + first trunk_in = prefill's last row.
+  if (mtp_loaded) {
+    s = q4t::mtp::MtpResetState(mtp, nullptr);
+    if (!s.ok()) {
+      std::fprintf(stderr, "MTP reset failed: %s\n", s.message().c_str());
+      cudaFree(d_logits);
+      mtp.Free();
+      model.Free();
+      return 1;
+    }
+    cudaMemcpy(d_trunk_in,
+               d_trunk_full +
+                   static_cast<size_t>(T_prompt - 1) * hc_dim,
+               hc_dim * 2, cudaMemcpyDeviceToDevice);
+  }
 
   // 5. Decode loop (greedy argmax).
   auto argmax = [&](const uint16_t* h) {
@@ -232,26 +302,72 @@ int RunGenerate(int argc, char** argv) {
   };
 
   std::vector<int32_t> generated;
-  int next_token = -1;
-  // First decode token comes from the prefill's LAST position (row T-1).
-  cudaMemcpy(h_logits.data(), d_logits + static_cast<size_t>(T_prompt - 1) * vocab,
-             static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost);
-  next_token = argmax(h_logits.data());
-
   auto t_decode_start = std::chrono::steady_clock::now();
-  for (int step = 0; step < max_tokens; ++step) {
-    generated.push_back(next_token);
-    if (next_token == cfg.eos_token_id) break;
-    const int32_t tok_id = next_token;
-    s = q4t::model::ModelDecodeStepSeq(model, &seq, tok_id, d_logits, nullptr);
-    if (!s.ok()) {
-      std::fprintf(stderr, "decode step %d failed: %s\n", step,
-                   s.message().c_str());
-      break;
+  if (mtp_loaded) {
+    // Speculative decoding: each iteration runs MtpSpeculativeStep (k draft
+    // steps + main-model verification), accepting 1..k+1 tokens.
+    int32_t accepted_tokens[64];
+    int accepted_count = 0;
+    int mtp_steps = 0, mtp_accepted = 0;
+    bool done = false;
+    while (!done && static_cast<int>(generated.size()) < max_tokens) {
+      const int room = max_tokens - static_cast<int>(generated.size());
+      const int k = std::min(mtp_k, room);
+      s = q4t::mtp::MtpSpeculativeStep(model, mtp, &seq, d_trunk_in, k,
+                                       accepted_tokens, &accepted_count,
+                                       d_trunk_next, nullptr);
+      if (!s.ok()) {
+        std::fprintf(stderr, "speculative step failed: %s\n",
+                     s.message().c_str());
+        break;
+      }
+      if (accepted_count <= 0) break;
+      mtp_steps++;
+      mtp_accepted += accepted_count;
+      for (int i = 0; i < accepted_count &&
+                          static_cast<int>(generated.size()) < max_tokens;
+           ++i) {
+        generated.push_back(accepted_tokens[i]);
+        if (accepted_tokens[i] == cfg.eos_token_id) {
+          done = true;
+          break;
+        }
+      }
+      // Swap trunk buffers for the next iteration.
+      uint16_t* tmp = d_trunk_in;
+      d_trunk_in = d_trunk_next;
+      d_trunk_next = tmp;
     }
-    cudaMemcpy(h_logits.data(), d_logits, static_cast<size_t>(vocab) * 2,
-               cudaMemcpyDeviceToHost);
+    std::fprintf(stderr,
+                 "[q4t] MTP: %d steps, %d tokens, avg %.2f tok/step "
+                 "(k=%d)\n",
+                 mtp_steps, mtp_accepted,
+                 mtp_steps ? static_cast<double>(mtp_accepted) / mtp_steps
+                           : 0.0,
+                 mtp_k);
+  } else {
+    // Plain greedy decode (baseline).
+    int next_token = -1;
+    // First decode token comes from the prefill's LAST position (row T-1).
+    cudaMemcpy(h_logits.data(),
+               d_logits + static_cast<size_t>(T_prompt - 1) * vocab,
+               static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost);
     next_token = argmax(h_logits.data());
+    for (int step = 0; step < max_tokens; ++step) {
+      generated.push_back(next_token);
+      if (next_token == cfg.eos_token_id) break;
+      const int32_t tok_id = next_token;
+      s = q4t::model::ModelDecodeStepSeq(model, &seq, tok_id, d_logits,
+                                         nullptr);
+      if (!s.ok()) {
+        std::fprintf(stderr, "decode step %d failed: %s\n", step,
+                     s.message().c_str());
+        break;
+      }
+      cudaMemcpy(h_logits.data(), d_logits,
+                 static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost);
+      next_token = argmax(h_logits.data());
+    }
   }
   cudaDeviceSynchronize();
   auto t_decode_end = std::chrono::steady_clock::now();
@@ -276,10 +392,16 @@ int RunGenerate(int argc, char** argv) {
   std::fprintf(stderr, "\n[q4t] generated %zu tokens\n", generated.size());
   std::fprintf(stderr,
                "[q4t] perf: prefill %d tok in %.1f ms (%.1f tok/s) | "
-               "decode %zu tok in %.1f ms (%.1f tok/s)\n",
+               "decode %zu tok in %.1f ms (%.1f tok/s)%s\n",
                T_prompt, prefill_ms, prefill_tps, generated.size(), decode_ms,
-               decode_tps);
+               decode_tps, mtp_loaded ? " [MTP]" : "");
 
+  if (mtp_loaded) {
+    cudaFree(d_trunk_full);
+    cudaFree(d_trunk_in);
+    cudaFree(d_trunk_next);
+    mtp.Free();
+  }
   cudaFree(d_logits);
   model.Free();
   return 0;

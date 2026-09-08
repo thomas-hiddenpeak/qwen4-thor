@@ -5,6 +5,50 @@
 
 ---
 
+## 2026-09-08 — MTP 接入 generate (--mtp) + 接受率诊断 (负结果: draft 输出垃圾)
+
+**背景**
+单 token decode 已接近带宽下限 (14.6 tok/s), 下一个数量级收益是 MTP 推测
+解码。MTP 已实现 (2026-09-07, 测试通过) 但从未接入 generate, 加速比从未
+实测。本轮把 MTP 接入 `q4t generate` (加 `--mtp` / `--mtp-k` 可选 flag,
+默认关闭不影响基准): 加载 MTP (借主模型 embed/lm_head) + prefill 拿
+trunk_out + decode 循环改用 MtpSpeculativeStep。
+
+**接入 (main.cpp, plumbing 正确)**
+- `--mtp` 加载 MtpModel (14GB BF16, 一次性 ~10-15s), 借 model.head
+  embed_tokens/lm_head
+- prefill 传 trunk_out (d_trunk_full [T, hc*hs]), 取最后一行作首轮 trunk_in
+- MtpResetState 初始化 MTP KV/indexer
+- decode 循环: while generated < max_tokens, 每轮 MtpSpeculativeStep (k
+  draft + 主模型验证), 接受 1..k+1 token, trunk 双缓冲交换
+- 保留 plain greedy 路径作 fallback (无 --mtp 时)
+
+**诊断 (负结果): MTP draft 模型输出垃圾, 接受率 0**
+30 tok: MTP 9.9 tok/s vs 默认 14.6 tok/s — **MTP 反而更慢**。
+加 top-2 logit gap 诊断 (Q4T_MTP_DEBUG) 揭示根因:
+- draft 输出与输入无关, 且随 position 奇偶交替 (271/760/271/760...)
+- main 预测正常且 confident (top-2 gap 3.0, 非 near-tie 噪声)
+- 接受率 = 0.00 (avg 1.00 tok/step, 每步只接受 1 个 bonus token)
+
+**定性**: 这是 `MtpForward` draft 前向路径的 bug (draft 模型没正确消费
+hidden_states/position, 输出退化为 position-parity 相关的常数), **不是**
+推测解码接入逻辑问题 (plumbing 经诊断确认正确: 30 步 30 token 机制无误)。
+MTP draft 测试 (mtp_draft_test) 只是 smoke test (logits 有限 + 确定性),
+**从未对照 vLLM mtp.py 参考验证过 draft 预测正确性**。
+
+**结论**: MTP 接入完成 (plumbing 正确, --mtp 默认关闭), 但 draft 模型
+输出垃圾导致接受率 0, MTP 比 plain decode 慢。decode 基准维持 14.6
+tok/s (默认路径不受影响, 62 项测试全绿)。**下一步: 对照 vLLM mtp.py
+参考专门调试 MtpForward** (独立任务, 需先建立 draft 预测的参考验证)。
+
+**下一步**
+1. 调试 MtpForward (对照 reference/vllm/.../nvidia/mtp.py), 先建 draft
+   预测参考验证 (当前只有 smoke test)
+2. (可选) GatherQuant/ScatterAdd prefix-sum 跨 expert 单次 launch
+3. (可选) SparseAttention T=1 占用率 (grid 仅 24 blocks)
+
+---
+
 ## 2026-09-08 — MoE SwiGLU+QuantF32 融合 (省 1 launch + inter GMEM 往返)
 
 **背景**

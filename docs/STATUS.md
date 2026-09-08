@@ -797,11 +797,22 @@ Phase 2 候选 (完整多设备 PD 部署等, 见 [PHASES.md](PHASES.md)): 完�
    QuantizeFloat32ToFp4Kernel。62 项全绿, MoE l2_rel=0.0016622 不变。
    decode 14.5 tok/s (M_e=1 时 glue kernel 极小, launch 开销主导, 收益
    有限)。
+   **阶段 H 已完成 (MTP 接入 generate + 接受率诊断, 2026-09-08, 负结果)**:
+   把 MTP 接入 `q4t generate` (加 `--mtp`/`--mtp-k` 可选 flag, 默认关闭):
+   加载 MTP (借主模型 embed/lm_head) + prefill 拿 trunk_out + decode 循环
+   改用 MtpSpeculativeStep + trunk 双缓冲。plumbing 正确 (62 项全绿)。
+   **但 MTP 接受率 = 0** (avg 1.00 tok/step): 诊断 (Q4T_MTP_DEBUG) 揭示
+   draft 输出与输入无关且随 position 奇偶交替 (271/760), 而 main 预测
+   正常且 confident (top-2 gap 3.0); MTP 生成文本退化为 "hash hash hash"
+   (plain 路径连贯)。根因 = MTP 推测解码的位置对齐/验证逻辑 bug (bonus
+   token 计算与 plain 首 token 不一致), 需对照 vLLM mtp.py 参考专门调试
+   (独立任务)。MTP 9.9 tok/s < plain 14.6 tok/s, **默认关闭**。
    **当前 kernel 分解 (14.5-14.6 tok/s, 接近带宽下限)**: Bf16Gev 48%
    (N=10240 645 GB/s 有效带宽含 L2 复用, 已近上限) / SparseAttention
    12% (T=1 grid 仅 24 blocks, 15% 占用率) / nvjet FP4 14% (100% DRAM)
-   / glue ~10% (SwiGLU+Quant 已融合)。**下一步 = MTP 推测解码** (draft
-   k 步摊薄主模型验证成本, 下一个数量级收益; 接口已预留)。
+   / glue ~10% (SwiGLU+Quant 已融合)。**下一步 = 调试 MTP 位置对齐**
+   (对照 vLLM mtp.py, 先建 draft 预测参考验证) 或 (可选) glue 进一步
+   融合 / SparseAttention 占用率。
 3. **MTP 1 层 (已完成 2026-09-07)**: 权威参考:
    `reference/vllm/vllm/models/qwen4_exp/nvidia/mtp.py`。
    scheme A 接口 (2026-09-06): `ModelPrefill` / `ModelDecodeStepSeq`
