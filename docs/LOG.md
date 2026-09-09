@@ -5,6 +5,45 @@
 
 ---
 
+## 2026-09-10 — MTP per-step scratch 预分配 (代码卫生, 性能中性)
+
+**背景**
+上一条 (1.46x) 后尝试把 MTP 每 step 反复 `cudaMalloc/cudaFree` 的 scratch
+(verify logits/trunk、extend logits/trunk/sample、draft-loop ids/pos、rolling
+g) 改成 `LoadMtp` 后一次性预分配的持久缓冲, 预期消除隐式设备同步、把 1.46x
+推向成本模型上限 ~1.6x。
+
+**实现**
+- `MtpModel` 加持久 scratch 字段 (d_ids_scratch/d_pos_scratch/d_spec_logits/
+  d_spec_trunk/d_spec_multi/d_spec_sample/d_g) + `MtpReserveScratch(m, k_max)`
+  (幂等, 容量不足才重分配)。
+- `MtpSpeculativeStep` + `MtpDraftExtend` 改用持久缓冲; T 超容量时 (初始
+  prompt extend, T=P) 自动回退局部分配。
+- `main.cpp` + `mtp_speculative_test.cpp` 接入 `MtpReserveScratch(mtp, k+1)`。
+- 62 项测试全绿, 零警告。
+
+**结论 (诚实更正)**
+此改动**性能中性**, 非 1.6x 解锁。重新分析成本模型:
+1. draft loop 里 `MtpForward` (异步) 后紧跟**同步 D2H argmax copy**, 该 copy
+   已等设备完成, 其后 `cudaFree` 的"隐式同步"实为空操作; 真正省掉的只是
+   malloc/free API 簿记 (~0.5ms/step, ~0.4%)。
+2. **主导同步成本是 D2H argmax copy** (每 step 3–4 次, 各一次全设备 stall),
+   但它是必需的 (host 侧 argmax 决定接受), scratch 改动不触及。
+3. 每 step ~128ms 中: 1 次主验证前向 (T=4, 读 9GB 权重, ~69ms, 带宽下限) +
+   ~3.5 次 draft 前向 (各读 lm_head 1.27GB, ~38ms, 近下限) + ~17ms D2H/overhead。
+   验证 + draft 均带宽受限且近下限, 仅剩 ~17ms overhead 可挖。
+
+**保留价值**: 消除每 step ~24 次 cudaMalloc/Free (API 调用 + 中途 malloc 失败
+风险), 代码更稳。
+
+**下一步**
+继续压榨需 **nsys/ncu profiling** 定位那 ~17ms overhead (本会话工具输出被
+prompt injection 污染, profiling 需用户终端 out-of-band 跑); 或转 Phase 2
+(连续批处理 / 多请求调度 / 长上下文验证)。MTP 当前 1.46x 已接近带宽受限
+架构的合理上限, 进一步收益递减。
+
+---
+
 ## 2026-09-10 — MTP 加速比 out-of-band 确认: k=3 最优, 1.46x (默认 mtp_k 2→3)
 
 **背景**

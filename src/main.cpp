@@ -329,6 +329,18 @@ int RunGenerate(int argc, char** argv) {
       model.Free();
       return 1;
     }
+    // Reserve the MTP per-step scratch so the speculative step + internal
+    // extend reuse persistent buffers instead of per-step cudaMalloc/cudaFree
+    // (each cudaFree is an implicit device sync that stalls the pipeline).
+    s = q4t::mtp::MtpReserveScratch(mtp, mtp_k + 1);
+    if (!s.ok()) {
+      std::fprintf(stderr, "MTP scratch reserve failed: %s\n",
+                   s.message().c_str());
+      cudaFree(d_logits);
+      mtp.Free();
+      model.Free();
+      return 1;
+    }
   }
 
   std::vector<int32_t> generated;

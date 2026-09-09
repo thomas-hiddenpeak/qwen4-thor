@@ -110,6 +110,20 @@ struct MtpModel {
   uint16_t* d_trunk = nullptr;
   uint16_t* d_logits = nullptr;
 
+  // Per-step speculative scratch (allocated in LoadMtp, sized for k up to
+  // k_max). Preallocating these avoids the per-step cudaMalloc/cudaFree in
+  // MtpSpeculativeStep / MtpDraftExtend — each cudaFree is an implicit device
+  // sync that stalls the pipeline. When the requested k exceeds k_max the
+  // caller falls back to per-call allocation.
+  int32_t* d_ids_scratch = nullptr;   // [k_max]
+  int* d_pos_scratch = nullptr;       // [k_max]
+  uint16_t* d_spec_logits = nullptr;  // [k_max*vocab] verify logits + extend logits
+  uint16_t* d_spec_trunk = nullptr;   // [k_max*hc_dim] verify trunk (extend input)
+  uint16_t* d_spec_multi = nullptr;   // [k_max*hc_dim] extend multi_hidden (output)
+  uint16_t* d_spec_sample = nullptr;  // [k_max*hs] extend sample_hidden
+  uint16_t* d_g = nullptr;            // [hc_dim] rolling draft trunk
+  int k_max = 0;  // capacity of the above (0 = not allocated)
+
   int hc_dim() const { return cfg.hc * cfg.hs; }
   void Free();
 };
@@ -124,6 +138,14 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
 // Zero the MTP full-attention KV cache + indexer buffers (call before a fresh
 // speculative-decoding sequence, mirroring the main model's per-layer reset).
 Status MtpResetState(const MtpModel& m, cudaStream_t stream);
+
+// Reserve the per-step speculative scratch buffers (ids/positions, verify
+// logits+trunk, extend logits+trunk+sample, rolling draft trunk) sized for a
+// speculative `k` up to `k_max`. Idempotent: grows only if `k_max` exceeds the
+// current capacity. Call once after LoadMtp, before the decode loop, so
+// MtpSpeculativeStep / MtpDraftExtend can use the persistent buffers instead of
+// per-step cudaMalloc/cudaFree (each cudaFree is an implicit device sync).
+Status MtpReserveScratch(MtpModel& m, int k_max);
 
 // Run one MTP draft step.
 //

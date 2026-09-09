@@ -44,6 +44,7 @@ using q4t::mtp::LoadMtp;
 using q4t::mtp::MtpConfig;
 using q4t::mtp::MtpModel;
 using q4t::mtp::MtpResetState;
+using q4t::mtp::MtpReserveScratch;
 using q4t::mtp::MtpSpeculativeStep;
 
 const char* kModelDir =
@@ -314,6 +315,15 @@ Q4T_TEST(mtp_speculative_step) {
   s = ModelReserveVerifyCheckpoints(m, k);
   if (!s.ok()) {
     std::printf("  checkpoint reserve failed: %s\n", s.message().c_str());
+    mtp.Free();
+    m.Free();
+    return false;
+  }
+  // Reserve the MTP per-step scratch so the speculative step + internal extend
+  // reuse persistent buffers (no per-step cudaMalloc/cudaFree).
+  s = MtpReserveScratch(mtp, k + 1);
+  if (!s.ok()) {
+    std::printf("  scratch reserve failed: %s\n", s.message().c_str());
     mtp.Free();
     m.Free();
     return false;

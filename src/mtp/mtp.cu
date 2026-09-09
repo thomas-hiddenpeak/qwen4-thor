@@ -183,6 +183,12 @@ void MtpModel::Free() {
   if (d_sample) cudaFree(d_sample);
   if (d_trunk) cudaFree(d_trunk);
   if (d_logits) cudaFree(d_logits);
+  if (d_ids_scratch) cudaFree(d_ids_scratch);
+  if (d_pos_scratch) cudaFree(d_pos_scratch);
+  if (d_spec_logits) cudaFree(d_spec_logits);
+  if (d_spec_trunk) cudaFree(d_spec_trunk);
+  if (d_spec_sample) cudaFree(d_spec_sample);
+  if (d_g) cudaFree(d_g);
   fc_embedding = nullptr;
   fc_hidden = nullptr;
   pre_fc_norm_embedding = nullptr;
@@ -195,6 +201,13 @@ void MtpModel::Free() {
   d_sample = nullptr;
   d_trunk = nullptr;
   d_logits = nullptr;
+  d_ids_scratch = nullptr;
+  d_pos_scratch = nullptr;
+  d_spec_logits = nullptr;
+  d_spec_trunk = nullptr;
+  d_spec_sample = nullptr;
+  d_g = nullptr;
+  k_max = 0;
 }
 
 Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
@@ -368,6 +381,54 @@ Status MtpResetState(const MtpModel& m, cudaStream_t stream) {
   return Status();
 }
 
+Status MtpReserveScratch(MtpModel& m, int k_max) {
+  if (k_max <= 0) return Status::Fail("MtpReserveScratch: k_max must be > 0");
+  if (k_max <= m.k_max) return Status();  // already sized for this k
+  const int hs = m.cfg.hs, hc_dim = m.hc_dim(), vocab = m.cfg.vocab;
+  if (m.d_ids_scratch) cudaFree(m.d_ids_scratch);
+  if (m.d_pos_scratch) cudaFree(m.d_pos_scratch);
+  if (m.d_spec_logits) cudaFree(m.d_spec_logits);
+  if (m.d_spec_trunk) cudaFree(m.d_spec_trunk);
+  if (m.d_spec_multi) cudaFree(m.d_spec_multi);
+  if (m.d_spec_sample) cudaFree(m.d_spec_sample);
+  if (m.d_g) cudaFree(m.d_g);
+  m.d_ids_scratch = nullptr;
+  m.d_pos_scratch = nullptr;
+  m.d_spec_logits = nullptr;
+  m.d_spec_trunk = nullptr;
+  m.d_spec_multi = nullptr;
+  m.d_spec_sample = nullptr;
+  m.d_g = nullptr;
+  // k_max rows: verify uses k+1 tokens, extend uses a+1 <= k+1 tokens.
+  if (cudaMalloc(reinterpret_cast<void**>(&m.d_ids_scratch),
+                 static_cast<size_t>(k_max) * sizeof(int32_t)) != cudaSuccess)
+    return Status::Fail("MtpReserveScratch: d_ids_scratch");
+  if (cudaMalloc(reinterpret_cast<void**>(&m.d_pos_scratch),
+                 static_cast<size_t>(k_max) * sizeof(int)) != cudaSuccess)
+    return Status::Fail("MtpReserveScratch: d_pos_scratch");
+  if (cudaMalloc(reinterpret_cast<void**>(&m.d_spec_logits),
+                 static_cast<size_t>(k_max) * vocab * sizeof(uint16_t)) !=
+      cudaSuccess)
+    return Status::Fail("MtpReserveScratch: d_spec_logits");
+  if (cudaMalloc(reinterpret_cast<void**>(&m.d_spec_trunk),
+                 static_cast<size_t>(k_max) * hc_dim * sizeof(uint16_t)) !=
+      cudaSuccess)
+    return Status::Fail("MtpReserveScratch: d_spec_trunk");
+  if (cudaMalloc(reinterpret_cast<void**>(&m.d_spec_multi),
+                 static_cast<size_t>(k_max) * hc_dim * sizeof(uint16_t)) !=
+      cudaSuccess)
+    return Status::Fail("MtpReserveScratch: d_spec_multi");
+  if (cudaMalloc(reinterpret_cast<void**>(&m.d_spec_sample),
+                 static_cast<size_t>(k_max) * hs * sizeof(uint16_t)) !=
+      cudaSuccess)
+    return Status::Fail("MtpReserveScratch: d_spec_sample");
+  if (cudaMalloc(reinterpret_cast<void**>(&m.d_g),
+                 static_cast<size_t>(hc_dim) * sizeof(uint16_t)) != cudaSuccess)
+    return Status::Fail("MtpReserveScratch: d_g");
+  m.k_max = k_max;
+  return Status();
+}
+
 size_t MoeBf16ScratchBytes(int T, int topk, int hs, int shared_is, int E) {
   // The non-routed scratch MoeBf16Forward carves after the routed region
   // (router logits + expert_ids + router_w + routed f32 + shared gu/swiglu/
@@ -424,33 +485,41 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
   const int hs = m.cfg.hs;
   const int vocab = m.cfg.vocab;
 
-  int32_t* d_ids = nullptr;
-  int* d_pos = nullptr;
-  uint16_t* d_sample = nullptr;  // [T, hs]
-  uint16_t* d_multi = nullptr;   // [T, hc_dim]
-  uint16_t* d_logits = nullptr;  // [T, vocab]
+  // Use the persistent per-step scratch when T fits (the common internal-extend
+  // case, T = a+1 <= k+1); otherwise fall back to per-call allocation (the
+  // initial prompt extend, T = P, which is large and one-shot).
+  const bool use_scratch = m.k_max > 0 && T <= m.k_max;
+  int32_t* d_ids = use_scratch ? m.d_ids_scratch : nullptr;
+  int* d_pos = use_scratch ? m.d_pos_scratch : nullptr;
+  uint16_t* d_sample = use_scratch ? m.d_spec_sample : nullptr;  // [T, hs]
+  uint16_t* d_multi = use_scratch ? m.d_spec_multi : nullptr;    // [T, hc_dim]
+  uint16_t* d_logits = use_scratch ? m.d_spec_logits : nullptr;  // [T, vocab]
   auto cleanup = [&](Status s) -> Status {
-    if (d_ids) cudaFree(d_ids);
-    if (d_pos) cudaFree(d_pos);
-    if (d_sample) cudaFree(d_sample);
-    if (d_multi) cudaFree(d_multi);
-    if (d_logits) cudaFree(d_logits);
+    if (!use_scratch) {
+      if (d_ids) cudaFree(d_ids);
+      if (d_pos) cudaFree(d_pos);
+      if (d_sample) cudaFree(d_sample);
+      if (d_multi) cudaFree(d_multi);
+      if (d_logits) cudaFree(d_logits);
+    }
     return s;
   };
-  if (cudaMalloc(reinterpret_cast<void**>(&d_ids),
-                 static_cast<size_t>(T) * sizeof(int32_t)) != cudaSuccess ||
-      cudaMalloc(reinterpret_cast<void**>(&d_pos),
-                 static_cast<size_t>(T) * sizeof(int)) != cudaSuccess ||
-      cudaMalloc(reinterpret_cast<void**>(&d_sample),
-                 static_cast<size_t>(T) * hs * sizeof(uint16_t)) !=
-          cudaSuccess ||
-      cudaMalloc(reinterpret_cast<void**>(&d_multi),
-                 static_cast<size_t>(T) * hc_dim * sizeof(uint16_t)) !=
-          cudaSuccess ||
-      cudaMalloc(reinterpret_cast<void**>(&d_logits),
-                 static_cast<size_t>(T) * vocab * sizeof(uint16_t)) !=
-          cudaSuccess)
-    return cleanup(Status::Fail("MtpDraftExtend: cudaMalloc"));
+  if (!use_scratch) {
+    if (cudaMalloc(reinterpret_cast<void**>(&d_ids),
+                   static_cast<size_t>(T) * sizeof(int32_t)) != cudaSuccess ||
+        cudaMalloc(reinterpret_cast<void**>(&d_pos),
+                   static_cast<size_t>(T) * sizeof(int)) != cudaSuccess ||
+        cudaMalloc(reinterpret_cast<void**>(&d_sample),
+                   static_cast<size_t>(T) * hs * sizeof(uint16_t)) !=
+            cudaSuccess ||
+        cudaMalloc(reinterpret_cast<void**>(&d_multi),
+                   static_cast<size_t>(T) * hc_dim * sizeof(uint16_t)) !=
+            cudaSuccess ||
+        cudaMalloc(reinterpret_cast<void**>(&d_logits),
+                   static_cast<size_t>(T) * vocab * sizeof(uint16_t)) !=
+            cudaSuccess)
+      return cleanup(Status::Fail("MtpDraftExtend: cudaMalloc"));
+  }
 
   cudaMemcpy(d_ids, shifted_ids, static_cast<size_t>(T) * sizeof(int32_t),
              cudaMemcpyHostToDevice);
@@ -507,26 +576,34 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
   const int vocab = mtp.cfg.vocab;
   const int hc_dim = mtp.hc_dim();
 
-  // Batched verification buffers: [k+1, vocab] logits + [k+1, hc_dim] main
-  // trunks (h_P..h_{P+k}); d_g is the rolling draft trunk for the draft loop.
-  uint16_t* d_vlogits = nullptr;  // [k+1, vocab]
-  uint16_t* d_vtrunk = nullptr;   // [k+1, hc_dim]
-  uint16_t* d_g = nullptr;        // [hc_dim]
+  // Verification + draft-loop buffers. Use the persistent per-step scratch
+  // when k+1 fits (the common case); otherwise fall back to per-call
+  // allocation. d_vlogits = [k+1, vocab] verify logits, d_vtrunk = [k+1,
+  // hc_dim] main trunks (h_P..h_{P+k}), d_g = [hc_dim] rolling draft trunk.
+  const bool use_scratch = mtp.k_max > 0 && k + 1 <= mtp.k_max;
+  uint16_t* d_vlogits = use_scratch ? mtp.d_spec_logits : nullptr;
+  uint16_t* d_vtrunk = use_scratch ? mtp.d_spec_trunk : nullptr;
+  uint16_t* d_g = use_scratch ? mtp.d_g : nullptr;
   auto cleanup = [&](Status s) -> Status {
-    if (d_vlogits) cudaFree(d_vlogits);
-    if (d_vtrunk) cudaFree(d_vtrunk);
-    if (d_g) cudaFree(d_g);
+    if (!use_scratch) {
+      if (d_vlogits) cudaFree(d_vlogits);
+      if (d_vtrunk) cudaFree(d_vtrunk);
+      if (d_g) cudaFree(d_g);
+    }
     return s;
   };
-  if (cudaMalloc(reinterpret_cast<void**>(&d_vlogits),
-                 static_cast<size_t>(k + 1) * vocab * sizeof(uint16_t)) !=
-          cudaSuccess ||
-      cudaMalloc(reinterpret_cast<void**>(&d_vtrunk),
-                 static_cast<size_t>(k + 1) * hc_dim * sizeof(uint16_t)) !=
-          cudaSuccess ||
-      cudaMalloc(reinterpret_cast<void**>(&d_g),
-                 static_cast<size_t>(hc_dim) * sizeof(uint16_t)) != cudaSuccess)
-    return cleanup(Status::Fail("MtpSpeculativeStep: cudaMalloc"));
+  if (!use_scratch) {
+    if (cudaMalloc(reinterpret_cast<void**>(&d_vlogits),
+                   static_cast<size_t>(k + 1) * vocab * sizeof(uint16_t)) !=
+            cudaSuccess ||
+        cudaMalloc(reinterpret_cast<void**>(&d_vtrunk),
+                   static_cast<size_t>(k + 1) * hc_dim * sizeof(uint16_t)) !=
+            cudaSuccess ||
+        cudaMalloc(reinterpret_cast<void**>(&d_g),
+                   static_cast<size_t>(hc_dim) * sizeof(uint16_t)) !=
+            cudaSuccess)
+      return cleanup(Status::Fail("MtpSpeculativeStep: cudaMalloc"));
+  }
 
   const bool timing = getenv("Q4T_MTP_TIMING") != nullptr;
   const auto t_draft0 = std::chrono::steady_clock::now();
@@ -540,22 +617,27 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
     const int pos = P + j - 1;  // EAGLE shift: token t_{P+j} fed at P+j-1.
     int32_t h_ids[1] = {drafts[j - 1]};
     int h_pos[1] = {pos};
-    int32_t* d_ids = nullptr;
-    int* d_pos = nullptr;
-    if (cudaMalloc(reinterpret_cast<void**>(&d_ids), sizeof(int32_t)) !=
-            cudaSuccess ||
-        cudaMalloc(reinterpret_cast<void**>(&d_pos), sizeof(int)) !=
-            cudaSuccess) {
-      if (d_ids) cudaFree(d_ids);
-      if (d_pos) cudaFree(d_pos);
-      return cleanup(Status::Fail("MtpSpeculativeStep: cudaMalloc draft"));
+    // Reuse the persistent scratch's first element (no per-iteration malloc).
+    int32_t* d_ids = use_scratch ? mtp.d_ids_scratch : nullptr;
+    int* d_pos = use_scratch ? mtp.d_pos_scratch : nullptr;
+    if (!use_scratch) {
+      if (cudaMalloc(reinterpret_cast<void**>(&d_ids), sizeof(int32_t)) !=
+              cudaSuccess ||
+          cudaMalloc(reinterpret_cast<void**>(&d_pos), sizeof(int)) !=
+              cudaSuccess) {
+        if (d_ids) cudaFree(d_ids);
+        if (d_pos) cudaFree(d_pos);
+        return cleanup(Status::Fail("MtpSpeculativeStep: cudaMalloc draft"));
+      }
     }
     cudaMemcpy(d_ids, h_ids, sizeof(int32_t), cudaMemcpyHostToDevice);
     cudaMemcpy(d_pos, h_pos, sizeof(int), cudaMemcpyHostToDevice);
     Status s = MtpForward(mtp, d_ids, d_pos, d_g, mtp.d_sample, mtp.d_trunk,
                           mtp.d_logits, 1, stream);
-    cudaFree(d_ids);
-    cudaFree(d_pos);
+    if (!use_scratch) {
+      cudaFree(d_ids);
+      cudaFree(d_pos);
+    }
     if (!s.ok()) return cleanup(s);
     std::vector<uint16_t> lg(static_cast<size_t>(vocab));
     if (cudaMemcpy(lg.data(), mtp.d_logits, lg.size() * sizeof(uint16_t),
