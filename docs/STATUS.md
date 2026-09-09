@@ -591,8 +591,10 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   (ModelSequence, 引擎暴露"完成 prefill、交出 KV/SSM 状态"为独立操作)。
   完整多设备 PD 部署 (连续批处理 + 多请求调度) 归 Phase 2。
   设计见 ARCHITECTURE.md, 范围见 PHASES.md 第 6 项。
-- **MTP 已完成 (2026-09-07)**: draft k 步 + 主模型验证 + 接受/回退 +
-  recurrent 状态快照/恢复, 见"已完成" MTP 条目。
+- **MTP 已完成 (2026-09-07, 加速比 2026-09-10 确认)**: draft k 步 + 主模型
+  验证 + 接受/回退 + per-token SSM/conv checkpoint 恢复 (消除部分接受
+  re-advance), 实测 decode 加速 1.46x (k=3 最优, 默认 mtp_k=3), 见
+  "已完成" MTP 条目 + LOG.md 2026-09-10。
 - **MoE 贪心非确定性** (见"进行中"长序列条目): `ScatterAddKernel` 的 FP32
   `atomicAdd` 顺序非确定, 运行间 argmax 可能翻转。属 LLM 固有特性 (PyTorch
   同样), 不影响正确性; 如需可复现输出, 可改确定性归约 (代价: 性能)。
@@ -699,7 +701,7 @@ E1–E10 实验链), **MTP 推测解码** ✅, **多模态图像输入** ✅, **
 
 Phase 2 候选 (完整多设备 PD 部署等, 见 [PHASES.md](PHASES.md)): 完整
 48 层 greedy 长序列端到端、Paged KV 跨设备 P/D 分离、serve 层流式
-输出、MTP 加速比实测等。
+输出等 (MTP 加速比已于 2026-09-10 实测确认 1.46x, 不再属候选)。
 
 剩余 Phase 1 项 (按 2026-09-06 与用户确认的顺序):
 1. **逐 token 对参考验证 (已闭合)**: 4 层基线 + decode 自洽性 + E1–E10

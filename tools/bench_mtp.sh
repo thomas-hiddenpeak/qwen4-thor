@@ -44,15 +44,15 @@ awk -v maxtok="$MAXTOK" '
   /^mtp/   {sec="mtp";   next}
   $2=="ERR" {next}
   sec=="plain" {ps+=$2; pn++}
-  sec=="mtp"   {split($1,a,"="); s[a[2]]+=$2; c[a[2]]++}
+  sec=="mtp"   {lbl=$1; sub(/^k=/,"",lbl); sub(/[ab]$/,"",lbl); s[lbl]+=$2; c[lbl]++}
   END {
     if (pn==0) {print "no valid plain runs"; exit}
     pm=ps/pn
     printf "\nplain avg: %.1f ms -> %.1f tok/s\n", pm, maxtok/(pm/1000)
-    for (kk in c) {
+    for (kk=1; kk<=10; kk++) if (c[kk]>0) {
       km=s[kk]/c[kk]
-      printf "k=%-3s avg: %.1f ms -> %.1f tok/s (%.2fx vs plain)\n", \
-             kk, km, maxtok/(km/1000), pm/km
+      printf "k=%-3d avg (%d runs): %.1f ms -> %.1f tok/s (%.2fx vs plain)\n", \
+             kk, c[kk], km, maxtok/(km/1000), pm/km
     }
   }' "$OUT" | tee -a "$OUT"
 
