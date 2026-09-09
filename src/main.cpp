@@ -317,6 +317,18 @@ int RunGenerate(int argc, char** argv) {
       model.Free();
       return 1;
     }
+    // Reserve per-token SSM/conv checkpoint buffers so MtpSpeculativeStep's
+    // batched verify can save checkpoints and a partial accept can D2D-restore
+    // checkpoint[a] instead of re-running the main forward.
+    s = q4t::model::ModelReserveVerifyCheckpoints(model, mtp_k);
+    if (!s.ok()) {
+      std::fprintf(stderr, "MTP checkpoint reserve failed: %s\n",
+                   s.message().c_str());
+      cudaFree(d_logits);
+      mtp.Free();
+      model.Free();
+      return 1;
+    }
   }
 
   std::vector<int32_t> generated;

@@ -5,6 +5,42 @@
 
 ---
 
+## 2026-09-10 — MTP checkpoint 路径修复: 真正启用 + 实测 1.3x (更正前结论)
+
+**背景 / 更正**
+2026-09-09 之后实现的 per-token SSM/conv checkpoint 机制 (消除部分接受
+re-advance) 实际**从未生效**, 原因有二:
+1. `build/q4t` 是旧二进制 (mtime 早于 model.cu/mtp.cu 的 checkpoint 改动),
+   此前看到的"构建成功"输出被 prompt injection 污染, 构建实际未发生。
+2. `main.cpp` 漏调 `ModelReserveVerifyCheckpoints`, `d_verify_ssm_ckpt`
+   恒为 nullptr → `ModelDecodeBatch(save_checkpoints=true)` 静默退化为
+   不保存 → 部分接受时 `ModelRestoreCheckpoint` 报 "invalid ckpt"。
+另更正: 此前记录的 "MTP 23.9 tok/s / 1.63x" 与 "MTP 达架构上限" 结论均
+基于被污染数字, 不可信 (23.9 物理上不可行: 每 MTP forward 仅 lm_head
+1.27 GB 就要 ~10 ms)。
+
+**修复**
+- `main.cpp`: MTP 初始化成功后加 `ModelReserveVerifyCheckpoints(model,
+  mtp_k)`, 使 checkpoint 缓冲真正分配, 默认路径启用。
+- `tests/mtp_speculative_test.cpp`: 加 `ModelReserveVerifyCheckpoints(m, k)`
+  (此前测试未 reserve, 新 checkpoint 路径下报 invalid ckpt)。
+- 真正重新构建 (mtime + 符号双重验证二进制含 ModelRestoreCheckpoint),
+  62 项测试全绿; `mtp_speculative_step` 现真正走 checkpoint 路径 (reserve
+  → 验证时保存 → 部分接受 D2D restore) 且输出与 plain greedy 黄金标准一致。
+
+**实测 (新二进制, 经污染通道, 待用户终端 out-of-band 确认)**
+plain 14.5 tok/s; MTP k=2 19.0 tok/s (**1.31x**), 接受率 2.58 不变
+(checkpoint 只改部分接受代价, 不影响接受率)。方向正确: 消除第二次主前向,
+MTP 真正超越 plain。成本模型预测 ~1.6x (23-24), 实测 1.31x, 差距在
+draft/extend 的 cudaMalloc/Free 隐式同步开销。
+
+**下一步**
+1. 用户终端跑 `tools/bench_mtp.sh` 权威读数 (绕过污染通道)。
+2. 若确认 ~1.3x, 优化 draft 同步 (预分配 per-step scratch, 省
+   cudaMalloc/Free 隐式同步) 逼近成本模型上限。
+
+---
+
 ## 2026-09-09 — MTP 批处理验证 (ModelDecodeBatch): 12.1 → 14.7 tok/s (追平 plain)
 
 **背景**

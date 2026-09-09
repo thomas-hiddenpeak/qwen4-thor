@@ -39,6 +39,7 @@ using q4t::model::ModelBeginSequence;
 using q4t::model::ModelPrefill;
 using q4t::model::ModelDecodeStepSeq;
 using q4t::model::ModelEndSequence;
+using q4t::model::ModelReserveVerifyCheckpoints;
 using q4t::mtp::LoadMtp;
 using q4t::mtp::MtpConfig;
 using q4t::mtp::MtpModel;
@@ -304,6 +305,15 @@ Q4T_TEST(mtp_speculative_step) {
                                &d0, d_g, nullptr);
   if (!s.ok()) {
     std::printf("  MtpDraftExtend failed: %s\n", s.message().c_str());
+    mtp.Free();
+    m.Free();
+    return false;
+  }
+  // Reserve per-token SSM/conv checkpoints so the speculative step's batched
+  // verify can save them and a partial accept can D2D-restore checkpoint[a].
+  s = ModelReserveVerifyCheckpoints(m, k);
+  if (!s.ok()) {
+    std::printf("  checkpoint reserve failed: %s\n", s.message().c_str());
     mtp.Free();
     m.Free();
     return false;
