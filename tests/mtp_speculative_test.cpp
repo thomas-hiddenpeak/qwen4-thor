@@ -192,7 +192,6 @@ Q4T_TEST(mtp_speculative_step) {
     std::printf("  cross-check: main argmax at P-1 = %d (expect 236644)\n",
                 cross);
   }
-  cudaFree(d_trunk_full);
   cudaFree(d_logits_full);
 
   const int P = seq.position;  // == T
@@ -275,13 +274,46 @@ Q4T_TEST(mtp_speculative_step) {
   std::printf("  ground truth: %zu tokens (first=%d)\n", gt_tokens.size(),
               gt_tokens[0]);
 
-  // 5. Now run the speculative step from the original seq (position P=T).
-  //    Reset the MTP KV first (fresh sequence).
+  // 5. The ground-truth decode above advanced the shared per-layer state; the
+  //    MTP KV was never touched. Re-prefill to reset the main state to P and
+  //    refresh the per-position trunks, then draft-extend + one spec step.
+  ModelBeginSequence(m, &seq, nullptr);
+  uint16_t* d_relog = nullptr;
+  if (!mal(reinterpret_cast<void**>(&d_relog),
+           static_cast<size_t>(T) * vocab * 2)) {
+    std::printf("  cudaMalloc relog failed\n");
+    mtp.Free();
+    m.Free();
+    return false;
+  }
+  ModelPrefill(m, &seq, ids, T, d_relog, nullptr, d_trunk_full);
+  cudaFree(d_relog);
+
   MtpResetState(mtp, nullptr);
+  const int32_t b0 = gt_tokens[0];  // main's first token (bonus)
+  // EAGLE shift: [t_1..t_{T-1}, b0].
+  std::vector<int32_t> shifted(T);
+  for (int i = 0; i < T - 1; ++i) shifted[i] = ids[i + 1];
+  shifted[T - 1] = b0;
+  std::vector<int> pos(T);
+  for (int i = 0; i < T; ++i) pos[i] = i;
+  int32_t d0 = -1;
+  uint16_t* d_g = d_trunk;          // reuse buffer: draft trunk
+  uint16_t* d_g_next = d_trunk_gt;  // reuse buffer: next draft trunk
+  s = q4t::mtp::MtpDraftExtend(mtp, shifted.data(), d_trunk_full, pos.data(), T,
+                               &d0, d_g, nullptr);
+  if (!s.ok()) {
+    std::printf("  MtpDraftExtend failed: %s\n", s.message().c_str());
+    mtp.Free();
+    m.Free();
+    return false;
+  }
+
   int32_t accepted_tokens[k + 1];
   int accepted_count = 0;
-  s = MtpSpeculativeStep(m, mtp, &seq, d_trunk_in, k, accepted_tokens,
-                         &accepted_count, d_trunk, nullptr);
+  int32_t next_b = -1, next_d0 = -1;
+  s = MtpSpeculativeStep(m, mtp, &seq, b0, d0, d_g, k, accepted_tokens,
+                         &accepted_count, &next_b, &next_d0, d_g_next, nullptr);
   if (!s.ok()) {
     std::printf("  MtpSpeculativeStep failed: %s\n", s.message().c_str());
     mtp.Free();
@@ -293,82 +325,25 @@ Q4T_TEST(mtp_speculative_step) {
     std::printf("%d%s", accepted_tokens[i], i + 1 < accepted_count ? ", " : "");
   std::printf("]\n");
 
-  // 6. Check 1: the speculative step's mechanics are correct.
-  //
-  //    NOTE: with a 2-layer main model (a truncation of the full 48-layer
-  //    model), the main model's greedy output is NOT a reliable ground truth
-  //    for the MTP draft model (which was trained against the full model).
-  //    The MTP draft's predictions will generally disagree with the
-  //    truncated main model's predictions, so the speculative step will
-  //    accept 0 draft tokens and fall back to the main model's own next
-  //    token. This is the CORRECT behavior of the speculative decoding
-  //    algorithm — the test verifies the algorithm's mechanics (state
-  //    rollback, seq advancement, trunk propagation), not the MTP model's
-  //    quality against a truncated main model.
-  //
-  //    The key correctness checks are:
-  //    (a) The speculative step produces at least 1 token (the main model's
-  //        own next token, even when 0 draft tokens are accepted).
-  //    (b) The seq state machine advanced by exactly accepted_count.
-  //    (c) When accepted_count == 1 (0 draft tokens accepted), the
-  //        next_trunk is the main model's trunk at position P-1 (the
-  //        prefill's last row), which is the correct state for the next
-  //        speculative step.
-  bool tokens_match = true;
-  for (int i = 0; i < accepted_count; ++i) {
-    if (accepted_tokens[i] != gt_tokens[i]) {
-      tokens_match = false;
-      std::printf("  MISMATCH at %d: spec=%d gt=%d\n", i, accepted_tokens[i],
-                  gt_tokens[i]);
-    }
-  }
-  std::printf("  tokens: %s (expected with 2-layer main model)\n",
-              tokens_match ? "match" : "MISMATCH");
-  // (a) The speculative step must produce at least 1 token.
+  // 6. Mechanics + correctness checks.
+  //    (a) At least 1 token (the bonus b0).
+  //    (b) accepted[0] == b0 (the main's own first token).
+  //    (c) seq advanced by exactly accepted_count (lazy verify feeds only the
+  //        accepted prefix: b + a accepted drafts = 1 + a = accepted_count).
+  //    (d) the accepted tokens are a prefix of the plain-greedy ground truth
+  //        (each accepted draft was verified == the main's greedy argmax).
   Q4T_CHECK(accepted_count >= 1);
-
-  // 7. Check 2: the seq advanced by exactly accepted_count.
-  //    NOTE: when a=0 (0 draft tokens accepted), the verification phase
-  //    already advanced the seq by 1 (the decode step at position P), so the
-  //    final seq position is P+1, which equals P + accepted_count (since
-  //    accepted_count = a + 1 = 1). When a>0, the re-run advances the seq by
-  //    a, so the final seq position is P + a = P + (accepted_count - 1).
-  //    In both cases, the seq position is P + accepted_count (for a=0) or
-  //    P + (accepted_count - 1) (for a>0). We check the a=0 case here.
-  if (accepted_count == 1) {
-    Q4T_CHECK(seq.position == P + 1);
-    Q4T_CHECK(static_cast<int>(seq.history.size()) == T + 1);
-  }
-
-  // 8. Check 3: when accepted_count == 1 (0 draft tokens accepted), the
-  //    speculative step's bonus token IS the main model's own next token at
-  //    position P, and the next_trunk should be the main model's trunk at
-  //    position P-1 (the prefill's last row). Compare next_trunk with the
-  //    prefill's trunk_in (which is the main model's trunk at position P-1).
-  if (accepted_count == 1) {
-    std::vector<uint16_t> trunk_spec(hc_dim), trunk_in(hc_dim);
-    cudaMemcpy(trunk_spec.data(), d_trunk, hc_dim * 2,
-               cudaMemcpyDeviceToHost);
-    cudaMemcpy(trunk_in.data(), d_trunk_in, hc_dim * 2,
-               cudaMemcpyDeviceToHost);
-    bool trunk_close = true;
-    for (size_t i = 0; i < hc_dim; ++i) {
-      const float a = Bf16ToFloat(trunk_spec[i]);
-      const float b = Bf16ToFloat(trunk_in[i]);
-      if (std::fabs(a - b) > 1e-2f * std::max(1.0f, std::fabs(b))) {
-        trunk_close = false;
-        break;
-      }
-    }
-    std::printf("  next_trunk (a=0 case): %s\n",
-                trunk_close ? "close to trunk_in" : "DIFFER");
-    Q4T_CHECK(trunk_close);
-  }
+  Q4T_CHECK(accepted_tokens[0] == b0);
+  Q4T_CHECK(seq.position == P + accepted_count);
+  Q4T_CHECK(static_cast<int>(seq.history.size()) == T + accepted_count);
+  for (int i = 0; i < accepted_count; ++i)
+    Q4T_CHECK(accepted_tokens[i] == gt_tokens[i]);
 
   cudaFree(d_logits);
   cudaFree(d_trunk);
   cudaFree(d_trunk_gt);
   cudaFree(d_trunk_in);
+  cudaFree(d_trunk_full);
   mtp.Free();
   m.Free();
   return true;

@@ -31,6 +31,8 @@
 
 #include <cmath>
 #include <cstdint>
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <memory>
 #include <string>
@@ -396,82 +398,143 @@ size_t MtpWorkspaceBytes(const MtpConfig& cfg, int T,
 }
 
 // ---------------------------------------------------------------------------
-// Speculative decoding step (see mtp.h).
-//
-// Alignment (scheme A, mirrors the vLLM MTP proposer):
-//   - trunk_in = the main model's pre-final-mixer multi stream at position
-//     P-1 (the last prompt token, or the prior speculative step's next_trunk).
-//   - draft step i (i=0..k-1): input token = the token at position P+i
-//     (i=0: the last prompt token; i>0: the prior draft token), hidden =
-//     trunk_{P+i-1}. It predicts the token at position P+i+1 (draft[i]) and
-//     emits trunk_{P+i}.
-//   - verification: the main model at position P+i predicts the token at
-//     P+i+1; draft[i] is accepted iff it equals that argmax.
-//
-// Rollback: the main model's paged KV/indexer caches are written at absolute
-// positions and are overwritten identically by the re-run, so they need no
-// rollback. Only the recurrent state (linear SSM/conv, PLE conv) is updated
-// in place; it is snapshotted before verification and restored before the
-// re-run of the accepted prefix.
+// Host argmax over a BF16 logits row.
+static int ArgmaxBf16Row(const uint16_t* lg, int vocab) {
+  int best = 0;
+  float bestv = -1e30f;
+  for (int v = 0; v < vocab; ++v) {
+    const float x = Bf16ToFloatHost(lg[static_cast<size_t>(v)]);
+    if (x > bestv) {
+      bestv = x;
+      best = v;
+    }
+  }
+  return best;
+}
+
 // ---------------------------------------------------------------------------
+// Draft-extend (see mtp.h): run the draft model over T tokens to build its
+// full-attention KV, returning the last row's first-draft argmax + trunk.
+// ---------------------------------------------------------------------------
+Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
+                      const uint16_t* main_trunk, const int* positions, int T,
+                      int32_t* out_d0, uint16_t* out_g, cudaStream_t stream) {
+  if (T <= 0) return Status::Fail("MtpDraftExtend: T must be > 0");
+  const int hc_dim = m.hc_dim();
+  const int hs = m.cfg.hs;
+  const int vocab = m.cfg.vocab;
 
-Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
-                          model::ModelSequence* seq, const uint16_t* trunk_in,
-                          int k, int32_t* accepted_tokens, int* accepted_count,
-                          uint16_t* next_trunk, cudaStream_t stream) {
-  if (!seq || !trunk_in || !accepted_tokens || !accepted_count || !next_trunk)
-    return Status::Fail("MtpSpeculativeStep: null arg");
-  if (k <= 0) return Status::Fail("MtpSpeculativeStep: k must be > 0");
-  if (seq->stage != model::ModelSequence::Stage::kDecode) {
-    return Status::Fail("MtpSpeculativeStep: sequence not in decode stage");
-  }
-  const int P = seq->position;
-  const int vocab = mtp.cfg.vocab;
-
-  // Host buffers.
-  std::vector<int32_t> draft(k);
-  std::vector<int32_t> accepted(k + 1);
-
-  // Device buffers: the main model's per-step logits [vocab] (the main model's
-  // own d_ws is too small for a full-vocab logits row) and the per-step trunk
-  // [hc*hs]. The draft step reuses the MtpModel's d_trunk/d_logits.
-  uint16_t* d_main_logits = nullptr;
-  uint16_t* d_trunk_step = nullptr;
-  const size_t hc_dim = static_cast<size_t>(mtp.hc_dim());
-  if (cudaMalloc(reinterpret_cast<void**>(&d_main_logits),
-                 static_cast<size_t>(vocab) * sizeof(uint16_t)) !=
-      cudaSuccess)
-    return Status::Fail("cudaMalloc d_main_logits");
-  if (cudaMalloc(reinterpret_cast<void**>(&d_trunk_step),
-                 hc_dim * sizeof(uint16_t)) != cudaSuccess) {
-    cudaFree(d_main_logits);
-    return Status::Fail("cudaMalloc d_trunk_step");
-  }
-
+  int32_t* d_ids = nullptr;
+  int* d_pos = nullptr;
+  uint16_t* d_sample = nullptr;  // [T, hs]
+  uint16_t* d_multi = nullptr;   // [T, hc_dim]
+  uint16_t* d_logits = nullptr;  // [T, vocab]
   auto cleanup = [&](Status s) -> Status {
-    cudaFree(d_main_logits);
-    cudaFree(d_trunk_step);
+    if (d_ids) cudaFree(d_ids);
+    if (d_pos) cudaFree(d_pos);
+    if (d_sample) cudaFree(d_sample);
+    if (d_multi) cudaFree(d_multi);
+    if (d_logits) cudaFree(d_logits);
     return s;
   };
+  if (cudaMalloc(reinterpret_cast<void**>(&d_ids),
+                 static_cast<size_t>(T) * sizeof(int32_t)) != cudaSuccess ||
+      cudaMalloc(reinterpret_cast<void**>(&d_pos),
+                 static_cast<size_t>(T) * sizeof(int)) != cudaSuccess ||
+      cudaMalloc(reinterpret_cast<void**>(&d_sample),
+                 static_cast<size_t>(T) * hs * sizeof(uint16_t)) !=
+          cudaSuccess ||
+      cudaMalloc(reinterpret_cast<void**>(&d_multi),
+                 static_cast<size_t>(T) * hc_dim * sizeof(uint16_t)) !=
+          cudaSuccess ||
+      cudaMalloc(reinterpret_cast<void**>(&d_logits),
+                 static_cast<size_t>(T) * vocab * sizeof(uint16_t)) !=
+          cudaSuccess)
+    return cleanup(Status::Fail("MtpDraftExtend: cudaMalloc"));
 
-  // 1. Snapshot the main model's recurrent state (pre-verification).
-  model::ModelStateSnapshot snap;
-  {
-    Status s = model::ModelSnapshotState(main, &snap, stream);
-    if (!s.ok()) return cleanup(s);
-  }
+  cudaMemcpy(d_ids, shifted_ids, static_cast<size_t>(T) * sizeof(int32_t),
+             cudaMemcpyHostToDevice);
+  cudaMemcpy(d_pos, positions, static_cast<size_t>(T) * sizeof(int),
+             cudaMemcpyHostToDevice);
 
-  // 2. Draft phase: k MTP steps. The MTP full-attention KV/indexer caches are
-  //    ACCUMULATED across speculative steps (the draft model builds its own KV
-  //    over all draft tokens, mirroring the main model's decode KV). Call
-  //    MtpResetState once before the FIRST speculative step of a sequence
-  //    (mirroring the main model's ModelBeginSequence), not here.
-  for (int i = 0; i < k; ++i) {
-    const int pos = P + i;
-    // input token: i=0 -> last prompt token (history[P-1]); i>0 -> draft[i-1].
-    const int32_t in_tok =
-        (i == 0) ? seq->history[static_cast<size_t>(P) - 1] : draft[i - 1];
-    int32_t h_ids[1] = {in_tok};
+  Status s = MtpForward(m, d_ids, d_pos, main_trunk, d_sample, d_multi,
+                        d_logits, T, stream);
+  if (!s.ok()) return cleanup(s);
+
+  // out_g = last row's multi_hidden (draft trunk g_{last}).
+  if (cudaMemcpy(out_g, d_multi + static_cast<size_t>(T - 1) * hc_dim,
+                 static_cast<size_t>(hc_dim) * sizeof(uint16_t),
+                 cudaMemcpyDeviceToDevice) != cudaSuccess)
+    return cleanup(Status::Fail("MtpDraftExtend: D2D out_g"));
+
+  // out_d0 = argmax of the last row's logits (first draft token).
+  std::vector<uint16_t> lg(static_cast<size_t>(vocab));
+  if (cudaMemcpy(lg.data(), d_logits + static_cast<size_t>(T - 1) * vocab,
+                 lg.size() * sizeof(uint16_t),
+                 cudaMemcpyDeviceToHost) != cudaSuccess)
+    return cleanup(Status::Fail("MtpDraftExtend: D2H logits"));
+  *out_d0 = ArgmaxBf16Row(lg.data(), vocab);
+  return cleanup(Status());
+}
+
+// ---------------------------------------------------------------------------
+// Speculative decoding step (see mtp.h).
+//
+// Alignment (scheme A, EAGLE-shift, mirrors the vLLM MTP proposer):
+//   - The draft KV is already built to position P-1 (MtpDraftExtend over the
+//     prompt for the first step; the previous step's internal extend after).
+//   - b = t_P (main's bonus, from prefill/prev step); d0 = draft's t_{P+1};
+//     g_in = draft trunk g_{P-1}.
+//   - draft loop writes speculative KV[P..P+k-2]; lazy verification feeds ONLY
+//     the accepted tokens (b + accepted drafts), so the main recurrent state
+//     advances exactly over the accepted prefix — no snapshot/rollback needed.
+//   - internal extend rebuilds draft KV[P..P+a] from the captured main trunks
+//     (matching vLLM's next-call first pass over the accepted tokens).
+// ---------------------------------------------------------------------------
+Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
+                          model::ModelSequence* seq, int32_t b, int32_t d0,
+                          const uint16_t* g_in, int k, int32_t* accepted_tokens,
+                          int* accepted_count, int32_t* next_b,
+                          int32_t* next_d0, uint16_t* next_g,
+                          cudaStream_t stream) {
+  if (!seq || !g_in || !accepted_tokens || !accepted_count || !next_b ||
+      !next_d0 || !next_g)
+    return Status::Fail("MtpSpeculativeStep: null arg");
+  if (k <= 0) return Status::Fail("MtpSpeculativeStep: k must be > 0");
+  if (seq->stage != model::ModelSequence::Stage::kDecode)
+    return Status::Fail("MtpSpeculativeStep: sequence not in decode stage");
+  const int P = seq->position;
+  const int vocab = mtp.cfg.vocab;
+  const int hc_dim = mtp.hc_dim();
+
+  uint16_t* d_main_logits = nullptr;  // [vocab]
+  uint16_t* d_htrunk = nullptr;       // [k+1, hc_dim] captured main trunks
+  uint16_t* d_g = nullptr;            // [hc_dim] rolling draft trunk
+  auto cleanup = [&](Status s) -> Status {
+    if (d_main_logits) cudaFree(d_main_logits);
+    if (d_htrunk) cudaFree(d_htrunk);
+    if (d_g) cudaFree(d_g);
+    return s;
+  };
+  if (cudaMalloc(reinterpret_cast<void**>(&d_main_logits),
+                 static_cast<size_t>(vocab) * sizeof(uint16_t)) !=
+          cudaSuccess ||
+      cudaMalloc(reinterpret_cast<void**>(&d_htrunk),
+                 static_cast<size_t>(k + 1) * hc_dim * sizeof(uint16_t)) !=
+          cudaSuccess ||
+      cudaMalloc(reinterpret_cast<void**>(&d_g),
+                 static_cast<size_t>(hc_dim) * sizeof(uint16_t)) != cudaSuccess)
+    return cleanup(Status::Fail("MtpSpeculativeStep: cudaMalloc"));
+
+  // 1. Draft loop: drafts[0] = d0 (given); generate drafts[1..k-1].
+  std::vector<int32_t> drafts(k);
+  drafts[0] = d0;
+  if (cudaMemcpy(d_g, g_in, static_cast<size_t>(hc_dim) * sizeof(uint16_t),
+                 cudaMemcpyDeviceToDevice) != cudaSuccess)
+    return cleanup(Status::Fail("MtpSpeculativeStep: D2D g_in"));
+  for (int j = 1; j < k; ++j) {
+    const int pos = P + j - 1;  // EAGLE shift: token t_{P+j} fed at P+j-1.
+    int32_t h_ids[1] = {drafts[j - 1]};
     int h_pos[1] = {pos};
     int32_t* d_ids = nullptr;
     int* d_pos = nullptr;
@@ -481,142 +544,87 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
             cudaSuccess) {
       if (d_ids) cudaFree(d_ids);
       if (d_pos) cudaFree(d_pos);
-      return cleanup(Status::Fail("cudaMalloc draft ids/pos"));
+      return cleanup(Status::Fail("MtpSpeculativeStep: cudaMalloc draft"));
     }
     cudaMemcpy(d_ids, h_ids, sizeof(int32_t), cudaMemcpyHostToDevice);
     cudaMemcpy(d_pos, h_pos, sizeof(int), cudaMemcpyHostToDevice);
-    // hidden_states = trunk_{P+i-1}: i=0 -> trunk_in (caller), i>0 -> the
-    // prior draft step's multi_hidden (mtp.d_trunk).
-    const uint16_t* hidden_src = (i == 0) ? trunk_in : mtp.d_trunk;
-    Status s = MtpForward(mtp, d_ids, d_pos, hidden_src, mtp.d_sample,
-                          mtp.d_trunk, mtp.d_logits, 1, stream);
+    Status s = MtpForward(mtp, d_ids, d_pos, d_g, mtp.d_sample, mtp.d_trunk,
+                          mtp.d_logits, 1, stream);
     cudaFree(d_ids);
     cudaFree(d_pos);
     if (!s.ok()) return cleanup(s);
-    // argmax of the draft logits (host).
     std::vector<uint16_t> lg(static_cast<size_t>(vocab));
     if (cudaMemcpy(lg.data(), mtp.d_logits, lg.size() * sizeof(uint16_t),
-                   cudaMemcpyDeviceToHost) != cudaSuccess) {
-      return cleanup(Status::Fail("D2H draft logits"));
-    }
-    int best = 0;
-    float bestv = -1e30f;
-    for (int v = 0; v < vocab; ++v) {
-      const float x = Bf16ToFloatHost(lg[static_cast<size_t>(v)]);
-      if (x > bestv) {
-        bestv = x;
-        best = v;
-      }
-    }
-    draft[i] = best;
+                   cudaMemcpyDeviceToHost) != cudaSuccess)
+      return cleanup(Status::Fail("MtpSpeculativeStep: D2H draft logits"));
+    drafts[j] = ArgmaxBf16Row(lg.data(), vocab);
+    if (cudaMemcpy(d_g, mtp.d_trunk,
+                   static_cast<size_t>(hc_dim) * sizeof(uint16_t),
+                   cudaMemcpyDeviceToDevice) != cudaSuccess)
+      return cleanup(Status::Fail("MtpSpeculativeStep: D2D roll g"));
   }
 
-  // 3. Verification: k main-model decode steps (positions P..P+k-1). Each
-  //    predicts the token at position P+i+1; compare with draft[i].
-  //    ModelDecodeStepSeq auto-advances seq->position/history, so snapshot
-  //    them now and restore after verification (the re-run re-advances them
-  //    over the accepted prefix only).
-  const int saved_position = seq->position;
-  const std::vector<int32_t> saved_history = seq->history;
-  // main_pred[i] = the main model's argmax at position P+i (predicts the token
-  // at P+i+1). Used both for the accept decision and, when a==0, as the bonus
-  // token (the main model's own next token at position P).
-  std::vector<int> main_pred(k);
+  const bool dbg = getenv("Q4T_MTP_DEBUG") != nullptr;
+
+  // 2. Lazy verification: feed b@P, then each accepted draft. Capture the main
+  //    trunk at every fed position (h_P..h_{P+a}). No rollback: the main state
+  //    advances only over accepted tokens.
   int a = 0;
-  for (int i = 0; i < k; ++i) {
-    Status s = model::ModelDecodeStepSeq(main, seq, draft[i], d_main_logits,
-                                         stream, nullptr);
+  int32_t correction = -1;
+  {
+    Status s = model::ModelDecodeStepSeq(main, seq, b, d_main_logits, stream,
+                                         d_htrunk + 0);
     if (!s.ok()) return cleanup(s);
     std::vector<uint16_t> lg(static_cast<size_t>(vocab));
     if (cudaMemcpy(lg.data(), d_main_logits, lg.size() * sizeof(uint16_t),
-                   cudaMemcpyDeviceToHost) != cudaSuccess) {
-      return cleanup(Status::Fail("D2H main logits"));
-    }
-    int best = 0;
-    float bestv = -1e30f;
-    for (int v = 0; v < vocab; ++v) {
-      const float x = Bf16ToFloatHost(lg[static_cast<size_t>(v)]);
-      if (x > bestv) {
-        bestv = x;
-        best = v;
-      }
-    }
-    main_pred[i] = best;
-    if (best != draft[i]) break;
+                   cudaMemcpyDeviceToHost) != cudaSuccess)
+      return cleanup(Status::Fail("MtpSpeculativeStep: D2H m0"));
+    correction = ArgmaxBf16Row(lg.data(), vocab);
+  }
+  for (int i = 0; i < k; ++i) {
+    if (dbg && i < 3)
+      std::fprintf(stderr,
+                   "[mtp-debug] P=%d i=%d draft=%d main=%d match=%d\n", P, i,
+                   drafts[i], correction, drafts[i] == correction ? 1 : 0);
+    if (drafts[i] != correction) break;
     a = i + 1;
+    // Accept drafts[i]; feed it to advance the main state + get m_{i+1}.
+    Status s = model::ModelDecodeStepSeq(
+        main, seq, drafts[i], d_main_logits, stream,
+        d_htrunk + static_cast<size_t>(i + 1) * hc_dim);
+    if (!s.ok()) return cleanup(s);
+    std::vector<uint16_t> lg(static_cast<size_t>(vocab));
+    if (cudaMemcpy(lg.data(), d_main_logits, lg.size() * sizeof(uint16_t),
+                   cudaMemcpyDeviceToHost) != cudaSuccess)
+      return cleanup(Status::Fail("MtpSpeculativeStep: D2H mi"));
+    correction = ArgmaxBf16Row(lg.data(), vocab);
   }
 
-  // 4. Rollback: restore the recurrent state AND the seq state machine to
-  //    pre-verification, then re-run the a accepted tokens to advance the
-  //    recurrent state correctly and to obtain the next trunk + the bonus
-  //    token. The paged KV/indexer caches are overwritten identically by the
-  //    re-run (no rollback needed).
-  //
-  //    NOTE: when a=0, we do NOT re-run any tokens (the verification phase
-  //    already advanced the seq by 1, which is the correct final state).
-  //    When a>0, we re-run the a accepted tokens to advance the seq by a.
+  // 3. Emit accepted = [b, drafts[0..a-1]]; correction = m_a = next bonus.
+  accepted_tokens[0] = b;
+  for (int i = 0; i < a; ++i) accepted_tokens[1 + i] = drafts[i];
+  *accepted_count = 1 + a;
+  *next_b = correction;
+
+  // 4. Internal extend: rebuild draft KV[P..P+a] from the captured main trunks
+  //    (input = accepted drafts + the correction at the tail), yielding the
+  //    next step's first draft (next_d0) + trunk (next_g).
   {
-    Status s = model::ModelRestoreState(main, snap, stream);
+    std::vector<int32_t> ext_ids(a + 1);
+    std::vector<int> ext_pos(a + 1);
+    for (int i = 0; i < a; ++i) {
+      ext_ids[i] = drafts[i];
+      ext_pos[i] = P + i;
+    }
+    ext_ids[a] = correction;
+    ext_pos[a] = P + a;
+    Status s = MtpDraftExtend(mtp, ext_ids.data(), d_htrunk, ext_pos.data(),
+                              a + 1, next_d0, next_g, stream);
     if (!s.ok()) return cleanup(s);
   }
-  if (a > 0) {
-    seq->position = saved_position;
-    seq->history = saved_history;
-  }
-  // Bonus token: the main model's own next token at position P+a.
-  //   - a == 0: the main model's argmax at position P (main_pred[0], already
-  //     computed during verification). The seq is already at position P+1
-  //     (advanced by the verification decode step), so no re-run is needed.
-  //   - a > 0: the main model's argmax at position P+a-1, obtained from the
-  //     re-run's last decode step.
-  int32_t bonus = -1;
-  if (a == 0) {
-    bonus = main_pred[0];
-    // The seq is already at position P+1 (advanced by the verification
-    // decode step at position P). The next_trunk is the main model's trunk
-    // at position P-1 (the prefill's last row), which is the correct state
-    // for the next speculative step.
-    if (cudaMemcpy(next_trunk, trunk_in, hc_dim * sizeof(uint16_t),
-                   cudaMemcpyDeviceToDevice) != cudaSuccess) {
-      return cleanup(Status::Fail("D2D next_trunk (a=0)"));
-    }
-  } else {
-    for (int i = 0; i < a; ++i) {
-      Status s = model::ModelDecodeStepSeq(main, seq, draft[i], d_main_logits,
-                                           stream, d_trunk_step);
-      if (!s.ok()) return cleanup(s);
-      if (i == a - 1) {
-        // Copy the accepted prefix's final trunk to the caller's next_trunk.
-        if (cudaMemcpy(next_trunk, d_trunk_step, hc_dim * sizeof(uint16_t),
-                       cudaMemcpyDeviceToDevice) != cudaSuccess) {
-          return cleanup(Status::Fail("D2D next_trunk"));
-        }
-        std::vector<uint16_t> lg(static_cast<size_t>(vocab));
-        if (cudaMemcpy(lg.data(), d_main_logits, lg.size() * sizeof(uint16_t),
-                       cudaMemcpyDeviceToHost) != cudaSuccess) {
-          return cleanup(Status::Fail("D2H bonus logits"));
-        }
-        int best = 0;
-        float bestv = -1e30f;
-        for (int v = 0; v < vocab; ++v) {
-          const float x = Bf16ToFloatHost(lg[static_cast<size_t>(v)]);
-          if (x > bestv) {
-            bestv = x;
-            best = v;
-          }
-        }
-        bonus = best;
-      }
-    }
-  }
-
-  // 5. Emit the accepted tokens + the bonus token; advance the sequence.
-  for (int i = 0; i < a; ++i) accepted[i] = draft[i];
-  accepted[a] = bonus;
-  for (int i = 0; i <= a; ++i) accepted_tokens[i] = accepted[i];
-  *accepted_count = a + 1;
   return cleanup(Status());
 }
+
 
 Status MtpForward(const MtpModel& m, const int32_t* input_ids,
                   const int* positions, const uint16_t* hidden_states,

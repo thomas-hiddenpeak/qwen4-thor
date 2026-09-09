@@ -199,15 +199,14 @@ int RunGenerate(int argc, char** argv) {
   const size_t hc_dim =
       static_cast<size_t>(mcfg.hc) * static_cast<size_t>(mcfg.hs);
   uint16_t* d_trunk_full = nullptr;  // [T_prompt, hc_dim] (prefill trunk_out)
-  uint16_t* d_trunk_in = nullptr;    // [hc_dim] (current speculative trunk)
-  uint16_t* d_trunk_next = nullptr;  // [hc_dim] (next speculative trunk)
+  uint16_t* d_g = nullptr;           // [hc_dim] (current draft trunk)
+  uint16_t* d_g_next = nullptr;      // [hc_dim] (next draft trunk)
   if (mtp_loaded) {
     if (cudaMalloc(reinterpret_cast<void**>(&d_trunk_full),
                    static_cast<size_t>(T_prompt) * hc_dim * 2) !=
             cudaSuccess ||
-        cudaMalloc(reinterpret_cast<void**>(&d_trunk_in), hc_dim * 2) !=
-            cudaSuccess ||
-        cudaMalloc(reinterpret_cast<void**>(&d_trunk_next), hc_dim * 2) !=
+        cudaMalloc(reinterpret_cast<void**>(&d_g), hc_dim * 2) != cudaSuccess ||
+        cudaMalloc(reinterpret_cast<void**>(&d_g_next), hc_dim * 2) !=
             cudaSuccess) {
       std::fprintf(stderr, "cudaMalloc trunk failed\n");
       cudaFree(d_logits);
@@ -269,23 +268,7 @@ int RunGenerate(int argc, char** argv) {
   cudaDeviceSynchronize();
   auto t_prefill_end = std::chrono::steady_clock::now();
 
-  // MTP init: fresh KV/indexer state + first trunk_in = prefill's last row.
-  if (mtp_loaded) {
-    s = q4t::mtp::MtpResetState(mtp, nullptr);
-    if (!s.ok()) {
-      std::fprintf(stderr, "MTP reset failed: %s\n", s.message().c_str());
-      cudaFree(d_logits);
-      mtp.Free();
-      model.Free();
-      return 1;
-    }
-    cudaMemcpy(d_trunk_in,
-               d_trunk_full +
-                   static_cast<size_t>(T_prompt - 1) * hc_dim,
-               hc_dim * 2, cudaMemcpyDeviceToDevice);
-  }
-
-  // 5. Decode loop (greedy argmax).
+  // Greedy argmax over a host BF16 logits row.
   auto argmax = [&](const uint16_t* h) {
     int best = 0;
     float best_v = -1e30f;
@@ -301,21 +284,56 @@ int RunGenerate(int argc, char** argv) {
     return best;
   };
 
+  // MTP init: fresh KV/indexer state, sample the bonus token b = t_P (main's
+  // argmax at the last prompt position), then draft-extend over the prompt to
+  // build the draft KV[0..P-1] and seed the first speculative step (d0 + g).
+  int32_t mtp_b = -1, mtp_d0 = -1;
+  if (mtp_loaded) {
+    s = q4t::mtp::MtpResetState(mtp, nullptr);
+    if (!s.ok()) {
+      std::fprintf(stderr, "MTP reset failed: %s\n", s.message().c_str());
+      cudaFree(d_logits);
+      mtp.Free();
+      model.Free();
+      return 1;
+    }
+    cudaMemcpy(h_logits.data(),
+               d_logits + static_cast<size_t>(T_prompt - 1) * vocab,
+               static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost);
+    mtp_b = argmax(h_logits.data());
+    // EAGLE shift: shifted_ids[p] = t_{p+1}, with t_P := b at the tail.
+    std::vector<int32_t> shifted(T_prompt);
+    for (int i = 0; i < T_prompt - 1; ++i) shifted[i] = ids[i + 1];
+    shifted[T_prompt - 1] = mtp_b;
+    std::vector<int> pos(T_prompt);
+    for (int i = 0; i < T_prompt; ++i) pos[i] = i;
+    s = q4t::mtp::MtpDraftExtend(mtp, shifted.data(), d_trunk_full, pos.data(),
+                                 T_prompt, &mtp_d0, d_g, nullptr);
+    if (!s.ok()) {
+      std::fprintf(stderr, "MTP draft-extend failed: %s\n",
+                   s.message().c_str());
+      cudaFree(d_logits);
+      mtp.Free();
+      model.Free();
+      return 1;
+    }
+  }
+
   std::vector<int32_t> generated;
   auto t_decode_start = std::chrono::steady_clock::now();
   if (mtp_loaded) {
-    // Speculative decoding: each iteration runs MtpSpeculativeStep (k draft
-    // steps + main-model verification), accepting 1..k+1 tokens.
+    // Speculative decoding: each step emits the bonus b + accepted drafts and
+    // yields the next (b, d0, g). MtpSpeculativeStep advances the main seq over
+    // exactly the accepted prefix (lazy verification, no rollback).
     int32_t accepted_tokens[64];
     int accepted_count = 0;
     int mtp_steps = 0, mtp_accepted = 0;
     bool done = false;
     while (!done && static_cast<int>(generated.size()) < max_tokens) {
-      const int room = max_tokens - static_cast<int>(generated.size());
-      const int k = std::min(mtp_k, room);
-      s = q4t::mtp::MtpSpeculativeStep(model, mtp, &seq, d_trunk_in, k,
-                                       accepted_tokens, &accepted_count,
-                                       d_trunk_next, nullptr);
+      int32_t next_b = -1, next_d0 = -1;
+      s = q4t::mtp::MtpSpeculativeStep(model, mtp, &seq, mtp_b, mtp_d0, d_g,
+                                       mtp_k, accepted_tokens, &accepted_count,
+                                       &next_b, &next_d0, d_g_next, nullptr);
       if (!s.ok()) {
         std::fprintf(stderr, "speculative step failed: %s\n",
                      s.message().c_str());
@@ -333,10 +351,12 @@ int RunGenerate(int argc, char** argv) {
           break;
         }
       }
-      // Swap trunk buffers for the next iteration.
-      uint16_t* tmp = d_trunk_in;
-      d_trunk_in = d_trunk_next;
-      d_trunk_next = tmp;
+      // Roll (b, d0, g) forward for the next step.
+      mtp_b = next_b;
+      mtp_d0 = next_d0;
+      uint16_t* tmp = d_g;
+      d_g = d_g_next;
+      d_g_next = tmp;
     }
     std::fprintf(stderr,
                  "[q4t] MTP: %d steps, %d tokens, avg %.2f tok/step "
@@ -398,8 +418,8 @@ int RunGenerate(int argc, char** argv) {
 
   if (mtp_loaded) {
     cudaFree(d_trunk_full);
-    cudaFree(d_trunk_in);
-    cudaFree(d_trunk_next);
+    cudaFree(d_g);
+    cudaFree(d_g_next);
     mtp.Free();
   }
   cudaFree(d_logits);

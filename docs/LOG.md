@@ -5,6 +5,67 @@
 
 ---
 
+## 2026-09-09 — MTP draft-extend 修复 (接受率 0 → 2.62 tok/step, 根因闭合)
+
+**背景**
+上一条 (2026-09-08) 诊断出 MTP 接受率 = 0, draft 输出垃圾 (271/760 随
+position 奇偶交替)。本轮对照 vLLM `reference/.../nvidia/mtp.py` +
+`v1/spec_decode/llm_base_proposer.py` 定位根因并修复。
+
+**根因: MTP 缺少 draft-extend (KV cache 未建 prompt 上下文)**
+`MtpResetState` 清空 MTP full-attention KV 后, 旧代码直接跑单 token draft,
+draft 的注意力层只看到自己那一个 KV entry, **看不到 prompt 的 0..P-1
+上下文** → attention 退化 → 输出随 RoPE 相位奇偶交替的常数。vLLM 的
+proposer 在 "first pass" (set_inputs_first_pass) 会让 draft 模型对整个
+prompt 跑一遍 (EAGLE shift: position p 输入 t_{p+1}, hidden = 主模型 trunk
+h_p), 建好 draft KV[0..P-1] 再做单 token 投机。旧代码完全没有这一步。
+
+**修复 (对齐语义 + 新增 MtpDraftExtend + 重写 MtpSpeculativeStep)**
+- 新增 `MtpDraftExtend`: 对 T 个 token 跑 MtpForward 建 draft KV,
+  返回末行 argmax (首个 draft token d0) + 末行 multi_hidden (draft trunk g)。
+- 重写 `MtpSpeculativeStep` (EAGLE-shift 对齐, 新签名 b/d0/g_in →
+  accepted/next_b/next_d0/next_g):
+  ① draft 循环用 d0+g 做种子生成 d_1..d_{k-1} (input=d_{j-1}, pos=P+j-1,
+     hidden=上一步 multi_hidden), 写投机 KV[P..P+k-2];
+  ② **惰性验证 (无需 snapshot/rollback)**: 喂 b@P → m_0, 逐个比对
+     d_i==m_i, 命中才喂 d_i → m_{i+1}, 主模型只喂被接受的 token, recurrent
+     状态恰好推进到接受前缀末尾 (比旧的 snapshot+全喂+restore 更简洁且少
+     一个 bug 源);
+  ③ 内部 extend: 用验证期捕获的主干 h_P..h_{P+a} 对 [d_0..d_{a-1},
+     correction] 在 pos P..P+a 重建 draft KV (覆盖投机写入, 匹配 vLLM
+     next-call first pass), 产出 next_d0 + next_g。
+- main.cpp 驱动重写: prefill 后采样 b=argmax(末行), MtpDraftExtend 建
+  prompt KV, 循环 MtpSpeculativeStep 滚动 (b,d0,g)。
+- 测试 mtp_speculative_test 重写为新签名 + 更强检查 (accepted[0]==b,
+  seq 推进 == accepted_count, accepted 全为 plain 贪心前缀)。
+
+**结果 (根因闭合)**
+- **接受率 0 → 2.62 tok/step** (k=3, 8 步 21 token); draft 现与主模型
+  频繁一致 (P=9 [198,760,1156] 全中; P=17 [1070,883,5010] 全中; P=21
+  [13,1061,369] 全中)。
+- 输出连贯 ("The user is asking me to tell them about hash tables. This
+  is a straightforward computer science/data structures question"), 不再是
+  "hash hash hash" 垃圾。62 项测试全绿, 零警告。
+
+**遗留: 净速度仍慢 (12.1 vs plain 14.6 tok/s) — 验证未批处理**
+当前验证是逐 token `ModelDecodeStepSeq` (T=1), 每 token 一次主模型前向
+(读全权重), 与 plain decode 同代价 → **无批处理节省**。加上 draft/extend
+的额外前向, 净变慢。speculative decode 的加速来自"主模型一次批量前向
+(T=k+1) 验证 k 个 draft" (decode 带宽受限, 权重只读一次), 需要一个
+**批处理 decode API** (ModelDecodeBatch: 在已有 KV 上追加 T 个 token 的
+前向, 返回 [T, vocab] logits)。这是拿到实际加速的下一步。
+
+**遗留 2: MTP 输出与 plain 贪心有小分歧** (explain vs tell)。理论上应逐
+token 一致 (验证精确), 分歧疑为 NVFP4 near-tie 噪声或次要状态扰动, 待查
+(E1–E10 已确立该模型 greedy 非跨路径位一致)。
+
+**下一步**
+1. 批处理 decode API (ModelDecodeBatch) → MTP 实际加速 (~1.4× 估计)
+2. 查 MTP vs plain 小分歧 (是否次要 bug 或纯 NVFP4 噪声)
+3. (可选) draft 循环/extend 的 lm_head 只在需要时算 (省 vocab GEMM)
+
+---
+
 ## 2026-09-08 — MTP 接入 generate (--mtp) + 接受率诊断 (负结果: draft 输出垃圾)
 
 **背景**

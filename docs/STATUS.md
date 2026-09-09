@@ -807,12 +807,22 @@ Phase 2 候选 (完整多设备 PD 部署等, 见 [PHASES.md](PHASES.md)): 完�
    (plain 路径连贯)。根因 = MTP 推测解码的位置对齐/验证逻辑 bug (bonus
    token 计算与 plain 首 token 不一致), 需对照 vLLM mtp.py 参考专门调试
    (独立任务)。MTP 9.9 tok/s < plain 14.6 tok/s, **默认关闭**。
+   **阶段 I 已完成 (MTP draft-extend 修复, 2026-09-09, 根因闭合)**:
+   对照 vLLM proposer 定位根因 = **MTP 缺 draft-extend** (MtpResetState 后
+   直接单 token draft, draft 注意力看不到 prompt KV → 输出垃圾)。修复:
+   新增 `MtpDraftExtend` (对 prompt 跑一遍建 draft KV[0..P-1], EAGLE shift)
+   + 重写 `MtpSpeculativeStep` (新签名 b/d0/g → accepted/next_b/d0/g;
+   惰性验证只喂被接受 token, 无需 snapshot/rollback; 内部 extend 用验证
+   期主干重建 draft KV)。**接受率 0 → 2.62 tok/step** (k=3), draft 现与
+   主模型频繁一致, 输出连贯 (非 "hash hash hash")。62 项全绿。**遗留:
+   净速度仍慢 (12.1 < plain 14.6) — 验证是逐 token T=1 主前向, 无批处理
+   节省; 需 ModelDecodeBatch (已有 KV 上批量 T=k+1 前向) 才能实际加速
+   (~1.4× 估计)。MTP vs plain 有小分歧待查 (疑 NVFP4 near-tie 噪声)**。
    **当前 kernel 分解 (14.5-14.6 tok/s, 接近带宽下限)**: Bf16Gev 48%
    (N=10240 645 GB/s 有效带宽含 L2 复用, 已近上限) / SparseAttention
    12% (T=1 grid 仅 24 blocks, 15% 占用率) / nvjet FP4 14% (100% DRAM)
-   / glue ~10% (SwiGLU+Quant 已融合)。**下一步 = 调试 MTP 位置对齐**
-   (对照 vLLM mtp.py, 先建 draft 预测参考验证) 或 (可选) glue 进一步
-   融合 / SparseAttention 占用率。
+   / glue ~10% (SwiGLU+Quant 已融合)。**下一步 = MTP 批处理验证**
+   (ModelDecodeBatch → MTP 实际加速) 或 (可选) glue 融合 / sparse-attn。
 3. **MTP 1 层 (已完成 2026-09-07)**: 权威参考:
    `reference/vllm/vllm/models/qwen4_exp/nvidia/mtp.py`。
    scheme A 接口 (2026-09-06): `ModelPrefill` / `ModelDecodeStepSeq`

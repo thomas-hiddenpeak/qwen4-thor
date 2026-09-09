@@ -150,26 +150,62 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids, const int* positi
 size_t MtpWorkspaceBytes(const MtpConfig& cfg, int T,
                          const model::FullAttentionWeights& full);
 
-// 推测解码一步: 从当前 seq 状态 (position P, 主模型 pre-final-mixer trunk
-// trunk_in [hc*hs]) 出发, 跑 k 步 MTP draft, 再用主模型逐 token 验证, 接受
-// 最长正确前缀 + 1 个 bonus token。
+// Draft-extend: run the MTP draft model over T tokens to build its
+// full-attention KV/indexer cache for those absolute positions, mirroring the
+// vLLM MTP proposer's "first pass". This MUST be called (over the prompt)
+// after the main prefill and MtpResetState, before the first MtpSpeculativeStep
+// — otherwise the draft attention sees an empty KV and outputs garbage.
 //
-// 返回: accepted_count = 接受的 token 数 (1..k+1), accepted_tokens 填充
-// (host, 调用方分配 >= k+1), next_trunk 填充下一轮的 trunk [hc*hs] (最后一个
-// 接受 token 的主模型 pre-final-mixer 多流)。seq 的 position/history 已推进
-// 到接受后状态。
+// EAGLE-style shift (see reference/.../llm_base_proposer.py set_inputs_first_pass):
+//   at absolute position p, input token = the token at position p+1, hidden =
+//   the main model's pre-final-mixer trunk at position p. The output at the
+//   LAST row predicts the first speculative token and yields the draft trunk to
+//   seed the speculative step's draft loop.
 //
-// 约定 (scheme A, 见本文件顶部):
-//   - trunk_in = 主模型在 position P-1 的 pre-final-mixer 多流 (上一轮
-//     next_trunk, 首轮 = 主模型 prefill 的 trunk_out 最后一行)。
-//   - draft 步 i 的 hidden_states = trunk_{P+i-1}, 产出 draft token 在
-//     position P+i 与 trunk_{P+i}。
-//   - 验证: 主模型在 position P+i 的 argmax 必须等于 draft token_{P+i+1}
-//     (i<k); 全接受时 bonus = 主模型在 position P+k 的 argmax。
+//   shifted_ids : host int32 [T] — for a prompt t_0..t_{P-1} extended after the
+//                 main model sampled t_P, this is [t_1, t_2, ..., t_{P-1}, t_P].
+//   main_trunk  : device BF16 [T, hc*hs] — the main model's per-position trunk
+//                 (prefill trunk_out, or the speculative step's captured trunks).
+//   positions   : host int [T] — the absolute positions p (0..T-1 for a prompt).
+//   out_d0      : host — argmax of the last row's logits (first draft token).
+//   out_g       : device BF16 [hc*hs] — the last row's multi_hidden (draft trunk
+//                 that seeds the next draft step).
+Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
+                      const uint16_t* main_trunk, const int* positions, int T,
+                      int32_t* out_d0, uint16_t* out_g, cudaStream_t stream);
+
+// 推测解码一步 (scheme A, 见本文件顶部 + reference/.../nvidia/mtp.py)。
+//
+// 前置条件: MTP 的 full-attention KV 已通过 MtpDraftExtend 建到 position P-1
+// (首步在 prefill 后对整个 prompt 做 extend; 后续步由上一步内部 extend 续上)。
+// seq 处于 kDecode 阶段, seq->position = P。
+//
+// 输入:
+//   b   = 主模型在 position P-1 的 argmax (bonus token t_P; 首步来自 prefill
+//         末行, 后续步来自上一步的 next_b)。
+//   d0  = draft 对 t_{P+1} 的预测 (来自上一次 extend 的末行 logits)。
+//   g_in= draft 在 position P-1 的 multi_hidden [hc*hs] (来自上一次 extend),
+//         作为 draft 循环第 1 步的 hidden。
+//   k   = 推测步数 (draft 生成 d_0..d_{k-1})。
+//
+// 流程:
+//   1. draft 循环: d_0=d0 已给, 逐 token 生成 d_1..d_{k-1} (input=d_{j-1},
+//      position=P+j-1, hidden=上一步 multi_hidden), 写 draft KV[P..P+k-2]。
+//   2. 惰性验证 (无需回滚): 喂 b@P → m_0; 逐个比对 d_i==m_i, 命中则喂 d_i@P+1+i
+//      → m_{i+1}, 只喂被接受的 token, 主模型状态恰好推进到接受前缀末尾。
+//   3. 输出接受 token = [b, d_0..d_{a-1}] (count=1+a); next_b = m_a (修正/下一
+//      bonus)。
+//   4. 内部 extend: 用验证期捕获的主干 h_P..h_{P+a} 对 [d_0..d_{a-1}, next_b]
+//      在 position P..P+a 重建 draft KV (覆盖投机写入), 产出 next_d0 + next_g。
+//
+// 返回: accepted_tokens 填 1+a 个 (host, 调用方 >= k+1); next_b/next_d0/next_g
+// 供下一步。seq 已推进 1+a。
 Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
-                          model::ModelSequence* seq, const uint16_t* trunk_in,
-                          int k, int32_t* accepted_tokens, int* accepted_count,
-                          uint16_t* next_trunk, cudaStream_t stream);
+                          model::ModelSequence* seq, int32_t b, int32_t d0,
+                          const uint16_t* g_in, int k, int32_t* accepted_tokens,
+                          int* accepted_count, int32_t* next_b,
+                          int32_t* next_d0, uint16_t* next_g,
+                          cudaStream_t stream);
 
 }  // namespace mtp
 }  // namespace q4t
