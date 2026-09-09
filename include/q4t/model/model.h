@@ -171,6 +171,19 @@ Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
                        const int32_t* history, uint16_t* logits,
                        cudaStream_t stream, uint16_t* trunk_out = nullptr);
 
+// Batched decode over T tokens at absolute positions [base_position ..
+// base_position+T-1] WITHOUT resetting per-layer state (continues from the
+// current KV/SSM/conv). Returns [T, vocab] logits (and optionally [T, hc*hs]
+// trunk_out). This lets MTP verify k+1 speculative tokens in ONE bandwidth-
+// bound forward (weights read once) instead of k+1 separate T=1 decodes.
+// `history` (length `history_len`) supplies the PLE n-gram context for the
+// positions before `base_position`; the in-batch prefix supplies the rest.
+// The caller owns `logits` (>= T*vocab) and `trunk_out` (>= T*hc*hs).
+Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
+                        int base_position, const int32_t* history,
+                        int history_len, uint16_t* logits, cudaStream_t stream,
+                        uint16_t* trunk_out = nullptr);
+
 // ---------------------------------------------------------------------------
 // PD-ready 阶段边界 API (Prefill/Decode 可分离, 见 ARCHITECTURE.md)。
 //

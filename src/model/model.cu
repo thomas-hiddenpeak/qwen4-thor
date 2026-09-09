@@ -459,6 +459,67 @@ Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
                    logits, stream, trunk_out);
 }
 
+// Batched decode over T tokens at absolute positions [base..base+T-1] WITHOUT
+// resetting per-layer state (continues from the current KV/SSM/conv). Returns
+// [T, vocab] logits (and optionally [T, hc*hs] trunk_out). Used by MTP to
+// verify k+1 speculative tokens in a single bandwidth-bound forward instead of
+// k+1 separate T=1 decodes. `history` (length `history_len`) supplies the PLE
+// n-gram context for positions before `base`; the in-batch prefix supplies the
+// rest.
+Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
+                        int base_position, const int32_t* history,
+                        int history_len, uint16_t* logits, cudaStream_t stream,
+                        uint16_t* trunk_out) {
+  const ModelConfig& cfg = m.cfg;
+  if (T <= 0) return Status::Fail("ModelDecodeBatch: T must be > 0");
+  if (T > cfg.max_prefill)
+    return Status::Fail("ModelDecodeBatch: T exceeds max_prefill");
+  if (base_position < 0 || base_position + T > cfg.max_len)
+    return Status::Fail("ModelDecodeBatch: position range exceeds max_len");
+
+  if (cudaMemcpyAsync(m.d_ids, input_ids, T * sizeof(int32_t),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return Status::Fail("H2D ids");
+  std::vector<int64_t> ids64(input_ids, input_ids + T);
+  std::vector<int> positions(T);
+  for (int t = 0; t < T; ++t) positions[t] = base_position + t;
+  if (cudaMemcpyAsync(m.d_positions, positions.data(), T * sizeof(int),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return Status::Fail("H2D positions");
+
+  Status s = EmbedLookup(m.head, m.d_ids, m.d_emb, T, stream);
+  if (!s.ok()) return s;
+  s = ExpandTrunk(m.head, m.d_emb, m.d_trunk, T, stream);
+  if (!s.ok()) return s;
+
+  // PLE n-gram history: token t at absolute (base+t); its context spans the
+  // caller's `history` (positions < base) and the in-batch prefix.
+  std::vector<int64_t> hist;
+  if (m.ple_emb) {
+    const int hist_w = m.ple_hash.ngram_size - 1;
+    hist.resize(static_cast<size_t>(T) * hist_w);
+    for (int t = 0; t < T; ++t) {
+      const int abs = base_position + t;
+      for (int j = 0; j < hist_w; ++j) {
+        const int src = abs - (hist_w - j);  // oldest first
+        int64_t tok;
+        if (src < 0)
+          tok = cfg.eos_token_id;
+        else if (src < base_position)
+          tok = (src < history_len) ? static_cast<int64_t>(history[src])
+                                    : cfg.eos_token_id;
+        else
+          tok = static_cast<int64_t>(input_ids[src - base_position]);
+        hist[static_cast<size_t>(t) * hist_w + j] = tok;
+      }
+    }
+  }
+
+  // Layer loop + head — NO reset, continues from the current per-layer state.
+  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), T,
+                   logits, stream, trunk_out);
+}
+
 // ---------------------------------------------------------------------------
 // PD-ready 阶段边界 API (see model.h).
 // ---------------------------------------------------------------------------

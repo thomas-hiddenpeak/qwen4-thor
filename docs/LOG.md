@@ -5,6 +5,52 @@
 
 ---
 
+## 2026-09-09 — MTP 批处理验证 (ModelDecodeBatch): 12.1 → 14.7 tok/s (追平 plain)
+
+**背景**
+draft-extend 修好接受率 (0 → 2.62) 后 MTP 仍比 plain 慢 (12.1 < 14.6):
+验证是逐 token `ModelDecodeStepSeq` (T=1), 每 token 一次主前向读全权重,
+与 plain 同代价, 无批处理节省。speculative decode 的加速本应来自"主模型
+一次批量前向 (T=k+1) 验证 k 个 draft"(decode 带宽受限, 权重只读一次)。
+
+**新增 ModelDecodeBatch**
+在已有 KV/SSM/conv 状态上批量前向 T 个 token (绝对 positions
+base..base+T-1, **不重置**), 返回 [T, vocab] logits + [T, hc*hs] trunk。
+本质 = RunPrefill 的机制但用绝对 positions + 不重置 + PLE ngram 上下文
+跨 history/批内前缀。主模型权重只读一遍即验证 T 个 token。
+
+**MtpSpeculativeStep 改批量验证 + 条件回滚**
+逐 token 惰性验证 → 一次 `ModelDecodeBatch([b, d_0..d_{k-1}])` @ P..P+k。
+难点: hybrid 模型的 recurrent (SSM/conv) 状态**不可逆**, 批量前向推进
+k+1 步但只接受 1+a 个。处理: 验证前 snapshot recurrent; **全接受
+(a==k) 不回滚** (批量后状态正好正确); 部分接受 (a<k) restore + re-advance
+接受前缀 [b,d_0..d_{a-1}]。paged full-attn KV 按绝对位置写, 被下一步覆盖,
+无需回滚。主干 h_P..h_{P+a} 从批量验证的 trunk 一次拿到给内部 extend。
+
+**结果 (追平 plain, 未净加速)**
+| k | tok/step | tok/s |
+|---|---|---|
+| 1 | 1.78 | 12.8 |
+| **2** | **2.47** | **14.7** |
+| 3 | 3.00 | 13.1 |
+| 4 | 3.33 | 14.5 |
+
+批处理把 MTP 从"比 plain 慢 17%"变成"追平 plain"(k=2 14.7 vs 14.6),
+接受率升到 3.0 (k=3)。默认 k=2 (实测最优)。62 项测试全绿。
+
+**为何只追平未超越**
+每步仍有 k 个 MTP draft 前向 (BF16 MoE 512 专家 + lm_head over vocab
+248320, ~10-15ms/次) + re-advance (部分接受重跑主前向, hybrid SSM 无法
+免快照回滚) + snapshot/restore, 吃掉批处理节省。
+
+**下一步 (真正加速)**
+1. **量化 MTP draft MoE** (BF16 → NVFP4): draft 前向 MoE 快 ~4×, 是最大
+   单项 (MTP 权重是 BF16 checkpoint, 需运行时量化 + 精度验证)
+2. 消除 re-advance: GatedDeltaNet kernel 暴露中间步状态, 免回滚重跑
+3. GPU argmax 省 draft 循环/extend 的全 vocab D2H (小优化)
+
+---
+
 ## 2026-09-09 — MTP draft-extend 修复 (接受率 0 → 2.62 tok/step, 根因闭合)
 
 **背景**

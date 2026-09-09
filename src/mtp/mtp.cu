@@ -507,19 +507,21 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
   const int vocab = mtp.cfg.vocab;
   const int hc_dim = mtp.hc_dim();
 
-  uint16_t* d_main_logits = nullptr;  // [vocab]
-  uint16_t* d_htrunk = nullptr;       // [k+1, hc_dim] captured main trunks
-  uint16_t* d_g = nullptr;            // [hc_dim] rolling draft trunk
+  // Batched verification buffers: [k+1, vocab] logits + [k+1, hc_dim] main
+  // trunks (h_P..h_{P+k}); d_g is the rolling draft trunk for the draft loop.
+  uint16_t* d_vlogits = nullptr;  // [k+1, vocab]
+  uint16_t* d_vtrunk = nullptr;   // [k+1, hc_dim]
+  uint16_t* d_g = nullptr;        // [hc_dim]
   auto cleanup = [&](Status s) -> Status {
-    if (d_main_logits) cudaFree(d_main_logits);
-    if (d_htrunk) cudaFree(d_htrunk);
+    if (d_vlogits) cudaFree(d_vlogits);
+    if (d_vtrunk) cudaFree(d_vtrunk);
     if (d_g) cudaFree(d_g);
     return s;
   };
-  if (cudaMalloc(reinterpret_cast<void**>(&d_main_logits),
-                 static_cast<size_t>(vocab) * sizeof(uint16_t)) !=
+  if (cudaMalloc(reinterpret_cast<void**>(&d_vlogits),
+                 static_cast<size_t>(k + 1) * vocab * sizeof(uint16_t)) !=
           cudaSuccess ||
-      cudaMalloc(reinterpret_cast<void**>(&d_htrunk),
+      cudaMalloc(reinterpret_cast<void**>(&d_vtrunk),
                  static_cast<size_t>(k + 1) * hc_dim * sizeof(uint16_t)) !=
           cudaSuccess ||
       cudaMalloc(reinterpret_cast<void**>(&d_g),
@@ -566,49 +568,72 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
 
   const bool dbg = getenv("Q4T_MTP_DEBUG") != nullptr;
 
-  // 2. Lazy verification: feed b@P, then each accepted draft. Capture the main
-  //    trunk at every fed position (h_P..h_{P+a}). No rollback: the main state
-  //    advances only over accepted tokens.
-  int a = 0;
-  int32_t correction = -1;
+  // 2. Batched verification: feed [b, d_0..d_{k-1}] (k+1 tokens) at absolute
+  //    positions P..P+k in ONE main forward. Snapshot the recurrent state
+  //    first: the batch advances it k+1 steps, but only 1+a accepted tokens
+  //    should stick (the paged full-attention KV is keyed by absolute position
+  //    and is overwritten by the next step, so it needs no rollback).
+  model::ModelStateSnapshot snap;
   {
-    Status s = model::ModelDecodeStepSeq(main, seq, b, d_main_logits, stream,
-                                         d_htrunk + 0);
+    Status s = model::ModelSnapshotState(main, &snap, stream);
     if (!s.ok()) return cleanup(s);
-    std::vector<uint16_t> lg(static_cast<size_t>(vocab));
-    if (cudaMemcpy(lg.data(), d_main_logits, lg.size() * sizeof(uint16_t),
-                   cudaMemcpyDeviceToHost) != cudaSuccess)
-      return cleanup(Status::Fail("MtpSpeculativeStep: D2H m0"));
-    correction = ArgmaxBf16Row(lg.data(), vocab);
   }
+  std::vector<int32_t> verify_ids(k + 1);
+  verify_ids[0] = b;
+  for (int i = 0; i < k; ++i) verify_ids[i + 1] = drafts[i];
+  {
+    Status s = model::ModelDecodeBatch(
+        main, verify_ids.data(), k + 1, P, seq->history.data(),
+        static_cast<int>(seq->history.size()), d_vlogits, stream, d_vtrunk);
+    if (!s.ok()) return cleanup(s);
+  }
+  // m_i = argmax(logits[i]); accept the longest prefix where d_i == m_i.
+  std::vector<uint16_t> vlg(static_cast<size_t>(k + 1) * vocab);
+  if (cudaMemcpy(vlg.data(), d_vlogits, vlg.size() * sizeof(uint16_t),
+                 cudaMemcpyDeviceToHost) != cudaSuccess)
+    return cleanup(Status::Fail("MtpSpeculativeStep: D2H verify logits"));
+  int a = 0;
   for (int i = 0; i < k; ++i) {
+    const int mi =
+        ArgmaxBf16Row(vlg.data() + static_cast<size_t>(i) * vocab, vocab);
     if (dbg && i < 3)
-      std::fprintf(stderr,
-                   "[mtp-debug] P=%d i=%d draft=%d main=%d match=%d\n", P, i,
-                   drafts[i], correction, drafts[i] == correction ? 1 : 0);
-    if (drafts[i] != correction) break;
+      std::fprintf(stderr, "[mtp-debug] P=%d i=%d draft=%d main=%d match=%d\n",
+                   P, i, drafts[i], mi, drafts[i] == mi ? 1 : 0);
+    if (drafts[i] != mi) break;
     a = i + 1;
-    // Accept drafts[i]; feed it to advance the main state + get m_{i+1}.
-    Status s = model::ModelDecodeStepSeq(
-        main, seq, drafts[i], d_main_logits, stream,
-        d_htrunk + static_cast<size_t>(i + 1) * hc_dim);
-    if (!s.ok()) return cleanup(s);
-    std::vector<uint16_t> lg(static_cast<size_t>(vocab));
-    if (cudaMemcpy(lg.data(), d_main_logits, lg.size() * sizeof(uint16_t),
-                   cudaMemcpyDeviceToHost) != cudaSuccess)
-      return cleanup(Status::Fail("MtpSpeculativeStep: D2H mi"));
-    correction = ArgmaxBf16Row(lg.data(), vocab);
   }
+  const int32_t correction =
+      ArgmaxBf16Row(vlg.data() + static_cast<size_t>(a) * vocab, vocab);
 
-  // 3. Emit accepted = [b, drafts[0..a-1]]; correction = m_a = next bonus.
+  // 3. Reconcile the main recurrent state to P+1+a. The batch advanced it to
+  //    P+k+1; on full accept (a==k) that is already correct, else restore +
+  //    re-advance the accepted prefix [b, d_0..d_{a-1}] (full KV is rewritten
+  //    identically; the trunks are already captured in d_vtrunk).
+  if (a < k) {
+    Status s = model::ModelRestoreState(main, snap, stream);
+    if (!s.ok()) return cleanup(s);
+    std::vector<int32_t> adv_ids(a + 1);
+    adv_ids[0] = b;
+    for (int i = 0; i < a; ++i) adv_ids[i + 1] = drafts[i];
+    Status s2 = model::ModelDecodeBatch(
+        main, adv_ids.data(), a + 1, P, seq->history.data(),
+        static_cast<int>(seq->history.size()), d_vlogits, stream, nullptr);
+    if (!s2.ok()) return cleanup(s2);
+  }
+  // Advance the seq state machine over the accepted tokens [b, d_0..d_{a-1}].
+  seq->position = P + 1 + a;
+  seq->history.push_back(b);
+  for (int i = 0; i < a; ++i) seq->history.push_back(drafts[i]);
+
+  // 4. Emit accepted = [b, drafts[0..a-1]]; correction = m_a = next bonus.
   accepted_tokens[0] = b;
   for (int i = 0; i < a; ++i) accepted_tokens[1 + i] = drafts[i];
   *accepted_count = 1 + a;
   *next_b = correction;
 
-  // 4. Internal extend: rebuild draft KV[P..P+a] from the captured main trunks
-  //    (input = accepted drafts + the correction at the tail), yielding the
-  //    next step's first draft (next_d0) + trunk (next_g).
+  // 5. Internal extend: rebuild draft KV[P..P+a] from the captured main trunks
+  //    d_vtrunk[0..a] (= h_P..h_{P+a}), input = accepted drafts + correction,
+  //    yielding the next step's first draft (next_d0) + trunk (next_g).
   {
     std::vector<int32_t> ext_ids(a + 1);
     std::vector<int> ext_pos(a + 1);
@@ -618,7 +643,7 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
     }
     ext_ids[a] = correction;
     ext_pos[a] = P + a;
-    Status s = MtpDraftExtend(mtp, ext_ids.data(), d_htrunk, ext_pos.data(),
+    Status s = MtpDraftExtend(mtp, ext_ids.data(), d_vtrunk, ext_pos.data(),
                               a + 1, next_d0, next_g, stream);
     if (!s.ok()) return cleanup(s);
   }

@@ -97,7 +97,7 @@ int RunGenerate(int argc, char** argv) {
   std::string model_dir = kDefaultModelDir;
   int max_tokens = 64;
   bool use_mtp = false;
-  int mtp_k = 3;
+  int mtp_k = 2;  // 实测最优 (k=2 追平 plain; 见 docs/LOG.md 2026-09-09)
   std::string prompt;
 
   for (int i = 2; i < argc; ++i) {

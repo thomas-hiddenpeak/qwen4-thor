@@ -818,6 +818,17 @@ Phase 2 候选 (完整多设备 PD 部署等, 见 [PHASES.md](PHASES.md)): 完�
    净速度仍慢 (12.1 < plain 14.6) — 验证是逐 token T=1 主前向, 无批处理
    节省; 需 ModelDecodeBatch (已有 KV 上批量 T=k+1 前向) 才能实际加速
    (~1.4× 估计)。MTP vs plain 有小分歧待查 (疑 NVFP4 near-tie 噪声)**。
+   **阶段 J 已完成 (MTP 批处理验证, 2026-09-09, 追平 plain)**: 新增
+   `ModelDecodeBatch` (已有 KV/SSM 上批量前向 T token, 绝对 positions,
+   不重置, 返回 [T,vocab] logits + [T,hc*hs] trunk)。MtpSpeculativeStep
+   逐 token 惰性验证 → 一次批量 `ModelDecodeBatch([b,d_0..d_{k-1}])`
+   验证 k+1 token + 条件回滚 (hybrid SSM 不可逆: snapshot; a==k 不回滚;
+   a<k restore+re-advance 接受前缀; paged KV 按位置写无需回滚)。**12.1 →
+   14.7 tok/s (k=2 最优, 追平 plain 14.6)**, 接受率 3.0 (k=3), 默认 k=2,
+   62 项全绿。**只追平未超越**: 每步 k 个 MTP draft 前向 (BF16 MoE +
+   lm_head vocab 248320) + re-advance + snapshot 吃掉节省。**真正加速
+   下一步 = 量化 MTP draft MoE (BF16→NVFP4, MoE 快 ~4×) / 消除 re-advance
+   (SSM kernel 暴露中间状态)**。
    **当前 kernel 分解 (14.5-14.6 tok/s, 接近带宽下限)**: Bf16Gev 48%
    (N=10240 645 GB/s 有效带宽含 L2 复用, 已近上限) / SparseAttention
    12% (T=1 grid 仅 24 blocks, 15% 占用率) / nvjet FP4 14% (100% DRAM)
