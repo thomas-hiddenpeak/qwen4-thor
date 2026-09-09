@@ -11,6 +11,7 @@
 // modules land (see docs/PHASES.md).
 
 #include <cuda_runtime.h>
+#include <cuda_profiler_api.h>
 
 #include <algorithm>
 #include <chrono>
@@ -343,6 +344,11 @@ int RunGenerate(int argc, char** argv) {
     }
   }
 
+  // Q4T_PROFILE=1: bracket the decode phase with cudaProfilerStart/Stop so
+  // `nsys profile --capture-range=cudaProfilerApi` captures only decode
+  // (skipping the ~15s model load).
+  const bool profile = std::getenv("Q4T_PROFILE") != nullptr;
+  if (profile) cudaProfilerStart();
   std::vector<int32_t> generated;
   auto t_decode_start = std::chrono::steady_clock::now();
   if (mtp_loaded) {
@@ -414,6 +420,7 @@ int RunGenerate(int argc, char** argv) {
     }
   }
   cudaDeviceSynchronize();
+  if (profile) cudaProfilerStop();
   auto t_decode_end = std::chrono::steady_clock::now();
   q4t::model::ModelEndSequence(&seq);
 
