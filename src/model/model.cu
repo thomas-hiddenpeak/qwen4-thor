@@ -86,6 +86,8 @@ void Model::Free() {
   freep(d_ple_emb);
   freep(d_img_pos);
   freep(d_ws);
+  freep(d_verify_ssm_ckpt);
+  freep(d_verify_conv_ckpt);
   d_ids = nullptr;
   d_positions = nullptr;
   d_emb = nullptr;
@@ -94,6 +96,9 @@ void Model::Free() {
   d_ple_emb = nullptr;
   d_img_pos = nullptr;
   d_ws = nullptr;
+  d_verify_ssm_ckpt = nullptr;
+  d_verify_conv_ckpt = nullptr;
+  verify_ckpt_cap = 0;
   ws_bytes = 0;
 }
 
@@ -273,10 +278,12 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
 Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                  const int64_t* ids64, const int64_t* hist, int T,
                  uint16_t* logits, cudaStream_t stream,
-                 uint16_t* trunk_out = nullptr) {
+                 uint16_t* trunk_out = nullptr, float* ssm_ckpt = nullptr,
+                 uint16_t* conv_ckpt = nullptr, int num_ckpt = 0) {
   const ModelConfig& cfg = m.cfg;
   const uint16_t* trunk = trunk_in;
   uint16_t* next = trunk2;
+  int lin_idx = 0;  // running linear-layer index (for checkpoint offsets)
   for (int l = 0; l < cfg.num_layers; ++l) {
     const uint16_t* ple_emb = nullptr;
     if (m.layers[l].has_ple) {
@@ -292,9 +299,25 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
       }
       ple_emb = m.d_ple_emb;
     }
+    // Per-linear-layer checkpoint slices (only when saving for MTP verify).
+    float* layer_ssm_ckpt = nullptr;
+    uint16_t* layer_conv_ckpt = nullptr;
+    if (ssm_ckpt && !m.layers[l].is_full_attention) {
+      const auto& lin = m.layers[l].linear;
+      const size_t ssm_elems =
+          static_cast<size_t>(lin.nv) * lin.kd * lin.vd;
+      const size_t conv_elems =
+          static_cast<size_t>(lin.in_qkv()) * (lin.conv_k - 1);
+      layer_ssm_ckpt =
+          ssm_ckpt + static_cast<size_t>(lin_idx) * num_ckpt * ssm_elems;
+      layer_conv_ckpt =
+          conv_ckpt + static_cast<size_t>(lin_idx) * num_ckpt * conv_elems;
+    }
     Status s = DecoderLayerForward(m.layers[l], trunk, ple_emb, next,
-                                   m.d_positions, T, m.d_ws, m.ws_bytes, stream);
+                                   m.d_positions, T, m.d_ws, m.ws_bytes, stream,
+                                   layer_ssm_ckpt, layer_conv_ckpt, num_ckpt);
     if (!s.ok()) return s;
+    if (!m.layers[l].is_full_attention) lin_idx++;
     const uint16_t* t = trunk;
     trunk = next;
     next = const_cast<uint16_t*>(t);
@@ -469,7 +492,7 @@ Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
 Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
                         int base_position, const int32_t* history,
                         int history_len, uint16_t* logits, cudaStream_t stream,
-                        uint16_t* trunk_out) {
+                        uint16_t* trunk_out, bool save_checkpoints) {
   const ModelConfig& cfg = m.cfg;
   if (T <= 0) return Status::Fail("ModelDecodeBatch: T must be > 0");
   if (T > cfg.max_prefill)
@@ -516,8 +539,86 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
   }
 
   // Layer loop + head — NO reset, continues from the current per-layer state.
+  // When save_checkpoints, capture per-token SSM/conv state for the first T-1
+  // tokens (checkpoint[t] = state after token t) so an MTP partial accept can
+  // restore checkpoint[accept_count] via D2D instead of re-running the forward.
+  float* ssm_ckpt = save_checkpoints ? m.d_verify_ssm_ckpt : nullptr;
+  uint16_t* conv_ckpt = save_checkpoints ? m.d_verify_conv_ckpt : nullptr;
+  const int num_ckpt = save_checkpoints ? (T - 1) : 0;
   return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), T,
-                   logits, stream, trunk_out);
+                   logits, stream, trunk_out, ssm_ckpt, conv_ckpt, num_ckpt);
+}
+
+// Per-linear-layer SSM/conv element counts (assumes all linear layers share
+// the same dims, which they do for this architecture).
+namespace {
+struct LinCkptDims {
+  size_t ssm_elems = 0;
+  size_t conv_elems = 0;
+  int num_lin = 0;
+};
+LinCkptDims CollectLinCkptDims(const Model& m) {
+  LinCkptDims d;
+  for (const auto& l : m.layers) {
+    if (l.is_full_attention) continue;
+    if (d.num_lin == 0) {
+      d.ssm_elems = static_cast<size_t>(l.linear.nv) * l.linear.kd * l.linear.vd;
+      d.conv_elems =
+          static_cast<size_t>(l.linear.in_qkv()) * (l.linear.conv_k - 1);
+    }
+    d.num_lin++;
+  }
+  return d;
+}
+}  // namespace
+
+Status ModelReserveVerifyCheckpoints(Model& m, int num_ckpt) {
+  if (num_ckpt <= m.verify_ckpt_cap) return Status();
+  const LinCkptDims d = CollectLinCkptDims(m);
+  if (d.num_lin == 0) return Status();  // no linear layers (nothing to save)
+  if (m.d_verify_ssm_ckpt) cudaFree(m.d_verify_ssm_ckpt);
+  if (m.d_verify_conv_ckpt) cudaFree(m.d_verify_conv_ckpt);
+  m.d_verify_ssm_ckpt = nullptr;
+  m.d_verify_conv_ckpt = nullptr;
+  const size_t ssm_bytes = static_cast<size_t>(d.num_lin) * num_ckpt *
+                           d.ssm_elems * sizeof(float);
+  const size_t conv_bytes = static_cast<size_t>(d.num_lin) * num_ckpt *
+                            d.conv_elems * sizeof(uint16_t);
+  if (cudaMalloc(reinterpret_cast<void**>(&m.d_verify_ssm_ckpt), ssm_bytes) !=
+      cudaSuccess)
+    return Status::Fail("ModelReserveVerifyCheckpoints: cudaMalloc ssm");
+  if (cudaMalloc(reinterpret_cast<void**>(&m.d_verify_conv_ckpt), conv_bytes) !=
+      cudaSuccess)
+    return Status::Fail("ModelReserveVerifyCheckpoints: cudaMalloc conv");
+  m.verify_ckpt_cap = num_ckpt;
+  return Status();
+}
+
+Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx,
+                              cudaStream_t stream) {
+  if (!m.d_verify_ssm_ckpt || ckpt_idx < 0 || ckpt_idx >= m.verify_ckpt_cap)
+    return Status::Fail("ModelRestoreCheckpoint: invalid ckpt");
+  const LinCkptDims d = CollectLinCkptDims(m);
+  const int cap = m.verify_ckpt_cap;
+  int lin_idx = 0;
+  for (const auto& l : m.layers) {
+    if (l.is_full_attention) continue;
+    const float* ssm_src = m.d_verify_ssm_ckpt +
+                           (static_cast<size_t>(lin_idx) * cap + ckpt_idx) *
+                               d.ssm_elems;
+    const uint16_t* conv_src = m.d_verify_conv_ckpt +
+                               (static_cast<size_t>(lin_idx) * cap + ckpt_idx) *
+                                   d.conv_elems;
+    if (cudaMemcpyAsync(l.ssm_state, ssm_src, d.ssm_elems * sizeof(float),
+                        cudaMemcpyDeviceToDevice, stream) != cudaSuccess)
+      return Status::Fail("ModelRestoreCheckpoint: D2D ssm");
+    if (cudaMemcpyAsync(l.conv_state, conv_src,
+                        d.conv_elems * sizeof(uint16_t),
+                        cudaMemcpyDeviceToDevice, stream) != cudaSuccess)
+      return Status::Fail("ModelRestoreCheckpoint: D2D conv");
+    lin_idx++;
+  }
+  return Status();
 }
 
 // ---------------------------------------------------------------------------

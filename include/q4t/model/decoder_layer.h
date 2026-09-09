@@ -124,10 +124,16 @@ Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
 //   positions      : host int [T] absolute positions (full attention only)
 //   T              : number of tokens
 //   workspace      : device scratch (>= DecoderLayerWorkspaceBytes)
+// `ssm_ckpt`/`conv_ckpt`/`num_ckpt` (MTP speculative verify, linear layers
+// only): if non-null, save the per-token SSM/conv state after each of the
+// first `num_ckpt` tokens so a partial accept can restore via D2D. Layout:
+// ssm_ckpt = [num_ckpt, nv*kd*vd] f32, conv_ckpt = [num_ckpt, in_qkv*(k-1)] bf16.
 Status DecoderLayerForward(const DecoderLayer& layer, const uint16_t* hyper_input,
                            const uint16_t* ple_embeddings, uint16_t* out,
                            const int* positions, int T, void* workspace,
-                           size_t workspace_bytes, cudaStream_t stream);
+                           size_t workspace_bytes, cudaStream_t stream,
+                           float* ssm_ckpt = nullptr,
+                           uint16_t* conv_ckpt = nullptr, int num_ckpt = 0);
 
 }  // namespace model
 }  // namespace q4t

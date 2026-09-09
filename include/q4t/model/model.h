@@ -83,6 +83,15 @@ struct Model {
   void* d_ws = nullptr;  // forward workspace (reused across layers)
   size_t ws_bytes = 0;
 
+  // MTP speculative-verify checkpoints (lazy-allocated by
+  // ModelReserveVerifyCheckpoints): per-linear-layer per-token SSM/conv state,
+  // so a partial accept restores the accepted-prefix boundary via D2D instead
+  // of re-running the forward. ssm = [num_lin, cap, ssm_elems] f32,
+  // conv = [num_lin, cap, conv_elems] bf16.
+  float* d_verify_ssm_ckpt = nullptr;
+  uint16_t* d_verify_conv_ckpt = nullptr;
+  int verify_ckpt_cap = 0;
+
   int hc_dim() const { return cfg.hc * cfg.hs; }
   void Free();
 };
@@ -182,7 +191,18 @@ Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
 Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
                         int base_position, const int32_t* history,
                         int history_len, uint16_t* logits, cudaStream_t stream,
-                        uint16_t* trunk_out = nullptr);
+                        uint16_t* trunk_out = nullptr,
+                        bool save_checkpoints = false);
+
+// Reserve per-linear-layer per-token SSM/conv checkpoint buffers for MTP
+// verify (idempotent; grows if num_ckpt exceeds the current capacity). Must be
+// called before ModelDecodeBatch(save_checkpoints=true) / ModelRestoreCheckpoint.
+Status ModelReserveVerifyCheckpoints(Model& m, int num_ckpt);
+
+// Restore every linear layer's SSM/conv state from checkpoint `ckpt_idx` (D2D).
+// Used after a partial-accept MTP verify to roll the recurrent state back to
+// the accepted-prefix boundary WITHOUT re-running the forward.
+Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx, cudaStream_t stream);
 
 // ---------------------------------------------------------------------------
 // PD-ready 阶段边界 API (Prefill/Decode 可分离, 见 ARCHITECTURE.md)。

@@ -385,7 +385,8 @@ Status DecoderLayerForward(const DecoderLayer& layer,
                            const uint16_t* hyper_input,
                            const uint16_t* ple_embeddings, uint16_t* out,
                            const int* positions, int T, void* workspace,
-                           size_t workspace_bytes, cudaStream_t stream) {
+                           size_t workspace_bytes, cudaStream_t stream,
+                           float* ssm_ckpt, uint16_t* conv_ckpt, int num_ckpt) {
   const int hs = layer.hs, hc_dim = layer.hc_dim, hc = layer.hc;
   if (T <= 0) return Status();
 
@@ -474,7 +475,8 @@ Status DecoderLayerForward(const DecoderLayer& layer,
                              layer.idx_comp, T, d_attn_ws, attn_ws, stream);
   } else {
     s = LinearAttentionForward(layer.linear, d_mixed, d_block, layer.ssm_state,
-                               layer.conv_state, T, d_attn_ws, attn_ws, stream);
+                               layer.conv_state, T, d_attn_ws, attn_ws, stream,
+                               ssm_ckpt, conv_ckpt, num_ckpt);
   }
   if (!s.ok()) {
     return s;

@@ -528,6 +528,8 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
                  static_cast<size_t>(hc_dim) * sizeof(uint16_t)) != cudaSuccess)
     return cleanup(Status::Fail("MtpSpeculativeStep: cudaMalloc"));
 
+  const bool timing = getenv("Q4T_MTP_TIMING") != nullptr;
+  const auto t_draft0 = std::chrono::steady_clock::now();
   // 1. Draft loop: drafts[0] = d0 (given); generate drafts[1..k-1].
   std::vector<int32_t> drafts(k);
   drafts[0] = d0;
@@ -566,25 +568,24 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
       return cleanup(Status::Fail("MtpSpeculativeStep: D2D roll g"));
   }
 
+  const auto t_draft1 = std::chrono::steady_clock::now();
   const bool dbg = getenv("Q4T_MTP_DEBUG") != nullptr;
 
   // 2. Batched verification: feed [b, d_0..d_{k-1}] (k+1 tokens) at absolute
-  //    positions P..P+k in ONE main forward. Snapshot the recurrent state
-  //    first: the batch advances it k+1 steps, but only 1+a accepted tokens
-  //    should stick (the paged full-attention KV is keyed by absolute position
-  //    and is overwritten by the next step, so it needs no rollback).
-  model::ModelStateSnapshot snap;
-  {
-    Status s = model::ModelSnapshotState(main, &snap, stream);
-    if (!s.ok()) return cleanup(s);
-  }
+  //    positions P..P+k in ONE main forward, saving per-token SSM/conv
+  //    checkpoints. The batch advances the recurrent state k+1 steps, but only
+  //    1+a accepted tokens should stick; a partial accept restores the
+  //    accepted-prefix boundary from checkpoint[a] via D2D (no re-advance).
+  //    The paged full-attention KV is keyed by absolute position and is
+  //    overwritten by the next step, so it needs no rollback.
   std::vector<int32_t> verify_ids(k + 1);
   verify_ids[0] = b;
   for (int i = 0; i < k; ++i) verify_ids[i + 1] = drafts[i];
   {
     Status s = model::ModelDecodeBatch(
         main, verify_ids.data(), k + 1, P, seq->history.data(),
-        static_cast<int>(seq->history.size()), d_vlogits, stream, d_vtrunk);
+        static_cast<int>(seq->history.size()), d_vlogits, stream, d_vtrunk,
+        /*save_checkpoints=*/true);
     if (!s.ok()) return cleanup(s);
   }
   // m_i = argmax(logits[i]); accept the longest prefix where d_i == m_i.
@@ -592,6 +593,7 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
   if (cudaMemcpy(vlg.data(), d_vlogits, vlg.size() * sizeof(uint16_t),
                  cudaMemcpyDeviceToHost) != cudaSuccess)
     return cleanup(Status::Fail("MtpSpeculativeStep: D2H verify logits"));
+  const auto t_verify1 = std::chrono::steady_clock::now();
   int a = 0;
   for (int i = 0; i < k; ++i) {
     const int mi =
@@ -606,19 +608,14 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
       ArgmaxBf16Row(vlg.data() + static_cast<size_t>(a) * vocab, vocab);
 
   // 3. Reconcile the main recurrent state to P+1+a. The batch advanced it to
-  //    P+k+1; on full accept (a==k) that is already correct, else restore +
-  //    re-advance the accepted prefix [b, d_0..d_{a-1}] (full KV is rewritten
-  //    identically; the trunks are already captured in d_vtrunk).
+  //    P+k+1; on full accept (a==k) that is already correct, else restore the
+  //    per-token checkpoint[a] (= state after accepting [b, d_0..d_{a-1}]) via
+  //    D2D — no re-advance. The full-attention KV is keyed by absolute position
+  //    and is rewritten identically by the next step; trunks are already
+  //    captured in d_vtrunk.
   if (a < k) {
-    Status s = model::ModelRestoreState(main, snap, stream);
+    Status s = model::ModelRestoreCheckpoint(main, a, stream);
     if (!s.ok()) return cleanup(s);
-    std::vector<int32_t> adv_ids(a + 1);
-    adv_ids[0] = b;
-    for (int i = 0; i < a; ++i) adv_ids[i + 1] = drafts[i];
-    Status s2 = model::ModelDecodeBatch(
-        main, adv_ids.data(), a + 1, P, seq->history.data(),
-        static_cast<int>(seq->history.size()), d_vlogits, stream, nullptr);
-    if (!s2.ok()) return cleanup(s2);
   }
   // Advance the seq state machine over the accepted tokens [b, d_0..d_{a-1}].
   seq->position = P + 1 + a;
@@ -646,6 +643,17 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
     Status s = MtpDraftExtend(mtp, ext_ids.data(), d_vtrunk, ext_pos.data(),
                               a + 1, next_d0, next_g, stream);
     if (!s.ok()) return cleanup(s);
+  }
+  if (timing) {
+    const auto t_end = std::chrono::steady_clock::now();
+    auto ms = [](auto lo, auto hi) {
+      return std::chrono::duration<double, std::milli>(hi - lo).count();
+    };
+    std::fprintf(stderr,
+                 "[mtp-timing] draft=%.1f verify=%.1f extend+accept=%.1f ms "
+                 "(a=%d k=%d)\n",
+                 ms(t_draft0, t_draft1), ms(t_draft1, t_verify1),
+                 ms(t_verify1, t_end), a, k);
   }
   return cleanup(Status());
 }

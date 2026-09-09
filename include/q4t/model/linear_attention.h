@@ -99,7 +99,9 @@ Status LoadLinearAttention(const io::WeightLoader& loader, const std::string& pr
 Status LinearAttentionForward(const LinearAttentionWeights& w, const uint16_t* x,
                               uint16_t* out, float* ssm_state,
                               uint16_t* conv_state, int T, void* workspace,
-                              size_t workspace_bytes, cudaStream_t stream);
+                              size_t workspace_bytes, cudaStream_t stream,
+                              float* ssm_ckpt = nullptr,
+                              uint16_t* conv_ckpt = nullptr, int num_ckpt = 0);
 
 }  // namespace model
 }  // namespace q4t

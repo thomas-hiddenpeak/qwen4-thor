@@ -175,6 +175,27 @@ __global__ void Conv1dUpdateStateKernel(uint16_t* __restrict__ state,
   }
 }
 
+// Build per-token conv-state checkpoints for MTP speculative verify:
+// ckpt[t][ch][k] = the conv state AFTER processing token t = the last `hist`
+// inputs ending at t (x[s]=input[s] if s>=0 else old_state[s+hist]). Must run
+// BEFORE Conv1dUpdateStateKernel (which overwrites old_state). One thread per
+// (checkpoint t, channel). Layout matches conv_state: [num_ckpt, channels, hist].
+__global__ void ConvCheckpointKernel(const uint16_t* __restrict__ input,
+                                     const uint16_t* __restrict__ old_state,
+                                     uint16_t* __restrict__ ckpt, int channels,
+                                     int conv_k, int num_ckpt) {
+  const int ch = blockIdx.x * blockDim.x + threadIdx.x;
+  const int t = blockIdx.y;
+  if (ch >= channels || t >= num_ckpt) return;
+  const int hist = conv_k - 1;
+  uint16_t* dst = ckpt + (static_cast<size_t>(t) * channels + ch) * hist;
+  for (int k = 0; k < hist; ++k) {
+    const int s = t - hist + 1 + k;  // batch-relative token index
+    dst[k] = (s >= 0) ? input[static_cast<size_t>(s) * channels + ch]
+                      : old_state[ch * hist + (s + hist)];
+  }
+}
+
 // Gated DeltaNet recurrence. One block per value head (nv blocks), 128 threads
 // (one per vd element). S[kd, vd] held in shared memory (FP32). Mirrors
 // qwen35-thor gated_delta_net_prefill_kernel.
@@ -199,7 +220,7 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetKernel(
     const uint16_t* __restrict__ dt_bias, const uint16_t* __restrict__ A_log,
     const uint16_t* __restrict__ beta_raw, float* __restrict__ ssm,
     uint16_t* __restrict__ y, int T, int nkh, int kd, int nv_per_kh, int vd,
-    int token_stride, int nv) {
+    int token_stride, int nv, float* __restrict__ ssm_ckpt, int num_ckpt) {
   const int h_v = blockIdx.x;
   const int h_k = h_v / nv_per_kh;
   const int j = threadIdx.x;  // vd index
@@ -279,6 +300,14 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetKernel(
 
     const int y_base = (t * nv + h_v) * vd;
     y[y_base + j] = FloatToBf16(y_j);
+    // MTP speculative verify: save per-token SSM state so a partial accept can
+    // restore checkpoint[accept_count] via D2D instead of re-running the
+    // forward. Layout: [num_ckpt, nv, kd, vd]; this block owns head h_v.
+    if (ssm_ckpt && t < num_ckpt) {
+      const size_t ck_off = static_cast<size_t>(t) * nv * kd * vd + ss_base;
+      for (int i = 0; i < kd; ++i)
+        ssm_ckpt[ck_off + i * vd + j] = S_smem[i * vd_pad + j];
+    }
     __syncthreads();
   }
 
@@ -438,7 +467,8 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
                               const uint16_t* x, uint16_t* out,
                               float* ssm_state, uint16_t* conv_state, int T,
                               void* workspace, size_t workspace_bytes,
-                              cudaStream_t stream) {
+                              cudaStream_t stream, float* ssm_ckpt,
+                              uint16_t* conv_ckpt, int num_ckpt) {
   const int hs = w.hidden_size;
   const int nkh = w.nkh, nv = w.nv, kd = w.kd, vd = w.vd, conv_k = w.conv_k;
   const int qk = nkh * kd;
@@ -540,6 +570,15 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
       free_all();
       return Status::Fail("conv1d launch");
     }
+    // Per-token conv checkpoints (before the state update overwrites old_state).
+    if (conv_ckpt && num_ckpt > 0) {
+      ConvCheckpointKernel<<<dim3(ch_blocks, num_ckpt), kBlock, 0, stream>>>(
+          d_qkv_raw, conv_state, conv_ckpt, in_qkv, conv_k, num_ckpt);
+      if (cudaGetLastError() != cudaSuccess) {
+        free_all();
+        return Status::Fail("conv ckpt launch");
+      }
+    }
     Conv1dUpdateStateKernel<<<ch_blocks, kBlock, 0, stream>>>(
         conv_state, d_qkv_raw, T, in_qkv, conv_k);
     if (cudaGetLastError() != cudaSuccess) {
@@ -563,7 +602,7 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
     }
     GatedDeltaNetKernel<<<nv, threads, smem_bytes, stream>>>(
         d_qkv, d_a, w.dt_bias, w.A_log, d_beta, ssm_state, d_y_ssm, T, nkh, kd,
-        nv / nkh, vd, in_qkv, nv);
+        nv / nkh, vd, in_qkv, nv, ssm_ckpt, num_ckpt);
     if (cudaGetLastError() != cudaSuccess) {
       free_all();
       return Status::Fail("gdn launch");
