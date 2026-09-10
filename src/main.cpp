@@ -99,6 +99,7 @@ int RunGenerate(int argc, char** argv) {
   int max_tokens = 64;
   bool use_mtp = false;
   int mtp_k = 3;  // 实测最优 (k=3 1.46x; 见 docs/LOG.md 2026-09-10)
+  int max_prefill = 0;  // 0 = use ModelConfig default (2048)
   std::string prompt;
 
   for (int i = 2; i < argc; ++i) {
@@ -111,6 +112,8 @@ int RunGenerate(int argc, char** argv) {
       use_mtp = true;
     } else if (a == "--mtp-k" && i + 1 < argc) {
       mtp_k = std::atoi(argv[++i]);
+    } else if (a == "--max-prefill" && i + 1 < argc) {
+      max_prefill = std::atoi(argv[++i]);
     } else if (!a.empty() && a[0] == '-') {
       std::fprintf(stderr, "Unknown option: %s\n", a.c_str());
       return 2;
@@ -141,6 +144,7 @@ int RunGenerate(int argc, char** argv) {
   cfg.index_path = model_dir + "/model.safetensors.index.json";
   cfg.ple_sidecar =
       model_dir + "/ple/qwen3.8-flash-next-ple-fp8.bin";
+  if (max_prefill > 0) cfg.max_prefill = max_prefill;
   q4t::model::Model model;
   s = q4t::model::LoadModel(cfg, &model, nullptr);
   if (!s.ok()) {
@@ -155,6 +159,8 @@ int RunGenerate(int argc, char** argv) {
   bool mtp_loaded = false;
   if (use_mtp) {
     mcfg.mtp_dir = model_dir + "/mtp";
+    mcfg.max_prefill = cfg.max_prefill;  // MTP draft-extend runs over the whole
+                                         // prompt; size its workspace to match.
     auto t_mtp0 = std::chrono::steady_clock::now();
     s = q4t::mtp::LoadMtp(mcfg, model.head.embed_tokens, model.head.lm_head,
                           &mtp, nullptr);

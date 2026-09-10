@@ -598,10 +598,12 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 - **serve 层 MTP (2026-09-11)**: HTTP API decode 接入 MtpSpeculativeStep
   (复用 CLI 已验证机制), 失败自动回退 plain; 端到端 decode ≈ 17.5 tok/s
   (~1.4x, 与 CLI 一致), 流式 SSE 正常, 见 LOG.md 2026-09-11。
-- **长上下文验证 (2026-09-11, 1737 token)**: QSA 稀疏路径 plain + MTP 均
-  通过 (MTP 1.35x, 接受率 2.83 tok/step), 输出连贯。边界: prefill 上限
-  max_prefill=2048 (配置), decode 上限 max_len=8192 (KV); 262K 为大工程
-  (KV ~64GB + QSA idx_budget 瓶颈), 见 LOG.md 2026-09-11。
+- **长上下文验证 (2026-09-11, 1.7K/4K/8K)**: QSA 稀疏路径 plain + MTP 均
+  通过, 输出连贯。MTP 加速比随长度单调上升: 1737→1.35x, 4337→1.79x,
+  7612→**1.87x** (plain decode 的 KV 读代价随长度线性增长, MTP 每步摊薄
+  ~2.8 token; 短序列 ~1.4x 是下界, 长上下文是 MTP 主场)。CLI 加
+  --max-prefill flag (默认 2048 不变); decode 上限 max_len=8192; 262K 为大
+  工程 (KV ~64GB + QSA idx_budget 瓶颈), 见 LOG.md 2026-09-11。
 - **kernel launch 削减 (2026-09-10, 性能中性)**: conv1d+checkpoint 三合一
   (CausalConv1dWithCkptKernel, num_ckpt=0 退化纯 conv) + HC gate/combine
   融合 (CombineWithGateKernel, gate 寄存器内重算位级一致) + PLE conv+add

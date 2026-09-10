@@ -5,6 +5,62 @@
 
 ---
 
+## 2026-09-11 — 8K prefill 验证 (7612 token, MTP 加速比 1.87x, 随长度单调上升)
+
+**背景**
+继续长上下文验证, 贴近 max_len=8192 上限 (7612 + 32 = 7644 < 8192)。
+
+**验证 (真实环境, 7612-token prompt + 32-token 生成, --max-prefill 8192)**
+- **plain**: prefill 7612 tok 43597.4ms (174.6 tok/s), decode 32 tok 10829.2ms
+  (3.0 tok/s)。输出连贯。
+- **MTP k=3**: prefill 174.7 tok/s (与 plain 一致), decode 32 tok 5753.2ms
+  (5.6 tok/s, **1.87x vs plain**), 12 步 34 token avg 2.83 tok/step。
+
+**关键发现: MTP 加速比随序列长度单调上升**
+| 序列 | plain decode | MTP decode | 加速比 |
+|---|---|---|---|
+| 1.7K (1737) | 12.0 tok/s | 16.2 tok/s | 1.35x |
+| 4K (4337) | 4.3 tok/s | 7.7 tok/s | 1.79x |
+| 8K (7612) | 3.0 tok/s | 5.6 tok/s | 1.87x |
+
+原因: plain decode 每 token 要读 12 个 full-attention 层的全部 KV (随长度
+线性增长, 8K 时 ~190MB/token), MTP 每步摊薄 ~2.8 个 token 的验证前向 →
+序列越长 KV 读代价占比越大, MTP 相对收益越大。短序列 (30 tok 基准) 的
+~1.4x 是 KV 尚小的下界, 长上下文才是 MTP 的主场。
+
+**长上下文验证线完成 (1.7K/4K/8K)**: 三档 plain + MTP 均通过, 输出连贯,
+无边界 bug。262K 为大工程 (KV ~64GB + QSA idx_budget=2048 瓶颈 + PLE 状态),
+需单独规划。
+
+**下一步**: ① 262K 长上下文规划 (大任务) 或 ② 其他 Phase 2 项 (视频输入 /
+连续批处理 [PD 部署用户指示等整体完善])。
+
+---
+
+## 2026-09-11 — 4K prefill 验证 (4337 token, --max-prefill flag, MTP 加速比随长度升至 1.79x)
+
+**背景**
+上一条摸清边界后, 提高 max_prefill 验证 4K prefill。加 CLI `--max-prefill N`
+flag (覆盖 ModelConfig.max_prefill, 默认 2048 不变; MTP 侧 mcfg.max_prefill
+同步主模型, 因 MtpDraftExtend 跑整个 prompt)。
+
+**验证 (真实环境, 4337-token prompt + 32-token 生成, --max-prefill 4608)**
+- **plain**: prefill 4337 tok 22328.9ms (194.2 tok/s), decode 32 tok 7363.0ms
+  (4.3 tok/s)。输出连贯。
+- **MTP k=3**: prefill 194.2 tok/s (与 plain 一致), decode 32 tok 4149.8ms
+  (7.7 tok/s, **1.79x vs plain**), 12 步 35 token avg 2.92 tok/step。
+- **MTP 加速比随长度上升**: 1.7K 序列 1.35x → 4K 序列 1.79x。原因: 序列越
+  长 plain decode 的 KV 读代价越大 (12 个 full-attention 层, 4337 位置每
+  token ~108MB KV), MTP 每步摊薄多个 token, 相对收益越大。
+- decode 绝对值比短序列低 (4.3 vs 12.0 tok/s) = KV 带宽代价, 非 bug。
+- prefill 194.2 tok/s 比 1.7K 的 239.6 低 = QSA 长序列路径 + 更大 GEMM 的
+  正常 scaling。
+
+**下一步**: ① 8K prefill 验证 (同 flag, 低风险) 或 ② 262K 长上下文规划
+(大任务) 或 ③ 其他 Phase 2 项。
+
+---
+
 ## 2026-09-11 — 长上下文验证 (1737 token, QSA 稀疏路径, plain + MTP 均通过)
 
 **背景**
