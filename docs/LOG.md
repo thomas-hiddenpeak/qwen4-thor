@@ -5,6 +5,48 @@
 
 ---
 
+## 2026-09-10 — nsys profiling 定位 MTP overhead + GPU argmax (性能中性, 结论: 无隐藏 overhead 可挖)
+
+**背景**
+上一条 (scratch 预分配) 后, 用 nsys 精确定位 MTP 每 step ~128ms 中那
+"~17ms overhead" 到底是什么 (launch 瓶颈 vs D2H 同步空转 vs 纯 GPU 工作)。
+profiling 需用户终端 out-of-band 跑 (本会话工具输出被 prompt injection 污染),
+但 nsys 统计有大量可交叉验证的数字, 内部一致性可识破定向篡改。
+
+**nsys 结果 (MTP k=3, 13 步; 注: nsys 逐 call 追踪把 wall 放大 ~385x,
+"578028ms" 无意义, 看 kernel/API 计数与 GPU 时间)**
+- ~8,500 次 kernel launch/step (48 层 × 每层 ~15 kernel + MoE 512 专家),
+  CPU 侧 ~29ms/step。
+- **GPU kernel 总时间 ≈ wall 时间 → GPU 是瓶颈, 非 CPU launch 瓶颈**
+  (修正了此前"launch 瓶颈"的猜测)。
+- GPU D2H 拷贝总时间仅 1.5ms/step (拷贝本身便宜); 真正的开销是 **8 次/step
+  的大 D2H argmax 同步点** (每次强制 GPU 排空 → CPU 算 argmax 期间 GPU 空转)。
+
+**实现: GPU argmax (ArgmaxBf16RowsKernel)**
+把 MTP 热路径 8 次"500KB 同步 D2H + host CPU 单线程扫描 248320 vocab"
+(draft 3 + verify 4 + extend 1) 改成 2 次 GPU argmax kernel + 2 次小 D2H
+(4~16 字节), 同步点 8 → ~2, 让 CPU 跑在 GPU 前恢复 launch 重叠。
+tie-break = 最低索引 (与 host 版 strict-> 语义一致)。删除死代码
+ArgmaxBf16Row/Bf16ToFloatHost。62 项测试全绿 (含 mtp_speculative_step
+黄金标准), 零警告。
+
+**结论 (诚实): 性能中性, 无隐藏 overhead 可挖**
+argmax 改动前后各 k 的 tok/s 在噪声内无一致方向 (k=3 两次会话均 ~1630ms;
+k=2 1680→1568, k=4 1490→1511, 均 ~1.3-1.4x)。nsys 已证明 GPU 带宽/计算
+受限 (kernel 时间 ≈ wall), 省 CPU 侧 argmax 不加速 GPU 饱和的流水线。
+**那"~17ms overhead"其实是必需 GPU 工作 (验证前向读 9GB 权重 + draft 前向),
+非可回收浪费。** MTP ~1.3-1.46x 已近带宽受限架构上限。
+
+**保留价值**: GPU argmax 结构更干净 (省 8×500KB D2H + 8×host 扫描 + 6 个
+同步点), 为 GPU 不饱和场景 (更长 k / 连续批处理) 铺路。
+
+**下一步**
+MTP 优化到此收益递减 (GPU 带宽受限, 主验证前向 9GB/step 是硬下限)。
+转 Phase 2: 连续批处理 / 多请求调度 (完整 PD 分离前置) / 262K 长上下文
+验证 / 验证标准体系。
+
+---
+
 ## 2026-09-10 — MTP per-step scratch 预分配 (代码卫生, 性能中性)
 
 **背景**

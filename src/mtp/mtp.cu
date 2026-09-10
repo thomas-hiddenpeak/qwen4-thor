@@ -58,13 +58,6 @@ __device__ __forceinline__ float Bf16ToFloat(uint16_t b) {
   std::memcpy(&f, &bits, sizeof(f));
   return f;
 }
-// Host-side BF16 -> float (for the speculative step's argmax on host logits).
-static float Bf16ToFloatHost(uint16_t b) {
-  uint32_t bits = static_cast<uint32_t>(b) << 16;
-  float f;
-  std::memcpy(&f, &bits, sizeof(f));
-  return f;
-}
 __device__ __forceinline__ uint16_t FloatToBf16(float f) {
   const __nv_bfloat16 b = __float2bfloat16_rn(f);
   return *reinterpret_cast<const uint16_t*>(&b);
@@ -459,18 +452,55 @@ size_t MtpWorkspaceBytes(const MtpConfig& cfg, int T,
 }
 
 // ---------------------------------------------------------------------------
-// Host argmax over a BF16 logits row.
-static int ArgmaxBf16Row(const uint16_t* lg, int vocab) {
-  int best = 0;
+// GPU argmax over `rows` BF16 logits rows [rows, vocab] -> out[row] = argmax.
+// Tie-break = lowest index (matches the host scan's strict-> semantics).
+// Replaces the per-row "500 KB sync D2H + host CPU scan" (the MTP hot path
+// did this 7x/step, leaving the GPU idle while the CPU scanned 248320 floats).
+namespace {
+constexpr int kArgmaxBlock = 256;
+}  // namespace
+
+__global__ void ArgmaxBf16RowsKernel(const uint16_t* __restrict__ logits,
+                                     int vocab, int* __restrict__ out) {
+  const int row = blockIdx.y;
+  const uint16_t* lg = logits + static_cast<size_t>(row) * vocab;
   float bestv = -1e30f;
-  for (int v = 0; v < vocab; ++v) {
-    const float x = Bf16ToFloatHost(lg[static_cast<size_t>(v)]);
+  int besti = 0;
+  for (int v = threadIdx.x; v < vocab; v += kArgmaxBlock) {
+    const float x = Bf16ToFloat(lg[v]);
     if (x > bestv) {
       bestv = x;
-      best = v;
+      besti = v;
     }
   }
-  return best;
+  __shared__ float s_v[kArgmaxBlock];
+  __shared__ int s_i[kArgmaxBlock];
+  s_v[threadIdx.x] = bestv;
+  s_i[threadIdx.x] = besti;
+  __syncthreads();
+  for (int s = kArgmaxBlock / 2; s > 0; s >>= 1) {
+    if (threadIdx.x < s) {
+      const float ov = s_v[threadIdx.x + s];
+      const int oi = s_i[threadIdx.x + s];
+      if (ov > s_v[threadIdx.x] || (ov == s_v[threadIdx.x] && oi < s_i[threadIdx.x])) {
+        s_v[threadIdx.x] = ov;
+        s_i[threadIdx.x] = oi;
+      }
+    }
+    __syncthreads();
+  }
+  if (threadIdx.x == 0) out[row] = s_i[0];
+}
+
+Status ArgmaxBf16Rows(const uint16_t* logits, int rows, int vocab, int32_t* out,
+                      cudaStream_t stream) {
+  if (rows <= 0) return Status();
+  const dim3 block(kArgmaxBlock);
+  const dim3 grid(1, rows);
+  ArgmaxBf16RowsKernel<<<grid, block, 0, stream>>>(logits, vocab, out);
+  return cudaGetLastError() == cudaSuccess
+             ? Status()
+             : Status::Fail("ArgmaxBf16Rows: kernel launch");
 }
 
 // ---------------------------------------------------------------------------
@@ -536,13 +566,17 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
                  cudaMemcpyDeviceToDevice) != cudaSuccess)
     return cleanup(Status::Fail("MtpDraftExtend: D2D out_g"));
 
-  // out_d0 = argmax of the last row's logits (first draft token).
-  std::vector<uint16_t> lg(static_cast<size_t>(vocab));
-  if (cudaMemcpy(lg.data(), d_logits + static_cast<size_t>(T - 1) * vocab,
-                 lg.size() * sizeof(uint16_t),
-                 cudaMemcpyDeviceToHost) != cudaSuccess)
-    return cleanup(Status::Fail("MtpDraftExtend: D2H logits"));
-  *out_d0 = ArgmaxBf16Row(lg.data(), vocab);
+  // out_d0 = argmax of the last row's logits (first draft token), on the GPU
+  // (1 kernel + 4-byte D2H). d_ids is reused as the 1-int output (the input
+  // ids are no longer needed after MtpForward).
+  {
+    Status s = ArgmaxBf16Rows(d_logits + static_cast<size_t>(T - 1) * vocab,
+                              1, vocab, d_ids, stream);
+    if (!s.ok()) return cleanup(s);
+    if (cudaMemcpy(out_d0, d_ids, sizeof(int32_t), cudaMemcpyDeviceToHost) !=
+        cudaSuccess)
+      return cleanup(Status::Fail("MtpDraftExtend: D2H argmax"));
+  }
   return cleanup(Status());
 }
 
@@ -634,16 +668,16 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
     cudaMemcpy(d_pos, h_pos, sizeof(int), cudaMemcpyHostToDevice);
     Status s = MtpForward(mtp, d_ids, d_pos, d_g, mtp.d_sample, mtp.d_trunk,
                           mtp.d_logits, 1, stream);
-    if (!use_scratch) {
-      cudaFree(d_ids);
-      cudaFree(d_pos);
-    }
+    if (!use_scratch) cudaFree(d_pos);
     if (!s.ok()) return cleanup(s);
-    std::vector<uint16_t> lg(static_cast<size_t>(vocab));
-    if (cudaMemcpy(lg.data(), mtp.d_logits, lg.size() * sizeof(uint16_t),
+    // GPU argmax (1 kernel + 4-byte D2H) instead of 500 KB D2H + host scan.
+    // Reuses d_ids as the 1-int output (input ids are no longer needed).
+    s = ArgmaxBf16Rows(mtp.d_logits, 1, vocab, d_ids, stream);
+    if (!s.ok()) return cleanup(s);
+    if (cudaMemcpy(&drafts[j], d_ids, sizeof(int32_t),
                    cudaMemcpyDeviceToHost) != cudaSuccess)
-      return cleanup(Status::Fail("MtpSpeculativeStep: D2H draft logits"));
-    drafts[j] = ArgmaxBf16Row(lg.data(), vocab);
+      return cleanup(Status::Fail("MtpSpeculativeStep: D2H draft argmax"));
+    if (!use_scratch) cudaFree(d_ids);
     if (cudaMemcpy(d_g, mtp.d_trunk,
                    static_cast<size_t>(hc_dim) * sizeof(uint16_t),
                    cudaMemcpyDeviceToDevice) != cudaSuccess)
@@ -670,24 +704,36 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
         /*save_checkpoints=*/true);
     if (!s.ok()) return cleanup(s);
   }
-  // m_i = argmax(logits[i]); accept the longest prefix where d_i == m_i.
-  std::vector<uint16_t> vlg(static_cast<size_t>(k + 1) * vocab);
-  if (cudaMemcpy(vlg.data(), d_vlogits, vlg.size() * sizeof(uint16_t),
-                 cudaMemcpyDeviceToHost) != cudaSuccess)
-    return cleanup(Status::Fail("MtpSpeculativeStep: D2H verify logits"));
+  // m_i = argmax(logits[i]) on the GPU (1 kernel over k+1 rows + (k+1)*4-byte
+  // D2H) instead of (k+1) full-vocab D2H + host scans. Device output reuses
+  // the ids scratch (draft loop is done; k_max >= k+1).
+  int32_t* d_argmax = use_scratch ? mtp.d_ids_scratch : nullptr;
+  if (!use_scratch) {
+    if (cudaMalloc(reinterpret_cast<void**>(&d_argmax),
+                   static_cast<size_t>(k + 1) * sizeof(int32_t)) != cudaSuccess)
+      return cleanup(Status::Fail("MtpSpeculativeStep: cudaMalloc argmax"));
+  }
+  {
+    Status s = ArgmaxBf16Rows(d_vlogits, k + 1, vocab, d_argmax, stream);
+    if (!s.ok()) return cleanup(s);
+  }
   const auto t_verify1 = std::chrono::steady_clock::now();
+  std::vector<int32_t> m_argmax(k + 1);
+  if (cudaMemcpy(m_argmax.data(), d_argmax,
+                 static_cast<size_t>(k + 1) * sizeof(int32_t),
+                 cudaMemcpyDeviceToHost) != cudaSuccess)
+    return cleanup(Status::Fail("MtpSpeculativeStep: D2H verify argmax"));
+  if (!use_scratch) cudaFree(d_argmax);
   int a = 0;
   for (int i = 0; i < k; ++i) {
-    const int mi =
-        ArgmaxBf16Row(vlg.data() + static_cast<size_t>(i) * vocab, vocab);
+    const int mi = m_argmax[i];
     if (dbg && i < 3)
       std::fprintf(stderr, "[mtp-debug] P=%d i=%d draft=%d main=%d match=%d\n",
                    P, i, drafts[i], mi, drafts[i] == mi ? 1 : 0);
     if (drafts[i] != mi) break;
     a = i + 1;
   }
-  const int32_t correction =
-      ArgmaxBf16Row(vlg.data() + static_cast<size_t>(a) * vocab, vocab);
+  const int32_t correction = m_argmax[a];
 
   // 3. Reconcile the main recurrent state to P+1+a. The batch advanced it to
   //    P+k+1; on full accept (a==k) that is already correct, else restore the
