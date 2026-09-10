@@ -272,6 +272,21 @@ ChatServer::~ChatServer() {
     vision_tower_->Free();
     vision_tower_.reset();
   }
+  // MTP draft model: free its device weights before model_ (the borrowed
+  // embed/lm_head point into model_'s memory). Then the rolling draft-trunk
+  // buffers.
+  if (mtp_loaded_) {
+    mtp_.Free();
+    mtp_loaded_ = false;
+  }
+  if (d_g_) {
+    cudaFree(d_g_);
+    d_g_ = nullptr;
+  }
+  if (d_g_next_) {
+    cudaFree(d_g_next_);
+    d_g_next_ = nullptr;
+  }
 }
 
 Status ChatServer::Start(const ServerOptions& opts) {
@@ -290,6 +305,35 @@ Status ChatServer::Start(const ServerOptions& opts) {
   if (!s.ok()) {
     tok_.reset();
     return Status::Fail("model load failed: " + s.message());
+  }
+
+  // Load the MTP draft model (optional). Borrowed embed/lm_head from the main
+  // model. On failure the server falls back to plain decode (mirrors the CLI
+  // --mtp behavior).
+  {
+    mtp::MtpConfig mcfg;
+    mcfg.mtp_dir = opts.model_dir + "/mtp";
+    s = mtp::LoadMtp(mcfg, model_.head.embed_tokens, model_.head.lm_head,
+                     &mtp_, nullptr);
+    if (!s.ok()) {
+      std::fprintf(stderr, "[q4t] MTP load failed (%s); plain decode only\n",
+                   s.message().c_str());
+    } else {
+      mtp_loaded_ = true;
+      const size_t hc_dim =
+          static_cast<size_t>(mtp_.cfg.hc) * static_cast<size_t>(mtp_.cfg.hs);
+      if (cudaMalloc(reinterpret_cast<void**>(&d_g_), hc_dim * 2) !=
+              cudaSuccess ||
+          cudaMalloc(reinterpret_cast<void**>(&d_g_next_), hc_dim * 2) !=
+              cudaSuccess) {
+        std::fprintf(stderr,
+                     "[q4t] MTP buffer alloc failed; plain decode only\n");
+        mtp_.Free();
+        mtp_loaded_ = false;
+      } else {
+        std::fprintf(stderr, "[q4t] MTP loaded (k=%d)\n", mtp_k_);
+      }
+    }
   }
 
   // Load the vision tower (multimodal). Optional: if the checkpoint has no
@@ -622,11 +666,29 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     cudaFree(d_vfeats);
     return;
   }
+  // MTP: prefill trunk_out buffer (pre-final-mixer multi stream [T, hc*hs])
+  // for the draft-extend. Allocated only when MTP is loaded.
+  uint16_t* d_trunk_full = nullptr;
+  if (mtp_loaded_) {
+    const size_t hc_dim =
+        static_cast<size_t>(mtp_.cfg.hc) * static_cast<size_t>(mtp_.cfg.hs);
+    if (cudaMalloc(reinterpret_cast<void**>(&d_trunk_full),
+                   static_cast<size_t>(T) * hc_dim * 2) != cudaSuccess) {
+      cudaFree(d_logits);
+      cudaFree(d_vfeats);
+      SendError(fd, 500, "cudaMalloc trunk failed");
+      return;
+    }
+  }
   // Release the per-request device buffers on any exit path.
   auto cleanup = [&]() {
     if (d_logits) {
       cudaFree(d_logits);
       d_logits = nullptr;
+    }
+    if (d_trunk_full) {
+      cudaFree(d_trunk_full);
+      d_trunk_full = nullptr;
     }
     if (d_vfeats) {
       cudaFree(d_vfeats);
@@ -661,7 +723,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   const model::VisionFeatures* vptr =
       (vfeats.num_tokens > 0) ? &vfeats : nullptr;
   s = model::ModelPrefill(model_, &seq, ids.data(), T, d_logits, nullptr,
-                          nullptr, vptr);
+                          mtp_loaded_ ? d_trunk_full : nullptr, vptr);
   if (!s.ok()) {
     model::ModelEndSequence(&seq);
     cleanup();
@@ -692,36 +754,115 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
              static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost);
   next_token = argmax(h_logits.data());
 
-  for (int step = 0; step < max_tokens; ++step) {
-    generated.push_back(next_token);
-    if (next_token == eos) {
-      finish_reason = "stop";
-      break;
-    }
-    if (step == max_tokens - 1) {
-      finish_reason = "length";
-    }
-    const int32_t tok_id = next_token;
-    // Emit the token text (decode this single token).
-    if (stream) {
-      std::vector<std::uint32_t> one(1, static_cast<std::uint32_t>(tok_id));
-      std::string piece;
-      if (tok_->Decode(one, true, &piece).ok()) {
-        WriteAll(fd, SseChunk(id, model_field, "", piece, "", 0));
+  // MTP init (mirrors the CLI --mtp path): fresh draft KV, bonus token b =
+  // t_P (the first decode token), draft-extend over the prompt to build the
+  // draft KV[0..P-1] and seed the first speculative step (d0 + g). On any
+  // failure fall back to plain decode (the main seq is still usable).
+  bool use_mtp = mtp_loaded_;
+  int32_t mtp_b = -1, mtp_d0 = -1;
+  if (use_mtp) {
+    s = mtp::MtpResetState(mtp_, nullptr);
+    if (s.ok()) {
+      mtp_b = next_token;
+      // EAGLE shift: shifted_ids[p] = t_{p+1}, with t_P := b at the tail.
+      std::vector<int32_t> shifted(T);
+      for (int i = 0; i < T - 1; ++i) shifted[i] = ids[i + 1];
+      shifted[T - 1] = mtp_b;
+      std::vector<int> pos(T);
+      for (int i = 0; i < T; ++i) pos[i] = i;
+      s = mtp::MtpDraftExtend(mtp_, shifted.data(), d_trunk_full, pos.data(),
+                              T, &mtp_d0, d_g_, nullptr);
+      if (s.ok()) {
+        s = model::ModelReserveVerifyCheckpoints(model_, mtp_k_);
+        if (s.ok())
+          s = mtp::MtpReserveScratch(mtp_, mtp_k_ + 1);
       }
     }
-    if (seq.position + 1 >= max_len_) {
-      finish_reason = "length";
-      break;  // cannot decode further without exceeding the KV cache
-    }
-    s = model::ModelDecodeStepSeq(model_, &seq, tok_id, d_logits, nullptr);
     if (!s.ok()) {
-      finish_reason = "stop";
-      break;
+      std::fprintf(stderr,
+                   "[q4t] MTP init failed (%s); plain decode for this "
+                   "request\n",
+                   s.message().c_str());
+      use_mtp = false;
     }
-    cudaMemcpy(h_logits.data(), d_logits, static_cast<size_t>(vocab) * 2,
-               cudaMemcpyDeviceToHost);
-    next_token = argmax(h_logits.data());
+  }
+
+  if (use_mtp) {
+    // Speculative decode: each step emits the bonus b + accepted drafts and
+    // yields the next (b, d0, g). MtpSpeculativeStep advances the main seq
+    // over exactly the accepted prefix (lazy verification, no rollback).
+    int32_t accepted_tokens[64];
+    int accepted_count_tmp = 0;
+    bool done = false;
+    while (!done && static_cast<int>(generated.size()) < max_tokens) {
+      int32_t next_b = -1, next_d0 = -1;
+      s = mtp::MtpSpeculativeStep(model_, mtp_, &seq, mtp_b, mtp_d0, d_g_,
+                                  mtp_k_, accepted_tokens, &accepted_count_tmp,
+                                  &next_b, &next_d0, d_g_next_, nullptr);
+      if (!s.ok() || accepted_count_tmp <= 0) break;
+      for (int i = 0; i < accepted_count_tmp &&
+                          static_cast<int>(generated.size()) < max_tokens;
+           ++i) {
+        const int32_t tok_id = accepted_tokens[i];
+        generated.push_back(tok_id);
+        if (stream) {
+          std::vector<std::uint32_t> one(1, static_cast<std::uint32_t>(tok_id));
+          std::string piece;
+          if (tok_->Decode(one, true, &piece).ok())
+            WriteAll(fd, SseChunk(id, model_field, "", piece, "", 0));
+        }
+        if (tok_id == eos) {
+          done = true;
+          break;
+        }
+      }
+      if (static_cast<int>(generated.size()) >= max_tokens) {
+        finish_reason = "length";
+        break;
+      }
+      if (seq.position + 1 >= max_len_) {
+        finish_reason = "length";
+        break;  // cannot decode further without exceeding the KV cache
+      }
+      mtp_b = next_b;
+      mtp_d0 = next_d0;
+      uint16_t* tmp = d_g_;
+      d_g_ = d_g_next_;
+      d_g_next_ = tmp;
+    }
+  } else {
+    // Plain greedy decode (baseline / MTP fallback).
+    for (int step = 0; step < max_tokens; ++step) {
+      generated.push_back(next_token);
+      if (next_token == eos) {
+        finish_reason = "stop";
+        break;
+      }
+      if (step == max_tokens - 1) {
+        finish_reason = "length";
+      }
+      const int32_t tok_id = next_token;
+      // Emit the token text (decode this single token).
+      if (stream) {
+        std::vector<std::uint32_t> one(1, static_cast<std::uint32_t>(tok_id));
+        std::string piece;
+        if (tok_->Decode(one, true, &piece).ok()) {
+          WriteAll(fd, SseChunk(id, model_field, "", piece, "", 0));
+        }
+      }
+      if (seq.position + 1 >= max_len_) {
+        finish_reason = "length";
+        break;  // cannot decode further without exceeding the KV cache
+      }
+      s = model::ModelDecodeStepSeq(model_, &seq, tok_id, d_logits, nullptr);
+      if (!s.ok()) {
+        finish_reason = "stop";
+        break;
+      }
+      cudaMemcpy(h_logits.data(), d_logits, static_cast<size_t>(vocab) * 2,
+                 cudaMemcpyDeviceToHost);
+      next_token = argmax(h_logits.data());
+    }
   }
   model::ModelEndSequence(&seq);
 

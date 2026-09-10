@@ -595,6 +595,9 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   验证 + 接受/回退 + per-token SSM/conv checkpoint 恢复 (消除部分接受
   re-advance), 实测 decode 加速 1.46x (k=3 最优, 默认 mtp_k=3), 见
   "已完成" MTP 条目 + LOG.md 2026-09-10。
+- **serve 层 MTP (2026-09-11)**: HTTP API decode 接入 MtpSpeculativeStep
+  (复用 CLI 已验证机制), 失败自动回退 plain; 端到端 decode ≈ 17.5 tok/s
+  (~1.4x, 与 CLI 一致), 流式 SSE 正常, 见 LOG.md 2026-09-11。
 - **kernel launch 削减 (2026-09-10, 性能中性)**: conv1d+checkpoint 三合一
   (CausalConv1dWithCkptKernel, num_ckpt=0 退化纯 conv) + HC gate/combine
   融合 (CombineWithGateKernel, gate 寄存器内重算位级一致) + PLE conv+add

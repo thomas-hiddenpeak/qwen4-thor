@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "q4t/model/model.h"
+#include "q4t/mtp/mtp.h"
 #include "q4t/status.h"
 #include "q4t/text/tokenizer.h"
 #include "q4t/vision/processor.h"
@@ -74,6 +75,17 @@ class ChatServer {
   int max_len_ = 2048;
   std::unique_ptr<text::Tokenizer> tok_;
   model::Model model_;
+  // MTP draft model (optional). Borrowed embed/lm_head from model_ must be
+  // freed before model_ (destructor order: members destruct in reverse
+  // declaration order, so mtp_ is destroyed before model_).
+  mtp::MtpModel mtp_;
+  bool mtp_loaded_ = false;
+  int mtp_k_ = 3;  // matches the CLI default (实测最优, 见 docs/LOG.md)
+  // Rolling draft-trunk double buffer for the speculative step (persistent;
+  // freed in the destructor). d_trunk_full (prefill trunk_out [T, hc*hs]) is
+  // per-request and freed by HandleChat's cleanup lambda.
+  uint16_t* d_g_ = nullptr;
+  uint16_t* d_g_next_ = nullptr;
   // Vision tower (multimodal). Null if the model has no visual weights.
   std::unique_ptr<vision::VisionTower> vision_tower_;
   vision::ProcessorConfig proc_cfg_;

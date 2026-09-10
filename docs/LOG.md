@@ -5,6 +5,41 @@
 
 ---
 
+## 2026-09-11 — serve 层接入 MTP 推测解码 (API decode 获得 ~1.4x 加速)
+
+**背景**
+CLI `q4t generate --mtp` 有 1.4x 加速, 但 HTTP API (serve) 的 decode 循环用
+plain `ModelDecodeStepSeq`, 享受不到 MTP。用户指示: PD 部署等整体完善后
+再测, 先做其他推荐工作 — 选定 serve MTP 接线 (复用已验证的
+MtpSpeculativeStep + checkpoint 机制)。
+
+**实现 (chat_server.h/.cpp)**
+- `ChatServer` 加 `mtp_`/`mtp_loaded_`/`mtp_k_`/`d_g_`/`d_g_next_` 成员。
+  mtp_ 声明在 model_ 之后 → 析构时先释放借用的 embed/lm_head (成员逆序析构)。
+- `Start()`: 主模型加载后尝试 `LoadMtp(mcfg, model_.head.embed_tokens,
+  model_.head.lm_head, &mtp_)` (mtp_dir = model_dir/"mtp"), 失败回退 plain
+  decode (镜像 CLI --mtp 行为); 成功则预分配 d_g_/d_g_next_ (hc_dim×2)。
+- `HandleChat`: prefill 传 `trunk_out=d_trunk_full` (per-request, cleanup
+  lambda 释放); MTP 初始化镜像 CLI: MtpResetState → bonus b = prefill 末行
+  argmax → EAGLE shift → MtpDraftExtend → ModelReserveVerifyCheckpoints(k) →
+  MtpReserveScratch(k+1); 任一步失败回退 plain (主 seq 仍可用)。decode 循环:
+  MTP 分支用 MtpSpeculativeStep (每步发射 bonus+accepted, SSE 逐 token 输出,
+  d_g_/d_g_next_ 双缓冲滚动), plain 分支保持原逻辑。
+- 安全性: server 单线程 accept 循环 + 请求间 mu_ 互斥 → 成员级 MTP 状态无
+  竞争。MTP 源码本就在 q4t_model 库, 无需改 CMake。
+
+**验证 (真实环境)**
+- 62 项测试全绿, 零警告。
+- 端到端: `q4t serve --port 8901` 加载成功 (日志 "MTP loaded (k=3)");
+  非流式 30-token 请求 1.795s (含 10-token prefill) → decode ≈ 17.5 tok/s
+  (plain 仅 decode 30 token 需 2.07s → ~1.4x, 与 CLI 一致); 流式 SSE 逐
+  token chunk + [DONE] 正常; 输出连贯无退化。
+
+**下一步**: Phase 2 候选 (视频输入 / 连续批处理 / PD 部署 [用户: 等整体完善
+再测] / 长上下文验证 / 验证标准体系)。
+
+---
+
 ## 2026-09-10 — kernel launch 削减 (续 3): PLE trunk_add 融合 + 删 PleAddTrunkKernel (性能中性, 复杂度下降)
 
 **背景**
