@@ -103,7 +103,7 @@ void DumpLayerOut(const uint16_t* out, int T, int hc_dim) {
 // projection GEMMs) or the attn_hc.mix GEMM introduces the batch-vs-
 // incremental divergence. Without this, an exact previous-layer `out` does NOT
 // establish an identical input to the PLE layer's attn_hc.mix, because
-// PleLayerForward + PleAddTrunkKernel modify the trunk in between.
+// PleLayerForward (with trunk_add) modifies the trunk in between.
 void DumpTrunkBeforeMix(const uint16_t* trunk, int T, int hc_dim) {
   const char* e = std::getenv("Q4T_MLP_DUMP");
   if (!e || !*e) return;
@@ -151,23 +151,6 @@ void DumpPleEmbeddings(const uint16_t* embeddings, int T, int ple_embed_dim) {
 
 // Align a byte count up to 256 (cuBLASLt wants aligned scratch pointers).
 inline size_t AlignUp(size_t x) { return (x + 255u) & ~size_t(255u); }
-
-// Elementwise BF16 add: o[i] = a[i] + b[i]. Used to form the PLE-corrected
-// trunk (hyper_input + ple_out). No __restrict__ on the pointers because the
-// caller passes o == b (in-place add); each element is read before written, so
-// this is safe. (Trivial kernel, not a hot path.)
-__global__ void PleAddTrunkKernel(const uint16_t* a, const uint16_t* b,
-                                  uint16_t* o, int total) {
-  const int i = blockIdx.x * blockDim.x + threadIdx.x;
-  if (i >= total) return;
-  uint32_t ba = static_cast<uint32_t>(a[i]) << 16;
-  uint32_t bb = static_cast<uint32_t>(b[i]) << 16;
-  float fa, fb;
-  std::memcpy(&fa, &ba, sizeof(fa));
-  std::memcpy(&fb, &bb, sizeof(fb));
-  const __nv_bfloat16 r = __float2bfloat16_rn(fa + fb);
-  o[i] = *reinterpret_cast<const uint16_t*>(&r);
-}
 
 // Attention-block workspace size for `T` tokens. Full attention carves its
 // intermediates from the workspace (scales with T) plus a GEMM scratch; linear
@@ -444,19 +427,14 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     d_ple_trunk = reinterpret_cast<uint16_t*>(p);
     // 1. PLE: d_ple_trunk = hyper_input + ple(ple_embeddings, hyper_input).
     DumpPleEmbeddings(ple_embeddings, T, layer.ple.ple_embed_dim);
-    s = PleLayerForward(layer.ple, ple_embeddings, hyper_input, d_ple_trunk, T,
-                        layer.ple_conv_state, d_ple_ws, ple_ws, stream);
+    // Fused: PleLayerForward with trunk_add=hyper_input computes
+    // d_ple_trunk = hyper_input + ple_out in one launch (no separate
+    // PleAddTrunkKernel).
+    s = PleLayerForward(layer.ple, ple_embeddings, hyper_input, d_ple_trunk,
+                        T, layer.ple_conv_state, d_ple_ws, ple_ws, stream,
+                        hyper_input);
     if (!s.ok()) {
       return s;
-    }
-    {
-      const int total = static_cast<int>(static_cast<size_t>(T) * hc_dim);
-      const int block = 256;
-      PleAddTrunkKernel<<<(total + block - 1) / block, block, 0, stream>>>(
-          hyper_input, d_ple_trunk, d_ple_trunk, total);
-      if (cudaGetLastError() != cudaSuccess) {
-        return Status::Fail("ple add trunk launch");
-      }
     }
     d_trunk = d_ple_trunk;
   }

@@ -84,8 +84,10 @@ Status LoadPleLayer(const io::WeightLoader& loader, const std::string& prefix,
 //                 gathered + reduced n-gram embeddings
 //   hyper_input : device row-major [T, hc*hs] uint16 (BF16), the layer's
 //                 hyper-connection input (the "query")
-//   out         : device row-major [T, hc*hs] uint16 (out) — ADD to
-//                 hyper_input to form the PLE-corrected input
+//   out         : device row-major [T, hc*hs] uint16 (out) — the PLE output
+//                 (gated_value + conv_out). When trunk_add is non-null, out
+//                 = trunk_add + (gated_value + conv_out) (the PLE-corrected
+//                 trunk, fusing the old PleAddTrunkKernel).
 //   conv_state  : persistent short-conv state [hc*hs, (K-1)*dilation] BF16
 //                 (oldest-first), zeroed for a fresh sequence. The dilated
 //                 depthwise conv reads taps before the chunk from this state
@@ -93,10 +95,13 @@ Status LoadPleLayer(const io::WeightLoader& loader, const std::string& prefix,
 //                 after the conv. Matches the reference _short_conv
 //                 (update_conv_state, state_idx=1).
 //   workspace   : scratch device buffer (>= ~32 MiB) for the two GEMMs
+//   trunk_add   : optional [T, hc*hs] BF16 buffer to add to the PLE output
+//                 (fuses the old PleAddTrunkKernel). nullptr = plain ple_out.
 Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
                        const uint16_t* hyper_input, uint16_t* out, int T,
                        uint16_t* conv_state, void* workspace,
-                       size_t workspace_bytes, cudaStream_t stream);
+                       size_t workspace_bytes, cudaStream_t stream,
+                       const uint16_t* trunk_add = nullptr);
 
 }  // namespace model
 }  // namespace q4t

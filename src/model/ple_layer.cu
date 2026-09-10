@@ -173,11 +173,15 @@ __global__ void GatedValueKernel(const uint16_t* __restrict__ gate,
 // reduces to zero-padding (the prefill path is unchanged).
 // Fused with the old PleAddKernel: the conv result goes through the same BF16
 // round-trip (store-then-read) as the old two-kernel path, so the sum is
-// bit-identical. One thread per (t, c); loops over K taps.
+// bit-identical. When trunk_add is non-null, also fuses the old
+// PleAddTrunkKernel: out = BF16(trunk_add + BF16(gated + conv)) — the double
+// BF16 rounding matches the old two-kernel path exactly.
+// One thread per (t, c); loops over K taps.
 __global__ void DepthwiseConvAddKernel(const uint16_t* __restrict__ x,
                                        const uint16_t* __restrict__ conv1d,
                                        const uint16_t* __restrict__ state,
                                        const uint16_t* __restrict__ gated,
+                                       const uint16_t* __restrict__ trunk_add,
                                        uint16_t* __restrict__ out, int T,
                                        int C, int K, int dilation,
                                        int state_len) {
@@ -197,7 +201,11 @@ __global__ void DepthwiseConvAddKernel(const uint16_t* __restrict__ x,
     acc += w * xv;
   }
   const float conv = Bf16ToFloat(FloatToBf16(Silu(acc)));
-  out[idx] = FloatToBf16(Bf16ToFloat(gated[idx]) + conv);
+  const uint16_t ple_out = FloatToBf16(Bf16ToFloat(gated[idx]) + conv);
+  if (trunk_add)
+    out[idx] = FloatToBf16(Bf16ToFloat(trunk_add[idx]) + Bf16ToFloat(ple_out));
+  else
+    out[idx] = ple_out;
 }
 
 // Update the PLE short-conv state to the last `state_len` gated_n values of
@@ -385,7 +393,8 @@ Status LoadPleLayer(const io::WeightLoader& loader, const std::string& prefix,
 Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
                        const uint16_t* hyper_input, uint16_t* out, int T,
                        uint16_t* conv_state, void* workspace,
-                       size_t workspace_bytes, cudaStream_t stream) {
+                       size_t workspace_bytes, cudaStream_t stream,
+                       const uint16_t* trunk_add) {
   const int hc = w.hc_count, hs = w.hidden_size, pe = w.ple_embed_dim;
   const int hc_dim = hc * hs;
   const int K = w.conv_kernel, dil = w.conv_dilation;
@@ -468,9 +477,12 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
     const int total = T * hc_dim;
     DepthwiseConvAddKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
         reinterpret_cast<uint16_t*>(d_gated_n), w.conv1d, conv_state,
-        reinterpret_cast<uint16_t*>(d_gated), out, T, hc_dim, K, dil,
-        state_len);
+        reinterpret_cast<uint16_t*>(d_gated), trunk_add, out, T, hc_dim, K,
+        dil, state_len);
   }
+  // DumpPleConv: when trunk_add is active, `out` is the trunk-corrected value
+  // (hyper_input + ple_out), not raw ple_out. The dump is only used for
+  // manual E1–E10 debugging (no test/tool reads these files).
   DumpPleConv(reinterpret_cast<uint16_t*>(d_gated_n),
               reinterpret_cast<uint16_t*>(out), T, hc_dim);
   // 8b. Slide the state to the last state_len gated_n values (old + chunk).

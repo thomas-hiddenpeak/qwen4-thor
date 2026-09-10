@@ -5,6 +5,42 @@
 
 ---
 
+## 2026-09-10 — kernel launch 削减 (续 3): PLE trunk_add 融合 + 删 PleAddTrunkKernel (性能中性, 复杂度下降)
+
+**背景**
+继续"无回退即推进"。PLE 层后 decoder_layer 用 `PleAddTrunkKernel` 原地
+加 hyper_input 形成 PLE 校正 trunk (每 PLE 层 1 次 launch)。
+
+**实现**
+- `PleLayerForward` 加可选参数 `trunk_add` (默认 nullptr)。
+- `DepthwiseConvAddKernel` 末段: 先 `ple_out = BF16(gated + conv)`, 若
+  trunk_add 非空则 `out = BF16(trunk_add + ple_out)` — 双重 BF16 舍入与旧
+  路径 (PLE 写 ple_out → PleAddTrunkKernel 读回再加) 逐位一致。
+- `decoder_layer.cu`: PLE 层直接传 `trunk_add=hyper_input`, **删除**
+  `PleAddTrunkKernel` 死代码 + 调用块。省 1 launch × 1 PLE 层 + 1 个 kernel
+  定义。
+
+**验证 (干净环境, 无并发)**
+- 62 项测试全绿, 零警告。关键: `model_decoder_layer` route B 用 **CPU
+  独立实现**做 hyper+ple_out 加法再对比全层输出 — 不依赖 GPU kernel, 独立
+  验证了 trunk_add 的位级正确性。
+- 干净基准: plain 2062.8ms → 14.5 tok/s (与融合前一致, 零回退);
+  k=1..4 = 1.06/1.33/1.40/1.37x, 均在 ±20% 噪声带内, 无 ERR。
+
+**k=3 vs k=4 默认值 (5 轮干净基准汇总)**: k=3 最优 3 轮 (1.21/1.26/1.40x),
+k=4 最优 2 轮 (1.47/1.38x), 整体打平且在噪声带内 → **默认 mtp_k=3 维持
+不变**。
+
+**本轮降复杂度累计 (5 个融合)**: ① conv1d+ckpt 三合一 (×36 层) ② HC
+gate+combine (×2/层×48) ③ PLE conv+add (×48 层 + d_conv buffer) ④ full_attn
+q/k norm (×12 层) ⑤ PLE trunk_add (×1 层 + 删 1 kernel)。每 forward launch
+数减少 ~97 次, 5 个 kernel 定义被消灭/合并。
+
+**下一步**: model kernel 融合候选已近枯竭 (剩余多为 GEMM/scan/attention
+边界)。建议转向 Phase 2 或 serve 层优化。
+
+---
+
 ## 2026-09-10 — kernel launch 削减 (续 2): full_attention q/k norm 合一 (性能中性, 复杂度下降)
 
 **背景**
