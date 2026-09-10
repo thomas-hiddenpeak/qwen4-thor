@@ -5,6 +5,34 @@
 
 ---
 
+## 2026-09-10 — kernel launch 削减 (续): PLE conv+add 融合 (性能中性, 复杂度下降)
+
+**背景**
+继续"无回退即推进"原则。PLE 层每层 forward 热路径, 原第 8+9 步:
+`DepthwiseConvKernel` (silu(depthwise-causal-conv(gated_n)) 写 d_conv) +
+`PleAddKernel` (out = gated_value + conv_out)。
+
+**实现 (ple_layer.cu)**
+`DepthwiseConvKernel` + `PleAddKernel` → `DepthwiseConvAddKernel`: conv 按
+(t,c) 算完 silu 后寄存器内直接加 `gated[idx]` 写 `out`。conv 值经
+`Bf16ToFloat(FloatToBf16(silu))` 往返复刻旧路径"先存 BF16 再读回"的舍入 →
+位级一致。省 1 launch × 48 层 + `d_conv` 整块 buffer (T×hc_dim×2B) 的写+读。
+`PleConvUpdateStateKernel` (8b) 保持独立: 只读 gated_n 写 conv_state, 与 fused
+kernel 无竞争, 顺序不变 (fused 读旧 state → 8b 更新)。`DumpPleConv` 调试路径
+的 ple_conv_out 改指向 out (该文件无测试/工具读取, 仅 E1–E10 已闭合实验链的
+手动 Q4T_STATE_DUMP 调试用)。
+
+**验证 (干净环境, 无并发)**
+- 62 项测试全绿, 零警告 (含 model_ple_layer / model_forward /
+  mtp_speculative_step 覆盖 PLE 热路径)。
+- 干净基准: plain 2068.6ms → 14.5 tok/s (与融合前 2072.6ms 一致, 零回退);
+  k=1..4 = 1.12/1.28/1.26/1.38x, 均在 ±20% 噪声带内, 无 ERR。
+
+**下一步**: 继续找可融合点 (原则: 相邻纯元素级 kernel, 中间 buffer 只被
+两者共享; GEMM/RMSNorm 边界不可合)。或进入 Phase 2。
+
+---
+
 ## 2026-09-10 — kernel launch 数量削减: conv1d+ckpt 三合一 / HC gate+combine 融合 (性能中性, 复杂度下降)
 
 **背景**

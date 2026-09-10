@@ -7,8 +7,7 @@
 //   5. gate = sigmoid(sqrt(|dot(key_n, query_n)/sqrt(hs)|))  [T, hc] (kernel)
 //   6. gated_value[b,c] = gate[b] * value[c]              [T, hc*hs] (kernel)
 //   7. gated_n = GroupedGemmaRMSNorm(gated_value, norm_conv) (kernel)
-//   8. conv_out = silu(depthwise-causal-conv(gated_n))    [T, hc*hs] (kernel)
-//   9. out = gated_value + conv_out                       (kernel)
+//   8. out = gated_value + silu(depthwise-causal-conv(gated_n))  (fused)
 #include "q4t/model/ple_layer.h"
 
 #include <cuda_bf16.h>
@@ -162,8 +161,9 @@ __global__ void GatedValueKernel(const uint16_t* __restrict__ gate,
   out[idx] = FloatToBf16(g * v);
 }
 
-// Depthwise causal convolution over the token sequence, then SiLU.
-//   conv_out[t, c] = silu( sum_{j=0}^{K-1} conv1d[c, j] *
+// Depthwise causal convolution over the token sequence, then SiLU, then add
+// the (un-normed) gated_value:
+//   out[t, c] = gated[t, c] + silu( sum_{j=0}^{K-1} conv1d[c, j] *
 //                          gated_n[t - (K-1-j)*dilation, c] )
 // Taps before the sequence start (src < 0) read from the persistent
 // `state` ([C, state_len] BF16, oldest-first, state_len = (K-1)*dilation)
@@ -171,12 +171,16 @@ __global__ void GatedValueKernel(const uint16_t* __restrict__ gate,
 // global position src (the reference _short_conv keeps this 9-element state
 // via update_conv_state). For a fresh sequence the state is zero, so this
 // reduces to zero-padding (the prefill path is unchanged).
-// One thread per (t, c); loops over K taps.
-__global__ void DepthwiseConvKernel(const uint16_t* __restrict__ x,
-                                    const uint16_t* __restrict__ conv1d,
-                                    const uint16_t* __restrict__ state,
-                                    uint16_t* __restrict__ out, int T, int C,
-                                    int K, int dilation, int state_len) {
+// Fused with the old PleAddKernel: the conv result goes through the same BF16
+// round-trip (store-then-read) as the old two-kernel path, so the sum is
+// bit-identical. One thread per (t, c); loops over K taps.
+__global__ void DepthwiseConvAddKernel(const uint16_t* __restrict__ x,
+                                       const uint16_t* __restrict__ conv1d,
+                                       const uint16_t* __restrict__ state,
+                                       const uint16_t* __restrict__ gated,
+                                       uint16_t* __restrict__ out, int T,
+                                       int C, int K, int dilation,
+                                       int state_len) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   if (idx >= T * C) return;
   const int t = idx / C;
@@ -192,7 +196,8 @@ __global__ void DepthwiseConvKernel(const uint16_t* __restrict__ x,
     const float w = Bf16ToFloat(conv1d[c * K + j]);
     acc += w * xv;
   }
-  out[idx] = FloatToBf16(Silu(acc));
+  const float conv = Bf16ToFloat(FloatToBf16(Silu(acc)));
+  out[idx] = FloatToBf16(Bf16ToFloat(gated[idx]) + conv);
 }
 
 // Update the PLE short-conv state to the last `state_len` gated_n values of
@@ -230,15 +235,6 @@ __global__ void PleConvUpdateStateKernel(uint16_t* __restrict__ state,
             input[static_cast<size_t>(src) * C + c];
     }
   }
-}
-
-// out[t, c] = gated_value[t, c] + conv_out[t, c].
-__global__ void PleAddKernel(const uint16_t* __restrict__ a,
-                             const uint16_t* __restrict__ b, uint16_t* __restrict__ out,
-                             int total) {
-  const int i = blockIdx.x * blockDim.x + threadIdx.x;
-  if (i >= total) return;
-  out[i] = FloatToBf16(Bf16ToFloat(a[i]) + Bf16ToFloat(b[i]));
 }
 
 Status CheckGemm(const Bf16GemmResult& r) {
@@ -298,7 +294,7 @@ size_t PleLayerWorkspaceBytes(int T, int hc, int hs) {
   carve(gate_bytes);  // gate
   carve(hc_bytes);  // gated
   carve(hc_bytes);  // gated_n
-  carve(hc_bytes);  // conv
+
   carve(kGemmScratch);  // gemm scratch
   return off;
 }
@@ -416,7 +412,6 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
   char* d_gate = carve(gate_bytes);
   char* d_gated = carve(hc_bytes);
   char* d_gated_n = carve(hc_bytes);
-  char* d_conv = carve(hc_bytes);
   char* d_gemm = carve(kGemmScratch);
   if (off > workspace_bytes) {
     return Status::Fail("PLE workspace too small");
@@ -462,31 +457,28 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
       reinterpret_cast<uint16_t*>(d_gated), w.norm_conv,
       reinterpret_cast<uint16_t*>(d_gated_n), T, hc, hs, w.eps);
   if (cudaGetLastError() != cudaSuccess) return Status::Fail("ple rmsnorm2");
-  // 8. conv_out = silu(depthwise-causal-conv(gated_n)). The dilated conv
-  //    (K, dilation) has receptive field (K-1)*dilation, so the persistent
-  //    state holds that many gated_n values per channel (oldest-first).
+  // 8. out = gated_value + silu(depthwise-causal-conv(gated_n)). The dilated
+  //    conv (K, dilation) has receptive field (K-1)*dilation, so the
+  //    persistent state holds that many gated_n values per channel
+  //    (oldest-first). Fused with the old PleAddKernel: the conv result is
+  //    added to gated_value in-register (same BF16 round-trip as the old
+  //    store-then-read path), so no separate d_conv buffer / launch.
   const int state_len = (K - 1) * dil;
   {
     const int total = T * hc_dim;
-    DepthwiseConvKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
+    DepthwiseConvAddKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
         reinterpret_cast<uint16_t*>(d_gated_n), w.conv1d, conv_state,
-        reinterpret_cast<uint16_t*>(d_conv), T, hc_dim, K, dil, state_len);
+        reinterpret_cast<uint16_t*>(d_gated), out, T, hc_dim, K, dil,
+        state_len);
   }
   DumpPleConv(reinterpret_cast<uint16_t*>(d_gated_n),
-              reinterpret_cast<uint16_t*>(d_conv), T, hc_dim);
+              reinterpret_cast<uint16_t*>(out), T, hc_dim);
   // 8b. Slide the state to the last state_len gated_n values (old + chunk).
   {
     const int blocks = (hc_dim + kBlock - 1) / kBlock;
     PleConvUpdateStateKernel<<<blocks, kBlock, 0, stream>>>(
         conv_state, reinterpret_cast<uint16_t*>(d_gated_n), T, hc_dim,
         state_len);
-  }
-  // 9. out = gated_value + conv_out.
-  {
-    const int total = T * hc_dim;
-    PleAddKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
-        reinterpret_cast<uint16_t*>(d_gated),
-        reinterpret_cast<uint16_t*>(d_conv), out, total);
   }
   if (cudaGetLastError() != cudaSuccess) return Status::Fail("ple kernel");
   return Status();
