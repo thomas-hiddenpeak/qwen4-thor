@@ -104,39 +104,55 @@ void DumpLinearIntermediates(const char* tag, const uint16_t* x, int T,
   (void)tag;
 }
 
-// Causal conv1d over `channels` (the in_qkv channels), kernel width conv_k,
-// SiLU activation. Prefill-parallel: all tokens computed at once from the
-// input + the persistent conv_state (history for t < conv_k-1).
+// Fused causal conv1d (SiLU) + per-token conv checkpoints.
+// Grid: dim3(ch_blocks, T + num_ckpt).
+//   z <  T: compute conv output for token z (SiLU(conv)).
+//   z >= T: write the conv checkpoint for token (z - T).
+// Both branches only READ input + the pre-update conv_state and write different
+// outputs (output / ckpt), so they are race-free in one kernel (saves a launch
+// vs the separate CausalConv1d + ConvCheckpoint). When num_ckpt == 0 the grid is
+// dim3(ch_blocks, T) and this degenerates to the plain causal conv1d.
 //   input  : [T, channels] (original, unmodified)
 //   output : [T, channels] (SiLU(conv)); may alias input (per-(t,ch) safe)
-//   state  : [channels, conv_k-1] (last conv_k-1 inputs, oldest first)
+//   old_state : [channels, conv_k-1] (pre-update history, read-only here)
+//   ckpt   : [num_ckpt, channels, conv_k-1] (may be null when num_ckpt == 0)
 //   w      : [channels, conv_k]
-__global__ void CausalConv1dKernel(const uint16_t* __restrict__ input,
-                                   uint16_t* __restrict__ output,
-                                   uint16_t* __restrict__ state,
-                                   const uint16_t* __restrict__ w, int T,
-                                   int channels, int conv_k) {
+__global__ void CausalConv1dWithCkptKernel(
+    const uint16_t* __restrict__ input, uint16_t* __restrict__ output,
+    const uint16_t* __restrict__ old_state, uint16_t* __restrict__ ckpt,
+    const uint16_t* __restrict__ w, int T, int channels, int conv_k,
+    int num_ckpt) {
   const int ch = blockIdx.x * blockDim.x + threadIdx.x;
-  const int t = blockIdx.y;
-  if (ch >= channels || t >= T) return;
+  if (ch >= channels) return;
+  const int z = blockIdx.y;
   const int hist = conv_k - 1;
-  float wv[4];
+  if (z < T) {
+    float wv[4];
 #pragma unroll
-  for (int k = 0; k < 4; ++k)
-    wv[k] = (k < conv_k) ? Bf16ToFloat(w[ch * conv_k + k]) : 0.0f;
-  float acc = 0.0f;
+    for (int k = 0; k < 4; ++k)
+      wv[k] = (k < conv_k) ? Bf16ToFloat(w[ch * conv_k + k]) : 0.0f;
+    float acc = 0.0f;
 #pragma unroll
-  for (int k = 0; k < 4; ++k) {
-    if (k >= conv_k) break;
-    const int src_t = t - (hist - k);
-    float val;
-    if (src_t < 0)
-      val = Bf16ToFloat(state[ch * hist + (src_t + hist)]);
-    else
-      val = Bf16ToFloat(input[static_cast<size_t>(src_t) * channels + ch]);
-    acc += val * wv[k];
+    for (int k = 0; k < 4; ++k) {
+      if (k >= conv_k) break;
+      const int src_t = z - (hist - k);
+      float val;
+      if (src_t < 0)
+        val = Bf16ToFloat(old_state[ch * hist + (src_t + hist)]);
+      else
+        val = Bf16ToFloat(input[static_cast<size_t>(src_t) * channels + ch]);
+      acc += val * wv[k];
+    }
+    output[static_cast<size_t>(z) * channels + ch] = FloatToBf16(Silu(acc));
+  } else {
+    const int t = z - T;
+    uint16_t* dst = ckpt + (static_cast<size_t>(t) * channels + ch) * hist;
+    for (int k = 0; k < hist; ++k) {
+      const int s = t - hist + 1 + k;  // batch-relative token index
+      dst[k] = (s >= 0) ? input[static_cast<size_t>(s) * channels + ch]
+                        : old_state[ch * hist + (s + hist)];
+    }
   }
-  output[static_cast<size_t>(t) * channels + ch] = FloatToBf16(Silu(acc));
 }
 
 // Update conv_state to the last `hist` inputs of (old history + chunk).
@@ -172,27 +188,6 @@ __global__ void Conv1dUpdateStateKernel(uint16_t* __restrict__ state,
         state[ch * hist + k] =
             input[static_cast<size_t>(src_t) * channels + ch];
     }
-  }
-}
-
-// Build per-token conv-state checkpoints for MTP speculative verify:
-// ckpt[t][ch][k] = the conv state AFTER processing token t = the last `hist`
-// inputs ending at t (x[s]=input[s] if s>=0 else old_state[s+hist]). Must run
-// BEFORE Conv1dUpdateStateKernel (which overwrites old_state). One thread per
-// (checkpoint t, channel). Layout matches conv_state: [num_ckpt, channels, hist].
-__global__ void ConvCheckpointKernel(const uint16_t* __restrict__ input,
-                                     const uint16_t* __restrict__ old_state,
-                                     uint16_t* __restrict__ ckpt, int channels,
-                                     int conv_k, int num_ckpt) {
-  const int ch = blockIdx.x * blockDim.x + threadIdx.x;
-  const int t = blockIdx.y;
-  if (ch >= channels || t >= num_ckpt) return;
-  const int hist = conv_k - 1;
-  uint16_t* dst = ckpt + (static_cast<size_t>(t) * channels + ch) * hist;
-  for (int k = 0; k < hist; ++k) {
-    const int s = t - hist + 1 + k;  // batch-relative token index
-    dst[k] = (s >= 0) ? input[static_cast<size_t>(s) * channels + ch]
-                      : old_state[ch * hist + (s + hist)];
   }
 }
 
@@ -561,23 +556,19 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
   }
 
   // 2. Causal conv1d (SiLU) over in_qkv channels: d_qkv = SiLU(conv(d_qkv_raw)),
-  // conv_state updated from the RAW projection output (d_qkv_raw).
+  // conv_state updated from the RAW projection output (d_qkv_raw). The conv
+  // output + per-token MTP checkpoints are computed in ONE fused kernel (the
+  // checkpoint rows only read the pre-update state, so they must precede the
+  // state update below).
   {
     const int ch_blocks = (in_qkv + kBlock - 1) / kBlock;
-    CausalConv1dKernel<<<dim3(ch_blocks, T), kBlock, 0, stream>>>(
-        d_qkv_raw, d_qkv, conv_state, w.conv1d, T, in_qkv, conv_k);
+    const int z_blocks = T + (conv_ckpt ? num_ckpt : 0);
+    CausalConv1dWithCkptKernel<<<dim3(ch_blocks, z_blocks), kBlock, 0, stream>>>(
+        d_qkv_raw, d_qkv, conv_state, conv_ckpt, w.conv1d, T, in_qkv, conv_k,
+        conv_ckpt ? num_ckpt : 0);
     if (cudaGetLastError() != cudaSuccess) {
       free_all();
       return Status::Fail("conv1d launch");
-    }
-    // Per-token conv checkpoints (before the state update overwrites old_state).
-    if (conv_ckpt && num_ckpt > 0) {
-      ConvCheckpointKernel<<<dim3(ch_blocks, num_ckpt), kBlock, 0, stream>>>(
-          d_qkv_raw, conv_state, conv_ckpt, in_qkv, conv_k, num_ckpt);
-      if (cudaGetLastError() != cudaSuccess) {
-        free_all();
-        return Status::Fail("conv ckpt launch");
-      }
     }
     Conv1dUpdateStateKernel<<<ch_blocks, kBlock, 0, stream>>>(
         conv_state, d_qkv_raw, T, in_qkv, conv_k);

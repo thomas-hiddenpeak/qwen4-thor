@@ -146,29 +146,26 @@ __global__ void MixGateKernel(const uint16_t* __restrict__ up,
   mixed[idx] = FloatToBf16(acc / hc);
 }
 
-// inject = 2*sigmoid(inject_raw/hc) in place on [T, hc] BF16.
-__global__ void InjectGateKernel(uint16_t* __restrict__ inject, int T, int hc,
-                                 float inv_hc) {
-  const int i = blockIdx.x * blockDim.x + threadIdx.x;
-  if (i >= T * hc) return;
-  const float v = Bf16ToFloat(inject[i]) * inv_hc;
-  inject[i] = FloatToBf16(2.0f / (1.0f + __expf(-v)));
-}
-
-// out[t, b*hs+c] = R[t, b*hs+c] + block_output[t, c] * inject[t, b].
-__global__ void CombineKernel(const uint16_t* __restrict__ block_output,
-                              const uint16_t* __restrict__ R,
-                              const uint16_t* __restrict__ inject,
-                              uint16_t* __restrict__ out, int T, int hc, int hs) {
+// Fused inject-gate + combine: out[t, b*hs+c] = R[t, b*hs+c] +
+// block_output[t, c] * gate[t, b], where gate = 2*sigmoid(inject_raw[t, b]/hc)
+// is recomputed in-register from the raw inject GEMM output (no separate
+// InjectGate launch, no extra d_inject read). The gate goes through the same
+// BF16 round-trip as the old two-kernel path, so the result is bit-identical.
+__global__ void CombineWithGateKernel(
+    const uint16_t* __restrict__ block_output, const uint16_t* __restrict__ R,
+    const uint16_t* __restrict__ inject_raw, uint16_t* __restrict__ out, int T,
+    int hc, int hs, float inv_hc) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   if (idx >= T * hc * hs) return;
   const int t = idx / (hc * hs);
   const int rem = idx % (hc * hs);
   const int b = rem / hs;
   const int c = rem % hs;
+  const float iv = Bf16ToFloat(inject_raw[static_cast<size_t>(t) * hc + b]);
+  const float v = iv * inv_hc;
+  const float inj = Bf16ToFloat(FloatToBf16(2.0f / (1.0f + __expf(-v))));
   const float r = Bf16ToFloat(R[idx]);
   const float bo = Bf16ToFloat(block_output[static_cast<size_t>(t) * hs + c]);
-  const float inj = Bf16ToFloat(inject[static_cast<size_t>(t) * hc + b]);
   out[idx] = FloatToBf16(r + bo * inj);
 }
 
@@ -363,17 +360,13 @@ Status HyperConnectionCombine(const HyperConnectionWeights& w,
     cudaFreeAsync(d_inject, stream);
     return s;
   }
-  // 2. 2*sigmoid(inject/hc) in place.
-  {
-    const int total = T * hc;
-    InjectGateKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
-        d_inject, T, hc, inv_hc);
-  }
-  // 3. out = R + block_output * inject.
+  // 2. Fused gate + combine: out = R + block_output * 2*sigmoid(inject/hc),
+  //    the gate recomputed in-register from the raw inject GEMM output (one
+  //    launch instead of InjectGate + Combine).
   {
     const int total = T * hc_dim;
-    CombineKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
-        block_output, hyper_input, d_inject, out, T, hc, hs);
+    CombineWithGateKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
+        block_output, hyper_input, d_inject, out, T, hc, hs, inv_hc);
   }
   cudaFreeAsync(d_inject, stream);
   return Status();

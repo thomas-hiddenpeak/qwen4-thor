@@ -5,6 +5,40 @@
 
 ---
 
+## 2026-09-10 — kernel launch 数量削减: conv1d+ckpt 三合一 / HC gate+combine 融合 (性能中性, 复杂度下降)
+
+**背景**
+用户方向: "kernel launch 数量减少是有必要的, 只要不发生性能回退, 就应该
+推进尝试, 作为一个整体系统, 子系统的复杂度会导致整体复杂度几何级数上升,
+毋以善小而不为。" nsys 已证 GPU 饱和 (非 launch 瓶颈), 故融合目标是
+**结构简化 + 零回退**, 不指望加速。
+
+**实现 (两个融合, 均纯元素级, 内存流量/计算量不变, 只省 launch + 中间
+buffer 读写)**
+1. `CausalConv1dWithCkptKernel` (linear_attention.cu): 替代
+   `CausalConv1dKernel` + `ConvCheckpointKernel`。grid `dim3(ch_blocks,
+   T+num_ckpt)`: z<T 做 conv+SiLU, z≥T 写 checkpoint 行 (t=z-T); 两分支只读
+   input+old_state、写不同输出 → 无竞争。`num_ckpt=0` 退化为纯 conv
+   (plain 路径零回退)。省 1 launch/linear 层 × 36 层。`Conv1dUpdateState`
+   保持独立 (decode T<hist 时 in-place 滑动状态与 conv 竞争, 不能合)。
+2. `CombineWithGateKernel` (hyperconnection.cu): 替代 `InjectGateKernel` +
+   `CombineKernel`。gate 在寄存器内从 GEMM 原始输出 `d_inject` 重算, 保留
+   原路径的 BF16 舍入 (`Bf16ToFloat(FloatToBf16(2*sigmoid(v)))`) → 位级
+   一致。省 1 launch/HC combine (每层 ~2 次)。
+
+**验证 (干净环境, 无并发)**
+- 62 项测试全绿, 零警告 (隔离重跑确认; 此前一次 2 失败是 bench 与测试
+  并发抢 122GB 统一内存的 cudaMalloc 竞争, 非回归)。
+- 干净基准 (bench_mtp.sh, 9 次 generate 无 ERR): plain 2072.6ms → 14.5
+  tok/s (与融合前一致, 零回退); k=1 1.09x / k=2 1.38x / k=3 1.21x /
+  k=4 1.47x, 均在 ±20% 噪声带内。k=4 本次最快 (1.47x) 但单次基准不足以
+  改默认 mtp_k=3。
+
+**下一步**: 继续按"无回退即推进"原则找下一个可融合点 (候选: mixer 的
+MixGate 与后续 add、PLE short-conv 与投影); 或进入 Phase 2。
+
+---
+
 ## 2026-09-10 — nsys profiling 定位 MTP overhead + GPU argmax (性能中性, 结论: 无隐藏 overhead 可挖)
 
 **背景**
