@@ -5,6 +5,35 @@
 
 ---
 
+## 2026-09-11 — 长上下文验证 (1737 token, QSA 稀疏路径, plain + MTP 均通过)
+
+**背景**
+Phase 2 候选 "长上下文验证"。先验证当前配置下的长序列路径 (QSA 稀疏
+注意力), 摸清边界。
+
+**验证 (真实环境, 1737-token prompt + 32-token 生成)**
+- **plain**: prefill 1737 tok 7250.8ms (239.6 tok/s), decode 32 tok 2671.8ms
+  (12.0 tok/s)。输出连贯 (正确识别重复句)。
+- **MTP k=3**: prefill 239.2 tok/s (与 plain 一致), decode 32 tok 1976.0ms
+  (16.2 tok/s, **1.35x vs plain**), 12 步 34 token avg 2.83 tok/step (接受率
+  高)。输出连贯且语义正确。
+- decode 比短序列 (14.5 tok/s) 低 = 12 个 full-attention 层读更长 KV 的带宽
+  代价, 非 bug。
+
+**边界摸清 (当前配置)**
+- **prefill 上限 = `max_prefill` = 2048 token** (forward workspace 按此分配;
+  1737 已过, 再高报 `T exceeds max_prefill`)。提高是配置改动 (workspace 随 T
+  线性增长, Thor 122GB 内存无压力)。
+- **decode 上限 = `max_len` = 8192** (KV cache 分配)。
+- 1737 token 已覆盖 QSA 稀疏注意力路径 (长序列分支)。
+- **262K 是大工程**: KV cache ~64GB (12 层 × 262144 × 2kv × 2 × 256 × 2B) +
+  QSA indexer `idx_budget=2048` 瓶颈 + PLE 状态, 需单独规划 (非一次可完成)。
+
+**下一步**: ① 提高 max_prefill 验证 4K/8K prefill (配置改动, 低风险) 或
+② 262K 长上下文规划 (大任务) 或 ③ 其他 Phase 2 项。
+
+---
+
 ## 2026-09-11 — serve 层接入 MTP 推测解码 (API decode 获得 ~1.4x 加速)
 
 **背景**
