@@ -599,8 +599,9 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   (CausalConv1dWithCkptKernel, num_ckpt=0 退化纯 conv) + HC gate/combine
   融合 (CombineWithGateKernel, gate 寄存器内重算位级一致) + PLE conv+add
   融合 (DepthwiseConvAddKernel, conv 寄存器内加 gated 位级一致, 省 d_conv
-  buffer)。62 测试全绿零警告, 干净基准 plain 14.5 tok/s 零回退, 见
-  LOG.md 2026-09-10。
+  buffer) + full_attention q/k norm 合一 (QKDeinterleaveNormKernel, 不相交
+  头按 blockIdx 分支, 位级一致)。62 测试全绿零警告, 干净基准 plain
+  14.5-14.6 tok/s 零回退, 见 LOG.md 2026-09-10。
 - **MoE 贪心非确定性** (见"进行中"长序列条目): `ScatterAddKernel` 的 FP32
   `atomicAdd` 顺序非确定, 运行间 argmax 可能翻转。属 LLM 固有特性 (PyTorch
   同样), 不影响正确性; 如需可复现输出, 可改确定性归约 (代价: 性能)。

@@ -5,6 +5,38 @@
 
 ---
 
+## 2026-09-10 — kernel launch 削减 (续 2): full_attention q/k norm 合一 (性能中性, 复杂度下降)
+
+**背景**
+继续"无回退即推进"。FullAttentionForward 第 2+3 步:
+`DeinterleaveQNormKernel` (qg deinterleave → q + gate 抽取 + centered
+RMSNorm(q)) 与 `KNormKernel` (centered RMSNorm(k) in-place) 是相邻两次
+launch, 对 qkv 投影的**不相交头** (q 头 vs kv 头) 做结构完全相同的
+per-head centered RMSNorm。
+
+**实现 (full_attention.cu)**
+两 kernel → `QKDeinterleaveNormKernel`: grid = T*(nq+nkv), 按 blockIdx.x
+分支 (前 T*nq 块走 q 分支, 其余走 kv 分支)。分支依赖仅 blockIdx.x (块内
+均匀) → __syncthreads 安全。每分支的数学与原 kernel 逐行一致 (同一
+atomicAdd 块归约 + rsqrt + (1+w) 中心化) → 位级一致。省 1 launch × 12
+full attention 层。坑: kv 分支 in-place 写 k, 参数不能 const (原
+KNormKernel 用独立非 const k_out)。
+
+**验证 (干净环境, 无并发)**
+- 62 项测试全绿, 零警告 (含 model_full_attention / model_forward /
+  mtp_speculative_step)。
+- 干净基准: plain 2055.9ms → 14.6 tok/s (与融合前 14.5 一致, 零回退);
+  k=1..4 = 1.08/1.32/1.21/1.31x, 均在 ±20% 噪声带内, 无 ERR。
+
+**已勘察无新融合点的层**: linear_attention (NormGateKernel 已是 norm+gate
+融合, 前后是 GEMM/scan 边界); moe (SwiGLU 后接量化、RouterTopk 后接 GEMM,
+边界不可合)。
+
+**下一步**: 候选已近枯竭 (剩余 kernel 多为 GEMM/scan/attention 边界),
+建议转向 Phase 2 或 MTP k=3 vs k=4 默认值 A/B 实测。
+
+---
+
 ## 2026-09-10 — kernel launch 削减 (续): PLE conv+add 融合 (性能中性, 复杂度下降)
 
 **背景**

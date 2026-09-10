@@ -62,63 +62,53 @@ Status CheckGemm(const Bf16GemmResult& r) {
 }
 
 // ---------------------------------------------------------------------------
-// Kernel 1: deinterleave qg -> q, gate, then per-head centered RMSNorm(q)
-//
-//   qg : [T, nq, 2*hd]  (per head: [hd q-dims][hd gate-dims])
-//   q  : [T, nq, hd]    (centered RMSNorm'd, pre-RoPE)
-//   gate: [T, nq, hd]
-//
-// block = one (t, h), thread = d. centered RMSNorm:
-//   y = x * rsqrt(mean(x^2)+eps) * (1 + w[d]).
-__global__ void DeinterleaveQNormKernel(const u16* __restrict__ qg,
-                                        const u16* __restrict__ q_norm,
-                                        u16* __restrict__ q,
-                                        u16* __restrict__ gate, int nq, int hd,
-                                        float eps) {
-  int th = blockIdx.x;  // t * nq + h
-  int t = th / nq;
-  int h = th % nq;
-  int d = threadIdx.x;
+// Kernel 1: fused q/k preprocessing. Fuses the old DeinterleaveQNormKernel +
+// KNormKernel (two launches over the disjoint q / kv head sets of the qkv
+// projections) into one launch. grid = T*(nq+nkv), block = hd threads:
+//   blockIdx.x < T*nq  -> q head: deinterleave qg -> q, copy gate, centered
+//                         RMSNorm(q)  (y = x*rsqrt(mean(x^2)+eps)*(1+w[d]))
+//   otherwise          -> kv head: centered RMSNorm(k) in place
+// Both branches are the same per-head centered RMSNorm over disjoint heads,
+// so the result is bit-identical to the two-kernel path. The branch depends
+// only on blockIdx.x (uniform within a block), so __syncthreads is safe.
+__global__ void QKDeinterleaveNormKernel(const u16* __restrict__ qg,
+                                         const u16* __restrict__ q_norm,
+                                         u16* __restrict__ q,
+                                         u16* __restrict__ gate, int nq,
+                                         u16* __restrict__ k,
+                                         const u16* __restrict__ k_norm,
+                                         int T, int nkv, int hd, float eps) {
+  const int th = blockIdx.x;
+  const int d = threadIdx.x;
   if (d >= hd) return;
-  size_t base = (static_cast<size_t>(t) * nq + h) * (2 * hd);
-  f32 qv = Bf16ToFloat(qg[base + d]);
-  // gate is a raw BF16 bit copy (no conversion).
-  gate[static_cast<size_t>(t) * nq * hd + h * hd + d] = qg[base + hd + d];
   __shared__ float head_sum[1];
   if (threadIdx.x == 0) head_sum[0] = 0.f;
   __syncthreads();
-  atomicAdd(&head_sum[0], qv * qv);
-  __syncthreads();
-  float rs = rsqrtf(head_sum[0] / hd + eps);
-  f32 w = Bf16ToFloat(q_norm[d]);
-  q[static_cast<size_t>(t) * nq * hd + h * hd + d] =
-      FloatToBf16(qv * rs * (1.f + w));
-}
-
-// ---------------------------------------------------------------------------
-// Kernel 2: per-head centered RMSNorm(k)
-//
-//   k : [T, nkv, hd] (in/out)
-//   k_norm: [hd]
-// block = one (t, kv), thread = d.
-// k_out may alias k (in-place norm).
-__global__ void KNormKernel(const u16* __restrict__ k, const u16* __restrict__ k_norm,
-                            u16* k_out, int T, int nkv, int hd,
-                            float eps) {
-  int t = blockIdx.x / nkv;
-  int h = blockIdx.x % nkv;
-  int d = threadIdx.x;
-  if (d >= hd) return;
-  size_t base = (static_cast<size_t>(t) * nkv + h) * hd;
-  f32 kv = Bf16ToFloat(k[base + d]);
-  __shared__ float head_sum[1];
-  if (threadIdx.x == 0) head_sum[0] = 0.f;
-  __syncthreads();
-  atomicAdd(&head_sum[0], kv * kv);
-  __syncthreads();
-  float rs = rsqrtf(head_sum[0] / hd + eps);
-  f32 w = Bf16ToFloat(k_norm[d]);
-  k_out[base + d] = FloatToBf16(kv * rs * (1.f + w));
+  if (th < T * nq) {
+    const int t = th / nq;
+    const int h = th % nq;
+    const size_t base = (static_cast<size_t>(t) * nq + h) * (2 * hd);
+    const f32 qv = Bf16ToFloat(qg[base + d]);
+    // gate is a raw BF16 bit copy (no conversion).
+    gate[static_cast<size_t>(t) * nq * hd + h * hd + d] = qg[base + hd + d];
+    atomicAdd(&head_sum[0], qv * qv);
+    __syncthreads();
+    const float rs = rsqrtf(head_sum[0] / hd + eps);
+    const f32 w = Bf16ToFloat(q_norm[d]);
+    q[static_cast<size_t>(t) * nq * hd + h * hd + d] =
+        FloatToBf16(qv * rs * (1.f + w));
+  } else {
+    const int h = th - T * nq;  // t * nkv + kv
+    const int t = h / nkv;
+    const int kv = h % nkv;
+    const size_t base = (static_cast<size_t>(t) * nkv + kv) * hd;
+    const f32 kvv = Bf16ToFloat(k[base + d]);
+    atomicAdd(&head_sum[0], kvv * kvv);
+    __syncthreads();
+    const float rs = rsqrtf(head_sum[0] / hd + eps);
+    const f32 w = Bf16ToFloat(k_norm[d]);
+    k[base + d] = FloatToBf16(kvv * rs * (1.f + w));
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -796,12 +786,11 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                          gemm_ws, stream));
   if (!s.ok()) return s;
 
-  // 2. deinterleave qg -> q, gate + centered RMSNorm(q)
-  DeinterleaveQNormKernel<<<T * nq, hd, 0, stream>>>(d_qg, w.q_norm, d_q,
-                                                     d_gate, nq, hd, w.eps);
-  // 3. centered RMSNorm(k) (in place)
-  KNormKernel<<<T * nkv, hd, 0, stream>>>(d_k, w.k_norm, d_k, T, nkv, hd, w.eps);
-  // 4. partial RoPE on q (nq heads) and k (nkv heads), first rot_d dims
+  // 2. Fused q/k preprocessing: deinterleave qg -> q + gate + centered
+  //    RMSNorm(q) AND centered RMSNorm(k) in one launch (disjoint heads).
+  QKDeinterleaveNormKernel<<<T * (nq + nkv), hd, 0, stream>>>(
+      d_qg, w.q_norm, d_q, d_gate, nq, d_k, w.k_norm, T, nkv, hd, w.eps);
+  // 3. partial RoPE on q (nq heads) and k (nkv heads), first rot_d dims
   const int half = w.rot_d / 2;
   PartialRopeKernel<24><<<(T * nq * half + 255) / 256, 256, 0, stream>>>(
       d_q, nq, hd, w.rot_d, d_positions, w.rope_theta, T);
