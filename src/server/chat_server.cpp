@@ -232,11 +232,15 @@ bool DecodeImageUrl(const std::string& url, std::string* out,
 }
 
 // Render one message's `content` to a prompt string. Text parts are appended
-// verbatim; image parts append a literal <image> placeholder (the tokenizer
-// encodes it as a single image_token_id) and push the decoded image bytes to
-// `images` in order. Returns false (with err) on a bad image_url; on success
-// the rendered text is returned.
-std::string RenderContent(const io::Json& m, std::vector<std::string>* images,
+// verbatim; image parts append the literal <|image_pad|> placeholder (the
+// tokenizer encodes it as a single image_token_id = 248056) and push the
+// decoded image bytes to `items` (as a 1-frame VisionItem); video parts
+// append <|video_pad|> (video_token_id = 248057) and push their decoded frames
+// as a multi-frame VisionItem. Items are appended in content-part order so the
+// vision feature rows line up with the placeholders left-to-right. Returns
+// false (with err) on a bad image_url / video frame; on success the rendered
+// text is returned.
+std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
                           std::string* err) {
   std::string out;
   const io::Json* content = m.Find("content");
@@ -250,17 +254,50 @@ std::string RenderContent(const io::Json& m, std::vector<std::string>* images,
       continue;
     }
     const io::Json* iu = part.Find("image_url");
-    if (iu == nullptr) continue;  // unknown part type: skip
-    std::string url;
-    if (iu->IsObject()) {
-      url = iu->GetString("url", "");
-    } else if (iu->IsString()) {
-      url = iu->str;
+    if (iu != nullptr) {
+      std::string url;
+      if (iu->IsObject()) {
+        url = iu->GetString("url", "");
+      } else if (iu->IsString()) {
+        url = iu->str;
+      }
+      std::string bytes;
+      if (!DecodeImageUrl(url, &bytes, err)) return std::string();
+      VisionItem item;
+      item.kind = VisionItem::kImage;
+      item.frames.push_back(std::move(bytes));
+      items->push_back(std::move(item));
+      out += "<|image_pad|>";
+      continue;
     }
-    std::string bytes;
-    if (!DecodeImageUrl(url, &bytes, err)) return std::string();
-    images->push_back(std::move(bytes));
-    out += "<image>";
+    const io::Json* vf = part.Find("video_frames");
+    if (vf != nullptr) {
+      if (!vf->IsArray()) {
+        if (err) *err = "video_frames must be an array of base64 data urls";
+        return std::string();
+      }
+      VisionItem item;
+      item.kind = VisionItem::kVideo;
+      for (const io::Json& f : vf->array) {
+        std::string url;
+        if (f.IsObject()) {
+          url = f.GetString("url", "");
+        } else if (f.IsString()) {
+          url = f.str;
+        }
+        std::string bytes;
+        if (!DecodeImageUrl(url, &bytes, err)) return std::string();
+        item.frames.push_back(std::move(bytes));
+      }
+      if (item.frames.empty()) {
+        if (err) *err = "video_frames is empty";
+        return std::string();
+      }
+      items->push_back(std::move(item));
+      out += "<|video_pad|>";
+      continue;
+    }
+    // unknown part type: skip
   }
   return out;
 }
@@ -373,6 +410,11 @@ Status ChatServer::Start(const ServerOptions& opts) {
   max_prefill_ = cfg.max_prefill;
   max_len_ = cfg.max_len;
   model_name_ = kDefaultModelName;
+  // Video processor budget comes from video_preprocessor_config.json
+  // (4096 / 25165824), NOT the image budget. Same patch/merge/temporal dims.
+  video_proc_cfg_ = proc_cfg_;
+  video_proc_cfg_.min_pixels = 4096;
+  video_proc_cfg_.max_pixels = 25165824;
   return Status();
 }
 
@@ -456,7 +498,7 @@ void ChatServer::HandleModels(int fd) {
   SendSimple(fd, 200, "OK", body, "application/json");
 }
 
-bool ChatServer::RunVisionPipeline(const std::vector<std::string>& images,
+bool ChatServer::RunVisionPipeline(const std::vector<VisionItem>& items,
                                    uint16_t** out_feats, int* out_num_tokens,
                                    std::vector<int>* out_counts,
                                    std::string* err) {
@@ -466,32 +508,58 @@ bool ChatServer::RunVisionPipeline(const std::vector<std::string>& images,
     if (err) *err = "vision tower not loaded (text-only model)";
     return false;
   }
-  if (images.empty()) return true;  // nothing to do
+  if (items.empty()) return true;  // nothing to do
 
   const vision::VisionConfig& cfg = vision_tower_->cfg;
   const int m = cfg.spatial_merge_size;
 
-  // 1. Process each image (CPU: decode + resize + normalize + patchify).
-  std::vector<vision::ProcessedImage> processed;
-  processed.reserve(images.size());
+  // 1. Process each item (CPU: decode + resize + normalize + patchify).
+  //    Images use the image budget (proc_cfg_); videos use the video budget
+  //    (video_proc_cfg_). Both produce the same per-patch layout [C,T,P,P]
+  //    (96 floats) so they can share one VisionForward batch.
+  std::vector<std::vector<float>> pixel_sets;  // per-item float32 patches
+  pixel_sets.reserve(items.size());
   std::vector<vision::ImageShape> shapes;
-  shapes.reserve(images.size());
+  shapes.reserve(items.size());
   int total_L = 0;
-  for (const auto& img : images) {
-    vision::ProcessedImage pi;
-    std::string perr;
-    if (!vision::ProcessImage(reinterpret_cast<const uint8_t*>(img.data()),
-                              img.size(), proc_cfg_, &pi, &perr)) {
-      if (err) *err = "image process failed: " + perr;
-      return false;
-    }
+  for (const auto& item : items) {
+    std::vector<float> pix;
     vision::ImageShape sh;
-    sh.h = pi.grid_h;
-    sh.w = pi.grid_w;
-    sh.t = pi.grid_t;
+    std::string perr;
+    if (item.kind == VisionItem::kImage) {
+      vision::ProcessedImage pi;
+      if (!vision::ProcessImage(
+              reinterpret_cast<const uint8_t*>(item.frames[0].data()),
+              item.frames[0].size(), proc_cfg_, &pi, &perr)) {
+        if (err) *err = "image process failed: " + perr;
+        return false;
+      }
+      pix = std::move(pi.pixel_values);
+      sh.h = pi.grid_h;
+      sh.w = pi.grid_w;
+      sh.t = pi.grid_t;
+    } else {
+      std::vector<const uint8_t*> fptrs;
+      std::vector<size_t> flens;
+      fptrs.reserve(item.frames.size());
+      flens.reserve(item.frames.size());
+      for (const auto& f : item.frames) {
+        fptrs.push_back(reinterpret_cast<const uint8_t*>(f.data()));
+        flens.push_back(f.size());
+      }
+      vision::ProcessedVideo pv;
+      if (!vision::ProcessVideo(fptrs, flens, video_proc_cfg_, &pv, &perr)) {
+        if (err) *err = "video process failed: " + perr;
+        return false;
+      }
+      pix = std::move(pv.pixel_values);
+      sh.h = pv.grid_h;
+      sh.w = pv.grid_w;
+      sh.t = pv.grid_t;
+    }
     shapes.push_back(sh);
-    total_L += pi.L();
-    processed.push_back(std::move(pi));
+    total_L += sh.L();
+    pixel_sets.push_back(std::move(pix));
   }
 
   // 2. Build the device pixel buffer (float32 -> BF16, concatenated).
@@ -500,10 +568,10 @@ bool ChatServer::RunVisionPipeline(const std::vector<std::string>& images,
   std::vector<uint16_t> pixels_bf16(static_cast<size_t>(total_L) * patch_dim);
   {
     size_t off = 0;
-    for (const auto& pi : processed) {
-      const size_t n = static_cast<size_t>(pi.L()) * patch_dim;
+    for (const auto& pix : pixel_sets) {
+      const size_t n = pix.size();
       for (size_t i = 0; i < n; ++i) {
-        const __nv_bfloat16 b = __float2bfloat16_rn(pi.pixel_values[i]);
+        const __nv_bfloat16 b = __float2bfloat16_rn(pix[i]);
         pixels_bf16[off + i] = *reinterpret_cast<const uint16_t*>(&b);
       }
       off += n;
@@ -547,7 +615,9 @@ bool ChatServer::RunVisionPipeline(const std::vector<std::string>& images,
   cudaFree(d_pixels);
   cudaDeviceSynchronize();
 
-  // 4. Per-image merged-token counts (the <image> expansion factor).
+  // 4. Per-item merged-token counts (the <|image_pad|> / <|video_pad|>
+  //    expansion factor). One count per VisionItem, in item (prompt position)
+  //    order.
   out_counts->clear();
   int total_tokens = 0;
   for (const auto& sh : shapes) {
@@ -577,11 +647,13 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   const bool stream = req.GetBool("stream", false);
 
   // Build the prompt from the messages array. Each message's `content` may be
-  // a plain string or an OpenAI-style array of parts (text + image_url). Image
-  // parts render as a literal <image> placeholder (the tokenizer encodes it as
-  // a single image_token_id) and their decoded bytes are collected in order.
+  // a plain string or an OpenAI-style array of parts (text + image_url +
+  // video_frames). Image parts render as a <|image_pad|> placeholder (the
+  // tokenizer encodes it as a single image_token_id = 248056); video parts
+  // render as <|video_pad|> (video_token_id = 248057). Decoded bytes are
+  // collected into `items` in content-part (prompt position) order.
   std::string prompt;
-  std::vector<std::string> images;
+  std::vector<VisionItem> items;
   const io::Json* messages = req.GetArray("messages");
   if (messages && messages->IsArray()) {
     for (const io::Json& m : messages->array) {
@@ -591,7 +663,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         prompt += role + ": ";
       }
       std::string cerr;
-      prompt += RenderContent(m, &images, &cerr);
+      prompt += RenderContent(m, &items, &cerr);
       if (!cerr.empty()) {
         SendError(fd, 400, cerr);
         return;
@@ -618,24 +690,34 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   }
   std::vector<int32_t> ids(prompt_u32.begin(), prompt_u32.end());
 
-  // 1b. Multimodal: each <image> placeholder (image_token_id) expands to the
-  // number of merged visual tokens for its image, and the vision tower's
-  // features are injected in place of those token embeddings.
+  // 1b. Multimodal: each <|image_pad|> (image_token_id) / <|video_pad|>
+  // (video_token_id) placeholder expands to the number of merged visual tokens
+  // for its item, and the vision tower's features are injected in place of
+  // those token embeddings (in prompt position order).
   const int img_id = model_.cfg.image_token_id;
+  const int vid_id = model_.cfg.video_token_id;
   uint16_t* d_vfeats = nullptr;
   model::VisionFeatures vfeats;
-  if (!images.empty()) {
+  if (!items.empty()) {
     std::vector<int> counts;
     std::string verr;
-    if (!RunVisionPipeline(images, &d_vfeats, &vfeats.num_tokens, &counts,
+    if (!RunVisionPipeline(items, &d_vfeats, &vfeats.num_tokens, &counts,
                            &verr)) {
       SendError(fd, 400, verr);
       return;
     }
+    // Split the per-item counts (in item order) into image / video counts,
+    // matching the placeholder order in the encoded prompt.
+    std::vector<int> img_counts, vid_counts;
+    for (size_t i = 0; i < items.size(); ++i) {
+      if (items[i].kind == VisionItem::kImage) img_counts.push_back(counts[i]);
+      else vid_counts.push_back(counts[i]);
+    }
     std::vector<int32_t> expanded;
-    if (!model::ExpandImageTokens(ids.data(), static_cast<int>(ids.size()),
-                                  img_id, counts, &expanded)) {
-      SendError(fd, 400, "image count mismatch in prompt");
+    if (!model::ExpandMultimodalTokens(ids.data(), static_cast<int>(ids.size()),
+                                       img_id, vid_id, img_counts, vid_counts,
+                                       &expanded)) {
+      SendError(fd, 400, "multimodal count mismatch in prompt");
       cudaFree(d_vfeats);
       return;
     }

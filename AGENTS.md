@@ -76,13 +76,17 @@ cmake --build build --parallel
   `_merge_multimodal_embeddings`; C++ 图像 processor: stb 解码 +
   Pillow 12.3.0 定点 BICUBIC + block-major patchify, 对真实 transformers
   processor 逐位一致; serve 层 OpenAI image_url/base64 接入 + 端到端
-  图像→特征→注入→生成) / **PLE 工作内存 + SHA-256 (已闭合)** (工作内存
+  图像→特征→注入→生成) / **多模态视频输入 (已闭合, Phase 2)** (27 层 ViT
+  逐时间组注意力 + t-major pos; C++ ProcessVideo 视频 processor; serve 层
+  视频 part 接入 + 混合图像/视频 batch + 按位置展开; 占位符实为
+  |image_pad| 248056 / |video_pad| 248057, 修复了旧代码塞 <image> 被 BPE 的
+  既有 bug) / **PLE 工作内存 + SHA-256 (已闭合)** (工作内存
   实测 75.17 MiB < 100 MiB 预算, 无 OOM 无 swap; 51.2 GB sidecar SHA-256
   与 MODEL.md 期望值逐位一致) / **greedy 生成输出与参考一致 (已闭合,
   L2 噪声保真度)** (C++ NVFP4 W4A4 vs transformers 5.16.1 参考, 同一
   256-token prompt 16 层 prefill logits 对比; 置信位置 argmax 8/8 全对 +
   108 个翻转全 near-tie + l2_rel 0.207 在 W4A4 噪声带; 无系统性错误,
-  差异纯为量化噪声)。62 项测试全绿, 零警告。
+  差异纯为量化噪声)。63 项测试全绿, 零警告。
 - **Phase 1 完成标准全部闭合 (2026-09-07)**。下一步进入 Phase 2
   (完整多设备 PD 部署、48 层长序列端到端、serve 流式输出、MTP 加速比
   实测等, 见 docs/PHASES.md)。

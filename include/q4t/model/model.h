@@ -46,6 +46,7 @@ struct ModelConfig {
   int topk = 10;
   int vocab = 248320;
   int image_token_id = 248056;  // <image> placeholder (vision feature injection)
+  int video_token_id = 248057;  // <video> placeholder (vision feature injection)
   // full-attention cache length. Sized to the kernel cap (kMaxT=8192 in
   // full_attention.cu) and ple_capacity_tokens, so the QSA sparse path
   // (active once context > indexer_budget) is reachable during decode.
@@ -151,6 +152,39 @@ inline bool ExpandImageTokens(const int32_t* ids, int T, int image_token_id,
     }
   }
   return img_idx == counts.size();
+}
+
+// Expand BOTH image and video placeholders in a single pass. Each
+// image_token_id occurrence expands by the next image_count, each
+// video_token_id occurrence by the next video_count (independent counters,
+// left-to-right). Returns false if a placeholder has no matching count, or if
+// any count is left unconsumed.
+inline bool ExpandMultimodalTokens(
+    const int32_t* ids, int T, int image_token_id, int video_token_id,
+    const std::vector<int>& image_counts, const std::vector<int>& video_counts,
+    std::vector<int32_t>* out) {
+  out->clear();
+  out->reserve(static_cast<size_t>(T) + image_counts.size() +
+               video_counts.size());
+  size_t img_idx = 0, vid_idx = 0;
+  for (int i = 0; i < T; ++i) {
+    if (ids[i] == image_token_id) {
+      if (img_idx >= image_counts.size()) return false;
+      const int c = image_counts[img_idx];
+      if (c <= 0) return false;
+      for (int k = 0; k < c; ++k) out->push_back(image_token_id);
+      ++img_idx;
+    } else if (ids[i] == video_token_id) {
+      if (vid_idx >= video_counts.size()) return false;
+      const int c = video_counts[vid_idx];
+      if (c <= 0) return false;
+      for (int k = 0; k < c; ++k) out->push_back(video_token_id);
+      ++vid_idx;
+    } else {
+      out->push_back(ids[i]);
+    }
+  }
+  return img_idx == image_counts.size() && vid_idx == video_counts.size();
 }
 
 // Run one prefill forward: input_ids [T] (host int32) -> logits [T, vocab]

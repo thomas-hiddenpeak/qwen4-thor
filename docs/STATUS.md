@@ -613,7 +613,17 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   容差差分 (≤0.02/≤0.005)。6 case 全过 (偶数/奇数帧/大分辨率/BICUBIC,
   identity 逐位 + BICUBIC 容差)。踩坑: 时间组索引偏移 `g*gh*gw` (初版误乘
   M*M, grid_t>1 全错位)。63 测试全绿零警告, 见 LOG.md 2026-09-11。
-  待补: serve 层视频接入 (video token 248057 + 多帧)。
+- **serve 层视频接入 (2026-09-12, Phase 2, 视频输入 3/3 闭合)**: HTTP API
+  接入视频。`VisionItem` (kImage 1 帧 / kVideo N 帧, 按 content-part 顺序) +
+  `RunVisionPipeline` 混合 batch (图像 `ProcessImage` 图像预算 / 视频
+  `ProcessVideo` 视频预算, 共享一次 `VisionForward`) + `ExpandMultimodalTokens`
+  (图像/视频独立计数按位置展开)。视频 part: `{"type":"video",
+  "video_frames":[base64 data url...]}`。**修复既有图像 bug**: 多模态占位符
+  实为 `|image_pad|` (248056) / `|video_pad|` (248057) (hex+round-trip 三方
+  验证), 旧代码塞 `<image>` 被 BPE 成 3 token → 图像 HTTP 路径一直 400
+  (此前"已闭合"是手构 input_ids 的 e2e, 非 HTTP)。E2E: 图像 72=8+64 (输出
+  "green" 语义正确) / 视频 21=13+8 / 混合交错 85=13+64+8 (位置顺序正确)。
+  63 测试全绿零警告, 见 LOG.md 2026-09-12。
 - **serve 层 MTP (2026-09-11)**: HTTP API decode 接入 MtpSpeculativeStep
   (复用 CLI 已验证机制), 失败自动回退 plain; 端到端 decode ≈ 17.5 tok/s
   (~1.4x, 与 CLI 一致), 流式 SSE 正常, 见 LOG.md 2026-09-11。

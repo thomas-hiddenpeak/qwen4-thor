@@ -34,6 +34,17 @@ struct ServerOptions {
   int max_prefill = 0;  // 0 = use ModelConfig default (2048); >0 overrides
 };
 
+// One multimodal content part: a single image (1 frame) or a video (N frames).
+// `frames` holds raw decoded PNG/JPEG byte buffers. `kind` selects the
+// processor budget (image vs video) and the placeholder token (image_token_id
+// vs video_token_id). Items are kept in content-part (prompt position) order
+// so the vision feature rows line up with the placeholders left-to-right.
+struct VisionItem {
+  enum Kind { kImage, kVideo };
+  Kind kind = kImage;
+  std::vector<std::string> frames;  // decoded PNG/JPEG bytes (1 for an image)
+};
+
 class ChatServer {
  public:
   ChatServer() = default;
@@ -59,13 +70,14 @@ class ChatServer {
   void HandleModels(int fd);
   void HandleChat(int fd, const std::string& body);
 
-  // Multimodal pipeline: decode each image_url part, run the image processor
-  // + vision tower, and return the merged visual features (device BF16) plus
-  // the number of <image> tokens each image expands to. `images` is the list
-  // of raw decoded image bytes (PNG/JPEG) in message order; `out_feats`
-  // receives the concatenated feature rows (owned by the caller's device
-  // buffer, freed by the caller) and `out_counts` the per-image token counts.
-  bool RunVisionPipeline(const std::vector<std::string>& images,
+  // Multimodal pipeline: run the image/video processor + vision tower over the
+  // vision items (in content-part order) and return the merged visual features
+  // (device BF16) plus the per-item expansion counts. `items` is the list of
+  // VisionItem (image or video) in prompt position order; `out_feats` receives
+  // the concatenated feature rows (owned by the caller's device buffer, freed
+  // by the caller), `out_num_tokens` the total merged-token count, and
+  // `out_counts` the per-item token counts (same order as `items`).
+  bool RunVisionPipeline(const std::vector<VisionItem>& items,
                          uint16_t** out_feats, int* out_num_tokens,
                          std::vector<int>* out_counts, std::string* err);
 
@@ -89,7 +101,8 @@ class ChatServer {
   uint16_t* d_g_next_ = nullptr;
   // Vision tower (multimodal). Null if the model has no visual weights.
   std::unique_ptr<vision::VisionTower> vision_tower_;
-  vision::ProcessorConfig proc_cfg_;
+  vision::ProcessorConfig proc_cfg_;       // image budget (65536/16777216)
+  vision::ProcessorConfig video_proc_cfg_;  // video budget (4096/25165824)
   std::mutex mu_;
 };
 

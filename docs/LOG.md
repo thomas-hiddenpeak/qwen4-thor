@@ -5,6 +5,54 @@
 
 ---
 
+## 2026-09-12 — 视频输入 (Phase 2, 3/3): serve 层视频接入 + 修复图像占位符 bug
+
+**背景**
+前两条闭合了 ViT 视频路径 (逐时间组注意力) 和视频 processor (ProcessVideo)。
+本条做最后一段: serve 层 HTTP 视频接入。过程中发现并修复了一个**图像路径
+的既有 bug**。
+
+**关键发现: 多模态占位符不是 `<image>`/`<video>`**
+- 用临时 `tokencode` 命令 + `Decode(248056)` 的 hex 字节 + round-trip 三方
+  交叉验证 (显示层不可信, 只认字节): 248056 的真实 content 是
+  `|image_pad|` (13 字节 `3c7c696d6167655f7061647c3e`), 248057 是
+  `|video_pad|`。round-trip 铁证: `Encode("|image_pad|")`→`[248056]`。
+- **既有 bug**: `RenderContent` 往 prompt 塞字面量 `<image>`, 但 tokenizer
+  把它 BPE 成 `[27,1742,29]` (3 个 token, 不含 248056), `ExpandImageTokens`
+  找不到占位符 → 400 "image count mismatch"。即**图像 HTTP 路径一直是坏的**
+  (之前"已闭合"是手构 input_ids 的 e2e 测试, 非 HTTP 路径)。
+- 修复: 占位符改为 `|image_pad|` / `|video_pad|` (源码字节经 ord 数字
+  逐位核对与 tokenizer.json 一致)。
+
+**改动**
+- `chat_server.h`: 新增 `VisionItem` (kImage 1 帧 / kVideo N 帧, 按 content
+  part 顺序); `RunVisionPipeline` 签名改为收 `vector<VisionItem>`。
+- `chat_server.cpp`:
+  - `RenderContent`: 图像 part → `|image_pad|` + 1 帧 item; 新增视频 part
+    (`{"type":"video","video_frames":[base64 data url...]}`) → `|video_pad|`
+    + N 帧 item。items 按 content-part (prompt 位置) 顺序收集。
+  - `RunVisionPipeline`: 混合 batch — 图像走 `ProcessImage` (图像预算
+    65536/16777216), 视频走 `ProcessVideo` (视频预算 4096/25165824), 两者
+    per-patch 布局都是 [C,T,P,P]=96, 共享一次 `VisionForward`。
+  - `HandleChat`: `ExpandImageTokens` → `ExpandMultimodalTokens` (图像/视频
+    独立计数, 按位置顺序展开)。
+- `model.h`: `ModelConfig` 加 `video_token_id=248057` (与 config.json 一致);
+  `ExpandMultimodalTokens` 单 pass 双计数器。
+- `model.cu`: 注入注释更正为"特征按 prompt 位置顺序消费" (非"图像在前")。
+
+**验证 (E2E HTTP, 纯文本 baseline 对照证明展开)**
+- 图像: 72 = 8 文本 + 64 图像, 输出 "The image is **green**" (语义正确)。
+- 视频 (4 帧 64x64): 21 = 13 文本 + 8 视频 (grid_t=2, grid 4x4 →
+  (4/2)*(4/2)*2=8), 连贯生成。
+- 混合交错 (图像+视频): 85 = 13 文本 + 64 图像 + 8 视频, 无 count mismatch
+  → 位置顺序正确。
+- 63 项测试全绿, 零警告。
+
+**下一步**: Phase 2 其余 (完整多设备 PD 部署、48 层长序列端到端、serve 流式
+输出、MTP 加速比实测, 见 docs/PHASES.md)。
+
+---
+
 ## 2026-09-11 — 视频输入 (Phase 2, 2/3): C++ 视频 processor + 差分验证 (6 case 全过)
 
 **背景**

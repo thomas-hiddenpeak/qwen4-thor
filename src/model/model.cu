@@ -370,22 +370,28 @@ Status RunPrefill(const Model& m, const int32_t* input_ids, int T,
   Status s = EmbedLookup(m.head, m.d_ids, m.d_emb, T, stream);
   if (!s.ok()) return s;
 
-  // 2b. Multimodal injection: replace image-token embeddings with vision
-  //     features (vllm `_merge_multimodal_embeddings`). The i-th
-  //     image_token_id occurrence takes vision->device row i.
+  // 2b. Multimodal injection: replace image/video-token embeddings with vision
+  //     features (vllm `_merge_multimodal_embeddings`). Feature rows are
+  //     consumed in PROMPT POSITION ORDER (left-to-right): the i-th
+  //     image_token_id or video_token_id occurrence (in sequence order) takes
+  //     feature row i. The caller must lay out `vision->device` in that same
+  //     left-to-right position order (interleaved images and videos allowed).
   if (vision && vision->num_tokens > 0) {
-    std::vector<int> img_pos;
-    img_pos.reserve(static_cast<size_t>(vision->num_tokens));
+    std::vector<int> mm_pos;
+    mm_pos.reserve(static_cast<size_t>(vision->num_tokens));
     for (int t = 0; t < T; ++t) {
-      if (input_ids[t] == cfg.image_token_id) img_pos.push_back(t);
+      if (input_ids[t] == cfg.image_token_id ||
+          input_ids[t] == cfg.video_token_id) {
+        mm_pos.push_back(t);
+      }
     }
-    if (static_cast<int>(img_pos.size()) != vision->num_tokens) {
-      return Status::Fail("vision: image-token count mismatch " +
-                           std::to_string(img_pos.size()) + " vs " +
+    if (static_cast<int>(mm_pos.size()) != vision->num_tokens) {
+      return Status::Fail("vision: multimodal-token count mismatch " +
+                           std::to_string(mm_pos.size()) + " vs " +
                            std::to_string(vision->num_tokens));
     }
-    if (cudaMemcpyAsync(m.d_img_pos, img_pos.data(),
-                        img_pos.size() * sizeof(int), cudaMemcpyHostToDevice,
+    if (cudaMemcpyAsync(m.d_img_pos, mm_pos.data(),
+                        mm_pos.size() * sizeof(int), cudaMemcpyHostToDevice,
                         stream) != cudaSuccess) {
       return Status::Fail("H2D img_pos");
     }
