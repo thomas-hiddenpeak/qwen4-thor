@@ -402,44 +402,86 @@ __global__ void IndexerLogitsKernel(const u16* __restrict__ iq,
 //   logits: [T, max_blocks] FP32
 //   positions: [T]
 // block = one token t, 256 threads.
+//
+// PARALLEL (2026-09-11): the old implementation ran the sparse top-k on a
+// SINGLE thread (O(block_topk x n_groups) sequential global reads: 512 x
+// n_groups, n_groups = O(seq_len)). nsys at 4K/8K context showed it was the
+// #1 decode kernel: 11.7ms (4K) / 20.4ms (8K) per call, 61%/73% of all GPU
+// time — this, not KV reads, was why decode degraded like a dense full-
+// attention model. Now: load the (logit, block index) pairs into shared
+// memory (padding = -inf so it sorts to the front and is never selected),
+// in-place bitonic sort ASCENDING (2048 = 2^11, 11 stages, 256 threads),
+// the top `block_topk` blocks are the last `block_topk` entries, expand to
+// tokens. The selected SET matches the old sequential top-k (ties in FP32
+// logits are measure-zero; the -1e30f padding is equal-valued but always
+// sorts below real logits in the sparse regime where n_groups > block_topk).
+// Selection ORDER within the list may differ from the old version; that is
+// safe because SparseAttentionKernel's online softmax reduces over the set
+// (the golden tests only exercise the dense regime, which is unchanged).
 __global__ void TopkSelectKernel(f32* __restrict__ logits, int* __restrict__ topk,
                                  int* __restrict__ topk_len,
                                  const int* __restrict__ positions, int T,
                                  int compress, int block_topk, int max_blocks,
                                  int max_topk) {
-  __shared__ int s_sel[2048];
-  int t = blockIdx.x;
+  __shared__ float s_val[2048];  // kMaxBlocks
+  __shared__ int s_idx[2048];
+  __shared__ int s_n;
+  const int t = blockIdx.x;
   if (t >= T) return;
-  // Selection is inherently sequential; run it on a single thread to avoid
-  // shared-memory races (the dense path is a simple 0..pos fill).
-  if (threadIdx.x != 0) return;
-  int pos = positions[t];
-  int n_groups = (pos + 1) / compress;
-  if (n_groups > max_blocks) n_groups = max_blocks;
+  const int pos = positions[t];
+  const int n_groups = (pos + 1) / compress > max_blocks
+                           ? max_blocks
+                           : (pos + 1) / compress;
   int* out = topk + static_cast<size_t>(t) * max_topk;
-  int n = 0;
+  const f32* lrow = logits + static_cast<size_t>(t) * max_blocks;
+  int n;
   if (n_groups <= block_topk) {
     // dense: all visible positions (QSA == dense causal attention)
-    for (int p = 0; p <= pos && n < max_topk; ++p) out[n++] = p;
+    for (int p = threadIdx.x; p <= pos; p += 256) out[p] = p;
+    n = pos + 1;
   } else {
-    // sparse: top-`block_topk` blocks by logit, expanded to tokens.
-    for (int g = 0; g < n_groups; ++g) s_sel[g] = 0;
-    for (int c = 0; c < block_topk; ++c) {
-      int best = -1;
-      float bv = -1e30f;
-      for (int g = 0; g < n_groups; ++g) {
-        if (s_sel[g]) continue;
-        float v = logits[static_cast<size_t>(t) * max_blocks + g];
-        if (v > bv) {
-          bv = v;
-          best = g;
+    // sparse: load (logit, block index) pairs; pad with -inf so padding
+    // sorts to the front (ascending) and is never among the top block_topk.
+    if (threadIdx.x == 0) s_n = 0;
+    for (int g = threadIdx.x; g < 2048; g += 256) {
+      s_val[g] = (g < n_groups) ? lrow[g] : -1e30f;
+      s_idx[g] = g;
+    }
+    __syncthreads();
+    // In-place bitonic sort of (s_val, s_idx) pairs, ascending, N = 2048 =
+    // 2^11. Standard network: for block-size k = 2..N, stride j = k/2..1,
+    // compare-exchange (i, i+j) for every i in the FIRST HALF of each 2j-block
+    // ((i & (2j-1)) < j); ascending within the first k/2 of each 2k-superblock
+    // ((i & (2k-1)) < k), descending in the second half.
+#pragma unroll
+    for (int k = 2; k <= 2048; k <<= 1) {
+#pragma unroll
+      for (int j = k >> 1; j > 0; j >>= 1) {
+        for (int i = threadIdx.x; i < 2048; i += 256) {
+          if ((i & (2 * j - 1)) >= j) continue;  // only first half of 2j-block
+          const int p = i + j;
+          const bool asc = ((i & (2 * k - 1)) < k);
+          if (asc ? (s_val[i] > s_val[p]) : (s_val[i] < s_val[p])) {
+            const float tv = s_val[i];
+            s_val[i] = s_val[p];
+            s_val[p] = tv;
+            const int ti = s_idx[i];
+            s_idx[i] = s_idx[p];
+            s_idx[p] = ti;
+          }
         }
+        __syncthreads();
       }
-      if (best < 0) break;
-      s_sel[best] = 1;
-      for (int j = 0; j < compress && n < max_topk; ++j) {
-        int p = best * compress + j;
-        if (p <= pos) out[n++] = p;
+    }
+    // Expand the top blocks (the last `block_topk` entries after the sort)
+    // to tokens. Order within the list is irrelevant (SparseAttentionKernel
+    // reduces over the selected set).
+    for (int c = threadIdx.x; c < block_topk; c += 256) {
+      const int g = s_idx[2048 - block_topk + c];
+      const int base = g * compress;
+      for (int j = 0; j < compress; ++j) {
+        const int p = base + j;
+        if (p <= pos) out[atomicAdd(&s_n, 1)] = p;
       }
     }
     // Causality: the current token's group is NOT among the visible
@@ -447,16 +489,21 @@ __global__ void TopkSelectKernel(f32* __restrict__ logits, int* __restrict__ top
     // excludes the in-progress group unless pos is a group tail), so the
     // top-`block_topk` selection above never covers the current local
     // context. Force-include the current group's emitted tail
-    // [g0_cur, pos] so the query always attends to its own recent tokens.
-    int cur_g = pos / compress;
-    bool cur_selected = (cur_g < n_groups) && s_sel[cur_g];
-    if (!cur_selected) {
-      int g0_cur = cur_g * compress;
-      for (int p = g0_cur; p <= pos && n < max_topk; ++p) out[n++] = p;
+    // [g0_cur, pos] (at most `compress` tokens) so the query always attends
+    // to its own recent tokens.
+    const int cur_g = pos / compress;
+    bool cur_selected = false;
+    for (int c = 0; c < block_topk; ++c)
+      cur_selected |= (s_idx[2048 - block_topk + c] == cur_g);
+    if (!cur_selected && threadIdx.x < 4) {
+      const int p = cur_g * compress + threadIdx.x;
+      if (p <= pos) out[atomicAdd(&s_n, 1)] = p;
     }
+    __syncthreads();
+    n = s_n;
   }
-  for (; n < max_topk; ++n) out[n] = -1;
-  topk_len[t] = n;
+  for (int i = n + threadIdx.x; i < max_topk; i += 256) out[i] = -1;
+  if (threadIdx.x == 0) topk_len[t] = n;
 }
 
 // ---------------------------------------------------------------------------

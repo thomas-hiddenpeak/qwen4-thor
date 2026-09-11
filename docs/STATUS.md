@@ -598,12 +598,20 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 - **serve 层 MTP (2026-09-11)**: HTTP API decode 接入 MtpSpeculativeStep
   (复用 CLI 已验证机制), 失败自动回退 plain; 端到端 decode ≈ 17.5 tok/s
   (~1.4x, 与 CLI 一致), 流式 SSE 正常, 见 LOG.md 2026-09-11。
+- **长上下文 decode 退化根因修复 (2026-09-11)**: 用户诊断"decode 随长度
+  退化像 full attention"正确。nsys 定位真因 = `TopkSelectKernel` 旧单线程
+  O(block_topk×n_groups) 扫描, 占 4K/8K decode GPU 时间 61%/73% (11.7/20.4ms
+  每次), **非 KV 读** (此前归因误判, 已更正)。重写为并行 bitonic sort
+  (2048 槽 shared, 256 线程, ~20µs), 选中集合不变 (顺序无关, online softmax
+  归约)。修复后 **4K 4.3→10.7 / 8K 3.0→10.3 tok/s, 且 4K≈8K 不再随长度
+  退化** (稀疏注意力预期行为); 短序列 16.5 tok/s 无回退; 62 测试全绿零警告,
+  见 LOG.md 2026-09-11。
 - **长上下文验证 (2026-09-11, 1.7K/4K/8K)**: QSA 稀疏路径 plain + MTP 均
   通过, 输出连贯。MTP 加速比随长度单调上升: 1737→1.35x, 4337→1.79x,
-  7612→**1.87x** (plain decode 的 KV 读代价随长度线性增长, MTP 每步摊薄
-  ~2.8 token; 短序列 ~1.4x 是下界, 长上下文是 MTP 主场)。CLI 加
-  --max-prefill flag (默认 2048 不变); decode 上限 max_len=8192; 262K 为大
-  工程 (KV ~64GB + QSA idx_budget 瓶颈), 见 LOG.md 2026-09-11。
+  7612→**1.87x** (注: 此加速比基于修复前 plain 基线; TopkSelect 修复后
+  plain 长上下文 decode 抬升至 ~10.5 tok/s, MTP 加速比将收敛, 待复测)。
+  CLI 加 --max-prefill flag (默认 2048 不变); decode 上限 max_len=8192;
+  262K 为大工程 (KV ~64GB + QSA idx_budget 瓶颈), 见 LOG.md 2026-09-11。
 - **kernel launch 削减 (2026-09-10, 性能中性)**: conv1d+checkpoint 三合一
   (CausalConv1dWithCkptKernel, num_ckpt=0 退化纯 conv) + HC gate/combine
   融合 (CombineWithGateKernel, gate 寄存器内重算位级一致) + PLE conv+add

@@ -5,6 +5,45 @@
 
 ---
 
+## 2026-09-11 — 长上下文 decode 退化根因修复 (TopkSelectKernel 并行化, 4K 4.3→10.7 / 8K 3.0→10.3 tok/s)
+
+**背景 (用户诊断)**
+"随上下文增长 decode 变慢是正常现象, 但在稀疏/混合注意力下应被极大缓解,
+为何当前数据像传统 full attention? runner 是不是漏了什么?" — 诊断正确。
+
+**根因 (nsys 定位, 证伪此前"KV 带宽"归因)**
+`TopkSelectKernel` (QSA 稀疏索引) 旧实现是**单线程** O(block_topk × n_groups):
+每 token 用 1 个线程顺序扫 n_groups 个 block logit 找 top-512, n_groups 随
+序列长度线性增长 (4K→1084, 8K→1903)。nsys 4K/8K decode: 该 kernel 占 GPU
+时间 **61.3% / 72.6%**, 每次调用 11.68ms / 20.38ms (12 full 层 × 8 tok = 96
+次)。这才是 decode 随长度退化的主因, **不是 KV 读** (KV 读 4K 仅 ~0.43ms)。
+此前 LOG 把退化归因于"KV 带宽代价"是误判, 此处更正。
+
+**修复**
+`TopkSelectKernel` 重写为并行: 把 (logit, block 索引) 对载入 shared memory
+(2048 槽, padding 填 -1e30f 排序后沉底永不被选), 256 线程 in-place bitonic
+sort 升序 (2048=2^11, 11 级), top-512 block 即排序后末尾 512 个, 展开成
+token。选中的**集合**与旧单线程 top-k 相同 (FP32 logit 并列是测度零事件),
+仅**顺序**可能不同 — 安全, 因 `SparseAttentionKernel` 的 online softmax 对
+集合做归约, 与顺序无关。dense 区间 (n_groups≤512, pos<2048) 路径不变。
+
+**验证 (真实环境, --max-prefill 8192, 30-token 生成)**
+| 序列 | 修复前 decode | 修复后 decode | 提升 |
+|---|---|---|---|
+| 短 (30 tok) | 14.6 tok/s | 16.5 tok/s | 无回退 (略快) |
+| 4K (4337) | 4.3 tok/s (230ms/tok) | **10.7 tok/s** (93ms/tok) | 2.5x |
+| 8K (7612) | 3.0 tok/s (338ms/tok) | **10.3 tok/s** (97ms/tok) | 3.4x |
+
+关键: **4K 与 8K 现在几乎持平 (10.7 vs 10.3), 不再随上下文长度退化** —
+这正是稀疏注意力的预期行为。省下的时间精确等于 TopkSelect 旧耗时 (4K 省
+137ms/tok ≈ 12×11.68ms; 8K 省 241ms/tok ≈ 12×20.38ms)。62 项测试全绿,
+零警告。
+
+**下一步**: 长上下文 MTP 复测 (加速比会进一步收敛, 因 plain 基线抬升) +
+serve 层长上下文验证。
+
+---
+
 ## 2026-09-11 — 8K prefill 验证 (7612 token, MTP 加速比 1.87x, 随长度单调上升)
 
 **背景**
