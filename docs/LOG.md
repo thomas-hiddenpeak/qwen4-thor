@@ -5,6 +5,50 @@
 
 ---
 
+## 2026-09-11 — 视频输入 (Phase 2): ViT 逐时间组注意力 + 多帧 pos_embed/RoPE
+
+**背景**
+Phase 2 视频输入 (temporal_patch_size=2)。图像路径已闭合 (27 层 ViT CUDA,
+CUDA vs numpy l2_rel=0.0317), 视频 = 同一 ViT 处理多帧。参考 vLLM
+qwen3_vl.py 确认视频与图像的本质差异。
+
+**关键架构差异 (参考 vLLM qwen3_vl.py prepare_encoder_metadata)**
+- **逐时间组注意力**: `cu_seqlens = repeat(h*w, t)` — 每个时间组 (2 帧) 的
+  h*w 个空间 patch 各自成一个 attention 序列, 组间不 attend。t=1 时退化为
+  当前单一双向注意力 (所以图像路径不受影响)。
+- **pos_embed/RoPE 平铺**: 2D 空间位置 `.expand(t)` / `.repeat(t, 1)` — 每个
+  时间组用相同的 2D 空间位置, **无独立时间维 RoPE**。
+- **patch_embed**: Conv3d (2,16,16) 已含 T=2 时间维 (现有实现已是 Conv3d)。
+- **merger**: 2x2 空间 merge, 逐时间组 (block-major 下组内连续, 组间不交叉)。
+
+**改动**
+- `vision.cu`: `AttentionKernel` 加 t/S 参数, 改为逐时间组分段 softmax
+  (组 g 的 token 是 [g*S, (g+1)*S), 组内双向注意力); `BuildPosTables` /
+  `BuildPosIds` 加 t 参数, 空间表算一次后 time-major 平铺 t 次 (l = g*S + s)。
+- `vision_reference.py`: `vision_attention` 改逐时间组 (einsum gihd,gjhd->gihj);
+  `vision_forward` 加 t; 新增 video case (t=2, 4x4, 每时间组独立随机像素)。
+- `vision_forward_test.cpp`: 解析嵌套 JSON (image/video 两 case), 双 case 对比。
+
+**踩坑 (重要): numpy 参考的 t 平铺写错, C++ 一直是对的**
+初版 numpy 参考用 `np.repeat(pos_ids, t, axis=0)` (逐元素重复 →
+`[[0,0],[0,0],[0,1],[0,1],...]`), 而 vLLM 的 `.repeat(t, 1)` 是**块重复**
+(time-major, = `np.tile` → `[[0,0],[0,1],[1,0],[1,1],...]`)。t=1 时两者相同
+(所以图像测试一直通过), t=2 时不同 → video l2_rel 0.328。逐层 dump 定位
+(pre-attn 0.0024 / pre-RoPE qkv 0.0031 都对, post-RoPE 0.3555 错) + 直接对比
+pos_ids (30/32 不匹配) 后确认: **bug 在 numpy 参考, 不在 C++**。修正
+`np.repeat` → `np.tile` (pos_embed + pos_ids 两处) 后 video 通过。
+
+**验证 (真实环境)**
+- image (t=1, 4x4): l2_rel = 0.0317 (与历史一致, 纯 BF16 精度, 无回归)。
+- **video (t=2, 4x4): l2_rel = 0.0206** (纯 BF16 精度, 与 image 同级)。
+- 62 项测试全绿, 零警告。
+
+**下一步**: 视频 processor (ProcessVideo: 多帧解码 + video_smart_resize +
+BICUBIC + 时间维 patchify) + Python 参考 ground truth + serve 层视频接入
+(video token 248057)。
+
+---
+
 ## 2026-09-11 — TopkSelect 修复的 kernel 级 nsys 确认 (11.68ms→82µs, 142x)
 
 **背景**

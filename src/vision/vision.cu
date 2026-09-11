@@ -175,27 +175,37 @@ __global__ void PosEmbedKernel(const uint16_t* __restrict__ pos,
   out[idx] = FloatToBf16(acc);
 }
 
-// Bidirectional attention for one image: qkv [L, 3H] (q|k|v each [H]),
+// Bidirectional attention for one image/video: qkv [L, 3H] (q|k|v each [H]),
 // RoPE already applied to q,k.  Writes context [L, H].
-// One block per (l, head).  Shared memory holds the L softmax scores (L <=
+//
+// The layout is time-major: L = t * S (S = h*w spatial slots per time group),
+// tokens of time group g are the consecutive slice [g*S, (g+1)*S). The
+// reference (vLLM qwen3_vl.py) builds cu_seqlens = repeat(S, t), i.e. each
+// time group is its own attention sequence and groups do NOT attend to each
+// other. For t=1 this is identical to a single bidirectional attention over
+// all L tokens.
+//
+// One block per (l, head).  Shared memory holds the S softmax scores (S <=
 // 1024 -> 4KB), well within the 48KB limit.  Three phases:
-//   1. cooperatively compute score[j] = q[l] . k[j] * scale
+//   1. cooperatively compute score[j] = q[l] . k[j] * scale  (j in group)
 //   2. softmax over the row (max, exp, sum)
 //   3. cooperatively compute ctx[l, head, d] = sum_j score[j] * v[j, d]
 __global__ void AttentionKernel(const uint16_t* __restrict__ qkv,
-                                uint16_t* __restrict__ ctx, int L, int nh,
-                                int hd, int H, float scale) {
+                                uint16_t* __restrict__ ctx, int L, int t,
+                                int S, int nh, int hd, int H, float scale) {
   const int l = blockIdx.x;
   const int head = blockIdx.y;
   if (l >= L) return;
-  extern __shared__ float s_score[];  // [L]
+  extern __shared__ float s_score[];  // [S]
+  const int g = l / S;    // time group
+  const int base = g * S;  // first token of the group
   const int q_off = head * hd;
   const int k_off = H + head * hd;
   const int v_off = 2 * H + head * hd;
   const uint16_t* qrow = qkv + static_cast<size_t>(l) * 3 * H + q_off;
-  // Phase 1: score[j] = dot(q[l], k[j]) * scale.
-  for (int j = threadIdx.x; j < L; j += blockDim.x) {
-    const uint16_t* krow = qkv + static_cast<size_t>(j) * 3 * H + k_off;
+  // Phase 1: score[j] = dot(q[l], k[base+j]) * scale, j in [0, S).
+  for (int j = threadIdx.x; j < S; j += blockDim.x) {
+    const uint16_t* krow = qkv + static_cast<size_t>(base + j) * 3 * H + k_off;
     float dot = 0.0f;
     for (int d = 0; d < hd; ++d) {
       dot += Bf16ToFloat(qrow[d]) * Bf16ToFloat(krow[d]);
@@ -205,9 +215,9 @@ __global__ void AttentionKernel(const uint16_t* __restrict__ qkv,
   __syncthreads();
   // Phase 2: row max, then exp + sum.
   float row_max = -1e30f;
-  for (int j = 0; j < L; ++j) row_max = fmaxf(row_max, s_score[j]);
+  for (int j = 0; j < S; ++j) row_max = fmaxf(row_max, s_score[j]);
   float sum = 0.0f;
-  for (int j = threadIdx.x; j < L; j += blockDim.x) {
+  for (int j = threadIdx.x; j < S; j += blockDim.x) {
     s_score[j] = __expf(s_score[j] - row_max);
     sum += s_score[j];
   }
@@ -220,15 +230,15 @@ __global__ void AttentionKernel(const uint16_t* __restrict__ qkv,
     __syncthreads();
   }
   const float inv = 1.0f / s_part[0];
-  for (int j = threadIdx.x; j < L; j += blockDim.x) s_score[j] *= inv;
+  for (int j = threadIdx.x; j < S; j += blockDim.x) s_score[j] *= inv;
   __syncthreads();
-  // Phase 3: ctx[l, head, d] = sum_j score[j] * v[j, d].
+  // Phase 3: ctx[l, head, d] = sum_j score[j] * v[base+j, d].
   uint16_t* crow = ctx + static_cast<size_t>(l) * H + q_off;
   for (int d = threadIdx.x; d < hd; d += blockDim.x) {
     float acc = 0.0f;
-    for (int j = 0; j < L; ++j) {
+    for (int j = 0; j < S; ++j) {
       acc += s_score[j] *
-             Bf16ToFloat(qkv[static_cast<size_t>(j) * 3 * H + v_off + d]);
+             Bf16ToFloat(qkv[static_cast<size_t>(base + j) * 3 * H + v_off + d]);
     }
     crow[d] = FloatToBf16(acc);
   }
@@ -266,13 +276,19 @@ bool BuildRopeTables(int max_grid, float** d_cos_h, float** d_sin_h,
   return true;
 }
 
-// Host: build bilinear pos-embed tables for one image (h x w grid).
-// Patches are in block-major (spatial-merge) order:
-//   p = (wb*(h/m)+hb)*(m*m) + mb*m + mj  ->  grid (i,j) = (hb*m+mb, wb*m+mj)
-// d_rows: [L, 4] int (corner row indices into the 48x48 pos grid).
+// Host: build bilinear pos-embed tables for one image/video (h x w grid, t
+// time groups). Patches are time-major (token l = g*(h*w) + s) with spatial
+// patches in block-major (spatial-merge) order:
+//   s = (wb*(h/m)+hb)*(m*m) + mb*m + mj  ->  grid (i,j) = (hb*m+mb, wb*m+mj)
+// The 2D position is identical across time groups (the reference repeats the
+// spatial pos-embed t times), so the spatial table is computed once for the
+// h*w spatial slots and replicated to all t groups.
+// d_rows: [L, 4] int (corner row indices into the 48x48 pos grid), L = t*h*w.
 // d_weights: [L, 4] float (bilinear weights).
-bool BuildPosTables(int h, int w, int grid, int* d_rows, float* d_weights) {
-  const int L = h * w;
+bool BuildPosTables(int h, int w, int t, int grid, int* d_rows,
+                    float* d_weights) {
+  const int S = h * w;
+  const int L = t * S;
   const int m = 2;  // spatial_merge_size
   std::vector<int> rows(L * 4);
   std::vector<float> weights(L * 4);
@@ -281,13 +297,15 @@ bool BuildPosTables(int h, int w, int grid, int* d_rows, float* d_weights) {
     h_idx[i] = (h > 1) ? static_cast<float>(i) * (grid - 1) / (h - 1) : 0.0f;
   for (int j = 0; j < w; ++j)
     w_idx[j] = (w > 1) ? static_cast<float>(j) * (grid - 1) / (w - 1) : 0.0f;
-  // Block-major order matching numpy transpose(0,2,1,3,4):
-  //   p = (hb*(w/m) + wb)*m*m + mb*m + mj  (hb slowest, then wb, mb, mj).
+  // Compute the spatial table once (block-major order matching numpy
+  // transpose(0,2,1,3,4): s = (hb*(w/m) + wb)*m*m + mb*m + mj, hb slowest).
+  std::vector<int> srows(S * 4);
+  std::vector<float> sweights(S * 4);
   for (int hb = 0; hb < h / m; ++hb) {
     for (int wb = 0; wb < w / m; ++wb) {
       for (int mb = 0; mb < m; ++mb) {
         for (int mj = 0; mj < m; ++mj) {
-          const int p = (hb * (w / m) + wb) * (m * m) + mb * m + mj;
+          const int s = (hb * (w / m) + wb) * (m * m) + mb * m + mj;
           const int i = hb * m + mb;
           const int j = wb * m + mj;
           const int hf = static_cast<int>(h_idx[i]);
@@ -300,15 +318,25 @@ bool BuildPosTables(int h, int w, int grid, int* d_rows, float* d_weights) {
           const float w10 = dh - w11;
           const float w01 = dw - w11;
           const float w00 = 1.0f - dh - w01;
-          rows[p * 4 + 0] = hf * grid + wf;
-          rows[p * 4 + 1] = hf * grid + wc;
-          rows[p * 4 + 2] = hc * grid + wf;
-          rows[p * 4 + 3] = hc * grid + wc;
-          weights[p * 4 + 0] = w00;
-          weights[p * 4 + 1] = w01;
-          weights[p * 4 + 2] = w10;
-          weights[p * 4 + 3] = w11;
+          srows[s * 4 + 0] = hf * grid + wf;
+          srows[s * 4 + 1] = hf * grid + wc;
+          srows[s * 4 + 2] = hc * grid + wf;
+          srows[s * 4 + 3] = hc * grid + wc;
+          sweights[s * 4 + 0] = w00;
+          sweights[s * 4 + 1] = w01;
+          sweights[s * 4 + 2] = w10;
+          sweights[s * 4 + 3] = w11;
         }
+      }
+    }
+  }
+  // Replicate the spatial table across the t time groups (time-major).
+  for (int g = 0; g < t; ++g) {
+    for (int s = 0; s < S; ++s) {
+      const int p = g * S + s;
+      for (int c = 0; c < 4; ++c) {
+        rows[p * 4 + c] = srows[s * 4 + c];
+        weights[p * 4 + c] = sweights[s * 4 + c];
       }
     }
   }
@@ -321,24 +349,36 @@ bool BuildPosTables(int h, int w, int grid, int* d_rows, float* d_weights) {
   return true;
 }
 
-// Host: build per-patch 2D position IDs in block-major order.
-// d_pos_ids: [L, 2] = (h_pos, w_pos) for each patch in block-major order.
-bool BuildPosIds(int h, int w, int* d_pos_ids) {
-  const int L = h * w;
+// Host: build per-patch 2D position IDs, time-major + block-major order.
+// d_pos_ids: [L, 2] = (h_pos, w_pos) for each patch, L = t*h*w. The 2D
+// position is identical across time groups (the reference repeats the spatial
+// pos_ids t times), so the spatial table is computed once for the h*w spatial
+// slots and replicated to all t groups.
+bool BuildPosIds(int h, int w, int t, int* d_pos_ids) {
+  const int S = h * w;
+  const int L = t * S;
   const int m = 2;
   std::vector<int> ids(L * 2);
+  // Spatial table first (block-major order).
   for (int hb = 0; hb < h / m; ++hb) {
     for (int wb = 0; wb < w / m; ++wb) {
       for (int mb = 0; mb < m; ++mb) {
         for (int mj = 0; mj < m; ++mj) {
-          const int p = (hb * (w / m) + wb) * (m * m) + mb * m + mj;
-          ids[p * 2 + 0] = hb * m + mb;  // h_pos
-          ids[p * 2 + 1] = wb * m + mj;  // w_pos
+          const int s = (hb * (w / m) + wb) * (m * m) + mb * m + mj;
+          ids[s * 2 + 0] = hb * m + mb;  // h_pos
+          ids[s * 2 + 1] = wb * m + mj;  // w_pos
         }
       }
     }
   }
-  return cudaMemcpy(d_pos_ids, ids.data(), L * 2 * sizeof(int),
+  // Replicate across the t time groups (time-major: l = g*S + s).
+  std::vector<int> full(L * 2);
+  for (int g = 0; g < t; ++g)
+    for (int s = 0; s < S; ++s) {
+      full[(g * S + s) * 2 + 0] = ids[s * 2 + 0];
+      full[(g * S + s) * 2 + 1] = ids[s * 2 + 1];
+    }
+  return cudaMemcpy(d_pos_ids, full.data(), L * 2 * sizeof(int),
                     cudaMemcpyHostToDevice) == cudaSuccess;
 }
 
@@ -753,13 +793,14 @@ bool VisionForward(const VisionTower& tower, const uint16_t* pixel_values,
   for (const auto& sh : shapes) {
     const int L = sh.L();
     const int h = sh.h, wd = sh.w, t = sh.t;
+    const int S = h * wd;  // spatial slots per time group
     const int merged_n = (h / m) * (wd / m) * t;
-    // pos_embed (bilinear interpolate) + pos_ids (block-major).
-    if (!BuildPosTables(h, wd, grid, tower.d_pos_rows, tower.d_pos_weights)) {
+    // pos_embed (bilinear interpolate) + pos_ids (time-major + block-major).
+    if (!BuildPosTables(h, wd, t, grid, tower.d_pos_rows, tower.d_pos_weights)) {
       set_err("build pos tables");
       return false;
     }
-    if (!BuildPosIds(h, wd, tower.d_pos_ids)) {
+    if (!BuildPosIds(h, wd, t, tower.d_pos_ids)) {
       set_err("build pos ids");
       return false;
     }
@@ -793,10 +834,10 @@ bool VisionForward(const VisionTower& tower, const uint16_t* pixel_values,
           qkv + offset * 3 * H, L, nh, 3 * H, H, tower.d_pos_ids, tower.d_cos,
           tower.d_sin, tower.d_cos_w, tower.d_sin_w);
       {
-        const int smem = L * sizeof(float);
+        const int smem = S * sizeof(float);
         dim3 grid_attn(L, nh);
         AttentionKernel<<<grid_attn, kBlock, smem, stream>>>(
-            qkv + offset * 3 * H, ctx + offset * H, L, nh, hd, H, scale);
+            qkv + offset * 3 * H, ctx + offset * H, L, t, S, nh, hd, H, scale);
       }
       if (!gemm(ctx + offset * H, w.d_attn_proj_w[i], attn_out + offset * H,
                 L, H, H)) {

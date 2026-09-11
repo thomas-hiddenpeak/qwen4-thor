@@ -163,7 +163,10 @@ def pos_embed_interpolate(w, t, h, w_grid):
     m = MERGE
     combined = combined.reshape(h // m, m, w_grid // m, m, HIDDEN)
     combined = combined.transpose(0, 2, 1, 3, 4).reshape(1, -1, HIDDEN)
-    return np.repeat(combined, t, axis=0).reshape(-1, HIDDEN)
+    # Tile the spatial table t times (time-major: l = g*(h*w) + s). This matches
+    # vLLM's `combined.expand(t, -1, -1)` (a block repeat), NOT np.repeat
+    # (which would repeat each row consecutively). For t=1 they are identical.
+    return np.tile(combined, (t, 1)).reshape(-1, HIDDEN)
 
 
 def rot_pos_ids(h, w):
@@ -220,11 +223,15 @@ def apply_rope(x, cos_h, sin_h, cos_w, sin_w):
     return np.concatenate([out1, out2, out3, out4], axis=-1)
 
 
-def vision_attention(x, qkv_w, qkv_b, proj_w, proj_b, rope):
-    """x [L, H] -> [L, H]. Bidirectional attention over all L tokens.
+def vision_attention(x, qkv_w, qkv_b, proj_w, proj_b, rope, t=1):
+    """x [L, H] -> [L, H]. Bidirectional attention, PER TIME GROUP.
 
-    Standard per-head attention: scores[l, h, j] = q[l, h] . k[j, h]
-    (across positions, per head).
+    Layout is time-major: L = t * (h*w), tokens of time group g are the
+    consecutive slice [g*(h*w), (g+1)*(h*w)). The reference (vLLM
+    qwen3_vl.py prepare_encoder_metadata) builds cu_seqlens =
+    repeat(h*w, t), i.e. each time group is its own attention sequence and
+    groups do NOT attend to each other. For t=1 this is identical to a
+    single bidirectional attention over all L tokens.
     """
     L = x.shape[0]
     qkv = matmul(x, qkv_w, qkv_b)  # [L, 3H]
@@ -235,20 +242,22 @@ def vision_attention(x, qkv_w, qkv_b, proj_w, proj_b, rope):
     q = apply_rope(q, *rope)
     k = apply_rope(k, *rope)
     scale = HEAD_DIM ** -0.5
-    # scores[l, h, j] = sum_d q[l, h, d] * k[j, h, d]
-    scores = np.einsum("lhd,jhd->lhj", q, k) * scale  # [L, NH, L]
+    # Per time group: scores[g, i, h, j] = q[g,i,h] . k[g,j,h].
+    qg = q.reshape(t, -1, NUM_HEADS, HEAD_DIM)
+    kg = k.reshape(t, -1, NUM_HEADS, HEAD_DIM)
+    vg = v.reshape(t, -1, NUM_HEADS, HEAD_DIM)
+    scores = np.einsum("gihd,gjhd->gihj", qg, kg) * scale  # [t, S, NH, S]
     attn = np.exp(scores - scores.max(axis=-1, keepdims=True))
     attn = attn / attn.sum(axis=-1, keepdims=True)
-    # context[l, h, d] = sum_j attn[l, h, j] * v[j, h, d]
-    context = np.einsum("lhj,jhd->lhd", attn, v)  # [L, NH, HD]
+    context = np.einsum("gihj,gjhd->gihd", attn, vg)  # [t, S, NH, HD]
     context = context.reshape(L, HIDDEN)
     return matmul(context, proj_w, proj_b)
 
 
-def vision_block(x, rope, b):
+def vision_block(x, rope, b, t=1):
     x = x + vision_attention(
         layer_norm(x, b["norm1_w"], b["norm1_b"]),
-        b["qkv_w"], b["qkv_b"], b["proj_w"], b["proj_b"], rope,
+        b["qkv_w"], b["qkv_b"], b["proj_w"], b["proj_b"], rope, t,
     )
     h = layer_norm(x, b["norm2_w"], b["norm2_b"])
     mlp = gelu_tanh(matmul(h, b["fc1_w"], b["fc1_b"]))
@@ -312,11 +321,46 @@ def vision_forward(vis, pixel_values, grid_thw):
     x = x + pos
     pos_ids = rot_pos_ids(h, w)
     if t > 1:
-        pos_ids = np.repeat(pos_ids, t, axis=0)
+        # Tile (block repeat, time-major) to match vLLM's `.repeat(t, 1)`, NOT
+        # np.repeat (element-wise repeat). For t=1 they are identical.
+        pos_ids = np.tile(pos_ids, (t, 1))
     rope = rot_pos_emb(pos_ids)
     for i in range(DEPTH):
-        x = vision_block(x, rope, vis[i])
+        x = vision_block(x, rope, vis[i], t)
     return merger(x, vis["merger"])
+
+
+def make_pixels(t, h, w, seed):
+    """Synthetic pixel_values [L, C*T*P*P] in time-major + block-major order.
+
+    Time-major: token l = g*(h*w) + s, g in [0,t), s in [0,h*w) (spatial).
+    Within each time group, spatial patches are in block-major (spatial-merge)
+    order. Each time group gets its OWN random values (seed + g) so the video
+    groups are distinct (unlike a still image where all temporal slots repeat
+    the same frame).
+    """
+    L = t * h * w
+    C, P = 3, PATCH
+    m = MERGE
+    S = h * w
+    pixel = np.empty((L, C * TEMPORAL * P * P), dtype=np.float32)
+    for g in range(t):
+        rng = np.random.default_rng(seed + g)
+        # Generate this group's S spatial patches in row-major, then reorder
+        # to block-major.
+        rm = rng.standard_normal((S, C * TEMPORAL * P * P)).astype(np.float32)
+        bm = np.empty_like(rm)
+        for hb in range(h // m):
+            for wb in range(w // m):
+                for mb in range(m):
+                    for mj in range(m):
+                        i = hb * m + mb
+                        j = wb * m + mj
+                        p_rm = i * w + j
+                        p_bm = (hb * (w // m) + wb) * (m * m) + mb * m + mj
+                        bm[p_bm] = rm[p_rm]
+        pixel[g * S : (g + 1) * S] = bm
+    return pixel
 
 
 def main():
@@ -326,46 +370,30 @@ def main():
     vis = load_vision_weights(load)
     print("  weights loaded", flush=True)
 
-    # Synthetic test image: 64x64 pixels -> 4x4 patches (patch=16), t=1.
-    # Patches are in block-major (spatial-merge) order to match pos_embed.
-    t, h, w = 1, 4, 4
-    L = t * h * w
-    C, P = 3, PATCH
-    m = MERGE
-    rng = np.random.default_rng(1234)
-    # Generate in row-major, then reorder to block-major.
-    pixel_rm = rng.standard_normal((L, C * TEMPORAL * P * P)).astype(np.float32)
-    # Row-major index p_rm = i*w + j  ->  block-major index p_bm.
-    # Block-major: p_bm = (wb*(h/m)+hb)*(m*m) + mb*m + mj
-    #   where i = hb*m+mb, j = wb*m+mj
-    pixel_bm = np.empty_like(pixel_rm)
-    for hb in range(h // m):
-        for wb in range(w // m):
-            for mb in range(m):
-                for mj in range(m):
-                    i = hb * m + mb
-                    j = wb * m + mj
-                    p_rm = i * w + j
-                    p_bm = (hb * (w // m) + wb) * (m * m) + mb * m + mj
-                    pixel_bm[p_bm] = pixel_rm[p_rm]
-    pixel_values = pixel_bm
+    # Two cases: a still image (t=1, 4x4 patches) and a short video (t=2,
+    # 4x4 patches per frame -> 2 time groups). Both exercise the same tower;
+    # the video case exercises per-time-group attention.
+    cases = {"image": (1, 4, 4, 1234), "video": (2, 4, 4, 777)}
+    data = {}
+    for name, (t, h, w, seed) in cases.items():
+        L = t * h * w
+        pixel_values = make_pixels(t, h, w, seed)
+        print("Running %s forward (L=%d, grid=%dx%dx%d)..." % (name, L, t, h, w),
+              flush=True)
+        out_feat = vision_forward(vis, pixel_values, [[t, h, w]])
+        print("  output shape:", out_feat.shape, flush=True)
+        data[name] = {
+            "grid_thw": [[t, h, w]],
+            "pixel_values": pixel_values.tolist(),
+            "output": out_feat.tolist(),
+            "output_shape": list(out_feat.shape),
+        }
+        print("  output[0, :4] =", out_feat[0, :4].tolist(), flush=True)
+        print("  output max_abs =", float(np.abs(out_feat).max()), flush=True)
 
-    print("Running vision forward (L=%d, grid=%dx%d)..." % (L, h, w), flush=True)
-    out_feat = vision_forward(vis, pixel_values, [[t, h, w]])
-    print("  output shape:", out_feat.shape, flush=True)
-
-    # Save input + output as JSON (float32 lists).
-    data = {
-        "grid_thw": [[t, h, w]],
-        "pixel_values": pixel_values.tolist(),
-        "output": out_feat.tolist(),
-        "output_shape": list(out_feat.shape),
-    }
     with open(out, "w") as f:
         json.dump(data, f)
     print("Saved reference to", out, flush=True)
-    print("  output[0, :4] =", out_feat[0, :4].tolist(), flush=True)
-    print("  output max_abs =", float(np.abs(out_feat).max()), flush=True)
 
 
 if __name__ == "__main__":

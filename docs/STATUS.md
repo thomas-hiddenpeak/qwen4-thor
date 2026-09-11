@@ -595,6 +595,16 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   验证 + 接受/回退 + per-token SSM/conv checkpoint 恢复 (消除部分接受
   re-advance), 实测 decode 加速 1.46x (k=3 最优, 默认 mtp_k=3), 见
   "已完成" MTP 条目 + LOG.md 2026-09-10。
+- **视频输入 ViT (2026-09-11, Phase 2 启动)**: 27 层 ViT 扩展支持多帧视频。
+  核心差异 (参考 vLLM qwen3_vl.py): **逐时间组注意力** (cu_seqlens=repeat(h*w,t),
+  每 2 帧组内 h*w 空间 patch 各自双向注意力, 组间不 attend; t=1 退化为图像
+  单一注意力) + **pos_embed/RoPE time-major 平铺 t 次** (无独立时间维 RoPE)。
+  `AttentionKernel` 改分段 softmax, `BuildPosTables`/`BuildPosIds` 加 t 平铺。
+  验证: image l2_rel=0.0317 (无回归) / **video (t=2) l2_rel=0.0206** (纯 BF16
+  精度)。踩坑: numpy 参考 t 平铺误用 `np.repeat` (逐元素) 而非 vLLM 的
+  `.repeat(t,1)` 块重复 (= `np.tile`), t=1 相同故图像一直通过, t=2 暴露;
+  逐层 dump + pos_ids 对比确认 bug 在参考不在 C++, 已修。62 测试全绿零警告,
+  见 LOG.md 2026-09-11。待补: 视频 processor + serve 接入。
 - **serve 层 MTP (2026-09-11)**: HTTP API decode 接入 MtpSpeculativeStep
   (复用 CLI 已验证机制), 失败自动回退 plain; 端到端 decode ≈ 17.5 tok/s
   (~1.4x, 与 CLI 一致), 流式 SSE 正常, 见 LOG.md 2026-09-11。
