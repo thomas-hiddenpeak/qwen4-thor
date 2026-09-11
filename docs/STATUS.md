@@ -607,11 +607,11 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   退化** (稀疏注意力预期行为); 短序列 16.5 tok/s 无回退; 62 测试全绿零警告,
   见 LOG.md 2026-09-11。
 - **长上下文验证 (2026-09-11, 1.7K/4K/8K)**: QSA 稀疏路径 plain + MTP 均
-  通过, 输出连贯。MTP 加速比随长度单调上升: 1737→1.35x, 4337→1.79x,
-  7612→**1.87x** (注: 此加速比基于修复前 plain 基线; TopkSelect 修复后
-  plain 长上下文 decode 抬升至 ~10.5 tok/s, MTP 加速比将收敛, 待复测)。
-  CLI 加 --max-prefill flag (默认 2048 不变); decode 上限 max_len=8192;
-  262K 为大工程 (KV ~64GB + QSA idx_budget 瓶颈), 见 LOG.md 2026-09-11。
+  通过, 输出连贯。TopkSelect 修复后 MTP 复测: 4K 1.54x / 8K 1.49x (修复前
+  1.79x/1.87x, 加速比因 plain 基线抬升而收敛), 但 MTP 绝对 decode 大涨
+  (4K 7.7→16.5, 8K 5.6→15.4 tok/s), 4K/8K 均不再随长度退化。CLI 加
+  --max-prefill flag (默认 2048 不变); decode 上限 max_len=8192; 262K 为大
+  工程 (KV ~64GB + QSA idx_budget 瓶颈), 见 LOG.md 2026-09-11。
 - **kernel launch 削减 (2026-09-10, 性能中性)**: conv1d+checkpoint 三合一
   (CausalConv1dWithCkptKernel, num_ckpt=0 退化纯 conv) + HC gate/combine
   融合 (CombineWithGateKernel, gate 寄存器内重算位级一致) + PLE conv+add
