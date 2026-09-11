@@ -598,6 +598,11 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 - **serve 层 MTP (2026-09-11)**: HTTP API decode 接入 MtpSpeculativeStep
   (复用 CLI 已验证机制), 失败自动回退 plain; 端到端 decode ≈ 17.5 tok/s
   (~1.4x, 与 CLI 一致), 流式 SSE 正常, 见 LOG.md 2026-09-11。
+- **serve 层长上下文 (2026-09-11)**: serve 加 `--max-prefill N` flag
+  (ServerOptions.max_prefill, 默认 0=ModelConfig 2048; MTP 侧同步主模型,
+  顺带修正此前 serve MTP 工作区未同步的问题)。4K 长 prompt (4340 tok)
+  HTTP 验证通过: 200 + 连贯输出 (修复前 >2048 直接报错), 见 LOG.md
+  2026-09-11。
 - **长上下文 decode 退化根因修复 (2026-09-11)**: 用户诊断"decode 随长度
   退化像 full attention"正确。nsys 定位真因 = `TopkSelectKernel` 旧单线程
   O(block_topk×n_groups) 扫描, 占 4K/8K decode GPU 时间 61%/73% (11.7/20.4ms

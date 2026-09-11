@@ -301,6 +301,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
   cfg.model_dir = opts.model_dir;
   cfg.index_path = opts.model_dir + "/model.safetensors.index.json";
   cfg.ple_sidecar = opts.model_dir + "/ple/qwen3.8-flash-next-ple-fp8.bin";
+  if (opts.max_prefill > 0) cfg.max_prefill = opts.max_prefill;
   s = model::LoadModel(cfg, &model_, nullptr);
   if (!s.ok()) {
     tok_.reset();
@@ -313,6 +314,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
   {
     mtp::MtpConfig mcfg;
     mcfg.mtp_dir = opts.model_dir + "/mtp";
+    mcfg.max_prefill = cfg.max_prefill;  // MTP draft-extend runs over the whole
+                                         // prompt; size its workspace to match.
     s = mtp::LoadMtp(mcfg, model_.head.embed_tokens, model_.head.lm_head,
                      &mtp_, nullptr);
     if (!s.ok()) {

@@ -31,6 +31,7 @@ struct ServerOptions {
   int port = 8000;
   std::string model_dir;
   int max_tokens = 256;  // default cap when the request omits max_tokens
+  int max_prefill = 0;  // 0 = use ModelConfig default (2048); >0 overrides
 };
 
 class ChatServer {

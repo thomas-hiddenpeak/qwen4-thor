@@ -5,6 +5,33 @@
 
 ---
 
+## 2026-09-11 — serve 层长上下文支持 (--max-prefill flag + 4K HTTP 验证)
+
+**背景**
+CLI 已有 --max-prefill, 但 serve 层没有: `ServerOptions` 无 max_prefill 字段,
+`ChatServer` 用 ModelConfig 默认 2048, `T > max_prefill_` 直接报错。即 serve
+层此前无法处理 >2048 token 的 prompt。
+
+**改动**
+- `ServerOptions` 加 `max_prefill` 字段 (默认 0 = 用 ModelConfig 默认 2048)。
+- `ChatServer::Start`: `opts.max_prefill > 0` 时覆盖 `cfg.max_prefill`;
+  **MTP 侧 `mcfg.max_prefill = cfg.max_prefill` 同步主模型** (MTP draft-extend
+  跑整个 prompt, 工作区须匹配; 此前 serve 的 MTP 一直用默认 2048, 与 CLI
+  不同步 — 顺带修正)。
+- `main.cpp` RunServe 加 `--max-prefill N` flag + usage 文本。
+
+**验证 (真实环境)**
+- 启动 `q4t serve --port 8199 --max-prefill 8192`, healthz ok, MTP (k=3) +
+  视觉塔 (27 blocks) 均加载。
+- 4K 长 prompt (4340 token) HTTP POST /v1/chat/completions: **HTTP 200**,
+  `prompt_tokens=4340` (>2048, 修复前会直接 413 报错), 输出连贯
+  ("The scene depicts an old mill turning..."), `finish_reason=length`。
+- 62 项测试全绿, 零警告。
+
+**下一步**: 262K 长上下文规划 (大任务) 或其他 Phase 2 项。
+
+---
+
 ## 2026-09-11 — 长上下文 MTP 复测 (TopkSelect 修复后加速比收敛, 绝对值大涨)
 
 **背景**
