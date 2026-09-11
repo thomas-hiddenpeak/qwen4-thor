@@ -5,6 +5,26 @@
 
 ---
 
+## 2026-09-11 — TopkSelect 修复的 kernel 级 nsys 确认 (11.68ms→82µs, 142x)
+
+**背景**
+上一条用 bench 墙钟 (4K 230→93ms/tok) 确认了 TopkSelect 修复, 此处补 kernel
+级 nsys 证据 (4K decode, --max-prefill 8192, 8-token, Q4T_PROFILE 括号)。
+
+**结果 (nsys cuda_gpu_kern_sum, 96 实例 = 12 full 层 × 8 tok)**
+- **TopkSelectKernel: 11.68ms → 82.3µs/次 (142x), GPU 时间占比 61.3% → 1.1%**。
+- 修复后 4K decode kernel 分布: Bf16GevKernel 41.3% (5512 实例, 55µs, 常量) /
+  SparseAttentionKernel 30.7% (96, 2.35ms, 常量 O(idx_budget)) /
+  IndexerLogitsKernel 5.1% (96, 394µs) / TopkSelect 1.1% (96, 82µs)。
+- 新瓶颈 = Bf16Gev (线性层 GEMV) + SparseAttention, 两者均**不随上下文长度
+  增长** — 与 bench 观察 (4K 10.7 ≈ 8K 10.3 tok/s 持平) 完全一致。TopkSelect
+  已不再是瓶颈, 长上下文 decode 退化问题彻底闭合。
+
+**下一步**: 进入 Phase 2 (视频输入 / 连续批处理 / 262K 长上下文 / 验证标准
+体系; 完整多设备 PD 部署用户指示等整体完善)。
+
+---
+
 ## 2026-09-11 — serve 层长上下文支持 (--max-prefill flag + 4K HTTP 验证)
 
 **背景**

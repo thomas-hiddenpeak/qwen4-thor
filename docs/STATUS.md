@@ -609,7 +609,9 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   每次), **非 KV 读** (此前归因误判, 已更正)。重写为并行 bitonic sort
   (2048 槽 shared, 256 线程, ~20µs), 选中集合不变 (顺序无关, online softmax
   归约)。修复后 **4K 4.3→10.7 / 8K 3.0→10.3 tok/s, 且 4K≈8K 不再随长度
-  退化** (稀疏注意力预期行为); 短序列 16.5 tok/s 无回退; 62 测试全绿零警告,
+  退化** (稀疏注意力预期行为); 短序列 16.5 tok/s 无回退; 62 测试全绿零警告。
+  **kernel 级 nsys 确认**: TopkSelectKernel 11.68ms→82.3µs/次 (142x), GPU
+  占比 61.3%→1.1%; 新瓶颈 Bf16Gev 41% + SparseAttention 31% 均不随长度增长,
   见 LOG.md 2026-09-11。
 - **长上下文验证 (2026-09-11, 1.7K/4K/8K)**: QSA 稀疏路径 plain + MTP 均
   通过, 输出连贯。TopkSelect 修复后 MTP 复测: 4K 1.54x / 8K 1.49x (修复前
