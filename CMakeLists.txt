@@ -195,6 +195,7 @@ if(Q4T_BUILD_TESTS)
     tests/vision_forward_test.cpp
     tests/model_vision_inject_test.cpp
     tests/vision_processor_test.cpp
+    tests/video_processor_test.cpp
     tests/vision_e2e_test.cpp
     tests/test_main.cpp)
   set(Q4T_TEST_LIBS q4t_ple q4t_io q4t_quant q4t_model)

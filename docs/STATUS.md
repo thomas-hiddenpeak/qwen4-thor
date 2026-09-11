@@ -604,7 +604,16 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   精度)。踩坑: numpy 参考 t 平铺误用 `np.repeat` (逐元素) 而非 vLLM 的
   `.repeat(t,1)` 块重复 (= `np.tile`), t=1 相同故图像一直通过, t=2 暴露;
   逐层 dump + pos_ids 对比确认 bug 在参考不在 C++, 已修。62 测试全绿零警告,
-  见 LOG.md 2026-09-11。待补: 视频 processor + serve 接入。
+  见 LOG.md 2026-09-11。
+- **视频输入 processor (2026-09-11, Phase 2)**: `ProcessVideo` (帧解码 →
+  视频 smart_resize [3-D t*h*w 预算, 独立 video_preprocessor_config.json
+  边界 4096/25165824] → 逐帧 BICUBIC → 奇数帧 pad 末帧 → 时间维 patchify)。
+  **关键**: 视频 resize 用 torchvision BICUBIC (图像用 Pillow), 实测差异
+  max~0.016/l2_rel~0.001 (远小于 BF16 带) → C++ 复用 Pillow 定点 BICUBIC +
+  容差差分 (≤0.02/≤0.005)。6 case 全过 (偶数/奇数帧/大分辨率/BICUBIC,
+  identity 逐位 + BICUBIC 容差)。踩坑: 时间组索引偏移 `g*gh*gw` (初版误乘
+  M*M, grid_t>1 全错位)。63 测试全绿零警告, 见 LOG.md 2026-09-11。
+  待补: serve 层视频接入 (video token 248057 + 多帧)。
 - **serve 层 MTP (2026-09-11)**: HTTP API decode 接入 MtpSpeculativeStep
   (复用 CLI 已验证机制), 失败自动回退 plain; 端到端 decode ≈ 17.5 tok/s
   (~1.4x, 与 CLI 一致), 流式 SSE 正常, 见 LOG.md 2026-09-11。

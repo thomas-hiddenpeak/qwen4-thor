@@ -5,6 +5,45 @@
 
 ---
 
+## 2026-09-11 — 视频输入 (Phase 2, 2/3): C++ 视频 processor + 差分验证 (6 case 全过)
+
+**背景**
+上一条闭合了 ViT 视频路径 (逐时间组注意力)。本条做视频 processor:
+把帧序列预处理成 ViT 期望的 pixel_values_videos。参考 transformers 5.16.1
+Qwen3VLVideoProcessor (torchvision 后端)。
+
+**关键发现: 视频 resize 后端与图像不同**
+- 图像 processor 用 **Pillow BICUBIC** (C++ 已逐位复刻); 视频 processor 走
+  `tvF.resize(..., BICUBIC, antialias=True)` (**torchvision**)。
+- 实测两后端差异 (225x321→224x320): max_abs ~0.016 (≈2/255 像素空间,
+  /0.5 归一化后 ×2), l2_rel ~0.001 — 远小于 BF16 精度带 (~0.03)。
+- **决策**: C++ 视频 processor 复用现有 Pillow 12.3.0 定点 BICUBIC, 差分
+  测试用容差 (max_abs ≤ 0.02 / l2_rel ≤ 0.005, 是实测后端差异的 2-5× 裕量,
+  仍比真实布局 bug 的 max_abs~2.0 小两个数量级)。
+- 视频预算来自独立 `video_preprocessor_config.json`: **shortest_edge=4096 /
+  longest_edge=25165824** (非图像的 65536/16777216); smart_resize 是 3-D
+  预算 `t_bar*h_bar*w_bar` (beta 分子用 num_frames)。
+
+**改动**
+- `processor.h/.cpp`: 新增 `ProcessVideo` (帧解码 → VideoSmartResize → 逐帧
+  BICUBIC → 奇数帧 pad 末帧 → 归一化 → 时间维 patchify)。per-patch 布局
+  [C,T,P,P] 与图像相同, 空间 block-major 组内顺序相同, 唯一区别 T=2 填真实
+  两帧。
+- `tools/video_processor_ref.py`: 真实 Qwen3VLProcessor (do_sample_frames=False
+  显式帧数) 生成 ground truth + 逐帧无损 PNG (C++ 解码同一 uint8)。
+- `tests/video_processor_test.cpp`: 6 case — 偶数帧 (2/4/8) / 奇数帧 (5→pad) /
+  大分辨率 (448x640) / **BICUBIC (225x321→224x320)**。
+
+**踩坑: 时间组索引偏移算错**
+初版 `p_idx = (g*gh + hb*(gw/M) + wb)*(M*M) + ...` 把 `g*gh` 错乘了 M*M,
+应为 `g*gh*gw` (每时间组占 gh*gw 个空间 patch)。grid_t=1 时 g=0 碰巧对,
+grid_t>1 全错位 (max_abs=2.0)。修正后 6 case 全过: 5 个 identity 逐位一致
+(max_abs=0), BICUBIC case 容差内 (0.0157/0.00106)。63 项测试全绿, 零警告。
+
+**下一步**: serve 层视频输入接入 (video token 248057 + 多帧解码 + 展开)。
+
+---
+
 ## 2026-09-11 — 视频输入 (Phase 2): ViT 逐时间组注意力 + 多帧 pos_embed/RoPE
 
 **背景**

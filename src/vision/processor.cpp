@@ -235,6 +235,55 @@ void BicubicResize(const uint8_t* in, int h, int w, uint8_t* out, int out_h,
 }  // namespace
 
 // ---------------------------------------------------------------------------
+// video smart_resize (exact copy of transformers 5.16.1 Qwen3VLVideoProcessor
+// smart_resize). Unlike the image version the pixel budget is 3-D
+// (t_bar * h_bar * w_bar) and the shrink/grow beta uses num_frames.
+// ---------------------------------------------------------------------------
+bool VideoSmartResize(int num_frames, int height, int width, int temporal_factor,
+                      int factor, int min_pixels, int max_pixels, int* out_h,
+                      int* out_w) {
+  if (num_frames < temporal_factor) return false;
+  if (height <= 0 || width <= 0) return false;
+  if (height < factor || width < factor) {
+    double scale = std::max(static_cast<double>(factor) / height,
+                            static_cast<double>(factor) / width);
+    height = static_cast<int>(height * scale);
+    width = static_cast<int>(width * scale);
+  }
+  if (static_cast<double>(std::max(height, width)) / std::min(height, width) >
+      200.0) {
+    return false;  // aspect ratio too large
+  }
+  int h_bar =
+      static_cast<int>(std::round(static_cast<double>(height) / factor)) * factor;
+  int w_bar =
+      static_cast<int>(std::round(static_cast<double>(width) / factor)) * factor;
+  int t_bar = static_cast<int>(std::round(
+                  static_cast<double>(num_frames) / temporal_factor)) *
+              temporal_factor;
+  if (static_cast<int64_t>(t_bar) * h_bar * w_bar > max_pixels) {
+    double beta = std::sqrt(static_cast<double>(num_frames * height * width) /
+                            static_cast<double>(max_pixels));
+    h_bar = std::max(factor, static_cast<int>(std::floor(
+                                 static_cast<double>(height) / beta / factor)) *
+                            factor);
+    w_bar = std::max(factor, static_cast<int>(std::floor(
+                                 static_cast<double>(width) / beta / factor)) *
+                            factor);
+  } else if (static_cast<int64_t>(t_bar) * h_bar * w_bar < min_pixels) {
+    double beta = std::sqrt(static_cast<double>(min_pixels) /
+                            static_cast<double>(num_frames * height * width));
+    h_bar = static_cast<int>(std::ceil(
+                static_cast<double>(height) * beta / factor)) * factor;
+    w_bar = static_cast<int>(std::ceil(
+                static_cast<double>(width) * beta / factor)) * factor;
+  }
+  *out_h = h_bar;
+  *out_w = w_bar;
+  return true;
+}
+
+// ---------------------------------------------------------------------------
 // ProcessImage: decode + resize + normalize + patchify.
 // ---------------------------------------------------------------------------
 bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
@@ -335,6 +384,139 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
                   plane[p * P + q] =
                       norm[(static_cast<size_t>(i * P + p) * rw +
                             (j * P + q)) * 3 + c];
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return true;
+}
+
+// ---------------------------------------------------------------------------
+// ProcessVideo: decode frames + video smart_resize + per-frame BICUBIC +
+// odd-frame pad + normalize + temporal patchify.
+// ---------------------------------------------------------------------------
+bool ProcessVideo(const std::vector<const uint8_t*>& frames,
+                  const std::vector<size_t>& frame_bytes,
+                  const ProcessorConfig& cfg, ProcessedVideo* out,
+                  std::string* err) {
+  const int F = static_cast<int>(frames.size());
+  if (F < cfg.temporal_patch_size) {
+    if (err) *err = "need at least temporal_patch_size frames";
+    return false;
+  }
+  if (frame_bytes.size() != static_cast<size_t>(F)) {
+    if (err) *err = "frame_bytes size mismatch";
+    return false;
+  }
+  if (!out) {
+    if (err) *err = "null output";
+    return false;
+  }
+
+  // 1. Decode every frame -> RGB uint8 [H, W, 3]. All frames share H, W.
+  std::vector<std::vector<uint8_t>> decoded(F);
+  int H = 0, W = 0;
+  for (int f = 0; f < F; ++f) {
+    int w = 0, h = 0, comp = 0;
+    uint8_t* px = stbi_load_from_memory(
+        frames[f], static_cast<int>(frame_bytes[f]), &w, &h, &comp, 3);
+    if (!px) {
+      if (err) *err = "failed to decode frame " + std::to_string(f);
+      return false;
+    }
+    if (f == 0) {
+      H = h;
+      W = w;
+    } else if (h != H || w != W) {
+      stbi_image_free(px);
+      if (err) *err = "inconsistent frame dimensions";
+      return false;
+    }
+    decoded[f].assign(px, px + static_cast<size_t>(h) * w * 3);
+    stbi_image_free(px);
+  }
+
+  // 2. video smart_resize (3-D t*h*w budget).
+  const int factor = cfg.patch_size * cfg.merge_size;  // 16*2 = 32
+  int rh = 0, rw = 0;
+  if (!VideoSmartResize(F, H, W, cfg.temporal_patch_size, factor,
+                        cfg.min_pixels, cfg.max_pixels, &rh, &rw)) {
+    if (err) *err = "video smart_resize failed (aspect ratio or size)";
+    return false;
+  }
+
+  // 3. Per-frame BICUBIC resize (Pillow fixed-point).
+  std::vector<std::vector<uint8_t>> resized(F);
+  for (int f = 0; f < F; ++f) {
+    resized[f].resize(static_cast<size_t>(rh) * rw * 3);
+    if (rh != H || rw != W) {
+      BicubicResize(decoded[f].data(), H, W, resized[f].data(), rh, rw);
+    } else {
+      resized[f] = decoded[f];
+    }
+  }
+
+  // 4. Odd-frame pad: repeat the LAST frame until F is even.
+  int Fp = (F % 2 == 0) ? F : F + 1;
+  if (Fp != F) resized.push_back(resized[F - 1]);
+  const int grid_t = Fp / cfg.temporal_patch_size;
+
+  // 5. rescale + normalize (per frame, exact float32, same as ProcessImage).
+  const double kInv255 = 1.0 / 255.0;
+  std::vector<std::vector<float>> norm(Fp);
+  for (int f = 0; f < Fp; ++f) {
+    norm[f].resize(static_cast<size_t>(rh) * rw * 3);
+    for (size_t i = 0; i < norm[f].size(); ++i) {
+      const int c = static_cast<int>(i % 3);
+      float fl = static_cast<float>(static_cast<double>(resized[f][i]) * kInv255);
+      norm[f][i] = (fl - cfg.image_mean[c]) / cfg.image_std[c];
+    }
+  }
+
+  // 6. Temporal patchify: per-patch [C, T, P, P] with T real frames,
+  //    block-major spatial within each time group (same layout as image).
+  const int P = cfg.patch_size;
+  const int T = cfg.temporal_patch_size;
+  const int M = cfg.merge_size;
+  const int gh = rh / P;
+  const int gw = rw / P;
+  const int patch_dim = 3 * T * P * P;
+  const int L = grid_t * gh * gw;
+
+  out->cfg = cfg;
+  out->grid_t = grid_t;
+  out->grid_h = gh;
+  out->grid_w = gw;
+  out->pixel_values.resize(static_cast<size_t>(L) * patch_dim);
+
+  for (int g = 0; g < grid_t; ++g) {
+    for (int hb = 0; hb < gh / M; ++hb) {
+      for (int wb = 0; wb < gw / M; ++wb) {
+        for (int mb = 0; mb < M; ++mb) {
+          for (int mj = 0; mj < M; ++mj) {
+            const int i = hb * M + mb;  // patch row
+            const int j = wb * M + mj;  // patch col
+            // Full index = time group offset (g * gh * gw) + block-major
+            // spatial index within the group (same as the image case).
+            const int p_idx =
+                g * gh * gw + (hb * (gw / M) + wb) * (M * M) + mb * M + mj;
+            float* dst =
+                out->pixel_values.data() + static_cast<size_t>(p_idx) * patch_dim;
+            for (int c = 0; c < 3; ++c) {
+              for (int t = 0; t < T; ++t) {
+                const int f = g * T + t;
+                float* plane = dst + (c * T + t) * P * P;
+                for (int p = 0; p < P; ++p) {
+                  for (int q = 0; q < P; ++q) {
+                    plane[p * P + q] =
+                        norm[f][(static_cast<size_t>(i * P + p) * rw +
+                                 (j * P + q)) * 3 + c];
+                  }
                 }
               }
             }

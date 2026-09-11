@@ -51,6 +51,22 @@ struct ProcessedImage {
   }
 };
 
+// Processed video (ready for the vision tower). Same per-patch layout as
+// ProcessedImage ([C, T, P, P], block-major spatial within each time group),
+// but T = temporal_patch_size real frames per group (not a repeated frame).
+struct ProcessedVideo {
+  std::vector<float> pixel_values;  // [L, C*T*P*P] float32, block-major
+  int grid_t = 0;
+  int grid_h = 0;
+  int grid_w = 0;
+  ProcessorConfig cfg;  // the config used
+
+  int L() const { return grid_h * grid_w * grid_t; }
+  int patch_dim() const {
+    return 3 * cfg.temporal_patch_size * cfg.patch_size * cfg.patch_size;
+  }
+};
+
 // Decode + resize + normalize + patchify.
 // image_bytes: raw PNG/JPEG image data.
 // num_bytes: length of image_bytes.
@@ -60,6 +76,32 @@ struct ProcessedImage {
 // Returns false on failure.
 bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
                   const ProcessorConfig& cfg, ProcessedImage* out,
+                  std::string* err);
+
+// Video processor (Qwen3-VL, transformers 5.16.1 Qwen3VLVideoProcessor).
+//
+// frames: list of raw PNG/JPEG frame buffers (each decoded independently).
+// frame_bytes: lengths of each frame buffer.
+// cfg: processor config. NOTE: min_pixels/max_pixels must be the VIDEO
+//      budget (video_preprocessor_config.json: 4096 / 25165824), NOT the
+//      image budget.
+// out: receives the processed video (grid_t = ceil(num_frames / temporal)).
+// err: error message on failure.
+// Returns false on failure.
+//
+// Pipeline (must match transformers Qwen3VLVideoProcessor):
+//   1. Decode each frame (stb) -> RGB uint8 [H, W, 3] (all frames same size)
+//   2. video smart_resize(H, W, num_frames, factor=32, temporal_factor=2,
+//      min_pixels, max_pixels) -> (rh, rw)  [t*h*w budget]
+//   3. Per-frame BICUBIC resize (Pillow fixed-point; the reference uses
+//      torchvision BICUBIC+antialias which differs by <= 1/255 per pixel)
+//   4. Odd-frame pad: repeat the LAST frame until num_frames is even
+//   5. rescale /255 + normalize (x-0.5)/0.5 (per frame)
+//   6. patchify: per-patch [C, T, P, P] with T real frames, block-major
+//      spatial within each time group (identical layout to ProcessImage).
+bool ProcessVideo(const std::vector<const uint8_t*>& frames,
+                  const std::vector<size_t>& frame_bytes,
+                  const ProcessorConfig& cfg, ProcessedVideo* out,
                   std::string* err);
 
 }  // namespace vision
