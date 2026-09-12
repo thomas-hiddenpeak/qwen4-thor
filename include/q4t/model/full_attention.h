@@ -31,9 +31,13 @@
 //   logits[t, g] = sum_h relu(iq[t,h] . ck[g]) / sqrt(128)   (g < (pos+1)/4)
 //   topk = top-512 blocks -> expand to 2048 token indices + tail
 //
-// NOTE: the engine is text-only, so MRoPE's three position axes are all the
-// same scalar position; partial MRoPE reduces to standard RoPE on the first
-// 64 dims.
+// NOTE: `positions` carries the LOGICAL positions (0..T-1) used for KV
+// paging, indexer group boundaries and causal masking. `rope_pos` carries the
+// 3D MRoPE coordinates [3, max_len] (t, h, w) used for the RoPE angles (main
+// attention Q/K, indexer Q/K, compressed keys). For pure text the three rows
+// are identical to the logical position, so partial MRoPE reduces to standard
+// RoPE on the first 64 dims; for multimodal prompts the vision tokens carry
+// their own (t, h, w) grid coordinates (see model::VisionFeatures.grids).
 #pragma once
 
 #include <cuda_runtime.h>
@@ -56,6 +60,7 @@ struct FullAttentionWeights {
   int rot_d = 64;  // partial rotary dim (0.25 * hd)
   float rope_theta = 1e7f;
   float eps = 1e-6f;
+  int max_len = 0;  // sequence capacity; sizes the persistent rope_pos rows
   // QSA indexer
   int idx_n_heads = 4;
   int idx_kv_heads = 1;
@@ -126,6 +131,7 @@ Status LoadFullAttention(const io::WeightLoader& loader, const std::string& pref
 //              projections + logits + topk + GEMM scratch
 Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                             uint16_t* out, const int* positions,
+                            const int* rope_pos,
                             uint16_t* kv_cache, const int* page_table,
                             uint16_t* idx_raw, uint16_t* idx_comp, int T,
                             void* workspace, size_t workspace_bytes,

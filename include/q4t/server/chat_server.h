@@ -12,6 +12,7 @@
 // decode loop. This is correct but not concurrent; concurrency is Phase 2.
 #pragma once
 
+#include <array>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -72,14 +73,18 @@ class ChatServer {
 
   // Multimodal pipeline: run the image/video processor + vision tower over the
   // vision items (in content-part order) and return the merged visual features
-  // (device BF16) plus the per-item expansion counts. `items` is the list of
-  // VisionItem (image or video) in prompt position order; `out_feats` receives
-  // the concatenated feature rows (owned by the caller's device buffer, freed
-  // by the caller), `out_num_tokens` the total merged-token count, and
-  // `out_counts` the per-item token counts (same order as `items`).
+  // (device BF16) plus the per-item expansion counts and grids. `items` is the
+  // list of VisionItem (image or video) in prompt position order; `out_feats`
+  // receives the concatenated feature rows (owned by the caller's device
+  // buffer, freed by the caller), `out_num_tokens` the total merged-token
+  // count, `out_counts` the per-item token counts, and `out_grids` the per-item
+  // ViT grid (t, h, w) in PATCH units (same order as `items`). The grids feed
+  // the 3D MRoPE position computation (model::VisionFeatures::grids).
   bool RunVisionPipeline(const std::vector<VisionItem>& items,
                          uint16_t** out_feats, int* out_num_tokens,
-                         std::vector<int>* out_counts, std::string* err);
+                         std::vector<int>* out_counts,
+                         std::vector<std::array<int, 3>>* out_grids,
+                         std::string* err);
 
   std::string model_name_;
   int port_ = 8000;

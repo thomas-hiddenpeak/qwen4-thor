@@ -121,7 +121,10 @@ Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
 //   ple_embeddings : device [T, ple_embed_dim] uint16 (BF16) gathered n-gram
 //                    embeddings; must be non-null when layer.has_ple
 //   out            : device [T, hc*hs] uint16 (BF16) — updated trunk residual
-//   positions      : host int [T] absolute positions (full attention only)
+//   positions      : device int [T] logical positions (full attention only;
+//                    KV paging, indexer grouping, causal mask)
+//   rope_pos       : device int [3, max_len] 3D MRoPE (t,h,w) for RoPE angles
+//                    (full attention only; identical rows for pure text)
 //   T              : number of tokens
 //   workspace      : device scratch (>= DecoderLayerWorkspaceBytes)
 // `ssm_ckpt`/`conv_ckpt`/`num_ckpt` (MTP speculative verify, linear layers
@@ -130,9 +133,9 @@ Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
 // ssm_ckpt = [num_ckpt, nv*kd*vd] f32, conv_ckpt = [num_ckpt, in_qkv*(k-1)] bf16.
 Status DecoderLayerForward(const DecoderLayer& layer, const uint16_t* hyper_input,
                            const uint16_t* ple_embeddings, uint16_t* out,
-                           const int* positions, int T, void* workspace,
-                           size_t workspace_bytes, cudaStream_t stream,
-                           float* ssm_ckpt = nullptr,
+                           const int* positions, const int* rope_pos, int T,
+                           void* workspace, size_t workspace_bytes,
+                           cudaStream_t stream, float* ssm_ckpt = nullptr,
                            uint16_t* conv_ckpt = nullptr, int num_ckpt = 0);
 
 }  // namespace model

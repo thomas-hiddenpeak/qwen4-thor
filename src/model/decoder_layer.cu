@@ -279,6 +279,7 @@ Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
     s = LoadFullAttention(loader, base + ".self_attn", hs, 24, 2, 256, 64, 1e7f,
                           eps, 4, 1, 128, 2048, 4, &out->full, stream);
     if (!s.ok()) return s;
+    out->full.max_len = max_len;  // for the persistent 3D MRoPE table.
     // Full-attention caches.
     const int nkv = 2, hd = 256, idx_hd = 128;
     auto alloc = [](void** p, size_t bytes) -> Status {
@@ -367,9 +368,10 @@ Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
 Status DecoderLayerForward(const DecoderLayer& layer,
                            const uint16_t* hyper_input,
                            const uint16_t* ple_embeddings, uint16_t* out,
-                           const int* positions, int T, void* workspace,
-                           size_t workspace_bytes, cudaStream_t stream,
-                           float* ssm_ckpt, uint16_t* conv_ckpt, int num_ckpt) {
+                           const int* positions, const int* rope_pos, int T,
+                           void* workspace, size_t workspace_bytes,
+                           cudaStream_t stream, float* ssm_ckpt,
+                           uint16_t* conv_ckpt, int num_ckpt) {
   const int hs = layer.hs, hc_dim = layer.hc_dim, hc = layer.hc;
   if (T <= 0) return Status();
 
@@ -448,7 +450,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   }
   // 2. attention block.
   if (layer.is_full_attention) {
-    s = FullAttentionForward(layer.full, d_mixed, d_block, positions,
+    s = FullAttentionForward(layer.full, d_mixed, d_block, positions, rope_pos,
                              layer.kv_cache, layer.page_table, layer.idx_raw,
                              layer.idx_comp, T, d_attn_ws, attn_ws, stream);
   } else {

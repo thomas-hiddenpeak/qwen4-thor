@@ -181,8 +181,8 @@ Q4T_TEST(decoder_layer_forward) {
     return false;
   }
   ResetLinearState(layer, nullptr);
-  s = DecoderLayerForward(layer, d_hyper, nullptr, d_outA, nullptr, kT, d_wsA,
-                          wsA, nullptr);
+  s = DecoderLayerForward(layer, d_hyper, nullptr, d_outA, nullptr, nullptr,
+                          kT, d_wsA, wsA, nullptr);
   if (!s.ok()) {
     std::printf("  route A failed: %s\n", s.message().c_str());
     layer.Free();
@@ -373,8 +373,8 @@ Q4T_TEST(decoder_layer_ple_injection) {
     return false;
   }
   ResetLinearState(layer, nullptr);
-  s = DecoderLayerForward(layer, d_hyper, d_emb, d_outA, nullptr, kT, d_wsA,
-                          wsA, nullptr);
+  s = DecoderLayerForward(layer, d_hyper, d_emb, d_outA, nullptr, nullptr,
+                          kT, d_wsA, wsA, nullptr);
   if (!s.ok()) {
     std::printf("  route A failed: %s\n", s.message().c_str());
     layer.Free();

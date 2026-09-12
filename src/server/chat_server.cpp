@@ -501,9 +501,11 @@ void ChatServer::HandleModels(int fd) {
 bool ChatServer::RunVisionPipeline(const std::vector<VisionItem>& items,
                                    uint16_t** out_feats, int* out_num_tokens,
                                    std::vector<int>* out_counts,
+                                   std::vector<std::array<int, 3>>* out_grids,
                                    std::string* err) {
   *out_feats = nullptr;
   *out_num_tokens = 0;
+  if (out_grids) out_grids->clear();
   if (vision_tower_ == nullptr) {
     if (err) *err = "vision tower not loaded (text-only model)";
     return false;
@@ -560,6 +562,9 @@ bool ChatServer::RunVisionPipeline(const std::vector<VisionItem>& items,
     shapes.push_back(sh);
     total_L += sh.L();
     pixel_sets.push_back(std::move(pix));
+    // Patch-unit grid (t, h, w) for the 3D MRoPE table (same order as the
+    // feature rows / placeholders).
+    if (out_grids) out_grids->push_back({sh.t, sh.h, sh.w});
   }
 
   // 2. Build the device pixel buffer (float32 -> BF16, concatenated).
@@ -700,12 +705,14 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   model::VisionFeatures vfeats;
   if (!items.empty()) {
     std::vector<int> counts;
+    std::vector<std::array<int, 3>> grids;
     std::string verr;
     if (!RunVisionPipeline(items, &d_vfeats, &vfeats.num_tokens, &counts,
-                           &verr)) {
+                           &grids, &verr)) {
       SendError(fd, 400, verr);
       return;
     }
+    vfeats.grids = std::move(grids);
     // Split the per-item counts (in item order) into image / video counts,
     // matching the placeholder order in the encoded prompt.
     std::vector<int> img_counts, vid_counts;

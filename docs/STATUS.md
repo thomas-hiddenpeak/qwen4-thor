@@ -582,6 +582,28 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     "The capital of France is" → 通顺英文 + thinking, 格式正确; 流式
     "Say hello in one word" → "Hello", SSE 格式正确。52 项测试全绿, 零警告。
   **→ Phase 1 服务层 (serve) 完成**
+- [x] 2026-09-12 **多模态 3D MRoPE (已闭合)**: 视觉/视频 token 的 RoPE
+  位置从"纯文本逻辑位置"升级为 transformers 5.16.1 的 3D MRoPE
+  (t, h, w 三行坐标 + mrope_position_delta)。
+  - **布局统一**: 持久化 `d_rope_pos[3, max_len]` 按**绝对位置**寻址
+    (`rope_pos[r*max_len+p]`); 3 个 RoPE kernel (主注意力 Q/K partial
+    RoPE / indexer Q/K / 压缩 key) 全部改用 `positions[t]` 索引, prefill
+    (positions=t) 与 decode (positions=绝对) 共用同一张表, 修复了旧
+    `[3,T]` 布局在 decode 下越界/错位的隐患。
+  - **位置算法** (`BuildRopePositions`): 文本段三行=文本时钟; 视觉块
+    (grid T×H×W, merge m) 占 `T*(H/m)*(W/m)` token, 每 token 坐标
+    (clock+tc, clock+hc, clock+wc) t-major; 块后时钟推进
+    `max(H,W)/m` (非 token 数) → 产生非零 delta;
+    `delta = max(row)+1-T`。decode 文本 token 三行 = `p+delta`。
+  - **MTP 一致性**: `MtpModel` 加 `d_rope_pos` 恒等表 (纯文本, 三行=
+    绝对位置), 修正 `FullAttentionForward` 调用漏传 rope_pos 的编译断裂;
+    `LoadFullAttention` 后补 `max_len`。
+  - **验证**: 差分测试 `tools/mrope_diff_test.cpp` 与 Python 参考
+    `tools/mrope_ref.py` (复刻 `get_rope_index`/`get_vision_position_ids`)
+    在混合序列 (4 文本+图像 1×4×4+3 文本+视频 2×4×4+2 文本) 上 63 个
+    坐标逐位一致, delta=-8, decode 规则成立, 纯文本 delta=0 退化正确;
+    纯文本 prefill/decode 数学确认与改动前逐位相同 (无回归)。63 项测试
+    全绿, 零警告。
 
 ## 阻塞 / 风险
 

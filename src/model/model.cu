@@ -80,6 +80,7 @@ void Model::Free() {
   };
   freep(d_ids);
   freep(d_positions);
+  freep(d_rope_pos);
   freep(d_emb);
   freep(d_trunk);
   freep(d_trunk2);
@@ -90,6 +91,7 @@ void Model::Free() {
   freep(d_verify_conv_ckpt);
   d_ids = nullptr;
   d_positions = nullptr;
+  d_rope_pos = nullptr;
   d_emb = nullptr;
   d_trunk = nullptr;
   d_trunk2 = nullptr;
@@ -228,6 +230,13 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   if (!(s = alloc(reinterpret_cast<void**>(&m->d_positions),
                   max_t * sizeof(int))))
     return s;
+  // Persistent 3D MRoPE table: [3, max_len] (t, h, w) rows. Sized for the
+  // full sequence capacity (not max_prefill) because the compressed-key
+  // builder reads the rope position of a group's first token, which can be
+  // anywhere in the sequence during decode.
+  if (!(s = alloc(reinterpret_cast<void**>(&m->d_rope_pos),
+                  3u * static_cast<size_t>(cfg.max_len) * sizeof(int))))
+    return s;
   if (!(s = alloc(reinterpret_cast<void**>(&m->d_emb),
                   max_t * cfg.hs * 2)))
     return s;
@@ -314,8 +323,9 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
           conv_ckpt + static_cast<size_t>(lin_idx) * num_ckpt * conv_elems;
     }
     Status s = DecoderLayerForward(m.layers[l], trunk, ple_emb, next,
-                                   m.d_positions, T, m.d_ws, m.ws_bytes, stream,
-                                   layer_ssm_ckpt, layer_conv_ckpt, num_ckpt);
+                                   m.d_positions, m.d_rope_pos, T, m.d_ws,
+                                   m.ws_bytes, stream, layer_ssm_ckpt,
+                                   layer_conv_ckpt, num_ckpt);
     if (!s.ok()) return s;
     if (!m.layers[l].is_full_attention) lin_idx++;
     const uint16_t* t = trunk;
@@ -343,6 +353,90 @@ Status ResetAllLayers(const Model& m, cudaStream_t stream) {
   return Status();
 }
 
+// Build the 3D MRoPE position table (host) for a prefill, mirroring
+// transformers qwen4_exp get_rope_index + get_vision_position_ids.
+//
+// The table has 3 rows (t, h, w) of length T, stored row-major into
+// `rope_pos` (device [3, max_len]). For pure text the three rows are all the
+// logical position 0..T-1 (delta = 0), so partial MRoPE reduces to standard
+// RoPE. For multimodal prompts, each image/video placeholder block (grid
+// (t, h, w) in PATCH units, in `vision->grids`, in prompt position order)
+// contributes t*(h/m)*(w/m) tokens whose merged index k maps to
+//   t_coord = k / ((h/m)*(w/m)),  h_coord = (k % ...) / (w/m),  w_coord = k % (w/m)
+// and the three rows take (t_coord + clock, h_coord + clock, w_coord + clock).
+// The text clock advances by `len` over a text run and by max(h, w) / m over a
+// vision block (NOT the token count) — this is what creates the rope delta.
+// Returns the mrope_position_delta (decode rope row = logical + delta).
+int BuildRopePositions(const int32_t* input_ids, int T, int m,
+                       int img_id, int vid_id, int max_len,
+                       const std::vector<std::array<int, 3>>& grids,
+                       std::vector<int>* rope_pos) {
+  // Layout [3, max_len]: row r at ABSOLUTE position p is rope_pos[r*max_len+p].
+  // The RoPE kernels index by positions[t] (== t in prefill, == absolute pos
+  // in decode), so the table must be addressable by absolute position.
+  rope_pos->assign(3 * max_len, 0);
+  int clock = 0;  // text clock (current_pos in the reference)
+  int gi = 0;  // grid index (in prompt position order)
+  int t = 0;
+  int maxv = 0;
+  while (t < T) {
+    const int32_t id = input_ids[t];
+    if (id != img_id && id != vid_id) {
+      // Text run: all three rows = clock + offset.
+      int run = 0;
+      while (t + run < T) {
+        const int32_t d = input_ids[t + run];
+        if (d == img_id || d == vid_id) break;
+        ++run;
+      }
+      for (int j = 0; j < run; ++j) {
+        const int v = clock + j;
+        (*rope_pos)[t + j] = v;
+        (*rope_pos)[max_len + (t + j)] = v;
+        (*rope_pos)[2 * max_len + (t + j)] = v;
+        if (v > maxv) maxv = v;
+      }
+      clock += run;
+      t += run;
+      continue;
+    }
+    // Vision block: consume the next grid.
+    if (gi >= static_cast<int>(grids.size())) {
+      // No grid for a placeholder: fall back to the logical position for this
+      // token (defensive; the caller should always supply matching grids).
+      const int v = t;
+      (*rope_pos)[t] = v;
+      (*rope_pos)[max_len + t] = v;
+      (*rope_pos)[2 * max_len + t] = v;
+      if (v > maxv) maxv = v;
+      ++t;
+      continue;
+    }
+    const int gt = grids[gi][0];  // temporal (patch groups)
+    const int gh = grids[gi][1];  // height (patches)
+    const int gw = grids[gi][2];  // width (patches)
+    const int mh = gh / m, mw = gw / m;  // merged grid
+    const int per_frame = mh * mw;
+    const int n = gt * per_frame;  // merged tokens in this block
+    for (int k = 0; k < n && t + k < T; ++k) {
+      const int tc = k / per_frame;
+      const int rem = k % per_frame;
+      const int hc = rem / mw;
+      const int wc = rem % mw;
+      const int idx = t + k;
+      (*rope_pos)[idx] = clock + tc;
+      (*rope_pos)[max_len + idx] = clock + hc;
+      (*rope_pos)[2 * max_len + idx] = clock + wc;
+      const int v = clock + tc;
+      if (v > maxv) maxv = v;
+    }
+    clock += (std::max(gh, gw) / m);
+    t += n;
+    ++gi;
+  }
+  return maxv + 1 - T;
+}
+
 // Prefill without reset: assumes per-layer state is already at the sequence
 // start (call ResetAllLayers / ModelBeginSequence first). positions = 0..T-1.
 // `trunk_out` (MTP scheme A hook) is forwarded to RunLayers. `vision` (optional)
@@ -364,6 +458,27 @@ Status RunPrefill(const Model& m, const int32_t* input_ids, int T,
   if (cudaMemcpyAsync(m.d_positions, positions.data(), T * sizeof(int),
                       cudaMemcpyHostToDevice, stream) != cudaSuccess) {
     return Status::Fail("H2D positions");
+  }
+  // 1b. 3D MRoPE table [3, max_len] (t, h, w) for the RoPE angles, addressed by
+  //     ABSOLUTE position (rope_pos[r*max_len+p]). Pure text -> three identical
+  //     rows (== logical), delta 0. Multimodal -> vision blocks carry their grid
+  //     coordinates and the text clock advances by max(h, w) / merge over each
+  //     block, producing a nonzero delta. The full table is H2D'd so the decode
+  //     path (and the compressed-key builder) can read any absolute position.
+  {
+    const std::vector<std::array<int, 3>>* grids =
+        (vision && !vision->grids.empty()) ? &vision->grids : nullptr;
+    std::vector<int> rope_pos;
+    m.rope_delta = BuildRopePositions(input_ids, T, cfg.spatial_merge_size,
+                                      cfg.image_token_id, cfg.video_token_id,
+                                      cfg.max_len, grids ? *grids
+                                                        : std::vector<std::array<int, 3>>{},
+                                      &rope_pos);
+    if (cudaMemcpyAsync(m.d_rope_pos, rope_pos.data(),
+                        rope_pos.size() * sizeof(int), cudaMemcpyHostToDevice,
+                        stream) != cudaSuccess) {
+      return Status::Fail("H2D rope_pos");
+    }
   }
 
   // 2. emb.
@@ -462,6 +577,21 @@ Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
                       stream) != cudaSuccess) {
     return Status::Fail("H2D position");
   }
+  // 1b. 3D MRoPE for this decode token: all three rows = logical + delta
+  //     (the rope delta computed at prefill; 0 for pure text). The RoPE
+  //     kernels index rope_pos by the ABSOLUTE position: row r at position p
+  //     is rope_pos[r * max_len + p] (layout [3, max_len]). Write the three
+  //     rows at their strided offsets.
+  {
+    const int rp = pos + m.rope_delta;
+    const size_t ml = static_cast<size_t>(cfg.max_len);
+    for (int r = 0; r < 3; ++r) {
+      if (cudaMemcpyAsync(m.d_rope_pos + r * ml + pos, &rp, sizeof(int),
+                          cudaMemcpyHostToDevice, stream) != cudaSuccess) {
+        return Status::Fail("H2D rope_pos");
+      }
+    }
+  }
 
   // 2-3. emb + trunk.
   Status s = EmbedLookup(m.head, m.d_ids, m.d_emb, 1, stream);
@@ -515,6 +645,22 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
   if (cudaMemcpyAsync(m.d_positions, positions.data(), T * sizeof(int),
                       cudaMemcpyHostToDevice, stream) != cudaSuccess)
     return Status::Fail("H2D positions");
+  // 3D MRoPE for the decode batch (all text tokens): each row = logical +
+  // delta (the rope delta from prefill; 0 for pure text). The RoPE kernels
+  // index rope_pos by the ABSOLUTE position (positions[t] == base_position+t),
+  // so write the three rows at their strided [3, max_len] offsets.
+  {
+    const size_t ml = static_cast<size_t>(cfg.max_len);
+    for (int t = 0; t < T; ++t) {
+      const int rp = base_position + t + m.rope_delta;
+      for (int r = 0; r < 3; ++r) {
+        if (cudaMemcpyAsync(m.d_rope_pos + r * ml + (base_position + t), &rp,
+                            sizeof(int), cudaMemcpyHostToDevice, stream) !=
+            cudaSuccess)
+          return Status::Fail("H2D rope_pos");
+      }
+    }
+  }
 
   Status s = EmbedLookup(m.head, m.d_ids, m.d_emb, T, stream);
   if (!s.ok()) return s;

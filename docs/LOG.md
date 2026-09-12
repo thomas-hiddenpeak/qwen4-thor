@@ -5,6 +5,56 @@
 
 ---
 
+## 2026-09-12 — 多模态 3D MRoPE (已闭合)
+
+**背景**
+此前视觉/视频 token 的 RoPE 位置用的是纯文本逻辑位置 (三行相同 =
+逻辑索引), 与 transformers 5.16.1 `Qwen4ExpTextRotaryEmbedding` +
+`get_rope_index` 的 3D MRoPE 不一致。多模态下视觉 token 应携带
+(t, h, w) 三维坐标, 文本时钟在视觉块后按 `max(H,W)/merge` 推进
+(而非 token 数), 产生 `mrope_position_delta`。本条把这条路径补全。
+
+**做了什么**
+- **布局统一为 `[3, max_len]` 绝对位置**: 持久化 `d_rope_pos` 改为
+  `[3, max_len]`, 按绝对位置寻址 (`rope_pos[r*max_len+p]`)。3 个 RoPE
+  kernel (主注意力 Q/K `PartialRopeKernel`、indexer `IndexerNormRopeKernel`、
+  压缩 key `BuildCompressedKKernel`) 全部改用 `positions[t]` (prefill=t,
+  decode=绝对) 索引。这修复了旧 `[3,T]` 布局在 decode 下 (T=1, 但压缩
+  key 需读任意绝对位置 g0) 的越界/错位隐患。
+- **`BuildRopePositions` 重写为 `[3,max_len]` 输出**: 文本段三行=文本
+  时钟; 视觉块 (grid T×H×W, merge m) 占 `T*(H/m)*(W/m)` token, 每
+  token 坐标 `(clock+tc, clock+hc, clock+wc)` (t-major / block-major
+  空间); 块后时钟推进 `max(H,W)/m`; 返回 `delta = max(row)+1-T`。
+- **prefill/decode 填充**: prefill H2D 整张 `[3,max_len]` 表;
+  `ModelDecodeStep`/`ModelDecodeBatch` 按 strided 偏移写三行
+  (`p+delta`)。
+- **MTP 一致性**: `MtpModel` 加 `d_rope_pos` 恒等表 (纯文本三行=绝对
+  位置), 修正 `MtpForward` 里 `FullAttentionForward` 调用漏传 rope_pos
+  的编译断裂, `LoadFullAttention` 后补 `out->full_attn.max_len`。
+- **测试**: `model_full_attention_test` 加恒等 rope 表 + `w.max_len`;
+  `model_decoder_layer_test` 两处补 `nullptr` rope_pos。
+
+**为什么**
+多模态 RoPE 正确性是视觉/视频输入语义正确的前提; 布局统一到绝对位置
+后 prefill/decode/压缩 key 共用一张表, 消除 decode 越界隐患, 也为后续
+PD 分离 (KV 携带 rope 坐标) 铺路。
+
+**验证**
+- 差分测试 `tools/mrope_diff_test.cpp` (内联 `BuildRopePositions` 算法)
+  vs Python 参考 `tools/mrope_ref.py` (复刻 `get_rope_index` +
+  `get_vision_position_ids`): 混合序列 (4 文本 + 图像 1×4×4 + 3 文本 +
+  视频 2×4×4 + 2 文本, T=21) 上 63 个坐标逐位一致, delta=-8,
+  decode 规则 (文本 token 三行 = p+delta) 成立, 纯文本 delta=0 退化
+  正确。
+- 纯文本 prefill/decode 数学确认与改动前逐位相同 (无回归)。
+- 构建零警告, 63 项测试全绿。
+
+**下一步**
+Phase 2 继续: 完整多设备 PD 部署、48 层长序列端到端、serve 流式输出
+等 (见 PHASES.md)。
+
+---
+
 ## 2026-09-12 — 视频输入 (Phase 2, 3/3): serve 层视频接入 + 修复图像占位符 bug
 
 **背景**

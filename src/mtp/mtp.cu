@@ -172,6 +172,7 @@ void MtpModel::Free() {
   if (page_table) cudaFree(page_table);
   if (idx_raw) cudaFree(idx_raw);
   if (idx_comp) cudaFree(idx_comp);
+  if (d_rope_pos) cudaFree(d_rope_pos);
   if (d_ws) cudaFree(d_ws);
   if (d_sample) cudaFree(d_sample);
   if (d_trunk) cudaFree(d_trunk);
@@ -190,6 +191,7 @@ void MtpModel::Free() {
   page_table = nullptr;
   idx_raw = nullptr;
   idx_comp = nullptr;
+  d_rope_pos = nullptr;
   d_ws = nullptr;
   d_sample = nullptr;
   d_trunk = nullptr;
@@ -288,6 +290,7 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
             cfg.idx_head_dim, cfg.idx_budget, cfg.idx_compress, &out->full_attn,
             stream)))
     return s;
+  out->full_attn.max_len = cfg.max_len;  // sizes the persistent 3D MRoPE table.
   if (!(s = LoadMoeBf16(*loader, lp + ".mlp", cfg.E, hs, cfg.moe_is, &out->moe,
                         stream)))
     return s;
@@ -322,6 +325,22 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
                  static_cast<size_t>(cfg.max_len) * cfg.idx_head_dim *
                      sizeof(uint16_t)) != cudaSuccess)
     return Status::Fail("cudaMalloc idx_comp");
+  // 3D MRoPE identity table [3, max_len]: all three rows = position (pure
+  // text, delta=0). The RoPE kernels index by positions[t] (absolute pos).
+  if (cudaMalloc(reinterpret_cast<void**>(&out->d_rope_pos),
+                 3u * static_cast<size_t>(cfg.max_len) * sizeof(int)) !=
+      cudaSuccess)
+    return Status::Fail("cudaMalloc d_rope_pos");
+  {
+    std::vector<int> rp(3 * static_cast<size_t>(cfg.max_len), 0);
+    for (int p = 0; p < cfg.max_len; ++p)
+      for (int r = 0; r < 3; ++r)
+        rp[r * cfg.max_len + p] = p;
+    if (cudaMemcpy(out->d_rope_pos, rp.data(),
+                   rp.size() * sizeof(int), cudaMemcpyHostToDevice) !=
+        cudaSuccess)
+      return Status::Fail("H2D d_rope_pos");
+  }
   {
     std::vector<int> pt(cfg.max_len);
     for (int p = 0; p < cfg.max_len; ++p)
@@ -875,9 +894,9 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
   if (!s.ok()) return s;
   // 4c. full attention.
   s = model::FullAttentionForward(m.full_attn, d_mixed_attn, d_attn_out,
-                                  positions, m.kv_cache, m.page_table,
-                                  m.idx_raw, m.idx_comp, T, d_attn_ws, attn_ws,
-                                  stream);
+                                  positions, m.d_rope_pos, m.kv_cache,
+                                  m.page_table, m.idx_raw, m.idx_comp, T,
+                                  d_attn_ws, attn_ws, stream);
   if (!s.ok()) return s;
   // 4d. attn_hc.combine: trunk_a = attn_out + trunk (learned injection).
   s = model::HyperConnectionCombine(m.attn_hc, d_attn_out, d_trunk,

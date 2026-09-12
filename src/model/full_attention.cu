@@ -116,16 +116,22 @@ __global__ void QKDeinterleaveNormKernel(const u16* __restrict__ qg,
 //
 //   q : [T, nq, hd]  (in/out, first rot_d dims rotated)
 //   k : [T, nkv, hd] (in/out)
-//   positions: [T] int32
+//   rope_pos: [3, max_len] int32 — 3D MRoPE coordinates (t, h, w) for RoPE.
 //
 // RoPE: for i in [0, rot_d/2):
 //   freq_i = theta^(-2i/rot_d)
 //   q[i]   = q[i]*cos + q[i+half]*sin
 //   q[i+half] = -q[i]*sin + q[i+half]*cos
 // One thread per (t, h, i) for i in [0, half).
+// Interleaved MRoPE (transformers qwen4_exp apply_interleaved_mrope): for the
+// i-th of the rot_d/2 frequency pairs, the position is chosen by i % 3:
+//   i % 3 == 0 -> t-row, i % 3 == 1 -> h-row, i % 3 == 2 -> w-row.
+// For pure text the three rows are identical (== logical position), so this
+// reduces to standard RoPE on the first rot_d dims.
 template <int N>
 __global__ void PartialRopeKernel(u16* __restrict__ x, int n_heads, int hd,
                                   int rot_d, const int* __restrict__ positions,
+                                  const int* __restrict__ rope_pos, int max_len,
                                   float theta, int T) {
   int half = rot_d / 2;
   int idx = blockIdx.x * blockDim.x + threadIdx.x;
@@ -134,7 +140,9 @@ __global__ void PartialRopeKernel(u16* __restrict__ x, int n_heads, int hd,
   int i = idx % half;
   int h = (idx / half) % N;
   int t = idx / (half * N);
-  float pos = static_cast<float>(positions[t]);
+  const int row = i % 3;  // 0=t, 1=h, 2=w (interleaved MRoPE)
+  const int ap = positions[t];  // absolute position
+  float pos = static_cast<float>(rope_pos[row * max_len + ap]);
   float inv_freq = powf(theta, -2.f * i / rot_d);
   float ang = pos * inv_freq;
   float c = cosf(ang), s = sinf(ang);
@@ -191,8 +199,10 @@ __global__ void IndexerNormRopeKernel(u16* __restrict__ iq,
                                       u16* __restrict__ ik,
                                       const u16* __restrict__ ik_norm,
                                       const int* __restrict__ positions,
-                                      int T, int n_iq, int n_ik, int hd,
-                                      int rot_d, float theta, float eps) {
+                                      const int* __restrict__ rope_pos,
+                                      int max_len, int T, int n_iq, int n_ik,
+                                      int hd, int rot_d, float theta,
+                                      float eps) {
   // Handle iq and ik in the same kernel: blockIdx.x encodes (t, which, head).
   int total_heads = n_iq + n_ik;
   int t = blockIdx.x / total_heads;
@@ -218,10 +228,12 @@ __global__ void IndexerNormRopeKernel(u16* __restrict__ iq,
   float rs = rsqrtf(head_sum[0] / hd + eps);
   f32 w = Bf16ToFloat(nw[d]);
   x[d] = FloatToBf16(xv * rs * w);
-  // partial RoPE on first rot_d dims
+  // partial RoPE on first rot_d dims (interleaved MRoPE: row = d % 3).
   int half = rot_d / 2;
   if (d < half) {
-    float pos = static_cast<float>(positions[t]);
+    const int row = d % 3;  // 0=t, 1=h, 2=w
+    const int ap = positions[t];  // absolute position
+    float pos = static_cast<float>(rope_pos[row * max_len + ap]);
     float inv_freq = powf(theta, -2.f * d / rot_d);
     float ang = pos * inv_freq;
     float c = cosf(ang), s = sinf(ang);
@@ -272,9 +284,10 @@ __global__ void WriteIndexRawKernel(const u16* __restrict__ ik_raw,
 __global__ void BuildCompressedKKernel(const u16* __restrict__ ik_norm,
                                        const u16* __restrict__ idx_raw,
                                        u16* __restrict__ idx_comp,
-                                       const int* __restrict__ positions, int T,
-                                       int hd, int compress, float theta,
-                                       float eps) {
+                                       const int* __restrict__ positions,
+                                       const int* __restrict__ rope_pos, int T,
+                                       int max_len, int hd, int compress,
+                                       float theta, float eps) {
   int t = blockIdx.x;
   if (t >= T) return;
   int pos = positions[t];
@@ -304,12 +317,13 @@ __global__ void BuildCompressedKKernel(const u16* __restrict__ ik_norm,
   float rs = rsqrtf(head_sum[0] / hd + eps);
   f32 w = Bf16ToFloat(ik_norm[d]);
   float normed = acc * rs * w;
-  // partial RoPE at the group's first position. Positions are the
-  // contiguous 0..N-1, so the group's first position IS g0. (Reading
-  // positions[g0] would be out of bounds during decode, where the
-  // positions array has a single element.)
+  // partial RoPE at the group's first position g0, using the PERSISTENT
+  // 3D MRoPE table (rope_pos has max_len entries per row, so g0 is always
+  // in range — even during decode, where the batch positions array holds a
+  // single element). Interleaved MRoPE: row = d % 3 (0=t, 1=h, 2=w).
   int half = 64 / 2;  // rot_d = 64 for the indexer (idx_head_dim 128, factor .5)
-  float pos0 = static_cast<float>(g0);
+  const int row = d % 3;
+  float pos0 = static_cast<float>(rope_pos[row * max_len + g0]);
   float val;
   if (d < half) {
     float inv_freq = powf(theta, -2.f * d / 64.f);
@@ -766,6 +780,7 @@ size_t FullAttentionWorkspaceBytes(const FullAttentionWeights& w, int T) {
 
 Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                             uint16_t* out, const int* positions,
+                            const int* rope_pos,
                             uint16_t* kv_cache, const int* page_table,
                             uint16_t* idx_raw, uint16_t* idx_comp, int T,
                             void* workspace, size_t workspace_bytes,
@@ -838,11 +853,12 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   QKDeinterleaveNormKernel<<<T * (nq + nkv), hd, 0, stream>>>(
       d_qg, w.q_norm, d_q, d_gate, nq, d_k, w.k_norm, T, nkv, hd, w.eps);
   // 3. partial RoPE on q (nq heads) and k (nkv heads), first rot_d dims
+  //    (3D MRoPE: rope_pos [3, max_len], row chosen by i % 3).
   const int half = w.rot_d / 2;
   PartialRopeKernel<24><<<(T * nq * half + 255) / 256, 256, 0, stream>>>(
-      d_q, nq, hd, w.rot_d, d_positions, w.rope_theta, T);
+      d_q, nq, hd, w.rot_d, d_positions, rope_pos, w.max_len, w.rope_theta, T);
   PartialRopeKernel<2><<<(T * nkv * half + 255) / 256, 256, 0, stream>>>(
-      d_k, nkv, hd, w.rot_d, d_positions, w.rope_theta, T);
+      d_k, nkv, hd, w.rot_d, d_positions, rope_pos, w.max_len, w.rope_theta, T);
   // 5. write k, v into the paged KV cache
   WriteKVKernel<<<(T * nkv * hd + 255) / 256, 256, 0, stream>>>(
       d_k, d_v, kv_cache, nkv, hd, d_positions, page_table, T);
@@ -861,9 +877,10 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                       cudaMemcpyDeviceToDevice, stream) != cudaSuccess)
     return Status::Fail("cudaMemcpyAsync ik_raw failed");
   // 7. indexer GemmaRMSNorm (plain) + partial RoPE on iq, ik (in place)
+  //    (3D MRoPE: rope_pos [3, max_len], row chosen by d % 3).
   IndexerNormRopeKernel<<<T * (n_iq + n_ik), idx_hd, 0, stream>>>(
-      d_iq, w.index_q_norm, d_ik, w.index_k_norm, d_positions, T, n_iq, n_ik,
-      idx_hd, w.rot_d, w.rope_theta, w.eps);
+      d_iq, w.index_q_norm, d_ik, w.index_k_norm, d_positions, rope_pos,
+      w.max_len, T, n_iq, n_ik, idx_hd, w.rot_d, w.rope_theta, w.eps);
   // 8a. store raw index keys (per token).
   WriteIndexRawKernel<<<T, idx_hd, 0, stream>>>(d_ik_raw, idx_raw, d_positions,
                                                 T, idx_hd);
@@ -871,8 +888,8 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   // separate launch so the kernel-boundary sync makes every idx_raw write
   // from 8a visible before the group averages read them (no prefill race).
   BuildCompressedKKernel<<<T, idx_hd, 0, stream>>>(
-      w.index_k_norm, idx_raw, idx_comp, d_positions, T, idx_hd,
-      w.idx_compress, w.rope_theta, w.eps);
+      w.index_k_norm, idx_raw, idx_comp, d_positions, rope_pos, T,
+      w.max_len, idx_hd, w.idx_compress, w.rope_theta, w.eps);
   // 9. indexer logits over visible compressed blocks
   IndexerLogitsKernel<<<T, 256, 0, stream>>>(d_iq, idx_comp, d_logits,
                                              d_positions, T, n_iq, idx_hd,

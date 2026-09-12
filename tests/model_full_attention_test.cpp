@@ -175,6 +175,7 @@ Q4T_TEST(full_attention_forward) {
     std::printf("  load failed: %s\n", s.message().c_str());
     return false;
   }
+  w.max_len = kMaxLen;  // sizes the persistent 3D MRoPE table.
 
   auto read_host = [&](const std::string& name, size_t n) {
     std::vector<uint16_t> raw(n);
@@ -225,6 +226,7 @@ Q4T_TEST(full_attention_forward) {
   int* d_page_table = nullptr;
   uint16_t* d_idx_raw = nullptr;
   uint16_t* d_idx_comp = nullptr;
+  int* d_rope_pos = nullptr;
   void* d_ws = nullptr;
   const size_t ws_bytes = 128u * 1024u * 1024u;
   const int kPageSize = q4t::model::kKvPageSize;
@@ -240,6 +242,8 @@ Q4T_TEST(full_attention_forward) {
           cudaSuccess ||
       cudaMalloc(&d_idx_raw, idx_bytes) != cudaSuccess ||
       cudaMalloc(&d_idx_comp, idx_bytes) != cudaSuccess ||
+      cudaMalloc(&d_rope_pos, 3u * static_cast<size_t>(kMaxLen) * 4) !=
+          cudaSuccess ||
       cudaMalloc(&d_ws, ws_bytes) != cudaSuccess) {
     std::printf("  cudaMalloc failed\n");
     w.Free();
@@ -253,10 +257,18 @@ Q4T_TEST(full_attention_forward) {
   for (int p = 0; p < kMaxLen; ++p) page_table[p] = p / kPageSize;
   cudaMemcpy(d_page_table, page_table.data(),
              static_cast<size_t>(kMaxLen) * 4, cudaMemcpyHostToDevice);
+  // Identity 3D MRoPE table [3, kMaxLen]: all rows = position (pure text).
+  {
+    std::vector<int> rope_pos(3 * static_cast<size_t>(kMaxLen), 0);
+    for (int p = 0; p < kMaxLen; ++p)
+      for (int r = 0; r < 3; ++r) rope_pos[r * kMaxLen + p] = p;
+    cudaMemcpy(d_rope_pos, rope_pos.data(), rope_pos.size() * sizeof(int),
+               cudaMemcpyHostToDevice);
+  }
   cudaMemcpy(d_x, x_bf.data(), x_bf.size() * sizeof(uint16_t),
              cudaMemcpyHostToDevice);
 
-  s = FullAttentionForward(w, d_x, d_out, positions.data(), d_kv,
+  s = FullAttentionForward(w, d_x, d_out, positions.data(), d_rope_pos, d_kv,
                            d_page_table, d_idx_raw, d_idx_comp, kT, d_ws,
                            ws_bytes, nullptr);
   if (!s.ok()) {
@@ -354,6 +366,7 @@ Q4T_TEST(full_attention_forward) {
   cudaFree(d_page_table);
   cudaFree(d_idx_raw);
   cudaFree(d_idx_comp);
+  cudaFree(d_rope_pos);
   cudaFree(d_ws);
   w.Free();
 

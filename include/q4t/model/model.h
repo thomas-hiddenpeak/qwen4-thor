@@ -18,6 +18,7 @@
 
 #include <cuda_runtime.h>
 
+#include <array>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -47,6 +48,7 @@ struct ModelConfig {
   int vocab = 248320;
   int image_token_id = 248056;  // <image> placeholder (vision feature injection)
   int video_token_id = 248057;  // <video> placeholder (vision feature injection)
+  int spatial_merge_size = 2;  // vision merger block size (3D MRoPE grid)
   // full-attention cache length. Sized to the kernel cap (kMaxT=8192 in
   // full_attention.cu) and ple_capacity_tokens, so the QSA sparse path
   // (active once context > indexer_budget) is reachable during decode.
@@ -75,7 +77,13 @@ struct Model {
 
   // Persistent device buffers (allocated in LoadModel, freed in Free).
   int32_t* d_ids = nullptr;  // [max_prefill]
-  int* d_positions = nullptr;  // [max_prefill]
+  int* d_positions = nullptr;  // [max_prefill] logical positions (KV paging,
+                               // indexer grouping, causal mask)
+  int* d_rope_pos = nullptr;  // [3, max_len] 3D MRoPE (t,h,w) for RoPE angles
+  // mrope_position_delta: during incremental decode the 3 rope rows for a
+  // token at logical position p are all (p + rope_delta). Computed at prefill
+  // (mutable so it can be written through a const Model& in RunPrefill).
+  mutable int rope_delta = 0;
   uint16_t* d_emb = nullptr;  // [max_prefill, hs]
   uint16_t* d_trunk = nullptr;  // [max_prefill, hc*hs] (ping)
   uint16_t* d_trunk2 = nullptr;  // [max_prefill, hc*hs] (pong)
@@ -122,6 +130,13 @@ Status LoadModel(const ModelConfig& cfg, Model* out, cudaStream_t stream);
 struct VisionFeatures {
   const uint16_t* device = nullptr;  // [num_tokens, hs] device BF16
   int num_tokens = 0;
+  // Per vision item (in prompt position order) the ViT grid (t, h, w) in
+  // PATCH units (grid_t, grid_h, grid_w). Used to compute the 3D MRoPE
+  // positions for the expanded image/video tokens. Empty = text-only (or the
+  // caller does not need 3D positions). One entry per image_token_id /
+  // video_token_id placeholder, in the same left-to-right order as the
+  // feature rows.
+  std::vector<std::array<int, 3>> grids;
 };
 
 // Expand image placeholders for multimodal prefill.

@@ -80,7 +80,12 @@ cmake --build build --parallel
   逐时间组注意力 + t-major pos; C++ ProcessVideo 视频 processor; serve 层
   视频 part 接入 + 混合图像/视频 batch + 按位置展开; 占位符实为
   |image_pad| 248056 / |video_pad| 248057, 修复了旧代码塞 <image> 被 BPE 的
-  既有 bug) / **PLE 工作内存 + SHA-256 (已闭合)** (工作内存
+  既有 bug) / **多模态 3D MRoPE (已闭合)** (视觉/视频 token 的 RoPE 从纯
+  文本逻辑位置升级为 transformers 5.16.1 3D MRoPE (t,h,w 三行 +
+  mrope_position_delta); 布局统一 [3,max_len] 绝对位置, prefill/decode/
+  压缩 key 共用一张表, 消除 decode 越界隐患; MTP 恒等表 + 修正漏传
+  rope_pos; 差分测试 vs Python 参考 63 坐标逐位一致, 纯文本无回归) /
+  **PLE 工作内存 + SHA-256 (已闭合)** (工作内存
   实测 75.17 MiB < 100 MiB 预算, 无 OOM 无 swap; 51.2 GB sidecar SHA-256
   与 MODEL.md 期望值逐位一致) / **greedy 生成输出与参考一致 (已闭合,
   L2 噪声保真度)** (C++ NVFP4 W4A4 vs transformers 5.16.1 参考, 同一

@@ -99,6 +99,7 @@ struct MtpModel {
   int* page_table = nullptr;  // [max_len] identity mapping
   uint16_t* idx_raw = nullptr;  // [max_len, idx_head_dim]
   uint16_t* idx_comp = nullptr;  // [max_len, idx_head_dim]
+  int* d_rope_pos = nullptr;  // [3, max_len] identity (pure text)
   void* d_ws = nullptr;  // forward workspace (GEMM ws + scratch)
   size_t ws_bytes = 0;
   size_t kv_bytes = 0;  // bytes of kv_cache (for ResetState)
