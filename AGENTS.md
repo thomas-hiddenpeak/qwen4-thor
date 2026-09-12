@@ -85,6 +85,11 @@ cmake --build build --parallel
   mrope_position_delta); 布局统一 [3,max_len] 绝对位置, prefill/decode/
   压缩 key 共用一张表, 消除 decode 越界隐患; MTP 恒等表 + 修正漏传
   rope_pos; 差分测试 vs Python 参考 63 坐标逐位一致, 纯文本无回归) /
+  **验证标准体系 (已闭合, Phase 2)** (tools/verify/ 三件套: 主驱动 +
+  transformers 5.16.1 参考 (逐层 lazy dequant, 全 48 层) + 三判据对比
+  (置信位置 argmax / near-tie 翻转 / l2_rel 噪声带, 带退出码); 48 层
+  全量基线 OVERALL PASS: 置信位置 44/44 全对 + 8 翻转全 near-tie +
+  l2_rel 0.140 在噪声带; GPU 参考已评估, 留待连续批处理启动时落地) /
   **PLE 工作内存 + SHA-256 (已闭合)** (工作内存
   实测 75.17 MiB < 100 MiB 预算, 无 OOM 无 swap; 51.2 GB sidecar SHA-256
   与 MODEL.md 期望值逐位一致) / **greedy 生成输出与参考一致 (已闭合,

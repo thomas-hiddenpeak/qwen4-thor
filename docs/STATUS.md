@@ -604,6 +604,24 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
     坐标逐位一致, delta=-8, decode 规则成立, 纯文本 delta=0 退化正确;
     纯文本 prefill/decode 数学确认与改动前逐位相同 (无回归)。63 项测试
     全绿, 零警告。
+- [x] 2026-09-12 **验证标准体系 (Phase 2 完成标准, 已闭合)**: 把 Phase 1
+  的 "L2 噪声保真度" 验证固化为可重复的 `tools/verify/` harness
+  (自包含, 不再依赖被 gitignore 的 `.q4t-work/`)。
+  - **三件套**: `verify_logits.py` (主驱动: encode → C++ dump → 参考
+    dump → 三判据对比, 带退出码) / `ref_dump.py` (transformers 5.16.1
+    参考, 逐层 lazy dequant, 支持全 48 层, 内存峰值 ~23 GB) /
+    `compare_logits.py` (三判据: 置信位置 argmax / near-tie 翻转 /
+    l2_rel 噪声带; 修复了原脚本 `m_gaps[mism[worst]]` 索引 bug, 补退出码)。
+  - **48 层全量基线 (OVERALL PASS)**: 79-token prompt, 完整 48 层
+    (比 Phase 1 的 16 层更强): 置信位置 argmax **44/44 全对** (主判据),
+    8 个翻转全部 near-tie (max gap 0.368 ≤ tau 1.657), l2_rel mean
+    0.140 / max 0.280 (W4A4 噪声带)。差异纯为量化噪声, 无系统性错误。
+  - **l2_rel band 与层数相关** (噪声逐层累积): 4 层 ~0.05 / 16 层
+    ~0.21 / 48 层 ~0.14; band [0.10, 0.35] 按完整模型校准, 短层 smoke
+    的 [C] 仅供参考, [A]/[B] 才是真信号。
+  - **GPU 参考 (用户建议, 已评估)**: 合理, 但时机放 Phase 2 连续批处理
+    启动时 (验证频率上来后 ROI 才体现); CPU 参考保留为 gold standard
+    (确定性), GPU 参考作开发期快速回归, 分歧时以 CPU 为准。
 
 ## 阻塞 / 风险
 

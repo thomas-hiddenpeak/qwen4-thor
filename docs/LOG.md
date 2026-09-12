@@ -5,6 +5,60 @@
 
 ---
 
+## 2026-09-12 — 验证标准体系 (Phase 2 完成标准, 已闭合)
+
+**背景**
+Phase 2 完成标准 "验证标准体系落地"。Phase 1 的 "L2 噪声保真度" 验证
+(2026-09-07) 只验证过 16 层, 且脚本散落在被 gitignore 的 `.q4t-work/`,
+不可重复、不可提交。进入 Phase 2 大重构 (连续批处理 / PD 分离) 前,
+需要把验证固化成可重复的回归网。
+
+**做了什么**
+- 新建 `tools/verify/` 三件套 (自包含, 可提交):
+  - `verify_logits.py`: 主驱动。encode prompt (transformers tokenizer,
+    与 C++ BPE 同源 tokenizer.json) → C++ dump (`q4t_tests
+    model_forward_dump_decode`, env 配层数/prompt/输出) → 参考 dump
+    (`ref_dump.py`) → 三判据对比, 带退出码。
+  - `ref_dump.py`: 从 `.q4t-work/ref4_logits.py` 固化。transformers
+    5.16.1 qwen4_exp 类 + 真实权重, 51 GB PLE nn.Embedding 换 sidecar
+    gather, 路由专家逐层 lazy dequant (内存峰值 ~23 GB), 支持全 48 层
+    (`Q4T_REF_LAYERS`)。MDIR 加 `Q4T_MODEL_DIR` env 覆盖。
+  - `compare_logits.py`: 三判据 (置信位置 argmax / near-tie 翻转 /
+    l2_rel 噪声带)。修复了继承自原 `l2_compare.py` 的索引 bug
+    (`m_gaps[mism[worst]]` → `m_gaps[worst]`, 原脚本在 8 个 mismatch
+    时 IndexError 崩溃), 补退出码 (原脚本只打印 OVERALL 不返回码)。
+- `README.md`: 方法论 + 用法 + 覆盖范围 + 校准基线。
+
+**为什么**
+Phase 2 的连续批处理 + PD 分离是大重构, 输出路径会变; 没有可靠参考
+对比基线就无法判断重构是否引入回归。现在 (单序列、路径稳定) 建立基线
+成本最低, 且把 48 层全量验证补上 (Phase 1 只做了 16 层)。
+
+**验证 (48 层全量基线, OVERALL PASS)**
+- prompt 79 tokens, 完整 48 层 (比 Phase 1 的 16 层更强):
+  - [A] 置信位置 argmax **44/44 全对** (主判据, greedy 正确性);
+  - [B] 8 个翻转全部 near-tie (max gap 0.368 ≤ tau 1.657);
+  - [C] l2_rel mean 0.140 / max 0.280 (W4A4 噪声带)。
+- 判读: 44.3% 位置是参考 near-tie, C++ 匹配全部 confident 位置,
+  无系统性错误, 差异纯为 NVFP4 量化噪声。
+- 4 层 smoke: argmax 5/5 全对 (管道端到端通)。
+
+**发现**
+- l2_rel band 与层数相关 (噪声逐层累积): 4 层 ~0.05 / 16 层 ~0.21 /
+  48 层 ~0.14。band [0.10, 0.35] 按完整模型校准; 短层 smoke 的 [C]
+  仅供参考, [A]/[B] 才是真信号。
+- **GPU 参考 (用户建议, 已评估)**: 合理 (CPU 48 层 ~3-5 分钟, GPU 秒级;
+  连续批处理重构期验证频率高, GPU 参考迭代效率提升显著)。但时机放
+  Phase 2 连续批处理启动时 (当前仅 CPU venv, A 阶段不需要); CPU 参考
+  保留为 gold standard (确定性), GPU 参考作开发期快速回归, 分歧时以
+  CPU 为准。落地: 建 `reference/.venv-gpu` + `ref_dump.py` 加
+  `--device cuda` + `verify_logits.py` 加 `--ref-device` 开关。
+
+**下一步**
+Phase 2: 连续批处理 + 多请求调度 (SSM/conv 状态 per-sequence 重构)。
+
+---
+
 ## 2026-09-12 — 多模态 3D MRoPE (已闭合)
 
 **背景**
