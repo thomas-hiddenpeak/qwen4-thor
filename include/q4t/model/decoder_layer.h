@@ -146,7 +146,12 @@ Status DecoderLayerForward(const DecoderLayer& layer, const uint16_t* hyper_inpu
                            cudaStream_t stream, float* ssm_ckpt = nullptr,
                            uint16_t* conv_ckpt = nullptr, int num_ckpt = 0,
                            int seq_id = 0, const int* d_seq_id = nullptr,
-                           const int* d_rope_pos = nullptr);
+                           const int* d_rope_pos = nullptr,
+                           int tokens_per_seq = 0);
+// `tokens_per_seq` (MTP multi-sequence VERIFY, Phase 2): when d_seq_id is
+// non-null and tokens_per_seq > 1, the packed [T, ...] rows are sequence-major
+// (B = T / tokens_per_seq sequences) and the linear/PLE layers run a
+// per-sequence causal chain (prefill semantics); 0 = B2 decode / single-seq.
 // `d_rope_pos` (B2 multi-sequence decode): the POOLED 3D MRoPE base
 // [max_seq, 3, max_len]. When d_seq_id != null the full-attention kernels
 // select the per-token rope slice via d_seq_id from this base, so it must be

@@ -5,6 +5,13 @@
 > 风险"经重读 kernel 确认是**误判** (per-seq KV 隔离天然阻止跨序列
 > 注意力), 核心工作量在 linear attention 多序列因果 prefill kernel。
 > 用户已授权动核心 + 单分支 commit 检查点。
+>
+> **正确性发现 (2026-09-13, 2a 前置)**: 单序列 MTP **部分接受** (a<k) 时
+> `ModelRestoreCheckpoint` 只回滚 linear 层 SSM/conv, **不回滚 PLE 层
+> `ple_conv_state`** (也是 in-place 递推, 验证后持有含被拒绝 token 的
+> gated_n 窗口) → 下一步 PLE short-conv 用到被拒绝 token 的值, 系统性
+> (小) 状态污染; 全接受 (a==k) 无影响。2a 的多序列回滚必须一并覆盖
+> PLE conv (per-seq), 否则继承该 bug。
 
 ## 目标
 
@@ -92,8 +99,10 @@ token 一致), 确认无跨序列污染。沿用 B2a 的判据。
 
 1. **2a 多序列验证引擎** `ModelVerifyMulti`: 每序列 (k+1) token 打包
    一次主模型 forward (d_seq_id), 含 linear attention 多序列因果 prefill
-   kernel + per-seq checkpoint (或快照 + 重跑) 回滚。单序列路径 bit 不变。
-   测试: `model_verify_multi` 隔离 (B 序列 vs 单序列参考, 接受 token 一致)。
+   kernel + **per-seq checkpoint (含 PLE conv, 见上正确性发现)** 回滚。
+   单序列路径 bit 不变 (PLE 回滚缺口对单序列同时修复)。
+   测试: `model_verify_multi` 隔离 (B 序列 vs 单序列参考, 接受 token
+   一致) + 部分接受后 PLE conv 状态正确性。
 2. **2b 多序列投机步** `MtpSpeculativeStepMulti`: 批量化 draft 循环
    (per-seq 滚动 trunk) + 2a 验证 + per-seq extend。
 3. **2c 调度器 MTP 分支**: serve 调度器区分 MTP/plain 请求。

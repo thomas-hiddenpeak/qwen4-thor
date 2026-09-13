@@ -105,13 +105,24 @@ Status LoadLinearAttention(const io::WeightLoader& loader, const std::string& pr
 //                packed [T, ...] rows directly (weights read once). When null
 //                (legacy single-sequence prefill/decode), ssm_state/conv_state
 //                are the per-sequence slices and the single-seq kernels run.
+//   tokens_per_seq : MTP multi-sequence VERIFY (Phase 2). When d_seq_id is
+//                non-null AND tokens_per_seq > 1, the packed [T, ...] rows are
+//                SEQUENCE-MAJOR (B = T / tokens_per_seq sequences, packed index
+//                t = b*tokens_per_seq + tt) and the conv/GDN kernels run a
+//                per-sequence CAUSAL chain over each sequence's tokens
+//                (prefill semantics, in-batch recurrence) with the per-seq
+//                state slice selected by d_seq_id. ssm_ckpt/conv_ckpt are then
+//                the POOLED per-seq checkpoint bases ([max_seq, num_ckpt, ...]).
+//                When tokens_per_seq <= 1 (or d_seq_id == null) this is the
+//                B2 decode / single-seq path (bit-identical).
 Status LinearAttentionForward(const LinearAttentionWeights& w, const uint16_t* x,
                               uint16_t* out, float* ssm_state,
                               uint16_t* conv_state, int T, void* workspace,
                               size_t workspace_bytes, cudaStream_t stream,
                               float* ssm_ckpt = nullptr,
                               uint16_t* conv_ckpt = nullptr, int num_ckpt = 0,
-                              const int* d_seq_id = nullptr);
+                              const int* d_seq_id = nullptr,
+                              int tokens_per_seq = 0);
 
 }  // namespace model
 }  // namespace q4t

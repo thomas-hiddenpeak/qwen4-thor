@@ -253,6 +253,73 @@ __global__ void Conv1dUpdateStateMultiSeqKernel(
       input[static_cast<size_t>(t) * channels + ch];
 }
 
+// Causal conv1d (SiLU) for MTP multi-sequence VERIFY. Sequence-major layout:
+// packed token index t = b*T + tt (sequence b, local token tt). Grid
+// dim3(ch_blocks, B*T). Each block (ch, t) computes the conv for token t:
+// taps from the per-sequence old_state (positions before the sequence's
+// packed range) AND from the packed input at the sequence's earlier local
+// tokens (b*T + tt - d). This is the multi-sequence analogue of the single-
+// sequence prefill branch of CausalConv1dWithCkptKernel (src_t = tt - (hist -
+// k), reading input for in-sequence taps and old_state for pre-sequence taps),
+// with the state slice selected by d_seq_id[t].
+__global__ void CausalConv1dMultiSeqCausalKernel(
+    const uint16_t* __restrict__ input, uint16_t* __restrict__ output,
+    const uint16_t* __restrict__ old_state, const uint16_t* __restrict__ w,
+    const int* __restrict__ d_seq_id, int channels, int conv_k, int T) {
+  const int ch = blockIdx.x * blockDim.x + threadIdx.x;
+  if (ch >= channels) return;
+  const int t = blockIdx.y;  // packed token index = b*T + tt
+  const int tt = t % T;  // local token within the sequence
+  const int hist = conv_k - 1;
+  const uint16_t* seq_state =
+      old_state + static_cast<size_t>(d_seq_id[t]) * channels * hist;
+  float wv[4];
+#pragma unroll
+  for (int k = 0; k < 4; ++k)
+    wv[k] = (k < conv_k) ? Bf16ToFloat(w[ch * conv_k + k]) : 0.0f;
+  float acc = 0.0f;
+#pragma unroll
+  for (int k = 0; k < 4; ++k) {
+    if (k >= conv_k) break;
+    const int src_t = tt - (hist - k);  // prefill-style causal tap
+    float val;
+    if (src_t < 0)
+      val = Bf16ToFloat(seq_state[ch * hist + (src_t + hist)]);
+    else
+      val = Bf16ToFloat(
+          input[static_cast<size_t>(t - (tt - src_t)) * channels + ch]);
+    acc += val * wv[k];
+  }
+  output[static_cast<size_t>(t) * channels + ch] = FloatToBf16(Silu(acc));
+}
+
+// Update conv_state for MTP multi-sequence VERIFY. Sequence-major: packed
+// token t = b*T + tt. Grid dim3(ch_blocks, B). Each block (ch, b) updates
+// sequence b's conv_state to the last `hist` inputs of (old history + the
+// sequence's T packed tokens): state[k] = the value at local token (T - hist +
+// k), read from old_state (negative) or the packed input. Mirrors the prefill
+// branch (T >= hist) of Conv1dUpdateStateKernel.
+__global__ void Conv1dUpdateStateMultiSeqCausalKernel(
+    uint16_t* __restrict__ state, const uint16_t* __restrict__ input,
+    const int* __restrict__ d_seq_id, int channels, int conv_k, int T) {
+  const int ch = blockIdx.x * blockDim.x + threadIdx.x;
+  if (ch >= channels) return;
+  const int b = blockIdx.y;
+  const int hist = conv_k - 1;
+  const int seq = d_seq_id[b * T];  // all T tokens of block b share seq b
+  uint16_t* seq_state =
+      state + static_cast<size_t>(seq) * channels * hist;
+  for (int k = 0; k < hist; ++k) {
+    const int src_t = T - hist + k;  // local token index (prefill branch)
+    uint16_t val;
+    if (src_t >= 0)
+      val = input[static_cast<size_t>(b * T + src_t) * channels + ch];
+    else
+      val = seq_state[ch * hist + (src_t + hist)];  // pre-sequence history
+    seq_state[ch * hist + k] = val;
+  }
+}
+
 // Gated DeltaNet recurrence. One block per value head (nv blocks), 128 threads
 // (one per vd element). S[kd, vd] held in shared memory (FP32). Mirrors
 // qwen35-thor gated_delta_net_prefill_kernel.
@@ -473,6 +540,146 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetDecodeKernel(
   for (int i = 0; i < kd; ++i) ssm[ss_base + i * vd + j] = S_smem[i * vd_pad + j];
 }
 
+// Conv checkpoint for MTP multi-sequence VERIFY. Sequence-major: packed token
+// t = b*T + tt. Grid dim3(ch_blocks, B * num_ckpt): each block (ch, z) where
+// z = b*num_ckpt + tt writes the conv state after sequence b's local token tt
+// (the window of (conv_k-1) values ending at tt, from the packed input or the
+// per-sequence old_state). Layout: [B, num_ckpt, channels, conv_k-1].
+__global__ void Conv1dCheckpointMultiSeqKernel(
+    const uint16_t* __restrict__ input, const uint16_t* __restrict__ old_state,
+    uint16_t* __restrict__ ckpt, const int* __restrict__ d_seq_id,
+    int channels, int conv_k, int T, int num_ckpt) {
+  const int ch = blockIdx.x * blockDim.x + threadIdx.x;
+  if (ch >= channels) return;
+  const int z = blockIdx.y;  // = b * num_ckpt + tt
+  const int b = z / num_ckpt;
+  const int tt = z % num_ckpt;
+  const int hist = conv_k - 1;
+  const int seq = d_seq_id[b * T];
+  const uint16_t* seq_state =
+      old_state + static_cast<size_t>(seq) * channels * hist;
+  uint16_t* dst = ckpt + (static_cast<size_t>(b) * num_ckpt + tt) * channels *
+                        hist + ch * hist;
+  for (int k = 0; k < hist; ++k) {
+    const int s = tt - hist + 1 + k;  // local token index (can be negative)
+    dst[k] = (s >= 0) ? input[static_cast<size_t>(b * T + s) * channels + ch]
+                      : seq_state[ch * hist + (s + hist)];
+  }
+}
+
+// Gated DeltaNet recurrence for MTP multi-sequence VERIFY. Sequence-major
+// layout: packed token index t = b*T + tt (sequence b, local token tt). Grid
+// dim3(nv, B): each block handles ONE value head (blockIdx.x) for ONE sequence
+// (blockIdx.y = b), serializing the sequence's T tokens (b*T .. b*T+T-1) with
+// the in-place S recurrence — the multi-sequence analogue of the single-
+// sequence prefill GatedDeltaNetKernel, with the state slice selected by
+// d_seq_id[b*T] and the per-token math byte-identical to one iteration of
+// GatedDeltaNetKernel. token_stride = T * in_qkv (the packed row stride for a
+// local token within its sequence).
+//
+// Checkpoints (ssm_ckpt, when non-null): layout [B, num_ckpt, nv, kd, vd];
+// after local token tt (tt < num_ckpt) the block saves S for sequence b.
+//
+//   qkv     : [B*T, in_qkv] (q | k | v, post-conv), sequence-major
+//   a, beta : [B*T, nv]
+//   d_seq_id: [B*T] device int (d_seq_id[b*T] = sequence b's id)
+//   ssm     : [max_seq, nv, kd, vd] FP32 (pooled, in-place)
+//   y       : [B*T, nv, vd]
+__global__ void __launch_bounds__(128, 2) GatedDeltaNetMultiSeqCausalKernel(
+    const uint16_t* __restrict__ qkv, const uint16_t* __restrict__ a_raw,
+    const uint16_t* __restrict__ dt_bias, const uint16_t* __restrict__ A_log,
+    const uint16_t* __restrict__ beta_raw, float* __restrict__ ssm,
+    uint16_t* __restrict__ y, int T, int nkh, int kd, int nv_per_kh, int vd,
+    int in_qkv, int nv, const int* __restrict__ d_seq_id,
+    float* __restrict__ ssm_ckpt, int num_ckpt) {
+  const int h_v = blockIdx.x;
+  const int b = blockIdx.y;  // sequence index
+  const int j = threadIdx.x;  // vd index
+  extern __shared__ float smem[];
+  const int vd_pad = vd + 1;
+  float* S_smem = smem;
+  float* k_hat_s = S_smem + kd * vd_pad;
+  float* q_hat_s = k_hat_s + kd;
+  float* s_part = q_hat_s + kd;  // [128] reduction scratch
+  float* s_norms = s_part + 128;  // [2] k_sq, q_sq
+
+  const int seq = d_seq_id[b * T];
+  const int ss_base = seq * nv * kd * vd + h_v * kd * vd;
+  const float q_scale = rsqrtf(static_cast<float>(kd));
+  const int token_stride = T * in_qkv;  // packed row stride (sequence-major)
+  // Load initial state S[kd, vd] for this sequence's value head.
+  for (int i = 0; i < kd; ++i) S_smem[i * vd_pad + j] = ssm[ss_base + i * vd + j];
+  __syncthreads();
+
+  for (int tt = 0; tt < T; ++tt) {
+    const int t = b * T + tt;  // packed token index
+    const int h_k = h_v / nv_per_kh;
+    const int q_base = t * in_qkv + h_k * kd;
+    const int k_base = t * in_qkv + nkh * kd + h_k * kd;
+
+    float local_k_sq = 0.0f;
+    float local_q_sq = 0.0f;
+    for (int i = threadIdx.x; i < kd; i += blockDim.x) {
+      const float kv = Bf16ToFloat(qkv[k_base + i]);
+      local_k_sq += kv * kv;
+      const float qv = Bf16ToFloat(qkv[q_base + i]);
+      local_q_sq += qv * qv;
+    }
+    s_norms[0] = BlockReduceSum(local_k_sq, s_part);
+    __syncthreads();
+    s_norms[1] = BlockReduceSum(local_q_sq, s_part);
+    __syncthreads();
+
+    const float k_norm = rsqrtf(s_norms[0] + 1e-6f);
+    const float q_norm = rsqrtf(s_norms[1] + 1e-6f) * q_scale;
+    for (int i = threadIdx.x; i < kd; i += blockDim.x) {
+      k_hat_s[i] = Bf16ToFloat(qkv[k_base + i]) * k_norm;
+      q_hat_s[i] = Bf16ToFloat(qkv[q_base + i]) * q_norm;
+    }
+    __syncthreads();
+
+    const float a_val = Bf16ToFloat(a_raw[t * nv + h_v]);
+    const float bias = Bf16ToFloat(dt_bias[h_v]);
+    const float a_l = Bf16ToFloat(A_log[h_v]);
+    const float ab = a_val + bias;
+    const float dt_v = (ab > 20.0f) ? ab : log1pf(expf(ab));
+    const float alpha_v = expf(-dt_v * expf(a_l));
+    const float beta_v =
+        1.0f / (1.0f + expf(-Bf16ToFloat(beta_raw[t * nv + h_v])));
+
+    const int v_base = t * in_qkv + 2 * nkh * kd + h_v * vd;
+    float kS_j = 0.0f;
+    for (int i = 0; i < kd; ++i)
+      kS_j += k_hat_s[i] * S_smem[i * vd_pad + j];
+
+    const float v_j = Bf16ToFloat(qkv[v_base + j]);
+    const float delta_j = v_j - alpha_v * kS_j;
+
+    float y_j = 0.0f;
+    for (int i = 0; i < kd; ++i) {
+      const float beta_k_i = beta_v * k_hat_s[i];
+      const float old_s = S_smem[i * vd_pad + j];
+      const float new_s = alpha_v * old_s + beta_k_i * delta_j;
+      S_smem[i * vd_pad + j] = new_s;
+      y_j += new_s * q_hat_s[i];
+    }
+
+    const int y_base = (t * nv + h_v) * vd;
+    y[y_base + j] = FloatToBf16(y_j);
+    // Per-sequence per-token checkpoint: layout [B, num_ckpt, nv, kd, vd].
+    if (ssm_ckpt && tt < num_ckpt) {
+      const size_t ck_off =
+          (static_cast<size_t>(b) * num_ckpt + tt) * nv * kd * vd + ss_base;
+      for (int i = 0; i < kd; ++i)
+        ssm_ckpt[ck_off + i * vd + j] = S_smem[i * vd_pad + j];
+    }
+    __syncthreads();
+  }
+
+  // Write final state (FP32 SMEM -> FP32 GMEM) for this sequence's head.
+  for (int i = 0; i < kd; ++i) ssm[ss_base + i * vd + j] = S_smem[i * vd_pad + j];
+}
+
 // Fused per-head RMSNorm * gate(z) gate. One block per (token, value head),
 // 128 threads (one per vd). The gate activation is `output_gate_type` from the
 // config (sigmoid for qwen4_exp), NOT the conv1d activation (silu). Mirrors
@@ -627,13 +834,22 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
                               void* workspace, size_t workspace_bytes,
                               cudaStream_t stream, float* ssm_ckpt,
                               uint16_t* conv_ckpt, int num_ckpt,
-                              const int* d_seq_id) {
+                              const int* d_seq_id, int tokens_per_seq) {
   const int hs = w.hidden_size;
   const int nkh = w.nkh, nv = w.nv, kd = w.kd, vd = w.vd, conv_k = w.conv_k;
   const int qk = nkh * kd;
   const int v_dim = nv * vd;
   const int in_qkv = 2 * qk + v_dim;
   if (T <= 0) return Status();
+  // MTP multi-sequence VERIFY (tokens_per_seq > 1 with d_seq_id): the packed
+  // [T, ...] rows are SEQUENCE-MAJOR (B sequences x tokens_per_seq tokens,
+  // t = b*Tps + tt). The conv/GDN kernels run a per-sequence CAUSAL chain over
+  // the tokens of each sequence (prefill semantics) with the per-sequence
+  // state slice selected by d_seq_id. tokens_per_seq == 1 (or 0) with d_seq_id
+  // is the B2 multi-sequence DECODE path (one token per sequence, no in-batch
+  // chain); d_seq_id == null is the single-sequence path (bit-identical).
+  const bool multi_seq_causal = d_seq_id && tokens_per_seq > 1;
+  const int B = multi_seq_causal ? (T / tokens_per_seq) : T;
 
   // Intermediates are allocated separately (NOT carved from `workspace`): the
   // same `workspace` buffer is handed to cuBLASLt as its internal scratch,
@@ -726,7 +942,36 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
   // state update below).
   {
     const int ch_blocks = (in_qkv + kBlock - 1) / kBlock;
-    if (d_seq_id) {
+    if (multi_seq_causal) {
+      // MTP multi-sequence verify: per-sequence causal conv chain (sequence-
+      // major packed rows), conv_state is the pooled [max_seq, ...] base.
+      CausalConv1dMultiSeqCausalKernel<<<dim3(ch_blocks, T), kBlock, 0, stream>>>(
+          d_qkv_raw, d_qkv, conv_state, w.conv1d, d_seq_id, in_qkv, conv_k,
+          tokens_per_seq);
+      if (cudaGetLastError() != cudaSuccess) {
+        free_all();
+        return Status::Fail("conv1d multi-seq causal launch");
+      }
+      // Per-sequence per-token conv checkpoints (before the state update; the
+      // checkpoint rows only read the pre-update state + packed input).
+      if (conv_ckpt) {
+        Conv1dCheckpointMultiSeqKernel<<<dim3(ch_blocks, B * num_ckpt), kBlock,
+                                         0, stream>>>(
+            d_qkv_raw, conv_state, conv_ckpt, d_seq_id, in_qkv, conv_k,
+            tokens_per_seq, num_ckpt);
+        if (cudaGetLastError() != cudaSuccess) {
+          free_all();
+          return Status::Fail("conv1d multi-seq ckpt launch");
+        }
+      }
+      Conv1dUpdateStateMultiSeqCausalKernel<<<dim3(ch_blocks, B), kBlock, 0,
+                                              stream>>>(
+          conv_state, d_qkv_raw, d_seq_id, in_qkv, conv_k, tokens_per_seq);
+      if (cudaGetLastError() != cudaSuccess) {
+        free_all();
+        return Status::Fail("conv1d multi-seq causal state launch");
+      }
+    } else if (d_seq_id) {
       // B2 multi-sequence decode: each token t uses its own sequence's conv
       // slice (d_seq_id[t]); conv_state is the pooled [max_seq, ...] base.
       CausalConv1dMultiSeqKernel<<<dim3(ch_blocks, T), kBlock, 0, stream>>>(
@@ -765,7 +1010,28 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
     const int vd_pad = vd + 1;
     const size_t smem_bytes =
         static_cast<size_t>(kd * vd_pad + 2 * kd + 128 + 2) * sizeof(float);
-    if (d_seq_id) {
+    if (multi_seq_causal) {
+      // MTP multi-sequence verify: grid (nv, B), each block one value head for
+      // one sequence, serializing the sequence's tokens_per_seq tokens with
+      // the in-place S recurrence; ssm_state is the pooled [max_seq, ...] base.
+      cudaError_t smem_err = cudaFuncSetAttribute(
+          GatedDeltaNetMultiSeqCausalKernel,
+          cudaFuncAttributeMaxDynamicSharedMemorySize,
+          static_cast<int>(smem_bytes));
+      if (smem_err != cudaSuccess) {
+        free_all();
+        return Status::Fail("gdn multi-seq causal smem attr");
+      }
+      GatedDeltaNetMultiSeqCausalKernel<<<dim3(nv, B), threads, smem_bytes,
+                                           stream>>>(
+          d_qkv, d_a, w.dt_bias, w.A_log, d_beta, ssm_state, d_y_ssm,
+          tokens_per_seq, nkh, kd, nv / nkh, vd, in_qkv, nv, d_seq_id,
+          ssm_ckpt, num_ckpt);
+      if (cudaGetLastError() != cudaSuccess) {
+        free_all();
+        return Status::Fail("gdn multi-seq causal launch");
+      }
+    } else if (d_seq_id) {
       // B2 multi-sequence decode: grid (nv, T), each block one value head for
       // one token; ssm_state is the pooled [max_seq, nv, kd, vd] base.
       cudaError_t smem_err = cudaFuncSetAttribute(
