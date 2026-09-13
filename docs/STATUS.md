@@ -307,6 +307,20 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   校验。53 项测试全绿, 零警告。生成验证 (27+48) 连贯。
   **→ PD-ready 架构 Phase 1 部分全部完成** (Paged KV + 可分离代码路径 +
   阶段边界 API; 完整多设备 PD 部署归 Phase 2)
+- [x] 2026-09-13 **B1 多序列隔离 (per-seq 状态池化 + seq_id 穿透收尾)**:
+  recurrent 状态 (linear ssm/conv、PLE short-conv、full KV/idx) 池化为
+  `[max_seq, ...]`, seq_id 穿透 `DecoderLayerForward`/`ModelPrefill`/
+  `ModelDecodeStepSeq` 选 per-seq 切片; 新增 `model_multi_seq_isolation`
+  测试 (4 层含 full attention, max_seq=4, 4 个 seq_id 串行跑同一 prompt
+  要求逐位一致)。修复两个 bug: (1) `uint16_t*` kv_cache 用字节数做
+  per-seq 偏移被放大 2 倍 → seq≥2 越界写 (illegal access / 静默 DIFFER),
+  改 `char*` 字节偏移; (2) full attention 四个 RMSNorm kernel 的 float
+  `atomicAdd` 求和顺序非确定 → 跨运行 bit 漂移, 改确定性 `BlockSum`
+  (warp shuffle 固定序)。64 项测试全绿, 零警告, 隔离测试连跑稳定 PASS。
+  **serve 多请求 E2E 已验证**: `q4t serve --max-seq 4` 下 3 个并发请求
+  (不同 prompt, 不同 seq_id) 全部成功返回且语义正确 (Paris / 4 / 正确
+  展开), 日志无 error/illegal/503。
+  **→ B1 全部闭合** (状态池化 + seq_id 穿透 + 隔离测试 + serve 多请求 E2E)
 
 ## 进行中
 
@@ -701,6 +715,20 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   `atomicAdd` 顺序非确定, 运行间 argmax 可能翻转。属 LLM 固有特性 (PyTorch
   同样), 不影响正确性; 如需可复现输出, 可改确定性归约 (代价: 性能)。
 
+## 已解决 (2026-09-13)
+
+- ✅ **B1 多序列隔离两个 bug (model_multi_seq_isolation 非确定性失败)**:
+  - **`uint16_t*` kv_cache 字节步长放大 2 倍 (B1 引入)**: `ResetState` /
+    `DecoderLayerForward` 对 `kv_cache` (uint16_t*) 用字节数做 per-seq
+    偏移, 指针算术按元素计 → 实际偏移 ×2, seq≥2 越界写 (落已映射区静默
+    DIFFER, 落未映射区 illegal access, 非确定)。linear 分支用元素数
+    一直正确, 故 3 层 (全 linear) 变体不触发。修复: `char*` 字节偏移。
+  - **float `atomicAdd` 求和非确定 (既有, 本次暴露)**: full attention
+    四个 RMSNorm kernel 用 `atomicAdd` 到 shared float 求平方和, float
+    加法不结合 + 完成顺序非确定 → 跨运行 bit 漂移 (seq0 自重跑即间歇
+    DIFFER, 与隔离无关)。既有单元测试单次 + 3e-2 容差不暴露。修复:
+    确定性 `BlockSum` (warp shuffle 固定序) 替换 4 处 atomicAdd。
+
 ## 已解决 (2026-09-05)
 
 - ✅ **MoE `BuildTokenListsKernel` 越界 (预先存在, Paged KV 验证时暴露)**:
@@ -788,6 +816,11 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   非 0; 错误判断须用 `< 0`。
 
 ## 下一步
+
+**B1 多序列 (Phase 2 连续批处理前置) 全部闭合 (2026-09-13)**: 状态池化
+(max_seq) ✅ + seq_id 穿透 ✅ + 多序列隔离测试 ✅ + serve 多请求 E2E ✅
+(修复 uint16_t 字节步长越界 + float atomicAdd 非确定两个 bug)。
+下一步: B2 token 级打包 (GDN 多序列并行 + GEMM 打包)。
 
 **Phase 1 完成标准全部闭合 (2026-09-07)。** 已完成的层: **PLE 流式层**
 ✅, **IO 层** ✅, **量化层** ✅ (NVFP4 W4A4 原生 + grouped MoE), **模型

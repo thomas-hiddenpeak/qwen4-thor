@@ -54,6 +54,11 @@ struct ModelConfig {
   // (active once context > indexer_budget) is reachable during decode.
   int max_len = 8192;
   int max_prefill = 2048;  // sizes the forward workspace
+  // Number of concurrent sequences the per-layer recurrent state (linear
+  // SSM/conv, PLE conv) is pooled for. Each sequence owns an independent
+  // state slice [seq_id, ...], enabling multi-request continuous batching
+  // (Phase 2). 1 = legacy single-sequence behavior (bit-identical).
+  int max_seq = 1;
   float eps = 1e-6f;
 
   // PLE SSD stream (the core differentiator).
@@ -79,11 +84,12 @@ struct Model {
   int32_t* d_ids = nullptr;  // [max_prefill]
   int* d_positions = nullptr;  // [max_prefill] logical positions (KV paging,
                                // indexer grouping, causal mask)
-  int* d_rope_pos = nullptr;  // [3, max_len] 3D MRoPE (t,h,w) for RoPE angles
-  // mrope_position_delta: during incremental decode the 3 rope rows for a
-  // token at logical position p are all (p + rope_delta). Computed at prefill
-  // (mutable so it can be written through a const Model& in RunPrefill).
-  mutable int rope_delta = 0;
+  int* d_rope_pos = nullptr;  // [max_seq, 3, max_len] 3D MRoPE (t, h, w)
+  // mrope_position_delta per sequence: during incremental decode the 3 rope
+  // rows for a token at logical position p are all (p + rope_delta[seq_id]).
+  // Computed at prefill (mutable so it can be written through a const Model&
+  // in RunPrefill). Sized to cfg.max_seq in LoadModel.
+  mutable std::vector<int> rope_delta;
   uint16_t* d_emb = nullptr;  // [max_prefill, hs]
   uint16_t* d_trunk = nullptr;  // [max_prefill, hc*hs] (ping)
   uint16_t* d_trunk2 = nullptr;  // [max_prefill, hc*hs] (pong)
@@ -211,7 +217,7 @@ inline bool ExpandMultimodalTokens(
 // VisionFeatures). Null = pure-text prefill.
 Status ModelForward(const Model& m, const int32_t* input_ids, int T,
                     uint16_t* logits, cudaStream_t stream,
-                    const VisionFeatures* vision = nullptr);
+                    const VisionFeatures* vision = nullptr, int seq_id = 0);
 
 // Run one decode step for a single new token: token_id at absolute position
 // `position` -> logits [1, vocab] (device BF16). Per-layer state is NOT reset
@@ -227,7 +233,8 @@ Status ModelForward(const Model& m, const int32_t* input_ids, int T,
 // reference/vllm/vllm/models/qwen4_exp/nvidia/mtp.py). Null = not exposed.
 Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
                        const int32_t* history, uint16_t* logits,
-                       cudaStream_t stream, uint16_t* trunk_out = nullptr);
+                       cudaStream_t stream, uint16_t* trunk_out = nullptr,
+                       int seq_id = 0);
 
 // Batched decode over T tokens at absolute positions [base_position ..
 // base_position+T-1] WITHOUT resetting per-layer state (continues from the
@@ -241,7 +248,7 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
                         int base_position, const int32_t* history,
                         int history_len, uint16_t* logits, cudaStream_t stream,
                         uint16_t* trunk_out = nullptr,
-                        bool save_checkpoints = false);
+                        bool save_checkpoints = false, int seq_id = 0);
 
 // Reserve per-linear-layer per-token SSM/conv checkpoint buffers for MTP
 // verify (idempotent; grows if num_ckpt exceeds the current capacity). Must be
@@ -251,7 +258,8 @@ Status ModelReserveVerifyCheckpoints(Model& m, int num_ckpt);
 // Restore every linear layer's SSM/conv state from checkpoint `ckpt_idx` (D2D).
 // Used after a partial-accept MTP verify to roll the recurrent state back to
 // the accepted-prefix boundary WITHOUT re-running the forward.
-Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx, cudaStream_t stream);
+Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx, cudaStream_t stream,
+                              int seq_id = 0);
 
 // ---------------------------------------------------------------------------
 // PD-ready 阶段边界 API (Prefill/Decode 可分离, 见 ARCHITECTURE.md)。
@@ -276,13 +284,18 @@ struct ModelSequence {
   enum class Stage { kIdle, kPrefill, kDecode };
   Stage stage = Stage::kIdle;
   int position = 0;  // 下一个 token 的绝对 position
+  // Pooled recurrent-state slice index (Phase 2 continuous batching). The
+  // per-layer SSM/conv/KV/PLE/rope state is allocated [max_seq, ...]; this
+  // sequence uses slice `seq_id`. 0 = legacy single-sequence layout.
+  int seq_id = 0;
   std::vector<int32_t> history;  // 已见 token (prompt + 已 decode), PLE 上下文
 };
 
 // 重置 per-layer 状态 (KV/SSM/conv 清零), 序列进入 kPrefill 阶段。
-// 等价于 ModelForward 内部的 ResetState 循环。
+// 等价于 ModelForward 内部的 ResetState 循环。`seq_id` 选择池化的 recurrent
+// 状态切片 (0 = 旧单序列布局), 并记入 seq->seq_id 供后续 Prefill/Decode 使用。
 Status ModelBeginSequence(const Model& m, ModelSequence* seq,
-                          cudaStream_t stream);
+                          cudaStream_t stream, int seq_id = 0);
 
 // 完成 prefill: seq 须处于 kPrefill 阶段。input_ids [T] -> logits [T, vocab]
 // (device BF16)。成功后阶段 = kDecode, position = T, history = prompt。
@@ -294,14 +307,14 @@ Status ModelBeginSequence(const Model& m, ModelSequence* seq,
 Status ModelPrefill(const Model& m, ModelSequence* seq, const int32_t* input_ids,
                     int T, uint16_t* logits, cudaStream_t stream,
                     uint16_t* trunk_out = nullptr,
-                    const VisionFeatures* vision = nullptr);
+                    const VisionFeatures* vision = nullptr, int seq_id = 0);
 
 // 一个 decode step: seq 须处于 kDecode 阶段。token_id 写入 position,
 // -> logits [1, vocab]。自动 ++position 并追加 history (PLE 上下文)。
 // 等价于 ModelDecodeStep (history 由 seq 内部维护)。trunk_out 同上。
 Status ModelDecodeStepSeq(const Model& m, ModelSequence* seq, int32_t token_id,
                           uint16_t* logits, cudaStream_t stream,
-                          uint16_t* trunk_out = nullptr);
+                          uint16_t* trunk_out = nullptr, int seq_id = 0);
 
 // 序列结束: 状态机复位为 kIdle (不释放 device 内存, 内存归 Model 所有)。
 void ModelEndSequence(ModelSequence* seq);

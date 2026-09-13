@@ -110,8 +110,9 @@ Status LoadFullAttention(const io::WeightLoader& loader, const std::string& pref
 //
 //   x        : device row-major [T, hs] uint16 (BF16)
 //   out      : device row-major [T, hs] uint16 (out)
-//   positions: host int [T] absolute token positions (single sequence, so
-//              positions[i] = seq_start + i)
+//   positions: device int [T] absolute token positions (single sequence, so
+//              positions[i] = seq_start + i). Must already be on the device
+//              (same contract as `rope_pos`); no host->device copy is made.
 //   kv_cache : device paged KV, [n_pages, kKvPageSize, nkv, 2, hd] uint16
 //              (K and V interleaved per position within a page). Logical
 //              position p maps to physical slot

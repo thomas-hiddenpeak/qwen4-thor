@@ -227,6 +227,7 @@ Q4T_TEST(full_attention_forward) {
   uint16_t* d_idx_raw = nullptr;
   uint16_t* d_idx_comp = nullptr;
   int* d_rope_pos = nullptr;
+  int* d_positions = nullptr;
   void* d_ws = nullptr;
   const size_t ws_bytes = 128u * 1024u * 1024u;
   const int kPageSize = q4t::model::kKvPageSize;
@@ -243,6 +244,8 @@ Q4T_TEST(full_attention_forward) {
       cudaMalloc(&d_idx_raw, idx_bytes) != cudaSuccess ||
       cudaMalloc(&d_idx_comp, idx_bytes) != cudaSuccess ||
       cudaMalloc(&d_rope_pos, 3u * static_cast<size_t>(kMaxLen) * 4) !=
+          cudaSuccess ||
+      cudaMalloc(&d_positions, static_cast<size_t>(kT) * sizeof(int)) !=
           cudaSuccess ||
       cudaMalloc(&d_ws, ws_bytes) != cudaSuccess) {
     std::printf("  cudaMalloc failed\n");
@@ -267,8 +270,10 @@ Q4T_TEST(full_attention_forward) {
   }
   cudaMemcpy(d_x, x_bf.data(), x_bf.size() * sizeof(uint16_t),
              cudaMemcpyHostToDevice);
+  cudaMemcpy(d_positions, positions.data(),
+             static_cast<size_t>(kT) * sizeof(int), cudaMemcpyHostToDevice);
 
-  s = FullAttentionForward(w, d_x, d_out, positions.data(), d_rope_pos, d_kv,
+  s = FullAttentionForward(w, d_x, d_out, d_positions, d_rope_pos, d_kv,
                            d_page_table, d_idx_raw, d_idx_comp, kT, d_ws,
                            ws_bytes, nullptr);
   if (!s.ok()) {
@@ -367,6 +372,7 @@ Q4T_TEST(full_attention_forward) {
   cudaFree(d_idx_raw);
   cudaFree(d_idx_comp);
   cudaFree(d_rope_pos);
+  cudaFree(d_positions);
   cudaFree(d_ws);
   w.Free();
 

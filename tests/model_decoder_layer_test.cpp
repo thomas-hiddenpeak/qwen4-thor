@@ -136,7 +136,7 @@ Q4T_TEST(decoder_layer_forward) {
 
   DecoderLayer layer;
   s = LoadDecoderLayer(*loader, kLayer, kHs, kHc, kLowrank, kEps, kE, kMoeIs,
-                       kSharedIs, kTopK, kMaxLen, &layer, nullptr);
+                       kSharedIs, kTopK, kMaxLen, 1, &layer, nullptr);
   if (!s.ok()) {
     std::printf("  load failed: %s\n", s.message().c_str());
     return false;
@@ -327,7 +327,7 @@ Q4T_TEST(decoder_layer_ple_injection) {
   const int hc_dim = kHc * kHs;
   DecoderLayer layer;
   s = LoadDecoderLayer(*loader, kPleLayer, kHs, kHc, kLowrank, kEps, kE,
-                       kMoeIs, kSharedIs, kTopK, kMaxLen, &layer, nullptr);
+                       kMoeIs, kSharedIs, kTopK, kMaxLen, 1, &layer, nullptr);
   if (!s.ok()) {
     std::printf("  load failed: %s\n", s.message().c_str());
     return false;

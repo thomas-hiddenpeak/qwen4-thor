@@ -964,3 +964,156 @@ Q4T_TEST(model_trunk_out) {
   m.Free();
   return true;
 }
+
+// B1: per-sequence recurrent-state pooling. Load the model with max_seq=4 and
+// run the SAME prompt through EVERY seq_id (0..3), serially. If the per-sequence
+// state slices (SSM/conv/PLE-conv/KV/page_table/idx/rope) are correctly
+// isolated, every sequence must produce bit-identical logits to seq_id 0 (they
+// run the same tokens over the same weights). Any wrong seq_id offset (e.g. a
+// pooled buffer sized for fewer sequences, or a slice pointer computed with the
+// wrong stride) makes a specific seq_id read/write out of bounds -> illegal
+// memory access or DIFFER. Testing all four seq_ids serially (not just 0/1)
+// catches stride bugs that only manifest at seq_id >= 2. This is the core
+// correctness gate for multi-request scheduling.
+Q4T_TEST(model_multi_seq_isolation) {
+  if (!CudaAvailable()) {
+    std::printf("  (skipped: no CUDA device)\n");
+    return true;
+  }
+  if (!FileExists(kIndex) || !FileExists(kPleSidecar)) {
+    std::printf("  (skipped: model or PLE sidecar not found)\n");
+    return true;
+  }
+
+  const int num_layers = [] {
+    const char* e = std::getenv("Q4T_MODEL_LAYERS");
+    return e ? std::atoi(e) : 4;  // 4 layers: linear + PLE + linear + full
+  }();
+
+  const int kMaxSeq = 4;
+  ModelConfig cfg;
+  cfg.model_dir = kModelDir;
+  cfg.index_path = kIndex;
+  cfg.num_layers = num_layers;
+  cfg.max_prefill = 8;
+  cfg.max_seq = kMaxSeq;
+  cfg.ple_sidecar = kPleSidecar;
+
+  Model m;
+  Status s = LoadModel(cfg, &m, nullptr);
+  if (!s.ok()) {
+    std::printf("  load failed: %s\n", s.message().c_str());
+    return false;
+  }
+  std::printf("  model loaded: %d layers, max_seq=%d\n", cfg.num_layers,
+              cfg.max_seq);
+
+  const int T = 4;
+  const int32_t ids[] = {846, 25, 1203, 321};
+  const int vocab = cfg.vocab;
+  const int n_decode = 2;
+
+  // One logit buffer per seq_id (prefill [T,vocab]; decode reuses row 0).
+  std::vector<uint16_t*> d_l(kMaxSeq, nullptr);
+  for (int q = 0; q < kMaxSeq; ++q) {
+    if (cudaMalloc(reinterpret_cast<void**>(&d_l[q]),
+                   static_cast<size_t>(T) * vocab * 2) != cudaSuccess) {
+      std::printf("  cudaMalloc failed (seq %d)\n", q);
+      for (int r = 0; r < q; ++r) cudaFree(d_l[r]);
+      m.Free();
+      return false;
+    }
+  }
+
+  // Argmax over a BF16 logits row (tie-break: lowest index, matches the
+  // greedy decoder).
+  auto argmax_row = [&](const uint16_t* row) {
+    int best = 0;
+    float best_v = -1e30f;
+    for (int v = 0; v < vocab; ++v) {
+      const uint32_t bits = static_cast<uint32_t>(row[v]) << 16;
+      float f;
+      std::memcpy(&f, &bits, sizeof(f));
+      if (f > best_v) {
+        best_v = f;
+        best = v;
+      }
+    }
+    return static_cast<int32_t>(best);
+  };
+
+  // Reference: run seq_id 0 first, capture its prefill + decode logits.
+  ModelSequence seq;
+  bool ok = true;
+  std::vector<uint16_t> ref_prefill(static_cast<size_t>(T) * vocab);
+  std::vector<std::vector<uint16_t>> ref_decode(n_decode,
+                                                std::vector<uint16_t>(vocab));
+  ok = ok && ModelBeginSequence(m, &seq, nullptr, 0).ok();
+  ok = ok &&
+       ModelPrefill(m, &seq, ids, T, d_l[0], nullptr, nullptr, nullptr, 0).ok();
+  cudaMemcpy(ref_prefill.data(), d_l[0], ref_prefill.size() * 2,
+             cudaMemcpyDeviceToHost);
+  const int32_t ref_first_tok =
+      argmax_row(ref_prefill.data() + static_cast<size_t>(T - 1) * vocab);
+  for (int step = 0; step < n_decode && ok; ++step) {
+    // Token fed at decode step `step`: step 0 = argmax(prefill last row);
+    // step s>0 = argmax(decode step s-1 logits).
+    const int32_t tok =
+        (step == 0) ? ref_first_tok : argmax_row(ref_decode[step - 1].data());
+    ok = ok && ModelDecodeStepSeq(m, &seq, tok, d_l[0], nullptr, nullptr, 0)
+                   .ok();
+    cudaMemcpy(ref_decode[step].data(), d_l[0], vocab * 2,
+               cudaMemcpyDeviceToHost);
+  }
+  ModelEndSequence(&seq);
+
+  // Now run seq_id 1..kMaxSeq-1, each must match the reference bit-for-bit.
+  for (int q = 1; q < kMaxSeq && ok; ++q) {
+    ModelSequence sq;
+    s = ModelBeginSequence(m, &sq, nullptr, q);
+    if (!s.ok()) {
+      std::printf("  seq%d BeginSequence failed: %s\n", q, s.message().c_str());
+      ok = false;
+      break;
+    }
+    s = ModelPrefill(m, &sq, ids, T, d_l[q], nullptr, nullptr, nullptr, q);
+    const cudaError_t ce = cudaGetLastError();
+    if (ce != cudaSuccess) {
+      std::printf("  seq%d prefill cudaGetLastError: %s\n", q,
+                  cudaGetErrorString(ce));
+    }
+    if (!s.ok()) {
+      std::printf("  seq%d prefill failed: %s\n", q, s.message().c_str());
+      ok = false;
+      break;
+    }
+    std::vector<uint16_t> p(static_cast<size_t>(T) * vocab);
+    cudaMemcpy(p.data(), d_l[q], p.size() * 2, cudaMemcpyDeviceToHost);
+    const bool prefill_match = (p == ref_prefill);
+    std::printf("  prefill seq%d-vs-seq0: %s\n", q,
+                prefill_match ? "identical" : "DIFFER");
+    ok = ok && prefill_match;
+    for (int step = 0; step < n_decode && ok; ++step) {
+      const int32_t tok =
+          (step == 0) ? ref_first_tok : argmax_row(ref_decode[step - 1].data());
+      s = ModelDecodeStepSeq(m, &sq, tok, d_l[q], nullptr, nullptr, q);
+      if (!s.ok()) {
+        std::printf("  seq%d decode step %d failed: %s\n", q, step,
+                    s.message().c_str());
+        ok = false;
+        break;
+      }
+      std::vector<uint16_t> d(vocab);
+      cudaMemcpy(d.data(), d_l[q], vocab * 2, cudaMemcpyDeviceToHost);
+      const bool match = (d == ref_decode[step]);
+      std::printf("  decode step %d seq%d-vs-seq0: %s\n", step, q,
+                  match ? "identical" : "DIFFER");
+      ok = ok && match;
+    }
+    ModelEndSequence(&sq);
+  }
+
+  for (int q = 0; q < kMaxSeq; ++q) cudaFree(d_l[q]);
+  m.Free();
+  return ok;
+}

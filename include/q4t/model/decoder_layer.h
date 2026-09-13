@@ -78,12 +78,20 @@ struct DecoderLayer {
 
   // Max sequence length the full-attention caches are sized for.
   int max_len = 2048;
+  // Number of concurrent sequences the recurrent state (ssm/conv/ple_conv)
+  // is pooled for. Sequence s uses the s-th slice. 1 = legacy layout.
+  int max_seq = 1;
 
   void Free();
-  // Reset the per-layer persistent state (linear SSM/conv, or full KV/indexer)
-  // to zero — i.e. prepare to process a fresh sequence from the start.
+  // Reset ONE sequence's per-layer state (linear SSM/conv slice, or the full
+  // KV/indexer) to zero — prepare to process a fresh sequence from the start.
+  // `seq_id` selects the pooled recurrent-state slice (0 = legacy single
+  // sequence). Full-attention KV/indexer are pooled over max_seq as well, but
+  // the reset zeroes the whole allocation (identity page mapping makes a
+  // per-sequence slice reset unsafe while other sequences are live; a fresh
+  // sequence always starts at logical position 0 and overwrites its pages).
   // const: only touches device memory, not the object's ownership.
-  void ResetState(cudaStream_t stream) const;
+  void ResetState(int seq_id, cudaStream_t stream) const;
 };
 
 // Device bytes required for the DecoderLayerForward `workspace` argument for a
@@ -112,8 +120,8 @@ size_t DecoderLayerWorkspaceBytes(int T, bool is_full_attention, bool has_ple,
 //   {base}.mlp  (MoE routed + router/shared)
 Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
                         int hc, int lowrank, float eps, int E, int moe_is,
-                        int shared_is, int k, int max_len, DecoderLayer* out,
-                        cudaStream_t stream);
+                        int shared_is, int k, int max_len, int max_seq,
+                        DecoderLayer* out, cudaStream_t stream);
 
 // Run one decoder layer forward for a single sequence (prefill).
 //
@@ -136,7 +144,8 @@ Status DecoderLayerForward(const DecoderLayer& layer, const uint16_t* hyper_inpu
                            const int* positions, const int* rope_pos, int T,
                            void* workspace, size_t workspace_bytes,
                            cudaStream_t stream, float* ssm_ckpt = nullptr,
-                           uint16_t* conv_ckpt = nullptr, int num_ckpt = 0);
+                           uint16_t* conv_ckpt = nullptr, int num_ckpt = 0,
+                           int seq_id = 0);
 
 }  // namespace model
 }  // namespace q4t

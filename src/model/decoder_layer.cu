@@ -219,40 +219,47 @@ void DecoderLayer::Free() {
   routed = quant::MoEWeightLayout();
 }
 
-void DecoderLayer::ResetState(cudaStream_t stream) const {
+void DecoderLayer::ResetState(int seq_id, cudaStream_t stream) const {
+  // Zero ONE sequence's recurrent-state slice. The pooled buffers are laid
+  // out as [max_seq, ...]; the per-sequence stride is expressed in BYTES and
+  // applied via a char* so the element size of the typed pointer (float vs
+  // uint16_t) cannot double the stride. (A previous version added the byte
+  // stride to the typed pointer, which for the uint16_t full-attention
+  // caches (kv_cache/idx_raw/idx_comp) doubled the stride and made seq_id
+  // >= 2 write past the allocation -> illegal memory access.)
+  const size_t seq = static_cast<size_t>(seq_id);
   if (is_full_attention) {
-    // Paged KV: allocation is n_pages * kKvPageSize positions (>= max_len).
-    // Zero the whole allocation (identity mapping makes it bit-identical to
-    // the legacy contiguous zeroing).
-    if (kv_cache) {
-      const int n_pages = (max_len + kKvPageSize - 1) / kKvPageSize;
-      const size_t kv_bytes =
-          static_cast<size_t>(n_pages) * kKvPageSize * 2 * 2 * 256 * 2;
-      cudaMemsetAsync(kv_cache, 0, kv_bytes, stream);
-    }
+    const size_t kv_bytes = static_cast<size_t>(
+        (max_len + kKvPageSize - 1) / kKvPageSize) * kKvPageSize * 2 * 2 *
+        256 * 2;  // one sequence's paged KV, in bytes
+    const size_t idx_bytes =
+        static_cast<size_t>(max_len) * 128 * 2;  // one sequence's idx, bytes
+    if (kv_cache)
+      cudaMemsetAsync(reinterpret_cast<char*>(kv_cache) + seq * kv_bytes, 0,
+                      kv_bytes, stream);
     if (idx_raw)
-      cudaMemsetAsync(idx_raw, 0,
-                      static_cast<size_t>(max_len) * 128 * 2, stream);
+      cudaMemsetAsync(reinterpret_cast<char*>(idx_raw) + seq * idx_bytes, 0,
+                      idx_bytes, stream);
     if (idx_comp)
-      cudaMemsetAsync(idx_comp, 0,
-                      static_cast<size_t>(max_len) * 128 * 2, stream);
+      cudaMemsetAsync(reinterpret_cast<char*>(idx_comp) + seq * idx_bytes, 0,
+                      idx_bytes, stream);
   } else {
     if (ssm_state)
-      cudaMemsetAsync(ssm_state, 0,
+      cudaMemsetAsync(ssm_state + seq * 48 * 128 * 128, 0,
                       static_cast<size_t>(48) * 128 * 128 * 4, stream);
     if (conv_state)
-      cudaMemsetAsync(conv_state, 0,
+      cudaMemsetAsync(conv_state + seq * 10240 * 3, 0,
                       static_cast<size_t>(10240) * 3 * 2, stream);
   }
   if (ple_conv_state)
-    cudaMemsetAsync(ple_conv_state, 0,
+    cudaMemsetAsync(ple_conv_state + seq * 10240 * 9, 0,
                     static_cast<size_t>(10240) * 9 * 2, stream);
 }
 
 Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
                         int hc, int lowrank, float eps, int E, int moe_is,
-                        int shared_is, int k, int max_len, DecoderLayer* out,
-                        cudaStream_t stream) {
+                        int shared_is, int k, int max_len, int max_seq,
+                        DecoderLayer* out, cudaStream_t stream) {
   out->layer_id = layer_id;
   out->hs = hs;
   out->hc = hc;
@@ -286,66 +293,75 @@ Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
       if (cudaMalloc(p, bytes) != cudaSuccess) return Status::Fail("cudaMalloc");
       return Status();
     };
-    // Paged KV: n_pages * kKvPageSize positions (>= max_len).
+    // Paged KV, POOLED over max_seq sequences: kv_cache [max_seq, n_pages,
+    // kKvPageSize, nkv, 2, hd], page_table [max_seq, max_len], idx_raw/comp
+    // [max_seq, max_len, idx_hd]. Sequence s uses slice s (seq_id offset).
     const int n_pages = (max_len + kKvPageSize - 1) / kKvPageSize;
+    const size_t seq = static_cast<size_t>(max_seq);
     const size_t kv_bytes =
-        static_cast<size_t>(n_pages) * kKvPageSize * nkv * 2 * hd * 2;
+        seq * static_cast<size_t>(n_pages) * kKvPageSize * nkv * 2 * hd * 2;
     if (!(s = alloc(reinterpret_cast<void**>(&out->kv_cache), kv_bytes)))
       return s;
-    // Page table: identity mapping (page_table[p] = p / kKvPageSize) makes
-    // the physical layout bit-identical to the legacy contiguous layout.
     if (!(s = alloc(reinterpret_cast<void**>(&out->page_table),
-                    static_cast<size_t>(max_len) * 4)))
+                    seq * static_cast<size_t>(max_len) * 4)))
       return s;
     if (!(s = alloc(reinterpret_cast<void**>(&out->idx_raw),
-                    static_cast<size_t>(max_len) * idx_hd * 2)))
+                    seq * static_cast<size_t>(max_len) * idx_hd * 2)))
       return s;
     if (!(s = alloc(reinterpret_cast<void**>(&out->idx_comp),
-                    static_cast<size_t>(max_len) * idx_hd * 2)))
+                    seq * static_cast<size_t>(max_len) * idx_hd * 2)))
       return s;
     cudaMemset(out->kv_cache, 0, kv_bytes);
-    cudaMemset(out->idx_raw, 0, static_cast<size_t>(max_len) * idx_hd * 2);
-    cudaMemset(out->idx_comp, 0, static_cast<size_t>(max_len) * idx_hd * 2);
-    std::vector<int> page_table(max_len);
-    for (int p = 0; p < max_len; ++p) page_table[p] = p / kKvPageSize;
+    cudaMemset(out->idx_raw, 0, seq * static_cast<size_t>(max_len) * idx_hd * 2);
+    cudaMemset(out->idx_comp, 0, seq * static_cast<size_t>(max_len) * idx_hd * 2);
+    std::vector<int> page_table(seq * static_cast<size_t>(max_len));
+    for (size_t i = 0; i < page_table.size(); ++i)
+      page_table[i] = (i % max_len) / kKvPageSize;  // identity per sequence
     if (cudaMemcpy(out->page_table, page_table.data(),
-                   static_cast<size_t>(max_len) * 4,
-                   cudaMemcpyHostToDevice) != cudaSuccess)
+                   page_table.size() * 4, cudaMemcpyHostToDevice) !=
+        cudaSuccess)
       return Status::Fail("cudaMemcpy page_table failed");
   } else {
     s = LoadLinearAttention(loader, base + ".linear_attn", hs, 16, 48, 128, 128,
                             4, eps, &out->linear, stream);
     if (!s.ok()) return s;
-    // Linear caches: ssm_state [nv, kd, vd], conv_state [in_qkv, conv_k-1].
+    // Linear caches, POOLED over max_seq concurrent sequences (Phase 2
+    // continuous batching): ssm_state [max_seq, nv, kd, vd], conv_state
+    // [max_seq, in_qkv, conv_k-1]. Sequence s uses slice s (seq_id offset);
+    // max_seq == 1 is the legacy single-sequence layout (bit-identical).
     const int nv = 48, kd = 128, vd = 128, in_qkv = 10240, conv_k = 4;
+    const size_t seq = static_cast<size_t>(max_seq);
     auto alloc = [](void** p, size_t bytes) -> Status {
       if (cudaMalloc(p, bytes) != cudaSuccess) return Status::Fail("cudaMalloc");
       return Status();
     };
     if (!(s = alloc(reinterpret_cast<void**>(&out->ssm_state),
-                    static_cast<size_t>(nv) * kd * vd * 4)))
+                    seq * static_cast<size_t>(nv) * kd * vd * 4)))
       return s;
     if (!(s = alloc(reinterpret_cast<void**>(&out->conv_state),
-                    static_cast<size_t>(in_qkv) * (conv_k - 1) * 2)))
+                    seq * static_cast<size_t>(in_qkv) * (conv_k - 1) * 2)))
       return s;
-    cudaMemset(out->ssm_state, 0, static_cast<size_t>(nv) * kd * vd * 4);
+    cudaMemset(out->ssm_state, 0, seq * static_cast<size_t>(nv) * kd * vd * 4);
     cudaMemset(out->conv_state, 0,
-               static_cast<size_t>(in_qkv) * (conv_k - 1) * 2);
+               seq * static_cast<size_t>(in_qkv) * (conv_k - 1) * 2);
   }
 
-  // 3b. PLE short-conv state [hc*hs, (K-1)*dilation] = [10240, 9] BF16.
-  //     Allocated for the PLE layer only (has_ple); zeroed (fresh sequence).
+  // 3b. PLE short-conv state, POOLED over max_seq sequences: [max_seq, hc*hs,
+  //     (K-1)*dilation] = [max_seq, 10240, 9] BF16. Allocated for the PLE
+  //     layer only (has_ple); zeroed (fresh sequence).
   if (out->has_ple) {
     const int hc_dim = hc * hs;
     const int state_len = (out->ple.conv_kernel - 1) * out->ple.conv_dilation;
+    const size_t seq = static_cast<size_t>(max_seq);
     auto alloc = [](void** p, size_t bytes) -> Status {
       if (cudaMalloc(p, bytes) != cudaSuccess) return Status::Fail("cudaMalloc");
       return Status();
     };
     if (!(s = alloc(reinterpret_cast<void**>(&out->ple_conv_state),
-                    static_cast<size_t>(hc_dim) * state_len * 2)))
+                    seq * static_cast<size_t>(hc_dim) * state_len * 2)))
       return s;
-    cudaMemset(out->ple_conv_state, 0, static_cast<size_t>(hc_dim) * state_len * 2);
+    cudaMemset(out->ple_conv_state, 0,
+               seq * static_cast<size_t>(hc_dim) * state_len * 2);
   }
 
   // 3. MoE (routed NVFP4 + BF16 router/shared).
@@ -371,9 +387,34 @@ Status DecoderLayerForward(const DecoderLayer& layer,
                            const int* positions, const int* rope_pos, int T,
                            void* workspace, size_t workspace_bytes,
                            cudaStream_t stream, float* ssm_ckpt,
-                           uint16_t* conv_ckpt, int num_ckpt) {
+                           uint16_t* conv_ckpt, int num_ckpt, int seq_id) {
   const int hs = layer.hs, hc_dim = layer.hc_dim, hc = layer.hc;
   if (T <= 0) return Status();
+  // Pooled recurrent-state slices for this sequence (seq_id selects the
+  // [max_seq, ...] slice; 0 = legacy single-sequence layout).
+  const size_t seq = static_cast<size_t>(seq_id);
+  float* ssm_state =
+      layer.ssm_state ? layer.ssm_state + seq * 48 * 128 * 128 : nullptr;
+  uint16_t* conv_state =
+      layer.conv_state ? layer.conv_state + seq * 10240 * 3 : nullptr;
+  uint16_t* ple_conv_state =
+      layer.ple_conv_state ? layer.ple_conv_state + seq * 10240 * 9 : nullptr;
+  const size_t kv_seq_bytes = static_cast<size_t>(
+      (layer.max_len + kKvPageSize - 1) / kKvPageSize) * kKvPageSize * 2 * 2 *
+      256 * 2;  // one sequence's paged KV (nkv=2, 2 for K+V, hd=256, bf16)
+  // kv_cache is a uint16_t* but kv_seq_bytes is a BYTE stride; offset via
+  // char* so the element size does not double the stride (mirrors ResetState).
+  uint16_t* kv_cache = layer.kv_cache
+                           ? reinterpret_cast<uint16_t*>(
+                                 reinterpret_cast<char*>(layer.kv_cache) +
+                                 seq * kv_seq_bytes)
+                           : nullptr;
+  int* page_table =
+      layer.page_table ? layer.page_table + seq * layer.max_len : nullptr;
+  uint16_t* idx_raw =
+      layer.idx_raw ? layer.idx_raw + seq * layer.max_len * 128 : nullptr;
+  uint16_t* idx_comp =
+      layer.idx_comp ? layer.idx_comp + seq * layer.max_len * 128 : nullptr;
 
   // Carve the workspace into per-submodule regions.
   const size_t attn_ws = layer.is_full_attention
@@ -433,7 +474,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     // d_ple_trunk = hyper_input + ple_out in one launch (no separate
     // PleAddTrunkKernel).
     s = PleLayerForward(layer.ple, ple_embeddings, hyper_input, d_ple_trunk,
-                        T, layer.ple_conv_state, d_ple_ws, ple_ws, stream,
+                        T, ple_conv_state, d_ple_ws, ple_ws, stream,
                         hyper_input);
     if (!s.ok()) {
       return s;
@@ -451,11 +492,11 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   // 2. attention block.
   if (layer.is_full_attention) {
     s = FullAttentionForward(layer.full, d_mixed, d_block, positions, rope_pos,
-                             layer.kv_cache, layer.page_table, layer.idx_raw,
-                             layer.idx_comp, T, d_attn_ws, attn_ws, stream);
+                             kv_cache, page_table, idx_raw, idx_comp, T,
+                             d_attn_ws, attn_ws, stream);
   } else {
-    s = LinearAttentionForward(layer.linear, d_mixed, d_block, layer.ssm_state,
-                               layer.conv_state, T, d_attn_ws, attn_ws, stream,
+    s = LinearAttentionForward(layer.linear, d_mixed, d_block, ssm_state,
+                               conv_state, T, d_attn_ws, attn_ws, stream,
                                ssm_ckpt, conv_ckpt, num_ckpt);
   }
   if (!s.ok()) {

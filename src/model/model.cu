@@ -184,7 +184,7 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   for (int l = 0; l < cfg.num_layers; ++l) {
     s = LoadDecoderLayer(*loader, l, cfg.hs, cfg.hc, cfg.lowrank, cfg.eps,
                          cfg.E, cfg.moe_is, cfg.shared_is, cfg.topk,
-                         cfg.max_len, &m->layers[l], stream);
+                         cfg.max_len, cfg.max_seq, &m->layers[l], stream);
     if (!s.ok()) return s;
   }
 
@@ -230,13 +230,19 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   if (!(s = alloc(reinterpret_cast<void**>(&m->d_positions),
                   max_t * sizeof(int))))
     return s;
-  // Persistent 3D MRoPE table: [3, max_len] (t, h, w) rows. Sized for the
-  // full sequence capacity (not max_prefill) because the compressed-key
-  // builder reads the rope position of a group's first token, which can be
-  // anywhere in the sequence during decode.
+  // Persistent 3D MRoPE table: [max_seq, 3, max_len] (t, h, w) rows, POOLED
+  // over concurrent sequences (Phase 2). Each sequence's rope coordinates are
+  // written at prefill and read across its decode steps, so the table must be
+  // per-sequence (a shared table would be clobbered by a concurrent prefill).
+  // Sized for the full sequence capacity (not max_prefill) because the
+  // compressed-key builder reads the rope position of a group's first token,
+  // which can be anywhere in the sequence during decode.
   if (!(s = alloc(reinterpret_cast<void**>(&m->d_rope_pos),
-                  3u * static_cast<size_t>(cfg.max_len) * sizeof(int))))
+                  static_cast<size_t>(cfg.max_seq) * 3u *
+                      static_cast<size_t>(cfg.max_len) * sizeof(int))))
     return s;
+  // Per-sequence mrope_position_delta (written at prefill, read at decode).
+  m->rope_delta.assign(static_cast<size_t>(cfg.max_seq), 0);
   if (!(s = alloc(reinterpret_cast<void**>(&m->d_emb),
                   max_t * cfg.hs * 2)))
     return s;
@@ -288,12 +294,30 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                  const int64_t* ids64, const int64_t* hist, int T,
                  uint16_t* logits, cudaStream_t stream,
                  uint16_t* trunk_out = nullptr, float* ssm_ckpt = nullptr,
-                 uint16_t* conv_ckpt = nullptr, int num_ckpt = 0) {
+                 uint16_t* conv_ckpt = nullptr, int num_ckpt = 0,
+                 int seq_id = 0) {
   const ModelConfig& cfg = m.cfg;
   const uint16_t* trunk = trunk_in;
   uint16_t* next = trunk2;
+  // Per-sequence 3D MRoPE table slice [3, max_len] (the pooled table is
+  // [max_seq, 3, max_len]; seq_id selects this sequence's rows).
+  const int* seq_rope_pos =
+      m.d_rope_pos + static_cast<size_t>(seq_id) * 3 * cfg.max_len;
+  // DIAG (Q4T_DIAG=1): check for async CUDA errors after each layer to
+  // localize illegal-memory-access sources during concurrency debugging.
+  const bool diag = std::getenv("Q4T_DIAG") != nullptr;
   int lin_idx = 0;  // running linear-layer index (for checkpoint offsets)
   for (int l = 0; l < cfg.num_layers; ++l) {
+    if (diag) {
+      const cudaError_t e = cudaGetLastError();
+      if (e != cudaSuccess) {
+        std::fprintf(stderr,
+                     "[q4t][diag] pre-layer %d (seq_id=%d T=%d): %s\n", l,
+                     seq_id, T, cudaGetErrorString(e));
+        return Status::Fail(std::string("diag pre-layer ") +
+                            std::to_string(l) + ": " + cudaGetErrorString(e));
+      }
+    }
     const uint16_t* ple_emb = nullptr;
     if (m.layers[l].has_ple) {
       Status s =
@@ -323,11 +347,22 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
           conv_ckpt + static_cast<size_t>(lin_idx) * num_ckpt * conv_elems;
     }
     Status s = DecoderLayerForward(m.layers[l], trunk, ple_emb, next,
-                                   m.d_positions, m.d_rope_pos, T, m.d_ws,
+                                   m.d_positions, seq_rope_pos, T, m.d_ws,
                                    m.ws_bytes, stream, layer_ssm_ckpt,
-                                   layer_conv_ckpt, num_ckpt);
+                                   layer_conv_ckpt, num_ckpt, seq_id);
     if (!s.ok()) return s;
     if (!m.layers[l].is_full_attention) lin_idx++;
+    if (diag) {
+      const cudaError_t e = cudaGetLastError();
+      if (e != cudaSuccess) {
+        std::fprintf(stderr,
+                     "[q4t][diag] post-layer %d (%s, seq_id=%d T=%d): %s\n", l,
+                     m.layers[l].is_full_attention ? "full" : "linear", seq_id,
+                     T, cudaGetErrorString(e));
+        return Status::Fail(std::string("diag post-layer ") +
+                            std::to_string(l) + ": " + cudaGetErrorString(e));
+      }
+    }
     const uint16_t* t = trunk;
     trunk = next;
     next = const_cast<uint16_t*>(t);
@@ -348,8 +383,8 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
 // Reset all per-layer persistent state (linear SSM/conv, full KV/indexer)
 // to zero — prepare to process a fresh sequence from the start.
 // const: ResetState only touches device memory, not the object.
-Status ResetAllLayers(const Model& m, cudaStream_t stream) {
-  for (const auto& l : m.layers) l.ResetState(stream);
+Status ResetAllLayers(const Model& m, cudaStream_t stream, int seq_id = 0) {
+  for (const auto& l : m.layers) l.ResetState(seq_id, stream);
   return Status();
 }
 
@@ -444,7 +479,7 @@ int BuildRopePositions(const int32_t* input_ids, int T, int m,
 Status RunPrefill(const Model& m, const int32_t* input_ids, int T,
                   uint16_t* logits, cudaStream_t stream,
                   uint16_t* trunk_out = nullptr,
-                  const VisionFeatures* vision = nullptr) {
+                  const VisionFeatures* vision = nullptr, int seq_id = 0) {
   const ModelConfig& cfg = m.cfg;
   // 1. ids + positions.
   if (cudaMemcpyAsync(m.d_ids, input_ids, T * sizeof(int32_t),
@@ -469,14 +504,14 @@ Status RunPrefill(const Model& m, const int32_t* input_ids, int T,
     const std::vector<std::array<int, 3>>* grids =
         (vision && !vision->grids.empty()) ? &vision->grids : nullptr;
     std::vector<int> rope_pos;
-    m.rope_delta = BuildRopePositions(input_ids, T, cfg.spatial_merge_size,
-                                      cfg.image_token_id, cfg.video_token_id,
-                                      cfg.max_len, grids ? *grids
-                                                        : std::vector<std::array<int, 3>>{},
-                                      &rope_pos);
-    if (cudaMemcpyAsync(m.d_rope_pos, rope_pos.data(),
-                        rope_pos.size() * sizeof(int), cudaMemcpyHostToDevice,
-                        stream) != cudaSuccess) {
+    m.rope_delta[seq_id] = BuildRopePositions(
+        input_ids, T, cfg.spatial_merge_size, cfg.image_token_id,
+        cfg.video_token_id, cfg.max_len,
+        grids ? *grids : std::vector<std::array<int, 3>>{}, &rope_pos);
+    // Write into this sequence's [3, max_len] slice of the pooled table.
+    if (cudaMemcpyAsync(m.d_rope_pos + static_cast<size_t>(seq_id) * 3 * cfg.max_len,
+                        rope_pos.data(), rope_pos.size() * sizeof(int),
+                        cudaMemcpyHostToDevice, stream) != cudaSuccess) {
       return Status::Fail("H2D rope_pos");
     }
   }
@@ -539,12 +574,12 @@ Status RunPrefill(const Model& m, const int32_t* input_ids, int T,
 
   // 5. Layer loop + head.
   return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), T,
-                   logits, stream, trunk_out);
+                   logits, stream, trunk_out, nullptr, nullptr, 0, seq_id);
 }
 
 Status ModelForward(const Model& m, const int32_t* input_ids, int T,
                     uint16_t* logits, cudaStream_t stream,
-                    const VisionFeatures* vision) {
+                    const VisionFeatures* vision, int seq_id) {
   const ModelConfig& cfg = m.cfg;
   if (T <= 0) return Status();
   if (T > cfg.max_prefill) {
@@ -552,14 +587,14 @@ Status ModelForward(const Model& m, const int32_t* input_ids, int T,
   }
   // Prefill of a fresh sequence starts from empty per-layer state (linear
   // SSM/conv, full KV/indexer). Reset so repeated calls are deterministic.
-  Status s = ResetAllLayers(m, stream);
+  Status s = ResetAllLayers(m, stream, seq_id);
   if (!s.ok()) return s;
-  return RunPrefill(m, input_ids, T, logits, stream, nullptr, vision);
+  return RunPrefill(m, input_ids, T, logits, stream, nullptr, vision, seq_id);
 }
 
 Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
                        const int32_t* history, uint16_t* logits,
-                       cudaStream_t stream, uint16_t* trunk_out) {
+                       cudaStream_t stream, uint16_t* trunk_out, int seq_id) {
   const ModelConfig& cfg = m.cfg;
   if (position < 0) return Status::Fail("ModelDecodeStep: position < 0");
   if (position >= cfg.max_len) {
@@ -583,10 +618,11 @@ Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
   //     is rope_pos[r * max_len + p] (layout [3, max_len]). Write the three
   //     rows at their strided offsets.
   {
-    const int rp = pos + m.rope_delta;
+    const int rp = pos + m.rope_delta[seq_id];
     const size_t ml = static_cast<size_t>(cfg.max_len);
+    int* seq_rope = m.d_rope_pos + static_cast<size_t>(seq_id) * 3 * ml;
     for (int r = 0; r < 3; ++r) {
-      if (cudaMemcpyAsync(m.d_rope_pos + r * ml + pos, &rp, sizeof(int),
+      if (cudaMemcpyAsync(seq_rope + r * ml + pos, &rp, sizeof(int),
                           cudaMemcpyHostToDevice, stream) != cudaSuccess) {
         return Status::Fail("H2D rope_pos");
       }
@@ -615,7 +651,7 @@ Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
 
   // 5. Layer loop + head.
   return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), 1,
-                   logits, stream, trunk_out);
+                   logits, stream, trunk_out, nullptr, nullptr, 0, seq_id);
 }
 
 // Batched decode over T tokens at absolute positions [base..base+T-1] WITHOUT
@@ -628,7 +664,8 @@ Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
 Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
                         int base_position, const int32_t* history,
                         int history_len, uint16_t* logits, cudaStream_t stream,
-                        uint16_t* trunk_out, bool save_checkpoints) {
+                        uint16_t* trunk_out, bool save_checkpoints,
+                        int seq_id) {
   const ModelConfig& cfg = m.cfg;
   if (T <= 0) return Status::Fail("ModelDecodeBatch: T must be > 0");
   if (T > cfg.max_prefill)
@@ -651,10 +688,11 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
   // so write the three rows at their strided [3, max_len] offsets.
   {
     const size_t ml = static_cast<size_t>(cfg.max_len);
+    int* seq_rope = m.d_rope_pos + static_cast<size_t>(seq_id) * 3 * ml;
     for (int t = 0; t < T; ++t) {
-      const int rp = base_position + t + m.rope_delta;
+      const int rp = base_position + t + m.rope_delta[seq_id];
       for (int r = 0; r < 3; ++r) {
-        if (cudaMemcpyAsync(m.d_rope_pos + r * ml + (base_position + t), &rp,
+        if (cudaMemcpyAsync(seq_rope + r * ml + (base_position + t), &rp,
                             sizeof(int), cudaMemcpyHostToDevice, stream) !=
             cudaSuccess)
           return Status::Fail("H2D rope_pos");
@@ -698,7 +736,8 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
   uint16_t* conv_ckpt = save_checkpoints ? m.d_verify_conv_ckpt : nullptr;
   const int num_ckpt = save_checkpoints ? (T - 1) : 0;
   return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), T,
-                   logits, stream, trunk_out, ssm_ckpt, conv_ckpt, num_ckpt);
+                   logits, stream, trunk_out, ssm_ckpt, conv_ckpt, num_ckpt,
+                   seq_id);
 }
 
 // Per-linear-layer SSM/conv element counts (assumes all linear layers share
@@ -747,11 +786,12 @@ Status ModelReserveVerifyCheckpoints(Model& m, int num_ckpt) {
 }
 
 Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx,
-                              cudaStream_t stream) {
+                              cudaStream_t stream, int seq_id) {
   if (!m.d_verify_ssm_ckpt || ckpt_idx < 0 || ckpt_idx >= m.verify_ckpt_cap)
     return Status::Fail("ModelRestoreCheckpoint: invalid ckpt");
   const LinCkptDims d = CollectLinCkptDims(m);
   const int cap = m.verify_ckpt_cap;
+  const size_t seq = static_cast<size_t>(seq_id);
   int lin_idx = 0;
   for (const auto& l : m.layers) {
     if (l.is_full_attention) continue;
@@ -761,11 +801,13 @@ Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx,
     const uint16_t* conv_src = m.d_verify_conv_ckpt +
                                (static_cast<size_t>(lin_idx) * cap + ckpt_idx) *
                                    d.conv_elems;
-    if (cudaMemcpyAsync(l.ssm_state, ssm_src, d.ssm_elems * sizeof(float),
+    // Restore into this sequence's pooled state slice.
+    float* ssm_dst = l.ssm_state + seq * d.ssm_elems;
+    uint16_t* conv_dst = l.conv_state + seq * d.conv_elems;
+    if (cudaMemcpyAsync(ssm_dst, ssm_src, d.ssm_elems * sizeof(float),
                         cudaMemcpyDeviceToDevice, stream) != cudaSuccess)
       return Status::Fail("ModelRestoreCheckpoint: D2D ssm");
-    if (cudaMemcpyAsync(l.conv_state, conv_src,
-                        d.conv_elems * sizeof(uint16_t),
+    if (cudaMemcpyAsync(conv_dst, conv_src, d.conv_elems * sizeof(uint16_t),
                         cudaMemcpyDeviceToDevice, stream) != cudaSuccess)
       return Status::Fail("ModelRestoreCheckpoint: D2D conv");
     lin_idx++;
@@ -778,12 +820,13 @@ Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx,
 // ---------------------------------------------------------------------------
 
 Status ModelBeginSequence(const Model& m, ModelSequence* seq,
-                          cudaStream_t stream) {
+                          cudaStream_t stream, int seq_id) {
   if (!seq) return Status::Fail("ModelBeginSequence: null seq");
-  Status s = ResetAllLayers(m, stream);
+  Status s = ResetAllLayers(m, stream, seq_id);
   if (!s.ok()) return s;
   seq->stage = ModelSequence::Stage::kPrefill;
   seq->position = 0;
+  seq->seq_id = seq_id;
   seq->history.clear();
   return Status();
 }
@@ -791,7 +834,7 @@ Status ModelBeginSequence(const Model& m, ModelSequence* seq,
 Status ModelPrefill(const Model& m, ModelSequence* seq,
                     const int32_t* input_ids, int T, uint16_t* logits,
                     cudaStream_t stream, uint16_t* trunk_out,
-                    const VisionFeatures* vision) {
+                    const VisionFeatures* vision, int seq_id) {
   if (!seq) return Status::Fail("ModelPrefill: null seq");
   if (seq->stage != ModelSequence::Stage::kPrefill) {
     return Status::Fail("ModelPrefill: sequence not in prefill stage");
@@ -802,7 +845,8 @@ Status ModelPrefill(const Model& m, ModelSequence* seq,
     return Status::Fail("ModelPrefill: T exceeds max_prefill");
   }
   // Per-layer state was reset by ModelBeginSequence; run the prefill.
-  Status s = RunPrefill(m, input_ids, T, logits, stream, trunk_out, vision);
+  Status s = RunPrefill(m, input_ids, T, logits, stream, trunk_out, vision,
+                        seq_id);
   if (!s.ok()) return s;
   // Handoff point: per-layer KV/SSM state is now ready for decode (or for
   // PD separation — the runner can take ownership of the state here).
@@ -814,7 +858,8 @@ Status ModelPrefill(const Model& m, ModelSequence* seq,
 
 Status ModelDecodeStepSeq(const Model& m, ModelSequence* seq,
                           int32_t token_id, uint16_t* logits,
-                          cudaStream_t stream, uint16_t* trunk_out) {
+                          cudaStream_t stream, uint16_t* trunk_out,
+                          int seq_id) {
   if (!seq) return Status::Fail("ModelDecodeStepSeq: null seq");
   if (seq->stage != ModelSequence::Stage::kDecode) {
     return Status::Fail("ModelDecodeStepSeq: sequence not in decode stage");
@@ -827,7 +872,7 @@ Status ModelDecodeStepSeq(const Model& m, ModelSequence* seq,
   // history = tokens already seen (prompt + previously decoded); the PLE
   // n-gram context for this token is the last (ngram_size-1) of them.
   Status s = ModelDecodeStep(m, token_id, position, seq->history.data(),
-                             logits, stream, trunk_out);
+                             logits, stream, trunk_out, seq_id);
   if (!s.ok()) return s;
   // Advance the state machine.
   seq->position = position + 1;

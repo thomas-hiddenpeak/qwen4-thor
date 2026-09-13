@@ -7,9 +7,11 @@
 //   POST /v1/chat/completions   -> 200 OpenAI chat completion (stream or not)
 //
 // The model is stateful (per-layer SSM/conv/KV caches persist across decode
-// steps), so all requests are serialized behind a single mutex: each request
-// runs a fresh prefill (which resets per-layer state) followed by a greedy
-// decode loop. This is correct but not concurrent; concurrency is Phase 2.
+// steps). B1 makes requests concurrent: each client is handled on its own
+// thread + CUDA stream, the per-sequence recurrent state is pooled and
+// isolated by seq_id (see ServerOptions::max_seq), and the model's single
+// shared per-forward scratch is serialized behind a forward-level mutex. CPU
+// post-processing (D2H/argmax/tokenize/SSE) overlaps across requests.
 #pragma once
 
 #include <array>
@@ -33,6 +35,13 @@ struct ServerOptions {
   std::string model_dir;
   int max_tokens = 256;  // default cap when the request omits max_tokens
   int max_prefill = 0;  // 0 = use ModelConfig default (2048); >0 overrides
+  // Max concurrent sequences (per-sequence recurrent-state pool size). Each
+  // in-flight request owns one seq_id; the model's SSM/conv/PLE-conv/KV/indexer
+  // state is pooled [max_seq, ...] so concurrent requests are isolated.
+  int max_seq = 8;
+  // Disable the MTP draft model (plain greedy decode only). Useful for
+  // isolating MTP-specific concurrency issues from the base scheduler.
+  bool no_mtp = false;
 };
 
 // One multimodal content part: a single image (1 frame) or a video (N frames).
@@ -59,8 +68,9 @@ class ChatServer {
   // running.
   Status Start(const ServerOptions& opts);
 
-  // Accept loop: blocks, handling one client at a time, until an error or
-  // closed. Returns the exit Status.
+  // Accept loop: blocks, spawning one thread per client (concurrent requests;
+  // see the B1 scheduling note above), until an error or closed. Returns the
+  // exit Status.
   Status Run();
 
  private:
@@ -70,6 +80,24 @@ class ChatServer {
   void HandleHealth(int fd);
   void HandleModels(int fd);
   void HandleChat(int fd, const std::string& body);
+
+  // B1 multi-request scheduling. The model's per-forward scratch (GEMM ws,
+  // PLE gather, MTP speculative buffers) is a single shared allocation, so all
+  // model forwards are serialized behind `model_mu_`; the per-sequence
+  // recurrent state is pooled and isolated by seq_id. CPU post-processing
+  // (D2H/argmax/tokenize/SSE) and encoding run OUTSIDE `model_mu_` on a
+  // per-request CUDA stream, so one request's D2H overlaps another request's
+  // forward on the GPU.
+  int AllocSeqId();  // -1 if the pool is exhausted (caller returns 503)
+  void FreeSeqId(int seq_id);
+  std::mutex model_mu_;   // serializes all model forwards (main + MTP + vision)
+  std::mutex seq_mu_;     // guards the seq_id free pool
+  // The tokenizer's ICU 74 regex engine is NOT thread-safe (concurrent Encode
+  // trips U_INTERNAL_PROGRAM_ERROR), so all Encode/Decode calls are serialized
+  // behind tok_mu_ even though the rest of the tokenizer is immutable.
+  std::mutex tok_mu_;
+  std::vector<bool> seq_free_;  // [max_seq]; true = available
+  int max_seq_ = 8;
 
   // Multimodal pipeline: run the image/video processor + vision tower over the
   // vision items (in content-part order) and return the merged visual features
@@ -108,7 +136,6 @@ class ChatServer {
   std::unique_ptr<vision::VisionTower> vision_tower_;
   vision::ProcessorConfig proc_cfg_;       // image budget (65536/16777216)
   vision::ProcessorConfig video_proc_cfg_;  // video budget (4096/25165824)
-  std::mutex mu_;
 };
 
 }  // namespace server

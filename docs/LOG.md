@@ -5,6 +5,67 @@
 
 ---
 
+## 2026-09-13 — B1 多序列隔离两个 bug 修复 (per-seq 状态池化收尾)
+
+**背景**
+B1 (per-sequence recurrent-state pooling + seq_id 穿透) 的状态池化与
+seq_id 穿透代码已写完, 但新增的 `model_multi_seq_isolation` 测试
+(4 层含 full attention, max_seq=4, 4 个 seq_id 串行跑同一 prompt 要求
+逐位一致) **非确定性失败**: 有时 seq2 prefill 直接 "illegal memory
+access", 有时 seq1 prefill DIFFER。3 层 (全 linear) 变体稳定通过,
+指向 full attention 路径。
+
+**根因 1 — `uint16_t*` 指针上加字节步长 (B1 引入, 越界写)**
+`DecoderLayer::ResetState` 与 `DecoderLayerForward` 对 full-attention
+的 `kv_cache` (类型 `uint16_t*`) 用**字节数**做 per-seq 偏移
+(`kv_cache + seq_id * kv_bytes`)。指针算术按元素计, 实际字节偏移被
+**放大 2 倍**: seq 0/1 落在 64 MiB 分配内, seq 2 写到 [64,80) MiB
+越界。linear 分支 (`ssm_state` float* / `conv_state` uint16_t*) 的
+偏移用的是元素数, 一直正确 —— 所以 3 层变体从不触发。越界写落已映射
+区时静默损坏 (表现为 DIFFER), 落未映射区时 hard fault (表现为
+illegal access), 落点取决于分配器布局 → 非确定性。
+**修复**: 两处统一改为 `reinterpret_cast<char*>(ptr) + seq * bytes`
+(字节偏移走 char*, 与指针元素类型解耦), 并加注释说明陷阱。
+
+**根因 2 — float `atomicAdd` 求和顺序非确定 (既有, 本次暴露)**
+`full_attention.cu` 四个 RMSNorm 类 kernel (`QKDeinterleaveNormKernel`
+q/k 两分支、`IndexerNormRopeKernel`、`BuildCompressedKKernel`) 用
+`atomicAdd(&head_sum[0], x*x)` 到 shared float 求平方和。float 加法
+不满足结合律, atomicAdd 完成顺序非确定 → 求和结果运行间 bit 级
+漂移。既有 `full_attention_forward` 单元测试只跑一次且对 CPU 参考
+用 3e-2 容差, 从不暴露; multi_seq 测试要求跨 seq **逐位一致** 才
+触发 (表现为 seq0 自己重跑就间歇 DIFFER, 与隔离无关)。
+**修复**: 新增确定性 `BlockSum` 设备函数 (warp shuffle 固定 lane
+序 + warp 间固定顺序累加, 结果跨运行 bit 一致), 替换全部 4 处
+float atomicAdd。`full_attention_forward` 对 CPU 参考仍通过
+(数值不变, 仅求和顺序固定)。
+
+**定位过程 (方法记录)**
+compute-sanitizer 报 "failed to handle a hardware exception" 无法
+归因 (OOB 写野地址); 逐层/逐 kernel 加 `cudaStreamSynchronize` +
+`cudaGetLastError` 探针 (Q4T_LAYER_SYNC / Q4T_FA_DIAG /
+Q4T_RESET_DIAG / Q4T_ALLOC_DIAG) 逐步收敛: 分配诊断确认 64 MiB
+正确 → 逐 memset 诊断锁定 seq 2 kv_cache memset → 指针算术核对
+发现字节/元素混淆。self-consistency 探针 (seq0 同 prompt 重跑 5 次)
+区分出"非确定性"与"隔离 bug"两个独立问题。
+
+**验证**
+- `model_multi_seq_isolation`: 4 个 seq_id prefill+decode 全部与
+  参考逐位一致, 连跑多次稳定 PASS (修复前 ~50% 失败率)。
+- 全量 64 项测试 0 failed, 零警告 (`-Wall -Wextra`)。
+- `full_attention_forward` (CPU 参考) / `decoder_layer_forward` /
+  `model_forward_e2e` 等既有回归全绿。
+- **serve 多请求 E2E**: `q4t serve --max-seq 4 --no-mtp` 下 3 个并发
+  请求 (不同 prompt, 不同 seq_id) 全部成功返回且语义正确 (France→
+  Paris / 2+2→4 / largest planet 正确展开), serve 日志无
+  error/illegal/503。多 seq_id 调度 (seq 池 + model_mu_ 串行 forward +
+  tok_mu_ 串行 tokenize) 在真实并发下验证通过。
+
+**下一步**
+B1 全部闭合。进入 B2: token 级打包 (GDN 多序列并行 + GEMM 打包)。
+
+---
+
 ## 2026-09-12 — 验证标准体系 (Phase 2 完成标准, 已闭合)
 
 **背景**

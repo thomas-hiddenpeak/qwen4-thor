@@ -14,6 +14,7 @@
 #include <cstring>
 #include <ctime>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include <cuda_bf16.h>
@@ -339,6 +340,11 @@ Status ChatServer::Start(const ServerOptions& opts) {
   cfg.index_path = opts.model_dir + "/model.safetensors.index.json";
   cfg.ple_sidecar = opts.model_dir + "/ple/qwen3.8-flash-next-ple-fp8.bin";
   if (opts.max_prefill > 0) cfg.max_prefill = opts.max_prefill;
+  // B1: pool the per-sequence recurrent state for up to max_seq concurrent
+  // requests. Each in-flight request owns one seq_id.
+  max_seq_ = opts.max_seq > 0 ? opts.max_seq : 8;
+  cfg.max_seq = max_seq_;
+  seq_free_.assign(static_cast<size_t>(max_seq_), true);
   s = model::LoadModel(cfg, &model_, nullptr);
   if (!s.ok()) {
     tok_.reset();
@@ -347,8 +353,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
 
   // Load the MTP draft model (optional). Borrowed embed/lm_head from the main
   // model. On failure the server falls back to plain decode (mirrors the CLI
-  // --mtp behavior).
-  {
+  // --mtp behavior). Skipped entirely when opts.no_mtp is set.
+  if (!opts.no_mtp) {
     mtp::MtpConfig mcfg;
     mcfg.mtp_dir = opts.model_dir + "/mtp";
     mcfg.max_prefill = cfg.max_prefill;  // MTP draft-extend runs over the whole
@@ -454,8 +460,16 @@ Status ChatServer::Run() {
     }
     int nodelay = 1;
     ::setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &nodelay, sizeof(nodelay));
-    HandleClient(fd);
-    ::close(fd);
+    // B1: handle each client on its own thread so multiple requests are
+    // processed concurrently. The model forwards are serialized behind
+    // model_mu_ (see HandleChat); CPU post-processing (D2H/argmax/tokenize/SSE)
+    // overlaps across requests. Run() blocks in the accept loop for the
+    // server's lifetime, so the ChatServer object outlives the detached
+    // request threads.
+    std::thread([this, fd]() {
+      HandleClient(fd);
+      ::close(fd);
+    }).detach();
   }
 }
 
@@ -484,6 +498,23 @@ void ChatServer::Dispatch(int fd, const std::string& method,
   }
   SendSimple(fd, 404, "Not Found",
              "{\"error\":{\"message\":\"not found\"}}", "application/json");
+}
+
+int ChatServer::AllocSeqId() {
+  const std::lock_guard<std::mutex> lock(seq_mu_);
+  for (int i = 0; i < max_seq_; ++i) {
+    if (seq_free_[static_cast<size_t>(i)]) {
+      seq_free_[static_cast<size_t>(i)] = false;
+      return i;
+    }
+  }
+  return -1;
+}
+
+void ChatServer::FreeSeqId(int seq_id) {
+  if (seq_id < 0) return;
+  const std::lock_guard<std::mutex> lock(seq_mu_);
+  if (seq_id < max_seq_) seq_free_[static_cast<size_t>(seq_id)] = true;
 }
 
 void ChatServer::HandleHealth(int fd) {
@@ -683,14 +714,48 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     return;
   }
 
-  // Serialize: the model is stateful, one request at a time.
-  const std::lock_guard<std::mutex> lock(mu_);
+  // B1 multi-request scheduling: each request runs on its own thread. All
+  // GPU work uses the DEFAULT stream (the model's per-forward scratch is a
+  // single shared allocation, and per-sequence state is pooled + isolated by
+  // seq_id), so model forwards are serialized behind model_mu_ for both
+  // scratch safety and GPU-stream ordering. CPU post-processing (D2H, argmax,
+  // tokenize, SSE) and encoding run OUTSIDE model_mu_, overlapping another
+  // request's GPU forward.
+  const int seq_id = AllocSeqId();
+  if (seq_id < 0) {
+    SendError(fd, 503, "server busy: all sequences in use, retry");
+    return;
+  }
+  // Per-request device buffers (freed by `cleanup` on any exit path).
+  uint16_t* d_logits = nullptr;
+  uint16_t* d_trunk_full = nullptr;
+  uint16_t* d_vfeats = nullptr;
+  auto cleanup = [&]() {
+    if (d_logits) {
+      cudaFree(d_logits);
+      d_logits = nullptr;
+    }
+    if (d_trunk_full) {
+      cudaFree(d_trunk_full);
+      d_trunk_full = nullptr;
+    }
+    if (d_vfeats) {
+      cudaFree(d_vfeats);
+      d_vfeats = nullptr;
+    }
+    FreeSeqId(seq_id);
+  };
 
-  // 1. Encode prompt.
+  // 1. Encode prompt (CPU, outside model_mu_). The tokenizer's ICU regex
+  // engine is not thread-safe, so Encode is serialized behind tok_mu_.
   std::vector<std::uint32_t> prompt_u32;
-  s = tok_->Encode(prompt, &prompt_u32);
+  {
+    const std::lock_guard<std::mutex> lock(tok_mu_);
+    s = tok_->Encode(prompt, &prompt_u32);
+  }
   if (!s.ok()) {
     SendError(fd, 400, "encode failed: " + s.message());
+    cleanup();
     return;
   }
   std::vector<int32_t> ids(prompt_u32.begin(), prompt_u32.end());
@@ -701,16 +766,22 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // those token embeddings (in prompt position order).
   const int img_id = model_.cfg.image_token_id;
   const int vid_id = model_.cfg.video_token_id;
-  uint16_t* d_vfeats = nullptr;
   model::VisionFeatures vfeats;
   if (!items.empty()) {
     std::vector<int> counts;
     std::vector<std::array<int, 3>> grids;
     std::string verr;
-    if (!RunVisionPipeline(items, &d_vfeats, &vfeats.num_tokens, &counts,
-                           &grids, &verr)) {
-      SendError(fd, 400, verr);
-      return;
+    // The vision tower uses a shared workspace, so its forward is serialized
+    // behind model_mu_ (the same lock that serializes the main model). The
+    // pipeline runs on the default stream and self-synchronizes internally.
+    {
+      const std::lock_guard<std::mutex> lock(model_mu_);
+      if (!RunVisionPipeline(items, &d_vfeats, &vfeats.num_tokens, &counts,
+                             &grids, &verr)) {
+        SendError(fd, 400, verr);
+        cleanup();
+        return;
+      }
     }
     vfeats.grids = std::move(grids);
     // Split the per-item counts (in item order) into image / video counts,
@@ -725,7 +796,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                                        img_id, vid_id, img_counts, vid_counts,
                                        &expanded)) {
       SendError(fd, 400, "multimodal count mismatch in prompt");
-      cudaFree(d_vfeats);
+      cleanup();
       return;
     }
     ids = std::move(expanded);
@@ -736,14 +807,14 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     SendError(fd, 400,
               "prompt too long: " + std::to_string(T) + " tokens > " +
                   std::to_string(max_prefill_) + " max prefill");
-    cudaFree(d_vfeats);
+    cleanup();
     return;
   }
   if (T >= max_len_) {
     SendError(fd, 400,
               "prompt too long for context: " + std::to_string(T) +
                   " tokens >= " + std::to_string(max_len_) + " max_len");
-    cudaFree(d_vfeats);
+    cleanup();
     return;
   }
 
@@ -751,42 +822,24 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   const int eos = static_cast<int>(model_.cfg.eos_token_id);
   // d_logits must hold T rows (prefill lm_head GEMM outputs [T, vocab]).
   // Decode steps write 1 row (T=1) to row 0, which fits within this allocation.
-  uint16_t* d_logits = nullptr;
   if (cudaMalloc(reinterpret_cast<void**>(&d_logits),
                  static_cast<size_t>(T) * vocab * 2) != cudaSuccess) {
     SendError(fd, 500, "cudaMalloc logits failed");
-    cudaFree(d_vfeats);
+    cleanup();
     return;
   }
   // MTP: prefill trunk_out buffer (pre-final-mixer multi stream [T, hc*hs])
   // for the draft-extend. Allocated only when MTP is loaded.
-  uint16_t* d_trunk_full = nullptr;
   if (mtp_loaded_) {
     const size_t hc_dim =
         static_cast<size_t>(mtp_.cfg.hc) * static_cast<size_t>(mtp_.cfg.hs);
     if (cudaMalloc(reinterpret_cast<void**>(&d_trunk_full),
                    static_cast<size_t>(T) * hc_dim * 2) != cudaSuccess) {
-      cudaFree(d_logits);
-      cudaFree(d_vfeats);
       SendError(fd, 500, "cudaMalloc trunk failed");
+      cleanup();
       return;
     }
   }
-  // Release the per-request device buffers on any exit path.
-  auto cleanup = [&]() {
-    if (d_logits) {
-      cudaFree(d_logits);
-      d_logits = nullptr;
-    }
-    if (d_trunk_full) {
-      cudaFree(d_trunk_full);
-      d_trunk_full = nullptr;
-    }
-    if (d_vfeats) {
-      cudaFree(d_vfeats);
-      d_vfeats = nullptr;
-    }
-  };
   std::vector<uint16_t> h_logits(static_cast<size_t>(vocab));
 
   auto argmax = [&](const uint16_t* h) {
@@ -804,18 +857,35 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     return best;
   };
 
-  // 2. Prefill (PD-ready 阶段边界 API: Begin -> Prefill).
+  // 2. Prefill (PD-ready 阶段边界 API: Begin -> Prefill). The forward uses the
+  // shared per-forward scratch, so it is serialized behind model_mu_; the
+  // per-sequence recurrent state is isolated by seq_id. All GPU work uses the
+  // default stream, so the forward is ordered with the D2H below.
   model::ModelSequence seq;
-  s = model::ModelBeginSequence(model_, &seq, nullptr);
-  if (!s.ok()) {
-    cleanup();
-    SendError(fd, 500, "begin sequence failed: " + s.message());
-    return;
-  }
   const model::VisionFeatures* vptr =
       (vfeats.num_tokens > 0) ? &vfeats : nullptr;
-  s = model::ModelPrefill(model_, &seq, ids.data(), T, d_logits, nullptr,
-                          mtp_loaded_ ? d_trunk_full : nullptr, vptr);
+  {
+    const std::lock_guard<std::mutex> lock(model_mu_);
+    s = model::ModelBeginSequence(model_, &seq, nullptr, seq_id);
+    if (s.ok()) {
+      s = model::ModelPrefill(model_, &seq, ids.data(), T, d_logits, nullptr,
+                              mtp_loaded_ ? d_trunk_full : nullptr, vptr,
+                              seq_id);
+    }
+  }
+  // DIAG: the prefill kernels are async; surface any launch/async error now
+  // (otherwise it shows up later at the next sync point as a misleading
+  // "memset"/"H2D" failure).
+  {
+    const cudaError_t se = cudaStreamSynchronize(nullptr);
+    const cudaError_t le = cudaGetLastError();
+    if (se != cudaSuccess || le != cudaSuccess) {
+      std::fprintf(stderr,
+                   "[q4t][diag] prefill seq_id=%d T=%d streamSync=%s "
+                   "lastErr=%s\n",
+                   seq_id, T, cudaGetErrorString(se), cudaGetErrorString(le));
+    }
+  }
   if (!s.ok()) {
     model::ModelEndSequence(&seq);
     cleanup();
@@ -841,9 +911,15 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   int next_token = -1;
   std::string finish_reason = "stop";
 
-  // First decode token comes from the prefill's LAST position (row T-1).
-  cudaMemcpy(h_logits.data(), d_logits + static_cast<size_t>(T - 1) * vocab,
-             static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost);
+  // First decode token comes from the prefill's LAST position (row T-1). The
+  // D2H (outside the lock) runs on the default stream; synchronize before the
+  // host argmax so h_logits is fully populated (the original serial code relied
+  // on the next forward's H2D to implicitly order this, but the lock now
+  // separates them).
+  cudaMemcpyAsync(h_logits.data(), d_logits + static_cast<size_t>(T - 1) * vocab,
+                  static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost,
+                  nullptr);
+  cudaStreamSynchronize(nullptr);
   next_token = argmax(h_logits.data());
 
   // MTP init (mirrors the CLI --mtp path): fresh draft KV, bonus token b =
@@ -853,74 +929,94 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   bool use_mtp = mtp_loaded_;
   int32_t mtp_b = -1, mtp_d0 = -1;
   if (use_mtp) {
-    s = mtp::MtpResetState(mtp_, nullptr);
-    if (s.ok()) {
-      mtp_b = next_token;
-      // EAGLE shift: shifted_ids[p] = t_{p+1}, with t_P := b at the tail.
-      std::vector<int32_t> shifted(T);
-      for (int i = 0; i < T - 1; ++i) shifted[i] = ids[i + 1];
-      shifted[T - 1] = mtp_b;
-      std::vector<int> pos(T);
-      for (int i = 0; i < T; ++i) pos[i] = i;
-      s = mtp::MtpDraftExtend(mtp_, shifted.data(), d_trunk_full, pos.data(),
-                              T, &mtp_d0, d_g_, nullptr);
+    // B1: MTP is single-sequence. The draft model has a single shared KV +
+    // rolling trunk buffer (d_g_/d_g_next_), and MtpSpeculativeStep resets the
+    // draft KV each request, so two concurrent MTP requests would corrupt each
+    // other's draft state. Hold model_mu_ for the ENTIRE MTP path (init + the
+    // whole speculative decode loop, including the d_g_ swap) so MTP requests
+    // are mutually exclusive. (Multi-request MTP is B2.) Plain-decode requests
+    // still run concurrently with each other.
+    {
+      const std::lock_guard<std::mutex> lock(model_mu_);
+      // MTP init: fresh draft KV, bonus token b = t_P (the first decode token),
+      // draft-extend over the prompt to build the draft KV[0..P-1] and seed the
+      // first speculative step (d0 + g). On any failure fall back to plain
+      // decode (the main seq is still usable).
+      s = mtp::MtpResetState(mtp_, nullptr);
       if (s.ok()) {
-        s = model::ModelReserveVerifyCheckpoints(model_, mtp_k_);
-        if (s.ok())
-          s = mtp::MtpReserveScratch(mtp_, mtp_k_ + 1);
+        mtp_b = next_token;
+        // EAGLE shift: shifted_ids[p] = t_{p+1}, with t_P := b at the tail.
+        std::vector<int32_t> shifted(T);
+        for (int i = 0; i < T - 1; ++i) shifted[i] = ids[i + 1];
+        shifted[T - 1] = mtp_b;
+        std::vector<int> pos(T);
+        for (int i = 0; i < T; ++i) pos[i] = i;
+        s = mtp::MtpDraftExtend(mtp_, shifted.data(), d_trunk_full, pos.data(),
+                                T, &mtp_d0, d_g_, nullptr);
+        if (s.ok()) {
+          s = model::ModelReserveVerifyCheckpoints(model_, mtp_k_);
+          if (s.ok())
+            s = mtp::MtpReserveScratch(mtp_, mtp_k_ + 1);
+        }
       }
-    }
-    if (!s.ok()) {
-      std::fprintf(stderr,
-                   "[q4t] MTP init failed (%s); plain decode for this "
-                   "request\n",
-                   s.message().c_str());
-      use_mtp = false;
-    }
-  }
+      if (!s.ok()) {
+        std::fprintf(stderr,
+                     "[q4t] MTP init failed (%s); plain decode for this "
+                     "request\n",
+                     s.message().c_str());
+        use_mtp = false;
+      }
 
-  if (use_mtp) {
-    // Speculative decode: each step emits the bonus b + accepted drafts and
-    // yields the next (b, d0, g). MtpSpeculativeStep advances the main seq
-    // over exactly the accepted prefix (lazy verification, no rollback).
-    int32_t accepted_tokens[64];
-    int accepted_count_tmp = 0;
-    bool done = false;
-    while (!done && static_cast<int>(generated.size()) < max_tokens) {
-      int32_t next_b = -1, next_d0 = -1;
-      s = mtp::MtpSpeculativeStep(model_, mtp_, &seq, mtp_b, mtp_d0, d_g_,
-                                  mtp_k_, accepted_tokens, &accepted_count_tmp,
-                                  &next_b, &next_d0, d_g_next_, nullptr);
-      if (!s.ok() || accepted_count_tmp <= 0) break;
-      for (int i = 0; i < accepted_count_tmp &&
-                          static_cast<int>(generated.size()) < max_tokens;
-           ++i) {
-        const int32_t tok_id = accepted_tokens[i];
-        generated.push_back(tok_id);
-        if (stream) {
-          std::vector<std::uint32_t> one(1, static_cast<std::uint32_t>(tok_id));
-          std::string piece;
-          if (tok_->Decode(one, true, &piece).ok())
-            WriteAll(fd, SseChunk(id, model_field, "", piece, "", 0));
+      // Speculative decode loop (still under model_mu_): each step emits the
+      // bonus b + accepted drafts and yields the next (b, d0, g).
+      // MtpSpeculativeStep advances the main seq over exactly the accepted
+      // prefix (lazy verification, no rollback).
+      if (use_mtp) {
+        int32_t accepted_tokens[64];
+        int accepted_count_tmp = 0;
+        bool done = false;
+        while (!done && static_cast<int>(generated.size()) < max_tokens) {
+          int32_t next_b = -1, next_d0 = -1;
+          s = mtp::MtpSpeculativeStep(model_, mtp_, &seq, mtp_b, mtp_d0, d_g_,
+                                      mtp_k_, accepted_tokens,
+                                      &accepted_count_tmp, &next_b, &next_d0,
+                                      d_g_next_, nullptr);
+          if (!s.ok() || accepted_count_tmp <= 0) break;
+          for (int i = 0; i < accepted_count_tmp &&
+                              static_cast<int>(generated.size()) < max_tokens;
+               ++i) {
+            const int32_t tok_id = accepted_tokens[i];
+            generated.push_back(tok_id);
+            if (stream) {
+              std::vector<std::uint32_t> one(
+                  1, static_cast<std::uint32_t>(tok_id));
+              std::string piece;
+              {
+                const std::lock_guard<std::mutex> lock(tok_mu_);
+                if (tok_->Decode(one, true, &piece).ok())
+                  WriteAll(fd, SseChunk(id, model_field, "", piece, "", 0));
+              }
+            }
+            if (tok_id == eos) {
+              done = true;
+              break;
+            }
+          }
+          if (static_cast<int>(generated.size()) >= max_tokens) {
+            finish_reason = "length";
+            break;
+          }
+          if (seq.position + 1 >= max_len_) {
+            finish_reason = "length";
+            break;  // cannot decode further without exceeding the KV cache
+          }
+          mtp_b = next_b;
+          mtp_d0 = next_d0;
+          uint16_t* tmp = d_g_;
+          d_g_ = d_g_next_;
+          d_g_next_ = tmp;
         }
-        if (tok_id == eos) {
-          done = true;
-          break;
-        }
       }
-      if (static_cast<int>(generated.size()) >= max_tokens) {
-        finish_reason = "length";
-        break;
-      }
-      if (seq.position + 1 >= max_len_) {
-        finish_reason = "length";
-        break;  // cannot decode further without exceeding the KV cache
-      }
-      mtp_b = next_b;
-      mtp_d0 = next_d0;
-      uint16_t* tmp = d_g_;
-      d_g_ = d_g_next_;
-      d_g_next_ = tmp;
     }
   } else {
     // Plain greedy decode (baseline / MTP fallback).
@@ -938,21 +1034,37 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       if (stream) {
         std::vector<std::uint32_t> one(1, static_cast<std::uint32_t>(tok_id));
         std::string piece;
-        if (tok_->Decode(one, true, &piece).ok()) {
-          WriteAll(fd, SseChunk(id, model_field, "", piece, "", 0));
+        {
+          const std::lock_guard<std::mutex> lock(tok_mu_);
+          if (tok_->Decode(one, true, &piece).ok())
+            WriteAll(fd, SseChunk(id, model_field, "", piece, "", 0));
         }
       }
       if (seq.position + 1 >= max_len_) {
         finish_reason = "length";
         break;  // cannot decode further without exceeding the KV cache
       }
-      s = model::ModelDecodeStepSeq(model_, &seq, tok_id, d_logits, nullptr);
+      // The decode forward uses the shared per-forward scratch, so it is
+      // serialized behind model_mu_ (per-sequence state isolated by seq_id).
+      // The D2H + argmax below run OUTSIDE the lock on the default stream,
+      // overlapping other requests' CPU work.
+      {
+        const std::lock_guard<std::mutex> lock(model_mu_);
+        s = model::ModelDecodeStepSeq(model_, &seq, tok_id, d_logits, nullptr,
+                                      nullptr, seq_id);
+      }
       if (!s.ok()) {
         finish_reason = "stop";
         break;
       }
-      cudaMemcpy(h_logits.data(), d_logits, static_cast<size_t>(vocab) * 2,
-                 cudaMemcpyDeviceToHost);
+      // D2H on the default stream, then synchronize before the host argmax so
+      // h_logits is fully populated (an out-of-range garbage token here would
+      // corrupt the next forward's embedding lookup and poison the CUDA
+      // context for every other request).
+      cudaMemcpyAsync(h_logits.data(), d_logits,
+                      static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost,
+                      nullptr);
+      cudaStreamSynchronize(nullptr);
       next_token = argmax(h_logits.data());
     }
   }
@@ -965,7 +1077,12 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   } else {
     std::vector<std::uint32_t> gen_u32(generated.begin(), generated.end());
     std::string text;
-    if (tok_->Decode(gen_u32, true, &text).ok()) {
+    bool decoded = false;
+    {
+      const std::lock_guard<std::mutex> lock(tok_mu_);
+      decoded = tok_->Decode(gen_u32, true, &text).ok();
+    }
+    if (decoded) {
       std::string resp =
           "{\"id\":\"" + id + "\",\"object\":\"chat.completion\","
           "\"created\":" +

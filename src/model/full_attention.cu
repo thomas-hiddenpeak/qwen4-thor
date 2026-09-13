@@ -53,6 +53,34 @@ __device__ __forceinline__ u16 FloatToBf16(f32 f) {
   return *reinterpret_cast<const u16*>(&b);
 }
 
+// Deterministic block reduction: sum of value[threadIdx.x] over the whole
+// block, returned to every thread. The addition order is FIXED (warp shuffles
+// in a fixed lane order, then warps added in a fixed sequence), so the result
+// is bit-identical across runs — unlike float atomicAdd, whose completion
+// order is nondeterministic and, since float addition is not associative,
+// produced run-to-run differing RMSNorm sums (breaking bit-identical
+// multi-sequence isolation). Requires blockDim.x % 32 == 0 (true for every
+// caller: hd=256, idx_hd=128). kMaxThreads bounds the shared array; the
+// runtime nwarps guard keeps it correct for 128- and 256-thread blocks.
+__device__ __forceinline__ f32 BlockSum(f32 value) {
+  constexpr int kWarp = 32;
+  constexpr int kMaxThreads = 256;
+  #pragma unroll
+  for (int off = kWarp / 2; off > 0; off >>= 1)
+    value += __shfl_xor_sync(0xffffffffu, value, off);
+  __shared__ float s_warp[kMaxThreads / kWarp];
+  const int lane = threadIdx.x & (kWarp - 1);
+  const int wid = threadIdx.x / kWarp;
+  if (lane == 0) s_warp[wid] = value;
+  __syncthreads();
+  const int nwarps = static_cast<int>(blockDim.x) / kWarp;
+  value = 0.f;
+  #pragma unroll
+  for (int w = 0; w < kMaxThreads / kWarp; ++w)
+    value += (w < nwarps) ? s_warp[w] : 0.f;
+  return value;
+}
+
 Status CheckGemm(const Bf16GemmResult& r) {
   if (r.status != CUBLAS_STATUS_SUCCESS || !r.has_algo) {
     return Status::Fail(std::string("Bf16Gemm failed (status=") +
@@ -81,9 +109,6 @@ __global__ void QKDeinterleaveNormKernel(const u16* __restrict__ qg,
   const int th = blockIdx.x;
   const int d = threadIdx.x;
   if (d >= hd) return;
-  __shared__ float head_sum[1];
-  if (threadIdx.x == 0) head_sum[0] = 0.f;
-  __syncthreads();
   if (th < T * nq) {
     const int t = th / nq;
     const int h = th % nq;
@@ -91,9 +116,8 @@ __global__ void QKDeinterleaveNormKernel(const u16* __restrict__ qg,
     const f32 qv = Bf16ToFloat(qg[base + d]);
     // gate is a raw BF16 bit copy (no conversion).
     gate[static_cast<size_t>(t) * nq * hd + h * hd + d] = qg[base + hd + d];
-    atomicAdd(&head_sum[0], qv * qv);
-    __syncthreads();
-    const float rs = rsqrtf(head_sum[0] / hd + eps);
+    const float head_sum = BlockSum(qv * qv);
+    const float rs = rsqrtf(head_sum / hd + eps);
     const f32 w = Bf16ToFloat(q_norm[d]);
     q[static_cast<size_t>(t) * nq * hd + h * hd + d] =
         FloatToBf16(qv * rs * (1.f + w));
@@ -103,9 +127,8 @@ __global__ void QKDeinterleaveNormKernel(const u16* __restrict__ qg,
     const int kv = h % nkv;
     const size_t base = (static_cast<size_t>(t) * nkv + kv) * hd;
     const f32 kvv = Bf16ToFloat(k[base + d]);
-    atomicAdd(&head_sum[0], kvv * kvv);
-    __syncthreads();
-    const float rs = rsqrtf(head_sum[0] / hd + eps);
+    const float head_sum = BlockSum(kvv * kvv);
+    const float rs = rsqrtf(head_sum / hd + eps);
     const f32 w = Bf16ToFloat(k_norm[d]);
     k[base + d] = FloatToBf16(kvv * rs * (1.f + w));
   }
@@ -220,12 +243,8 @@ __global__ void IndexerNormRopeKernel(u16* __restrict__ iq,
   }
   if (d >= hd) return;
   f32 xv = Bf16ToFloat(x[d]);
-  __shared__ float head_sum[1];
-  if (threadIdx.x == 0) head_sum[0] = 0.f;
-  __syncthreads();
-  atomicAdd(&head_sum[0], xv * xv);
-  __syncthreads();
-  float rs = rsqrtf(head_sum[0] / hd + eps);
+  const float head_sum = BlockSum(xv * xv);
+  float rs = rsqrtf(head_sum / hd + eps);
   f32 w = Bf16ToFloat(nw[d]);
   x[d] = FloatToBf16(xv * rs * w);
   // partial RoPE on first rot_d dims (interleaved MRoPE: row = d % 3).
@@ -309,12 +328,8 @@ __global__ void BuildCompressedKKernel(const u16* __restrict__ ik_norm,
   }
   acc /= compress;
   // GemmaRMSNorm (plain) over the head: need sum of squares
-  __shared__ float head_sum[1];
-  if (threadIdx.x == 0) head_sum[0] = 0.f;
-  __syncthreads();
-  atomicAdd(&head_sum[0], acc * acc);
-  __syncthreads();
-  float rs = rsqrtf(head_sum[0] / hd + eps);
+  const float head_sum = BlockSum(acc * acc);
+  float rs = rsqrtf(head_sum / hd + eps);
   f32 w = Bf16ToFloat(ik_norm[d]);
   float normed = acc * rs * w;
   // partial RoPE at the group's first position g0, using the PERSISTENT
@@ -827,14 +842,12 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   if (off > workspace_bytes)
     return Status::Fail("FullAttentionForward: workspace too small for GEMM");
 
-  int* d_positions = nullptr;
-  if (cudaMallocAsync(&d_positions, T * 4, stream) != cudaSuccess)
-    return Status::Fail("cudaMallocAsync positions failed");
-  if (cudaMemcpyAsync(d_positions, positions, T * 4, cudaMemcpyHostToDevice,
-                      stream) != cudaSuccess) {
-    cudaFreeAsync(d_positions, stream);
-    return Status::Fail("cudaMemcpyAsync positions failed");
-  }
+  // `positions` is a DEVICE int[T] (absolute token positions), the same
+  // contract as `rope_pos`. It is read directly by the kernels below; no
+  // host->device copy is performed here. (An earlier version treated it as a
+  // host pointer and did a cudaMemcpyHostToDevice, which faulted when the
+  // model layer passed its persistent device buffer `m.d_positions`.)
+  const int* d_positions = positions;
 
   Status s;
   // 1. qg = x @ W_q^T ; k = x @ W_k^T ; v = x @ W_v^T
@@ -910,7 +923,6 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   // 13. out = attn @ W_o^T
   s = CheckGemm(Bf16Gemm(d_attn, w.o_proj, out, T, hs, nq * hd, 1.f, 0.f,
                          d_gemm_ws, gemm_ws, stream));
-  cudaFreeAsync(d_positions, stream);
   return s;
 }
 

@@ -465,6 +465,7 @@ size_t MtpWorkspaceBytes(const MtpConfig& cfg, int T,
   b += MoeBf16WorkspaceBytes(T, cfg.topk, cfg.hs, cfg.moe_is, cfg.E) +
        MoeBf16ScratchBytes(T, cfg.topk, cfg.hs, cfg.shared_is, cfg.E);
   b += 2 * kGemmWs;
+  b += static_cast<size_t>(T) * sizeof(int);  // d_positions (device positions)
   b += 7 * static_cast<size_t>(T) * cfg.hs * sizeof(uint16_t);
   b += 5 * static_cast<size_t>(T) * hc_dim * sizeof(uint16_t);
   return (b + 255) & ~size_t(255);
@@ -720,7 +721,7 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
     Status s = model::ModelDecodeBatch(
         main, verify_ids.data(), k + 1, P, seq->history.data(),
         static_cast<int>(seq->history.size()), d_vlogits, stream, d_vtrunk,
-        /*save_checkpoints=*/true);
+        /*save_checkpoints=*/true, seq->seq_id);
     if (!s.ok()) return cleanup(s);
   }
   // m_i = argmax(logits[i]) on the GPU (1 kernel over k+1 rows + (k+1)*4-byte
@@ -761,7 +762,7 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
   //    and is rewritten identically by the next step; trunks are already
   //    captured in d_vtrunk.
   if (a < k) {
-    Status s = model::ModelRestoreCheckpoint(main, a, stream);
+    Status s = model::ModelRestoreCheckpoint(main, a, stream, seq->seq_id);
     if (!s.ok()) return cleanup(s);
   }
   // Advance the seq state machine over the accepted tokens [b, d_0..d_{a-1}].
@@ -836,6 +837,12 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
   void* d_moe_ws = carve(moe_carve);
   void* d_moe_gemm = carve(kGemmWs);
   void* d_hc_gemm = carve(kGemmWs);
+  // Device copy of the host `positions` (FullAttentionForward now takes a
+  // device positions pointer, same contract as d_rope_pos).
+  int* d_positions = static_cast<int*>(carve(static_cast<size_t>(T) * sizeof(int)));
+  if (cudaMemcpyAsync(d_positions, positions, static_cast<size_t>(T) * sizeof(int),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return Status::Fail("MtpForward: H2D positions failed");
 
   uint16_t* d_emb = static_cast<uint16_t*>(carve(static_cast<size_t>(T) * hs * sizeof(uint16_t)));
   uint16_t* d_normed_emb = static_cast<uint16_t*>(carve(static_cast<size_t>(T) * hs * sizeof(uint16_t)));
@@ -894,7 +901,7 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
   if (!s.ok()) return s;
   // 4c. full attention.
   s = model::FullAttentionForward(m.full_attn, d_mixed_attn, d_attn_out,
-                                  positions, m.d_rope_pos, m.kv_cache,
+                                  d_positions, m.d_rope_pos, m.kv_cache,
                                   m.page_table, m.idx_raw, m.idx_comp, T,
                                   d_attn_ws, attn_ws, stream);
   if (!s.ok()) return s;
