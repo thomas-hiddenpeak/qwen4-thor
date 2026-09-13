@@ -186,7 +186,6 @@ void MtpModel::Free() {
   if (d_g) cudaFree(d_g);
   if (d_ms_ids) cudaFree(d_ms_ids);
   if (d_ms_pos) cudaFree(d_ms_pos);
-  if (d_ms_seqid) cudaFree(d_ms_seqid);
   if (d_ms_sample) cudaFree(d_ms_sample);
   if (d_ms_multi) cudaFree(d_ms_multi);
   if (d_ms_gather) cudaFree(d_ms_gather);
@@ -214,7 +213,6 @@ void MtpModel::Free() {
   d_g = nullptr;
   d_ms_ids = nullptr;
   d_ms_pos = nullptr;
-  d_ms_seqid = nullptr;
   d_ms_sample = nullptr;
   d_ms_multi = nullptr;
   d_ms_gather = nullptr;
@@ -453,7 +451,6 @@ Status MtpReserveScratch(MtpModel& m, int k_max) {
   if (m.d_g) cudaFree(m.d_g);
   if (m.d_ms_ids) cudaFree(m.d_ms_ids);
   if (m.d_ms_pos) cudaFree(m.d_ms_pos);
-  if (m.d_ms_seqid) cudaFree(m.d_ms_seqid);
   if (m.d_ms_sample) cudaFree(m.d_ms_sample);
   if (m.d_ms_multi) cudaFree(m.d_ms_multi);
   if (m.d_ms_gather) cudaFree(m.d_ms_gather);
@@ -468,7 +465,6 @@ Status MtpReserveScratch(MtpModel& m, int k_max) {
   m.d_g = nullptr;
   m.d_ms_ids = nullptr;
   m.d_ms_pos = nullptr;
-  m.d_ms_seqid = nullptr;
   m.d_ms_sample = nullptr;
   m.d_ms_multi = nullptr;
   m.d_ms_gather = nullptr;
@@ -513,10 +509,6 @@ Status MtpReserveScratch(MtpModel& m, int k_max) {
                    static_cast<size_t>(m.max_seq) * sizeof(int)) !=
         cudaSuccess)
       return Status::Fail("MtpReserveScratch: d_ms_pos");
-    if (cudaMalloc(reinterpret_cast<void**>(&m.d_ms_seqid),
-                   static_cast<size_t>(m.max_seq) * sizeof(int)) !=
-        cudaSuccess)
-      return Status::Fail("MtpReserveScratch: d_ms_seqid");
     if (cudaMalloc(reinterpret_cast<void**>(&m.d_ms_sample),
                    static_cast<size_t>(m.max_seq) * hs * sizeof(uint16_t)) !=
         cudaSuccess)
@@ -537,14 +529,6 @@ Status MtpReserveScratch(MtpModel& m, int k_max) {
                    static_cast<size_t>(m.max_seq) * k_max * sizeof(int)) !=
         cudaSuccess)
       return Status::Fail("MtpReserveScratch: d_ms_ext_seq");
-    // d_ms_seqid is the persistent identity map (token t belongs to sequence
-    // t) used as the draft-loop d_seq_id; init once here.
-    std::vector<int> ident(m.max_seq);
-    for (int i = 0; i < m.max_seq; ++i) ident[i] = i;
-    if (cudaMemcpy(m.d_ms_seqid, ident.data(),
-                   static_cast<size_t>(m.max_seq) * sizeof(int),
-                   cudaMemcpyHostToDevice) != cudaSuccess)
-      return Status::Fail("MtpReserveScratch: d_ms_seqid init");
   }
   m.k_max = k_max;
   return Status();
@@ -1017,14 +1001,24 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     return cleanup(Status::Fail("MtpSpeculativeStepMulti: cudaMalloc"));
 
   std::vector<int> P(B);
-  for (int b = 0; b < B; ++b) P[b] = seqs[b].position;
+  std::vector<int> seq_of(B);  // pooled-state slice index of sequence b
+  for (int b = 0; b < B; ++b) {
+    P[b] = seqs[b].position;
+    seq_of[b] = seqs[b].seq_id;
+  }
+  // Per-token d_seq_id for the batched draft loop: token b (sequence b) belongs
+  // to pooled slice seq_of[b]. H2D into d_ms_ext_seq (first B ints); the extend
+  // phase overwrites it later with its own per-token seq ids (sequential, safe).
+  if (cudaMemcpyAsync(mtp.d_ms_ext_seq, seq_of.data(), B * sizeof(int),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return cleanup(Status::Fail("MtpSpeculativeStepMulti: H2D draft seq"));
 
   // 1. Batched draft loop: seed the per-seq rolling trunk, then generate
   //    drafts[1..k-1] for all sequences (drafts[0] = d0 given).
   std::vector<std::vector<int32_t>> drafts(B, std::vector<int32_t>(k));
   for (int b = 0; b < B; ++b) {
     drafts[b][0] = d0[b];
-    if (cudaMemcpy(d_g_pool + static_cast<size_t>(b) * hc_dim, g_in[b],
+    if (cudaMemcpy(d_g_pool + static_cast<size_t>(seq_of[b]) * hc_dim, g_in[b],
                    static_cast<size_t>(hc_dim) * 2, cudaMemcpyDeviceToDevice) !=
         cudaSuccess)
       return cleanup(Status::Fail("MtpSpeculativeStepMulti: D2D g_in"));
@@ -1041,11 +1035,10 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
         cudaMemcpyAsync(d_pos, h_pos.data(), B * sizeof(int),
                         cudaMemcpyHostToDevice, stream) != cudaSuccess)
       return cleanup(Status::Fail("MtpSpeculativeStepMulti: H2D draft"));
-    // d_seq_id = identity (token t belongs to sequence t): the draft loop
-    // packs one token per sequence, so the per-token slice index is the token
-    // index itself. d_ms_seqid is the persistent identity buffer.
+    // d_seq_id = seq_of (token b = sequence b -> pooled slice seq_of[b]),
+    // H2D'd into d_ms_ext_seq above.
     Status s = MtpForward(mtp, d_ids, d_pos, d_g_pool, d_sample, d_multi,
-                          d_vlogits, B, stream, mtp.d_ms_seqid);
+                          d_vlogits, B, stream, mtp.d_ms_ext_seq);
     if (!s.ok()) return cleanup(s);
     // Argmax over the B rows (reuse d_ids as the B-int output).
     s = ArgmaxBf16Rows(d_vlogits, B, vocab, d_ids, stream);
@@ -1056,7 +1049,7 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     for (int b = 0; b < B; ++b) drafts[b][j] = h_ids[b];
     // Roll the per-seq trunk: d_g_pool[b] = d_multi[b].
     for (int b = 0; b < B; ++b)
-      if (cudaMemcpyAsync(d_g_pool + static_cast<size_t>(b) * hc_dim,
+      if (cudaMemcpyAsync(d_g_pool + static_cast<size_t>(seq_of[b]) * hc_dim,
                           d_multi + static_cast<size_t>(b) * hc_dim,
                           static_cast<size_t>(hc_dim) * 2,
                           cudaMemcpyDeviceToDevice, stream) != cudaSuccess)
@@ -1072,7 +1065,7 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     for (int i = 0; i < k; ++i)
       vtok[static_cast<size_t>(b) * (k + 1) + 1 + i] = drafts[b][i];
     vbase[b] = P[b];
-    vseq[b] = b;
+    vseq[b] = seq_of[b];
   }
   // PLE n-gram history: per sequence, the tokens at positions < P_b (the
   // prompt, = seqs[b].history before this step advances it). Row b holds
@@ -1112,7 +1105,7 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     }
     a[b] = acc;
     if (acc < k) {
-      s = model::ModelRestoreCheckpoint(main, acc, stream, b);
+      s = model::ModelRestoreCheckpoint(main, acc, stream, seq_of[b]);
       if (!s.ok()) return cleanup(s);
     }
   }
@@ -1135,13 +1128,13 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     for (int i = 0; i < a[b]; ++i) {
       ext_ids[r] = drafts[b][i];
       ext_pos[r] = P[b] + i;
-      ext_seq[r] = b;
+      ext_seq[r] = seq_of[b];
       gather_off[r] = base + i;  // verify-trunk row h_{P_b+i}
       ++r;
     }
     ext_ids[r] = corr[b];
     ext_pos[r] = P[b] + a[b];
-    ext_seq[r] = b;
+    ext_seq[r] = seq_of[b];
     gather_off[r] = base + a[b];  // verify-trunk row h_{P_b+a_b}
     ++r;
   }

@@ -144,13 +144,12 @@ struct MtpModel {
   // contiguous [T, hc_dim] hidden_states).
   int32_t* d_ms_ids = nullptr;     // [max_seq] draft-loop packed ids
   int* d_ms_pos = nullptr;         // [max_seq] draft-loop positions
-  int* d_ms_seqid = nullptr;       // [max_seq] identity (draft-loop d_seq_id:
-                                   // token t belongs to sequence t)
   uint16_t* d_ms_sample = nullptr;  // [max_seq*hs] draft-loop sample_hidden
   uint16_t* d_ms_multi = nullptr;   // [max_seq*hc_dim] draft-loop multi_hidden
   uint16_t* d_ms_gather = nullptr;  // [B*(k+1)*hc_dim] extend hidden gather
   uint16_t* d_ms_g_pool = nullptr;  // [max_seq*hc_dim] per-seq rolling trunk
-  int* d_ms_ext_seq = nullptr;      // [max_seq*k_max] extend per-token d_seq_id
+  int* d_ms_ext_seq = nullptr;      // [max_seq*k_max] per-token d_seq_id:
+                                    // draft loop (first B ints) + extend
   int k_max = 0;  // capacity of the above (0 = not allocated)
 
   int hc_dim() const { return cfg.hc * cfg.hs; }

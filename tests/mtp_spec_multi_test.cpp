@@ -204,9 +204,35 @@ Q4T_TEST(mtp_spec_multi_step) {
     }
   }
 
-  // 4. Per-sequence draft KV build (EAGLE shift: [t_1..t_{T-1}, b0]).
+  // 4. Reset the MTP draft KV (all slices) and reserve scratch + checkpoints
+  //    BEFORE building the draft KV (ResetState clears the pooled draft
+  //    kv/idx, so it must precede the build, not follow it).
+  MtpResetState(mtp, nullptr);
+  s = ModelReserveVerifyCheckpoints(m, k);
+  if (!s.ok()) {
+    std::printf("  checkpoint reserve failed: %s\n", s.message().c_str());
+    mtp.Free();
+    m.Free();
+    return false;
+  }
+  s = MtpReserveScratch(mtp, k + 1);
+  if (!s.ok()) {
+    std::printf("  scratch reserve failed: %s\n", s.message().c_str());
+    mtp.Free();
+    m.Free();
+    return false;
+  }
+
+  // 5. Per-sequence draft KV build (EAGLE shift: [t_1..t_{T-1}, b0]).
   //    MtpDraftExtend always writes slice 0, so build each sequence's draft
   //    KV with MtpForward + d_seq_id (the pooled-slice path).
+  //
+  //    SWAPPED seq_id: sequence b uses pooled slice seq_id_of[b] (not b).
+  //    This is the serve-path reality (seq_id comes from a free pool, not the
+  //    batch index). If MtpSpeculativeStepMulti (or the draft build) misused
+  //    the batch index b as the seq_id, it would read/write the wrong slice
+  //    and the result would diverge from the ground truth.
+  const int seq_id_of[B] = {1, 0};
   ModelSequence seqs[B];
   std::vector<int32_t> b_tok(B), d0(B);
   int32_t* d_ids = nullptr;
@@ -235,7 +261,7 @@ Q4T_TEST(mtp_spec_multi_step) {
   for (int b = 0; b < B; ++b) {
     const std::vector<int32_t>& p = (b == 0) ? p0 : p1;
     const int T = (b == 0) ? T0 : T1;
-    s = ModelBeginSequence(m, &seqs[b], nullptr, b);
+    s = ModelBeginSequence(m, &seqs[b], nullptr, seq_id_of[b]);
     if (!s.ok()) {
       std::printf("  begin seq %d failed: %s\n", b, s.message().c_str());
       mtp.Free();
@@ -243,7 +269,7 @@ Q4T_TEST(mtp_spec_multi_step) {
       return false;
     }
     s = ModelPrefill(m, &seqs[b], p.data(), T, nullptr, nullptr, d_full[b],
-                     nullptr, b);
+                     nullptr, seq_id_of[b]);
     if (!s.ok()) {
       std::printf("  prefill seq %d failed: %s\n", b, s.message().c_str());
       mtp.Free();
@@ -254,7 +280,7 @@ Q4T_TEST(mtp_spec_multi_step) {
     std::vector<int32_t> shifted(T);
     for (int i = 0; i < T - 1; ++i) shifted[i] = p[i + 1];
     shifted[T - 1] = b_tok[b];
-    std::vector<int> pos(T), seqid(T, b);
+    std::vector<int> pos(T), seqid(T, seq_id_of[b]);
     for (int i = 0; i < T; ++i) pos[i] = i;
     cudaMemcpy(d_ids, shifted.data(), T * sizeof(int32_t),
                cudaMemcpyHostToDevice);
@@ -282,23 +308,6 @@ Q4T_TEST(mtp_spec_multi_step) {
   cudaFree(d_sample);
   cudaFree(d_multi);
   cudaFree(d_logits);
-
-  // 5. Reset the MTP KV (all slices) and reserve scratch + checkpoints.
-  MtpResetState(mtp, nullptr);
-  s = ModelReserveVerifyCheckpoints(m, k);
-  if (!s.ok()) {
-    std::printf("  checkpoint reserve failed: %s\n", s.message().c_str());
-    mtp.Free();
-    m.Free();
-    return false;
-  }
-  s = MtpReserveScratch(mtp, k + 1);
-  if (!s.ok()) {
-    std::printf("  scratch reserve failed: %s\n", s.message().c_str());
-    mtp.Free();
-    m.Free();
-    return false;
-  }
 
   // 6. The batched speculative step.
   std::vector<int32_t> accepted(B * (k + 1), -1);
