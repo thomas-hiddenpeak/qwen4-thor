@@ -106,9 +106,17 @@ cmake --build build --parallel
   污染, 吞吐 15.13→18.03 tok/s 聚合) / **MTP 批处理 Stage 1 (已闭合,
   Phase 2)** (draft 模型 KV/indexer/rope 按 max_seq 池化 + MtpForward
   d_seq_id 多序列路径, 单序列 bit 不变; 隔离测试 4 序列×2 token 打包
-  l2_rel≈0.002 无跨序列污染; Stage 2 批量化 draft 循环 + ragged 验证 +
-  调度器 MTP 分支待做)。66 项测试全绿, 零警告。
+  l2_rel≈0.002 无跨序列污染) / **MTP 批处理 Stage 2a (已闭合, Phase 2)**
+  (ModelVerifyMulti: B 序列 × (k+1) token 打包一次主模型 forward,
+  sequence-major; linear/PLE per-seq 因果链 kernel + full attn per-seq
+  paged KV; checkpoint 池化布局 [num_layers, max_seq, cap, elems] + 新增
+  PLE conv checkpoint (修复单序列部分接受 PLE conv 残留 bug); 修 2 个
+  kernel bug: PLE 因果 conv 的 T 参数边界/局部位置混用 (seq≥1 跨序列读)
+  + PLE conv 状态更新缺 T<state_len 滑窗; 测试 B=2 不同 prompt × T=3
+  verify logits vs 单序列 prefill 参考 6/6 bit-exact + 回滚 0.00896)。
+  67 项测试全绿, 零警告。
 - **Phase 1 完成标准全部闭合 (2026-09-07)**。Phase 2 进行中: B1 多序列
-  + B2 连续批处理 + MTP 批处理 Stage 1 已闭合。剩余: MTP 批处理 Stage 2
-  (批量化 draft + ragged 验证 + 调度器分支)、完整多设备 PD 部署、
+  + B2 连续批处理 + MTP 批处理 Stage 1 + Stage 2a (多序列验证前向) 已
+  闭合。剩余: MTP 批处理 Stage 2b (批量化 draft 循环 + ragged 验证 +
+  extend) + Stage 2c (调度器 MTP 分支)、完整多设备 PD 部署、
   48 层长序列端到端等, 见 docs/PHASES.md。

@@ -86,6 +86,8 @@ struct Model {
                                // indexer grouping, causal mask)
   int* d_seq_id = nullptr;  // [max_seq] B2 multi-seq decode: per-token
                             // pooled-state slice index (H2D per forward)
+  int* d_token_seq_id = nullptr;  // [max_prefill] Phase 2 MTP multi-seq verify:
+                                  // per-token seq id for the B*T packed tokens
   int* d_rope_pos = nullptr;  // [max_seq, 3, max_len] 3D MRoPE (t, h, w)
   // mrope_position_delta per sequence: during incremental decode the 3 rope
   // rows for a token at logical position p are all (p + rope_delta[seq_id]).
@@ -103,10 +105,16 @@ struct Model {
   // MTP speculative-verify checkpoints (lazy-allocated by
   // ModelReserveVerifyCheckpoints): per-linear-layer per-token SSM/conv state,
   // so a partial accept restores the accepted-prefix boundary via D2D instead
-  // of re-running the forward. ssm = [num_lin, cap, ssm_elems] f32,
-  // conv = [num_lin, cap, conv_elems] bf16.
+  // of re-running the forward. POOLED over max_seq sequences (Phase 2 MTP
+  // multi-seq verify): ssm = [num_lin, max_seq, cap, ssm_elems] f32, conv =
+  // [num_lin, max_seq, cap, conv_elems] bf16, ple_conv = [num_ple, max_seq,
+  // cap, ple_conv_elems] bf16. With max_seq == 1 the layout degenerates to the
+  // legacy [num_lin, cap, elems] (bit-identical single-seq path). The PLE
+  // conv state is an in-place recurrence too, so a partial accept must restore
+  // it (the single-seq path historically missed this — see LOG 2026-09-13).
   float* d_verify_ssm_ckpt = nullptr;
   uint16_t* d_verify_conv_ckpt = nullptr;
+  uint16_t* d_verify_ple_conv_ckpt = nullptr;
   int verify_ckpt_cap = 0;
 
   int hc_dim() const { return cfg.hc * cfg.hs; }
@@ -277,16 +285,60 @@ Status ModelDecodeBatchMulti(const Model& m, const int32_t* tokens,
                              cudaStream_t stream,
                              uint16_t* trunk_out = nullptr);
 
-// Reserve per-linear-layer per-token SSM/conv checkpoint buffers for MTP
-// verify (idempotent; grows if num_ckpt exceeds the current capacity). Must be
-// called before ModelDecodeBatch(save_checkpoints=true) / ModelRestoreCheckpoint.
+// Reserve per-linear-layer per-token SSM/conv/PLE-conv checkpoint buffers for
+// MTP verify (idempotent; grows if num_ckpt exceeds the current capacity).
+// Layout is pooled over m.cfg.max_seq: [num_lin, max_seq, cap, elems]. Must be
+// called before ModelDecodeBatch(save_checkpoints=true) / ModelVerifyMulti /
+// ModelRestoreCheckpoint.
 Status ModelReserveVerifyCheckpoints(Model& m, int num_ckpt);
 
-// Restore every linear layer's SSM/conv state from checkpoint `ckpt_idx` (D2D).
-// Used after a partial-accept MTP verify to roll the recurrent state back to
-// the accepted-prefix boundary WITHOUT re-running the forward.
+// Restore every linear layer's SSM/conv state AND the PLE layer's conv state
+// from checkpoint `ckpt_idx` for sequence `seq_id` (D2D). Used after a
+// partial-accept MTP verify to roll the recurrent state back to the
+// accepted-prefix boundary WITHOUT re-running the forward. (The PLE conv
+// restore fixes a pre-existing gap: the single-seq path only restored the
+// linear layers, leaving the PLE short-conv window polluted with rejected
+// tokens after a partial accept.)
 Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx, cudaStream_t stream,
                               int seq_id = 0);
+
+// MTP multi-sequence VERIFY (Phase 2): verify k+1 speculative tokens for each
+// of B sequences in ONE packed forward (T = B * tokens_per_seq, sequence-major
+// rows). This is the multi-sequence analogue of ModelDecodeBatch(save_
+// checkpoints=true): the GEMMs (HC/MoE/head/proj) are stateless and operate on
+// the packed rows (weights read once); the linear/PLE layers run a per-
+// sequence causal chain (prefill semantics, tokens_per_seq > 1) with the
+// recurrent state selected per-sequence via d_seq_id; the full-attention layers
+// use the per-seq paged KV (B2a d_seq_id kernels). Per-sequence per-token
+// checkpoints are saved so a partial accept can restore each sequence's state
+// to its accepted-prefix boundary via ModelRestoreCheckpoint(m, a_i, stream,
+// seq_id).
+//
+//   tokens        : host int32 [B * T] — sequence-major (seq 0's T tokens,
+//                   then seq 1's, ...). Row b*T+t is sequence b's (t+1)-th
+//                   verify token (bonus + k drafts).
+//   base_positions: host int [B] — the absolute position of sequence b's FIRST
+//                   verify token (row b*T). Row b*T+t is at base_positions[b]+t.
+//   seq_ids       : host int [B] — the pooled-state slice index of sequence b
+//                   (written to d_seq_id[b*T .. b*T+T-1]).
+//   history       : host int32 [B * history_len] — per-sequence PLE n-gram
+//                   context for positions before base_positions[b] (oldest
+//                   first), one row per sequence.
+//   logits        : device BF16 [B*T, vocab] (out) — row b*T+t is the logits
+//                   for sequence b's (t+1)-th verify token.
+//   stream        : CUDA stream.
+//   trunk_out     : optional device BF16 [B*T, hc*hs] (out) — the pre-final-
+//                   mixer multi stream (MTP extend input), sequence-major.
+//
+// The caller must have already run ModelPrefill (or a prior verify) for each
+// sequence so the per-seq recurrent state is at base_positions[b]-1. Returns
+// [B*T, vocab] logits; the caller argmaxes row b*T+t to get the main model's
+// prediction for sequence b's (t+1)-th token and compares against its draft.
+Status ModelVerifyMulti(const Model& m, const int32_t* tokens,
+                        const int* base_positions, const int* seq_ids,
+                        const int32_t* history, int history_len, int B,
+                        int tokens_per_seq, uint16_t* logits,
+                        cudaStream_t stream, uint16_t* trunk_out = nullptr);
 
 // ---------------------------------------------------------------------------
 // PD-ready 阶段边界 API (Prefill/Decode 可分离, 见 ARCHITECTURE.md)。

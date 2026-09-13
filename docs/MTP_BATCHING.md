@@ -1,17 +1,28 @@
 # MTP 批处理 — Stage 2 设计
 
-> 状态: **实现中 (2026-09-13)**。Stage 1 (draft 状态池化 + 多序列
-> MtpForward) 已闭合 (commit 0b5dfff)。初稿的"full attention 因果掩码
-> 风险"经重读 kernel 确认是**误判** (per-seq KV 隔离天然阻止跨序列
-> 注意力), 核心工作量在 linear attention 多序列因果 prefill kernel。
-> 用户已授权动核心 + 单分支 commit 检查点。
+> 状态: **Stage 2a 已闭合 (2026-09-13)**; 2b/2c 未做。Stage 1 (draft
+> 状态池化 + 多序列 MtpForward) 已闭合 (commit 0b5dfff)。初稿的"full
+> attention 因果掩码风险"经重读 kernel 确认是**误判** (per-seq KV 隔离
+> 天然阻止跨序列注意力), 核心工作量在 linear attention 多序列因果
+> prefill kernel。用户已授权动核心 + 单分支 commit 检查点。
 >
-> **正确性发现 (2026-09-13, 2a 前置)**: 单序列 MTP **部分接受** (a<k) 时
-> `ModelRestoreCheckpoint` 只回滚 linear 层 SSM/conv, **不回滚 PLE 层
-> `ple_conv_state`** (也是 in-place 递推, 验证后持有含被拒绝 token 的
-> gated_n 窗口) → 下一步 PLE short-conv 用到被拒绝 token 的值, 系统性
-> (小) 状态污染; 全接受 (a==k) 无影响。2a 的多序列回滚必须一并覆盖
-> PLE conv (per-seq), 否则继承该 bug。
+> **Stage 2a 实现结果 (2026-09-13)**: `ModelVerifyMulti` (B 序列 × (k+1)
+> token 打包一次主模型 forward, sequence-major) + checkpoint 池化布局
+> [num_layers, max_seq, cap, elems] + PLE conv checkpoint/回滚 (修复上述
+> 正确性发现)。测试 model_verify_multi (B=2 不同 prompt × T=3) vs 单序列
+> prefill 参考 6/6 bit-exact + 回滚 0.00896。实现中修 2 个 kernel bug:
+> ① DepthwiseConvAddMultiSeqCausalKernel 的 T 参数 grid 边界 (需总数
+> B*T) 与局部位置 tt=t%T (需 tokens_per_seq) 混用 → seq≥1 跨序列读
+> (加 Tps 参数分离; seq 0 的 t%6==t%3 巧合掩盖了 bug); ②
+> PleConvUpdateStateMultiSeqCausalKernel 缺 T<state_len 滑窗 (MTP verify
+> T=k+1<9 是常态, 状态窗口不前进)。
+>
+> **正确性发现 (2026-09-13, 2a 前置, 已修复)**: 单序列 MTP **部分接受**
+> (a<k) 时 `ModelRestoreCheckpoint` 只回滚 linear 层 SSM/conv, **不回滚
+> PLE 层 `ple_conv_state`** (也是 in-place 递推, 验证后持有含被拒绝
+> token 的 gated_n 窗口) → 下一步 PLE short-conv 用到被拒绝 token 的值,
+> 系统性 (小) 状态污染; 全接受 (a==k) 无影响。2a 已一并覆盖 (新增
+> d_verify_ple_conv_ckpt + Restore 加 PLE 恢复)。
 
 ## 目标
 

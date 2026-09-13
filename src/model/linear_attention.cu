@@ -268,8 +268,8 @@ __global__ void CausalConv1dMultiSeqCausalKernel(
     const int* __restrict__ d_seq_id, int channels, int conv_k, int T) {
   const int ch = blockIdx.x * blockDim.x + threadIdx.x;
   if (ch >= channels) return;
-  const int t = blockIdx.y;  // packed token index = b*T + tt
-  const int tt = t % T;  // local token within the sequence
+  const int t = blockIdx.y;  // packed token index = b*tps + tt
+  const int tt = t % T;  // local token within the sequence (T = tokens/seq)
   const int hist = conv_k - 1;
   const uint16_t* seq_state =
       old_state + static_cast<size_t>(d_seq_id[t]) * channels * hist;

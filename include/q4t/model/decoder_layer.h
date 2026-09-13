@@ -147,7 +147,13 @@ Status DecoderLayerForward(const DecoderLayer& layer, const uint16_t* hyper_inpu
                            uint16_t* conv_ckpt = nullptr, int num_ckpt = 0,
                            int seq_id = 0, const int* d_seq_id = nullptr,
                            const int* d_rope_pos = nullptr,
-                           int tokens_per_seq = 0);
+                           int tokens_per_seq = 0,
+                           uint16_t* ple_conv_ckpt = nullptr);
+// `ple_conv_ckpt` (MTP verify rollback, PLE layer only): when non-null and
+// num_ckpt > 0, save the per-token PLE short-conv state after each of the
+// first `num_ckpt` (local) tokens — the PLE conv is an in-place recurrence,
+// so a partial accept must restore it (layout [max_seq, num_ckpt, C, len],
+// indexed by pooled seq id, matching the linear conv checkpoint scheme).
 // `tokens_per_seq` (MTP multi-sequence VERIFY, Phase 2): when d_seq_id is
 // non-null and tokens_per_seq > 1, the packed [T, ...] rows are sequence-major
 // (B = T / tokens_per_seq sequences) and the linear/PLE layers run a

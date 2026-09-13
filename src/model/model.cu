@@ -81,6 +81,7 @@ void Model::Free() {
   freep(d_ids);
   freep(d_positions);
   freep(d_seq_id);
+  freep(d_token_seq_id);
   freep(d_rope_pos);
   freep(d_emb);
   freep(d_trunk);
@@ -90,9 +91,11 @@ void Model::Free() {
   freep(d_ws);
   freep(d_verify_ssm_ckpt);
   freep(d_verify_conv_ckpt);
+  freep(d_verify_ple_conv_ckpt);
   d_ids = nullptr;
   d_positions = nullptr;
   d_seq_id = nullptr;
+  d_token_seq_id = nullptr;
   d_rope_pos = nullptr;
   d_emb = nullptr;
   d_trunk = nullptr;
@@ -102,6 +105,7 @@ void Model::Free() {
   d_ws = nullptr;
   d_verify_ssm_ckpt = nullptr;
   d_verify_conv_ckpt = nullptr;
+  d_verify_ple_conv_ckpt = nullptr;
   verify_ckpt_cap = 0;
   ws_bytes = 0;
 }
@@ -237,6 +241,11 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   if (!(s = alloc(reinterpret_cast<void**>(&m->d_seq_id),
                   static_cast<size_t>(cfg.max_seq) * sizeof(int))))
     return s;
+  // Phase 2 MTP multi-seq verify: per-token seq id for the B*T packed verify
+  // tokens (sized for the max prefill, since B*T <= max_prefill).
+  if (!(s = alloc(reinterpret_cast<void**>(&m->d_token_seq_id),
+                  max_t * sizeof(int))))
+    return s;
   // Persistent 3D MRoPE table: [max_seq, 3, max_len] (t, h, w) rows, POOLED
   // over concurrent sequences (Phase 2). Each sequence's rope coordinates are
   // written at prefill and read across its decode steps, so the table must be
@@ -302,7 +311,8 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                  uint16_t* logits, cudaStream_t stream,
                  uint16_t* trunk_out = nullptr, float* ssm_ckpt = nullptr,
                  uint16_t* conv_ckpt = nullptr, int num_ckpt = 0,
-                 int seq_id = 0, const int* d_seq_id = nullptr) {
+                 int seq_id = 0, const int* d_seq_id = nullptr,
+                 int tokens_per_seq = 0, uint16_t* ple_conv_ckpt = nullptr) {
   const ModelConfig& cfg = m.cfg;
   const uint16_t* trunk = trunk_in;
   uint16_t* next = trunk2;
@@ -313,7 +323,15 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
   // DIAG (Q4T_DIAG=1): check for async CUDA errors after each layer to
   // localize illegal-memory-access sources during concurrency debugging.
   const bool diag = std::getenv("Q4T_DIAG") != nullptr;
-  int lin_idx = 0;  // running linear-layer index (for checkpoint offsets)
+  int lin_idx = 0;   // running linear-layer index (for checkpoint offsets)
+  int ple_idx = 0;   // running PLE-layer index (for checkpoint offsets)
+  // Checkpoint layout is pooled over max_seq: [num_layers, max_seq, num_ckpt,
+  // elems]. The kernels index the per-layer slice by the POOLED seq id (multi
+  // seq, d_seq_id != null: pass the layer base, seq_off = 0) or by the single
+  // sequence's slice (single seq: seq_off = seq_id). With max_seq == 1 this
+  // degenerates to the legacy [num_layers, num_ckpt, elems] layout.
+  const size_t max_seq = static_cast<size_t>(cfg.max_seq);
+  const size_t seq_off = d_seq_id ? 0 : static_cast<size_t>(seq_id);
   for (int l = 0; l < cfg.num_layers; ++l) {
     if (diag) {
       const cudaError_t e = cudaGetLastError();
@@ -340,26 +358,45 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
       ple_emb = m.d_ple_emb;
     }
     // Per-linear-layer checkpoint slices (only when saving for MTP verify).
+    // Pooled layout [num_lin, max_seq, num_ckpt, elems]: the per-layer slice
+    // starts at (lin_idx * max_seq + seq_off) * num_ckpt * elems.
     float* layer_ssm_ckpt = nullptr;
     uint16_t* layer_conv_ckpt = nullptr;
+    uint16_t* layer_ple_conv_ckpt = nullptr;
     if (ssm_ckpt && !m.layers[l].is_full_attention) {
       const auto& lin = m.layers[l].linear;
       const size_t ssm_elems =
           static_cast<size_t>(lin.nv) * lin.kd * lin.vd;
       const size_t conv_elems =
           static_cast<size_t>(lin.in_qkv()) * (lin.conv_k - 1);
-      layer_ssm_ckpt =
-          ssm_ckpt + static_cast<size_t>(lin_idx) * num_ckpt * ssm_elems;
-      layer_conv_ckpt =
-          conv_ckpt + static_cast<size_t>(lin_idx) * num_ckpt * conv_elems;
+      layer_ssm_ckpt = ssm_ckpt +
+                       (static_cast<size_t>(lin_idx) * max_seq + seq_off) *
+                           num_ckpt * ssm_elems;
+      layer_conv_ckpt = conv_ckpt +
+                        (static_cast<size_t>(lin_idx) * max_seq + seq_off) *
+                            num_ckpt * conv_elems;
+    }
+    // PLE conv checkpoint slice (the PLE short-conv is an in-place recurrence
+    // too; a partial accept must restore it — see ModelRestoreCheckpoint).
+    // Uses the SEPARATE d_verify_ple_conv_ckpt buffer ([num_ple, max_seq,
+    // cap, ple_elems]), not the linear conv buffer.
+    if (ple_conv_ckpt && m.layers[l].has_ple) {
+      const size_t ple_elems = static_cast<size_t>(m.layers[l].hc_dim) *
+                               (m.layers[l].ple.conv_kernel - 1) *
+                               m.layers[l].ple.conv_dilation;
+      layer_ple_conv_ckpt = ple_conv_ckpt +
+                            (static_cast<size_t>(ple_idx) * max_seq + seq_off) *
+                                num_ckpt * ple_elems;
     }
     Status s = DecoderLayerForward(m.layers[l], trunk, ple_emb, next,
                                    m.d_positions, seq_rope_pos, T, m.d_ws,
                                    m.ws_bytes, stream, layer_ssm_ckpt,
                                    layer_conv_ckpt, num_ckpt, seq_id, d_seq_id,
-                                   m.d_rope_pos);
+                                   m.d_rope_pos, tokens_per_seq,
+                                   layer_ple_conv_ckpt);
     if (!s.ok()) return s;
     if (!m.layers[l].is_full_attention) lin_idx++;
+    if (m.layers[l].has_ple) ple_idx++;
     if (diag) {
       const cudaError_t e = cudaGetLastError();
       if (e != cudaSuccess) {
@@ -805,13 +842,130 @@ Status ModelDecodeBatchMulti(const Model& m, const int32_t* tokens,
                    m.d_seq_id);
 }
 
+// Phase 2 MTP multi-seq verify: feed `tokens_per_seq` tokens for EACH of B
+// sequences in ONE packed forward (T_total = B * tokens_per_seq, sequence-
+// major). See the header for the full contract. Unlike ModelDecodeBatch (one
+// sequence), this packs B sequences so the GEMMs read the weights once for the
+// whole speculative batch; the per-sequence recurrent state (linear SSM/conv,
+// PLE conv, full KV/indexer, 3D MRoPE) is selected per-token via
+// d_token_seq_id. Per-sequence per-token SSM/conv/PLE-conv checkpoints are
+// saved (num_ckpt = tokens_per_seq - 1) so each sequence can independently
+// roll back to its own accepted prefix.
+Status ModelVerifyMulti(const Model& m, const int32_t* tokens,
+                        const int* base_positions, const int* seq_ids,
+                        const int32_t* history, int history_len, int B,
+                        int tokens_per_seq, uint16_t* logits,
+                        cudaStream_t stream, uint16_t* trunk_out) {
+  const ModelConfig& cfg = m.cfg;
+  const int T = tokens_per_seq;
+  const int Ttot = B * T;
+  if (B <= 0 || T <= 0)
+    return Status::Fail("ModelVerifyMulti: B and T must be > 0");
+  if (B > cfg.max_seq)
+    return Status::Fail("ModelVerifyMulti: B exceeds max_seq");
+  if (Ttot > cfg.max_prefill)
+    return Status::Fail("ModelVerifyMulti: B*T exceeds max_prefill");
+  for (int b = 0; b < B; ++b) {
+    if (base_positions[b] < 0 || base_positions[b] + T > cfg.max_len)
+      return Status::Fail("ModelVerifyMulti: position range exceeds max_len");
+    if (seq_ids[b] < 0 || seq_ids[b] >= cfg.max_seq)
+      return Status::Fail("ModelVerifyMulti: seq_id exceeds max_seq");
+  }
+
+  // 1. H2D the packed tokens / positions / per-token seq ids (sequence-major).
+  if (cudaMemcpyAsync(m.d_ids, tokens, Ttot * sizeof(int32_t),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return Status::Fail("H2D tokens");
+  std::vector<int> positions(Ttot);
+  std::vector<int> token_seq(Ttot);
+  for (int b = 0; b < B; ++b) {
+    for (int t = 0; t < T; ++t) {
+      positions[static_cast<size_t>(b) * T + t] = base_positions[b] + t;
+      token_seq[static_cast<size_t>(b) * T + t] = seq_ids[b];
+    }
+  }
+  if (cudaMemcpyAsync(m.d_positions, positions.data(), Ttot * sizeof(int),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return Status::Fail("H2D positions");
+  if (cudaMemcpyAsync(m.d_token_seq_id, token_seq.data(), Ttot * sizeof(int),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return Status::Fail("H2D token_seq");
+
+  // 3D MRoPE per sequence (all text tokens): each row = logical + delta,
+  // written at the strided [3, max_len] offsets for that sequence's slice.
+  {
+    const size_t ml = static_cast<size_t>(cfg.max_len);
+    for (int b = 0; b < B; ++b) {
+      int* seq_rope = m.d_rope_pos + static_cast<size_t>(seq_ids[b]) * 3 * ml;
+      for (int t = 0; t < T; ++t) {
+        const int p = base_positions[b] + t;
+        const int rp = p + m.rope_delta[seq_ids[b]];
+        for (int r = 0; r < 3; ++r) {
+          if (cudaMemcpyAsync(seq_rope + r * ml + p, &rp, sizeof(int),
+                              cudaMemcpyHostToDevice, stream) !=
+              cudaSuccess)
+            return Status::Fail("H2D rope_pos");
+        }
+      }
+    }
+  }
+
+  std::vector<int64_t> ids64(tokens, tokens + Ttot);
+
+  // PLE n-gram history: per sequence, token (b, t) at absolute
+  // base_positions[b]+t; its context spans the sequence's `history` (positions
+  // < base) and the in-batch prefix. Mirrors ModelDecodeBatch, per sequence.
+  std::vector<int64_t> hist;
+  if (m.ple_emb) {
+    const int hist_w = m.ple_hash.ngram_size - 1;
+    hist.resize(static_cast<size_t>(Ttot) * hist_w);
+    for (int b = 0; b < B; ++b) {
+      for (int t = 0; t < T; ++t) {
+        const int abs = base_positions[b] + t;
+        for (int j = 0; j < hist_w; ++j) {
+          const int src = abs - (hist_w - j);  // oldest first
+          int64_t tok;
+          if (src < 0)
+            tok = cfg.eos_token_id;
+          else if (src < base_positions[b])
+            tok = (src < history_len)
+                      ? static_cast<int64_t>(
+                            history[static_cast<size_t>(b) * history_len + src])
+                      : cfg.eos_token_id;
+          else
+            tok = static_cast<int64_t>(
+                tokens[static_cast<size_t>(b) * T + (src - base_positions[b])]);
+          hist[static_cast<size_t>(b) * T * hist_w + t * hist_w + j] = tok;
+        }
+      }
+    }
+  }
+
+  // emb + trunk (packed [B*T, ...]).
+  Status s = EmbedLookup(m.head, m.d_ids, m.d_emb, Ttot, stream);
+  if (!s.ok()) return s;
+  s = ExpandTrunk(m.head, m.d_emb, m.d_trunk, Ttot, stream);
+  if (!s.ok()) return s;
+
+  // Layer loop + head — NO reset; per-token state via d_token_seq_id, and
+  // per-sequence per-token SSM/conv/PLE-conv checkpoints for the first T-1
+  // tokens so each sequence rolls back to its own accepted prefix.
+  const int num_ckpt = T - 1;
+  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), Ttot,
+                   logits, stream, trunk_out, m.d_verify_ssm_ckpt,
+                   m.d_verify_conv_ckpt, num_ckpt, 0, m.d_token_seq_id, T,
+                   m.d_verify_ple_conv_ckpt);
+}
+
 // Per-linear-layer SSM/conv element counts (assumes all linear layers share
 // the same dims, which they do for this architecture).
 namespace {
 struct LinCkptDims {
   size_t ssm_elems = 0;
   size_t conv_elems = 0;
+  size_t ple_conv_elems = 0;  // PLE short-conv state (0 if no PLE layer)
   int num_lin = 0;
+  int num_ple = 0;
 };
 LinCkptDims CollectLinCkptDims(const Model& m) {
   LinCkptDims d;
@@ -823,6 +977,13 @@ LinCkptDims CollectLinCkptDims(const Model& m) {
           static_cast<size_t>(l.linear.in_qkv()) * (l.linear.conv_k - 1);
     }
     d.num_lin++;
+    if (l.has_ple) {
+      if (d.num_ple == 0) {
+        d.ple_conv_elems = static_cast<size_t>(l.hc_dim) *
+                           (l.ple.conv_kernel - 1) * l.ple.conv_dilation;
+      }
+      d.num_ple++;
+    }
   }
   return d;
 }
@@ -834,18 +995,30 @@ Status ModelReserveVerifyCheckpoints(Model& m, int num_ckpt) {
   if (d.num_lin == 0) return Status();  // no linear layers (nothing to save)
   if (m.d_verify_ssm_ckpt) cudaFree(m.d_verify_ssm_ckpt);
   if (m.d_verify_conv_ckpt) cudaFree(m.d_verify_conv_ckpt);
+  if (m.d_verify_ple_conv_ckpt) cudaFree(m.d_verify_ple_conv_ckpt);
   m.d_verify_ssm_ckpt = nullptr;
   m.d_verify_conv_ckpt = nullptr;
-  const size_t ssm_bytes = static_cast<size_t>(d.num_lin) * num_ckpt *
+  m.d_verify_ple_conv_ckpt = nullptr;
+  // Pooled over max_seq (Phase 2 MTP multi-seq verify): [num_layers, max_seq,
+  // cap, elems]. max_seq == 1 degenerates to the legacy [num_layers, cap,
+  // elems] layout (bit-identical single-seq path).
+  const size_t max_seq = static_cast<size_t>(m.cfg.max_seq);
+  const size_t ssm_bytes = static_cast<size_t>(d.num_lin) * max_seq * num_ckpt *
                            d.ssm_elems * sizeof(float);
-  const size_t conv_bytes = static_cast<size_t>(d.num_lin) * num_ckpt *
+  const size_t conv_bytes = static_cast<size_t>(d.num_lin) * max_seq * num_ckpt *
                             d.conv_elems * sizeof(uint16_t);
+  const size_t ple_bytes = static_cast<size_t>(d.num_ple) * max_seq * num_ckpt *
+                           d.ple_conv_elems * sizeof(uint16_t);
   if (cudaMalloc(reinterpret_cast<void**>(&m.d_verify_ssm_ckpt), ssm_bytes) !=
       cudaSuccess)
     return Status::Fail("ModelReserveVerifyCheckpoints: cudaMalloc ssm");
   if (cudaMalloc(reinterpret_cast<void**>(&m.d_verify_conv_ckpt), conv_bytes) !=
       cudaSuccess)
     return Status::Fail("ModelReserveVerifyCheckpoints: cudaMalloc conv");
+  if (d.num_ple > 0 &&
+      cudaMalloc(reinterpret_cast<void**>(&m.d_verify_ple_conv_ckpt),
+                 ple_bytes) != cudaSuccess)
+    return Status::Fail("ModelReserveVerifyCheckpoints: cudaMalloc ple_conv");
   m.verify_ckpt_cap = num_ckpt;
   return Status();
 }
@@ -856,17 +1029,23 @@ Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx,
     return Status::Fail("ModelRestoreCheckpoint: invalid ckpt");
   const LinCkptDims d = CollectLinCkptDims(m);
   const int cap = m.verify_ckpt_cap;
+  const size_t max_seq = static_cast<size_t>(m.cfg.max_seq);
   const size_t seq = static_cast<size_t>(seq_id);
+  // Checkpoint source: pooled layout [num_layers, max_seq, cap, elems]; the
+  // slice for (layer, sequence) starts at (layer_idx * max_seq + seq) * cap.
+  // Restored into the same sequence's pooled recurrent-state slice. (The PLE
+  // conv restore fixes the pre-existing single-seq gap: the PLE short-conv is
+  // an in-place recurrence and must roll back on a partial accept too.)
   int lin_idx = 0;
+  int ple_idx = 0;
   for (const auto& l : m.layers) {
     if (l.is_full_attention) continue;
-    const float* ssm_src = m.d_verify_ssm_ckpt +
-                           (static_cast<size_t>(lin_idx) * cap + ckpt_idx) *
-                               d.ssm_elems;
-    const uint16_t* conv_src = m.d_verify_conv_ckpt +
-                               (static_cast<size_t>(lin_idx) * cap + ckpt_idx) *
-                                   d.conv_elems;
-    // Restore into this sequence's pooled state slice.
+    const size_t lin_slice =
+        (static_cast<size_t>(lin_idx) * max_seq + seq) * cap;
+    const float* ssm_src = m.d_verify_ssm_ckpt + lin_slice * d.ssm_elems +
+                           static_cast<size_t>(ckpt_idx) * d.ssm_elems;
+    const uint16_t* conv_src = m.d_verify_conv_ckpt + lin_slice * d.conv_elems +
+                               static_cast<size_t>(ckpt_idx) * d.conv_elems;
     float* ssm_dst = l.ssm_state + seq * d.ssm_elems;
     uint16_t* conv_dst = l.conv_state + seq * d.conv_elems;
     if (cudaMemcpyAsync(ssm_dst, ssm_src, d.ssm_elems * sizeof(float),
@@ -876,6 +1055,18 @@ Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx,
                         cudaMemcpyDeviceToDevice, stream) != cudaSuccess)
       return Status::Fail("ModelRestoreCheckpoint: D2D conv");
     lin_idx++;
+    if (l.has_ple) {
+      const size_t ple_slice =
+          (static_cast<size_t>(ple_idx) * max_seq + seq) * cap;
+      const uint16_t* ple_src =
+          m.d_verify_ple_conv_ckpt + ple_slice * d.ple_conv_elems +
+          static_cast<size_t>(ckpt_idx) * d.ple_conv_elems;
+      uint16_t* ple_dst = l.ple_conv_state + seq * d.ple_conv_elems;
+      if (cudaMemcpyAsync(ple_dst, ple_src, d.ple_conv_elems * sizeof(uint16_t),
+                          cudaMemcpyDeviceToDevice, stream) != cudaSuccess)
+        return Status::Fail("ModelRestoreCheckpoint: D2D ple_conv");
+      ple_idx++;
+    }
   }
   return Status();
 }

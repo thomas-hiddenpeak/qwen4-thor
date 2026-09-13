@@ -5,6 +5,77 @@
 
 ---
 
+## 2026-09-13 — MTP 批处理 Stage 2a: ModelVerifyMulti 多序列验证前向 + per-seq checkpoint 回滚 (闭合)
+
+**背景**
+Stage 2 设计稿 (1bc8c12) + 设计更正 (aa3a2ad, full attention 因果掩码
+风险是误判 — per-seq KV 隔离天然阻止跨序列注意力) 之后, 实现 Stage 2a:
+多序列验证前向 (核心段) + per-seq checkpoint 回滚。增量 1-3 (linear/PLE
+多序列因果 kernel + per-seq checkpoint kernel) 已在前序 commit 提交,
+本次是核心 `ModelVerifyMulti` + checkpoint 基础设施 + 测试。
+
+**做了什么**
+1. **`ModelVerifyMulti`** (model.h/model.cu): B 序列 × T token (k+1)
+   打包成一次主模型 forward (T_total = B*T, sequence-major [B,T])。
+   GEMM 无状态自动打包 (权重只读一次); 有状态 kernel 用 `d_token_seq_id`
+   (新增持久 buffer [max_prefill], per-token seq id) 选 per-seq 切片;
+   3D MRoPE 按序列切片写; PLE n-gram history 按序列构造 (镜像
+   ModelDecodeBatch)。num_ckpt = T-1, 每序列独立 checkpoint。
+2. **checkpoint 体系升级**: 布局从 [num_layers, cap, elems] 改为池化
+   [num_layers, max_seq, cap, elems] (max_seq=1 退化旧布局, 单序列 bit
+   不变); RunLayers 加 tokens_per_seq + ple_conv_ckpt 尾参, ckpt 切片按
+   (layer_idx * max_seq + seq_off) 索引; **新增 PLE conv checkpoint**
+   (d_verify_ple_conv_ckpt, 独立 buffer) — 修复既有 bug: 单序列 MTP 部分
+   接受时 ModelRestoreCheckpoint 只恢复 linear SSM/conv, 不恢复 PLE
+   short-conv (也是 in-place 递推) → 部分接受后 PLE conv 窗口含被拒绝
+   token 的 gated_n 值 (系统性小污染, 全接受无影响)。
+   ModelRestoreCheckpoint 加 PLE conv 恢复 (池化布局)。
+3. **修 2 个 kernel bug** (测试暴露):
+   - **DepthwiseConvAddMultiSeqCausalKernel**: `T` 参数同时用于 grid 边界
+     `idx >= T*C` (需**总数** B*T) 和局部位置 `tt = t % T` (需
+     **tokens_per_seq**)。原代码 launch 传总数 → seq≥1 的 tt 错误
+     (t=3,4,5 → tt=3,4,5 而非 0,1,2) → 跨序列读 packed input + 不读
+     per-seq old_state。修复: 加 `Tps` 参数, 边界用总数、tt 用 Tps。
+     (seq 0 的 token t=0,1,2 恰好 t%6==t%3, 所以只有 seq≥1 受影响 —
+     这解释了测试里 seq 0 bit-exact / seq 1 发散的现象。)
+   - **PleConvUpdateStateMultiSeqCausalKernel**: 缺 T<state_len 的**滑窗**
+     (只处理了 T>=state_len 的"整窗来自 chunk"分支)。MTP verify 的
+     T=k+1 < state_len=(K-1)*dilation=9 是常态 → 状态窗口不前进, 全接受
+     路径下下一步的 PLE conv 窗口错误。修复: 加 else 分支读旧状态
+     (镜像单序列 PleConvUpdateStateKernel 的 decode 分支; in-place 安全:
+     读索引 T+k > k, 升序 k 不覆盖未读值)。
+   - linear conv 的 Conv1dUpdateStateMultiSeqCausalKernel 已有 else 分支
+     读旧状态 (正确), 无需改; GDN kernel 的 token_stride/in_qkv 索引经
+     核实正确。
+4. **测试 `model_verify_multi`** (2 层 = layer 0 linear + layer 1
+   linear/PLE, 覆盖 PLE conv checkpoint 路径; B=2 不同 prompt, T=3):
+   - 多序列 verify logits vs **单序列 prefill 参考** (prefill 整段
+     prompt+verify, recurrent 状态 chunk-invariant) 6/6 **bit-exact**
+     (l2_rel=0.00000) — 证明 multi-seq causal kernel 数学逐位正确 +
+     无跨序列污染。
+   - 部分接受回滚: ModelRestoreCheckpoint(a=0) 恢复 seq 0 状态后 decode
+     verify0[1], 匹配参考 0.00896 (decode kernel vs prefill 参考的已知
+     batch-vs-decode 残差量级) — 覆盖 PLE conv 回滚。
+   - 参考路径选择: 最初用 ModelDecodeStepSeq (decode kernel) 做参考,
+     seq 0 0.059 / seq 1 0.24 (累积) — 是 decode vs prefill kernel 数学
+     差异 (已知 MoE 路由边界敏感性), 不是 bug。改用 prefill 参考后
+     seq 0 立即 bit-exact, 才暴露出 PLE conv 的 seq 1 真 bug。
+   - 调试手段: 加 DIAG 对比 verify-prefill 的 prompt logits vs 参考
+     (都是 prefill kernel, 应 bit-exact) → 定位 bug 在 multi-seq causal
+     阶段而非 prefill/状态切片。
+
+**结果**
+67 项测试全绿 (66 + model_verify_multi), 零警告。Stage 2a 闭合:
+多序列验证前向 + per-seq checkpoint 回滚 (含 PLE conv) 可用。
+
+**下一步**
+Stage 2b: 多序列投机步 (批量化 draft 循环 — B 序列 draft 步打包一次
+多序列 MtpForward + 滚动 trunk per-seq; ragged 验证 — 各序列 k 可不同,
+用 ModelVerifyMulti 打包; extend — 重建 draft KV per-seq)。Stage 2c:
+调度器 MTP 分支 (serve 层把 MTP 请求并入连续批处理)。
+
+---
+
 ## 2026-09-13 — MTP 批处理 Stage 2 设计稿 (docs/MTP_BATCHING.md, 待审阅)
 
 **背景**

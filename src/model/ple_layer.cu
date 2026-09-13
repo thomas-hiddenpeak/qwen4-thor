@@ -318,13 +318,13 @@ __global__ void DepthwiseConvAddMultiSeqCausalKernel(
     const uint16_t* __restrict__ x, const uint16_t* __restrict__ conv1d,
     const uint16_t* __restrict__ state, const uint16_t* __restrict__ gated,
     const uint16_t* __restrict__ trunk_add, uint16_t* __restrict__ out,
-    const int* __restrict__ d_seq_id, int T, int C, int K, int dilation,
-    int state_len) {
+    const int* __restrict__ d_seq_id, int T, int Tps, int C, int K,
+    int dilation, int state_len) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
-  if (idx >= T * C) return;
+  if (idx >= T * C) return;  // T = total packed tokens (grid bound)
   const int t = idx / C;
   const int c = idx % C;
-  const int tt = t % T;  // local position within the sequence
+  const int tt = t % Tps;  // local position within the sequence (Tps = tokens/seq)
   const uint16_t* seq_state =
       state + static_cast<size_t>(d_seq_id[t]) * C * state_len;
   float acc = 0.0f;
@@ -392,11 +392,22 @@ __global__ void PleConvUpdateStateMultiSeqCausalKernel(
   const int b = blockIdx.y;
   uint16_t* seq_state =
       state + static_cast<size_t>(d_seq_id[b * T]) * C * state_len;
+  // Slide the window by T: the new window = the last `state_len` gated_n
+  // values of (old state + the sequence's T tokens). For local token index
+  // src = T - state_len + k: src >= 0 reads the packed input (in-batch), else
+  // it reads the OLD state at (src + state_len) (pre-sequence history). This
+  // mirrors the single-seq PleConvUpdateStateKernel decode branch (T <
+  // state_len slides the window; the in-place read is safe because src+
+  // state_len > k and k is ascending). MTP verify has T = k+1 < state_len =
+  // (K-1)*dilation, so the slide is the common case.
   for (int k = 0; k < state_len; ++k) {
-    const int src = T - state_len + k;
+    const int src = T - state_len + k;  // local token index (can be negative)
     if (src >= 0)
       seq_state[static_cast<size_t>(c) * state_len + k] =
           input[static_cast<size_t>(b * T + src) * C + c];
+    else
+      seq_state[static_cast<size_t>(c) * state_len + k] =
+          seq_state[static_cast<size_t>(c) * state_len + (src + state_len)];
   }
 }
 
@@ -639,7 +650,7 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
       DepthwiseConvAddMultiSeqCausalKernel<<<blocks, kBlock, 0, stream>>>(
           reinterpret_cast<uint16_t*>(d_gated_n), w.conv1d, conv_state,
           reinterpret_cast<uint16_t*>(d_gated), trunk_add, out, d_seq_id, T,
-          hc_dim, K, dil, state_len);
+          tokens_per_seq, hc_dim, K, dil, state_len);
       if (cudaGetLastError() != cudaSuccess) return Status::Fail("ple conv");
     } else if (d_seq_id) {
       // B2 multi-sequence decode: each token t uses its own sequence's conv
@@ -675,14 +686,14 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
         PleConvCheckpointMultiSeqKernel<<<dim3(blocks, B * num_ckpt), kBlock,
                                           0, stream>>>(
             reinterpret_cast<uint16_t*>(d_gated_n), conv_state, conv_ckpt,
-            d_seq_id, hc_dim, state_len, T, num_ckpt);
+            d_seq_id, hc_dim, state_len, tokens_per_seq, num_ckpt);
         if (cudaGetLastError() != cudaSuccess)
           return Status::Fail("ple conv ckpt");
       }
       PleConvUpdateStateMultiSeqCausalKernel<<<dim3(blocks, B), kBlock, 0,
                                                stream>>>(
-          conv_state, reinterpret_cast<uint16_t*>(d_gated_n), d_seq_id, T,
-          hc_dim, state_len);
+          conv_state, reinterpret_cast<uint16_t*>(d_gated_n), d_seq_id,
+          tokens_per_seq, hc_dim, state_len);
     } else if (d_seq_id) {
       PleConvUpdateStateMultiSeqKernel<<<dim3(blocks, T), kBlock, 0, stream>>>(
           conv_state, reinterpret_cast<uint16_t*>(d_gated_n), d_seq_id, hc_dim,

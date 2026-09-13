@@ -190,6 +190,7 @@ if(Q4T_BUILD_TESTS)
     tests/model_head_test.cpp
     tests/model_forward_test.cpp
     tests/model_moe_test.cpp
+    tests/model_verify_multi_test.cpp
     tests/mtp_draft_test.cpp
     tests/mtp_speculative_test.cpp
     tests/vision_forward_test.cpp

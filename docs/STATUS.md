@@ -361,6 +361,25 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   确定性 bit 一致。66 项测试全绿零警告。
   **→ MTP 批处理 Stage 1 闭合** (并发 MTP 地基; Stage 2 = 批量化 draft
   循环 + ragged 多序列验证 + 调度器 MTP 分支, 未做)
+- [x] 2026-09-13 **MTP 批处理 Stage 2a (多序列验证前向 + per-seq
+  checkpoint 回滚)**: 新增 `ModelVerifyMulti` — B 序列 × T token (k+1)
+  打包成一次主模型 forward (sequence-major [B,T]), 权重只读一次;
+  linear/PLE 层走 per-seq 因果链 kernel (增量 1-3 已提交), full attention
+  走 per-seq paged KV (B2a, 设计稿中"因果掩码风险"经核实是误判: per-seq
+  KV 隔离天然阻止跨序列注意力)。checkpoint 体系升级为池化布局
+  [num_layers, max_seq, cap, elems] (max_seq=1 退化旧布局 bit 不变) +
+  新增 PLE conv checkpoint (修复既有 bug: 单序列 MTP 部分接受时 PLE
+  short-conv 窗口残留被拒绝 token)。实现中发现并修复 2 个 kernel bug:
+  ① DepthwiseConvAddMultiSeqCausalKernel 的 T 参数同时用于 grid 边界
+  (需总数 B*T) 和局部位置 tt=t%T (需 tokens_per_seq) — 原代码传总数
+  导致 seq≥1 跨序列读 (加 Tps 参数分离); ② PleConvUpdateStateMultiSeq
+  CausalKernel 缺 T<state_len 滑窗 (MTP verify T=k+1<9 是常态, 状态不
+  前进)。测试 model_verify_multi (2 层 = linear + PLE, B=2 不同 prompt,
+  T=3): 多序列 verify logits vs 单序列 prefill 参考 6/6 **bit-exact**
+  (l2_rel=0.00000) + 部分接受回滚 (a=0) 后 decode 匹配参考 0.00896。
+  67 项测试全绿零警告。 **→ Stage 2a 闭合**; 剩余: Stage 2b (多序列
+  投机步: 批量化 draft 循环 + ragged 验证 + extend) + Stage 2c (调度器
+  MTP 分支)。
 
 ## 进行中
 

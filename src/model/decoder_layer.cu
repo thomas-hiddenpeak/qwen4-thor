@@ -389,7 +389,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
                            cudaStream_t stream, float* ssm_ckpt,
                            uint16_t* conv_ckpt, int num_ckpt, int seq_id,
                            const int* d_seq_id, const int* d_rope_pos,
-                           int tokens_per_seq) {
+                           int tokens_per_seq, uint16_t* ple_conv_ckpt) {
   const int hs = layer.hs, hc_dim = layer.hc_dim, hc = layer.hc;
   if (T <= 0) return Status();
   // Pooled recurrent-state slices for this sequence (seq_id selects the
@@ -496,7 +496,8 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     // PleAddTrunkKernel).
     s = PleLayerForward(layer.ple, ple_embeddings, hyper_input, d_ple_trunk,
                         T, ple_conv_state, d_ple_ws, ple_ws, stream,
-                        hyper_input, d_seq_id, tokens_per_seq);
+                        hyper_input, d_seq_id, tokens_per_seq, ple_conv_ckpt,
+                        num_ckpt);
     if (!s.ok()) {
       return s;
     }
