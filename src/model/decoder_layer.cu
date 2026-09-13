@@ -496,7 +496,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     // PleAddTrunkKernel).
     s = PleLayerForward(layer.ple, ple_embeddings, hyper_input, d_ple_trunk,
                         T, ple_conv_state, d_ple_ws, ple_ws, stream,
-                        hyper_input, d_seq_id);
+                        hyper_input, d_seq_id, tokens_per_seq);
     if (!s.ok()) {
       return s;
     }

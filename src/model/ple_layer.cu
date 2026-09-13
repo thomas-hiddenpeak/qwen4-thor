@@ -305,6 +305,69 @@ __global__ void PleConvUpdateStateMultiSeqKernel(
       input[static_cast<size_t>(t) * C + c];
 }
 
+// PLE short-conv for MTP multi-sequence VERIFY (Phase 2): the packed [T, C]
+// input is sequence-major (t = b*T + tt, tt in [0,T), B = T/tokens_per_seq
+// sequences). Each token's dilated causal conv reads (a) earlier LOCAL tokens
+// of the SAME sequence from the packed input (taps within the current
+// sequence) and (b) the per-sequence old_state (taps before the sequence
+// start). The single non-negative tap (j == K-1, src == 0) is the CURRENT
+// token at packed index t. Mirrors one prefill step of
+// DepthwiseConvAddKernel with the state selected by d_seq_id[t]. PLE has no
+// checkpoint (it sits at layer 1, before the first linear-attention layer).
+__global__ void DepthwiseConvAddMultiSeqCausalKernel(
+    const uint16_t* __restrict__ x, const uint16_t* __restrict__ conv1d,
+    const uint16_t* __restrict__ state, const uint16_t* __restrict__ gated,
+    const uint16_t* __restrict__ trunk_add, uint16_t* __restrict__ out,
+    const int* __restrict__ d_seq_id, int T, int C, int K, int dilation,
+    int state_len) {
+  const int idx = blockIdx.x * blockDim.x + threadIdx.x;
+  if (idx >= T * C) return;
+  const int t = idx / C;
+  const int c = idx % C;
+  const int tt = t % T;  // local position within the sequence
+  const uint16_t* seq_state =
+      state + static_cast<size_t>(d_seq_id[t]) * C * state_len;
+  float acc = 0.0f;
+  for (int j = 0; j < K; ++j) {
+    int src = tt - (K - 1 - j) * dilation;  // local position of the tap
+    float xv;
+    if (src < 0)
+      xv = Bf16ToFloat(seq_state[static_cast<size_t>(c) * state_len +
+                                 (src + state_len)]);
+    else
+      xv = Bf16ToFloat(x[static_cast<size_t>(t - (tt - src)) * C + c]);
+    const float w = Bf16ToFloat(conv1d[c * K + j]);
+    acc += w * xv;
+  }
+  const float conv = Bf16ToFloat(FloatToBf16(Silu(acc)));
+  const uint16_t ple_out = FloatToBf16(Bf16ToFloat(gated[idx]) + conv);
+  if (trunk_add)
+    out[idx] = FloatToBf16(Bf16ToFloat(trunk_add[idx]) + Bf16ToFloat(ple_out));
+  else
+    out[idx] = ple_out;
+}
+
+// Update the PLE short-conv state for MTP multi-sequence VERIFY: the packed
+// [T, C] input is sequence-major (t = b*T + tt, T = tokens per sequence).
+// After the causal conv, each sequence's conv_state becomes its last
+// `state_len` gated_n values (the prefill branch of
+// PleConvUpdateStateKernel), selected by d_seq_id[t].
+__global__ void PleConvUpdateStateMultiSeqCausalKernel(
+    uint16_t* __restrict__ state, const uint16_t* __restrict__ input,
+    const int* __restrict__ d_seq_id, int T, int C, int state_len) {
+  const int c = blockIdx.x * blockDim.x + threadIdx.x;
+  if (c >= C) return;
+  const int b = blockIdx.y;
+  uint16_t* seq_state =
+      state + static_cast<size_t>(d_seq_id[b * T]) * C * state_len;
+  for (int k = 0; k < state_len; ++k) {
+    const int src = T - state_len + k;
+    if (src >= 0)
+      seq_state[static_cast<size_t>(c) * state_len + k] =
+          input[static_cast<size_t>(b * T + src) * C + c];
+  }
+}
+
 Status CheckGemm(const Bf16GemmResult& r) {
   if (r.status != CUBLAS_STATUS_SUCCESS || !r.has_algo) {
     return Status::Fail(std::string("Bf16Gemm failed (status=") +
@@ -454,7 +517,8 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
                        const uint16_t* hyper_input, uint16_t* out, int T,
                        uint16_t* conv_state, void* workspace,
                        size_t workspace_bytes, cudaStream_t stream,
-                       const uint16_t* trunk_add, const int* d_seq_id) {
+                       const uint16_t* trunk_add, const int* d_seq_id,
+                       int tokens_per_seq) {
   const int hc = w.hc_count, hs = w.hidden_size, pe = w.ple_embed_dim;
   const int hc_dim = hc * hs;
   const int K = w.conv_kernel, dil = w.conv_dilation;
@@ -535,22 +599,29 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
   const int state_len = (K - 1) * dil;
   {
     const int total = T * hc_dim;
-    if (d_seq_id) {
+    const int blocks = (total + kBlock - 1) / kBlock;
+    if (d_seq_id && tokens_per_seq > 1) {
+      // MTP multi-sequence VERIFY: per-sequence causal conv (sequence-major
+      // packed input); taps read earlier local tokens of the same sequence +
+      // the per-sequence old_state.
+      DepthwiseConvAddMultiSeqCausalKernel<<<blocks, kBlock, 0, stream>>>(
+          reinterpret_cast<uint16_t*>(d_gated_n), w.conv1d, conv_state,
+          reinterpret_cast<uint16_t*>(d_gated), trunk_add, out, d_seq_id, T,
+          hc_dim, K, dil, state_len);
+      if (cudaGetLastError() != cudaSuccess) return Status::Fail("ple conv");
+    } else if (d_seq_id) {
       // B2 multi-sequence decode: each token t uses its own sequence's conv
       // slice (d_seq_id[t]); conv_state is the pooled [max_seq, ...] base.
-      const int blocks = (total + kBlock - 1) / kBlock;
       DepthwiseConvAddMultiSeqKernel<<<blocks, kBlock, 0, stream>>>(
           reinterpret_cast<uint16_t*>(d_gated_n), w.conv1d, conv_state,
           reinterpret_cast<uint16_t*>(d_gated), trunk_add, out, d_seq_id, T,
           hc_dim, K, dil, state_len);
       if (cudaGetLastError() != cudaSuccess) return Status::Fail("ple conv");
     } else {
-      DepthwiseConvAddKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0,
-                                stream>>>(reinterpret_cast<uint16_t*>(d_gated_n),
-                                         w.conv1d, conv_state,
-                                         reinterpret_cast<uint16_t*>(d_gated),
-                                         trunk_add, out, T, hc_dim, K, dil,
-                                         state_len);
+      DepthwiseConvAddKernel<<<blocks, kBlock, 0, stream>>>(
+          reinterpret_cast<uint16_t*>(d_gated_n), w.conv1d, conv_state,
+          reinterpret_cast<uint16_t*>(d_gated), trunk_add, out, T, hc_dim, K,
+          dil, state_len);
     }
   }
   // DumpPleConv: when trunk_add is active, `out` is the trunk-corrected value
@@ -561,7 +632,15 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
   // 8b. Slide the state to the last state_len gated_n values (old + chunk).
   {
     const int blocks = (hc_dim + kBlock - 1) / kBlock;
-    if (d_seq_id) {
+    if (d_seq_id && tokens_per_seq > 1) {
+      // MTP multi-sequence VERIFY: per-sequence state update (sequence-major
+      // packed input, B = T / tokens_per_seq sequences).
+      const int B = T / tokens_per_seq;
+      PleConvUpdateStateMultiSeqCausalKernel<<<dim3(blocks, B), kBlock, 0,
+                                               stream>>>(
+          conv_state, reinterpret_cast<uint16_t*>(d_gated_n), d_seq_id, T,
+          hc_dim, state_len);
+    } else if (d_seq_id) {
       PleConvUpdateStateMultiSeqKernel<<<dim3(blocks, T), kBlock, 0, stream>>>(
           conv_state, reinterpret_cast<uint16_t*>(d_gated_n), d_seq_id, hc_dim,
           state_len);

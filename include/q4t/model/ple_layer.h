@@ -102,7 +102,11 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
                        uint16_t* conv_state, void* workspace,
                        size_t workspace_bytes, cudaStream_t stream,
                        const uint16_t* trunk_add = nullptr,
-                       const int* d_seq_id = nullptr);
+                       const int* d_seq_id = nullptr, int tokens_per_seq = 0);
+// `tokens_per_seq` (MTP multi-sequence VERIFY, Phase 2): when d_seq_id is
+// non-null and tokens_per_seq > 1, the packed [T, ...] rows are sequence-major
+// (B = T / tokens_per_seq sequences) and the short-conv runs a per-sequence
+// causal chain (prefill semantics); 0 = B2 decode / single-seq.
 
 }  // namespace model
 }  // namespace q4t
