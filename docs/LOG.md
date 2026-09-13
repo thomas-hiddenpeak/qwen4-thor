@@ -5,6 +5,55 @@
 
 ---
 
+## 2026-09-13 — B2b serve 连续批处理调度器 (E2E 闭合)
+
+**背景**
+B2a 提供了引擎级 `ModelDecodeBatchMulti` (B 序列各 1 token 打包一次
+forward)。B2b 在 serve 层加**连续批处理调度器**: 把并发请求的 decode
+step 合并成一次 `ModelDecodeBatchMulti` 调用, 实现真正的 token 级连续
+批处理 (continuous batching)。
+
+**设计**
+- **独立调度线程** `SchedulerLoop`: 阻塞在 `sched_cv_` 上, 任一请求
+  pending 时唤醒 → 收集所有 pending 请求的 (token, position, seq_id,
+  ple_hist) → 组 B 个 token 的打包数组 → 在 `model_mu_` 下调
+  `ModelDecodeBatchMulti` + D2H logits → 在 `sched_mu_` 下逐请求设
+  `done=true` + `next_token` (argmax) + `notify`。
+- **请求线程** (`HandleChat` plain decode 循环): 每步把当前 token 填入
+  `ActiveRequest` (栈对象), `sched_mu_` 下设 `pending=true` →
+  `notify` → 等 `ar.cv` 至 `done` → 取 `next_token` 推进序列。
+- **回退**: `scheduler_active_==false` (buffer 分配失败) 或
+  `active_.size()>=max_seq` 时回退 `ModelDecodeStepSeq` 单序列路径。
+- **MTP 路径不变**: MTP 请求走单序列路径 (draft KV 单共享 buffer,
+  未批处理) —— 已知范围限制。
+- **stop drain**: `StopScheduler` 设 `scheduler_stop_` + notify,
+  调度器退出前把所有 active 请求设 `done=true, next_token=-1` 唤醒,
+  避免死锁。
+
+**E2E 验证**
+`q4t serve --port 8201 --max-seq 8 --max-tokens 64 --no-mtp`:
+- 日志出现 `[q4t] continuous-batching scheduler started (max_seq=8)`。
+- **3 并发请求** (不同 prompt: France 首都 / 2+2 / 最大行星) 全部成功
+  返回语义正确 (Paris / 4 / Jupiter), 无跨序列污染, 日志无
+  error/illegal/503。
+
+**吞吐实测** (max_tokens=40, 短故事 prompt):
+- 单请求: 40 tok, 2.64s, **15.13 tok/s**。
+- 3 并发: 120 tok, 6.66s, **聚合 18.03 tok/s** (1.19x)。
+- 提升低于理论线性值 (3x), 符合 MoE 特性: dense 层 (HC/GDN/full-attn)
+  打包接近免费 (权重只读一次), 但 MoE 专家权重读取**不共享** (不同
+  token 路由到不同专家, 权重读取随 token 数增长), 限制了聚合吞吐
+  上限。
+
+65 项测试全绿, 零警告。
+
+**→ B2 全部闭合** (B2a 引擎 + B2b serve 调度器 + E2E + 吞吐实测)。
+
+**下一步**: Phase 2 剩余项 (serve 流式输出 / MTP 批处理 / 48 层长序列
+端到端 / 多设备 PD 部署)。
+
+---
+
 ## 2026-09-13 — B2a 连续批处理引擎 (token 级打包: 多序列 decode 一次 forward)
 
 **背景**

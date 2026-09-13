@@ -15,9 +15,11 @@
 #pragma once
 
 #include <array>
+#include <condition_variable>
 #include <memory>
 #include <mutex>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include "q4t/model/model.h"
@@ -92,6 +94,44 @@ class ChatServer {
   void FreeSeqId(int seq_id);
   std::mutex model_mu_;   // serializes all model forwards (main + MTP + vision)
   std::mutex seq_mu_;     // guards the seq_id free pool
+
+  // B2b continuous batching: a central scheduler thread collects the current
+  // decode token of every ACTIVE plain-decode request and runs them in ONE
+  // packed ModelDecodeBatchMulti (the 84 GB of weights is read once for all B
+  // tokens instead of B times — the decode throughput win). Each request
+  // thread registers its token, blocks on its own cv, and is woken with its
+  // row of logits. MTP requests are NOT batched (their draft KV is a single
+  // shared buffer, so MTP stays single-sequence; see HandleChat).
+  //
+  // An ActiveRequest is the scheduler's view of one in-flight plain-decode
+  // request. `pending` is set by the request thread (under sched_mu_) before
+  // it signals the scheduler; `done` is set by the scheduler (under
+  // sched_mu_) once the packed forward has produced this request's next token.
+  // `next_token` carries the scheduler's argmax result back to the request.
+  struct ActiveRequest {
+    int seq_id = 0;        // pooled-state slice index
+    int position = 0;      // absolute position of the token to decode
+    int32_t token = 0;     // the token to feed (this request's next input)
+    std::vector<int32_t> ple_hist;  // PLE n-gram context (ngram_size-1, oldest
+                                     // first, EOS-filled) for `token`
+    bool pending = false;  // token registered, awaiting the packed forward
+    bool done = false;     // scheduler produced `next_token`
+    int32_t next_token = 0;
+    std::condition_variable cv;  // request thread waits here for `done`
+  };
+  void SchedulerLoop();
+  void StopScheduler();  // signal + join the scheduler thread (destructor)
+  std::mutex sched_mu_;  // guards active_ + the pending/done handshake
+  std::condition_variable sched_cv_;  // scheduler waits for pending work
+  std::vector<ActiveRequest*> active_;  // live plain-decode requests
+  std::thread scheduler_thread_;
+  bool scheduler_stop_ = false;
+  bool scheduler_active_ = false;  // false if the scheduler buffer alloc failed
+                                    // (plain decode then uses the per-request path)
+  // Scheduler's packed-logits buffers (device [max_seq, vocab] + host mirror).
+  // Only the scheduler thread touches these (the write is under model_mu_).
+  uint16_t* d_sched_logits_ = nullptr;
+  std::vector<uint16_t> sched_h_logits_;
   // The tokenizer's ICU 74 regex engine is NOT thread-safe (concurrent Encode
   // trips U_INTERNAL_PROGRAM_ERROR), so all Encode/Decode calls are serialized
   // behind tok_mu_ even though the rest of the tokenizer is immutable.

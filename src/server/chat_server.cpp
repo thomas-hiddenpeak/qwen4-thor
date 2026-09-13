@@ -7,6 +7,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include <algorithm>
 #include <cctype>
 #include <cerrno>
 #include <chrono>
@@ -73,6 +74,23 @@ bool WriteAll(int fd, const char* data, size_t len) {
 
 bool WriteAll(int fd, const std::string& s) {
   return WriteAll(fd, s.data(), s.size());
+}
+
+// Argmax over a BF16 logits row (lowest-index tie-break, matches the greedy
+// decoder). Used by the B2b scheduler to turn each packed row into a token.
+int ArgmaxBf16Row(const uint16_t* row, int vocab) {
+  int best = 0;
+  float best_v = -1e30f;
+  for (int v = 0; v < vocab; ++v) {
+    const uint32_t bits = static_cast<uint32_t>(row[v]) << 16;
+    float f;
+    std::memcpy(&f, &bits, sizeof(f));
+    if (f > best_v) {
+      best_v = f;
+      best = v;
+    }
+  }
+  return best;
 }
 
 // Read the full HTTP request: request line + headers (until blank line) +
@@ -306,6 +324,13 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
 }  // namespace
 
 ChatServer::~ChatServer() {
+  // B2b: stop the scheduler thread FIRST (it touches model_ + d_sched_logits_
+  // under model_mu_, so it must be joined before those are freed).
+  StopScheduler();
+  if (d_sched_logits_) {
+    cudaFree(d_sched_logits_);
+    d_sched_logits_ = nullptr;
+  }
   if (vision_tower_) {
     vision_tower_->Free();
     vision_tower_.reset();
@@ -421,6 +446,20 @@ Status ChatServer::Start(const ServerOptions& opts) {
   video_proc_cfg_ = proc_cfg_;
   video_proc_cfg_.min_pixels = 4096;
   video_proc_cfg_.max_pixels = 25165824;
+
+  // B2b continuous batching: the scheduler's packed-logits buffers
+  // (device [max_seq, vocab] + host mirror) and the scheduler thread.
+  if (cudaMalloc(reinterpret_cast<void**>(&d_sched_logits_),
+                 static_cast<size_t>(max_seq_) * cfg.vocab * 2) != cudaSuccess) {
+    std::fprintf(stderr, "[q4t] scheduler logits alloc failed; plain decode\n");
+  } else {
+    sched_h_logits_.assign(static_cast<size_t>(max_seq_) * cfg.vocab, 0);
+    scheduler_thread_ = std::thread([this] { SchedulerLoop(); });
+    scheduler_active_ = true;
+    std::fprintf(stderr, "[q4t] continuous-batching scheduler started "
+                         "(max_seq=%d)\n",
+                 max_seq_);
+  }
   return Status();
 }
 
@@ -515,6 +554,103 @@ void ChatServer::FreeSeqId(int seq_id) {
   if (seq_id < 0) return;
   const std::lock_guard<std::mutex> lock(seq_mu_);
   if (seq_id < max_seq_) seq_free_[static_cast<size_t>(seq_id)] = true;
+}
+
+// B2b continuous batching: the central scheduler loop.
+//
+// Each ACTIVE plain-decode request registers its current decode token (its
+// `pending` flag is set under sched_mu_ and the scheduler is signalled). The
+// scheduler collects ALL pending requests, runs them in ONE packed
+// ModelDecodeBatchMulti (the 84 GB of weights is read once for all B tokens
+// instead of B times — the decode throughput win), copies the [B, vocab]
+// logits back to the host, argmaxes each row, and wakes each request with its
+// next token. The packed forward runs under model_mu_ (the shared per-forward
+// scratch); the D2H + argmax run under model_mu_ too (they must be ordered
+// after the forward on the default stream and before the next forward's H2D).
+//
+// MTP requests are NOT batched (their draft KV is a single shared buffer);
+// they keep the single-sequence path in HandleChat.
+void ChatServer::SchedulerLoop() {
+  const int vocab = model_.cfg.vocab;
+  for (;;) {
+    std::vector<ActiveRequest*> pending;
+    {
+      std::unique_lock<std::mutex> lock(sched_mu_);
+      sched_cv_.wait(lock, [this] {
+        return scheduler_stop_ ||
+               std::any_of(active_.begin(), active_.end(),
+                           [](ActiveRequest* r) { return r->pending; });
+      });
+      if (scheduler_stop_) {
+        // Drain: wake any request that is still waiting so it can exit.
+        for (ActiveRequest* r : active_) {
+          r->pending = false;
+          r->done = true;
+          r->next_token = -1;  // sentinel: scheduler is shutting down
+          r->cv.notify_one();
+        }
+        return;
+      }
+      for (ActiveRequest* r : active_)
+        if (r->pending) pending.push_back(r);
+    }
+    if (pending.empty()) continue;
+
+    const int B = static_cast<int>(pending.size());
+    std::vector<int32_t> tokens(B);
+    std::vector<int> positions(B), seq_ids(B);
+    std::vector<int32_t> hist_flat(static_cast<size_t>(B) *
+                                   static_cast<size_t>(
+                                       model_.ple_hash.ngram_size - 1));
+    for (int i = 0; i < B; ++i) {
+      tokens[i] = pending[i]->token;
+      positions[i] = pending[i]->position;
+      seq_ids[i] = pending[i]->seq_id;
+      std::copy(pending[i]->ple_hist.begin(), pending[i]->ple_hist.end(),
+                hist_flat.begin() + static_cast<size_t>(i) *
+                                        (model_.ple_hash.ngram_size - 1));
+    }
+
+    Status s;
+    {
+      const std::lock_guard<std::mutex> lock(model_mu_);
+      s = model::ModelDecodeBatchMulti(model_, tokens.data(), positions.data(),
+                                       seq_ids.data(), hist_flat.data(), B,
+                                       d_sched_logits_, nullptr, nullptr);
+      if (s.ok()) {
+        cudaMemcpyAsync(sched_h_logits_.data(), d_sched_logits_,
+                        static_cast<size_t>(B) * vocab * 2,
+                        cudaMemcpyDeviceToHost, nullptr);
+        cudaStreamSynchronize(nullptr);
+      }
+    }
+
+    // Wake each request with its next token (or -1 on failure). The request
+    // thread owns the state-machine advance (position/history) after this.
+    {
+      const std::lock_guard<std::mutex> lock(sched_mu_);
+      for (int i = 0; i < B; ++i) {
+        ActiveRequest* r = pending[i];
+        r->pending = false;
+        r->done = true;
+        if (s.ok())
+          r->next_token = ArgmaxBf16Row(
+              sched_h_logits_.data() + static_cast<size_t>(i) * vocab, vocab);
+        else
+          r->next_token = -1;
+        r->cv.notify_one();
+      }
+    }
+  }
+}
+
+void ChatServer::StopScheduler() {
+  {
+    const std::lock_guard<std::mutex> lock(sched_mu_);
+    scheduler_stop_ = true;
+  }
+  sched_cv_.notify_all();
+  if (scheduler_thread_.joinable()) scheduler_thread_.join();
 }
 
 void ChatServer::HandleHealth(int fd) {
@@ -1019,16 +1155,35 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       }
     }
   } else {
-    // Plain greedy decode (baseline / MTP fallback).
+    // B2b continuous batching: this request's decode steps are driven by the
+    // central scheduler, which packs the current token of EVERY active
+    // plain-decode request into ONE ModelDecodeBatchMulti (weights read once
+    // for all B tokens). This thread only emits tokens and advances the
+    // per-sequence state machine; the GPU forward is the scheduler's job.
+    //
+    // Fallback: if the scheduler is unavailable (buffer alloc failed) or the
+    // active pool is full, this request decodes on its own via
+    // ModelDecodeStepSeq (the B1 single-sequence path).
+    const bool use_sched =
+        scheduler_active_ && d_sched_logits_ &&
+        static_cast<int>(active_.size()) < max_seq_;
+    ActiveRequest ar;
+    if (use_sched) {
+      ar.seq_id = seq_id;
+      ar.ple_hist.resize(static_cast<size_t>(model_.ple_hash.ngram_size - 1),
+                         eos);
+      {
+        const std::lock_guard<std::mutex> lock(sched_mu_);
+        active_.push_back(&ar);
+      }
+    }
     for (int step = 0; step < max_tokens; ++step) {
       generated.push_back(next_token);
       if (next_token == eos) {
         finish_reason = "stop";
         break;
       }
-      if (step == max_tokens - 1) {
-        finish_reason = "length";
-      }
+      if (step == max_tokens - 1) finish_reason = "length";
       const int32_t tok_id = next_token;
       // Emit the token text (decode this single token).
       if (stream) {
@@ -1044,28 +1199,58 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         finish_reason = "length";
         break;  // cannot decode further without exceeding the KV cache
       }
-      // The decode forward uses the shared per-forward scratch, so it is
-      // serialized behind model_mu_ (per-sequence state isolated by seq_id).
-      // The D2H + argmax below run OUTSIDE the lock on the default stream,
-      // overlapping other requests' CPU work.
-      {
+      if (use_sched) {
+        // Register this step's token with the scheduler (position + PLE
+        // context are read from the per-sequence state BEFORE advancing).
+        ar.position = seq.position;
+        ar.token = tok_id;
+        const int hist_w = model_.ple_hash.ngram_size - 1;
+        const size_t hsz = seq.history.size();
+        for (int j = 0; j < hist_w; ++j) {
+          const long src = static_cast<long>(hsz) - (hist_w - j);
+          ar.ple_hist[j] = (src >= 0) ? seq.history[static_cast<size_t>(src)]
+                                      : static_cast<int32_t>(eos);
+        }
+        {
+          const std::lock_guard<std::mutex> lock(sched_mu_);
+          ar.pending = true;
+          ar.done = false;
+        }
+        sched_cv_.notify_one();
+        // Block until the scheduler's packed forward yields this step's token.
+        {
+          std::unique_lock<std::mutex> lock(sched_mu_);
+          ar.cv.wait(lock, [&ar] { return ar.done; });
+        }
+        if (ar.next_token < 0) {
+          // Scheduler failed the forward or is shutting down.
+          finish_reason = "stop";
+          break;
+        }
+        next_token = ar.next_token;
+        // Advance the per-sequence state machine (owned by this thread).
+        seq.position = ar.position + 1;
+        seq.history.push_back(tok_id);
+      } else {
+        // Fallback: single-sequence decode (B1 path).
         const std::lock_guard<std::mutex> lock(model_mu_);
         s = model::ModelDecodeStepSeq(model_, &seq, tok_id, d_logits, nullptr,
                                       nullptr, seq_id);
+        if (!s.ok()) {
+          finish_reason = "stop";
+          break;
+        }
+        cudaMemcpyAsync(h_logits.data(), d_logits,
+                        static_cast<size_t>(vocab) * 2,
+                        cudaMemcpyDeviceToHost, nullptr);
+        cudaStreamSynchronize(nullptr);
+        next_token = argmax(h_logits.data());
       }
-      if (!s.ok()) {
-        finish_reason = "stop";
-        break;
-      }
-      // D2H on the default stream, then synchronize before the host argmax so
-      // h_logits is fully populated (an out-of-range garbage token here would
-      // corrupt the next forward's embedding lookup and poison the CUDA
-      // context for every other request).
-      cudaMemcpyAsync(h_logits.data(), d_logits,
-                      static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost,
-                      nullptr);
-      cudaStreamSynchronize(nullptr);
-      next_token = argmax(h_logits.data());
+    }
+    if (use_sched) {
+      const std::lock_guard<std::mutex> lock(sched_mu_);
+      active_.erase(std::remove(active_.begin(), active_.end(), &ar),
+                    active_.end());
     }
   }
   model::ModelEndSequence(&seq);

@@ -335,6 +335,19 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   (kernel 路径正确, 差异纯为 GEMM M=1 算法选择) + B=4 不同 prompt 隔离
   l2_rel 0.07–0.18 无跨序列污染。65 项测试全绿, 零警告。
   **→ B2a 闭合** (引擎 + API + 单元测试; B2b serve 调度器待做)
+- [x] 2026-09-13 **B2b serve 连续批处理调度器 (E2E 闭合)**: serve 层
+  独立调度线程 `SchedulerLoop` 把并发请求的 decode step 合并成一次
+  `ModelDecodeBatchMulti` 调用 (token 级连续批处理)。请求线程每步填
+  `ActiveRequest` (token/position/seq_id/ple_hist) → `pending=true` +
+  notify → 等 `done` 取 `next_token` (argmax); 调度线程收集 pending →
+  `model_mu_` 下打包 forward + D2H → `sched_mu_` 下逐请求唤醒。回退:
+  buffer 分配失败或 `active_>=max_seq` 时走 `ModelDecodeStepSeq` 单序列
+  路径; MTP 请求保持单序列 (draft KV 单共享 buffer 未批处理, 已知范围
+  限制); stop 时 drain 所有 active 防死锁。E2E: 3 并发请求 (不同
+  prompt) 全部语义正确 (Paris/4/Jupiter), 无跨序列污染, 日志无
+  error/illegal/503。吞吐: 单请求 15.13 tok/s → 3 并发聚合 18.03 tok/s
+  (1.19x, 低于线性因 MoE 专家权重读取不共享)。65 项测试全绿零警告。
+  **→ B2 全部闭合** (B2a 引擎 + B2b serve 调度器 + E2E + 吞吐实测)
 
 ## 进行中
 
@@ -831,16 +844,13 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 ## 下一步
 
-**B2a 连续批处理引擎 (token 级打包) 闭合 (2026-09-13)**: 把 B 个序列各 1
-个 decode token 打包成一次 T=B forward (权重只读一次)。GEMM (HC/MoE/head/
-proj) 无状态自动打包; 有状态 kernel 用 `d_seq_id[t]` 选 per-token 切片:
-新增 GDN decode kernel (grid (nv,B), 无跨 token 链) + conv1d/PLE short-conv
-多序列 kernel + full attention 7 kernel per-seq 间接寻址。API
-`ModelDecodeBatchMulti`。测试 `model_decode_batch_multi`: B=1 l2_rel=0.018
-argmax 一致 (kernel 路径正确) + B=4 不同 prompt 隔离 l2_rel 0.07–0.18 无
-跨序列污染。65 项测试全绿零警告。
-下一步: B2b — serve 连续批处理调度器 (合并并发请求 decode step) + 并发 E2E
-+ 吞吐实测。
+**B2 连续批处理全部闭合 (2026-09-13)**: B2a 引擎 (token 级打包, 多序列
+decode 一次 forward, 权重只读一次) + B2b serve 调度器 (独立调度线程合并
+并发请求 decode step 成 `ModelDecodeBatchMulti` 调用)。E2E: 3 并发请求
+全部语义正确, 无跨序列污染; 吞吐 15.13 → 18.03 tok/s 聚合 (1.19x, MoE
+专家权重读取不共享限制线性收益)。65 项测试全绿零警告。
+下一步: Phase 2 剩余项 — serve 流式输出 / MTP 批处理 (draft KV 多 buffer)
+/ 48 层长序列端到端 / 多设备 PD 部署。
 
 **B1 多序列 (Phase 2 连续批处理前置) 全部闭合 (2026-09-13)**: 状态池化
 (max_seq) ✅ + seq_id 穿透 ✅ + 多序列隔离测试 ✅ + serve 多请求 E2E ✅
