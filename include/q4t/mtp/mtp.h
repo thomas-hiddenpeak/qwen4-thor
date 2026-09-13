@@ -150,6 +150,17 @@ struct MtpModel {
   uint16_t* d_ms_g_pool = nullptr;  // [max_seq*hc_dim] per-seq rolling trunk
   int* d_ms_ext_seq = nullptr;      // [max_seq*k_max] per-token d_seq_id:
                                     // draft loop (first B ints) + extend
+  // Verify + extend buffers (MtpSpeculativeStepMulti), sized for the worst
+  // case B = max_seq, T = k_max: B*(k+1) rows. Persistent so the scheduler's
+  // per-step call does not cudaMalloc/cudaFree (each cudaFree is an implicit
+  // device sync that stalls the pipeline).
+  uint16_t* d_ms_vlogits = nullptr;  // [max_seq*k_max, vocab] verify logits
+  uint16_t* d_ms_vtrunk = nullptr;   // [max_seq*k_max, hc_dim] verify trunk
+  uint16_t* d_ms_ext_logits = nullptr;  // [max_seq*k_max, vocab] extend logits
+  uint16_t* d_ms_ext_multi = nullptr;   // [max_seq*k_max, hc_dim] extend multi
+  uint16_t* d_ms_ext_sample = nullptr;  // [max_seq*k_max, hs] extend sample
+  int32_t* d_ms_ext_ids = nullptr;      // [max_seq*k_max] extend ids
+  int* d_ms_ext_pos = nullptr;          // [max_seq*k_max] extend positions
   int k_max = 0;  // capacity of the above (0 = not allocated)
 
   int hc_dim() const { return cfg.hc * cfg.hs; }

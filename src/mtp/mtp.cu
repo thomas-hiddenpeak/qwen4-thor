@@ -191,6 +191,13 @@ void MtpModel::Free() {
   if (d_ms_gather) cudaFree(d_ms_gather);
   if (d_ms_g_pool) cudaFree(d_ms_g_pool);
   if (d_ms_ext_seq) cudaFree(d_ms_ext_seq);
+  if (d_ms_vlogits) cudaFree(d_ms_vlogits);
+  if (d_ms_vtrunk) cudaFree(d_ms_vtrunk);
+  if (d_ms_ext_logits) cudaFree(d_ms_ext_logits);
+  if (d_ms_ext_multi) cudaFree(d_ms_ext_multi);
+  if (d_ms_ext_sample) cudaFree(d_ms_ext_sample);
+  if (d_ms_ext_ids) cudaFree(d_ms_ext_ids);
+  if (d_ms_ext_pos) cudaFree(d_ms_ext_pos);
   fc_embedding = nullptr;
   fc_hidden = nullptr;
   pre_fc_norm_embedding = nullptr;
@@ -218,6 +225,13 @@ void MtpModel::Free() {
   d_ms_gather = nullptr;
   d_ms_g_pool = nullptr;
   d_ms_ext_seq = nullptr;
+  d_ms_vlogits = nullptr;
+  d_ms_vtrunk = nullptr;
+  d_ms_ext_logits = nullptr;
+  d_ms_ext_multi = nullptr;
+  d_ms_ext_sample = nullptr;
+  d_ms_ext_ids = nullptr;
+  d_ms_ext_pos = nullptr;
   k_max = 0;
 }
 
@@ -456,6 +470,13 @@ Status MtpReserveScratch(MtpModel& m, int k_max) {
   if (m.d_ms_gather) cudaFree(m.d_ms_gather);
   if (m.d_ms_g_pool) cudaFree(m.d_ms_g_pool);
   if (m.d_ms_ext_seq) cudaFree(m.d_ms_ext_seq);
+  if (m.d_ms_vlogits) cudaFree(m.d_ms_vlogits);
+  if (m.d_ms_vtrunk) cudaFree(m.d_ms_vtrunk);
+  if (m.d_ms_ext_logits) cudaFree(m.d_ms_ext_logits);
+  if (m.d_ms_ext_multi) cudaFree(m.d_ms_ext_multi);
+  if (m.d_ms_ext_sample) cudaFree(m.d_ms_ext_sample);
+  if (m.d_ms_ext_ids) cudaFree(m.d_ms_ext_ids);
+  if (m.d_ms_ext_pos) cudaFree(m.d_ms_ext_pos);
   m.d_ids_scratch = nullptr;
   m.d_pos_scratch = nullptr;
   m.d_spec_logits = nullptr;
@@ -470,6 +491,13 @@ Status MtpReserveScratch(MtpModel& m, int k_max) {
   m.d_ms_gather = nullptr;
   m.d_ms_g_pool = nullptr;
   m.d_ms_ext_seq = nullptr;
+  m.d_ms_vlogits = nullptr;
+  m.d_ms_vtrunk = nullptr;
+  m.d_ms_ext_logits = nullptr;
+  m.d_ms_ext_multi = nullptr;
+  m.d_ms_ext_sample = nullptr;
+  m.d_ms_ext_ids = nullptr;
+  m.d_ms_ext_pos = nullptr;
   // k_max rows: verify uses k+1 tokens, extend uses a+1 <= k+1 tokens.
   if (cudaMalloc(reinterpret_cast<void**>(&m.d_ids_scratch),
                  static_cast<size_t>(k_max) * sizeof(int32_t)) != cudaSuccess)
@@ -529,6 +557,28 @@ Status MtpReserveScratch(MtpModel& m, int k_max) {
                    static_cast<size_t>(m.max_seq) * k_max * sizeof(int)) !=
         cudaSuccess)
       return Status::Fail("MtpReserveScratch: d_ms_ext_seq");
+    const size_t Tmx = static_cast<size_t>(m.max_seq) * k_max;
+    if (cudaMalloc(reinterpret_cast<void**>(&m.d_ms_vlogits),
+                   Tmx * vocab * sizeof(uint16_t)) != cudaSuccess)
+      return Status::Fail("MtpReserveScratch: d_ms_vlogits");
+    if (cudaMalloc(reinterpret_cast<void**>(&m.d_ms_vtrunk),
+                   Tmx * hc_dim * sizeof(uint16_t)) != cudaSuccess)
+      return Status::Fail("MtpReserveScratch: d_ms_vtrunk");
+    if (cudaMalloc(reinterpret_cast<void**>(&m.d_ms_ext_logits),
+                   Tmx * vocab * sizeof(uint16_t)) != cudaSuccess)
+      return Status::Fail("MtpReserveScratch: d_ms_ext_logits");
+    if (cudaMalloc(reinterpret_cast<void**>(&m.d_ms_ext_multi),
+                   Tmx * hc_dim * sizeof(uint16_t)) != cudaSuccess)
+      return Status::Fail("MtpReserveScratch: d_ms_ext_multi");
+    if (cudaMalloc(reinterpret_cast<void**>(&m.d_ms_ext_sample),
+                   Tmx * hs * sizeof(uint16_t)) != cudaSuccess)
+      return Status::Fail("MtpReserveScratch: d_ms_ext_sample");
+    if (cudaMalloc(reinterpret_cast<void**>(&m.d_ms_ext_ids),
+                   Tmx * sizeof(int32_t)) != cudaSuccess)
+      return Status::Fail("MtpReserveScratch: d_ms_ext_ids");
+    if (cudaMalloc(reinterpret_cast<void**>(&m.d_ms_ext_pos),
+                   Tmx * sizeof(int)) != cudaSuccess)
+      return Status::Fail("MtpReserveScratch: d_ms_ext_pos");
   }
   m.k_max = k_max;
   return Status();
@@ -955,50 +1005,27 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
   }
 
   // Persistent multi-seq scratch (reserved by MtpReserveScratch, max_seq > 1).
+  // All buffers are sized for the worst case B = max_seq, T = k_max, so the
+  // scheduler's per-step call does no cudaMalloc/cudaFree (each cudaFree is an
+  // implicit device sync that stalls the pipeline).
+  if (mtp.d_ms_ids == nullptr || mtp.k_max < k + 1)
+    return Status::Fail("MtpSpeculativeStepMulti: scratch not reserved "
+                        "(call MtpReserveScratch with k_max >= k+1)");
   int32_t* d_ids = mtp.d_ms_ids;      // [B] draft-loop packed ids
   int* d_pos = mtp.d_ms_pos;          // [B] draft-loop positions
   uint16_t* d_sample = mtp.d_ms_sample;  // [B, hs]
   uint16_t* d_multi = mtp.d_ms_multi;    // [B, hc_dim]
-  uint16_t* d_g_pool = mtp.d_ms_g_pool;  // [B, hc_dim] rolling trunk (rows 0..B-1)
+  uint16_t* d_g_pool = mtp.d_ms_g_pool;  // [max_seq, hc_dim] rolling trunk
   uint16_t* d_gather = mtp.d_ms_gather;  // [B*(k+1), hc_dim] extend hidden gather
-  // Verify + extend reuse the single-seq k_max-sized scratch (B*(k+1) <=
-  // max_seq*k_max = the gather size; the verify/extend logits+trunk buffers
-  // are k_max rows, which covers one sequence's k+1 — but the batched verify
-  // needs B*(k+1) rows, so use dedicated device buffers below).
-  uint16_t* d_vlogits = nullptr;  // [B*(k+1), vocab]
-  uint16_t* d_vtrunk = nullptr;   // [B*(k+1), hc_dim]
-  uint16_t* d_ext_logits = nullptr;  // [T_ext, vocab]
-  uint16_t* d_ext_multi = nullptr;   // [T_ext, hc_dim]
-  uint16_t* d_ext_sample = nullptr;  // [T_ext, hs]
-  int32_t* d_ext_ids = nullptr;      // [T_ext]
-  int* d_ext_pos = nullptr;          // [T_ext]
+  uint16_t* d_vlogits = mtp.d_ms_vlogits;  // [B*(k+1), vocab] verify logits
+  uint16_t* d_vtrunk = mtp.d_ms_vtrunk;    // [B*(k+1), hc_dim] verify trunk
+  uint16_t* d_ext_logits = mtp.d_ms_ext_logits;  // [T_ext, vocab]
+  uint16_t* d_ext_multi = mtp.d_ms_ext_multi;    // [T_ext, hc_dim]
+  uint16_t* d_ext_sample = mtp.d_ms_ext_sample;  // [T_ext, hs]
+  int32_t* d_ext_ids = mtp.d_ms_ext_ids;         // [T_ext]
+  int* d_ext_pos = mtp.d_ms_ext_pos;             // [T_ext]
   const size_t Tvm = static_cast<size_t>(B) * (k + 1);
-  const size_t Tmx = static_cast<size_t>(B) * (k + 1);  // worst-case extend T
-  auto cleanup = [&](Status s) -> Status {
-    if (d_vlogits) cudaFree(d_vlogits);
-    if (d_vtrunk) cudaFree(d_vtrunk);
-    if (d_ext_logits) cudaFree(d_ext_logits);
-    if (d_ext_multi) cudaFree(d_ext_multi);
-    if (d_ext_sample) cudaFree(d_ext_sample);
-    if (d_ext_ids) cudaFree(d_ext_ids);
-    if (d_ext_pos) cudaFree(d_ext_pos);
-    return s;
-  };
-  if (cudaMalloc(reinterpret_cast<void**>(&d_vlogits), Tvm * vocab * 2) !=
-          cudaSuccess ||
-      cudaMalloc(reinterpret_cast<void**>(&d_vtrunk), Tvm * hc_dim * 2) !=
-          cudaSuccess ||
-      cudaMalloc(reinterpret_cast<void**>(&d_ext_logits), Tmx * vocab * 2) !=
-          cudaSuccess ||
-      cudaMalloc(reinterpret_cast<void**>(&d_ext_multi), Tmx * hc_dim * 2) !=
-          cudaSuccess ||
-      cudaMalloc(reinterpret_cast<void**>(&d_ext_sample), Tmx * mtp.cfg.hs * 2) !=
-          cudaSuccess ||
-      cudaMalloc(reinterpret_cast<void**>(&d_ext_ids), Tmx * sizeof(int32_t)) !=
-          cudaSuccess ||
-      cudaMalloc(reinterpret_cast<void**>(&d_ext_pos), Tmx * sizeof(int)) !=
-          cudaSuccess)
-    return cleanup(Status::Fail("MtpSpeculativeStepMulti: cudaMalloc"));
+  auto cleanup = [](Status s) -> Status { return s; };
 
   std::vector<int> P(B);
   std::vector<int> seq_of(B);  // pooled-state slice index of sequence b
