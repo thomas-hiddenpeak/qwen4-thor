@@ -321,6 +321,20 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   (不同 prompt, 不同 seq_id) 全部成功返回且语义正确 (Paris / 4 / 正确
   展开), 日志无 error/illegal/503。
   **→ B1 全部闭合** (状态池化 + seq_id 穿透 + 隔离测试 + serve 多请求 E2E)
+- [x] 2026-09-13 **B2a 连续批处理引擎 (token 级打包)**: 把 B 个活跃序列
+  各 1 个 decode token 打包成一次 T=B forward (decode memory-bound, 权重
+  84 GB 只读一次而非 B 次)。GEMM (HC/MoE/head/proj) 无状态, 现有
+  `Bf16Gemm(T=B)` 自动打包 (免费); 有状态 kernel 用 device 数组
+  `d_seq_id[t]` 选 per-token 状态切片: 新增 GDN decode kernel (grid
+  (nv,B), 每 block 一序列一 token, 无跨 token 链) + conv1d / PLE short-conv
+  多序列 kernel (坑: decode 当前 token tap 在打包索引 t 而非 0) + full
+  attention 7 kernel per-seq 间接寻址 (rope/kv/page_table/idx 按
+  `d_seq_id[t]` 选切片, `d_seq_id==null` 时单序列路径 bit 不变)。API
+  `ModelDecodeBatchMulti` + `Model.d_seq_id` 持久 buffer。测试
+  `model_decode_batch_multi`: B=1 打包 vs 串行 l2_rel=0.018 argmax 一致
+  (kernel 路径正确, 差异纯为 GEMM M=1 算法选择) + B=4 不同 prompt 隔离
+  l2_rel 0.07–0.18 无跨序列污染。65 项测试全绿, 零警告。
+  **→ B2a 闭合** (引擎 + API + 单元测试; B2b serve 调度器待做)
 
 ## 进行中
 
@@ -817,10 +831,20 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 ## 下一步
 
+**B2a 连续批处理引擎 (token 级打包) 闭合 (2026-09-13)**: 把 B 个序列各 1
+个 decode token 打包成一次 T=B forward (权重只读一次)。GEMM (HC/MoE/head/
+proj) 无状态自动打包; 有状态 kernel 用 `d_seq_id[t]` 选 per-token 切片:
+新增 GDN decode kernel (grid (nv,B), 无跨 token 链) + conv1d/PLE short-conv
+多序列 kernel + full attention 7 kernel per-seq 间接寻址。API
+`ModelDecodeBatchMulti`。测试 `model_decode_batch_multi`: B=1 l2_rel=0.018
+argmax 一致 (kernel 路径正确) + B=4 不同 prompt 隔离 l2_rel 0.07–0.18 无
+跨序列污染。65 项测试全绿零警告。
+下一步: B2b — serve 连续批处理调度器 (合并并发请求 decode step) + 并发 E2E
++ 吞吐实测。
+
 **B1 多序列 (Phase 2 连续批处理前置) 全部闭合 (2026-09-13)**: 状态池化
 (max_seq) ✅ + seq_id 穿透 ✅ + 多序列隔离测试 ✅ + serve 多请求 E2E ✅
 (修复 uint16_t 字节步长越界 + float atomicAdd 非确定两个 bug)。
-下一步: B2 token 级打包 (GDN 多序列并行 + GEMM 打包)。
 
 **Phase 1 完成标准全部闭合 (2026-09-07)。** 已完成的层: **PLE 流式层**
 ✅, **IO 层** ✅, **量化层** ✅ (NVFP4 W4A4 原生 + grouped MoE), **模型

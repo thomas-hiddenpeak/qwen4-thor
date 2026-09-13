@@ -387,34 +387,54 @@ Status DecoderLayerForward(const DecoderLayer& layer,
                            const int* positions, const int* rope_pos, int T,
                            void* workspace, size_t workspace_bytes,
                            cudaStream_t stream, float* ssm_ckpt,
-                           uint16_t* conv_ckpt, int num_ckpt, int seq_id) {
+                           uint16_t* conv_ckpt, int num_ckpt, int seq_id,
+                           const int* d_seq_id, const int* d_rope_pos) {
   const int hs = layer.hs, hc_dim = layer.hc_dim, hc = layer.hc;
   if (T <= 0) return Status();
   // Pooled recurrent-state slices for this sequence (seq_id selects the
-  // [max_seq, ...] slice; 0 = legacy single-sequence layout).
+  // [max_seq, ...] slice; 0 = legacy single-sequence layout). In B2
+  // multi-sequence decode (d_seq_id != null) ALL persistent state (linear
+  // SSM/conv, PLE conv, full-attention KV/page_table/indexer) is passed as the
+  // POOLED base — the multi-seq kernels index the per-token slice via
+  // d_seq_id. In single-sequence mode (d_seq_id == null) each pointer is the
+  // per-sequence slice (seq_id selects it; 0 = legacy layout).
   const size_t seq = static_cast<size_t>(seq_id);
   float* ssm_state =
-      layer.ssm_state ? layer.ssm_state + seq * 48 * 128 * 128 : nullptr;
+      layer.ssm_state ? (d_seq_id ? layer.ssm_state
+                                  : layer.ssm_state + seq * 48 * 128 * 128)
+                      : nullptr;
   uint16_t* conv_state =
-      layer.conv_state ? layer.conv_state + seq * 10240 * 3 : nullptr;
-  uint16_t* ple_conv_state =
-      layer.ple_conv_state ? layer.ple_conv_state + seq * 10240 * 9 : nullptr;
+      layer.conv_state ? (d_seq_id ? layer.conv_state
+                                   : layer.conv_state + seq * 10240 * 3)
+                       : nullptr;
+  uint16_t* ple_conv_state = layer.ple_conv_state
+                                 ? (d_seq_id ? layer.ple_conv_state
+                                            : layer.ple_conv_state + seq * 10240 * 9)
+                                 : nullptr;
   const size_t kv_seq_bytes = static_cast<size_t>(
       (layer.max_len + kKvPageSize - 1) / kKvPageSize) * kKvPageSize * 2 * 2 *
       256 * 2;  // one sequence's paged KV (nkv=2, 2 for K+V, hd=256, bf16)
   // kv_cache is a uint16_t* but kv_seq_bytes is a BYTE stride; offset via
   // char* so the element size does not double the stride (mirrors ResetState).
   uint16_t* kv_cache = layer.kv_cache
-                           ? reinterpret_cast<uint16_t*>(
-                                 reinterpret_cast<char*>(layer.kv_cache) +
-                                 seq * kv_seq_bytes)
+                           ? (d_seq_id
+                                  ? layer.kv_cache
+                                  : reinterpret_cast<uint16_t*>(
+                                        reinterpret_cast<char*>(layer.kv_cache) +
+                                        seq * kv_seq_bytes))
                            : nullptr;
   int* page_table =
-      layer.page_table ? layer.page_table + seq * layer.max_len : nullptr;
+      layer.page_table ? (d_seq_id ? layer.page_table
+                                   : layer.page_table + seq * layer.max_len)
+                       : nullptr;
   uint16_t* idx_raw =
-      layer.idx_raw ? layer.idx_raw + seq * layer.max_len * 128 : nullptr;
+      layer.idx_raw ? (d_seq_id ? layer.idx_raw
+                                : layer.idx_raw + seq * layer.max_len * 128)
+                    : nullptr;
   uint16_t* idx_comp =
-      layer.idx_comp ? layer.idx_comp + seq * layer.max_len * 128 : nullptr;
+      layer.idx_comp ? (d_seq_id ? layer.idx_comp
+                                 : layer.idx_comp + seq * layer.max_len * 128)
+                     : nullptr;
 
   // Carve the workspace into per-submodule regions.
   const size_t attn_ws = layer.is_full_attention
@@ -475,7 +495,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     // PleAddTrunkKernel).
     s = PleLayerForward(layer.ple, ple_embeddings, hyper_input, d_ple_trunk,
                         T, ple_conv_state, d_ple_ws, ple_ws, stream,
-                        hyper_input);
+                        hyper_input, d_seq_id);
     if (!s.ok()) {
       return s;
     }
@@ -491,13 +511,17 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   }
   // 2. attention block.
   if (layer.is_full_attention) {
-    s = FullAttentionForward(layer.full, d_mixed, d_block, positions, rope_pos,
+    // B2 multi-seq: the full-attention kernels select the per-token rope slice
+    // via d_seq_id, so pass the POOLED rope base (d_rope_pos); otherwise the
+    // per-sequence slice (rope_pos).
+    const int* fa_rope = d_seq_id ? d_rope_pos : rope_pos;
+    s = FullAttentionForward(layer.full, d_mixed, d_block, positions, fa_rope,
                              kv_cache, page_table, idx_raw, idx_comp, T,
-                             d_attn_ws, attn_ws, stream);
+                             d_attn_ws, attn_ws, stream, d_seq_id);
   } else {
     s = LinearAttentionForward(layer.linear, d_mixed, d_block, ssm_state,
                                conv_state, T, d_attn_ws, attn_ws, stream,
-                               ssm_ckpt, conv_ckpt, num_ckpt);
+                               ssm_ckpt, conv_ckpt, num_ckpt, d_seq_id);
   }
   if (!s.ok()) {
     return s;

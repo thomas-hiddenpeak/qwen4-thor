@@ -145,7 +145,13 @@ Status DecoderLayerForward(const DecoderLayer& layer, const uint16_t* hyper_inpu
                            void* workspace, size_t workspace_bytes,
                            cudaStream_t stream, float* ssm_ckpt = nullptr,
                            uint16_t* conv_ckpt = nullptr, int num_ckpt = 0,
-                           int seq_id = 0);
+                           int seq_id = 0, const int* d_seq_id = nullptr,
+                           const int* d_rope_pos = nullptr);
+// `d_rope_pos` (B2 multi-sequence decode): the POOLED 3D MRoPE base
+// [max_seq, 3, max_len]. When d_seq_id != null the full-attention kernels
+// select the per-token rope slice via d_seq_id from this base, so it must be
+// the pooled base (NOT a per-sequence slice). When d_seq_id == null it is
+// ignored and `rope_pos` (the per-sequence slice) is used.
 
 }  // namespace model
 }  // namespace q4t

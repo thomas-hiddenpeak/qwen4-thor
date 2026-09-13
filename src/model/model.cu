@@ -80,6 +80,7 @@ void Model::Free() {
   };
   freep(d_ids);
   freep(d_positions);
+  freep(d_seq_id);
   freep(d_rope_pos);
   freep(d_emb);
   freep(d_trunk);
@@ -91,6 +92,7 @@ void Model::Free() {
   freep(d_verify_conv_ckpt);
   d_ids = nullptr;
   d_positions = nullptr;
+  d_seq_id = nullptr;
   d_rope_pos = nullptr;
   d_emb = nullptr;
   d_trunk = nullptr;
@@ -230,6 +232,11 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   if (!(s = alloc(reinterpret_cast<void**>(&m->d_positions),
                   max_t * sizeof(int))))
     return s;
+  // B2 multi-seq decode: per-token pooled-state slice index (H2D per forward,
+  // sized for the max batch of concurrent sequences).
+  if (!(s = alloc(reinterpret_cast<void**>(&m->d_seq_id),
+                  static_cast<size_t>(cfg.max_seq) * sizeof(int))))
+    return s;
   // Persistent 3D MRoPE table: [max_seq, 3, max_len] (t, h, w) rows, POOLED
   // over concurrent sequences (Phase 2). Each sequence's rope coordinates are
   // written at prefill and read across its decode steps, so the table must be
@@ -295,7 +302,7 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                  uint16_t* logits, cudaStream_t stream,
                  uint16_t* trunk_out = nullptr, float* ssm_ckpt = nullptr,
                  uint16_t* conv_ckpt = nullptr, int num_ckpt = 0,
-                 int seq_id = 0) {
+                 int seq_id = 0, const int* d_seq_id = nullptr) {
   const ModelConfig& cfg = m.cfg;
   const uint16_t* trunk = trunk_in;
   uint16_t* next = trunk2;
@@ -349,7 +356,8 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
     Status s = DecoderLayerForward(m.layers[l], trunk, ple_emb, next,
                                    m.d_positions, seq_rope_pos, T, m.d_ws,
                                    m.ws_bytes, stream, layer_ssm_ckpt,
-                                   layer_conv_ckpt, num_ckpt, seq_id);
+                                   layer_conv_ckpt, num_ckpt, seq_id, d_seq_id,
+                                   m.d_rope_pos);
     if (!s.ok()) return s;
     if (!m.layers[l].is_full_attention) lin_idx++;
     if (diag) {
@@ -738,6 +746,63 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
   return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), T,
                    logits, stream, trunk_out, ssm_ckpt, conv_ckpt, num_ckpt,
                    seq_id);
+}
+
+// B2 continuous batching: decode ONE token for each of B sequences in a single
+// packed forward (T = B). See the header for the argument contract. The GEMMs
+// (HC/MoE/head/projections) are stateless and operate on the packed [B, ...]
+// rows (weights read once); the recurrent state (linear SSM/conv, PLE conv,
+// full KV/indexer, 3D MRoPE) is selected per-token via d_seq_id.
+Status ModelDecodeBatchMulti(const Model& m, const int32_t* tokens,
+                             const int* positions, const int* seq_ids,
+                             const int32_t* history, int B, uint16_t* logits,
+                             cudaStream_t stream, uint16_t* trunk_out) {
+  const ModelConfig& cfg = m.cfg;
+  if (B <= 0) return Status::Fail("ModelDecodeBatchMulti: B must be > 0");
+  if (B > cfg.max_seq)
+    return Status::Fail("ModelDecodeBatchMulti: B exceeds max_seq");
+  for (int t = 0; t < B; ++t) {
+    if (positions[t] < 0 || positions[t] >= cfg.max_len)
+      return Status::Fail("ModelDecodeBatchMulti: position exceeds max_len");
+    if (seq_ids[t] < 0 || seq_ids[t] >= cfg.max_seq)
+      return Status::Fail("ModelDecodeBatchMulti: seq_id exceeds max_seq");
+  }
+
+  // 1. H2D the packed tokens / positions / per-token seq ids.
+  if (cudaMemcpyAsync(m.d_ids, tokens, B * sizeof(int32_t),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return Status::Fail("H2D tokens");
+  if (cudaMemcpyAsync(m.d_positions, positions, B * sizeof(int),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return Status::Fail("H2D positions");
+  if (cudaMemcpyAsync(m.d_seq_id, seq_ids, B * sizeof(int),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return Status::Fail("H2D seq_ids");
+
+  std::vector<int64_t> ids64(tokens, tokens + B);
+
+  // 2. PLE n-gram history: the caller supplies per-token context (oldest
+  //    first, EOS-filled) in `history` (B * (ngram_size-1) int32), so it maps
+  //    directly to the int64 hist RunLayers expects (one row per token).
+  std::vector<int64_t> hist;
+  if (m.ple_emb) {
+    const int hist_w = m.ple_hash.ngram_size - 1;
+    hist.resize(static_cast<size_t>(B) * hist_w);
+    for (size_t i = 0; i < hist.size(); ++i)
+      hist[i] = static_cast<int64_t>(history[i]);
+  }
+
+  // 3. emb + trunk (packed [B, ...]).
+  Status s = EmbedLookup(m.head, m.d_ids, m.d_emb, B, stream);
+  if (!s.ok()) return s;
+  s = ExpandTrunk(m.head, m.d_emb, m.d_trunk, B, stream);
+  if (!s.ok()) return s;
+
+  // 4. Layer loop + head — NO reset, continues from each sequence's current
+  //    per-layer state (selected per-token via d_seq_id).
+  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), B,
+                   logits, stream, trunk_out, nullptr, nullptr, 0, 0,
+                   m.d_seq_id);
 }
 
 // Per-linear-layer SSM/conv element counts (assumes all linear layers share

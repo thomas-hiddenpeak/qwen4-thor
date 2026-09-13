@@ -5,6 +5,58 @@
 
 ---
 
+## 2026-09-13 — B2a 连续批处理引擎 (token 级打包: 多序列 decode 一次 forward)
+
+**背景**
+B2 = Phase 2 连续批处理核心: 把 B 个活跃序列各自的 1 个 decode token
+**打包成一次 T=B 的 forward**, 权重 (84 GB) 只读一次而非 B 次 (decode 是
+memory-bound, 这是吞吐收益的全部来源)。B2a 只做引擎改造 + API + 单元测试,
+B2b 做 serve 调度器 + E2E。
+
+**核心洞察**
+所有 **GEMM (HC mix/combine, MoE, head, 各 proj) 是无状态的** —— 把 B 个
+token 的 trunk 行连续排布, 现有 `Bf16Gemm(T=B)` 自动打包, 权重只读一次,
+**免费**。真正要改的是**有状态 kernel**, 统一用 device 数组
+`d_seq_id[t]` (token t 的序列 id) 选 per-token 状态切片:
+
+- **GDN 递推 (36 linear 层)**: 新增 `GatedDeltaNetDecodeKernel`,
+  grid (nv, B), 每 block 处理一个序列的一个 token (独立递推一步, **无跨
+  token 链** —— 与 prefill kernel 串行 T token 不同)。数学逐位复制 prefill
+  kernel 单 token 迭代。
+- **conv1d (36 linear 层)**: 新增 `CausalConv1dMultiSeqKernel` +
+  `Conv1dUpdateStateMultiSeqKernel`, 每 token 用 `d_seq_id[t]` 选 conv_state
+  切片。关键坑: decode 的"当前 token" tap (src_t=0) 在打包索引 `t` 而非 0
+  (0 是 token 0 的行) —— 初版误读 `input[0]`, 已修。
+- **PLE short-conv (layer 1)**: 同样新增 `DepthwiseConvAddMultiSeqKernel` +
+  `PleConvUpdateStateMultiSeqKernel`。
+- **full attention (12 层)**: 7 个 kernel (PartialRope ×2 模板实例,
+  WriteKV, IndexerNormRope, WriteIndexRaw, BuildCompressedK,
+  IndexerLogits, SparseAttention) 加 `d_seq_id` + per-seq 元素步长, 用
+  `d_seq_id[t]` 选 rope_pos/kv_cache/page_table/idx_raw/idx_comp 切片。
+  TopkSelect 用打包 [T,...] 数组, 无需改。`d_seq_id==null` 时直接用已切片
+  指针 (单序列路径 bit 不变)。
+
+**API**
+`ModelDecodeBatchMulti(tokens, positions, seq_ids, history, B, logits)`:
+B 序列各 1 token 打包 decode, per-seq 状态由 `seq_ids[t]` 隔离。`Model`
+加持久 `d_seq_id [max_seq]` buffer (每次 forward H2D)。
+
+**验证**
+新增 `model_decode_batch_multi` 测试 (4 层 = linear+PLE+linear+full,
+max_seq=4):
+- **B=1**: 打包 vs `ModelDecodeStepSeq` l2_rel=0.0180, argmax 一致 ——
+  多序列 kernel 路径正确 (差异纯为 GEMM: M=1 时 cuBLASLt 选 GEMV/不同
+  tiling, 累加顺序不同 → W4A4 噪声带 bit 漂移, 非系统性 bug)。
+- **B=4 隔离**: 4 个**不同 prompt** (不同状态) 打包, 每行 vs 单序列参考
+  l2_rel 0.07–0.18, 全部 < 0.5 阈值 → **无跨序列污染** (状态切片正确)。
+  seq1 argmax 翻转 (l2_rel=0.18) 在 W4A4 噪声带内, 是 near-tie。
+65 项测试全绿, 零警告。
+
+**下一步**: B2b — serve 连续批处理调度器 (把并发请求的 decode step 合并成
+ModelDecodeBatchMulti 调用) + 并发 E2E 验证 + 吞吐实测。
+
+---
+
 ## 2026-09-13 — B1 多序列隔离两个 bug 修复 (per-seq 状态池化收尾)
 
 **背景**

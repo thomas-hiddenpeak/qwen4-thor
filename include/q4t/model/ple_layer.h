@@ -101,7 +101,8 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
                        const uint16_t* hyper_input, uint16_t* out, int T,
                        uint16_t* conv_state, void* workspace,
                        size_t workspace_bytes, cudaStream_t stream,
-                       const uint16_t* trunk_add = nullptr);
+                       const uint16_t* trunk_add = nullptr,
+                       const int* d_seq_id = nullptr);
 
 }  // namespace model
 }  // namespace q4t

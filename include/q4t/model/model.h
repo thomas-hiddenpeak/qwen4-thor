@@ -84,6 +84,8 @@ struct Model {
   int32_t* d_ids = nullptr;  // [max_prefill]
   int* d_positions = nullptr;  // [max_prefill] logical positions (KV paging,
                                // indexer grouping, causal mask)
+  int* d_seq_id = nullptr;  // [max_seq] B2 multi-seq decode: per-token
+                            // pooled-state slice index (H2D per forward)
   int* d_rope_pos = nullptr;  // [max_seq, 3, max_len] 3D MRoPE (t, h, w)
   // mrope_position_delta per sequence: during incremental decode the 3 rope
   // rows for a token at logical position p are all (p + rope_delta[seq_id]).
@@ -249,6 +251,31 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
                         int history_len, uint16_t* logits, cudaStream_t stream,
                         uint16_t* trunk_out = nullptr,
                         bool save_checkpoints = false, int seq_id = 0);
+
+// B2 continuous batching: decode ONE token for each of B sequences in a SINGLE
+// packed forward (T = B). This is the bandwidth win — the 84 GB of weights is
+// read ONCE for all B tokens instead of B times (each GEMM is stateless and
+// operates on the packed [B, ...] rows; the recurrent state is selected
+// per-token via d_seq_id).
+//
+//   tokens   : host int32 [B] — the next decode token of each sequence
+//   positions: host int [B]   — the absolute position of each token
+//   seq_ids  : host int [B]   — the pooled-state slice index of each token
+//   history  : host int32 [B * (ngram_size-1)] — per-token PLE n-gram context
+//              (oldest first, EOS-filled before the sequence start), one row
+//              per token in the same order as `tokens`
+//   logits   : device BF16 [B, vocab] (caller-owned)
+//
+// Per-sequence state (linear SSM/conv, PLE conv, full KV/indexer, 3D MRoPE)
+// is isolated by seq_ids[t]; each token continues its own sequence's
+// recurrent state from the prior step. The caller must have already run
+// ModelPrefill (or a prior ModelDecodeBatchMulti) for each sequence. Returns
+// [B, vocab] logits; row t is the logits for token t.
+Status ModelDecodeBatchMulti(const Model& m, const int32_t* tokens,
+                             const int* positions, const int* seq_ids,
+                             const int32_t* history, int B, uint16_t* logits,
+                             cudaStream_t stream,
+                             uint16_t* trunk_out = nullptr);
 
 // Reserve per-linear-layer per-token SSM/conv checkpoint buffers for MTP
 // verify (idempotent; grows if num_ckpt exceeds the current capacity). Must be

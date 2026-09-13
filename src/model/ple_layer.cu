@@ -245,6 +245,66 @@ __global__ void PleConvUpdateStateKernel(uint16_t* __restrict__ state,
   }
 }
 
+// Depthwise causal conv + SiLU + add for B2 multi-sequence decode. One thread
+// per (t, c). Token t belongs to sequence d_seq_id[t]; its conv history lives
+// ENTIRELY in that sequence's conv_state slice (each packed token is the NEXT
+// decode token of its own sequence, so the dilated window needs no cross-token
+// input — only the per-sequence old_state and the current input[t]). Mirrors
+// one decode step of DepthwiseConvAddKernel (T=1) with the state selected by
+// d_seq_id[t].
+__global__ void DepthwiseConvAddMultiSeqKernel(
+    const uint16_t* __restrict__ x, const uint16_t* __restrict__ conv1d,
+    const uint16_t* __restrict__ state, const uint16_t* __restrict__ gated,
+    const uint16_t* __restrict__ trunk_add, uint16_t* __restrict__ out,
+    const int* __restrict__ d_seq_id, int T, int C, int K, int dilation,
+    int state_len) {
+  const int idx = blockIdx.x * blockDim.x + threadIdx.x;
+  if (idx >= T * C) return;
+  const int t = idx / C;
+  const int c = idx % C;
+  const uint16_t* seq_state =
+      state + static_cast<size_t>(d_seq_id[t]) * C * state_len;
+  float acc = 0.0f;
+  for (int j = 0; j < K; ++j) {
+    const int src = -(K - 1 - j) * dilation;  // decode: next token of seq
+    float xv;
+    if (src < 0)
+      xv = Bf16ToFloat(seq_state[static_cast<size_t>(c) * state_len +
+                                 (src + state_len)]);
+    else
+      // The single non-negative tap (j == K-1) is the CURRENT token, which
+      // lives at packed index t (NOT 0 — that would be token 0's row).
+      xv = Bf16ToFloat(x[static_cast<size_t>(t) * C + c]);
+    const float w = Bf16ToFloat(conv1d[c * K + j]);
+    acc += w * xv;
+  }
+  const float conv = Bf16ToFloat(FloatToBf16(Silu(acc)));
+  const uint16_t ple_out = FloatToBf16(Bf16ToFloat(gated[idx]) + conv);
+  if (trunk_add)
+    out[idx] = FloatToBf16(Bf16ToFloat(trunk_add[idx]) + Bf16ToFloat(ple_out));
+  else
+    out[idx] = ple_out;
+}
+
+// Update the PLE short-conv state for B2 multi-sequence decode. One thread per
+// channel; slides the conv_state of sequence d_seq_id[t] by one token:
+// state[k] = state[k+1] for k < state_len-1, state[state_len-1] = input[t].
+// Mirrors the decode branch (shift = state_len - T, T = 1) of
+// PleConvUpdateStateKernel.
+__global__ void PleConvUpdateStateMultiSeqKernel(
+    uint16_t* __restrict__ state, const uint16_t* __restrict__ input,
+    const int* __restrict__ d_seq_id, int C, int state_len) {
+  const int c = blockIdx.x * blockDim.x + threadIdx.x;
+  if (c >= C) return;
+  const int t = blockIdx.y;
+  uint16_t* seq_state = state + static_cast<size_t>(d_seq_id[t]) * C * state_len;
+  for (int k = 0; k < state_len - 1; ++k)
+    seq_state[static_cast<size_t>(c) * state_len + k] =
+        seq_state[static_cast<size_t>(c) * state_len + k + 1];
+  seq_state[static_cast<size_t>(c) * state_len + state_len - 1] =
+      input[static_cast<size_t>(t) * C + c];
+}
+
 Status CheckGemm(const Bf16GemmResult& r) {
   if (r.status != CUBLAS_STATUS_SUCCESS || !r.has_algo) {
     return Status::Fail(std::string("Bf16Gemm failed (status=") +
@@ -394,7 +454,7 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
                        const uint16_t* hyper_input, uint16_t* out, int T,
                        uint16_t* conv_state, void* workspace,
                        size_t workspace_bytes, cudaStream_t stream,
-                       const uint16_t* trunk_add) {
+                       const uint16_t* trunk_add, const int* d_seq_id) {
   const int hc = w.hc_count, hs = w.hidden_size, pe = w.ple_embed_dim;
   const int hc_dim = hc * hs;
   const int K = w.conv_kernel, dil = w.conv_dilation;
@@ -475,10 +535,23 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
   const int state_len = (K - 1) * dil;
   {
     const int total = T * hc_dim;
-    DepthwiseConvAddKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
-        reinterpret_cast<uint16_t*>(d_gated_n), w.conv1d, conv_state,
-        reinterpret_cast<uint16_t*>(d_gated), trunk_add, out, T, hc_dim, K,
-        dil, state_len);
+    if (d_seq_id) {
+      // B2 multi-sequence decode: each token t uses its own sequence's conv
+      // slice (d_seq_id[t]); conv_state is the pooled [max_seq, ...] base.
+      const int blocks = (total + kBlock - 1) / kBlock;
+      DepthwiseConvAddMultiSeqKernel<<<blocks, kBlock, 0, stream>>>(
+          reinterpret_cast<uint16_t*>(d_gated_n), w.conv1d, conv_state,
+          reinterpret_cast<uint16_t*>(d_gated), trunk_add, out, d_seq_id, T,
+          hc_dim, K, dil, state_len);
+      if (cudaGetLastError() != cudaSuccess) return Status::Fail("ple conv");
+    } else {
+      DepthwiseConvAddKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0,
+                                stream>>>(reinterpret_cast<uint16_t*>(d_gated_n),
+                                         w.conv1d, conv_state,
+                                         reinterpret_cast<uint16_t*>(d_gated),
+                                         trunk_add, out, T, hc_dim, K, dil,
+                                         state_len);
+    }
   }
   // DumpPleConv: when trunk_add is active, `out` is the trunk-corrected value
   // (hyper_input + ple_out), not raw ple_out. The dump is only used for
@@ -488,9 +561,15 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
   // 8b. Slide the state to the last state_len gated_n values (old + chunk).
   {
     const int blocks = (hc_dim + kBlock - 1) / kBlock;
-    PleConvUpdateStateKernel<<<blocks, kBlock, 0, stream>>>(
-        conv_state, reinterpret_cast<uint16_t*>(d_gated_n), T, hc_dim,
-        state_len);
+    if (d_seq_id) {
+      PleConvUpdateStateMultiSeqKernel<<<dim3(blocks, T), kBlock, 0, stream>>>(
+          conv_state, reinterpret_cast<uint16_t*>(d_gated_n), d_seq_id, hc_dim,
+          state_len);
+    } else {
+      PleConvUpdateStateKernel<<<blocks, kBlock, 0, stream>>>(
+          conv_state, reinterpret_cast<uint16_t*>(d_gated_n), T, hc_dim,
+          state_len);
+    }
   }
   if (cudaGetLastError() != cudaSuccess) return Status::Fail("ple kernel");
   return Status();

@@ -130,13 +130,21 @@ Status LoadFullAttention(const io::WeightLoader& loader, const std::string& pref
 //              single prefill)
 //   workspace: scratch device buffer (>= FullAttentionWorkspaceBytes(T)) for
 //              projections + logits + topk + GEMM scratch
+// `d_seq_id` (B2 multi-sequence decode): when non-null, a device int[T] giving
+// the sequence id of each token. `rope_pos`, `kv_cache`, `page_table`,
+// `idx_raw`, `idx_comp` are then the POOLED bases ([max_seq, ...]) and each
+// token t indexes the slice for d_seq_id[t] (the kernels select the per-token
+// base via d_seq_id). When null (legacy single-sequence prefill/decode) the
+// pointers are the per-sequence slices and the kernels use them directly
+// (bit-identical to the prior behavior). The projection GEMMs are stateless
+// and operate on the packed [T, ...] rows directly (weights read once).
 Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                             uint16_t* out, const int* positions,
                             const int* rope_pos,
                             uint16_t* kv_cache, const int* page_table,
                             uint16_t* idx_raw, uint16_t* idx_comp, int T,
                             void* workspace, size_t workspace_bytes,
-                            cudaStream_t stream);
+                            cudaStream_t stream, const int* d_seq_id = nullptr);
 
 // Exact workspace bytes FullAttentionForward carves for `T` tokens: the
 // projection/logits/topk intermediates (256-byte aligned each, sized from the

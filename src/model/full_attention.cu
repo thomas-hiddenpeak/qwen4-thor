@@ -155,7 +155,9 @@ template <int N>
 __global__ void PartialRopeKernel(u16* __restrict__ x, int n_heads, int hd,
                                   int rot_d, const int* __restrict__ positions,
                                   const int* __restrict__ rope_pos, int max_len,
-                                  float theta, int T) {
+                                  float theta, int T,
+                                  const int* __restrict__ d_seq_id,
+                                  int rope_seq_stride) {
   int half = rot_d / 2;
   int idx = blockIdx.x * blockDim.x + threadIdx.x;
   int total = T * N * half;
@@ -165,7 +167,12 @@ __global__ void PartialRopeKernel(u16* __restrict__ x, int n_heads, int hd,
   int t = idx / (half * N);
   const int row = i % 3;  // 0=t, 1=h, 2=w (interleaved MRoPE)
   const int ap = positions[t];  // absolute position
-  float pos = static_cast<float>(rope_pos[row * max_len + ap]);
+  // B2 multi-seq: select this token's sequence [3, max_len] rope slice.
+  const int* rope = d_seq_id
+                        ? rope_pos + static_cast<size_t>(d_seq_id[t]) *
+                                         rope_seq_stride
+                        : rope_pos;
+  float pos = static_cast<float>(rope[row * max_len + ap]);
   float inv_freq = powf(theta, -2.f * i / rot_d);
   float ang = pos * inv_freq;
   float c = cosf(ang), s = sinf(ang);
@@ -191,7 +198,9 @@ __global__ void WriteKVKernel(const u16* __restrict__ k,
                               const u16* __restrict__ v,
                               u16* __restrict__ kv_cache, int nkv, int hd,
                               const int* __restrict__ positions,
-                              const int* __restrict__ page_table, int T) {
+                              const int* __restrict__ page_table, int T,
+                              const int* __restrict__ d_seq_id,
+                              size_t kv_seq_stride, int pt_seq_stride) {
   int idx = blockIdx.x * blockDim.x + threadIdx.x;
   int total = T * nkv * hd;
   if (idx >= total) return;
@@ -199,12 +208,19 @@ __global__ void WriteKVKernel(const u16* __restrict__ k,
   int h = (idx / hd) % nkv;
   int t = idx / (hd * nkv);
   int pos = positions[t];
+  // B2 multi-seq: select this token's sequence KV + page_table slices.
+  u16* kv = d_seq_id
+                ? kv_cache + static_cast<size_t>(d_seq_id[t]) * kv_seq_stride
+                : kv_cache;
+  const int* pt = d_seq_id
+                      ? page_table + static_cast<size_t>(d_seq_id[t]) * pt_seq_stride
+                      : page_table;
   size_t src = (static_cast<size_t>(t) * nkv + h) * hd + d;
-  int slot = page_table[pos] * kKvPageSize + (pos % kKvPageSize);
+  int slot = pt[pos] * kKvPageSize + (pos % kKvPageSize);
   size_t dst =
       (static_cast<size_t>(slot) * nkv + h) * (2 * hd);
-  kv_cache[dst + d] = k[src];
-  kv_cache[dst + hd + d] = v[src];
+  kv[dst + d] = k[src];
+  kv[dst + hd + d] = v[src];
 }
 
 // ---------------------------------------------------------------------------
@@ -225,7 +241,8 @@ __global__ void IndexerNormRopeKernel(u16* __restrict__ iq,
                                       const int* __restrict__ rope_pos,
                                       int max_len, int T, int n_iq, int n_ik,
                                       int hd, int rot_d, float theta,
-                                      float eps) {
+                                      float eps, const int* __restrict__ d_seq_id,
+                                      int rope_seq_stride) {
   // Handle iq and ik in the same kernel: blockIdx.x encodes (t, which, head).
   int total_heads = n_iq + n_ik;
   int t = blockIdx.x / total_heads;
@@ -252,7 +269,11 @@ __global__ void IndexerNormRopeKernel(u16* __restrict__ iq,
   if (d < half) {
     const int row = d % 3;  // 0=t, 1=h, 2=w
     const int ap = positions[t];  // absolute position
-    float pos = static_cast<float>(rope_pos[row * max_len + ap]);
+    const int* rope = d_seq_id
+                          ? rope_pos + static_cast<size_t>(d_seq_id[t]) *
+                                           rope_seq_stride
+                          : rope_pos;
+    float pos = static_cast<float>(rope[row * max_len + ap]);
     float inv_freq = powf(theta, -2.f * d / rot_d);
     float ang = pos * inv_freq;
     float c = cosf(ang), s = sinf(ang);
@@ -291,13 +312,18 @@ __global__ void IndexerNormRopeKernel(u16* __restrict__ iq,
 __global__ void WriteIndexRawKernel(const u16* __restrict__ ik_raw,
                                     u16* __restrict__ idx_raw,
                                     const int* __restrict__ positions, int T,
-                                    int hd) {
+                                    int hd, const int* __restrict__ d_seq_id,
+                                    size_t idx_seq_stride) {
   int t = blockIdx.x;
   if (t >= T) return;
   int pos = positions[t];
   int d = threadIdx.x;
   if (d >= hd) return;
-  idx_raw[static_cast<size_t>(pos) * hd + d] = ik_raw[static_cast<size_t>(t) * hd + d];
+  // B2 multi-seq: select this token's sequence idx_raw slice.
+  u16* idx = d_seq_id
+                 ? idx_raw + static_cast<size_t>(d_seq_id[t]) * idx_seq_stride
+                 : idx_raw;
+  idx[static_cast<size_t>(pos) * hd + d] = ik_raw[static_cast<size_t>(t) * hd + d];
 }
 
 __global__ void BuildCompressedKKernel(const u16* __restrict__ ik_norm,
@@ -306,12 +332,27 @@ __global__ void BuildCompressedKKernel(const u16* __restrict__ ik_norm,
                                        const int* __restrict__ positions,
                                        const int* __restrict__ rope_pos, int T,
                                        int max_len, int hd, int compress,
-                                       float theta, float eps) {
+                                       float theta, float eps,
+                                       const int* __restrict__ d_seq_id,
+                                       size_t idx_seq_stride,
+                                       int rope_seq_stride) {
   int t = blockIdx.x;
   if (t >= T) return;
   int pos = positions[t];
   int d = threadIdx.x;
   if (d >= hd) return;
+  // B2 multi-seq: select this token's sequence idx_raw / idx_comp / rope
+  // slices (the group's raw tokens all belong to the same sequence).
+  const u16* iraw = d_seq_id
+                        ? idx_raw + static_cast<size_t>(d_seq_id[t]) * idx_seq_stride
+                        : idx_raw;
+  u16* icomp = d_seq_id
+                   ? idx_comp + static_cast<size_t>(d_seq_id[t]) * idx_seq_stride
+                   : idx_comp;
+  const int* rope = d_seq_id
+                        ? rope_pos + static_cast<size_t>(d_seq_id[t]) *
+                                         rope_seq_stride
+                        : rope_pos;
   // group completion: position `pos` is the last of its group when
   // (pos+1) % compress == 0. Must use `pos`, not the batch index `t`:
   // during decode T=1 and t=0 always, so (t+1)%compress never fires and
@@ -324,7 +365,7 @@ __global__ void BuildCompressedKKernel(const u16* __restrict__ ik_norm,
   // WriteIndexRawKernel launch, so they are visible here.
   float acc = 0.f;
   for (int j = 0; j < compress; ++j) {
-    acc += Bf16ToFloat(idx_raw[static_cast<size_t>(g0 + j) * hd + d]);
+    acc += Bf16ToFloat(iraw[static_cast<size_t>(g0 + j) * hd + d]);
   }
   acc /= compress;
   // GemmaRMSNorm (plain) over the head: need sum of squares
@@ -338,7 +379,7 @@ __global__ void BuildCompressedKKernel(const u16* __restrict__ ik_norm,
   // single element). Interleaved MRoPE: row = d % 3 (0=t, 1=h, 2=w).
   int half = 64 / 2;  // rot_d = 64 for the indexer (idx_head_dim 128, factor .5)
   const int row = d % 3;
-  float pos0 = static_cast<float>(rope_pos[row * max_len + g0]);
+  float pos0 = static_cast<float>(rope[row * max_len + g0]);
   float val;
   if (d < half) {
     float inv_freq = powf(theta, -2.f * d / 64.f);
@@ -347,7 +388,7 @@ __global__ void BuildCompressedKKernel(const u16* __restrict__ ik_norm,
     // need the partner (d+half) normed value; recompute it
     float acc2 = 0.f;
     for (int j = 0; j < compress; ++j) {
-      acc2 += Bf16ToFloat(idx_raw[static_cast<size_t>(g0 + j) * hd + (d + half)]);
+      acc2 += Bf16ToFloat(iraw[static_cast<size_t>(g0 + j) * hd + (d + half)]);
     }
     acc2 /= compress;
     float w2 = Bf16ToFloat(ik_norm[d + half]);
@@ -360,7 +401,7 @@ __global__ void BuildCompressedKKernel(const u16* __restrict__ ik_norm,
     float c = cosf(ang), s = sinf(ang);
     float acc2 = 0.f;
     for (int j = 0; j < compress; ++j) {
-      acc2 += Bf16ToFloat(idx_raw[static_cast<size_t>(g0 + j) * hd + d2]);
+      acc2 += Bf16ToFloat(iraw[static_cast<size_t>(g0 + j) * hd + d2]);
     }
     acc2 /= compress;
     float w2 = Bf16ToFloat(ik_norm[d2]);
@@ -369,7 +410,7 @@ __global__ void BuildCompressedKKernel(const u16* __restrict__ ik_norm,
   } else {
     val = normed;  // dims >= 64 unchanged
   }
-  idx_comp[static_cast<size_t>(group) * hd + d] = FloatToBf16(val);
+  icomp[static_cast<size_t>(group) * hd + d] = FloatToBf16(val);
 }
 
 // ---------------------------------------------------------------------------
@@ -388,13 +429,18 @@ __global__ void IndexerLogitsKernel(const u16* __restrict__ iq,
                                     f32* __restrict__ logits,
                                     const int* __restrict__ positions, int T,
                                     int n_iq, int hd, int compress,
-                                    int max_blocks) {
+                                    int max_blocks, const int* __restrict__ d_seq_id,
+                                    size_t idx_seq_stride) {
   int t = blockIdx.x;
   if (t >= T) return;
   int pos = positions[t];
   int n_groups = (pos + 1) / compress;  // visible groups
   if (n_groups > max_blocks) n_groups = max_blocks;
   float inv_sqrt = 1.f / sqrtf(static_cast<float>(hd));
+  // B2 multi-seq: select this token's sequence idx_comp slice.
+  const u16* cks = d_seq_id
+                       ? ck + static_cast<size_t>(d_seq_id[t]) * idx_seq_stride
+                       : ck;
   // Must hold up to max_blocks (kMaxBlocks) entries: n_groups reaches
   // max_blocks once position >= max_blocks * compress (2048 * 4 = 8192).
   // A smaller buffer (e.g. 512) overflows at position 2051 (n_groups 513),
@@ -406,7 +452,7 @@ __global__ void IndexerLogitsKernel(const u16* __restrict__ iq,
       float dot = 0.f;
       for (int d = 0; d < hd; ++d) {
         dot += Bf16ToFloat(iq[(static_cast<size_t>(t) * n_iq + h) * hd + d]) *
-               Bf16ToFloat(ck[static_cast<size_t>(g) * hd + d]);
+               Bf16ToFloat(cks[static_cast<size_t>(g) * hd + d]);
       }
       sum += fmaxf(dot, 0.f);
     }
@@ -557,7 +603,9 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
                                       const int* __restrict__ topk,
                                       const int* __restrict__ topk_len,
                                       u16* __restrict__ out, int nq, int nkv,
-                                      int hd, int max_topk) {
+                                      int hd, int max_topk,
+                                      const int* __restrict__ d_seq_id,
+                                      size_t kv_seq_stride, int pt_seq_stride) {
   const int CHUNK = 16;
   const int NWARP = 8;  // 256 threads / 32
   __shared__ float sQ[256];
@@ -572,6 +620,14 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
   int d = threadIdx.x;
   int warp_id = d >> 5;
   int lane = d & 31;
+  // B2 multi-seq: select this token's sequence KV + page_table slices (all
+  // selected positions belong to this token's own sequence).
+  const u16* kv = d_seq_id
+                      ? kv_cache + static_cast<size_t>(d_seq_id[t]) * kv_seq_stride
+                      : kv_cache;
+  const int* pt = d_seq_id
+                      ? page_table + static_cast<size_t>(d_seq_id[t]) * pt_seq_stride
+                      : page_table;
   // Load the query row into shared memory (all threads).
   if (d < hd) sQ[d] = Bf16ToFloat(q[(static_cast<size_t>(t) * nq + qh) * hd + d]);
   __syncthreads();
@@ -589,10 +645,10 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
     for (int c = 0; c < chunk; ++c) {
       int p = sel[nsel + c];
       if (p >= 0 && d < hd) {
-        int slot = page_table[p] * kKvPageSize + (p % kKvPageSize);
+        int slot = pt[p] * kKvPageSize + (p % kKvPageSize);
         size_t base = (static_cast<size_t>(slot) * nkv + kvh) * (2 * hd);
-        sK[c * 256 + d] = Bf16ToFloat(kv_cache[base + d]);
-        sV[c * 256 + d] = Bf16ToFloat(kv_cache[base + hd + d]);
+        sK[c * 256 + d] = Bf16ToFloat(kv[base + d]);
+        sV[c * 256 + d] = Bf16ToFloat(kv[base + hd + d]);
       }
     }
     __syncthreads();
@@ -799,7 +855,7 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                             uint16_t* kv_cache, const int* page_table,
                             uint16_t* idx_raw, uint16_t* idx_comp, int T,
                             void* workspace, size_t workspace_bytes,
-                            cudaStream_t stream) {
+                            cudaStream_t stream, const int* d_seq_id) {
   if (T <= 0 || T > kMaxT)
     return Status::Fail("FullAttentionForward: T out of range [1, " +
                         std::to_string(kMaxT) + "]");
@@ -849,6 +905,17 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   // model layer passed its persistent device buffer `m.d_positions`.)
   const int* d_positions = positions;
 
+  // B2 multi-seq per-sequence strides (elements), used by the kernels to
+  // select the per-token state slice via d_seq_id. Only meaningful when
+  // d_seq_id != null (the pooled bases are passed in that case).
+  const size_t n_pages = (w.max_len + kKvPageSize - 1) / kKvPageSize;
+  const size_t kv_seq_stride =
+      n_pages * kKvPageSize * nkv * 2 * hd;  // uint16 (one seq's paged KV)
+  const int pt_seq_stride = w.max_len;  // int (page_table [max_seq, max_len])
+  const size_t idx_seq_stride =
+      static_cast<size_t>(w.max_len) * idx_hd;  // uint16 (idx [max_seq, max_len, idx_hd])
+  const int rope_seq_stride = 3 * w.max_len;  // int (rope [max_seq, 3, max_len])
+
   Status s;
   // 1. qg = x @ W_q^T ; k = x @ W_k^T ; v = x @ W_v^T
   s = CheckGemm(Bf16Gemm(x, w.q_proj, d_qg, T, qg_dim, hs, 1.f, 0.f, d_gemm_ws,
@@ -869,12 +936,15 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   //    (3D MRoPE: rope_pos [3, max_len], row chosen by i % 3).
   const int half = w.rot_d / 2;
   PartialRopeKernel<24><<<(T * nq * half + 255) / 256, 256, 0, stream>>>(
-      d_q, nq, hd, w.rot_d, d_positions, rope_pos, w.max_len, w.rope_theta, T);
+      d_q, nq, hd, w.rot_d, d_positions, rope_pos, w.max_len, w.rope_theta, T,
+      d_seq_id, rope_seq_stride);
   PartialRopeKernel<2><<<(T * nkv * half + 255) / 256, 256, 0, stream>>>(
-      d_k, nkv, hd, w.rot_d, d_positions, rope_pos, w.max_len, w.rope_theta, T);
+      d_k, nkv, hd, w.rot_d, d_positions, rope_pos, w.max_len, w.rope_theta, T,
+      d_seq_id, rope_seq_stride);
   // 5. write k, v into the paged KV cache
   WriteKVKernel<<<(T * nkv * hd + 255) / 256, 256, 0, stream>>>(
-      d_k, d_v, kv_cache, nkv, hd, d_positions, page_table, T);
+      d_k, d_v, kv_cache, nkv, hd, d_positions, page_table, T, d_seq_id,
+      kv_seq_stride, pt_seq_stride);
   // 6. indexer projections: iq = x @ W_iq^T [T,512], ik = x @ W_ik^T [T,128]
   const int iq_dim = n_iq * idx_hd;
   const int ik_dim = n_ik * idx_hd;
@@ -893,30 +963,35 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   //    (3D MRoPE: rope_pos [3, max_len], row chosen by d % 3).
   IndexerNormRopeKernel<<<T * (n_iq + n_ik), idx_hd, 0, stream>>>(
       d_iq, w.index_q_norm, d_ik, w.index_k_norm, d_positions, rope_pos,
-      w.max_len, T, n_iq, n_ik, idx_hd, w.rot_d, w.rope_theta, w.eps);
+      w.max_len, T, n_iq, n_ik, idx_hd, w.rot_d, w.rope_theta, w.eps, d_seq_id,
+      rope_seq_stride);
   // 8a. store raw index keys (per token).
   WriteIndexRawKernel<<<T, idx_hd, 0, stream>>>(d_ik_raw, idx_raw, d_positions,
-                                                T, idx_hd);
+                                                T, idx_hd, d_seq_id,
+                                                idx_seq_stride);
   // 8b. build compressed keys for groups completed in this batch. Runs in a
   // separate launch so the kernel-boundary sync makes every idx_raw write
   // from 8a visible before the group averages read them (no prefill race).
   BuildCompressedKKernel<<<T, idx_hd, 0, stream>>>(
       w.index_k_norm, idx_raw, idx_comp, d_positions, rope_pos, T,
-      w.max_len, idx_hd, w.idx_compress, w.rope_theta, w.eps);
+      w.max_len, idx_hd, w.idx_compress, w.rope_theta, w.eps, d_seq_id,
+      idx_seq_stride, rope_seq_stride);
   // 9. indexer logits over visible compressed blocks
   IndexerLogitsKernel<<<T, 256, 0, stream>>>(d_iq, idx_comp, d_logits,
                                              d_positions, T, n_iq, idx_hd,
-                                             w.idx_compress, max_blocks);
-  // 10. topk block selection -> token index list
+                                             w.idx_compress, max_blocks,
+                                             d_seq_id, idx_seq_stride);
+  // 10. topk block selection -> token index list (packed [T, ...] arrays, no
+  //     per-seq state).
   TopkSelectKernel<<<T, 256, 0, stream>>>(d_logits, d_topk, d_topk_len,
                                           d_positions, T, w.idx_compress,
                                           w.idx_block_topk(), max_blocks,
                                           max_topk);
   // 11. sparse GQA attention over the selected positions (valid only, via
   //     topk_len — the -1 tail is not iterated)
-  SparseAttentionKernel<<<T * nq, 256, 0, stream>>>(d_q, kv_cache, page_table,
-                                                    d_topk, d_topk_len, d_attn,
-                                                    nq, nkv, hd, max_topk);
+  SparseAttentionKernel<<<T * nq, 256, 0, stream>>>(
+      d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn, nq, nkv, hd,
+      max_topk, d_seq_id, kv_seq_stride, pt_seq_stride);
   // 12. attn *= sigmoid(gate)
   GateMulKernel<<<(T * nq * hd + 255) / 256, 256, 0, stream>>>(
       d_attn, d_gate, T * nq * hd);

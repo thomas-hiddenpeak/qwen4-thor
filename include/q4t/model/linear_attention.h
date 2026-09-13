@@ -96,12 +96,22 @@ Status LoadLinearAttention(const io::WeightLoader& loader, const std::string& pr
 //                (passed to cuBLASLt as its internal scratch; intermediates are
 //                allocated separately, so the buffer must not be reused for
 //                anything else during the call)
+//   d_seq_id   : B2 multi-sequence decode. When non-null, a device int[T]
+//                giving the sequence id of each token, and `ssm_state` /
+//                `conv_state` are the POOLED bases ([max_seq, nv, kd, vd] and
+//                [max_seq, in_qkv, conv_k-1]) — each token t reads/writes the
+//                slice for d_seq_id[t] via the multi-seq kernels. The
+//                projection/output GEMMs are stateless and operate on the
+//                packed [T, ...] rows directly (weights read once). When null
+//                (legacy single-sequence prefill/decode), ssm_state/conv_state
+//                are the per-sequence slices and the single-seq kernels run.
 Status LinearAttentionForward(const LinearAttentionWeights& w, const uint16_t* x,
                               uint16_t* out, float* ssm_state,
                               uint16_t* conv_state, int T, void* workspace,
                               size_t workspace_bytes, cudaStream_t stream,
                               float* ssm_ckpt = nullptr,
-                              uint16_t* conv_ckpt = nullptr, int num_ckpt = 0);
+                              uint16_t* conv_ckpt = nullptr, int num_ckpt = 0,
+                              const int* d_seq_id = nullptr);
 
 }  // namespace model
 }  // namespace q4t
