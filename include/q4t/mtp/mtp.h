@@ -59,6 +59,11 @@ struct MtpConfig {
   int vocab = 248320;
   int max_len = 8192;  // MTP full-attention KV/indexer length
   int max_prefill = 2048;  // sizes the forward workspace
+  // Number of concurrent sequences the draft full-attention KV/indexer state
+  // is pooled for (Phase 2 MTP continuous batching). Each sequence owns an
+  // independent [seq_id, ...] slice, enabling concurrent MTP requests. 1 =
+  // legacy single-sequence behavior (bit-identical, no extra memory).
+  int max_seq = 1;
   float eps = 1e-6f;
   // full-attention dims (same as the main model).
   int nq = 24;
@@ -99,10 +104,13 @@ struct MtpModel {
   int* page_table = nullptr;  // [max_len] identity mapping
   uint16_t* idx_raw = nullptr;  // [max_len, idx_head_dim]
   uint16_t* idx_comp = nullptr;  // [max_len, idx_head_dim]
-  int* d_rope_pos = nullptr;  // [3, max_len] identity (pure text)
+  int* d_rope_pos = nullptr;  // [3, max_len] identity (pure text, shared by
+  // all sequences — the identity table is the same for every seq)
   void* d_ws = nullptr;  // forward workspace (GEMM ws + scratch)
   size_t ws_bytes = 0;
-  size_t kv_bytes = 0;  // bytes of kv_cache (for ResetState)
+  size_t kv_bytes = 0;  // bytes of ONE sequence's kv_cache (for ResetState)
+  size_t idx_bytes = 0;  // bytes of ONE sequence's idx_raw (== idx_comp)
+  int max_seq = 1;  // pooled sequence count (cfg.max_seq at load time)
 
   // Speculative-step scratch (allocated in LoadMtp, sized for one draft step
   // of a single token): the sample_hidden [hs], the multi_hidden trunk [hc*hs],
@@ -136,9 +144,17 @@ struct MtpModel {
 Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
                const uint16_t* main_lm_head, MtpModel* out, cudaStream_t stream);
 
+// Bytes of ONE sequence's draft full-attention KV cache (the pooled layout is
+// [max_seq, n_pages, kKvPageSize, nkv, 2, hd] uint16; this is the per-seq
+// stride). Useful for sizing pooled buffers and per-seq resets.
+size_t MtpPerSeqKvBytes(const MtpConfig& cfg);
+
 // Zero the MTP full-attention KV cache + indexer buffers (call before a fresh
 // speculative-decoding sequence, mirroring the main model's per-layer reset).
-Status MtpResetState(const MtpModel& m, cudaStream_t stream);
+// `seq_id` selects one pooled sequence slice (valid only when
+// m.max_seq > 1); pass -1 to reset ALL sequences (the single-sequence layout
+// when m.max_seq == 1, or the whole pool otherwise).
+Status MtpResetState(const MtpModel& m, cudaStream_t stream, int seq_id = -1);
 
 // Reserve the per-step speculative scratch buffers (ids/positions, verify
 // logits+trunk, extend logits+trunk+sample, rolling draft trunk) sized for a
@@ -161,10 +177,20 @@ Status MtpReserveScratch(MtpModel& m, int k_max);
 //                 for the next draft step.
 //   logits       : device BF16 [T, vocab] (out) — lm_head(sample_hidden).
 //   stream       : CUDA stream.
+//   d_seq_id     : device int[T] (Phase 2 MTP multi-seq draft). When non-null,
+//                  the draft full-attention KV/indexer buffers (m.kv_cache /
+//                  m.idx_raw / m.idx_comp) are the POOLED bases ([max_seq, ...])
+//                  and each token t indexes the slice for d_seq_id[t] (the
+//                  attention kernels select the per-token base via d_seq_id).
+//                  When null (legacy single-sequence) the buffers are the
+//                  per-sequence slices and the kernels use them directly
+//                  (bit-identical to the prior behavior). The projection/MoE/
+//                  lm_head GEMMs are stateless and operate on the packed [T,...]
+//                  rows (weights read once).
 Status MtpForward(const MtpModel& m, const int32_t* input_ids, const int* positions,
                   const uint16_t* hidden_states, uint16_t* sample_hidden,
                   uint16_t* multi_hidden, uint16_t* logits, int T,
-                  cudaStream_t stream);
+                  cudaStream_t stream, const int* d_seq_id = nullptr);
 
 // Device bytes for the MtpForward `workspace` (the GEMM scratch plus the
 // forward intermediates for `T` tokens, the full-attention scratch, and the

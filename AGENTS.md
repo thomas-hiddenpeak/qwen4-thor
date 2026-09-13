@@ -103,7 +103,12 @@ cmake --build build --parallel
   各 1 decode token 一次 T=B forward, 权重只读一次; GEMM 无状态自动
   打包, 有状态 kernel 用 d_seq_id[t] 选 per-token 切片; B2b serve 调度器:
   独立调度线程合并并发请求 decode step; E2E 3 并发请求语义正确无跨序列
-  污染, 吞吐 15.13→18.03 tok/s 聚合)。65 项测试全绿, 零警告。
+  污染, 吞吐 15.13→18.03 tok/s 聚合) / **MTP 批处理 Stage 1 (已闭合,
+  Phase 2)** (draft 模型 KV/indexer/rope 按 max_seq 池化 + MtpForward
+  d_seq_id 多序列路径, 单序列 bit 不变; 隔离测试 4 序列×2 token 打包
+  l2_rel≈0.002 无跨序列污染; Stage 2 批量化 draft 循环 + ragged 验证 +
+  调度器 MTP 分支待做)。66 项测试全绿, 零警告。
 - **Phase 1 完成标准全部闭合 (2026-09-07)**。Phase 2 进行中: B1 多序列
-  + B2 连续批处理已闭合。剩余: 完整多设备 PD 部署、48 层长序列端到端、
-  serve 流式输出、MTP 批处理/加速比实测等, 见 docs/PHASES.md。
+  + B2 连续批处理 + MTP 批处理 Stage 1 已闭合。剩余: MTP 批处理 Stage 2
+  (批量化 draft + ragged 验证 + 调度器分支)、完整多设备 PD 部署、
+  48 层长序列端到端等, 见 docs/PHASES.md。

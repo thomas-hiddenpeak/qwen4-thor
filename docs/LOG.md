@@ -5,6 +5,56 @@
 
 ---
 
+## 2026-09-13 — MTP 批处理 Stage 1: draft KV/indexer per-seq 池化 + 多序列 MtpForward
+
+**背景**
+MTP 请求当前**独占 `model_mu_` 整个投机循环** (draft 循环 + 验证 + extend),
+既不能并发、也不能享受连续批处理的聚合吞吐 — 长上下文场景损失最大 (MTP
+加速比 1.4x 短 → 1.87x 8K, 随长度单调上升)。根因: MTP draft 模型 (1 层
+full-attention) 的 `kv_cache`/`page_table`/`idx_raw`/`idx_comp` + 滚动 trunk
+`d_g_` 都是**单份共享**, 两个并发 MTP 请求会互相污染 draft 状态。
+
+**Stage 1 范围 (本次闭合)**
+把 B1 的 per-seq 状态池化模式应用到 MTP draft 模型:
+- `MtpConfig.max_seq` (默认 1 = 旧单序列布局, bit 不变): draft 的
+  `kv_cache`/`page_table`/`idx_raw`/`idx_comp`/`d_rope_pos` 全部按
+  `[max_seq, ...]` 池化 (rope 恒等表每序列一份, 内容相同)。
+- `MtpModel` 加 `idx_bytes`/`max_seq`; `kv_bytes` 语义改为**单序列**步长。
+- `MtpResetState(m, stream, seq_id)`: `seq_id<0` 清零整个池, `>=0` 清零
+  单序列切片 (字节偏移走 char*, 镜像 B1 的 uint16_t 步长陷阱修复)。
+- 新增 `MtpPerSeqKvBytes(cfg)` (单序列 KV 字节数, 供池化/重置计算)。
+- `MtpForward` 加尾参 `const int* d_seq_id = nullptr`: 透传给
+  `FullAttentionForward` (B2a 已有 d_seq_id 机制), 每 token 按
+  `d_seq_id[t]` 选 draft KV/indexer/rope 切片; `null` 时单序列路径
+  bit 不变。投影/MoE/lm_head GEMM 无状态, 自动打包 [T,...] 行。
+
+**验证**
+新增 `mtp_draft_multi_seq` 测试 (真实 MTP 权重, max_seq=4): 4 序列各
+2 token (B*T=8) 打包一次 `MtpForward` (d_seq_id != null), 每序列每行 vs
+单序列 T=2 参考 (d_seq_id == null) l2_rel ≈ 0.002 (MTP draft 是 BF16 非
+NVFP4, 噪声远小于主模型 W4A4 的 ~0.2), 全部 < 0.5 阈值 → **无跨序列
+污染**; 二次打包运行 bit 逐位一致 (确定性)。
+**测试设计要点**: 必须打包 B*T 个 token (每序列 T 个), 不能只打包 B 个
+(每序列 1 个) — draft 层是自回归 full attention, 每 token 要 attend 自己
+序列的前 T-1 个 token; 只打 B 个会让每 token 只有 1-token 上下文, 与
+参考的 T-token 因果上下文是**不同的注意力模式**, 对比无意义。
+66 项测试全绿, 零警告。
+
+**→ MTP 批处理 Stage 1 闭合** (draft 状态池化 + 多序列 MtpForward + 隔离
+测试)。这是并发 MTP 的地基。
+
+**下一步 (Stage 2, 未做)**: 真正的并发 MTP 还需:
+1. **批量化 draft 循环**: B 序列的 draft 步打包 (EAGLE batched drafting),
+   滚动 trunk `d_g_` 改 per-seq。
+2. **多序列验证前向**: 验证是 ragged (每序列接受 a_i 个不同), 需要
+   多序列 prefill-like 前向 + per-seq checkpoint/restore (现有
+   `ModelDecodeBatch` 是等长 T, 不等长需新路径)。
+3. **调度器 MTP 分支**: MTP 步是"多 token 前向" (k+1 验证 token), 与
+   plain 的"1 token/步"打包模型不同, 需调度器区分处理。
+Stage 2 工作量约 Stage 1 的 2-3 倍, 且 ragged 验证是最大难点。
+
+---
+
 ## 2026-09-13 — B2b serve 连续批处理调度器 (E2E 闭合)
 
 **背景**

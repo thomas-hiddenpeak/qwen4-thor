@@ -348,6 +348,19 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   error/illegal/503。吞吐: 单请求 15.13 tok/s → 3 并发聚合 18.03 tok/s
   (1.19x, 低于线性因 MoE 专家权重读取不共享)。65 项测试全绿零警告。
   **→ B2 全部闭合** (B2a 引擎 + B2b serve 调度器 + E2E + 吞吐实测)
+- [x] 2026-09-13 **MTP 批处理 Stage 1 (draft 状态池化 + 多序列
+  MtpForward)**: MTP 请求当前独占 model_mu_ 整个投机循环 (draft 循环 +
+  验证 + extend), 不能并发 — 根因是 draft 模型 (1 层 full-attention) 的
+  kv_cache/page_table/idx_raw/idx_comp 单份共享。Stage 1 把 B1 的 per-seq
+  池化模式应用到 MTP: MtpConfig.max_seq (默认 1 = 旧布局 bit 不变),
+  draft KV/indexer/rope 全部 [max_seq,...] 池化; MtpResetState 加 seq_id
+  (字节偏移走 char*); 新增 MtpPerSeqKvBytes; MtpForward 加 d_seq_id 尾参
+  透传 FullAttentionForward (B2a 机制), null 时单序列 bit 不变。测试
+  mtp_draft_multi_seq (max_seq=4, 4 序列×2 token 打包): 每行 vs 单序列
+  参考 l2_rel≈0.002 (BF16 draft, 噪声远小于主模型 W4A4) 无跨序列污染 +
+  确定性 bit 一致。66 项测试全绿零警告。
+  **→ MTP 批处理 Stage 1 闭合** (并发 MTP 地基; Stage 2 = 批量化 draft
+  循环 + ragged 多序列验证 + 调度器 MTP 分支, 未做)
 
 ## 进行中
 
@@ -844,13 +857,19 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 ## 下一步
 
+**MTP 批处理 Stage 1 闭合 (2026-09-13)**: draft 模型 (1 层 full-attention)
+的 KV/indexer/rope 按 max_seq 池化 + MtpForward 加 d_seq_id 多序列路径
+(透传 B2a 的 FullAttentionForward 机制, 单序列 bit 不变) + 隔离测试
+(4 序列×2 token 打包, l2_rel≈0.002 无跨序列污染)。66 项测试全绿零警告。
+下一步: MTP 批处理 Stage 2 — 批量化 draft 循环 (per-seq 滚动 trunk) +
+ragged 多序列验证前向 (per-seq checkpoint/restore) + 调度器 MTP 分支
+(MTP 步是多 token 前向, 与 plain 1-token/步打包模型不同)。
+
 **B2 连续批处理全部闭合 (2026-09-13)**: B2a 引擎 (token 级打包, 多序列
 decode 一次 forward, 权重只读一次) + B2b serve 调度器 (独立调度线程合并
 并发请求 decode step 成 `ModelDecodeBatchMulti` 调用)。E2E: 3 并发请求
 全部语义正确, 无跨序列污染; 吞吐 15.13 → 18.03 tok/s 聚合 (1.19x, MoE
 专家权重读取不共享限制线性收益)。65 项测试全绿零警告。
-下一步: Phase 2 剩余项 — serve 流式输出 / MTP 批处理 (draft KV 多 buffer)
-/ 48 层长序列端到端 / 多设备 PD 部署。
 
 **B1 多序列 (Phase 2 连续批处理前置) 全部闭合 (2026-09-13)**: 状态池化
 (max_seq) ✅ + seq_id 穿透 ✅ + 多序列隔离测试 ✅ + serve 多请求 E2E ✅

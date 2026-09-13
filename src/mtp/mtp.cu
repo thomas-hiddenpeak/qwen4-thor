@@ -305,50 +305,60 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
     return s;
 
   // 4. Persistent full-attention KV / indexer buffers + identity page table.
+  //    Pooled over max_seq sequences (Phase 2 MTP continuous batching): each
+  //    sequence owns an independent [seq_id, ...] slice so concurrent MTP
+  //    requests don't corrupt each other's draft state. max_seq == 1
+  //    reproduces the legacy single-sequence layout bit-for-bit.
   const int n_pages = (cfg.max_len + model::kKvPageSize - 1) /
                       model::kKvPageSize;
+  const int max_seq = cfg.max_seq > 0 ? cfg.max_seq : 1;
+  out->max_seq = max_seq;
   out->kv_bytes =
       static_cast<size_t>(n_pages) * model::kKvPageSize * cfg.nkv * 2 *
       cfg.hd * sizeof(uint16_t);
-  if (cudaMalloc(reinterpret_cast<void**>(&out->kv_cache), out->kv_bytes) !=
-      cudaSuccess)
+  out->idx_bytes =
+      static_cast<size_t>(cfg.max_len) * cfg.idx_head_dim * sizeof(uint16_t);
+  if (cudaMalloc(reinterpret_cast<void**>(&out->kv_cache),
+                 static_cast<size_t>(max_seq) * out->kv_bytes) != cudaSuccess)
     return Status::Fail("cudaMalloc kv_cache");
   if (cudaMalloc(reinterpret_cast<void**>(&out->page_table),
-                 static_cast<size_t>(cfg.max_len) * sizeof(int)) !=
+                 static_cast<size_t>(max_seq) * cfg.max_len * sizeof(int)) !=
       cudaSuccess)
     return Status::Fail("cudaMalloc page_table");
   if (cudaMalloc(reinterpret_cast<void**>(&out->idx_raw),
-                 static_cast<size_t>(cfg.max_len) * cfg.idx_head_dim *
-                     sizeof(uint16_t)) != cudaSuccess)
+                 static_cast<size_t>(max_seq) * out->idx_bytes) != cudaSuccess)
     return Status::Fail("cudaMalloc idx_raw");
   if (cudaMalloc(reinterpret_cast<void**>(&out->idx_comp),
-                 static_cast<size_t>(cfg.max_len) * cfg.idx_head_dim *
-                     sizeof(uint16_t)) != cudaSuccess)
+                 static_cast<size_t>(max_seq) * out->idx_bytes) != cudaSuccess)
     return Status::Fail("cudaMalloc idx_comp");
-  // 3D MRoPE identity table [3, max_len]: all three rows = position (pure
-  // text, delta=0). The RoPE kernels index by positions[t] (absolute pos).
+  // 3D MRoPE identity table [max_seq, 3, max_len]: all three rows = position
+  // (pure text, delta=0). Pooled so the multi-seq attention kernels can index
+  // the per-seq slice via d_seq_id (the identity is the same for every seq).
   if (cudaMalloc(reinterpret_cast<void**>(&out->d_rope_pos),
-                 3u * static_cast<size_t>(cfg.max_len) * sizeof(int)) !=
-      cudaSuccess)
+                 static_cast<size_t>(max_seq) * 3u * cfg.max_len *
+                     sizeof(int)) != cudaSuccess)
     return Status::Fail("cudaMalloc d_rope_pos");
   {
     std::vector<int> rp(3 * static_cast<size_t>(cfg.max_len), 0);
     for (int p = 0; p < cfg.max_len; ++p)
       for (int r = 0; r < 3; ++r)
         rp[r * cfg.max_len + p] = p;
-    if (cudaMemcpy(out->d_rope_pos, rp.data(),
-                   rp.size() * sizeof(int), cudaMemcpyHostToDevice) !=
-        cudaSuccess)
-      return Status::Fail("H2D d_rope_pos");
+    for (int s = 0; s < max_seq; ++s)
+      if (cudaMemcpy(out->d_rope_pos +
+                         static_cast<size_t>(s) * 3 * cfg.max_len,
+                     rp.data(), rp.size() * sizeof(int),
+                     cudaMemcpyHostToDevice) != cudaSuccess)
+        return Status::Fail("H2D d_rope_pos");
   }
   {
     std::vector<int> pt(cfg.max_len);
     for (int p = 0; p < cfg.max_len; ++p)
       pt[p] = p / model::kKvPageSize;  // identity mapping
-    if (cudaMemcpy(out->page_table, pt.data(),
-                   static_cast<size_t>(cfg.max_len) * sizeof(int),
-                   cudaMemcpyHostToDevice) != cudaSuccess)
-      return Status::Fail("H2D page_table");
+    for (int s = 0; s < max_seq; ++s)
+      if (cudaMemcpy(out->page_table + static_cast<size_t>(s) * cfg.max_len,
+                     pt.data(), static_cast<size_t>(cfg.max_len) * sizeof(int),
+                     cudaMemcpyHostToDevice) != cudaSuccess)
+        return Status::Fail("H2D page_table");
   }
 
   // 5. Forward workspace (sized for max_prefill tokens).
@@ -377,18 +387,37 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
   return Status();
 }
 
-Status MtpResetState(const MtpModel& m, cudaStream_t stream) {
-  if (m.kv_cache) {
-    if (cudaMemsetAsync(m.kv_cache, 0, m.kv_bytes, stream) != cudaSuccess)
-      return Status::Fail("memset kv_cache");
-  }
-  const size_t idx_bytes = static_cast<size_t>(m.cfg.max_len) *
-                           m.cfg.idx_head_dim * sizeof(uint16_t);
+size_t MtpPerSeqKvBytes(const MtpConfig& cfg) {
+  const int n_pages = (cfg.max_len + model::kKvPageSize - 1) /
+                      model::kKvPageSize;
+  return static_cast<size_t>(n_pages) * model::kKvPageSize * cfg.nkv * 2 *
+         cfg.hd * sizeof(uint16_t);
+}
+
+Status MtpResetState(const MtpModel& m, cudaStream_t stream, int seq_id) {
+  const int max_seq = m.max_seq > 0 ? m.max_seq : 1;
+  // Per-seq byte offsets into the pooled buffers. seq_id < 0 resets ALL
+  // sequences (the whole pool); seq_id >= 0 resets one slice. Byte offsets go
+  // through char* (decoupled from the element type, mirroring the B1 fix).
+  const size_t kv_off =
+      (seq_id >= 0) ? static_cast<size_t>(seq_id) * m.kv_bytes : 0;
+  const size_t idx_off =
+      (seq_id >= 0) ? static_cast<size_t>(seq_id) * m.idx_bytes : 0;
+  const size_t kv_total =
+      (seq_id >= 0) ? m.kv_bytes : static_cast<size_t>(max_seq) * m.kv_bytes;
+  const size_t idx_total =
+      (seq_id >= 0) ? m.idx_bytes : static_cast<size_t>(max_seq) * m.idx_bytes;
+  if (m.kv_cache &&
+      cudaMemsetAsync(reinterpret_cast<char*>(m.kv_cache) + kv_off, 0, kv_total,
+                      stream) != cudaSuccess)
+    return Status::Fail("memset kv_cache");
   if (m.idx_raw &&
-      cudaMemsetAsync(m.idx_raw, 0, idx_bytes, stream) != cudaSuccess)
+      cudaMemsetAsync(reinterpret_cast<char*>(m.idx_raw) + idx_off, 0,
+                      idx_total, stream) != cudaSuccess)
     return Status::Fail("memset idx_raw");
   if (m.idx_comp &&
-      cudaMemsetAsync(m.idx_comp, 0, idx_bytes, stream) != cudaSuccess)
+      cudaMemsetAsync(reinterpret_cast<char*>(m.idx_comp) + idx_off, 0,
+                      idx_total, stream) != cudaSuccess)
     return Status::Fail("memset idx_comp");
   return Status();
 }
@@ -810,7 +839,8 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
 Status MtpForward(const MtpModel& m, const int32_t* input_ids,
                   const int* positions, const uint16_t* hidden_states,
                   uint16_t* sample_hidden, uint16_t* multi_hidden,
-                  uint16_t* logits, int T, cudaStream_t stream) {
+                  uint16_t* logits, int T, cudaStream_t stream,
+                  const int* d_seq_id) {
   const int hs = m.cfg.hs, hc = m.cfg.hc, hc_dim = hc * hs;
   if (T <= 0) return Status();
   const auto& cfg = m.cfg;
@@ -899,11 +929,12 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
   s = model::HyperConnectionMix(m.attn_hc, d_trunk, d_mixed_attn,
                                 d_normed_attn, T, d_hc_gemm, kGemmWs, stream);
   if (!s.ok()) return s;
-  // 4c. full attention.
+  // 4c. full attention. d_seq_id selects the per-token draft KV/indexer/rope
+  // slice (multi-seq draft, Phase 2); null = single-seq (bit-identical).
   s = model::FullAttentionForward(m.full_attn, d_mixed_attn, d_attn_out,
                                   d_positions, m.d_rope_pos, m.kv_cache,
                                   m.page_table, m.idx_raw, m.idx_comp, T,
-                                  d_attn_ws, attn_ws, stream);
+                                  d_attn_ws, attn_ws, stream, d_seq_id);
   if (!s.ok()) return s;
   // 4d. attn_hc.combine: trunk_a = attn_out + trunk (learned injection).
   s = model::HyperConnectionCombine(m.attn_hc, d_attn_out, d_trunk,

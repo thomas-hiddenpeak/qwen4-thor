@@ -275,3 +275,212 @@ Q4T_TEST(mtp_draft_forward) {
   m.Free();
   return true;
 }
+
+// Phase 2 MTP multi-seq draft isolation: load the MTP draft model with
+// max_seq=B (pooled draft KV/indexer), then verify that packing B sequences
+// (each T tokens, B different seq_ids, same prompt) into ONE MtpForward
+// (d_seq_id != null) yields per-sequence logits that match the single-sequence
+// T-token reference (d_seq_id == null) within the W4A4 noise band, with no
+// cross-sequence contamination.
+//
+// Why B*T tokens (not B): the MTP draft layer is autoregressive full
+// attention — each token attends to all prior tokens in ITS OWN sequence.
+// Packing B sequences of T tokens each (B*T total) means each sequence's
+// tokens see their own T-token causal context (isolated by d_seq_id), which
+// must match a single-sequence T-token forward. Packing B tokens (one per seq)
+// would give each token only 1-token context, which is a DIFFERENT attention
+// pattern and not comparable to the reference.
+Q4T_TEST(mtp_draft_multi_seq) {
+  if (!CudaAvailable()) {
+    std::printf("  (skipped: no CUDA device)\n");
+    return true;
+  }
+  if (!FileExists(kIndex) || !FileExists(kMtpDir) ||
+      !FileExists(kPleSidecar)) {
+    std::printf("  (skipped: model or MTP dir not found)\n");
+    return true;
+  }
+  const int B = 4;  // number of concurrent draft sequences
+  const int T = 2;  // tokens per sequence (B*T = 8 <= max_prefill)
+  const int BT = B * T;
+  const int32_t ids[] = {846, 25, 1203, 321};  // same prompt for all seqs
+  const int positions[] = {0, 1, 2, 3};
+
+  // 1. Load a small main model (2 layers) for the shared embed/lm_head.
+  ModelConfig cfg;
+  cfg.model_dir = kModelDir;
+  cfg.index_path = kIndex;
+  cfg.num_layers = 2;
+  cfg.max_prefill = 8;
+  cfg.ple_sidecar = kPleSidecar;
+  Model m;
+  Status s = LoadModel(cfg, &m, nullptr);
+  if (!s.ok()) {
+    std::printf("  main model load failed: %s\n", s.message().c_str());
+    return false;
+  }
+  // 2. Load the MTP draft model with max_seq=B (pooled draft state).
+  MtpConfig mcfg;
+  mcfg.mtp_dir = kMtpDir;
+  mcfg.max_seq = B;
+  MtpModel mtp;
+  s = LoadMtp(mcfg, m.head.embed_tokens, m.head.lm_head, &mtp, nullptr);
+  if (!s.ok()) {
+    std::printf("  MTP load failed: %s\n", s.message().c_str());
+    m.Free();
+    return false;
+  }
+  std::printf("  MTP loaded (max_seq=%d, hs=%d hc=%d E=%d)\n", mtp.max_seq,
+              mcfg.hs, mcfg.hc, mcfg.E);
+  const size_t hc_dim = static_cast<size_t>(mcfg.hc) * mcfg.hs;
+
+  // Device buffers.
+  int32_t* d_ids = nullptr;
+  int* d_pos = nullptr;
+  int* d_seq_id = nullptr;
+  uint16_t* d_trunk = nullptr;  // [T, hc*hs] main pre-final-mixer stream
+  uint16_t* d_trunk_bt = nullptr;  // [BT, hc*hs] replicated for multi-seq
+  uint16_t* d_logits_main = nullptr;  // [T, vocab]
+  uint16_t* d_sample = nullptr;  // [BT, hs]
+  uint16_t* d_multi = nullptr;  // [BT, hc*hs]
+  uint16_t* d_logits_ref = nullptr;  // [T, vocab] single-seq reference
+  uint16_t* d_logits_multi = nullptr;  // [BT, vocab] packed multi-seq
+  auto mal = [&](void** p, size_t bytes) {
+    return cudaMalloc(p, bytes) == cudaSuccess;
+  };
+  if (!mal(reinterpret_cast<void**>(&d_ids), BT * sizeof(int32_t)) ||
+      !mal(reinterpret_cast<void**>(&d_pos), BT * sizeof(int)) ||
+      !mal(reinterpret_cast<void**>(&d_seq_id), BT * sizeof(int)) ||
+      !mal(reinterpret_cast<void**>(&d_trunk), T * hc_dim * 2) ||
+      !mal(reinterpret_cast<void**>(&d_trunk_bt), BT * hc_dim * 2) ||
+      !mal(reinterpret_cast<void**>(&d_logits_main),
+           static_cast<size_t>(T) * mcfg.vocab * 2) ||
+      !mal(reinterpret_cast<void**>(&d_sample), BT * mcfg.hs * 2) ||
+      !mal(reinterpret_cast<void**>(&d_multi), BT * hc_dim * 2) ||
+      !mal(reinterpret_cast<void**>(&d_logits_ref),
+           static_cast<size_t>(T) * mcfg.vocab * 2) ||
+      !mal(reinterpret_cast<void**>(&d_logits_multi),
+           static_cast<size_t>(BT) * mcfg.vocab * 2)) {
+    std::printf("  cudaMalloc failed\n");
+    mtp.Free();
+    m.Free();
+    return false;
+  }
+  // ids/positions: replicate the T-token prompt B times (one per sequence).
+  std::vector<int32_t> ids_bt(BT), pos_bt(BT), seq_ids_bt(BT);
+  for (int b = 0; b < B; ++b)
+    for (int t = 0; t < T; ++t) {
+      ids_bt[b * T + t] = ids[t];
+      pos_bt[b * T + t] = positions[t];
+      seq_ids_bt[b * T + t] = b;
+    }
+  cudaMemcpy(d_ids, ids_bt.data(), BT * sizeof(int32_t), cudaMemcpyHostToDevice);
+  cudaMemcpy(d_pos, pos_bt.data(), BT * sizeof(int), cudaMemcpyHostToDevice);
+  cudaMemcpy(d_seq_id, seq_ids_bt.data(), BT * sizeof(int), cudaMemcpyHostToDevice);
+
+  // 3. Main-model prefill (T tokens) to get the pre-final-mixer multi stream.
+  ModelSequence seq;
+  s = ModelBeginSequence(m, &seq, nullptr);
+  if (!s.ok()) {
+    std::printf("  begin sequence failed: %s\n", s.message().c_str());
+    mtp.Free();
+    m.Free();
+    return false;
+  }
+  s = ModelPrefill(m, &seq, ids, T, d_logits_main, nullptr, d_trunk);
+  ModelEndSequence(&seq);
+  if (!s.ok()) {
+    std::printf("  prefill failed: %s\n", s.message().c_str());
+    mtp.Free();
+    m.Free();
+    return false;
+  }
+  // Replicate trunk_out B times for the packed multi-seq forward.
+  cudaMemcpy(d_trunk_bt, d_trunk, T * hc_dim * 2, cudaMemcpyDeviceToDevice);
+  for (int b = 1; b < B; ++b)
+    cudaMemcpy(d_trunk_bt + static_cast<size_t>(b) * T * hc_dim, d_trunk,
+               T * hc_dim * 2, cudaMemcpyDeviceToDevice);
+  std::printf("  main prefill done, trunk_out [T=%d, hc*hs=%zu]\n", T, hc_dim);
+
+  // 4. Single-sequence reference (d_seq_id = null, T tokens, legacy path).
+  MtpResetState(mtp, nullptr, -1);
+  s = MtpForward(mtp, d_ids, d_pos, d_trunk, d_sample, d_multi, d_logits_ref,
+                 T, nullptr, nullptr);
+  if (!s.ok()) {
+    std::printf("  ref MtpForward failed: %s\n", s.message().c_str());
+    mtp.Free();
+    m.Free();
+    return false;
+  }
+  std::vector<uint16_t> ref_logits(static_cast<size_t>(T) * mcfg.vocab, 0);
+  cudaMemcpy(ref_logits.data(), d_logits_ref, ref_logits.size() * 2,
+             cudaMemcpyDeviceToHost);
+
+  // 5. Packed multi-sequence (d_seq_id != null, B*T tokens in one forward).
+  MtpResetState(mtp, nullptr, -1);
+  s = MtpForward(mtp, d_ids, d_pos, d_trunk_bt, d_sample, d_multi,
+                 d_logits_multi, BT, nullptr, d_seq_id);
+  if (!s.ok()) {
+    std::printf("  multi MtpForward failed: %s\n", s.message().c_str());
+    mtp.Free();
+    m.Free();
+    return false;
+  }
+  std::vector<uint16_t> multi_logits(static_cast<size_t>(BT) * mcfg.vocab, 0);
+  cudaMemcpy(multi_logits.data(), d_logits_multi, multi_logits.size() * 2,
+             cudaMemcpyDeviceToHost);
+
+  // 6. Per-sequence comparison: each seq's T rows must match the reference
+  //    (same T-token causal context, isolated by d_seq_id).
+  bool ok = true;
+  for (int b = 0; b < B; ++b) {
+    for (int t = 0; t < T; ++t) {
+      const size_t multi_row = static_cast<size_t>(b) * T + t;
+      const size_t ref_row = static_cast<size_t>(t);
+      double num = 0.0, den = 0.0;
+      for (int v = 0; v < mcfg.vocab; ++v) {
+        const float x = Bf16ToFloat(multi_logits[multi_row * mcfg.vocab + v]);
+        const float y = Bf16ToFloat(ref_logits[ref_row * mcfg.vocab + v]);
+        num += static_cast<double>((x - y) * (x - y));
+        den += static_cast<double>(y * y);
+      }
+      const float l2 = den > 0.0 ? static_cast<float>(std::sqrt(num / den))
+                                 : 0.0f;
+      if (l2 >= 0.5f) ok = false;
+      std::printf("  seq%d tok%d: l2_rel=%.4f %s\n", b, t, l2,
+                  l2 < 0.5f ? "OK" : "CHECK");
+    }
+  }
+  Q4T_CHECK(ok);
+
+  // 7. Determinism: a second packed run must be bit-identical.
+  MtpResetState(mtp, nullptr, -1);
+  s = MtpForward(mtp, d_ids, d_pos, d_trunk_bt, d_sample, d_multi,
+                 d_logits_multi, BT, nullptr, d_seq_id);
+  if (!s.ok()) {
+    std::printf("  multi MtpForward (2nd) failed: %s\n", s.message().c_str());
+    mtp.Free();
+    m.Free();
+    return false;
+  }
+  std::vector<uint16_t> multi_logits2(static_cast<size_t>(BT) * mcfg.vocab, 0);
+  cudaMemcpy(multi_logits2.data(), d_logits_multi, multi_logits2.size() * 2,
+             cudaMemcpyDeviceToHost);
+  const bool identical = multi_logits == multi_logits2;
+  std::printf("  multi determinism: %s\n", identical ? "identical" : "DIFFER");
+  Q4T_CHECK(identical);
+
+  cudaFree(d_ids);
+  cudaFree(d_pos);
+  cudaFree(d_seq_id);
+  cudaFree(d_trunk);
+  cudaFree(d_trunk_bt);
+  cudaFree(d_logits_main);
+  cudaFree(d_sample);
+  cudaFree(d_multi);
+  cudaFree(d_logits_ref);
+  cudaFree(d_logits_multi);
+  mtp.Free();
+  m.Free();
+  return true;
+}
