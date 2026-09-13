@@ -5,6 +5,74 @@
 
 ---
 
+## 2026-09-13 — MTP 批处理 Stage 2b: MtpSpeculativeStepMulti 多序列投机步 (闭合)
+
+**背景**
+Stage 2a (bacd74e) 闭合了多序列验证前向 ModelVerifyMulti + per-seq
+checkpoint 回滚。Stage 2b 把整个投机步 (draft 循环 + 验证 + extend) 批
+量化: B 序列各走一步投机解码, 三段都打包执行, 权重只读一次。这是并发
+MTP 请求 (Stage 2c 调度器) 的核心算子。
+
+**做了什么**
+1. **`MtpSpeculativeStepMulti`** (mtp.h/mtp.cu): B 序列一步投机解码,
+   三段批量化:
+   - **批量化 draft 循环**: 每步 j 把 B 序列的 draft[j-1] 打包成一次
+     MtpForward (d_seq_id = 恒等映射 d_ms_seqid, T=B, 每序列 1 token —
+     Stage 1 的多序列路径), 滚动 trunk 用 per-seq 池 d_ms_g_pool
+     [max_seq, hc_dim] (行 b = 序列 b)。draft 循环从 B×k 次 forward 降到
+     k 次。
+   - **多序列验证**: ModelVerifyMulti (Stage 2a) 打包 B×(k+1) token
+     一次主模型 forward, per-seq per-token checkpoint 按序列各自回滚
+     (ModelRestoreCheckpoint(m, a_b, stream, b))。
+   - **批量化 extend**: 各序列接受前缀 [d_0..d_{a_b-1}, next_b] 连续
+     打包 (T_ext = Σ(a_b+1), 各序列行连续, EAGLE-shift 与单序列一致),
+     一次 MtpForward (d_seq_id = per-token 序列号 d_ms_ext_seq) 重建
+     draft KV; hidden gather (新增 GatherTrunkRowsKernel) 把每序列的
+     verify trunk 行 h_{P_b}..h_{P_b+a_b} 收集成连续 [T_ext, hc_dim]。
+   - 输出: accepted_tokens[b*(k+1)..] = [b_b, d_0..d_{a_b-1}],
+     accepted_count[b] = 1+a_b, next_b[b] = m_{a_b} (修正/下一 bonus),
+     next_d0[b] = extend 末行 argmax (下一 draft), next_g[b] = extend
+     末行 multi_hidden (下一 draft trunk)。推进 seqs[b].position/history。
+2. **持久多序列 scratch** (MtpModel 新增, max_seq>1 时由
+   MtpReserveScratch 分配): d_ms_ids [max_seq] / d_ms_pos [max_seq] /
+   d_ms_seqid [max_seq] (恒等映射, 初始化一次) / d_ms_sample
+   [max_seq*hs] / d_ms_multi [max_seq*hc_dim] / d_ms_gather
+   [max_seq*k_max*hc_dim] / d_ms_g_pool [max_seq*hc_dim] / d_ms_ext_seq
+   [max_seq*k_max]。
+3. **修 MtpModel::Free 既有泄漏**: Free 漏释放 d_spec_multi (git show
+   HEAD 确认 HEAD 的 Free 无此释放), 补上 + 6 个 d_ms_* 释放/nullptr。
+4. **修 2 个既有/新 bug** (测试暴露):
+   - **RunLayers 的 logits==nullptr 崩溃** (既有): HeadForward 无条件调
+     Bf16Gemm(..., logits, ...), 当 logits==nullptr (trunk-only 路径,
+     如 MTP draft extend 的 hidden gather) 时 cuBLAS 输出指针 null →
+     CUBLAS_STATUS_INVALID_VALUE (7)。修复: RunLayers 末尾加
+     `if (!logits) return Status()` 跳过 lm_head (trunk_out 拷贝在
+     HeadForward 之前, 安全)。
+   - **MtpSpeculativeStepMulti 的 PLE history** (新): 初版给
+     ModelVerifyMulti 传 history=nullptr,0 → verify token 的 PLE n-gram
+     上下文 (src < base) 全被 EOS 填充 → 层 1 PLE embedding 污染 →
+     logits 全错 (next_b 与 ground truth 不符)。修复: 按 seqs[b].history
+     (本步推进前的 prompt, 位置 0..P_b-1) 构造 per-seq history 行
+     (hist_len = max P_b, 短 prompt EOS 填充)。
+5. **测试 mtp_spec_multi_step** (tests/mtp_spec_multi_test.cpp): 2 层
+   模型 (layer 0 linear + layer 1 linear/PLE, max_seq=2), B=2 不同
+   prompt (长度 4/5), k=3。每序列 draft KV 用 MtpForward + d_seq_id 建
+   (MtpDraftExtend 总写 slice 0, 多序列会互相覆盖, 故测试里直接调
+   MtpForward 传 per-seq d_seq_id)。ground truth 用 **prefill 语义贪心**
+   (每步 re-prefill 整个前缀取末行 argmax, 与 ModelVerifyMulti 的
+   prefill kernel 一致 — decode kernel 参考会有已知 MoE 路由边界差异)。
+   断言: 两序列 accepted[0..a-1] == gt[0..a-1] + next_b == gt[a] +
+   next_d0 有效 (draft 模型预测, 不与主模型比)。结果: seq 0
+   accepted_count=1 next_b=3901==gt[1], seq 1 accepted_count=1
+   next_b=238360==gt[1], 无跨序列污染。68 项测试全绿零警告。
+
+**下一步**
+Stage 2c: 调度器 MTP 分支 — 把 MtpSpeculativeStepMulti 接入 serve 连续
+批处理调度 (当前 MTP 请求独占 model_mu_ 整个投机循环, 不能并发), 让
+并发 MTP 请求共享一次投机步。
+
+---
+
 ## 2026-09-13 — MTP 批处理 Stage 2a: ModelVerifyMulti 多序列验证前向 + per-seq checkpoint 回滚 (闭合)
 
 **背景**

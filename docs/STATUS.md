@@ -380,6 +380,31 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   67 项测试全绿零警告。 **→ Stage 2a 闭合**; 剩余: Stage 2b (多序列
   投机步: 批量化 draft 循环 + ragged 验证 + extend) + Stage 2c (调度器
   MTP 分支)。
+- [x] 2026-09-13 **MTP 批处理 Stage 2b (多序列投机步
+  MtpSpeculativeStepMulti)**: B 序列各走一步投机解码, 三段全部批量化:
+  ① 批量化 draft 循环 — 每步 j 把 B 序列的 draft[j-1] 打包成一次
+  MtpForward (d_seq_id 恒等映射, T=B, 每序列 1 token, Stage 1 多序列
+  路径), 滚动 trunk 用 per-seq 池 d_ms_g_pool [max_seq, hc_dim], draft
+  循环从 B×k 次 forward 降到 k 次; ② 多序列验证 — ModelVerifyMulti
+  (Stage 2a) 打包 B×(k+1) token 一次主模型 forward, per-seq per-token
+  checkpoint 按序列各自回滚 (ModelRestoreCheckpoint); ③ 批量化 extend —
+  各序列接受前缀 [d_0..d_{a_b-1}, next_b] 连续打包 (T=Σ(a_b+1)) 一次
+  MtpForward 重建 draft KV, hidden gather (GatherTrunkRowsKernel) 把每
+  序列的 verify trunk 行 h_{P_b}..h_{P_b+a_b} 收集连续。新增持久 scratch
+  (d_ms_ids/pos/seqid/sample/multi/gather/g_pool/ext_seq, max_seq>1 时
+  分配) + 修复 MtpModel::Free 既有 d_spec_multi 泄漏。实现中发现并修复
+  2 个既有 bug: ① RunLayers 在 logits==nullptr 时仍调 HeadForward →
+  Bf16Gemm 输出指针 null 触发 CUBLAS_STATUS_INVALID_VALUE (trunk-only
+  路径如 MTP draft extend 的 hidden gather 会挂), 加 `if(!logits) return`
+  跳过 lm_head; ② MtpSpeculativeStepMulti 初版给 ModelVerifyMulti 传
+  history=nullptr 导致 PLE n-gram 上下文全被 EOS 填充 (层 1 PLE
+  embedding 污染, logits 全错), 改为按 seqs[b].history 构造 per-seq
+  history 行。测试 mtp_spec_multi_step (2 层 = linear + PLE, B=2 不同
+  prompt 长度 4/5, k=3): 批量化投机步 vs prefill 语义贪心 ground truth,
+  两序列 accepted/next_b 全匹配 + next_d0 有效 + 无跨序列污染。68 项
+  测试全绿零警告。 **→ Stage 2b 闭合**; 剩余: Stage 2c (调度器 MTP
+  分支: 把 MtpSpeculativeStepMulti 接入 serve 连续批处理调度, 并发 MTP
+  请求)。
 
 ## 进行中
 

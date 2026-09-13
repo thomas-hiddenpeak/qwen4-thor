@@ -422,6 +422,11 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
       return Status::Fail("RunLayers: trunk_out D2D copy");
     }
   }
+  // logits == nullptr: the caller only wants the trunk (e.g. the MTP draft
+  // extend's hidden gather) and skips the lm_head GEMM. HeadForward would
+  // otherwise pass a null output pointer to Bf16Gemm (CUBLAS_STATUS_INVALID_
+  // VALUE).
+  if (!logits) return Status();
   return HeadForward(m.head, trunk, logits, T, m.d_ws, m.ws_bytes, stream);
 }
 

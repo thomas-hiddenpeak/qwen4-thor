@@ -131,6 +131,26 @@ struct MtpModel {
   uint16_t* d_spec_multi = nullptr;   // [k_max*hc_dim] extend multi_hidden (output)
   uint16_t* d_spec_sample = nullptr;  // [k_max*hs] extend sample_hidden
   uint16_t* d_g = nullptr;            // [hc_dim] rolling draft trunk
+  // Multi-seq speculative scratch (Phase 2 Stage 2b, allocated in
+  // MtpReserveScratch when max_seq > 1). The batched draft loop packs B
+  // sequences' tokens per step (T = B), so it needs its own ids/positions/
+  // sample/multi buffers sized for B rows (B <= max_seq); the batched extend
+  // packs the accepted prefixes of all sequences (T = sum(a_b+1) <= B*(k+1)),
+  // sized for the worst case. d_ms_g_pool = per-sequence rolling draft trunk
+  // [max_seq, hc_dim] (the batched draft loop reads row b as sequence b's
+  // hidden and overwrites it with the step's multi_hidden); d_ms_gather =
+  // extend hidden gather [B*(k+1), hc_dim] (per-sequence verify-trunk rows
+  // copied contiguous for the batched extend MtpForward, which needs a
+  // contiguous [T, hc_dim] hidden_states).
+  int32_t* d_ms_ids = nullptr;     // [max_seq] draft-loop packed ids
+  int* d_ms_pos = nullptr;         // [max_seq] draft-loop positions
+  int* d_ms_seqid = nullptr;       // [max_seq] identity (draft-loop d_seq_id:
+                                   // token t belongs to sequence t)
+  uint16_t* d_ms_sample = nullptr;  // [max_seq*hs] draft-loop sample_hidden
+  uint16_t* d_ms_multi = nullptr;   // [max_seq*hc_dim] draft-loop multi_hidden
+  uint16_t* d_ms_gather = nullptr;  // [B*(k+1)*hc_dim] extend hidden gather
+  uint16_t* d_ms_g_pool = nullptr;  // [max_seq*hc_dim] per-seq rolling trunk
+  int* d_ms_ext_seq = nullptr;      // [max_seq*k_max] extend per-token d_seq_id
   int k_max = 0;  // capacity of the above (0 = not allocated)
 
   int hc_dim() const { return cfg.hc * cfg.hs; }
@@ -255,6 +275,48 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
                           int* accepted_count, int32_t* next_b,
                           int32_t* next_d0, uint16_t* next_g,
                           cudaStream_t stream);
+
+// 多序列投机步 (Phase 2 Stage 2b): B 个序列各走一步投机解码, 打包执行。
+// 与 MtpSpeculativeStep 同语义 (scheme A, EAGLE-shift), 但三个段都批量化:
+//
+//   1. 批量化 draft 循环: 每步 j 把 B 序列的 draft[j-1] 打包成一次
+//      MtpForward (d_seq_id, T=B, 每序列 1 token — Stage 1 的多序列路径),
+//      滚动 trunk 用 per-seq 池 d_g_pool [max_seq, hc_dim] (行 b = 序列 b)。
+//      draft 循环从 B×k 次 forward 降到 k 次。
+//   2. 多序列验证: 每序列 (k+1) token 打包一次主模型 forward
+//      (ModelVerifyMulti, Stage 2a), 权重只读一次; per-seq per-token
+//      checkpoint 保存, 部分接受按序列各自回滚 (ModelRestoreCheckpoint)。
+//   3. per-seq extend: 各序列用接受前缀 [d_0..d_{a_b-1}, next_b] 重建
+//      draft KV (一次打包 MtpForward, T = Σ(a_b+1), 各序列行连续,
+//      EAGLE-shift 与单序列一致), 产出每序列的 next_d0 + next_g。
+//
+// 前置条件: 每序列的 MTP draft KV 已通过 MtpDraftExtend 建到 P_b-1
+// (per-seq 切片, MtpResetState(m, stream, b) 重置); 主模型 per-seq recurrent
+// 状态在 P_b-1 (已 prefill)。
+//
+//   seqs[b]  : 主模型序列状态机 (kDecode, position = P_b, history = 已见
+//              token)。本函数推进 position/history (接受前缀), 与单序列一致。
+//   b_tok[b] : 主模型 bonus token t_{P_b} (host int32)。
+//   d0[b]    : draft 对 t_{P_b+1} 的预测 (host int32, 来自上次 extend)。
+//   g_in[b]  : draft 在 P_b-1 的 multi_hidden (device BF16 [hc*hs], 来自上次
+//              extend 的 next_g; 拷入 d_g_pool 行 b 作 draft 循环种子)。
+//   k        : 推测步数 (各序列相同; ragged k 留待后续)。
+//   accepted_tokens[b*(k+1) .. ] : 每序列 1+a_b 个接受 token (host, 调用方
+//              每序列预留 k+1)。
+//   accepted_count[b] / next_b[b] / next_d0[b] : 每序列输出 (host)。
+//   next_g[b] : 每序列下一步 draft trunk (device BF16 [hc*hs], 调用方持有,
+//              各序列独立 buffer)。
+//
+// 正确性: draft 循环与 extend 复用 Stage 1 已验证的多序列 MtpForward
+// (per-seq KV 隔离); 验证复用 Stage 2a 已 bit-exact 验证的 ModelVerifyMulti。
+// 单序列 (B=1) 不走本函数 (用 MtpSpeculativeStep, 路径更省)。
+Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
+                               model::ModelSequence* seqs, const int32_t* b_tok,
+                               const int32_t* d0, const uint16_t* const* g_in,
+                               int B, int k, int32_t* accepted_tokens,
+                               int* accepted_count, int32_t* next_b,
+                               int32_t* next_d0, uint16_t** next_g,
+                               cudaStream_t stream);
 
 }  // namespace mtp
 }  // namespace q4t

@@ -1,10 +1,26 @@
 # MTP 批处理 — Stage 2 设计
 
-> 状态: **Stage 2a 已闭合 (2026-09-13)**; 2b/2c 未做。Stage 1 (draft
-> 状态池化 + 多序列 MtpForward) 已闭合 (commit 0b5dfff)。初稿的"full
-> attention 因果掩码风险"经重读 kernel 确认是**误判** (per-seq KV 隔离
-> 天然阻止跨序列注意力), 核心工作量在 linear attention 多序列因果
+> 状态: **Stage 2b 已闭合 (2026-09-13)**; 2c (调度器 MTP 分支) 未做。
+> Stage 1 (draft 状态池化 + 多序列 MtpForward) 已闭合 (commit 0b5dfff)。
+> 初稿的"full attention 因果掩码风险"经重读 kernel 确认是**误判** (per-seq
+> KV 隔离天然阻止跨序列注意力), 核心工作量在 linear attention 多序列因果
 > prefill kernel。用户已授权动核心 + 单分支 commit 检查点。
+>
+> **Stage 2b 实现结果 (2026-09-13)**: `MtpSpeculativeStepMulti` (B 序列
+> 一步投机解码, 三段批量化: 批量化 draft 循环 (per-seq 滚动 trunk
+> d_ms_g_pool, k 次 forward 替代 B×k) + ModelVerifyMulti 验证 (Stage 2a,
+> per-seq checkpoint 各自回滚) + 批量化 extend (接受前缀连续打包 T=Σ(a_b+1)
+> 一次 MtpForward, GatherTrunkRowsKernel 收集 verify trunk 行))。新增持久
+> 多序列 scratch (d_ms_*) + 修 MtpModel::Free 既有 d_spec_multi 泄漏。修
+> 2 个 bug: ① RunLayers 的 logits==nullptr 仍调 HeadForward → Bf16Gemm
+> 输出指针 null 触发 CUBLAS_STATUS_INVALID_VALUE (trunk-only 路径会挂),
+> 加 `if(!logits) return` 跳过 lm_head; ② MtpSpeculativeStepMulti 初版给
+> ModelVerifyMulti 传 history=nullptr → PLE n-gram 上下文全被 EOS 填充
+> (层 1 PLE embedding 污染, logits 全错), 改按 seqs[b].history 构造
+> per-seq history。测试 mtp_spec_multi_step (2 层 linear+PLE, B=2 不同
+> prompt 长度 4/5, k=3) vs prefill 语义贪心 ground truth: 两序列
+> accepted/next_b 全匹配 + next_d0 有效 + 无跨序列污染。68 项测试全绿
+> 零警告。
 >
 > **Stage 2a 实现结果 (2026-09-13)**: `ModelVerifyMulti` (B 序列 × (k+1)
 > token 打包一次主模型 forward, sequence-major) + checkpoint 池化布局

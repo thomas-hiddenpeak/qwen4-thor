@@ -193,6 +193,7 @@ if(Q4T_BUILD_TESTS)
     tests/model_verify_multi_test.cpp
     tests/mtp_draft_test.cpp
     tests/mtp_speculative_test.cpp
+    tests/mtp_spec_multi_test.cpp
     tests/vision_forward_test.cpp
     tests/model_vision_inject_test.cpp
     tests/vision_processor_test.cpp

@@ -113,10 +113,20 @@ cmake --build build --parallel
   PLE conv checkpoint (修复单序列部分接受 PLE conv 残留 bug); 修 2 个
   kernel bug: PLE 因果 conv 的 T 参数边界/局部位置混用 (seq≥1 跨序列读)
   + PLE conv 状态更新缺 T<state_len 滑窗; 测试 B=2 不同 prompt × T=3
-  verify logits vs 单序列 prefill 参考 6/6 bit-exact + 回滚 0.00896)。
-  67 项测试全绿, 零警告。
+  verify logits vs 单序列 prefill 参考 6/6 bit-exact + 回滚 0.00896) /
+  **MTP 批处理 Stage 2b (已闭合, Phase 2)** (MtpSpeculativeStepMulti:
+  B 序列一步投机解码, 三段批量化 — 批量化 draft 循环 (per-seq 滚动 trunk,
+  k 次 forward 替代 B×k) + ModelVerifyMulti 验证 (per-seq checkpoint 各自
+  回滚) + 批量化 extend (接受前缀连续打包 T=Σ(a_b+1) 一次 MtpForward +
+  GatherTrunkRowsKernel 收集 verify trunk 行); 新增持久多序列 scratch
+  d_ms_* + 修 MtpModel::Free 既有 d_spec_multi 泄漏; 修 2 个 bug:
+  RunLayers logits==nullptr 仍调 HeadForward 触发 CUBLAS INVALID_VALUE
+  (trunk-only 路径) + MtpSpeculativeStepMulti 初版 PLE history=nullptr
+  致 n-gram 上下文全 EOS 填充 (logits 全错); 测试 mtp_spec_multi_step
+  B=2 不同 prompt 长度 4/5 × k=3 vs prefill 语义贪心 ground truth 两序列
+  accepted/next_b 全匹配无跨序列污染)。68 项测试全绿, 零警告。
 - **Phase 1 完成标准全部闭合 (2026-09-07)**。Phase 2 进行中: B1 多序列
-  + B2 连续批处理 + MTP 批处理 Stage 1 + Stage 2a (多序列验证前向) 已
-  闭合。剩余: MTP 批处理 Stage 2b (批量化 draft 循环 + ragged 验证 +
-  extend) + Stage 2c (调度器 MTP 分支)、完整多设备 PD 部署、
-  48 层长序列端到端等, 见 docs/PHASES.md。
+  + B2 连续批处理 + MTP 批处理 Stage 1 + Stage 2a (多序列验证前向) +
+  Stage 2b (多序列投机步) 已闭合。剩余: MTP 批处理 Stage 2c (调度器 MTP
+  分支: 并发 MTP 请求共享投机步)、完整多设备 PD 部署、48 层长序列端到端
+  等, 见 docs/PHASES.md。
