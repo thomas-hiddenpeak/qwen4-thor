@@ -347,6 +347,38 @@ __global__ void DepthwiseConvAddMultiSeqCausalKernel(
     out[idx] = ple_out;
 }
 
+// Save the PLE short-conv state after each of the first `num_ckpt` local
+// tokens, for MTP multi-sequence VERIFY rollback (the PLE conv is an in-place
+// recurrence, so a partial accept must restore the PLE conv state too — not
+// just the linear layers). Layout [max_seq, num_ckpt, C, state_len] (per PLE
+// layer). For sequence b's local token tt, the conv state window = the last
+// `state_len` gated_n values ending at tt (from the packed input if in-range,
+// else the per-sequence old_state). MUST run BEFORE the in-place state update
+// (PleConvUpdateStateMultiSeqCausalKernel) so `old_state` is still the
+// pre-batch state. Mirrors Conv1dCheckpointMultiSeqKernel with
+// state_len = (K-1)*dilation.
+__global__ void PleConvCheckpointMultiSeqKernel(
+    const uint16_t* __restrict__ input, const uint16_t* __restrict__ old_state,
+    uint16_t* __restrict__ ckpt, const int* __restrict__ d_seq_id, int C,
+    int state_len, int T, int num_ckpt) {
+  const int c = blockIdx.x * blockDim.x + threadIdx.x;
+  if (c >= C) return;
+  const int z = blockIdx.y;  // = b * num_ckpt + tt
+  const int b = z / num_ckpt;
+  const int tt = z % num_ckpt;
+  const int seq = d_seq_id[b * T];
+  const uint16_t* seq_state =
+      old_state + static_cast<size_t>(seq) * C * state_len;
+  uint16_t* dst = ckpt +
+                  ((static_cast<size_t>(seq) * num_ckpt + tt) * C + c) *
+                      state_len;
+  for (int k = 0; k < state_len; ++k) {
+    const int s = tt - state_len + 1 + k;  // local position (can be negative)
+    dst[k] = (s >= 0) ? input[static_cast<size_t>(b * T + s) * C + c]
+                      : seq_state[c * state_len + (s + state_len)];
+  }
+}
+
 // Update the PLE short-conv state for MTP multi-sequence VERIFY: the packed
 // [T, C] input is sequence-major (t = b*T + tt, T = tokens per sequence).
 // After the causal conv, each sequence's conv_state becomes its last
@@ -518,7 +550,7 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
                        uint16_t* conv_state, void* workspace,
                        size_t workspace_bytes, cudaStream_t stream,
                        const uint16_t* trunk_add, const int* d_seq_id,
-                       int tokens_per_seq) {
+                       int tokens_per_seq, uint16_t* conv_ckpt, int num_ckpt) {
   const int hc = w.hc_count, hs = w.hidden_size, pe = w.ple_embed_dim;
   const int hc_dim = hc * hs;
   const int K = w.conv_kernel, dil = w.conv_dilation;
@@ -636,6 +668,17 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
       // MTP multi-sequence VERIFY: per-sequence state update (sequence-major
       // packed input, B = T / tokens_per_seq sequences).
       const int B = T / tokens_per_seq;
+      // Save the per-token PLE conv checkpoint BEFORE the in-place update so
+      // `conv_state` is still the pre-batch state when the checkpoint kernel
+      // reads it (a partial accept restores the PLE conv state via D2D).
+      if (conv_ckpt && num_ckpt > 0) {
+        PleConvCheckpointMultiSeqKernel<<<dim3(blocks, B * num_ckpt), kBlock,
+                                          0, stream>>>(
+            reinterpret_cast<uint16_t*>(d_gated_n), conv_state, conv_ckpt,
+            d_seq_id, hc_dim, state_len, T, num_ckpt);
+        if (cudaGetLastError() != cudaSuccess)
+          return Status::Fail("ple conv ckpt");
+      }
       PleConvUpdateStateMultiSeqCausalKernel<<<dim3(blocks, B), kBlock, 0,
                                                stream>>>(
           conv_state, reinterpret_cast<uint16_t*>(d_gated_n), d_seq_id, T,

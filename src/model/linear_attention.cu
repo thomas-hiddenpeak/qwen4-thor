@@ -544,7 +544,9 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetDecodeKernel(
 // t = b*T + tt. Grid dim3(ch_blocks, B * num_ckpt): each block (ch, z) where
 // z = b*num_ckpt + tt writes the conv state after sequence b's local token tt
 // (the window of (conv_k-1) values ending at tt, from the packed input or the
-// per-sequence old_state). Layout: [B, num_ckpt, channels, conv_k-1].
+// per-sequence old_state). Layout: [max_seq, num_ckpt, channels, conv_k-1]
+// (per-layer slice), indexed by the POOLED seq id + local token tt so a
+// partial accept can restore this sequence's conv state via D2D.
 __global__ void Conv1dCheckpointMultiSeqKernel(
     const uint16_t* __restrict__ input, const uint16_t* __restrict__ old_state,
     uint16_t* __restrict__ ckpt, const int* __restrict__ d_seq_id,
@@ -558,8 +560,9 @@ __global__ void Conv1dCheckpointMultiSeqKernel(
   const int seq = d_seq_id[b * T];
   const uint16_t* seq_state =
       old_state + static_cast<size_t>(seq) * channels * hist;
-  uint16_t* dst = ckpt + (static_cast<size_t>(b) * num_ckpt + tt) * channels *
-                        hist + ch * hist;
+  uint16_t* dst = ckpt +
+                  ((static_cast<size_t>(seq) * num_ckpt + tt) * channels + ch) *
+                      hist;
   for (int k = 0; k < hist; ++k) {
     const int s = tt - hist + 1 + k;  // local token index (can be negative)
     dst[k] = (s >= 0) ? input[static_cast<size_t>(b * T + s) * channels + ch]
@@ -577,8 +580,9 @@ __global__ void Conv1dCheckpointMultiSeqKernel(
 // GatedDeltaNetKernel. token_stride = T * in_qkv (the packed row stride for a
 // local token within its sequence).
 //
-// Checkpoints (ssm_ckpt, when non-null): layout [B, num_ckpt, nv, kd, vd];
-// after local token tt (tt < num_ckpt) the block saves S for sequence b.
+// Checkpoints (ssm_ckpt, when non-null): layout [max_seq, num_ckpt, nv, kd,
+// vd] (per-layer slice), indexed by the POOLED seq id + local token tt; after
+// local token tt (tt < num_ckpt) the block saves S for sequence b's slice.
 //
 //   qkv     : [B*T, in_qkv] (q | k | v, post-conv), sequence-major
 //   a, beta : [B*T, nv]
@@ -666,10 +670,13 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetMultiSeqCausalKernel(
 
     const int y_base = (t * nv + h_v) * vd;
     y[y_base + j] = FloatToBf16(y_j);
-    // Per-sequence per-token checkpoint: layout [B, num_ckpt, nv, kd, vd].
+    // Per-sequence per-token checkpoint: layout [max_seq, num_ckpt, nv, kd, vd]
+    // (per-layer slice). Index by the POOLED seq id and the local token index
+    // tt, so a partial accept can restore this sequence's state at the
+    // accepted-prefix boundary via D2D.
     if (ssm_ckpt && tt < num_ckpt) {
       const size_t ck_off =
-          (static_cast<size_t>(b) * num_ckpt + tt) * nv * kd * vd + ss_base;
+          ((static_cast<size_t>(seq) * num_ckpt + tt) * nv + h_v) * kd * vd;
       for (int i = 0; i < kd; ++i)
         ssm_ckpt[ck_off + i * vd + j] = S_smem[i * vd_pad + j];
     }

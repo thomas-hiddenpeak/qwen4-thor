@@ -102,11 +102,17 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
                        uint16_t* conv_state, void* workspace,
                        size_t workspace_bytes, cudaStream_t stream,
                        const uint16_t* trunk_add = nullptr,
-                       const int* d_seq_id = nullptr, int tokens_per_seq = 0);
+                       const int* d_seq_id = nullptr, int tokens_per_seq = 0,
+                       uint16_t* conv_ckpt = nullptr, int num_ckpt = 0);
 // `tokens_per_seq` (MTP multi-sequence VERIFY, Phase 2): when d_seq_id is
 // non-null and tokens_per_seq > 1, the packed [T, ...] rows are sequence-major
 // (B = T / tokens_per_seq sequences) and the short-conv runs a per-sequence
 // causal chain (prefill semantics); 0 = B2 decode / single-seq.
+// `conv_ckpt`/`num_ckpt` (MTP verify rollback): when conv_ckpt != null, save
+// the per-token PLE conv state after each of the first `num_ckpt` local tokens
+// (layout [max_seq, num_ckpt, C, state_len]) BEFORE the in-place state update,
+// so a partial accept can restore the PLE conv state (it is an in-place
+// recurrence, like the linear conv/SSM).
 
 }  // namespace model
 }  // namespace q4t
