@@ -5,6 +5,72 @@
 
 ---
 
+## 2026-09-14 — 计划 D (draft 循环去 host 同步) + 锁步死锁修复 (闭合)
+
+**背景**
+计划 A (lockstep) 闭合后, 按既定顺序推进计划 D: draft 循环去 host
+同步, draft token 全程 GPU-resident (对齐 vllm `llm_base_proposer.py:693-
+760` 的 `input_ids = draft_token_ids_list[-1].int()` 无 host 同步模式)。
+
+**做了什么**
+1. **计划 D — `MtpSpeculativeStepMulti` draft 循环 GPU-resident 化**
+   (`src/mtp/mtp.cu` + `include/q4t/mtp/mtp.h`):
+   - 新增持久 scratch `d_ms_drafts [max_seq, k_max]` (draft token 矩阵,
+     按 seq_id 索引), `MtpReserveScratch` 分配 / `Free` 释放。
+   - 3 个小 kernel: `GatherDraftKernel` (取上一列, 1 线程/序列) /
+     `ScatterDraftKernel` (写新列, 1 线程/序列) / `GatherDraftMatrixKernel`
+     (循环结束后按 seq_of 收集 [B,k] 子矩阵, 1 block/序列)。
+   - draft 循环重写: 种子列 H2D d0→d_ids 后 scatter 到
+     `drafts[seq_of[b],0]`; 循环 j=1..k-1 内 GatherDraftKernel 取
+     `drafts[seq_of[b],j-1]` → MtpForward → ArgmaxBf16Rows →
+     ScatterDraftKernel 写 `drafts[seq_of[b],j]` — **循环内零 host 同步**
+     (旧版每步 D2H argmax + H2D 下一 token)。循环后一次
+     GatherDraftMatrixKernel + D2H 拿 [B,k] 矩阵 (verify/extend 打包需要)。
+   - 修 2 个初版 bug: 种子列误用连续 memcpy (矩阵按 seq_id 非 batch 位置
+     索引, 需 scatter); 最终提取误把 host 指针当 device 输出 (改经
+     `d_ext_ids` device 中转再 D2H)。
+2. **锁步死锁修复** (`src/server/chat_server.cpp`, 计划 A 遗留 bug):
+   MTP 请求从 `active_` 移除后补 `sched_cv_.notify_one()`。
+
+**为什么 (死锁根因)**
+计划 D 首版 E2E 3 并发出现 1 请求挂死 300s (GPU 0%, server 存活, 另 2
+请求正常完成)。`Q4T_SCHED_DEBUG` B 序列 `B=1, B=3×37, B=2×12, 卡死`
+定位: 这是**计划 A 的丢失唤醒竞态**, 非计划 D 引入 — 计划 D 更快的 draft
+循环 (少 2 次 host 同步) 改变了时序, 把潜在竞态暴露出来。时序:
+1. 调度器完成 B=2 步, 释放 `sched_mu_`;
+2. 请求 X 与 c 同时被唤醒, c 置 `pending=true` + `sched_cv_.notify_one()`
+   — 但调度器此刻在**两次迭代之间** (尚未进入 `cv.wait`), 唤醒丢失;
+3. 调度器进入 `wait`, 谓词 `active_={X,c}` 中 `pending_mtp=1 !=
+   active_mtp=2` → 睡眠;
+4. X 从 `active_` 移除自己 — **未 notify**;
+5. 此刻 `active_={c}` 且 c pending, 谓词本应为 true, 但调度器在睡, 无人
+   唤醒 → 永久死锁 (c 阻塞在 `mtp_ar.cv.wait` 等永不到来的 `done`)。
+
+修复: 锁步谓词依赖 `active_` 大小, 凡能令谓词 false→true 的状态变化
+(置 `pending=true`、从 `active_` 移除) 之后都必须 `notify_one()`。移除
+路径原本漏了 notify, 补上。plain decode 路径是机会式谓词 (任意 pending
+即跑), 移除不会令谓词 false→true, 无需改 (但其 notify 也无害, 未动)。
+
+**验证**
+- 68 项测试全绿零警告 (`-Wall -Wextra`)。
+- **3 轮 × 3 并发 MTP × 各 200 token 全部完成** (修复前 1/3 挂死 300s):
+  19.3s/31.0 tok/s, 20.1s/29.9 tok/s, 19.3s/31.1 tok/s; B 分布
+  34×B=1+46×B=2+**190×B=3** (B=3 主导, lockstep 正常); 0 error; 输出
+  确定性 (3 轮 len 850/892/898 逐轮一致)。
+- **计划 D 吞吐收益 ≈ 0**: 29.9 → 29.9~31.1 tok/s (噪声范围内)。根因:
+  draft 循环 (2× 单层 draft forward) 仅占投机步 ~8%, 48 层主模型 verify
+  占大头。计划 D 优化了错误目标 — 真正的瓶颈是 verify, 正是计划 B (QSA
+  索引复用) 的目标。计划 D 保留 (代码更干净, 对齐 vllm 范式, 为后续
+  cudagraph 化铺路), 但不计入吞吐收益。
+
+**下一步**
+计划 B (MTP 复用 QSA top-k 索引, draft/verify 步不重跑 indexer — 技术
+报告 §2.1.2 接受长度无损 + sglang `eagle_worker_v2.py:458`
+`_configure_qsa_mtp_index_share` 参考; 先做子集: 序列 ≤2048 时 QSA 退化
+稠密因果, top-k 索引恒为 [0..pos], 可完全跳过 indexer kernel)。
+
+---
+
 ## 2026-09-14 — MTP 调度 lockstep (计划 A, 闭合) + 参考项目更新
 
 **背景**

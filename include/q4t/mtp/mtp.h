@@ -161,6 +161,12 @@ struct MtpModel {
   uint16_t* d_ms_ext_sample = nullptr;  // [max_seq*k_max, hs] extend sample
   int32_t* d_ms_ext_ids = nullptr;      // [max_seq*k_max] extend ids
   int* d_ms_ext_pos = nullptr;          // [max_seq*k_max] extend positions
+  // Plan D: GPU-resident draft token matrix [max_seq, k_max] (int32).
+  // The batched draft loop keeps all draft tokens on-device; each step
+  // gathers the previous column (GatherDraftKernel) and scatters the new
+  // argmax result (ScatterDraftKernel) — zero host syncs inside the loop.
+  // A single D2H of the [B, k] sub-matrix happens after the loop.
+  int32_t* d_ms_drafts = nullptr;       // [max_seq*k_max] draft tokens
   int k_max = 0;  // capacity of the above (0 = not allocated)
 
   int hc_dim() const { return cfg.hc * cfg.hs; }

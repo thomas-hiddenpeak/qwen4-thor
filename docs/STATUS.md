@@ -451,6 +451,27 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   B=2 步是请求加入/退出边界效应。68 项测试全绿零警告。`Q4T_SCHED_DEBUG=1`
   打印每步 B (env 门控)。参考调研见 docs/REFERENCE_MTP.md (vllm 09-14 /
   sglang-ssd-stream v0.3.0 更新, 含计划 B/C 的 QSA 索引复用 + FP8 参考)。
+- [x] 2026-09-14 **计划 D (draft 循环去 host 同步) + 锁步死锁修复**:
+  (1) 计划 D: `MtpSpeculativeStepMulti` draft 循环 GPU-resident 化 —
+  新增持久 scratch `d_ms_drafts [max_seq, k_max]` (按 seq_id 索引的 draft
+  token 矩阵) + 3 个小 kernel (GatherDraft/ScatterDraft/GatherDraftMatrix),
+  循环内零 host 同步 (旧版每步 D2H argmax + H2D 下一 token), 对齐 vllm
+  `llm_base_proposer.py` 无 host 同步模式; 修 2 个初版 bug (种子列误用
+  连续 memcpy / 最终提取误把 host 指针当 device 输出)。(2) **锁步死锁
+  修复 (计划 A 遗留 bug)**: MTP 请求从 `active_` 移除后补
+  `sched_cv_.notify_one()` — 计划 D 首版 E2E 3 并发 1 请求挂死 300s
+  (GPU 0% server 存活), `Q4T_SCHED_DEBUG` B 序列 `B=1,B=3×37,B=2×12,卡死`
+  定位为**丢失唤醒竞态**: 请求 c 置 pending+notify 时调度器在两次迭代之间
+  (未入 wait) 唤醒丢失 → 调度器睡眠时谓词 `pending_mtp(1) != active_mtp(2)`
+  → X 移除自己未 notify → 谓词本应转 true 却无人唤醒 → 永久死锁。计划 D
+  更快的 draft 循环改变时序暴露了该潜在竞态 (非计划 D 引入)。验证: 68 项
+  测试全绿零警告 + **3 轮 × 3 并发 MTP × 200 token 全部完成** (修复前
+  1/3 挂死): 19.3/20.1/19.3s (31.0/29.9/31.1 tok/s), B 分布
+  34×B=1+46×B=2+190×B=3 (B=3 主导), 0 error, 输出确定性。**计划 D 吞吐
+  收益 ≈ 0** (29.9→29.9~31.1, 噪声内): draft 循环 (2× 单层 forward) 仅占
+  投机步 ~8%, 48 层主模型 verify 占大头 — 计划 D 优化了错误目标, 真正瓶颈
+  是 verify (计划 B 目标)。计划 D 保留 (代码更干净, 对齐 vllm, 为 cudagraph
+  铺路) 但不计吞吐收益。
 
 ## 进行中
 

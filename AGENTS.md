@@ -143,10 +143,22 @@ cmake --build build --parallel
   81×B=1+38×B=2+0×B=3 → 5×B=1+16×B=2+37×B=3, 聚合吞吐 ~21.8 → 29.9
   tok/s (1.37×), wall 25-30s → 20.1s, 单请求无回归, 0 error;
   Q4T_SCHED_DEBUG=1 打印每步 B; 参考调研 docs/REFERENCE_MTP.md, 参考项目
-  已更新 vllm 09-14 + sglang-ssd-stream v0.3.0)。68 项测试全绿, 零警告。
+  已更新 vllm 09-14 + sglang-ssd-stream v0.3.0) / **计划 D + 锁步死锁修复
+  (已闭合, 2026-09-14)** (计划 D: MtpSpeculativeStepMulti draft 循环
+  GPU-resident 化 — d_ms_drafts [max_seq,k_max] + Gather/Scatter/GatherMatrix
+  3 kernel, 循环内零 host 同步, 对齐 vllm; 吞吐收益≈0 (draft 仅占投机步
+  ~8%, verify 占大头, 计划 D 优化错目标但代码更干净保留)。锁步死锁修复
+  (计划 A 遗留 bug): MTP 请求从 active_ 移除后补 sched_cv_.notify_one() —
+  计划 D 首版 E2E 3 并发 1 请求挂死 300s, B 序列 B=1,B=3×37,B=2×12,卡死
+  定位为丢失唤醒竞态 (c 的 notify 在调度器未入 wait 时丢失 → X 移除未
+  notify → 谓词转 true 无人唤醒); 修复后 3 轮×3 并发×200 tok 全完成
+  31.0/29.9/31.1 tok/s, B 分布 34×B=1+46×B=2+190×B=3, 0 error 输出确定)。
+  68 项测试全绿, 零警告。
 - **Phase 1 完成标准全部闭合 (2026-09-07)**。Phase 2 进行中: B1 多序列
   + B2 连续批处理 + MTP 批处理 Stage 1 + Stage 2a (多序列验证前向) +
   Stage 2b (多序列投机步) + Stage 2c (调度器 MTP 分支, 并发 MTP 请求共享
-  投机步) + 计划 A (调度 lockstep, 并发 MTP 聚合吞吐 1.37×) 已闭合。
-  剩余: 计划 B (MTP 复用 QSA top-k 索引) / 计划 C (FP8) / 完整多设备 PD
-  部署 / 48 层长序列端到端等, 见 docs/PHASES.md + docs/REFERENCE_MTP.md。
+  投机步) + 计划 A (调度 lockstep, 并发 MTP 聚合吞吐 1.37×) + 计划 D
+  (draft 循环去 host 同步, GPU-resident, 吞吐收益≈0 但代码更干净) 已闭合。
+  剩余: 计划 B (MTP 复用 QSA top-k 索引, 优化 verify 真瓶颈) / 计划 C
+  (FP8) / 完整多设备 PD 部署 / 48 层长序列端到端等, 见 docs/PHASES.md +
+  docs/REFERENCE_MTP.md。

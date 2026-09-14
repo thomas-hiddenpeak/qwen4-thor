@@ -1260,9 +1260,16 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     }
   }
   if (mtp_sched) {
-    const std::lock_guard<std::mutex> lock(sched_mu_);
-    active_.erase(std::remove(active_.begin(), active_.end(), &mtp_ar),
-                  active_.end());
+    {
+      const std::lock_guard<std::mutex> lock(sched_mu_);
+      active_.erase(std::remove(active_.begin(), active_.end(), &mtp_ar),
+                    active_.end());
+    }
+    // Lockstep predicate depends on active_ size: removing a request can
+    // flip "pending_mtp == active_mtp" from false to true. Notify the
+    // scheduler so it re-evaluates (fixes a lost-wakeup deadlock where the
+    // departing request's notify was consumed before the scheduler slept).
+    sched_cv_.notify_one();
   }
   if (!use_mtp) {
     // B2b continuous batching: this request's decode steps are driven by the
