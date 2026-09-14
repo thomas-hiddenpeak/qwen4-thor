@@ -124,9 +124,21 @@ cmake --build build --parallel
   (trunk-only 路径) + MtpSpeculativeStepMulti 初版 PLE history=nullptr
   致 n-gram 上下文全 EOS 填充 (logits 全错); 测试 mtp_spec_multi_step
   B=2 不同 prompt 长度 4/5 × k=3 vs prefill 语义贪心 ground truth 两序列
-  accepted/next_b 全匹配无跨序列污染)。68 项测试全绿, 零警告。
+  accepted/next_b 全匹配无跨序列污染) / **MTP 批处理 Stage 2c (已闭合,
+  Phase 2)** (调度器 MTP 分支: SchedulerLoop 把 pending 请求 split 成
+  mtp/plain, MTP 批量跑一次 MtpSpeculativeStepMulti (B 序列共享投机步) +
+  plain 跑 ModelDecodeBatchMulti; HandleChat MTP 投机循环改注册调度器 +
+  阻塞 cv, 请求线程推进 seq; ActiveRequest 加 ModelSequence* seq 指针;
+  MtpSpeculativeStepMulti 签名 seqs 改 const ModelSequence* const* + 全用
+  真实 seqs[b].seq_id (初版用 batch 索引 b 当 seq_id, serve free pool 下
+  seq_id≠b 会污染); verify/extend buffer 持久化 + MtpDraftExtend 加
+  seq_id + serve MTP 路径 per-seq 化; 5 增量提交 ef1510b/9d27be0/
+  ad655cf/7a05e41/4b; serve 3 并发 MTP × 3 轮语义正确且确定无跨序列污染;
+  吞吐聚合 ~22 vs 单 ~21.8 tok/s 提升有限, 根因 MTP 步长错位 (各请求每步
+  接受数不同 → 投机步天然不同步, B 分布 81×B=1+38×B=2), 属 MTP 投机解码
+  固有特性非 bug)。68 项测试全绿, 零警告。
 - **Phase 1 完成标准全部闭合 (2026-09-07)**。Phase 2 进行中: B1 多序列
   + B2 连续批处理 + MTP 批处理 Stage 1 + Stage 2a (多序列验证前向) +
-  Stage 2b (多序列投机步) 已闭合。剩余: MTP 批处理 Stage 2c (调度器 MTP
-  分支: 并发 MTP 请求共享投机步)、完整多设备 PD 部署、48 层长序列端到端
-  等, 见 docs/PHASES.md。
+  Stage 2b (多序列投机步) + Stage 2c (调度器 MTP 分支, 并发 MTP 请求共享
+  投机步) 已闭合。剩余: 完整多设备 PD 部署、48 层长序列端到端等, 见
+  docs/PHASES.md。

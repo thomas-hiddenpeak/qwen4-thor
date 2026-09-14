@@ -1,6 +1,26 @@
 # MTP 批处理 — Stage 2 设计
 
-> 状态: **Stage 2b 已闭合 (2026-09-13)**; 2c (调度器 MTP 分支) 未做。
+> 状态: **Stage 2c 已闭合 (2026-09-13)** — MTP 批处理 Stage 1 + 2a + 2b +
+> 2c 全部完成, 并发 MTP 请求已接入 serve 连续批处理调度。
+>
+> **Stage 2c 实现结果 (2026-09-13)**: `SchedulerLoop` 把 pending 请求
+> split 成 mtp_reqs/plain_reqs, MTP 批量跑一次 `MtpSpeculativeStepMulti`
+> (B 序列共享投机步), plain 跑 `ModelDecodeBatchMulti`; `HandleChat` MTP
+> 投机循环从请求线程直接跑 step 改为注册调度器 + 阻塞 cv, 请求线程推进
+> seq (position/history)。`ActiveRequest` 加 `ModelSequence* seq` 指针
+> (调度器读其 position/history/seq_id/stage; 请求线程拥有 seq, 运行 step
+> 期间请求阻塞 cv 无竞争)。`MtpSpeculativeStepMulti` 签名 `seqs` 改
+> `const ModelSequence* const*` (调度器 seq 不连续) + 全部用真实
+> `seqs[b].seq_id` (初版用 batch 索引 b 当 seq_id, serve free pool 下
+> seq_id≠b 会污染)。verify/extend buffer 持久化 (d_ms_vlogits/vtrunk/
+> ext_*)。`MtpDraftExtend` 加 seq_id 尾参。serve MTP 路径 per-seq 化
+> (per-seq reset + per-request d_mtp_g + MtpDraftExtend(seq_id))。
+> 测试: 68 项全绿零警告 + serve 3 并发 MTP × 3 轮语义正确且确定 (无跨
+> 序列污染)。吞吐: 单 200 token ~9.0s, 3 并发 25-30s (聚合 ~22 vs ~21.8
+> tok/s, 提升有限) — 根因 MTP 步长错位 (各请求每步接受数不同 → 投机步
+> 天然不同步, B 很少达请求数; 实测 B 分布 81×B=1 + 38×B=2), 属 MTP
+> 投机解码固有特性。
+>
 > Stage 1 (draft 状态池化 + 多序列 MtpForward) 已闭合 (commit 0b5dfff)。
 > 初稿的"full attention 因果掩码风险"经重读 kernel 确认是**误判** (per-seq
 > KV 隔离天然阻止跨序列注意力), 核心工作量在 linear attention 多序列因果
@@ -131,8 +151,19 @@ token 一致), 确认无跨序列污染。沿用 B2a 的判据。
    测试: `model_verify_multi` 隔离 (B 序列 vs 单序列参考, 接受 token
    一致) + 部分接受后 PLE conv 状态正确性。
 2. **2b 多序列投机步** `MtpSpeculativeStepMulti`: 批量化 draft 循环
-   (per-seq 滚动 trunk) + 2a 验证 + per-seq extend。
-3. **2c 调度器 MTP 分支**: serve 调度器区分 MTP/plain 请求。
-4. 并发 MTP E2E + 吞吐实测。
+   (per-seq 滚动 trunk) + 2a 验证 + per-seq extend。 ✅ 已闭合
+3. **2c 调度器 MTP 分支**: serve 调度器区分 MTP/plain 请求。 ✅ 已闭合
+   (SchedulerLoop split mtp/plain, MTP 批量跑 MtpSpeculativeStepMulti)
+4. 并发 MTP E2E + 吞吐实测。 ✅ 已闭合 (3 并发 MTP × 3 轮正确; 吞吐
+   提升有限, 根因 MTP 步长错位, 见上)
 
 每步前后 commit 做检查点 (单分支 main, 体现探索过程)。
+
+## 吞吐实测结论 (2026-09-13)
+
+3 并发 MTP 请求 (各 120 token) 实测 B 分布 81×B=1 + 38×B=2, 无 B=3。
+聚合吞吐 ~22 tok/s vs 单请求 ~21.8 tok/s, 提升有限。根因: MTP 投机步的
+步长 = 每步接受数 a_b, 各请求 a_b 不同 (有的 1 有的 3) → 投机步天然
+不同步 (ragged), 多数时刻只有 1 个请求在 step。这是 MTP 投机解码的固有
+特性 (非 4b bug), 批量化机制本身正确生效 (B=2 的 38 步证明了打包发生)。
+后续若要提升, 需让请求同步 step (如按统一接受数对齐), 属独立优化项。

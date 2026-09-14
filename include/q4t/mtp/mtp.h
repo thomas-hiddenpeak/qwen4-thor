@@ -334,12 +334,12 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
 // (per-seq KV 隔离); 验证复用 Stage 2a 已 bit-exact 验证的 ModelVerifyMulti。
 // 单序列 (B=1) 不走本函数 (用 MtpSpeculativeStep, 路径更省)。
 Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
-                               model::ModelSequence* seqs, const int32_t* b_tok,
-                               const int32_t* d0, const uint16_t* const* g_in,
-                               int B, int k, int32_t* accepted_tokens,
-                               int* accepted_count, int32_t* next_b,
-                               int32_t* next_d0, uint16_t** next_g,
-                               cudaStream_t stream);
+                               const model::ModelSequence* const* seqs,
+                               const int32_t* b_tok, const int32_t* d0,
+                               const uint16_t* const* g_in, int B, int k,
+                               int32_t* accepted_tokens, int* accepted_count,
+                               int32_t* next_b, int32_t* next_d0,
+                               uint16_t** next_g, cudaStream_t stream);
 
 }  // namespace mtp
 }  // namespace q4t

@@ -998,7 +998,7 @@ __global__ void GatherTrunkRowsKernel(const uint16_t* __restrict__ src,
 }  // namespace
 
 Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
-                               model::ModelSequence* seqs,
+                               const model::ModelSequence* const* seqs,
                                const int32_t* b_tok, const int32_t* d0,
                                const uint16_t* const* g_in, int B, int k,
                                int32_t* accepted_tokens, int* accepted_count,
@@ -1017,7 +1017,7 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
   const int vocab = mtp.cfg.vocab;
   const int hc_dim = mtp.hc_dim();
   for (int b = 0; b < B; ++b) {
-    if (seqs[b].stage != model::ModelSequence::Stage::kDecode)
+    if (seqs[b]->stage != model::ModelSequence::Stage::kDecode)
       return Status::Fail("MtpSpeculativeStepMulti: seq not in decode stage");
   }
 
@@ -1047,8 +1047,8 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
   std::vector<int> P(B);
   std::vector<int> seq_of(B);  // pooled-state slice index of sequence b
   for (int b = 0; b < B; ++b) {
-    P[b] = seqs[b].position;
-    seq_of[b] = seqs[b].seq_id;
+    P[b] = seqs[b]->position;
+    seq_of[b] = seqs[b]->seq_id;
   }
   // Per-token d_seq_id for the batched draft loop: token b (sequence b) belongs
   // to pooled slice seq_of[b]. H2D into d_ms_ext_seq (first B ints); the extend
@@ -1117,11 +1117,11 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
   // src < P_b, so hist_len must be >= max P_b (pad shorter prompts with EOS).
   int hist_len = 0;
   for (int b = 0; b < B; ++b)
-    hist_len = std::max(hist_len, static_cast<int>(seqs[b].history.size()));
+    hist_len = std::max(hist_len, static_cast<int>(seqs[b]->history.size()));
   std::vector<int32_t> vhist(static_cast<size_t>(B) * hist_len,
                              main.cfg.eos_token_id);
   for (int b = 0; b < B; ++b) {
-    const auto& h = seqs[b].history;
+    const auto& h = seqs[b]->history;
     for (size_t i = 0; i < h.size(); ++i)
       vhist[static_cast<size_t>(b) * hist_len + i] = h[i];
   }

@@ -313,8 +313,10 @@ Q4T_TEST(mtp_spec_multi_step) {
   std::vector<int32_t> accepted(B * (k + 1), -1);
   std::vector<int> accepted_count(B, -1);
   std::vector<int32_t> next_b(B, -1), next_d0(B, -1);
-  s = MtpSpeculativeStepMulti(m, mtp, seqs, b_tok.data(), d0.data(), g_in, B,
-                              k, accepted.data(), accepted_count.data(),
+  const ModelSequence* seq_ptrs[B];
+  for (int b = 0; b < B; ++b) seq_ptrs[b] = &seqs[b];
+  s = MtpSpeculativeStepMulti(m, mtp, seq_ptrs, b_tok.data(), d0.data(), g_in,
+                              B, k, accepted.data(), accepted_count.data(),
                               next_b.data(), next_d0.data(), next_g, nullptr);
   if (!s.ok()) {
     std::printf("  MtpSpeculativeStepMulti failed: %s\n", s.message().c_str());

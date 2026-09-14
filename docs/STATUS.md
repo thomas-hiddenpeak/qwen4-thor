@@ -405,6 +405,35 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   测试全绿零警告。 **→ Stage 2b 闭合**; 剩余: Stage 2c (调度器 MTP
   分支: 把 MtpSpeculativeStepMulti 接入 serve 连续批处理调度, 并发 MTP
   请求)。
+- [x] 2026-09-13 **MTP 批处理 Stage 2c (调度器 MTP 分支, 并发 MTP 请求
+  接入连续批处理)**: 把 `MtpSpeculativeStepMulti` 接入 serve 连续批处理
+  调度, 让并发 MTP 请求共享投机步 (此前 MTP 请求独占 `model_mu_` 整个
+  投机循环, 不能并发)。分 5 个增量提交 (单分支 main 检查点):
+  ① 真实 seq_id — `MtpSpeculativeStepMulti` 初版用 batch 索引 b 当
+  seq_id (vseq[b]=b, draft 恒等, ext_seq[r]=b, g_pool+b*hc_dim), 只在
+  测试 seq_id==b 时碰巧正确; serve 里 seq_id 来自 free pool (≠batch
+  索引), 全改用 `seqs[b].seq_id` (seq_of[b]); 签名 `seqs` 从
+  `ModelSequence*` 改 `const ModelSequence* const*` (调度器 seq 不连续);
+  测试改 swapped seq_id (seqs[0]→slice 1, seqs[1]→slice 0) 验证 + 修
+  测试顺序 bug (MtpResetState 在 draft KV 构建后执行把刚建的 KV 清零 →
+  两序列都 accepted=1, 移到构建前)。② verify/extend buffer 持久化
+  (d_ms_vlogits/vtrunk/ext_*, 每步不再反复 cudaMalloc/Free)。③
+  `MtpDraftExtend` 加 seq_id 尾参 (max_seq>1 时 H2D 常量 d_seq_id 写各自
+  draft KV slice)。④ serve MTP 路径 per-seq 化 (per-seq reset +
+  per-request d_mtp_g + MtpDraftExtend(seq_id))。⑤ 调度器 MTP 分支 —
+  `SchedulerLoop` 把 pending 请求 split 成 mtp_reqs/plain_reqs, MTP 批量
+  跑一次 `MtpSpeculativeStepMulti`, plain 跑 `ModelDecodeBatchMulti`;
+  `HandleChat` MTP 投机循环从请求线程直接跑 step 改为注册调度器 + 阻塞
+  cv, 请求线程推进 seq (position/history)。`ActiveRequest` 加
+  `ModelSequence* seq` 指针 (调度器读其 position/history/seq_id/stage 跑
+  step, 请求线程拥有 seq, 运行 step 期间请求阻塞 cv 无竞争)。
+  测试: 68 项全绿零警告 + serve 3 并发 MTP × 3 轮全部语义正确且确定
+  (无跨序列污染, 无 error/illegal/503)。吞吐: 单 200 token ~9.0s,
+  3 并发 25-30s (聚合 ~22 vs ~21.8 tok/s, 提升有限) — 根因是 MTP 步长
+  错位 (各请求每步接受数不同 → 投机步天然不同步, B 很少达请求数, 实测
+  B 分布 81×B=1 + 38×B=2), 属 MTP 投机解码固有特性而非 4b bug。
+  **→ Stage 2c 闭合** (MTP 批处理 Stage 1+2a+2b+2c 全部完成; 剩余: 完整
+  多设备 PD 部署、48 层长序列端到端, 见 docs/PHASES.md)。
 
 ## 进行中
 

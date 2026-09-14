@@ -580,17 +580,74 @@ void ChatServer::SchedulerLoop() {
     }
     if (pending.empty()) continue;
 
-    const int B = static_cast<int>(pending.size());
+    // Split pending into MTP (speculative) and plain (single-token) requests.
+    // MTP requests are batched into ONE MtpSpeculativeStepMulti (Stage 2c:
+    // batched draft loop + ModelVerifyMulti + batched extend, weights read
+    // once); plain requests into ONE ModelDecodeBatchMulti (B2b). The two
+    // groups run as separate forwards (both under model_mu_, sequential).
+    std::vector<ActiveRequest*> mtp_reqs, plain_reqs;
+    for (ActiveRequest* r : pending)
+      (r->is_mtp ? mtp_reqs : plain_reqs).push_back(r);
+
+    if (!mtp_reqs.empty()) {
+      const int B = static_cast<int>(mtp_reqs.size());
+      std::vector<model::ModelSequence*> seqs(B);
+      std::vector<int32_t> b_tok(B), d0(B);
+      std::vector<const uint16_t*> g_in(B);
+      std::vector<uint16_t*> next_g(B);
+      for (int i = 0; i < B; ++i) {
+        seqs[i] = mtp_reqs[i]->seq;
+        b_tok[i] = mtp_reqs[i]->mtp_b;
+        d0[i] = mtp_reqs[i]->mtp_d0;
+        g_in[i] = mtp_reqs[i]->mtp_g;
+        next_g[i] = mtp_reqs[i]->mtp_g;  // trunk rolled in place
+      }
+      std::vector<int32_t> accepted(static_cast<size_t>(B) * (mtp_k_ + 1));
+      std::vector<int> acc_count(B, 0);
+      std::vector<int32_t> next_b(B, 0), next_d0(B, 0);
+      Status s;
+      {
+        const std::lock_guard<std::mutex> lock(model_mu_);
+        s = mtp::MtpSpeculativeStepMulti(model_, mtp_, seqs.data(),
+                                         b_tok.data(), d0.data(), g_in.data(),
+                                         B, mtp_k_, accepted.data(),
+                                         acc_count.data(), next_b.data(),
+                                         next_d0.data(), next_g.data(),
+                                         nullptr);
+      }
+      {
+        const std::lock_guard<std::mutex> lock(sched_mu_);
+        for (int i = 0; i < B; ++i) {
+          ActiveRequest* r = mtp_reqs[i];
+          r->pending = false;
+          r->done = true;
+          if (s.ok()) {
+            r->mtp_accepted_count = acc_count[i];
+            for (int t = 0; t < acc_count[i]; ++t)
+              r->mtp_accepted[t] =
+                  accepted[static_cast<size_t>(i) * (mtp_k_ + 1) + t];
+            r->mtp_next_b = next_b[i];
+            r->mtp_next_d0 = next_d0[i];
+          } else {
+            r->mtp_accepted_count = 0;  // sentinel: step failed
+          }
+          r->cv.notify_one();
+        }
+      }
+    }
+
+    if (plain_reqs.empty()) continue;
+    const int B = static_cast<int>(plain_reqs.size());
     std::vector<int32_t> tokens(B);
     std::vector<int> positions(B), seq_ids(B);
     std::vector<int32_t> hist_flat(static_cast<size_t>(B) *
                                    static_cast<size_t>(
                                        model_.ple_hash.ngram_size - 1));
     for (int i = 0; i < B; ++i) {
-      tokens[i] = pending[i]->token;
-      positions[i] = pending[i]->position;
-      seq_ids[i] = pending[i]->seq_id;
-      std::copy(pending[i]->ple_hist.begin(), pending[i]->ple_hist.end(),
+      tokens[i] = plain_reqs[i]->token;
+      positions[i] = plain_reqs[i]->position;
+      seq_ids[i] = plain_reqs[i]->seq_id;
+      std::copy(plain_reqs[i]->ple_hist.begin(), plain_reqs[i]->ple_hist.end(),
                 hist_flat.begin() + static_cast<size_t>(i) *
                                         (model_.ple_hash.ngram_size - 1));
     }
@@ -614,7 +671,7 @@ void ChatServer::SchedulerLoop() {
     {
       const std::lock_guard<std::mutex> lock(sched_mu_);
       for (int i = 0; i < B; ++i) {
-        ActiveRequest* r = pending[i];
+        ActiveRequest* r = plain_reqs[i];
         r->pending = false;
         r->done = true;
         if (s.ok())
@@ -1054,16 +1111,15 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // draft KV[0..P-1] and seed the first speculative step (d0 + g). On any
   // failure fall back to plain decode (the main seq is still usable).
   //
-  // Stage 2c (4a): the MTP path is per-sequence safe. The draft KV is pooled
-  // per seq_id (mcfg.max_seq, Stage 1) and each request owns a per-request
-  // rolling trunk (d_mtp_g), so concurrent MTP requests no longer corrupt each
-  // other's draft state. The speculative step runs through
-  // MtpSpeculativeStepMulti (B=1) — the same code path the scheduler will batch
-  // (4b) — and this request thread advances the main seq over the accepted
-  // prefix (the multi step does not touch seqs[b]). Hold model_mu_ for the
-  // whole MTP path (init + loop) so MTP steps are mutually exclusive for now;
-  // 4b moves the step into the scheduler so concurrent MTP requests share one
-  // batched step.
+  // Stage 2c (4b): the MTP path is per-sequence safe AND batched. The draft
+  // KV is pooled per seq_id (mcfg.max_seq, Stage 1) and each request owns a
+  // per-request rolling trunk (d_mtp_g). MTP init (per-seq reset + draft
+  // extend) runs on this thread under model_mu_; the speculative STEPS are
+  // registered with the central scheduler, which batches all concurrent MTP
+  // requests into ONE MtpSpeculativeStepMulti (batched draft loop +
+  // ModelVerifyMulti + batched extend, weights read once) — the same code path
+  // a single MTP request takes (B=1). This thread advances the main seq over
+  // the accepted prefix (the multi step does not touch seqs[b]).
   bool use_mtp = mtp_loaded_;
   int32_t mtp_b = -1, mtp_d0 = -1;
   if (use_mtp) {
@@ -1102,67 +1158,97 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         use_mtp = false;
       }
 
-      // Speculative decode loop (still under model_mu_): each step emits the
-      // bonus b + accepted drafts and yields the next (b, d0, g). B=1
-      // MtpSpeculativeStepMulti (the scheduler will batch B>1 in 4b). This
-      // thread advances the main seq over the accepted prefix.
-      if (use_mtp) {
-        int32_t accepted_tokens[64];
-        int accepted_count_tmp = 0;
-        bool done = false;
-        while (!done && static_cast<int>(generated.size()) < max_tokens) {
-          int32_t next_b = -1, next_d0 = -1;
-          model::ModelSequence* seqs = &seq;
-          int32_t b_tok = mtp_b;
-          int32_t d0 = mtp_d0;
-          uint16_t* g_in = d_mtp_g;
-          uint16_t* next_g = d_mtp_g;
-          int B = 1;
-          s = mtp::MtpSpeculativeStepMulti(model_, mtp_, seqs, &b_tok, &d0,
-                                           &g_in, B, mtp_k_, accepted_tokens,
-                                           &accepted_count_tmp, &next_b,
-                                           &next_d0, &next_g, nullptr);
-          if (!s.ok() || accepted_count_tmp <= 0) break;
-          for (int i = 0; i < accepted_count_tmp &&
-                              static_cast<int>(generated.size()) < max_tokens;
-               ++i) {
-            const int32_t tok_id = accepted_tokens[i];
-            generated.push_back(tok_id);
-            if (stream) {
-              std::vector<std::uint32_t> one(
-                  1, static_cast<std::uint32_t>(tok_id));
-              std::string piece;
-              {
-                const std::lock_guard<std::mutex> lock(tok_mu_);
-                if (tok_->Decode(one, true, &piece).ok())
-                  WriteAll(fd, SseChunk(id, model_field, "", piece, "", 0));
-              }
-            }
-            if (tok_id == eos) {
-              done = true;
-              break;
-            }
+    }
+  }
+  // Stage 2c (4b): the speculative steps are driven by the central scheduler,
+  // which batches all concurrent MTP requests into ONE MtpSpeculativeStepMulti
+  // (weights read once). This thread registers each step's input (mtp_b/d0/g),
+  // blocks on the request's cv, and is woken with the step's output. It owns
+  // the state-machine advance (position/history) over the accepted prefix.
+  // Fallback: if the scheduler is unavailable or the pool is full, decode
+  // plainly (the main seq is still usable).
+  ActiveRequest mtp_ar;
+  bool mtp_sched = false;
+  if (use_mtp) {
+    mtp_sched = scheduler_active_ && d_sched_logits_ &&
+                static_cast<int>(active_.size()) < max_seq_;
+    if (mtp_sched) {
+      mtp_ar.seq_id = seq_id;
+      mtp_ar.is_mtp = true;
+      mtp_ar.seq = &seq;
+      mtp_ar.mtp_g = d_mtp_g;
+      mtp_ar.ple_hist.resize(
+          static_cast<size_t>(model_.ple_hash.ngram_size - 1), eos);
+      const std::lock_guard<std::mutex> lock(sched_mu_);
+      active_.push_back(&mtp_ar);
+    }
+  }
+  if (use_mtp) {
+    bool done = false;
+    while (!done && static_cast<int>(generated.size()) < max_tokens) {
+      if (!mtp_sched) break;
+      // Register this step's input with the scheduler.
+      mtp_ar.mtp_b = mtp_b;
+      mtp_ar.mtp_d0 = mtp_d0;
+      {
+        const std::lock_guard<std::mutex> lock(sched_mu_);
+        mtp_ar.pending = true;
+        mtp_ar.done = false;
+      }
+      sched_cv_.notify_one();
+      // Block until the scheduler's batched step yields this step's output.
+      {
+        std::unique_lock<std::mutex> lock(sched_mu_);
+        mtp_ar.cv.wait(lock, [&mtp_ar] { return mtp_ar.done; });
+      }
+      if (mtp_ar.mtp_accepted_count <= 0) {
+        // Scheduler failed the step or is shutting down.
+        finish_reason = "stop";
+        break;
+      }
+      for (int i = 0; i < mtp_ar.mtp_accepted_count &&
+                          static_cast<int>(generated.size()) < max_tokens;
+           ++i) {
+        const int32_t tok_id = mtp_ar.mtp_accepted[i];
+        generated.push_back(tok_id);
+        if (stream) {
+          std::vector<std::uint32_t> one(1, static_cast<std::uint32_t>(tok_id));
+          std::string piece;
+          {
+            const std::lock_guard<std::mutex> lock(tok_mu_);
+            if (tok_->Decode(one, true, &piece).ok())
+              WriteAll(fd, SseChunk(id, model_field, "", piece, "", 0));
           }
-          // Advance the main seq over the accepted prefix [b, d_0..d_{a-1}]
-          // (MtpSpeculativeStepMulti does not touch seqs[b]).
-          seq.position += accepted_count_tmp;
-          for (int i = 0; i < accepted_count_tmp; ++i)
-            seq.history.push_back(accepted_tokens[i]);
-          if (static_cast<int>(generated.size()) >= max_tokens) {
-            finish_reason = "length";
-            break;
-          }
-          if (seq.position + 1 >= max_len_) {
-            finish_reason = "length";
-            break;  // cannot decode further without exceeding the KV cache
-          }
-          mtp_b = next_b;
-          mtp_d0 = next_d0;
-          // d_mtp_g was overwritten in place with the next step's trunk.
+        }
+        if (tok_id == eos) {
+          done = true;
+          break;
         }
       }
+      // Advance the main seq over the accepted prefix [b, d_0..d_{a-1}] (the
+      // multi step does not touch seqs[b]).
+      seq.position += mtp_ar.mtp_accepted_count;
+      for (int i = 0; i < mtp_ar.mtp_accepted_count; ++i)
+        seq.history.push_back(mtp_ar.mtp_accepted[i]);
+      if (static_cast<int>(generated.size()) >= max_tokens) {
+        finish_reason = "length";
+        break;
+      }
+      if (seq.position + 1 >= max_len_) {
+        finish_reason = "length";
+        break;  // cannot decode further without exceeding the KV cache
+      }
+      mtp_b = mtp_ar.mtp_next_b;
+      mtp_d0 = mtp_ar.mtp_next_d0;
+      // d_mtp_g was overwritten in place with the next step's trunk.
     }
-  } else {
+  }
+  if (mtp_sched) {
+    const std::lock_guard<std::mutex> lock(sched_mu_);
+    active_.erase(std::remove(active_.begin(), active_.end(), &mtp_ar),
+                  active_.end());
+  }
+  if (!use_mtp) {
     // B2b continuous batching: this request's decode steps are driven by the
     // central scheduler, which packs the current token of EVERY active
     // plain-decode request into ONE ModelDecodeBatchMulti (weights read once
@@ -1262,6 +1348,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     }
   }
   model::ModelEndSequence(&seq);
+
 
   // 4. Finalize.
   if (stream) {

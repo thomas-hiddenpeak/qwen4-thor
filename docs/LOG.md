@@ -5,6 +5,59 @@
 
 ---
 
+## 2026-09-13 — MTP 批处理 Stage 2c: 调度器 MTP 分支 (闭合, 5 增量)
+
+**背景**
+Stage 2b (04d3822) 闭合了多序列投机步 `MtpSpeculativeStepMulti`。Stage 2c
+把它接入 serve 连续批处理调度, 让并发 MTP 请求共享投机步 (此前 MTP 请求
+独占 `model_mu_` 整个投机循环, 不能并发)。分 5 个增量提交 (单分支 main
+检查点, 方便回滚/审查)。
+
+**做了什么**
+1. **增量1 真实 seq_id (ef1510b)**: `MtpSpeculativeStepMulti` 初版用
+   batch 索引 b 当 seq_id (vseq[b]=b, draft 恒等, ext_seq[r]=b,
+   g_pool+b*hc_dim), 只在测试 seq_id==b 时碰巧正确; serve 里 seq_id 来自
+   free pool (≠batch 索引), 会污染。全改用 `seqs[b].seq_id` (seq_of[b])。
+   签名 `seqs` 从 `ModelSequence*` 改 `const ModelSequence* const*`
+   (调度器 seq 不连续)。测试改 swapped seq_id (seqs[0]→slice 1,
+   seqs[1]→slice 0) 验证 + 修测试顺序 bug (MtpResetState 在 draft KV
+   构建后执行把刚建的 KV 清零 → 两序列都 accepted=1, 移到构建前)。
+2. **增量2 verify/extend buffer 持久化 (9d27be0)**: d_ms_vlogits/vtrunk/
+   ext_logits/ext_multi/ext_sample/ext_ids/ext_pos 持久化 (max_seq>1 时
+   MtpReserveScratch 分配), 每步不再反复 cudaMalloc/Free。
+3. **增量3 MtpDraftExtend 加 seq_id (ad655cf)**: max_seq>1 时 H2D 常量
+   d_seq_id 传 MtpForward 写各自 draft KV slice (init 阶段 per-seq)。
+4. **增量4a serve MTP 路径 per-seq 化 (7a05e41)**: per-seq reset +
+   per-request d_mtp_g + MtpDraftExtend(seq_id), 并发 MTP 请求不互相
+   污染。
+5. **增量4b 调度器 MTP 分支 (本次)**: `SchedulerLoop` 把 pending 请求
+   split 成 mtp_reqs/plain_reqs, MTP 批量跑一次 `MtpSpeculativeStepMulti`
+   (B 序列共享投机步), plain 跑 `ModelDecodeBatchMulti`; `HandleChat` MTP
+   投机循环从请求线程直接跑 step 改为注册调度器 + 阻塞 cv, 请求线程推进
+   seq (position/history)。`ActiveRequest` 加 `ModelSequence* seq` 指针
+   (调度器读其 position/history/seq_id/stage 跑 step, 请求线程拥有 seq,
+   运行 step 期间请求阻塞 cv 无竞争)。
+
+**为什么**
+并发 MTP 请求是 Phase 2 目标 (长上下文 MTP 加速比 1.4x 短 → 1.87x 8K,
+并发后聚合吞吐应提升)。Stage 2b 提供了核心算子, 2c 把它接入调度。
+
+**验证**
+- 68 项测试全绿零警告 (`-Wall -Wextra`)。
+- serve 3 并发 MTP × 3 轮全部语义正确且确定 (无跨序列污染, 无
+  error/illegal/503)。
+- 吞吐: 单 200 token ~9.0s, 3 并发 25-30s (聚合 ~22 vs ~21.8 tok/s,
+  提升有限)。B 分布实测 81×B=1 + 38×B=2, 无 B=3 — 批量化机制正确生效
+  (B=2 的 38 步证明打包发生), 但 MTP 步长错位 (各请求每步接受数不同 →
+  投机步天然不同步, ragged) 导致 B 很少达请求数。属 MTP 投机解码固有
+  特性, 非 4b bug。后续若要提升需让请求同步 step (独立优化项)。
+
+**下一步**
+MTP 批处理 Stage 1+2a+2b+2c 全部闭合。剩余 Phase 2: 完整多设备 PD 部署、
+48 层长序列端到端 (见 docs/PHASES.md)。
+
+---
+
 ## 2026-09-13 — MTP 批处理 Stage 2b: MtpSpeculativeStepMulti 多序列投机步 (闭合)
 
 **背景**

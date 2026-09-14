@@ -98,22 +98,30 @@ class ChatServer {
   // B2b continuous batching: a central scheduler thread collects the current
   // decode token of every ACTIVE plain-decode request and runs them in ONE
   // packed ModelDecodeBatchMulti (the 84 GB of weights is read once for all B
-  // tokens instead of B times — the decode throughput win). Each request
-  // thread registers its token, blocks on its own cv, and is woken with its
-  // row of logits. MTP requests are NOT batched (their draft KV is a single
-  // shared buffer, so MTP stays single-sequence; see HandleChat).
+  // tokens instead of B times — the decode throughput win). Stage 2c adds an
+  // MTP branch: concurrent MTP requests are batched into ONE
+  // MtpSpeculativeStepMulti (batched draft loop + ModelVerifyMulti + batched
+  // extend). Each request thread registers its step input, blocks on its own
+  // cv, and is woken with the step's output.
   //
-  // An ActiveRequest is the scheduler's view of one in-flight plain-decode
-  // request. `pending` is set by the request thread (under sched_mu_) before
-  // it signals the scheduler; `done` is set by the scheduler (under
-  // sched_mu_) once the packed forward has produced this request's next token.
-  // `next_token` carries the scheduler's argmax result back to the request.
+  // An ActiveRequest is the scheduler's view of one in-flight request.
+  // `pending` is set by the request thread (under sched_mu_) before it signals
+  // the scheduler; `done` is set by the scheduler (under sched_mu_) once the
+  // forward has produced this request's result. `next_token` carries the
+  // plain-decode argmax back; `mtp_*` carry the MTP step output.
   struct ActiveRequest {
     int seq_id = 0;        // pooled-state slice index
     int position = 0;      // absolute position of the token to decode
     int32_t token = 0;     // the token to feed (this request's next input)
     std::vector<int32_t> ple_hist;  // PLE n-gram context (ngram_size-1, oldest
                                      // first, EOS-filled) for `token`
+    model::ModelSequence* seq = nullptr;  // the request's main sequence (owned
+                                           // by the request thread; the
+                                           // scheduler reads its
+                                           // position/history/seq_id/stage to
+                                           // run the MTP step — the request
+                                           // thread is blocked on `cv` for the
+                                           // whole step, so no race)
     bool pending = false;  // token registered, awaiting the packed forward
     bool done = false;     // scheduler produced `next_token`
     int32_t next_token = 0;
