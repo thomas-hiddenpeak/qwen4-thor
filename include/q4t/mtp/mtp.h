@@ -249,9 +249,18 @@ size_t MtpWorkspaceBytes(const MtpConfig& cfg, int T,
 //   out_d0      : host — argmax of the last row's logits (first draft token).
 //   out_g       : device BF16 [hc*hs] — the last row's multi_hidden (draft trunk
 //                 that seeds the next draft step).
+//   seq_id      : pooled-state slice index for the draft full-attention
+//                 KV/indexer (Phase 2 MTP multi-seq). 0 = legacy single-seq
+//                 layout (bit-identical to the prior behavior). When the draft
+//                 state is pooled (max_seq > 1) each concurrent MTP request
+//                 passes its own slice so the initial prompt extend writes the
+//                 right slice. The internal extend inside
+//                 MtpSpeculativeStepMulti uses MtpForward + d_seq_id directly
+//                 (per-token seq ids), not this helper.
 Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
                       const uint16_t* main_trunk, const int* positions, int T,
-                      int32_t* out_d0, uint16_t* out_g, cudaStream_t stream);
+                      int32_t* out_d0, uint16_t* out_g, cudaStream_t stream,
+                      int seq_id = 0);
 
 // 推测解码一步 (scheme A, 见本文件顶部 + reference/.../nvidia/mtp.py)。
 //

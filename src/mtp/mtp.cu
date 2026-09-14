@@ -672,8 +672,11 @@ Status ArgmaxBf16Rows(const uint16_t* logits, int rows, int vocab, int32_t* out,
 // ---------------------------------------------------------------------------
 Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
                       const uint16_t* main_trunk, const int* positions, int T,
-                      int32_t* out_d0, uint16_t* out_g, cudaStream_t stream) {
+                      int32_t* out_d0, uint16_t* out_g, cudaStream_t stream,
+                      int seq_id) {
   if (T <= 0) return Status::Fail("MtpDraftExtend: T must be > 0");
+  if (seq_id < 0 || seq_id >= m.max_seq)
+    return Status::Fail("MtpDraftExtend: seq_id out of range");
   const int hc_dim = m.hc_dim();
   const int hs = m.cfg.hs;
   const int vocab = m.cfg.vocab;
@@ -687,7 +690,12 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
   uint16_t* d_sample = use_scratch ? m.d_spec_sample : nullptr;  // [T, hs]
   uint16_t* d_multi = use_scratch ? m.d_spec_multi : nullptr;    // [T, hc_dim]
   uint16_t* d_logits = use_scratch ? m.d_spec_logits : nullptr;  // [T, vocab]
+  // Per-token d_seq_id (constant = seq_id) for the pooled draft KV. Only
+  // needed when the draft state is pooled (max_seq > 1); the single-seq
+  // layout (max_seq == 1) passes nullptr to MtpForward (bit-identical).
+  int* d_seqid = nullptr;
   auto cleanup = [&](Status s) -> Status {
+    if (d_seqid) cudaFree(d_seqid);
     if (!use_scratch) {
       if (d_ids) cudaFree(d_ids);
       if (d_pos) cudaFree(d_pos);
@@ -718,9 +726,18 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
              cudaMemcpyHostToDevice);
   cudaMemcpy(d_pos, positions, static_cast<size_t>(T) * sizeof(int),
              cudaMemcpyHostToDevice);
+  if (m.max_seq > 1) {
+    if (cudaMalloc(reinterpret_cast<void**>(&d_seqid),
+                   static_cast<size_t>(T) * sizeof(int)) != cudaSuccess)
+      return cleanup(Status::Fail("MtpDraftExtend: cudaMalloc d_seqid"));
+    std::vector<int> seqid(T, seq_id);
+    if (cudaMemcpy(d_seqid, seqid.data(), T * sizeof(int),
+                   cudaMemcpyHostToDevice) != cudaSuccess)
+      return cleanup(Status::Fail("MtpDraftExtend: H2D d_seqid"));
+  }
 
   Status s = MtpForward(m, d_ids, d_pos, main_trunk, d_sample, d_multi,
-                        d_logits, T, stream);
+                        d_logits, T, stream, d_seqid);
   if (!s.ok()) return cleanup(s);
 
   // out_g = last row's multi_hidden (draft trunk g_{last}).
