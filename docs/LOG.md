@@ -5,6 +5,48 @@
 
 ---
 
+## 2026-09-14 — 262K 内存预算评估 + PD 决定 + PHASES.md 更新
+
+**背景**
+用户决定: (1) PD 分离当前架构已满足本机调度 (持续 prefill 场景),
+多设备/双机扩展降级后续计划; (2) 262144 上下文必要, 需仔细评估内存
+预算; (3) 先处理文档, 再做验证和准备。
+
+**做了什么**
+1. **262K 内存预算评估** (代码分配公式 + 运行时 ground truth):
+   - ground truth: 模型加载后 GPU 进程占 84350 MiB ≈ 82.4 GB (含
+     max_len=8192×max_seq=4 的 cache), GPU 总 122.9 GB。
+   - 关键架构事实: 36 层 linear attention 的 SSM state O(1) 不随序列
+     增长 (`ssm_state [max_seq, 48, 128, 128]`, 无 max_len 维度), 仅
+     12 层 full attention 的 KV+indexer cache 随 max_len 线性 (KV
+     [max_seq, n_pages, 16, 2, 2, 256] BF16 + idx_raw/comp [max_seq,
+     max_len, 128] BF16 + page_table + rope_pos)。
+   - max_len 8192→262144 增量: max_seq=4 时 ~78.4 GB → 总 ~158 GB
+     **OOM 不可行**; max_seq=1 时 ~19.6 GB → 总 ~101 GB **可行**
+     (余 ~21 GB)。
+   - 独立约束: 一次性 prefill 262K 的 [T, vocab] logits = 262144×
+     248320×2B = 130 GB 不可行, **必须分块 prefill** (当前 API 无
+     "继续 prefill" 路径, `ModelForward` 从空状态开始;
+     `ModelDecodeBatchMulti` 不重置状态可复用)。
+   - 模型层硬伤 (如实报告): QSA idx_budget=2048 在 262K 时 n_groups=
+     65536, 只能 attend ~3% 历史块, 召回受限 — 模型设计问题非引擎。
+2. **PD 分离决定记录**: 当前 PD-ready 架构 (Paged KV + 可分离路径 +
+   ModelSequence 阶段边界 API) 已满足本机调度需求 (持续 prefill 场景
+   靠 Paged KV 按页迁移 + 独立调度池), 多设备/双机扩展 (KV 跨设备
+   传输) 归后续计划, 需多卡硬件验证。
+3. **PHASES.md 更新** (消除过时): 视频输入 (09-12) / 连续批处理 (09-
+   13~14) / 验证标准体系 (09-12) 标为已闭合; Phase 2 剩余项更新为
+   长上下文 262K (进行中) + 完整多设备 PD 部署 (降级后续计划); 新增
+   "长上下文 262K 内存预算" 小节。
+
+**下一步**
+262K 验证与准备: (1) serve 加 `--max-len` flag (当前 max_len 硬编码
+8192, config 已解析 max_position_embeddings=262144 但未用); (2) 实测
+max_len=262144×max_seq=1 显存 (验证 ~101 GB 估算); (3) 分块 prefill
+路径 (继续 prefill API, 复用 ModelDecodeBatchMulti 的不重置状态语义)。
+
+---
+
 ## 2026-09-14 — 性能 profile 收尾: 多序列 MTP 分段计时 + 瓶颈定位 (计划 B 否决)
 
 **背景**

@@ -160,14 +160,22 @@ cmake --build build --parallel
   **计划 B 否决** — indexer 两 regime 都非瓶颈, 此前"长序列 indexer
   61-73%"判断引用了 bitonic sort 并行化前的旧注释, 实测已降 0.2%。
   真瓶颈: decode 吞吐 = GEMM 权重带宽 (方向 FP8 计划 C) / prefill TTFT
-  = SparseAttentionKernel (方向 profile 后优化)。68 项测试全绿零警告)。
+  = SparseAttentionKernel (方向 profile 后优化)。68 项测试全绿零警告) /
+  **262K 内存预算评估 + PD 决定 (2026-09-14)** (262144 上下文: 36 层
+  linear SSM O(1) 不随序列增长, 仅 12 层 full attn KV+indexer 随 max_len
+  线性; ground truth 82.4 GB @ 8192×seq4 → 262144 时 max_seq=1 可行
+  ~101 GB / max_seq=4 OOM ~158 GB; 需分块 prefill (一次性 [T,vocab]
+  logits 130 GB 不可行); QSA idx_budget=2048 在 262K 只 attend ~3% 历史
+  召回受限。PD 分离: 当前 PD-ready 架构已满足本机调度, 多设备/双机降级
+  后续计划。详见 PHASES.md "长上下文 262K 内存预算")。
 - **Phase 1 完成标准全部闭合 (2026-09-07)**。Phase 2 进行中: B1 多序列
   + B2 连续批处理 + MTP 批处理 Stage 1 + Stage 2a (多序列验证前向) +
   Stage 2b (多序列投机步) + Stage 2c (调度器 MTP 分支, 并发 MTP 请求共享
   投机步) + 计划 A (调度 lockstep, 并发 MTP 聚合吞吐 1.37×) + 计划 D
   (draft 循环去 host 同步, GPU-resident, 吞吐收益≈0 但代码更干净) 已闭合。
   剩余: 性能优化 (decode GEMM 权重带宽 → FP8 计划 C / prefill
-  SparseAttentionKernel → 待 profile) + Phase 2 功能 (完整多设备 PD 部署 /
-  长上下文 262K 验证 / 验证标准体系落地), 见 docs/PHASES.md +
+  SparseAttentionKernel → 待 profile) + Phase 2 功能 (长上下文 262K 验证
+  进行中 / 完整多设备 PD 部署降级后续计划), 见 docs/PHASES.md +
   docs/REFERENCE_MTP.md。计划 B (MTP 复用 QSA top-k 索引) 已否决
-  (indexer 非瓶颈, 见 LOG.md 2026-09-14 profile 条目)。
+  (indexer 非瓶颈, 见 LOG.md 2026-09-14 profile 条目)。视频输入 + 验证
+  标准体系 + 连续批处理均已闭合 (PHASES.md 已更新)。

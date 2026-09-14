@@ -487,6 +487,20 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 ## 进行中
 
+- **长上下文 262K (262144) 验证 (2026-09-14 启动, 内存预算已评估)**:
+  模型声明 `max_position_embeddings=262144` (config 已解析)。内存预算
+  (代码分配公式 + 运行时 ground truth 82.4 GB @ max_len=8192×max_seq=4,
+  GPU 总 122.9 GB): 36 层 linear SSM state O(1) 不随序列增长, 仅 12 层
+  full attn 的 KV+indexer cache 随 max_len 线性 → max_len 262144 时
+  **max_seq=1 可行 (~101 GB, 余 ~21 GB), max_seq=4 OOM (~158 GB)**。
+  另需**分块 prefill** (一次性 prefill 262K 的 [T,vocab] logits = 130 GB
+  不可行, 当前 API 无"继续 prefill"路径)。模型层硬伤 (如实报告): QSA
+  idx_budget=2048 在 262K 只 attend ~3% 历史块, 召回受限。详见
+  PHASES.md "长上下文 262K 内存预算"。
+- **完整 PD 分离部署 — 降级为后续计划 (2026-09-14 用户决定)**: 当前
+  PD-ready 架构 (Paged KV + 可分离路径 + ModelSequence 阶段边界 API)
+  已满足本机调度需求 (持续 prefill 场景靠 Paged KV 按页迁移 + 独立调度
+  池); 多设备/双机扩展 (KV 跨设备传输) 归后续计划, 需多卡硬件验证。
 - Phase 1 实现:**PLE 流式层 (核心特性) 已全部完成** ✅ (ngram 哈希 /
   io_uring 读取器 / FP8→BF16 转换 / 端到端 gather, 均通过真实 checkpoint
   参数 + 真实 51.2 GB sidecar 验证)。

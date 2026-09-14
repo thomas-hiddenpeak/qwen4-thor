@@ -84,16 +84,50 @@
 - 完整多设备/多实例 PD 分离部署 (KV 跨设备传输、独立调度池;
   Phase 2, 依赖连续批处理。Phase 1 只做 PD-ready 架构, 见第 6 项)
 - 性能调优 (kernel 融合、TMA、PDL 等, Phase 3)
-- 视频输入 (图像先行, 视频 Phase 2)
+- 视频输入 (✅ 2026-09-12 已闭合, 见下)
 
 ## Phase 2 — 多模态完善 + 并发
 
-- 视频输入 (temporal_patch_size=2)
-- 连续批处理、多请求调度
-- **完整 PD 分离部署** (多设备/多实例, KV 跨设备传输, 独立调度池;
-  基于 Phase 1 的 PD-ready 架构 + Paged KV)
-- 长上下文 (262K) 验证
-- 验证标准体系落地
+- [x] 视频输入 (temporal_patch_size=2) — **已闭合 (2026-09-12)**: 27 层
+  ViT 逐时间组注意力 + `ProcessVideo` processor + serve 视频 part 接入 +
+  混合图像/视频 batch, 见 STATUS.md / LOG.md 2026-09-11~12。
+- [x] 连续批处理、多请求调度 — **已闭合 (2026-09-13~14)**: B1 多序列隔离
+  + B2 连续批处理 (token 级打包 + serve 调度器) + MTP 批处理 Stage 1/2a/
+  2b/2c + 调度 lockstep (计划 A), 见 STATUS.md。
+- [x] 验证标准体系落地 — **已闭合 (2026-09-12)**: `tools/verify/` 三件套 +
+  48 层全量基线 OVERALL PASS (置信位置 44/44 + 翻转全 near-tie + l2_rel
+  噪声带), 见 STATUS.md。
+- **长上下文 262K (262144) 验证** — 进行中 (2026-09-14 启动)。内存预算
+  已评估 (见下), 需分块 prefill (当前 `ModelForward` 一次性 prefill 的
+  `[T, vocab]` logits 在 262K 下 = 130 GB 不可行)。
+- **完整 PD 分离部署** — 降级为后续计划 (2026-09-14 用户决定): 当前
+  PD-ready 架构 (Paged KV + 可分离路径 + `ModelSequence` 阶段边界 API)
+  已满足**本机调度**需求 (持续 prefill 场景靠 Paged KV 按页迁移 + 独立
+  调度池即可, 无需多设备); **多设备/双机扩展** (KV 跨设备传输) 归后续
+  计划, 届时需多卡硬件验证。
+
+### 长上下文 262K 内存预算 (2026-09-14 评估)
+
+关键架构事实: 36 层 linear attention 的 SSM state 是 **O(1) 不随序列增长**
+(`ssm_state [max_seq, 48, 128, 128]`), 只有 **12 层 full attention 的
+KV+indexer cache 随 max_len 线性增长**。运行时 ground truth: 模型加载后
+GPU 进程占 **82.4 GB** (含 max_len=8192×max_seq=4 的 cache), GPU 总
+122.9 GB。
+
+max_len 8192 → 262144 的 cache 增量 (12 层 full attn, KV [max_seq,
+n_pages, 16, 2, 2, 256] BF16 + idx_raw/comp [max_seq, max_len, 128] BF16 +
+page_table + rope_pos):
+
+| max_seq | cache 增量 | 总显存 (估) | 可行性 |
+|---|---|---|---|
+| 4 (当前) | ~78.4 GB | ~158 GB | **OOM, 不可行** |
+| 1 | ~19.6 GB | ~101 GB | **可行** (余 ~21 GB) |
+
+另: prefill 工作区是独立约束 — 一次性 prefill 262K 的 `[T, vocab]`
+logits = 130 GB 不可行, **必须分块 prefill** (当前 API 无"继续 prefill"
+路径, `ModelDecodeBatchMulti` 不重置状态可复用)。模型层硬伤 (如实报告):
+QSA `idx_budget=2048` 在 262K 时 n_groups=65536, 只能 attend ~3% 历史块,
+召回受限 — 模型设计问题, 非引擎问题。
 
 ## Phase 3 — 优化
 
