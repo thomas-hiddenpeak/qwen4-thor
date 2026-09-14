@@ -5,6 +5,56 @@
 
 ---
 
+## 2026-09-14 — 性能 profile 收尾: 多序列 MTP 分段计时 + 瓶颈定位 (计划 B 否决)
+
+**背景**
+计划 D 闭合后评估下一步。用户要求从工程维度 (非仅性能) 重估计划 B, 并
+"验证一下再决定"。本轮: (1) 给多序列投机步加 `Q4T_MTP_TIMING` 分段计时
+(诊断工具完善); (2) 用 nsys per-kernel profile 在短序列 (60 tok) + 长序列
+(3707 tok, `--max-prefill 4096`) 两个 regime 实测, 定位真瓶颈。
+
+**做了什么**
+1. **多序列 `MtpSpeculativeStepMulti` 加 `Q4T_MTP_TIMING` 分段计时**
+   (`src/mtp/mtp.cu`): 与单序列 `MtpSpeculativeStep` 同格式, 打印
+   `B / draft / verify / extend+accept` 各阶段 ms (env 门控, 默认关)。
+   此前只有单序列路径有, serve 实际走的多序列路径无法分段 profile。
+2. **两 regime nsys profile** (短 60 tok / 长 3707 tok)。
+
+**发现 (数据, 修正了两轮口头判断)**
+- **短序列 (60 tok, 稠密区)**: 单步 draft 13.6 / verify 114.4 / extend
+  8.9 ms (verify 占 84%)。per-kernel: GEMM 权重带宽主导 (~66%),
+  **indexer 全系列仅 0.2%**。
+- **长序列 (3707 tok, 稀疏区, 位置>2048)**: 单步 verify 139-151 ms
+  (只比短序列慢 ~30%)。per-kernel (含 prefill): **SparseAttentionKernel
+  占 71.4%**, 但这是 **prefill 主导** (12 次 prefill 每次 ~1s ≈ 12s,
+  175 次 decode 每次 ~2ms ≈ 0.35s); **indexer 全系列仅 2.5%**。
+- **结论 — 计划 B (MTP 复用 QSA top-k 索引) 否决**: indexer 在短序列
+  (0.2%) 和长序列 (2.5%) 都**不是瓶颈**。此前两轮口头判断都错: 第一轮
+  用短序列 profile 说"不值得" (场景选错), 第二轮改口说"长序列 indexer
+  是 #1 瓶颈 61-73%" (引用了 `full_attention.cu:482` 的**旧注释**, 那是
+  09-11 bitonic sort 并行化**之前**的数据; 实测并行化后 TopkSelect 已降
+  到 0.2%)。工程维度看计划 B 价值也低: 非性能瓶颈 + 非功能缺口 (QSA
+  稀疏路径已正确, 仅缺跨步复用微优化), 不值得现在做。
+
+**真瓶颈 (精确区分 prefill/decode, 列入后续性能优化计划)**
+- **decode 吞吐 (短+长)**: GEMM 权重带宽 — 48 层 × 84GB 权重每 verify
+  步读一遍, 模型架构固有。方向: FP8 (计划 C, 尤其 HC fc_hidden
+  [10240×10240] BF16 10GB 转 FP8 省 5GB 带宽)。
+- **prefill / TTFT (长上下文)**: SparseAttentionKernel (4K 每层 ~1s)。
+  方向: 需进一步 profile 为何慢 (疑似低效实现), 优化它主要降 TTFT,
+  对 decode 吞吐影响小 (decode 步里仅占 ~16%)。
+
+**验证**
+- 68 项测试全绿零警告 (`-Wall -Wextra`)。
+- 长序列 E2E: 3707 tok prompt + 30 decode 正常完成 (50.8s), 输出正确。
+
+**下一步**
+(1) 性能优化计划落文档 (decode GEMM 带宽 / prefill SparseAttention);
+(2) Phase 2 功能实现计划讨论 (完整 PD 分离部署 / 长上下文 262K 验证 /
+验证标准体系落地, 见 docs/PHASES.md)。
+
+---
+
 ## 2026-09-14 — 计划 D (draft 循环去 host 同步) + 锁步死锁修复 (闭合)
 
 **背景**

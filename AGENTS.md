@@ -152,13 +152,22 @@ cmake --build build --parallel
   计划 D 首版 E2E 3 并发 1 请求挂死 300s, B 序列 B=1,B=3×37,B=2×12,卡死
   定位为丢失唤醒竞态 (c 的 notify 在调度器未入 wait 时丢失 → X 移除未
   notify → 谓词转 true 无人唤醒); 修复后 3 轮×3 并发×200 tok 全完成
-  31.0/29.9/31.1 tok/s, B 分布 34×B=1+46×B=2+190×B=3, 0 error 输出确定)。
-  68 项测试全绿, 零警告。
+  31.0/29.9/31.1 tok/s, B 分布 34×B=1+46×B=2+190×B=3, 0 error 输出确定)
+  / **性能 profile 收尾 (已闭合, 2026-09-14)** (多序列 MtpSpeculativeStepMulti
+  加 Q4T_MTP_TIMING 分段计时; nsys per-kernel 两 regime 实测: 短序列
+  verify 占 84% GEMM 权重带宽主导 indexer 仅 0.2%, 长序列 3707 tok
+  SparseAttentionKernel 占 71.4% 但 prefill 主导, indexer 仅 2.5%;
+  **计划 B 否决** — indexer 两 regime 都非瓶颈, 此前"长序列 indexer
+  61-73%"判断引用了 bitonic sort 并行化前的旧注释, 实测已降 0.2%。
+  真瓶颈: decode 吞吐 = GEMM 权重带宽 (方向 FP8 计划 C) / prefill TTFT
+  = SparseAttentionKernel (方向 profile 后优化)。68 项测试全绿零警告)。
 - **Phase 1 完成标准全部闭合 (2026-09-07)**。Phase 2 进行中: B1 多序列
   + B2 连续批处理 + MTP 批处理 Stage 1 + Stage 2a (多序列验证前向) +
   Stage 2b (多序列投机步) + Stage 2c (调度器 MTP 分支, 并发 MTP 请求共享
   投机步) + 计划 A (调度 lockstep, 并发 MTP 聚合吞吐 1.37×) + 计划 D
   (draft 循环去 host 同步, GPU-resident, 吞吐收益≈0 但代码更干净) 已闭合。
-  剩余: 计划 B (MTP 复用 QSA top-k 索引, 优化 verify 真瓶颈) / 计划 C
-  (FP8) / 完整多设备 PD 部署 / 48 层长序列端到端等, 见 docs/PHASES.md +
-  docs/REFERENCE_MTP.md。
+  剩余: 性能优化 (decode GEMM 权重带宽 → FP8 计划 C / prefill
+  SparseAttentionKernel → 待 profile) + Phase 2 功能 (完整多设备 PD 部署 /
+  长上下文 262K 验证 / 验证标准体系落地), 见 docs/PHASES.md +
+  docs/REFERENCE_MTP.md。计划 B (MTP 复用 QSA top-k 索引) 已否决
+  (indexer 非瓶颈, 见 LOG.md 2026-09-14 profile 条目)。

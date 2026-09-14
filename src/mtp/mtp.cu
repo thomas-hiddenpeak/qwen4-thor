@@ -1083,6 +1083,13 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
   int* d_ext_pos = mtp.d_ms_ext_pos;             // [T_ext]
   const size_t Tvm = static_cast<size_t>(B) * (k + 1);
   auto cleanup = [](Status s) -> Status { return s; };
+  // Phase timing (Q4T_MTP_TIMING): draft / verify / extend+accept, same
+  // format as the single-seq MtpSpeculativeStep. Wall-clock around each
+  // phase's GPU work (the D2H at the end of each phase forces the sync).
+  const bool timing = getenv("Q4T_MTP_TIMING") != nullptr;
+  const auto t_draft0 = std::chrono::steady_clock::now();
+  auto t_draft1 = t_draft0;
+  auto t_verify1 = t_draft0;
 
   std::vector<int> P(B);
   std::vector<int> seq_of(B);  // pooled-state slice index of sequence b
@@ -1172,6 +1179,7 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                  static_cast<size_t>(B) * k * sizeof(int32_t),
                  cudaMemcpyDeviceToHost) != cudaSuccess)
     return cleanup(Status::Fail("MtpSpeculativeStepMulti: D2H draft matrix"));
+  t_draft1 = std::chrono::steady_clock::now();
 
   // 2. Multi-seq verify: pack [b_b, d_0..d_{k-1}] per sequence (k+1 tokens,
   //    sequence-major) and run ONE main forward (ModelVerifyMulti).
@@ -1211,6 +1219,7 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
   if (cudaMemcpy(m_argmax.data(), d_ext_ids, Tvm * sizeof(int32_t),
                  cudaMemcpyDeviceToHost) != cudaSuccess)
     return cleanup(Status::Fail("MtpSpeculativeStepMulti: D2H verify argmax"));
+  t_verify1 = std::chrono::steady_clock::now();
   // Accept per sequence + roll back the recurrent state to the accepted
   // prefix (checkpoint[a_b]; a_b == k needs no restore).
   std::vector<int> a(B);
@@ -1321,6 +1330,17 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
           drafts_host[static_cast<size_t>(b) * k + i];
     accepted_count[b] = 1 + a[b];
     next_b[b] = corr[b];
+  }
+  if (timing) {
+    const auto t_end = std::chrono::steady_clock::now();
+    auto ms = [](auto lo, auto hi) {
+      return std::chrono::duration<double, std::milli>(hi - lo).count();
+    };
+    std::fprintf(stderr,
+                 "[mtp-timing] B=%d draft=%.1f verify=%.1f extend+accept=%.1f "
+                 "ms (k=%d)\n",
+                 B, ms(t_draft0, t_draft1), ms(t_draft1, t_verify1),
+                 ms(t_verify1, t_end), k);
   }
   return cleanup(Status());
 }

@@ -472,6 +472,18 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   投机步 ~8%, 48 层主模型 verify 占大头 — 计划 D 优化了错误目标, 真正瓶颈
   是 verify (计划 B 目标)。计划 D 保留 (代码更干净, 对齐 vllm, 为 cudagraph
   铺路) 但不计吞吐收益。
+- [x] 2026-09-14 **性能 profile 收尾 (多序列分段计时 + 瓶颈定位, 计划 B
+  否决)**: 多序列 `MtpSpeculativeStepMulti` 加 `Q4T_MTP_TIMING` 分段计时
+  (draft/verify/extend, 与单序列同格式, env 门控)。nsys per-kernel 两
+  regime 实测: 短序列 (60 tok) verify 占 84%, GEMM 权重带宽主导,
+  indexer 仅 0.2%; 长序列 (3707 tok, `--max-prefill 4096`)
+  SparseAttentionKernel 占 71.4% (prefill 主导: 12 次 prefill 每次 ~1s),
+  indexer 仅 2.5%。**计划 B (MTP 复用 QSA top-k 索引) 否决**: indexer
+  两 regime 都非瓶颈 (此前"长序列 indexer 61-73%"判断引用了 bitonic
+  sort 并行化前的旧注释, 实测已降到 0.2%)。真瓶颈精确区分: decode
+  吞吐 = GEMM 权重带宽 (48 层×84GB/verify 步, 方向 FP8 计划 C);
+  prefill/TTFT = SparseAttentionKernel (方向: profile 后优化, 主要降
+  TTFT)。68 项测试全绿零警告; 长序列 E2E (3707 tok + 30 decode) 正常。
 
 ## 进行中
 
