@@ -5,6 +5,58 @@
 
 ---
 
+## 2026-09-14 — MTP 调度 lockstep (计划 A, 闭合) + 参考项目更新
+
+**背景**
+Stage 2c (4b) 闭合后实测 3 并发 MTP 聚合吞吐 ~21.8 tok/s, 几乎无提升,
+B 分布 81×B=1 + 38×B=2 (无 B=3)。用户建议参考 vllm/sglang 的 MTP 批
+处理 + 更新参考项目 (新模型适配初期变化最大)。
+
+**参考项目更新 (2026-09-14)**
+- vllm: 2902ca1 (09-05) → 6711197 (09-14, 今天)。9 天 1366 文件变化,
+  其中 `qwen4_exp` 的 MTP/QSA 文件 + scheduler (277 行) + spec_decode
+  utils (258 行) 大改; 新增 QSA indexer cache FP8 (e4m3) 支持。
+- sglang-ssd-stream: v0.2.0 (08-31) → v0.3.0 (09-10)。**新增完整
+  speculative decoding 实现** (eagle_worker_v2.py 1722 行 / spec_utils.py
+  1117 行 / draft_utils.py 577 行 / eagle_draft_extend_cuda_graph_runner.py
+  609 行)。
+- sglang-qwen4-exp 单文件: Thor (aarch64) pin 的 sglang commit 0a79825b
+  未变 (install.sh SPARK_SGLANG_COMMIT 不变), 无需更新。
+- 调研笔记: docs/REFERENCE_MTP.md (计划 A/B/C 的权威参考位置 + 对照)。
+
+**做了什么 (计划 A)**
+1. **调度器 MTP 等待谓词改 lockstep**: `SchedulerLoop` 的 cv 等待从
+   "任意 MTP 请求 pending 即跑" 改为 "**所有活跃 MTP 请求都 pending 才
+   跑**" (plain decode 仍保持"任意 pending 即跑"的机会式批处理, B2b 不
+   变)。这样批量化 `MtpSpeculativeStepMulti` 的 B 恒等于活跃 MTP 请求数
+   (uniform 步宽), 而非 ragged 子集。
+2. **保留 `Q4T_SCHED_DEBUG` 诊断**: env 门控, 打印每步 B 值 (默认关)。
+
+**为什么**
+4b 初版按"任意 pending 即跑", 各请求接受数不同 → 完成时间不同 → 任意
+时刻 ready 的 MTP 请求数是 ragged 子集 (1~3), B 退化到 1 主导。vllm
+(scheduler.py: 每请求固定调度 `1+num_spec_tokens`, 不足 pad 到统一尺寸,
+"to preserve full cudagraph") 与 sglang (spec_utils.py
+`resolve_num_tokens_per_req` 统一 per-request 宽度) 都用 uniform 投机
+宽度 + 调度器 lockstep。我们的算子 `MtpSpeculativeStepMulti` 已能打包 B
+序列, 瓶颈在调度层同步模型。lockstep 是最小改动 (只动等待谓词, 请求
+线程侧每步已重新注册无需改)。
+
+**验证**
+- 68 项测试全绿零警告 (`-Wall -Wextra`)。
+- 3 并发 MTP × 各 200 token: B 分布 81×B=1+38×B=2+0×B=3 →
+  **5×B=1+16×B=2+37×B=3** (B=3 成主导); 聚合吞吐 ~21.8 → **29.9 tok/s
+  (1.37×)**, wall 25-30s → 20.1s; 单请求无回归 (纯 decode ~22 一致);
+  3 并发输出语义正确, 0 error/illegal/503。
+- 残留 B=1/B=2 步是请求陆续加入/退出 (EOS/max_tokens) 的边界效应, 正常。
+
+**下一步**
+计划 B (MTP 复用 QSA top-k 索引, draft 步不跑 indexer — 技术报告 §2.1.2
++ sglang `eagle_worker_v2.py:458` 参考, 接受长度无损的白捡 draft 加速);
+计划 C (QSA indexer cache / GR 残差 FP8, 带宽优化需质量验证)。
+
+---
+
 ## 2026-09-13 — MTP 批处理 Stage 2c: 调度器 MTP 分支 (闭合, 5 增量)
 
 **背景**

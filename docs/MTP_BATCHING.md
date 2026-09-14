@@ -159,11 +159,33 @@ token 一致), 确认无跨序列污染。沿用 B2a 的判据。
 
 每步前后 commit 做检查点 (单分支 main, 体现探索过程)。
 
-## 吞吐实测结论 (2026-09-13)
+## 吞吐实测结论 (2026-09-13, 4b 初版)
 
 3 并发 MTP 请求 (各 120 token) 实测 B 分布 81×B=1 + 38×B=2, 无 B=3。
 聚合吞吐 ~22 tok/s vs 单请求 ~21.8 tok/s, 提升有限。根因: MTP 投机步的
 步长 = 每步接受数 a_b, 各请求 a_b 不同 (有的 1 有的 3) → 投机步天然
-不同步 (ragged), 多数时刻只有 1 个请求在 step。这是 MTP 投机解码的固有
-特性 (非 4b bug), 批量化机制本身正确生效 (B=2 的 38 步证明了打包发生)。
-后续若要提升, 需让请求同步 step (如按统一接受数对齐), 属独立优化项。
+不同步 (ragged), 多数时刻只有 1 个请求在 step。批量化机制本身正确生效
+(B=2 的 38 步证明打包发生), 但调度层按"任意 pending 即跑"导致 B 退化。
+后续优化见下 (计划 A, 已闭合)。
+
+## 计划 A — MTP 调度 lockstep (2026-09-14, 已闭合)
+
+**根因**: 4b 初版调度器等待谓词是"任意 MTP 请求 pending 即跑", 各请求
+接受数不同 → 完成时间不同 → 任意时刻 ready 的 MTP 请求数是 ragged 子集
+(1~3), 批量化步的 B 退化 (实测 81×B=1 主导)。
+
+**修复** (对齐 vllm/sglang 的 uniform+lockstep 范式, 见 docs/REFERENCE_MTP.md):
+`SchedulerLoop` 的 MTP 等待谓词从"任意 MTP pending"改为"**所有活跃 MTP
+请求都 pending** 才跑" (plain decode 仍保持"任意 pending 即跑"的机会式
+批处理)。这样批量化 `MtpSpeculativeStepMulti` 的 B 恒等于活跃 MTP 请求
+数 (uniform 步宽), 而非 ragged 子集。请求线程侧无需改动 (每步已重新
+注册)。最慢请求的 CPU 后处理 (tokenize/SSE) 在 sched_mu_ 外, 不阻塞
+调度器。
+
+**实测** (3 并发 MTP, 各 200 token):
+- B 分布: 81×B=1+38×B=2+0×B=3 → **5×B=1+16×B=2+37×B=3** (B=3 成主导)。
+- 聚合吞吐: ~21.8 → **29.9 tok/s (1.37×)**; wall 25-30s → 20.1s。
+- 单请求无回归 (纯 decode ~22 tok/s 一致); 3 并发输出正确, 0 error。
+- 残留的 B=1/B=2 步是请求陆续加入/退出 (EOS/max_tokens) 的边界效应, 正常。
+
+**诊断**: `Q4T_SCHED_DEBUG=1` 打印每步 B 值 (env 门控, 默认关)。

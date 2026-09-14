@@ -434,6 +434,23 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   B 分布 81×B=1 + 38×B=2), 属 MTP 投机解码固有特性而非 4b bug。
   **→ Stage 2c 闭合** (MTP 批处理 Stage 1+2a+2b+2c 全部完成; 剩余: 完整
   多设备 PD 部署、48 层长序列端到端, 见 docs/PHASES.md)。
+- [x] 2026-09-14 **MTP 调度 lockstep (计划 A, 修 4b 吞吐收益小的根因)**:
+  4b 初版调度器等待谓词是"任意 MTP 请求 pending 即跑", 各请求接受数不同
+  → 完成时间不同 → 任意时刻 ready 的 MTP 请求数是 ragged 子集 (1~3),
+  批量化步的 B 退化 (实测 81×B=1 主导, 聚合吞吐 ~21.8 tok/s 几乎无提升)。
+  参考 vllm (scheduler.py uniform `1+num_spec_tokens` + pad 到统一尺寸)
+  与 sglang (spec_utils.py `resolve_num_tokens_per_req` 统一 per-request
+  宽度) 的 lockstep 范式, 把 `SchedulerLoop` 的 MTP 等待谓词改为"**所有
+  活跃 MTP 请求都 pending 才跑**" (plain decode 仍保持机会式批处理)。
+  批量化 `MtpSpeculativeStepMulti` 的 B 恒等于活跃 MTP 请求数 (uniform
+  步宽)。请求线程侧无需改动 (每步已重新注册); 最慢请求的 CPU 后处理
+  (tokenize/SSE) 在 sched_mu_ 外不阻塞调度器。实测 (3 并发 MTP, 各 200
+  token): B 分布 81×B=1+38×B=2+0×B=3 → **5×B=1+16×B=2+37×B=3** (B=3
+  成主导); 聚合吞吐 ~21.8 → **29.9 tok/s (1.37×)**, wall 25-30s → 20.1s;
+  单请求无回归 (纯 decode ~22 一致), 3 并发输出正确 0 error。残留 B=1/
+  B=2 步是请求加入/退出边界效应。68 项测试全绿零警告。`Q4T_SCHED_DEBUG=1`
+  打印每步 B (env 门控)。参考调研见 docs/REFERENCE_MTP.md (vllm 09-14 /
+  sglang-ssd-stream v0.3.0 更新, 含计划 B/C 的 QSA 索引复用 + FP8 参考)。
 
 ## 进行中
 

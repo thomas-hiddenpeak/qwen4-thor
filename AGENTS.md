@@ -136,9 +136,17 @@ cmake --build build --parallel
   ad655cf/7a05e41/4b; serve 3 并发 MTP × 3 轮语义正确且确定无跨序列污染;
   吞吐聚合 ~22 vs 单 ~21.8 tok/s 提升有限, 根因 MTP 步长错位 (各请求每步
   接受数不同 → 投机步天然不同步, B 分布 81×B=1+38×B=2), 属 MTP 投机解码
-  固有特性非 bug)。68 项测试全绿, 零警告。
+  固有特性非 bug) / **MTP 调度 lockstep (已闭合, 计划 A, 2026-09-14)**
+  (修 4b 吞吐收益小的根因: 调度器 MTP 等待谓词从"任意 pending 即跑"改
+  "所有活跃 MTP 都 pending 才跑" (plain 仍机会式), 批量化步 B 恒等于活跃
+  MTP 请求数 (uniform 步宽, 对齐 vllm/sglang); 实测 3 并发 B 分布
+  81×B=1+38×B=2+0×B=3 → 5×B=1+16×B=2+37×B=3, 聚合吞吐 ~21.8 → 29.9
+  tok/s (1.37×), wall 25-30s → 20.1s, 单请求无回归, 0 error;
+  Q4T_SCHED_DEBUG=1 打印每步 B; 参考调研 docs/REFERENCE_MTP.md, 参考项目
+  已更新 vllm 09-14 + sglang-ssd-stream v0.3.0)。68 项测试全绿, 零警告。
 - **Phase 1 完成标准全部闭合 (2026-09-07)**。Phase 2 进行中: B1 多序列
   + B2 连续批处理 + MTP 批处理 Stage 1 + Stage 2a (多序列验证前向) +
   Stage 2b (多序列投机步) + Stage 2c (调度器 MTP 分支, 并发 MTP 请求共享
-  投机步) 已闭合。剩余: 完整多设备 PD 部署、48 层长序列端到端等, 见
-  docs/PHASES.md。
+  投机步) + 计划 A (调度 lockstep, 并发 MTP 聚合吞吐 1.37×) 已闭合。
+  剩余: 计划 B (MTP 复用 QSA top-k 索引) / 计划 C (FP8) / 完整多设备 PD
+  部署 / 48 层长序列端到端等, 见 docs/PHASES.md + docs/REFERENCE_MTP.md。

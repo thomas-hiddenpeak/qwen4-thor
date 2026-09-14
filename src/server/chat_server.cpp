@@ -561,9 +561,23 @@ void ChatServer::SchedulerLoop() {
     {
       std::unique_lock<std::mutex> lock(sched_mu_);
       sched_cv_.wait(lock, [this] {
-        return scheduler_stop_ ||
-               std::any_of(active_.begin(), active_.end(),
-                           [](ActiveRequest* r) { return r->pending; });
+        if (scheduler_stop_) return true;
+        // Plain decode: any pending request is work (opportunistic, B2b).
+        for (ActiveRequest* r : active_)
+          if (!r->is_mtp && r->pending) return true;
+        // MTP lockstep (plan A): run only when EVERY active MTP request has
+        // registered its step. This keeps the batched MtpSpeculativeStepMulti
+        // at B = all active MTP requests (uniform step width, like vllm/sglang)
+        // instead of a ragged subset — the root cause of the 4b B=1-dominant
+        // distribution. If only some are ready, block until the stragglers
+        // re-register (or finish and drop out of active_).
+        int active_mtp = 0, pending_mtp = 0;
+        for (ActiveRequest* r : active_)
+          if (r->is_mtp) {
+            ++active_mtp;
+            if (r->pending) ++pending_mtp;
+          }
+        return active_mtp > 0 && pending_mtp == active_mtp;
       });
       if (scheduler_stop_) {
         // Drain: wake any request that is still waiting so it can exit.
@@ -591,6 +605,8 @@ void ChatServer::SchedulerLoop() {
 
     if (!mtp_reqs.empty()) {
       const int B = static_cast<int>(mtp_reqs.size());
+      if (getenv("Q4T_SCHED_DEBUG") != nullptr)
+        std::fprintf(stderr, "[q4t][sched] MTP step B=%d\n", B);
       std::vector<model::ModelSequence*> seqs(B);
       std::vector<int32_t> b_tok(B), d0(B);
       std::vector<const uint16_t*> g_in(B);
