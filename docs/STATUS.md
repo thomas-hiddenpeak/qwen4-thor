@@ -484,6 +484,20 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   吞吐 = GEMM 权重带宽 (48 层×84GB/verify 步, 方向 FP8 计划 C);
   prefill/TTFT = SparseAttentionKernel (方向: profile 后优化, 主要降
   TTFT)。68 项测试全绿零警告; 长序列 E2E (3707 tok + 30 decode) 正常。
+- [x] 2026-09-15 **`--max-seq 1` MTP 空输出 bug 已修 (262K 单序列关键)**:
+  serve `--max-seq 1` (262K 单序列场景)MTP 路径空输出。根因:
+  `MtpReserveScratch` 用 `if (m.max_seq > 1)` 守卫跳过多序列投机 scratch
+  (d_ms_*) 分配; 但 Stage 2c 后调度器把**所有** MTP 请求 (含 B=1 单请求)
+  路由到 `MtpSpeculativeStepMulti`, 该函数开头检查
+  `mtp.d_ms_ids == nullptr` 即返回 Fail → 所有 MTP 步失败 → 空输出。
+  修: 去掉 `max_seq > 1` 守卫, 无条件分配 scratch (max_seq=1 时 buffer
+  极小, 无额外开销)。serve `--max-seq 1` 端到端 3/3 正常生成。
+- [x] 2026-09-15 **full-attention 独立 bench 工具**: `tools/bench_full_attn.cu`
+  + `q4t_bench_full_attn` target, 只载 layer-3 self_attn 权重 (~100MB), 秒级
+  测 FullAttentionForward 各 T (替代 50s 的 serve+nsys 全模型流程), prefill
+  优化快速迭代环。`--max-len/--ts/--iters/--golden/--check/--diag`。
+  注意: 孤立冷启动 FullAttentionForward (cublasLt 冷缓存) 可能非确定, 不代表
+  生产 bug — serve 路径 (warm 缓存) 已验证跨进程 bit 一致 (见 LOG 2026-09-15)。
 
 ## 进行中
 

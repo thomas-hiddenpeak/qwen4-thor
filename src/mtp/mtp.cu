@@ -528,9 +528,11 @@ Status MtpReserveScratch(MtpModel& m, int k_max) {
     return Status::Fail("MtpReserveScratch: d_g");
   // Multi-seq speculative scratch (Stage 2b): the batched draft loop packs
   // B <= max_seq sequences per step (T = B), and the batched extend packs the
-  // accepted prefixes (T = sum(a_b+1) <= B*(k+1)). Only useful when the draft
-  // state is pooled (max_seq > 1); skip for the legacy single-seq layout.
-  if (m.max_seq > 1) {
+  // accepted prefixes (T = sum(a_b+1) <= B*(k+1)). ALWAYS allocated (not just
+  // for max_seq > 1): since Stage 2c the scheduler routes EVERY MTP request
+  // through MtpSpeculativeStepMulti, including a single request (B=1), so the
+  // scratch must exist even when max_seq == 1 (the buffers are then tiny).
+  {
     if (cudaMalloc(reinterpret_cast<void**>(&m.d_ms_ids),
                    static_cast<size_t>(m.max_seq) * sizeof(int32_t)) !=
         cudaSuccess)

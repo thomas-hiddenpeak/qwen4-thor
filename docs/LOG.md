@@ -5,6 +5,49 @@
 
 ---
 
+## 2026-09-15 — `--max-seq 1` MTP 空输出 bug 修复 + full-attention bench 工具
+
+**背景**
+用户要测 262144 上下文。`--max-len 262144 --max-seq 1`(单序列)启动后
+MTP 路径空输出。这是 262K 单序列场景的关键阻塞。同时用户要求: 长上下文
+测试前先提升 prefill kernel 性能, 需要快速迭代工具(全模型 serve+nsys
+要 50s)。
+
+**`--max-seq 1` MTP 空输出 bug (已修)**
+- 现象: `--max-seq 1` serve, MTP 请求空输出 (0 token); `--max-seq 4`
+  正常。
+- 根因: `MtpReserveScratch` 用 `if (m.max_seq > 1)` 守卫跳过多序列投机
+  scratch (`d_ms_*`) 分配 (注释说 "legacy single-seq layout 不需要");
+  但 Stage 2c 后调度器把**所有** MTP 请求 (含 B=1 单请求) 路由到
+  `MtpSpeculativeStepMulti`, 该函数开头检查 `mtp.d_ms_ids == nullptr`
+  即返回 Fail → 所有 MTP 步失败 → 空输出。
+- 修: 去掉 `max_seq > 1` 守卫, 无条件分配 scratch (max_seq=1 时 buffer
+  极小, 无额外开销)。
+- 验证: serve `--max-seq 1` 端到端 3/3 正常生成。
+
+**full-attention 独立 bench 工具 (新增)**
+- `tools/bench_full_attn.cu` + `q4t_bench_full_attn` target: 只载 layer-3
+  self_attn 权重 (~100MB, 非全 84GB), 秒级测 `FullAttentionForward` 各 T
+  (替代 50s 的 serve+nsys 全模型流程), prefill 优化快速迭代环。
+  `--max-len/--ts/--iters/--golden/--check/--diag`。
+- 基线: T=2048 dense 5.62ms (364 tok/ms), T=4096 sparse 11.07ms
+  (370 tok/ms)。
+- **bench 非确定性 (诊断, 非生产 bug)**: bench 的孤立冷启动
+  `FullAttentionForward` (cublasLt 冷缓存) 输出非确定 (in-proc 两次
+  l2_rel~1.0), 但 serve 路径 (warm 缓存, 顺序 forward) 跨进程 bit 一致
+  (3/3 相同且语义正确), 68 测试 (对 CPU 参考) 稳定通过。compute-sanitizer
+  initcheck 报 `QKDeinterleaveNormKernel` 读未初始化全局内存 (100 处),
+  但生产正确 → 判定为 cublasLt GEMM 写出未被 initcheck 追踪导致的误判
+  (d_qg 实际由 GEMM 写出)。诊断探针改 `--diag` opt-in, 默认只出干净
+  perf 数字。
+
+**下一步**
+- prefill kernel 优化 (用户要求, 长上下文测试前): 用 bench 工具快速迭代
+  SparseAttentionKernel (T>2048 sparse 路径 11ms @ T=4096)。
+- 262K 长上下文测试 (用 serve, 已验证正确): `--max-len 262144 --max-seq 1`。
+
+---
+
 ## 2026-09-14 — 262K 内存预算评估 + PD 决定 + PHASES.md 更新
 
 **背景**

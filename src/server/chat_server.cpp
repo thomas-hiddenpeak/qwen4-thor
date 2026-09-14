@@ -357,6 +357,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
   cfg.index_path = opts.model_dir + "/model.safetensors.index.json";
   cfg.ple_sidecar = opts.model_dir + "/ple/qwen3.8-flash-next-ple-fp8.bin";
   if (opts.max_prefill > 0) cfg.max_prefill = opts.max_prefill;
+  if (opts.max_len > 0) cfg.max_len = opts.max_len;
   // B1: pool the per-sequence recurrent state for up to max_seq concurrent
   // requests. Each in-flight request owns one seq_id.
   max_seq_ = opts.max_seq > 0 ? opts.max_seq : 8;
@@ -376,6 +377,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
     mcfg.mtp_dir = opts.model_dir + "/mtp";
     mcfg.max_prefill = cfg.max_prefill;  // MTP draft-extend runs over the whole
                                          // prompt; size its workspace to match.
+    mcfg.max_len = cfg.max_len;  // draft full-attn KV/indexer tracks the main
+                                 // sequence positions; size to the same length.
     // Stage 2c: pool the draft full-attention KV/indexer for max_seq sequences
     // so concurrent MTP requests own independent draft-state slices (Stage 1).
     mcfg.max_seq = max_seq_;

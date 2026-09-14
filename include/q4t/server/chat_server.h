@@ -37,6 +37,10 @@ struct ServerOptions {
   std::string model_dir;
   int max_tokens = 256;  // default cap when the request omits max_tokens
   int max_prefill = 0;  // 0 = use ModelConfig default (2048); >0 overrides
+  // Max sequence length (sizes the full-attention KV/indexer/rope caches).
+  // 0 = use ModelConfig default (8192); >0 overrides (e.g. 262144 for the
+  // model's full context; see PHASES.md 262K memory budget — use max_seq=1).
+  int max_len = 0;
   // Max concurrent sequences (per-sequence recurrent-state pool size). Each
   // in-flight request owns one seq_id; the model's SSM/conv/PLE-conv/KV/indexer
   // state is pooled [max_seq, ...] so concurrent requests are isolated.

@@ -46,7 +46,7 @@ void PrintUsage(const char* prog) {
       "            (q4t generate \"prompt\" [--max-tokens N])\n"
       "  serve     OpenAI-compatible HTTP API server\n"
       "            (q4t serve [--port N] [--model-dir DIR] "
-      "[--max-tokens N] [--max-prefill N] [--max-seq N])\n",
+      "[--max-tokens N] [--max-prefill N] [--max-len N] [--max-seq N])\n",
       prog);
 }
 
@@ -482,6 +482,8 @@ int RunServe(int argc, char** argv) {
       opts.max_tokens = std::atoi(argv[++i]);
     } else if (a == "--max-prefill" && i + 1 < argc) {
       opts.max_prefill = std::atoi(argv[++i]);
+    } else if (a == "--max-len" && i + 1 < argc) {
+      opts.max_len = std::atoi(argv[++i]);
     } else if (a == "--max-seq" && i + 1 < argc) {
       opts.max_seq = std::atoi(argv[++i]);
     } else if (a == "--no-mtp") {

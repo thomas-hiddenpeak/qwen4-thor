@@ -165,6 +165,14 @@ target_link_libraries(q4t PRIVATE q4t_model q4t_text q4t_ple q4t_quant
                                   q4t_server CUDA::cudart)
 
 # ---------------------------------------------------------------------------
+# q4t_bench_full_attn — full-attention (QSA) block benchmark (prefill tuning)
+# ---------------------------------------------------------------------------
+add_executable(q4t_bench_full_attn tools/bench_full_attn.cu)
+target_include_directories(q4t_bench_full_attn PRIVATE include)
+target_link_libraries(q4t_bench_full_attn PRIVATE q4t_model q4t_io
+                                                  CUDA::cudart)
+
+# ---------------------------------------------------------------------------
 # Tests
 # ---------------------------------------------------------------------------
 if(Q4T_BUILD_TESTS)

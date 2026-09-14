@@ -602,8 +602,9 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
                                       const int* __restrict__ page_table,
                                       const int* __restrict__ topk,
                                       const int* __restrict__ topk_len,
-                                      u16* __restrict__ out, int nq, int nkv,
-                                      int hd, int max_topk,
+                                      u16* __restrict__ out,
+                                      const u16* __restrict__ gate, int nq,
+                                      int nkv, int hd, int max_topk,
                                       const int* __restrict__ d_seq_id,
                                       size_t kv_seq_stride, int pt_seq_stride) {
   const int CHUNK = 16;
@@ -706,17 +707,16 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
     __syncthreads();
   }
   if (l > 0.f) acc /= l;
-  if (d < hd) out[(static_cast<size_t>(t) * nq + qh) * hd + d] = FloatToBf16(acc);
-}
-
-// ---------------------------------------------------------------------------
-// Kernel 10: attn *= sigmoid(gate) (in-place).
-__global__ void GateMulKernel(u16* __restrict__ attn, const u16* __restrict__ gate,
-                              int total) {
-  int idx = blockIdx.x * blockDim.x + threadIdx.x;
-  if (idx >= total) return;
-  attn[idx] = FloatToBf16(Bf16ToFloat(attn[idx]) *
-                          (1.f / (1.f + expf(-Bf16ToFloat(gate[idx])))));
+  // Fused gate: out = attn * sigmoid(gate) (was a separate GateMulKernel pass
+  // over [T, nq, hd]; folding it here removes a launch + a 150 MB round trip).
+  // The intermediate BF16 round of `acc` is preserved so the result is
+  // bit-identical to the two-pass version (round acc -> multiply -> round).
+  if (d < hd) {
+    const size_t oidx = (static_cast<size_t>(t) * nq + qh) * hd + d;
+    const u16 a16 = FloatToBf16(acc);
+    const float g = 1.f / (1.f + expf(-Bf16ToFloat(gate[oidx])));
+    out[oidx] = FloatToBf16(Bf16ToFloat(a16) * g);
+  }
 }
 
 }  // namespace
@@ -988,14 +988,12 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                                           w.idx_block_topk(), max_blocks,
                                           max_topk);
   // 11. sparse GQA attention over the selected positions (valid only, via
-  //     topk_len — the -1 tail is not iterated)
+  //     topk_len — the -1 tail is not iterated). The sigmoid gate is applied
+  //     in-kernel (fused), so no separate GateMulKernel pass is needed.
   SparseAttentionKernel<<<T * nq, 256, 0, stream>>>(
-      d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn, nq, nkv, hd,
-      max_topk, d_seq_id, kv_seq_stride, pt_seq_stride);
-  // 12. attn *= sigmoid(gate)
-  GateMulKernel<<<(T * nq * hd + 255) / 256, 256, 0, stream>>>(
-      d_attn, d_gate, T * nq * hd);
-  // 13. out = attn @ W_o^T
+      d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn, d_gate, nq, nkv,
+      hd, max_topk, d_seq_id, kv_seq_stride, pt_seq_stride);
+  // 12. out = attn @ W_o^T
   s = CheckGemm(Bf16Gemm(d_attn, w.o_proj, out, T, hs, nq * hd, 1.f, 0.f,
                          d_gemm_ws, gemm_ws, stream));
   return s;
