@@ -508,12 +508,12 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 ## 进行中
 
-- **长上下文 262K (262144) 验证 (2026-09-14 启动, 内存预算已评估)**:
-  模型声明 `max_position_embeddings=262144` (config 已解析)。内存预算
-  (代码分配公式 + 运行时 ground truth 82.4 GB @ max_len=8192×max_seq=4,
-  GPU 总 122.9 GB): 36 层 linear SSM state O(1) 不随序列增长, 仅 12 层
-  full attn 的 KV+indexer cache 随 max_len 线性 → max_len 262144 时
-  **max_seq=1 可行 (~101 GB, 余 ~21 GB), max_seq=4 OOM (~158 GB)**。
+- **长上下文 262K (262144) 验证 (2026-09-14 启动, 内存实测已闭合)**:
+  模型声明 `max_position_embeddings=262144` (config 已解析)。**实测
+  (2026-09-15, 带内存看门狗): `--max-len 262144 --max-seq 1` serve 加载
+  成功, 峰值可用内存 25.6 GB (消耗 ~96 GB, 无 OOM), 短 prompt 生成正常
+  且确定 (2/2 一致), 请求后无泄漏 (25 GB 稳定)** — 与预算估算
+  (~101 GB) 吻合。max_seq=4 仍 OOM (~158 GB, 此前实测崩机)。
   另需**分块 prefill** (一次性 prefill 262K 的 [T,vocab] logits = 130 GB
   不可行, 当前 API 无"继续 prefill"路径)。模型层硬伤 (如实报告): QSA
   idx_budget=2048 在 262K 只 attend ~3% 历史块, 召回受限。详见

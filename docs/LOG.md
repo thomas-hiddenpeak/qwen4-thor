@@ -5,6 +5,34 @@
 
 ---
 
+## 2026-09-15 — 262144×max_seq=1 显存实测 (带看门狗, 闭合)
+
+**背景**
+262K 内存预算此前只有公式估算 (PHASES.md: max_seq=1 可行 ~101 GB,
+max_seq=4 OOM ~158 GB)。max_seq=4 实测曾把机器搞崩 (统一内存耗尽)。
+用户要求实测 262144×max_seq=1, 必须带看门狗防止再次崩机。
+
+**方法**
+- 看门狗脚本 (/tmp/mem_watchdog.sh): 每 0.5s 采样 available 内存,
+  低于 10 GB 自动 pkill q4t, 全程记录曲线 (/tmp/mem_watch.log)。
+- serve `--max-len 262144 --max-seq 1` 后台启动, 轮询日志 + 内存。
+
+**结果**
+- 加载 80s 完成 (84 GB 权重 + 262K KV/indexer/rope cache 分配)。
+- **峰值可用 25.6 GB (消耗 ~96 GB), 无 OOM, 看门狗未触发**
+  (阈值 10 GB, 最低 25.6 GB)。与预算估算 ~101 GB 吻合。
+- 功能验证: 短 prompt (15 tok) 生成 16 tok 正常, 两次请求输出完全
+  一致 (确定性); 请求后内存稳定 25 GB (无泄漏)。
+- 测试后内存完全恢复 (116 GB 可用)。
+
+**结论**
+262144×max_seq=1 在本机可行 (余 ~25 GB), 262K 单序列场景解锁。
+剩余: 分块 prefill (262K 一次性 prefill 的 [T,vocab] logits 130 GB
+不可行, 需"继续 prefill"路径) + QSA idx_budget=2048 在 262K 只 attend
+~3% 历史的召回问题 (模型层硬伤, 见 PHASES.md)。
+
+---
+
 ## 2026-09-15 — SparseAttentionKernel 优化探索 (两项均回退, 负面结果记录)
 
 **背景**

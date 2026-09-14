@@ -97,16 +97,18 @@
 - [x] 验证标准体系落地 — **已闭合 (2026-09-12)**: `tools/verify/` 三件套 +
   48 层全量基线 OVERALL PASS (置信位置 44/44 + 翻转全 near-tie + l2_rel
   噪声带), 见 STATUS.md。
-- **长上下文 262K (262144) 验证** — 进行中 (2026-09-14 启动)。内存预算
-  已评估 (见下), 需分块 prefill (当前 `ModelForward` 一次性 prefill 的
-  `[T, vocab]` logits 在 262K 下 = 130 GB 不可行)。
+- **长上下文 262K (262144) 验证** — 内存实测已闭合 (2026-09-15):
+  `--max-len 262144 --max-seq 1` 加载成功, 峰值消耗 ~96 GB (余 25.6 GB,
+  无 OOM), 短 prompt 生成正常且确定 — 与预算估算吻合 (见下)。剩余:
+  分块 prefill (当前 `ModelForward` 一次性 prefill 的 `[T, vocab]` logits
+  在 262K 下 = 130 GB 不可行, 需"继续 prefill"路径)。
 - **完整 PD 分离部署** — 降级为后续计划 (2026-09-14 用户决定): 当前
   PD-ready 架构 (Paged KV + 可分离路径 + `ModelSequence` 阶段边界 API)
   已满足**本机调度**需求 (持续 prefill 场景靠 Paged KV 按页迁移 + 独立
   调度池即可, 无需多设备); **多设备/双机扩展** (KV 跨设备传输) 归后续
   计划, 届时需多卡硬件验证。
 
-### 长上下文 262K 内存预算 (2026-09-14 评估)
+### 长上下文 262K 内存预算 (2026-09-14 评估, 2026-09-15 实测确认)
 
 关键架构事实: 36 层 linear attention 的 SSM state 是 **O(1) 不随序列增长**
 (`ssm_state [max_seq, 48, 128, 128]`), 只有 **12 层 full attention 的
@@ -120,8 +122,8 @@ page_table + rope_pos):
 
 | max_seq | cache 增量 | 总显存 (估) | 可行性 |
 |---|---|---|---|
-| 4 (当前) | ~78.4 GB | ~158 GB | **OOM, 不可行** |
-| 1 | ~19.6 GB | ~101 GB | **可行** (余 ~21 GB) |
+| 4 (当前) | ~78.4 GB | ~158 GB | **OOM, 不可行** (实测: 加载后统一内存耗尽, 机器崩机) |
+| 1 | ~19.6 GB | ~101 GB | **可行** (2026-09-15 实测: 峰值消耗 ~96 GB, 余 25.6 GB, 无 OOM) |
 
 另: prefill 工作区是独立约束 — 一次性 prefill 262K 的 `[T, vocab]`
 logits = 130 GB 不可行, **必须分块 prefill** (当前 API 无"继续 prefill"
