@@ -5,6 +5,41 @@
 
 ---
 
+## 2026-09-15 — SparseAttentionKernel 优化探索 (两项均回退, 负面结果记录)
+
+**背景**
+用户要求长上下文测试前先提升 prefill 性能。nsys per-kernel (T=4096,
+bench 工具): SparseAttentionKernel 4.81ms (42.8%) 是最大单项, 其次 GEMM
+q_proj 2.37ms / QKDeinterleaveNorm 1.51ms / GEMM o_proj 1.21ms。
+
+**分析: 延迟受限, 非带宽受限**
+每 block (t,qh) 读 nsel≈2048 位置 × K/V × 512B ≈ 1MB, 98304 block 共
+~100GB 逻辑读取, 4.81ms → 有效 ~31GB/s, 远低于 Thor HBM3e ~8TB/s。
+根因: 随机 K/V 全局读 (page_table 间接) 延迟高, 靠**大量 block 并行**
+(98304 block, 每 SM 3 block) 隐藏。
+
+**尝试 1: sK/sV 改 BF16 存 (shared 213KB→135KB, occupancy 3→6 block/SM)**
+结果: T=4096 11.080→11.173ms, **略差**。occupancy 不是瓶颈。已回退。
+
+**尝试 2: GQA K/V 共享 (block 从 (t,qh) 改 (t,kvh), 12 qh 共享 K/V)**
+理论: K/V 全局流量降 12 倍 (100GB→8GB)。实现: kernel 模板化 <G>,
+每 block 循环 G=12 个 qh, K/V 只读 1 次。
+结果: T=4096 11.09→15.16ms, **回退 37%**。根因: block 数 98304→8192
+(12 倍), 总计算量不变但并行度降 12 倍 → 随机读延迟藏不住。冗余 K/V 读
+其实被 L2 缓存吸收了, 共享 K/V 反而损失并行度。已回退。
+
+**结论 (重要负面结果, 避免重复)**
+SparseAttentionKernel 是延迟受限, 延迟隐藏靠大量 block 并行。任何降低
+并行度 (GQA 共享) 或增加每 block 工作量 / 不减 block 数的优化 (BF16
+shared) 都回退。进一步优化方向 (未尝试, 需更复杂改动):
+- 增大每 block 的 K/V 读批量 + 异步拷贝 (cp.async / TMA) 重叠计算与读;
+- 减少随机性: 按 page 排序 topk 使 K/V 读更连续;
+- 换算法: 把 sparse attention 改成 GEMM 形式 (gather K/V 到连续 buffer
+  后走 tensor core), 牺牲一些流量换计算密度。
+当前保持基线 (T=4096 sparse 11.09ms / T=2048 dense 5.64ms)。
+
+---
+
 ## 2026-09-15 — `--max-seq 1` MTP 空输出 bug 修复 + full-attention bench 工具
 
 **背景**

@@ -498,6 +498,13 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   优化快速迭代环。`--max-len/--ts/--iters/--golden/--check/--diag`。
   注意: 孤立冷启动 FullAttentionForward (cublasLt 冷缓存) 可能非确定, 不代表
   生产 bug — serve 路径 (warm 缓存) 已验证跨进程 bit 一致 (见 LOG 2026-09-15)。
+- [x] 2026-09-15 **SparseAttentionKernel 优化探索 (两项均回退, 负面结果)**:
+  nsys per-kernel (T=4096): SparseAttentionKernel 4.81ms (42.8%) 最大单项。
+  分析: 延迟受限 (有效带宽 ~31GB/s ≪ 8TB/s), 靠 98304 block 并行隐藏随机
+  K/V 读延迟。尝试 ① sK/sV 改 BF16 存 (occupancy 3→6 block/SM): 11.08→
+  11.17ms 略差; ② GQA K/V 共享 (block (t,qh)→(t,kvh), 流量降 12 倍):
+  11.09→15.16ms 回退 37% (block 数降 12 倍, 并行度损失 > 流量收益)。
+  均回退, 保持基线 (T=4096 sparse 11.09ms)。详见 LOG 2026-09-15。
 
 ## 进行中
 
