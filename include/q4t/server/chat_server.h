@@ -117,6 +117,25 @@ class ChatServer {
     bool pending = false;  // token registered, awaiting the packed forward
     bool done = false;     // scheduler produced `next_token`
     int32_t next_token = 0;
+    // MTP speculative-decode state (Phase 2 Stage 2c). When `is_mtp` is set
+    // the scheduler runs this request's speculative step inside a batched
+    // MtpSpeculativeStepMulti (concurrent MTP requests share ONE step: batched
+    // draft loop + ModelVerifyMulti + batched extend). The request thread
+    // registers `mtp_b`/`mtp_d0`/`mtp_g` (the step's inputs) and blocks on
+    // `cv`; the scheduler writes `mtp_next_b`/`mtp_next_d0`/`mtp_accepted`/
+    // `mtp_accepted_count` (the step's outputs) and wakes it. `mtp_g` is a
+    // per-request draft-trunk buffer (device [hc*hs], allocated by the request
+    // thread, freed in HandleChat's cleanup); the scheduler writes the next
+    // step's trunk into it. `mtp_accepted` holds up to mtp_k+1 accepted tokens
+    // (the bonus + accepted drafts) for this step.
+    bool is_mtp = false;
+    int32_t mtp_b = 0;         // bonus token t_P (step input)
+    int32_t mtp_d0 = 0;        // first draft token (step input)
+    uint16_t* mtp_g = nullptr;  // draft trunk [hc*hs] (step input + next output)
+    int32_t mtp_next_b = 0;     // correction / next bonus (step output)
+    int32_t mtp_next_d0 = 0;    // next first draft (step output)
+    int mtp_accepted_count = 0;  // accepted tokens this step (step output)
+    int32_t mtp_accepted[64];   // accepted tokens (bonus + drafts, step output)
     std::condition_variable cv;  // request thread waits here for `done`
   };
   void SchedulerLoop();
@@ -167,11 +186,13 @@ class ChatServer {
   mtp::MtpModel mtp_;
   bool mtp_loaded_ = false;
   int mtp_k_ = 3;  // matches the CLI default (实测最优, 见 docs/LOG.md)
+  // NOTE (Stage 2c): the legacy shared rolling draft-trunk buffers d_g_/
+  // d_g_next_ are gone — concurrent MTP requests would corrupt each other's
+  // trunk. Each MTP request now owns a per-request d_mtp_g (HandleChat local,
+  // freed in cleanup), and the draft KV is pooled per seq_id (mcfg.max_seq).
   // Rolling draft-trunk double buffer for the speculative step (persistent;
   // freed in the destructor). d_trunk_full (prefill trunk_out [T, hc*hs]) is
   // per-request and freed by HandleChat's cleanup lambda.
-  uint16_t* d_g_ = nullptr;
-  uint16_t* d_g_next_ = nullptr;
   // Vision tower (multimodal). Null if the model has no visual weights.
   std::unique_ptr<vision::VisionTower> vision_tower_;
   vision::ProcessorConfig proc_cfg_;       // image budget (65536/16777216)

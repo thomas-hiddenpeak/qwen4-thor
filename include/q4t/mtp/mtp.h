@@ -314,7 +314,11 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
 // 状态在 P_b-1 (已 prefill)。
 //
 //   seqs[b]  : 主模型序列状态机 (kDecode, position = P_b, history = 已见
-//              token)。本函数推进 position/history (接受前缀), 与单序列一致。
+//              token)。本函数只读 seqs[b] (position + history 作 PLE 上下文),
+//              **不推进** position/history — 调用方在拿到 accepted_count[b]
+//              后自行推进 (position += 1+a_b; history += [b_b, d_0..d_{a_b-1}])。
+//              这样本函数可被调度器线程调用 (Stage 2c) 而不与拥有
+//              ModelSequence 的请求线程竞争。
 //   b_tok[b] : 主模型 bonus token t_{P_b} (host int32)。
 //   d0[b]    : draft 对 t_{P_b+1} 的预测 (host int32, 来自上次 extend)。
 //   g_in[b]  : draft 在 P_b-1 的 multi_hidden (device BF16 [hc*hs], 来自上次

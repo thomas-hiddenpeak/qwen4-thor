@@ -1235,16 +1235,17 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     r += a[b] + 1;
   }
 
-  // 4. Emit accepted tokens + advance each sequence's state machine.
+  // 4. Emit accepted tokens. The caller advances each sequence's state
+  //    machine (position += 1 + a_b; history += [b_b, d_0..d_{a_b-1}]) —
+  //    this function does NOT touch seqs[b].position/history, so it can be
+  //    called from the scheduler thread (Stage 2c) without racing the
+  //    request thread that owns the ModelSequence.
   for (int b = 0; b < B; ++b) {
     accepted_tokens[static_cast<size_t>(b) * (k + 1)] = b_tok[b];
     for (int i = 0; i < a[b]; ++i)
       accepted_tokens[static_cast<size_t>(b) * (k + 1) + 1 + i] = drafts[b][i];
     accepted_count[b] = 1 + a[b];
     next_b[b] = corr[b];
-    seqs[b].position = P[b] + 1 + a[b];
-    seqs[b].history.push_back(b_tok[b]);
-    for (int i = 0; i < a[b]; ++i) seqs[b].history.push_back(drafts[b][i]);
   }
   return cleanup(Status());
 }

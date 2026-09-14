@@ -342,14 +342,6 @@ ChatServer::~ChatServer() {
     mtp_.Free();
     mtp_loaded_ = false;
   }
-  if (d_g_) {
-    cudaFree(d_g_);
-    d_g_ = nullptr;
-  }
-  if (d_g_next_) {
-    cudaFree(d_g_next_);
-    d_g_next_ = nullptr;
-  }
 }
 
 Status ChatServer::Start(const ServerOptions& opts) {
@@ -384,6 +376,9 @@ Status ChatServer::Start(const ServerOptions& opts) {
     mcfg.mtp_dir = opts.model_dir + "/mtp";
     mcfg.max_prefill = cfg.max_prefill;  // MTP draft-extend runs over the whole
                                          // prompt; size its workspace to match.
+    // Stage 2c: pool the draft full-attention KV/indexer for max_seq sequences
+    // so concurrent MTP requests own independent draft-state slices (Stage 1).
+    mcfg.max_seq = max_seq_;
     s = mtp::LoadMtp(mcfg, model_.head.embed_tokens, model_.head.lm_head,
                      &mtp_, nullptr);
     if (!s.ok()) {
@@ -391,19 +386,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
                    s.message().c_str());
     } else {
       mtp_loaded_ = true;
-      const size_t hc_dim =
-          static_cast<size_t>(mtp_.cfg.hc) * static_cast<size_t>(mtp_.cfg.hs);
-      if (cudaMalloc(reinterpret_cast<void**>(&d_g_), hc_dim * 2) !=
-              cudaSuccess ||
-          cudaMalloc(reinterpret_cast<void**>(&d_g_next_), hc_dim * 2) !=
-              cudaSuccess) {
-        std::fprintf(stderr,
-                     "[q4t] MTP buffer alloc failed; plain decode only\n");
-        mtp_.Free();
-        mtp_loaded_ = false;
-      } else {
-        std::fprintf(stderr, "[q4t] MTP loaded (k=%d)\n", mtp_k_);
-      }
+      std::fprintf(stderr, "[q4t] MTP loaded (k=%d max_seq=%d)\n", mtp_k_,
+                   max_seq_);
     }
   }
 
@@ -866,6 +850,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   uint16_t* d_logits = nullptr;
   uint16_t* d_trunk_full = nullptr;
   uint16_t* d_vfeats = nullptr;
+  uint16_t* d_mtp_g = nullptr;  // MTP rolling draft trunk [hc*hs] (Stage 2c:
+                                // per-request, so concurrent MTP requests don't
+                                // share the legacy d_g_/d_g_next_ double buffer)
   auto cleanup = [&]() {
     if (d_logits) {
       cudaFree(d_logits);
@@ -878,6 +865,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     if (d_vfeats) {
       cudaFree(d_vfeats);
       d_vfeats = nullptr;
+    }
+    if (d_mtp_g) {
+      cudaFree(d_mtp_g);
+      d_mtp_g = nullptr;
     }
     FreeSeqId(seq_id);
   };
@@ -1062,23 +1053,31 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // t_P (the first decode token), draft-extend over the prompt to build the
   // draft KV[0..P-1] and seed the first speculative step (d0 + g). On any
   // failure fall back to plain decode (the main seq is still usable).
+  //
+  // Stage 2c (4a): the MTP path is per-sequence safe. The draft KV is pooled
+  // per seq_id (mcfg.max_seq, Stage 1) and each request owns a per-request
+  // rolling trunk (d_mtp_g), so concurrent MTP requests no longer corrupt each
+  // other's draft state. The speculative step runs through
+  // MtpSpeculativeStepMulti (B=1) — the same code path the scheduler will batch
+  // (4b) — and this request thread advances the main seq over the accepted
+  // prefix (the multi step does not touch seqs[b]). Hold model_mu_ for the
+  // whole MTP path (init + loop) so MTP steps are mutually exclusive for now;
+  // 4b moves the step into the scheduler so concurrent MTP requests share one
+  // batched step.
   bool use_mtp = mtp_loaded_;
   int32_t mtp_b = -1, mtp_d0 = -1;
   if (use_mtp) {
-    // B1: MTP is single-sequence. The draft model has a single shared KV +
-    // rolling trunk buffer (d_g_/d_g_next_), and MtpSpeculativeStep resets the
-    // draft KV each request, so two concurrent MTP requests would corrupt each
-    // other's draft state. Hold model_mu_ for the ENTIRE MTP path (init + the
-    // whole speculative decode loop, including the d_g_ swap) so MTP requests
-    // are mutually exclusive. (Multi-request MTP is B2.) Plain-decode requests
-    // still run concurrently with each other.
+    if (cudaMalloc(reinterpret_cast<void**>(&d_mtp_g),
+                   static_cast<size_t>(mtp_.cfg.hc) *
+                       static_cast<size_t>(mtp_.cfg.hs) * 2) != cudaSuccess) {
+      std::fprintf(stderr, "[q4t] MTP trunk alloc failed; plain decode\n");
+      use_mtp = false;
+    }
+  }
+  if (use_mtp) {
     {
       const std::lock_guard<std::mutex> lock(model_mu_);
-      // MTP init: fresh draft KV, bonus token b = t_P (the first decode token),
-      // draft-extend over the prompt to build the draft KV[0..P-1] and seed the
-      // first speculative step (d0 + g). On any failure fall back to plain
-      // decode (the main seq is still usable).
-      s = mtp::MtpResetState(mtp_, nullptr);
+      s = mtp::MtpResetState(mtp_, nullptr, seq_id);
       if (s.ok()) {
         mtp_b = next_token;
         // EAGLE shift: shifted_ids[p] = t_{p+1}, with t_P := b at the tail.
@@ -1088,7 +1087,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         std::vector<int> pos(T);
         for (int i = 0; i < T; ++i) pos[i] = i;
         s = mtp::MtpDraftExtend(mtp_, shifted.data(), d_trunk_full, pos.data(),
-                                T, &mtp_d0, d_g_, nullptr);
+                                T, &mtp_d0, d_mtp_g, nullptr, seq_id);
         if (s.ok()) {
           s = model::ModelReserveVerifyCheckpoints(model_, mtp_k_);
           if (s.ok())
@@ -1104,19 +1103,25 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       }
 
       // Speculative decode loop (still under model_mu_): each step emits the
-      // bonus b + accepted drafts and yields the next (b, d0, g).
-      // MtpSpeculativeStep advances the main seq over exactly the accepted
-      // prefix (lazy verification, no rollback).
+      // bonus b + accepted drafts and yields the next (b, d0, g). B=1
+      // MtpSpeculativeStepMulti (the scheduler will batch B>1 in 4b). This
+      // thread advances the main seq over the accepted prefix.
       if (use_mtp) {
         int32_t accepted_tokens[64];
         int accepted_count_tmp = 0;
         bool done = false;
         while (!done && static_cast<int>(generated.size()) < max_tokens) {
           int32_t next_b = -1, next_d0 = -1;
-          s = mtp::MtpSpeculativeStep(model_, mtp_, &seq, mtp_b, mtp_d0, d_g_,
-                                      mtp_k_, accepted_tokens,
-                                      &accepted_count_tmp, &next_b, &next_d0,
-                                      d_g_next_, nullptr);
+          model::ModelSequence* seqs = &seq;
+          int32_t b_tok = mtp_b;
+          int32_t d0 = mtp_d0;
+          uint16_t* g_in = d_mtp_g;
+          uint16_t* next_g = d_mtp_g;
+          int B = 1;
+          s = mtp::MtpSpeculativeStepMulti(model_, mtp_, seqs, &b_tok, &d0,
+                                           &g_in, B, mtp_k_, accepted_tokens,
+                                           &accepted_count_tmp, &next_b,
+                                           &next_d0, &next_g, nullptr);
           if (!s.ok() || accepted_count_tmp <= 0) break;
           for (int i = 0; i < accepted_count_tmp &&
                               static_cast<int>(generated.size()) < max_tokens;
@@ -1138,6 +1143,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
               break;
             }
           }
+          // Advance the main seq over the accepted prefix [b, d_0..d_{a-1}]
+          // (MtpSpeculativeStepMulti does not touch seqs[b]).
+          seq.position += accepted_count_tmp;
+          for (int i = 0; i < accepted_count_tmp; ++i)
+            seq.history.push_back(accepted_tokens[i]);
           if (static_cast<int>(generated.size()) >= max_tokens) {
             finish_reason = "length";
             break;
@@ -1148,9 +1158,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           }
           mtp_b = next_b;
           mtp_d0 = next_d0;
-          uint16_t* tmp = d_g_;
-          d_g_ = d_g_next_;
-          d_g_next_ = tmp;
+          // d_mtp_g was overwritten in place with the next step's trunk.
         }
       }
     }
