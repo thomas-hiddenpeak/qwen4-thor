@@ -10,6 +10,8 @@ reference/
 ├── sglang-ssd-stream/    # PLE SSD Stream 机制参考 (必读)
 ├── sglang-qwen4-exp/     # SGLang qwen4_exp.py 单文件 (PLE/forward 权威参考)
 ├── vllm/                 # vLLM main, 含完整 qwen4_exp 实现 (MTP/QSA/PLE 权威参考)
+├── flashinfer/           # 注意力 kernel 参考 (Blackwell FMHA / sparse / FP4 MoE)
+├── flash-attention/      # FA2/FA3/FA4 (FA4 = Blackwell CUTE DSL, 含 block-sparse)
 ├── qwen35-thor/          # 同硬件 Qwen3.5 引擎, 架构模式参考
 ├── Qwen3x-Orin/          # 生产级 tokenizer 参考 (ICU 74 + BPE + golden fixture)
 ├── thor-probe/           # 硬件探测方法 (可选)
@@ -116,6 +118,50 @@ reference/
 - 注意: refenv 的 torch 是 **CPU-only** (2.14.0+cpu), 参考验证走 CPU
   路径; 全 48 层 MoE dequant (~242 GB) 超统一内存, 参考验证以 4 层
   (含首个 full_attention) 为基线 (见 LOG.md 2026-09-06 条目)。
+
+## flashinfer (注意力 kernel 参考, prefill 优化主参考)
+
+- 仓库: https://github.com/flashinfer-ai/flashinfer (Apache-2.0)
+- 获取: 2026-09-15 `git clone --depth 1`
+- 固定 commit: `c1c8e3e` (main, 2026-09-15)
+- 背景: prefill 瓶颈定位在 QSA 稀疏 attention (nsys 2026-09-15:
+  SparseAttentionKernel 78.8% + IndexerLogitsKernel 5.8%), 需要参考
+  领先实现。Thor SM110a 为 Blackwell, 与 SM100/SM120 共享 tcgen05/TMA
+  等核心特性, 这些代码路径可直接参考。
+- **重点研读**:
+  1. `include/flashinfer/attention/blackwell/fmha_cutlass_sm100.cuh` +
+     `blackwell/{collective,kernel,device}/` — Blackwell FMHA (CUTLASS,
+     tcgen05), 对应我们的 hd256 prefill attention
+  2. `include/flashinfer/attention/sm120/nvfp4_attention_sm120/` —
+     SM120 NVFP4 attention (FP4 Q/K/V, 与我们 W4A4 路线一致)
+  3. `include/flashinfer/attention/hopper/sparse_mainloop.cuh` +
+     `hopper/quantization/mainloop_sparse_load.cuh` — sparse attention
+     mainloop (top-k KV 的访存组织, 对我们 764ms/call 的随机读延迟
+     问题最相关)
+  4. `include/flashinfer/attention/prefill.cuh` + `scheduler.cuh` —
+     prefill 调度 (batch/ragged 布局)
+  5. `csrc/sparse_mla_sm120_nvfp4_prefill.cu` — SM120 NVFP4 sparse
+     prefill 实例
+- 许可: Apache-2.0, 可参考/移植。
+
+## flash-attention (FA2/FA3/FA4, attention 算法参考)
+
+- 仓库: https://github.com/Dao-AILab/flash-attention (BSD-3)
+- 获取: 2026-09-15 `git clone --depth 1`
+- 固定 commit: `0dc2cb4` (main, 2026-09-14)
+- 背景: 同上。FA4 是 Blackwell 的 CUTE DSL 实现, 且**原生支持
+  block-sparse attention**, 与 QSA 的 top-k block 选择直接对应。
+- **重点研读**:
+  1. `flash_attn/cute/block_sparsity.py` + `block_sparse_utils.py` —
+     **block-sparse 数据结构 (BlockSparseTensors: mask/full block
+     分离)** 与 CUTE kernel 的消费方式, QSA top-2048 block 可直接
+     映射
+  2. `flash_attn/cute/flash_fwd_sm100.py` + `sm100_hd256_2cta_fmha_forward.py`
+     — **hd256 (我们的 head_dim) Blackwell 前向**, 2-CTA 模式
+  3. `flash_attn/cute/flash_fwd.py` (FA2 主体, Ampere+) — 经典
+     online-softmax tiling, 我们手写 kernel 的对照基线
+  4. `hopper/` (FA3, Hopper WGMMA) — 中间参考
+- 许可: BSD-3, 可参考/移植。
 
 ## qwen35-thor (架构模式参考)
 

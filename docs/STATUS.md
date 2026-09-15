@@ -505,6 +505,19 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   11.17ms 略差; ② GQA K/V 共享 (block (t,qh)→(t,kvh), 流量降 12 倍):
   11.09→15.16ms 回退 37% (block 数降 12 倍, 并行度损失 > 流量收益)。
   均回退, 保持基线 (T=4096 sparse 11.09ms)。详见 LOG 2026-09-15。
+- [x] 2026-09-15 **prefill 瓶颈重定位 (nsys 实测) + flashinfer/FA 参考就位**:
+  此前"MoE GEMM 权重带宽下限"判断被 nsys 推翻 (20K 分块 prefill
+  per-kernel): **SparseAttentionKernel 78.8% (764ms/call, 120 次) +
+  IndexerLogitsKernel 5.8% = attention 侧 84.6%**; MoE 全部仅 ~6.4%
+  (gather/scatter 访存为主, FP4 GEMM 极小)。SparseAttentionKernel 比
+  算力下限高 ~1500 倍 — 随机 paged-KV 读延迟受限 + 24 q-head 对 2
+  kv-head 的 12 倍冗余读。参考项目: sglang-ssd-stream 用 FA2 (dense
+  连续 KV) + Triton sparse GQA (远端 top-k) 分解; vllm MoE 用 flashinfer
+  monolithic kernel。新增参考 `reference/flashinfer` (commit c1c8e3e,
+  Blackwell FMHA + sparse mainloop + SM120 NVFP4 attention) 与
+  `reference/flash-attention` (commit 0dc2cb4, **FA4 CUTE DSL 原生
+  block-sparse** 与 QSA top-k block 直接对应 + `sm100_hd256_2cta`
+  匹配我们 hd256)。详见 REFERENCE.md + LOG 2026-09-15。
 - [x] 2026-09-15 **分块 prefill 闭合 (262K 长上下文可用) + rope H2D 修复**:
   `max_prefill` 语义从 prompt 上限改为分块大小 (上限 = `max_len`);
   `T > max_prefill` 走分块: chunk 0 `ModelPrefill` + chunk 1..

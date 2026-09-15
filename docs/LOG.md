@@ -5,6 +5,62 @@
 
 ---
 
+## 2026-09-15 — prefill 瓶颈重定位 (nsys 实测推翻"MoE 带宽"判断) + flashinfer/FA 参考就位
+
+**背景**
+用户指出"MoE 激活权重不高, prefill 吃算力而非带宽"。重新算账:
+2048-token 块激活 ~6B 参数 → 25 TFLOP, 算力下限 ~0.1–1s; 权重流量
+~84 GB @ 8 TB/s ≈ 10ms。实测 12.6s/块 确实远超"MoE 带宽下限"——
+之前的判断 (把 decode 的 T=B 带宽受限结论套到 prefill) 错误。
+
+**nsys 实测 (q4t_chunk_prefill_diag 20000 2048, 10 块 × 48 层, 116.4s)**
+per-kernel 分解:
+- **SparseAttentionKernel 91.7s = 78.8%** (120 次, 平均 764ms,
+  379–832ms) — 主瓶颈
+- IndexerLogitsKernel 6.7s = 5.8% (120 次, 56ms)
+- GatedDeltaNetKernel 6.1s = 5.2% (360 次, 17ms)
+- MoE 全部 (GatherQuant 2.2s + ScatterAdd 1.3s + SwiGLUQuant 0.9s +
+  FP4 GEMM ~1.5s + 其余) ≈ 7.4s = **~6.4%**
+- CombineWithGate 0.94s, 其余 ~3s
+结论: **attention 侧 84.6%, MoE 仅 6.4%**。SparseAttentionKernel
+764ms/call 比算力下限 (~0.5ms) 高 ~1500 倍 — 随机 paged-KV 读延迟
+受限 + 24 q-head 共享 2 kv-head 的 12 倍冗余 KV 读。连 chunk 0
+(dense, T=2048) 都 379ms, 孤立 bench 同 shape 仅 5.6ms — in-context
+慢 68 倍, kernel 访存模式在真实长 KV 下有问题。
+
+**参考项目调研**
+- sglang-ssd-stream QSA: FA2 处理 dense/compact 连续 KV (cu_seqlens),
+  Triton sparse GQA 处理远端 top-k, indexer 用 row-chunk 限制
+  [query_rows, compressed_keys] workspace。
+- vllm MoE: flashinfer `trtllm_fp4_block_scale_routed_moe` monolithic
+  kernel (我们则是 host 逐专家循环 ~1000 launch/层; 但 MoE 非
+  prefill 瓶颈, 优先级低)。
+
+**新增参考 (用户建议, 已执行)**
+- `reference/flashinfer` (commit c1c8e3e, 2026-09-15, --depth 1,
+  222MB, Apache-2.0): Blackwell FMHA (fmha_cutlass_sm100.cuh +
+  blackwell/{collective,kernel,device}), SM120 NVFP4 attention,
+  Hopper sparse mainloop (sparse_mainloop.cuh + mainloop_sparse_load.cuh),
+  prefill.cuh/scheduler.cuh。
+- `reference/flash-attention` (commit 0dc2cb4, 2026-09-14, --depth 1,
+  39MB, BSD-3): FA2 (flash_attn/cute/flash_fwd.py), FA3 (hopper/),
+  **FA4 (flash_attn/cute/, CUTE DSL, Blackwell) 原生 block-sparse
+  (block_sparsity.py + block_sparse_utils.py, BlockSparseTensors)
+  与 QSA top-k block 直接对应**; `sm100_hd256_2cta_fmha_forward.py`
+  匹配我们 hd256。
+- 架构匹配: Thor SM110a Blackwell, 与 SM100/SM120 共享 tcgen05 (5 代
+  tensor core, FP4) + TMA 核心特性。
+
+**下一步 (待用户确认方向)**
+P1 (78.8%): 重写 SparseAttentionKernel — 候选: (a) 对齐参考的
+dense-FA2 + sparse 分解; (b) FA4 block-sparse 路线 (QSA top-k block
+直接映射 BlockSparseTensors); (c) 最小改动: page-sorted topk +
+cp.async/TMA 重叠。P2 (5.8%): IndexerLogitsKernel row-chunk。
+P3 (~6%, 非 prefill 关键): MoE 逐专家循环 → grouped/monolithic
+(主要收益在 decode)。
+
+---
+
 ## 2026-09-15 — 分块 prefill 闭合 (262K 长上下文可用) + rope H2D 性能修复
 
 **背景**
