@@ -1351,7 +1351,7 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
                   const int* positions, const uint16_t* hidden_states,
                   uint16_t* sample_hidden, uint16_t* multi_hidden,
                   uint16_t* logits, int T, cudaStream_t stream,
-                  const int* d_seq_id) {
+                  const int* d_seq_id, bool compute_logits) {
   const int hs = m.cfg.hs, hc = m.cfg.hc, hc_dim = hc * hs;
   if (T <= 0) return Status();
   const auto& cfg = m.cfg;
@@ -1472,8 +1472,11 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
                                 d_normed_mlp, T, d_hc_gemm, kGemmWs, stream);
   if (!s.ok()) return s;
 
-  // 6. logits = lm_head(sample_hidden) [T, vocab].
-  {
+  // 6. logits = lm_head(sample_hidden) [T, vocab]. Skipped when
+  // compute_logits is false (chunked draft-extend intermediate chunks: the
+  // [T, vocab] buffer is only needed for the final chunk's argmax — at 262K
+  // a full-prompt logits buffer would be ~130 GB).
+  if (compute_logits) {
     model::ModelHeadWeights head_view;
     head_view.lm_head = const_cast<uint16_t*>(m.lm_head);
     head_view.vocab = cfg.vocab;

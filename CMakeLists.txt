@@ -172,6 +172,13 @@ target_include_directories(q4t_bench_full_attn PRIVATE include)
 target_link_libraries(q4t_bench_full_attn PRIVATE q4t_model q4t_io
                                                   CUDA::cudart)
 
+# q4t_chunk_prefill_diag — one-shot vs chunked prefill logits comparison
+# (262K chunked-prefill correctness diagnostic)
+add_executable(q4t_chunk_prefill_diag tools/chunk_prefill_diag.cu)
+target_include_directories(q4t_chunk_prefill_diag PRIVATE include)
+target_link_libraries(q4t_chunk_prefill_diag PRIVATE q4t_model q4t_io
+                                                     CUDA::cudart)
+
 # ---------------------------------------------------------------------------
 # Tests
 # ---------------------------------------------------------------------------

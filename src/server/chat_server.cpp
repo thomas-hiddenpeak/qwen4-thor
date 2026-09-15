@@ -1006,13 +1006,6 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     vfeats.device = d_vfeats;
   }
   const int T = static_cast<int>(ids.size());
-  if (T > max_prefill_) {
-    SendError(fd, 400,
-              "prompt too long: " + std::to_string(T) + " tokens > " +
-                  std::to_string(max_prefill_) + " max prefill");
-    cleanup();
-    return;
-  }
   if (T >= max_len_) {
     SendError(fd, 400,
               "prompt too long for context: " + std::to_string(T) +
@@ -1023,17 +1016,41 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
 
   const int vocab = model_.cfg.vocab;
   const int eos = static_cast<int>(model_.cfg.eos_token_id);
-  // d_logits must hold T rows (prefill lm_head GEMM outputs [T, vocab]).
-  // Decode steps write 1 row (T=1) to row 0, which fits within this allocation.
+  // Chunked prefill (262K context, see PHASES.md 262K memory budget): the
+  // forward workspace (d_ws, d_trunk, ...) is sized for max_prefill tokens,
+  // so a prompt longer than max_prefill is run in chunks of max_prefill.
+  // max_prefill is now the CHUNK size, not a prompt cap (the prompt cap is
+  // max_len). Text-only: a vision prompt's special (t,h,w) rope is not
+  // reproducible by the continuation chunks' text rope, so vision + chunked
+  // is rejected (vision prompts are far shorter than 262K in practice).
+  const int chunk = max_prefill_;
+  const bool chunked = T > chunk;
+  if (chunked && vfeats.num_tokens > 0) {
+    SendError(fd, 400,
+              "chunked prefill (prompt > max_prefill) does not support "
+              "vision input");
+    cleanup();
+    return;
+  }
+  // Chunk 0 is a true prefill (state reset + rope table + PLE history);
+  // chunks 1.. are ModelDecodeBatch calls that CONTINUE from the existing
+  // per-layer state (linear SSM/conv recurrence, full-attention KV/indexer
+  // written at absolute positions) — bit-identical to one big prefill. Only
+  // the LAST chunk's final logits row is needed (first decode token), so
+  // d_logits holds ONE chunk's rows, not T (a 262K one-shot [T, vocab]
+  // buffer would be ~130 GB).
   if (cudaMalloc(reinterpret_cast<void**>(&d_logits),
-                 static_cast<size_t>(T) * vocab * 2) != cudaSuccess) {
+                 static_cast<size_t>(chunk) * vocab * 2) != cudaSuccess) {
     SendError(fd, 500, "cudaMalloc logits failed");
     cleanup();
     return;
   }
   // MTP: prefill trunk_out buffer (pre-final-mixer multi stream [T, hc*hs])
-  // for the draft-extend. Allocated only when MTP is loaded.
-  if (mtp_loaded_) {
+  // for the draft-extend. Allocated only when MTP is loaded. Disabled for
+  // chunked prefill: the draft-extend needs the FULL-prompt main trunk
+  // (~5.3 GB at 262K) plus the draft model's own 262K KV (~26 GB), which
+  // exceeds the headroom; plain decode is the safe path (see LOG 2026-09-15).
+  if (mtp_loaded_ && !chunked) {
     const size_t hc_dim =
         static_cast<size_t>(mtp_.cfg.hc) * static_cast<size_t>(mtp_.cfg.hs);
     if (cudaMalloc(reinterpret_cast<void**>(&d_trunk_full),
@@ -1067,13 +1084,47 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   model::ModelSequence seq;
   const model::VisionFeatures* vptr =
       (vfeats.num_tokens > 0) ? &vfeats : nullptr;
+  int last_chunk_c = 0;  // token count of the final chunk (D2H row offset)
   {
     const std::lock_guard<std::mutex> lock(model_mu_);
     s = model::ModelBeginSequence(model_, &seq, nullptr, seq_id);
     if (s.ok()) {
-      s = model::ModelPrefill(model_, &seq, ids.data(), T, d_logits, nullptr,
-                              mtp_loaded_ ? d_trunk_full : nullptr, vptr,
-                              seq_id);
+      if (!chunked) {
+        // One-shot prefill (T <= max_prefill): unchanged path.
+        s = model::ModelPrefill(model_, &seq, ids.data(), T, d_logits, nullptr,
+                                mtp_loaded_ ? d_trunk_full : nullptr, vptr,
+                                seq_id);
+      } else {
+        // Chunked prefill (T > max_prefill, 262K context). Chunk 0 is a true
+        // prefill (state reset + rope table + PLE history via ModelPrefill);
+        // chunks 1.. are ModelDecodeBatch calls that CONTINUE from the
+        // existing per-layer state (linear SSM/conv recurrence, full-attention
+        // KV/indexer written at absolute positions) — bit-identical to one big
+        // prefill. Intermediate chunks pass logits=nullptr to skip the
+        // lm_head GEMM (only the last chunk's final row is needed for the
+        // first decode token). Text-only: a vision prompt's special (t,h,w)
+        // rope is not reproducible by ModelDecodeBatch's text rope.
+        s = model::ModelPrefill(model_, &seq, ids.data(), chunk, d_logits,
+                                nullptr, nullptr, nullptr, seq_id);
+        for (int base = chunk; s.ok() && base < T; base += chunk) {
+          const int c = std::min(chunk, T - base);
+          const bool last = (base + c >= T);
+          if (last) last_chunk_c = c;
+          s = model::ModelDecodeBatch(
+              model_, ids.data() + base, c, base, ids.data(), base,
+              last ? d_logits : nullptr, nullptr, nullptr, false, seq_id);
+        }
+        // ModelDecodeBatch does NOT advance the sequence state machine (it is
+        // a bare forward, unlike ModelDecodeStepSeq). After the chunked
+        // prefill the sequence must be at position T with the FULL prompt as
+        // PLE history, so the decode loop (ModelDecodeStepSeq / MTP) starts
+        // from the right place. Chunk 0's ModelPrefill left position=chunk and
+        // history=first-chunk-only; fix both here.
+        if (s.ok()) {
+          seq.position = T;
+          seq.history.assign(ids.begin(), ids.end());
+        }
+      }
     }
   }
   // DIAG: the prefill kernels are async; surface any launch/async error now
@@ -1114,12 +1165,17 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   int next_token = -1;
   std::string finish_reason = "stop";
 
-  // First decode token comes from the prefill's LAST position (row T-1). The
-  // D2H (outside the lock) runs on the default stream; synchronize before the
-  // host argmax so h_logits is fully populated (the original serial code relied
-  // on the next forward's H2D to implicitly order this, but the lock now
-  // separates them).
-  cudaMemcpyAsync(h_logits.data(), d_logits + static_cast<size_t>(T - 1) * vocab,
+  // First decode token comes from the prefill's LAST position. One-shot
+  // prefill: row T-1 of d_logits. Chunked prefill: the last chunk wrote its
+  // final row to row 0 of d_logits (ModelDecodeBatch's T=c rows start at
+  // row 0). The D2H (outside the lock) runs on the default stream;
+  // synchronize before the host argmax so h_logits is fully populated (the
+  // original serial code relied on the next forward's H2D to implicitly
+  // order this, but the lock now separates them).
+  const uint16_t* last_logits =
+      chunked ? d_logits + static_cast<size_t>(last_chunk_c - 1) * vocab
+              : d_logits + static_cast<size_t>(T - 1) * vocab;
+  cudaMemcpyAsync(h_logits.data(), last_logits,
                   static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost,
                   nullptr);
   cudaStreamSynchronize(nullptr);
@@ -1139,7 +1195,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // ModelVerifyMulti + batched extend, weights read once) — the same code path
   // a single MTP request takes (B=1). This thread advances the main seq over
   // the accepted prefix (the multi step does not touch seqs[b]).
-  bool use_mtp = mtp_loaded_;
+  // MTP is disabled for chunked prefill (T > max_prefill): the draft-extend
+  // needs the FULL-prompt main trunk (~5.3 GB at 262K) plus the draft model's
+  // own 262K KV/indexer (~26 GB), which exceeds the ~25 GB headroom left after
+  // the main model loads. Plain decode is the safe path (see LOG 2026-09-15).
+  bool use_mtp = mtp_loaded_ && !chunked;
   int32_t mtp_b = -1, mtp_d0 = -1;
   if (use_mtp) {
     if (cudaMalloc(reinterpret_cast<void**>(&d_mtp_g),

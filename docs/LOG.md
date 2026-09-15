@@ -5,6 +5,67 @@
 
 ---
 
+## 2026-09-15 — 分块 prefill 闭合 (262K 长上下文可用) + rope H2D 性能修复
+
+**背景**
+262K 内存实测已闭合 (上一条), 但一次性 prefill 262K 的 `[T, vocab]`
+logits = 130 GB 不可行, 且当前 API 无"继续 prefill"路径 — 262K 实际不可用。
+用户要求先做分块 prefill 再测长上下文。
+
+**实现 (serve 层, 不改模型 API 语义)**
+- `max_prefill` 语义从"prompt 上限"改为"分块大小" (prompt 上限 = `max_len`)。
+  `T > max_prefill` 时走分块路径, 否则一次性 (行为不变)。
+- 分块路径: chunk 0 用 `ModelPrefill` (状态重置 + rope 表 + PLE history),
+  chunk 1.. 用 `ModelDecodeBatch` (绝对位置 `[base, base+T)`, 不重置状态,
+  继续 per-layer SSM/conv/KV/indexer)。中间块 `logits=nullptr` 跳过
+  lm_head GEMM (只需最后一块的末行做首个 decode token)。
+- `d_logits` 只分配 `chunk*vocab` (非 `T*vocab`)。MTP 在分块路径禁用
+  (draft-extend 需全 prompt trunk ~5.3 GB + draft 自身 262K KV ~26 GB,
+  超 headroom; plain decode 是安全路径)。vision + 分块拒绝 (3D MRoPE 的
+  (t,h,w) rope 无法由续块文本 rope 复现; vision prompt 实际远短于 262K)。
+- 分块后手动修 `seq.position = T` + `seq.history = 全 prompt`
+  (`ModelDecodeBatch` 是裸 forward, 不推进状态机)。
+
+**正确性 (诊断工具 `tools/chunk_prefill_diag.cu`)**
+一次性 `ModelForward` vs 分块 (Prefill+DecodeBatch) 的末位 logits 对比:
+- **argmax 全一致** (greedy 输出正确)。
+- l2_rel 0.15–0.21, 但 **baseline 两次相同的一次性 `ModelForward` 也差
+  0.173** — 即分块差异在引擎固有非确定带内 (GEMM/MoE 浮点加法顺序),
+  **非分块引入的 bug**。各 chunk 大小 (1/2/5 块) 的 l2_rel 都落在同一
+  噪声带, 无随块数增长的累积漂移。
+- 68 项测试全绿零警告 (含 4 层参考验证 / MTP / 多序列隔离)。
+
+**性能 bug 修复 (`ModelDecodeBatch` rope H2D)**
+分块续块走 `ModelDecodeBatch`, 其 3D MRoPE 写 `d_rope_pos` 用
+**逐 token 3×T 次 4 字节 `cudaMemcpyAsync`** (2048-token 块 = 6144 次小
+拷贝, 串行 H2D 启动开销)。改为: 文本 token 三行 rope 值相同 (t=h=w=
+logical+delta), 构造一次 T 个值, **3 次连续批量 H2D** (位不变, 同值同
+偏移)。20K 全程 116s → 其中 rope 拷贝 ~3s 降到可忽略。
+
+**每块计时 (诊断工具, 定位长上下文成本)**
+T=20000 chunk=2048: chunk 0 (prefill, dense) 6.6s, chunk 1..8 (sparse)
+各 ~12.6s **flat (不随 base 增长)**, 末块 9.8s, 全程 116s。
+→ 非 O(T²), 是 O(chunk) 的 48 层 MoE forward 带宽下限 (nvjet tensor
+core, 已优化)。262K = 128 块 × ~12.6s ≈ **27 分钟 prefill** — 正确但慢,
+接近 MoE GEMM 带宽下限。QSA indexer 每 query 被 cap 在 max_blocks=2048
+(compress=4 → 8192 token), 非 O(T²) 来源。
+
+**262K 端到端 (200K-token prompt, 带看门狗) — 已闭合**
+serve `--max-len 262144 --max-seq 1 --max-prefill 2048 --no-mtp`,
+200K-token prompt 分块 prefill + 30 decode: **prompt_tokens=200743,
+completion_tokens=30, elapsed=1259.4s (~21 分钟, 与 100 块 × 12.6s
+估计吻合)**, 内存稳定 ~92 GB 无 OOM (看门狗未触发), 输出语义正确
+(模型正确识别重复文本并开始分析)。
+
+**结论**
+262K 长上下文可用 (单序列, 分块 prefill)。prefill 吞吐受 MoE GEMM 带宽
+下限约束 (~12.6s/2048-token 块), 进一步提速需 FP8 权重 (计划 C) 或
+SparseAttentionKernel 优化 (已证 BF16 shared / GQA 共享均回退)。
+QSA idx_budget=2048 在 262K 只 attend ~3% 历史的召回问题仍是模型层
+硬伤 (见 PHASES.md)。
+
+---
+
 ## 2026-09-15 — 262144×max_seq=1 显存实测 (带看门狗, 闭合)
 
 **背景**

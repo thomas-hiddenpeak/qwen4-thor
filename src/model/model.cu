@@ -736,17 +736,24 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
   // delta (the rope delta from prefill; 0 for pure text). The RoPE kernels
   // index rope_pos by the ABSOLUTE position (positions[t] == base_position+t),
   // so write the three rows at their strided [3, max_len] offsets.
+  //
+  // All three rows carry the SAME value for a text token (t = h = w = logical
+  // position + delta), so build the T values once and copy each of the 3 rows
+  // as a SINGLE contiguous H2D into [base_position, base_position+T). The old
+  // per-token 3xT tiny (4-byte) copies serialized ~3T H2D launches per call —
+  // a 2048-token chunk meant 6144 launches, which dominated chunked-prefill
+  // time at 262K (see LOG 2026-09-15). Bit-identical (same values, same
+  // destination offsets), just batched.
   {
     const size_t ml = static_cast<size_t>(cfg.max_len);
     int* seq_rope = m.d_rope_pos + static_cast<size_t>(seq_id) * 3 * ml;
-    for (int t = 0; t < T; ++t) {
-      const int rp = base_position + t + m.rope_delta[seq_id];
-      for (int r = 0; r < 3; ++r) {
-        if (cudaMemcpyAsync(seq_rope + r * ml + (base_position + t), &rp,
-                            sizeof(int), cudaMemcpyHostToDevice, stream) !=
-            cudaSuccess)
-          return Status::Fail("H2D rope_pos");
-      }
+    std::vector<int> rope_pos(T);
+    for (int t = 0; t < T; ++t) rope_pos[t] = base_position + t + m.rope_delta[seq_id];
+    for (int r = 0; r < 3; ++r) {
+      if (cudaMemcpyAsync(seq_rope + r * ml + base_position, rope_pos.data(),
+                          T * sizeof(int), cudaMemcpyHostToDevice, stream) !=
+          cudaSuccess)
+        return Status::Fail("H2D rope_pos");
     }
   }
 

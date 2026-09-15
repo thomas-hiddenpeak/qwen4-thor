@@ -505,19 +505,33 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   11.17ms 略差; ② GQA K/V 共享 (block (t,qh)→(t,kvh), 流量降 12 倍):
   11.09→15.16ms 回退 37% (block 数降 12 倍, 并行度损失 > 流量收益)。
   均回退, 保持基线 (T=4096 sparse 11.09ms)。详见 LOG 2026-09-15。
+- [x] 2026-09-15 **分块 prefill 闭合 (262K 长上下文可用) + rope H2D 修复**:
+  `max_prefill` 语义从 prompt 上限改为分块大小 (上限 = `max_len`);
+  `T > max_prefill` 走分块: chunk 0 `ModelPrefill` + chunk 1..
+  `ModelDecodeBatch` (绝对位置续块, 不重置状态), 中间块跳过 lm_head。
+  正确性 (诊断工具 `tools/chunk_prefill_diag.cu`): 分块 vs 一次性末位
+  logits **argmax 全一致**, l2_rel 0.15–0.21 在引擎固有非确定带内
+  (baseline 两次一次性也差 0.173), 非 bug; 68 测试全绿。性能 bug 修复:
+  `ModelDecodeBatch` 的 3D MRoPE 写 `d_rope_pos` 从逐 token 3×T 次 4 字节
+  H2D 改为 3 次批量 (位不变)。每块计时: 2048-token 块 ~12.6s flat
+  (不随位置增长, 48 层 MoE forward 带宽下限), 262K ≈ 27 分钟 prefill。
+  262K E2E: 200K-token prompt 分块 prefill + 30 decode, 内存 ~92 GB 无
+  OOM (看门狗), 生成正常。详见 LOG 2026-09-15。
 
 ## 进行中
 
-- **长上下文 262K (262144) 验证 (2026-09-14 启动, 内存实测已闭合)**:
-  模型声明 `max_position_embeddings=262144` (config 已解析)。**实测
-  (2026-09-15, 带内存看门狗): `--max-len 262144 --max-seq 1` serve 加载
-  成功, 峰值可用内存 25.6 GB (消耗 ~96 GB, 无 OOM), 短 prompt 生成正常
-  且确定 (2/2 一致), 请求后无泄漏 (25 GB 稳定)** — 与预算估算
-  (~101 GB) 吻合。max_seq=4 仍 OOM (~158 GB, 此前实测崩机)。
-  另需**分块 prefill** (一次性 prefill 262K 的 [T,vocab] logits = 130 GB
-  不可行, 当前 API 无"继续 prefill"路径)。模型层硬伤 (如实报告): QSA
-  idx_budget=2048 在 262K 只 attend ~3% 历史块, 召回受限。详见
-  PHASES.md "长上下文 262K 内存预算"。
+- **长上下文 262K (262144) 验证 (2026-09-14 启动, 内存实测 + 分块 prefill
+  均已闭合)**: 模型声明 `max_position_embeddings=262144` (config 已解析)。
+  **实测 (2026-09-15, 带内存看门狗): `--max-len 262144 --max-seq 1` serve
+  加载成功, 峰值可用内存 25.6 GB (消耗 ~96 GB, 无 OOM), 短 prompt 生成
+  正常且确定 (2/2 一致), 请求后无泄漏 (25 GB 稳定)** — 与预算估算
+  (~101 GB) 吻合。max_seq=4 仍 OOM (~158 GB, 此前实测崩机)。**分块
+  prefill 已实现并验证 (2026-09-15): `max_prefill` 改分块大小, 分块路径
+  Prefill+DecodeBatch 续块, 正确性 argmax 一致 (差异在引擎固有非确定带),
+  200K-token prompt E2E 无 OOM 生成正常**。prefill 吞吐受 MoE GEMM 带宽
+  下限约束 (~12.6s/2048-token 块, 262K ≈ 27 分钟)。模型层硬伤 (如实
+  报告): QSA idx_budget=2048 在 262K 只 attend ~3% 历史块, 召回受限。
+  详见 PHASES.md "长上下文 262K 内存预算" + LOG 2026-09-15。
 - **完整 PD 分离部署 — 降级为后续计划 (2026-09-14 用户决定)**: 当前
   PD-ready 架构 (Paged KV + 可分离路径 + ModelSequence 阶段边界 API)
   已满足本机调度需求 (持续 prefill 场景靠 Paged KV 按页迁移 + 独立调度
