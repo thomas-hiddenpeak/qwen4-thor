@@ -575,6 +575,20 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   AOT, 理论下限 ~0.05ms, 但需自建 block-sparse + paged gather, 工程量大)
   ③ 接受当前 10.5ms 转 decode GEMM 带宽 (FP8 计划 C)。回退 bf16 (无
   收益), 保持基线。详见 LOG 2026-09-15。
+- [x] 2026-09-16 **Step 5: decode 全链路 profile (计划 C 证伪, 真瓶颈
+  定位)**: attention 优化闭合后转 decode GEMM 带宽, 先数据驱动: nsys
+  profile decode 全链路 (MTP 生产路径, 60 tokens) 拿 per-kernel 精确占比:
+  **BF16 投影 GEMM/GEMV ~58%** (attention 12 层 + linear 36 层 q/k/v/o +
+  DeltaNet 投影, BF16 权重) / FP4 MoE GEMM 19.2% / MoE 量化开销 14.3%
+  (SwiGLUQuant+GatherQuant+ScatterAdd) / linear attention 2.8% /
+  **QSA full attention ~0.7% (IndexerLogits 仅 0.2%)**。**决定性结论:
+  计划 C (QSA indexer cache FP8) 彻底证伪** — IndexerLogitsKernel decode
+  仅 0.2%, FP8 化收益 <0.1%, 不值得 (且需质量验证), **计划 C 关闭**。
+  真瓶颈 = BF16 投影 GEMM/GEMV 58% (转 FP8 是大工程: 权重格式 + GEMM
+  kernel + 重新量化 + 质量验证, 需用户决策) + MoE 量化开销 14.3% (次要,
+  可 kernel 融合/launch 减少)。不自主启动 BF16 投影 FP8 大工程, 本
+  优化阶段 (attention + decode 瓶颈定位) 数据驱动收尾, 下一步待用户
+  定夺。详见 LOG 2026-09-16。
 - [x] 2026-09-15 **Step 4: tensor core (FA4) 路径关闭 (源码级 blocker)**:
   Step 3b 收敛后调研唯一能大幅超越 SIMT 7.5× 下限的方向 (tensor core /
   FA4 AOT, Step 1b 已打通全链路)。源码级确认: 通用 kernel

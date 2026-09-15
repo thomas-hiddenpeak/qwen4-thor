@@ -5,6 +5,50 @@
 
 ---
 
+## 2026-09-16 — Step 5: decode 全链路 profile (计划 C 证伪, 真瓶颈定位)
+
+**背景**
+attention 优化闭合 (Step 2-4) 后, 按计划转 decode GEMM 带宽。先做数据
+驱动: nsys profile decode 全链路 (MTP 生产路径, `q4t generate --mtp
+--max-tokens 60`), 拿 per-kernel 精确占比, 再定优化目标 — 避免拍脑袋
+投入大工程。
+
+**decode per-kernel 占比 (MTP 路径, 60 tokens, ~2.8s)**
+| 类别 | kernel | 占比 |
+|---|---|---|
+| BF16 GEMM/GEMV (attention+linear 投影) | Bf16GevKernel 10.0% + nvjet tst ~27% + cutlass bf16 ~21.6% | **~58%** |
+| FP4 MoE GEMM (nvjet UE4M3) | 11.5% + 7.7% | **19.2%** |
+| MoE 量化开销 | SwiGLUQuant 6.4% + GatherQuant 6.4% + ScatterAdd 1.5% | **14.3%** |
+| linear attention (DeltaNet) | GatedDeltaNet 1.7% + CausalConv1d 0.2% + GroupedRmsNorm 0.9% | ~2.8% |
+| QSA full attention | SparseAttention 0.5% + **IndexerLogits 0.2%** | ~0.7% |
+| MoE routing/combine | RouterTopk + MoECombine + MixGate | ~0.8% |
+
+**决定性结论: 计划 C (QSA indexer cache FP8) 彻底证伪**
+- `IndexerLogitsKernel` 在 decode 仅占 **0.2%** (5ms/2.8s)。
+- 即使 idx_comp 改 FP8 把 indexer 读带宽减半, decode 吞吐收益 **<0.1%**。
+- 计划 C (REFERENCE_MTP.md 定义: idx_comp BF16→FP8 + fp8×fp8 dot) 完全
+  不值得做, 且需质量验证 (量化 indexer logits 影响 top-k)。
+- **计划 C 关闭**。
+
+**真 decode 瓶颈定位**
+- **BF16 投影 GEMM/GEMV ~58%**: attention (12 层) + linear attention
+  (36 层) 的 q/k/v/o + DeltaNet 投影, BF16 权重。这是 "decode GEMM 权重
+  带宽" 的本体。转 FP8 可减半权重读带宽, 但是大工程 (权重格式 + GEMM
+  kernel + 重新量化 + 质量验证)。
+- **MoE 量化开销 14.3%**: SwiGLUQuant + GatherQuant + ScatterAdd (FP4
+  MoE 的量化/反量化)。28429 实例 × 6-7µs, 是 launch 开销 + 小工作, 可
+  能是 kernel 融合 / launch 减少的机会 (次要目标)。
+- FP4 MoE GEMM 19.2%: 已是 NVFP4 W4A4, 权重带宽已优化。
+
+**决定 (自主, 用户暂不可用)**
+- 计划 C 关闭 (数据证伪, 0.2%)。
+- 不自主启动 BF16 投影 FP8 大工程 (改变权重格式 + 重新量化 + 质量验证,
+  是重大方向, 需用户决策)。
+- 本优化阶段 (attention + decode 瓶颈定位) 数据驱动收尾, 结论已记录。
+  下一步 (BF16 投影 FP8 / MoE 量化融合) 待用户定夺。
+
+---
+
 ## 2026-09-15 — Step 4: tensor core (FA4) 路径关闭 (源码级 blocker)
 
 **背景**
