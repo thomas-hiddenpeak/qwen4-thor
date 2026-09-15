@@ -5,6 +5,70 @@
 
 ---
 
+## 2026-09-15 — Step 2: GQA packing 重写 SparseAttentionKernel (负结果, 回退)
+
+**目标**
+Step 1b 证明 FA4 能 AOT 走通, 但 Step 2 调研发现 FA4 的稀疏模型与
+我们的 QSA 根本不兼容 (见下), 故改走 **计划 1**: 借 FA4 的 Blackwell
+思路, 用 GQA packing 重写我们自己的 `SparseAttentionKernel` — 一个
+block 服务一个 (t, kv-head) 的全部 12 个 q-head, KV 只 gather 一次,
+理论稀疏 regime 下 KV 读取减 12×。
+
+**FA4 稀疏模型不兼容 (调研结论)**
+- FA4 `BlockSparseTensors` 粒度是 per (batch, head, m_block); 我们的 QSA
+  是 **per-token、head 共享** (一个 token 的 24 个 q-head 共享同一组
+  topk 位置)。FA4 无法直接表达我们的稀疏 pattern。
+- FA4 `gather_kv_indices` 需要 qv, 不能与 paged KV 组合。
+- 结论: 没有 FA4 路径能直接替换 `SparseAttentionKernel`, 只能借其
+  思路重写自己的 kernel。
+
+**实现 (GQA packing, 模板 `<int kGQA>`)**
+- block = (t, kv-group), 256 线程。每线程拥有 dim d=tid 对**全部 kGQA
+  个 q-head** (寄存器数组 m[kGQA]/l[kGQA]/acc[kGQA]), 12 个 q-head 共享
+  一次 KV gather。
+- QK: 对每个 q-head g, 每线程 1 FMA (dim d=tid) + warp-reduce (5 shfl)
+  + cross-warp sum — 与旧 per-q-head kernel 的逐维/跨 warp 累加顺序
+  **完全一致** → 逐 q-head bit-exact。
+- PV: 位置顺序与旧 kernel 相同 → online softmax + acc/l + gate 舍入
+  bit-exact。68 项测试全过 (含 `model_full_attention`)。
+
+**性能: 负结果 — GQA packing 比原 per-q-head kernel 慢**
+bench (layer 3, nq=24 nkv=2 hd=256, iters=10, 默认配置):
+```
+                 T=2048 dense    T=4096 sparse
+  原 per-qh      5.325 ms        10.538 ms   (最快)
+  GQA=4          5.539 ms        10.933 ms   (+3.7%)
+  GQA=12         6.683 ms        13.193 ms   (+25%)
+```
+趋势单调: packing 越大越慢。ptxas: 原 48 寄存器 / GQA=4 64 / GQA=12 96,
+smem 34368/37632/46336 B, 三者都 smem 限制 1 block/SM。
+
+**根因**
+- GQA packing 优化的是 **KV gather**, 但 QSA 的 per-token KV footprint
+  被 idx_budget (2048 位置) 封顶 ≈ 2MB, **始终 L2 驻留** (Thor L2=32MB),
+  gather 本就不是瓶颈 (L2 命中, 不是 HBM miss) — "12× KV 读取减少"
+  是红鲱鱼, 没东西可省。
+- packing 把 grid 从 T×24 (原) 降到 T×6 (GQA=4) / T×2 (GQA=12),
+  **并行度损失** 3×/12×, 同时寄存器 48→64/96 压低 ILP。
+- 即使 262K 长上下文, sparse attention 每 token 也只读 2048 位置,
+  footprint 不变, 结论不变。
+
+**决定**
+- 回退 `full_attention.cu` 到原 per-q-head kernel (已验证最快)。
+- 保留 bench 增强 `--warm-idx` + `--base-pos` (production-like 散射读
+  模拟, 独立工具价值)。
+- GQA packing 作为**负结果**记录, 不合并。
+
+**下一步**
+- prefill TTFT 真瓶颈是 `SparseAttentionKernel` (profile 占 71.4%),
+  但优化方向不是 GQA packing (gather 非瓶颈), 而是:
+  ① 降低 per-token 2048 位置的 QK/PV 计算量 (tensor core / 向量化),
+  ② 或 idx_budget 自适应 (长序列下 2048 只 attend ~3% 历史, 召回受限,
+  见 PHASES.md 262K 内存预算)。decode 吞吐瓶颈是 GEMM 权重带宽
+  (方向 FP8 计划 C), 与 attention 无关。
+
+---
+
 ## 2026-09-15 — Step 1b: FA4 hd256 kernel AOT 全链路闭合 (零 Python 运行时)
 
 **目标**

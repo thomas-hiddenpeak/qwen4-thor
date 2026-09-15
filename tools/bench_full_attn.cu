@@ -123,6 +123,8 @@ int main(int argc, char** argv) {
   int max_len = 4096;
   int iters = 5;
   bool diag = false;
+  bool warm_idx = false;
+  int base_pos = 0;
   std::string ts_arg = "256,1024,2048,4096";
   std::string golden_path, check_path;
   for (int i = 1; i < argc; ++i) {
@@ -133,6 +135,25 @@ int main(int argc, char** argv) {
     if (a == "--golden" && i + 1 < argc) golden_path = argv[++i];
     if (a == "--check" && i + 1 < argc) check_path = argv[++i];
     if (a == "--diag") diag = true;
+    // --warm-idx: pre-fill the INDEXER caches (idx_raw + idx_comp) with
+    // random data ONCE and do not reset them per iteration. The indexer
+    // logits are iq[t] . idx_comp[g] over the FULL history, so random
+    // idx_comp makes TopkSelectKernel pick a RANDOM 512-group subset of
+    // the max_len/compress groups — the production scattered-read pattern
+    // (vs the zero-cache default where all logits tie at 0 and the top-k
+    // degenerates to the first 512 groups, a contiguous prefix). The main
+    // KV cache is still zeroed per iteration, so SparseAttentionKernel
+    // reads scattered physical pages of a zero-filled (L2-cold, >32MB) KV
+    // pool — exactly the production memory pattern, isolated from the
+    // indexer/GEMM cost. Requires T > idx_budget to be in the sparse
+    // regime.
+    if (a == "--warm-idx") warm_idx = true;
+    // --base-pos N: the T tokens sit at ABSOLUTE positions [N, N+T) instead
+    // of [0, T). Models a prefill chunk at the tail of a long sequence:
+    // the indexer sees (N+T)/compress visible groups (history included),
+    // so with --warm-idx the top-k scatters across the whole KV pool.
+    // Requires N + max(ts) <= max_len.
+    if (a == "--base-pos" && i + 1 < argc) base_pos = std::atoi(argv[++i]);
   }
   if (!FileExists(kIndex)) {
     std::fprintf(stderr, "model index not found\n");
@@ -195,13 +216,21 @@ int main(int argc, char** argv) {
   cudaMemset(d_kv, 0, kv_bytes);
   cudaMemset(d_idx_raw, 0, static_cast<size_t>(max_len) * kIdxHd * 2);
   cudaMemset(d_idx_comp, 0, static_cast<size_t>(max_len) * kIdxHd * 2);
+  if (warm_idx) {
+    const size_t idx_elems = static_cast<size_t>(max_len) * kIdxHd;
+    std::vector<uint16_t> idx_warm = MakeInput(idx_elems);
+    cudaMemcpy(d_idx_raw, idx_warm.data(), idx_elems * 2,
+               cudaMemcpyHostToDevice);
+    cudaMemcpy(d_idx_comp, idx_warm.data(), idx_elems * 2,
+               cudaMemcpyHostToDevice);
+  }
   // Identity page table + rope (pure text: all three rows = position).
   {
     std::vector<int> pt(max_len), rope(3 * max_len), pos(max_len);
     for (int p = 0; p < max_len; ++p) {
       pt[p] = p / kKvPageSize;
       rope[p] = rope[max_len + p] = rope[2 * max_len + p] = p;
-      pos[p] = p;
+      pos[p] = base_pos + p;
     }
     cudaMemcpy(d_pt, pt.data(), pt.size() * sizeof(int), cudaMemcpyHostToDevice);
     cudaMemcpy(d_rope, rope.data(), rope.size() * sizeof(int),
@@ -247,8 +276,12 @@ int main(int argc, char** argv) {
     const double ms = TimeMs(
         iters, [&] {
           cudaMemset(d_kv, 0, kv_bytes);
-          cudaMemset(d_idx_raw, 0, static_cast<size_t>(max_len) * kIdxHd * 2);
-          cudaMemset(d_idx_comp, 0, static_cast<size_t>(max_len) * kIdxHd * 2);
+          if (!warm_idx) {
+            cudaMemset(d_idx_raw, 0,
+                       static_cast<size_t>(max_len) * kIdxHd * 2);
+            cudaMemset(d_idx_comp, 0,
+                       static_cast<size_t>(max_len) * kIdxHd * 2);
+          }
           FullAttentionForward(w, d_x, d_out, d_pos, d_rope, d_kv, d_pt,
                                d_idx_raw, d_idx_comp, T, d_ws, ws_bytes,
                                nullptr, nullptr);

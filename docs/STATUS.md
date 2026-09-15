@@ -534,9 +534,31 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   编译期常量, 使 C 导出干净)。C++ 驱动 `tools/cute_aot/test_fa4_aot.cpp`
   (零 Python, 自包含 bf16, fp32 causal 参考)。**结果 PASS: l2_rel=
   0.001834, argmax_mismatch=172/3072 (near-tie, bf16 精度内)**。
-  下一步 Step 2: block-sparse + paged KV (page 16) + varlen 接入 AOT,
-  对齐真实 QSA 布局; Step 3: 引擎集成替换 `SparseAttentionKernel`。
-  详见 LOG 2026-09-15。
+  Step 2 已闭合 (负结果, 见下条): FA4 稀疏模型与 QSA 不兼容, 改走计划 1
+  (GQA packing 重写) 亦比原 kernel 慢, 已回退。详见 LOG 2026-09-15。
+- [x] 2026-09-15 **Step 2: GQA packing 重写 SparseAttentionKernel (负结果,
+  回退)**: FA4 稀疏模型不兼容 (FA4 `BlockSparseTensors` 是 per (batch,
+  head, m_block) 粒度, QSA 是 per-token head 共享; `gather_kv_indices`
+  需 qv 不能与 paged KV 组合) → 无 FA4 路径可直接替换, 改走**计划 1**:
+  借 FA4 思路用 GQA packing 重写 `SparseAttentionKernel` (一个 block 服务
+  一个 kv-head 的多个 q-head, KV 只 gather 一次)。实现 bit-exact (QK 逐维
+  + 跨 warp 累加顺序与旧 kernel 完全一致, 68 测试全过), 但**性能负结果**:
+  ```
+                 T=2048 dense    T=4096 sparse
+  原 per-qh      5.325 ms        10.538 ms   (最快)
+  GQA=4          5.539 ms        10.933 ms   (+3.7%)
+  GQA=12         6.683 ms        13.193 ms   (+25%)
+  ```
+  趋势单调: packing 越大越慢。ptxas 48/64/96 寄存器, 三者都 smem 限制
+  1 block/SM。**根因**: GQA packing 优化的是 KV gather, 但 QSA per-token
+  KV footprint 被 idx_budget (2048 位置) 封顶 ≈2MB, **始终 L2 驻留**
+  (Thor L2=32MB), gather 非瓶颈 (L2 命中非 HBM miss) — "12× KV 读取
+  减少" 是红鲱鱼; packing 把 grid 从 T×24 降到 T×6/T×2 (并行度损失
+  3×/12×) + 寄存器 48→64/96, 净变慢。即使 262K 长上下文, sparse
+  attention 每 token 也只读 2048 位置, footprint 不变, 结论不变。回退
+  `full_attention.cu` 到原 per-q-head kernel (最快), 保留 bench 增强
+  `--warm-idx` + `--base-pos` (production-like 散射读模拟)。详见 LOG
+  2026-09-15。
 - [x] 2026-09-15 **分块 prefill 闭合 (262K 长上下文可用) + rope H2D 修复**:
   `max_prefill` 语义从 prompt 上限改为分块大小 (上限 = `max_len`);
   `T > max_prefill` 走分块: chunk 0 `ModelPrefill` + chunk 1..
