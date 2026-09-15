@@ -5,6 +5,63 @@
 
 ---
 
+## 2026-09-16 — Step 6: MoE 量化开销分析 (14.3%, launch 开销主导) + 优化全景
+
+**背景**
+Step 5 定位 decode 真瓶颈: BF16 投影 GEMM 58% + MoE 量化 14.3%。
+本步分析 MoE 量化 14.3% 的优化空间。
+
+**MoE 量化 kernel 结构 (src/quant/moe_gemm.cu)**
+per-expert 循环 (E=512, decode 时仅 ~10 专家 M_e=1):
+```
+GatherQuant(e) → GEMM_gu(e) → SwiGLUQuant(e) → GEMM_dn(e) → ScatterAdd(e)
+```
+5 kernel 按专家串行 (数据依赖: SwiGLUQuant 读 GEMM_gu 输出,
+ScatterAdd 读 GEMM_dn 输出)。28429 实例 = 48 层 × ~12 MTP 步 ×
+~10 非空专家 × 3 量化 kernel。每 kernel 6-11µs 是 **launch 开销主导**
+(实际计算极小: M_e=1, hs=2560, 256 线程 1 个 block)。
+
+**优化空间评估**
+- **批量 GatherQuant** (1 launch 替代 ~10): 需改 buffer 布局 (当前
+  per-expert 覆写 rows 0..M_e-1), 且只省 1/3 量化 kernel (~2%)。
+- **SwiGLUQuant/ScatterAdd 无法批量**: 依赖 per-expert GEMM 输出,
+  必须 per-expert launch。
+- **CUDA Graphs** (capture 5-kernel 序列): decode M_e=1 固定, 理论上
+  可行, 但 cuBLASLt GEMM 在 graph 内 capture 复杂, 且 MTP 多序列
+  下 M_e 不固定。
+- **Grouped GEMM 重写** (PHASES.md Phase 3 "MoE grouped GEMM 调优"):
+  一次 GEMM 处理所有专家, 消除 per-expert 循环。大工程, 需重写
+  Fp4Gemm 为 grouped 版本 + 改 buffer 布局。
+
+**结论: MoE 量化 14.3% 优化需 grouped GEMM 重写 (大工程)**
+launch 开销主导, 单 kernel 批量收益有限 (~2%), 真正消除需 grouped
+GEMM (一次处理所有专家)。属 PHASES.md Phase 3 计划, 非本阶段范围。
+
+**decode 优化全景 (Step 5-6 汇总)**
+| 瓶颈 | 占比 | 优化方向 | 工程量 | 风险 |
+|---|---|---|---|---|
+| BF16 投影 GEMM/GEMV | **58%** | 权重 BF16→FP8 (减半带宽) | **大** (权重格式+GEMM kernel+重新量化) | 需质量验证 |
+| FP4 MoE GEMM | 19.2% | 已 NVFP4 W4A4, 权重带宽已优化 | — | — |
+| MoE 量化开销 | **14.3%** | grouped GEMM 重写 | **大** (per-expert 循环→grouped) | 中 (数值不变) |
+| linear attention | 2.8% | 已优化 (手写 kernel) | — | — |
+| QSA full attention | 0.7% | 已闭合 (Step 2-4, SIMT 极限) | — | — |
+
+**两个大工程 (需用户决策)**
+1. **BF16 投影 FP8** (58% → 理论减半): 改 attention+linear 投影权重
+   从 BF16 到 FP8 (e4m3), GEMM 改 FP8×FP8 (cuBLASLt 支持), 需重新
+   量化权重 + 质量验证。收益最大但工程最大。
+2. **MoE grouped GEMM** (14.3% → 理论减 50%+): 消除 per-expert 循环,
+   一次 grouped GEMM 处理所有专家。需重写 Fp4Gemm 为 grouped 版本。
+
+**决定 (自主, 用户暂不可用)**
+- 本优化阶段 (attention 闭合 + decode 瓶颈定位 + MoE 量化分析) 数据
+  驱动收尾。两个大工程 (BF16 投影 FP8 / MoE grouped GEMM) 需用户
+  决策优先级与质量验证标准, 不自主启动。
+- 当前引擎性能 (decode ~22 tok/s MTP, prefill ~35 tok/s) 是 SIMT +
+  NVFP4 架构下的合理水平, 进一步优化需架构级改变。
+
+---
+
 ## 2026-09-16 — Step 5: decode 全链路 profile (计划 C 证伪, 真瓶颈定位)
 
 **背景**

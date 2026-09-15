@@ -575,6 +575,20 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   AOT, 理论下限 ~0.05ms, 但需自建 block-sparse + paged gather, 工程量大)
   ③ 接受当前 10.5ms 转 decode GEMM 带宽 (FP8 计划 C)。回退 bf16 (无
   收益), 保持基线。详见 LOG 2026-09-15。
+- [x] 2026-09-16 **Step 6: MoE 量化开销分析 (14.3%, launch 开销主导) +
+  优化全景**: Step 5 定位 decode 真瓶颈后, 分析 MoE 量化 14.3% 的优化
+  空间。MoE 量化 kernel 是 per-expert 循环 (GatherQuant→GEMM_gu→
+  SwiGLUQuant→GEMM_dn→ScatterAdd, 5 kernel 按专家串行, 数据依赖),
+  28429 实例 × 6-11µs 是 **launch 开销主导** (decode M_e=1 计算极小)。
+  优化空间: 批量 GatherQuant 只省 ~2%, SwiGLUQuant/ScatterAdd 无法
+  批量 (依赖 per-expert GEMM 输出), 真正消除需 **grouped GEMM 重写**
+  (PHASES.md Phase 3)。**decode 优化全景**: BF16 投影 GEMM/GEMV 58%
+  (→FP8 大工程, 需质量验证) / FP4 MoE GEMM 19.2% (已优化) / MoE 量化
+  14.3% (→grouped GEMM 大工程) / linear attention 2.8% (已优化) / QSA
+  0.7% (已闭合)。**两个大工程需用户决策**: ① BF16 投影 FP8 (58% 收益
+  最大但工程最大) ② MoE grouped GEMM (14.3%)。本优化阶段 (attention
+  闭合 + decode 瓶颈定位 + MoE 量化分析) 数据驱动收尾, 不自主启动大
+  工程。详见 LOG 2026-09-16。
 - [x] 2026-09-16 **Step 5: decode 全链路 profile (计划 C 证伪, 真瓶颈
   定位)**: attention 优化闭合后转 decode GEMM 带宽, 先数据驱动: nsys
   profile decode 全链路 (MTP 生产路径, 60 tokens) 拿 per-kernel 精确占比:
