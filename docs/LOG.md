@@ -5,6 +5,49 @@
 
 ---
 
+## 2026-09-16 — Step 7: prefill 慢的真相 (用户反馈 vllm 1k+ tok/s) — 修正 Step 2-4 结论
+
+**用户反馈**
+"prefill 的速度太儿戏了, vllm 可以到 1k 以上"。
+
+**实测 prefill 吞吐 (q4t generate, Thor)**
+| prompt | tok/s | 备注 |
+|---|---|---|
+| 1051 | 437 | dense regime |
+| 2126 | 300 | sparse regime, 吞吐下降 |
+| 4251 | 220 | 继续下降 |
+
+**长 prefill (T=4251, 19.4s) nsys per-kernel**
+- **SparseAttentionKernel 78.4% (30.4s/38.7s, 36 实例, avg 843ms, max 1.27s)**
+- GatedDeltaNet 6.7% / IndexerLogits 2.4% / MoE ~6% / 其余 ~6%
+
+**关键修正: Step 2-4 的 bench 是误导性的**
+Step 2-4 用 `q4t_bench_full_attn` (单层, max_len=4096): KV cache 8.4MB
+**驻留 L2 (32MB)** → 10.5ms/call, 据此得出 "KV 驻留 L2, gather 非
+瓶颈, SIMT 已近极限"。
+真实 prefill: **12 层 full attn 顺序处理**, 每层 KV 16.8MB (max_len
+8192), 层间互相驱逐 L2 → **HBM 散射读** → **843ms/call (80× 差距)**。
+Step 2-4 结论在真实场景**不成立**。SparseAttentionKernel 是 prefill
+#1 瓶颈 (78.4%), HBM 延迟受限 (散射 paged-KV 读, 1 block/SM 无法
+隐藏延迟)。
+
+**vllm 为什么快 6×+**
+vllm QSA 用 **Triton tensor-core kernel**
+(`ops/qsa.py::_qsa_sparse_paged_gqa_splitk_kernel`): `tl.dot` 2D tile
+(BLOCK_M q-heads × BLOCK_N positions) + split-K + paged KV gather。
+tensor core 的 QK^T/PV 矩阵乘 + 2D tiling 的延迟隐藏, 是 80× 差距
+的来源。我们的 SIMT kernel (per-dim FMA + warp reduce) 无法隐藏
+HBM 散射读延迟。
+
+**下一步 (方向明确)**
+用 tensor core 重写 SparseAttentionKernel (对齐 vllm Triton kernel 的
+2D tile + split-K 结构), 或集成 vllm 的 Triton kernel 逻辑到 C++
+(Triton 可 AOT 编译, 参考 Step 1b FA4 AOT 链路)。目标: 长 prefill
+SparseAttentionKernel 从 843ms/call 降到 ~100ms 量级, 整体 prefill
+220 → 1k+ tok/s。
+
+---
+
 ## 2026-09-16 — Step 6: MoE 量化开销分析 (14.3%, launch 开销主导) + 优化全景
 
 **背景**

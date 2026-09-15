@@ -575,6 +575,23 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   AOT, 理论下限 ~0.05ms, 但需自建 block-sparse + paged gather, 工程量大)
   ③ 接受当前 10.5ms 转 decode GEMM 带宽 (FP8 计划 C)。回退 bf16 (无
   收益), 保持基线。详见 LOG 2026-09-15。
+- [x] 2026-09-16 **Step 7: prefill 慢的真相 (用户反馈 vllm 1k+) — 修正
+  Step 2-4 结论**: 用户反馈 "prefill 太慢, vllm 1k+"。实测 prefill
+  吞吐: 1051 tok=437 tok/s, 2126=300, 4251=220 (随 T 增大下降)。长
+  prefill (T=4251, 19.4s) nsys: **SparseAttentionKernel 78.4% (30.4s/
+  38.7s GPU 时间, 36 实例, 每 prefill 层 ~1.2s)** / GatedDeltaNet 6.7% /
+  IndexerLogits 2.4% / MoE ~6%。**关键修正: Step 2-4 的 bench 是
+  误导性的** — bench 单层 + max_len=4096, KV 8.4MB **驻留 L2 (32MB)**
+  → 10.5ms, 据此误判 "KV 驻留 L2, gather 非瓶颈, SIMT 已近极限"。真实
+  prefill: **12 层顺序处理**, 每层 KV 16.8MB (max_len 8192), 层间互相
+  驱逐 L2 → **HBM 散射读** → **~1.2s/call (80× 差距)**, 有效带宽仅
+  ~170GB/s (HBM 延迟受限, 1 block/SM 无法隐藏延迟)。Step 2-4 结论在
+  真实场景不成立。**vllm 快 6×+ 的原因**: QSA 用 Triton tensor-core
+  kernel (`tl.dot` 2D tile + split-K + paged gather), 2D tiling + 更多
+  在途 load 隐藏 HBM 延迟。下一步: 用 tensor core 重写
+  SparseAttentionKernel (对齐 vllm Triton 结构), 或先在 HBM-bound 场景
+  重测 Step 3b 的 2-blocks/SM (L2 场景持平, 但 HBM 延迟受限场景可能
+  显著)。详见 LOG 2026-09-16。
 - [x] 2026-09-16 **Step 6: MoE 量化开销分析 (14.3%, launch 开销主导) +
   优化全景**: Step 5 定位 decode 真瓶颈后, 分析 MoE 量化 14.3% 的优化
   空间。MoE 量化 kernel 是 per-expert 循环 (GatherQuant→GEMM_gu→
