@@ -575,6 +575,18 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   AOT, 理论下限 ~0.05ms, 但需自建 block-sparse + paged gather, 工程量大)
   ③ 接受当前 10.5ms 转 decode GEMM 带宽 (FP8 计划 C)。回退 bf16 (无
   收益), 保持基线。详见 LOG 2026-09-15。
+- [x] 2026-09-15 **Step 3b: SparseAttentionKernel 5 实验收敛 (SIMT 路径
+  已近极限)**: 继续 Step 3 做实验排除候选瓶颈, 共 5 实验全持平/负结果:
+  ① GQA packing (减 L2 流量 12×) +25% 更慢 → L2 流量非瓶颈; ② bf16
+  sK/sV (occ 1→2) 持平 → occupancy 非瓶颈; ③ `__expf` (单 MUFU) 持平 →
+  SFU 非瓶颈; ④ bf16+CHUNK=32 (迭代 128→64, sync 减半) +28% 更慢 →
+  迭代/sync 开销非瓶颈 (每位置 gather+compute 本身才是); ⑤ nsys 42.3%
+  确认位置。计算量 ~103 GFLOP, SIMT 下限 ~1.4ms, 当前 10.5ms = 下限
+  7.5×, 差距来自每 block 对 2048 位置的串行处理 (SIMT 固有)。**结论:
+  SIMT 路径已近极限, 进一步大幅超越需 tensor core (FA4 不兼容, 需自建
+  block-sparse + paged gather, 工程量大)**。5 实验全回退, 保持基线
+  10.5ms。下一步建议: 转 decode GEMM 带宽 (FP8 计划 C) 或接受当前
+  attention 性能。详见 LOG 2026-09-15。
 - [x] 2026-09-15 **分块 prefill 闭合 (262K 长上下文可用) + rope H2D 修复**:
   `max_prefill` 语义从 prompt 上限改为分块大小 (上限 = `max_len`);
   `T > max_prefill` 走分块: chunk 0 `ModelPrefill` + chunk 1..

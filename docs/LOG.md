@@ -5,6 +5,49 @@
 
 ---
 
+## 2026-09-15 — Step 3b: SparseAttentionKernel 5 实验收敛 (SIMT 路径已近极限)
+
+**背景**
+Step 3 初步定位"每 block 串行链"。继续做实验排除候选瓶颈, 共 5 个实验,
+全部持平或负结果, 诊断收敛。
+
+**5 实验汇总 (T=4096 sparse, 基线 10.5ms)**
+| 实验 | 改动 | 结果 | 排除的瓶颈 |
+|---|---|---|---|
+| GQA packing (Step 2) | 12 qh/block, 减 L2 流量 12× | +25% 更慢 | L2 流量 |
+| bf16 sK/sV | smem 33.6→17.5KB, occ 1→2 block/SM | 持平 | occupancy |
+| `__expf` | 热循环 2 处 expf→__expf (单 MUFU) | 持平 | expf/SFU |
+| bf16 + CHUNK=32 | 迭代 128→64, sync 减半 | +28% 更慢 | 迭代/sync 开销 |
+| (对照) nsys | — | 42.3% 最大单项 | 确认瓶颈位置 |
+
+**关键推理**
+- 迭代数减半 (CHUNK=32) 反而更慢 (+28%) → **迭代/sync 次数不是瓶颈**,
+  而是每位置 gather+compute 本身 (寄存器 48→56 + smem 翻倍压力增加)。
+- occupancy 翻倍 (bf16) 持平 → block 间并行度不是瓶颈。
+- 减 L2 流量 12× (GQA packing) 更慢 → L2 流量不是瓶颈。
+- __expf 持平 → SFU 不是瓶颈。
+- 计算量 ~103 GFLOP, SIMT fp32 下限 ~1.4ms, 当前 10.5ms = **下限 7.5×**。
+  7.5× 的差距来自每 block 对 2048 位置的**串行处理** (256 线程/SM,
+  1 block/SM, 每位置 gather+QK+PV 串行), 这是 SIMT 设计的固有特性。
+
+**结论: SIMT 路径已近极限, 进一步优化需架构级改变**
+- 唯一能大幅超越 7.5× 下限的方向是 **tensor core** (bf16, ~2000 TFLOPS
+  vs SIMT 75 TFLOPS, 理论下限 ~0.05ms)。但 FA4 稀疏模型不兼容 (Step 2),
+  需自己构建 block-sparse pattern + paged KV gather, 工程量大。
+- 所有 SIMT 层面的微调 (occupancy / expf / chunk / packing) 都已排除。
+
+**决定**
+- 5 实验全部回退, 保持基线 (T=4096 sparse 10.5ms)。
+- 诊断收敛: attention 优化在 SIMT 路径已到极限, 转方向。
+
+**下一步 (建议)**
+- 转向 **decode GEMM 带宽 (FP8 计划 C)**: decode 吞吐瓶颈是 GEMM 权重
+  带宽 (48 层×84GB/verify 步), 与 attention 无关, 是更明确的优化目标。
+- 或 **接受当前 attention 性能** (10.5ms prefill 块, 262K 分块 prefill
+  每块 ~12.6s 主要是 MoE GEMM 带宽下限, attention 占比有限)。
+
+---
+
 ## 2026-09-15 — Step 3: SparseAttentionKernel 瓶颈诊断 (nsys + 2 实验, 定位串行链)
 
 **目标**
