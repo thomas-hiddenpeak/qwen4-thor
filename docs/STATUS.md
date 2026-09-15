@@ -559,6 +559,22 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   `full_attention.cu` 到原 per-q-head kernel (最快), 保留 bench 增强
   `--warm-idx` + `--base-pos` (production-like 散射读模拟)。详见 LOG
   2026-09-15。
+- [x] 2026-09-15 **Step 3: SparseAttentionKernel 瓶颈诊断 (nsys + 2 实验,
+  定位串行链)**: nsys per-kernel (T=4096 sparse): SparseAttentionKernel
+  42.3% 最大单项 (avg 2.1ms, max 4.68ms), HBM 有效带宽仅 ~1.5TB/s
+  (≪8TB/s), 计算量 ~103 GFLOP (SIMT fp32 下限 ~1.4ms, 当前 10.5ms =
+  下限 7.5×)。两实验排除候选瓶颈: ① bf16 sK/sV (smem 33.6→17.5KB,
+  occupancy 1→2 blocks/SM, 数值 l2_rel 6.4e-3 过容差) **性能持平** →
+  occupancy 非瓶颈; ② GQA packing (Step 2) 减 L2 流量 12× 更慢 → L2
+  流量非瓶颈。**根因: 每 block 内部串行工作** — block=(t,qh) 256 线程,
+  CHUNK=16, 每 block 串行 ~128 chunk, 每 chunk 4 次 `__syncthreads` +
+  gather/compute 串行 (gather chunk c 完才 compute c, gather 延迟无法被
+  compute 隐藏), 128×4=512 sync + 128 串行 gather 是硬下限。优化方向
+  (待决策): ① prefetch 双缓冲 (gather c+1 与 compute c 并行, 需 bf16
+  sK/sV + 手动双缓冲, cp.async 不支持 paged 间接) ② tensor core (FA4
+  AOT, 理论下限 ~0.05ms, 但需自建 block-sparse + paged gather, 工程量大)
+  ③ 接受当前 10.5ms 转 decode GEMM 带宽 (FP8 计划 C)。回退 bf16 (无
+  收益), 保持基线。详见 LOG 2026-09-15。
 - [x] 2026-09-15 **分块 prefill 闭合 (262K 长上下文可用) + rope H2D 修复**:
   `max_prefill` 语义从 prompt 上限改为分块大小 (上限 = `max_len`);
   `T > max_prefill` 走分块: chunk 0 `ModelPrefill` + chunk 1..

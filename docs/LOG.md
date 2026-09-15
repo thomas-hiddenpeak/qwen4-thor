@@ -5,6 +5,61 @@
 
 ---
 
+## 2026-09-15 — Step 3: SparseAttentionKernel 瓶颈诊断 (nsys + 2 实验, 定位串行链)
+
+**目标**
+Step 2 (GQA packing) 证伪后, 继续按计划优化 `SparseAttentionKernel`
+(prefill TTFT 真瓶颈, nsys 42.3% 最大单项)。先精确定位瓶颈, 再选优化
+方向。
+
+**nsys per-kernel (T=4096 sparse, iters=3)**
+- SparseAttentionKernel: 42.3% (33.7ms/16 实例, avg 2.1ms, max 4.68ms)
+- nvjet GEMM (q/k/v/o proj): ~33% 合计
+- QKDeinterleaveNormKernel: 12.8%
+- 其余 (rope/indexer/topk/write): ~12%
+
+**实验 1: bf16 sK/sV (occupancy 1→2 blocks/SM)**
+sK/sV 从 fp32 改 bf16 存, smem 33.6KB→17.5KB, 占用率 1→2 blocks/SM
+(寄存器 48 不变, 无溢出)。数值: `model_full_attention` out l2_rel_err
+6.4e-3 < 3e-2 容差, 68 测试全过。**性能: 持平** (T=4096 sparse 10.535
+vs 基线 10.538, T=2048 5.340 vs 5.325, 噪声内)。
+→ **occupancy 非瓶颈** (2 blocks/SM 无收益)。回退。
+
+**综合诊断 (GQA packing + bf16 + nsys 三实验)**
+- GQA packing (减 L2 流量 12×) 更慢 → L2 流量非瓶颈
+- bf16 (occupancy 翻倍) 持平 → occupancy 非瓶颈
+- nsys: 42.3% 最大单项, 但 HBM 有效带宽仅 ~1.5TB/s (≪8TB/s)
+- 计算量: T=4096 sparse 每 token attend 2048 位置, QK+PV ≈ 103 GFLOP,
+  SIMT fp32 理论下限 ~1.4ms, 当前 10.5ms = **下限的 7.5×**
+
+**根因: 每 block 内部串行工作**
+当前 kernel: block=(t,qh) 256 线程, CHUNK=16, 每 block 串行
+`nsel_total/16 ≈ 128` 个 chunk, 每 chunk:
+  gather K/V (paged 散射读) → __syncthreads → QK dot (warp reduce)
+  → __syncthreads → cross-warp sum → __syncthreads → PV+softmax
+  → __syncthreads
+即 **128 chunk × 4 sync = 512 次 __syncthreads + 128 次串行 gather**,
+gather 与 compute 串行 (gather chunk c 完才 compute chunk c), gather
+延迟无法被 compute 隐藏。block 间并行 (98304 blocks) 只能部分隐藏
+gather 延迟, 但每 block 的串行链 (sync + 串行 gather) 是硬下限。
+
+**优化方向 (待评估)**
+1. **prefetch 双缓冲**: gather chunk c+1 与 compute chunk c 并行, 隐藏
+   gather 延迟。需 bf16 sK/sV (16KB) + 双缓冲 (32KB) 在 48KB smem 内。
+   但 CUDA cp.async 不支持 paged 间接寻址, 需手动双缓冲, 实现复杂。
+2. **tensor core (FA4 AOT)**: QK/PV 用 tensor core (bf16, ~2000 TFLOPS
+   vs SIMT 75 TFLOPS), 理论下限 ~0.05ms。但 FA4 稀疏模型不兼容 (Step 2),
+   需自己构建 block-sparse pattern + paged KV gather, 工程量大。
+3. **接受当前性能**: 10.5ms 是 SIMT 设计的 ~7.5× 下限, 若 TTFT 可接受
+   则不再优化 attention, 转向 decode GEMM 带宽 (FP8 计划 C)。
+
+**决定**
+- 回退 bf16 sK/sV (无收益, 保持基线 10.5ms)。
+- 诊断结论记录, 优化方向待用户决策 (prefetch 双缓冲 vs tensor core vs
+  接受当前)。
+
+---
+
 ## 2026-09-15 — Step 2: GQA packing 重写 SparseAttentionKernel (负结果, 回退)
 
 **目标**
