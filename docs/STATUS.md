@@ -575,6 +575,19 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   AOT, 理论下限 ~0.05ms, 但需自建 block-sparse + paged gather, 工程量大)
   ③ 接受当前 10.5ms 转 decode GEMM 带宽 (FP8 计划 C)。回退 bf16 (无
   收益), 保持基线。详见 LOG 2026-09-15。
+- [x] 2026-09-15 **Step 4: tensor core (FA4) 路径关闭 (源码级 blocker)**:
+  Step 3b 收敛后调研唯一能大幅超越 SIMT 7.5× 下限的方向 (tensor core /
+  FA4 AOT, Step 1b 已打通全链路)。源码级确认: 通用 kernel
+  `flash_fwd_sm100.py:813-815` 明确
+  `raise NotImplementedError("Block sparsity + paged KV not supported on
+  SM100")` — QSA 需要 block-sparse + paged KV (page 16) 同时, FA4 直接
+  抛异常 (硬 blocker); 专用 hd256 kernel `assert blocksparse_tensors is
+  None` + paged 要求 page_size==128。用 FA4 须改 FA4 源码 (外部参考,
+  不应改) 或放弃 paged KV (Phase 1 硬需求), 两条路都不可行。**attention
+  优化路径最终结论: SIMT 已近极限 (5 实验) + tensor core 源码级 blocker
+  → 现有架构下无可行方向, 接受当前 10.5ms**。下一步建议: 转 decode
+  GEMM 带宽 (FP8 计划 C), 262K 分块 prefill 每块 ~12.6s 主要是 MoE GEMM
+  带宽下限, attention 占比有限。详见 LOG 2026-09-15。
 - [x] 2026-09-15 **Step 3b: SparseAttentionKernel 5 实验收敛 (SIMT 路径
   已近极限)**: 继续 Step 3 做实验排除候选瓶颈, 共 5 实验全持平/负结果:
   ① GQA packing (减 L2 流量 12×) +25% 更慢 → L2 流量非瓶颈; ② bf16
