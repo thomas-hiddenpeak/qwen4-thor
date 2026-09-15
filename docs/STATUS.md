@@ -518,6 +518,25 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   `reference/flash-attention` (commit 0dc2cb4, **FA4 CUTE DSL 原生
   block-sparse** 与 QSA top-k block 直接对应 + `sm100_hd256_2cta`
   匹配我们 hd256)。详见 REFERENCE.md + LOG 2026-09-15。
+- [x] 2026-09-15 **Step 1b: FA4 hd256 kernel AOT 全链路闭合 (零 Python)**:
+  证明 FA4 attention kernel 能走通 `cute.compile -> export_to_c -> .h/.o ->
+  纯 C++ 驱动 (真实 cudaStream_t)` AOT 链路 (Step 1a 已用 vec_add 验证)。
+  **关键决策: 用通用 kernel `FlashAttentionForwardSm100` 而非专用
+  hd256 2-CTA kernel** — 后者 `assert blocksparse_tensors is None` 且
+  paged KV 要求 page_size==128, 而我们的 QSA 是 block-sparse + page 16;
+  通用 kernel 支持 hd256 + block sparsity + paged_kv_non_tma (page 16) +
+  GQA + causal, 才是能替换 `SparseAttentionKernel` 的 kernel (hd256 在
+  通用 kernel 只能 1-CTA, q_stage=1 使 tmem 512<=512)。依赖修正: torch
+  2.14.0+cu132 (匹配系统 CUDA 13.3) + `nvidia-cutlass-dsl[cu13]` +
+  **quack-kernels 0.6.5** (Dao-AILab 真依赖, PyPI `quack` 是同名假包)。
+  AOT 脚本 `tools/cute_aot/fa4_aot_compile.py` (stub 包绕过 FA2 C 扩展
+  import + 自定义 `@cute.jit` 包装函数把 `AuxData` NamedTuple 参数内化为
+  编译期常量, 使 C 导出干净)。C++ 驱动 `tools/cute_aot/test_fa4_aot.cpp`
+  (零 Python, 自包含 bf16, fp32 causal 参考)。**结果 PASS: l2_rel=
+  0.001834, argmax_mismatch=172/3072 (near-tie, bf16 精度内)**。
+  下一步 Step 2: block-sparse + paged KV (page 16) + varlen 接入 AOT,
+  对齐真实 QSA 布局; Step 3: 引擎集成替换 `SparseAttentionKernel`。
+  详见 LOG 2026-09-15。
 - [x] 2026-09-15 **分块 prefill 闭合 (262K 长上下文可用) + rope H2D 修复**:
   `max_prefill` 语义从 prompt 上限改为分块大小 (上限 = `max_len`);
   `T > max_prefill` 走分块: chunk 0 `ModelPrefill` + chunk 1..

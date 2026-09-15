@@ -5,6 +5,67 @@
 
 ---
 
+## 2026-09-15 — Step 1b: FA4 hd256 kernel AOT 全链路闭合 (零 Python 运行时)
+
+**目标**
+证明 FA4 (CUTE DSL) 的 attention kernel 能走通
+`cute.compile -> export_to_c -> .h/.o -> 纯 C++ 驱动 (真实 cudaStream_t)`
+的 AOT 链路, 数值正确。这是把 FA4 替换我们 `SparseAttentionKernel`
+(78.8% prefill 瓶颈) 的前置验证 (Step 1a 已用最小 vec_add 验证过链路)。
+
+**关键决策: 用通用 kernel, 不用专用 hd256 kernel**
+- 专用 `BlackwellFusedMultiHeadAttentionForward` (hd256 2-CTA) 明确
+  `assert blocksparse_tensors is None`, 且 paged KV 要求 page_size==128。
+  我们的 QSA 是 **block-sparse + page_size 16**, 用不了。
+- 通用 `FlashAttentionForwardSm100` 支持 hd256 (tuning 表有 256 条目) +
+  block sparsity + `paged_kv_non_tma` (page 16) + GQA + causal。
+  这才是能替换 `SparseAttentionKernel` 的 kernel。
+- hd256 在通用 kernel 里只能 1-CTA (2-CTA 路径要求 head_dim∈[128,192]),
+  `q_stage=1` 使 tmem_total=512<=512 列 (q_stage=2 会 768 超限)。
+
+**依赖修正 (用户指出 CUDA 版本失当)**
+- 系统 nvcc 13.3, 之前误装 cu12 DSL + CPU torch。修正:
+  torch 2.14.0+**cu132** (用户自装) + `nvidia-cutlass-dsl[cu13]`
+  (libs-cu13) + **quack-kernels 0.6.5** (Dao-AILab, 真正的 FA 依赖;
+  PyPI 的 `quack` 是 zonito 的同名 yaml 假包) + apache-tvm-ffi +
+  torch-c-dlpack-ext + einops。CI 注释确认 cutlass-dsl 与 quack-kernels
+  耦合, 须一起装让 uv 联合解析。
+- venv 位置: `.q4t-work/cute-venv` (构建产物, 非工具链源码; 工具链
+  源码在 `tools/cute_aot/`)。
+
+**AOT 编译脚本 `tools/cute_aot/fa4_aot_compile.py`**
+- 绕过顶层 `flash_attn/__init__.py` (它 import 未构建的 FA2 C 扩展
+  `flash_attn_2_cuda`): 预填充 `sys.modules["flash_attn"]` 为指向真实
+  `__path__` 的 stub 包, 只 import 纯 Python 的 `flash_attn.cute.*`。
+- C 导出器 (`c_header_generator.py`) 只认 Pointer/Tensor/Numeric/
+  CUstream, 且 `arg is None` 跳过; 但 FA4 `__call__` 有 `aux_data:
+  AuxData` (NamedTuple) 参数, kernel 内部无条件读 `aux_data.tensors`,
+  不能传 None。解法: 用自定义 `@cute.jit` 包装函数, 只暴露 C 可导出
+  参数 (张量/标量/stream), `AuxData(None,None)` 在函数内部构造为编译
+  期常量。`cute.compile` 导出顶层 (wrapper) 签名, C wrapper 即干净。
+- 配置: batch=1, s_q=s_k=128, hd256, GQA 24:2, causal, bf16。
+
+**C++ 驱动 `tools/cute_aot/test_fa4_aot.cpp` (零 Python)**
+- 链接 `fa4_fwd_hd256.o` + `libcute_dsl_runtime` (cu13) + cudart/cuda,
+  rpath 指向 venv cu13/lib。自包含 bf16 转换 (uint16_t, 避免
+  cuda_bf16.h 版本耦合)。纯 C++ fp32 causal 参考 (bottom-right 对齐)。
+- 编译: `g++ -O2 -std=c++17 -Wall -Wextra ... -lcute_dsl_runtime
+  -lcudart -lcuda` (零警告, 除导出头文件里 unused 'module' 参数 —
+  那是 DSL 生成的, 非我们代码)。
+
+**结果 (PASS)**
+`l2_rel=0.001834`, `argmax_mismatch=172/3072` (near-tie 翻转, bf16
+精度内)。AOT 链路对真实 FA4 hd256 kernel 验证通过。
+
+**遗留 / 下一步**
+- JIT 运行时路径 (`compiled(...)` 传 fake stream) 在 venv 里 segfault,
+  与 AOT 无关 (C++ 驱动走真实 stream 正常); 不影响零 Python 目标。
+- Step 2: 把 block-sparse (QSA top-k block -> BlockSparseTensors) +
+  paged KV (page 16) + varlen 接入 AOT 编译, 对齐我们真实 QSA 布局。
+- Step 3: 引擎集成 (替换 `SparseAttentionKernel`), 数值对拍 + 性能。
+
+---
+
 ## 2026-09-15 — prefill 瓶颈重定位 (nsys 实测推翻"MoE 带宽"判断) + flashinfer/FA 参考就位
 
 **背景**
