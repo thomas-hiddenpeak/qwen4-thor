@@ -15,6 +15,7 @@
 #include <cuda_runtime.h>
 
 #include <cstdint>
+#include <cstdlib>
 #include <vector>
 
 #include "q4t/quant/fp4_gemm.h"
@@ -27,6 +28,70 @@ namespace quant {
 namespace {
 
 constexpr int kBlock = 256;
+
+// Multi-stream MoE: the per-expert chains (gather -> gu GEMM -> swiglu ->
+// dn GEMM) are independent, and each small GEMM (M_e ~ tens of tokens) only
+// fills a fraction of the 20 SMs. Round-robin experts across a few CUDA
+// streams so independent experts overlap and fill the SMs. dn_out is written
+// at disjoint per-expert offsets, so only the reused a_packed/a_sf/gu_out and
+// the cuBLASLt workspace need to be per-stream. Env Q4T_MOE_STREAMS (default
+// 4; 1 = legacy single-stream, bit-identical).
+constexpr int kMaxMoeStreams = 8;
+cudaStream_t g_moe_streams[kMaxMoeStreams - 1];  // extras; stream 0 = caller's
+cudaEvent_t g_moe_events[kMaxMoeStreams - 1];
+bool g_moe_streams_init = false;
+
+int MoeStreamCount() {
+  const char* env = std::getenv("Q4T_MOE_STREAMS");
+  int n = env ? std::atoi(env) : 4;
+  if (n < 1) n = 1;
+  if (n > kMaxMoeStreams) n = kMaxMoeStreams;
+  return n;
+}
+
+void EnsureMoeStreams() {
+  if (g_moe_streams_init) return;
+  for (int i = 0; i < kMaxMoeStreams - 1; ++i) {
+    cudaStreamCreateWithFlags(&g_moe_streams[i], cudaStreamNonBlocking);
+    cudaEventCreateWithFlags(&g_moe_events[i], cudaEventDisableTiming);
+  }
+  g_moe_streams_init = true;
+}
+
+// Persistent per-stream scratch (a_packed+a_sf+gu_out carved from one buffer,
+// plus a cuBLASLt workspace) so the expert loop does NOT cudaMalloc per call.
+struct MoeScratch {
+  void* buf = nullptr;
+  void* gemm_ws = nullptr;
+  size_t buf_bytes = 0;
+  size_t gws_bytes = 0;
+};
+MoeScratch g_moe_scratch[kMaxMoeStreams - 1];  // extras (stream 0 uses ws)
+
+size_t AlignUp256(size_t x) { return (x + 255) & ~static_cast<size_t>(255); }
+
+bool EnsureMoeScratch(int idx, size_t need_buf, size_t need_gws) {
+  MoeScratch& s = g_moe_scratch[idx];
+  if (s.buf_bytes < need_buf) {
+    if (s.buf) cudaFree(s.buf);
+    if (cudaMalloc(&s.buf, need_buf) != cudaSuccess) {
+      s.buf = nullptr;
+      s.buf_bytes = 0;
+      return false;
+    }
+    s.buf_bytes = need_buf;
+  }
+  if (s.gws_bytes < need_gws) {
+    if (s.gemm_ws) cudaFree(s.gemm_ws);
+    if (cudaMalloc(&s.gemm_ws, need_gws) != cudaSuccess) {
+      s.gemm_ws = nullptr;
+      s.gws_bytes = 0;
+      return false;
+    }
+    s.gws_bytes = need_gws;
+  }
+  return true;
+}
 
 // Device copy of the SF swizzle offset (swizzle.h is host-only).
 __device__ __forceinline__ float Bf16ToFloat(uint16_t b) {
@@ -330,10 +395,47 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
     return Status::Fail("build row_of_flat failed");
   }
 
+  // Per-stream scratch. Stream 0 is the caller's stream (reuses ws + gemm_ws);
+  // streams 1..n-1 get their own a_packed/a_sf/gu_out (M rows suffice since
+  // M_e <= M) and cuBLASLt workspace so concurrent experts don't clobber. The
+  // host sync above guarantees x / d_token_list are ready before any stream
+  // reads them; the extras rejoin the caller's stream before the combine.
+  struct SScratch {
+    uint8_t* a_packed;
+    uint8_t* a_sf;
+    uint16_t* gu_out;
+    void* gemm_ws;
+    cudaStream_t stream;
+  };
+  const int n_streams = MoeStreamCount();
+  SScratch sc[kMaxMoeStreams];
+  sc[0] = {reinterpret_cast<uint8_t*>(ws.a_packed),
+           reinterpret_cast<uint8_t*>(ws.a_sf), ws.gu_out, gemm_ws, stream};
+  if (n_streams > 1) {
+    EnsureMoeStreams();
+    const size_t ap_b = AlignUp256(static_cast<size_t>(M) * (hs / 2));
+    const size_t asf_b = AlignUp256(SfBufferSize(M, hs));
+    const size_t gu_b =
+        AlignUp256(static_cast<size_t>(M) * (2 * moe_is) * sizeof(uint16_t));
+    for (int si = 1; si < n_streams; ++si) {
+      if (!EnsureMoeScratch(si - 1, ap_b + asf_b + gu_b, gemm_ws_bytes)) {
+        free_all();
+        return Status::Fail("moe stream scratch alloc");
+      }
+      uint8_t* base = static_cast<uint8_t*>(g_moe_scratch[si - 1].buf);
+      sc[si] = {base, base + ap_b,
+                reinterpret_cast<uint16_t*>(base + ap_b + asf_b),
+                g_moe_scratch[si - 1].gemm_ws, g_moe_streams[si - 1]};
+    }
+  }
+
   // 4. Per-expert GEMM chain.
+  int active_idx = 0;
   for (int e = 0; e < E; ++e) {
     const int M_e = counts_h[e];
     if (M_e <= 0) continue;
+    const SScratch& ss = sc[active_idx % n_streams];
+    ++active_idx;
 
     // gate/up input = token activation (calibrated by gu_input_scale); the
     // down input = SwiGLU intermediate (calibrated by down_proj's own
@@ -349,11 +451,9 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
     {
       const int total = M_e * (hs / 16);
       const int blocks = (total + kBlock - 1) / kBlock;
-      GatherQuantKernel<<<blocks, kBlock, 0, stream>>>(
+      GatherQuantKernel<<<blocks, kBlock, 0, ss.stream>>>(
           reinterpret_cast<const uint16_t*>(x), d_token_list, M_e, e, k, M, hs,
-          num_g_tiles, weights.gu_input_scale,
-          reinterpret_cast<uint8_t*>(ws.a_packed),
-          reinterpret_cast<uint8_t*>(ws.a_sf));
+          num_g_tiles, weights.gu_input_scale, ss.a_packed, ss.a_sf);
     }
     if (cudaGetLastError() != cudaSuccess) {
       free_all();
@@ -369,8 +469,8 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
     // ~5-6 instructions/byte for nibble extract + LUT + FMA vs a 0.63
     // inst/byte budget to stay DRAM-bound (152 Ginst/s issue limit).
     auto r1 = Fp4Gemm(weights.gu_packed_expert(e), weights.gu_sf_expert(e),
-                      ws.a_packed, ws.a_sf, ws.gu_out, M_e, 2 * moe_is, hs,
-                      gu_alpha, 1.0f, gemm_ws, gemm_ws_bytes, stream);
+                      ss.a_packed, ss.a_sf, ss.gu_out, M_e, 2 * moe_is, hs,
+                      gu_alpha, 1.0f, ss.gemm_ws, gemm_ws_bytes, ss.stream);
     if (r1.status != CUBLAS_STATUS_SUCCESS || !r1.has_algo) {
       free_all();
       return Status::Fail("gate/up GEMM failed");
@@ -382,9 +482,8 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
       const int num_g_tiles_dn = SfNumGtiles(moe_is);
       const int total = M_e * (moe_is / 16);
       const int blocks = (total + kBlock - 1) / kBlock;
-      SwiGLUQuantKernel<<<blocks, kBlock, 0, stream>>>(
-          ws.gu_out, reinterpret_cast<uint8_t*>(ws.a_packed),
-          reinterpret_cast<uint8_t*>(ws.a_sf), M_e, moe_is, num_g_tiles_dn,
+      SwiGLUQuantKernel<<<blocks, kBlock, 0, ss.stream>>>(
+          ss.gu_out, ss.a_packed, ss.a_sf, M_e, moe_is, num_g_tiles_dn,
           dn_in_scale);
     }
     if (cudaGetLastError() != cudaSuccess) {
@@ -397,13 +496,21 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
     // of the grouped [R, hs] output (rows offset[e]..offset[e]+M_e). beta=0 in
     // Fp4Gemm, so each expert overwrites its own disjoint slice.
     auto r2 = Fp4Gemm(weights.dn_packed_expert(e), weights.dn_sf_expert(e),
-                      ws.a_packed, ws.a_sf,
+                      ss.a_packed, ss.a_sf,
                       ws.dn_out + static_cast<size_t>(offset_h[e]) * hs, M_e, hs,
-                      moe_is, dn_alpha, 1.0f, gemm_ws, gemm_ws_bytes, stream);
+                      moe_is, dn_alpha, 1.0f, ss.gemm_ws, gemm_ws_bytes,
+                      ss.stream);
     if (r2.status != CUBLAS_STATUS_SUCCESS || !r2.has_algo) {
       free_all();
       return Status::Fail("down GEMM failed");
     }
+  }
+
+  // Rejoin the extra streams: the combine (on the caller's stream) must not
+  // read dn_out until every stream's down GEMM has landed.
+  for (int si = 1; si < n_streams; ++si) {
+    cudaEventRecord(g_moe_events[si - 1], g_moe_streams[si - 1]);
+    cudaStreamWaitEvent(stream, g_moe_events[si - 1], 0);
   }
 
   // 5. Single deterministic combine over all experts' grouped rows.
