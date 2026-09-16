@@ -10,6 +10,11 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
 
 ## 当前焦点 (2026-09-17): 批处理吞吐 (推进中)
 
+- **plain decode 调度 lockstep (2026-09-17, 已落地)**: B2b 调度器 plain 调度从机会式
+  "任一 pending 即跑"改为 lockstep "所有活跃 pending 才跑" (对齐 MTP plan A +
+  vllm/sglang), 批 B=活跃请求数 uniform 而非 ragged (每小步重读 84GB 权重)。
+  **serve 并发吞吐 +26~53%** (8→65.2/32→137.4/64→173.4 tok/s), scale 8.3→**10.4×**。
+  正确性保持 ("Four"), 128 并发排队存活 0 error, 68 测试全绿。
 - **路径 C 兑现 (2026-09-17)**: serve 并发吞吐 concurrency 1→64 = **16.6→138.1
   tok/s (8.3×)** 且仍爬升, 0 error 存活。与 bench 理想 18.6× 差距 = prefill +
   HTTP/tokenizer 串行 + 调度非 lockstep 开销。缩小方向 (不量化): prefill

@@ -609,21 +609,25 @@ void ChatServer::SchedulerLoop() {
       std::unique_lock<std::mutex> lock(sched_mu_);
       sched_cv_.wait(lock, [this] {
         if (scheduler_stop_) return true;
-        // Plain decode: any pending request is work (opportunistic, B2b).
-        for (ActiveRequest* r : active_)
-          if (!r->is_mtp && r->pending) return true;
-        // MTP lockstep (plan A): run only when EVERY active MTP request has
-        // registered its step. This keeps the batched MtpSpeculativeStepMulti
-        // at B = all active MTP requests (uniform step width, like vllm/sglang)
-        // instead of a ragged subset — the root cause of the 4b B=1-dominant
-        // distribution. If only some are ready, block until the stragglers
-        // re-register (or finish and drop out of active_).
+        // Lockstep (both plain B2b and MTP plan A): run only when EVERY active
+        // request of a kind has registered its step, so the packed forward is
+        // B = all active requests (uniform width, like vllm/sglang) instead of
+        // a ragged subset. Opportunistic "any pending" fragmented the decode
+        // into many small sub-steps, each re-reading the 84 GB of weights — the
+        // decode throughput killer. A straggler gates the step; a finishing
+        // request removes itself from active_ + notifies so this re-evaluates.
+        int active_plain = 0, pending_plain = 0;
         int active_mtp = 0, pending_mtp = 0;
-        for (ActiveRequest* r : active_)
+        for (ActiveRequest* r : active_) {
           if (r->is_mtp) {
             ++active_mtp;
             if (r->pending) ++pending_mtp;
+          } else {
+            ++active_plain;
+            if (r->pending) ++pending_plain;
           }
+        }
+        if (active_plain > 0 && pending_plain == active_plain) return true;
         return active_mtp > 0 && pending_mtp == active_mtp;
       });
       if (scheduler_stop_) {
@@ -1479,9 +1483,14 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       }
     }
     if (use_sched) {
-      const std::lock_guard<std::mutex> lock(sched_mu_);
-      active_.erase(std::remove(active_.begin(), active_.end(), &ar),
-                    active_.end());
+      {
+        const std::lock_guard<std::mutex> lock(sched_mu_);
+        active_.erase(std::remove(active_.begin(), active_.end(), &ar),
+                      active_.end());
+      }
+      // Lockstep depends on active_ size: a departing request can flip
+      // "all active pending" to true, so wake the scheduler to re-evaluate.
+      sched_cv_.notify_one();
     }
   }
   model::ModelEndSequence(&seq);
