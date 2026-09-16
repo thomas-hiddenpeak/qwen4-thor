@@ -46,7 +46,10 @@ void PrintUsage(const char* prog) {
       "            (q4t generate \"prompt\" [--max-tokens N])\n"
       "  serve     OpenAI-compatible HTTP API server\n"
       "            (q4t serve [--port N] [--model-dir DIR] "
-      "[--max-tokens N] [--max-prefill N] [--max-len N] [--max-seq N])\n",
+      "[--max-tokens N] [--max-prefill N] [--max-len N] [--max-seq N])\n"
+      "  bench-decode  Batched-decode throughput vs batch size\n"
+      "            (q4t bench-decode [--batch B] [--steps N] [--prompt P] "
+      "[--max-len L])\n",
       prog);
 }
 
@@ -466,6 +469,166 @@ int RunGenerate(int argc, char** argv) {
 
 // OpenAI-compatible HTTP API server: load the model once, then serve
 // /healthz, /v1/models, and /v1/chat/completions (stream + non-stream).
+// Batched-decode throughput benchmark: prefill B sequences (distinct prompts),
+// then run N packed decode steps (ModelDecodeBatchMulti, T=B) with realistic
+// per-sequence routing, and report aggregate tok/s. This measures how decode
+// throughput scales with batch size — the memory-bound MoE weight load is read
+// ONCE per packed forward, so aggregate tok/s should climb with B until the
+// per-token expert overlap (B >~ E/k) lets the weights amortize. No argmax /
+// D2H in the timed loop (synthetic tokens) so it measures pure forward. With
+// --sweep, loads once at max_seq=--batch and benchmarks B=1,2,4,...,--batch
+// (subsets of the pooled state); positions are pinned to [P, P+N) each run so
+// the attention range is constant across B.
+int RunBenchDecode(int argc, char** argv) {
+  const char* kDefaultModelDir =
+      "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
+  std::string model_dir = kDefaultModelDir;
+  int maxB = 8, N = 64, P = 128, L = 0;  // L=0 -> auto (P+N+slack)
+  bool sweep = false;
+  for (int i = 2; i < argc; ++i) {
+    const std::string a = argv[i];
+    if (a == "--batch" && i + 1 < argc) {
+      maxB = std::atoi(argv[++i]);
+    } else if (a == "--steps" && i + 1 < argc) {
+      N = std::atoi(argv[++i]);
+    } else if (a == "--prompt" && i + 1 < argc) {
+      P = std::atoi(argv[++i]);
+    } else if (a == "--max-len" && i + 1 < argc) {
+      L = std::atoi(argv[++i]);
+    } else if (a == "--sweep") {
+      sweep = true;
+    } else if (a == "--model-dir" && i + 1 < argc) {
+      model_dir = argv[++i];
+    } else {
+      std::fprintf(stderr, "Unknown option: %s\n", a.c_str());
+      return 2;
+    }
+  }
+  if (maxB <= 0 || N <= 0 || P <= 0) {
+    std::fprintf(stderr, "bench-decode: --batch/--steps/--prompt must be > 0\n");
+    return 2;
+  }
+  if (L <= 0) L = P + N + 8;
+
+  q4t::model::ModelConfig cfg;
+  cfg.model_dir = model_dir;
+  cfg.index_path = model_dir + "/model.safetensors.index.json";
+  cfg.ple_sidecar = model_dir + "/ple/qwen3.8-flash-next-ple-fp8.bin";
+  cfg.max_seq = maxB;
+  cfg.max_len = L;
+  cfg.max_prefill = std::max(P, 8);
+  q4t::model::Model model;
+  q4t::Status s = q4t::model::LoadModel(cfg, &model, nullptr);
+  if (!s.ok()) {
+    std::fprintf(stderr, "model load failed: %s\n", s.message().c_str());
+    return 1;
+  }
+  const int vocab = cfg.vocab;
+  const int hist_w = model.ple_emb ? model.ple_hash.ngram_size - 1 : 0;
+  std::fprintf(stderr,
+               "[q4t] bench-decode: max_seq=%d steps=%d prompt=%d max_len=%d\n",
+               maxB, N, P, L);
+
+  uint16_t* d_pref = nullptr;  // [P, vocab] prefill logits (reused per seq)
+  uint16_t* d_dec = nullptr;   // [maxB, vocab] decode logits
+  if (cudaMalloc(reinterpret_cast<void**>(&d_pref),
+                 static_cast<size_t>(P) * vocab * 2) != cudaSuccess ||
+      cudaMalloc(reinterpret_cast<void**>(&d_dec),
+                 static_cast<size_t>(maxB) * vocab * 2) != cudaSuccess) {
+    std::fprintf(stderr, "bench-decode: logits cudaMalloc failed\n");
+    model.Free();
+    return 1;
+  }
+
+  // Prefill maxB sequences with distinct prompts (distinct routing per seq).
+  std::vector<q4t::model::ModelSequence> seqs(maxB);
+  for (int b = 0; b < maxB; ++b) {
+    std::vector<int32_t> prompt(P);
+    for (int i = 0; i < P; ++i)
+      prompt[i] = 100 + ((b * 131 + i * 17) % 20000);
+    q4t::model::ModelBeginSequence(model, &seqs[b], nullptr, b);
+    s = q4t::model::ModelPrefill(model, &seqs[b], prompt.data(), P, d_pref,
+                                 nullptr, nullptr, nullptr, b);
+    if (!s.ok()) {
+      std::fprintf(stderr, "bench-decode: prefill seq %d failed: %s\n", b,
+                   s.message().c_str());
+      cudaFree(d_pref);
+      cudaFree(d_dec);
+      model.Free();
+      return 1;
+    }
+  }
+  cudaDeviceSynchronize();
+
+  std::vector<int32_t> tokens(maxB), history(static_cast<size_t>(maxB) *
+                                             std::max(hist_w, 1));
+  std::vector<int> positions(maxB), seq_ids(maxB);
+  for (int b = 0; b < maxB; ++b) {
+    seq_ids[b] = b;
+    for (int j = 0; j < hist_w; ++j)
+      history[static_cast<size_t>(b) * hist_w + j] =
+          100 + ((b * 131 + j * 17) % 20000);
+  }
+  auto syn = [](int b, int step) {
+    long v = (static_cast<long>(b) * 9973 + static_cast<long>(step) * 131 + 7) %
+             20000;
+    if (v < 0) v += 20000;  // C++ modulo of a negative is negative
+    return 100 + static_cast<int>(v);
+  };
+
+  // One decode-throughput run at batch Bi: warmup + N timed packed steps,
+  // positions pinned to [P, P+N) (constant attention range across Bi).
+  auto bench = [&](int Bi) {
+    auto step_forward = [&](int pos, int step) -> q4t::Status {
+      for (int b = 0; b < Bi; ++b) {
+        positions[b] = pos;
+        tokens[b] = syn(b, step);
+      }
+      return q4t::model::ModelDecodeBatchMulti(
+          model, tokens.data(), positions.data(), seq_ids.data(),
+          history.data(), Bi, d_dec, nullptr);
+    };
+    q4t::Status st = step_forward(P, -1);  // warmup (cuBLASLt heuristics)
+    cudaDeviceSynchronize();
+    if (!st.ok()) {
+      std::fprintf(stderr, "bench-decode: B=%d warmup failed: %s\n", Bi,
+                   st.message().c_str());
+      return;
+    }
+    auto t0 = std::chrono::steady_clock::now();
+    cudaProfilerStart();
+    for (int step = 0; step < N; ++step) {
+      st = step_forward(P + (step % N), step);
+      if (!st.ok()) {
+        std::fprintf(stderr, "bench-decode: B=%d step %d failed: %s\n", Bi, step,
+                     st.message().c_str());
+        return;
+      }
+    }
+    cudaProfilerStop();
+    cudaDeviceSynchronize();
+    auto t1 = std::chrono::steady_clock::now();
+    const double sec = std::chrono::duration<double>(t1 - t0).count();
+    const double agg = static_cast<double>(Bi) * N / sec;
+    std::printf(
+        "[q4t] bench-decode B=%3d | aggregate %8.1f tok/s | %6.2f tok/s/seq | "
+        "%6.2f ms/step\n",
+        Bi, agg, agg / Bi, sec * 1000.0 / N);
+  };
+
+  if (sweep) {
+    for (int Bi = 1; Bi < maxB; Bi *= 2) bench(Bi);
+    bench(maxB);
+  } else {
+    bench(maxB);
+  }
+
+  cudaFree(d_pref);
+  cudaFree(d_dec);
+  model.Free();
+  return 0;
+}
+
 int RunServe(int argc, char** argv) {
   const char* kDefaultModelDir =
       "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
@@ -525,6 +688,9 @@ int main(int argc, char** argv) {
   }
   if (cmd == "generate") {
     return RunGenerate(argc, argv);
+  }
+  if (cmd == "bench-decode") {
+    return RunBenchDecode(argc, argv);
   }
   if (cmd == "serve") {
     return RunServe(argc, argv);

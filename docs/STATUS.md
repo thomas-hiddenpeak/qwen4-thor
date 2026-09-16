@@ -8,8 +8,14 @@
 Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 2026-09-07)
 (详见 [PHASES.md](PHASES.md))
 
-## 当前焦点 (2026-09-16): prefill 性能
+## 当前焦点 (2026-09-17): 批处理吞吐 (推进中)
 
+- **批处理 decode 标度实测 (2026-09-17, `q4t bench-decode --sweep`)**: 聚合吞吐
+  B=1→128 = **16.6→308.9 tok/s (18.6×)** 且仍在爬升。ms/step 仅 60→414 (128×
+  token 6.9× 时间) → per-token 成本降 18.6× = MoE 权重摊销 (roofline 预言兑现)。
+  B=128 瓶颈: GatedDeltaNetDecode 34.3% (SSM state 读写 86% 带宽 = 地板) + MoE
+  fp4 GEMM 24.4% + 量化 16.4% (per-expert, MoE 仅 ~34% 带宽 = 2-3× 浪费杠杆)。
+  方向 (不量化): monolithic grouped FP4 MoE 同时惠及 prefill + 批处理 decode。
 - **根本性结论 (2026-09-16 roofline, tools/roofline_prefill.py)**: prefill 总算力
   28.2 TFLOP, 达到 10.8 TFLOPS = **FP4 峰值 1.0% / BF16 4.2%** → 张量核 ~96% 空转;
   纯算力下限仅 0.03s 而实测 2.6s = 86× → wall time 几乎全是访存+延迟。
