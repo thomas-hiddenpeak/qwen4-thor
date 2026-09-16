@@ -18,8 +18,10 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
   full attention 已 per-token 驱动无需改)。**dual-path: ragged==null 走原路 → MTP
   位不变**。`ModelPrefillBatch(tokens,lens,seq_ids,B)` 打包 B 变长全新序列一次
   forward。新测试 B=3 (len 5/3/7) vs 独立单序列 prefill **逐 token l2_rel=0.00000
-  位级一致**。69 测试全绿。下一步: 调度器收集并发 prefill → 一次 ModelPrefillBatch,
-  以 serve 端口衡量。
+  位级一致**。69 测试全绿。**bench-prefill 实测 (prompt=128): 顺序 vs 批量 speedup
+  B=2/4/8 = 1.46×/1.82×/2.39× (权重摊销, 未饱和)**。下一步: 调度器收集并发 prefill →
+  一次 ModelPrefillBatch, 以 serve 端口衡量。(注: bench 合成 token 触发 ModelPrefill/
+  MoE 既有 latent 小 dim 问题, bench-decode 同复现, 非 ragged 代码, 真实 serve 无。)
 - **plain decode 调度 lockstep (2026-09-17, 已落地)**: B2b 调度器 plain 调度从机会式
   "任一 pending 即跑"改为 lockstep "所有活跃 pending 才跑" (对齐 MTP plan A +
   vllm/sglang), 批 B=活跃请求数 uniform 而非 ragged (每小步重读 84GB 权重)。

@@ -49,7 +49,9 @@ void PrintUsage(const char* prog) {
       "[--max-tokens N] [--max-prefill N] [--max-len N] [--max-seq N])\n"
       "  bench-decode  Batched-decode throughput vs batch size\n"
       "            (q4t bench-decode [--batch B] [--steps N] [--prompt P] "
-      "[--max-len L])\n",
+      "[--max-len L])\n"
+      "  bench-prefill Batched-prefill (ragged) vs sequential, tok/s + speedup\n"
+      "            (q4t bench-prefill [--batch B] [--prompt P] [--sweep])\n",
       prog);
 }
 
@@ -629,6 +631,147 @@ int RunBenchDecode(int argc, char** argv) {
   return 0;
 }
 
+// bench-prefill: quantify the ragged batched-prefill win. Prefill B distinct
+// SHORT prompts (a) one-at-a-time via B ModelPrefill calls (the dense weights
+// are re-read for EACH sequence) and (b) packed via one ModelPrefillBatch (the
+// weights are read ONCE for the whole batch), reporting tok/s + speedup. Short
+// prompts are weight-bandwidth-bound (few tokens to amortize the weight sweep),
+// so batching many of them is the serve prefill-burst win. With --sweep,
+// benchmarks B = 1, 2, 4, ..., --batch.
+int RunBenchPrefill(int argc, char** argv) {
+  const char* kDefaultModelDir =
+      "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
+  std::string model_dir = kDefaultModelDir;
+  int maxB = 16, P = 64;  // batch size, per-prompt length
+  bool sweep = false;
+  for (int i = 2; i < argc; ++i) {
+    const std::string a = argv[i];
+    if (a == "--batch" && i + 1 < argc) {
+      maxB = std::atoi(argv[++i]);
+    } else if (a == "--prompt" && i + 1 < argc) {
+      P = std::atoi(argv[++i]);
+    } else if (a == "--sweep") {
+      sweep = true;
+    } else if (a == "--model-dir" && i + 1 < argc) {
+      model_dir = argv[++i];
+    } else {
+      std::fprintf(stderr, "Unknown option: %s\n", a.c_str());
+      return 2;
+    }
+  }
+  if (maxB <= 0 || P <= 0) {
+    std::fprintf(stderr, "bench-prefill: --batch/--prompt must be > 0\n");
+    return 2;
+  }
+
+  q4t::model::ModelConfig cfg;
+  cfg.model_dir = model_dir;
+  cfg.index_path = model_dir + "/model.safetensors.index.json";
+  cfg.ple_sidecar = model_dir + "/ple/qwen3.8-flash-next-ple-fp8.bin";
+  cfg.max_seq = maxB;
+  cfg.max_len = std::max(P + 8, 256);  // full-attention KV/indexer need slack
+  cfg.max_prefill = maxB * P + 8;  // Ttot = B*P must fit
+  q4t::model::Model model;
+  q4t::Status s = q4t::model::LoadModel(cfg, &model, nullptr);
+  if (!s.ok()) {
+    std::fprintf(stderr, "model load failed: %s\n", s.message().c_str());
+    return 1;
+  }
+  const int vocab = cfg.vocab;
+  std::fprintf(stderr, "[q4t] bench-prefill: max_seq=%d prompt=%d\n", maxB, P);
+
+  uint16_t* d_logits = nullptr;  // [maxB*P, vocab] packed prefill logits
+  if (cudaMalloc(reinterpret_cast<void**>(&d_logits),
+                 static_cast<size_t>(maxB) * P * vocab * 2) != cudaSuccess) {
+    std::fprintf(stderr, "bench-prefill: logits cudaMalloc failed\n");
+    model.Free();
+    return 1;
+  }
+
+  // maxB distinct prompts (distinct MoE routing per sequence).
+  std::vector<std::vector<int32_t>> prompts(maxB);
+  for (int b = 0; b < maxB; ++b) {
+    prompts[b].resize(P);
+    for (int i = 0; i < P; ++i)
+      prompts[b][i] = 100 + ((b * 131 + i * 17) % 20000);
+  }
+
+  auto bench = [&](int Bi) {
+    // (a) Sequential: Bi ModelPrefill calls (weights re-read per sequence).
+    {  // warmup (cuBLASLt M=P heuristics)
+      q4t::model::ModelSequence w;
+      q4t::model::ModelBeginSequence(model, &w, nullptr, 0);
+      q4t::Status wst = q4t::model::ModelPrefill(model, &w, prompts[0].data(),
+                                                 P, d_logits, nullptr, nullptr,
+                                                 nullptr, 0);
+      cudaError_t ce = cudaDeviceSynchronize();
+      if (!wst.ok() || ce != cudaSuccess) {
+        std::fprintf(stderr, "bench-prefill: warmup B=%d failed: %s / %s\n", Bi,
+                     wst.message().c_str(), cudaGetErrorString(ce));
+        return;
+      }
+    }
+    cudaDeviceSynchronize();
+    auto t0 = std::chrono::steady_clock::now();
+    for (int b = 0; b < Bi; ++b) {
+      q4t::model::ModelSequence seq;
+      q4t::model::ModelBeginSequence(model, &seq, nullptr, b);
+      q4t::Status st = q4t::model::ModelPrefill(model, &seq, prompts[b].data(),
+                                                P, d_logits, nullptr, nullptr,
+                                                nullptr, b);
+      if (!st.ok()) {
+        std::fprintf(stderr, "bench-prefill: seq prefill %d failed: %s\n", b,
+                     st.message().c_str());
+        return;
+      }
+    }
+    cudaDeviceSynchronize();
+    auto t1 = std::chrono::steady_clock::now();
+    const double seq_sec = std::chrono::duration<double>(t1 - t0).count();
+
+    // (b) Batched: one ModelPrefillBatch (weights read ONCE).
+    std::vector<int32_t> packed;
+    packed.reserve(static_cast<size_t>(Bi) * P);
+    std::vector<int> lens(Bi), sids(Bi);
+    for (int b = 0; b < Bi; ++b) {
+      packed.insert(packed.end(), prompts[b].begin(), prompts[b].end());
+      lens[b] = P;
+      sids[b] = b;
+    }
+    q4t::model::ModelPrefillBatch(model, packed.data(), lens.data(),
+                                  sids.data(), Bi, d_logits, nullptr);  // warmup
+    cudaDeviceSynchronize();
+    auto t2 = std::chrono::steady_clock::now();
+    q4t::Status st = q4t::model::ModelPrefillBatch(
+        model, packed.data(), lens.data(), sids.data(), Bi, d_logits, nullptr);
+    cudaDeviceSynchronize();
+    auto t3 = std::chrono::steady_clock::now();
+    if (!st.ok()) {
+      std::fprintf(stderr, "bench-prefill: batch B=%d failed: %s\n", Bi,
+                   st.message().c_str());
+      return;
+    }
+    const double bat_sec = std::chrono::duration<double>(t3 - t2).count();
+    const double toks = static_cast<double>(Bi) * P;
+    std::printf(
+        "[q4t] bench-prefill B=%3d | seq %8.1f tok/s (%6.1f ms) | batch %8.1f "
+        "tok/s (%6.1f ms) | speedup %.2fx\n",
+        Bi, toks / seq_sec, seq_sec * 1000.0, toks / bat_sec, bat_sec * 1000.0,
+        seq_sec / bat_sec);
+  };
+
+  if (sweep) {
+    for (int Bi = 1; Bi < maxB; Bi *= 2) bench(Bi);
+    bench(maxB);
+  } else {
+    bench(maxB);
+  }
+
+  cudaFree(d_logits);
+  model.Free();
+  return 0;
+}
+
 int RunServe(int argc, char** argv) {
   const char* kDefaultModelDir =
       "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
@@ -691,6 +834,9 @@ int main(int argc, char** argv) {
   }
   if (cmd == "bench-decode") {
     return RunBenchDecode(argc, argv);
+  }
+  if (cmd == "bench-prefill") {
+    return RunBenchPrefill(argc, argv);
   }
   if (cmd == "serve") {
     return RunServe(argc, argv);
