@@ -156,20 +156,51 @@ __global__ void SwiGLUQuantKernel(const uint16_t* __restrict__ gu_out,
   a_sf[SfOffsetDev(row, g, num_g_tiles)] = sf_code;
 }
 
-// Scatter-add: y[t, :] += router_w[t, slot] * dn_out[row, :]. One thread per
-// (row, hs element).
-__global__ void ScatterAddKernel(const uint16_t* __restrict__ dn_out,
-                                 const int32_t* __restrict__ token_list,
-                                 const float* __restrict__ router_w, int k,
-                                 int stride, int hs, int M_e, int e, float* y) {
+// Invert the per-expert token lists into row_of_flat[flat] = the grouped
+// down-GEMM output row that holds this (token,slot)'s result. Block e handles
+// expert e's count = offset[e+1]-offset[e] rows in one launch (vs one per
+// expert). GatherQuant/GEMMs process expert e's j-th token from
+// token_list[e*stride+j], and the grouped down-GEMM writes it to row
+// offset[e]+j, so row_of_flat[token_list[e*stride+j]] = offset[e]+j. This lets
+// the final combine be a single deterministic gather (no cross-expert atomics
+// on y). token_list is [E, stride]; row_of_flat is [R].
+__global__ void BuildRowOfFlatKernel(const int32_t* __restrict__ token_list,
+                                     const int32_t* __restrict__ offset,
+                                     int stride,
+                                     int32_t* __restrict__ row_of_flat) {
+  const int e = blockIdx.x;
+  const int base = offset[e];
+  const int count = offset[e + 1] - base;
+  for (int j = threadIdx.x; j < count; j += blockDim.x) {
+    row_of_flat[token_list[e * stride + j]] = base + j;
+  }
+}
+
+// Deterministic combine over the expert-grouped [R, hs] down-GEMM output in a
+// single launch (replacing the E per-expert ScatterAddKernel launches, which
+// were launch-overhead dominated at ~3.5us median):
+//   y[t, :] += Σ_slot router_w[t*k+slot] * dn_out[row_of_flat[t*k+slot], :].
+// One thread per (token t, hs element c). Each y[t,c] is written by exactly
+// one thread, so there are no atomics (the old per-expert scatter summed the
+// k contributions in a fixed expert order; this sums them in a fixed slot
+// order) — deterministic and free of the cross-expert atomicAdd contention on
+// shared tokens. Adjacent threads share the same row per slot, so the dn_out
+// reads coalesce across c.
+__global__ void CombineGroupedKernel(const uint16_t* __restrict__ dn_out,
+                                     const int32_t* __restrict__ row_of_flat,
+                                     const float* __restrict__ router_w, int k,
+                                     int hs, int T, float* y) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
-  if (idx >= M_e * hs) return;
-  const int row = idx / hs;
+  if (idx >= T * hs) return;
+  const int t = idx / hs;
   const int c = idx % hs;
-  const int flat = token_list[e * stride + row];  // (token, slot) flat index
-  const int t = flat / k;
-  const float w = router_w[flat];
-  atomicAdd(&y[static_cast<size_t>(t) * hs + c], w * Bf16ToFloat(dn_out[idx]));
+  float acc = 0.0f;
+  for (int slot = 0; slot < k; ++slot) {
+    const int flat = t * k + slot;
+    const int r = row_of_flat[flat];
+    acc += router_w[flat] * Bf16ToFloat(dn_out[static_cast<size_t>(r) * hs + c]);
+  }
+  y[static_cast<size_t>(t) * hs + c] += acc;
 }
 
 }  // namespace
@@ -221,6 +252,8 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
   std::vector<int32_t> counts_h(E, 0);
   int32_t* d_counts = nullptr;
   int32_t* d_token_list = nullptr;
+  int32_t* d_offset = nullptr;  // [E+1] expert-group prefix-sum offsets
+  int32_t* d_row_of_flat = nullptr;  // [R] flat (token,slot) -> grouped row
   if (cudaMallocAsync(&d_counts, E * sizeof(int32_t), stream) != cudaSuccess)
     return Status::Fail("cudaMallocAsync counts");
   // token_list [E, M]: an expert can be selected by up to M tokens (all M
@@ -232,6 +265,13 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
   }
   cudaMemsetAsync(d_counts, 0, E * sizeof(int32_t), stream);
 
+  auto free_all = [&]() {
+    cudaFreeAsync(d_counts, stream);
+    cudaFreeAsync(d_token_list, stream);
+    if (d_offset) cudaFreeAsync(d_offset, stream);
+    if (d_row_of_flat) cudaFreeAsync(d_row_of_flat, stream);
+  };
+
   const int num_g_tiles = SfNumGtiles(hs);
 
   // 1. Build per-expert token lists.
@@ -242,22 +282,52 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
         expert_ids, M, k, E, d_counts, d_token_list);
   }
   if (cudaGetLastError() != cudaSuccess) {
-    cudaFreeAsync(d_counts, stream);
-    cudaFreeAsync(d_token_list, stream);
+    free_all();
     return Status::Fail("kernel launch error");
   }
 
   // 2. Read counts to host (one sync). Token lists stay on device.
   if (cudaMemcpyAsync(counts_h.data(), d_counts, E * sizeof(int32_t),
                       cudaMemcpyDeviceToHost, stream) != cudaSuccess) {
-    cudaFreeAsync(d_counts, stream);
-    cudaFreeAsync(d_token_list, stream);
+    free_all();
     return Status::Fail("cudaMemcpy counts");
   }
   if (cudaStreamSynchronize(stream) != cudaSuccess) {
-    cudaFreeAsync(d_counts, stream);
-    cudaFreeAsync(d_token_list, stream);
+    free_all();
     return Status::Fail("stream sync");
+  }
+
+  // 3. Expert-group offsets (prefix sum of counts). Grouping the down-GEMM
+  //    output into one contiguous [R, hs] buffer lets the combine run as a
+  //    single deterministic gather over all tokens instead of one scatter
+  //    launch per expert (the per-expert ScatterAddKernel was launch-overhead
+  //    dominated: median ~3.5us, below the ~5us launch cost).
+  std::vector<int32_t> offset_h(E + 1, 0);
+  for (int e = 0; e < E; ++e) offset_h[e + 1] = offset_h[e] + counts_h[e];
+  const int R_used = offset_h[E];  // == sum(counts): each token routes to k.
+  if (cudaMallocAsync(&d_offset, static_cast<size_t>(E + 1) * sizeof(int32_t),
+                      stream) != cudaSuccess) {
+    free_all();
+    return Status::Fail("cudaMallocAsync offset");
+  }
+  if (cudaMallocAsync(&d_row_of_flat,
+                      static_cast<size_t>(R_used) * sizeof(int32_t),
+                      stream) != cudaSuccess) {
+    free_all();
+    return Status::Fail("cudaMallocAsync row_of_flat");
+  }
+  if (cudaMemcpyAsync(d_offset, offset_h.data(),
+                      static_cast<size_t>(E + 1) * sizeof(int32_t),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess) {
+    free_all();
+    return Status::Fail("cudaMemcpy offset");
+  }
+  // Build the flat (token,slot) -> grouped-row inverse map for the combine.
+  BuildRowOfFlatKernel<<<E, kBlock, 0, stream>>>(d_token_list, d_offset, M,
+                                                 d_row_of_flat);
+  if (cudaGetLastError() != cudaSuccess) {
+    free_all();
+    return Status::Fail("build row_of_flat failed");
   }
 
   // 4. Per-expert GEMM chain.
@@ -286,8 +356,7 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
           reinterpret_cast<uint8_t*>(ws.a_sf));
     }
     if (cudaGetLastError() != cudaSuccess) {
-      cudaFreeAsync(d_counts, stream);
-      cudaFreeAsync(d_token_list, stream);
+      free_all();
       return Status::Fail("gather quant failed");
     }
 
@@ -303,8 +372,7 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
                       ws.a_packed, ws.a_sf, ws.gu_out, M_e, 2 * moe_is, hs,
                       gu_alpha, 1.0f, gemm_ws, gemm_ws_bytes, stream);
     if (r1.status != CUBLAS_STATUS_SUCCESS || !r1.has_algo) {
-      cudaFreeAsync(d_counts, stream);
-      cudaFreeAsync(d_token_list, stream);
+      free_all();
       return Status::Fail("gate/up GEMM failed");
     }
 
@@ -320,33 +388,37 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
           dn_in_scale);
     }
     if (cudaGetLastError() != cudaSuccess) {
-      cudaFreeAsync(d_counts, stream);
-      cudaFreeAsync(d_token_list, stream);
+      free_all();
       return Status::Fail("inter quant failed");
     }
 
     // down GEMM: [M_e, hs] = inter [M_e, moe_is] * W_dn [hs, moe_is]^T.
-    // (Same nvjet rationale as gate/up above.)
+    // (Same nvjet rationale as gate/up above.) Write into this expert's slice
+    // of the grouped [R, hs] output (rows offset[e]..offset[e]+M_e). beta=0 in
+    // Fp4Gemm, so each expert overwrites its own disjoint slice.
     auto r2 = Fp4Gemm(weights.dn_packed_expert(e), weights.dn_sf_expert(e),
-                      ws.a_packed, ws.a_sf, ws.dn_out, M_e, hs, moe_is,
-                      dn_alpha, 1.0f, gemm_ws, gemm_ws_bytes, stream);
+                      ws.a_packed, ws.a_sf,
+                      ws.dn_out + static_cast<size_t>(offset_h[e]) * hs, M_e, hs,
+                      moe_is, dn_alpha, 1.0f, gemm_ws, gemm_ws_bytes, stream);
     if (r2.status != CUBLAS_STATUS_SUCCESS || !r2.has_algo) {
-      cudaFreeAsync(d_counts, stream);
-      cudaFreeAsync(d_token_list, stream);
+      free_all();
       return Status::Fail("down GEMM failed");
-    }
-
-    // scatter-add into y.
-    {
-      const int total = M_e * hs;
-      const int blocks = (total + kBlock - 1) / kBlock;
-      ScatterAddKernel<<<blocks, kBlock, 0, stream>>>(
-          ws.dn_out, d_token_list, router_w, k, M, hs, M_e, e, y);
     }
   }
 
-  cudaFreeAsync(d_counts, stream);
-  cudaFreeAsync(d_token_list, stream);
+  // 5. Single deterministic combine over all experts' grouped rows.
+  {
+    const size_t total = static_cast<size_t>(M) * hs;
+    const int blocks = static_cast<int>((total + kBlock - 1) / kBlock);
+    CombineGroupedKernel<<<blocks, kBlock, 0, stream>>>(
+        ws.dn_out, d_row_of_flat, router_w, k, hs, M, y);
+  }
+  if (cudaGetLastError() != cudaSuccess) {
+    free_all();
+    return Status::Fail("combine failed");
+  }
+
+  free_all();
   return Status();
 }
 
