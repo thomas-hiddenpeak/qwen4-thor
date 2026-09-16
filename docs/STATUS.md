@@ -10,6 +10,13 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
 
 ## 当前焦点 (2026-09-16): prefill 性能
 
+- **根本性结论 (2026-09-16 roofline, tools/roofline_prefill.py)**: prefill 总算力
+  28.2 TFLOP, 达到 10.8 TFLOPS = **FP4 峰值 1.0% / BF16 4.2%** → 张量核 ~96% 空转;
+  纯算力下限仅 0.03s 而实测 2.6s = 86× → wall time 几乎全是访存+延迟。
+  MoE routed AI=200 ≪ FP4 ridge 4295 (512 专家×~50 token/专家, 权重带宽受限);
+  标度曲线 T=1280→1012.7/2560→989/5120→950.7 tok/s (随 T 降 = per-token 访存
+  主导, 非权重摄销受限)。**空转张量核是访存受限的症状, 非算力浪费**;
+  填满它靠连续批处理聚合吞吐 (单请求已近结构天花板 ~1000 tok/s)。
 - **基线**: prefill 2560 tok ≈ **989 tok/s** (原始 220–437, 累计约 2.3–4.5×,
   已达 vllm 1k+ 的 ~0.99×)。nsys (最新): SparseAttention 26.8% / GatedDeltaNet
   24.4% / MoE gather+swiglu ~8.5% / MoE FP4 GEMM ~10% / MoE combine 1.6% /
