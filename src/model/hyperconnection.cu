@@ -146,24 +146,36 @@ __global__ void MixGateKernel(const uint16_t* __restrict__ up,
   mixed[idx] = FloatToBf16(acc / hc);
 }
 
+// Precompute the inject gate 2*sigmoid(inject_raw/hc) in place, once per
+// (t, b). The gate does not depend on the channel c, so folding it out of
+// CombineWithGateKernel removes an hs-fold redundant sigmoid recompute there
+// (CombineWithGate ran well below MixGate's memory bandwidth despite an almost
+// identical access pattern; the per-c gate recompute was the gap). Bit-
+// identical: the BF16 round-trip is the same one the fused kernel did in-reg.
+__global__ void ApplyInjectGateKernel(uint16_t* __restrict__ inject, int total,
+                                      float inv_hc) {
+  const int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i >= total) return;
+  const float v = Bf16ToFloat(inject[i]) * inv_hc;
+  inject[i] = FloatToBf16(2.0f / (1.0f + __expf(-v)));
+}
+
 // Fused inject-gate + combine: out[t, b*hs+c] = R[t, b*hs+c] +
-// block_output[t, c] * gate[t, b], where gate = 2*sigmoid(inject_raw[t, b]/hc)
-// is recomputed in-register from the raw inject GEMM output (no separate
-// InjectGate launch, no extra d_inject read). The gate goes through the same
-// BF16 round-trip as the old two-kernel path, so the result is bit-identical.
+// block_output[t, c] * gate[t, b], where gate = 2*sigmoid(inject_raw[t,b]/hc)
+// was precomputed into inject_gated by ApplyInjectGateKernel (one sigmoid per
+// (t,b) instead of per (t,b,c)). The gate went through the same BF16 round-trip
+// as the old in-register recompute, so the result is bit-identical.
 __global__ void CombineWithGateKernel(
     const uint16_t* __restrict__ block_output, const uint16_t* __restrict__ R,
-    const uint16_t* __restrict__ inject_raw, uint16_t* __restrict__ out, int T,
-    int hc, int hs, float inv_hc) {
+    const uint16_t* __restrict__ inject_gated, uint16_t* __restrict__ out,
+    int T, int hc, int hs) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   if (idx >= T * hc * hs) return;
   const int t = idx / (hc * hs);
   const int rem = idx % (hc * hs);
   const int b = rem / hs;
   const int c = rem % hs;
-  const float iv = Bf16ToFloat(inject_raw[static_cast<size_t>(t) * hc + b]);
-  const float v = iv * inv_hc;
-  const float inj = Bf16ToFloat(FloatToBf16(2.0f / (1.0f + __expf(-v))));
+  const float inj = Bf16ToFloat(inject_gated[static_cast<size_t>(t) * hc + b]);
   const float r = Bf16ToFloat(R[idx]);
   const float bo = Bf16ToFloat(block_output[static_cast<size_t>(t) * hs + c]);
   out[idx] = FloatToBf16(r + bo * inj);
@@ -360,13 +372,16 @@ Status HyperConnectionCombine(const HyperConnectionWeights& w,
     cudaFreeAsync(d_inject, stream);
     return s;
   }
-  // 2. Fused gate + combine: out = R + block_output * 2*sigmoid(inject/hc),
-  //    the gate recomputed in-register from the raw inject GEMM output (one
-  //    launch instead of InjectGate + Combine).
+  // 2. Fused gate + combine: out = R + block_output * 2*sigmoid(inject/hc).
+  //    The per-(t,b) gate is precomputed in place first (it is c-invariant, so
+  //    recomputing it per channel in the combine wasted an hs-fold sigmoid).
   {
+    const int gt = T * hc;
+    ApplyInjectGateKernel<<<(gt + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
+        d_inject, gt, inv_hc);
     const int total = T * hc_dim;
     CombineWithGateKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
-        block_output, hyper_input, d_inject, out, T, hc, hs, inv_hc);
+        block_output, hyper_input, d_inject, out, T, hc, hs);
   }
   cudaFreeAsync(d_inject, stream);
   return Status();
