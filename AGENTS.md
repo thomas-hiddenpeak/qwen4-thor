@@ -16,9 +16,11 @@ Qwen3.8-Flash-Next (qwen4_exp) 的原生推理引擎,
 | 当前进展到哪了、下一步做什么 | [docs/STATUS.md](docs/STATUS.md) |
 | 整体架构设计 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
 | 分阶段计划与范围 | [docs/PHASES.md](docs/PHASES.md) |
-| 开发日志 (按时间倒序) | [docs/LOG.md](docs/LOG.md) |
+| 开发日志 (按日期分文件, 时间倒序) | [docs/log/](docs/log/README.md) |
+| 已完成 / 已解决归档 | [docs/DONE.md](docs/DONE.md) |
 | 目标模型架构细节 (qwen4_exp) | [docs/MODEL.md](docs/MODEL.md) |
 | 参考项目说明 | [docs/REFERENCE.md](docs/REFERENCE.md) |
+| 文档总索引 | [docs/README.md](docs/README.md) |
 
 ## 硬性约定
 
@@ -32,8 +34,9 @@ Qwen3.8-Flash-Next (qwen4_exp) 的原生推理引擎,
    (见 .clang-format)。命名: PascalCase 类型/方法, lower_snake_case
    局部变量, 成员变量尾下划线 (`member_`), I 前缀接口。
 5. **编译零警告**: `-Wall -Wextra`。
-6. **每次有意义的改动后**, 更新 `docs/STATUS.md` 并在 `docs/LOG.md`
-   顶部追加一条记录 (日期、做了什么、为什么、下一步)。
+6. **每次有意义的改动后**, 更新 `docs/STATUS.md` 并追加一条开发日志到
+   当天 `docs/log/<日期>.md` 顶部 (不存在则新建并在 `docs/log/README.md`
+   索引登记); 每条: 日期、做了什么、为什么、下一步。日志只追加不改历史。
 7. **验证以真实环境为准**: 开发过程直接在本机 Thor 上构建、运行、
    测试, 不假设 CI 环境。
 

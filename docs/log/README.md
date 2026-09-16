@@ -1,0 +1,22 @@
+# 开发日志索引 (docs/log/)
+
+> 按时间倒序, **只追加不修改**。每条: 日期、做了什么、为什么、下一步。
+> 发现历史错误时追加更正条目, 不改原文。**新增日志追加到当天的
+> `docs/log/<日期>.md` 顶部** (当天文件不存在则新建并在此登记)。
+
+| 日期 | 摘要 (当天最新一条) |
+|---|---|
+| [2026-09-16](2026-09-16.md) | chunked tensor-core GatedDeltaNet 集成完成: 正确但 Thor 上更慢 (负结果, flag 默认关) |
+| [2026-09-15](2026-09-15.md) | Step 4: tensor core (FA4) 路径关闭 (源码级 blocker) |
+| [2026-09-14](2026-09-14.md) | 262K 内存预算评估 + PD 决定 + PHASES.md 更新 |
+| [2026-09-13](2026-09-13.md) | MTP 批处理 Stage 2c: 调度器 MTP 分支 (闭合, 5 增量) |
+| [2026-09-12](2026-09-12.md) | 验证标准体系 (Phase 2 完成标准, 已闭合) |
+| [2026-09-11](2026-09-11.md) | 视频输入 (Phase 2, 2/3): C++ 视频 processor + 差分验证 (6 case 全过) |
+| [2026-09-10](2026-09-10.md) | kernel launch 削减 (续 3): PLE trunk_add 融合 + 删 PleAddTrunkKernel (性能中性, 复杂度下降) |
+| [2026-09-09](2026-09-09.md) | MTP 批处理验证 (ModelDecodeBatch): 12.1 → 14.7 tok/s (追平 plain) |
+| [2026-09-08](2026-09-08.md) | MTP 接入 generate (--mtp) + 接受率诊断 (负结果: draft 输出垃圾) |
+| [2026-09-07](2026-09-07.md) | decode 流量根因分析 + RouterTopk 并行化 (12.2→12.9 tok/s) |
+| [2026-09-06](2026-09-06.md) | MTP 接口预留 (scheme A: 主模型暴露 pre-final-mixer 多流) |
+| [2026-09-05](2026-09-05.md) | PD-ready 阶段边界 API (ModelSequence) 实现 |
+| [2026-09-04](2026-09-04.md) | 模型层启动 (1/N): Hyper-Connection (GatedResidual) 主干 |
+| [2026-09-03](2026-09-03.md) | IO 层: 权重加载编排 (WeightIndex + WeightLoader) |
