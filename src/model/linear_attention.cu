@@ -55,6 +55,102 @@ __device__ __forceinline__ float BlockReduceSum(float val, float* s) {
   return s[0];
 }
 
+// Fused block-wide sum of two independent lanes over blockDim.x threads (a
+// multiple of 32) via warp shuffles + a SINGLE __syncthreads. The Gated
+// DeltaNet recurrence reduced k_sq and q_sq with two halving-tree
+// BlockReduceSum calls == ~2*log2(bd) barriers per token; here the whole
+// per-token norm costs one barrier. `scratch` must hold >= 2*(blockDim.x/32)
+// floats. Returned to every thread (x = sum of val.x, y = sum of val.y). The
+// prefill and MTP verify kernels both use this, so their norms stay identical;
+// the warp-butterfly order differs from the halving tree by ~1e-7 rel, far
+// inside the reference tolerance.
+__device__ __forceinline__ float2 BlockReduceSum2Warp(float2 v, float* scratch) {
+#pragma unroll
+  for (int off = 16; off > 0; off >>= 1) {
+    v.x += __shfl_down_sync(0xffffffffu, v.x, off);
+    v.y += __shfl_down_sync(0xffffffffu, v.y, off);
+  }
+  const int warp = threadIdx.x >> 5;
+  const int lane = threadIdx.x & 31;
+  const int nw = blockDim.x >> 5;
+  if (lane == 0) {
+    scratch[warp] = v.x;
+    scratch[nw + warp] = v.y;
+  }
+  __syncthreads();
+  float2 r = make_float2(0.0f, 0.0f);
+  for (int w = 0; w < nw; ++w) {
+    r.x += scratch[w];
+    r.y += scratch[nw + w];
+  }
+  return r;
+}
+
+// One Gated DeltaNet recurrence token, shared by the prefill and MTP multi-seq
+// verify kernels so their per-token math is byte-identical (the verify path is
+// validated as an exact copy of prefill; MoE routing downstream amplifies any
+// divergence past the l2_rel < 0.01 gate). Thread j owns value column j; the
+// two kd reductions use 4 accumulators to break the 128-deep FMA dependency
+// chain (4x ILP hides shared-memory latency at the ~25% occupancy this state-
+// heavy kernel is capped to). The 4-way reassociation is ~1e-6 rel, far inside
+// the reference tolerance.
+//
+// kS_j = sum_i k_hat[i] * S[i][j].
+__device__ __forceinline__ float GdnKSum(const float* __restrict__ k_hat_s,
+                                         const float* __restrict__ S_smem,
+                                         int vd_pad, int j, int kd, int kd4) {
+  float a0 = 0.0f, a1 = 0.0f, a2 = 0.0f, a3 = 0.0f;
+  int i = 0;
+  for (; i < kd4; i += 4) {
+    a0 += k_hat_s[i + 0] * S_smem[(i + 0) * vd_pad + j];
+    a1 += k_hat_s[i + 1] * S_smem[(i + 1) * vd_pad + j];
+    a2 += k_hat_s[i + 2] * S_smem[(i + 2) * vd_pad + j];
+    a3 += k_hat_s[i + 3] * S_smem[(i + 3) * vd_pad + j];
+  }
+  float s = (a0 + a1) + (a2 + a3);
+  for (; i < kd; ++i) s += k_hat_s[i] * S_smem[i * vd_pad + j];
+  return s;
+}
+
+// Rank-1 state update S[i][j] = alpha*S + beta*k_hat[i]*delta (in place) and
+// y_j = sum_i S_new[i][j] * q_hat[i]. 4 y-accumulators break the y chain; the
+// per-i S loads/stores are independent and pipeline freely.
+__device__ __forceinline__ float GdnUpdateY(float* __restrict__ S_smem,
+                                            const float* __restrict__ k_hat_s,
+                                            const float* __restrict__ q_hat_s,
+                                            int vd_pad, int j, int kd, int kd4,
+                                            float alpha_v, float beta_v,
+                                            float delta_j) {
+  float y0 = 0.0f, y1 = 0.0f, y2 = 0.0f, y3 = 0.0f;
+  int i = 0;
+  for (; i < kd4; i += 4) {
+    const float os0 = S_smem[(i + 0) * vd_pad + j];
+    const float os1 = S_smem[(i + 1) * vd_pad + j];
+    const float os2 = S_smem[(i + 2) * vd_pad + j];
+    const float os3 = S_smem[(i + 3) * vd_pad + j];
+    const float ns0 = alpha_v * os0 + (beta_v * k_hat_s[i + 0]) * delta_j;
+    const float ns1 = alpha_v * os1 + (beta_v * k_hat_s[i + 1]) * delta_j;
+    const float ns2 = alpha_v * os2 + (beta_v * k_hat_s[i + 2]) * delta_j;
+    const float ns3 = alpha_v * os3 + (beta_v * k_hat_s[i + 3]) * delta_j;
+    S_smem[(i + 0) * vd_pad + j] = ns0;
+    S_smem[(i + 1) * vd_pad + j] = ns1;
+    S_smem[(i + 2) * vd_pad + j] = ns2;
+    S_smem[(i + 3) * vd_pad + j] = ns3;
+    y0 += ns0 * q_hat_s[i + 0];
+    y1 += ns1 * q_hat_s[i + 1];
+    y2 += ns2 * q_hat_s[i + 2];
+    y3 += ns3 * q_hat_s[i + 3];
+  }
+  float y = (y0 + y1) + (y2 + y3);
+  for (; i < kd; ++i) {
+    const float os = S_smem[i * vd_pad + j];
+    const float ns = alpha_v * os + (beta_v * k_hat_s[i]) * delta_j;
+    S_smem[i * vd_pad + j] = ns;
+    y += ns * q_hat_s[i];
+  }
+  return y;
+}
+
 Status CheckGemm(const Bf16GemmResult& r) {
   if (r.status != CUBLAS_STATUS_SUCCESS || !r.has_algo) {
     return Status::Fail(std::string("Bf16Gemm failed (status=") +
@@ -353,11 +449,11 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetKernel(
   float* S_smem = smem;
   float* k_hat_s = S_smem + kd * vd_pad;
   float* q_hat_s = k_hat_s + kd;
-  float* s_part = q_hat_s + kd;  // [128] reduction scratch
-  float* s_norms = s_part + 128;  // [2] k_sq, q_sq
+  float* s_part = q_hat_s + kd;  // reduction scratch (warp-partial sums)
 
   const int ss_base = h_v * kd * vd;
   const float q_scale = rsqrtf(static_cast<float>(kd));
+  const int kd4 = kd & ~3;  // 4-way unroll bound for the inner kd reductions
   // Load initial state S[kd, vd] -> S_smem (FP32 GMEM -> FP32 SMEM). The
   // persistent state is FP32 to match the reference (transformers keeps the
   // GatedDeltaNet recurrent state in float32 end-to-end); a BF16 state
@@ -377,16 +473,15 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetKernel(
       const float qv = Bf16ToFloat(qkv[q_base + i]);
       local_q_sq += qv * qv;
     }
-    s_norms[0] = BlockReduceSum(local_k_sq, s_part);
-    __syncthreads();
-    s_norms[1] = BlockReduceSum(local_q_sq, s_part);
-    __syncthreads();
+    // One warp-shuffle reduction for both norms (one barrier vs ~14).
+    const float2 sq =
+        BlockReduceSum2Warp(make_float2(local_k_sq, local_q_sq), s_part);
 
     // L2-style normalization (NOT RMSNorm): 1/sqrt(sum(x^2) + eps). The
     // reference (qwen35-thor gated_delta_net_*_kernel) does not divide by kd;
     // q additionally carries a 1/sqrt(kd) scale.
-    const float k_norm = rsqrtf(s_norms[0] + 1e-6f);
-    const float q_norm = rsqrtf(s_norms[1] + 1e-6f) * q_scale;
+    const float k_norm = rsqrtf(sq.x + 1e-6f);
+    const float q_norm = rsqrtf(sq.y + 1e-6f) * q_scale;
     for (int i = threadIdx.x; i < kd; i += blockDim.x) {
       k_hat_s[i] = Bf16ToFloat(qkv[k_base + i]) * k_norm;
       q_hat_s[i] = Bf16ToFloat(qkv[q_base + i]) * q_norm;
@@ -406,21 +501,11 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetKernel(
         1.0f / (1.0f + expf(-Bf16ToFloat(beta_raw[t * nv + h_v])));
 
     const int v_base = t * token_stride + 2 * nkh * kd + h_v * vd;
-    float kS_j = 0.0f;
-    for (int i = 0; i < kd; ++i)
-      kS_j += k_hat_s[i] * S_smem[i * vd_pad + j];
-
+    const float kS_j = GdnKSum(k_hat_s, S_smem, vd_pad, j, kd, kd4);
     const float v_j = Bf16ToFloat(qkv[v_base + j]);
     const float delta_j = v_j - alpha_v * kS_j;
-
-    float y_j = 0.0f;
-    for (int i = 0; i < kd; ++i) {
-      const float beta_k_i = beta_v * k_hat_s[i];
-      const float old_s = S_smem[i * vd_pad + j];
-      const float new_s = alpha_v * old_s + beta_k_i * delta_j;
-      S_smem[i * vd_pad + j] = new_s;
-      y_j += new_s * q_hat_s[i];
-    }
+    const float y_j = GdnUpdateY(S_smem, k_hat_s, q_hat_s, vd_pad, j, kd, kd4,
+                                 alpha_v, beta_v, delta_j);
 
     const int y_base = (t * nv + h_v) * vd;
     y[y_base + j] = FloatToBf16(y_j);
@@ -604,13 +689,12 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetMultiSeqCausalKernel(
   float* S_smem = smem;
   float* k_hat_s = S_smem + kd * vd_pad;
   float* q_hat_s = k_hat_s + kd;
-  float* s_part = q_hat_s + kd;  // [128] reduction scratch
-  float* s_norms = s_part + 128;  // [2] k_sq, q_sq
+  float* s_part = q_hat_s + kd;  // reduction scratch (warp-partial sums)
 
   const int seq = d_seq_id[b * T];
   const int ss_base = seq * nv * kd * vd + h_v * kd * vd;
   const float q_scale = rsqrtf(static_cast<float>(kd));
-  const int token_stride = T * in_qkv;  // packed row stride (sequence-major)
+  const int kd4 = kd & ~3;  // 4-way unroll bound (matches GatedDeltaNetKernel)
   // Load initial state S[kd, vd] for this sequence's value head.
   for (int i = 0; i < kd; ++i) S_smem[i * vd_pad + j] = ssm[ss_base + i * vd + j];
   __syncthreads();
@@ -629,13 +713,11 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetMultiSeqCausalKernel(
       const float qv = Bf16ToFloat(qkv[q_base + i]);
       local_q_sq += qv * qv;
     }
-    s_norms[0] = BlockReduceSum(local_k_sq, s_part);
-    __syncthreads();
-    s_norms[1] = BlockReduceSum(local_q_sq, s_part);
-    __syncthreads();
-
-    const float k_norm = rsqrtf(s_norms[0] + 1e-6f);
-    const float q_norm = rsqrtf(s_norms[1] + 1e-6f) * q_scale;
+    // One warp-shuffle reduction for both norms (one barrier vs ~14).
+    const float2 sq =
+        BlockReduceSum2Warp(make_float2(local_k_sq, local_q_sq), s_part);
+    const float k_norm = rsqrtf(sq.x + 1e-6f);
+    const float q_norm = rsqrtf(sq.y + 1e-6f) * q_scale;
     for (int i = threadIdx.x; i < kd; i += blockDim.x) {
       k_hat_s[i] = Bf16ToFloat(qkv[k_base + i]) * k_norm;
       q_hat_s[i] = Bf16ToFloat(qkv[q_base + i]) * q_norm;
@@ -652,21 +734,11 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetMultiSeqCausalKernel(
         1.0f / (1.0f + expf(-Bf16ToFloat(beta_raw[t * nv + h_v])));
 
     const int v_base = t * in_qkv + 2 * nkh * kd + h_v * vd;
-    float kS_j = 0.0f;
-    for (int i = 0; i < kd; ++i)
-      kS_j += k_hat_s[i] * S_smem[i * vd_pad + j];
-
+    const float kS_j = GdnKSum(k_hat_s, S_smem, vd_pad, j, kd, kd4);
     const float v_j = Bf16ToFloat(qkv[v_base + j]);
     const float delta_j = v_j - alpha_v * kS_j;
-
-    float y_j = 0.0f;
-    for (int i = 0; i < kd; ++i) {
-      const float beta_k_i = beta_v * k_hat_s[i];
-      const float old_s = S_smem[i * vd_pad + j];
-      const float new_s = alpha_v * old_s + beta_k_i * delta_j;
-      S_smem[i * vd_pad + j] = new_s;
-      y_j += new_s * q_hat_s[i];
-    }
+    const float y_j = GdnUpdateY(S_smem, k_hat_s, q_hat_s, vd_pad, j, kd, kd4,
+                                 alpha_v, beta_v, delta_j);
 
     const int y_base = (t * nv + h_v) * vd;
     y[y_base + j] = FloatToBf16(y_j);

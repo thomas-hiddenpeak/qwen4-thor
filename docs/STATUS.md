@@ -575,6 +575,22 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   AOT, 理论下限 ~0.05ms, 但需自建 block-sparse + paged gather, 工程量大)
   ③ 接受当前 10.5ms 转 decode GEMM 带宽 (FP8 计划 C)。回退 bf16 (无
   收益), 保持基线。详见 LOG 2026-09-15。
+- [x] 2026-09-16 **Step 10: GatedDeltaNet 内循环 ILP + warp reduction →
+  prefill 786→826 tok/s**: Step 9 后 GatedDeltaNet 成 prefill #1/#2 瓶颈
+  (nsys 22-24%)。两处安全优化 (prefill + `GatedDeltaNetMultiSeqCausalKernel`
+  同步改, 保持逐位一致, 对参考 l2_rel 在容差内): (a) 内循环 4 路 ILP —
+  `kS_j`/`y_j` 两个 128 深串行 FMA 链拆 4 累加器 (共享 helper `GdnKSum`/
+  `GdnUpdateY`); (b) warp-shuffle 归约 — 每 token k_sq/q_sq 归约从两次
+  halving-tree `BlockReduceSum` (~14 barrier) 换成一次 `BlockReduceSum2Warp`
+  (1 barrier), 每 token barrier 18→3。**cuobjdump 实测 GatedDeltaNetKernel
+  REG:127 无 spill, 但 66KB FP32 state 限死 3 block/SM = 25% 占用率 (shared
+  才是天花板, 非寄存器)**; kernel 距 FP32 峰值 ~18×, 占用率受限, 固定占用率
+  下 ILP+warp 只拿 ~5%。踩坑: 先试 vd-split 拆列提占用率, 但 (i) 改归约线程
+  数破坏 prefill/verify 逐位一致 → MoE 路由离散边界放大差 → verify_multi
+  seq0 l2_rel 0.029 FAIL; (ii) 实测 vd-split 不增 warp/SM (state 总量不变)
+  收益≈0, 遂弃。全 68 测试通过, 零警告。下一步大杠杆: bf16 shared state
+  (alpha 衰减 → 误差或有界, 可回退试) 或 chunked tensor-core delta rule。
+  详见 LOG 2026-09-16。
 - [x] 2026-09-16 **Step 9: PV 累加器搬寄存器 → prefill 268→786 tok/s (2.9×)**:
   Step 8 用 shared sO[12,256] 做 PV 累加 (每 chunk 读改写 3072 float)。改为
   per-lane 寄存器累加 acc[4][4] (online-softmax rescale 折进寄存器 fma), 移除

@@ -5,7 +5,50 @@
 
 ---
 
-## 2026-09-16 — Step 9: PV 累加器搬到寄存器 → prefill 268→786 tok/s (2.9×)
+## 2026-09-16 — Step 10: GatedDeltaNet 内循环 ILP + warp reduction → prefill 786→826 tok/s
+
+**做了什么**
+Step 9 后 GatedDeltaNet 成为 prefill #1/#2 瓶颈 (nsys 22-24%)。两处安全
+优化 (数值上对参考 l2_rel 保持在容差内, prefill 与 MTP verify 两条 kernel
+路径同步改动以保持逐位一致):
+- **内循环 4 路 ILP**: `kS_j = Σ k̂·S` 与 `y_j = Σ S_new·q̂` 两个 128 深
+  的串行 FMA 依赖链拆成 4 个累加器 (提取到共享 `__device__` helper
+  `GdnKSum`/`GdnUpdateY`, prefill + `GatedDeltaNetMultiSeqCausalKernel`
+  共用, 保证逐 token 数学逐位一致)。重结合误差 ~1e-6 rel。
+- **warp-shuffle 归约**: 每 token 的 k_sq/q_sq 归约从两次 halving-tree
+  `BlockReduceSum` (~14 barrier) 换成一次融合 `BlockReduceSum2Warp`
+  (warp shuffle + 1 barrier)。每 token barrier 18 → 3。
+
+**为什么只有 5%**
+ncu/cuobjdump 实测: GatedDeltaNetKernel **REG:127, 无 spill**, 但被
+**66KB FP32 state (S_smem = kd×vd_pad×4) 限制到 3 block/SM = 12 warp/SM
+= 25% 占用率** (寄存器允许 4, shared 才是天花板)。kernel 距 FP32 峰值
+~18×, 属占用率/延迟受限。ILP+warp 在固定占用率下只能压依赖链与 barrier,
+拿到 ~5%; 要再进一步必须**降 state 的 shared footprint** (bf16 state →
+2× 占用率, 有数值风险) 或**换 chunked tensor-core 算法** (大改)。
+
+**结果**
+- 真实 prefill 2560 tok: **786 → 826 tok/s** (ILP 786→814, warp 814→826)
+- 全 68 测试通过 (linear_attention l2_rel 6.4e-3; verify_multi 逐位一致
+  恢复), 零警告。
+- 期间修复一个既有隐藏 warning: `GatedDeltaNetMultiSeqCausalKernel` 里
+  `token_stride` 未使用 (本文件重编译才暴露)。
+
+**踩坑**
+先试 vd-split (拆 vd 列到多 block 提占用率) — verify_multi seq0 l2_rel
+0.029 FAIL: MoE 路由是离散边界, 会放大任何数值差, 而 vd-split 改了归约
+线程数 (128→64) 破坏了 prefill 与 MTP verify 的逐位一致。且实测 vd-split
+不增 warp/SM (state 总量不变, 只是分摊), 占用率天花板还是 25%, 收益≈0,
+遂放弃。教训: 动 GatedDeltaNet 的数值路径必须 prefill + verify 同步改。
+
+**下一步**
+GatedDeltaNet 占用率被 FP32 state 锁死。候选大杠杆: (a) bf16 shared state
+(alpha 衰减系统, 远端误差指数衰减 → 误差可能有界, 值得一试, 可回退);
+(b) chunked tensor-core delta rule (对齐 vllm/sglang, 大改)。SparseAttention
+已 71% 带宽 (需 FP8 KV)。MoE gather/scatter/quant 三 kernel 各 29171 次
+launch 共 17.8%, 可能有小 kernel/launch 开销可挖。
+
+---
 
 **做了什么**
 Step 8 的 tensor-core kernel 用 shared `sO[12,256]` 做 PV 运行累加器 (每
