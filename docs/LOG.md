@@ -19,6 +19,17 @@ lane 拥有 4 n-tile × 4 mma C 值; online-softmax rescale 折进寄存器 fma)
 - SparseAttentionKernel: 584 → **60 ms/call (9.7×)** (从原始 SIMT 1264ms
   算 **21×**); nsys 占比 73.6% → 22.7%, GatedDeltaNet 升为 #1 (23.9%)
 
+**完整 prefill 曲线 (原始基线 → Step 9)**
+| prompt | 原始 | Step 9 | 提升 |
+|---|---|---|---|
+| 1040 | 437 | 822 | 1.9× |
+| 2560 | ~280 | 786 | 2.8× |
+| 4240 | 220 | 757 | 3.4× |
+
+prefill 从"随长度暴跌" (437→300→220) 变为**几乎持平** (822→786→757) —
+attention 瓶颈基本解决, 接近 vllm 1k+ 同一量级。SparseAttention 60ms/call
+= 171 GB/s = **71% LPDDR5x 峰值带宽** (接近带宽下限)。
+
 **根因**
 真实 kernel 是**延迟受限** (散射 LPDDR5x paged-KV 读, 不是带宽也不是
 计算)。释放 12KB shared → 每 SM 容纳更多并发 block → 更多在途内存请求 →
