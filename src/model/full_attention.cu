@@ -465,6 +465,36 @@ __global__ void IndexerLogitsKernel(const u16* __restrict__ iq,
   }
 }
 
+// Kernel 7b: indexer logits reduction over the tensor-core GEMM output.
+// S[t*n_iq+h, g] = iq[t,h] . ck[g] (from Bf16Gemm). This folds the head relu +
+// sum + 1/sqrt(hd) scale + causal group mask that the SIMT IndexerLogitsKernel
+// did inline. One thread per (t, g); logits[t,g] = -1e30 for invisible groups
+// (g >= (pos+1)/compress), whose S columns are never read (single-seq path).
+__global__ void IndexerReduceKernel(const u16* __restrict__ S,
+                                    f32* __restrict__ logits,
+                                    const int* __restrict__ positions, int T,
+                                    int n_iq, int hd, int compress,
+                                    int max_blocks) {
+  const int idx = blockIdx.x * blockDim.x + threadIdx.x;
+  if (idx >= T * max_blocks) return;
+  const int t = idx / max_blocks;
+  const int g = idx % max_blocks;
+  int n_groups = (positions[t] + 1) / compress;
+  if (n_groups > max_blocks) n_groups = max_blocks;
+  if (g >= n_groups) {
+    logits[idx] = -1e30f;
+    return;
+  }
+  const float inv_sqrt = rsqrtf(static_cast<float>(hd));
+  float sum = 0.f;
+  for (int h = 0; h < n_iq; ++h) {
+    const float dot =
+        Bf16ToFloat(S[(static_cast<size_t>(t) * n_iq + h) * max_blocks + g]);
+    sum += fmaxf(dot, 0.f);
+  }
+  logits[idx] = sum * inv_sqrt;
+}
+
 // ---------------------------------------------------------------------------
 // Kernel 8: topk block selection -> token index list.
 //
@@ -985,6 +1015,7 @@ size_t FullAttentionWorkspaceBytes(const FullAttentionWeights& w, int T) {
   alloc(static_cast<size_t>(T) * max_topk * 4);       // d_topk (i32)
   alloc(static_cast<size_t>(T) * 4);                  // d_topk_len (i32)
   alloc(static_cast<size_t>(T) * nq * hd * 2);        // d_attn
+  alloc(static_cast<size_t>(T) * n_iq * max_blocks * 2);  // d_S (indexer GEMM)
   off += 32u * 1024u * 1024u;  // GEMM scratch
   return off;
 }
@@ -1027,6 +1058,8 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   int* d_topk = static_cast<int*>(alloc(static_cast<size_t>(T) * max_topk * 4));
   int* d_topk_len = static_cast<int*>(alloc(static_cast<size_t>(T) * 4));
   u16* d_attn = static_cast<u16*>(alloc(static_cast<size_t>(T) * nq * hd * 2));
+  u16* d_S = static_cast<u16*>(
+      alloc(static_cast<size_t>(T) * n_iq * max_blocks * 2));  // indexer GEMM out
   if (off > workspace_bytes)
     return Status::Fail("FullAttentionForward: workspace too small (need " +
                         std::to_string(off) + ", have " +
@@ -1116,11 +1149,23 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
       w.index_k_norm, idx_raw, idx_comp, d_positions, rope_pos, T,
       w.max_len, idx_hd, w.idx_compress, w.rope_theta, w.eps, d_seq_id,
       idx_seq_stride, rope_seq_stride);
-  // 9. indexer logits over visible compressed blocks
-  IndexerLogitsKernel<<<T, 256, 0, stream>>>(d_iq, idx_comp, d_logits,
-                                             d_positions, T, n_iq, idx_hd,
-                                             w.idx_compress, max_blocks,
-                                             d_seq_id, idx_seq_stride);
+  // 9. indexer logits over visible compressed blocks. Single-seq: tensor-core
+  //    GEMM S = iq @ ck^T (Bf16Gemm) + relu/sum/mask reduce (replaces the SIMT
+  //    triple loop). Multi-seq (d_seq_id): per-sequence idx_comp slices can't
+  //    share one GEMM weight, so keep the SIMT kernel.
+  if (d_seq_id == nullptr) {
+    s = CheckGemm(Bf16Gemm(d_iq, idx_comp, d_S, T * n_iq, max_blocks, idx_hd,
+                           1.f, 0.f, d_gemm_ws, gemm_ws, stream));
+    if (!s.ok()) return s;
+    const int total = T * max_blocks;
+    IndexerReduceKernel<<<(total + 255) / 256, 256, 0, stream>>>(
+        d_S, d_logits, d_positions, T, n_iq, idx_hd, w.idx_compress, max_blocks);
+  } else {
+    IndexerLogitsKernel<<<T, 256, 0, stream>>>(d_iq, idx_comp, d_logits,
+                                               d_positions, T, n_iq, idx_hd,
+                                               w.idx_compress, max_blocks,
+                                               d_seq_id, idx_seq_stride);
+  }
   // 10. topk block selection -> token index list (packed [T, ...] arrays, no
   //     per-seq state).
   TopkSelectKernel<<<T, 256, 0, stream>>>(d_logits, d_topk, d_topk_len,
