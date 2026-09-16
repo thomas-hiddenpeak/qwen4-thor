@@ -76,23 +76,6 @@ bool WriteAll(int fd, const std::string& s) {
   return WriteAll(fd, s.data(), s.size());
 }
 
-// Argmax over a BF16 logits row (lowest-index tie-break, matches the greedy
-// decoder). Used by the B2b scheduler to turn each packed row into a token.
-int ArgmaxBf16Row(const uint16_t* row, int vocab) {
-  int best = 0;
-  float best_v = -1e30f;
-  for (int v = 0; v < vocab; ++v) {
-    const uint32_t bits = static_cast<uint32_t>(row[v]) << 16;
-    float f;
-    std::memcpy(&f, &bits, sizeof(f));
-    if (f > best_v) {
-      best_v = f;
-      best = v;
-    }
-  }
-  return best;
-}
-
 // Read the full HTTP request: request line + headers (until blank line) +
 // Content-Length body. Returns false on a malformed or closed request.
 bool ReadRequest(int fd, std::string* method, std::string* path,
@@ -337,6 +320,10 @@ ChatServer::~ChatServer() {
     cudaFree(d_sched_logits_);
     d_sched_logits_ = nullptr;
   }
+  if (d_sched_tokens_) {
+    cudaFree(d_sched_tokens_);
+    d_sched_tokens_ = nullptr;
+  }
   if (d_prefill_logits_) {
     cudaFree(d_prefill_logits_);
     d_prefill_logits_ = nullptr;
@@ -445,13 +432,20 @@ Status ChatServer::Start(const ServerOptions& opts) {
   video_proc_cfg_.min_pixels = 4096;
   video_proc_cfg_.max_pixels = 25165824;
 
-  // B2b continuous batching: the scheduler's packed-logits buffers
-  // (device [max_seq, vocab] + host mirror) and the scheduler thread.
+  // B2b continuous batching: the scheduler's packed-logits buffer (device
+  // [max_seq, vocab]) + a GPU-argmax token buffer (device [max_seq] + host
+  // mirror) + the scheduler thread.
   if (cudaMalloc(reinterpret_cast<void**>(&d_sched_logits_),
                  static_cast<size_t>(max_seq_) * cfg.vocab * 2) != cudaSuccess) {
     std::fprintf(stderr, "[q4t] scheduler logits alloc failed; plain decode\n");
+  } else if (cudaMalloc(reinterpret_cast<void**>(&d_sched_tokens_),
+                        static_cast<size_t>(max_seq_) * sizeof(int32_t)) !=
+             cudaSuccess) {
+    std::fprintf(stderr, "[q4t] scheduler tokens alloc failed; plain decode\n");
+    cudaFree(d_sched_logits_);
+    d_sched_logits_ = nullptr;
   } else {
-    sched_h_logits_.assign(static_cast<size_t>(max_seq_) * cfg.vocab, 0);
+    h_sched_tokens_.assign(static_cast<size_t>(max_seq_), 0);
     scheduler_thread_ = std::thread([this] { SchedulerLoop(); });
     scheduler_active_ = true;
     std::fprintf(stderr, "[q4t] continuous-batching scheduler started "
@@ -726,10 +720,16 @@ void ChatServer::SchedulerLoop() {
                                        seq_ids.data(), hist_flat.data(), B,
                                        d_sched_logits_, nullptr, nullptr);
       if (s.ok()) {
-        cudaMemcpyAsync(sched_h_logits_.data(), d_sched_logits_,
-                        static_cast<size_t>(B) * vocab * 2,
-                        cudaMemcpyDeviceToHost, nullptr);
-        cudaStreamSynchronize(nullptr);
+        // GPU argmax: [B, vocab] -> B token ids (moves the 248320-wide
+        // reduction off the CPU and shrinks the D2H from B*vocab to B ints).
+        s = model::ArgmaxBf16Rows(d_sched_logits_, B, vocab, d_sched_tokens_,
+                                  nullptr);
+        if (s.ok()) {
+          cudaMemcpyAsync(h_sched_tokens_.data(), d_sched_tokens_,
+                          static_cast<size_t>(B) * sizeof(int32_t),
+                          cudaMemcpyDeviceToHost, nullptr);
+          cudaStreamSynchronize(nullptr);
+        }
       }
     }
 
@@ -741,11 +741,7 @@ void ChatServer::SchedulerLoop() {
         ActiveRequest* r = plain_reqs[i];
         r->pending = false;
         r->done = true;
-        if (s.ok())
-          r->next_token = ArgmaxBf16Row(
-              sched_h_logits_.data() + static_cast<size_t>(i) * vocab, vocab);
-        else
-          r->next_token = -1;
+        r->next_token = s.ok() ? h_sched_tokens_[i] : -1;
         r->cv.notify_one();
       }
     }

@@ -143,6 +143,50 @@ Status EmbedLookup(const ModelHeadWeights& w, const int32_t* token_ids,
   return Status();
 }
 
+// One block per row; each thread scans a strided slice of the vocab tracking
+// its local (max, lowest-index), then a shared-memory reduction picks the
+// global max with lowest-index tie-break (matches the CPU ArgmaxBf16Row).
+__global__ void ArgmaxBf16Kernel(const uint16_t* __restrict__ logits, int vocab,
+                                 int32_t* __restrict__ out) {
+  const int b = blockIdx.x;
+  const uint16_t* row = logits + static_cast<size_t>(b) * vocab;
+  float best_v = -1e30f;
+  int best_i = 0;
+  for (int v = threadIdx.x; v < vocab; v += blockDim.x) {
+    const float f = __uint_as_float(static_cast<uint32_t>(row[v]) << 16);
+    if (f > best_v) {  // strict > keeps the lowest index within this thread
+      best_v = f;
+      best_i = v;
+    }
+  }
+  __shared__ float s_v[256];
+  __shared__ int s_i[256];
+  s_v[threadIdx.x] = best_v;
+  s_i[threadIdx.x] = best_i;
+  __syncthreads();
+  for (int stride = blockDim.x >> 1; stride > 0; stride >>= 1) {
+    if (threadIdx.x < stride) {
+      const float ov = s_v[threadIdx.x + stride];
+      const int oi = s_i[threadIdx.x + stride];
+      if (ov > s_v[threadIdx.x] ||
+          (ov == s_v[threadIdx.x] && oi < s_i[threadIdx.x])) {
+        s_v[threadIdx.x] = ov;
+        s_i[threadIdx.x] = oi;
+      }
+    }
+    __syncthreads();
+  }
+  if (threadIdx.x == 0) out[b] = s_i[0];
+}
+
+Status ArgmaxBf16Rows(const uint16_t* logits, int B, int vocab,
+                      int32_t* out_tokens, cudaStream_t stream) {
+  if (B <= 0 || vocab <= 0) return Status();
+  ArgmaxBf16Kernel<<<B, 256, 0, stream>>>(logits, vocab, out_tokens);
+  if (cudaGetLastError() != cudaSuccess) return Status::Fail("argmax launch");
+  return Status();
+}
+
 Status ExpandTrunk(const ModelHeadWeights& w, const uint16_t* emb,
                    uint16_t* trunk, int T, cudaStream_t stream) {
   if (T <= 0) return Status();

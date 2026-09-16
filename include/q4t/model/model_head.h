@@ -67,5 +67,13 @@ Status HeadForward(const ModelHeadWeights& w, const uint16_t* trunk,
 // Device bytes for the HeadForward `workspace` (mixer GEMM + lm_head GEMM).
 size_t ModelHeadWorkspaceBytes(int T, int hs);
 
+// Greedy argmax over each of B BF16 logits rows [B, vocab] on the GPU, writing
+// the B token ids to `out_tokens` (device int32 [B]). Lowest-index tie-break
+// (matches the CPU ArgmaxBf16Row). This keeps the per-step D2H at B ints
+// instead of B*vocab logits and moves the 248320-wide reduction off the CPU
+// (the continuous-batching scheduler's dominant per-step cost).
+Status ArgmaxBf16Rows(const uint16_t* logits, int B, int vocab,
+                      int32_t* out_tokens, cudaStream_t stream);
+
 }  // namespace model
 }  // namespace q4t

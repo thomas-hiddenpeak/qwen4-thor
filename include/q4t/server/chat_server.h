@@ -165,7 +165,8 @@ class ChatServer {
   // Scheduler's packed-logits buffers (device [max_seq, vocab] + host mirror).
   // Only the scheduler thread touches these (the write is under model_mu_).
   uint16_t* d_sched_logits_ = nullptr;
-  std::vector<uint16_t> sched_h_logits_;
+  int32_t* d_sched_tokens_ = nullptr;        // [max_seq] GPU argmax result
+  std::vector<int32_t> h_sched_tokens_;      // host mirror (B ints, not vocab)
   // Shared prefill-logits buffer [max_prefill, vocab], used only under
   // model_mu_ (prefills serialize there). Replaces the per-request ~1 GB
   // d_logits so peak GPU memory does not scale with prompt length x
