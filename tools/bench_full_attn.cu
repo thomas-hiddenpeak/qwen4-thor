@@ -124,6 +124,8 @@ int main(int argc, char** argv) {
   int iters = 5;
   bool diag = false;
   bool warm_idx = false;
+  bool warm_kv = false;
+  bool flush_l2 = false;
   int base_pos = 0;
   std::string ts_arg = "256,1024,2048,4096";
   std::string golden_path, check_path;
@@ -148,6 +150,20 @@ int main(int argc, char** argv) {
     // indexer/GEMM cost. Requires T > idx_budget to be in the sparse
     // regime.
     if (a == "--warm-idx") warm_idx = true;
+    // --warm-kv: pre-fill the MAIN KV cache with random data ONCE and do not
+    // reset it per iteration. (NOTE: zero vs random KV alone does NOT reproduce
+    // the real prefill — a single layer's 16MB KV fits in L2 either way. Use
+    // --flush-l2 for that.)
+    if (a == "--warm-kv") warm_kv = true;
+    // --flush-l2: write a 128MB scratch buffer before every attention call to
+    // evict the KV cache from L2. A single layer's KV (16MB at max_len=8192)
+    // fits in the 32MB L2, so a standalone bench always reads KV from L2
+    // (~10x faster than real). In the real model, 47 other layers run between
+    // attention calls and their KV+activations+PLE data evict the current
+    // layer's KV -> HBM scattered reads. --flush-l2 reproduces that by
+    // forcing an L2 eviction before each call. THIS is what makes the bench
+    // match the real prefill's HBM-bound regime.
+    if (a == "--flush-l2") flush_l2 = true;
     // --base-pos N: the T tokens sit at ABSOLUTE positions [N, N+T) instead
     // of [0, T). Models a prefill chunk at the tail of a long sequence:
     // the indexer sees (N+T)/compress visible groups (history included),
@@ -195,6 +211,14 @@ int main(int argc, char** argv) {
   int* d_pos = nullptr;
   uint16_t* d_x = nullptr;
   uint16_t* d_out = nullptr;
+  void* d_l2_flush = nullptr;
+  const size_t kFlushBytes = 128ull << 20;
+  if (flush_l2 &&
+      cudaMalloc(reinterpret_cast<void**>(&d_l2_flush), kFlushBytes) !=
+          cudaSuccess) {
+    std::fprintf(stderr, "cudaMalloc flush scratch failed\n");
+    return 1;
+  }
   if (cudaMalloc(reinterpret_cast<void**>(&d_kv), kv_bytes) != cudaSuccess ||
       cudaMalloc(reinterpret_cast<void**>(&d_pt),
                  static_cast<size_t>(max_len) * sizeof(int)) != cudaSuccess ||
@@ -213,7 +237,13 @@ int main(int argc, char** argv) {
     std::fprintf(stderr, "cudaMalloc failed\n");
     return 1;
   }
-  cudaMemset(d_kv, 0, kv_bytes);
+  if (warm_kv) {
+    // Random KV (does not compress in L2) — the production HBM-bound pattern.
+    std::vector<uint16_t> kv_warm = MakeInput(kv_bytes / 2);
+    cudaMemcpy(d_kv, kv_warm.data(), kv_bytes, cudaMemcpyHostToDevice);
+  } else {
+    cudaMemset(d_kv, 0, kv_bytes);
+  }
   cudaMemset(d_idx_raw, 0, static_cast<size_t>(max_len) * kIdxHd * 2);
   cudaMemset(d_idx_comp, 0, static_cast<size_t>(max_len) * kIdxHd * 2);
   if (warm_idx) {
@@ -275,7 +305,11 @@ int main(int argc, char** argv) {
     // fresh prefill of T tokens from an empty cache.
     const double ms = TimeMs(
         iters, [&] {
-          cudaMemset(d_kv, 0, kv_bytes);
+          if (flush_l2) {
+            // Evict the KV cache from L2 (write 128MB of scratch data).
+            cudaMemset(d_l2_flush, 0xAB, kFlushBytes);
+          }
+          if (!warm_kv) cudaMemset(d_kv, 0, kv_bytes);
           if (!warm_idx) {
             cudaMemset(d_idx_raw, 0,
                        static_cast<size_t>(max_len) * kIdxHd * 2);
@@ -402,6 +436,7 @@ int main(int argc, char** argv) {
 
   w.Free();
   cudaFree(d_kv); cudaFree(d_pt); cudaFree(d_idx_raw); cudaFree(d_idx_comp);
+  if (d_l2_flush) cudaFree(d_l2_flush);
   cudaFree(d_rope); cudaFree(d_pos); cudaFree(d_x); cudaFree(d_out);
   delete loader;
   delete index;

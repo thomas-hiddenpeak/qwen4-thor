@@ -575,6 +575,21 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   AOT, 理论下限 ~0.05ms, 但需自建 block-sparse + paged gather, 工程量大)
   ③ 接受当前 10.5ms 转 decode GEMM 带宽 (FP8 计划 C)。回退 bf16 (无
   收益), 保持基线。详见 LOG 2026-09-15。
+- [x] 2026-09-16 **Step 8: tensor-core GQA-packed SparseAttentionKernel**:
+  用户要求利用 tensor core + 纠正 Thor 硬件 (**无 HBM, LPDDR5x 统一内存,
+  理论 273 GB/s, 实测可用 246+ GB/s**; AGENTS.md "8TB/s HBM3e" 错误)。
+  验证 SM110a 支持 bf16 `mma.sync m16n8k16` (CUDA13 `nvcuda::wmma` bf16
+  fragment incomplete 但底层 PTX 可用)。重写 kernel: grid T×24 (每 q-head
+  独立读 KV 12× 冗余) → grid (T,nkv), 每 block 读 KV 一次驱动 12 q-head
+  走 mma (QK warp0 sQ[16,256]@sK[16,256]^T 补零到 16 行, PV 8 warp 切 256
+  维, online softmax)。修复关键非确定 bug: PV mma 无效位置 sP=0 乘未初始化
+  sV(NaN/Inf), 0×NaN=NaN 污染输出 → 多序列 step1 DIFFER; staging 清零
+  [chunk,16) sK/sV。全 68 测试通过 (l2_rel 4.7e-3)。性能: 单层 bench
+  10.55→8.19ms (1.29×), 真实 SparseAttentionKernel 1264→584ms/call, 端到端
+  prefill 2560tok 268 tok/s (attn 仍占 73.6%)。**12× KV 读减少收益有限**:
+  kernel 现为 latency/occupancy bound (QK 仅 warp0 + ~128 chunk 串行 + 多
+  __syncthreads), 非 KV 带宽 — 推翻 Step 7 "12× 冗余读是瓶颈"。下一步:
+  QK 跨 warp 并行 / split-K 跨位置。详见 LOG 2026-09-16。
 - [x] 2026-09-16 **Step 7: prefill 慢的真相 (用户反馈 vllm 1k+) — 修正
   Step 2-4 结论**: 用户反馈 "prefill 太慢, vllm 1k+"。实测 prefill
   吞吐: 1051 tok=437 tok/s, 2126=300, 4251=220 (随 T 增大下降)。长

@@ -590,13 +590,44 @@ __global__ void TopkSelectKernel(f32* __restrict__ logits, int* __restrict__ top
 //   topk : [T, max_topk] int32
 //   out  : [T, nq, hd] (BF16, pre-gate)
 //
-// block = one (t, qh), 256 threads (hd). The query row is staged in shared
-// memory; selected K/V positions are processed in chunks of 16, staged in
-// shared memory, with online (running max/sum) softmax. Each selected logical
-// position p is read from physical slot page_table[p]*kKvPageSize + p%kKvPageSize.
-// Optimized: each thread owns dim d. Dot products computed via per-dim
-// partial (1 FMA) + warp reduce (5 shfl) + cross-warp shared (8 adds),
-// eliminating the 256x redundant full-dot computation of the old version.
+// Tensor-core GQA-packed rewrite (replaces the per-q-head SIMT kernel).
+//
+// The old kernel launched one 256-thread block per (t, qh): grid T*nq. With
+// nkv=2 / nq=24 (GQA 12:1), the same KV row was read from memory 12 times —
+// once per q-head sharing a kv-head. On Thor (LPDDR5x, 241 GB/s) the real
+// prefill is memory-bound, so that 12x redundant KV read is the dominant
+// cost (214 GB vs 18 GB). This kernel packs all 12 q-heads of one kv-head
+// into a single block: grid T*nkv. Each block reads its KV chunk ONCE and
+// feeds all 12 q-heads through mma.sync tensor-core matmuls, mirroring
+// vllm's _qsa_sparse_paged_gqa_splitk_kernel (tl.dot on [12,hd]x[hd,BN]).
+//
+// Layout: block = 256 threads = 8 warps. Warp w handles q-heads
+// m0 = 2*w, m0+1 (m = qh - kvh*12 in [0,12)). Per 16-position chunk:
+//   sQ [12, 256] bf16  — the 12 q-heads' query rows (row-major)
+//   sK [16, 256] bf16  — K rows for the chunk (row-major)
+//   sV [16, 256] bf16  — V rows for the chunk (row-major)
+//   sS [12, 16]  f32   — scores = sQ @ sK^T (via mma m16n8k16)
+//   sP [16, 12]  bf16  — softmax probs (transposed for the PV mma B operand)
+//   sO [12, 256] f32   — running PV accumulator (rescaled by alpha)
+// QK^T: per 8-dim n-tile, mma A = sQ rows (16 m, 12 used), B = sK cols.
+// PV:   per 8-dim n-tile, mma A = sP (16 m = positions, 12 used), B = sV cols.
+// Online softmax (running max/sum) is applied to sS per chunk; the running
+// sO accumulator is rescaled by alpha = exp(m_old - m_new) each chunk.
+//
+// ldmatrix loads the mma fragments from shared memory (no bank conflicts for
+// row-major bf16 with the standard x4 pattern). The PV B-operand (sV^T view)
+// is loaded with ldmatrix.trans.
+__device__ __forceinline__ void MmaBf16(float& c0, float& c1, float& c2,
+                                        float& c3, uint32_t a0, uint32_t a1,
+                                        uint32_t a2, uint32_t a3, uint32_t b0,
+                                        uint32_t b1) {
+  asm volatile(
+      "mma.sync.aligned.m16n8k16.row.col.f32.bf16.bf16.f32 "
+      "{%0,%1,%2,%3}, {%4,%5,%6,%7}, {%8,%9}, {%0,%1,%2,%3};\n"
+      : "+f"(c0), "+f"(c1), "+f"(c2), "+f"(c3)
+      : "r"(a0), "r"(a1), "r"(a2), "r"(a3), "r"(b0), "r"(b1));
+}
+
 __global__ void SparseAttentionKernel(const u16* __restrict__ q,
                                       const u16* __restrict__ kv_cache,
                                       const int* __restrict__ page_table,
@@ -607,115 +638,192 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
                                       int nkv, int hd, int max_topk,
                                       const int* __restrict__ d_seq_id,
                                       size_t kv_seq_stride, int pt_seq_stride) {
-  const int CHUNK = 16;
-  const int NWARP = 8;  // 256 threads / 32
-  __shared__ float sQ[256];
-  __shared__ float sK[CHUNK * 256];
-  __shared__ float sV[CHUNK * 256];
-  __shared__ float s_partial[NWARP * CHUNK];  // warp-reduced partial dots
-  __shared__ float s_dot[CHUNK];              // final dot products
-  int th = blockIdx.x;
-  int t = th / nq;
-  int qh = th % nq;
-  int kvh = qh / (nq / nkv);
-  int d = threadIdx.x;
-  int warp_id = d >> 5;
-  int lane = d & 31;
-  // B2 multi-seq: select this token's sequence KV + page_table slices (all
-  // selected positions belong to this token's own sequence).
+  // Tensor-core GQA-packed QSA attention. grid = (T, nkv); each block reads
+  // its kv-head's K/V ONCE and drives all 12 q-heads through mma.sync
+  // (12x KV-read reduction vs the old per-q-head kernel). Tile shape is fixed
+  // to the model constants (hd=256, nq=24, nkv=2 -> G=12); a runtime guard
+  // rejects any other geometry.
+  constexpr int kG = 12;      // q-heads per kv-head
+  constexpr int kHd = 256;
+  constexpr int kChunk = 16;  // positions processed per mma pass
+  if (nq / nkv != kG || nkv != 2 || hd != kHd) return;
+  __shared__ u16 sQ[16 * kHd];     // [16, 256] query rows (12..15 zero-padded)
+  __shared__ u16 sK[kChunk * kHd]; // [16, 256] K rows (chunk)
+  __shared__ u16 sV[kChunk * kHd]; // [16, 256] V rows (chunk)
+  __shared__ float sS[16 * 16];    // [16, 16] scores (rows 12..15 unused)
+  __shared__ u16 sP[kChunk * 16];  // [16 pos, 16] probs (cols 12..15 = 0)
+  __shared__ float sO[kG * kHd];   // [12, 256] running PV accumulator
+  __shared__ float sMax[kG];       // running softmax max per q-head
+  __shared__ float sSum[kG];       // running softmax denom per q-head
+  __shared__ float sAlpha[kG];     // this-chunk rescale factor per q-head
+  const int t = blockIdx.x;
+  const int kvh = blockIdx.y;
+  const int warp_id = threadIdx.x >> 5;
+  const int lane = threadIdx.x & 31;
+  // B2 multi-seq: select this token's sequence KV + page_table slices.
   const u16* kv = d_seq_id
                       ? kv_cache + static_cast<size_t>(d_seq_id[t]) * kv_seq_stride
                       : kv_cache;
   const int* pt = d_seq_id
                       ? page_table + static_cast<size_t>(d_seq_id[t]) * pt_seq_stride
                       : page_table;
-  // Load the query row into shared memory (all threads).
-  if (d < hd) sQ[d] = Bf16ToFloat(q[(static_cast<size_t>(t) * nq + qh) * hd + d]);
-  __syncthreads();
   const int* sel = topk + static_cast<size_t>(t) * max_topk;
-  const int nsel_total = topk_len[t];  // valid positions only (skip -1 tail)
-  const float scale = 1.f / sqrtf(static_cast<float>(hd));
-  float m = -1e30f;
-  float l = 0.f;
-  float acc = 0.f;
+  const int nsel_total = topk_len[t];
+  const float scale = 1.f / sqrtf(static_cast<float>(kHd));
+  // Stage 12 query rows into sQ; zero rows 12..15 (mma reads a 16-row tile).
+  const int qh0 = kvh * kG;
+  for (int i = threadIdx.x; i < 16 * kHd; i += 256) {
+    const int m = i / kHd;
+    sQ[i] = (m < kG)
+                ? q[(static_cast<size_t>(t) * nq + qh0 + m) * kHd + (i % kHd)]
+                : 0;
+  }
+  for (int i = threadIdx.x; i < kG * kHd; i += 256) sO[i] = 0.f;
+  for (int i = threadIdx.x; i < kChunk * 16; i += 256) sP[i] = 0;
+  if (threadIdx.x < kG) {
+    sMax[threadIdx.x] = -1e30f;
+    sSum[threadIdx.x] = 0.f;
+  }
+  __syncthreads();
   int nsel = 0;
   while (nsel < nsel_total) {
-    int chunk = min(CHUNK, nsel_total - nsel);
-    // Stage K, V for this chunk into shared memory (coalesced: consecutive
-    // threads read consecutive dims).
-    for (int c = 0; c < chunk; ++c) {
-      int p = sel[nsel + c];
-      if (p >= 0 && d < hd) {
-        int slot = pt[p] * kKvPageSize + (p % kKvPageSize);
-        size_t base = (static_cast<size_t>(slot) * nkv + kvh) * (2 * hd);
-        sK[c * 256 + d] = Bf16ToFloat(kv[base + d]);
-        sV[c * 256 + d] = Bf16ToFloat(kv[base + hd + d]);
+    const int chunk = min(kChunk, nsel_total - nsel);
+    // ---- Stage K, V for this chunk (ONE read, shared by all 12 q-heads). ----
+    // Positions [chunk, 16) are zeroed: the mma processes a full 16-wide k
+    // tile, and for invalid positions sP=0; leaving sV as uninitialized shared
+    // memory (possibly a NaN/Inf bit pattern) would make 0*NaN=NaN in the PV
+    // mma and corrupt valid outputs (a nondeterministic, SM-residue-dependent
+    // bug). Zeroing keeps every product finite.
+    for (int c = 0; c < kChunk; ++c) {
+      if (c < chunk) {
+        const int p = sel[nsel + c];
+        if (p >= 0) {
+          const int slot = pt[p] * kKvPageSize + (p % kKvPageSize);
+          const size_t base =
+              (static_cast<size_t>(slot) * nkv + kvh) * (2 * kHd);
+          for (int d = threadIdx.x; d < kHd; d += 256) {
+            sK[c * kHd + d] = kv[base + d];
+            sV[c * kHd + d] = kv[base + kHd + d];
+          }
+        }
+      } else {
+        for (int d = threadIdx.x; d < kHd; d += 256) {
+          sK[c * kHd + d] = 0;
+          sV[c * kHd + d] = 0;
+        }
       }
     }
     __syncthreads();
-    // Compute dot products: each thread does 1 FMA per position for its dim,
-    // then warp-reduce + cross-warp sum.
-    float partial[CHUNK];
-    #pragma unroll
-    for (int c = 0; c < CHUNK; ++c) {
-      partial[c] = (c < chunk && sel[nsel + c] >= 0)
-                       ? sQ[d] * sK[c * 256 + d]
-                       : 0.f;
-    }
-    // Warp reduce for each position (5 shfl each).
-    #pragma unroll
-    for (int c = 0; c < CHUNK; ++c) {
-      #pragma unroll
-      for (int off = 16; off > 0; off >>= 1)
-        partial[c] += __shfl_xor_sync(0xffffffffu, partial[c], off);
-    }
-    // Lane 0 of each warp writes to shared.
-    if (lane == 0) {
-      #pragma unroll
-      for (int c = 0; c < chunk; ++c) s_partial[warp_id * CHUNK + c] = partial[c];
-    }
-    __syncthreads();
-    // Sum across warps (only needed by one thread per position, but all
-    // threads need the result for V accumulation — use thread 0..15).
-    if (d < chunk) {
-      float s = 0.f;
-      #pragma unroll
-      for (int w = 0; w < NWARP; ++w) s += s_partial[w * CHUNK + d];
-      s_dot[d] = s;
-    }
-    __syncthreads();
-    // Online softmax + V accumulation (each thread owns dim d).
-    float m_new = m;
-    #pragma unroll
-    for (int c = 0; c < chunk; ++c) {
-      if (sel[nsel + c] >= 0) m_new = fmaxf(m_new, s_dot[c] * scale);
-    }
-    float alpha = expf(m - m_new);
-    float l_new = l * alpha;
-    acc *= alpha;
-    #pragma unroll
-    for (int c = 0; c < chunk; ++c) {
-      if (sel[nsel + c] >= 0) {
-        float w = expf(s_dot[c] * scale - m_new);
-        l_new += w;
-        acc += w * sV[c * 256 + d];
+    // ---- QK^T (warp 0): sS[16,16] = sQ[16,256] @ sK[16,256]^T via mma. ----
+    // mma m16n8k16: A = sQ (m=qh, k=dim), B = sK^T (B[k][n] = sK[pos=n][dim=k],
+    // contiguous in dim). Accumulate over 16 k-tiles; 2 n-tiles cover 16 pos.
+    if (warp_id == 0) {
+      const int group = lane >> 2;     // qh row (0..7, and +8)
+      const int k0 = (lane & 3) * 2;   // k-pair base
+      const int col = (lane & 3) * 2;  // pos-pair base (C fragment)
+      for (int nt = 0; nt < kChunk / 8; ++nt) {
+        const int nb = nt * 8;
+        float c0 = 0.f, c1 = 0.f, c2 = 0.f, c3 = 0.f;
+        for (int kt = 0; kt < kHd / 16; ++kt) {
+          const int kb = kt * 16;
+          const u16* qa = sQ + group * kHd + kb + k0;
+          const u16* qa8 = sQ + (group + 8) * kHd + kb + k0;
+          uint32_t a0 = *reinterpret_cast<const uint32_t*>(qa);
+          uint32_t a1 = *reinterpret_cast<const uint32_t*>(qa8);
+          uint32_t a2 = *reinterpret_cast<const uint32_t*>(qa + 8);
+          uint32_t a3 = *reinterpret_cast<const uint32_t*>(qa8 + 8);
+          const u16* kbp = sK + (nb + group) * kHd + kb + k0;
+          uint32_t b0 = *reinterpret_cast<const uint32_t*>(kbp);
+          uint32_t b1 = *reinterpret_cast<const uint32_t*>(kbp + 8);
+          MmaBf16(c0, c1, c2, c3, a0, a1, a2, a3, b0, b1);
+        }
+        sS[group * 16 + nb + col] = c0;
+        sS[group * 16 + nb + col + 1] = c1;
+        sS[(group + 8) * 16 + nb + col] = c2;
+        sS[(group + 8) * 16 + nb + col + 1] = c3;
       }
     }
-    m = m_new;
-    l = l_new;
+    __syncthreads();
+    // ---- Online softmax per q-head row (thread q handles qh=q). ----
+    if (threadIdx.x < kG) {
+      const int qrow = threadIdx.x;
+      const float m_old = sMax[qrow];
+      float mx = m_old;
+      for (int p = 0; p < chunk; ++p)
+        mx = fmaxf(mx, sS[qrow * 16 + p] * scale);
+      const float alpha = expf(m_old - mx);
+      sAlpha[qrow] = alpha;
+      float s = sSum[qrow] * alpha;
+      for (int p = 0; p < kChunk; ++p) {
+        const float pr = (p < chunk) ? expf(sS[qrow * 16 + p] * scale - mx)
+                                     : 0.f;
+        sP[p * 16 + qrow] = FloatToBf16(pr);
+        s += pr;
+      }
+      sSum[qrow] = s;
+      sMax[qrow] = mx;
+    }
+    __syncthreads();
+    // ---- PV: sO[12,256] = sO*alpha + sP^T[16,16] @ sV[16,256] via mma. ----
+    // out[qh][d] = sum_pos P[pos][qh] * V[pos][d].
+    // mma: A = sP^T (m=qh, k=pos): A[qh][pos] = sP[pos*16 + qh] (stride 16).
+    //      B = sV (k=pos, n=d): B[pos][d] = sV[pos*hd + d] (stride hd in k).
+    // Warp w handles n-tiles w, w+8, w+16, w+24 (disjoint 8-dim slices).
+    {
+      const int group = lane >> 2;     // qh (0..7, and +8)
+      const int k0 = (lane & 3) * 2;   // pos-pair base (mma K)
+      const int col = (lane & 3) * 2;  // d-pair base (C fragment)
+      for (int nt = warp_id; nt < kHd / 8; nt += 8) {
+        const int nb = nt * 8;
+        // A-fragment: elements strided by 16 in sP -> scalar load + pack
+        // (low16 = first k, high16 = second k, matching the contiguous load).
+        const u16* pa = sP + group;
+        const u16* pa8 = sP + group + 8;
+        uint32_t a0 = static_cast<uint32_t>(pa[k0 * 16]) |
+                      (static_cast<uint32_t>(pa[(k0 + 1) * 16]) << 16);
+        uint32_t a1 = static_cast<uint32_t>(pa8[k0 * 16]) |
+                      (static_cast<uint32_t>(pa8[(k0 + 1) * 16]) << 16);
+        uint32_t a2 = static_cast<uint32_t>(pa[(k0 + 8) * 16]) |
+                      (static_cast<uint32_t>(pa[(k0 + 9) * 16]) << 16);
+        uint32_t a3 = static_cast<uint32_t>(pa8[(k0 + 8) * 16]) |
+                      (static_cast<uint32_t>(pa8[(k0 + 9) * 16]) << 16);
+        // B-fragment: elements strided by hd in sV -> scalar load + pack.
+        const u16* vb = sV + nb + group;
+        uint32_t b0 = static_cast<uint32_t>(vb[k0 * kHd]) |
+                      (static_cast<uint32_t>(vb[(k0 + 1) * kHd]) << 16);
+        uint32_t b1 = static_cast<uint32_t>(vb[(k0 + 8) * kHd]) |
+                      (static_cast<uint32_t>(vb[(k0 + 9) * kHd]) << 16);
+        float c0 = 0.f, c1 = 0.f, c2 = 0.f, c3 = 0.f;
+        MmaBf16(c0, c1, c2, c3, a0, a1, a2, a3, b0, b1);
+        // C[qh][d]: qh=group (c0,c1) / group+8 (c2,c3), d=nb+col. Fold the
+        // per-chunk online-softmax rescale (sO*alpha) into the add; each
+        // (qh,d) is touched by exactly one lane in one warp per chunk.
+        float* o = sO + group * kHd + nb + col;
+        o[0] = o[0] * sAlpha[group] + c0;
+        o[1] = o[1] * sAlpha[group] + c1;
+        if (group + 8 < kG) {
+          float* o8 = sO + (group + 8) * kHd + nb + col;
+          o8[0] = o8[0] * sAlpha[group + 8] + c2;
+          o8[1] = o8[1] * sAlpha[group + 8] + c3;
+        }
+      }
+    }
+    __syncthreads();
     nsel += chunk;
-    __syncthreads();
   }
-  if (l > 0.f) acc /= l;
-  // Fused gate: out = attn * sigmoid(gate) (was a separate GateMulKernel pass
-  // over [T, nq, hd]; folding it here removes a launch + a 150 MB round trip).
-  // The intermediate BF16 round of `acc` is preserved so the result is
-  // bit-identical to the two-pass version (round acc -> multiply -> round).
-  if (d < hd) {
-    const size_t oidx = (static_cast<size_t>(t) * nq + qh) * hd + d;
+  // ---- Normalize + fused gate + write out. ----
+  for (int i = threadIdx.x; i < kG * kHd; i += 256) {
+    const int m = i / kHd;
+    const int d = i % kHd;
+    const int qh = qh0 + m;
+    const size_t oidx = (static_cast<size_t>(t) * nq + qh) * kHd + d;
+    float acc = sO[i];
+    const float l = sSum[m];
+    if (l > 0.f) acc /= l;
+    // Fused gate: out = attn * sigmoid(gate) (BF16 round preserved).
     const u16 a16 = FloatToBf16(acc);
-    const float g = 1.f / (1.f + expf(-Bf16ToFloat(gate[oidx])));
-    out[oidx] = FloatToBf16(Bf16ToFloat(a16) * g);
+    const float sg = 1.f / (1.f + expf(-Bf16ToFloat(gate[oidx])));
+    out[oidx] = FloatToBf16(Bf16ToFloat(a16) * sg);
   }
 }
 
@@ -990,7 +1098,10 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   // 11. sparse GQA attention over the selected positions (valid only, via
   //     topk_len — the -1 tail is not iterated). The sigmoid gate is applied
   //     in-kernel (fused), so no separate GateMulKernel pass is needed.
-  SparseAttentionKernel<<<T * nq, 256, 0, stream>>>(
+  // Tensor-core GQA-packed: grid (T, nkv), each block reads its KV chunk once
+  // and feeds all 12 q-heads via mma.sync (12x KV read reduction vs the old
+  // per-q-head SIMT kernel).
+  SparseAttentionKernel<<<dim3(T, nkv), 256, 0, stream>>>(
       d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn, d_gate, nq, nkv,
       hd, max_topk, d_seq_id, kv_seq_stride, pt_seq_stride);
   // 12. out = attn @ W_o^T

@@ -5,7 +5,46 @@
 
 ---
 
-## 2026-09-16 — Step 7: prefill 慢的真相 (用户反馈 vllm 1k+ tok/s) — 修正 Step 2-4 结论
+## 2026-09-16 — Step 8: tensor-core GQA-packed SparseAttentionKernel (利用 tensor core)
+
+**用户要求**
+"既然 tensorCore 没有利用起来, 那么我们就利用起来啊" + 纠正 Thor 硬件:
+**无 HBM, LPDDR5x 统一内存, 理论 273 GB/s, 实测可用 246+ GB/s**
+(此前 AGENTS.md "~8TB/s HBM3e" 错误; copy kernel 实测 241 GB/s)。
+
+**做了什么**
+1. 验证 SM110a 支持 bf16 `mma.sync m16n8k16` (最小测试 PASS)。CUDA 13 的
+   `nvcuda::wmma` bf16 fragment incomplete, 但底层 `mma.sync` PTX 可用。
+2. 重写 `SparseAttentionKernel`: 旧 grid=T×24 (每 q-head 一 block, 同一 KV
+   被 12 q-head 读 12×); 新 grid=(T,nkv), 每 block 读其 kv-head 的 KV **一次**,
+   12 q-head 打包进 16 行 mma tile (行 12..15 补零) 走 tensor core。QK 由
+   warp0 算 sQ[16,256]@sK[16,256]^T (16 k-tile × 2 n-tile), PV 8 warp 切
+   256 维 (sP^T[16,16]@sV[16,256]), online softmax 跨 chunk。对齐 vllm
+   `_qsa_sparse_paged_gqa_splitk_kernel` 的 GQA-in-kernel 思路。
+
+**关键 bug (已修)**
+PV mma 对无效位置 pos>=chunk 用 sP=0 乘 `sV` (未初始化 shared, 可能是
+NaN/Inf 位模式), IEEE **0×NaN=NaN** 污染有效输出 → 非确定 (SM shared 残留
+相关) → 多序列 step1 seq-vs-seq0 DIFFER。修复: K/V staging 把 [chunk,16)
+的 sK/sV 清零 (finite, 0×0=0)。全 68 测试通过 (l2_rel 4.7e-3 < 3e-2)。
+
+**性能**
+- 单层 bench (T=4251, L2 驻留): 10.55 → 8.19 ms (1.29×, 纯 mma vs SIMT 计算)
+- 真实 prefill SparseAttentionKernel: 1264 → 584 ms/call
+- 端到端 prefill 2560 tok: 268 tok/s (attn 仍占 73.6%)
+
+**未兑现: 12× KV 读减少收益有限 — kernel 现为 latency/occupancy bound**
+实测 kernel 既非 compute-bound (0.235 TFLOP/s ≪ peak) 也非 bandwidth-bound
+(≈18 GB/s ≪ 241)。根因: QK 只用 warp0 (7 warp 空转) + ~128 chunk 串行 +
+多次 __syncthreads。之前 "12× 冗余 KV 读是瓶颈" 的判断被推翻 — 真实瓶颈是
+kernel 结构 (串行 chunk + 低占用), 非 KV 带宽。
+
+**下一步**
+QK 跨 warp 并行 (2 warp 分 2 n-tile 或 split-K 跨位置) + 减少 __syncthreads,
+对齐 vllm split-K + merge 结构提升占用率。
+
+---
+
 
 **用户反馈**
 "prefill 的速度太儿戏了, vllm 可以到 1k 以上"。
