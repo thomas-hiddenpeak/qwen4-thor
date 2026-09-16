@@ -10,6 +10,10 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
 
 ## 当前焦点 (2026-09-17): 批处理吞吐 (推进中)
 
+- **路径 C 兑现 (2026-09-17)**: serve 并发吞吐 concurrency 1→64 = **16.6→138.1
+  tok/s (8.3×)** 且仍爬升, 0 error 存活。与 bench 理想 18.6× 差距 = prefill +
+  HTTP/tokenizer 串行 + 调度非 lockstep 开销。缩小方向 (不量化): prefill
+  last-row lm_head / prefill 批处理 / tokenizer 并行。
 - **serve 资源背压 (2026-09-17, 已修)**: 并发压测崩溃 (per-request ~1GB d_logits ×
   并发 OOM) → 共享 prefill buffer (一次分配, 持锁内读首行) + 阻塞 AllocSeqId (超
   max_seq 排队非 503) + 连接上限 (防线程爆炸)。压测 2×/4× 超限 + 16 并发长 prompt
