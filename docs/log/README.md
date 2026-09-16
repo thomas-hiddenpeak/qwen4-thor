@@ -6,7 +6,7 @@
 
 | 日期 | 摘要 (当天最新一条) |
 |---|---|
-| [2026-09-16](2026-09-16.md) | chunked tensor-core GatedDeltaNet 集成完成: 正确但 Thor 上更慢 (负结果, flag 默认关) |
+| [2026-09-16](2026-09-16.md) | MoE 去死写 (移除 NVFP4 compact/inter) → prefill 826→871 tok/s |
 | [2026-09-15](2026-09-15.md) | Step 4: tensor core (FA4) 路径关闭 (源码级 blocker) |
 | [2026-09-14](2026-09-14.md) | 262K 内存预算评估 + PD 决定 + PHASES.md 更新 |
 | [2026-09-13](2026-09-13.md) | MTP 批处理 Stage 2c: 调度器 MTP 分支 (闭合, 5 增量) |

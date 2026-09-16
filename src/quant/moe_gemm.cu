@@ -61,17 +61,16 @@ __global__ void BuildTokenListsKernel(const int32_t* __restrict__ expert_ids,
 }
 
 // Gather + quantize one expert's tokens: one thread per (row, group of 16).
-// Writes the expert's M_e rows to the START of the compact / a_packed / a_sf
-// buffers (rows 0..M_e-1) so the following per-expert GEMM can address them
-// directly. token_list holds [E, k] token indices; expert e's tokens are
-// token_list[e * k + 0 .. M_e-1].
-//   x [M, hs] bf16, token_list [E, k] int32, input_scale float (per expert),
-//   compact [M_e, hs] bf16 (out), a_packed [M_e, hs/2] u8 (out),
-//   a_sf swizzled e4m3 (out).
+// Writes the expert's M_e rows to the START of the a_packed / a_sf buffers
+// (rows 0..M_e-1) so the following per-expert GEMM can address them directly.
+// token_list holds [E, stride] flat (token,slot) indices; expert e's tokens are
+// token_list[e*stride + 0 .. M_e-1].
+//   x [M, hs] bf16, token_list [E, stride] int32, input_scale (per expert),
+//   a_packed [M_e, hs/2] u8 (out), a_sf swizzled e4m3 (out).
 __global__ void GatherQuantKernel(
     const uint16_t* __restrict__ x, const int32_t* __restrict__ token_list,
     int M_e, int e, int k, int stride, int hs, int num_g_tiles,
-    const float* __restrict__ input_scale, uint16_t* __restrict__ compact,
+    const float* __restrict__ input_scale,
     uint8_t* __restrict__ a_packed, uint8_t* __restrict__ a_sf) {
   const int groups = hs / 16;
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
@@ -83,14 +82,12 @@ __global__ void GatherQuantKernel(
   const float inv_scale = input_scale[e];
 
   const uint16_t* src = x + static_cast<size_t>(t) * hs + g * 16;
-  uint16_t* dst = compact + static_cast<size_t>(row) * hs + g * 16;
   float a[16];
   float gmax = 0.0f;
 #pragma unroll
   for (int j = 0; j < 16; ++j) {
     const __nv_bfloat16 b = *reinterpret_cast<const __nv_bfloat16*>(&src[j]);
     a[j] = __bfloat162float(b);
-    dst[j] = src[j];
     gmax = fmaxf(gmax, fabsf(a[j]));
   }
   const float block_scale = gmax > 0.0f ? gmax / 6.0f : 1.0f;
@@ -176,27 +173,21 @@ __global__ void ScatterAddKernel(const float* __restrict__ dn_out,
 size_t MoEWorkspace::RequiredBytes(int M, int k, int hs, int moe_is) {
   const int R = M * k;
   size_t b = 0;
-  b += static_cast<size_t>(R) * hs * sizeof(uint16_t);  // compact
   b += static_cast<size_t>(R) * (hs / 2);  // a_packed
   b += SfBufferSize(R, hs);  // a_sf
   b += static_cast<size_t>(R) * (2 * moe_is) * sizeof(float);  // gu_out
-  b += static_cast<size_t>(R) * moe_is * sizeof(float);  // inter
   b += static_cast<size_t>(R) * hs * sizeof(float);  // dn_out
   return b;
 }
 
 void MoEWorkspace::Init(uint8_t* base) {
   size_t off = 0;
-  compact = base;
-  off += compact_bytes;
   a_packed = base + off;
   off += a_packed_bytes;
   a_sf = base + off;
   off += a_sf_bytes;
   gu_out = reinterpret_cast<float*>(base + off);
   off += gu_out_bytes;
-  inter = reinterpret_cast<float*>(base + off);
-  off += inter_bytes;
   dn_out = reinterpret_cast<float*>(base + off);
   off += dn_out_bytes;
 }
@@ -215,11 +206,9 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
   const int R = M * k;
 
   MoEWorkspace ws;
-  ws.compact_bytes = static_cast<size_t>(R) * hs * sizeof(uint16_t);
   ws.a_packed_bytes = static_cast<size_t>(R) * (hs / 2);
   ws.a_sf_bytes = SfBufferSize(R, hs);
   ws.gu_out_bytes = static_cast<size_t>(R) * (2 * moe_is) * sizeof(float);
-  ws.inter_bytes = static_cast<size_t>(R) * moe_is * sizeof(float);
   ws.dn_out_bytes = static_cast<size_t>(R) * hs * sizeof(float);
   ws.Init(static_cast<uint8_t*>(workspace));
 
@@ -289,7 +278,6 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
       GatherQuantKernel<<<blocks, kBlock, 0, stream>>>(
           reinterpret_cast<const uint16_t*>(x), d_token_list, M_e, e, k, M, hs,
           num_g_tiles, weights.gu_input_scale,
-          reinterpret_cast<uint16_t*>(ws.compact),
           reinterpret_cast<uint8_t*>(ws.a_packed),
           reinterpret_cast<uint8_t*>(ws.a_sf));
     }

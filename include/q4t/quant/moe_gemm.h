@@ -32,26 +32,21 @@ namespace quant {
 // Device workspace layout for MoERoutedForward. All regions are carved from a
 // single cudaMalloc'd buffer; sizes depend on (M, E, hs, moe_is).
 struct MoEWorkspace {
-  size_t compact_bytes = 0;  // [M*k, hs] bf16 gathered activations
   size_t a_packed_bytes = 0;  // [M*k, hs/2] e2m1
   size_t a_sf_bytes = 0;  // swizzled e4m3 (padded to 128-row atoms)
   size_t gu_out_bytes = 0;  // [M*k, 2*moe_is] f32 gate/up GEMM output
-  size_t inter_bytes = 0;  // [M*k, moe_is] f32 SwiGLU output
   size_t dn_out_bytes = 0;  // [M*k, hs] f32 down GEMM output
 
   size_t TotalBytes() const {
-    return compact_bytes + a_packed_bytes + a_sf_bytes + gu_out_bytes +
-           inter_bytes + dn_out_bytes;
+    return a_packed_bytes + a_sf_bytes + gu_out_bytes + dn_out_bytes;
   }
   // Size of the workspace for the given dims (call before cudaMalloc).
   // Depends only on M*k (total routed slots), hs, and moe_is — not on E.
   static size_t RequiredBytes(int M, int k, int hs, int moe_is);
 
-  uint8_t* compact;
   uint8_t* a_packed;
   uint8_t* a_sf;
   float* gu_out;
-  float* inter;
   float* dn_out;
   // Carve the regions out of a buffer of at least RequiredBytes().
   void Init(uint8_t* base);

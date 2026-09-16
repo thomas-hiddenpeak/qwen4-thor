@@ -10,18 +10,21 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
 
 ## 当前焦点 (2026-09-16): prefill 性能
 
-- **基线**: prefill 2560 tok ≈ **814–826 tok/s** (原始 220–437, 累计约 2–3.7×)。
-  nsys (2560 tok, 默认路径): SparseAttention 23.4% (1.48s) / GatedDeltaNet
-  21.3% (1.35s) / MoE gather+scatter+swiglu 18.1% (各 ~29000 次 per-expert
-  launch) / Indexer 5.4% / MoE GEMM (nvjet) ~10–13% / gating+HC ~9%。
+- **基线**: prefill 2560 tok ≈ **871 tok/s** (原始 220–437, 累计约 2–4×)。
+  nsys (2560 tok, 默认路径, compact 去死写前): SparseAttention 23.4% (1.48s) /
+  GatedDeltaNet 21.3% (1.35s) / MoE gather+scatter+swiglu 18.1% (各 ~29000 次
+  per-expert launch) / Indexer 5.4% / MoE GEMM (nvjet) ~10–13% / gating+HC ~9%。
 - **已闭合**: Step 8–9 SparseAttention tensor-core + 寄存器累加器 (1264→60
-  ms/call, 21×); Step 10 GatedDeltaNet 内循环 ILP + warp 归约 (786→826 tok/s)。
+  ms/call, 21×); Step 10 GatedDeltaNet 内循环 ILP + warp 归约 (786→826 tok/s);
+  MoE 去死写 (移除 NVFP4 路径 vestigial 的 compact 写 + compact/inter buffer,
+  GatherQuant 写流量 ~-75%, 826→871 tok/s, 省 ~168MB workspace)。
 - **chunked tensor-core GatedDeltaNet: 负结果** (2026-09-16)。算法/GEMM/完整
   kernel 三步验证全绿并集成 (flag `Q4T_GDN_CHUNKED`, 工件 tools/gdn_chunk*_
   proto.cu), 但 Thor 上更慢 (kernel 1.96s vs SIMT 1.35s): 20 SM + 单序列小
   matmul 不饱和 tensor core + state 驻 shared 锁占用率。默认保持 SIMT。
-- **下一杠杆候选**: MoE gather/scatter/quant per-expert launch 开销 (18%) /
-  SparseAttn FP8 KV (23%, 现 71% 带宽)。GatedDeltaNet 已近 SIMT 占用率上限。
+- **下一杠杆候选**: MoE 批量化 scatter (down GEMM 输出无 swizzle, 可分组) /
+  完整 grouped GEMM (受 FP4 SF swizzle 128 对齐约束) / SparseAttn FP8 KV (23%,
+  现 71% 带宽)。GatedDeltaNet 已近 SIMT 占用率上限。
 
 ## 进行中
 
