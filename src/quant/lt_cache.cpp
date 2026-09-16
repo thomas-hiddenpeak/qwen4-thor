@@ -19,7 +19,7 @@ cublasLtHandle_t GlobalLtHandle() {
   // IMPORTANT: this must NOT take g_mutex. The GEMM entry points hold
   // g_mutex (guarding the plan caches) while calling GlobalLtHandle(); a
   // non-recursive mutex would self-deadlock on the first GEMM call.
-  static cublasLtHandle_t handle = [] -> cublasLtHandle_t {
+  static cublasLtHandle_t handle = []() -> cublasLtHandle_t {
     cublasLtHandle_t h = nullptr;
     if (cublasLtCreate(&h) != CUBLAS_STATUS_SUCCESS) {
       return nullptr;

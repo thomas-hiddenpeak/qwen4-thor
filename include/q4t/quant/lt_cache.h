@@ -48,14 +48,17 @@ struct LtPlanKey {
   int N = 0;
   int K = 0;
   size_t ws = 0;
+  int out_bits = 0;  // output element bits (32=f32, 16=bf16); Fp4Gemm outputs
+                     // both, so a shared cache entry must not span types.
   bool operator==(const LtPlanKey& o) const {
-    return M == o.M && N == o.N && K == o.K && ws == o.ws;
+    return M == o.M && N == o.N && K == o.K && ws == o.ws &&
+           out_bits == o.out_bits;
   }
 };
 
 struct LtPlanKeyHash {
   size_t operator()(const LtPlanKey& k) const {
-    // FNV-1a over the four fields.
+    // FNV-1a over the fields.
     uint64_t h = 1469598103934665603ull;
     auto mix = [&](uint64_t v) {
       h ^= v;
@@ -65,6 +68,7 @@ struct LtPlanKeyHash {
     mix(static_cast<uint64_t>(static_cast<uint32_t>(k.N)));
     mix(static_cast<uint64_t>(static_cast<uint32_t>(k.K)));
     mix(static_cast<uint64_t>(k.ws));
+    mix(static_cast<uint64_t>(static_cast<uint32_t>(k.out_bits)));
     return static_cast<size_t>(h);
   }
 };

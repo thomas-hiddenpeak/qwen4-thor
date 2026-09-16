@@ -29,6 +29,10 @@ namespace {
 constexpr int kBlock = 256;
 
 // Device copy of the SF swizzle offset (swizzle.h is host-only).
+__device__ __forceinline__ float Bf16ToFloat(uint16_t b) {
+  const __nv_bfloat16 h = *reinterpret_cast<const __nv_bfloat16*>(&b);
+  return __bfloat162float(h);
+}
 __device__ __forceinline__ size_t SfOffsetDev(int row, int group,
                                               int num_g_tiles) {
   const int i = row % 32;
@@ -112,9 +116,9 @@ __global__ void GatherQuantKernel(
 // (row, group of 16) — a group is exactly 16 inter elements, so the per-group
 // max is local to the thread (no cross-thread reduce). Eliminates the
 // separate SwiGLU kernel + the inter f32 round-trip through GMEM.
-//   gu_out [rows, 2*moe_is] f32 (gate | up), a_packed [rows, moe_is/2] u8,
+//   gu_out [rows, 2*moe_is] bf16 (gate | up), a_packed [rows, moe_is/2] u8,
 //   a_sf swizzled e4m3, inv_scale = per-expert down input_scale.
-__global__ void SwiGLUQuantKernel(const float* __restrict__ gu_out,
+__global__ void SwiGLUQuantKernel(const uint16_t* __restrict__ gu_out,
                                   uint8_t* __restrict__ a_packed,
                                   uint8_t* __restrict__ a_sf, int rows,
                                   int moe_is, int num_g_tiles,
@@ -124,13 +128,13 @@ __global__ void SwiGLUQuantKernel(const float* __restrict__ gu_out,
   if (idx >= rows * groups) return;
   const int row = idx / groups;
   const int g = idx % groups;
-  const float* gu = gu_out + static_cast<size_t>(row) * 2 * moe_is;
+  const uint16_t* gu = gu_out + static_cast<size_t>(row) * 2 * moe_is;
   float a[16];
   float gmax = 0.0f;
 #pragma unroll
   for (int j = 0; j < 16; ++j) {
-    const float gv = gu[g * 16 + j];
-    const float uv = gu[moe_is + g * 16 + j];
+    const float gv = Bf16ToFloat(gu[g * 16 + j]);
+    const float uv = Bf16ToFloat(gu[moe_is + g * 16 + j]);
     const float s = 1.0f / (1.0f + __expf(-gv));
     a[j] = gv * s * uv;
     gmax = fmaxf(gmax, fabsf(a[j]));
@@ -154,7 +158,7 @@ __global__ void SwiGLUQuantKernel(const float* __restrict__ gu_out,
 
 // Scatter-add: y[t, :] += router_w[t, slot] * dn_out[row, :]. One thread per
 // (row, hs element).
-__global__ void ScatterAddKernel(const float* __restrict__ dn_out,
+__global__ void ScatterAddKernel(const uint16_t* __restrict__ dn_out,
                                  const int32_t* __restrict__ token_list,
                                  const float* __restrict__ router_w, int k,
                                  int stride, int hs, int M_e, int e, float* y) {
@@ -165,7 +169,7 @@ __global__ void ScatterAddKernel(const float* __restrict__ dn_out,
   const int flat = token_list[e * stride + row];  // (token, slot) flat index
   const int t = flat / k;
   const float w = router_w[flat];
-  atomicAdd(&y[static_cast<size_t>(t) * hs + c], w * dn_out[idx]);
+  atomicAdd(&y[static_cast<size_t>(t) * hs + c], w * Bf16ToFloat(dn_out[idx]));
 }
 
 }  // namespace
@@ -175,8 +179,8 @@ size_t MoEWorkspace::RequiredBytes(int M, int k, int hs, int moe_is) {
   size_t b = 0;
   b += static_cast<size_t>(R) * (hs / 2);  // a_packed
   b += SfBufferSize(R, hs);  // a_sf
-  b += static_cast<size_t>(R) * (2 * moe_is) * sizeof(float);  // gu_out
-  b += static_cast<size_t>(R) * hs * sizeof(float);  // dn_out
+  b += static_cast<size_t>(R) * (2 * moe_is) * sizeof(uint16_t);  // gu_out
+  b += static_cast<size_t>(R) * hs * sizeof(uint16_t);  // dn_out
   return b;
 }
 
@@ -186,9 +190,9 @@ void MoEWorkspace::Init(uint8_t* base) {
   off += a_packed_bytes;
   a_sf = base + off;
   off += a_sf_bytes;
-  gu_out = reinterpret_cast<float*>(base + off);
+  gu_out = reinterpret_cast<uint16_t*>(base + off);
   off += gu_out_bytes;
-  dn_out = reinterpret_cast<float*>(base + off);
+  dn_out = reinterpret_cast<uint16_t*>(base + off);
   off += dn_out_bytes;
 }
 
@@ -208,8 +212,8 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
   MoEWorkspace ws;
   ws.a_packed_bytes = static_cast<size_t>(R) * (hs / 2);
   ws.a_sf_bytes = SfBufferSize(R, hs);
-  ws.gu_out_bytes = static_cast<size_t>(R) * (2 * moe_is) * sizeof(float);
-  ws.dn_out_bytes = static_cast<size_t>(R) * hs * sizeof(float);
+  ws.gu_out_bytes = static_cast<size_t>(R) * (2 * moe_is) * sizeof(uint16_t);
+  ws.dn_out_bytes = static_cast<size_t>(R) * hs * sizeof(uint16_t);
   ws.Init(static_cast<uint8_t*>(workspace));
 
   // Host-side scratch for per-expert counts (the token lists stay on device;

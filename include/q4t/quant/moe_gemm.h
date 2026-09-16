@@ -34,8 +34,8 @@ namespace quant {
 struct MoEWorkspace {
   size_t a_packed_bytes = 0;  // [M*k, hs/2] e2m1
   size_t a_sf_bytes = 0;  // swizzled e4m3 (padded to 128-row atoms)
-  size_t gu_out_bytes = 0;  // [M*k, 2*moe_is] f32 gate/up GEMM output
-  size_t dn_out_bytes = 0;  // [M*k, hs] f32 down GEMM output
+  size_t gu_out_bytes = 0;  // [M*k, 2*moe_is] bf16 gate/up GEMM output
+  size_t dn_out_bytes = 0;  // [M*k, hs] bf16 down GEMM output
 
   size_t TotalBytes() const {
     return a_packed_bytes + a_sf_bytes + gu_out_bytes + dn_out_bytes;
@@ -46,8 +46,8 @@ struct MoEWorkspace {
 
   uint8_t* a_packed;
   uint8_t* a_sf;
-  float* gu_out;
-  float* dn_out;
+  uint16_t* gu_out;
+  uint16_t* dn_out;
   // Carve the regions out of a buffer of at least RequiredBytes().
   void Init(uint8_t* base);
 };

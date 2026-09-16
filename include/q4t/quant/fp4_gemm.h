@@ -21,6 +21,7 @@
 #include <cublasLt.h>
 
 #include <cstdint>
+#include <type_traits>
 
 #include "q4t/quant/lt_cache.h"
 
@@ -39,7 +40,7 @@ struct Fp4GemmResult {
 //   w_sf       : swizzled e4m3 weight scales, >= SfBufferSize(N, K) bytes
 //   a_packed   : row-major [M, K/2] uint8 (packed e2m1 activations)
 //   a_sf       : swizzled e4m3 activation scales, >= SfBufferSize(M, K) bytes
-//   out        : row-major [M, N] float32, caller-allocated
+//   out        : row-major [M, N], type OutT (float=f32 or uint16_t=bf16)
 //   inv_w_global : 1 / weight global scale (= weight_scale_2, ModelOpt)
 //   inv_a_global : 1 / activation global scale (= input_scale)
 //   workspace  : device buffer of at least `workspace_bytes`
@@ -53,15 +54,22 @@ struct Fp4GemmResult {
 // workspace_bytes) in the shared plan cache (lt_cache.h). The two scale
 // pointers are re-pointed on every call because the same shape is reused
 // across experts with different scale buffers.
+template <typename OutT>
 inline Fp4GemmResult Fp4Gemm(const uint8_t* w_packed, const uint8_t* w_sf,
                              const uint8_t* a_packed, const uint8_t* a_sf,
-                             float* out, int M, int N, int K,
+                             OutT* out, int M, int N, int K,
                              float inv_w_global, float inv_a_global,
                              void* workspace, size_t workspace_bytes,
                              cudaStream_t stream) {
+  static_assert(std::is_same<OutT, float>::value ||
+                    std::is_same<OutT, uint16_t>::value,
+                "Fp4Gemm output must be float (f32) or uint16_t (bf16)");
+  constexpr cudaDataType_t kOutType =
+      std::is_same<OutT, uint16_t>::value ? CUDA_R_16BF : CUDA_R_32F;
+  constexpr int kOutBits = std::is_same<OutT, uint16_t>::value ? 16 : 32;
   Fp4GemmResult res;
   std::lock_guard<std::mutex> lock(LtCacheMutex());
-  LtPlanKey key{M, N, K, workspace_bytes};
+  LtPlanKey key{M, N, K, workspace_bytes, kOutBits};
   LtPlanMap& cache = Fp4PlanCache();
   LtPlan* plan;
   auto it = cache.find(key);
@@ -111,8 +119,8 @@ inline Fp4GemmResult Fp4Gemm(const uint8_t* w_packed, const uint8_t* w_sf,
     cublasLtMatrixLayoutCreate(&np.la, CUDA_R_4F_E2M1, K, N, K);
     // B slot = act: stored col-major [K, M] (ld = K).
     cublasLtMatrixLayoutCreate(&np.lb, CUDA_R_4F_E2M1, K, M, K);
-    // C: col-major [N, M] (ld = N).
-    cublasLtMatrixLayoutCreate(&np.lc, CUDA_R_32F, N, M, N);
+    // C: col-major [N, M] (ld = N). Output type = OutT (f32 or bf16).
+    cublasLtMatrixLayoutCreate(&np.lc, kOutType, N, M, N);
 
     cublasLtMatmulPreference_t pref;
     cublasLtMatmulPreferenceCreate(&pref);
