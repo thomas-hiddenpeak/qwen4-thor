@@ -652,10 +652,11 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
   __shared__ u16 sV[kChunk * kHd]; // [16, 256] V rows (chunk)
   __shared__ float sS[16 * 16];    // [16, 16] scores (rows 12..15 unused)
   __shared__ u16 sP[kChunk * 16];  // [16 pos, 16] probs (cols 12..15 = 0)
-  __shared__ float sO[kG * kHd];   // [12, 256] running PV accumulator
-  __shared__ float sMax[kG];       // running softmax max per q-head
-  __shared__ float sSum[kG];       // running softmax denom per q-head
-  __shared__ float sAlpha[kG];     // this-chunk rescale factor per q-head
+  // sMax/sSum/sAlpha padded to 16 (PV lanes read [group+8] up to 15 for the
+  // unused q-heads 12..15; padding avoids an OOB read).
+  __shared__ float sMax[16];       // running softmax max per q-head
+  __shared__ float sSum[16];       // running softmax denom per q-head
+  __shared__ float sAlpha[16];     // this-chunk rescale factor per q-head
   const int t = blockIdx.x;
   const int kvh = blockIdx.y;
   const int warp_id = threadIdx.x >> 5;
@@ -678,13 +679,28 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
                 ? q[(static_cast<size_t>(t) * nq + qh0 + m) * kHd + (i % kHd)]
                 : 0;
   }
-  for (int i = threadIdx.x; i < kG * kHd; i += 256) sO[i] = 0.f;
   for (int i = threadIdx.x; i < kChunk * 16; i += 256) sP[i] = 0;
-  if (threadIdx.x < kG) {
+  if (threadIdx.x < 16) {
     sMax[threadIdx.x] = -1e30f;
     sSum[threadIdx.x] = 0.f;
+    sAlpha[threadIdx.x] = 0.f;
   }
   __syncthreads();
+  // PV output accumulator in REGISTERS (was shared sO with a per-chunk
+  // read-modify-write over [12,256] floats — the dominant shared-memory
+  // traffic). Warp w owns n-tiles {w, w+8, w+16, w+24}; each lane owns, per
+  // n-tile, the 4 mma C values (2 q-heads x 2 dims). acc[j][0..3] mirrors the
+  // mma C fragment (c0,c1 = q-head group; c2,c3 = q-head group+8).
+  const int pv_group = lane >> 2;
+  const int pv_col = (lane & 3) * 2;
+  float acc[4][4];
+  #pragma unroll
+  for (int j = 0; j < 4; ++j) {
+    acc[j][0] = 0.f;
+    acc[j][1] = 0.f;
+    acc[j][2] = 0.f;
+    acc[j][3] = 0.f;
+  }
   int nsel = 0;
   while (nsel < nsel_total) {
     const int chunk = min(kChunk, nsel_total - nsel);
@@ -764,66 +780,82 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
       sMax[qrow] = mx;
     }
     __syncthreads();
-    // ---- PV: sO[12,256] = sO*alpha + sP^T[16,16] @ sV[16,256] via mma. ----
+    // ---- PV: acc += sP^T[16,16] @ sV[16,256] via mma (register accum). ----
     // out[qh][d] = sum_pos P[pos][qh] * V[pos][d].
     // mma: A = sP^T (m=qh, k=pos): A[qh][pos] = sP[pos*16 + qh] (stride 16).
     //      B = sV (k=pos, n=d): B[pos][d] = sV[pos*hd + d] (stride hd in k).
-    // Warp w handles n-tiles w, w+8, w+16, w+24 (disjoint 8-dim slices).
+    // Warp w handles n-tiles w, w+8, w+16, w+24 (disjoint 8-dim slices); the
+    // running accumulator lives in registers (acc[j]) — no shared sO traffic.
     {
-      const int group = lane >> 2;     // qh (0..7, and +8)
       const int k0 = (lane & 3) * 2;   // pos-pair base (mma K)
-      const int col = (lane & 3) * 2;  // d-pair base (C fragment)
-      for (int nt = warp_id; nt < kHd / 8; nt += 8) {
+      const float ag = sAlpha[pv_group];
+      const float ag8 = sAlpha[pv_group + 8];
+      // A-fragment is the same for every n-tile (depends only on q-heads/pos).
+      const u16* pa = sP + pv_group;
+      const u16* pa8 = sP + pv_group + 8;
+      uint32_t a0 = static_cast<uint32_t>(pa[k0 * 16]) |
+                    (static_cast<uint32_t>(pa[(k0 + 1) * 16]) << 16);
+      uint32_t a1 = static_cast<uint32_t>(pa8[k0 * 16]) |
+                    (static_cast<uint32_t>(pa8[(k0 + 1) * 16]) << 16);
+      uint32_t a2 = static_cast<uint32_t>(pa[(k0 + 8) * 16]) |
+                    (static_cast<uint32_t>(pa[(k0 + 9) * 16]) << 16);
+      uint32_t a3 = static_cast<uint32_t>(pa8[(k0 + 8) * 16]) |
+                    (static_cast<uint32_t>(pa8[(k0 + 9) * 16]) << 16);
+      #pragma unroll
+      for (int j = 0; j < 4; ++j) {
+        const int nt = warp_id + j * 8;
         const int nb = nt * 8;
-        // A-fragment: elements strided by 16 in sP -> scalar load + pack
-        // (low16 = first k, high16 = second k, matching the contiguous load).
-        const u16* pa = sP + group;
-        const u16* pa8 = sP + group + 8;
-        uint32_t a0 = static_cast<uint32_t>(pa[k0 * 16]) |
-                      (static_cast<uint32_t>(pa[(k0 + 1) * 16]) << 16);
-        uint32_t a1 = static_cast<uint32_t>(pa8[k0 * 16]) |
-                      (static_cast<uint32_t>(pa8[(k0 + 1) * 16]) << 16);
-        uint32_t a2 = static_cast<uint32_t>(pa[(k0 + 8) * 16]) |
-                      (static_cast<uint32_t>(pa[(k0 + 9) * 16]) << 16);
-        uint32_t a3 = static_cast<uint32_t>(pa8[(k0 + 8) * 16]) |
-                      (static_cast<uint32_t>(pa8[(k0 + 9) * 16]) << 16);
         // B-fragment: elements strided by hd in sV -> scalar load + pack.
-        const u16* vb = sV + nb + group;
+        const u16* vb = sV + nb + pv_group;
         uint32_t b0 = static_cast<uint32_t>(vb[k0 * kHd]) |
                       (static_cast<uint32_t>(vb[(k0 + 1) * kHd]) << 16);
         uint32_t b1 = static_cast<uint32_t>(vb[(k0 + 8) * kHd]) |
                       (static_cast<uint32_t>(vb[(k0 + 9) * kHd]) << 16);
         float c0 = 0.f, c1 = 0.f, c2 = 0.f, c3 = 0.f;
         MmaBf16(c0, c1, c2, c3, a0, a1, a2, a3, b0, b1);
-        // C[qh][d]: qh=group (c0,c1) / group+8 (c2,c3), d=nb+col. Fold the
-        // per-chunk online-softmax rescale (sO*alpha) into the add; each
-        // (qh,d) is touched by exactly one lane in one warp per chunk.
-        float* o = sO + group * kHd + nb + col;
-        o[0] = o[0] * sAlpha[group] + c0;
-        o[1] = o[1] * sAlpha[group] + c1;
-        if (group + 8 < kG) {
-          float* o8 = sO + (group + 8) * kHd + nb + col;
-          o8[0] = o8[0] * sAlpha[group + 8] + c2;
-          o8[1] = o8[1] * sAlpha[group + 8] + c3;
-        }
+        // Fold the per-chunk online-softmax rescale into the register accum.
+        acc[j][0] = acc[j][0] * ag + c0;
+        acc[j][1] = acc[j][1] * ag + c1;
+        acc[j][2] = acc[j][2] * ag8 + c2;
+        acc[j][3] = acc[j][3] * ag8 + c3;
       }
     }
     __syncthreads();
     nsel += chunk;
   }
-  // ---- Normalize + fused gate + write out. ----
-  for (int i = threadIdx.x; i < kG * kHd; i += 256) {
-    const int m = i / kHd;
-    const int d = i % kHd;
-    const int qh = qh0 + m;
-    const size_t oidx = (static_cast<size_t>(t) * nq + qh) * kHd + d;
-    float acc = sO[i];
-    const float l = sSum[m];
-    if (l > 0.f) acc /= l;
-    // Fused gate: out = attn * sigmoid(gate) (BF16 round preserved).
-    const u16 a16 = FloatToBf16(acc);
-    const float sg = 1.f / (1.f + expf(-Bf16ToFloat(gate[oidx])));
-    out[oidx] = FloatToBf16(Bf16ToFloat(a16) * sg);
+  // ---- Normalize + fused gate + write out (from register accumulators). ----
+  // Lane (warp w, lane L) owns q-heads group=L/4 and group+8, dims nb+col,
+  // nb+col+1 for n-tiles nt = w + j*8 (j=0..3).
+  {
+    const float lg = sSum[pv_group];
+    const float lg8 = sSum[pv_group + 8];
+    const int qh_a = qh0 + pv_group;
+    const int qh_b = qh0 + pv_group + 8;
+    #pragma unroll
+    for (int j = 0; j < 4; ++j) {
+      const int nb = (warp_id + j * 8) * 8;
+      const int d = nb + pv_col;
+      // q-head group (always valid, 0..7 < 12).
+      {
+        const size_t o0 = (static_cast<size_t>(t) * nq + qh_a) * kHd + d;
+        float v0 = (lg > 0.f) ? acc[j][0] / lg : acc[j][0];
+        float v1 = (lg > 0.f) ? acc[j][1] / lg : acc[j][1];
+        const float g0 = 1.f / (1.f + expf(-Bf16ToFloat(gate[o0])));
+        const float g1 = 1.f / (1.f + expf(-Bf16ToFloat(gate[o0 + 1])));
+        out[o0] = FloatToBf16(Bf16ToFloat(FloatToBf16(v0)) * g0);
+        out[o0 + 1] = FloatToBf16(Bf16ToFloat(FloatToBf16(v1)) * g1);
+      }
+      // q-head group+8 (valid only for group 0..3 -> qh 8..11).
+      if (pv_group + 8 < kG) {
+        const size_t o0 = (static_cast<size_t>(t) * nq + qh_b) * kHd + d;
+        float v0 = (lg8 > 0.f) ? acc[j][2] / lg8 : acc[j][2];
+        float v1 = (lg8 > 0.f) ? acc[j][3] / lg8 : acc[j][3];
+        const float g0 = 1.f / (1.f + expf(-Bf16ToFloat(gate[o0])));
+        const float g1 = 1.f / (1.f + expf(-Bf16ToFloat(gate[o0 + 1])));
+        out[o0] = FloatToBf16(Bf16ToFloat(FloatToBf16(v0)) * g0);
+        out[o0 + 1] = FloatToBf16(Bf16ToFloat(FloatToBf16(v1)) * g1);
+      }
+    }
   }
 }
 

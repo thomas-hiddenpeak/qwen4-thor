@@ -5,7 +5,37 @@
 
 ---
 
-## 2026-09-16 — Step 8: tensor-core GQA-packed SparseAttentionKernel (利用 tensor core)
+## 2026-09-16 — Step 9: PV 累加器搬到寄存器 → prefill 268→786 tok/s (2.9×)
+
+**做了什么**
+Step 8 的 tensor-core kernel 用 shared `sO[12,256]` 做 PV 运行累加器 (每
+chunk 读改写全部 3072 float)。改为 **per-lane 寄存器累加** `acc[4][4]` (每
+lane 拥有 4 n-tile × 4 mma C 值; online-softmax rescale 折进寄存器 fma),
+彻底移除 shared sO。shared/block 37.5KB → 25.5KB。
+
+**结果 (数据驱动的意外发现)**
+- 单层 L2 驻留 bench: 8.19 → 8.25 ms (**持平**) — 看似无用
+- 真实 prefill 2560 tok: **268 → 786 tok/s (2.9×)**
+- SparseAttentionKernel: 584 → **60 ms/call (9.7×)** (从原始 SIMT 1264ms
+  算 **21×**); nsys 占比 73.6% → 22.7%, GatedDeltaNet 升为 #1 (23.9%)
+
+**根因**
+真实 kernel 是**延迟受限** (散射 LPDDR5x paged-KV 读, 不是带宽也不是
+计算)。释放 12KB shared → 每 SM 容纳更多并发 block → 更多在途内存请求 →
+隐藏散射读延迟。ncu 在 L2 驻留 bench 上显示 memory 64% / warps 82%, 但
+L2 延迟低, **看不出真实 LPDDR5x 散射读延迟** → bench 持平但真实 3×。
+
+**教训**
+L2 驻留单层 bench 对**占用率敏感的延迟受限 kernel 是误导的** (Step 2-7 一直
+被它误导)。真实内存受限场景受益于 bench 无法体现的占用率。占用率敏感的
+优化必须测真实全模型 prefill, 不能只信单层 bench。
+
+**下一步**
+GatedDeltaNet 现为 prefill #1 (23.9%)。attention 已非压倒性瓶颈, 可转
+GatedDeltaNet / MoE, 或继续 attention (KV staging 双缓冲/cp.async)。
+
+---
+
 
 **用户要求**
 "既然 tensorCore 没有利用起来, 那么我们就利用起来啊" + 纠正 Thor 硬件:
