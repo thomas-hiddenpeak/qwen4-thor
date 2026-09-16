@@ -389,7 +389,8 @@ Status DecoderLayerForward(const DecoderLayer& layer,
                            cudaStream_t stream, float* ssm_ckpt,
                            uint16_t* conv_ckpt, int num_ckpt, int seq_id,
                            const int* d_seq_id, const int* d_rope_pos,
-                           int tokens_per_seq, uint16_t* ple_conv_ckpt) {
+                           int tokens_per_seq, uint16_t* ple_conv_ckpt,
+                           const RaggedBatch* ragged) {
   const int hs = layer.hs, hc_dim = layer.hc_dim, hc = layer.hc;
   if (T <= 0) return Status();
   // Pooled recurrent-state slices for this sequence (seq_id selects the
@@ -497,7 +498,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     s = PleLayerForward(layer.ple, ple_embeddings, hyper_input, d_ple_trunk,
                         T, ple_conv_state, d_ple_ws, ple_ws, stream,
                         hyper_input, d_seq_id, tokens_per_seq, ple_conv_ckpt,
-                        num_ckpt);
+                        num_ckpt, ragged);
     if (!s.ok()) {
       return s;
     }
@@ -524,7 +525,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     s = LinearAttentionForward(layer.linear, d_mixed, d_block, ssm_state,
                                conv_state, T, d_attn_ws, attn_ws, stream,
                                ssm_ckpt, conv_ckpt, num_ckpt, d_seq_id,
-                               tokens_per_seq);
+                               tokens_per_seq, ragged);
   }
   if (!s.ok()) {
     return s;

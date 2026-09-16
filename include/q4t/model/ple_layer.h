@@ -36,6 +36,7 @@
 #include <string>
 
 #include "q4t/io/weight_loader.h"
+#include "q4t/model/ragged_batch.h"
 #include "q4t/status.h"
 
 namespace q4t {
@@ -103,7 +104,8 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
                        size_t workspace_bytes, cudaStream_t stream,
                        const uint16_t* trunk_add = nullptr,
                        const int* d_seq_id = nullptr, int tokens_per_seq = 0,
-                       uint16_t* conv_ckpt = nullptr, int num_ckpt = 0);
+                       uint16_t* conv_ckpt = nullptr, int num_ckpt = 0,
+                       const RaggedBatch* ragged = nullptr);
 // `tokens_per_seq` (MTP multi-sequence VERIFY, Phase 2): when d_seq_id is
 // non-null and tokens_per_seq > 1, the packed [T, ...] rows are sequence-major
 // (B = T / tokens_per_seq sequences) and the short-conv runs a per-sequence

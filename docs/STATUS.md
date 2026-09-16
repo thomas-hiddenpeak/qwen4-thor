@@ -10,6 +10,16 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
 
 ## 当前焦点 (2026-09-17): 批处理吞吐 (推进中)
 
+- **ragged 批量 prefill 原语 + ModelPrefillBatch (2026-09-17, 已落地, serve 集成待做)**:
+  serve 剩余差距主要在 prefill 阶段 (并发请求各自扫 ~24GB dense 权重)。多流已在 N=4
+  饱和 (prefill N=4/8/16=1061/1061/1062 tok/s), 真正杠杆是**打包并发 prefill 一次
+  forward**。把 5 个 MTP 多序列 causal kernel 泛化到变长 (新 `RaggedBatch` 描述符:
+  cu_seqlens + token_local; token-grid 只换局部位置, batch-grid 用 off/len;
+  full attention 已 per-token 驱动无需改)。**dual-path: ragged==null 走原路 → MTP
+  位不变**。`ModelPrefillBatch(tokens,lens,seq_ids,B)` 打包 B 变长全新序列一次
+  forward。新测试 B=3 (len 5/3/7) vs 独立单序列 prefill **逐 token l2_rel=0.00000
+  位级一致**。69 测试全绿。下一步: 调度器收集并发 prefill → 一次 ModelPrefillBatch,
+  以 serve 端口衡量。
 - **plain decode 调度 lockstep (2026-09-17, 已落地)**: B2b 调度器 plain 调度从机会式
   "任一 pending 即跑"改为 lockstep "所有活跃 pending 才跑" (对齐 MTP plan A +
   vllm/sglang), 批 B=活跃请求数 uniform 而非 ragged (每小步重读 84GB 权重)。

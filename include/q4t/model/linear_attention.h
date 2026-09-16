@@ -34,6 +34,7 @@
 #include <string>
 
 #include "q4t/io/weight_loader.h"
+#include "q4t/model/ragged_batch.h"
 #include "q4t/status.h"
 
 namespace q4t {
@@ -115,6 +116,11 @@ Status LoadLinearAttention(const io::WeightLoader& loader, const std::string& pr
 //                the POOLED per-seq checkpoint bases ([max_seq, num_ckpt, ...]).
 //                When tokens_per_seq <= 1 (or d_seq_id == null) this is the
 //                B2 decode / single-seq path (bit-identical).
+//   ragged     : optional variable-length packing (batched prefill). When
+//                non-null the conv/GDN causal chains use ragged->seq_offset
+//                (cu_seqlens) + ragged->token_local instead of the uniform
+//                tokens_per_seq stride, so B sequences of unequal length pack
+//                into one forward. Null = uniform tokens_per_seq (legacy).
 Status LinearAttentionForward(const LinearAttentionWeights& w, const uint16_t* x,
                               uint16_t* out, float* ssm_state,
                               uint16_t* conv_state, int T, void* workspace,
@@ -122,7 +128,8 @@ Status LinearAttentionForward(const LinearAttentionWeights& w, const uint16_t* x
                               float* ssm_ckpt = nullptr,
                               uint16_t* conv_ckpt = nullptr, int num_ckpt = 0,
                               const int* d_seq_id = nullptr,
-                              int tokens_per_seq = 0);
+                              int tokens_per_seq = 0,
+                              const RaggedBatch* ragged = nullptr);
 
 }  // namespace model
 }  // namespace q4t

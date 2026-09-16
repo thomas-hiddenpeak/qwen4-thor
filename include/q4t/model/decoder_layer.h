@@ -35,11 +35,14 @@
 #include "q4t/model/linear_attention.h"
 #include "q4t/model/moe.h"
 #include "q4t/model/ple_layer.h"
+#include "q4t/model/ragged_batch.h"
 #include "q4t/quant/moe_weights.h"
 #include "q4t/status.h"
 
 namespace q4t {
 namespace model {
+
+// Ragged multi-sequence packing (RaggedBatch) is declared in ragged_batch.h.
 
 // One qwen4_exp decoder layer (all 48 layers share this structure; the
 // attention block is linear_attention for 36 layers and full_attention for 12).
@@ -148,7 +151,8 @@ Status DecoderLayerForward(const DecoderLayer& layer, const uint16_t* hyper_inpu
                            int seq_id = 0, const int* d_seq_id = nullptr,
                            const int* d_rope_pos = nullptr,
                            int tokens_per_seq = 0,
-                           uint16_t* ple_conv_ckpt = nullptr);
+                           uint16_t* ple_conv_ckpt = nullptr,
+                           const RaggedBatch* ragged = nullptr);
 // `ple_conv_ckpt` (MTP verify rollback, PLE layer only): when non-null and
 // num_ckpt > 0, save the per-token PLE short-conv state after each of the
 // first `num_ckpt` (local) tokens — the PLE conv is an in-place recurrence,

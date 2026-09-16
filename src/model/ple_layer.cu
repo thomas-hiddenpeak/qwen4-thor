@@ -319,12 +319,15 @@ __global__ void DepthwiseConvAddMultiSeqCausalKernel(
     const uint16_t* __restrict__ state, const uint16_t* __restrict__ gated,
     const uint16_t* __restrict__ trunk_add, uint16_t* __restrict__ out,
     const int* __restrict__ d_seq_id, int T, int Tps, int C, int K,
-    int dilation, int state_len) {
+    int dilation, int state_len, const int* __restrict__ token_local) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   if (idx >= T * C) return;  // T = total packed tokens (grid bound)
   const int t = idx / C;
   const int c = idx % C;
-  const int tt = t % Tps;  // local position within the sequence (Tps = tokens/seq)
+  // Local position within the sequence. Uniform (MTP): t % Tps. Ragged
+  // (batched prefill): token_local[t]. `t - tt` is the sequence's packed start
+  // offset in both cases, so the tap index `t - (tt - src)` stays correct.
+  const int tt = token_local ? token_local[t] : (t % Tps);
   const uint16_t* seq_state =
       state + static_cast<size_t>(d_seq_id[t]) * C * state_len;
   float acc = 0.0f;
@@ -386,25 +389,30 @@ __global__ void PleConvCheckpointMultiSeqKernel(
 // PleConvUpdateStateKernel), selected by d_seq_id[t].
 __global__ void PleConvUpdateStateMultiSeqCausalKernel(
     uint16_t* __restrict__ state, const uint16_t* __restrict__ input,
-    const int* __restrict__ d_seq_id, int T, int C, int state_len) {
+    const int* __restrict__ d_seq_id, int T, int C, int state_len,
+    const int* __restrict__ seq_offset) {
   const int c = blockIdx.x * blockDim.x + threadIdx.x;
   if (c >= C) return;
   const int b = blockIdx.y;
+  // Sequence b's packed [off, off+len) rows. Uniform (MTP): off=b*T, len=T.
+  // Ragged (batched prefill): cu_seqlens seq_offset[b..b+1].
+  const int off = seq_offset ? seq_offset[b] : b * T;
+  const int len = seq_offset ? (seq_offset[b + 1] - off) : T;
   uint16_t* seq_state =
-      state + static_cast<size_t>(d_seq_id[b * T]) * C * state_len;
-  // Slide the window by T: the new window = the last `state_len` gated_n
-  // values of (old state + the sequence's T tokens). For local token index
-  // src = T - state_len + k: src >= 0 reads the packed input (in-batch), else
+      state + static_cast<size_t>(d_seq_id[off]) * C * state_len;
+  // Slide the window by len: the new window = the last `state_len` gated_n
+  // values of (old state + the sequence's len tokens). For local token index
+  // src = len - state_len + k: src >= 0 reads the packed input (in-batch), else
   // it reads the OLD state at (src + state_len) (pre-sequence history). This
   // mirrors the single-seq PleConvUpdateStateKernel decode branch (T <
   // state_len slides the window; the in-place read is safe because src+
   // state_len > k and k is ascending). MTP verify has T = k+1 < state_len =
   // (K-1)*dilation, so the slide is the common case.
   for (int k = 0; k < state_len; ++k) {
-    const int src = T - state_len + k;  // local token index (can be negative)
+    const int src = len - state_len + k;  // local token index (can be negative)
     if (src >= 0)
       seq_state[static_cast<size_t>(c) * state_len + k] =
-          input[static_cast<size_t>(b * T + src) * C + c];
+          input[static_cast<size_t>(off + src) * C + c];
     else
       seq_state[static_cast<size_t>(c) * state_len + k] =
           seq_state[static_cast<size_t>(c) * state_len + (src + state_len)];
@@ -561,12 +569,19 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
                        uint16_t* conv_state, void* workspace,
                        size_t workspace_bytes, cudaStream_t stream,
                        const uint16_t* trunk_add, const int* d_seq_id,
-                       int tokens_per_seq, uint16_t* conv_ckpt, int num_ckpt) {
+                       int tokens_per_seq, uint16_t* conv_ckpt, int num_ckpt,
+                       const RaggedBatch* ragged) {
   const int hc = w.hc_count, hs = w.hidden_size, pe = w.ple_embed_dim;
   const int hc_dim = hc * hs;
   const int K = w.conv_kernel, dil = w.conv_dilation;
   if (T <= 0) return Status();
   const float inv_sqrt_hs = 1.0f / std::sqrt(static_cast<float>(hs));
+  // Ragged (batched-prefill) packing: per-token local position + per-sequence
+  // cu_seqlens replace the uniform tokens_per_seq stride (null in the uniform
+  // MTP path, keeping the kernels bit-identical).
+  const bool multi_causal = d_seq_id && (tokens_per_seq > 1 || ragged);
+  const int* rag_offset = ragged ? ragged->seq_offset : nullptr;
+  const int* rag_local = ragged ? ragged->token_local : nullptr;
 
   // Carve the single workspace (256-byte aligned offsets; cuBLASLt requires
   // aligned scratch pointers).
@@ -643,14 +658,14 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
   {
     const int total = T * hc_dim;
     const int blocks = (total + kBlock - 1) / kBlock;
-    if (d_seq_id && tokens_per_seq > 1) {
-      // MTP multi-sequence VERIFY: per-sequence causal conv (sequence-major
-      // packed input); taps read earlier local tokens of the same sequence +
-      // the per-sequence old_state.
+    if (multi_causal) {
+      // MTP multi-sequence VERIFY / ragged batched prefill: per-sequence causal
+      // conv (sequence-major packed input); taps read earlier local tokens of
+      // the same sequence + the per-sequence old_state.
       DepthwiseConvAddMultiSeqCausalKernel<<<blocks, kBlock, 0, stream>>>(
           reinterpret_cast<uint16_t*>(d_gated_n), w.conv1d, conv_state,
           reinterpret_cast<uint16_t*>(d_gated), trunk_add, out, d_seq_id, T,
-          tokens_per_seq, hc_dim, K, dil, state_len);
+          tokens_per_seq, hc_dim, K, dil, state_len, rag_local);
       if (cudaGetLastError() != cudaSuccess) return Status::Fail("ple conv");
     } else if (d_seq_id) {
       // B2 multi-sequence decode: each token t uses its own sequence's conv
@@ -675,13 +690,14 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
   // 8b. Slide the state to the last state_len gated_n values (old + chunk).
   {
     const int blocks = (hc_dim + kBlock - 1) / kBlock;
-    if (d_seq_id && tokens_per_seq > 1) {
-      // MTP multi-sequence VERIFY: per-sequence state update (sequence-major
-      // packed input, B = T / tokens_per_seq sequences).
-      const int B = T / tokens_per_seq;
+    if (multi_causal) {
+      // MTP multi-sequence VERIFY / ragged batched prefill: per-sequence state
+      // update (sequence-major packed input).
+      const int B = ragged ? ragged->B : (T / tokens_per_seq);
       // Save the per-token PLE conv checkpoint BEFORE the in-place update so
       // `conv_state` is still the pre-batch state when the checkpoint kernel
-      // reads it (a partial accept restores the PLE conv state via D2D).
+      // reads it (a partial accept restores the PLE conv state via D2D). Ragged
+      // batched prefill never checkpoints (conv_ckpt == null).
       if (conv_ckpt && num_ckpt > 0) {
         PleConvCheckpointMultiSeqKernel<<<dim3(blocks, B * num_ckpt), kBlock,
                                           0, stream>>>(
@@ -693,7 +709,7 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
       PleConvUpdateStateMultiSeqCausalKernel<<<dim3(blocks, B), kBlock, 0,
                                                stream>>>(
           conv_state, reinterpret_cast<uint16_t*>(d_gated_n), d_seq_id,
-          tokens_per_seq, hc_dim, state_len);
+          tokens_per_seq, hc_dim, state_len, rag_offset);
     } else if (d_seq_id) {
       PleConvUpdateStateMultiSeqKernel<<<dim3(blocks, T), kBlock, 0, stream>>>(
           conv_state, reinterpret_cast<uint16_t*>(d_gated_n), d_seq_id, hc_dim,

@@ -88,6 +88,12 @@ struct Model {
                             // pooled-state slice index (H2D per forward)
   int* d_token_seq_id = nullptr;  // [max_prefill] Phase 2 MTP multi-seq verify:
                                   // per-token seq id for the B*T packed tokens
+  // Ragged batched prefill (Phase 2): pack B variable-length prompts into one
+  // forward. d_ragged_seq_offset = [max_seq+1] cu_seqlens, d_ragged_token_local
+  // = [max_prefill] per-token local position. Filled per ModelPrefillBatch;
+  // null in every other forward (uniform path, bit-identical).
+  int* d_ragged_seq_offset = nullptr;  // [max_seq + 1]
+  int* d_ragged_token_local = nullptr;  // [max_prefill]
   int* d_rope_pos = nullptr;  // [max_seq, 3, max_len] 3D MRoPE (t, h, w)
   // mrope_position_delta per sequence: during incremental decode the 3 rope
   // rows for a token at logical position p are all (p + rope_delta[seq_id]).
@@ -339,6 +345,32 @@ Status ModelVerifyMulti(const Model& m, const int32_t* tokens,
                         const int32_t* history, int history_len, int B,
                         int tokens_per_seq, uint16_t* logits,
                         cudaStream_t stream, uint16_t* trunk_out = nullptr);
+
+// Ragged batched prefill (Phase 2): prefill B FRESH, variable-length sequences
+// in ONE packed forward so the dense weights are read once for the whole batch
+// (the serve win when several requests prefill together). Unlike ModelVerify-
+// Multi (uniform tokens_per_seq), the sequences may have different lengths; the
+// per-sequence causal linear/PLE chains are driven by cu_seqlens + per-token
+// local positions (the RaggedBatch descriptor). Each sequence's per-layer state
+// is RESET first (fresh prefill from position 0), so the caller must NOT have
+// begun these sequences. Pure text only (no vision).
+//
+//   tokens  : host int32 [Ttot] — sequence-major concatenation of the B prompts
+//             (seq 0's lens[0] tokens, then seq 1's, ...); Ttot = sum(lens).
+//   lens    : host int [B] — prompt length of each sequence (>0, <= max_len).
+//   seq_ids : host int [B] — the pooled-state slice index each sequence fills.
+//   logits  : device BF16 [Ttot, vocab] (out) — row seq_offset[b]+t is sequence
+//             b's token t (seq_offset = prefix sum of lens). The caller reads
+//             row seq_offset[b+1]-1 for sequence b's next-token distribution.
+//   stream  : CUDA stream.
+//
+// After the call each sequence's per-layer recurrent state (linear SSM/conv,
+// PLE conv, full KV/indexer, 3D MRoPE) is at position lens[b]-1, ready for
+// incremental decode (ModelDecodeBatchMulti) — identical to B independent
+// ModelPrefill calls, but with the weights swept once.
+Status ModelPrefillBatch(const Model& m, const int32_t* tokens,
+                         const int* lens, const int* seq_ids, int B,
+                         uint16_t* logits, cudaStream_t stream);
 
 // ---------------------------------------------------------------------------
 // PD-ready 阶段边界 API (Prefill/Decode 可分离, 见 ARCHITECTURE.md)。

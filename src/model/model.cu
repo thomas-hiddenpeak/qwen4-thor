@@ -82,6 +82,8 @@ void Model::Free() {
   freep(d_positions);
   freep(d_seq_id);
   freep(d_token_seq_id);
+  freep(d_ragged_seq_offset);
+  freep(d_ragged_token_local);
   freep(d_rope_pos);
   freep(d_emb);
   freep(d_trunk);
@@ -96,6 +98,8 @@ void Model::Free() {
   d_positions = nullptr;
   d_seq_id = nullptr;
   d_token_seq_id = nullptr;
+  d_ragged_seq_offset = nullptr;
+  d_ragged_token_local = nullptr;
   d_rope_pos = nullptr;
   d_emb = nullptr;
   d_trunk = nullptr;
@@ -246,6 +250,14 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   if (!(s = alloc(reinterpret_cast<void**>(&m->d_token_seq_id),
                   max_t * sizeof(int))))
     return s;
+  // Ragged batched prefill: cu_seqlens [max_seq+1] + per-token local position
+  // [max_prefill]. Filled per ModelPrefillBatch, null in every other forward.
+  if (!(s = alloc(reinterpret_cast<void**>(&m->d_ragged_seq_offset),
+                  static_cast<size_t>(cfg.max_seq + 1) * sizeof(int))))
+    return s;
+  if (!(s = alloc(reinterpret_cast<void**>(&m->d_ragged_token_local),
+                  max_t * sizeof(int))))
+    return s;
   // Persistent 3D MRoPE table: [max_seq, 3, max_len] (t, h, w) rows, POOLED
   // over concurrent sequences (Phase 2). Each sequence's rope coordinates are
   // written at prefill and read across its decode steps, so the table must be
@@ -312,7 +324,8 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                  uint16_t* trunk_out = nullptr, float* ssm_ckpt = nullptr,
                  uint16_t* conv_ckpt = nullptr, int num_ckpt = 0,
                  int seq_id = 0, const int* d_seq_id = nullptr,
-                 int tokens_per_seq = 0, uint16_t* ple_conv_ckpt = nullptr) {
+                 int tokens_per_seq = 0, uint16_t* ple_conv_ckpt = nullptr,
+                 const RaggedBatch* ragged = nullptr) {
   const ModelConfig& cfg = m.cfg;
   const uint16_t* trunk = trunk_in;
   uint16_t* next = trunk2;
@@ -393,7 +406,7 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                                    m.ws_bytes, stream, layer_ssm_ckpt,
                                    layer_conv_ckpt, num_ckpt, seq_id, d_seq_id,
                                    m.d_rope_pos, tokens_per_seq,
-                                   layer_ple_conv_ckpt);
+                                   layer_ple_conv_ckpt, ragged);
     if (!s.ok()) return s;
     if (!m.layers[l].is_full_attention) lin_idx++;
     if (m.layers[l].has_ple) ple_idx++;
@@ -969,7 +982,135 @@ Status ModelVerifyMulti(const Model& m, const int32_t* tokens,
                    m.d_verify_ple_conv_ckpt);
 }
 
-// Per-linear-layer SSM/conv element counts (assumes all linear layers share
+// Ragged batched prefill (Phase 2): prefill B FRESH sequences of variable
+// length in ONE packed forward. `tokens` is the sequence-major concatenation
+// of the B prompts (Ttot = sum(lens) rows), `lens[b]` the b-th prompt length,
+// `seq_ids[b]` the pooled recurrent-state slice it fills. Each sequence's
+// per-layer state is RESET first (fresh prefill from position 0). `logits`
+// receives the packed [Ttot, vocab] logits (row seq_offset[b]+t = sequence b's
+// token t). The projection / MoE / attention GEMMs read the dense weights ONCE
+// for the whole batch, so B short prefills cost ~one weight sweep instead of B
+// — the serve win when several requests prefill together. Pure text only (no
+// vision); per-sequence rope_delta = 0.
+Status ModelPrefillBatch(const Model& m, const int32_t* tokens,
+                         const int* lens, const int* seq_ids, int B,
+                         uint16_t* logits, cudaStream_t stream) {
+  const ModelConfig& cfg = m.cfg;
+  if (B <= 0) return Status::Fail("ModelPrefillBatch: B must be > 0");
+  if (B > cfg.max_seq)
+    return Status::Fail("ModelPrefillBatch: B exceeds max_seq");
+
+  // cu_seqlens + per-sequence validation.
+  std::vector<int> seq_offset(B + 1);
+  seq_offset[0] = 0;
+  for (int b = 0; b < B; ++b) {
+    if (lens[b] <= 0) return Status::Fail("ModelPrefillBatch: len must be > 0");
+    if (lens[b] > cfg.max_len)
+      return Status::Fail("ModelPrefillBatch: len exceeds max_len");
+    if (seq_ids[b] < 0 || seq_ids[b] >= cfg.max_seq)
+      return Status::Fail("ModelPrefillBatch: seq_id exceeds max_seq");
+    seq_offset[b + 1] = seq_offset[b] + lens[b];
+  }
+  const int Ttot = seq_offset[B];
+  if (Ttot > cfg.max_prefill)
+    return Status::Fail("ModelPrefillBatch: Ttot exceeds max_prefill");
+
+  // Fresh prefill: reset each sequence's per-layer state (per-sequence slice).
+  for (int b = 0; b < B; ++b) ResetAllLayers(m, stream, seq_ids[b]);
+
+  // Per-token positions (local 0..len-1 for a fresh sequence), pooled seq id,
+  // local position (the ragged token_local array).
+  std::vector<int> positions(Ttot);
+  std::vector<int> token_seq(Ttot);
+  std::vector<int> token_local(Ttot);
+  for (int b = 0; b < B; ++b) {
+    const int off = seq_offset[b];
+    for (int t = 0; t < lens[b]; ++t) {
+      positions[off + t] = t;
+      token_seq[off + t] = seq_ids[b];
+      token_local[off + t] = t;
+    }
+    m.rope_delta[seq_ids[b]] = 0;  // pure text
+  }
+
+  // H2D packed tokens / positions / per-token seq id / ragged descriptor.
+  if (cudaMemcpyAsync(m.d_ids, tokens, Ttot * sizeof(int32_t),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return Status::Fail("H2D tokens");
+  if (cudaMemcpyAsync(m.d_positions, positions.data(), Ttot * sizeof(int),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return Status::Fail("H2D positions");
+  if (cudaMemcpyAsync(m.d_token_seq_id, token_seq.data(), Ttot * sizeof(int),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return Status::Fail("H2D token_seq");
+  if (cudaMemcpyAsync(m.d_ragged_seq_offset, seq_offset.data(),
+                      (B + 1) * sizeof(int), cudaMemcpyHostToDevice, stream) !=
+      cudaSuccess)
+    return Status::Fail("H2D seq_offset");
+  if (cudaMemcpyAsync(m.d_ragged_token_local, token_local.data(),
+                      Ttot * sizeof(int), cudaMemcpyHostToDevice, stream) !=
+      cudaSuccess)
+    return Status::Fail("H2D token_local");
+
+  // 3D MRoPE: pure text, each sequence's three rows = local position 0..len-1
+  // (delta 0). Write into the pooled table at the sequence's [3, max_len] slice.
+  {
+    const size_t ml = static_cast<size_t>(cfg.max_len);
+    std::vector<int> rope_row;
+    for (int b = 0; b < B; ++b) {
+      int* seq_rope = m.d_rope_pos + static_cast<size_t>(seq_ids[b]) * 3 * ml;
+      rope_row.resize(lens[b]);
+      for (int t = 0; t < lens[b]; ++t) rope_row[t] = t;
+      for (int r = 0; r < 3; ++r) {
+        if (cudaMemcpyAsync(seq_rope + r * ml, rope_row.data(),
+                            lens[b] * sizeof(int), cudaMemcpyHostToDevice,
+                            stream) != cudaSuccess)
+          return Status::Fail("H2D rope_pos");
+      }
+    }
+  }
+
+  std::vector<int64_t> ids64(tokens, tokens + Ttot);
+
+  // PLE n-gram history: per sequence, per token, the ngram_size-1 preceding
+  // tokens (oldest first, EOS-filled before the sequence start), local to the
+  // sequence (fresh prefill, no cross-sequence context).
+  std::vector<int64_t> hist;
+  if (m.ple_emb) {
+    const int hist_w = m.ple_hash.ngram_size - 1;
+    hist.resize(static_cast<size_t>(Ttot) * hist_w);
+    for (int b = 0; b < B; ++b) {
+      const int off = seq_offset[b];
+      for (int t = 0; t < lens[b]; ++t) {
+        for (int j = 0; j < hist_w; ++j) {
+          const int src = t - (hist_w - j);  // oldest first, local position
+          hist[static_cast<size_t>(off + t) * hist_w + j] =
+              (src >= 0) ? static_cast<int64_t>(tokens[off + src])
+                         : cfg.eos_token_id;
+        }
+      }
+    }
+  }
+
+  // emb + trunk (packed [Ttot, ...]).
+  Status s = EmbedLookup(m.head, m.d_ids, m.d_emb, Ttot, stream);
+  if (!s.ok()) return s;
+  s = ExpandTrunk(m.head, m.d_emb, m.d_trunk, Ttot, stream);
+  if (!s.ok()) return s;
+
+  // Layer loop + head. Per-token pooled state via d_token_seq_id; variable
+  // lengths via the ragged descriptor (cu_seqlens + token_local). No
+  // checkpoints (fresh prefill, not a speculative verify).
+  RaggedBatch ragged;
+  ragged.seq_offset = m.d_ragged_seq_offset;
+  ragged.token_local = m.d_ragged_token_local;
+  ragged.B = B;
+  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), Ttot,
+                   logits, stream, nullptr, nullptr, nullptr, 0, 0,
+                   m.d_token_seq_id, 0, nullptr, &ragged);
+}
+
+
 // the same dims, which they do for this architecture).
 namespace {
 struct LinCkptDims {
