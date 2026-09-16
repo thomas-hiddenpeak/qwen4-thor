@@ -575,6 +575,17 @@ Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
   AOT, 理论下限 ~0.05ms, 但需自建 block-sparse + paged gather, 工程量大)
   ③ 接受当前 10.5ms 转 decode GEMM 带宽 (FP8 计划 C)。回退 bf16 (无
   收益), 保持基线。详见 LOG 2026-09-15。
+- [~] 2026-09-16 **chunked tensor-core GatedDeltaNet: 算法端到端验证通过
+  (未集成)**: Step 10 后 GatedDeltaNet 被 25% 占用率锁死, 大杠杆是 chunked
+  tensor-core delta rule。三步验证全绿 (工件在 tools/): (1) 自推导 chunk
+  分解 `gdn_chunked_ref.py` vs 顺序 golden **l2_rel 1e-16**; (2) 通用 bf16
+  m16n8k16 GEMM `mma_gemm_proto.cu` vs CPU **1.4e-7**; (3) 完整 chunked
+  kernel `gdn_chunk_proto.cu` (6 tensor-core GEMM + 前代 + 衰减 + 块间
+  state 递推, 状态/delta 转置存免 mma 转置) vs golden **y 3.05e-3 / S
+  2.42e-3** (bf16 GEMM 精度)。**未集成**: 默认仍走 GatedDeltaNetKernel。
+  剩余: 真实 dk=dv=128 shared 282KB>228KB 需动态 shared+别名/vd-split, 多
+  warp GEMM, gating math 折入, 金标准校验+测 prefill, Q4T_GDN_CHUNKED flag。
+  详见 LOG 2026-09-16。
 - [x] 2026-09-16 **Step 10: GatedDeltaNet 内循环 ILP + warp reduction →
   prefill 786→826 tok/s**: Step 9 后 GatedDeltaNet 成 prefill #1/#2 瓶颈
   (nsys 22-24%)。两处安全优化 (prefill + `GatedDeltaNetMultiSeqCausalKernel`

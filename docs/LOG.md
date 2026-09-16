@@ -5,7 +5,48 @@
 
 ---
 
-## 2026-09-16 — Step 10: GatedDeltaNet 内循环 ILP + warp reduction → prefill 786→826 tok/s
+## 2026-09-16 — chunked tensor-core GatedDeltaNet: 算法端到端验证通过 (未集成)
+
+**做了什么**
+GatedDeltaNet 微优化 (Step 10) 后被 25% 占用率锁死, 大杠杆是 chunked
+tensor-core delta rule (对齐 vllm/sglang flash-linear-attention)。分三步
+验证, 全部通过, 但**尚未集成进引擎** (默认仍走 GatedDeltaNetKernel):
+
+1. **算法数学** (`tools/gdn_chunked_ref.py`): 从现有 kernel 的逐 token
+   递推**自行推导** chunk 分解 (不翻译 Triton), Python 对照顺序 golden
+   l2_rel **1e-16** (机器精度)。关键公式: g=log(alpha), 块内累积
+   G_t=Σ_{s<=t}g_s; A[r,p]=exp(G_r-G_p)·beta_p·(k_r·k_p) 严格下三角;
+   delta=(I+A)^{-1}·rhs, rhs_r=v_r-exp(G_r)(k_r^T S0) (前代); S_new=
+   exp(G_last)S0+Σ exp(G_last-G_r)beta_r k_r⊗delta_r; y_t=exp(G_t)(q_t^T S0)+
+   Σ_{r<=t} exp(G_t-G_r)beta_r(q_t·k_r)delta_r。
+
+2. **通用 bf16 tensor-core GEMM** (`tools/mma_gemm_proto.cu`): 复用
+   full_attention.cu 的 m16n8k16 mma.sync fragment 打包, C=A@B 对照 CPU
+   l2_rel **1.4e-7**。B 操作数按 [N,K] row-major 存 (=Bᵀ) 免转置。
+
+3. **完整 chunked kernel** (`tools/gdn_chunk_proto.cu`): 单 block 单 head,
+   6 个 tensor-core GEMM (A=KKᵀ / QKᵀ / K@S0 / Q@S0 / P@delta / deltaᵀ@KD)
+   + 前代 + 衰减缩放 + 块间 state 递推。**状态转置存 S_T[dv,dk]、delta 转置
+   存 delta_T[dv,C]**, 使 mma B 操作数免转置 (只需一次 K 的转置缩放 KD^T)。
+   对照顺序 golden **y l2_rel 3.05e-3 / S 2.42e-3** (T=70, 5 块含末尾残块),
+   即 bf16 GEMM 精度, 与现 kernel 对 fp32 参考的 ~6e-3 同量级。
+
+**为什么值得**
+现 GatedDeltaNetKernel 距 FP32 峰值 ~18×, 占用率锁死。chunked 把 T 步串行
+matvec 换成块内 tensor-core matmul (~16× FLOP 吞吐) + 前代 (每 token 串行
+工作 ~12× 更轻), 是唯一数量级杠杆, 也正是用户要的"把 tensor core 用起来"。
+
+**未集成的原因 (剩余聚焦工作)**
+(a) 真实 dk=dv=128 时 shared 约 282KB > 228KB, 需动态 shared + buffer 别名
+或 vd-split (dv 列独立, 拆 2/4 提占用率过 1 block/SM); (b) WarpGemm 现只用
+warp 0, 需 4 warp 分摊 M/N; (c) gating math (softplus/exp(A_log)/sigmoid/
+L2norm) 要折进 kernel; (d) 对 GatedDeltaNetKernel 金标准校验 + 测真实 prefill。
+
+**下一步**
+按上述 (a)-(d) 集成进 linear_attention.cu, 加 Q4T_GDN_CHUNKED flag, 旧
+kernel 留作 fallback, 验证通过 + 更快再切默认。
+
+---
 
 **做了什么**
 Step 9 后 GatedDeltaNet 成为 prefill #1/#2 瓶颈 (nsys 22-24%)。两处安全
