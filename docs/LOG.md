@@ -5,7 +5,44 @@
 
 ---
 
-## 2026-09-16 — chunked tensor-core GatedDeltaNet: 算法端到端验证通过 (未集成)
+## 2026-09-16 — chunked tensor-core GatedDeltaNet 集成完成: 正确但 Thor 上更慢 (负结果, flag 默认关)
+
+**做了什么**
+把上一条验证过的 chunked delta rule 集成进 `linear_attention.cu`
+(`GatedDeltaNetChunkedKernel` + `GdnBlockGemm` 多 warp mma + gating math 折入),
+`Q4T_GDN_CHUNKED=1` 启用, `Q4T_GDN_SPLIT` 调 vd-split, 旧 kernel 默认 fallback。
+grid dim3(nv, split), 128 线程, 动态 shared, 状态/delta 转置存, vd-split (dv 列
+独立) + 动态 DVH=vd/gridDim.y 控占用率。
+
+**结果 (负结果, 但重要)**
+- **正确**: `Q4T_GDN_CHUNKED=1` 下 linear_attention 测试 out l2_rel 7.05e-3 /
+  ssm 5.41e-3 (< 2e-2 容差, 仅比 baseline 6.4e-3/4.5e-3 略噪)。全 68 测试
+  (默认关) 通过, 零警告。
+- **更慢**: prefill 2560 tok chunked 767 vs SIMT baseline **826 tok/s**;
+  nsys 实测 **GatedDeltaNetChunkedKernel 1.96s (28.3%) vs GatedDeltaNetKernel
+  1.44s (22.4%), 1.36× 慢**。split=4 (742) 比 split=2 (752) 还慢 (dv-独立部分
+  A/QK/Kc/Qc/gating 每 split block 重算, 冗余抵消占用率收益)。
+
+**根因 (Thor 架构不匹配)**
+chunked tensor-core 是大 GPU (vllm/sglang, 100+ SM + 大 batch) 的赢法。Thor
+只有 **20 SM**, 单序列 prefill 每 head 的 matmul 很小 (CK=32, DVH=32-64,
+不饱和 tensor core), 且 state 驻 shared 把占用率锁在 1-2 block/SM (8-16%)。
+tensor core 的 FLOP 优势被低占用率 + 冗余 + 开销 (gating 重算 / 多 __syncthreads /
+前代 / bf16 转换) 抵消。已高度优化的 SIMT kernel (25% 占用率, 低开销) 反而赢。
+
+**保留 flag-gated 的原因 + 未来赢的路径**
+kernel 正确且对默认零成本 (flag 关), 作为验证过的基础设施保留。要在 Thor 上
+赢需: (a) **state 驻 gmem** (释放 shared → 高占用率 + split=1 免冗余, 但 GEMM
+要从 gmem 流式读, 大改); (b) **批量多序列** (serve 连续批处理时多序列 prefill
+打包 → 大 matmul 饱和 tensor core, chunked 的天然优势场景, 当前单序列是最差
+情况)。工件: tools/gdn_chunk*_proto.cu + gdn_chunked_ref.py。
+
+**下一步**
+默认保持 SIMT (826 tok/s)。chunked 留 flag-gated。若要继续攻 prefill, 更可能
+的杠杆是 MoE gather/scatter/quant (17.8%, per-expert launch 开销) 或 SparseAttn
+FP8 KV, 而非 GatedDeltaNet (已近 SIMT 占用率上限)。
+
+---
 
 **做了什么**
 GatedDeltaNet 微优化 (Step 10) 后被 25% 占用率锁死, 大杠杆是 chunked

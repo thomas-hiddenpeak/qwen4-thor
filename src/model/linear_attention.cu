@@ -524,6 +524,204 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetKernel(
   for (int i = 0; i < kd; ++i) ssm[ss_base + i * vd + j] = S_smem[i * vd_pad + j];
 }
 
+// ---- Chunked tensor-core Gated DeltaNet prefill (Q4T_GDN_CHUNKED) ----
+// Replaces the per-token serial matvecs with chunk-parallel bf16 tensor-core
+// GEMMs (the flash-linear-attention chunked delta rule, derived directly from
+// the sequential recurrence above so the numerics match). Validated vs the
+// sequential golden at bf16 GEMM precision (~3e-3 l2_rel); see
+// tools/gdn_chunk_proto.cu / gdn_chunked_ref.py. Specialized for kd=vd=128.
+__device__ __forceinline__ void MmaBf16Gdn(float& c0, float& c1, float& c2,
+                                           float& c3, uint32_t a0, uint32_t a1,
+                                           uint32_t a2, uint32_t a3, uint32_t b0,
+                                           uint32_t b1) {
+  asm volatile(
+      "mma.sync.aligned.m16n8k16.row.col.f32.bf16.bf16.f32 "
+      "{%0,%1,%2,%3}, {%4,%5,%6,%7}, {%8,%9}, {%0,%1,%2,%3};\n"
+      : "+f"(c0), "+f"(c1), "+f"(c2), "+f"(c3)
+      : "r"(a0), "r"(a1), "r"(a2), "r"(a3), "r"(b0), "r"(b1));
+}
+// Cout[M,N] f32 = A[M,K] @ B[K,N]; A row-major [M,K], Bt row-major [N,K]
+// (Bt[n][k]=B[k][n], i.e. B^T). All warps share the (m-tile,n-tile) grid.
+// K%16==0; the operand buffers are sized to the M,N tile multiples (16/8).
+__device__ void GdnBlockGemm(float* Cout, const uint16_t* A,
+                             const uint16_t* Bt, int M, int N, int K) {
+  const int wid = threadIdx.x >> 5, nw = blockDim.x >> 5, lane = threadIdx.x & 31;
+  const int group = lane >> 2, k0 = (lane & 3) * 2, col = (lane & 3) * 2;
+  const int nmt = (M + 15) / 16, nnt = (N + 7) / 8;
+  for (int idx = wid; idx < nmt * nnt; idx += nw) {
+    const int mt = idx / nnt, nt = idx % nnt, mb = mt * 16, nb = nt * 8;
+    float c0 = 0, c1 = 0, c2 = 0, c3 = 0;
+    for (int kt = 0; kt < K / 16; ++kt) {
+      const int kb = kt * 16;
+      const uint16_t* a = A + (mb + group) * K + kb + k0;
+      const uint16_t* a8 = A + (mb + group + 8) * K + kb + k0;
+      const uint16_t* b = Bt + (nb + group) * K + kb + k0;
+      MmaBf16Gdn(c0, c1, c2, c3,
+                 *reinterpret_cast<const uint32_t*>(a),
+                 *reinterpret_cast<const uint32_t*>(a8),
+                 *reinterpret_cast<const uint32_t*>(a + 8),
+                 *reinterpret_cast<const uint32_t*>(a8 + 8),
+                 *reinterpret_cast<const uint32_t*>(b),
+                 *reinterpret_cast<const uint32_t*>(b + 8));
+    }
+    if (mb + group < M) {
+      if (nb + col < N) Cout[(mb + group) * N + nb + col] = c0;
+      if (nb + col + 1 < N) Cout[(mb + group) * N + nb + col + 1] = c1;
+    }
+    if (mb + group + 8 < M) {
+      if (nb + col < N) Cout[(mb + group + 8) * N + nb + col] = c2;
+      if (nb + col + 1 < N) Cout[(mb + group + 8) * N + nb + col + 1] = c3;
+    }
+  }
+}
+
+// Grid dim3(nv, 2): block (h_v, s) owns value head h_v and dv columns
+// [s*64, s*64+64) (the dv columns are independent). 128 threads, dynamic
+// shared. State held transposed S_T[dvh,kd] and delta transposed delta_T so
+// the mma B-operands need no transpose. Only used when ssm_ckpt is absent.
+__global__ void GatedDeltaNetChunkedKernel(
+    const uint16_t* __restrict__ qkv, const uint16_t* __restrict__ a_raw,
+    const uint16_t* __restrict__ dt_bias, const uint16_t* __restrict__ A_log,
+    const uint16_t* __restrict__ beta_raw, float* __restrict__ ssm,
+    uint16_t* __restrict__ y, int T, int nkh, int kd, int nv_per_kh, int vd,
+    int token_stride, int nv) {
+  if (kd != 128 || vd != 128) return;
+  constexpr int KD = 128, VD = 128, CK = 32;
+  const int DVH = VD / gridDim.y;  // dv columns per block (vd-split)
+  const int h_v = blockIdx.x, h_k = h_v / nv_per_kh, col0 = blockIdx.y * DVH;
+  const int tid = threadIdx.x;
+  const float q_scale = rsqrtf((float)KD);
+  const float bias = Bf16ToFloat(dt_bias[h_v]);
+  const float expA = expf(Bf16ToFloat(A_log[h_v]));
+  const int ss_base = h_v * KD * VD;
+
+  extern __shared__ unsigned char arena[];
+  size_t o = 0;
+  auto A32 = [&](size_t nn) -> float* {
+    float* p = reinterpret_cast<float*>(arena + o); o += nn * 4; return p; };
+  auto A16 = [&](size_t nn) -> uint16_t* {
+    uint16_t* p = reinterpret_cast<uint16_t*>(arena + o); o += nn * 2; return p; };
+  float* S_T = A32(DVH * KD);
+  float* Sdel = A32(DVH * KD);
+  float* KS0 = A32(CK * DVH);
+  float* QS0 = A32(CK * DVH);
+  float* Vc = A32(CK * DVH);
+  float* Am = A32(CK * CK);
+  float* QK = A32(CK * CK);
+  float* deltaT = A32(DVH * CK);
+  float* Ydel = A32(CK * DVH);
+  float* Gsh = A32(CK);
+  float* betaSh = A32(CK);
+  float* gtok = A32(CK);
+  float* knorm = A32(CK);
+  float* qnorm = A32(CK);
+  uint16_t* S_Tb = A16(DVH * KD);
+  uint16_t* Kc = A16(CK * KD);
+  uint16_t* Qc = A16(CK * KD);
+  uint16_t* deltaTb = A16(DVH * CK);
+  uint16_t* Pb = A16(CK * CK);
+  uint16_t* KTs = A16(KD * CK);
+
+  for (int e = tid; e < DVH * KD; e += blockDim.x) {
+    int jh = e / KD, i = e % KD;
+    S_T[e] = ssm[ss_base + i * VD + col0 + jh];
+  }
+  __syncthreads();
+
+  for (int c0 = 0; c0 < T; c0 += CK) {
+    const int n = min(CK, T - c0);
+    if (tid < CK) {
+      if (tid < n) {
+        const int gt = c0 + tid;
+        const int kb = gt * token_stride + nkh * kd + h_k * kd;
+        const int qb = gt * token_stride + h_k * kd;
+        float ks = 0.f, qs = 0.f;
+        for (int i = 0; i < KD; ++i) {
+          float kv = Bf16ToFloat(qkv[kb + i]); ks += kv * kv;
+          float qv = Bf16ToFloat(qkv[qb + i]); qs += qv * qv;
+        }
+        knorm[tid] = rsqrtf(ks + 1e-6f);
+        qnorm[tid] = rsqrtf(qs + 1e-6f) * q_scale;
+        float ab = Bf16ToFloat(a_raw[gt * nv + h_v]) + bias;
+        float dtv = (ab > 20.f) ? ab : log1pf(expf(ab));
+        gtok[tid] = -dtv * expA;
+        betaSh[tid] = 1.f / (1.f + expf(-Bf16ToFloat(beta_raw[gt * nv + h_v])));
+      } else {
+        knorm[tid] = 0.f; qnorm[tid] = 0.f; gtok[tid] = 0.f; betaSh[tid] = 0.f;
+      }
+    }
+    __syncthreads();
+    if (tid == 0) {
+      float acc = 0.f;
+      for (int r = 0; r < CK; ++r) { acc += gtok[r]; Gsh[r] = acc; }
+    }
+    for (int e = tid; e < CK * KD; e += blockDim.x) {
+      int r = e / KD, i = e % KD;
+      if (r < n) {
+        const int kb = (c0 + r) * token_stride + nkh * kd + h_k * kd;
+        const int qb = (c0 + r) * token_stride + h_k * kd;
+        Kc[e] = FloatToBf16(Bf16ToFloat(qkv[kb + i]) * knorm[r]);
+        Qc[e] = FloatToBf16(Bf16ToFloat(qkv[qb + i]) * qnorm[r]);
+      } else { Kc[e] = 0; Qc[e] = 0; }
+    }
+    for (int e = tid; e < CK * DVH; e += blockDim.x) {
+      int r = e / DVH, c = e % DVH;
+      const int vb = (c0 + r) * token_stride + 2 * nkh * kd + h_v * vd;
+      Vc[e] = (r < n) ? Bf16ToFloat(qkv[vb + col0 + c]) : 0.f;
+    }
+    for (int e = tid; e < DVH * KD; e += blockDim.x) S_Tb[e] = FloatToBf16(S_T[e]);
+    __syncthreads();
+    GdnBlockGemm(Am, Kc, Kc, CK, CK, KD);    // k_hat k_hat^T
+    GdnBlockGemm(QK, Qc, Kc, CK, CK, KD);    // q_hat k_hat^T
+    GdnBlockGemm(KS0, Kc, S_Tb, CK, DVH, KD);
+    GdnBlockGemm(QS0, Qc, S_Tb, CK, DVH, KD);
+    __syncthreads();
+    for (int e = tid; e < CK * CK; e += blockDim.x) {
+      int r = e / CK, p = e % CK;
+      Am[e] = (p < r && r < n) ? Am[e] * expf(Gsh[r] - Gsh[p]) * betaSh[p] : 0.f;
+    }
+    __syncthreads();
+    if (tid < DVH) {  // forward substitution, one dv-column per thread
+      int j = tid;
+      for (int r = 0; r < n; ++r) {
+        float rhs = Vc[r * DVH + j] - expf(Gsh[r]) * KS0[r * DVH + j];
+        float acc = 0.f;
+        for (int p = 0; p < r; ++p) acc += Am[r * CK + p] * deltaT[j * CK + p];
+        deltaT[j * CK + r] = rhs - acc;
+      }
+      for (int r = n; r < CK; ++r) deltaT[j * CK + r] = 0.f;
+      for (int r = 0; r < CK; ++r) deltaTb[j * CK + r] = FloatToBf16(deltaT[j * CK + r]);
+    }
+    for (int e = tid; e < CK * CK; e += blockDim.x) {
+      int t = e / CK, r = e % CK;
+      float p = (r <= t && t < n) ? QK[e] * expf(Gsh[t] - Gsh[r]) * betaSh[r] : 0.f;
+      Pb[e] = FloatToBf16(p);
+    }
+    const float Glast = Gsh[n - 1];
+    for (int e = tid; e < KD * CK; e += blockDim.x) {
+      int i = e / CK, r = e % CK;
+      float s = (r < n) ? expf(Glast - Gsh[r]) * betaSh[r] * Bf16ToFloat(Kc[r * KD + i]) : 0.f;
+      KTs[e] = FloatToBf16(s);
+    }
+    __syncthreads();
+    GdnBlockGemm(Ydel, Pb, deltaTb, CK, DVH, CK);   // P @ delta
+    GdnBlockGemm(Sdel, deltaTb, KTs, DVH, KD, CK);  // delta^T @ KD
+    __syncthreads();
+    for (int e = tid; e < n * DVH; e += blockDim.x) {
+      int r = e / DVH, j = e % DVH;
+      y[((size_t)(c0 + r) * nv + h_v) * vd + col0 + j] =
+          FloatToBf16(expf(Gsh[r]) * QS0[r * DVH + j] + Ydel[r * DVH + j]);
+    }
+    for (int e = tid; e < DVH * KD; e += blockDim.x)
+      S_T[e] = expf(Glast) * S_T[e] + Sdel[e];
+    __syncthreads();
+  }
+  for (int e = tid; e < DVH * KD; e += blockDim.x) {
+    int jh = e / KD, i = e % KD;
+    ssm[ss_base + i * VD + col0 + jh] = S_T[e];
+  }
+}
+
 // Gated DeltaNet recurrence for B2 multi-sequence decode. Grid: dim3(nv, B).
 // Each block handles ONE value head (blockIdx.x) for ONE token (blockIdx.y =
 // token index t). Token t belongs to sequence d_seq_id[t]; its recurrent
@@ -1129,19 +1327,57 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
         return Status::Fail("gdn multi-seq launch");
       }
     } else {
-      cudaError_t smem_err = cudaFuncSetAttribute(
-          GatedDeltaNetKernel, cudaFuncAttributeMaxDynamicSharedMemorySize,
-          static_cast<int>(smem_bytes));
-      if (smem_err != cudaSuccess) {
-        free_all();
-        return Status::Fail("gdn smem attr");
-      }
-      GatedDeltaNetKernel<<<nv, threads, smem_bytes, stream>>>(
-          d_qkv, d_a, w.dt_bias, w.A_log, d_beta, ssm_state, d_y_ssm, T, nkh, kd,
-          nv / nkh, vd, in_qkv, nv, ssm_ckpt, num_ckpt);
-      if (cudaGetLastError() != cudaSuccess) {
-        free_all();
-        return Status::Fail("gdn launch");
+      // Optional chunked tensor-core prefill (Q4T_GDN_CHUNKED). Only for the
+      // no-checkpoint single-seq path at kd=vd=128; the per-token serial kernel
+      // stays the default fallback.
+      static const bool use_chunked = []() {
+        const char* e = std::getenv("Q4T_GDN_CHUNKED");
+        return e && *e && e[0] != '0';
+      }();
+      if (use_chunked && kd == 128 && vd == 128 && ssm_ckpt == nullptr) {
+        // vd-split: more blocks + less shared/block -> higher occupancy.
+        // Q4T_GDN_SPLIT (default 4): dv columns per block = vd / split.
+        static const int split = []() {
+          const char* e = std::getenv("Q4T_GDN_SPLIT");
+          int s = e ? atoi(e) : 4;
+          return (s == 2 || s == 4) ? s : 4;
+        }();
+        const int DVH = vd / split, CK = 32;
+        const size_t ch_smem =
+            static_cast<size_t>(DVH * kd * 2 + CK * DVH * 3 + CK * CK * 2 +
+                                DVH * CK + CK * DVH + CK * 5) * sizeof(float) +
+            static_cast<size_t>(DVH * kd + CK * kd * 2 + DVH * CK + CK * CK +
+                                kd * CK) * sizeof(uint16_t);
+        cudaError_t smem_err = cudaFuncSetAttribute(
+            GatedDeltaNetChunkedKernel,
+            cudaFuncAttributeMaxDynamicSharedMemorySize,
+            static_cast<int>(ch_smem));
+        if (smem_err != cudaSuccess) {
+          free_all();
+          return Status::Fail("gdn chunked smem attr");
+        }
+        GatedDeltaNetChunkedKernel<<<dim3(nv, split), 128, ch_smem, stream>>>(
+            d_qkv, d_a, w.dt_bias, w.A_log, d_beta, ssm_state, d_y_ssm, T, nkh,
+            kd, nv / nkh, vd, in_qkv, nv);
+        if (cudaGetLastError() != cudaSuccess) {
+          free_all();
+          return Status::Fail("gdn chunked launch");
+        }
+      } else {
+        cudaError_t smem_err = cudaFuncSetAttribute(
+            GatedDeltaNetKernel, cudaFuncAttributeMaxDynamicSharedMemorySize,
+            static_cast<int>(smem_bytes));
+        if (smem_err != cudaSuccess) {
+          free_all();
+          return Status::Fail("gdn smem attr");
+        }
+        GatedDeltaNetKernel<<<nv, threads, smem_bytes, stream>>>(
+            d_qkv, d_a, w.dt_bias, w.A_log, d_beta, ssm_state, d_y_ssm, T, nkh,
+            kd, nv / nkh, vd, in_qkv, nv, ssm_ckpt, num_ckpt);
+        if (cudaGetLastError() != cudaSuccess) {
+          free_all();
+          return Status::Fail("gdn launch");
+        }
       }
     }
   }
