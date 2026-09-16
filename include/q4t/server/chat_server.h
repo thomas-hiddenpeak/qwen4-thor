@@ -15,6 +15,7 @@
 #pragma once
 
 #include <array>
+#include <atomic>
 #include <condition_variable>
 #include <memory>
 #include <mutex>
@@ -94,10 +95,12 @@ class ChatServer {
   // (D2H/argmax/tokenize/SSE) and encoding run OUTSIDE `model_mu_` on a
   // per-request CUDA stream, so one request's D2H overlaps another request's
   // forward on the GPU.
-  int AllocSeqId();  // -1 if the pool is exhausted (caller returns 503)
+  int AllocSeqId();  // blocks (queues) until a slot frees; -1 only on shutdown
   void FreeSeqId(int seq_id);
   std::mutex model_mu_;   // serializes all model forwards (main + MTP + vision)
   std::mutex seq_mu_;     // guards the seq_id free pool
+  std::condition_variable seq_cv_;  // requests queue here for a free seq slot
+  bool seq_stopping_ = false;       // set on shutdown to release seq waiters
 
   // B2b continuous batching: a central scheduler thread collects the current
   // decode token of every ACTIVE plain-decode request and runs them in ONE
@@ -163,12 +166,23 @@ class ChatServer {
   // Only the scheduler thread touches these (the write is under model_mu_).
   uint16_t* d_sched_logits_ = nullptr;
   std::vector<uint16_t> sched_h_logits_;
+  // Shared prefill-logits buffer [max_prefill, vocab], used only under
+  // model_mu_ (prefills serialize there). Replaces the per-request ~1 GB
+  // d_logits so peak GPU memory does not scale with prompt length x
+  // concurrency (that over-commit OOM'd the box under load); only the last
+  // prefill row is ever consumed.
+  uint16_t* d_prefill_logits_ = nullptr;
   // The tokenizer's ICU 74 regex engine is NOT thread-safe (concurrent Encode
   // trips U_INTERNAL_PROGRAM_ERROR), so all Encode/Decode calls are serialized
   // behind tok_mu_ even though the rest of the tokenizer is immutable.
   std::mutex tok_mu_;
   std::vector<bool> seq_free_;  // [max_seq]; true = available
   int max_seq_ = 8;
+  // In-flight request-thread cap: bounds how many connections may be waiting
+  // in the AllocSeqId queue at once, so a connection flood cannot spawn
+  // unbounded threads. Excess connections are refused (503) to shed load.
+  std::atomic<int> active_conns_{0};
+  int conn_cap_ = 512;
 
   // Multimodal pipeline: run the image/video processor + vision tower over the
   // vision items (in content-part order) and return the merged visual features

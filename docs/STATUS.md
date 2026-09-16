@@ -10,6 +10,10 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
 
 ## 当前焦点 (2026-09-17): 批处理吞吐 (推进中)
 
+- **serve 资源背压 (2026-09-17, 已修)**: 并发压测崩溃 (per-request ~1GB d_logits ×
+  并发 OOM) → 共享 prefill buffer (一次分配, 持锁内读首行) + 阻塞 AllocSeqId (超
+  max_seq 排队非 503) + 连接上限 (防线程爆炸)。压测 2×/4× 超限 + 16 并发长 prompt
+  内存稳、0 error、存活。**请求超资源现排队不崩溃**。
 - **多流 MoE (2026-09-17, 默认开, `Q4T_MOE_STREAMS`=4)**: per-expert chain 无依赖
   → 轮询到 4 个 CUDA 流并发填满欠占用的 SM (小 GEMM M_e≈10-50 只填半数 SM)。
   **prefill 990→1062 tok/s (+7.2%, 破 1000)** + 批 decode B=128 308→374 (+21%) /

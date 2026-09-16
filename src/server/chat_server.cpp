@@ -324,12 +324,22 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
 }  // namespace
 
 ChatServer::~ChatServer() {
+  // Release any requests queued in AllocSeqId so their threads can exit.
+  {
+    const std::lock_guard<std::mutex> lock(seq_mu_);
+    seq_stopping_ = true;
+  }
+  seq_cv_.notify_all();
   // B2b: stop the scheduler thread FIRST (it touches model_ + d_sched_logits_
   // under model_mu_, so it must be joined before those are freed).
   StopScheduler();
   if (d_sched_logits_) {
     cudaFree(d_sched_logits_);
     d_sched_logits_ = nullptr;
+  }
+  if (d_prefill_logits_) {
+    cudaFree(d_prefill_logits_);
+    d_prefill_logits_ = nullptr;
   }
   if (vision_tower_) {
     vision_tower_->Free();
@@ -363,6 +373,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
   max_seq_ = opts.max_seq > 0 ? opts.max_seq : 8;
   cfg.max_seq = max_seq_;
   seq_free_.assign(static_cast<size_t>(max_seq_), true);
+  conn_cap_ = std::max(max_seq_ * 8, 128);  // in-flight request-thread cap
   s = model::LoadModel(cfg, &model_, nullptr);
   if (!s.ok()) {
     tok_.reset();
@@ -447,6 +458,14 @@ Status ChatServer::Start(const ServerOptions& opts) {
                          "(max_seq=%d)\n",
                  max_seq_);
   }
+  // Shared prefill-logits buffer [max_prefill, vocab], used only under
+  // model_mu_ (prefills serialize there). One buffer instead of per-request
+  // ~1 GB so peak memory does not scale with prompt length x concurrency.
+  if (cudaMalloc(reinterpret_cast<void**>(&d_prefill_logits_),
+                 static_cast<size_t>(cfg.max_prefill) * cfg.vocab * 2) !=
+      cudaSuccess) {
+    return Status::Fail("prefill logits buffer alloc failed (out of memory)");
+  }
   return Status();
 }
 
@@ -492,9 +511,21 @@ Status ChatServer::Run() {
     // overlaps across requests. Run() blocks in the accept loop for the
     // server's lifetime, so the ChatServer object outlives the detached
     // request threads.
+    // Bound in-flight request threads: shed load (503) beyond conn_cap_ so a
+    // connection flood cannot exhaust host memory with blocked threads (the
+    // AllocSeqId queue absorbs bursts up to this cap).
+    if (active_conns_.fetch_add(1, std::memory_order_relaxed) >= conn_cap_) {
+      active_conns_.fetch_sub(1, std::memory_order_relaxed);
+      SendSimple(fd, 503, "Service Unavailable",
+                 "{\"error\":{\"message\":\"server overloaded, retry\"}}",
+                 "application/json");
+      ::close(fd);
+      continue;
+    }
     std::thread([this, fd]() {
       HandleClient(fd);
       ::close(fd);
+      active_conns_.fetch_sub(1, std::memory_order_relaxed);
     }).detach();
   }
 }
@@ -527,7 +558,17 @@ void ChatServer::Dispatch(int fd, const std::string& method,
 }
 
 int ChatServer::AllocSeqId() {
-  const std::lock_guard<std::mutex> lock(seq_mu_);
+  std::unique_lock<std::mutex> lock(seq_mu_);
+  // Queue (block) until a slot frees rather than rejecting — this bounds the
+  // number of in-flight requests to max_seq so GPU resources are never
+  // over-committed (excess requests wait here instead of OOM-ing the box).
+  seq_cv_.wait(lock, [this] {
+    if (seq_stopping_) return true;
+    for (int i = 0; i < max_seq_; ++i)
+      if (seq_free_[static_cast<size_t>(i)]) return true;
+    return false;
+  });
+  if (seq_stopping_) return -1;
   for (int i = 0; i < max_seq_; ++i) {
     if (seq_free_[static_cast<size_t>(i)]) {
       seq_free_[static_cast<size_t>(i)] = false;
@@ -539,8 +580,11 @@ int ChatServer::AllocSeqId() {
 
 void ChatServer::FreeSeqId(int seq_id) {
   if (seq_id < 0) return;
-  const std::lock_guard<std::mutex> lock(seq_mu_);
-  if (seq_id < max_seq_) seq_free_[static_cast<size_t>(seq_id)] = true;
+  {
+    const std::lock_guard<std::mutex> lock(seq_mu_);
+    if (seq_id < max_seq_) seq_free_[static_cast<size_t>(seq_id)] = true;
+  }
+  seq_cv_.notify_one();  // wake one queued request
 }
 
 // B2b continuous batching: the central scheduler loop.
@@ -917,23 +961,20 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // scratch safety and GPU-stream ordering. CPU post-processing (D2H, argmax,
   // tokenize, SSE) and encoding run OUTSIDE model_mu_, overlapping another
   // request's GPU forward.
-  const int seq_id = AllocSeqId();
+  const int seq_id = AllocSeqId();  // blocks (queues) until a slot frees
   if (seq_id < 0) {
-    SendError(fd, 503, "server busy: all sequences in use, retry");
+    SendError(fd, 503, "server shutting down");
     return;
   }
-  // Per-request device buffers (freed by `cleanup` on any exit path).
-  uint16_t* d_logits = nullptr;
+  // Per-request device buffers (freed by `cleanup` on any exit path). Prefill
+  // logits use the shared d_prefill_logits_ (under model_mu_), not a per-
+  // request buffer.
   uint16_t* d_trunk_full = nullptr;
   uint16_t* d_vfeats = nullptr;
   uint16_t* d_mtp_g = nullptr;  // MTP rolling draft trunk [hc*hs] (Stage 2c:
                                 // per-request, so concurrent MTP requests don't
                                 // share the legacy d_g_/d_g_next_ double buffer)
   auto cleanup = [&]() {
-    if (d_logits) {
-      cudaFree(d_logits);
-      d_logits = nullptr;
-    }
     if (d_trunk_full) {
       cudaFree(d_trunk_full);
       d_trunk_full = nullptr;
@@ -1039,12 +1080,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // the LAST chunk's final logits row is needed (first decode token), so
   // d_logits holds ONE chunk's rows, not T (a 262K one-shot [T, vocab]
   // buffer would be ~130 GB).
-  if (cudaMalloc(reinterpret_cast<void**>(&d_logits),
-                 static_cast<size_t>(chunk) * vocab * 2) != cudaSuccess) {
-    SendError(fd, 500, "cudaMalloc logits failed");
-    cleanup();
-    return;
-  }
+  // Prefill logits go to the shared d_prefill_logits_ [max_prefill, vocab]
+  // (chunk <= max_prefill), so there is no per-request logits allocation.
   // MTP: prefill trunk_out buffer (pre-final-mixer multi stream [T, hc*hs])
   // for the draft-extend. Allocated only when MTP is loaded. Disabled for
   // chunked prefill: the draft-extend needs the FULL-prompt main trunk
@@ -1091,9 +1128,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     if (s.ok()) {
       if (!chunked) {
         // One-shot prefill (T <= max_prefill): unchanged path.
-        s = model::ModelPrefill(model_, &seq, ids.data(), T, d_logits, nullptr,
-                                mtp_loaded_ ? d_trunk_full : nullptr, vptr,
-                                seq_id);
+        s = model::ModelPrefill(model_, &seq, ids.data(), T, d_prefill_logits_,
+                                nullptr, mtp_loaded_ ? d_trunk_full : nullptr,
+                                vptr, seq_id);
       } else {
         // Chunked prefill (T > max_prefill, 262K context). Chunk 0 is a true
         // prefill (state reset + rope table + PLE history via ModelPrefill);
@@ -1104,15 +1141,17 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         // lm_head GEMM (only the last chunk's final row is needed for the
         // first decode token). Text-only: a vision prompt's special (t,h,w)
         // rope is not reproducible by ModelDecodeBatch's text rope.
-        s = model::ModelPrefill(model_, &seq, ids.data(), chunk, d_logits,
-                                nullptr, nullptr, nullptr, seq_id);
+        s = model::ModelPrefill(model_, &seq, ids.data(), chunk,
+                                d_prefill_logits_, nullptr, nullptr, nullptr,
+                                seq_id);
         for (int base = chunk; s.ok() && base < T; base += chunk) {
           const int c = std::min(chunk, T - base);
           const bool last = (base + c >= T);
           if (last) last_chunk_c = c;
           s = model::ModelDecodeBatch(
               model_, ids.data() + base, c, base, ids.data(), base,
-              last ? d_logits : nullptr, nullptr, nullptr, false, seq_id);
+              last ? d_prefill_logits_ : nullptr, nullptr, nullptr, false,
+              seq_id);
         }
         // ModelDecodeBatch does NOT advance the sequence state machine (it is
         // a bare forward, unlike ModelDecodeStepSeq). After the chunked
@@ -1125,6 +1164,18 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           seq.history.assign(ids.begin(), ids.end());
         }
       }
+    }
+    // First decode token: D2H the last prefill row into h_logits WHILE holding
+    // model_mu_, so the shared d_prefill_logits_ is safe from the next prefill.
+    if (s.ok()) {
+      const uint16_t* last_logits =
+          chunked ? d_prefill_logits_ +
+                        static_cast<size_t>(last_chunk_c - 1) * vocab
+                  : d_prefill_logits_ + static_cast<size_t>(T - 1) * vocab;
+      cudaMemcpyAsync(h_logits.data(), last_logits,
+                      static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost,
+                      nullptr);
+      cudaStreamSynchronize(nullptr);
     }
   }
   // DIAG: the prefill kernels are async; surface any launch/async error now
@@ -1172,13 +1223,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // synchronize before the host argmax so h_logits is fully populated (the
   // original serial code relied on the next forward's H2D to implicitly
   // order this, but the lock now separates them).
-  const uint16_t* last_logits =
-      chunked ? d_logits + static_cast<size_t>(last_chunk_c - 1) * vocab
-              : d_logits + static_cast<size_t>(T - 1) * vocab;
-  cudaMemcpyAsync(h_logits.data(), last_logits,
-                  static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost,
-                  nullptr);
-  cudaStreamSynchronize(nullptr);
+  // h_logits holds the last prefill row (D2H'd under the model_mu_ lock above).
   next_token = argmax(h_logits.data());
 
   // MTP init (mirrors the CLI --mtp path): fresh draft KV, bonus token b =
@@ -1238,6 +1283,12 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       }
 
     }
+  }
+  // The prompt trunk is only needed for the draft-extend above; free it now so
+  // decoding requests do not hold it (bounds concurrent memory).
+  if (d_trunk_full) {
+    cudaFree(d_trunk_full);
+    d_trunk_full = nullptr;
   }
   // Stage 2c (4b): the speculative steps are driven by the central scheduler,
   // which batches all concurrent MTP requests into ONE MtpSpeculativeStepMulti
@@ -1414,13 +1465,13 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       } else {
         // Fallback: single-sequence decode (B1 path).
         const std::lock_guard<std::mutex> lock(model_mu_);
-        s = model::ModelDecodeStepSeq(model_, &seq, tok_id, d_logits, nullptr,
-                                      nullptr, seq_id);
+        s = model::ModelDecodeStepSeq(model_, &seq, tok_id, d_prefill_logits_,
+                                      nullptr, nullptr, seq_id);
         if (!s.ok()) {
           finish_reason = "stop";
           break;
         }
-        cudaMemcpyAsync(h_logits.data(), d_logits,
+        cudaMemcpyAsync(h_logits.data(), d_prefill_logits_,
                         static_cast<size_t>(vocab) * 2,
                         cudaMemcpyDeviceToHost, nullptr);
         cudaStreamSynchronize(nullptr);
