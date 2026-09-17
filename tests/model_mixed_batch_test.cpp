@@ -88,6 +88,10 @@ int Argmax(const uint16_t* row, int n) {
 }  // namespace
 
 Q4T_TEST(model_mixed_batch) {
+  // Force the shared-state GDN kernel: the single-seq ModelPrefill golden must
+  // use the same kernel as the (shared-state) batched path it validates (the
+  // register-state kernel is ON by default). See q4t::test::GdnRegOff.
+  q4t::test::GdnRegOff gdn_reg_off;
   if (!CudaAvailable()) {
     std::printf("  (skipped: no CUDA device)\n");
     return true;

@@ -10,6 +10,22 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
 
 ## 当前焦点 (2026-09-17): 批处理吞吐 (推进中)
 
+- **GatedDeltaNet 寄存器-state prefill kernel (2026-09-17, 正结果 +12%, 默认开)**:
+  用户加 ds4/tokenspeed 参考。**对标: 我们单流 prefill 已超 ds4 30-50%** (同模型
+  Qwen3.8 Flash Next + 同硬件类 DGX Spark GB10, ds4 745-771 vs 我们 989-1143 t/s,
+  Spark 带宽还略高)。唯一新杠杆 = ds4 gdn_scan 寄存器-state: default GatedDeltaNetKernel
+  只 nv=48 blocks (20 SM 不足) + shared S[kd,vd] 66KB → 25% 占用率锁死, 单流 GDN
+  latency-bound (DRAM floor 12.5ms vs 实测 700ms = 56×)。**warp-per-vd-column** (每 warp
+  ROWS 列, kd 分布 32 lanes + warp-reduce, state 驻寄存器 s[ROWS][4], grid=(vd/(4*ROWS),
+  nv))。陷阱: 初版把 L2 norm 融进 scan → 每 head 64 warp 冗余算 → GDN +8.5%; 修复拆独立
+  **GdnRegPrepNormKernel** 一次性 normalize (仅 0.3%)。ROWS sweep: 1=977/2=1221/4=1292/
+  **8=1318** (ROWS 越大 ILP 越隐藏 warp-reduce latency)。**nsys T=8000: GDN kernel
+  4.20→2.67s (-36%), 整体 prefill 1147→1283 tok/s (+12%, T=3000 同), ptxas 0 spill**;
+  GDN 27.2%→18.9%, **SparseAttention (28.7%) 重回唯一 #1 瓶颈**。默认开 ROWS=8
+  (Q4T_GDN_REG=1/2/4 override, =0 回退 shared); gdn_reg_rows 非 static 供测试 toggle;
+  4 批量/多序列/MTP 等价测试用 GdnRegOff RAII 临时关 reg (单序列 golden 与批量 shared 同
+  kernel), reg 正确性由 linear_attention 覆盖; 70 测试全绿。**修正旧结论"GDN 近占用率
+  上限 25%"** (那是 shared-state thread-per-vd 布局上限, 寄存器 warp-per-column 突破了)。
 - **prefill/decode 融合: 原语保留 (正结果 bit-identical) + 调度器融合无收益 (负结果,
   已回退) (2026-09-17)**: 用户授权建融合 (确认加法式, 不破坏 PD 分离)。**增量 1
   ModelMixedBatch** (泛化 ModelPrefillBatch: per-seq base_position reset-or-continue +

@@ -533,6 +533,140 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetKernel(
   for (int i = 0; i < kd; ++i) ssm[ss_base + i * vd + j] = S_smem[i * vd_pad + j];
 }
 
+// ---- Register-state Gated DeltaNet prefill (Q4T_GDN_REG) ----
+// The default GatedDeltaNetKernel launches only nv (=48) blocks — one per value
+// head — on 20 SMs, and holds the FP32 state S[kd,vd] (66 KB) in shared, so it
+// is both parallelism-starved (2.4 block/SM) and shared-occupancy-capped (~25%)
+// on a per-token serial recurrence whose cost is latency, not DRAM bandwidth
+// (the state lives on-chip; DRAM is only qkv+y). The vd columns of the
+// recurrence are fully independent (S[i,j] is used only within column j), so
+// this variant parallelizes across them: each WARP owns ROWS vd columns and
+// distributes the kd dimension across its 32 lanes (npt=kd/32=4 each), holding
+// the state in REGISTERS (s[ROWS][4]) with warp-shuffle reductions for the two
+// per-token dot products. grid = (vd/(4*ROWS), nv) -> 768 blocks at ROWS=2
+// (16x the default), zero shared, ~64 reg -> high occupancy to hide the serial
+// dependency's latency. Mirrors ds4/DwarfStar gdn_scan. Math is identical to
+// GatedDeltaNetKernel (verified term-by-term); the reduction order differs
+// (warp-shuffle vs the shared-memory kernel), so results match within the bf16
+// l2_rel tolerance, not bit-exactly (like the chunked path). kd==vd==128 only,
+// single-sequence, no MTP checkpoint.
+
+// Pre-normalize q/k in place (L2, no /kd; q also carries 1/sqrt(kd)) for the
+// register-state scan below, so the scan's many warps-per-head do NOT each
+// recompute the norm (folding it into the scan cost +12.7% of prefill). One
+// warp per (t, h_k); 32 lanes cover kd (NPT each). Writes BF16 back to the q/k
+// slots of qkv (v untouched); the extra BF16 round on the normalized value is
+// within tolerance (the source q/k were already BF16).
+__global__ void GdnRegPrepNormKernel(uint16_t* __restrict__ qkv, int T, int nkh,
+                                     int kd, int token_stride) {
+  constexpr int NPT = 4;  // kd / 32 (kd == 128)
+  const int gwarp = (blockIdx.x * blockDim.x + threadIdx.x) >> 5;
+  const int lane = threadIdx.x & 31;
+  if (gwarp >= T * nkh) return;
+  const int t = gwarp / nkh, h_k = gwarp % nkh;
+  const int q_base = t * token_stride + h_k * kd + lane * NPT;
+  const int k_base = t * token_stride + nkh * kd + h_k * kd + lane * NPT;
+  float qq[NPT], kk[NPT], qs = 0.0f, ks = 0.0f;
+#pragma unroll
+  for (int p = 0; p < NPT; ++p) {
+    qq[p] = Bf16ToFloat(qkv[q_base + p]);
+    qs += qq[p] * qq[p];
+    kk[p] = Bf16ToFloat(qkv[k_base + p]);
+    ks += kk[p] * kk[p];
+  }
+#pragma unroll
+  for (int off = 16; off > 0; off >>= 1) {
+    qs += __shfl_xor_sync(0xffffffffu, qs, off);
+    ks += __shfl_xor_sync(0xffffffffu, ks, off);
+  }
+  const float q_norm = rsqrtf(qs + 1e-6f) * rsqrtf(static_cast<float>(kd));
+  const float k_norm = rsqrtf(ks + 1e-6f);
+#pragma unroll
+  for (int p = 0; p < NPT; ++p) {
+    qkv[q_base + p] = FloatToBf16(qq[p] * q_norm);
+    qkv[k_base + p] = FloatToBf16(kk[p] * k_norm);
+  }
+}
+
+template <int ROWS>
+__global__ void GatedDeltaNetRegKernel(
+    const uint16_t* __restrict__ qkv, const uint16_t* __restrict__ a_raw,
+    const uint16_t* __restrict__ dt_bias, const uint16_t* __restrict__ A_log,
+    const uint16_t* __restrict__ beta_raw, float* __restrict__ ssm,
+    uint16_t* __restrict__ y, int T, int nkh, int kd, int nv_per_kh, int vd,
+    int token_stride, int nv) {
+  constexpr int NPT = 4;  // kd / 32 (kd == 128)
+  const int warps_per_block = blockDim.x >> 5;
+  const int warp = threadIdx.x >> 5;
+  const int lane = threadIdx.x & 31;
+  const int h_v = blockIdx.y;
+  const int h_k = h_v / nv_per_kh;
+  const int j0 = (blockIdx.x * warps_per_block + warp) * ROWS;  // first vd col
+  if (j0 >= vd) return;
+  const int k0 = lane * NPT;  // this lane's kd sub-range [k0, k0+NPT)
+  const int ss_base = h_v * kd * vd;
+
+  // State s[r][p] = S[k0+p, j0+r], resident in registers.
+  float s[ROWS][NPT];
+#pragma unroll
+  for (int r = 0; r < ROWS; ++r)
+#pragma unroll
+    for (int p = 0; p < NPT; ++p)
+      s[r][p] = ssm[ss_base + (k0 + p) * vd + (j0 + r)];
+
+  const float bias = Bf16ToFloat(dt_bias[h_v]);
+  const float a_l = Bf16ToFloat(A_log[h_v]);
+
+  for (int t = 0; t < T; ++t) {
+    const int q_base = t * token_stride + h_k * kd + k0;
+    const int k_base = t * token_stride + nkh * kd + h_k * kd + k0;
+    // q/k are pre-normalized in place by GdnRegPrepNormKernel (one warp per
+    // (t, h_k)), so the scan just loads them — no redundant per-warp L2 norm
+    // (which, computed per warp, cost +12.7% of prefill; see docs/log).
+    float kk[NPT], qq[NPT];
+#pragma unroll
+    for (int p = 0; p < NPT; ++p) {
+      kk[p] = Bf16ToFloat(qkv[k_base + p]);
+      qq[p] = Bf16ToFloat(qkv[q_base + p]);
+    }
+    const float a_val = Bf16ToFloat(a_raw[t * nv + h_v]);
+    const float ab = a_val + bias;
+    const float dt_v = (ab > 20.0f) ? ab : log1pf(expf(ab));
+    const float alpha = expf(-dt_v * expf(a_l));
+    const float beta =
+        1.0f / (1.0f + expf(-Bf16ToFloat(beta_raw[t * nv + h_v])));
+
+    const int v_base = t * token_stride + 2 * nkh * kd + h_v * vd;
+#pragma unroll
+    for (int r = 0; r < ROWS; ++r) {
+      const float v_j = Bf16ToFloat(qkv[v_base + j0 + r]);
+      float u = 0.0f;  // sum_i k_hat[i] * S_old[i, j]
+#pragma unroll
+      for (int p = 0; p < NPT; ++p) u += kk[p] * s[r][p];
+#pragma unroll
+      for (int off = 16; off > 0; off >>= 1)
+        u += __shfl_xor_sync(0xffffffffu, u, off);
+      const float delta = (v_j - alpha * u) * beta;
+      float o = 0.0f;  // sum_i S_new[i, j] * q_hat[i]
+#pragma unroll
+      for (int p = 0; p < NPT; ++p) {
+        s[r][p] = alpha * s[r][p] + kk[p] * delta;
+        o += s[r][p] * qq[p];
+      }
+#pragma unroll
+      for (int off = 16; off > 0; off >>= 1)
+        o += __shfl_xor_sync(0xffffffffu, o, off);
+      if (lane == 0)
+        y[(static_cast<size_t>(t) * nv + h_v) * vd + j0 + r] = FloatToBf16(o);
+    }
+  }
+#pragma unroll
+  for (int r = 0; r < ROWS; ++r)
+#pragma unroll
+    for (int p = 0; p < NPT; ++p)
+      ssm[ss_base + (k0 + p) * vd + (j0 + r)] = s[r][p];
+}
+
 // ---- Chunked tensor-core Gated DeltaNet prefill (Q4T_GDN_CHUNKED) ----
 // Replaces the per-token serial matvecs with chunk-parallel bf16 tensor-core
 // GEMMs (the flash-linear-attention chunked delta rule, derived directly from
@@ -1352,11 +1486,58 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
       // Optional chunked tensor-core prefill (Q4T_GDN_CHUNKED). Only for the
       // no-checkpoint single-seq path at kd=vd=128; the per-token serial kernel
       // stays the default fallback.
+      // Register-state warp-per-vd-column GDN prefill (ds4-style) fed by a
+      // one-shot q/k prep kernel. Measured +12% single-stream prefill (GDN
+      // kernel 4.20->2.67s = -36% at T=8000, zero register spill) vs the
+      // shared-state kernel, whose S[kd,vd] in shared caps occupancy and whose
+      // nv=48 blocks starve the 20 SMs. ON by default at ROWS=8 (the sweep
+      // optimum: enough vd columns per warp to hide the warp-reduce latency via
+      // ILP); Q4T_GDN_REG=1/2/4 override, =0 falls back to the shared kernel.
+      // Read per call (not static) so the batched/multi-seq equivalence tests
+      // can force =0 via the env (getenv is negligible next to a 36-layer
+      // prefill).
+      const int gdn_reg_rows = []() {
+        const char* e = std::getenv("Q4T_GDN_REG");
+        if (!e || !*e) return 8;  // default ON
+        const int r = atoi(e);
+        return (r == 1 || r == 2 || r == 4 || r == 8) ? r : 0;
+      }();
       static const bool use_chunked = []() {
         const char* e = std::getenv("Q4T_GDN_CHUNKED");
         return e && *e && e[0] != '0';
       }();
-      if (use_chunked && kd == 128 && vd == 128 && ssm_ckpt == nullptr) {
+      if (gdn_reg_rows && kd == 128 && vd == 128 && ssm_ckpt == nullptr) {
+        const int wpb = 4;  // warps per block (128 threads)
+        const dim3 grid(vd / (wpb * gdn_reg_rows), nv);
+        const int blk = wpb * 32;
+        // Pre-normalize q/k once (one warp per (t, h_k)) so the scan's warps
+        // don't each redundantly recompute the L2 norm (+12.7% prefill).
+        {
+          const int pblk = 128;                 // 4 warps/block
+          const int pgrid = (T * nkh + 3) / 4;  // ceil(T*nkh warps / 4)
+          GdnRegPrepNormKernel<<<pgrid, pblk, 0, stream>>>(d_qkv, T, nkh, kd,
+                                                           in_qkv);
+          if (cudaGetLastError() != cudaSuccess) {
+            free_all();
+            return Status::Fail("gdn reg prep launch");
+          }
+        }
+#define Q4T_GDN_REG_LAUNCH(ROWS)                                            \
+  GatedDeltaNetRegKernel<ROWS><<<grid, blk, 0, stream>>>(                   \
+      d_qkv, d_a, w.dt_bias, w.A_log, d_beta, ssm_state, d_y_ssm, T, nkh,   \
+      kd, nv / nkh, vd, in_qkv, nv)
+        switch (gdn_reg_rows) {
+          case 1: Q4T_GDN_REG_LAUNCH(1); break;
+          case 2: Q4T_GDN_REG_LAUNCH(2); break;
+          case 4: Q4T_GDN_REG_LAUNCH(4); break;
+          default: Q4T_GDN_REG_LAUNCH(8); break;
+        }
+#undef Q4T_GDN_REG_LAUNCH
+        if (cudaGetLastError() != cudaSuccess) {
+          free_all();
+          return Status::Fail("gdn reg launch");
+        }
+      } else if (use_chunked && kd == 128 && vd == 128 && ssm_ckpt == nullptr) {
         // vd-split: more blocks + less shared/block -> higher occupancy.
         // Q4T_GDN_SPLIT (default 4): dv columns per block = vd / split.
         static const int split = []() {

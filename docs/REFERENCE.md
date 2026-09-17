@@ -10,6 +10,8 @@ reference/
 ├── sglang-ssd-stream/    # PLE SSD Stream 机制参考 (必读)
 ├── sglang-qwen4-exp/     # SGLang qwen4_exp.py 单文件 (PLE/forward 权威参考)
 ├── vllm/                 # vLLM main, 含完整 qwen4_exp 实现 (MTP/QSA/PLE 权威参考)
+├── ds4/                  # DwarfStar: 同模型(qwen4_exp)+同硬件类(DGX Spark) C+CUDA (最直接对标)
+├── tokenspeed/           # LightSeek: qwen4_exp Day-0, datacenter Blackwell (算法/架构参考)
 ├── flashinfer/           # 注意力 kernel 参考 (Blackwell FMHA / sparse / FP4 MoE)
 ├── flash-attention/      # FA2/FA3/FA4 (FA4 = Blackwell CUTE DSL, 含 block-sparse)
 ├── qwen35-thor/          # 同硬件 Qwen3.5 引擎, 架构模式参考
@@ -208,6 +210,70 @@ reference/
 - 固定 commit: thor-probe `481668514756b8decda421290c32dbbc130b897f`,
   thor-bench `3a33a90579acd5ab58f1df1f96c8df4b941a14a7` (2026-09-04 克隆,
   `--depth 1`)。
+
+## ds4 / DwarfStar (最直接对标: 同模型 + 同硬件类)
+
+- 仓库: https://github.com/antirez/ds4 (antirez/DwarfStar, MIT, 22.5k star)
+- 固定 commit: `8db1d1d` (2026-09-16 克隆, `--depth 1`)
+- **为什么最相关**: 唯一同时满足
+  1. **同模型** —— 原生实现 Qwen3.8 Flash Next (`qwen4exp` 架构, gated
+     delta-net + gated GQA + block-sparse attn + hyper-connections +
+     n-gram + MoE + MTP), 与我们目标模型逐特性对应。
+  2. **同硬件类** —— 主 CUDA target 是 **DGX Spark (GB10, Grace-Blackwell,
+     LPDDR5x 统一内存 ~273 GB/s)**, 与 Jetson Thor (Blackwell SM110a +
+     LPDDR5x 241 GB/s) 同为"弱 FP4 张量核 + 带宽受限统一内存"一类。
+  3. **开源 C+CUDA** (llama.cpp 血统, 非 Triton), 可逐 kernel 读。
+- **关键对标数据 (2026-09-17 读取)**: ds4 @ Spark 单流 prefill Qwen3.8
+  Flash Next Q2/Q4 = **745-771 t/s** (8192 chunk); DeepSeek V4 Flash Q2 =
+  820-872 t/s。我们 Thor NVFP4 W4A4 = **989 (T=2560) / 1143 (T=8000) t/s**
+  → **我们单流 prefill 已快 ~30-50%** (Spark 带宽还略高), 印证 roofline
+  "已近带宽地板 + 超同类开源 SOTA"。ds4 CUDA 只顺序 decode (无连续批处理),
+  我们领先。
+- **重点研读** (`ds4_qwen4_cuda.cuh`, 单文件 ~1800 行, 40+ kernel):
+  1. `attention_group` (177+) — sparse attn, **tensor-core**
+     (`tt_mma_m16n8k16` + `tt_ldmatrix` + `tt_cp_async_16B` KV 预取 +
+     GQA-group 共享 key + 寄存器累加)。与我们 SparseAttention **同级**;
+     它多一个 FP32-query hi/lo split (我们 bf16 不需要)。
+  2. `gdn_prep`/`gdn_scan`/`gdn_out` (1653+) — GatedDeltaNet, **纯 SIMT
+     递归** (印证 chunked tensor-core 是错路)。关键差异: **state 驻寄存器**
+     (`s[ROWS][4]`, kd 分布到 warp lanes + warp-reduce, dv 分布到
+     warp/block), 无 shared-state 占用率上限 —— 对照我们的 shared-state
+     `S_smem[kd,vd]` (block-per-head, 25% 占用率锁死)。**潜在杠杆**。
+  3. `moe_mv`/`expert_lists`/`expert_tiles`/`matrix_tc`/`matrix_reg` — MoE
+     (router + 分专家收集 + tensor-core/寄存器 GEMM 变体)。
+  4. `hc_*` (hyper-connections) / `conv`+`ngram_*` (PLE n-gram) /
+     `mtp_*` (推测解码) / `vis_*` (Qwen3-VL 视觉塔)。
+- **prefill 策略**: `--prefill-chunk` (Spark 默认 8192), continued-prefill
+  分块; Metal `--batched-session` (权重读一次 + 递归/KV/conv per-session,
+  正是我们 ModelPrefillBatch 思路), 但 **CUDA 未做批处理**。
+- 许可: MIT (+ 保留 GGML 版权), 可参考/移植思路 (勿抄整段, 我们 NVFP4
+  路线与其 GGUF Q2/Q4 不同)。
+
+## tokenspeed / LightSeek (算法 + 架构参考, 非硬件迁移)
+
+- 仓库: https://github.com/lightseekorg/tokenspeed (LightSeek 基金会, MIT,
+  2.1k star)
+- 固定 commit: `78c6518` (2026-09-17 克隆, `--depth 1`)
+- **定位**: speed-of-light LLM 推理引擎 (TensorRT-LLM 级性能 + vLLM 级
+  易用), Qwen3.8 Flash Next Day-0 支持。**主 target 是 datacenter
+  Blackwell (B200/B300/GB300, HBM 3TB/s + 大张量核)** —— 与 Thor 硬件
+  形态不同 (算力富余 vs 我们带宽受限), 故 **算法/架构参考价值 > 硬件
+  kernel 迁移价值**。Python 94.8% + C++ 4.5% (Triton kernel)。
+- **重点参考**:
+  1. **control/execution plane 分离** (`tokenspeed-scheduler`): 控制面
+     C++ 有限状态机 (请求生命周期 + KV cache 所有权在**编译期**用类型
+     系统保证安全), 执行面 Python。架构思想可借鉴我们的 ModelSequence
+     阶段机 + PD-ready 设计。
+  2. `tokenspeed-kernel` — attention prefill 优化 (如 "skip fully masked
+     sliding-window prefill tiles"); 但我们模型是 QSA block-sparse 非
+     sliding-window, 且 Thor 带宽受限, tile-skip 收益结构不同。
+  3. `tokenspeed-mla` — MLA (Multi-head Latent Attention), Blackwell 上
+     领先实现; 我们模型非 MLA (是 gated GQA + linear attn), 仅算法参考。
+  4. kernel registry / plugin 机制 (可移植 public API + 异构后端)。
+- **注意 (同 session 教训)**: tokenspeed 的配平类技巧 (prefill/decode
+  融合、chunked-prefill 交织) 依赖 datacenter 的 compute-vs-memory 流水线
+  不平衡; Thor 均匀带宽受限, 这些**不迁移** (见 docs/log/2026-09-17.md
+  融合负结果)。取其**架构设计**, 慎取其 datacenter-kernel 策略。
 
 ## 明确不参考
 

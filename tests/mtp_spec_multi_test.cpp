@@ -131,6 +131,10 @@ std::vector<int32_t> GreedyPrefill(const Model& m,
 }  // namespace
 
 Q4T_TEST(mtp_spec_multi_step) {
+  // Force the shared-state GDN kernel: the single-seq ModelPrefill ground truth
+  // must use the same kernel as the (shared-state) MTP verify path (the
+  // register-state kernel is ON by default). See q4t::test::GdnRegOff.
+  q4t::test::GdnRegOff gdn_reg_off;
   if (!CudaAvailable()) {
     std::printf("  (skipped: no CUDA device)\n");
     return true;

@@ -6,6 +6,7 @@
 #pragma once
 
 #include <cstdio>
+#include <cstdlib>
 #include <functional>
 #include <string>
 #include <vector>
@@ -38,6 +39,38 @@ inline int RunAllTests() {
   std::printf("%zu tests, %d failed\n", Registry().size(), failures);
   return failures;
 }
+
+// RAII: temporarily force the shared-state GDN prefill kernel (Q4T_GDN_REG=0)
+// for a test's scope, restoring the prior value on exit (including early
+// returns). Used by the batched / multi-seq / MTP equivalence tests: their
+// single-sequence ModelPrefill golden must run the SAME GDN kernel as the
+// batched path they validate. With the register-state kernel ON by default,
+// the single-seq golden (register) and the batched path (shared) are both
+// correct but differ numerically, and a 2-layer-model MoE routing boundary can
+// flip the argmax — a false failure. Forcing both to the shared kernel restores
+// the bit-identical equivalence these tests assert. (reg is covered separately
+// by linear_attention.)
+class GdnRegOff {
+ public:
+  GdnRegOff() {
+    const char* prev = std::getenv("Q4T_GDN_REG");
+    if (prev) {
+      had_ = true;
+      prev_ = prev;
+    }
+    setenv("Q4T_GDN_REG", "0", 1);
+  }
+  ~GdnRegOff() {
+    if (had_)
+      setenv("Q4T_GDN_REG", prev_.c_str(), 1);
+    else
+      unsetenv("Q4T_GDN_REG");
+  }
+
+ private:
+  bool had_ = false;
+  std::string prev_;
+};
 
 }  // namespace test
 }  // namespace q4t

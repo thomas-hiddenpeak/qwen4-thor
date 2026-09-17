@@ -98,6 +98,10 @@ float L2Rel(const std::vector<uint16_t>& a, const std::vector<uint16_t>& b) {
 }  // namespace
 
 Q4T_TEST(model_verify_multi) {
+  // Force the shared-state GDN kernel: the single-seq ModelPrefill golden must
+  // use the same kernel as the (shared-state) verify path it validates (the
+  // register-state kernel is ON by default). See q4t::test::GdnRegOff.
+  q4t::test::GdnRegOff gdn_reg_off;
   if (!CudaAvailable()) {
     std::printf("  (skipped: no CUDA device)\n");
     return true;
