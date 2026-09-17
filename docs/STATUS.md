@@ -10,6 +10,15 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
 
 ## 当前焦点 (2026-09-17): 批处理吞吐 (推进中)
 
+- **长 prompt prefill: SparseAttention cp.async 双缓冲预取 (2026-09-17, 正结果 +20%)**:
+  full-model nsys 定位长 prompt (T=8000) prefill 瓶颈 = SparseAttentionKernel 38%
+  (随 T 涨), latency-bound (散射 paged-KV gather 与 compute 串行)。用 cp.async 双缓冲
+  预取 chunk c+1 的 KV 与 chunk c 的 QK/PV 重叠 (纠正旧误判"cp.async 不支持 paged
+  间接寻址"——能)。**bit-exact** (staged 值不变, full_attention l2_rel 4.688e-3 不变),
+  **占用率零代价** (56 reg 不变 register-limited 4 block/SM, shared 26→42KB 仍 4)。
+  **SparseAttention GPU 时间 −40% (6.99→4.20s), prefill T=8000 942→1128 tok/s (+20%) /
+  T=2560 ~1061→1188 (+12%)**, decode 亦受益, 69 测试全绿输出连贯。GatedDeltaNet 现
+  并列 #1 (26.8%)。教训: 先 full-model profile + ptxas 查占用率 → 直接命中正结果。
 - **grouped FP4 MoE GEMM = 无预期收益 (2026-09-17, 负结果探针, ① 否决)**:
   tools/moe_grouped_bench.cu 真实 MoE 维度直接探针 (E=512, gu[1280,2560]+dn[2560,640]
   FP4, all-E 1.42GB>>L2), 三路对比 per-expert cuBLASLt 1-str/4-str vs 纯权重流式地板。

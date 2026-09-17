@@ -658,6 +658,23 @@ __device__ __forceinline__ void MmaBf16(float& c0, float& c1, float& c2,
       : "r"(a0), "r"(a1), "r"(a2), "r"(a3), "r"(b0), "r"(b1));
 }
 
+// cp.async: asynchronously copy 16 bytes global->shared (Ampere+; SM110
+// Blackwell). Used to prefetch the next chunk's scattered paged-KV while the
+// current chunk computes, hiding the LPDDR5x scatter latency that makes the
+// per-chunk gather->compute serialization the dominant prefill cost.
+__device__ __forceinline__ void CpAsync16(void* smem, const void* gmem) {
+  const unsigned s = static_cast<unsigned>(__cvta_generic_to_shared(smem));
+  asm volatile("cp.async.cg.shared.global [%0], [%1], 16;\n" ::"r"(s),
+               "l"(gmem));
+}
+__device__ __forceinline__ void CpAsyncCommit() {
+  asm volatile("cp.async.commit_group;\n");
+}
+template <int N>
+__device__ __forceinline__ void CpAsyncWait() {
+  asm volatile("cp.async.wait_group %0;\n" ::"n"(N));
+}
+
 __global__ void SparseAttentionKernel(const u16* __restrict__ q,
                                       const u16* __restrict__ kv_cache,
                                       const int* __restrict__ page_table,
@@ -678,8 +695,8 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
   constexpr int kChunk = 16;  // positions processed per mma pass
   if (nq / nkv != kG || nkv != 2 || hd != kHd) return;
   __shared__ u16 sQ[16 * kHd];     // [16, 256] query rows (12..15 zero-padded)
-  __shared__ u16 sK[kChunk * kHd]; // [16, 256] K rows (chunk)
-  __shared__ u16 sV[kChunk * kHd]; // [16, 256] V rows (chunk)
+  __shared__ u16 sK[2 * kChunk * kHd]; // double-buffered K rows (prefetch)
+  __shared__ u16 sV[2 * kChunk * kHd]; // double-buffered V rows (prefetch)
   __shared__ float sS[16 * 16];    // [16, 16] scores (rows 12..15 unused)
   __shared__ u16 sP[kChunk * 16];  // [16 pos, 16] probs (cols 12..15 = 0)
   // sMax/sSum/sAlpha padded to 16 (PV lanes read [group+8] up to 15 for the
@@ -731,35 +748,56 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
     acc[j][2] = 0.f;
     acc[j][3] = 0.f;
   }
+  // KV gather is double-buffered: the next chunk's scattered paged-KV is
+  // prefetched (cp.async) into the alternate buffer while this chunk's QK/PV
+  // computes, hiding the LPDDR5x scatter latency that dominates this kernel.
+  // The staged VALUES are identical to the old synchronous gather, so the
+  // QK/softmax/PV math is bit-for-bit unchanged.
+  auto stage = [&](int base_sel, int chunk, int buf) {
+    u16* dK = sK + static_cast<size_t>(buf) * kChunk * kHd;
+    u16* dV = sV + static_cast<size_t>(buf) * kChunk * kHd;
+    // One 16-byte cp.async per (position, 8-dim group) for K and V: u in
+    // [0,32) copies K dims [u*8, u*8+8); u in [32,64) copies the V dims.
+    for (int i = threadIdx.x; i < chunk * 64; i += 256) {
+      const int c = i >> 6;
+      const int u = i & 63;
+      const int is_v = u >> 5;
+      const int d8 = (u & 31) * 8;
+      const int p = sel[base_sel + c];
+      const int sp = p < 0 ? 0 : p;
+      const int slot = pt[sp] * kKvPageSize + (sp % kKvPageSize);
+      const size_t g = (static_cast<size_t>(slot) * nkv + kvh) * (2 * kHd) +
+                       (is_v ? kHd : 0) + d8;
+      CpAsync16((is_v ? dV : dK) + c * kHd + d8, kv + g);
+    }
+    // Zero the [chunk, kChunk) tail (only the final partial chunk needs it);
+    // finite so 0*x=0 in the PV mma (uninitialised shared could be a NaN).
+    for (int i = threadIdx.x; i < (kChunk - chunk) * kHd; i += 256) {
+      const int c = chunk + (i / kHd);
+      const int d = i - (i / kHd) * kHd;
+      dK[c * kHd + d] = 0;
+      dV[c * kHd + d] = 0;
+    }
+    CpAsyncCommit();
+  };
   int nsel = 0;
+  int buf = 0;
+  if (nsel_total > 0) stage(0, min(kChunk, nsel_total), 0);
   while (nsel < nsel_total) {
     const int chunk = min(kChunk, nsel_total - nsel);
-    // ---- Stage K, V for this chunk (ONE read, shared by all 12 q-heads). ----
-    // Positions [chunk, 16) are zeroed: the mma processes a full 16-wide k
-    // tile, and for invalid positions sP=0; leaving sV as uninitialized shared
-    // memory (possibly a NaN/Inf bit pattern) would make 0*NaN=NaN in the PV
-    // mma and corrupt valid outputs (a nondeterministic, SM-residue-dependent
-    // bug). Zeroing keeps every product finite.
-    for (int c = 0; c < kChunk; ++c) {
-      if (c < chunk) {
-        const int p = sel[nsel + c];
-        if (p >= 0) {
-          const int slot = pt[p] * kKvPageSize + (p % kKvPageSize);
-          const size_t base =
-              (static_cast<size_t>(slot) * nkv + kvh) * (2 * kHd);
-          for (int d = threadIdx.x; d < kHd; d += 256) {
-            sK[c * kHd + d] = kv[base + d];
-            sV[c * kHd + d] = kv[base + kHd + d];
-          }
-        }
-      } else {
-        for (int d = threadIdx.x; d < kHd; d += 256) {
-          sK[c * kHd + d] = 0;
-          sV[c * kHd + d] = 0;
-        }
-      }
+    const int next_nsel = nsel + chunk;
+    // Prefetch the next chunk into the alternate buffer (overlaps this chunk's
+    // compute), then wait for THIS chunk's gather (issued last iteration /
+    // prologue) to land. wait_group<1> keeps the next prefetch in flight.
+    if (next_nsel < nsel_total) {
+      stage(next_nsel, min(kChunk, nsel_total - next_nsel), buf ^ 1);
+      CpAsyncWait<1>();
+    } else {
+      CpAsyncWait<0>();
     }
     __syncthreads();
+    const u16* bK = sK + static_cast<size_t>(buf) * kChunk * kHd;
+    const u16* bV = sV + static_cast<size_t>(buf) * kChunk * kHd;
     // ---- QK^T (warp 0): sS[16,16] = sQ[16,256] @ sK[16,256]^T via mma. ----
     // mma m16n8k16: A = sQ (m=qh, k=dim), B = sK^T (B[k][n] = sK[pos=n][dim=k],
     // contiguous in dim). Accumulate over 16 k-tiles; 2 n-tiles cover 16 pos.
@@ -778,7 +816,7 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
           uint32_t a1 = *reinterpret_cast<const uint32_t*>(qa8);
           uint32_t a2 = *reinterpret_cast<const uint32_t*>(qa + 8);
           uint32_t a3 = *reinterpret_cast<const uint32_t*>(qa8 + 8);
-          const u16* kbp = sK + (nb + group) * kHd + kb + k0;
+          const u16* kbp = bK + (nb + group) * kHd + kb + k0;
           uint32_t b0 = *reinterpret_cast<const uint32_t*>(kbp);
           uint32_t b1 = *reinterpret_cast<const uint32_t*>(kbp + 8);
           MmaBf16(c0, c1, c2, c3, a0, a1, a2, a3, b0, b1);
@@ -836,7 +874,7 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
         const int nt = warp_id + j * 8;
         const int nb = nt * 8;
         // B-fragment: elements strided by hd in sV -> scalar load + pack.
-        const u16* vb = sV + nb + pv_group;
+        const u16* vb = bV + nb + pv_group;
         uint32_t b0 = static_cast<uint32_t>(vb[k0 * kHd]) |
                       (static_cast<uint32_t>(vb[(k0 + 1) * kHd]) << 16);
         uint32_t b1 = static_cast<uint32_t>(vb[(k0 + 8) * kHd]) |
@@ -851,7 +889,8 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
       }
     }
     __syncthreads();
-    nsel += chunk;
+    nsel = next_nsel;
+    buf ^= 1;
   }
   // ---- Normalize + fused gate + write out (from register accumulators). ----
   // Lane (warp w, lane L) owns q-heads group=L/4 and group+8, dims nb+col,
