@@ -10,6 +10,12 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
 
 ## 当前焦点 (2026-09-18): 单流 decode 性能 (FP8 投影) + serve 工业化 (推进中)
 
+- **decode 全面推进: HC mix FP8 (2026-09-18, 最大遗漏)**: 评估剩余杠杆后发现 HC
+  (hyper-connection) mix_down[320,10240]+mix_up[10240,320] 每层 attn+mlp ≈ 1.27GB
+  BF16/step (和 lm_head 一样大) 从未转 FP8。加 Fp8Part::kHc + ProjGemm, 纳入
+  Q4T_FP8_PROJ。decode 22.1→22.8 tok/s (+3%), 质数事实 prompt 逐字一致。**FP8 投影
+  覆盖已全面** (大投影全转); 剩余 Bf16Gev = 小 latency-bound GEMV 各<1%。单流 decode
+  近结构地板。下步: M≥8 tensor-core FP8 (大批, 需 mma) / MoE 融合 (难)。
 - **decode Q2: FP8 批处理 decode (2026-09-18, 手写胜 cuBLASLt 于 M≤4)**: ProjGemm 仅
   M==1 走 FP8, 批处理 decode (连续批处理打包 M=B) fallback cuBLASLt BF16 丢 FP8。
   实测手写 W8A16 vs cuBLASLt BF16 (tools/small_m_gemm_bench): M=1 1.9-2.1× / M=2

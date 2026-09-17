@@ -6,7 +6,7 @@
 
 | 日期 | 摘要 (当天最新一条) |
 |---|---|
-| [2026-09-18](2026-09-18.md) | decode Q2: FP8 批处理 decode M≤4 (手写胜 cuBLASLt) + 审计响应 + max_seq 修复 + FP8 decode 1.31× |
+| [2026-09-18](2026-09-18.md) | decode 全面推进: HC mix FP8 (最大遗漏) + 批处理 decode M≤4 (手写胜 cuBLASLt) + 审计 + max_seq 修复 |
 | [2026-09-17](2026-09-17.md) | GatedDeltaNet 寄存器-state prefill kernel (ds4 风格, +12% 单流 prefill) |
 | [2026-09-16](2026-09-16.md) | prefill roofline: 算力仅用 ~1-4%, 瓶颈是访存+延迟 (非算力); 大乘数在批处理 |
 | [2026-09-15](2026-09-15.md) | Step 4: tensor core (FA4) 路径关闭 (源码级 blocker) |
