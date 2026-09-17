@@ -798,34 +798,34 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
     __syncthreads();
     const u16* bK = sK + static_cast<size_t>(buf) * kChunk * kHd;
     const u16* bV = sV + static_cast<size_t>(buf) * kChunk * kHd;
-    // ---- QK^T (warp 0): sS[16,16] = sQ[16,256] @ sK[16,256]^T via mma. ----
-    // mma m16n8k16: A = sQ (m=qh, k=dim), B = sK^T (B[k][n] = sK[pos=n][dim=k],
-    // contiguous in dim). Accumulate over 16 k-tiles; 2 n-tiles cover 16 pos.
-    if (warp_id == 0) {
+    // ---- QK^T (warps 0-1, one n-tile each): sS[16,16] = sQ @ sK^T via mma. --
+    // mma m16n8k16: A = sQ (m=qh, k=dim), B = sK^T (B[k][n]=sK[pos=n][dim=k]).
+    // 16 k-tiles per n-tile; the 2 n-tiles (16 positions) run on warps 0 and 1
+    // in parallel (was warp 0 serial). Bit-identical: disjoint output columns.
+    if (warp_id < kChunk / 8) {
+      const int nt = warp_id;
+      const int nb = nt * 8;
       const int group = lane >> 2;     // qh row (0..7, and +8)
       const int k0 = (lane & 3) * 2;   // k-pair base
       const int col = (lane & 3) * 2;  // pos-pair base (C fragment)
-      for (int nt = 0; nt < kChunk / 8; ++nt) {
-        const int nb = nt * 8;
-        float c0 = 0.f, c1 = 0.f, c2 = 0.f, c3 = 0.f;
-        for (int kt = 0; kt < kHd / 16; ++kt) {
-          const int kb = kt * 16;
-          const u16* qa = sQ + group * kHd + kb + k0;
-          const u16* qa8 = sQ + (group + 8) * kHd + kb + k0;
-          uint32_t a0 = *reinterpret_cast<const uint32_t*>(qa);
-          uint32_t a1 = *reinterpret_cast<const uint32_t*>(qa8);
-          uint32_t a2 = *reinterpret_cast<const uint32_t*>(qa + 8);
-          uint32_t a3 = *reinterpret_cast<const uint32_t*>(qa8 + 8);
-          const u16* kbp = bK + (nb + group) * kHd + kb + k0;
-          uint32_t b0 = *reinterpret_cast<const uint32_t*>(kbp);
-          uint32_t b1 = *reinterpret_cast<const uint32_t*>(kbp + 8);
-          MmaBf16(c0, c1, c2, c3, a0, a1, a2, a3, b0, b1);
-        }
-        sS[group * 16 + nb + col] = c0;
-        sS[group * 16 + nb + col + 1] = c1;
-        sS[(group + 8) * 16 + nb + col] = c2;
-        sS[(group + 8) * 16 + nb + col + 1] = c3;
+      float c0 = 0.f, c1 = 0.f, c2 = 0.f, c3 = 0.f;
+      for (int kt = 0; kt < kHd / 16; ++kt) {
+        const int kb = kt * 16;
+        const u16* qa = sQ + group * kHd + kb + k0;
+        const u16* qa8 = sQ + (group + 8) * kHd + kb + k0;
+        uint32_t a0 = *reinterpret_cast<const uint32_t*>(qa);
+        uint32_t a1 = *reinterpret_cast<const uint32_t*>(qa8);
+        uint32_t a2 = *reinterpret_cast<const uint32_t*>(qa + 8);
+        uint32_t a3 = *reinterpret_cast<const uint32_t*>(qa8 + 8);
+        const u16* kbp = bK + (nb + group) * kHd + kb + k0;
+        uint32_t b0 = *reinterpret_cast<const uint32_t*>(kbp);
+        uint32_t b1 = *reinterpret_cast<const uint32_t*>(kbp + 8);
+        MmaBf16(c0, c1, c2, c3, a0, a1, a2, a3, b0, b1);
       }
+      sS[group * 16 + nb + col] = c0;
+      sS[group * 16 + nb + col + 1] = c1;
+      sS[(group + 8) * 16 + nb + col] = c2;
+      sS[(group + 8) * 16 + nb + col + 1] = c3;
     }
     __syncthreads();
     // ---- Online softmax per q-head row (thread q handles qh=q). ----

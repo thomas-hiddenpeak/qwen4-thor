@@ -19,6 +19,10 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
   **SparseAttention GPU 时间 −40% (6.99→4.20s), prefill T=8000 942→1128 tok/s (+20%) /
   T=2560 ~1061→1188 (+12%)**, decode 亦受益, 69 测试全绿输出连贯。GatedDeltaNet 现
   并列 #1 (26.8%)。教训: 先 full-model profile + ptxas 查占用率 → 直接命中正结果。
+  **补充: QK 2-warp 并行 (+1.3%, T=8000 1128→1143)** —— prefetch 后 QK (warp 0 独占)
+  暴露, 拆 2 warp 并行 (bit-exact); 收益小证 kernel 已 latency-bound, SparseAttention
+  近地板 (累计 +21.3%)。GatedDeltaNet (26.8%) 是死路 (vd-split ≈0 破 bit-exact,
+  chunked tensor-core Thor 上更慢); 剩余大杠杆仅 query-tiling (大改, 不确定)。
 - **grouped FP4 MoE GEMM = 无预期收益 (2026-09-17, 负结果探针, ① 否决)**:
   tools/moe_grouped_bench.cu 真实 MoE 维度直接探针 (E=512, gu[1280,2560]+dn[2560,640]
   FP4, all-E 1.42GB>>L2), 三路对比 per-expert cuBLASLt 1-str/4-str vs 纯权重流式地板。
