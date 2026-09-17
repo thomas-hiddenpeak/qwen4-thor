@@ -1153,6 +1153,9 @@ void LinearAttentionWeights::Free() {
   if (norm) cudaFree(norm);
   if (A_log) cudaFree(A_log);
   if (dt_bias) cudaFree(dt_bias);
+  in_proj_qkv_fp8.Free();
+  in_proj_z_fp8.Free();
+  out_proj_fp8.Free();
   in_proj_qkv = in_proj_z = in_proj_a = in_proj_b = conv1d = nullptr;
   out_proj = norm = A_log = dt_bias = nullptr;
 }
@@ -1247,6 +1250,17 @@ Status LoadLinearAttention(const io::WeightLoader& loader,
   if (!(s = load(prefix + ".dt_bias", out->dt_bias,
                  static_cast<size_t>(nv) * sizeof(uint16_t))))
     return s;
+  // FP8 (e4m3) decode shadows for the large projections (gated by
+  // Q4T_FP8_PROJ). in_proj_a/b (N=nv, tiny + recurrence-sensitive) stay BF16.
+  if (!BuildFp8Shadow(out->in_proj_qkv, in_qkv, hidden_size,
+                      &out->in_proj_qkv_fp8, stream))
+    return Status::Fail("in_proj_qkv FP8 shadow");
+  if (!BuildFp8Shadow(out->in_proj_z, v_dim, hidden_size, &out->in_proj_z_fp8,
+                      stream))
+    return Status::Fail("in_proj_z FP8 shadow");
+  if (!BuildFp8Shadow(out->out_proj, hidden_size, v_dim, &out->out_proj_fp8,
+                      stream))
+    return Status::Fail("out_proj FP8 shadow");
   if (stream != nullptr && cudaStreamSynchronize(stream) != cudaSuccess) {
     return Status::Fail("stream sync failed");
   }
@@ -1341,15 +1355,16 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
     return s;
   }
 
-  // 1. Projections (all BF16 GEMMs).
-  s = CheckGemm(Bf16Gemm(x, w.in_proj_qkv, d_qkv_raw, T, in_qkv, hs, 1.0f, 0.0f,
-                         workspace, workspace_bytes, stream));
+  // 1. Projections (all BF16 GEMMs; large ones use the FP8 decode shadow).
+  s = CheckGemm(ProjGemm(x, w.in_proj_qkv, &w.in_proj_qkv_fp8, d_qkv_raw, T,
+                         in_qkv, hs, 1.0f, 0.0f, workspace, workspace_bytes,
+                         stream));
   if (!s.ok()) {
     free_all();
     return s;
   }
-  s = CheckGemm(Bf16Gemm(x, w.in_proj_z, d_z, T, v_dim, hs, 1.0f, 0.0f, workspace,
-                         workspace_bytes, stream));
+  s = CheckGemm(ProjGemm(x, w.in_proj_z, &w.in_proj_z_fp8, d_z, T, v_dim, hs,
+                         1.0f, 0.0f, workspace, workspace_bytes, stream));
   if (!s.ok()) {
     free_all();
     return s;
@@ -1602,8 +1617,9 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
   }
 
   // 5. Output projection.
-  s = CheckGemm(Bf16Gemm(d_y_ssm, w.out_proj, out, T, hs, v_dim, 1.0f, 0.0f,
-                         workspace, workspace_bytes, stream));
+  s = CheckGemm(ProjGemm(d_y_ssm, w.out_proj, &w.out_proj_fp8, out, T, hs,
+                         v_dim, 1.0f, 0.0f, workspace, workspace_bytes,
+                         stream));
   free_all();
   if (!s.ok()) return s;
   return Status();

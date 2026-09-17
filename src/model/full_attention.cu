@@ -935,6 +935,7 @@ void FullAttentionWeights::Free() {
   freep(q_proj); freep(k_proj); freep(v_proj); freep(o_proj);
   freep(q_norm); freep(k_norm);
   freep(index_qk_proj); freep(index_q_norm); freep(index_k_norm);
+  q_proj_fp8.Free(); k_proj_fp8.Free(); v_proj_fp8.Free(); o_proj_fp8.Free();
   q_proj = k_proj = v_proj = o_proj = nullptr;
   q_norm = k_norm = nullptr;
   index_qk_proj = index_q_norm = index_k_norm = nullptr;
@@ -1027,6 +1028,23 @@ Status LoadFullAttention(const io::WeightLoader& loader,
   if (!(s = load(prefix + ".indexer.k_layernorm.weight", out->index_k_norm,
                  static_cast<size_t>(idx_head_dim) * 2)))
     return s;
+
+  // FP8 (e4m3) decode shadows for the large projections (gated by
+  // Q4T_FP8_PROJ; a no-op returning empty shadows when off). The prior loads
+  // use pageable H2D (synchronous), so the weights are already resident when
+  // the quantize kernels enqueue on `stream`.
+  if (!BuildFp8Shadow(out->q_proj, nq * 2 * hd, hidden_size, &out->q_proj_fp8,
+                      stream))
+    return Status::Fail("q_proj FP8 shadow");
+  if (!BuildFp8Shadow(out->k_proj, nkv * hd, hidden_size, &out->k_proj_fp8,
+                      stream))
+    return Status::Fail("k_proj FP8 shadow");
+  if (!BuildFp8Shadow(out->v_proj, nkv * hd, hidden_size, &out->v_proj_fp8,
+                      stream))
+    return Status::Fail("v_proj FP8 shadow");
+  if (!BuildFp8Shadow(out->o_proj, hidden_size, nq * hd, &out->o_proj_fp8,
+                      stream))
+    return Status::Fail("o_proj FP8 shadow");
   return Status();
 }
 
@@ -1130,14 +1148,14 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
 
   Status s;
   // 1. qg = x @ W_q^T ; k = x @ W_k^T ; v = x @ W_v^T
-  s = CheckGemm(Bf16Gemm(x, w.q_proj, d_qg, T, qg_dim, hs, 1.f, 0.f, d_gemm_ws,
-                         gemm_ws, stream));
+  s = CheckGemm(ProjGemm(x, w.q_proj, &w.q_proj_fp8, d_qg, T, qg_dim, hs, 1.f,
+                         0.f, d_gemm_ws, gemm_ws, stream));
   if (!s.ok()) return s;
-  s = CheckGemm(Bf16Gemm(x, w.k_proj, d_k, T, kv_dim, hs, 1.f, 0.f, d_gemm_ws,
-                         gemm_ws, stream));
+  s = CheckGemm(ProjGemm(x, w.k_proj, &w.k_proj_fp8, d_k, T, kv_dim, hs, 1.f,
+                         0.f, d_gemm_ws, gemm_ws, stream));
   if (!s.ok()) return s;
-  s = CheckGemm(Bf16Gemm(x, w.v_proj, d_v, T, kv_dim, hs, 1.f, 0.f, d_gemm_ws,
-                         gemm_ws, stream));
+  s = CheckGemm(ProjGemm(x, w.v_proj, &w.v_proj_fp8, d_v, T, kv_dim, hs, 1.f,
+                         0.f, d_gemm_ws, gemm_ws, stream));
   if (!s.ok()) return s;
 
   // 2. Fused q/k preprocessing: deinterleave qg -> q + gate + centered
@@ -1221,8 +1239,8 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
       d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn, d_gate, nq, nkv,
       hd, max_topk, d_seq_id, kv_seq_stride, pt_seq_stride);
   // 12. out = attn @ W_o^T
-  s = CheckGemm(Bf16Gemm(d_attn, w.o_proj, out, T, hs, nq * hd, 1.f, 0.f,
-                         d_gemm_ws, gemm_ws, stream));
+  s = CheckGemm(ProjGemm(d_attn, w.o_proj, &w.o_proj_fp8, out, T, hs, nq * hd,
+                         1.f, 0.f, d_gemm_ws, gemm_ws, stream));
   return s;
 }
 

@@ -129,5 +129,29 @@ inline Bf16GemmResult Bf16Gemm(const uint16_t* x, const uint16_t* w,
   return res;
 }
 
+// Projection GEMM with an optional FP8 decode shadow. On the M=1 decode path
+// (beta 0), when `shadow` is present (Q4T_FP8_PROJ on -> weight was quantized
+// at load), the FP8 W8A16 GEMV runs (half the weight bytes, ~2x). Otherwise —
+// prefill (M>1), no shadow, or an unsupported shape — this is exactly
+// Bf16Gemm. The BF16 weight `w` is still required for those paths, so the FP8
+// shadow is purely additive and the BF16/prefill path is bit-identical.
+inline Bf16GemmResult ProjGemm(const uint16_t* x, const uint16_t* w,
+                               const Fp8Shadow* shadow, uint16_t* y, int M,
+                               int N, int K, float alpha, float beta,
+                               void* workspace, size_t workspace_bytes,
+                               cudaStream_t stream) {
+  if (M == 1 && beta == 0.0f && shadow != nullptr && shadow->w != nullptr) {
+    if (Fp8Gev(x, *shadow, y, N, K, alpha, stream)) {
+      Bf16GemmResult res;
+      res.status = CUBLAS_STATUS_SUCCESS;
+      res.has_algo = true;
+      return res;
+    }
+    // Unsupported shape / launch failure: fall through to the BF16 path.
+  }
+  return Bf16Gemm(x, w, y, M, N, K, alpha, beta, workspace, workspace_bytes,
+                  stream);
+}
+
 }  // namespace model
 }  // namespace q4t

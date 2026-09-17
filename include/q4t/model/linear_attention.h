@@ -34,6 +34,7 @@
 #include <string>
 
 #include "q4t/io/weight_loader.h"
+#include "q4t/model/gemv.h"
 #include "q4t/model/ragged_batch.h"
 #include "q4t/status.h"
 
@@ -66,6 +67,13 @@ struct LinearAttentionWeights {
   uint16_t* norm = nullptr;  // [vd] (per value-head RMSNorm weight)
   uint16_t* A_log = nullptr;  // [nv]
   uint16_t* dt_bias = nullptr;  // [nv]
+
+  // FP8 (e4m3) decode shadows of the large projections (built at load when
+  // Q4T_FP8_PROJ is on; null otherwise). in_proj_a/b (N=nv, tiny +
+  // recurrence-sensitive) stay BF16.
+  Fp8Shadow in_proj_qkv_fp8;
+  Fp8Shadow in_proj_z_fp8;
+  Fp8Shadow out_proj_fp8;
 
   void Free();
 };

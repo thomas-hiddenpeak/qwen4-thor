@@ -46,6 +46,7 @@
 #include <string>
 
 #include "q4t/io/weight_loader.h"
+#include "q4t/model/gemv.h"
 #include "q4t/status.h"
 
 namespace q4t {
@@ -79,6 +80,14 @@ struct FullAttentionWeights {
   uint16_t* index_qk_proj = nullptr;  // [(idx_n_heads+idx_kv_heads)*idx_head_dim, hs]
   uint16_t* index_q_norm = nullptr;  // [idx_head_dim] (plain)
   uint16_t* index_k_norm = nullptr;  // [idx_head_dim] (plain)
+
+  // FP8 (e4m3) decode shadows of the large projections (built at load when
+  // Q4T_FP8_PROJ is on; null otherwise). index_qk stays BF16 (its GEMM slices
+  // the merged [iq|ik] rows at an offset, and it is tiny).
+  Fp8Shadow q_proj_fp8;
+  Fp8Shadow k_proj_fp8;
+  Fp8Shadow v_proj_fp8;
+  Fp8Shadow o_proj_fp8;
 
   void Free();
 };

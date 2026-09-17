@@ -24,5 +24,35 @@ namespace model {
 bool Bf16Gev(const uint16_t* x, const uint16_t* w, uint16_t* y, int N, int K,
              float alpha, cudaStream_t stream);
 
+// FP8 (e4m3) shadow of a BF16 [N, K] projection weight, for the M=1 decode
+// GEMV. W8A16: the weight is stored e4m3 (1 byte) with a per-output-channel
+// (row) absmax scale; the activation stays BF16. Halves the weight bytes read
+// per decode step (the #1 decode cost, ~62% of a step — see
+// tools/fp8_gemv_proto.cu, ~2x on large projections). Built alongside the
+// BF16 weight (which the M>1 prefill/cuBLASLt path keeps using unchanged).
+struct Fp8Shadow {
+  uint8_t* w = nullptr;    // [N, K] e4m3
+  float* scale = nullptr;  // [N] per-output-channel (absmax / 448)
+  void Free();
+};
+
+// True if FP8 decode projections are enabled (Q4T_FP8_PROJ env, read once).
+// When false, BuildFp8Shadow is a no-op (no alloc) and the decode path stays
+// on Bf16Gev, so the feature is fully gated at zero cost.
+bool Fp8ProjEnabled();
+
+// Quantize a BF16 [N, K] weight into an e4m3 shadow (+ per-output-channel
+// scale), allocating out->w and out->scale on the device. Returns true (with
+// null fields) when !Fp8ProjEnabled(). Requires K % 16 == 0 (all qwen4_exp
+// projection K's are multiples of 16). Returns false on a bad shape / alloc.
+bool BuildFp8Shadow(const uint16_t* w_bf16, int N, int K, Fp8Shadow* out,
+                    cudaStream_t stream);
+
+// y[N] = alpha * (x[1, K] * dequant(w)^T), w = the FP8 shadow. beta must be 0.
+// Returns false if unsupported (K % 16 != 0 or a null shadow); the caller then
+// falls back to Bf16Gev / the cuBLASLt GEMM.
+bool Fp8Gev(const uint16_t* x, const Fp8Shadow& w, uint16_t* y, int N, int K,
+            float alpha, cudaStream_t stream);
+
 }  // namespace model
 }  // namespace q4t
