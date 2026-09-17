@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <sys/socket.h>
+#include <sys/time.h>
 #include <unistd.h>
 
 #include <algorithm>
@@ -480,7 +481,7 @@ Status ChatServer::Run() {
     ::close(listen_fd);
     return Status::Fail("bind: " + err);
   }
-  if (::listen(listen_fd, 16) < 0) {
+  if (::listen(listen_fd, 128) < 0) {
     const std::string err = std::strerror(errno);
     ::close(listen_fd);
     return Status::Fail("listen: " + err);
@@ -499,6 +500,15 @@ Status ChatServer::Run() {
     }
     int nodelay = 1;
     ::setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &nodelay, sizeof(nodelay));
+    // Read/write timeouts: a slow or stalled client (slowloris) must not pin a
+    // request thread + seq slot indefinitely. Each blocking recv/send fails
+    // after 30 s of no progress (well above a legitimate inter-write gap), so
+    // ReadRequest / WriteAll return and the slot frees.
+    struct timeval tv {
+      30, 0
+    };
+    ::setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+    ::setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
     // B1: handle each client on its own thread so multiple requests are
     // processed concurrently. The model forwards are serialized behind
     // model_mu_ (see HandleChat); CPU post-processing (D2H/argmax/tokenize/SSE)
@@ -1007,6 +1017,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   int max_tokens = static_cast<int>(
       req.GetInt("max_tokens", max_tokens_default_));
   if (max_tokens <= 0) max_tokens = 1;
+  // Upper bound: decode stops at max_len_ anyway (KV cache), so a huge
+  // max_tokens only pins a seq slot and grows host buffers; cap it so one
+  // request cannot starve the pool.
+  if (max_tokens > max_len_) max_tokens = max_len_;
 
   // stream flag.
   const bool stream = req.GetBool("stream", false);
@@ -1464,10 +1478,16 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         if (stream) {
           std::vector<std::uint32_t> one(1, static_cast<std::uint32_t>(tok_id));
           std::string piece;
+          bool wrote = true;
           {
             const std::lock_guard<std::mutex> lock(tok_mu_);
             if (tok_->Decode(one, true, &piece).ok())
-              WriteAll(fd, SseChunk(id, model_field, "", piece, "", 0));
+              wrote = WriteAll(fd, SseChunk(id, model_field, "", piece, "", 0));
+          }
+          if (!wrote) {  // client disconnected: stop, free the slot
+            done = true;
+            finish_reason = "stop";
+            break;
           }
         }
         if (tok_id == eos) {
@@ -1540,10 +1560,15 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       if (stream) {
         std::vector<std::uint32_t> one(1, static_cast<std::uint32_t>(tok_id));
         std::string piece;
+        bool wrote = true;
         {
           const std::lock_guard<std::mutex> lock(tok_mu_);
           if (tok_->Decode(one, true, &piece).ok())
-            WriteAll(fd, SseChunk(id, model_field, "", piece, "", 0));
+            wrote = WriteAll(fd, SseChunk(id, model_field, "", piece, "", 0));
+        }
+        if (!wrote) {  // client disconnected: stop, free the slot
+          finish_reason = "stop";
+          break;
         }
       }
       if (seq.position + 1 >= max_len_) {
