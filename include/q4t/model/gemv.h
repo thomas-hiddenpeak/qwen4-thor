@@ -69,5 +69,16 @@ bool BuildFp8Shadow(const uint16_t* w_bf16, int N, int K, Fp8Shadow* out,
 bool Fp8Gev(const uint16_t* x, const Fp8Shadow& w, uint16_t* y, int N, int K,
             float alpha, cudaStream_t stream);
 
+// FP8 W8A16 wins for M <= this (memory-bound, hand-written SIMT); above it the
+// GEMM turns compute-bound and cuBLASLt's tensor cores beat SIMT (measured,
+// tools/small_m_gemm_bench). ProjGemm uses the FP8 small-M path only up to here.
+constexpr int kFp8SmallMMax = 4;
+
+// y[M, N] = alpha * (x[M, K] * dequant(w)^T), 2 <= M <= kFp8SmallMMax (batched
+// decode). Same FP8 shadow as Fp8Gev; weight streamed once, M dots in
+// registers. Returns false if unsupported (bad M/shape or null shadow).
+bool Fp8SmallMGemm(const uint16_t* x, const Fp8Shadow& w, uint16_t* y, int M,
+                   int N, int K, float alpha, cudaStream_t stream);
+
 }  // namespace model
 }  // namespace q4t

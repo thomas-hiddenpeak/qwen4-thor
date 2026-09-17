@@ -177,6 +177,70 @@ __global__ void Fp8GevKernel(const uint8_t* __restrict__ w,
     y[out_idx] = __bfloat16_as_ushort(__float2bfloat16_rn(alpha * sum));
 }
 
+// FP8 W8A16 for small M (batched decode): one warp per output n, weight
+// streamed once (16 e4m3/iter via uint4), M dots held in registers, x[M,K]
+// read from L2. Beats cuBLASLt BF16 for M<=kFp8SmallMMax (memory-bound); above
+// that the M FMAs turn compute-bound and cuBLASLt tensor cores win (measured,
+// tools/small_m_gemm_bench). MAXM is the compile-time cap; runtime M<=MAXM.
+template <int MAXM>
+__global__ void Fp8SmallMKernel(const uint8_t* __restrict__ w,
+                               const float* __restrict__ wscale,
+                               const uint16_t* __restrict__ x,
+                               uint16_t* __restrict__ y, int M, int N, int K,
+                               float alpha) {
+  constexpr int kWarp = 32;
+  const int warps = blockDim.x / kWarp;
+  const int warp_id = threadIdx.x / kWarp;
+  const int lane = threadIdx.x & (kWarp - 1);
+  const int num_blocks = (N + warps - 1) / warps;
+  const int n = blockIdx.x + warp_id * num_blocks;
+  if (n >= N) return;
+  const uint4* w16 =
+      reinterpret_cast<const uint4*>(w + static_cast<size_t>(n) * K);
+  const int k16 = K / 16;
+  float acc[MAXM];
+#pragma unroll
+  for (int m = 0; m < MAXM; ++m) acc[m] = 0.0f;
+  for (int i = lane; i < k16; i += kWarp) {
+    const uint4 raw = w16[i];
+    const __nv_fp8_e4m3* wf = reinterpret_cast<const __nv_fp8_e4m3*>(&raw);
+    float wv[16];
+#pragma unroll
+    for (int j = 0; j < 16; ++j) wv[j] = static_cast<float>(wf[j]);
+    const int base = i * 16;
+#pragma unroll
+    for (int m = 0; m < MAXM; ++m) {
+      if (m < M) {
+        const float4* xr = reinterpret_cast<const float4*>(
+            x + static_cast<size_t>(m) * K + base);
+        const float4 xa = xr[0], xb = xr[1];
+        const __nv_bfloat162* a = reinterpret_cast<const __nv_bfloat162*>(&xa);
+        const __nv_bfloat162* b = reinterpret_cast<const __nv_bfloat162*>(&xb);
+#pragma unroll
+        for (int j = 0; j < 4; ++j) {
+          const float2 av = __bfloat1622float2(a[j]);
+          acc[m] += av.x * wv[2 * j] + av.y * wv[2 * j + 1];
+          const float2 bv = __bfloat1622float2(b[j]);
+          acc[m] += bv.x * wv[8 + 2 * j] + bv.y * wv[8 + 2 * j + 1];
+        }
+      }
+    }
+  }
+  const float sc = wscale[n] * alpha;
+#pragma unroll
+  for (int m = 0; m < MAXM; ++m) {
+    if (m < M) {
+      float s = acc[m];
+#pragma unroll
+      for (int off = kWarp / 2; off > 0; off >>= 1)
+        s += __shfl_down_sync(0xffffffff, s, off);
+      if (lane == 0)
+        y[static_cast<size_t>(m) * N + n] =
+            __bfloat16_as_ushort(__float2bfloat16(s * sc));
+    }
+  }
+}
+
 }  // namespace
 
 // y[M=1, N] = alpha * sum_k x[k] * W[N, K] (beta must be 0, caller-checked).
@@ -267,6 +331,18 @@ bool Fp8Gev(const uint16_t* x, const Fp8Shadow& w, uint16_t* y, int N, int K,
   const size_t smem = static_cast<size_t>(K) * sizeof(uint16_t);
   Fp8GevKernel<<<blocks, kGevThreads, smem, stream>>>(w.w, w.scale, x, y, N, K,
                                                        alpha);
+  return cudaGetLastError() == cudaSuccess;
+}
+
+bool Fp8SmallMGemm(const uint16_t* x, const Fp8Shadow& w, uint16_t* y, int M,
+                   int N, int K, float alpha, cudaStream_t stream) {
+  if (!w.w || !w.scale) return false;
+  if (M < 2 || M > kFp8SmallMMax || N <= 0 || K <= 0 || (K & 15) != 0)
+    return false;
+  constexpr int kWarps = kGevThreads / 32;
+  const int blocks = (N + kWarps - 1) / kWarps;
+  Fp8SmallMKernel<kFp8SmallMMax><<<blocks, kGevThreads, 0, stream>>>(
+      w.w, w.scale, x, y, M, N, K, alpha);
   return cudaGetLastError() == cudaSuccess;
 }
 

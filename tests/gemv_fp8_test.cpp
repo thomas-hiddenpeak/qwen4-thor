@@ -27,6 +27,7 @@ namespace {
 using q4t::model::Bf16Gemm;
 using q4t::model::Fp8Gev;
 using q4t::model::Fp8Shadow;
+using q4t::model::Fp8SmallMGemm;
 using q4t::model::ProjGemm;
 using q4t::model::QuantizeToFp8Shadow;
 
@@ -189,9 +190,9 @@ Q4T_TEST(fp8_gev_matches_reference_in_noise_band) {
 }
 
 // 3. ProjGemm dispatch (the exact selection the layer forwards rely on):
-//    M=1 + shadow -> FP8 (== Fp8Gev); M=1 + null -> BF16 (== Bf16Gemm);
-//    M=2 + shadow -> BF16 (FP8 is decode/M=1 only).
-Q4T_TEST(proj_gemm_dispatches_fp8_only_at_m1_with_shadow) {
+//    M=1 + shadow -> Fp8Gev; M=1 + null -> BF16; 2<=M<=kFp8SmallMMax + shadow ->
+//    Fp8SmallMGemm (batched decode); above the cap -> BF16 (cuBLASLt).
+Q4T_TEST(proj_gemm_dispatches_fp8_by_m) {
   if (!CudaAvailable()) {
     std::printf("  (no CUDA, skipped)\n");
     return true;
@@ -249,17 +250,20 @@ Q4T_TEST(proj_gemm_dispatches_fp8_only_at_m1_with_shadow) {
   Q4T_CHECK(std::memcmp(proj_bf.data(), bf.data(), N * 2) == 0);    // BF16 taken
   Q4T_CHECK(std::memcmp(fp8.data(), bf.data(), N * 2) != 0);  // paths differ
 
-  // M=2 + shadow -> BF16 (FP8 is M=1 only): equals Bf16Gemm(M=2).
+  // M=2 + shadow -> FP8 small-M path: matches Fp8SmallMGemm, differs from BF16.
   const auto r3 = ProjGemm(d_x, d_w, &sh, d_proj2, 2, N, K, 1.0f, 0.0f, ws,
                            32u << 20, nullptr);
-  const auto r4 =
-      Bf16Gemm(d_x, d_w, d_bf2, 2, N, K, 1.0f, 0.0f, ws, 32u << 20, nullptr);
-  Q4T_CHECK(r3.has_algo && r4.has_algo);
+  Q4T_CHECK(r3.has_algo);
+  Q4T_CHECK(Fp8SmallMGemm(d_x, sh, d_bf2, 2, N, K, 1.0f, nullptr));
   cudaDeviceSynchronize();
-  std::vector<uint16_t> p2(2 * N), b2(2 * N);
+  std::vector<uint16_t> p2(2 * N), f2(2 * N), b2(2 * N);
   cudaMemcpy(p2.data(), d_proj2, 2 * N * 2, cudaMemcpyDeviceToHost);
-  cudaMemcpy(b2.data(), d_bf2, 2 * N * 2, cudaMemcpyDeviceToHost);
-  Q4T_CHECK(std::memcmp(p2.data(), b2.data(), 2 * N * 2) == 0);  // no FP8 at M=2
+  cudaMemcpy(f2.data(), d_bf2, 2 * N * 2, cudaMemcpyDeviceToHost);
+  Q4T_CHECK(std::memcmp(p2.data(), f2.data(), 2 * N * 2) == 0);  // FP8 small-M
+  Bf16Gemm(d_x, d_w, d_proj2, 2, N, K, 1.0f, 0.0f, ws, 32u << 20, nullptr);
+  cudaDeviceSynchronize();
+  cudaMemcpy(b2.data(), d_proj2, 2 * N * 2, cudaMemcpyDeviceToHost);
+  Q4T_CHECK(std::memcmp(p2.data(), b2.data(), 2 * N * 2) != 0);  // not BF16
 
   sh.Free();
   cudaFree(d_w);
@@ -324,5 +328,61 @@ Q4T_TEST(fp8_head_argmax_preserved_for_confident_token) {
   cudaFree(d_fp);
   cudaFree(d_bf);
   cudaFree(ws);
+  return true;
+}
+
+// 5. Fp8SmallMGemm (batched decode, M=2..4): each output row equals the M=1
+//    Fp8Gev of that row (same FP8 weights; only the intra-warp sum order
+//    differs, so a tight tolerance). Confirms the batched FP8 path is correct.
+Q4T_TEST(fp8_small_m_matches_per_row_gev) {
+  if (!CudaAvailable()) {
+    std::printf("  (no CUDA, skipped)\n");
+    return true;
+  }
+  const int N = 512, K = 256, MAXM = 4;
+  std::mt19937 rng(41);
+  std::normal_distribution<float> wd(0.0f, 0.02f), xd(0.0f, 1.0f);
+  std::vector<uint16_t> w(static_cast<size_t>(N) * K),
+      x(static_cast<size_t>(MAXM) * K);
+  for (auto& v : w) v = F2B(wd(rng));
+  for (auto& v : x) v = F2B(xd(rng));
+
+  uint16_t *d_w = nullptr, *d_x = nullptr, *d_batch = nullptr, *d_single = nullptr;
+  cudaMalloc(&d_w, w.size() * 2);
+  cudaMalloc(&d_x, x.size() * 2);
+  cudaMalloc(&d_batch, static_cast<size_t>(MAXM) * N * 2);
+  cudaMalloc(&d_single, static_cast<size_t>(MAXM) * N * 2);
+  cudaMemcpy(d_w, w.data(), w.size() * 2, cudaMemcpyHostToDevice);
+  cudaMemcpy(d_x, x.data(), x.size() * 2, cudaMemcpyHostToDevice);
+
+  Fp8Shadow sh;
+  Q4T_CHECK(QuantizeToFp8Shadow(d_w, N, K, &sh, nullptr));
+
+  for (int M : {2, 4}) {
+    Q4T_CHECK(Fp8SmallMGemm(d_x, sh, d_batch, M, N, K, 1.0f, nullptr));
+    for (int m = 0; m < M; ++m)
+      Q4T_CHECK(Fp8Gev(d_x + static_cast<size_t>(m) * K, sh,
+                       d_single + static_cast<size_t>(m) * N, N, K, 1.0f,
+                       nullptr));
+    cudaDeviceSynchronize();
+    std::vector<uint16_t> hb(static_cast<size_t>(M) * N), hs(static_cast<size_t>(M) * N);
+    cudaMemcpy(hb.data(), d_batch, static_cast<size_t>(M) * N * 2, cudaMemcpyDeviceToHost);
+    cudaMemcpy(hs.data(), d_single, static_cast<size_t>(M) * N * 2, cudaMemcpyDeviceToHost);
+    for (int m = 0; m < M; ++m) {
+      std::vector<float> b(N), s(N);
+      for (int n = 0; n < N; ++n) {
+        b[n] = B2F(hb[static_cast<size_t>(m) * N + n]);
+        s[n] = B2F(hs[static_cast<size_t>(m) * N + n]);
+      }
+      const double rel = L2Rel(b, s);
+      std::printf("  M=%d row %d: batch vs per-row Fp8Gev l2rel=%.2e\n", M, m, rel);
+      Q4T_CHECK(rel < 1e-3);
+    }
+  }
+  sh.Free();
+  cudaFree(d_w);
+  cudaFree(d_x);
+  cudaFree(d_batch);
+  cudaFree(d_single);
   return true;
 }

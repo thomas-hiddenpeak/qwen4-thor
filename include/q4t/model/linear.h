@@ -149,6 +149,18 @@ inline Bf16GemmResult ProjGemm(const uint16_t* x, const uint16_t* w,
     }
     // Unsupported shape / launch failure: fall through to the BF16 path.
   }
+  // Batched decode (2 <= M <= kFp8SmallMMax): the hand-written FP8 small-M
+  // kernel is memory-bound and beats cuBLASLt BF16; above kFp8SmallMMax the
+  // GEMM is compute-bound and cuBLASLt tensor cores win, so keep BF16 there.
+  if (M >= 2 && M <= kFp8SmallMMax && beta == 0.0f && shadow != nullptr &&
+      shadow->w != nullptr) {
+    if (Fp8SmallMGemm(x, *shadow, y, M, N, K, alpha, stream)) {
+      Bf16GemmResult res;
+      res.status = CUBLAS_STATUS_SUCCESS;
+      res.has_algo = true;
+      return res;
+    }
+  }
   return Bf16Gemm(x, w, y, M, N, K, alpha, beta, workspace, workspace_bytes,
                   stream);
 }
