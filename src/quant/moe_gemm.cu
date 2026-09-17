@@ -122,11 +122,15 @@ __global__ void BuildTokenListsKernel(const int32_t* __restrict__ expert_ids,
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   if (idx >= M * k) return;
   const int e = expert_ids[idx];
+  if (e < 0 || e >= E) return;  // defensive: RouterTopk yields [0, E)
   const int pos = atomicAdd(&expert_counts[e], 1);
   // Store the flat (token, slot) index so the scatter can recover both the
   // token (idx / k) and the router-weight slot (idx % k).
-  // stride = M: worst case all M tokens select the same expert.
-  token_list[e * M + pos] = idx;
+  // stride = M: an expert is selected by at most M distinct tokens, so pos < M
+  // for well-formed routing. A degenerate top-k with duplicate experts can push
+  // pos >= M; drop those writes so the [E, M] token_list never overflows into
+  // the next expert's region (the count is clamped to M host-side to match).
+  if (pos < M) token_list[e * M + pos] = idx;
 }
 
 // Gather + quantize one expert's tokens: one thread per (row, group of 16).
@@ -362,6 +366,18 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
     return Status::Fail("stream sync");
   }
 
+  // Clamp per-expert counts to M. An expert can be selected by at most M
+  // distinct tokens, so count > M can only arise from a degenerate router top-k
+  // with duplicate experts. Left unclamped it would drive GatherQuant/GEMM with
+  // M_e > M rows and overflow the per-expert [M]-row a_packed buffer. No-op
+  // (bit-identical) for well-formed routing where every count <= M.
+  bool clamped = false;
+  for (int e = 0; e < E; ++e)
+    if (counts_h[e] > M) {
+      counts_h[e] = M;
+      clamped = true;
+    }
+
   // 3. Expert-group offsets (prefix sum of counts). Grouping the down-GEMM
   //    output into one contiguous [R, hs] buffer lets the combine run as a
   //    single deterministic gather over all tokens instead of one scatter
@@ -369,14 +385,13 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
   //    dominated: median ~3.5us, below the ~5us launch cost).
   std::vector<int32_t> offset_h(E + 1, 0);
   for (int e = 0; e < E; ++e) offset_h[e + 1] = offset_h[e] + counts_h[e];
-  const int R_used = offset_h[E];  // == sum(counts): each token routes to k.
+  // R (= M*k) declared above; row_of_flat is indexed by flat (token,slot).
   if (cudaMallocAsync(&d_offset, static_cast<size_t>(E + 1) * sizeof(int32_t),
                       stream) != cudaSuccess) {
     free_all();
     return Status::Fail("cudaMallocAsync offset");
   }
-  if (cudaMallocAsync(&d_row_of_flat,
-                      static_cast<size_t>(R_used) * sizeof(int32_t),
+  if (cudaMallocAsync(&d_row_of_flat, static_cast<size_t>(R) * sizeof(int32_t),
                       stream) != cudaSuccess) {
     free_all();
     return Status::Fail("cudaMallocAsync row_of_flat");
@@ -386,6 +401,17 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
                       cudaMemcpyHostToDevice, stream) != cudaSuccess) {
     free_all();
     return Status::Fail("cudaMemcpy offset");
+  }
+  // Zero row_of_flat only when a count was clamped: then some (token,slot) flat
+  // is dropped and left uncovered by BuildRowOfFlatKernel, so it must map to
+  // grouped row 0 instead of an uninitialized garbage row (keeps the combine's
+  // dn_out gather in bounds). Well-formed routing covers every flat, so the
+  // memset is skipped entirely (zero cost on the normal path).
+  if (clamped &&
+      cudaMemsetAsync(d_row_of_flat, 0, static_cast<size_t>(R) * sizeof(int32_t),
+                      stream) != cudaSuccess) {
+    free_all();
+    return Status::Fail("memset row_of_flat");
   }
   // Build the flat (token,slot) -> grouped-row inverse map for the combine.
   BuildRowOfFlatKernel<<<E, kBlock, 0, stream>>>(d_token_list, d_offset, M,

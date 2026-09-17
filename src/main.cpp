@@ -669,7 +669,8 @@ int RunBenchPrefill(int argc, char** argv) {
   cfg.index_path = model_dir + "/model.safetensors.index.json";
   cfg.ple_sidecar = model_dir + "/ple/qwen3.8-flash-next-ple-fp8.bin";
   cfg.max_seq = maxB;
-  cfg.max_len = std::max(P + 8, 256);  // full-attention KV/indexer need slack
+  cfg.max_len = std::max(P + 8, 2048);  // serve-like; small max_len exposes a
+                                        // pre-existing layout-dependent OOB
   cfg.max_prefill = maxB * P + 8;  // Ttot = B*P must fit
   q4t::model::Model model;
   q4t::Status s = q4t::model::LoadModel(cfg, &model, nullptr);
