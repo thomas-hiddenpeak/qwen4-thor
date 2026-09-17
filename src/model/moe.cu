@@ -236,6 +236,8 @@ void MoEExtraWeights::Free() {
   if (shared_gu) cudaFree(shared_gu);
   if (shared_down) cudaFree(shared_down);
   if (shared_gate_scalar) cudaFree(shared_gate_scalar);
+  shared_gu_fp8.Free();
+  shared_down_fp8.Free();
   gate = shared_gu = shared_down = shared_gate_scalar = nullptr;
 }
 
@@ -291,6 +293,14 @@ Status LoadMoEExtra(const io::WeightLoader& loader, const std::string& prefix,
   if (!(s = load(prefix + ".shared_expert_gate.weight", out->shared_gate_scalar,
                  hs * sizeof(uint16_t))))
     return s;
+  // FP8 (e4m3) decode shadows for the shared-expert projections (gated by
+  // Q4T_FP8_PROJ). The router `gate` stays BF16 (exact top-k routing).
+  if (!BuildFp8Shadow(out->shared_gu, 2 * shared_is, hs, &out->shared_gu_fp8,
+                      stream))
+    return Status::Fail("shared_gu FP8 shadow");
+  if (!BuildFp8Shadow(out->shared_down, hs, shared_is, &out->shared_down_fp8,
+                      stream))
+    return Status::Fail("shared_down FP8 shadow");
   if (stream != nullptr && cudaStreamSynchronize(stream) != cudaSuccess)
     return Status::Fail("stream sync failed");
   return Status();
@@ -365,8 +375,9 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
                               gemm_ws, gemm_ws_bytes, T, k, stream);
   if (!s.ok()) return s;
   // 4. shared gate/up.
-  s = CheckGemm(Bf16Gemm(x, extra.shared_gu, d_gu, T, 2 * shared_is, hs, 1.0f,
-                         0.0f, gemm_ws, gemm_ws_bytes, stream));
+  s = CheckGemm(ProjGemm(x, extra.shared_gu, &extra.shared_gu_fp8, d_gu, T,
+                         2 * shared_is, hs, 1.0f, 0.0f, gemm_ws, gemm_ws_bytes,
+                         stream));
   if (!s.ok()) return s;
   // 5. SwiGLU.
   {
@@ -375,8 +386,9 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
         d_gu, d_swiglu, T, shared_is);
   }
   // 6. shared down.
-  s = CheckGemm(Bf16Gemm(d_swiglu, extra.shared_down, d_shared_down, T, hs,
-                         shared_is, 1.0f, 0.0f, gemm_ws, gemm_ws_bytes, stream));
+  s = CheckGemm(ProjGemm(d_swiglu, extra.shared_down, &extra.shared_down_fp8,
+                         d_shared_down, T, hs, shared_is, 1.0f, 0.0f, gemm_ws,
+                         gemm_ws_bytes, stream));
   if (!s.ok()) return s;
   // 7. combine.
   MoECombineKernel<<<T, kBlock, 0, stream>>>(d_routed, d_shared_down, x,

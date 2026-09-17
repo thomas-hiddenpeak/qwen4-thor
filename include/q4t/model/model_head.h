@@ -20,6 +20,7 @@
 #include <string>
 
 #include "q4t/io/weight_loader.h"
+#include "q4t/model/gemv.h"
 #include "q4t/model/hyperconnection.h"
 #include "q4t/status.h"
 
@@ -35,6 +36,7 @@ struct ModelHeadWeights {
 
   uint16_t* embed_tokens = nullptr;  // [vocab, hs]
   uint16_t* lm_head = nullptr;  // [vocab, hs]
+  Fp8Shadow lm_head_fp8;  // decode FP8 shadow (embed_tokens is a gather, no GEMV)
   HyperConnectionWeights mixer;  // use_combine=false (no block_inject)
 
   void Free();

@@ -63,6 +63,7 @@ Status CheckGemm(const Bf16GemmResult& r) {
 void ModelHeadWeights::Free() {
   if (embed_tokens) cudaFree(embed_tokens);
   if (lm_head) cudaFree(lm_head);
+  lm_head_fp8.Free();
   mixer.Free();
   embed_tokens = lm_head = nullptr;
 }
@@ -123,6 +124,10 @@ Status LoadModelHead(const io::WeightLoader& loader, int vocab, int hs, int hc,
   if (!(s = load("lm_head.weight", out->lm_head,
                  static_cast<size_t>(vocab) * hs * sizeof(uint16_t))))
     return s;
+  // FP8 (e4m3) decode shadow of lm_head (gated by Q4T_FP8_PROJ). Only used on
+  // the M=1 decode GEMV; prefill logits stay BF16.
+  if (!BuildFp8Shadow(out->lm_head, vocab, hs, &out->lm_head_fp8, stream))
+    return Status::Fail("lm_head FP8 shadow");
   // Mixer: GatedResidual, use_combine=false (no block_inject).
   s = LoadHyperConnection(loader, "model.language_model.hyper_connection_mixer",
                           hc, hs, lowrank, eps, false, &out->mixer, stream);
@@ -226,9 +231,9 @@ Status HeadForward(const ModelHeadWeights& w, const uint16_t* trunk,
                          kGemmScratch, stream);
   if (!s.ok()) return s;
   // 2. logits = mixed @ lm_head^T  [T, hs] x [vocab, hs]^T -> [T, vocab].
-  s = CheckGemm(Bf16Gemm(reinterpret_cast<uint16_t*>(d_mixed), w.lm_head,
-                         logits, T, vocab, hs, 1.0f, 0.0f, d_gemm2,
-                         kGemmScratch, stream));
+  s = CheckGemm(ProjGemm(reinterpret_cast<uint16_t*>(d_mixed), w.lm_head,
+                         &w.lm_head_fp8, logits, T, vocab, hs, 1.0f, 0.0f,
+                         d_gemm2, kGemmScratch, stream));
   return s;
 }
 

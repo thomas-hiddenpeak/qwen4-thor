@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "q4t/io/weight_loader.h"
+#include "q4t/model/gemv.h"
 #include "q4t/quant/moe_weights.h"
 #include "q4t/status.h"
 
@@ -43,6 +44,12 @@ struct MoEExtraWeights {
   uint16_t* shared_gu = nullptr;  // [2*shared_is, hs]
   uint16_t* shared_down = nullptr;  // [hs, shared_is]
   uint16_t* shared_gate_scalar = nullptr;  // [1, hs]
+
+  // FP8 (e4m3) decode shadows of the shared-expert projections (built at load
+  // when Q4T_FP8_PROJ is on). The router `gate` (small E rows + top-k
+  // selection) stays BF16 to keep routing exact.
+  Fp8Shadow shared_gu_fp8;
+  Fp8Shadow shared_down_fp8;
 
   void Free();
 };
