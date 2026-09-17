@@ -372,6 +372,40 @@ Status ModelPrefillBatch(const Model& m, const int32_t* tokens,
                          const int* lens, const int* seq_ids, int B,
                          uint16_t* logits, cudaStream_t stream);
 
+// Fused mixed prefill+decode batch (aggregated continuous batching): process B
+// sequences in ONE packed forward where each sequence is EITHER a fresh prefill
+// chunk (base_position 0 -> its per-layer state is reset) OR a continuing
+// decode/prefill chunk (base_position > 0 -> state kept). The dense weights are
+// read ONCE for the whole batch, so concurrent decode tokens "ride" a prefill
+// chunk's weight sweep instead of paying a second one — the vLLM continuous-
+// batching win. This is ADDITIVE: ModelPrefillBatch (prefill-only) and
+// ModelDecodeBatchMulti (decode-only) remain the PD-disaggregation operations;
+// the fused path is only used when prefill and decode are co-located.
+//
+//   tokens        : host int32 [Ttot] — sequence-major concatenation (Ttot =
+//                   sum(lens)).
+//   lens          : host int [B] — token count of each sequence (prefill chunk
+//                   size, or 1 for a decode step). > 0.
+//   seq_ids       : host int [B] — the pooled recurrent-state slice each fills.
+//   base_positions: host int [B] — absolute position of each sequence's first
+//                   token (0 = fresh sequence start -> state reset; > 0 =
+//                   continue from the existing state).
+//   prior_history : host int32 [B * (ngram_size-1)] — the ngram_size-1 tokens
+//                   BEFORE base_positions[b] for each sequence (oldest first,
+//                   EOS-filled for a fresh sequence). Supplies the PLE n-gram
+//                   context for positions before this batch's tokens.
+//   logits        : device BF16 [Ttot, vocab] (out) — row seq_offset[b]+t is
+//                   sequence b's token t (seq_offset = prefix sum of lens).
+//
+// With all base_positions == 0 and EOS prior_history this is bit-identical to
+// ModelPrefillBatch. A len-1 continuing sequence matches ModelDecodeBatchMulti
+// to within the causal-vs-decode-kernel rounding (same math, different float
+// order), like the existing batched-prefill acceptance.
+Status ModelMixedBatch(const Model& m, const int32_t* tokens, const int* lens,
+                       const int* seq_ids, const int* base_positions,
+                       const int32_t* prior_history, int B, uint16_t* logits,
+                       cudaStream_t stream);
+
 // ---------------------------------------------------------------------------
 // PD-ready 阶段边界 API (Prefill/Decode 可分离, 见 ARCHITECTURE.md)。
 //

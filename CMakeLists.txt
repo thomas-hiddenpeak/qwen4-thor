@@ -218,6 +218,7 @@ if(Q4T_BUILD_TESTS)
     tests/model_moe_test.cpp
     tests/model_verify_multi_test.cpp
     tests/model_prefill_batch_test.cpp
+    tests/model_mixed_batch_test.cpp
     tests/mtp_draft_test.cpp
     tests/mtp_speculative_test.cpp
     tests/mtp_spec_multi_test.cpp

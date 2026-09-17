@@ -1110,6 +1110,130 @@ Status ModelPrefillBatch(const Model& m, const int32_t* tokens,
                    m.d_token_seq_id, 0, nullptr, &ragged);
 }
 
+// Fused mixed prefill+decode forward (see model.h). A generalization of
+// ModelPrefillBatch: each sequence may start fresh (base_position 0 -> reset)
+// or continue (base_position > 0 -> keep state), so fresh-prefill chunks and
+// continuing-decode tokens share ONE weight sweep. The ragged causal path
+// (cu_seqlens + token_local) drives the per-sequence linear/PLE chains for both
+// kinds; the reset and the absolute base position are the only per-seq knobs.
+Status ModelMixedBatch(const Model& m, const int32_t* tokens, const int* lens,
+                       const int* seq_ids, const int* base_positions,
+                       const int32_t* prior_history, int B, uint16_t* logits,
+                       cudaStream_t stream) {
+  const ModelConfig& cfg = m.cfg;
+  if (B <= 0) return Status::Fail("ModelMixedBatch: B must be > 0");
+  if (B > cfg.max_seq)
+    return Status::Fail("ModelMixedBatch: B exceeds max_seq");
+
+  std::vector<int> seq_offset(B + 1);
+  seq_offset[0] = 0;
+  for (int b = 0; b < B; ++b) {
+    if (lens[b] <= 0) return Status::Fail("ModelMixedBatch: len must be > 0");
+    if (base_positions[b] < 0 || base_positions[b] + lens[b] > cfg.max_len)
+      return Status::Fail("ModelMixedBatch: position range exceeds max_len");
+    if (seq_ids[b] < 0 || seq_ids[b] >= cfg.max_seq)
+      return Status::Fail("ModelMixedBatch: seq_id exceeds max_seq");
+    seq_offset[b + 1] = seq_offset[b] + lens[b];
+  }
+  const int Ttot = seq_offset[B];
+  if (Ttot > cfg.max_prefill)
+    return Status::Fail("ModelMixedBatch: Ttot exceeds max_prefill");
+
+  // Fresh sequences (base_position == 0) reset their per-layer state; continue
+  // sequences keep it — this is what lets fresh-prefill chunks and continuing-
+  // decode tokens share one forward.
+  for (int b = 0; b < B; ++b)
+    if (base_positions[b] == 0) ResetAllLayers(m, stream, seq_ids[b]);
+
+  std::vector<int> positions(Ttot);
+  std::vector<int> token_seq(Ttot);
+  std::vector<int> token_local(Ttot);
+  for (int b = 0; b < B; ++b) {
+    const int off = seq_offset[b];
+    const int base = base_positions[b];
+    for (int t = 0; t < lens[b]; ++t) {
+      positions[off + t] = base + t;  // absolute position
+      token_seq[off + t] = seq_ids[b];
+      token_local[off + t] = t;  // local within this chunk (drives causal chain)
+    }
+    if (base == 0) m.rope_delta[seq_ids[b]] = 0;  // fresh text sequence
+  }
+
+  if (cudaMemcpyAsync(m.d_ids, tokens, Ttot * sizeof(int32_t),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return Status::Fail("H2D tokens");
+  if (cudaMemcpyAsync(m.d_positions, positions.data(), Ttot * sizeof(int),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return Status::Fail("H2D positions");
+  if (cudaMemcpyAsync(m.d_token_seq_id, token_seq.data(), Ttot * sizeof(int),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return Status::Fail("H2D token_seq");
+  if (cudaMemcpyAsync(m.d_ragged_seq_offset, seq_offset.data(),
+                      (B + 1) * sizeof(int), cudaMemcpyHostToDevice, stream) !=
+      cudaSuccess)
+    return Status::Fail("H2D seq_offset");
+  if (cudaMemcpyAsync(m.d_ragged_token_local, token_local.data(),
+                      Ttot * sizeof(int), cudaMemcpyHostToDevice, stream) !=
+      cudaSuccess)
+    return Status::Fail("H2D token_local");
+
+  // 3D MRoPE (pure text): each sequence's three rows = absolute position
+  // base+t, written into the [base, base+len) slice of its [3, max_len] table.
+  {
+    const size_t ml = static_cast<size_t>(cfg.max_len);
+    std::vector<int> rope_row;
+    for (int b = 0; b < B; ++b) {
+      int* seq_rope = m.d_rope_pos + static_cast<size_t>(seq_ids[b]) * 3 * ml;
+      const int base = base_positions[b];
+      rope_row.resize(lens[b]);
+      for (int t = 0; t < lens[b]; ++t) rope_row[t] = base + t;
+      for (int r = 0; r < 3; ++r) {
+        if (cudaMemcpyAsync(seq_rope + r * ml + base, rope_row.data(),
+                            lens[b] * sizeof(int), cudaMemcpyHostToDevice,
+                            stream) != cudaSuccess)
+          return Status::Fail("H2D rope_pos");
+      }
+    }
+  }
+
+  std::vector<int64_t> ids64(tokens, tokens + Ttot);
+
+  // PLE n-gram history: for token (off+t) the w preceding tokens (oldest
+  // first). In-chunk part (j+t >= w) from `tokens`; before-chunk part from the
+  // caller's per-seq `prior_history` (EOS-filled for fresh sequences, so a
+  // fresh sequence reproduces ModelPrefillBatch exactly).
+  std::vector<int64_t> hist;
+  if (m.ple_emb) {
+    const int w = m.ple_hash.ngram_size - 1;
+    hist.resize(static_cast<size_t>(Ttot) * w);
+    for (int b = 0; b < B; ++b) {
+      const int off = seq_offset[b];
+      const int32_t* ph = prior_history + static_cast<size_t>(b) * w;
+      for (int t = 0; t < lens[b]; ++t) {
+        for (int j = 0; j < w; ++j) {
+          const int src = j + t - w;  // in-chunk local index if >= 0
+          hist[static_cast<size_t>(off + t) * w + j] =
+              (src >= 0) ? static_cast<int64_t>(tokens[off + src])
+                         : static_cast<int64_t>(ph[j + t]);
+        }
+      }
+    }
+  }
+
+  Status s = EmbedLookup(m.head, m.d_ids, m.d_emb, Ttot, stream);
+  if (!s.ok()) return s;
+  s = ExpandTrunk(m.head, m.d_emb, m.d_trunk, Ttot, stream);
+  if (!s.ok()) return s;
+
+  RaggedBatch ragged2;
+  ragged2.seq_offset = m.d_ragged_seq_offset;
+  ragged2.token_local = m.d_ragged_token_local;
+  ragged2.B = B;
+  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), Ttot,
+                   logits, stream, nullptr, nullptr, nullptr, 0, 0,
+                   m.d_token_seq_id, 0, nullptr, &ragged2);
+}
+
 
 // the same dims, which they do for this architecture).
 namespace {
