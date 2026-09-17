@@ -17,6 +17,7 @@
 #include <array>
 #include <atomic>
 #include <condition_variable>
+#include <cstdint>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -62,6 +63,30 @@ struct VisionItem {
   std::vector<std::string> frames;  // decoded PNG/JPEG bytes (1 for an image)
 };
 
+// Fixed-bucket, lock-free latency histogram (Prometheus style). Buckets are
+// le boundaries in seconds; sum is accumulated in microseconds.
+struct MetricHistogram {
+  static constexpr int kNumBuckets = 14;
+  std::atomic<uint64_t> bucket[kNumBuckets]{};  // per-bucket (non-cumulative)
+  std::atomic<uint64_t> inf{0};                 // observations past the last le
+  std::atomic<uint64_t> count{0};
+  std::atomic<uint64_t> sum_us{0};
+  void Observe(double seconds);
+};
+
+// serve/scheduler observability counters + histograms (exposed at /metrics).
+struct ServeMetrics {
+  std::atomic<uint64_t> requests_total{0};
+  std::atomic<uint64_t> requests_success{0};
+  std::atomic<uint64_t> requests_error{0};    // rejected before generation
+  std::atomic<uint64_t> requests_aborted{0};  // client disconnect mid-stream
+  std::atomic<uint64_t> prompt_tokens_total{0};
+  std::atomic<uint64_t> generation_tokens_total{0};
+  MetricHistogram ttft_seconds;   // arrival -> first token
+  MetricHistogram e2e_seconds;    // arrival -> last token
+  MetricHistogram queue_seconds;  // arrival -> seq slot acquired
+};
+
 class ChatServer {
  public:
   ChatServer() = default;
@@ -92,6 +117,7 @@ class ChatServer {
                 const std::string& body);
   void HandleHealth(int fd);
   void HandleModels(int fd);
+  void HandleMetrics(int fd);
   void HandleChat(int fd, const std::string& body);
 
   // B1 multi-request scheduling. The model's per-forward scratch (GEMM ws,
@@ -218,6 +244,7 @@ class ChatServer {
   // forward), so once one is observed the server reports unhealthy (healthz
   // 503) and refuses new requests (503) instead of silently failing them all.
   std::atomic<bool> gpu_healthy_{true};
+  ServeMetrics metrics_;  // /metrics observability
 
   // Multimodal pipeline: run the image/video processor + vision tower over the
   // vision items (in content-part order) and return the merged visual features

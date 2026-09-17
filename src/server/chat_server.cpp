@@ -34,6 +34,11 @@ namespace {
 
 constexpr const char* kDefaultModelName = "qwen3.8-flash-next";
 
+// le boundaries (seconds) shared by MetricHistogram::Observe and /metrics.
+constexpr double kLatencyBounds[MetricHistogram::kNumBuckets] = {
+    0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0,
+    2.5,   5.0,  10.0,  30.0, 60.0, 120.0};
+
 // Escape a string for embedding inside a JSON string literal.
 std::string JsonEscape(const std::string& s) {
   std::string out;
@@ -573,6 +578,10 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     HandleModels(fd);
     return;
   }
+  if (path == "/metrics" && method == "GET") {
+    HandleMetrics(fd);
+    return;
+  }
   if (path == "/v1/chat/completions" && method == "POST") {
     HandleChat(fd, body);
     return;
@@ -888,6 +897,84 @@ void ChatServer::StopScheduler() {
   if (scheduler_thread_.joinable()) scheduler_thread_.join();
 }
 
+void MetricHistogram::Observe(double seconds) {
+  int i = 0;
+  while (i < kNumBuckets && seconds > kLatencyBounds[i]) ++i;
+  if (i < kNumBuckets)
+    bucket[i].fetch_add(1, std::memory_order_relaxed);
+  else
+    inf.fetch_add(1, std::memory_order_relaxed);
+  count.fetch_add(1, std::memory_order_relaxed);
+  if (seconds > 0)
+    sum_us.fetch_add(static_cast<uint64_t>(seconds * 1e6),
+                     std::memory_order_relaxed);
+}
+
+void ChatServer::HandleMetrics(int fd) {
+  std::string b;
+  b.reserve(2048);
+  auto counter = [&](const char* name, const char* help, uint64_t v) {
+    b += "# HELP "; b += name; b += ' '; b += help; b += "\n# TYPE ";
+    b += name; b += " counter\n"; b += name; b += ' ';
+    b += std::to_string(v); b += '\n';
+  };
+  auto gauge = [&](const char* name, const char* help, long v) {
+    b += "# HELP "; b += name; b += ' '; b += help; b += "\n# TYPE ";
+    b += name; b += " gauge\n"; b += name; b += ' ';
+    b += std::to_string(v); b += '\n';
+  };
+  auto histogram = [&](const char* name, const char* help,
+                       const MetricHistogram& h) {
+    b += "# HELP "; b += name; b += ' '; b += help; b += "\n# TYPE ";
+    b += name; b += " histogram\n";
+    uint64_t cum = 0;
+    for (int i = 0; i < MetricHistogram::kNumBuckets; ++i) {
+      cum += h.bucket[i].load(std::memory_order_relaxed);
+      b += name; b += "_bucket{le=\""; b += std::to_string(kLatencyBounds[i]);
+      b += "\"} "; b += std::to_string(cum); b += '\n';
+    }
+    cum += h.inf.load(std::memory_order_relaxed);
+    b += name; b += "_bucket{le=\"+Inf\"} "; b += std::to_string(cum);
+    b += '\n'; b += name; b += "_sum ";
+    b += std::to_string(h.sum_us.load(std::memory_order_relaxed) / 1e6);
+    b += '\n'; b += name; b += "_count "; b += std::to_string(cum); b += '\n';
+  };
+
+  counter("q4t_requests_total", "Total chat requests received.",
+          metrics_.requests_total.load());
+  counter("q4t_requests_success_total", "Requests that finished generating.",
+          metrics_.requests_success.load());
+  counter("q4t_requests_error_total", "Requests rejected before generation.",
+          metrics_.requests_error.load());
+  counter("q4t_requests_aborted_total", "Requests aborted by client disconnect.",
+          metrics_.requests_aborted.load());
+  counter("q4t_prompt_tokens_total", "Total prompt tokens processed.",
+          metrics_.prompt_tokens_total.load());
+  counter("q4t_generation_tokens_total", "Total tokens generated.",
+          metrics_.generation_tokens_total.load());
+
+  int free_slots = 0;
+  {
+    const std::lock_guard<std::mutex> lock(seq_mu_);
+    for (bool f : seq_free_)
+      if (f) ++free_slots;
+  }
+  gauge("q4t_num_requests_running", "In-flight request threads.",
+        active_conns_.load());
+  gauge("q4t_seq_slots_total", "Sequence-state pool size (max_seq).", max_seq_);
+  gauge("q4t_seq_slots_free", "Free sequence-state slots.", free_slots);
+  gauge("q4t_gpu_healthy", "1 if no sticky CUDA error observed, else 0.",
+        gpu_healthy_.load() ? 1 : 0);
+
+  histogram("q4t_ttft_seconds", "Time to first token.", metrics_.ttft_seconds);
+  histogram("q4t_e2e_seconds", "End-to-end request latency.",
+            metrics_.e2e_seconds);
+  histogram("q4t_queue_seconds", "Seq-slot queue wait.",
+            metrics_.queue_seconds);
+
+  SendSimple(fd, 200, "OK", b, "text/plain; version=0.0.4");
+}
+
 void ChatServer::HandleHealth(int fd) {
   if (gpu_healthy_.load(std::memory_order_relaxed)) {
     SendSimple(fd, 200, "OK", "ok", "text/plain");
@@ -1042,6 +1129,17 @@ bool ChatServer::RunVisionPipeline(const std::vector<VisionItem>& items,
 }
 
 void ChatServer::HandleChat(int fd, const std::string& body) {
+  metrics_.requests_total.fetch_add(1, std::memory_order_relaxed);
+  const auto t_arrive = std::chrono::steady_clock::now();
+  // Any return before generation starts (validation / alloc / encode / prefill
+  // failure) counts as a pre-generation error; cleared once a token is produced.
+  struct ErrGuard {
+    std::atomic<uint64_t>& err;
+    bool ok = false;
+    ~ErrGuard() {
+      if (!ok) err.fetch_add(1, std::memory_order_relaxed);
+    }
+  } err_guard{metrics_.requests_error};
   if (!gpu_healthy_.load(std::memory_order_relaxed)) {
     SendError(fd, 503, "GPU unhealthy after a device error; restart the server");
     return;
@@ -1109,6 +1207,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     SendError(fd, 503, "server shutting down");
     return;
   }
+  metrics_.queue_seconds.Observe(
+      std::chrono::duration<double>(std::chrono::steady_clock::now() - t_arrive)
+          .count());
   // Per-request device buffers (freed by `cleanup` on any exit path). Prefill
   // logits use the shared d_prefill_logits_ (under model_mu_), not a per-
   // request buffer.
@@ -1399,6 +1500,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // order this, but the lock now separates them).
   // h_logits holds the last prefill row (D2H'd under the model_mu_ lock above).
   next_token = argmax(h_logits.data());
+  metrics_.ttft_seconds.Observe(
+      std::chrono::duration<double>(std::chrono::steady_clock::now() - t_arrive)
+          .count());
+  err_guard.ok = true;  // generation has started; not a pre-generation error
 
   // MTP init (mirrors the CLI --mtp path): fresh draft KV, bonus token b =
   // t_P (the first decode token), draft-extend over the prompt to build the
@@ -1525,6 +1630,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
               wrote = WriteAll(fd, SseChunk(id, model_field, "", piece, "", 0));
           }
           if (!wrote) {  // client disconnected: stop, free the slot
+            metrics_.requests_aborted.fetch_add(1, std::memory_order_relaxed);
             done = true;
             finish_reason = "stop";
             break;
@@ -1607,6 +1713,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
             wrote = WriteAll(fd, SseChunk(id, model_field, "", piece, "", 0));
         }
         if (!wrote) {  // client disconnected: stop, free the slot
+          metrics_.requests_aborted.fetch_add(1, std::memory_order_relaxed);
           finish_reason = "stop";
           break;
         }
@@ -1676,6 +1783,14 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   }
   model::ModelEndSequence(&seq);
 
+  metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
+  metrics_.prompt_tokens_total.fetch_add(static_cast<uint64_t>(T),
+                                         std::memory_order_relaxed);
+  metrics_.generation_tokens_total.fetch_add(generated.size(),
+                                             std::memory_order_relaxed);
+  metrics_.e2e_seconds.Observe(
+      std::chrono::duration<double>(std::chrono::steady_clock::now() - t_arrive)
+          .count());
 
   // 4. Finalize.
   if (stream) {
