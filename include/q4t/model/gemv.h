@@ -37,13 +37,16 @@ struct Fp8Shadow {
 };
 
 // FP8 decode is gated per projection group so each group's speed and quality
-// can be measured independently. Q4T_FP8_PROJ enables all groups; each group
-// also has its own env var (below) to enable just that group.
+// can be measured independently. Q4T_FP8_PROJ enables the intermediate groups
+// (attn/gdn/shared); lm_head is the highest-risk group (FP8 on the final
+// logits) and stays opt-in behind its own Q4T_FP8_LMHEAD. Each group also has
+// its own env var to enable just that group.
 enum class Fp8Part { kAttn, kGdn, kLmHead, kMoeShared };
 
-// True if FP8 decode is enabled for `part`: Q4T_FP8_PROJ (all groups) or the
-// group's own env — Q4T_FP8_ATTN / _GDN / _LMHEAD / _SHARED. A value of "0" or
-// empty counts as off. Read once.
+// True if FP8 decode is enabled for `part`: Q4T_FP8_PROJ (attn/gdn/shared) or
+// the group's own env — Q4T_FP8_ATTN / _GDN / _SHARED, and Q4T_FP8_LMHEAD for
+// the head (NOT covered by Q4T_FP8_PROJ). A "0"/empty value counts as off.
+// Read once.
 bool Fp8ProjEnabled(Fp8Part part);
 
 // Unconditionally quantize a BF16 [N, K] weight into an e4m3 shadow (+ per-
