@@ -18,8 +18,11 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
   **P2 已修 (推进)**: 信号优雅关闭 (SIGINT/SIGTERM → RequestStop → StopScheduler +
   drain in-flight ≤15s → 干净退出, 防 detached 线程 UAF) + GPU 健康上报 (forward
   CUDA sticky error → gpu_healthy_=false → healthz 503 + 拒新请求, orchestrator 可
-  重启)。**剩余 P3** (观测性): metrics endpoint / 深度 healthz / keep-alive。71 测试
-  全绿, SIGTERM 排空验证 (draining → shutdown complete → 干净退出)。
+  **P3 已修 (参考 vllm 指标集)**: Prometheus /metrics endpoint (counters:
+  requests_total/success/error/aborted + prompt/generation_tokens; gauges:
+  num_requests_running/seq_slots/gpu_healthy; histograms: ttft/e2e/queue_seconds),
+  lock-free atomic + HandleChat 埋点。**剩余** (低优先): 深度 healthz JSON /
+  keep-alive。71 测试全绿, SIGTERM 排空 + /metrics (3 请求→计数正确) 验证。
 - **PLE page_reader io_uring exact-recovery (2026-09-18, 从 ds4 借鉴)**: PLE SSD
   Stream 对标 ds4 (同模型+同硬件类) / tokenspeed (datacenter 无 SSD stream) —— 我们
   核心机制领先/对齐 (io_uring registered pool + page dedup + sglang 参考)。唯一借鉴
