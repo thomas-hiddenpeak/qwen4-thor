@@ -17,6 +17,7 @@
 #include <cuda_bf16.h>
 #include <cuda_runtime.h>
 
+#include <algorithm>
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
@@ -1093,7 +1094,12 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   const int kv_dim = nkv * hd;
   const int idx_hd = w.idx_head_dim;
   const int n_iq = w.idx_n_heads, n_ik = w.idx_kv_heads;
-  const int max_blocks = kMaxBlocks;
+  // Cap to one sequence's idx_comp slice (max_len rows). The single-seq
+  // indexer GEMM reads idx_comp as [max_blocks, idx_hd]; a fixed kMaxBlocks
+  // (2048) overruns the seq-0 slice when max_seq*max_len < 2048 (e.g. serve
+  // --max-seq 2 --max-len 640 -> illegal memory access). Visible blocks are
+  // always <= max_len/compress < max_len, so this cap never drops a real one.
+  const int max_blocks = std::min(kMaxBlocks, w.max_len);
   const int max_topk = kMaxTopk;
 
   // Workspace layout (BF16 unless noted).
