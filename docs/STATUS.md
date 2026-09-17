@@ -15,8 +15,11 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
   AllocSeqId 排队背压 + 共享 prefill buffer + lockstep 调度 + drain。**已修缺口**:
   socket 读写超时 (SO_RCVTIMEO/SNDTIMEO 30s, 防 slowloris) + max_tokens 上界 (cap
   max_len, 999999→249 实测) + 客户端断开检测 (stream WriteAll 返回) + backlog 128。
-  **剩余建议** (未修, 更侵入): 信号优雅关闭 (SIGINT/SIGTERM drain) / CUDA sticky
-  error 恢复 (healthz 反映 / 主动退出) / metrics endpoint。71 测试全绿。
+  **P2 已修 (推进)**: 信号优雅关闭 (SIGINT/SIGTERM → RequestStop → StopScheduler +
+  drain in-flight ≤15s → 干净退出, 防 detached 线程 UAF) + GPU 健康上报 (forward
+  CUDA sticky error → gpu_healthy_=false → healthz 503 + 拒新请求, orchestrator 可
+  重启)。**剩余 P3** (观测性): metrics endpoint / 深度 healthz / keep-alive。71 测试
+  全绿, SIGTERM 排空验证 (draining → shutdown complete → 干净退出)。
 - **PLE page_reader io_uring exact-recovery (2026-09-18, 从 ds4 借鉴)**: PLE SSD
   Stream 对标 ds4 (同模型+同硬件类) / tokenspeed (datacenter 无 SSD stream) —— 我们
   核心机制领先/对齐 (io_uring registered pool + page dedup + sglang 参考)。唯一借鉴
