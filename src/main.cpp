@@ -15,6 +15,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <csignal>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -28,6 +29,13 @@
 #include "q4t/text/tokenizer.h"
 
 namespace {
+
+// Graceful-shutdown plumbing: SIGINT/SIGTERM -> RequestStop() (async-signal-
+// safe: atomic store + shutdown(2)), so serve drains in-flight requests.
+q4t::server::ChatServer* g_server = nullptr;
+void HandleServeSignal(int) {
+  if (g_server) g_server->RequestStop();
+}
 
 void PrintVersion() {
   std::printf("q4t (Qwen4-Thor) v0.1.0 — skeleton\n");
@@ -807,6 +815,11 @@ int RunServe(int argc, char** argv) {
     std::fprintf(stderr, "serve start failed: %s\n", s.message().c_str());
     return 1;
   }
+  // Graceful shutdown on SIGINT/SIGTERM: RequestStop() breaks the accept loop
+  // so Run() drains in-flight requests and returns cleanly.
+  g_server = &server;
+  std::signal(SIGINT, HandleServeSignal);
+  std::signal(SIGTERM, HandleServeSignal);
   s = server.Run();
   if (!s.ok()) {
     std::fprintf(stderr, "serve stopped: %s\n", s.message().c_str());

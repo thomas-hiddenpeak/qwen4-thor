@@ -486,6 +486,7 @@ Status ChatServer::Run() {
     ::close(listen_fd);
     return Status::Fail("listen: " + err);
   }
+  listen_fd_ = listen_fd;  // RequestStop() shutdown(2)s this to break accept
   std::fprintf(stderr, "[q4t] serving on port %d (model %s)\n", port_,
                model_name_.c_str());
   while (true) {
@@ -494,6 +495,7 @@ Status ChatServer::Run() {
     const int fd =
         ::accept(listen_fd, reinterpret_cast<sockaddr*>(&client), &clen);
     if (fd < 0) {
+      if (stop_requested_.load()) break;  // RequestStop() shutdown() the socket
       if (errno == EINTR) continue;
       ::close(listen_fd);
       return Status::Fail(std::string("accept: ") + std::strerror(errno));
@@ -532,6 +534,24 @@ Status ChatServer::Run() {
       active_conns_.fetch_sub(1, std::memory_order_relaxed);
     }).detach();
   }
+  // Graceful shutdown (RequestStop broke the accept loop): stop the scheduler
+  // (in-flight decodes get next_token=-1 so their request threads exit),
+  // release queued seq waiters, then wait for in-flight request threads to
+  // drain before returning — they are detached and cannot be joined, so the
+  // destructor's frees must not race a live request thread.
+  std::fprintf(stderr, "[q4t] shutting down: draining in-flight requests...\n");
+  StopScheduler();
+  {
+    const std::lock_guard<std::mutex> lock(seq_mu_);
+    seq_stopping_ = true;
+  }
+  seq_cv_.notify_all();
+  for (int i = 0; i < 150 && active_conns_.load() > 0; ++i)
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));  // <= 15 s
+  ::close(listen_fd);
+  std::fprintf(stderr, "[q4t] shutdown complete (%d in-flight remaining)\n",
+               active_conns_.load(std::memory_order_relaxed));
+  return Status();
 }
 
 void ChatServer::HandleClient(int fd) {
@@ -712,6 +732,8 @@ void ChatServer::SchedulerLoop() {
           sp = model::ModelPrefillBatch(model_, pk_tokens.data(),
                                         pk_lens.data(), pk_seq.data(), Bp,
                                         d_prefill_logits_, nullptr);
+          if (!sp.ok() && cudaPeekAtLastError() != cudaSuccess)
+            gpu_healthy_.store(false, std::memory_order_relaxed);
           if (sp.ok()) {
             // D2H each sequence's last-token row (seq_offset[b+1]-1).
             for (int i = 0; i < Bp; ++i) {
@@ -774,6 +796,8 @@ void ChatServer::SchedulerLoop() {
                                          acc_count.data(), next_b.data(),
                                          next_d0.data(), next_g.data(),
                                          nullptr);
+        if (!s.ok() && cudaPeekAtLastError() != cudaSuccess)
+          gpu_healthy_.store(false, std::memory_order_relaxed);
       }
       {
         const std::lock_guard<std::mutex> lock(sched_mu_);
@@ -818,6 +842,8 @@ void ChatServer::SchedulerLoop() {
       s = model::ModelDecodeBatchMulti(model_, tokens.data(), positions.data(),
                                        seq_ids.data(), hist_flat.data(), B,
                                        d_sched_logits_, nullptr, nullptr);
+      if (!s.ok() && cudaPeekAtLastError() != cudaSuccess)
+        gpu_healthy_.store(false, std::memory_order_relaxed);
       if (s.ok()) {
         // GPU argmax: [B, vocab] -> B token ids (moves the 248320-wide
         // reduction off the CPU and shrinks the D2H from B*vocab to B ints).
@@ -847,6 +873,12 @@ void ChatServer::SchedulerLoop() {
   }
 }
 
+void ChatServer::RequestStop() {
+  stop_requested_.store(true, std::memory_order_relaxed);
+  // shutdown(2) is async-signal-safe and wakes the blocked accept(2).
+  if (listen_fd_ >= 0) ::shutdown(listen_fd_, SHUT_RDWR);
+}
+
 void ChatServer::StopScheduler() {
   {
     const std::lock_guard<std::mutex> lock(sched_mu_);
@@ -857,7 +889,11 @@ void ChatServer::StopScheduler() {
 }
 
 void ChatServer::HandleHealth(int fd) {
-  SendSimple(fd, 200, "OK", "ok", "text/plain");
+  if (gpu_healthy_.load(std::memory_order_relaxed)) {
+    SendSimple(fd, 200, "OK", "ok", "text/plain");
+  } else {
+    SendSimple(fd, 503, "Service Unavailable", "gpu unhealthy", "text/plain");
+  }
 }
 
 void ChatServer::HandleModels(int fd) {
@@ -1006,6 +1042,10 @@ bool ChatServer::RunVisionPipeline(const std::vector<VisionItem>& items,
 }
 
 void ChatServer::HandleChat(int fd, const std::string& body) {
+  if (!gpu_healthy_.load(std::memory_order_relaxed)) {
+    SendError(fd, 503, "GPU unhealthy after a device error; restart the server");
+    return;
+  }
   io::Json req;
   Status s = io::ParseJson(body, &req);
   if (!s.ok()) {

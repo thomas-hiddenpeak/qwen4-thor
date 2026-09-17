@@ -80,6 +80,12 @@ class ChatServer {
   // exit Status.
   Status Run();
 
+  // Request a graceful shutdown from a signal handler: sets a flag and
+  // shutdown(2)s the listen socket to interrupt the blocked accept, so Run()
+  // stops accepting, drains in-flight requests, and returns. Async-signal-safe
+  // (atomic store + shutdown(2)).
+  void RequestStop();
+
  private:
   void HandleClient(int fd);
   void Dispatch(int fd, const std::string& method, const std::string& path,
@@ -204,6 +210,14 @@ class ChatServer {
   // unbounded threads. Excess connections are refused (503) to shed load.
   std::atomic<int> active_conns_{0};
   int conn_cap_ = 512;
+  // Graceful shutdown (signal handler -> RequestStop): stop_requested_ breaks
+  // the accept loop; listen_fd_ is shutdown(2) to interrupt a blocked accept.
+  std::atomic<bool> stop_requested_{false};
+  int listen_fd_ = -1;
+  // GPU health: a forward's CUDA error is sticky (it poisons every later
+  // forward), so once one is observed the server reports unhealthy (healthz
+  // 503) and refuses new requests (503) instead of silently failing them all.
+  std::atomic<bool> gpu_healthy_{true};
 
   // Multimodal pipeline: run the image/video processor + vision tower over the
   // vision items (in content-part order) and return the merged visual features
