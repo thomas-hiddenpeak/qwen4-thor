@@ -10,6 +10,15 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
 
 ## 当前焦点 (2026-09-17): 批处理吞吐 (推进中)
 
+- **grouped GatherQuant = MoE gather 是 work-bound 非 launch-bound (2026-09-17, 负结果,
+  已回退)**: 前提 (profile GatherQuant 6.0% / ~29K per-expert 启动 → 合并 1 次启动省
+  5-6%) **证伪**。实现 grouped gather (一次启动量化全部 R 路由行, per-row 与 per-expert
+  逐位一致, `quant_moe_gemm max_rel=0.0077468` 完全一致), A/B: 2560 tok 1061.5 vs 1061.2,
+  8000 tok 936 vs 942 (**略慢 0.5%**)。根因: GatherQuant 6.0% 几乎全是量化 WORK
+  (memory-bound), grouped 做同样 work 只省 <1% 启动开销; decode (M=1) 只激活 k≈8 experts
+  无可合并。**MoE 真杠杆 = grouped/monolithic FP4 GEMM** (E 次 cuBLASLt → 1 次 CUTLASS
+  group-GEMM, 命中 FP4 GEMM 13.7%), 需 CUTLASS group-gemm (独立大 session); grouped gather
+  是其必要 substrate 但单独无用, 应与 GEMM 一起落地, 不留 default-off dead code。
 - **serve decode = GPU-forward-bound (2026-09-17, 负结果结论)**: 尝试 scheduler-driven
   decode (调度器内部驱动整个 decode 循环, 消除每步 64 线程握手) A/B 无收益 (C=64
   265 vs 262 +1.3% 噪声内, 已回退)。20W GPU + 46% CPU 都不饱和不是步间协调 gap, 而是
