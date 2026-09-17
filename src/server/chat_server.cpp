@@ -565,7 +565,16 @@ void ChatServer::HandleClient(int fd) {
     SendSimple(fd, 400, "Bad Request", "bad request", "text/plain");
     return;
   }
+  const auto t0 = std::chrono::steady_clock::now();
   Dispatch(fd, method, path, body);
+  static const bool access_log = std::getenv("Q4T_ACCESS_LOG") != nullptr;
+  if (access_log) {
+    const double ms = std::chrono::duration<double, std::milli>(
+                          std::chrono::steady_clock::now() - t0)
+                          .count();
+    std::fprintf(stderr, "[q4t] %s %s %.1fms\n", method.c_str(), path.c_str(),
+                 ms);
+  }
 }
 
 void ChatServer::Dispatch(int fd, const std::string& method,
@@ -976,11 +985,21 @@ void ChatServer::HandleMetrics(int fd) {
 }
 
 void ChatServer::HandleHealth(int fd) {
-  if (gpu_healthy_.load(std::memory_order_relaxed)) {
-    SendSimple(fd, 200, "OK", "ok", "text/plain");
-  } else {
-    SendSimple(fd, 503, "Service Unavailable", "gpu unhealthy", "text/plain");
+  int free_slots = 0;
+  {
+    const std::lock_guard<std::mutex> lock(seq_mu_);
+    for (bool f : seq_free_)
+      if (f) ++free_slots;
   }
+  const bool healthy = gpu_healthy_.load(std::memory_order_relaxed);
+  const std::string body =
+      std::string("{\"status\":\"") + (healthy ? "ok" : "unhealthy") +
+      "\",\"gpu_healthy\":" + (healthy ? "true" : "false") +
+      ",\"requests_running\":" + std::to_string(active_conns_.load()) +
+      ",\"seq_slots_free\":" + std::to_string(free_slots) +
+      ",\"seq_slots_total\":" + std::to_string(max_seq_) + "}";
+  SendSimple(fd, healthy ? 200 : 503, healthy ? "OK" : "Service Unavailable",
+             body, "application/json");
 }
 
 void ChatServer::HandleModels(int fd) {
