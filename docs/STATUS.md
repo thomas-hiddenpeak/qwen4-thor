@@ -10,6 +10,15 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
 
 ## 当前焦点 (2026-09-17): 批处理吞吐 (推进中)
 
+- **下一杠杆调研 + FP8 W8A16 投影 GEMV spike (2026-09-17, 正结果 Thor ~2×, 待用户
+  授权全量)**: 两个"需用户决策"大工程 —— ① CUTLASS grouped FP4 MoE (Thor 高风险:
+  CUTLASS 只 ship SM100/SM107 block-scaled kernel, 无 SM110, sm_100a PTX 不保证跑
+  sm_110a, 未 vendored → 可能多周死路) ② BF16 投影→FP8 (单请求 decode 58%)。
+  **de-risk spike** (tools/fp8_gemv_proto.cu, 手写 W8A16 FP8 GEMV, L2-defeat):
+  大投影 **FP8 = ~2× BF16** (1.75/1.96/2.00/2.04×, 均 ~250 GB/s DRAM 峰值, 半字节
+  物理兑现) → 预期单请求 decode ~1.4×, **无需 CUTLASS**。质量 e4m3 per-channel
+  ~2.6% l2rel/投影 (vs BF16 0.24%) → 需端到端验证 (48 层复合 + 投影敏感度)。
+  **推荐 ②** (更可行 + 更大单请求收益), 全量属改模型数值大工程待授权。
 - **grouped GatherQuant = MoE gather 是 work-bound 非 launch-bound (2026-09-17, 负结果,
   已回退)**: 前提 (profile GatherQuant 6.0% / ~29K per-expert 启动 → 合并 1 次启动省
   5-6%) **证伪**。实现 grouped gather (一次启动量化全部 R 路由行, per-row 与 per-expert

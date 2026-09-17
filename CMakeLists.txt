@@ -179,6 +179,11 @@ target_include_directories(q4t_chunk_prefill_diag PRIVATE include)
 target_link_libraries(q4t_chunk_prefill_diag PRIVATE q4t_model q4t_io
                                                      CUDA::cudart)
 
+# q4t_fp8_gemv_proto — W8A16 FP8 GEMV feasibility spike (decode projection
+# lever; standalone, synthetic weights, no model load)
+add_executable(q4t_fp8_gemv_proto tools/fp8_gemv_proto.cu)
+target_link_libraries(q4t_fp8_gemv_proto PRIVATE CUDA::cudart)
+
 # ---------------------------------------------------------------------------
 # Tests
 # ---------------------------------------------------------------------------
