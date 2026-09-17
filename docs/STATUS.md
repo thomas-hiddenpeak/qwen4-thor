@@ -8,8 +8,22 @@
 Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 2026-09-07)
 (详见 [PHASES.md](PHASES.md))
 
-## 当前焦点 (2026-09-17): 批处理吞吐 (推进中)
+## 当前焦点 (2026-09-18): 单流 prefill + serve 工业化 (推进中)
 
+- **serve 工业级审计 + 加固 (2026-09-18, DoS/健壮性)**: 系统审计 chat_server.cpp
+  (1651 行) + 调度器。已具备: header 1MB/body 16MB guard + conn_cap 503 shed +
+  AllocSeqId 排队背压 + 共享 prefill buffer + lockstep 调度 + drain。**已修缺口**:
+  socket 读写超时 (SO_RCVTIMEO/SNDTIMEO 30s, 防 slowloris) + max_tokens 上界 (cap
+  max_len, 999999→249 实测) + 客户端断开检测 (stream WriteAll 返回) + backlog 128。
+  **剩余建议** (未修, 更侵入): 信号优雅关闭 (SIGINT/SIGTERM drain) / CUDA sticky
+  error 恢复 (healthz 反映 / 主动退出) / metrics endpoint。71 测试全绿。
+- **PLE page_reader io_uring exact-recovery (2026-09-18, 从 ds4 借鉴)**: PLE SSD
+  Stream 对标 ds4 (同模型+同硬件类) / tokenspeed (datacenter 无 SSD stream) —— 我们
+  核心机制领先/对齐 (io_uring registered pool + page dedup + sglang 参考)。唯一借鉴
+  = ds4 磁盘读 exact-recovery: page_reader 从 fail-closed 升级为瞬时错误 (EAGAIN/
+  EINTR/EBUSY/ECANCELED) 重试 + 短读补齐 (kMaxReadRetries=8), 持久 errno/意外 EOF
+  仍 fail-closed。正常路径逐位一致 (ple_e2e l2_rel 0), 故障注入测试
+  ple_page_reader_fault_recovery 验证。71 测试全绿。
 - **GatedDeltaNet 寄存器-state prefill kernel (2026-09-17, 正结果 +12%, 默认开)**:
   用户加 ds4/tokenspeed 参考。**对标: 我们单流 prefill 已超 ds4 30-50%** (同模型
   Qwen3.8 Flash Next + 同硬件类 DGX Spark GB10, ds4 745-771 vs 我们 989-1143 t/s,

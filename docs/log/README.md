@@ -6,7 +6,8 @@
 
 | 日期 | 摘要 (当天最新一条) |
 |---|---|
-| [2026-09-17](2026-09-17.md) | plain decode 调度 lockstep (对齐 MTP plan A): serve 并发吞吐 +26~53% |
+| [2026-09-18](2026-09-18.md) | serve 工业级审计+加固 (socket 超时/max_tokens cap/断开检测) + PLE io_uring exact-recovery (ds4 借鉴) |
+| [2026-09-17](2026-09-17.md) | GatedDeltaNet 寄存器-state prefill kernel (ds4 风格, +12% 单流 prefill) |
 | [2026-09-16](2026-09-16.md) | prefill roofline: 算力仅用 ~1-4%, 瓶颈是访存+延迟 (非算力); 大乘数在批处理 |
 | [2026-09-15](2026-09-15.md) | Step 4: tensor core (FA4) 路径关闭 (源码级 blocker) |
 | [2026-09-14](2026-09-14.md) | 262K 内存预算评估 + PD 决定 + PHASES.md 更新 |
