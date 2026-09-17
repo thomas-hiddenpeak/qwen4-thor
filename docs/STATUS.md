@@ -10,15 +10,19 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
 
 ## 当前焦点 (2026-09-17): 批处理吞吐 (推进中)
 
-- **下一杠杆调研 + FP8 W8A16 投影 GEMV spike (2026-09-17, 正结果 Thor ~2×, 待用户
-  授权全量)**: 两个"需用户决策"大工程 —— ① CUTLASS grouped FP4 MoE (Thor 高风险:
-  CUTLASS 只 ship SM100/SM107 block-scaled kernel, 无 SM110, sm_100a PTX 不保证跑
-  sm_110a, 未 vendored → 可能多周死路) ② BF16 投影→FP8 (单请求 decode 58%)。
-  **de-risk spike** (tools/fp8_gemv_proto.cu, 手写 W8A16 FP8 GEMV, L2-defeat):
-  大投影 **FP8 = ~2× BF16** (1.75/1.96/2.00/2.04×, 均 ~250 GB/s DRAM 峰值, 半字节
-  物理兑现) → 预期单请求 decode ~1.4×, **无需 CUTLASS**。质量 e4m3 per-channel
-  ~2.6% l2rel/投影 (vs BF16 0.24%) → 需端到端验证 (48 层复合 + 投影敏感度)。
-  **推荐 ②** (更可行 + 更大单请求收益), 全量属改模型数值大工程待授权。
+- **grouped FP4 MoE GEMM = 无预期收益 (2026-09-17, 负结果探针, ① 否决)**:
+  tools/moe_grouped_bench.cu 真实 MoE 维度直接探针 (E=512, gu[1280,2560]+dn[2560,640]
+  FP4, all-E 1.42GB>>L2), 三路对比 per-expert cuBLASLt 1-str/4-str vs 纯权重流式地板。
+  **现有 4-stream+plan-cache per-expert 已 ~233 GB/s = 流式地板 253 的 92% / spec
+  241 峰值的 96%, 所有 M_e (1-64, B=1 decode→prefill) 都近地板** → CUTLASS grouped
+  GEMM 天花板仅 **~1.1×** (也必须每 expert 权重读一次)。多流 MoE 优化 (2026-09-17)
+  实质已吃掉收益。文档"MoE 34% 带宽"误导 (GEMM 部分实测近峰值)。**不值得高风险
+  CUTLASS-on-Thor 投入**。与 gather 同: MoE per-expert 已近结构地板非 launch-bound。
+- **下一杠杆调研 + FP8 W8A16 投影 GEMV spike (2026-09-17, 正结果 Thor ~2×, 用户
+  现阶段不做权重量化搁置)**: ② FP8 投影 spike 证 ~2× (tools/fp8_gemv_proto.cu),
+  但用户现阶段不量化权重 → 搁置。① CUTLASS grouped FP4 见上, 已否决。
+  **单请求性能已近结构带宽地板** (prefill ~1000 / MoE GEMM near-floor / attn+GDN
+  near-floor); 剩余方向 = 连续批处理聚合 (已 300+) 或 Phase 2 功能 (262K/PD)。
 - **grouped GatherQuant = MoE gather 是 work-bound 非 launch-bound (2026-09-17, 负结果,
   已回退)**: 前提 (profile GatherQuant 6.0% / ~29K per-expert 启动 → 合并 1 次启动省
   5-6%) **证伪**。实现 grouped gather (一次启动量化全部 R 路由行, per-row 与 per-expert

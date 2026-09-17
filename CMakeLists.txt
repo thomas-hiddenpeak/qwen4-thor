@@ -184,6 +184,12 @@ target_link_libraries(q4t_chunk_prefill_diag PRIVATE q4t_model q4t_io
 add_executable(q4t_fp8_gemv_proto tools/fp8_gemv_proto.cu)
 target_link_libraries(q4t_fp8_gemv_proto PRIVATE CUDA::cudart)
 
+# q4t_moe_grouped_bench — grouped FP4 MoE GEMM benefit probe (per-expert
+# cuBLASLt vs weight-streaming floor; no model load)
+add_executable(q4t_moe_grouped_bench tools/moe_grouped_bench.cu)
+target_include_directories(q4t_moe_grouped_bench PRIVATE include)
+target_link_libraries(q4t_moe_grouped_bench PRIVATE q4t_quant CUDA::cudart)
+
 # ---------------------------------------------------------------------------
 # Tests
 # ---------------------------------------------------------------------------
