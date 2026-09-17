@@ -10,6 +10,13 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
 
 ## 当前焦点 (2026-09-18): 单流 decode 性能 (FP8 投影) + serve 工业化 (推进中)
 
+- **decode Q2: FP8 批处理 decode (2026-09-18, 手写胜 cuBLASLt 于 M≤4)**: ProjGemm 仅
+  M==1 走 FP8, 批处理 decode (连续批处理打包 M=B) fallback cuBLASLt BF16 丢 FP8。
+  实测手写 W8A16 vs cuBLASLt BF16 (tools/small_m_gemm_bench): M=1 1.9-2.1× / M=2
+  1.7-2.0× / M=4 1.2-1.5× / M≥8 cuBLASLt 胜 (SIMT 转算力受限, tensor core 胜)。
+  新增手写 Fp8SmallMKernel (warp-per-output 权重读一次 M 点积驻寄存器) + ProjGemm
+  分发 (M==1→Fp8Gev / 2≤M≤4→Fp8SmallMGemm / M≥5→cuBLASLt)。与逐行 Fp8Gev 逐位一致
+  (l2rel 0), 76 测试, E2E 三并发连贯 ~32 tok/s。Q1 QSA 延后, Q3 MoE 融合待后续。
 - **FP8 审计响应 + max_seq 修复 (2026-09-18)**: (1) 求证 NVFP4=W4A4 (act_quant.cu
   运行时量化激活), 与投影 W8A16 区分。(2) 审计两点已落地: **拆分开关**
   (Q4T_FP8_ATTN/_GDN/_LMHEAD/_SHARED 各自独立, 可单独测收益) + **真实 FP8 路径
