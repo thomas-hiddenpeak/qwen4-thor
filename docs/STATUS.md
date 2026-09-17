@@ -10,13 +10,17 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
 
 ## 当前焦点 (2026-09-17): 批处理吞吐 (推进中)
 
+- **serve decode = GPU-forward-bound (2026-09-17, 负结果结论)**: 尝试 scheduler-driven
+  decode (调度器内部驱动整个 decode 循环, 消除每步 64 线程握手) A/B 无收益 (C=64
+  265 vs 262 +1.3% 噪声内, 已回退)。20W GPU + 46% CPU 都不饱和不是步间协调 gap, 而是
+  **单步 decode forward 本身 memory-bound**。调度层已榨干 (lockstep+argmax+批量 prefill)。
+  **最大杠杆 = decode forward → monolithic grouped FP4 MoE** (移植 flashinfer trtllm)。
 - **serve 集成批量 prefill (2026-09-17, 已落地)**: 并发 plain 请求 (非 vision/chunk/MTP)
   的 prefill 注册到调度器, 打包一次 ModelPrefillBatch (dense 权重读一次); B=1 孤立请求
   特判走单序列 ModelPrefill (与 inline 位级一致, 保行为不变), 只有 B>1 才批处理。
-  **serve A/B (max_seq=16 --no-mtp)**: prefill-heavy mt=8 C=16 = 38.3→**76.4 tok/s (2.0×)** /
-  长 prompt C=16 = 42.5→70.8 (1.67×) / decode 主导 mt=64 1.17×。B=1 孤立 2+2→"Four" 位级
-  一致; B>1 near-tie 翻转 (答案正确, 如 vllm)。C=32 超限存活 0 error, 69 测试全绿, 长
-  单序列 prefill 1058 tok/s 不变。门控 env Q4T_NO_BATCH_PREFILL。
+  **serve A/B**: prefill-heavy max_seq=16 mt=8 C=16 38.3→**76.4 (2.0×)**; **C=64 mt=64
+  聚合 181→262 (+45%, batched prefill 真实大杠杆)**。B=1 孤立 2+2→"Four" 位级一致;
+  C=32 超限存活 0 error, 69 测试全绿, 长单序列 prefill 1058 tok/s 不变。
 - **ragged 批量 prefill 原语 + ModelPrefillBatch (2026-09-17, 已落地)**:
   serve 剩余差距主要在 prefill 阶段 (并发请求各自扫 ~24GB dense 权重)。多流已在 N=4
   饱和 (prefill N=4/8/16=1061/1061/1062 tok/s), 真正杠杆是**打包并发 prefill 一次
