@@ -177,3 +177,50 @@ Q4T_TEST(ple_page_reader_cross_page_row) {
   unlink(path.c_str());
   return true;
 }
+
+Q4T_TEST(ple_page_reader_fault_recovery) {
+  // Short-read / transient-error recovery. With Q4T_PLE_FAULT_INJECT the reader
+  // fakes the first N successful page reads as 1-byte short reads, forcing the
+  // retry + offset-fill path. The gather must still return correct data and
+  // leave the reader usable (not broken). Mirrors ds4's exact-recovery test.
+  const size_t kRowBytes = 160;
+  const size_t kFileSize = 4 * 1024 * 1024;
+  const std::string path = MakePatternFile(kFileSize);
+  Q4T_CHECK(!path.empty());
+  const int64_t total_rows = kFileSize / kRowBytes;
+
+  PlePageReader* reader = nullptr;
+  Status s = PlePageReader::Create(path, kRowBytes, 0, 0, total_rows, &reader);
+  Q4T_CHECK(s.ok());
+
+  // 12 rows on 12 distinct pages (30 * 160 = 4800 > 4096).
+  int64_t rows[12];
+  for (int i = 0; i < 12; ++i) rows[i] = static_cast<int64_t>(i) * 30;
+  const size_t n = 12;
+  std::vector<uint8_t> out(n * kRowBytes, 0xAB);
+
+  setenv("Q4T_PLE_FAULT_INJECT", "8", 1);  // 8 faked short reads (< 12 pages)
+  ReadStats stats{};
+  s = reader->Gather(rows, n, out.data(), &stats);
+  unsetenv("Q4T_PLE_FAULT_INJECT");
+  Q4T_CHECK(s.ok());  // recovered, not broken
+
+  for (size_t i = 0; i < n; ++i) {
+    const uint64_t row_start = static_cast<uint64_t>(rows[i]) * kRowBytes;
+    for (size_t b = 0; b < kRowBytes; ++b) {
+      Q4T_CHECK(out[i * kRowBytes + b] == PatternByte(row_start + b));
+    }
+  }
+
+  // The reader is still usable after recovery (a plain gather succeeds).
+  std::vector<uint8_t> out2(kRowBytes, 0);
+  const int64_t r0[] = {0};
+  s = reader->Gather(r0, 1, out2.data(), &stats);
+  Q4T_CHECK(s.ok());
+  Q4T_CHECK(out2[0] == PatternByte(0));
+
+  delete reader;
+  unlink(path.c_str());
+  return true;
+}
+

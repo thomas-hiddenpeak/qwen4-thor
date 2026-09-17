@@ -7,8 +7,11 @@
 #include <unistd.h>
 
 #include <algorithm>
+#include <cerrno>
 #include <chrono>
+#include <cstdlib>
 #include <cstring>
+#include <string>
 
 #ifdef Q4T_HAS_LIBURING
 #include <liburing.h>
@@ -18,6 +21,10 @@ namespace q4t {
 namespace ple {
 
 namespace {
+
+// Max re-submit rounds per wave before failing closed (short-read fill +
+// transient-error retry). 8 tolerates brief EAGAIN/EINTR bursts.
+constexpr int kMaxReadRetries = 8;
 
 uint64_t NowNs() {
   using namespace std::chrono;
@@ -40,6 +47,7 @@ struct PlePageReader::Impl {
   bool registered_buffers = false;
   bool broken = false;
   std::string broken_reason;
+  mutable int fault_inject_reads = 0;  // test-only (Q4T_PLE_FAULT_INJECT)
 
 #ifdef Q4T_HAS_LIBURING
   mutable io_uring ring;
@@ -162,6 +170,10 @@ Status PlePageReader::Gather(const int64_t* row_ids, size_t row_count,
     return Status::Fail("PLE page reader unusable after I/O failure: " +
                         impl->broken_reason);
   }
+  // Test-only: fake the first N successful reads as transient (EAGAIN) to
+  // exercise the retry / short-read recovery path.
+  if (const char* fi = std::getenv("Q4T_PLE_FAULT_INJECT"))
+    impl->fault_inject_reads = std::atoi(fi);
   const uint64_t started = NowNs();
   const uint64_t expected_len =
       static_cast<uint64_t>(row_count) * impl->row_bytes;
@@ -244,47 +256,79 @@ Status PlePageReader::Gather(const int64_t* row_ids, size_t row_count,
       ++result.read_batches;
 
 #ifdef Q4T_HAS_LIBURING
-      for (size_t page_slot = wave_start; page_slot < wave_end; ++page_slot) {
-        const PageGroup& group = impl->groups[page_slot];
-        uint8_t* dst = impl->pool + (page_slot - batch_start) * kPageSize;
-        uint64_t offset = group.page_id * kPageSize;
-        io_uring_sqe* sqe = io_uring_get_sqe(&impl->ring);
-        if (!sqe) return Status::Fail("io_uring submission queue is full");
-        if (impl->registered_buffers) {
-          io_uring_prep_read_fixed(sqe, impl->fd, dst, kPageSize, offset, 0);
-        } else {
-          io_uring_prep_read(sqe, impl->fd, dst, kPageSize, offset);
-        }
-        sqe->user_data = page_slot;
-      }
       const uint64_t io_started = NowNs();
-      // submit_and_wait returns the number of SQEs submitted (>= 0) on
-      // success, or a negative errno on failure.
-      if (io_uring_submit_and_wait(&impl->ring,
-                                   static_cast<unsigned>(wave_len)) < 0) {
-        impl->broken = true;
-        impl->broken_reason = "io_uring_submit_and_wait failed";
-        return Status::Fail(impl->broken_reason);
-      }
-      size_t done = 0;
-      while (done < wave_len) {
-        io_uring_cqe* cqe = nullptr;
-        if (io_uring_peek_cqe(&impl->ring, &cqe) != 0) break;
-        const size_t page_slot = static_cast<size_t>(cqe->user_data);
-        if (page_slot < wave_start || page_slot >= wave_end) {
-          io_uring_cqe_seen(&impl->ring, cqe);
+      // Per-page bytes read so far in this wave, for short-read fill +
+      // transient-error retry (ds4-style "exact recovery"). A page's valid byte
+      // count is min(kPageSize, file_len - page_start): the last page of a
+      // non-page-multiple file is legitimately short at EOF, not a failure.
+      // wave_len <= kDefaultQueueDepth. When every read returns its full valid
+      // length on the first attempt (the normal path) this reduces to a single
+      // submit+reap, so successful reads are byte-identical to before.
+      uint32_t page_done[kDefaultQueueDepth] = {0};
+      auto valid_bytes = [&](size_t slot) -> uint32_t {
+        const uint64_t page_start = impl->groups[slot].page_id * kPageSize;
+        return static_cast<uint32_t>(
+            std::min<uint64_t>(kPageSize, impl->file_len - page_start));
+      };
+      for (int attempt = 0;; ++attempt) {
+        unsigned inflight = 0;
+        for (size_t slot = wave_start; slot < wave_end; ++slot) {
+          const uint32_t want = valid_bytes(slot);
+          const uint32_t have = page_done[slot - wave_start];
+          if (have >= want) continue;
+          uint8_t* dst = impl->pool + (slot - batch_start) * kPageSize + have;
+          const uint64_t offset = impl->groups[slot].page_id * kPageSize + have;
+          io_uring_sqe* sqe = io_uring_get_sqe(&impl->ring);
+          if (!sqe) return Status::Fail("io_uring submission queue is full");
+          if (impl->registered_buffers) {
+            io_uring_prep_read_fixed(sqe, impl->fd, dst, want - have, offset, 0);
+          } else {
+            io_uring_prep_read(sqe, impl->fd, dst, want - have, offset);
+          }
+          sqe->user_data = slot;
+          ++inflight;
+        }
+        if (inflight == 0) break;  // every page has its full valid length
+        if (attempt > kMaxReadRetries) {
           impl->broken = true;
-          impl->broken_reason = "io_uring returned an unknown page slot";
+          impl->broken_reason = "PLE page read unfinished after retries";
           return Status::Fail(impl->broken_reason);
         }
-        if (cqe->res < 0) {
-          io_uring_cqe_seen(&impl->ring, cqe);
+        if (io_uring_submit_and_wait(&impl->ring, inflight) < 0) {
           impl->broken = true;
-          impl->broken_reason = "io_uring read failed";
+          impl->broken_reason = "io_uring_submit_and_wait failed";
           return Status::Fail(impl->broken_reason);
         }
-        io_uring_cqe_seen(&impl->ring, cqe);
-        ++done;
+        for (unsigned reaped = 0; reaped < inflight; ++reaped) {
+          io_uring_cqe* cqe = nullptr;
+          if (io_uring_peek_cqe(&impl->ring, &cqe) != 0) break;
+          const size_t slot = static_cast<size_t>(cqe->user_data);
+          const int res = cqe->res;
+          io_uring_cqe_seen(&impl->ring, cqe);
+          if (slot < wave_start || slot >= wave_end) {
+            impl->broken = true;
+            impl->broken_reason = "io_uring returned an unknown page slot";
+            return Status::Fail(impl->broken_reason);
+          }
+          if (res > 0 && impl->fault_inject_reads > 0) {
+            // Fake a short read (advance 1 byte) so the next attempt re-reads
+            // [have, want): exercises both the retry loop and the offset fill.
+            --impl->fault_inject_reads;
+            page_done[slot - wave_start] += 1;
+          } else if (res > 0) {
+            page_done[slot - wave_start] += static_cast<uint32_t>(res);
+          } else if (res == -EAGAIN || res == -EINTR || res == -EBUSY ||
+                     res == -ECANCELED) {
+            // Transient: leave page_done unchanged so this page is re-read.
+          } else {
+            // res == 0 (unexpected EOF before the valid end) or a persistent
+            // errno: fail closed rather than scatter stale page bytes.
+            impl->broken = true;
+            impl->broken_reason =
+                "io_uring read failed (res=" + std::to_string(res) + ")";
+            return Status::Fail(impl->broken_reason);
+          }
+        }
       }
       io_ns += NowNs() - io_started;
 #else
