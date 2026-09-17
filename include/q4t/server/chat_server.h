@@ -153,11 +153,31 @@ class ChatServer {
     int32_t mtp_accepted[64];   // accepted tokens (bonus + drafts, step output)
     std::condition_variable cv;  // request thread waits here for `done`
   };
+  // Batched prefill (Phase 2, plain path). Concurrent requests that need a
+  // plain prefill (T <= max_prefill, no vision / chunk / MTP) register a
+  // PrefillReq here instead of prefilling inline; the scheduler packs up to a
+  // (max_prefill-token, max_seq-sequence) batch into ONE ModelPrefillBatch (the
+  // dense weights are read once for the whole batch instead of per request) and
+  // hands each request its last-row logits. Mirrors the decode collect-batch-
+  // distribute handshake. `ids` is owned by the request thread (blocked on `cv`
+  // for the whole prefill, so no lifetime race); `h_logits` is the request's
+  // [vocab] host buffer that the scheduler D2Hs the sequence's last row into.
+  struct PrefillReq {
+    int seq_id = 0;
+    const int32_t* ids = nullptr;
+    int len = 0;
+    uint16_t* h_logits = nullptr;
+    bool pending = false;
+    bool done = false;
+    bool ok = false;
+    std::condition_variable cv;
+  };
   void SchedulerLoop();
   void StopScheduler();  // signal + join the scheduler thread (destructor)
   std::mutex sched_mu_;  // guards active_ + the pending/done handshake
   std::condition_variable sched_cv_;  // scheduler waits for pending work
   std::vector<ActiveRequest*> active_;  // live plain-decode requests
+  std::vector<PrefillReq*> prefill_pending_;  // requests awaiting batched prefill
   std::thread scheduler_thread_;
   bool scheduler_stop_ = false;
   bool scheduler_active_ = false;  // false if the scheduler buffer alloc failed

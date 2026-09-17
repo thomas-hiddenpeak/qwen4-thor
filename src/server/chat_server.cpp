@@ -599,10 +599,14 @@ void ChatServer::SchedulerLoop() {
   const int vocab = model_.cfg.vocab;
   for (;;) {
     std::vector<ActiveRequest*> pending;
+    std::vector<PrefillReq*> pf;
     {
       std::unique_lock<std::mutex> lock(sched_mu_);
       sched_cv_.wait(lock, [this] {
         if (scheduler_stop_) return true;
+        // Batched prefill runs opportunistically (prefills arrive as encoding
+        // completes, not in lockstep), so ANY pending prefill wakes the loop.
+        if (!prefill_pending_.empty()) return true;
         // Lockstep (both plain B2b and MTP plan A): run only when EVERY active
         // request of a kind has registered its step, so the packed forward is
         // B = all active requests (uniform width, like vllm/sglang) instead of
@@ -632,10 +636,95 @@ void ChatServer::SchedulerLoop() {
           r->next_token = -1;  // sentinel: scheduler is shutting down
           r->cv.notify_one();
         }
+        for (PrefillReq* p : prefill_pending_) {
+          p->pending = false;
+          p->done = true;
+          p->ok = false;  // sentinel: scheduler is shutting down
+          p->cv.notify_one();
+        }
+        prefill_pending_.clear();
         return;
+      }
+      // Collect pending prefills into one batch (up to max_seq sequences /
+      // max_prefill packed tokens). Opportunistic: whatever is queued now.
+      int ttot = 0;
+      while (!prefill_pending_.empty() &&
+             static_cast<int>(pf.size()) < max_seq_) {
+        PrefillReq* p = prefill_pending_.front();
+        if (ttot + p->len > max_prefill_) break;  // token budget
+        ttot += p->len;
+        pf.push_back(p);
+        prefill_pending_.erase(prefill_pending_.begin());
       }
       for (ActiveRequest* r : active_)
         if (r->pending) pending.push_back(r);
+    }
+
+    // Batched prefill: pack pf into ONE ModelPrefillBatch (the dense weights
+    // are read once for the whole batch instead of per request), then hand each
+    // request its last-token logits. Runs under model_mu_ (shared per-forward
+    // scratch), like the decode step below. A LONE prefill (Bp == 1) uses the
+    // single-seq ModelPrefill instead, so it is bit-identical to the inline
+    // path (the multi-seq full-attention indexer rounds differently from the
+    // single-seq tensor-core GEMM, which can flip a near-tie token — harmless
+    // but a visible change; only actual batching (Bp > 1) accepts it).
+    if (!pf.empty()) {
+      const int Bp = static_cast<int>(pf.size());
+      Status sp;
+      {
+        const std::lock_guard<std::mutex> lock(model_mu_);
+        if (Bp == 1) {
+          model::ModelSequence tmp;
+          sp = model::ModelBeginSequence(model_, &tmp, nullptr, pf[0]->seq_id);
+          if (sp.ok())
+            sp = model::ModelPrefill(model_, &tmp, pf[0]->ids, pf[0]->len,
+                                     d_prefill_logits_, nullptr, nullptr,
+                                     nullptr, pf[0]->seq_id);
+          if (sp.ok()) {
+            cudaMemcpyAsync(
+                pf[0]->h_logits,
+                d_prefill_logits_ +
+                    static_cast<size_t>(pf[0]->len - 1) * vocab,
+                static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost, nullptr);
+            cudaStreamSynchronize(nullptr);
+          }
+        } else {
+          std::vector<int32_t> pk_tokens;
+          std::vector<int> pk_lens(Bp), pk_seq(Bp);
+          std::vector<int> pk_off(Bp + 1, 0);
+          for (int i = 0; i < Bp; ++i) {
+            pk_lens[i] = pf[i]->len;
+            pk_seq[i] = pf[i]->seq_id;
+            pk_off[i + 1] = pk_off[i] + pf[i]->len;
+            pk_tokens.insert(pk_tokens.end(), pf[i]->ids,
+                             pf[i]->ids + pf[i]->len);
+          }
+          sp = model::ModelPrefillBatch(model_, pk_tokens.data(),
+                                        pk_lens.data(), pk_seq.data(), Bp,
+                                        d_prefill_logits_, nullptr);
+          if (sp.ok()) {
+            // D2H each sequence's last-token row (seq_offset[b+1]-1).
+            for (int i = 0; i < Bp; ++i) {
+              const int last_row = pk_off[i + 1] - 1;
+              cudaMemcpyAsync(
+                  pf[i]->h_logits,
+                  d_prefill_logits_ + static_cast<size_t>(last_row) * vocab,
+                  static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost,
+                  nullptr);
+            }
+            cudaStreamSynchronize(nullptr);
+          }
+        }
+      }
+      {
+        const std::lock_guard<std::mutex> lock(sched_mu_);
+        for (int i = 0; i < Bp; ++i) {
+          pf[i]->pending = false;
+          pf[i]->done = true;
+          pf[i]->ok = sp.ok();
+          pf[i]->cv.notify_one();
+        }
+      }
     }
     if (pending.empty()) continue;
 
@@ -1121,8 +1210,39 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   model::ModelSequence seq;
   const model::VisionFeatures* vptr =
       (vfeats.num_tokens > 0) ? &vfeats : nullptr;
-  int last_chunk_c = 0;  // token count of the final chunk (D2H row offset)
-  {
+  // Batched prefill (plain path): non-vision, non-chunked, non-MTP requests
+  // pack their prefill with other concurrent requests into ONE
+  // ModelPrefillBatch (the dense weights read once for the whole batch instead
+  // of per request). MTP needs the prefill trunk_out (draft-extend) and
+  // vision/chunked need the per-request path, so those still prefill inline.
+  const bool batched_prefill =
+      scheduler_active_ && !mtp_loaded_ && !chunked && vptr == nullptr &&
+      getenv("Q4T_NO_BATCH_PREFILL") == nullptr;
+  if (batched_prefill) {
+    PrefillReq pr;
+    pr.seq_id = seq_id;
+    pr.ids = ids.data();
+    pr.len = T;
+    pr.h_logits = h_logits.data();
+    {
+      std::unique_lock<std::mutex> lock(sched_mu_);
+      pr.pending = true;
+      prefill_pending_.push_back(&pr);
+      sched_cv_.notify_one();
+      pr.cv.wait(lock, [&] { return pr.done; });
+    }
+    s = pr.ok ? Status() : Status::Fail("batched prefill failed");
+    if (s.ok()) {
+      // ModelPrefillBatch reset + populated this sequence's per-layer state and
+      // the scheduler D2H'd the last-token row into h_logits; the ModelSequence
+      // is host-only, so set up its decode state machine here.
+      seq.stage = model::ModelSequence::Stage::kDecode;
+      seq.position = T;
+      seq.seq_id = seq_id;
+      seq.history.assign(ids.begin(), ids.end());
+    }
+  } else {
+    int last_chunk_c = 0;  // token count of the final chunk (D2H row offset)
     const std::lock_guard<std::mutex> lock(model_mu_);
     s = model::ModelBeginSequence(model_, &seq, nullptr, seq_id);
     if (s.ok()) {
