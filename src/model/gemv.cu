@@ -193,9 +193,24 @@ bool Bf16Gev(const uint16_t* x, const uint16_t* w, uint16_t* y, int N, int K,
   return cudaGetLastError() == cudaSuccess;
 }
 
-bool Fp8ProjEnabled() {
-  static const bool on = std::getenv("Q4T_FP8_PROJ") != nullptr;
-  return on;
+bool Fp8ProjEnabled(Fp8Part part) {
+  const auto on = [](const char* n) {
+    const char* v = std::getenv(n);
+    return v != nullptr && v[0] != '\0' && !(v[0] == '0' && v[1] == '\0');
+  };
+  static const bool all = on("Q4T_FP8_PROJ");
+  static const bool attn = on("Q4T_FP8_ATTN");
+  static const bool gdn = on("Q4T_FP8_GDN");
+  static const bool lmhead = on("Q4T_FP8_LMHEAD");
+  static const bool shared = on("Q4T_FP8_SHARED");
+  if (all) return true;
+  switch (part) {
+    case Fp8Part::kAttn: return attn;
+    case Fp8Part::kGdn: return gdn;
+    case Fp8Part::kLmHead: return lmhead;
+    case Fp8Part::kMoeShared: return shared;
+  }
+  return false;
 }
 
 void Fp8Shadow::Free() {
@@ -205,12 +220,11 @@ void Fp8Shadow::Free() {
   scale = nullptr;
 }
 
-bool BuildFp8Shadow(const uint16_t* w_bf16, int N, int K, Fp8Shadow* out,
-                    cudaStream_t stream) {
+bool QuantizeToFp8Shadow(const uint16_t* w_bf16, int N, int K, Fp8Shadow* out,
+                         cudaStream_t stream) {
   if (!out) return false;
   out->w = nullptr;
   out->scale = nullptr;
-  if (!Fp8ProjEnabled()) return true;  // gated off: no shadow, decode uses BF16
   if (!w_bf16 || N <= 0 || K <= 0 || (K & 15) != 0) return false;
   if (cudaMalloc(&out->w, static_cast<size_t>(N) * K) != cudaSuccess)
     return false;
@@ -230,6 +244,15 @@ bool BuildFp8Shadow(const uint16_t* w_bf16, int N, int K, Fp8Shadow* out,
     return false;
   }
   return true;
+}
+
+bool BuildFp8Shadow(const uint16_t* w_bf16, int N, int K, Fp8Shadow* out,
+                    Fp8Part part, cudaStream_t stream) {
+  if (!out) return false;
+  out->w = nullptr;
+  out->scale = nullptr;
+  if (!Fp8ProjEnabled(part)) return true;  // gated off: decode stays BF16
+  return QuantizeToFp8Shadow(w_bf16, N, K, out, stream);
 }
 
 bool Fp8Gev(const uint16_t* x, const Fp8Shadow& w, uint16_t* y, int N, int K,

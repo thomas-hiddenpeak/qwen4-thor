@@ -1035,16 +1035,16 @@ Status LoadFullAttention(const io::WeightLoader& loader,
   // use pageable H2D (synchronous), so the weights are already resident when
   // the quantize kernels enqueue on `stream`.
   if (!BuildFp8Shadow(out->q_proj, nq * 2 * hd, hidden_size, &out->q_proj_fp8,
-                      stream))
+                      Fp8Part::kAttn, stream))
     return Status::Fail("q_proj FP8 shadow");
   if (!BuildFp8Shadow(out->k_proj, nkv * hd, hidden_size, &out->k_proj_fp8,
-                      stream))
+                      Fp8Part::kAttn, stream))
     return Status::Fail("k_proj FP8 shadow");
   if (!BuildFp8Shadow(out->v_proj, nkv * hd, hidden_size, &out->v_proj_fp8,
-                      stream))
+                      Fp8Part::kAttn, stream))
     return Status::Fail("v_proj FP8 shadow");
   if (!BuildFp8Shadow(out->o_proj, hidden_size, nq * hd, &out->o_proj_fp8,
-                      stream))
+                      Fp8Part::kAttn, stream))
     return Status::Fail("o_proj FP8 shadow");
   return Status();
 }

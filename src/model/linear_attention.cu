@@ -1253,13 +1253,13 @@ Status LoadLinearAttention(const io::WeightLoader& loader,
   // FP8 (e4m3) decode shadows for the large projections (gated by
   // Q4T_FP8_PROJ). in_proj_a/b (N=nv, tiny + recurrence-sensitive) stay BF16.
   if (!BuildFp8Shadow(out->in_proj_qkv, in_qkv, hidden_size,
-                      &out->in_proj_qkv_fp8, stream))
+                      &out->in_proj_qkv_fp8, Fp8Part::kGdn, stream))
     return Status::Fail("in_proj_qkv FP8 shadow");
   if (!BuildFp8Shadow(out->in_proj_z, v_dim, hidden_size, &out->in_proj_z_fp8,
-                      stream))
+                      Fp8Part::kGdn, stream))
     return Status::Fail("in_proj_z FP8 shadow");
   if (!BuildFp8Shadow(out->out_proj, hidden_size, v_dim, &out->out_proj_fp8,
-                      stream))
+                      Fp8Part::kGdn, stream))
     return Status::Fail("out_proj FP8 shadow");
   if (stream != nullptr && cudaStreamSynchronize(stream) != cudaSuccess) {
     return Status::Fail("stream sync failed");

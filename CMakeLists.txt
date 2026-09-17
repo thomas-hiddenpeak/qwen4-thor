@@ -214,6 +214,7 @@ if(Q4T_BUILD_TESTS)
     tests/model_decoder_layer_test.cpp
     tests/model_ple_layer_test.cpp
     tests/model_head_test.cpp
+    tests/gemv_fp8_test.cpp
     tests/model_forward_test.cpp
     tests/model_moe_test.cpp
     tests/model_verify_multi_test.cpp

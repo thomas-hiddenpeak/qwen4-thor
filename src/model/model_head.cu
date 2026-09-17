@@ -126,7 +126,8 @@ Status LoadModelHead(const io::WeightLoader& loader, int vocab, int hs, int hc,
     return s;
   // FP8 (e4m3) decode shadow of lm_head (gated by Q4T_FP8_PROJ). Only used on
   // the M=1 decode GEMV; prefill logits stay BF16.
-  if (!BuildFp8Shadow(out->lm_head, vocab, hs, &out->lm_head_fp8, stream))
+  if (!BuildFp8Shadow(out->lm_head, vocab, hs, &out->lm_head_fp8,
+                      Fp8Part::kLmHead, stream))
     return Status::Fail("lm_head FP8 shadow");
   // Mixer: GatedResidual, use_combine=false (no block_inject).
   s = LoadHyperConnection(loader, "model.language_model.hyper_connection_mixer",

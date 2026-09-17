@@ -36,17 +36,29 @@ struct Fp8Shadow {
   void Free();
 };
 
-// True if FP8 decode projections are enabled (Q4T_FP8_PROJ env, read once).
-// When false, BuildFp8Shadow is a no-op (no alloc) and the decode path stays
-// on Bf16Gev, so the feature is fully gated at zero cost.
-bool Fp8ProjEnabled();
+// FP8 decode is gated per projection group so each group's speed and quality
+// can be measured independently. Q4T_FP8_PROJ enables all groups; each group
+// also has its own env var (below) to enable just that group.
+enum class Fp8Part { kAttn, kGdn, kLmHead, kMoeShared };
 
-// Quantize a BF16 [N, K] weight into an e4m3 shadow (+ per-output-channel
-// scale), allocating out->w and out->scale on the device. Returns true (with
-// null fields) when !Fp8ProjEnabled(). Requires K % 16 == 0 (all qwen4_exp
-// projection K's are multiples of 16). Returns false on a bad shape / alloc.
+// True if FP8 decode is enabled for `part`: Q4T_FP8_PROJ (all groups) or the
+// group's own env — Q4T_FP8_ATTN / _GDN / _LMHEAD / _SHARED. A value of "0" or
+// empty counts as off. Read once.
+bool Fp8ProjEnabled(Fp8Part part);
+
+// Unconditionally quantize a BF16 [N, K] weight into an e4m3 shadow (+ per-
+// output-channel absmax/448 scale), allocating out->w and out->scale on the
+// device. Requires K % 16 == 0. Returns false on a bad shape / alloc. Used by
+// BuildFp8Shadow and by tests that must execute the FP8 GEMV path regardless
+// of the env gate.
+bool QuantizeToFp8Shadow(const uint16_t* w_bf16, int N, int K, Fp8Shadow* out,
+                         cudaStream_t stream);
+
+// Gated shadow build: quantizes (via QuantizeToFp8Shadow) only when
+// Fp8ProjEnabled(part); otherwise leaves the shadow null so the decode path
+// stays on Bf16Gev at zero cost.
 bool BuildFp8Shadow(const uint16_t* w_bf16, int N, int K, Fp8Shadow* out,
-                    cudaStream_t stream);
+                    Fp8Part part, cudaStream_t stream);
 
 // y[N] = alpha * (x[1, K] * dequant(w)^T), w = the FP8 shadow. beta must be 0.
 // Returns false if unsupported (K % 16 != 0 or a null shadow); the caller then

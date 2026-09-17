@@ -296,10 +296,10 @@ Status LoadMoEExtra(const io::WeightLoader& loader, const std::string& prefix,
   // FP8 (e4m3) decode shadows for the shared-expert projections (gated by
   // Q4T_FP8_PROJ). The router `gate` stays BF16 (exact top-k routing).
   if (!BuildFp8Shadow(out->shared_gu, 2 * shared_is, hs, &out->shared_gu_fp8,
-                      stream))
+                      Fp8Part::kMoeShared, stream))
     return Status::Fail("shared_gu FP8 shadow");
   if (!BuildFp8Shadow(out->shared_down, hs, shared_is, &out->shared_down_fp8,
-                      stream))
+                      Fp8Part::kMoeShared, stream))
     return Status::Fail("shared_down FP8 shadow");
   if (stream != nullptr && cudaStreamSynchronize(stream) != cudaSuccess)
     return Status::Fail("stream sync failed");
