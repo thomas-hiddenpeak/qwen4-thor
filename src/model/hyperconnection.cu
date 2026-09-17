@@ -196,6 +196,8 @@ void HyperConnectionWeights::Free() {
   if (mix_down) cudaFree(mix_down);
   if (mix_up) cudaFree(mix_up);
   if (block_inject) cudaFree(block_inject);
+  mix_down_fp8.Free();
+  mix_up_fp8.Free();
   hc_norm = mix_down = mix_up = block_inject = nullptr;
 }
 
@@ -261,6 +263,14 @@ Status LoadHyperConnection(const io::WeightLoader& loader,
                    static_cast<size_t>(hc_count) * hc_dim * sizeof(uint16_t))))
       return s;
   }
+  // FP8 (e4m3) decode shadows for the low-rank mix projections (gated by
+  // Q4T_FP8_PROJ / Q4T_FP8_HC). block_inject (N=hc) is tiny -> BF16.
+  if (!BuildFp8Shadow(out->mix_down, lowrank, hc_dim, &out->mix_down_fp8,
+                      Fp8Part::kHc, stream))
+    return Status::Fail("mix_down FP8 shadow");
+  if (!BuildFp8Shadow(out->mix_up, hc_dim, lowrank, &out->mix_up_fp8,
+                      Fp8Part::kHc, stream))
+    return Status::Fail("mix_up FP8 shadow");
   if (stream != nullptr &&
       cudaStreamSynchronize(stream) != cudaSuccess) {
     return Status::Fail("stream sync failed");
@@ -294,8 +304,9 @@ Status HyperConnectionMix(const HyperConnectionWeights& w,
   }
 
   // 2. down = normed @ W_down^T  ([T, hc_dim] x [lr, hc_dim]^T -> [T, lr]).
-  Status s = CheckGemm(Bf16Gemm(normed, w.mix_down, d_down, T, lr, hc_dim,
-                                1.0f, 0.0f, workspace, workspace_bytes, stream));
+  Status s = CheckGemm(ProjGemm(normed, w.mix_down, &w.mix_down_fp8, d_down, T,
+                                lr, hc_dim, 1.0f, 0.0f, workspace,
+                                workspace_bytes, stream));
   if (!s.ok()) {
     cudaFreeAsync(d_down, stream);
     cudaFreeAsync(d_up, stream);
@@ -308,8 +319,8 @@ Status HyperConnectionMix(const HyperConnectionWeights& w,
         d_down, total, inv_hc);
   }
   // 4. up = silu_down @ W_up^T  ([T, lr] x [hc_dim, lr]^T -> [T, hc_dim]).
-  s = CheckGemm(Bf16Gemm(d_down, w.mix_up, d_up, T, hc_dim, lr, 1.0f, 0.0f,
-                         workspace, workspace_bytes, stream));
+  s = CheckGemm(ProjGemm(d_down, w.mix_up, &w.mix_up_fp8, d_up, T, hc_dim, lr,
+                         1.0f, 0.0f, workspace, workspace_bytes, stream));
   if (!s.ok()) {
     cudaFreeAsync(d_down, stream);
     cudaFreeAsync(d_up, stream);

@@ -267,6 +267,7 @@ bool Fp8ProjEnabled(Fp8Part part) {
   static const bool gdn = on("Q4T_FP8_GDN");
   static const bool lmhead = on("Q4T_FP8_LMHEAD");
   static const bool shared = on("Q4T_FP8_SHARED");
+  static const bool hc = on("Q4T_FP8_HC");
   // Q4T_FP8_PROJ enables the intermediate projections but NOT lm_head: FP8 on
   // the final logits is the highest-risk group (it can flip a near-tie argmax,
   // with no downstream norm/residual to absorb it), so lm_head stays opt-in
@@ -275,6 +276,7 @@ bool Fp8ProjEnabled(Fp8Part part) {
     case Fp8Part::kAttn: return all || attn;
     case Fp8Part::kGdn: return all || gdn;
     case Fp8Part::kMoeShared: return all || shared;
+    case Fp8Part::kHc: return all || hc;
     case Fp8Part::kLmHead: return lmhead;
   }
   return false;

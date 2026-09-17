@@ -29,6 +29,7 @@
 #include <vector>
 
 #include "q4t/io/weight_loader.h"
+#include "q4t/model/gemv.h"
 #include "q4t/status.h"
 
 namespace q4t {
@@ -47,6 +48,11 @@ struct HyperConnectionWeights {
   uint16_t* mix_down = nullptr;  // [lowrank, hc*hs]
   uint16_t* mix_up = nullptr;  // [hc*hs, lowrank]
   uint16_t* block_inject = nullptr;  // [hc, hc*hs] (null if !use_combine)
+
+  // FP8 (e4m3) decode shadows of the low-rank mix projections (built at load
+  // when Q4T_FP8_PROJ / Q4T_FP8_HC is on). block_inject (N=hc=4) stays BF16.
+  Fp8Shadow mix_down_fp8;
+  Fp8Shadow mix_up_fp8;
 
   int hc_dim() const { return hc_count * hidden_size; }
   void Free();
