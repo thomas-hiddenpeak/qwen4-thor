@@ -6,7 +6,7 @@
 
 | 日期 | 摘要 (当天最新一条) |
 |---|---|
-| [2026-09-18](2026-09-18.md) | serve 工业化: P1 加固 + P2 (优雅关闭/GPU 健康) + P3 (/metrics Prometheus) + PLE exact-recovery |
+| [2026-09-18](2026-09-18.md) | decode 性能: FP8 W8A16 投影 (单流 decode 1.31×) + serve 工业化收尾 |
 | [2026-09-17](2026-09-17.md) | GatedDeltaNet 寄存器-state prefill kernel (ds4 风格, +12% 单流 prefill) |
 | [2026-09-16](2026-09-16.md) | prefill roofline: 算力仅用 ~1-4%, 瓶颈是访存+延迟 (非算力); 大乘数在批处理 |
 | [2026-09-15](2026-09-15.md) | Step 4: tensor core (FA4) 路径关闭 (源码级 blocker) |

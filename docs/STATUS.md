@@ -8,8 +8,22 @@
 Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 2026-09-07)
 (详见 [PHASES.md](PHASES.md))
 
-## 当前焦点 (2026-09-18): 单流 prefill + serve 工业化 (推进中)
+## 当前焦点 (2026-09-18): 单流 decode 性能 (FP8 投影) + serve 工业化 (推进中)
 
+- **FP8 W8A16 decode 投影 (2026-09-18, 正结果 1.31×, opt-in Q4T_FP8_PROJ)**:
+  用户"目标单流 decode 达 273 GB/s 上限"。nsys 先测: `Bf16GevKernel` (M=1 投影
+  GEMV) = decode **61.6%**, **GPU 满载非 launch-bound** (kernel busy≈wall,
+  cudaLaunchKernel 1.6% 隐藏) → CUDA Graph 无用。proto 复测: **BF16 GEMV 大投影已
+  244-252 GB/s** (近 273 spec) → **认知修正: 杠杆非"提高 GB/s"而是 FP8 减字节**。
+  实现 W8A16 (e4m3 权重 1B + per-channel scale, BF16 激活): `Fp8GevKernel` +
+  `QuantizeFp8RowKernel` + `Fp8Shadow`/`BuildFp8Shadow` + `ProjGemm` (M=1 有
+  shadow→FP8, 否则=Bf16Gemm)。接入 attn q/k/v/o + GDN in_proj_qkv/z/out +
+  lm_head + MoE shared (router/index_qk/a/b/HC 保 BF16)。**双存零风险** (BF16 权重
+  不动, prefill bit-identical; FP8 shadow 纯附加, 仅 M=1 用)。**结果**: decode
+  17.9→**23.4 tok/s (1.31×)**, greedy 输出对事实 prompt 与 BF16 **逐字一致**,
+  serve API E2E 3 请求全连贯无 error ~22.7 tok/s, 71 测试无回归。默认 OFF
+  (保 BF16 精确路径为默认; 翻默认 ON 待更广质量验证)。下一杠杆: MoE quant
+  kernel 融合 (SwiGLUQuant+GatherQuant 11.2%)。
 - **serve 工业级审计 + 加固 (2026-09-18, DoS/健壮性)**: 系统审计 chat_server.cpp
   (1651 行) + 调度器。已具备: header 1MB/body 16MB guard + conn_cap 503 shed +
   AllocSeqId 排队背压 + 共享 prefill buffer + lockstep 调度 + drain。**已修缺口**:
