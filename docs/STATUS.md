@@ -10,6 +10,13 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
 
 ## 当前焦点 (2026-09-18): 单流 decode 性能 (FP8 投影) + serve 工业化 (推进中)
 
+- **FP8 审计响应 + max_seq 修复 (2026-09-18)**: (1) 求证 NVFP4=W4A4 (act_quant.cu
+  运行时量化激活), 与投影 W8A16 区分。(2) 审计两点已落地: **拆分开关**
+  (Q4T_FP8_ATTN/_GDN/_LMHEAD/_SHARED 各自独立, 可单独测收益) + **真实 FP8 路径
+  单测** (tests/gemv_fp8_test.cpp 4 个经 ungated QuantizeToFp8Shadow 真执行
+  Fp8GevKernel: 量化/噪声带/调度/argmax, 75 测试全绿)。(3) **serve --max-seq 2
+  崩溃修复** (compute-sanitizer: QSA indexer GEMM 读 idx_comp 越 max_len slice;
+  max_blocks=min(kMaxBlocks,max_len); 既有 bug 非 FP8 回归)。
 - **FP8 W8A16 decode 投影 (2026-09-18, 正结果 1.31×, opt-in Q4T_FP8_PROJ)**:
   用户"目标单流 decode 达 273 GB/s 上限"。nsys 先测: `Bf16GevKernel` (M=1 投影
   GEMV) = decode **61.6%**, **GPU 满载非 launch-bound** (kernel busy≈wall,
