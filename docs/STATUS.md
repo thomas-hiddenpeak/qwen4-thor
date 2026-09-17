@@ -10,6 +10,20 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
 
 ## 当前焦点 (2026-09-17): 批处理吞吐 (推进中)
 
+- **prefill/decode 融合: 原语保留 (正结果 bit-identical) + 调度器融合无收益 (负结果,
+  已回退) (2026-09-17)**: 用户授权建融合 (确认加法式, 不破坏 PD 分离)。**增量 1
+  ModelMixedBatch** (泛化 ModelPrefillBatch: per-seq base_position reset-or-continue +
+  统一 PLE history): bit-identical (全新 batch == ModelPrefillBatch l2_rel 0; 融合
+  continue 行 == 全量 ModelPrefill 末行 0, argmax 一致), **已提交 1af0821 保留**
+  (PD-ready co-located 原语, 当前未调用)。**增量 2 调度器融合**: prefill+decode 共现
+  融合成一次 forward。发现调度器 (opportunistic prefill + lockstep decode) 使两者
+  **时序不相交, 融合从不触发**; 加 fuse-align 强制触发后**吞吐持平偏略降** (饱和 24
+  req: ON 60-65 vs baseline 65-66 tok/s; prefill 重: 54.5 vs 54.8)。**无收益, 已回退
+  调度器改动**。根因: **Thor 均匀带宽受限** (FP4 张量核弱 vs 241 GB/s LPDDR5x,
+  roofline T=2560 prefill 仅 1% FP4 峰值), prefill 与 decode **都** memory-bound →
+  **无 compute/memory 流水线不平衡**可配平 (H100 上 prefill 计算受限+decode 带宽受限
+  才有), 融合只让 forward 更重被抵消。**本 session 第 4 个配平/合并负结果 (gather /
+  grouped-GEMM / 分块交织 / 融合), 全同根: 已近结构带宽地板**。
 - **长 prompt prefill: SparseAttention cp.async 双缓冲预取 (2026-09-17, 正结果 +20%)**:
   full-model nsys 定位长 prompt (T=8000) prefill 瓶颈 = SparseAttentionKernel 38%
   (随 T 涨), latency-bound (散射 paged-KV gather 与 compute 串行)。用 cp.async 双缓冲
