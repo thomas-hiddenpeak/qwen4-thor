@@ -697,6 +697,64 @@ __global__ void MergeChunkTopkKernel(const f32* __restrict__ logits_c,
   }
 }
 
+// Block-parallel streaming indexer kernels (decode / small T).
+//
+// The token-parallel kernels above (IndexerLogitsKernel / MergeChunkTopkKernel)
+// launch one 256-thread block per TOKEN. For decode (T=1) that is a SINGLE
+// block scoring 2048 blocks serially on 20 SMs (~1/160 utilization) — the
+// dominant decode cost at long context (measured: 704us/chunk x 15 chunks x
+// 12 layers ~= 127ms/step). These kernels parallelize over BLOCK TILES instead
+// (grid.x = 2048/256 = 8 tiles, grid.y = T), mirroring vllm's decode QSA
+// indexer (program_id over block tiles). Each thread scores ONE block (all
+// n_iq heads), so 2048 blocks use 2048 threads across all SMs.
+//
+// Valid for small T (<= 4) with OR without d_seq_id: for T <= 4 each token's
+// d_seq_id[t] is fixed, so the per-sequence idx_comp slice can be selected
+// once per block (the query rows are still shared across the block's tiles).
+// Large T (prefill) keeps the tensor-core GEMM scoring path.
+
+// Score one 2048-block chunk in parallel. iq: [T, n_iq, hd] (RoPE'd),
+// ck: idx_comp (+ per-seq slice via d_seq_id) + block_off*hd, logits_c:
+// [T, max_blocks].
+__global__ void IndexerLogitsBlockParKernel(
+    const u16* __restrict__ iq, const u16* __restrict__ ck,
+    f32* __restrict__ logits_c, const int* __restrict__ positions, int T,
+    int n_iq, int hd, int compress, int max_blocks, int block_off,
+    const int* __restrict__ d_seq_id, size_t idx_seq_stride) {
+  const int t = blockIdx.y;
+  if (t >= T) return;
+  const int tile = blockIdx.x;
+  const int g = tile * 256 + threadIdx.x;  // LOCAL block index within the chunk
+  const int pos = positions[t];
+  const int n_groups = (pos + 1) / compress;  // GLOBAL visible block count
+  const int global_g = block_off + g;  // global block index (ck is pre-offset)
+  const float inv_sqrt = 1.f / sqrtf(static_cast<float>(hd));
+  // Per-sequence idx_comp slice (T <= 4: d_seq_id[t] is fixed for this token).
+  const u16* cks = d_seq_id
+                       ? ck + static_cast<size_t>(d_seq_id[t]) * idx_seq_stride
+                       : ck;
+  // Stage this token's n_iq query rows. n_iq <= 4, hd <= 128 (idx config), so
+  // a fixed 512-element buffer covers it (VLA shared memory is illegal).
+  __shared__ u16 s_q[512];
+  for (int i = threadIdx.x; i < n_iq * hd; i += blockDim.x)
+    s_q[i] = iq[(static_cast<size_t>(t) * n_iq * hd) + i];
+  __syncthreads();
+  float val = -1e30f;
+  if (global_g < n_groups) {
+    float sum = 0.f;
+    for (int h = 0; h < n_iq; ++h) {
+      float dot = 0.f;
+      for (int d = 0; d < hd; ++d)
+        dot += Bf16ToFloat(s_q[h * hd + d]) *
+               Bf16ToFloat(cks[static_cast<size_t>(g) * hd + d]);
+      sum += fmaxf(dot, 0.f);
+    }
+    val = sum * inv_sqrt;
+  }
+  // Write to the LOCAL column g (MergeChunkTopkKernel reads [0, max_blocks)).
+  logits_c[static_cast<size_t>(t) * max_blocks + g] = val;
+}
+
 // Expand the running top-block_topk block ids to visible token positions plus
 // the current (in-progress) group tail. Mirrors TopkSelectKernel's sparse
 // expand, but reads the streamed run_idx / run_val instead of sorting logits.
@@ -1412,9 +1470,29 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
     InitRunTopkKernel<<<(T * block_topk + 255) / 256, 256, 0, stream>>>(
         d_run_val, d_run_idx, T * block_topk);
     const int num_chunks = (n_groups_max + max_blocks - 1) / max_blocks;
+    // Small T (decode / MTP verify, T <= 4): block-parallel streaming kernels
+    // (grid over block tiles) — the token-parallel kernels above launch one
+    // block per token, which is a single block for T=1 and leaves 19/20 SMs
+    // idle. Valid with OR without d_seq_id (T <= 4: d_seq_id[t] is fixed per
+    // token, so the per-seq idx_comp slice is selected once per block). Large
+    // T (prefill) keeps the tensor-core GEMM scoring path (Bf16Gemm +
+    // IndexerReduce) which saturates the SMs via the GEMM.
+    const bool block_par = T <= 4 && n_iq * idx_hd <= 512;
     for (int c = 0; c < num_chunks; ++c) {
       const int block_off = c * max_blocks;
-      if (d_seq_id == nullptr) {
+      if (block_par) {
+        IndexerLogitsBlockParKernel<<<dim3(max_blocks / 256, T), 256, 0,
+                                       stream>>>(
+            d_iq, idx_comp + static_cast<size_t>(block_off) * idx_hd, d_logits,
+            d_positions, T, n_iq, idx_hd, w.idx_compress, max_blocks,
+            block_off, d_seq_id, idx_seq_stride);
+        // Merge stays token-parallel (one block per token): it is correct and
+        // cheap (~137us at T=1); only the scoring was the under-parallelized
+        // dominant cost. (A block-parallel merge would race on run_val.)
+        MergeChunkTopkKernel<<<T, 256, 0, stream>>>(
+            d_logits, block_off, max_blocks, block_topk, T, d_run_val,
+            d_run_idx);
+      } else if (d_seq_id == nullptr) {
         s = CheckGemm(Bf16Gemm(
             d_iq, idx_comp + static_cast<size_t>(block_off) * idx_hd, d_S,
             T * n_iq, max_blocks, idx_hd, 1.f, 0.f, d_gemm_ws, gemm_ws,
@@ -1424,14 +1502,17 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
         IndexerReduceKernel<<<(total + 255) / 256, 256, 0, stream>>>(
             d_S, d_logits, d_positions, T, n_iq, idx_hd, w.idx_compress,
             max_blocks, block_off);
+        MergeChunkTopkKernel<<<T, 256, 0, stream>>>(
+            d_logits, block_off, max_blocks, block_topk, T, d_run_val,
+            d_run_idx);
       } else {
         IndexerLogitsKernel<<<T, 256, 0, stream>>>(
             d_iq, idx_comp, d_logits, d_positions, T, n_iq, idx_hd,
             w.idx_compress, max_blocks, block_off, d_seq_id, idx_seq_stride);
+        MergeChunkTopkKernel<<<T, 256, 0, stream>>>(
+            d_logits, block_off, max_blocks, block_topk, T, d_run_val,
+            d_run_idx);
       }
-      MergeChunkTopkKernel<<<T, 256, 0, stream>>>(
-          d_logits, block_off, max_blocks, block_topk, T, d_run_val,
-          d_run_idx);
     }
     ExpandRunTopkKernel<<<T, 256, 0, stream>>>(
         d_run_idx, d_run_val, d_positions, T, w.idx_compress, block_topk,

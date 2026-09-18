@@ -20,6 +20,7 @@
 #include <vector>
 
 #include <cuda_bf16.h>
+#include <cuda_profiler_api.h>
 #include <cuda_runtime.h>
 
 #include "q4t/io/json.h"
@@ -854,6 +855,12 @@ void ChatServer::SchedulerLoop() {
                                         (model_.ple_hash.ngram_size - 1));
     }
 
+    // Q4T_PROFILE_DECODE=1: bracket each decode step with the CUDA profiler
+    // API so `nsys --capture-range=cudaProfilerApi` captures ONLY decode
+    // (isolating the O(context) QSA indexer cost from prefill).
+    static const bool kProfileDecode =
+        std::getenv("Q4T_PROFILE_DECODE") != nullptr;
+    if (kProfileDecode) cudaProfilerStart();
     Status s;
     {
       const std::lock_guard<std::mutex> lock(model_mu_);
@@ -875,6 +882,7 @@ void ChatServer::SchedulerLoop() {
         }
       }
     }
+    if (kProfileDecode) cudaProfilerStop();
 
     // Wake each request with its next token (or -1 on failure). The request
     // thread owns the state-machine advance (position/history) after this.
