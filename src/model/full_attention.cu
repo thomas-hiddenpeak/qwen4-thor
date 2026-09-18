@@ -37,6 +37,17 @@ constexpr int kMaxT = 8192;  // max prefill tokens per attention forward
 constexpr int kMaxBlocks = 2048;  // block-score CHUNK size (long ctx streams)
 constexpr int kMaxBlockTopk = 512;  // idx_budget / compress (top-k blocks kept)
 constexpr int kMaxTopk = 2052;  // idx_budget + compress - 1
+// Max T for the one-pass long-context indexer (decode / MTP verify). At T <=
+// kOnePassT the full [T, n_groups] logits buffer is small enough to materialise
+// (T=1, 262K ctx -> 65536 f32 = 256 KB), so we score all blocks once and do a
+// multi-level parallel top-k instead of the O(n_chunks) streaming merge.
+constexpr int kOnePassT = 4;
+// One-pass candidate-list stride: must hold the worst-case first-level output
+// (ceil(kMaxGroups / kMaxBlocks) * kMaxBlockTopk). 262K ctx -> 65536 groups ->
+// 32 slices * 512 = 16384. Bounded by kMaxOnePassCand below.
+constexpr int kMaxGroups = 65536;  // 262144 / compress(4)
+constexpr int kMaxOnePassCand =
+    (kMaxGroups / kMaxBlocks) * kMaxBlockTopk;  // 32 slices * 512 = 16384
 
 using u16 = uint16_t;
 using f32 = float;
@@ -801,6 +812,193 @@ __global__ void ExpandRunTopkKernel(const int* __restrict__ run_idx,
 }
 
 // ---------------------------------------------------------------------------
+// One-pass long-context indexer (decode / small T, T <= kOnePassT).
+//
+// The streaming path above exists because PREFILL (T up to 8192) cannot
+// materialise [T, n_groups] logits. But at decode (T <= 4) the full
+// [T, n_groups] is tiny (T=1, 262K context -> 65536 f32 = 256 KB), so we can
+// score ALL blocks in ONE pass and select the global top-block_topk with a
+// small multi-level parallel reduction. This removes the O(n_chunks) cost of
+// the streaming merge (6 chunks x 12 layers x 132us ~= 9.5ms/step at 30K)
+// and the under-parallelised chunked scoring.
+//
+// Correctness: the selected SET is the exact global top-block_topk. Lemma:
+// global top-K  subset  union over windows of (window top-K), because if a
+// global top-K element x were absent from its window's top-K, that window
+// would hold >= K elements > x, contradicting x being within the global top-K.
+// The invariant is preserved at every reduction level (each window keeps
+// top-block_topk), so the final sort yields the exact global top-block_topk.
+// The scoring math is identical to IndexerLogitsBlockParKernel
+// (sum_h relu(q_h . k_g) / sqrt(hd)), so selection is bit-equivalent to the
+// streaming path up to measure-zero FP32 ties.
+
+// Score every visible block for each token in one pass. One WARP per block
+// (8 blocks per 256-thread CUDA block), coalesced key reads (lane l reads key
+// dims {l, 32+l, 64+l, 96+l}). iq: [T, n_iq, hd] (RoPE'd); ck: idx_comp
+// (+ per-seq slice via d_seq_id); logits: [T, n_groups] f32 (OOB / causal-
+// hidden blocks are -1e30).
+__global__ void OnePassScoreKernel(const u16* __restrict__ iq,
+                                   const u16* __restrict__ ck,
+                                   f32* __restrict__ logits,
+                                   const int* __restrict__ positions, int T,
+                                   int n_iq, int hd, int compress,
+                                   int n_groups,
+                                   const int* __restrict__ d_seq_id,
+                                   size_t idx_seq_stride) {
+  const int t = blockIdx.y;
+  if (t >= T) return;
+  const int warp = threadIdx.x >> 5;
+  const int lane = threadIdx.x & 31;
+  const int g = blockIdx.x * 8 + warp;  // global block index for this warp
+  const int pos = positions[t];
+  const int n_vis = (pos + 1) / compress;  // visible blocks for this token
+  const float inv_sqrt = 1.f / sqrtf(static_cast<float>(hd));
+  const u16* cks = d_seq_id
+                       ? ck + static_cast<size_t>(d_seq_id[t]) * idx_seq_stride
+                       : ck;
+  // Stage this token's query [n_iq, hd] (n_iq*hd <= 512 for the idx config).
+  __shared__ u16 s_q[512];
+  for (int i = threadIdx.x; i < n_iq * hd; i += blockDim.x)
+    s_q[i] = iq[(static_cast<size_t>(t) * n_iq * hd) + i];
+  __syncthreads();
+  float acc = 0.f;
+  if (g < n_groups && g < n_vis) {
+    const u16* krow = cks + static_cast<size_t>(g) * hd;
+    for (int h = 0; h < n_iq; ++h) {
+      float dot = 0.f;
+#pragma unroll
+      for (int m = 0; m < hd / 32; ++m) {
+        const int d = m * 32 + lane;
+        dot += Bf16ToFloat(s_q[h * hd + d]) * Bf16ToFloat(krow[d]);
+      }
+#pragma unroll
+      for (int off = 16; off > 0; off >>= 1)
+        dot += __shfl_down_sync(0xffffffffu, dot, off);
+      if (lane == 0) acc += fmaxf(dot, 0.f);
+    }
+  }
+  // grid.x = ceil(n_groups/8), so tail warps can have g >= n_groups: guard the
+  // write (logits is sized exactly [T, n_groups]).
+  if (lane == 0 && g < n_groups)
+    logits[static_cast<size_t>(t) * n_groups + g] =
+        (g < n_vis) ? acc * inv_sqrt : -1e30f;
+}
+
+// Local top-block_topk of one 2048-wide slice of the one-pass logits.
+// grid = (num_slices, T). logits: [T, n_groups]; out (val,idx): [T, stride]
+// with this slice's top-block_topk at [slice*block_topk, +block_topk).
+__global__ void SliceLocalTopkKernel(const f32* __restrict__ logits,
+                                     int n_groups, int max_blocks,
+                                     int block_topk, int T,
+                                     f32* __restrict__ out_val,
+                                     int* __restrict__ out_idx, int stride) {
+  const int t = blockIdx.y;
+  if (t >= T) return;
+  const int base = blockIdx.x * max_blocks;
+  __shared__ float s_val[kMaxBlocks];
+  __shared__ int s_idx[kMaxBlocks];
+  const f32* lrow = logits + static_cast<size_t>(t) * n_groups;
+  for (int g = threadIdx.x; g < kMaxBlocks; g += blockDim.x) {
+    const int gg = base + g;
+    s_val[g] = (gg < n_groups) ? lrow[gg] : -1e30f;
+    s_idx[g] = gg;
+  }
+  __syncthreads();
+  BitonicSortAsc(s_val, s_idx, kMaxBlocks);
+  __syncthreads();
+  for (int i = threadIdx.x; i < block_topk; i += blockDim.x) {
+    const size_t o = static_cast<size_t>(t) * stride + blockIdx.x * block_topk + i;
+    out_val[o] = s_val[kMaxBlocks - block_topk + i];
+    out_idx[o] = s_idx[kMaxBlocks - block_topk + i];
+  }
+}
+
+// Merge level: local top-block_topk of each 2048-window of the current
+// candidate list (val,idx). grid = (ceil(C/max_blocks), T). Reads C candidates
+// from in (stride), writes ceil(C/max_blocks)*block_topk to out (stride).
+__global__ void WindowMergeTopkKernel(const f32* __restrict__ in_val,
+                                      const int* __restrict__ in_idx, int C,
+                                      int in_stride, int max_blocks,
+                                      int block_topk, int T,
+                                      f32* __restrict__ out_val,
+                                      int* __restrict__ out_idx,
+                                      int out_stride) {
+  const int t = blockIdx.y;
+  if (t >= T) return;
+  const int base = blockIdx.x * max_blocks;
+  __shared__ float s_val[kMaxBlocks];
+  __shared__ int s_idx[kMaxBlocks];
+  const f32* iv = in_val + static_cast<size_t>(t) * in_stride;
+  const int* ii = in_idx + static_cast<size_t>(t) * in_stride;
+  for (int g = threadIdx.x; g < kMaxBlocks; g += blockDim.x) {
+    const int k = base + g;
+    s_val[g] = (k < C) ? iv[k] : -1e30f;
+    s_idx[g] = (k < C) ? ii[k] : -1;
+  }
+  __syncthreads();
+  BitonicSortAsc(s_val, s_idx, kMaxBlocks);
+  __syncthreads();
+  for (int i = threadIdx.x; i < block_topk; i += blockDim.x) {
+    const size_t o = static_cast<size_t>(t) * out_stride +
+                     blockIdx.x * block_topk + i;
+    out_val[o] = s_val[kMaxBlocks - block_topk + i];
+    out_idx[o] = s_idx[kMaxBlocks - block_topk + i];
+  }
+}
+
+// Final: one block per token. Sort the (<= 2048) surviving candidates, take
+// top-block_topk, expand to token positions + force-include the current group
+// tail. Mirrors ExpandRunTopkKernel but reads the one-pass candidate list.
+__global__ void FinalTopkExpandKernel(const f32* __restrict__ cand_val,
+                                      const int* __restrict__ cand_idx, int C,
+                                      int stride,
+                                      const int* __restrict__ positions, int T,
+                                      int compress, int block_topk,
+                                      int* __restrict__ topk,
+                                      int* __restrict__ topk_len, int max_topk) {
+  const int t = blockIdx.x;
+  if (t >= T) return;
+  const int pos = positions[t];
+  __shared__ float s_val[kMaxBlocks];
+  __shared__ int s_idx[kMaxBlocks];
+  __shared__ int s_n;
+  if (threadIdx.x == 0) s_n = 0;
+  const f32* cv = cand_val + static_cast<size_t>(t) * stride;
+  const int* ci = cand_idx + static_cast<size_t>(t) * stride;
+  for (int g = threadIdx.x; g < kMaxBlocks; g += blockDim.x) {
+    s_val[g] = (g < C) ? cv[g] : -1e30f;
+    s_idx[g] = (g < C) ? ci[g] : -1;
+  }
+  __syncthreads();
+  BitonicSortAsc(s_val, s_idx, kMaxBlocks);
+  __syncthreads();
+  int* out = topk + static_cast<size_t>(t) * max_topk;
+  for (int c = threadIdx.x; c < block_topk; c += blockDim.x) {
+    const int gi = kMaxBlocks - block_topk + c;
+    if (s_val[gi] <= -1e29f) continue;
+    const int base = s_idx[gi] * compress;
+    for (int j = 0; j < compress; ++j) {
+      const int p = base + j;
+      if (p <= pos) out[atomicAdd(&s_n, 1)] = p;
+    }
+  }
+  __syncthreads();
+  const int cur_g = pos / compress;
+  bool cur_selected = false;
+  for (int c = 0; c < block_topk; ++c)
+    cur_selected |= (s_val[kMaxBlocks - block_topk + c] > -1e29f &&
+                     s_idx[kMaxBlocks - block_topk + c] == cur_g);
+  if (!cur_selected && threadIdx.x < compress) {
+    const int p = cur_g * compress + threadIdx.x;
+    if (p <= pos) out[atomicAdd(&s_n, 1)] = p;
+  }
+  __syncthreads();
+  const int n = s_n;
+  for (int i = n + threadIdx.x; i < max_topk; i += blockDim.x) out[i] = -1;
+  if (threadIdx.x == 0) topk_len[t] = n;
+}
+
+// ---------------------------------------------------------------------------
 // Kernel 9: sparse GQA attention over the selected token positions.
 //
 //   q : [T, nq, hd] (RoPE'd), gate applied later
@@ -1265,6 +1463,15 @@ size_t FullAttentionWorkspaceBytes(const FullAttentionWeights& w, int T) {
   const int block_topk = 512;  // idx_budget / compress (streaming top-k)
   alloc(static_cast<size_t>(T) * block_topk * 4);  // d_run_val (f32)
   alloc(static_cast<size_t>(T) * block_topk * 4);  // d_run_idx (i32)
+  // One-pass long-context indexer buffers (decode / small T only).
+  if (T <= kOnePassT) {
+    const int n_groups_ws = std::max(1, w.max_len / w.idx_compress);
+    alloc(static_cast<size_t>(T) * n_groups_ws * 4);  // one-pass logits [T,groups]
+    alloc(static_cast<size_t>(T) * kMaxOnePassCand * 4);  // cand val 0
+    alloc(static_cast<size_t>(T) * kMaxOnePassCand * 4);  // cand idx 0
+    alloc(static_cast<size_t>(T) * kMaxOnePassCand * 4);  // cand val 1
+    alloc(static_cast<size_t>(T) * kMaxOnePassCand * 4);  // cand idx 1
+  }
   off += 32u * 1024u * 1024u;  // GEMM scratch
   return off;
 }
@@ -1321,6 +1528,25 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
       static_cast<f32*>(alloc(static_cast<size_t>(T) * stream_block_topk * 4));
   int* d_run_idx =
       static_cast<int*>(alloc(static_cast<size_t>(T) * stream_block_topk * 4));
+  // One-pass long-context indexer buffers (decode / small T only).
+  f32* d_op_logits = nullptr;
+  f32* d_cand_val0 = nullptr;
+  int* d_cand_idx0 = nullptr;
+  f32* d_cand_val1 = nullptr;
+  int* d_cand_idx1 = nullptr;
+  if (T <= kOnePassT) {
+    const int n_groups_ws = std::max(1, w.max_len / w.idx_compress);
+    d_op_logits =
+        static_cast<f32*>(alloc(static_cast<size_t>(T) * n_groups_ws * 4));
+    d_cand_val0 =
+        static_cast<f32*>(alloc(static_cast<size_t>(T) * kMaxOnePassCand * 4));
+    d_cand_idx0 =
+        static_cast<int*>(alloc(static_cast<size_t>(T) * kMaxOnePassCand * 4));
+    d_cand_val1 =
+        static_cast<f32*>(alloc(static_cast<size_t>(T) * kMaxOnePassCand * 4));
+    d_cand_idx1 =
+        static_cast<int*>(alloc(static_cast<size_t>(T) * kMaxOnePassCand * 4));
+  }
   if (off > workspace_bytes)
     return Status::Fail("FullAttentionForward: workspace too small (need " +
                         std::to_string(off) + ", have " +
@@ -1460,9 +1686,58 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
     TopkSelectKernel<<<T, 256, 0, stream>>>(d_logits, d_topk, d_topk_len,
                                             d_positions, T, w.idx_compress,
                                             block_topk, max_blocks, max_topk);
+  } else if (T <= kOnePassT && n_iq * idx_hd <= 512) {
+    // One-pass long-context indexer (decode / MTP verify, T <= kOnePassT).
+    // The [T, n_groups] logits buffer is small enough to materialise, so score
+    // ALL blocks in one pass (warp-per-block, coalesced) and select the global
+    // top-block_topk with a small multi-level parallel reduction. This removes
+    // the O(n_chunks) streaming-merge cost (6 chunks x 12 layers x 132us ~=
+    // 9.5ms/step at 30K) and the under-parallelised chunked scoring. The
+    // selected set is the exact global top-block_topk (lemma in the kernel
+    // header). Short context (<= max_blocks) and prefill (large T) are
+    // unchanged.
+    if (block_topk > kMaxBlockTopk)
+      return Status::Fail(
+          "FullAttentionForward: block_topk exceeds kMaxBlockTopk "
+          "(one-pass top-k shared buffer)");
+    OnePassScoreKernel<<<dim3((n_groups_max + 7) / 8, T), 256, 0, stream>>>(
+        d_iq, idx_comp, d_op_logits, d_positions, T, n_iq, idx_hd,
+        w.idx_compress, n_groups_max, d_seq_id, idx_seq_stride);
+    // Multi-level reduction: each level takes the local top-block_topk of every
+    // 2048-window of the current candidate list, converging to <= max_blocks,
+    // then one final sort. Ping-pong two candidate buffers.
+    const int n_slices0 = (n_groups_max + max_blocks - 1) / max_blocks;
+    int cur = n_slices0 * block_topk;  // candidates after level 0
+    SliceLocalTopkKernel<<<dim3(n_slices0, T), 256, 0, stream>>>(
+        d_op_logits, n_groups_max, max_blocks, block_topk, T, d_cand_val0,
+        d_cand_idx0, cur);
+    f32* in_v = d_cand_val0;
+    int* in_i = d_cand_idx0;
+    int in_stride = cur;
+    f32* out_v = d_cand_val1;
+    int* out_i = d_cand_idx1;
+    while (cur > max_blocks) {
+      const int n_slices = (cur + max_blocks - 1) / max_blocks;
+      const int next = n_slices * block_topk;
+      WindowMergeTopkKernel<<<dim3(n_slices, T), 256, 0, stream>>>(
+          in_v, in_i, cur, in_stride, max_blocks, block_topk, T, out_v, out_i,
+          next);
+      f32* tv = in_v;
+      in_v = out_v;
+      out_v = tv;
+      int* ti = in_i;
+      in_i = out_i;
+      out_i = ti;
+      in_stride = next;
+      cur = next;
+    }
+    FinalTopkExpandKernel<<<T, 256, 0, stream>>>(
+        in_v, in_i, cur, in_stride, d_positions, T, w.idx_compress, block_topk,
+        d_topk, d_topk_len, max_topk);
   } else {
-    // Streaming path (long context). Score blocks in CHUNK = max_blocks slices
-    // and keep a running per-query top-block_topk merged across chunks.
+    // Streaming path (long context, prefill large T). Score blocks in
+    // CHUNK = max_blocks slices and keep a running per-query top-block_topk
+    // merged across chunks.
     if (block_topk > kMaxBlockTopk)
       return Status::Fail(
           "FullAttentionForward: block_topk exceeds kMaxBlockTopk "

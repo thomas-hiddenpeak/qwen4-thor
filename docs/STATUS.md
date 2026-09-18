@@ -9,6 +9,15 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
 (详见 [PHASES.md](PHASES.md))
 
 ## 当前焦点 (2026-09-18): QSA 长上下文召回修复 + 单流 decode 性能 (FP8 投影) + serve 工业化
+- **长上下文 decode 性能: one-pass 全块打分 + 多级并行 top-k (2026-09-19, 44K 14.4→17.7 tok/s)**:
+  块并行 indexer (0ae1304) 后 44K decode 14.4 tok/s, 用户要求推回 18+ 且不改
+  精度 (全块打分召回保留)。关键洞察: 流式 top-k 是为 prefill 设计的, decode
+  T≤4 时 [T,n_groups] 才 ~180KB 根本不需要流式 — 一次打完所有块 + 多级并行
+  top-k。4 新 kernel (OnePassScore warp-per-block coalesced / SliceLocalTopk /
+  WindowMergeTopk 逐级收敛 / FinalTopkExpand), 数学保证全局 top-512 ⊆ 各窗口
+  top-512 的并。自检 id_diff=0 (n_groups=10966), 76 测试零警告, 4K 无回归
+  (30-34)。单步 nsys: indexer 24%→7%, 瓶颈转 Fp8Gev 31.2% (权重带宽地板)。
+  测试期间机器重启 (两模型实例并发 OOM, 规则已记 repo memory)。
 
 - **QSA 长上下文召回修复: 流式 top-k (2026-09-18, 移除 8192 硬上限, 已闭合)**:
   用户真实场景 = agent 开发 (40K-200K token prompt)。发现 QSA 只 attend 前 8192
