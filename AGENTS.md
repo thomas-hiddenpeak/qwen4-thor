@@ -170,7 +170,22 @@ cmake --build build --parallel
   ~101 GB / max_seq=4 OOM ~158 GB; 需分块 prefill (一次性 [T,vocab]
   logits 130 GB 不可行); QSA idx_budget=2048 在 262K 只 attend ~3% 历史
   召回受限。PD 分离: 当前 PD-ready 架构已满足本机调度, 多设备/双机降级
-  后续计划。详见 PHASES.md "长上下文 262K 内存预算")。
+  后续计划。详见 PHASES.md "长上下文 262K 内存预算") /
+  **QSA 长上下文召回修复: 流式 top-k (已闭合, 2026-09-18)** (移除 8192
+  硬上限: 旧 kMaxBlocks=2048 把候选块锁死前 2048 压缩块, 8192 之后近期
+  上下文从不被打分, 长上下文召回断裂 — 我们的不完整实现 bug 非 SGLang
+  设计, 参考 tokenspeed/vllm/sglang-ssd-stream 都对全部 num_blocks 打分
+  无上限。prefill 不能 materialize [T,all_blocks] (T=8192 时 3.3TB), 镜像
+  tokenspeed split+merge-tree 做流式 top-k: CHUNK=2048 循环覆盖所有块,
+  每块 tensor-core GEMM 打分 + merge 进 running top-512, 末尾 expand +
+  当前 group 尾部; ≤8192 走原 single-shot 路径不变零回归, >8192 走流式;
+  新增 BitonicSortAsc/InitRunTopk/MergeChunkTopk/ExpandRunTopk 4 kernel,
+  IndexerLogits/Reduce 加 block_off 打分全局块去 cap。验证: 流式合并=精确
+  全局 top-512 (host 暴力自检, 多 chunk id_diff 全边界 near-tie
+  far_from_boundary=0 max_logit_diff≤0.00011) + needle @9000 (group 2250>
+  2048 旧代码 100% 不可见) 召回 + 76 测试全绿零警告。已知边界非 bug: QSA
+  top-512 选择性稀疏, 块数远大于 512 且 needle 不够突出时可能跌出, 参考无
+  大 recent window 与 vllm/sglang 一致)。
 - **Phase 1 完成标准全部闭合 (2026-09-07)**。Phase 2 进行中: B1 多序列
   + B2 连续批处理 + MTP 批处理 Stage 1 + Stage 2a (多序列验证前向) +
   Stage 2b (多序列投机步) + Stage 2c (调度器 MTP 分支, 并发 MTP 请求共享

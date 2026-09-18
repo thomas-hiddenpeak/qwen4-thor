@@ -8,8 +8,25 @@
 Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 2026-09-07)
 (详见 [PHASES.md](PHASES.md))
 
-## 当前焦点 (2026-09-18): 单流 decode 性能 (FP8 投影) + serve 工业化 (推进中)
+## 当前焦点 (2026-09-18): QSA 长上下文召回修复 + 单流 decode 性能 (FP8 投影) + serve 工业化
 
+- **QSA 长上下文召回修复: 流式 top-k (2026-09-18, 移除 8192 硬上限, 已闭合)**:
+  用户真实场景 = agent 开发 (40K-200K token prompt)。发现 QSA 只 attend 前 8192
+  token: `kMaxBlocks=2048` 把候选块锁死在前 2048 压缩块, 8192 之后的近期上下文
+  **从不被打分** (needle 13.5K 末尾密钥答不出)。这是**我们的不完整实现 bug**
+  非 SGLang 设计 — 参考 (tokenspeed/vllm/sglang-ssd-stream) 都对全部 num_blocks
+  打分无上限。prefill 不能 materialize [T,all_blocks] (T=8192 时 3.3TB), 故镜像
+  tokenspeed split+merge-tree 做**流式 top-k**: CHUNK=2048 循环覆盖所有块, 每块
+  tensor-core GEMM 打分 + merge 进 running top-512, 末尾 expand + 当前 group
+  尾部。`kMaxBlocks` 语义改"打分 CHUNK 大小" + 新增 `kMaxBlockTopk=512`;
+  IndexerLogits/Reduce 加 `block_off` 打分全局块去 cap; 新增 BitonicSortAsc/
+  InitRunTopk/MergeChunkTopk/ExpandRunTopk 4 kernel; ≤8192 走**原 single-shot
+  路径不变** (零回归), >8192 走流式。**验证**: (1) 流式合并=精确全局 top-512
+  (host 暴力自检, 多 chunk id_diff 全边界 near-tie, far_from_boundary=0,
+  max_logit_diff≤0.00011); (2) **needle @9000 (group 2250>2048, 旧代码 100%
+  不可见) 召回** — 硬上限移除的决定性证据; (3) 76 测试全绿零警告, 短上下文
+  零回归。已知边界 (非 bug): QSA top-512 是选择性稀疏, 块数远大于 512 且 needle
+  不够突出时可能跌出 (参考无大 recent window, 与 vllm/sglang 一致)。
 - **decode 全面推进: HC mix FP8 (2026-09-18, 最大遗漏)**: 评估剩余杠杆后发现 HC
   (hyper-connection) mix_down[320,10240]+mix_up[10240,320] 每层 attn+mlp ≈ 1.27GB
   BF16/step (和 lm_head 一样大) 从未转 FP8。加 Fp8Part::kHc + ProjGemm, 纳入

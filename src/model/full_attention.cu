@@ -33,8 +33,9 @@ namespace q4t {
 namespace model {
 namespace {
 
-constexpr int kMaxT = 8192;  // max prefill tokens handled by the attention
-constexpr int kMaxBlocks = 2048;  // max compressed blocks (kMaxT / 4)
+constexpr int kMaxT = 8192;  // max prefill tokens per attention forward
+constexpr int kMaxBlocks = 2048;  // block-score CHUNK size (long ctx streams)
+constexpr int kMaxBlockTopk = 512;  // idx_budget / compress (top-k blocks kept)
 constexpr int kMaxTopk = 2052;  // idx_budget + compress - 1
 
 using u16 = uint16_t;
@@ -430,39 +431,34 @@ __global__ void IndexerLogitsKernel(const u16* __restrict__ iq,
                                     f32* __restrict__ logits,
                                     const int* __restrict__ positions, int T,
                                     int n_iq, int hd, int compress,
-                                    int max_blocks, const int* __restrict__ d_seq_id,
+                                    int max_blocks, int block_off,
+                                    const int* __restrict__ d_seq_id,
                                     size_t idx_seq_stride) {
   int t = blockIdx.x;
   if (t >= T) return;
-  int pos = positions[t];
-  int n_groups = (pos + 1) / compress;  // visible groups
-  if (n_groups > max_blocks) n_groups = max_blocks;
-  float inv_sqrt = 1.f / sqrtf(static_cast<float>(hd));
-  // B2 multi-seq: select this token's sequence idx_comp slice.
+  const int pos = positions[t];
+  const int n_groups = (pos + 1) / compress;  // global visible groups (uncapped)
+  const float inv_sqrt = 1.f / sqrtf(static_cast<float>(hd));
   const u16* cks = d_seq_id
                        ? ck + static_cast<size_t>(d_seq_id[t]) * idx_seq_stride
                        : ck;
-  // Must hold up to max_blocks (kMaxBlocks) entries: n_groups reaches
-  // max_blocks once position >= max_blocks * compress (2048 * 4 = 8192).
-  // A smaller buffer (e.g. 512) overflows at position 2051 (n_groups 513),
-  // corrupting shared memory -> illegal memory access.
-  __shared__ float s_blk[kMaxBlocks];
-  for (int g = threadIdx.x; g < n_groups; g += blockDim.x) {
-    float sum = 0.f;
-    for (int h = 0; h < n_iq; ++h) {
-      float dot = 0.f;
-      for (int d = 0; d < hd; ++d) {
-        dot += Bf16ToFloat(iq[(static_cast<size_t>(t) * n_iq + h) * hd + d]) *
-               Bf16ToFloat(cks[static_cast<size_t>(g) * hd + d]);
+  // Scores the chunk of GLOBAL blocks [block_off, block_off + max_blocks);
+  // logits written at the local column lg = g - block_off.
+  for (int lg = threadIdx.x; lg < max_blocks; lg += blockDim.x) {
+    const int g = block_off + lg;
+    float val = -1e30f;
+    if (g < n_groups) {
+      float sum = 0.f;
+      for (int h = 0; h < n_iq; ++h) {
+        float dot = 0.f;
+        for (int d = 0; d < hd; ++d)
+          dot += Bf16ToFloat(iq[(static_cast<size_t>(t) * n_iq + h) * hd + d]) *
+                 Bf16ToFloat(cks[static_cast<size_t>(g) * hd + d]);
+        sum += fmaxf(dot, 0.f);
       }
-      sum += fmaxf(dot, 0.f);
+      val = sum * inv_sqrt;
     }
-    s_blk[g] = sum * inv_sqrt;
-  }
-  __syncthreads();
-  for (int g = threadIdx.x; g < max_blocks; g += blockDim.x) {
-    logits[static_cast<size_t>(t) * max_blocks + g] =
-        (g < n_groups) ? s_blk[g] : -1e30f;
+    logits[static_cast<size_t>(t) * max_blocks + lg] = val;
   }
 }
 
@@ -475,13 +471,13 @@ __global__ void IndexerReduceKernel(const u16* __restrict__ S,
                                     f32* __restrict__ logits,
                                     const int* __restrict__ positions, int T,
                                     int n_iq, int hd, int compress,
-                                    int max_blocks) {
+                                    int max_blocks, int block_off) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   if (idx >= T * max_blocks) return;
   const int t = idx / max_blocks;
-  const int g = idx % max_blocks;
-  int n_groups = (positions[t] + 1) / compress;
-  if (n_groups > max_blocks) n_groups = max_blocks;
+  const int lg = idx % max_blocks;
+  const int g = block_off + lg;  // global block index
+  const int n_groups = (positions[t] + 1) / compress;  // uncapped
   if (g >= n_groups) {
     logits[idx] = -1e30f;
     return;
@@ -490,7 +486,7 @@ __global__ void IndexerReduceKernel(const u16* __restrict__ S,
   float sum = 0.f;
   for (int h = 0; h < n_iq; ++h) {
     const float dot =
-        Bf16ToFloat(S[(static_cast<size_t>(t) * n_iq + h) * max_blocks + g]);
+        Bf16ToFloat(S[(static_cast<size_t>(t) * n_iq + h) * max_blocks + lg]);
     sum += fmaxf(dot, 0.f);
   }
   logits[idx] = sum * inv_sqrt;
@@ -609,6 +605,140 @@ __global__ void TopkSelectKernel(f32* __restrict__ logits, int* __restrict__ top
     n = s_n;
   }
   for (int i = n + threadIdx.x; i < max_topk; i += 256) out[i] = -1;
+  if (threadIdx.x == 0) topk_len[t] = n;
+}
+
+// ---------------------------------------------------------------------------
+// Streaming block top-k (long context, > kMaxBlocks * compress tokens).
+//
+// The single-shot TopkSelectKernel above bitonic-sorts logits over a single
+// [T, kMaxBlocks] buffer, so it can only ever consider the first kMaxBlocks
+// (2048) compressed blocks -> the first 8192 tokens. For agent-scale prompts
+// (40K-200K tokens) that silently drops all recent context from the sparse
+// candidate set, breaking recall. Materializing logits over ALL blocks
+// ([T, n_groups]) is infeasible for prefill (T=8192, n_groups up to ~50000).
+//
+// Instead we stream, mirroring tokenspeed's split + merge-tree QSA kernels:
+// score the blocks in CHUNK = kMaxBlocks slices (tensor-core GEMM per slice),
+// keep a running per-query top-block_topk, and merge each chunk's local
+// top-block_topk into it. Memory stays bounded ([T, block_topk]); the final
+// run_idx holds the global top-block_topk over the entire history.
+// ---------------------------------------------------------------------------
+
+// Bitonic sort (ascending) of (val,idx) held in shared memory. N must be a
+// power of two and <= blockDim.x-addressable; after the sort the k largest
+// entries are the last k. Runtime N (no unroll) — correctness over speed;
+// the streaming indexer is a small fraction of the sparse-attention cost.
+__device__ void BitonicSortAsc(float* v, int* id, int N) {
+  for (int k = 2; k <= N; k <<= 1) {
+    for (int j = k >> 1; j > 0; j >>= 1) {
+      for (int i = threadIdx.x; i < N; i += blockDim.x) {
+        if ((i & (2 * j - 1)) >= j) continue;
+        const int p = i + j;
+        const bool asc = ((i & (2 * k - 1)) < k);
+        if (asc ? (v[i] > v[p]) : (v[i] < v[p])) {
+          const float tv = v[i];
+          v[i] = v[p];
+          v[p] = tv;
+          const int ti = id[i];
+          id[i] = id[p];
+          id[p] = ti;
+        }
+      }
+      __syncthreads();
+    }
+  }
+}
+
+// Initialise the running top-k to empty (score -inf, id -1).
+__global__ void InitRunTopkKernel(f32* __restrict__ run_val,
+                                  int* __restrict__ run_idx, int total) {
+  const int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i >= total) return;
+  run_val[i] = -1e30f;
+  run_idx[i] = -1;
+}
+
+// Merge one chunk's block logits into the running per-query top-block_topk.
+// logits_c: [T, max_blocks] scores for global blocks [block_off, block_off +
+// max_blocks) (invisible / out-of-range columns are -1e30). One block per
+// query t, 256 threads. block_topk <= kMaxBlockTopk, max_blocks == kMaxBlocks.
+__global__ void MergeChunkTopkKernel(const f32* __restrict__ logits_c,
+                                     int block_off, int max_blocks,
+                                     int block_topk, int T,
+                                     f32* __restrict__ run_val,
+                                     int* __restrict__ run_idx) {
+  const int t = blockIdx.x;
+  if (t >= T) return;
+  __shared__ float s_val[kMaxBlocks];
+  __shared__ int s_idx[kMaxBlocks];
+  __shared__ float m_val[2 * kMaxBlockTopk];
+  __shared__ int m_idx[2 * kMaxBlockTopk];
+  const f32* lrow = logits_c + static_cast<size_t>(t) * max_blocks;
+  for (int g = threadIdx.x; g < kMaxBlocks; g += blockDim.x) {
+    s_val[g] = (g < max_blocks) ? lrow[g] : -1e30f;
+    s_idx[g] = block_off + g;
+  }
+  __syncthreads();
+  // Local top-block_topk of this chunk -> last block_topk after the sort.
+  BitonicSortAsc(s_val, s_idx, kMaxBlocks);
+  // Merge running top-k (first half) with this chunk's top-k (second half).
+  for (int i = threadIdx.x; i < block_topk; i += blockDim.x) {
+    m_val[i] = run_val[static_cast<size_t>(t) * block_topk + i];
+    m_idx[i] = run_idx[static_cast<size_t>(t) * block_topk + i];
+    m_val[block_topk + i] = s_val[kMaxBlocks - block_topk + i];
+    m_idx[block_topk + i] = s_idx[kMaxBlocks - block_topk + i];
+  }
+  __syncthreads();
+  BitonicSortAsc(m_val, m_idx, 2 * block_topk);
+  for (int i = threadIdx.x; i < block_topk; i += blockDim.x) {
+    run_val[static_cast<size_t>(t) * block_topk + i] = m_val[block_topk + i];
+    run_idx[static_cast<size_t>(t) * block_topk + i] = m_idx[block_topk + i];
+  }
+}
+
+// Expand the running top-block_topk block ids to visible token positions plus
+// the current (in-progress) group tail. Mirrors TopkSelectKernel's sparse
+// expand, but reads the streamed run_idx / run_val instead of sorting logits.
+__global__ void ExpandRunTopkKernel(const int* __restrict__ run_idx,
+                                    const f32* __restrict__ run_val,
+                                    const int* __restrict__ positions, int T,
+                                    int compress, int block_topk,
+                                    int* __restrict__ topk,
+                                    int* __restrict__ topk_len, int max_topk) {
+  const int t = blockIdx.x;
+  if (t >= T) return;
+  const int pos = positions[t];
+  __shared__ int s_n;
+  if (threadIdx.x == 0) s_n = 0;
+  __syncthreads();
+  int* out = topk + static_cast<size_t>(t) * max_topk;
+  const int* rid = run_idx + static_cast<size_t>(t) * block_topk;
+  const f32* rval = run_val + static_cast<size_t>(t) * block_topk;
+  for (int c = threadIdx.x; c < block_topk; c += blockDim.x) {
+    if (rval[c] <= -1e29f) continue;  // empty top-k slot
+    const int base = rid[c] * compress;
+    for (int j = 0; j < compress; ++j) {
+      const int p = base + j;
+      if (p <= pos) out[atomicAdd(&s_n, 1)] = p;
+    }
+  }
+  __syncthreads();
+  // Force-include the current group tail (causal, may post-date all blocks).
+  const int cur_g = pos / compress;
+  __shared__ int s_cur_sel;
+  if (threadIdx.x == 0) s_cur_sel = 0;
+  __syncthreads();
+  for (int c = threadIdx.x; c < block_topk; c += blockDim.x)
+    if (rval[c] > -1e29f && rid[c] == cur_g) atomicOr(&s_cur_sel, 1);
+  __syncthreads();
+  if (!s_cur_sel && threadIdx.x < compress) {
+    const int p = cur_g * compress + threadIdx.x;
+    if (p <= pos) out[atomicAdd(&s_n, 1)] = p;
+  }
+  __syncthreads();
+  const int n = s_n;
+  for (int i = n + threadIdx.x; i < max_topk; i += blockDim.x) out[i] = -1;
   if (threadIdx.x == 0) topk_len[t] = n;
 }
 
@@ -1074,6 +1204,9 @@ size_t FullAttentionWorkspaceBytes(const FullAttentionWeights& w, int T) {
   alloc(static_cast<size_t>(T) * 4);                  // d_topk_len (i32)
   alloc(static_cast<size_t>(T) * nq * hd * 2);        // d_attn
   alloc(static_cast<size_t>(T) * n_iq * max_blocks * 2);  // d_S (indexer GEMM)
+  const int block_topk = 512;  // idx_budget / compress (streaming top-k)
+  alloc(static_cast<size_t>(T) * block_topk * 4);  // d_run_val (f32)
+  alloc(static_cast<size_t>(T) * block_topk * 4);  // d_run_idx (i32)
   off += 32u * 1024u * 1024u;  // GEMM scratch
   return off;
 }
@@ -1123,6 +1256,13 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   u16* d_attn = static_cast<u16*>(alloc(static_cast<size_t>(T) * nq * hd * 2));
   u16* d_S = static_cast<u16*>(
       alloc(static_cast<size_t>(T) * n_iq * max_blocks * 2));  // indexer GEMM out
+  // Streaming top-k running buffers (long context): per-query top-block_topk
+  // scores + global block ids, merged across CHUNK slices.
+  const int stream_block_topk = 512;  // idx_budget / compress
+  f32* d_run_val =
+      static_cast<f32*>(alloc(static_cast<size_t>(T) * stream_block_topk * 4));
+  int* d_run_idx =
+      static_cast<int*>(alloc(static_cast<size_t>(T) * stream_block_topk * 4));
   if (off > workspace_bytes)
     return Status::Fail("FullAttentionForward: workspace too small (need " +
                         std::to_string(off) + ", have " +
@@ -1212,29 +1352,91 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
       w.index_k_norm, idx_raw, idx_comp, d_positions, rope_pos, T,
       w.max_len, idx_hd, w.idx_compress, w.rope_theta, w.eps, d_seq_id,
       idx_seq_stride, rope_seq_stride);
-  // 9. indexer logits over visible compressed blocks. Single-seq: tensor-core
-  //    GEMM S = iq @ ck^T (Bf16Gemm) + relu/sum/mask reduce (replaces the SIMT
-  //    triple loop). Multi-seq (d_seq_id): per-sequence idx_comp slices can't
-  //    share one GEMM weight, so keep the SIMT kernel.
-  if (d_seq_id == nullptr) {
-    s = CheckGemm(Bf16Gemm(d_iq, idx_comp, d_S, T * n_iq, max_blocks, idx_hd,
-                           1.f, 0.f, d_gemm_ws, gemm_ws, stream));
-    if (!s.ok()) return s;
-    const int total = T * max_blocks;
-    IndexerReduceKernel<<<(total + 255) / 256, 256, 0, stream>>>(
-        d_S, d_logits, d_positions, T, n_iq, idx_hd, w.idx_compress, max_blocks);
-  } else {
-    IndexerLogitsKernel<<<T, 256, 0, stream>>>(d_iq, idx_comp, d_logits,
-                                               d_positions, T, n_iq, idx_hd,
-                                               w.idx_compress, max_blocks,
-                                               d_seq_id, idx_seq_stride);
+  // 9-10. Block scoring + top-k selection.
+  //
+  // Short/medium context (max visible groups <= kMaxBlocks, i.e. <= 8192
+  // tokens): score all blocks into one [T, max_blocks] buffer and bitonic-
+  // select in a single shot (unchanged fast path).
+  //
+  // Long context (> 8192 tokens): the candidate set spans more than kMaxBlocks
+  // compressed blocks, which cannot be materialised as [T, n_groups] for
+  // prefill. Stream the score over CHUNK = max_blocks slices and merge each
+  // chunk's local top-k into a running per-query top-block_topk (see the
+  // streaming kernels above). This restores long-context recall: without it
+  // only the first 2048 blocks (first 8192 tokens) were ever candidates.
+  const int block_topk = w.idx_block_topk();
+  // Host-side max position to size the chunk loop. A single small D2H; the
+  // streaming branch only runs for genuinely long prompts where its cost
+  // dwarfs this sync.
+  int max_pos = 0;
+  {
+    std::vector<int> hp(static_cast<size_t>(T));
+    if (cudaMemcpyAsync(hp.data(), d_positions,
+                        static_cast<size_t>(T) * sizeof(int),
+                        cudaMemcpyDeviceToHost, stream) != cudaSuccess)
+      return Status::Fail("cudaMemcpyAsync positions failed");
+    if (cudaStreamSynchronize(stream) != cudaSuccess)
+      return Status::Fail("cudaStreamSynchronize positions failed");
+    for (int i = 0; i < T; ++i) max_pos = std::max(max_pos, hp[i]);
   }
-  // 10. topk block selection -> token index list (packed [T, ...] arrays, no
-  //     per-seq state).
-  TopkSelectKernel<<<T, 256, 0, stream>>>(d_logits, d_topk, d_topk_len,
-                                          d_positions, T, w.idx_compress,
-                                          w.idx_block_topk(), max_blocks,
-                                          max_topk);
+  const int n_groups_max = (max_pos + 1) / w.idx_compress;
+  if (n_groups_max <= max_blocks) {
+    // Single-shot fast path (context <= kMaxBlocks * compress). Single-seq:
+    // tensor-core GEMM S = iq @ ck^T + relu/sum/mask reduce. Multi-seq
+    // (d_seq_id): per-sequence idx_comp slices can't share one GEMM weight, so
+    // keep the SIMT kernel.
+    if (d_seq_id == nullptr) {
+      s = CheckGemm(Bf16Gemm(d_iq, idx_comp, d_S, T * n_iq, max_blocks, idx_hd,
+                             1.f, 0.f, d_gemm_ws, gemm_ws, stream));
+      if (!s.ok()) return s;
+      const int total = T * max_blocks;
+      IndexerReduceKernel<<<(total + 255) / 256, 256, 0, stream>>>(
+          d_S, d_logits, d_positions, T, n_iq, idx_hd, w.idx_compress,
+          max_blocks, /*block_off=*/0);
+    } else {
+      IndexerLogitsKernel<<<T, 256, 0, stream>>>(
+          d_iq, idx_comp, d_logits, d_positions, T, n_iq, idx_hd,
+          w.idx_compress, max_blocks, /*block_off=*/0, d_seq_id,
+          idx_seq_stride);
+    }
+    TopkSelectKernel<<<T, 256, 0, stream>>>(d_logits, d_topk, d_topk_len,
+                                            d_positions, T, w.idx_compress,
+                                            block_topk, max_blocks, max_topk);
+  } else {
+    // Streaming path (long context). Score blocks in CHUNK = max_blocks slices
+    // and keep a running per-query top-block_topk merged across chunks.
+    if (block_topk > kMaxBlockTopk)
+      return Status::Fail(
+          "FullAttentionForward: block_topk exceeds kMaxBlockTopk "
+          "(streaming top-k shared buffer)");
+    InitRunTopkKernel<<<(T * block_topk + 255) / 256, 256, 0, stream>>>(
+        d_run_val, d_run_idx, T * block_topk);
+    const int num_chunks = (n_groups_max + max_blocks - 1) / max_blocks;
+    for (int c = 0; c < num_chunks; ++c) {
+      const int block_off = c * max_blocks;
+      if (d_seq_id == nullptr) {
+        s = CheckGemm(Bf16Gemm(
+            d_iq, idx_comp + static_cast<size_t>(block_off) * idx_hd, d_S,
+            T * n_iq, max_blocks, idx_hd, 1.f, 0.f, d_gemm_ws, gemm_ws,
+            stream));
+        if (!s.ok()) return s;
+        const int total = T * max_blocks;
+        IndexerReduceKernel<<<(total + 255) / 256, 256, 0, stream>>>(
+            d_S, d_logits, d_positions, T, n_iq, idx_hd, w.idx_compress,
+            max_blocks, block_off);
+      } else {
+        IndexerLogitsKernel<<<T, 256, 0, stream>>>(
+            d_iq, idx_comp, d_logits, d_positions, T, n_iq, idx_hd,
+            w.idx_compress, max_blocks, block_off, d_seq_id, idx_seq_stride);
+      }
+      MergeChunkTopkKernel<<<T, 256, 0, stream>>>(
+          d_logits, block_off, max_blocks, block_topk, T, d_run_val,
+          d_run_idx);
+    }
+    ExpandRunTopkKernel<<<T, 256, 0, stream>>>(
+        d_run_idx, d_run_val, d_positions, T, w.idx_compress, block_topk,
+        d_topk, d_topk_len, max_topk);
+  }
   // 11. sparse GQA attention over the selected positions (valid only, via
   //     topk_len — the -1 tail is not iterated). The sigmoid gate is applied
   //     in-kernel (fused), so no separate GateMulKernel pass is needed.
