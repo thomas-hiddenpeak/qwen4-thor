@@ -149,24 +149,77 @@ Status EmbedLookup(const ModelHeadWeights& w, const int32_t* token_ids,
   return Status();
 }
 
-// One block per row; each thread scans a strided slice of the vocab tracking
-// its local (max, lowest-index), then a shared-memory reduction picks the
-// global max with lowest-index tie-break (matches the CPU ArgmaxBf16Row).
-__global__ void ArgmaxBf16Kernel(const uint16_t* __restrict__ logits, int vocab,
-                                 int32_t* __restrict__ out) {
-  const int b = blockIdx.x;
+// 2-stage argmax over [B, vocab]. Stage 1 (grid = (numChunks, B)) splits each
+// row into numChunks contiguous slices; each 256-thread block scans its slice
+// tracking the local (max, lowest-index) and writes one partial. Stage 2
+// (grid = B) reduces the numChunks partials to the global (max, lowest-index).
+// The old single-block-per-row kernel used ONE block (one SM) to scan all
+// 248320 vocab entries -- latency-bound at ~523us for B=1. The 2-stage version
+// spreads the read across ~970 blocks (all 20 SMs) and is bandwidth-bound
+// (~10-20us). Lowest-index tie-break is preserved: chunk c covers
+// [c*per, (c+1)*per), so the lowest index among equal-valued entries is always
+// in the earliest chunk, and both stages break ties toward the lower index.
+constexpr int kArgmaxThreads = 256;
+
+__global__ void ArgmaxBf16ChunkKernel(const uint16_t* __restrict__ logits,
+                                      int vocab, int numChunks,
+                                      float* __restrict__ part_v,
+                                      int* __restrict__ part_i) {
+  const int b = blockIdx.y;
+  const int chunk = blockIdx.x;
   const uint16_t* row = logits + static_cast<size_t>(b) * vocab;
+  const int per = (vocab + numChunks - 1) / numChunks;
+  const int start = chunk * per;
+  const int end = start + per < vocab ? start + per : vocab;
   float best_v = -1e30f;
-  int best_i = 0;
-  for (int v = threadIdx.x; v < vocab; v += blockDim.x) {
+  int best_i = start;
+  for (int v = start + threadIdx.x; v < end; v += blockDim.x) {
     const float f = __uint_as_float(static_cast<uint32_t>(row[v]) << 16);
     if (f > best_v) {  // strict > keeps the lowest index within this thread
       best_v = f;
       best_i = v;
     }
   }
-  __shared__ float s_v[256];
-  __shared__ int s_i[256];
+  __shared__ float s_v[kArgmaxThreads];
+  __shared__ int s_i[kArgmaxThreads];
+  s_v[threadIdx.x] = best_v;
+  s_i[threadIdx.x] = best_i;
+  __syncthreads();
+  for (int stride = blockDim.x >> 1; stride > 0; stride >>= 1) {
+    if (threadIdx.x < stride) {
+      const float ov = s_v[threadIdx.x + stride];
+      const int oi = s_i[threadIdx.x + stride];
+      if (ov > s_v[threadIdx.x] ||
+          (ov == s_v[threadIdx.x] && oi < s_i[threadIdx.x])) {
+        s_v[threadIdx.x] = ov;
+        s_i[threadIdx.x] = oi;
+      }
+    }
+    __syncthreads();
+  }
+  if (threadIdx.x == 0) {
+    const size_t o = static_cast<size_t>(b) * numChunks + chunk;
+    part_v[o] = s_v[0];
+    part_i[o] = s_i[0];
+  }
+}
+
+__global__ void ArgmaxBf16ReduceKernel(const float* __restrict__ part_v,
+                                       const int* __restrict__ part_i,
+                                       int numChunks, int32_t* __restrict__ out) {
+  const int b = blockIdx.x;
+  const float* pv = part_v + static_cast<size_t>(b) * numChunks;
+  const int* pi = part_i + static_cast<size_t>(b) * numChunks;
+  float best_v = -1e30f;
+  int best_i = 0x7fffffff;
+  for (int c = threadIdx.x; c < numChunks; c += blockDim.x) {
+    if (pv[c] > best_v || (pv[c] == best_v && pi[c] < best_i)) {
+      best_v = pv[c];
+      best_i = pi[c];
+    }
+  }
+  __shared__ float s_v[kArgmaxThreads];
+  __shared__ int s_i[kArgmaxThreads];
   s_v[threadIdx.x] = best_v;
   s_i[threadIdx.x] = best_i;
   __syncthreads();
@@ -188,8 +241,41 @@ __global__ void ArgmaxBf16Kernel(const uint16_t* __restrict__ logits, int vocab,
 Status ArgmaxBf16Rows(const uint16_t* logits, int B, int vocab,
                       int32_t* out_tokens, cudaStream_t stream) {
   if (B <= 0 || vocab <= 0) return Status();
-  ArgmaxBf16Kernel<<<B, 256, 0, stream>>>(logits, vocab, out_tokens);
-  if (cudaGetLastError() != cudaSuccess) return Status::Fail("argmax launch");
+  const int numChunks = (vocab + kArgmaxThreads - 1) / kArgmaxThreads;
+  // Persistent partial buffer [B, numChunks] (float value + int index), grown
+  // on demand. The argmax calls are serialized on the model stream (under
+  // model_mu_ in the scheduler and the MTP path), so no extra lock is needed.
+  static float* s_part_v = nullptr;
+  static int* s_part_i = nullptr;
+  static size_t s_part_cap = 0;  // capacity in (B, numChunks) pairs
+  const size_t need = static_cast<size_t>(B) * numChunks;
+  if (need > s_part_cap) {
+    if (s_part_v) {
+      cudaFree(s_part_v);
+      cudaFree(s_part_i);
+      s_part_v = nullptr;
+      s_part_i = nullptr;
+      s_part_cap = 0;
+    }
+    const size_t cap = need > static_cast<size_t>(256) * numChunks
+                           ? need
+                           : static_cast<size_t>(256) * numChunks;
+    if (cudaMalloc(reinterpret_cast<void**>(&s_part_v), cap * sizeof(float)) !=
+            cudaSuccess ||
+        cudaMalloc(reinterpret_cast<void**>(&s_part_i), cap * sizeof(int)) !=
+            cudaSuccess) {
+      return Status::Fail("argmax partial buffer alloc");
+    }
+    s_part_cap = cap;
+  }
+  ArgmaxBf16ChunkKernel<<<dim3(numChunks, B), kArgmaxThreads, 0, stream>>>(
+      logits, vocab, numChunks, s_part_v, s_part_i);
+  if (cudaGetLastError() != cudaSuccess)
+    return Status::Fail("argmax chunk launch");
+  ArgmaxBf16ReduceKernel<<<B, kArgmaxThreads, 0, stream>>>(
+      s_part_v, s_part_i, numChunks, out_tokens);
+  if (cudaGetLastError() != cudaSuccess)
+    return Status::Fail("argmax reduce launch");
   return Status();
 }
 
