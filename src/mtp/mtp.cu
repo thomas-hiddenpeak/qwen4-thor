@@ -689,6 +689,98 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
   const int hs = m.cfg.hs;
   const int vocab = m.cfg.vocab;
 
+  // Chunked draft-extend (T > max_prefill): the forward workspace is sized for
+  // max_prefill tokens, so a long prompt is run in chunks of max_prefill. The
+  // draft model is a SINGLE layer (one full-attention + one MoE, no linear
+  // SSM/conv) and its full-attention KV/indexer is written at ABSOLUTE
+  // positions (the per-seq pooled slice, zeroed by MtpResetState before the
+  // first chunk), so each chunk continues from the KV the previous chunks
+  // wrote -- bit-identical to one big forward (same contract as the main
+  // model's chunked prefill). Only the LAST chunk computes logits (its final
+  // row is the first-draft-token argmax); intermediate chunks skip the lm_head
+  // GEMM (a full-prompt [T, vocab] buffer would be ~22 GB at 44K).
+  if (T > m.cfg.max_prefill) {
+    const int chunk = m.cfg.max_prefill;
+    const int last_c = (T % chunk == 0) ? chunk : (T % chunk);
+    int32_t* d_ids = nullptr;
+    int* d_pos = nullptr;
+    uint16_t* d_sample = nullptr;
+    uint16_t* d_multi = nullptr;
+    uint16_t* d_logits = nullptr;  // [last_c, vocab] -- last chunk's rows
+    int* d_seqid = nullptr;
+    auto cleanup = [&](Status s) -> Status {
+      if (d_seqid) cudaFree(d_seqid);
+      if (d_ids) cudaFree(d_ids);
+      if (d_pos) cudaFree(d_pos);
+      if (d_sample) cudaFree(d_sample);
+      if (d_multi) cudaFree(d_multi);
+      if (d_logits) cudaFree(d_logits);
+      return s;
+    };
+    if (cudaMalloc(reinterpret_cast<void**>(&d_ids),
+                   static_cast<size_t>(chunk) * sizeof(int32_t)) != cudaSuccess ||
+        cudaMalloc(reinterpret_cast<void**>(&d_pos),
+                   static_cast<size_t>(chunk) * sizeof(int)) != cudaSuccess ||
+        cudaMalloc(reinterpret_cast<void**>(&d_sample),
+                   static_cast<size_t>(chunk) * hs * sizeof(uint16_t)) !=
+            cudaSuccess ||
+        cudaMalloc(reinterpret_cast<void**>(&d_multi),
+                   static_cast<size_t>(chunk) * hc_dim * sizeof(uint16_t)) !=
+            cudaSuccess ||
+        cudaMalloc(reinterpret_cast<void**>(&d_logits),
+                   static_cast<size_t>(last_c) * vocab * sizeof(uint16_t)) !=
+            cudaSuccess)
+      return cleanup(Status::Fail("MtpDraftExtend: chunked cudaMalloc"));
+    if (m.max_seq > 1) {
+      if (cudaMalloc(reinterpret_cast<void**>(&d_seqid),
+                     static_cast<size_t>(chunk) * sizeof(int)) != cudaSuccess)
+        return cleanup(
+            Status::Fail("MtpDraftExtend: chunked cudaMalloc d_seqid"));
+    }
+    Status s;
+    for (int base = 0; base < T; base += chunk) {
+      const int c = (T - base < chunk) ? (T - base) : chunk;
+      const bool last = (base + c >= T);
+      if (cudaMemcpyAsync(d_ids, shifted_ids + base,
+                          static_cast<size_t>(c) * sizeof(int32_t),
+                          cudaMemcpyHostToDevice, stream) != cudaSuccess)
+        return cleanup(Status::Fail("MtpDraftExtend: H2D ids"));
+      if (cudaMemcpyAsync(d_pos, positions + base,
+                          static_cast<size_t>(c) * sizeof(int),
+                          cudaMemcpyHostToDevice, stream) != cudaSuccess)
+        return cleanup(Status::Fail("MtpDraftExtend: H2D pos"));
+      if (m.max_seq > 1) {
+        std::vector<int> seqid(c, seq_id);
+        if (cudaMemcpyAsync(d_seqid, seqid.data(), c * sizeof(int),
+                            cudaMemcpyHostToDevice, stream) != cudaSuccess)
+          return cleanup(Status::Fail("MtpDraftExtend: H2D d_seqid"));
+      }
+      // main_trunk is the FULL-prompt trunk [T, hc_dim]; this chunk reads its
+      // [base, base+c) rows.
+      s = MtpForward(m, d_ids, d_pos,
+                     main_trunk + static_cast<size_t>(base) * hc_dim, d_sample,
+                     d_multi, last ? d_logits : nullptr, c, stream, d_seqid,
+                     last);
+      if (!s.ok()) return cleanup(s);
+    }
+    // out_g = last row's multi_hidden (draft trunk g_{last}).
+    if (cudaMemcpy(out_g, d_multi + static_cast<size_t>(last_c - 1) * hc_dim,
+                   static_cast<size_t>(hc_dim) * sizeof(uint16_t),
+                   cudaMemcpyDeviceToDevice) != cudaSuccess)
+      return cleanup(Status::Fail("MtpDraftExtend: D2D out_g"));
+    // out_d0 = argmax of the last chunk's final logits row (first draft token).
+    {
+      Status s2 = ArgmaxBf16Rows(
+          d_logits + static_cast<size_t>(last_c - 1) * vocab, 1, vocab, d_ids,
+          stream);
+      if (!s2.ok()) return cleanup(s2);
+      if (cudaMemcpy(out_d0, d_ids, sizeof(int32_t), cudaMemcpyDeviceToHost) !=
+          cudaSuccess)
+        return cleanup(Status::Fail("MtpDraftExtend: D2H argmax"));
+    }
+    return cleanup(Status());
+  }
+
   // Use the persistent per-step scratch when T fits (the common internal-extend
   // case, T = a+1 <= k+1); otherwise fall back to per-call allocation (the
   // initial prompt extend, T = P, which is large and one-shot).

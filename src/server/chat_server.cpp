@@ -1354,18 +1354,24 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // Prefill logits go to the shared d_prefill_logits_ [max_prefill, vocab]
   // (chunk <= max_prefill), so there is no per-request logits allocation.
   // MTP: prefill trunk_out buffer (pre-final-mixer multi stream [T, hc*hs])
-  // for the draft-extend. Allocated only when MTP is loaded. Disabled for
-  // chunked prefill: the draft-extend needs the FULL-prompt main trunk
-  // (~5.3 GB at 262K) plus the draft model's own 262K KV (~26 GB), which
-  // exceeds the headroom; plain decode is the safe path (see LOG 2026-09-15).
-  if (mtp_loaded_ && !chunked) {
-    const size_t hc_dim =
-        static_cast<size_t>(mtp_.cfg.hc) * static_cast<size_t>(mtp_.cfg.hs);
+  // for the draft-extend. Allocated when MTP is loaded, for BOTH one-shot and
+  // chunked prefill. The chunked path accumulates the trunk across chunks
+  // (each chunk's trunk_out writes its [base, base+c) rows); the draft-extend
+  // then runs over the full prompt in chunks (MtpDraftExtend's chunked path).
+  // The draft KV/indexer is allocated at MTP load time (pooled over max_seq,
+  // max_len), so it is NOT a per-request cost -- the only per-request extra is
+  // this trunk buffer (T * hc_dim * 2, ~0.9 GB at 44K, ~5.4 GB at 262K). If
+  // the allocation fails (not enough headroom), fall back to plain decode.
+  const size_t trunk_hc_dim =
+      mtp_loaded_
+          ? static_cast<size_t>(mtp_.cfg.hc) * static_cast<size_t>(mtp_.cfg.hs)
+          : 0;
+  if (mtp_loaded_) {
     if (cudaMalloc(reinterpret_cast<void**>(&d_trunk_full),
-                   static_cast<size_t>(T) * hc_dim * 2) != cudaSuccess) {
-      SendError(fd, 500, "cudaMalloc trunk failed");
-      cleanup();
-      return;
+                   static_cast<size_t>(T) * trunk_hc_dim * 2) != cudaSuccess) {
+      std::fprintf(stderr,
+                   "[q4t] trunk alloc failed for T=%d; plain decode\n", T);
+      d_trunk_full = nullptr;
     }
   }
   std::vector<uint16_t> h_logits(static_cast<size_t>(vocab));
@@ -1444,16 +1450,19 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         // first decode token). Text-only: a vision prompt's special (t,h,w)
         // rope is not reproducible by ModelDecodeBatch's text rope.
         s = model::ModelPrefill(model_, &seq, ids.data(), chunk,
-                                d_prefill_logits_, nullptr, nullptr, nullptr,
-                                seq_id);
+                                d_prefill_logits_, nullptr, d_trunk_full,
+                                nullptr, seq_id);
         for (int base = chunk; s.ok() && base < T; base += chunk) {
           const int c = std::min(chunk, T - base);
           const bool last = (base + c >= T);
           if (last) last_chunk_c = c;
           s = model::ModelDecodeBatch(
               model_, ids.data() + base, c, base, ids.data(), base,
-              last ? d_prefill_logits_ : nullptr, nullptr, nullptr, false,
-              seq_id);
+              last ? d_prefill_logits_ : nullptr, nullptr,
+              d_trunk_full
+                  ? d_trunk_full + static_cast<size_t>(base) * trunk_hc_dim
+                  : nullptr,
+              false, seq_id);
         }
         // ModelDecodeBatch does NOT advance the sequence state machine (it is
         // a bare forward, unlike ModelDecodeStepSeq). After the chunked
@@ -1546,11 +1555,16 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // ModelVerifyMulti + batched extend, weights read once) — the same code path
   // a single MTP request takes (B=1). This thread advances the main seq over
   // the accepted prefix (the multi step does not touch seqs[b]).
-  // MTP is disabled for chunked prefill (T > max_prefill): the draft-extend
-  // needs the FULL-prompt main trunk (~5.3 GB at 262K) plus the draft model's
-  // own 262K KV/indexer (~26 GB), which exceeds the ~25 GB headroom left after
-  // the main model loads. Plain decode is the safe path (see LOG 2026-09-15).
-  bool use_mtp = mtp_loaded_ && !chunked;
+  // MTP is enabled for BOTH one-shot and chunked prefill, as long as the
+  // full-prompt trunk buffer was allocated (d_trunk_full != nullptr). The
+  // chunked path accumulates the trunk across prefill chunks and runs the
+  // draft-extend in chunks (MtpDraftExtend's chunked path). The draft
+  // KV/indexer is allocated at MTP load time (not per-request), so the only
+  // per-request cost is the trunk buffer; if its allocation failed, d_trunk_full
+  // is null and we fall back to plain decode. MTP is precision-safe: the main
+  // model verifies every draft token, so the output is identical to pure
+  // greedy (only the throughput changes).
+  bool use_mtp = mtp_loaded_ && d_trunk_full != nullptr;
   int32_t mtp_b = -1, mtp_d0 = -1;
   if (use_mtp) {
     if (cudaMalloc(reinterpret_cast<void**>(&d_mtp_g),

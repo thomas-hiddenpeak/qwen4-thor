@@ -8,7 +8,21 @@
 Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 2026-09-07)
 (详见 [PHASES.md](PHASES.md))
 
-## 当前焦点 (2026-09-18): QSA 长上下文召回修复 + 单流 decode 性能 (FP8 投影) + serve 工业化
+## 当前焦点 (2026-09-19): chunked MTP 长上下文投机解码 + 单流 decode 性能 (FP8 投影) + serve 工业化
+- **chunked MTP: 长上下文投机解码 (2026-09-19, 44K 17.7→33.1 tok/s, 精度无损, 已闭合)**:
+  前序发现 plain decode 单步 4K≈44K (57ms, 不随上下文退化), 4K=30 vs 44K=17.7
+  差距纯粹是 MTP gate (44K chunked 被禁)。旧 gate 按 262K 最坏算过保守:
+  draft KV/indexer 池在 MTP load 时已按 max_len×max_seq 分配 (非 per-request),
+  per-request 新增只有 trunk buffer (44K 0.9GB)。实现: MtpDraftExtend 分块
+  (每块 ≤ max_prefill 调 MtpForward, 仅末块 compute_logits, 省 21.9GB;
+  draft 单层无 SSM, KV 绝对位置 per-seq 池化, 块间天然续接) + chat_server
+  chunked prefill 累积 trunk (ModelPrefill/ModelDecodeBatch 传 trunk_out) +
+  use_mtp gate 改 d_trunk_full != nullptr (分配失败软回退 plain)。验证:
+  44K 分 6 块全 ok, decode 33.1 tok/s (4K MTP 33.6 持平), **44K 同 prompt
+  MTP vs --no-mtp 输出 bit-exact** (主模型验证所有 draft token), 76 测试
+  零警告。运维: 本次 --max-len 262144 未带 --max-seq 1 → KV 池 65GB OOM
+  重启, 规则已记 (serve 显式 --max-seq 1 + max-len 按需最小, 44K 用 49152)。
+
 - **长上下文 decode 性能: one-pass 全块打分 + 多级并行 top-k (2026-09-19, 44K 14.4→17.7 tok/s)**:
   块并行 indexer (0ae1304) 后 44K decode 14.4 tok/s, 用户要求推回 18+ 且不改
   精度 (全块打分召回保留)。关键洞察: 流式 top-k 是为 prefill 设计的, decode
