@@ -2,7 +2,7 @@
 
 在 NVIDIA Jetson AGX Thor (SM110a, Blackwell) 上为
 [Qwen3.8-Flash-Next](https://modelscope.cn/models/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream)
-构建的原生 C++17/CUDA 推理引擎。
+构建的原生 C++23 (host + device, CUDA 13.3) 推理引擎。
 
 核心特性:**PLE SSD Stream** —— 51.2 GB FP8 逐层嵌入查找表 (Per-Layer
 Embedding) 不驻留内存,通过 Linux `io_uring` 从本地 NVMe 异步流式读取,
@@ -26,12 +26,18 @@ Embedding) 不驻留内存,通过 Linux `io_uring` 从本地 NVMe 异步流式�
 | 内存 | 122 GB LPDDR5X 统一内存 |
 | CPU | 14 核 ARM Neoverse V3AE |
 | 存储 | NVMe SSD |
-| 工具链 | CUDA 13.x, CMake 3.24+, GCC 13+ (aarch64) |
+| 工具链 | CUDA 13.3, CMake 4.0+ (pip 装 4.4.3), g++-14 (apt) (aarch64) |
 
 ## 构建
 
 ```bash
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DQ4T_CUDA_ARCHITECTURES=110a
+# 要求: CMake >= 4.0 (CMAKE_CUDA_STANDARD 23 仅在 4.x 映射 nvcc --std=c++23)
+#   pip install --user --break-system-packages cmake==4.4.3
+# 要求: g++-14 (nvcc 的 --std=c++23 需 host 编译器支持, GCC 13 会静默忽略)
+#   sudo apt-get install g++-14
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_CXX_COMPILER=g++-14 -DCMAKE_CUDA_HOST_COMPILER=g++-14 \
+  -DQ4T_CUDA_ARCHITECTURES=110a
 cmake --build build --parallel
 ```
 

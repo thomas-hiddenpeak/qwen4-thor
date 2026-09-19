@@ -49,9 +49,19 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
   (46→133s, 197 并发 mmap page fault 竞争内核 VMA 锁), 已回退, 保持 32-LRU。
   结果: 冷启动 63.7→44.2s (-31%), model_load 58.3→35.1s, MoE 48 层 17.4s
   (均 363ms/层); **bit-exact** (并行==串行==MTP==plain); 76 测试全绿零警告。
-  下一步: 非 MoE 层 ~12.3s (HC/attn/linear/PLE + 每层 cudaMalloc) + head
-  1.3s 仍可优化 (专家 tensor 名预解析 / 跨层全局工作队列 / 批量 H2D),
-  当前 44s 达工业级可接受, 优先稳定。
+  下一步: 非 MoE 层 ~12.3s + head 1.3s (已闭合, 见下条)。
+- **启动提速 (续): pread 读取 + tensor hash 索引 (2026-09-19, 冷启动 44.2s→32.1s, 已闭合)**:
+  数据驱动定位: 每层 5120 次 ReadTensor 跨 4 shard (LRU 够), 每 shard
+  1504 tensor 但 Find 是线性扫描; 热缓存 363ms/层 = 3.5GB/s 聚合远低于
+  带宽 → 算账 1.26GB÷4KB=322K 页 × ~1μs mmap minor fault ≈ 350ms/层,
+  与实测吻合, 根因是 mmap 逐页 fault 非带宽/锁。实现 (safetensors.cpp
+  Pimpl 内部零 API 变更, MoE+非MoE+head+PLE 全生效): (1) ReadTensor 改
+  pread (单次内核调用, 线程安全, 无逐页 user fault, EINTR 重试); (2) Find
+  加 name→index hash (Open 时建, O(1) 替代 O(1500))。结果: 冷启动
+  44.2→32.1s (-27%), model_load 35.1→27.0s; 非 MoE 层 12.3→4.2s (-66%);
+  MoE 17.4→14.3s (现 4.2GB/s 接近 NVMe 带宽)。bit-exact (== C++17 ==
+  C++23 基线), 76 测试绿零警告。下一步: MoE 每专家 10 小 pread 可 io_uring
+  批量异步 (PLE 已用); 非 MoE 已近带宽下限。当前 32s 达工业级。
 - **chunked MTP: 长上下文投机解码 (2026-09-19, 44K 17.7→33.1 tok/s, 精度无损, 已闭合)**:
   前序发现 plain decode 单步 4K≈44K (57ms, 不随上下文退化), 4K=30 vs 44K=17.7
   差距纯粹是 MTP gate (44K chunked 被禁)。旧 gate 按 262K 最坏算过保守:

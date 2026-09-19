@@ -6,7 +6,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include <cerrno>
 #include <cstring>
+#include <unordered_map>
 
 #include "q4t/io/json.h"
 
@@ -68,6 +70,10 @@ struct SafetensorsFile::Impl {
   size_t map_len = 0;
   uint64_t data_offset = 0;  // where the data region starts (after header)
   std::vector<TensorInfo> tensors;
+  // name -> index into `tensors`, built once in Open. Find() becomes O(1)
+  // instead of a linear scan over ~1500 tensors/shard; the MoE load does
+  // ~5120 lookups per layer, so this matters.
+  std::unordered_map<std::string, size_t> name_index;
 };
 
 SafetensorsFile::SafetensorsFile(Impl* impl) : impl_(impl) {}
@@ -177,6 +183,11 @@ Status SafetensorsFile::Open(const std::string& path, SafetensorsFile** out) {
     impl->tensors.push_back(std::move(info));
   }
 
+  impl->name_index.reserve(impl->tensors.size());
+  for (size_t i = 0; i < impl->tensors.size(); ++i) {
+    impl->name_index.emplace(impl->tensors[i].name, i);
+  }
+
   *out = new SafetensorsFile(impl);
   return Status();
 }
@@ -186,10 +197,9 @@ const std::vector<TensorInfo>& SafetensorsFile::tensors() const {
 }
 
 const TensorInfo* SafetensorsFile::Find(const std::string& name) const {
-  for (const auto& t : impl_->tensors) {
-    if (t.name == name) return &t;
-  }
-  return nullptr;
+  auto it = impl_->name_index.find(name);
+  if (it == impl_->name_index.end()) return nullptr;
+  return &impl_->tensors[it->second];
 }
 
 size_t SafetensorsFile::num_tensors() const { return impl_->tensors.size(); }
@@ -201,9 +211,26 @@ Status SafetensorsFile::ReadTensor(const TensorInfo& t, void* dst) const {
   if (impl_->data_offset + t.data_end > impl_->map_len) {
     return Status::Fail("tensor " + t.name + " extends past file end");
   }
-  const char* src =
-      static_cast<const char*>(impl_->map) + impl_->data_offset + t.data_start;
-  std::memcpy(dst, src, bytes);
+  // pread (not mmap+memcpy): one kernel call copies the whole range,
+  // thread-safely (no shared-fd lseek race under the parallel MoE load) and
+  // without the per-page user-space minor faults the mmap path incurred on
+  // first touch. Each layer's ~1.26 GB of expert weights is ~320K 4 KB pages;
+  // faulting them one-by-one cost ~350 ms/layer (matching the measured
+  // 363 ms/layer floor) even with the data already in the page cache.
+  // Reference: Qwen3x-Orin reads shards with ::read for the same reason.
+  const off_t base = static_cast<off_t>(impl_->data_offset + t.data_start);
+  size_t got = 0;
+  while (got < bytes) {
+    const ssize_t r = pread(impl_->fd, static_cast<char*>(dst) + got,
+                            bytes - got, base + static_cast<off_t>(got));
+    if (r < 0) {
+      if (errno == EINTR) continue;
+      return Status::Fail("pread failed for " + t.name);
+    }
+    if (r == 0) break;  // unexpected EOF
+    got += static_cast<size_t>(r);
+  }
+  if (got != bytes) return Status::Fail("short pread for " + t.name);
   return Status();
 }
 
