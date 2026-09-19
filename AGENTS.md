@@ -5,7 +5,7 @@
 
 ## 项目一句话
 
-在 Jetson AGX Thor (SM110a) 上用 C++23 (host) / CUDA 17 (device) 实现
+在 Jetson AGX Thor (SM110a) 上用 C++23 (host + device, CUDA 13.3) 实现
 Qwen3.8-Flash-Next (qwen4_exp) 的原生推理引擎,
 核心特性是 PLE SSD Stream (51.2 GB FP8 查找表从 NVMe 异步流式读取)。
 
@@ -43,8 +43,10 @@ Qwen3.8-Flash-Next (qwen4_exp) 的原生推理引擎,
 ## 快速上手
 
 ```bash
-# 构建
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DQ4T_CUDA_ARCHITECTURES=110a
+# 构建 (要求: CMake >= 4.0 [pip 装 4.4.3] + g++-14 [apt]; C++23 host+device)
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_CXX_COMPILER=g++-14 -DCMAKE_CUDA_HOST_COMPILER=g++-14 \
+  -DQ4T_CUDA_ARCHITECTURES=110a
 cmake --build build --parallel
 
 # 运行

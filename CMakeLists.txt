@@ -1,6 +1,11 @@
-# Qwen4-Thor — native C++23 (host) / CUDA 17 (device) inference engine for
+# Qwen4-Thor — native C++23 (host + device) inference engine for
 # Qwen3.8-Flash-Next (qwen4_exp) on Jetson AGX Thor (SM110a).
-cmake_minimum_required(VERSION 3.24)
+#
+# CMake >= 4.0 is REQUIRED: CMAKE_CUDA_STANDARD 23 maps to nvcc --std=c++23
+# only in CMake 4.x's NVIDIA compiler module (3.28/3.31 stop at CUDA20 and
+# fail with 'requires the language dialect "CUDA23"'). On this machine:
+#   pip install --user --break-system-packages cmake==4.4.3
+cmake_minimum_required(VERSION 4.0)
 
 project(
   qwen4-thor
@@ -22,23 +27,28 @@ endif()
 # ---------------------------------------------------------------------------
 # Global settings
 # ---------------------------------------------------------------------------
-# Host code (all .cpp: io / quant-host / runtime / server / text / main) is
-# C++23. Device code (.cu kernels + their host launch glue) stays C++17: the
-# kernel/PTX path is left untouched to avoid any device-side regression.
+# Both host (.cpp) and device (.cu) code are C++23, per the NVIDIA engineer
+# recommendation: CUDA 13.3 fully supports C++23 on both sides, and the
+# project migrates incrementally (existing .cu code is C++17-compatible, a
+# subset of C++23, so it compiles unchanged; new code adopts C++23 features
+# as they land).
 #
-# GCC 13.3 C++23 availability (measured 2026-09-19): std::expected,
-# std::format, ranges, jthread, designated/extended initializers are usable.
-# NOT yet in GCC 13 (need GCC 14/15): std::print, std::mdspan,
-# constexpr std::string. Use std::format (not std::print) for now.
+# REQUIREMENT: host compiler must be GCC >= 14. GCC 13 makes nvcc silently
+# IGNORE --std=c++23 ("not supported with the configured host compiler"),
+# so device C++23 never actually engages. Configure with:
+#   cmake -DCMAKE_CXX_COMPILER=g++-14 -DCMAKE_CUDA_HOST_COMPILER=g++-14 ...
+# (g++-14 from Ubuntu 24.04 apt; noble has no gcc-15).
 #
-# CONSTRAINT: headers in include/q4t/ that are #included by .cu files must
-# remain C++17-compatible (they are compiled by nvcc under CMAKE_CUDA_STANDARD
-# 17). C++23-only features (std::expected, ...) belong in .cpp translation
-# units, not in shared headers.
+# GCC 14.2 C++23 availability (measured 2026-09-19): std::print,
+# std::expected, std::format, ranges, jthread, in-order designated
+# initializers all work on host AND device (with --expt-relaxed-constexpr).
+# NOT in GCC 14 (need GCC 15): std::mdspan, constexpr std::string.
+# Device edge case: OUT-OF-ORDER designated initializers (C++23 P1967R3)
+# are rejected by cudafe — use declaration order.
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CUDA_STANDARD 17)
+set(CMAKE_CUDA_STANDARD 23)
 set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)

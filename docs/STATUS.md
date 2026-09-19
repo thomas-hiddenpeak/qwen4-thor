@@ -9,16 +9,21 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
 (详见 [PHASES.md](PHASES.md))
 
 ## 当前焦点 (2026-09-19): host C++23 升级 + OOM 可靠性工程 + chunked MTP 长上下文投机解码 + serve 工业化
-- **语言标准升级: host C++17 → C++23 (device 保持 C++17) (2026-09-19, 已闭合)**:
-  用户判断 C++23 host 优势能立即帮助后续工作。策略匹配代码布局 (host 全在
-  .cpp, .cu 是 device+launch): CMAKE_CXX_STANDARD 17→23 (所有 .cpp 拿
-  C++23), CMAKE_CUDA_STANDARD 保持 17 (.cu device 代码零改动零风险)。
-  约束: include/q4t/ 被 .cu 包含的共享头必须保持 C++17 兼容 (nvcc 按
-  CUDA_STANDARD 编译), C++23 专属特性只进 .cpp TU。GCC 13.3 实测可用
-  std::expected/std::format/ranges/jthread; 不可用 std::print/std::mdspan/
-  constexpr std::string (需 GCC 14/15+)。验证: 全量重编零警告零错误,
-  76 测试全绿 (host C++23 + device C++17 链接无回归)。下一步: host 工作
-  用 std::expected 替换裸 Status / std::format 替换 printf 拼接。
+- **C++23 全量迁移: host + device (GCC 14 + CMake 4.4.3) (2026-09-19, 已闭合)**:
+  承接上一项 (当时只升 host, device 留 C++17)。用户补充: 迁移是 NVIDIA
+  工程师建议, CUDA 13.3 已全面支持 host+device C++23, "不动 device" 指可
+  逐步迁移, GCC 可升级环境受控 → 改为 host+device 全 C++23。关键发现:
+  (1) nvcc 13.3 有 --std=c++23 但 GCC 13 时静默忽略 (device C++23 从未
+  生效); (2) GCC 14 是前提 (noble apt 无 15, 装 g++-14 14.2.0); (3) CMake
+  必须 >=4.0 (CMAKE_CUDA_STANDARD 23 只在 4.x 映射到 nvcc --std=c++23,
+  3.28/3.31 只到 CUDA20) → pip 装 cmake 4.4.3。实现: CMAKE_CUDA_STANDARD
+  17→23 + cmake_minimum_required 4.0, 配置 -DCMAKE_CXX_COMPILER=g++-14
+  -DCMAKE_CUDA_HOST_COMPILER=g++-14, 现有 .cu 代码零改动 (C++17 兼容是
+  C++23 子集)。验证: .cu flags 实证含 --std=c++23, 全量重编零警告, 76
+  测试绿, **E2E bit-exact** (44K 输出 == C++17 基线)。GCC 14.2 可用
+  print/expected/format/ranges/jthread (device 需 relaxed-constexpr);
+  mdspan/constexpr string 需 GCC 15; device 乱序指定初始化 (P1967R3) 不支持。
+  下一步: 新代码采用 C++23 特性, 现有代码按需逐步迁移。
 - **OOM 可靠性: 内存预算 (--mem-fraction) + auto-length + 运行时 preflight + 启动可观测性 (2026-09-19, 已闭合)**:
   08:29 OOM 重启根因 (--max-len 262144 未配 --max-seq 1 → 65GB KV + 84GB
   权重 > 122GB)。新模块 q4t_runtime (memory_budget): 启动前按
