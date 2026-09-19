@@ -55,19 +55,30 @@ inline std::size_t SfBufferSize(int rows, int K) {
          static_cast<std::size_t>(SfNumGtiles(K)) * 512;
 }
 
-// Convert a row-major [rows, K/16] e4m3 scale buffer into the swizzled layout.
-// Returns a buffer of SfBufferSize(rows, K) bytes (padded, zero-filled).
-inline std::vector<uint8_t> SwizzleSf(const uint8_t* row_major, int rows,
-                                      int K) {
+// Convert a row-major [rows, K/16] e4m3 scale buffer into the swizzled layout
+// in `out` (which must be >= SfBufferSize(rows, K) bytes and is zero-filled
+// first). This is the allocation-free form used by the parallel MoE load,
+// which would otherwise allocate a fresh vector per expert (24576 x 2).
+inline void SwizzleSfInto(const uint8_t* row_major, int rows, int K,
+                          uint8_t* out) {
   int groups = K / 16;
   int num_g_tiles = SfNumGtiles(K);
-  std::vector<uint8_t> out(SfBufferSize(rows, K), 0);
+  std::size_t n = SfBufferSize(rows, K);
+  for (std::size_t i = 0; i < n; ++i) out[i] = 0;
   for (int r = 0; r < rows; ++r) {
     for (int g = 0; g < groups; ++g) {
       out[SfOffset(r, g, num_g_tiles)] =
           row_major[static_cast<std::size_t>(r) * groups + g];
     }
   }
+}
+
+// Convert a row-major [rows, K/16] e4m3 scale buffer into the swizzled layout.
+// Returns a buffer of SfBufferSize(rows, K) bytes (padded, zero-filled).
+inline std::vector<uint8_t> SwizzleSf(const uint8_t* row_major, int rows,
+                                      int K) {
+  std::vector<uint8_t> out(SfBufferSize(rows, K));
+  SwizzleSfInto(row_major, rows, K, out.data());
   return out;
 }
 

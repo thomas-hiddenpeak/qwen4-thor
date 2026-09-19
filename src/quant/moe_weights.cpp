@@ -1,10 +1,15 @@
 // NVFP4 routed-expert MoE weight loader (direct-to-packed).
 #include "q4t/quant/moe_weights.h"
+#include <chrono>
+#include <cstdio>
+#include <cstdlib>
 
 #include <cuda_runtime.h>
 
+#include <atomic>
 #include <cstdio>
 #include <cstring>
+#include <thread>
 #include <vector>
 
 namespace q4t {
@@ -90,80 +95,172 @@ Status LoadMoEWeights(const io::WeightLoader& loader, int layer_id, int E,
   out->dn_w_scale2_h.resize(E);
   out->dn_input_scale_h.resize(E);
 
-  // Host staging (reused across experts).
+  // Per-expert staging sizes (shared by all worker threads).
   const size_t gu_w_bytes = static_cast<size_t>(moe_is) * (hs / 2);
   const size_t gu_s_bytes = static_cast<size_t>(moe_is) * (hs / 16);
   const size_t dn_w_bytes = static_cast<size_t>(hs) * (moe_is / 2);
-  std::vector<uint8_t> gu_w(gu_w_bytes);
-  std::vector<uint8_t> up_w(gu_w_bytes);
-  std::vector<uint8_t> dn_w(dn_w_bytes);
-  std::vector<uint8_t> gate_s(gu_s_bytes);
-  std::vector<uint8_t> up_s(gu_s_bytes);
-  std::vector<uint8_t> gu_s_merged(2 * gu_s_bytes);
-  std::vector<uint8_t> dn_s(static_cast<size_t>(hs) * (moe_is / 16));
-  float scal[4];  // [gu_ws2, gu_isc, dn_ws2, dn_isc]
 
-  for (int e = 0; e < E; ++e) {
-    // --- packed weights (row-major) ---
-    std::string n = ExpertName(layer_id, e, "gate_proj", "weight");
-    if (!(s = loader.ReadTensor(n, gu_w.data()))) return s;
-    n = ExpertName(layer_id, e, "up_proj", "weight");
-    if (!(s = loader.ReadTensor(n, up_w.data()))) return s;
-    uint8_t* gu_dst = out->gu_packed_expert(e);
-    if (!(s = H2D(gu_w.data(), gu_dst, gu_w_bytes, stream))) return s;
-    if (!(s = H2D(up_w.data(), gu_dst + moe_is * (hs / 2), gu_w_bytes, stream)))
-      return s;
-
-    n = ExpertName(layer_id, e, "down_proj", "weight");
-    if (!(s = loader.ReadTensor(n, dn_w.data()))) return s;
-    uint8_t* dn_dst = out->dn_packed + static_cast<size_t>(e) * dn_w_bytes;
-    if (!(s = H2D(dn_w.data(), dn_dst, dn_w_bytes, stream))) return s;
-
-    // --- gate/up scale: merge (gate rows then up rows) + swizzle per expert ---
-    n = ExpertName(layer_id, e, "gate_proj", "weight_scale");
-    if (!(s = loader.ReadTensor(n, gate_s.data()))) return s;
-    n = ExpertName(layer_id, e, "up_proj", "weight_scale");
-    if (!(s = loader.ReadTensor(n, up_s.data()))) return s;
-    std::memcpy(gu_s_merged.data(), gate_s.data(), gu_s_bytes);
-    std::memcpy(gu_s_merged.data() + gu_s_bytes, up_s.data(), gu_s_bytes);
-    std::vector<uint8_t> gu_sw = SwizzleSf(gu_s_merged.data(), 2 * moe_is, hs);
-    if (gu_sw.size() != gu_sf_block) {
-      return Status::Fail("gu_sf swizzle size mismatch");
-    }
-    if (!(s = H2D(gu_sw.data(), out->gu_sf_expert(e), gu_sw.size(), stream)))
-      return s;
-
-    // --- down scale: swizzle per expert ---
-    n = ExpertName(layer_id, e, "down_proj", "weight_scale");
-    if (!(s = loader.ReadTensor(n, dn_s.data()))) return s;
-    std::vector<uint8_t> dn_sw = SwizzleSf(dn_s.data(), hs, moe_is);
-    if (dn_sw.size() != dn_sf_block) {
-      return Status::Fail("dn_sf swizzle size mismatch");
-    }
-    if (!(s = H2D(dn_sw.data(), out->dn_sf_expert(e), dn_sw.size(), stream)))
-      return s;
-
-    // --- scalars (device + host copy) ---
-    n = ExpertName(layer_id, e, "gate_proj", "weight_scale_2");
-    if (!(s = loader.ReadTensor(n, &scal[0]))) return s;
-    n = ExpertName(layer_id, e, "gate_proj", "input_scale");
-    if (!(s = loader.ReadTensor(n, &scal[1]))) return s;
-    n = ExpertName(layer_id, e, "down_proj", "weight_scale_2");
-    if (!(s = loader.ReadTensor(n, &scal[2]))) return s;
-    n = ExpertName(layer_id, e, "down_proj", "input_scale");
-    if (!(s = loader.ReadTensor(n, &scal[3]))) return s;
-    out->gu_w_scale2_h[e] = scal[0];
-    out->gu_input_scale_h[e] = scal[1];
-    out->dn_w_scale2_h[e] = scal[2];
-    out->dn_input_scale_h[e] = scal[3];
-    if (!(s = H2D(&scal[0], out->gu_w_scale2 + e, sizeof(float), stream)))
-      return s;
-    if (!(s = H2D(&scal[1], out->gu_input_scale + e, sizeof(float), stream)))
-      return s;
-    if (!(s = H2D(&scal[2], out->dn_w_scale2 + e, sizeof(float), stream)))
-      return s;
-    if (!(s = H2D(&scal[3], out->dn_input_scale + e, sizeof(float), stream)))
-      return s;
+  // Parallel expert load. The serial path spent ~49 s (of a 58 s load) on
+  // 48 layers x 512 experts x ~10 small ReadTensor calls (string-name lookup +
+  // mmap page fault + memcpy) on ONE thread (~1.2 GB/s). Each expert writes to
+  // a disjoint device offset and uses its own thread-local staging, so the
+  // experts are embarrassingly parallel; a pool of min(hw, E) threads drives
+  // the host-side reads at aggregate memory bandwidth. This also fixes a
+  // latent async race in the old loop: the per-expert swizzle vectors were
+  // destroyed at iteration end while their H2D copies were still in flight on
+  // `stream` (use-after-free), masked only by timing. Per-thread staging + a
+  // single sync at the end removes it.
+  const int nthreads = std::max(
+      1, std::min<int>(std::thread::hardware_concurrency(), E));
+  std::atomic<int> next_expert{0};
+  std::atomic<int> first_err{0};  // 0 = ok, else cudaGetLastError / -1
+  const bool lt = std::getenv("Q4T_LOAD_TIMING") != nullptr;
+  auto nowms = [] {
+    return std::chrono::duration<double, std::milli>(
+               std::chrono::steady_clock::now().time_since_epoch())
+        .count();
+  };
+  const double t_par0 = lt ? nowms() : 0.0;
+  std::vector<std::thread> pool;
+  pool.reserve(nthreads);
+  for (int t = 0; t < nthreads; ++t) {
+    pool.emplace_back([&]() {
+      // Thread-local staging (no sharing across threads).
+      std::vector<uint8_t> gu_w(gu_w_bytes);
+      std::vector<uint8_t> up_w(gu_w_bytes);
+      std::vector<uint8_t> dn_w(dn_w_bytes);
+      std::vector<uint8_t> gate_s(gu_s_bytes);
+      std::vector<uint8_t> up_s(gu_s_bytes);
+      std::vector<uint8_t> gu_s_merged(2 * gu_s_bytes);
+      std::vector<uint8_t> dn_s(static_cast<size_t>(hs) * (moe_is / 16));
+      std::vector<uint8_t> gu_sw(gu_sf_block);
+      std::vector<uint8_t> dn_sw(dn_sf_block);
+      float scal[4];  // [gu_ws2, gu_isc, dn_ws2, dn_isc]
+      while (true) {
+        if (first_err.load(std::memory_order_relaxed) != 0) return;
+        const int e = next_expert.fetch_add(1, std::memory_order_relaxed);
+        if (e >= E) return;
+        Status es;
+        // --- packed weights (row-major) ---
+        std::string n = ExpertName(layer_id, e, "gate_proj", "weight");
+        if (!(es = loader.ReadTensor(n, gu_w.data()))) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
+        n = ExpertName(layer_id, e, "up_proj", "weight");
+        if (!(es = loader.ReadTensor(n, up_w.data()))) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
+        uint8_t* gu_dst = out->gu_packed_expert(e);
+        if (!(es = H2D(gu_w.data(), gu_dst, gu_w_bytes, stream))) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
+        if (!(es = H2D(up_w.data(), gu_dst + moe_is * (hs / 2), gu_w_bytes,
+                       stream))) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
+        n = ExpertName(layer_id, e, "down_proj", "weight");
+        if (!(es = loader.ReadTensor(n, dn_w.data()))) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
+        uint8_t* dn_dst = out->dn_packed_expert(e);
+        if (!(es = H2D(dn_w.data(), dn_dst, dn_w_bytes, stream))) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
+        // --- gate/up scale: merge (gate rows then up rows) + swizzle ---
+        n = ExpertName(layer_id, e, "gate_proj", "weight_scale");
+        if (!(es = loader.ReadTensor(n, gate_s.data()))) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
+        n = ExpertName(layer_id, e, "up_proj", "weight_scale");
+        if (!(es = loader.ReadTensor(n, up_s.data()))) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
+        std::memcpy(gu_s_merged.data(), gate_s.data(), gu_s_bytes);
+        std::memcpy(gu_s_merged.data() + gu_s_bytes, up_s.data(), gu_s_bytes);
+        SwizzleSfInto(gu_s_merged.data(), 2 * moe_is, hs, gu_sw.data());
+        if (!(es = H2D(gu_sw.data(), out->gu_sf_expert(e), gu_sf_block,
+                       stream))) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
+        // --- down scale: swizzle ---
+        n = ExpertName(layer_id, e, "down_proj", "weight_scale");
+        if (!(es = loader.ReadTensor(n, dn_s.data()))) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
+        SwizzleSfInto(dn_s.data(), hs, moe_is, dn_sw.data());
+        if (!(es = H2D(dn_sw.data(), out->dn_sf_expert(e), dn_sf_block,
+                       stream))) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
+        // --- scalars (device + host copy) ---
+        n = ExpertName(layer_id, e, "gate_proj", "weight_scale_2");
+        if (!(es = loader.ReadTensor(n, &scal[0]))) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
+        n = ExpertName(layer_id, e, "gate_proj", "input_scale");
+        if (!(es = loader.ReadTensor(n, &scal[1]))) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
+        n = ExpertName(layer_id, e, "down_proj", "weight_scale_2");
+        if (!(es = loader.ReadTensor(n, &scal[2]))) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
+        n = ExpertName(layer_id, e, "down_proj", "input_scale");
+        if (!(es = loader.ReadTensor(n, &scal[3]))) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
+        out->gu_w_scale2_h[e] = scal[0];
+        out->gu_input_scale_h[e] = scal[1];
+        out->dn_w_scale2_h[e] = scal[2];
+        out->dn_input_scale_h[e] = scal[3];
+        if (!(es = H2D(&scal[0], out->gu_w_scale2 + e, sizeof(float),
+                       stream))) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
+        if (!(es = H2D(&scal[1], out->gu_input_scale + e, sizeof(float),
+                       stream))) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
+        if (!(es = H2D(&scal[2], out->dn_w_scale2 + e, sizeof(float),
+                       stream))) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
+        if (!(es = H2D(&scal[3], out->dn_input_scale + e, sizeof(float),
+                       stream))) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
+      }
+    });
+  }
+  for (auto& th : pool) th.join();
+  if (first_err.load() != 0) {
+    return Status::Fail("parallel MoE expert load failed (layer " +
+                        std::to_string(layer_id) + ")");
+  }
+  if (lt) {
+    std::fprintf(stderr,
+                 "[q4t][moe] layer %d: experts=%d threads=%d parallel=%.0f "
+                 "ms\n",
+                 layer_id, E, nthreads, nowms() - t_par0);
   }
 
   if (stream != nullptr) {

@@ -22,7 +22,21 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
   (PhaseTimer): total 63.7s = model_load 58.3s (90%, 权重单线程 H2D) +
   mtp 2.7s + vision 1.2s。验证: 262144×seq8 (原 OOM 配置) 启动成功 CAPPED
   seq=1; auto seq8 → 53248; 44K 请求 33.3 tok/s MTP 正常; 76 测试全绿零警告。
-  下一步: 启动提速 (model_load 92GB 单线程 H2D 是瓶颈, 方向多 shard 并行)。
+  下一步: 启动提速 (已闭合, 见下条)。
+- **启动提速: 并行 MoE 专家权重加载 (2026-09-19, 冷启动 63.7s→44.2s, 已闭合)**:
+  上条 PhaseTimer 定位 model_load 58.3s 占 90%, 其中 MoE 专家读取 49s
+  (24576 专家 × 10 小张量, 单线程 host 读 ~1.2GB/s, NVMe 能力 2.7-6.9GB/s
+  远未打满)。实现: (1) 每层 512 专家 14 线程池并行 (atomic 工作队列 +
+  每线程本地 staging, 零共享); (2) WeightLoader 加 mutex (EnsureOpen LRU
+  持锁, 之前单线程无锁) + LRU 8→32 (14 线程并发读多 shard); (3) 零分配
+  SwizzleSfInto; (4) 修潜在异步 use-after-free (H2D 未同步即析构 staging)。
+  踩坑: 试 OpenAllShards 预开 197 shard 省锁内 LRU 重排 → 热缓存 3x 更慢
+  (46→133s, 197 并发 mmap page fault 竞争内核 VMA 锁), 已回退, 保持 32-LRU。
+  结果: 冷启动 63.7→44.2s (-31%), model_load 58.3→35.1s, MoE 48 层 17.4s
+  (均 363ms/层); **bit-exact** (并行==串行==MTP==plain); 76 测试全绿零警告。
+  下一步: 非 MoE 层 ~12.3s (HC/attn/linear/PLE + 每层 cudaMalloc) + head
+  1.3s 仍可优化 (专家 tensor 名预解析 / 跨层全局工作队列 / 批量 H2D),
+  当前 44s 达工业级可接受, 优先稳定。
 - **chunked MTP: 长上下文投机解码 (2026-09-19, 44K 17.7→33.1 tok/s, 精度无损, 已闭合)**:
   前序发现 plain decode 单步 4K≈44K (57ms, 不随上下文退化), 4K=30 vs 44K=17.7
   差距纯粹是 MTP gate (44K chunked 被禁)。旧 gate 按 262K 最坏算过保守:

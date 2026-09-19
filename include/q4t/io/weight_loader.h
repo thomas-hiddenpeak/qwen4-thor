@@ -11,6 +11,8 @@
 // checkpoint name (e.g. "model.language_model.layers.0.mlp.gate.weight").
 #pragma once
 
+#include <mutex>
+
 #include <cuda_runtime.h>
 
 #include <cstdint>
@@ -77,6 +79,9 @@ class WeightLoader {
   struct Impl;
   explicit WeightLoader(Impl* impl);
   Impl* impl_;
+  // Guards impl_->open/impl_->lru (the shard LRU cache). Required for the
+  // parallel MoE expert load, which reads from multiple shards concurrently.
+  mutable std::mutex mu_;
 };
 
 }  // namespace io

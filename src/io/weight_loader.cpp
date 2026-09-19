@@ -110,6 +110,7 @@ struct WeightLoader::Impl {
   std::string model_dir;
   const WeightIndex* index = nullptr;
   size_t max_open = 8;
+  std::mutex* owner_mu = nullptr;  // the loader's mutex (set in Create)
 
   struct Shard {
     std::unique_ptr<SafetensorsFile> file;
@@ -124,6 +125,8 @@ struct WeightLoader::Impl {
 
 Status WeightLoader::Impl::EnsureOpen(const std::string& shard,
                                       Shard** out) const {
+  // Called concurrently by the parallel MoE expert load; guard the LRU cache.
+  std::lock_guard<std::mutex> lock(*owner_mu);
   auto it = open.find(shard);
   if (it != open.end()) {
     // Move to MRU.
@@ -173,7 +176,9 @@ Status WeightLoader::Create(const std::string& model_dir,
   impl->model_dir = model_dir;
   impl->index = &index;
   impl->max_open = max_open_shards;
-  *out = new WeightLoader(impl);
+  WeightLoader* loader = new WeightLoader(impl);
+  impl->owner_mu = &loader->mu_;  // wire the LRU lock after construction
+  *out = loader;
   return Status();
 }
 

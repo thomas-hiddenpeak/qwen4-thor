@@ -21,12 +21,29 @@
 #include <cuda_runtime.h>
 
 #include <algorithm>
+#include <chrono>
 #include <cstdint>
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
+
+namespace {
+// Optional per-phase load timing (Q4T_LOAD_TIMING=1). Zero overhead when the
+// env var is unset (a single getenv check per phase).
+inline bool LoadTimingEnabled() {
+  static const bool on = std::getenv("Q4T_LOAD_TIMING") != nullptr;
+  return on;
+}
+inline double NowMs() {
+  return std::chrono::duration<double, std::milli>(
+             std::chrono::steady_clock::now().time_since_epoch())
+      .count();
+}
+}  // namespace
 
 #include "q4t/model/linear.h"
 
@@ -176,32 +193,46 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   std::unique_ptr<io::WeightLoader> loader;
   {
     io::WeightLoader* raw = nullptr;
-    Status s = io::WeightLoader::Create(cfg.model_dir, *index, 8, &raw);
+    // max_open_shards = 32: the parallel MoE expert load reads from multiple
+    // shards concurrently. NOTE: we deliberately do NOT pre-open all ~197
+    // shards (tried OpenAllShards, measured 3x SLOWER on warm cache: 197
+    // simultaneous mmaps make the 14 worker threads' page faults contend on
+    // the kernel VMA/page-table locks). A 32-shard LRU keeps the active mmap
+    // set small; each layer's experts span only a few shards, so eviction is
+    // rare.
+    Status s = io::WeightLoader::Create(cfg.model_dir, *index, 32, &raw);
     if (!s.ok()) return s;
     loader.reset(raw);
   }
   Status s;
 
   const int hc_dim = cfg.hc * cfg.hs;
+  double t_head = 0, t_layers = 0, t_ple = 0, t_buf = 0, t_sync = 0;
+  const bool lt = LoadTimingEnabled();
+  double t0 = lt ? NowMs() : 0.0;
 
   // 1. Head (embed + lm_head + mixer).
   s = LoadModelHead(*loader, cfg.vocab, cfg.hs, cfg.hc, cfg.lowrank, cfg.eps,
                     &m->head, stream);
   if (!s.ok()) return s;
+  if (lt) t_head = NowMs() - t0;
 
   // 2. Decoder layers [0, num_layers).
   m->layers.resize(cfg.num_layers);
+  t0 = lt ? NowMs() : 0.0;
   for (int l = 0; l < cfg.num_layers; ++l) {
     s = LoadDecoderLayer(*loader, l, cfg.hs, cfg.hc, cfg.lowrank, cfg.eps,
                          cfg.E, cfg.moe_is, cfg.shared_is, cfg.topk,
                          cfg.max_len, cfg.max_seq, &m->layers[l], stream);
     if (!s.ok()) return s;
   }
+  if (lt) t_layers = NowMs() - t0;
 
   // 3. PLE embedding (only if a PLE layer is in range).
   bool any_ple = false;
   for (auto& l : m->layers) any_ple = any_ple || l.has_ple;
   if (any_ple) {
+    t0 = lt ? NowMs() : 0.0;
     // Load hash params + weight_scale from the (first) PLE layer.
     int ple_layer = -1;
     for (int l = 0; l < cfg.num_layers; ++l) {
@@ -227,9 +258,11 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
     pcfg.capacity_tokens = cfg.ple_capacity_tokens;
     s = ple::PleEmbedding::Create(pcfg, &m->ple_emb);
     if (!s.ok()) return s;
+    if (lt) t_ple = NowMs() - t0;
   }
 
   // 4. Persistent forward buffers.
+  t0 = lt ? NowMs() : 0.0;
   const size_t max_t = static_cast<size_t>(cfg.max_prefill);
   auto alloc = [](void** p, size_t bytes) -> Status {
     if (cudaMalloc(p, bytes) != cudaSuccess) return Status::Fail("cudaMalloc");
@@ -290,6 +323,7 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
       return s;
   }
 
+  if (lt) t_buf = NowMs() - t0;
   // Forward workspace: max over layers (and the head).
   size_t ws = ModelHeadWorkspaceBytes(cfg.max_prefill, cfg.hs);
   for (auto& l : m->layers) {
@@ -306,7 +340,15 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   // mmap'd safetensors shards at scope exit, dropping the file mappings
   // before the decode loop runs. Sync first so every H2D copy has landed
   // (the reads are async on `stream`).
+  t0 = lt ? NowMs() : 0.0;
   cudaStreamSynchronize(stream);
+  if (lt) {
+    t_sync = NowMs() - t0;
+    std::fprintf(stderr,
+                 "[q4t][load] head=%.0f ms layers=%.0f ms ple=%.0f ms "
+                 "buffers=%.0f ms sync=%.0f ms\n",
+                 t_head, t_layers, t_ple, t_buf, t_sync);
+  }
   return Status();
 }
 
