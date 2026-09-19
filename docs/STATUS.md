@@ -9,6 +9,22 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
 (详见 [PHASES.md](PHASES.md))
 
 ## 当前焦点 (2026-09-19): host C++23 升级 + OOM 可靠性工程 + chunked MTP 长上下文投机解码 + serve 工业化
+- **单流非量化 decode 瓶颈定位: 已到带宽下限, Option 1 否决 (2026-09-19, 负结果 + 方向修正)**:
+  用户方向 = 单流 (B=1) 非量化 (BF16) 无 MTP decode 优化。前序日志把 "MoE
+  router D2H 最大 4.48ms" 列为最大 gap 并计划 Option 1 (GPU-resident MoE
+  plan)。动手前精确分解**推翻该判断**: (1) 4.48ms 窗口内 GPU 完全空闲, 唯一
+  活动 = 一个 2048B D2H 占 4428µs (紧随 2052B H2D 仅 0.5µs); (2) 微基准复刻
+  moe_gemm.cu:359 模式 pageable/pinned 均 21µs, **pinned 零帮助** → 非
+  pageable staging; (3) **决定性**: 48 次 MoE D2H 中 47 次 2-5µs 正常, 仅 1 次
+  4428µs (>1ms D2H 全 profile 仅 1 次) → **一次性异常, 非每 step**。修正后:
+  MoE D2H 真实开销 ≈190µs/step (0.23%), **Option 1 否决** (多天重写省 0.23%
+  不值)。真实单步 (剔除 2 个一次性异常: lm_head 5.17ms + MoE D2H 4.43ms)
+  ≈73-77ms (~13.5 tok/s)。**真瓶颈 = Bf16GevKernel 33.4ms (46%)**, 实测带宽
+  240-260 GB/s = **100-108% of LPDDR5x 峰值 → 已到带宽下限, kernel 无优化
+  空间**。结论: 单流非量化 decode 已到内存带宽下限, 唯一再快杠杆 = 减少权重
+  字节 (FP4/FP8 量化, 用户已排除) 或放宽单流 (B>1 批处理, 已闭合 B2)。
+  无代码改动 (仅新增 tools/d2h_latency_bench.cu + /tmp/gev_bw.cu 微基准)。
+  下一步: 待用户裁决是否放宽 "非量化" 或 "单流" 约束, 否则视为已闭合。
 - **C++23 全量迁移: host + device (GCC 14 + CMake 4.4.3) (2026-09-19, 已闭合)**:
   承接上一项 (当时只升 host, device 留 C++17)。用户补充: 迁移是 NVIDIA
   工程师建议, CUDA 13.3 已全面支持 host+device C++23, "不动 device" 指可
