@@ -14,6 +14,7 @@
 | [REFERENCE.md](REFERENCE.md) | 参考项目说明: 每个项目取什么、怎么用 | 参考策略变化时 |
 | [REFERENCE_MTP.md](REFERENCE_MTP.md) | MTP / 投机解码参考调研 | MTP 相关时 |
 | [MTP_BATCHING.md](MTP_BATCHING.md) | MTP 批处理设计与阶段 | MTP 批处理推进时 |
+| [DATAFLOW_OPTIMIZATION.md](DATAFLOW_OPTIMIZATION.md) | 数据流驱动的逐级优化分析: 5 环节搬运账单 + L1/L2/L3 路线图 (prefill 激活 347GB, 可省 82.8GB) | 数据流优化推进时 |
 
 ## 写作原则
 

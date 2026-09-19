@@ -46,8 +46,12 @@
 - mrope_interleaved=true, mrope_section=[11,11,10]
 - (head_dim 256 × 0.25 = 64 维旋转, 3 段 11+11+10=32 对)
 - 纯文本 (t=h=w=position) 下 3D 位置退化为一维, MRoPE 等价于标准
-  partial RoPE (前 64 维), 与当前实现数学等价 (已验证); 完整 3D
-  MRoPE (t/h/w 分离) 仅多模态需要, 随图像输入落地。
+  partial RoPE (前 64 维), 与当前实现数学等价 (已验证)。
+- **完整 3D MRoPE 已闭合 (2026-09-12)**: 视觉/视频 token 的 RoPE 位置从
+  纯文本逻辑位置升级为 transformers 5.16.1 的 3D MRoPE (t, h, w 三行
+  坐标 + `mrope_position_delta`)。布局统一为 `[3, max_len]` 绝对位置表,
+  prefill/decode/压缩 key 共用一张表; 差分测试 `tools/mrope_diff_test.cpp`
+  vs Python 参考 `tools/mrope_ref.py` 63 坐标逐位一致, 纯文本无回归。
 
 ## MoE
 
@@ -84,7 +88,8 @@
 | 行宽 | 160 字节 (FP8 e4m3) = head_dim_per_ngram (2560/16) |
 | dtype | float8_e4m3fn |
 | SHA-256 | `b070f9644adf93794d8a1030584ab705809387e64396a9327a68fa3a3a6666b3` |
-| 应用层 | `ple_layer_ids=[2]` (即第 3 层, layer_id=2, 0-indexed) |
+| 应用层 | `ple_layer_ids=[2]` (**1-indexed**, 即 0-indexed layer 1;
+  SGLang `if (layer_id + 1) in config.ple_layer_ids` 证实) |
 | ple_embed_dim | 2560 (= 16 heads × 160) |
 | ple_conv_kernel_size | 4 |
 
@@ -125,8 +130,9 @@
 6. gate  = sigmoid( sign(gate) * sqrt(|gate|) )   # 平滑门控
 7. gated_value = gate * value                    # [tokens, 4, 2560]
 8. conv_out = silu( depthwise_conv1d(norm_conv(gated_value)) )
-          # Conv1d(channels=10240, kernel=4, dilation=2, groups=10240, 零初始化)
-          # per-request conv state, 状态长 (4-1)*2=6 列
+          # Conv1d(channels=10240, kernel=4, dilation=3 (=ngram_size),
+          # groups=10240, 零初始化)
+          # per-request conv state, 状态长 (4-1)*3=9 列
 9. output = gated_value.flatten + conv_out       # [tokens, 10240]
 10. hidden_states += output                      # 加到主干 (在 attn_hyper_connection.mix 之前)
 ```

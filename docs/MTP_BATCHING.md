@@ -189,3 +189,23 @@ token 一致), 确认无跨序列污染。沿用 B2a 的判据。
 - 残留的 B=1/B=2 步是请求陆续加入/退出 (EOS/max_tokens) 的边界效应, 正常。
 
 **诊断**: `Q4T_SCHED_DEBUG=1` 打印每步 B 值 (env 门控, 默认关)。
+
+## chunked MTP: 长上下文投机解码 (2026-09-19, 已闭合)
+
+**背景**: 前序发现 plain decode 单步 4K≈44K (57ms, 不随上下文退化),
+4K=30 vs 44K=17.7 tok/s 差距纯粹是 MTP gate (44K chunked 被禁)。旧 gate
+按 262K 最坏算过保守: draft KV/indexer 池在 MTP load 时已按 max_len×max_seq
+分配 (非 per-request), per-request 新增只有 trunk buffer (44K 0.9GB)。
+
+**实现**: `MtpDraftExtend` 分块 (每块 ≤ max_prefill 调 MtpForward, 仅末块
+compute_logits, 省 21.9GB; draft 单层无 SSM, KV 绝对位置 per-seq 池化,
+块间天然续接) + chat_server chunked prefill 累积 trunk (ModelPrefill/
+ModelDecodeBatch 传 trunk_out) + use_mtp gate 改 `d_trunk_full != nullptr`
+(分配失败软回退 plain)。
+
+**验证**: 44K 分 6 块全 ok, decode 33.1 tok/s (4K MTP 33.6 持平),
+**44K 同 prompt MTP vs --no-mtp 输出 bit-exact** (主模型验证所有 draft
+token), 76 测试零警告。
+
+**意义**: MTP 投机解码从短序列扩展到长上下文 (44K), 精度无损 (主模型
+验证保证), 是长上下文 decode 的主要加速手段 (44K 17.7→33.1 tok/s)。

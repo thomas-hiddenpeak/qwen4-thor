@@ -17,7 +17,8 @@ reference/
 ├── qwen35-thor/          # 同硬件 Qwen3.5 引擎, 架构模式参考
 ├── Qwen3x-Orin/          # 生产级 tokenizer 参考 (ICU 74 + BPE + golden fixture)
 ├── thor-probe/           # 硬件探测方法 (可选)
-└── thor-bench/           # 性能基线数据 (可选)
+├── thor-bench/           # 性能基线数据 (可选)
+└── pdf/                  # Qwen3.8-Next 官方架构技术报告 (PDF)
 ```
 
 - 以 `git clone --depth 1` 获取, 固定 commit 记录在下方。
@@ -36,8 +37,8 @@ reference/
   4. 独立 CUDA stream 上 FP8→BF16 转换的同步点
   5. PLE 输出在 forward pass 中的融合位置
   6. 24-32 GB GPU 的 grouped CPU-offload 策略 (专家块预取)
-- 固定 commit: `176a522ef9d6dbb5056ae1f467fe49af0f1258a5` (v0.2.0,
-  2026-09-03 克隆, `--depth 1`)
+- 固定 commit: `155a949` (v0.3.0, 2026-09-03 克隆, 2026-09-14 更新,
+  `--depth 1`)
 
 ## sglang-qwen4-exp (PLE / forward pass 权威参考)
 
@@ -55,7 +56,7 @@ reference/
 ## vllm (qwen4_exp 完整实现, MTP/QSA 权威参考)
 
 - 仓库: https://github.com/vllm-project/vllm
-- 固定 commit: `2902ca1` (main, 2026-09-05 克隆, `--depth 1`)
+- 固定 commit: `6711197` (main, 2026-09-05 克隆, 2026-09-14 更新, `--depth 1`)
 - 用途: **qwen4_exp 的完整 PyTorch 参考实现** (14,192 行), 填补
   sglang-qwen4-exp 单文件无法覆盖的部分 (依赖 SGLang 运行时)。
 - 关键路径 (`vllm/models/qwen4_exp/`):
@@ -274,6 +275,24 @@ reference/
   融合、chunked-prefill 交织) 依赖 datacenter 的 compute-vs-memory 流水线
   不平衡; Thor 均匀带宽受限, 这些**不迁移** (见 docs/log/2026-09-17.md
   融合负结果)。取其**架构设计**, 慎取其 datacenter-kernel 策略。
+
+## Qwen3.8-Next 官方技术报告 (目标模型权威设计文档)
+
+- 文件: `pdf/tech_report.pdf` (PDF 1.5, 2026-08-26, Qwen Team)
+- 标题: "On the Design of Qwen3.8-Next Architecture: Evaluation, Efficiency,
+  and Training Stability"
+- 用途: **目标模型 Qwen3.8-Flash-Next 的官方架构设计文档**, 比 sglang/vllm
+  源码更高层地解释设计动机与消融:
+  - 125B 参数 / 6B 激活/token + 51B n-gram embedding 表 (off-accelerator,
+    即 PLE SSD Stream 的 51.2 GB sidecar)。
+  - Token mixing = Gated DeltaNet (GDN) + global attention 逐层混合, 每 4 层
+    一个 full-attention; 继续预训练时 full-attention 被 QSA 替换 (压缩轻量
+    indexer 在 micro-block 粒度打分) — 印证 36 linear + 12 full 的层布局。
+  - 残差流展宽为 4 分支 + 逐元素门控 = **Gated Residual (GR)**, 即本项目的
+    Hyper-Connection (hc_count=4)。
+  - 容量经单个 n-gram embedding 层 (表从 host 内存预取) 加在主干外 — 即 PLE。
+- 注意: 训练侧文档, 推理实现仍以 sglang-qwen4-exp / vllm 源码为准; 本文用于
+  理解"为什么这样设计", 与 MODEL.md 的"是什么"互补。
 
 ## 明确不参考
 

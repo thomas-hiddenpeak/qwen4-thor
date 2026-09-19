@@ -1,6 +1,6 @@
 # PHASES.md — 分阶段计划
 
-> 范围与完成标准。当前阶段: **Phase 1**。
+> 范围与完成标准。当前阶段: **Phase 2** (Phase 1 已闭合 2026-09-07)。
 
 ## Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
@@ -29,10 +29,11 @@
        架构提前, 见第 6 项)。✅ 已实现 (2026-09-05): 按页组织
        (`kKvPageSize=16`) + 页表间接寻址, 使 KV 可按页迁移/共享。
    - MoE: 512 专家 top-10 + shared expert, NVFP4 grouped GEMM
-   - PLE 嵌入 (layer 2, 每 token 16 次查找)
+   - PLE 嵌入 (0-indexed layer 1, 每 token 16 次查找)
    - MRoPE (interleaved, section [11,11,10], partial_rotary 0.25)
      - 纯文本 (t=h=w=position) 下退化为标准 partial RoPE, 与当前实现
-       数学等价 (已验证); 完整 3D MRoPE 仅多模态需要, 随图像输入落地。
+       数学等价 (已验证); 完整 3D MRoPE (t/h/w 三行 + mrope_position_delta)
+       已闭合 (2026-09-12, 多模态, 见 MODEL.md)。
    - MTP 推测解码 (1 层 full_attention draft)
 
 4. **服务与 CLI**
@@ -97,11 +98,16 @@
 - [x] 验证标准体系落地 — **已闭合 (2026-09-12)**: `tools/verify/` 三件套 +
   48 层全量基线 OVERALL PASS (置信位置 44/44 + 翻转全 near-tie + l2_rel
   噪声带), 见 STATUS.md。
-- **长上下文 262K (262144) 验证** — 内存实测已闭合 (2026-09-15):
+- **长上下文 262K (262144) 验证** — 已闭合 (2026-09-15, 内存实测 +
+  分块 prefill):
   `--max-len 262144 --max-seq 1` 加载成功, 峰值消耗 ~96 GB (余 25.6 GB,
-  无 OOM), 短 prompt 生成正常且确定 — 与预算估算吻合 (见下)。剩余:
-  分块 prefill (当前 `ModelForward` 一次性 prefill 的 `[T, vocab]` logits
-  在 262K 下 = 130 GB 不可行, 需"继续 prefill"路径)。
+  无 OOM), 短 prompt 生成正常且确定 — 与预算估算吻合 (见下)。**分块
+  prefill 已实现**: `max_prefill` 语义从 prompt 上限改为分块大小 (上限 =
+  `max_len`), `T > max_prefill` 走 chunk 0 `ModelPrefill` + chunk 1..
+  `ModelDecodeBatch` 续块 (绝对位置, 不重置状态), 中间块跳过 lm_head,
+  一次性 `[T, vocab]` logits 在 262K 下 = 130 GB 不可行的问题由此解决。
+  200K-token prompt E2E 无 OOM 生成正常 (prefill ~12.6s/2048-token 块,
+  262K ≈ 27 分钟, MoE GEMM 带宽下限)。
 - **完整 PD 分离部署** — 降级为后续计划 (2026-09-14 用户决定): 当前
   PD-ready 架构 (Paged KV + 可分离路径 + `ModelSequence` 阶段边界 API)
   已满足**本机调度**需求 (持续 prefill 场景靠 Paged KV 按页迁移 + 独立
@@ -126,8 +132,8 @@ page_table + rope_pos):
 | 1 | ~19.6 GB | ~101 GB | **可行** (2026-09-15 实测: 峰值消耗 ~96 GB, 余 25.6 GB, 无 OOM) |
 
 另: prefill 工作区是独立约束 — 一次性 prefill 262K 的 `[T, vocab]`
-logits = 130 GB 不可行, **必须分块 prefill** (当前 API 无"继续 prefill"
-路径, `ModelDecodeBatchMulti` 不重置状态可复用)。模型层硬伤 (如实报告):
+logits = 130 GB 不可行, **必须分块 prefill** (✅ 已实现, 见上: `max_prefill`
+改分块大小 + `ModelDecodeBatch` 续块, 不重置状态)。模型层硬伤 (如实报告):
 QSA `idx_budget=2048` 在 262K 时 n_groups=65536, 只能 attend ~3% 历史块,
 召回受限 — 模型设计问题, 非引擎问题。
 
