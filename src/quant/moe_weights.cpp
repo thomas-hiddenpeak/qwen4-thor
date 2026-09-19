@@ -6,6 +6,7 @@
 
 #include <cuda_runtime.h>
 
+#include <array>
 #include <atomic>
 #include <cstdio>
 #include <cstring>
@@ -110,8 +111,12 @@ Status LoadMoEWeights(const io::WeightLoader& loader, int layer_id, int E,
   // destroyed at iteration end while their H2D copies were still in flight on
   // `stream` (use-after-free), masked only by timing. Per-thread staging + a
   // single sync at the end removes it.
-  const int nthreads = std::max(
+  int nthreads = std::max(
       1, std::min<int>(std::thread::hardware_concurrency(), E));
+  if (const char* env = std::getenv("Q4T_MOE_THREADS")) {
+    const int v = std::atoi(env);
+    if (v > 0) nthreads = std::min(v, E);
+  }
   std::atomic<int> next_expert{0};
   std::atomic<int> first_err{0};  // 0 = ok, else cudaGetLastError / -1
   const bool lt = std::getenv("Q4T_LOAD_TIMING") != nullptr;
@@ -121,10 +126,12 @@ Status LoadMoEWeights(const io::WeightLoader& loader, int layer_id, int E,
         .count();
   };
   const double t_par0 = lt ? nowms() : 0.0;
+  // Per-thread phase accumulators [read, h2d, swizzle]; summed after join.
+  std::vector<std::array<double, 3>> phase_acc(nthreads, {0.0, 0.0, 0.0});
   std::vector<std::thread> pool;
   pool.reserve(nthreads);
   for (int t = 0; t < nthreads; ++t) {
-    pool.emplace_back([&]() {
+    pool.emplace_back([&, t]() {
       // Thread-local staging (no sharing across threads).
       std::vector<uint8_t> gu_w(gu_w_bytes);
       std::vector<uint8_t> up_w(gu_w_bytes);
@@ -141,8 +148,10 @@ Status LoadMoEWeights(const io::WeightLoader& loader, int layer_id, int E,
         const int e = next_expert.fetch_add(1, std::memory_order_relaxed);
         if (e >= E) return;
         Status es;
-        // --- packed weights (row-major) ---
-        std::string n = ExpertName(layer_id, e, "gate_proj", "weight");
+        std::string n;
+        // --- Phase 1: host reads of the three packed weights ---
+        const double t0 = lt ? nowms() : 0.0;
+        n = ExpertName(layer_id, e, "gate_proj", "weight");
         if (!(es = loader.ReadTensor(n, gu_w.data()))) {
           first_err.store(-1, std::memory_order_relaxed);
           return;
@@ -152,6 +161,14 @@ Status LoadMoEWeights(const io::WeightLoader& loader, int layer_id, int E,
           first_err.store(-1, std::memory_order_relaxed);
           return;
         }
+        n = ExpertName(layer_id, e, "down_proj", "weight");
+        if (!(es = loader.ReadTensor(n, dn_w.data()))) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
+        if (lt) phase_acc[t][0] += nowms() - t0;
+        // --- Phase 2: submit weight H2D (async on stream) ---
+        const double t1 = lt ? nowms() : 0.0;
         uint8_t* gu_dst = out->gu_packed_expert(e);
         if (!(es = H2D(gu_w.data(), gu_dst, gu_w_bytes, stream))) {
           first_err.store(-1, std::memory_order_relaxed);
@@ -162,17 +179,14 @@ Status LoadMoEWeights(const io::WeightLoader& loader, int layer_id, int E,
           first_err.store(-1, std::memory_order_relaxed);
           return;
         }
-        n = ExpertName(layer_id, e, "down_proj", "weight");
-        if (!(es = loader.ReadTensor(n, dn_w.data()))) {
-          first_err.store(-1, std::memory_order_relaxed);
-          return;
-        }
         uint8_t* dn_dst = out->dn_packed_expert(e);
         if (!(es = H2D(dn_w.data(), dn_dst, dn_w_bytes, stream))) {
           first_err.store(-1, std::memory_order_relaxed);
           return;
         }
-        // --- gate/up scale: merge (gate rows then up rows) + swizzle ---
+        if (lt) phase_acc[t][1] += nowms() - t1;
+        // --- Phase 3: host reads of the three weight_scales ---
+        const double t2 = lt ? nowms() : 0.0;
         n = ExpertName(layer_id, e, "gate_proj", "weight_scale");
         if (!(es = loader.ReadTensor(n, gate_s.data()))) {
           first_err.store(-1, std::memory_order_relaxed);
@@ -183,27 +197,34 @@ Status LoadMoEWeights(const io::WeightLoader& loader, int layer_id, int E,
           first_err.store(-1, std::memory_order_relaxed);
           return;
         }
-        std::memcpy(gu_s_merged.data(), gate_s.data(), gu_s_bytes);
-        std::memcpy(gu_s_merged.data() + gu_s_bytes, up_s.data(), gu_s_bytes);
-        SwizzleSfInto(gu_s_merged.data(), 2 * moe_is, hs, gu_sw.data());
-        if (!(es = H2D(gu_sw.data(), out->gu_sf_expert(e), gu_sf_block,
-                       stream))) {
-          first_err.store(-1, std::memory_order_relaxed);
-          return;
-        }
-        // --- down scale: swizzle ---
         n = ExpertName(layer_id, e, "down_proj", "weight_scale");
         if (!(es = loader.ReadTensor(n, dn_s.data()))) {
           first_err.store(-1, std::memory_order_relaxed);
           return;
         }
+        if (lt) phase_acc[t][0] += nowms() - t2;
+        // --- Phase 4: merge + swizzle both scale blocks (host compute) ---
+        const double t3 = lt ? nowms() : 0.0;
+        std::memcpy(gu_s_merged.data(), gate_s.data(), gu_s_bytes);
+        std::memcpy(gu_s_merged.data() + gu_s_bytes, up_s.data(), gu_s_bytes);
+        SwizzleSfInto(gu_s_merged.data(), 2 * moe_is, hs, gu_sw.data());
         SwizzleSfInto(dn_s.data(), hs, moe_is, dn_sw.data());
+        if (lt) phase_acc[t][2] += nowms() - t3;
+        // --- Phase 5: submit scale H2D ---
+        const double t4 = lt ? nowms() : 0.0;
+        if (!(es = H2D(gu_sw.data(), out->gu_sf_expert(e), gu_sf_block,
+                       stream))) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
         if (!(es = H2D(dn_sw.data(), out->dn_sf_expert(e), dn_sf_block,
                        stream))) {
           first_err.store(-1, std::memory_order_relaxed);
           return;
         }
-        // --- scalars (device + host copy) ---
+        if (lt) phase_acc[t][1] += nowms() - t4;
+        // --- Phase 6: host reads of the four scalar scales ---
+        const double t5 = lt ? nowms() : 0.0;
         n = ExpertName(layer_id, e, "gate_proj", "weight_scale_2");
         if (!(es = loader.ReadTensor(n, &scal[0]))) {
           first_err.store(-1, std::memory_order_relaxed);
@@ -224,10 +245,13 @@ Status LoadMoEWeights(const io::WeightLoader& loader, int layer_id, int E,
           first_err.store(-1, std::memory_order_relaxed);
           return;
         }
+        if (lt) phase_acc[t][0] += nowms() - t5;
         out->gu_w_scale2_h[e] = scal[0];
         out->gu_input_scale_h[e] = scal[1];
         out->dn_w_scale2_h[e] = scal[2];
         out->dn_input_scale_h[e] = scal[3];
+        // --- Phase 7: submit scalar H2D ---
+        const double t6 = lt ? nowms() : 0.0;
         if (!(es = H2D(&scal[0], out->gu_w_scale2 + e, sizeof(float),
                        stream))) {
           first_err.store(-1, std::memory_order_relaxed);
@@ -248,6 +272,7 @@ Status LoadMoEWeights(const io::WeightLoader& loader, int layer_id, int E,
           first_err.store(-1, std::memory_order_relaxed);
           return;
         }
+        if (lt) phase_acc[t][1] += nowms() - t6;
       }
     });
   }
@@ -257,10 +282,17 @@ Status LoadMoEWeights(const io::WeightLoader& loader, int layer_id, int E,
                         std::to_string(layer_id) + ")");
   }
   if (lt) {
+    double sum_read = 0, sum_h2d = 0, sum_sw = 0;
+    for (const auto& a : phase_acc) {
+      sum_read += a[0];
+      sum_h2d += a[1];
+      sum_sw += a[2];
+    }
     std::fprintf(stderr,
                  "[q4t][moe] layer %d: experts=%d threads=%d parallel=%.0f "
-                 "ms\n",
-                 layer_id, E, nthreads, nowms() - t_par0);
+                 "ms (read=%.0f h2d=%.0f swizzle=%.0f, sum=%.0f)\n",
+                 layer_id, E, nthreads, nowms() - t_par0, sum_read, sum_h2d,
+                 sum_sw, sum_read + sum_h2d + sum_sw);
   }
 
   if (stream != nullptr) {
