@@ -60,8 +60,21 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
   加 name→index hash (Open 时建, O(1) 替代 O(1500))。结果: 冷启动
   44.2→32.1s (-27%), model_load 35.1→27.0s; 非 MoE 层 12.3→4.2s (-66%);
   MoE 17.4→14.3s (现 4.2GB/s 接近 NVMe 带宽)。bit-exact (== C++17 ==
-  C++23 基线), 76 测试绿零警告。下一步: MoE 每专家 10 小 pread 可 io_uring
-  批量异步 (PLE 已用); 非 MoE 已近带宽下限。当前 32s 达工业级。
+  C++23 基线), 76 测试绿零警告。下一步: MoE 阶段剖析 (已闭合, 见下条)。
+- **启动提速 (终): MoE 加载阶段剖析, 确认到达 NVMe 硬件地板 (2026-09-19, 已闭合)**:
+  先测量再决定 (避免"计划 D"式优化错目标)。Q4T_LOAD_TIMING 新增
+  read/h2d/swizzle 分段: 热缓存 read=80.5% / h2d=16.5% / swizzle=3.0%
+  (线程时间); 冷 read 带宽 4.56GB/s **高于冷 NVMe 顺序读 2.72GB/s 1.67×**
+  (14 线程并行已榨出 NVMe 并行性)。排除的方向 (全数据驱动): (1) pread
+  直接到 device — cudaMalloc 指针 pread 4KB 实测 **EFAULT**, Thor 内核
+  pread 页错误写路径不可写 device 内存; (2) 更多线程 — Q4T_MOE_THREADS
+  冷测 14 与 32 **逐毫秒相同** (NVMe 已饱和), 64 更差 (过订阅); (3) 合并
+  同类型连续读 — 会失去跨 shard 并行性退化为顺序读, 更慢。结论: MoE
+  84GB 冷 ~18.3s = NVMe 硬件地板, 软件优化空间闭合; 冷 model_load 27.1s
+  = head 1.4 + MoE 18.3 + 非 MoE ~7 + ple 0.1。再快需架构级 (expert 按需
+  流式, 启动换推理延迟), 属 Phase 级决策。保留 env 门控工具
+  (Q4T_LOAD_TIMING 分段 / Q4T_MOE_THREADS 线程数), 默认行为不变,
+  bit-exact + 76 测试绿零警告。
 - **chunked MTP: 长上下文投机解码 (2026-09-19, 44K 17.7→33.1 tok/s, 精度无损, 已闭合)**:
   前序发现 plain decode 单步 4K≈44K (57ms, 不随上下文退化), 4K=30 vs 44K=17.7
   差距纯粹是 MTP gate (44K chunked 被禁)。旧 gate 按 262K 最坏算过保守:
