@@ -803,6 +803,10 @@ int RunServe(int argc, char** argv) {
       opts.max_seq = std::atoi(argv[++i]);
     } else if (a == "--no-mtp") {
       opts.no_mtp = true;
+    } else if (a == "--mem-fraction" && i + 1 < argc) {
+      opts.mem_fraction = std::atof(argv[++i]);
+    } else if (a == "--no-budget") {
+      opts.no_budget = true;
     } else {
       std::fprintf(stderr, "Unknown option: %s\n", a.c_str());
       return 2;

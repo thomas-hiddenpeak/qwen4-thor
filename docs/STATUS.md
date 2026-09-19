@@ -8,7 +8,21 @@
 Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 2026-09-07)
 (详见 [PHASES.md](PHASES.md))
 
-## 当前焦点 (2026-09-19): chunked MTP 长上下文投机解码 + 单流 decode 性能 (FP8 投影) + serve 工业化
+## 当前焦点 (2026-09-19): OOM 可靠性工程 + chunked MTP 长上下文投机解码 + serve 工业化
+- **OOM 可靠性: 内存预算 (--mem-fraction) + auto-length + 运行时 preflight + 启动可观测性 (2026-09-19, 已闭合)**:
+  08:29 OOM 重启根因 (--max-len 262144 未配 --max-seq 1 → 65GB KV + 84GB
+  权重 > 122GB)。新模块 q4t_runtime (memory_budget): 启动前按
+  mem_fraction×MemTotal (默认 0.90) 算预算, 权重用 WeightIndex::total_size()
+  精确 84GB, 固定成本实测 ~14.2GB, 状态池按 13 层 full-attn 33356B/token/seq
+  + 36 层 linear 110.4MB/seq 推导 (max_len, max_seq) 上限; 用户 pin max_len
+  推导 max_seq (装不下二分回退 max_len), 未 pin 则 auto 推导 max_len (vllm
+  gpu_memory_utilization 等价) → 任何配置都不会 OOM。运行时 preflight:
+  trunk 分配前查 MemAvailable (非 MemFree, 稳态 MemFree 仅 2-5GB 会误触发)
+  < trunk+draft_logits+2GB → 软降级 plain decode。启动 per-phase 计时
+  (PhaseTimer): total 63.7s = model_load 58.3s (90%, 权重单线程 H2D) +
+  mtp 2.7s + vision 1.2s。验证: 262144×seq8 (原 OOM 配置) 启动成功 CAPPED
+  seq=1; auto seq8 → 53248; 44K 请求 33.3 tok/s MTP 正常; 76 测试全绿零警告。
+  下一步: 启动提速 (model_load 92GB 单线程 H2D 是瓶颈, 方向多 shard 并行)。
 - **chunked MTP: 长上下文投机解码 (2026-09-19, 44K 17.7→33.1 tok/s, 精度无损, 已闭合)**:
   前序发现 plain decode 单步 4K≈44K (57ms, 不随上下文退化), 4K=30 vs 44K=17.7
   差距纯粹是 MTP gate (44K chunked 被禁)。旧 gate 按 262K 最坏算过保守:

@@ -149,11 +149,18 @@ target_link_libraries(q4t_model PUBLIC q4t_io q4t_quant q4t_ple CUDA::cudart
                     CUDA::cublasLt)
 
 # ---------------------------------------------------------------------------
+# q4t_runtime — host-side runtime utilities (memory budget, OOM preflight).
+# No CUDA dependency: pure host logic over /proc/meminfo + architecture math.
+# ---------------------------------------------------------------------------
+add_library(q4t_runtime STATIC src/runtime/memory_budget.cpp)
+target_include_directories(q4t_runtime PUBLIC include)
+
+# ---------------------------------------------------------------------------
 # q4t_server — OpenAI-compatible HTTP server (POSIX sockets, no deps)
 # ---------------------------------------------------------------------------
 add_library(q4t_server STATIC src/server/chat_server.cpp)
 target_include_directories(q4t_server PUBLIC include)
-target_link_libraries(q4t_server PUBLIC q4t_model q4t_text q4t_io
+target_link_libraries(q4t_server PUBLIC q4t_model q4t_text q4t_io q4t_runtime
                                         CUDA::cudart)
 
 # ---------------------------------------------------------------------------

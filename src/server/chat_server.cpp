@@ -25,6 +25,7 @@
 
 #include "q4t/io/json.h"
 #include "q4t/io/weight_loader.h"
+#include "q4t/runtime/memory_budget.h"
 #include "q4t/vision/processor.h"
 #include "q4t/vision/vision.h"
 
@@ -348,36 +349,109 @@ ChatServer::~ChatServer() {
   }
 }
 
-Status ChatServer::Start(const ServerOptions& opts) {
-  text::TokenizerLimits limits;
-  Status s = text::Tokenizer::Load(opts.model_dir + "/tokenizer.json", limits,
-                                   &tok_);
-  if (!s.ok()) {
-    return Status::Fail("tokenizer load failed: " + s.message());
+namespace {
+// Per-phase startup timer: prints "[q4t][startup] <phase> <ms> ms" on scope
+// exit. Industrial-grade startup observability — makes it trivial to see which
+// phase dominates and to track startup-time regressions.
+struct PhaseTimer {
+  const char* phase;
+  std::chrono::steady_clock::time_point t0;
+  explicit PhaseTimer(const char* p) : phase(p), t0(std::chrono::steady_clock::now()) {}
+  ~PhaseTimer() {
+    const double ms =
+        std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - t0)
+            .count();
+    std::fprintf(stderr, "[q4t][startup] %s %.0f ms\n", phase, ms);
   }
+};
+}  // namespace
+
+Status ChatServer::Start(const ServerOptions& opts) {
+  PhaseTimer total("startup_total");
+  {
+    PhaseTimer pt("tokenizer");
+    text::TokenizerLimits limits;
+    Status s = text::Tokenizer::Load(opts.model_dir + "/tokenizer.json", limits,
+                                     &tok_);
+    if (!s.ok()) {
+      return Status::Fail("tokenizer load failed: " + s.message());
+    }
+  }
+  Status s;
+
+  // OOM-safe memory budget (vllm-style gpu_memory_utilization). Compute the
+  // maximum (max_len, max_seq) that fits within mem_fraction x MemTotal BEFORE
+  // any allocation, and cap the user's request to it. This is what makes an
+  // over-aggressive config (e.g. --max-len 262144 --max-seq 8) safe instead of
+  // OOM-rebooting the unified-memory box. Skipped when opts.no_budget is set.
+  {
+    PhaseTimer pt("budget");
+    if (!opts.no_budget) {
+    const size_t mem_total = runtime::ReadMemTotal();
+    if (mem_total == 0) {
+      return Status::Fail("could not read MemTotal from /proc/meminfo");
+    }
+    // Weights: the index's total_size is the exact GPU weight byte count
+    // (main + MTP + vision). Open the index read-only just to read it.
+    size_t weights = 0;
+    {
+      io::WeightIndex* idx = nullptr;
+      if (io::WeightIndex::Open(
+               opts.model_dir + "/model.safetensors.index.json", &idx)
+              .ok()) {
+        weights = idx->total_size();
+        delete idx;
+      }
+    }
+    if (weights == 0) {
+      return Status::Fail(
+          "could not read weight total_size from model index (budget)");
+    }
+    runtime::BudgetRequest breq;
+    breq.mem_fraction = opts.mem_fraction;
+    breq.max_len = opts.max_len;
+    breq.max_seq = opts.max_seq > 0 ? opts.max_seq : 8;
+    breq.max_prefill =
+        opts.max_prefill > 0 ? opts.max_prefill : 8192;
+    budget_ = runtime::ComputeMemoryBudget(runtime::BudgetModelParams{},
+                                           breq, weights, mem_total);
+    budget_valid_ = true;
+    std::fputs(budget_.report.c_str(), stderr);
+    }
+  }  // budget phase
+
+  // Effective (possibly budget-capped) max_len / max_seq.
+  const int eff_max_len =
+      budget_valid_ && budget_.max_len > 0 ? budget_.max_len : opts.max_len;
+  const int eff_max_seq =
+      budget_valid_ && budget_.max_seq > 0 ? budget_.max_seq : opts.max_seq;
 
   model::ModelConfig cfg;
   cfg.model_dir = opts.model_dir;
   cfg.index_path = opts.model_dir + "/model.safetensors.index.json";
   cfg.ple_sidecar = opts.model_dir + "/ple/qwen3.8-flash-next-ple-fp8.bin";
   if (opts.max_prefill > 0) cfg.max_prefill = opts.max_prefill;
-  if (opts.max_len > 0) cfg.max_len = opts.max_len;
+  if (eff_max_len > 0) cfg.max_len = eff_max_len;
   // B1: pool the per-sequence recurrent state for up to max_seq concurrent
   // requests. Each in-flight request owns one seq_id.
-  max_seq_ = opts.max_seq > 0 ? opts.max_seq : 8;
+  max_seq_ = eff_max_seq > 0 ? eff_max_seq : 8;
   cfg.max_seq = max_seq_;
   seq_free_.assign(static_cast<size_t>(max_seq_), true);
   conn_cap_ = std::max(max_seq_ * 8, 128);  // in-flight request-thread cap
-  s = model::LoadModel(cfg, &model_, nullptr);
-  if (!s.ok()) {
-    tok_.reset();
-    return Status::Fail("model load failed: " + s.message());
+  {
+    PhaseTimer pt("model_load");
+    s = model::LoadModel(cfg, &model_, nullptr);
+    if (!s.ok()) {
+      tok_.reset();
+      return Status::Fail("model load failed: " + s.message());
+    }
   }
 
   // Load the MTP draft model (optional). Borrowed embed/lm_head from the main
   // model. On failure the server falls back to plain decode (mirrors the CLI
   // --mtp behavior). Skipped entirely when opts.no_mtp is set.
   if (!opts.no_mtp) {
+    PhaseTimer pt("mtp_load");
     mtp::MtpConfig mcfg;
     mcfg.mtp_dir = opts.model_dir + "/mtp";
     mcfg.max_prefill = cfg.max_prefill;  // MTP draft-extend runs over the whole
@@ -404,6 +478,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // only and rejects image parts). The loader is read-only (mmap) and is
   // released after the weights are copied to device.
   {
+    PhaseTimer pt("vision_load");
     io::WeightIndex* index = nullptr;
     s = io::WeightIndex::Open(cfg.index_path, &index);
     if (s.ok()) {
@@ -1367,8 +1442,35 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           ? static_cast<size_t>(mtp_.cfg.hc) * static_cast<size_t>(mtp_.cfg.hs)
           : 0;
   if (mtp_loaded_) {
-    if (cudaMalloc(reinterpret_cast<void**>(&d_trunk_full),
-                   static_cast<size_t>(T) * trunk_hc_dim * 2) != cudaSuccess) {
+    // OOM preflight (runtime). On unified memory a large cudaMalloc does not
+    // merely fail — it can push MemFree to zero and trip the global OOM
+    // killer (the 2026-09-19 reboot). So before attempting the trunk
+    // allocation, gauge MemFree (which excludes reclaimable page cache) and
+    // fall back to plain decode if there is not enough headroom. The trunk
+    // buffer (T * hc_dim * 2) plus the MTP draft logits (max_prefill * vocab *
+    // 2, allocated inside MtpDraftExtend) plus a 2 GB safety margin must fit.
+    const size_t trunk_bytes = static_cast<size_t>(T) * trunk_hc_dim * 2;
+    const size_t draft_logits_bytes =
+        static_cast<size_t>(max_prefill_) *
+        static_cast<size_t>(model_.cfg.vocab) * 2;
+    const size_t kPreflightMargin = 2u * 1024u * 1024u * 1024u;  // 2 GB
+    const size_t need = trunk_bytes + draft_logits_bytes + kPreflightMargin;
+    // MemAvailable (NOT MemFree): it includes reclaimable page cache, which is
+    // exactly what the kernel evicts to satisfy a fresh cudaMalloc. In steady
+    // state MemFree is only a few GB (weights + model-file cache fill it) but
+    // MemAvailable is ~120 GB, so MemFree would wrongly fall back on every
+    // request. MemAvailable < need means even cache eviction cannot satisfy
+    // the allocation -> the OOM killer would trip, so degrade to plain decode.
+    const size_t mem_avail = runtime::ReadMemAvailable();
+    if (mem_avail > 0 && mem_avail < need) {
+      std::fprintf(
+          stderr,
+          "[q4t] OOM preflight: MemAvailable=%.2f GB < need=%.2f GB (trunk "
+          "T=%d); plain decode\n",
+          mem_avail / 1e9, need / 1e9, T);
+      d_trunk_full = nullptr;
+    } else if (cudaMalloc(reinterpret_cast<void**>(&d_trunk_full),
+                          trunk_bytes) != cudaSuccess) {
       std::fprintf(stderr,
                    "[q4t] trunk alloc failed for T=%d; plain decode\n", T);
       d_trunk_full = nullptr;

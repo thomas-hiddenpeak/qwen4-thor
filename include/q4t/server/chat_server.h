@@ -27,6 +27,7 @@
 #include "q4t/model/model.h"
 #include "q4t/mtp/mtp.h"
 #include "q4t/status.h"
+#include "q4t/runtime/memory_budget.h"
 #include "q4t/text/tokenizer.h"
 #include "q4t/vision/processor.h"
 #include "q4t/vision/vision.h"
@@ -50,6 +51,14 @@ struct ServerOptions {
   // Disable the MTP draft model (plain greedy decode only). Useful for
   // isolating MTP-specific concurrency issues from the base scheduler.
   bool no_mtp = false;
+  // OOM-safe memory budget (vllm-style gpu_memory_utilization). The server
+  // reserves mem_fraction x MemTotal for the whole engine (weights + state
+  // pools + per-request headroom) and caps max_len/max_seq to what fits, so
+  // an over-aggressive config can never OOM the unified-memory box. 0.90 is
+  // the safe default (10% left for the OS / page cache / other processes).
+  // Set no_budget=true to disable the cap (legacy behavior, user's own risk).
+  double mem_fraction = 0.90;
+  bool no_budget = false;
 };
 
 // One multimodal content part: a single image (1 frame) or a video (N frames).
@@ -266,6 +275,11 @@ class ChatServer {
   int max_tokens_default_ = 256;
   int max_prefill_ = 2048;
   int max_len_ = 2048;
+  // OOM-safe memory budget computed at Start() (vllm-style). max_len/max_seq
+  // are capped to what fits in mem_fraction x MemTotal so the engine can never
+  // OOM the unified-memory box. budget_valid_ is false when --no-budget.
+  runtime::MemoryBudget budget_;
+  bool budget_valid_ = false;
   std::unique_ptr<text::Tokenizer> tok_;
   model::Model model_;
   // MTP draft model (optional). Borrowed embed/lm_head from model_ must be
