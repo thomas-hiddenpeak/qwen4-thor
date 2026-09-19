@@ -8,7 +8,17 @@
 Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 2026-09-07)
 (详见 [PHASES.md](PHASES.md))
 
-## 当前焦点 (2026-09-19): OOM 可靠性工程 + chunked MTP 长上下文投机解码 + serve 工业化
+## 当前焦点 (2026-09-19): host C++23 升级 + OOM 可靠性工程 + chunked MTP 长上下文投机解码 + serve 工业化
+- **语言标准升级: host C++17 → C++23 (device 保持 C++17) (2026-09-19, 已闭合)**:
+  用户判断 C++23 host 优势能立即帮助后续工作。策略匹配代码布局 (host 全在
+  .cpp, .cu 是 device+launch): CMAKE_CXX_STANDARD 17→23 (所有 .cpp 拿
+  C++23), CMAKE_CUDA_STANDARD 保持 17 (.cu device 代码零改动零风险)。
+  约束: include/q4t/ 被 .cu 包含的共享头必须保持 C++17 兼容 (nvcc 按
+  CUDA_STANDARD 编译), C++23 专属特性只进 .cpp TU。GCC 13.3 实测可用
+  std::expected/std::format/ranges/jthread; 不可用 std::print/std::mdspan/
+  constexpr std::string (需 GCC 14/15+)。验证: 全量重编零警告零错误,
+  76 测试全绿 (host C++23 + device C++17 链接无回归)。下一步: host 工作
+  用 std::expected 替换裸 Status / std::format 替换 printf 拼接。
 - **OOM 可靠性: 内存预算 (--mem-fraction) + auto-length + 运行时 preflight + 启动可观测性 (2026-09-19, 已闭合)**:
   08:29 OOM 重启根因 (--max-len 262144 未配 --max-seq 1 → 65GB KV + 84GB
   权重 > 122GB)。新模块 q4t_runtime (memory_budget): 启动前按

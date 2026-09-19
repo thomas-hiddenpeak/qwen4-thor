@@ -5,7 +5,7 @@
 
 ## 项目一句话
 
-在 Jetson AGX Thor (SM110a) 上用 C++17/CUDA 实现
+在 Jetson AGX Thor (SM110a) 上用 C++23 (host) / CUDA 17 (device) 实现
 Qwen3.8-Flash-Next (qwen4_exp) 的原生推理引擎,
 核心特性是 PLE SSD Stream (51.2 GB FP8 查找表从 NVMe 异步流式读取)。
 

@@ -1,4 +1,4 @@
-# Qwen4-Thor — native C++17/CUDA inference engine for
+# Qwen4-Thor — native C++23 (host) / CUDA 17 (device) inference engine for
 # Qwen3.8-Flash-Next (qwen4_exp) on Jetson AGX Thor (SM110a).
 cmake_minimum_required(VERSION 3.24)
 
@@ -22,7 +22,20 @@ endif()
 # ---------------------------------------------------------------------------
 # Global settings
 # ---------------------------------------------------------------------------
-set(CMAKE_CXX_STANDARD 17)
+# Host code (all .cpp: io / quant-host / runtime / server / text / main) is
+# C++23. Device code (.cu kernels + their host launch glue) stays C++17: the
+# kernel/PTX path is left untouched to avoid any device-side regression.
+#
+# GCC 13.3 C++23 availability (measured 2026-09-19): std::expected,
+# std::format, ranges, jthread, designated/extended initializers are usable.
+# NOT yet in GCC 13 (need GCC 14/15): std::print, std::mdspan,
+# constexpr std::string. Use std::format (not std::print) for now.
+#
+# CONSTRAINT: headers in include/q4t/ that are #included by .cu files must
+# remain C++17-compatible (they are compiled by nvcc under CMAKE_CUDA_STANDARD
+# 17). C++23-only features (std::expected, ...) belong in .cpp translation
+# units, not in shared headers.
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CUDA_STANDARD 17)
