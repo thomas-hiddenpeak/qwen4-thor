@@ -156,8 +156,8 @@ __global__ void QKDeinterleaveNormKernel(const u16* __restrict__ qg,
 //
 // RoPE: for i in [0, rot_d/2):
 //   freq_i = theta^(-2i/rot_d)
-//   q[i]   = q[i]*cos + q[i+half]*sin
-//   q[i+half] = -q[i]*sin + q[i+half]*cos
+//   q[i]   = q[i]*cos - q[i+half]*sin
+//   q[i+half] = q[i]*sin + q[i+half]*cos
 // One thread per (t, h, i) for i in [0, half).
 // Interleaved MRoPE (transformers qwen4_exp apply_interleaved_mrope): for the
 // i-th of the rot_d/2 frequency pairs, the position is chosen by i % 3:
@@ -192,8 +192,8 @@ __global__ void PartialRopeKernel(u16* __restrict__ x, int n_heads, int hd,
   size_t base = (static_cast<size_t>(t) * N + h) * hd + i;
   f32 a = Bf16ToFloat(x[base]);
   f32 b = Bf16ToFloat(x[base + half]);
-  x[base] = FloatToBf16(a * c + b * s);
-  x[base + half] = FloatToBf16(-a * s + b * c);
+  x[base] = FloatToBf16(a * c - b * s);
+  x[base + half] = FloatToBf16(a * s + b * c);
 }
 
 // ---------------------------------------------------------------------------
@@ -237,14 +237,14 @@ __global__ void WriteKVKernel(const u16* __restrict__ k,
 }
 
 // ---------------------------------------------------------------------------
-// Kernel 5: QSA indexer — GemmaRMSNorm (plain) on iq, ik, then partial RoPE.
+// Kernel 5: QSA indexer — GemmaRMSNorm (centered) on iq, ik, then partial RoPE.
 //
 //   iq : [T, idx_n_heads, idx_head_dim]  (in/out)
 //   ik : [T, idx_kv_heads, idx_head_dim] (in/out)
-//   q_norm, k_norm: [idx_head_dim] (plain)
+//   q_norm, k_norm: [idx_head_dim] (centered)
 //   positions: [T]
 //
-// Plain RMSNorm: y = x * rsqrt(mean(x^2)+eps) * w[d]  (no +1).
+// Gemma RMSNorm: y = x * rsqrt(mean(x^2)+eps) * (1 + w[d]).
 // block = one (t, head), thread = d.
 __global__ void IndexerNormRopeKernel(u16* __restrict__ iq,
                                       const u16* __restrict__ iq_norm,
@@ -275,8 +275,10 @@ __global__ void IndexerNormRopeKernel(u16* __restrict__ iq,
   f32 xv = Bf16ToFloat(x[d]);
   const float head_sum = BlockSum(xv * xv);
   float rs = rsqrtf(head_sum / hd + eps);
-  f32 w = Bf16ToFloat(nw[d]);
+  f32 w = 1.f + Bf16ToFloat(nw[d]);
   x[d] = FloatToBf16(xv * rs * w);
+  // The rotary pair spans warps; both normalized values must be visible.
+  __syncthreads();
   // partial RoPE on first rot_d dims (interleaved MRoPE: row = d % 3).
   int half = rot_d / 2;
   if (d < half) {
@@ -292,20 +294,20 @@ __global__ void IndexerNormRopeKernel(u16* __restrict__ iq,
     float c = cosf(ang), s = sinf(ang);
     f32 a = Bf16ToFloat(x[d]);
     f32 b = Bf16ToFloat(x[d + half]);
-    x[d] = FloatToBf16(a * c + b * s);
-    x[d + half] = FloatToBf16(-a * s + b * c);
+    x[d] = FloatToBf16(a * c - b * s);
+    x[d + half] = FloatToBf16(a * s + b * c);
   }
 }
 
 // ---------------------------------------------------------------------------
 // Kernel 6: store raw index keys (pre-RoPE) per token + build compressed keys.
 //
-// The raw ik (pre-RoPE, post-norm) is stored per token in idx_raw. When a
+// The raw ik (pre-RoPE, pre-norm) is stored per token in idx_raw. When a
 // group of `compress` tokens completes, the group's average (FP32) is
 // GemmaRMSNorm'd and RoPE'd at the group's first position -> idx_comp.
 //
 // This kernel is launched once per token position t (grid = T). For each t:
-//   - copy ik[t] (pre-RoPE) into idx_raw[pos]
+//   - copy ik[t] (pre-norm, pre-RoPE) into idx_raw[pos]
 //   - if (t+1) % compress == 0: compute group avg over the last `compress`
 //     raw tokens, norm+rope, write idx_comp[group_idx]
 //
@@ -381,10 +383,10 @@ __global__ void BuildCompressedKKernel(const u16* __restrict__ ik_norm,
     acc += Bf16ToFloat(iraw[static_cast<size_t>(g0 + j) * hd + d]);
   }
   acc /= compress;
-  // GemmaRMSNorm (plain) over the head: need sum of squares
+  // GemmaRMSNorm (centered) over the head: need sum of squares
   const float head_sum = BlockSum(acc * acc);
   float rs = rsqrtf(head_sum / hd + eps);
-  f32 w = Bf16ToFloat(ik_norm[d]);
+  f32 w = 1.f + Bf16ToFloat(ik_norm[d]);
   float normed = acc * rs * w;
   // partial RoPE at the group's first position g0, using the PERSISTENT
   // 3D MRoPE table (rope_pos has max_len entries per row, so g0 is always
@@ -404,9 +406,9 @@ __global__ void BuildCompressedKKernel(const u16* __restrict__ ik_norm,
       acc2 += Bf16ToFloat(iraw[static_cast<size_t>(g0 + j) * hd + (d + half)]);
     }
     acc2 /= compress;
-    float w2 = Bf16ToFloat(ik_norm[d + half]);
+    float w2 = 1.f + Bf16ToFloat(ik_norm[d + half]);
     float normed2 = acc2 * rs * w2;
-    val = normed * c + normed2 * s;
+    val = normed * c - normed2 * s;
   } else if (d >= half && d < 64) {
     int d2 = d - half;
     float inv_freq = powf(theta, -2.f * d2 / 64.f);
@@ -417,9 +419,9 @@ __global__ void BuildCompressedKKernel(const u16* __restrict__ ik_norm,
       acc2 += Bf16ToFloat(iraw[static_cast<size_t>(g0 + j) * hd + d2]);
     }
     acc2 /= compress;
-    float w2 = Bf16ToFloat(ik_norm[d2]);
+    float w2 = 1.f + Bf16ToFloat(ik_norm[d2]);
     float normed2 = acc2 * rs * w2;
-    val = -normed2 * s + normed * c;
+    val = normed2 * s + normed * c;
   } else {
     val = normed;  // dims >= 64 unchanged
   }
@@ -525,12 +527,11 @@ __global__ void IndexerReduceKernel(const u16* __restrict__ S,
 // memory (padding = -inf so it sorts to the front and is never selected),
 // in-place bitonic sort ASCENDING (2048 = 2^11, 11 stages, 256 threads),
 // the top `block_topk` blocks are the last `block_topk` entries, expand to
-// tokens. The selected SET matches the old sequential top-k (ties in FP32
-// logits are measure-zero; the -1e30f padding is equal-valued but always
-// sorts below real logits in the sparse regime where n_groups > block_topk).
-// Selection ORDER within the list may differ from the old version; that is
-// safe because SparseAttentionKernel's online softmax reduces over the set
-// (the golden tests only exercise the dense regime, which is unchanged).
+// tokens. Padding (-1e30f) sorts below valid scores in the sparse regime
+// where n_groups > block_topk. Equal scores retain the ordering produced by
+// the fixed sort network; this change does not introduce a new tie-break.
+// Keep expansion order deterministic: floating-point attention reductions
+// depend on list order even when the selected set is unchanged.
 __global__ void TopkSelectKernel(f32* __restrict__ logits, int* __restrict__ topk,
                                  int* __restrict__ topk_len,
                                  const int* __restrict__ positions, int T,
@@ -538,7 +539,6 @@ __global__ void TopkSelectKernel(f32* __restrict__ logits, int* __restrict__ top
                                  int max_topk) {
   __shared__ float s_val[2048];  // kMaxBlocks
   __shared__ int s_idx[2048];
-  __shared__ int s_n;
   const int t = blockIdx.x;
   if (t >= T) return;
   const int pos = positions[t];
@@ -555,7 +555,6 @@ __global__ void TopkSelectKernel(f32* __restrict__ logits, int* __restrict__ top
   } else {
     // sparse: load (logit, block index) pairs; pad with -inf so padding
     // sorts to the front (ascending) and is never among the top block_topk.
-    if (threadIdx.x == 0) s_n = 0;
     for (int g = threadIdx.x; g < 2048; g += 256) {
       s_val[g] = (g < n_groups) ? lrow[g] : -1e30f;
       s_idx[g] = g;
@@ -586,34 +585,23 @@ __global__ void TopkSelectKernel(f32* __restrict__ logits, int* __restrict__ top
         __syncthreads();
       }
     }
-    // Expand the top blocks (the last `block_topk` entries after the sort)
-    // to tokens. Order within the list is irrelevant (SparseAttentionKernel
-    // reduces over the selected set).
+    // Expand in sorted-block order. Atomic slot allocation changes the
+    // floating-point reduction order in SparseAttentionKernel across runs.
     for (int c = threadIdx.x; c < block_topk; c += 256) {
       const int g = s_idx[2048 - block_topk + c];
       const int base = g * compress;
       for (int j = 0; j < compress; ++j) {
         const int p = base + j;
-        if (p <= pos) out[atomicAdd(&s_n, 1)] = p;
+        out[c * compress + j] = p;
       }
     }
-    // Causality: the current token's group is NOT among the visible
-    // compressed keys for 3 of 4 phase values (n_groups = (pos+1)/compress
-    // excludes the in-progress group unless pos is a group tail), so the
-    // top-`block_topk` selection above never covers the current local
-    // context. Force-include the current group's emitted tail
-    // [g0_cur, pos] (at most `compress` tokens) so the query always attends
-    // to its own recent tokens.
-    const int cur_g = pos / compress;
-    bool cur_selected = false;
-    for (int c = 0; c < block_topk; ++c)
-      cur_selected |= (s_idx[2048 - block_topk + c] == cur_g);
-    if (!cur_selected && threadIdx.x < 4) {
-      const int p = cur_g * compress + threadIdx.x;
-      if (p <= pos) out[atomicAdd(&s_n, 1)] = p;
-    }
-    __syncthreads();
-    n = s_n;
+    // Complete groups are governed solely by top-k selection. Only the
+    // unfinished group's visible tail is appended (at most compress - 1).
+    const int tail = (pos + 1) % compress;
+    n = block_topk * compress;
+    if (threadIdx.x < tail)
+      out[n + threadIdx.x] = pos + 1 - tail + threadIdx.x;
+    n += tail;
   }
   for (int i = n + threadIdx.x; i < max_topk; i += 256) out[i] = -1;
   if (threadIdx.x == 0) topk_len[t] = n;
@@ -778,35 +766,28 @@ __global__ void ExpandRunTopkKernel(const int* __restrict__ run_idx,
   const int t = blockIdx.x;
   if (t >= T) return;
   const int pos = positions[t];
-  __shared__ int s_n;
-  if (threadIdx.x == 0) s_n = 0;
-  __syncthreads();
   int* out = topk + static_cast<size_t>(t) * max_topk;
   const int* rid = run_idx + static_cast<size_t>(t) * block_topk;
   const f32* rval = run_val + static_cast<size_t>(t) * block_topk;
-  for (int c = threadIdx.x; c < block_topk; c += blockDim.x) {
-    if (rval[c] <= -1e29f) continue;  // empty top-k slot
+  int valid_count = 0;
+  for (int base = 0; base < block_topk; base += blockDim.x) {
+    const int c = base + threadIdx.x;
+    const bool valid = c < block_topk && rval[c] > -1e29f;
+    valid_count += __syncthreads_count(valid);
+  }
+  // Merge output is ascending: empty slots precede all valid blocks.
+  const int first = block_topk - valid_count;
+  // Fixed slots preserve attention reduction order across launches.
+  for (int c = first + threadIdx.x; c < block_topk; c += blockDim.x) {
     const int base = rid[c] * compress;
-    for (int j = 0; j < compress; ++j) {
-      const int p = base + j;
-      if (p <= pos) out[atomicAdd(&s_n, 1)] = p;
-    }
+    for (int j = 0; j < compress; ++j)
+      out[(c - first) * compress + j] = base + j;
   }
-  __syncthreads();
-  // Force-include the current group tail (causal, may post-date all blocks).
-  const int cur_g = pos / compress;
-  __shared__ int s_cur_sel;
-  if (threadIdx.x == 0) s_cur_sel = 0;
-  __syncthreads();
-  for (int c = threadIdx.x; c < block_topk; c += blockDim.x)
-    if (rval[c] > -1e29f && rid[c] == cur_g) atomicOr(&s_cur_sel, 1);
-  __syncthreads();
-  if (!s_cur_sel && threadIdx.x < compress) {
-    const int p = cur_g * compress + threadIdx.x;
-    if (p <= pos) out[atomicAdd(&s_n, 1)] = p;
-  }
-  __syncthreads();
-  const int n = s_n;
+  int n = (block_topk - first) * compress;
+  const int tail = (pos + 1) % compress;
+  if (threadIdx.x < tail)
+    out[n + threadIdx.x] = pos + 1 - tail + threadIdx.x;
+  n += tail;
   for (int i = n + threadIdx.x; i < max_topk; i += blockDim.x) out[i] = -1;
   if (threadIdx.x == 0) topk_len[t] = n;
 }
@@ -961,8 +942,6 @@ __global__ void FinalTopkExpandKernel(const f32* __restrict__ cand_val,
   const int pos = positions[t];
   __shared__ float s_val[kMaxBlocks];
   __shared__ int s_idx[kMaxBlocks];
-  __shared__ int s_n;
-  if (threadIdx.x == 0) s_n = 0;
   const f32* cv = cand_val + static_cast<size_t>(t) * stride;
   const int* ci = cand_idx + static_cast<size_t>(t) * stride;
   for (int g = threadIdx.x; g < kMaxBlocks; g += blockDim.x) {
@@ -973,27 +952,24 @@ __global__ void FinalTopkExpandKernel(const f32* __restrict__ cand_val,
   BitonicSortAsc(s_val, s_idx, kMaxBlocks);
   __syncthreads();
   int* out = topk + static_cast<size_t>(t) * max_topk;
-  for (int c = threadIdx.x; c < block_topk; c += blockDim.x) {
-    const int gi = kMaxBlocks - block_topk + c;
-    if (s_val[gi] <= -1e29f) continue;
-    const int base = s_idx[gi] * compress;
-    for (int j = 0; j < compress; ++j) {
-      const int p = base + j;
-      if (p <= pos) out[atomicAdd(&s_n, 1)] = p;
-    }
+  int valid_count = 0;
+  for (int base = kMaxBlocks - block_topk; base < kMaxBlocks;
+       base += blockDim.x) {
+    const int c = base + threadIdx.x;
+    const bool valid = c < kMaxBlocks && s_val[c] > -1e29f;
+    valid_count += __syncthreads_count(valid);
   }
-  __syncthreads();
-  const int cur_g = pos / compress;
-  bool cur_selected = false;
-  for (int c = 0; c < block_topk; ++c)
-    cur_selected |= (s_val[kMaxBlocks - block_topk + c] > -1e29f &&
-                     s_idx[kMaxBlocks - block_topk + c] == cur_g);
-  if (!cur_selected && threadIdx.x < compress) {
-    const int p = cur_g * compress + threadIdx.x;
-    if (p <= pos) out[atomicAdd(&s_n, 1)] = p;
+  const int first = kMaxBlocks - valid_count;
+  for (int c = first + threadIdx.x; c < kMaxBlocks; c += blockDim.x) {
+    const int base = s_idx[c] * compress;
+    for (int j = 0; j < compress; ++j)
+      out[(c - first) * compress + j] = base + j;
   }
-  __syncthreads();
-  const int n = s_n;
+  int n = (kMaxBlocks - first) * compress;
+  const int tail = (pos + 1) % compress;
+  if (threadIdx.x < tail)
+    out[n + threadIdx.x] = pos + 1 - tail + threadIdx.x;
+  n += tail;
   for (int i = n + threadIdx.x; i < max_topk; i += blockDim.x) out[i] = -1;
   if (threadIdx.x == 0) topk_len[t] = n;
 }
@@ -1444,7 +1420,7 @@ size_t FullAttentionWorkspaceBytes(const FullAttentionWeights& w, int T) {
   const int idx_hd = w.idx_head_dim;
   const int n_iq = w.idx_n_heads, n_ik = w.idx_kv_heads;
   const int max_blocks = 2048;  // kMaxT / idx_compress
-  const int max_topk = 2052;    // idx_budget + idx_compress - 1
+  const int max_topk = 2052;    // capacity; at most 2048 + 3 valid tokens
   size_t off = 0;
   auto alloc = [&](size_t bytes) { off += (bytes + 255) & ~size_t(255); };
   alloc(static_cast<size_t>(T) * qg_dim * 2);  // d_qg
@@ -1619,7 +1595,7 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   if (cudaMemcpyAsync(d_ik_raw, d_ik, static_cast<size_t>(T) * ik_dim * 2,
                       cudaMemcpyDeviceToDevice, stream) != cudaSuccess)
     return Status::Fail("cudaMemcpyAsync ik_raw failed");
-  // 7. indexer GemmaRMSNorm (plain) + partial RoPE on iq, ik (in place)
+  // 7. indexer GemmaRMSNorm (centered) + partial RoPE on iq, ik (in place)
   //    (3D MRoPE: rope_pos [3, max_len], row chosen by d % 3).
   IndexerNormRopeKernel<<<T * (n_iq + n_ik), idx_hd, 0, stream>>>(
       d_iq, w.index_q_norm, d_ik, w.index_k_norm, d_positions, rope_pos,

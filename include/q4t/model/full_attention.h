@@ -22,11 +22,11 @@
 // QSA indexer (compressed variant, compress_ratio 4, budget 2048, block_topk
 // 512): a tiny 4-query/1-key MQA head (head_dim 128) that scores *compressed*
 // keys (groups of 4 tokens, average-pooled) and picks the top-512 groups,
-// expanded to 2048 token positions (+ the current group's tail tokens).
+// expanded to 2048 token positions (+ the incomplete group's tail tokens).
 //   iq, ik = x @ W_index_qk^T  -> iq [T,4,128], ik [T,1,128]
-//   iq = GemmaRMSNorm(iq) ; ik = GemmaRMSNorm(ik)   (plain, not centered)
-//   iq, ik = partial MRoPE (first 64 dims)
-//   raw ik stored per token; each completed group of 4 is average-pooled,
+//   iq = GemmaRMSNorm(iq), with centered weight (1 + weight)
+//   iq = partial MRoPE (first 64 dims): (a*cos-b*sin, a*sin+b*cos)
+//   raw ik stored before normalization; each complete group is average-pooled,
 //   GemmaRMSNorm'd and MRoPE'd (at the group's first position) -> compressed K
 //   logits[t, g] = sum_h relu(iq[t,h] . ck[g]) / sqrt(128)   (g < (pos+1)/4)
 //   topk = top-512 blocks -> expand to 2048 token indices + tail
@@ -78,8 +78,8 @@ struct FullAttentionWeights {
   uint16_t* k_norm = nullptr;  // [hd] (centered)
   // QSA indexer
   uint16_t* index_qk_proj = nullptr;  // [(idx_n_heads+idx_kv_heads)*idx_head_dim, hs]
-  uint16_t* index_q_norm = nullptr;  // [idx_head_dim] (plain)
-  uint16_t* index_k_norm = nullptr;  // [idx_head_dim] (plain)
+  uint16_t* index_q_norm = nullptr;  // [idx_head_dim] (centered)
+  uint16_t* index_k_norm = nullptr;  // [idx_head_dim] (centered)
 
   // FP8 (e4m3) decode shadows of the large projections (built at load when
   // Q4T_FP8_PROJ is on; null otherwise). index_qk stays BF16 (its GEMM slices

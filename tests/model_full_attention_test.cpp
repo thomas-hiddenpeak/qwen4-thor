@@ -8,9 +8,10 @@
 // attention and topk[t] = [0..t]. The CPU reference mirrors: the q/k/v
 // projections, the per-head centered RMSNorm (q, k), partial RoPE (first 64
 // dims), dense causal GQA attention, the sigmoid gate, and the output
-// projection. The QSA indexer logits are checked separately against a CPU
-// reference (compressed keys + relu dot product). Skipped when CUDA or the
-// model is absent.
+// projection. Raw and compressed indexer keys are checked independently;
+// short dense attention alone cannot detect a broken indexer RMSNorm.
+// This test does not exercise sparse top-k selection. Skipped when CUDA or
+// the model is absent. Run only after the HTTP E2E gate has passed.
 #include "q4t/io/weight_loader.h"
 #include "q4t/model/full_attention.h"
 #include "q4t/test.h"
@@ -120,7 +121,8 @@ std::vector<float> CpuLinearBf16(const std::vector<float>& x,
   return y;
 }
 
-// Partial RoPE (first rot_d dims) on a vector, in place (FP32).
+// Partial RoPE: official rotate_half([a,b]) = [-b,a]. The old oracle used
+// the same reversed signs as the kernel and therefore missed that defect.
 void CpuPartialRope(std::vector<float>& v, int rot_d, int pos, float theta) {
   const int half = rot_d / 2;
   for (int i = 0; i < half; ++i) {
@@ -128,8 +130,8 @@ void CpuPartialRope(std::vector<float>& v, int rot_d, int pos, float theta) {
     const float ang = static_cast<float>(pos) * inv_freq;
     const float c = std::cos(ang), s = std::sin(ang);
     const float a = v[i], b = v[i + half];
-    v[i] = a * c + b * s;
-    v[i + half] = -a * s + b * c;
+    v[i] = a * c - b * s;
+    v[i + half] = a * s + b * c;
   }
 }
 
@@ -216,6 +218,7 @@ Q4T_TEST(full_attention_forward) {
   std::vector<float> x_in(static_cast<size_t>(kT) * kHs);
   for (auto& v : x_in) v = dist(rng);
   std::vector<uint16_t> x_bf = ToBf16(x_in);
+  x_in = FromBf16(x_bf);  // Reference and device receive the same input.
   std::vector<int> positions(kT);
   for (int i = 0; i < kT; ++i) positions[i] = i;
 
@@ -364,6 +367,42 @@ Q4T_TEST(full_attention_forward) {
   const float out_err = L2RelErr(FromBf16(out_dev), out_ref);
   std::printf("  out l2_rel_err = %.3e\n", out_err);
 
+  // Official QSA semantics: project raw keys, pool in FP32, round to BF16,
+  // apply centered RMSNorm (1 + weight), then RoPE at the group start.
+  // This checks actual cached keys, which the dense T=8 output ignores.
+  const int idx_dim = (kIdxN + kIdxKv) * kIdxHd;
+  const auto idx_qk = CpuLinearBf16(x_in, W_idx, kT, idx_dim, kHs);
+  std::vector<float> raw_ref(kT * kIdxHd);
+  for (int t = 0; t < kT; ++t)
+    for (int d = 0; d < kIdxHd; ++d)
+      raw_ref[t * kIdxHd + d] =
+          idx_qk[t * idx_dim + kIdxN * kIdxHd + d];
+  const int groups = kT / kIdxCompress;
+  std::vector<float> comp_ref(groups * kIdxHd);
+  for (int g = 0; g < groups; ++g) {
+    std::vector<float> pooled(kIdxHd, 0.f);
+    for (int d = 0; d < kIdxHd; ++d) {
+      for (int t = 0; t < kIdxCompress; ++t)
+        pooled[d] += raw_ref[(g * kIdxCompress + t) * kIdxHd + d];
+      pooled[d] = Bf16Round(pooled[d] / kIdxCompress);
+    }
+    CpuCenteredRmsNorm(pooled, kIdxHd, idx_k_norm, kEps);
+    CpuPartialRope(pooled, kRotD, g * kIdxCompress, kTheta);
+    for (int d = 0; d < kIdxHd; ++d)
+      comp_ref[g * kIdxHd + d] = Bf16Round(pooled[d]);
+  }
+  std::vector<uint16_t> raw_dev(raw_ref.size()), comp_dev(comp_ref.size());
+  const bool keys_copied =
+      cudaMemcpy(raw_dev.data(), d_idx_raw, raw_dev.size() * sizeof(uint16_t),
+                 cudaMemcpyDeviceToHost) == cudaSuccess &&
+      cudaMemcpy(comp_dev.data(), d_idx_comp,
+                 comp_dev.size() * sizeof(uint16_t), cudaMemcpyDeviceToHost) ==
+          cudaSuccess;
+  const float raw_err = L2RelErr(FromBf16(raw_dev), raw_ref);
+  const float comp_err = L2RelErr(FromBf16(comp_dev), comp_ref);
+  std::printf("  indexer raw/comp l2_rel_err = %.3e / %.3e\n", raw_err,
+              comp_err);
+
   // Cleanup.
   cudaFree(d_x);
   cudaFree(d_out);
@@ -377,5 +416,8 @@ Q4T_TEST(full_attention_forward) {
   w.Free();
 
   Q4T_CHECK(out_err < 3e-2f);
+  Q4T_CHECK(keys_copied);
+  Q4T_CHECK(raw_err < 3e-2f);
+  Q4T_CHECK(comp_err < 3e-2f);
   return true;
 }
