@@ -26,6 +26,7 @@
 #include <vector>
 
 #include "q4t/io/weight_loader.h"
+#include "q4t/model/decode_topk.h"
 #include "q4t/model/linear.h"
 #include "q4t/model/qsa_decode.h"
 #include "q4t/model/streaming_topk.h"
@@ -1661,37 +1662,44 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
     OnePassScoreKernel<<<dim3((n_groups_max + 7) / 8, T), 256, 0, stream>>>(
         d_iq, idx_comp, d_op_logits, d_positions, T, n_iq, idx_hd,
         w.idx_compress, n_groups_max, d_seq_id, idx_seq_stride);
-    // Multi-level reduction: each level takes the local top-block_topk of every
-    // 2048-window of the current candidate list, converging to <= max_blocks,
-    // then one final sort. Ping-pong two candidate buffers.
-    const int n_slices0 = (n_groups_max + max_blocks - 1) / max_blocks;
-    int cur = n_slices0 * block_topk;  // candidates after level 0
-    SliceLocalTopkKernel<<<dim3(n_slices0, T), 256, 0, stream>>>(
-        d_op_logits, n_groups_max, max_blocks, block_topk, T, d_cand_val0,
-        d_cand_idx0, cur);
-    f32* in_v = d_cand_val0;
-    int* in_i = d_cand_idx0;
-    int in_stride = cur;
-    f32* out_v = d_cand_val1;
-    int* out_i = d_cand_idx1;
-    while (cur > max_blocks) {
-      const int n_slices = (cur + max_blocks - 1) / max_blocks;
-      const int next = n_slices * block_topk;
-      WindowMergeTopkKernel<<<dim3(n_slices, T), 256, 0, stream>>>(
-          in_v, in_i, cur, in_stride, max_blocks, block_topk, T, out_v, out_i,
-          next);
-      f32* tv = in_v;
-      in_v = out_v;
-      out_v = tv;
-      int* ti = in_i;
-      in_i = out_i;
-      out_i = ti;
-      in_stride = next;
-      cur = next;
+    if (max_blocks == 2048 && block_topk == 512 && n_groups_max <= 65536) {
+      s = SelectDecodeTopk(d_op_logits, n_groups_max, T, d_positions,
+                          w.idx_compress, max_topk, d_cand_val0, d_cand_idx0,
+                          d_cand_val1, d_cand_idx1, d_topk, d_topk_len, stream);
+      if (!s) return s;
+    } else {
+      // Multi-level reduction: each level takes the local top-block_topk of every
+      // 2048-window of the current candidate list, converging to <= max_blocks,
+      // then one final sort. Ping-pong two candidate buffers.
+      const int n_slices0 = (n_groups_max + max_blocks - 1) / max_blocks;
+      int cur = n_slices0 * block_topk;  // candidates after level 0
+      SliceLocalTopkKernel<<<dim3(n_slices0, T), 256, 0, stream>>>(
+          d_op_logits, n_groups_max, max_blocks, block_topk, T, d_cand_val0,
+          d_cand_idx0, cur);
+      f32* in_v = d_cand_val0;
+      int* in_i = d_cand_idx0;
+      int in_stride = cur;
+      f32* out_v = d_cand_val1;
+      int* out_i = d_cand_idx1;
+      while (cur > max_blocks) {
+        const int n_slices = (cur + max_blocks - 1) / max_blocks;
+        const int next = n_slices * block_topk;
+        WindowMergeTopkKernel<<<dim3(n_slices, T), 256, 0, stream>>>(
+            in_v, in_i, cur, in_stride, max_blocks, block_topk, T, out_v, out_i,
+            next);
+        f32* tv = in_v;
+        in_v = out_v;
+        out_v = tv;
+        int* ti = in_i;
+        in_i = out_i;
+        out_i = ti;
+        in_stride = next;
+        cur = next;
+      }
+      FinalTopkExpandKernel<<<T, 256, 0, stream>>>(
+          in_v, in_i, cur, in_stride, d_positions, T, w.idx_compress, block_topk,
+          d_topk, d_topk_len, max_topk);
     }
-    FinalTopkExpandKernel<<<T, 256, 0, stream>>>(
-        in_v, in_i, cur, in_stride, d_positions, T, w.idx_compress, block_topk,
-        d_topk, d_topk_len, max_topk);
   } else {
     // Streaming path (long context, prefill large T). Score blocks in
     // CHUNK = max_blocks slices and keep a running per-query top-block_topk

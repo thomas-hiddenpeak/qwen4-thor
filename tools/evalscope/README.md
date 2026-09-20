@@ -43,15 +43,16 @@ quality_reference.json 来自 2026-09-20 完整数学修复后的真实 HTTP 结
 e98969c8d0d08572437745000d2a741a83b97d09600e60cf2ffd746643b3dcd3。
 只证明这 11 道合成检索题，不是全面模型质量基准。
 
-performance_reference.json 更新为 2026-09-21 QSA 单 token 输出列分片
+performance_reference.json 更新为 2026-09-21 decode 多级 top-k 寄存器网络
 完整五档结果，二进制 SHA-256：
-dff09ff91c89291cb697c4605cb993de611a959e27e3839268281b77274d992f。
+6856960f0dc6e99bbf8990e59ca69ce6ea2edc21533f0446ee97f4aa0ab58b82。
 输入/输出摘要一致，计时整体更新，不拼接最优档位；旧参考保留在
 Git 历史、原报告及本地 performance-before.json。
-五档 decode 18.505/16.710/17.691/17.168/16.265 tok/s，较 MoE
-基线提升 1.31%–3.52%，TTFT 范围重叠。完整 E2E 后 442368 个
-BF16 输出逐位一致，HTTP 中 QSA 累计 924.018→720.049 ms。
-见 [QSA 输出列分片报告](../../docs/QSA_DECODE_SPLIT_2026-09-21.md)。
+五档 decode 18.511/16.702/18.086/17.859/17.076 tok/s；8K/44K/200K
+较 QSA 分片版约 +2.23%/+4.03%/+4.98%，短档与 TTFT 范围重叠。
+完整 E2E 后 64 组、2745120 个分数/ID/位置逐位一致，原 streaming
+专项通过；200K HTTP 三级选择累计 1050.744→249.847 ms。
+见 [decode top-k 报告](../../docs/DECODE_TOPK_2026-09-21.md)。
 后续仍逐档比较，不能因质量输出不变就忽略性能回退。
 
 原 run_baseline.sh 每档三条不同输入，仍适用于初始负载采集；它与上述

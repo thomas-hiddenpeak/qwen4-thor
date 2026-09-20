@@ -45,7 +45,25 @@ E2E 与逐位专项，HTTP 中目标 kernel 累计耗时减少约 9.83%，已接
   15.51/14.19/14.85/14.45/13.98 tok/s。MTP 明确关闭。
   这是受控文本初始记录，不是完整精度验收或性能无回退证明。
 
-## 最新接受：QSA 单 token 输出维度四分
+## 最新接受：长上下文 decode 多级 top-k
+
+固定 2048 窗口、top-512、T<=4 的独立选择链采用寄存器比较网络，
+保持分数、同分 ID、槽位与既有 scratch；私有模板与 streaming 共用。
+质量 11/11、五档性能 15/15，输入输出一致、服务退出 0、构建零警告。
+decode 18.511/16.702/18.086/17.859/17.076 tok/s；8K/44K/200K
+较上一接受版 +2.23%/+4.03%/+4.98%，新旧三次范围不重叠。
+短档 decode 与所有 TTFT 范围重叠，未见可辨识回退。
+完整 E2E 后 200K HTTP 与数值专项串行完成：64 组、2745120 个
+分数/ID/位置逐位一致；原 streaming_topk_exact 通过，编译零警告。
+选择链累计 1050.744→249.847 ms，调用数不变；原 streaming merge
+19.550→19.555 秒。正式五档参考已整体更新，本轮接受。
+见 [执行计划](../dataflow-engine/DECODE_TOPK_PLAN.md)、
+[报告](DECODE_TOPK_2026-09-21.md)，证据
+`.q4t-work/e2e/decode-topk-register-20260921/`。
+下一项：[短上下文索引打分](../dataflow-engine/INDEXER_DECODE_PLAN.md)，
+目前只有静态方案，先完成本轮提交再接入，继续先完整 HTTP E2E。
+
+## 前一阶段：QSA 单 token 输出维度四分
 
 固定 T=1/nq=24/nkv=2/hd=256 时，每 kv-head 输出列拆成四段，
 grid 两个 CTA→八个，重复 QK/softmax，各自消费 64 列 V；多 token

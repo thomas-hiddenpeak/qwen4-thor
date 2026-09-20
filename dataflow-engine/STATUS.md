@@ -62,3 +62,11 @@ MoE 已提交推送 98206de；[QSA decode 输出维度拆分](QSA_DECODE_PLAN.md
 R0/R1 的可机读计划和 GRFrame 完整闭环仍未实现，不能由单个 MoE
 子链代替。后续按新时间线重新分配权重读取、计算、host 控制与临时空间
 预算，不把 kernel 数量减少当作所有剩余阶段收益的保证。
+
+## 当前推进：decode 多级选择
+
+已接受版 200K 时间线定位多级 top-k 累计约 4.121 ms/decode 步。
+[decode top-k 计划](DECODE_TOPK_PLAN.md) 已接入独立 CUDA 单元，
+复用私有寄存器比较网络，构建零警告，完整 HTTP、数值专项及时间线通过。
+200K decode +4.98%，未改变 score、同分规则或候选覆盖；本轮接受。
+下一项 [短上下文索引打分](INDEXER_DECODE_PLAN.md) 尚未实现。
