@@ -59,16 +59,24 @@ __global__ void Bf16GevKernel(const uint16_t* __restrict__ w,
   constexpr int kWarp = 32;
   constexpr int kWarps = kGevThreads / kWarp;  // 8
 
-  extern __shared__ uint16_t s_x[];
+  extern __shared__ __align__(16) uint16_t s_x[];
 
   const int warp_id = threadIdx.x / kWarp;
   const int lane = threadIdx.x & (kWarp - 1);
   const int num_blocks = (N + kWarps - 1) / kWarps;
   const int out_idx = blockIdx.x + warp_id * num_blocks;
 
-  // Cooperative load of x (K bf16) into shared memory, once.
-  for (int i = threadIdx.x; i < K; i += kGevThreads)
-    s_x[i] = x[i];
+  // Copy eight BF16 values per instruction when the input is aligned.
+  // Bf16Gev requires K % 8 == 0; retain scalar loads for offset inputs.
+  if ((reinterpret_cast<uintptr_t>(x) & 15u) == 0) {
+    auto* shared_v4 = reinterpret_cast<float4*>(s_x);
+    const auto* input_v4 = reinterpret_cast<const float4*>(x);
+    for (int i = threadIdx.x; i < K / 8; i += kGevThreads)
+      shared_v4[i] = input_v4[i];
+  } else {
+    for (int i = threadIdx.x; i < K; i += kGevThreads)
+      s_x[i] = x[i];
+  }
   __syncthreads();
 
   if (out_idx >= N) return;

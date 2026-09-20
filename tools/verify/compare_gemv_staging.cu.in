@@ -1,0 +1,105 @@
+#include <cuda_bf16.h>
+#include <cuda_runtime.h>
+
+#include <bit>
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <random>
+#include <vector>
+
+namespace original {
+@ORIGINAL@
+}
+namespace candidate {
+@CANDIDATE@
+}
+
+void Check(cudaError_t result) {
+  if (result != cudaSuccess) {
+    std::fprintf(stderr, "%s\n", cudaGetErrorString(result));
+    std::exit(2);
+  }
+}
+
+uint16_t ToBf16(float value) {
+  __nv_bfloat16 b = __float2bfloat16(value);
+  uint16_t bits;
+  std::memcpy(&bits, &b, sizeof(bits));
+  return bits;
+}
+
+float FromBf16(uint16_t bits) {
+  return __bfloat162float(std::bit_cast<__nv_bfloat16>(bits));
+}
+
+int main() {
+  constexpr int kMaxK = 10240;
+  constexpr int kMaxN = 320;
+  uint16_t* d_w = nullptr;
+  uint16_t* d_x = nullptr;
+  uint16_t* d_old = nullptr;
+  uint16_t* d_new = nullptr;
+  Check(cudaMalloc(&d_w, kMaxN * kMaxK * sizeof(uint16_t)));
+  Check(cudaMalloc(&d_x, (kMaxK + 8) * sizeof(uint16_t)));
+  Check(cudaMalloc(&d_old, kMaxN * sizeof(uint16_t)));
+  Check(cudaMalloc(&d_new, kMaxN * sizeof(uint16_t)));
+  std::mt19937 rng(20260921);
+  std::normal_distribution<float> dist(0.0f, 1.0f);
+  int cases = 0, values = 0, mismatches = 0, nonfinite = 0;
+  for (int k : {8, 256, 320, 640, 1280, 2560, 6144, 10240}) {
+    for (int n : {1, 4, 7, 8, 9, 17, 320}) {
+      std::vector<uint16_t> w(n * k), x(k);
+      std::vector<uint16_t> old_values(n), new_values(n);
+      for (int family = 0; family < 4; ++family) {
+        for (int i = 0; i < k; ++i) {
+          x[i] = ToBf16(dist(rng));
+          if (family == 1) x[i] = (i & 1) ? 0x8000 : 0;
+          if (family == 2) x[i] = (i & 1) ? 0x8001 : 0x0001;
+          if (family == 3) x[i] = ToBf16((i & 1) ? -0.5f : 0.5f);
+        }
+        for (int i = 0; i < n * k; ++i) {
+          w[i] = ToBf16(dist(rng));
+          if (family == 2) w[i] = ToBf16(1.0f);
+        }
+        Check(cudaMemcpy(d_w, w.data(), w.size() * sizeof(uint16_t),
+                         cudaMemcpyHostToDevice));
+        // Offset in BF16 elements: aligned and two unaligned cases.
+        for (int offset : {0, 1, 7}) {
+          Check(cudaMemcpy(d_x + offset, x.data(), k * sizeof(uint16_t),
+                           cudaMemcpyHostToDevice));
+          for (float alpha : {1.0f, -0.75f, 0.0f}) {
+            const int blocks = (n + 7) / 8;
+            original::Bf16GevKernel<<<blocks, 256, k * sizeof(uint16_t)>>>(
+                d_w, d_x + offset, d_old, n, k, alpha);
+            Check(cudaGetLastError());
+            candidate::Bf16GevKernel<<<blocks, 256, k * sizeof(uint16_t)>>>(
+                d_w, d_x + offset, d_new, n, k, alpha);
+            Check(cudaGetLastError());
+            Check(cudaDeviceSynchronize());
+            Check(cudaMemcpy(old_values.data(), d_old,
+                             n * sizeof(uint16_t), cudaMemcpyDeviceToHost));
+            Check(cudaMemcpy(new_values.data(), d_new,
+                             n * sizeof(uint16_t), cudaMemcpyDeviceToHost));
+            ++cases;
+            for (int i = 0; i < n; ++i) {
+              ++values;
+              nonfinite += !std::isfinite(FromBf16(old_values[i])) ||
+                           !std::isfinite(FromBf16(new_values[i]));
+              mismatches += old_values[i] != new_values[i];
+            }
+          }
+        }
+      }
+    }
+  }
+  Check(cudaFree(d_w));
+  Check(cudaFree(d_x));
+  Check(cudaFree(d_old));
+  Check(cudaFree(d_new));
+  std::printf("{\"cases\":%d,\"values\":%d,\"mismatches\":%d,"
+              "\"nonfinite\":%d}\n", cases, values, mismatches, nonfinite);
+  return mismatches || nonfinite ? 1 : 0;
+}
