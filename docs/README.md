@@ -5,6 +5,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [MOE_WORKSPACE_2026-09-21.md](MOE_WORKSPACE_2026-09-21.md) | MoE 路由元数据生命周期与 E2E 验收 | 本轮验证更新 |
 | [SPARSE_LAYOUT_2026-09-21.md](SPARSE_LAYOUT_2026-09-21.md) | 稀疏注意力 shared 行布局、E2E 与逐位数值验证 | 本轮验证更新 |
 | [TOPK_WARP_2026-09-20.md](TOPK_WARP_2026-09-20.md) | 流式 top-k warp 交换、失败候选与 E2E 验收 | 本轮验证更新 |
 | [OUTPUT_LIMIT_2026-09-20.md](OUTPUT_LIMIT_2026-09-20.md) | 输出上限后的无用前向修复、边界与五档 E2E | 本轮验证更新 |
