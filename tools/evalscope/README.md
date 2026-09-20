@@ -43,16 +43,16 @@ quality_reference.json 来自 2026-09-20 完整数学修复后的真实 HTTP 结
 e98969c8d0d08572437745000d2a741a83b97d09600e60cf2ffd746643b3dcd3。
 只证明这 11 道合成检索题，不是全面模型质量基准。
 
-performance_reference.json 更新为 2026-09-21 稀疏注意力 shared 行 padding
-通过的五档结果，二进制 SHA-256：
-394b86c5a5c7ab2557dfb45604026d5eb464bb122f7768eff926e69d15ae979b。
-输入及输出摘要与数学修复版一致，计时更新为最新接受值；旧参考保留在
-Git 历史、原报告及本地快照。本组负载此前已追回历史速度差距，见
-[位置元数据报告](../../docs/POSITION_METADATA_2026-09-20.md)和
-[输出上限报告](../../docs/OUTPUT_LIMIT_2026-09-20.md)。
-[top-k 优化](../../docs/TOPK_WARP_2026-09-20.md)将 200K TTFT 降至 205.22 秒，
-本次再降至 181.96 秒，五档 decode 未回退，见
-[shared 布局报告](../../docs/SPARSE_LAYOUT_2026-09-21.md)。
+performance_reference.json 更新为 2026-09-21 流式 top-k 网络寄存器化
+通过的完整五档结果，二进制 SHA-256：
+55fb505d1bdc10fa8afe78f4d170e33b7e23d8f6a48d113072b225f0ac276db0。
+输入及输出摘要与数学修复版一致，计时整体更新为本次接受值，不拼接
+各轮最快值；旧参考保留在 Git 历史、原报告及本地 performance-before.json。
+此前 shared 布局将 200K TTFT 降至约 181.96 秒，本次进一步降至
+167.39 秒，44K 为 32.38 秒，五档 decode 未见明确回退。完整 E2E 后
+268800 对排序分值/ID 逐位一致，真实 200K HTTP 中合并累计耗时
+34.079→19.549 秒，见
+[top-k 寄存器网络报告](../../docs/TOPK_REGISTER_NETWORK_2026-09-21.md)。
 后续仍逐档比较，不能因质量输出不变就忽略性能回退。
 
 原 run_baseline.sh 每档三条不同输入，仍适用于初始负载采集；它与上述
