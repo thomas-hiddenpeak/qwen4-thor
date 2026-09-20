@@ -606,7 +606,7 @@ __global__ void TopkSelectKernel(f32* __restrict__ logits, int* __restrict__ top
 // Bitonic sort (ascending) of (val,idx) held in shared memory. N must be a
 // power of two and <= blockDim.x-addressable; after the sort the k largest
 // entries are the last k. Runtime N (no unroll) — correctness over speed;
-// the streaming indexer is a small fraction of the sparse-attention cost.
+// cost grows with context and query count (see the HTTP timeline report).
 __device__ void BitonicSortAsc(float* v, int* id, int N) {
   for (int k = 2; k <= N; k <<= 1) {
     for (int j = k >> 1; j > 0; j >>= 1) {

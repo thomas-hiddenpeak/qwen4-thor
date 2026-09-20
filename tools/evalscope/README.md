@@ -57,3 +57,24 @@ dbefb9dd794ebb1da71471d19709b3fb1dbec6415f6f8e47994b124ddb3401a8。
 所有大体积请求、响应、二进制和原始数据库保留在本地忽略目录；Git 仅保存
 生成算法、参考摘要和报告。只处理可信本机 evalscope 数据库，其中响应
 由工具存为 pickle，不应使用本脚本解析外部不可信数据库。
+
+## 已通过 E2E 后的时间线诊断
+
+仅对已经按 EVALUATION.md 接受的同一二进制执行；不是前置测试，也不替代
+五档正式性能验收。profile_http.py 校验既有五档 HTTP/输出记录与二进制
+SHA，加载后才开启 Nsight，每档重放一条同输入 256 输出请求并核对摘要。
+每条独立 trace，结束服务后导出 SQLite；失败保留证据。需要本机 nsys。
+
+```bash
+python3 tools/evalscope/profile_http.py \
+  --accepted-run .q4t-work/e2e/position-metadata-20260920/performance \
+  --model-dir "$Q4T_MODEL_DIR" \
+  --output .q4t-work/e2e/my-http-timeline
+python3 tools/evalscope/analyze_http_trace.py .q4t-work/e2e/my-http-timeline
+```
+
+--lengths 可指定诊断子集，不能把子集称为完整五档；profile 结果带采集开销，
+不得回填 performance_reference.json。分析依赖当前单流普通路径的 logits
+和 argmax 回读形状，遇到不同结构会报错。GPU busy 使用区间并集；kernel
+累计时间、重叠 API 等待与 GPU 窗口不能相加。详见
+[HTTP 时间线报告](../../docs/HTTP_TIMELINE_2026-09-20.md)。
