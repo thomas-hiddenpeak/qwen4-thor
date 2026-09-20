@@ -164,6 +164,7 @@ add_library(q4t_model STATIC
   src/model/model_head.cu
   src/model/model.cu
   src/model/gemv.cu
+  src/model/gemv_hc_inject.cu
   src/mtp/moe_bf16.cu
   src/mtp/mtp.cu
   src/vision/vision.cu

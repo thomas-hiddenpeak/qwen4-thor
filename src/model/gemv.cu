@@ -19,6 +19,10 @@
 
 namespace q4t {
 namespace model {
+
+bool HcInjectGev(const uint16_t* x, const uint16_t* w, uint16_t* y,
+                 float alpha, cudaStream_t stream);
+
 namespace {
 
 // f32x2 SIMD FMA: 2 FMAs per instruction on SM110a (1.97x scalar throughput).
@@ -248,6 +252,13 @@ __global__ void Fp8SmallMKernel(const uint8_t* __restrict__ w,
 bool Bf16Gev(const uint16_t* x, const uint16_t* w, uint16_t* y, int N, int K,
              float alpha, cudaStream_t stream) {
   if (N <= 0 || K <= 0 || (K & 7) != 0) return false;
+  // HC block injection has only four outputs. Use independent one-warp
+  // CTAs without shared-x staging, preserving each row's arithmetic order.
+  if (N == 4 && K == 10240 &&
+      ((reinterpret_cast<uintptr_t>(x) | reinterpret_cast<uintptr_t>(w)) &
+       15u) == 0) {
+    return HcInjectGev(x, w, y, alpha, stream);
+  }
   // Warp-per-output: 8 warps per block, each warp owns one output element.
   // Grid = ceil(N / 8). Dynamic shared memory holds x (K bf16 = K*2 bytes).
   constexpr int kWarps = kGevThreads / 32;
