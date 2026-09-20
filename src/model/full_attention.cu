@@ -1035,11 +1035,16 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
   // rejects any other geometry.
   constexpr int kG = 12;      // q-heads per kv-head
   constexpr int kHd = 256;
+  // Shift consecutive shared rows by four 32-bit banks. The 8-BF16 pad
+  // preserves 16-byte cp.async alignment while separating row accesses
+  // in the QK and PV fragments. Global KV and arithmetic stay unchanged.
+  constexpr int kSharedHd = kHd + 8;
   constexpr int kChunk = 16;  // positions processed per mma pass
   if (nq / nkv != kG || nkv != 2 || hd != kHd) return;
-  __shared__ u16 sQ[16 * kHd];     // [16, 256] query rows (12..15 zero-padded)
-  __shared__ u16 sK[2 * kChunk * kHd]; // double-buffered K rows (prefetch)
-  __shared__ u16 sV[2 * kChunk * kHd]; // double-buffered V rows (prefetch)
+  // Logical rows remain 256 BF16; only their shared-memory stride is padded.
+  __shared__ u16 sQ[16 * kSharedHd];  // Query rows 12..15 are zero-padded.
+  __shared__ u16 sK[2 * kChunk * kSharedHd];  // Double-buffered prefetch.
+  __shared__ u16 sV[2 * kChunk * kSharedHd];
   __shared__ float sS[16 * 16];    // [16, 16] scores (rows 12..15 unused)
   __shared__ u16 sP[kChunk * 16];  // [16 pos, 16] probs (cols 12..15 = 0)
   // sMax/sSum/sAlpha padded to 16 (PV lanes read [group+8] up to 15 for the
@@ -1065,9 +1070,10 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
   const int qh0 = kvh * kG;
   for (int i = threadIdx.x; i < 16 * kHd; i += 256) {
     const int m = i / kHd;
-    sQ[i] = (m < kG)
-                ? q[(static_cast<size_t>(t) * nq + qh0 + m) * kHd + (i % kHd)]
-                : 0;
+    sQ[m * kSharedHd + i % kHd] =
+        (m < kG)
+            ? q[(static_cast<size_t>(t) * nq + qh0 + m) * kHd + (i % kHd)]
+            : 0;
   }
   for (int i = threadIdx.x; i < kChunk * 16; i += 256) sP[i] = 0;
   if (threadIdx.x < 16) {
@@ -1097,8 +1103,8 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
   // The staged VALUES are identical to the old synchronous gather, so the
   // QK/softmax/PV math is bit-for-bit unchanged.
   auto stage = [&](int base_sel, int chunk, int buf) {
-    u16* dK = sK + static_cast<size_t>(buf) * kChunk * kHd;
-    u16* dV = sV + static_cast<size_t>(buf) * kChunk * kHd;
+    u16* dK = sK + static_cast<size_t>(buf) * kChunk * kSharedHd;
+    u16* dV = sV + static_cast<size_t>(buf) * kChunk * kSharedHd;
     // One 16-byte cp.async per (position, 8-dim group) for K and V: u in
     // [0,32) copies K dims [u*8, u*8+8); u in [32,64) copies the V dims.
     for (int i = threadIdx.x; i < chunk * 64; i += 256) {
@@ -1111,15 +1117,15 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
       const int slot = pt[sp] * kKvPageSize + (sp % kKvPageSize);
       const size_t g = (static_cast<size_t>(slot) * nkv + kvh) * (2 * kHd) +
                        (is_v ? kHd : 0) + d8;
-      CpAsync16((is_v ? dV : dK) + c * kHd + d8, kv + g);
+      CpAsync16((is_v ? dV : dK) + c * kSharedHd + d8, kv + g);
     }
     // Zero the [chunk, kChunk) tail (only the final partial chunk needs it);
     // finite so 0*x=0 in the PV mma (uninitialised shared could be a NaN).
     for (int i = threadIdx.x; i < (kChunk - chunk) * kHd; i += 256) {
       const int c = chunk + (i / kHd);
       const int d = i - (i / kHd) * kHd;
-      dK[c * kHd + d] = 0;
-      dV[c * kHd + d] = 0;
+      dK[c * kSharedHd + d] = 0;
+      dV[c * kSharedHd + d] = 0;
     }
     CpAsyncCommit();
   };
@@ -1139,8 +1145,8 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
       CpAsyncWait<0>();
     }
     __syncthreads();
-    const u16* bK = sK + static_cast<size_t>(buf) * kChunk * kHd;
-    const u16* bV = sV + static_cast<size_t>(buf) * kChunk * kHd;
+    const u16* bK = sK + static_cast<size_t>(buf) * kChunk * kSharedHd;
+    const u16* bV = sV + static_cast<size_t>(buf) * kChunk * kSharedHd;
     // ---- QK^T (warps 0-1, one n-tile each): sS[16,16] = sQ @ sK^T via mma. --
     // mma m16n8k16: A = sQ (m=qh, k=dim), B = sK^T (B[k][n]=sK[pos=n][dim=k]).
     // 16 k-tiles per n-tile; the 2 n-tiles (16 positions) run on warps 0 and 1
@@ -1154,13 +1160,13 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
       float c0 = 0.f, c1 = 0.f, c2 = 0.f, c3 = 0.f;
       for (int kt = 0; kt < kHd / 16; ++kt) {
         const int kb = kt * 16;
-        const u16* qa = sQ + group * kHd + kb + k0;
-        const u16* qa8 = sQ + (group + 8) * kHd + kb + k0;
+        const u16* qa = sQ + group * kSharedHd + kb + k0;
+        const u16* qa8 = sQ + (group + 8) * kSharedHd + kb + k0;
         uint32_t a0 = *reinterpret_cast<const uint32_t*>(qa);
         uint32_t a1 = *reinterpret_cast<const uint32_t*>(qa8);
         uint32_t a2 = *reinterpret_cast<const uint32_t*>(qa + 8);
         uint32_t a3 = *reinterpret_cast<const uint32_t*>(qa8 + 8);
-        const u16* kbp = bK + (nb + group) * kHd + kb + k0;
+        const u16* kbp = bK + (nb + group) * kSharedHd + kb + k0;
         uint32_t b0 = *reinterpret_cast<const uint32_t*>(kbp);
         uint32_t b1 = *reinterpret_cast<const uint32_t*>(kbp + 8);
         MmaBf16(c0, c1, c2, c3, a0, a1, a2, a3, b0, b1);
@@ -1218,10 +1224,10 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
         const int nb = nt * 8;
         // B-fragment: elements strided by hd in sV -> scalar load + pack.
         const u16* vb = bV + nb + pv_group;
-        uint32_t b0 = static_cast<uint32_t>(vb[k0 * kHd]) |
-                      (static_cast<uint32_t>(vb[(k0 + 1) * kHd]) << 16);
-        uint32_t b1 = static_cast<uint32_t>(vb[(k0 + 8) * kHd]) |
-                      (static_cast<uint32_t>(vb[(k0 + 9) * kHd]) << 16);
+        uint32_t b0 = static_cast<uint32_t>(vb[k0 * kSharedHd]) |
+                      (static_cast<uint32_t>(vb[(k0 + 1) * kSharedHd]) << 16);
+        uint32_t b1 = static_cast<uint32_t>(vb[(k0 + 8) * kSharedHd]) |
+                      (static_cast<uint32_t>(vb[(k0 + 9) * kSharedHd]) << 16);
         float c0 = 0.f, c1 = 0.f, c2 = 0.f, c3 = 0.f;
         MmaBf16(c0, c1, c2, c3, a0, a1, a2, a3, b0, b1);
         // Fold the per-chunk online-softmax rescale into the register accum.

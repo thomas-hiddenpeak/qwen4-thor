@@ -1,0 +1,123 @@
+// Appended to verbatim baseline/candidate kernel sources by the Python driver.
+#define CUDA_OK(expression)                                                \
+  do {                                                                     \
+    cudaError_t error = (expression);                                       \
+    if (error != cudaSuccess) {                                             \
+      std::fprintf(stderr, "%s: %s\n", #expression,                         \
+                 cudaGetErrorString(error));                               \
+      return 1;                                                            \
+    }                                                                      \
+  } while (0)
+
+int main() {
+  constexpr int kRows = 12;
+  constexpr int kNq = 24;
+  constexpr int kNkv = 2;
+  constexpr int kHd = 256;
+  constexpr int kPositions = 4096;
+  constexpr int kSequences = 3;
+  constexpr int kSelected = 2052;
+  const std::array<int, kRows> lengths = {
+      0, 1, 3, 15, 16, 17, 31, 32, 33, 2048, 2049, 2051};
+  const size_t kv_stride = kPositions * kNkv * 2 * kHd;
+  const size_t output_count = kRows * kNq * kHd;
+  std::vector<uint16_t> q(output_count), gate(output_count);
+  std::vector<uint16_t> kv(kSequences * kv_stride);
+  std::vector<int> pages(kSequences * kPositions);
+  std::vector<int> selected(kRows * kSelected), sequence(kRows), lens(kRows);
+  std::vector<uint16_t> before(output_count), after(output_count);
+  uint32_t state = 20260921;
+  auto fill = [&](std::vector<uint16_t>* data) {
+    for (auto& bits : *data) {
+      state = state * 1664525u + 1013904223u;
+      const float value = (static_cast<int>(state >> 16) - 32768) / 32768.f;
+      const __nv_bfloat16 bf = __float2bfloat16_rn(value);
+      std::memcpy(&bits, &bf, sizeof(bits));
+    }
+  };
+  fill(&q);
+  fill(&gate);
+  fill(&kv);
+  for (int seq = 0; seq < kSequences; ++seq) {
+    for (int p = 0; p < kPositions; ++p) {
+      // Nonidentity bijection of physical pages, different per sequence.
+      pages[seq * kPositions + p] = ((p / 16) * 73 + seq * 19) % 256;
+    }
+  }
+  for (int row = 0; row < kRows; ++row) {
+    sequence[row] = (row * 2 + 1) % kSequences;
+    for (int i = 0; i < kSelected; ++i) {
+      selected[row * kSelected + i] = (i * 37 + row * 113 + 5) % kPositions;
+    }
+  }
+  uint16_t *dq, *dg, *dkv, *dbefore, *dafter;
+  int *dpages, *dselected, *dsequence, *dlens;
+  CUDA_OK(cudaMalloc(&dq, q.size() * 2));
+  CUDA_OK(cudaMalloc(&dg, gate.size() * 2));
+  CUDA_OK(cudaMalloc(&dkv, kv.size() * 2));
+  CUDA_OK(cudaMalloc(&dbefore, output_count * 2));
+  CUDA_OK(cudaMalloc(&dafter, output_count * 2));
+  CUDA_OK(cudaMalloc(&dpages, pages.size() * sizeof(int)));
+  CUDA_OK(cudaMalloc(&dselected, selected.size() * sizeof(int)));
+  CUDA_OK(cudaMalloc(&dsequence, sequence.size() * sizeof(int)));
+  CUDA_OK(cudaMalloc(&dlens, lens.size() * sizeof(int)));
+  CUDA_OK(cudaMemcpy(dq, q.data(), q.size() * 2, cudaMemcpyHostToDevice));
+  CUDA_OK(cudaMemcpy(dg, gate.data(), gate.size() * 2, cudaMemcpyHostToDevice));
+  CUDA_OK(cudaMemcpy(dkv, kv.data(), kv.size() * 2, cudaMemcpyHostToDevice));
+  CUDA_OK(cudaMemcpy(dpages, pages.data(), pages.size() * sizeof(int),
+                     cudaMemcpyHostToDevice));
+  CUDA_OK(cudaMemcpy(dselected, selected.data(), selected.size() * sizeof(int),
+                     cudaMemcpyHostToDevice));
+  CUDA_OK(cudaMemcpy(dsequence, sequence.data(), sequence.size() * sizeof(int),
+                     cudaMemcpyHostToDevice));
+  size_t checked = 0;
+  int launches = 0;
+  for (bool pooled : {false, true}) {
+    for (int rows : {1, 3, kRows}) {
+      for (int first = 0; first < kRows; first += rows) {
+        for (int row = 0; row < rows; ++row) lens[row] = lengths[first + row];
+        CUDA_OK(cudaMemcpy(dlens, lens.data(), rows * sizeof(int),
+                           cudaMemcpyHostToDevice));
+        CUDA_OK(cudaMemset(dbefore, 0xa5, output_count * 2));
+        CUDA_OK(cudaMemset(dafter, 0x5a, output_count * 2));
+        const int* seq_ids = pooled ? dsequence : nullptr;
+        baseline::SparseAttentionKernel<<<dim3(rows, kNkv), 256>>>(
+            dq, dkv, dpages, dselected, dlens, dbefore, dg, kNq, kNkv, kHd,
+            kSelected, seq_ids, kv_stride, kPositions);
+        CUDA_OK(cudaGetLastError());
+        candidate::SparseAttentionKernel<<<dim3(rows, kNkv), 256>>>(
+            dq, dkv, dpages, dselected, dlens, dafter, dg, kNq, kNkv, kHd,
+            kSelected, seq_ids, kv_stride, kPositions);
+        CUDA_OK(cudaGetLastError());
+        const size_t count = rows * kNq * kHd;
+        CUDA_OK(cudaMemcpy(before.data(), dbefore, count * 2,
+                           cudaMemcpyDeviceToHost));
+        CUDA_OK(cudaMemcpy(after.data(), dafter, count * 2,
+                           cudaMemcpyDeviceToHost));
+        for (size_t i = 0; i < count; ++i) {
+          if (before[i] != after[i] || (after[i] & 0x7f80) == 0x7f80) {
+            std::fprintf(stderr,
+                         "Mismatch/nonfinite: pooled=%d rows=%d first=%d "
+                         "element=%zu old=%04x new=%04x\n",
+                         pooled, rows, first, i, before[i], after[i]);
+            return 1;
+          }
+        }
+        checked += count;
+        ++launches;
+      }
+    }
+  }
+  CUDA_OK(cudaFree(dq));
+  CUDA_OK(cudaFree(dg));
+  CUDA_OK(cudaFree(dkv));
+  CUDA_OK(cudaFree(dbefore));
+  CUDA_OK(cudaFree(dafter));
+  CUDA_OK(cudaFree(dpages));
+  CUDA_OK(cudaFree(dselected));
+  CUDA_OK(cudaFree(dsequence));
+  CUDA_OK(cudaFree(dlens));
+  std::printf("PASS: %d paired launches, %zu finite BF16 outputs bit-exact\n",
+              launches, checked);
+  return 0;
+}

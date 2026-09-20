@@ -1,4 +1,4 @@
-# tools/verify/ — logits 辅助对照工具
+# tools/verify/ — 数值辅助对照工具
 
 执行顺序与接受条件以 [EVALUATION.md](../../docs/EVALUATION.md) 为准。
 改动后先通过真实 HTTP evalscope E2E，再使用这些工具进行必要的数值细分析。
@@ -8,6 +8,27 @@ C++ NVFP4 W4A4 与 transformers 参考的差异可能来自激活量化、浮点
 算子实现差异或实现错误，不能预先认定“就是量化噪声”。全模型、覆盖目标
 分支的相同输入对照才有意义：例如 T=8 或 256 不覆盖 2048 预算后的稀疏
 选择路径。首个 full-attention 层出现不等于稀疏分支已经被验证。
+
+## 稀疏注意力布局逐位对照
+
+`compare_sparse_attention_layout.py` 仅在完整质量和五档性能 HTTP 已通过、
+人工接受性能且 `acceptance.json` 中 `performance_accepted=true` 后使用。
+工具检查退出状态和 q4t 二进制摘要，不替代人工判断性能是否回退。
+
+```bash
+python3 tools/verify/compare_sparse_attention_layout.py \
+  --accepted-root .q4t-work/e2e/sparse-padding-20260920 \
+  --baseline-ref 6c9fbd6 \
+  --output .q4t-work/e2e/sparse-padding-20260920/numerical-new
+```
+
+从指定 Git 提交和当前源文件原样提取转换函数及 attention kernel，各放
+独立 namespace 编译；保存两份源代码、摘要、命令、构建与运行日志。
+这是源码级 CUDA 数值对照，不是从两个生产二进制抽取机器码。fixture
+固定 hd=256、GQA 24/2、KV page=16，1/3/12 行，nsel 为
+0/1/3/15/16/17/31/32/33/2048/2049/2051；包括非连续页、单序列及非平凡
+多序列 ID，先以不同哨兵填充输出再比较完整有限 BF16。无计时或 bench。
+该工具不检验 top-k 选取、模型 logits、并发调度或多模态语义。
 
 ## 当前脚本限制（2026-09-20 审计）
 

@@ -43,15 +43,16 @@ quality_reference.json 来自 2026-09-20 完整数学修复后的真实 HTTP 结
 e98969c8d0d08572437745000d2a741a83b97d09600e60cf2ffd746643b3dcd3。
 只证明这 11 道合成检索题，不是全面模型质量基准。
 
-performance_reference.json 更新为同日流式 top-k 独立 CUDA 实现通过的五档结果，
-二进制 SHA-256：
-3ccf9368c102b9cc83fa56190c195ac15085e2c3f2e30d915cfb4bd416dc3cb2。
-输入及输出摘要与数学修复版一致，计时参考更新为最新接受值；旧参考保留
-在 Git 历史与原报告中。本组负载已追回此前的历史速度差距，详见
-[位置元数据报告](../../docs/POSITION_METADATA_2026-09-20.md)及
-[输出上限报告](../../docs/OUTPUT_LIMIT_2026-09-20.md)。本轮 200K TTFT
-234.40→205.22 秒、44K 39.73→38.31 秒，decode 各档重复范围重叠，
-见 [top-k 报告](../../docs/TOPK_WARP_2026-09-20.md)。
+performance_reference.json 更新为 2026-09-21 稀疏注意力 shared 行 padding
+通过的五档结果，二进制 SHA-256：
+394b86c5a5c7ab2557dfb45604026d5eb464bb122f7768eff926e69d15ae979b。
+输入及输出摘要与数学修复版一致，计时更新为最新接受值；旧参考保留在
+Git 历史、原报告及本地快照。本组负载此前已追回历史速度差距，见
+[位置元数据报告](../../docs/POSITION_METADATA_2026-09-20.md)和
+[输出上限报告](../../docs/OUTPUT_LIMIT_2026-09-20.md)。
+[top-k 优化](../../docs/TOPK_WARP_2026-09-20.md)将 200K TTFT 降至 205.22 秒，
+本次再降至 181.96 秒，五档 decode 未回退，见
+[shared 布局报告](../../docs/SPARSE_LAYOUT_2026-09-21.md)。
 后续仍逐档比较，不能因质量输出不变就忽略性能回退。
 
 原 run_baseline.sh 每档三条不同输入，仍适用于初始负载采集；它与上述
