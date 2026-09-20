@@ -126,6 +126,7 @@ int main(int argc, char** argv) {
   bool warm_idx = false;
   bool warm_kv = false;
   bool flush_l2 = false;
+  bool dump_topk = false;
   int base_pos = 0;
   std::string ts_arg = "256,1024,2048,4096";
   std::string golden_path, check_path;
@@ -137,6 +138,7 @@ int main(int argc, char** argv) {
     if (a == "--golden" && i + 1 < argc) golden_path = argv[++i];
     if (a == "--check" && i + 1 < argc) check_path = argv[++i];
     if (a == "--diag") diag = true;
+    if (a == "--dump-topk") dump_topk = true;
     // --warm-idx: pre-fill the INDEXER caches (idx_raw + idx_comp) with
     // random data ONCE and do not reset them per iteration. The indexer
     // logits are iq[t] . idx_comp[g] over the FULL history, so random
@@ -265,6 +267,8 @@ int main(int argc, char** argv) {
     cudaMemcpy(d_pt, pt.data(), pt.size() * sizeof(int), cudaMemcpyHostToDevice);
     cudaMemcpy(d_rope, rope.data(), rope.size() * sizeof(int),
                cudaMemcpyHostToDevice);
+    cudaMemcpy(d_pos, pos.data(), pos.size() * sizeof(int),
+               cudaMemcpyHostToDevice);
   }
   const std::vector<uint16_t> x_host =
       MakeInput(static_cast<size_t>(max_len) * kHs);
@@ -321,6 +325,33 @@ int main(int argc, char** argv) {
                                nullptr, nullptr);
         });
     std::printf("%-8d %-10s %-12.3f %-10.1f\n", T, regime, ms, T / ms);
+    if (dump_topk) {
+      // topk_len lives at a fixed offset in the workspace (mirror the carve
+      // in FullAttentionWorkspaceBytes; T > kOnePassT so no one-pass buffers).
+      const int nq = kNq, nkv = kNkv, hd = kHd;
+      const int idx_hd = 128, n_iq = kIdxN, n_ik = kIdxKv;
+      const int max_blocks = 2048, max_topk = 2052, block_topk = 512;
+      size_t off = 0;
+      auto al = [&](size_t b) { off += (b + 255) & ~size_t(255); };
+      al(size_t(T) * (nq * 2 * hd) * 2);
+      al(size_t(T) * (nkv * hd) * 2);
+      al(size_t(T) * (nkv * hd) * 2);
+      al(size_t(T) * nq * hd * 2);
+      al(size_t(T) * nq * hd * 2);
+      al(size_t(T) * n_iq * idx_hd * 2);
+      al(size_t(T) * n_ik * idx_hd * 2);
+      al(size_t(idx_hd) * 2);
+      al(size_t(T) * max_blocks * 4);
+      al(size_t(T) * max_topk * 4);
+      std::vector<int> tl(T);
+      cudaMemcpy(tl.data(), static_cast<char*>(d_ws) + off,
+                 size_t(T) * 4, cudaMemcpyDeviceToHost);
+      int mn = 1 << 30, mx = 0;
+      long sum = 0;
+      for (int v : tl) { mn = std::min(mn, v); mx = std::max(mx, v); sum += v; }
+      std::printf("  topk_len: min=%d max=%d mean=%.1f (T=%d, idx_budget=2048)\n",
+                  mn, mx, double(sum) / T, T);
+    }
     // Diagnostics (opt-in via --diag): in-process determinism (two fresh
     // prefills in the same process) and per-shape GEMM determinism. NOTE: a
     // fresh isolated FullAttentionForward on a cold cublasLt cache can be

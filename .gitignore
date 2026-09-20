@@ -26,6 +26,7 @@ Thumbs.db
 __pycache__/
 *.pyc
 .venv/
+tools/evalscope/outputs/
 
 # Regenerable vision reference/debug dumps (tools/vision_processor_ref.py,
 # tools/vision_reference.py, tools/video_processor_ref.py; tens of MB, not

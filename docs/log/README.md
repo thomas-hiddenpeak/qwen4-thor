@@ -6,7 +6,7 @@
 
 | 日期 | 摘要 (当天最新一条) |
 |---|---|
-| [2026-09-20](2026-09-20.md) | 数据流驱动的逐级优化分析: 5 环节搬运账单 + L1/L2/L3 路线图 (prefill 激活 347GB, 可省 82.8GB) |
+| [2026-09-20](2026-09-20.md) | 数据流驱动优化: 北极星收敛 (8 原则+4 补充) + 两极框架 + 文档定稿; gemm_roofline_bench 尺子 (BF16 库 46-72% 峰值, 瘦 GEMM HC down 15.5%); evalscope E2E 吞吐基线 (短 prompt 并发 21.6/31.4/57.1 tok/s, 长 prompt 8192 TTFT 7.58s) |
 | [2026-09-19](2026-09-19.md) | chunked MTP: 长上下文投机解码 (44K 17.7→33.1 tok/s, bit-exact) |
 | [2026-09-18](2026-09-18.md) | decode 全面推进: HC mix FP8 (最大遗漏) + 批处理 decode M≤4 (手写胜 cuBLASLt) + 审计 + max_seq 修复 |
 | [2026-09-17](2026-09-17.md) | GatedDeltaNet 寄存器-state prefill kernel (ds4 风格, +12% 单流 prefill) |

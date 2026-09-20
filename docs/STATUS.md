@@ -8,10 +8,24 @@
 Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 2026-09-07)
 (详见 [PHASES.md](PHASES.md))
 
+## 当前焦点 (2026-09-20): 数据流驱动优化 — 生产 nsys 定位 + E2E 闭环验证
+
+- **SparseAttention topk 排序 E2E 负结果 (2026-09-20, 已回退)**:
+  生产 nsys 深挖确认 SparseAttention 116 实例中 13 个慢实例 (gridX=8192
+  prefill, 各 ~170ms) 占 97.5% 时间, decode 仅 2.5% — 瓶颈完全在 prefill。
+  实施 `SortTopkByPosKernel` (topk 按 position 升序重排 → 恒等 page table
+  下 gather 变近似顺序读, 保正确性, q4t_tests 76 项全过), evalscope E2E:
+  短 prompt 无回退 (21.88/37.46/~57), **长 prompt 8192 TTFT 回退 171ms
+  (7580→7751)** — 排序开销 > locality 收益, 已回退。排除 "scatter
+  locality" 方向 (kernel 已达 176GB/s = 72% 峰值, 剩余差距是延迟隐藏/
+  cp.async 粒度)。详见 [DATAFLOW_OPTIMIZATION.md](DATAFLOW_OPTIMIZATION.md)
+  §4.7。**流程纠正**: 放弃与生产不同步的 bench 迭代, 全部改动走
+  生产 nsys 定位 → 改生产 kernel → q4t_tests 验正确性 → evalscope E2E
+  验收 闭环。
+
 ## 当前焦点 (2026-09-19): host C++23 升级 + OOM 可靠性工程 + chunked MTP 长上下文投机解码 + serve 工业化
 
-- **数据流驱动的逐级优化分析: 5 环节搬运账单 + L1/L2/L3 路线图 (2026-09-20,
-  分析完成, 待实施)**:
+- **数据流驱动优化: 北极星收敛 + 两极框架 + 开始执行 (2026-09-20)**:
   用户提出新方向: 专用模型+专用设备, 按权重与数据流向针对全部硬件
   (寄存器/缓存/SM/tensor core) 逐环节写 kernel, 分次序分级别 (L1 带宽
   无效搬运 → L2 降复杂度 → L3 融合/执行模型)。逐环节读真实源码
@@ -27,8 +41,36 @@ Phase 2 — 连续批处理 / MTP 批处理 / 性能优化 (Phase 1 已闭合 20
   27%); P2 = MoE (3.8GB, GEMM 全 nvjet 已最优) + QSA (3.05GB, tensor
   core 已最优); P3 = PLE (1.7GB, 存储层级问题)。建议第一步 GDN ①+③+④
   (低风险 bit-exact 21.6GB)。**所有 GB 数字是估算, 实施前必须插桩实测**。
-  详见 [DATAFLOW_OPTIMIZATION.md](DATAFLOW_OPTIMIZATION.md)。下一步: 待
-  用户裁决实施顺序 (先插桩测量 / 直接 GDN ①+③+④)。
+  详见 [DATAFLOW_OPTIMIZATION.md](DATAFLOW_OPTIMIZATION.md)。**北极星收敛
+  (2026-09-20, 用户 8 原则 + 4 补充)**: 项目定位 = 固定模型+持久状态的数据流
+  执行机, 优化单位 = 一次完整状态转换, 贴两极屋顶 (Pole 1 内存: 最小化搬运
+  字节 ~347GB prefill / Pole 2 算力: 手写 tensor core >50%, 库 NVFP4 <10%
+  峰值手写赢 5-6×), 模型包声明数值契约, host 退出逐层指挥。修正: ① MoE
+  流量基线改按实际激活 (decode ~12GB / prefill ~70GB, 非总加载 84GB); ②
+  "GEMM 保留 nvjet" 升级为两极框架 (算力受限 GEMM 方向是手写 tcgen05, 非
+  SIMT 打不过库的旧结论)。执行序列: ① **gemm_roofline_bench 尺子已造已测 (2026-09-20)**: 库在我们
+  BF16 shape T=8192 达 46-72% 峰值 (GDN in_proj_qkv 61% / QSA qg 72%),
+  **不是 <10%** (那是 NVFP4 的事); 真正库低效点在瘦 GEMM — HC down (N=320)
+  仅 15.5% / HC up 28.8%。Pole 2 在 BF16 大 GEMM 上没那么大 (库已 61-72%),
+  机会集中在瘦 GEMM 且与 Pole 1 (HC 中间激活搬运) 重叠 — HC 融合同时打两
+  极。prefill GEMM 时间账 T=8192 ≈786ms/forward, HC 占 56%。详见
+  DATAFLOW_OPTIMIZATION.md §4.4。② **evalscope E2E 吞吐基线已测 (2026-09-20)**: tools/evalscope/ uv 环境
+  (evalscope[perf] 1.12.0) + run_baseline.sh; serve --max-seq 8 --max-prefill
+  8192 --max-len 16384。短 prompt (256/256): 并发 1/4/8 聚合 21.6/31.4/57.1
+  tok/s, TTFT 440/1063/1965ms, TPOT 44/75/110ms; 长 prompt 8192: **TTFT
+  7.58s, prefill ~760 tok/s** — 用户 agent 工作负载 (40K-200K) 的痛点入口,
+  prefill 优化直接打这个 TTFT。验收锚点: P0 改动 = 长 prompt TTFT 下降 +
+  短 prompt 聚合不回归 (详见 DATAFLOW_OPTIMIZATION.md §4.5)。③ 回填文档。④ **prefill T=8192 nsys profile 实测 (2026-09-20, 推翻 P0
+  路线图)**: 总 GPU kernel 8.377s, GPU 满负荷无 idle 间隙。时间构成:
+  **SparseAttentionKernel 2.268s (27%, 最大单点, KV 散射 gather 带宽/延迟
+  受限, 非算力 — §3.3 "tensor core 已最优" 错了)** + **GatedDeltaNetRegKernel
+  1.345s (16%, 顺序 recurrent scan 延迟受限, §3.2 "已落地不动" 错了)** +
+  MoE 量化 0.82s (9.7%) + GEMM nvjet ~1.3s (17%) + HC 0.62s (7%) + GDN
+  conv 0.22s (2.6%)。文档 P0 (GDN conv/norm + HC 融合) 只占 ~13%, 不是大头
+  — "先测量再决定" 兑现 (计划 D 正面版本)。**新 P0 = SparseAttention
+  (2.27s) + GDN 循环 (1.35s)**。详见 DATAFLOW_OPTIMIZATION.md §4.6。本轮
+  不涉及量化和 MTP (原则 7)。**下一步: 优化 SparseAttention (第一靶点,
+  27%)**。
 - **单流非量化 decode 瓶颈定位: 已到带宽下限, Option 1 否决 (2026-09-19, 负结果 + 方向修正)**:
   用户方向 = 单流 (B=1) 非量化 (BF16) 无 MTP decode 优化。前序日志把 "MoE
   router D2H 最大 4.48ms" 列为最大 gap 并计划 Option 1 (GPU-resident MoE

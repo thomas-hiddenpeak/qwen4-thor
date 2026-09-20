@@ -202,6 +202,11 @@ target_include_directories(q4t_bench_full_attn PRIVATE include)
 target_link_libraries(q4t_bench_full_attn PRIVATE q4t_model q4t_io
                                                   CUDA::cudart)
 
+# q4t_sparse_gather_microbench — scatter-vs-ordered 1KB gather bandwidth
+# probe (isolates the DRAM-locality lever for SparseAttentionKernel)
+add_executable(q4t_sparse_gather_microbench tools/sparse_gather_microbench.cu)
+target_link_libraries(q4t_sparse_gather_microbench PRIVATE CUDA::cudart)
+
 # q4t_chunk_prefill_diag — one-shot vs chunked prefill logits comparison
 # (262K chunked-prefill correctness diagnostic)
 add_executable(q4t_chunk_prefill_diag tools/chunk_prefill_diag.cu)
@@ -224,6 +229,12 @@ target_link_libraries(q4t_small_m_gemm_bench PRIVATE CUDA::cudart CUDA::cublasLt
 add_executable(q4t_moe_grouped_bench tools/moe_grouped_bench.cu)
 target_include_directories(q4t_moe_grouped_bench PRIVATE include)
 target_link_libraries(q4t_moe_grouped_bench PRIVATE q4t_quant CUDA::cudart)
+
+# q4t_gemm_roofline_bench — cuBLASLt BF16 TFLOPS on the model's real dense
+# GEMM shapes across T (Pole 2 compute-roof ruler; no model load).
+add_executable(q4t_gemm_roofline_bench tools/gemm_roofline_bench.cu)
+target_link_libraries(q4t_gemm_roofline_bench PRIVATE CUDA::cudart
+                                                     CUDA::cublasLt)
 
 # ---------------------------------------------------------------------------
 # Tests
