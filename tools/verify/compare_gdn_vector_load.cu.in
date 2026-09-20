@@ -1,0 +1,146 @@
+#include <cuda_bf16.h>
+#include <cuda_runtime.h>
+
+#include <bit>
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <random>
+#include <vector>
+
+namespace original {
+@ORIGINAL@
+}
+namespace candidate {
+@CANDIDATE@
+}
+
+void Check(cudaError_t result) {
+  if (result != cudaSuccess) {
+    std::fprintf(stderr, "%s\n", cudaGetErrorString(result));
+    std::exit(2);
+  }
+}
+
+template <typename T>
+struct Buffer {
+  T* data = nullptr;
+  explicit Buffer(size_t count) { Check(cudaMalloc(&data, count * sizeof(T))); }
+  ~Buffer() { cudaFree(data); }
+  void Upload(const std::vector<T>& values) {
+    Check(cudaMemcpy(data, values.data(), values.size() * sizeof(T),
+                     cudaMemcpyHostToDevice));
+  }
+  void Download(std::vector<T>& values) {
+    Check(cudaMemcpy(values.data(), data, values.size() * sizeof(T),
+                     cudaMemcpyDeviceToHost));
+  }
+};
+
+uint16_t ToBf16(float value) {
+  return std::bit_cast<uint16_t>(__float2bfloat16_rn(value));
+}
+
+template <int Rows>
+void Launch(const uint16_t* qkv, const uint16_t* a, const uint16_t* bias,
+            const uint16_t* alog, const uint16_t* beta, float* old_state,
+            float* new_state, uint16_t* old_y, uint16_t* new_y, int t,
+            int nkh, int nv, int stride) {
+  const dim3 grid(128 / (4 * Rows), nv);
+  original::GatedDeltaNetRegKernel<Rows><<<grid, 128>>>(
+      qkv, a, bias, alog, beta, old_state, old_y, t, nkh, 128, nv / nkh,
+      128, stride, nv);
+  Check(cudaGetLastError());
+  candidate::GatedDeltaNetRegKernel<Rows><<<grid, 128>>>(
+      qkv, a, bias, alog, beta, new_state, new_y, t, nkh, 128, nv / nkh,
+      128, stride, nv);
+  Check(cudaGetLastError());
+  Check(cudaDeviceSynchronize());
+}
+
+int main() {
+  std::mt19937 rng(20260921);
+  std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
+  size_t cases = 0, output_values = 0, state_values = 0;
+  size_t mismatches = 0, nonfinite = 0;
+  for (int nkh : {1, 16}) {
+    const int nv = nkh * 3;
+    const int stride = (2 * nkh + nv) * 128;
+    const size_t state_size = static_cast<size_t>(nv) * 128 * 128;
+    for (int t : {1, 3, 33, 129, 8192}) {
+      const size_t y_size = static_cast<size_t>(t) * nv * 128;
+      std::vector<uint16_t> qkv(static_cast<size_t>(t) * stride);
+      std::vector<uint16_t> a(t * nv), beta(t * nv), bias(nv), alog(nv);
+      std::vector<float> state(state_size), old_s(state_size), new_s(state_size);
+      std::vector<uint16_t> old_y(y_size), new_y(y_size);
+      Buffer<uint16_t> d_qkv(qkv.size()), d_a(a.size()), d_beta(beta.size());
+      Buffer<uint16_t> d_bias(nv), d_alog(nv), d_old_y(y_size), d_new_y(y_size);
+      Buffer<float> d_old_s(state_size), d_new_s(state_size);
+      for (int family = 0; family < 3; ++family) {
+        for (size_t i = 0; i < qkv.size(); ++i) {
+          qkv[i] = ToBf16(dist(rng) * 0.05f);
+          if (family == 1) qkv[i] = (i & 1) ? 0x8000 : 0;
+        }
+        for (size_t i = 0; i < a.size(); ++i) {
+          a[i] = ToBf16(dist(rng) * 3.0f);
+          beta[i] = ToBf16(dist(rng) * 3.0f);
+          if (family == 2) {
+            a[i] = ToBf16(20.0f + (static_cast<int>(i % 3) - 1) * 0.25f);
+            beta[i] = ToBf16((i & 1) ? -8.0f : 8.0f);
+          }
+        }
+        for (int h = 0; h < nv; ++h) {
+          bias[h] = ToBf16(family == 2 ? 0.0f : dist(rng));
+          alog[h] = ToBf16(-2.0f + dist(rng));
+        }
+        for (float& value : state) value = dist(rng) * 0.01f;
+        d_qkv.Upload(qkv);
+        d_a.Upload(a);
+        d_beta.Upload(beta);
+        d_bias.Upload(bias);
+        d_alog.Upload(alog);
+        for (int rows : {1, 2, 4, 8}) {
+          d_old_s.Upload(state);
+          d_new_s.Upload(state);
+          // The second call consumes each kernel's own persistent state.
+          for (int repeat = 0; repeat < 2; ++repeat) {
+#define RUN(R)                                                            \
+  Launch<R>(d_qkv.data, d_a.data, d_bias.data, d_alog.data, d_beta.data,     \
+            d_old_s.data, d_new_s.data, d_old_y.data, d_new_y.data, t,      \
+            nkh, nv, stride)
+            switch (rows) {
+              case 1: RUN(1); break;
+              case 2: RUN(2); break;
+              case 4: RUN(4); break;
+              default: RUN(8); break;
+            }
+#undef RUN
+            d_old_s.Download(old_s);
+            d_new_s.Download(new_s);
+            d_old_y.Download(old_y);
+            d_new_y.Download(new_y);
+            ++cases;
+            for (size_t i = 0; i < state_size; ++i) {
+              ++state_values;
+              mismatches += std::bit_cast<uint32_t>(old_s[i]) !=
+                            std::bit_cast<uint32_t>(new_s[i]);
+              nonfinite += !std::isfinite(old_s[i]) || !std::isfinite(new_s[i]);
+            }
+            for (size_t i = 0; i < y_size; ++i) {
+              ++output_values;
+              mismatches += old_y[i] != new_y[i];
+              nonfinite += (old_y[i] & 0x7f80) == 0x7f80 ||
+                           (new_y[i] & 0x7f80) == 0x7f80;
+            }
+          }
+        }
+      }
+    }
+  }
+  std::printf("{\"cases\":%zu,\"output_values\":%zu,\"state_values\":%zu,"
+              "\"mismatches\":%zu,\"nonfinite\":%zu}\n",
+              cases, output_values, state_values, mismatches, nonfinite);
+  return (mismatches || nonfinite) ? 1 : 0;
+}

@@ -623,12 +623,20 @@ __global__ void GatedDeltaNetRegKernel(
     // q/k are pre-normalized in place by GdnRegPrepNormKernel (one warp per
     // (t, h_k)), so the scan just loads them — no redundant per-warp L2 norm
     // (which, computed per warp, cost +12.7% of prefill; see docs/log).
-    float kk[NPT], qq[NPT];
-#pragma unroll
-    for (int p = 0; p < NPT; ++p) {
-      kk[p] = Bf16ToFloat(qkv[k_base + p]);
-      qq[p] = Bf16ToFloat(qkv[q_base + p]);
-    }
+    // The dispatch requires kd=vd=128. The allocated qkv base, token stride,
+    // head offsets and lane*4 offset are all aligned for four BF16 values.
+    const uint2 k_bits = *reinterpret_cast<const uint2*>(qkv + k_base);
+    const uint2 q_bits = *reinterpret_cast<const uint2*>(qkv + q_base);
+    const float kk[NPT] = {
+        Bf16ToFloat(static_cast<uint16_t>(k_bits.x)),
+        Bf16ToFloat(static_cast<uint16_t>(k_bits.x >> 16)),
+        Bf16ToFloat(static_cast<uint16_t>(k_bits.y)),
+        Bf16ToFloat(static_cast<uint16_t>(k_bits.y >> 16))};
+    const float qq[NPT] = {
+        Bf16ToFloat(static_cast<uint16_t>(q_bits.x)),
+        Bf16ToFloat(static_cast<uint16_t>(q_bits.x >> 16)),
+        Bf16ToFloat(static_cast<uint16_t>(q_bits.y)),
+        Bf16ToFloat(static_cast<uint16_t>(q_bits.y >> 16))};
     const float a_val = Bf16ToFloat(a_raw[t * nv + h_v]);
     const float ab = a_val + bias;
     const float dt_v = (ab > 20.0f) ? ab : log1pf(expf(ab));
