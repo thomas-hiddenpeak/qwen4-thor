@@ -48,9 +48,8 @@ struct ServerOptions {
   // in-flight request owns one seq_id; the model's SSM/conv/PLE-conv/KV/indexer
   // state is pooled [max_seq, ...] so concurrent requests are isolated.
   int max_seq = 8;
-  // Disable the MTP draft model (plain greedy decode only). Useful for
-  // isolating MTP-specific concurrency issues from the base scheduler.
-  bool no_mtp = false;
+  // Plain greedy decode is the default; MTP requires explicit opt-in.
+  bool no_mtp = true;
   // OOM-safe memory budget (vllm-style gpu_memory_utilization). The server
   // reserves mem_fraction x MemTotal for the whole engine (weights + state
   // pools + per-request headroom) and caps max_len/max_seq to what fits, so
@@ -273,6 +272,7 @@ class ChatServer {
   std::string model_name_;
   int port_ = 8000;
   int max_tokens_default_ = 256;
+  std::vector<int32_t> stop_token_ids_;  // generation_config, not PLE padding
   int max_prefill_ = 2048;
   int max_len_ = 2048;
   // OOM-safe memory budget computed at Start() (vllm-style). max_len/max_seq

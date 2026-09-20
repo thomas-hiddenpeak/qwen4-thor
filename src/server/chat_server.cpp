@@ -15,6 +15,8 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <fstream>
+#include <iterator>
 #include <string>
 #include <thread>
 #include <vector>
@@ -70,7 +72,8 @@ std::string JsonEscape(const std::string& s) {
 bool WriteAll(int fd, const char* data, size_t len) {
   size_t off = 0;
   while (off < len) {
-    const ssize_t n = ::write(fd, data + off, len - off);
+    // A disconnected client must fail this request, not terminate the server.
+    const ssize_t n = ::send(fd, data + off, len - off, MSG_NOSIGNAL);
     if (n <= 0) {
       if (n < 0 && errno == EINTR) continue;
       return false;
@@ -447,10 +450,61 @@ Status ChatServer::Start(const ServerOptions& opts) {
     }
   }
 
+  // Generation EOS may contain several IDs. Keep the model's primary EOS
+  // unchanged: PLE uses that ID to pad the beginning of its n-gram history.
+  stop_token_ids_ = {static_cast<int32_t>(model_.cfg.eos_token_id)};
+  {
+    errno = 0;
+    std::ifstream input(opts.model_dir + "/generation_config.json");
+    if (!input.is_open()) {
+      if (errno != ENOENT)
+        return Status::Fail("cannot read generation_config.json");
+    } else {
+      const std::string text((std::istreambuf_iterator<char>(input)),
+                             std::istreambuf_iterator<char>());
+      if (input.bad())
+        return Status::Fail("cannot read generation_config.json");
+      io::Json generation;
+      s = io::ParseJson(text, &generation);
+      if (!s.ok() || !generation.IsObject())
+        return Status::Fail("invalid generation_config.json");
+      const io::Json* ids = generation.Find("eos_token_id");
+      if (ids && !ids->IsNull()) {
+        std::vector<int32_t> configured;
+        const auto append = [&](const io::Json& value) {
+          if (!value.IsNumber() || value.number < 0 ||
+              value.number >= model_.cfg.vocab ||
+              value.number != static_cast<int32_t>(value.number))
+            return false;
+          const int32_t id = static_cast<int32_t>(value.number);
+          if (std::find(configured.begin(), configured.end(), id) ==
+              configured.end())
+            configured.push_back(id);
+          return true;
+        };
+        if (ids->IsArray()) {
+          for (const io::Json& id : ids->array)
+            if (!append(id))
+              return Status::Fail("invalid generation eos_token_id");
+        } else if (!append(*ids)) {
+          return Status::Fail("invalid generation eos_token_id");
+        }
+        if (configured.empty())
+          return Status::Fail("empty generation eos_token_id");
+        stop_token_ids_ = std::move(configured);
+      }
+    }
+  }
+  std::fprintf(stderr, "[q4t] generation stop token ids:");
+  for (int32_t id : stop_token_ids_) std::fprintf(stderr, " %d", id);
+  std::fprintf(stderr, "\n");
+
   // Load the MTP draft model (optional). Borrowed embed/lm_head from the main
   // model. On failure the server falls back to plain decode (mirrors the CLI
   // --mtp behavior). Skipped entirely when opts.no_mtp is set.
-  if (!opts.no_mtp) {
+  if (opts.no_mtp) {
+    std::fprintf(stderr, "[q4t] MTP disabled; plain decode\n");
+  } else {
     PhaseTimer pt("mtp_load");
     mtp::MtpConfig mcfg;
     mcfg.mtp_dir = opts.model_dir + "/mtp";
@@ -1264,6 +1318,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
 
   // stream flag.
   const bool stream = req.GetBool("stream", false);
+  const io::Json* stream_options = req.Find("stream_options");
+  const bool include_usage =
+      stream_options && stream_options->GetBool("include_usage", false);
 
   // Build the prompt from the messages array. Each message's `content` may be
   // a plain string or an OpenAI-style array of parts (text + image_url +
@@ -1403,6 +1460,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
 
   const int vocab = model_.cfg.vocab;
   const int eos = static_cast<int>(model_.cfg.eos_token_id);
+  const auto is_stop_token = [this](int32_t token) {
+    return std::find(stop_token_ids_.begin(), stop_token_ids_.end(), token) !=
+           stop_token_ids_.end();
+  };
   // Chunked prefill (262K context, see PHASES.md 262K memory budget): the
   // forward workspace (d_ws, d_trunk, ...) is sized for max_prefill tokens,
   // so a prompt longer than max_prefill is run in chunks of max_prefill.
@@ -1615,14 +1676,27 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   const std::string id = "chatcmpl-" + std::to_string(std::time(nullptr));
   const std::string model_field = model_name_;
   const int created = static_cast<int>(std::time(nullptr));
+  bool client_disconnected = false;
+  const auto write_stream = [&](const std::string& data) {
+    if (client_disconnected) return false;
+    if (WriteAll(fd, data)) return true;
+    client_disconnected = true;
+    metrics_.requests_aborted.fetch_add(1, std::memory_order_relaxed);
+    return false;
+  };
 
   // Streaming header (flushed immediately).
   if (stream) {
     const std::string head =
         "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\n"
         "Cache-Control: no-cache\r\nConnection: close\r\n\r\n";
-    WriteAll(fd, head);
-    WriteAll(fd, SseChunk(id, model_field, "assistant", "", "", 0));
+    if (!write_stream(head) ||
+        !write_stream(SseChunk(id, model_field, "assistant", "", "", 0))) {
+      err_guard.ok = true;  // Count this as an abort, not a prefill error.
+      model::ModelEndSequence(&seq);
+      cleanup();
+      return;
+    }
   }
 
   std::vector<int32_t> generated;
@@ -1770,16 +1844,15 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           {
             const std::lock_guard<std::mutex> lock(tok_mu_);
             if (tok_->Decode(one, true, &piece).ok())
-              wrote = WriteAll(fd, SseChunk(id, model_field, "", piece, "", 0));
+              wrote = write_stream(SseChunk(id, model_field, "", piece, "", 0));
           }
           if (!wrote) {  // client disconnected: stop, free the slot
-            metrics_.requests_aborted.fetch_add(1, std::memory_order_relaxed);
             done = true;
             finish_reason = "stop";
             break;
           }
         }
-        if (tok_id == eos) {
+        if (is_stop_token(tok_id)) {
           done = true;
           break;
         }
@@ -1839,7 +1912,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     }
     for (int step = 0; step < max_tokens; ++step) {
       generated.push_back(next_token);
-      if (next_token == eos) {
+      if (is_stop_token(next_token)) {
         finish_reason = "stop";
         break;
       }
@@ -1853,10 +1926,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         {
           const std::lock_guard<std::mutex> lock(tok_mu_);
           if (tok_->Decode(one, true, &piece).ok())
-            wrote = WriteAll(fd, SseChunk(id, model_field, "", piece, "", 0));
+            wrote = write_stream(SseChunk(id, model_field, "", piece, "", 0));
         }
         if (!wrote) {  // client disconnected: stop, free the slot
-          metrics_.requests_aborted.fetch_add(1, std::memory_order_relaxed);
           finish_reason = "stop";
           break;
         }
@@ -1926,7 +1998,6 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   }
   model::ModelEndSequence(&seq);
 
-  metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
   metrics_.prompt_tokens_total.fetch_add(static_cast<uint64_t>(T),
                                          std::memory_order_relaxed);
   metrics_.generation_tokens_total.fetch_add(generated.size(),
@@ -1937,8 +2008,20 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
 
   // 4. Finalize.
   if (stream) {
-    WriteAll(fd, SseChunk(id, model_field, "", "", finish_reason, 0));
-    WriteAll(fd, "data: [DONE]\r\n\r\n");
+    write_stream(SseChunk(id, model_field, "", "", finish_reason, 0));
+    if (include_usage && !client_disconnected) {
+      const std::string usage_chunk =
+          "data: {\"id\":\"" + id +
+          "\",\"object\":\"chat.completion.chunk\",\"created\":" +
+          std::to_string(created) + ",\"model\":\"" +
+          JsonEscape(model_field) + "\",\"choices\":[],\"usage\":{" +
+          "\"prompt_tokens\":" + std::to_string(T) +
+          ",\"completion_tokens\":" + std::to_string(generated.size()) +
+          ",\"total_tokens\":" + std::to_string(T + generated.size()) +
+          "}}\r\n\r\n";
+      write_stream(usage_chunk);
+    }
+    write_stream("data: [DONE]\r\n\r\n");
   } else {
     std::vector<std::uint32_t> gen_u32(generated.begin(), generated.end());
     std::string text;
@@ -1967,6 +2050,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     }
   }
 
+  if (!client_disconnected) {
+    metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
+  }
   cleanup();
 }
 

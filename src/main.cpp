@@ -54,7 +54,9 @@ void PrintUsage(const char* prog) {
       "            (q4t generate \"prompt\" [--max-tokens N])\n"
       "  serve     OpenAI-compatible HTTP API server\n"
       "            (q4t serve [--port N] [--model-dir DIR] "
-      "[--max-tokens N] [--max-prefill N] [--max-len N] [--max-seq N])\n"
+      "[--max-tokens N] [--max-prefill N] [--max-len N] [--max-seq N] "
+      "[--mtp | --no-mtp])\n"
+      "            MTP is disabled by default.\n"
       "  bench-decode  Batched-decode throughput vs batch size\n"
       "            (q4t bench-decode [--batch B] [--steps N] [--prompt P] "
       "[--max-len L])\n"
@@ -801,6 +803,8 @@ int RunServe(int argc, char** argv) {
       opts.max_len = std::atoi(argv[++i]);
     } else if (a == "--max-seq" && i + 1 < argc) {
       opts.max_seq = std::atoi(argv[++i]);
+    } else if (a == "--mtp") {
+      opts.no_mtp = false;
     } else if (a == "--no-mtp") {
       opts.no_mtp = true;
     } else if (a == "--mem-fraction" && i + 1 < argc) {
