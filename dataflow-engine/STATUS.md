@@ -56,8 +56,9 @@ scale 独立 atom 容量、现有 host counts 的消费者和数值边界。
 
 ## 下一步
 
-完成本轮提交，随后验证 [QSA decode 输出维度拆分](QSA_DECODE_PLAN.md)。
-草稿仅在工作产物目录，未构建或测试；仍须先完整 HTTP。
+MoE 已提交推送 98206de；[QSA decode 输出维度拆分](QSA_DECODE_PLAN.md)
+已接受：完整 HTTP 及逐位专项通过，decode 提升 1.31%–3.52%。
+这是 D3 QSA 固定形状子链的实现，不等于完整 GRFrame 执行计划完成。
 R0/R1 的可机读计划和 GRFrame 完整闭环仍未实现，不能由单个 MoE
 子链代替。后续按新时间线重新分配权重读取、计算、host 控制与临时空间
 预算，不把 kernel 数量减少当作所有剩余阶段收益的保证。

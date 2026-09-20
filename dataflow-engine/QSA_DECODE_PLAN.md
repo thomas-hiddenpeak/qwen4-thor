@@ -1,7 +1,9 @@
 # 单 token QSA 输出维度拆分候选
 
-2026-09-21。源码推演，草稿仅在 .q4t-work/ 准备，未接入构建或运行；不是收益承诺。
-前置：完成 MoE 最终二进制验收并形成独立提交。
+2026-09-21。独立 CUDA 单元已通过完整 HTTP、逐位专项与时间线验收并接受。
+实测与覆盖边界见 [实现报告](../docs/QSA_DECODE_SPLIT_2026-09-21.md)。
+以下保留候选设计依据，运行结论以实现报告为准。
+前置已完成：MoE 最终二进制接受并提交推送 98206de。
 
 ## 依据
 
@@ -63,3 +65,22 @@ qsa_decode.cu/.h 草稿。尚未加入 src/include/CMake，也未构建或测试
 静态核对映射为 column_base=blockIdx.z*64、每 warp 一个 8-column
 PV tile；K 全宽、V 局部 64 列，尾块分别清零，原 wait/barrier 次序保留。
 草稿仍须接入时审阅；这些源码约束不能替代后续 HTTP 和数值验证。
+
+## 接入（2026-09-21）
+
+src/model/qsa_decode.cu 与 include/q4t/model/qsa_decode.h 已加入构建，
+仅固定单 token 形状调用新入口。原 attention 设备代码未改；其他
+形状仍调用原 kernel。复制了所需 MMA/转换/cp.async helper，避免
+把此候选直接内联进原 attention 编译单元。已完成构建，首测 HTTP；当前验收结果见实现报告。
+
+## 源码容量账
+
+静态数组按声明计算，单 CTA shared 为 31680 字节：Q=8448，双槽
+K=16896，双槽 V=4608，scores=1024，P=512，max/sum/alpha=192。
+原 CTA 为 43968 字节，单 CTA 少 12288 字节；但 CTA 数四倍，
+整次 grid 声明的 shared 总量从 87936 到 253440 字节。
+这是源码预算，尚未采集最终编译资源或 occupancy；不能把每 CTA
+减少的空间当作全模型峰值降低。FP32 PV 累加器每线程从 16 个值
+降为 4 个值，实际寄存器数由后续 E2E 门禁后的编译资源核对决定。
+
+构建零警告，完整质量/五档 HTTP 与后续专项通过；结果见实现报告。

@@ -158,6 +158,7 @@ add_library(q4t_model STATIC
   src/model/hyperconnection.cu
   src/model/linear_attention.cu
   src/model/full_attention.cu
+  src/model/qsa_decode.cu
   src/model/streaming_topk.cu
   src/model/moe.cu
   src/model/ple_layer.cu

@@ -27,6 +27,7 @@
 
 #include "q4t/io/weight_loader.h"
 #include "q4t/model/linear.h"
+#include "q4t/model/qsa_decode.h"
 #include "q4t/model/streaming_topk.h"
 #include "q4t/status.h"
 
@@ -1752,9 +1753,16 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   // Tensor-core GQA-packed: grid (T, nkv), each block reads its KV chunk once
   // and feeds all 12 q-heads via mma.sync (12x KV read reduction vs the old
   // per-q-head SIMT kernel).
-  SparseAttentionKernel<<<dim3(T, nkv), 256, 0, stream>>>(
-      d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn, d_gate, nq, nkv,
-      hd, max_topk, d_seq_id, kv_seq_stride, pt_seq_stride);
+  if (T == 1 && nq == 24 && nkv == 2 && hd == 256) {
+    s = QsaDecodeSplit(d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn,
+                       d_gate, max_topk, d_seq_id, kv_seq_stride,
+                       pt_seq_stride, stream);
+    if (!s) return s;
+  } else {
+    SparseAttentionKernel<<<dim3(T, nkv), 256, 0, stream>>>(
+        d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn, d_gate, nq, nkv,
+        hd, max_topk, d_seq_id, kv_seq_stride, pt_seq_stride);
+  }
   // 12. out = attn @ W_o^T
   s = CheckGemm(ProjGemm(d_attn, w.o_proj, &w.o_proj_fp8, out, T, hs, nq * hd,
                          1.f, 0.f, d_gemm_ws, gemm_ws, stream));

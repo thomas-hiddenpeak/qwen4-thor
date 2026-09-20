@@ -45,7 +45,22 @@ E2E 与逐位专项，HTTP 中目标 kernel 累计耗时减少约 9.83%，已接
   15.51/14.19/14.85/14.45/13.98 tok/s。MTP 明确关闭。
   这是受控文本初始记录，不是完整精度验收或性能无回退证明。
 
-## 最新接受：MoE 单 token GPU 描述符执行
+## 最新接受：QSA 单 token 输出维度四分
+
+固定 T=1/nq=24/nkv=2/hd=256 时，每 kv-head 输出列拆成四段，
+grid 两个 CTA→八个，重复 QK/softmax，各自消费 64 列 V；多 token
+保持原 kernel。构建零警告，首项质量 HTTP 11/11、五档性能 15/15，
+输入/输出一致、服务退出 0。decode 为 18.505/16.710/17.691/17.168/
+16.265 tok/s，较 MoE 基线提升 1.31%–3.52%，各档三次范围不重叠；
+TTFT 范围重叠。完整 E2E 后 HTTP 时间线及数值专项串行完成：
+34 组、442368 个有限 BF16 输出逐位一致；1K QSA 累计
+924.018→720.049 ms（-22.07%），调用数不变，寄存器 56→40，
+STACK/LOCAL=0，prefill 保留原 kernel。正式五档参考已整体更新，接受。
+逻辑 K+V 读取约 2.5 倍，不等于实际 DRAM 流量；未推广至其他形状。
+[报告](QSA_DECODE_SPLIT_2026-09-21.md) / [执行合同](../dataflow-engine/QSA_DECODE_PLAN.md)。
+证据 `.q4t-work/e2e/qsa-decode-split-20260921/`。
+
+## 前一阶段：MoE 单 token GPU 描述符执行
 
 固定 M=1/top-10、hidden=2560/intermediate=640 的独立 CUDA 路径：
 设备生成专家指针/scale/alpha，GU/DN 各一次 grouped NVFP4 GEMM，
@@ -62,8 +77,7 @@ E2E 与逐位专项，HTTP 中目标 kernel 累计耗时减少约 9.83%，已接
 `.q4t-work/e2e/moe-device-decode-20260921/` 保留，未混作同一产物。
 见 [执行合同](../dataflow-engine/MOE_DEVICE_PLAN.md) 与
 [实现报告](MOE_DEVICE_DECODE_2026-09-21.md)。
-下一候选 [QSA 输出维度拆分](../dataflow-engine/QSA_DECODE_PLAN.md) 草稿
-仅在 .q4t-work/，未接入构建或测试；先收尾 MoE 提交。
+MoE 已提交推送 98206de；下一项 QSA 候选进展见本文上方。
 
 ## 前一阶段：GDN 连续 q/k 读取
 
