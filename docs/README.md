@@ -5,6 +5,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [HC_GATE_FUSION_2026-09-21.md](HC_GATE_FUSION_2026-09-21.md) | HC 投影与 gate 融合候选和验收 | 本轮验证更新 |
 | [GEMV_STAGING_2026-09-21.md](GEMV_STAGING_2026-09-21.md) | BF16 GEMV 输入搬运候选与验收 | 本轮验证更新 |
 | [HC_INJECT_GEMV_2026-09-21.md](HC_INJECT_GEMV_2026-09-21.md) | HC 四输出 decode 投影形状分析与验收 | 本轮验证更新 |
 | [LINEAR_WORKSPACE_2026-09-21.md](LINEAR_WORKSPACE_2026-09-21.md) | 线性注意力临时缓冲生命周期及合并分配验收 | 本轮验证更新 |

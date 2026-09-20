@@ -26,6 +26,9 @@
 namespace q4t {
 namespace model {
 
+bool HcInjectGevGated(const uint16_t* x, const uint16_t* w, uint16_t* y,
+                     cudaStream_t stream);
+
 namespace {
 
 constexpr int kBlock = 256;
@@ -376,20 +379,33 @@ Status HyperConnectionCombine(const HyperConnectionWeights& w,
   }
   // 1. inject_raw = normed @ W_inject^T  ([T, hc_dim] x [hc, hc_dim]^T -> [T,
   // hc]).
-  Status s = CheckGemm(Bf16Gemm(normed, w.block_inject, d_inject, T, hc,
-                                hc_dim, 1.0f, 0.0f, workspace, workspace_bytes,
-                                stream));
-  if (!s.ok()) {
-    cudaFreeAsync(d_inject, stream);
-    return s;
+  const bool fused_gate =
+      T == 1 && hc == 4 && hs == 2560 &&
+      ((reinterpret_cast<uintptr_t>(normed) |
+        reinterpret_cast<uintptr_t>(w.block_inject)) & 15u) == 0;
+  if (fused_gate) {
+    if (!HcInjectGevGated(normed, w.block_inject, d_inject, stream)) {
+      cudaFreeAsync(d_inject, stream);
+      return Status::Fail("HC gated projection launch failed");
+    }
+  } else {
+    Status s = CheckGemm(Bf16Gemm(
+        normed, w.block_inject, d_inject, T, hc, hc_dim, 1.0f, 0.0f,
+        workspace, workspace_bytes, stream));
+    if (!s.ok()) {
+      cudaFreeAsync(d_inject, stream);
+      return s;
+    }
   }
   // 2. Fused gate + combine: out = R + block_output * 2*sigmoid(inject/hc).
   //    The per-(t,b) gate is precomputed in place first (it is c-invariant, so
   //    recomputing it per channel in the combine wasted an hs-fold sigmoid).
   {
     const int gt = T * hc;
-    ApplyInjectGateKernel<<<(gt + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
-        d_inject, gt, inv_hc);
+    if (!fused_gate) {
+      ApplyInjectGateKernel<<<(gt + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
+          d_inject, gt, inv_hc);
+    }
     const int total = T * hc_dim;
     CombineWithGateKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
         block_output, hyper_input, d_inject, out, T, hc, hs);

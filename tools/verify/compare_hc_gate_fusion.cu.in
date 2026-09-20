@@ -1,0 +1,109 @@
+#include <cuda_bf16.h>
+#include <cuda_runtime.h>
+
+#include <bit>
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <random>
+#include <vector>
+
+namespace original {
+@ORIGINAL@
+}
+namespace candidate {
+@CANDIDATE@
+}
+
+void Check(cudaError_t result) {
+  if (result != cudaSuccess) {
+    std::fprintf(stderr, "%s\n", cudaGetErrorString(result));
+    std::exit(2);
+  }
+}
+
+uint16_t ToBf16(float value) {
+  __nv_bfloat16 b = __float2bfloat16(value);
+  uint16_t bits;
+  std::memcpy(&bits, &b, sizeof(bits));
+  return bits;
+}
+
+float FromBf16(uint16_t bits) {
+  return __bfloat162float(std::bit_cast<__nv_bfloat16>(bits));
+}
+
+int main() {
+  constexpr int kK = 10240;
+  constexpr int kN = 4;
+  uint16_t* d_w = nullptr;
+  uint16_t* d_x = nullptr;
+  uint16_t* d_old = nullptr;
+  uint16_t* d_new = nullptr;
+  Check(cudaMalloc(&d_w, kN * kK * sizeof(uint16_t)));
+  Check(cudaMalloc(&d_x, kK * sizeof(uint16_t)));
+  Check(cudaMalloc(&d_old, kN * sizeof(uint16_t)));
+  Check(cudaMalloc(&d_new, kN * sizeof(uint16_t)));
+  std::vector<uint16_t> w(kN * kK), x(kK);
+  std::mt19937 rng(20260921);
+  std::normal_distribution<float> dist(0.0f, 1.0f);
+  int cases = 0, values = 0, mismatches = 0, nonfinite = 0;
+  for (int sample = 0; sample < 256; ++sample) {
+    const int family = sample % 8;
+    const float scale = family == 1 ? 1.0e-10f :
+                        family == 2 ? 1.0e10f : 1.0f;
+    for (int i = 0; i < kK; ++i) {
+      x[i] = ToBf16(dist(rng) * scale);
+      if (family == 3) x[i] = 0;
+      if (family == 4) x[i] = (i & 1) ? 0x8000 : 0;
+      if (family == 5) x[i] = ToBf16(1.0f);
+      if (family == 6) x[i] = (i & 1) ? 0x8001 : 0x0001;
+      if (family == 7) x[i] = ToBf16((i & 1) ? -0.5f : 0.5f);
+    }
+    for (int i = 0; i < kN * kK; ++i) {
+      w[i] = ToBf16(dist(rng) * scale);
+      if (family == 5) w[i] = ToBf16((i & 1) ? -1.0f : 1.0f);
+      if (family == 6) w[i] = ToBf16(1.0f);
+    }
+    Check(cudaMemcpy(d_w, w.data(), w.size() * sizeof(uint16_t),
+                     cudaMemcpyHostToDevice));
+    Check(cudaMemcpy(d_x, x.data(), x.size() * sizeof(uint16_t),
+                     cudaMemcpyHostToDevice));
+    for (float alpha : {1.0f, -0.75f, 0.0f, 2.0f}) {
+      for (bool gated : {false, true}) {
+        original::HcInjectGevKernel<<<4, 32>>>(
+            d_w, d_x, d_old, kK, alpha);
+        Check(cudaGetLastError());
+        if (gated) {
+          original::ApplyInjectGateKernel<<<1, 256>>>(d_old, kN, 0.25f);
+          Check(cudaGetLastError());
+        }
+        candidate::HcInjectGevKernel<<<4, 32>>>(
+            d_w, d_x, d_new, kK, alpha, gated);
+        Check(cudaGetLastError());
+        Check(cudaDeviceSynchronize());
+        uint16_t old_values[kN], new_values[kN];
+        Check(cudaMemcpy(old_values, d_old, sizeof(old_values),
+                         cudaMemcpyDeviceToHost));
+        Check(cudaMemcpy(new_values, d_new, sizeof(new_values),
+                         cudaMemcpyDeviceToHost));
+        ++cases;
+        for (int i = 0; i < kN; ++i) {
+          ++values;
+          nonfinite += !std::isfinite(FromBf16(old_values[i])) ||
+                       !std::isfinite(FromBf16(new_values[i]));
+          mismatches += old_values[i] != new_values[i];
+        }
+      }
+    }
+  }
+  Check(cudaFree(d_w));
+  Check(cudaFree(d_x));
+  Check(cudaFree(d_old));
+  Check(cudaFree(d_new));
+  std::printf("{\"cases\":%d,\"values\":%d,\"mismatches\":%d,"
+              "\"nonfinite\":%d}\n", cases, values, mismatches, nonfinite);
+  return mismatches || nonfinite ? 1 : 0;
+}
