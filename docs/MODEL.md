@@ -30,6 +30,10 @@
 ### full_attention (12 层)
 - GQA: 24 Q heads / 2 KV heads, head_dim 256
 - attention_bias=false, dropout 0
+- QSA indexer：查询和压缩键均使用 centered RMSNorm（乘 1+weight）；
+  压缩键先对原始投影每 4 token 池化，再归一化并在组起点做 RoPE。
+  完整组由 top-k 选择，只额外追加未完成组的尾部 token。
+  2026-09-20 修复证据见 [精度排障报告](ACCURACY_AUDIT_2026-09-20.md)。
 - Paged KV cache (**Phase 1 硬需求**, PD-ready 前提)。✅ 已实现
   (2026-09-05): 按页组织 (`kKvPageSize=16`) + 页表间接寻址
   (`page_table[p] = p/16` 恒等映射下与旧连续布局逐位一致)。
@@ -46,12 +50,15 @@
 - mrope_interleaved=true, mrope_section=[11,11,10]
 - (head_dim 256 × 0.25 = 64 维旋转, 3 段 11+11+10=32 对)
 - 纯文本 (t=h=w=position) 下 3D 位置退化为一维, MRoPE 等价于标准
-  partial RoPE (前 64 维), 与当前实现数学等价 (已验证)。
-- **完整 3D MRoPE 已闭合 (2026-09-12)**: 视觉/视频 token 的 RoPE 位置从
+  partial RoPE (前 64 维)。旋转公式为 `(a*cos-b*sin, a*sin+b*cos)`。
+  2026-09-20 发现并修正旧 kernel 的相反符号；旧 CPU 测试也照用了错误公式，
+  因此历史“数学等价已验证”不能作为正确性证据。
+- **历史 3D 坐标验证 (2026-09-12)**: 视觉/视频 token 的 RoPE 位置从
   纯文本逻辑位置升级为 transformers 5.16.1 的 3D MRoPE (t, h, w 三行
   坐标 + `mrope_position_delta`)。布局统一为 `[3, max_len]` 绝对位置表,
   prefill/decode/压缩 key 共用一张表; 差分测试 `tools/mrope_diff_test.cpp`
-  vs Python 参考 `tools/mrope_ref.py` 63 坐标逐位一致, 纯文本无回归。
+  vs Python 参考 `tools/mrope_ref.py` 63 坐标逐位一致。坐标验证不覆盖
+  旋转符号；本轮修正后的多模态 E2E 尚未执行。
 
 ## MoE
 

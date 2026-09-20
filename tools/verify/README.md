@@ -1,14 +1,27 @@
-# tools/verify/ — 验证标准体系 (Phase 2 完成标准)
+# tools/verify/ — logits 辅助对照工具
 
-C++ NVFP4 W4A4 引擎 vs transformers 5.16.1 参考 (dequantized FP32 权重 +
-全精度激活) 的**可重复**正确性验证。固化 Phase 1 的 "L2 噪声保真度" 方法
-(见 LOG.md 2026-09-07), 供后续 batch / PD 重构时做回归网。
+执行顺序与接受条件以 [EVALUATION.md](../../docs/EVALUATION.md) 为准。
+改动后先通过真实 HTTP evalscope E2E，再使用这些工具进行必要的数值细分析。
+本目录保留历史比较方法；脚本 PASS 不能单独证明全模型精度或无回退。
 
-## 核心认知
+C++ NVFP4 W4A4 与 transformers 参考的差异可能来自激活量化、浮点归约、
+算子实现差异或实现错误，不能预先认定“就是量化噪声”。全模型、覆盖目标
+分支的相同输入对照才有意义：例如 T=8 或 256 不覆盖 2048 预算后的稀疏
+选择路径。首个 full-attention 层出现不等于稀疏分支已经被验证。
 
-两侧差异**就是** NVFP4 量化噪声 (C++ 把激活也量化到 e2m1 4-bit)。判据问
-"**差异是否只有量化噪声、有无系统性 bug**", 而非 "logits 是否逐位一致"
-(永远不可能)。
+## 当前脚本限制（2026-09-20 审计）
+
+- tau 从本次候选误差反推；误差变大也可能抬高阈值、减少 confident 位置，
+  因而不是独立校准的无回退门槛。
+- A/B 分别要求高 gap 位置不翻转、翻转位置 gap 不高，实质上是同一约束。
+  多个标签不构成独立证据。
+- C 含历史误差下限，误差更小也可能被判 REVIEW；不得为了 PASS 增大误差。
+- compare_logits.py 使用最短 T 截断；调用者必须先确认两侧形状、token
+  序列、模型层数和配置一致，不能以截断后的比较掩盖缺失位置。
+- 即使 logits 误差较小，也需结合明确答案的 E2E 和实际任务质量；完整
+  greedy 文本不同不自动证明精度下降，文本稳定也不自动证明精度保持。
+
+脚本当前行为如下，作为历史诊断口径记录，不提升为新的验收标准。
 
 ## 三判据 (compare_logits.py)
 
@@ -19,11 +32,10 @@ C++ NVFP4 W4A4 引擎 vs transformers 5.16.1 参考 (dequantized FP32 权重 +
 - **噪声 delta_t** = (L_cpp[top2]−L_cpp[top1]) − (L_ref[top2]−L_ref[top1])
 
 阈值 `tau = 3 * std(delta)` (对全部位置)。判据:
-- **[A] 主判据 (greedy 正确性)**: 每个 CONFIDENT 位置 (参考 gap > tau)
-  argmax 必须全对。系统性 bug (错权重 / GEMM / 路由) 会破坏这些位置,
-  纯量化噪声不会。
+- **[A] 历史高 gap 检查**: 每个 CONFIDENT 位置 (参考 gap > tau)
+  argmax 必须全对；检查可提示问题，但不能排除系统性错误。
 - **[B]** 每个 argmax 翻转都是 near-tie (gap ≤ tau): 参考自身在该位置就在
-  噪声水平内, C++ 选不同 token 是预期, 非错误。
+  本次误差估计范围内；不能由此认定 C++ 的不同 token 一定正确。
 - **[C]** l2_rel 在 W4A4 噪声带 (mean ~0.2, max < 0.75)。
 
 退出码: A∧B∧C 全 PASS → 0, 否则 1。
@@ -34,15 +46,16 @@ C++ NVFP4 W4A4 引擎 vs transformers 5.16.1 参考 (dequantized FP32 权重 +
 # 完整 48 层基线 (推荐; ~数分钟, CPU 参考 lazy dequant)
 python3 tools/verify/verify_logits.py \
     --prompt "The capital of France is ..." --layers 48 --tokens 256 \
-    --out /tmp/verify48
+    --out .q4t-work/verify48
 
 # 快速冒烟 (4 层, 含首个 full_attention; 注意 prompt 需足够长才有
 # confident 位置, 否则判据 [A] 无法验证 greedy)
 python3 tools/verify/verify_logits.py \
-    --prompt "..." --layers 4 --tokens 256 --out /tmp/verify4
+    --prompt "..." --layers 4 --tokens 256 --out .q4t-work/verify4
 
 # 用现成 token 序列 (跳过 encode)
-python3 tools/verify/verify_logits.py --ids-file /tmp/prompt.txt --layers 48
+python3 tools/verify/verify_logits.py --ids-file .q4t-work/prompt.txt --layers 48 \
+    --out .q4t-work/verify_ids
 ```
 
 Pipeline (verify_logits.py 自动编排):

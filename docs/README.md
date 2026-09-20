@@ -5,6 +5,11 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [ACCURACY_AUDIT_2026-09-20.md](ACCURACY_AUDIT_2026-09-20.md) | QSA 数学错误定位、分步质量 E2E 与性能验收 | 本轮验证更新 |
+| [BASELINE_2026-09-20.md](BASELINE_2026-09-20.md) | 五档普通 decode 初始 E2E 结果、证据与限制 | 新测量单独成文，不覆盖历史结果 |
+| [REPRODUCIBILITY_2026-09-20.md](REPRODUCIBILITY_2026-09-20.md) | 稀疏注意力输出非确定性定位与 E2E 证据 | 后续验证更新 |
+| [DISCONNECT_FIX_2026-09-20.md](DISCONNECT_FIX_2026-09-20.md) | SIGPIPE 修复、断连 E2E 与输出复现阻塞 | 新验证追加记录 |
+| [EVALUATION.md](EVALUATION.md) | E2E 优先规则、五档矩阵、证据与接受条件 | 用户规则或评估口径变化时 |
 | [STATUS.md](STATUS.md) | 当前状态快照: 当前焦点、进行中、卡在哪、下一步 | 每次有意义的改动后 |
 | [DONE.md](DONE.md) | 已完成 / 已解决归档 (从 STATUS 分离) | 条目完成时追加 |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | 整体架构设计: 模块划分、数据流、关键设计决策 | 架构变化时 |
@@ -14,7 +19,18 @@
 | [REFERENCE.md](REFERENCE.md) | 参考项目说明: 每个项目取什么、怎么用 | 参考策略变化时 |
 | [REFERENCE_MTP.md](REFERENCE_MTP.md) | MTP / 投机解码参考调研 | MTP 相关时 |
 | [MTP_BATCHING.md](MTP_BATCHING.md) | MTP 批处理设计与阶段 | MTP 批处理推进时 |
-| [DATAFLOW_OPTIMIZATION.md](DATAFLOW_OPTIMIZATION.md) | 数据流驱动的逐级优化分析: 5 环节搬运账单 + L1/L2/L3 路线图 (prefill 激活 347GB, 可省 82.8GB) | 数据流优化推进时 |
+| [DATAFLOW_OPTIMIZATION.md](DATAFLOW_OPTIMIZATION.md) | 当前数据流预算、假设与决策边界 | 数据流优化推进时 |
+
+## 现行入口（2026-09-20）
+
+先读 [STATUS.md](STATUS.md) 与 [EVALUATION.md](EVALUATION.md)。本轮先治理文档，
+再默认关闭 MTP，以 evalscope 建立五档单流基线。E2E 是改动后的第一项测试，
+通过后才细分析，不运行任何前置测试或 bench。
+
+[历史状态快照](HISTORY_STATUS_2026-09-20.md) 与
+[历史数据流分析](HISTORY_DATAFLOW_2026-09-20.md) 保存旧内容，不作为现行结论。
+[历史 AGENTS 状态段](HISTORY_AGENT_ENTRY_2026-09-20.md) 也已归档，入口不重复维护状态。
+日志原文保持不变，后续更正以新条目说明。
 
 ## 写作原则
 

@@ -2,6 +2,16 @@
 
 > 范围与完成标准。当前阶段: **Phase 2** (Phase 1 已闭合 2026-09-07)。
 
+## 当前执行顺序（2026-09-20 覆盖旧验证流程）
+
+1. 文档治理，区分历史结果与当前证据。
+2. serve 默认关闭 MTP，完善 tools/evalscope 五档单流 E2E 入口。
+3. 建立 1K/4K/8K/44K/200K 的正确性、TTFT 与 decode 基线。
+4. E2E 通过后才细分析，并以保持精度、各档不回退为后续改动门槛。
+   复杂度下降且性能持平也可接受。具体规则见 [EVALUATION.md](EVALUATION.md)。
+
+下列阶段记录保留原有范围；历史“已闭合”和 bench 测量不代表新基线通过。
+
 ## Phase 1 — 核心推理引擎 + PLE SSD Stream + HTTP API
 
 **目标**: 在本机 Thor 上跑通 Qwen3.8-Flash-Next 的完整推理路径,
@@ -142,4 +152,4 @@ QSA `idx_budget=2048` 在 262K 时 n_groups=65536, 只能 attend ~3% 历史块,
 - kernel 融合 (RMSNorm+GEMV, QKV merge, QK_norm+RoPE)
 - TMA bulk copy / PDL (Programmatic Dependent Launch)
 - MoE grouped GEMM 调优
-- 性能基线建立 (参考 thor-bench 方法)
+- 性能基线建立：tools/evalscope HTTP E2E，见 EVALUATION.md；不沿用 bench 方法。
