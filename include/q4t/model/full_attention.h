@@ -147,13 +147,17 @@ Status LoadFullAttention(const io::WeightLoader& loader, const std::string& pref
 // pointers are the per-sequence slices and the kernels use them directly
 // (bit-identical to the prior behavior). The projection GEMMs are stateless
 // and operate on the packed [T, ...] rows directly (weights read once).
+// max_position is the EXACT maximum of positions[0:T] (logical, not MRoPE).
+// Supply it from the same host array uploaded to positions to avoid a D2H
+// synchronization. -1 preserves readback for callers with device-only inputs.
 Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                             uint16_t* out, const int* positions,
                             const int* rope_pos,
                             uint16_t* kv_cache, const int* page_table,
                             uint16_t* idx_raw, uint16_t* idx_comp, int T,
                             void* workspace, size_t workspace_bytes,
-                            cudaStream_t stream, const int* d_seq_id = nullptr);
+                            cudaStream_t stream, const int* d_seq_id = nullptr,
+                            int max_position = -1);
 
 // Exact workspace bytes FullAttentionForward carves for `T` tokens: the
 // projection/logits/topk intermediates (256-byte aligned each, sized from the

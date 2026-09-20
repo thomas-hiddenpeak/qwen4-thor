@@ -5,6 +5,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [POSITION_METADATA_2026-09-20.md](POSITION_METADATA_2026-09-20.md) | 主模型位置回读消除与 E2E 验收 | 本轮验证更新 |
 | [INDEXER_CLEANUP_2026-09-20.md](INDEXER_CLEANUP_2026-09-20.md) | 索引键无用计算清理与等价性/性能验收 | 本轮验证更新 |
 | [ACCURACY_AUDIT_2026-09-20.md](ACCURACY_AUDIT_2026-09-20.md) | QSA 数学错误定位、分步质量 E2E 与性能验收 | 本轮验证更新 |
 | [BASELINE_2026-09-20.md](BASELINE_2026-09-20.md) | 五档普通 decode 初始 E2E 结果、证据与限制 | 新测量单独成文，不覆盖历史结果 |

@@ -152,7 +152,9 @@ Status DecoderLayerForward(const DecoderLayer& layer, const uint16_t* hyper_inpu
                            const int* d_rope_pos = nullptr,
                            int tokens_per_seq = 0,
                            uint16_t* ple_conv_ckpt = nullptr,
-                           const RaggedBatch* ragged = nullptr);
+                           const RaggedBatch* ragged = nullptr,
+                           int max_position = -1);
+// `max_position`: exact maximum logical position, or -1 for device readback.
 // `ple_conv_ckpt` (MTP verify rollback, PLE layer only): when non-null and
 // num_ckpt > 0, save the per-token PLE short-conv state after each of the
 // first `num_ckpt` (local) tokens — the PLE conv is an in-place recurrence,

@@ -390,7 +390,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
                            uint16_t* conv_ckpt, int num_ckpt, int seq_id,
                            const int* d_seq_id, const int* d_rope_pos,
                            int tokens_per_seq, uint16_t* ple_conv_ckpt,
-                           const RaggedBatch* ragged) {
+                           const RaggedBatch* ragged, int max_position) {
   const int hs = layer.hs, hc_dim = layer.hc_dim, hc = layer.hc;
   if (T <= 0) return Status();
   // Pooled recurrent-state slices for this sequence (seq_id selects the
@@ -520,7 +520,8 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     const int* fa_rope = d_seq_id ? d_rope_pos : rope_pos;
     s = FullAttentionForward(layer.full, d_mixed, d_block, positions, fa_rope,
                              kv_cache, page_table, idx_raw, idx_comp, T,
-                             d_attn_ws, attn_ws, stream, d_seq_id);
+                             d_attn_ws, attn_ws, stream, d_seq_id,
+                             max_position);
   } else {
     s = LinearAttentionForward(layer.linear, d_mixed, d_block, ssm_state,
                                conv_state, T, d_attn_ws, attn_ws, stream,

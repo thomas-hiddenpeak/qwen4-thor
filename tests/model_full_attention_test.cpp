@@ -278,7 +278,7 @@ Q4T_TEST(full_attention_forward) {
 
   s = FullAttentionForward(w, d_x, d_out, d_positions, d_rope_pos, d_kv,
                            d_page_table, d_idx_raw, d_idx_comp, kT, d_ws,
-                           ws_bytes, nullptr);
+                           ws_bytes, nullptr, nullptr, kT - 1);
   if (!s.ok()) {
     std::printf("  forward failed: %s\n", s.message().c_str());
     w.Free();
@@ -403,6 +403,22 @@ Q4T_TEST(full_attention_forward) {
   std::printf("  indexer raw/comp l2_rel_err = %.3e / %.3e\n", raw_err,
               comp_err);
 
+  // The same logical range supplied by the caller must preserve the
+  // device-readback path bit for bit. Replaying overwrites the same cache
+  // positions; this isolated attention layer has no recurrent state.
+  s = FullAttentionForward(w, d_x, d_out, d_positions, d_rope_pos, d_kv,
+                           d_page_table, d_idx_raw, d_idx_comp, kT, d_ws,
+                           ws_bytes, nullptr);
+  std::vector<uint16_t> fallback_out(out_dev.size());
+  const bool fallback_matches =
+      s.ok() &&
+      cudaMemcpy(fallback_out.data(), d_out,
+                 fallback_out.size() * sizeof(uint16_t),
+                 cudaMemcpyDeviceToHost) == cudaSuccess &&
+      fallback_out == out_dev;
+  std::printf("  host position metadata vs readback: %s\n",
+              fallback_matches ? "bit-exact" : "FAIL");
+
   // Cleanup.
   cudaFree(d_x);
   cudaFree(d_out);
@@ -417,6 +433,7 @@ Q4T_TEST(full_attention_forward) {
 
   Q4T_CHECK(out_err < 3e-2f);
   Q4T_CHECK(keys_copied);
+  Q4T_CHECK(fallback_matches);
   Q4T_CHECK(raw_err < 3e-2f);
   Q4T_CHECK(comp_err < 3e-2f);
   return true;

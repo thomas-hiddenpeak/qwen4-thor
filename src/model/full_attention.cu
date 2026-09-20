@@ -1436,10 +1436,13 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                             uint16_t* kv_cache, const int* page_table,
                             uint16_t* idx_raw, uint16_t* idx_comp, int T,
                             void* workspace, size_t workspace_bytes,
-                            cudaStream_t stream, const int* d_seq_id) {
+                            cudaStream_t stream, const int* d_seq_id,
+                            int max_position) {
   if (T <= 0 || T > kMaxT)
     return Status::Fail("FullAttentionForward: T out of range [1, " +
                         std::to_string(kMaxT) + "]");
+  if (max_position < -1 || max_position >= w.max_len)
+    return Status::Fail("FullAttentionForward: max_position out of range");
   const int hs = w.hidden_size;
   const int nq = w.nq, nkv = w.nkv, hd = w.hd;
   const int qg_dim = nq * 2 * hd;
@@ -1596,11 +1599,11 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   // streaming kernels above). This restores long-context recall: without it
   // only the first 2048 blocks (first 8192 tokens) were ever candidates.
   const int block_topk = w.idx_block_topk();
-  // Host-side max position to size the chunk loop. A single small D2H; the
-  // streaming branch only runs for genuinely long prompts where its cost
-  // dwarfs this sync.
-  int max_pos = 0;
-  {
+  // Model callers provide the exact host-side maximum of the uploaded
+  // logical positions. Device-only callers (e.g. MTP draft) keep readback.
+  int max_pos = max_position;
+  if (max_pos < 0) {
+    max_pos = 0;
     std::vector<int> hp(static_cast<size_t>(T));
     if (cudaMemcpyAsync(hp.data(), d_positions,
                         static_cast<size_t>(T) * sizeof(int),

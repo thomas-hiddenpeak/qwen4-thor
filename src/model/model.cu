@@ -361,14 +361,20 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
 // hyper_connection_mixer) is copied here. This is the MTP draft model's
 // `hidden_states` input (see reference/vllm/.../nvidia/mtp.py).
 Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
-                 const int64_t* ids64, const int64_t* hist, int T,
-                 uint16_t* logits, cudaStream_t stream,
+                 const int64_t* ids64, const int64_t* hist,
+                 const int* host_positions, int T, uint16_t* logits,
+                 cudaStream_t stream,
                  uint16_t* trunk_out = nullptr, float* ssm_ckpt = nullptr,
                  uint16_t* conv_ckpt = nullptr, int num_ckpt = 0,
                  int seq_id = 0, const int* d_seq_id = nullptr,
                  int tokens_per_seq = 0, uint16_t* ple_conv_ckpt = nullptr,
                  const RaggedBatch* ragged = nullptr) {
   const ModelConfig& cfg = m.cfg;
+  // Every model entry point already owns the logical positions copied to
+  // m.d_positions. Reduce once on host, not once per full-attention layer.
+  // Packed/ragged batches need the maximum over all rows, not the last row.
+  const int max_position =
+      *std::max_element(host_positions, host_positions + T);
   const uint16_t* trunk = trunk_in;
   uint16_t* next = trunk2;
   // Per-sequence 3D MRoPE table slice [3, max_len] (the pooled table is
@@ -448,7 +454,7 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                                    m.ws_bytes, stream, layer_ssm_ckpt,
                                    layer_conv_ckpt, num_ckpt, seq_id, d_seq_id,
                                    m.d_rope_pos, tokens_per_seq,
-                                   layer_ple_conv_ckpt, ragged);
+                                   layer_ple_conv_ckpt, ragged, max_position);
     if (!s.ok()) return s;
     if (!m.layers[l].is_full_attention) lin_idx++;
     if (m.layers[l].has_ple) ple_idx++;
@@ -678,8 +684,9 @@ Status RunPrefill(const Model& m, const int32_t* input_ids, int T,
   }
 
   // 5. Layer loop + head.
-  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), T,
-                   logits, stream, trunk_out, nullptr, nullptr, 0, seq_id);
+  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(),
+                   positions.data(), T, logits, stream, trunk_out, nullptr,
+                   nullptr, 0, seq_id);
 }
 
 Status ModelForward(const Model& m, const int32_t* input_ids, int T,
@@ -755,8 +762,8 @@ Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
   }
 
   // 5. Layer loop + head.
-  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), 1,
-                   logits, stream, trunk_out, nullptr, nullptr, 0, seq_id);
+  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(),
+                   &pos, 1, logits, stream, trunk_out, nullptr, nullptr, 0, seq_id);
 }
 
 // Batched decode over T tokens at absolute positions [base..base+T-1] WITHOUT
@@ -847,8 +854,9 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
   float* ssm_ckpt = save_checkpoints ? m.d_verify_ssm_ckpt : nullptr;
   uint16_t* conv_ckpt = save_checkpoints ? m.d_verify_conv_ckpt : nullptr;
   const int num_ckpt = save_checkpoints ? (T - 1) : 0;
-  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), T,
-                   logits, stream, trunk_out, ssm_ckpt, conv_ckpt, num_ckpt,
+  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(),
+                   positions.data(), T, logits, stream, trunk_out, ssm_ckpt,
+                   conv_ckpt, num_ckpt,
                    seq_id);
 }
 
@@ -904,8 +912,8 @@ Status ModelDecodeBatchMulti(const Model& m, const int32_t* tokens,
 
   // 4. Layer loop + head — NO reset, continues from each sequence's current
   //    per-layer state (selected per-token via d_seq_id).
-  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), B,
-                   logits, stream, trunk_out, nullptr, nullptr, 0, 0,
+  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(),
+                   positions, B, logits, stream, trunk_out, nullptr, nullptr, 0, 0,
                    m.d_seq_id);
 }
 
@@ -1018,9 +1026,10 @@ Status ModelVerifyMulti(const Model& m, const int32_t* tokens,
   // per-sequence per-token SSM/conv/PLE-conv checkpoints for the first T-1
   // tokens so each sequence rolls back to its own accepted prefix.
   const int num_ckpt = T - 1;
-  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), Ttot,
-                   logits, stream, trunk_out, m.d_verify_ssm_ckpt,
-                   m.d_verify_conv_ckpt, num_ckpt, 0, m.d_token_seq_id, T,
+  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(),
+                   positions.data(), Ttot, logits, stream, trunk_out,
+                   m.d_verify_ssm_ckpt, m.d_verify_conv_ckpt, num_ckpt, 0,
+                   m.d_token_seq_id, T,
                    m.d_verify_ple_conv_ckpt);
 }
 
@@ -1147,9 +1156,9 @@ Status ModelPrefillBatch(const Model& m, const int32_t* tokens,
   ragged.seq_offset = m.d_ragged_seq_offset;
   ragged.token_local = m.d_ragged_token_local;
   ragged.B = B;
-  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), Ttot,
-                   logits, stream, nullptr, nullptr, nullptr, 0, 0,
-                   m.d_token_seq_id, 0, nullptr, &ragged);
+  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(),
+                   positions.data(), Ttot, logits, stream, nullptr, nullptr,
+                   nullptr, 0, 0, m.d_token_seq_id, 0, nullptr, &ragged);
 }
 
 // Fused mixed prefill+decode forward (see model.h). A generalization of
@@ -1271,9 +1280,9 @@ Status ModelMixedBatch(const Model& m, const int32_t* tokens, const int* lens,
   ragged2.seq_offset = m.d_ragged_seq_offset;
   ragged2.token_local = m.d_ragged_token_local;
   ragged2.B = B;
-  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(), Ttot,
-                   logits, stream, nullptr, nullptr, nullptr, 0, 0,
-                   m.d_token_seq_id, 0, nullptr, &ragged2);
+  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(),
+                   positions.data(), Ttot, logits, stream, nullptr, nullptr,
+                   nullptr, 0, 0, m.d_token_seq_id, 0, nullptr, &ragged2);
 }
 
 
