@@ -43,16 +43,16 @@ quality_reference.json 来自 2026-09-20 完整数学修复后的真实 HTTP 结
 e98969c8d0d08572437745000d2a741a83b97d09600e60cf2ffd746643b3dcd3。
 只证明这 11 道合成检索题，不是全面模型质量基准。
 
-performance_reference.json 更新为 2026-09-21 GDN 连续 q/k 读取
-通过的完整五档结果，二进制 SHA-256：
-123f6fecb951893bc19621ae57b9c1b19604a39d885689698788037082886a52。
-输入及输出摘要与数学修复版一致，计时整体更新为本次接受值，不拼接
-各轮最快值；旧参考保留在 Git 历史、原报告及本地 performance-before.json。
-此前 top-k 网络寄存器化将 200K TTFT 降至约 167.39 秒，本次进一步
-降至 165.13 秒，44K 为 31.88 秒，五档 decode 未见明确回退。
-完整 E2E 后，GDN BF16 输出与 FP32 状态逐位一致；真实 200K HTTP
-扫描累计耗时 33.552→31.375 秒，寄存器不变，见
-[GDN 连续读取报告](../../docs/GDN_VECTOR_LOAD_2026-09-21.md)。
+performance_reference.json 更新为 2026-09-21 MoE 单 token 设备执行
+最终产物的完整五档结果，二进制 SHA-256：
+5479b5777522805308db3c902ededb6bf70fca7a56e0bd83000f70449e5e61a9。
+输入/输出摘要一致，计时整体更新，不拼接各轮最快值；旧参考保留在
+Git 历史、原报告及本地 performance-before.json。
+五档 decode 为 18.266/16.282/17.089/16.645/15.736 tok/s，较前一
+GDN 基线提升 6.65%–7.55%；TTFT 范围重叠，不声明 prefill 提速。
+最终完整 E2E 后 707520 个值逐位一致；HTTP 确认每步 counts 回读
+48→0、kernel 3561→1737，分配次数不变。首轮与最终产物独立验收，见
+[MoE 设备执行报告](../../docs/MOE_DEVICE_DECODE_2026-09-21.md)。
 后续仍逐档比较，不能因质量输出不变就忽略性能回退。
 
 原 run_baseline.sh 每档三条不同输入，仍适用于初始负载采集；它与上述

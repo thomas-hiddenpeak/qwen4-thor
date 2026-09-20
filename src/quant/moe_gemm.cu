@@ -19,6 +19,7 @@
 #include <vector>
 
 #include "q4t/quant/fp4_gemm.h"
+#include "q4t/quant/moe_decode.h"
 #include "q4t/quant/format.h"
 #include "q4t/quant/swizzle.h"
 
@@ -315,6 +316,11 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
   ws.gu_out_bytes = static_cast<size_t>(R) * (2 * moe_is) * sizeof(uint16_t);
   ws.dn_out_bytes = static_cast<size_t>(R) * hs * sizeof(uint16_t);
   ws.Init(static_cast<uint8_t*>(workspace));
+
+  if (M == 1 && k == 10 && E == 512 && hs == 2560 && moe_is == 640) {
+    return MoEDeviceDecode(x, expert_ids, router_w, y, weights, ws, gemm_ws,
+                           gemm_ws_bytes, stream);
+  }
 
   // Host-side scratch for per-expert counts (the token lists stay on device;
   // the gather/scatter kernels read d_token_list directly).

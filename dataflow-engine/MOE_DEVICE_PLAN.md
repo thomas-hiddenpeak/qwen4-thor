@@ -1,9 +1,12 @@
 # MoE 单 token 的 GPU 执行合同
 
-2026-09-21。基于 693c3ee 的源码审阅；以下实现方案仍未实现、未验收。
-这是现有 runner 的下一候选，不另起一个替代推理服务。
+2026-09-21。原设计基于 693c3ee 的源码审阅，已在现有 runner 中实现。
+最终产物完整 E2E、数值与 HTTP 时间线通过，已接受并更新正式参考。
+实现边界、容量、实测与限制见
+[MoE 设备执行报告](../docs/MOE_DEVICE_DECODE_2026-09-21.md)。
+本文以下保留设计时的依赖分析与合同，不作为最终产物已验收的声明。
 
-## 当前事实与需要移除的依赖
+## 原路径事实与需要移除的依赖
 
 `src/quant/moe_gemm.cu::MoERoutedForward` 先在 GPU 建立 counts 与
 `token_list[E,M]`，将 counts 回传 host 并同步。host 再决定非空专家、

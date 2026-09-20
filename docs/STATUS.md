@@ -45,16 +45,27 @@ E2E 与逐位专项，HTTP 中目标 kernel 累计耗时减少约 9.83%，已接
   15.51/14.19/14.85/14.45/13.98 tok/s。MTP 明确关闭。
   这是受控文本初始记录，不是完整精度验收或性能无回退证明。
 
-## 下一阶段：MoE 单 token GPU 执行合同
+## 最新接受：MoE 单 token GPU 描述符执行
 
-已静态核对 host counts 的消费者、本机 CUDA 13.3 / cuBLAS 13.5.1
-版本区别及 grouped NVFP4 的官方接口依据。下一候选限定 M=1/top-10，
-GPU 构建专家指针/scale/alpha，由两次 grouped GEMM 覆盖完整专家链。
-容量、生命周期、固定 slot 合并与失败验收见
-[执行合同](../dataflow-engine/MOE_DEVICE_PLAN.md)。尚未实现或运行库探针，
-没有性能承诺；先完成代码，再以真实 HTTP 为第一项测试。
+固定 M=1/top-10、hidden=2560/intermediate=640 的独立 CUDA 路径：
+设备生成专家指针/scale/alpha，GU/DN 各一次 grouped NVFP4 GEMM，
+固定 slot FP32 合并。其他形状保留原路径；精度与数学次序不变。
+最终产物首测质量 HTTP 11/11，完整五档性能 15/15，服务退出 0，
+输入/输出一致。decode 为 18.266/16.282/17.089/16.645/15.736 tok/s，
+较 GDN 基线提升 6.65%–7.55%，各档新旧重复范围不重叠；TTFT 范围重叠。
+与首轮 MoE 候选也无可辨识回退。最终完整 E2E 后数值专项 12 组、
+707520 个 payload/scale/BF16/FP32 值逐位一致，无非有限值。
+首轮配对 1K 时间线确认每步 counts 回读 48→0，kernel 3561→1737，
+异步分配/释放仍各 554 次；最终二进制 1K 时间线复核计数一致，
+服务与采集器退出 0，正式五档参考已整体更新。本次改动接受。
+最终证据 `.q4t-work/e2e/moe-device-decode-final-20260921/`；首轮证据
+`.q4t-work/e2e/moe-device-decode-20260921/` 保留，未混作同一产物。
+见 [执行合同](../dataflow-engine/MOE_DEVICE_PLAN.md) 与
+[实现报告](MOE_DEVICE_DECODE_2026-09-21.md)。
+下一候选 [QSA 输出维度拆分](../dataflow-engine/QSA_DECODE_PLAN.md) 草稿
+仅在 .q4t-work/，未接入构建或测试；先收尾 MoE 提交。
 
-## 最新接受：GDN 连续 q/k 读取
+## 前一阶段：GDN 连续 q/k 读取
 
 寄存器扫描每 lane 连续四个 BF16 q/k 改为 uint2 读取，按原次序
 解包；该分派 kd=vd=128，分配基址及 token/head/lane 偏移均满足
