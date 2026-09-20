@@ -5,6 +5,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [TOPK_WARP_2026-09-20.md](TOPK_WARP_2026-09-20.md) | 流式 top-k warp 交换、失败候选与 E2E 验收 | 本轮验证更新 |
 | [OUTPUT_LIMIT_2026-09-20.md](OUTPUT_LIMIT_2026-09-20.md) | 输出上限后的无用前向修复、边界与五档 E2E | 本轮验证更新 |
 | [HTTP_TIMELINE_2026-09-20.md](HTTP_TIMELINE_2026-09-20.md) | 已验收版本的五档 HTTP 时间线、阶段边界与优化优先级 | 新诊断更新 |
 | [POSITION_METADATA_2026-09-20.md](POSITION_METADATA_2026-09-20.md) | 主模型位置回读消除与 E2E 验收 | 本轮验证更新 |

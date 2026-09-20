@@ -157,6 +157,7 @@ add_library(q4t_model STATIC
   src/model/hyperconnection.cu
   src/model/linear_attention.cu
   src/model/full_attention.cu
+  src/model/streaming_topk.cu
   src/model/moe.cu
   src/model/ple_layer.cu
   src/model/decoder_layer.cu
@@ -257,6 +258,7 @@ if(Q4T_BUILD_TESTS)
     tests/model_hyperconnection_test.cpp
     tests/model_linear_attention_test.cpp
     tests/model_full_attention_test.cpp
+    tests/streaming_topk_test.cpp
     tests/model_decoder_layer_test.cpp
     tests/model_ple_layer_test.cpp
     tests/model_head_test.cpp

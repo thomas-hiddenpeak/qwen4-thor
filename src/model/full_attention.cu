@@ -27,6 +27,7 @@
 
 #include "q4t/io/weight_loader.h"
 #include "q4t/model/linear.h"
+#include "q4t/model/streaming_topk.h"
 #include "q4t/status.h"
 
 namespace q4t {
@@ -1711,12 +1712,6 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
             d_iq, idx_comp + static_cast<size_t>(block_off) * idx_hd, d_logits,
             d_positions, T, n_iq, idx_hd, w.idx_compress, max_blocks,
             block_off, d_seq_id, idx_seq_stride);
-        // Merge stays token-parallel (one block per token): it is correct and
-        // cheap (~137us at T=1); only the scoring was the under-parallelized
-        // dominant cost. (A block-parallel merge would race on run_val.)
-        MergeChunkTopkKernel<<<T, 256, 0, stream>>>(
-            d_logits, block_off, max_blocks, block_topk, T, d_run_val,
-            d_run_idx);
       } else if (d_seq_id == nullptr) {
         s = CheckGemm(Bf16Gemm(
             d_iq, idx_comp + static_cast<size_t>(block_off) * idx_hd, d_S,
@@ -1727,13 +1722,15 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
         IndexerReduceKernel<<<(total + 255) / 256, 256, 0, stream>>>(
             d_S, d_logits, d_positions, T, n_iq, idx_hd, w.idx_compress,
             max_blocks, block_off);
-        MergeChunkTopkKernel<<<T, 256, 0, stream>>>(
-            d_logits, block_off, max_blocks, block_topk, T, d_run_val,
-            d_run_idx);
       } else {
         IndexerLogitsKernel<<<T, 256, 0, stream>>>(
             d_iq, idx_comp, d_logits, d_positions, T, n_iq, idx_hd,
             w.idx_compress, max_blocks, block_off, d_seq_id, idx_seq_stride);
+      }
+      if (block_topk == kMaxBlockTopk) {
+        MergeStreamingTopk(d_logits, block_off, T, d_run_val, d_run_idx,
+                           stream);
+      } else {
         MergeChunkTopkKernel<<<T, 256, 0, stream>>>(
             d_logits, block_off, max_blocks, block_topk, T, d_run_val,
             d_run_idx);
