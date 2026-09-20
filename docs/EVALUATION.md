@@ -25,8 +25,10 @@
 - 保持 checkpoint 和当前精度；禁用 Q4T_FP8_* 实验开关，记录实际环境。
 - 服务容量必须容纳 prompt 加输出；max_prefill 是分块大小，**不是最大上下文**。
   固定分块策略。容量被预算器缩减、输入截断或退化路径变化必须报告。
-- 使用 tools/evalscope/run_baseline.sh 的五档矩阵，支持指定部分档位续跑；
-  部分结果不能声明整个矩阵通过。脚本不发送额外连接测试请求。
+- 固定质量题与同输入重复性能使用 tools/evalscope/run_acceptance.py，
+  入口说明和参考边界见 tools/evalscope/README.md。run_baseline.sh 保留
+  每档三条不同输入的初始采集用途，两类矩阵不混算；部分结果不能声明
+  整个矩阵通过。两个入口均不发送额外连接测试请求。
 - 所有生成产物放 build/ 或 .q4t-work/；模型目录与 reference/ 只读。
 
 ## 五档上下文

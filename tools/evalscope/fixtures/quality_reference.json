@@ -1,0 +1,178 @@
+[
+  {
+    "id": "1024-10",
+    "length": 1024,
+    "depth": 0.1,
+    "expected": "710003",
+    "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+    "success": 1,
+    "actual_input": 1024,
+    "actual_output": 7,
+    "text": "710003",
+    "finish": [
+      "stop"
+    ],
+    "exact_match": true,
+    "length_match": true
+  },
+  {
+    "id": "1024-50",
+    "length": 1024,
+    "depth": 0.5,
+    "expected": "710130",
+    "prompt_sha256": "f17889bf3cec9aead6db4da85c4d517a4d795407932c30b9f273363dec239dd0",
+    "success": 1,
+    "actual_input": 1024,
+    "actual_output": 7,
+    "text": "710130",
+    "finish": [
+      "stop"
+    ],
+    "exact_match": true,
+    "length_match": true
+  },
+  {
+    "id": "1024-90",
+    "length": 1024,
+    "depth": 0.9,
+    "expected": "710257",
+    "prompt_sha256": "e647c72568b4bf9589fd5c63e8a214898769f0285839cf53987c0e47ec12e4ff",
+    "success": 1,
+    "actual_input": 1024,
+    "actual_output": 7,
+    "text": "710257",
+    "finish": [
+      "stop"
+    ],
+    "exact_match": true,
+    "length_match": true
+  },
+  {
+    "id": "4096-10",
+    "length": 4096,
+    "depth": 0.1,
+    "expected": "710384",
+    "prompt_sha256": "4e4b462f767736bc27913543654afae84da78917924d4f2d60f8990a6b7a3a94",
+    "success": 1,
+    "actual_input": 4096,
+    "actual_output": 7,
+    "text": "710384",
+    "finish": [
+      "stop"
+    ],
+    "exact_match": true,
+    "length_match": true
+  },
+  {
+    "id": "4096-50",
+    "length": 4096,
+    "depth": 0.5,
+    "expected": "710511",
+    "prompt_sha256": "0e349879840c9c0cf3261f3263359482be3c1b4a9383c9bd68561014acefba6f",
+    "success": 1,
+    "actual_input": 4096,
+    "actual_output": 7,
+    "text": "710511",
+    "finish": [
+      "stop"
+    ],
+    "exact_match": true,
+    "length_match": true
+  },
+  {
+    "id": "4096-90",
+    "length": 4096,
+    "depth": 0.9,
+    "expected": "710638",
+    "prompt_sha256": "c40c8baf22c4a45590d30a327475c9f2163af28cee13baef0bf290cd74779074",
+    "success": 1,
+    "actual_input": 4096,
+    "actual_output": 7,
+    "text": "710638",
+    "finish": [
+      "stop"
+    ],
+    "exact_match": true,
+    "length_match": true
+  },
+  {
+    "id": "8192-10",
+    "length": 8192,
+    "depth": 0.1,
+    "expected": "710765",
+    "prompt_sha256": "b8198a7998b20d7edd3ada87edecbce958843b6bcafcf9d4983a239c6324fa02",
+    "success": 1,
+    "actual_input": 8192,
+    "actual_output": 7,
+    "text": "710765",
+    "finish": [
+      "stop"
+    ],
+    "exact_match": true,
+    "length_match": true
+  },
+  {
+    "id": "8192-50",
+    "length": 8192,
+    "depth": 0.5,
+    "expected": "710892",
+    "prompt_sha256": "d3f37a78f3f642d958c455757b859a222ab47784de1833847a5a5954aa37abb6",
+    "success": 1,
+    "actual_input": 8192,
+    "actual_output": 7,
+    "text": "710892",
+    "finish": [
+      "stop"
+    ],
+    "exact_match": true,
+    "length_match": true
+  },
+  {
+    "id": "8192-90",
+    "length": 8192,
+    "depth": 0.9,
+    "expected": "711019",
+    "prompt_sha256": "46616386557835b6e297f422fe33ed022202e321bde2729c7232a741939c9a47",
+    "success": 1,
+    "actual_input": 8192,
+    "actual_output": 7,
+    "text": "711019",
+    "finish": [
+      "stop"
+    ],
+    "exact_match": true,
+    "length_match": true
+  },
+  {
+    "id": "45056-50",
+    "length": 45056,
+    "depth": 0.5,
+    "expected": "711146",
+    "prompt_sha256": "8e7d6e535925c3552adaf57319be27d987365520fa852409366c05cf32b6c423",
+    "success": 1,
+    "actual_input": 45056,
+    "actual_output": 7,
+    "text": "711146",
+    "finish": [
+      "stop"
+    ],
+    "exact_match": true,
+    "length_match": true
+  },
+  {
+    "id": "204800-50",
+    "length": 204800,
+    "depth": 0.5,
+    "expected": "711273",
+    "prompt_sha256": "12ba2ea94933c44aea775a49a5380161413c7d377208ae35c8ad20fab8c6f150",
+    "success": 1,
+    "actual_input": 204800,
+    "actual_output": 7,
+    "text": "711273",
+    "finish": [
+      "stop"
+    ],
+    "exact_match": true,
+    "length_match": true
+  }
+]
