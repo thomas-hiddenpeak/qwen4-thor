@@ -237,40 +237,19 @@ __global__ void WriteKVKernel(const u16* __restrict__ k,
 }
 
 // ---------------------------------------------------------------------------
-// Kernel 5: QSA indexer — GemmaRMSNorm (centered) on iq, ik, then partial RoPE.
-//
-//   iq : [T, idx_n_heads, idx_head_dim]  (in/out)
-//   ik : [T, idx_kv_heads, idx_head_dim] (in/out)
-//   q_norm, k_norm: [idx_head_dim] (centered)
-//   positions: [T]
-//
-// Gemma RMSNorm: y = x * rsqrt(mean(x^2)+eps) * (1 + w[d]).
-// block = one (t, head), thread = d.
-__global__ void IndexerNormRopeKernel(u16* __restrict__ iq,
-                                      const u16* __restrict__ iq_norm,
-                                      u16* __restrict__ ik,
-                                      const u16* __restrict__ ik_norm,
-                                      const int* __restrict__ positions,
-                                      const int* __restrict__ rope_pos,
-                                      int max_len, int T, int n_iq, int n_ik,
-                                      int hd, int rot_d, float theta,
-                                      float eps, const int* __restrict__ d_seq_id,
-                                      int rope_seq_stride) {
-  // Handle iq and ik in the same kernel: blockIdx.x encodes (t, which, head).
-  int total_heads = n_iq + n_ik;
-  int t = blockIdx.x / total_heads;
-  int which_head = blockIdx.x % total_heads;
-  int d = threadIdx.x;
-  u16* x;
-  const u16* nw;
-  if (which_head < n_iq) {
-    x = iq + (static_cast<size_t>(t) * n_iq + which_head) * hd;
-    nw = iq_norm;
-  } else {
-    int h = which_head - n_iq;
-    x = ik + (static_cast<size_t>(t) * n_ik + h) * hd;
-    nw = ik_norm;
-  }
+// Kernel 5: centered GemmaRMSNorm + partial RoPE on indexer queries.
+// Raw keys bypass this transform: compressed keys are normalized after pooling.
+// One block per (token, query head), one thread per dimension.
+__global__ void IndexerQueryNormRopeKernel(
+    u16* __restrict__ iq, const u16* __restrict__ iq_norm,
+    const int* __restrict__ positions, const int* __restrict__ rope_pos,
+    int max_len, int n_iq, int hd, int rot_d, float theta, float eps,
+    const int* __restrict__ d_seq_id, int rope_seq_stride) {
+  const int t = blockIdx.x / n_iq;
+  const int head = blockIdx.x % n_iq;
+  const int d = threadIdx.x;
+  u16* x = iq + (static_cast<size_t>(t) * n_iq + head) * hd;
+  const u16* nw = iq_norm;
   if (d >= hd) return;
   f32 xv = Bf16ToFloat(x[d]);
   const float head_sum = BlockSum(xv * xv);
@@ -1430,7 +1409,6 @@ size_t FullAttentionWorkspaceBytes(const FullAttentionWeights& w, int T) {
   alloc(static_cast<size_t>(T) * nq * hd * 2);  // d_gate
   alloc(static_cast<size_t>(T) * n_iq * idx_hd * 2);  // d_iq
   alloc(static_cast<size_t>(T) * n_ik * idx_hd * 2);  // d_ik
-  alloc(static_cast<size_t>(T) * idx_hd * 2);         // d_ik_raw
   alloc(static_cast<size_t>(T) * max_blocks * 4);     // d_logits (f32)
   alloc(static_cast<size_t>(T) * max_topk * 4);       // d_topk (i32)
   alloc(static_cast<size_t>(T) * 4);                  // d_topk_len (i32)
@@ -1490,7 +1468,6 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   u16* d_gate = static_cast<u16*>(alloc(static_cast<size_t>(T) * nq * hd * 2));
   u16* d_iq = static_cast<u16*>(alloc(static_cast<size_t>(T) * n_iq * idx_hd * 2));
   u16* d_ik = static_cast<u16*>(alloc(static_cast<size_t>(T) * n_ik * idx_hd * 2));
-  u16* d_ik_raw = static_cast<u16*>(alloc(static_cast<size_t>(T) * idx_hd * 2));
   f32* d_logits = static_cast<f32*>(alloc(static_cast<size_t>(T) * max_blocks * 4));
   int* d_topk = static_cast<int*>(alloc(static_cast<size_t>(T) * max_topk * 4));
   int* d_topk_len = static_cast<int*>(alloc(static_cast<size_t>(T) * 4));
@@ -1591,20 +1568,14 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                          d_ik, T, ik_dim, hs, 1.f, 0.f, d_gemm_ws, gemm_ws,
                          stream));
   if (!s.ok()) return s;
-  // ik_raw = pre-norm ik (for compressed-key construction)
-  if (cudaMemcpyAsync(d_ik_raw, d_ik, static_cast<size_t>(T) * ik_dim * 2,
-                      cudaMemcpyDeviceToDevice, stream) != cudaSuccess)
-    return Status::Fail("cudaMemcpyAsync ik_raw failed");
-  // 7. indexer GemmaRMSNorm (centered) + partial RoPE on iq, ik (in place)
-  //    (3D MRoPE: rope_pos [3, max_len], row chosen by d % 3).
-  IndexerNormRopeKernel<<<T * (n_iq + n_ik), idx_hd, 0, stream>>>(
-      d_iq, w.index_q_norm, d_ik, w.index_k_norm, d_positions, rope_pos,
-      w.max_len, T, n_iq, n_ik, idx_hd, w.rot_d, w.rope_theta, w.eps, d_seq_id,
-      rope_seq_stride);
-  // 8a. store raw index keys (per token).
-  WriteIndexRawKernel<<<T, idx_hd, 0, stream>>>(d_ik_raw, idx_raw, d_positions,
-                                                T, idx_hd, d_seq_id,
-                                                idx_seq_stride);
+  // 7. Normalize and rotate queries only. Keys remain the raw projection
+  //    until BuildCompressedKKernel pools and transforms each complete group.
+  IndexerQueryNormRopeKernel<<<T * n_iq, idx_hd, 0, stream>>>(
+      d_iq, w.index_q_norm, d_positions, rope_pos, w.max_len, n_iq, idx_hd,
+      w.rot_d, w.rope_theta, w.eps, d_seq_id, rope_seq_stride);
+  // 8a. Store the raw projection directly; no transformed key copy is needed.
+  WriteIndexRawKernel<<<T, idx_hd, 0, stream>>>(
+      d_ik, idx_raw, d_positions, T, idx_hd, d_seq_id, idx_seq_stride);
   // 8b. build compressed keys for groups completed in this batch. Runs in a
   // separate launch so the kernel-boundary sync makes every idx_raw write
   // from 8a visible before the group averages read them (no prefill race).
