@@ -1,0 +1,80 @@
+[
+  {
+    "id": "stream-1",
+    "max_tokens": 1,
+    "streaming": true,
+    "request_stream": true,
+    "actual_input": 1024,
+    "actual_output": 1,
+    "finish": [
+      "length"
+    ],
+    "text": "\n\n",
+    "prompt_sha256": "a72fade2611451e1f33ca088f0554474ec9d9032efccf04cc5581a2c25be2d98"
+  },
+  {
+    "id": "stream-2",
+    "max_tokens": 2,
+    "streaming": true,
+    "request_stream": true,
+    "actual_input": 1024,
+    "actual_output": 2,
+    "finish": [
+      "length"
+    ],
+    "text": "\n\n<think>",
+    "prompt_sha256": "a72fade2611451e1f33ca088f0554474ec9d9032efccf04cc5581a2c25be2d98"
+  },
+  {
+    "id": "stream-8",
+    "max_tokens": 8,
+    "streaming": true,
+    "request_stream": true,
+    "actual_input": 1024,
+    "actual_output": 8,
+    "finish": [
+      "length"
+    ],
+    "text": "\n\n<think>\nThe user wants me to",
+    "prompt_sha256": "a72fade2611451e1f33ca088f0554474ec9d9032efccf04cc5581a2c25be2d98"
+  },
+  {
+    "id": "nonstream-1",
+    "max_tokens": 1,
+    "streaming": false,
+    "request_stream": false,
+    "actual_input": 1024,
+    "actual_output": 1,
+    "finish": [
+      "length"
+    ],
+    "text": "\n\n",
+    "prompt_sha256": "a72fade2611451e1f33ca088f0554474ec9d9032efccf04cc5581a2c25be2d98"
+  },
+  {
+    "id": "nonstream-2",
+    "max_tokens": 2,
+    "streaming": false,
+    "request_stream": false,
+    "actual_input": 1024,
+    "actual_output": 2,
+    "finish": [
+      "length"
+    ],
+    "text": "\n\n<think>",
+    "prompt_sha256": "a72fade2611451e1f33ca088f0554474ec9d9032efccf04cc5581a2c25be2d98"
+  },
+  {
+    "id": "nonstream-8",
+    "max_tokens": 8,
+    "streaming": false,
+    "request_stream": false,
+    "actual_input": 1024,
+    "actual_output": 8,
+    "finish": [
+      "length"
+    ],
+    "text": "\n\n<think>\nThe user wants me to",
+    "prompt_sha256": "a72fade2611451e1f33ca088f0554474ec9d9032efccf04cc5581a2c25be2d98"
+  }
+]

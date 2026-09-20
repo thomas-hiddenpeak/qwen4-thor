@@ -1916,7 +1916,6 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         finish_reason = "stop";
         break;
       }
-      if (step == max_tokens - 1) finish_reason = "length";
       const int32_t tok_id = next_token;
       // Emit the token text (decode this single token).
       if (stream) {
@@ -1933,9 +1932,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           break;
         }
       }
-      if (seq.position + 1 >= max_len_) {
+      // The current token is already emitted (or buffered for non-streaming).
+      // Do not prepare another token when this request cannot consume it.
+      if (step == max_tokens - 1 || seq.position + 1 >= max_len_) {
         finish_reason = "length";
-        break;  // cannot decode further without exceeding the KV cache
+        break;
       }
       if (use_sched) {
         // Register this step's token with the scheduler (position + PLE

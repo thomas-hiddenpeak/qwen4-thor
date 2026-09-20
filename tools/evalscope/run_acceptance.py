@@ -25,7 +25,7 @@ def save(path, value):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--mode', choices=['quality', 'performance'], required=True)
+    parser.add_argument('--mode', choices=['quality', 'performance', 'limits'], required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--binary', type=Path, default=ROOT / 'build/q4t')
     parser.add_argument('--model-dir', type=Path, required=True)
@@ -64,8 +64,8 @@ def main():
             subprocess.run([str(python), str(ROOT / 'tools/evalscope/prepare_quality.py'),
                             '--model-dir', str(model), '--output', str(prepared)], check=True)
         manifest = json.loads((prepared / 'manifest.json').read_text())
-        cases = [(out / 'quality', prepared / 'requests.jsonl', len(manifest), 1, 208896, 32)]
-    else:
+        cases = [(out / 'quality', prepared / 'requests.jsonl', len(manifest), 1, 208896, 32, True)]
+    elif args.mode == 'performance':
         prepared.mkdir()
         cases = []
         for length in LENGTHS:
@@ -78,7 +78,16 @@ def main():
                                 '--number', '1', '--output', str(target)], check=True)
                 first = target.read_text().splitlines()[0]
             target.write_text((first + '\n') * 3)
-            cases.append((out / f'context-{length}', target, 3, length, length, 256))
+            cases.append((out / f'context-{length}', target, 3, length, length, 256, True))
+    else:
+        prepared.mkdir()
+        target = prepared / 'context-1024.jsonl'
+        subprocess.run([str(python), str(ROOT / 'tools/evalscope/prepare_inputs.py'),
+                        '--model-dir', str(model), '--length', '1024', '--number', '1',
+                        '--output', str(target)], check=True)
+        cases = [(out / f'{"stream" if streaming else "nonstream"}-{limit}',
+                  target, 1, 1024, 1024, limit, streaming)
+                 for streaming in [True, False] for limit in [1, 2, 8]]
     reference = json.loads(args.reference.read_text()) if args.reference else None
     command = [str(binary), 'serve', '--model-dir', str(model), '--port', str(args.port),
                '--max-seq', '1', '--max-prefill', '8192', '--max-len', '208896',
@@ -98,7 +107,7 @@ def main():
                 time.sleep(1)
             else:
                 raise RuntimeError('server startup timeout')
-            for case, inputs, count, minimum, maximum, tokens in cases:
+            for case, inputs, count, minimum, maximum, tokens, streaming in cases:
                 case.mkdir()
                 shutil.copyfile(inputs, case / 'requests.jsonl')
                 cmd = [str(evalscope), 'perf', '--model', 'qwen3.8-flash-next',
@@ -110,7 +119,8 @@ def main():
                        '--temperature', '0', '--seed', '20260920', '--parallel', '1',
                        '--number', str(count), '--warmup-num', '0', '--connect-timeout', '30',
                        '--read-timeout', '7200', '--total-timeout', '10800',
-                       '--no-test-connection', '--stream', '--outputs-dir', str(case)]
+                       '--no-test-connection', '--outputs-dir', str(case)]
+                cmd.append('--stream' if streaming else '--no-stream')
                 save(case / 'command.json', cmd)
                 with (case / 'client.log').open('w') as client:
                     subprocess.run(cmd, cwd=ROOT, env=env, stdout=client,
@@ -123,13 +133,15 @@ def main():
                 for i, row in enumerate(rows):
                     messages = pickle.loads(base64.b64decode(row[3]))
                     choices = [choice for msg in messages for choice in msg.get('choices', [])]
-                    text = ''.join(c.get('delta', {}).get('content', '') for c in choices)
+                    text = ''.join(c.get('delta', c.get('message', {})).get('content', '') for c in choices)
                     finish = [c['finish_reason'] for c in choices if c.get('finish_reason')]
-                    prompt = json.loads(row[6])['prompt']
+                    wire_request = json.loads(row[6])
+                    prompt = wire_request['prompt']
                     parsed.append({'success': row[0], 'actual_input': row[1],
                                    'actual_output': row[2], 'text': text, 'finish': finish,
                                    'prompt_sha256': hashlib.sha256(prompt.encode()).hexdigest(),
-                                   'ttft': row[4], 'latency': row[5]})
+                                   'ttft': row[4], 'latency': row[5],
+                                   'request_stream': wire_request.get('stream')})
                     (case / f'output-{i}.txt').write_text(text)
                 # Preserve failure evidence before checking acceptance.
                 save(case / 'responses.json', parsed)
@@ -151,6 +163,20 @@ def main():
                         if any(r['text'] != old[r['id']]['text'] or
                                r['prompt_sha256'] != old[r['id']]['prompt_sha256'] for r in parsed):
                             raise RuntimeError('quality output/prompt differs from reference')
+                elif args.mode == 'limits':
+                    row = parsed[0]
+                    row.update({'id': case.name, 'streaming': streaming,
+                                'max_tokens': tokens})
+                    results.append(row)
+                    save(out / 'results.json', results)
+                    if (row['actual_input'] != 1024 or row['actual_output'] != tokens or
+                            row['finish'] != ['length'] or row['request_stream'] != streaming):
+                        raise RuntimeError('output-limit/finish/stream acceptance failed')
+                    if reference:
+                        old = next(r for r in reference if r['id'] == row['id'])
+                        if (row['text'] != old['text'] or
+                                row['prompt_sha256'] != old['prompt_sha256']):
+                            raise RuntimeError('output-limit prompt/text differs from reference')
                 else:
                     hashes = [hashlib.sha256(r['text'].encode()).hexdigest() for r in parsed]
                     item = {'length': minimum, 'outputs': hashes,
