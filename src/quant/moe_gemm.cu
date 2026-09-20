@@ -319,27 +319,32 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
   // Host-side scratch for per-expert counts (the token lists stay on device;
   // the gather/scatter kernels read d_token_list directly).
   std::vector<int32_t> counts_h(E, 0);
-  int32_t* d_counts = nullptr;
-  int32_t* d_token_list = nullptr;
-  int32_t* d_offset = nullptr;  // [E+1] expert-group prefix-sum offsets
-  int32_t* d_row_of_flat = nullptr;  // [R] flat (token,slot) -> grouped row
-  if (cudaMallocAsync(&d_counts, E * sizeof(int32_t), stream) != cudaSuccess)
-    return Status::Fail("cudaMallocAsync counts");
-  // token_list [E, M]: an expert can be selected by up to M tokens (all M
-  // tokens' top-k include it), so per-expert capacity must be M, not k.
-  if (cudaMallocAsync(&d_token_list, static_cast<size_t>(E) * M * sizeof(int32_t),
+  // Keep routing metadata in the stream-ordered pool, with one allocation
+  // and one lifetime. An expert can select all M tokens, so its list needs
+  // capacity M (not k). Align each region as separate CUDA allocations were.
+  const size_t counts_bytes = AlignUp256(static_cast<size_t>(E) * sizeof(int32_t));
+  const size_t list_bytes =
+      AlignUp256(static_cast<size_t>(E) * M * sizeof(int32_t));
+  const size_t offset_bytes =
+      AlignUp256(static_cast<size_t>(E + 1) * sizeof(int32_t));
+  const size_t rows_bytes = AlignUp256(static_cast<size_t>(R) * sizeof(int32_t));
+  uint8_t* routing = nullptr;
+  if (cudaMallocAsync(&routing,
+                      counts_bytes + list_bytes + offset_bytes + rows_bytes,
                       stream) != cudaSuccess) {
-    cudaFreeAsync(d_counts, stream);
-    return Status::Fail("cudaMallocAsync token_list");
+    return Status::Fail("cudaMallocAsync routing metadata");
   }
-  cudaMemsetAsync(d_counts, 0, E * sizeof(int32_t), stream);
-
-  auto free_all = [&]() {
-    cudaFreeAsync(d_counts, stream);
-    cudaFreeAsync(d_token_list, stream);
-    if (d_offset) cudaFreeAsync(d_offset, stream);
-    if (d_row_of_flat) cudaFreeAsync(d_row_of_flat, stream);
-  };
+  int32_t* d_counts = reinterpret_cast<int32_t*>(routing);
+  int32_t* d_token_list = reinterpret_cast<int32_t*>(routing + counts_bytes);
+  int32_t* d_offset =
+      reinterpret_cast<int32_t*>(routing + counts_bytes + list_bytes);
+  int32_t* d_row_of_flat = reinterpret_cast<int32_t*>(
+      routing + counts_bytes + list_bytes + offset_bytes);
+  auto free_all = [&]() { cudaFreeAsync(routing, stream); };
+  if (cudaMemsetAsync(d_counts, 0, E * sizeof(int32_t), stream) != cudaSuccess) {
+    free_all();
+    return Status::Fail("memset counts");
+  }
 
   const int num_g_tiles = SfNumGtiles(hs);
 
@@ -385,17 +390,6 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
   //    dominated: median ~3.5us, below the ~5us launch cost).
   std::vector<int32_t> offset_h(E + 1, 0);
   for (int e = 0; e < E; ++e) offset_h[e + 1] = offset_h[e] + counts_h[e];
-  // R (= M*k) declared above; row_of_flat is indexed by flat (token,slot).
-  if (cudaMallocAsync(&d_offset, static_cast<size_t>(E + 1) * sizeof(int32_t),
-                      stream) != cudaSuccess) {
-    free_all();
-    return Status::Fail("cudaMallocAsync offset");
-  }
-  if (cudaMallocAsync(&d_row_of_flat, static_cast<size_t>(R) * sizeof(int32_t),
-                      stream) != cudaSuccess) {
-    free_all();
-    return Status::Fail("cudaMallocAsync row_of_flat");
-  }
   if (cudaMemcpyAsync(d_offset, offset_h.data(),
                       static_cast<size_t>(E + 1) * sizeof(int32_t),
                       cudaMemcpyHostToDevice, stream) != cudaSuccess) {
