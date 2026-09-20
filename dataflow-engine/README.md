@@ -21,14 +21,17 @@ runner 和新引擎；具体证据要求见 [验证标准](VALIDATION.md#采纳�
 | [EXECUTION_PLANS.md](EXECUTION_PLANS.md) | decode / 分块 prefill / 多序列 MTP 如何执行 |
 | [RESOURCE_BUDGET.md](RESOURCE_BUDGET.md) | 容量、流量、并行度与临界路径如何记账 |
 | [VALIDATION.md](VALIDATION.md) | 如何证明设计正确、有收益，如何选择第一项实验 |
+| [MOE_DEVICE_PLAN.md](MOE_DEVICE_PLAN.md) | 当前 runner 单 token MoE 的 GPU 描述符执行候选与验收边界 |
 | [STATUS.md](STATUS.md) | 本项目筹备进度、暂定决策与待决问题 |
 | [log/2026-09-20.md](log/2026-09-20.md) | 初次推演记录 |
 
 ## 边界
 
-- 用户授权在独立目录保存新项目筹备文档。本轮写入限于本目录；状态和
-  日志也在此维护，以隔离其他人正在修改的 runner 文档及代码。
-- 模型目录、reference/ 继续只读。本轮不编译、不运行 GPU 工作负载。
+- 初始筹备阶段用户授权在独立目录保存设计；后续已授权先完善 runner。
+  当前实现与验收以 ../docs/STATUS.md、../docs/EVALUATION.md 为准，
+  本目录继续区分已实现事实与候选计划，保护其他任务的未提交修改。
+- 模型目录、reference/ 继续只读。初始设计阶段未运行 GPU 工作负载；
+  后续 runner 改动遵守先 HTTP E2E、通过后再专项/profile 的规则。
 - 首个执行合同以文本、greedy 为范围；保留视觉 embedding 和三行
   MRoPE 的输入接口。视觉编码器调度、一般随机采样另立合同。
 - 使用 checkpoint 的 NVFP4 routed weights、BF16 dense weights /

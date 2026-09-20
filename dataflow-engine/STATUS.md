@@ -1,6 +1,6 @@
 # QTDE 筹备状态
 
-更新：2026-09-20。只描述本目录的设计工作，不替代现有 runner 状态。
+更新：2026-09-21。只描述本目录的设计工作，不替代现有 runner 状态。
 
 ## 已确立原则
 
@@ -39,8 +39,17 @@
 - 更新日志、FP8 residual、draft 索引复用是实验，不是默认承诺。
 - 不把所有阶段的“权重只读一次”或片上全驻留作为设计假设。
 
+## 新增源码与 API 核查
+
+[MoE GPU 执行合同](MOE_DEVICE_PLAN.md) 将计划 D5 落到当前 runner：
+先以 M=1/top-10 固定形状闭合 device 路由→grouped GU→量化→grouped
+DN→固定 slot combine。核对了本机 cuBLAS 13.5.1 的 grouped 接口、
+scale 独立 atom 容量、现有 host counts 的消费者和数值边界。
+这是候选方案，未实现、未运行能力 probe、没有新性能结论。
+
 ## 下一步
 
-先审阅 [EXECUTION_PLANS](EXECUTION_PLANS.md) 的状态边界和
-[RESOURCE_BUDGET](RESOURCE_BUDGET.md) 的范围，再进入 R0/R1：
-可机读计划清单与 GRFrame 最小执行闭环。当前没有开始实现代码。
+在 runner 中实现上述固定形状独立入口，保持其他形状原路径；构建后
+直接真实 HTTP 质量及五档性能。不先运行库探针或微测试，也不静默
+回退后将旧路径的通过当成新计划验收。R0/R1 的可机读计划和 GRFrame
+完整闭环仍未实现，不能由单个 MoE 候选代替。

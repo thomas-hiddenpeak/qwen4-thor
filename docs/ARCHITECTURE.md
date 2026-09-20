@@ -93,7 +93,8 @@ GPU 层计算掩盖; 仅当读取超过重叠窗口时才同步等待。
 | PLE I/O | 原生 Linux io_uring | sglang-ssd-stream 用 Rust io_uring; 我们 C++ 直接调用 liburing, 无跨语言边界 |
 | GEMM | cuBLASLt (BF16/FP4 W4A4) + 自研 GEMV | decode 单 token 走自研
   GEMV (warp-per-output + f32x2, 超 cuBLASLt); prefill 走 cuBLASLt; FP4
-  W4A4 保留 nvjet tensor core (手写 SIMT 数学上无法超越) |
+  W4A4 当前保留 cuBLASLt tensor core；历史 SIMT 候选未获收益，
+  不据此排除 grouped 执行等其他方案。见 [MoE 执行合同](../dataflow-engine/MOE_DEVICE_PLAN.md) |
 | HTTP | 轻量 C++ HTTP (自研或 cpp-httplib 级) | 无重依赖; OpenAI 兼容语义 |
 | JSON | 有界解析器 (自研, 参考 Qwen3x-Orin 的 bounded JSON) | 拒绝无界分配 |
 | Tokenizer | 自研 BPE (解析 tokenizer.json) | 无 Python 依赖 |

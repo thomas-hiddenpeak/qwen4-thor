@@ -45,6 +45,15 @@ E2E 与逐位专项，HTTP 中目标 kernel 累计耗时减少约 9.83%，已接
   15.51/14.19/14.85/14.45/13.98 tok/s。MTP 明确关闭。
   这是受控文本初始记录，不是完整精度验收或性能无回退证明。
 
+## 下一阶段：MoE 单 token GPU 执行合同
+
+已静态核对 host counts 的消费者、本机 CUDA 13.3 / cuBLAS 13.5.1
+版本区别及 grouped NVFP4 的官方接口依据。下一候选限定 M=1/top-10，
+GPU 构建专家指针/scale/alpha，由两次 grouped GEMM 覆盖完整专家链。
+容量、生命周期、固定 slot 合并与失败验收见
+[执行合同](../dataflow-engine/MOE_DEVICE_PLAN.md)。尚未实现或运行库探针，
+没有性能承诺；先完成代码，再以真实 HTTP 为第一项测试。
+
 ## 最新接受：GDN 连续 q/k 读取
 
 寄存器扫描每 lane 连续四个 BF16 q/k 改为 uint2 读取，按原次序
