@@ -158,3 +158,12 @@ LPDDR 流量或峰值内存改善。下一步继续从已验收时间线核对 G
 Decode 局部略慢而 E2E 范围重叠，按持平接受，原始异常保留。该物理
 映射改进不代表完整执行器，下一步仍需整体时间预算与资源合同驱动。
 详见 [报告](../docs/GRREAD_PAIR_MIX_2026-09-21.md)。
+
+## 文本 prefill chunk 的 host 状态边界（2026-09-21）
+
+runner 新增 ModelPrefillTextChunk，每块维护 slot/position/history，
+末块才进入 decode；forward 同步返回失败进入 kFailed，必须重置。
+完整 HTTP 双参考门禁、旧链逐块输出对照与 44K 时间线通过，见
+[实现报告](../docs/PREFILL_CHUNK_SEQUENCE_2026-09-21.md)。
+这是有序 host 游标，不是完成事件或回滚事务；serve 仍持有全 prompt
+模型锁。计划 P 的 chunk 公平调度、资源准入与设备完成发布仍未实现。

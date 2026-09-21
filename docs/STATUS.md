@@ -18,7 +18,25 @@
 TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间。
 按重复范围比较，不设置临时容忍百分比或拼接最优档位。
 
-## 最新接受：serve GPU 结果读回提交边界
+## 最新接受：文本 prefill 分块序列接口
+
+基于 18f1abe，ModelPrefillTextChunk 统一使用 seq_id、位置与 PLE
+历史；每块成功排队后推进 host 游标，最后块才进入 decode，forward
+失败进入 kFailed，必须重置后再使用。serve 长 prompt 改用此接口，
+移除结束时手工修正整段历史，保留原分块大小、首/末块输出头策略。
+这是 stream 有序的 host 状态，不是 GPU 完成事件或故障回滚。
+必要构建后首项完整 HTTP，未做前置专项。
+首轮质量请求因补充旧 ModelPrefill 的部分 prompt 拒绝检查而主动
+中止，记录保留，未计通过。修正后零警告重构建，首项质量 HTTP 11/11、输出对照通过、服务
+退出 0；完整五档 HTTP/输出 15/15，对父版及固定参考均无不利
+范围分离。门禁后 8,791,040 个 BF16 输出/主干逐位一致，14 项拒绝
+检查、2 次同步错误返回注入及重置恢复通过；44K 双版本时间线
+全部 kernel/CUDA API 次数相同，按性能持平接受。未验证真实 GPU
+故障、并发隔离、MTP 或调度公平性。
+[报告](PREFILL_CHUNK_SEQUENCE_2026-09-21.md)，
+当前证据 prefill-chunk-sequence-v2-20260921。
+
+## 已完成前置：serve GPU 结果读回提交边界
 
 基于 ede4e09，修复 prefill/普通 decode 在 D2H 或 stream 同步失败后
 仍可能发布 host 结果的问题。保留正常路径的计算、复制和同步位置，
@@ -155,7 +173,7 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 ## 正式性能参考
 
 正式五档性能参考仍为 **fcb5925**（短路径 top-k 寄存器网络）。
-最新运行时为上述 serve 结果发布修复，正式参考不重置。
+最新运行时为上述文本分块序列接口 v2，正式参考不重置。
 质量 11/11、性能 15/15，输出摘要一致、服务退出 0，构建零警告；
 完整门禁后 352 组、277598448 个槽/长度逐位一致，4K HTTP 时间线通过。
 
@@ -170,7 +188,8 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 4K decode 较前一版 +0.76%，8K TTFT -1.08%，其余范围重叠。
 正式参考见 tools/evalscope/fixtures/performance_reference.json；
 二进制 SHA 与完整边界见 [报告](SHORT_TOPK_2026-09-21.md)。证据
-`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 对应已接受的 serve 结果发布修复版本；
+`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 对应已接受的文本分块序列接口 v2；
+已接受 18f1abe 二进制保存在 prefill-chunk-sequence-v2-20260921/q4t-before；
 已接受 ede4e09 二进制保存在 serve-readback-commit-20260921/q4t-before；
 已接受 40b7dbb 二进制保存在 linear-scratch-owner-20260921/q4t-before；
 已接受 79dd7a6 二进制保存在 grread-pair-mix-20260921/q4t-before；

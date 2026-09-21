@@ -1423,6 +1423,9 @@ Status ModelPrefill(const Model& m, ModelSequence* seq,
   if (seq->stage != ModelSequence::Stage::kPrefill) {
     return Status::Fail("ModelPrefill: sequence not in prefill stage");
   }
+  if (seq->position != 0 || !seq->history.empty()) {
+    return Status::Fail("ModelPrefill: partial prompt requires chunk API");
+  }
   const ModelConfig& cfg = m.cfg;
   if (T <= 0) return Status::Fail("ModelPrefill: T must be > 0");
   if (T > cfg.max_prefill) {
@@ -1437,6 +1440,49 @@ Status ModelPrefill(const Model& m, ModelSequence* seq,
   seq->stage = ModelSequence::Stage::kDecode;
   seq->position = T;
   seq->history.assign(input_ids, input_ids + T);
+  return Status();
+}
+
+Status ModelPrefillTextChunk(const Model& m, ModelSequence* seq,
+                            const int32_t* prompt, int prompt_length,
+                            int chunk_length, uint16_t* logits,
+                            cudaStream_t stream, uint16_t* trunk_out) {
+  if (!seq || !prompt) {
+    return Status::Fail("ModelPrefillTextChunk: null sequence or prompt");
+  }
+  if (seq->stage != ModelSequence::Stage::kPrefill) {
+    return Status::Fail("ModelPrefillTextChunk: sequence not in prefill stage");
+  }
+  const ModelConfig& cfg = m.cfg;
+  const int base = seq->position;
+  if (prompt_length <= 0 || prompt_length > cfg.max_len || base < 0 ||
+      base >= prompt_length || chunk_length <= 0 ||
+      chunk_length > cfg.max_prefill || chunk_length > prompt_length - base) {
+    return Status::Fail("ModelPrefillTextChunk: invalid prompt or chunk range");
+  }
+  if (seq->seq_id < 0 || seq->seq_id >= cfg.max_seq ||
+      seq->history.size() != static_cast<size_t>(base)) {
+    return Status::Fail("ModelPrefillTextChunk: invalid sequence slot/history");
+  }
+  // Reserve before GPU work so appending a successfully queued chunk cannot
+  // allocate after recurrent state has begun advancing.
+  seq->history.reserve(prompt_length);
+  Status s = base == 0
+      ? RunPrefill(m, prompt, chunk_length, logits, stream, trunk_out,
+                   nullptr, seq->seq_id)
+      : ModelDecodeBatch(m, prompt + base, chunk_length, base,
+                         seq->history.data(), base, logits, stream,
+                         trunk_out, false, seq->seq_id);
+  if (!s.ok()) {
+    seq->stage = ModelSequence::Stage::kFailed;
+    return s;
+  }
+  seq->history.insert(seq->history.end(), prompt + base,
+                      prompt + base + chunk_length);
+  seq->position = base + chunk_length;
+  if (seq->position == prompt_length) {
+    seq->stage = ModelSequence::Stage::kDecode;
+  }
   return Status();
 }
 

@@ -1619,39 +1619,20 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                                 nullptr, mtp_loaded_ ? d_trunk_full : nullptr,
                                 vptr, seq_id);
       } else {
-        // Chunked prefill (T > max_prefill, 262K context). Chunk 0 is a true
-        // prefill (state reset + rope table + PLE history via ModelPrefill);
-        // chunks 1.. are ModelDecodeBatch calls that CONTINUE from the
-        // existing per-layer state (linear SSM/conv recurrence, full-attention
-        // KV/indexer written at absolute positions) — bit-identical to one big
-        // prefill. Intermediate chunks pass logits=nullptr to skip the
-        // lm_head GEMM (only the last chunk's final row is needed for the
-        // first decode token). Text-only: a vision prompt's special (t,h,w)
-        // rope is not reproducible by ModelDecodeBatch's text rope.
-        s = model::ModelPrefill(model_, &seq, ids.data(), chunk,
-                                d_prefill_logits_, nullptr, d_trunk_full,
-                                nullptr, seq_id);
-        for (int base = chunk; s.ok() && base < T; base += chunk) {
+        // Text chunks share the sequence's slot, position and PLE history.
+        // Keep the original head policy: first and final chunks produce
+        // logits, intermediate continuation chunks omit them.
+        while (s.ok() && seq.position < T) {
+          const int base = seq.position;
           const int c = std::min(chunk, T - base);
-          const bool last = (base + c >= T);
+          const bool last = (base + c == T);
           if (last) last_chunk_c = c;
-          s = model::ModelDecodeBatch(
-              model_, ids.data() + base, c, base, ids.data(), base,
-              last ? d_prefill_logits_ : nullptr, nullptr,
+          s = model::ModelPrefillTextChunk(
+              model_, &seq, ids.data(), T, c,
+              (base == 0 || last) ? d_prefill_logits_ : nullptr, nullptr,
               d_trunk_full
                   ? d_trunk_full + static_cast<size_t>(base) * trunk_hc_dim
-                  : nullptr,
-              false, seq_id);
-        }
-        // ModelDecodeBatch does NOT advance the sequence state machine (it is
-        // a bare forward, unlike ModelDecodeStepSeq). After the chunked
-        // prefill the sequence must be at position T with the FULL prompt as
-        // PLE history, so the decode loop (ModelDecodeStepSeq / MTP) starts
-        // from the right place. Chunk 0's ModelPrefill left position=chunk and
-        // history=first-chunk-only; fix both here.
-        if (s.ok()) {
-          seq.position = T;
-          seq.history.assign(ids.begin(), ids.end());
+                  : nullptr);
         }
       }
     }

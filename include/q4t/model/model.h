@@ -426,7 +426,7 @@ Status ModelMixedBatch(const Model& m, const int32_t* tokens, const int* lens,
 // 与 ModelForward/ModelDecodeStep 等价 (ModelForward = Begin + Prefill),
 // 但阶段边界显式化, 供 runner 的 PD 分离场景驱动。
 struct ModelSequence {
-  enum class Stage { kIdle, kPrefill, kDecode };
+  enum class Stage { kIdle, kPrefill, kDecode, kFailed };
   Stage stage = Stage::kIdle;
   int position = 0;  // 下一个 token 的绝对 position
   // Pooled recurrent-state slice index (Phase 2 continuous batching). The
@@ -453,6 +453,23 @@ Status ModelPrefill(const Model& m, ModelSequence* seq, const int32_t* input_ids
                     int T, uint16_t* logits, cudaStream_t stream,
                     uint16_t* trunk_out = nullptr,
                     const VisionFeatures* vision = nullptr, int seq_id = 0);
+
+// Queue one text-only prompt chunk starting at seq->position. prompt contains
+// the same complete prompt [prompt_length] on every call; chunk_length must
+// fit max_prefill and the remaining prompt. Uses seq->seq_id as the sole slot
+// identity. On success, position/history include this chunk; stage stays
+// kPrefill until the final chunk, then becomes kDecode. On forward failure,
+// stage becomes kFailed: reset with ModelBeginSequence before reuse.
+// These are stream-ordered host cursors, not GPU completion or rollback.
+// The caller must check stream completion before publishing results/reusing
+// buffers. No vision/MRoPE prompt chunking or scheduling fairness is implied.
+// logits/trunk_out describe this chunk only, with the same optional-output
+// semantics as ModelDecodeBatch; no output-head policy is selected here.
+Status ModelPrefillTextChunk(const Model& m, ModelSequence* seq,
+                            const int32_t* prompt, int prompt_length,
+                            int chunk_length, uint16_t* logits,
+                            cudaStream_t stream,
+                            uint16_t* trunk_out = nullptr);
 
 // 一个 decode step: seq 须处于 kDecode 阶段。token_id 写入 position,
 // -> logits [1, vocab]。自动 ++position 并追加 history (PLE 上下文)。

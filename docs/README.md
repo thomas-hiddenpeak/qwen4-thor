@@ -14,6 +14,7 @@
 | [GRREAD_SCRATCH_2026-09-21.md](GRREAD_SCRATCH_2026-09-21.md) | GRRead down/up 接受，分配各 554→362/步，性能持平 |
 | [GRFRAME_GATE_2026-09-21.md](GRFRAME_GATE_2026-09-21.md) | gate 工作区已接受，分配各 362→266/步，新增 64 KiB |
 | [DECODER_RESOURCE_CONTRACT_2026-09-21.md](DECODER_RESOURCE_CONTRACT_2026-09-21.md) | 资源合同已接受，布局与错误合同检查通过，性能持平 |
+| [PREFILL_CHUNK_SEQUENCE_2026-09-21.md](PREFILL_CHUNK_SEQUENCE_2026-09-21.md) | 文本分块 prefill 序列接口候选 | 状态边界演进时 |
 | [SERVE_READBACK_COMMIT_2026-09-21.md](SERVE_READBACK_COMMIT_2026-09-21.md) | serve GPU 结果发布边界候选与验收范围 | 跟踪结果提交时 |
 | [LINEAR_SCRATCH_OWNER_2026-09-21.md](LINEAR_SCRATCH_OWNER_2026-09-21.md) | 线性 scratch 所有权复核通过，时间线运行中 |
 | [GRREAD_PAIR_MIX_2026-09-21.md](GRREAD_PAIR_MIX_2026-09-21.md) | GRRead 成对读取已接受，TTFT 改善、decode 持平 |

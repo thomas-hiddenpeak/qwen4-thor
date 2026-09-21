@@ -1,0 +1,152 @@
+// Links the actual model library; compares the old and new chunk call chains.
+#include <cuda_runtime.h>
+#include <algorithm>
+#include <cstdio>
+#include <cstdlib>
+#include <numeric>
+#include <string>
+#include <vector>
+#include "q4t/model/model.h"
+
+namespace {
+bool fail_copy = false;
+int copy_calls = 0;
+int rejected = 0;
+size_t compared = 0;
+void Require(bool ok, const char* message) {
+  if (!ok) {
+    std::fprintf(stderr, "FAIL: %s\n", message);
+    std::exit(1);
+  }
+}
+void Check(q4t::Status s) { Require(s.ok(), s.message().c_str()); }
+void Cuda(cudaError_t e) { Require(e == cudaSuccess, cudaGetErrorString(e)); }
+}  // namespace
+extern "C" cudaError_t __real_cudaMemcpyAsync(
+    void*, const void*, size_t, cudaMemcpyKind, cudaStream_t);
+extern "C" cudaError_t __wrap_cudaMemcpyAsync(
+    void* dst, const void* src, size_t bytes, cudaMemcpyKind kind,
+    cudaStream_t stream) {
+  ++copy_calls;
+  if (fail_copy && kind == cudaMemcpyHostToDevice) {
+    fail_copy = false;
+    return cudaErrorInvalidValue;
+  }
+  return __real_cudaMemcpyAsync(dst, src, bytes, kind, stream);
+}
+
+int main(int argc, char** argv) {
+  using namespace q4t::model;
+  Require(argc == 2, "model directory required");
+  ModelConfig cfg;
+  cfg.model_dir = argv[1];
+  cfg.index_path = cfg.model_dir + "/model.safetensors.index.json";
+  cfg.ple_sidecar = cfg.model_dir + "/ple/qwen3.8-flash-next-ple-fp8.bin";
+  cfg.max_len = 64;
+  cfg.max_prefill = 32;
+  cfg.max_seq = 2;
+  cfg.ple_capacity_tokens = 32;
+  Model m;
+  Check(LoadModel(cfg, &m, nullptr));
+  uint16_t* logits = nullptr;
+  uint16_t* trunk = nullptr;
+  const int width = m.cfg.hc * m.cfg.hs;
+  Cuda(cudaMalloc(&logits, static_cast<size_t>(32) * m.cfg.vocab * 2));
+  Cuda(cudaMalloc(&trunk, static_cast<size_t>(32) * width * 2));
+  const std::vector<std::vector<int>> shapes{{7, 5, 1}, {4, 4, 4}, {1, 3, 5}};
+  for (int test = 0; test < static_cast<int>(shapes.size()); ++test) {
+    const auto& chunks = shapes[test];
+    const int length = std::accumulate(chunks.begin(), chunks.end(), 0);
+    const int slot = test == 0 ? 1 : 0;
+    std::vector<int32_t> ids(length);
+    for (int i = 0; i < length; ++i) ids[i] = 42 + 17 * i + test;
+    std::vector<std::vector<uint16_t>> expected;
+    ModelSequence seq;
+    for (int pass = 0; pass < 2; ++pass) {
+      Check(ModelBeginSequence(m, &seq, nullptr, slot));
+      int base = 0;
+      for (int index = 0; index < static_cast<int>(chunks.size()); ++index) {
+        const int count = chunks[index];
+        if (pass == 0) {
+          if (base == 0) {
+            Check(ModelPrefill(m, &seq, ids.data(), count, logits, nullptr,
+                               trunk, nullptr, slot));
+          } else {
+            Check(ModelDecodeBatch(m, ids.data() + base, count, base,
+                                   ids.data(), base, logits, nullptr, trunk,
+                                   false, slot));
+          }
+        } else {
+          Check(ModelPrefillTextChunk(m, &seq, ids.data(), length, count,
+                                      logits, nullptr, trunk));
+          Require(seq.position == base + count, "chunk position");
+          Require(seq.seq_id == slot, "slot identity");
+          Require(seq.history == std::vector<int32_t>(
+                      ids.begin(), ids.begin() + base + count), "chunk history");
+          const auto stage = base + count == length
+              ? ModelSequence::Stage::kDecode : ModelSequence::Stage::kPrefill;
+          Require(seq.stage == stage, "chunk stage");
+          if (stage == ModelSequence::Stage::kPrefill) {
+            const int before = copy_calls;
+            Require(!ModelPrefill(m, &seq, ids.data(), count, logits, nullptr,
+                                  nullptr, nullptr, slot).ok(), "legacy reuse");
+            Require(!ModelDecodeStepSeq(m, &seq, ids[0], logits, nullptr,
+                                        nullptr, slot).ok(), "early decode");
+            Require(copy_calls == before, "invalid call queued GPU copy");
+            Require(seq.position == base + count && seq.stage == stage,
+                    "invalid call changed cursor");
+            rejected += 2;
+          }
+        }
+        std::vector<uint16_t> output(static_cast<size_t>(count) *
+                                     (m.cfg.vocab + width));
+        Cuda(cudaMemcpyAsync(output.data(), logits,
+                             static_cast<size_t>(count) * m.cfg.vocab * 2,
+                             cudaMemcpyDeviceToHost, nullptr));
+        Cuda(cudaMemcpyAsync(output.data() + count * m.cfg.vocab, trunk,
+                             static_cast<size_t>(count) * width * 2,
+                             cudaMemcpyDeviceToHost, nullptr));
+        Cuda(cudaStreamSynchronize(nullptr));
+        if (pass == 0) expected.push_back(output);
+        else {
+          Require(output == expected[index], "old/new logits or trunk differ");
+          compared += output.size();
+        }
+        base += count;
+      }
+    }
+    std::printf("shape=%d slot=%d old/new chunk outputs bit-exact\n", test, slot);
+  }
+  std::vector<int32_t> ids(13, 42);
+  for (int base : {0, 7}) {
+    ModelSequence seq;
+    Check(ModelBeginSequence(m, &seq, nullptr, 1));
+    if (base) {
+      Check(ModelPrefillTextChunk(m, &seq, ids.data(), 13, base,
+                                  logits, nullptr));
+      Cuda(cudaStreamSynchronize(nullptr));
+    }
+    const auto history = seq.history;
+    fail_copy = true;
+    Require(!ModelPrefillTextChunk(m, &seq, ids.data(), 13, 1,
+                                   logits, nullptr).ok(), "injection missed");
+    Require(!fail_copy && seq.stage == ModelSequence::Stage::kFailed &&
+                seq.position == base && seq.history == history,
+            "failed chunk cursor");
+    const int before = copy_calls;
+    Require(!ModelPrefillTextChunk(m, &seq, ids.data(), 13, 1,
+                                   logits, nullptr).ok(), "failed reuse");
+    Require(copy_calls == before, "failed reuse reached GPU");
+    ++rejected;
+    Check(ModelBeginSequence(m, &seq, nullptr, 1));
+    Check(ModelPrefillTextChunk(m, &seq, ids.data(), 13, 13, logits, nullptr));
+    Cuda(cudaStreamSynchronize(nullptr));
+    Require(seq.stage == ModelSequence::Stage::kDecode && seq.position == 13 &&
+                seq.history == ids, "reset did not recover sequence");
+  }
+  Cuda(cudaFree(trunk));
+  Cuda(cudaFree(logits));
+  m.Free();
+  std::printf("PASS compared_bf16=%zu rejection_checks=%d injected_failures=2\n",
+              compared, rejected);
+}
