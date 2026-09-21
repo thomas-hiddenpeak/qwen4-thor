@@ -18,7 +18,17 @@
 TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间。
 按重复范围比较，不设置临时容忍百分比或拼接最优档位。
 
-## 最新接受：GRFrame gate 工作区管理
+## 最新接受：decoder 资源合同
+
+基于 81cdbf8，导出 runner 实际布局，13 个视图绑定真实 offset/bytes
+与 7 个粗粒度存活阶段。首项质量 11/11、五档 15/15、双参考范围门禁
+通过；门禁后 252 布局、504 容量、1260 错误合同拒绝通过。forward
+实现及旧 20 个布局字段不变，4K kernel/分配调用数不变，性能持平。
+导出 3276 个视图供检查，不是完整执行器，也不覆盖外部权重/序列状态。
+[报告](DECODER_RESOURCE_CONTRACT_2026-09-21.md)，证据
+`.q4t-work/e2e/decoder-resource-contract-20260921/`。
+
+## 已完成前置：GRFrame gate 工作区管理
 
 基于 e550a02，gate 放到独立 workspace 尾部，跨子层有效，并按 stream
 顺序由两个 Read/Write 复用。质量 11/11、五档 15/15、双参考范围门禁
@@ -92,7 +102,7 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 ## 正式性能参考
 
 正式五档性能参考仍为 **fcb5925**（短路径 top-k 寄存器网络）。
-最新运行时为上述 GRFrame gate 阶段，正式参考不重置。
+最新运行时为上述资源合同阶段，正式参考不重置。
 质量 11/11、性能 15/15，输出摘要一致、服务退出 0，构建零警告；
 完整门禁后 352 组、277598448 个槽/长度逐位一致，4K HTTP 时间线通过。
 
@@ -107,7 +117,8 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 4K decode 较前一版 +0.76%，8K TTFT -1.08%，其余范围重叠。
 正式参考见 tools/evalscope/fixtures/performance_reference.json；
 二进制 SHA 与完整边界见 [报告](SHORT_TOPK_2026-09-21.md)。证据
-`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 对应已接受的 gate 版本；
+`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 对应已接受的资源合同版本；
+已接受 81cdbf8 二进制保存在 decoder-resource-contract-20260921/q4t-before；
 已接受的 e550a02 二进制保存在 grframe-gate-arena-20260921/q4t-before；
 已接受别名版保存在 grread-scratch-20260921/q4t-before；
 已接受的 cd1a624 二进制保存在本轮证据目录 q4t-before。
@@ -115,8 +126,8 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 ## 后续演进
 
 GRFrame、单 normed 复用、布局单源化与 normed/MoE 别名已接受。
-GRRead down/up 暂存迁移已接受。gate 独立工作区也已接受。下一步绑定已验证布局与 GR 执行依赖，
-先形成可检查资源描述，保持现有位置和顺序；任何运行时改动仍先完整 HTTP。完整 D/P/S、可执行计划和状态提交仍未实现。
+GRRead down/up 暂存迁移已接受。gate 独立工作区也已接受。资源合同现已接受。下一步按 R1 路线评估 GRWrite→下一 GRRead
+衔接，先核对真实 BF16 舍入与 residual 存活期；新改动仍先完整 HTTP。完整 D/P/S、可执行计划和状态提交仍未实现。
 [GRFrame 合同](../dataflow-engine/GRFRAME_RUNNER_PLAN.md) 与
 [JSON 清单](../dataflow-engine/plans/grframe_main.json) 区分提案和候选绑定；
 完整引擎进度见 [筹备状态](../dataflow-engine/STATUS.md)。

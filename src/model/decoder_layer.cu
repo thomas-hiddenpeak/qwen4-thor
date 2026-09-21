@@ -26,6 +26,7 @@
 #include <string>
 #include <vector>
 
+#include "q4t/model/decoder_workspace.h"
 #include "q4t/status.h"
 
 namespace q4t {
@@ -168,31 +169,7 @@ size_t AttnWs(int T, bool is_full) {
   return kGemmWs;  // linear: GEMM scratch only
 }
 
-// One source for both allocation size and forward offsets. No runtime
-// allocation or interpreter is involved. GRRead scratch shares MoE storage;
-// normed/down/up last readers precede MoE on the caller stream.
-struct DecoderWorkspaceLayout {
-  size_t attention = 0;
-  size_t moe = 0;
-  size_t moe_gemm = 0;
-  size_t hc_gemm = 0;
-  size_t ple = 0;
-  size_t mixed = 0;
-  size_t block = 0;
-  size_t normed = 0;
-  size_t hc_down = 0;
-  size_t hc_up = 0;
-  size_t hc_down_bytes = 0;
-  size_t hc_up_bytes = 0;
-  size_t combined = 0;
-  size_t ple_trunk = 0;
-  size_t gate = 0;
-  size_t gate_bytes = 0;
-  size_t attention_bytes = 0;
-  size_t moe_bytes = 0;
-  size_t ple_bytes = 0;
-  size_t total_bytes = 0;
-};
+}  // namespace
 
 DecoderWorkspaceLayout MakeDecoderWorkspaceLayout(
     int T, bool is_full, bool has_ple, int hc, int hs, int E, int moe_is,
@@ -205,6 +182,8 @@ DecoderWorkspaceLayout MakeDecoderWorkspaceLayout(
   layout.ple_bytes = has_ple ? PleLayerWorkspaceBytes(T, hc, hs) : 0;
   const size_t hidden_bytes = static_cast<size_t>(T) * hs * sizeof(uint16_t);
   const size_t hyper_bytes = hidden_bytes * hc;
+  layout.hidden_bytes = hidden_bytes;
+  layout.hyper_bytes = hyper_bytes;
   layout.hc_down_bytes = static_cast<size_t>(T) * lowrank * sizeof(uint16_t);
   layout.hc_up_bytes = hyper_bytes;
   const size_t read_bytes = AlignUp(hyper_bytes) +
@@ -235,7 +214,40 @@ DecoderWorkspaceLayout MakeDecoderWorkspaceLayout(
   return layout;
 }
 
-}  // namespace
+std::array<DecoderResourceView, 13> DescribeDecoderWorkspace(
+    const DecoderWorkspaceLayout& layout) {
+  using Phase = DecoderPhase;
+  constexpr auto bit = [](Phase phase) {
+    return uint32_t{1} << static_cast<unsigned>(phase);
+  };
+  constexpr uint32_t read = bit(Phase::kAttentionRead) | bit(Phase::kMlpRead);
+  constexpr uint32_t mixed = read | bit(Phase::kAttention) | bit(Phase::kMoe);
+  constexpr uint32_t block = bit(Phase::kAttention) |
+                             bit(Phase::kAttentionWrite) | bit(Phase::kMoe) |
+                             bit(Phase::kMlpWrite);
+  constexpr uint32_t residual = bit(Phase::kAttentionWrite) |
+                                bit(Phase::kMlpRead) | bit(Phase::kMoe) |
+                                bit(Phase::kMlpWrite);
+  constexpr uint32_t ple_trunk = bit(Phase::kPle) | bit(Phase::kAttentionRead) |
+                                 bit(Phase::kAttention) |
+                                 bit(Phase::kAttentionWrite);
+  constexpr uint32_t gate = read | block;
+  return {{{"attention", layout.attention, layout.attention_bytes,
+            bit(Phase::kAttention)},
+           {"moe", layout.moe, layout.moe_bytes, bit(Phase::kMoe)},
+           {"moe_gemm", layout.moe_gemm, kGemmWs, bit(Phase::kMoe)},
+           {"hc_gemm", layout.hc_gemm, kGemmWs, read},
+           {"ple", layout.ple, layout.ple_bytes, bit(Phase::kPle)},
+           {"mixed", layout.mixed, layout.hidden_bytes, mixed},
+           {"block", layout.block, layout.hidden_bytes, block},
+           {"normed", layout.normed, layout.hyper_bytes, read},
+           {"down", layout.hc_down, layout.hc_down_bytes, read},
+           {"up", layout.hc_up, layout.hc_up_bytes, read},
+           {"combined", layout.combined, layout.hyper_bytes, residual},
+           {"ple_trunk", layout.ple_trunk,
+            layout.ple_bytes ? layout.hyper_bytes : 0, ple_trunk},
+           {"gate", layout.gate, layout.gate_bytes, gate}}};
+}
 
 size_t DecoderLayerWorkspaceBytes(int T, bool is_full_attention, bool has_ple,
                                   int hs, int E, int moe_is, int shared_is,
