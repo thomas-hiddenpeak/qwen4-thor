@@ -38,6 +38,19 @@ namespace {
 
 constexpr const char* kDefaultModelName = "qwen3.8-flash-next";
 
+// A successful launch is not a completed result. Drain the existing stream
+// boundary even if a copy failed, and never publish stale host output.
+Status FinishHostReadback(cudaError_t copy_error,
+                          std::atomic<bool>* gpu_healthy) {
+  const cudaError_t sync_error = cudaStreamSynchronize(nullptr);
+  const cudaError_t error =
+      copy_error != cudaSuccess ? copy_error : sync_error;
+  if (error == cudaSuccess) return Status();
+  gpu_healthy->store(false, std::memory_order_relaxed);
+  return Status::Fail(std::string("GPU result readback: ") +
+                      cudaGetErrorString(error));
+}
+
 // le boundaries (seconds) shared by MetricHistogram::Observe and /metrics.
 constexpr double kLatencyBounds[MetricHistogram::kNumBuckets] = {
     0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0,
@@ -859,12 +872,12 @@ void ChatServer::SchedulerLoop() {
                                      d_prefill_logits_, nullptr, nullptr,
                                      nullptr, pf[0]->seq_id);
           if (sp.ok()) {
-            cudaMemcpyAsync(
+            const cudaError_t copy_error = cudaMemcpyAsync(
                 pf[0]->h_logits,
                 d_prefill_logits_ +
                     static_cast<size_t>(pf[0]->len - 1) * vocab,
                 static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost, nullptr);
-            cudaStreamSynchronize(nullptr);
+            sp = FinishHostReadback(copy_error, &gpu_healthy_);
           }
         } else {
           std::vector<int32_t> pk_tokens;
@@ -884,15 +897,17 @@ void ChatServer::SchedulerLoop() {
             gpu_healthy_.store(false, std::memory_order_relaxed);
           if (sp.ok()) {
             // D2H each sequence's last-token row (seq_offset[b+1]-1).
+            cudaError_t copy_error = cudaSuccess;
             for (int i = 0; i < Bp; ++i) {
               const int last_row = pk_off[i + 1] - 1;
-              cudaMemcpyAsync(
+              const cudaError_t error = cudaMemcpyAsync(
                   pf[i]->h_logits,
                   d_prefill_logits_ + static_cast<size_t>(last_row) * vocab,
                   static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost,
                   nullptr);
+              if (copy_error == cudaSuccess) copy_error = error;
             }
-            cudaStreamSynchronize(nullptr);
+            sp = FinishHostReadback(copy_error, &gpu_healthy_);
           }
         }
       }
@@ -1004,10 +1019,11 @@ void ChatServer::SchedulerLoop() {
         s = model::ArgmaxBf16Rows(d_sched_logits_, B, vocab, d_sched_tokens_,
                                   nullptr);
         if (s.ok()) {
-          cudaMemcpyAsync(h_sched_tokens_.data(), d_sched_tokens_,
-                          static_cast<size_t>(B) * sizeof(int32_t),
-                          cudaMemcpyDeviceToHost, nullptr);
-          cudaStreamSynchronize(nullptr);
+          const cudaError_t copy_error = cudaMemcpyAsync(
+              h_sched_tokens_.data(), d_sched_tokens_,
+              static_cast<size_t>(B) * sizeof(int32_t),
+              cudaMemcpyDeviceToHost, nullptr);
+          s = FinishHostReadback(copy_error, &gpu_healthy_);
         }
       }
     }
@@ -1646,10 +1662,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           chunked ? d_prefill_logits_ +
                         static_cast<size_t>(last_chunk_c - 1) * vocab
                   : d_prefill_logits_ + static_cast<size_t>(T - 1) * vocab;
-      cudaMemcpyAsync(h_logits.data(), last_logits,
-                      static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost,
-                      nullptr);
-      cudaStreamSynchronize(nullptr);
+      const cudaError_t copy_error = cudaMemcpyAsync(
+          h_logits.data(), last_logits, static_cast<size_t>(vocab) * 2,
+          cudaMemcpyDeviceToHost, nullptr);
+      s = FinishHostReadback(copy_error, &gpu_healthy_);
     }
   }
   // DIAG: the prefill kernels are async; surface any launch/async error now
@@ -1663,6 +1679,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                    "[q4t][diag] prefill seq_id=%d T=%d streamSync=%s "
                    "lastErr=%s\n",
                    seq_id, T, cudaGetErrorString(se), cudaGetErrorString(le));
+      gpu_healthy_.store(false, std::memory_order_relaxed);
+      if (s.ok()) {
+        s = Status::Fail(std::string("prefill completion: ") +
+                         cudaGetErrorString(se != cudaSuccess ? se : le));
+      }
     }
   }
   if (!s.ok()) {
@@ -1979,10 +2000,14 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           finish_reason = "stop";
           break;
         }
-        cudaMemcpyAsync(h_logits.data(), d_prefill_logits_,
-                        static_cast<size_t>(vocab) * 2,
-                        cudaMemcpyDeviceToHost, nullptr);
-        cudaStreamSynchronize(nullptr);
+        const cudaError_t copy_error = cudaMemcpyAsync(
+            h_logits.data(), d_prefill_logits_,
+            static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost, nullptr);
+        s = FinishHostReadback(copy_error, &gpu_healthy_);
+        if (!s.ok()) {
+          finish_reason = "stop";
+          break;
+        }
         next_token = argmax(h_logits.data());
       }
     }

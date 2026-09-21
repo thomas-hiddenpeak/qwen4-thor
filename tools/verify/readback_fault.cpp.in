@@ -1,0 +1,47 @@
+// Test-only CUDA return-code injection. Never linked into the production binary.
+#include <cuda_runtime_api.h>
+#include <dlfcn.h>
+
+#include <atomic>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+
+namespace {
+std::atomic<bool> fired{false};
+thread_local bool fail_sync = false;
+
+template <typename T>
+T Resolve(const char* name) {
+  auto fn = reinterpret_cast<T>(dlsym(RTLD_NEXT, name));
+  if (!fn) std::_Exit(127);
+  return fn;
+}
+}  // namespace
+
+extern "C" cudaError_t CUDARTAPI cudaMemcpyAsync(
+    void* dst, const void* src, size_t bytes, cudaMemcpyKind kind,
+    cudaStream_t stream) {
+  static const auto real = Resolve<decltype(&cudaMemcpyAsync)>("cudaMemcpyAsync");
+  const char* size_env = std::getenv("Q4T_TEST_READBACK_BYTES");
+  const char* mode = std::getenv("Q4T_TEST_READBACK_MODE");
+  if (size_env && mode && kind == cudaMemcpyDeviceToHost &&
+      bytes == std::strtoull(size_env, nullptr, 10) && !fired.exchange(true)) {
+    std::fprintf(stderr, "[readback-fault] mode=%s bytes=%zu\n", mode, bytes);
+    if (std::strcmp(mode, "copy") == 0) return cudaErrorInvalidValue;
+    if (std::strcmp(mode, "sync") == 0) fail_sync = true;
+  }
+  return real(dst, src, bytes, kind, stream);
+}
+
+extern "C" cudaError_t CUDARTAPI cudaStreamSynchronize(cudaStream_t stream) {
+  static const auto real =
+      Resolve<decltype(&cudaStreamSynchronize)>("cudaStreamSynchronize");
+  const cudaError_t result = real(stream);
+  if (fail_sync) {
+    fail_sync = false;
+    std::fprintf(stderr, "[readback-fault] sync-return\n");
+    return result == cudaSuccess ? cudaErrorUnknown : result;
+  }
+  return result;
+}

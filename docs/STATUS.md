@@ -18,7 +18,19 @@
 TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间。
 按重复范围比较，不设置临时容忍百分比或拼接最优档位。
 
-## 最新接受：线性注意力 scratch 作用域所有权
+## 最新接受：serve GPU 结果读回提交边界
+
+基于 ede4e09，修复 prefill/普通 decode 在 D2H 或 stream 同步失败后
+仍可能发布 host 结果的问题。保留正常路径的计算、复制和同步位置，
+检查错误并标记 GPU 不健康，失败走已有请求终止路径。零警告构建后
+首项质量 HTTP 11/11、完整五档 HTTP/输出 15/15，服务退出 0；
+对父版及固定参考无不利范围分离。门禁后 12 组父版/候选错误返回
+注入通过；4K 时间线全部 kernel/CUDA API 次数不变，按性能持平
+接受。未验证真实设备损坏、streaming 故障、强制多请求组批或 MTP。
+这不是完整序列事务或 MTP 故障恢复。
+[报告](SERVE_READBACK_COMMIT_2026-09-21.md)，证据 serve-readback-commit-20260921。
+
+## 已完成前置：线性注意力 scratch 作用域所有权
 
 基于 40b7dbb，六块独立中间缓冲收拢为非复制作用域对象，移除 29 处
 手工清理。保留分配尺寸/顺序、同 stream 释放顺序、kernel 与所有状态
@@ -143,7 +155,7 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 ## 正式性能参考
 
 正式五档性能参考仍为 **fcb5925**（短路径 top-k 寄存器网络）。
-最新运行时为上述线性 scratch 所有权阶段，正式参考不重置。
+最新运行时为上述 serve 结果发布修复，正式参考不重置。
 质量 11/11、性能 15/15，输出摘要一致、服务退出 0，构建零警告；
 完整门禁后 352 组、277598448 个槽/长度逐位一致，4K HTTP 时间线通过。
 
@@ -158,7 +170,8 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 4K decode 较前一版 +0.76%，8K TTFT -1.08%，其余范围重叠。
 正式参考见 tools/evalscope/fixtures/performance_reference.json；
 二进制 SHA 与完整边界见 [报告](SHORT_TOPK_2026-09-21.md)。证据
-`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 对应已接受的线性 scratch 所有权版本；
+`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 对应已接受的 serve 结果发布修复版本；
+已接受 ede4e09 二进制保存在 serve-readback-commit-20260921/q4t-before；
 已接受 40b7dbb 二进制保存在 linear-scratch-owner-20260921/q4t-before；
 已接受 79dd7a6 二进制保存在 grread-pair-mix-20260921/q4t-before；
 已接受 dd1da64 二进制保存在 grwrite-read-fusion-20260921/q4t-before；
