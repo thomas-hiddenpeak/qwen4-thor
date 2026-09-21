@@ -1,0 +1,80 @@
+// Appended to exact baseline and candidate source, after full HTTP gates.
+void Check(cudaError_t error) {
+  if (error != cudaSuccess) {
+    std::fprintf(stderr, "%s\n", cudaGetErrorString(error));
+    std::exit(1);
+  }
+}
+template <class T>
+struct Buffer {
+  T* data;
+  explicit Buffer(size_t n) { Check(cudaMalloc(&data, n * sizeof(T))); }
+  ~Buffer() { cudaFree(data); }
+  void Upload(const std::vector<T>& values) {
+    Check(cudaMemcpy(data, values.data(), values.size() * sizeof(T),
+                     cudaMemcpyHostToDevice));
+  }
+};
+size_t checked = 0;
+void Equal(const int* before, const int* after, size_t n, const char* label) {
+  std::vector<int> x(n), y(n);
+  Check(cudaMemcpy(x.data(), before, n * sizeof(int), cudaMemcpyDeviceToHost));
+  Check(cudaMemcpy(y.data(), after, n * sizeof(int), cudaMemcpyDeviceToHost));
+  if (std::memcmp(x.data(), y.data(), n * sizeof(int))) {
+    std::fprintf(stderr, "mismatch: %s\n", label);
+    std::exit(1);
+  }
+  checked += n;
+}
+int main() {
+  uint32_t rng = 20260921;
+  int cases = 0;
+  for (int rows : {1, 3, 33, 8192}) {
+    Buffer<float> scores(static_cast<size_t>(rows) * 2048);
+    Buffer<int> positions(rows), old_topk(static_cast<size_t>(rows) * 2052),
+        new_topk(static_cast<size_t>(rows) * 2052), old_len(rows),
+        new_len(rows);
+    std::vector<float> values(static_cast<size_t>(rows) * 2048);
+    std::vector<int> pos(rows);
+    for (int groups : {0, 1, 511, 512, 513, 2047, 2048}) {
+      for (int family = 0; family < 4; ++family) {
+        if (rows == 8192 && ((groups != 513 && groups != 2048) || family > 1))
+          continue;
+        for (int tail = 0; tail < 4; ++tail) {
+          for (int t = 0; t < rows; ++t) {
+            const int visible = groups > t % 3 ? groups - t % 3 : 0;
+            pos[t] = visible * 4 - 1 + (tail + t) % 4;
+            for (int g = 0; g < 2048; ++g) {
+              rng = rng * 1664525u + 1013904223u;
+              float value = (rng >> 8) / 16777216.0f;
+              if (family == 1) value = float(g % 4);
+              if (family == 2) value = (g & 1) ? -0.0f : 0.0f;
+              if (family == 3 && g < visible && g >= visible - 16)
+                value += 10.f;
+              values[static_cast<size_t>(t) * 2048 + g] = value;
+            }
+          }
+          scores.Upload(values);
+          positions.Upload(pos);
+          baseline::TopkSelectKernel<<<rows, 256>>>(
+              scores.data, old_topk.data, old_len.data, positions.data, rows, 4,
+              512, 2048, 2052);
+          Check(cudaGetLastError());
+          const auto status = q4t::model::SelectShortTopk(
+              scores.data, new_topk.data, new_len.data, positions.data, rows, 4,
+              2052, nullptr);
+          if (!status) {
+            std::fprintf(stderr, "%s\n", status.message().c_str());
+            return 1;
+          }
+          Equal(old_topk.data, new_topk.data, static_cast<size_t>(rows) * 2052,
+                "expanded slots");
+          Equal(old_len.data, new_len.data, rows, "lengths");
+          ++cases;
+        }
+      }
+    }
+  }
+  std::printf("PASS: %d cases, %zu slots/lengths bit-exact\n", cases, checked);
+  return 0;
+}

@@ -45,7 +45,23 @@ E2E 与逐位专项，HTTP 中目标 kernel 累计耗时减少约 9.83%，已接
   15.51/14.19/14.85/14.45/13.98 tok/s。MTP 明确关闭。
   这是受控文本初始记录，不是完整精度验收或性能无回退证明。
 
-## 最新接受：短上下文索引打分 CTA 映射
+## 最新接受：短路径 top-k 寄存器网络
+
+固定 2048 窗口/top-512 的选择链复用精确寄存器网络，保留 dense
+展开、同分 ID、排序槽序与组尾。单 token 与 prefill 多行共同验收。
+质量 11/11、性能 15/15，输出一致、服务退出 0，构建零警告。
+五档 decode 18.611/17.871/18.161/17.855/17.072 tok/s；4K 约
++0.76%，8K TTFT 5.547→5.488 秒，均为有利的不重叠范围；其余范围重叠。
+完整 E2E 后 352 组、277598448 个槽/长度逐位一致；4K HTTP 选择
+累计 decode 226.446→60.105 ms、prefill 25.608→10.869 ms，调用数不变。
+REG 40→44，SHARED 不变、STACK/LOCAL=0，正式五档参考整体更新。
+[计划](../dataflow-engine/SHORT_TOPK_PLAN.md) / [报告](SHORT_TOPK_2026-09-21.md)，
+证据 `.q4t-work/e2e/short-topk-register-20260921/`。
+下一步 [GRFrame 合同](../dataflow-engine/GRFRAME_RUNNER_PLAN.md) 与
+[JSON 提案](../dataflow-engine/plans/grframe_main.json) 的 read/write 边界，
+先分离 inject 顺序与 arena 布局；尚未实现执行器或峰值内存节省。
+
+## 前一阶段：短上下文索引打分 CTA 映射
 
 固定 T=1/n_iq=4/hd=128、2048 槽与非空 seq_id 的 SIMT 路径，
 八个 CTA 分担候选组，保留累加、mask、序列偏移和槽布局，无新缓冲。

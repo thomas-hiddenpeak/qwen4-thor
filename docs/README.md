@@ -6,6 +6,7 @@
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
 | [GDN_VECTOR_LOAD_2026-09-21.md](GDN_VECTOR_LOAD_2026-09-21.md) | GDN 连续读取、完整 E2E 与状态等价证据 | 本轮验证更新 |
+| [短路径 top-k](SHORT_TOPK_2026-09-21.md) | 精确选择、完整 E2E 与局部时间线 | 本轮验收完成 |
 | [短上下文索引打分](INDEXER_DECODE_2026-09-21.md) | CTA 映射、逐位分数与配对 HTTP | 本轮验收完成 |
 | [Decode 多级 top-k](DECODE_TOPK_2026-09-21.md) | 寄存器网络、完整 E2E 与逐位证据 | 本轮验收完成 |
 | [QSA 输出列分片](QSA_DECODE_SPLIT_2026-09-21.md) | 单 token 四分输出、完整 E2E 与逐位证据 | 本轮验收完成 |

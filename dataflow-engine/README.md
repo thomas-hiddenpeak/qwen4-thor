@@ -27,6 +27,8 @@ runner 和新引擎；具体证据要求见 [验证标准](VALIDATION.md#采纳�
 | [QSA_DECODE_PLAN.md](QSA_DECODE_PLAN.md) | 单 token 注意力输出列分片合同与边界 |
 | [DECODE_TOPK_PLAN.md](DECODE_TOPK_PLAN.md) | 长上下文精确选择的比较网络与容量合同 |
 | [INDEXER_DECODE_PLAN.md](INDEXER_DECODE_PLAN.md) | 短上下文索引打分 CTA 映射候选 |
+| [SHORT_TOPK_PLAN.md](SHORT_TOPK_PLAN.md) | 短路径 dense/sparse 选择与精确寄存器网络候选 |
+| [GRFRAME_RUNNER_PLAN.md](GRFRAME_RUNNER_PLAN.md) | runner 的 GRRead/GRWrite、inject 提前与生命周期演进 |
 | [STATUS.md](STATUS.md) | 本项目筹备进度、暂定决策与待决问题 |
 | [log/2026-09-20.md](log/2026-09-20.md) | 初次推演记录 |
 

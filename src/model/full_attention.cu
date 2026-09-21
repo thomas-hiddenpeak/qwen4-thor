@@ -30,6 +30,7 @@
 #include "q4t/model/indexer_decode.h"
 #include "q4t/model/linear.h"
 #include "q4t/model/qsa_decode.h"
+#include "q4t/model/short_topk.h"
 #include "q4t/model/streaming_topk.h"
 #include "q4t/status.h"
 
@@ -1648,9 +1649,15 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
           w.idx_compress, max_blocks, /*block_off=*/0, d_seq_id,
           idx_seq_stride);
     }
-    TopkSelectKernel<<<T, 256, 0, stream>>>(d_logits, d_topk, d_topk_len,
-                                            d_positions, T, w.idx_compress,
-                                            block_topk, max_blocks, max_topk);
+    if (max_blocks == 2048 && block_topk == 512) {
+      s = SelectShortTopk(d_logits, d_topk, d_topk_len, d_positions, T,
+                          w.idx_compress, max_topk, stream);
+      if (!s) return s;
+    } else {
+      TopkSelectKernel<<<T, 256, 0, stream>>>(d_logits, d_topk, d_topk_len,
+                                              d_positions, T, w.idx_compress,
+                                              block_topk, max_blocks, max_topk);
+    }
   } else if (T <= kOnePassT && n_iq * idx_hd <= 512) {
     // One-pass long-context indexer (decode / MTP verify, T <= kOnePassT).
     // The [T, n_groups] logits buffer is small enough to materialise, so score

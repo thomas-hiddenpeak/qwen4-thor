@@ -1,0 +1,280 @@
+{
+  "format": "q4t.execution_contract",
+  "version": 1,
+  "status": "proposal_not_executable",
+  "scope": "One main-model gated-residual sublayer; phase A retains existing normed workspace regions.",
+  "baseline_commit": "4f4b8d8",
+  "source_sha256": {
+    "src/model/hyperconnection.cu": "0aa71e35635bffed2a9d355f0cba930de62b9ddd83f692f3ba96469fe7bb3988",
+    "src/model/decoder_layer.cu": "c5fe5608d4109d2cc787a239f3216979af28aa48fd6f92bc1125659874a7b35d",
+    "include/q4t/model/hyperconnection.h": "5731b57e17a4c8dcc6cc621e55ad6e1de6dbe623d115aca1cac74aa7c39b6edc"
+  },
+  "constraints": {
+    "tokens": {
+      "min": 1,
+      "max": 8192
+    },
+    "hc": 4,
+    "hidden_size": 2560,
+    "lowrank": 320,
+    "activation": "BF16",
+    "accumulation": "existing FP32 order",
+    "mtp": false,
+    "fp8_shadows": false
+  },
+  "storage": [
+    {
+      "id": "residual",
+      "dtype": "BF16",
+      "shape": [
+        "T",
+        4,
+        2560
+      ],
+      "bytes_per_token": 20480,
+      "owner": "caller",
+      "space": "device_global_LPDDR",
+      "access": "borrowed_readonly",
+      "live_until": "write_complete"
+    },
+    {
+      "id": "normed",
+      "dtype": "BF16",
+      "shape": [
+        "T",
+        4,
+        2560
+      ],
+      "bytes_per_token": 20480,
+      "owner": "decoder_workspace",
+      "space": "device_global_LPDDR",
+      "live_until_current": "inject_after_sublayer",
+      "live_until_proposed": "prepare_frame_complete",
+      "physical_reuse_phase_a": false
+    },
+    {
+      "id": "down",
+      "dtype": "BF16",
+      "shape": [
+        "T",
+        320
+      ],
+      "bytes_per_token": 640,
+      "owner": "mix_async_allocation",
+      "space": "device_global_LPDDR",
+      "live_until": "up_complete"
+    },
+    {
+      "id": "up",
+      "dtype": "BF16",
+      "shape": [
+        "T",
+        4,
+        2560
+      ],
+      "bytes_per_token": 20480,
+      "owner": "mix_async_allocation",
+      "space": "device_global_LPDDR",
+      "live_until": "mix_complete"
+    },
+    {
+      "id": "mixed",
+      "dtype": "BF16",
+      "shape": [
+        "T",
+        2560
+      ],
+      "bytes_per_token": 5120,
+      "owner": "decoder_workspace",
+      "space": "device_global_LPDDR",
+      "live_until": "sublayer_last_reader"
+    },
+    {
+      "id": "inject_gate",
+      "dtype": "BF16",
+      "shape": [
+        "T",
+        4
+      ],
+      "bytes_per_token": 8,
+      "owner_proposed": "frame_with_same_stream_release",
+      "space": "device_global_LPDDR",
+      "live_until": "write_complete"
+    },
+    {
+      "id": "block_output",
+      "dtype": "BF16",
+      "shape": [
+        "T",
+        2560
+      ],
+      "bytes_per_token": 5120,
+      "owner": "decoder_workspace",
+      "space": "device_global_LPDDR",
+      "live_until": "write_complete"
+    },
+    {
+      "id": "output",
+      "dtype": "BF16",
+      "shape": [
+        "T",
+        4,
+        2560
+      ],
+      "bytes_per_token": 20480,
+      "owner": "caller",
+      "space": "device_global_LPDDR",
+      "live_until": "next_consumer"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "norm",
+      "reads": [
+        "residual",
+        "weights.hc_norm"
+      ],
+      "writes": [
+        "normed"
+      ],
+      "binding": "GroupedRmsNormKernel",
+      "rounding": "BF16 output"
+    },
+    {
+      "id": "down_projection",
+      "reads": [
+        "normed",
+        "weights.mix_down"
+      ],
+      "writes": [
+        "down"
+      ],
+      "binding": "ProjGemm with FP8 disabled",
+      "rounding": "BF16 GEMM output"
+    },
+    {
+      "id": "silu_div",
+      "reads": [
+        "down"
+      ],
+      "writes": [
+        "down"
+      ],
+      "binding": "SiluDivKernel",
+      "operation": "BF16_to_FP32(down) * (1/hc), then SiLU, then BF16; not SiLU(down)/hc"
+    },
+    {
+      "id": "up_projection",
+      "reads": [
+        "down",
+        "weights.mix_up"
+      ],
+      "writes": [
+        "up"
+      ],
+      "binding": "ProjGemm with FP8 disabled",
+      "rounding": "BF16 GEMM output"
+    },
+    {
+      "id": "mix",
+      "reads": [
+        "up",
+        "normed"
+      ],
+      "writes": [
+        "mixed"
+      ],
+      "binding": "MixGateKernel",
+      "rounding": "preserve branch accumulation order and BF16 output"
+    },
+    {
+      "id": "prepare_frame",
+      "reads": [
+        "normed",
+        "weights.block_inject"
+      ],
+      "writes": [
+        "inject_gate"
+      ],
+      "binding": "HcInjectGevGated for aligned T=1; otherwise Bf16Gemm then ApplyInjectGateKernel",
+      "rounding": "projection BF16, FP32 scale/sigmoid, gate BF16"
+    },
+    {
+      "id": "sublayer",
+      "reads": [
+        "mixed"
+      ],
+      "writes": [
+        "block_output"
+      ],
+      "binding": "FullAttentionForward / LinearAttentionForward / MoEForward; unchanged state transitions",
+      "completion": "existing auxiliary-stream joins precede main-stream consumers"
+    },
+    {
+      "id": "write",
+      "reads": [
+        "residual",
+        "block_output",
+        "inject_gate"
+      ],
+      "writes": [
+        "output"
+      ],
+      "binding": "CombineWithGateKernel",
+      "rounding": "preserve existing multiply/add and BF16 conversion"
+    }
+  ],
+  "current_order": [
+    "norm",
+    "down_projection",
+    "silu_div",
+    "up_projection",
+    "mix",
+    "sublayer",
+    "prepare_frame",
+    "write"
+  ],
+  "proposed_phase_a_order": [
+    "norm",
+    "down_projection",
+    "silu_div",
+    "up_projection",
+    "mix",
+    "prepare_frame",
+    "sublayer",
+    "write"
+  ],
+  "execution": {
+    "stream": "existing caller CUDA stream",
+    "new_streams": 0,
+    "new_cross_stream_protocols": 0,
+    "frame_reuse": "only after write or abort cleanup is ordered on owning stream",
+    "unresolved": "Exact C++ ownership API and error cleanup are not implemented."
+  },
+  "capacity_constraints": {
+    "normed_region_bytes_at_T8192": 167772160,
+    "current_decoder_normed_regions": 2,
+    "phase_a_remove_normed_regions": 0,
+    "inject_gate_bytes_at_T8192": 65536,
+    "claimed_peak_memory_saving_bytes": null,
+    "register_shared_L1_L2_residency": "not assigned by this contract; current kernel mappings retained"
+  },
+  "compatibility": {
+    "head_mixer": "keep existing API; use_combine=false must not read null block_inject",
+    "mtp": "existing API retained; no new MTP behavior claimed",
+    "state_checkpoint": "frame is ephemeral activation ownership, not a state checkpoint"
+  },
+  "gates": [
+    "necessary build",
+    "first test: HTTP quality",
+    "complete five-length HTTP performance and repeated-range review",
+    "only after full HTTP: bitwise intermediate/state checks and HTTP trace"
+  ],
+  "not_delivered": [
+    "C++ frame executor",
+    "plan schema validator",
+    "arena aliasing",
+    "full D/P/S plans",
+    "proven performance or peak-memory benefit"
+  ]
+}

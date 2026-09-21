@@ -161,6 +161,7 @@ add_library(q4t_model STATIC
   src/model/qsa_decode.cu
   src/model/streaming_topk.cu
   src/model/decode_topk.cu
+  src/model/short_topk.cu
   src/model/indexer_decode.cu
   src/model/moe.cu
   src/model/ple_layer.cu
