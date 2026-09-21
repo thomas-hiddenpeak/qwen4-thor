@@ -947,27 +947,26 @@ void ChatServer::SchedulerLoop() {
         } else {
           std::vector<int32_t> pk_tokens;
           std::vector<int> pk_lens(Bp), pk_seq(Bp);
-          std::vector<int> pk_off(Bp + 1, 0);
           for (int i = 0; i < Bp; ++i) {
             pk_lens[i] = pf[i]->len;
             pk_seq[i] = pf[i]->seq_id;
-            pk_off[i + 1] = pk_off[i] + pf[i]->len;
             pk_tokens.insert(pk_tokens.end(), pf[i]->ids,
                              pf[i]->ids + pf[i]->len);
           }
           sp = model::ModelPrefillBatch(model_, pk_tokens.data(),
                                         pk_lens.data(), pk_seq.data(), Bp,
-                                        d_prefill_logits_, nullptr);
+                                        d_prefill_logits_, nullptr,
+                                        model::PrefillBatchLogitsRows::
+                                            kSequenceLastRows);
           if (!sp.ok() && cudaPeekAtLastError() != cudaSuccess)
             gpu_healthy_.store(false, std::memory_order_relaxed);
           if (sp.ok()) {
-            // D2H each sequence's last-token row (seq_offset[b+1]-1).
+            // Head output row i belongs to packed sequence i.
             cudaError_t copy_error = cudaSuccess;
             for (int i = 0; i < Bp; ++i) {
-              const int last_row = pk_off[i + 1] - 1;
               const cudaError_t error = cudaMemcpyAsync(
                   pf[i]->h_logits,
-                  d_prefill_logits_ + static_cast<size_t>(last_row) * vocab,
+                  d_prefill_logits_ + static_cast<size_t>(i) * vocab,
                   static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost,
                   nullptr);
               if (copy_error == cudaSuccess) copy_error = error;

@@ -1,0 +1,205 @@
+// Structural checks plus raw numerical evidence; no invented error tolerance.
+#include <cuda_runtime.h>
+#include <algorithm>
+#include <bit>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <fstream>
+#include <iterator>
+#include <memory>
+#include <numeric>
+#include <string>
+#include <vector>
+#include "q4t/model/model.h"
+#include "q4t/text/tokenizer.h"
+
+namespace {
+void Require(bool ok, const char* message) {
+  if (!ok) {
+    std::fprintf(stderr, "FAIL: %s\n", message);
+    std::exit(1);
+  }
+}
+void Check(q4t::Status s) { Require(s.ok(), s.message().c_str()); }
+void Cuda(cudaError_t e) { Require(e == cudaSuccess, cudaGetErrorString(e)); }
+std::vector<uint16_t> Read(const uint16_t* p, size_t n) {
+  std::vector<uint16_t> v(n);
+  Cuda(cudaMemcpy(v.data(), p, n * 2, cudaMemcpyDeviceToHost));
+  return v;
+}
+float Float(uint16_t x) {
+  return std::bit_cast<float>(static_cast<uint32_t>(x) << 16);
+}
+void Save(const std::string& path, const std::vector<uint16_t>& v) {
+  std::ofstream f(path, std::ios::binary);
+  f.write(reinterpret_cast<const char*>(v.data()), v.size() * 2);
+  Require(f.good(), "write raw logits");
+}
+void Compare(const std::string& prefix, const std::vector<uint16_t>& a,
+             const std::vector<uint16_t>& b) {
+  Require(a.size() == b.size(), "logits size");
+  double error = 0, norm = 0, max_abs = 0;
+  size_t different = 0, top_a = 0, top_b = 0;
+  for (size_t i = 0; i < a.size(); ++i) {
+    const double x = Float(a[i]), y = Float(b[i]);
+    Require(std::isfinite(x) && std::isfinite(y), "nonfinite logits");
+    different += a[i] != b[i];
+    error += (x - y) * (x - y);
+    norm += x * x;
+    max_abs = std::max(max_abs, std::abs(x - y));
+    if (x > Float(a[top_a])) top_a = i;
+    if (y > Float(b[top_b])) top_b = i;
+  }
+  Save(prefix + "-all.bf16", a);
+  Save(prefix + "-last.bf16", b);
+  std::printf("ROW %s elements=%zu bit_diff=%zu l2_rel=%.12g "
+              "max_abs=%.12g argmax=%zu/%zu\n", prefix.c_str(), a.size(),
+              different, std::sqrt(error / std::max(norm, 1e-300)),
+              max_abs, top_a, top_b);
+  std::fflush(stdout);
+}
+}  // namespace
+
+int main(int argc, char** argv) {
+  using namespace q4t::model;
+  Require(argc == 3, "model and artifact directories required");
+  const std::string output = argv[2];
+  ModelConfig cfg;
+  cfg.model_dir = argv[1];
+  cfg.index_path = cfg.model_dir + "/model.safetensors.index.json";
+  cfg.ple_sidecar = cfg.model_dir + "/ple/qwen3.8-flash-next-ple-fp8.bin";
+  cfg.max_len = 8193;
+  cfg.max_prefill = 8192;
+  cfg.max_seq = 4;
+  cfg.ple_capacity_tokens = 8192;
+  Model m;
+  Check(LoadModel(cfg, &m, nullptr));
+  Require(!m.head.lm_head_fp8.w && !m.head.mixer.mix_down_fp8.w &&
+              !m.head.mixer.mix_up_fp8.w, "requires BF16 head projections");
+  std::unique_ptr<q4t::text::Tokenizer> tokenizer;
+  Check(q4t::text::Tokenizer::Load(cfg.model_dir + "/tokenizer.json", {},
+                                  &tokenizer));
+  std::ifstream prompt_file(output + "/prompt-8192.txt");
+  const std::string prompt((std::istreambuf_iterator<char>(prompt_file)), {});
+  std::vector<uint32_t> source;
+  Check(tokenizer->Encode(prompt, &source));
+  Require(source.size() == 8192, "fixture token length");
+  const std::vector<std::vector<int>> shapes{
+      {1}, {7, 1}, {1, 13, 5}, {1024, 4096}, {4096, 1024},
+      {4096, 4096}, {1, 8191}, {1024, 3072, 4096}};
+  const std::vector<std::vector<int>> slots{
+      {3}, {3, 1}, {2, 0, 3}, {3, 1}, {1, 3}, {2, 0}, {3, 1}, {2, 0, 3}};
+  const size_t vocab = m.cfg.vocab;
+  const size_t width = m.hc_dim();
+  constexpr size_t kGuard = 128;
+  uint16_t* full = nullptr;
+  uint16_t* selected = nullptr;
+  Cuda(cudaMalloc(&full, 8192 * vocab * 2));
+  Cuda(cudaMalloc(&selected, (cfg.max_seq * vocab + 2 * kGuard) * 2));
+  size_t trunk_values = 0;
+  int rows = 0;
+  for (size_t test = 0; test < shapes.size(); ++test) {
+    const auto& lengths = shapes[test];
+    const int batch = static_cast<int>(lengths.size());
+    std::vector<int> offsets(batch + 1, 0);
+    std::vector<int32_t> tokens;
+    for (int b = 0; b < batch; ++b) {
+      offsets[b + 1] = offsets[b] + lengths[b];
+      // Distinct prefixes/rotations exercise the mapping independently of slot.
+      for (int t = 0; t < lengths[b]; ++t)
+        tokens.push_back(source[(t + b * 137) % source.size()]);
+    }
+    const int total = offsets.back();
+    std::vector<uint16_t> expected_trunk, expected_next;
+    std::vector<std::vector<uint16_t>> expected_logits;
+    for (int pass = 0; pass < 2; ++pass) {
+      Cuda(cudaMemset(selected, 0xa5,
+                      (cfg.max_seq * vocab + 2 * kGuard) * 2));
+      auto* dest = pass == 0 ? full : selected + kGuard;
+      Check(ModelPrefillBatch(m, tokens.data(), lengths.data(),
+                               slots[test].data(), batch, dest, nullptr,
+                               pass == 0 ? PrefillBatchLogitsRows::kAllRows
+                                   : PrefillBatchLogitsRows::kSequenceLastRows));
+      Cuda(cudaStreamSynchronize(nullptr));
+      const auto* final_trunk = m.cfg.num_layers % 2 == 0
+                                   ? m.d_trunk : m.d_trunk2;
+      const auto* inactive = m.cfg.num_layers % 2 == 0
+                                ? m.d_trunk2 : m.d_trunk;
+      const auto hidden = Read(final_trunk, total * width);
+      if (pass == 0) expected_trunk = hidden;
+      else {
+        Require(hidden == expected_trunk, "full decoder trunk changed");
+        trunk_values += hidden.size();
+        const auto guard = Read(selected, batch * vocab + 2 * kGuard);
+        for (size_t i = 0; i < kGuard; ++i)
+          Require(guard[i] == 0xa5a5 &&
+                      guard[kGuard + batch * vocab + i] == 0xa5a5,
+                  "selected output overrun");
+      }
+      const size_t head_rows = pass == 0 ? total : batch;
+      const size_t norm_offset =
+          (head_rows * m.cfg.hs * 2 + 255) / 256 * 256;
+      Require(norm_offset + head_rows * width * 2 <= m.ws_bytes,
+              "stage capture bounds");
+      const auto* mixed = static_cast<const uint16_t*>(m.d_ws);
+      const auto* normed = reinterpret_cast<const uint16_t*>(
+          static_cast<const char*>(m.d_ws) + norm_offset);
+      for (int b = 0; b < batch; ++b) {
+        const int row_index = pass == 0 ? offsets[b + 1] - 1 : b;
+        const auto row = Read(dest + row_index * vocab, vocab);
+        const std::string prefix = output + "/case-" + std::to_string(test) +
+                                   "-chunk-" + std::to_string(b);
+        const std::string suffix = pass == 0 ? "-all.bf16" : "-last.bf16";
+        Save(prefix + "-mixed" + suffix,
+             Read(mixed + row_index * m.cfg.hs, m.cfg.hs));
+        Save(prefix + "-normed" + suffix,
+             Read(normed + row_index * width, width));
+        const auto begin = hidden.begin() + (offsets[b + 1] - 1) * width;
+        const std::vector<uint16_t> trunk_row(begin, begin + width);
+        Save(prefix + "-trunk" + suffix, trunk_row);
+        if (pass == 0) expected_logits.push_back(row);
+        else {
+          Require(Read(inactive + b * width, width) == trunk_row,
+                  "gathered wrong sequence row");
+          Compare(prefix, expected_logits[b], row);
+          ++rows;
+        }
+      }
+      const int history_width = m.ple_hash.ngram_size - 1;
+      std::vector<int32_t> history(batch * history_width, m.cfg.eos_token_id);
+      std::vector<int32_t> next_tokens(batch);
+      for (int b = 0; b < batch; ++b) {
+        next_tokens[b] = 64 + b;
+        for (int j = 0; j < history_width; ++j) {
+          const int local = lengths[b] - history_width + j;
+          if (local >= 0) history[b * history_width + j] =
+                              tokens[offsets[b] + local];
+        }
+      }
+      // ModelDecodeBatchMulti consumes the caller's pooled rope table.
+      // Populate the continuation position in both modes before comparing it.
+      for (int b = 0; b < batch; ++b) {
+        for (int axis = 0; axis < 3; ++axis) {
+          int* position = m.d_rope_pos +
+              (static_cast<size_t>(slots[test][b]) * 3 + axis) *
+                  m.cfg.max_len + lengths[b];
+          Cuda(cudaMemcpy(position, &lengths[b], sizeof(int),
+                          cudaMemcpyHostToDevice));
+        }
+      }
+      Check(ModelDecodeBatchMulti(m, next_tokens.data(), lengths.data(),
+                                   slots[test].data(), history.data(), batch,
+                                   full, nullptr));
+      Cuda(cudaStreamSynchronize(nullptr));
+      auto continuation = Read(full, batch * vocab);
+      if (pass == 0) expected_next = std::move(continuation);
+      else Require(continuation == expected_next, "fixed continuation changed");
+    }
+  }
+  Cuda(cudaFree(selected));
+  Cuda(cudaFree(full));
+  m.Free();
+  std::printf("STRUCTURAL_PASS rows=%d trunk_bf16=%zu continuation_cases=%zu "
+              "NUMERICAL_REVIEW_REQUIRED\n", rows, trunk_values, shapes.size());
+}

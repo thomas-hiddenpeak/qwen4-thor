@@ -1,0 +1,58 @@
+// HTTP coverage observer only. Never linked into the production binary.
+// Two vocabulary rows before one stream completion identify the serve batch
+// readback loop. Lone prefill completes its one row before another request.
+#include <cuda_runtime_api.h>
+#include <dlfcn.h>
+
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+
+namespace {
+thread_local int rows = 0;
+thread_local uintptr_t first_source = 0;
+thread_local intptr_t row_stride = 0;
+thread_local bool copy_ok = true;
+
+template <typename T>
+T Resolve(const char* name) {
+  auto fn = reinterpret_cast<T>(dlsym(RTLD_NEXT, name));
+  if (!fn) std::_Exit(127);
+  return fn;
+}
+}  // namespace
+
+extern "C" cudaError_t CUDARTAPI cudaMemcpyAsync(
+    void* dst, const void* src, size_t bytes, cudaMemcpyKind kind,
+    cudaStream_t stream) {
+  static const auto real = Resolve<decltype(&cudaMemcpyAsync)>("cudaMemcpyAsync");
+  const cudaError_t result = real(dst, src, bytes, kind, stream);
+  if (kind == cudaMemcpyDeviceToHost && bytes == 248320 * sizeof(uint16_t)) {
+    const uintptr_t source = reinterpret_cast<uintptr_t>(src);
+    if (rows == 0) first_source = source;
+    if (rows == 1) {
+      row_stride = static_cast<intptr_t>(source) -
+                   static_cast<intptr_t>(first_source);
+    }
+    ++rows;
+    copy_ok = copy_ok && result == cudaSuccess;
+  }
+  return result;
+}
+
+extern "C" cudaError_t CUDARTAPI cudaStreamSynchronize(cudaStream_t stream) {
+  static const auto real =
+      Resolve<decltype(&cudaStreamSynchronize)>("cudaStreamSynchronize");
+  const cudaError_t result = real(stream);
+  if (rows > 1) {
+    std::fprintf(stderr,
+                 "[prefill-batch-readback] rows=%d stride=%lld ok=%d\n",
+                 rows, static_cast<long long>(row_stride),
+                 copy_ok && result == cudaSuccess);
+  }
+  rows = 0;
+  first_source = 0;
+  row_stride = 0;
+  copy_ok = true;
+  return result;
+}

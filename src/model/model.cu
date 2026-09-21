@@ -54,6 +54,20 @@ namespace {
 
 constexpr int kBlock = 256;
 
+// The inactive trunk buffer is dead after the decoder loop. Pack each
+// sequence's final row there before the head, without another allocation.
+__global__ void GatherSequenceLastRowsKernel(
+    const uint16_t* __restrict__ trunk, uint16_t* __restrict__ selected,
+    const int* __restrict__ offsets, int width) {
+  const int b = blockIdx.y;
+  const int col = blockIdx.x * blockDim.x + threadIdx.x;
+  if (col < width) {
+    selected[static_cast<size_t>(b) * width + col] =
+        trunk[static_cast<size_t>(offsets[b + 1] - 1) * width + col];
+  }
+}
+
+
 // ple_emb[i] *= scale (in place, BF16).
 __global__ void ScaleBf16Kernel(uint16_t* __restrict__ x, int total,
                                 float scale) {
@@ -369,7 +383,8 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                  int seq_id = 0, const int* d_seq_id = nullptr,
                  int tokens_per_seq = 0, uint16_t* ple_conv_ckpt = nullptr,
                  const RaggedBatch* ragged = nullptr,
-                 LogitsRows logits_rows = LogitsRows::kAllRows) {
+                 LogitsRows logits_rows = LogitsRows::kAllRows,
+                 bool sequence_last_rows = false) {
   const ModelConfig& cfg = m.cfg;
   // Every model entry point already owns the logical positions copied to
   // m.d_positions. Reduce once on host, not once per full-attention layer.
@@ -489,6 +504,16 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
   // otherwise pass a null output pointer to Bf16Gemm (CUBLAS_STATUS_INVALID_
   // VALUE).
   if (!logits) return Status();
+  if (sequence_last_rows) {
+    const int width = m.hc_dim();
+    const dim3 grid((width + kBlock - 1) / kBlock, ragged->B);
+    GatherSequenceLastRowsKernel<<<grid, kBlock, 0, stream>>>(
+        trunk, next, ragged->seq_offset, width);
+    if (cudaGetLastError() != cudaSuccess)
+      return Status::Fail("RunLayers: gather sequence last rows");
+    return HeadForward(m.head, next, logits, ragged->B, m.d_ws, m.ws_bytes,
+                       stream);
+  }
   if (logits_rows == LogitsRows::kLastRow) {
     return HeadForward(m.head, trunk + static_cast<size_t>(T - 1) * m.hc_dim(),
                        logits, 1, m.d_ws, m.ws_bytes, stream);
@@ -1052,7 +1077,8 @@ Status ModelVerifyMulti(const Model& m, const int32_t* tokens,
 // vision); per-sequence rope_delta = 0.
 Status ModelPrefillBatch(const Model& m, const int32_t* tokens,
                          const int* lens, const int* seq_ids, int B,
-                         uint16_t* logits, cudaStream_t stream) {
+                         uint16_t* logits, cudaStream_t stream,
+                         PrefillBatchLogitsRows logits_rows) {
   const ModelConfig& cfg = m.cfg;
   if (B <= 0) return Status::Fail("ModelPrefillBatch: B must be > 0");
   if (B > cfg.max_seq)
@@ -1165,7 +1191,9 @@ Status ModelPrefillBatch(const Model& m, const int32_t* tokens,
   ragged.B = B;
   return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(),
                    positions.data(), Ttot, logits, stream, nullptr, nullptr,
-                   nullptr, 0, 0, m.d_token_seq_id, 0, nullptr, &ragged);
+                   nullptr, 0, 0, m.d_token_seq_id, 0, nullptr, &ragged,
+                   LogitsRows::kAllRows,
+                   logits_rows == PrefillBatchLogitsRows::kSequenceLastRows);
 }
 
 // Fused mixed prefill+decode forward (see model.h). A generalization of

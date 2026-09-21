@@ -37,6 +37,9 @@ namespace model {
 // nullptr skips head. trunk_out always keeps all [T, hc*hs] rows.
 enum class LogitsRows { kAllRows, kLastRow };
 
+// Packed prefill output order follows the input sequence order, not slot IDs.
+enum class PrefillBatchLogitsRows { kAllRows, kSequenceLastRows };
+
 // Static configuration of the model (all from config.json / the checkpoint).
 struct ModelConfig {
   std::string model_dir;
@@ -369,6 +372,8 @@ Status ModelVerifyMulti(const Model& m, const int32_t* tokens,
 //             b's token t (seq_offset = prefix sum of lens). The caller reads
 //             row seq_offset[b+1]-1 for sequence b's next-token distribution.
 //   stream  : CUDA stream.
+//   logits_rows: kAllRows preserves the packed output above;
+//             kSequenceLastRows writes [B, vocab], row b for sequence b.
 //
 // After the call each sequence's per-layer recurrent state (linear SSM/conv,
 // PLE conv, full KV/indexer, 3D MRoPE) is at position lens[b]-1, ready for
@@ -376,7 +381,9 @@ Status ModelVerifyMulti(const Model& m, const int32_t* tokens,
 // ModelPrefill calls, but with the weights swept once.
 Status ModelPrefillBatch(const Model& m, const int32_t* tokens,
                          const int* lens, const int* seq_ids, int B,
-                         uint16_t* logits, cudaStream_t stream);
+                         uint16_t* logits, cudaStream_t stream,
+                         PrefillBatchLogitsRows logits_rows =
+                             PrefillBatchLogitsRows::kAllRows);
 
 // Fused mixed prefill+decode batch (aggregated continuous batching): process B
 // sequences in ONE packed forward where each sequence is EITHER a fresh prefill
