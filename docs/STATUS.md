@@ -18,7 +18,19 @@
 TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间。
 按重复范围比较，不设置临时容忍百分比或拼接最优档位。
 
-## 最新接受：workspace 布局单源化
+## 最新接受：normed 借用 MoE 区域
+
+基于 cd1a624，normed 借用 MoE 工作区，最大容量预留，HC GEMM scratch
+和输入输出仍独立。构建零警告，首项质量 11/11、五档 15/15；初始
+44K decode 相对父版的不利分离，经旧→新→旧 HTTP 复核未重现，候选
+TTFT/decode 同时与两组旧对照重叠。原始异常与复核完整保留。
+门禁后 84 布局、168 链接容量核对通过，4K 各 kernel/分配次数不变。
+8192 分块共享 workspace 2515730432→2347958272 字节，再减 160 MiB；
+相对两份 normed 阶段累计减 320 MiB。未测系统峰值，不宣称稳定提速。
+[报告](NORMED_MOE_ALIAS_2026-09-21.md)，证据
+`.q4t-work/e2e/normed-moe-alias-20260921/`。
+
+## 已完成前置：workspace 布局单源化
 
 基于 657b2e8，DecoderWorkspaceLayout 统一容量与偏移，公开容量查询
 和 forward 共用一个构造函数，消除重复维护；区域仍然独立。
@@ -59,7 +71,7 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 ## 正式性能参考
 
 正式五档性能参考仍为 **fcb5925**（短路径 top-k 寄存器网络）。
-最新运行时为上述布局单源化阶段，正式参考不重置。
+最新运行时为上述 normed/MoE 别名阶段，正式参考不重置。
 质量 11/11、性能 15/15，输出摘要一致、服务退出 0，构建零警告；
 完整门禁后 352 组、277598448 个槽/长度逐位一致，4K HTTP 时间线通过。
 
@@ -74,13 +86,14 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 4K decode 较前一版 +0.76%，8K TTFT -1.08%，其余范围重叠。
 正式参考见 tools/evalscope/fixtures/performance_reference.json；
 二进制 SHA 与完整边界见 [报告](SHORT_TOPK_2026-09-21.md)。证据
-`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 对应已验证的布局单源化版本；
-已接受的 657b2e8 二进制保存在本轮证据目录 q4t-before。
+`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 对应已验证的 normed/MoE 别名版本；
+已接受的 cd1a624 二进制保存在本轮证据目录 q4t-before。
 
 ## 后续演进
 
-GRFrame、单 normed 复用与布局单源化已接受。下一步独立验证 normed
-借用 MoE 工作区，保持 HC GEMM scratch 与各输入/输出区域独立。完整 D/P/S、可执行计划和状态提交仍未实现。
+GRFrame、单 normed 复用、布局单源化与 normed/MoE 别名已接受。
+下一步独立迁移 GRRead down/up 暂存，保留 gate 所有权，按实际 lowrank
+计算不重叠视图。独立草稿未应用，所有新改动仍须完整 HTTP。完整 D/P/S、可执行计划和状态提交仍未实现。
 [GRFrame 合同](../dataflow-engine/GRFRAME_RUNNER_PLAN.md) 与
 [JSON 清单](../dataflow-engine/plans/grframe_main.json) 区分提案和候选绑定；
 完整引擎进度见 [筹备状态](../dataflow-engine/STATUS.md)。

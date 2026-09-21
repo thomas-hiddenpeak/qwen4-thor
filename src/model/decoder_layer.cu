@@ -10,8 +10,8 @@
 //     6. out = GRWrite(mlp_out, mlp_frame)
 //
 // The layer carves its device `workspace` into per-submodule regions (they run
-// sequentially on one stream, but each gets its own region so a submodule's
-// cuBLASLt scratch / carved intermediates never alias another's).
+// sequentially, with existing auxiliary-stream joins). GRRead normed scratch
+// borrows the MoE region before MoE starts; GEMM scratch remains separate.
 #include "q4t/model/decoder_layer.h"
 
 #include <cuda_bf16.h>
@@ -167,7 +167,8 @@ size_t AttnWs(int T, bool is_full) {
 }
 
 // One source for both allocation size and forward offsets. No runtime
-// allocation or interpreter is involved; all regions remain disjoint.
+// allocation or interpreter is involved. Only normed and MoE share storage;
+// both GRRead last readers precede MoE on the caller stream.
 struct DecoderWorkspaceLayout {
   size_t attention = 0;
   size_t moe = 0;
@@ -194,21 +195,22 @@ DecoderWorkspaceLayout MakeDecoderWorkspaceLayout(
                                : AttnWs(T, is_full);
   layout.moe_bytes = MoEForwardWorkspaceBytes(T, k, hs, moe_is, shared_is, E);
   layout.ple_bytes = has_ple ? PleLayerWorkspaceBytes(T, hc, hs) : 0;
+  const size_t hidden_bytes = static_cast<size_t>(T) * hs * sizeof(uint16_t);
+  const size_t hyper_bytes = hidden_bytes * hc;
   auto carve = [&](size_t bytes) {
     const size_t offset = layout.total_bytes;
     layout.total_bytes += AlignUp(bytes);
     return offset;
   };
   layout.attention = carve(layout.attention_bytes);
-  layout.moe = carve(layout.moe_bytes);
+  layout.moe =
+      carve(layout.moe_bytes >= hyper_bytes ? layout.moe_bytes : hyper_bytes);
   layout.moe_gemm = carve(kGemmWs);
   layout.hc_gemm = carve(kGemmWs);
   layout.ple = carve(layout.ple_bytes);
-  const size_t hidden_bytes = static_cast<size_t>(T) * hs * sizeof(uint16_t);
-  const size_t hyper_bytes = hidden_bytes * hc;
   layout.mixed = carve(hidden_bytes);
   layout.block = carve(hidden_bytes);
-  layout.normed = carve(hyper_bytes);
+  layout.normed = layout.moe;  // Last read: inject, before MoE overwrites it.
   layout.combined = carve(hyper_bytes);
   layout.ple_trunk = carve(has_ple ? hyper_bytes : 0);
   return layout;

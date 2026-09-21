@@ -1,8 +1,8 @@
 {
   "format": "q4t.arena_contract",
   "version": 1,
-  "status": "proposal_not_applied",
-  "depends_on": "decoder-workspace-layout candidate acceptance",
+  "status": "accepted_after_bracketing_http",
+  "depends_on": "accepted layout baseline cd1a624",
   "scope": {
     "hs": 2560,
     "hc": 4,
@@ -14,7 +14,7 @@
     "mtp_validation": false
   },
   "source_sha256": {
-    "src/model/decoder_layer.cu": "311f06201dc6d45a432f301decbcf39f814562f53be4f93ede59d4750eb43882",
+    "src/model/decoder_layer.cu": "35c53f4c59fd3f75b4bb9b5bdba159b5ab7b7382b7458e2cd9beb6f07e0e510c",
     "src/model/hyperconnection.cu": "f649f525fef538dae7ee19ee59af988f674f645e4a7e03b544e1ef356654938f",
     "src/model/moe.cu": "28140043a3f0876c87ce5342fb82370f129586b2ff997c6ab350cfd5b12f5aa0",
     "src/quant/moe_gemm.cu": "5996c65c890c6714b19333150f6766093311f822e8efaaa5a9ac7d63670918e0",
@@ -73,11 +73,22 @@
     "logical_normed_read_write_reduction": 0,
     "dram_bandwidth_reduction_measured": false,
     "system_peak_memory_reduction_measured": false,
-    "L1_L2_residency_guaranteed": false
+    "L1_L2_residency_guaranteed": false,
+    "compiled_model_workspace_bytes_at_T8192": {
+      "before": 2515730432,
+      "after": 2347958272
+    }
   },
   "not_implemented": [
-    "physical alias in runner",
-    "alias-specific HTTP validation",
     "machine-readable plan executor"
-  ]
+  ],
+  "evidence": ".q4t-work/e2e/normed-moe-alias-20260921/",
+  "validation": {
+    "quality": 11,
+    "full_performance_requests": 15,
+    "paired_44k_requests": 9,
+    "layout_cases": 84,
+    "linked_capacity_cases": 168,
+    "initial_adverse_preserved": true
+  }
 }

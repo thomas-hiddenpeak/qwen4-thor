@@ -139,10 +139,10 @@ src/model/model.cu；因此 decoder 预算差额不应直接描述成整机峰�
 hs/hc 的布局兼容性；84 个布局与 168 个容量对照针对当前模型的真实
 容量参数，不以通用 API 外观宣称通用形状验证。
 
-## 后续提案：normed 借用 MoE 区域
+## 已接受：normed 借用 MoE 区域
 
 [可机读提案](plans/normed_moe_alias.json) 记录区域容量、三个视图、
-最后消费者与源文件指纹；尚未应用，不是执行器输入。
+最后消费者与源文件指纹；候选已在 cd1a624 后应用，不是执行器输入。
 两次 GRRead 均在 MoE 子层开始前完成；Read 的最后 normed 消费者是
 inject 投影，Write 只持有 gate。候选可令 normed 偏移等于 MoE 起点，
 保留区域容量 max(MoE workspace, normed bytes)，删除独立 normed 区域。
@@ -156,3 +156,32 @@ stream event，再执行 combine；T=1 device 路径都使用调用者 stream。
 模型形状预计再减少 160 MiB decoder 预算（T=8192），但 normed 的
 逻辑读写次数不变，没有 DRAM 流量或缓存驻留实测收益。必须先接受
 布局单源化，再单独修改别名、完成全套 HTTP 与容量/生命周期核对。
+
+别名阶段构建零警告、质量 11/11、五档及 44K 旧→新→旧复核通过，
+随后 84 布局/168 容量与 4K 时间线通过，实际模型预算再减 160 MiB。
+初始异常与边界详见 ../docs/NORMED_MOE_ALIAS_2026-09-21.md。
+
+## 后续范围：GRRead down/up 暂存（仅静态推演）
+
+HyperConnectionMix 当前在 RMSNorm 后分别 cudaMallocAsync down/up，
+在 mix 后各自释放。主层每步 48*2 次 Read，每次两对，合计 192 对；
+根据已接受 4K 时间线的 554 对/step 总数，若移到 caller arena，理论
+可降至 362 对/step。这里只是代码次数推导，尚未改动或测量。
+
+两份临时量均只在 Read 内被消费：down[T,lowrank] 到 up 投影，
+up[T,hc*hs] 到 MixGate。normed 同时被 down 投影、MixGate、inject
+读取，故不能将 down/up 简单覆盖 normed。候选 Read staging 至少需
+Align(normed)+Align(down)+Align(up)，当前模型 T=8192 为 325 MiB；
+可评估扩大现有 normed/MoE 共用区域的视图，而不是新增等量持久区。
+仍需按 max(MoE requirement, Read staging requirement) 实际取容量。
+
+公开容量 API 与 ModelLoad 必须使用真实 lowrank，不能把既有 hs/hc
+约定误用成任意 lowrank 均可用。两个 GRRead 可能有不同 lowrank 时需
+按最大需求预留。down/up 由 caller 借用的接口须与旧 head/MTP 的自有
+分配兼容，并共用同一数学实现；不能复制两套 GR 计算长期维护。
+
+gate 是另一种生命周期：必须活到 Write，不能放进随后被子层覆盖的
+MoE 区域。本轮之后若迁移 down/up，先保留 frame 的 gate 所有权，
+单独验证分配变化；gate arena 化再独立处理。主层动态分配的减少不等于
+权重流量下降，也不保证性能提升。每一步仍先完整 HTTP，后中间值与
+别名/时间线核对。当前没有应用、构建或测试这项后续方案。
