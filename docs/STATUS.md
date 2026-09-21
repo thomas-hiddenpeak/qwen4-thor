@@ -1,6 +1,6 @@
 # 当前状态
 
-更新：2026-09-21。代码是实现事实来源；验收规则见 [EVALUATION.md](EVALUATION.md)。
+更新：2026-09-22。代码是实现事实来源；验收规则见 [EVALUATION.md](EVALUATION.md)。
 
 ## 目标与约束
 
@@ -34,6 +34,61 @@ TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间�
 和原始 HTTP 记录核对通过，接受修复，固定参考不变。
 [报告](VISION_ATTENTION_BARRIER_2026-09-21.md)，证据
 vision-score-barrier-20260921。不是全面视觉质量保证。
+
+## 候选待验收：decode 路径一致性
+
+父版 7364767 已推送 main；以下改动未接受、未提交。
+完整定位链见 [报告](DECODE_PATH_CONSISTENCY_2026-09-21.md)，
+各原始实验保存在 `.q4t-work/e2e/`，历史失败和中间观察保留。
+
+已确认三个实现边界：
+
+1. ModelDecodeStep 写入当前 position + rope_delta 的三行 RoPE
+   坐标；旧 ModelDecodeBatchMulti 未写入，却把 pooled 表传给
+   full attention。最小候选按实际 seq_id 补写，但单独补写
+   并未消除调度/回退的输出差异。
+2. 单图首步第 0 层，初始 SSM/conv 状态、投影和卷积输出摘要
+   相同，GDN recurrence 输出首次不同。共享模式统一归约/更新
+   后三侧一致；默认模式复用寄存器计算体、按 token/真实 slot
+   选择状态后，九个单图 HTTP 输出和边界摘要均保持旧回退。
+3. 扩展 1K/8K/单图 27 请求时，1K/单图一致，8K 分叉重启可复现，
+   新回退保持旧输出。因此首次质量依赖驱动拒绝启动，未运行
+   质量题。8K 逐层日志确认 prefill 全层和 decode 前三层相同，
+   首个 full attention（第 3 层）的输入相同、输出不同。
+   内部 query/gate/index query/压缩 key 摘要相同，评分与所选
+   位置序列不同。专用评分每 head 点积保留 FP32，而 GEMM 路径
+   先存 BF16；专用 T=1 只增加该舍入后，8K 三侧九请求完整输出
+   和主干边界匹配旧回退，评分摘要仍不全等。
+
+这些都是实际 HTTP 内的故障定位；摘要相同不等于完整张量
+精度检验，位置序列摘要不同也不能推断选中集合一定不同。
+插桩各轮已核对不改变对应输出，不用于性能结论。
+
+质量已通过：`decode-rope-indexer-round-quality-20260921` 的
+11/11 题答案精确正确，输入/完整输出与 7364767 相同，长度和
+停止原因正确，服务退出 0，quality-review.json 留证。全部
+定位环境关闭。这不证明全面模型精度，仍不能接受候选。
+
+严格五档门禁未通过：`decode-rope-indexer-round-performance-20260922`
+在首档 1K 因输出与旧调度参考不同退出；prompt 相同，三次
+输出稳定、实际长度正确、服务退出 0，后四档未执行。
+failure-review.json 留证，质量通过不覆盖此失败，参考不更新。
+
+当前独立定位：`decode-path-parent-fallback-matrix-20260922`，
+旧版回退→候选调度→旧版回退，五档各三次、输出 256，固定
+max_len=208896/max_prefill=8192/MTP off。父版二进制摘要核对
+7364767 已接受记录；候选及后侧父版严格对照前侧父版回退的
+完整输出，仍保留旧调度输出门禁失败。这不是正式性能接受，
+不替代旧调度参考，也不允许开始底层数值/profile。
+首次质量依赖未启动记录仍保留于
+`decode-rope-gdn-register-quality-20260921/not-started.json`。
+
+尚未完成：最终候选五档性能及直接父版/固定参考对照；真实 B>1、
+slot 复用、生命周期、视觉/视频与 MTP 消费者 HTTP；门禁后的
+参考精度审查；临时日志/接口清理后的重新构建和首项 HTTP 复验。
+当前点积舍入仅改专用 T=1 分支，不能冒充完整多形状方案。
+不更新输出参考，不将路径一致性当作精度接受，不执行前置
+数值测试或 profile，不宣称吞吐收益。
 
 ## 最新接受：serve logits 按消费者行数分配
 
@@ -310,7 +365,8 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 ## 正式性能参考
 
 正式五档性能参考仍为 **fcb5925**（短路径 top-k 寄存器网络）。
-最新运行时为普通文本单/多序列末行输出头，正式参考不重置。
+最新已接受运行时为 7364767 的按消费者行数分配 logits；
+工作区 decode 候选尚未接受，正式参考不重置。
 质量 11/11、性能 15/15，输出摘要一致、服务退出 0，构建零警告；
 完整门禁后 352 组、277598448 个槽/长度逐位一致，4K HTTP 时间线通过。
 
@@ -325,7 +381,8 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 4K decode 较前一版 +0.76%，8K TTFT -1.08%，其余范围重叠。
 正式参考见 tools/evalscope/fixtures/performance_reference.json；
 二进制 SHA 与完整边界见 [报告](SHORT_TOPK_2026-09-21.md)。证据
-`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 对应已接受的批处理末行输出头版本；
+`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 当前为未接受的 decode 路径一致性候选；
+7364767 已接受二进制保存在 decode-rope-fix-20260921/q4t-before；
 已接受 61742d4 二进制保存在 prefill-batch-last-rows-20260921/q4t-before；
 已接受 46b732b 二进制保存在 prefill-last-row-20260921/q4t-before；
 已接受 f41adfc 二进制保存在 prefill-first-head-skip-20260921/q4t-before；
