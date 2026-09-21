@@ -40,6 +40,7 @@ def main():
     ap.add_argument('--stages', required=True, type=Path)
     ap.add_argument('--model-dir', required=True, type=Path)
     ap.add_argument('--output', required=True, type=Path)
+    ap.add_argument('--expected-cases', type=int, default=10)
     args = ap.parse_args()
     root = Path(__file__).resolve().parents[2]
     stage, out = args.stages.resolve(), args.output.resolve()
@@ -69,7 +70,7 @@ def main():
     assert lm.shape == (248320, 2560)
     cases = sorted(p.name.removesuffix('-mixed-all.bf16')
                    for p in stage.glob('*-mixed-all.bf16'))
-    assert len(cases) == 10
+    assert args.expected_cases > 0 and len(cases) == args.expected_cases
     inputs, records = [], []
     hashes = {}
 
@@ -114,7 +115,8 @@ def main():
         'stages_manifest': json.loads((stage / 'manifest.json').read_text()),
         'weight_metadata': weight_metadata, 'input_sha256': hashes,
         'reference': 'FP64 matmul/nonlinear; FP32 then BF16 RNE at original boundaries',
-        'limits': 'Ten observed rows, not all prompts; CPU reference is not production math. '
+        'observed_rows': len(cases),
+        'limits': 'Observed rows only, not all prompts; CPU reference is not production math. '
                   'Reports relative evidence, no automatic precision acceptance.'}, indent=2) + '\n')
 
 

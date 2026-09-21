@@ -67,6 +67,8 @@ def main():
     for name in ['accepted-root', 'parent-run', 'output', 'model-dir']:
         parser.add_argument('--' + name, type=Path, required=True)
     parser.add_argument('--port', type=int, default=8000)
+    parser.add_argument('--parent-selected-rows', action='store_true',
+                        help='parent already writes one packed row per sequence')
     args = parser.parse_args()
     run, parent, out = [p.resolve() for p in
                         [args.accepted_root, args.parent_run, args.output]]
@@ -85,6 +87,8 @@ def main():
                  'src/server/chat_server.cpp', 'include/q4t/server/chat_server.h']:
         assert (ROOT / name).read_bytes() == (run / 'source' / name).read_bytes()
     out.mkdir(parents=True, exist_ok=False)
+    save(out / 'coverage-mode.json',
+         {'parent_selected_rows': args.parent_selected_rows})
     shutil.copy2(__file__, out / Path(__file__).name)
     shutil.copy2(ROOT / 'tools/evalscope/run_chunk_interleave.py', out)
     observer = ROOT / 'tools/verify/prefill_batch_readback.cpp.in'
@@ -181,7 +185,8 @@ def main():
                 assert len(observations) == 1, observations
                 rows, stride, ok = map(int, observations[0])
                 assert rows == 2 and ok == 1
-                allowed = [496640] if version == 'candidate' else [n * 496640 for n in lengths]
+                selected_rows = version == 'candidate' or args.parent_selected_rows
+                allowed = [496640] if selected_rows else [n * 496640 for n in lengths]
                 assert stride in allowed, observations
                 assert all(long[0]['start_time'] < x['start_time'] < long[0]['completed_time']
                            for x in short)

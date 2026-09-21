@@ -601,11 +601,10 @@ Status ChatServer::Start(const ServerOptions& opts) {
                          "(max_seq=%d)\n",
                  max_seq_);
   }
-  // Shared prefill-logits buffer [max_prefill, vocab], used only under
-  // model_mu_ (prefills serialize there). One buffer instead of per-request
-  // ~1 GB so peak memory does not scale with prompt length x concurrency.
+  // Every serve prefill consumes one row per sequence. The shared buffer
+  // holds at most max_seq rows, and all accesses are under model_mu_.
   if (cudaMalloc(reinterpret_cast<void**>(&d_prefill_logits_),
-                 static_cast<size_t>(cfg.max_prefill) * cfg.vocab * 2) !=
+                 static_cast<size_t>(max_seq_) * cfg.vocab * 2) !=
       cudaSuccess) {
     return Status::Fail("prefill logits buffer alloc failed (out of memory)");
   }
@@ -1572,10 +1571,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // per-layer state (linear SSM/conv recurrence, full-attention KV/indexer
   // written at absolute positions) — bit-identical to one big prefill. Only
   // the LAST chunk's final logits row is needed (first decode token), so
-  // d_logits holds ONE chunk's rows, not T (a 262K one-shot [T, vocab]
-  // buffer would be ~130 GB).
-  // Prefill logits go to the shared d_prefill_logits_ [max_prefill, vocab]
-  // (chunk <= max_prefill), so there is no per-request logits allocation.
+  // all serve paths explicitly select that row before the output head.
+  // Shared d_prefill_logits_ holds [max_seq, vocab], including inline
+  // fallback, vision and MTP main-model prefill (one row per request).
   // MTP: prefill trunk_out buffer (pre-final-mixer multi stream [T, hc*hs])
   // for the draft-extend. Allocated when MTP is loaded, for BOTH one-shot and
   // chunked prefill. The chunked path accumulates the trunk across chunks
@@ -1698,42 +1696,36 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       seq.history.assign(ids.begin(), ids.end());
     }
   } else {
-    int last_chunk_c = 0;  // token count of the final chunk (D2H row offset)
     const std::lock_guard<std::mutex> lock(model_mu_);
     s = model::ModelBeginSequence(model_, &seq, nullptr, seq_id);
     if (s.ok()) {
       if (!chunked) {
-        // One-shot prefill (T <= max_prefill): unchanged path.
+        // Keep full trunk output for MTP, but only the final logits row.
         s = model::ModelPrefill(model_, &seq, ids.data(), T, d_prefill_logits_,
                                 nullptr, mtp_loaded_ ? d_trunk_full : nullptr,
-                                vptr, seq_id);
+                                vptr, seq_id, model::LogitsRows::kLastRow);
       } else {
         // Text chunks share the sequence's slot, position and PLE history.
-        // Keep the original head policy: first and final chunks produce
-        // logits, intermediate continuation chunks omit them.
+        // Intermediate chunks only produce trunk/state; the final chunk
+        // writes one logits row at the start of the shared buffer.
         while (s.ok() && seq.position < T) {
           const int base = seq.position;
           const int c = std::min(chunk, T - base);
           const bool last = (base + c == T);
-          if (last) last_chunk_c = c;
           s = model::ModelPrefillTextChunk(
               model_, &seq, ids.data(), T, c,
-              (base == 0 || last) ? d_prefill_logits_ : nullptr, nullptr,
+              last ? d_prefill_logits_ : nullptr, nullptr,
               d_trunk_full
                   ? d_trunk_full + static_cast<size_t>(base) * trunk_hc_dim
-                  : nullptr);
+                  : nullptr, model::LogitsRows::kLastRow);
         }
       }
     }
     // First decode token: D2H the last prefill row into h_logits WHILE holding
     // model_mu_, so the shared d_prefill_logits_ is safe from the next prefill.
     if (s.ok()) {
-      const uint16_t* last_logits =
-          chunked ? d_prefill_logits_ +
-                        static_cast<size_t>(last_chunk_c - 1) * vocab
-                  : d_prefill_logits_ + static_cast<size_t>(T - 1) * vocab;
       const cudaError_t copy_error = cudaMemcpyAsync(
-          h_logits.data(), last_logits, static_cast<size_t>(vocab) * 2,
+          h_logits.data(), d_prefill_logits_, static_cast<size_t>(vocab) * 2,
           cudaMemcpyDeviceToHost, nullptr);
       s = FinishHostReadback(copy_error, &gpu_healthy_);
     }
@@ -1796,14 +1788,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   int next_token = -1;
   std::string finish_reason = "stop";
 
-  // First decode token comes from the prefill's LAST position. One-shot
-  // prefill: row T-1 of d_logits. Chunked prefill: the last chunk wrote its
-  // final row to row 0 of d_logits (ModelDecodeBatch's T=c rows start at
-  // row 0). The D2H (outside the lock) runs on the default stream;
-  // synchronize before the host argmax so h_logits is fully populated (the
-  // original serial code relied on the next forward's H2D to implicitly
-  // order this, but the lock now separates them).
-  // h_logits holds the last prefill row (D2H'd under the model_mu_ lock above).
+  // Every prefill path reads its selected final row under model_mu_ and
+  // checks stream completion before publishing h_logits to this thread.
   next_token = argmax(h_logits.data());
   metrics_.ttft_seconds.Observe(
       std::chrono::duration<double>(std::chrono::steady_clock::now() - t_arrive)

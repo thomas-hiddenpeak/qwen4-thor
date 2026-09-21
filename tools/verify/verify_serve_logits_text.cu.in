@@ -1,0 +1,204 @@
+// Structural checks plus raw numerical evidence; no invented error tolerance.
+#include <cuda_runtime.h>
+#include <algorithm>
+#include <bit>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <fstream>
+#include <iterator>
+#include <memory>
+#include <numeric>
+#include <string>
+#include <vector>
+#include "q4t/model/model.h"
+#include "q4t/text/tokenizer.h"
+
+namespace {
+void Require(bool ok, const char* message) {
+  if (!ok) {
+    std::fprintf(stderr, "FAIL: %s\n", message);
+    std::exit(1);
+  }
+}
+void Check(q4t::Status s) { Require(s.ok(), s.message().c_str()); }
+void Cuda(cudaError_t e) { Require(e == cudaSuccess, cudaGetErrorString(e)); }
+std::vector<uint16_t> Read(const uint16_t* p, size_t n) {
+  std::vector<uint16_t> v(n);
+  Cuda(cudaMemcpy(v.data(), p, n * 2, cudaMemcpyDeviceToHost));
+  return v;
+}
+float Float(uint16_t x) {
+  return std::bit_cast<float>(static_cast<uint32_t>(x) << 16);
+}
+void Save(const std::string& path, const std::vector<uint16_t>& v) {
+  std::ofstream f(path, std::ios::binary);
+  f.write(reinterpret_cast<const char*>(v.data()), v.size() * 2);
+  Require(f.good(), "write raw logits");
+}
+void Compare(const std::string& prefix, const std::vector<uint16_t>& a,
+             const std::vector<uint16_t>& b) {
+  Require(a.size() == b.size(), "logits size");
+  double error = 0, norm = 0, max_abs = 0;
+  size_t different = 0, top_a = 0, top_b = 0;
+  for (size_t i = 0; i < a.size(); ++i) {
+    const double x = Float(a[i]), y = Float(b[i]);
+    Require(std::isfinite(x) && std::isfinite(y), "nonfinite logits");
+    different += a[i] != b[i];
+    error += (x - y) * (x - y);
+    norm += x * x;
+    max_abs = std::max(max_abs, std::abs(x - y));
+    if (x > Float(a[top_a])) top_a = i;
+    if (y > Float(b[top_b])) top_b = i;
+  }
+  Save(prefix + "-all.bf16", a);
+  Save(prefix + "-last.bf16", b);
+  std::printf("ROW %s elements=%zu bit_diff=%zu l2_rel=%.12g "
+              "max_abs=%.12g argmax=%zu/%zu\n", prefix.c_str(), a.size(),
+              different, std::sqrt(error / std::max(norm, 1e-300)),
+              max_abs, top_a, top_b);
+  std::fflush(stdout);
+}
+}  // namespace
+
+int main(int argc, char** argv) {
+  using namespace q4t::model;
+  Require(argc == 3 || argc == 4, "model and artifact directories required");
+  const bool dump_stages = argc == 4;
+  Require(!dump_stages || std::string(argv[3]) == "--dump-stages",
+          "unknown option");
+  const std::string output = argv[2];
+  ModelConfig cfg;
+  cfg.model_dir = argv[1];
+  cfg.index_path = cfg.model_dir + "/model.safetensors.index.json";
+  cfg.ple_sidecar = cfg.model_dir + "/ple/qwen3.8-flash-next-ple-fp8.bin";
+  cfg.max_len = 45057;
+  cfg.max_prefill = 8192;
+  cfg.max_seq = 2;
+  cfg.ple_capacity_tokens = 8192;
+  Model m;
+  Check(LoadModel(cfg, &m, nullptr));
+  Require(!m.head.lm_head_fp8.w && !m.head.mixer.mix_down_fp8.w &&
+              !m.head.mixer.mix_up_fp8.w, "requires BF16 head projections");
+  std::unique_ptr<q4t::text::Tokenizer> tokenizer;
+  Check(q4t::text::Tokenizer::Load(cfg.model_dir + "/tokenizer.json", {},
+                                  &tokenizer));
+  uint16_t* full = nullptr;
+  uint16_t* selected = nullptr;
+  uint16_t* trunk = nullptr;
+  const size_t vocab = m.cfg.vocab;
+  const size_t width = m.cfg.hc * m.cfg.hs;
+  constexpr size_t kGuard = 128;
+  Cuda(cudaMalloc(&full, 8192 * vocab * 2));
+  Cuda(cudaMalloc(&selected, (vocab + 2 * kGuard) * 2));
+  Cuda(cudaMalloc(&trunk, 8192 * width * 2));
+  const std::vector<std::vector<int>> shapes{
+      {1024}, {8192}, {8192, 8192, 8192, 8192, 8192, 4096}};
+  size_t trunk_values = 0;
+  int rows = 0;
+  for (size_t test = 0; test < shapes.size(); ++test) {
+    const auto& chunks = shapes[test];
+    const int total = std::accumulate(chunks.begin(), chunks.end(), 0);
+    const int fixture = total <= 1024 ? 1024 : total;
+    std::ifstream file(output + "/prompt-" + std::to_string(fixture) + ".txt");
+    Require(file.good(), "prompt fixture");
+    const std::string prompt((std::istreambuf_iterator<char>(file)), {});
+    std::vector<uint32_t> encoded;
+    Check(tokenizer->Encode(prompt, &encoded));
+    Require(encoded.size() == static_cast<size_t>(fixture), "token count");
+    std::vector<int32_t> ids(encoded.begin(), encoded.begin() + total);
+    const int slot = test % 2;
+    std::vector<std::vector<uint16_t>> expected_logits, expected_trunk;
+    std::vector<uint16_t> expected_next;
+    for (int pass = 0; pass < 2; ++pass) {
+      ModelSequence seq;
+      Check(ModelBeginSequence(m, &seq, nullptr, slot));
+      int base = 0;
+      for (size_t c = 0; c < chunks.size(); ++c) {
+        const int count = chunks[c];
+        Cuda(cudaMemset(selected, 0xa5, (vocab + 2 * kGuard) * 2));
+        const bool last = c + 1 == chunks.size();
+        const bool head = last || (pass == 0 && c == 0);
+        uint16_t* dest = head ? (pass == 0 ? full : selected + kGuard)
+                              : nullptr;
+        if (chunks.size() == 1) {
+          if (pass == 0) {
+            Check(ModelPrefill(m, &seq, ids.data(), total, dest, nullptr,
+                               trunk, nullptr, slot));
+          } else {
+            Check(ModelPrefill(m, &seq, ids.data(), total, dest, nullptr,
+                               trunk, nullptr, slot, LogitsRows::kLastRow));
+          }
+        } else if (pass == 0) {
+          Check(ModelPrefillTextChunk(m, &seq, ids.data(), total, count,
+                                      dest, nullptr, trunk));
+        } else {
+          Check(ModelPrefillTextChunk(m, &seq, ids.data(), total, count,
+                                      dest, nullptr, trunk,
+                                      LogitsRows::kLastRow));
+        }
+        Cuda(cudaStreamSynchronize(nullptr));
+        auto row = head
+            ? Read(dest + (pass == 0 ? (count - 1) * vocab : 0), vocab)
+            : std::vector<uint16_t>{};
+        auto hidden = Read(trunk, count * width);
+        if (dump_stages && last) {
+          // HeadForward leaves mixed/normed before its two GEMM scratch
+          // regions. Capture the actual calculation, without re-running it.
+          const size_t head_rows = pass == 0 ? count : 1;
+          const size_t norm_offset =
+              (head_rows * m.cfg.hs * 2 + 255) / 256 * 256;
+          Require(norm_offset + head_rows * width * 2 <= m.ws_bytes,
+                  "head workspace capture bounds");
+          const auto* mixed = static_cast<const uint16_t*>(m.d_ws);
+          const auto* normed = reinterpret_cast<const uint16_t*>(
+              static_cast<const char*>(m.d_ws) + norm_offset);
+          const std::string prefix = output + "/case-" + std::to_string(test) +
+              "-chunk-" + std::to_string(c);
+          const std::string suffix = pass == 0 ? "-all.bf16" : "-last.bf16";
+          Save(prefix + "-mixed" + suffix,
+               Read(mixed + (head_rows - 1) * m.cfg.hs, m.cfg.hs));
+          Save(prefix + "-normed" + suffix,
+               Read(normed + (head_rows - 1) * width, width));
+          Save(prefix + "-trunk" + suffix,
+               std::vector<uint16_t>(hidden.end() - width, hidden.end()));
+        }
+        Require(seq.position == base + count && seq.seq_id == slot,
+                "position/slot");
+        Require(seq.history == std::vector<int32_t>(
+                    ids.begin(), ids.begin() + base + count), "history");
+        Require(seq.stage == (base + count == total
+                    ? ModelSequence::Stage::kDecode
+                    : ModelSequence::Stage::kPrefill), "stage");
+        if (pass == 0) {
+          expected_logits.push_back(std::move(row));
+          expected_trunk.push_back(std::move(hidden));
+        } else {
+          Require(hidden == expected_trunk[c], "trunk changed");
+          trunk_values += hidden.size();
+          const auto guarded = Read(selected, vocab + 2 * kGuard);
+          for (size_t i = 0; i < kGuard; ++i) {
+            Require(guarded[i] == 0xa5a5 &&
+                    guarded[kGuard + vocab + i] == 0xa5a5, "output overrun");
+          }
+          if (last) Compare(output + "/case-" + std::to_string(test) + "-chunk-" +
+                      std::to_string(c), expected_logits[c], row);
+          rows += last;
+        }
+        base += count;
+      }
+      // A fixed continuation separates state preservation from greedy flips.
+      Check(ModelDecodeStepSeq(m, &seq, 64, full, nullptr, nullptr, slot));
+      Cuda(cudaStreamSynchronize(nullptr));
+      auto next = Read(full, vocab);
+      if (pass == 0) expected_next = std::move(next);
+      else Require(next == expected_next, "continuation state/output changed");
+    }
+  }
+  Cuda(cudaFree(trunk));
+  Cuda(cudaFree(selected));
+  Cuda(cudaFree(full));
+  m.Free();
+  std::printf("STRUCTURAL_PASS rows=%d trunk_bf16=%zu continuation_cases=%zu "
+              "NUMERICAL_REVIEW_REQUIRED\n", rows, trunk_values, shapes.size());
+}

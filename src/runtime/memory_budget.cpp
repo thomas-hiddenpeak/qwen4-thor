@@ -23,7 +23,6 @@ constexpr size_t kMainWorkspaceBytes = 2683503000;  // d_ws (max layer, @8192)
 constexpr size_t kMtpWorkspaceBytes = 5000000000;   // MTP draft forward ws (est @8192)
 constexpr size_t kPleWorkingBytes = 75170000;       // PLE staging + gpu_fp8 + ring
 constexpr size_t kContextMarginBytes = 2000000000;  // CUDA context + system headroom
-constexpr size_t kSchedulerPerSeqBytes = 500000;    // d_sched_logits [1, vocab]/seq
 
 // Per full-attention layer, per sequence, per token (BF16 KV + int page_table
 // + BF16 indexer raw/comp). Mirrors the allocation in decoder_layer.cu.
@@ -57,7 +56,9 @@ size_t StatePoolBytes(const BudgetModelParams& p, int max_len, int max_seq) {
                            RopePerTokenBytes();
   const size_t per_seq_fixed =
       static_cast<size_t>(p.linear_attn_layers()) * LinearPerSeqBytes(p) +
-      PleConvPerSeqBytes(p) + kSchedulerPerSeqBytes;
+      PleConvPerSeqBytes(p) +
+      // Scheduler and selected prefill logits, plus the device argmax token.
+      static_cast<size_t>(p.vocab) * 2u * 2u + sizeof(int32_t);
   return static_cast<size_t>(max_seq) *
          (static_cast<size_t>(max_len) * per_token + per_seq_fixed);
 }
@@ -86,8 +87,6 @@ size_t ForwardBufferBytes(const BudgetModelParams& p) {
 
 size_t FixedBytes(const BudgetModelParams& p, size_t weights) {
   return weights + kMainWorkspaceBytes + ForwardBufferBytes(p) +
-         static_cast<size_t>(p.max_prefill) * static_cast<size_t>(p.vocab) *
-             2u +  // d_prefill_logits [max_prefill, vocab]
          kMtpWorkspaceBytes + kPleWorkingBytes + kContextMarginBytes;
 }
 

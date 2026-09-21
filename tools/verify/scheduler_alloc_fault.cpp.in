@@ -1,0 +1,23 @@
+// HTTP-only startup fault injection. Never linked into the server binary.
+// With max_seq=1 and MTP off, fail the first one-row vocabulary allocation.
+// The driver must confirm the scheduler allocation failure in the server log;
+// an unrelated allocation failure is not valid fallback-path coverage.
+#include <cuda_runtime_api.h>
+#include <dlfcn.h>
+
+#include <atomic>
+#include <cstdio>
+#include <cstdlib>
+
+extern "C" cudaError_t CUDARTAPI cudaMalloc(void** pointer, size_t bytes) {
+  static const auto real =
+      reinterpret_cast<decltype(&cudaMalloc)>(dlsym(RTLD_NEXT, "cudaMalloc"));
+  if (!real) std::_Exit(127);
+  static std::atomic<bool> fired{false};
+  if (bytes == 248320 * sizeof(unsigned short) && !fired.exchange(true)) {
+    *pointer = nullptr;
+    std::fprintf(stderr, "[scheduler-alloc-fault] bytes=%zu\n", bytes);
+    return cudaErrorMemoryAllocation;
+  }
+  return real(pointer, bytes);
+}

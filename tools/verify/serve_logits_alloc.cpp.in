@@ -1,0 +1,39 @@
+// Post-HTTP diagnostic only: allocation request and CUDA address-range size.
+#include <cuda_runtime_api.h>
+#include <dlfcn.h>
+#include <atomic>
+#include <cstdio>
+#include <cstdlib>
+#include <cstdint>
+
+extern "C" cudaError_t cudaMalloc(void** ptr, size_t bytes) {
+  using Allocate = cudaError_t (*)(void**, size_t);
+  static auto allocate = reinterpret_cast<Allocate>(dlsym(RTLD_NEXT, "cudaMalloc"));
+  static std::atomic<bool> failed{false};
+  const bool observed = bytes == 496640 || bytes == 993280 ||
+                        bytes == 1986560 || bytes == 4068474880ULL;
+  if (bytes == 496640 && std::getenv("Q4T_CAPTURE_SCHED_FAILURE") &&
+      !failed.exchange(true)) {
+    *ptr = nullptr;
+    std::fprintf(stderr, "[logits-alloc-fault] bytes=%zu\n", bytes);
+    return cudaErrorMemoryAllocation;
+  }
+  const auto status = allocate(ptr, bytes);
+  if (observed) {
+    Dl_info info{};
+    const auto caller = reinterpret_cast<uintptr_t>(__builtin_return_address(0));
+    dladdr(reinterpret_cast<void*>(caller), &info);
+    using Range = int (*)(unsigned long long*, size_t*, unsigned long long);
+    static void* driver = dlopen("libcuda.so.1", RTLD_LAZY | RTLD_LOCAL);
+    static auto range = reinterpret_cast<Range>(dlsym(driver, "cuMemGetAddressRange_v2"));
+    unsigned long long base = 0;
+    size_t extent = 0;
+    const int queried = status == cudaSuccess && range
+        ? range(&base, &extent, reinterpret_cast<unsigned long long>(*ptr)) : -1;
+    std::fprintf(stderr, "[logits-alloc] bytes=%zu status=%d extent=%zu "
+                         "query=%d caller_offset=%zx\n", bytes,
+                 static_cast<int>(status), extent, queried,
+                 caller - reinterpret_cast<uintptr_t>(info.dli_fbase));
+  }
+  return status;
+}

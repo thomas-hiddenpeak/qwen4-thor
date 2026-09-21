@@ -35,20 +35,32 @@ TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间�
 [报告](VISION_ATTENTION_BARRIER_2026-09-21.md)，证据
 vision-score-barrier-20260921。不是全面视觉质量保证。
 
-## 下一步：恢复 serve logits 容量候选
+## 最新接受：serve logits 按消费者行数分配
 
-旧候选基于 5d560f5，共享 logits 从 [max_prefill,vocab] 改为
-[max_seq,vocab]，内联/视觉/MTP 主模型仅算末行，完整 trunk 保持。
-质量、五档与 4K 相邻复核、真实 B=2、交错、生命周期、内联/回退
-HTTP 已通过；视觉门禁发现上述父版非确定问题后停止，MTP 与
-容量数值检查未运行，旧候选未接受。三个运行时文件已保存为
-serve-logits-capacity-20260921/deferred-runtime.patch，二进制和
-全部异常记录保留；当前运行时已恢复父版容量实现。
-下一步在视觉修复基线上重新实现并完整验收，不能沿用旧候选通过
-记录作新二进制门禁。[容量合同](../dataflow-engine/SERVE_LOGITS_CAPACITY.md)
-记录写入者与 3.789 GiB 静态分配差额，不是整机峰值实测下降。
-另：标准 messages 目前仅拼 role 前缀；显式模板 HTTP 不证明该
-模板转换问题已解决，原始单图立即停止行为也已留证。
+基于 00bddff，共享 prefill logits 从 [max_prefill,vocab] 改为
+[max_seq,vocab]，内联/视觉/MTP 主模型显式只计算末行；长文本
+首块无消费者的 head 删除，完整 trunk 与状态保持。预算计入
+scheduler/prefill 两份词表行和 GPU argmax token。
+
+零警告构建后先质量 11/11、完整五档 15/15、双参考范围检查，
+再完成真实 B=2、交错、生命周期、内联/回退/视觉/MTP HTTP。
+回退 44K 和 MTP 8K 各有一次单侧范围分离，三侧复核未重现，
+原失败保留、不替换样本、不宣称 decode 提速。
+
+门禁后文本 555745280、视觉 3317760 个完整 trunk BF16 值、
+固定续算逐位一致，视觉 MRoPE/输出 canary 通过；六组末行 mixed
+均匹配同 BF16 权重 FP64 参考，最终 head 误差均低于旧全行。
+64 配置预算算术通过。S=1 实际 prefill logits 请求及 CUDA 区间
+4068474880→496640 字节，减少约 3.789 GiB；S=2/4 两份 logits
+分别各为 993280/1986560 字节，真实 HTTP 输出通过。这不是整机
+峰值/驻留降幅。八份父候选 HTTP 时间线仅预期 head 删除/单行化，
+其余各 stream kernel 名称/grid/block/顺序一致。
+
+源码/二进制/库及原始证据最终审查通过，接受本轮，固定参考不变。
+证据 serve-logits-capacity-v2-20260921/final-audit.json，完整
+[报告](../dataflow-engine/SERVE_LOGITS_CAPACITY.md)。显式视觉模板
+测试不证明标准 messages 模板接入问题已修复；下一步审查这一
+现有 API 行为及已记录的 decode 位置表疑点，仍先真实 HTTP。
 
 ## 最新接受：批处理每序列末行输出头
 

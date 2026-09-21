@@ -241,11 +241,9 @@ class ChatServer {
   uint16_t* d_sched_logits_ = nullptr;
   int32_t* d_sched_tokens_ = nullptr;        // [max_seq] GPU argmax result
   std::vector<int32_t> h_sched_tokens_;      // host mirror (B ints, not vocab)
-  // Shared prefill-logits buffer [max_prefill, vocab], used only under
-  // model_mu_ (prefills serialize there). Replaces the per-request ~1 GB
-  // d_logits so peak GPU memory does not scale with prompt length x
-  // concurrency (that over-commit OOM'd the box under load); only the last
-  // prefill row is ever consumed.
+  // Shared prefill logits [max_seq, vocab], accessed under model_mu_.
+  // Batched prefill writes B selected rows; single/inline/vision/MTP main
+  // prefill and fallback decode write one row. Full trunk output is separate.
   uint16_t* d_prefill_logits_ = nullptr;
   // The tokenizer's ICU 74 regex engine is NOT thread-safe (concurrent Encode
   // trips U_INTERNAL_PROGRAM_ERROR), so all Encode/Decode calls are serialized

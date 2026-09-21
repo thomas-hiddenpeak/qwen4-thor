@@ -1,0 +1,229 @@
+// Structural checks plus raw numerical evidence; no invented error tolerance.
+#include <cuda_runtime.h>
+#include <algorithm>
+#include <bit>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <fstream>
+#include <iterator>
+#include <memory>
+#include <numeric>
+#include <string>
+#include <vector>
+#include "q4t/model/model.h"
+#include "q4t/text/tokenizer.h"
+
+namespace {
+void Require(bool ok, const char* message) {
+  if (!ok) {
+    std::fprintf(stderr, "FAIL: %s\n", message);
+    std::exit(1);
+  }
+}
+void Check(q4t::Status s) { Require(s.ok(), s.message().c_str()); }
+void Cuda(cudaError_t e) { Require(e == cudaSuccess, cudaGetErrorString(e)); }
+std::vector<uint16_t> Read(const uint16_t* p, size_t n) {
+  std::vector<uint16_t> v(n);
+  Cuda(cudaMemcpy(v.data(), p, n * 2, cudaMemcpyDeviceToHost));
+  return v;
+}
+float Float(uint16_t x) {
+  return std::bit_cast<float>(static_cast<uint32_t>(x) << 16);
+}
+void Save(const std::string& path, const std::vector<uint16_t>& v) {
+  std::ofstream f(path, std::ios::binary);
+  f.write(reinterpret_cast<const char*>(v.data()), v.size() * 2);
+  Require(f.good(), "write raw logits");
+}
+void Compare(const std::string& prefix, const std::vector<uint16_t>& a,
+             const std::vector<uint16_t>& b) {
+  Require(a.size() == b.size(), "logits size");
+  double error = 0, norm = 0, max_abs = 0;
+  size_t different = 0, top_a = 0, top_b = 0;
+  for (size_t i = 0; i < a.size(); ++i) {
+    const double x = Float(a[i]), y = Float(b[i]);
+    Require(std::isfinite(x) && std::isfinite(y), "nonfinite logits");
+    different += a[i] != b[i];
+    error += (x - y) * (x - y);
+    norm += x * x;
+    max_abs = std::max(max_abs, std::abs(x - y));
+    if (x > Float(a[top_a])) top_a = i;
+    if (y > Float(b[top_b])) top_b = i;
+  }
+  Save(prefix + "-all.bf16", a);
+  Save(prefix + "-last.bf16", b);
+  std::printf("ROW %s elements=%zu bit_diff=%zu l2_rel=%.12g "
+              "max_abs=%.12g argmax=%zu/%zu\n", prefix.c_str(), a.size(),
+              different, std::sqrt(error / std::max(norm, 1e-300)),
+              max_abs, top_a, top_b);
+  std::fflush(stdout);
+}
+}  // namespace
+
+#include <cuda_bf16.h>
+#include "q4t/io/weight_loader.h"
+#include "q4t/vision/processor.h"
+#include "q4t/vision/vision.h"
+int main(int argc, char** argv) {
+  using namespace q4t::model;
+  namespace vision = q4t::vision;
+  Require(argc == 3 || argc == 4, "model and output required");
+  const std::string output = argv[2];
+  ModelConfig cfg;
+  cfg.model_dir = argv[1];
+  cfg.index_path = cfg.model_dir + "/model.safetensors.index.json";
+  cfg.ple_sidecar = cfg.model_dir + "/ple/qwen3.8-flash-next-ple-fp8.bin";
+  cfg.max_len = 8192;
+  cfg.max_prefill = 8192;
+  cfg.max_seq = 1;
+  cfg.ple_capacity_tokens = 8192;
+  Model m;
+  Check(LoadModel(cfg, &m, nullptr));
+  q4t::io::WeightIndex* index = nullptr;
+  Check(q4t::io::WeightIndex::Open(cfg.index_path, &index));
+  q4t::io::WeightLoader* loader = nullptr;
+  Check(q4t::io::WeightLoader::Create(cfg.model_dir, *index, 8, &loader));
+  vision::VisionTower tower;
+  std::string error;
+  Require(vision::LoadVision(*loader, {}, &tower, &error, nullptr),
+          error.c_str());
+  delete loader;
+  delete index;
+  std::unique_ptr<q4t::text::Tokenizer> tokenizer;
+  Check(q4t::text::Tokenizer::Load(cfg.model_dir + "/tokenizer.json", {},
+                                  &tokenizer));
+  const size_t vocab = m.cfg.vocab, width = m.cfg.hc * m.cfg.hs;
+  constexpr size_t kGuard = 128;
+  size_t trunk_values = 0;
+  for (const std::string name : {"image", "two-images", "video"}) {
+    std::vector<vision::ImageShape> shapes;
+    std::vector<uint16_t> pixels;
+    VisionFeatures features;
+    std::vector<int> image_counts, video_counts;
+    const int items = name == "two-images" ? 2 : 1;
+    for (int item = 0; item < items; ++item) {
+      std::ifstream file(output + (item == 0 ? "/vision_test_a.png"
+                                           : "/vision_test_b.png"),
+                         std::ios::binary);
+      Require(file.good(), "image fixture");
+      const std::vector<uint8_t> bytes((std::istreambuf_iterator<char>(file)), {});
+      vision::ProcessorConfig pcfg;
+      vision::ImageShape shape;
+      std::vector<float> values;
+      if (name == "video") {
+        pcfg.min_pixels = 4096;
+        pcfg.max_pixels = 25165824;
+        vision::ProcessedVideo processed;
+        Require(vision::ProcessVideo({bytes.data(), bytes.data()},
+                    {bytes.size(), bytes.size()}, pcfg, &processed, &error),
+                error.c_str());
+        shape = {processed.grid_h, processed.grid_w, processed.grid_t};
+        values = std::move(processed.pixel_values);
+      } else {
+        vision::ProcessedImage processed;
+        Require(vision::ProcessImage(bytes.data(), bytes.size(), pcfg,
+                                     &processed, &error), error.c_str());
+        shape = {processed.grid_h, processed.grid_w, processed.grid_t};
+        values = std::move(processed.pixel_values);
+      }
+      shapes.push_back(shape);
+      features.grids.push_back({shape.t, shape.h, shape.w});
+      const int count = shape.L() / 4;
+      features.num_tokens += count;
+      (name == "video" ? video_counts : image_counts).push_back(count);
+      for (float value : values) {
+        const __nv_bfloat16 bf = __float2bfloat16_rn(value);
+        pixels.push_back(std::bit_cast<uint16_t>(bf));
+      }
+    }
+    uint16_t *device_pixels = nullptr, *device_features = nullptr;
+    Cuda(cudaMalloc(&device_pixels, pixels.size() * 2));
+    Cuda(cudaMemcpy(device_pixels, pixels.data(), pixels.size() * 2,
+                    cudaMemcpyHostToDevice));
+    Require(tower.Allocate(shapes, nullptr), "tower allocation");
+    Cuda(cudaMalloc(&device_features, vision::VisionOutputBytes(tower.cfg, shapes)));
+    Require(vision::VisionForward(tower, device_pixels, shapes, device_features,
+                                  &error, nullptr), error.c_str());
+    Cuda(cudaDeviceSynchronize());
+    Cuda(cudaFree(device_pixels));
+    features.device = device_features;
+    Save(output + "/" + name + "-features.bf16",
+         Read(device_features, features.num_tokens * m.cfg.hs));
+    std::ifstream file(output + "/" + name + ".txt");
+    Require(file.good(), "prompt fixture");
+    const std::string prompt((std::istreambuf_iterator<char>(file)), {});
+    std::vector<uint32_t> encoded;
+    Check(tokenizer->Encode(prompt, &encoded));
+    std::vector<int32_t> unexpanded(encoded.begin(), encoded.end()), ids;
+    Require(ExpandMultimodalTokens(unexpanded.data(), unexpanded.size(),
+                m.cfg.image_token_id, m.cfg.video_token_id, image_counts,
+                video_counts, &ids), "multimodal expansion");
+    int expected_tokens = 0;
+    std::ifstream count_file(output + "/" + name + ".tokens");
+    count_file >> expected_tokens;
+    Require(ids.size() == static_cast<size_t>(expected_tokens), "HTTP token count");
+    const int total = ids.size();
+    uint16_t *full = nullptr, *selected = nullptr, *trunk = nullptr;
+    Cuda(cudaMalloc(&full, total * vocab * 2));
+    Cuda(cudaMalloc(&selected, (vocab + 2 * kGuard) * 2));
+    Cuda(cudaMalloc(&trunk, total * width * 2));
+    std::vector<uint16_t> old_trunk, old_row, old_next, old_rope;
+    int old_delta = 0;
+    for (int pass = 0; pass < 2; ++pass) {
+      ModelSequence seq;
+      Check(ModelBeginSequence(m, &seq, nullptr, 0));
+      Cuda(cudaMemset(selected, 0xa5, (vocab + 2 * kGuard) * 2));
+      uint16_t* dest = pass == 0 ? full : selected + kGuard;
+      Check(ModelPrefill(m, &seq, ids.data(), total, dest, nullptr, trunk,
+                         &features, 0, pass == 0 ? LogitsRows::kAllRows
+                                                : LogitsRows::kLastRow));
+      Cuda(cudaDeviceSynchronize());
+      const auto hidden = Read(trunk, total * width);
+      const auto row = Read(dest + (pass == 0 ? (total - 1) * vocab : 0), vocab);
+      const auto rope = Read(reinterpret_cast<uint16_t*>(m.d_rope_pos),
+                             3 * cfg.max_len * 2);
+      const size_t head_rows = pass == 0 ? total : 1;
+      const size_t norm_offset = (head_rows * m.cfg.hs * 2 + 255) / 256 * 256;
+      Require(norm_offset + head_rows * width * 2 <= m.ws_bytes, "workspace bounds");
+      const auto* mixed = static_cast<const uint16_t*>(m.d_ws);
+      const auto* normed = reinterpret_cast<const uint16_t*>(
+          static_cast<const char*>(m.d_ws) + norm_offset);
+      const std::string suffix = pass == 0 ? "-all.bf16" : "-last.bf16";
+      Save(output + "/" + name + "-mixed" + suffix,
+           Read(mixed + (head_rows - 1) * m.cfg.hs, m.cfg.hs));
+      Save(output + "/" + name + "-normed" + suffix,
+           Read(normed + (head_rows - 1) * width, width));
+      Save(output + "/" + name + "-trunk" + suffix, hidden);
+      Require(seq.position == total && seq.history == ids, "sequence state");
+      if (pass == 0) {
+        old_trunk = hidden;
+        old_row = row;
+        old_rope = rope;
+        old_delta = m.rope_delta[0];
+      } else {
+        Require(hidden == old_trunk, "visual trunk changed");
+        Require(rope == old_rope && m.rope_delta[0] == old_delta, "MRoPE changed");
+        trunk_values += hidden.size();
+        const auto guards = Read(selected, vocab + 2 * kGuard);
+        for (size_t i = 0; i < kGuard; ++i)
+          Require(guards[i] == 0xa5a5 && guards[kGuard + vocab + i] == 0xa5a5,
+                  "output overrun");
+        Compare(output + "/" + name, old_row, row);
+      }
+      Check(ModelDecodeStepSeq(m, &seq, 64, full, nullptr, nullptr, 0));
+      Cuda(cudaDeviceSynchronize());
+      const auto next = Read(full, vocab);
+      if (pass == 0) old_next = next;
+      else Require(next == old_next, "visual continuation changed");
+    }
+    Cuda(cudaFree(full));
+    Cuda(cudaFree(selected));
+    Cuda(cudaFree(trunk));
+    Cuda(cudaFree(device_features));
+  }
+  tower.Free();
+  m.Free();
+  std::printf("STRUCTURAL_PASS rows=3 trunk_bf16=%zu continuation_cases=3 "
+              "NUMERICAL_REVIEW_REQUIRED\n", trunk_values);
+}
