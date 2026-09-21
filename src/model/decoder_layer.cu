@@ -2,12 +2,12 @@
 // include/q4t/model/decoder_layer.h for the orchestration.
 //
 //   hyper_input [T, hc*hs]
-//     1. mixed_attn, res_a = attn_hc.mix(hyper_input)
+//     1. mixed_attn, attn_frame = GRRead(hyper_input, normed_scratch)
 //     2. attn_out = attn_block(mixed_attn)        (linear or full)
-//     3. combined_a = attn_hc.combine(attn_out, hyper_input, res_a)
-//     4. mixed_mlp, res_m = mlp_hc.mix(combined_a)
+//     3. combined_a = GRWrite(attn_out, attn_frame)
+//     4. mixed_mlp, mlp_frame = GRRead(combined_a, normed_scratch)
 //     5. mlp_out = moe(mixed_mlp)
-//     6. out = mlp_hc.combine(mlp_out, combined_a, res_m)
+//     6. out = GRWrite(mlp_out, mlp_frame)
 //
 // The layer carves its device `workspace` into per-submodule regions (they run
 // sequentially on one stream, but each gets its own region so a submodule's
@@ -176,13 +176,13 @@ size_t DecoderLayerWorkspaceBytes(int T, bool is_full_attention, bool has_ple,
                           : AlignUp(AttnWs(T, is_full_attention));
   const size_t moe_carve = AlignUp(
       MoEForwardWorkspaceBytes(T, k, hs, moe_is, shared_is, E));
-  // Per-layer activation scratch carved from the workspace (avoids 5-6
-  // cudaMalloc/cudaFree per layer per forward): d_mixed + d_block (T*hs*2
-  // each) + d_res_a + d_res_m + d_combined (T*hc_dim*2 each) + d_ple_trunk
-  // (T*hc_dim*2, PLE layer only). hc_count is 4 for qwen4_exp.
+  // Per-layer activation scratch: d_mixed + d_block (T*hs*2 each),
+  // d_normed + d_combined (T*hc_dim*2 each), and optional d_ple_trunk.
+  // Both GRRead calls reuse d_normed on the same stream; GRWrite does not
+  // retain it. hc_count is 4 for qwen4_exp.
   const size_t hc_dim = static_cast<size_t>(4) * hs;
   size_t scratch = 2 * static_cast<size_t>(T) * hs * 2;
-  scratch += 3 * static_cast<size_t>(T) * hc_dim * 2;
+  scratch += 2 * static_cast<size_t>(T) * hc_dim * 2;
   if (has_ple) scratch += static_cast<size_t>(T) * hc_dim * 2;
   size_t total = attn + moe_carve + kGemmWs + kGemmWs + AlignUp(scratch);
   if (has_ple) total += AlignUp(PleLayerWorkspaceBytes(T, 4, hs));
@@ -449,7 +449,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   // Per-layer activation scratch (carved from workspace, no cudaMalloc).
   const size_t scratch_bytes =
       2 * static_cast<size_t>(T) * hs * 2 +
-      3 * static_cast<size_t>(T) * hc_dim * 2 +
+      2 * static_cast<size_t>(T) * hc_dim * 2 +
       (layer.has_ple ? static_cast<size_t>(T) * hc_dim * 2 : 0);
   const size_t total_ws =
       AlignUp(attn_ws) + AlignUp(moe_carve) + kGemmWs + kGemmWs +
@@ -474,9 +474,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   p += AlignUp(static_cast<size_t>(T) * hs * 2);
   uint16_t* d_block = reinterpret_cast<uint16_t*>(p);
   p += AlignUp(static_cast<size_t>(T) * hs * 2);
-  uint16_t* d_res_a = reinterpret_cast<uint16_t*>(p);
-  p += AlignUp(static_cast<size_t>(T) * hc_dim * 2);
-  uint16_t* d_res_m = reinterpret_cast<uint16_t*>(p);
+  uint16_t* d_normed = reinterpret_cast<uint16_t*>(p);
   p += AlignUp(static_cast<size_t>(T) * hc_dim * 2);
   uint16_t* d_combined = reinterpret_cast<uint16_t*>(p);
   p += AlignUp(static_cast<size_t>(T) * hc_dim * 2);
@@ -508,7 +506,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
 
   // GRRead prepares inject before the sublayer; normed is now temporary.
   GatedResidualFrame attn_frame;
-  s = attn_frame.Read(layer.attn_hc, d_trunk, d_mixed, d_res_a, T,
+  s = attn_frame.Read(layer.attn_hc, d_trunk, d_mixed, d_normed, T,
                        d_hc_ws, kGemmWs, stream);
   if (!s.ok()) {
     return s;
@@ -538,7 +536,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     return s;
   }
   GatedResidualFrame mlp_frame;
-  s = mlp_frame.Read(layer.mlp_hc, d_combined, d_mixed, d_res_m, T,
+  s = mlp_frame.Read(layer.mlp_hc, d_combined, d_mixed, d_normed, T,
                       d_hc_ws, kGemmWs, stream);
   if (!s.ok()) {
     return s;

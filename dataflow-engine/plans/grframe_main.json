@@ -2,7 +2,7 @@
   "format": "q4t.execution_contract",
   "version": 1,
   "status": "proposal_not_executable",
-  "scope": "One main-model gated-residual sublayer; phase A retains existing normed workspace regions.",
+  "scope": "One main-model gated-residual sublayer. Baseline fields describe the original proposal; accepted runtime and pending workspace changes are separate records.",
   "baseline_commit": "4f4b8d8",
   "source_sha256": {
     "src/model/hyperconnection.cu": "0aa71e35635bffed2a9d355f0cba930de62b9ddd83f692f3ba96469fe7bb3988",
@@ -224,40 +224,21 @@
       "rounding": "preserve existing multiply/add and BF16 conversion"
     }
   ],
-  "current_order": [
-    "norm",
-    "down_projection",
-    "silu_div",
-    "up_projection",
-    "mix",
-    "sublayer",
-    "prepare_frame",
-    "write"
-  ],
-  "proposed_phase_a_order": [
-    "norm",
-    "down_projection",
-    "silu_div",
-    "up_projection",
-    "mix",
-    "prepare_frame",
-    "sublayer",
-    "write"
-  ],
   "execution": {
     "stream": "existing caller CUDA stream",
     "new_streams": 0,
     "new_cross_stream_protocols": 0,
     "frame_reuse": "only after write or abort cleanup is ordered on owning stream",
-    "unresolved": "Exact C++ ownership API and error cleanup are not implemented."
+    "unresolved": "The JSON is descriptive only; no schema validator, executable plan or arena planner is implemented.",
+    "implemented": "GatedResidualFrame owns inject gates, borrows residual and releases on the Read stream; accepted in 7a34dd3."
   },
   "capacity_constraints": {
     "normed_region_bytes_at_T8192": 167772160,
-    "current_decoder_normed_regions": 2,
     "phase_a_remove_normed_regions": 0,
     "inject_gate_bytes_at_T8192": 65536,
     "claimed_peak_memory_saving_bytes": null,
-    "register_shared_L1_L2_residency": "not assigned by this contract; current kernel mappings retained"
+    "register_shared_L1_L2_residency": "not assigned by this contract; current kernel mappings retained",
+    "baseline_decoder_normed_regions": 2
   },
   "compatibility": {
     "head_mixer": "keep existing API; use_combine=false must not read null block_inject",
@@ -271,7 +252,6 @@
     "only after full HTTP: bitwise intermediate/state checks and HTTP trace"
   ],
   "not_delivered": [
-    "accepted C++ frame runtime",
     "plan schema validator",
     "arena aliasing",
     "full D/P/S plans",
@@ -290,6 +270,40 @@
       "src/model/decoder_layer.cu": "6cab6dd36cc81b0b620a0e49990b8efed978767c844aea45fda2cfc255b366b3"
     },
     "performance_reference": "fcb5925",
-    "evidence_report": "docs/GRFRAME_READWRITE_2026-09-21.md"
-  }
+    "evidence_report": "docs/GRFRAME_READWRITE_2026-09-21.md",
+    "accepted_commit": "7a34dd3"
+  },
+  "workspace_candidate": {
+    "baseline_commit": "7a34dd3",
+    "status": "accepted",
+    "normed_regions": 1,
+    "decoder_workspace_reduction_bytes": "T * 4 * 2560 * 2",
+    "evidence": ".q4t-work/e2e/grframe-normed-reuse-20260921/",
+    "system_peak_reduction_measured": false,
+    "compiled_model_workspace_bytes_at_8192": {
+      "before": 2683502592,
+      "after": 2515730432
+    },
+    "performance_reference": "fcb5925"
+  },
+  "baseline_order": [
+    "norm",
+    "down_projection",
+    "silu_div",
+    "up_projection",
+    "mix",
+    "sublayer",
+    "prepare_frame",
+    "write"
+  ],
+  "accepted_phase_one_order": [
+    "norm",
+    "down_projection",
+    "silu_div",
+    "up_projection",
+    "mix",
+    "prepare_frame",
+    "sublayer",
+    "write"
+  ]
 }

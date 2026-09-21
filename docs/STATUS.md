@@ -18,7 +18,19 @@
 TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间。
 按重复范围比较，不设置临时容忍百分比或拼接最优档位。
 
-## 最新接受：GRFrame read/write 第一阶段
+## 最新接受：复用 normed 工作区
+
+基于 7a34dd3，两个 GRRead 共用一份 d_normed，预算与实际 carve
+同步删除第二份区域。构建零警告，首项质量 11/11、五档性能 15/15；
+输入输出一致，服务退出 0。对直接父版和固定参考均无不利分离范围。
+200K decode 本轮均值 17.119 tok/s，小样本有利变化不作为稳定提速主张。
+门禁后编译容量核对 21 组层预算及 7 组模型最大值通过：8192 分块的
+共享 workspace 2683502592→2515730432 字节，减少 160 MiB，未测系统
+峰值。4K 时间线全部 kernel 调用与分配次数不变。
+[报告](GRFRAME_NORMED_REUSE_2026-09-21.md)，证据
+`.q4t-work/e2e/grframe-normed-reuse-20260921/`。
+
+## 已完成前置：GRFrame read/write 第一阶段
 
 基于 fcb5925，主层 attention/MLP 接入 GatedResidualFrame：Read 生成
 mixed 与 gate，Write 只消费 residual、gate、子层输出，不保留 normed。
@@ -36,7 +48,7 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 ## 正式性能参考
 
 正式五档性能参考仍为 **fcb5925**（短路径 top-k 寄存器网络）。
-最新运行时为上述 GRFrame 阶段，性能持平，不重置参考。
+最新运行时为上述 normed 复用阶段，正式参考不重置。
 质量 11/11、性能 15/15，输出摘要一致、服务退出 0，构建零警告；
 完整门禁后 352 组、277598448 个槽/长度逐位一致，4K HTTP 时间线通过。
 
@@ -51,13 +63,13 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 4K decode 较前一版 +0.76%，8K TTFT -1.08%，其余范围重叠。
 正式参考见 tools/evalscope/fixtures/performance_reference.json；
 二进制 SHA 与完整边界见 [报告](SHORT_TOPK_2026-09-21.md)。证据
-`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 对应 GRFrame 已验证二进制，
-不是 fcb5925 的原二进制；两版均在 GRFrame 证据目录保存。
+`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 对应已验证的 normed 复用版本；
+父版本 7a34dd3 二进制保存在当前证据目录 q4t-before。
 
 ## 后续演进
 
-GRFrame 第一阶段已接受。下一步单独合并 normed 非重叠生命周期，
-然后再考虑 arena 别名，不把调度顺序、合并和别名混为一次改动。完整 D/P/S、可执行计划和状态提交仍未实现。
+GRFrame 与单 normed 复用已接受。下一步统一 workspace 容量与 offset
+的布局来源，保持物理布局，然后再单独考虑 arena 别名。完整 D/P/S、可执行计划和状态提交仍未实现。
 [GRFrame 合同](../dataflow-engine/GRFRAME_RUNNER_PLAN.md) 与
 [JSON 清单](../dataflow-engine/plans/grframe_main.json) 区分提案和候选绑定；
 完整引擎进度见 [筹备状态](../dataflow-engine/STATUS.md)。

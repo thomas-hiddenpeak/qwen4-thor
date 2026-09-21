@@ -84,3 +84,52 @@ PrepareInjectGate 统一新路径和旧 Combine 的数学；head/MTP 的公开
 inject 分配与计算提前，pool 地址和生存时间可能改变；不能假定性能不变。
 完整门禁后数值与时间线通过，详见 ../docs/GRFRAME_READWRITE_2026-09-21.md；
 不代表完整执行器完成。
+
+## 第二阶段已接受：单 normed 区域
+
+基线 7a34dd3。两个 GRRead 复用 d_normed：前一次的 mix 与 inject
+都排在下一次 Read 之前，Write 不持有该地址。DecoderLayerWorkspaceBytes
+与 forward 的 scratch_bytes 同时从 3 个 hc_dim 区域减到 2 个，carve
+删除一份 normed。d_combined 与 PLE trunk 因此前移，不能假定缓存或性能
+完全不受影响。模型形状下每 token 减少 20480 字节的 decoder 预算。
+
+ModelLoad 的 d_ws 实际申请取所有层和 head 的最大预算，见
+src/model/model.cu；因此 decoder 预算差额不应直接描述成整机峰值下降。
+本轮未新增 cudaMalloc/stream/event，也未把子层 workspace 相互别名。
+构建零警告，首项质量 11/11、五档性能 15/15、门禁后容量与时间线
+通过；实际编译预算的模型最大 workspace 减少 160 MiB，未测系统峰值。
+
+后续 arena 别名须逐项核对：attn、MoE、PLE、HC GEMM scratch 与 normed
+的最后消费者，尤其 src/quant/moe_gemm.cu 的辅助 stream 会在主 stream
+上等待各自 event，不能只凭 host 返回判断可复用。一般性多模块合并不与
+本轮混做；下一步先形成实际 offsets/capacity/alignment 的共享布局来源，
+再用 E2E 验证物理布局变化。L1/L2 驻留不能由 LPDDR 地址别名推断。
+
+## 下一步布局单源化（待实现，不并入当前候选）
+
+当前 decoder 在三个位置分别表达同一布局：公开容量函数、forward 的
+容量检查、forward 的指针 carve。下一阶段用一个轻量布局描述返回
+各 region 的 offset/bytes 与 total_bytes，容量函数和 forward 共用它。
+先保留当前区域顺序和所有偏移，不同时实施 arena 别名或减少分配。
+
+| 区域 | 当前使用期 | 首次单源化保留的边界 |
+|---|---|---|
+| attention workspace | attention 子层 | 独立区域，含自身 GEMM scratch |
+| MoE workspace | router 到 MoE combine | 独立区域，辅助 stream 必须汇合 |
+| MoE GEMM scratch | routed/shared 投影 | 固定 32 MiB，与 HC scratch 分开 |
+| HC GEMM scratch | 两个 GRRead | 固定 32 MiB，与 normed 不重叠 |
+| PLE workspace | 可选 PLE 子层 | 独立区域，PLE trunk 存放在外部 |
+| mixed / block_output | 子层输入/输出 | 两个独立的 T*hs*2 区域 |
+| normed | 每个 GRRead 内 | 一份 T*hc*hs*2，依赖本轮验收 |
+| combined | attention Write 至 MLP Write | 不与 MLP normed 或输出重叠 |
+| PLE trunk | PLE 输出至 attention Write | 保留原始 residual 的借用期 |
+
+模型的 hs=2560/hc=4 使激活区大小为 256 字节的整数倍。公开 API 仍
+有 full==nullptr 的兼容预算分支，必须保留；不能将近似预算当成已有
+精确 full-attention 形状。full->max_len 影响 T<=4 的 indexer scratch，
+布局描述必须使用真实 full 参数，不能只由 T 推导所有容量。
+
+接受标准除完整 HTTP 外，需在门禁后逐项对照旧/新 region offset、
+容量和总字节，覆盖 T=1/3/4/5/33/257/8192、linear/full、PLE 与无 PLE。
+同地址布局是净简化步骤；之后的物理别名必须作为另一项候选重做 E2E。
+不新增解释器、动态 region 容器或每层 JSON 解析到热路径。

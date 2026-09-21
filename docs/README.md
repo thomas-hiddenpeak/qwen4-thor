@@ -8,6 +8,7 @@
 | [GDN_VECTOR_LOAD_2026-09-21.md](GDN_VECTOR_LOAD_2026-09-21.md) | GDN 连续读取、完整 E2E 与状态等价证据 | 本轮验证更新 |
 | [2026-09-21 状态历史](HISTORY_STATUS_2026-09-21.md) | 完整保留 fcb5925 时的阶段记录，当前状态已精简 | 历史快照 |
 | [GRFrame read/write](GRFRAME_READWRITE_2026-09-21.md) | 提前 inject、frame 所有权与阶段验收 | 验收进行中 |
+| [GRFRAME_NORMED_REUSE_2026-09-21.md](GRFRAME_NORMED_REUSE_2026-09-21.md) | normed 区域复用候选、容量边界与 E2E 门禁 |
 | [短路径 top-k](SHORT_TOPK_2026-09-21.md) | 精确选择、完整 E2E 与局部时间线 | 本轮验收完成 |
 | [短上下文索引打分](INDEXER_DECODE_2026-09-21.md) | CTA 映射、逐位分数与配对 HTTP | 本轮验收完成 |
 | [Decode 多级 top-k](DECODE_TOPK_2026-09-21.md) | 寄存器网络、完整 E2E 与逐位证据 | 本轮验收完成 |
