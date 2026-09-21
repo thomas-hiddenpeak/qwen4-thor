@@ -18,7 +18,28 @@
 TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间。
 按重复范围比较，不设置临时容忍百分比或拼接最优档位。
 
-## 最新接受：普通文本长 prefill 调度
+## 最新接受：省去长文本首块未消费的输出头
+
+基于 f41adfc，仅调整普通文本 chunk 调度的 logits 需求：中间块
+（含首块）传 nullptr，最后块保持原计算与末行读回。RunLayers 已
+支持空 logits，并在输出头之前完成层状态与可选 trunk 输出；
+HeadForward 只读 trunk、写共享 scratch/logits，不更新序列状态。
+本轮不改变末块 GEMM 形状，MTP/视觉/内联回退保持现有路径。
+证据 prefill-first-head-skip-20260921，必要构建后首项完整质量及
+五档 HTTP，双参考通过后再检查时间线；并发路径仍需相邻对照和
+生命周期 HTTP。首项质量 11/11、输出对照通过、服务退出 0，
+完整五档 HTTP/输出 15/15、服务退出 0，双参考无不利范围分离。
+44K TTFT 均值 30.628→30.489 秒，200K 159.698→159.372 秒但
+范围重叠，不宣称稳定收益。并发相邻对照 18 请求通过、服务退出 0，
+总完成时间无不利分离，与后侧父版范围重叠；约 5.75 秒响应间隔
+仍存在。四项生命周期 HTTP 已通过，门禁后源码/库摘要核对通过，
+44K 时间线确认首块少 6 次 kernel、2 对分配/释放，decode 调用
+不变；全部 forward 的每 stream 序列核对通过。最终接受，固定
+参考不更新；末块按需行选择仍待实现，未减少 logits 预留容量。
+[P7 消费者与行需求](../dataflow-engine/PREFILL_HEAD_DEMAND.md) 明确
+首块省略只是前置，最终块按需计算行与批处理每序列选择仍待实现。
+
+## 已完成前置：普通文本长 prefill 调度
 
 基于 af8fad4（运行时 ec64259），长文本请求进入 chunk 队列，每轮
 在已选 decode 后最多推进一块，检查 stream 完成后轮转；末块在锁内
@@ -193,7 +214,7 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 ## 正式性能参考
 
 正式五档性能参考仍为 **fcb5925**（短路径 top-k 寄存器网络）。
-最新运行时为普通文本 chunk 调度，正式参考不重置。
+最新运行时为普通文本 chunk 调度省略首块输出头，正式参考不重置。
 质量 11/11、性能 15/15，输出摘要一致、服务退出 0，构建零警告；
 完整门禁后 352 组、277598448 个槽/长度逐位一致，4K HTTP 时间线通过。
 
@@ -208,7 +229,8 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 4K decode 较前一版 +0.76%，8K TTFT -1.08%，其余范围重叠。
 正式参考见 tools/evalscope/fixtures/performance_reference.json；
 二进制 SHA 与完整边界见 [报告](SHORT_TOPK_2026-09-21.md)。证据
-`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 对应已接受的 chunk 调度；
+`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 对应已接受的首块输出头省略版本；
+已接受 f41adfc 二进制保存在 prefill-first-head-skip-20260921/q4t-before；
 已接受 ec64259/af8fad4 二进制保存在 prefill-chunk-scheduler-20260921/q4t-before；
 已接受 18f1abe 二进制保存在 prefill-chunk-sequence-v2-20260921/q4t-before；
 已接受 ede4e09 二进制保存在 serve-readback-commit-20260921/q4t-before；

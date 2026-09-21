@@ -810,7 +810,7 @@ void ChatServer::RunOnePrefillChunk() {
       if (s.ok()) {
         s = model::ModelPrefillTextChunk(
             model_, req->seq, req->ids, req->len, count,
-            (base == 0 || last) ? d_prefill_logits_ : nullptr, nullptr);
+            last ? d_prefill_logits_ : nullptr, nullptr);
       }
       cudaError_t copy_error = cudaSuccess;
       if (s.ok() && last) {
