@@ -104,3 +104,12 @@ workspace 布局单源化已接受（基线 657b2e8）：容量查询与 forward
 normed/MoE 别名已接受：质量 11/11、五档及 44K 旧→新→旧复核通过，
 门禁后 84 布局/168 容量通过，模型 workspace 再减 160 MiB；初始异常
 保留，未宣称稳定提速。下一步 down/up 暂存，gate 所有权独立处理。
+
+## GRRead down/up 已接受
+
+基于 c8e8331，[暂存合同](plans/grread_scratch.json) 定义 normed/down/up
+三个互不重叠的视图及 MoE 覆写顺序，容量按实际 lowrank 计算。
+完整 HTTP、逐位、布局及 4K 时间线通过，每步异步分配/释放各
+554→362，共享 workspace 不变。详见
+[报告](../docs/GRREAD_SCRATCH_2026-09-21.md)。下一步独立处理 gate
+的跨子层存活期，不能借用随后由 MoE 覆写的区域。

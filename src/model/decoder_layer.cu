@@ -10,13 +10,15 @@
 //     6. out = GRWrite(mlp_out, mlp_frame)
 //
 // The layer carves its device `workspace` into per-submodule regions (they run
-// sequentially, with existing auxiliary-stream joins). GRRead normed scratch
-// borrows the MoE region before MoE starts; GEMM scratch remains separate.
+// sequentially, with existing auxiliary-stream joins). GRRead normed/down/up
+// scratch borrows the MoE region before MoE starts; GEMM scratch remains
+// separate.
 #include "q4t/model/decoder_layer.h"
 
 #include <cuda_bf16.h>
 #include <cuda_runtime.h>
 
+#include <algorithm>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -167,8 +169,8 @@ size_t AttnWs(int T, bool is_full) {
 }
 
 // One source for both allocation size and forward offsets. No runtime
-// allocation or interpreter is involved. Only normed and MoE share storage;
-// both GRRead last readers precede MoE on the caller stream.
+// allocation or interpreter is involved. GRRead scratch shares MoE storage;
+// normed/down/up last readers precede MoE on the caller stream.
 struct DecoderWorkspaceLayout {
   size_t attention = 0;
   size_t moe = 0;
@@ -178,6 +180,10 @@ struct DecoderWorkspaceLayout {
   size_t mixed = 0;
   size_t block = 0;
   size_t normed = 0;
+  size_t hc_down = 0;
+  size_t hc_up = 0;
+  size_t hc_down_bytes = 0;
+  size_t hc_up_bytes = 0;
   size_t combined = 0;
   size_t ple_trunk = 0;
   size_t attention_bytes = 0;
@@ -188,7 +194,7 @@ struct DecoderWorkspaceLayout {
 
 DecoderWorkspaceLayout MakeDecoderWorkspaceLayout(
     int T, bool is_full, bool has_ple, int hc, int hs, int E, int moe_is,
-    int shared_is, int k, const FullAttentionWeights* full) {
+    int shared_is, int k, const FullAttentionWeights* full, int lowrank) {
   DecoderWorkspaceLayout layout;
   layout.attention_bytes = is_full && full
                                ? FullAttentionWorkspaceBytes(*full, T)
@@ -197,6 +203,11 @@ DecoderWorkspaceLayout MakeDecoderWorkspaceLayout(
   layout.ple_bytes = has_ple ? PleLayerWorkspaceBytes(T, hc, hs) : 0;
   const size_t hidden_bytes = static_cast<size_t>(T) * hs * sizeof(uint16_t);
   const size_t hyper_bytes = hidden_bytes * hc;
+  layout.hc_down_bytes = static_cast<size_t>(T) * lowrank * sizeof(uint16_t);
+  layout.hc_up_bytes = hyper_bytes;
+  const size_t read_bytes = AlignUp(hyper_bytes) +
+                            AlignUp(layout.hc_down_bytes) +
+                            AlignUp(layout.hc_up_bytes);
   auto carve = [&](size_t bytes) {
     const size_t offset = layout.total_bytes;
     layout.total_bytes += AlignUp(bytes);
@@ -204,13 +215,15 @@ DecoderWorkspaceLayout MakeDecoderWorkspaceLayout(
   };
   layout.attention = carve(layout.attention_bytes);
   layout.moe =
-      carve(layout.moe_bytes >= hyper_bytes ? layout.moe_bytes : hyper_bytes);
+      carve(layout.moe_bytes >= read_bytes ? layout.moe_bytes : read_bytes);
   layout.moe_gemm = carve(kGemmWs);
   layout.hc_gemm = carve(kGemmWs);
   layout.ple = carve(layout.ple_bytes);
   layout.mixed = carve(hidden_bytes);
   layout.block = carve(hidden_bytes);
   layout.normed = layout.moe;  // Last read: inject, before MoE overwrites it.
+  layout.hc_down = layout.normed + AlignUp(hyper_bytes);
+  layout.hc_up = layout.hc_down + AlignUp(layout.hc_down_bytes);
   layout.combined = carve(hyper_bytes);
   layout.ple_trunk = carve(has_ple ? hyper_bytes : 0);
   return layout;
@@ -220,9 +233,10 @@ DecoderWorkspaceLayout MakeDecoderWorkspaceLayout(
 
 size_t DecoderLayerWorkspaceBytes(int T, bool is_full_attention, bool has_ple,
                                   int hs, int E, int moe_is, int shared_is,
-                                  int k, const FullAttentionWeights* full) {
+                                  int k, const FullAttentionWeights* full,
+                                  int lowrank) {
   return MakeDecoderWorkspaceLayout(T, is_full_attention, has_ple, 4, hs, E,
-                                    moe_is, shared_is, k, full)
+                                    moe_is, shared_is, k, full, lowrank)
       .total_bytes;
 }
 
@@ -477,7 +491,8 @@ Status DecoderLayerForward(const DecoderLayer& layer,
 
   const DecoderWorkspaceLayout layout = MakeDecoderWorkspaceLayout(
       T, layer.is_full_attention, layer.has_ple, hc, hs, layer.routed.E,
-      layer.routed.moe_is, layer.mlp.shared_is, layer.topk, &layer.full);
+      layer.routed.moe_is, layer.mlp.shared_is, layer.topk, &layer.full,
+      std::max(layer.attn_hc.lowrank, layer.mlp_hc.lowrank));
   if (layout.total_bytes > workspace_bytes) {
     return Status::Fail("DecoderLayerForward: workspace too small");
   }
@@ -491,6 +506,10 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   uint16_t* d_block = reinterpret_cast<uint16_t*>(base + layout.block);
   uint16_t* d_normed = reinterpret_cast<uint16_t*>(base + layout.normed);
   uint16_t* d_combined = reinterpret_cast<uint16_t*>(base + layout.combined);
+  const HyperConnectionMixScratch hc_mix_scratch{
+      reinterpret_cast<uint16_t*>(base + layout.hc_down),
+      reinterpret_cast<uint16_t*>(base + layout.hc_up), layout.hc_down_bytes,
+      layout.hc_up_bytes};
 
   Status s;
 
@@ -520,7 +539,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   // GRRead prepares inject before the sublayer; normed is now temporary.
   GatedResidualFrame attn_frame;
   s = attn_frame.Read(layer.attn_hc, d_trunk, d_mixed, d_normed, T, d_hc_ws,
-                      kGemmWs, stream);
+                      kGemmWs, stream, &hc_mix_scratch);
   if (!s.ok()) {
     return s;
   }
@@ -550,7 +569,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   }
   GatedResidualFrame mlp_frame;
   s = mlp_frame.Read(layer.mlp_hc, d_combined, d_mixed, d_normed, T, d_hc_ws,
-                     kGemmWs, stream);
+                     kGemmWs, stream, &hc_mix_scratch);
   if (!s.ok()) {
     return s;
   }

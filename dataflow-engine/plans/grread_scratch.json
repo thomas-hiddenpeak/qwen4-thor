@@ -1,0 +1,82 @@
+{
+  "format": "q4t.arena_contract",
+  "version": 1,
+  "status": "accepted",
+  "baseline": "c8e8331",
+  "scope": {
+    "hs": 2560,
+    "hc": 4,
+    "lowrank": "max(attn_hc.lowrank, mlp_hc.lowrank)",
+    "tokens_min": 1,
+    "tokens_max": 8192,
+    "mtp_validation": false
+  },
+  "physical_region": {
+    "name": "moe_or_grread",
+    "space": "device_global_LPDDR",
+    "alignment_bytes": 256,
+    "capacity_expression": "AlignUp(max(MoEForwardWorkspaceBytes(T,...), AlignUp(T*hc*hs*2)+AlignUp(T*lowrank*2)+AlignUp(T*hc*hs*2)))",
+    "owner": "model shared workspace"
+  },
+  "views": [
+    {
+      "name": "normed",
+      "offset": "0",
+      "bytes": "T*hc*hs*2",
+      "last_reader": "PrepareInjectGate"
+    },
+    {
+      "name": "down",
+      "offset": "AlignUp(T*hc*hs*2)",
+      "bytes": "T*lowrank*2",
+      "last_reader": "mix_up projection"
+    },
+    {
+      "name": "up",
+      "offset": "AlignUp(T*hc*hs*2)+AlignUp(T*lowrank*2)",
+      "bytes": "T*hc*hs*2",
+      "last_reader": "MixGateKernel"
+    }
+  ],
+  "invariants": [
+    "normed/down/up disjoint during GRRead",
+    "MoE begins after both GRRead last readers on caller stream",
+    "mixed, residual, combined, gate and HC GEMM scratch remain outside aliased region",
+    "gate is frame-owned and survives MoE",
+    "borrowed buffers never freed by HyperConnectionMix",
+    "head and MTP retain default owned allocation path",
+    "actual lowrank used by both allocation and forward layout"
+  ],
+  "expected_not_measured": {
+    "main_layer_async_allocation_pairs_removed_per_decode_step": 192,
+    "additional_kernels": 0,
+    "system_peak_memory_reduction": null,
+    "throughput_gain": null
+  },
+  "not_implemented": [
+    "plan executor",
+    "schema verifier"
+  ],
+  "evidence": ".q4t-work/e2e/grread-scratch-20260921",
+  "source_sha256": {
+    "include/q4t/model/hyperconnection.h": "c43708565059d60e1be712df63e65bfc835de540098c7899ea2cb370a4519900",
+    "include/q4t/model/decoder_layer.h": "2115641417975a0e4c1c79e5c32ce7891c560814e7735ae9454babfa5769ca25",
+    "src/model/hyperconnection.cu": "ff920f43af85297bce4146d76fce2091bcf170757e7beb0a496a45f834e318ae",
+    "src/model/model.cu": "ecae65c758af9521408672dfc64fd195aef74d1edca4740ff56a4f78dc6c401e",
+    "src/model/decoder_layer.cu": "ff99c322dab34421e17175eda088e0398b4d1c11b139ebcf2aac78208096c958"
+  },
+  "validation": {
+    "quality": 11,
+    "performance_requests": 15,
+    "numeric_cases": 30,
+    "finite_bf16_values": 2867589120,
+    "layout_cases": 252,
+    "linked_capacity_cases": 504,
+    "allocation_pairs_per_decode_step": {
+      "before": 554,
+      "after": 362
+    },
+    "model_workspace_bytes": 2347958272,
+    "system_peak_measured": false
+  }
+}

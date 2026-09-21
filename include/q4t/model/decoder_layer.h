@@ -104,8 +104,9 @@ struct DecoderLayer {
 // FullAttentionWorkspaceBytes (exact); otherwise `full` may be null.
 size_t DecoderLayerWorkspaceBytes(int T, bool is_full_attention, bool has_ple,
                                   int hs, int E, int moe_is, int shared_is,
-                                  int k, const FullAttentionWeights* full =
-                                      nullptr);
+                                  int k,
+                                  const FullAttentionWeights* full = nullptr,
+                                  int lowrank = 320);
 
 // Load one decoder layer's weights from `loader`.
 //

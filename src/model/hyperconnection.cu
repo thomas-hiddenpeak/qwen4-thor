@@ -309,35 +309,48 @@ Status LoadHyperConnection(const io::WeightLoader& loader,
 Status HyperConnectionMix(const HyperConnectionWeights& w,
                           const uint16_t* hyper_input, uint16_t* mixed,
                           uint16_t* normed, int T, void* workspace,
-                          size_t workspace_bytes, cudaStream_t stream) {
+                          size_t workspace_bytes, cudaStream_t stream,
+                          const HyperConnectionMixScratch* mix_scratch) {
   const int hc = w.hc_count, hs = w.hidden_size, lr = w.lowrank;
   const int hc_dim = hc * hs;
   if (T <= 0) return Status();
   const float inv_hc = 1.0f / hc;
+  const size_t down_bytes = static_cast<size_t>(T) * lr * sizeof(uint16_t);
+  const size_t up_bytes = static_cast<size_t>(T) * hc_dim * sizeof(uint16_t);
+  if (mix_scratch && (!mix_scratch->down || !mix_scratch->up ||
+                      mix_scratch->down_bytes < down_bytes ||
+                      mix_scratch->up_bytes < up_bytes)) {
+    return Status::Fail("HC mix scratch too small or missing");
+  }
 
   // 1. Grouped RMSNorm (warp-per-branch: blockDim = 32*hc).
   GroupedRmsNormKernel<<<T, 32 * hc, 0, stream>>>(hyper_input, w.hc_norm,
                                                    normed, T, hc, hs, w.eps);
   if (cudaGetLastError() != cudaSuccess) return Status::Fail("rmsnorm launch");
 
-  uint16_t* d_down = nullptr;  // [T, lr]
-  uint16_t* d_up = nullptr;  // [T, hc_dim]
-  if (cudaMallocAsync(&d_down, static_cast<size_t>(T) * lr * sizeof(uint16_t),
-                      stream) != cudaSuccess)
-    return Status::Fail("cudaMallocAsync down");
-  if (cudaMallocAsync(&d_up, static_cast<size_t>(T) * hc_dim * sizeof(uint16_t),
-                      stream) != cudaSuccess) {
-    cudaFreeAsync(d_down, stream);
-    return Status::Fail("cudaMallocAsync up");
+  uint16_t* d_down = mix_scratch ? mix_scratch->down : nullptr;
+  uint16_t* d_up = mix_scratch ? mix_scratch->up : nullptr;
+  if (!mix_scratch) {
+    if (cudaMallocAsync(&d_down, down_bytes, stream) != cudaSuccess)
+      return Status::Fail("cudaMallocAsync down");
+    if (cudaMallocAsync(&d_up, up_bytes, stream) != cudaSuccess) {
+      cudaFreeAsync(d_down, stream);
+      return Status::Fail("cudaMallocAsync up");
+    }
   }
+  auto release_owned = [&] {
+    if (!mix_scratch) {
+      cudaFreeAsync(d_down, stream);
+      cudaFreeAsync(d_up, stream);
+    }
+  };
 
   // 2. down = normed @ W_down^T  ([T, hc_dim] x [lr, hc_dim]^T -> [T, lr]).
   Status s = CheckGemm(ProjGemm(normed, w.mix_down, &w.mix_down_fp8, d_down, T,
                                 lr, hc_dim, 1.0f, 0.0f, workspace,
                                 workspace_bytes, stream));
   if (!s.ok()) {
-    cudaFreeAsync(d_down, stream);
-    cudaFreeAsync(d_up, stream);
+    release_owned();
     return s;
   }
   // 3. silu(down/hc) in place, with BF16 output.
@@ -350,8 +363,7 @@ Status HyperConnectionMix(const HyperConnectionWeights& w,
   s = CheckGemm(ProjGemm(d_down, w.mix_up, &w.mix_up_fp8, d_up, T, hc_dim, lr,
                          1.0f, 0.0f, workspace, workspace_bytes, stream));
   if (!s.ok()) {
-    cudaFreeAsync(d_down, stream);
-    cudaFreeAsync(d_up, stream);
+    release_owned();
     return s;
   }
   // 5. gate + mean.
@@ -360,8 +372,7 @@ Status HyperConnectionMix(const HyperConnectionWeights& w,
     MixGateKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
         d_up, normed, mixed, T, hc, hs);
   }
-  cudaFreeAsync(d_down, stream);
-  cudaFreeAsync(d_up, stream);
+  release_owned();
   return Status();
 }
 
@@ -382,11 +393,13 @@ Status GatedResidualFrame::Read(const HyperConnectionWeights& w,
                                 const uint16_t* residual, uint16_t* mixed,
                                 uint16_t* normed_scratch, int tokens,
                                 void* workspace, size_t workspace_bytes,
-                                cudaStream_t stream) {
+                                cudaStream_t stream,
+                                const HyperConnectionMixScratch* mix_scratch) {
   if (ready_ || inject_gate_)
     return Status::Fail("GR frame must be consumed before another Read");
-  Status s = HyperConnectionMix(w, residual, mixed, normed_scratch, tokens,
-                                workspace, workspace_bytes, stream);
+  Status s =
+      HyperConnectionMix(w, residual, mixed, normed_scratch, tokens, workspace,
+                         workspace_bytes, stream, mix_scratch);
   if (!s) return s;
   residual_ = residual;
   stream_ = stream;

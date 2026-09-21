@@ -161,12 +161,12 @@ stream event，再执行 combine；T=1 device 路径都使用调用者 stream。
 随后 84 布局/168 容量与 4K 时间线通过，实际模型预算再减 160 MiB。
 初始异常与边界详见 ../docs/NORMED_MOE_ALIAS_2026-09-21.md。
 
-## 后续范围：GRRead down/up 暂存（仅静态推演）
+## 已接受：GRRead down/up 暂存
 
-HyperConnectionMix 当前在 RMSNorm 后分别 cudaMallocAsync down/up，
+父版 HyperConnectionMix 在 RMSNorm 后分别 cudaMallocAsync down/up，
 在 mix 后各自释放。主层每步 48*2 次 Read，每次两对，合计 192 对；
 根据已接受 4K 时间线的 554 对/step 总数，若移到 caller arena，理论
-可降至 362 对/step。这里只是代码次数推导，尚未改动或测量。
+可降至 362 对/step。候选已接入 caller arena，实际时间线确认这一结果。
 
 两份临时量均只在 Read 内被消费：down[T,lowrank] 到 up 投影，
 up[T,hc*hs] 到 MixGate。normed 同时被 down 投影、MixGate、inject
@@ -184,4 +184,11 @@ gate 是另一种生命周期：必须活到 Write，不能放进随后被子层
 MoE 区域。本轮之后若迁移 down/up，先保留 frame 的 gate 所有权，
 单独验证分配变化；gate arena 化再独立处理。主层动态分配的减少不等于
 权重流量下降，也不保证性能提升。每一步仍先完整 HTTP，后中间值与
-别名/时间线核对。当前没有应用、构建或测试这项后续方案。
+别名/时间线核对。候选已构建零警告，首项质量 HTTP 11/11 通过，
+五档性能、数值/布局/时间线均通过。详见
+[候选报告](../docs/GRREAD_SCRATCH_2026-09-21.md) 与
+[暂存合同](plans/grread_scratch.json)。
+
+GRRead down/up 阶段现已接受：完整 HTTP、逐位、布局及 4K 时间线通过，
+每步异步分配/释放各 554→362，共享 workspace 不变。旧候选描述的
+状态由此结果更新，详见 [报告](../docs/GRREAD_SCRATCH_2026-09-21.md)。

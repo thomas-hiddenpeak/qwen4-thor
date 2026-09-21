@@ -69,6 +69,15 @@ Status LoadHyperConnection(const io::WeightLoader& loader, const std::string& pr
                            bool use_combine, HyperConnectionWeights* out,
                            cudaStream_t stream);
 
+// Optional caller-owned storage. Both buffers must remain valid until the
+// enqueued mix completes, and must not overlap normed, mixed or GEMM scratch.
+struct HyperConnectionMixScratch {
+  uint16_t* down = nullptr;
+  uint16_t* up = nullptr;
+  size_t down_bytes = 0;
+  size_t up_bytes = 0;
+};
+
 // Run mix: hyper_input [T, hc*hs] BF16 -> mixed [T, hs] BF16, and the
 // (hyper_input, normed) residual pair for the later combine.
 //
@@ -76,9 +85,11 @@ Status LoadHyperConnection(const io::WeightLoader& loader, const std::string& pr
 //   mixed       : device row-major [T, hs] uint16 (out)
 //   normed      : device row-major [T, hc*hs] uint16 (out, for combine)
 //   workspace   : scratch device buffer (>= ~32 MiB) for the two low-rank GEMMs
-Status HyperConnectionMix(const HyperConnectionWeights& w, const uint16_t* hyper_input,
-                          uint16_t* mixed, uint16_t* normed, int T, void* workspace,
-                          size_t workspace_bytes, cudaStream_t stream);
+Status HyperConnectionMix(
+    const HyperConnectionWeights& w, const uint16_t* hyper_input,
+    uint16_t* mixed, uint16_t* normed, int T, void* workspace,
+    size_t workspace_bytes, cudaStream_t stream,
+    const HyperConnectionMixScratch* mix_scratch = nullptr);
 
 // Ephemeral GRRead -> sublayer -> GRWrite contract. Borrows the residual,
 // owns only BF16 inject gates, and releases them on the Read stream. The
@@ -92,7 +103,8 @@ class GatedResidualFrame {
 
   Status Read(const HyperConnectionWeights& w, const uint16_t* residual,
               uint16_t* mixed, uint16_t* normed_scratch, int tokens,
-              void* workspace, size_t workspace_bytes, cudaStream_t stream);
+              void* workspace, size_t workspace_bytes, cudaStream_t stream,
+              const HyperConnectionMixScratch* mix_scratch = nullptr);
   // Consumes the frame; all block-output producers must join the Read stream.
   Status Write(const uint16_t* block_output, uint16_t* output);
 

@@ -1,0 +1,192 @@
+#include <cuda_bf16.h>
+#include <cuda_runtime.h>
+#include <bit>
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <vector>
+#include "q4t/model/hyperconnection.h"
+#include "q4t/model/linear.h"
+namespace q4t::model {
+bool HcInjectGevGated(const uint16_t*, const uint16_t*, uint16_t*,
+                      cudaStream_t);
+}
+namespace baseline {
+using namespace q4t::model;
+using q4t::Status;
+// BASELINE_BODY
+}  // namespace baseline
+void Check(cudaError_t error) {
+  if (error != cudaSuccess) {
+    std::fprintf(stderr, "%s\n", cudaGetErrorString(error));
+    std::exit(1);
+  }
+}
+void Require(const q4t::Status& status) {
+  if (!status) {
+    std::fprintf(stderr, "%s\n", status.message().c_str());
+    std::exit(1);
+  }
+}
+template <class T>
+struct Buffer {
+  T* data;
+  size_t count;
+  explicit Buffer(size_t n) : count(n) {
+    Check(cudaMalloc(&data, n * sizeof(T)));
+  }
+  ~Buffer() { cudaFree(data); }
+};
+uint32_t rng = 20260921;
+void Fill(Buffer<uint16_t>& buffer, float scale, int family = 0) {
+  std::vector<uint16_t> values(buffer.count);
+  for (size_t i = 0; i < values.size(); ++i) {
+    rng = rng * 1664525u + 1013904223u;
+    float value = (float(rng >> 8) / 16777216.0f - 0.5f) * scale;
+    if (family == 1) value = (i & 1) ? -0.0f : 0.0f;
+    if (family == 2) value = (i & 1) ? -scale : scale;
+    values[i] = std::bit_cast<uint16_t>(__float2bfloat16_rn(value));
+  }
+  Check(cudaMemcpy(buffer.data, values.data(), values.size() * 2,
+                   cudaMemcpyHostToDevice));
+}
+size_t checked = 0;
+void Equal(const Buffer<uint16_t>& a, const Buffer<uint16_t>& b,
+           const char* label) {
+  std::vector<uint16_t> x(a.count), y(b.count);
+  Check(cudaMemcpy(x.data(), a.data, a.count * 2, cudaMemcpyDeviceToHost));
+  Check(cudaMemcpy(y.data(), b.data, b.count * 2, cudaMemcpyDeviceToHost));
+  for (size_t i = 0; i < x.size(); ++i) {
+    if (x[i] != y[i] || (y[i] & 0x7f80u) == 0x7f80u) {
+      std::fprintf(stderr, "mismatch/nonfinite %s at %zu\n", label, i);
+      std::exit(1);
+    }
+  }
+  checked += x.size();
+}
+int main() {
+  using q4t::model::GatedResidualFrame;
+  q4t::model::HyperConnectionWeights w;
+  constexpr int hc = 4, hs = 2560, dim = hc * hs, lr = 320;
+  Buffer<uint16_t> norm(dim), down(lr * dim), up(dim * lr), inject(hc * dim);
+  Fill(norm, 0.1f);
+  Fill(down, 0.01f);
+  Fill(up, 0.01f);
+  Fill(inject, 0.02f);
+  w.hc_norm = norm.data;
+  w.mix_down = down.data;
+  w.mix_up = up.data;
+  w.block_inject = inject.data;
+  Buffer<uint8_t> workspace(32 * 1024 * 1024);
+  cudaStream_t stream;
+  Check(cudaStreamCreate(&stream));
+  int cases = 0;
+  for (int rows : {1, 3, 33, 257, 8192}) {
+    Buffer<uint16_t> residual(size_t(rows) * dim), block(size_t(rows) * hs);
+    Buffer<uint16_t> old_mixed(size_t(rows) * hs), new_mixed(size_t(rows) * hs);
+    Buffer<uint16_t> old_norm(size_t(rows) * dim), new_norm(size_t(rows) * dim);
+    Buffer<uint16_t> old_out(size_t(rows) * dim), new_out(size_t(rows) * dim);
+    // One physical allocation, aligned disjoint views as in the runner.
+    const auto align = [](size_t bytes) {
+      return (bytes + 255) & ~size_t(255);
+    };
+    const size_t down_bytes = size_t(rows) * lr * 2;
+    const size_t up_bytes = size_t(rows) * dim * 2;
+    Buffer<uint8_t> staging(align(down_bytes) + align(up_bytes));
+    const q4t::model::HyperConnectionMixScratch scratch{
+        reinterpret_cast<uint16_t*>(staging.data),
+        reinterpret_cast<uint16_t*>(staging.data + align(down_bytes)),
+        down_bytes, up_bytes};
+    for (int family = 0; family < 3; ++family) {
+      Fill(residual, 0.5f, family);
+      Fill(block, 0.25f, family);
+      for (bool combine : {true, false}) {
+        w.use_combine = combine;
+        w.block_inject = combine ? inject.data : nullptr;
+        Require(baseline::HyperConnectionMix(
+            w, residual.data, old_mixed.data, old_norm.data, rows,
+            workspace.data, workspace.count, stream));
+        Require(baseline::HyperConnectionCombine(
+            w, block.data, residual.data, old_norm.data, old_out.data, rows,
+            workspace.data, workspace.count, stream));
+        GatedResidualFrame frame;
+        if (frame.Write(block.data, new_out.data)) return 2;
+        Require(frame.Read(w, residual.data, new_mixed.data, new_norm.data,
+                           rows, workspace.data, workspace.count, stream,
+                           &scratch));
+        if (frame.Read(w, residual.data, new_mixed.data, new_norm.data, rows,
+                       workspace.data, workspace.count, stream, &scratch))
+          return 3;
+        Check(cudaStreamSynchronize(stream));
+        Equal(old_mixed, new_mixed, "mixed");
+        Equal(old_norm, new_norm, "normed");
+        // Destroy all borrowed Read scratch before Write, matching MoE reuse.
+        Check(cudaMemsetAsync(staging.data, 0xff, staging.count, stream));
+        // Destroy normed after GRRead to prove GRWrite does not consume it.
+        Check(cudaMemsetAsync(new_norm.data, 0xff, new_norm.count * 2, stream));
+        Require(frame.Write(block.data, new_out.data));
+        if (frame.Write(block.data, new_out.data)) return 4;
+        Check(cudaStreamSynchronize(stream));
+        Equal(old_out, new_out, "write after normed invalidation");
+        Require(q4t::model::HyperConnectionCombine(
+            w, block.data, residual.data, old_norm.data, new_out.data, rows,
+            workspace.data, workspace.count, stream));
+        Check(cudaStreamSynchronize(stream));
+        Equal(old_out, new_out, "retained legacy combine API");
+        // A consumed frame is reusable with newly generated scratch.
+        Require(frame.Read(w, residual.data, new_mixed.data, new_norm.data,
+                           rows, workspace.data, workspace.count, stream,
+                           &scratch));
+        Require(frame.Write(block.data, new_out.data));
+        Check(cudaStreamSynchronize(stream));
+        Equal(old_out, new_out, "reused frame");
+        // Also exercise cleanup when a sublayer exits before Write.
+        {
+          GatedResidualFrame abandoned;
+          Require(abandoned.Read(w, residual.data, new_mixed.data,
+                                 new_norm.data, rows, workspace.data,
+                                 workspace.count, stream, &scratch));
+        }
+        Check(cudaStreamSynchronize(stream));
+        // Borrowed pointers must still be usable after frame destruction.
+        Check(cudaMemsetAsync(staging.data, 0, staging.count, stream));
+        Check(cudaStreamSynchronize(stream));
+        // Retained default allocation path produces the same mix.
+        Require(q4t::model::HyperConnectionMix(
+            w, residual.data, new_mixed.data, new_norm.data, rows,
+            workspace.data, workspace.count, stream));
+        Check(cudaStreamSynchronize(stream));
+        Equal(old_mixed, new_mixed, "default owned mix");
+        Equal(old_norm, new_norm, "default owned normed");
+        // Reject each undersized/missing view before launching any kernels.
+        for (int invalid = 0; invalid < 4; ++invalid) {
+          auto bad = scratch;
+          if (invalid == 0) --bad.down_bytes;
+          if (invalid == 1) --bad.up_bytes;
+          if (invalid == 2) bad.down = nullptr;
+          if (invalid == 3) bad.up = nullptr;
+          GatedResidualFrame invalid_frame;
+          if (invalid_frame.Read(w, residual.data, new_mixed.data,
+                                 new_norm.data, rows, workspace.data,
+                                 workspace.count, stream, &bad))
+            return 5;
+        }
+        ++cases;
+      }
+    }
+  }
+  {
+    GatedResidualFrame empty;
+    Require(empty.Read(w, nullptr, nullptr, nullptr, 0, workspace.data,
+                       workspace.count, stream));
+    Require(empty.Write(nullptr, nullptr));
+  }
+  Check(cudaStreamDestroy(stream));
+  std::printf(
+      "PASS: %d cases, %zu finite BF16 values bit-exact; frame transitions "
+      "passed\n",
+      cases, checked);
+}
