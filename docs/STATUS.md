@@ -18,16 +18,44 @@
 TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间。
 按重复范围比较，不设置临时容忍百分比或拼接最优档位。
 
-## 最新接受：省去长文本首块未消费的输出头
+## 最新接受：单序列 prefill 仅计算末行输出头
+
+基于 46b732b，新增显式 LogitsRows：默认全部行，末行模式仅
+对最后 trunk 行执行 mixer/词表投影，输出写 logits 首行，
+trunk_out 仍保留全行。普通文本调度中的单请求短 prefill 与长
+prefill 末块接入，批量 B>1 仍保留各序列末行的全行路径；MTP、
+视觉及内联回退默认语义不变，logits 预留容量尚未缩减。
+中间接口未改齐时的编译失败保存在 build-incomplete-edit.log；
+最终重构建零警告，首项质量 HTTP 11/11、输出对照通过、服务
+退出 0，完整五档 HTTP/输出 15/15、双参考范围检查通过。
+4K/8K TTFT 均值改善约 1.6%–1.7%，44K/200K 不认定稳定收益；
+并发相邻对照 18 请求通过，三个服务退出 0，总完成时间与两侧
+父版范围均重叠；四项生命周期 HTTP 已通过，没有前置测试。
+证据 prefill-last-row-20260921；完整质量/性能和调度 HTTP
+全部通过后才进行数值与时间线，详见
+[P7 验收报告](../dataflow-engine/PREFILL_HEAD_DEMAND.md)。
+本阶段经独立精度与时间线核对接受，固定参考不更新。
+门禁后数值工具零警告运行完成：220416000 个 trunk BF16 值、
+7 组固定 token 续算逐位一致，canary/序列状态通过；10 组 logits
+中 8 组非逐位一致，最大 l2_rel=0.000919、max_abs=0.0625，
+10/10 argmax 与 top2 值相同。近零值也存在符号翻转，不能统称
+“一 ULP”。逐阶段确认 normed 一致、mixed 四组差 1–9 元素；
+同 BF16 权重的 CPU FP64 参考显示末行 mixed 全部匹配，最终
+logits 对参考误差八组更小、两组相同、argmax 全对，按 E1 完成
+精度审查（不是 E0）。4K/44K 时间线确认仅最终 head 六次
+调用的形状变化，其余每 stream 的 kernel 序列不变；最终接受。
+44K 捕获存在首请求/后续请求差别，不据初始化 API 差异宣称收益。
+
+## 已完成前置：省去长文本首块未消费的输出头
 
 基于 f41adfc，仅调整普通文本 chunk 调度的 logits 需求：中间块
 （含首块）传 nullptr，最后块保持原计算与末行读回。RunLayers 已
 支持空 logits，并在输出头之前完成层状态与可选 trunk 输出；
 HeadForward 只读 trunk、写共享 scratch/logits，不更新序列状态。
 本轮不改变末块 GEMM 形状，MTP/视觉/内联回退保持现有路径。
-证据 prefill-first-head-skip-20260921，必要构建后首项完整质量及
-五档 HTTP，双参考通过后再检查时间线；并发路径仍需相邻对照和
-生命周期 HTTP。首项质量 11/11、输出对照通过、服务退出 0，
+证据 prefill-first-head-skip-20260921，必要构建后首项完整 HTTP，
+双参考与调度 HTTP 门禁后才检查时间线。首项质量 11/11、
+输出对照通过、服务退出 0，
 完整五档 HTTP/输出 15/15、服务退出 0，双参考无不利范围分离。
 44K TTFT 均值 30.628→30.489 秒，200K 159.698→159.372 秒但
 范围重叠，不宣称稳定收益。并发相邻对照 18 请求通过、服务退出 0，
@@ -214,7 +242,7 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 ## 正式性能参考
 
 正式五档性能参考仍为 **fcb5925**（短路径 top-k 寄存器网络）。
-最新运行时为普通文本 chunk 调度省略首块输出头，正式参考不重置。
+最新运行时为普通文本单序列末行输出头，正式参考不重置。
 质量 11/11、性能 15/15，输出摘要一致、服务退出 0，构建零警告；
 完整门禁后 352 组、277598448 个槽/长度逐位一致，4K HTTP 时间线通过。
 
@@ -229,7 +257,8 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 4K decode 较前一版 +0.76%，8K TTFT -1.08%，其余范围重叠。
 正式参考见 tools/evalscope/fixtures/performance_reference.json；
 二进制 SHA 与完整边界见 [报告](SHORT_TOPK_2026-09-21.md)。证据
-`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 对应已接受的首块输出头省略版本；
+`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 对应已接受的单序列末行输出头版本；
+已接受 46b732b 二进制保存在 prefill-last-row-20260921/q4t-before；
 已接受 f41adfc 二进制保存在 prefill-first-head-skip-20260921/q4t-before；
 已接受 ec64259/af8fad4 二进制保存在 prefill-chunk-scheduler-20260921/q4t-before；
 已接受 18f1abe 二进制保存在 prefill-chunk-sequence-v2-20260921/q4t-before；
@@ -247,8 +276,8 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 普通文本长 prefill chunk 调度已接受，完整单流、固定双请求对照、
 轮转/复用、停机与合成错误 HTTP，以及门禁后时间线通过。见
 [执行与验收报告](../dataflow-engine/PREFILL_CHUNK_SCHEDULING.md)。
-下一步核对 prefill 输出头的实际消费者，减少不被消费的计算；保持
-原精度并独立完成全套 E2E，再决定是否调整调度粒度。
+单序列末行输出头已接受；下一步实现批处理每序列输出行选择，
+保持精度并独立完成完整 E2E 和真实多请求门禁，再核对数值。
 
 GRFrame、单 normed 复用、布局单源化与 normed/MoE 别名已接受。
 GRRead down/up 暂存迁移已接受。gate 独立工作区也已接受。资源合同与 GRWrite→下一 GRRead 融合第二版已接受。

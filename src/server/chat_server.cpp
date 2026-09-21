@@ -810,13 +810,14 @@ void ChatServer::RunOnePrefillChunk() {
       if (s.ok()) {
         s = model::ModelPrefillTextChunk(
             model_, req->seq, req->ids, req->len, count,
-            last ? d_prefill_logits_ : nullptr, nullptr);
+            last ? d_prefill_logits_ : nullptr, nullptr, nullptr,
+            model::LogitsRows::kLastRow);
       }
       cudaError_t copy_error = cudaSuccess;
       if (s.ok() && last) {
         copy_error = cudaMemcpyAsync(
             req->h_logits,
-            d_prefill_logits_ + static_cast<size_t>(count - 1) * model_.cfg.vocab,
+            d_prefill_logits_,
             static_cast<size_t>(model_.cfg.vocab) * 2,
             cudaMemcpyDeviceToHost, nullptr);
       }
@@ -919,10 +920,10 @@ void ChatServer::SchedulerLoop() {
     // are read once for the whole batch instead of per request), then hand each
     // request its last-token logits. Runs under model_mu_ (shared per-forward
     // scratch), like the decode step below. A LONE prefill (Bp == 1) uses the
-    // single-seq ModelPrefill instead, so it is bit-identical to the inline
-    // path (the multi-seq full-attention indexer rounds differently from the
+    // single-seq ModelPrefill instead, selecting only its last head row.
+    // The multi-seq full-attention indexer rounds differently from the
     // single-seq tensor-core GEMM, which can flip a near-tie token — harmless
-    // but a visible change; only actual batching (Bp > 1) accepts it).
+    // but a visible change; only actual batching (Bp > 1) accepts it.
     if (!pf.empty()) {
       const int Bp = static_cast<int>(pf.size());
       Status sp;
@@ -934,12 +935,12 @@ void ChatServer::SchedulerLoop() {
           if (sp.ok())
             sp = model::ModelPrefill(model_, &tmp, pf[0]->ids, pf[0]->len,
                                      d_prefill_logits_, nullptr, nullptr,
-                                     nullptr, pf[0]->seq_id);
+                                     nullptr, pf[0]->seq_id,
+                                     model::LogitsRows::kLastRow);
           if (sp.ok()) {
             const cudaError_t copy_error = cudaMemcpyAsync(
                 pf[0]->h_logits,
-                d_prefill_logits_ +
-                    static_cast<size_t>(pf[0]->len - 1) * vocab,
+                d_prefill_logits_,
                 static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost, nullptr);
             sp = FinishHostReadback(copy_error, &gpu_healthy_);
           }

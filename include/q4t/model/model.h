@@ -33,6 +33,10 @@
 namespace q4t {
 namespace model {
 
+// Single-sequence head rows. kLastRow writes [1, vocab] at logits start;
+// nullptr skips head. trunk_out always keeps all [T, hc*hs] rows.
+enum class LogitsRows { kAllRows, kLastRow };
+
 // Static configuration of the model (all from config.json / the checkpoint).
 struct ModelConfig {
   std::string model_dir;
@@ -259,12 +263,14 @@ Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
 // bound forward (weights read once) instead of k+1 separate T=1 decodes.
 // `history` (length `history_len`) supplies the PLE n-gram context for the
 // positions before `base_position`; the in-batch prefix supplies the rest.
-// The caller owns `logits` (>= T*vocab) and `trunk_out` (>= T*hc*hs).
+// The caller owns logits (T*vocab, or vocab for kLastRow) and
+// trunk_out (T*hc*hs); selecting logits rows never shortens trunk_out.
 Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
                         int base_position, const int32_t* history,
                         int history_len, uint16_t* logits, cudaStream_t stream,
                         uint16_t* trunk_out = nullptr,
-                        bool save_checkpoints = false, int seq_id = 0);
+                        bool save_checkpoints = false, int seq_id = 0,
+                        LogitsRows logits_rows = LogitsRows::kAllRows);
 
 // B2 continuous batching: decode ONE token for each of B sequences in a SINGLE
 // packed forward (T = B). This is the bandwidth win — the 84 GB of weights is
@@ -452,7 +458,8 @@ Status ModelBeginSequence(const Model& m, ModelSequence* seq,
 Status ModelPrefill(const Model& m, ModelSequence* seq, const int32_t* input_ids,
                     int T, uint16_t* logits, cudaStream_t stream,
                     uint16_t* trunk_out = nullptr,
-                    const VisionFeatures* vision = nullptr, int seq_id = 0);
+                    const VisionFeatures* vision = nullptr, int seq_id = 0,
+                    LogitsRows logits_rows = LogitsRows::kAllRows);
 
 // Queue one text-only prompt chunk starting at seq->position. prompt contains
 // the same complete prompt [prompt_length] on every call; chunk_length must
@@ -464,12 +471,14 @@ Status ModelPrefill(const Model& m, ModelSequence* seq, const int32_t* input_ids
 // The caller must check stream completion before publishing results/reusing
 // buffers. No vision/MRoPE prompt chunking or scheduling fairness is implied.
 // logits/trunk_out describe this chunk only, with the same optional-output
-// semantics as ModelDecodeBatch; no output-head policy is selected here.
+// semantics as ModelDecodeBatch. kLastRow selects the last row of this
+// chunk, not the last row of the complete prompt.
 Status ModelPrefillTextChunk(const Model& m, ModelSequence* seq,
                             const int32_t* prompt, int prompt_length,
                             int chunk_length, uint16_t* logits,
                             cudaStream_t stream,
-                            uint16_t* trunk_out = nullptr);
+                            uint16_t* trunk_out = nullptr,
+                            LogitsRows logits_rows = LogitsRows::kAllRows);
 
 // 一个 decode step: seq 须处于 kDecode 阶段。token_id 写入 position,
 // -> logits [1, vocab]。自动 ++position 并追加 history (PLE 上下文)。

@@ -368,7 +368,8 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                  uint16_t* conv_ckpt = nullptr, int num_ckpt = 0,
                  int seq_id = 0, const int* d_seq_id = nullptr,
                  int tokens_per_seq = 0, uint16_t* ple_conv_ckpt = nullptr,
-                 const RaggedBatch* ragged = nullptr) {
+                 const RaggedBatch* ragged = nullptr,
+                 LogitsRows logits_rows = LogitsRows::kAllRows) {
   const ModelConfig& cfg = m.cfg;
   // Every model entry point already owns the logical positions copied to
   // m.d_positions. Reduce once on host, not once per full-attention layer.
@@ -488,6 +489,10 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
   // otherwise pass a null output pointer to Bf16Gemm (CUBLAS_STATUS_INVALID_
   // VALUE).
   if (!logits) return Status();
+  if (logits_rows == LogitsRows::kLastRow) {
+    return HeadForward(m.head, trunk + static_cast<size_t>(T - 1) * m.hc_dim(),
+                       logits, 1, m.d_ws, m.ws_bytes, stream);
+  }
   return HeadForward(m.head, trunk, logits, T, m.d_ws, m.ws_bytes, stream);
 }
 
@@ -590,7 +595,8 @@ int BuildRopePositions(const int32_t* input_ids, int T, int m,
 Status RunPrefill(const Model& m, const int32_t* input_ids, int T,
                   uint16_t* logits, cudaStream_t stream,
                   uint16_t* trunk_out = nullptr,
-                  const VisionFeatures* vision = nullptr, int seq_id = 0) {
+                  const VisionFeatures* vision = nullptr, int seq_id = 0,
+                  LogitsRows logits_rows = LogitsRows::kAllRows) {
   const ModelConfig& cfg = m.cfg;
   // 1. ids + positions.
   if (cudaMemcpyAsync(m.d_ids, input_ids, T * sizeof(int32_t),
@@ -686,7 +692,8 @@ Status RunPrefill(const Model& m, const int32_t* input_ids, int T,
   // 5. Layer loop + head.
   return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(),
                    positions.data(), T, logits, stream, trunk_out, nullptr,
-                   nullptr, 0, seq_id);
+                   nullptr, 0, seq_id, nullptr, 0, nullptr, nullptr,
+                   logits_rows);
 }
 
 Status ModelForward(const Model& m, const int32_t* input_ids, int T,
@@ -777,7 +784,7 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
                         int base_position, const int32_t* history,
                         int history_len, uint16_t* logits, cudaStream_t stream,
                         uint16_t* trunk_out, bool save_checkpoints,
-                        int seq_id) {
+                        int seq_id, LogitsRows logits_rows) {
   const ModelConfig& cfg = m.cfg;
   if (T <= 0) return Status::Fail("ModelDecodeBatch: T must be > 0");
   if (T > cfg.max_prefill)
@@ -856,8 +863,8 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
   const int num_ckpt = save_checkpoints ? (T - 1) : 0;
   return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(),
                    positions.data(), T, logits, stream, trunk_out, ssm_ckpt,
-                   conv_ckpt, num_ckpt,
-                   seq_id);
+                   conv_ckpt, num_ckpt, seq_id, nullptr, 0, nullptr,
+                   nullptr, logits_rows);
 }
 
 // B2 continuous batching: decode ONE token for each of B sequences in a single
@@ -1418,7 +1425,8 @@ Status ModelBeginSequence(const Model& m, ModelSequence* seq,
 Status ModelPrefill(const Model& m, ModelSequence* seq,
                     const int32_t* input_ids, int T, uint16_t* logits,
                     cudaStream_t stream, uint16_t* trunk_out,
-                    const VisionFeatures* vision, int seq_id) {
+                    const VisionFeatures* vision, int seq_id,
+                    LogitsRows logits_rows) {
   if (!seq) return Status::Fail("ModelPrefill: null seq");
   if (seq->stage != ModelSequence::Stage::kPrefill) {
     return Status::Fail("ModelPrefill: sequence not in prefill stage");
@@ -1433,7 +1441,7 @@ Status ModelPrefill(const Model& m, ModelSequence* seq,
   }
   // Per-layer state was reset by ModelBeginSequence; run the prefill.
   Status s = RunPrefill(m, input_ids, T, logits, stream, trunk_out, vision,
-                        seq_id);
+                        seq_id, logits_rows);
   if (!s.ok()) return s;
   // Handoff point: per-layer KV/SSM state is now ready for decode (or for
   // PD separation — the runner can take ownership of the state here).
@@ -1446,7 +1454,8 @@ Status ModelPrefill(const Model& m, ModelSequence* seq,
 Status ModelPrefillTextChunk(const Model& m, ModelSequence* seq,
                             const int32_t* prompt, int prompt_length,
                             int chunk_length, uint16_t* logits,
-                            cudaStream_t stream, uint16_t* trunk_out) {
+                            cudaStream_t stream, uint16_t* trunk_out,
+                            LogitsRows logits_rows) {
   if (!seq || !prompt) {
     return Status::Fail("ModelPrefillTextChunk: null sequence or prompt");
   }
@@ -1469,10 +1478,10 @@ Status ModelPrefillTextChunk(const Model& m, ModelSequence* seq,
   seq->history.reserve(prompt_length);
   Status s = base == 0
       ? RunPrefill(m, prompt, chunk_length, logits, stream, trunk_out,
-                   nullptr, seq->seq_id)
+                   nullptr, seq->seq_id, logits_rows)
       : ModelDecodeBatch(m, prompt + base, chunk_length, base,
                          seq->history.data(), base, logits, stream,
-                         trunk_out, false, seq->seq_id);
+                         trunk_out, false, seq->seq_id, logits_rows);
   if (!s.ok()) {
     seq->stage = ModelSequence::Stage::kFailed;
     return s;
