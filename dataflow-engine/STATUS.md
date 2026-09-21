@@ -175,3 +175,12 @@ runner 新增 ModelPrefillTextChunk，每块维护 slot/position/history，
 现有调度器，每轮最多一块，完成检查后排回队尾。覆盖单流五档及
 长短并发 HTTP，不能仅在并发开关后隐藏新路径。没有新增事件系统
 或 GPU 重叠假设，增加同步的成本必须验证。
+
+## 普通文本 chunk 调度已接受
+
+runner 已在 chunk 完成检查后归还共享 scratch 使用权，每轮在已选
+decode 后最多推进一个普通文本长 prefill 块。单流五档性能持平，
+固定双请求短 TTFT 约 24.6→4.75 秒、长 TTFT 增加约 0.9 秒，
+总完成时间范围重叠；四项生命周期 HTTP 与时间线/源码核对通过。
+详见 [完整报告](PREFILL_CHUNK_SCHEDULING.md)。仍有约 5.75 秒响应
+间隔；不等同于完整 D/P/S 执行计划或一般并发性能保证。

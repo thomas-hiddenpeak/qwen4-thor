@@ -18,7 +18,27 @@
 TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间。
 按重复范围比较，不设置临时容忍百分比或拼接最优档位。
 
-## 最新接受：文本 prefill 分块序列接口
+## 最新接受：普通文本长 prefill 调度
+
+基于 af8fad4（运行时 ec64259），长文本请求进入 chunk 队列，每轮
+在已选 decode 后最多推进一块，检查 stream 完成后轮转；末块在锁内
+读回 logits 并唤醒请求线程。停止/错误不重新排队，等待线程持有
+输入、seq 与 host 输出。调度结果已检查完成，不在请求线程重复同步
+随后可能提交的其他工作。正常块大小、精度、首/末块 head 策略不变。
+零警告构建后首项质量 HTTP 11/11、输出对照通过、服务退出 0；
+完整单流五档 HTTP/输出 15/15，双参考无不利范围分离；
+长短请求父版→候选→父版各三轮并发 HTTP 通过，输出一致，
+总完成时间与两侧范围重叠；短 TTFT 约 24.6→4.75 秒，但最大
+响应 chunk 间隔仍约 5.75 秒。轮转/复用、停机及错误 HTTP 四场景
+已通过；门禁后 44K 时间线全部 kernel 次数不变，五个中间 chunk
+增加完成同步。无 kernel 关联的 driver API 记录差异保留，不作为
+收益。冻结源码、二进制与库摘要一致，原始响应及服务终态最终审查通过。
+按单流持平、固定双请求首响应改善接受；长请求 TTFT 增加约 0.9 秒，
+不宣称所有请求均变快或任意并发收益。
+证据 prefill-chunk-scheduler-20260921；计划见
+[chunk 调度](../dataflow-engine/PREFILL_CHUNK_SCHEDULING.md)。
+
+## 已完成前置：文本 prefill 分块序列接口
 
 基于 18f1abe，ModelPrefillTextChunk 统一使用 seq_id、位置与 PLE
 历史；每块成功排队后推进 host 游标，最后块才进入 decode，forward
@@ -173,7 +193,7 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 ## 正式性能参考
 
 正式五档性能参考仍为 **fcb5925**（短路径 top-k 寄存器网络）。
-最新运行时为上述文本分块序列接口 v2，正式参考不重置。
+最新运行时为普通文本 chunk 调度，正式参考不重置。
 质量 11/11、性能 15/15，输出摘要一致、服务退出 0，构建零警告；
 完整门禁后 352 组、277598448 个槽/长度逐位一致，4K HTTP 时间线通过。
 
@@ -188,7 +208,8 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 4K decode 较前一版 +0.76%，8K TTFT -1.08%，其余范围重叠。
 正式参考见 tools/evalscope/fixtures/performance_reference.json；
 二进制 SHA 与完整边界见 [报告](SHORT_TOPK_2026-09-21.md)。证据
-`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 对应已接受的文本分块序列接口 v2；
+`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 对应已接受的 chunk 调度；
+已接受 ec64259/af8fad4 二进制保存在 prefill-chunk-scheduler-20260921/q4t-before；
 已接受 18f1abe 二进制保存在 prefill-chunk-sequence-v2-20260921/q4t-before；
 已接受 ede4e09 二进制保存在 serve-readback-commit-20260921/q4t-before；
 已接受 40b7dbb 二进制保存在 linear-scratch-owner-20260921/q4t-before；
@@ -201,11 +222,11 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 
 ## 后续演进
 
-下一实施项为普通文本长 prefill 的 chunk 调度；已核对共享 scratch、
-两处提前 continue、请求对象与停机边界，见
-[候选执行与并发验收计划](../dataflow-engine/PREFILL_CHUNK_SCHEDULING.md)。
-设计尚未实现，不宣称公平性或并发性能已改善。下一候选必须先完整
-单流 HTTP，并补长短请求并发 HTTP，再进行时间线分析。
+普通文本长 prefill chunk 调度已接受，完整单流、固定双请求对照、
+轮转/复用、停机与合成错误 HTTP，以及门禁后时间线通过。见
+[执行与验收报告](../dataflow-engine/PREFILL_CHUNK_SCHEDULING.md)。
+下一步核对 prefill 输出头的实际消费者，减少不被消费的计算；保持
+原精度并独立完成全套 E2E，再决定是否调整调度粒度。
 
 GRFrame、单 normed 复用、布局单源化与 normed/MoE 别名已接受。
 GRRead down/up 暂存迁移已接受。gate 独立工作区也已接受。资源合同与 GRWrite→下一 GRRead 融合第二版已接受。

@@ -212,12 +212,26 @@ class ChatServer {
     bool ok = false;
     std::condition_variable cv;
   };
+  // Request thread owns these buffers and waits until the entire prompt is
+  // done. Only the scheduler advances seq between chunk completions.
+  struct ChunkPrefillReq {
+    model::ModelSequence* seq = nullptr;
+    int seq_id = 0;
+    const int32_t* ids = nullptr;
+    int len = 0;
+    uint16_t* h_logits = nullptr;
+    bool done = false;
+    bool ok = false;
+    std::condition_variable cv;
+  };
+  void RunOnePrefillChunk();
   void SchedulerLoop();
   void StopScheduler();  // signal + join the scheduler thread (destructor)
   std::mutex sched_mu_;  // guards active_ + the pending/done handshake
   std::condition_variable sched_cv_;  // scheduler waits for pending work
   std::vector<ActiveRequest*> active_;  // live plain-decode requests
   std::vector<PrefillReq*> prefill_pending_;  // requests awaiting batched prefill
+  std::vector<ChunkPrefillReq*> chunk_prefill_pending_;
   std::thread scheduler_thread_;
   bool scheduler_stop_ = false;
   bool scheduler_active_ = false;  // false if the scheduler buffer alloc failed

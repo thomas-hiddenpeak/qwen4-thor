@@ -786,6 +786,62 @@ void ChatServer::FreeSeqId(int seq_id) {
 //
 // MTP requests are NOT batched (their draft KV is a single shared buffer);
 // they keep the single-sequence path in HandleChat.
+void ChatServer::RunOnePrefillChunk() {
+  ChunkPrefillReq* req = nullptr;
+  {
+    const std::lock_guard<std::mutex> lock(sched_mu_);
+    if (scheduler_stop_ || chunk_prefill_pending_.empty()) return;
+    req = chunk_prefill_pending_.front();
+    chunk_prefill_pending_.erase(chunk_prefill_pending_.begin());
+  }
+  Status s;
+  bool last = false;
+  {
+    const std::lock_guard<std::mutex> lock(model_mu_);
+    if (!gpu_healthy_.load(std::memory_order_relaxed)) {
+      s = Status::Fail("chunk prefill: GPU unhealthy");
+    } else {
+      if (req->seq->stage == model::ModelSequence::Stage::kIdle) {
+        s = model::ModelBeginSequence(model_, req->seq, nullptr, req->seq_id);
+      }
+      const int base = req->seq->position;
+      const int count = std::min(max_prefill_, req->len - base);
+      last = base + count == req->len;
+      if (s.ok()) {
+        s = model::ModelPrefillTextChunk(
+            model_, req->seq, req->ids, req->len, count,
+            (base == 0 || last) ? d_prefill_logits_ : nullptr, nullptr);
+      }
+      cudaError_t copy_error = cudaSuccess;
+      if (s.ok() && last) {
+        copy_error = cudaMemcpyAsync(
+            req->h_logits,
+            d_prefill_logits_ + static_cast<size_t>(count - 1) * model_.cfg.vocab,
+            static_cast<size_t>(model_.cfg.vocab) * 2,
+            cudaMemcpyDeviceToHost, nullptr);
+      }
+      // A host cursor is not device completion. Drain even a failed forward
+      // before handing shared scratch to another request.
+      const Status completion = FinishHostReadback(copy_error, &gpu_healthy_);
+      if (s.ok()) s = completion;
+      if (!s.ok() && cudaPeekAtLastError() != cudaSuccess) {
+        gpu_healthy_.store(false, std::memory_order_relaxed);
+      }
+    }
+  }
+  {
+    const std::lock_guard<std::mutex> lock(sched_mu_);
+    if (s.ok() && !last && !scheduler_stop_) {
+      chunk_prefill_pending_.push_back(req);
+    } else {
+      req->ok = s.ok() && last && !scheduler_stop_;
+      if (!req->ok) req->seq->stage = model::ModelSequence::Stage::kFailed;
+      req->done = true;
+      req->cv.notify_one();
+    }
+  }
+}
+
 void ChatServer::SchedulerLoop() {
   const int vocab = model_.cfg.vocab;
   for (;;) {
@@ -797,7 +853,8 @@ void ChatServer::SchedulerLoop() {
         if (scheduler_stop_) return true;
         // Batched prefill runs opportunistically (prefills arrive as encoding
         // completes, not in lockstep), so ANY pending prefill wakes the loop.
-        if (!prefill_pending_.empty()) return true;
+        if (!prefill_pending_.empty() || !chunk_prefill_pending_.empty())
+          return true;
         // Lockstep (both plain B2b and MTP plan A): run only when EVERY active
         // request of a kind has registered its step, so the packed forward is
         // B = all active requests (uniform width, like vllm/sglang) instead of
@@ -834,6 +891,13 @@ void ChatServer::SchedulerLoop() {
           p->cv.notify_one();
         }
         prefill_pending_.clear();
+        for (ChunkPrefillReq* p : chunk_prefill_pending_) {
+          p->seq->stage = model::ModelSequence::Stage::kFailed;
+          p->ok = false;
+          p->done = true;
+          p->cv.notify_one();
+        }
+        chunk_prefill_pending_.clear();
         return;
       }
       // Collect pending prefills into one batch (up to max_seq sequences /
@@ -921,7 +985,10 @@ void ChatServer::SchedulerLoop() {
         }
       }
     }
-    if (pending.empty()) continue;
+    if (pending.empty()) {
+      RunOnePrefillChunk();
+      continue;
+    }
 
     // Split pending into MTP (speculative) and plain (single-token) requests.
     // MTP requests are batched into ONE MtpSpeculativeStepMulti (Stage 2c:
@@ -983,7 +1050,10 @@ void ChatServer::SchedulerLoop() {
       }
     }
 
-    if (plain_reqs.empty()) continue;
+    if (plain_reqs.empty()) {
+      RunOnePrefillChunk();
+      continue;
+    }
     const int B = static_cast<int>(plain_reqs.size());
     std::vector<int32_t> tokens(B);
     std::vector<int> positions(B), seq_ids(B);
@@ -1041,6 +1111,7 @@ void ChatServer::SchedulerLoop() {
         r->cv.notify_one();
       }
     }
+    RunOnePrefillChunk();
   }
 }
 
@@ -1585,7 +1656,25 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   const bool batched_prefill =
       scheduler_active_ && !mtp_loaded_ && !chunked && vptr == nullptr &&
       getenv("Q4T_NO_BATCH_PREFILL") == nullptr;
-  if (batched_prefill) {
+  const bool scheduled_chunk_prefill =
+      scheduler_active_ && !mtp_loaded_ && chunked && vptr == nullptr;
+  if (scheduled_chunk_prefill) {
+    ChunkPrefillReq pr;
+    pr.seq = &seq;
+    pr.seq_id = seq_id;
+    pr.ids = ids.data();
+    pr.len = T;
+    pr.h_logits = h_logits.data();
+    {
+      std::unique_lock<std::mutex> lock(sched_mu_);
+      if (!scheduler_stop_) {
+        chunk_prefill_pending_.push_back(&pr);
+        sched_cv_.notify_one();
+        pr.cv.wait(lock, [&] { return pr.done; });
+      }
+    }
+    s = pr.ok ? Status() : Status::Fail("scheduled chunk prefill failed");
+  } else if (batched_prefill) {
     PrefillReq pr;
     pr.seq_id = seq_id;
     pr.ids = ids.data();
@@ -1652,7 +1741,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // DIAG: the prefill kernels are async; surface any launch/async error now
   // (otherwise it shows up later at the next sync point as a misleading
   // "memset"/"H2D" failure).
-  {
+  // Scheduler results have already passed checked readback. Re-synchronizing
+  // here could wait for an unrelated chunk submitted after this notification.
+  if (!batched_prefill && !scheduled_chunk_prefill) {
     const cudaError_t se = cudaStreamSynchronize(nullptr);
     const cudaError_t le = cudaGetLastError();
     if (se != cudaSuccess || le != cudaSuccess) {
