@@ -1,0 +1,100 @@
+// Include the actual kernel; do not maintain a second implementation.
+#include "src/vision/vision.cu"
+
+#include <bit>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+
+namespace {
+void Require(bool ok, const char* message) {
+  if (!ok) {
+    std::fprintf(stderr, "FAIL: %s\n", message);
+    std::exit(1);
+  }
+}
+void Cuda(cudaError_t result) {
+  Require(result == cudaSuccess, cudaGetErrorString(result));
+}
+uint16_t Bf16(float value) {
+  const __nv_bfloat16 converted = __float2bfloat16_rn(value);
+  return std::bit_cast<uint16_t>(converted);
+}
+}  // namespace
+
+int main() {
+  constexpr int kHeads = 16;
+  constexpr int kHeadDim = 72;
+  constexpr int kHidden = kHeads * kHeadDim;
+  constexpr int kGuard = 128;
+  size_t checked = 0;
+  // Q=K=0 gives exactly uniform probabilities. Power-of-two S and bounded
+  // integer V make the entire FP32 accumulation exact, followed by BF16 RN.
+  // Distinct time groups and heads also detect accidental cross-group reads.
+  for (const int spatial : {64, 256, 1024}) {
+    for (const int temporal : {1, 2}) {
+      const int length = spatial * temporal;
+      std::vector<uint16_t> qkv(static_cast<size_t>(length) * 3 * kHidden, 0);
+      std::vector<uint16_t> expected(static_cast<size_t>(length) * kHidden);
+      for (int token = 0; token < length; ++token) {
+        for (int channel = 0; channel < kHidden; ++channel) {
+          const int value = (token * 7 + channel * 3 +
+                             (token / spatial) * 5) % 17 - 8;
+          qkv[static_cast<size_t>(token) * 3 * kHidden +
+              2 * kHidden + channel] = Bf16(static_cast<float>(value));
+        }
+      }
+      for (int group = 0; group < temporal; ++group) {
+        for (int channel = 0; channel < kHidden; ++channel) {
+          int sum = 0;
+          for (int j = 0; j < spatial; ++j) {
+            sum += ((group * spatial + j) * 7 + channel * 3 +
+                    group * 5) % 17 - 8;
+          }
+          const uint16_t value = Bf16(static_cast<float>(sum) / spatial);
+          for (int j = 0; j < spatial; ++j) {
+            expected[static_cast<size_t>(group * spatial + j) *
+                     kHidden + channel] = value;
+          }
+        }
+      }
+      uint16_t* device_qkv = nullptr;
+      uint16_t* guarded = nullptr;
+      Cuda(cudaMalloc(&device_qkv, qkv.size() * sizeof(uint16_t)));
+      Cuda(cudaMalloc(&guarded,
+                      (expected.size() + 2 * kGuard) * sizeof(uint16_t)));
+      Cuda(cudaMemcpy(device_qkv, qkv.data(), qkv.size() * sizeof(uint16_t),
+                      cudaMemcpyHostToDevice));
+      std::vector<uint16_t> actual(expected.size() + 2 * kGuard);
+      for (int repeat = 0; repeat < 5; ++repeat) {
+        Cuda(cudaMemset(guarded, 0xa5, actual.size() * sizeof(uint16_t)));
+        q4t::vision::AttentionKernel<<<dim3(length, kHeads), 256,
+                                      spatial * sizeof(float)>>>(
+            device_qkv, guarded + kGuard, length, temporal, spatial,
+            kHeads, kHeadDim, kHidden, 1.0f / std::sqrt(72.0f));
+        Cuda(cudaGetLastError());
+        Cuda(cudaMemcpy(actual.data(), guarded,
+                        actual.size() * sizeof(uint16_t),
+                        cudaMemcpyDeviceToHost));
+        for (int i = 0; i < kGuard; ++i) {
+          Require(actual[i] == 0xa5a5 &&
+                      actual[kGuard + expected.size() + i] == 0xa5a5,
+                  "output canary");
+        }
+        for (size_t i = 0; i < expected.size(); ++i) {
+          if (actual[kGuard + i] != expected[i]) {
+            std::fprintf(stderr, "S=%d t=%d repeat=%d index=%zu got=%04x "
+                                 "expected=%04x\n", spatial, temporal, repeat,
+                         i, actual[kGuard + i], expected[i]);
+            Require(false, "exact uniform-attention reference");
+          }
+        }
+        checked += expected.size();
+      }
+      Cuda(cudaFree(guarded));
+      Cuda(cudaFree(device_qkv));
+      std::printf("PASS S=%d t=%d repeats=5\n", spatial, temporal);
+    }
+  }
+  std::printf("EXACT_REFERENCE_PASS bf16_values=%zu\n", checked);
+}

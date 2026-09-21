@@ -216,6 +216,8 @@ __global__ void AttentionKernel(const uint16_t* __restrict__ qkv,
   // Phase 2: row max, then exp + sum.
   float row_max = -1e30f;
   for (int j = 0; j < S; ++j) row_max = fmaxf(row_max, s_score[j]);
+  // Finish every warp's reads before any warp overwrites shared scores.
+  __syncthreads();
   float sum = 0.0f;
   for (int j = threadIdx.x; j < S; j += blockDim.x) {
     s_score[j] = __expf(s_score[j] - row_max);
