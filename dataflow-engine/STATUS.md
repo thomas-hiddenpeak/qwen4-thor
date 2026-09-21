@@ -167,3 +167,11 @@ runner 新增 ModelPrefillTextChunk，每块维护 slot/position/history，
 [实现报告](../docs/PREFILL_CHUNK_SEQUENCE_2026-09-21.md)。
 这是有序 host 游标，不是完成事件或回滚事务；serve 仍持有全 prompt
 模型锁。计划 P 的 chunk 公平调度、资源准入与设备完成发布仍未实现。
+
+## 下一实施边界：chunk 调度（设计，尚未实现）
+
+[执行与验收计划](PREFILL_CHUNK_SCHEDULING.md) 根据 ec64259 的真实
+共享 scratch、锁和请求生命周期，选择把普通文本长 prefill 纳入
+现有调度器，每轮最多一块，完成检查后排回队尾。覆盖单流五档及
+长短并发 HTTP，不能仅在并发开关后隐藏新路径。没有新增事件系统
+或 GPU 重叠假设，增加同步的成本必须验证。

@@ -201,6 +201,12 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 
 ## 后续演进
 
+下一实施项为普通文本长 prefill 的 chunk 调度；已核对共享 scratch、
+两处提前 continue、请求对象与停机边界，见
+[候选执行与并发验收计划](../dataflow-engine/PREFILL_CHUNK_SCHEDULING.md)。
+设计尚未实现，不宣称公平性或并发性能已改善。下一候选必须先完整
+单流 HTTP，并补长短请求并发 HTTP，再进行时间线分析。
+
 GRFrame、单 normed 复用、布局单源化与 normed/MoE 别名已接受。
 GRRead down/up 暂存迁移已接受。gate 独立工作区也已接受。资源合同与 GRWrite→下一 GRRead 融合第二版已接受。
 成对 gate+mix 也已接受。下一步结合整体时间预算与资源合同推进
