@@ -6,7 +6,8 @@
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
 | [GDN_VECTOR_LOAD_2026-09-21.md](GDN_VECTOR_LOAD_2026-09-21.md) | GDN 连续读取、完整 E2E 与状态等价证据 | 本轮验证更新 |
-| [Decode 多级 top-k](DECODE_TOPK_2026-09-21.md) | 寄存器比较网络候选、容量与验收边界 | 验收进行中 |
+| [短上下文索引打分](INDEXER_DECODE_2026-09-21.md) | CTA 映射、逐位分数与配对 HTTP | 本轮验收完成 |
+| [Decode 多级 top-k](DECODE_TOPK_2026-09-21.md) | 寄存器网络、完整 E2E 与逐位证据 | 本轮验收完成 |
 | [QSA 输出列分片](QSA_DECODE_SPLIT_2026-09-21.md) | 单 token 四分输出、完整 E2E 与逐位证据 | 本轮验收完成 |
 | [MoE 设备执行](MOE_DEVICE_DECODE_2026-09-21.md) | 单 token GPU 专家执行、五档 E2E 与同步计数 | 本轮验收完成 |
 | [TOPK_REGISTER_NETWORK_2026-09-21.md](TOPK_REGISTER_NETWORK_2026-09-21.md) | 流式 top-k 网络寄存器化候选与验收 | 本轮验证更新 |

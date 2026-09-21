@@ -69,4 +69,6 @@ R0/R1 的可机读计划和 GRFrame 完整闭环仍未实现，不能由单个 M
 [decode top-k 计划](DECODE_TOPK_PLAN.md) 已接入独立 CUDA 单元，
 复用私有寄存器比较网络，构建零警告，完整 HTTP、数值专项及时间线通过。
 200K decode +4.98%，未改变 score、同分规则或候选覆盖；本轮接受。
-下一项 [短上下文索引打分](INDEXER_DECODE_PLAN.md) 尚未实现。
+[短上下文索引打分](INDEXER_DECODE_PLAN.md) 也已接受：完整 HTTP、
+589824 个分数逐位及配对 4K 时间线通过，4K decode +6.20%。
+下一项短路径 top-k 寄存器网络尚未实现。

@@ -1,0 +1,88 @@
+// Appended to the exact baseline and candidate implementations after HTTP
+// gates.
+void Check(cudaError_t error) {
+  if (error != cudaSuccess) {
+    std::fprintf(stderr, "%s\n", cudaGetErrorString(error));
+    std::exit(1);
+  }
+}
+template <class T>
+struct Buffer {
+  T* data;
+  explicit Buffer(size_t n) { Check(cudaMalloc(&data, n * sizeof(T))); }
+  ~Buffer() { cudaFree(data); }
+  void Upload(const std::vector<T>& values) {
+    Check(cudaMemcpy(data, values.data(), values.size() * sizeof(T),
+                     cudaMemcpyHostToDevice));
+  }
+};
+uint16_t Bf16(float value) {
+  const __nv_bfloat16 result = __float2bfloat16_rn(value);
+  return std::bit_cast<uint16_t>(result);
+}
+int main() {
+  constexpr int kSlots = 2048;
+  constexpr size_t kStride = kSlots * 128;
+  Buffer<uint16_t> query(512), keys(3 * kStride);
+  Buffer<int> positions(1), seq_id(1);
+  Buffer<float> before(kSlots), after(kSlots);
+  std::vector<uint16_t> q(512), k(3 * kStride);
+  std::vector<float> old_scores(kSlots), new_scores(kSlots);
+  uint32_t rng = 20260921;
+  int cases = 0;
+  for (int family = 0; family < 3; ++family) {
+    auto value = [&]() {
+      rng = rng * 1664525u + 1013904223u;
+      return (static_cast<float>(rng >> 8) / 16777216.0f - 0.5f) * 4.f;
+    };
+    for (size_t i = 0; i < q.size(); ++i)
+      q[i] = Bf16(family == 1 ? ((i & 1) ? -1.f : 1.f) : value());
+    for (size_t i = 0; i < k.size(); ++i) {
+      float v = family == 1 ? ((i & 1) ? 1.f : -1.f) : value();
+      if (family == 2) v = (i & 1) ? -0.0f : 0.0f;
+      k[i] = Bf16(v);
+    }
+    query.Upload(q);
+    keys.Upload(k);
+    for (int groups : {0, 1, 255, 256, 257, 1024, 2047, 2048}) {
+      for (int tail = 0; tail < 4; ++tail) {
+        for (int seq : {0, 1, 2}) {
+          // Same visible group count, including all four incomplete tails.
+          const int position = groups * 4 - 1 + tail;
+          positions.Upload({position});
+          seq_id.Upload({seq});
+          baseline::IndexerLogitsKernel<<<1, 256>>>(
+              query.data, keys.data, before.data, positions.data, 1, 4, 128, 4,
+              kSlots, 0, seq_id.data, kStride);
+          Check(cudaGetLastError());
+          const auto status = q4t::model::IndexerDecodeScores(
+              query.data, keys.data, after.data, positions.data, 4, seq_id.data,
+              kStride, nullptr);
+          if (!status) {
+            std::fprintf(stderr, "%s\n", status.message().c_str());
+            return 1;
+          }
+          Check(cudaMemcpy(old_scores.data(), before.data,
+                           kSlots * sizeof(float), cudaMemcpyDeviceToHost));
+          Check(cudaMemcpy(new_scores.data(), after.data,
+                           kSlots * sizeof(float), cudaMemcpyDeviceToHost));
+          for (int g = 0; g < kSlots; ++g) {
+            if (!std::isfinite(new_scores[g]) ||
+                std::bit_cast<uint32_t>(old_scores[g]) !=
+                    std::bit_cast<uint32_t>(new_scores[g]) ||
+                (g >= groups && new_scores[g] != -1e30f)) {
+              std::fprintf(stderr,
+                           "mismatch family=%d groups=%d tail=%d seq=%d g=%d\n",
+                           family, groups, tail, seq, g);
+              return 1;
+            }
+          }
+          ++cases;
+        }
+      }
+    }
+  }
+  std::printf("PASS: %d cases, %d finite FP32 scores bit-exact\n", cases,
+              cases * kSlots);
+  return 0;
+}

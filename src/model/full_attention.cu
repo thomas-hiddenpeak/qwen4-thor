@@ -27,6 +27,7 @@
 
 #include "q4t/io/weight_loader.h"
 #include "q4t/model/decode_topk.h"
+#include "q4t/model/indexer_decode.h"
 #include "q4t/model/linear.h"
 #include "q4t/model/qsa_decode.h"
 #include "q4t/model/streaming_topk.h"
@@ -1636,6 +1637,11 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
       IndexerReduceKernel<<<(total + 255) / 256, 256, 0, stream>>>(
           d_S, d_logits, d_positions, T, n_iq, idx_hd, w.idx_compress,
           max_blocks, /*block_off=*/0);
+    } else if (T == 1 && n_iq == 4 && idx_hd == 128 &&
+               max_blocks == 2048) {
+      s = IndexerDecodeScores(d_iq, idx_comp, d_logits, d_positions,
+                              w.idx_compress, d_seq_id, idx_seq_stride, stream);
+      if (!s) return s;
     } else {
       IndexerLogitsKernel<<<T, 256, 0, stream>>>(
           d_iq, idx_comp, d_logits, d_positions, T, n_iq, idx_hd,

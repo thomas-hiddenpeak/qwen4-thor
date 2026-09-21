@@ -2,7 +2,9 @@
 
 模型专用数据流引擎 · 筹备文档 · 2026-09-20
 
-状态：设计推演，尚无实现或新性能实测。QTDE 是暂定工作名。
+状态：完整执行计划仍在筹备；MoE、QSA 与 decode top-k 固定形状子链
+已在 runner 实现并通过 E2E。最新候选及证据见 [STATUS.md](STATUS.md)。
+QTDE 是暂定工作名，子链优化不代表完整数据流引擎完成。
 “数据流机器”保留为设计理念；软件项目称“数据流引擎”。
 
 目标：在 Thor 上运行当前 Qwen3.8-Flash-Next-NVFP4-SSD-Stream
@@ -22,6 +24,9 @@ runner 和新引擎；具体证据要求见 [验证标准](VALIDATION.md#采纳�
 | [RESOURCE_BUDGET.md](RESOURCE_BUDGET.md) | 容量、流量、并行度与临界路径如何记账 |
 | [VALIDATION.md](VALIDATION.md) | 如何证明设计正确、有收益，如何选择第一项实验 |
 | [MOE_DEVICE_PLAN.md](MOE_DEVICE_PLAN.md) | 当前 runner 单 token MoE 的 GPU 描述符执行候选与验收边界 |
+| [QSA_DECODE_PLAN.md](QSA_DECODE_PLAN.md) | 单 token 注意力输出列分片合同与边界 |
+| [DECODE_TOPK_PLAN.md](DECODE_TOPK_PLAN.md) | 长上下文精确选择的比较网络与容量合同 |
+| [INDEXER_DECODE_PLAN.md](INDEXER_DECODE_PLAN.md) | 短上下文索引打分 CTA 映射候选 |
 | [STATUS.md](STATUS.md) | 本项目筹备进度、暂定决策与待决问题 |
 | [log/2026-09-20.md](log/2026-09-20.md) | 初次推演记录 |
 
