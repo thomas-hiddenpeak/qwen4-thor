@@ -1,0 +1,71 @@
+{
+  "format": "q4t.arena_contract",
+  "version": 1,
+  "status": "accepted",
+  "baseline": "e550a02",
+  "scope": {
+    "hs": 2560,
+    "hc": 4,
+    "tokens_max": 8192,
+    "mtp_validation": false
+  },
+  "region": {
+    "name": "inject_gate",
+    "space": "device_global_LPDDR",
+    "owner": "model shared workspace",
+    "placement": "independent tail after ple_trunk",
+    "alignment_bytes": 256,
+    "bytes": "AlignUp(T*hc*2)"
+  },
+  "ordering": [
+    "attention Read writes gate",
+    "attention sublayer preserves gate",
+    "attention Write reads gate",
+    "MLP Read overwrites gate on same stream",
+    "MoE preserves gate including auxiliary-stream work",
+    "MLP Write reads gate"
+  ],
+  "invariants": [
+    "Gate never aliases MoE, attention, GRRead scratch, residual or output",
+    "Borrowed gate remains valid until queued Write finishes or abandoned Read finishes",
+    "Release clears frame state and frees only owned allocation",
+    "Owned default API remains available",
+    "use_combine=false or tokens<=0 does not require gate storage"
+  ],
+  "expected_not_measured": {
+    "async_allocation_pairs_per_step_before": 362,
+    "async_allocation_pairs_per_step_after": 266,
+    "workspace_growth_bytes_T8192": 65536,
+    "workspace_growth_bytes_T1": 256,
+    "throughput_gain": null,
+    "system_peak_change": null
+  },
+  "not_implemented": [
+    "plan executor",
+    "schema verifier"
+  ],
+  "evidence": ".q4t-work/e2e/grframe-gate-arena-20260921",
+  "binary_sha256": "4d3cbae5433e3fc188f16abc478d2951e9c30aec90f7459ab8aea7f8b802fcda",
+  "source_sha256": {
+    "include/q4t/model/hyperconnection.h": "79cc275441801cf3093622f18155e86e93ff0d8d42e8cd0d0ac59146587e4fb7",
+    "include/q4t/model/decoder_layer.h": "2115641417975a0e4c1c79e5c32ce7891c560814e7735ae9454babfa5769ca25",
+    "src/model/hyperconnection.cu": "f0479e5d55ac0f2cadcc4e0d3a43c366aa47e286fdd7663bd84903f38d9ff3b0",
+    "src/model/model.cu": "ecae65c758af9521408672dfc64fd195aef74d1edca4740ff56a4f78dc6c401e",
+    "src/model/decoder_layer.cu": "5c695a49e7eb0eefe7a782d6e62feabc2f918c1f5d65c9c6b2ba2abc81c5f002"
+  },
+  "validation": {
+    "quality": 11,
+    "performance_requests": 15,
+    "numerical_cases": 30,
+    "finite_bf16_values": 4953108480,
+    "layout_cases": 252,
+    "linked_capacity_cases": 504,
+    "allocation_pairs_per_step": {
+      "before": 362,
+      "after": 266
+    },
+    "workspace_bytes_T8192": 2348023808,
+    "growth_bytes_T8192": 65536,
+    "system_peak_measured": false
+  }
+}

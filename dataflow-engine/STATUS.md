@@ -113,3 +113,12 @@ normed/MoE 别名已接受：质量 11/11、五档及 44K 旧→新→旧复核�
 554→362，共享 workspace 不变。详见
 [报告](../docs/GRREAD_SCRATCH_2026-09-21.md)。下一步独立处理 gate
 的跨子层存活期，不能借用随后由 MoE 覆写的区域。
+
+## GRFrame gate 独立工作区已接受
+
+[gate 合同](plans/grframe_gate.json) 已落实到 runner，gate 存储与所有
+子层暂存不重叠，两个 frame 按 stream 顺序复用。完整 HTTP、逐位、布局
+与时间线通过，每步异步分配/释放各 362→266，workspace 增加 64 KiB。
+性能持平，正式参考不变。[报告](../docs/GRFRAME_GATE_2026-09-21.md)。
+下一步把实际布局和 GR 执行依赖绑定成可检查描述；完整 D/P/S 执行器、
+状态提交和其他子层 arena 化仍未完成。

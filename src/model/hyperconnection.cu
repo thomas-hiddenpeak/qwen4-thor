@@ -380,8 +380,9 @@ GatedResidualFrame::~GatedResidualFrame() { Release(); }
 
 cudaError_t GatedResidualFrame::Release() {
   cudaError_t error = cudaSuccess;
-  if (inject_gate_) error = cudaFreeAsync(inject_gate_, stream_);
+  if (inject_gate_ && owns_gate_) error = cudaFreeAsync(inject_gate_, stream_);
   inject_gate_ = nullptr;
+  owns_gate_ = false;
   residual_ = nullptr;
   tokens_ = hc_ = hs_ = 0;
   stream_ = nullptr;
@@ -394,9 +395,17 @@ Status GatedResidualFrame::Read(const HyperConnectionWeights& w,
                                 uint16_t* normed_scratch, int tokens,
                                 void* workspace, size_t workspace_bytes,
                                 cudaStream_t stream,
-                                const HyperConnectionMixScratch* mix_scratch) {
+                                const HyperConnectionMixScratch* mix_scratch,
+                                const GatedResidualGateStorage* gate_storage) {
   if (ready_ || inject_gate_)
     return Status::Fail("GR frame must be consumed before another Read");
+  const bool needs_gate = tokens > 0 && w.use_combine && w.block_inject;
+  const size_t gate_bytes =
+      needs_gate ? static_cast<size_t>(tokens) * w.hc_count * sizeof(uint16_t)
+                 : 0;
+  if (needs_gate && gate_storage &&
+      (!gate_storage->data || gate_storage->bytes < gate_bytes))
+    return Status::Fail("GR gate storage too small or missing");
   Status s =
       HyperConnectionMix(w, residual, mixed, normed_scratch, tokens, workspace,
                          workspace_bytes, stream, mix_scratch);
@@ -406,18 +415,22 @@ Status GatedResidualFrame::Read(const HyperConnectionWeights& w,
   tokens_ = tokens;
   hc_ = w.hc_count;
   hs_ = w.hidden_size;
-  if (tokens > 0 && w.use_combine && w.block_inject) {
+  if (needs_gate) {
     const cudaError_t pending = cudaGetLastError();
     if (pending != cudaSuccess) {
       Release();
       return Status::Fail(cudaGetErrorString(pending));
     }
-    const cudaError_t error = cudaMallocAsync(
-        &inject_gate_, static_cast<size_t>(tokens) * hc_ * sizeof(uint16_t),
-        stream_);
-    if (error != cudaSuccess) {
-      Release();
-      return Status::Fail(cudaGetErrorString(error));
+    if (gate_storage) {
+      inject_gate_ = gate_storage->data;
+    } else {
+      const cudaError_t error =
+          cudaMallocAsync(&inject_gate_, gate_bytes, stream_);
+      if (error != cudaSuccess) {
+        Release();
+        return Status::Fail(cudaGetErrorString(error));
+      }
+      owns_gate_ = true;
     }
     s = PrepareInjectGate(w, normed_scratch, inject_gate_, tokens, workspace,
                           workspace_bytes, stream_);

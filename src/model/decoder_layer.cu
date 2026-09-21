@@ -186,6 +186,8 @@ struct DecoderWorkspaceLayout {
   size_t hc_up_bytes = 0;
   size_t combined = 0;
   size_t ple_trunk = 0;
+  size_t gate = 0;
+  size_t gate_bytes = 0;
   size_t attention_bytes = 0;
   size_t moe_bytes = 0;
   size_t ple_bytes = 0;
@@ -226,6 +228,10 @@ DecoderWorkspaceLayout MakeDecoderWorkspaceLayout(
   layout.hc_up = layout.hc_down + AlignUp(layout.hc_down_bytes);
   layout.combined = carve(hyper_bytes);
   layout.ple_trunk = carve(has_ple ? hyper_bytes : 0);
+  // Both frames reuse this region in stream order. It survives each sublayer
+  // and must remain outside the MoE/GRRead scratch alias.
+  layout.gate_bytes = static_cast<size_t>(T) * hc * sizeof(uint16_t);
+  layout.gate = carve(layout.gate_bytes);
   return layout;
 }
 
@@ -510,6 +516,8 @@ Status DecoderLayerForward(const DecoderLayer& layer,
       reinterpret_cast<uint16_t*>(base + layout.hc_down),
       reinterpret_cast<uint16_t*>(base + layout.hc_up), layout.hc_down_bytes,
       layout.hc_up_bytes};
+  const GatedResidualGateStorage gate_storage{
+      reinterpret_cast<uint16_t*>(base + layout.gate), layout.gate_bytes};
 
   Status s;
 
@@ -539,7 +547,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   // GRRead prepares inject before the sublayer; normed is now temporary.
   GatedResidualFrame attn_frame;
   s = attn_frame.Read(layer.attn_hc, d_trunk, d_mixed, d_normed, T, d_hc_ws,
-                      kGemmWs, stream, &hc_mix_scratch);
+                      kGemmWs, stream, &hc_mix_scratch, &gate_storage);
   if (!s.ok()) {
     return s;
   }
@@ -569,7 +577,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   }
   GatedResidualFrame mlp_frame;
   s = mlp_frame.Read(layer.mlp_hc, d_combined, d_mixed, d_normed, T, d_hc_ws,
-                     kGemmWs, stream, &hc_mix_scratch);
+                     kGemmWs, stream, &hc_mix_scratch, &gate_storage);
   if (!s.ok()) {
     return s;
   }

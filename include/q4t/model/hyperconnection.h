@@ -91,9 +91,17 @@ Status HyperConnectionMix(
     size_t workspace_bytes, cudaStream_t stream,
     const HyperConnectionMixScratch* mix_scratch = nullptr);
 
-// Ephemeral GRRead -> sublayer -> GRWrite contract. Borrows the residual,
-// owns only BF16 inject gates, and releases them on the Read stream. The
-// normed scratch is not retained. The stream must outlive this frame.
+// Optional caller-owned gate storage. It must remain valid through the last
+// enqueued GRWrite consumer (or pending Read work on an abandoned frame),
+// and must not overlap residual, mix scratch or any sublayer workspace.
+struct GatedResidualGateStorage {
+  uint16_t* data = nullptr;
+  size_t bytes = 0;
+};
+
+// Ephemeral GRRead -> sublayer -> GRWrite contract. Borrows the residual and
+// optionally the gate storage; otherwise owns its gate allocation. Normed
+// scratch is not retained. The stream must outlive this frame.
 class GatedResidualFrame {
  public:
   GatedResidualFrame() = default;
@@ -104,7 +112,8 @@ class GatedResidualFrame {
   Status Read(const HyperConnectionWeights& w, const uint16_t* residual,
               uint16_t* mixed, uint16_t* normed_scratch, int tokens,
               void* workspace, size_t workspace_bytes, cudaStream_t stream,
-              const HyperConnectionMixScratch* mix_scratch = nullptr);
+              const HyperConnectionMixScratch* mix_scratch = nullptr,
+              const GatedResidualGateStorage* gate_storage = nullptr);
   // Consumes the frame; all block-output producers must join the Read stream.
   Status Write(const uint16_t* block_output, uint16_t* output);
 
@@ -117,6 +126,7 @@ class GatedResidualFrame {
   int hc_ = 0;
   int hs_ = 0;
   bool ready_ = false;
+  bool owns_gate_ = false;
 };
 
 // Run combine: block_output [T, hs] + residual (hyper_input, normed) [T, hc*hs]

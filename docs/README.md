@@ -12,6 +12,7 @@
 | [DECODER_WORKSPACE_LAYOUT_2026-09-21.md](DECODER_WORKSPACE_LAYOUT_2026-09-21.md) | decoder 容量与偏移单源化候选及布局对照 |
 | [NORMED_MOE_ALIAS_2026-09-21.md](NORMED_MOE_ALIAS_2026-09-21.md) | normed 借用 MoE 区域的别名、生命周期与容量验收 |
 | [GRREAD_SCRATCH_2026-09-21.md](GRREAD_SCRATCH_2026-09-21.md) | GRRead down/up 接受，分配各 554→362/步，性能持平 |
+| [GRFRAME_GATE_2026-09-21.md](GRFRAME_GATE_2026-09-21.md) | gate 工作区已接受，分配各 362→266/步，新增 64 KiB |
 | [短路径 top-k](SHORT_TOPK_2026-09-21.md) | 精确选择、完整 E2E 与局部时间线 | 本轮验收完成 |
 | [短上下文索引打分](INDEXER_DECODE_2026-09-21.md) | CTA 映射、逐位分数与配对 HTTP | 本轮验收完成 |
 | [Decode 多级 top-k](DECODE_TOPK_2026-09-21.md) | 寄存器网络、完整 E2E 与逐位证据 | 本轮验收完成 |
