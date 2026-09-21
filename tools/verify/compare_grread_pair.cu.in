@@ -1,0 +1,89 @@
+#include <cuda_bf16.h>
+#include <cuda_runtime.h>
+#include <bit>
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <vector>
+namespace baseline {
+@ORIGINAL@
+}
+namespace candidate {
+@CANDIDATE@
+}
+void Check(cudaError_t error) {
+  if (error != cudaSuccess) {
+    std::fprintf(stderr, "%s\n", cudaGetErrorString(error));
+    std::exit(1);
+  }
+}
+uint16_t Bf16(float value) {
+  return std::bit_cast<uint16_t>(__float2bfloat16_rn(value));
+}
+int main() {
+  constexpr int hc = 4, hs = 2560;
+  uint32_t rng = 20260921;
+  size_t checked = 0;
+  int cases = 0;
+  for (int rows : {1, 3, 33, 257, 8192}) {
+    const size_t n = size_t(rows) * hs, hyper = n * hc;
+    std::vector<uint16_t> up(hyper), normed(hyper), old(n + 8), out(n + 8);
+    uint16_t *du, *dn, *da, *db;
+    Check(cudaMalloc(&du, hyper * 2));
+    Check(cudaMalloc(&dn, hyper * 2));
+    Check(cudaMalloc(&da, (n + 8) * 2));
+    Check(cudaMalloc(&db, (n + 8) * 2));
+    for (int family = 0; family < 5; ++family) {
+      for (size_t i = 0; i < hyper; ++i) {
+        rng = rng * 1664525u + 1013904223u;
+        const float random = float(rng >> 8) / 16777216.0f - 0.5f;
+        up[i] = Bf16(random * 8.f);
+        normed[i] = Bf16(random * 4.f);
+        if (family == 1) {
+          up[i] = Bf16((i & 1) ? 96.f : -96.f);
+          normed[i] = Bf16((i & 2) ? 4096.f : -4096.f);
+        } else if (family == 2) {
+          up[i] = (i & 1) ? 0x8000 : 0;
+          normed[i] = (i & 2) ? 0x8000 : 0;
+        } else if (family == 3) {
+          up[i] = uint16_t((i % 127) + 1) | ((i & 1) ? 0x8000 : 0);
+          normed[i] = uint16_t((i % 127) + 1) | ((i & 2) ? 0x8000 : 0);
+        } else if (family == 4) {
+          up[i] = Bf16(random * 0.01f);
+          normed[i] = Bf16(((i / hs) & 1) ? -1.f : 1.f);
+        }
+      }
+      Check(cudaMemcpy(du, up.data(), hyper * 2, cudaMemcpyHostToDevice));
+      Check(cudaMemcpy(dn, normed.data(), hyper * 2, cudaMemcpyHostToDevice));
+      Check(cudaMemset(da, 0xa5, (n + 8) * 2));
+      Check(cudaMemset(db, 0xa5, (n + 8) * 2));
+      baseline::MixGateKernel<<<(n + 255) / 256, 256>>>(du, dn, da, rows, hc, hs);
+      Check(cudaGetLastError());
+      candidate::MixGatePairKernel<<<(n + 255) / 256, 128>>>(
+          du, dn, db, rows, hc, hs);
+      Check(cudaGetLastError());
+      Check(cudaDeviceSynchronize());
+      Check(cudaMemcpy(old.data(), da, (n + 8) * 2, cudaMemcpyDeviceToHost));
+      Check(cudaMemcpy(out.data(), db, (n + 8) * 2, cudaMemcpyDeviceToHost));
+      for (size_t i = 0; i < n + 8; ++i) {
+        if (old[i] != out[i] ||
+            (i < n && (out[i] & 0x7f80u) == 0x7f80u) ||
+            (i >= n && (old[i] != 0xa5a5 || out[i] != 0xa5a5))) {
+          std::fprintf(stderr, "mismatch rows=%d family=%d index=%zu\n",
+                       rows, family, i);
+          return 1;
+        }
+      }
+      checked += n;
+      ++cases;
+    }
+    Check(cudaFree(du));
+    Check(cudaFree(dn));
+    Check(cudaFree(da));
+    Check(cudaFree(db));
+  }
+  std::printf("PASS: %d cases, %zu finite BF16 outputs bit-exact, guards intact\n",
+              cases, checked);
+}

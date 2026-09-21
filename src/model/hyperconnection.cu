@@ -238,6 +238,34 @@ __global__ void MixGateKernel(const uint16_t* __restrict__ up,
   mixed[idx] = FloatToBf16(acc / hc);
 }
 
+// Two adjacent BF16 channels per thread. Each channel keeps the original
+// branch order, FP32 gate arithmetic and final BF16 rounding.
+__global__ void MixGatePairKernel(const uint16_t* __restrict__ up,
+                                  const uint16_t* __restrict__ normed,
+                                  uint16_t* __restrict__ mixed, int T, int hc,
+                                  int hs) {
+  const int idx = blockIdx.x * blockDim.x + threadIdx.x;
+  const int pairs = hs / 2;
+  if (idx >= T * pairs) return;
+  const int t = idx / pairs;
+  const int c = idx % pairs;
+  const auto* uprow = reinterpret_cast<const __nv_bfloat162*>(
+      up + static_cast<size_t>(t) * hc * hs);
+  const auto* nrow = reinterpret_cast<const __nv_bfloat162*>(
+      normed + static_cast<size_t>(t) * hc * hs);
+  float ax = 0.0f, ay = 0.0f;
+  for (int b = 0; b < hc; ++b) {
+    const float2 u = __bfloat1622float2(uprow[b * pairs + c]);
+    const float2 n = __bfloat1622float2(nrow[b * pairs + c]);
+    const float gx = 1.0f / (1.0f + __expf(-u.x));
+    const float gy = 1.0f / (1.0f + __expf(-u.y));
+    ax += gx * n.x;
+    ay += gy * n.y;
+  }
+  reinterpret_cast<__nv_bfloat162*>(mixed)[idx] =
+      __floats2bfloat162_rn(ax / hc, ay / hc);
+}
+
 // Precompute the inject gate 2*sigmoid(inject_raw/hc) in place, once per
 // (t, b). The gate does not depend on the channel c, so folding it out of
 // CombineWithGateKernel removes an hs-fold redundant sigmoid recompute there
@@ -461,8 +489,18 @@ static Status HyperConnectionMixImpl(
   // 5. gate + mean.
   {
     const int total = T * hs;
-    MixGateKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
-        d_up, normed, mixed, T, hc, hs);
+    const bool paired = hc == 4 && hs == 2560 &&
+        ((reinterpret_cast<uintptr_t>(d_up) |
+          reinterpret_cast<uintptr_t>(normed) |
+          reinterpret_cast<uintptr_t>(mixed)) & 3u) == 0;
+    if (paired) {
+      // Keep the same number of output channels per CTA as the scalar path.
+      MixGatePairKernel<<<(total + kBlock - 1) / kBlock, kBlock / 2, 0,
+                          stream>>>(d_up, normed, mixed, T, hc, hs);
+    } else {
+      MixGateKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
+          d_up, normed, mixed, T, hc, hs);
+    }
   }
   release_owned();
   return Status();

@@ -18,7 +18,21 @@
 TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间。
 按重复范围比较，不设置临时容忍百分比或拼接最优档位。
 
-## 最新接受：GRWrite→下一 GRRead 归一化融合
+## 最新接受：GRRead 成对 BF16 gate+mix
+
+基于 79dd7a6，固定 hc=4/hs=2560 的 gate+mix 每线程处理相邻两元素，
+合并读取/输出，保持各元素 FP32 累加顺序、BF16 舍入及 CTA 输出数。
+质量 11/11、五档 HTTP/输出 15/15；初始 200K decode 不利分离，经
+旧→新→旧相邻复核与两侧父版均重叠，原始异常保留。
+
+门禁后 25 组、108620800 个 BF16 输出及实际 GR 链路 75 组逐位通过，
+4K 时间线确认 prefill gate+mix 130.558→79.030 ms；kernel/分配次数
+不变。正式 4K/8K/44K/200K TTFT 改善约 1.5%–2.0%，decode 按持平
+理解；profile 中 decode 局部略慢记录保留，不宣称所有形状均加速。
+编译 REG=33、SHARED/STACK/LOCAL=0。固定参考 fcb5925 不变。
+[报告](GRREAD_PAIR_MIX_2026-09-21.md)，证据 grread-pair-mix-20260921。
+
+## 已完成前置：GRWrite→下一 GRRead 归一化融合
 
 基于 dd1da64，融合 attention Write 与 MLP Read 的 grouped RMSNorm，
 combined 仍写回供后续残差计算。首版相邻 HTTP 仍有 200K 不利范围，
@@ -118,7 +132,7 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 ## 正式性能参考
 
 正式五档性能参考仍为 **fcb5925**（短路径 top-k 寄存器网络）。
-最新运行时为上述融合第二版阶段，正式参考不重置。
+最新运行时为上述成对 gate+mix 阶段，正式参考不重置。
 质量 11/11、性能 15/15，输出摘要一致、服务退出 0，构建零警告；
 完整门禁后 352 组、277598448 个槽/长度逐位一致，4K HTTP 时间线通过。
 
@@ -133,7 +147,8 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 4K decode 较前一版 +0.76%，8K TTFT -1.08%，其余范围重叠。
 正式参考见 tools/evalscope/fixtures/performance_reference.json；
 二进制 SHA 与完整边界见 [报告](SHORT_TOPK_2026-09-21.md)。证据
-`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 对应已接受的向量读取融合第二版；
+`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 对应已接受的成对 gate+mix 版本；
+已接受 79dd7a6 二进制保存在 grread-pair-mix-20260921/q4t-before；
 已接受 dd1da64 二进制保存在 grwrite-read-fusion-20260921/q4t-before；
 已接受 81cdbf8 二进制保存在 decoder-resource-contract-20260921/q4t-before；
 已接受的 e550a02 二进制保存在 grframe-gate-arena-20260921/q4t-before；
@@ -144,7 +159,8 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 
 GRFrame、单 normed 复用、布局单源化与 normed/MoE 别名已接受。
 GRRead down/up 暂存迁移已接受。gate 独立工作区也已接受。资源合同与 GRWrite→下一 GRRead 融合第二版已接受。
-下一步结合已验收时间线核对 GRRead 数据流与生命周期，独立候选仍先
+成对 gate+mix 也已接受。下一步结合整体时间预算与资源合同推进
+模型专用执行计划，独立候选仍先
 完整 HTTP。完整 D/P/S、可执行计划和状态提交仍未实现。
 [GRFrame 合同](../dataflow-engine/GRFRAME_RUNNER_PLAN.md) 与
 [JSON 清单](../dataflow-engine/plans/grframe_main.json) 区分提案和候选绑定；

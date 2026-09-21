@@ -14,6 +14,7 @@
 | [GRREAD_SCRATCH_2026-09-21.md](GRREAD_SCRATCH_2026-09-21.md) | GRRead down/up 接受，分配各 554→362/步，性能持平 |
 | [GRFRAME_GATE_2026-09-21.md](GRFRAME_GATE_2026-09-21.md) | gate 工作区已接受，分配各 362→266/步，新增 64 KiB |
 | [DECODER_RESOURCE_CONTRACT_2026-09-21.md](DECODER_RESOURCE_CONTRACT_2026-09-21.md) | 资源合同已接受，布局与错误合同检查通过，性能持平 |
+| [GRREAD_PAIR_MIX_2026-09-21.md](GRREAD_PAIR_MIX_2026-09-21.md) | GRRead 成对读取已接受，TTFT 改善、decode 持平 |
 | [GRWRITE_READ_FUSION_2026-09-21.md](GRWRITE_READ_FUSION_2026-09-21.md) | 首版未接受；向量读取第二版完整验收通过，TTFT 改善 |
 | [短路径 top-k](SHORT_TOPK_2026-09-21.md) | 精确选择、完整 E2E 与局部时间线 | 本轮验收完成 |
 | [短上下文索引打分](INDEXER_DECODE_2026-09-21.md) | CTA 映射、逐位分数与配对 HTTP | 本轮验收完成 |
