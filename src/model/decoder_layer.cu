@@ -506,9 +506,10 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   }
   DumpTrunkBeforeMix(d_trunk, T, hc_dim);
 
-  // 2. attn_hc.mix(trunk) -> mixed_attn, res_a.
-  s = HyperConnectionMix(layer.attn_hc, d_trunk, d_mixed, d_res_a, T,
-                         d_hc_ws, kGemmWs, stream);
+  // GRRead prepares inject before the sublayer; normed is now temporary.
+  GatedResidualFrame attn_frame;
+  s = attn_frame.Read(layer.attn_hc, d_trunk, d_mixed, d_res_a, T,
+                       d_hc_ws, kGemmWs, stream);
   if (!s.ok()) {
     return s;
   }
@@ -531,15 +532,14 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   if (!s.ok()) {
     return s;
   }
-  // 3. attn_hc.combine(attn_out, trunk, res_a) -> combined_a.
-  s = HyperConnectionCombine(layer.attn_hc, d_block, d_trunk, d_res_a,
-                             d_combined, T, d_hc_ws, kGemmWs, stream);
+  // GRWrite consumes only the borrowed residual and prepared inject gate.
+  s = attn_frame.Write(d_block, d_combined);
   if (!s.ok()) {
     return s;
   }
-  // 4. mlp_hc.mix(combined_a) -> mixed_mlp, res_m.
-  s = HyperConnectionMix(layer.mlp_hc, d_combined, d_mixed, d_res_m, T,
-                         d_hc_ws, kGemmWs, stream);
+  GatedResidualFrame mlp_frame;
+  s = mlp_frame.Read(layer.mlp_hc, d_combined, d_mixed, d_res_m, T,
+                      d_hc_ws, kGemmWs, stream);
   if (!s.ok()) {
     return s;
   }
@@ -550,9 +550,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     return s;
   }
   DumpMoeBoundary(d_mixed, d_block, T, hs);
-  // 6. mlp_hc.combine(mlp_out, combined_a, res_m) -> out.
-  s = HyperConnectionCombine(layer.mlp_hc, d_block, d_combined, d_res_m, out, T,
-                             d_hc_ws, kGemmWs, stream);
+  s = mlp_frame.Write(d_block, out);
   DumpLayerOut(out, T, hc_dim);
   return s;
 }

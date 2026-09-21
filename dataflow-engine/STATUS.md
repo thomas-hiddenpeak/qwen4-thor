@@ -74,12 +74,18 @@ R0/R1 的可机读计划和 GRFrame 完整闭环仍未实现，不能由单个 M
 [短路径 top-k 寄存器网络](SHORT_TOPK_PLAN.md) 已接受，完整 HTTP 后
 精确选择与 4K 时间线通过，4K decode +0.76%、8K TTFT -1.08%。
 
-## 后续架构入口（静态，未实现）
+## GRFrame 架构入口（第一阶段接受）
 
 [GRFrame runner 合同](GRFRAME_RUNNER_PLAN.md) 核对 normed 与原始
 residual 的区别，分开 inject 提前、生命周期合并和 arena 别名三个阶段。
-先完成当前 top-k 候选，不能把两份 160 MiB 区域直接写成峰值节省。
+top-k 与第一阶段 read/write 已接受；不能把两份 160 MiB
+区域直接写成峰值节省。
 
 GRFrame 单子层已有首份 [JSON 合同](plans/grframe_main.json)，标为
 proposal_not_executable，含源码指纹、buffer 字节与节点顺序；无执行器
-或 schema 验证器，不替代 R0/R1 完整计划，也未改变 runner。
+或 schema 验证器，不替代 R0/R1 完整计划；runner 的实际改动见下。
+
+GRFrame 第一阶段已接入 runner：Read 提前 gate，Write 消费小帧，
+两个 normed 区域保留；质量 11/11、五档性能 15/15 与门禁后 30 组
+逐位及 4K 顺序核对通过，第一阶段接受。性能持平、容量未减。
+JSON 仍不是可执行计划，runtime_candidate 字段单独记录候选状态。

@@ -192,6 +192,31 @@ Status CheckGemm(const Bf16GemmResult& r) {
   return Status();
 }
 
+Status PrepareInjectGate(const HyperConnectionWeights& w,
+                         const uint16_t* normed, uint16_t* inject, int T,
+                         void* workspace, size_t workspace_bytes,
+                         cudaStream_t stream) {
+  const int hc = w.hc_count, hs = w.hidden_size;
+  const bool fused_gate = T == 1 && hc == 4 && hs == 2560 &&
+                          ((reinterpret_cast<uintptr_t>(normed) |
+                            reinterpret_cast<uintptr_t>(w.block_inject)) &
+                           15u) == 0;
+  if (fused_gate) {
+    if (!HcInjectGevGated(normed, w.block_inject, inject, stream))
+      return Status::Fail("HC gated projection launch failed");
+  } else {
+    Status s =
+        CheckGemm(Bf16Gemm(normed, w.block_inject, inject, T, hc, hc * hs, 1.0f,
+                           0.0f, workspace, workspace_bytes, stream));
+    if (!s) return s;
+    const int total = T * hc;
+    ApplyInjectGateKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
+        inject, total, 1.0f / hc);
+  }
+  const cudaError_t error = cudaGetLastError();
+  if (error != cudaSuccess) return Status::Fail(cudaGetErrorString(error));
+  return {};
+}
 }  // namespace
 
 void HyperConnectionWeights::Free() {
@@ -315,7 +340,7 @@ Status HyperConnectionMix(const HyperConnectionWeights& w,
     cudaFreeAsync(d_up, stream);
     return s;
   }
-  // 3. silu(down)/hc in place.
+  // 3. silu(down/hc) in place, with BF16 output.
   {
     const int total = T * lr;
     SiluDivKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
@@ -340,6 +365,81 @@ Status HyperConnectionMix(const HyperConnectionWeights& w,
   return Status();
 }
 
+GatedResidualFrame::~GatedResidualFrame() { Release(); }
+
+cudaError_t GatedResidualFrame::Release() {
+  cudaError_t error = cudaSuccess;
+  if (inject_gate_) error = cudaFreeAsync(inject_gate_, stream_);
+  inject_gate_ = nullptr;
+  residual_ = nullptr;
+  tokens_ = hc_ = hs_ = 0;
+  stream_ = nullptr;
+  ready_ = false;
+  return error;
+}
+
+Status GatedResidualFrame::Read(const HyperConnectionWeights& w,
+                                const uint16_t* residual, uint16_t* mixed,
+                                uint16_t* normed_scratch, int tokens,
+                                void* workspace, size_t workspace_bytes,
+                                cudaStream_t stream) {
+  if (ready_ || inject_gate_)
+    return Status::Fail("GR frame must be consumed before another Read");
+  Status s = HyperConnectionMix(w, residual, mixed, normed_scratch, tokens,
+                                workspace, workspace_bytes, stream);
+  if (!s) return s;
+  residual_ = residual;
+  stream_ = stream;
+  tokens_ = tokens;
+  hc_ = w.hc_count;
+  hs_ = w.hidden_size;
+  if (tokens > 0 && w.use_combine && w.block_inject) {
+    const cudaError_t pending = cudaGetLastError();
+    if (pending != cudaSuccess) {
+      Release();
+      return Status::Fail(cudaGetErrorString(pending));
+    }
+    const cudaError_t error = cudaMallocAsync(
+        &inject_gate_, static_cast<size_t>(tokens) * hc_ * sizeof(uint16_t),
+        stream_);
+    if (error != cudaSuccess) {
+      Release();
+      return Status::Fail(cudaGetErrorString(error));
+    }
+    s = PrepareInjectGate(w, normed_scratch, inject_gate_, tokens, workspace,
+                          workspace_bytes, stream_);
+    if (!s) {
+      Release();
+      return s;
+    }
+  }
+  ready_ = true;
+  return {};
+}
+
+Status GatedResidualFrame::Write(const uint16_t* block_output,
+                                 uint16_t* output) {
+  if (!ready_) return Status::Fail("GR Write requires a ready frame");
+  cudaError_t error = cudaSuccess;
+  if (tokens_ > 0) {
+    if (inject_gate_) {
+      const int total = tokens_ * hc_ * hs_;
+      CombineWithGateKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0,
+                              stream_>>>(block_output, residual_, inject_gate_,
+                                         output, tokens_, hc_, hs_);
+      error = cudaGetLastError();
+    } else {
+      error = cudaMemcpyAsync(output, residual_,
+                              static_cast<size_t>(tokens_) * hc_ * hs_ * 2,
+                              cudaMemcpyDeviceToDevice, stream_);
+    }
+  }
+  const cudaError_t release_error = Release();
+  if (error != cudaSuccess) return Status::Fail(cudaGetErrorString(error));
+  if (release_error != cudaSuccess)
+    return Status::Fail(cudaGetErrorString(release_error));
+  return {};
+}
 Status HyperConnectionCombine(const HyperConnectionWeights& w,
                               const uint16_t* block_output,
                               const uint16_t* hyper_input,
@@ -358,7 +458,6 @@ Status HyperConnectionCombine(const HyperConnectionWeights& w,
     }
     return Status();
   }
-  const float inv_hc = 1.0f / hc;
   // Check for a pending async error from a prior kernel (e.g. an illegal
   // memory access in the attention path). A tiny 8-byte cudaMalloc failing
   // with 37 GB available is a classic sign of a poisoned context, not a
@@ -377,39 +476,15 @@ Status HyperConnectionCombine(const HyperConnectionWeights& w,
     return Status::Fail(std::string("cudaMallocAsync inject: ") +
                         cudaGetErrorString(merr));
   }
-  // 1. inject_raw = normed @ W_inject^T  ([T, hc_dim] x [hc, hc_dim]^T -> [T,
-  // hc]).
-  const bool fused_gate =
-      T == 1 && hc == 4 && hs == 2560 &&
-      ((reinterpret_cast<uintptr_t>(normed) |
-        reinterpret_cast<uintptr_t>(w.block_inject)) & 15u) == 0;
-  if (fused_gate) {
-    if (!HcInjectGevGated(normed, w.block_inject, d_inject, stream)) {
-      cudaFreeAsync(d_inject, stream);
-      return Status::Fail("HC gated projection launch failed");
-    }
-  } else {
-    Status s = CheckGemm(Bf16Gemm(
-        normed, w.block_inject, d_inject, T, hc, hc_dim, 1.0f, 0.0f,
-        workspace, workspace_bytes, stream));
-    if (!s.ok()) {
-      cudaFreeAsync(d_inject, stream);
-      return s;
-    }
+  Status s = PrepareInjectGate(w, normed, d_inject, T, workspace,
+                               workspace_bytes, stream);
+  if (!s) {
+    cudaFreeAsync(d_inject, stream);
+    return s;
   }
-  // 2. Fused gate + combine: out = R + block_output * 2*sigmoid(inject/hc).
-  //    The per-(t,b) gate is precomputed in place first (it is c-invariant, so
-  //    recomputing it per channel in the combine wasted an hs-fold sigmoid).
-  {
-    const int gt = T * hc;
-    if (!fused_gate) {
-      ApplyInjectGateKernel<<<(gt + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
-          d_inject, gt, inv_hc);
-    }
-    const int total = T * hc_dim;
-    CombineWithGateKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
-        block_output, hyper_input, d_inject, out, T, hc, hs);
-  }
+  const int total = T * hc_dim;
+  CombineWithGateKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
+      block_output, hyper_input, d_inject, out, T, hc, hs);
   cudaFreeAsync(d_inject, stream);
   return Status();
 }

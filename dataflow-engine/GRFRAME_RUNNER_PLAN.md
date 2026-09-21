@@ -1,8 +1,8 @@
 # 从 runner 演进 GRFrame 的第一条执行合同
 
-2026-09-21。静态方案，未实现；先完成短路径 top-k 当前验收。
+2026-09-21。第一阶段已接受（基线 fcb5925），完整 HTTP、数值与时间线通过。
 
-## 已核对的调用链
+## 改动前调用链
 
 DecoderLayerForward 对 attention 与 MLP 分别执行：
 HyperConnectionMix(R) → mixed、normed → 子层(mixed) → block_output →
@@ -22,7 +22,7 @@ normed 不参与子层计算，却因 inject 推迟而跨越整个子层存活�
 ## 数值与所有权合同
 
 提案 GRRead(R) 输出 mixed 与 frame：frame 含 residual 的只读借用、
-调用方拥有的 BF16 inject_gate[T,4]、T/形状及有效性，不拥有 normed。
+frame 拥有的 BF16 inject_gate[T,4]、T/形状及有效性，不拥有 normed。
 GRWrite(block_output,frame) 沿原 CombineWithGate 写出结果。
 
 保留 grouped RMSNorm、down/silu/up、mix 的当前精度和次序；inject
@@ -58,9 +58,9 @@ stream，必须沿现有汇合依赖完成其最后消费者，不能只凭 host
 
 ## 当前边界
 
-当前只静态核对 src/model/decoder_layer.cu 与 hyperconnection.cu 的
-正常执行消费者；head 与 MTP 的接口兼容性已发现但未完成新实现验证。
-未运行 GRFrame 原型、没有新的容量或性能实测。该合同是 R1 的起点，
+第一阶段已通过质量 11/11、五档性能 15/15、30 组逐位数值与 frame
+生命周期检查；旧 Combine API 也参与对照，但不等于完整 MTP 验证。
+性能范围重叠、容量未变。该合同是 R1 的起点，
 R0/R1 完整机器可读计划、三计划调度与状态提交仍需独立完成。
 
 ## 首份可机读清单（提案）
@@ -71,3 +71,16 @@ R0/R1 完整机器可读计划、三计划调度与状态提交仍需独立完�
 验证器或执行器，也没有分配片上驻留或宣称峰值节省。第一阶段保留
 现有两个 normed 区域，先隔离 inject 提前的影响。完整 D/P/S、状态提交
 和 arena 别名仍未交付；这只是 R0 的一个可复核片段。
+
+## 第一阶段实现
+
+GatedResidualFrame 为非复制 RAII 对象，Read/Write 绑定同一 stream，
+持有 residual 借用与小型 gate 分配，不保存 normed 指针。Write 消费后
+释放，未完成子层的错误退出由析构清理。主 decoder 两个子层各有一帧。
+PrepareInjectGate 统一新路径和旧 Combine 的数学；head/MTP 的公开
+旧接口保留。Read/Write 明确防止未消费覆盖和重复消费。
+
+两个 normed 工作区、预算与 carve 均未改。分配数量设计上不变，但
+inject 分配与计算提前，pool 地址和生存时间可能改变；不能假定性能不变。
+完整门禁后数值与时间线通过，详见 ../docs/GRFRAME_READWRITE_2026-09-21.md；
+不代表完整执行器完成。

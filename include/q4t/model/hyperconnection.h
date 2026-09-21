@@ -80,6 +80,33 @@ Status HyperConnectionMix(const HyperConnectionWeights& w, const uint16_t* hyper
                           uint16_t* mixed, uint16_t* normed, int T, void* workspace,
                           size_t workspace_bytes, cudaStream_t stream);
 
+// Ephemeral GRRead -> sublayer -> GRWrite contract. Borrows the residual,
+// owns only BF16 inject gates, and releases them on the Read stream. The
+// normed scratch is not retained. The stream must outlive this frame.
+class GatedResidualFrame {
+ public:
+  GatedResidualFrame() = default;
+  ~GatedResidualFrame();
+  GatedResidualFrame(const GatedResidualFrame&) = delete;
+  GatedResidualFrame& operator=(const GatedResidualFrame&) = delete;
+
+  Status Read(const HyperConnectionWeights& w, const uint16_t* residual,
+              uint16_t* mixed, uint16_t* normed_scratch, int tokens,
+              void* workspace, size_t workspace_bytes, cudaStream_t stream);
+  // Consumes the frame; all block-output producers must join the Read stream.
+  Status Write(const uint16_t* block_output, uint16_t* output);
+
+ private:
+  cudaError_t Release();
+  const uint16_t* residual_ = nullptr;
+  uint16_t* inject_gate_ = nullptr;
+  cudaStream_t stream_ = nullptr;
+  int tokens_ = 0;
+  int hc_ = 0;
+  int hs_ = 0;
+  bool ready_ = false;
+};
+
 // Run combine: block_output [T, hs] + residual (hyper_input, normed) [T, hc*hs]
 // -> updated residual [T, hc*hs] BF16.
 Status HyperConnectionCombine(const HyperConnectionWeights& w,

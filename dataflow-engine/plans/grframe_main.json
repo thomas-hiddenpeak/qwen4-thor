@@ -271,10 +271,25 @@
     "only after full HTTP: bitwise intermediate/state checks and HTTP trace"
   ],
   "not_delivered": [
-    "C++ frame executor",
+    "accepted C++ frame runtime",
     "plan schema validator",
     "arena aliasing",
     "full D/P/S plans",
     "proven performance or peak-memory benefit"
-  ]
+  ],
+  "runtime_candidate": {
+    "baseline_commit": "fcb5925",
+    "status": "accepted_phase_one",
+    "class": "q4t::model::GatedResidualFrame",
+    "binding": "Read -> unchanged sublayer -> Write",
+    "retained_normed_regions": 2,
+    "evidence": ".q4t-work/e2e/grframe-readwrite-20260921/",
+    "source_sha256": {
+      "src/model/hyperconnection.cu": "f649f525fef538dae7ee19ee59af988f674f645e4a7e03b544e1ef356654938f",
+      "include/q4t/model/hyperconnection.h": "6c8a17ffc4e0fea097525c376f503e7adf085852bd5bed67fec857b3309ae9da",
+      "src/model/decoder_layer.cu": "6cab6dd36cc81b0b620a0e49990b8efed978767c844aea45fda2cfc255b366b3"
+    },
+    "performance_reference": "fcb5925",
+    "evidence_report": "docs/GRFRAME_READWRITE_2026-09-21.md"
+  }
 }
