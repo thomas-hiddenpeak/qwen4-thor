@@ -1,0 +1,83 @@
+{
+  "format": "q4t.arena_contract",
+  "version": 1,
+  "status": "proposal_not_applied",
+  "depends_on": "decoder-workspace-layout candidate acceptance",
+  "scope": {
+    "hs": 2560,
+    "hc": 4,
+    "topk": 10,
+    "experts": 512,
+    "moe_is": 640,
+    "tokens_min": 1,
+    "tokens_max": 8192,
+    "mtp_validation": false
+  },
+  "source_sha256": {
+    "src/model/decoder_layer.cu": "311f06201dc6d45a432f301decbcf39f814562f53be4f93ede59d4750eb43882",
+    "src/model/hyperconnection.cu": "f649f525fef538dae7ee19ee59af988f674f645e4a7e03b544e1ef356654938f",
+    "src/model/moe.cu": "28140043a3f0876c87ce5342fb82370f129586b2ff997c6ab350cfd5b12f5aa0",
+    "src/quant/moe_gemm.cu": "5996c65c890c6714b19333150f6766093311f822e8efaaa5a9ac7d63670918e0",
+    "src/quant/moe_decode.cu": "a5dc3edb261a936585e069d68e021d65d05850a0b33f7a73f88887fa2c2f25c1"
+  },
+  "physical_region": {
+    "name": "moe_or_normed",
+    "space": "device_global_LPDDR",
+    "alignment_bytes": 256,
+    "capacity_expression": "AlignUp(max(MoEForwardWorkspaceBytes(T,...), T * hc * hs * sizeof(BF16)))",
+    "owner": "model shared workspace",
+    "no_new_allocation": true
+  },
+  "views": [
+    {
+      "name": "attn_normed",
+      "offset": 0,
+      "bytes": "T * hc * hs * 2",
+      "first_writer": "attention GRRead norm",
+      "last_reader": "attention GRRead prepare inject gate"
+    },
+    {
+      "name": "mlp_normed",
+      "offset": 0,
+      "bytes": "T * hc * hs * 2",
+      "first_writer": "MLP GRRead norm",
+      "last_reader": "MLP GRRead prepare inject gate"
+    },
+    {
+      "name": "moe_workspace",
+      "offset": 0,
+      "bytes": "MoEForwardWorkspaceBytes(T,...)",
+      "first_writer": "MoE router / routed preparation",
+      "last_reader": "MoECombineKernel on caller stream"
+    }
+  ],
+  "ordering": [
+    "PLE optional",
+    "attention GRRead",
+    "attention sublayer",
+    "attention GRWrite",
+    "MLP GRRead",
+    "MoE sublayer with auxiliary-stream joins",
+    "MLP GRWrite"
+  ],
+  "requirements": [
+    "Do not alias HC GEMM scratch with normed: inject reads normed while using scratch.",
+    "Keep mixed, block_output, combined and PLE trunk outside the aliased region.",
+    "Preserve auxiliary-stream event waits before main-stream MoE combine.",
+    "Apply only after the current layout candidate is accepted; run fresh full HTTP gates."
+  ],
+  "resource_claims": {
+    "anticipated_decoder_budget_reduction_bytes_at_T8192": 167772160,
+    "additional_kernel_launches": 0,
+    "additional_stream_events": 0,
+    "logical_normed_read_write_reduction": 0,
+    "dram_bandwidth_reduction_measured": false,
+    "system_peak_memory_reduction_measured": false,
+    "L1_L2_residency_guaranteed": false
+  },
+  "not_implemented": [
+    "physical alias in runner",
+    "alias-specific HTTP validation",
+    "machine-readable plan executor"
+  ]
+}

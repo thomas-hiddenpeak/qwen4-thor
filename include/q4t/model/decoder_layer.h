@@ -3,18 +3,18 @@
 //
 //   hyper_input [T, hc*hs]
 //     1. [PLE, layer 1 only]  hyper_input += ple(ple_embeddings, hyper_input)
-//     2. mixed_attn, res_a = attn_hc.mix(hyper_input)         [T, hs]
+//     2. mixed_attn, attn_frame = GRRead(hyper_input)         [T, hs]
 //     3. attn_out = attn_block(mixed_attn)                    linear or full
-//     4. combined_a = attn_hc.combine(attn_out, res_a)        [T, hc*hs]
-//     5. mixed_mlp, res_m = mlp_hc.mix(combined_a)            [T, hs]
+//     4. combined_a = GRWrite(attn_out, attn_frame)            [T, hc*hs]
+//     5. mixed_mlp, mlp_frame = GRRead(combined_a)             [T, hs]
 //     6. mlp_out = moe(mixed_mlp)                             [T, hs]
-//     7. out = mlp_hc.combine(mlp_out, res_m)                 [T, hc*hs]
+//     7. out = GRWrite(mlp_out, mlp_frame)                     [T, hc*hs]
 //
 // The layer owns all sub-block weights (attn + MoE + the two Hyper-Connection
 // GatedResiduals + optional PLE) and the per-layer persistent caches (linear
-// SSM/conv state, full-attention KV + indexer caches). It allocates one device
-// `workspace` (see DecoderLayerWorkspaceBytes) and carves it into per-submodule
-// regions.
+// SSM/conv state, full-attention KV + indexer caches). The caller owns the
+// device workspace. A common layout determines DecoderLayerWorkspaceBytes
+// and the per-submodule offsets; both GRRead calls reuse one normed region.
 //
 // PLE injection (step 1) is wired for layer 1 (checkpoint `ple_layer_ids = [2]`
 // is 1-indexed). The caller passes the gathered n-gram embeddings

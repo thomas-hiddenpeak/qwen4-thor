@@ -305,5 +305,17 @@
     "prepare_frame",
     "sublayer",
     "write"
-  ]
+  ],
+  "layout_candidate": {
+    "baseline_commit": "657b2e8",
+    "status": "accepted",
+    "builder": "MakeDecoderWorkspaceLayout",
+    "storage": "host value type; no dynamic allocation",
+    "scope": "same disjoint layout for hs=2560 hc=4",
+    "source_sha256": "311f06201dc6d45a432f301decbcf39f814562f53be4f93ede59d4750eb43882",
+    "evidence": ".q4t-work/e2e/decoder-workspace-layout-20260921/",
+    "layout_cases": 84,
+    "linked_budget_comparisons": 168,
+    "performance_reference": "fcb5925"
+  }
 }

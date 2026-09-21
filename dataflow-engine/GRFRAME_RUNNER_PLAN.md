@@ -105,7 +105,7 @@ src/model/model.cu；因此 decoder 预算差额不应直接描述成整机峰�
 本轮混做；下一步先形成实际 offsets/capacity/alignment 的共享布局来源，
 再用 E2E 验证物理布局变化。L1/L2 驻留不能由 LPDDR 地址别名推断。
 
-## 下一步布局单源化（待实现，不并入当前候选）
+## 布局单源化已接受（基线 657b2e8）
 
 当前 decoder 在三个位置分别表达同一布局：公开容量函数、forward 的
 容量检查、forward 的指针 carve。下一阶段用一个轻量布局描述返回
@@ -133,3 +133,26 @@ src/model/model.cu；因此 decoder 预算差额不应直接描述成整机峰�
 容量和总字节，覆盖 T=1/3/4/5/33/257/8192、linear/full、PLE 与无 PLE。
 同地址布局是净简化步骤；之后的物理别名必须作为另一项候选重做 E2E。
 不新增解释器、动态 region 容器或每层 JSON 解析到热路径。
+
+布局单源化草稿已在 normed 复用阶段接受后应用，构建零警告，首项
+质量 11/11、性能 15/15 与门禁后布局/时间线已通过。未测试任意非模型
+hs/hc 的布局兼容性；84 个布局与 168 个容量对照针对当前模型的真实
+容量参数，不以通用 API 外观宣称通用形状验证。
+
+## 后续提案：normed 借用 MoE 区域
+
+[可机读提案](plans/normed_moe_alias.json) 记录区域容量、三个视图、
+最后消费者与源文件指纹；尚未应用，不是执行器输入。
+两次 GRRead 均在 MoE 子层开始前完成；Read 的最后 normed 消费者是
+inject 投影，Write 只持有 gate。候选可令 normed 偏移等于 MoE 起点，
+保留区域容量 max(MoE workspace, normed bytes)，删除独立 normed 区域。
+
+HC GEMM scratch 不能同时复用这个区域，因为 inject 读取 normed 时
+仍使用 GEMM scratch。mixed/block/combined/PLE trunk 保持独立。
+MoE 多 stream 路径在 src/quant/moe_gemm.cu 中先在主 stream 等待辅助
+stream event，再执行 combine；T=1 device 路径都使用调用者 stream。
+本提案不改这些依赖，也不把 host 返回当成设备完成。
+
+模型形状预计再减少 160 MiB decoder 预算（T=8192），但 normed 的
+逻辑读写次数不变，没有 DRAM 流量或缓存驻留实测收益。必须先接受
+布局单源化，再单独修改别名、完成全套 HTTP 与容量/生命周期核对。

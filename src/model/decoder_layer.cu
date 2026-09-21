@@ -166,27 +166,62 @@ size_t AttnWs(int T, bool is_full) {
   return kGemmWs;  // linear: GEMM scratch only
 }
 
+// One source for both allocation size and forward offsets. No runtime
+// allocation or interpreter is involved; all regions remain disjoint.
+struct DecoderWorkspaceLayout {
+  size_t attention = 0;
+  size_t moe = 0;
+  size_t moe_gemm = 0;
+  size_t hc_gemm = 0;
+  size_t ple = 0;
+  size_t mixed = 0;
+  size_t block = 0;
+  size_t normed = 0;
+  size_t combined = 0;
+  size_t ple_trunk = 0;
+  size_t attention_bytes = 0;
+  size_t moe_bytes = 0;
+  size_t ple_bytes = 0;
+  size_t total_bytes = 0;
+};
+
+DecoderWorkspaceLayout MakeDecoderWorkspaceLayout(
+    int T, bool is_full, bool has_ple, int hc, int hs, int E, int moe_is,
+    int shared_is, int k, const FullAttentionWeights* full) {
+  DecoderWorkspaceLayout layout;
+  layout.attention_bytes = is_full && full
+                               ? FullAttentionWorkspaceBytes(*full, T)
+                               : AttnWs(T, is_full);
+  layout.moe_bytes = MoEForwardWorkspaceBytes(T, k, hs, moe_is, shared_is, E);
+  layout.ple_bytes = has_ple ? PleLayerWorkspaceBytes(T, hc, hs) : 0;
+  auto carve = [&](size_t bytes) {
+    const size_t offset = layout.total_bytes;
+    layout.total_bytes += AlignUp(bytes);
+    return offset;
+  };
+  layout.attention = carve(layout.attention_bytes);
+  layout.moe = carve(layout.moe_bytes);
+  layout.moe_gemm = carve(kGemmWs);
+  layout.hc_gemm = carve(kGemmWs);
+  layout.ple = carve(layout.ple_bytes);
+  const size_t hidden_bytes = static_cast<size_t>(T) * hs * sizeof(uint16_t);
+  const size_t hyper_bytes = hidden_bytes * hc;
+  layout.mixed = carve(hidden_bytes);
+  layout.block = carve(hidden_bytes);
+  layout.normed = carve(hyper_bytes);
+  layout.combined = carve(hyper_bytes);
+  layout.ple_trunk = carve(has_ple ? hyper_bytes : 0);
+  return layout;
+}
+
 }  // namespace
 
 size_t DecoderLayerWorkspaceBytes(int T, bool is_full_attention, bool has_ple,
                                   int hs, int E, int moe_is, int shared_is,
                                   int k, const FullAttentionWeights* full) {
-  const size_t attn = is_full_attention && full
-                          ? AlignUp(FullAttentionWorkspaceBytes(*full, T))
-                          : AlignUp(AttnWs(T, is_full_attention));
-  const size_t moe_carve = AlignUp(
-      MoEForwardWorkspaceBytes(T, k, hs, moe_is, shared_is, E));
-  // Per-layer activation scratch: d_mixed + d_block (T*hs*2 each),
-  // d_normed + d_combined (T*hc_dim*2 each), and optional d_ple_trunk.
-  // Both GRRead calls reuse d_normed on the same stream; GRWrite does not
-  // retain it. hc_count is 4 for qwen4_exp.
-  const size_t hc_dim = static_cast<size_t>(4) * hs;
-  size_t scratch = 2 * static_cast<size_t>(T) * hs * 2;
-  scratch += 2 * static_cast<size_t>(T) * hc_dim * 2;
-  if (has_ple) scratch += static_cast<size_t>(T) * hc_dim * 2;
-  size_t total = attn + moe_carve + kGemmWs + kGemmWs + AlignUp(scratch);
-  if (has_ple) total += AlignUp(PleLayerWorkspaceBytes(T, 4, hs));
-  return total;
+  return MakeDecoderWorkspaceLayout(T, is_full_attention, has_ple, 4, hs, E,
+                                    moe_is, shared_is, k, full)
+      .total_bytes;
 }
 
 void DecoderLayer::Free() {
@@ -438,46 +473,22 @@ Status DecoderLayerForward(const DecoderLayer& layer,
                                  : layer.idx_comp + seq * layer.max_len * 128)
                      : nullptr;
 
-  // Carve the workspace into per-submodule regions.
-  const size_t attn_ws = layer.is_full_attention
-                             ? FullAttentionWorkspaceBytes(layer.full, T)
-                             : AttnWs(T, false);
-  const size_t moe_carve = MoEForwardWorkspaceBytes(
-      T, layer.topk, hs, layer.routed.moe_is, layer.mlp.shared_is, layer.routed.E);
-  const size_t ple_ws =
-      layer.has_ple ? PleLayerWorkspaceBytes(T, hc, hs) : 0;
-  // Per-layer activation scratch (carved from workspace, no cudaMalloc).
-  const size_t scratch_bytes =
-      2 * static_cast<size_t>(T) * hs * 2 +
-      2 * static_cast<size_t>(T) * hc_dim * 2 +
-      (layer.has_ple ? static_cast<size_t>(T) * hc_dim * 2 : 0);
-  const size_t total_ws =
-      AlignUp(attn_ws) + AlignUp(moe_carve) + kGemmWs + kGemmWs +
-      AlignUp(scratch_bytes) + ple_ws;
-  if (total_ws > workspace_bytes) {
+  const DecoderWorkspaceLayout layout = MakeDecoderWorkspaceLayout(
+      T, layer.is_full_attention, layer.has_ple, hc, hs, layer.routed.E,
+      layer.routed.moe_is, layer.mlp.shared_is, layer.topk, &layer.full);
+  if (layout.total_bytes > workspace_bytes) {
     return Status::Fail("DecoderLayerForward: workspace too small");
   }
   char* base = static_cast<char*>(workspace);
-  void* d_attn_ws = base;
-  char* p = base + AlignUp(attn_ws);
-  void* d_moe_ws = p;
-  p += AlignUp(moe_carve);
-  void* d_moe_gemm = p;
-  p += kGemmWs;
-  void* d_hc_ws = p;
-  p += kGemmWs;
-  void* d_ple_ws = p;  // only used when layer.has_ple
-  p += ple_ws;  // skip the PLE workspace region before the scratch region
-
-  // Scratch pointers carved from the workspace (no cudaMalloc/cudaFree).
-  uint16_t* d_mixed = reinterpret_cast<uint16_t*>(p);
-  p += AlignUp(static_cast<size_t>(T) * hs * 2);
-  uint16_t* d_block = reinterpret_cast<uint16_t*>(p);
-  p += AlignUp(static_cast<size_t>(T) * hs * 2);
-  uint16_t* d_normed = reinterpret_cast<uint16_t*>(p);
-  p += AlignUp(static_cast<size_t>(T) * hc_dim * 2);
-  uint16_t* d_combined = reinterpret_cast<uint16_t*>(p);
-  p += AlignUp(static_cast<size_t>(T) * hc_dim * 2);
+  void* d_attn_ws = base + layout.attention;
+  void* d_moe_ws = base + layout.moe;
+  void* d_moe_gemm = base + layout.moe_gemm;
+  void* d_hc_ws = base + layout.hc_gemm;
+  void* d_ple_ws = base + layout.ple;
+  uint16_t* d_mixed = reinterpret_cast<uint16_t*>(base + layout.mixed);
+  uint16_t* d_block = reinterpret_cast<uint16_t*>(base + layout.block);
+  uint16_t* d_normed = reinterpret_cast<uint16_t*>(base + layout.normed);
+  uint16_t* d_combined = reinterpret_cast<uint16_t*>(base + layout.combined);
 
   Status s;
 
@@ -487,14 +498,14 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   const uint16_t* d_trunk = hyper_input;
   uint16_t* d_ple_trunk = nullptr;
   if (layer.has_ple) {
-    d_ple_trunk = reinterpret_cast<uint16_t*>(p);
+    d_ple_trunk = reinterpret_cast<uint16_t*>(base + layout.ple_trunk);
     // 1. PLE: d_ple_trunk = hyper_input + ple(ple_embeddings, hyper_input).
     DumpPleEmbeddings(ple_embeddings, T, layer.ple.ple_embed_dim);
     // Fused: PleLayerForward with trunk_add=hyper_input computes
     // d_ple_trunk = hyper_input + ple_out in one launch (no separate
     // PleAddTrunkKernel).
-    s = PleLayerForward(layer.ple, ple_embeddings, hyper_input, d_ple_trunk,
-                        T, ple_conv_state, d_ple_ws, ple_ws, stream,
+    s = PleLayerForward(layer.ple, ple_embeddings, hyper_input, d_ple_trunk, T,
+                        ple_conv_state, d_ple_ws, layout.ple_bytes, stream,
                         hyper_input, d_seq_id, tokens_per_seq, ple_conv_ckpt,
                         num_ckpt, ragged);
     if (!s.ok()) {
@@ -506,8 +517,8 @@ Status DecoderLayerForward(const DecoderLayer& layer,
 
   // GRRead prepares inject before the sublayer; normed is now temporary.
   GatedResidualFrame attn_frame;
-  s = attn_frame.Read(layer.attn_hc, d_trunk, d_mixed, d_normed, T,
-                       d_hc_ws, kGemmWs, stream);
+  s = attn_frame.Read(layer.attn_hc, d_trunk, d_mixed, d_normed, T, d_hc_ws,
+                      kGemmWs, stream);
   if (!s.ok()) {
     return s;
   }
@@ -519,12 +530,12 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     const int* fa_rope = d_seq_id ? d_rope_pos : rope_pos;
     s = FullAttentionForward(layer.full, d_mixed, d_block, positions, fa_rope,
                              kv_cache, page_table, idx_raw, idx_comp, T,
-                             d_attn_ws, attn_ws, stream, d_seq_id,
-                             max_position);
+                             d_attn_ws, layout.attention_bytes, stream,
+                             d_seq_id, max_position);
   } else {
     s = LinearAttentionForward(layer.linear, d_mixed, d_block, ssm_state,
-                               conv_state, T, d_attn_ws, attn_ws, stream,
-                               ssm_ckpt, conv_ckpt, num_ckpt, d_seq_id,
+                               conv_state, T, d_attn_ws, layout.attention_bytes,
+                               stream, ssm_ckpt, conv_ckpt, num_ckpt, d_seq_id,
                                tokens_per_seq, ragged);
   }
   if (!s.ok()) {
@@ -536,14 +547,14 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     return s;
   }
   GatedResidualFrame mlp_frame;
-  s = mlp_frame.Read(layer.mlp_hc, d_combined, d_mixed, d_normed, T,
-                      d_hc_ws, kGemmWs, stream);
+  s = mlp_frame.Read(layer.mlp_hc, d_combined, d_mixed, d_normed, T, d_hc_ws,
+                     kGemmWs, stream);
   if (!s.ok()) {
     return s;
   }
   // 5. MoE.
   s = MoEForward(d_mixed, layer.routed, layer.mlp, d_block, T, layer.topk,
-                 d_moe_ws, moe_carve, d_moe_gemm, kGemmWs, stream);
+                 d_moe_ws, layout.moe_bytes, d_moe_gemm, kGemmWs, stream);
   if (!s.ok()) {
     return s;
   }
