@@ -132,3 +132,20 @@ forward 和调用次数不变，性能持平。
 [报告](../docs/DECODER_RESOURCE_CONTRACT_2026-09-21.md)。
 存活语义仍需代码审查；本描述不覆盖外部权重/状态，不是执行器，
 不保证缓存驻留。下一步按 R1 路线审查 GRWrite→下一 GRRead 衔接。
+
+## 已接受：GRWrite→下一 GRRead 归一化融合
+
+[融合合同](plans/grwrite_read_fusion.json) 将 attention Write 与下一次
+MLP Read 的 RMSNorm 合并，combined 仍写回供下一次 residual 使用。
+首版相邻复核 200K 对前侧父版不利、与后侧重叠，未接受且没有做底层
+测试。第二版改为对齐向量读取，BF16 舍入和归约顺序保持。
+
+第二版质量 11/11、性能 15/15、双参考范围门禁通过；门禁后 75 组逐位、
+252 布局/504 容量/1260 错误合同拒绝及 4K HTTP 时间线通过。每 forward
+净少 48 次 kernel，容量和异步分配次数不变。正式 TTFT 改善约
+1.5%–2.0%，decode 按持平理解；编译 shared 21504 字节，区别于源码
+staging 20480 字节。证据 grwrite-read-vector-20260921，首版另存。
+
+这仅验证普通单流固定模型形状下的衔接，不代表完整执行器、MTP/多流、
+LPDDR 流量或峰值内存改善。下一步继续从已验收时间线核对 GRRead
+数据流和生命周期，独立改动仍先完整 E2E。

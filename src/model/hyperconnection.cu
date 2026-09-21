@@ -119,6 +119,95 @@ __global__ void GroupedRmsNormKernel(const uint16_t* __restrict__ x,
   }
 }
 
+// Exact Combine -> BF16 round-trip -> grouped RMSNorm for hs=2560/hc=4.
+// Combined remains in global memory for the next residual Write. Shared
+// staging avoids reading it twice from global memory during normalization.
+__global__ void CombineAndGroupedNormKernel(
+    const uint16_t* __restrict__ block_output,
+    const uint16_t* __restrict__ residual,
+    const uint16_t* __restrict__ inject_gate,
+    const uint16_t* __restrict__ weight, uint16_t* __restrict__ combined,
+    uint16_t* __restrict__ out, int T, int hc, int hs, float eps) {
+  const int t = blockIdx.x;
+  if (t >= T) return;
+  const int b = threadIdx.x >> 5;  // branch = warp id
+  const int lane = threadIdx.x & 31;
+  if (b >= hc) return;
+  __shared__ __align__(16) uint16_t staged[4 * 2560];
+  const size_t base = (static_cast<size_t>(t) * hc + b) * hs;
+  uint16_t* g = staged + b * hs;
+  const float inj = Bf16ToFloat(inject_gate[static_cast<size_t>(t) * hc + b]);
+  uint16_t* orow = out + (static_cast<size_t>(t) * hc + b) * hs;
+  const uint16_t* wg = weight + static_cast<size_t>(b) * hs;
+  float4* gv = reinterpret_cast<float4*>(g);
+  const float4* wv = reinterpret_cast<const float4*>(wg);
+  float4* ov = reinterpret_cast<float4*>(orow);
+  const int n8 = hs / 8;  // float4 = 16 B = 8 bf16
+  // Pass 1: sum of squares for this branch.
+  float acc = 0.f;
+  for (int i = lane; i < n8; i += 32) {
+    // Keep the eight-value arithmetic order, but load contiguous vectors.
+    const float4 residual_pack =
+        reinterpret_cast<const float4*>(residual + base)[i];
+    const float4 block_pack = reinterpret_cast<const float4*>(
+        block_output + static_cast<size_t>(t) * hs)[i];
+    const uint16_t* residual_values =
+        reinterpret_cast<const uint16_t*>(&residual_pack);
+    const uint16_t* block_values =
+        reinterpret_cast<const uint16_t*>(&block_pack);
+    float4 packed;
+    uint16_t* values = reinterpret_cast<uint16_t*>(&packed);
+#pragma unroll
+    for (int j = 0; j < 8; ++j) {
+      const float residual_value = Bf16ToFloat(residual_values[j]);
+      const float block_value = Bf16ToFloat(block_values[j]);
+      values[j] = FloatToBf16(residual_value + block_value * inj);
+    }
+    reinterpret_cast<float4*>(combined + base)[i] = packed;
+    gv[i] = packed;
+    const __nv_bfloat162* p = reinterpret_cast<const __nv_bfloat162*>(&packed);
+
+    float2 v0 = __bfloat1622float2(p[0]);
+    float2 v1 = __bfloat1622float2(p[1]);
+    float2 v2 = __bfloat1622float2(p[2]);
+    float2 v3 = __bfloat1622float2(p[3]);
+    acc += v0.x * v0.x + v0.y * v0.y + v1.x * v1.x + v1.y * v1.y + v2.x * v2.x +
+           v2.y * v2.y + v3.x * v3.x + v3.y * v3.y;
+  }
+#pragma unroll
+  for (int off = 16; off > 0; off >>= 1)
+    acc += __shfl_xor_sync(0xffffffffu, acc, off);
+  const float rs = rsqrtf(acc / hs + eps);
+  // Pass 2: normalize + scale, write back.
+  for (int i = lane; i < n8; i += 32) {
+    const __nv_bfloat162* p = reinterpret_cast<const __nv_bfloat162*>(&gv[i]);
+    const __nv_bfloat162* q = reinterpret_cast<const __nv_bfloat162*>(&wv[i]);
+    float2 v0 = __bfloat1622float2(p[0]);
+    float2 v1 = __bfloat1622float2(p[1]);
+    float2 v2 = __bfloat1622float2(p[2]);
+    float2 v3 = __bfloat1622float2(p[3]);
+    float2 w0 = __bfloat1622float2(q[0]);
+    float2 w1 = __bfloat1622float2(q[1]);
+    float2 w2 = __bfloat1622float2(q[2]);
+    float2 w3 = __bfloat1622float2(q[3]);
+    v0.x *= rs * (1.f + w0.x);
+    v0.y *= rs * (1.f + w0.y);
+    v1.x *= rs * (1.f + w1.x);
+    v1.y *= rs * (1.f + w1.y);
+    v2.x *= rs * (1.f + w2.x);
+    v2.y *= rs * (1.f + w2.y);
+    v3.x *= rs * (1.f + w3.x);
+    v3.y *= rs * (1.f + w3.y);
+    float4 o;
+    __nv_bfloat162* op = reinterpret_cast<__nv_bfloat162*>(&o);
+    op[0] = __floats2bfloat162_rn(v0.x, v0.y);
+    op[1] = __floats2bfloat162_rn(v1.x, v1.y);
+    op[2] = __floats2bfloat162_rn(v2.x, v2.y);
+    op[3] = __floats2bfloat162_rn(v3.x, v3.y);
+    ov[i] = o;
+  }
+}
+
 // silu(x / hc) in place on a [T, lowrank] BF16 buffer.
 // Matches SGLang _mix_compute: F.silu(F.linear(...) / hc) — divide FIRST,
 // then silu (NOT silu(x)/hc; the two differ because silu is nonlinear).
@@ -306,11 +395,11 @@ Status LoadHyperConnection(const io::WeightLoader& loader,
   return Status();
 }
 
-Status HyperConnectionMix(const HyperConnectionWeights& w,
-                          const uint16_t* hyper_input, uint16_t* mixed,
-                          uint16_t* normed, int T, void* workspace,
-                          size_t workspace_bytes, cudaStream_t stream,
-                          const HyperConnectionMixScratch* mix_scratch) {
+static Status HyperConnectionMixImpl(
+    const HyperConnectionWeights& w, const uint16_t* hyper_input,
+    uint16_t* mixed, uint16_t* normed, int T, void* workspace,
+    size_t workspace_bytes, cudaStream_t stream,
+    const HyperConnectionMixScratch* mix_scratch, bool normed_ready) {
   const int hc = w.hc_count, hs = w.hidden_size, lr = w.lowrank;
   const int hc_dim = hc * hs;
   if (T <= 0) return Status();
@@ -323,10 +412,13 @@ Status HyperConnectionMix(const HyperConnectionWeights& w,
     return Status::Fail("HC mix scratch too small or missing");
   }
 
-  // 1. Grouped RMSNorm (warp-per-branch: blockDim = 32*hc).
-  GroupedRmsNormKernel<<<T, 32 * hc, 0, stream>>>(hyper_input, w.hc_norm,
-                                                   normed, T, hc, hs, w.eps);
-  if (cudaGetLastError() != cudaSuccess) return Status::Fail("rmsnorm launch");
+  if (!normed_ready) {
+    // 1. Grouped RMSNorm (warp-per-branch: blockDim = 32*hc).
+    GroupedRmsNormKernel<<<T, 32 * hc, 0, stream>>>(hyper_input, w.hc_norm,
+                                                    normed, T, hc, hs, w.eps);
+    if (cudaGetLastError() != cudaSuccess)
+      return Status::Fail("rmsnorm launch");
+  }
 
   uint16_t* d_down = mix_scratch ? mix_scratch->down : nullptr;
   uint16_t* d_up = mix_scratch ? mix_scratch->up : nullptr;
@@ -376,6 +468,15 @@ Status HyperConnectionMix(const HyperConnectionWeights& w,
   return Status();
 }
 
+Status HyperConnectionMix(const HyperConnectionWeights& w,
+                          const uint16_t* hyper_input, uint16_t* mixed,
+                          uint16_t* normed, int T, void* workspace,
+                          size_t workspace_bytes, cudaStream_t stream,
+                          const HyperConnectionMixScratch* mix_scratch) {
+  return HyperConnectionMixImpl(w, hyper_input, mixed, normed, T, workspace,
+                                workspace_bytes, stream, mix_scratch, false);
+}
+
 GatedResidualFrame::~GatedResidualFrame() { Release(); }
 
 cudaError_t GatedResidualFrame::Release() {
@@ -397,6 +498,16 @@ Status GatedResidualFrame::Read(const HyperConnectionWeights& w,
                                 cudaStream_t stream,
                                 const HyperConnectionMixScratch* mix_scratch,
                                 const GatedResidualGateStorage* gate_storage) {
+  return ReadImpl(w, residual, mixed, normed_scratch, tokens, workspace,
+                  workspace_bytes, stream, mix_scratch, gate_storage, false);
+}
+
+Status GatedResidualFrame::ReadImpl(
+    const HyperConnectionWeights& w, const uint16_t* residual, uint16_t* mixed,
+    uint16_t* normed_scratch, int tokens, void* workspace,
+    size_t workspace_bytes, cudaStream_t stream,
+    const HyperConnectionMixScratch* mix_scratch,
+    const GatedResidualGateStorage* gate_storage, bool normed_ready) {
   if (ready_ || inject_gate_)
     return Status::Fail("GR frame must be consumed before another Read");
   const bool needs_gate = tokens > 0 && w.use_combine && w.block_inject;
@@ -406,9 +517,9 @@ Status GatedResidualFrame::Read(const HyperConnectionWeights& w,
   if (needs_gate && gate_storage &&
       (!gate_storage->data || gate_storage->bytes < gate_bytes))
     return Status::Fail("GR gate storage too small or missing");
-  Status s =
-      HyperConnectionMix(w, residual, mixed, normed_scratch, tokens, workspace,
-                         workspace_bytes, stream, mix_scratch);
+  Status s = HyperConnectionMixImpl(w, residual, mixed, normed_scratch, tokens,
+                                    workspace, workspace_bytes, stream,
+                                    mix_scratch, normed_ready);
   if (!s) return s;
   residual_ = residual;
   stream_ = stream;
@@ -466,6 +577,45 @@ Status GatedResidualFrame::Write(const uint16_t* block_output,
     return Status::Fail(cudaGetErrorString(release_error));
   return {};
 }
+Status GatedResidualFrame::WriteAndRead(
+    const uint16_t* block_output, uint16_t* combined,
+    const HyperConnectionWeights& next_weights, GatedResidualFrame& next_frame,
+    uint16_t* mixed, uint16_t* normed, void* workspace, size_t workspace_bytes,
+    const HyperConnectionMixScratch* mix_scratch,
+    const GatedResidualGateStorage* gate_storage) {
+  if (!ready_) return Status::Fail("GR Write requires a ready frame");
+  if (&next_frame == this || next_frame.ready_ || next_frame.inject_gate_)
+    return Status::Fail("GR next frame must be distinct and empty");
+  const int tokens = tokens_;
+  const cudaStream_t stream = stream_;
+  const bool aligned =
+      ((reinterpret_cast<uintptr_t>(block_output) |
+        reinterpret_cast<uintptr_t>(residual_) |
+        reinterpret_cast<uintptr_t>(next_weights.hc_norm) |
+        reinterpret_cast<uintptr_t>(combined) |
+        reinterpret_cast<uintptr_t>(normed)) & 15u) == 0;
+  if (!inject_gate_ || tokens <= 0 || hc_ != 4 || hs_ != 2560 || !aligned ||
+      next_weights.hc_count != 4 || next_weights.hidden_size != 2560) {
+    Status s = Write(block_output, combined);
+    if (!s) return s;
+    return next_frame.Read(next_weights, combined, mixed, normed, tokens,
+                           workspace, workspace_bytes, stream, mix_scratch,
+                           gate_storage);
+  }
+  CombineAndGroupedNormKernel<<<tokens, 128, 0, stream>>>(
+      block_output, residual_, inject_gate_, next_weights.hc_norm, combined,
+      normed, tokens, hc_, hs_, next_weights.eps);
+  const cudaError_t launch_error = cudaGetLastError();
+  const cudaError_t release_error = Release();
+  if (launch_error != cudaSuccess)
+    return Status::Fail(cudaGetErrorString(launch_error));
+  if (release_error != cudaSuccess)
+    return Status::Fail(cudaGetErrorString(release_error));
+  return next_frame.ReadImpl(next_weights, combined, mixed, normed, tokens,
+                             workspace, workspace_bytes, stream, mix_scratch,
+                             gate_storage, true);
+}
+
 Status HyperConnectionCombine(const HyperConnectionWeights& w,
                               const uint16_t* block_output,
                               const uint16_t* hyper_input,

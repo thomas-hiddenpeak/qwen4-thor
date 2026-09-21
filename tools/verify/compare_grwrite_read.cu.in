@@ -1,0 +1,194 @@
+#include <cuda_bf16.h>
+#include <cuda_runtime.h>
+#include <bit>
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <vector>
+#include "q4t/model/hyperconnection.h"
+#include "q4t/model/linear.h"
+namespace q4t::model {
+bool HcInjectGevGated(const uint16_t*, const uint16_t*, uint16_t*,
+                      cudaStream_t);
+}
+namespace baseline {
+using namespace q4t::model;
+using q4t::Status;
+// BASELINE_BODY
+}  // namespace baseline
+void Check(cudaError_t error) {
+  if (error != cudaSuccess) {
+    std::fprintf(stderr, "%s\n", cudaGetErrorString(error));
+    std::exit(1);
+  }
+}
+void Require(const q4t::Status& status) {
+  if (!status) {
+    std::fprintf(stderr, "%s\n", status.message().c_str());
+    std::exit(1);
+  }
+}
+template <class T>
+struct Buffer {
+  T* data;
+  size_t count;
+  explicit Buffer(size_t n) : count(n) {
+    Check(cudaMalloc(&data, n * sizeof(T)));
+  }
+  ~Buffer() { cudaFree(data); }
+};
+uint32_t rng = 20260921;
+void Fill(Buffer<uint16_t>& buffer, float scale, int family = 0) {
+  std::vector<uint16_t> values(buffer.count);
+  for (size_t i = 0; i < values.size(); ++i) {
+    rng = rng * 1664525u + 1013904223u;
+    float value = (float(rng >> 8) / 16777216.0f - 0.5f) * scale;
+    if (family == 1) value = (i & 1) ? -0.0f : 0.0f;
+    if (family == 2) value = (i & 1) ? -scale : scale;
+    values[i] = std::bit_cast<uint16_t>(__float2bfloat16_rn(value));
+  }
+  Check(cudaMemcpy(buffer.data, values.data(), values.size() * 2,
+                   cudaMemcpyHostToDevice));
+}
+size_t checked = 0;
+void Equal(const Buffer<uint16_t>& a, const Buffer<uint16_t>& b,
+           const char* label) {
+  std::vector<uint16_t> x(a.count), y(b.count);
+  Check(cudaMemcpy(x.data(), a.data, a.count * 2, cudaMemcpyDeviceToHost));
+  Check(cudaMemcpy(y.data(), b.data, b.count * 2, cudaMemcpyDeviceToHost));
+  for (size_t i = 0; i < x.size(); ++i) {
+    if (x[i] != y[i] || (y[i] & 0x7f80u) == 0x7f80u) {
+      std::fprintf(stderr, "mismatch/nonfinite %s at %zu\n", label, i);
+      std::exit(1);
+    }
+  }
+  checked += x.size();
+}
+int main() {
+  using namespace q4t::model;
+  constexpr int hc = 4, hs = 2560, dim = hc * hs, lr = 320;
+  Buffer<uint16_t> n1(dim), d1(lr * dim), u1(dim * lr), i1(hc * dim);
+  Buffer<uint16_t> n2(dim), d2(lr * dim), u2(dim * lr), i2(hc * dim);
+  Fill(n1, 0.1f);
+  Fill(d1, 0.01f);
+  Fill(u1, 0.01f);
+  Fill(i1, 0.02f);
+  Fill(n2, 0.2f);
+  Fill(d2, 0.015f);
+  Fill(u2, 0.012f);
+  Fill(i2, 0.025f);
+  HyperConnectionWeights first, second;
+  first.hc_count = second.hc_count = hc;
+  first.hidden_size = second.hidden_size = hs;
+  first.lowrank = second.lowrank = lr;
+  first.hc_norm = n1.data;
+  first.mix_down = d1.data;
+  first.mix_up = u1.data;
+  second.hc_norm = n2.data;
+  second.mix_down = d2.data;
+  second.mix_up = u2.data;
+  first.eps = 1e-6f;
+  second.eps = 1e-5f;
+  Buffer<uint8_t> workspace(32 * 1024 * 1024);
+  cudaStream_t stream;
+  Check(cudaStreamCreate(&stream));
+  int cases = 0;
+  for (int rows : {1, 3, 33, 257, 8192}) {
+    const size_t h = size_t(rows) * hs, hyper = size_t(rows) * dim;
+    Buffer<uint16_t> residual(hyper), block1(h + 1), block2(h);
+    Buffer<uint16_t> old_norm1(hyper), old_mix1(h), old_combined(hyper);
+    Buffer<uint16_t> old_norm2(hyper), old_mix2(h), old_final(hyper);
+    Buffer<uint16_t> normed(hyper), mixed(h), combined(hyper), final(hyper);
+    Buffer<uint16_t> down(size_t(rows) * lr), up(hyper),
+        gate(size_t(rows) * hc);
+    HyperConnectionMixScratch scratch{down.data, up.data, down.count * 2,
+                                      up.count * 2};
+    GatedResidualGateStorage storage{gate.data, gate.count * 2};
+    for (int family = 0; family < 3; ++family) {
+      Fill(residual, 0.5f, family);
+      Fill(block1, 0.25f, family);
+      Fill(block2, 0.35f, family);
+      for (int mode = 0; mode < 5; ++mode) {
+        // Mode 4 exercises scalar Combine fallback for unaligned block input.
+        const uint16_t* block1_input = block1.data + (mode == 4 ? 1 : 0);
+        first.use_combine = mode != 2;
+        first.block_inject = first.use_combine ? i1.data : nullptr;
+        second.use_combine = mode != 3;
+        second.block_inject = second.use_combine ? i2.data : nullptr;
+        const auto* borrowed = mode == 1 ? nullptr : &storage;
+        Require(baseline::HyperConnectionMix(
+            first, residual.data, old_mix1.data, old_norm1.data, rows,
+            workspace.data, workspace.count, stream));
+        Require(baseline::HyperConnectionCombine(
+            first, block1_input, residual.data, old_norm1.data,
+            old_combined.data, rows, workspace.data, workspace.count, stream));
+        Require(baseline::HyperConnectionMix(
+            second, old_combined.data, old_mix2.data, old_norm2.data, rows,
+            workspace.data, workspace.count, stream));
+        Require(baseline::HyperConnectionCombine(
+            second, block2.data, old_combined.data, old_norm2.data,
+            old_final.data, rows, workspace.data, workspace.count, stream));
+        GatedResidualFrame a, b, busy;
+        Require(a.Read(first, residual.data, mixed.data, normed.data, rows,
+                       workspace.data, workspace.count, stream, &scratch,
+                       borrowed));
+        Check(cudaStreamSynchronize(stream));
+        Equal(old_norm1, normed, "first norm");
+        Equal(old_mix1, mixed, "first mix");
+        if (a.WriteAndRead(block1_input, combined.data, second, a, mixed.data,
+                           normed.data, workspace.data, workspace.count,
+                           &scratch, borrowed))
+          return 2;
+        Require(busy.Read(second, nullptr, nullptr, nullptr, 0, workspace.data,
+                          workspace.count, stream));
+        if (a.WriteAndRead(block1_input, combined.data, second, busy, mixed.data,
+                           normed.data, workspace.data, workspace.count,
+                           &scratch, borrowed))
+          return 3;
+        Require(busy.Write(nullptr, nullptr));
+        Require(a.WriteAndRead(block1_input, combined.data, second, b,
+                               mixed.data, normed.data, workspace.data,
+                               workspace.count, &scratch, borrowed));
+        if (a.Write(block1_input, combined.data)) return 4;
+        Check(cudaStreamSynchronize(stream));
+        Equal(old_combined, combined, "combined BF16 residual");
+        Equal(old_norm2, normed, "next norm with different weights/eps");
+        Equal(old_mix2, mixed, "next mix");
+        Check(cudaMemsetAsync(normed.data, 0xff, normed.count * 2, stream));
+        Require(b.Write(block2.data, final.data));
+        Check(cudaStreamSynchronize(stream));
+        Equal(old_final, final, "next Write");
+        // Discard a prepared next frame without Write; its gate lifetime must
+        // obey owned/borrowed cleanup while queued device work still finishes.
+        Require(a.Read(first, residual.data, mixed.data, normed.data, rows,
+                       workspace.data, workspace.count, stream, &scratch,
+                       borrowed));
+        {
+          GatedResidualFrame abandoned;
+          Require(a.WriteAndRead(block1_input, combined.data, second, abandoned,
+                                 mixed.data, normed.data, workspace.data,
+                                 workspace.count, &scratch, borrowed));
+        }
+        Check(cudaStreamSynchronize(stream));
+        Check(cudaGetLastError());
+        Check(cudaMemsetAsync(gate.data, 0, gate.count * 2, stream));
+        Check(cudaStreamSynchronize(stream));
+        ++cases;
+      }
+    }
+  }
+  {
+    GatedResidualFrame empty, next;
+    Require(empty.Read(first, nullptr, nullptr, nullptr, 0, workspace.data,
+                       workspace.count, stream));
+    Require(empty.WriteAndRead(nullptr, nullptr, second, next, nullptr, nullptr,
+                               workspace.data, workspace.count));
+    Require(next.Write(nullptr, nullptr));
+  }
+  Check(cudaStreamDestroy(stream));
+  std::printf("PASS: %d boundary cases, %zu finite BF16 values bit-exact\n",
+              cases, checked);
+}

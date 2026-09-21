@@ -240,7 +240,8 @@ std::array<DecoderResourceView, 13> DescribeDecoderWorkspace(
            {"ple", layout.ple, layout.ple_bytes, bit(Phase::kPle)},
            {"mixed", layout.mixed, layout.hidden_bytes, mixed},
            {"block", layout.block, layout.hidden_bytes, block},
-           {"normed", layout.normed, layout.hyper_bytes, read},
+           {"normed", layout.normed, layout.hyper_bytes,
+            read | bit(Phase::kAttentionWrite)},
            {"down", layout.hc_down, layout.hc_down_bytes, read},
            {"up", layout.hc_up, layout.hc_up_bytes, read},
            {"combined", layout.combined, layout.hyper_bytes, residual},
@@ -582,17 +583,13 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   if (!s.ok()) {
     return s;
   }
-  // GRWrite consumes only the borrowed residual and prepared inject gate.
-  s = attn_frame.Write(d_block, d_combined);
-  if (!s.ok()) {
-    return s;
-  }
+  // Combined is still materialized for the MLP residual. The next norm can
+  // consume the BF16-rounded Write result before it leaves shared staging.
   GatedResidualFrame mlp_frame;
-  s = mlp_frame.Read(layer.mlp_hc, d_combined, d_mixed, d_normed, T, d_hc_ws,
-                     kGemmWs, stream, &hc_mix_scratch, &gate_storage);
-  if (!s.ok()) {
-    return s;
-  }
+  s = attn_frame.WriteAndRead(d_block, d_combined, layer.mlp_hc, mlp_frame,
+                              d_mixed, d_normed, d_hc_ws, kGemmWs,
+                              &hc_mix_scratch, &gate_storage);
+  if (!s.ok()) return s;
   // 5. MoE.
   s = MoEForward(d_mixed, layer.routed, layer.mlp, d_block, T, layer.topk,
                  d_moe_ws, layout.moe_bytes, d_moe_gemm, kGemmWs, stream);

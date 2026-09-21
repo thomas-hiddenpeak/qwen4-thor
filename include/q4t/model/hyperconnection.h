@@ -116,8 +116,24 @@ class GatedResidualFrame {
               const GatedResidualGateStorage* gate_storage = nullptr);
   // Consumes the frame; all block-output producers must join the Read stream.
   Status Write(const uint16_t* block_output, uint16_t* output);
+  // Consume this frame and prepare the next on the same stream. Combined
+  // remains the next frame's residual. Normed may be produced during Write.
+  // Next frame must be distinct and empty. Combined/normed must not alias
+  // inputs. Gate storage may be reused in stream order after Write.
+  Status WriteAndRead(const uint16_t* block_output, uint16_t* combined,
+                      const HyperConnectionWeights& next_weights,
+                      GatedResidualFrame& next_frame, uint16_t* mixed,
+                      uint16_t* normed, void* workspace, size_t workspace_bytes,
+                      const HyperConnectionMixScratch* mix_scratch = nullptr,
+                      const GatedResidualGateStorage* gate_storage = nullptr);
 
  private:
+  Status ReadImpl(const HyperConnectionWeights& w, const uint16_t* residual,
+                  uint16_t* mixed, uint16_t* normed_scratch, int tokens,
+                  void* workspace, size_t workspace_bytes, cudaStream_t stream,
+                  const HyperConnectionMixScratch* mix_scratch,
+                  const GatedResidualGateStorage* gate_storage,
+                  bool normed_ready);
   cudaError_t Release();
   const uint16_t* residual_ = nullptr;
   uint16_t* inject_gate_ = nullptr;
