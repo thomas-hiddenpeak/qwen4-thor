@@ -18,7 +18,18 @@
 TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间。
 按重复范围比较，不设置临时容忍百分比或拼接最优档位。
 
-## 最新接受：GRRead 成对 BF16 gate+mix
+## 最新接受：线性注意力 scratch 作用域所有权
+
+基于 40b7dbb，六块独立中间缓冲收拢为非复制作用域对象，移除 29 处
+手工清理。保留分配尺寸/顺序、同 stream 释放顺序、kernel 与所有状态
+更新；不合并分配，不预设性能或容量收益。已零警告构建，质量 11/11、五档 HTTP/输出 15/15，但 4K decode
+和 44K TTFT 对父版不利范围分离，初始性能未接受。两档旧→新→旧复核与两侧范围均重叠，
+异常未重现，完整门禁现通过。源码所有权核对通过，除 owner/清理
+外计算和分配代码完全一致；4K HTTP 所有 kernel/分配次数与父版一致。
+按性能持平、清理逻辑集中接受；未做 CUDA 失败注入，不宣称提速。
+[报告](LINEAR_SCRATCH_OWNER_2026-09-21.md)，证据 linear-scratch-owner-20260921。
+
+## 已完成前置：GRRead 成对 BF16 gate+mix
 
 基于 79dd7a6，固定 hc=4/hs=2560 的 gate+mix 每线程处理相邻两元素，
 合并读取/输出，保持各元素 FP32 累加顺序、BF16 舍入及 CTA 输出数。
@@ -132,7 +143,7 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 ## 正式性能参考
 
 正式五档性能参考仍为 **fcb5925**（短路径 top-k 寄存器网络）。
-最新运行时为上述成对 gate+mix 阶段，正式参考不重置。
+最新运行时为上述线性 scratch 所有权阶段，正式参考不重置。
 质量 11/11、性能 15/15，输出摘要一致、服务退出 0，构建零警告；
 完整门禁后 352 组、277598448 个槽/长度逐位一致，4K HTTP 时间线通过。
 
@@ -147,7 +158,8 @@ Write 正确，frame 状态检查通过。4K 时间线全部 24576 个 GR 子层
 4K decode 较前一版 +0.76%，8K TTFT -1.08%，其余范围重叠。
 正式参考见 tools/evalscope/fixtures/performance_reference.json；
 二进制 SHA 与完整边界见 [报告](SHORT_TOPK_2026-09-21.md)。证据
-`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 对应已接受的成对 gate+mix 版本；
+`.q4t-work/e2e/short-topk-register-20260921/`。build/q4t 对应已接受的线性 scratch 所有权版本；
+已接受 40b7dbb 二进制保存在 linear-scratch-owner-20260921/q4t-before；
 已接受 79dd7a6 二进制保存在 grread-pair-mix-20260921/q4t-before；
 已接受 dd1da64 二进制保存在 grwrite-read-fusion-20260921/q4t-before；
 已接受 81cdbf8 二进制保存在 decoder-resource-contract-20260921/q4t-before；

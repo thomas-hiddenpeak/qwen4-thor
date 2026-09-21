@@ -24,6 +24,32 @@ namespace model {
 
 namespace {
 
+// Owns the six independent intermediates on the caller stream. Keep their
+// allocation and release order stable; GEMM workspace is borrowed separately.
+struct LinearAttentionScratch {
+  explicit LinearAttentionScratch(cudaStream_t stream) : stream_(stream) {}
+  LinearAttentionScratch(const LinearAttentionScratch&) = delete;
+  LinearAttentionScratch& operator=(const LinearAttentionScratch&) = delete;
+  ~LinearAttentionScratch() {
+    cudaFreeAsync(qkv_raw, stream_);
+    cudaFreeAsync(qkv, stream_);
+    cudaFreeAsync(z, stream_);
+    cudaFreeAsync(a, stream_);
+    cudaFreeAsync(beta, stream_);
+    cudaFreeAsync(y_ssm, stream_);
+  }
+
+  uint16_t* qkv_raw = nullptr;
+  uint16_t* qkv = nullptr;
+  uint16_t* z = nullptr;
+  uint16_t* a = nullptr;
+  uint16_t* beta = nullptr;
+  uint16_t* y_ssm = nullptr;
+
+ private:
+  cudaStream_t stream_;
+};
+
 constexpr int kBlock = 256;
 
 __device__ __forceinline__ float Bf16ToFloat(uint16_t b) {
@@ -1313,23 +1339,15 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
   //   qkv_raw [T,in_qkv] (raw projection = conv input + conv_state source)
   //   qkv     [T,in_qkv] (SiLU(conv) result)
   //   z [T,v_dim] | a [T,nv] | beta [T,nv] | y_ssm [T,v_dim]
-  uint16_t* d_qkv_raw = nullptr;
-  uint16_t* d_qkv = nullptr;
-  uint16_t* d_z = nullptr;
-  uint16_t* d_a = nullptr;
-  uint16_t* d_beta = nullptr;
-  uint16_t* d_y_ssm = nullptr;
-  // Async alloc/free: cudaFree synchronizes the device (drains the queue),
-  // which dominated decode CPU time (~700 frees/step at ~100us each). The
-  // memory-pool async variants are cheap and CUDA-Graphs-capturable.
-  auto free_all = [&]() {
-    cudaFreeAsync(d_qkv_raw, stream);
-    cudaFreeAsync(d_qkv, stream);
-    cudaFreeAsync(d_z, stream);
-    cudaFreeAsync(d_a, stream);
-    cudaFreeAsync(d_beta, stream);
-    cudaFreeAsync(d_y_ssm, stream);
-  };
+  LinearAttentionScratch scratch(stream);
+  auto& d_qkv_raw = scratch.qkv_raw;
+  auto& d_qkv = scratch.qkv;
+  auto& d_z = scratch.z;
+  auto& d_a = scratch.a;
+  auto& d_beta = scratch.beta;
+  auto& d_y_ssm = scratch.y_ssm;
+  // Async frees stay ordered on the caller stream, including partial
+  // allocation failures and every early return below.
   auto alloc = [&](uint16_t** p, size_t elems) -> Status {
     if (cudaMallocAsync(reinterpret_cast<void**>(p),
                         elems * sizeof(uint16_t), stream) != cudaSuccess) {
@@ -1339,27 +1357,21 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
   };
   Status s;
   if (!(s = alloc(&d_qkv_raw, static_cast<size_t>(T) * in_qkv))) {
-    free_all();
     return s;
   }
   if (!(s = alloc(&d_qkv, static_cast<size_t>(T) * in_qkv))) {
-    free_all();
     return s;
   }
   if (!(s = alloc(&d_z, static_cast<size_t>(T) * v_dim))) {
-    free_all();
     return s;
   }
   if (!(s = alloc(&d_a, static_cast<size_t>(T) * nv))) {
-    free_all();
     return s;
   }
   if (!(s = alloc(&d_beta, static_cast<size_t>(T) * nv))) {
-    free_all();
     return s;
   }
   if (!(s = alloc(&d_y_ssm, static_cast<size_t>(T) * v_dim))) {
-    free_all();
     return s;
   }
 
@@ -1368,25 +1380,21 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
                          in_qkv, hs, 1.0f, 0.0f, workspace, workspace_bytes,
                          stream));
   if (!s.ok()) {
-    free_all();
     return s;
   }
   s = CheckGemm(ProjGemm(x, w.in_proj_z, &w.in_proj_z_fp8, d_z, T, v_dim, hs,
                          1.0f, 0.0f, workspace, workspace_bytes, stream));
   if (!s.ok()) {
-    free_all();
     return s;
   }
   s = CheckGemm(Bf16Gemm(x, w.in_proj_a, d_a, T, nv, hs, 1.0f, 0.0f, workspace,
                          workspace_bytes, stream));
   if (!s.ok()) {
-    free_all();
     return s;
   }
   s = CheckGemm(Bf16Gemm(x, w.in_proj_b, d_beta, T, nv, hs, 1.0f, 0.0f, workspace,
                          workspace_bytes, stream));
   if (!s.ok()) {
-    free_all();
     return s;
   }
 
@@ -1404,7 +1412,6 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
           d_qkv_raw, d_qkv, conv_state, w.conv1d, d_seq_id, in_qkv, conv_k,
           tokens_per_seq, rag_local);
       if (cudaGetLastError() != cudaSuccess) {
-        free_all();
         return Status::Fail("conv1d multi-seq causal launch");
       }
       // Per-sequence per-token conv checkpoints (before the state update; the
@@ -1415,7 +1422,6 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
             d_qkv_raw, conv_state, conv_ckpt, d_seq_id, in_qkv, conv_k,
             tokens_per_seq, num_ckpt);
         if (cudaGetLastError() != cudaSuccess) {
-          free_all();
           return Status::Fail("conv1d multi-seq ckpt launch");
         }
       }
@@ -1424,7 +1430,6 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
           conv_state, d_qkv_raw, d_seq_id, in_qkv, conv_k, tokens_per_seq,
           rag_offset);
       if (cudaGetLastError() != cudaSuccess) {
-        free_all();
         return Status::Fail("conv1d multi-seq causal state launch");
       }
     } else if (d_seq_id) {
@@ -1433,13 +1438,11 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
       CausalConv1dMultiSeqKernel<<<dim3(ch_blocks, T), kBlock, 0, stream>>>(
           d_qkv_raw, d_qkv, conv_state, w.conv1d, d_seq_id, in_qkv, conv_k);
       if (cudaGetLastError() != cudaSuccess) {
-        free_all();
         return Status::Fail("conv1d multi-seq launch");
       }
       Conv1dUpdateStateMultiSeqKernel<<<dim3(ch_blocks, T), kBlock, 0, stream>>>(
           conv_state, d_qkv_raw, d_seq_id, in_qkv, conv_k);
       if (cudaGetLastError() != cudaSuccess) {
-        free_all();
         return Status::Fail("conv1d multi-seq state launch");
       }
     } else {
@@ -1448,13 +1451,11 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
           d_qkv_raw, d_qkv, conv_state, conv_ckpt, w.conv1d, T, in_qkv, conv_k,
           conv_ckpt ? num_ckpt : 0);
       if (cudaGetLastError() != cudaSuccess) {
-        free_all();
         return Status::Fail("conv1d launch");
       }
       Conv1dUpdateStateKernel<<<ch_blocks, kBlock, 0, stream>>>(
           conv_state, d_qkv_raw, T, in_qkv, conv_k);
       if (cudaGetLastError() != cudaSuccess) {
-        free_all();
         return Status::Fail("conv1d state launch");
       }
     }
@@ -1475,7 +1476,6 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
           cudaFuncAttributeMaxDynamicSharedMemorySize,
           static_cast<int>(smem_bytes));
       if (smem_err != cudaSuccess) {
-        free_all();
         return Status::Fail("gdn multi-seq causal smem attr");
       }
       GatedDeltaNetMultiSeqCausalKernel<<<dim3(nv, B), threads, smem_bytes,
@@ -1484,7 +1484,6 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
           tokens_per_seq, nkh, kd, nv / nkh, vd, in_qkv, nv, d_seq_id,
           ssm_ckpt, num_ckpt, rag_offset);
       if (cudaGetLastError() != cudaSuccess) {
-        free_all();
         return Status::Fail("gdn multi-seq causal launch");
       }
     } else if (d_seq_id) {
@@ -1495,14 +1494,12 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
           cudaFuncAttributeMaxDynamicSharedMemorySize,
           static_cast<int>(smem_bytes));
       if (smem_err != cudaSuccess) {
-        free_all();
         return Status::Fail("gdn multi-seq smem attr");
       }
       GatedDeltaNetDecodeKernel<<<dim3(nv, T), threads, smem_bytes, stream>>>(
           d_qkv, d_a, w.dt_bias, w.A_log, d_beta, ssm_state, d_y_ssm, nkh, kd,
           nv / nkh, vd, in_qkv, nv, d_seq_id);
       if (cudaGetLastError() != cudaSuccess) {
-        free_all();
         return Status::Fail("gdn multi-seq launch");
       }
     } else {
@@ -1541,7 +1538,6 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
           GdnRegPrepNormKernel<<<pgrid, pblk, 0, stream>>>(d_qkv, T, nkh, kd,
                                                            in_qkv);
           if (cudaGetLastError() != cudaSuccess) {
-            free_all();
             return Status::Fail("gdn reg prep launch");
           }
         }
@@ -1557,7 +1553,6 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
         }
 #undef Q4T_GDN_REG_LAUNCH
         if (cudaGetLastError() != cudaSuccess) {
-          free_all();
           return Status::Fail("gdn reg launch");
         }
       } else if (use_chunked && kd == 128 && vd == 128 && ssm_ckpt == nullptr) {
@@ -1579,14 +1574,12 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
             cudaFuncAttributeMaxDynamicSharedMemorySize,
             static_cast<int>(ch_smem));
         if (smem_err != cudaSuccess) {
-          free_all();
           return Status::Fail("gdn chunked smem attr");
         }
         GatedDeltaNetChunkedKernel<<<dim3(nv, split), 128, ch_smem, stream>>>(
             d_qkv, d_a, w.dt_bias, w.A_log, d_beta, ssm_state, d_y_ssm, T, nkh,
             kd, nv / nkh, vd, in_qkv, nv);
         if (cudaGetLastError() != cudaSuccess) {
-          free_all();
           return Status::Fail("gdn chunked launch");
         }
       } else {
@@ -1594,14 +1587,12 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
             GatedDeltaNetKernel, cudaFuncAttributeMaxDynamicSharedMemorySize,
             static_cast<int>(smem_bytes));
         if (smem_err != cudaSuccess) {
-          free_all();
           return Status::Fail("gdn smem attr");
         }
         GatedDeltaNetKernel<<<nv, threads, smem_bytes, stream>>>(
             d_qkv, d_a, w.dt_bias, w.A_log, d_beta, ssm_state, d_y_ssm, T, nkh,
             kd, nv / nkh, vd, in_qkv, nv, ssm_ckpt, num_ckpt);
         if (cudaGetLastError() != cudaSuccess) {
-          free_all();
           return Status::Fail("gdn launch");
         }
       }
@@ -1619,7 +1610,6 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
     NormGateKernel<<<grid, 128, 0, stream>>>(d_y_ssm, d_z, w.norm, w.eps, nv,
                                              vd);
     if (cudaGetLastError() != cudaSuccess) {
-      free_all();
       return Status::Fail("norm gate launch");
     }
   }
@@ -1628,7 +1618,6 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
   s = CheckGemm(ProjGemm(d_y_ssm, w.out_proj, &w.out_proj_fp8, out, T, hs,
                          v_dim, 1.0f, 0.0f, workspace, workspace_bytes,
                          stream));
-  free_all();
   if (!s.ok()) return s;
   return Status();
 }
