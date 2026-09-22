@@ -14,10 +14,13 @@
 候选内容：补 pooled decode RoPE 位置写入；对齐 GDN 单行/打包
 算术并优化状态访问；短 indexer 每 head BF16 舍入；2–4 行 BF16
 共享权重投影；混合长短批次中为短行保留原打分和 top-k 排列。
-临时 GPU 摘要/D2H/同步已删除，仅保留默认关闭的 host token 日志。
+清理版曾移除临时 GPU 摘要；当前为 MTP 分叉定位重新加入受开关
+控制的少量层/状态读回，关闭时不执行，不纳入性能收益结论。
 
-当前二进制 SHA-256：
-`448d73d5b1567430162bf7631db36c2881c2c6648bde605f0dd84afb43a7ac58`。
+当前候选二进制 SHA-256：
+`a95dbafdeb94e885b91f496d155d133844fd049992f1fd7d518cf17a5aacbc31`。
+此前清理版计算候选为 `448d73d5…`，host 轨迹版为 `c7f5ab35…`；
+上述轨迹版本仅新增诊断；当前共享 FP32 GDN 候选另有算术变更，见下文。
 必要构建零警告；每轮首测均为真实 HTTP，无前置底层测试/profile。
 
 已验证的范围：
@@ -73,16 +76,113 @@
 同 prompt 的普通 decode 历史输出前缀也不同，但容量/输出上限
 不同，不能仅据此把差异归因于 MTP 或量化噪声。
 
-正在运行 `decode-consistent-mtp-switch-http-20260922`（PID 1949448）：
-同一候选、相同 max_len=65536/max_tokens=32，plain→MTP→plain，
-1K/8K/44K 各三次，隔离 MTP 开关；plain 前侧三档已完成。
-源码发现普通 decode 与 MTP 因果 GDN 的归一化/归约路径不同，
-仅列为候选原因。host 验证 token 日志补丁已准备、未应用，若
-同配置仍分叉再用于真实 HTTP 定位，不增加 GPU 读回/同步。
-原输出差异与 TTFT 未通过样本保留；实际 B=2 批量 prefill 驱动
-暂不启动，先定位当前差异。
-不得伪造 acceptance.json 或用低层测试覆盖 E2E 未通过项；
-正式精度门禁仍未闭合，候选运行时不接受、不提交。
+`decode-consistent-mtp-switch-http-20260922` 同候选/同容量和输出
+上限的 plain→MTP→plain 三侧 27 HTTP 已终态，服务退出 0。
+plain 重启前后各档一致；MTP 在 1K 同 plain，在 8K/44K 均不同，
+各自重复确定。MTP TTFT 含初始化，不混为父候选性能回退。
+源码发现 GDN 归一化/归约和 T=1/多 token 稀疏 attention 实现
+差异，只是候选原因，尚无根因证明。
+
+`mtp-verify-host-trace-http-20260922` 四组 24 HTTP 已完成，
+日志开关不改变各模式输出，四服务/驱动退出 0；原始响应和 token
+链已独立复核。三次请求均同一首次分叉：
+
+- 8K：输出索引 27，预测位置 8218，输入 55404；plain=13、
+  MTP=11，MTP base=8216/local_row=2/accepted=2，为校正行。
+- 44K：输出索引 2，预测位置 45057，输入 248068；plain=271、
+  MTP=198，MTP base=45057/local_row=0/accepted=3。
+
+prefill token 和分叉前输入 token 前缀一致，不证明内部状态一致。
+被拒草稿/超出 HTTP 上限的预测已从实际输出链剔除。
+
+`mtp-layer-trace-http-20260922` 四组 24 HTTP 已终态，四服务/
+驱动退出 0；层/状态诊断开关不改变前一 host 轨迹版各模式的完整
+输出。原始响应、实际接受 token 链及层摘要三份复核均 complete。
+8K/44K 各三次在所有观察位置首次不同的 trunk 层均为第 0 层，
+该层之前输入 trunk 摘要相同。首个 decode base=8192/45056 时
+第 0 层初始 SSM/conv 摘要均相同；下一 base=8193/45057 时
+conv 仍相同，SSM 已不同。证据 layer-state-review.json。
+这把首次差异缩小到第 0 层内部，不能仅凭哈希判定 GDN 根因、
+差异大小或精度好坏；下一步区分投影/卷积/GDN 首次分叉。
+
+本轮只读参考源码核对发现：固定 Transformers 5.16.1 先做 q/k
+归一化，再显式转 FP32；evalscope 环境 5.17.0 顺序相反，不能
+混用。ref_dump.py 构造模型未显式指定低精度，加载时 copy_ 到
+现有参数；源张量转 BF16 不等于参数或激活为 BF16。没有执行
+参考推理或运行时 dtype 验证，不能由源码顺序推导实际归一化
+精度。版本来源摘要保存在 reference-source-audit.json，固定参考
+不变。实际 B=2 批量 prefill 暂缓；正式输出和 MTP 44K 性能
+未通过记录保留，候选运行时不接受、不提交。
+
+当前已新增第 0 层线性链路摘要诊断，二进制 `c1765e65…`，完整
+SHA 见 mtp-linear-stage-trace-http-20260922/manifest.json。只在
+原层摘要选中的 forward 传递 host 位置，观察 input、qkv_raw、z、
+a、beta、conv、GDN、gate、output；默认关闭，无计算逻辑改动。
+必要构建零警告，首项四组 24 HTTP 已完成，四服务/驱动退出 0；
+raw-response/token-chain/layer-state/stage 四份复核均 complete。
+插桩关闭/开启保持前一层摘要版各模式完整响应。8K/44K 各三次
+在全部观察位置 input、qkv_raw、z、a、beta、conv 摘要均一致，
+第一个不同阶段是 GDN，gate 和 output 随之不同。首步初始 SSM
+摘要相同，因此该层首步分叉定位在 GDN 计算边界，而非此前
+投影或卷积；后续状态差异可能累积，不证明所有层只此一处。
+源码确认 register 路径先把归一化 q/k 写回 BF16，而 causal
+路径保留 FP32 归一化值，归约及更新结合顺序也不同。尚未
+分别量化这些差异，不把任何一路预定为高精度真值。下一步
+设计共享递推与 checkpoint 语义，精度保持及完整 HTTP 门禁
+不变。新增读回/同步只用于定位，不能作性能或精度结论。
+
+当前新增共享 FP32 GDN 候选（未接受）：kd=vd=128 的普通/打包/
+因果及 ragged 路径共用 register 递推，按实际 seq slot、local token
+保存 checkpoint。q/k 保持原 BF16 输入，归一化因子与乘积保持
+FP32，不再把归一化结果写回 BF16；归约与更新顺序统一。因子
+存放在原 qkv_raw 分配的 8-byte 对齐尾部，不与原投影重叠，
+无新增分配次数，容量增加 8*T*nkh 字节加最多 6 字节对齐。
+这仍是待验收算术变更，不据 FP32 类型声称模型精度改善。
+
+初版必要构建零警告，二进制 `e39f4cc7…`，完整摘要及可回退源/
+二进制见 prepared/gdn-shared-fp32-20260922。首项运行测试
+`gdn-shared-fp32-20260922/quality` 已完成：正式质量 11/11，
+含 200K，完整输出与 prompt 摘要同 7364767，服务/驱动退出 0。
+共享 FP32 GDN 初版完整五档已终态：15 个请求、服务/驱动退出 0，
+全部原始响应长度、结束原因、哈希及指标公式已核对。1K/4K/8K/
+44K/200K TTFT 均值分别 0.846/2.914/5.738/33.555/173.496 秒，
+decode 为 18.757/18.092/18.123/17.846/17.142 tok/s。
+4K/8K/44K/200K TTFT 对 7364767、fcb5925、上一候选均不利
+范围分离，decode 无不利分离；五档完整输出均不同于三份对照。
+**初版不接受**。质量 11/11 不覆盖性能和正式输出失败；所有
+样本及对照保留于 gdn-shared-fp32-performance-20260922。
+
+确认旧测试终态且无推理服务后，应用 checkpoint 需求编译期
+分派候选：只将 ssm_ckpt 是否存在移到 host 分派/模板参数，
+普通 prefill/decode 不再保留逐 token checkpoint 分支和地址
+生命周期，归一化、递推算术、分配及 checkpoint 布局不变。
+这只是待验证开销假设，不宣称根因或性能恢复。
+prepared/gdn-checkpoint-specialization-20260922 保存旧二进制/
+前后源。必要构建零警告，首项 quality HTTP 已完成于
+`gdn-checkpoint-specialization-20260922`：11/11，含 200K，
+完整输出同 7364767，服务/驱动退出 0。随后启动同二进制五档
+`gdn-checkpoint-specialization-performance-20260922`（PID
+1978180，已结束），每档三次、输出 256，正式父版/固定参考/
+初版及前一候选分别比较。结果见下，MTP/checkpoint 行为未复验。
+
+checkpoint 专门化完整五档已完成，15 HTTP，服务/驱动退出 0，
+原始响应/长度/finish/哈希及公式均已核对。1K/4K/8K/44K/200K
+TTFT 均值 0.802/2.643/5.188/30.554/159.832 秒，decode
+18.748/18.064/18.045/17.822/17.179 tok/s。五档输出均同共享
+FP32 初版，仍不同于正式参考。8K/44K TTFT 对正式父版不利
+范围分离，44K 对前一候选也不利；200K 无不利分离，decode
+各档无不利分离。相对初版的恢复不能覆盖正式验收未通过。
+
+按完整矩阵实际不利档位，已启动 8K/44K 的旧→新→旧相邻
+HTTP：gdn-checkpoint-parent-pair-20260922（PID 1981749），
+三侧每档三次，共 18 请求；分别检查每个二进制自身的原输出，
+对全部原始 SQLite 请求/响应及公式复核。原矩阵失败不替换，
+正式参考不变。目前相邻复核尚未完成，候选仍未接受。
+MTP 四组 HTTP 已准备于 prepared/gdn-shared-mtp-http-20260922，
+尚未执行，同候选 trace-off 只用于插桩控制，不替代正式参考。
+此前所有失败记录与正式参考保持不变；无前置底层数值/profile。
+
+
 
 ## 阶段记录快照（2026-09-22，截止四档性能采集）
 
