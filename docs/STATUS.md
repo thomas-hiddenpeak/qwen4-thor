@@ -71,10 +71,33 @@ B2/3/4每轮126次成功读回。异长1K/4K/8K/44K三排列各121次
 不要重复启动。证据`decode-pooled-indexer-batches-observed-20260922`
 及`decode-pooled-indexer-mixed-http-20260922`。
 
-当前开始同二进制plain-before→MTP→plain-after HTTP诊断，
-三档1K/8K/44K各三次、输出最多32，共27请求；PID2249625。
-证据`decode-pooled-indexer-mtp-switch-http-20260923`。不把它当
-正式五档性能验收；当前MTP多token算术与BF16路径仍待闭合。
+5cdf9ed3的MTP三侧诊断27请求已完成、原始核对通过，三服务
+和驱动退出0。普通decode重启前后相同；MTP 1K同普通，8K/
+44K各三次确定但不同两侧普通输出。证据
+`decode-pooled-indexer-mtp-switch-http-20260923`，PID2249625已退出。
+
+现应用因果GDN寄存器递推统一：默认128×128的pooled因果和
+单序列checkpoint复用BF16寄存器公式，支持uniform/ragged
+边界、真实seq槽及逐token检查点；无checkpoint实例编译期
+去除存储分支。构建0、零警告，未运行低层测试。新SHA
+`bb74466f4c25779731f5051b30d4d31ad245d02ed77a7ca8ee067180e80caac8`。
+首项固定质量HTTP已完成11/11，原始响应同未变正式参考，
+驱动/服务0，PID2254283退出。证据
+`decode-causal-register-consistency-20260923`。旧版本168请求
+和五档结果不能替代当前版本验收；当前候选未接受。
+完整五档15次原始响应已核对，驱动/服务0，原PID2257865及
+控制器2256166已退出。输出五档均同5cdf9ed3父候选/正式回退，
+不同正式调度参考；五档后续decode范围均低于正式/固定参考，
+TTFT均对正式参考不利，当前不接受。五档TTFT均值为
+0.804587/2.651664/5.210757/30.725207/160.491427秒，decode
+17.898625/17.212833/17.510955/17.214510/16.603204 tok/s。
+证据`decode-causal-register-full-diagnostic-20260923`。
+
+MTP衔接PID2258976已核对完成条件，启动27请求三侧HTTP
+PID2261423并确认存活，证据`decode-causal-register-mtp-switch-http-20260923`。
+尚无本候选MTP输出修复结论；当前仅作HTTP失败路径诊断。
+另有状态矩阵连续搬运草稿`prepared/decode-register-state-staging-20260923`，
+未应用/构建；当前源码/二进制保持bb74466f，待MTP终态再决定。
 未接受、不更新参考、旧测试不计为本轮通过、未做低层测试。
 
 ### 本轮实验索引与未闭合条件
@@ -91,7 +114,8 @@ B2/3/4每轮126次成功读回。异长1K/4K/8K/44K三排列各121次
 
 当前工作区运行时包含：pooled decode MRoPE补写、packed BF16
 寄存器GDN四列与内联归一化、短单token indexer每head BF16
-舍入、BF16小行投影及新恢复的混合indexer逐行语义修正。
+舍入、BF16小行投影、混合indexer逐行语义修正，以及待验收的
+因果/检查点寄存器递推统一。
 独立scratch合并与旧共享FP32递推均不在当前工作区，旧实验通过不能自动
 转移为当前版本通过。
 
@@ -101,8 +125,8 @@ B2/3/4每轮126次成功读回。异长1K/4K/8K/44K三排列各121次
   回退输出一致或质量题通过替代精度验收。
 - 实际B=2/3/4及异长混合请求已完成当前168次HTTP诊断，
   请求集输出对齐；仍不能据此推广为全部投影/索引/状态正确。
-- MTP多token因果GDN仍与当前BF16寄存器路径有归一化舍入及
-  更新次序差异。旧FP32组合实验已撤下，当前未解决。
+- MTP多token因果GDN已应用复用BF16寄存器递推的候选修复，
+  当前首项HTTP质量11/11，MTP及回滚正确性未验证。
 - 当前二进制的视觉、混合序列及MTP边界复验。历史HTTP或
   数值结果只证明对应旧版本，固定Transformers参考仍为5.16.1。
 
