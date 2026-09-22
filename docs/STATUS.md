@@ -42,65 +42,55 @@ vision-score-barrier-20260921。不是全面视觉质量保证。
 完整实验、失败样本、SHA 和相邻复核见
 [decode 路径报告](DECODE_PATH_CONSISTENCY_2026-09-21.md)。
 
-### 独立 scratch 单次分配实验结束：未接受，已撤下
+### 当前诊断进展（2026-09-22）
 
-正式运行时仍为7364767，固定参考fcb5925不变。独立分配候选
-4d4d82df的严格质量11/11、原五档15次及三轮九服务135次HTTP
-均完成原始记录核对，完整输出同正式参考，九服务与驱动退出0；
-PID2087760已退出。40项三轮比较中两项对固定参考不利分离：
+当前候选47aada1d的首项质量11/11、完整五档15次原始HTTP
+核对均结束，驱动/服务0。五档输出保持直接父候选d056，且同
+正式回退，仍不同原正式调度参考；五档后续两次decode范围
+均低于正式父版和固定参考，因此未接受。证据
+`decode-bf16-small-m-restored-20260922`及
+`decode-bf16-small-m-full-diagnostic-20260922`。
 
-| 档位与阶段 | 候选decode范围 | 固定参考decode范围（tok/s） |
-|---|---:|---:|
-| 8K档首请求 | 17.980077–18.028356 | 18.047754–18.110051 |
-| 200K档首请求 | 17.011772–17.052264 | 17.061105–17.082034 |
+当前运行实际批次HTTP故障定位PID2169107，驱动位于
+`prepared/decode-small-m-batch-observer-20260922`，输出
+`e2e/decode-small-m-batches-observed-20260922`（均在.q4t-work）。
+同一二进制，先带观察库、再不带，各1K/8K、串行前后及
+B2/3/4三轮，共132请求；max_seq4/max_len16384、128输出，
+关闭MTP和批量prefill以隔离decode。不作为正式性能矩阵。
+观察库零警告构建，已确认唯一缓冲分配调用者为ChatServer::Start。
+1K串行前三次及B2/3/4各三轮共30次响应已原始核对，输出
+均同串行，每轮实际对应B读回125–126次。串行后对照、8K
+和不带观察库输出仍待完成，不能宣称完整覆盖。
+未接受、不更新参考、未做低层测试。
 
-上述首请求是各档第一次请求，不是服务加载首请求。后续范围
-重叠不能抵消未通过项。对正式父版20项比较未出现不利分离，
-故不能把差异直接归因于分配改动；证据不足以接受候选。
-所有原始样本保留，不追加重测替换。证据
-`linear-scratch-isolated-restarts-20260922`，完整审查
-`raw-response-review.json`，归档
-`prepared/linear-scratch-isolated-20260922/rejection.json`。
+### 本轮实验索引与未闭合条件
 
-分配候选源码与二进制已归档并撤下，没有运行消费者测试、
-低层数值测试或profile。原decode/MTP一致性问题仍未解决。
+以下均未接受；详细过程见decode路径报告及当天追加日志。
 
-### 当前候选：独立补齐批处理decode的MRoPE坐标
+| 实验 | 结论 | 证据目录（`.q4t-work/e2e/`） |
+|---|---|---|
+| 独立scratch单次分配 | 完整输出不变，但九服务135次对照仍有两项对固定参考不利分离；已撤下 | `linear-scratch-isolated-restarts-20260922` |
+| 独立decode MRoPE补写 | 质量11/11；正式1K输出不同，单独修复不足以对齐调度/回退 | `decode-rope-isolated-paths-20260922` |
+| packed BF16寄存器GDN、内联归一化、四列 | 四列全五档输出不同正式参考且decode下降；只对齐部分回退样本 | `decode-gdn-register-rows4-full-diagnostic-20260922` |
+| 正式回退五档与同二进制4K/8K | 确认d85的4K/8K调度与回退仍不同，其他三档同回退 | `accepted-fallback-full-diagnostic-20260922`、`decode-gdn-register-rows4-fallback-20260922` |
+| 短indexer每head BF16舍入 | 质量11/11；五档输出对齐回退，性能未通过，未接受 | `decode-indexer-bf16-round-full-diagnostic-20260922` |
 
-当前仅修改model.cu的ModelDecodeBatchMulti：按真实seq_id、
-绝对position与对应rope_delta写入三轴当前位置，与单序列
-ModelDecodeStep对齐。没有携带scratch分配、FP32递推、GEMV
-或indexer改动。必要构建退出0、零警告，未执行构建出的测试程序。
-新build/q4t SHA为
-`03ecfa153a343e6b223fd39ad3cacf8955ec7a45f693d51c1669175d3d9db372`。
-首项测试为固定7364767质量参考的tools/evalscope HTTP E2E，
-质量11/11原始响应核对通过，输出同正式参考，服务/驱动退出0，
-PID2123379已退出；证据 `decode-rope-isolated-20260922`。
-同SHA性能E2E在1K后因完整输出不同停止，PID2124707已退出，
-服务退出0、驱动退出1；三次原始响应已核对，输入1024/输出256，
-候选重复一致，但与正式参考第72个字符开始不同。证据
-`decode-rope-isolated-performance-20260922/output-difference.json`。
-其余四档未运行，当前未接受，不更新参考、不进入低层测试。
-失败定位HTTP对照PID2126567已启动：同1K输入、输出256，
-正式父版回退/候选调度/候选回退/候选调度重启各三次，检查
-新坐标写入是否对齐既有单序列行为，不能替代正式验收。证据
-`decode-rope-isolated-paths-20260922`。
+当前工作区运行时包含：pooled decode MRoPE补写、packed BF16
+寄存器GDN四列与内联归一化、短单token indexer每head BF16
+舍入，以及新恢复的BF16小行投影。独立scratch合并、旧共享
+FP32递推与混合indexer组合修复均不在当前工作区，旧实验通过不能自动
+转移为当前版本通过。
 
-### 已定位问题与未闭合条件
+仍需闭合：
 
-- 正式父版自身有串行/并发输出分叉。此前组合候选中的 pooled
-  decode RoPE 写入、BF16 小行投影、短/混合 indexer 修复已归档
-  撤下，当前工作区不含这些修复；后续须逐项验证。
-- 普通 decode/MTP 的 8K/44K 分歧定位到首层 GDN：此前 register
-  路径把归一化 q/k 舍入 BF16，causal 路径保留 FP32，更新次序
-  也不同。此前共享 FP32 归一化和递推的组合候选未通过验收，
-  已撤下；当前独立分配候选沿用正式父版算术，未解决此差异。
-- a95 的 24 HTTP plain/MTP/诊断开关控制中，8K/44K 各三次
-  32-token 输出相同，接受数覆盖 0/2/3，选定位置层/阶段摘要
-  相同。这不是全面精度证明，不能自动算作当前版本通过。
-- 当前需闭合：完整五档性能、正式输出精度，以及新二进制的
-  批处理/视觉路径复验及 MTP 未覆盖边界。固定 Transformers
-  参考仍为 5.16.1。
+- 当前完整五档性能及与正式输出差异的精度处置；不能只以
+  回退输出一致或质量题通过替代精度验收。
+- 实际B=2/3/4的投影、索引及状态隔离。已知单流对齐不足以
+  覆盖这些路径；不使用B=1绕路冒充完整批处理修复。
+- MTP多token因果GDN仍与当前BF16寄存器路径有归一化舍入及
+  更新次序差异。旧FP32组合实验已撤下，当前未解决。
+- 当前二进制的视觉、混合序列及MTP边界复验。历史HTTP或
+  数值结果只证明对应旧版本，固定Transformers参考仍为5.16.1。
 
 ### 已拒绝方案及保留证据
 
