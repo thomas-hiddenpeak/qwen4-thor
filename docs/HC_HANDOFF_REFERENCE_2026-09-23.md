@@ -69,3 +69,31 @@ previous-binding.json、artifact-binding.json和observed-captures/。
 下一步建立HC norm、mix_down/up、inject投影与门控的独立参考，
 优先绑定实际权重和输入；随后继续完整prefill GDN状态、QSA、PLE
 与输出头。当前局部一致不能作为原4K错误与实现无关的证据。
+
+## 后续：混合sigmoid与四分支加权参考
+
+复用已完成三侧HTTP及身份验证的v3冻结快照，未改观测或生产实现，
+未另跑模型。读取并校验上一轮artifact-binding全部条目；本轮192组
+up/normed/output共576份输入文件分别记录SHA，分析后再次校验不变。
+
+48层×prefill末token/首decode×attention/MLP，共192次、491520
+个BF16混合输出。数学参考为四分支sigmoid(up)*normed之和除以4，
+使用FP64后经FP32→BF16最近偶数舍入，有8项不同；索引及参考值保留。
+
+独立CPU参考按分支0/1/2/3顺序执行显式FP32 fma，除4再BF16舍入，
+关闭隐式浮点收缩。CPU sigmoid使用double exp舍入FP32、FP32加法与
+除法，有6项不同：L30 decode attention/1940，L35 decode MLP/1360，
+L36 prefill MLP/1170，L37 decode attention/1152，L42 decode MLP/1216，
+L45 decode MLP/2409。没有改变容忍阈值或删除这些差异。
+
+设备只从实际up值重建1/(1+__expf(-up))，不调用生产MixGatePair。
+将其结果交给同一个CPU四分支fma累加器后，491520个BF16全部位同。
+所以本次6项纯CPU差异可由sigmoid算术来源解释；FP648项包含不同
+精度、累加和非线性共同影响，不逐项仅归因为exp。不是完全独立于
+CUDA数学近似的证明，也不是up/normed来源正确的证明。
+
+两份工具零警告构建、运行退出0；控制器逐文件复核差异计数并保存
+全部输出。证据目录`.q4t-work/e2e/hc-mix-reference-20260923/`中的
+input-binding.json、fp64-reference.json、mix-reference.json及
+artifact-binding.json；原HTTP质量失败仍明确保留。下一步绑定实际
+HC norm权重，核对归一化与mix_down/up、inject投影及注入门生成。

@@ -1,0 +1,32 @@
+from pathlib import Path
+import json,hashlib,subprocess,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];prior=root/'.q4t-work/e2e/hc-handoff-v3-20260923';c=prior/'observed-captures';out=root/'.q4t-work/e2e/hc-mix-reference-20260923'
+assert json.loads((prior/'exit.json').read_text())['observer_preserved_tested_output']
+audit=json.loads((prior/'raw-http-audit.json').read_text());assert len(audit)==3 and all(x['text']=='600440' and x['server_exit']==0 for x in audit)
+assert json.loads((prior/'handoff-reference.json').read_text())['link_count']==812
+for name,sha in json.loads((prior/'artifact-binding.json').read_text()).items():assert hashlib.sha256((prior/name).read_bytes()).hexdigest()==sha,name
+assert all((p/f).stat().st_size==0 for f in ['mix-build.log','sigmoid-build.log'])
+def sha(f):return hashlib.sha256(f.read_bytes()).hexdigest()
+def dec(path):return (np.fromfile(path,dtype='<u2').astype(np.uint32)<<16).view(np.float32).astype(np.float64)
+def rounded(v):
+ b=np.asarray(v,dtype=np.float32).view(np.uint32);return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype(np.uint16)
+names=[f'hc-{l}.{phase}.mix.{stage}' for l in range(48) for phase in ['prefill','decode'] for stage in ['attn','mlp']]
+inputs={str(c/(n+s)):sha(c/(n+s)) for n in names for s in ['.up.bf16','.normed.bf16','.output.bf16']}
+(out/'input-binding.json').write_text(json.dumps({'prior_artifacts_verified':True,'files':inputs,'records':192,'scope':'Frozen prior HTTP snapshots only; no production or observer changes'},indent=2)+'\n')
+records=[]
+for n in names:
+ up=dec(c/(n+'.up.bf16')).reshape(4,2560);norm=dec(c/(n+'.normed.bf16')).reshape(4,2560);actual=np.fromfile(c/(n+'.output.bf16'),dtype='<u2')
+ ref=np.sum(norm/(1+np.exp(-up)),axis=0)/4;bits=rounded(ref);bad=np.flatnonzero(bits!=actual)
+ np.savez(out/(n+'.reference.npz'),fp64=ref,bf16_bits=bits)
+ records.append({'name':n,'elements':2560,'mismatches':len(bad),'indices':bad.tolist()})
+(out/'fp64-reference.json').write_text(json.dumps({'records':records,'elements':491520,'total_mismatches':sum(x['mismatches'] for x in records)},indent=2)+'\n')
+exits={}
+for exe in ['sigmoid','mix']:
+ with (out/(exe+'.stdout')).open('w') as stdout,(out/(exe+'.stderr')).open('w') as stderr:exits[exe]=subprocess.run([str(p/exe),str(c),str(out)],stdout=stdout,stderr=stderr).returncode
+ (out/'exit.json').write_text(json.dumps(exits)+'\n');assert exits[exe]==0
+r=json.loads((out/'mix.stdout').read_text());assert len(r['records'])==384
+for record in r['records']:
+ n=record['name'];suffix='.cuda-sig-cpu-mix.bf16' if record['variant'] else '.cpu.bf16';bits=np.fromfile(out/(n+suffix),dtype='<u2');actual=np.fromfile(c/(n+'.output.bf16'),dtype='<u2');bad=np.flatnonzero(bits!=actual);assert len(bad)==record['mismatches'];record['indices']=bad.tolist()
+for f,h in inputs.items():assert sha(Path(f))==h
+r['fp64_mismatches']=sum(x['mismatches'] for x in records);r['elements_per_variant']=491520;r['all_snapshot_bytes_unchanged']=True
+(out/'mix-reference.json').write_text(json.dumps(r,indent=2)+'\n');print({k:v for k,v in r.items() if k!='records'})
