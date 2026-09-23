@@ -1,0 +1,44 @@
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import json,hashlib,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];old=root/'.q4t-work/e2e/qsa-selection-reference-20260923';c=old/'observed-captures';out=root/'.q4t-work/e2e/qsa-rounding-reference-20260923'
+assert json.loads((old/'exit.json').read_text())['observer_preserved_tested_output']
+for name,h in json.loads((old/'artifact-binding.json').read_text()).items():assert hashlib.sha256((old/name).read_bytes()).hexdigest()==h
+for name,h in json.loads((old/'capture-binding.json').read_text()).items():assert hashlib.sha256((c/name).read_bytes()).hexdigest()==h
+
+def dec(b):return (np.asarray(b,dtype=np.uint16).astype(np.uint32)<<16).view(np.float32).astype(np.float64)
+def rnd(v):
+ b=np.asarray(v,dtype=np.float32).view(np.uint32);return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype(np.uint16)
+def bf(v):return dec(rnd(v))
+variants=['fp64_original','fp64_gate_round','online_fp64','online_pbf16','online_pbf16_gate_round','fp32_online_pbf16_gate_round']
+(out/'plan.json').write_text(json.dumps({'variants':variants,'scope':'Frozen accepted HTTP captures only, no production/observer changes','cpu_fp32_method':'QK FP64 rounded FP32, CPU double exp rounded FP32, sequential FP32 denominator, FP64 PV rounded FP32, float64 product+sum rounded FP32 for online accumulator, materialized BF16 ungated output and FP32 sigmoid/multiply. Not Tensor Core internal arithmetic.'},indent=2)+'\n')
+records=[];bindings={}
+for layer in range(3,48,4):
+ for phase in ['prefill','decode']:
+  name=f'layer-{layer}.{phase}';base=str(c/name)
+  for suffix in ['.reference.npz','.attention-reference.npz']:
+   bindings[name+suffix]=hashlib.sha256(Path(base+suffix).read_bytes()).hexdigest()
+  original=np.load(base+'.attention-reference.npz');selected=np.load(base+'.reference.npz');scores=original['scores'];kv=dec(selected['selected_cache']);actual=np.fromfile(base+'.attention-output.bf16',dtype='<u2').reshape(24,256);gate=dec(np.fromfile(base+'.gate.bf16',dtype='<u2')).reshape(24,256);sigmoid=1/(1+np.exp(-gate))
+  results={'fp64_original':original['bf16_bits'],'fp64_gate_round':rnd(bf(original['ungated'])*sigmoid)}
+  maximum=np.full(24,-1e30);den=np.zeros(24);acc=np.zeros((24,256));quant_acc=acc.copy()
+  fm=np.full(24,np.float32(-1e30),dtype=np.float32);fd=np.zeros(24,dtype=np.float32);fa=np.zeros((24,256),dtype=np.float32)
+  for start in range(0,scores.shape[1],16):
+   end=min(start+16,scores.shape[1]);s=scores[:,start:end];v=kv[start:end,np.arange(24)//12,1,:].transpose(1,0,2)
+   mx=np.maximum(maximum,np.max(s,axis=1));alpha=np.exp(maximum-mx);pr=np.exp(s-mx[:,None]);den=den*alpha+np.sum(pr,axis=1)
+   acc=acc*alpha[:,None]+np.einsum('hp,hpd->hd',pr,v);quant_acc=quant_acc*alpha[:,None]+np.einsum('hp,hpd->hd',bf(pr),v);maximum=mx
+   fs=s.astype(np.float32);new=np.maximum(fm,np.max(fs,axis=1));al=np.exp((fm-new).astype(np.float64)).astype(np.float32);fp=np.exp((fs-new[:,None]).astype(np.float64)).astype(np.float32)
+   fd=fd*al
+   for j in range(end-start):fd=fd+fp[:,j]
+   pv=np.einsum('hp,hpd->hd',bf(fp),v).astype(np.float32);fa=(fa.astype(np.float64)*al[:,None].astype(np.float64)+pv.astype(np.float64)).astype(np.float32);fm=new
+  plain=acc/den[:,None];quant=quant_acc/den[:,None];results['online_fp64']=rnd(plain*sigmoid);results['online_pbf16']=rnd(quant*sigmoid);results['online_pbf16_gate_round']=rnd(bf(quant)*sigmoid)
+  fg=np.float32(1)/(np.float32(1)+np.exp(-gate).astype(np.float32));fout=(fa/fd[:,None]);results['fp32_online_pbf16_gate_round']=rnd(bf(fout).astype(np.float32)*fg)
+  row={'layer':layer,'phase':phase,'elements':6144,'variants':{},'online_fp64_max_abs_vs_batch':float(np.max(np.abs(plain-original['ungated'])))}
+  for variant,bits in results.items():
+   different=np.flatnonzero(bits.reshape(-1)!=actual.reshape(-1));delta=dec(bits)-dec(actual);row['variants'][variant]={'mismatches':len(different),'indices':different.tolist(),'max_abs_vs_actual_bf16':float(np.max(abs(delta)))};bits.astype('<u2').tofile(out/(name+'.'+variant+'.bf16'))
+  np.savez(out/(name+'.intermediates.npz'),fp64_online=plain,fp64_online_pbf16=quant,fp32_online=fout,fp32_denominator=fd)
+  records.append(row);(out/'progress.json').write_text(json.dumps({'calls':len(records),'last':{k:v for k,v in row.items() if k!='variants'}})+'\n')
+r={'elements':147456,'records':records,'totals':{v:sum(x['variants'][v]['mismatches'] for x in records) for v in variants},'by_phase':{phase:{v:sum(x['variants'][v]['mismatches'] for x in records if x['phase']==phase) for v in variants} for phase in ['prefill','decode']},'runtime_changed':False}
+assert r['totals']['fp64_original']==json.loads((old/'attention-reference.json').read_text())['mismatches']
+for name,h in bindings.items():assert hashlib.sha256((c/name).read_bytes()).hexdigest()==h
+(out/'reference-binding.json').write_text(json.dumps(bindings,indent=2)+'\n');(out/'rounding-reference.json').write_text(json.dumps(r,indent=2)+'\n');print({k:v for k,v in r.items() if k!='records'})

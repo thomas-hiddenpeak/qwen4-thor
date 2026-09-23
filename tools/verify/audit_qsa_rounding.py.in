@@ -1,0 +1,12 @@
+from pathlib import Path
+import json,numpy as np,hashlib,shutil
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/qsa-rounding-reference-20260923';c=root/'.q4t-work/e2e/qsa-selection-reference-20260923/observed-captures';r=json.loads((o/'rounding-reference.json').read_text());changes={v:{'original_mismatches_resolved':0,'new_mismatches':0,'remaining_original_mismatches':0} for v in r['totals']}
+for x in r['records']:
+ name=f"layer-{x['layer']}.{x['phase']}";actual=np.fromfile(c/(name+'.attention-output.bf16'),dtype='<u2');baseline=set(x['variants']['fp64_original']['indices'])
+ for v in r['totals']:
+  bits=np.fromfile(o/(name+'.'+v+'.bf16'),dtype='<u2');assert bits.size==actual.size==6144;indices=np.flatnonzero(bits!=actual).tolist();assert indices==x['variants'][v]['indices'];current=set(indices)
+  changes[v]['original_mismatches_resolved']+=len(baseline-current);changes[v]['new_mismatches']+=len(current-baseline);changes[v]['remaining_original_mismatches']+=len(current&baseline)
+  x['variants'][v]['bitwise_file_verified']=True
+r['changes_vs_original']=changes;r['max_fp64_online_vs_batch']=max(x['online_fp64_max_abs_vs_batch'] for x in r['records']);(o/'rounding-audited.json').write_text(json.dumps(r,indent=2)+'\n')
+for name in ['analyze.py','analyze.log','audit.py']:shutil.copy2(p/name,o/name)
+files=['analyze.py','audit.py','analyze.log','plan.json','reference-binding.json','rounding-reference.json','rounding-audited.json'];(o/'artifact-binding.json').write_text(json.dumps({x:hashlib.sha256((o/x).read_bytes()).hexdigest() for x in files},indent=2)+'\n');print(changes);print('FP64 online difference:',r['max_fp64_online_vs_batch'])
