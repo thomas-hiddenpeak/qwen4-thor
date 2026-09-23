@@ -227,3 +227,52 @@ FlashInfer jit/cpp_ext.py:347确认MAX_JOBS控制Ninja并行数。
 v5只新增MAX_JOBS=2，保留已编译缓存，服务会话3212启动。
 证据independent-sglang-http-v5-20260923，仍等待首项HTTP；
 v1至v4均无答题样本，不计入正确率或性能统计。
+
+
+## 采用同版本官方SM110a预编译MoE模块
+
+v5实测Ninja -j2生效、两个CUDA编译阶段持续CPU活动，可用内存
+约28GiB，编译并未卡死。为避免首次266对象的长编译等待，
+读取官方FlashInfer0.6.17+cu130 ARM64 wheel目录，并按HTTP
+Range提取fused_moe_100.so（164916256字节）。ZIP CRC及wheel
+RECORD中SHA256/长度均匹配；cuobjdump仅列出二进制架构元数据，
+包含sm100a、sm103a、sm110a，未执行kernel或做数值/性能测试。
+
+完整wheel约1.69GB未下载，不能声称验证完整wheel SHA；单个
+模块SHA256为828af9cb2d59ed4923ca3272a252f6515da3ebc877db2e579841c235fd7395a6。
+首后缀Range返回501，改显式范围成功；模块下载90秒超时后按
+已下载长度补足尾段，全部记录保留。摘要以aot-install.json
+及prebuilt-moe-record-verification.json为准。
+
+v5主动终止的理由是已找到匹配官方产物，不是超时或判定挂死；
+服务及所属编译进程树终止，0HTTP请求。将已核对模块放入独立
+环境FlashInfer默认data/aot/fused_moe_100路径，不修改FlashInfer
+源码或本项目引擎；v6保持原参数及MAX_JOBS=2启动，会话37283，
+证据independent-sglang-http-v6-20260923。后续仍先冻结请求HTTP。
+
+
+## 独立完整模型首轮HTTP：1K同错，4K重复不稳定
+
+v6已完成六个evalscope HTTP请求，原始SQLite/SSE逐条复核：
+提示词SHA、greedy、max_tokens32、MTP关闭、实际输入1024/4096、
+输出7token及stop均核对。1K答案360019三次；4K答案依次
+600430、360284、600430，分别只有中间一次正确。总1/6答对。
+证据independent-sglang-http-v6-20260923/final-raw-audit.json。
+
+1K独立实现与当前候选/仅位置补写候选相同错误，新增证据不支持
+把本题错误简单归为本项目独有的补写实现错误；但量化合同及
+其他计算路径不同，不能由相同输出证明候选实现整体正确。
+4K首个无缓存请求亦同候选600430，后续结果不稳定，不得只挑
+正确那次。日志显示1K第三次复用960tokens，4K后两次复用64，
+因此下一步关闭radix cache，原题各三次复核，不修改原答案。
+
+官方预编译MoE实际加载并完成框架启动autotune。QSA TileLang
+编译出现潜在数据竞争警告（示例含负位置），保留不关闭检查，
+尚未证明实际请求存在竞态或与4K变化有因果关系。请求完成后
+SGLang收到SIGTERM、报告剩余请求0，随后自行kill_process_tree
+包含父进程，server=-9；驱动0仅表示采集完成，不算正常退出0。
+首次服务期JIT和前缀缓存使延迟不能用于引擎性能对比。
+
+v7仅增加--disable-radix-cache，参数/题目/AOT不变，已启动
+会话22287，证据independent-sglang-http-v7-20260923。未改项目
+运行时，未放宽验收或改正式参考；尚未获得v7结果。
