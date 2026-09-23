@@ -1,0 +1,36 @@
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import json,hashlib,struct,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/gdn-state-handoff-20260923';c=o/'observed-captures'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');idx=json.loads((model/'model.safetensors.index.json').read_text())['weight_map']
+def tensor(name):
+ with (model/idx[name]).open('rb') as f:
+  n=struct.unpack('<Q',f.read(8))[0];h=json.loads(f.read(n));m=h[name];assert m['dtype']=='BF16' and m['shape']==[48];a,b=m['data_offsets'];f.seek(8+n+a);v=f.read(b-a);assert len(v)==96
+ return v
+
+def decode(v):return (v.astype(np.uint32)<<16).view(np.float32).astype(np.float64)
+def round_bf16(v):
+ bits=np.asarray(v,dtype=np.float32).view(np.uint32);return ((bits+np.uint32(0x7fff)+((bits>>16)&1))>>16).astype(np.uint16)
+def error(a,b):
+ d=a-b;return {'max_abs':float(np.max(abs(d))),'relative_l2':float(np.linalg.norm(d)/max(np.linalg.norm(b),1e-300))}
+records=[]
+for layer in [l for l in range(48) if l%4!=3]:
+ b=str(c/f'layer-{layer}');meta=json.loads(Path(b+'.meta.json').read_text());assert meta['ok'] and meta['seq']==0
+ def f32(s):
+  v=np.fromfile(b+s,dtype='<f4');assert v.size==48*128*128 and np.all(np.isfinite(v));return v.reshape(48,128,128)
+ def bf(s,n):
+  v=np.fromfile(b+s,dtype='<u2');assert v.size==n and np.all(np.isfinite(decode(v)));return v
+ pre=f32('.prefill-state-final.f32');before=f32('.decode-state-before.f32');after=f32('.decode-state-after.f32');equal=np.array_equal(pre.view(np.uint32),before.view(np.uint32))
+ bias=bf('.dt-bias.bf16',48);alog=bf('.a-log.bf16',48)
+ assert bias.tobytes()==tensor(f'model.language_model.layers.{layer}.linear_attn.dt_bias') and alog.tobytes()==tensor(f'model.language_model.layers.{layer}.linear_attn.A_log')
+ qkv=decode(bf('.decode-qkv.bf16',10240));q=qkv[:2048].reshape(16,128);k=qkv[2048:4096].reshape(16,128);v=qkv[4096:].reshape(48,128)
+ q=q/np.sqrt(np.sum(q*q,axis=1,keepdims=True)+1e-6)/np.sqrt(128);k=k/np.sqrt(np.sum(k*k,axis=1,keepdims=True)+1e-6);q=np.repeat(q,3,axis=0);k=np.repeat(k,3,axis=0)
+ ab=decode(bf('.decode-a.bf16',48))+decode(bias);dt=np.where(ab>20,ab,np.logaddexp(0,ab));alpha=np.exp(-dt*np.exp(decode(alog)));br=decode(bf('.decode-beta.bf16',48));z=np.exp(-abs(br));beta=np.where(br>=0,1/(1+z),z/(1+z))
+ state=before.astype(np.float64);ks=np.einsum('hi,hij->hj',k,state);delta=v-alpha[:,None]*ks;ref=alpha[:,None,None]*state+beta[:,None,None]*k[:,:,None]*delta[:,None,:];y=np.einsum('hij,hi->hj',ref,q);y_actual_state=np.einsum('hij,hi->hj',after.astype(np.float64),q)
+ actual=bf('.decode-y.bf16',6144).reshape(48,128);r={'layer':layer,'handoff_bit_exact':equal,'state_elements':before.size,'parameter_sha256':hashlib.sha256(bias.tobytes()+alog.tobytes()).hexdigest(),'state_fp64_error':error(after.astype(np.float64),ref),'state_bit_mismatches_vs_fp64_rounded_fp32':int(np.count_nonzero(after.view(np.uint32)!=ref.astype(np.float32).view(np.uint32))),'output_bf16_mismatches_vs_fp64_step':int(np.count_nonzero(actual!=round_bf16(y))),'output_bf16_mismatches_vs_actual_state_fp64_readout':int(np.count_nonzero(actual!=round_bf16(y_actual_state))),'output_fp64_error':error(decode(actual),y)}
+ np.savez(b+'.reference.npz',state_fp64=ref,y_fp64=y,y_from_actual_state_fp64=y_actual_state,alpha_fp64=alpha,beta_fp64=beta,q_fp64=q,k_fp64=k)
+ records.append(r)
+report={'layers':36,'handoff_elements':sum(r['state_elements'] for r in records),'all_handoffs_bit_exact':all(r['handoff_bit_exact'] for r in records),'unique_parameter_identities':len(set(r['parameter_sha256'] for r in records)),'state_bit_mismatches_vs_fp64_rounded_fp32':sum(r['state_bit_mismatches_vs_fp64_rounded_fp32'] for r in records),'output_bf16_mismatches_vs_fp64_step':sum(r['output_bf16_mismatches_vs_fp64_step'] for r in records),'output_bf16_mismatches_vs_actual_state_fp64_readout':sum(r['output_bf16_mismatches_vs_actual_state_fp64_readout'] for r in records),'max_state_relative_l2':max(r['state_fp64_error']['relative_l2'] for r in records),'max_output_relative_l2':max(r['output_fp64_error']['relative_l2'] for r in records),'records':records,'runtime_changed':False,'quality_fixed':False,'limitation':'The initial state and recurrence inputs come from actual execution. FP64 formula does not reproduce CUDA FP32 reductions/transcendentals; all differences retained without a tolerance. Prefill recurrence, convolution, and projection accuracy are not established.'}
+(o/'state-reference.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({k:v for k,v in report.items() if k!='records'},indent=2))

@@ -20,6 +20,13 @@ TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间�
 
 ## 当前决策摘要
 
+- **36层GDN状态交接确认，单步数值差异待解释。**
+  原4K三侧HTTP仍600440、服务0，生产运行时未改。prefill最终S
+  与首pooled decode初始S共28311552个FP32值位同，层参数匹配。
+  FP64单步读出20项BF16不同，用实际新S独立读出17项不同；全部
+  差异保留，不宣称GDN或模型全正确。下一步核对FP32递推顺序，见
+  [交接报告](GDN_STATE_HANDOFF_2026-09-23.md)及
+  [上游参考合同](UPSTREAM_REFERENCE_CONTRACT_2026-09-23.md)。
 - **首decode共享差异已由指定算术复现，生产运行时未改。**
   复用已绑定HTTP快照，CPU按双累加链/warp树重算96次GEMV，
   184320个BF16全部位同，解释相对FP64的8/14项差异。48层门控
