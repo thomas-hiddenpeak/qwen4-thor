@@ -1,0 +1,72 @@
+"""Independent CPU reference for the last prompt token's MoE boundaries."""
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import ctypes,hashlib,json,math,struct
+import numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2]
+out=root/'.q4t-work/e2e/moe-first-decode-reference-20260923';capture=out/'observed-captures'
+assert json.loads((out/'exit.json').read_text())['observer_preserved_tested_output']
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream')
+index=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];headers={}
+fma=ctypes.CDLL('libm.so.6').fmaf;fma.argtypes=[ctypes.c_float,ctypes.c_float,ctypes.c_float];fma.restype=ctypes.c_float
+
+def tensor(name):
+ file=model/index[name]
+ with file.open('rb') as f:
+  if file not in headers:
+   size=struct.unpack('<Q',f.read(8))[0];headers[file]=(size,json.loads(f.read(size)))
+  size,h=headers[file];m=h[name];a,b=m['data_offsets'];f.seek(8+size+a);data=f.read(b-a)
+ assert len(data)==b-a
+ return m,data
+
+def read(base,suffix,dtype,count):
+ a=np.fromfile(str(base)+suffix,dtype=dtype);assert len(a)==count;return a
+
+def bf16(v):return (v.astype(np.uint32)<<16).view(np.float32)
+def rounded_bf16(v):
+ x=np.asarray(v,dtype=np.float32).view(np.uint32)
+ return ((x+np.uint32(0x7fff)+((x>>16)&1))>>16).astype(np.uint16)
+def sigmoid(x):
+ if x>=0:return 1/(1+math.exp(-x))
+ z=math.exp(x);return z/(1+z)
+records=[]
+for layer in range(48):
+ base=capture/f'layer-{layer}';meta=json.loads(Path(str(base)+'.meta.json').read_text());assert meta['ok'] and meta['layer']==layer and meta['block']==256
+ logits=bf16(read(base,'.logits.bf16','<u2',512));ids=read(base,'.ids.i32','<i4',10)
+ assert np.all(np.isfinite(logits)) and len(set(ids.tolist()))==10
+ expected_ids=np.lexsort((np.arange(512),-logits))[:10];assert np.array_equal(ids,expected_ids)
+ weights=read(base,'.weights.f32','<f4',10);rw=read(base,'.router-weights.f32','<f4',10);assert np.array_equal(weights.view(np.uint32),rw.view(np.uint32)) and np.all(np.isfinite(weights)) and np.all(weights>=0)
+ selected=logits[ids].astype(np.float64);softmax=np.exp(selected-selected.max());softmax/=softmax.sum()
+ mapping=[]
+ for slot,e in enumerate(ids):
+  gu=json.loads(Path(str(base)+f'.expert-{e}.gu.json').read_text());dn=json.loads(Path(str(base)+f'.expert-{e}.dn.json').read_text())
+  assert gu['slot']==dn['slot']==slot and gu['expert']==dn['expert']==int(e) and gu['ok'] and dn['ok']
+  mapping.append({'slot':slot,'expert':int(e),'device_batch_slot':slot})
+ experts=bf16(read(base,'.experts.bf16','<u2',10*2560)).reshape(10,2560);before=read(base,'.before.f32','<f4',2560);actual=read(base,'.routed.f32','<f4',2560)
+ assert np.all(np.isfinite(experts)) and np.all(np.isfinite(actual)) and np.all(before==0)
+ acc=np.zeros(2560,dtype=np.float32)
+ for slot in range(10):acc=np.fromiter((fma(float(weights[slot]),float(v),float(a)) for v,a in zip(experts[slot],acc)),dtype=np.float32,count=2560)
+ reference=np.float32(before+acc);route_mismatch=int(np.count_nonzero(reference.view(np.uint32)!=actual.view(np.uint32)))
+ route64=(experts.astype(np.float64)*weights.astype(np.float64)[:,None]).sum(axis=0)
+ merge=read(base,'.merge-routed.f32','<f4',2560);assert np.array_equal(actual.view(np.uint32),merge.view(np.uint32))
+ shared=bf16(read(base,'.shared.bf16','<u2',2560));x=bf16(read(base,'.x.bf16','<u2',2560));gate_bits=read(base,'.gate.bf16','<u2',2560);gate=bf16(gate_bits);output=read(base,'.output.bf16','<u2',2560)
+ assert all(np.all(np.isfinite(v)) for v in [shared,x,gate,bf16(output)])
+ info,checkpoint=tensor(f'model.language_model.layers.{layer}.mlp.shared_expert_gate.weight');assert info['dtype']=='BF16' and gate_bits.tobytes()==checkpoint
+ # Independent double dot and sigmoid; do not copy the project's reduction.
+ dot64=float(np.dot(x.astype(np.float64),gate.astype(np.float64)));sig64=sigmoid(dot64)
+ independent64=actual.astype(np.float64)+sig64*shared.astype(np.float64);independent_bits=rounded_bf16(independent64)
+ # Separately model the documented 256-lane FP32 reduction using CPU fmaf.
+ lanes=np.zeros(256,dtype=np.float32)
+ for tid in range(256):
+  value=0.0
+  for i in range(tid,2560,256):value=fma(float(x[i]),float(gate[i]),value)
+  lanes[tid]=value
+ for off in [128,64,32,16,8,4,2,1]:lanes[:off]=np.float32(lanes[:off]+lanes[off:off*2])
+ dot32=float(lanes[0]);exp32=np.float32(math.exp(-dot32)) if -dot32<88.72 else np.float32(np.inf);sig32=np.float32(np.float32(1)/np.float32(np.float32(1)+exp32))
+ merge32=np.fromiter((fma(float(sig32),float(v),float(a)) for v,a in zip(shared,actual)),dtype=np.float32,count=2560);merge_bits=rounded_bf16(merge32)
+ record={'layer':layer,'token':0,'mapping':mapping,'topk_exact':True,'mapping_exact':True,'gate_checkpoint_sha256':hashlib.sha256(checkpoint).hexdigest(),'router_weight_max_abs_error_vs_fp64':float(np.max(np.abs(weights.astype(np.float64)-softmax))),'router_weight_sum':float(weights.astype(np.float64).sum()),'routed_fp32_bit_mismatches':route_mismatch,'routed_max_abs_error_vs_fp64':float(np.max(np.abs(actual.astype(np.float64)-route64))),'shared_gate_dot_fp64':dot64,'shared_gate_dot_tree_fp32':dot32,'shared_gate_sigmoid_fp64':sig64,'merge_bf16_bit_mismatches_vs_fp64':int(np.count_nonzero(output!=independent_bits)),'merge_bf16_bit_mismatches_vs_cpu_tree_exp':int(np.count_nonzero(output!=merge_bits)),'merge_max_abs_error_vs_fp64':float(np.max(np.abs(bf16(output).astype(np.float64)-independent64)))}
+ np.savez(str(base)+'.reference.npz',routed_fma=reference,routed_fp64=route64,merge_fp64=independent64,merge_fp64_bf16=independent_bits,merge_cpu_tree_bf16=merge_bits)
+ records.append(record)
+report={'layers':48,'token':0,'routed_slots_verified':480,'routed_components_compared':48*2560,'merged_components_compared':48*2560,'routed_fp32_bit_mismatches':sum(r['routed_fp32_bit_mismatches'] for r in records),'merge_bf16_bit_mismatches_vs_fp64':sum(r['merge_bf16_bit_mismatches_vs_fp64'] for r in records),'merge_bf16_bit_mismatches_vs_cpu_tree_exp':sum(r['merge_bf16_bit_mismatches_vs_cpu_tree_exp'] for r in records),'router_weight_max_abs_error_vs_fp64':max(r['router_weight_max_abs_error_vs_fp64'] for r in records),'unique_checkpoint_gate_vectors':len({r['gate_checkpoint_sha256'] for r in records}),'records':records,'runtime_changed':False,'task_error_causality_established':False,'limitations':'Boundary inputs are actual tensors, not independent upstream GEMM/attention/GDN outputs. FP64 sigmoid and CPU expf model do not emulate CUDA __expf; report differences without a new tolerance.'}
+(out/'combine-analysis.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({k:v for k,v in report.items() if k!='records'},indent=2))

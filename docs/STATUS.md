@@ -20,6 +20,13 @@ TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间�
 
 ## 当前决策摘要
 
+- **首decode前向MoE参考完成，生产运行时未改。**
+  三侧HTTP原错600440保留、服务0。router、480专家两次投影、
+  FP4编码及路由加权全同参考；设备尺度复核确认GU20次/down63组
+  高值错误。共享GU/down有8/14项FP64舍入差异；最终合成同FP64，
+  CPU树形近似参考有3项差异，全部保留。未覆盖后续decode或上游
+  状态，下一步核对共享GEMV归约，见
+  [首decode报告](MOE_FIRST_DECODE_REFERENCE_2026-09-23.md)。
 - **末prefill token的480专家完整路由支路已接通参考，运行时未改。**
   三侧HTTP仍600440、服务0。GU→SwiGLU→down→合成身份全部绑定；
   307200中间FP4及1228800 down BF16全同参考，高精度SwiGLU量化
