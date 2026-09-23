@@ -1,0 +1,11 @@
+#include <cuda_runtime.h>
+#include <cstdio>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+#define CU(x) do{if((x)!=cudaSuccess)throw std::runtime_error(#x);}while(0)
+__global__ void Inv(const float* x,float* y,int n,int kd){int i=blockIdx.x*blockDim.x+threadIdx.x;if(i<n){float r=rsqrtf(x[i]);if((i/32)%2==0)r*=rsqrtf(float(kd));y[i]=r;}}
+int main(int argc,char**argv){try{
+ if(argc!=3)throw std::runtime_error("reference layer");std::string b=std::string(argv[1])+"/layer-"+argv[2];constexpr size_t n=4096*16*2*32;std::vector<float>x(n),y(n);std::ifstream f(b+".mean.f32",std::ios::binary|std::ios::ate);if(!f||size_t(f.tellg())!=n*4)throw std::runtime_error("size");f.seekg(0);if(!f.read(reinterpret_cast<char*>(x.data()),n*4))throw std::runtime_error("read");float *dx,*dy;CU(cudaMalloc(&dx,n*4));CU(cudaMalloc(&dy,n*4));CU(cudaMemcpy(dx,x.data(),n*4,cudaMemcpyHostToDevice));Inv<<<(n+127)/128,128>>>(dx,dy,n,128);CU(cudaGetLastError());CU(cudaMemcpy(y.data(),dy,n*4,cudaMemcpyDeviceToHost));std::ofstream out(b+".device-inv.f32",std::ios::binary);if(!out.write(reinterpret_cast<char*>(y.data()),n*4))throw std::runtime_error("write");CU(cudaFree(dx));CU(cudaFree(dy));return 0;
+}catch(const std::exception&e){std::fprintf(stderr,"%s\n",e.what());return 2;}}

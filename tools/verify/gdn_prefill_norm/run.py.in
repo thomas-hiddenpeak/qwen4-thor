@@ -1,0 +1,32 @@
+from pathlib import Path
+import json,hashlib,subprocess,os,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];old=root/'.q4t-work/e2e/gdn-prefill-reference-20260923';c=old/'observed-captures';o=root/'.q4t-work/e2e/gdn-prefill-norm-20260923'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for block in iter(lambda:stream.read(4*1024*1024),b''):h.update(block)
+ return h.hexdigest()
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+m=json.loads((old/'artifact-binding.json').read_text());assert sha(old/'exit.json')==m['exit.json'] and json.loads((old/'exit.json').read_text())['observer_preserved_tested_output']
+for n in ['norm','math']:assert (p/(n+'-build.log')).stat().st_size==0
+for proc in Path('/proc').iterdir():
+ if not proc.name.isdigit():continue
+ try:a=(proc/'cmdline').read_bytes().split(b'\0');exe=(proc/'exe').resolve(strict=True)
+ except OSError:continue
+ assert not(exe.name.startswith('q4t') and b'serve' in a)
+o.mkdir(exist_ok=False);d=o/'reference';d.mkdir();binding={};records=[]
+for l in range(48):
+ if l%4==3:continue
+ for suffix in ['prefill-qkv-before.bf16','prefill-qkv-normalized.bf16']:
+  name=f'layer-{l}.{suffix}';f=c/name;h=sha(f);assert h==m['observed-captures/'+name];binding[str(f.relative_to(root))]=h
+ save(o/'source-binding.json',binding)
+ for tool,arguments,tag in [('norm',[c,d,l,'cpu'],'cpu'),('math',[d,l],'math'),('norm',[c,d,l,'device'],'device')]:
+  with (o/f'layer-{l}.{tag}.json').open('w') as out,(o/f'layer-{l}.{tag}.stderr').open('w') as err:r=subprocess.run([str(p/tool)]+list(map(str,arguments)),stdout=out,stderr=err,env={**os.environ,'OMP_NUM_THREADS':'12'})
+  assert r.returncode==0
+ actual=np.memmap(c/f'layer-{l}.prefill-qkv-normalized.bf16',dtype='<u2',mode='r',shape=(4096,10240))[:,:4096].reshape(-1);diff={}
+ for kind in ['cpu','device','fp64']:
+  value=np.fromfile(d/f'layer-{l}.{kind}.bf16',dtype='<u2');assert len(value)==16777216;idx=np.flatnonzero(value!=actual);idx.astype('<i4').tofile(d/f'layer-{l}.{kind}.differences.i32');diff[kind]=len(idx)
+ cpu=json.loads((o/f'layer-{l}.cpu.json').read_text());device=json.loads((o/f'layer-{l}.device.json').read_text());assert cpu['mismatches']==diff['cpu'] and cpu['fp64_mismatches']==diff['fp64'] and device['mismatches']==diff['device']
+ record={'layer':l,'elements':len(actual),'mismatches':diff};records.append(record);print(record,flush=True)
+ save(o/'norm-reference.json',{'records':records,'complete':len(records)==36,'elements':sum(x['elements'] for x in records),'mismatches':{kind:sum(x['mismatches'][kind] for x in records) for kind in diff},'runtime_changed':False,'whole_model_correctness_proven':False})

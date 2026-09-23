@@ -1,0 +1,28 @@
+from pathlib import Path
+import hashlib,json,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/gdn-prefill-norm-20260923';d=o/'reference';old=root/'.q4t-work/e2e/gdn-prefill-reference-20260923';c=old/'observed-captures'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for block in iter(lambda:stream.read(4*1024*1024),b''):h.update(block)
+ return h.hexdigest()
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+r=json.loads((o/'norm-reference.json').read_text());assert r['complete'] and r['elements']==603979776 and r['mismatches']=={'cpu':6335,'device':0,'fp64':7648}
+for name,h in json.loads((o/'source-binding.json').read_text()).items():assert sha(root/name)==h
+m=json.loads((old/'artifact-binding.json').read_text());assert sha(old/'recurrence-reference.json')==m['recurrence-reference.json'];rec=json.loads((old/'recurrence-reference.json').read_text());assert rec['complete'] and rec['state_mismatches']==rec['output_mismatches']==0
+records=[]
+for record in r['records']:
+ l=record['layer'];b=f'layer-{l}';actual=np.fromfile(c/(b+'.prefill-qkv-normalized.bf16'),dtype='<u2').reshape(4096,10240);raw=np.fromfile(c/(b+'.prefill-qkv-before.bf16'),dtype='<u2').reshape(4096,10240)
+ packed=np.fromfile(d/(b+'.device.bf16'),dtype='<u2').reshape(4096,4096);assert np.array_equal(actual[:,:4096],packed) and np.array_equal(actual[:,4096:],raw[:,4096:])
+ raw[:,:4096]=packed;reconstructed=hashlib.sha256(raw.tobytes()).hexdigest();assert reconstructed==sha(c/(b+'.prefill-qkv-normalized.bf16'))
+ for kind in ['cpu','device','fp64']:
+  value=np.fromfile(d/(b+'.'+kind+'.bf16'),dtype='<u2').reshape(4096,4096);idx=np.flatnonzero((value!=actual[:,:4096]).reshape(-1));assert len(idx)==record['mismatches'][kind] and np.array_equal(idx,np.fromfile(d/(b+'.'+kind+'.differences.i32'),dtype='<i4'))
+ for actual_suffix,reference_suffix in [('prefill-state-final.f32','v1.state.f32'),('prefill-y.bf16','v1.y.bf16')]:
+  a=c/(b+'.'+actual_suffix);ref=old/'reference'/(b+'.'+reference_suffix);assert sha(a)==m['observed-captures/'+a.name] and sha(ref)==m['reference/'+ref.name] and sha(a)==sha(ref)
+ records.append({'layer':l,'complete_reconstructed_qkv_sha256':reconstructed,'recurrence_input_bound':True})
+save(o/'recurrence-binding.json',{'records':records,'recurrence_manifest_sha256':sha(old/'artifact-binding.json'),'recurrence_result_sha256':sha(old/'recurrence-reference.json'),'limitation':'Convolution output and full-token a/b projections remain actual inputs;device elementary nonlinear precision not independently proved.'})
+for f in p.iterdir():
+ if f.is_file():shutil.copy2(f,o/f.name)
+save(o/'artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})
+print('audit passed:603979776 normalized q/k BF16 exact withCPU arithmetic+device rsqrt;full reconstructedqkv bound to36-layer recurrence;CPU6335/FP647648 differences retained')
