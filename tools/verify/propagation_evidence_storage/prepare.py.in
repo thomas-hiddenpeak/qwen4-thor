@@ -1,0 +1,23 @@
+"""Manifest/stat inventory only; share.py must verify bytes before any mutation."""
+from pathlib import Path
+import json,hashlib,collections,stat
+p=Path(__file__).resolve().parent;root=p.parents[2];base=root/'.q4t-work/e2e'
+extra=['hc-full-boundaries-20260923','hc-full-projection-20260924','linear-full-projection-20260923','linear-full-output-v2-20260923','linear-prefill-conv-20260923','gdn-prefill-reference-20260923','gdn-prefill-norm-20260923','ple-full-conv-20260924','ple-full-gate-norm-20260924']
+names=sorted(x.name for x in base.iterdir() if (x.name.startswith('moe-scale-') or x.name in extra) and (x/'artifact-binding.json').exists());groups=collections.defaultdict(dict);mh={}
+for n in names:
+ d=base/n;f=d/'artifact-binding.json';mh[n]=hashlib.sha256(f.read_bytes()).hexdigest()
+ for rel,digest in json.loads(f.read_text()).items():
+  f=d/rel
+  if f.suffix not in ['.bf16','.f32','.f64','.i32','.bin','.sf'] or f.is_symlink():continue
+  st=f.stat()
+  if st.st_size<4*1024**2:continue
+  groups[(st.st_size,digest)].setdefault((st.st_dev,st.st_ino),{'file':str(f.relative_to(root)),'source':n,'inode':st.st_ino,'device':st.st_dev,'nlink':st.st_nlink,'mode':stat.S_IMODE(st.st_mode),'allocated':st.st_blocks*512})
+selected=[]
+for (size,digest),v in groups.items():
+ ordered=sorted(v.values(),key=lambda x:(bool(x['mode']&0o222),x['file']));safe=[x for x in ordered if x['nlink']==1 or not(x['mode']&0o222)]
+ if not safe:continue
+ canonical=safe[0];targets=[x for x in ordered if x!=canonical and x['nlink']==1]
+ if targets:selected.append({'bytes':size,'sha256':digest,'canonical':canonical,'targets':targets})
+sources=sorted({x['source'] for g in selected for x in [g['canonical']]+g['targets']})
+result={'sources':sources,'manifest_hashes':{n:mh[n] for n in sources},'groups':selected,'potential_released_allocated_bytes':sum(x['allocated'] for g in selected for x in g['targets']),'note':'No content verification or mutations yet. Only singly-linked target inodes; shared canonical must already be readonly.'}
+f=p/'candidate-inventory.json';assert not f.exists();f.write_text(json.dumps(result,indent=2)+'\n');print({'sources':len(sources),'groups':len(selected),'targets':sum(len(g['targets']) for g in selected),'potential_bytes':result['potential_released_allocated_bytes']})

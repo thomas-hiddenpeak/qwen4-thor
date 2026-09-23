@@ -1,0 +1,68 @@
+"""Replace verified duplicate private inodes with links, keeping paths/bytes."""
+from pathlib import Path
+import hashlib,json,os,stat,shutil
+p=Path(__file__).resolve().parent;root=p.parents[2];base=root/'.q4t-work/e2e';out=base/'propagation-evidence-storage-20260924';out.mkdir(exist_ok=False)
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as z:
+  for b in iter(lambda:z.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def snap(f):
+ s=f.stat();return {'device':s.st_dev,'inode':s.st_ino,'bytes':s.st_size,'mtime_ns':s.st_mtime_ns,'mode':stat.S_IMODE(s.st_mode),'nlink':s.st_nlink,'blocks':s.st_blocks}
+def save(n,x):(out/n).write_text(json.dumps(x,indent=2)+'\n')
+inv=json.loads((p/'candidate-inventory.json').read_text());man={};free=shutil.disk_usage(root).free
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+for name in inv['sources']:
+ d=base/name;assert sha(d/'artifact-binding.json')==inv['manifest_hashes'][name];man[name]=json.loads((d/'artifact-binding.json').read_text())
+groups=[]
+for g in inv['groups']:
+ items=[]
+ for index,item in enumerate([g['canonical']]+g['targets']):
+  f=root/item['file'];assert f.is_file() and not f.is_symlink() and f.resolve()==f
+  d=base/item['source'];assert f.is_relative_to(d);assert man[item['source']][str(f.relative_to(d))]==g['sha256']
+  st=snap(f);assert st['bytes']==g['bytes']
+  for key in ['inode','device','nlink','mode']:assert st[key]==item[key]
+  if index:assert st['nlink']==1
+  else:assert st['nlink']==1 or not(st['mode']&0o222)
+  assert sha(f)==g['sha256'] and snap(f)==st
+  items.append({'file':item['file'],'before':st})
+ assert len({x['before']['device'] for x in items})==1
+ groups.append({'sha256':g['sha256'],'bytes':g['bytes'],'canonical':items[0],'targets':items[1:]})
+save('preflight.json',{'groups':groups,'manifest_hashes':inv['manifest_hashes'],'free_before':free});print({'preflight_verified_groups':len(groups)},flush=True)
+with (out/'journal.jsonl').open('x') as journal:
+ def record(x):journal.write(json.dumps(x)+'\n');journal.flush();os.fsync(journal.fileno())
+ for gi,g in enumerate(groups):
+  item=g['canonical'];f=root/item['file'];assert snap(f)==item['before']
+  if item['before']['mode']&0o222:
+   assert item['before']['nlink']==1;record({'operation':'make_private_canonical_readonly','file':item['file'],'before':item['before']});os.chmod(f,item['before']['mode']&~0o222)
+  assert not(snap(f)['mode']&0o222);assert sha(f)==g['sha256']
+  for t in g['targets']:
+   target=root/t['file'];assert snap(target)==t['before'];tmp=target.with_name(target.name+'.share-pending');assert not tmp.exists()
+   record({'operation':'replace_duplicate_with_hardlink','canonical':item['file'],'target':t['file'],'before':t['before'],'sha256':g['sha256']});os.link(f,tmp)
+   try:
+    assert snap(target)==t['before'] and tmp.stat().st_ino==f.stat().st_ino;os.replace(tmp,target)
+    fd=os.open(target.parent,os.O_RDONLY|os.O_DIRECTORY)
+    try:os.fsync(fd)
+    finally:os.close(fd)
+   finally:
+    if tmp.exists():tmp.unlink()
+   record({'operation':'completed','file':t['file'],'after':snap(target)})
+  assert f.stat().st_nlink==item['before']['nlink']+len(g['targets'])
+  if gi%16==0:print({'shared_groups':gi+1},flush=True)
+# Verify every entry in all selected original manifests; never rewrite them.
+cache={};verified=0
+for name,m in man.items():
+ d=base/name;assert sha(d/'artifact-binding.json')==inv['manifest_hashes'][name]
+ for rel,expected in m.items():
+  f=d/rel;assert f.is_file() and not f.is_symlink();st=snap(f);key=(st['device'],st['inode'],st['bytes'],st['mtime_ns'])
+  if key not in cache:cache[key]=sha(f);assert snap(f)==st
+  assert cache[key]==expected,(f,expected,cache[key]);verified+=1
+ print({'audited_manifest':name,'entries_verified':verified},flush=True)
+for g in groups:
+ f=root/g['canonical']['file'];canonical=snap(f);assert canonical['nlink']==g['canonical']['before']['nlink']+len(g['targets']) and not(canonical['mode']&0o222)
+ for t in g['targets']:
+  st=snap(root/t['file']);assert st['inode']==canonical['inode'] and st['device']==canonical['device'] and st['bytes']==g['bytes'] and not(st['mode']&0o222)
+summary={'groups':len(groups),'replaced_private_inodes':sum(len(g['targets']) for g in groups),'released_allocated_bytes':sum(t['before']['blocks']*512 for g in groups for t in g['targets']),'free_before':free,'free_after':shutil.disk_usage(root).free,'original_manifest_entries_verified':verified,'original_manifests_unchanged':True,'all_paths_and_bytes_preserved':True,'existing_shared_inode_permissions_unchanged':True,'runtime_changed':False,'quality_or_performance_acceptance':False,'metadata_note':'Target inode/mode/mtime/link count now follow readonly canonical; preflight/journal retain old metadata. Existing shared canonical was readonly already, no chmod. Future writes require private copy.'}
+save('summary.json',summary)
+for n in ['prepare.py','share.py','candidate-inventory.json']:shutil.copy2(p/n,out/n)
+print(summary,flush=True)

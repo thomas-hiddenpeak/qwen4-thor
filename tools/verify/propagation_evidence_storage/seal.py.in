@@ -1,0 +1,14 @@
+"""Run only after share.py is terminal, so its closed log is fully bound."""
+from pathlib import Path
+import json,hashlib,shutil
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/propagation-evidence-storage-20260924'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as z:
+  for b in iter(lambda:z.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+s=json.loads((o/'summary.json').read_text());assert s['all_paths_and_bytes_preserved'] and s['original_manifests_unchanged']
+for n in ['share.log','seal.py']:shutil.copy2(p/n,o/n)
+f=o/'artifact-binding.json';assert not f.exists();binding={str(x.relative_to(o)):sha(x) for x in sorted(o.rglob('*')) if x.is_file()};f.write_text(json.dumps(binding,indent=2)+'\n')
+for n,h in binding.items():assert sha(o/n)==h
+print({'entries':len(binding),'all_hashes_verified':True,'storage_summary':s})
