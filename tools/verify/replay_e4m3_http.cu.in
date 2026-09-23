@@ -1,0 +1,90 @@
+// Analyze saved HTTP snapshots only after observer invariance review.
+#include <cuda_bf16.h>
+#include <cuda_fp8.h>
+#include <cuda_runtime.h>
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include "q4t/quant/format.h"
+struct Result { float ratio; uint8_t actual, legacy, native; };
+__global__ void Replay(const uint16_t* input, const uint8_t* sf, int count,
+                       float scale, Result* result) {
+  const int idx = blockIdx.x * blockDim.x + threadIdx.x;
+  if (idx >= count) return;
+  const int row = idx / 40, group = idx % 40;
+  const uint16_t* gu = input + row * 1280;
+  float maximum = 0.0f;
+  for (int j = 0; j < 16; ++j) {
+    const float gate = __bfloat162float(
+        *reinterpret_cast<const __nv_bfloat16*>(gu + group * 16 + j));
+    const float up = __bfloat162float(
+        *reinterpret_cast<const __nv_bfloat16*>(gu + 640 + group * 16 + j));
+    const float sigmoid = 1.0f / (1.0f + __expf(-gate));
+    const float value = gate * sigmoid * up;
+    maximum = fmaxf(maximum, fabsf(value));
+  }
+  const float block_scale = maximum > 0.0f ? maximum / 6.0f : 1.0f;
+  const float ratio = block_scale / scale;
+  const size_t offset = (row % 32) * 16 + ((row % 128) / 32) * 4 +
+                        group % 4 + (group / 4) * 512 +
+                        static_cast<size_t>(row / 128) * 10 * 512;
+  result[idx] = {ratio, sf[offset], q4t::quant::FloatToE4m3(ratio),
+      __nv_cvt_float_to_fp8(ratio, __NV_SATFINITE, __NV_E4M3)};
+}
+bool Check(cudaError_t code) {
+  if (code == cudaSuccess) return true;
+  std::fprintf(stderr, "%s\n", cudaGetErrorString(code));
+  return false;
+}
+bool Read(const char* path, void* data, size_t size) {
+  FILE* file = std::fopen(path, "rb");
+  if (!file) return false;
+  const bool ok = std::fread(data, 1, size, file) == size &&
+                  std::fgetc(file) == EOF;
+  return std::fclose(file) == 0 && ok;
+}
+int main(int argc, char** argv) {
+  if (argc != 6) return 2;
+  const int rows = std::atoi(argv[3]);
+  const float scale = std::strtof(argv[4], nullptr);
+  if (rows <= 0 || rows > 8192 || !std::isfinite(scale) || scale <= 0) return 2;
+  std::vector<uint16_t> input(static_cast<size_t>(rows) * 1280);
+  std::vector<uint8_t> sf(static_cast<size_t>((rows + 127) / 128) * 5120);
+  if (!Read(argv[1], input.data(), input.size() * 2) ||
+      !Read(argv[2], sf.data(), sf.size())) return 2;
+  uint16_t* device_input = nullptr;
+  uint8_t* device_sf = nullptr;
+  Result* device_result = nullptr;
+  const int count = rows * 40;
+  if (!Check(cudaMalloc(&device_input, input.size() * 2)) ||
+      !Check(cudaMalloc(&device_sf, sf.size())) ||
+      !Check(cudaMalloc(&device_result, count * sizeof(Result)))) return 2;
+  if (!Check(cudaMemcpy(device_input, input.data(), input.size() * 2,
+                        cudaMemcpyHostToDevice)) ||
+      !Check(cudaMemcpy(device_sf, sf.data(), sf.size(),
+                        cudaMemcpyHostToDevice))) return 2;
+  Replay<<<(count + 255) / 256, 256>>>(device_input, device_sf, count, scale,
+                                     device_result);
+  if (!Check(cudaGetLastError()) || !Check(cudaDeviceSynchronize())) return 2;
+  std::vector<Result> result(count);
+  if (!Check(cudaMemcpy(result.data(), device_result, count * sizeof(Result),
+                        cudaMemcpyDeviceToHost))) return 2;
+  FILE* report = std::fopen(argv[5], "w");
+  if (!report) return 2;
+  int replay_bad = 0, format_bad = 0;
+  for (int i = 0; i < count; ++i) {
+    const auto& r = result[i];
+    if (!std::isfinite(r.ratio)) return 2;
+    replay_bad += r.actual != r.legacy;
+    format_bad += r.actual != r.native;
+    if (std::fprintf(report, "%d %d %a %u %u %u\n", i / 40, i % 40,
+        static_cast<double>(r.ratio), r.actual, r.legacy, r.native) < 0) return 2;
+  }
+  if (std::fclose(report) != 0 || !Check(cudaFree(device_input)) ||
+      !Check(cudaFree(device_sf)) || !Check(cudaFree(device_result))) return 2;
+  std::printf("groups=%d replay_bad=%d format_bad=%d\n", count, replay_bad,
+               format_bad);
+  return replay_bad ? 2 : (format_bad ? 1 : 0);
+}

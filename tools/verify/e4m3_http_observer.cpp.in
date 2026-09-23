@@ -1,0 +1,93 @@
+// Bounded read-only snapshots during real HTTP. Never a timing reference.
+#include <cuda_runtime_api.h>
+#include <dlfcn.h>
+#include <atomic>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <vector>
+namespace {
+std::atomic<cudaKernel_t> down_kernel{nullptr}, gather_kernel{nullptr};
+std::atomic<int> captures{0};
+thread_local int expert = -1;
+template <typename T> T Resolve(const char* name) {
+  auto fn = reinterpret_cast<T>(dlsym(RTLD_NEXT, name));
+  if (!fn) std::_Exit(127);
+  return fn;
+}
+bool Save(const std::string& path, const void* data, size_t size) {
+  FILE* f = std::fopen(path.c_str(), "wb");
+  if (!f) return false;
+  const bool ok = std::fwrite(data, 1, size, f) == size;
+  return std::fclose(f) == 0 && ok;
+}
+}
+extern "C" cudaError_t __cudaGetKernel(cudaKernel_t* kernel, const void* fn) {
+  using Get = cudaError_t (*)(cudaKernel_t*, const void*);
+  static const auto real = Resolve<Get>("__cudaGetKernel");
+  const auto status = real(kernel, fn);
+  if (status == cudaSuccess) {
+    const char* name = nullptr;
+    static const auto get_name = Resolve<decltype(&cudaFuncGetName)>(
+        "cudaFuncGetName");
+    if (get_name(&name, fn) == cudaSuccess && name) {
+      if (std::strstr(name, "SwiGLUQuantKernel")) down_kernel = *kernel;
+      if (std::strstr(name, "GatherQuantKernel")) gather_kernel = *kernel;
+    }
+  }
+  return status;
+}
+extern "C" cudaError_t __cudaLaunchKernel(
+    cudaKernel_t kernel, dim3 grid, dim3 block, void** args,
+    size_t shared, cudaStream_t stream) {
+  using Launch = cudaError_t (*)(cudaKernel_t, dim3, dim3, void**, size_t,
+                                cudaStream_t);
+  static const auto real = Resolve<Launch>("__cudaLaunchKernel");
+  const char* directory = std::getenv("Q4T_E4M3_CAPTURE_DIR");
+  if (directory && kernel == gather_kernel.load()) {
+    expert = *static_cast<int*>(args[3]);
+  }
+  const auto status = real(kernel, grid, block, args, shared, stream);
+  if (!directory || kernel != down_kernel.load() ||
+      status != cudaSuccess || captures.load() >= 4) return status;
+  const int index = captures.fetch_add(1);
+  if (index >= 4) return status;
+  const int rows = *static_cast<int*>(args[3]);
+  const int width = *static_cast<int*>(args[4]);
+  const int tiles = *static_cast<int*>(args[5]);
+  const float scale = *static_cast<float*>(args[6]);
+  if (rows <= 0 || rows > 8192 || width != 640 || tiles != 10 ||
+      expert < 0 || expert >= 512) {
+    std::fprintf(stderr, "[e4m3-capture] invalid shape/expert\n");
+    return status;
+  }
+  const size_t input_bytes = static_cast<size_t>(rows) * 2 * width * 2;
+  const size_t sf_bytes = static_cast<size_t>((rows + 127) / 128) * tiles * 512;
+  std::vector<unsigned char> input(input_bytes), sf(sf_bytes);
+  static const auto copy = Resolve<decltype(&cudaMemcpyAsync)>("cudaMemcpyAsync");
+  static const auto sync = Resolve<decltype(&cudaStreamSynchronize)>(
+      "cudaStreamSynchronize");
+  const auto c1 = copy(input.data(), *static_cast<void**>(args[0]), input_bytes,
+                       cudaMemcpyDeviceToHost, stream);
+  const auto c2 = copy(sf.data(), *static_cast<void**>(args[2]), sf_bytes,
+                       cudaMemcpyDeviceToHost, stream);
+  const auto done = sync(stream);
+  const std::string base = std::string(directory) + "/capture-" +
+                           std::to_string(index);
+  const bool ok = c1 == cudaSuccess && c2 == cudaSuccess && done == cudaSuccess &&
+                 Save(base + ".input.bin", input.data(), input_bytes) &&
+                 Save(base + ".sf.bin", sf.data(), sf_bytes);
+  char metadata[512];
+  const int size = std::snprintf(metadata, sizeof(metadata),
+      "{\"index\":%d,\"rows\":%d,\"width\":%d,\"tiles\":%d,"
+      "\"expert\":%d,\"input_scale\":%.9g,\"scale_hex\":\"%a\","
+      "\"input_bytes\":%zu,\"sf_bytes\":%zu,\"ok\":%s}\n",
+      index, rows, width, tiles, expert, static_cast<double>(scale),
+      static_cast<double>(scale), input_bytes, sf_bytes, ok ? "true" : "false");
+  const bool saved = size > 0 && static_cast<size_t>(size) < sizeof(metadata) &&
+                    Save(base + ".json", metadata, static_cast<size_t>(size));
+  std::fprintf(stderr, "[e4m3-capture] index=%d rows=%d expert=%d ok=%d\n",
+               index, rows, expert, ok && saved);
+  return status;
+}
