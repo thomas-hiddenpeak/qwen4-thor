@@ -1,0 +1,49 @@
+from pathlib import Path
+import hashlib,json,subprocess,shutil,numpy as np,os
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/moe-full-shared-nonlinear-20260924';d=o/'reference';s=root/'.q4t-work/e2e/moe-full-shared-20260924';hc=root/'.q4t-work/e2e/hc-full-boundaries-20260923';routed=root/'.q4t-work/e2e/moe-full-down-20260924';c=s/'observed-captures'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+def run(args,name):
+ r=subprocess.run([str(x) for x in args],capture_output=True,text=True,env={**os.environ,'OMP_NUM_THREADS':'8'});(o/(name+'.stdout')).write_text(r.stdout);(o/(name+'.stderr')).write_text(r.stderr);assert r.returncode==0,r.stderr;return r.stdout
+assert all((p/f'build-{kind}.log').stat().st_size==0 for kind in ['cpu','device'])
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+sm=json.loads((s/'artifact-binding.json').read_text());hm=json.loads((hc/'artifact-binding.json').read_text());rm=json.loads((routed/'artifact-binding.json').read_text())
+for f in ['exit.json','prior-binding.json','router-prior-binding.json']:assert sha(s/f)==sm[f]
+assert json.loads((s/'exit.json').read_text())['observer_preserved_tested_output']
+for f,source in [('prior-binding.json',hc),('router-prior-binding.json',routed)]:assert json.loads((s/f).read_text())['manifest_sha256']==sha(source/'artifact-binding.json')
+reserve=20*1024**3;budget=600000000;assert shutil.disk_usage(o).free>reserve+budget
+save('plan.json',{'source_manifest_sha256':sha(s/'artifact-binding.json'),'hc_manifest_sha256':sha(hc/'artifact-binding.json'),'routed_manifest_sha256':sha(routed/'artifact-binding.json'),'reserve_bytes':reserve,'reference_budget_bytes':budget,'scope':'48 full SwiGLU and final MoECombine outputs; CPU specified FP32/FMA and reduction order with device-only sigmoid, pure CPU expf variant, FP64 variant. Actual operands retained; not composed whole-model reference.','retention':'Complete three BF16 variants reconstructable from bound actual base and full index/value deltas. All CPU FP32 and FP64 gate dots and device sigmoid values persisted. Fused internal gate dot not independently observed.'})
+binding=[]
+for l in range(48):
+ files=[(s,f'observed-captures/layer-{l}.'+suffix,sm) for suffix in ['gu.output.bf16','inter.bf16','down.output.bf16','gate.weights.bf16']]
+ files += [(hc,f'observed-captures/hc-{l}.prefill.'+suffix,hm) for suffix in ['mix.mlp.output.bf16','write.block.bf16']]
+ files += [(routed,f'observed-captures/layer-{l}.combine-after.f32',rm)]
+ for source,name,manifest in files:
+  f=source/name;assert sha(f)==manifest[name];binding.append({'file':str(f.relative_to(root)),'sha256':manifest[name]})
+save('input-binding.json',binding);print({'bound_files':len(binding)},flush=True)
+run([p/'device','table',65536,d/'sigmoid-table.f32'],'table')
+records=[]
+for l in range(48):
+ assert shutil.disk_usage(o).free>reserve+budget
+ name=f'layer-{l}';args=[c,hc/'observed-captures',routed/'observed-captures',d,l,d/'sigmoid-table.f32']
+ run([p/'cpu','prepare',*args],name+'.prepare');run([p/'device',d/(name+'.dot.f32'),4096,d/(name+'.sigmoid.f32')],name+'.device')
+ record=json.loads(run([p/'cpu','compare',*args],name+'.compare'));record['references']=[]
+ for stage,base,count in [('swiglu',c/(name+'.inter.bf16'),4096*640),('combine',hc/f'observed-captures/hc-{l}.prefill.write.block.bf16',4096*2560)]:
+  actual=np.fromfile(base,dtype='<u2');assert len(actual)==count
+  for variant in record['variants']:
+   kind=variant['name'];f=d/(name+'.'+stage+'.'+kind+'.bf16');ref=np.fromfile(f,dtype='<u2');assert len(ref)==count and np.isfinite((ref.astype('<u4')<<16).view('<f4')).all();idx=np.flatnonzero(ref!=actual).astype('<i4');assert len(idx)==variant[stage+'_mismatches']
+   delta=f.with_suffix('.delta.npz');np.savez_compressed(delta,indices=idx,values=ref[idx]);z=np.load(delta);rebuilt=actual.copy();rebuilt[z['indices']]=z['values'];assert np.array_equal(rebuilt,ref);h=sha(f);assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==h
+   record['references'].append({'stage':stage,'variant':kind,'base':str(base.relative_to(root)),'base_sha256':sha(base),'delta':str(delta.relative_to(o)),'delta_sha256':sha(delta),'reference_sha256':h,'mismatches':len(idx)});f.unlink()
+ records.append(record);save('reference.json',{'records':records,'complete':len(records)==48});print({k:v for k,v in record.items() if k!='references'},flush=True)
+for r in records:
+ for v in r['references']:
+  base=root/v['base'];assert sha(base)==v['base_sha256'];delta=o/v['delta'];assert sha(delta)==v['delta_sha256'];z=np.load(delta);rebuilt=np.fromfile(base,dtype='<u2');rebuilt[z['indices']]=z['values'];assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==v['reference_sha256']
+summary={'layers':48,'swiglu_elements':sum(r['swiglu_elements'] for r in records),'combine_elements':sum(r['combine_elements'] for r in records),'mismatches':{stage:{kind:sum(v['mismatches'] for r in records for v in r['references'] if v['stage']==stage and v['variant']==kind) for kind in ['device','cpu','fp64']} for stage in ['swiglu','combine']},'all_references_reconstructed':True,'runtime_changed':False,'whole_model_correctness_proven':False,'free_after':shutil.disk_usage(o).free}
+save('summary.json',summary)
+for f in ['run.py','cpu.cpp','device.cu','common.h','cpu','device','build-cpu.log','build-device.log']:shutil.copy2(p/f,o/f)
+save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})
+print(summary,flush=True)

@@ -1,0 +1,36 @@
+#include <cuda_runtime.h>
+#include "common.h"
+#define CU(x)                                             \
+  do {                                                    \
+    if ((x) != cudaSuccess) throw std::runtime_error(#x); \
+  } while (0)
+__global__ void Sig(const float* x, float* y, int n) {
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i < n) y[i] = 1.f / (1.f + __expf(-x[i]));
+}
+int main(int argc, char** argv) {
+  try {
+    if (argc != 4) throw std::runtime_error("table|input count output");
+    int n = std::stoi(argv[2]);
+    std::vector<float> x(n), y(n);
+    if (std::string(argv[1]) == "table") {
+      if (n != 65536) throw std::runtime_error("table size");
+      for (int j = 0; j < n; ++j) x[j] = B(uint16_t(j));
+    } else
+      x = Read<float>(argv[1], n);
+    float *dx, *dy;
+    CU(cudaMalloc(&dx, n * 4));
+    CU(cudaMalloc(&dy, n * 4));
+    CU(cudaMemcpy(dx, x.data(), n * 4, cudaMemcpyHostToDevice));
+    Sig<<<(n + 255) / 256, 256>>>(dx, dy, n);
+    CU(cudaGetLastError());
+    CU(cudaMemcpy(y.data(), dy, n * 4, cudaMemcpyDeviceToHost));
+    Save(argv[3], y);
+    CU(cudaFree(dx));
+    CU(cudaFree(dy));
+    return 0;
+  } catch (const std::exception& e) {
+    std::fprintf(stderr, "%s\n", e.what());
+    return 2;
+  }
+}

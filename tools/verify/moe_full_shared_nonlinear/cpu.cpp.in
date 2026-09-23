@@ -1,0 +1,97 @@
+#include "common.h"
+int main(int argc, char** argv) {
+  try {
+    if (argc != 8)
+      throw std::runtime_error(
+          "prepare|compare captures hc routed output layer table");
+    int l = std::stoi(argv[6]);
+    std::string name = "layer-" + std::to_string(l),
+                c = std::string(argv[2]) + "/" + name,
+                h = std::string(argv[3]) + "/hc-" + std::to_string(l) +
+                    ".prefill.",
+                o = std::string(argv[5]) + "/" + name;
+    auto x = Read<uint16_t>(h + "mix.mlp.output.bf16", 4096 * 2560),
+         w = Read<uint16_t>(c + ".gate.weights.bf16", 2560);
+    if (std::string(argv[1]) == "prepare") {
+      std::vector<float> dot(4096);
+      std::vector<double> high(4096);
+      for (int t = 0; t < 4096; ++t) {
+        float parts[256] = {};
+        double total = 0;
+        for (int j = 0; j < 2560; ++j) {
+          float a = B(x[size_t(t) * 2560 + j]), b = B(w[j]);
+          parts[j % 256] = std::fma(a, b, parts[j % 256]);
+          total = std::fma(double(a), double(b), total);
+        }
+        for (int off = 128; off > 0; off >>= 1)
+          for (int j = 0; j < off; ++j) parts[j] += parts[j + off];
+        dot[t] = parts[0];
+        high[t] = total;
+      }
+      Save(o + ".dot.f32", dot);
+      Save(o + ".dot.f64", high);
+      return 0;
+    }
+    if (std::string(argv[1]) != "compare") throw std::runtime_error("mode");
+    auto dot = Read<float>(o + ".dot.f32", 4096),
+         sig = Read<float>(o + ".sigmoid.f32", 4096),
+         table = Read<float>(argv[7], 65536);
+    auto high = Read<double>(o + ".dot.f64", 4096);
+    auto gu = Read<uint16_t>(c + ".gu.output.bf16", 4096 * 1280),
+         inter = Read<uint16_t>(c + ".inter.bf16", 4096 * 640),
+         down = Read<uint16_t>(c + ".down.output.bf16", 4096 * 2560),
+         actual = Read<uint16_t>(h + "write.block.bf16", 4096 * 2560);
+    auto routed = Read<float>(
+        std::string(argv[4]) + "/" + name + ".combine-after.f32", 4096 * 2560);
+    std::vector<float> cpu_table(65536);
+    std::vector<double> high_table(65536);
+    for (int j = 0; j < 65536; ++j) {
+      float a = B(uint16_t(j));
+      cpu_table[j] = 1.f / (1.f + std::exp(-a));
+      high_table[j] = Sig64(double(a));
+    }
+    std::printf(
+        "{\"layer\":%d,\"swiglu_elements\":%zu,\"combine_elements\":%zu,"
+        "\"variants\":[",
+        l, inter.size(), actual.size());
+    for (int v = 0; v < 3; ++v) {
+      const char* kind = v == 0 ? "device" : v == 1 ? "cpu" : "fp64";
+      std::vector<uint16_t> iy(inter.size()), y(actual.size());
+      size_t ibad = 0, bad = 0;
+#pragma omp parallel for reduction(+ : ibad)
+      for (size_t i = 0; i < inter.size(); ++i) {
+        size_t pos = (i / 640) * 1280 + i % 640;
+        float g = B(gu[pos]), u = B(gu[pos + 640]);
+        float val =
+            v == 2 ? float(double(g) * high_table[gu[pos]] * double(u))
+                   : (g * (v == 0 ? table[gu[pos]] : cpu_table[gu[pos]])) * u;
+        iy[i] = Round(val);
+        ibad += iy[i] != inter[i];
+      }
+#pragma omp parallel for reduction(+ : bad)
+      for (int t = 0; t < 4096; ++t) {
+        float gate = v == 0 ? sig[t] : 1.f / (1.f + std::exp(-dot[t]));
+        double gate64 = Sig64(high[t]);
+        for (int j = 0; j < 2560; ++j) {
+          size_t i = size_t(t) * 2560 + j;
+          float val =
+              v == 2 ? float(double(routed[i]) + gate64 * double(B(down[i])))
+                     : std::fma(gate, B(down[i]), routed[i]);
+          y[i] = Round(val);
+          bad += y[i] != actual[i];
+        }
+      }
+      Save(o + ".swiglu." + kind + ".bf16", iy);
+      Save(o + ".combine." + kind + ".bf16", y);
+      std::printf(
+          "%s{\"name\":\"%s\",\"swiglu_mismatches\":%zu,\"combine_mismatches\":"
+          "%zu}",
+          v ? "," : "", kind, ibad, bad);
+    }
+    std::printf("]}\n");
+    return 0;
+  } catch (const std::exception& e) {
+    std::fprintf(stderr, "%s\n", e.what());
+    return 2;
+  }
+}
