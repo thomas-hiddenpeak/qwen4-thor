@@ -1,0 +1,20 @@
+"""After run.py is terminal, verify unchanged common operands stay unchanged."""
+from pathlib import Path
+import hashlib,json,shutil
+import numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];e=root/'.q4t-work/e2e';o=e/p.name;q=e/'moe-scale-input-quant-l1-20260924'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as z:
+  for b in iter(lambda:z.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+assert json.loads((o/'reference.json').read_text())['complete'];m=json.loads((q/'artifact-binding.json').read_text());bindings=[];records=[]
+def read(path,kind):
+ f=q/path;h=sha(f);assert h==m[path];bindings.append({'file':str(f.relative_to(root)),'sha256':h});return np.fromfile(f,dtype=kind)
+for b in ['baseline','input_fixed','inter_fixed','both_fixed']:
+ off=read('mapping/'+b+'/layer-1.offsets.i32','<i4');changed=read('reference/'+b+'/shared-edge-packed-row-differences.i32','<i4')>0;sf=read('reference/'+b+'/shared-edge-sf-differences.i32','<i4');changed[sf//160]=True
+ experts=json.loads((o/'reference'/b/'experts.json').read_text());total=0
+ for r in experts:
+  ex=r['expert'];f=o/'reference'/b/f'layer-1.expert-{ex}.shared-row-differences.i32';bindings.append({'file':str(f.relative_to(root)),'sha256':sha(f)});rc=np.fromfile(f,dtype='<i4');bad=np.flatnonzero((rc>0)&~changed[off[ex]:off[ex+1]]);assert len(bad)==0,(b,ex,bad.tolist());total+=int(np.count_nonzero(rc))
+ records.append({'branch':b,'changed_common_input_rows':int(changed.sum()),'changed_common_output_rows':total,'unchanged_input_changed_output_rows':0})
+f=o/'support-audit.json';assert not f.exists();f.write_text(json.dumps({'records':records,'bindings':bindings,'complete':True,'quant_manifest_sha256':sha(q/'artifact-binding.json')},indent=2)+'\n');shutil.copy2(p/'support_audit.py',o/'support_audit.py');print(records)

@@ -1,0 +1,78 @@
+#include <algorithm>
+#include "common.h"
+uint8_t Nearest(float v, const std::vector<float>& values) {
+  auto it = std::lower_bound(values.begin(), values.end(), v);
+  int hi = int(it - values.begin());
+  if (hi == 0) return 0;
+  if (hi == int(values.size())) return uint8_t(hi - 1);
+  double dl = double(v) - values[hi - 1], dh = double(values[hi]) - v;
+  if (dl < dh) return uint8_t(hi - 1);
+  if (dh < dl) return uint8_t(hi);
+  return uint8_t((hi & 1) ? hi - 1 : hi);
+}
+int main(int argc, char** argv) {
+  try {
+    if (argc != 4) throw std::runtime_error("mapping input output");
+    std::string b = std::string(argv[1]) + "/layer-1";
+    std::string o = std::string(argv[3]) + "/layer-1";
+    auto x = Read<uint16_t>(argv[2], 4096 * 2560);
+    auto flat = Read<int32_t>(b + ".lists.i32", kRows);
+    auto offset = Read<int32_t>(b + ".offsets.i32", 513);
+    auto scales = Read<float>(b + ".input-scales.f32", 512);
+    auto device_ratio = Read<float>(o + ".device-ratios.f32", kGroups);
+    auto sf = Read<uint8_t>(o + ".legacy.sf", kGroups);
+    auto native = Read<uint8_t>(o + ".native.sf", kGroups);
+    std::vector<int32_t> experts(kRows);
+    for (int e = 0; e < 512; ++e)
+      for (int r = offset[e]; r < offset[e + 1]; ++r) experts[r] = e;
+    std::vector<float> fp8(127), fp4{0, .5, 1, 1.5, 2, 3, 4, 6};
+    for (int c = 0; c < 127; ++c)
+      fp8[c] = c < 8 ? std::ldexp(float(c), -9)
+                     : std::ldexp(1.f + float(c % 8) / 8, c / 8 - 7);
+    std::vector<float> ratios(kGroups);
+    std::vector<uint8_t> packed(kRows * 1280), rne(kGroups);
+    size_t ratio_bad = 0, native_bad = 0, high = 0, other = 0;
+#pragma omp parallel for reduction(+ : ratio_bad, native_bad, high, other)
+    for (size_t i = 0; i < kGroups; ++i) {
+      size_t row = i / 160, g = i % 160;
+      int t = flat[row] / 10, e = experts[row];
+      float maximum = 0;
+      for (int j = 0; j < 16; ++j)
+        maximum = std::fmax(
+            maximum, std::fabs(Decode(x[size_t(t) * 2560 + g * 16 + j])));
+      float block = maximum > 0 ? maximum / 6.f : 1.f;
+      ratios[i] = block / scales[e];
+      ratio_bad += Bits(ratios[i]) != Bits(device_ratio[i]);
+      rne[i] = Nearest(ratios[i], fp8);
+      native_bad += rne[i] != native[i];
+      if (rne[i] != sf[i]) {
+        if (ratios[i] >= 248 && ratios[i] < 432)
+          ++high;
+        else
+          ++other;
+      }
+      float eff = fp8.at(sf[i]) * scales[e];
+      float inv = eff > 0 ? 1.f / eff : 0;
+      for (int j = 0; j < 8; ++j) {
+        uint8_t code[2];
+        for (int q = 0; q < 2; ++q) {
+          float v = Decode(x[size_t(t) * 2560 + g * 16 + j * 2 + q]) * inv;
+          code[q] = Nearest(std::fabs(v), fp4) | (v < 0 ? 8 : 0);
+        }
+        packed[i * 8 + j] = uint8_t(code[0] | (code[1] << 4));
+      }
+    }
+    Save(o + ".cpu-ratios.f32", ratios);
+    Save(o + ".cpu-rne.sf", rne);
+    Save(o + ".packed.bin", packed);
+    std::printf(
+        "{\"groups\":%zu,\"ratio_mismatches\":%zu,"
+        "\"native_rne_mismatches\":%zu,\"legacy_high_errors\":%zu,"
+        "\"legacy_other_errors\":%zu}\n",
+        kGroups, ratio_bad, native_bad, high, other);
+    return 0;
+  } catch (const std::exception& e) {
+    std::fprintf(stderr, "%s\n", e.what());
+    return 2;
+  }
+}

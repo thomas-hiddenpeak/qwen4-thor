@@ -1,0 +1,61 @@
+"""Rebuild four branch expert mappings and accepted legacy input quantization."""
+from pathlib import Path
+import hashlib,json,subprocess,shutil,os
+import numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];e=root/'.q4t-work/e2e';o=e/p.name;g=e/'moe-full-gather-20260924';u=e/'moe-scale-hc-mlp-read-l1-20260924';r=e/'moe-scale-router-l1-20260924'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as z:
+  for b in iter(lambda:z.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(n,x):(o/n).write_text(json.dumps(x,indent=2)+'\n')
+assert not any((o/'reference').iterdir());assert (p/'build.log').stat().st_size==0
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+assert sha(root/'include/q4t/quant/format.h')=='24c372233cebbb73ca88ee9b69e8937c4bf97cf2dbb096975eb85132eed24247'
+budget=2000000000;reserve=20*1024**3;assert shutil.disk_usage(o).free>reserve+budget
+sources=[g,u,r];man={x.name:json.loads((x/'artifact-binding.json').read_text()) for x in sources};bindings=[]
+def bind(x,n):
+ f=x/n;h=sha(f);assert h==man[x.name][n],f;bindings.append({'file':str(f.relative_to(root)),'sha256':h});return f
+assert json.loads(bind(g,'exit.json').read_text())['observer_preserved_tested_output']
+for x in [u,r]:assert json.loads(bind(x,'reference.json').read_text())['complete']
+actual={n:bind(g,'observed-captures/layer-1.'+n) for n in ['counts.i32','offsets.i32','lists.i32','input-scales.f32']}
+oldcount=np.fromfile(actual['counts.i32'],dtype='<i4');oldoff=np.fromfile(actual['offsets.i32'],dtype='<i4');oldflat=np.fromfile(actual['lists.i32'],dtype='<i4');scales=np.fromfile(actual['input-scales.f32'],dtype='<f4')
+assert len(scales)==512 and np.isfinite(scales).all() and np.all(scales>0)
+assert len(oldflat)==40960 and np.array_equal(np.sort(oldflat),np.arange(40960)) and np.array_equal(np.diff(oldoff),oldcount)
+oldsf=np.empty((40960,160),dtype='u1');oldpacked=np.empty((40960,1280),dtype='u1');oldrow=np.full((512,4096),-1,dtype='<i4')
+for ex in np.flatnonzero(oldcount):
+ a,b=oldoff[ex:ex+2];oldrow[ex,oldflat[a:b]//10]=np.arange(a,b)
+ for suffix,target,width in [('sf-logical.bin',oldsf,160),('packed.bin',oldpacked,1280)]:target[a:b]=np.fromfile(bind(g,f'observed-captures/layer-1.expert-{ex}.'+suffix),dtype='u1').reshape(-1,width)
+weights=[w for w in json.loads(bind(g,'checkpoint-binding.json').read_text()) if '.layers.1.' in w['key']];assert len(weights)==1024
+for w in weights:
+ f=Path(w['file']);st=f.stat();assert st.st_size==w['size'] and st.st_mtime_ns==w['mtime_ns']
+ with f.open('rb') as z:z.seek(w['offset']);raw=z.read(w['bytes']);assert hashlib.sha256(raw).hexdigest()==w['sha256']
+ ex=int(w['key'].split('.experts.')[1].split('.')[0]);assert raw==scales[ex:ex+1].tobytes()
+branches=['baseline','input_fixed','inter_fixed','both_fixed'];paths={}
+for b in branches:paths[b]={'x':bind(u,'reference/'+b+'/hc-1.prefill.mix.mlp.device.bf16'),'ids':bind(r,'reference/'+b+'/layer-1.ids.i32'),'weights':bind(r,'reference/'+b+'/layer-1.router-weights.f32')}
+baseids=np.fromfile(paths['baseline']['ids'],dtype='<i4').reshape(4096,10)
+for ex in range(512):assert np.all(baseids.reshape(-1)[oldflat[oldoff[ex]:oldoff[ex+1]]]==ex)
+save('input-binding.json',bindings);save('checkpoint-binding.json',weights);save('source-manifests.json',{x.name:sha(x/'artifact-binding.json') for x in sources})
+save('plan.json',{'budget_bytes':budget,'reserve_bytes':reserve,'scope':'Own branch layer1 IDs -> stable expert then flat-slot grouping. New own mixed input -> accepted legacy E4M3 scaling and enumerated CPU E2M1 payload. No new layer1 scale correction: isolate propagation of layer0 interventions. Baseline compared against original actual payload/SF by expert-token identity, not physical row order. New assignments reported separately from shared-assignment differences.','dependencies':'Device accepted FloatToE4m3 is deliberately reproduced, including known errors; CPU ratios checked bitwise against device, native E4M3 only diagnostic. No GU calculation yet.','retention':'Full mapping/counts/offsets/slot lists, old-row map (-1 new), ratios, legacy/native/independentRNE SF and packed bytes; all shared-edge differences; new/removed edge IDs.','format_sha256':sha(root/'include/q4t/quant/format.h')})
+records=[]
+for b in branches:
+ d=o/'reference'/b;d.mkdir();c=o/'mapping'/b;c.mkdir(parents=True);prior=o/'prior'/b;prior.mkdir(parents=True)
+ ids=np.fromfile(paths[b]['ids'],dtype='<i4').reshape(4096,10);assert np.all((ids>=0)&(ids<512)) and np.all(np.diff(np.sort(ids,axis=1),axis=1)>0)
+ order=np.argsort(ids.reshape(-1),kind='stable').astype('<i4');ex=ids.reshape(-1)[order];tokens=order//10;counts=np.bincount(ex,minlength=512).astype('<i4');off=np.concatenate([np.array([0],dtype='<i4'),np.cumsum(counts,dtype='<i4')]);assert off[-1]==40960
+ counts.tofile(c/'layer-1.counts.i32');off.tofile(c/'layer-1.offsets.i32');order.tofile(c/'layer-1.lists.i32');os.link(actual['input-scales.f32'],c/'layer-1.input-scales.f32');os.link(paths[b]['x'],prior/'hc-1.prefill.mix.mlp.output.bf16')
+ mapped=oldrow[ex,tokens];mapped.tofile(d/'old-gather-row.i32');newrows=np.flatnonzero(mapped<0).astype('<i4');newrows.tofile(d/'new-assignment-rows.i32');oldedges=np.repeat(np.arange(512),oldcount)*4096+oldflat//10;edges=ex*4096+tokens;removed=np.setdiff1d(oldedges,edges).astype('<i4');removed.tofile(d/'removed-expert-token-keys.i32');assert len(removed)==len(newrows)
+ for tool,args in [('device',[c,prior,d,1]),('cpu',[c,paths[b]['x'],d])]:
+  proc=subprocess.run([str(p/tool)]+list(map(str,args)),capture_output=True,text=True,env={**os.environ,'OMP_NUM_THREADS':'8'});(o/(b+'.'+tool+'.stdout')).write_text(proc.stdout);(o/(b+'.'+tool+'.stderr')).write_text(proc.stderr);assert proc.returncode==0,proc.stderr
+ rec=json.loads(proc.stdout);assert rec['ratio_mismatches']==rec['native_rne_mismatches']==0
+ sf=np.fromfile(d/'layer-1.legacy.sf',dtype='u1').reshape(40960,160);packed=np.fromfile(d/'layer-1.packed.bin',dtype='u1').reshape(40960,1280);common=np.flatnonzero(mapped>=0);refrows=mapped[common]
+ sc=sf[common]!=oldsf[refrows];pc=packed[common]!=oldpacked[refrows]
+ # Difference indices use new canonical rows, and exclude newly added edges.
+ si=(common[:,None]*160+np.arange(160))[sc].astype('<i4');pi=(common[:,None]*1280+np.arange(1280))[pc].astype('<i4');si.tofile(d/'shared-edge-sf-differences.i32');pi.tofile(d/'shared-edge-packed-differences.i32')
+ rowcounts=np.zeros(40960,dtype='<i4');rowcounts[common]=np.count_nonzero(pc,axis=1);rowcounts.tofile(d/'shared-edge-packed-row-differences.i32')
+ if b=='baseline':assert len(newrows)==len(si)==len(pi)==0 and np.array_equal(counts,oldcount)
+ rec.update(branch=b,active_experts=int(np.count_nonzero(counts)),newly_active_experts=np.flatnonzero((counts>0)&(oldcount==0)).tolist(),changed_count_experts=int(np.count_nonzero(counts!=oldcount)),new_assignments=len(newrows),common_assignments=len(common),shared_edge_sf_differences=len(si),shared_edge_packed_byte_differences=len(pi),shared_edge_changed_rows=int(np.count_nonzero(rowcounts)))
+ records.append(rec);save('reference.json',{'records':records,'complete':len(records)==4});print(rec,flush=True)
+for n in ['run.py','common.h','cpu.cpp','device.cu','cpu','device','build.log']:shutil.copy2(p/n,o/n)
+shutil.copy2(root/'include/q4t/quant/format.h',o/'format.h')
+save('summary.json',{'records':records,'runtime_changed':False,'whole_model_correctness_proven':False,'task_causality_established':False,'endpoint':'Layer1 regrouped input FP4/SF operands; GU pending'})
+assert sum(f.stat().st_size for f in o.rglob('*') if f.is_file())<budget
