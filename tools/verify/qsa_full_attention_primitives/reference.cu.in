@@ -1,0 +1,293 @@
+// Separated arithmetic primitives on frozen HTTP operands; no model kernels.
+#include <cuda_runtime.h>
+#include <cuda_bf16.h>
+#include <cstdint>
+#include <cmath>
+#include <cstring>
+#include <cstdio>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+using U = uint16_t;
+#define CU(x)                                             \
+  do {                                                    \
+    if ((x) != cudaSuccess) throw std::runtime_error(#x); \
+  } while (0)
+__device__ uint32_t Pack(U a, U b) { return uint32_t(a) | (uint32_t(b) << 16); }
+__device__ U Q(const U* q, int h, int d, int kh) {
+  return h < 12 ? q[(kh * 12 + h) * 256 + d] : 0;
+}
+__device__ U KV(const U* kv, int pos, int n, int kh, int part, int d) {
+  return pos < n ? kv[pos * 1024 + kh * 512 + part * 256 + d] : 0;
+}
+__device__ U P(const U* p, int h, int pos, int padded, int kh) {
+  return h < 12 ? p[(kh * 12 + h) * padded + pos] : 0;
+}
+__device__ void Mma(float& c0, float& c1, float& c2, float& c3, uint32_t a0,
+                    uint32_t a1, uint32_t a2, uint32_t a3, uint32_t b0,
+                    uint32_t b1) {
+  asm volatile(
+      "mma.sync.aligned.m16n8k16.row.col.f32.bf16.bf16.f32 {%0,%1,%2,%3}, "
+      "{%4,%5,%6,%7}, {%8,%9}, {%0,%1,%2,%3};"
+      : "+f"(c0), "+f"(c1), "+f"(c2), "+f"(c3)
+      : "r"(a0), "r"(a1), "r"(a2), "r"(a3), "r"(b0), "r"(b1));
+}
+__global__ void DotQK(const U* q, const U* kv, float* scores, int n,
+                      int padded) {
+  int kh = blockIdx.x, nb = blockIdx.y * 8, group = threadIdx.x / 4,
+      k0 = (threadIdx.x % 4) * 2;
+  float a = 0, b = 0, c = 0, d = 0;
+  for (int tile = 0; tile < 16; ++tile) {
+    int k = tile * 16 + k0;
+    Mma(a, b, c, d, Pack(Q(q, group, k, kh), Q(q, group, k + 1, kh)),
+        Pack(Q(q, group + 8, k, kh), Q(q, group + 8, k + 1, kh)),
+        Pack(Q(q, group, k + 8, kh), Q(q, group, k + 9, kh)),
+        Pack(Q(q, group + 8, k + 8, kh), Q(q, group + 8, k + 9, kh)),
+        Pack(KV(kv, nb + group, n, kh, 0, k),
+             KV(kv, nb + group, n, kh, 0, k + 1)),
+        Pack(KV(kv, nb + group, n, kh, 0, k + 8),
+             KV(kv, nb + group, n, kh, 0, k + 9)));
+  }
+  int h = kh * 12 + group;
+  scores[h * padded + nb + k0] = a;
+  scores[h * padded + nb + k0 + 1] = b;
+  if (group + 8 < 12) {
+    scores[(h + 8) * padded + nb + k0] = c;
+    scores[(h + 8) * padded + nb + k0 + 1] = d;
+  }
+}
+__global__ void Online(const float* scores, U* prob, float* alpha, float* denom,
+                       int n, int padded) {
+  int head = threadIdx.x;
+  if (head >= 24) return;
+  int chunks = padded / 16;
+  float mx = -1e30f, sum = 0;
+  for (int chunk = 0; chunk < chunks; ++chunk) {
+    float next = mx;
+    int begin = chunk * 16;
+    for (int j = 0; j < 16 && begin + j < n; ++j)
+      next = fmaxf(next, scores[head * padded + begin + j] * 0.0625f);
+    float scale = expf(mx - next);
+    alpha[head * chunks + chunk] = scale;
+    sum *= scale;
+    for (int j = 0; j < 16; ++j) {
+      float pr = begin + j < n
+                     ? expf(scores[head * padded + begin + j] * 0.0625f - next)
+                     : 0;
+      prob[head * padded + begin + j] =
+          __bfloat16_as_ushort(__float2bfloat16_rn(pr));
+      sum += pr;
+    }
+    mx = next;
+  }
+  denom[head] = sum;
+}
+__global__ void DotPV(const U* prob, const U* kv, float* output, int n,
+                      int padded) {
+  int kh = blockIdx.x, nb = blockIdx.y * 8, chunk = blockIdx.z,
+      group = threadIdx.x / 4, k0 = (threadIdx.x % 4) * 2,
+      pos = chunk * 16 + k0;
+  float a = 0, b = 0, c = 0, d = 0;
+  Mma(a, b, c, d,
+      Pack(P(prob, group, pos, padded, kh),
+           P(prob, group, pos + 1, padded, kh)),
+      Pack(P(prob, group + 8, pos, padded, kh),
+           P(prob, group + 8, pos + 1, padded, kh)),
+      Pack(P(prob, group, pos + 8, padded, kh),
+           P(prob, group, pos + 9, padded, kh)),
+      Pack(P(prob, group + 8, pos + 8, padded, kh),
+           P(prob, group + 8, pos + 9, padded, kh)),
+      Pack(KV(kv, pos, n, kh, 1, nb + group),
+           KV(kv, pos + 1, n, kh, 1, nb + group)),
+      Pack(KV(kv, pos + 8, n, kh, 1, nb + group),
+           KV(kv, pos + 9, n, kh, 1, nb + group)));
+  int h = kh * 12 + group, chunks = padded / 16;
+  output[(h * chunks + chunk) * 256 + nb + k0] = a;
+  output[(h * chunks + chunk) * 256 + nb + k0 + 1] = b;
+  if (group + 8 < 12) {
+    output[((h + 8) * chunks + chunk) * 256 + nb + k0] = c;
+    output[((h + 8) * chunks + chunk) * 256 + nb + k0 + 1] = d;
+  }
+}
+__global__ void Gate(const U* gate, float* out, int n) {
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i < n)
+    out[i] =
+        1.f / (1.f + expf(-__bfloat162float(__ushort_as_bfloat16(gate[i]))));
+}
+template <class T>
+std::vector<T> Read(const std::string& s, size_t n) {
+  std::ifstream f(s, std::ios::binary | std::ios::ate);
+  if (!f || size_t(f.tellg()) != n * sizeof(T)) throw std::runtime_error(s);
+  std::vector<T> v(n);
+  f.seekg(0);
+  if (!f.read(reinterpret_cast<char*>(v.data()), n * sizeof(T)))
+    throw std::runtime_error(s);
+  return v;
+}
+template <class T>
+T* Upload(const std::vector<T>& v) {
+  T* p;
+  CU(cudaMalloc(&p, v.size() * sizeof(T)));
+  CU(cudaMemcpy(p, v.data(), v.size() * sizeof(T), cudaMemcpyHostToDevice));
+  return p;
+}
+template <class T>
+void Save(const std::string& s, T* p, size_t n) {
+  std::vector<T> v(n);
+  CU(cudaMemcpy(v.data(), p, n * sizeof(T), cudaMemcpyDeviceToHost));
+  std::ofstream f(s, std::ios::binary);
+  f.write(reinterpret_cast<char*>(v.data()), n * sizeof(T));
+  if (!f) throw std::runtime_error(s);
+}
+
+float Decode(U x) {
+  uint32_t b = uint32_t(x) << 16;
+  float v;
+  std::memcpy(&v, &b, 4);
+  return v;
+}
+U Round(float x) {
+  uint32_t b;
+  std::memcpy(&b, &x, 4);
+  return U((b + 0x7fff + ((b >> 16) & 1)) >> 16);
+}
+template <class T>
+void Write(const std::string& p, const std::vector<T>& v) {
+  std::ofstream f(p, std::ios::binary);
+  if (!f.write(reinterpret_cast<const char*>(v.data()), v.size() * sizeof(T)))
+    throw std::runtime_error(p);
+}
+int main(int argc, char** argv) {
+  try {
+    if (argc != 6)
+      throw std::runtime_error("captures output_prefix layer first rows");
+    int l = std::stoi(argv[3]), first = std::stoi(argv[4]),
+        rows = std::stoi(argv[5]);
+    if (first < 0 || rows < 1 || rows > 512 || first + rows > 4096)
+      throw std::runtime_error("range");
+    std::string b = std::string(argv[1]) + "/layer-" + std::to_string(l) +
+                    ".prefill",
+                o = argv[2];
+    auto qs = Read<U>(b + ".q.bf16", 4096 * 6144),
+         gs = Read<U>(b + ".gate.bf16", 4096 * 6144),
+         expected = Read<U>(b + ".attention-output.bf16", 4096 * 6144),
+         cache = Read<U>(b + ".cache.bf16", 4096 * 1024);
+    auto select = Read<int>(b + ".selection.i32", 4096 * 2052),
+         lens = Read<int>(b + ".length.i32", 4096),
+         pt = Read<int>(b + ".page-table.i32", 4096);
+    constexpr int maxpad = 2064, maxchunks = maxpad / 16;
+    U *dq, *dkv, *prob;
+    float *scores, *alpha, *denom, *pv;
+    CU(cudaMalloc(&dq, 6144 * 2));
+    CU(cudaMalloc(&dkv, maxpad * 1024 * 2));
+    CU(cudaMalloc(&scores, 24 * maxpad * 4));
+    CU(cudaMalloc(&alpha, 24 * maxchunks * 4));
+    CU(cudaMalloc(&denom, 24 * 4));
+    CU(cudaMalloc(&pv, 24 * maxchunks * 256 * 4));
+    CU(cudaMalloc(&prob, 24 * maxpad * 2));
+    std::vector<U> codes(65536);
+    for (int i = 0; i < 65536; ++i) codes[i] = U(i);
+    U* dc = Upload(codes);
+    float* dt;
+    CU(cudaMalloc(&dt, 65536 * 4));
+    Gate<<<256, 256>>>(dc, dt, 65536);
+    CU(cudaGetLastError());
+    std::vector<float> table(65536);
+    CU(cudaMemcpy(table.data(), dt, 65536 * 4, cudaMemcpyDeviceToHost));
+    CU(cudaFree(dc));
+    CU(cudaFree(dt));
+    Write(o + ".gate-table.f32", table);
+    std::vector<U> output(size_t(rows) * 6144), ungated(output.size());
+    std::vector<float> all_den(size_t(rows) * 24), bad_acc, bad_norm, bad_final;
+    std::vector<int32_t> bad_indices, query_bad(rows);
+    std::vector<U> gather(maxpad * 1024);
+    size_t total_bad = 0, selected_count = 0;
+    for (int t = first; t < first + rows; ++t) {
+      int n = lens[t];
+      if (n < 1 || n > 2052) throw std::runtime_error("length");
+      int padded = (n + 15) / 16 * 16, chunks = padded / 16;
+      selected_count += n;
+      for (int j = 0; j < n; ++j) {
+        int pos = select[size_t(t) * 2052 + j];
+        if (pos < 0 || pos > t) throw std::runtime_error("selection");
+        int slot = pt[pos] * 16 + pos % 16;
+        if (slot < 0 || slot >= 4096) throw std::runtime_error("page");
+        std::memcpy(gather.data() + size_t(j) * 1024,
+                    cache.data() + size_t(slot) * 1024, 2048);
+      }
+      CU(cudaMemcpy(dq, qs.data() + size_t(t) * 6144, 6144 * 2,
+                    cudaMemcpyHostToDevice));
+      CU(cudaMemcpy(dkv, gather.data(), size_t(n) * 1024 * 2,
+                    cudaMemcpyHostToDevice));
+      DotQK<<<dim3(2, padded / 8), 32>>>(dq, dkv, scores, n, padded);
+      CU(cudaGetLastError());
+      Online<<<1, 32>>>(scores, prob, alpha, denom, n, padded);
+      CU(cudaGetLastError());
+      DotPV<<<dim3(2, 32, chunks), 32>>>(prob, dkv, pv, n, padded);
+      CU(cudaGetLastError());
+      std::vector<float> a(24 * chunks), v(size_t(24) * chunks * 256), den(24),
+          acc(6144);
+      CU(cudaMemcpy(a.data(), alpha, a.size() * 4, cudaMemcpyDeviceToHost));
+      CU(cudaMemcpy(v.data(), pv, v.size() * 4, cudaMemcpyDeviceToHost));
+      CU(cudaMemcpy(den.data(), denom, 24 * 4, cudaMemcpyDeviceToHost));
+#pragma omp parallel for
+      for (int h = 0; h < 24; ++h) {
+        float sums[256] = {};
+        for (int chunk = 0; chunk < chunks; ++chunk) {
+          float al = a[h * chunks + chunk];
+          for (int j = 0; j < 256; ++j)
+            sums[j] = std::fma(sums[j], al, v[(h * chunks + chunk) * 256 + j]);
+        }
+        for (int j = 0; j < 256; ++j) acc[h * 256 + j] = sums[j];
+      }
+      for (int h = 0; h < 24; ++h) {
+        if (!std::isfinite(den[h]) || den[h] <= 0)
+          throw std::runtime_error("denom");
+        all_den[size_t(t - first) * 24 + h] = den[h];
+      }
+      for (int j = 0; j < 6144; ++j) {
+        size_t local = size_t(t - first) * 6144 + j,
+               global = size_t(t) * 6144 + j;
+        float norm = acc[j] / den[j / 256];
+        if (!std::isfinite(norm) || !std::isfinite(table[gs[global]]))
+          throw std::runtime_error("nonfinite");
+        ungated[local] = Round(norm);
+        float final = Decode(ungated[local]) * table[gs[global]];
+        output[local] = Round(final);
+        if (output[local] != expected[global]) {
+          ++total_bad;
+          ++query_bad[t - first];
+          bad_indices.push_back(int32_t(local));
+          bad_acc.push_back(acc[j]);
+          bad_norm.push_back(norm);
+          bad_final.push_back(final);
+        }
+      }
+    }
+    Write(o + ".output.bf16", output);
+    Write(o + ".ungated.bf16", ungated);
+    Write(o + ".denom.f32", all_den);
+    Write(o + ".differences.i32", bad_indices);
+    Write(o + ".diff-acc.f32", bad_acc);
+    Write(o + ".diff-normalized.f32", bad_norm);
+    Write(o + ".diff-final.f32", bad_final);
+    Write(o + ".query-mismatches.i32", query_bad);
+    CU(cudaFree(dq));
+    CU(cudaFree(dkv));
+    CU(cudaFree(scores));
+    CU(cudaFree(alpha));
+    CU(cudaFree(denom));
+    CU(cudaFree(pv));
+    CU(cudaFree(prob));
+    std::printf(
+        "{\"layer\":%d,\"first_row\":%d,\"rows\":%d,\"elements\":%zu,"
+        "\"selected_indices\":%zu,\"mismatches\":%zu}\n",
+        l, first, rows, output.size(), selected_count, total_bad);
+    return 0;
+  } catch (const std::exception& e) {
+    std::fprintf(stderr, "%s\n", e.what());
+    return 2;
+  }
+}

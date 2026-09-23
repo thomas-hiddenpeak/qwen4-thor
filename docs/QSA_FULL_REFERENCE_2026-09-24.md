@@ -61,3 +61,31 @@ CPU独立标量比较网络重建12层49152个query的选择顺序，全部
 仍未验证，原错答未修复。下一步全query attention算术参考，
 保留BF16 QK/PV乘法与在线softmax的实际舍入边界，并明确设备
 数学函数依赖；随后接通完整评分/投影来源。
+
+
+## 后续：完整attention指定算术参考
+
+复用原三侧HTTP冻结输入，生产及观测器不变，无新增HTTP。
+零警告构建后绑定84份Q/gate/cache/selection/length/page-table/
+attention-output来源，以512 query分块完成12层全部49152个query。
+75546624个有效KV索引参与计算；301989888个最终BF16输出全部
+逐位相同，包含零符号。进程正常退出，完整覆盖与最终恢复审计通过。
+
+参考将QK/PV的BF16 MMA和在线softmax拆成独立设备kernel，CPU
+按16位置块顺序执行FP32 FMA累加、归一化除法、门控前BF16舍入，
+再用设备sigmoid查表进行CPU乘法和最终BF16舍入。它没有调用
+生产模型kernel，但仍依赖相同设备指令与数学函数；不能称为完全
+独立的高精度参考，也不能用结果相同证明数学公式或上游输入正确。
+
+保存完整门控前BF16、FP32分母、gate查表、所有query差异计数。
+最终BF16参考以实际基底+完整delta保存，每块先逐字节/SHA恢复
+才删除临时输出，末尾再次恢复全部12层并保存SHA。所有最终差异
+位置的CPU累加/归一化/门控FP32值有保留接口，本次为空。没有
+保存全部QK/prob/PV/alpha及一致位置未舍入值，未对这些内部量
+逐项核对生产。归档前文件635378965字节，在1GB预算内。
+
+证据：`.q4t-work/e2e/qsa-full-attention-primitives-20260924/`；模板：
+`tools/verify/qsa_full_attention_primitives/`。生产二进制仍2392f6b1，
+不构成新性能结果。下一步补全query高精度/显式舍入对照及完整
+评分、Q/gate投影、out_proj消费者；仍需独立组合前向与错答因果。
+原4K的600440错答和E4M3尺度缺陷未解决，整模型正确性未通过。
