@@ -1,0 +1,41 @@
+from pathlib import Path
+import json,hashlib,shutil,subprocess,os,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];e=root/'.q4t-work/e2e';o=e/p.name;g=e/'moe-full-gather-20260924';hc=e/'hc-full-boundaries-20260923';q=e/'moe-full-input-quant-20260924';u=e/'moe-full-gu-20260924';plans=root/'.q4t-work/prepared/moe-full-gu-20260924/parameters'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as z:
+  for b in iter(lambda:z.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(n,x):(o/n).write_text(json.dumps(x,indent=2)+'\n')
+assert not any((o/'quant').iterdir());assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e';assert all((p/(x+'-build.log')).stat().st_size==0 for x in ['quant','gu']);budget=1500000000;reserve=20*1024**3;assert shutil.disk_usage(o).free>reserve+budget
+man={s.name:json.loads((s/'artifact-binding.json').read_text()) for s in [g,hc,q,u]};bindings=[]
+def bind(s,name):
+ f=s/name;assert sha(f)==man[s.name][name];bindings.append({'file':str(f.relative_to(root)),'sha256':sha(f)});return f
+for s in [g,hc,u]:assert json.loads(bind(s,'exit.json').read_text())['observer_preserved_tested_output']
+bind(hc,'observed-captures/hc-0.prefill.mix.mlp.output.bf16')
+for s in [g,u]:
+ for name in man[s.name]:
+  if name.startswith('observed-captures/layer-0.') and (s==g or name.endswith(('.reorder.i32','.algo.bin','.gu-output.bf16'))):bind(s,name)
+for suffix in ['device-ratios.f32','legacy.sf','native.sf','cpu-rne.sf','cpu-ratios.f32','cpu.packed.bin']:bind(q,'reference/layer-0.'+suffix)
+cp=json.loads(bind(u,'checkpoint-plan.json').read_text());weights=[r for r in cp['records'] if r['layer']==0];assert weights
+for r in weights:
+ name=f"layer-0.expert-{r['expert']}.plan";assert sha(plans/name)==cp['plan_hashes'][name]
+ for t in r['tensors']:
+  f=Path(t['file']);st=f.stat();assert st.st_size==t['size'] and st.st_mtime_ns==t['mtime_ns']
+  with f.open('rb') as z:z.seek(t['offset']);assert hashlib.sha256(z.read(t['bytes'])).hexdigest()==t['sha256']
+save('checkpoint-binding.json',weights);save('input-binding.json',bindings);save('plan.json',{'source_manifests':{s.name:sha(s/'artifact-binding.json') for s in [g,hc,q,u]},'budget_bytes':budget,'reserve_bytes':reserve,'scope':'Layer0 original4096 frozen HC mixed MLP and actual router. Independently recompute E4M3 RNE scales and E2M1 payloads; assert only legacy high-range scales change. Recorded algorithm GU on corrected input, same weights/row ordering/alpha. Baseline operand/replay references reused. No production candidate, no new HTTP, no assertion about final answer; subsequent inter quant/down/combine pending.','retention':'All corrected input ratios/scales/payload and complete GU output; complete per-element changed indices and row distribution. Exact BF16 normed inputs/actual GU held in bound frozen sources.'})
+proc=subprocess.run([str(p/'quant'),str(g/'observed-captures'),str(hc/'observed-captures'),str(o/'quant'),'0',str(q/'reference')],capture_output=True,text=True,env={**os.environ,'OMP_NUM_THREADS':'8'});(o/'quant.stdout').write_text(proc.stdout);(o/'quant.stderr').write_text(proc.stderr);assert proc.returncode==0,proc.stderr;qr=json.loads(proc.stdout);assert qr['other_sf_errors']==qr['native_vs_independent_rne_mismatches']==qr['legacy_vs_actual_mismatches']==qr['cpu_device_ratio_bit_mismatches']==qr['cpu_device_rne_mismatches']==0 and qr['high_range_sf_errors']>0
+for suffix in ['cpu-rne.sf','device-rne.sf','cpu-ratios.f32']:
+ oldsuffix='cpu-rne.sf' if suffix=='device-rne.sf' else suffix;assert sha(o/'quant'/('layer-0.'+suffix))==sha(q/'reference'/('layer-0.'+oldsuffix))
+scale=np.fromfile(o/'quant/layer-0.device-rne.sf',dtype='u1');packed=np.fromfile(o/'quant/layer-0.cpu.packed.bin',dtype='u1');actual_sf=np.fromfile(q/'reference/layer-0.legacy.sf',dtype='u1');actual_packed=np.fromfile(q/'reference/layer-0.cpu.packed.bin',dtype='u1');diff=np.flatnonzero(scale!=actual_sf);assert len(diff)==qr['high_range_sf_errors'];pidx=np.flatnonzero(packed!=actual_packed);assert np.all(np.isin(pidx//8,diff));assert np.count_nonzero((packed&15)!=(actual_packed&15))+np.count_nonzero((packed>>4)!=(actual_packed>>4))==qr['fp4_changes_with_corrected_sf']
+counts=np.fromfile(g/'observed-captures/layer-0.counts.i32',dtype='<i4');offsets=np.fromfile(g/'observed-captures/layer-0.offsets.i32',dtype='<i4');flats=np.fromfile(g/'observed-captures/layer-0.lists.i32',dtype='<i4');assert counts.sum()==40960 and np.array_equal(np.diff(offsets),counts);shutil.copy2(g/'observed-captures/layer-0.counts.i32',o/'inputs/layer-0.counts.i32')
+changed_rows={};sfrows=np.any(scale.reshape(-1,160)!=actual_sf.reshape(-1,160),axis=1)
+for expert in np.flatnonzero(counts):
+ a,b=offsets[expert:expert+2];stem=f'layer-0.expert-{expert}';scale[a*160:b*160].tofile(o/'inputs'/(stem+'.sf-logical.bin'));packed[a*1280:b*1280].tofile(o/'inputs'/(stem+'.packed.bin'));order=np.fromfile(u/'observed-captures'/(stem+'.reorder.i32'),dtype='<i4');assert np.array_equal(np.sort(order),np.arange(b-a));changed_rows[int(expert)]=sfrows[a:b][order]
+save('quant-summary.json',qr);print(qr,flush=True)
+proc=subprocess.run([str(p/'gu'),str(u/'observed-captures'),str(o/'inputs'),str(plans),str(o/'gu'),'0'],capture_output=True,text=True);(o/'gu.stdout').write_text(proc.stdout);(o/'gu.stderr').write_text(proc.stderr);assert proc.returncode==0,proc.stderr;gr=json.loads(proc.stdout);assert gr['elements']==40960*1280;records=[]
+for r in gr['records']:
+ ex=r['expert'];stem=f'layer-0.expert-{ex}';base=u/'observed-captures'/(stem+'.gu-output.bf16');a=np.fromfile(base,dtype='<u2').reshape(-1,1280);b=np.fromfile(o/'gu'/(stem+'.replay.bf16'),dtype='<u2').reshape(-1,1280);assert a.shape==b.shape==(counts[ex],1280);assert np.isfinite((b.astype('<u4')<<16).view('<f4')).all();idx=np.flatnonzero(a.reshape(-1)!=b.reshape(-1));assert len(idx)==r['mismatches'] and np.array_equal(idx,np.fromfile(o/'gu'/(stem+'.replay-differences.i32'),dtype='<i4'));rowchanged=np.any(a!=b,axis=1);assert not np.any(rowchanged&~changed_rows[ex]);rowcounts=np.count_nonzero(a!=b,axis=1).astype('<i4');rowcounts.tofile(o/'gu'/(stem+'.row-differences.i32'));r.update(changed_input_rows=int(changed_rows[ex].sum()),changed_output_rows=int(rowchanged.sum()),unchanged_input_output_mismatches=0,output_sha256=sha(o/'gu'/(stem+'.replay.bf16')));records.append(r)
+assert len(records)==len(weights) and sum(r['mismatches'] for r in records)==gr['mismatches'];save('gu-reference.json',{'records':records,'complete':True});summary={'layer':0,'input':qr,'unique_tokens_with_input_sf_changes':int(np.unique(flats[np.flatnonzero(sfrows)]//10).size),'gu':{k:sum(r[k] for r in records) for k in ['elements','mismatches','changed_input_rows','changed_output_rows','unchanged_input_output_mismatches']},'runtime_changed':False,'whole_model_correctness_proven':False,'task_causality_established':False,'propagation_endpoint':'layer0 GU BF16; inter quant/down/combine pending'}
+for name in ['run.py','quant.cpp','common.h','gu.cpp','quant','gu','quant-build.log','gu-build.log']:shutil.copy2(p/name,o/name)
+summary['artifact_bytes_before_sealing']=sum(f.stat().st_size for f in o.rglob('*') if f.is_file());assert summary['artifact_bytes_before_sealing']<budget;save('summary.json',summary);print(summary,flush=True)
