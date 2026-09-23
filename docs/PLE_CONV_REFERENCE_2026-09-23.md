@@ -158,3 +158,28 @@ HC层1 read.trunk。此前16份末尾/小张量证据摘要重读后全部一致
 本轮给定实际gated_n/gated/trunk，尚未重算这些上游来源，原错答
 仍在。下一步完整PLE门控/归一化与key/value投影；新采集先评估
 容量，不覆盖或改写任何冻结共享证据。
+
+
+## 2026-09-24后续：完整归一化/门控边界与广播乘法
+
+新只读观测零警告构建，首项tools/evalscope原4K三侧HTTP均为
+600440、4096/7 token、stop、服务0、质量驱动1；六份边界元数据
+通过且采集均在监听之后。原错答保持不代表质量通过。
+
+三组实际norm权重61440字节直接匹配checkpoint，eps均为实际
+FP32 1e-6，gate实际scale同FP32 1/sqrt(2560)。现场三组norm、
+gate、gated和卷积消费者的指针与完整数据交接通过。保存norm0
+input/output、norm1 output、value、gate及参数；norm1输入、
+norm2输入/输出、gated和最终卷积输出全部比较冻结卷积来源，
+避免重复保存。12份旧参数/10行尾部证据重读摘要后完全一致。
+
+完整41943040个广播乘法输出同CPU FP32 product再独立BF16
+最近偶数舍入。实际gate和value作为输入；完整结果落盘后用
+实际gated基底+delta逐字节/SHA恢复通过，再删除临时副本。
+三组norm的125829120个输出及16384个gate值已接通，但其算术
+尚未重算，不把消费者一致扩张为这两步或整层正确。
+
+证据：`.q4t-work/e2e/ple-full-gate-norm-20260924/`；模板：
+`tools/verify/ple_full_gate_norm/`。采集预算280MB、参考100MB，
+保留20GiB余量；归档后可用21670621184字节。生产未改，下一步
+用小块临时参考核对完整norm/gate，随后补key/value投影来源。
