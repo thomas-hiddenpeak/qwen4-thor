@@ -1,0 +1,26 @@
+from pathlib import Path
+import json,hashlib,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/hc-full-mix-20260924';old=root/'.q4t-work/e2e/hc-full-boundaries-20260923';norm=root/'.q4t-work/e2e/hc-full-norm-20260924';previous=root/'.q4t-work/e2e/hc-mix-reference-20260923'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+plan=json.loads((o/'plan.json').read_text());assert sha(old/'artifact-binding.json')==plan['source_manifest_sha256'];m=json.loads((old/'artifact-binding.json').read_text())
+for r in json.loads((o/'input-binding.json').read_text()):assert sha(old/r['file'])==r['sha256']==m[r['file']]
+nm=json.loads((norm/'artifact-binding.json').read_text());assert sha(norm/'summary.json')==nm['summary.json'] and json.loads((norm/'summary.json').read_text())['all_device_assisted_outputs_equal']
+pm=json.loads((previous/'artifact-binding.json').read_text());assert sha(previous/'mix-reference.json')==pm['mix-reference.json'];prior={(r['name'],r['variant']):r for r in json.loads((previous/'mix-reference.json').read_text())['records']}
+r=json.loads((o/'reference.json').read_text());assert r['complete'] and len(r['records'])==96;totals=np.zeros(3,dtype=np.int64);elements=0;norms=[];checks=[]
+for record in r['records']:
+ name=record['name'];stage=name.rsplit('.',1)[1];nname=name.replace('.mix.'+stage,'.read' if stage=='attn' else '.fused');source='reference/'+nname+'.device.bf16';assert sha(norm/source)==nm[source]==m['observed-captures/'+name+'.normed.bf16'];norms.append({'name':name,'reference_file':source,'sha256':nm[source]})
+ base=old/'observed-captures'/(name+'.output.bf16');actual=np.fromfile(base,dtype='<u2');assert actual.size==record['elements']==4096*2560;elements+=actual.size
+ for k,e in enumerate(record['encoding']):
+  kind=e['variant'];assert kind==['cpu','device','fp64'][k];f=o/'reference'/(name+'.'+kind+'.delta.npz');assert sha(f)==e['delta_sha256'] and sha(base)==e['base_sha256'];z=np.load(f);idx=z['indices'];v=z['values'];assert len(idx)==len(v)==record['mismatches'][k] and np.all(idx>=0) and np.all(idx<len(actual)) and np.all(np.diff(idx)>0) and np.all(actual[idx]!=v);reconstructed=actual.copy();reconstructed[idx]=v;assert hashlib.sha256(reconstructed.tobytes()).hexdigest()==e['reconstructed_sha256'];totals[k]+=len(idx)
+  if k<2:assert e['last_row_indices']==prior[name,k]['indices'];checks.append({'name':name,'variant':kind,'indices':e['last_row_indices']})
+summary={'elements':elements,'mismatches':dict(zip(['cpu','device','fp64'],totals.tolist())),'full_norm_reference_boundaries':len(norms),'previous_last_row_checks':len(checks),'lossless_encoding_verified':True,'all_device_assisted_outputs_equal':int(totals[1])==0,'runtime_changed':False,'whole_model_correctness_proven':False,'limitation':'Actual full up projection supplied; independent high precision sigmoid differs from device approximation. Full HC low rank/inject projections still pending.'};save('summary.json',summary);save('norm-boundary-binding.json',{'manifest_sha256':sha(norm/'artifact-binding.json'),'records':norms});save('previous-last-row-binding.json',{'manifest_sha256':sha(previous/'artifact-binding.json'),'records':checks})
+for f in p.iterdir():
+ if f.is_file():shutil.copy2(f,o/f.name)
+save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})
+print(summary,flush=True)

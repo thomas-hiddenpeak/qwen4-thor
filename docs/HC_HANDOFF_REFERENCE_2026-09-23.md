@@ -196,3 +196,33 @@ audited-records、previous-last-row-binding和artifact-binding。
 工具模板`tools/verify/hc_full_norm/`。生产源码/接受二进制未改，
 原4K错误未修复。下一步全位置HC混合算术；磁盘余量约25GiB，
 下一阶段须先预算存储，不能直接复制更多大规模中间量。
+
+
+## 2026-09-24后续：完整4K HC混合
+
+继续使用hc-full-boundaries冻结快照，不改生产/观测器、不新增HTTP。
+288份up/normed/output先逐份核对来源manifest；96份normed与上一
+阶段完整CPU算术+设备rsqrt参考输出按全文件SHA绑定。两个工具均
+零警告构建后才运行离线参考。
+
+48层attention/MLP两类，共1006632960个混合输出。设备仅计算
+65536种BF16编码对应的sigmoid表，不调用生产混合kernel；实际
+up和normed逐项断言有限值，CPU按四分支顺序fma、除4、BF16舍入。
+该参考全部逐位一致。CPU将double exp舍入FP32后做sigmoid及
+同序fma时9962项差异；double sigmoid、乘加及除4后经FP32/BF16
+舍入的公式参考25801项差异。全部保存，不把数值复现当作独立
+硬件精度证明。末行CPU/device的192条差异索引检查与旧参考相同。
+
+为控制磁盘用量，每组先生成三份完整参考，保存全部差异索引和值，
+以已绑定原始输出为基底还原，逐元素及完整SHA256均相同后，才移除
+该组新生成的临时完整副本。最终审计再次重建全部输出验证SHA。
+这是一种无损保存，并未省略相同位置或差异值的可恢复性，也未删除
+旧证据。每组开始要求20GiB预留加1GiB工作余量；新阶段结果约数MB。
+
+证据`.q4t-work/e2e/hc-full-mix-20260924/`：reference.json记录每组
+完整输出SHA、差异数及delta包SHA；reference/*.delta.npz为全部
+差异位置/值。input-binding、norm-boundary-binding、
+previous-last-row-binding、summary及artifact-binding记录完整链。
+工具模板`tools/verify/hc_full_mix/`。生产未改、原4K错误未修复。
+完整up仍是实际投影输出，下一步补HC低秩down/up及inject全行
+算术和门值来源；不能将残差/norm/mix一致扩大为整个HC独立前向。

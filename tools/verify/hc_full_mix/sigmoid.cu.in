@@ -1,0 +1,20 @@
+// Elementary device sigmoid only; no production mixing kernel is called.
+#include <cuda_runtime.h>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+#define CU(x) do { if((x)!=cudaSuccess)throw std::runtime_error(#x); } while(0)
+__global__ void Sigmoid(const float* x,float* y){
+ int i=blockIdx.x*blockDim.x+threadIdx.x;
+ if(i<65536)y[i]=1.0f/(1.0f+__expf(-x[i]));
+}
+int main(int argc,char**argv){try{
+ if(argc!=2){throw std::runtime_error("output-table");}
+ std::vector<float>x(65536),y(65536);
+ for(uint32_t i=0;i<65536;++i){uint32_t b=i<<16;std::memcpy(&x[i],&b,4);}
+ float *dx,*dy;CU(cudaMalloc(&dx,262144));CU(cudaMalloc(&dy,262144));CU(cudaMemcpy(dx,x.data(),262144,cudaMemcpyHostToDevice));Sigmoid<<<256,256>>>(dx,dy);CU(cudaGetLastError());CU(cudaMemcpy(y.data(),dy,262144,cudaMemcpyDeviceToHost));std::ofstream f(argv[1],std::ios::binary);f.write(reinterpret_cast<char*>(y.data()),262144);if(!f)throw std::runtime_error("write");CU(cudaFree(dx));CU(cudaFree(dy));return 0;
+}catch(const std::exception&e){std::fprintf(stderr,"%s\n",e.what());return 1;}}

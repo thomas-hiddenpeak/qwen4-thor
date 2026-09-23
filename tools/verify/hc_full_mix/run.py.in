@@ -1,0 +1,33 @@
+from pathlib import Path
+import hashlib,json,shutil,subprocess,os,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];old=root/'.q4t-work/e2e/hc-full-boundaries-20260923';c=old/'observed-captures';o=root/'.q4t-work/e2e/hc-full-mix-20260924';d=o/'reference';m=json.loads((old/'artifact-binding.json').read_text())
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+for name in ['build.log','sigmoid-build.log']:assert (p/name).stat().st_size==0
+assert sha(old/'exit.json')==m['exit.json'] and json.loads((old/'exit.json').read_text())['observer_preserved_tested_output']
+reserve=20*1024**3;budget=1024**3;assert shutil.disk_usage(o).free>reserve+budget
+save('plan.json',{'source_manifest_sha256':sha(old/'artifact-binding.json'),'source':str(old),'reserve_bytes':reserve,'working_allowance_bytes':budget,'free_before':shutil.disk_usage(o).free,'encoding':'For each full reference: actual BF16 output + every differing index/value, SHA256 of full reconstructed reference. Temporary raw output removed only after exact reconstruction. Stop before next group if free space below reserve+allowance.','scope':'48 layers attn/mlp full4096 rows, actual up/norm inputs. Device only65536-entry BF16 sigmoid lookup, CPU4branch fma. No production/observer changes.'})
+bindings=[]
+for l in range(48):
+ for stage in ['attn','mlp']:
+  for suffix in ['up.bf16','normed.bf16','output.bf16']:
+   name=f'observed-captures/hc-{l}.prefill.mix.{stage}.{suffix}';assert sha(old/name)==m[name];bindings.append({'file':name,'sha256':m[name]})
+save('input-binding.json',bindings);print({'input_files_bound':len(bindings)},flush=True)
+subprocess.run([str(p/'sigmoid'),str(o/'sigmoid-table.f32')],check=True)
+records=[];env=dict(os.environ,OMP_NUM_THREADS='12')
+for l in range(48):
+ for stage in ['attn','mlp']:
+  assert shutil.disk_usage(o).free>reserve+budget
+  name=f'hc-{l}.prefill.mix.{stage}';run=subprocess.run([str(p/'replay'),str(c),str(d),str(l),stage,str(o/'sigmoid-table.f32')],env=env,capture_output=True,text=True)
+  (o/(name+'.stdout')).write_text(run.stdout);(o/(name+'.stderr')).write_text(run.stderr);assert run.returncode==0,run.stderr;r=json.loads(run.stdout);actual=np.fromfile(c/(name+'.output.bf16'),dtype='<u2');r['encoding']=[]
+  for k,kind in enumerate(['cpu','device','fp64']):
+   f=d/(name+'.'+kind+'.bf16');ref=np.fromfile(f,dtype='<u2');assert len(ref)==len(actual)==r['elements'];idx=np.flatnonzero(ref!=actual).astype('<i4');values=ref[idx];assert len(idx)==r['mismatches'][k]
+   target=d/(name+'.'+kind+'.delta.npz');np.savez_compressed(target,indices=idx,values=values);z=np.load(target);rebuilt=actual.copy();rebuilt[z['indices']]=z['values'];assert np.array_equal(rebuilt,ref);digest=sha(f);assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==digest
+   r['encoding'].append({'variant':kind,'base_sha256':m['observed-captures/'+name+'.output.bf16'],'reconstructed_sha256':digest,'delta_sha256':sha(target),'last_row_indices':np.flatnonzero(ref[-2560:]!=actual[-2560:]).tolist()});f.unlink()
+  records.append(r);save('reference.json',{'records':records,'complete':len(records)==96});print({'name':name,'mismatches':r['mismatches']},flush=True)
+print({'complete':True,'totals':np.sum([x['mismatches'] for x in records],axis=0).tolist()},flush=True)
