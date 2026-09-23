@@ -1,0 +1,16 @@
+from pathlib import Path
+import json,hashlib,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/hc-projection-reference-20260923';c=o/'observed-captures'
+for phase,suffix in [('prefill','.replay.bf16'),('decode','.cpu.bf16')]:
+ r=json.loads((o/f'{phase}-replay.json').read_text());assert len(r['records'])==288 and r['total_mismatches']==0 and sum(x['elements'] for x in r['records'])==1014144
+ files=list((o/phase).glob('*'+suffix));assert len(files)==288
+ for f in files:assert f.read_bytes()==(c/f.name.replace(suffix,'.output.bf16')).read_bytes()
+for f in ['build.log','decode-build.log','prefill-build.log']:assert (p/f).stat().st_size==0
+files=['observer.cpp','observer.so','run.py','analyze.py','analyze.log','audit.py','decode.cpp','decode','decode-build.log','prefill.cpp','prefill','prefill-build.log']
+for name in files:
+ if name in ['decode','prefill']:shutil.copy2(p/name,o/(name+'-tool'))
+ elif (p/name).exists():shutil.copy2(p/name,o/name)
+files=[x+'-tool' if x in ['decode','prefill'] else x for x in files]+['projection-reference.json','previous-binding.json','prefill-replay.json','decode-replay.json','raw-http-audit.json']
+(o/'artifact-binding.json').write_text(json.dumps({x:hashlib.sha256((o/x).read_bytes()).hexdigest() for x in files},indent=2)+'\n')
+print('Previous snapshots',json.loads((o/'previous-binding.json').read_text())['files'])
+print('All 576 replay output files match captured HTTP bytes.')
