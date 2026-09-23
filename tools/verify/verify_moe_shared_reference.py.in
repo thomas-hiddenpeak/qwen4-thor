@@ -1,0 +1,51 @@
+"""Independent shared-MLP reference from checkpoint and frozen HTTP input."""
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import hashlib,json,struct
+import numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2]
+out=root/'.q4t-work/e2e/moe-shared-reference-20260923';capture=out/'observed-captures'
+assert json.loads((out/'exit.json').read_text())['observer_preserved_tested_output']
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');index=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];headers={}
+def decode(bits):return (bits.astype(np.uint32)<<16).view(np.float32)
+def rounded(v):
+ bits=np.asarray(v,dtype=np.float32).view(np.uint32);return ((bits+np.uint32(0x7fff)+((bits>>16)&1))>>16).astype(np.uint16)
+def tensor(name,shape):
+ file=model/index[name]
+ with file.open('rb') as f:
+  if file not in headers:
+   n=struct.unpack('<Q',f.read(8))[0];headers[file]=(n,json.loads(f.read(n)))
+  n,h=headers[file];m=h[name];assert m['dtype']=='BF16' and m['shape']==shape;a,b=m['data_offsets'];f.seek(8+n+a);data=f.read(b-a)
+ assert len(data)==int(np.prod(shape))*2
+ return decode(np.frombuffer(data,dtype='<u2')).reshape(shape).astype(np.float64),hashlib.sha256(data).hexdigest()
+def read(base,suffix,n):
+ x=np.fromfile(str(base)+suffix,dtype='<u2');assert x.size==n and np.all(np.isfinite(decode(x)));return x
+def sigmoid64(g):
+ z=np.exp(-np.abs(g));return np.where(g>=0,1/(1+z),z/(1+z))
+def swiglu(gu,precision):
+ g,u=decode(gu[:640]),decode(gu[640:])
+ if precision=='fp64':return g.astype(np.float64)*sigmoid64(g.astype(np.float64))*u.astype(np.float64)
+ with np.errstate(over='ignore'):
+  e=np.exp(-g.astype(np.float64)).astype(np.float32);s=np.float32(np.float32(1)/np.float32(np.float32(1)+e))
+ return np.float32(np.float32(g*s)*u)
+def compare(actual,reference_bits,reference):
+ value=decode(actual).astype(np.float64);delta=value-np.asarray(reference,dtype=np.float64)
+ return {'bit_mismatches':int(np.count_nonzero(actual!=reference_bits)),'max_abs_error_vs_unrounded':float(np.max(np.abs(delta))),'relative_l2_vs_unrounded':float(np.linalg.norm(delta)/max(np.linalg.norm(reference),1e-300)),'mismatch_indices':np.flatnonzero(actual!=reference_bits).tolist()}
+records=[]
+for layer in range(48):
+ base=capture/f'layer-{layer}';meta=json.loads(Path(str(base)+'.meta.json').read_text());assert meta['ok'] and meta['layer']==layer
+ x=decode(read(base,'.x.bf16',2560)).astype(np.float64);gu=read(base,'.shared-gu.bf16',1280);inter=read(base,'.shared-inter.bf16',640);down=read(base,'.shared.bf16',2560)
+ prefix=f'model.language_model.layers.{layer}.mlp.shared_expert.'
+ wg,hg=tensor(prefix+'gate_proj.weight',[640,2560]);wu,hu=tensor(prefix+'up_proj.weight',[640,2560]);wd,hd=tensor(prefix+'down_proj.weight',[2560,640])
+ gu64=np.concatenate([wg@x,wu@x]);gu_ref=rounded(gu64)
+ inter64=swiglu(gu,'fp64');inter32=swiglu(gu,'fp32');inter64_bits=rounded(inter64);inter32_bits=rounded(inter32)
+ down64=wd@decode(inter).astype(np.float64);down_ref=rounded(down64)
+ # A composed reference starts from checkpoint-derived GU, not captured GU.
+ composed_inter=rounded(swiglu(gu_ref,'fp32'));composed_down64=wd@decode(composed_inter).astype(np.float64);composed_down=rounded(composed_down64)
+ record={'layer':layer,'weight_sha256':{'gate':hg,'up':hu,'down':hd},'gu_projection':compare(gu,gu_ref,gu64),'swiglu_fp64_from_actual_gu':compare(inter,inter64_bits,inter64),'swiglu_cpu_fp32_from_actual_gu':compare(inter,inter32_bits,inter32),'down_projection_from_actual_inter':compare(down,down_ref,down64),'composed_shared_mlp':compare(down,composed_down,composed_down64)}
+ np.savez(str(base)+'.shared-reference.npz',gu_fp64=gu64,gu_reference_bf16=gu_ref,inter_fp64=inter64,inter_cpu_fp32=inter32,inter_fp64_bf16=inter64_bits,inter_cpu_fp32_bf16=inter32_bits,down_fp64=down64,down_reference_bf16=down_ref,composed_inter_bf16=composed_inter,composed_down_fp64=composed_down64,composed_down_bf16=composed_down)
+ records.append(record)
+keys=['gu_projection','swiglu_fp64_from_actual_gu','swiglu_cpu_fp32_from_actual_gu','down_projection_from_actual_inter','composed_shared_mlp']
+report={'layers':48,'token':4095,'gu_elements':48*1280,'intermediate_elements':48*640,'down_elements':48*2560,'total_bit_mismatches':{k:sum(r[k]['bit_mismatches'] for r in records) for k in keys},'affected_layers':{k:[r['layer'] for r in records if r[k]['bit_mismatches']] for k in keys},'max_relative_l2':{k:max(r[k]['relative_l2_vs_unrounded'] for r in records) for k in keys},'records':records,'runtime_changed':False,'quality_fixed':False,'limitation':'FP64 GEMM and CPU rounded exp do not emulate all CUDA rounding; no tolerance introduced. Composed reference uses actual preceding MoE input, not an independently computed model state.'}
+(out/'shared-reference.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({k:v for k,v in report.items() if k!='records'},indent=2))

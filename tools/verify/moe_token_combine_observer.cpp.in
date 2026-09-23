@@ -12,11 +12,12 @@
 #include <vector>
 namespace {
 std::atomic<cudaKernel_t> router{nullptr}, mapping{nullptr}, grouped{nullptr},
-    combined{nullptr};
+    combined{nullptr}, shared_swiglu{nullptr};
 std::atomic<int> next_layer{0};
 thread_local int layer = -1;
 thread_local std::array<int32_t, 10> ids{};
 thread_local bool router_ok = false, mapping_ok = false, grouped_ok = false;
+thread_local bool shared_ok = false;
 constexpr int kT = 4096, kToken = 4095, kHs = 2560, kE = 512, kSlots = 10;
 template <typename T> T Resolve(const char* name) {
   auto fn = reinterpret_cast<T>(dlsym(RTLD_NEXT, name));
@@ -63,6 +64,8 @@ extern "C" cudaError_t __cudaGetKernel(cudaKernel_t* kernel, const void* fn) {
           std::strstr(name, "5model")) router = *kernel;
       if (std::strstr(name, "BuildRowOfFlatKernel")) mapping = *kernel;
       if (std::strstr(name, "CombineGroupedKernel")) grouped = *kernel;
+      if (std::strstr(name, "SwiGLUKernel") &&
+          std::strstr(name, "5model")) shared_swiglu = *kernel;
       if (std::strstr(name, "MoECombineKernel") &&
           std::strstr(name, "5model")) combined = *kernel;
     }
@@ -103,7 +106,7 @@ extern "C" cudaError_t __cudaLaunchKernel(cudaKernel_t kernel, dim3 grid,
       *static_cast<int*>(args[4]) == kE &&
       *static_cast<int*>(args[5]) == kSlots) {
     layer = next_layer.fetch_add(1);
-    router_ok = mapping_ok = grouped_ok = false;
+    router_ok = mapping_ok = grouped_ok = shared_ok = false;
     if (layer >= 48) return status;
     router_ok = Read(ids.data(), Pointer<int32_t>(args, 1) + kToken * kSlots,
                      sizeof(ids), stream) &&
@@ -135,9 +138,18 @@ extern "C" cudaError_t __cudaLaunchKernel(cudaKernel_t kernel, dim3 grid,
     grouped_ok = grouped_ok && Capture(".routed.f32",
         Pointer<float>(args, 6) + kToken * kHs, kHs * sizeof(float), stream);
   }
+  if (kernel == shared_swiglu && *static_cast<int*>(args[2]) == kT &&
+      *static_cast<int*>(args[3]) == 640) {
+    shared_ok = Capture(".shared-gu.bf16",
+        Pointer<uint16_t>(args, 0) + static_cast<size_t>(kToken) * 1280,
+        1280 * sizeof(uint16_t), stream) &&
+        Capture(".shared-inter.bf16",
+        Pointer<uint16_t>(args, 1) + static_cast<size_t>(kToken) * 640,
+        640 * sizeof(uint16_t), stream);
+  }
   if (kernel == combined && *static_cast<int*>(args[5]) == kT &&
       *static_cast<int*>(args[6]) == kHs) {
-    const bool ok = router_ok && mapping_ok && grouped_ok &&
+    const bool ok = router_ok && mapping_ok && grouped_ok && shared_ok &&
         Capture(".merge-routed.f32", Pointer<float>(args, 0) + kToken * kHs,
                 kHs * sizeof(float), stream) &&
         Capture(".shared.bf16", Pointer<uint16_t>(args, 1) + kToken * kHs,
