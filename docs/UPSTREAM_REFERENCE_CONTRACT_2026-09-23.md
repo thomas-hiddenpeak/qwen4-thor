@@ -66,3 +66,7 @@ QSA使用QsaDecodeSplit，其余使用SparseAttentionKernel。实际分支
 
 短卷积的新证据见[卷积交接报告](LINEAR_CONV_HANDOFF_2026-09-23.md)，
 原始QKV投影仍为实际输入，不据此宣称整个linear层独立验证完成。
+
+输入QKV/z/a/b投影的实际权重与末prefill/首decode参考见
+[输入投影报告](LINEAR_PROJECTION_REFERENCE_2026-09-23.md)：decode指定
+累加全同，prefill638项FP64舍入差异仍未解释，输入GRRead尚未独立生成。

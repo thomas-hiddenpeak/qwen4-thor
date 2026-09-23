@@ -1,0 +1,35 @@
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import json,struct,hashlib,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/linear-projection-reference-v2-20260923';c=o/'observed-captures'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');idx=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];headers={}
+def dec(v):return (v.astype(np.uint32)<<16).view(np.float32).astype(np.float64)
+def rounded(v):
+ b=np.asarray(v,dtype=np.float32).view(np.uint32);return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype(np.uint16)
+records=[]
+for l in range(48):
+ if l%4==3:continue
+ for phase in ['prefill','decode']:
+  x0=None
+  for stage,n in [('qkv',10240),('z',6144),('a',48),('b',48)]:
+   base=str(c/f'layer-{l}.{phase}.{stage}');meta=json.loads(Path(base+'.proj.json').read_text());assert meta['ok'] and meta['layer']==l and meta['n']==n and meta['k']==2560 and meta['phase']==phase and meta['m']==(4096 if phase=='prefill' else 1)
+   data=Path(base+'.weights.bf16').read_bytes();name=f'model.language_model.layers.{l}.linear_attn.in_proj_{stage}.weight';file=model/idx[name]
+   with file.open('rb') as f:
+    if file not in headers:
+     size=struct.unpack('<Q',f.read(8))[0];headers[file]=(size,json.loads(f.read(size)))
+    size,h=headers[file];info=h[name];assert info['dtype']=='BF16' and info['shape']==[n,2560];a,b=info['data_offsets'];f.seek(8+size+a);expected=f.read(b-a)
+   assert data==expected
+   xbits=np.fromfile(base+'.input.bf16',dtype='<u2');actual=np.fromfile(base+'.output.bf16',dtype='<u2');assert xbits.size==2560 and actual.size==n
+   if x0 is None:x0=xbits
+   else:assert np.array_equal(x0,xbits)
+   if stage=='qkv':
+    bound=np.fromfile(c/f'layer-{l}.conv-prefill-tail.bf16',dtype='<u2').reshape(4,10240)[-1] if phase=='prefill' else np.fromfile(c/f'layer-{l}.conv-decode-input.bf16',dtype='<u2');assert np.array_equal(bound,actual)
+   if phase=='decode' and stage in ['a','b']:
+    suffix='a' if stage=='a' else 'beta';assert np.array_equal(actual,np.fromfile(c/f'layer-{l}.decode-{suffix}.bf16',dtype='<u2'))
+   w=dec(np.frombuffer(data,dtype='<u2')).reshape(n,2560);ref=w@dec(xbits);bits=rounded(ref);different=np.flatnonzero(bits!=actual)
+   r={'layer':l,'phase':phase,'stage':stage,'elements':n,'weights_match_checkpoint':True,'same_projection_input':True,'weight_sha256':hashlib.sha256(data).hexdigest(),'fp64_bf16_mismatches':len(different),'mismatch_indices':different.tolist(),'max_abs_vs_fp64':float(np.max(abs(dec(actual)-ref)))};records.append(r)
+   np.savez(base+'.reference.npz',fp64=ref,bf16_bits=bits)
+   (o/'projection-progress.json').write_text(json.dumps({'completed':len(records),'latest':r})+'\n')
+r={'calls':len(records),'elements':sum(x['elements'] for x in records),'mismatches_by_phase_stage':{phase:{stage:sum(x['fp64_bf16_mismatches'] for x in records if x['phase']==phase and x['stage']==stage) for stage in ['qkv','z','a','b']} for phase in ['prefill','decode']},'records':records,'runtime_changed':False,'limitation':'Actual linear-layer mixed input is not independently derived from hyperconnection. Only last prefill row and first decode step. FP64 projection does not reproduce all FP32 accumulation orders; all differences retained.'};assert len(records)==288;(o/'projection-reference.json').write_text(json.dumps(r,indent=2)+'\n');print({k:v for k,v in r.items() if k!='records'})

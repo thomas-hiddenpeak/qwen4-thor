@@ -20,6 +20,13 @@ TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间�
 
 ## 当前决策摘要
 
+- **36层QKV/z/a/b实际投影已绑定，prefill差异未决。**
+  初版观测误将PLE同形状投影计入，141份时门禁失败并留档；修订
+  以QKV→z同输入顺序识别，三侧HTTP仍600440、服务0，288份完整。
+  权重全同checkpoint、QKV/a/b下游边界位同；decode593280输出
+  同CPU指定累加，FP64差异36项可复现。prefill638项差异保留，
+  下一步记录算法同形状重放；运行时未改，见
+  [输入投影报告](LINEAR_PROJECTION_REFERENCE_2026-09-23.md)。
 - **36层短卷积历史与GDN输入边界已核对，运行时未改。**
   三侧HTTP仍原错600440、服务0。三个历史条件各1105920个BF16
   位同；decode卷积输出同GDN输入。末prefill及首decode共737280
