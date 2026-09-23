@@ -1,0 +1,20 @@
+from pathlib import Path
+import os,json,hashlib,shutil
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/ple-lookup-reference-20260923';c=o/'observed-captures'
+def sha(f):return hashlib.sha256(f.read_bytes()).hexdigest()
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+r=json.loads((o/'lookup-reference.json').read_text());assert r['tokens']==4102 and r['rows']==65632 and r['bytes']==10501120 and len(r['records'])==7
+for x in r['records']:
+ f=c/f"step-{x['step']}.fp8";expected=o/'reference'/f"step-{x['step']}.expected.fp8";assert f.read_bytes()==expected.read_bytes() and sha(f)==x['actual_fp8_sha256']==x['expected_fp8_sha256']
+for name,h in json.loads((o/'previous-binding.json').read_text()).items():assert sha(root/name)==h
+identity=json.loads((o/'sidecar-identity.json').read_text());sidecar=Path(identity['path']);st=sidecar.stat();assert st.st_size==identity['size'] and st.st_ino==identity['inode'] and st.st_dev==identity['device'] and st.st_mtime_ns==identity['mtime_ns']
+fd=os.open(sidecar,os.O_RDONLY)
+try:
+ for row,h in json.loads((o/'selected-row-hashes.json').read_text()).items():assert hashlib.sha256(os.pread(fd,160,int(row)*160)).hexdigest()==h
+finally:os.close(fd)
+save(o/'source-binding.json',{name:sha(root/name) for name in ['src/ple/ngram_hash.cpp','src/ple/ple_embedding.cpp','src/ple/page_reader.cpp','src/model/model.cu','src/server/chat_server.cpp','include/q4t/model/model.h','reference/sglang-qwen4-exp/qwen4_exp.py']})
+for name in ['analyze.py','analyze.log','audit.py','initial-analyze.py','initial-analyze.log']:shutil.copy2(p/name,o/name)
+save(o/'artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})
+print('audit passed:65632 lookup occurrences,5560 distinct SSD rows,10501120 bytes; no whole-model correctness claim')
