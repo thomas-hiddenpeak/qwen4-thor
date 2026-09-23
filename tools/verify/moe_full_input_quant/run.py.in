@@ -1,0 +1,29 @@
+from pathlib import Path
+import json,hashlib,shutil,subprocess,os
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/moe-full-input-quant-20260924';d=o/'reference';source=root/'.q4t-work/e2e/moe-full-gather-20260924';c=source/'observed-captures';prior=root/'.q4t-work/e2e/hc-full-boundaries-20260923';pc=prior/'observed-captures'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e';assert sha(root/'include/q4t/quant/format.h')=='24c372233cebbb73ca88ee9b69e8937c4bf97cf2dbb096975eb85132eed24247'
+for log in ['cpu-build.log','device-build.log']:assert (p/log).stat().st_size==0
+sm=json.loads((source/'artifact-binding.json').read_text());pm=json.loads((prior/'artifact-binding.json').read_text());assert sha(source/'exit.json')==sm['exit.json'] and json.loads((source/'exit.json').read_text())['observer_preserved_tested_output']
+assert shutil.disk_usage(o).free>28*1024**3
+save('plan.json',{'source_manifest_sha256':sha(source/'artifact-binding.json'),'prior_manifest_sha256':sha(prior/'artifact-binding.json'),'format_sha256':sha(root/'include/q4t/quant/format.h'),'reference_budget_bytes':8*1024**3,'reserve_bytes':20*1024**3,'free_before':shutil.disk_usage(o).free,'scope':'Frozen full4096 gather inputs. CPU independent enumerated E2M1 given actual SF; CPU nearest-even E4M3 on CPU/device ratios; CUDA native E4M3 and accepted legacy function compared. No production changes or correction propagation.'})
+bindings=[]
+for name,h in sm.items():
+ if not name.startswith('observed-captures/'):continue
+ assert sha(source/name)==h;bindings.append({'file':str((source/name).relative_to(root)),'sha256':h})
+for l in range(48):
+ name=f'observed-captures/hc-{l}.prefill.mix.mlp.output.bf16';assert sha(prior/name)==pm[name];bindings.append({'file':str((prior/name).relative_to(root)),'sha256':pm[name]})
+save('input-binding.json',bindings);print({'bound_files':len(bindings)},flush=True)
+records=[];env=dict(os.environ,OMP_NUM_THREADS='12')
+for l in range(48):
+ assert shutil.disk_usage(o).free>20*1024**3+256*1024**2
+ for tool in ['device','cpu']:
+  proc=subprocess.run([str(p/tool),str(c),str(pc),str(d),str(l)],env=env,capture_output=True,text=True);(o/f'layer-{l}.{tool}.stdout').write_text(proc.stdout);(o/f'layer-{l}.{tool}.stderr').write_text(proc.stderr);assert proc.returncode==0,proc.stderr
+  if tool=='cpu':records.append(json.loads(proc.stdout))
+ save('reference.json',{'records':records,'complete':len(records)==48});print(records[-1],flush=True)
+print({'complete':True},flush=True)

@@ -51,7 +51,7 @@ QSA使用QsaDecodeSplit，其余使用SparseAttentionKernel。实际分支
 | linear短卷积 | 原始QKV、卷积权重、3项历史、输出及新历史 | 因果窗口、激活及状态顺序 | 原4K完整36层4096位置及首decode窗口已核对；原始QKV已绑定全行输入投影，其他请求未覆盖 |
 | GDN prefill | 初始S、全序列QKV/a/b、norm前后和最终S | 全递推与BF16中间边界 | 36层4096位置的q/k归一化及全递推同指定参考；非线性复用设备数学函数，完整卷积与全行输入投影已接通，HC输入本身仍为实际数据 |
 | MoE路由 | 完整HC MLP mixed、router权重/算法/logits、ID及路由权重 | 投影重放/FP64、Top10与softmax | 原4K48层全位置已核对；FP64舍入后103行集合不同，未建任务因果；全行mapping/gather边界已接通，专家量化算术与计算仍待补齐 |
-| MoE mapping/gather | 完整ID/counts/offsets/lists/逆映射、实际x与input_scale、FP4及物理/逻辑SF | 列表覆盖、专家归属、逆映射、尺度身份与布局 | 原4K48层全位置及combine消费映射已核对；完整量化数据已保存，E4M3/FP4算术尚待独立重建 |
+| MoE mapping/gather | 完整ID/counts/offsets/lists/逆映射、实际x与input_scale、FP4及物理/逻辑SF | 列表覆盖、专家归属、逆映射、尺度身份与布局 | 原4K48层全位置及combine消费映射已核对；完整输入量化参考已完成：实际SF条件下FP4全同，但1208940项E4M3高区间编码错误确认；未修正传播 |
 | QSA cache/indexer | 位置、RoPE、KV页表/新增槽、压缩索引、分数和top-k | 因果可见集、索引选择、softmax及attention | 12个全attention层末prefill/首decode已核对选择、KV、压缩/indexer和attention指定算术；不覆盖全部prefill query或其他上下文 |
 | PLE | token历史、hash参数、SSD行身份、反量化值、卷积历史 | 查表身份、门控投影、因果conv与trunk加法 | 全请求查表内容同预期SSD行；门控/投影/卷积仅末10个prefill及首decode等报告范围，不覆盖全token算术 |
 | GRRead/Write | 四路trunk、norm权重、投影/门控、写回BF16边界 | 混合、注入、残差与融合舍入顺序 | 48层末prefill/首decode权重、投影、混合已核对；完整4K残差、norm、mix、投影记录算法重放/FP64及门值已核对；FP64舍入差异保留，实际上游主干仍非独立全模型前向 |
@@ -59,7 +59,7 @@ QSA使用QsaDecodeSplit，其余使用SparseAttentionKernel。实际分支
 
 参考分两层：独立高精度公式检查数学对象；按指定精度/顺序的参考
 解释实际舍入。必须报告全部差异，不临时添加容忍条件；算术解释
-不能覆盖任务质量退化。下一步复用冻结mapping/gather快照重建完整输入量化，再补专家计算及QSA/PLE链，
+不能覆盖任务质量退化。下一步绑定完整输入量化到GU消费者，再补专家计算及QSA/PLE链，
 同时保留原4K错误、已知E4M3尺度问题与其他请求尚未证明的限制。
 不以局部算术一致或旧文档“已闭合”代替真实任务质量。
 
@@ -97,3 +97,5 @@ QSA使用QsaDecodeSplit，其余使用SparseAttentionKernel。实际分支
 完整MoE路由与FP64选择边界见[2026-09-24报告](MOE_ROUTER_REFERENCE_2026-09-24.md)。
 
 完整mapping/gather边界与输入尺度见[2026-09-24报告](MOE_GATHER_REFERENCE_2026-09-24.md)。
+
+完整输入量化的高区间错误及独立参考见[2026-09-24报告](MOE_INPUT_QUANT_REFERENCE_2026-09-24.md)。

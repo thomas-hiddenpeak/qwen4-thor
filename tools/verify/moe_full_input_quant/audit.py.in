@@ -1,0 +1,33 @@
+from pathlib import Path
+import json,hashlib,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/moe-full-input-quant-20260924';d=o/'reference';source=root/'.q4t-work/e2e/moe-full-gather-20260924';c=source/'observed-captures';prior=root/'.q4t-work/e2e/hc-full-boundaries-20260923'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e';plan=json.loads((o/'plan.json').read_text());assert sha(root/'include/q4t/quant/format.h')==plan['format_sha256'];assert sha(source/'artifact-binding.json')==plan['source_manifest_sha256'] and sha(prior/'artifact-binding.json')==plan['prior_manifest_sha256']
+for r in json.loads((o/'input-binding.json').read_text()):assert sha(root/r['file'])==r['sha256']
+r=json.loads((o/'reference.json').read_text());assert r['complete'] and len(r['records'])==48;details=[]
+for record in r['records']:
+ l=record['layer'];name=f'layer-{l}';offset=np.fromfile(c/(name+'.offsets.i32'),dtype='<i4');flat=np.fromfile(c/(name+'.lists.i32'),dtype='<i4');actual_sf=np.empty(6553600,dtype=np.uint8);actual_packed=np.empty(40960*1280,dtype=np.uint8)
+ for e in range(512):
+  rows=int(offset[e+1]-offset[e])
+  if not rows:continue
+  stem=c/(name+f'.expert-{e}');actual_sf[offset[e]*160:offset[e+1]*160]=np.fromfile(str(stem)+'.sf-logical.bin',dtype=np.uint8);actual_packed[offset[e]*1280:offset[e+1]*1280]=np.fromfile(str(stem)+'.packed.bin',dtype=np.uint8)
+ arrays={k:np.fromfile(d/(name+'.'+suffix),dtype=typ) for k,suffix,typ in [('ratio','device-ratios.f32','<f4'),('cpu_ratio','cpu-ratios.f32','<f4'),('legacy','legacy.sf','u1'),('native','native.sf','u1'),('rne','device-rne.sf','u1'),('cpu_rne','cpu-rne.sf','u1')]};assert all(len(v)==6553600 for v in arrays.values());assert np.isfinite(arrays['ratio']).all() and np.all(arrays['ratio']>=0)
+ assert np.count_nonzero(arrays['legacy']!=actual_sf)==record['legacy_vs_actual_mismatches'];assert np.count_nonzero(arrays['rne']!=arrays['native'])==record['native_vs_independent_rne_mismatches'];assert np.count_nonzero(arrays['cpu_rne']!=arrays['rne'])==record['cpu_device_rne_mismatches']
+ ratio_bad=np.flatnonzero(arrays['ratio'].view('<u4')!=arrays['cpu_ratio'].view('<u4'));assert len(ratio_bad)==record['cpu_device_ratio_bit_mismatches'] and np.array_equal(ratio_bad,np.fromfile(d/(name+'.ratio-differences.i32'),dtype='<i4'))
+ bits=np.fromfile(d/(name+'.cpu.packed.bin'),dtype=np.uint8);assert len(bits)==len(actual_packed);packed_bad=np.flatnonzero(bits!=actual_packed);assert np.array_equal(packed_bad,np.fromfile(d/(name+'.packed-differences.i32'),dtype='<i4'));code_bad=int(np.count_nonzero((bits&15)!=(actual_packed&15)))+int(np.count_nonzero((bits>>4)!=(actual_packed>>4)));assert code_bad==record['fp4_mismatches_given_actual_sf']
+ idx=np.flatnonzero(arrays['rne']!=actual_sf);assert len(idx)==record['sf_mismatches_vs_device_ratio_rne'] and np.array_equal(idx,np.fromfile(d/(name+'.sf-differences.i32'),dtype='<i4'));ratios=arrays['ratio'][idx];high=(ratios>=248)&(ratios<432);assert int(high.sum())==record['high_range_sf_errors'] and int((~high).sum())==record['other_sf_errors']
+ rows=idx//160;groups=idx%160;tokens=flat[rows]//10;slots=flat[rows]%10;token_groups=tokens.astype(np.int64)*160+groups;unique,counts=np.unique(token_groups,return_counts=True);assert np.all(counts==10);pairs=np.unique(token_groups*10+slots);assert len(pairs)==len(idx)
+ scales=np.fromfile(c/(name+'.input-scales.f32'),dtype='<u4');assert len(np.unique(scales))==1
+ np.savez_compressed(d/(name+'.scale-error-details.npz'),indices=idx.astype('<i4'),tokens=tokens.astype('<i4'),slots=slots.astype('<i4'),groups=groups.astype('<i4'),ratios=ratios,actual=actual_sf[idx],rne=arrays['rne'][idx])
+ details.append({'layer':l,'sf_errors_including_expert_slots':len(idx),'unique_token_groups':len(unique),'affected_tokens':len(np.unique(tokens)),'all_repeated_across_ten_slots':True,'ratio_min':float(ratios.min()) if len(idx) else None,'ratio_max':float(ratios.max()) if len(idx) else None,'actual_codes':np.unique(actual_sf[idx]).tolist(),'rne_codes':np.unique(arrays['rne'][idx]).tolist(),'distinct_input_scales':1})
+keys=['groups','fp4_elements','fp4_mismatches_given_actual_sf','sf_mismatches_vs_device_ratio_rne','native_vs_independent_rne_mismatches','legacy_vs_actual_mismatches','cpu_device_ratio_bit_mismatches','cpu_device_rne_mismatches','high_range_sf_errors','other_sf_errors'];summary={k:sum(x[k] for x in r['records']) for k in keys};summary.update(unique_token_group_errors=sum(x['unique_token_groups'] for x in details),affected_layer_token_pairs=sum(x['affected_tokens'] for x in details),layers_with_scale_errors=sum(x['sf_errors_including_expert_slots']>0 for x in details),all_layers_one_input_scale=True,runtime_changed=False,whole_model_correctness_proven=False,task_causality_established=False,corrected_scales_propagated=False)
+assert summary['fp4_mismatches_given_actual_sf']==summary['legacy_vs_actual_mismatches']==summary['native_vs_independent_rne_mismatches']==0
+save('summary.json',summary);save('scale-error-summary.json',details)
+for f in p.iterdir():
+ if f.is_file():shutil.copy2(f,o/f.name)
+save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'});print(summary,flush=True)
