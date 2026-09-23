@@ -1,0 +1,13 @@
+from pathlib import Path
+import json,hashlib
+p=Path(__file__).resolve().parent;root=p.parents[2];gu=root/'.q4t-work/e2e/moe-full-gu-20260924';high=root/'.q4t-work/e2e/moe-full-gu-fp64-20260924';manifests={d:json.loads((d/'artifact-binding.json').read_text()) for d in [gu,high]};groups=[]
+assert json.loads((gu/'summary.json').read_text())['recorded_algorithm_replay_mismatches']==0
+assert json.loads((high/'summary.json').read_text())['fp64_via_fp32_bf16_mismatches']==0
+for name,digest in manifests[gu].items():
+ if not name.startswith('observed-captures/') or not name.endswith('.gu-output.bf16'):continue
+ stem=Path(name).name[:-len('.gu-output.bf16')];files=[gu/name,gu/'reference'/(stem+'.replay.bf16'),high/'reference'/(stem+'.fp64.bf16')];items=[]
+ for f in files:
+  d=gu if f.is_relative_to(gu) else high;assert manifests[d][str(f.relative_to(d))]==digest;st=f.stat();items.append({'file':str(f.relative_to(root)),'inode':st.st_ino,'device':st.st_dev});assert st.st_size==files[0].stat().st_size
+ groups.append({'sha256':digest,'bytes':files[0].stat().st_size,'files':items})
+assert len(groups)==21197 and sum(g['bytes'] for g in groups)==5033164800
+f=p/'candidate-inventory.json';assert not f.exists();f.write_text(json.dumps({'groups':groups},indent=2)+'\n');print({'groups':len(groups),'paths':len(groups)*3,'duplicate_logical_bytes':2*sum(g['bytes'] for g in groups)},flush=True)
