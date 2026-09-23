@@ -1,0 +1,24 @@
+from pathlib import Path
+import json,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/linear-output-reference-20260923';c=o/'observed-captures'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+def decode(path):return (np.fromfile(path,dtype='<u2').astype(np.uint32)<<16).view(np.float32)
+def rnd(x):
+ b=np.asarray(x,dtype=np.float32).view(np.uint32);return ((b+0x7fff+((b>>16)&1))>>16).astype(np.uint16)
+records=[]
+for l in range(48):
+ if l%4==3:continue
+ for phase in ['prefill','decode']:
+  base=c/f'layer-{l}.{phase}.norm';s=str(base);meta=json.loads(Path(s+'.norm.json').read_text())
+  y=decode(s+'.input.bf16').reshape(48,128);z=decode(s+'.z.bf16').reshape(48,128);w=decode(s+'.weights.bf16');actual=np.fromfile(s+'.output.bf16',dtype='<u2')
+  a=y*y
+  for offset in [64,32,16,8,4,2,1]:a[:,:offset]=a[:,:offset]+a[:,offset:offset*2]
+  square_mean=a[:,0]/np.float32(128)+np.float32(meta['eps'])
+  inv=(1/np.sqrt(square_mean.astype(np.float64))).astype(np.float32)
+  exp=np.exp(-z.astype(np.float64)).astype(np.float32)
+  sig=np.float32(1)/(np.float32(1)+exp)
+  value=((y*inv[:,None])*w)*sig;bits=rnd(value).reshape(-1);bad=np.flatnonzero(bits!=actual)
+  np.savez(s+'.cpu-order.npz',sum_sq=a[:,0],square_mean=square_mean,inv=inv,exp=exp,sigmoid=sig,value=value,bf16_bits=bits)
+  records.append({'layer':l,'phase':phase,'elements':6144,'mismatches':len(bad),'indices':bad.tolist()})
+r={'records':records,'elements':sum(x['elements'] for x in records),'total_mismatches':sum(x['mismatches'] for x in records),'method':'FP32 binary tree 64..1, explicit multiply rounding, float64 numpy exp and reciprocal sqrt rounded to FP32, FP32 sigmoid divide, BF16 RNE; CUDA approximate nonlinear functions not substituted.'}
+(o/'norm-order-reference.json').write_text(json.dumps(r,indent=2)+'\n');print({k:v for k,v in r.items() if k!='records'})

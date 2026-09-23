@@ -1,0 +1,48 @@
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import json,struct,hashlib,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/linear-output-reference-20260923';c=o/'observed-captures'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');idx=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];headers={}
+def dec(v):return (v.astype(np.uint32)<<16).view(np.float32).astype(np.float64)
+def rounded(v):
+ b=np.asarray(v,dtype=np.float32).view(np.uint32);return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype(np.uint16)
+def bits(path):return np.fromfile(path,dtype='<u2')
+def weight(l,name,shape,data):
+ name=f'model.language_model.layers.{l}.linear_attn.{name}.weight';file=model/idx[name]
+ with file.open('rb') as f:
+  if file not in headers:
+   size=struct.unpack('<Q',f.read(8))[0];headers[file]=(size,json.loads(f.read(size)))
+  size,h=headers[file];info=h[name];assert info['dtype']=='BF16' and info['shape']==shape;start,end=info['data_offsets'];f.seek(8+size+start);expected=f.read(end-start)
+ assert data==expected,name
+ return hashlib.sha256(data).hexdigest()
+old=root/'.q4t-work/e2e/linear-prefill-algorithm-20260923/observed-captures'
+bind=[]
+for f in old.glob('*.bf16'):
+ assert f.read_bytes()==(c/f.name).read_bytes(),f.name
+ bind.append({'file':f.name,'sha256':hashlib.sha256(f.read_bytes()).hexdigest()})
+(o/'previous-binding.json').write_text(json.dumps({'files':len(bind),'all_equal':True,'records':bind},indent=2)+'\n')
+records=[]
+for l in range(48):
+ if l%4==3:continue
+ for phase in ['prefill','decode']:
+  base=c/f'layer-{l}.{phase}';s=str(base)+'.norm';meta=json.loads(Path(s+'.norm.json').read_text());assert meta['ok']
+  xb=bits(s+'.input.bf16');zb=bits(s+'.z.bf16');wb=bits(s+'.weights.bf16');actual=bits(s+'.output.bf16')
+  assert xb.size==zb.size==actual.size==6144 and wb.size==128
+  assert np.array_equal(zb,bits(str(base)+'.z.output.bf16'))
+  if phase=='decode':assert np.array_equal(xb,bits(c/f'layer-{l}.decode-y.bf16'))
+  sha=weight(l,'norm',[128],wb.tobytes())
+  x=dec(xb).reshape(48,128);z=dec(zb).reshape(48,128);w=dec(wb)
+  ref=(x/np.sqrt(np.mean(x*x,axis=1,keepdims=True)+meta['eps'])*w/(1+np.exp(-z))).reshape(-1)
+  b=rounded(ref);bad=np.flatnonzero(b!=actual);np.savez(s+'.reference.npz',fp64=ref,bf16_bits=b)
+  records.append({'layer':l,'phase':phase,'stage':'norm','elements':6144,'weight_sha256':sha,'fp64_bf16_mismatches':len(bad),'mismatch_indices':bad.tolist()})
+  s=str(base)+'.out';m=json.loads(Path(s+'.out.json').read_text());assert m['ok'] and m['k']==6144 and m['n']==2560
+  inp=bits(s+'.input.bf16');assert np.array_equal(inp,actual)
+  data=Path(s+'.weights.bf16').read_bytes();sha=weight(l,'out_proj',[2560,6144],data)
+  ref=dec(np.frombuffer(data,dtype='<u2')).reshape(2560,6144)@dec(inp);actual=bits(s+'.output.bf16');assert actual.size==2560
+  b=rounded(ref);bad=np.flatnonzero(b!=actual);np.savez(s+'.reference.npz',fp64=ref,bf16_bits=b)
+  records.append({'layer':l,'phase':phase,'stage':'out','elements':2560,'weight_sha256':sha,'fp64_bf16_mismatches':len(bad),'mismatch_indices':bad.tolist()})
+  (o/'reference-progress.json').write_text(json.dumps({'completed':len(records),'latest':records[-1]})+'\n')
+r={'calls':len(records),'elements':sum(x['elements'] for x in records),'mismatches_by_phase_stage':{phase:{stage:sum(x['fp64_bf16_mismatches'] for x in records if x['phase']==phase and x['stage']==stage) for stage in ['norm','out']} for phase in ['prefill','decode']},'records':records,'runtime_changed':False,'limitation':'Actual GDN output is the norm input, not an independently derived full prefill recurrence. Only last prefill row and first decode. FP64 is not the production accumulation order.'}
+(o/'output-reference.json').write_text(json.dumps(r,indent=2)+'\n');print({k:v for k,v in r.items() if k!='records'})

@@ -1,0 +1,24 @@
+from pathlib import Path
+import json,numpy as np,subprocess
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/linear-output-reference-20260923';c=o/'observed-captures'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+def decode(path):return (np.fromfile(path,dtype='<u2').astype(np.uint32)<<16).view(np.float32)
+def rnd(x):
+ b=np.asarray(x,dtype=np.float32).view(np.uint32);return ((b+0x7fff+((b>>16)&1))>>16).astype(np.uint16)
+paths=[c/f'layer-{l}.{phase}.norm' for l in range(48) if l%4!=3 for phase in ['prefill','decode']]
+for path in paths:
+ s=str(path);r=np.load(s+'.cpu-order.npz');r['square_mean'].astype('<f4').tofile(s+'.mean.f32');decode(s+'.z.bf16').astype('<f4').tofile(s+'.z.f32')
+code=subprocess.run([str(p/'nonlinear'),str(c)],check=False).returncode
+(o/'norm-nonlinear-exit.json').write_text(json.dumps({'exit':code})+'\n');assert code==0
+records=[]
+for path in paths:
+ s=str(path);r=np.load(s+'.cpu-order.npz');inv=np.fromfile(s+'.cuda-inv.f32',dtype='<f4');sig=np.fromfile(s+'.cuda-sig.f32',dtype='<f4').reshape(48,128)
+ y=decode(s+'.input.bf16').reshape(48,128);w=decode(s+'.weights.bf16');actual=np.fromfile(s+'.output.bf16',dtype='<u2')
+ variants={}
+ for name,iv,sv in [('cuda_inv_only',inv,r['sigmoid']),('cuda_sig_only',r['inv'],sig),('cuda_both',inv,sig)]:
+  bits=rnd(((y*iv[:,None])*w)*sv).reshape(-1);bad=np.flatnonzero(bits!=actual)
+  variants[name]={'mismatches':len(bad),'indices':bad.tolist()}
+  bits.tofile(s+'.'+name+'.bf16')
+ records.append({'name':path.name,'cuda_inv_changed':int(np.count_nonzero(inv.view(np.uint32)!=r['inv'].view(np.uint32))),'cuda_sig_changed':int(np.count_nonzero(sig.view(np.uint32)!=r['sigmoid'].view(np.uint32))),'variants':variants})
+res={'elements':442368,'totals':{name:sum(x['variants'][name]['mismatches'] for x in records) for name in variants},'records':records,'method':'CPU FP32 reduction and products; device only reciprocal square root and sigmoid reconstructed from actual inputs. Not a fully CPU nonlinear reference.'}
+(o/'norm-nonlinear-reference.json').write_text(json.dumps(res,indent=2)+'\n');print({k:v for k,v in res.items() if k!='records'})

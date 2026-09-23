@@ -1,0 +1,39 @@
+#include <cuda_runtime.h>
+#include <cstdio>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+#define CU(x) do { if((x)!=cudaSuccess) throw std::runtime_error(#x); } while(0)
+__global__ void Elementary(const float* mean,const float* z,float* inv,float* sig){
+ int i=blockIdx.x*blockDim.x+threadIdx.x;
+ if(i<48)inv[i]=rsqrtf(mean[i]);
+ if(i<6144)sig[i]=1.0f/(1.0f+__expf(-z[i]));
+}
+std::vector<float> Read(const std::string& path,size_t n){
+ std::ifstream f(path,std::ios::binary|std::ios::ate);
+ if(!f||size_t(f.tellg())!=n*4)throw std::runtime_error(path);
+ std::vector<float> v(n);f.seekg(0);
+ if(!f.read(reinterpret_cast<char*>(v.data()),n*4))throw std::runtime_error(path);
+ return v;
+}
+void Write(const std::string& path,const std::vector<float>& v){
+ std::ofstream f(path,std::ios::binary);f.write(reinterpret_cast<const char*>(v.data()),v.size()*4);
+ if(!f)throw std::runtime_error(path);
+}
+int main(int argc,char** argv){try{
+ if(argc!=2)throw std::runtime_error("directory");
+ for(int l=0;l<48;++l){if(l%4==3)continue;
+  for(const char* phase:{"prefill","decode"}){
+   std::string b=std::string(argv[1])+"/layer-"+std::to_string(l)+"."+phase+".norm";
+   auto mean=Read(b+".mean.f32",48),z=Read(b+".z.f32",6144);
+   float *dm,*dz,*di,*ds;CU(cudaMalloc(&dm,48*4));CU(cudaMalloc(&dz,6144*4));CU(cudaMalloc(&di,48*4));CU(cudaMalloc(&ds,6144*4));
+   CU(cudaMemcpy(dm,mean.data(),48*4,cudaMemcpyHostToDevice));CU(cudaMemcpy(dz,z.data(),6144*4,cudaMemcpyHostToDevice));
+   Elementary<<<48,128>>>(dm,dz,di,ds);CU(cudaGetLastError());
+   std::vector<float> inv(48),sig(6144);CU(cudaMemcpy(inv.data(),di,48*4,cudaMemcpyDeviceToHost));CU(cudaMemcpy(sig.data(),ds,6144*4,cudaMemcpyDeviceToHost));
+   Write(b+".cuda-inv.f32",inv);Write(b+".cuda-sig.f32",sig);
+   CU(cudaFree(dm));CU(cudaFree(dz));CU(cudaFree(di));CU(cudaFree(ds));
+  }
+ }
+ return 0;
+}catch(const std::exception& e){std::fprintf(stderr,"%s\n",e.what());return 1;}}
