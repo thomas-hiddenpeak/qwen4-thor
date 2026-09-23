@@ -20,6 +20,14 @@ TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间�
 
 ## 当前决策摘要
 
+- **完整4K down输出同记录算法与高精度参考。**
+  冻结HTTP输入上21197次矩阵乘、5033164800个BF16输出同
+  记录算法重放及FP64经FP32/BF16舍入；480末行1228800个
+  CPU/GPU FP64值也逐位一致。两种完整参考均可从基底+delta
+  恢复，实际SF错误/原错答仍在。生产未改，下一步清零证据去重
+  后补全shared expert和最终MoECombine，见
+  [down参考后续](MOE_DOWN_REFERENCE_2026-09-24.md)。
+
 - **完整down消费者接通，路由专家合并同CPU参考。**
   新观测先三侧HTTP仍原错、服务0；21197次down输入/权重及
   5033164800个BF16输出接通实际CombineGrouped消费者，

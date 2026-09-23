@@ -1,0 +1,32 @@
+from pathlib import Path
+import json,hashlib,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/moe-full-down-reference-20260924';d=o/'reference';source=root/'.q4t-work/e2e/moe-full-down-20260924';prior=root/'.q4t-work/e2e/moe-full-gu-20260924'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+def rounded(x):
+ b=np.asarray(x,dtype='<f4').view('<u4');return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype('<u2')
+assert json.loads((o/'exit.json').read_text())['reference_exit']==0;plan=json.loads((o/'plan.json').read_text());assert sha(source/'artifact-binding.json')==plan['source_manifest_sha256'] and sha(prior/'artifact-binding.json')==plan['prior_manifest_sha256'];assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+for r in json.loads((o/'input-binding.json').read_text()):assert sha(root/r['file'])==r['sha256']
+ref=json.loads((o/'reference.json').read_text());assert ref['complete'] and len(ref['records'])==48;enc=json.loads((o/'reference-encodings.json').read_text());assert len(enc)==21197*2;mapping={(r['layer'],r['expert'],r['tool']):r for r in enc};assert len(mapping)==len(enc);records=[];tail_count=tail_bad=tail_round_bad=tail_actual_bad=0
+for l in range(48):
+ row={'layer':l}
+ for tool in ['replay','fp64']:
+  r=json.loads((o/f'{tool}-layer-{l}.json').read_text());elements=bad=changed_experts=0
+  for item in r['records']:
+   e=item['expert'];stem=f'layer-{l}.expert-{e}';entry=mapping[l,e,tool];base=root/entry['base_file'];assert sha(base)==entry['base_sha256'];actual=np.fromfile(base,dtype='<u2');reconstructed=actual.copy()
+   with np.load(o/entry['delta']) as delta:
+    idx=delta['indices'];bits=delta['bits'];assert len(idx)==len(bits)==item['mismatches']==entry['mismatches'] and np.all(np.diff(idx)>0) and np.all((idx>=0)&(idx<len(actual)));reconstructed[idx]=bits
+   assert len(actual)==entry['elements']==item['elements']==item['rows']*2560 and hashlib.sha256(reconstructed.tobytes()).hexdigest()==entry['reference_sha256'];assert np.array_equal(np.flatnonzero(reconstructed!=actual),idx);elements+=len(actual);bad+=len(idx);changed_experts+=int(len(idx)>0)
+   if tool=='replay':assert np.array_equal(idx,np.fromfile(d/(stem+'.replay-differences.i32'),dtype='<i4'))
+   else:
+    assert np.array_equal(idx,np.fromfile(d/(stem+'.differences.i32'),dtype='<i4'));values=np.fromfile(d/(stem+'.differences.f64'),dtype='<f8');assert len(values)==len(idx) and np.isfinite(values).all() and np.array_equal(rounded(values),bits)
+    if item['tail_row']>=0:
+     cpu=np.fromfile(d/(stem+'.tail-cpu.f64'),dtype='<f8');gpu=np.fromfile(d/(stem+'.tail-gpu.f64'),dtype='<f8');ci=np.fromfile(d/(stem+'.tail-cpu-differences.i32'),dtype='<i4');assert len(cpu)==len(gpu)==item['cpu_tail_elements']==2560;assert np.isfinite(cpu).all() and np.isfinite(gpu).all();diff=np.flatnonzero(cpu.view('<u8')!=gpu.view('<u8'));assert np.array_equal(ci,diff) and len(diff)==item['cpu_tail_bit_mismatches'];a=item['tail_row']*2560;b=a+2560;assert np.array_equal(rounded(gpu),reconstructed[a:b]);tail_count+=2560;tail_bad+=len(diff);tail_round_bad+=int(np.count_nonzero(rounded(cpu)!=rounded(gpu)));tail_actual_bad+=int(np.count_nonzero(rounded(cpu)!=actual[a:b]))
+  assert elements==r['elements']==104857600 and bad==r['mismatches'];row[tool]={'calls':len(r['records']),'elements':elements,'mismatches':bad,'experts_with_differences':changed_experts}
+ records.append(row);print(row,flush=True)
+assert tail_count==1228800 and all(sum(r[t]['calls'] for r in records)==21197 for t in ['replay','fp64']);assert not list(d.glob('*.bf16'))
+summary={'calls':21197,'elements':5033164800,'recorded_algorithm_replay_mismatches':sum(r['replay']['mismatches'] for r in records),'fp64_via_fp32_bf16_mismatches':sum(r['fp64']['mismatches'] for r in records),'cpu_tail_elements':tail_count,'cpu_vs_dgemm_tail_f64_bit_mismatches':tail_bad,'cpu_vs_dgemm_tail_bf16_mismatches':tail_round_bad,'cpu_tail_vs_actual_bf16_mismatches':tail_actual_bad,'full_reference_reconstruction_verified':True,'matching_non_tail_unrounded_fp64_persisted':False,'actual_scales_used':True,'corrected_scales_propagated':False,'runtime_changed':False,'whole_model_correctness_proven':False,'task_causality_established':False};save('summary.json',summary);save('difference-summary.json',records);shutil.copy2(p/'audit.py',o/'audit.py');save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'});print(summary,flush=True)
