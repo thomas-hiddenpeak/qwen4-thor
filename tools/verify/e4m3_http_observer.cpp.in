@@ -8,10 +8,16 @@
 #include <cstring>
 #include <string>
 #include <vector>
+#include <mutex>
+#include <algorithm>
 namespace {
 std::atomic<cudaKernel_t> down_kernel{nullptr}, gather_kernel{nullptr};
 std::atomic<int> captures{0};
 thread_local int expert = -1;
+thread_local int layer = -1;
+std::mutex layer_mutex;
+std::vector<const void*> layer_scales;
+std::atomic<int> layer_captures[48]{};
 struct Pending { const void* activation = nullptr; int index = 0; int rows = 0; };
 thread_local Pending pending;
 template <typename T> T Resolve(const char* name) {
@@ -50,12 +56,22 @@ extern "C" cudaError_t __cudaLaunchKernel(
   const char* directory = std::getenv("Q4T_E4M3_CAPTURE_DIR");
   if (directory && kernel == gather_kernel.load()) {
     expert = *static_cast<int*>(args[3]);
+    const void* scale_pointer = *static_cast<void**>(args[8]);
+    std::lock_guard<std::mutex> lock(layer_mutex);
+    auto it = std::find(layer_scales.begin(), layer_scales.end(), scale_pointer);
+    if (it == layer_scales.end()) {
+      layer = static_cast<int>(layer_scales.size());
+      layer_scales.push_back(scale_pointer);
+    } else {
+      layer = static_cast<int>(it - layer_scales.begin());
+    }
   }
   const auto status = real(kernel, grid, block, args, shared, stream);
   if (!directory || kernel != down_kernel.load() ||
-      status != cudaSuccess || captures.load() >= 4) return status;
+      status != cudaSuccess || layer < 0 || layer >= 48) return status;
+  if (layer_captures[layer].fetch_add(1) >= 2) return status;
   const int index = captures.fetch_add(1);
-  if (index >= 4) return status;
+  if (index >= 96) return status;
   const int rows = *static_cast<int*>(args[3]);
   const int width = *static_cast<int*>(args[4]);
   const int tiles = *static_cast<int*>(args[5]);
@@ -83,10 +99,10 @@ extern "C" cudaError_t __cudaLaunchKernel(
                  Save(base + ".sf.bin", sf.data(), sf_bytes);
   char metadata[512];
   const int size = std::snprintf(metadata, sizeof(metadata),
-      "{\"index\":%d,\"rows\":%d,\"width\":%d,\"tiles\":%d,"
+      "{\"index\":%d,\"layer\":%d,\"rows\":%d,\"width\":%d,\"tiles\":%d,"
       "\"expert\":%d,\"input_scale\":%.9g,\"scale_hex\":\"%a\","
       "\"input_bytes\":%zu,\"sf_bytes\":%zu,\"ok\":%s}\n",
-      index, rows, width, tiles, expert, static_cast<double>(scale),
+      index, layer, rows, width, tiles, expert, static_cast<double>(scale),
       static_cast<double>(scale), input_bytes, sf_bytes, ok ? "true" : "false");
   const bool saved = size > 0 && static_cast<size_t>(size) < sizeof(metadata) &&
                     Save(base + ".json", metadata, static_cast<size_t>(size));
