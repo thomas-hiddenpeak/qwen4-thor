@@ -1,0 +1,31 @@
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import json,numpy as np,struct,hashlib,ctypes
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/linear-conv-handoff-20260923';c=o/'observed-captures'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');idx=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];fma=ctypes.CDLL('libm.so.6').fmaf;fma.argtypes=[ctypes.c_float]*3;fma.restype=ctypes.c_float
+
+def dec(v):return (v.astype(np.uint32)<<16).view(np.float32)
+def rounded(v):
+ b=np.asarray(v,dtype=np.float32).view(np.uint32);return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype(np.uint16)
+records=[];accs=[];outputs=[];mapping=[]
+for l in range(48):
+ if l%4==3:continue
+ base=str(c/f'layer-{l}')
+ def read(s,n):
+  a=np.fromfile(base+s,dtype='<u2');assert len(a)==n and np.all(np.isfinite(dec(a)));return a
+ tail=read('.conv-prefill-tail.bf16',40960).reshape(4,10240);pre=read('.conv-prefill-state.bf16',30720).reshape(10240,3);before=read('.conv-decode-before.bf16',30720).reshape(10240,3);current=read('.conv-decode-input.bf16',10240);after=read('.conv-decode-after.bf16',30720).reshape(10240,3);weights=read('.conv-weights.bf16',40960).reshape(10240,4)
+ assert np.array_equal(pre,tail[1:].T) and np.array_equal(pre,before) and np.array_equal(after,np.column_stack([before[:,1:],current]))
+ assert np.array_equal(read('.conv-decode-output.bf16',10240),read('.decode-qkv.bf16',10240))
+ name=f'model.language_model.layers.{l}.linear_attn.conv1d.weight'
+ with (model/idx[name]).open('rb') as f:
+  n=struct.unpack('<Q',f.read(8))[0];h=json.loads(f.read(n));m=h[name];assert m['dtype']=='BF16' and m['shape']==[10240,1,4];a,b=m['data_offsets'];f.seek(8+n+a);w=f.read(b-a)
+ assert weights.tobytes()==w
+ for phase,taps in [('prefill',tail.T),('decode',np.column_stack([before,current]))]:
+  values=dec(taps);wv=dec(weights);acc=np.zeros(10240,dtype=np.float32)
+  for j in range(4):acc=np.fromiter((fma(float(x),float(w),float(a)) for x,w,a in zip(values[:,j],wv[:,j],acc)),dtype=np.float32,count=10240)
+  ref=(values.astype(np.float64)*wv.astype(np.float64)).sum(axis=1);z=np.exp(-abs(ref));sig=np.where(ref>=0,1/(1+z),z/(1+z));ref=ref*sig
+  actual=read(f'.conv-{phase}-output.bf16',10240);records.append({'layer':l,'phase':phase,'checkpoint_weight_sha256':hashlib.sha256(w).hexdigest(),'history_contract_exact':True,'output_vs_fp64_bf16_mismatches':int(np.count_nonzero(actual!=rounded(ref))),'mismatch_indices':np.flatnonzero(actual!=rounded(ref)).tolist()});accs.append(acc);outputs.append(actual);mapping.append({'layer':l,'phase':phase});np.savez(base+f'.conv-{phase}-reference.npz',dot_cpu_f32=acc,silu_fp64=ref,bf16_fp64=rounded(ref))
+np.concatenate(accs).astype('<f4').tofile(o/'conv-acc.f32');np.concatenate(outputs).astype('<u2').tofile(o/'conv-actual.bf16');(o/'conv-map.json').write_text(json.dumps(mapping)+'\n')
+r={'layers':36,'history_elements_per_boundary':36*30720,'all_history_contracts_exact':True,'all_decode_conv_to_gdn_inputs_exact':True,'weight_checkpoint_bound':True,'output_elements':36*2*10240,'output_vs_fp64_bf16_mismatches':sum(r['output_vs_fp64_bf16_mismatches'] for r in records),'records':records,'runtime_changed':False,'limitation':'Last prefill token and first decode step only; raw QKV projections remain actual inputs. FP64 math does not emulate CUDA exp or FP32 FMA.'};(o/'conv-reference.json').write_text(json.dumps(r,indent=2)+'\n');print({k:v for k,v in r.items() if k!='records'})

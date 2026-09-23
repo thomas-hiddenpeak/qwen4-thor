@@ -1,0 +1,9 @@
+#include <cuda_runtime.h>
+#include <cuda_bf16.h>
+#include <cstdio>
+#include <vector>
+#include <cstdint>
+#include <string>
+#define CU(x) do{if((x)!=cudaSuccess)return 2;}while(0)
+__global__ void Silu(const float* a,uint16_t* out,int n){int i=blockIdx.x*blockDim.x+threadIdx.x;if(i<n)out[i]=__bfloat16_as_ushort(__float2bfloat16_rn(a[i]/(1.0f+__expf(-a[i]))));}
+int main(int argc,char**argv){if(argc!=2)return 2;std::string p=argv[1];constexpr int n=36*2*10240;std::vector<float>a(n);std::vector<uint16_t>out(n);FILE*f=fopen((p+"/conv-acc.f32").c_str(),"rb");if(!f)return 2;bool ok=fread(a.data(),4,n,f)==n&&fgetc(f)==EOF;ok=fclose(f)==0&&ok;if(!ok)return 2;float*da;uint16_t*dy;CU(cudaMalloc(&da,n*4));CU(cudaMalloc(&dy,n*2));CU(cudaMemcpy(da,a.data(),n*4,cudaMemcpyHostToDevice));Silu<<<(n+255)/256,256>>>(da,dy,n);CU(cudaGetLastError());CU(cudaMemcpy(out.data(),dy,n*2,cudaMemcpyDeviceToHost));f=fopen((p+"/conv-replay.bf16").c_str(),"wb");if(!f)return 2;ok=fwrite(out.data(),2,n,f)==n;ok=fclose(f)==0&&ok;CU(cudaFree(da));CU(cudaFree(dy));return ok?0:2;}

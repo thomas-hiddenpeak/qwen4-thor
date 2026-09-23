@@ -46,7 +46,7 @@ QSA使用QsaDecodeSplit，其余使用SparseAttentionKernel。实际分支
 |---|---|---|---|
 | GDN状态交接 | prefill最终S，decode前S，seq_id | 原样交接、形状和层身份 | 本次原4K首decode已验证 |
 | GDN单步 | 实际conv后QKV、a/b、dt_bias/A_log、S前后、y | 归一化、衰减、delta、秩1更新和读出 | FP64公式及指定FP32单步已建立，实际初态仍未独立生成 |
-| linear短卷积 | 原始QKV、卷积权重、3项历史、输出及新历史 | 因果窗口、激活及状态顺序 | 未采集 |
+| linear短卷积 | 原始QKV、卷积权重、3项历史、输出及新历史 | 因果窗口、激活及状态顺序 | 36层末prefill/首decode窗口、历史和指定算术已核对；不覆盖全部token |
 | GDN prefill | 初始S、全序列QKV/a/b、norm前后和最终S | 全递推与BF16中间边界 | 未独立重建；状态交接不证明其值正确 |
 | QSA cache/indexer | 位置、RoPE、KV页表/新增槽、压缩索引、分数和top-k | 因果可见集、索引选择、softmax及attention | 未建立本请求对应参考 |
 | PLE | token历史、hash参数、SSD行身份、反量化值、卷积历史 | 查表身份、门控投影、因果conv与trunk加法 | 未建立本请求对应参考 |
@@ -63,3 +63,6 @@ QSA使用QsaDecodeSplit，其余使用SparseAttentionKernel。实际分支
 详见[GDN交接报告](GDN_STATE_HANDOFF_2026-09-23.md)。36层状态交接
 逐位相同；单步FP64数学参考有20项BF16读出差异；后续按实际FP32
 归约及运行时归一化重建后，状态及读出全部位同，数学参考差异保留。当前没有修复原错题，也没有接受任何运行时修改。
+
+短卷积的新证据见[卷积交接报告](LINEAR_CONV_HANDOFF_2026-09-23.md)，
+原始QKV投影仍为实际输入，不据此宣称整个linear层独立验证完成。

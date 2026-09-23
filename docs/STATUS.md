@@ -20,6 +20,12 @@ TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间�
 
 ## 当前决策摘要
 
+- **36层短卷积历史与GDN输入边界已核对，运行时未改。**
+  三侧HTTP仍原错600440、服务0。三个历史条件各1105920个BF16
+  位同；decode卷积输出同GDN输入。末prefill及首decode共737280
+  输出对FP64有5项差异，CPU fma+CUDA SiLU全部位同，旧差异保留。
+  下一步补原始QKV/a/b投影来源，见
+  [卷积交接报告](LINEAR_CONV_HANDOFF_2026-09-23.md)。
 - **首decode GDN单步按指定FP32算术逐位复现，运行时未改。**
   复用已绑定HTTP快照，设备仅重建归一化/非线性，CPU独立fma递推。
   明确state update收缩顺序并把诊断工具常量rsqrt改为运行时kd后，
