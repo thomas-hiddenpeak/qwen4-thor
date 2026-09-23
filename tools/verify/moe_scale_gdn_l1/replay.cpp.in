@@ -1,0 +1,116 @@
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+template <class T>
+std::vector<T> Read(const std::string& p, size_t n) {
+  std::ifstream f(p, std::ios::binary | std::ios::ate);
+  if (!f || size_t(f.tellg()) != n * sizeof(T)) throw std::runtime_error(p);
+  std::vector<T> v(n);
+  f.seekg(0);
+  if (!f.read(reinterpret_cast<char*>(v.data()), n * sizeof(T)))
+    throw std::runtime_error(p);
+  return v;
+}
+uint32_t Bits(float x) {
+  uint32_t b;
+  std::memcpy(&b, &x, 4);
+  return b;
+}
+float B(uint16_t x) {
+  uint32_t b = uint32_t(x) << 16;
+  float f;
+  std::memcpy(&f, &b, 4);
+  return f;
+}
+uint16_t Round(float x) {
+  uint32_t b = Bits(x);
+  return uint16_t((b + 0x7fff + ((b >> 16) & 1)) >> 16);
+}
+template <class T>
+void Save(const std::string& p, const std::vector<T>& v) {
+  std::ofstream f(p, std::ios::binary);
+  if (!f.write(reinterpret_cast<const char*>(v.data()), v.size() * sizeof(T)))
+    throw std::runtime_error(p);
+}
+int main(int argc, char** argv) {
+  try {
+    if (argc != 5)
+      throw std::runtime_error("capture parameters/output layer variant");
+    int l = std::stoi(argv[3]), variant = std::stoi(argv[4]);
+    if (l < 0 || l >= 48 || l % 4 == 3 || variant < 0 || variant > 1)
+      throw std::runtime_error("arguments");
+    std::string name = "layer-" + std::to_string(l),
+                b = std::string(argv[1]) + "/" + name,
+                o = std::string(argv[2]) + "/" + name;
+    auto initial = Read<float>(b + ".prefill-state-before.f32", 48 * 128 * 128),
+         actual = Read<float>(b + ".prefill-state-final.f32", 48 * 128 * 128),
+         par = Read<float>(o + ".parameters.f32", 4096 * 48 * 2);
+    auto qkv = Read<uint16_t>(b + ".prefill-qkv-normalized.bf16",
+                              size_t(4096) * 10240),
+         y = Read<uint16_t>(b + ".prefill-y.bf16", size_t(4096) * 6144);
+    std::vector<float> final(initial.size());
+    std::vector<uint16_t> out(y.size());
+    size_t bad_s = 0, bad_y = 0;
+#pragma omp parallel for reduction(+ : bad_s, bad_y) schedule(dynamic, 8)
+    for (int hj = 0; hj < 6144; ++hj) {
+      int h = hj / 128, j = hj % 128, kh = h / 3;
+      float s[128];
+      for (int i = 0; i < 128; ++i) s[i] = initial[(h * 128 + i) * 128 + j];
+      for (int t = 0; t < 4096; ++t) {
+        const uint16_t* q = qkv.data() + size_t(t) * 10240 + kh * 128;
+        const uint16_t* k = q + 2048;
+        float a = par[(t * 48 + h) * 2], beta = par[(t * 48 + h) * 2 + 1],
+              v = B(qkv[size_t(t) * 10240 + 4096 + hj]);
+        float u[32]{};
+        for (int lane = 0; lane < 32; ++lane)
+          for (int p = 0; p < 4; ++p) {
+            int i = lane * 4 + p;
+            u[lane] = std::fma(B(k[i]), s[i], u[lane]);
+          }
+        for (int off = 16; off; off >>= 1) {
+          float old[32];
+          std::memcpy(old, u, sizeof(u));
+          for (int lane = 0; lane < 32; ++lane)
+            u[lane] = old[lane] + old[lane ^ off];
+        }
+        float readout[32]{};
+        for (int lane = 0; lane < 32; ++lane) {
+          float delta = std::fma(-a, u[lane], v) * beta;
+          for (int p = 0; p < 4; ++p) {
+            int i = lane * 4 + p;
+            s[i] = variant == 0 ? std::fma(B(k[i]), delta, a * s[i])
+                                : std::fma(a, s[i], B(k[i]) * delta);
+            readout[lane] = std::fma(s[i], B(q[i]), readout[lane]);
+          }
+        }
+        for (int off = 16; off; off >>= 1)
+          for (int lane = 0; lane < off; ++lane)
+            readout[lane] += readout[lane + off];
+        size_t at = size_t(t) * 6144 + hj;
+        out[at] = Round(readout[0]);
+        bad_y += out[at] != y[at];
+      }
+      for (int i = 0; i < 128; ++i) {
+        size_t at = (h * 128 + i) * 128 + j;
+        final[at] = s[i];
+        bad_s += Bits(s[i]) != Bits(actual[at]);
+      }
+    }
+    Save(o + ".v" + std::to_string(variant) + ".state.f32", final);
+    Save(o + ".v" + std::to_string(variant) + ".y.bf16", out);
+    std::printf(
+        "{\"layer\":%d,\"variant\":%d,\"state_elements\":786432,\"output_"
+        "elements\":25165824,\"state_mismatches\":%zu,\"output_mismatches\":%"
+        "zu}\n",
+        l, variant, bad_s, bad_y);
+    return 0;
+  } catch (const std::exception& e) {
+    std::fprintf(stderr, "%s\n", e.what());
+    return 2;
+  }
+}

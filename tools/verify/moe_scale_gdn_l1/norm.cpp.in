@@ -1,0 +1,111 @@
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+template <class T>
+std::vector<T> Read(const std::string& p, size_t n) {
+  std::ifstream f(p, std::ios::binary | std::ios::ate);
+  if (!f || size_t(f.tellg()) != n * sizeof(T)) throw std::runtime_error(p);
+  std::vector<T> v(n);
+  f.seekg(0);
+  if (!f.read(reinterpret_cast<char*>(v.data()), n * sizeof(T)))
+    throw std::runtime_error(p);
+  return v;
+}
+uint32_t Bits(float x) {
+  uint32_t b;
+  std::memcpy(&b, &x, 4);
+  return b;
+}
+float B(uint16_t x) {
+  uint32_t b = uint32_t(x) << 16;
+  float f;
+  std::memcpy(&f, &b, 4);
+  return f;
+}
+uint16_t Round(float x) {
+  uint32_t b = Bits(x);
+  return uint16_t((b + 0x7fff + ((b >> 16) & 1)) >> 16);
+}
+template <class T>
+void Save(const std::string& p, const std::vector<T>& v) {
+  std::ofstream f(p, std::ios::binary);
+  if (!f.write(reinterpret_cast<const char*>(v.data()), v.size() * sizeof(T)))
+    throw std::runtime_error(p);
+}
+int main(int argc, char** argv) {
+  try {
+    if (argc != 5)
+      throw std::runtime_error("captures reference layer cpu|device");
+    int layer = std::stoi(argv[3]);
+    bool device = std::string(argv[4]) == "device";
+    std::string name = "layer-" + std::to_string(layer),
+                b = std::string(argv[1]) + "/" + name,
+                o = std::string(argv[2]) + "/" + name;
+    auto raw = Read<uint16_t>(b + ".prefill-qkv-before.bf16",
+                              size_t(4096) * 10240),
+         actual = Read<uint16_t>(b + ".prefill-qkv-normalized.bf16",
+                                 size_t(4096) * 10240);
+    std::vector<float> mean(size_t(4096) * 16 * 2 * 32), inv;
+    std::vector<uint16_t> result(size_t(4096) * 4096), high(result.size());
+    if (device) inv = Read<float>(o + ".device-inv.f32", mean.size());
+    size_t bad = 0, bad_high = 0;
+#pragma omp parallel for reduction(+ : bad, bad_high)
+    for (int group = 0; group < 4096 * 16 * 2; ++group) {
+      int kind = group % 2, g = group / 2, t = g / 16, h = g % 16;
+      const uint16_t* x =
+          raw.data() + size_t(t) * 10240 + kind * 2048 + h * 128;
+      float lane[32]{};
+      for (int j = 0; j < 32; ++j)
+        for (int k = 0; k < 4; ++k) {
+          float v = B(x[j * 4 + k]);
+          lane[j] = std::fma(v, v, lane[j]);
+        }
+      for (int off = 16; off; off >>= 1) {
+        float old[32];
+        std::memcpy(old, lane, sizeof(lane));
+        for (int j = 0; j < 32; ++j) lane[j] = old[j] + old[j ^ off];
+      }
+      double sq = 0;
+      for (int i = 0; i < 128; ++i) {
+        double v = B(x[i]);
+        sq += v * v;
+      }
+      double hr = 1.0 / std::sqrt(sq + double(1e-6f));
+      if (kind == 0) hr *= 1.0 / std::sqrt(128.0);
+      for (int j = 0; j < 32; ++j) {
+        size_t m = size_t(group) * 32 + j;
+        mean[m] = lane[j] + 1e-6f;
+        float r = device ? inv[m] : float(1.0 / std::sqrt(double(mean[m])));
+        if (!device && kind == 0) r *= float(1.0 / std::sqrt(128.0));
+        for (int k = 0; k < 4; ++k) {
+          int i = j * 4 + k;
+          size_t at = size_t(t) * 4096 + kind * 2048 + h * 128 + i;
+          uint16_t expected =
+              actual[size_t(t) * 10240 + kind * 2048 + h * 128 + i];
+          result[at] = Round(B(x[i]) * r);
+          high[at] = Round(float(double(B(x[i])) * hr));
+          bad += result[at] != expected;
+          bad_high += high[at] != expected;
+        }
+      }
+    }
+    if (!device) {
+      Save(o + ".mean.f32", mean);
+      Save(o + ".fp64.bf16", high);
+    }
+    Save(o + (device ? ".device.bf16" : ".cpu.bf16"), result);
+    std::printf(
+        "{\"layer\":%d,\"elements\":16777216,\"mismatches\":%zu,\"fp64_"
+        "mismatches\":%zu}\n",
+        layer, bad, bad_high);
+    return 0;
+  } catch (const std::exception& e) {
+    std::fprintf(stderr, "%s\n", e.what());
+    return 2;
+  }
+}

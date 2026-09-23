@@ -1,0 +1,118 @@
+"""Four branch layer-one GDN propagation, using frozen gated HTTP operands."""
+from pathlib import Path
+import hashlib, json, os, shutil, subprocess
+import numpy as np
+p = Path(__file__).resolve().parent
+root = p.parents[2]
+e = root / '.q4t-work/e2e'
+o = e / p.name
+s = e / 'gdn-prefill-reference-20260923'
+u = e / 'moe-scale-linear-input-l1-20260924'
+v = e / 'moe-scale-linear-conv-l1-20260924'
+branches = ['baseline', 'input_fixed', 'inter_fixed', 'both_fixed']
+def sha(f):
+ h = hashlib.sha256()
+ with f.open('rb') as z:
+  for b in iter(lambda: z.read(4*1024*1024), b''): h.update(b)
+ return h.hexdigest()
+def save(n, x): (o/n).write_text(json.dumps(x, indent=2)+'\n')
+assert not any((o/'reference').iterdir())
+assert (p/'build.log').stat().st_size == 0
+assert sha(root/'build/q4t') == '2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+budget = 3000000000
+reserve = 20*1024**3
+assert shutil.disk_usage(o).free > reserve + budget
+man = {x.name: json.loads((x/'artifact-binding.json').read_text()) for x in [s,u,v]}
+bindings = []
+def bind(x, n):
+ f = x/n
+ h = sha(f)
+ assert h == man[x.name][n], f
+ bindings.append({'file': str(f.relative_to(root)), 'sha256': h})
+ return f
+assert json.loads(bind(s,'exit.json').read_text())['observer_preserved_tested_output']
+for x in [u,v]: assert json.loads(bind(x,'reference.json').read_text())['complete']
+suffixes = ['qkv-before.bf16','qkv-normalized.bf16','a.bf16','beta.bf16','dt-bias.bf16','a-log.bf16','state-before.f32','state-final.f32','y.bf16']
+actual = {n: bind(s,'observed-captures/layer-1.prefill-'+n) for n in suffixes}
+oldpar = bind(s,'reference/layer-1.parameters.f32')
+assert not np.fromfile(actual['state-before.f32'],dtype='<u4').any()
+weights = [w for w in json.loads(bind(s,'checkpoint-binding.json').read_text()) if '.layers.1.' in w['tensor']]
+assert len(weights) == 2
+for w in weights:
+ f = Path(w['path']); st = f.stat()
+ assert st.st_size == w['size'] and st.st_mtime_ns == w['mtime_ns']
+ with f.open('rb') as z:
+  z.seek(w['offset']); assert hashlib.sha256(z.read(w['bytes'])).hexdigest() == w['sha256']
+ suffix = 'dt-bias.bf16' if w['tensor'].endswith('dt_bias') else 'a-log.bf16'
+ assert sha(actual[suffix]) == w['sha256']
+paths = {}
+for b in branches:
+ paths[b] = {'qkv-before.bf16':bind(v,'reference/'+b+'.bf16'),
+             'a.bf16':bind(u,'reference/'+b+'/layer-1.prefill.a.replay.bf16'),
+             'beta.bf16':bind(u,'reference/'+b+'/layer-1.prefill.b.replay.bf16')}
+for n,f in paths['baseline'].items(): assert sha(f) == sha(actual[n])
+save('input-binding.json',bindings)
+save('checkpoint-binding.json',weights)
+save('source-manifests.json',{x.name:sha(x/'artifact-binding.json') for x in [s,u,v]})
+save('plan.json',{'budget_bytes':budget,'reserve_bytes':reserve,
+ 'scope':'Own QKV -> CPU grouped4 FMA + XOR norm / device rsqrt / BF16 q,k; own A/B -> device decay,beta; CPU full4096 recurrence from actual zero state, update fma(alpha,S,k*delta). Baseline must restore entire normalized QKV, parameters, Y and final state. Layer0 interventions only; no new layer scale fixes.',
+ 'dependencies':'Device elementary math retained. This is specified arithmetic propagation, not an independent high precision whole-model reference.',
+ 'retention':'Full CPU/device/FP64 qk norm variants, norm arguments/inverses, normalized QKV, decay/beta, Y and final state, full difference indices and token counts. FP64 only norm, not whole recurrence.',
+ 'endpoint':'Layer1 GDN Y and final state; NormGate/out projection not run.'})
+records=[]
+oldq=np.fromfile(actual['qkv-normalized.bf16'],dtype='<u2').reshape(4096,10240)
+oldy=np.fromfile(actual['y.bf16'],dtype='<u2')
+olds=np.fromfile(actual['state-final.f32'],dtype='<u4')
+oldp=np.fromfile(oldpar,dtype='<u4')
+for b in branches:
+ d=o/'reference'/b;d.mkdir()
+ c=o/'inputs'/b;c.mkdir(parents=True)
+ # Links are read-only inputs. The normalized QKV is new, never linked.
+ for n in suffixes:
+  if n=='qkv-normalized.bf16': continue
+  os.link(paths[b].get(n,actual[n]),c/('layer-1.prefill-'+n))
+ # norm helper compares to actual normalized QKV, recurrence later uses own.
+ nc=o/'norm-inputs'/b;nc.mkdir(parents=True)
+ os.link(paths[b]['qkv-before.bf16'],nc/'layer-1.prefill-qkv-before.bf16')
+ os.link(actual['qkv-normalized.bf16'],nc/'layer-1.prefill-qkv-normalized.bf16')
+ calls=[('norm',[nc,d,1,'cpu'],'norm-cpu'),('math',[d,1],'norm-math'),
+        ('norm',[nc,d,1,'device'],'norm-device'),('parameters',[c,d],'parameters')]
+ for tool,args,tag in calls:
+  with (o/(b+'.'+tag+'.stdout')).open('w') as out,(o/(b+'.'+tag+'.stderr')).open('w') as err:
+   proc=subprocess.run([str(p/tool)]+list(map(str,args)),stdout=out,stderr=err,env={**os.environ,'OMP_NUM_THREADS':'8'})
+  assert proc.returncode==0,(b,tag)
+ qkv=np.fromfile(paths[b]['qkv-before.bf16'],dtype='<u2').reshape(4096,10240)
+ diff={}
+ for kind in ['cpu','device','fp64']:
+  qk=np.fromfile(d/('layer-1.'+kind+'.bf16'),dtype='<u2').reshape(4096,4096)
+  idx=np.flatnonzero(qk.reshape(-1)!=oldq[:,:4096].reshape(-1)).astype('<i4')
+  idx.tofile(d/('norm-'+kind+'.differences.i32'));diff[kind]=len(idx)
+  if kind=='device':qkv[:,:4096]=qk
+ qkv.tofile(c/'layer-1.prefill-qkv-normalized.bf16')
+ assert np.isfinite((qkv.astype('<u4')<<16).view('<f4')).all()
+ par=np.fromfile(d/'layer-1.parameters.f32',dtype='<f4')
+ assert len(par)==4096*48*2 and np.isfinite(par).all()
+ pi=np.flatnonzero(par.view('<u4')!=oldp).astype('<i4');pi.tofile(d/'parameters.differences.i32')
+ if b=='baseline':assert diff['device']==len(pi)==0 and np.array_equal(qkv,oldq)
+ print({'branch':b,'stage':'normalized-input-and-parameters','norm_differences':diff,'parameter_differences':len(pi)},flush=True)
+ with (o/(b+'.recurrence.stdout')).open('w') as out,(o/(b+'.recurrence.stderr')).open('w') as err:
+  proc=subprocess.run([str(p/'replay'),str(c),str(d),'1','1'],stdout=out,stderr=err,env={**os.environ,'OMP_NUM_THREADS':'8'})
+ assert proc.returncode==0
+ r=json.loads((o/(b+'.recurrence.stdout')).read_text())
+ y=np.fromfile(d/'layer-1.v1.y.bf16',dtype='<u2');state=np.fromfile(d/'layer-1.v1.state.f32',dtype='<f4')
+ assert len(y)==25165824 and len(state)==786432
+ assert np.isfinite((y.astype('<u4')<<16).view('<f4')).all() and np.isfinite(state).all()
+ yi=np.flatnonzero(y!=oldy).astype('<i4');si=np.flatnonzero(state.view('<u4')!=olds).astype('<i4')
+ assert len(yi)==r['output_mismatches'] and len(si)==r['state_mismatches']
+ yi.tofile(d/'y.differences.i32');si.tofile(d/'state.differences.i32')
+ counts=np.bincount(yi//6144,minlength=4096).astype('<i4');counts.tofile(d/'y.token-differences.i32')
+ changed=np.any(qkv!=oldq,axis=1)|np.any(par.view('<u4').reshape(4096,-1)!=oldp.reshape(4096,-1),axis=1)
+ allowed=np.maximum.accumulate(changed)
+ assert not np.any((counts>0)&~allowed)
+ if b=='baseline':assert len(yi)==len(si)==0
+ r.update(branch=b,norm_differences=diff,parameter_differences=len(pi),changed_output_tokens=int(np.count_nonzero(counts)),changed_input_tokens=int(changed.sum()),causal_support_tokens=int(allowed.sum()))
+ records.append(r);print(r,flush=True)
+ save('reference.json',{'records':records,'complete':len(records)==4})
+for n in ['norm.cpp','math.cu','parameters.cu','replay.cpp','norm','math','parameters','replay','run.py','build.log']:shutil.copy2(p/n,o/n)
+save('summary.json',{'records':records,'runtime_changed':False,'whole_model_correctness_proven':False,'task_causality_established':False,'endpoint':'Layer1 GDN Y and final state only'})
+assert sum(f.stat().st_size for f in o.rglob('*') if f.is_file())<budget

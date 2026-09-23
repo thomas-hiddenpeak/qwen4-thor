@@ -1,0 +1,72 @@
+#include <cuda_runtime.h>
+#include <cuda_bf16.h>
+#include <cstdio>
+#include <cstdint>
+#include <string>
+#include <vector>
+#define CU(x)                         \
+  do {                                \
+    if ((x) != cudaSuccess) return 2; \
+  } while (0)
+__device__ float B(uint16_t x) {
+  return __bfloat162float(__ushort_as_bfloat16(x));
+}
+__global__ void Parameters(const uint16_t* a, const uint16_t* bias,
+                           const uint16_t* alog, const uint16_t* beta,
+                           float* out) {
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i >= 4096 * 48) return;
+  int h = i % 48;
+  float ab = B(a[i]) + B(bias[h]);
+  float dt = ab > 20.f ? ab : log1pf(expf(ab));
+  out[i * 2] = expf(-dt * expf(B(alog[h])));
+  out[i * 2 + 1] = 1.f / (1.f + expf(-B(beta[i])));
+}
+bool Read(const std::string& p, void* d, size_t n) {
+  FILE* f = fopen(p.c_str(), "rb");
+  if (!f) return false;
+  bool ok = fread(d, 1, n, f) == n && fgetc(f) == EOF;
+  return fclose(f) == 0 && ok;
+}
+int main(int argc, char** argv) {
+  if (argc != 3) return 2;
+  for (int l = 1; l < 2; ++l) {
+    std::string b = std::string(argv[1]) + "/layer-" + std::to_string(l);
+    constexpr size_t n = 4096 * 48;
+    std::vector<uint16_t> a(n), bias(48), alog(48), beta(n);
+    std::vector<float> out(n * 2);
+    if (!Read(b + ".prefill-a.bf16", a.data(), n * 2) ||
+        !Read(b + ".prefill-dt-bias.bf16", bias.data(), 96) ||
+        !Read(b + ".prefill-a-log.bf16", alog.data(), 96) ||
+        !Read(b + ".prefill-beta.bf16", beta.data(), n * 2))
+      return 2;
+    uint16_t *da, *db, *dl, *dt;
+    float* d;
+    CU(cudaMalloc(&da, n * 2));
+    CU(cudaMalloc(&db, 96));
+    CU(cudaMalloc(&dl, 96));
+    CU(cudaMalloc(&dt, n * 2));
+    CU(cudaMalloc(&d, n * 2 * 4));
+    CU(cudaMemcpy(da, a.data(), n * 2, cudaMemcpyHostToDevice));
+    CU(cudaMemcpy(db, bias.data(), 96, cudaMemcpyHostToDevice));
+    CU(cudaMemcpy(dl, alog.data(), 96, cudaMemcpyHostToDevice));
+    CU(cudaMemcpy(dt, beta.data(), n * 2, cudaMemcpyHostToDevice));
+    Parameters<<<(n + 127) / 128, 128>>>(da, db, dl, dt, d);
+    CU(cudaGetLastError());
+    CU(cudaMemcpy(out.data(), d, n * 2 * 4, cudaMemcpyDeviceToHost));
+    FILE* f = fopen((std::string(argv[2]) + "/layer-" + std::to_string(l) +
+                     ".parameters.f32")
+                        .c_str(),
+                    "wb");
+    if (!f) return 2;
+    bool ok = fwrite(out.data(), 4, out.size(), f) == out.size();
+    ok = fclose(f) == 0 && ok;
+    if (!ok) return 2;
+    CU(cudaFree(da));
+    CU(cudaFree(db));
+    CU(cudaFree(dl));
+    CU(cudaFree(dt));
+    CU(cudaFree(d));
+  }
+  return 0;
+}
