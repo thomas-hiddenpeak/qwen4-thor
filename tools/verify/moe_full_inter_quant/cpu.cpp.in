@@ -1,0 +1,33 @@
+#include <algorithm>
+#include "common.h"
+uint8_t Nearest(float v,const std::vector<float>&table){auto it=std::lower_bound(table.begin(),table.end(),v);int hi=int(it-table.begin());if(hi==0)return 0;if(hi==int(table.size()))return uint8_t(hi-1);double lo=double(v)-table[hi-1],up=double(table[hi])-v;if(lo<up)return uint8_t(hi-1);if(up<lo)return uint8_t(hi);return uint8_t((hi&1)?hi-1:hi);}
+int main(int argc,char**argv){try{
+ if(argc!=5)throw std::runtime_error("captures prior output layer");
+ int l=std::stoi(argv[4]);std::string out=std::string(argv[3])+"/layer-"+std::to_string(l);auto x=Load(argv[1],argv[2],l);
+ auto table=Read<float>(std::string(argv[3])+"/device-sigmoid.f32",65536);
+ auto device_ratio=Read<float>(out+".device-ratios.f32",kGroups);auto legacy=Read<uint8_t>(out+".legacy.sf",kGroups),native=Read<uint8_t>(out+".native.sf",kGroups);
+ std::vector<float>fp8(127),fp4{0,.5,1,1.5,2,3,4,6},cpu_sigmoid(65536);std::vector<double>high_sigmoid(65536);
+ for(int i=0;i<65536;++i)if((i&0x7fff)<0x7f80){float v=Decode(uint16_t(i));cpu_sigmoid[i]=1.f/(1.f+std::exp(-v));double z=std::exp(-std::abs(double(v)));high_sigmoid[i]=v>=0?1/(1+z):z/(1+z);}
+ for(int i=0;i<127;++i)fp8[i]=i<8?std::ldexp(float(i),-9):std::ldexp(1.f+float(i%8)/8,i/8-7);
+ for(auto bits:x.gu)if((bits&0x7fff)>=0x7f80)throw std::runtime_error("nonfinite GU");
+ for(auto v:x.scales)if(!std::isfinite(v)||v<=0)throw std::runtime_error("scale");
+ for(auto v:x.sf)if(v>=127)throw std::runtime_error("SF");
+ std::printf("{\"layer\":%d,\"groups\":%zu,\"fp4_elements\":%zu,\"variants\":[",l,kGroups,kGroups*16);
+ const char*names[3]={"device_math","cpu_math","fp64_math"};
+ for(int mode=0;mode<3;++mode){
+  std::vector<float>ratios(kGroups);std::vector<uint8_t>rne(kGroups),packed(kGroups*8);
+  size_t bad_packed=0,bad_ratio=0,bad_sf=0,bad_native=0,bad_legacy=0,high_errors=0,other_errors=0;
+  #pragma omp parallel for reduction(+:bad_packed,bad_ratio,bad_sf,bad_native,bad_legacy,high_errors,other_errors)
+  for(size_t i=0;i<kGroups;++i){size_t row=i/40,g=i%40;float values[16],maximum=0;
+   for(int j=0;j<16;++j){auto gb=x.gu[row*1280+g*16+j];float gv=Decode(gb),uv=Decode(x.gu[row*1280+640+g*16+j]);values[j]=mode==2?float(double(gv)*high_sigmoid[gb]*double(uv)):(gv*(mode==0?table[gb]:cpu_sigmoid[gb]))*uv;maximum=std::fmax(maximum,std::fabs(values[j]));}
+   float block=maximum>0?maximum/6.f:1.f;ratios[i]=block/x.scales[row];rne[i]=Nearest(ratios[i],fp8);bad_ratio+=Bits(ratios[i])!=Bits(device_ratio[i]);bad_sf+=rne[i]!=x.sf[i];bad_native+=rne[i]!=native[i];bad_legacy+=legacy[i]!=x.sf[i];
+   if(rne[i]!=x.sf[i]){if(ratios[i]>=248&&ratios[i]<432)++high_errors;else ++other_errors;}
+   float eff=fp8[x.sf[i]]*x.scales[row],inv=eff>0?1.f/eff:0;
+   for(int j=0;j<8;++j){uint8_t codes[2];for(int q=0;q<2;++q){float v=values[2*j+q]*inv;codes[q]=Nearest(std::fabs(v),fp4)|(v<0?8:0);bad_packed+=codes[q]!=((x.packed[i*8+j]>>(q*4))&15);}packed[i*8+j]=uint8_t(codes[0]|(codes[1]<<4));}
+  }
+  std::string stem=out+"."+names[mode];Save(stem+".ratios.f32",ratios);Save(stem+".rne.sf",rne);Save(stem+".packed.bin",packed);
+  std::vector<int32_t>sf_diff,packed_diff,ratio_diff;for(size_t i=0;i<kGroups;++i){if(rne[i]!=x.sf[i])sf_diff.push_back(int32_t(i));if(Bits(ratios[i])!=Bits(device_ratio[i]))ratio_diff.push_back(int32_t(i));}for(size_t i=0;i<packed.size();++i)if(packed[i]!=x.packed[i])packed_diff.push_back(int32_t(i));Save(stem+".sf-differences.i32",sf_diff);Save(stem+".packed-differences.i32",packed_diff);Save(stem+".ratio-differences.i32",ratio_diff);
+  std::printf("%s{\"name\":\"%s\",\"fp4_mismatches_given_actual_sf\":%zu,\"ratio_bit_mismatches_vs_device\":%zu,\"sf_mismatches\":%zu,\"rne_vs_native_mismatches\":%zu,\"legacy_vs_actual_mismatches\":%zu,\"high_range_sf_errors\":%zu,\"other_sf_errors\":%zu}",mode?",":"",names[mode],bad_packed,bad_ratio,bad_sf,bad_native,bad_legacy,high_errors,other_errors);
+ }
+ Save(out+".flats.i32",x.flats);std::printf("]}\n");return 0;
+}catch(const std::exception&e){std::fprintf(stderr,"%s\n",e.what());return 2;}}

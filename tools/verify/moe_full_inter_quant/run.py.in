@@ -1,0 +1,35 @@
+from pathlib import Path
+import json,hashlib,shutil,subprocess,os
+p=Path(__file__).resolve().parent;root=p.parents[2];source=root/'.q4t-work/e2e/moe-full-gu-20260924';gather=root/'.q4t-work/e2e/moe-full-gather-20260924';o=root/'.q4t-work/e2e/moe-full-inter-quant-20260924'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert not o.exists();assert all(not (p/f'{tool}-build.log').read_text().strip() for tool in ['device','cpu']);assert shutil.disk_usage(p).free>26*1024**3
+assert json.loads((source/'exit.json').read_text())['observer_preserved_tested_output']
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+format_sha=sha(root/'include/q4t/quant/format.h');assert format_sha=='24c372233cebbb73ca88ee9b69e8937c4bf97cf2dbb096975eb85132eed24247' and sha(p/'snapshot/q4t/quant/format.h')==format_sha
+for proc in Path('/proc').iterdir():
+ if not proc.name.isdigit():continue
+ try:a=(proc/'cmdline').read_bytes().split(b'\0');exe=(proc/'exe').resolve(strict=True)
+ except OSError:continue
+ assert not(exe.name.startswith('q4t') and b'serve' in a)
+o.mkdir();d=o/'reference';d.mkdir();bindings=[]
+plan={'source_manifest_sha256':sha(source/'artifact-binding.json'),'gather_manifest_sha256':sha(gather/'artifact-binding.json'),'format_sha256':format_sha,'reference_budget_bytes':6*1024**3,'reserve_bytes':20*1024**3,'omp_num_threads':8,'scope':'Frozen complete4K GU outputs, actual down scales and intermediate FP4/SF. CPU independent nearest-even, explicit FP32 arithmetic with device-only sigmoid lookup, pure CPU math and FP64 nonlinear variants. Device group ratios, accepted legacy encoder and CUDA native E4M3. Actual SF used for every FP4 comparison; no corrected scales propagated. No runtime/observer edit, reuse frozen HTTP.'};save('plan.json',plan)
+for src,suffixes in [(source,('.gu-output.bf16','.inter-packed.bin','.inter-sf-logical.bin','.down-input-scale.f32','.flats.i32')),(gather,('.counts.i32',))]:
+ m=json.loads((src/'artifact-binding.json').read_text())
+ for name,digest in m.items():
+  if name.startswith('observed-captures/') and name.endswith(suffixes):assert sha(src/name)==digest;bindings.append({'file':str((src/name).relative_to(root)),'sha256':digest})
+save('input-binding.json',bindings);records=[]
+for l in range(48):
+ for tool in ['device','cpu']:
+  cmd=[str(p/tool),str(source/'observed-captures'),str(gather/'observed-captures'),str(d),str(l)]
+  with (o/f'{tool}-layer-{l}.json').open('w') as out,(o/f'{tool}-layer-{l}.stderr').open('w') as err:result=subprocess.run(cmd,stdout=out,stderr=err,env=dict(os.environ,OMP_NUM_THREADS='8'))
+  assert result.returncode==0,{'layer':l,'tool':tool,'exit':result.returncode}
+ r=json.loads((o/f'cpu-layer-{l}.json').read_text());assert r['layer']==l and r['groups']==1638400 and r['fp4_elements']==26214400;records.append(r);save('reference.json',{'records':records,'complete':len(records)==48});print(r,flush=True)
+ assert shutil.disk_usage(o).free>plan['reserve_bytes']
+for f in p.iterdir():
+ if f.is_file():shutil.copy2(f,o/f.name)
+shutil.copytree(p/'snapshot',o/'snapshot');save('exit.json',{'reference_exit':0,'runtime_changed':False,'whole_model_correctness_proven':False})

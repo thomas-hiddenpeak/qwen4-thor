@@ -1,0 +1,40 @@
+#include <cuda_fp8.h>
+#include <cuda_runtime.h>
+#include "q4t/quant/format.h"
+#include "common.h"
+#define CU(x) do {if((x)!=cudaSuccess)throw std::runtime_error(#x);}while(0)
+struct Result{float ratio;uint8_t legacy,native;};
+__global__ void Sigmoid(float*out) {
+ unsigned i=blockIdx.x*blockDim.x+threadIdx.x;
+ if(i>=65536)return;
+ if((i&0x7fff)>=0x7f80){out[i]=0;return;}
+ float v=__uint_as_float(i<<16);
+ out[i]=1.0f/(1.0f+__expf(-v));
+}
+__global__ void Ratios(const uint16_t*x,const float*scales,Result*out) {
+ size_t i=blockIdx.x*blockDim.x+threadIdx.x;if(i>=kGroups)return;
+ size_t row=i/40,g=i%40;float maximum=0;
+ for(int j=0;j<16;++j) {
+  float gv=__uint_as_float(uint32_t(x[row*1280+g*16+j])<<16);
+  float uv=__uint_as_float(uint32_t(x[row*1280+640+g*16+j])<<16);
+  float sigmoid=1.0f/(1.0f+__expf(-gv));
+  float v=gv*sigmoid*uv;maximum=fmaxf(maximum,fabsf(v));
+ }
+ float block=maximum>0?maximum/6.f:1.f,ratio=block/scales[row];
+ out[i]={ratio,q4t::quant::FloatToE4m3(ratio),__nv_cvt_float_to_fp8(ratio,__NV_SATFINITE,__NV_E4M3)};
+}
+int main(int argc,char**argv){try{
+ if(argc!=5)throw std::runtime_error("captures prior output layer");
+ int l=std::stoi(argv[4]);std::string out=std::string(argv[3])+"/layer-"+std::to_string(l);
+ auto x=Load(argv[1],argv[2],l);uint16_t*dx;float*ds;Result*dr;
+ CU(cudaMalloc(&dx,x.gu.size()*2));CU(cudaMalloc(&ds,kRows*4));CU(cudaMalloc(&dr,kGroups*sizeof(Result)));
+ CU(cudaMemcpy(dx,x.gu.data(),x.gu.size()*2,cudaMemcpyHostToDevice));CU(cudaMemcpy(ds,x.scales.data(),kRows*4,cudaMemcpyHostToDevice));
+ Ratios<<<(kGroups+255)/256,256>>>(dx,ds,dr);CU(cudaGetLastError());
+ std::vector<Result>r(kGroups);CU(cudaMemcpy(r.data(),dr,r.size()*sizeof(Result),cudaMemcpyDeviceToHost));
+ CU(cudaFree(dx));CU(cudaFree(ds));CU(cudaFree(dr));
+ std::vector<float>ratios(kGroups);std::vector<uint8_t>legacy(kGroups),native(kGroups);
+ for(size_t i=0;i<kGroups;++i){ratios[i]=r[i].ratio;legacy[i]=r[i].legacy;native[i]=r[i].native;}
+ Save(out+".device-ratios.f32",ratios);Save(out+".legacy.sf",legacy);Save(out+".native.sf",native);
+ if(l==0){float*table;CU(cudaMalloc(&table,65536*4));Sigmoid<<<256,256>>>(table);CU(cudaGetLastError());std::vector<float>v(65536);CU(cudaMemcpy(v.data(),table,65536*4,cudaMemcpyDeviceToHost));CU(cudaFree(table));Save(std::string(argv[3])+"/device-sigmoid.f32",v);}
+ return 0;
+}catch(const std::exception&e){std::fprintf(stderr,"%s\n",e.what());return 2;}}

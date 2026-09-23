@@ -1,0 +1,25 @@
+from pathlib import Path
+import json,hashlib,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/moe-full-inter-quant-20260924';d=o/'reference';c=root/'.q4t-work/e2e/moe-full-gu-20260924/observed-captures';gather=root/'.q4t-work/e2e/moe-full-gather-20260924/observed-captures';summary=json.loads((o/'summary.json').read_text());records=[];scale_records=[]
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+manifest=json.loads((o/'artifact-binding.json').read_text())
+for l in range(48):
+ name=f'layer-{l}';counts=np.fromfile(gather/(name+'.counts.i32'),dtype='<i4');offset=np.r_[0,np.cumsum(counts,dtype=np.int64)];flat=np.fromfile(d/(name+'.flats.i32'),dtype='<i4')
+ native=np.fromfile(d/(name+'.native.sf'),dtype='u1')
+ for kind in ['cpu_math','fp64_math']:
+  stem=name+'.'+kind;path=d/(stem+'.packed-differences.i32');assert sha(path)==manifest[str(path.relative_to(o))];idx=np.fromfile(path,dtype='<i4');packed=np.memmap(d/(stem+'.packed.bin'),dtype='u1',mode='r');ratio=np.memmap(d/(stem+'.ratios.f32'),dtype='<f4',mode='r');rne=np.fromfile(d/(stem+'.rne.sf'),dtype='u1');d_ratio=np.memmap(d/(name+'.device-ratios.f32'),dtype='<f4',mode='r')
+  for byte in idx:
+   row=int(byte)//320;expert=int(np.searchsorted(offset,row,side='right')-1);local=row-int(offset[expert]);base=c/f'{name}.expert-{expert}';actual=np.memmap(str(base)+'.inter-packed.bin',dtype='u1',mode='r');gu=np.memmap(str(base)+'.gu-output.bf16',dtype='<u2',mode='r').reshape(-1,1280)
+   for q in [0,1]:
+    reference_code=int(packed[byte]>>(q*4))&15;actual_code=int(actual[local*320+int(byte)%320]>>(q*4))&15
+    if reference_code==actual_code:continue
+    column=(int(byte)%320)*2+q;records.append({'variant':kind,'layer':l,'expert':expert,'row':local,'token':int(flat[row]//10),'slot':int(flat[row]%10),'column':column,'gate_bf16_bits':int(gu[local,column]),'up_bf16_bits':int(gu[local,640+column]),'actual_code':actual_code,'reference_code':reference_code,'zero_sign_only':(actual_code&7)==(reference_code&7)==0})
+  for i in np.flatnonzero(rne!=native):
+   row=int(i)//40;expert=int(np.searchsorted(offset,row,side='right')-1);scale_records.append({'variant':kind,'layer':l,'expert':expert,'token':int(flat[row]//10),'slot':int(flat[row]%10),'group':int(i)%40,'device_ratio':float(d_ratio[i]),'reference_ratio':float(ratio[i]),'native_code':int(native[i]),'reference_code':int(rne[i])})
+for kind in ['cpu_math','fp64_math']:
+ selected=[r for r in records if r['variant']==kind];assert len(selected)==summary['variants'][kind]['fp4_mismatches_given_actual_sf'];summary['variants'][kind]['fp4_zero_sign_only_differences']=sum(r['zero_sign_only'] for r in selected);summary['variants'][kind]['fp4_value_differences']=sum(not r['zero_sign_only'] for r in selected);assert sum(r['variant']==kind for r in scale_records)==summary['variants'][kind]['rne_vs_native_mismatches']
+(o/'nonlinear-difference-details.json').write_text(json.dumps({'fp4_differences':records,'rne_differences_vs_native':scale_records},indent=2)+'\n');(o/'summary.json').write_text(json.dumps(summary,indent=2)+'\n');shutil.copy2(p/'details.py',o/'details.py');(o/'artifact-binding.json').write_text(json.dumps({str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'},indent=2)+'\n');print(summary,flush=True)

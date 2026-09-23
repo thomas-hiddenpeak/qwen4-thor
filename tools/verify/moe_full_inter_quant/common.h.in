@@ -1,0 +1,41 @@
+#pragma once
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+template<class T>std::vector<T> Read(const std::string&p,size_t n){std::ifstream f(p,std::ios::binary|std::ios::ate);if(!f||size_t(f.tellg())!=n*sizeof(T))throw std::runtime_error(p);std::vector<T>v(n);f.seekg(0);if(!f.read(reinterpret_cast<char*>(v.data()),n*sizeof(T)))throw std::runtime_error(p);return v;}
+template<class T>void Save(const std::string&p,const std::vector<T>&v){std::ofstream f(p,std::ios::binary);if(!f.write(reinterpret_cast<const char*>(v.data()),v.size()*sizeof(T)))throw std::runtime_error(p);}
+float Decode(uint16_t x){uint32_t b=uint32_t(x)<<16;float v;std::memcpy(&v,&b,4);return v;}
+uint32_t Bits(float v){uint32_t b;std::memcpy(&b,&v,4);return b;}
+constexpr size_t kRows=40960,kGroups=kRows*40;
+
+struct Inputs {
+ std::vector<uint16_t> gu;
+ std::vector<float> scales;
+ std::vector<uint8_t> packed,sf;
+ std::vector<int32_t> flats;
+};
+Inputs Load(const std::string&c,const std::string&prior,int layer) {
+ Inputs x;std::string name="layer-"+std::to_string(layer);
+ auto counts=Read<int32_t>(prior+"/"+name+".counts.i32",512);
+ for(int e=0;e<512;++e) {
+  int rows=counts[e];if(!rows)continue;
+  std::string b=c+"/"+name+".expert-"+std::to_string(e);
+  auto gu=Read<uint16_t>(b+".gu-output.bf16",size_t(rows)*1280);
+  auto packed=Read<uint8_t>(b+".inter-packed.bin",size_t(rows)*320);
+  auto sf=Read<uint8_t>(b+".inter-sf-logical.bin",size_t(rows)*40);
+  auto scale=Read<float>(b+".down-input-scale.f32",1);
+  auto flats=Read<int32_t>(b+".flats.i32",rows);
+  x.gu.insert(x.gu.end(),gu.begin(),gu.end());
+  x.packed.insert(x.packed.end(),packed.begin(),packed.end());
+  x.sf.insert(x.sf.end(),sf.begin(),sf.end());
+  x.scales.insert(x.scales.end(),rows,scale[0]);
+  x.flats.insert(x.flats.end(),flats.begin(),flats.end());
+ }
+ if(x.scales.size()!=kRows)throw std::runtime_error("row count");
+ return x;
+}

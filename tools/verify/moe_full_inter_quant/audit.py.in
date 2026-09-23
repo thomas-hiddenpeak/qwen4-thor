@@ -1,0 +1,38 @@
+from pathlib import Path
+import json,hashlib,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/moe-full-inter-quant-20260924';d=o/'reference';source=root/'.q4t-work/e2e/moe-full-gu-20260924';c=source/'observed-captures';gather=root/'.q4t-work/e2e/moe-full-gather-20260924'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert json.loads((o/'exit.json').read_text())['reference_exit']==0
+plan=json.loads((o/'plan.json').read_text());assert sha(source/'artifact-binding.json')==plan['source_manifest_sha256'] and sha(gather/'artifact-binding.json')==plan['gather_manifest_sha256'];assert sha(root/'include/q4t/quant/format.h')==plan['format_sha256'];assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+for r in json.loads((o/'input-binding.json').read_text()):assert sha(root/r['file'])==r['sha256']
+reference=json.loads((o/'reference.json').read_text());assert reference['complete'] and len(reference['records'])==48
+names=['device_math','cpu_math','fp64_math'];keys=['fp4_mismatches_given_actual_sf','ratio_bit_mismatches_vs_device','sf_mismatches','rne_vs_native_mismatches','legacy_vs_actual_mismatches','high_range_sf_errors','other_sf_errors'];totals={name:{key:0 for key in keys} for name in names};details=[]
+for l in range(48):
+ name=f'layer-{l}';counts=np.fromfile(gather/'observed-captures'/(name+'.counts.i32'),dtype='<i4');packed=[];sf=[];flats=[];experts=[]
+ for e,rows in enumerate(counts):
+  if not rows:continue
+  stem=f'{name}.expert-{e}';packed.append(np.fromfile(c/(stem+'.inter-packed.bin'),dtype='u1'));sf.append(np.fromfile(c/(stem+'.inter-sf-logical.bin'),dtype='u1'));flats.append(np.fromfile(c/(stem+'.flats.i32'),dtype='<i4'));experts.extend([e]*int(rows))
+ actual=np.concatenate(packed);actual_sf=np.concatenate(sf);flat=np.concatenate(flats);experts=np.array(experts,dtype='<i4');assert len(actual)==40960*320 and len(actual_sf)==1638400 and len(flat)==40960;assert np.array_equal(np.sort(flat),np.arange(40960));assert np.array_equal(flat,np.fromfile(d/(name+'.flats.i32'),dtype='<i4'))
+ device=np.fromfile(d/(name+'.device-ratios.f32'),dtype='<f4');legacy=np.fromfile(d/(name+'.legacy.sf'),dtype='u1');native=np.fromfile(d/(name+'.native.sf'),dtype='u1');assert len(device)==len(legacy)==len(native)==len(actual_sf);assert np.isfinite(device).all() and np.all(device>=0)
+ r=reference['records'][l];assert r['layer']==l and [v['name'] for v in r['variants']]==names
+ for rec in r['variants']:
+  kind=rec['name'];stem=name+'.'+kind;bits=np.fromfile(d/(stem+'.packed.bin'),dtype='u1');ratio=np.fromfile(d/(stem+'.ratios.f32'),dtype='<f4');rne=np.fromfile(d/(stem+'.rne.sf'),dtype='u1');assert len(bits)==len(actual) and len(ratio)==len(rne)==len(actual_sf);assert np.isfinite(ratio).all() and np.all(ratio>=0)
+  packed_idx=np.flatnonzero(bits!=actual);ratio_idx=np.flatnonzero(ratio.view('<u4')!=device.view('<u4'));sf_idx=np.flatnonzero(rne!=actual_sf)
+  for suffix,idx in [('packed',packed_idx),('ratio',ratio_idx),('sf',sf_idx)]:assert np.array_equal(idx,np.fromfile(d/(stem+'.'+suffix+'-differences.i32'),dtype='<i4'))
+  fp4_bad=int(np.count_nonzero((bits&15)!=(actual&15))+np.count_nonzero((bits>>4)!=(actual>>4)));high=(ratio[sf_idx]>=248)&(ratio[sf_idx]<432)
+  measured={'fp4_mismatches_given_actual_sf':fp4_bad,'ratio_bit_mismatches_vs_device':len(ratio_idx),'sf_mismatches':len(sf_idx),'rne_vs_native_mismatches':int(np.count_nonzero(rne!=native)),'legacy_vs_actual_mismatches':int(np.count_nonzero(legacy!=actual_sf)),'high_range_sf_errors':int(high.sum()),'other_sf_errors':int((~high).sum())}
+  for key,value in measured.items():assert value==rec[key];totals[kind][key]+=value
+  if kind=='device_math':
+   assert fp4_bad==len(ratio_idx)==measured['rne_vs_native_mismatches']==measured['legacy_vs_actual_mismatches']==0
+   rows=sf_idx//40;groups=sf_idx%40;tokens=flat[rows]//10;slots=flat[rows]%10
+   np.savez_compressed(d/(name+'.scale-error-details.npz'),indices=sf_idx.astype('<i4'),experts=experts[rows],tokens=tokens,slots=slots,groups=groups.astype('<i4'),ratios=ratio[sf_idx],actual=actual_sf[sf_idx],rne=rne[sf_idx])
+   details.append({'layer':l,'scale_errors':len(sf_idx),'high_range_errors':int(high.sum()),'other_errors':int((~high).sum()),'affected_expert_rows':len(np.unique(rows)),'affected_tokens':len(np.unique(tokens)),'affected_experts':len(np.unique(experts[rows])),'last_token_scale_errors':int(np.count_nonzero(tokens==4095)),'actual_codes':np.unique(actual_sf[sf_idx]).tolist(),'rne_codes':np.unique(rne[sf_idx]).tolist()})
+ print(details[-1],flush=True)
+summary={'groups':48*1638400,'fp4_elements':48*40960*640,'variants':totals,'layers_with_scale_errors':sum(r['scale_errors']>0 for r in details),'affected_layer_token_pairs':sum(r['affected_tokens'] for r in details),'affected_expert_rows':sum(r['affected_expert_rows'] for r in details),'last_token_scale_errors':sum(r['last_token_scale_errors'] for r in details),'corrected_scales_propagated':False,'runtime_changed':False,'whole_model_correctness_proven':False,'task_causality_established':False};save('summary.json',summary);save('scale-error-summary.json',details)
+for name in ['common.h','device.cu','cpu.cpp','device','cpu','device-build.log','cpu-build.log','run.py','audit.py']:shutil.copy2(p/name,o/name)
+save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'});print(summary,flush=True)
