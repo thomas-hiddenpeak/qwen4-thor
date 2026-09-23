@@ -66,3 +66,32 @@ lane的偶/奇累加链、fma和16/8/4/2/1树形相加，编译关闭隐式
 decode-cpu-reference.json、chain-binding.json和artifact-binding.json。
 初版失败目录保留observer-failure-diagnosis.json。仓库保存修订版
 观测、独立数学分析和decode CPU重算模板。
+
+## 后续：记录实际算法的prefill独立重放
+
+新观测保留QKV→z同输入归属规则，分别复制各次调用自身的算法对象，
+包括暂存QKV的算法，检查FP32 compute/scale、默认epilogue、BF16
+列主序布局和转置，并记录workspace。初次构建因文本插入范围过宽
+失败，日志保留；修正后零警告，第一项执行原4K无/有/无观测HTTP。
+三次仍600440、4096输入/7输出、stop，服务均0、质量驱动均1；
+288份投影及144份prefill算法记录完整，workspace均33554432字节。
+这只通过观测不改变本请求结果的检查，原题质量没有通过。
+
+新旧1368份BF16快照逐字节相同，包括实际投影权重、输入、输出；
+据此绑定上一轮FP64参考及checkpoint核对，不另选样本或改变参考。
+独立进程使用记录算法、相同矩阵形状/布局/权重和32MiB workspace，
+先用AlgoCheck验证兼容性，未重新选择算法。cuBLAS版本130501。
+输入用捕获的末行复制4096次，只核对末行；不是原始4096行完整输入。
+
+144次、593280个输出全部逐位同HTTP。因此原638项FP64差异
+（QKV488、z147、a1、b2）可在没有模型调度的独立GEMM重放中
+复现。没有将这些差异清零，也没有独立证明cuBLAS内部累加算术。
+生产实现和接受二进制未变，没有新的质量/性能验收结论。
+下一步补NormGate/out_proj及其输入交接，仍需继续核对完整prefill
+状态生成、hyperconnection、QSA及PLE等上游，原错题因果未确定。
+
+证据：`.q4t-work/e2e/linear-prefill-algorithm-20260923/`中的
+raw-http-audit.json、observed-captures、previous-binding.json、
+replay-result.json、replay/及artifact-binding.json。独立重放退出0，
+原始输出文件另行逐字节复核；构建失败与随后零警告日志均保留。
+仓库保存算法观测和独立重放模板。

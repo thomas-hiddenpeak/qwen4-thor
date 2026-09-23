@@ -1,0 +1,223 @@
+#include <cuda_runtime_api.h>
+#include <cublasLt.h>
+#include <dlfcn.h>
+#include <atomic>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <vector>
+namespace {
+std::atomic<cudaKernel_t> prefill{nullptr},decode{nullptr}, gemv{nullptr}, conv_prefill{nullptr}, update_prefill{nullptr}, conv_decode{nullptr}, update_decode{nullptr};
+std::atomic<int> conv_prefill_count{0},conv_decode_count{0};
+thread_local bool take_conv=false;
+std::atomic<int> prefill_count{0},decode_count{0};
+thread_local int layer=-1;
+template <typename T> T Resolve(const char* name) {
+  auto fn = reinterpret_cast<T>(dlsym(RTLD_NEXT, name));
+  if (!fn) std::_Exit(127);
+  return fn;
+}
+std::string Base() {
+  const char* dir = std::getenv("Q4T_GDN_CAPTURE_DIR");
+  return std::string(dir ? dir : "") + "/layer-" + std::to_string(layer);
+}
+bool Save(const std::string& path, const void* data, size_t bytes) {
+  FILE* f = std::fopen(path.c_str(), "wb");
+  if (!f) return false;
+  const bool ok = std::fwrite(data, 1, bytes, f) == bytes;
+  return std::fclose(f) == 0 && ok;
+}
+bool Read(void* dst, const void* src, size_t bytes, cudaStream_t stream) {
+  static const auto copy = Resolve<decltype(&cudaMemcpyAsync)>("cudaMemcpyAsync");
+  static const auto sync = Resolve<decltype(&cudaStreamSynchronize)>(
+      "cudaStreamSynchronize");
+  return copy(dst, src, bytes, cudaMemcpyDeviceToHost, stream) == cudaSuccess &&
+         sync(stream) == cudaSuccess;
+}
+bool Capture(const char* suffix, const void* src, size_t bytes,
+             cudaStream_t stream) {
+  std::vector<unsigned char> data(bytes);
+  return Read(data.data(), src, bytes, stream) &&
+         Save(Base() + suffix, data.data(), bytes);
+}
+template <typename T> T* Pointer(void** args, int index) {
+  return *static_cast<T**>(args[index]);
+}
+}
+namespace {
+int proj_counts[2]={0,0};
+thread_local int proj_layer[2]={-1,-1}, proj_stage[2]={0,0};
+thread_local const void* proj_input[2]={nullptr,nullptr};
+thread_local cublasLtMatmulAlgo_t pending_algo[2]{};
+thread_local size_t pending_ws[2]{};
+thread_local bool pending_has_algo[2]{};
+thread_local float pending_alpha[2]={0,0};
+thread_local const uint16_t *pending_w[2]={nullptr,nullptr}, *pending_y[2]={nullptr,nullptr};
+void Projection(const uint16_t* w,const uint16_t* x,const uint16_t* y,
+                int m,int n,int k,float alpha,cudaStream_t stream,bool confirmed=false,const cublasLtMatmulAlgo_t* algo=nullptr,size_t ws=0){
+ if(!std::getenv("Q4T_GDN_CAPTURE_DIR")||k!=2560||(m!=4096&&m!=1))return;
+ const int phase=m==4096?0:1;
+ if(phase==1&&proj_counts[0]!=36)return;
+ if(n==10240&&!confirmed){proj_stage[phase]=-1;proj_input[phase]=x;pending_w[phase]=w;pending_y[phase]=y;pending_alpha[phase]=alpha;pending_has_algo[phase]=algo!=nullptr;if(algo)pending_algo[phase]=*algo;pending_ws[phase]=ws;return;}
+ if(n==6144&&proj_stage[phase]==-1&&x==proj_input[phase]){
+  int index=proj_counts[phase]++;proj_layer[phase]=index+index/3;proj_stage[phase]=0;
+  Projection(pending_w[phase],x,pending_y[phase],m,10240,k,pending_alpha[phase],stream,true,pending_has_algo[phase]?&pending_algo[phase]:nullptr,pending_ws[phase]);
+ }
+ if(proj_stage[phase]<0)return;
+ if(proj_layer[phase]<0||proj_layer[phase]>=48||proj_stage[phase]>=4)return;
+ const int widths[4]={10240,6144,48,48};const char* names[4]={"qkv","z","a","b"};
+ int stage=proj_stage[phase];if(n!=widths[stage]||x!=proj_input[phase])return;
+ int saved_layer=layer;layer=proj_layer[phase];
+ std::string tag=std::string(phase?".decode.":".prefill.")+names[stage];
+ bool ok=alpha==1.0f&&Capture((tag+".input.bf16").c_str(),x+size_t(m-1)*2560,5120,stream)&&
+  Capture((tag+".weights.bf16").c_str(),w,size_t(n)*k*2,stream)&&
+  Capture((tag+".output.bf16").c_str(),y+size_t(m-1)*n,n*2,stream);
+ if(phase==0){
+  ok=ok&&algo&&Save(Base()+tag+".algo.bin",algo,sizeof(*algo));
+  char info[128];int bytes=std::snprintf(info,sizeof(info),"{\"workspace_bytes\":%zu,\"algorithm_bytes\":%zu}\n",ws,sizeof(*algo));
+  ok=ok&&bytes>0&&size_t(bytes)<sizeof(info)&&Save(Base()+tag+".algo.json",info,bytes);
+ }
+ char meta[256];int len=std::snprintf(meta,sizeof(meta),"{\"layer\":%d,\"phase\":\"%s\",\"stage\":\"%s\",\"m\":%d,\"n\":%d,\"k\":%d,\"ok\":%s}\n",layer,phase?"decode":"prefill",names[stage],m,n,k,ok?"true":"false");
+ if(len>0&&size_t(len)<sizeof(meta))Save(Base()+tag+".proj.json",meta,len);
+ std::fprintf(stderr,"[linear-projection] layer=%d phase=%d stage=%d ok=%d\n",layer,phase,stage,ok);
+ ++proj_stage[phase];layer=saved_layer;
+}
+}
+extern "C" cudaError_t __cudaGetKernel(cudaKernel_t* k,const void* fn){
+ using Get=cudaError_t(*)(cudaKernel_t*,const void*);static auto real=Resolve<Get>("__cudaGetKernel");auto result=real(k,fn);
+ if(result==cudaSuccess){const char* n=nullptr;static auto name=Resolve<decltype(&cudaFuncGetName)>("cudaFuncGetName");
+  if(name(&n,fn)==cudaSuccess&&n){
+   if(std::strstr(n,"GatedDeltaNetRegKernelILi8"))prefill=*k;
+   if(std::strstr(n,"Bf16GevKernel"))gemv=*k;
+   if(std::strstr(n,"GatedDeltaNetDecodeKernel"))decode=*k;
+   if(std::strstr(n,"CausalConv1dWithCkptKernel"))conv_prefill=*k;
+   if(std::strstr(n,"Conv1dUpdateStateKernel"))update_prefill=*k;
+   if(std::strstr(n,"CausalConv1dMultiSeqKernel"))conv_decode=*k;
+   if(std::strstr(n,"Conv1dUpdateStateMultiSeqKernel"))update_decode=*k;
+  }
+ }return result;
+}
+extern "C" cudaError_t __cudaLaunchKernel(cudaKernel_t kernel,dim3 grid,dim3 block,void** args,size_t shared,cudaStream_t stream){
+ using Launch=cudaError_t(*)(cudaKernel_t,dim3,dim3,void**,size_t,cudaStream_t);static auto real=Resolve<Launch>("__cudaLaunchKernel");
+ const bool enabled=std::getenv("Q4T_GDN_CAPTURE_DIR")!=nullptr;
+ bool take=false,ok=true;int seq=-1;float* state=nullptr;
+ if(enabled&&kernel==conv_decode&&prefill_count==36&&grid.y==1){
+  int index=conv_decode_count.fetch_add(1);take_conv=index<36;layer=index+index/3;
+  if(take_conv){int conv_seq=-1;
+   bool good=*static_cast<int*>(args[5])==10240&&*static_cast<int*>(args[6])==4&&Read(&conv_seq,Pointer<int>(args,4),4,stream)&&conv_seq==0&&
+    Capture(".conv-decode-input.bf16",Pointer<uint16_t>(args,0),10240*2,stream)&&
+    Capture(".conv-decode-before.bf16",Pointer<uint16_t>(args,2),10240*3*2,stream)&&
+    Capture(".conv-weights.bf16",Pointer<uint16_t>(args,3),10240*4*2,stream);
+   std::fprintf(stderr,"[conv-decode-before] layer=%d ok=%d\n",layer,good);
+  }
+ }
+
+ if(enabled&&kernel==decode&&prefill_count==36&&grid.y==1){
+  int index=decode_count.fetch_add(1);take=index<36;layer=index+index/3;
+  if(take){
+   ok=*static_cast<int*>(args[7])==16&&*static_cast<int*>(args[8])==128&&
+      *static_cast<int*>(args[9])==3&&*static_cast<int*>(args[10])==128&&
+      *static_cast<int*>(args[11])==10240&&*static_cast<int*>(args[12])==48&&
+      Read(&seq,Pointer<int>(args,13),sizeof(seq),stream)&&seq==0;
+   state=Pointer<float>(args,5);
+   ok=ok&&Capture(".decode-state-before.f32",state,48*128*128*4,stream)&&
+    Capture(".decode-qkv.bf16",Pointer<uint16_t>(args,0),10240*2,stream)&&
+    Capture(".decode-a.bf16",Pointer<uint16_t>(args,1),48*2,stream)&&
+    Capture(".dt-bias.bf16",Pointer<uint16_t>(args,2),48*2,stream)&&
+    Capture(".a-log.bf16",Pointer<uint16_t>(args,3),48*2,stream)&&
+    Capture(".decode-beta.bf16",Pointer<uint16_t>(args,4),48*2,stream);
+  }
+ }
+ auto status=real(kernel,grid,block,args,shared,stream);
+ if(!enabled||status!=cudaSuccess)return status;
+ if(kernel==gemv)Projection(Pointer<uint16_t>(args,0),Pointer<uint16_t>(args,1),Pointer<uint16_t>(args,2),1,*static_cast<int*>(args[3]),*static_cast<int*>(args[4]),*static_cast<float*>(args[5]),stream);
+ if(kernel==conv_prefill&&*static_cast<int*>(args[5])==4096){
+  int index=conv_prefill_count.load();layer=index+index/3;
+  if(index<36){bool good=*static_cast<int*>(args[6])==10240&&*static_cast<int*>(args[7])==4&&
+    Capture(".conv-prefill-tail.bf16",Pointer<uint16_t>(args,0)+size_t(4092)*10240,4*10240*2,stream)&&
+    Capture(".conv-prefill-output.bf16",Pointer<uint16_t>(args,1)+size_t(4095)*10240,10240*2,stream);
+   std::fprintf(stderr,"[conv-prefill-tail] layer=%d ok=%d\n",layer,good);
+  }
+ }
+ if(kernel==update_prefill&&*static_cast<int*>(args[2])==4096){
+  int index=conv_prefill_count.fetch_add(1);layer=index+index/3;
+  if(index<36){bool good=Capture(".conv-prefill-state.bf16",Pointer<uint16_t>(args,0),10240*3*2,stream);
+   std::fprintf(stderr,"[conv-prefill-state] layer=%d ok=%d\n",layer,good);
+  }
+ }
+ if(kernel==conv_decode&&take_conv){bool good=Capture(".conv-decode-output.bf16",Pointer<uint16_t>(args,1),10240*2,stream);std::fprintf(stderr,"[conv-decode-output] layer=%d ok=%d\n",layer,good);}
+ if(kernel==update_decode&&take_conv){bool good=Capture(".conv-decode-after.bf16",Pointer<uint16_t>(args,0),10240*3*2,stream);std::fprintf(stderr,"[conv-decode-after] layer=%d ok=%d\n",layer,good);}
+ if(kernel==prefill&&*static_cast<int*>(args[7])==4096){
+  int index=prefill_count.fetch_add(1);layer=index+index/3;
+  if(index<36){
+   bool saved=Capture(".prefill-state-final.f32",Pointer<float>(args,5),48*128*128*4,stream);
+   std::fprintf(stderr,"[gdn-prefill-state] layer=%d ok=%d\n",layer,saved);
+  }
+ }
+ if(take){
+  ok=ok&&Capture(".decode-state-after.f32",state,48*128*128*4,stream)&&
+   Capture(".decode-y.bf16",Pointer<uint16_t>(args,6),48*128*2,stream);
+  char meta[256];int size=std::snprintf(meta,sizeof(meta),"{\"layer\":%d,\"seq\":%d,\"heads\":48,\"kd\":128,\"vd\":128,\"block\":%u,\"ok\":%s}\n",layer,seq,block.x,ok?"true":"false");
+  if(size>0&&size_t(size)<sizeof(meta))Save(Base()+".meta.json",meta,size);
+  std::fprintf(stderr,"[gdn-decode-state] layer=%d ok=%d\n",layer,ok);
+ }
+ return status;
+}
+
+namespace {
+template <typename T>
+bool Layout(cublasLtMatrixLayout_t layout, cublasLtMatrixLayoutAttribute_t key,
+            T* value) {
+  static const auto get = Resolve<decltype(&cublasLtMatrixLayoutGetAttribute)>(
+      "cublasLtMatrixLayoutGetAttribute");
+  size_t size = 0;
+  return get(layout, key, value, sizeof(T), &size) == CUBLAS_STATUS_SUCCESS &&
+         size == sizeof(T);
+}
+template <typename T>
+bool Attribute(cublasLtMatmulDesc_t desc, cublasLtMatmulDescAttributes_t key,
+               T* value) {
+  static const auto get = Resolve<decltype(&cublasLtMatmulDescGetAttribute)>(
+      "cublasLtMatmulDescGetAttribute");
+  size_t size = 0;
+  return get(desc, key, value, sizeof(T), &size) == CUBLAS_STATUS_SUCCESS &&
+         size == sizeof(T);
+}
+bool Shape(cublasLtMatrixLayout_t desc, uint64_t rows, uint64_t cols,
+           cudaDataType_t type) {
+  uint64_t r = 0, c = 0;
+  int64_t ld = 0;
+  cudaDataType_t t{};
+  cublasLtOrder_t order{};
+  return Layout(desc, CUBLASLT_MATRIX_LAYOUT_ROWS, &r) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_COLS, &c) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_LD, &ld) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_TYPE, &t) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_ORDER, &order) &&
+         r == rows && c == cols && ld == static_cast<int64_t>(rows) &&
+         t == type && order == CUBLASLT_ORDER_COL;
+}
+}
+extern "C" cublasStatus_t CUBLASWINAPI cublasLtMatmul(
+ cublasLtHandle_t handle,cublasLtMatmulDesc_t desc,const void* alpha,
+ const void* a,cublasLtMatrixLayout_t ad,const void* b,cublasLtMatrixLayout_t bd,
+ const void* beta,const void* c,cublasLtMatrixLayout_t cd,void* d,cublasLtMatrixLayout_t dd,
+ const cublasLtMatmulAlgo_t* algo,void* workspace,size_t workspace_bytes,cudaStream_t stream){
+ static auto real=Resolve<decltype(&cublasLtMatmul)>("cublasLtMatmul");
+ auto result=real(handle,desc,alpha,a,ad,b,bd,beta,c,cd,d,dd,algo,workspace,workspace_bytes,stream);
+ if(!std::getenv("Q4T_GDN_CAPTURE_DIR")||result!=CUBLAS_STATUS_SUCCESS)return result;
+ cublasComputeType_t compute{};cudaDataType_t scale{};cublasLtEpilogue_t epilogue{};
+ uint64_t n=0;cublasLtPointerMode_t mode{};cublasOperation_t ta{},tb{};
+ if(Attribute(desc,CUBLASLT_MATMUL_DESC_COMPUTE_TYPE,&compute)&&compute==CUBLAS_COMPUTE_32F&&
+    Attribute(desc,CUBLASLT_MATMUL_DESC_SCALE_TYPE,&scale)&&scale==CUDA_R_32F&&
+    Attribute(desc,CUBLASLT_MATMUL_DESC_EPILOGUE,&epilogue)&&epilogue==CUBLASLT_EPILOGUE_DEFAULT&&Shape(bd,2560,4096,CUDA_R_16BF)&&Layout(ad,CUBLASLT_MATRIX_LAYOUT_COLS,&n)&&
+    (n==10240||n==6144||n==48)&&Shape(ad,2560,n,CUDA_R_16BF)&&Shape(dd,n,4096,CUDA_R_16BF)&&
+    Attribute(desc,CUBLASLT_MATMUL_DESC_POINTER_MODE,&mode)&&mode==CUBLASLT_POINTER_MODE_HOST&&
+    Attribute(desc,CUBLASLT_MATMUL_DESC_TRANSA,&ta)&&ta==CUBLAS_OP_T&&
+    Attribute(desc,CUBLASLT_MATMUL_DESC_TRANSB,&tb)&&tb==CUBLAS_OP_N&&*static_cast<const float*>(beta)==0.0f){
+  Projection(static_cast<const uint16_t*>(a),static_cast<const uint16_t*>(b),static_cast<const uint16_t*>(d),4096,int(n),2560,*static_cast<const float*>(alpha),stream,false,algo,workspace_bytes);
+ }
+ return result;
+}
