@@ -1,0 +1,60 @@
+from pathlib import Path
+import hashlib,json,shutil,subprocess,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/moe-full-shared-reference-20260924';d=o/'reference';s=root/'.q4t-work/e2e/moe-full-shared-20260924';hc=root/'.q4t-work/e2e/hc-full-boundaries-20260923';c=s/'observed-captures'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert (p/'build.log').stat().st_size==0
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+sm=json.loads((s/'artifact-binding.json').read_text());hm=json.loads((hc/'artifact-binding.json').read_text())
+for f in ['exit.json','prior-binding.json','checkpoint-binding.json'] :assert sha(s/f)==sm[f]
+assert json.loads((s/'exit.json').read_text())['observer_preserved_tested_output']
+assert json.loads((s/'prior-binding.json').read_text())['manifest_sha256']==sha(hc/'artifact-binding.json')
+reserve=20*1024**3;budget=600000000
+assert shutil.disk_usage(o).free>reserve+budget
+save('plan.json',{'source_manifest_sha256':sha(s/'artifact-binding.json'),'hc_manifest_sha256':sha(hc/'artifact-binding.json'),'reserve_bytes':reserve,'reference_budget_bytes':budget,'free_before':shutil.disk_usage(o).free,'scope':'96 shared BF16 GEMMs, actual inputs and checkpoint-bound weights; recorded algorithm and FP64 via FP32/BF16. CPU sequential FP64 checks all 96 final rows. Not whole-model reference.','retention':'Complete replay and rounded reference retained as actual base plus lossless delta; all FP64 differences and last rows saved. Matching non-tail unrounded FP64 not saved.'})
+binding=[];seen=set()
+for l in range(48):
+ for kind in ['gu','down']:
+  base=f'layer-{l}.{kind}'
+  files=[(s,'observed-captures/'+base+suffix,sm) for suffix in ['.weights.bf16','.output.bf16','.algo.bin','.gemm.json']]
+  files += [(hc,f'observed-captures/hc-{l}.prefill.mix.mlp.output.bf16',hm)] if kind=='gu' else [(s,f'observed-captures/layer-{l}.inter.bf16',sm)]
+  for source,name,manifest in files:
+   f=source/name
+   if f in seen:continue
+   assert sha(f)==manifest[name];seen.add(f);binding.append({'file':str(f.relative_to(root)),'sha256':manifest[name]})
+save('input-binding.json',binding)
+# Direct checkpoint segment re-read as well as binding the capture manifest.
+for w in json.loads((s/'checkpoint-binding.json').read_text()):
+ f=Path(w['file']);st=f.stat();assert st.st_size==w['size'] and st.st_mtime_ns==w['mtime_ns']
+ with f.open('rb') as stream:stream.seek(w['offset']);assert hashlib.sha256(stream.read(w['bytes'])).hexdigest()==w['sha256']
+print({'bound_files':len(binding)},flush=True)
+records=[]
+for l in range(48):
+ for kind,n,k in [('gu',1280,2560),('down',2560,640)]:
+  assert shutil.disk_usage(o).free>reserve+budget
+  name=f'layer-{l}.{kind}';base=c/(name+'.output.bf16');x=hc/f'observed-captures/hc-{l}.prefill.mix.mlp.output.bf16' if kind=='gu' else c/f'layer-{l}.inter.bf16'
+  args=[str(p/'reference'),str(c/(name+'.weights.bf16')),str(x),str(base),str(d/name),str(n),str(k),str(c/(name+'.algo.bin'))]
+  r=subprocess.run(args,capture_output=True,text=True);(o/(name+'.stdout')).write_text(r.stdout);(o/(name+'.stderr')).write_text(r.stderr);assert r.returncode==0,r.stderr
+  result=json.loads(r.stdout);result.update(name=name,layer=l,stage=kind,base=str(base.relative_to(root)),base_sha256=sha(base));actual=np.fromfile(base,dtype='<u2');assert len(actual)==result['elements']==4096*n
+  for variant,key in [('replay','replay_mismatches'),('fp64','mismatches')]:
+   f=d/(name+'.'+variant+'.bf16');ref=np.fromfile(f,dtype='<u2');assert len(ref)==len(actual);idx=np.flatnonzero(ref!=actual).astype('<i4');assert len(idx)==result[key]
+   if variant=='fp64':
+    assert np.array_equal(idx,np.fromfile(d/(name+'.differences.i32'),dtype='<i4'))
+    vals=np.fromfile(d/(name+'.differences.f64'),dtype='<f8');bits=vals.astype('<f4').view('<u4');rounded=((bits+0x7fff+((bits>>16)&1))>>16).astype('<u2');assert np.array_equal(rounded,ref[idx])
+   delta=d/(name+'.'+variant+'.delta.npz');np.savez_compressed(delta,indices=idx,values=ref[idx]);z=np.load(delta);rebuilt=actual.copy();rebuilt[z['indices']]=z['values'];assert np.array_equal(rebuilt,ref);h=sha(f);assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==h
+   result[variant+'_reference_sha256']=h;result[variant+'_delta_sha256']=sha(delta);f.unlink()
+  records.append(result);save('reference.json',{'records':records,'complete':len(records)==96});print(result,flush=True)
+# Separate complete reconstruction pass before final summary.
+for r in records:
+ base=root/r['base'];assert sha(base)==r['base_sha256'];actual=np.fromfile(base,dtype='<u2')
+ for variant in ['replay','fp64']:
+  f=d/(r['name']+'.'+variant+'.delta.npz');assert sha(f)==r[variant+'_delta_sha256'];z=np.load(f);rebuilt=actual.copy();rebuilt[z['indices']]=z['values'];assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==r[variant+'_reference_sha256']
+summary={key:sum(r[key] for r in records) for key in ['elements','mismatches','replay_mismatches','cpu_last_elements','cpu_last_raw_mismatches','cpu_last_rounded_mismatches']};summary.update(records=len(records),all_references_reconstructed=True,runtime_changed=False,whole_model_correctness_proven=False,free_after=shutil.disk_usage(o).free)
+save('summary.json',summary)
+for name in ['run.py','reference.cpp','reference','build.log']:shutil.copy2(p/name,o/name)
+save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})
+print(summary,flush=True)
