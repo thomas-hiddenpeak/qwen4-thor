@@ -1,0 +1,57 @@
+// Separated arithmetic primitives on frozen HTTP operands; no model kernels.
+#include <cuda_runtime.h>
+#include <cuda_bf16.h>
+#include <cstdint>
+#include <cstdio>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+using U=uint16_t;
+#define CU(x) do{if((x)!=cudaSuccess)throw std::runtime_error(#x);}while(0)
+__device__ uint32_t Pack(U a,U b){return uint32_t(a)|(uint32_t(b)<<16);}
+__device__ U Q(const U* q,int h,int d,int kh){return h<12?q[(kh*12+h)*256+d]:0;}
+__device__ U KV(const U* kv,int pos,int n,int kh,int part,int d){return pos<n?kv[pos*1024+kh*512+part*256+d]:0;}
+__device__ U P(const U* p,int h,int pos,int padded,int kh){return h<12?p[(kh*12+h)*padded+pos]:0;}
+__device__ void Mma(float& c0,float& c1,float& c2,float& c3,uint32_t a0,uint32_t a1,uint32_t a2,uint32_t a3,uint32_t b0,uint32_t b1){
+ asm volatile("mma.sync.aligned.m16n8k16.row.col.f32.bf16.bf16.f32 {%0,%1,%2,%3}, {%4,%5,%6,%7}, {%8,%9}, {%0,%1,%2,%3};" : "+f"(c0),"+f"(c1),"+f"(c2),"+f"(c3):"r"(a0),"r"(a1),"r"(a2),"r"(a3),"r"(b0),"r"(b1));
+}
+__global__ void DotQK(const U* q,const U* kv,float* scores,int n,int padded){
+ int kh=blockIdx.x,nb=blockIdx.y*8,group=threadIdx.x/4,k0=(threadIdx.x%4)*2;float a=0,b=0,c=0,d=0;
+ for(int tile=0;tile<16;++tile){int k=tile*16+k0;
+  Mma(a,b,c,d,Pack(Q(q,group,k,kh),Q(q,group,k+1,kh)),Pack(Q(q,group+8,k,kh),Q(q,group+8,k+1,kh)),Pack(Q(q,group,k+8,kh),Q(q,group,k+9,kh)),Pack(Q(q,group+8,k+8,kh),Q(q,group+8,k+9,kh)),Pack(KV(kv,nb+group,n,kh,0,k),KV(kv,nb+group,n,kh,0,k+1)),Pack(KV(kv,nb+group,n,kh,0,k+8),KV(kv,nb+group,n,kh,0,k+9)));
+ }
+ int h=kh*12+group; scores[h*padded+nb+k0]=a;scores[h*padded+nb+k0+1]=b;
+ if(group+8<12){scores[(h+8)*padded+nb+k0]=c;scores[(h+8)*padded+nb+k0+1]=d;}
+}
+__global__ void Online(const float* scores,U* prob,float* alpha,float* denom,int n,int padded){
+ int head=threadIdx.x;if(head>=24)return;int chunks=padded/16;float mx=-1e30f,sum=0;
+ for(int chunk=0;chunk<chunks;++chunk){float next=mx;int begin=chunk*16;
+  for(int j=0;j<16&&begin+j<n;++j)next=fmaxf(next,scores[head*padded+begin+j]*0.0625f);
+  float scale=expf(mx-next);alpha[head*chunks+chunk]=scale;sum*=scale;
+  for(int j=0;j<16;++j){float pr=begin+j<n?expf(scores[head*padded+begin+j]*0.0625f-next):0;prob[head*padded+begin+j]=__bfloat16_as_ushort(__float2bfloat16_rn(pr));sum+=pr;}
+  mx=next;
+ }denom[head]=sum;
+}
+__global__ void DotPV(const U* prob,const U* kv,float* output,int n,int padded){
+ int kh=blockIdx.x,nb=blockIdx.y*8,chunk=blockIdx.z,group=threadIdx.x/4,k0=(threadIdx.x%4)*2,pos=chunk*16+k0;float a=0,b=0,c=0,d=0;
+ Mma(a,b,c,d,Pack(P(prob,group,pos,padded,kh),P(prob,group,pos+1,padded,kh)),Pack(P(prob,group+8,pos,padded,kh),P(prob,group+8,pos+1,padded,kh)),Pack(P(prob,group,pos+8,padded,kh),P(prob,group,pos+9,padded,kh)),Pack(P(prob,group+8,pos+8,padded,kh),P(prob,group+8,pos+9,padded,kh)),Pack(KV(kv,pos,n,kh,1,nb+group),KV(kv,pos+1,n,kh,1,nb+group)),Pack(KV(kv,pos+8,n,kh,1,nb+group),KV(kv,pos+9,n,kh,1,nb+group)));
+ int h=kh*12+group,chunks=padded/16;output[(h*chunks+chunk)*256+nb+k0]=a;output[(h*chunks+chunk)*256+nb+k0+1]=b;
+ if(group+8<12){output[((h+8)*chunks+chunk)*256+nb+k0]=c;output[((h+8)*chunks+chunk)*256+nb+k0+1]=d;}
+}
+__global__ void Gate(const U* gate,float* out){int i=blockIdx.x*blockDim.x+threadIdx.x;if(i<6144)out[i]=1.f/(1.f+expf(-__bfloat162float(__ushort_as_bfloat16(gate[i]))));}
+template<class T>std::vector<T> Read(const std::string& s,size_t n){std::ifstream f(s,std::ios::binary|std::ios::ate);if(!f||size_t(f.tellg())!=n*sizeof(T))throw std::runtime_error(s);std::vector<T> v(n);f.seekg(0);if(!f.read(reinterpret_cast<char*>(v.data()),n*sizeof(T)))throw std::runtime_error(s);return v;}
+template<class T>T* Upload(const std::vector<T>& v){T* p;CU(cudaMalloc(&p,v.size()*sizeof(T)));CU(cudaMemcpy(p,v.data(),v.size()*sizeof(T),cudaMemcpyHostToDevice));return p;}
+template<class T>void Save(const std::string& s,T* p,size_t n){std::vector<T> v(n);CU(cudaMemcpy(v.data(),p,n*sizeof(T),cudaMemcpyDeviceToHost));std::ofstream f(s,std::ios::binary);f.write(reinterpret_cast<char*>(v.data()),n*sizeof(T));if(!f)throw std::runtime_error(s);}
+int main(int argc,char** argv){try{
+ if(argc!=3){throw std::runtime_error("inputs outputs");}
+ for(int l=3;l<48;l+=4)for(const char* phase:{"prefill","decode"}){
+  std::string name="layer-"+std::to_string(l)+"."+phase,b=std::string(argv[1])+"/"+name,o=std::string(argv[2])+"/"+name;int n=Read<int>(b+".n.i32",1)[0],padded=(n+15)/16*16,chunks=padded/16;
+  U* q=Upload(Read<U>(b+".q.bf16",6144));U* kv=Upload(Read<U>(b+".selected.bf16",size_t(n)*1024));U* gate=Upload(Read<U>(b+".gate.bf16",6144));
+  float *scores,*alpha,*denom,*pv,*sigmoid;U* prob;CU(cudaMalloc(&scores,24*padded*4));CU(cudaMalloc(&alpha,24*chunks*4));CU(cudaMalloc(&denom,24*4));CU(cudaMalloc(&pv,size_t(24)*chunks*256*4));CU(cudaMalloc(&sigmoid,6144*4));CU(cudaMalloc(&prob,24*padded*2));
+  DotQK<<<dim3(2,padded/8),32>>>(q,kv,scores,n,padded);CU(cudaGetLastError());Online<<<1,32>>>(scores,prob,alpha,denom,n,padded);CU(cudaGetLastError());DotPV<<<dim3(2,32,chunks),32>>>(prob,kv,pv,n,padded);CU(cudaGetLastError());Gate<<<24,256>>>(gate,sigmoid);CU(cudaGetLastError());
+  Save(o+".qk.f32",scores,24*padded);Save(o+".prob.bf16",prob,24*padded);Save(o+".alpha.f32",alpha,24*chunks);Save(o+".denom.f32",denom,24);Save(o+".pv.f32",pv,size_t(24)*chunks*256);Save(o+".gate.f32",sigmoid,6144);
+  CU(cudaFree(q));CU(cudaFree(kv));CU(cudaFree(gate));CU(cudaFree(scores));CU(cudaFree(alpha));CU(cudaFree(denom));CU(cudaFree(pv));CU(cudaFree(sigmoid));CU(cudaFree(prob));
+ }
+ return 0;
+}catch(const std::exception& e){std::fprintf(stderr,"%s\n",e.what());return 1;}}

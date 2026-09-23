@@ -1,0 +1,25 @@
+from pathlib import Path
+import json,hashlib,shutil,subprocess,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];prior=root/'.q4t-work/e2e/qsa-selection-reference-20260923';c=prior/'observed-captures';o=root/'.q4t-work/e2e/qsa-primitives-reference-20260923'
+assert json.loads((prior/'exit.json').read_text())['observer_preserved_tested_output']
+for name,h in json.loads((prior/'artifact-binding.json').read_text()).items():assert hashlib.sha256((prior/name).read_bytes()).hexdigest()==h
+for name,h in json.loads((prior/'capture-binding.json').read_text()).items():assert hashlib.sha256((c/name).read_bytes()).hexdigest()==h
+assert all((p/f).stat().st_size==0 for f in ['build.log','accumulate-build.log'])
+inp=o/'inputs';inp.mkdir();data=o/'primitives';data.mkdir();bindings={}
+for l in range(3,48,4):
+ for phase in ['prefill','decode']:
+  name=f'layer-{l}.{phase}';base=str(c/name);sel=np.fromfile(base+'.selection.i32',dtype='<i4');n=int(np.fromfile(base+'.length.i32',dtype='<i4')[0]);pt=np.fromfile(base+'.page-table.i32',dtype='<i4');cache=np.fromfile(base+'.cache.bf16',dtype='<u2').reshape(-1,2,2,256);slots=pt[sel[:n]]*16+sel[:n]%16
+  cache[slots].tofile(inp/(name+'.selected.bf16'));np.array([n],dtype='<i4').tofile(inp/(name+'.n.i32'))
+  for src,dst in [('.q.bf16','.q.bf16'),('.gate.bf16','.gate.bf16'),('.attention-output.bf16','.expected.bf16')]:shutil.copy2(base+src,inp/(name+dst))
+for f in inp.iterdir():bindings[f.name]=hashlib.sha256(f.read_bytes()).hexdigest()
+(o/'input-binding.json').write_text(json.dumps(bindings,indent=2)+'\n')
+(o/'plan.json').write_text(json.dumps({'source':'accepted HTTP qsa-selection-reference-20260923','scope':'Standalone Tensor Core QK/PV and device softmax/gate; CPU explicit fma online accumulator, division, two BF16 rounding stages. Does not call production attention kernels. Same hardware instruction/library is not independent arithmetic proof.','runtime_changed':False},indent=2)+'\n')
+exits={}
+for tool in ['primitives','accumulate']:
+ with (o/(tool+'.stdout')).open('w') as stdout,(o/(tool+'.stderr')).open('w') as stderr:exits[tool]=subprocess.run([str(p/tool),str(inp),str(data)],stdout=stdout,stderr=stderr).returncode
+ (o/'exit.json').write_text(json.dumps(exits)+'\n');assert exits[tool]==0
+r=json.loads((o/'accumulate.stdout').read_text());assert len(r['records'])==24
+for x in r['records']:
+ name=f"layer-{x['layer']}.{x['phase']}";bits=np.fromfile(data/(name+'.cpu-output.bf16'),dtype='<u2');expected=np.fromfile(inp/(name+'.expected.bf16'),dtype='<u2');bad=np.flatnonzero(bits!=expected);assert len(bad)==x['mismatches'];x['indices']=bad.tolist()
+for name,h in bindings.items():assert hashlib.sha256((inp/name).read_bytes()).hexdigest()==h
+(o/'primitive-reference.json').write_text(json.dumps(r,indent=2)+'\n');print('mismatches',r['total_mismatches'])

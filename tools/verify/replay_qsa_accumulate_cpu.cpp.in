@@ -1,0 +1,22 @@
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+float Decode(uint16_t v){uint32_t b=uint32_t(v)<<16;float f;std::memcpy(&f,&b,4);return f;}
+uint16_t Round(float f){uint32_t b;std::memcpy(&b,&f,4);return (b+0x7fff+((b>>16)&1))>>16;}
+template<class T>std::vector<T> Read(const std::string& s,size_t n){std::ifstream f(s,std::ios::binary|std::ios::ate);if(!f||size_t(f.tellg())!=n*sizeof(T))throw std::runtime_error(s);std::vector<T> v(n);f.seekg(0);if(!f.read(reinterpret_cast<char*>(v.data()),n*sizeof(T)))throw std::runtime_error(s);return v;}
+int main(int argc,char** argv){try{
+ if(argc!=3){throw std::runtime_error("inputs primitives");}size_t total=0;bool first=true;std::printf("{\"records\":[");
+ for(int l=3;l<48;l+=4)for(const char* phase:{"prefill","decode"}){
+  std::string name="layer-"+std::to_string(l)+"."+phase,b=std::string(argv[1])+"/"+name,o=std::string(argv[2])+"/"+name;int n=Read<int>(b+".n.i32",1)[0],chunks=(n+15)/16;
+  auto a=Read<float>(o+".alpha.f32",24*chunks),pv=Read<float>(o+".pv.f32",size_t(24)*chunks*256),den=Read<float>(o+".denom.f32",24),gate=Read<float>(o+".gate.f32",6144);auto expected=Read<uint16_t>(b+".expected.bf16",6144);std::vector<uint16_t> out(6144),ungated(6144);size_t bad=0;
+  for(int h=0;h<24;++h)for(int d=0;d<256;++d){float acc=0;for(int c=0;c<chunks;++c)acc=std::fma(acc,a[h*chunks+c],pv[(h*chunks+c)*256+d]);float value=acc/den[h];int i=h*256+d;ungated[i]=Round(value);out[i]=Round(Decode(ungated[i])*gate[i]);bad+=out[i]!=expected[i];}
+  for(int k=0;k<2;++k){const auto& v=k?ungated:out;std::ofstream f(o+(k?".ungated.bf16":".cpu-output.bf16"),std::ios::binary);f.write(reinterpret_cast<const char*>(v.data()),12288);if(!f)throw std::runtime_error("write");}
+  std::printf("%s{\"layer\":%d,\"phase\":\"%s\",\"elements\":6144,\"mismatches\":%zu}",first?"":",",l,phase,bad);first=false;total+=bad;
+ }
+ std::printf("],\"total_mismatches\":%zu}\n",total);return 0;
+}catch(const std::exception& e){std::fprintf(stderr,"%s\n",e.what());return 1;}}

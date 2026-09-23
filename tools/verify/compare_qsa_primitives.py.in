@@ -1,0 +1,30 @@
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import json,numpy as np,hashlib,shutil
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/qsa-primitives-reference-20260923';inp=o/'inputs';d=o/'primitives';old=root/'.q4t-work/e2e/qsa-selection-reference-20260923/observed-captures'
+assert json.loads((o/'primitive-reference.json').read_text())['total_mismatches']==0
+
+def dec(b):return (np.asarray(b,dtype=np.uint16).astype(np.uint32)<<16).view(np.float32).astype(np.float64)
+def rnd(v):
+ b=np.asarray(v,dtype=np.float32).view(np.uint32);return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype(np.uint16)
+def different(a,b):return int(np.count_nonzero(np.asarray(a,dtype=np.float32).view(np.uint32)!=np.asarray(b,dtype=np.float32).view(np.uint32)))
+records=[]
+for l in range(3,48,4):
+ for phase in ['prefill','decode']:
+  name=f'layer-{l}.{phase}';b=str(d/name);n=int(np.fromfile(inp/(name+'.n.i32'),dtype='<i4')[0]);padded=(n+15)//16*16;chunks=padded//16
+  qk=np.fromfile(b+'.qk.f32',dtype='<f4').reshape(24,padded);oldref=np.load(old/(name+'.attention-reference.npz'));fp64=oldref['scores']*16;expected=fp64.astype(np.float32)
+  prob=np.fromfile(b+'.prob.bf16',dtype='<u2').reshape(24,padded);alpha=np.fromfile(b+'.alpha.f32',dtype='<f4').reshape(24,chunks);den=np.fromfile(b+'.denom.f32',dtype='<f4');pv=np.fromfile(b+'.pv.f32',dtype='<f4').reshape(24,chunks,256);kv=dec(np.fromfile(inp/(name+'.selected.bf16'),dtype='<u2')).reshape(n,2,2,256)
+  cpu_p=np.zeros_like(prob);cpu_a=np.zeros_like(alpha);cpu_den=np.zeros(24,dtype=np.float32);mx=np.full(24,np.float32(-1e30),dtype=np.float32);cpu_pv=np.zeros_like(pv)
+  for chunk in range(chunks):
+   start=chunk*16;end=min(start+16,n);s=qk[:,start:end]*np.float32(0.0625);new=np.maximum(mx,np.max(s,axis=1));a=np.exp((mx-new).astype(np.float64)).astype(np.float32);pr=np.exp((s-new[:,None]).astype(np.float64)).astype(np.float32);cpu_a[:,chunk]=a;cpu_p[:,start:end]=rnd(pr);cpu_den*=a
+   for j in range(end-start):cpu_den+=pr[:,j]
+   mx=new;v=kv[start:end,np.arange(24)//12,1,:].transpose(1,0,2);cpu_pv[:,chunk,:]=np.einsum('hp,hpd->hd',dec(prob[:,start:end]),v).astype(np.float32)
+  gate=dec(np.fromfile(inp/(name+'.gate.bf16'),dtype='<u2'));cpu_gate=np.float32(1)/(np.float32(1)+np.exp(-gate).astype(np.float32));device_gate=np.fromfile(b+'.gate.f32',dtype='<f4')
+  records.append({'layer':l,'phase':phase,'qk_elements':24*n,'qk_fp32_bits_different_from_fp64_round':different(qk[:,:n],expected),'qk_max_abs_vs_fp64':float(np.max(abs(qk[:,:n]-fp64))),'cpu_exp_probability_bf16_differences':int(np.count_nonzero(prob!=cpu_p)),'cpu_exp_alpha_fp32_differences':different(alpha,cpu_a),'cpu_exp_denominator_fp32_differences':different(den,cpu_den),'pv_elements':int(pv.size),'pv_fp32_bits_different_from_fp64_round':different(pv,cpu_pv),'cpu_gate_fp32_differences':different(cpu_gate,device_gate)})
+  np.savez(o/(name+'.primitive-comparison.npz'),qk_fp64_rounded=expected,cpu_exp_probability=cpu_p,cpu_exp_alpha=cpu_a,cpu_exp_denominator=cpu_den,pv_fp64_rounded=cpu_pv,cpu_gate=cpu_gate)
+keys=[k for k in records[0] if k not in ['layer','phase','qk_max_abs_vs_fp64']];r={'records':records,'totals':{k:sum(x[k] for x in records) for k in keys},'max_qk_abs':max(x['qk_max_abs_vs_fp64'] for x in records),'limitation':'Local operand-fixed comparisons only; counts are not independent causal attribution to final output mismatches.'}
+(o/'primitive-comparison.json').write_text(json.dumps(r,indent=2)+'\n');print(r['totals']);print('max_qk_abs',r['max_qk_abs'])
+for name in ['primitives.cu','primitives','build.log','accumulate.cpp','accumulate','accumulate-build.log','run.py','run.log','compare.py']:
+ shutil.copy2(p/name,o/(name+'-tool' if name=='primitives' else name))
+files=['primitives.cu','primitives-tool','accumulate.cpp','accumulate','run.py','compare.py','plan.json','input-binding.json','exit.json','primitive-reference.json','primitive-comparison.json'];(o/'artifact-binding.json').write_text(json.dumps({f:hashlib.sha256((o/f).read_bytes()).hexdigest() for f in files},indent=2)+'\n')

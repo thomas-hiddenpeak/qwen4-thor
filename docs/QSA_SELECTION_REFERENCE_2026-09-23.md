@@ -114,3 +114,48 @@ reference-binding.json、artifact-binding.json及各变体BF16文件。
 两份CPU分析退出0仅表示执行/审计完成，93/102项仍未闭合。
 下一步隔离Tensor Core的QK/PV点积与设备exp及在线累加顺序。
 实际索引分数来源仍待独立验证；原4K质量失败及全模型未验收状态不变。
+
+## 后续：分离Tensor Core原语与CPU在线累加
+
+继续使用冻结HTTP操作数，校验旧artifact/capture哈希后按实际页表
+和选择列表重新整理选中KV，不复用上一轮浮点重算值作为原始输入。
+独立CUDA程序不调用生产attention kernel，分开执行：
+
+1. BF16 QK，m16n8k16同种Tensor Core指令，沿head_dim以16维步长
+   累加，输出未经scale的FP32点积。
+2. 每head16-token在线softmax，使用设备expf，保存BF16概率、
+   每chunk alpha和最终未量化概率分母。
+3. 每chunk独立BF16概率×BF16 V的PV点积，输出FP32增量。
+4. 设备expf计算逐元素sigmoid门。
+
+独立CPU程序仅从这些原语输出执行逐chunk显式std::fma在线累加、
+除以分母、BF16舍入、乘门、再次BF16舍入。编译关闭隐式收缩，
+不调用生产注意力实现。24次、147456个BF16输出全部逐位同HTTP，
+并逐文件重算差异索引复核。旧93/102项及43122项原始参考差异保留。
+两份工具零警告构建与执行退出0，无生产或观测修改、无新模型采样。
+
+这表明本请求的输出可由明确的硬件原语与CPU在线递推完整复现，
+不是独立于Tensor Core/CUDA数学库的证明，也不证明模型应采用这些
+中间精度。它不能替代checkpoint/framework精度合同或整模型质量。
+
+另做固定操作数下的中间量比较：
+
+| 局部比较 | 不同项 / 比较范围 |
+|---|---:|
+| QK Tensor Core vs FP64点积舍入FP32 | 1126178 / 1179936 |
+| 固定QK，CPU exp参考 vs设备概率BF16 | 7项 |
+| 固定QK，CPU exp参考 vs设备alpha FP32 | 2114项 |
+| CPU在线分母 vs设备分母FP32 | 185项 |
+| 固定实际概率，PV Tensor Core vs FP64舍入FP32 | 6757436 / 18948096 |
+| CPU exp门参考 vs设备门FP32 | 31191项 |
+
+QK相对FP64最大绝对差0.00020074844360351562。以上为局部位差，
+不能将数量相加当成最终输出误差归因；CPU exp参考仍是double exp
+舍入FP32、FP32后续运算，不同于设备实现。所有中间数组和比较记录
+保存，未以近似阈值代替逐位判断。
+
+证据目录`.q4t-work/e2e/qsa-primitives-reference-20260923/`：
+plan.json、input-binding.json、primitive-reference.json、
+primitive-comparison.json、artifact-binding.json及inputs/primitives
+目录。下一步核对索引分数和压缩key来源；全注意力的投影/RoPE来源、
+完整prefill GDN、PLE及输出头仍待独立覆盖。原4K质量失败未修复。
