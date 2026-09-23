@@ -1,0 +1,20 @@
+from pathlib import Path
+import hashlib,json,shutil
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/qsa-query-transform-20260923';c=o/'observed-captures'
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+def sha(f):return hashlib.sha256(f.read_bytes()).hexdigest()
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+sass=(o/'query-transform.sass').read_text()
+for line in ['/*07a0*/                   F2F.BF16.F32 R5, R5','/*1be0*/                   SHF.L.U32 R3, R10, 0x10, RZ','/*1bf0*/                   FMUL R11, R0.reuse, R3','/*1c00*/                   FMUL R0, R0, R5','/*1c10*/                   FFMA R11, R18.reuse, R5, -R11','/*1c20*/                   FFMA R0, R18, R3, R0']:assert line in sass
+r=json.loads((o/'query-reference.json').read_text());assert r['totals']==[9,10,0,0,9,0]
+assert len(r['records'])==144
+for l in range(3,48,4):
+ for phase in ['prefill','decode']:
+  b=f'layer-{l}.{phase}';assert (o/'data'/f'{b}.variant-5.bf16').read_bytes()==(c/f'{b}.iq.bf16').read_bytes()
+for name,h in json.loads((o/'previous-binding.json').read_text())['hashes'].items():assert sha(c/name)==h
+save(o/'sass-order-decision.json',{'selected_variant':5,'reason':'SASS normalized a in R5, normalized partner b loaded to R10 then shifted to R3; R18 cos and R0 sin. FMUL sin*b and sin*a before FFMA cos*a-minus and cos*b-plus. Matches current*cos fused in both halves.','mismatch_counts':[9,10,0,0,9,0],'ambiguity':'All three device-math contraction variants agree on these samples; data alone does not identify compiler contraction. Order selected from SASS.','matched_outputs':12288,'scope':'Last prefill token and first decode token,12 full-attention layers,text equal MRoPE axes. Raw projection not independently verified; known4K wrong answer remains.'})
+for name in ['analyze.py','cpu.cpp','cpu','cpu-build.log','nonlinear.cu','nonlinear','nonlinear-build.log','audit.py']:
+ shutil.copy2(p/name,o/name)
+save(o/'artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})
+print('audit: 24 calls,12288 exact BF16 outputs; production unchanged; known wrong HTTP retained')

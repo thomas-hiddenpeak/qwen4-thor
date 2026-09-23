@@ -1,0 +1,26 @@
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+float Decode(uint16_t v){uint32_t b=uint32_t(v)<<16;float f;std::memcpy(&f,&b,4);return f;}
+uint16_t Round(float f){uint32_t b;std::memcpy(&b,&f,4);return (b+0x7fff+((b>>16)&1))>>16;}
+template<class T>std::vector<T> Read(const std::string& s,size_t n){std::ifstream f(s,std::ios::binary|std::ios::ate);if(!f||size_t(f.tellg())!=n*sizeof(T))throw std::runtime_error(s);std::vector<T> v(n);f.seekg(0);if(!f.read(reinterpret_cast<char*>(v.data()),n*sizeof(T)))throw std::runtime_error(s);return v;}
+int main(int argc,char** argv){try{
+ if(argc!=2){throw std::runtime_error("directory");}bool first=true;size_t total[6]{};std::printf("{\"records\":[");
+ for(int l=3;l<48;l+=4)for(const char* phase:{"prefill","decode"}){std::string b=std::string(argv[1])+"/layer-"+std::to_string(l)+"."+phase;auto mean=Read<float>(b+".mean.f32",4*128),variance=Read<float>(b+".variance.f32",4),params=Read<float>(b+".params.f32",2),inv=Read<float>(b+".inv.f32",4),co=Read<float>(b+".cos.f32",4*64),si=Read<float>(b+".sin.f32",4*64);auto weight=Read<uint16_t>(b+".weight.bf16",128),expected=Read<uint16_t>(b+".expected.bf16",4*128);auto pos=Read<int>(b+".positions.i32",4*64);
+  for(int variant=0;variant<6;++variant){bool device=variant==2||variant==3||variant==5;int mode=variant%2;std::vector<uint16_t> out(4*128);size_t bad=0;
+   for(int g=0;g<4;++g){float norm[128];float rs=device?inv[g]:float(1.0/std::sqrt(double(variance[g])));for(int d=0;d<128;++d)norm[d]=Decode(Round((mean[g*128+d]*rs)*(1.0f+Decode(weight[d]))));
+    for(int d=0;d<128;++d){if(variant>=4)mode=d<32?0:1;float value=norm[d];if(d<64){float freq=float(std::pow(double(params[0]),double(-2.0f*(d%32)/64.0f)));float angle=float(pos[g*64+d])*freq;float c=device?co[g*64+d]:float(std::cos(double(angle)));float s=device?si[g*64+d]:float(std::sin(double(angle)));
+      if(d<32)value=mode?std::fma(-norm[d+32],s,norm[d]*c):std::fma(norm[d],c,-(norm[d+32]*s));
+      else value=mode?std::fma(norm[d],c,norm[d-32]*s):std::fma(norm[d-32],s,norm[d]*c);
+     }out[g*128+d]=Round(value);bad+=out[g*128+d]!=expected[g*128+d];}
+   }
+   std::ofstream f(b+".variant-"+std::to_string(variant)+".bf16",std::ios::binary);f.write(reinterpret_cast<char*>(out.data()),out.size()*2);if(!f)throw std::runtime_error("write");std::printf("%s{\"layer\":%d,\"phase\":\"%s\",\"variant\":%d,\"elements\":512,\"mismatches\":%zu}",first?"":",",l,phase,variant,bad);first=false;total[variant]+=bad;
+  }
+ }
+ std::printf("],\"totals\":[%zu,%zu,%zu,%zu,%zu,%zu]}\n",total[0],total[1],total[2],total[3],total[4],total[5]);return 0;
+}catch(const std::exception& e){std::fprintf(stderr,"%s\n",e.what());return 1;}}

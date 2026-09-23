@@ -142,3 +142,41 @@ gemm-reference.json、replay-result.json、previous-binding.json、
 artifact-binding.json及全部实际操作数。工具零警告、执行/审计退出0。
 生产和接受二进制未改，原4K质量失败仍在。下一步连接原始indexer
 query/key投影、query归一化/RoPE以及全注意力投影来源。
+
+
+## 后续：query归一化与部分RoPE
+
+新观测在IndexerQueryNormRope实际调用前捕获最后prefill/首decode
+的4×128 query、128项归一化权重、theta/epsilon、实际位置及三轴
+rope值、旋转维度和布局参数。零警告构建后第一项仍为三侧原4K
+HTTP，均600440、4096输入/7输出、stop，服务退出0、质量驱动1；
+24组新输入完整、此前840份快照/元数据逐字节一致后才数值分析。
+这通过的是观测不改变该请求的检查，不是质量验收。
+
+实际权重逐字节同checkpoint的indexer.q_layernorm.weight；4头、
+每头128、旋转64维，theta=1e7、epsilon为FP32的1e-6。实际位置
+4095/4096与先前捕获rope表一致，本轮三轴位置相同。
+
+纯FP64归一化/旋转、仅最终舍入，在12288输出中有922项不同。
+按生产合同在归一化后先舍入BF16，再用FP64旋转，剩7项不同。
+两类参考及全部差异索引保留，不以FP64计算忽略中间舍入来判错。
+
+指定算术参考使用CPU平方、warp XOR16/8/4/2/1和四warp顺序归约，
+设备仅提供rsqrtf/powf/sin/cos；归一化乘法、BF16中间舍入、旋转
+fma和最终舍入仍由CPU完成。预声明六种数学函数/乘加顺序变体，
+差异数依次9/10/0/0/9/0。三个设备数学变体在本样本全部相同，
+因此不能根据输出推断编译器到底融合哪项。
+
+接受二进制SASS另存：07a0先将归一化值转BF16，07b0写入、07c0
+同步；1be0将配对BF16移入FP32位表示。1bf0/1c00先算sin*b及
+sin*a，1c10/1c20融合cos*a减前项、cos*b加前项。因此选择两半区
+均融合当前值*cos的variant5有独立指令依据，12288输出逐字节同
+HTTP。并不把其他变体同样零差异解释为其编译顺序也成立。
+
+工具零警告、参考与审计退出0；生产代码和接受二进制未改，无性能
+验收或整模型正确性结论。原4K错答仍在，原始query/key投影尚未
+独立确认，且不覆盖多模态三轴不同位置或后续decode位置。
+证据在`.q4t-work/e2e/qsa-query-transform-20260923/`，含三侧HTTP、
+fp64-reference.json、query-reference.json、query-transform.sass、
+sass-order-decision.json、previous-binding.json、artifact-binding.json。
+下一步连接原始indexer query/key投影，再补全注意力投影与变换来源。
