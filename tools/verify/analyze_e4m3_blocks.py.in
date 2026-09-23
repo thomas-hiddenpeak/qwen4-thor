@@ -1,0 +1,73 @@
+"""Independent FP4 block/FP64 down reference on frozen HTTP snapshots."""
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+os.environ['OMP_NUM_THREADS']='1'
+import hashlib,json,struct,subprocess,math
+import numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2]
+out=root/'.q4t-work/e2e/e4m3-http-blocks-20260923';capture=out/'observed-captures'
+assert json.loads((out/'exit.json').read_text())['observer_preserved_tested_output']
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream')
+index=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];headers={}
+def tensor(name):
+ file=model/index[name]
+ with file.open('rb') as f:
+  if file not in headers:
+   size=struct.unpack('<Q',f.read(8))[0];headers[file]=(size,json.loads(f.read(size)))
+  size,header=headers[file];info=header[name];a,b=info['data_offsets'];f.seek(8+size+a);data=f.read(b-a)
+ assert len(data)==b-a
+ return info,data
+fp8=np.array([math.ldexp(c%8,-9) if c<8 else math.ldexp(1+(c%8)/8,c//8-7) for c in range(127)],dtype=np.float64)
+positive=np.array([0,.5,1,1.5,2,3,4,6],dtype=np.float64)
+fp4=np.concatenate([positive,-positive]);tie_order=np.array([0,2,4,6,1,3,5,7],dtype=np.uint8)
+def unpack(data,rows):
+ b=np.frombuffer(data,dtype=np.uint8).reshape(rows,320);result=np.empty((rows,640),dtype=np.uint8);result[:,0::2]=b&15;result[:,1::2]=b>>4;return result
+
+def unswizzle(data,rows):
+ a=np.frombuffer(data,dtype=np.uint8);r=np.arange(rows)[:,None];g=np.arange(40)[None,:];offset=(r%32)*16+(r%128//32)*4+g%4+(g//4)*512+(r//128)*5120;result=a[offset];assert np.all(result<127);return result
+
+def encode_fp4(values,sf,scale):
+ eff=np.float32(fp8[sf].astype(np.float32)*np.float32(scale));inverse=np.zeros_like(eff);np.divide(np.float32(1),eff,out=inverse,where=eff>0)
+ normalized=np.float32(values*inverse.repeat(16,axis=1));distance=np.abs(np.abs(normalized.astype(np.float64))[...,None]-positive[tie_order]);code=tie_order[np.argmin(distance,axis=-1)];return code|np.where(normalized<0,8,0).astype(np.uint8)
+
+def norm(v):return float(np.linalg.norm(v))
+def comparison(value,reference):
+ delta=value-reference
+ return {'l2':norm(delta),'relative_l2':norm(delta)/max(norm(reference),1e-300),'max_abs':float(np.max(np.abs(delta)))}
+def bf16_round(value):
+ x=np.asarray(value,dtype=np.float32);bits=x.view(np.uint32);rounded=((bits+np.uint32(0x7fff)+((bits>>16)&1))>>16).astype(np.uint16);return (rounded.astype(np.uint32)<<16).view(np.float32).astype(np.float64)
+reports=[]
+for f in sorted(capture.glob('capture-[0-9].json')):
+ meta=json.loads(f.read_text());base=f.with_suffix('');n=meta['rows'];down=json.loads(base.with_suffix('.down.json').read_text());assert down['ok'] and down['rows']==n
+ target=base.with_suffix('.replay.tsv');cmd=[str(p/'replay'),str(base.with_suffix('.input.bin')),str(base.with_suffix('.sf.bin')),str(n),meta['scale_hex'],str(target)]
+ replay=subprocess.run(cmd,capture_output=True,text=True);base.with_suffix('.replay.log').write_text(replay.stdout+replay.stderr);assert replay.returncode in [0,1]
+ rows=[line.split() for line in target.read_text().splitlines()];assert len(rows)==n*40
+ sf=unswizzle(base.with_suffix('.sf.bin').read_bytes(),n);assert np.array_equal(sf,unswizzle(base.with_suffix('.gemm-sf.bin').read_bytes(),n))
+ corrected=np.empty((n,40),dtype=np.uint8)
+ for r,g,v,a,legacy,native in rows:
+  r,g,a,legacy,native=map(int,[r,g,a,legacy,native]);value=float.fromhex(v);assert math.isfinite(value) and value>=0 and a==legacy==sf[r,g]
+  expected=min(range(127),key=lambda c:(abs(value-fp8[c]),c%2));assert native==expected;corrected[r,g]=expected
+ values=np.fromfile(str(target)+'.values.f32',dtype='<f4').reshape(n,640);assert np.all(np.isfinite(values))
+ scale=float.fromhex(meta['scale_hex']);actual=unpack(base.with_suffix('.packed.bin').read_bytes(),n);old=encode_fp4(values,sf,scale);new=encode_fp4(values,corrected,scale);assert np.array_equal(actual,old)
+ weight_bytes=base.with_suffix('.weights.bin').read_bytes();weights=unpack(weight_bytes,2560);wsf=unswizzle(base.with_suffix('.weights-sf.bin').read_bytes(),2560)
+ prefix=f'model.language_model.layers.0.mlp.experts.{meta["expert"]}.down_proj.'
+ wi,wb=tensor(prefix+'weight');si,sb=tensor(prefix+'weight_scale');assert wi['shape']==[2560,320] and weight_bytes==wb
+ assert si['shape']==[2560,40] and np.array_equal(wsf,np.frombuffer(sb,dtype=np.uint8).reshape(2560,40))
+ ii,ib=tensor(prefix+'input_scale');gi,gb=tensor(prefix+'weight_scale_2');assert ii['dtype']==gi['dtype']=='F32' and ii['shape']==gi['shape']==[]
+ input_scale=struct.unpack('<f',ib)[0];weight_scale=struct.unpack('<f',gb)[0];alpha=float.fromhex(down['alpha_hex']);assert scale==input_scale and alpha==float(np.float32(input_scale)*np.float32(weight_scale))
+ a_old=fp4[old]*fp8[sf].repeat(16,axis=1);a_new=fp4[new]*fp8[corrected].repeat(16,axis=1);w=fp4[weights]*fp8[wsf].repeat(16,axis=1)
+ old_out=(a_old@w.T)*alpha;new_out=(a_new@w.T)*alpha
+ actual_bits=np.fromfile(base.with_suffix('.down.bin'),dtype='<u2').reshape(n,2560);actual_out=(actual_bits.astype(np.uint32)<<16).view(np.float32).astype(np.float64);assert np.all(np.isfinite(actual_out))
+ rounded_old=bf16_round(old_out);rounded_new=bf16_round(new_out)
+ affected_rows=np.flatnonzero(np.any(corrected!=sf,axis=1));same_rows=np.flatnonzero(np.all(corrected==sf,axis=1));assert np.array_equal(old_out[same_rows],new_out[same_rows])
+ rec={'index':meta['index'],'expert':meta['expert'],'rows':n,'groups':n*40,'weight_checkpoint_layer':0,'weights_and_scales_exact':True,'scale_groups_changed':int(np.count_nonzero(corrected!=sf)),'actual_fp4_vs_independent_legacy_mismatches':int(np.count_nonzero(actual!=old)),'fp4_codes_changed':int(np.count_nonzero(new!=old)),'affected_rows':affected_rows.tolist(),'gpu_vs_old_fp64':comparison(actual_out,old_out),'gpu_vs_rounded_old_fp64':comparison(actual_out,rounded_old),'gpu_vs_rounded_old_different_elements':int(np.count_nonzero(actual_out!=rounded_old)),'counterfactual_fp64_delta':comparison(new_out,old_out),'counterfactual_bf16_changed_elements':int(np.count_nonzero(rounded_new!=rounded_old)),'old_activation_quantization_error':comparison(a_old*scale,values.astype(np.float64)),'corrected_activation_quantization_error':comparison(a_new*scale,values.astype(np.float64)),'replay_exit':replay.returncode}
+ rec['gpu_vs_rounded_old_bf16_bit_mismatches']=int(np.count_nonzero(actual_bits!=(rounded_old.astype(np.float32).view(np.uint32)>>16).astype(np.uint16)))
+ rec['counterfactual_bf16_changed_bit_patterns']=int(np.count_nonzero((rounded_old.astype(np.float32).view(np.uint32)>>16)!=(rounded_new.astype(np.float32).view(np.uint32)>>16)))
+ assert rec['gpu_vs_rounded_old_bf16_bit_mismatches']==0
+ if len(affected_rows):
+  rec['affected_rows_counterfactual_delta']=comparison(new_out[affected_rows],old_out[affected_rows]);rec['affected_rows_gpu_replay_residual']=comparison(actual_out[affected_rows],rounded_old[affected_rows])
+ np.savez(base.with_suffix('.reference.npz'),old=old_out,corrected=new_out,actual=actual_out,rounded_old=rounded_old,rounded_corrected=rounded_new)
+ reports.append(rec);print(json.dumps(rec),flush=True)
+report={'snapshots':reports,'http_gate':'three identical known-wrong outputs, not all-answer correctness','runtime_changed':False,'task_causality_established':False,'all_actual_bf16_bits_match_rounded_reference':True,'actual_fp4_elements_verified':sum(r['rows']*640 for r in reports),'actual_down_elements_compared':sum(r['rows']*2560 for r in reports),'format_groups_changed':sum(r['scale_groups_changed'] for r in reports),'fp4_codes_changed':sum(r['fp4_codes_changed'] for r in reports),'rounded_counterfactual_elements_changed':sum(r['counterfactual_bf16_changed_elements'] for r in reports),'limitation':'FP64 reference does not emulate cuBLAS FP32 accumulation. Differences reported without invented tolerance; no full model counterfactual executed.'}
+(out/'block-analysis.json').write_text(json.dumps(report,indent=2)+'\n')

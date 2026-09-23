@@ -7,10 +7,11 @@
 #include <cstdio>
 #include <cstdlib>
 #include <vector>
+#include <string>
 #include "q4t/quant/format.h"
 struct Result { float ratio; uint8_t actual, legacy, native; };
 __global__ void Replay(const uint16_t* input, const uint8_t* sf, int count,
-                       float scale, Result* result) {
+                       float scale, Result* result, float* values) {
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
   if (idx >= count) return;
   const int row = idx / 40, group = idx % 40;
@@ -23,6 +24,7 @@ __global__ void Replay(const uint16_t* input, const uint8_t* sf, int count,
         *reinterpret_cast<const __nv_bfloat16*>(gu + 640 + group * 16 + j));
     const float sigmoid = 1.0f / (1.0f + __expf(-gate));
     const float value = gate * sigmoid * up;
+    values[idx * 16 + j] = value;
     maximum = fmaxf(maximum, fabsf(value));
   }
   const float block_scale = maximum > 0.0f ? maximum / 6.0f : 1.0f;
@@ -57,20 +59,31 @@ int main(int argc, char** argv) {
   uint16_t* device_input = nullptr;
   uint8_t* device_sf = nullptr;
   Result* device_result = nullptr;
+  float* device_values = nullptr;
   const int count = rows * 40;
   if (!Check(cudaMalloc(&device_input, input.size() * 2)) ||
       !Check(cudaMalloc(&device_sf, sf.size())) ||
-      !Check(cudaMalloc(&device_result, count * sizeof(Result)))) return 2;
+      !Check(cudaMalloc(&device_result, count * sizeof(Result))) ||
+      !Check(cudaMalloc(&device_values, count * 16 * sizeof(float)))) return 2;
   if (!Check(cudaMemcpy(device_input, input.data(), input.size() * 2,
                         cudaMemcpyHostToDevice)) ||
       !Check(cudaMemcpy(device_sf, sf.data(), sf.size(),
                         cudaMemcpyHostToDevice))) return 2;
   Replay<<<(count + 255) / 256, 256>>>(device_input, device_sf, count, scale,
-                                     device_result);
+                                     device_result, device_values);
   if (!Check(cudaGetLastError()) || !Check(cudaDeviceSynchronize())) return 2;
   std::vector<Result> result(count);
   if (!Check(cudaMemcpy(result.data(), device_result, count * sizeof(Result),
                         cudaMemcpyDeviceToHost))) return 2;
+  std::vector<float> values(count * 16);
+  if (!Check(cudaMemcpy(values.data(), device_values, values.size() * sizeof(float),
+                        cudaMemcpyDeviceToHost))) return 2;
+  const std::string values_path = std::string(argv[5]) + ".values.f32";
+  FILE* data = std::fopen(values_path.c_str(), "wb");
+  if (!data) return 2;
+  const bool written = std::fwrite(values.data(), sizeof(float), values.size(),
+                                   data) == values.size();
+  if (std::fclose(data) != 0 || !written) return 2;
   FILE* report = std::fopen(argv[5], "w");
   if (!report) return 2;
   int replay_bad = 0, format_bad = 0;
@@ -83,7 +96,8 @@ int main(int argc, char** argv) {
         static_cast<double>(r.ratio), r.actual, r.legacy, r.native) < 0) return 2;
   }
   if (std::fclose(report) != 0 || !Check(cudaFree(device_input)) ||
-      !Check(cudaFree(device_sf)) || !Check(cudaFree(device_result))) return 2;
+      !Check(cudaFree(device_sf)) || !Check(cudaFree(device_result)) ||
+      !Check(cudaFree(device_values))) return 2;
   std::printf("groups=%d replay_bad=%d format_bad=%d\n", count, replay_bad,
                format_bad);
   return replay_bad ? 2 : (format_bad ? 1 : 0);

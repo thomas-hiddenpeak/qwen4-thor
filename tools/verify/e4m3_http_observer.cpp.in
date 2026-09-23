@@ -1,5 +1,6 @@
 // Bounded read-only snapshots during real HTTP. Never a timing reference.
 #include <cuda_runtime_api.h>
+#include <cublasLt.h>
 #include <dlfcn.h>
 #include <atomic>
 #include <cstdio>
@@ -11,6 +12,8 @@ namespace {
 std::atomic<cudaKernel_t> down_kernel{nullptr}, gather_kernel{nullptr};
 std::atomic<int> captures{0};
 thread_local int expert = -1;
+struct Pending { const void* activation = nullptr; int index = 0; int rows = 0; };
+thread_local Pending pending;
 template <typename T> T Resolve(const char* name) {
   auto fn = reinterpret_cast<T>(dlsym(RTLD_NEXT, name));
   if (!fn) std::_Exit(127);
@@ -87,7 +90,109 @@ extern "C" cudaError_t __cudaLaunchKernel(
       static_cast<double>(scale), input_bytes, sf_bytes, ok ? "true" : "false");
   const bool saved = size > 0 && static_cast<size_t>(size) < sizeof(metadata) &&
                     Save(base + ".json", metadata, static_cast<size_t>(size));
+  if (ok && saved) pending = {*static_cast<void**>(args[1]), index, rows};
   std::fprintf(stderr, "[e4m3-capture] index=%d rows=%d expert=%d ok=%d\n",
                index, rows, expert, ok && saved);
+  return status;
+}
+namespace {
+template <typename T>
+bool Layout(cublasLtMatrixLayout_t layout, cublasLtMatrixLayoutAttribute_t key,
+            T* value) {
+  static const auto get = Resolve<decltype(&cublasLtMatrixLayoutGetAttribute)>(
+      "cublasLtMatrixLayoutGetAttribute");
+  size_t size = 0;
+  return get(layout, key, value, sizeof(T), &size) == CUBLAS_STATUS_SUCCESS &&
+         size == sizeof(T);
+}
+template <typename T>
+bool Attribute(cublasLtMatmulDesc_t desc, cublasLtMatmulDescAttributes_t key,
+               T* value) {
+  static const auto get = Resolve<decltype(&cublasLtMatmulDescGetAttribute)>(
+      "cublasLtMatmulDescGetAttribute");
+  size_t size = 0;
+  return get(desc, key, value, sizeof(T), &size) == CUBLAS_STATUS_SUCCESS &&
+         size == sizeof(T);
+}
+bool Shape(cublasLtMatrixLayout_t desc, uint64_t rows, uint64_t cols,
+           cudaDataType_t type) {
+  uint64_t r = 0, c = 0;
+  int64_t ld = 0;
+  cudaDataType_t t{};
+  cublasLtOrder_t order{};
+  return Layout(desc, CUBLASLT_MATRIX_LAYOUT_ROWS, &r) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_COLS, &c) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_LD, &ld) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_TYPE, &t) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_ORDER, &order) &&
+         r == rows && c == cols && ld == static_cast<int64_t>(rows) &&
+         t == type && order == CUBLASLT_ORDER_COL;
+}
+}
+extern "C" cublasStatus_t CUBLASWINAPI cublasLtMatmul(
+    cublasLtHandle_t handle, cublasLtMatmulDesc_t desc, const void* alpha,
+    const void* a, cublasLtMatrixLayout_t ad, const void* b,
+    cublasLtMatrixLayout_t bd, const void* beta, const void* c,
+    cublasLtMatrixLayout_t cd, void* d, cublasLtMatrixLayout_t dd,
+    const cublasLtMatmulAlgo_t* algo, void* workspace, size_t workspace_bytes,
+    cudaStream_t stream) {
+  static const auto real = Resolve<decltype(&cublasLtMatmul)>("cublasLtMatmul");
+  const auto status = real(handle, desc, alpha, a, ad, b, bd, beta, c, cd, d, dd,
+                           algo, workspace, workspace_bytes, stream);
+  if (!pending.activation || b != pending.activation) return status;
+  const Pending snapshot = pending;
+  pending.activation = nullptr;
+  cublasLtPointerMode_t pointer_mode{};
+  cublasOperation_t ta{}, tb{};
+  cublasLtMatmulMatrixScale_t sa{}, sb{};
+  const void *wsf = nullptr, *asf = nullptr;
+  const bool shape_ok = status == CUBLAS_STATUS_SUCCESS &&
+      Shape(ad, 640, 2560, CUDA_R_4F_E2M1) &&
+      Shape(bd, 640, snapshot.rows, CUDA_R_4F_E2M1) &&
+      Shape(dd, 2560, snapshot.rows, CUDA_R_16BF) &&
+      Attribute(desc, CUBLASLT_MATMUL_DESC_POINTER_MODE, &pointer_mode) &&
+      pointer_mode == CUBLASLT_POINTER_MODE_HOST &&
+      Attribute(desc, CUBLASLT_MATMUL_DESC_TRANSA, &ta) && ta == CUBLAS_OP_T &&
+      Attribute(desc, CUBLASLT_MATMUL_DESC_TRANSB, &tb) && tb == CUBLAS_OP_N &&
+      Attribute(desc, CUBLASLT_MATMUL_DESC_A_SCALE_MODE, &sa) &&
+      sa == CUBLASLT_MATMUL_MATRIX_SCALE_VEC16_UE4M3 &&
+      Attribute(desc, CUBLASLT_MATMUL_DESC_B_SCALE_MODE, &sb) &&
+      sb == CUBLASLT_MATMUL_MATRIX_SCALE_VEC16_UE4M3 &&
+      Attribute(desc, CUBLASLT_MATMUL_DESC_A_SCALE_POINTER, &wsf) &&
+      Attribute(desc, CUBLASLT_MATMUL_DESC_B_SCALE_POINTER, &asf) &&
+      *static_cast<const float*>(beta) == 0.0f;
+  if (!shape_ok) {
+    std::fprintf(stderr, "[e4m3-down] invalid descriptor\n");
+    return status;
+  }
+  const char* directory = std::getenv("Q4T_E4M3_CAPTURE_DIR");
+  if (!directory) return status;
+  const std::string base = std::string(directory) + "/capture-" +
+                           std::to_string(snapshot.index);
+  static const auto copy = Resolve<decltype(&cudaMemcpyAsync)>("cudaMemcpyAsync");
+  static const auto sync = Resolve<decltype(&cudaStreamSynchronize)>(
+      "cudaStreamSynchronize");
+  auto capture = [&](const char* suffix, const void* source, size_t bytes) {
+    std::vector<unsigned char> data(bytes);
+    return copy(data.data(), source, bytes, cudaMemcpyDeviceToHost, stream) ==
+               cudaSuccess && sync(stream) == cudaSuccess &&
+           Save(base + suffix, data.data(), bytes);
+  };
+  const bool ok = capture(".packed.bin", b, snapshot.rows * size_t{320}) &&
+      capture(".weights.bin", a, 2560 * size_t{320}) &&
+      capture(".weights-sf.bin", wsf, 20 * size_t{5120}) &&
+      capture(".gemm-sf.bin", asf, ((snapshot.rows + 127) / 128) * size_t{5120}) &&
+      capture(".down.bin", d, snapshot.rows * size_t{2560} * 2);
+  char metadata[256];
+  const int size = std::snprintf(metadata, sizeof(metadata),
+      "{\"index\":%d,\"rows\":%d,\"alpha_hex\":\"%a\","
+      "\"beta\":0,\"descriptor_checked\":true,\"ok\":%s}\n",
+      snapshot.index, snapshot.rows,
+      static_cast<double>(*static_cast<const float*>(alpha)),
+      ok ? "true" : "false");
+  const bool saved = size > 0 && static_cast<size_t>(size) < sizeof(metadata) &&
+                    Save(base + ".down.json", metadata, static_cast<size_t>(size));
+  std::fprintf(stderr, "[e4m3-down] index=%d ok=%d\n", snapshot.index,
+               ok && saved);
   return status;
 }
