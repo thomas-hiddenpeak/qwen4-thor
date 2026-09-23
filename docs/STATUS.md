@@ -20,6 +20,12 @@ TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间�
 
 ## 当前决策摘要
 
+- **压缩key指定算术全同，投影与评分GEMM仍待绑定。**
+  冻结HTTP快照CPU均值/归约/旋转加设备数学函数，SASS确认两半区
+  的乘加收缩后1572864输出全部位同。旧FP64 1680项及初始
+  958/959/6/2项差异保留，CPU数学函数同顺序仍956项。运行时未改，
+  不覆盖decode新组或多轴不同位置；下一步prefill评分GEMM来源，见
+  [索引报告后续](QSA_INDEXER_REFERENCE_2026-09-23.md)。
 - **索引分数汇总/首decode计算已复现，压缩key差异未解。**
   新观测先三侧HTTP仍原错、服务0，raw写入及历史/压缩key交接位同。
   实际norm权重同checkpoint；prefill CPU reduce用设备rsqrt缩放后

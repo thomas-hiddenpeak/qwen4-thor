@@ -75,3 +75,39 @@ reduce-audited.json、previous-binding.json、artifact-binding.json及
 observed-captures/。工具零警告、运行与审计完成，非零差异继续保留。
 下一步复核压缩key指定算术，再绑定prefill点积算法与原始投影来源；
 完整prefill GDN、PLE和输出头仍待覆盖，整体正确性未验收。
+
+## 后续：压缩均值、归一化与旋转指定算术
+
+复用已绑定HTTP快照，不改运行时或观测。CPU按四token顺序FP32
+求和除4，平方后执行warp XOR16/8/4/2/1归约，再按四warp顺序
+相加，FP32均方+epsilon。设备仅重建rsqrtf、powf及sin/cos，CPU
+完成规范化乘法与旋转fma及BF16舍入，不调用生产BuildCompressedK。
+
+最初预声明两种整式fma顺序：第一项融合或第二项融合。CPU数学
+函数参考分别有958/959项不同，设备数学函数分别剩6/2项。前一种
+的6项都在旋转后半区，后一种2项都在前半区，原结果完整保留。
+
+读取接受二进制的BuildCompressedKKernel SASS，前半区3c10先
+FMUL配对值与sin，3c20以FFMA当前值*cos减该结果；后半区6040
+先FMUL配对值与sin，6050以FFMA当前值*cos加该结果。两分支
+始终融合当前值*cos，但源表达式中它的位置不同，所以统一按源
+表达式“第一项/第二项”融合都不足以重建编译后行为。
+初次用未修饰函数名查询未找到，随后按完整mangled符号提取指令，
+保留查询输出与实际SASS；没有根据剩余差异直接挑选容忍规则。
+
+新增SASS支持的分支顺序后，CPU数学函数仍有956项不同；设备
+数学函数+CPU均值/归约/乘法/旋转则1572864个输出全部逐位一致。
+六个变体分别958/959/6/2/956/0，前四个结果与原记录逐项相同；
+旧FP64的1680项差异及全部变体输出/索引保留，不以较小值代替验收。
+所有工具零警告，执行退出0，最终12份原始输出逐字节复核。
+
+这是指定硬件数学近似与CPU算术下的局部重建，不是独立于CUDA
+数学库或编译器精度选择的模型合同证明。本轮仅prefill1024组×12层，
+三轴rope位置相同；不覆盖decode新组完成或多轴不同位置语义。
+原始key/query投影与prefill评分GEMM来源仍待绑定，原错答未修复。
+
+证据目录`.q4t-work/e2e/qsa-compression-reference-20260923/`，包含
+initial-compression-reference.json、sass-order-reference.json、
+sass-order-decision.json、compressed-k-exact.sass、input-binding.json、
+artifact-binding.json及各变体输出。下一步补prefill评分GEMM实际
+算法/操作数，再连接原始indexer及全注意力投影与位置变换来源。

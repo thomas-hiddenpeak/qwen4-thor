@@ -1,0 +1,28 @@
+from pathlib import Path
+import json,hashlib,numpy as np,shutil,subprocess
+p=Path(__file__).resolve().parent;root=p.parents[2];prior=root/'.q4t-work/e2e/qsa-indexer-reference-20260923';c=prior/'observed-captures';o=root/'.q4t-work/e2e/qsa-compression-reference-20260923';data=o/'data';data.mkdir()
+assert json.loads((prior/'exit.json').read_text())['observer_preserved_tested_output']
+for name,h in json.loads((prior/'artifact-binding.json').read_text()).items():assert hashlib.sha256((prior/name).read_bytes()).hexdigest()==h
+assert all((p/f).stat().st_size==0 for f in ['cpu-build.log','nonlinear-build.log'])
+plan={'scope':'Frozen accepted HTTP prefill1024 groups x12 layers, actual raw keys/weights/rope. CPU mean/warp reduction/norm/rotation with independent device elementary functions only. No production kernel called.','variants':{'0':'CPU elementary functions; rotation fma first product','1':'CPU elementary functions; rotation fma second product','2':'Device elementary functions; rotation fma first product','3':'Device elementary functions; rotation fma second product','4':'CPU functions; SASS branch order (current*cos fused)','5':'Device functions; SASS branch order (current*cos fused)'},'limitation':'Not hardware-independent math-library proof. Does not cover decode completing a group or nonidentical MRoPE axes.'};(o/'plan.json').write_text(json.dumps(plan,indent=2)+'\n');bindings={}
+for l in range(3,48,4):
+ base=str(c/f'layer-{l}.prefill');b=str(data/f'layer-{l}')
+ for suffix in ['.index-raw.bf16','.ik-norm.bf16','.compressed-params.f32','.compressed.bf16','.rope-0.i32','.rope-1.i32','.rope-2.i32']:
+  bindings[base+suffix]=hashlib.sha256(Path(base+suffix).read_bytes()).hexdigest()
+ raw=(np.fromfile(base+'.index-raw.bf16',dtype='<u2').astype(np.uint32)<<16).view(np.float32).reshape(1024,4,128);mean=np.zeros((1024,128),dtype=np.float32)
+ for j in range(4):mean+=raw[:,j,:]
+ mean/=np.float32(4);values=(mean*mean).reshape(1024,4,32)
+ for off in [16,8,4,2,1]:values=values+values[:,:,np.arange(32)^off]
+ sums=np.zeros(1024,dtype=np.float32)
+ for warp in range(4):sums+=values[:,warp,0]
+ params=np.fromfile(base+'.compressed-params.f32',dtype='<f4');variance=sums/np.float32(128)+params[1];mean.tofile(b+'.mean.f32');variance.tofile(b+'.variance.f32');sums.tofile(b+'.sum-squares.f32');ropes=np.stack([np.fromfile(base+f'.rope-{r}.i32',dtype='<i4') for r in range(3)]);positions=ropes[np.arange(64)[None,:]%3,(np.arange(1024)*4)[:,None]];positions.astype('<i4').tofile(b+'.positions.i32')
+ for src,dst in [('.ik-norm.bf16','.weight.bf16'),('.compressed.bf16','.expected.bf16'),('.compressed-params.f32','.params.f32')]:shutil.copy2(base+src,b+dst)
+(o/'input-binding.json').write_text(json.dumps(bindings,indent=2)+'\n');exits={}
+for name in ['nonlinear','cpu']:
+ with (o/(name+'.stdout')).open('w') as stdout,(o/(name+'.stderr')).open('w') as stderr:exits[name]=subprocess.run([str(p/name),str(data)],stdout=stdout,stderr=stderr).returncode
+ (o/'exit.json').write_text(json.dumps(exits)+'\n');assert exits[name]==0
+r=json.loads((o/'cpu.stdout').read_text());assert len(r['records'])==72
+for x in r['records']:
+ b=data/f"layer-{x['layer']}";bits=np.fromfile(str(b)+f".variant-{x['variant']}.bf16",dtype='<u2');expected=np.fromfile(str(b)+'.expected.bf16',dtype='<u2');bad=np.flatnonzero(bits!=expected);assert len(bad)==x['mismatches'];x['indices']=bad.tolist()
+for f,h in bindings.items():assert hashlib.sha256(Path(f).read_bytes()).hexdigest()==h
+(o/'compression-reference.json').write_text(json.dumps(r,indent=2)+'\n');print('totals',r['totals'])
