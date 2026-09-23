@@ -1,0 +1,31 @@
+from pathlib import Path
+import hashlib,json,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/qsa-full-selection-20260924';c=o/'observed-captures';old=root/'.q4t-work/e2e/qsa-selection-reference-20260923'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+def read(name,dtype,n):
+ a=np.fromfile(c/name,dtype=dtype);assert len(a)==n;return a
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output'];assert sha(root/'build/q4t')==json.loads((o/'plan.json').read_text())['binary_sha256']
+om=json.loads((old/'artifact-binding.json').read_text());assert sha(old/'capture-binding.json')==om['capture-binding.json'];cm=json.loads((old/'capture-binding.json').read_text());bindings=[];records=[]
+for l in range(3,48,4):
+ name=f'layer-{l}.prefill'
+ for kind in range(3):
+  m=json.loads((c/f'{name}.kind-{kind}.json').read_text());assert m['ok'] and m['tokens']==4096 and m['block']==256 and m['grid_x']==(8192 if kind==0 else 4096) and m['grid_y']==(2 if kind==2 else 1)
+ for suffix in ['write-seqids.i32','attention-seqids.i32']:assert np.all(read(name+'.'+suffix,'<i4',4096)==0)
+ positions=read(name+'.write-positions.i32','<i4',4096);assert np.array_equal(positions,np.arange(4096));pt=read(name+'.page-table.i32','<i4',4096);slots=pt.astype(np.int64)*16+positions%16;assert np.unique(slots).size==4096 and np.min(slots)>=0 and np.max(slots)<4096
+ cache=read(name+'.cache.bf16','<u2',4096*1024).reshape(4096,2,2,256);key=read(name+'.write-k.bf16','<u2',4096*512).reshape(4096,2,256);value=read(name+'.write-v.bf16','<u2',4096*512).reshape(4096,2,256);assert np.array_equal(cache[slots,:,0,:],key) and np.array_equal(cache[slots,:,1,:],value)
+ lengths=read(name+'.length.i32','<i4',4096);selection=read(name+'.selection.i32','<i4',4096*2052).reshape(4096,2052);scores=read(name+'.scores.f32','<f4',4096*2048).reshape(4096,2048);assert np.isfinite(scores).all()
+ for t,n in enumerate(lengths):
+  assert n==(t+1 if (t+1)//4<=512 else 2048+(t+1)%4);chosen=selection[t,:n];assert len(np.unique(chosen))==n and np.all(chosen>=0) and np.all(chosen<=t) and np.all(selection[t,n:]==-1)
+ for suffix in ['q.bf16','gate.bf16','attention-output.bf16']:
+  a=read(name+'.'+suffix,'<u2',4096*6144);assert np.isfinite((a.astype('<u4')<<16).view('<f4')).all()
+ mapping=[('page-table.i32',None),('cache.bf16',None),('write-positions.i32',None),('write-k.bf16',None),('write-v.bf16',None),('q.bf16',6144*2),('gate.bf16',6144*2),('attention-output.bf16',6144*2),('scores.f32',2048*4),('selection.i32',2052*4),('length.i32',4)]
+ for suffix,tail in mapping:
+  prior=old/'observed-captures'/(name+'.'+suffix);rel=str(prior.relative_to(old));assert sha(prior)==cm[prior.name];raw=(c/(name+'.'+suffix)).read_bytes();assert (raw[-tail:] if tail else raw)==prior.read_bytes();bindings.append({'file':rel,'sha256':cm[prior.name],'relation':'last query' if tail else 'full tensor'})
+ records.append({'layer':l,'queries':4096,'selected_indices':int(lengths.sum()),'selection_slots':4096*2052,'kv_bf16_values':4096*1024,'q_gate_attention_each':4096*6144,'all_selection_causal_unique_and_lengths_valid':True,'full_kv_write_equal':True,'mapping_identity':bool(np.array_equal(slots,positions))});print(records[-1],flush=True)
+save('old-binding.json',{'manifest_sha256':sha(old/'artifact-binding.json'),'capture_binding_sha256':sha(old/'capture-binding.json'),'records':bindings});save('boundary-reference.json',records)
+summary={'layers':12,'queries':12*4096,'selected_indices':sum(r['selected_indices'] for r in records),'selection_slots':12*4096*2052,'kv_bf16_values':12*4096*1024,'q_gate_attention_each':12*4096*6144,'old_files_equal':len(bindings),'selection_and_cache_inputs_at_attention_equal':True,'selection_ranking_arithmetic_verified':False,'attention_arithmetic_verified':False,'upstream_projections_and_scores_verified':False,'runtime_changed':False,'whole_model_correctness_proven':False,'free_after':shutil.disk_usage(o).free};save('summary.json',summary);shutil.copy2(p/'analyze.py',o/'analyze.py');save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'});print(summary,flush=True)

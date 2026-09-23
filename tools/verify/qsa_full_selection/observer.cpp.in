@@ -1,0 +1,187 @@
+#include <cuda_runtime_api.h>
+#include <dlfcn.h>
+#include <atomic>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <string>
+#include <cstring>
+#include <vector>
+namespace {
+std::atomic<cudaKernel_t> select_kernel{nullptr}, write_kernel{nullptr},
+    prefill_kernel{nullptr}, decode_kernel{nullptr};
+int counts[3][2]{};
+const uint16_t* caches[12]{};
+const int *tables[12]{}, *selections[12]{}, *lengths[12]{};
+template <class T>
+T Resolve(const char* s) {
+  auto p = reinterpret_cast<T>(dlsym(RTLD_NEXT, s));
+  if (!p) std::_Exit(127);
+  return p;
+}
+template <class T>
+T* Ptr(void** a, int i) {
+  return *static_cast<T**>(a[i]);
+}
+bool Save(const std::string& s, const void* p, size_t n) {
+  FILE* f = std::fopen(s.c_str(), "wb");
+  if (!f) return false;
+  bool ok = std::fwrite(p, 1, n, f) == n;
+  return std::fclose(f) == 0 && ok;
+}
+bool Read(void* p, const void* d, size_t n, cudaStream_t stream) {
+  static auto copy = Resolve<decltype(&cudaMemcpyAsync)>("cudaMemcpyAsync");
+  static auto sync =
+      Resolve<decltype(&cudaStreamSynchronize)>("cudaStreamSynchronize");
+  return copy(p, d, n, cudaMemcpyDeviceToHost, stream) == cudaSuccess &&
+         sync(stream) == cudaSuccess;
+}
+bool Capture(const std::string& s, const void* d, size_t n,
+             cudaStream_t stream) {
+  std::vector<unsigned char> v(n);
+  return Read(v.data(), d, n, stream) && Save(s, v.data(), n);
+}
+bool Compare(const std::string& p, const void* d, size_t n,
+             cudaStream_t stream) {
+  std::vector<unsigned char> v(n), e(n);
+  FILE* f = std::fopen(p.c_str(), "rb");
+  if (!f) return false;
+  bool ok = std::fread(e.data(), 1, n, f) == n && std::fgetc(f) == EOF;
+  std::fclose(f);
+  return ok && Read(v.data(), d, n, stream) && v == e;
+}
+bool Seq(const int* ids, const std::string& p, cudaStream_t stream) {
+  std::vector<int> v(4096);
+  bool ok = !ids || Read(v.data(), ids, v.size() * 4, stream);
+  for (int x : v) ok = ok && x == 0;
+  return ok && Save(p, v.data(), v.size() * 4);
+}
+std::string Base(int index, int phase) {
+  return std::string(std::getenv("Q4T_QSA_CAPTURE_DIR")) + "/layer-" +
+         std::to_string(index * 4 + 3) + (phase ? ".decode" : ".prefill");
+}
+}  // namespace
+extern "C" cudaError_t __cudaGetKernel(cudaKernel_t* k, const void* fn) {
+  static auto real =
+      Resolve<cudaError_t (*)(cudaKernel_t*, const void*)>("__cudaGetKernel");
+  auto status = real(k, fn);
+  if (status == cudaSuccess) {
+    const char* n = nullptr;
+    static auto name = Resolve<decltype(&cudaFuncGetName)>("cudaFuncGetName");
+    if (name(&n, fn) == cudaSuccess && n) {
+      if (std::strstr(n, "ShortTopkSelectKernel")) select_kernel = *k;
+      if (std::strstr(n, "WriteKVKernel") &&
+          std::strstr(n, "full_attention_cu"))
+        write_kernel = *k;
+      if (std::strstr(n, "SparseAttentionKernel")) prefill_kernel = *k;
+      if (std::strstr(n, "SparseAttentionDecodeSplitKernel"))
+        decode_kernel = *k;
+    }
+  }
+  return status;
+}
+extern "C" cudaError_t __cudaLaunchKernel(cudaKernel_t k, dim3 grid, dim3 block,
+                                          void** a, size_t smem,
+                                          cudaStream_t stream) {
+  static auto real =
+      Resolve<cudaError_t (*)(cudaKernel_t, dim3, dim3, void**, size_t,
+                              cudaStream_t)>("__cudaLaunchKernel");
+  int kind = k == write_kernel     ? 0
+             : k == select_kernel  ? 1
+             : k == prefill_kernel ? 2
+                                   : -1;
+  int t = kind == 0   ? *static_cast<int*>(a[7])
+          : kind == 1 ? *static_cast<int*>(a[4])
+                      : int(grid.x);
+  bool take = false, ok = true;
+  int index = -1;
+  std::string base;
+  if (std::getenv("Q4T_QSA_CAPTURE_DIR") && kind >= 0 && t == 4096) {
+    index = counts[kind][0]++;
+    take = index < 12;
+    if (take) base = Base(index, 0);
+  }
+  if (take) {
+    ok = block.x == 256 && block.y == 1 && block.z == 1 && grid.z == 1 &&
+         smem == 0;
+    if (kind == 0) {
+      ok = ok && *static_cast<int*>(a[3]) == 2 &&
+           *static_cast<int*>(a[4]) == 256 &&
+           Seq(Ptr<int>(a, 8), base + ".write-seqids.i32", stream);
+      caches[index] = Ptr<uint16_t>(a, 2);
+      tables[index] = Ptr<int>(a, 6);
+      std::vector<int> pt(4096), pos(4096);
+      ok = ok && Read(pt.data(), tables[index], 16384, stream) &&
+           Read(pos.data(), Ptr<int>(a, 5), 16384, stream);
+      for (int j = 0; j < 4096; ++j)
+        ok = ok && pos[j] == j && pt[j] >= 0 && pt[j] < 256;
+      ok = ok && Save(base + ".page-table.i32", pt.data(), 16384) &&
+           Save(base + ".write-positions.i32", pos.data(), 16384) &&
+           Capture(base + ".write-k.bf16", Ptr<uint16_t>(a, 0),
+                   size_t(4096) * 512 * 2, stream) &&
+           Capture(base + ".write-v.bf16", Ptr<uint16_t>(a, 1),
+                   size_t(4096) * 512 * 2, stream);
+    }
+    if (kind == 1) {
+      ok =
+          ok && counts[0][0] == index + 1 && *static_cast<int*>(a[5]) == 4 &&
+          *static_cast<int*>(a[6]) == 512 && *static_cast<int*>(a[7]) == 2048 &&
+          *static_cast<int*>(a[8]) == 2052 &&
+          Compare(base + ".write-positions.i32", Ptr<int>(a, 3), 16384, stream);
+      selections[index] = Ptr<int>(a, 1);
+      lengths[index] = Ptr<int>(a, 2);
+      ok = ok && Capture(base + ".scores.f32", Ptr<float>(a, 0),
+                         size_t(4096) * 2048 * 4, stream);
+    }
+    if (kind == 2) {
+      ok = ok && counts[1][0] == index + 1 && grid.y == 2 &&
+           *static_cast<int*>(a[7]) == 24 && *static_cast<int*>(a[8]) == 2 &&
+           *static_cast<int*>(a[9]) == 256 &&
+           *static_cast<int*>(a[10]) == 2052 &&
+           Ptr<uint16_t>(a, 1) == caches[index] &&
+           Ptr<int>(a, 2) == tables[index] &&
+           Ptr<int>(a, 3) == selections[index] &&
+           Ptr<int>(a, 4) == lengths[index] &&
+           Seq(Ptr<int>(a, 11), base + ".attention-seqids.i32", stream) &&
+           Compare(base + ".page-table.i32", Ptr<int>(a, 2), 16384, stream) &&
+           Compare(base + ".cache.bf16", Ptr<uint16_t>(a, 1),
+                   size_t(4096) * 1024 * 2, stream) &&
+           Compare(base + ".selection.i32", Ptr<int>(a, 3),
+                   size_t(4096) * 2052 * 4, stream) &&
+           Compare(base + ".length.i32", Ptr<int>(a, 4), 16384, stream) &&
+           Capture(base + ".q.bf16", Ptr<uint16_t>(a, 0),
+                   size_t(4096) * 6144 * 2, stream) &&
+           Capture(base + ".gate.bf16", Ptr<uint16_t>(a, 6),
+                   size_t(4096) * 6144 * 2, stream);
+    }
+  }
+  auto result = real(k, grid, block, a, smem, stream);
+  if (!take || result != cudaSuccess) return result;
+  if (kind == 0)
+    ok = ok && Capture(base + ".cache.bf16", Ptr<uint16_t>(a, 2),
+                       size_t(4096) * 1024 * 2, stream);
+  if (kind == 1)
+    ok = ok &&
+         Capture(base + ".selection.i32", Ptr<int>(a, 1),
+                 size_t(4096) * 2052 * 4, stream) &&
+         Capture(base + ".length.i32", Ptr<int>(a, 2), 16384, stream);
+  if (kind == 2)
+    ok = ok && Capture(base + ".attention-output.bf16", Ptr<uint16_t>(a, 5),
+                       size_t(4096) * 6144 * 2, stream);
+  char meta[400];
+  int len = std::snprintf(
+      meta, sizeof(meta),
+      "{\"layer\":%d,\"kind\":%d,\"tokens\":4096,\"block\":%u,\"grid_x\":%u,"
+      "\"grid_y\":%u,\"seq_ids_null\":%s,\"kv_seq_stride\":%zu,\"pt_seq_"
+      "stride\":%d,\"ok\":%s}\n",
+      index * 4 + 3, kind, block.x, grid.x, grid.y,
+      (kind == 1 || !Ptr<int>(a, kind == 0 ? 8 : 11)) ? "true" : "false",
+      kind == 1 ? size_t(0) : *static_cast<size_t*>(a[kind == 0 ? 9 : 12]),
+      kind == 1 ? 0 : *static_cast<int*>(a[kind == 0 ? 10 : 13]),
+      ok ? "true" : "false");
+  if (len > 0 && size_t(len) < sizeof(meta))
+    Save(base + ".kind-" + std::to_string(kind) + ".json", meta, len);
+  std::fprintf(stderr, "[qsa-full] layer=%d kind=%d ok=%d\n", index * 4 + 3,
+               kind, ok);
+  return result;
+}
