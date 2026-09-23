@@ -1,0 +1,42 @@
+from pathlib import Path
+import json,hashlib,shutil,subprocess
+p=Path(__file__).resolve().parent;root=p.parents[2];source=root/'.q4t-work/e2e/moe-full-gu-20260924';gather=root/'.q4t-work/e2e/moe-full-gather-20260924';plans=root/'.q4t-work/prepared/moe-full-gu-20260924/parameters';o=root/'.q4t-work/e2e/moe-full-gu-fp64-20260924'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert not o.exists();assert not (p/'build.log').read_text().strip();assert shutil.disk_usage(p).free>28*1024**3
+assert json.loads((source/'exit.json').read_text())['observer_preserved_tested_output']
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+for proc in Path('/proc').iterdir():
+ if not proc.name.isdigit():continue
+ try:a=(proc/'cmdline').read_bytes().split(b'\0');exe=(proc/'exe').resolve(strict=True)
+ except OSError:continue
+ assert not(exe.name.startswith('q4t') and b'serve' in a)
+o.mkdir();d=o/'reference';d.mkdir();bindings=[]
+plan={'source_manifest_sha256':sha(source/'artifact-binding.json'),'gather_manifest_sha256':sha(gather/'artifact-binding.json'),'reference_budget_bytes':8*1024**3,'reserve_bytes':20*1024**3,'scope':'Full actual GU inputs, actual SF and actual FP32 alpha; independent dequantization and FP64 Dgemm, then FP32/BF16 RNE. CPU sequential FP64 on every output at token4095. No corrected scales or runtime edits. Reuse frozen HTTP, no new HTTP required.','stored_reference':'All rounded BF16, all mismatch indices and corresponding FP64 values; complete unrounded FP64 only for token4095. Matching non-tail unrounded FP64 not persisted.'};save('plan.json',plan)
+for src,suffixes in [(source,('.gu-output.bf16','.reorder.i32','.flats.i32')),(gather,('.counts.i32','.packed.bin','.sf-logical.bin'))]:
+ m=json.loads((src/'artifact-binding.json').read_text())
+ for name,digest in m.items():
+  if name.startswith('observed-captures/') and name.endswith(suffixes):
+   assert sha(src/name)==digest;bindings.append({'file':str((src/name).relative_to(root)),'sha256':digest})
+cp=json.loads((source/'checkpoint-plan.json').read_text());source_manifest=json.loads((source/'artifact-binding.json').read_text());assert sha(source/'checkpoint-plan.json')==source_manifest['checkpoint-plan.json']
+for name,digest in cp['plan_hashes'].items():assert sha(plans/name)==digest
+for i,r in enumerate(cp['records']):
+ for t in r['tensors']:
+  f=Path(t['file']);st=f.stat();assert st.st_size==t['size'] and st.st_mtime_ns==t['mtime_ns']
+  with f.open('rb') as s:s.seek(t['offset']);raw=s.read(t['bytes'])
+  assert len(raw)==t['bytes'] and hashlib.sha256(raw).hexdigest()==t['sha256']
+ if (i+1)%1000==0:print({'checkpoint_records_bound':i+1},flush=True)
+save('input-binding.json',bindings);shutil.copy2(source/'checkpoint-plan.json',o/'checkpoint-plan.json');records=[]
+for l in range(48):
+ cmd=[str(p/'fp64'),str(source/'observed-captures'),str(gather/'observed-captures'),str(plans),str(d),str(l)]
+ with (o/f'layer-{l}.json').open('w') as out,(o/f'layer-{l}.stderr').open('w') as err:result=subprocess.run(cmd,stdout=out,stderr=err)
+ assert result.returncode==0,{'layer':l,'exit':result.returncode};r=json.loads((o/f'layer-{l}.json').read_text());assert r['layer']==l and r['elements']==40960*1280 and r['cpu_tail_elements']==12800
+ records.append({k:v for k,v in r.items() if k!='records'});save('reference.json',{'records':records,'complete':len(records)==48});print(records[-1],flush=True)
+ assert shutil.disk_usage(o).free>plan['reserve_bytes']
+for f in p.iterdir():
+ if f.is_file():shutil.copy2(f,o/f.name)
+save('exit.json',{'reference_exit':0,'runtime_changed':False,'whole_model_correctness_proven':False})

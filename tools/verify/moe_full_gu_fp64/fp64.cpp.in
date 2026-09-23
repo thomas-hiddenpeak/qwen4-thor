@@ -1,0 +1,147 @@
+// Offline independent FP4 dequantization and FP64 GEMM reference.
+#include <cuda_runtime_api.h>
+#include <cublas_v2.h>
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <filesystem>
+#include <stdexcept>
+#include <string>
+#include <vector>
+#define CU(x) do { if ((x) != cudaSuccess) throw std::runtime_error(#x); } while (0)
+#define BL(x) do { if ((x) != CUBLAS_STATUS_SUCCESS) throw std::runtime_error(#x); } while (0)
+template<class T> std::vector<T> Read(const std::string& path, size_t n) {
+  std::ifstream f(path, std::ios::binary | std::ios::ate);
+  if (!f || size_t(f.tellg()) != n*sizeof(T)) throw std::runtime_error(path);
+  std::vector<T> v(n); f.seekg(0);
+  if (!f.read(reinterpret_cast<char*>(v.data()), n*sizeof(T)))
+    throw std::runtime_error(path);
+  return v;
+}
+template<class T> void Save(const std::string& path, const std::vector<T>& v) {
+  std::ofstream f(path,std::ios::binary);
+  if (!f.write(reinterpret_cast<const char*>(v.data()),v.size()*sizeof(T)))
+    throw std::runtime_error(path);
+}
+std::vector<std::vector<uint8_t>> Parameters(const std::string& path) {
+  std::ifstream f(path); std::vector<std::vector<uint8_t>> result;
+  for(int i=0;i<9;++i) {
+    std::string file; size_t offset,n;
+    if (!(f>>file>>offset>>n)) throw std::runtime_error(path);
+    std::ifstream source(file,std::ios::binary); source.seekg(offset);
+    std::vector<uint8_t> v(n);
+    if (!source.read(reinterpret_cast<char*>(v.data()),n))
+      throw std::runtime_error(file);
+    result.push_back(std::move(v));
+  }
+  return result;
+}
+float Scalar(const std::vector<uint8_t>& v) {
+  if(v.size()!=4) throw std::runtime_error("scalar size");
+  float x; std::memcpy(&x,v.data(),4); return x;
+}
+std::vector<double> Decode(const std::vector<uint8_t>& packed,
+                           const std::vector<uint8_t>& scales,int rows) {
+  if(packed.size()!=size_t(rows)*1280||scales.size()!=size_t(rows)*160)
+    throw std::runtime_error("operand shape");
+  constexpr double lut[8]={0,.5,1,1.5,2,3,4,6};
+  std::vector<double> values(size_t(rows)*2560);
+  for(int r=0;r<rows;++r) for(int group=0;group<160;++group) {
+    int code=scales[size_t(r)*160+group];
+    if(code>=127) throw std::runtime_error("invalid unsigned E4M3 scale");
+    double sf=code<8?std::ldexp(double(code),-9):
+        std::ldexp(double(8+(code&7)),(code>>3)-10);
+    for(int j=0;j<16;++j) {
+      size_t i=size_t(r)*2560+group*16+j;
+      int nibble=(packed[i/2]>>((i%2)*4))&15;
+      values[i]=(nibble&8?-lut[nibble&7]:lut[nibble&7])*sf;
+    }
+  }
+  return values;
+}
+uint16_t Round(double x) {
+  float f=float(x);uint32_t b;std::memcpy(&b,&f,4);
+  return uint16_t((b+0x7fff+((b>>16)&1))>>16);
+}
+double DecodeBf16(uint16_t b) {
+  uint32_t bits=uint32_t(b)<<16;float f;std::memcpy(&f,&bits,4);return f;
+}
+int main(int argc,char** argv) {
+ try {
+  if(argc!=6) throw std::runtime_error("captures prior plans output layer");
+  int layer=std::stoi(argv[5]);std::string prefix="layer-"+std::to_string(layer);
+  auto counts=Read<int32_t>(std::string(argv[2])+"/"+prefix+".counts.i32",512);
+  cublasHandle_t handle;BL(cublasCreate(&handle));int version;
+  BL(cublasGetVersion(handle,&version));
+  bool first=true;size_t total=0,bad=0,cpu_elements=0,cpu_bad=0;
+  std::printf("{\"layer\":%d,\"cublas_version\":%d,\"records\":[",layer,version);
+  for(int e=0;e<512;++e) {
+    int m=counts[e];if(!m)continue;
+    std::string name=prefix+".expert-"+std::to_string(e);
+    std::string base=std::string(argv[1])+"/"+name;
+    std::string old=std::string(argv[2])+"/"+name;
+    std::string out=std::string(argv[4])+"/"+name;
+    auto parameters=Parameters(std::string(argv[3])+"/"+name+".plan");
+    auto wb=parameters[0];wb.insert(wb.end(),parameters[4].begin(),parameters[4].end());
+    auto ws=parameters[1];ws.insert(ws.end(),parameters[5].begin(),parameters[5].end());
+    auto xb=Read<uint8_t>(old+".packed.bin",size_t(m)*1280);
+    auto xs=Read<uint8_t>(old+".sf-logical.bin",size_t(m)*160);
+    auto order=Read<int32_t>(base+".reorder.i32",m);
+    auto flats=Read<int32_t>(base+".flats.i32",m);
+    std::vector<uint8_t> packed(xb.size()),scales(xs.size());int tail=-1;
+    for(int r=0;r<m;++r) {
+      if(order[r]<0||order[r]>=m)throw std::runtime_error("row order");
+      std::memcpy(packed.data()+size_t(r)*1280,xb.data()+size_t(order[r])*1280,1280);
+      std::memcpy(scales.data()+size_t(r)*160,xs.data()+size_t(order[r])*160,160);
+      if(flats[r]/10==4095) {if(tail!=-1)throw std::runtime_error("duplicate tail");tail=r;}
+    }
+    auto w=Decode(wb,ws,1280),x=Decode(packed,scales,m);
+    auto actual=Read<uint16_t>(base+".gu-output.bf16",size_t(m)*1280);
+    std::vector<double> y(actual.size());double *dw,*dx,*dy;
+    CU(cudaMalloc(reinterpret_cast<void**>(&dw),w.size()*8));
+    CU(cudaMalloc(reinterpret_cast<void**>(&dx),x.size()*8));
+    CU(cudaMalloc(reinterpret_cast<void**>(&dy),y.size()*8));
+    CU(cudaMemcpy(dw,w.data(),w.size()*8,cudaMemcpyHostToDevice));
+    CU(cudaMemcpy(dx,x.data(),x.size()*8,cudaMemcpyHostToDevice));
+    double alpha=double(Scalar(parameters[2])*Scalar(parameters[3])),beta=0;
+    BL(cublasDgemm(handle,CUBLAS_OP_T,CUBLAS_OP_N,1280,m,2560,
+                  &alpha,dw,2560,dx,2560,&beta,dy,1280));
+    CU(cudaMemcpy(y.data(),dy,y.size()*8,cudaMemcpyDeviceToHost));
+    CU(cudaFree(dw));CU(cudaFree(dx));CU(cudaFree(dy));
+    std::vector<uint16_t> rounded(y.size());std::vector<int32_t> differences;
+    std::vector<double> difference_values;double max_abs=0;size_t max_index=0;
+    for(size_t i=0;i<y.size();++i) {
+      if(!std::isfinite(y[i]))throw std::runtime_error("nonfinite FP64");
+      rounded[i]=Round(y[i]);
+      if(rounded[i]!=actual[i]) {differences.push_back(int32_t(i));difference_values.push_back(y[i]);}
+      double error=std::abs(y[i]-DecodeBf16(actual[i]));
+      if(error>max_abs) {max_abs=error;max_index=i;}
+    }
+    size_t required=rounded.size()*2+differences.size()*12+1280*20;
+    if(std::filesystem::space(argv[4]).available<required+size_t(20)*1024*1024*1024)
+      throw std::runtime_error("reference capacity reserve");
+    Save(out+".fp64.bf16",rounded);Save(out+".differences.i32",differences);
+    Save(out+".differences.f64",difference_values);
+    size_t cpu_diff=0;int cpu_count=0;
+    if(tail>=0) {
+      std::vector<double> cpu(1280),gpu(y.begin()+size_t(tail)*1280,y.begin()+size_t(tail+1)*1280);
+      std::vector<int32_t> cpu_indices;
+      for(int n=0;n<1280;++n) {
+        double sum=0;
+        for(int k=0;k<2560;++k)sum+=w[size_t(n)*2560+k]*x[size_t(tail)*2560+k];
+        cpu[n]=sum*alpha;
+        if(std::memcmp(&cpu[n],&gpu[n],8)!=0)cpu_indices.push_back(n);
+      }
+      Save(out+".tail-cpu.f64",cpu);Save(out+".tail-gpu.f64",gpu);
+      Save(out+".tail-cpu-differences.i32",cpu_indices);
+      cpu_diff=cpu_indices.size();cpu_count=1280;
+    }
+    std::printf("%s{\"expert\":%d,\"rows\":%d,\"elements\":%zu,\"mismatches\":%zu,\"max_abs\":%.17g,\"max_abs_index\":%zu,\"tail_row\":%d,\"cpu_tail_elements\":%d,\"cpu_tail_bit_mismatches\":%zu}",first?"":",",e,m,y.size(),differences.size(),max_abs,max_index,tail,cpu_count,cpu_diff);std::fflush(stdout);
+    first=false;total+=y.size();bad+=differences.size();cpu_elements+=cpu_count;cpu_bad+=cpu_diff;
+  }
+  BL(cublasDestroy(handle));
+  std::printf("],\"elements\":%zu,\"mismatches\":%zu,\"cpu_tail_elements\":%zu,\"cpu_tail_bit_mismatches\":%zu}\n",total,bad,cpu_elements,cpu_bad);return 0;
+ }catch(const std::exception& e){std::fprintf(stderr,"%s\n",e.what());return 2;}
+}
