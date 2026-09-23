@@ -1,0 +1,25 @@
+from pathlib import Path
+import json,hashlib,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/hc-full-fp64-20260924';d=o/'reference';source=root/'.q4t-work/e2e/hc-full-projection-20260924';prior=root/'.q4t-work/e2e/hc-full-boundaries-20260923';old=root/'.q4t-work/e2e/hc-projection-reference-20260923'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+def rounded(y):
+ b=np.asarray(y,dtype=np.float32).view(np.uint32);return ((b+0x7fff+((b>>16)&1))>>16).astype('<u2')
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+plan=json.loads((o/'plan.json').read_text());assert sha(source/'artifact-binding.json')==plan['source_manifest_sha256'] and sha(prior/'artifact-binding.json')==plan['prior_manifest_sha256']
+for r in json.loads((o/'input-binding.json').read_text()):assert sha(root/r['file'])==r['sha256']
+om=json.loads((old/'artifact-binding.json').read_text());assert sha(old/'projection-reference.json')==om['projection-reference.json'];previous={f"hc-{x['layer']}.prefill.{x['side']}.{x['stage']}":x for x in json.loads((old/'projection-reference.json').read_text())['records'] if x['phase']=='prefill'}
+r=json.loads((o/'reference.json').read_text());assert r['complete'] and len(r['records'])==288;totals={k:0 for k in ['down','up','inject']};tails=[]
+for record in r['records']:
+ name=record['name'];kind=name.rsplit('.',1)[1];n={'down':320,'up':10240,'inject':4}[kind];assert record['elements']==4096*n
+ base=root/record['base'];assert sha(base)==record['base_sha256'];actual=np.fromfile(base,dtype='<u2');f=d/(name+'.delta.npz');assert sha(f)==record['delta_sha256'];z=np.load(f);idx=z['indices'];values=z['values'];assert len(idx)==len(values)==record['mismatches'] and np.all(idx>=0) and np.all(idx<len(actual)) and np.all(np.diff(idx)>0) and np.all(actual[idx]!=values)
+ assert np.array_equal(idx,np.fromfile(d/(name+'.differences.i32'),dtype='<i4'));high=np.fromfile(d/(name+'.differences.f64'),dtype='<f8');assert np.isfinite(high).all() and np.array_equal(rounded(high),values);rebuilt=actual.copy();rebuilt[idx]=values;assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==record['reference_sha256'];last=np.fromfile(d/(name+'.last.f64'),dtype='<f8');assert len(last)==n and np.array_equal(rounded(last),rebuilt[-n:]);bad=np.flatnonzero(rebuilt[-n:]!=actual[-n:]);assert bad.tolist()==previous[name]['indices'],name;tails.append({'name':name,'indices':bad.tolist()});totals[kind]+=len(idx)
+assert sum(totals.values())==r['mismatches'];summary={'elements':sum(x['elements'] for x in r['records']),'fp64_rounded_mismatches':totals,'total_mismatches':sum(totals.values()),'last_row_mismatches':sum(len(x['indices']) for x in tails),'last_row_checks':len(tails),'lossless_rounded_reference_verified':True,'all_mismatch_fp64_values_retained':True,'all_matching_fp64_values_retained':False,'runtime_changed':False,'whole_model_correctness_proven':False,'scope':'cuBLAS FP64 matrix reference, FP32->BF16 rounding, actual BF16 inputs; not a standalone end-to-end FP64 forward.'};save('summary.json',summary);save('previous-last-row-binding.json',{'source_manifest_sha256':sha(old/'artifact-binding.json'),'records':tails})
+for f in p.iterdir():
+ if f.is_file():shutil.copy2(f,o/f.name)
+save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})
+print(summary,flush=True)

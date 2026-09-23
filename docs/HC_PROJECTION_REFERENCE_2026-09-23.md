@@ -113,3 +113,34 @@ prior-binding、checkpoint-binding、replay-reference、
 nonlinear-reference、初版非线性记录、summary和artifact-binding。
 工具模板`tools/verify/hc_full_projection/`。下一步用独立高精度
 公式检查全部投影；其他全位置MoE/QSA/PLE及任务正确性仍未完成。
+
+
+## 2026-09-24后续：完整4K FP64投影参考
+
+复用上一节已绑定三侧HTTP的冻结快照，无新增运行时或观测改动，
+没有再次运行HTTP。零警告构建后，先重新核验两阶段manifest和
+全部实际输入/权重/输出，再以精确BF16→double转换、cuBLAS
+Dgemm计算全部288个M4096矩阵。其输出经FP32再BF16舍入，与
+4153933824项实际输出相比有1299342项差异：down574830、
+up718949、inject5563。未使用容忍阈值或只检查末行。
+
+全部288条末行的差异索引与旧CPU FP64参考严格一致，合计仍为
+352项（down155/up195/inject2）。这是不同实现的末行对照；全行
+高精度矩阵仍使用cuBLAS Dgemm，并非CPU逐元素全行计算，也不是
+从原始token开始的全模型FP64前向。前一阶段记录算法重放全同的
+结论不变，不能把本阶段舍入差异直接作为错误归因或可忽略证明。
+
+受磁盘容量约束，保存全部舍入后BF16参考（绑定原始输出+无损差异
+编码）、每一个差异位置的FP64值及每矩阵完整末行FP64值。每次
+生成后完整重建比对，最终审计再逐文件SHA和差异值舍入复核。
+一致位置且不在末行的未舍入FP64值没有落盘，这一限制不能表述为
+保留了完整FP64中间矩阵。每组开跑检查20GiB预留加1GiB工作余量；
+全部阶段证据约数十MB，旧证据未删除。
+
+证据`.q4t-work/e2e/hc-full-fp64-20260924/`包含input-binding、
+reference、全部delta/差异FP64/末行FP64、previous-last-row-binding、
+summary及artifact-binding，工具模板`tools/verify/hc_full_fp64/`。
+生产未改、原4K错答未修复，全模型正确性仍未通过。
+下一步先核验冻结证据中可共享的重复文件以恢复采集容量，再补
+全位置MoE/QSA/PLE链。仅清单预检发现两阶段HC证据约36.07GB
+重复候选，尚未修改文件或据此宣称已释放空间。

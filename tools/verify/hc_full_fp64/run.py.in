@@ -1,0 +1,36 @@
+from pathlib import Path
+import json,hashlib,subprocess,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/hc-full-fp64-20260924';d=o/'reference';source=root/'.q4t-work/e2e/hc-full-projection-20260924';c=source/'observed-captures';prior=root/'.q4t-work/e2e/hc-full-boundaries-20260923';pc=prior/'observed-captures'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert (p/'build.log').stat().st_size==0;assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+sm=json.loads((source/'artifact-binding.json').read_text());pm=json.loads((prior/'artifact-binding.json').read_text());assert sha(source/'exit.json')==sm['exit.json'] and json.loads((source/'exit.json').read_text())['observer_preserved_tested_output'];assert sha(source/'prior-binding.json')==sm['prior-binding.json'];assert json.loads((source/'prior-binding.json').read_text())['manifest_sha256']==sha(prior/'artifact-binding.json')
+reserve=20*1024**3;working=1024**3;assert shutil.disk_usage(o).free>reserve+working
+save('plan.json',{'source_manifest_sha256':sha(source/'artifact-binding.json'),'prior_manifest_sha256':sha(prior/'artifact-binding.json'),'reserve_bytes':reserve,'working_bytes':working,'free_before':shutil.disk_usage(o).free,'scope':'All 288 HC prefill4096 projection matrices with actual BF16 input/weights, converted to FP64 and cublasDgemm. Output rounded FP64->FP32->BF16. Not an independent whole-model forward.','retention':'Every rounded BF16 reference reconstructed losslessly from bound actual output plus delta indices/values; FP64 values saved for ALL mismatches and last row. FP64 matching-position unrounded values are not persisted.'})
+bindings=[];seen=set()
+for l in range(48):
+ for side in ['attn','mlp']:
+  for stage in ['down','up','inject']:
+   base=f'hc-{l}.prefill.{side}.{stage}'
+   files=[(source,'observed-captures/'+base+'.weights.bf16',sm)]
+   files+=[(source,'observed-captures/'+base+'.input.bf16',sm)] if stage=='up' else [(prior,f'observed-captures/hc-{l}.prefill.mix.{side}.normed.bf16',pm)]
+   files+=[(prior,f'observed-captures/hc-{l}.prefill.mix.{side}.up.bf16',pm)] if stage=='up' else [(source,'observed-captures/'+base+'.output.bf16',sm)]
+   for directory,name,manifest in files:
+    f=directory/name
+    if f in seen:continue
+    assert sha(f)==manifest[name];seen.add(f);bindings.append({'file':str(f.relative_to(root)),'sha256':manifest[name]})
+save('input-binding.json',bindings);print({'bound_files':len(bindings)},flush=True)
+records=[]
+for l in range(48):
+ for side in ['attn','mlp']:
+  for stage,kind in enumerate(['down','up','inject']):
+   assert shutil.disk_usage(o).free>reserve+working
+   run=subprocess.run([str(p/'fp64'),str(c),str(pc),str(d),str(l),side,str(stage)],capture_output=True,text=True);name=f'hc-{l}.prefill.{side}.{kind}';(o/(name+'.stdout')).write_text(run.stdout);(o/(name+'.stderr')).write_text(run.stderr);assert run.returncode==0,run.stderr;r=json.loads(run.stdout)
+   base=pc/f'hc-{l}.prefill.mix.{side}.up.bf16' if stage==1 else c/(name+'.output.bf16');actual=np.fromfile(base,dtype='<u2');f=d/(name+'.fp64.bf16');ref=np.fromfile(f,dtype='<u2');assert len(actual)==len(ref)==r['elements'];idx=np.flatnonzero(ref!=actual).astype('<i4');assert len(idx)==r['mismatches'] and np.array_equal(idx,np.fromfile(d/(name+'.differences.i32'),dtype='<i4'))
+   high=np.fromfile(d/(name+'.differences.f64'),dtype='<f8');assert len(high)==len(idx);bits=high.astype(np.float32).view(np.uint32);rounded=((bits+0x7fff+((bits>>16)&1))>>16).astype('<u2');assert np.array_equal(rounded,ref[idx]);delta=d/(name+'.delta.npz');np.savez_compressed(delta,indices=idx,values=ref[idx]);z=np.load(delta);rebuilt=actual.copy();rebuilt[z['indices']]=z['values'];assert np.array_equal(rebuilt,ref);h=sha(f);assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==h
+   r.update(base=str(base.relative_to(root)),base_sha256=sha(base),reference_sha256=h,delta_sha256=sha(delta));records.append(r);save('reference.json',{'records':records,'complete':len(records)==288,'mismatches':sum(x['mismatches'] for x in records)});f.unlink();print({'name':name,'mismatches':r['mismatches']},flush=True)
+print({'complete':True,'elements':sum(x['elements'] for x in records),'mismatches':sum(x['mismatches'] for x in records)},flush=True)

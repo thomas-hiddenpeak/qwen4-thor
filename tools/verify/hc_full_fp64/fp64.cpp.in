@@ -1,0 +1,30 @@
+#include <cuda_runtime_api.h>
+#include <cublas_v2.h>
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+template<class T>std::vector<T> Read(const std::string& p,size_t n){std::ifstream f(p,std::ios::binary|std::ios::ate);if(!f||size_t(f.tellg())!=n*sizeof(T))throw std::runtime_error(p);std::vector<T>v(n);f.seekg(0);if(!f.read(reinterpret_cast<char*>(v.data()),n*sizeof(T)))throw std::runtime_error(p);return v;}
+uint32_t Bits(float x){uint32_t b;std::memcpy(&b,&x,4);return b;}
+float B(uint16_t x){uint32_t b=uint32_t(x)<<16;float f;std::memcpy(&f,&b,4);return f;}
+uint16_t Round(float x){uint32_t b=Bits(x);return uint16_t((b+0x7fff+((b>>16)&1))>>16);}
+template<class T>void Save(const std::string&p,const std::vector<T>&v){std::ofstream f(p,std::ios::binary);if(!f.write(reinterpret_cast<const char*>(v.data()),v.size()*sizeof(T)))throw std::runtime_error(p);}
+
+#define CU(x) do{if((x)!=cudaSuccess)throw std::runtime_error(#x);}while(0)
+#define BL(x) do{if((x)!=CUBLAS_STATUS_SUCCESS)throw std::runtime_error(#x);}while(0)
+int main(int argc,char**argv){try{
+ if(argc!=7)throw std::runtime_error("captures prior outputs layer side stage");
+ int l=std::stoi(argv[4]),stage=std::stoi(argv[6]);if(stage<0||stage>2)throw std::runtime_error("stage");
+ const char* names[3]={"down","up","inject"};int widths[3]={320,10240,4},inputs[3]={10240,320,10240};int n=widths[stage],m=4096,k=inputs[stage];std::string name="hc-"+std::to_string(l)+".prefill."+argv[5]+"."+names[stage],b=std::string(argv[1])+"/"+name,o=std::string(argv[3])+"/"+name,prior=std::string(argv[2])+"/hc-"+std::to_string(l)+".prefill.mix."+argv[5];
+ auto wb=Read<uint16_t>(b+".weights.bf16",size_t(n)*k),xb=Read<uint16_t>(stage==1?b+".input.bf16":prior+".normed.bf16",size_t(m)*k),actual=Read<uint16_t>(stage==1?prior+".up.bf16":b+".output.bf16",size_t(m)*n);
+ std::vector<double>w(wb.size()),x(xb.size()),y(actual.size());for(size_t i=0;i<w.size();++i)w[i]=B(wb[i]);for(size_t i=0;i<x.size();++i)x[i]=B(xb[i]);
+ cublasHandle_t handle;BL(cublasCreate(&handle));int version;BL(cublasGetVersion(handle,&version));double *dw,*dx,*dy;CU(cudaMalloc(reinterpret_cast<void**>(&dw),w.size()*8));CU(cudaMalloc(reinterpret_cast<void**>(&dx),x.size()*8));CU(cudaMalloc(reinterpret_cast<void**>(&dy),y.size()*8));CU(cudaMemcpy(dw,w.data(),w.size()*8,cudaMemcpyHostToDevice));CU(cudaMemcpy(dx,x.data(),x.size()*8,cudaMemcpyHostToDevice));double alpha=1,beta=0;BL(cublasDgemm(handle,CUBLAS_OP_T,CUBLAS_OP_N,n,m,k,&alpha,dw,k,dx,k,&beta,dy,n));CU(cudaMemcpy(y.data(),dy,y.size()*8,cudaMemcpyDeviceToHost));CU(cudaFree(dw));CU(cudaFree(dx));CU(cudaFree(dy));BL(cublasDestroy(handle));
+ std::vector<uint16_t>rounded(y.size());std::vector<int32_t>diff;std::vector<double>diff_values;double max_abs=0;size_t max_index=0;
+ for(size_t i=0;i<y.size();++i){if(!std::isfinite(y[i]))throw std::runtime_error("nonfinite reference");rounded[i]=Round(float(y[i]));if(rounded[i]!=actual[i]){diff.push_back(int32_t(i));diff_values.push_back(y[i]);}double error=std::abs(y[i]-double(B(actual[i])));if(error>max_abs){max_abs=error;max_index=i;}}
+ Save(o+".fp64.bf16",rounded);Save(o+".differences.i32",diff);Save(o+".differences.f64",diff_values);std::vector<double>last(y.end()-n,y.end());Save(o+".last.f64",last);
+ std::printf("{\"name\":\"%s\",\"elements\":%zu,\"mismatches\":%zu,\"max_abs_vs_fp64\":%.17g,\"max_abs_index\":%zu,\"cublas_version\":%d}\n",name.c_str(),y.size(),diff.size(),max_abs,max_index,version);return 0;
+}catch(const std::exception&e){std::fprintf(stderr,"%s\n",e.what());return 2;}}
