@@ -1,0 +1,27 @@
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+float Decode(uint16_t v){uint32_t u=uint32_t(v)<<16;float f;std::memcpy(&f,&u,4);return f;}
+uint16_t Round(float f){uint32_t u;std::memcpy(&u,&f,4);return (u+0x7fff+((u>>16)&1))>>16;}
+std::vector<uint16_t> Read(const std::string& s,size_t n){
+ std::ifstream f(s,std::ios::binary|std::ios::ate);if(!f||size_t(f.tellg())!=n*2)throw std::runtime_error(s);
+ std::vector<uint16_t> v(n);f.seekg(0);if(!f.read(reinterpret_cast<char*>(v.data()),n*2))throw std::runtime_error(s);return v;
+}
+int main(int argc,char** argv){try{
+ if(argc!=3)throw std::runtime_error("capture_directory output_directory");
+ bool first=true;size_t total=0;std::printf("{\"records\":[");
+ for(int l=0;l<48;++l)for(const char* phase:{"prefill","decode"})for(const char* stage:{"fused","write"}){
+  std::string name="hc-"+std::to_string(l)+"."+phase+"."+stage,b=std::string(argv[1])+"/"+name;
+  auto r=Read(b+".residual.bf16",10240),x=Read(b+".block.bf16",2560),g=Read(b+".gate.bf16",4),expected=Read(b+".output.bf16",10240);
+  std::vector<uint16_t> y(10240);size_t bad=0;
+  for(int i=0;i<10240;++i){y[i]=Round(std::fma(Decode(x[i%2560]),Decode(g[i/2560]),Decode(r[i])));bad+=y[i]!=expected[i];}
+  std::ofstream f(std::string(argv[2])+"/"+name+".cpu.bf16",std::ios::binary);f.write(reinterpret_cast<const char*>(y.data()),20480);if(!f)throw std::runtime_error("write");
+  std::printf("%s{\"name\":\"%s\",\"elements\":10240,\"mismatches\":%zu}",first?"":",",name.c_str(),bad);first=false;total+=bad;
+ }
+ std::printf("],\"total_mismatches\":%zu}\n",total);return total?1:0;
+}catch(const std::exception& e){std::fprintf(stderr,"%s\n",e.what());return 2;}}

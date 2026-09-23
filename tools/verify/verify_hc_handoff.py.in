@@ -1,0 +1,36 @@
+from pathlib import Path
+import json,hashlib,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/hc-handoff-v3-20260923';c=o/'observed-captures'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+def read(n):return (c/n).read_bytes()
+def same(a,b):assert read(a)==read(b),(a,b)
+def dec(b):return (np.frombuffer(b,dtype='<u2').astype(np.uint32)<<16).view(np.float32).astype(np.float64)
+def rounded(v):
+ b=np.asarray(v,dtype=np.float32).view(np.uint32);return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype(np.uint16)
+old=root/'.q4t-work/e2e/linear-output-reference-20260923/observed-captures';bound=[]
+# Only compare production captures; exclude prior offline reconstruction files.
+for f in sorted(c.glob('layer-*.bf16')):
+ assert f.read_bytes()==(old/f.name).read_bytes(),f.name
+ bound.append({'name':f.name,'sha256':hashlib.sha256(f.read_bytes()).hexdigest()})
+(o/'previous-binding.json').write_text(json.dumps({'files':len(bound),'all_equal':True,'records':bound},indent=2)+'\n')
+records=[];links=[];exceptions=[]
+for phase in ['prefill','decode']:
+ moe=root/'.q4t-work/e2e'/('moe-token-chain-reference-20260923' if phase=='prefill' else 'moe-first-decode-reference-20260923')/'observed-captures'
+ for l in range(48):
+  b=f'hc-{l}.{phase}.'
+  for a,d in [('read.trunk.bf16','fused.residual.bf16'),('read.output.bf16','mix.attn.normed.bf16'),('fused.output.bf16','write.residual.bf16'),('fused.normed.bf16','mix.mlp.normed.bf16')]:same(b+a,b+d);links.append([b+a,b+d])
+  for local,remote in [('mix.mlp.output.bf16','x.bf16'),('write.block.bf16','output.bf16')]:
+   assert read(b+local)==(moe/f'layer-{l}.{remote}').read_bytes();links.append([b+local,str(moe/f'layer-{l}.{remote}')])
+  if l%4!=3:
+   for local,remote in [('mix.attn.output.bf16','qkv.input.bf16'),('fused.block.bf16','out.output.bf16')]:same(b+local,f'layer-{l}.{phase}.{remote}');links.append([b+local,f'layer-{l}.{phase}.{remote}'])
+  if l<47:
+   a=b+'write.output.bf16';d=f'hc-{l+1}.{phase}.read.trunk.bf16'
+   if l+1==1:exceptions.append({'phase':phase,'boundary':'layer0 output -> layer1 post-PLE trunk','equal':read(a)==read(d),'reason':'PLE adds to trunk before HC read; not an identity boundary'})
+   else:same(a,d);links.append([a,d])
+  for stage in ['fused','write']:
+   name=b+stage;r=dec(read(name+'.residual.bf16')).reshape(4,2560);block=dec(read(name+'.block.bf16'));gate=dec(read(name+'.gate.bf16')).reshape(4,1);actual=np.frombuffer(read(name+'.output.bf16'),dtype='<u2')
+   ref=r+block*gate;bits=rounded(ref).reshape(-1);bad=np.flatnonzero(bits!=actual)
+   records.append({'layer':l,'phase':phase,'stage':stage,'elements':10240,'fp64_bf16_mismatches':len(bad),'indices':bad.tolist()})
+   np.savez(c/(name+'.reference.npz'),fp64=ref,bf16_bits=bits)
+r={'calls':len(records),'elements':sum(x['elements'] for x in records),'mismatches':sum(x['fp64_bf16_mismatches'] for x in records),'records':records,'links':links,'link_count':len(links),'exceptions':exceptions,'runtime_changed':False,'limitation':'Actual inject gates, normalized values and sublayer outputs, not independently derived. Only last prefill token and first decode. PLE boundary excluded from identity claim.'}
+(o/'handoff-reference.json').write_text(json.dumps(r,indent=2)+'\n');print({k:v for k,v in r.items() if k not in ['records','links']})
