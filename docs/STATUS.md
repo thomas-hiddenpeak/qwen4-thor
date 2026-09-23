@@ -20,6 +20,13 @@ TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间�
 
 ## 当前决策摘要
 
+- **首decode共享差异已由指定算术复现，生产运行时未改。**
+  复用已绑定HTTP快照，CPU按双累加链/warp树重算96次GEMV，
+  184320个BF16全部位同，解释相对FP64的8/14项差异。48层门控
+  dot同CPU树；仅替换CUDA exp来源后122880合成位同，原3项差异
+  来自层20/28的exp舍入。不是全模型正确或原错修复；下一步梳理
+  attention/GDN/PLE/残差上游参考合同，见
+  [首decode报告后续](MOE_FIRST_DECODE_REFERENCE_2026-09-23.md)。
 - **首decode前向MoE参考完成，生产运行时未改。**
   三侧HTTP原错600440保留、服务0。router、480专家两次投影、
   FP4编码及路由加权全同参考；设备尺度复核确认GU20次/down63组

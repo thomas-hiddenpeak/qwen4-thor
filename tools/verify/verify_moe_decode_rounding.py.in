@@ -1,0 +1,20 @@
+from pathlib import Path
+import json,numpy as np,ctypes,math
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/moe-decode-gemv-order-20260923';s=root/'.q4t-work/e2e/moe-first-decode-reference-20260923';c=s/'observed-captures'
+fma=ctypes.CDLL('libm.so.6').fmaf;fma.argtypes=[ctypes.c_float]*3;fma.restype=ctypes.c_float
+old=json.loads((s/'combine-analysis.json').read_text());gates=np.fromfile(o/'gate-results.f32',dtype='<f4').reshape(48,3)
+def bf16(b):return (b.astype(np.uint32)<<16).view(np.float32)
+def round_bf16(x):
+ b=np.asarray(x,dtype=np.float32).view(np.uint32);return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype(np.uint16)
+records=[]
+for l in range(48):
+ dot,e,sig=gates[l];cpu_dot=np.float32(old['records'][l]['shared_gate_dot_tree_fp32']);assert dot.view(np.uint32)==cpu_dot.view(np.uint32)
+ b=str(c/f'layer-{l}');shared=bf16(np.fromfile(b+'.shared.bf16',dtype='<u2'));routed=np.fromfile(b+'.merge-routed.f32',dtype='<f4');actual=np.fromfile(b+'.output.bf16',dtype='<u2');ref=np.fromiter((fma(float(sig),float(v),float(a)) for v,a in zip(shared,routed)),dtype=np.float32,count=2560);bits=round_bf16(ref)
+ cpu_exp=np.float32(math.exp(-float(dot)));cpu_sig=np.float32(np.float32(1)/np.float32(np.float32(1)+cpu_exp));assert np.float32(np.float32(1)/np.float32(np.float32(1)+e)).view(np.uint32)==sig.view(np.uint32)
+ records.append({'layer':l,'dot_matches_cpu':True,'cuda_exp':float(e),'cpu_rounded_exp':float(cpu_exp),'cuda_sigmoid':float(sig),'cpu_sigmoid':float(cpu_sig),'mismatches':int(np.count_nonzero(bits!=actual)),'previous_cpu_mismatches':old['records'][l]['merge_bf16_bit_mismatches_vs_cpu_tree_exp']})
+ np.savez(o/f'layer-{l}.merge-reference.npz',cuda_gate_cpu_merge_bf16=bits)
+gemv=json.loads((o/'replay.json').read_text());assert len(gemv['records'])==96 and gemv['total_mismatches']==0
+for rec in gemv['records']:
+ name=f"layer-{rec['layer']}.{rec['stage']}";assert (o/(name+'.cpu.bf16')).read_bytes()==(o/'inputs'/(name+'.actual.bf16')).read_bytes()
+report={'gemv_calls':96,'gemv_elements':184320,'gemv_cpu_order_bit_mismatches':0,'gate_dot_device_vs_cpu_mismatches':0,'merge_elements':122880,'merge_bit_mismatches_using_device_sigmoid':sum(r['mismatches'] for r in records),'previous_cpu_merge_mismatches':3,'records':records,'runtime_changed':False,'limitation':'CPU GEMV validates checkpoint weights plus captured input under source reduction, not independently dumped decode GEMV weights. CUDA gate reconstruction reuses the accepted arithmetic; no general transcendental accuracy or whole-model correctness proof.'}
+(o/'analysis.json').write_text(json.dumps(report,indent=2)+'\n');print({k:v for k,v in report.items() if k!='records'});print([r for r in records if r['previous_cpu_mismatches']])

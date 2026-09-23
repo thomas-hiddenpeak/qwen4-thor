@@ -80,3 +80,44 @@ HTTP、实际快照、gu/down/shared/router参考、combine-analysis.json、
 两种尺度重建、merge-differences.json和artifact-binding.json。
 prepared同名目录保留构建、控制器、分析脚本、重用二进制来源与摘要。
 仓库保存首decode观测及合成参考模板，其他算术工具与上一阶段同构。
+
+## 后续：共享GEMV累加与合成exp差异已复现（2026-09-23）
+
+本节解释前面22项投影及3项CPU合成参考差异，不删除原比较结果。
+仅使用上一轮三侧HTTP已确认的接受版快照，生产运行时未改，
+没有新增候选或重复HTTP。独立诊断程序零警告构建后做离线分析。
+
+CPU参考直接读取checkpoint权重及实际HTTP输入，按GEMV源码的
+32个lane、每lane偶/奇两条FP32 fma累加链、两链相加及16/8/4/2/1
+shuffle归约顺序计算，最后一次BF16舍入。编译关闭隐式浮点收缩，
+乘加显式std::fma；没有调用CUDA GEMV kernel。96次投影共184320个
+BF16输出全部与HTTP快照逐位相同，退出0。
+
+因此本样本的8项GU和14项down相对FP64差异可由指定FP32累加
+顺序复现，不需要假设权重错误或改变容忍度。这里未额外捕获decode
+GEMV的全部实际权重；证明的是checkpoint权重加实际输入的既定
+算术足以复现所有输出，不泛化为所有权重装载绝无缺陷。
+
+门控点积单独在GPU按原256线程树重建，并记录dot、__expf和sigmoid。
+48层设备dot全部与CPU树参考位同；把CUDA exp结果交给CPU相同
+FP32分母/倒数计算，sigmoid也逐位相同。仅替换原CPU参考中的exp
+来源，后续仍用CPU fmaf与BF16舍入，122880项合成全部同HTTP。
+
+| 层 | CUDA exp | CPU高精度exp舍入到FP32 | 原合成差异数 |
+|---|---:|---:|---:|
+| 20 | 7.283745765686035 | 7.283746242523193 | 2 |
+| 28 | 5.944986343383789 | 5.944985866546631 | 1 |
+
+每处exp相差一个FP32编码，经过分母舍入和sigmoid改变后，足以
+解释已记录的3项合成差异。没有更换点积、输入、输出参考或阈值。
+这不是__expf全域精度证明，也不抹去实际与数学参考的不同。
+
+本次局部共享差异解释形成边界；后续正确性缺口主要仍包括已确认
+但未接受修正的E4M3尺度缺陷、attention/GDN/PLE/残差上游状态及
+后续decode。下一步先从代码梳理上游张量依赖和独立参考合同，
+选择能区分实现错误与模型/量化行为的边界，避免继续泛化MoE局部结论。
+
+新增证据：`.q4t-work/e2e/moe-decode-gemv-order-20260923/`保存
+checkpoint输入快照、96份CPU结果、replay.json、gate-results.f32、
+analysis.json和artifact-binding.json；prepared同名目录保留工具和
+两份零警告构建日志。仓库保留CPU累加、设备gate重建及分析模板。

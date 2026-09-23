@@ -1,0 +1,30 @@
+#include <cuda_runtime.h>
+#include <cuda_bf16.h>
+#include <cstdio>
+#include <cstdint>
+#include <vector>
+#include <string>
+#define CU(x) do { if ((x)!=cudaSuccess)return 2; } while(0)
+__global__ void Gate(const uint16_t* x,const uint16_t* w,float* output) {
+ __shared__ float lane[256];int l=blockIdx.x,t=threadIdx.x;float a=0;
+ for(int i=t;i<2560;i+=256){
+  float xv=__bfloat162float(__ushort_as_bfloat16(x[l*2560+i]));
+  float wv=__bfloat162float(__ushort_as_bfloat16(w[l*2560+i]));a+=xv*wv;
+ }
+ lane[t]=a;__syncthreads();
+ for(int off=128;off;off>>=1){if(t<off)lane[t]+=lane[t+off];__syncthreads();}
+ if(t==0){float e=__expf(-lane[0]);output[l*3]=lane[0];output[l*3+1]=e;output[l*3+2]=1.0f/(1.0f+e);}
+}
+bool Read(const std::string& p,void* dst,size_t bytes){
+ FILE* f=std::fopen(p.c_str(),"rb");if(!f)return false;
+ bool ok=std::fread(dst,1,bytes,f)==bytes&&std::fgetc(f)==EOF;return std::fclose(f)==0&&ok;
+}
+int main(int argc,char** argv){
+ if(argc!=2)return 2;std::string p=argv[1];std::vector<uint16_t>x(48*2560),w(x.size());std::vector<float>out(48*3);
+ if(!Read(p+"/gate-inputs.bf16",x.data(),x.size()*2)||!Read(p+"/gate-weights.bf16",w.data(),w.size()*2))return 2;
+ uint16_t *dx,*dw;float* d;CU(cudaMalloc(&dx,x.size()*2));CU(cudaMalloc(&dw,w.size()*2));CU(cudaMalloc(&d,out.size()*4));
+ CU(cudaMemcpy(dx,x.data(),x.size()*2,cudaMemcpyHostToDevice));CU(cudaMemcpy(dw,w.data(),w.size()*2,cudaMemcpyHostToDevice));
+ Gate<<<48,256>>>(dx,dw,d);CU(cudaGetLastError());CU(cudaMemcpy(out.data(),d,out.size()*4,cudaMemcpyDeviceToHost));
+ FILE* f=std::fopen((p+"/gate-results.f32").c_str(),"wb");if(!f)return 2;bool ok=std::fwrite(out.data(),4,out.size(),f)==out.size();ok=std::fclose(f)==0&&ok;
+ CU(cudaFree(dx));CU(cudaFree(dw));CU(cudaFree(d));return ok?0:2;
+}

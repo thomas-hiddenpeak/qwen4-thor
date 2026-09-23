@@ -1,0 +1,54 @@
+// CPU reconstruction of the documented two-accumulator GEMV reduction.
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+float Decode(uint16_t v) {
+ uint32_t bits=uint32_t(v)<<16;float f;std::memcpy(&f,&bits,4);return f;
+}
+uint16_t Round(float f) {
+ uint32_t b;std::memcpy(&b,&f,4);return uint16_t((b+0x7fff+((b>>16)&1))>>16);
+}
+std::vector<uint16_t> Read(const std::string& name,size_t count) {
+ std::ifstream f(name,std::ios::binary|std::ios::ate);
+ if(!f||size_t(f.tellg())!=count*2)throw std::runtime_error(name);
+ std::vector<uint16_t> out(count);f.seekg(0);
+ if(!f.read(reinterpret_cast<char*>(out.data()),count*2))throw std::runtime_error(name);
+ return out;
+}
+int main(int argc,char** argv) {
+ try {
+  if(argc!=3)throw std::runtime_error("input_directory output_directory");
+  size_t total=0;bool first=true;std::printf("{\"records\":[");
+  for(int l=0;l<48;++l)for(int stage=0;stage<2;++stage){
+   int n=stage?2560:1280,k=stage?640:2560;
+   std::string name="layer-"+std::to_string(l)+(stage?".down":".gu");
+   std::string b=std::string(argv[1])+"/"+name;
+   auto w=Read(b+".weights.bf16",size_t(n)*k),x=Read(b+".input.bf16",k),expected=Read(b+".actual.bf16",n);
+   std::vector<uint16_t> result(n);size_t bad=0;
+   for(int row=0;row<n;++row){
+    float lane[32]{};
+    for(int t=0;t<32;++t){
+     float even=0,odd=0;
+     for(int i=t;i<k/8;i+=32)for(int j=0;j<4;++j){
+      int col=i*8+j*2;
+      even=std::fma(Decode(x[col]),Decode(w[size_t(row)*k+col]),even);
+      odd=std::fma(Decode(x[col+1]),Decode(w[size_t(row)*k+col+1]),odd);
+     }
+     lane[t]=even+odd;
+    }
+    for(int offset=16;offset;offset>>=1)for(int t=0;t<offset;++t)lane[t]=lane[t]+lane[t+offset];
+    result[row]=Round(lane[0]);bad+=result[row]!=expected[row];
+   }
+   std::ofstream f(std::string(argv[2])+"/"+name+".cpu.bf16",std::ios::binary);f.write(reinterpret_cast<const char*>(result.data()),n*2);
+   if(!f)throw std::runtime_error("write output");
+   std::printf("%s{\"layer\":%d,\"stage\":\"%s\",\"elements\":%d,\"mismatches\":%zu}",first?"":",",l,stage?"down":"gu",n,bad);
+   first=false;total+=bad;
+  }
+  std::printf("],\"total_mismatches\":%zu}\n",total);return total?1:0;
+ }catch(const std::exception& e){std::fprintf(stderr,"%s\n",e.what());return 2;}
+}

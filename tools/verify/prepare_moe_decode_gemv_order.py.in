@@ -1,0 +1,22 @@
+from pathlib import Path
+import json,hashlib,struct,shutil
+p=Path(__file__).resolve().parent;root=p.parents[2];source=root/'.q4t-work/e2e/moe-first-decode-reference-20260923';o=root/'.q4t-work/e2e/moe-decode-gemv-order-20260923';o.mkdir(exist_ok=False);c=source/'observed-captures';inputs=o/'inputs';inputs.mkdir()
+assert json.loads((source/'exit.json').read_text())['observer_preserved_tested_output']
+assert hashlib.sha256((root/'build/q4t').read_bytes()).hexdigest()=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+assert (p/'build.log').stat().st_size==0
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');idx=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];headers={}
+def tensor(name,shape):
+ file=model/idx[name]
+ with file.open('rb') as f:
+  if file not in headers:
+   n=struct.unpack('<Q',f.read(8))[0];headers[file]=(n,json.loads(f.read(n)))
+  n,h=headers[file];m=h[name];assert m['dtype']=='BF16' and m['shape']==shape;a,b=m['data_offsets'];f.seek(8+n+a);data=f.read(b-a);assert len(data)==b-a
+ return data
+records=[]
+for l in range(48):
+ for stage in ['gu','down']:
+  name=f'layer-{l}.{stage}';prefix=f'model.language_model.layers.{l}.mlp.shared_expert.'
+  w=tensor(prefix+'down_proj.weight',[2560,640]) if stage=='down' else tensor(prefix+'gate_proj.weight',[640,2560])+tensor(prefix+'up_proj.weight',[640,2560]);(inputs/(name+'.weights.bf16')).write_bytes(w)
+  shutil.copyfile(c/(f'layer-{l}'+('.shared-inter.bf16' if stage=='down' else '.x.bf16')),inputs/(name+'.input.bf16'));shutil.copyfile(c/(f'layer-{l}'+('.shared.bf16' if stage=='down' else '.shared-gu.bf16')),inputs/(name+'.actual.bf16'))
+  records.append({'layer':l,'stage':stage,'checkpoint_weight_sha256':hashlib.sha256(w).hexdigest()})
+(o/'plan.json').write_text(json.dumps({'http_source':str(source),'scope':'CPU fmaf reconstruction of two FP32 accumulators per lane and warp tree; checkpoint weights and actual HTTP inputs; not a new runtime candidate. No native GEMV kernel called.','records':records,'runtime_changed':False},indent=2)+'\n')
