@@ -142,3 +142,28 @@ HTTP参考，再区分位置修正导致的合理生成变化、模型能力问�
 与实现错误。保留1K新增失败及4K共同失败；不调整答案来迁就
 任何版本。参考建立前不追加性能改动，不接受当前运行时候选。
 本轮仅提交诊断文档；工作区候选代码和其他任务改动均不纳入。
+
+
+## 独立服务可行性审查：量化合同尚不等价
+
+固定SGLang commit `0a79825b7baa3e2aafd54e89097a5aba83d00b4e`
+源码已下载到`.q4t-work/prepared/independent-http-reference-20260923/`，
+未安装依赖、未运行模型或低层测试，reference目录未改。
+其modelopt_quant.py:2411–2439显示：flashinfer_cutlass/trtllm
+把w13和w2输入scale各自归并为全专家最大值；CuteDSL分支
+w13共享、w2保留逐专家。不能仅凭同为NVFP4认定计算相同。
+
+读取本地checkpoint第0层1536个F32输入scale（只读权重盘点）：
+gate/up各512个且各自全部相同，值0.001964750699698925；down
+的512个有301个不同值，范围0.000213623046875至
+0.0053245909512043。当前moe_decode.cu:86按expert取input_scale，
+moe_gemm.cu也保留逐专家scale。因此全专家最大值归并在本模型
+确实改变量化配置，并非一个无影响的代码差异。这里只核查第0层，
+不推广为全部层；原始值和归档SHA保存在checkpoint-scale-audit.json。
+
+现有ref_dump不量化激活；SGLang上述两个后端改变down scale。
+两者均不可直接充当当前执行的逐token真值。下一步优先审查
+CuteDSL逐专家down scale路径在Thor上的支持及缓存精度设置，
+若用于质量对照，必须完整列出仍有差异的计算合同。独立框架
+答对/答错仍是证据而非单独证明本引擎数学正确。未启动新的
+性能实验，正式运行时和验收参考不变。
