@@ -1,0 +1,54 @@
+"""Independent checkpoint gate/up and activation reference on HTTP snapshots."""
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import numpy as np
+import json,struct,math,hashlib
+p=Path(__file__).resolve().parent;root=p.parents[2]
+out=root/'.q4t-work/e2e/moe-token-gu-reference-20260923';cap=out/'observed-captures'
+assert json.loads((out/'exit.json').read_text())['observer_preserved_tested_output']
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');index=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];headers={}
+def tensor(name):
+ file=model/index[name]
+ with file.open('rb') as f:
+  if file not in headers:
+   n=struct.unpack('<Q',f.read(8))[0];headers[file]=(n,json.loads(f.read(n)))
+  n,h=headers[file];m=h[name];a,b=m['data_offsets'];f.seek(8+n+a);data=f.read(b-a)
+ assert len(data)==b-a
+ return m,data
+fp8=np.array([math.ldexp(c%8,-9) if c<8 else math.ldexp(1+c%8/8,c//8-7) for c in range(127)])
+positive=np.array([0,.5,1,1.5,2,3,4,6]);fp4=np.r_[positive,-positive];tie_order=np.array([0,2,4,6,1,3,5,7],dtype=np.uint8)
+def unpack(data,rows):
+ x=np.frombuffer(data,dtype=np.uint8).reshape(rows,1280);r=np.empty((rows,2560),dtype=np.uint8);r[:,::2]=x&15;r[:,1::2]=x>>4;return r
+
+def sf(data,rows):
+ a=np.frombuffer(data,dtype=np.uint8);r=np.asarray(rows)[:,None];g=np.arange(160)[None,:];offset=(r%32)*16+(r%128//32)*4+g%4+(g//4)*512+(r//128)*20480;x=a[offset];assert np.all(x<127);return x
+
+def bf16(x):return (x.astype(np.uint32)<<16).view(np.float32)
+def rounded(x):
+ b=np.asarray(x,dtype=np.float32).view(np.uint32);return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype(np.uint16)
+records=[]
+for f in sorted(cap.glob('*.gu.json')):
+ m=json.loads(f.read_text());assert m['ok'];layer,e=m['layer'],m['expert'];base=str(f)[:-len('.gu.json')]
+ def read(s):return Path(base+s).read_bytes()
+ scale=float.fromhex(m['scale_hex']);alpha=float.fromhex(m['alpha_hex']);wbytes=read('.gu-weights.bin');wsf=sf(read('.gu-wsf.bin'),np.arange(1280));checkpoint=[];checkpoint_sf=[];scales=[]
+ for proj in ['gate','up']:
+  prefix=f'model.language_model.layers.{layer}.mlp.experts.{e}.{proj}_proj.'
+  wi,wb=tensor(prefix+'weight');si,sb=tensor(prefix+'weight_scale');assert wi['shape']==[640,1280] and si['shape']==[640,160]
+  checkpoint.append(wb);checkpoint_sf.append(np.frombuffer(sb,dtype=np.uint8).reshape(640,160))
+  ii,ib=tensor(prefix+'input_scale');gi,gb=tensor(prefix+'weight_scale_2');assert ii['dtype']==gi['dtype']=='F32';scales.append((struct.unpack('<f',ib)[0],struct.unpack('<f',gb)[0]))
+ assert wbytes==b''.join(checkpoint) and np.array_equal(wsf,np.concatenate(checkpoint_sf))
+ assert scales[0]==scales[1] and scale==scales[0][0] and alpha==float(np.float32(scale)*np.float32(scales[0][1]))
+ xbits=np.frombuffer(read('.gu-input.bf16'),dtype='<u2');assert np.array_equal(xbits,np.fromfile(cap/f'layer-{layer}.x.bf16',dtype='<u2'));x=bf16(xbits).reshape(1,2560)
+ asf=sf(read('.gu-asf.bin'),[m['row']]);actual_codes=unpack(read('.gu-packed.bin'),1)
+ eff=np.float32(fp8[asf].astype(np.float32)*np.float32(scale));inv=np.zeros_like(eff);np.divide(np.float32(1),eff,out=inv,where=eff>0);v=np.float32(x*inv.repeat(16,axis=1));dist=abs(abs(v.astype(np.float64))[...,None]-positive[tie_order]);codes=tie_order[np.argmin(dist,axis=-1)]|np.where(v<0,8,0).astype(np.uint8)
+ gmax=abs(x).reshape(160,16).max(axis=1);block=np.where(gmax>0,np.float32(gmax/np.float32(6)),np.float32(1));ratio=np.float32(block/np.float32(scale));expected_sf=np.array([min(range(127),key=lambda c:(abs(float(v)-fp8[c]),c%2)) for v in ratio],dtype=np.uint8)
+ weights=fp4[unpack(wbytes,1280)]*fp8[wsf].repeat(16,axis=1);a=fp4[actual_codes]*fp8[asf].repeat(16,axis=1);ref=(weights@a[0])*alpha;actual=np.frombuffer(read('.gu-output.bf16'),dtype='<u2');refbits=rounded(ref)
+ changed=np.flatnonzero(asf[0]!=expected_sf)
+ rec={'layer':layer,'expert':e,'row':m['row'],'rows':m['rows'],'checkpoint_bound':True,'input_matches_moe':True,'weight_sha256':hashlib.sha256(wbytes).hexdigest(),'fp4_code_mismatches':int(np.count_nonzero(codes!=actual_codes)),'fp64_bf16_mismatches':int(np.count_nonzero(actual!=refbits)),'fp64_mismatch_indices':np.flatnonzero(actual!=refbits).tolist(),'sf_mismatches_vs_cpu_ratio_nearest_even':len(changed),'sf_details':[{'group':int(g),'ratio':float(ratio[g]),'actual':int(asf[0,g]),'nearest_even':int(expected_sf[g])} for g in changed]}
+ np.savez(base+'.gu-reference.npz',fp64=ref,bf16_bits=refbits,asf=asf,nearest_even_sf=expected_sf,ratio=ratio)
+ records.append(rec);(out/'analysis-progress.json').write_text(json.dumps({'completed':len(records),'latest':rec})+'\n')
+assert len(records)==480 and len(set((r['layer'],r['expert']) for r in records))==480
+for l in range(48):assert sorted(r['expert'] for r in records if r['layer']==l)==sorted(np.fromfile(cap/f'layer-{l}.ids.i32',dtype='<i4').tolist())
+summary={'calls':480,'fp4_elements':480*2560,'gu_elements':480*1280,'fp4_code_mismatches':sum(r['fp4_code_mismatches'] for r in records),'fp64_bf16_mismatches':sum(r['fp64_bf16_mismatches'] for r in records),'sf_mismatches_vs_cpu_ratio_nearest_even':sum(r['sf_mismatches_vs_cpu_ratio_nearest_even'] for r in records),'records':records,'runtime_changed':False,'limitation':'FP32 CPU division may differ from CUDA division; SF discrepancies remain candidates until actual-device ratio reconstruction. Actual SF is used in the independent FP4/GEMM reference. No full-model correctness or task-causality claim.'}
+(out/'gu-reference.json').write_text(json.dumps(summary,indent=2)+'\n');print(json.dumps({k:v for k,v in summary.items() if k!='records'},indent=2))

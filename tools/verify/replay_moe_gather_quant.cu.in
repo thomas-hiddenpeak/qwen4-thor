@@ -1,0 +1,38 @@
+#include <cuda_bf16.h>
+#include <cuda_fp8.h>
+#include <cuda_runtime.h>
+#include <cstdio>
+#include <cstdint>
+#include <vector>
+#include <string>
+#include "q4t/quant/format.h"
+#define CU(x) do { if ((x)!=cudaSuccess) return 2; } while(0)
+constexpr int kCount = 480 * 160;
+struct Result { float ratio; uint8_t legacy, native; };
+__global__ void Replay(const uint16_t* x, const float* scales, Result* out) {
+  int i=blockIdx.x*blockDim.x+threadIdx.x;
+  if(i>=kCount) return;
+  float maximum=0;
+  for(int j=0;j<16;++j) maximum=fmaxf(maximum,fabsf(__bfloat162float(
+      *reinterpret_cast<const __nv_bfloat16*>(x+size_t(i)*16+j))));
+  float block=maximum>0?maximum/6.0f:1.0f;
+  float ratio=block/scales[i/160];
+  out[i]={ratio,q4t::quant::FloatToE4m3(ratio),
+      __nv_cvt_float_to_fp8(ratio,__NV_SATFINITE,__NV_E4M3)};
+}
+bool Read(const std::string& p,void* dst,size_t n) {
+ FILE* f=std::fopen(p.c_str(),"rb");if(!f)return false;
+ bool ok=std::fread(dst,1,n,f)==n&&std::fgetc(f)==EOF;
+ return std::fclose(f)==0&&ok;
+}
+int main(int argc,char** argv) {
+ if(argc!=2)return 2;std::string p=argv[1];
+ std::vector<uint16_t>x(kCount*16);std::vector<float>s(480);std::vector<uint8_t>a(kCount);std::vector<Result>r(kCount);
+ if(!Read(p+"/gather-inputs.bf16",x.data(),x.size()*2)||!Read(p+"/gather-scales.f32",s.data(),s.size()*4)||!Read(p+"/gather-actual.sf",a.data(),a.size()))return 2;
+ uint16_t* dx;float* ds;Result* dr;
+ CU(cudaMalloc(&dx,x.size()*2));CU(cudaMalloc(&ds,s.size()*4));CU(cudaMalloc(&dr,r.size()*sizeof(Result)));
+ CU(cudaMemcpy(dx,x.data(),x.size()*2,cudaMemcpyHostToDevice));CU(cudaMemcpy(ds,s.data(),s.size()*4,cudaMemcpyHostToDevice));
+ Replay<<<(kCount+255)/256,256>>>(dx,ds,dr);CU(cudaGetLastError());CU(cudaMemcpy(r.data(),dr,r.size()*sizeof(Result),cudaMemcpyDeviceToHost));
+ int bad=0;for(int i=0;i<kCount;++i){bad+=a[i]!=r[i].legacy;std::printf("%d %a %u %u %u\n",i,double(r[i].ratio),a[i],r[i].legacy,r[i].native);}
+ CU(cudaFree(dx));CU(cudaFree(ds));CU(cudaFree(dr));return bad?1:0;
+}

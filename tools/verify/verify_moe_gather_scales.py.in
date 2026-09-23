@@ -1,0 +1,12 @@
+from pathlib import Path
+import json,math
+p=Path(__file__).resolve().parent;root=p.parents[2];out=root/'.q4t-work/e2e/moe-token-gu-reference-20260923'
+fp8=[math.ldexp(c%8,-9) if c<8 else math.ldexp(1+c%8/8,c//8-7) for c in range(127)]
+mapping=json.loads((out/'gather-map.json').read_text());rows=(out/'gather-replay.tsv').read_text().splitlines();assert len(rows)==76800
+bad=[]
+for n,line in enumerate(rows):
+ i,v,a,legacy,native=line.split();i,a,legacy,native=map(int,[i,a,legacy,native]);v=float.fromhex(v);assert i==n and a==legacy and math.isfinite(v)
+ expected=min(range(127),key=lambda c:(abs(v-fp8[c]),c%2));assert native==expected
+ if a!=expected:bad.append(dict(mapping[i//160],group=i%160,ratio=v,actual=a,expected=expected))
+r={'groups':76800,'actual_vs_accepted_device_codec_mismatches':0,'native_vs_independent_nearest_even_mismatches':0,'actual_vs_nearest_even_mismatches':len(bad),'layers':sorted(set(x['layer'] for x in bad)),'unique_layer_groups':len(set((x['layer'],x['group']) for x in bad)),'all_high_range':all(248<=x['ratio']<432 for x in bad),'details':bad,'runtime_changed':False,'task_causality_established':False}
+(out/'gather-analysis.json').write_text(json.dumps(r,indent=2)+'\n');print(json.dumps({k:v for k,v in r.items() if k!='details'},indent=2))
