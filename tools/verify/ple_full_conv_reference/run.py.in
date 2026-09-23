@@ -1,0 +1,48 @@
+from pathlib import Path
+import hashlib,json,subprocess,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/ple-full-conv-reference-20260924';d=o/'reference';s=root/'.q4t-work/e2e/ple-full-conv-20260924';c=s/'observed-captures'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert (p/'build.log').stat().st_size==0
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+manifest=json.loads((s/'artifact-binding.json').read_text())
+for f in ['exit.json','checkpoint-binding.json','prior-binding.json']:assert sha(s/f)==manifest[f]
+assert json.loads((s/'exit.json').read_text())['observer_preserved_tested_output']
+reserve=20*1024**3;budget=600000000;temporary=40000000
+assert shutil.disk_usage(o).free>reserve+budget
+save('plan.json',{'source_manifest_sha256':sha(s/'artifact-binding.json'),'reserve_bytes':reserve,'total_reference_budget_bytes':budget,'chunk_temporary_bytes':temporary,'rows_per_chunk':128,'scope':'Full4096 prefill and first decode PLE depthwise convolution from captured actual inputs/history, four CPU FP32 FMAs then device-only SiLU, pure CPU expf and FP64 variants; three BF16 rounding boundaries retained. Not whole PLE/model reference.','retention':'Every CPU FP32 accumulator and device SiLU saved. All three full BF16 references losslessly reconstructable from source plus per-chunk deltas. FP64 accumulators and SiLU saved at all final-output differences only.'})
+binding=[]
+for phase in ['prefill','decode']:
+ for suffix in ['x','weights','state-before','gated','trunk','output']:
+  name=f'observed-captures/{phase}.{suffix}.bf16';assert sha(s/name)==manifest[name];binding.append({'file':str((s/name).relative_to(root)),'sha256':manifest[name]})
+save('input-binding.json',binding)
+w=json.loads((s/'checkpoint-binding.json').read_text());f=Path(w['file']);st=f.stat();assert st.st_size==w['size'] and st.st_mtime_ns==w['mtime_ns']
+with f.open('rb') as stream:stream.seek(w['offset']);assert hashlib.sha256(stream.read(w['bytes'])).hexdigest()==w['sha256']
+records=[]
+for phase,total in [('prefill',4096),('decode',1)]:
+ actual=np.fromfile(c/(phase+'.output.bf16'),dtype='<u2')
+ for start in range(0,total,128):
+  assert shutil.disk_usage(o).free>reserve+temporary
+  rows=min(128,total-start);name=f'{phase}-{start}';args=[p/'reference',c,d/name,phase,start,rows];r=subprocess.run([str(x) for x in args],capture_output=True,text=True);(o/(name+'.stdout')).write_text(r.stdout);(o/(name+'.stderr')).write_text(r.stderr);assert r.returncode==0,r.stderr;record=json.loads(r.stdout);assert record['elements']==rows*10240 and record['first_row']==start
+  base=actual[start*10240:(start+rows)*10240]
+  for variant in record['variants']:
+   kind=variant['name'];f=d/(name+'.'+kind+'.bf16');ref=np.fromfile(f,dtype='<u2');assert len(ref)==len(base) and np.isfinite((ref.astype('<u4')<<16).view('<f4')).all();idx=np.flatnonzero(ref!=base).astype('<i4');assert len(idx)==variant['mismatches'] and np.array_equal(idx,np.fromfile(d/(name+'.'+kind+'.indices.i32'),dtype='<i4'))
+   delta=d/(name+'.'+kind+'.delta.npz');np.savez_compressed(delta,indices=idx,values=ref[idx]);z=np.load(delta);rebuilt=base.copy();rebuilt[z['indices']]=z['values'];assert np.array_equal(rebuilt,ref);h=sha(f);assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==h;variant.update(delta=str(delta.relative_to(o)),delta_sha256=sha(delta),reference_sha256=h,zero_sign_only=int(np.count_nonzero(((base[idx]&0x7fff)==0)&((ref[idx]&0x7fff)==0))));f.unlink()
+  record.update(base=str((c/(phase+'.output.bf16')).relative_to(root)),base_sha256=manifest[f'observed-captures/{phase}.output.bf16']);records.append(record);save('reference.json',{'records':records,'complete':len(records)==33});print(record,flush=True)
+# Independently reconstruct every complete phase/variant from saved deltas.
+full=[]
+for phase,total in [('prefill',4096),('decode',1)]:
+ base=c/(phase+'.output.bf16');assert sha(base)==manifest[f'observed-captures/{phase}.output.bf16'];actual=np.fromfile(base,dtype='<u2')
+ for kind in ['device','cpu','fp64']:
+  rebuilt=actual.copy();offset=0;bad=0
+  for record in [r for r in records if r['phase']==phase]:
+   assert record['first_row']*10240==offset;variant=next(v for v in record['variants'] if v['name']==kind);delta=o/variant['delta'];assert sha(delta)==variant['delta_sha256'];z=np.load(delta);chunk=rebuilt[offset:offset+record['elements']];chunk[z['indices']]=z['values'];assert hashlib.sha256(chunk.tobytes()).hexdigest()==variant['reference_sha256'];bad+=variant['mismatches'];offset+=record['elements']
+  assert offset==total*10240 and np.count_nonzero(rebuilt!=actual)==bad;full.append({'phase':phase,'variant':kind,'elements':len(rebuilt),'mismatches':bad,'reference_sha256':hashlib.sha256(rebuilt.tobytes()).hexdigest()})
+save('full-reference-audit.json',full);summary={'elements':4097*10240,'chunks':len(records),'mismatches':{kind:sum(r['mismatches'] for r in full if r['variant']==kind) for kind in ['device','cpu','fp64']},'zero_sign_only':{kind:sum(v['zero_sign_only'] for r in records for v in r['variants'] if v['name']==kind) for kind in ['device','cpu','fp64']},'all_references_reconstructed':True,'runtime_changed':False,'whole_model_correctness_proven':False,'free_after':shutil.disk_usage(o).free};save('summary.json',summary)
+for name in ['run.py','reference.cu','common.h','reference','build.log']:shutil.copy2(p/name,o/name)
+assert sum(f.stat().st_size for f in o.rglob('*') if f.is_file())<budget
+save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'});print(summary,flush=True)
