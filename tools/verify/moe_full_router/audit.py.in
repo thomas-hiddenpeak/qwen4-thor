@@ -1,0 +1,49 @@
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import json,hashlib,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/moe-full-router-20260924';c=o/'observed-captures';d=o/'reference';prior=root/'.q4t-work/e2e/hc-full-boundaries-20260923';old=root/'.q4t-work/e2e/moe-token-combine-20260923'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+def dec(v):return (v.astype(np.uint32)<<16).view(np.float32)
+def rounded(v):
+ b=np.asarray(v,dtype=np.float32).view(np.uint32);return ((b+0x7fff+((b>>16)&1))>>16).astype('<u2')
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output'];metas=[json.loads(f.read_text()) for f in c.glob('*.router.json')];assert len(metas)==48 and all(r['ok'] for r in metas)
+pb=json.loads((o/'prior-binding.json').read_text());assert sha(prior/'artifact-binding.json')==pb['manifest_sha256']
+for r in pb['records']:assert sha(prior/r['file'])==r['sha256']
+for r in json.loads((o/'checkpoint-binding.json').read_text()):
+ f=Path(r['file']);s=f.stat();assert s.st_size==r['size'] and s.st_mtime_ns==r['mtime_ns']
+ with f.open('rb') as stream:stream.seek(r['offset']);raw=stream.read(r['bytes']);assert len(raw)==r['bytes'] and hashlib.sha256(raw).hexdigest()==r['sha256']
+replay=json.loads((o/'replay-reference.json').read_text());fp64=json.loads((o/'fp64-reference.json').read_text());routing=json.loads((o/'routing-reference.json').read_text());assert len(replay['records'])==len(fp64['records'])==len(routing['records'])==48
+old_m=json.loads((old/'artifact-binding.json').read_text())['files'];tails=[];cpu_last=[]
+for l in range(48):
+ name=f'layer-{l}';actual=np.fromfile(c/(name+'.logits.bf16'),dtype='<u2');repeated=np.fromfile(d/(name+'.replay.bf16'),dtype='<u2');high=np.fromfile(d/(name+'.fp64.f64'),dtype='<f8');bits=rounded(high);assert len(actual)==len(repeated)==len(high)==4096*512;assert np.count_nonzero(actual!=repeated)==replay['records'][l]['mismatches']==0;assert np.array_equal(bits,np.fromfile(d/(name+'.fp64.bf16'),dtype='<u2'));idx=np.flatnonzero(bits!=actual);assert len(idx)==fp64['records'][l]['mismatches'] and np.array_equal(idx,np.fromfile(d/(name+'.fp64.differences.i32'),dtype='<i4'))
+ input_file=prior/'observed-captures'/f'hc-{l}.prefill.mix.mlp.output.bf16'
+ for suffix,new in [('logits.bf16',c/(name+'.logits.bf16')),('ids.i32',c/(name+'.ids.i32')),('router-weights.f32',c/(name+'.router-weights.f32')),('x.bf16',input_file)]:
+  key='observed-captures/'+name+'.'+suffix;oldfile=old/key;assert sha(oldfile)==old_m[key];raw=oldfile.read_bytes()
+  with new.open('rb') as stream:stream.seek(-len(raw),2);assert stream.read()==raw
+  tails.append({'old':key,'new':str(new.relative_to(root)),'tail_sha256':old_m[key]})
+ w=dec(np.fromfile(c/(name+'.weights.bf16'),dtype='<u2')).astype(np.float64).reshape(512,2560)
+ with input_file.open('rb') as f:f.seek(-5120,2);x=dec(np.frombuffer(f.read(),dtype='<u2')).astype(np.float64)
+ ref=w@x;assert np.array_equal(rounded(ref),bits[-512:]);ref.tofile(d/(name+'.cpu-last.f64'));cpu_last.append({'layer':l,'mismatches':int(np.count_nonzero(rounded(ref)!=actual[-512:]))})
+ record=routing['records'][l];ids=np.fromfile(c/(name+'.ids.i32'),dtype='<i4').reshape(4096,10);expected=np.fromfile(d/(name+'.expected-ids.i32'),dtype='<i4').reshape(4096,10);idbad=np.argwhere(ids!=expected);assert len(idbad)==record['topk_mismatches'] and np.array_equal(idbad,np.fromfile(d/(name+'.id-differences.i32'),dtype='<i4').reshape(-1,2))
+ high_ids=np.fromfile(d/(name+'.fp64-ids.i32'),dtype='<i4').reshape(4096,10)
+ for suffix,changed in [('rows',np.flatnonzero(np.any(ids!=high_ids,axis=1))),('sets',np.flatnonzero(np.any(np.sort(ids,axis=1)!=np.sort(high_ids,axis=1),axis=1)))]:assert np.array_equal(changed,np.fromfile(d/(name+'.fp64-changed-'+suffix+'.i32'),dtype='<i4'))
+ weights=np.fromfile(c/(name+'.router-weights.f32'),dtype='<f4')
+ for kind in ['cpu','device','fp64']:
+  ref=np.fromfile(d/(name+'.'+kind+'.weights.f32'),dtype='<f4');bad=np.flatnonzero(ref.view('<u4')!=weights.view('<u4'));assert len(bad)==record['weight_mismatches'][kind] and np.array_equal(bad,np.fromfile(d/(name+'.'+kind+'.weight-differences.i32'),dtype='<i4'))
+boundaries=json.loads((o/'selection-boundaries.json').read_text());assert len(boundaries['records'])==routing['fp64_logit_changed_set_rows']
+for record in boundaries['records']:
+ l,t=record['layer'],record['token'];name=f'layer-{l}';ids=np.fromfile(c/(name+'.ids.i32'),dtype='<i4').reshape(4096,10)[t];high_ids=np.fromfile(d/(name+'.fp64-ids.i32'),dtype='<i4').reshape(4096,10)[t];assert ids.tolist()==record['actual_ids'] and high_ids.tolist()==record['reference_ids'];assert sorted(set(ids)-set(high_ids))==record['removed'] and sorted(set(high_ids)-set(ids))==record['added']
+ a=dec(np.fromfile(c/(name+'.logits.bf16'),dtype='<u2')).reshape(4096,512)[t];h=dec(np.fromfile(d/(name+'.fp64.bf16'),dtype='<u2')).reshape(4096,512)[t];hi=np.fromfile(d/(name+'.fp64.f64'),dtype='<f8').reshape(4096,512)[t];aa=np.sort(a);hh=np.sort(h);assert float(aa[-10]-aa[-11])==record['actual_boundary_gap'] and float(hh[-10]-hh[-11])==record['reference_boundary_gap']
+ for v in record['affected']:i=v['expert'];assert v['actual']==float(a[i]) and v['fp64_rounded']==float(h[i]) and v['fp64']==float(hi[i])
+assert boundaries['summary']['actual_boundary_ties']==sum(r['actual_boundary_gap']==0 for r in boundaries['records']) and boundaries['summary']['actual_strict_boundary']==sum(r['actual_boundary_gap']>0 for r in boundaries['records'])
+summary={'projection_elements':48*4096*512,'recorded_algorithm_mismatches':replay['total_mismatches'],'projection_fp64_mismatches':sum(x['mismatches'] for x in fp64['records']),'selected_elements':48*4096*10,'topk_mismatches':routing['topk_mismatches'],'weight_mismatches':routing['weight_mismatches'],'fp64_logit_changed_order_rows':routing['fp64_logit_changed_order_rows'],'fp64_logit_changed_set_rows':routing['fp64_logit_changed_set_rows'],'previous_tail_bindings':len(tails),'cpu_last_fp64_checks':48,'cpu_last_fp64_mismatches_vs_actual':sum(x['mismatches'] for x in cpu_last),'selection_boundaries':boundaries['summary'],'runtime_changed':False,'whole_model_correctness_proven':False};save('summary.json',summary);save('previous-tail-binding.json',{'source_manifest_sha256':sha(old/'artifact-binding.json'),'records':tails});save('cpu-last-reference.json',cpu_last)
+for f in p.iterdir():
+ if f.is_file():shutil.copy2(f,o/f.name)
+save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'});print(summary,flush=True)

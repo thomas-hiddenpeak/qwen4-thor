@@ -1,0 +1,10 @@
+from pathlib import Path
+import json,hashlib,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/moe-full-router-20260924';c=o/'observed-captures';d=o/'reference'
+def dec(v):return (v.astype(np.uint32)<<16).view(np.float32)
+records=[]
+for l in range(48):
+ name=f'layer-{l}';rows=np.fromfile(d/(name+'.fp64-changed-sets.i32'),dtype='<i4');actual=dec(np.fromfile(c/(name+'.logits.bf16'),dtype='<u2')).reshape(4096,512);rounded=dec(np.fromfile(d/(name+'.fp64.bf16'),dtype='<u2')).reshape(4096,512);high=np.fromfile(d/(name+'.fp64.f64'),dtype='<f8').reshape(4096,512);ids=np.fromfile(c/(name+'.ids.i32'),dtype='<i4').reshape(4096,10);ref=np.fromfile(d/(name+'.fp64-ids.i32'),dtype='<i4').reshape(4096,10)
+ for row in rows:
+  ordered=np.argsort(-actual[row],kind='stable');ordered_ref=np.argsort(-rounded[row],kind='stable');assert np.array_equal(ids[row],ordered[:10]) and np.array_equal(ref[row],ordered_ref[:10]);removed=sorted(set(ids[row])-set(ref[row]));added=sorted(set(ref[row])-set(ids[row]));affected=sorted(set(removed+added));records.append({'layer':l,'token':int(row),'actual_ids':ids[row].tolist(),'reference_ids':ref[row].tolist(),'removed':[int(i) for i in removed],'added':[int(i) for i in added],'actual_boundary_gap':float(actual[row,ordered[9]]-actual[row,ordered[10]]),'reference_boundary_gap':float(rounded[row,ordered_ref[9]]-rounded[row,ordered_ref[10]]),'affected':[{'expert':int(i),'actual':float(actual[row,i]),'fp64_rounded':float(rounded[row,i]),'fp64':float(high[row,i])} for i in affected]})
+summary={'changed_set_rows':len(records),'actual_boundary_ties':sum(r['actual_boundary_gap']==0 for r in records),'actual_strict_boundary':sum(r['actual_boundary_gap']>0 for r in records),'reference_boundary_ties':sum(r['reference_boundary_gap']==0 for r in records),'max_actual_boundary_gap':max(r['actual_boundary_gap'] for r in records),'task_causality_established':False};(o/'selection-boundaries.json').write_text(json.dumps({'summary':summary,'records':records},indent=2)+'\n');print(summary)

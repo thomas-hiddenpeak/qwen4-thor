@@ -1,0 +1,38 @@
+from pathlib import Path
+import json,hashlib,struct,subprocess,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/moe-full-router-20260924';c=o/'observed-captures';d=o/'reference';prior=root/'.q4t-work/e2e/hc-full-boundaries-20260923';pc=prior/'observed-captures'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+def dec(x):return (x.astype(np.uint32)<<16).view(np.float32)
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+for name in ['replay-build.log','fp64-build.log','exp-build.log']:assert (p/name).stat().st_size==0
+pb=json.loads((o/'prior-binding.json').read_text());assert sha(prior/'artifact-binding.json')==pb['manifest_sha256']
+for r in pb['records']:assert sha(prior/r['file'])==r['sha256']
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');index=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];weights=[]
+for l in range(48):
+ key=f'model.language_model.layers.{l}.mlp.gate.weight';f=model/index[key]
+ with f.open('rb') as s:
+  n=struct.unpack('<Q',s.read(8))[0];info=json.loads(s.read(n))[key];assert info['dtype']=='BF16' and info['shape']==[512,2560];a,b=info['data_offsets'];offset=8+n+a;s.seek(offset);data=s.read(b-a)
+ assert hashlib.sha256(data).hexdigest()==sha(c/f'layer-{l}.weights.bf16');weights.append({'key':key,'file':str(f),'offset':offset,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest(),'size':f.stat().st_size,'mtime_ns':f.stat().st_mtime_ns})
+save('checkpoint-binding.json',weights);d.mkdir(exist_ok=False)
+for tool,name in [('replay','replay-reference.json'),('fp64','fp64-reference.json')]:
+ with (o/name).open('w') as log:result=subprocess.run([str(p/tool),str(c),str(d),str(pc)],stdout=log,stderr=subprocess.PIPE,text=True)
+ (o/(tool+'.stderr')).write_text(result.stderr);assert result.returncode==0,result.stderr
+ print({'tool':tool,'exit':result.returncode},flush=True)
+records=[]
+for l in range(48):
+ name=f'layer-{l}';logits=dec(np.fromfile(c/(name+'.logits.bf16'),dtype='<u2')).reshape(4096,512);ids=np.fromfile(c/(name+'.ids.i32'),dtype='<i4').reshape(4096,10);assert np.isfinite(logits).all();expected=np.argsort(-logits,axis=1,kind='stable')[:,:10].astype('<i4');idbad=np.argwhere(ids!=expected);expected.tofile(d/(name+'.expected-ids.i32'));idbad.astype('<i4').tofile(d/(name+'.id-differences.i32'));selected=np.take_along_axis(logits,expected,axis=1);delta=selected-selected[:,:1];delta.astype('<f4').tofile(d/(name+'.deltas.f32'))
+ fp64=dec(np.fromfile(d/(name+'.fp64.bf16'),dtype='<u2')).reshape(4096,512);high_ids=np.argsort(-fp64,axis=1,kind='stable')[:,:10].astype('<i4');high_ids.tofile(d/(name+'.fp64-ids.i32'));changed=np.flatnonzero(np.any(ids!=high_ids,axis=1)).astype('<i4');changed.tofile(d/(name+'.fp64-changed-rows.i32'));set_changed=np.flatnonzero(np.any(np.sort(ids,axis=1)!=np.sort(high_ids,axis=1),axis=1)).astype('<i4');set_changed.tofile(d/(name+'.fp64-changed-sets.i32'))
+ records.append({'layer':l,'selected_elements':ids.size,'topk_mismatches':len(idbad),'fp64_logit_changed_order_rows':len(changed),'fp64_logit_changed_set_rows':len(set_changed)})
+subprocess.run([str(p/'exp'),str(d)],check=True)
+for r in records:
+ name=f"layer-{r['layer']}";delta=np.fromfile(d/(name+'.deltas.f32'),dtype='<f4').reshape(4096,10);actual=np.fromfile(c/(name+'.router-weights.f32'),dtype='<f4').reshape(4096,10);variants={'cpu':np.exp(delta.astype(np.float64)).astype(np.float32),'device':np.fromfile(d/(name+'.device-exp.f32'),dtype='<f4').reshape(4096,10),'fp64':np.exp(delta.astype(np.float64))};r['weight_mismatches']={};r['max_abs_vs_reference']={}
+ for kind,value in variants.items():
+  sums=np.zeros(4096,dtype=value.dtype)
+  for j in range(10):sums+=value[:,j]
+  inv=np.asarray(1,dtype=value.dtype)/sums;ref=(value*inv[:,None]).astype('<f4');idx=np.flatnonzero(ref.view('<u4').ravel()!=actual.view('<u4').ravel()).astype('<i4');ref.tofile(d/(name+'.'+kind+'.weights.f32'));idx.tofile(d/(name+'.'+kind+'.weight-differences.i32'));r['weight_mismatches'][kind]=len(idx);r['max_abs_vs_reference'][kind]=float(np.max(np.abs(ref.astype(np.float64)-actual.astype(np.float64))))
+save('routing-reference.json',{'records':records,'topk_mismatches':sum(r['topk_mismatches'] for r in records),'weight_mismatches':{k:sum(r['weight_mismatches'][k] for r in records) for k in ['cpu','device','fp64']},'fp64_logit_changed_order_rows':sum(r['fp64_logit_changed_order_rows'] for r in records),'fp64_logit_changed_set_rows':sum(r['fp64_logit_changed_set_rows'] for r in records),'scope':'Topk from actual BF16 logits; CPU sequential10term softmax, device only exp, FP64 softmax rounded FP32. FP64 projection topk evaluated separately; no task causality claim.'});print({k:v for k,v in json.loads((o/'routing-reference.json').read_text()).items() if k!='records'},flush=True)

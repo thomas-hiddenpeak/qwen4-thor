@@ -1,0 +1,62 @@
+#include <cuda_runtime_api.h>
+#include <cublasLt.h>
+#include <dlfcn.h>
+#include <atomic>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <vector>
+namespace {
+template<class T>T Resolve(const char*n){auto f=reinterpret_cast<T>(dlsym(RTLD_NEXT,n));if(!f)std::_Exit(127);return f;}
+template<class T>T* Ptr(void**a,int i){return *static_cast<T**>(a[i]);}
+bool Save(const std::string&n,const void*p,size_t bytes){FILE*f=std::fopen(n.c_str(),"wb");if(!f)return false;bool ok=std::fwrite(p,1,bytes,f)==bytes;return std::fclose(f)==0&&ok;}
+bool Read(void*p,const void*x,size_t bytes,cudaStream_t s){static auto copy=Resolve<decltype(&cudaMemcpyAsync)>("cudaMemcpyAsync");static auto sync=Resolve<decltype(&cudaStreamSynchronize)>("cudaStreamSynchronize");return copy(p,x,bytes,cudaMemcpyDeviceToHost,s)==cudaSuccess&&sync(s)==cudaSuccess;}
+bool Capture(const std::string&n,const void*x,size_t bytes,cudaStream_t s){std::vector<unsigned char>b(bytes);return Read(b.data(),x,bytes,s)&&Save(n,b.data(),bytes);}
+bool Compare(const std::string&n,const void*x,size_t bytes,cudaStream_t s){std::vector<unsigned char>b(bytes),chunk(1048576);if(!Read(b.data(),x,bytes,s))return false;FILE*f=std::fopen(n.c_str(),"rb");if(!f)return false;bool ok=true;size_t pos=0;while(pos<bytes){size_t amount=bytes-pos;if(amount>chunk.size())amount=chunk.size();if(std::fread(chunk.data(),1,amount,f)!=amount||std::memcmp(chunk.data(),b.data()+pos,amount)){ok=false;break;}pos+=amount;}ok=ok&&std::fgetc(f)==EOF;return std::fclose(f)==0&&ok;}
+std::atomic<cudaKernel_t> router_kernel{};
+struct Pending {const void* weight=nullptr;const void* input=nullptr;void* output=nullptr;cublasLtMatmulAlgo_t algo{};size_t workspace=0;bool ok=false;} pending;
+int count=0;
+template <typename T>
+bool Layout(cublasLtMatrixLayout_t layout, cublasLtMatrixLayoutAttribute_t key,
+            T* value) {
+  static const auto get = Resolve<decltype(&cublasLtMatrixLayoutGetAttribute)>(
+      "cublasLtMatrixLayoutGetAttribute");
+  size_t size = 0;
+  return get(layout, key, value, sizeof(T), &size) == CUBLAS_STATUS_SUCCESS &&
+         size == sizeof(T);
+}
+template <typename T>
+bool Attribute(cublasLtMatmulDesc_t desc, cublasLtMatmulDescAttributes_t key,
+               T* value) {
+  static const auto get = Resolve<decltype(&cublasLtMatmulDescGetAttribute)>(
+      "cublasLtMatmulDescGetAttribute");
+  size_t size = 0;
+  return get(desc, key, value, sizeof(T), &size) == CUBLAS_STATUS_SUCCESS &&
+         size == sizeof(T);
+}
+bool Shape(cublasLtMatrixLayout_t desc, uint64_t rows, uint64_t cols,
+           cudaDataType_t type) {
+  uint64_t r = 0, c = 0;
+  int64_t ld = 0;
+  cudaDataType_t t{};
+  cublasLtOrder_t order{};
+  return Layout(desc, CUBLASLT_MATRIX_LAYOUT_ROWS, &r) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_COLS, &c) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_LD, &ld) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_TYPE, &t) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_ORDER, &order) &&
+         r == rows && c == cols && ld == static_cast<int64_t>(rows) &&
+         t == type && order == CUBLASLT_ORDER_COL;
+}
+}
+extern "C" cudaError_t __cudaGetKernel(cudaKernel_t*k,const void*fn){static auto real=Resolve<cudaError_t(*)(cudaKernel_t*,const void*)>("__cudaGetKernel");auto r=real(k,fn);if(r==cudaSuccess){const char*n=nullptr;static auto name=Resolve<decltype(&cudaFuncGetName)>("cudaFuncGetName");if(name(&n,fn)==cudaSuccess&&n&&std::strstr(n,"RouterTopkKernel")&&std::strstr(n,"5model"))router_kernel=*k;}return r;}
+extern "C" cudaError_t __cudaLaunchKernel(cudaKernel_t k,dim3 grid,dim3 block,void**a,size_t smem,cudaStream_t stream){static auto real=Resolve<cudaError_t(*)(cudaKernel_t,dim3,dim3,void**,size_t,cudaStream_t)>("__cudaLaunchKernel");const char*dir=std::getenv("Q4T_GDN_CAPTURE_DIR");const char*prior=std::getenv("Q4T_HC_PRIOR");bool take=dir&&prior&&k==router_kernel&&*static_cast<int*>(a[3])==4096;bool ok=false;int l=-1;std::string base;
+ if(take){l=count++;base=std::string(dir)+"/layer-"+std::to_string(l);ok=l<48&&pending.ok&&pending.output==Ptr<uint16_t>(a,0)&&*static_cast<int*>(a[4])==512&&*static_cast<int*>(a[5])==10;std::string old=std::string(prior)+"/hc-"+std::to_string(l)+".prefill.mix.mlp.output.bf16";ok=ok&&Compare(old,pending.input,size_t(4096)*2560*2,stream)&&Capture(base+".weights.bf16",pending.weight,512*2560*2,stream)&&Capture(base+".logits.bf16",Ptr<uint16_t>(a,0),4096*512*2,stream)&&Save(base+".algo.bin",&pending.algo,sizeof(pending.algo));}
+ auto result=real(k,grid,block,a,smem,stream);
+ if(take){ok=ok&&result==cudaSuccess&&Capture(base+".ids.i32",Ptr<int32_t>(a,1),4096*10*4,stream)&&Capture(base+".router-weights.f32",Ptr<float>(a,2),4096*10*4,stream);char meta[256];int n=std::snprintf(meta,sizeof(meta),"{\"layer\":%d,\"m\":4096,\"n\":512,\"k\":2560,\"topk\":10,\"workspace_bytes\":%zu,\"ok\":%s}\n",l,pending.workspace,ok?"true":"false");if(n>0&&size_t(n)<sizeof(meta))Save(base+".router.json",meta,n);std::fprintf(stderr,"[moe-full-router] layer=%d ok=%d\n",l,ok);pending.ok=false;}
+ return result;}
+extern "C" cublasStatus_t CUBLASWINAPI cublasLtMatmul(cublasLtHandle_t handle,cublasLtMatmulDesc_t desc,const void* alpha,const void*a,cublasLtMatrixLayout_t ad,const void*b,cublasLtMatrixLayout_t bd,const void*beta,const void*c,cublasLtMatrixLayout_t cd,void*d,cublasLtMatrixLayout_t dd,const cublasLtMatmulAlgo_t*algo,void*workspace,size_t workspace_bytes,cudaStream_t stream){static auto real=Resolve<decltype(&cublasLtMatmul)>("cublasLtMatmul");auto r=real(handle,desc,alpha,a,ad,b,bd,beta,c,cd,d,dd,algo,workspace,workspace_bytes,stream);if(!std::getenv("Q4T_GDN_CAPTURE_DIR")||r!=CUBLAS_STATUS_SUCCESS||!Shape(ad,2560,512,CUDA_R_16BF)||!Shape(bd,2560,4096,CUDA_R_16BF)||!Shape(dd,512,4096,CUDA_R_16BF))return r;
+ cublasComputeType_t compute{};cudaDataType_t scale{};cublasLtEpilogue_t epilogue{};cublasLtPointerMode_t mode{};cublasOperation_t ta{},tb{};
+ pending.ok=Attribute(desc,CUBLASLT_MATMUL_DESC_COMPUTE_TYPE,&compute)&&compute==CUBLAS_COMPUTE_32F&&Attribute(desc,CUBLASLT_MATMUL_DESC_SCALE_TYPE,&scale)&&scale==CUDA_R_32F&&Attribute(desc,CUBLASLT_MATMUL_DESC_EPILOGUE,&epilogue)&&epilogue==CUBLASLT_EPILOGUE_DEFAULT&&Attribute(desc,CUBLASLT_MATMUL_DESC_POINTER_MODE,&mode)&&mode==CUBLASLT_POINTER_MODE_HOST&&Attribute(desc,CUBLASLT_MATMUL_DESC_TRANSA,&ta)&&ta==CUBLAS_OP_T&&Attribute(desc,CUBLASLT_MATMUL_DESC_TRANSB,&tb)&&tb==CUBLAS_OP_N&&*static_cast<const float*>(alpha)==1.f&&*static_cast<const float*>(beta)==0.f&&workspace_bytes==33554432&&algo;pending.weight=a;pending.input=b;pending.output=d;pending.workspace=workspace_bytes;if(algo)pending.algo=*algo;return r;}
