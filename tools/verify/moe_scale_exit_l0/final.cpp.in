@@ -1,0 +1,27 @@
+#include "common.h"
+int main(int argc, char** argv) {
+  try {
+    if (argc != 6)
+      throw std::runtime_error("routed shared_down sigmoid actual output");
+    auto routed = Read<float>(argv[1], 4096 * 2560),
+         sig = Read<float>(argv[3], 4096);
+    auto down = Read<uint16_t>(argv[2], 4096 * 2560),
+         actual = Read<uint16_t>(argv[4], 4096 * 2560);
+    std::vector<uint16_t> out(actual.size());
+    std::vector<float> raw(actual.size());
+    size_t bad = 0;
+#pragma omp parallel for reduction(+ : bad)
+    for (size_t i = 0; i < out.size(); ++i) {
+      raw[i] = std::fma(sig[i / 2560], B(down[i]), routed[i]);
+      out[i] = Round(raw[i]);
+      bad += out[i] != actual[i];
+    }
+    Save(std::string(argv[5]) + ".bf16", out);
+    Save(std::string(argv[5]) + ".f32", raw);
+    std::printf("{\"elements\":%zu,\"mismatches\":%zu}\n", out.size(), bad);
+    return 0;
+  } catch (const std::exception& e) {
+    std::fprintf(stderr, "%s\n", e.what());
+    return 2;
+  }
+}
