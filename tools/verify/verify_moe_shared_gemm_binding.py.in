@@ -1,0 +1,24 @@
+"""Bind observed shared GEMM operands to checkpoint and adjacent boundaries."""
+from pathlib import Path
+import hashlib,json,struct
+p=Path(__file__).resolve().parent;root=p.parents[2]
+out=root/'.q4t-work/e2e/moe-shared-gemm-binding-20260923';cap=out/'observed-captures'
+assert json.loads((out/'exit.json').read_text())['observer_preserved_tested_output']
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');index=json.loads((model/'model.safetensors.index.json').read_text())['weight_map']
+def tensor(name):
+ with (model/index[name]).open('rb') as f:
+  n=struct.unpack('<Q',f.read(8))[0];h=json.loads(f.read(n));m=h[name];assert m['dtype']=='BF16';a,b=m['data_offsets'];f.seek(8+n+a);data=f.read(b-a);assert len(data)==b-a
+ return data
+records=[]
+for layer in range(48):
+ base=cap/f'layer-{layer}';prefix=f'model.language_model.layers.{layer}.mlp.shared_expert.'
+ def read(s):return Path(str(base)+s).read_bytes()
+ for stage in ['gu','down']:
+  tag=f'.{stage}-gemm';meta=json.loads(read(tag+'.json'));assert meta['ok'] and meta['descriptor_checked']
+  expected=(tensor(prefix+'gate_proj.weight')+tensor(prefix+'up_proj.weight')) if stage=='gu' else tensor(prefix+'down_proj.weight')
+  w=read(tag+'.weights.bf16');x=read(tag+'.input.bf16');y=read(tag+'.output.bf16')
+  r={'layer':layer,'stage':stage,'weights_match_checkpoint':w==expected,'input_matches_boundary':x==read('.x.bf16' if stage=='gu' else '.shared-inter.bf16'),'output_matches_boundary':y==read('.shared-gu.bf16' if stage=='gu' else '.shared.bf16'),'weight_sha256':hashlib.sha256(w).hexdigest(),'descriptor_checked':True,'algorithm_sha256':hashlib.sha256(read(tag+'.algo.bin')).hexdigest()}
+  records.append(r)
+report={'calls':len(records),'all_weights_match':all(r['weights_match_checkpoint'] for r in records),'all_inputs_match':all(r['input_matches_boundary'] for r in records),'all_outputs_match':all(r['output_matches_boundary'] for r in records),'records':records,'runtime_changed':False,'limitation':'Checks actual operands and descriptors, not internal cuBLAS summation order or whole-model correctness.'}
+(out/'gemm-binding.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({k:v for k,v in report.items() if k!='records'},indent=2))
+assert report['all_weights_match'] and report['all_inputs_match'] and report['all_outputs_match']
