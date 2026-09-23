@@ -291,10 +291,42 @@ Y和末态，以及所有差异/token分布。设备初等函数仍是参考依�
 162项清单全量验证，逻辑字节2768312106；工具模板
 `tools/verify/moe_scale_gdn_l1/`。终点为layer1 GDN输出/末态。
 
+## 四分支 layer1 NormGate、输出投影与注意力残差写回
+
+各支自身Y与Z进入NormGate：CPU平方树归约，设备rsqrt/sigmoid，
+CPU逐步三次F32乘法和BF16。两组checkpoint权重重读，新的NormGate
+输出进入捕获算法的out投影，m4096/n2560/k6144、alpha1/beta0。
+原分支完整NormGate、out及捕获HC消费者逐位恢复；NormGate纯CPU/
+FP64仍有200/270个BF16差异，保留完整对照，不计作整模型精度结论。
+
+随后每支自身attention输出、自身PLE主干与HC attention注入门值，
+通过CPU显式FMA+BF16写回四路主干。原分支恢复fused.output及
+MLP residual消费者，修正分支不复用旧门值或旧主干。
+
+| 修正 | NormGate BF16差异 | out BF16差异 | HC写回 BF16差异 | 三阶段影响token |
+|---|---:|---:|---:|---:|
+| 输入单项 | 11728767 | 6176843 | 8765901 | 4079 |
+| 中间单项 | 15830531 | 7177847 | 13067963 | 4094 |
+| 双项 | 17863770 | 7681784 | 15534688 | 4094 |
+
+所有输出有限，差异支持集未越出自身输入；仅衡量传播，不判断最终
+答案改善/退化。生产未改，无新HTTP或性能结论。helper零警告，
+真实进程终态后封存并逐项核对：
+
+- `.q4t-work/e2e/moe-scale-linear-output-l1-20260924/`：144项，
+  3631648388逻辑字节。完整NormGate三参考/数学中间值/rawFP32、
+  out BF16与全部差异/行分布；未保存GEMM累加器。
+- `.q4t-work/e2e/moe-scale-hc-attn-write-l1-20260924/`：完整主干
+  BF16、全部差异及差异处rawFP32、行分布，未保存匹配处舍入前值。
+
+模板分别在`tools/verify/moe_scale_linear_output_l1/`和
+`moe_scale_hc_attn_write_l1/`。终点为注意力后的主干，尚未第二层
+MLP HC读取/路由/专家；后续必须重算路由，不固定为旧专家选择。
+
 ## 待完成
 
-1. 四分支接NormGate/输出投影，使用各支自身Z、HC inject gate
-   与PLE后的主干，继续对应HC残差和后续MoE。
+1. 四分支从注意力后的主干重算layer1 MLP HC norm/read/gate，
+   再按各自新输入重算MoE路由、量化、专家和共享分支。
 2. 建立可比多层与最终答案因果证据；不能由局部影响计数或
    格式正确性宣布错答已解释或修复。
 3. 保留规范修正候选原HTTP任务退化事实；任何运行时修复仍须

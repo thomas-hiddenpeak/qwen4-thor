@@ -1,0 +1,46 @@
+"""Own branch attention output, residual and gate -> layer1 HC trunk."""
+from pathlib import Path
+import hashlib,json,subprocess,shutil,os
+import numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];e=root/'.q4t-work/e2e';o=e/p.name;d=o/'reference'
+s=e/'hc-full-boundaries-20260923';a=e/'moe-scale-linear-output-l1-20260924';r=e/'moe-scale-ple-chain-20260924';g=e/'moe-scale-hc-read-l1-20260924'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as z:
+  for b in iter(lambda:z.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(n,x):(o/n).write_text(json.dumps(x,indent=2)+'\n')
+assert not any(d.iterdir());assert (p/'build.log').stat().st_size==0
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+budget=2000000000;reserve=20*1024**3;assert shutil.disk_usage(o).free>reserve+budget
+sources=[s,a,r,g];man={x.name:json.loads((x/'artifact-binding.json').read_text()) for x in sources};bindings=[]
+def bind(x,n):
+ f=x/n;v=sha(f);assert v==man[x.name][n],f;bindings.append({'file':str(f.relative_to(root)),'sha256':v});return f
+assert json.loads(bind(s,'exit.json').read_text())['observer_preserved_tested_output']
+for x in [a,r,g]:assert json.loads(bind(x,'reference.json').read_text())['complete']
+actual={n:bind(s,'observed-captures/hc-1.prefill.fused.'+n+'.bf16') for n in ['block','gate','residual','output']}
+consumer=bind(s,'observed-captures/hc-1.prefill.write.residual.bf16');assert sha(consumer)==sha(actual['output'])
+branches=['baseline','input_fixed','inter_fixed','both_fixed'];paths={}
+for b in branches:
+ paths[b]={'block':bind(a,'reference/'+b+'/layer-1.prefill.out.replay.bf16'),'residual':bind(r,'reference/'+b+'.conv.device.bf16'),'gate':bind(g,'reference/'+b+'/gate.bf16')}
+for n,f in paths['baseline'].items():assert sha(f)==sha(actual[n])
+save('input-binding.json',bindings);save('source-manifests.json',{x.name:sha(x/'artifact-binding.json') for x in sources})
+save('plan.json',{'budget_bytes':budget,'reserve_bytes':reserve,'scope':'Four own layer1 attention output / PLE residual / HC attention inject gate branches, CPU explicit FMA then BF16, complete4096x4x2560. Baseline restores fused HC output and captured MLP residual. Stop before MLP HC norm/read; no new scale fixes beyond layer0.','source_code':{n:sha(root/n) for n in ['src/model/decoder_layer.cu','src/model/hyperconnection.cu']},'retention':'FullBF16 output, all differences and rawF32 values at differing positions, token counts. Matching pre-round values not retained.'})
+old=np.fromfile(actual['output'],dtype='<u2');records=[]
+for b in branches:
+ x=paths[b];prefix=d/b
+ proc=subprocess.run([str(p/'write'),str(x['residual']),str(x['block']),str(x['gate']),str(actual['output']),str(prefix)],capture_output=True,text=True,env={**os.environ,'OMP_NUM_THREADS':'8'})
+ (o/(b+'.stdout')).write_text(proc.stdout);(o/(b+'.stderr')).write_text(proc.stderr);assert proc.returncode==0,proc.stderr
+ rec=json.loads(proc.stdout);new=np.fromfile(str(prefix)+'.bf16',dtype='<u2');assert len(new)==rec['elements']==41943040
+ idx=np.flatnonzero(new!=old).astype('<i4');assert len(idx)==rec['mismatches'] and np.array_equal(idx,np.fromfile(str(prefix)+'.differences.i32',dtype='<i4'))
+ raw=np.fromfile(str(prefix)+'.differences.f32',dtype='<f4');bits=raw.view('<u4');assert len(raw)==len(idx) and np.isfinite(raw).all()
+ assert np.array_equal(((bits+np.uint32(0x7fff)+((bits>>16)&1))>>16).astype('<u2'),new[idx]);assert np.isfinite((new.astype('<u4')<<16).view('<f4')).all()
+ counts=np.bincount(idx//10240,minlength=4096).astype('<i4');counts.tofile(str(prefix)+'.token-differences.i32');allowed=np.zeros(4096,dtype=bool)
+ for n,f in x.items():allowed|=np.any(np.fromfile(f,dtype='<u2').reshape(4096,-1)!=np.fromfile(actual[n],dtype='<u2').reshape(4096,-1),axis=1)
+ assert not np.any((counts>0)&~allowed)
+ if b=='baseline':assert len(idx)==0 and sha(Path(str(prefix)+'.bf16'))==sha(consumer)
+ rec.update(branch=b,changed_tokens=int(np.count_nonzero(counts)),input_changed_tokens=int(allowed.sum()));records.append(rec);print(rec,flush=True)
+save('reference.json',{'records':records,'complete':len(records)==4})
+for n in ['run.py','write.cpp','common.h','write','build.log']:shutil.copy2(p/n,o/n)
+save('summary.json',{'records':records,'runtime_changed':False,'whole_model_correctness_proven':False,'task_causality_established':False,'endpoint':'Layer1 after attention residual, before MLP HC norm/read'})
+assert sum(f.stat().st_size for f in o.rglob('*') if f.is_file())<budget
