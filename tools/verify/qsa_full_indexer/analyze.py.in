@@ -1,0 +1,52 @@
+from pathlib import Path
+import json,hashlib,struct,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/qsa-full-indexer-20260924';c=o/'observed-captures';old=root/'.q4t-work/e2e/qsa-main-projections-20260923';q=root/'.q4t-work/e2e/qsa-full-selection-20260924';h=root/'.q4t-work/e2e/hc-full-boundaries-20260923';model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream')
+def sha(f):
+ x=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):x.update(b)
+ return x.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output'];assert sha(root/'build/q4t')==json.loads((o/'plan.json').read_text())['binary_sha256']
+for label,source in [('hc',h),('qsa',q),('index',old)]:
+ binding=json.loads((o/(label+'-binding.json')).read_text());assert sha(source/'artifact-binding.json')==binding['manifest_sha256']
+ for r in binding['records']:assert sha(source/r['file'])==r['sha256']
+metas=[json.loads(f.read_text()) for f in c.glob('*.json')];assert len(metas)==108 and all(m['ok'] for m in metas)
+index=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];config=json.loads((model/'config.json').read_text())['text_config'];om=json.loads((old/'artifact-binding.json').read_text());weights=[];previous=[];records=[];maps=[]
+def tensor(key,shape):
+ f=model/index[key]
+ with f.open('rb') as stream:
+  size=struct.unpack('<Q',stream.read(8))[0];info=json.loads(stream.read(size))[key];assert info['dtype']=='BF16' and info['shape']==shape;a,b=info['data_offsets'];offset=8+size+a;stream.seek(offset);raw=stream.read(b-a)
+ assert len(raw)==int(np.prod(shape))*2;st=f.stat();weights.append({'key':key,'file':str(f),'offset':offset,'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),'size':st.st_size,'mtime_ns':st.st_mtime_ns});return raw
+def old_bytes(l,suffix):
+ f=old/'observed-captures'/f'layer-{l}.prefill.{suffix}';name=str(f.relative_to(old));assert sha(f)==om[name];previous.append({'file':name,'sha256':om[name]});return f.read_bytes()
+def finite(a):return np.all((a&0x7f80)!=0x7f80)
+for l in range(3,48,4):
+ b=f'layer-{l}.prefill';raw=tensor(f'model.language_model.layers.{l}.self_attn.indexer.index_qk_proj.weight',[640,2560]);offset=0
+ for kind,n in [('iq',512),('ik',128)]:
+  f=c/(b+f'.{kind}.weights.bf16');piece=raw[offset:offset+n*2560*2];offset+=len(piece);assert piece==f.read_bytes()==old_bytes(l,f'projection-{kind}.weights.bf16');assert (c/(b+f'.{kind}.algo.bin')).stat().st_size==64
+  output=c/(b+'.iq.raw.bf16') if kind=='iq' else old/'observed-captures'/(b+'.ik-input.bf16');assert output.stat().st_size==4096*n*2;assert output.read_bytes()[-n*2:]==old_bytes(l,f'projection-{kind}.output.bf16')
+  inp=h/'observed-captures'/f'hc-{l}.prefill.mix.attn.output.bf16';maps.append({'layer':l,'kind':kind,'m':4096,'n':n,'k':2560,'input':str(inp.relative_to(root)),'weight':str(f.relative_to(root)),'output':str(output.relative_to(root)),'algorithm':str((c/(b+f'.{kind}.algo.bin')).relative_to(root))})
+ for side in ['q','k']:
+  raw=tensor(f'model.language_model.layers.{l}.self_attn.indexer.{side}_layernorm.weight',[128]);assert raw==(c/(b+f'.{side}-norm.weights.bf16')).read_bytes()==old_bytes(l,'iq-norm.bf16' if side=='q' else 'ik-norm.bf16')
+ iq=np.fromfile(c/(b+'.iq.raw.bf16'),dtype='<u2');trans=np.fromfile(c/(b+'.iq.transformed.bf16'),dtype='<u2');assert iq.size==trans.size==4096*512 and finite(iq) and finite(trans);assert trans[-512:].tobytes()==old_bytes(l,'iq.bf16') and iq[-512:].tobytes()==old_bytes(l,'iq-before.bf16')
+ for tag in ['query-transform','raw-write','compression']:
+  pos=np.fromfile(c/(b+f'.{tag}.positions.i32'),dtype='<i4');ids=np.fromfile(c/(b+f'.{tag}.seqids.i32'),dtype='<i4');null=np.fromfile(c/(b+f'.{tag}.seqids-null.i32'),dtype='<i4');assert np.array_equal(pos,np.arange(4096)) and ids.size==4096 and np.all(ids==0) and null.size==1 and null[0] in [0,1]
+  if tag!='raw-write':
+   for row in range(3):
+    rp=np.fromfile(c/(b+f'.{tag}.rope-{row}.i32'),dtype='<i4');assert np.array_equal(rp,pos);assert rp.tobytes()==old_bytes(l,f'rope-{row}.i32')
+ for tag,oldtag in [('query','iq-params'),('compression','compressed-params')]:
+  params=(c/(b+f'.{tag}.params.f32')).read_bytes();expected=np.array([config['rope_parameters']['rope_theta'],config['rms_norm_eps']],dtype='<f4').tobytes();assert params==expected==old_bytes(l,oldtag+'.f32')
+ keys=np.fromfile(c/(b+'.score.keys.bf16'),dtype='<u2').reshape(2048,128);assert finite(keys[:1024]) and keys[:1024].tobytes()==old_bytes(l,'compressed.bf16');dot=np.fromfile(c/(b+'.score.output.bf16'),dtype='<u2').reshape(4096,4,2048);assert (c/(b+'.score.algo.bin')).stat().st_size==64
+ visible=0;masked_nonfinite=0
+ for t in range(4096):
+  groups=(t+1)//4;assert finite(dot[t,:,:groups]);visible+=4*groups;masked_nonfinite+=int(np.count_nonzero((dot[t,:,groups:]&0x7f80)==0x7f80))
+ prior_dot=np.frombuffer(old_bytes(l,'gemm.output.bf16'),dtype='<u2').reshape(4,2048);assert np.array_equal(dot[-1,:,:1024],prior_dot[:,:1024]);bad=np.flatnonzero(dot[-1,:,1024:].ravel()!=prior_dot[:,1024:].ravel()).astype('<i4');np.savez_compressed(o/f'layer-{l}.old-masked-tail-differences.npz',indices=bad,current=dot[-1,:,1024:].ravel()[bad],prior=prior_dot[:,1024:].ravel()[bad])
+ maps.append({'layer':l,'kind':'score','m':16384,'n':2048,'k':128,'input':str((c/(b+'.iq.transformed.bf16')).relative_to(root)),'weight':str((c/(b+'.score.keys.bf16')).relative_to(root)),'output':str((c/(b+'.score.output.bf16')).relative_to(root)),'algorithm':str((c/(b+'.score.algo.bin')).relative_to(root))})
+ records.append({'layer':l,'visible_dot_elements':visible,'total_dot_elements':dot.size,'masked_dot_nonfinite':masked_nonfinite,'padded_key_nonfinite':int(np.count_nonzero((keys[1024:]&0x7f80)==0x7f80)),'old_masked_last_differences':len(bad)});print(records[-1],flush=True)
+for r in maps:
+ for key in ['input','weight','output','algorithm']:r[key+'_sha256']=sha(root/r[key])
+ r.update(alpha=1.0,beta=0.0,workspace_bytes=33554432)
+save('projection-map.json',maps);save('checkpoint-binding.json',{'config_sha256':sha(model/'config.json'),'weights':weights});save('old-binding.json',{'manifest_sha256':sha(old/'artifact-binding.json'),'records':previous});save('visibility.json',records)
+summary={'layers':12,'tokens':4096,'metadata_records':108,'source_files_bound':96,'projection_calls':24,'projection_output_elements':12*4096*640,'score_gemm_calls':12,'score_matrix_elements':sum(r['total_dot_elements'] for r in records),'visible_dot_elements':sum(r['visible_dot_elements'] for r in records),'masked_dot_nonfinite':sum(r['masked_dot_nonfinite'] for r in records),'padded_key_nonfinite':sum(r['padded_key_nonfinite'] for r in records),'old_masked_last_differences':sum(r['old_masked_last_differences'] for r in records),'checkpoint_tensors':len(weights),'checkpoint_bytes':sum(w['bytes'] for w in weights),'old_bindings':len(previous),'full_source_consumer_bindings_passed':True,'indexer_arithmetic_verified':False,'runtime_changed':False,'whole_model_correctness_proven':False,'capture_bytes':sum(f.stat().st_size for f in c.iterdir()),'free_after':shutil.disk_usage(o).free};assert summary['capture_bytes']<1100000000
+save('summary.json',summary);shutil.copy2(p/'analyze.py',o/'analyze.py');print(summary,flush=True)

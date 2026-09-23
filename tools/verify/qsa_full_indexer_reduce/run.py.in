@@ -1,0 +1,42 @@
+from pathlib import Path
+import hashlib,json,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/qsa-full-indexer-reduce-v2-20260924';d=o/'reference';s=root/'.q4t-work/e2e/qsa-full-indexer-20260924';q=root/'.q4t-work/e2e/qsa-full-selection-20260924';old=root/'.q4t-work/e2e/qsa-indexer-reference-20260923'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert not any(d.iterdir());assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e';sm=json.loads((s/'artifact-binding.json').read_text());qm=json.loads((q/'artifact-binding.json').read_text());om=json.loads((old/'artifact-binding.json').read_text())
+assert sha(s/'exit.json')==sm['exit.json'] and json.loads((s/'exit.json').read_text())['observer_preserved_tested_output'];assert sha(s/'qsa-binding.json')==sm['qsa-binding.json'];assert sha(q/'artifact-binding.json')==json.loads((s/'qsa-binding.json').read_text())['manifest_sha256'];assert sha(old/'device-scale.f32')==om['device-scale.f32']
+assert sha(old/'scale.cu')==om['scale.cu']
+scale=np.fromfile(old/'device-scale.f32',dtype='<f4');assert scale.size==2 and np.isfinite(scale[0]) and scale[0]>0;cpu_scale=np.float32(1/np.sqrt(np.float64(128)));high_scale=1/np.sqrt(np.float64(128));reserve=20*1024**3;budget=1000000000;assert shutil.disk_usage(o).free>reserve+budget
+bindings=[]
+for l in range(3,48,4):
+ for source,manifest,names in [(s,sm,['score.output.bf16']),(q,qm,['scores.f32','write-positions.i32'])]:
+  for suffix in names:
+   name=f'observed-captures/layer-{l}.prefill.{suffix}';assert sha(source/name)==manifest[name];bindings.append({'file':str((source/name).relative_to(root)),'sha256':manifest[name]})
+save('input-binding.json',bindings);save('plan.json',{'source_manifest_sha256':sha(s/'artifact-binding.json'),'qsa_manifest_sha256':sha(q/'artifact-binding.json'),'device_math_manifest_sha256':sha(old/'artifact-binding.json'),'device_scale_sha256':om['device-scale.f32'],'device_scale':float(scale[0]),'device_scale_selected_index':0,'device_scale_values':scale.tolist(),'device_scale_source_sha256':om['scale.cu'],'device_scale_contract':'scale.cu out[0]=rsqrtf(128), out[1]=1.0f/sqrtf(128); reduction uses out[0]','cpu_scale':float(cpu_scale),'fp64_scale':float(high_scale),'reference_budget_bytes':budget,'reserve_bytes':reserve,'scope':'Full 12x4096x2048 indexer score reduction, four BF16 dot heads -> ReLU -> ordered FP32 addition -> scale; causal group mask. Actual score GEMM inputs, not propagated high precision GEMM. Device rsqrt(128) reused from hash-bound prior frozen elementary reference, no new device operation.','retention':'All F32 reference bits recoverable base+delta; all mismatching unrounded values retained. Complete visible four-head FP32 sums retained in row-major visible order; unseen group sums and matching final unrounded outputs not retained.'});shutil.copy2(old/'device-scale.f32',o/'device-scale.f32')
+variants=['device','cpu','fp64'];records=[]
+for l in range(3,48,4):
+ name=f'layer-{l}.prefill';dot=np.memmap(s/'observed-captures'/(name+'.score.output.bf16'),dtype='<u2',mode='r',shape=(4096,4,2048));base=q/'observed-captures'/(name+'.scores.f32');actual=np.memmap(base,dtype='<f4',mode='r',shape=(4096,2048));positions=np.fromfile(q/'observed-captures'/(name+'.write-positions.i32'),dtype='<i4');assert np.array_equal(positions,np.arange(4096))
+ for first in range(0,4096,256):
+  assert shutil.disk_usage(o).free>reserve+100000000
+  tag=f'layer-{l}.rows-{first}-256';vals=(np.asarray(dot[first:first+256]).astype('<u4')<<16).view('<f4');assert np.isfinite(vals).all();sum32=np.zeros((256,2048),dtype='<f4');sum64=np.zeros((256,2048),dtype='<f8')
+  for h in range(4):
+   relu=np.maximum(vals[:,h,:],np.float32(0));sum32=np.add(sum32,relu,dtype=np.float32);sum64+=relu.astype('<f8')
+  visible=np.arange(2048)[None,:] < ((positions[first:first+256]+1)//4)[:,None];sum32[visible].tofile(d/(tag+'.visible-sum.f32'));a=np.asarray(actual[first:first+256]).reshape(-1);ab=a.view('<u4');outputs=[(sum32*scale[0]).astype('<f8'),(sum32*cpu_scale).astype('<f8'),sum64*high_scale]
+  for variant,raw in zip(variants,outputs):
+   raw[~visible]=np.float64(np.float32(-1e30));ref=raw.astype('<f4').reshape(-1).view('<u4');idx=np.flatnonzero(ref!=ab).astype('<i4');f=d/(tag+'.'+variant+'.npz');np.savez_compressed(f,indices=idx,values=ref[idx],raw=raw.reshape(-1)[idx],query_mismatches=np.bincount(idx//2048,minlength=256).astype('<i4'));z=np.load(f);rebuilt=ab.copy();rebuilt[z['indices']]=z['values'];assert np.array_equal(rebuilt,ref) and np.array_equal(z['raw'].astype('<f4').view('<u4'),ref[idx]);digest=hashlib.sha256(ref.tobytes()).hexdigest();assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==digest
+   records.append({'layer':l,'first':first,'rows':256,'variant':variant,'elements':len(a),'visible_scores':int(visible.sum()),'mismatches':len(idx),'masked_mismatches':int(np.count_nonzero(~visible.reshape(-1)[idx])),'zero_sign_only':int(np.count_nonzero(((ab[idx]&0x7fffffff)==0)&((ref[idx]&0x7fffffff)==0))),'delta':str(f.relative_to(o)),'delta_sha256':sha(f),'reference_sha256':digest})
+  save('reference.json',{'records':records,'complete':len(records)==576})
+ print({'layer':l,'mismatches':{v:sum(r['mismatches'] for r in records if r['layer']==l and r['variant']==v) for v in variants}},flush=True)
+full=[]
+for l in range(3,48,4):
+ base=q/f'observed-captures/layer-{l}.prefill.scores.f32';assert sha(base)==qm[str(base.relative_to(q))]
+ for v in variants:
+  rows=[r for r in records if r['layer']==l and r['variant']==v];assert [r['first'] for r in rows]==list(range(0,4096,256));rebuilt=np.fromfile(base,dtype='<u4').reshape(4096,2048)
+  for r in rows:
+   f=o/r['delta'];assert sha(f)==r['delta_sha256'];z=np.load(f);chunk=rebuilt[r['first']:r['first']+256].reshape(-1);chunk[z['indices']]=z['values'];assert hashlib.sha256(chunk.tobytes()).hexdigest()==r['reference_sha256']
+  full.append({'layer':l,'variant':v,'reference_sha256':hashlib.sha256(rebuilt.tobytes()).hexdigest()})
+save('full-reconstruction.json',full);summary={v:{key:sum(r[key] for r in records if r['variant']==v) for key in ['elements','visible_scores','mismatches','masked_mismatches','zero_sign_only']} for v in variants};summary.update(all_references_reconstructed=True,runtime_changed=False,whole_model_correctness_proven=False,free_after=shutil.disk_usage(o).free);shutil.copy2(p/'run.py',o/'run.py');summary['artifact_bytes_before_sealing']=sum(f.stat().st_size for f in o.rglob('*') if f.is_file());assert summary['artifact_bytes_before_sealing']<budget;save('summary.json',summary);print(summary,flush=True)

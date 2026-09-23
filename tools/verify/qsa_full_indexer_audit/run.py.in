@@ -1,0 +1,41 @@
+from pathlib import Path
+import hashlib,json,numpy as np,shutil
+p=Path(__file__).resolve().parent;root=p.parents[2];e=root/'.q4t-work/e2e';o=e/p.name
+s=e/'qsa-full-indexer-20260924';r=e/'qsa-full-indexer-reference-20260924';d=e/'qsa-full-indexer-reduce-v2-20260924';c=e/'qsa-compression-reference-20260923'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as z:
+  for b in iter(lambda:z.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(n,x):(o/n).write_text(json.dumps(x,indent=2)+'\n')
+assert not any(o.iterdir());man={x.name:json.loads((x/'artifact-binding.json').read_text()) for x in [s,r,d,c]};bound=[]
+def check(source,name):
+ f=source/name;assert sha(f)==man[source.name][name];bound.append({'file':str(f.relative_to(root)),'sha256':sha(f)});return f
+rr=json.loads(check(r,'reference.json').read_text())['records'];assert sorted((x['layer'],x['stage']) for x in rr)==[(l,k) for l in range(3,48,4) for k in ['ik','iq','score']]
+score=[]
+for x in rr:
+ if x['stage']!='score':continue
+ f=check(r,'reference/'+x['name']+'.fp64.delta.npz');z=np.load(f);idx=z['indices'];query=idx//2048//4;group=idx%2048;visible=group<(query+1)//4
+ score.append({'layer':x['layer'],'total':len(idx),'visible':int(visible.sum()),'masked':int((~visible).sum()),'padded_key':int(np.count_nonzero(group>=1024))})
+save('score-difference-visibility.json',score)
+dr=json.loads(check(d,'reference.json').read_text())['records'];assert sorted((x['layer'],x['first'],x['variant']) for x in dr)==[(l,t,v) for l in range(3,48,4) for t in range(0,4096,256) for v in ['cpu','device','fp64']]
+assert all(x['masked_mismatches']==0 for x in dr);assert all(x['mismatches']==0 for x in dr if x['variant']=='device')
+# Rebind every operand of the previous full1024-group compression reference.
+bind=json.loads(check(c,'input-binding.json').read_text());ib=json.loads(check(s,'index-binding.json').read_text());old_index=e/'qsa-main-projections-20260923';oldhash={x['file']:x['sha256'] for x in ib['records']};compression=[]
+for l in range(3,48,4):
+ for oldsuffix,newsuffix in [('index-raw.bf16','index-raw.bf16'),('ik-norm.bf16','k-norm.weights.bf16'),('compressed-params.f32','compression.params.f32'),('compressed.bf16','score.keys.bf16')]+[(f'rope-{j}.i32',f'compression.rope-{j}.i32') for j in range(3)]:
+  old=e/'qsa-indexer-reference-20260923/observed-captures'/f'layer-{l}.prefill.{oldsuffix}';assert str(old) in bind and sha(old)==bind[str(old)]
+  name=f'observed-captures/layer-{l}.prefill.{newsuffix}'
+  if oldsuffix=='index-raw.bf16':
+   new=old_index/name;assert sha(new)==oldhash[name];value=new.read_bytes()
+  else:
+   new=check(s,name);value=new.read_bytes()
+  if oldsuffix=='compressed.bf16':value=value[:1024*128*2]
+  assert hashlib.sha256(value).hexdigest()==bind[str(old)],(l,oldsuffix)
+  compression.append({'old':str(old.relative_to(root)),'new':str(new.relative_to(root)),'bytes':len(value),'sha256':bind[str(old)]})
+assert len(compression)==84;save('compression-reuse-binding.json',compression)
+cr=json.loads(check(c,'sass-order-reference.json').read_text());selected=[x for x in cr['records'] if x['variant']==5];assert len(selected)==12 and sum(x['elements'] for x in selected)==1572864 and all(x['mismatches']==0 for x in selected)
+# Recheck stored exact-reference bytes, not just the historic summary count.
+for l in range(3,48,4):
+ f=c/f'data/layer-{l}.variant-5.bf16';bound.append({'file':str(f.relative_to(root)),'sha256':sha(f),'historic_manifest_binding':False,'validation':'current bytes equal historic hash-bound expected output'});old=e/'qsa-indexer-reference-20260923/observed-captures'/f'layer-{l}.prefill.compressed.bf16';assert sha(f)==bind[str(old)]
+save('input-binding.json',bound);save('source-manifests.json',{x.name:sha(x/'artifact-binding.json') for x in [s,r,d,c]});summary={'score_differences':{k:sum(x[k] for x in score) for k in ['total','visible','masked','padded_key']},'projection_records':len(rr),'reduce_records':len(dr),'compression_operand_bindings':len(compression),'compression_elements':1572864,'compression_device_mismatches':0,'compression_reference_reused':True,'whole_model_correctness_proven':False};save('summary.json',summary);shutil.copy2(p/'run.py',o/'run.py');print(summary,flush=True)
