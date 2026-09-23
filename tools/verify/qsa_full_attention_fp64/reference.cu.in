@@ -1,0 +1,273 @@
+#include <cuda_runtime.h>
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+using U = uint16_t;
+#define CU(x)                                             \
+  do {                                                    \
+    if ((x) != cudaSuccess) throw std::runtime_error(#x); \
+  } while (0)
+__host__ __device__ double Decode(U x) {
+#ifdef __CUDA_ARCH__
+  return double(__uint_as_float(uint32_t(x) << 16));
+#else
+  uint32_t b = uint32_t(x) << 16;
+  float f;
+  std::memcpy(&f, &b, 4);
+  return double(f);
+#endif
+}
+__host__ __device__ U Round(double x) {
+  float f = float(x);
+  uint32_t b;
+#ifdef __CUDA_ARCH__
+  b = __float_as_uint(f);
+#else
+  std::memcpy(&b, &f, 4);
+#endif
+  return U((b + 0x7fff + ((b >> 16) & 1)) >> 16);
+}
+__global__ void Scores(const U* q, const U* cache, const int* sel,
+                       const int* len, const int* pt, double* s, int first,
+                       int rows) {
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i >= rows * 24 * 2052) return;
+  int pos = i % 2052, h = (i / 2052) % 24, t = first + i / (2052 * 24);
+  double sum = 0;
+  if (pos < len[t]) {
+    int p = sel[t * 2052 + pos], slot = pt[p] * 16 + p % 16;
+    for (int j = 0; j < 256; ++j)
+      sum = fma(Decode(q[t * 6144 + h * 256 + j]),
+                Decode(cache[slot * 1024 + (h / 12) * 512 + j]), sum);
+  }
+  s[i] = sum * 0.0625;
+}
+__global__ void Probability(const double* s, const int* len, double* pr,
+                            double* quant, double* alpha, double* den,
+                            int first, int rows) {
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i >= rows * 24) return;
+  int n = len[first + i / 24];
+  const double* score = s + i * 2052;
+  double maximum = -INFINITY, total = 0;
+  for (int j = 0; j < n; ++j) maximum = fmax(maximum, score[j]);
+  for (int j = 0; j < n; ++j) {
+    double v = exp(score[j] - maximum);
+    pr[i * 2052 + j] = v;
+    total += v;
+  }
+  den[i * 2] = total;
+  double old = -INFINITY, sum = 0;
+  for (int begin = 0; begin < n; begin += 16) {
+    double next = old;
+    for (int j = begin; j < begin + 16 && j < n; ++j)
+      next = fmax(next, score[j]);
+    double a = exp(old - next);
+    alpha[i * 129 + begin / 16] = a;
+    sum *= a;
+    for (int j = begin; j < begin + 16 && j < n; ++j) {
+      double v = exp(score[j] - next);
+      sum += v;
+      quant[i * 2052 + j] = Decode(Round(v));
+    }
+    old = next;
+  }
+  den[i * 2 + 1] = sum;
+}
+__global__ void Outputs(const U* cache, const U* gate, const int* sel,
+                        const int* len, const int* pt, const double* pr,
+                        const double* quant, const double* alpha,
+                        const double* den, double* out, int first, int rows) {
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i >= rows * 6144) return;
+  int local = i / 6144, t = first + local, h = (i % 6144) / 256, dim = i % 256,
+      k = local * 24 + h, n = len[t];
+  double plain = 0, online = 0;
+  for (int begin = 0; begin < n; begin += 16) {
+    double part = 0;
+    for (int j = begin; j < begin + 16 && j < n; ++j) {
+      int p = sel[t * 2052 + j], slot = pt[p] * 16 + p % 16;
+      double v = Decode(cache[slot * 1024 + (h / 12) * 512 + 256 + dim]);
+      plain = fma(pr[k * 2052 + j], v, plain);
+      part = fma(quant[k * 2052 + j], v, part);
+    }
+    online = fma(online, alpha[k * 129 + begin / 16], part);
+  }
+  double a = plain / den[k * 2], b = online / den[k * 2 + 1],
+         sig = 1 / (1 + exp(-Decode(gate[t * 6144 + h * 256 + dim])));
+  out[i] = a * sig;
+  out[rows * 6144 + i] = Decode(Round(a)) * sig;
+  out[2 * rows * 6144 + i] = Decode(Round(b)) * sig;
+}
+template <class T>
+std::vector<T> Read(const std::string& p, size_t n) {
+  std::ifstream f(p, std::ios::binary | std::ios::ate);
+  if (!f || size_t(f.tellg()) != n * sizeof(T)) throw std::runtime_error(p);
+  std::vector<T> v(n);
+  f.seekg(0);
+  if (!f.read(reinterpret_cast<char*>(v.data()), n * sizeof(T)))
+    throw std::runtime_error(p);
+  return v;
+}
+template <class T>
+void Save(const std::string& p, const std::vector<T>& v) {
+  std::ofstream f(p, std::ios::binary);
+  if (!f.write(reinterpret_cast<const char*>(v.data()), v.size() * sizeof(T)))
+    throw std::runtime_error(p);
+}
+template <class T>
+T* Upload(const std::vector<T>& v) {
+  T* d;
+  CU(cudaMalloc(&d, v.size() * sizeof(T)));
+  CU(cudaMemcpy(d, v.data(), v.size() * sizeof(T), cudaMemcpyHostToDevice));
+  return d;
+}
+int main(int argc, char** argv) {
+  try {
+    if (argc != 6)
+      throw std::runtime_error("captures output_prefix layer first rows");
+    int l = std::stoi(argv[3]), first = std::stoi(argv[4]),
+        rows = std::stoi(argv[5]);
+    if (first < 0 || rows < 1 || rows > 32 || first + rows > 4096)
+      throw std::runtime_error("range");
+    std::string b = std::string(argv[1]) + "/layer-" + std::to_string(l) +
+                    ".prefill",
+                o = argv[2];
+    auto q = Read<U>(b + ".q.bf16", 4096 * 6144),
+         g = Read<U>(b + ".gate.bf16", 4096 * 6144),
+         cache = Read<U>(b + ".cache.bf16", 4096 * 1024);
+    auto sel = Read<int>(b + ".selection.i32", 4096 * 2052),
+         len = Read<int>(b + ".length.i32", 4096),
+         pt = Read<int>(b + ".page-table.i32", 4096);
+    for (int t = first; t < first + rows; ++t) {
+      if (len[t] < 1 || len[t] > 2052) throw std::runtime_error("length");
+      for (int j = 0; j < len[t]; ++j) {
+        int p = sel[t * 2052 + j];
+        if (p < 0 || p > t || pt[p] * 16 + p % 16 < 0 ||
+            pt[p] * 16 + p % 16 >= 4096)
+          throw std::runtime_error("index");
+      }
+    }
+    U *dq = Upload(q), *dg = Upload(g), *dc = Upload(cache);
+    int *ds = Upload(sel), *dl = Upload(len), *dp = Upload(pt);
+    double *score, *pr, *quant, *alpha, *den, *out;
+    CU(cudaMalloc(&score, size_t(rows) * 24 * 2052 * 8));
+    CU(cudaMalloc(&pr, size_t(rows) * 24 * 2052 * 8));
+    CU(cudaMalloc(&quant, size_t(rows) * 24 * 2052 * 8));
+    CU(cudaMalloc(&alpha, size_t(rows) * 24 * 129 * 8));
+    CU(cudaMalloc(&den, size_t(rows) * 24 * 2 * 8));
+    CU(cudaMalloc(&out, size_t(rows) * 6144 * 3 * 8));
+    Scores<<<(rows * 24 * 2052 + 127) / 128, 128>>>(dq, dc, ds, dl, dp, score,
+                                                    first, rows);
+    CU(cudaGetLastError());
+    Probability<<<(rows * 24 + 127) / 128, 128>>>(score, dl, pr, quant, alpha,
+                                                  den, first, rows);
+    CU(cudaGetLastError());
+    Outputs<<<(rows * 6144 + 127) / 128, 128>>>(dc, dg, ds, dl, dp, pr, quant,
+                                                alpha, den, out, first, rows);
+    CU(cudaGetLastError());
+    std::vector<double> result(size_t(rows) * 6144 * 3),
+        denominator(size_t(rows) * 24 * 2);
+    CU(cudaMemcpy(result.data(), out, result.size() * 8,
+                  cudaMemcpyDeviceToHost));
+    CU(cudaMemcpy(denominator.data(), den, denominator.size() * 8,
+                  cudaMemcpyDeviceToHost));
+    for (double v : result)
+      if (!std::isfinite(v)) throw std::runtime_error("nonfinite output");
+    for (double v : denominator)
+      if (!std::isfinite(v) || v <= 0) throw std::runtime_error("denominator");
+    Save(o + ".output.f64", result);
+    Save(o + ".denom.f64", denominator);
+    if (first + rows == 4096) {
+      int t = 4095, n = len[t];
+      std::vector<double> cs(24 * 2052), gs(cs.size()), cpu(3 * 6144);
+      CU(cudaMemcpy(gs.data(), score + size_t(rows - 1) * 24 * 2052,
+                    gs.size() * 8, cudaMemcpyDeviceToHost));
+#pragma omp parallel for
+      for (int h = 0; h < 24; ++h) {
+        std::vector<double> pp(n), qp(n), aa((n + 15) / 16);
+        double maximum = -INFINITY;
+        for (int j = 0; j < n; ++j) {
+          int p = sel[t * 2052 + j], slot = pt[p] * 16 + p % 16;
+          double dot = 0;
+          for (int z = 0; z < 256; ++z)
+            dot =
+                std::fma(Decode(q[t * 6144 + h * 256 + z]),
+                         Decode(cache[slot * 1024 + (h / 12) * 512 + z]), dot);
+          cs[h * 2052 + j] = dot * 0.0625;
+          maximum = std::fmax(maximum, dot * 0.0625);
+        }
+        double total = 0, old = -INFINITY, sum = 0;
+        for (int j = 0; j < n; ++j) {
+          pp[j] = std::exp(cs[h * 2052 + j] - maximum);
+          total += pp[j];
+        }
+        for (int begin = 0; begin < n; begin += 16) {
+          double next = old;
+          for (int j = begin; j < begin + 16 && j < n; ++j)
+            next = std::fmax(next, cs[h * 2052 + j]);
+          double a = std::exp(old - next);
+          aa[begin / 16] = a;
+          sum *= a;
+          for (int j = begin; j < begin + 16 && j < n; ++j) {
+            double v = std::exp(cs[h * 2052 + j] - next);
+            sum += v;
+            qp[j] = Decode(Round(v));
+          }
+          old = next;
+        }
+        for (int z = 0; z < 256; ++z) {
+          double plain = 0, online = 0;
+          for (int begin = 0; begin < n; begin += 16) {
+            double part = 0;
+            for (int j = begin; j < begin + 16 && j < n; ++j) {
+              int p = sel[t * 2052 + j], slot = pt[p] * 16 + p % 16;
+              double v = Decode(cache[slot * 1024 + (h / 12) * 512 + 256 + z]);
+              plain = std::fma(pp[j], v, plain);
+              part = std::fma(qp[j], v, part);
+            }
+            online = std::fma(online, aa[begin / 16], part);
+          }
+          double a = plain / total, bv = online / sum,
+                 sig = 1 / (1 + std::exp(-Decode(g[t * 6144 + h * 256 + z])));
+          cpu[h * 256 + z] = a * sig;
+          cpu[6144 + h * 256 + z] = Decode(Round(a)) * sig;
+          cpu[12288 + h * 256 + z] = Decode(Round(bv)) * sig;
+        }
+      }
+      Save(o + ".cpu-last.f64", cpu);
+      Save(o + ".cpu-last-scores.f64", cs);
+      Save(o + ".gpu-last-scores.f64", gs);
+      std::vector<double> tail(3 * 6144);
+      for (int v = 0; v < 3; ++v)
+        std::memcpy(
+            tail.data() + v * 6144,
+            result.data() + size_t(v) * rows * 6144 + size_t(rows - 1) * 6144,
+            6144 * 8);
+      Save(o + ".gpu-last.f64", tail);
+    }
+    CU(cudaFree(dq));
+    CU(cudaFree(dg));
+    CU(cudaFree(dc));
+    CU(cudaFree(ds));
+    CU(cudaFree(dl));
+    CU(cudaFree(dp));
+    CU(cudaFree(score));
+    CU(cudaFree(pr));
+    CU(cudaFree(quant));
+    CU(cudaFree(alpha));
+    CU(cudaFree(den));
+    CU(cudaFree(out));
+    std::printf("{\"layer\":%d,\"first_row\":%d,\"rows\":%d}\n", l, first,
+                rows);
+    return 0;
+  } catch (const std::exception& e) {
+    std::fprintf(stderr, "%s\n", e.what());
+    return 2;
+  }
+}

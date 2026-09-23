@@ -18,8 +18,10 @@
 最新完成：完整QSA的49152个query、301989888个attention输出
 同分离设备原语+CPU指定累加参考；完整选择顺序及最高分集合也
 核对一致。依赖设备MMA/softmax/sigmoid，不是独立整模型证明。
-全query FP64/显式舍入对照正在运行，结果未验收，见
-[QSA报告](QSA_FULL_REFERENCE_2026-09-24.md)。
+全query高精度对照亦完成：FP64最终舍入差异85672536项；加入
+概率及门控前BF16舍入后仍有175500项，均完整保留。末query的
+CPU/设备BF16对照相同，不能据此判定全模型正确。两轮终态清单
+生成时机问题已核对并修正，见 [QSA报告](QSA_FULL_REFERENCE_2026-09-24.md)。
 
 ## 目标与工作规则
 
@@ -83,7 +85,7 @@
 | MoE路由/量化 | 全router/mapping/gather、输入及中间量化；E4M3错误确实到达实际计算 | FP64 router舍入后103行集合变化，未建任务因果；错误尺度未修正传播 | [路由](MOE_ROUTER_REFERENCE_2026-09-24.md)、[输入量化](MOE_INPUT_QUANT_REFERENCE_2026-09-24.md)、[中间量化](MOE_INTER_QUANT_REFERENCE_2026-09-24.md) |
 | MoE专家/合并 | 全GU/down重放及FP64、路由合并、shared投影/SwiGLU及最终MoE合并 | 使用实际量化/路由输入；共享分支存在保留的高精度差异 | [GU](MOE_GU_REFERENCE_2026-09-24.md)、[down](MOE_DOWN_REFERENCE_2026-09-24.md)、[shared](MOE_SHARED_REFERENCE_2026-09-24.md) |
 | PLE | 全prefill key/value投影、norm/gate/广播、卷积/历史及HC交接 | 逐算子条件参考，不是独立组合前向 | [投影](PLE_PROJECTION_REFERENCE_2026-09-23.md)、[卷积/门控](PLE_CONV_REFERENCE_2026-09-23.md) |
-| QSA | 全query选择顺序/集合、KV写入/实际消费、指定attention算术 | 全query高精度/舍入对照运行中；完整评分、Q/gate投影、变换及out_proj消费者待补齐 | [完整QSA](QSA_FULL_REFERENCE_2026-09-24.md)、[旧局部范围](QSA_SELECTION_REFERENCE_2026-09-23.md) |
+| QSA | 全query选择顺序/集合、KV写入/实际消费、指定attention算术 | 全query高精度/舍入差异已保留；完整评分、Q/gate投影、变换及out_proj消费者待补齐 | [完整QSA](QSA_FULL_REFERENCE_2026-09-24.md)、[旧局部范围](QSA_SELECTION_REFERENCE_2026-09-23.md) |
 | 输出头 | 七次最终mixer、全词表logits、argmax、后续token交接 | 上游仍为实际主干，没有从原始输入独立生成 | [mixer](FINAL_MIXER_REFERENCE_2026-09-23.md)、[logits](OUTPUT_HEAD_REFERENCE_2026-09-23.md) |
 
 参考依赖与接口见 [上游参考合同](UPSTREAM_REFERENCE_CONTRACT_2026-09-23.md)。
@@ -92,10 +94,10 @@ SGLang在本机的现有对照未形成稳定、可比的整模型oracle，不�
 
 ## 下一步执行顺序
 
-1. 收齐完整QSA高精度/显式舍入参考终态，核对覆盖、差异及CPU末行
-   对照，保存可完整恢复的参考，不以接近或低差异率当作通过。
-2. 补完整QSA评分、投影/归一化/RoPE来源与out_proj实际消费者，
+1. 补完整QSA主投影、归一化/RoPE来源与out_proj实际消费者；
    新观测仍先三侧HTTP，已有冻结证据优先复用。
+2. 接通并核对完整indexer评分来源及所有query的实际消费，保留
+   高精度与指定算术差异，不以接近或低差异率当作通过。
 3. 在逐算子条件参考之外建立组合前向/修正传播对照，明确已知尺度
    缺陷与错误答案的因果边界；不能把算子检查数量当成完成标准。
 4. 只有形成具体、可回退且有证据支持的修复才改运行时，仍先完整

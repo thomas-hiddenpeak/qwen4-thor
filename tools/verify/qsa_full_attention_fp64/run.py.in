@@ -1,0 +1,59 @@
+from pathlib import Path
+import hashlib,json,shutil,subprocess,os,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/qsa-full-attention-fp64-20260924';d=o/'reference';s=root/'.q4t-work/e2e/qsa-full-selection-20260924';c=s/'observed-captures'
+variants=['fp64','fp64_gate_round','online_probability_and_gate_round']
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+def rounded(x):
+ b=x.astype('<f4').view('<u4');return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype('<u2')
+def decoded(x):return (x.astype('<u4')<<16).view('<f4').astype('<f8')
+assert (p/'build.log').stat().st_size==0 and not any(d.iterdir())
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+manifest=json.loads((s/'artifact-binding.json').read_text());assert sha(s/'exit.json')==manifest['exit.json'] and json.loads((s/'exit.json').read_text())['observer_preserved_tested_output']
+binding=[]
+for l in range(3,48,4):
+ for suffix in ['q.bf16','gate.bf16','attention-output.bf16','cache.bf16','selection.i32','length.i32','page-table.i32']:
+  name=f'observed-captures/layer-{l}.prefill.{suffix}';assert sha(s/name)==manifest[name];binding.append({'file':str((s/name).relative_to(root)),'sha256':manifest[name]})
+save('input-binding.json',binding);reserve=20*1024**3;budget=4000000000;assert shutil.disk_usage(o).free>reserve+budget
+save('plan.json',{'source_manifest_sha256':sha(s/'artifact-binding.json'),'reserve_bytes':reserve,'reference_budget_bytes':budget,'variants':variants,'scope':'All 49152 queries using captured Q/K/V/gate/selection. Device FP64 sequential FMA QK and PV with stable global softmax; optional ungated BF16 materialization; separate online 16-position probability-BF16 and ungated-BF16 variant. All BF16 rounding via FP32. GPU double exp and CPU double exp crosschecked on each last query, not wholly CPU coverage. No Tensor Core or production kernels.','retention':'Full rounded references losslessly base+delta. All differing indices, BF16 values and FP64 final references retained. Full FP64 denominators, all-query difference counts, complete CPU/GPU last-query outputs/scores retained. Matching non-tail unrounded outputs and full probabilities/QK/PV not retained.'})
+for f in ['run.py','reference.cu','reference','build.log']:shutil.copy2(p/f,o/f)
+records=[];audits=[];retained=0
+for l in range(3,48,4):
+ base=c/f'layer-{l}.prefill.attention-output.bf16';actual=np.fromfile(base,dtype='<u2');lens=np.fromfile(c/f'layer-{l}.prefill.length.i32',dtype='<i4')
+ for first in range(0,4096,32):
+  assert shutil.disk_usage(o).free>reserve+100000000
+  name=f'layer-{l}.rows-{first}-32';prefix=d/name
+  r=subprocess.run([str(p/'reference'),str(c),str(prefix),str(l),str(first),'32'],capture_output=True,text=True,env={**os.environ,'OMP_NUM_THREADS':'8'});(o/(name+'.stdout')).write_text(r.stdout);(o/(name+'.stderr')).write_text(r.stderr);assert r.returncode==0,r.stderr;record=json.loads(r.stdout);assert record=={'layer':l,'first_row':first,'rows':32}
+  f=Path(str(prefix)+'.output.f64');raw=np.fromfile(f,dtype='<f8');assert len(raw)==3*32*6144 and np.isfinite(raw).all();raw=raw.reshape(3,-1)
+  denom=np.fromfile(str(prefix)+'.denom.f64',dtype='<f8');assert len(denom)==32*24*2 and np.isfinite(denom).all() and (denom>0).all()
+  start=first*6144;chunk=actual[start:start+32*6144];a=decoded(chunk);record.update(elements=len(chunk),selected_indices=int(lens[first:first+32].sum()),variants={})
+  for k,v in enumerate(variants):
+   ref=rounded(raw[k]);idx=np.flatnonzero(chunk!=ref).astype('<i4');delta=Path(str(prefix)+'.'+v+'.npz');counts=np.count_nonzero((chunk!=ref).reshape(32,6144),axis=1).astype('<i4');np.savez_compressed(delta,indices=idx,values=ref[idx],fp64=raw[k,idx],query_mismatches=counts)
+   z=np.load(delta);rebuilt=chunk.copy();rebuilt[z['indices']]=z['values'];assert np.array_equal(rebuilt,ref) and np.array_equal(rounded(z['fp64']),ref[idx]);h=hashlib.sha256(ref.tobytes()).hexdigest();assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==h
+   diff=a-raw[k];record['variants'][v]={'mismatches':len(idx),'zero_sign_only':int(np.count_nonzero(((chunk[idx]&0x7fff)==0)&((ref[idx]&0x7fff)==0))),'max_abs':float(np.max(abs(diff))),'error_squared':float(np.dot(diff,diff)),'reference_squared':float(np.dot(raw[k],raw[k])),'reference_sha256':h,'delta':str(delta.relative_to(o)),'delta_sha256':sha(delta)}
+   retained+=delta.stat().st_size
+  if first==4064:
+   cpu=np.fromfile(str(prefix)+'.cpu-last.f64',dtype='<f8').reshape(3,6144);gpu=np.fromfile(str(prefix)+'.gpu-last.f64',dtype='<f8').reshape(3,6144);assert np.array_equal(gpu,raw.reshape(3,32,6144)[:,-1,:])
+   cs=np.fromfile(str(prefix)+'.cpu-last-scores.f64',dtype='<f8');gs=np.fromfile(str(prefix)+'.gpu-last-scores.f64',dtype='<f8');assert cs.size==gs.size==24*2052
+   audit={'layer':l,'score_raw_mismatches':int(np.count_nonzero(cs.view('<u8')!=gs.view('<u8'))),'score_max_abs':float(np.max(abs(cs-gs))),'variants':{v:{'raw_mismatches':int(np.count_nonzero(cpu[k].view('<u8')!=gpu[k].view('<u8'))),'rounded_mismatches':int(np.count_nonzero(rounded(cpu[k])!=rounded(gpu[k]))),'max_abs':float(np.max(abs(cpu[k]-gpu[k])))} for k,v in enumerate(variants)}};audits.append(audit);save('cpu-last-audit.json',audits)
+  records.append(record);save('reference.json',{'records':records,'complete':len(records)==1536});f.unlink();assert retained<budget-100000000;print({'layer':l,'first':first,'mismatches':{v:record['variants'][v]['mismatches'] for v in variants}},flush=True)
+full=[]
+for l in range(3,48,4):
+ base=c/f'layer-{l}.prefill.attention-output.bf16';assert sha(base)==manifest[str(base.relative_to(s))];subset=[r for r in records if r['layer']==l];assert [r['first_row'] for r in subset]==list(range(0,4096,32))
+ for v in variants:
+  rebuilt=np.fromfile(base,dtype='<u2')
+  for r in subset:
+   e=r['variants'][v];delta=o/e['delta'];assert sha(delta)==e['delta_sha256'];z=np.load(delta);chunk=rebuilt[r['first_row']*6144:(r['first_row']+32)*6144];chunk[z['indices']]=z['values'];assert hashlib.sha256(chunk.tobytes()).hexdigest()==e['reference_sha256']
+  full.append({'layer':l,'variant':v,'reference_sha256':hashlib.sha256(rebuilt.tobytes()).hexdigest(),'elements':len(rebuilt)})
+save('full-reconstruction.json',full)
+summary={key:sum(r[key] for r in records) for key in ['rows','elements','selected_indices']};summary['variants']={}
+for v in variants:
+ e=[r['variants'][v] for r in records];summary['variants'][v]={key:sum(x[key] for x in e) for key in ['mismatches','zero_sign_only','error_squared','reference_squared']};summary['variants'][v]['max_abs']=max(x['max_abs'] for x in e);summary['variants'][v]['relative_l2']=(summary['variants'][v]['error_squared']/summary['variants'][v]['reference_squared'])**0.5
+summary.update(all_references_reconstructed=True,runtime_changed=False,whole_model_correctness_proven=False,device_fp64_used=True,free_after=shutil.disk_usage(o).free)
+assert summary['rows']==49152 and summary['elements']==301989888 and summary['selected_indices']==75546624
+summary['artifact_bytes_before_manifest']=sum(f.stat().st_size for f in o.rglob('*') if f.is_file());assert summary['artifact_bytes_before_manifest']<budget
+save('summary.json',summary);print(summary,flush=True);save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})

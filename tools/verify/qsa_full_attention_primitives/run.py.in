@@ -48,4 +48,4 @@ save('full-reconstruction.json',full)
 summary={key:sum(r[key] for r in records) for key in ['rows','elements','selected_indices','mismatches','zero_sign_only']};summary.update(all_references_reconstructed=True,runtime_changed=False,whole_model_correctness_proven=False,device_primitives_used=True,free_after=shutil.disk_usage(o).free)
 assert summary['rows']==49152 and summary['elements']==301989888 and summary['selected_indices']==75546624
 summary['artifact_bytes_before_manifest']=sum(f.stat().st_size for f in o.rglob('*') if f.is_file());assert summary['artifact_bytes_before_manifest']<budget
-save('summary.json',summary);save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'});print(summary,flush=True)
+save('summary.json',summary);print(summary,flush=True);save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})

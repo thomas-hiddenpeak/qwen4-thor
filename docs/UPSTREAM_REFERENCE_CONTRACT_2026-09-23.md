@@ -52,14 +52,14 @@ QSA使用QsaDecodeSplit，其余使用SparseAttentionKernel。实际分支
 | GDN prefill | 初始S、全序列QKV/a/b、norm前后和最终S | 全递推与BF16中间边界 | 36层4096位置的q/k归一化及全递推同指定参考；非线性复用设备数学函数，完整卷积与全行输入投影已接通，HC输入本身仍为实际数据 |
 | MoE路由 | 完整HC MLP mixed、router权重/算法/logits、ID及路由权重 | 投影重放/FP64、Top10与softmax | 原4K48层全位置已核对；FP64舍入后103行集合不同，未建任务因果；全行mapping/gather、GU/down、shared及最终合并已核对；输入/中间量化确认E4M3尺度错误，未修正传播 |
 | MoE mapping/gather | 完整ID/counts/offsets/lists/逆映射、实际x与input_scale、FP4及物理/逻辑SF | 列表覆盖、专家归属、逆映射、尺度身份与布局 | 原4K48层全位置及combine消费映射已核对；完整输入量化参考已完成：实际SF条件下FP4全同，但1208940项E4M3高区间编码错误确认；未修正传播 |
-| QSA cache/indexer | 位置、RoPE、KV页表/新增槽、压缩索引、分数和top-k | 因果可见集、索引选择、softmax及attention | 12层全部4096 query的选择、KV及attention指定设备原语+CPU参考已核对；完整评分/投影来源及全query高精度尚待补齐，压缩/indexer旧参考范围不能扩张 |
+| QSA cache/indexer | 位置、RoPE、KV页表/新增槽、压缩索引、分数和top-k | 因果可见集、索引选择、softmax及attention | 12层全部4096 query的选择、KV及attention指定设备原语+CPU参考已核对；全query高精度及显式舍入差异已完整保留，完整评分/投影来源尚待补齐，压缩/indexer旧参考范围不能扩张 |
 | PLE | token历史、hash参数、SSD行身份、反量化值、卷积历史 | 查表身份、门控投影、因果conv与trunk加法 | 全请求查表同SSD；完整prefill投影重放/FP64、norm/gate/广播及卷积指定算术已核对，完整交接已绑定；仍为逐算子实际输入条件参考，非独立组合前向 |
 | GRRead/Write | 四路trunk、norm权重、投影/门控、写回BF16边界 | 混合、注入、残差与融合舍入顺序 | 48层末prefill/首decode权重、投影、混合已核对；完整4K残差、norm、mix、投影记录算法重放/FP64及门值已核对；FP64舍入差异保留，实际上游主干仍非独立全模型前向 |
 | 最终head | 最终trunk、mix/norm/词表投影、logits及argmax | logit、排序与首处分歧 | 七次最终mixer/全词表/选择/下一步输入已核对；上游实际主干不等于从原始输入独立生成 |
 
 参考分两层：独立高精度公式检查数学对象；按指定精度/顺序的参考
 解释实际舍入。必须报告全部差异，不临时添加容忍条件；算术解释
-不能覆盖任务质量退化。下一步补完整QSA高精度/舍入参考与评分/投影来源，再核对组合前向，
+不能覆盖任务质量退化。下一步补完整QSA评分/投影/变换来源与消费者，再核对组合前向，
 同时保留原4K错误、已知E4M3尺度问题与其他请求尚未证明的限制。
 不以局部算术一致或旧文档“已闭合”代替真实任务质量。
 

@@ -1,0 +1,30 @@
+from pathlib import Path
+import json,hashlib,numpy as np,shutil
+p=Path(__file__).resolve().parent;root=p.parents[2];s=root/'.q4t-work/e2e/qsa-full-attention-fp64-20260924';q=root/'.q4t-work/e2e/qsa-full-selection-reference-20260924';o=s/'audit';o.mkdir(exist_ok=False)
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+manifest=json.loads((s/'artifact-binding.json').read_text());qm=json.loads((q/'artifact-binding.json').read_text())
+for name in ['summary.json','reference.json','cpu-last-audit.json','full-reconstruction.json','input-binding.json']:assert sha(s/name)==manifest[name]
+summary=json.loads((s/'summary.json').read_text());records=json.loads((s/'reference.json').read_text());assert records['complete'] and summary['all_references_reconstructed'];assert sha(q/'summary.json')==qm['summary.json'];assert json.loads((q/'summary.json').read_text())['semantic_errors']==0
+variants=list(summary['variants']);layers=[];binding=[]
+for l in range(3,48,4):
+ sparse_file=q/f'reference/layer-{l}.prefill.sparse.u8';name=str(sparse_file.relative_to(q));assert sha(sparse_file)==qm[name];sparse=np.fromfile(sparse_file,dtype='u1');assert sparse.size==4096 and ((sparse==0)|(sparse==1)).all();binding.append({'file':str(sparse_file.relative_to(root)),'sha256':qm[name]})
+ selected=[r for r in records['records'] if r['layer']==l];assert [r['first_row'] for r in selected]==list(range(0,4096,32));row={'layer':l,'variants':{}}
+ for v in variants:
+  counts=[]
+  for r in selected:
+   info=r['variants'][v];f=s/info['delta'];assert sha(f)==info['delta_sha256']==manifest[info['delta']];z=np.load(f);idx=z['indices'];cnt=z['query_mismatches'];assert len(idx)==info['mismatches'] and cnt.shape==(32,) and np.array_equal(cnt,np.bincount(idx//6144,minlength=32));counts.extend(cnt.tolist())
+  counts=np.array(counts,dtype=np.int64);worst=int(np.argmax(counts));row['variants'][v]={'mismatches':int(counts.sum()),'affected_queries':int(np.count_nonzero(counts)),'dense_mismatches':int(counts[sparse==0].sum()),'sparse_mismatches':int(counts[sparse!=0].sum()),'largest_query_mismatches':int(counts[worst]),'first_largest_query':worst}
+ layers.append(row)
+result={'layers':layers,'totals':{v:{key:sum(r['variants'][v][key] for r in layers) for key in ['mismatches','affected_queries','dense_mismatches','sparse_mismatches']} for v in variants}}
+for v in variants:assert result['totals'][v]['mismatches']==summary['variants'][v]['mismatches']
+valid_scores=0
+for entry in json.loads((s/'input-binding.json').read_text()):
+ if entry['file'].endswith('.length.i32'):
+  f=root/entry['file'];assert sha(f)==entry['sha256'];lens=np.fromfile(f,dtype='<i4');assert len(lens)==4096;valid_scores+=24*int(lens[-1])
+cp=json.loads((s/'cpu-last-audit.json').read_text());assert [r['layer'] for r in cp]==list(range(3,48,4));result['cpu_last']={'queries':12,'score_array_elements':12*24*2052,'valid_score_elements':valid_scores,'output_elements_per_variant':12*6144,'score_raw_mismatches':sum(r['score_raw_mismatches'] for r in cp),'variants':{v:{'raw_mismatches':sum(r['variants'][v]['raw_mismatches'] for r in cp),'rounded_mismatches':sum(r['variants'][v]['rounded_mismatches'] for r in cp),'max_abs':max(r['variants'][v]['max_abs'] for r in cp)} for v in variants}}
+save('distribution.json',result);save('binding.json',{'reference_manifest_sha256':sha(s/'artifact-binding.json'),'selection_manifest_sha256':sha(q/'artifact-binding.json'),'selection_files':binding});shutil.copy2(p/'audit.py',o/'audit.py');save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.iterdir()) if f.is_file() and f.name!='artifact-binding.json'});print(result)

@@ -1,0 +1,24 @@
+"""Seal completed reference artifacts without rewriting the initial manifest."""
+from pathlib import Path
+import ast,hashlib,json,shutil,sys
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e'/sys.argv[1]
+assert o.name in ['qsa-full-attention-primitives-20260924','qsa-full-attention-fp64-20260924']
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+manifest=json.loads((o/'artifact-binding.json').read_text());changes=[]
+for name,expected in manifest.items():
+ actual=sha(o/name)
+ if actual!=expected:changes.append({'file':name,'initial_sha256':expected,'terminal_sha256':actual})
+assert not changes or (len(changes)==1 and changes[0]['file']=='run.log'),changes
+log=(o/'run.log').read_bytes();prefix,tail,empty=log.rsplit(b'\n',2);assert empty==b''
+if changes:assert hashlib.sha256(prefix+b'\n').hexdigest()==manifest['run.log']
+assert ast.literal_eval(tail.decode())==json.loads((o/'summary.json').read_text())
+assert json.loads((o/'reference.json').read_text())['complete']
+f=o/'finalization';f.mkdir(exist_ok=False);shutil.copy2(p/'finalize.py',f/'finalize.py')
+(f/'audit.json').write_text(json.dumps({'initial_manifest_sha256':sha(o/'artifact-binding.json'),'initial_entries_checked':len(manifest),'changes':changes,'initial_log_append_detected':bool(changes),'explanation':'If initial log append detected: initial manifest hashed redirected stdout before the final flushed summary line. The entire old log prefix still matches its original hash and the appended line equals summary.json. Every other initial entry is unchanged. No original file or manifest was overwritten. Final manifest created only after controller and numerical audit terminal exits.','old_log_prefix_verified':True if changes else None,'terminal_summary_verified':True},indent=2)+'\n')
+final=o/'final-artifact-binding.json';assert not final.exists();all_files={str(x.relative_to(o)):sha(x) for x in sorted(o.rglob('*')) if x.is_file()};final.write_text(json.dumps(all_files,indent=2)+'\n')
+for name,expected in all_files.items():assert sha(o/name)==expected
+print({'directory':str(o.relative_to(root)),'initial_entries':len(manifest),'final_entries':len(all_files),'verified':True})
