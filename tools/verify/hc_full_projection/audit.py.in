@@ -1,0 +1,33 @@
+from pathlib import Path
+import json,hashlib,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/hc-full-projection-20260924';c=o/'observed-captures';d=o/'reference';prior=root/'.q4t-work/e2e/hc-full-boundaries-20260923'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+for suffix,count in [('hp.json',288),('source.json',96),('gate.json',96)]:
+ metas=[json.loads(f.read_text()) for f in c.glob('*.'+suffix)];assert len(metas)==count and all(r['ok'] for r in metas)
+pb=json.loads((o/'prior-binding.json').read_text());assert sha(prior/'artifact-binding.json')==pb['manifest_sha256']
+for r in pb['records']:assert sha(prior/r['file'])==r['sha256']
+weights=json.loads((o/'checkpoint-binding.json').read_text());assert len(weights)==288
+for r in weights:
+ f=Path(r['file']);st=f.stat();assert st.st_size==r['size'] and st.st_mtime_ns==r['mtime_ns']
+ with f.open('rb') as s:s.seek(r['offset']);data=s.read(r['bytes']);assert len(data)==r['bytes'] and hashlib.sha256(data).hexdigest()==r['sha256']
+r=json.loads((o/'replay-reference.json').read_text());assert r['complete'] and len(r['records'])==288
+for item in r['records']:
+ base=root/item['base'];assert sha(base)==item['base_sha256'];f=d/(item['name']+'.replay.delta.npz');assert sha(f)==item['delta_sha256'];z=np.load(f);actual=np.fromfile(base,dtype='<u2');idx=z['indices'];values=z['values'];assert len(actual)==item['elements'] and len(idx)==len(values)==item['mismatches'];assert np.all(idx>=0) and np.all(idx<len(actual)) and np.all(np.diff(idx)>0) and np.all(actual[idx]!=values);actual[idx]=values;assert hashlib.sha256(actual.tobytes()).hexdigest()==item['reference_sha256']
+nonlinear=json.loads((o/'nonlinear-reference.json').read_text());assert len(nonlinear['records'])==192
+assert nonlinear==json.loads((o/'initial-nonlinear-reference.json').read_text())
+for item in nonlinear['records']:
+ actual=np.fromfile(c/(item['name']+'.'+item['target']),dtype='<u2');assert len(actual)==item['elements']
+ for e in item['encoding']:
+  f=d/e['file'];assert sha(f)==e['sha256'];z=np.load(f);idx=z['indices'];values=z['values'];assert len(idx)==len(values)==item['mismatches'][e['variant']];assert np.all(idx>=0) and np.all(idx<len(actual)) and np.all(np.diff(idx)>0) and np.all(actual[idx]!=values);rebuilt=actual.copy();rebuilt[idx]=values;assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==e['reference_sha256']
+summary={'projection_elements':sum(x['elements'] for x in r['records']),'recorded_algorithm_mismatches':sum(x['mismatches'] for x in r['records']),'checkpoint_weights':len(weights),'full_norm_up_gate_source_files':len(pb['records']),'nonlinear_elements':{k:sum(x['elements'] for x in nonlinear['records'] if x['kind']==k) for k in ['silu','gate']},'nonlinear_mismatches':nonlinear['mismatches'],'runtime_changed':False,'whole_model_correctness_proven':False,'full_projection_fp64_reference_complete':False};save('summary.json',summary)
+for f in p.iterdir():
+ if f.is_file():shutil.copy2(f,o/f.name)
+save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})
+print(summary,flush=True)

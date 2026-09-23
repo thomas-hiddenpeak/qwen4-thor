@@ -1,0 +1,24 @@
+from pathlib import Path
+import json,hashlib,subprocess,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/hc-full-projection-20260924';c=o/'observed-captures';d=o/'reference'
+def round_bf(v):
+ bits=np.asarray(v,dtype=np.float32).view(np.uint32);return ((bits+0x7fff+((bits>>16)&1))>>16).astype('<u2')
+def sha(f):return hashlib.sha256(f.read_bytes()).hexdigest()
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output'] and (p/'nonlinear-build.log').stat().st_size==0
+subprocess.run([str(p/'nonlinear'),str(o/'silu-table.f32'),str(o/'gate-table.f32')],check=True)
+x=(np.arange(65536,dtype=np.uint32)<<16).view(np.float32);finite=np.isfinite(x);v=np.zeros(65536,dtype=np.float64);v[finite]=x[finite].astype(np.float64)/4.0
+# Nonfinite encodings are unused: actual inputs are asserted finite below.
+with np.errstate(over='ignore',invalid='ignore'):
+ exp=np.exp(-v);den=exp.astype(np.float32)+np.float32(1);cpu={'silu':round_bf(v.astype(np.float32)/den),'gate':round_bf(np.float32(2)/den)};high={'silu':round_bf(v/(1+exp)),'gate':round_bf(2/(1+exp))}
+tables={kind:{'cpu':cpu[kind],'fp64':high[kind],'device':round_bf(np.fromfile(o/(kind+'-table.f32'),dtype='<f4'))} for kind in ['silu','gate']}
+records=[]
+for l in range(48):
+ for side in ['attn','mlp']:
+  stem=f'hc-{l}.prefill.{side}'
+  for kind,src,dst in [('silu','down.output.bf16','up.input.bf16'),('gate','inject.output.bf16','inject.gate.bf16')]:
+   raw=np.fromfile(c/(stem+'.'+src),dtype='<u2');actual=np.fromfile(c/(stem+'.'+dst),dtype='<u2');assert len(raw)==len(actual) and np.isfinite((raw.astype(np.uint32)<<16).view(np.float32)).all()
+   counts={};encoding=[]
+   for variant in ['cpu','device','fp64']:
+    ref=tables[kind][variant][raw];idx=np.flatnonzero(ref!=actual).astype('<i4');f=d/(stem+'.'+kind+'.'+variant+'.delta.npz');np.savez_compressed(f,indices=idx,values=ref[idx]);z=np.load(f);rebuilt=actual.copy();rebuilt[z['indices']]=z['values'];assert np.array_equal(rebuilt,ref);counts[variant]=len(idx);encoding.append({'variant':variant,'file':f.name,'sha256':sha(f),'reference_sha256':hashlib.sha256(ref.tobytes()).hexdigest()})
+   records.append({'name':stem,'kind':kind,'elements':len(raw),'source':src,'target':dst,'mismatches':counts,'encoding':encoding})
+summary={kind:{variant:sum(r['mismatches'][variant] for r in records if r['kind']==kind) for variant in ['cpu','device','fp64']} for kind in ['silu','gate']};(o/'nonlinear-reference.json').write_text(json.dumps({'records':records,'mismatches':summary,'scope':'Lookup tables reproduce scalar functions of actual BF16 inputs; FP64 rounded through FP32. Overflow to infinity in exp is retained; only finite actual inputs used.'},indent=2)+'\n');print(summary)

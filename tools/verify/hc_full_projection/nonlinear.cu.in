@@ -1,0 +1,9 @@
+#include <cuda_runtime.h>
+#include <cstdint>
+#include <cstdio>
+#include <fstream>
+#include <stdexcept>
+#include <vector>
+#define CU(x) do{if((x)!=cudaSuccess)throw std::runtime_error(#x);}while(0)
+__global__ void Tables(float*s,float*g){int i=blockIdx.x*blockDim.x+threadIdx.x;if(i<65536){float v=__uint_as_float(uint32_t(i)<<16)*0.25f;float den=1.0f+__expf(-v);s[i]=v/den;g[i]=2.0f/den;}}
+int main(int argc,char**argv){try{if(argc!=3)throw std::runtime_error("silu-table gate-table");float *s,*g;CU(cudaMalloc(&s,262144));CU(cudaMalloc(&g,262144));Tables<<<256,256>>>(s,g);CU(cudaGetLastError());std::vector<float>v(65536);for(int i=1;i<=2;++i){CU(cudaMemcpy(v.data(),i==1?s:g,262144,cudaMemcpyDeviceToHost));std::ofstream f(argv[i],std::ios::binary);f.write(reinterpret_cast<char*>(v.data()),262144);if(!f)throw std::runtime_error("write");}CU(cudaFree(s));CU(cudaFree(g));return 0;}catch(const std::exception&e){std::fprintf(stderr,"%s\n",e.what());return 1;}}

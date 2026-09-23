@@ -74,3 +74,42 @@ decode-replay.json、previous-binding.json、artifact-binding.json及
 据此认定原错属于模型能力。下一步检查12个全注意力层的索引器、
 选中块与KV读取；完整prefill GDN递推、PLE及最终输出头仍待覆盖。
 已知量化尺度缺陷及原4K质量失败继续保留，不进入性能改造验收。
+
+
+## 2026-09-24后续：完整4K实际投影及门值链
+
+新增最小观测器，以实际HC read/fused归一化的输出指针确定48层
+attention/MLP顺序，追踪down→SiLU→up→inject→ApplyInjectGate。
+仅覆盖T=4096，最终T=1 mixer及decode不纳入本轮。新观测零警告
+构建后首项无/有/无观测HTTP，三次仍600440、4096输入/7输出、
+stop，服务0、质量驱动1。仅观测一致性通过，任务质量未通过。
+
+为避免重复存储，先校验旧HC完整快照的288份norm/up/gate及其
+manifest；观测时对现场norm/up/gate完整逐字节比对旧文件。保存
+全部288组实际权重和算法、完整down输出、SiLU输出、inject原始
+输出与门值。原始数据预算1775763456字节，加1GiB参考工作空间
+及20GiB保留，开跑可用26489491456字节。480份元数据全部完整：
+288投影、96 norm来源、96 gate来源；在线比较/指针/调用顺序均通过。
+
+实际288组权重逐字节匹配checkpoint。每次实际M4096，down为
+N320/K10240，up为N10240/K320，inject为N4/K10240；FP32计算，
+BF16矩阵、alpha1/beta0、32MiB workspace。使用本次记录的算法
+和完整不同token输入重放4153933824个输出，全部逐位一致。
+这不是只重复末行，也不是独立FP64矩阵参考；算法仍复用cuBLASLt。
+完整FP64投影公式及差异分析尚待下一阶段完成。
+
+SiLU(down/4)共125829120项，2*sigmoid(inject/4)共1572864项，
+CPU指定FP32算术、设备基础函数查表、double公式经FP32/BF16
+舍入三种参考在该样本均无差异。输入限定为实际有限BF16；首次
+全编码查表中未使用的NaN转double触发RuntimeWarning，初版脚本/
+日志/完整结果留存。改为仅转换有限编码后重跑无警告，完整JSON
+结果与初版严格相同；不是修改实际算术或忽略现场NaN。
+
+参考采用原始输出加全部差异索引/值的无损编码，生成时逐元素及
+SHA复核后才移除本轮临时完整副本；最终审计再次重建全部参考。
+所有旧证据保留，生产源码/接受二进制未改，原4K错答仍在。
+证据`.q4t-work/e2e/hc-full-projection-20260924/`包含三侧HTTP、
+prior-binding、checkpoint-binding、replay-reference、
+nonlinear-reference、初版非线性记录、summary和artifact-binding。
+工具模板`tools/verify/hc_full_projection/`。下一步用独立高精度
+公式检查全部投影；其他全位置MoE/QSA/PLE及任务正确性仍未完成。

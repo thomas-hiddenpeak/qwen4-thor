@@ -1,0 +1,96 @@
+// Offline replay of accepted HTTP snapshots, not a production implementation.
+#include <cuda_runtime_api.h>
+#include <cublasLt.h>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+#define CU(x) do { if ((x) != cudaSuccess) throw std::runtime_error(#x); } while (0)
+#define LT(x) do { if ((x) != CUBLAS_STATUS_SUCCESS) throw std::runtime_error(#x); } while (0)
+std::vector<unsigned char> Read(const std::string& path, size_t size) {
+  std::ifstream f(path, std::ios::binary | std::ios::ate);
+  if (!f || static_cast<size_t>(f.tellg()) != size)
+    throw std::runtime_error(path);
+  std::vector<unsigned char> v(size); f.seekg(0);
+  if (!f.read(reinterpret_cast<char*>(v.data()), size))
+    throw std::runtime_error(path);
+  return v;
+}
+int main(int argc, char** argv) {
+  try {
+    if (argc != 6) throw std::runtime_error("captures output_directory prior_directory layer attn|mlp");
+    cublasLtHandle_t handle; LT(cublasLtCreate(&handle));
+    cudaStream_t stream; CU(cudaStreamCreate(&stream));
+    void* workspace; constexpr size_t ws = 33554432;
+    CU(cudaMalloc(&workspace, ws));
+    std::printf("{\"cublas_version\":%zu,\"records\":[", cublasLtGetVersion());
+    bool first = true; size_t total_mismatch = 0;
+    { const int layer = std::stoi(argv[4]); const char* side=argv[5];
+      const char* names[3] = {"down", "up", "inject"};
+      const int widths[3] = {320, 10240, 4}, inputs[3]={10240,320,10240};
+      for (int stage = 0; stage < 3; ++stage) {
+        const int n = widths[stage], k = inputs[stage];
+        const std::string name = "hc-" + std::to_string(layer) +
+            ".prefill." + side + "." + names[stage];
+        const std::string base = std::string(argv[1]) + "/" + name;
+        const auto weights = Read(base + ".weights.bf16", size_t(n) * k * 2);
+        const std::string prior=std::string(argv[3])+"/hc-"+std::to_string(layer)+".prefill.mix."+side;
+        const auto input = Read(stage==1?base+".input.bf16":prior+".normed.bf16",size_t(4096)*k*2);
+        const auto expected = Read(stage==1?prior+".up.bf16":base+".output.bf16",size_t(4096)*n*2);
+        const auto algorithm = Read(base + ".algo.bin", sizeof(cublasLtMatmulAlgo_t));
+        cublasLtMatmulAlgo_t algo;
+        std::memcpy(&algo, algorithm.data(), sizeof(algo));
+        const auto& repeated=input;
+        void *a, *b, *d;
+        CU(cudaMalloc(&a, weights.size())); CU(cudaMalloc(&b, repeated.size()));
+        CU(cudaMalloc(&d, size_t(4096) * n * 2));
+        CU(cudaMemcpyAsync(a, weights.data(), weights.size(), cudaMemcpyHostToDevice, stream));
+        CU(cudaMemcpyAsync(b, repeated.data(), repeated.size(), cudaMemcpyHostToDevice, stream));
+        CU(cudaMemsetAsync(d, 0, size_t(4096) * n * 2, stream));
+        cublasLtMatmulDesc_t desc;
+        LT(cublasLtMatmulDescCreate(&desc, CUBLAS_COMPUTE_32F, CUDA_R_32F));
+        cublasOperation_t ta = CUBLAS_OP_T, tb = CUBLAS_OP_N;
+        LT(cublasLtMatmulDescSetAttribute(desc, CUBLASLT_MATMUL_DESC_TRANSA, &ta, sizeof(ta)));
+        LT(cublasLtMatmulDescSetAttribute(desc, CUBLASLT_MATMUL_DESC_TRANSB, &tb, sizeof(tb)));
+        cublasLtMatrixLayout_t ad, bd, dd;
+        LT(cublasLtMatrixLayoutCreate(&ad, CUDA_R_16BF, k, n, k));
+        LT(cublasLtMatrixLayoutCreate(&bd, CUDA_R_16BF, k, 4096, k));
+        LT(cublasLtMatrixLayoutCreate(&dd, CUDA_R_16BF, n, 4096, n));
+        cublasLtMatmulHeuristicResult_t checked{};
+        LT(cublasLtMatmulAlgoCheck(handle, desc, ad, bd, dd, dd, &algo, &checked));
+        if (checked.state != CUBLAS_STATUS_SUCCESS || checked.workspaceSize > ws)
+          throw std::runtime_error("recorded algorithm incompatible");
+        const float alpha = 1, beta = 0;
+        LT(cublasLtMatmul(handle, desc, &alpha, a, ad, b, bd, &beta,
+            d, dd, d, dd, &algo, workspace, ws, stream));
+        std::vector<uint16_t> actual(size_t(4096)*n);
+        CU(cudaMemcpyAsync(actual.data(), static_cast<uint16_t*>(d),
+            size_t(4096)*n * 2, cudaMemcpyDeviceToHost, stream));
+        CU(cudaStreamSynchronize(stream));
+        size_t mismatch = 0;
+        for (size_t i = 0; i < actual.size(); ++i) {
+          uint16_t e; std::memcpy(&e, expected.data() + i * 2, 2);
+          mismatch += actual[i] != e;
+        }
+        std::ofstream f(std::string(argv[2]) + "/" + name + ".replay.bf16", std::ios::binary);
+        f.write(reinterpret_cast<const char*>(actual.data()), actual.size() * 2);
+        if (!f) throw std::runtime_error("output write");
+        std::printf("%s{\"layer\":%d,\"stage\":\"%s\",\"elements\":%d,\"mismatches\":%zu}",
+            first ? "" : ",", layer, names[stage], 4096*n, mismatch);
+        first = false; total_mismatch += mismatch;
+        LT(cublasLtMatrixLayoutDestroy(ad)); LT(cublasLtMatrixLayoutDestroy(bd));
+        LT(cublasLtMatrixLayoutDestroy(dd)); LT(cublasLtMatmulDescDestroy(desc));
+        CU(cudaFree(a)); CU(cudaFree(b)); CU(cudaFree(d));
+      }
+    }
+    std::printf("],\"total_mismatches\":%zu}\n", total_mismatch);
+    CU(cudaFree(workspace)); CU(cudaStreamDestroy(stream)); LT(cublasLtDestroy(handle));
+    return total_mismatch ? 1 : 0;
+  } catch (const std::exception& e) {
+    std::fprintf(stderr, "%s\n", e.what()); return 2;
+  }
+}

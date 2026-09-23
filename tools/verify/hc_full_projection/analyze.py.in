@@ -1,0 +1,31 @@
+from pathlib import Path
+import json,hashlib,struct,subprocess,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/hc-full-projection-20260924';c=o/'observed-captures';d=o/'reference';prior=root/'.q4t-work/e2e/hc-full-boundaries-20260923';pc=prior/'observed-captures'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output'];assert (p/'replay-build.log').stat().st_size==0
+pb=json.loads((o/'prior-binding.json').read_text());assert sha(prior/'artifact-binding.json')==pb['manifest_sha256']
+for r in pb['records']:assert sha(prior/r['file'])==r['sha256']
+old=root/'.q4t-work/e2e/hc-projection-reference-20260923';om=json.loads((old/'artifact-binding.json').read_text());model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');index=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];weights=[];tails=[]
+for l in range(48):
+ for side in ['attn','mlp']:
+  for stage,parameter,n,k in [('down','input_mix_weight_down',320,10240),('up','input_mix_weight_up',10240,320),('inject','block_inject_weight',4,10240)]:
+   name=f'hc-{l}.prefill.{side}.{stage}';actual=c/(name+'.weights.bf16');key=f'model.language_model.layers.{l}.{side}_hyper_connection.{parameter}.weight';f=model/index[key]
+   with f.open('rb') as s:
+    header=struct.unpack('<Q',s.read(8))[0];info=json.loads(s.read(header))[key];assert info['dtype']=='BF16' and info['shape']==[n,k];start,end=info['data_offsets'];offset=8+header+start;s.seek(offset);data=s.read(end-start)
+   assert hashlib.sha256(data).hexdigest()==sha(actual);weights.append({'key':key,'file':str(f),'offset':offset,'bytes':len(data),'sha256':sha(actual),'size':f.stat().st_size,'mtime_ns':f.stat().st_mtime_ns})
+   meta=json.loads((c/(name+'.hp.json')).read_text());assert meta['ok'] and (meta['m'],meta['n'],meta['k'],meta['workspace_bytes'])==(4096,n,k,33554432)
+save('checkpoint-binding.json',weights);print({'checkpoint_weights':len(weights)},flush=True)
+d.mkdir(exist_ok=False);records=[]
+for l in range(48):
+ for side in ['attn','mlp']:
+  assert shutil.disk_usage(o).free>21*1024**3
+  proc=subprocess.run([str(p/'replay'),str(c),str(d),str(pc),str(l),side],capture_output=True,text=True);stem=f'hc-{l}.prefill.{side}';(o/(stem+'.replay.stdout')).write_text(proc.stdout);(o/(stem+'.replay.stderr')).write_text(proc.stderr);assert proc.returncode in [0,1],proc.stderr;r=json.loads(proc.stdout)
+  for item in r['records']:
+   name=stem+'.'+item['stage'];f=d/(name+'.replay.bf16');base=pc/f'hc-{l}.prefill.mix.{side}.up.bf16' if item['stage']=='up' else c/(name+'.output.bf16');ref=np.fromfile(f,dtype='<u2');actual=np.fromfile(base,dtype='<u2');assert len(ref)==len(actual)==item['elements'];idx=np.flatnonzero(ref!=actual).astype('<i4');assert len(idx)==item['mismatches'];delta=d/(name+'.replay.delta.npz');np.savez_compressed(delta,indices=idx,values=ref[idx]);z=np.load(delta);rebuilt=actual.copy();rebuilt[z['indices']]=z['values'];assert np.array_equal(rebuilt,ref);digest=sha(f);assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==digest;records.append(dict(item,name=name,base=str(base.relative_to(root)),base_sha256=sha(base),reference_sha256=digest,delta_sha256=sha(delta)));f.unlink()
+  save('replay-reference.json',{'records':records,'complete':len(records)==288,'mismatches':sum(x['mismatches'] for x in records)});print({'group':stem,'mismatches':r['total_mismatches']},flush=True)
+print({'complete':True,'elements':sum(x['elements'] for x in records),'mismatches':sum(x['mismatches'] for x in records)},flush=True)
