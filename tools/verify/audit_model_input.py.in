@@ -1,0 +1,23 @@
+from pathlib import Path
+import json,hashlib,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/model-input-reference-20260923';c=o/'observed-captures'
+def sha(f):return hashlib.sha256(f.read_bytes()).hexdigest()
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+r=json.loads((o/'input-reference.json').read_text());assert r['tokens']==4102 and r['embedding_elements']==10501120 and r['expanded_elements']==42004480
+for x in r['records']:
+ b=c/f"step-{x['step']}";emb=np.fromfile(str(b)+'.embedding.bf16',dtype='<u2').reshape(-1,2560);expanded=np.fromfile(str(b)+'.expanded.bf16',dtype='<u2').reshape(-1,4,2560)
+ assert Path(str(b)+'.embedding.bf16').read_bytes()==(o/'reference'/f"step-{x['step']}.expected-embedding.bf16").read_bytes()
+ assert sha(Path(str(b)+'.tokens.i32'))==x['input_ids_sha256'] and sha(Path(str(b)+'.weight-rows.bf16'))==x['actual_weight_rows_sha256']
+ assert sha(Path(str(b)+'.embedding.bf16'))==x['embedding_sha256'] and sha(Path(str(b)+'.expanded.bf16'))==x['expanded_sha256']
+ for branch in range(4):assert np.array_equal(expanded[:,branch,:],emb)
+ assert Path(str(b)+'.entry-last.bf16').read_bytes()==expanded[-1].tobytes()
+for name,h in json.loads((o/'previous-binding.json').read_text()).items():assert sha(c/name)==h
+for name,h in json.loads((o/'hc-binding.json').read_text()).items():assert sha(root/name)==h
+binding=json.loads((o/'checkpoint-row-binding.json').read_text());weightfile=Path(binding['path']);st=weightfile.stat();assert (st.st_size,st.st_mtime_ns,st.st_ino,st.st_dev)==(binding['size'],binding['mtime_ns'],binding['inode'],binding['device'])
+with weightfile.open('rb') as f:
+ for token,h in binding['row_hashes'].items():f.seek(binding['offset']+int(token)*5120);assert hashlib.sha256(f.read(5120)).hexdigest()==h
+for name in ['analyze.py','analyze.log','audit.py','prepare.py']:shutil.copy2(p/name,o/name)
+save(o/'artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})
+print('audit passed:10501120 embedding and42004480 expanded BF16 values; first HC pointer/last row bound')

@@ -20,6 +20,12 @@ TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间�
 
 ## 当前决策摘要
 
+- **原4K请求的输入embedding与四分支入口全同。**
+  新观测先三侧HTTP仍原错、服务0，旧56份记录不变；4102个
+  实际输入token的96个不同权重行匹配checkpoint，10501120
+  embedding值、42004480展开值全部一致，首层HC指针/末行接通。
+  生产未改；下一步最终mixer/lm_head/greedy选择，全prefill GDN
+  仍待确认，见[模型入口报告](MODEL_INPUT_REFERENCE_2026-09-23.md)。
 - **原4K请求的PLE查表内容全程匹配预期SSD行。**
   新观测先三侧HTTP仍原错、服务0；实际4096+6个输入token独立
   重建上下文/hash，65632次读取、5560不同磁盘行、10501120字节
