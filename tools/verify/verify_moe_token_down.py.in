@@ -1,0 +1,57 @@
+"""Independent checkpoint gate/up and activation reference on HTTP snapshots."""
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import numpy as np
+import json,struct,math,hashlib
+p=Path(__file__).resolve().parent;root=p.parents[2]
+out=root/'.q4t-work/e2e/moe-token-chain-reference-20260923';cap=out/'observed-captures'
+assert json.loads((out/'exit.json').read_text())['observer_preserved_tested_output']
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');index=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];headers={}
+def tensor(name):
+ file=model/index[name]
+ with file.open('rb') as f:
+  if file not in headers:
+   n=struct.unpack('<Q',f.read(8))[0];headers[file]=(n,json.loads(f.read(n)))
+  n,h=headers[file];m=h[name];a,b=m['data_offsets'];f.seek(8+n+a);data=f.read(b-a)
+ assert len(data)==b-a
+ return m,data
+fp8=np.array([math.ldexp(c%8,-9) if c<8 else math.ldexp(1+c%8/8,c//8-7) for c in range(127)])
+positive=np.array([0,.5,1,1.5,2,3,4,6]);fp4=np.r_[positive,-positive];tie_order=np.array([0,2,4,6,1,3,5,7],dtype=np.uint8)
+def unpack(data,rows):
+ x=np.frombuffer(data,dtype=np.uint8).reshape(rows,320);r=np.empty((rows,640),dtype=np.uint8);r[:,::2]=x&15;r[:,1::2]=x>>4;return r
+
+def sf(data,rows):
+ a=np.frombuffer(data,dtype=np.uint8);r=np.asarray(rows)[:,None];g=np.arange(40)[None,:];offset=(r%32)*16+(r%128//32)*4+g%4+(g//4)*512+(r//128)*5120;x=a[offset];assert np.all(x<127);return x
+
+def bf16(x):return (x.astype(np.uint32)<<16).view(np.float32)
+def rounded(x):
+ b=np.asarray(x,dtype=np.float32).view(np.uint32);return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype(np.uint16)
+records=[]
+values=np.fromfile(out/'inter-values.f32',dtype='<f4').reshape(480,640)
+replay=(out/'inter-replay.tsv').read_text().splitlines();assert len(replay)==480*40
+mapping=json.loads((out/'inter-map.json').read_text())
+for number,m in enumerate(mapping):
+ layer,e=m['layer'],m['expert'];base=str(cap/f'layer-{layer}.expert-{e}')
+ def read(s):return Path(base+s).read_bytes()
+ meta=json.loads(read('.dn.json'));assert meta['ok'] and read('.inter-input.bf16')==read('.gu-output.bf16')
+ prefix=f'model.language_model.layers.{layer}.mlp.experts.{e}.down_proj.'
+ wi,wb=tensor(prefix+'weight');si,sb=tensor(prefix+'weight_scale');ii,ib=tensor(prefix+'input_scale');gi,gb=tensor(prefix+'weight_scale_2')
+ assert wi['shape']==[2560,320] and si['shape']==[2560,40] and ii['dtype']==gi['dtype']=='F32'
+ wbytes=read('.dn-weights.bin');wsf=sf(read('.dn-wsf.bin'),np.arange(2560));assert wbytes==wb and np.array_equal(wsf,np.frombuffer(sb,dtype=np.uint8).reshape(2560,40))
+ scale=struct.unpack('<f',ib)[0];alpha=float.fromhex(meta['alpha_hex']);assert scale==float.fromhex(meta['scale_hex']) and alpha==float(np.float32(scale)*np.float32(struct.unpack('<f',gb)[0]))
+ asf=sf(read('.dn-asf.bin'),[meta['row']]);corrected=[]
+ for g in range(40):
+  i,v,a,legacy,native=replay[number*40+g].split();i,a,legacy,native=map(int,[i,a,legacy,native]);ratio=float.fromhex(v);assert i==number*40+g and a==legacy==asf[0,g]
+  expected=min(range(127),key=lambda c:(abs(ratio-fp8[c]),c%2));assert native==expected;corrected.append(expected)
+ actual_codes=unpack(read('.dn-packed.bin'),1);x=values[number:number+1]
+ eff=np.float32(fp8[asf].astype(np.float32)*np.float32(scale));inv=np.zeros_like(eff);np.divide(np.float32(1),eff,out=inv,where=eff>0);v=np.float32(x*inv.repeat(16,axis=1));dist=abs(abs(v.astype(np.float64))[...,None]-positive[tie_order]);codes=tie_order[np.argmin(dist,axis=-1)]|np.where(v<0,8,0).astype(np.uint8)
+ weights=fp4[unpack(wbytes,2560)]*fp8[wsf].repeat(16,axis=1);a=fp4[actual_codes]*fp8[asf].repeat(16,axis=1);ref=(weights@a[0])*alpha;bits=rounded(ref);actual=np.frombuffer(read('.dn-output.bf16'),dtype='<u2')
+ ids=np.fromfile(cap/f'layer-{layer}.ids.i32',dtype='<i4');slot=int(np.flatnonzero(ids==e)[0]);combined=np.fromfile(cap/f'layer-{layer}.experts.bf16',dtype='<u2').reshape(10,2560)[slot];assert np.array_equal(actual,combined)
+ gu=bf16(np.frombuffer(read('.inter-input.bf16'),dtype='<u2')).astype(np.float64);g,u=gu[:640],gu[640:];z=np.exp(-abs(g));sigmoid=np.where(g>=0,1/(1+z),z/(1+z));math_values=g*sigmoid*u
+ changed=np.flatnonzero(asf[0]!=corrected)
+ rec={'layer':layer,'expert':e,'checkpoint_bound':True,'gu_to_inter_input_equal':True,'down_to_combine_equal':True,'fp4_code_mismatches':int(np.count_nonzero(codes!=actual_codes)),'fp64_bf16_mismatches':int(np.count_nonzero(bits!=actual)),'fp64_mismatch_indices':np.flatnonzero(bits!=actual).tolist(),'scale_errors':len(changed),'scale_error_groups':changed.tolist(),'swiglu_device_vs_fp64_max_abs':float(np.max(abs(x[0]-math_values)))}
+ np.savez(base+'.dn-reference.npz',fp64=ref,bf16_bits=bits,actual_sf=asf,corrected_sf=np.array(corrected))
+ records.append(rec);(out/'down-analysis-progress.json').write_text(json.dumps({'completed':len(records),'latest':rec})+'\n')
+summary={'calls':len(records),'fp4_elements':len(records)*640,'down_elements':len(records)*2560,'fp4_code_mismatches':sum(r['fp4_code_mismatches'] for r in records),'fp64_bf16_mismatches':sum(r['fp64_bf16_mismatches'] for r in records),'scale_errors':sum(r['scale_errors'] for r in records),'scale_error_layers':sorted(set(r['layer'] for r in records if r['scale_errors'])),'swiglu_device_vs_fp64_max_abs':max(r['swiglu_device_vs_fp64_max_abs'] for r in records),'records':records,'runtime_changed':False,'limitation':'SwiGLU intermediate reconstruction uses CUDA __expf to mirror accepted arithmetic. It is not an independent proof of transcendental accuracy. Actual intermediate FP4 is compared with independently enumerated E2M1; down FP64 reference uses actual quantized inputs. No cross-layer independent model state or task-causality claim.'}
+(out/'down-reference.json').write_text(json.dumps(summary,indent=2)+'\n');print(json.dumps({k:v for k,v in summary.items() if k!='records'},indent=2))

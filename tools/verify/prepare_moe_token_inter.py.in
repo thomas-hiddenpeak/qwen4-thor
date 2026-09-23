@@ -1,0 +1,10 @@
+from pathlib import Path
+import json,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/moe-token-chain-reference-20260923';c=o/'observed-captures'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+xs=[];scales=[];actual=[];mapping=[]
+for f in sorted(c.glob('*.dn.json')):
+ m=json.loads(f.read_text());assert m['ok'];b=str(f)[:-len('.dn.json')];x=np.fromfile(b+'.inter-input.bf16',dtype='<u2');assert x.size==1280
+ xs.append(x);scales.append(float.fromhex(m['scale_hex']));r=m['row'];g=np.arange(40);offset=(r%32)*16+(r%128//32)*4+g%4+(g//4)*512+(r//128)*5120;actual.append(np.fromfile(b+'.dn-asf.bin',dtype='u1')[offset]);mapping.append({'layer':m['layer'],'expert':m['expert']})
+assert len(xs)==480
+np.concatenate(xs).astype('<u2').tofile(o/'inter-inputs.bf16');np.array(scales,dtype='<f4').tofile(o/'inter-scales.f32');np.concatenate(actual).astype('u1').tofile(o/'inter-actual.sf');(o/'inter-map.json').write_text(json.dumps(mapping)+'\n')
