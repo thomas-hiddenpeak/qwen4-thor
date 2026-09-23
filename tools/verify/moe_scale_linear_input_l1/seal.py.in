@@ -1,0 +1,14 @@
+"""Seal after the reference controller has exited; stdout stays outside archive."""
+from pathlib import Path
+import hashlib,json,shutil
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/moe-scale-linear-input-l1-20260924'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+r=json.loads((o/'reference.json').read_text());assert r['complete'] and len(r['records'])==16
+for name in ['run.log','seal.py']:shutil.copy2(p/name,o/name)
+f=o/'artifact-binding.json';assert not f.exists();binding={str(x.relative_to(o)):sha(x) for x in sorted(o.rglob('*')) if x.is_file()};f.write_text(json.dumps(binding,indent=2)+'\n')
+for name,expected in binding.items():assert sha(o/name)==expected
+print({'entries':len(binding),'all_hashes_verified':True,'artifact_bytes':sum(x.stat().st_size for x in o.rglob('*') if x.is_file())})

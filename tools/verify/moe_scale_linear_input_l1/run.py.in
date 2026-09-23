@@ -1,0 +1,33 @@
+from pathlib import Path
+import hashlib,json,subprocess,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];e=root/'.q4t-work/e2e';o=e/p.name;d=o/'reference';h=e/'moe-scale-hc-read-l1-20260924';s=e/'linear-full-projection-20260923';c=s/'observed-captures'
+def sha(f):
+ x=hashlib.sha256()
+ with f.open('rb') as z:
+  for b in iter(lambda:z.read(4*1024*1024),b''):x.update(b)
+ return x.hexdigest()
+def save(n,x):(o/n).write_text(json.dumps(x,indent=2)+'\n')
+assert not any(d.iterdir());assert (p/'build.log').stat().st_size==0;assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e';budget=1500000000;reserve=20*1024**3;assert shutil.disk_usage(o).free>reserve+budget
+man={x.name:json.loads((x/'artifact-binding.json').read_text()) for x in [h,s]};bindings=[]
+def bind(x,n):
+ f=x/n;v=sha(f);assert v==man[x.name][n];bindings.append({'file':str(f.relative_to(root)),'sha256':v});return f
+assert json.loads(bind(s,'exit.json').read_text())['observer_preserved_tested_output'];assert json.loads(bind(h,'reference.json').read_text())['complete'];branches=['baseline','input_fixed','inter_fixed','both_fixed'];paths={b:bind(h,'reference/'+b+'/hc-1.prefill.mix.attn.device.bf16') for b in branches};widths={'qkv':10240,'z':6144,'a':48,'b':48}
+for kind in widths:
+ for suffix in ['input.bf16','output.bf16','weights.bf16','algo.bin']:bind(s,'observed-captures/layer-1.prefill.'+kind+'.'+suffix)
+ assert sha(c/('layer-1.prefill.'+kind+'.input.bf16'))==sha(paths['baseline'])
+weights=[w for w in json.loads(bind(s,'checkpoint-binding.json').read_text()) if w['tensor'].startswith('model.language_model.layers.1.linear_attn.')];assert len(weights)==4
+for w in weights:
+ f=Path(w['path']);st=f.stat();assert st.st_size==w['size'] and st.st_mtime_ns==w['mtime_ns']
+ with f.open('rb') as z:z.seek(w['offset']);assert hashlib.sha256(z.read(w['bytes'])).hexdigest()==w['sha256']
+save('checkpoint-binding.json',weights);save('input-binding.json',bindings);save('source-manifests.json',{x.name:sha(x/'artifact-binding.json') for x in [h,s]});save('plan.json',{'budget_bytes':budget,'reserve_bytes':reserve,'scope':'Four layer1 linear-attention inputs through recorded QKV/Z/A/B BF16 GEMM algorithms. All4096 rows, common changed HC mixed input. Baseline must restore all four actual outputs; independent checkpoint segment binding. No production/new HTTP; not independent high precision GEMM or attention recurrence.','retention':'Full BF16 outputs, all changed element indices and token counts; no raw accumulators retained.'})
+baseinput=np.fromfile(paths['baseline'],dtype='<u2').reshape(4096,2560);records=[]
+for branch in branches:
+ out=d/branch;out.mkdir();x=np.fromfile(paths[branch],dtype='<u2').reshape(4096,2560);allowed=np.any(x!=baseinput,axis=1);proc=subprocess.run([str(p/'gemm'),str(c),str(out),'1',str(paths[branch])],capture_output=True,text=True);(o/(branch+'.stdout')).write_text(proc.stdout);(o/(branch+'.stderr')).write_text(proc.stderr);assert proc.returncode==0,proc.stderr;r=json.loads(proc.stdout);assert sorted(v['stage'] for v in r['records'])==sorted(widths)
+ for v in r['records']:
+  kind=v['stage'];w=widths[kind];name='layer-1.prefill.'+kind;f=out/(name+'.replay.bf16');a=np.fromfile(c/(name+'.output.bf16'),dtype='<u2').reshape(4096,w);b=np.fromfile(f,dtype='<u2').reshape(4096,w);assert a.size==v['elements'] and np.isfinite((b.astype('<u4')<<16).view('<f4')).all();idx=np.flatnonzero(a.reshape(-1)!=b.reshape(-1)).astype('<i4');assert len(idx)==v['mismatches'];counts=np.bincount(idx//w,minlength=4096).astype('<i4');assert not np.any((counts>0)&~allowed)
+  if branch=='baseline':assert len(idx)==0
+  idx.tofile(out/(kind+'.differences.i32'));counts.tofile(out/(kind+'.token-differences.i32'));v.update(branch=branch,changed_tokens=int(np.count_nonzero(counts)),output=str(f.relative_to(o)),output_sha256=sha(f));records.append(v);print(v,flush=True)
+ save('reference.json',{'records':records,'complete':len(records)==16})
+summary={'records':records,'baseline_all_outputs_match':True,'runtime_changed':False,'whole_model_correctness_proven':False,'task_causality_established':False,'propagation_endpoint':'layer1 QKV/Z/A/B raw projected outputs; before short convolution and GDN'}
+for n in ['run.py','gemm.cpp','gemm','build.log']:shutil.copy2(p/n,o/n)
+summary['artifact_bytes_before_sealing']=sum(f.stat().st_size for f in o.rglob('*') if f.is_file());assert summary['artifact_bytes_before_sealing']<budget;save('summary.json',summary);print(summary,flush=True)
