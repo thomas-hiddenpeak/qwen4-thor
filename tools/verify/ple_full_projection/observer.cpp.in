@@ -1,0 +1,232 @@
+#include <cuda_runtime_api.h>
+#include <cublasLt.h>
+#include <dlfcn.h>
+#include <atomic>
+#include <cstdio>
+#include <cstdlib>
+#include <cstdint>
+#include <cstring>
+#include <string>
+#include <vector>
+namespace {
+std::atomic<cudaKernel_t> convert{}, scale{}, norm{}, gated{};
+const uint16_t *embedding = nullptr, *key_out = nullptr, *value_out = nullptr;
+int stage = 0;
+bool norm_seen = false, gated_seen = false;
+void Meta(const std::string& name, bool ok) {
+  std::string path =
+      std::string(std::getenv("Q4T_PLE_CAPTURE_DIR")) + "/" + name + ".json";
+  FILE* f = std::fopen(path.c_str(), "w");
+  if (f) {
+    std::fprintf(f, "{\"ok\":%s,\"stage\":%d}\n", ok ? "true" : "false", stage);
+    std::fclose(f);
+  }
+  std::fprintf(stderr, "[ple-full-projection] %s ok=%d\n", name.c_str(), ok);
+}
+template <class T>
+T Resolve(const char* n) {
+  auto p = reinterpret_cast<T>(dlsym(RTLD_NEXT, n));
+  if (!p) std::_Exit(127);
+  return p;
+}
+template <class T>
+T* Ptr(void** a, int i) {
+  return *static_cast<T**>(a[i]);
+}
+bool Save(const std::string& p, const void* d, size_t n) {
+  FILE* f = std::fopen(p.c_str(), "wb");
+  if (!f) return false;
+  bool ok = std::fwrite(d, 1, n, f) == n;
+  return std::fclose(f) == 0 && ok;
+}
+bool Read(void* h, const void* d, size_t n, cudaStream_t s) {
+  static auto copy = Resolve<decltype(&cudaMemcpyAsync)>("cudaMemcpyAsync");
+  static auto sync =
+      Resolve<decltype(&cudaStreamSynchronize)>("cudaStreamSynchronize");
+  return copy(h, d, n, cudaMemcpyDeviceToHost, s) == cudaSuccess &&
+         sync(s) == cudaSuccess;
+}
+bool Capture(const std::string& p, const void* d, size_t n, cudaStream_t s) {
+  std::vector<unsigned char> v(n);
+  return Read(v.data(), d, n, s) && Save(p, v.data(), n);
+}
+bool Compare(const std::string& p, const void* d, size_t n, cudaStream_t s) {
+  std::vector<unsigned char> v(n), expected(n);
+  FILE* f = std::fopen(p.c_str(), "rb");
+  if (!f) return false;
+  bool ok = std::fread(expected.data(), 1, n, f) == n && std::fgetc(f) == EOF;
+  std::fclose(f);
+  return ok && Read(v.data(), d, n, s) && v == expected;
+}
+}  // namespace
+namespace {
+template <typename T>
+bool Layout(cublasLtMatrixLayout_t layout, cublasLtMatrixLayoutAttribute_t key,
+            T* value) {
+  static const auto get = Resolve<decltype(&cublasLtMatrixLayoutGetAttribute)>(
+      "cublasLtMatrixLayoutGetAttribute");
+  size_t size = 0;
+  return get(layout, key, value, sizeof(T), &size) == CUBLAS_STATUS_SUCCESS &&
+         size == sizeof(T);
+}
+template <typename T>
+bool Attribute(cublasLtMatmulDesc_t desc, cublasLtMatmulDescAttributes_t key,
+               T* value) {
+  static const auto get = Resolve<decltype(&cublasLtMatmulDescGetAttribute)>(
+      "cublasLtMatmulDescGetAttribute");
+  size_t size = 0;
+  return get(desc, key, value, sizeof(T), &size) == CUBLAS_STATUS_SUCCESS &&
+         size == sizeof(T);
+}
+bool Shape(cublasLtMatrixLayout_t desc, uint64_t rows, uint64_t cols,
+           cudaDataType_t type) {
+  uint64_t r = 0, c = 0;
+  int64_t ld = 0;
+  cudaDataType_t t{};
+  cublasLtOrder_t order{};
+  return Layout(desc, CUBLASLT_MATRIX_LAYOUT_ROWS, &r) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_COLS, &c) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_LD, &ld) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_TYPE, &t) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_ORDER, &order) && r == rows &&
+         c == cols && ld == static_cast<int64_t>(rows) && t == type &&
+         order == CUBLASLT_ORDER_COL;
+}
+}  // namespace
+
+extern "C" cudaError_t __cudaGetKernel(cudaKernel_t* k, const void* fn) {
+  static auto real =
+      Resolve<cudaError_t (*)(cudaKernel_t*, const void*)>("__cudaGetKernel");
+  auto s = real(k, fn);
+  if (s == cudaSuccess) {
+    const char* n = nullptr;
+    static auto name = Resolve<decltype(&cudaFuncGetName)>("cudaFuncGetName");
+    if (name(&n, fn) == cudaSuccess && n) {
+      if (std::strstr(n, "Fp8ToBf16Kernel") && std::strstr(n, "fp8_convert_cu"))
+        convert = *k;
+      if (std::strstr(n, "ScaleBf16Kernel") && std::strstr(n, "model_cu"))
+        scale = *k;
+      if (std::strstr(n, "GroupedRmsNormKernel") &&
+          std::strstr(n, "ple_layer_cu"))
+        norm = *k;
+      if (std::strstr(n, "GatedValueKernel") && std::strstr(n, "ple_layer_cu"))
+        gated = *k;
+    }
+  }
+  return s;
+}
+extern "C" cudaError_t __cudaLaunchKernel(cudaKernel_t k, dim3 grid, dim3 block,
+                                          void** a, size_t smem,
+                                          cudaStream_t stream) {
+  static auto real =
+      Resolve<cudaError_t (*)(cudaKernel_t, dim3, dim3, void**, size_t,
+                              cudaStream_t)>("__cudaLaunchKernel");
+  const char* dir = std::getenv("Q4T_PLE_CAPTURE_DIR");
+  const char* lookup = std::getenv("Q4T_PLE_LOOKUP");
+  const char* prior = std::getenv("Q4T_PLE_PRIOR");
+  bool scaling = dir && lookup && prior && k == scale && stage == 1 &&
+                 Ptr<uint16_t>(a, 0) == embedding;
+  bool ok = true;
+  if (scaling) {
+    float factor = *static_cast<float*>(a[2]);
+    ok = *static_cast<int*>(a[1]) == 4096 * 2560 &&
+         Compare(std::string(lookup) + "/step-0.converted.bf16", embedding,
+                 4096 * 2560 * 2, stream) &&
+         Save(std::string(dir) + "/scale.f32", &factor, 4);
+  }
+  if (dir && prior && stage == 4 && (k == norm || k == gated) &&
+      *static_cast<int*>(a[3]) == 4096) {
+    if (k == norm && !norm_seen) {
+      ok = Ptr<uint16_t>(a, 0) == key_out &&
+           Compare(std::string(prior) + "/prefill.norm-0.input.bf16",
+                   Ptr<uint16_t>(a, 0), 4096 * 10240 * 2, stream);
+      norm_seen = true;
+      Meta("key-consumer", ok);
+    }
+    if (k == gated && !gated_seen) {
+      ok = Ptr<uint16_t>(a, 1) == value_out &&
+           Compare(std::string(prior) + "/prefill.gated.value.bf16",
+                   Ptr<uint16_t>(a, 1), 4096 * 2560 * 2, stream);
+      gated_seen = true;
+      Meta("value-consumer", ok);
+    }
+  }
+  auto result = real(k, grid, block, a, smem, stream);
+  if (result != cudaSuccess || !dir || !lookup) return result;
+  if (k == convert && *static_cast<size_t*>(a[2]) == size_t(4096) * 2560) {
+    ok = stage == 0;
+    embedding = Ptr<uint16_t>(a, 1);
+    ok = ok &&
+         Compare(std::string(lookup) + "/step-0.fp8", Ptr<uint8_t>(a, 0),
+                 4096 * 2560, stream) &&
+         Compare(std::string(lookup) + "/step-0.converted.bf16", embedding,
+                 4096 * 2560 * 2, stream);
+    stage = 1;
+    Meta("conversion", ok);
+  }
+  if (scaling) {
+    ok = ok && Compare(std::string(lookup) + "/step-0.scaled.bf16", embedding,
+                       4096 * 2560 * 2, stream);
+    stage = 2;
+    Meta("scale", ok);
+  }
+  return result;
+}
+extern "C" cublasStatus_t CUBLASWINAPI
+cublasLtMatmul(cublasLtHandle_t h, cublasLtMatmulDesc_t desc, const void* alpha,
+               const void* a, cublasLtMatrixLayout_t ad, const void* b,
+               cublasLtMatrixLayout_t bd, const void* beta, const void* c,
+               cublasLtMatrixLayout_t cd, void* d, cublasLtMatrixLayout_t dd,
+               const cublasLtMatmulAlgo_t* algo, void* ws, size_t bytes,
+               cudaStream_t stream) {
+  static auto real = Resolve<decltype(&cublasLtMatmul)>("cublasLtMatmul");
+  const char* dir = std::getenv("Q4T_PLE_CAPTURE_DIR");
+  bool take = dir && b == embedding && (stage == 2 || stage == 3);
+  bool ok = true;
+  int n = stage == 2 ? 10240 : 2560;
+  std::string name = stage == 2 ? "key" : "value", base;
+  if (take) {
+    base = std::string(dir) + "/" + name;
+    cublasComputeType_t ct{};
+    cudaDataType_t st{};
+    cublasLtEpilogue_t ep{};
+    cublasLtPointerMode_t pm{};
+    cublasOperation_t ta{}, tb{};
+    ok = Shape(ad, 2560, n, CUDA_R_16BF) &&
+         Shape(bd, 2560, 4096, CUDA_R_16BF) &&
+         Shape(cd, n, 4096, CUDA_R_16BF) && Shape(dd, n, 4096, CUDA_R_16BF) &&
+         Attribute(desc, CUBLASLT_MATMUL_DESC_COMPUTE_TYPE, &ct) &&
+         ct == CUBLAS_COMPUTE_32F &&
+         Attribute(desc, CUBLASLT_MATMUL_DESC_SCALE_TYPE, &st) &&
+         st == CUDA_R_32F &&
+         Attribute(desc, CUBLASLT_MATMUL_DESC_EPILOGUE, &ep) &&
+         ep == CUBLASLT_EPILOGUE_DEFAULT &&
+         Attribute(desc, CUBLASLT_MATMUL_DESC_POINTER_MODE, &pm) &&
+         pm == CUBLASLT_POINTER_MODE_HOST &&
+         Attribute(desc, CUBLASLT_MATMUL_DESC_TRANSA, &ta) &&
+         ta == CUBLAS_OP_T &&
+         Attribute(desc, CUBLASLT_MATMUL_DESC_TRANSB, &tb) && tb == CUBLAS_OP_N;
+    ok = ok && *static_cast<const float*>(alpha) == 1.f &&
+         *static_cast<const float*>(beta) == 0.f && bytes == 33554432 && algo &&
+         Compare(
+             std::string(std::getenv("Q4T_PLE_LOOKUP")) + "/step-0.scaled.bf16",
+             b, 4096 * 2560 * 2, stream) &&
+         Capture(base + ".weights.bf16", a, size_t(n) * 2560 * 2, stream) &&
+         Save(base + ".algo.bin", algo, sizeof(*algo));
+  }
+  auto result = real(h, desc, alpha, a, ad, b, bd, beta, c, cd, d, dd, algo, ws,
+                     bytes, stream);
+  if (take && result == CUBLAS_STATUS_SUCCESS) {
+    ok = ok && Compare(std::string(std::getenv("Q4T_PLE_PRIOR")) +
+                           (stage == 2 ? "/prefill.norm-0.input.bf16"
+                                       : "/prefill.gated.value.bf16"),
+                       d, size_t(4096) * n * 2, stream);
+    if (stage == 2)
+      key_out = static_cast<uint16_t*>(d);
+    else
+      value_out = static_cast<uint16_t*>(d);
+    ++stage;
+    Meta(name, ok);
+  }
+  return result;
+}

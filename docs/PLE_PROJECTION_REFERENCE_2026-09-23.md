@@ -71,3 +71,31 @@ artifact-binding.json及所有原始操作数/参考输出。最终工具零警�
 参考与审计退出0；没有运行时变更或新的性能验收结论。
 下一步连接实际token上下文、checkpoint hash参数、SSD行内容与
 本轮观察的原始FP8字节；全prefill GDN及最终头部等仍未确认。
+
+
+## 2026-09-24后续：完整4K投影与查表交接
+
+首版控制脚本在启动服务/发送HTTP前因来源manifest覆盖fixture
+变量而KeyError，记录保留于ple-full-projection-20260924；不是
+一次HTTP失败。v2仅修正控制变量，使用相同零警告观测器二进制。
+首项实际测试仍为tools/evalscope关闭/开启/关闭三侧HTTP，均
+600440、4096/7 token、stop、服务0、质量驱动1。六份元数据
+通过且采集均在监听后，原错答保持不代表质量验收通过。
+
+完整10485760个embedding值的实际FP8/转换BF16/缩放前后及
+两次投影输入均全字节匹配冻结lookup step0。41943040个key、
+10485760个value输出及下游实际消费者分别全字节匹配冻结
+norm0 input和gated value，现场指针也接通。输入/输出不重复保存。
+
+两组实际BF16权重65536000字节直接匹配checkpoint，加2字节
+weight_scale共65536002字节；实际FP32系数为
+0.00019931793212890625，与checkpoint和lookup记录相同。
+保存两份实际算法，现场检查M4096/K2560/N10240或2560、BF16
+布局、FP32计算/scale、alpha1/beta0、默认epilogue和32MiB
+workspace。投影算术尚未重算，不能以这些边界代替计算正确。
+
+证据：`.q4t-work/e2e/ple-full-projection-v2-20260924/`；模板：
+`tools/verify/ple_full_projection/`。含来源绑定、checkpoint偏移/
+摘要、完整HTTP与manifest。归档后可用21593632768字节，保留
+20GiB余量。生产未改，下一步100MB参考预算内顺序执行完整
+key/value记录算法与FP64参考，不同时保留多个完整临时输出。
