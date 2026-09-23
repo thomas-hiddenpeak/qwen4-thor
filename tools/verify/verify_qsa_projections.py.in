@@ -1,0 +1,46 @@
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import json,struct,hashlib,subprocess,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/qsa-projection-reference-20260923';c=o/'observed-captures';old=root/'.q4t-work/e2e/qsa-query-transform-20260923/observed-captures';hc=root/'.q4t-work/e2e/hc-projection-reference-20260923';replayed=o/'replayed'
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+def sha(f):return hashlib.sha256(f.read_bytes()).hexdigest()
+def dec(v):return (v.astype(np.uint32)<<16).view(np.float32).astype(np.float64)
+def rnd(v):
+ b=np.asarray(v,dtype=np.float32).view(np.uint32);return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype(np.uint16)
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+assert all((p/f).stat().st_size==0 for f in ['build.log','decode-build.log','prefill-build.log'])
+replayed.mkdir(exist_ok=True);assert not any(replayed.iterdir());bind={}
+for f in old.iterdir():
+ if f.suffix not in ['.bf16','.i32','.f32','.json','.bin']:continue
+ assert f.read_bytes()==(c/f.name).read_bytes(),f.name;bind[f.name]=sha(f)
+save(o/'previous-binding.json',{'files':len(bind),'all_equal':True,'hashes':bind})
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');index=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];hc_manifest=json.loads((hc/'artifact-binding.json').read_text());assert sha(hc/'previous-binding.json')==hc_manifest['previous-binding.json'];hc_hashes={x['file']:x['sha256'] for x in json.loads((hc/'previous-binding.json').read_text())['records']};records=[];bound={}
+for l in range(3,48,4):
+ name=f'model.language_model.layers.{l}.self_attn.indexer.index_qk_proj.weight'
+ with (model/index[name]).open('rb') as f:
+  size=struct.unpack('<Q',f.read(8))[0];info=json.loads(f.read(size))[name];assert info['dtype']=='BF16' and info['shape']==[640,2560];a,z=info['data_offsets'];f.seek(8+size+a);weights=f.read(z-a)
+ for phase in ['prefill','decode']:
+  b=str(c/f'layer-{l}.{phase}')
+  h=hc/'observed-captures'/f'hc-{l}.{phase}.mix.attn.output.bf16';assert sha(h)==hc_hashes[h.name];bound[str(h.relative_to(root))]=sha(h)
+  for stage,n,start in [('iq',512,0),('ik',128,512)]:
+   base=b+'.projection-'+stage;wfile=Path(base+'.weights.bf16');xfile=Path(base+'.input.bf16');yfile=Path(base+'.output.bf16')
+   assert wfile.read_bytes()==weights[start*2560*2:(start+n)*2560*2]
+   assert xfile.read_bytes()==h.read_bytes()
+   if stage=='iq':assert yfile.read_bytes()==Path(b+'.iq-before.bf16').read_bytes()
+   else:assert yfile.read_bytes()==Path(b+'.ik-input.bf16').read_bytes()[-256:]
+   w=dec(np.fromfile(wfile,dtype='<u2')).reshape(n,2560);x=dec(np.fromfile(xfile,dtype='<u2'));y=np.fromfile(yfile,dtype='<u2');ref=w@x;bits=rnd(ref);bad=np.flatnonzero(bits!=y)
+   np.savez(replayed/f'layer-{l}.{phase}.projection-{stage}.fp64.npz',values=ref,bits=bits)
+   records.append({'layer':l,'phase':phase,'stage':stage,'elements':n,'fp64_mismatches':len(bad),'indices':bad.tolist(),'weights_sha256':sha(wfile),'input_sha256':sha(xfile),'output_sha256':sha(yfile)})
+save(o/'hc-input-binding.json',bound)
+save(o/'projection-reference.json',{'records':records,'prefill_fp64_mismatches':sum(r['fp64_mismatches'] for r in records if r['phase']=='prefill'),'decode_fp64_mismatches':sum(r['fp64_mismatches'] for r in records if r['phase']=='decode'),'scope':'Actual 48 projection calls, last prefill/first decode,12 full attention layers; weight checkpoint slices exact. Inputs equal earlier gated HC outputs across runs. Actual producer output pointers bound to query norm/raw key consumer.','limitation':'Not whole prefill or full generation verification; prefill recorded algorithm replay is not independent cuBLAS arithmetic proof.'})
+exits={}
+for name in ['decode','prefill']:
+ with (o/(name+'.stdout')).open('w') as out,(o/(name+'.stderr')).open('w') as err:exits[name]=subprocess.run([str(p/name),str(c),str(replayed)],stdout=out,stderr=err).returncode
+ save(o/'reference-exit.json',exits);assert exits[name]==0
+ r=json.loads((o/(name+'.stdout')).read_text());assert len(r['records'])==24
+ for x in r['records']:
+  suffix='.cpu.bf16' if name=='decode' else '.replay.bf16';b=f"layer-{x['layer']}.{name}.projection-{x['stage']}";assert (replayed/(b+suffix)).read_bytes()==(c/(b+'.output.bf16')).read_bytes();assert x['mismatches']==0
+ assert r['total_mismatches']==0
+ save(o/(name+'-reference.json'),r)
+print('old_files',len(bind),'FP64 prefill/decode',sum(r['fp64_mismatches'] for r in records if r['phase']=='prefill'),sum(r['fp64_mismatches'] for r in records if r['phase']=='decode'),'specified-order/replay exact',12*640*2)

@@ -180,3 +180,47 @@ HTTP。并不把其他变体同样零差异解释为其编译顺序也成立。
 fp64-reference.json、query-reference.json、query-transform.sass、
 sass-order-decision.json、previous-binding.json、artifact-binding.json。
 下一步连接原始indexer query/key投影，再补全注意力投影与变换来源。
+
+
+## 后续：原始query/key投影与HC输入绑定
+
+在已识别WriteKV调用后开始捕获紧邻的indexer投影，检查query
+512行、key128行、共同输入K2560和key权重地址等于query权重
+地址加512×2560。随后在query归一化和raw-key写入的实际调用处
+验证输出指针，不仅按相同形状猜测调用身份。prefill另记录实际
+cuBLAS算法与描述符；decode捕获实际Bf16Gev输入/权重/输出。
+
+观测零警告构建后首项三侧原4K tools/evalscope HTTP均600440、
+4096输入/7输出、stop，三服务0、质量驱动1。48次投影观测完整，
+此前960份快照/元数据逐字节不变，再开展离线参考。
+
+每层实际两块权重均逐字节匹配checkpoint中
+indexer.index_qk_proj.weight [640,2560]的前512/后128行。两阶段
+24个query/key共同输入均同此前已检查HC attention混合输出。
+这是跨观测运行的字节绑定；query原始输出同当前归一化前输入，
+key最后行同当前raw写入输入，后两者同时具有本轮实际指针证据。
+
+FP64点积再FP32→BF16，在prefill7680输出中4项不同：L23 key72，
+L27 query493、L39 query277、L47 query441；decode7680项全同。
+全部高精度值、舍入结果及差异索引保留。
+
+Decode独立CPU按两个fma累加链、每lane八元素分组、warp
+shuffle-down16/8/4/2/1顺序重建，7680项全同。Prefill独立进程
+使用记录算法和原M4096/N512或128/K2560布局、32MiB workspace，
+AlgoCheck通过，将实际最后一行输入重复4096次后检查最后一行，
+24次7680项全同，cuBLAS130501。这复现了原4项FP64差异，但
+不等于独立证明cuBLAS内部算术，重复行也不是原完整prefill输入。
+
+首次分析在读取旧HC哈希清单时用错键层级，KeyError发生于数值
+结果生成之前，脚本和错误日志保留。修正为先校验previous-binding
+清单摘要，再按该清单逐项验证HC输出；没有重跑HTTP挑选结果。
+最终参考与审计退出0，所有构建零警告，运行时和接受二进制未改。
+
+本轮接通的是最后prefill/首decode样本的索引器链路，不覆盖完整
+prefill所有行、后续decode新组完成或多轴不同位置。原4K错答仍在，
+不宣称整模型正确或性能验收通过。证据目录
+`.q4t-work/e2e/qsa-projection-reference-20260923/`含三侧HTTP、
+projection-reference.json、decode/prefill-reference.json、
+hc-input-binding.json、previous-binding.json及artifact-binding.json。
+下一步转向完整注意力q/gate/k/v和输出投影、q/k归一化与RoPE来源；
+全prefill GDN状态和PLE等未核对链路仍不能省略。
