@@ -1,0 +1,39 @@
+from pathlib import Path
+import hashlib,json,struct,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/ple-full-conv-20260924';c=o/'observed-captures';hc=root/'.q4t-work/e2e/hc-full-boundaries-20260923';old=root/'.q4t-work/e2e/ple-conv-reference-20260923';model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream')
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+def read(f,n):
+ x=np.fromfile(f,dtype='<u2');assert len(x)==n;assert np.isfinite((x.astype('<u4')<<16).view('<f4')).all();return x
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+assert sha(root/'build/q4t')==json.loads((o/'plan.json').read_text())['binary_sha256']
+hm=json.loads((hc/'artifact-binding.json').read_text());om=json.loads((old/'artifact-binding.json').read_text());binding=[]
+index=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];key='model.language_model.layers.1.ple.conv1d.weight';f=model/index[key]
+with f.open('rb') as stream:
+ size=struct.unpack('<Q',stream.read(8))[0];info=json.loads(stream.read(size))[key];assert info['dtype']=='BF16' and info['shape']==[10240,1,4];a,b=info['data_offsets'];offset=8+size+a;stream.seek(offset);weight=stream.read(b-a)
+assert len(weight)==10240*4*2;st=f.stat();save('checkpoint-binding.json',{'key':key,'file':str(f),'offset':offset,'bytes':len(weight),'sha256':hashlib.sha256(weight).hexdigest(),'size':st.st_size,'mtime_ns':st.st_mtime_ns})
+records=[];previous=None
+for phase,rows in [('prefill',4096),('decode',1)]:
+ for kind in ([0,2] if phase=='prefill' else [1,3]):assert json.loads((c/f'{phase}.kind-{kind}.json').read_text())['ok']
+ x=read(c/(phase+'.x.bf16'),rows*10240).reshape(rows,10240);state=read(c/(phase+'.state-before.bf16'),10240*9).reshape(10240,9);after=read(c/(phase+'.state-after.bf16'),10240*9).reshape(10240,9);assert (c/(phase+'.weights.bf16')).read_bytes()==weight and (c/(phase+'.update-before.bf16')).read_bytes()==state.tobytes()
+ if phase=='prefill':assert np.all(state==0) and np.array_equal(after,x[-9:].T);previous=after.copy()
+ else:assert np.array_equal(state,previous) and np.array_equal(after,np.concatenate([state[:,1:],x.T],axis=1))
+ for suffix in ['x','weights','state-before','update-before','state-after','gated','trunk','output']:
+  f=c/(phase+'.'+suffix+'.bf16');v=np.fromfile(f,dtype='<u2');prior=old/'observed-captures'/f.name;rel=str(prior.relative_to(old));assert sha(prior)==om[rel]
+  if phase=='prefill' and suffix=='x':v=v[-10*10240:]
+  elif phase=='prefill' and suffix in ['gated','trunk','output']:v=v[-10240:]
+  assert v.tobytes()==prior.read_bytes();binding.append({'source':str(old.relative_to(root)),'file':rel,'sha256':om[rel],'relation':'matching prior tail or full small tensor'})
+ for suffix,layer,hcsuffix in [('trunk',0,'write.output'),('output',1,'read.trunk')]:
+  actual=read(c/(phase+'.'+suffix+'.bf16'),rows*10240)
+  if phase=='prefill':
+   rel=f'observed-captures/hc-{layer}.prefill.{hcsuffix}.bf16';prior=hc/rel;assert sha(prior)==hm[rel] and prior.read_bytes()==actual.tobytes();binding.append({'source':str(hc.relative_to(root)),'file':rel,'sha256':hm[rel],'relation':'full4096 byte equality'})
+ read(c/(phase+'.gated.bf16'),rows*10240)
+ records.append({'phase':phase,'tokens':rows,'output_elements':rows*10240,'state_elements':10240*9,'causal_history_update_equal':True,'checkpoint_weights_equal':True})
+save('prior-binding.json',{'hc_manifest_sha256':sha(hc/'artifact-binding.json'),'old_manifest_sha256':sha(old/'artifact-binding.json'),'records':binding})
+save('summary.json',{'records':records,'full_prefill_hc_handoffs':2,'old_tensors_equal':16,'convolution_arithmetic_verified':False,'runtime_changed':False,'whole_model_correctness_proven':False,'free_after':shutil.disk_usage(o).free})
+shutil.copy2(p/'analyze.py',o/'analyze.py');save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})
+print(json.loads((o/'summary.json').read_text()),flush=True)

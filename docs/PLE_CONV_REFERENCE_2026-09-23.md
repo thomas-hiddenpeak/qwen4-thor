@@ -103,3 +103,29 @@ artifact-binding.json以及CPU/设备数学函数全部参考输出。
 这补齐给定key/value投影输出下的PLE门控、归一化到卷积链路，
 不是key/value投影或SSD embedding来源证明。下一步检查这两组
 投影的实际权重和输入，再追溯FP8转换、hash与SSD行读取。
+
+
+## 2026-09-24后续：完整4K卷积与历史边界
+
+此前参考仅覆盖prefill末行及首decode。新只读观测器扩展到完整
+4096个位置；零警告构建后第一项为tools/evalscope三侧HTTP。
+关闭/开启/关闭观测均输出原错误答案600440、4096输入/7输出、
+stop、服务退出0、质量驱动1。原错答保持不代表质量验收通过。
+四份元数据均通过，所有采集标记出现在服务监听之后。
+
+实际卷积权重81920字节直接匹配checkpoint
+`model.language_model.layers.1.ple.conv1d.weight`，形状10240×1×4。
+完整prefill输入/gated/trunk/output保存；41943040个主干输入
+逐字节等于HC层0 write.output，41943040个最终输出逐字节等于
+HC层1 read.trunk。此前16份末尾/小张量证据摘要重读后全部一致。
+
+初始92160个历史值全零，prefill更新严格等于本块末九行转置；
+首decode历史等于该更新，随后左移一位并追加新行，更新全部一致。
+实际卷积输入gated_n及gated来源尚未独立重算，本阶段未执行
+卷积算术参考，不能把历史与交接一致报告成完整PLE正确。
+
+证据：`.q4t-work/e2e/ple-full-conv-20260924/`；模板：
+`tools/verify/ple_full_conv/`。含完整HTTP、checkpoint片段、原证据
+与HC绑定、全部采集及manifest。采集后可用22285783040字节。
+生产未改，下一步按分块有界临时空间重建全位置卷积与三次BF16
+舍入，保留全部参考差异，再补上游门控、归一化和投影。
