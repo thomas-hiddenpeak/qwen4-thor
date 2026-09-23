@@ -1,0 +1,222 @@
+#include <cuda_runtime_api.h>
+#include <cublasLt.h>
+#include <dlfcn.h>
+#include <atomic>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <string>
+#include <cstring>
+#include <vector>
+namespace {
+std::atomic<cudaKernel_t> select_kernel{nullptr},write_kernel{nullptr},prefill_kernel{nullptr},decode_kernel{nullptr};
+int counts[3][2]{};
+std::atomic<cudaKernel_t> transform_kernel[3]{};int transform_count[3][2]{};
+const uint16_t *transform_q=nullptr,*transform_k=nullptr,*transform_gate=nullptr;
+int transform_layer=-1,transform_phase=-1;
+
+std::atomic<cudaKernel_t> projection_gemv{nullptr};
+int projection_layer=-1,projection_phase=-1,projection_stage=3;
+const uint16_t *projection_x=nullptr,*projection_w=nullptr,*projection_q=nullptr,*projection_k=nullptr;
+
+const uint16_t *score_query=nullptr,*score_key=nullptr;int score_layer=-1;
+std::atomic<cudaKernel_t> extra[5]{};int extra_counts[5][2]{};
+template<class T>T Resolve(const char* s){auto p=reinterpret_cast<T>(dlsym(RTLD_NEXT,s));if(!p)std::_Exit(127);return p;}
+template<class T>T* Ptr(void** a,int i){return *static_cast<T**>(a[i]);}
+bool Save(const std::string& s,const void* p,size_t n){FILE* f=std::fopen(s.c_str(),"wb");if(!f)return false;bool ok=std::fwrite(p,1,n,f)==n;return std::fclose(f)==0&&ok;}
+bool Read(void* p,const void* d,size_t n,cudaStream_t stream){static auto copy=Resolve<decltype(&cudaMemcpyAsync)>("cudaMemcpyAsync");static auto sync=Resolve<decltype(&cudaStreamSynchronize)>("cudaStreamSynchronize");return copy(p,d,n,cudaMemcpyDeviceToHost,stream)==cudaSuccess&&sync(stream)==cudaSuccess;}
+bool Capture(const std::string& s,const void* d,size_t n,cudaStream_t stream){std::vector<unsigned char> v(n);return Read(v.data(),d,n,stream)&&Save(s,v.data(),n);}
+std::string Base(int index,int phase){return std::string(std::getenv("Q4T_QSA_CAPTURE_DIR"))+"/layer-"+std::to_string(index*4+3)+(phase?".decode":".prefill");}
+void Projection(const uint16_t* w,const uint16_t* x,const uint16_t* y,int m,int n,int k,float alpha,cudaStream_t stream,const cublasLtMatmulAlgo_t* algo=nullptr,size_t ws=0){
+ if(!std::getenv("Q4T_QSA_CAPTURE_DIR")||projection_stage<0||projection_stage>1||m!=(projection_phase?1:4096)||k!=2560||n!=(projection_stage?128:512))return;
+ bool ok=alpha==1.f;
+ const char* name=projection_stage?"ik":"iq";
+ if(projection_stage==0){projection_x=x;projection_w=w;projection_q=y;}
+ else{ok=ok&&x==projection_x&&w==projection_w+size_t(512)*2560;projection_k=y;}
+ std::string base=Base(projection_layer,projection_phase)+".projection-"+name;
+ ok=ok&&Capture(base+".weights.bf16",w,size_t(n)*k*2,stream)&&Capture(base+".input.bf16",x+size_t(m-1)*k,k*2,stream)&&Capture(base+".output.bf16",y+size_t(m-1)*n,n*2,stream);
+ if(!projection_phase)ok=ok&&algo&&ws==33554432&&Save(base+".algo.bin",algo,sizeof(*algo));
+ char meta[256];int len=std::snprintf(meta,sizeof(meta),"{\"layer\":%d,\"phase\":%d,\"stage\":%d,\"m\":%d,\"n\":%d,\"k\":%d,\"ok\":%s}\n",projection_layer*4+3,projection_phase,projection_stage,m,n,k,ok?"true":"false");if(len>0&&size_t(len)<sizeof(meta))Save(base+".json",meta,len);
+ std::fprintf(stderr,"[indexer-projection] layer=%d phase=%d stage=%d ok=%d\n",projection_layer*4+3,projection_phase,projection_stage,ok);++projection_stage;
+}
+}
+extern "C" cudaError_t __cudaGetKernel(cudaKernel_t* k,const void* fn){
+ static auto real=Resolve<cudaError_t(*)(cudaKernel_t*,const void*)>("__cudaGetKernel");auto status=real(k,fn);
+ if(status==cudaSuccess){const char* n=nullptr;static auto name=Resolve<decltype(&cudaFuncGetName)>("cudaFuncGetName");if(name(&n,fn)==cudaSuccess&&n){
+  if(std::strstr(n,"Bf16GevKernel"))projection_gemv=*k;
+  if(std::strstr(n,"QKDeinterleaveNormKernel"))transform_kernel[0]=*k;
+  if(std::strstr(n,"PartialRopeKernelILi24EE"))transform_kernel[1]=*k;
+  if(std::strstr(n,"PartialRopeKernelILi2EE"))transform_kernel[2]=*k;
+  const char* extra_names[5]={"IndexerQueryNormRopeKernel","WriteIndexRawKernel","BuildCompressedKKernel","IndexerReduceKernel","IndexerDecodeLogitsKernel"};
+  for(int i=0;i<5;++i)if(std::strstr(n,extra_names[i]))extra[i]=*k;
+  if(std::strstr(n,"ShortTopkSelectKernel"))select_kernel=*k;
+  if(std::strstr(n,"WriteKVKernel")&&std::strstr(n,"full_attention_cu"))write_kernel=*k;
+  if(std::strstr(n,"SparseAttentionKernel"))prefill_kernel=*k;
+  if(std::strstr(n,"SparseAttentionDecodeSplitKernel"))decode_kernel=*k;
+ }}return status;
+}
+extern "C" cudaError_t __cudaLaunchKernel(cudaKernel_t k,dim3 grid,dim3 block,void** a,size_t smem,cudaStream_t stream){
+ static auto real=Resolve<cudaError_t(*)(cudaKernel_t,dim3,dim3,void**,size_t,cudaStream_t)>("__cudaLaunchKernel");
+ bool enabled=std::getenv("Q4T_QSA_CAPTURE_DIR")!=nullptr;int kind=k==write_kernel?0:k==select_kernel?1:(k==prefill_kernel||k==decode_kernel)?2:-1;
+ int t=kind==0?*static_cast<int*>(a[7]):kind==1?*static_cast<int*>(a[4]):int(grid.x);int phase=t==4096?0:1,index=-1;bool take=false,ok=true;std::string base;
+ if(enabled&&kind>=0&&(t==4096||(t==1&&counts[kind][0]==12))){index=counts[kind][phase]++;take=index<12;if(take)base=Base(index,phase);}
+ if(take&&kind==2){
+  ok=*static_cast<int*>(a[7])==24&&*static_cast<int*>(a[8])==2&&*static_cast<int*>(a[9])==256&&*static_cast<int*>(a[10])==2052;
+  int seq=0;const int* ids=Ptr<int>(a,11);if(ids)ok=ok&&Read(&seq,ids+(t-1),4,stream)&&seq==0;
+  int pos=phase?4096:4095;std::vector<int> pt(pos+1);
+  ok=ok&&Read(pt.data(),Ptr<int>(a,2),pt.size()*4,stream)&&Save(base+".page-table.i32",pt.data(),pt.size()*4);
+  int maxslot=0;for(int j=0;j<=pos;++j){int slot=pt[j]*16+j%16;ok=ok&&pt[j]>=0&&slot<208896;if(slot>maxslot)maxslot=slot;}
+  ok=ok&&Capture(base+".cache.bf16",Ptr<uint16_t>(a,1),size_t(maxslot+1)*1024*2,stream)&&
+   Capture(base+".q.bf16",Ptr<uint16_t>(a,0)+size_t(t-1)*6144,6144*2,stream)&&
+   Capture(base+".gate.bf16",Ptr<uint16_t>(a,6)+size_t(t-1)*6144,6144*2,stream)&&
+   Capture(base+".attention-selection.i32",Ptr<int>(a,3)+size_t(t-1)*2052,2052*4,stream)&&
+   Capture(base+".attention-length.i32",Ptr<int>(a,4)+(t-1),4,stream);
+ }
+
+ int ek=-1,et=0,ep=0,ei=-1;bool etake=false,eok=true;std::string eb;
+ if(enabled){for(int j=0;j<5;++j)if(k==extra[j])ek=j;}
+ if(ek>=0){et=ek==0?int(grid.x)/4:*static_cast<int*>(a[ek==1?3:ek==2?5:ek==3?3:4]);ep=et==4096?0:1;
+  if(et==4096||(et==1&&counts[1][0]==12)){ei=extra_counts[ek][ep]++;etake=ei<12;if(etake)eb=Base(ei,ep);}
+ }
+ if(etake&&ek==0){
+  eok=projection_layer==ei&&projection_phase==ep&&projection_stage==2&&projection_q==Ptr<uint16_t>(a,0);
+  int seq=0,pos=-1;const int* ids=Ptr<int>(a,10);
+  int max_len=*static_cast<int*>(a[4]);
+  int geometry[7]={*static_cast<int*>(a[5]),*static_cast<int*>(a[6]),*static_cast<int*>(a[7]),max_len,*static_cast<int*>(a[11]),int(block.x),et};
+  eok=eok&&geometry[0]==4&&geometry[1]==128&&geometry[2]==64&&max_len==208896&&geometry[5]==128;
+  if(ids)eok=eok&&Read(&seq,ids+et-1,4,stream);
+  eok=eok&&seq==0&&Read(&pos,Ptr<int>(a,2)+et-1,4,stream)&&pos==(ep?4096:4095);
+  int positions[4]={pos,0,0,0};
+  if(eok)for(int row=0;row<3;++row)eok=eok&&Read(positions+row+1,Ptr<int>(a,3)+size_t(seq)*geometry[4]+size_t(row)*max_len+pos,4,stream);
+  float params[2]={*static_cast<float*>(a[8]),*static_cast<float*>(a[9])};
+  eok=eok&&Capture(eb+".iq-before.bf16",Ptr<uint16_t>(a,0)+size_t(et-1)*512,1024,stream)&&Capture(eb+".iq-norm.bf16",Ptr<uint16_t>(a,1),256,stream)&&Save(eb+".iq-params.f32",params,sizeof(params))&&Save(eb+".iq-positions.i32",positions,sizeof(positions))&&Save(eb+".iq-geometry.i32",geometry,sizeof(geometry));
+ }
+ int tk=-1,tt=0,tp=0,ti=-1;bool ttake=false,tok=true;std::string tb;
+ if(enabled)for(int j=0;j<3;++j)if(k==transform_kernel[j])tk=j;
+ if(tk>=0){tt=*static_cast<int*>(a[tk==0?7:8]);tp=tt==4096?0:1;
+  if(tt==4096||(tt==1&&counts[1][0]==12)){ti=transform_count[tk][tp]++;ttake=ti<12;if(ttake)tb=Base(ti,tp)+".transform-"+(tk==0?"norm":tk==1?"qrope":"krope");}
+ }
+ if(ttake){
+  if(tk==0){
+   tok=*static_cast<int*>(a[4])==24&&*static_cast<int*>(a[8])==2&&*static_cast<int*>(a[9])==256&&block.x==256;
+   transform_layer=ti;transform_phase=tp;transform_q=Ptr<uint16_t>(a,2);transform_k=Ptr<uint16_t>(a,5);transform_gate=Ptr<uint16_t>(a,3);
+   float eps=*static_cast<float*>(a[10]);
+   tok=tok&&Capture(tb+".qg.bf16",Ptr<uint16_t>(a,0)+size_t(tt-1)*12288,12288*2,stream)&&Capture(tb+".k-before.bf16",Ptr<uint16_t>(a,5)+size_t(tt-1)*512,512*2,stream)&&Capture(tb+".q-weight.bf16",Ptr<uint16_t>(a,1),512,stream)&&Capture(tb+".k-weight.bf16",Ptr<uint16_t>(a,6),512,stream)&&Save(tb+".epsilon.f32",&eps,4);
+  }else{
+   int nh=tk==1?24:2;int seq=0,pos=-1;int maxlen=*static_cast<int*>(a[6]);const int* ids=Ptr<int>(a,9);
+   tok=transform_layer==ti&&transform_phase==tp&&Ptr<uint16_t>(a,0)==(tk==1?transform_q:transform_k)&&*static_cast<int*>(a[1])==nh&&*static_cast<int*>(a[2])==256&&*static_cast<int*>(a[3])==64&&maxlen==208896;
+   if(ids)tok=tok&&Read(&seq,ids+tt-1,4,stream);
+   tok=tok&&seq==0&&Read(&pos,Ptr<int>(a,4)+tt-1,4,stream)&&pos==(tp?4096:4095);
+   int positions[4]={pos,0,0,0};if(tok)for(int row=0;row<3;++row)tok=tok&&Read(positions+row+1,Ptr<int>(a,5)+size_t(seq)*(*static_cast<int*>(a[10]))+size_t(row)*maxlen+pos,4,stream);
+   float theta=*static_cast<float*>(a[7]);tok=tok&&Save(tb+".positions.i32",positions,sizeof(positions))&&Save(tb+".theta.f32",&theta,4)&&Capture(tb+".before.bf16",Ptr<uint16_t>(a,0)+size_t(tt-1)*nh*256,nh*256*2,stream);
+  }
+ }
+ auto status=real(k,grid,block,a,smem,stream);
+ if(status==cudaSuccess&&k==projection_gemv)Projection(Ptr<uint16_t>(a,0),Ptr<uint16_t>(a,1),Ptr<uint16_t>(a,2),1,*static_cast<int*>(a[3]),*static_cast<int*>(a[4]),*static_cast<float*>(a[5]),stream);
+ if(ttake&&status==cudaSuccess){
+  if(tk==0)tok=tok&&Capture(tb+".q.bf16",Ptr<uint16_t>(a,2)+size_t(tt-1)*6144,6144*2,stream)&&Capture(tb+".k.bf16",Ptr<uint16_t>(a,5)+size_t(tt-1)*512,512*2,stream)&&Capture(tb+".gate.bf16",Ptr<uint16_t>(a,3)+size_t(tt-1)*6144,6144*2,stream);
+  else{int nh=tk==1?24:2;tok=tok&&Capture(tb+".after.bf16",Ptr<uint16_t>(a,0)+size_t(tt-1)*nh*256,nh*256*2,stream);}
+  char meta[160];int len=std::snprintf(meta,sizeof(meta),"{\"kind\":%d,\"layer\":%d,\"phase\":%d,\"tokens\":%d,\"ok\":%s}\n",tk,ti*4+3,tp,tt,tok?"true":"false");if(len>0&&size_t(len)<sizeof(meta))Save(tb+".json",meta,len);
+  std::fprintf(stderr,"[qk-transform] kind=%d layer=%d phase=%d ok=%d\n",tk,ti*4+3,tp,tok);
+ }
+ if(etake&&status==cudaSuccess){
+  if(ek==0&&ep==0){score_query=Ptr<uint16_t>(a,0);score_key=nullptr;score_layer=ei;}
+  if(ek==2&&ep==0&&score_layer==ei)score_key=Ptr<uint16_t>(a,2);
+  if(ek==0)eok=eok&&*static_cast<int*>(a[5])==4&&*static_cast<int*>(a[6])==128&&Capture(eb+".iq.bf16",Ptr<uint16_t>(a,0)+size_t(et-1)*512,1024,stream);
+  if(ek==1){
+   eok=projection_layer==ei&&projection_phase==ep&&projection_stage==2&&projection_k==Ptr<uint16_t>(a,0);projection_stage=3;
+   int seq=0;const int* ids=Ptr<int>(a,5);if(ids)eok=eok&&Read(&seq,ids+et-1,4,stream)&&seq==0;
+   eok=eok&&*static_cast<int*>(a[4])==128&&Capture(eb+".ik-input.bf16",Ptr<uint16_t>(a,0),size_t(et)*128*2,stream)&&Capture(eb+".index-raw.bf16",Ptr<uint16_t>(a,1),size_t(ep?4097:4096)*128*2,stream);
+  }
+  if(ek==2){
+   int seq=0;const int* ids=Ptr<int>(a,11);if(ids)eok=eok&&Read(&seq,ids+et-1,4,stream)&&seq==0;
+   eok=eok&&*static_cast<int*>(a[7])==128&&*static_cast<int*>(a[8])==4&&Capture(eb+".ik-norm.bf16",Ptr<uint16_t>(a,0),256,stream)&&Capture(eb+".compressed.bf16",Ptr<uint16_t>(a,2),1024*128*2,stream);
+   int stride=*static_cast<int*>(a[6]);for(int row=0;row<3;++row)eok=eok&&Capture(eb+".rope-"+std::to_string(row)+".i32",Ptr<int>(a,4)+size_t(row)*stride,(ep?4097:4096)*4,stream);
+   float params[2]={*static_cast<float*>(a[9]),*static_cast<float*>(a[10])};eok=eok&&Save(eb+".compressed-params.f32",params,sizeof(params));
+  }
+  if(ek==3)eok=*static_cast<int*>(a[4])==4&&*static_cast<int*>(a[5])==128&&*static_cast<int*>(a[6])==4&&*static_cast<int*>(a[7])==2048&&*static_cast<int*>(a[8])==0&&Capture(eb+".index-dot.bf16",Ptr<uint16_t>(a,0)+size_t(et-1)*4*2048,4*2048*2,stream)&&Capture(eb+".index-logits.f32",Ptr<float>(a,1)+size_t(et-1)*2048,2048*4,stream);
+  if(ek==4){int seq=-1;eok=*static_cast<int*>(a[5])==4&&*static_cast<int*>(a[6])==128&&*static_cast<int*>(a[7])==4&&*static_cast<int*>(a[8])==2048&&*static_cast<int*>(a[9])==0&&Read(&seq,Ptr<int>(a,10),4,stream)&&seq==0&&Capture(eb+".score-iq.bf16",Ptr<uint16_t>(a,0),512*2,stream)&&Capture(eb+".score-ck.bf16",Ptr<uint16_t>(a,1),1024*128*2,stream)&&Capture(eb+".index-logits.f32",Ptr<float>(a,2),2048*4,stream);}
+  char em[128];int len=std::snprintf(em,sizeof(em),"{\"kind\":%d,\"phase\":%d,\"layer\":%d,\"ok\":%s}\n",ek,ep,ei*4+3,eok?"true":"false");if(len>0&&size_t(len)<sizeof(em))Save(eb+".index-kind-"+std::to_string(ek)+".json",em,len);
+  std::fprintf(stderr,"[indexer-observer] kind=%d phase=%d layer=%d ok=%d\n",ek,ep,ei*4+3,eok);
+ }
+ if(!take||status!=cudaSuccess)return status;
+ if(kind==0){
+  projection_layer=index;projection_phase=phase;projection_stage=0;projection_x=projection_w=projection_q=projection_k=nullptr;
+  int seq=0;const int* ids=Ptr<int>(a,8);if(ids)ok=Read(&seq,ids+t-1,4,stream)&&seq==0;
+  ok=ok&&*static_cast<int*>(a[3])==2&&*static_cast<int*>(a[4])==256&&
+   Capture(base+".write-positions.i32",Ptr<int>(a,5),t*4,stream)&&
+   Capture(base+".write-k.bf16",Ptr<uint16_t>(a,0),size_t(t)*512*2,stream)&&
+   Capture(base+".write-v.bf16",Ptr<uint16_t>(a,1),size_t(t)*512*2,stream);
+ }else if(kind==1){
+  ok=*static_cast<int*>(a[5])==4&&*static_cast<int*>(a[6])==512&&*static_cast<int*>(a[7])==2048&&*static_cast<int*>(a[8])==2052&&
+   Capture(base+".position.i32",Ptr<int>(a,3)+t-1,4,stream)&&
+   Capture(base+".scores.f32",Ptr<float>(a,0)+size_t(t-1)*2048,2048*4,stream)&&
+   Capture(base+".selection.i32",Ptr<int>(a,1)+size_t(t-1)*2052,2052*4,stream)&&
+   Capture(base+".length.i32",Ptr<int>(a,2)+t-1,4,stream);
+ }else ok=ok&&Capture(base+".attention-output.bf16",Ptr<uint16_t>(a,5)+size_t(t-1)*6144,6144*2,stream);
+ char meta[256];int len=std::snprintf(meta,sizeof(meta),"{\"layer\":%d,\"phase\":%d,\"kind\":%d,\"tokens\":%d,\"ok\":%s}\n",index*4+3,phase,kind,t,ok?"true":"false");
+ if(len>0&&size_t(len)<sizeof(meta))Save(base+".kind-"+std::to_string(kind)+".json",meta,len);
+ std::fprintf(stderr,"[qsa-observer] layer=%d phase=%d kind=%d ok=%d\n",index*4+3,phase,kind,ok);return status;
+}
+
+namespace {
+template <typename T>
+bool Layout(cublasLtMatrixLayout_t layout, cublasLtMatrixLayoutAttribute_t key,
+            T* value) {
+  static const auto get = Resolve<decltype(&cublasLtMatrixLayoutGetAttribute)>(
+      "cublasLtMatrixLayoutGetAttribute");
+  size_t size = 0;
+  return get(layout, key, value, sizeof(T), &size) == CUBLAS_STATUS_SUCCESS &&
+         size == sizeof(T);
+}
+template <typename T>
+bool Attribute(cublasLtMatmulDesc_t desc, cublasLtMatmulDescAttributes_t key,
+               T* value) {
+  static const auto get = Resolve<decltype(&cublasLtMatmulDescGetAttribute)>(
+      "cublasLtMatmulDescGetAttribute");
+  size_t size = 0;
+  return get(desc, key, value, sizeof(T), &size) == CUBLAS_STATUS_SUCCESS &&
+         size == sizeof(T);
+}
+bool Shape(cublasLtMatrixLayout_t desc, uint64_t rows, uint64_t cols,
+           cudaDataType_t type) {
+  uint64_t r = 0, c = 0;
+  int64_t ld = 0;
+  cudaDataType_t t{};
+  cublasLtOrder_t order{};
+  return Layout(desc, CUBLASLT_MATRIX_LAYOUT_ROWS, &r) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_COLS, &c) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_LD, &ld) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_TYPE, &t) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_ORDER, &order) &&
+         r == rows && c == cols && ld == static_cast<int64_t>(rows) &&
+         t == type && order == CUBLASLT_ORDER_COL;
+}
+}
+
+extern "C" cublasStatus_t CUBLASWINAPI cublasLtMatmul(
+ cublasLtHandle_t handle,cublasLtMatmulDesc_t desc,const void* alpha,
+ const void* a,cublasLtMatrixLayout_t ad,const void* b,cublasLtMatrixLayout_t bd,
+ const void* beta,const void* c,cublasLtMatrixLayout_t cd,void* d,cublasLtMatrixLayout_t dd,
+ const cublasLtMatmulAlgo_t* algo,void* workspace,size_t workspace_bytes,cudaStream_t stream){
+ static auto real=Resolve<decltype(&cublasLtMatmul)>("cublasLtMatmul");
+ auto result=real(handle,desc,alpha,a,ad,b,bd,beta,c,cd,d,dd,algo,workspace,workspace_bytes,stream);
+ if(std::getenv("Q4T_QSA_CAPTURE_DIR")&&result==CUBLAS_STATUS_SUCCESS&&projection_phase==0&&projection_stage>=0&&projection_stage<2){
+  uint64_t n=0;cublasComputeType_t pc{};cudaDataType_t ps{};cublasLtEpilogue_t pe{};cublasLtPointerMode_t pm{};cublasOperation_t pa{},pb{};
+  if(Layout(ad,CUBLASLT_MATRIX_LAYOUT_COLS,&n)&&(n==512||n==128)&&Shape(ad,2560,n,CUDA_R_16BF)&&Shape(bd,2560,4096,CUDA_R_16BF)&&Shape(dd,n,4096,CUDA_R_16BF)&&Shape(cd,n,4096,CUDA_R_16BF)&&Attribute(desc,CUBLASLT_MATMUL_DESC_COMPUTE_TYPE,&pc)&&pc==CUBLAS_COMPUTE_32F&&Attribute(desc,CUBLASLT_MATMUL_DESC_SCALE_TYPE,&ps)&&ps==CUDA_R_32F&&Attribute(desc,CUBLASLT_MATMUL_DESC_EPILOGUE,&pe)&&pe==CUBLASLT_EPILOGUE_DEFAULT&&Attribute(desc,CUBLASLT_MATMUL_DESC_POINTER_MODE,&pm)&&pm==CUBLASLT_POINTER_MODE_HOST&&Attribute(desc,CUBLASLT_MATMUL_DESC_TRANSA,&pa)&&pa==CUBLAS_OP_T&&Attribute(desc,CUBLASLT_MATMUL_DESC_TRANSB,&pb)&&pb==CUBLAS_OP_N&&*static_cast<const float*>(beta)==0.f)
+   Projection(static_cast<const uint16_t*>(a),static_cast<const uint16_t*>(b),static_cast<const uint16_t*>(d),4096,int(n),2560,*static_cast<const float*>(alpha),stream,algo,workspace_bytes);
+ }
+ if(!std::getenv("Q4T_QSA_CAPTURE_DIR")||result!=CUBLAS_STATUS_SUCCESS||score_layer<0||score_layer>=12||a!=score_key||b!=score_query)return result;
+ cublasComputeType_t compute{};cudaDataType_t scale{};cublasLtEpilogue_t epilogue{};cublasLtPointerMode_t mode{};cublasOperation_t ta{},tb{};
+ bool ok=Shape(ad,128,2048,CUDA_R_16BF)&&Shape(bd,128,16384,CUDA_R_16BF)&&Shape(dd,2048,16384,CUDA_R_16BF)&&
+  Attribute(desc,CUBLASLT_MATMUL_DESC_COMPUTE_TYPE,&compute)&&compute==CUBLAS_COMPUTE_32F&&
+  Attribute(desc,CUBLASLT_MATMUL_DESC_SCALE_TYPE,&scale)&&scale==CUDA_R_32F&&
+  Attribute(desc,CUBLASLT_MATMUL_DESC_EPILOGUE,&epilogue)&&epilogue==CUBLASLT_EPILOGUE_DEFAULT&&
+  Attribute(desc,CUBLASLT_MATMUL_DESC_POINTER_MODE,&mode)&&mode==CUBLASLT_POINTER_MODE_HOST&&
+  Attribute(desc,CUBLASLT_MATMUL_DESC_TRANSA,&ta)&&ta==CUBLAS_OP_T&&Attribute(desc,CUBLASLT_MATMUL_DESC_TRANSB,&tb)&&tb==CUBLAS_OP_N&&
+  *static_cast<const float*>(alpha)==1.f&&*static_cast<const float*>(beta)==0.f&&workspace_bytes==33554432&&algo;
+ std::string base=Base(score_layer,0)+".gemm";
+ ok=ok&&Capture(base+".keys.bf16",a,128*2048*2,stream)&&Capture(base+".query.bf16",static_cast<const uint16_t*>(b)+size_t(16380)*128,4*128*2,stream)&&Capture(base+".output.bf16",static_cast<const uint16_t*>(d)+size_t(16380)*2048,4*2048*2,stream)&&Save(base+".algo.bin",algo,sizeof(*algo));
+ char meta[256];int len=std::snprintf(meta,sizeof(meta),"{\"layer\":%d,\"m\":16384,\"n\":2048,\"k\":128,\"workspace_bytes\":%zu,\"ok\":%s}\n",score_layer*4+3,workspace_bytes,ok?"true":"false");if(len>0&&size_t(len)<sizeof(meta))Save(base+".gemm.json",meta,len);
+ std::fprintf(stderr,"[indexer-gemm] layer=%d ok=%d\n",score_layer*4+3,ok);score_layer=-1;return result;
+}

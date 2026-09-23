@@ -1,0 +1,22 @@
+from pathlib import Path
+import json,hashlib,shutil
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/qsa-qk-transform-20260923';c=o/'observed-captures'
+def sha(f):return hashlib.sha256(f.read_bytes()).hexdigest()
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+for name,h in json.loads((o/'previous-binding.json').read_text())['hashes'].items():assert sha(c/name)==h
+r=json.loads((o/'transform-reference.json').read_text());assert r['totals']==[0,0,66,66,0,0,66,0]
+for side in ['q','k']:
+ s=(o/f'{side}-rope.sass').read_text()
+ for fragment in ['FMUL R11, R0.reuse, R7','FMUL R0, R0, R9','FFMA R11, R16.reuse, R9, -R11','FFMA R0, R16, R7, R0']:assert fragment in s
+for l in range(3,48,4):
+ for phase in ['prefill','decode']:
+  for side in ['q','k']:
+   b=f'layer-{l}.{phase}.{side}'
+   for variant in [0,1]:assert (o/'data'/(b+f'.variant-{variant}.bf16')).read_bytes()==(c/f'layer-{l}.{phase}.transform-norm.{side}.bf16').read_bytes()
+   assert (o/'data'/(b+'.variant-7.bf16')).read_bytes()==(c/f'layer-{l}.{phase}.transform-{side}rope.after.bf16').read_bytes()
+save(o/'sass-order-decision.json',{'rope_variant':7,'reason':'N24 q at18b0/18c0 FMUL sin*b and sin*a,18d0/18e0 FFMA cos*a-minus and cos*b-plus; N2 k addresses18a0/18b0 and18c0/18d0 same sequence. Operand loads R9/R10, expanded to R9/R7.','ambiguity':'All device math contraction variants agree on these inputs, so data alone cannot identify contraction.','norm_matching_variants':[0,1],'norm_elements':159744,'rope_elements':159744,'gate_copy_elements':147456,'limitations':'Last prefill/first decode only;text MRoPE axes identical;actual projection inputs not independently proven. Original4K wrong answer unchanged.'})
+for name in ['analyze.py','analyze.log','cpu.cpp','cpu','cpu-build.log','nonlinear.cu','nonlinear','nonlinear-build.log','audit.py','prepare.py']:shutil.copy2(p/name,o/name)
+save(o/'artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})
+print('audit passed:159744 norm+159744 rope outputs;147456 gate copies; production unchanged')

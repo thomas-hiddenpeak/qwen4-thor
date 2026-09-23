@@ -20,6 +20,12 @@ TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间�
 
 ## 当前决策摘要
 
+- **主注意力q/k归一化、gate拆分及旋转局部一致。**
+  新观测先三侧HTTP仍原错、服务0，1176份旧记录不变；实际权重
+  同checkpoint，gate147456项字节复制正确，归一化与旋转各
+  159744项同指定参考。FP64的1/39项及全部变体保留；生产未改。
+  下一步q/gate/k/v/out投影，见
+  [主注意力变换报告](QSA_QK_TRANSFORM_REFERENCE_2026-09-23.md)。
 - **原始indexer query/key投影与HC输入已绑定。**
   新观测先三侧HTTP仍原错、服务0；48次权重同checkpoint切片，
   输入同此前HC输出、实际输出指针接通下游，960份旧记录不变。

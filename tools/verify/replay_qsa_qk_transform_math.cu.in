@@ -1,0 +1,16 @@
+#include <cuda_runtime.h>
+#include <cstdio>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+#define CU(x) do{if((x)!=cudaSuccess)throw std::runtime_error(#x);}while(0)
+__global__ void Elementary(const float* variance,const int* pos,float* inv,float* co,float* si,float theta){int g=blockIdx.x,d=threadIdx.x;if(d==0)inv[g]=rsqrtf(variance[g]);if(d<64){int pair=d%32;float freq=powf(theta,-2.0f*pair/64.0f);float angle=float(pos[g*64+d])*freq;co[g*64+d]=cosf(angle);si[g*64+d]=sinf(angle);}}
+template<class T>std::vector<T> Read(const std::string& s,size_t n){std::ifstream f(s,std::ios::binary|std::ios::ate);if(!f||size_t(f.tellg())!=n*sizeof(T))throw std::runtime_error(s);std::vector<T> v(n);f.seekg(0);if(!f.read(reinterpret_cast<char*>(v.data()),n*sizeof(T)))throw std::runtime_error(s);return v;}
+template<class T>T* Upload(const std::vector<T>& v){T* p;CU(cudaMalloc(&p,v.size()*sizeof(T)));CU(cudaMemcpy(p,v.data(),v.size()*sizeof(T),cudaMemcpyHostToDevice));return p;}
+void Save(const std::string& s,float* p,size_t n){std::vector<float> v(n);CU(cudaMemcpy(v.data(),p,n*4,cudaMemcpyDeviceToHost));std::ofstream f(s,std::ios::binary);f.write(reinterpret_cast<char*>(v.data()),n*4);if(!f)throw std::runtime_error(s);}
+int main(int argc,char** argv){try{
+ if(argc!=2){throw std::runtime_error("directory");}
+ for(int l=3;l<48;l+=4)for(const char* phase:{"prefill","decode"})for(const char* side:{"q","k"}){int heads=side[0]=='q'?24:2;std::string b=std::string(argv[1])+"/layer-"+std::to_string(l)+"."+phase+"."+side;auto params=Read<float>(b+".params.f32",2);float* variance=Upload(Read<float>(b+".variance.f32",heads));int* pos=Upload(Read<int>(b+".positions.i32",heads*64));float *inv,*co,*si;CU(cudaMalloc(&inv,heads*4));CU(cudaMalloc(&co,heads*64*4));CU(cudaMalloc(&si,heads*64*4));Elementary<<<heads,64>>>(variance,pos,inv,co,si,params[0]);CU(cudaGetLastError());Save(b+".inv.f32",inv,heads);Save(b+".cos.f32",co,heads*64);Save(b+".sin.f32",si,heads*64);CU(cudaFree(variance));CU(cudaFree(pos));CU(cudaFree(inv));CU(cudaFree(co));CU(cudaFree(si));}
+ return 0;
+}catch(const std::exception& e){std::fprintf(stderr,"%s\n",e.what());return 1;}}
