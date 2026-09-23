@@ -1,0 +1,30 @@
+// Elementary device sigmoid only; no production mixing kernel is called.
+#include <cuda_runtime.h>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+#define CU(x) do { if((x)!=cudaSuccess)throw std::runtime_error(#x); } while(0)
+__global__ void Sigmoid(const float* x,float* y){
+ int i=blockIdx.x*blockDim.x+threadIdx.x;
+ if(i<10240)y[i]=1.0f/(1.0f+__expf(-x[i]));
+}
+int main(int argc,char** argv){try{
+ if(argc!=3)throw std::runtime_error("captures outputs");
+ for(int step=0;step<7;++step){
+  std::string name="step-"+std::to_string(step);
+  std::ifstream f(std::string(argv[1])+"/"+name+".mix-up.bf16",std::ios::binary|std::ios::ate);
+  if(!f||f.tellg()!=20480)throw std::runtime_error(name);
+  std::vector<uint16_t> bits(10240);std::vector<float> x(10240),y(10240);f.seekg(0);
+  if(!f.read(reinterpret_cast<char*>(bits.data()),20480))throw std::runtime_error("read");
+  for(int i=0;i<10240;++i){uint32_t b=uint32_t(bits[i])<<16;std::memcpy(&x[i],&b,4);}
+  float *dx,*dy;CU(cudaMalloc(&dx,40960));CU(cudaMalloc(&dy,40960));CU(cudaMemcpy(dx,x.data(),40960,cudaMemcpyHostToDevice));
+  Sigmoid<<<80,128>>>(dx,dy);CU(cudaGetLastError());CU(cudaMemcpy(y.data(),dy,40960,cudaMemcpyDeviceToHost));
+  std::ofstream out(std::string(argv[2])+"/"+name+".sigmoid.f32",std::ios::binary);out.write(reinterpret_cast<char*>(y.data()),40960);if(!out)throw std::runtime_error("write");
+  CU(cudaFree(dx));CU(cudaFree(dy));
+ }
+ return 0;
+}catch(const std::exception& e){std::fprintf(stderr,"%s\n",e.what());return 1;}}

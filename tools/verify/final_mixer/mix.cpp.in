@@ -1,0 +1,33 @@
+// Independent CPU four-branch fma reduction with CPU/device sigmoid variants.
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+float Decode(uint16_t v){uint32_t b=uint32_t(v)<<16;float f;std::memcpy(&f,&b,4);return f;}
+uint16_t Round(float f){uint32_t b;std::memcpy(&b,&f,4);return (b+0x7fff+((b>>16)&1))>>16;}
+template<class T>std::vector<T> Read(const std::string& s,size_t n){
+ std::ifstream f(s,std::ios::binary|std::ios::ate);if(!f||size_t(f.tellg())!=n*sizeof(T))throw std::runtime_error(s);
+ std::vector<T> v(n);f.seekg(0);if(!f.read(reinterpret_cast<char*>(v.data()),n*sizeof(T)))throw std::runtime_error(s);return v;
+}
+int main(int argc,char** argv){try{
+ if(argc!=3)throw std::runtime_error("captures outputs");
+ bool first=true;size_t totals[2]{};std::printf("{\"records\":[");
+ for(int step=0;step<7;++step){
+  std::string name="step-"+std::to_string(step),b=std::string(argv[1])+"/"+name,o=std::string(argv[2])+"/"+name;
+  auto up=Read<uint16_t>(b+".mix-up.bf16",10240),n=Read<uint16_t>(b+".mix-normed.bf16",10240),expected=Read<uint16_t>(b+".mix-output.bf16",2560);
+  auto device=Read<float>(o+".sigmoid.f32",10240);std::vector<float> cpu(10240);
+  for(int i=0;i<10240;++i)cpu[i]=1.0f/(1.0f+float(std::exp(-double(Decode(up[i])))));
+  for(int variant=0;variant<2;++variant){
+   const auto& gate=variant?device:cpu;std::vector<uint16_t> result(2560);size_t bad=0;
+   for(int c=0;c<2560;++c){float sum=0;for(int branch=0;branch<4;++branch){int i=branch*2560+c;sum=std::fma(gate[i],Decode(n[i]),sum);}result[c]=Round(sum/4.0f);bad+=result[c]!=expected[c];}
+   std::string suffix=variant?".cuda-sig-cpu-mix.bf16":".mix-cpu.bf16";
+   std::ofstream f(o+suffix,std::ios::binary);f.write(reinterpret_cast<char*>(result.data()),5120);if(!f)throw std::runtime_error("write");
+   std::printf("%s{\"name\":\"%s\",\"variant\":%d,\"elements\":2560,\"mismatches\":%zu}",first?"":",",name.c_str(),variant,bad);first=false;totals[variant]+=bad;
+  }
+ }
+ std::printf("],\"cpu_mismatches\":%zu,\"device_sigmoid_mismatches\":%zu}\n",totals[0],totals[1]);return 0;
+}catch(const std::exception& e){std::fprintf(stderr,"%s\n",e.what());return 2;}}

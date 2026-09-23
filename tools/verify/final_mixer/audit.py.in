@@ -1,0 +1,25 @@
+from pathlib import Path
+import hashlib,json,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/final-mixer-reference-20260923';c=o/'observed-captures';d=o/'reference'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for block in iter(lambda:stream.read(4*1024*1024),b''):h.update(block)
+ return h.hexdigest()
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+r=json.loads((o/'mixer-reference.json').read_text());assert r['projections']['total_mismatches']==r['norm_cpu']['total_mismatches']==r['norm_device']['total_mismatches']==r['mix']['cpu_mismatches']==r['mix']['device_sigmoid_mismatches']==0
+assert sum(x['elements'] for x in r['projections']['records'])==73920
+for step in range(7):
+ b='step-'+str(step)
+ for actual,reference in [('norm-output','.cpu.bf16'),('norm-output','.device-inv-cpu.bf16'),('down-output','.down.cpu.bf16'),('up-output','.up.cpu.bf16'),('mix-output','.mix-cpu.bf16'),('mix-output','.cuda-sig-cpu-mix.bf16'),('silu-output','.silu-cpu.bf16'),('silu-output','.silu-device.bf16')]:assert (c/(b+'.'+actual+'.bf16')).read_bytes()==(d/(b+reference)).read_bytes(),(step,actual,reference)
+ for left,right in [('last-trunk','norm-input'),('norm-output','down-input'),('norm-output','mix-normed'),('silu-output','up-input'),('up-output','mix-up'),('mix-output','lm-input')]:assert (c/(b+'.'+left+'.bf16')).read_bytes()==(c/(b+'.'+right+'.bf16')).read_bytes()
+for name,h in json.loads((o/'previous-binding.json').read_text()).items():assert sha(c/name)==h
+for name,h in json.loads((o/'hc-binding.json').read_text()).items():assert sha(root/name)==h
+for record in json.loads((o/'checkpoint-binding.json').read_text()):
+ f=Path(record['path']);st=f.stat();assert st.st_size==record['size'] and st.st_mtime_ns==record['mtime_ns']
+ with f.open('rb') as stream:stream.seek(record['offset']);raw=stream.read(record['bytes']);assert len(raw)==record['bytes'] and hashlib.sha256(raw).hexdigest()==record['sha256']
+for f in p.iterdir():
+ if f.is_file() and f.name not in ['observer.so']:shutil.copy2(f,o/f.name)
+(o/'artifact-binding.json').write_text(json.dumps({str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'},indent=2)+'\n')
+print('audit passed:71680 norm,73920 projection,2240 SiLU,17920 mix BF16 values;114 prior captures unchanged;production unchanged')

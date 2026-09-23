@@ -1,0 +1,18 @@
+from pathlib import Path
+import json,subprocess,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/final-mixer-reference-20260923';c=o/'observed-captures';data=o/'reference'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+assert (p/'silu-build.log').stat().st_size==0
+with (o/'silu-device.log').open('w') as log:result=subprocess.run([str(p/'silu'),str(c),str(data)],stdout=log,stderr=subprocess.STDOUT)
+assert result.returncode==0
+def decode(x):return (x.astype(np.uint32)<<16).view(np.float32)
+def rnd(x):
+ b=x.astype(np.float32).view(np.uint32);return ((b+0x7fff+((b>>16)&1))>>16).astype(np.uint16)
+records=[]
+for step in range(7):
+ x=decode(np.fromfile(c/f'step-{step}.down-output.bf16',dtype='<u2'))*np.float32(.25);expected=np.fromfile(c/f'step-{step}.silu-output.bf16',dtype='<u2')
+ # FP32 rounding after exp, addition and division, retaining CPU math source.
+ exp64=np.exp(-x.astype(np.float64));overflow=exp64>np.finfo(np.float32).max;ex=np.full(x.shape,np.inf,dtype=np.float32);ex[~overflow]=exp64[~overflow].astype(np.float32);cpu=rnd(x/(np.float32(1)+ex));device=rnd(np.fromfile(data/f'step-{step}.silu-device.f32',dtype='<f4'))
+ cpu.tofile(data/f'step-{step}.silu-cpu.bf16');device.tofile(data/f'step-{step}.silu-device.bf16');a=np.flatnonzero(cpu!=expected);b=np.flatnonzero(device!=expected);a.astype('<i4').tofile(data/f'step-{step}.silu-cpu-differences.i32');b.astype('<i4').tofile(data/f'step-{step}.silu-device-differences.i32');assert len(b)==0
+ records.append({'step':step,'elements':320,'exp_float32_overflows':int(np.count_nonzero(overflow)),'cpu_mismatches':len(a),'device_mismatches':len(b)})
+(o/'silu-reference.json').write_text(json.dumps(records,indent=2)+'\n');print(records)

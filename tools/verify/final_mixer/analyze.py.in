@@ -1,0 +1,53 @@
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import json,struct,hashlib,subprocess,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/final-mixer-reference-20260923';c=o/'observed-captures';data=o/'reference'
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for block in iter(lambda:stream.read(4*1024*1024),b''):h.update(block)
+ return h.hexdigest()
+def read(f):return np.fromfile(f,dtype='<u2')
+def decode(x):return (x.astype(np.uint32)<<16).view(np.float32)
+def roundbf(x):
+ b=x.astype(np.float32).view(np.uint32);return ((b+0x7fff+((b>>16)&1))>>16).astype(np.uint16)
+def run(name,args,output):
+ assert (p/(name+'-build.log')).stat().st_size==0
+ with (o/output).open('w') as log:r=subprocess.run([str(p/name)]+list(map(str,args)),stdout=log,stderr=subprocess.PIPE,text=True,env={**os.environ,'OMP_NUM_THREADS':'12'})
+ (o/(output+'.stderr')).write_text(r.stderr);assert r.returncode==0
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+assert json.loads((o/'capture-steps.json').read_text())=={'steps':7,'decode_steps':6,'metadata':82}
+data.mkdir(exist_ok=False)
+old=root/'.q4t-work/e2e/output-head-reference-20260923';manifest=json.loads((old/'artifact-binding.json').read_text());bindings={}
+for f in (old/'observed-captures').iterdir():
+ h=sha(f);assert h==manifest['observed-captures/'+f.name] and sha(c/f.name)==h;bindings[f.name]=h
+save(o/'previous-binding.json',bindings)
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');index=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];binding=[]
+for tag,suffix,shape in [('norm','hc_norm.weight',[10240]),('down','input_mix_weight_down.weight',[320,10240]),('up','input_mix_weight_up.weight',[10240,320])]:
+ name='model.language_model.hyper_connection_mixer.'+suffix;file=model/index[name];st=file.stat()
+ with file.open('rb') as f:
+  n=struct.unpack('<Q',f.read(8))[0];info=json.loads(f.read(n))[name];assert info['dtype']=='BF16' and info['shape']==shape,(name,info);a,b=info['data_offsets'];f.seek(8+n+a);raw=f.read(b-a);assert len(raw)==b-a
+ for step in range(7):assert (c/f'step-{step}.{tag}-weights.bf16').read_bytes()==raw
+ assert file.stat()==st;binding.append({'tensor':name,'path':str(file),'offset':8+n+a,'bytes':b-a,'shape':shape,'sha256':hashlib.sha256(raw).hexdigest(),'mtime_ns':st.st_mtime_ns,'size':st.st_size})
+save(o/'checkpoint-binding.json',binding)
+hc=root/'.q4t-work/e2e/hc-projection-reference-20260923';hm=json.loads((hc/'artifact-binding.json').read_text());assert sha(hc/'previous-binding.json')==hm['previous-binding.json'];hh={x['file']:x['sha256'] for x in json.loads((hc/'previous-binding.json').read_text())['records']};hb={};records=[]
+for step in range(7):
+ b=str(c/f'step-{step}')
+ for left,right in [('last-trunk','norm-input'),('norm-output','down-input'),('norm-output','mix-normed'),('silu-output','up-input'),('up-output','mix-up'),('mix-output','lm-input')]:assert Path(b+'.'+left+'.bf16').read_bytes()==Path(b+'.'+right+'.bf16').read_bytes()
+ if step<2:
+  f=hc/'observed-captures'/('hc-47.'+('prefill' if step==0 else 'decode')+'.write.output.bf16');assert sha(f)==hh[f.name] and f.read_bytes()==Path(b+'.last-trunk.bf16').read_bytes();hb[str(f.relative_to(root))]=sha(f)
+ eps=np.fromfile(b+'.eps.f32',dtype='<f4');assert eps.tolist()==[float(np.float32(1e-6))]
+ x=decode(read(b+'.norm-input.bf16')).astype(np.float64).reshape(4,2560);w=decode(read(b+'.norm-weights.bf16')).astype(np.float64).reshape(4,2560);norm=roundbf(x/np.sqrt(np.mean(x*x,axis=1,keepdims=True)+float(eps[0]))*(1+w)).reshape(-1)
+ diffs={}
+ for tag,pred in [('norm',norm)]:
+  diff=np.flatnonzero(pred!=read(b+'.'+tag+'-output.bf16'));diff.astype('<i4').tofile(data/f'step-{step}.{tag}-fp64-differences.i32');diffs[tag]=len(diff)
+ for tag,n,k in [('down',320,10240),('up',10240,320)]:
+  weight=decode(read(b+'.'+tag+'-weights.bf16')).astype(np.float64).reshape(n,k);inp=decode(read(b+'.'+tag+'-input.bf16')).astype(np.float64);pred=roundbf(weight@inp);diff=np.flatnonzero(pred!=read(b+'.'+tag+'-output.bf16'));diff.astype('<i4').tofile(data/f'step-{step}.{tag}-fp64-differences.i32');diffs[tag]=len(diff)
+ v=decode(read(b+'.down-output.bf16')).astype(np.float64)*0.25;pred=roundbf(v/(1+np.exp(-v)));diff=np.flatnonzero(pred!=read(b+'.silu-output.bf16'));diff.astype('<i4').tofile(data/f'step-{step}.silu-fp64-differences.i32');diffs['silu']=len(diff)
+ u=decode(read(b+'.mix-up.bf16')).astype(np.float64).reshape(4,2560);n=decode(read(b+'.mix-normed.bf16')).astype(np.float64).reshape(4,2560);pred=roundbf(np.sum(n/(1+np.exp(-u)),axis=0)*0.25);diff=np.flatnonzero(pred!=read(b+'.mix-output.bf16'));diff.astype('<i4').tofile(data/f'step-{step}.mix-fp64-differences.i32');diffs['mix']=len(diff);records.append({'step':step,'fp64_mismatches':diffs})
+save(o/'hc-binding.json',hb);save(o/'fp64-reference.json',records)
+run('projection',[c,data],'projection-reference.json');run('norm',[c,data,'cpu'],'norm-cpu-reference.json');run('rsqrt',[data],'rsqrt.log');run('norm',[c,data,'device'],'norm-device-reference.json');run('sigmoid',[c,data],'sigmoid.log');run('mix',[c,data],'mix-reference.json')
+summary={'fp64':records,'projections':json.loads((o/'projection-reference.json').read_text()),'norm_cpu':json.loads((o/'norm-cpu-reference.json').read_text()),'norm_device':json.loads((o/'norm-device-reference.json').read_text()),'mix':json.loads((o/'mix-reference.json').read_text()),'previous_files':len(bindings),'runtime_changed':False,'whole_model_correctness_proven':False}
+save(o/'mixer-reference.json',summary);print(json.dumps(summary,indent=2),flush=True)

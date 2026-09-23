@@ -20,6 +20,12 @@ TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间�
 
 ## 当前决策摘要
 
+- **最终mixer七步接通最后主干与lm_head。**
+  新观测先三侧原4K HTTP仍原错、服务0，82份元数据完整，旧114
+  份快照不变；三组权重同checkpoint。71680归一化、73920投影、
+  2240 SiLU、17920混合输出同指定CPU算术。FP64投影4项差异及
+  SiLU两项exp溢出负零行为保留；生产未改，原错未修复。下一步
+  完整prefill GDN状态，见[最终mixer报告](FINAL_MIXER_REFERENCE_2026-09-23.md)。
 - **lm_head全词表与greedy交接核对一致。**
   新观测先三侧原4K HTTP仍600440、服务0，40份元数据完整；
   七次实际权重同checkpoint，1738240个logits同独立CPU指定算术。

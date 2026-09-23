@@ -1,0 +1,30 @@
+// Device SiLU only, no production model kernel is called.
+#include <cuda_runtime.h>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+#define CU(x) do { if((x)!=cudaSuccess)throw std::runtime_error(#x); } while(0)
+__global__ void Sigmoid(const float* x,float* y){
+ int i=blockIdx.x*blockDim.x+threadIdx.x;
+ if(i<320){float v=x[i]*0.25f;y[i]=v/(1.0f+__expf(-v));}
+}
+int main(int argc,char** argv){try{
+ if(argc!=3)throw std::runtime_error("captures outputs");
+ for(int step=0;step<7;++step){
+  std::string name="step-"+std::to_string(step);
+  std::ifstream f(std::string(argv[1])+"/"+name+".down-output.bf16",std::ios::binary|std::ios::ate);
+  if(!f||f.tellg()!=640)throw std::runtime_error(name);
+  std::vector<uint16_t> bits(320);std::vector<float> x(320),y(320);f.seekg(0);
+  if(!f.read(reinterpret_cast<char*>(bits.data()),640))throw std::runtime_error("read");
+  for(int i=0;i<320;++i){uint32_t b=uint32_t(bits[i])<<16;std::memcpy(&x[i],&b,4);}
+  float *dx,*dy;CU(cudaMalloc(&dx,1280));CU(cudaMalloc(&dy,1280));CU(cudaMemcpy(dx,x.data(),1280,cudaMemcpyHostToDevice));
+  Sigmoid<<<80,128>>>(dx,dy);CU(cudaGetLastError());CU(cudaMemcpy(y.data(),dy,1280,cudaMemcpyDeviceToHost));
+  std::ofstream out(std::string(argv[2])+"/"+name+".silu-device.f32",std::ios::binary);out.write(reinterpret_cast<char*>(y.data()),1280);if(!out)throw std::runtime_error("write");
+  CU(cudaFree(dx));CU(cudaFree(dy));
+ }
+ return 0;
+}catch(const std::exception& e){std::fprintf(stderr,"%s\n",e.what());return 1;}}

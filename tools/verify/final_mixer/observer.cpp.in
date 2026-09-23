@@ -1,0 +1,46 @@
+#include <cuda_runtime_api.h>
+#include <dlfcn.h>
+#include <atomic>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <vector>
+namespace {
+std::atomic<cudaKernel_t> lookup{nullptr},convert{nullptr},scale_kernel{nullptr},gemv{nullptr},chunk_kernel{nullptr},select_kernel{nullptr};
+const uint16_t* logits=nullptr;const float* partial_v=nullptr;const int* partial_i=nullptr;bool lm_done=false,chunk_done=false;
+
+std::atomic<cudaKernel_t> norm_kernel{nullptr},write_kernel{nullptr},silu_kernel{nullptr},mix_kernel{nullptr};
+int writes=0,norms=0,phase=0;const uint16_t *last_trunk=nullptr,*normed=nullptr,*down=nullptr,*up=nullptr,*mixed=nullptr;
+int step=-1,tokens=0;bool converted=false,scaled=true;const uint16_t* embedding=nullptr;
+template<class T>T Resolve(const char* n){auto p=reinterpret_cast<T>(dlsym(RTLD_NEXT,n));if(!p)std::_Exit(127);return p;}
+template<class T>T* Ptr(void** a,int i){return *static_cast<T**>(a[i]);}
+bool Save(const std::string& s,const void* p,size_t n){FILE* f=std::fopen(s.c_str(),"wb");if(!f)return false;bool ok=std::fwrite(p,1,n,f)==n;return std::fclose(f)==0&&ok;}
+bool Capture(const std::string& s,const void* d,size_t n,cudaStream_t stream){static auto copy=Resolve<decltype(&cudaMemcpyAsync)>("cudaMemcpyAsync");static auto sync=Resolve<decltype(&cudaStreamSynchronize)>("cudaStreamSynchronize");std::vector<unsigned char> v(n);return copy(v.data(),d,n,cudaMemcpyDeviceToHost,stream)==cudaSuccess&&sync(stream)==cudaSuccess&&Save(s,v.data(),n);}
+std::string Base(){return std::string(std::getenv("Q4T_PLE_CAPTURE_DIR"))+"/step-"+std::to_string(step);}
+bool Weights(const uint16_t* w,cudaStream_t stream){
+ static auto copy=Resolve<decltype(&cudaMemcpyAsync)>("cudaMemcpyAsync");static auto sync=Resolve<decltype(&cudaStreamSynchronize)>("cudaStreamSynchronize");std::string path=std::string(std::getenv("Q4T_PLE_CAPTURE_DIR"))+"/lm-weights.bf16";FILE* f=std::fopen(path.c_str(),step==0?"wb":"rb");if(!f)return false;
+ constexpr size_t total=size_t(248320)*2560*2,chunk=4*1024*1024;std::vector<unsigned char> value(chunk),expected(chunk);bool ok=true;
+ for(size_t off=0;off<total&&ok;off+=chunk){size_t bytes=total-off<chunk?total-off:chunk;ok=copy(value.data(),reinterpret_cast<const unsigned char*>(w)+off,bytes,cudaMemcpyDeviceToHost,stream)==cudaSuccess&&sync(stream)==cudaSuccess;if(ok)ok=step==0?std::fwrite(value.data(),1,bytes,f)==bytes:(std::fread(expected.data(),1,bytes,f)==bytes&&std::memcmp(value.data(),expected.data(),bytes)==0);}
+ return std::fclose(f)==0&&ok;
+}
+void Meta(const std::string& kind,bool ok){char m[160];int n=std::snprintf(m,sizeof(m),"{\"step\":%d,\"tokens\":%d,\"kind\":\"%s\",\"ok\":%s}\n",step,tokens,kind.c_str(),ok?"true":"false");if(n>0&&size_t(n)<sizeof(m))Save(Base()+"."+kind+".json",m,n);std::fprintf(stderr,"[ple-lookup] step=%d kind=%s ok=%d\n",step,kind.c_str(),ok);}
+}
+extern "C" cudaError_t __cudaGetKernel(cudaKernel_t* k,const void* fn){static auto real=Resolve<cudaError_t(*)(cudaKernel_t*,const void*)>("__cudaGetKernel");auto s=real(k,fn);if(s==cudaSuccess){const char* n=nullptr;static auto name=Resolve<decltype(&cudaFuncGetName)>("cudaFuncGetName");if(name(&n,fn)==cudaSuccess&&n){if(std::strstr(n,"hyperconnection_cu")){if(std::strstr(n,"GroupedRmsNormKernel"))norm_kernel=*k;if(std::strstr(n,"CombineWithGateKernel"))write_kernel=*k;if(std::strstr(n,"SiluDivKernel"))silu_kernel=*k;if(std::strstr(n,"MixGatePairKernel"))mix_kernel=*k;}if(std::strstr(n,"EmbedLookupKernel")&&std::strstr(n,"model_head_cu"))lookup=*k;if(std::strstr(n,"Bf16GevKernel"))gemv=*k;if(std::strstr(n,"ArgmaxBf16ChunkKernel"))chunk_kernel=*k;if(std::strstr(n,"ArgmaxBf16ReduceKernel"))select_kernel=*k;if(std::strstr(n,"Fp8ToBf16Kernel")&&std::strstr(n,"fp8_convert_cu"))convert=*k;if(std::strstr(n,"ScaleBf16Kernel")&&std::strstr(n,"model_cu"))scale_kernel=*k;}}return s;}
+extern "C" cudaError_t __cudaLaunchKernel(cudaKernel_t k,dim3 grid,dim3 block,void** a,size_t smem,cudaStream_t stream){
+ static auto real=Resolve<cudaError_t(*)(cudaKernel_t,dim3,dim3,void**,size_t,cudaStream_t)>("__cudaLaunchKernel");auto s=real(k,grid,block,a,smem,stream);if(!std::getenv("Q4T_PLE_CAPTURE_DIR")||s!=cudaSuccess)return s;
+ if(k==lookup){bool ok=scaled&&((step==-1&&grid.x==4096)||(step>=0&&grid.x==1))&&*static_cast<int*>(a[3])==2560;++step;tokens=int(grid.x);converted=false;scaled=false;ok=ok&&step<16&&Capture(Base()+".tokens.i32",Ptr<int32_t>(a,1),size_t(tokens)*4,stream);Meta("tokens",ok);lm_done=false;chunk_done=false;logits=nullptr;writes=0;norms=0;phase=0;last_trunk=nullptr;}
+ if(k==convert&&step>=0){size_t count=*static_cast<size_t*>(a[2]);bool ok=!converted&&!scaled&&count==size_t(tokens)*2560;embedding=Ptr<uint16_t>(a,1);ok=ok&&Capture(Base()+".fp8",Ptr<uint8_t>(a,0),count,stream)&&Capture(Base()+".converted.bf16",embedding,count*2,stream);converted=true;Meta("convert",ok);}
+ if(k==scale_kernel&&step>=0&&Ptr<uint16_t>(a,0)==embedding){int count=*static_cast<int*>(a[1]);float scale=*static_cast<float*>(a[2]);bool ok=converted&&!scaled&&count==tokens*2560&&Save(Base()+".scale.f32",&scale,4)&&Capture(Base()+".scaled.bf16",embedding,size_t(count)*2,stream);scaled=true;Meta("scale",ok);}
+
+ if(k==write_kernel&&step>=0){++writes;if(writes==48){int t=*static_cast<int*>(a[4]);last_trunk=Ptr<uint16_t>(a,3)+size_t(t-1)*10240;bool ok=t==tokens&&*static_cast<int*>(a[5])==4&&*static_cast<int*>(a[6])==2560&&Capture(Base()+".last-trunk.bf16",last_trunk,20480,stream);Meta("trunk",ok);}}
+ if(k==norm_kernel&&step>=0){++norms;if(writes==48){float eps=*static_cast<float*>(a[6]);bool ok=phase==0&&norms==49&&Ptr<uint16_t>(a,0)==last_trunk&&*static_cast<int*>(a[3])==1&&*static_cast<int*>(a[4])==4&&*static_cast<int*>(a[5])==2560;normed=Ptr<uint16_t>(a,2);ok=ok&&Capture(Base()+".norm-input.bf16",Ptr<uint16_t>(a,0),20480,stream)&&Capture(Base()+".norm-weights.bf16",Ptr<uint16_t>(a,1),20480,stream)&&Capture(Base()+".norm-output.bf16",normed,20480,stream)&&Save(Base()+".eps.f32",&eps,4);phase=1;Meta("norm",ok);}}
+ if(k==gemv&&step>=0&&(phase==1||phase==3)){bool is_down=phase==1;int n=is_down?320:10240,inner=is_down?10240:320;std::string tag=is_down?"down":"up";bool ok=*static_cast<int*>(a[3])==n&&*static_cast<int*>(a[4])==inner&&*static_cast<float*>(a[5])==1.f&&Ptr<uint16_t>(a,1)==(is_down?normed:down);ok=ok&&Capture(Base()+"."+tag+"-weights.bf16",Ptr<uint16_t>(a,0),size_t(n)*inner*2,stream)&&Capture(Base()+"."+tag+"-input.bf16",Ptr<uint16_t>(a,1),inner*2,stream)&&Capture(Base()+"."+tag+"-output.bf16",Ptr<uint16_t>(a,2),n*2,stream);if(is_down)down=Ptr<uint16_t>(a,2);else up=Ptr<uint16_t>(a,2);++phase;Meta(tag,ok);}
+ if(k==silu_kernel&&step>=0&&phase==2){float inv=*static_cast<float*>(a[2]);bool ok=Ptr<uint16_t>(a,0)==down&&*static_cast<int*>(a[1])==320&&inv==0.25f&&Save(Base()+".silu-inv.f32",&inv,4)&&Capture(Base()+".silu-output.bf16",down,640,stream);phase=3;Meta("silu",ok);}
+ if(k==mix_kernel&&step>=0&&phase==4){mixed=Ptr<uint16_t>(a,2);bool ok=Ptr<uint16_t>(a,0)==up&&Ptr<uint16_t>(a,1)==normed&&*static_cast<int*>(a[3])==1&&*static_cast<int*>(a[4])==4&&*static_cast<int*>(a[5])==2560&&Capture(Base()+".mix-up.bf16",up,20480,stream)&&Capture(Base()+".mix-normed.bf16",normed,20480,stream)&&Capture(Base()+".mix-output.bf16",mixed,5120,stream);phase=5;Meta("mix",ok);}
+ if(k==gemv&&step>=0&&*static_cast<int*>(a[3])==248320&&*static_cast<int*>(a[4])==2560){bool ok=phase==5&&writes==48&&norms==49&&Ptr<uint16_t>(a,1)==mixed&&!lm_done&&*static_cast<float*>(a[5])==1.f&&Weights(Ptr<uint16_t>(a,0),stream)&&Capture(Base()+".lm-input.bf16",Ptr<uint16_t>(a,1),5120,stream)&&Capture(Base()+".logits.bf16",Ptr<uint16_t>(a,2),248320*2,stream);logits=Ptr<uint16_t>(a,2);lm_done=true;Meta("lm",ok);}
+ if(k==chunk_kernel&&step>=0){bool ok=step>0&&lm_done&&!chunk_done&&Ptr<uint16_t>(a,0)==logits&&*static_cast<int*>(a[1])==248320&&*static_cast<int*>(a[2])==970&&grid.x==970&&grid.y==1;partial_v=Ptr<float>(a,3);partial_i=Ptr<int>(a,4);ok=ok&&Capture(Base()+".argmax-input.bf16",Ptr<uint16_t>(a,0),248320*2,stream)&&Capture(Base()+".partial-values.f32",partial_v,970*4,stream)&&Capture(Base()+".partial-indices.i32",partial_i,970*4,stream);chunk_done=true;Meta("chunk",ok);}
+ if(k==select_kernel&&step>=0){bool ok=chunk_done&&Ptr<float>(a,0)==partial_v&&Ptr<int>(a,1)==partial_i&&*static_cast<int*>(a[2])==970&&grid.x==1&&Capture(Base()+".selected.i32",Ptr<int>(a,3),4,stream);Meta("select",ok);}
+ return s;
+}
