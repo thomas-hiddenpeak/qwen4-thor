@@ -124,12 +124,43 @@ trunk，更不是下一层或整模型输出。没有据差异数量声称误差
 模板：`tools/verify/moe_scale_factorial_l0/`。运行时未改，未新增
 HTTP或性能结论。终点仍是HC write读取的首层MLP block。
 
+## 后续：HC残差写回与PLE输入交接
+
+代码顺序确认：mlp_frame在MoE前ReadImpl准备inject gate并保留
+residual，MoE返回后Write只读取新block执行gate*block+residual。
+本轮干预没有改变这些前置输入，故保持实际门值/残差；不是为了
+获得一致结果而固定本应变化的量。相关源码摘要随计划保存。
+
+CPU显式FP32 FMA后BF16舍入，完整4096×4×2560逐项重建。
+原分支41943040项与HC捕获输出全同，完整摘要也与既有PLE的
+trunk输入相同，接通跨运行数据边界。三分支结果：
+
+| 修正 | HC主干BF16差异 | 受影响token |
+|---|---:|---:|
+| 输入单项 | 2118970 | 378 |
+| 中间单项 | 5747663 | 1185 |
+| 双项 | 7747890 | 1535 |
+
+无非有限输出或仅零符号差异；写回变化不越出对应MoE block变化
+token。完整四组BF16主干、全部差异及其舍入前FP32、每token
+分布保存，匹配位置未舍入值不保存。终态清单全量核对，约461MB，
+预算1GB及20GiB余量。证据：
+`.q4t-work/e2e/moe-scale-hc-write-l0-20260924/`；模板：
+`tools/verify/moe_scale_hc_write_l0/`。生产未改、无新HTTP/性能验收。
+
+PLE在layer1入口执行。代码中key/value投影仅依赖未改变的token
+查表embedding，norm_key可复用实际值；query norm依赖新主干，
+随后gate、gated value、norm_conv及卷积必须重算。最终还要把新
+主干加入PLE结果，不能复用旧残差。卷积K4/dilation3的前向影响
+可到t+3、t+6、t+9；实际影响以新旧数据对照为准，不预先推断
+全部位置都会变化。当前终点是PLE输入，不是layer1 attention输入。
+
 ## 待完成
 
-1. 将四分支出口传播至HC残差写回和PLE边界，核对原分支恢复，
-   然后送入后续层。当前尚未传播至layer1。
-2. 建立可比多层与最终答案因果证据；不能根据局部影响计数或
-   格式正确性宣布原错答已解释或修复。
+1. 从四分支新主干重算PLE query norm→gate→gated value→
+   norm_conv→有状态因果卷积及残差，先恢复原分支，再传播变化。
+2. 接通layer1 attention及后续层，建立可比多层与最终答案因果
+   证据；不能由局部影响计数或格式正确性宣布错答已解释或修复。
 3. 保留规范修正候选原HTTP任务退化事实；任何运行时修复仍须
    先完整HTTP质量和五档性能，不能以离线对照追认被拒候选。
 

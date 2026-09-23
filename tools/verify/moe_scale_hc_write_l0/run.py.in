@@ -1,0 +1,28 @@
+from pathlib import Path
+import hashlib,json,subprocess,shutil,os,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];e=root/'.q4t-work/e2e';o=e/p.name;d=o/'reference';hc=e/'hc-full-boundaries-20260923';ple=e/'ple-full-conv-20260924';sources={'input_fixed':e/'moe-scale-exit-l0-20260924','inter_fixed':e/'moe-scale-exit-inter_fixed-l0-20260924','both_fixed':e/'moe-scale-exit-both_fixed-l0-20260924'}
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as z:
+  for b in iter(lambda:z.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(n,x):(o/n).write_text(json.dumps(x,indent=2)+'\n')
+assert not any(d.iterdir());assert (p/'build.log').stat().st_size==0;assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e';budget=1000000000;reserve=20*1024**3;assert shutil.disk_usage(o).free>reserve+budget
+man={s.name:json.loads((s/'artifact-binding.json').read_text()) for s in [hc,ple]+list(sources.values())};bindings=[]
+def bind(s,n):
+ f=s/n;h=sha(f);assert h==man[s.name][n];bindings.append({'file':str(f.relative_to(root)),'sha256':h});return f
+for s in [hc,ple]:assert json.loads(bind(s,'exit.json').read_text())['observer_preserved_tested_output']
+paths={n:bind(hc,'observed-captures/hc-0.prefill.write.'+n+'.bf16') for n in ['block','residual','gate','output']};trunk=bind(ple,'observed-captures/prefill.trunk.bf16');assert sha(trunk)==sha(paths['output']);bind(hc,'observed-captures/hc-0.prefill.write.hc.json')
+blocks={'baseline':paths['block']}
+for name,s in sources.items():
+ blocks[name]=bind(s,f'combined/{name}/final.bf16');assert sha(bind(s,'combined/baseline/final.bf16'))==sha(paths['block'])
+save('input-binding.json',bindings);save('source-manifests.json',{s.name:sha(s/'artifact-binding.json') for s in [hc,ple]+list(sources.values())});save('plan.json',{'budget_bytes':budget,'reserve_bytes':reserve,'scope':'Four layer0 MLP block branches through CPU explicit FP32 FMA gate*block+residual then BF16, complete4096x4x2560. Gate/residual held actual because computed before MoE and independent of its outputs. Baseline must restore observed output, byte bound to layer1 PLE trunk input. New branches stop before PLE.','source_code':{n:sha(root/n) for n in ['src/model/decoder_layer.cu','src/model/hyperconnection.cu','src/model/ple_layer.cu']},'retention':'Complete BF16 trunk per branch, all differing indices and pre-round FP32 values, per-token/branch counts. Matching pre-round values not retained.'})
+actual=np.fromfile(paths['output'],dtype='<u2');oldblock=np.fromfile(paths['block'],dtype='<u2').reshape(4096,2560);records=[]
+for name,block in blocks.items():
+ prefix=d/name;proc=subprocess.run([str(p/'write'),str(paths['residual']),str(block),str(paths['gate']),str(paths['output']),str(prefix)],capture_output=True,text=True,env={**os.environ,'OMP_NUM_THREADS':'8'});(o/(name+'.stdout')).write_text(proc.stdout);(o/(name+'.stderr')).write_text(proc.stderr);assert proc.returncode==0,proc.stderr;r=json.loads(proc.stdout);assert r['elements']==41943040;new=np.fromfile(str(prefix)+'.bf16',dtype='<u2');idx=np.flatnonzero(new!=actual).astype('<i4');assert len(idx)==r['mismatches'] and np.array_equal(idx,np.fromfile(str(prefix)+'.differences.i32',dtype='<i4'));raw=np.fromfile(str(prefix)+'.differences.f32',dtype='<f4');bits=raw.view('<u4');assert len(raw)==len(idx) and np.isfinite(raw).all() and np.array_equal(((bits+0x7fff+((bits>>16)&1))>>16).astype('<u2'),new[idx]);assert np.isfinite((new.astype('<u4')<<16).view('<f4')).all()
+ counts=np.bincount(idx//10240,minlength=4096).astype('<i4');counts.tofile(str(prefix)+'.token-differences.i32');bc=np.fromfile(block,dtype='<u2').reshape(4096,2560);allowed=np.any(bc!=oldblock,axis=1);assert not np.any((counts>0)&~allowed)
+ if name=='baseline':assert r['mismatches']==0 and sha(Path(str(prefix)+'.bf16'))==sha(trunk)
+ r.update(branch=name,changed_tokens=int(np.count_nonzero(counts)),input_changed_tokens=int(allowed.sum()),output_sha256=sha(Path(str(prefix)+'.bf16')),zero_sign_only=int(np.count_nonzero(((actual[idx]&0x7fff)==0)&((new[idx]&0x7fff)==0))));records.append(r);print(r,flush=True)
+save('reference.json',{'records':records,'complete':len(records)==4});summary={'records':records,'baseline_equals_actual_ple_trunk':True,'runtime_changed':False,'whole_model_correctness_proven':False,'task_causality_established':False,'propagation_endpoint':'layer0 HC write output/layer1 PLE trunk input, before PLE query norm/gate/conv'}
+for n in ['run.py','write.cpp','common.h','write','build.log']:shutil.copy2(p/n,o/n)
+summary['artifact_bytes_before_sealing']=sum(f.stat().st_size for f in o.rglob('*') if f.is_file());assert summary['artifact_bytes_before_sealing']<budget;save('summary.json',summary);print(summary,flush=True)
