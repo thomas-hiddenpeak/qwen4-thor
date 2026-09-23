@@ -1,0 +1,32 @@
+from pathlib import Path
+import json,struct,hashlib,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/hc-norm-reference-20260923';c=o/'observed-captures';old=root/'.q4t-work/e2e/hc-handoff-v3-20260923/observed-captures'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');idx=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];headers={}
+def dec(b):return (np.frombuffer(b,dtype='<u2').astype(np.uint32)<<16).view(np.float32).astype(np.float64)
+def rounded(v):
+ b=np.asarray(v,dtype=np.float32).view(np.uint32);return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype(np.uint16)
+bind=[]
+for f in sorted(c.glob('*.bf16')):
+ if f.name.endswith('.norm-weights.bf16'):continue
+ assert f.read_bytes()==(old/f.name).read_bytes(),f.name
+ bind.append({'name':f.name,'sha256':hashlib.sha256(f.read_bytes()).hexdigest()})
+(o/'previous-binding.json').write_text(json.dumps({'files':len(bind),'records':bind,'all_equal':True},indent=2)+'\n')
+records=[]
+for l in range(48):
+ for phase in ['prefill','decode']:
+  for stage,kind in [('attn','read'),('mlp','fused')]:
+   base=str(c/f'hc-{l}.{phase}.{kind}');data=Path(base+'.norm-weights.bf16').read_bytes();name=f'model.language_model.layers.{l}.{stage}_hyper_connection.hc_norm.weight';file=model/idx[name]
+   with file.open('rb') as f:
+    if file not in headers:
+     size=struct.unpack('<Q',f.read(8))[0];headers[file]=(size,json.loads(f.read(size)))
+    size,h=headers[file];info=h[name];assert info['dtype']=='BF16' and np.prod(info['shape'])==10240;start,end=info['data_offsets'];f.seek(8+size+start);expected=f.read(end-start)
+   assert data==expected,name
+   eps=np.fromfile(base+'.eps.f32',dtype='<f4');assert eps.size==1 and eps[0]==np.float32(1e-6)
+   input_suffix='.trunk.bf16' if kind=='read' else '.output.bf16';output_suffix='.output.bf16' if kind=='read' else '.normed.bf16'
+   x=dec(Path(base+input_suffix).read_bytes()).reshape(4,2560);w=dec(data).reshape(4,2560);actual=np.fromfile(base+output_suffix,dtype='<u2')
+   ref=x/np.sqrt(np.mean(x*x,axis=1,keepdims=True)+float(eps[0]))*(1+w);bits=rounded(ref).reshape(-1);bad=np.flatnonzero(bits!=actual)
+   np.savez(base+'.norm-reference.npz',fp64=ref,bf16_bits=bits)
+   records.append({'layer':l,'phase':phase,'stage':stage,'elements':10240,'weight_sha256':hashlib.sha256(data).hexdigest(),'checkpoint_shape':info['shape'],'fp64_bf16_mismatches':len(bad),'indices':bad.tolist()})
+r={'records':records,'calls':len(records),'elements':sum(x['elements'] for x in records),'total_mismatches':sum(x['fp64_bf16_mismatches'] for x in records),'limitation':'Actual trunk or actual BF16 combined residual is input. Independent FP64 norm does not reproduce FP32 accumulation/rsqrt approximation. Only last prefill row and first decode.'}
+(o/'norm-reference.json').write_text(json.dumps(r,indent=2)+'\n');print({k:v for k,v in r.items() if k!='records'})

@@ -97,3 +97,37 @@ CUDA数学近似的证明，也不是up/normed来源正确的证明。
 input-binding.json、fp64-reference.json、mix-reference.json及
 artifact-binding.json；原HTTP质量失败仍明确保留。下一步绑定实际
 HC norm权重，核对归一化与mix_down/up、inject投影及注入门生成。
+
+## 后续：HC分组归一化权重与数值参考
+
+新观测只补实际HC norm权重及epsilon，保留v3来源识别和decode
+起点规则。零警告构建后首项执行原4K无/有/无观测HTTP，三次仍
+600440、4096输入/7输出、stop，服务0、质量驱动1。480份旧边界
+及192份归一化权重/epsilon完整后才分析；3504份旧BF16快照位同。
+
+48层attention/MLP两组、prefill末行/首decode两阶段，共192次。
+实际权重逐字节匹配对应attn_hyper_connection或mlp_hyper_connection
+的hc_norm.weight，均10240个BF16；实际epsilon按FP32位值检查为
+1e-6。attention使用现场trunk，MLP使用融合写回后实际BF16 residual，
+每个4×2560分支分别RMS归一化再乘(1+weight)。没有跳过写回的
+BF16舍入，也没有把归一化权重当作直接scale。
+
+1966080个BF16输出对FP64独立参考有10项差异，全部索引及数值保存。
+另用CPU重建每lane八个平方的指定fma链、10组局部累加、warp XOR
+16/8/4/2/1归约，FP32均方+epsilon与乘法分组。CPU double倒平方根
+舍入FP32时剩2项：L30 decode attention的9338、L40 prefill
+attention的5018。仅用设备rsqrtf重建4个分支的倒平方根，其他
+归约和乘法仍由CPU完成，全部1966080个输出逐位一致。
+
+该结果解释本样本指定运算下的局部差异，仍非完全独立于CUDA数学
+近似的证明；FP64的10项差异不全部仅归因为rsqrt。初次CPU工具
+构建有缩进警告，保留日志并修正为零警告后才执行；数值工具均退出0。
+审计工具初次把order目录当作二进制文件计算SHA失败，修正为实际
+order/order路径后完成文件哈希与192份原始输出逐元素复核；初版
+审计脚本留存，不将该打包错误当作数值失败或掩盖数值差异。
+
+证据目录`.q4t-work/e2e/hc-norm-reference-20260923/`，主要记录
+norm-reference.json、order-cpu-audited.json、order-device-audited.json、
+previous-binding.json和artifact-binding.json。接受二进制及生产
+源码未改，原4K错答仍在。接下来核对mix_down/up与inject投影和
+门控生成，将实际normed输入继续接到低秩计算；完整模型尚未验收。

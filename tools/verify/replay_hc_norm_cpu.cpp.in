@@ -1,0 +1,31 @@
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+float Decode(uint16_t v){uint32_t b=uint32_t(v)<<16;float f;std::memcpy(&f,&b,4);return f;}
+uint16_t Round(float f){uint32_t b;std::memcpy(&b,&f,4);return (b+0x7fff+((b>>16)&1))>>16;}
+template<class T>std::vector<T> Read(const std::string& s,size_t n){std::ifstream f(s,std::ios::binary|std::ios::ate);if(!f||size_t(f.tellg())!=n*sizeof(T))throw std::runtime_error(s);std::vector<T> v(n);f.seekg(0);if(!f.read(reinterpret_cast<char*>(v.data()),n*sizeof(T)))throw std::runtime_error(s);return v;}
+template<class T>void Write(const std::string& s,const std::vector<T>& v){std::ofstream f(s,std::ios::binary);f.write(reinterpret_cast<const char*>(v.data()),v.size()*sizeof(T));if(!f)throw std::runtime_error(s);}
+int main(int argc,char** argv){try{
+ if(argc!=4){throw std::runtime_error("captures outputs cpu|device");}
+ bool device=std::string(argv[3])=="device";size_t total=0;bool first=true;std::printf("{\"records\":[");
+ for(int l=0;l<48;++l)for(const char* phase:{"prefill","decode"})for(const char* kind:{"read","fused"}){
+  bool read=std::string(kind)=="read";std::string name="hc-"+std::to_string(l)+"."+phase+"."+kind,b=std::string(argv[1])+"/"+name,o=std::string(argv[2])+"/"+name;
+  auto x=Read<uint16_t>(b+(read?".trunk.bf16":".output.bf16"),10240),w=Read<uint16_t>(b+".norm-weights.bf16",10240),expected=Read<uint16_t>(b+(read?".output.bf16":".normed.bf16"),10240);float eps=Read<float>(b+".eps.f32",1)[0];
+  std::vector<float> mean(4),inv(4);
+  for(int branch=0;branch<4;++branch){float lane[32]{};
+   for(int t=0;t<32;++t)for(int i=t;i<320;i+=32){int off=branch*2560+i*8;float v=Decode(x[off]);float s=v*v;for(int j=1;j<8;++j){v=Decode(x[off+j]);s=std::fma(v,v,s);}lane[t]+=s;}
+   for(int off=16;off>0;off>>=1){float copy[32];std::memcpy(copy,lane,sizeof(lane));for(int t=0;t<32;++t)lane[t]=copy[t]+copy[t^off];}
+   mean[branch]=lane[0]/2560.0f+eps;inv[branch]=float(1.0/std::sqrt(double(mean[branch])));
+  }
+  if(device)inv=Read<float>(o+".device-inv.f32",4);else Write(o+".mean.f32",mean);
+  std::vector<uint16_t> y(10240);size_t bad=0;
+  for(int i=0;i<10240;++i){float scaled=inv[i/2560]*(1.0f+Decode(w[i]));y[i]=Round(Decode(x[i])*scaled);bad+=y[i]!=expected[i];}
+  Write(o+(device?".device-inv-cpu.bf16":".cpu.bf16"),y);std::printf("%s{\"name\":\"%s\",\"elements\":10240,\"mismatches\":%zu}",first?"":",",name.c_str(),bad);first=false;total+=bad;
+ }
+ std::printf("],\"total_mismatches\":%zu}\n",total);return 0;
+}catch(const std::exception& e){std::fprintf(stderr,"%s\n",e.what());return 2;}}

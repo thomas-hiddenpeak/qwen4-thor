@@ -1,0 +1,16 @@
+from pathlib import Path
+import json,numpy as np,hashlib,shutil
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/hc-norm-reference-20260923';c=o/'observed-captures'
+for variant,suffix in [('cpu','.cpu.bf16'),('device','.device-inv-cpu.bf16')]:
+ r=json.loads((o/f'order-{variant}.json').read_text());assert len(r['records'])==192
+ for x in r['records']:
+  name=x['name'];expected_suffix='.output.bf16' if name.endswith('.read') else '.normed.bf16';actual=np.fromfile(o/'order'/(name+suffix),dtype='<u2');expected=np.fromfile(c/(name+expected_suffix),dtype='<u2');assert actual.size==expected.size==10240;bad=np.flatnonzero(actual!=expected);assert len(bad)==x['mismatches'];x['indices']=bad.tolist()
+ assert sum(x['mismatches'] for x in r['records'])==r['total_mismatches']
+ (o/f'order-{variant}-audited.json').write_text(json.dumps(r,indent=2)+'\n')
+ if variant=='device':assert r['total_mismatches']==0
+for f in ['build.log','order-build.log','rsqrt-build.log']:assert (p/f).stat().st_size==0
+for f in ['analyze.py','analyze.log','audit.py','order.cpp','order','order-build.log','order-initial-build.log','rsqrt.cu','rsqrt','rsqrt-build.log']:shutil.copy2(p/f,o/f)
+files=['observer.cpp','observer.so','run.py','analyze.py','audit.py','order.cpp','order/order','rsqrt.cu','rsqrt','norm-reference.json','previous-binding.json','order-cpu-audited.json','order-device-audited.json','raw-http-audit.json']
+(o/'artifact-binding.json').write_text(json.dumps({f:hashlib.sha256((o/f).read_bytes()).hexdigest() for f in files},indent=2)+'\n')
+print('Previous snapshots:',json.loads((o/'previous-binding.json').read_text())['files'])
+print('CPU differences:',[(x['name'],x['indices']) for x in json.loads((o/'order-cpu-audited.json').read_text())['records'] if x['mismatches']])

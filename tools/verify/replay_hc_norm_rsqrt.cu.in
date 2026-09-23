@@ -1,0 +1,18 @@
+#include <cuda_runtime.h>
+#include <cstdio>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#define CU(x) do {if((x)!=cudaSuccess)throw std::runtime_error(#x);}while(0)
+__global__ void Inv(const float* in,float* out){int i=threadIdx.x;if(i<4)out[i]=rsqrtf(in[i]);}
+int main(int argc,char** argv){try{
+ if(argc!=2){throw std::runtime_error("directory");}
+ for(int l=0;l<48;++l)for(const char* phase:{"prefill","decode"})for(const char* kind:{"read","fused"}){
+  std::string b=std::string(argv[1])+"/hc-"+std::to_string(l)+"."+phase+"."+kind;float x[4],y[4];std::ifstream f(b+".mean.f32",std::ios::binary|std::ios::ate);
+  if(!f||f.tellg()!=16)throw std::runtime_error(b);
+  f.seekg(0);if(!f.read(reinterpret_cast<char*>(x),16))throw std::runtime_error("read");
+  float *dx,*dy;CU(cudaMalloc(&dx,16));CU(cudaMalloc(&dy,16));CU(cudaMemcpy(dx,x,16,cudaMemcpyHostToDevice));Inv<<<1,4>>>(dx,dy);CU(cudaGetLastError());CU(cudaMemcpy(y,dy,16,cudaMemcpyDeviceToHost));
+  std::ofstream out(b+".device-inv.f32",std::ios::binary);out.write(reinterpret_cast<char*>(y),16);if(!out)throw std::runtime_error("write");CU(cudaFree(dx));CU(cudaFree(dy));
+ }
+ return 0;
+}catch(const std::exception& e){std::fprintf(stderr,"%s\n",e.what());return 1;}}
