@@ -167,3 +167,63 @@ CuteDSL逐专家down scale路径在Thor上的支持及缓存精度设置，
 若用于质量对照，必须完整列出仍有差异的计算合同。独立框架
 答对/答错仍是证据而非单独证明本引擎数学正确。未启动新的
 性能实验，正式运行时和验收参考不变。
+
+
+## CuteDSL调用链复核与独立环境准备
+
+继续追踪发现，前述modelopt_quant.py保留逐专家w2只是中间状态。
+普通单机CuteDSL路径在moe_runner/flashinfer_cutedsl.py:217调用
+cutedsl_quant_scale_to_scalar，再以最小倒数（原始scale最大值）
+统一fc2量化，并重算alpha；因此也不等价。v1 masked路径需
+DeepEP，不能据其接口声称普通单机保留逐专家scale。Thor实际
+kernel支持仍未验证。后续独立服务定位为有明确量化差异的质量
+对照，不作为逐token真值，不以它的答案单独验收候选。
+
+在prepared/independent-http-reference-20260923内创建独立Python
+3.12环境；固定SGLang源码依赖dry-run退出0，解析205包，包括
+Torch2.13.0、FlashInfer0.6.17、Transformers5.12.1。这是独立
+参考环境，不替换原固定5.16.1或evalscope环境。安装已启动，
+会话76503，日志install.log；下载SSD Stream0.3.0 aarch64 wheel
+成功，尚未安装插件。所有缓存和临时构建路径位于prepared内。
+未运行模型、前置测试或修改引擎。SSD Stream自动CLI仅识别
+RTX/GB10/特定x86配置，Thor需显式SGLang参数；不能套用其
+默认含MTP的配置。下一步安装结束后固化实际依赖，配置MTP关、
+明确KV/GDN精度，再以冻结请求作首项evalscope HTTP验证。
+
+
+## 独立HTTP服务启动进展（尚无生成结果）
+
+独立依赖及SSD Stream wheel安装均退出0，installed-requirements.txt
+记录实际版本；插件的11个源码摘要全部匹配（package路径按
+__init__.py处理，初始错误路径假设清单保留）。准备run_http.py
+及reference-plan.json，冻结1K/4K filtered_sum各三次，MTP关、
+BF16 KV/GDN、Triton GDN、CUTLASS MoE，max_tokens32；首项推理
+由tools/evalscope发起，跳过server生成预热。仅是失败案例诊断。
+
+首启动发现SGLANG_CACHE_DIR未跟随XDG_CACHE_HOME，主动在服务
+就绪前终止，server=-15、0请求。v2显式设专用缓存至prepared，
+完成197分片和PLE加载，但因max_mamba_cache_size=1而失败：
+每请求需4状态槽，实际可服务请求数为0。服务/驱动已终止，
+0请求，不是模型正确性失败。kv_cache_configurator.py:1959
+确认该容量检查，v3仅改状态槽为5，单请求和题目不变；会话38318
+已启动，证据independent-sglang-http-v3-20260923。安装会话76503
+及前两次服务均已终止，不重复运行；下一步等待v3并核对HTTP。
+
+
+## Thor启动兼容与JIT内存边界
+
+v3状态池检查通过后，自动FlashInfer attention被混合GDN后端
+合同拒绝（Blackwell允许triton/trtllm_mha/fa4），0请求终止。
+v4仅显式选择Triton attention，成功加载81.89GB模型并完成
+BF16 KV/GDN缓存、QSA初始化。框架内置启动autotune随即触发
+SM110a首次编译；这不是人工另跑的bench，也不作为验收结果。
+
+实际编译进程占用使整机122GiB内存中120GiB被使用、2GiB swap
+耗尽。主动终止v4所属服务和编译子进程树（54进程），服务-15、
+0请求；controlled-stop.json保留原因和PID，不视为观察超时。
+终止后可用内存恢复119GiB，未修改模型或运行时代码。
+
+FlashInfer jit/cpp_ext.py:347确认MAX_JOBS控制Ninja并行数。
+v5只新增MAX_JOBS=2，保留已编译缓存，服务会话3212启动。
+证据independent-sglang-http-v5-20260923，仍等待首项HTTP；
+v1至v4均无答题样本，不计入正确率或性能统计。
