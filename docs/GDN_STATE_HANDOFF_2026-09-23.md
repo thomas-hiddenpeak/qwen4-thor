@@ -61,3 +61,42 @@
 36层前后S及输入快照、逐层reference.npz、state-reference.json、
 artifact-binding.json。prepared同名目录保存构建及控制器，仓库
 保留只读GDN交接观测和独立FP64分析模板。原4K任务错误仍未修复。
+
+## 后续：首decode单步指定算术已逐位复现（2026-09-23）
+
+复用上述已绑定的三侧HTTP快照，不修改生产运行时、不重跑HTTP。
+设备诊断只重建Q/K归一化、alpha/beta非线性参数；状态递推和读出
+由独立CPU std::fma实现。CPU关闭隐式浮点收缩，所有乘加顺序显式。
+最终28311552个FP32更新状态及221184个BF16输出均与快照逐位相同。
+
+在运行前声明并保留两种state update收缩顺序：
+
+- v0：fma(beta*k, delta, round(alpha*S_old))
+- v1：fma(alpha, S_old, round((beta*k)*delta))
+
+k^T S和q^T S_new按源码128项顺序fma，delta以fma(-alpha,kS,v)
+计算。v1全部状态位同；v0有8532299项状态不同，两套记录均保留，
+不是调整容忍度或挑选生产候选。明确运算顺序足以解释上一节
+FP64公式与实际状态的差异，不代表FP64参考应被删除。
+
+初次参数重建工具把q_scale写成rsqrtf(128.0f)编译期常量，而生产
+kernel使用运行时kd。初次v1虽然状态全部同，读出仍14项不同。
+只将这一处改为运行时rsqrtf(kd)，k/alpha/beta逐位不变，q中187959个
+FP32值改变；同一个CPU重建程序得到状态和输出全部位同。v0在
+运行时kd版本仍有8532299项状态和9项输出不同。
+这是诊断工具对运算合同的修正，不是生产kernel修复；两份参数
+源码、初次结果和运行时kd结果分目录保留，没有覆盖或重采HTTP。
+
+CPU初次构建的一处误导缩进警告保留，加明确花括号后零警告；
+两个设备参数工具也零警告。各次参数/CPU重建均正常退出，
+另用原始文件逐字节核对v1状态与输出，未仅依赖工具汇总。
+
+此结果解释的是已采样首decode单步的指定精度计算，不是全域
+非线性精度证明。初态、卷积后QKV和投影门控仍来自实际执行。
+下一步检查linear短卷积的历史与QKV边界，再向prefill全递推回溯；
+原4K任务错误、已确认E4M3尺度缺陷和其他上游缺口继续保留。
+
+新增证据在`.q4t-work/e2e/gdn-decode-order-20260923/`：根目录保存
+初次常量kd参数/结果，runtime-kd子目录保存修正后的诊断参数及
+两种CPU递推结果，analysis.json、plan.json和artifact-binding.json
+记录差异及边界。prepared同名目录保留全部源码、编译及警告日志。

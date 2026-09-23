@@ -1,0 +1,34 @@
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+template<class T>std::vector<T> Read(const std::string& p,size_t n){std::ifstream f(p,std::ios::binary|std::ios::ate);if(!f||size_t(f.tellg())!=n*sizeof(T))throw std::runtime_error(p);std::vector<T>v(n);f.seekg(0);if(!f.read(reinterpret_cast<char*>(v.data()),n*sizeof(T)))throw std::runtime_error(p);return v;}
+uint32_t Bits(float x){uint32_t b;std::memcpy(&b,&x,4);return b;}
+float B(uint16_t x){uint32_t b=uint32_t(x)<<16;float f;std::memcpy(&f,&b,4);return f;}
+uint16_t Round(float x){uint32_t b=Bits(x);return uint16_t((b+0x7fff+((b>>16)&1))>>16);}
+template<class T>void Save(const std::string&p,const std::vector<T>&v){std::ofstream f(p,std::ios::binary);if(!f.write(reinterpret_cast<const char*>(v.data()),v.size()*sizeof(T)))throw std::runtime_error(p);}
+int main(int argc,char**argv){try{
+ if(argc!=3) { throw std::runtime_error("capture parameters/output"); }
+ bool first=true;std::printf("{\"records\":[");
+ for(int l=0;l<48;++l){if(l%4==3)continue;std::string name="layer-"+std::to_string(l),b=std::string(argv[1])+"/"+name,o=std::string(argv[2])+"/"+name;
+  auto initial=Read<float>(b+".decode-state-before.f32",48*128*128),actual=Read<float>(b+".decode-state-after.f32",48*128*128),p=Read<float>(o+".parameters.f32",48*258);auto qkv=Read<uint16_t>(b+".decode-qkv.bf16",10240),y=Read<uint16_t>(b+".decode-y.bf16",6144);
+  for(int variant=0;variant<2;++variant){std::vector<float>s(initial.size());std::vector<uint16_t>out(6144);size_t bad_s=0,bad_y=0;
+   for(int h=0;h<48;++h){const float*par=p.data()+h*258;float alpha=par[256],beta=par[257];
+    for(int j=0;j<128;++j){float ks=0;for(int i=0;i<128;++i)ks=std::fma(par[128+i],initial[(h*128+i)*128+j],ks);
+     float delta=std::fma(-alpha,ks,B(qkv[4096+h*128+j]));float readout=0;
+     for(int i=0;i<128;++i){size_t index=(h*128+i)*128+j;float bk=beta*par[128+i];float old=initial[index];
+      float ns=variant==0?std::fma(bk,delta,alpha*old):std::fma(alpha,old,bk*delta);
+      s[index]=ns;bad_s+=Bits(ns)!=Bits(actual[index]);readout=std::fma(ns,par[i],readout);
+     }out[h*128+j]=Round(readout);bad_y+=out[h*128+j]!=y[h*128+j];
+    }
+   }
+   Save(o+".v"+std::to_string(variant)+".state.f32",s);Save(o+".v"+std::to_string(variant)+".y.bf16",out);
+   std::printf("%s{\"layer\":%d,\"variant\":%d,\"state_mismatches\":%zu,\"output_mismatches\":%zu}",first?"":",",l,variant,bad_s,bad_y);first=false;
+  }
+ }
+ std::printf("]}\n");return 0;
+}catch(const std::exception&e){std::fprintf(stderr,"%s\n",e.what());return 2;}}

@@ -1,0 +1,13 @@
+from pathlib import Path
+import json,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/gdn-decode-order-20260923';src=root/'.q4t-work/e2e/gdn-state-handoff-20260923/observed-captures';new=o/'runtime-kd'
+original=json.loads((o/'replay.json').read_text())['records'];records=json.loads((new/'replay.json').read_text())['records'];assert len(records)==len(original)==72
+summary=lambda rows:{str(v):{k:sum(r[k] for r in rows if r['variant']==v) for k in ['state_mismatches','output_mismatches']} for v in [0,1]}
+changes={'q':0,'k':0,'alpha':0,'beta':0};elements=outputs=0
+for l in range(48):
+ if l%4==3:continue
+ name=f'layer-{l}';state=(new/(name+'.v1.state.f32')).read_bytes();y=(new/(name+'.v1.y.bf16')).read_bytes();assert state==(src/(name+'.decode-state-after.f32')).read_bytes();assert y==(src/(name+'.decode-y.bf16')).read_bytes();elements+=len(state)//4;outputs+=len(y)//2
+ a=np.fromfile(o/(name+'.parameters.f32'),dtype='<f4').reshape(48,258);b=np.fromfile(new/(name+'.parameters.f32'),dtype='<f4').reshape(48,258)
+ for key,lo,hi in [('q',0,128),('k',128,256),('alpha',256,257),('beta',257,258)]:changes[key]+=int(np.count_nonzero(a[:,lo:hi].view(np.uint32)!=b[:,lo:hi].view(np.uint32)))
+report={'layers':36,'state_elements_bit_exact':elements,'output_bf16_elements_bit_exact':outputs,'initial_literal_kd':summary(original),'runtime_kd':summary(records),'parameter_elements_changed':changes,'runtime_changed':False,'quality_fixed':False,'limitation':'Device reconstruction supplies FP32 normalization and nonlinear parameters; CPU independently evaluates recurrence with fmaf. Initial S, projected gates and conv output remain actual snapshots. No independent whole-prefill state or model reference.'}
+(o/'analysis.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))

@@ -1,0 +1,28 @@
+#include <cuda_runtime.h>
+#include <cuda_bf16.h>
+#include <cstdio>
+#include <cstdint>
+#include <string>
+#include <vector>
+#define CU(x) do{if((x)!=cudaSuccess)return 2;}while(0)
+__device__ float B(uint16_t x){return __bfloat162float(__ushort_as_bfloat16(x));}
+__global__ void Parameters(const uint16_t* qkv,const uint16_t* a,const uint16_t* bias,const uint16_t* alog,const uint16_t* beta,float* out,int kd){
+ int h=blockIdx.x,t=threadIdx.x,kh=h/3;__shared__ float qs[128],ks[128];
+ float q=B(qkv[kh*128+t]),k=B(qkv[2048+kh*128+t]);qs[t]=q*q;ks[t]=k*k;__syncthreads();
+ for(int off=64;off;off>>=1){if(t<off){qs[t]+=qs[t+off];ks[t]+=ks[t+off];}__syncthreads();}
+ out[h*258+t]=q*(rsqrtf(qs[0]+1e-6f)*rsqrtf(static_cast<float>(kd)));
+ out[h*258+128+t]=k*rsqrtf(ks[0]+1e-6f);
+ if(t==0){float ab=B(a[h])+B(bias[h]);float dt=ab>20?ab:log1pf(expf(ab));out[h*258+256]=expf(-dt*expf(B(alog[h])));out[h*258+257]=1.0f/(1.0f+expf(-B(beta[h])));}
+}
+bool Read(const std::string& p,void* d,size_t n){FILE*f=fopen(p.c_str(),"rb");if(!f)return false;bool ok=fread(d,1,n,f)==n&&fgetc(f)==EOF;return fclose(f)==0&&ok;}
+int main(int argc,char**argv){
+ if(argc!=3)return 2;
+ for(int l=0;l<48;++l){if(l%4==3)continue;std::string b=std::string(argv[1])+"/layer-"+std::to_string(l);std::vector<uint16_t>qkv(10240),a(48),bias(48),alog(48),beta(48);std::vector<float>out(48*258);
+  if(!Read(b+".decode-qkv.bf16",qkv.data(),20480)||!Read(b+".decode-a.bf16",a.data(),96)||!Read(b+".dt-bias.bf16",bias.data(),96)||!Read(b+".a-log.bf16",alog.data(),96)||!Read(b+".decode-beta.bf16",beta.data(),96))return 2;
+  uint16_t *dq,*da,*db,*dl,*dt;float* d;CU(cudaMalloc(&dq,20480));CU(cudaMalloc(&da,96));CU(cudaMalloc(&db,96));CU(cudaMalloc(&dl,96));CU(cudaMalloc(&dt,96));CU(cudaMalloc(&d,out.size()*4));
+  CU(cudaMemcpy(dq,qkv.data(),20480,cudaMemcpyHostToDevice));CU(cudaMemcpy(da,a.data(),96,cudaMemcpyHostToDevice));CU(cudaMemcpy(db,bias.data(),96,cudaMemcpyHostToDevice));CU(cudaMemcpy(dl,alog.data(),96,cudaMemcpyHostToDevice));CU(cudaMemcpy(dt,beta.data(),96,cudaMemcpyHostToDevice));
+  Parameters<<<48,128>>>(dq,da,db,dl,dt,d,128);CU(cudaGetLastError());CU(cudaMemcpy(out.data(),d,out.size()*4,cudaMemcpyDeviceToHost));
+  FILE*f=fopen((std::string(argv[2])+"/layer-"+std::to_string(l)+".parameters.f32").c_str(),"wb");if(!f)return 2;bool ok=fwrite(out.data(),4,out.size(),f)==out.size();ok=fclose(f)==0&&ok;if(!ok)return 2;
+  CU(cudaFree(dq));CU(cudaFree(da));CU(cudaFree(db));CU(cudaFree(dl));CU(cudaFree(dt));CU(cudaFree(d));
+ }return 0;
+}
