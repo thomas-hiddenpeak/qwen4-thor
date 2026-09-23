@@ -1,0 +1,42 @@
+from pathlib import Path
+import json,hashlib,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/qsa-selection-reference-20260923';c=o/'observed-captures'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+def arr(s,dt):return np.fromfile(s,dtype=dt)
+records=[]
+for l in range(3,48,4):
+ old_logical=None
+ for phase in ['prefill','decode']:
+  base=str(c/f'layer-{l}.{phase}');pos=int(arr(base+'.position.i32','<i4')[0]);assert pos==(4095 if phase=='prefill' else 4096)
+  score=arr(base+'.scores.f32','<f4');sel=arr(base+'.selection.i32','<i4');length=int(arr(base+'.length.i32','<i4')[0]);assert score.size==2048 and sel.size==2052 and np.all(np.isfinite(score))
+  assert Path(base+'.selection.i32').read_bytes()==Path(base+'.attention-selection.i32').read_bytes()
+  assert Path(base+'.length.i32').read_bytes()==Path(base+'.attention-length.i32').read_bytes()
+  groups=(pos+1)//4;tail=(pos+1)%4
+  # Independent scalar-index comparison network; equal scores never swap.
+  v=score.copy();v[groups:]=np.float32(-1e30);ids=np.arange(2048,dtype=np.int32)
+  k=2
+  while k<=2048:
+   j=k//2
+   while j:
+    i=np.arange(2048);peer=i^j;left=i[i<peer];right=peer[left];asc=(left&k)==0
+    swap=np.where(asc,v[left]>v[right],v[left]<v[right]);a=left[swap];b=right[swap]
+    temp=v[a].copy();v[a]=v[b];v[b]=temp;temp=ids[a].copy();ids[a]=ids[b];ids[b]=temp;j//=2
+   k*=2
+  selected=ids[-512:];expected=(selected[:,None]*4+np.arange(4)).reshape(-1);expected=np.concatenate([expected,np.arange(pos+1-tail,pos+1)])
+  assert length==2048+tail and np.array_equal(sel[:length],expected) and np.all(sel[length:]==-1)
+  assert np.unique(sel[:length]).size==length and np.all((sel[:length]>=0)&(sel[:length]<=pos))
+  omitted=np.setdiff1d(np.arange(groups),selected);assert np.min(score[selected])>=np.max(score[omitted])
+  threshold=float(np.min(score[selected]));ties=int(np.count_nonzero(score[:groups]==threshold))
+  pt=arr(base+'.page-table.i32','<i4');assert pt.size==pos+1
+  slots=pt.astype(np.int64)*16+np.arange(pos+1)%16;assert np.unique(slots).size==pos+1 and np.all(slots>=0)
+  cache=arr(base+'.cache.bf16','<u2').reshape(-1,2,2,256);assert np.max(slots)<len(cache)
+  logical=cache[slots];positions=arr(base+'.write-positions.i32','<i4');expected_positions=np.arange(4096) if phase=='prefill' else np.array([4096]);assert np.array_equal(positions,expected_positions)
+  keys=arr(base+'.write-k.bf16','<u2').reshape(-1,2,256);values=arr(base+'.write-v.bf16','<u2').reshape(-1,2,256)
+  assert np.array_equal(logical[positions,:,0,:],keys) and np.array_equal(logical[positions,:,1,:],values)
+  if old_logical is not None:assert np.array_equal(logical[:4096],old_logical)
+  else:old_logical=logical.copy()
+  np.savez(base+'.reference.npz',selected_blocks=selected,expected_selection=expected,slots=slots,selected_cache=logical[sel[:length]])
+  records.append({'layer':l,'phase':phase,'position':pos,'selected_tokens':length,'all_selection_indices_equal':True,'tie_count_at_threshold':ties,'score_threshold':threshold,'kv_written_bf16':int(keys.size+values.size),'previous_kv_unchanged':phase=='decode','page_mapping_identity':bool(np.array_equal(slots,np.arange(pos+1)))})
+r={'records':records,'calls':24,'selected_indices':sum(x['selected_tokens'] for x in records),'written_bf16_checked':sum(x['kv_written_bf16'] for x in records),'preserved_cache_bf16':12*4096*1024,'limitation':'Selection checked against actual captured scores; score computation not independently derived. KV writes checked against actual post-transform K/V, not independent projections/normalization/RoPE. Only this request final prefill/first decode.'}
+(o/'selection-reference.json').write_text(json.dumps(r,indent=2)+'\n');print({k:v for k,v in r.items() if k!='records'})
+files=[f for f in c.iterdir() if f.suffix in ['.i32','.f32','.bf16','.json']];(o/'capture-binding.json').write_text(json.dumps({f.name:hashlib.sha256(f.read_bytes()).hexdigest() for f in files},indent=2)+'\n')

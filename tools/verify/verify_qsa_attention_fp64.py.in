@@ -1,0 +1,24 @@
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import json,hashlib,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/qsa-selection-reference-20260923';c=o/'observed-captures'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+assert json.loads((o/'selection-reference.json').read_text())['selected_indices']==49164
+for name,h in json.loads((o/'capture-binding.json').read_text()).items():assert hashlib.sha256((c/name).read_bytes()).hexdigest()==h
+
+def dec(b):return (np.asarray(b,dtype=np.uint16).astype(np.uint32)<<16).view(np.float32).astype(np.float64)
+def rounded(v):
+ b=np.asarray(v,dtype=np.float32).view(np.uint32);return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype(np.uint16)
+records=[]
+for l in range(3,48,4):
+ for phase in ['prefill','decode']:
+  base=str(c/f'layer-{l}.{phase}');q=dec(np.fromfile(base+'.q.bf16',dtype='<u2')).reshape(24,256);gate=dec(np.fromfile(base+'.gate.bf16',dtype='<u2')).reshape(24,256);actual=np.fromfile(base+'.attention-output.bf16',dtype='<u2').reshape(24,256)
+  saved=np.load(base+'.reference.npz');kv=dec(saved['selected_cache']);ungated=np.empty((24,256),dtype=np.float64);scores=[];probabilities=[]
+  for head in range(24):
+   kh=head//12;k=kv[:,kh,0,:];v=kv[:,kh,1,:];s=(k@q[head])*0.0625;p=np.exp(s-np.max(s));p=p/p.sum();ungated[head]=p@v;scores.append(s);probabilities.append(p)
+  reference=ungated/(1+np.exp(-gate));bits=rounded(reference);bad=np.flatnonzero(bits.reshape(-1)!=actual.reshape(-1));delta=dec(actual)-reference
+  records.append({'layer':l,'phase':phase,'elements':6144,'mismatches':len(bad),'indices':bad.tolist(),'max_abs':float(np.max(np.abs(delta))),'relative_l2':float(np.linalg.norm(delta)/np.linalg.norm(reference))})
+  np.savez(base+'.attention-reference.npz',scores=np.array(scores),probabilities=np.array(probabilities),ungated=ungated,fp64=reference,bf16_bits=bits)
+r={'records':records,'elements':147456,'mismatches':sum(x['mismatches'] for x in records),'by_phase':{phase:sum(x['mismatches'] for x in records if x['phase']==phase) for phase in ['prefill','decode']},'limitation':'FP64 stable softmax over actual selected KV and query, per-element sigmoid gate. Does not reproduce online 16-token chunks, BF16 probability quantization, tensor-core accumulation, CUDA exp or projection/rope sources. Differences retained without tolerance.'}
+(o/'attention-reference.json').write_text(json.dumps(r,indent=2)+'\n');print({k:v for k,v in r.items() if k!='records'})

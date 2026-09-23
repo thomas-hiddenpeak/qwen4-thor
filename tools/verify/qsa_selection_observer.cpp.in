@@ -1,0 +1,63 @@
+#include <cuda_runtime_api.h>
+#include <dlfcn.h>
+#include <atomic>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <string>
+#include <cstring>
+#include <vector>
+namespace {
+std::atomic<cudaKernel_t> select_kernel{nullptr},write_kernel{nullptr},prefill_kernel{nullptr},decode_kernel{nullptr};
+int counts[3][2]{};
+template<class T>T Resolve(const char* s){auto p=reinterpret_cast<T>(dlsym(RTLD_NEXT,s));if(!p)std::_Exit(127);return p;}
+template<class T>T* Ptr(void** a,int i){return *static_cast<T**>(a[i]);}
+bool Save(const std::string& s,const void* p,size_t n){FILE* f=std::fopen(s.c_str(),"wb");if(!f)return false;bool ok=std::fwrite(p,1,n,f)==n;return std::fclose(f)==0&&ok;}
+bool Read(void* p,const void* d,size_t n,cudaStream_t stream){static auto copy=Resolve<decltype(&cudaMemcpyAsync)>("cudaMemcpyAsync");static auto sync=Resolve<decltype(&cudaStreamSynchronize)>("cudaStreamSynchronize");return copy(p,d,n,cudaMemcpyDeviceToHost,stream)==cudaSuccess&&sync(stream)==cudaSuccess;}
+bool Capture(const std::string& s,const void* d,size_t n,cudaStream_t stream){std::vector<unsigned char> v(n);return Read(v.data(),d,n,stream)&&Save(s,v.data(),n);}
+std::string Base(int index,int phase){return std::string(std::getenv("Q4T_QSA_CAPTURE_DIR"))+"/layer-"+std::to_string(index*4+3)+(phase?".decode":".prefill");}
+}
+extern "C" cudaError_t __cudaGetKernel(cudaKernel_t* k,const void* fn){
+ static auto real=Resolve<cudaError_t(*)(cudaKernel_t*,const void*)>("__cudaGetKernel");auto status=real(k,fn);
+ if(status==cudaSuccess){const char* n=nullptr;static auto name=Resolve<decltype(&cudaFuncGetName)>("cudaFuncGetName");if(name(&n,fn)==cudaSuccess&&n){
+  if(std::strstr(n,"ShortTopkSelectKernel"))select_kernel=*k;
+  if(std::strstr(n,"WriteKVKernel")&&std::strstr(n,"full_attention_cu"))write_kernel=*k;
+  if(std::strstr(n,"SparseAttentionKernel"))prefill_kernel=*k;
+  if(std::strstr(n,"SparseAttentionDecodeSplitKernel"))decode_kernel=*k;
+ }}return status;
+}
+extern "C" cudaError_t __cudaLaunchKernel(cudaKernel_t k,dim3 grid,dim3 block,void** a,size_t smem,cudaStream_t stream){
+ static auto real=Resolve<cudaError_t(*)(cudaKernel_t,dim3,dim3,void**,size_t,cudaStream_t)>("__cudaLaunchKernel");
+ bool enabled=std::getenv("Q4T_QSA_CAPTURE_DIR")!=nullptr;int kind=k==write_kernel?0:k==select_kernel?1:(k==prefill_kernel||k==decode_kernel)?2:-1;
+ int t=kind==0?*static_cast<int*>(a[7]):kind==1?*static_cast<int*>(a[4]):int(grid.x);int phase=t==4096?0:1,index=-1;bool take=false,ok=true;std::string base;
+ if(enabled&&kind>=0&&(t==4096||(t==1&&counts[kind][0]==12))){index=counts[kind][phase]++;take=index<12;if(take)base=Base(index,phase);}
+ if(take&&kind==2){
+  ok=*static_cast<int*>(a[7])==24&&*static_cast<int*>(a[8])==2&&*static_cast<int*>(a[9])==256&&*static_cast<int*>(a[10])==2052;
+  int seq=0;const int* ids=Ptr<int>(a,11);if(ids)ok=ok&&Read(&seq,ids+(t-1),4,stream)&&seq==0;
+  int pos=phase?4096:4095;std::vector<int> pt(pos+1);
+  ok=ok&&Read(pt.data(),Ptr<int>(a,2),pt.size()*4,stream)&&Save(base+".page-table.i32",pt.data(),pt.size()*4);
+  int maxslot=0;for(int j=0;j<=pos;++j){int slot=pt[j]*16+j%16;ok=ok&&pt[j]>=0&&slot<208896;if(slot>maxslot)maxslot=slot;}
+  ok=ok&&Capture(base+".cache.bf16",Ptr<uint16_t>(a,1),size_t(maxslot+1)*1024*2,stream)&&
+   Capture(base+".q.bf16",Ptr<uint16_t>(a,0)+size_t(t-1)*6144,6144*2,stream)&&
+   Capture(base+".gate.bf16",Ptr<uint16_t>(a,6)+size_t(t-1)*6144,6144*2,stream)&&
+   Capture(base+".attention-selection.i32",Ptr<int>(a,3)+size_t(t-1)*2052,2052*4,stream)&&
+   Capture(base+".attention-length.i32",Ptr<int>(a,4)+(t-1),4,stream);
+ }
+ auto status=real(k,grid,block,a,smem,stream);if(!take||status!=cudaSuccess)return status;
+ if(kind==0){
+  int seq=0;const int* ids=Ptr<int>(a,8);if(ids)ok=Read(&seq,ids+t-1,4,stream)&&seq==0;
+  ok=ok&&*static_cast<int*>(a[3])==2&&*static_cast<int*>(a[4])==256&&
+   Capture(base+".write-positions.i32",Ptr<int>(a,5),t*4,stream)&&
+   Capture(base+".write-k.bf16",Ptr<uint16_t>(a,0),size_t(t)*512*2,stream)&&
+   Capture(base+".write-v.bf16",Ptr<uint16_t>(a,1),size_t(t)*512*2,stream);
+ }else if(kind==1){
+  ok=*static_cast<int*>(a[5])==4&&*static_cast<int*>(a[6])==512&&*static_cast<int*>(a[7])==2048&&*static_cast<int*>(a[8])==2052&&
+   Capture(base+".position.i32",Ptr<int>(a,3)+t-1,4,stream)&&
+   Capture(base+".scores.f32",Ptr<float>(a,0)+size_t(t-1)*2048,2048*4,stream)&&
+   Capture(base+".selection.i32",Ptr<int>(a,1)+size_t(t-1)*2052,2052*4,stream)&&
+   Capture(base+".length.i32",Ptr<int>(a,2)+t-1,4,stream);
+ }else ok=ok&&Capture(base+".attention-output.bf16",Ptr<uint16_t>(a,5)+size_t(t-1)*6144,6144*2,stream);
+ char meta[256];int len=std::snprintf(meta,sizeof(meta),"{\"layer\":%d,\"phase\":%d,\"kind\":%d,\"tokens\":%d,\"ok\":%s}\n",index*4+3,phase,kind,t,ok?"true":"false");
+ if(len>0&&size_t(len)<sizeof(meta))Save(base+".kind-"+std::to_string(kind)+".json",meta,len);
+ std::fprintf(stderr,"[qsa-observer] layer=%d phase=%d kind=%d ok=%d\n",index*4+3,phase,kind,ok);return status;
+}
