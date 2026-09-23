@@ -1,0 +1,60 @@
+from pathlib import Path
+import hashlib,json,subprocess,shutil,os,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];e=root/'.q4t-work/e2e';o=e/p.name;d=o/'reference';h=e/'moe-scale-hc-write-l0-20260924';n=e/'ple-full-gate-norm-20260924';c=e/'ple-full-conv-20260924';hc=e/'hc-full-boundaries-20260923';nc=n/'observed-captures';cc=c/'observed-captures'
+def sha(f):
+ z=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):z.update(b)
+ return z.hexdigest()
+def save(name,x):(o/name).write_text(json.dumps(x,indent=2)+'\n')
+def roundbf(a):
+ b=a.astype('<f4').view('<u4');return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype('<u2')
+def bf(f,shape):return np.fromfile(f,dtype='<u2').reshape(shape)
+assert not any(d.iterdir());assert all((p/(x+'-build.log')).stat().st_size==0 for x in ['norm','conv']);assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e';budget=5000000000;reserve=20*1024**3;assert shutil.disk_usage(o).free>reserve+budget
+man={x.name:json.loads((x/'artifact-binding.json').read_text()) for x in [h,n,c,hc]};bindings=[]
+def bind(x,name):
+ f=x/name;v=sha(f);assert v==man[x.name][name];bindings.append({'file':str(f.relative_to(root)),'sha256':v});return f
+for x in [n,c,hc]:assert json.loads(bind(x,'exit.json').read_text())['observer_preserved_tested_output']
+assert json.loads(bind(h,'reference.json').read_text())['complete']
+branches=['baseline','input_fixed','inter_fixed','both_fixed']
+for b in branches:bind(h,'reference/'+b+'.bf16')
+for suffix in ['norm-0.output.bf16','norm-1.weights.bf16','norm-1.eps.f32','norm-1.output.bf16','gate.scale.f32','gate.output.bf16','gated.value.bf16','norm-2.weights.bf16','norm-2.eps.f32']:bind(n,'observed-captures/prefill.'+suffix)
+for suffix in ['trunk.bf16','gated.bf16','x.bf16','output.bf16','state-before.bf16','state-after.bf16','weights.bf16']:bind(c,'observed-captures/prefill.'+suffix)
+next_input=bind(hc,'observed-captures/hc-1.prefill.read.trunk.bf16');assert sha(next_input)==sha(cc/'prefill.output.bf16');assert sha(h/'reference/baseline.bf16')==sha(cc/'prefill.trunk.bf16');assert not np.fromfile(cc/'prefill.state-before.bf16',dtype='<u2').any()
+weights=json.loads(bind(n,'checkpoint-binding.json').read_text())+[json.loads(bind(c,'checkpoint-binding.json').read_text())]
+for w in weights:
+ f=Path(w['file']);st=f.stat();assert st.st_size==w['size'] and st.st_mtime_ns==w['mtime_ns']
+ with f.open('rb') as z:z.seek(w['offset']);assert hashlib.sha256(z.read(w['bytes'])).hexdigest()==w['sha256']
+save('input-binding.json',bindings);save('checkpoint-binding.json',weights);save('source-manifests.json',{x.name:sha(x/'artifact-binding.json') for x in [h,n,c,hc]});save('plan.json',{'budget_bytes':budget,'reserve_bytes':reserve,'scope':'All four full4096 PLE chains: own HC trunk -> query norm -> gate with unchanged actual key norm -> broadcast actual token-derived value -> conv norm -> zero-initial-state K4 dilation3 convolution -> device SiLU -> three BF16 boundaries including own trunk residual. CPU specified FP32/FMA, device only rsqrt/gate nonlinear/SiLU. Baseline every intermediate and final must match actual; final bound to layer1 HC read trunk. No independent high precision variant in this propagation.','retention':'Complete all rounded intermediate/final tensors, all differing positions; full norm/gate primitive arguments/results and mismatch pre-round values; full convolution FP32 accumulators/device SiLU and updated BF16 states. Matching final pre-round values not saved separately.'})
+def run(name,args):
+ proc=subprocess.run([str(p/args[0])]+[str(x) for x in args[1:]],capture_output=True,text=True,env={**os.environ,'OMP_NUM_THREADS':'8'});(o/(name+'.stdout')).write_text(proc.stdout);(o/(name+'.stderr')).write_text(proc.stderr);assert proc.returncode==0,proc.stderr;return json.loads(proc.stdout)
+records=[]
+def inspect(branch,stage,f,actual,width,allowed,expected=None):
+ a=bf(actual,(4096,width));b=bf(f,(4096,width));assert np.isfinite((b.astype('<u4')<<16).view('<f4')).all();idx=np.flatnonzero(a.reshape(-1)!=b.reshape(-1)).astype('<i4');counts=np.bincount(idx//width,minlength=4096).astype('<i4');mask=counts>0;assert not np.any(mask&~allowed)
+ if expected is not None:assert len(idx)==expected
+ if branch=='baseline':assert len(idx)==0
+ prefix=d/(branch+'.'+stage);idx.tofile(str(prefix)+'.differences.i32');counts.tofile(str(prefix)+'.token-differences.i32');r={'branch':branch,'stage':stage,'elements':a.size,'mismatches':len(idx),'changed_tokens':int(mask.sum()),'output':str(f.relative_to(o)),'output_sha256':sha(f)};records.append(r);print(r,flush=True);return mask
+for branch in branches:
+ assert shutil.disk_usage(o).free>reserve+1000000000
+ trunk=h/'reference'/(branch+'.bf16');inputmask=np.any(bf(trunk,(4096,10240))!=bf(cc/'prefill.trunk.bf16',(4096,10240)),axis=1);prefix=d/(branch+'.query');r=run(branch+'-query',['norm',trunk,nc/'prefill.norm-1.weights.bf16',nc/'prefill.norm-1.eps.f32',nc/'prefill.norm-1.output.bf16',prefix,1,0,4096]);query=Path(str(prefix)+'.device.bf16');mask=inspect(branch,'query',query,nc/'prefill.norm-1.output.bf16',10240,inputmask,r['variants'][0]['mismatches'])
+ prefix=d/(branch+'.gate');r=run(branch+'-gate',['norm',nc/'prefill.norm-0.output.bf16',query,nc/'prefill.gate.scale.f32',nc/'prefill.gate.output.bf16',prefix,3,0,4096]);gate=Path(str(prefix)+'.device.bf16');mask=inspect(branch,'gate',gate,nc/'prefill.gate.output.bf16',4,mask,r['variants'][0]['mismatches'])
+ gates=(bf(gate,(4096,4,1)).astype('<u4')<<16).view('<f4');value=(bf(nc/'prefill.gated.value.bf16',(4096,1,2560)).astype('<u4')<<16).view('<f4');gated=d/(branch+'.gated.bf16');roundbf(np.multiply(gates,value,dtype=np.float32)).tofile(gated);mask=inspect(branch,'gated',gated,cc/'prefill.gated.bf16',10240,mask)
+ prefix=d/(branch+'.convnorm');r=run(branch+'-convnorm',['norm',gated,nc/'prefill.norm-2.weights.bf16',nc/'prefill.norm-2.eps.f32',cc/'prefill.x.bf16',prefix,2,0,4096]);convnorm=Path(str(prefix)+'.device.bf16');normmask=inspect(branch,'convnorm',convnorm,cc/'prefill.x.bf16',10240,mask,r['variants'][0]['mismatches'])
+ allowed=inputmask.copy()
+ for shift in [0,3,6,9]:
+  if shift:allowed[shift:]|=normmask[:-shift]
+  else:allowed|=normmask
+ prefix=d/(branch+'.conv');r=run(branch+'-conv',['conv',cc,prefix,'prefill',0,4096,convnorm,gated,trunk]);final=Path(str(prefix)+'.device.bf16');outmask=inspect(branch,'output',final,cc/'prefill.output.bf16',10240,allowed,r['variants'][0]['mismatches']);records[-1]['newly_affected_tokens_beyond_input']=int(np.count_nonzero(outmask&~inputmask));records[-1]['allowed_by_causal_support']=int(allowed.sum())
+ for suffix in ['acc.f32','silu.f32']:
+  arr=np.fromfile(str(prefix)+'.'+suffix,dtype='<f4');assert arr.size==41943040 and np.isfinite(arr).all()
+ state=bf(convnorm,(4096,10240))[-9:].T.copy();state.tofile(d/(branch+'.state-after.bf16'));oldstate=bf(cc/'prefill.state-after.bf16',(10240,9));sd=np.flatnonzero(state.reshape(-1)!=oldstate.reshape(-1)).astype('<i4');sd.tofile(d/(branch+'.state-differences.i32'));save(branch+'-state.json',{'elements':state.size,'mismatches':len(sd)})
+ if branch=='baseline':assert len(sd)==0 and sha(final)==sha(next_input)
+ # Audit every norm/gate difference raw value and complete primitive arrays.
+ for phase,width in [('query',10240),('gate',4),('convnorm',10240)]:
+  pr=str(d/(branch+'.'+phase));indices=np.fromfile(pr+'.device.indices.i32',dtype='<i4');raw=np.fromfile(pr+'.device.differences.f64',dtype='<f8');ref=np.fromfile(pr+'.device.bf16',dtype='<u2');assert len(raw)==len(indices) and np.isfinite(raw).all() and np.array_equal(roundbf(raw),ref[indices])
+  for suffix,dt in [('argument.f32','<f4'),('argument.f64','<f8'),('primitive.f32','<f4')]:
+   arr=np.fromfile(pr+'.'+suffix,dtype=dt);assert len(arr)==16384 and np.isfinite(arr).all()
+ save('reference.json',{'records':records,'complete':len(records)==20})
+summary={'outputs':[r for r in records if r['stage']=='output'],'records':len(records),'baseline_recovers_all_intermediates_and_state':True,'baseline_equals_layer1_hc_read_input':True,'runtime_changed':False,'whole_model_correctness_proven':False,'task_causality_established':False,'propagation_endpoint':'layer1 PLE output/HC attention read input, before its norm/mix and attention'}
+for name in ['run.py','norm.cu','conv.cu','common.h','norm','conv','norm-build.log','conv-build.log']:shutil.copy2(p/name,o/name)
+summary['artifact_bytes_before_sealing']=sum(f.stat().st_size for f in o.rglob('*') if f.is_file());assert summary['artifact_bytes_before_sealing']<budget;save('summary.json',summary);print(summary,flush=True)

@@ -1,0 +1,102 @@
+#include <cuda_runtime.h>
+#include "common.h"
+#define CU(x)                                             \
+  do {                                                    \
+    if ((x) != cudaSuccess) throw std::runtime_error(#x); \
+  } while (0)
+__global__ void SiluOnly(const float* x, float* y, int n) {
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i < n) y[i] = x[i] / (1.f + __expf(-x[i]));
+}
+int main(int argc, char** argv) {
+  try {
+    if (argc != 9)
+      throw std::runtime_error(
+          "captures output_prefix phase first_row rows new_norm new_gated "
+          "new_trunk");
+    std::string phase = argv[3], b = std::string(argv[1]) + "/" + phase,
+                o = argv[2];
+    int start = std::stoi(argv[4]), rows = std::stoi(argv[5]),
+        total = phase == "prefill"  ? 4096
+                : phase == "decode" ? 1
+                                    : 0;
+    if (start < 0 || rows < 1 || rows > 4096 || start + rows > total)
+      throw std::runtime_error("range");
+    constexpr int C = 10240;
+    size_t n = size_t(rows) * C;
+    auto x = Read<uint16_t>(argv[6], size_t(total) * C),
+         w = Read<uint16_t>(b + ".weights.bf16", C * 4),
+         state = Read<uint16_t>(b + ".state-before.bf16", C * 9),
+         gated = Read<uint16_t>(argv[7], size_t(total) * C),
+         trunk = Read<uint16_t>(argv[8], size_t(total) * C),
+         expected = Read<uint16_t>(b + ".output.bf16", size_t(total) * C);
+    std::vector<float> acc(n), device(n);
+    std::vector<double> high(n);
+#pragma omp parallel for
+    for (size_t i = 0; i < n; ++i) {
+      int t = start + int(i / C), c = int(i % C);
+      float sum = 0;
+      double sum64 = 0;
+      for (int j = 0; j < 4; ++j) {
+        int src = t - (3 - j) * 3;
+        float v =
+            src < 0 ? B(state[c * 9 + src + 9]) : B(x[size_t(src) * C + c]);
+        float weight = B(w[c * 4 + j]);
+        sum = std::fma(weight, v, sum);
+        sum64 = std::fma(double(weight), double(v), sum64);
+      }
+      acc[i] = sum;
+      high[i] = sum64;
+    }
+    Save(o + ".acc.f32", acc);
+    float *da, *dy;
+    CU(cudaMalloc(&da, n * 4));
+    CU(cudaMalloc(&dy, n * 4));
+    CU(cudaMemcpy(da, acc.data(), n * 4, cudaMemcpyHostToDevice));
+    SiluOnly<<<(n + 255) / 256, 256>>>(da, dy, int(n));
+    CU(cudaGetLastError());
+    CU(cudaMemcpy(device.data(), dy, n * 4, cudaMemcpyDeviceToHost));
+    CU(cudaFree(da));
+    CU(cudaFree(dy));
+    Save(o + ".silu.f32", device);
+    std::printf(
+        "{\"phase\":\"%s\",\"first_row\":%d,\"rows\":%d,\"elements\":%zu,"
+        "\"variants\":[",
+        phase.c_str(), start, rows, n);
+    for (int v = 0; v < 1; ++v) {
+      const char* kind = v == 0 ? "device" : v == 1 ? "cpu" : "fp64";
+      std::vector<uint16_t> y(n);
+      std::vector<int32_t> indices;
+      std::vector<double> diff_acc, diff_silu;
+      for (size_t i = 0; i < n; ++i) {
+        size_t global = size_t(start) * C + i;
+        double si64 = high[i] * Sig64(high[i]);
+        float si = v == 0   ? device[i]
+                   : v == 1 ? acc[i] / (1.f + std::exp(-acc[i]))
+                            : float(si64);
+        uint16_t conv = Round(si), ple = Round(B(gated[global]) + B(conv));
+        y[i] = Round(B(trunk[global]) + B(ple));
+        if (y[i] != expected[global]) {
+          indices.push_back(int32_t(i));
+          if (v == 2) {
+            diff_acc.push_back(high[i]);
+            diff_silu.push_back(si64);
+          }
+        }
+      }
+      Save(o + "." + kind + ".bf16", y);
+      Save(o + "." + kind + ".indices.i32", indices);
+      if (v == 2) {
+        Save(o + ".fp64.diff-acc.f64", diff_acc);
+        Save(o + ".fp64.diff-silu.f64", diff_silu);
+      }
+      std::printf("%s{\"name\":\"%s\",\"mismatches\":%zu}", v ? "," : "", kind,
+                  indices.size());
+    }
+    std::printf("]}\n");
+    return 0;
+  } catch (const std::exception& e) {
+    std::fprintf(stderr, "%s\n", e.what());
+    return 2;
+  }
+}

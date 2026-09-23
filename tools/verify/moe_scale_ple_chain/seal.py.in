@@ -1,0 +1,16 @@
+"""Seal after the reference controller has exited; stdout stays outside archive."""
+from pathlib import Path
+import hashlib,json,shutil
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/moe-scale-ple-chain-20260924'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+r=json.loads((o/'reference.json').read_text());assert r['complete'] and len(r['records'])==20
+assert sorted((x['branch'],x['stage']) for x in r['records'])==sorted((b,k) for b in ['baseline','input_fixed','inter_fixed','both_fixed'] for k in ['query','gate','gated','convnorm','output'])
+assert json.loads((o/'summary.json').read_text())['baseline_recovers_all_intermediates_and_state']
+for name in ['run.log','seal.py']:shutil.copy2(p/name,o/name)
+f=o/'artifact-binding.json';assert not f.exists();binding={str(x.relative_to(o)):sha(x) for x in sorted(o.rglob('*')) if x.is_file()};f.write_text(json.dumps(binding,indent=2)+'\n')
+for name,expected in binding.items():assert sha(o/name)==expected
+print({'entries':len(binding),'all_hashes_verified':True,'artifact_bytes':sum(x.stat().st_size for x in o.rglob('*') if x.is_file())})
