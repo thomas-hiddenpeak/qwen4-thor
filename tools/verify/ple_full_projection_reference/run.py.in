@@ -1,0 +1,43 @@
+from pathlib import Path
+import hashlib,json,shutil,subprocess,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/ple-full-projection-reference-20260924';d=o/'reference';s=root/'.q4t-work/e2e/ple-full-projection-v2-20260924';c=s/'observed-captures';prior=root/'.q4t-work/e2e/ple-full-gate-norm-20260924';lookup=root/'.q4t-work/e2e/ple-lookup-reference-20260923'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert (p/'build.log').stat().st_size==0;assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+sm=json.loads((s/'artifact-binding.json').read_text())
+for f in ['exit.json','prior-binding.json','lookup-binding.json','checkpoint-binding.json']:assert sha(s/f)==sm[f]
+assert json.loads((s/'exit.json').read_text())['observer_preserved_tested_output']
+binding=[]
+for label,source in [('prior',prior),('lookup',lookup)]:
+ b=json.loads((s/(label+'-binding.json')).read_text());assert sha(source/'artifact-binding.json')==b['manifest_sha256']
+ for r in b['records']:assert sha(source/r['file'])==r['sha256'];binding.append({'file':str((source/r['file']).relative_to(root)),'sha256':r['sha256']})
+for kind in ['key','value']:
+ for suffix in ['weights.bf16','algo.bin']:
+  f=c/(kind+'.'+suffix);h=sm[str(f.relative_to(s))];assert sha(f)==h;binding.append({'file':str(f.relative_to(root)),'sha256':h})
+save('input-binding.json',binding)
+for w in json.loads((s/'checkpoint-binding.json').read_text()):
+ f=Path(w['file']);st=f.stat();assert st.st_size==w['size'] and st.st_mtime_ns==w['mtime_ns']
+ with f.open('rb') as stream:stream.seek(w['offset']);assert hashlib.sha256(stream.read(w['bytes'])).hexdigest()==w['sha256']
+reserve=20*1024**3;budget=100000000;assert shutil.disk_usage(o).free>reserve+budget
+save('plan.json',{'source_manifest_sha256':sha(s/'artifact-binding.json'),'reserve_bytes':reserve,'budget_bytes':budget,'scope':'Full4096 key/value BF16 GEMMs using actual scaled lookup input and checkpoint-bound weights. Recorded algorithm replay and FP64->FP32->BF16, with CPU sequential FP64 last row. Not independent whole-model reference.','retention':'Every complete rounded/replayed reference reconstructable from actual base plus delta; all mismatch FP64 values and CPU/GPU last rows retained. Other matching unrounded FP64 outputs not persisted. One full temporary output at a time.'})
+records=[]
+for kind,n,suffix in [('key',10240,'prefill.norm-0.input.bf16'),('value',2560,'prefill.gated.value.bf16')]:
+ basefile=prior/'observed-captures'/suffix;actual=np.fromfile(basefile,dtype='<u2');assert len(actual)==4096*n
+ for mode in ['replay','fp64']:
+  assert shutil.disk_usage(o).free>reserve+95000000
+  args=[p/'reference',c/(kind+'.weights.bf16'),lookup/'observed-captures/step-0.scaled.bf16',basefile,d/kind,n,2560,c/(kind+'.algo.bin'),mode]
+  run=subprocess.run([str(x) for x in args],capture_output=True,text=True);(o/(kind+'.'+mode+'.stdout')).write_text(run.stdout);(o/(kind+'.'+mode+'.stderr')).write_text(run.stderr);assert run.returncode==0,run.stderr;r=json.loads(run.stdout);r.pop('replay_mismatches',None);assert r['elements']==len(actual);f=d/(kind+'.'+mode+'.bf16');ref=np.fromfile(f,dtype='<u2');assert len(ref)==len(actual);idx=np.flatnonzero(ref!=actual).astype('<i4');assert len(idx)==r['mismatches']
+  if mode=='fp64':
+   assert np.array_equal(idx,np.fromfile(d/(kind+'.differences.i32'),dtype='<i4'));v=np.fromfile(d/(kind+'.differences.f64'),dtype='<f8');bits=v.astype('<f4').view('<u4');assert len(v)==len(idx) and np.array_equal(((bits+0x7fff+((bits>>16)&1))>>16).astype('<u2'),ref[idx])
+  delta=d/(kind+'.'+mode+'.delta.npz');np.savez_compressed(delta,indices=idx,values=ref[idx]);z=np.load(delta);rebuilt=actual.copy();rebuilt[z['indices']]=z['values'];assert np.array_equal(rebuilt,ref);h=sha(f);assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==h
+  r.update(kind=kind,mode=mode,base=str(basefile.relative_to(root)),base_sha256=sha(basefile),delta=str(delta.relative_to(o)),delta_sha256=sha(delta),reference_sha256=h);records.append(r);save('reference.json',{'records':records,'complete':len(records)==4});f.unlink();print(r,flush=True)
+for r in records:
+ f=root/r['base'];assert sha(f)==r['base_sha256'];delta=o/r['delta'];assert sha(delta)==r['delta_sha256'];z=np.load(delta);rebuilt=np.fromfile(f,dtype='<u2');rebuilt[z['indices']]=z['values'];assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==r['reference_sha256']
+high=[r for r in records if r['mode']=='fp64'];summary={'projection_elements':sum(r['elements'] for r in high),'replay_mismatches':sum(r['mismatches'] for r in records if r['mode']=='replay'),'fp64_mismatches':sum(r['mismatches'] for r in high),'cpu_last_elements':sum(r['cpu_last_elements'] for r in high),'cpu_last_raw_mismatches':sum(r['cpu_last_raw_mismatches'] for r in high),'cpu_last_rounded_mismatches':sum(r['cpu_last_rounded_mismatches'] for r in high),'all_references_reconstructed':True,'runtime_changed':False,'whole_model_correctness_proven':False,'free_after':shutil.disk_usage(o).free};save('summary.json',summary)
+for name in ['run.py','reference.cpp','reference','build.log']:shutil.copy2(p/name,o/name)
+assert sum(f.stat().st_size for f in o.rglob('*') if f.is_file())<budget
+save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'});print(summary,flush=True)
