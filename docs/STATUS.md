@@ -15,11 +15,11 @@
 中间量化有148339项错误，均覆盖48层。给定错误尺度的后续FP4/
 矩阵乘参考一致不能消除尺度缺陷。修正传播与错答因果尚未闭合。
 
-最新完成：完整indexer边界先经三侧原4K HTTP观测不变性确认；
-36次矩阵乘434110464个BF16输出记录算法重放相同，FP64舍入
-差异43759。评分汇总100663296个F32输出同CPU指定顺序+设备
-缩放；旧完整压缩key参考84份操作数已接通复用。查询norm/RoPE
-全量算术仍待补齐，详见 [QSA报告](QSA_FULL_REFERENCE_2026-09-24.md)。
+最新完成：完整indexer查询norm/RoPE组合25165824个BF16输出
+同CPU指定顺序+设备数学参考；CPU数学差异15468，FP64保留/
+省略norm BF16边界差异27408/3565801，全部保留。完整indexer
+算子条件参考已补齐，下一步尺度修正的组合传播对照，详见
+[QSA报告](QSA_FULL_REFERENCE_2026-09-24.md)。
 
 此前完整QSA选择/attention指定算术相同；高精度保留概率与门控
 BF16舍入后仍有175500项差异。以上均为实际输入上的条件参考，
@@ -88,7 +88,7 @@ BF16舍入后仍有175500项差异。以上均为实际输入上的条件参考�
 | MoE路由/量化 | 全router/mapping/gather、输入及中间量化；E4M3错误确实到达实际计算 | FP64 router舍入后103行集合变化，未建任务因果；错误尺度未修正传播 | [路由](MOE_ROUTER_REFERENCE_2026-09-24.md)、[输入量化](MOE_INPUT_QUANT_REFERENCE_2026-09-24.md)、[中间量化](MOE_INTER_QUANT_REFERENCE_2026-09-24.md) |
 | MoE专家/合并 | 全GU/down重放及FP64、路由合并、shared投影/SwiGLU及最终MoE合并 | 使用实际量化/路由输入；共享分支存在保留的高精度差异 | [GU](MOE_GU_REFERENCE_2026-09-24.md)、[down](MOE_DOWN_REFERENCE_2026-09-24.md)、[shared](MOE_SHARED_REFERENCE_2026-09-24.md) |
 | PLE | 全prefill key/value投影、norm/gate/广播、卷积/历史及HC交接 | 逐算子条件参考，不是独立组合前向 | [投影](PLE_PROJECTION_REFERENCE_2026-09-23.md)、[卷积/门控](PLE_CONV_REFERENCE_2026-09-23.md) |
-| QSA | 全query选择/KV/attention指定算术，主投影重放/FP64、norm/RoPE参考及实际消费者边界 | indexer矩阵/汇总及压缩参考已补；查询变换全量算术待补，未做高精度整链传播 | [完整QSA](QSA_FULL_REFERENCE_2026-09-24.md)、[旧局部范围](QSA_SELECTION_REFERENCE_2026-09-23.md) |
+| QSA | 全query选择/KV/attention指定算术，主投影重放/FP64、norm/RoPE参考及实际消费者边界 | 完整indexer条件参考已补齐；未做独立整模型或高精度整链传播 | [完整QSA](QSA_FULL_REFERENCE_2026-09-24.md)、[旧局部范围](QSA_SELECTION_REFERENCE_2026-09-23.md) |
 | 输出头 | 七次最终mixer、全词表logits、argmax、后续token交接 | 上游仍为实际主干，没有从原始输入独立生成 | [mixer](FINAL_MIXER_REFERENCE_2026-09-23.md)、[logits](OUTPUT_HEAD_REFERENCE_2026-09-23.md) |
 
 参考依赖与接口见 [上游参考合同](UPSTREAM_REFERENCE_CONTRACT_2026-09-23.md)。
@@ -97,12 +97,12 @@ SGLang在本机的现有对照未形成稳定、可比的整模型oracle，不�
 
 ## 下一步执行顺序
 
-1. 复用已通过观测不变性门禁的冻结indexer输入，核对全部查询的
-   fused norm/RoPE，明确内部BF16舍入及设备数学依赖。
-2. 汇总完整indexer各算子与选择评分的覆盖边界；保留全部高精度
-   差异，不以接近、低差异率或重放相同当作整模型通过。
-3. 在逐算子条件参考之外建立组合前向/修正传播对照，明确已知尺度
-   缺陷与错误答案的因果边界；不能把算子检查数量当成完成标准。
+1. 从已冻结实际MoE输入开始，建立已知高区间尺度修正的有界
+   组合传播对照，先核对首个受影响层的量化→专家→合并输出。
+2. 明确实际输入条件、重放依赖和传播终点；单层变化不能宣称已
+   解释最终错答。保留规范修正候选1K/44K退化、4K改善的HTTP事实。
+3. 继续建立可比多层前向与最终答案因果证据，不能把局部一致数量
+   或低差异率当作正确性完成标准。
 4. 只有形成具体、可回退且有证据支持的修复才改运行时，仍先完整
    HTTP质量和五档性能。正确性确认之后再研究性能与数据流执行计划。
 

@@ -1,0 +1,45 @@
+from pathlib import Path
+import hashlib,json,shutil,subprocess,os,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e'/p.name;d=o/'reference';s=root/'.q4t-work/e2e/qsa-full-indexer-20260924';c=s/'observed-captures'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(n,x):(o/n).write_text(json.dumps(x,indent=2)+'\n')
+def rounded(x):
+ b=x.astype('<f4').view('<u4');return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype('<u2')
+assert (p/'build.log').stat().st_size==0 and not any(d.iterdir());assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e';m=json.loads((s/'artifact-binding.json').read_text());bindings=[]
+def bind(name):
+ f=s/name;assert sha(f)==m[name];bindings.append({'file':str(f.relative_to(root)),'sha256':m[name]});return f
+assert json.loads(bind('exit.json').read_text())['observer_preserved_tested_output'];weights=json.loads(bind('checkpoint-binding.json').read_text())['weights'];count=0
+for w in weights:
+ if not w['key'].endswith('.indexer.q_layernorm.weight'):continue
+ f=Path(w['file']);st=f.stat();assert st.st_size==w['size'] and st.st_mtime_ns==w['mtime_ns']
+ with f.open('rb') as z:z.seek(w['offset']);assert hashlib.sha256(z.read(w['bytes'])).hexdigest()==w['sha256']
+ count+=1
+assert count==12
+for l in range(3,48,4):
+ for suffix in ['iq.raw.bf16','iq.transformed.bf16','q-norm.weights.bf16','query.params.f32','query-transform.positions.i32','query-transform.seqids.i32','query-transform.seqids-null.i32']+[f'query-transform.rope-{j}.i32' for j in range(3)]:bind(f'observed-captures/layer-{l}.prefill.{suffix}')
+ params=np.fromfile(c/f'layer-{l}.prefill.query.params.f32',dtype='<f4');assert np.array_equal(params,np.array([1e7,1e-6],dtype='<f4'));ids=np.fromfile(c/f'layer-{l}.prefill.query-transform.seqids.i32',dtype='<i4');assert ids.size==4096 and not ids.any()
+budget=1000000000;reserve=20*1024**3;assert shutil.disk_usage(o).free>reserve+budget
+save('input-binding.json',bindings);save('plan.json',{'source_manifest_sha256':sha(s/'artifact-binding.json'),'budget_bytes':budget,'reserve_bytes':reserve,'scope':'12x4096x4x128 full fused indexer query normalization plus RoPE. CPU 4 warp XOR trees, sequential warp sum; BF16 norm boundary then current*cos FMA. Device variant only uses device rsqrt/pow/cos/sin; CPU variant uses double functions rounded FP32. FP64_BF16 formula retains norm BF16, FP64 formula omits internal rounding. All propagate own norm to own RoPE; no actual intermediate norm capture exists. Actual IQ projection inputs, not full model propagation.','retention':'All final BF16 variants lossless base+delta; all differing final unrounded values retained. Complete rounded norm intermediates, variances/inverses and math tables retained. Matching final unrounded outputs not retained; FP64 norm full unrounded values not retained.'})
+records=[]
+for l in range(3,48,4):
+ assert shutil.disk_usage(o).free>reserve+budget
+ prefix=d/f'layer-{l}';run=subprocess.run([str(p/'reference'),str(c),str(prefix),str(l)],capture_output=True,text=True,env={**os.environ,'OMP_NUM_THREADS':'8'});(o/f'layer-{l}.stdout').write_text(run.stdout);(o/f'layer-{l}.stderr').write_text(run.stderr);assert run.returncode==0,run.stderr
+ data=json.loads(run.stdout);assert data['layer']==l and data['rows']==4096 and sorted(x['variant'] for x in data['records'])==['cpu','device','fp64','fp64_bf16'];base=c/f'layer-{l}.prefill.iq.transformed.bf16';actual=np.fromfile(base,dtype='<u2');assert len(actual)==2097152
+ for suffix,dt,n in [('variance.f32','<f4',16384),('variance.f64','<f8',16384),('device-inv.f32','<f4',16384),('cpu-inv.f32','<f4',16384),('fp64-inv.f64','<f8',16384)]+[(v+'-'+k+'.'+('f64' if v=='fp64' else 'f32'),'<f8' if v=='fp64' else '<f4',32 if k=='freq' else 4096*32) for v in ['device','cpu','fp64'] for k in ['freq','angle','cos','sin']]:
+  x=np.fromfile(str(prefix)+'.'+suffix,dtype=dt);assert x.size==n and np.isfinite(x).all()
+ positions=np.fromfile(c/f'layer-{l}.prefill.query-transform.positions.i32',dtype='<i4');rr=np.array([np.fromfile(c/f'layer-{l}.prefill.query-transform.rope-{j}.i32',dtype='<i4') for j in range(3)]);mp=np.fromfile(str(prefix)+'.math-positions.i32',dtype='<i4').reshape(4096,32);assert np.array_equal(mp,rr[np.arange(32)[None,:]%3,positions[:,None]])
+ for result in data['records']:
+  v=result['variant'];tag=str(prefix)+'.'+v;ref=np.fromfile(tag+'.bf16',dtype='<u2');norm=np.fromfile(tag+'.norm.bf16',dtype='<u2');assert len(ref)==len(norm)==result['elements']==2097152;assert np.array_equal(ref.reshape(-1,128)[:,64:],norm.reshape(-1,128)[:,64:])
+  idx=np.flatnonzero(ref!=actual).astype('<i4');assert len(idx)==result['mismatches'] and np.array_equal(idx,np.fromfile(tag+'.differences.i32',dtype='<i4'));raw=np.fromfile(tag+'.differences.f64',dtype='<f8');assert len(raw)==len(idx) and np.isfinite(raw).all() and np.array_equal(rounded(raw),ref[idx]);delta=Path(tag+'.delta.npz');counts=np.bincount(idx//512,minlength=4096).astype('<i4');np.savez_compressed(delta,indices=idx,values=ref[idx],query_mismatches=counts);z=np.load(delta);rebuilt=actual.copy();rebuilt[z['indices']]=z['values'];assert np.array_equal(ref,rebuilt);digest=sha(Path(tag+'.bf16'));assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==digest
+  result.update(layer=l,base=str(base.relative_to(root)),base_sha256=sha(base),delta=str(delta.relative_to(o)),delta_sha256=sha(delta),reference_sha256=digest,affected_query_layers=int(np.count_nonzero(counts)),rotated_mismatches=int(np.count_nonzero(idx%128<64)),suffix_mismatches=int(np.count_nonzero(idx%128>=64)),zero_sign_only=int(np.count_nonzero(((actual[idx]&0x7fff)==0)&((ref[idx]&0x7fff)==0))));records.append(result);Path(tag+'.bf16').unlink()
+ save('reference.json',{'records':records,'complete':len(records)==48});print({'layer':l,'results':data['records']},flush=True)
+assert sorted((x['layer'],x['variant']) for x in records)==[(l,v) for l in range(3,48,4) for v in ['cpu','device','fp64','fp64_bf16']]
+for r in records:
+ base=root/r['base'];assert sha(base)==r['base_sha256'];delta=o/r['delta'];assert sha(delta)==r['delta_sha256'];z=np.load(delta);rebuilt=np.fromfile(base,dtype='<u2');rebuilt[z['indices']]=z['values'];assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==r['reference_sha256']
+summary={'variants':{v:{k:sum(r[k] for r in records if r['variant']==v) for k in ['elements','mismatches','affected_query_layers','rotated_mismatches','suffix_mismatches','zero_sign_only']} for v in ['device','cpu','fp64_bf16','fp64']},'all_references_reconstructed':True,'checkpoint_norm_tensors':count,'records':len(records),'runtime_changed':False,'whole_model_correctness_proven':False}
+for n in ['run.py','reference.cu','reference','build.log']:shutil.copy2(p/n,o/n)
+summary['artifact_bytes_before_sealing']=sum(f.stat().st_size for f in o.rglob('*') if f.is_file());assert summary['artifact_bytes_before_sealing']<budget;save('summary.json',summary);print(summary,flush=True)
