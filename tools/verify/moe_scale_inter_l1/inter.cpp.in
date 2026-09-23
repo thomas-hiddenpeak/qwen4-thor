@@ -1,0 +1,91 @@
+#include "common.h"
+#include <algorithm>
+uint8_t Nearest(float v, const std::vector<float>& table) {
+  auto it = std::lower_bound(table.begin(), table.end(), v);
+  int hi = int(it - table.begin());
+  if (hi == 0) return 0;
+  if (hi == int(table.size())) return uint8_t(hi - 1);
+  double lo = double(v) - table[hi - 1], up = double(table[hi]) - v;
+  if (lo < up) return uint8_t(hi - 1);
+  if (up < lo) return uint8_t(hi);
+  return uint8_t((hi & 1) ? hi - 1 : hi);
+}
+uint8_t Legacy(float ratio, const std::vector<float>& table) {
+  if (ratio < 0.015625f) return uint8_t(std::min(int(ratio * 512.f + .5f), 7));
+  uint8_t code = Nearest(ratio, table);
+  return code >= 120 ? 126 : code;
+}
+int main(int argc, char** argv) {
+  try {
+    if (argc != 7)
+      throw std::runtime_error(
+          "original_gu changed_gu gather table output mode");
+    std::string orig = argv[1], change = argv[2], out = argv[5], mode = argv[6];
+    auto counts =
+        Read<int32_t>(std::string(argv[3]) + "/layer-1.counts.i32", 512);
+    auto sigmoid = Read<float>(argv[4], 65536);
+    std::vector<float> fp8(127), fp4{0, .5, 1, 1.5, 2, 3, 4, 6};
+    for (int i = 0; i < 127; ++i)
+      fp8[i] = i < 8 ? std::ldexp(float(i), -9)
+                     : std::ldexp(1.f + float(i % 8) / 8, i / 8 - 7);
+    bool first = true;
+    size_t total_groups = 0;
+    std::printf("{\"mode\":\"%s\",\"records\":[", mode.c_str());
+    for (int e = 0; e < 512; ++e) {
+      int rows = counts[e];
+      if (!rows) continue;
+      std::string stem = "layer-1.expert-" + std::to_string(e),
+                  base = orig + "/" + stem,
+                  dest = out + "/" + stem + "." + mode;
+      auto gu = Read<uint16_t>(change + "/" + stem + ".replay.bf16",
+                               size_t(rows) * 1280);
+      float scale = Read<float>(base + ".down-input-scale.f32", 1)[0];
+      if (!std::isfinite(scale) || scale <= 0)
+        throw std::runtime_error("scale");
+      for (auto v : gu)
+        if ((v & 0x7fff) >= 0x7f80) throw std::runtime_error("nonfinite gu");
+      size_t groups = size_t(rows) * 40;
+      std::vector<float> values(size_t(rows) * 640), ratios(groups);
+      std::vector<uint8_t> sf(groups), packed(groups * 8);
+#pragma omp parallel for
+      for (size_t i = 0; i < groups; ++i) {
+        size_t row = i / 40, g = i % 40;
+        float maximum = 0;
+        for (int j = 0; j < 16; ++j) {
+          auto gb = gu[row * 1280 + g * 16 + j];
+          float v = (Decode(gb) * sigmoid[gb]) *
+                    Decode(gu[row * 1280 + 640 + g * 16 + j]);
+          values[i * 16 + j] = v;
+          maximum = std::fmax(maximum, std::fabs(v));
+        }
+        float block = maximum > 0 ? maximum / 6.f : 1.f;
+        ratios[i] = block / scale;
+        sf[i] = Legacy(ratios[i], fp8);
+        float eff = fp8[sf[i]] * scale, inv = eff > 0 ? 1.f / eff : 0;
+        for (int j = 0; j < 8; ++j) {
+          uint8_t codes[2];
+          for (int q = 0; q < 2; ++q) {
+            float v = values[i * 16 + j * 2 + q] * inv;
+            codes[q] = Nearest(std::fabs(v), fp4) | (v < 0 ? 8 : 0);
+          }
+          packed[i * 8 + j] = codes[0] | (codes[1] << 4);
+        }
+      }
+      for (float v : values)
+        if (!std::isfinite(v)) throw std::runtime_error("nonfinite activation");
+      Save(dest + ".values.f32", values);
+      Save(dest + ".ratios.f32", ratios);
+      Save(dest + ".sf.bin", sf);
+      Save(dest + ".packed.bin", packed);
+      std::printf("%s{\"expert\":%d,\"rows\":%d,\"groups\":%zu}",
+                  first ? "" : ",", e, rows, groups);
+      first = false;
+      total_groups += groups;
+    }
+    std::printf("],\"groups\":%zu}\n", total_groups);
+    return 0;
+  } catch (const std::exception& e) {
+    std::fprintf(stderr, "%s\n", e.what());
+    return 2;
+  }
+}

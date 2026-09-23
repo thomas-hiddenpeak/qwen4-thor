@@ -1,0 +1,53 @@
+"""Own new-route GU -> legacy intermediate FP4, with identity-aware comparison."""
+from pathlib import Path
+import hashlib,json,subprocess,shutil,os
+import numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];e=root/'.q4t-work/e2e';o=e/p.name;s=e/'moe-scale-gu-l1-20260924';u=e/'moe-full-gu-20260924';old=e/'moe-full-inter-quant-20260924'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as z:
+  for b in iter(lambda:z.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(n,x):(o/n).write_text(json.dumps(x,indent=2)+'\n')
+assert not any((o/'reference').iterdir());assert (p/'build.log').stat().st_size==0
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+budget=1000000000;reserve=20*1024**3;assert shutil.disk_usage(o).free>reserve+budget
+sources=[s,u,old];man={x.name:json.loads((x/'artifact-binding.json').read_text()) for x in sources};bindings=[]
+def bind(x,n):
+ f=x/n;h=sha(f);assert h==man[x.name][n],f;bindings.append({'file':str(f.relative_to(root)),'sha256':h});return f
+assert json.loads(bind(s,'reference.json').read_text())['complete'];assert json.loads(bind(u,'exit.json').read_text())['observer_preserved_tested_output']
+table=bind(old,'reference/device-sigmoid.f32');weights=json.loads(bind(s,'checkpoint-binding.json').read_text());scaleweights=[]
+for r in weights:
+ ex=r['expert'];stem=f'layer-1.expert-{ex}'
+ for suffix in ['inter-sf-logical.bin','inter-packed.bin','down-input-scale.f32']:bind(u,'observed-captures/'+stem+'.'+suffix)
+ w=r['tensors'][-1];assert w['key'].endswith('.down_proj.input_scale');f=Path(w['file']);st=f.stat();assert st.st_size==w['size'] and st.st_mtime_ns==w['mtime_ns']
+ with f.open('rb') as z:z.seek(w['offset']);raw=z.read(w['bytes']);assert hashlib.sha256(raw).hexdigest()==w['sha256']
+ assert raw==(u/'observed-captures'/(stem+'.down-input-scale.f32')).read_bytes();scaleweights.append(w)
+branches=['baseline','input_fixed','inter_fixed','both_fixed'];counts={}
+for b in branches:
+ counts[b]=np.fromfile(bind(s,'inputs/'+b+'/layer-1.counts.i32'),dtype='<i4')
+ for ex in np.flatnonzero(counts[b]):
+  stem=f'layer-1.expert-{ex}'
+  for suffix in ['replay.bf16','old-gu-row.i32','shared-row-differences.i32']:bind(s,'reference/'+b+'/'+stem+'.'+suffix)
+  bind(s,'inputs/'+b+'/'+stem+'.flats.i32')
+save('input-binding.json',bindings);save('checkpoint-binding.json',scaleweights);save('source-manifests.json',{x.name:sha(x/'artifact-binding.json') for x in sources})
+save('plan.json',{'budget_bytes':budget,'reserve_bytes':reserve,'scope':'Four own new-route layer1 GU -> CPU ordered SwiGLU using exhaustive frozen device sigmoid -> legacy E4M3 and enumerated E2M1. No added layer1 scale correction. Baseline must reproduce original intermediate SF/payload under old-GU-row mapping; newly selected expert rows separate.','dependencies':'Device sigmoid table and intentionally preserved accepted legacy scale behavior. No independent high precision whole model proof.','retention':'Complete FP32 activations/ratios, SF/payload, all common-assignment differences and row distribution. Original/new row mappings bound in previous GU evidence.','legacy_encoder':'Positive finite table: subnormal half-up clamped7; normal RNE code>=120 ->126, including known high-range defect.'})
+records=[]
+for b in branches:
+ d=o/'reference'/b;d.mkdir()
+ proc=subprocess.run([str(p/'inter'),str(u/'observed-captures'),str(s/'reference'/b),str(s/'inputs'/b),str(table),str(d),b],capture_output=True,text=True,env={**os.environ,'OMP_NUM_THREADS':'8'});(o/(b+'.stdout')).write_text(proc.stdout);(o/(b+'.stderr')).write_text(proc.stderr);assert proc.returncode==0,proc.stderr
+ result=json.loads(proc.stdout);assert result['groups']==1638400;er=[]
+ for rr in result['records']:
+  ex=rr['expert'];rows=int(counts[b][ex]);stem=f'layer-1.expert-{ex}';tag=d/(stem+'.'+b);mapping=np.fromfile(s/'reference'/b/(stem+'.old-gu-row.i32'),dtype='<i4');assert len(mapping)==rows;common=np.flatnonzero(mapping>=0);oldrows=mapping[common]
+  sf=np.fromfile(str(tag)+'.sf.bin',dtype='u1').reshape(rows,40);packed=np.fromfile(str(tag)+'.packed.bin',dtype='u1').reshape(rows,320);oldsf=np.fromfile(u/'observed-captures'/(stem+'.inter-sf-logical.bin'),dtype='u1').reshape(-1,40);oldpacked=np.fromfile(u/'observed-captures'/(stem+'.inter-packed.bin'),dtype='u1').reshape(-1,320)
+  sd=sf[common]!=oldsf[oldrows];pd=packed[common]!=oldpacked[oldrows];si=(common[:,None]*40+np.arange(40))[sd].astype('<i4');pi=(common[:,None]*320+np.arange(320))[pd].astype('<i4');si.tofile(str(tag)+'.shared-sf-differences.i32');pi.tofile(str(tag)+'.shared-packed-differences.i32');rc=np.zeros(rows,dtype='<i4');rc[common]=np.count_nonzero(sd,axis=1)+np.count_nonzero(pd,axis=1);rc.tofile(str(tag)+'.shared-row-differences.i32')
+  gu_changed=np.fromfile(s/'reference'/b/(stem+'.shared-row-differences.i32'),dtype='<i4')>0;assert not np.any((rc>0)&~gu_changed)
+  codes=int(np.count_nonzero((packed[common]&15)!=(oldpacked[oldrows]&15))+np.count_nonzero((packed[common]>>4)!=(oldpacked[oldrows]>>4)))
+  for suffix,n in [('values.f32',rows*640),('ratios.f32',rows*40)]:
+   arr=np.fromfile(str(tag)+'.'+suffix,dtype='<f4');assert len(arr)==n and np.isfinite(arr).all()
+  if b=='baseline':assert len(si)==len(pi)==0 and len(common)==rows
+  er.append({'expert':ex,'rows':rows,'new_assignments':rows-len(common),'shared_sf_differences':len(si),'shared_packed_byte_differences':len(pi),'shared_fp4_code_differences':codes,'shared_changed_rows':int(np.count_nonzero(rc))})
+ (d/'experts.json').write_text(json.dumps(er,indent=2)+'\n');rec={'branch':b,'experts':len(er),'groups':result['groups'],**{k:sum(x[k] for x in er) for k in ['rows','new_assignments','shared_sf_differences','shared_packed_byte_differences','shared_fp4_code_differences','shared_changed_rows']},'unchanged_common_gu_rows_with_changes':0};records.append(rec);save('reference.json',{'records':records,'complete':len(records)==4});print(rec,flush=True)
+for n in ['run.py','inter.cpp','common.h','inter','build.log']:shutil.copy2(p/n,o/n)
+save('summary.json',{'records':records,'runtime_changed':False,'whole_model_correctness_proven':False,'task_causality_established':False,'endpoint':'Layer1 new-route intermediate SF/FP4; down/shared pending'})
+assert sum(f.stat().st_size for f in o.rglob('*') if f.is_file())<budget

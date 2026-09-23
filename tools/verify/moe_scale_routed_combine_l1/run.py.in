@@ -1,0 +1,42 @@
+"""Reassemble new down rows by each branch's own router slots and weights."""
+from pathlib import Path
+import hashlib,json,subprocess,shutil,os
+import numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];e=root/'.q4t-work/e2e';o=e/p.name;d=o/'reference';s=e/'moe-full-down-20260924';u=e/'moe-scale-down-l1-20260924';r=e/'moe-scale-router-l1-20260924'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as z:
+  for b in iter(lambda:z.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(n,x):(o/n).write_text(json.dumps(x,indent=2)+'\n')
+assert not any(d.iterdir());assert (p/'build.log').stat().st_size==0
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+budget=1000000000;reserve=20*1024**3;assert shutil.disk_usage(o).free>reserve+budget
+sources=[s,u,r];man={x.name:json.loads((x/'artifact-binding.json').read_text()) for x in sources};bindings=[]
+def bind(x,n):
+ f=x/n;h=sha(f);assert h==man[x.name][n],f;bindings.append({'file':str(f.relative_to(root)),'sha256':h});return f
+assert json.loads(bind(s,'exit.json').read_text())['observer_preserved_tested_output']
+for x in [u,r]:assert json.loads(bind(x,'reference.json').read_text())['complete']
+before=bind(s,'observed-captures/layer-1.combine-before.f32');after=bind(s,'observed-captures/layer-1.combine-after.f32');assert not np.fromfile(before,dtype='<u4').any()
+branches=['baseline','input_fixed','inter_fixed','both_fixed'];paths={}
+for b in branches:
+ counts=np.fromfile(bind(u,'inputs/'+b+'/layer-1.counts.i32'),dtype='<i4');ids=bind(r,'reference/'+b+'/layer-1.ids.i32');weights=bind(r,'reference/'+b+'/layer-1.router-weights.f32');paths[b]=(counts,ids,weights)
+ for ex in np.flatnonzero(counts):
+  stem=f'layer-1.expert-{ex}';bind(u,'inputs/'+b+'/'+stem+'.flats.i32');bind(u,'reference/'+b+'/'+stem+'.replay.bf16')
+save('input-binding.json',bindings);save('source-manifests.json',{x.name:sha(x/'artifact-binding.json') for x in sources})
+save('plan.json',{'budget_bytes':budget,'reserve_bytes':reserve,'scope':'New down rows -> inverse flat-slot mapping, own top10 IDs and weights, CPU sequential10 explicit FMA into original all-positive-zero routed buffer. Baseline restores entire original routed F32. No shared branch/final BF16 combination yet.','retention':'All inverse row mappings, full routed F32, every bitwise difference and token count. Source down/IDs/weights fully bound.','dependencies':'Own recorded-algorithm down outputs; no independent whole-model or task correctness proof.'})
+actual=np.fromfile(after,dtype='<u4');records=[]
+for b in branches:
+ counts,idsfile,wfile=paths[b];ids=np.fromfile(idsfile,dtype='<i4');assert len(ids)==40960
+ c=o/'inputs'/b;c.mkdir(parents=True);out=d/b;out.mkdir();counts.tofile(c/'layer-1.counts.i32');mapping=np.full(40960,-1,dtype='<i4');offset=0;seen=[]
+ for ex in np.flatnonzero(counts):
+  flat=np.fromfile(u/'inputs'/b/f'layer-1.expert-{ex}.flats.i32',dtype='<i4');assert len(flat)==counts[ex] and np.all(ids[flat]==ex);mapping[flat]=np.arange(offset,offset+len(flat));offset+=len(flat);seen.extend(flat.tolist())
+ assert offset==40960 and np.array_equal(np.sort(seen),np.arange(40960)) and np.array_equal(np.sort(mapping),np.arange(40960));mapping.tofile(c/'layer-1.row-of-flat.i32')
+ for f,n in [(wfile,'router-weights.f32'),(before,'combine-before.f32'),(after,'combine-after.f32')]:os.link(f,c/('layer-1.'+n))
+ proc=subprocess.run([str(p/'combine'),str(c),str(out),'1',str(u/'reference'/b)],capture_output=True,text=True,env={**os.environ,'OMP_NUM_THREADS':'8'});(o/(b+'.stdout')).write_text(proc.stdout);(o/(b+'.stderr')).write_text(proc.stderr);assert proc.returncode==0,proc.stderr
+ rec=json.loads(proc.stdout);value=np.fromfile(out/'layer-1.combine-reference.f32',dtype='<f4');assert len(value)==10485760 and np.isfinite(value).all();idx=np.flatnonzero(value.view('<u4')!=actual).astype('<i4');assert len(idx)==rec['fp32_bit_mismatches'];idx.tofile(out/'differences.i32');tc=np.bincount(idx//2560,minlength=4096).astype('<i4');tc.tofile(out/'token-differences.i32')
+ if b=='baseline':assert len(idx)==0
+ rec.update(branch=b,changed_tokens=int(np.count_nonzero(tc)));records.append(rec);save('reference.json',{'records':records,'complete':len(records)==4});print(rec,flush=True)
+for n in ['run.py','combine.cpp','combine','build.log']:shutil.copy2(p/n,o/n)
+save('summary.json',{'records':records,'runtime_changed':False,'whole_model_correctness_proven':False,'task_causality_established':False,'endpoint':'Layer1 routed F32; shared branch and final MLP BF16 pending'})
+assert sum(f.stat().st_size for f in o.rglob('*') if f.is_file())<budget

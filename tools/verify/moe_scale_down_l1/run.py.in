@@ -1,0 +1,58 @@
+"""Recorded FP4 down algorithms with new expert row counts, maps and operands."""
+from pathlib import Path
+import hashlib,json,subprocess,shutil,os
+import numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];e=root/'.q4t-work/e2e';o=e/p.name;s=e/'moe-full-down-20260924';q=e/'moe-scale-inter-l1-20260924';v=e/'moe-scale-gu-l1-20260924';oldplans=root/'.q4t-work/prepared/moe-full-down-20260924/parameters'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as z:
+  for b in iter(lambda:z.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(n,x):(o/n).write_text(json.dumps(x,indent=2)+'\n')
+assert not any((o/'reference').iterdir());assert (p/'build.log').stat().st_size==0
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+budget=3000000000;reserve=20*1024**3;assert shutil.disk_usage(o).free>reserve+budget
+man={x.name:json.loads((x/'artifact-binding.json').read_text()) for x in [s,q,v]};bindings=[]
+def bind(x,n):
+ f=x/n;h=sha(f);assert h==man[x.name][n],f;bindings.append({'file':str(f.relative_to(root)),'sha256':h});return f
+assert json.loads(bind(s,'exit.json').read_text())['observer_preserved_tested_output'];assert json.loads(bind(q,'reference.json').read_text())['complete']
+cp=json.loads(bind(s,'checkpoint-plan.json').read_text());weights=[w for w in cp['records'] if w['layer']==1];assert len(weights)==361
+plans=o/'plans';plans.mkdir();old={}
+for w in weights:
+ ex=w['expert'];stem=f'layer-1.expert-{ex}';f=oldplans/(stem+'.plan');assert sha(f)==cp['plan_hashes'][f.name];shutil.copy2(f,plans/f.name)
+ for t in w['tensors']:
+  f=Path(t['file']);st=f.stat();assert st.st_size==t['size'] and st.st_mtime_ns==t['mtime_ns']
+  with f.open('rb') as z:z.seek(t['offset']);assert hashlib.sha256(z.read(t['bytes'])).hexdigest()==t['sha256']
+ old[ex]={n:bind(s,'observed-captures/'+stem+'.'+n) for n in ['algo.bin','flats.i32','down-output.bf16']}
+branches=['baseline','input_fixed','inter_fixed','both_fixed'];paths={}
+for b in branches:
+ paths[b]={n:bind(v,'inputs/'+b+'/layer-1.'+n) for n in ['counts.i32','offsets.i32']}
+ cc=np.fromfile(paths[b]['counts.i32'],dtype='<i4')
+ for ex in np.flatnonzero(cc):
+  stem=f'layer-1.expert-{ex}'
+  bind(v,'inputs/'+b+'/'+stem+'.flats.i32')
+  for suffix in ['sf.bin','packed.bin','shared-row-differences.i32']:bind(q,'reference/'+b+'/'+stem+'.'+b+'.'+suffix)
+save('input-binding.json',bindings);save('checkpoint-binding.json',weights);save('source-manifests.json',{x.name:sha(x/'artifact-binding.json') for x in [s,q,v]})
+save('plan.json',{'budget_bytes':budget,'reserve_bytes':reserve,'scope':'Own canonical expert rows and legacy FP4 inputs -> down projection with recorded per-expert algorithm. Check algorithm compatibility/workspace for each NEW row count. Baseline reordered outputs compared by expert/token identity; common assignments compared separately, newly added assignments preserved without fake baseline. No new layer1 scale correction.','dependencies':'Recorded cuBLASLt algorithms and model weights; not independent GEMM arithmetic. No heuristic fallback on compatibility failure.','retention':'Complete per-expert down BF16, full expert flat-slot maps and count/offsets, old down row mapping, all differences on common assignments and row distribution. New edge results fully preserved. Matching raw FP32 accumulators not retained.'})
+records=[]
+for b in branches:
+ c=o/'inputs'/b;c.mkdir(parents=True);out=o/'reference'/b;out.mkdir();counts=np.fromfile(paths[b]['counts.i32'],dtype='<i4')
+ assert all(int(ex) in old for ex in np.flatnonzero(counts));shutil.copy2(paths[b]['counts.i32'],c/'layer-1.counts.i32');shutil.copy2(paths[b]['offsets.i32'],c/'layer-1.offsets.i32')
+ for ex in np.flatnonzero(counts):
+  stem=f'layer-1.expert-{ex}'
+  for suffix,dest in [('sf.bin','inter-sf-logical.bin'),('packed.bin','inter-packed.bin')]:os.link(q/'reference'/b/(stem+'.'+b+'.'+suffix),c/(stem+'.'+dest))
+  os.link(v/'inputs'/b/(stem+'.flats.i32'),c/(stem+'.flats.i32'))
+ with (o/(b+'.down.stdout')).open('w') as log,(o/(b+'.down.stderr')).open('w') as err:proc=subprocess.run([str(p/'down'),str(s/'observed-captures'),str(c),str(plans),str(out),'1'],stdout=log,stderr=err)
+ assert proc.returncode==0,(b,(o/(b+'.down.stderr')).read_text())
+ gr=json.loads((o/(b+'.down.stdout')).read_text());assert gr['elements']==40960*2560;er=[]
+ for item in gr['records']:
+  ex=item['expert'];stem=f'layer-1.expert-{ex}';value=np.fromfile(out/(stem+'.replay.bf16'),dtype='<u2').reshape(-1,2560);assert value.shape==(counts[ex],2560) and np.isfinite((value.astype('<u4')<<16).view('<f4')).all()
+  oldflat=np.fromfile(old[ex]['flats.i32'],dtype='<i4');actual=np.fromfile(old[ex]['down-output.bf16'],dtype='<u2').reshape(-1,2560);assert len(actual)==len(oldflat) and len(np.unique(oldflat//10))==len(oldflat)
+  lut=np.full(4096,-1,dtype='<i4');lut[oldflat//10]=np.arange(len(oldflat));mapping=lut[np.fromfile(c/(stem+'.flats.i32'),dtype='<i4')//10];mapping.tofile(out/(stem+'.old-down-row.i32'));common=np.flatnonzero(mapping>=0);new=int(np.count_nonzero(mapping<0));mask=value[common]!=actual[mapping[common]];idx=(common[:,None]*2560+np.arange(2560))[mask].astype('<i4');idx.tofile(out/(stem+'.shared-differences.i32'));rc=np.zeros(len(value),dtype='<i4');rc[common]=np.count_nonzero(mask,axis=1);rc.tofile(out/(stem+'.shared-row-differences.i32'))
+  support=np.fromfile(q/'reference'/b/(stem+'.'+b+'.shared-row-differences.i32'),dtype='<i4')>0;assert not np.any((rc>0)&~support)
+  if b=='baseline':assert new==len(idx)==0
+  er.append({'expert':ex,'rows':len(value),'new_assignments':new,'shared_differences':len(idx),'shared_changed_rows':int(np.count_nonzero(rc))})
+ (out/'experts.json').write_text(json.dumps(er,indent=2)+'\n');rec={'branch':b,'experts':len(er),'rows':sum(x['rows'] for x in er),'elements':gr['elements'],'new_assignments':sum(x['new_assignments'] for x in er),'shared_differences':sum(x['shared_differences'] for x in er),'shared_changed_rows':sum(x['shared_changed_rows'] for x in er),'all_new_shapes_passed_algorithm_check':True,'unchanged_common_inter_rows_with_changes':0};records.append(rec);save('reference.json',{'records':records,'complete':len(records)==4});print(rec,flush=True)
+for n in ['run.py','down.cpp','down','build.log']:shutil.copy2(p/n,o/n)
+save('summary.json',{'records':records,'runtime_changed':False,'whole_model_correctness_proven':False,'task_causality_established':False,'endpoint':'Layer1 new-route down BF16; routed combine/shared pending'})
+assert sum(f.stat().st_size for f in o.rglob('*') if f.is_file())<budget

@@ -1,0 +1,178 @@
+// Reconstruct actual FP4 operands, then replay the recorded cuBLASLt algorithm.
+// This tests bindings/reproducibility; it is not independent GEMM arithmetic.
+#include <cuda_runtime_api.h>
+#include <cublasLt.h>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+#define CU(x)                                             \
+  do {                                                    \
+    if ((x) != cudaSuccess) throw std::runtime_error(#x); \
+  } while (0)
+#define LT(x)                                                       \
+  do {                                                              \
+    if ((x) != CUBLAS_STATUS_SUCCESS) throw std::runtime_error(#x); \
+  } while (0)
+template <class T>
+std::vector<T> Read(const std::string& path, size_t n) {
+  std::ifstream f(path, std::ios::binary | std::ios::ate);
+  if (!f || size_t(f.tellg()) != n * sizeof(T)) throw std::runtime_error(path);
+  std::vector<T> v(n);
+  f.seekg(0);
+  if (!f.read(reinterpret_cast<char*>(v.data()), n * sizeof(T)))
+    throw std::runtime_error(path);
+  return v;
+}
+template <class T>
+void Save(const std::string& path, const std::vector<T>& v) {
+  std::ofstream f(path, std::ios::binary);
+  if (!f.write(reinterpret_cast<const char*>(v.data()), v.size() * sizeof(T)))
+    throw std::runtime_error(path);
+}
+std::vector<std::vector<uint8_t>> Parameters(const std::string& path) {
+  std::ifstream f(path);
+  std::vector<std::vector<uint8_t>> result;
+  for (int i = 0; i < 4; ++i) {
+    std::string file;
+    size_t offset, n;
+    if (!(f >> file >> offset >> n)) throw std::runtime_error(path);
+    std::ifstream source(file, std::ios::binary);
+    source.seekg(offset);
+    std::vector<uint8_t> v(n);
+    if (!source.read(reinterpret_cast<char*>(v.data()), n))
+      throw std::runtime_error(file);
+    result.push_back(std::move(v));
+  }
+  return result;
+}
+float Scalar(const std::vector<uint8_t>& v) {
+  if (v.size() != 4) throw std::runtime_error("scalar size");
+  float x;
+  std::memcpy(&x, v.data(), 4);
+  return x;
+}
+// Independent tile/lane/group traversal, with unused padded rows zeroed.
+std::vector<uint8_t> Swizzle(const std::vector<uint8_t>& v, int rows) {
+  if (v.size() != size_t(rows) * 40) throw std::runtime_error("SF size");
+  std::vector<uint8_t> result(size_t((rows + 127) / 128) * 10 * 512);
+  for (int block = 0; block < (rows + 127) / 128; ++block)
+    for (int tile = 0; tile < 10; ++tile)
+      for (int lane = 0; lane < 32; ++lane)
+        for (int quarter = 0; quarter < 4; ++quarter)
+          for (int group = 0; group < 4; ++group) {
+            int row = block * 128 + quarter * 32 + lane;
+            size_t index =
+                ((((size_t(block) * 10 + tile) * 32 + lane) * 4 + quarter) * 4 +
+                 group);
+            if (row < rows)
+              result[index] = v[size_t(row) * 40 + tile * 4 + group];
+          }
+  return result;
+}
+int main(int argc, char** argv) {
+  try {
+    if (argc != 6)
+      throw std::runtime_error("captures prior plans output layer");
+    int layer = std::stoi(argv[5]);
+    const std::string prefix = "layer-" + std::to_string(layer);
+    std::string prior = std::string(argv[2]) + "/" + prefix;
+    auto counts = Read<int32_t>(prior + ".counts.i32", 512);
+    cublasLtHandle_t handle;
+    LT(cublasLtCreate(&handle));
+    void* workspace;
+    constexpr size_t ws = 33554432;
+    CU(cudaMalloc(&workspace, ws));
+    size_t total = 0;
+    bool first = true;
+    std::printf("{\"layer\":%d,\"cublas_version\":%zu,\"records\":[", layer,
+                cublasLtGetVersion());
+    for (int expert = 0; expert < 512; ++expert) {
+      int rows = counts[expert];
+      if (!rows) continue;
+      std::string name = prefix + ".expert-" + std::to_string(expert);
+      std::string base = std::string(argv[1]) + "/" + name;
+      std::string old = std::string(argv[2]) + "/" + name;
+      auto values = Parameters(std::string(argv[3]) + "/" + name + ".plan");
+      std::vector<uint8_t> w = values[0];
+      std::vector<uint8_t> wl = values[1];
+      auto wsf = Swizzle(wl, 2560);
+      auto oldx = Read<uint8_t>(old + ".inter-packed.bin", size_t(rows) * 320);
+      auto oldsf =
+          Read<uint8_t>(old + ".inter-sf-logical.bin", size_t(rows) * 40);
+      const auto& x = oldx;
+      const auto& sl = oldsf;
+      auto xsf = Swizzle(sl, rows);
+      const size_t elements = size_t(rows) * 2560;
+      auto ab = Read<uint8_t>(base + ".algo.bin", sizeof(cublasLtMatmulAlgo_t));
+      cublasLtMatmulAlgo_t algo;
+      std::memcpy(&algo, ab.data(), sizeof(algo));
+      void *a, *b, *asf, *bsf, *d;
+      CU(cudaMalloc(&a, w.size()));
+      CU(cudaMalloc(&b, x.size()));
+      CU(cudaMalloc(&asf, wsf.size()));
+      CU(cudaMalloc(&bsf, xsf.size()));
+      CU(cudaMalloc(&d, elements * 2));
+      CU(cudaMemcpy(a, w.data(), w.size(), cudaMemcpyHostToDevice));
+      CU(cudaMemcpy(b, x.data(), x.size(), cudaMemcpyHostToDevice));
+      CU(cudaMemcpy(asf, wsf.data(), wsf.size(), cudaMemcpyHostToDevice));
+      CU(cudaMemcpy(bsf, xsf.data(), xsf.size(), cudaMemcpyHostToDevice));
+      CU(cudaMemset(d, 0, elements * 2));
+      cublasLtMatmulDesc_t desc;
+      LT(cublasLtMatmulDescCreate(&desc, CUBLAS_COMPUTE_32F, CUDA_R_32F));
+      cublasOperation_t ta = CUBLAS_OP_T, tb = CUBLAS_OP_N;
+      LT(cublasLtMatmulDescSetAttribute(desc, CUBLASLT_MATMUL_DESC_TRANSA, &ta,
+                                        sizeof(ta)));
+      LT(cublasLtMatmulDescSetAttribute(desc, CUBLASLT_MATMUL_DESC_TRANSB, &tb,
+                                        sizeof(tb)));
+      cublasLtMatmulMatrixScale_t sm = CUBLASLT_MATMUL_MATRIX_SCALE_VEC16_UE4M3;
+      LT(cublasLtMatmulDescSetAttribute(desc, CUBLASLT_MATMUL_DESC_A_SCALE_MODE,
+                                        &sm, sizeof(sm)));
+      LT(cublasLtMatmulDescSetAttribute(desc, CUBLASLT_MATMUL_DESC_B_SCALE_MODE,
+                                        &sm, sizeof(sm)));
+      LT(cublasLtMatmulDescSetAttribute(
+          desc, CUBLASLT_MATMUL_DESC_A_SCALE_POINTER, &asf, sizeof(asf)));
+      LT(cublasLtMatmulDescSetAttribute(
+          desc, CUBLASLT_MATMUL_DESC_B_SCALE_POINTER, &bsf, sizeof(bsf)));
+      cublasLtMatrixLayout_t ad, bd, dd;
+      LT(cublasLtMatrixLayoutCreate(&ad, CUDA_R_4F_E2M1, 640, 2560, 640));
+      LT(cublasLtMatrixLayoutCreate(&bd, CUDA_R_4F_E2M1, 640, rows, 640));
+      LT(cublasLtMatrixLayoutCreate(&dd, CUDA_R_16BF, 2560, rows, 2560));
+      cublasLtMatmulHeuristicResult_t check{};
+      LT(cublasLtMatmulAlgoCheck(handle, desc, ad, bd, dd, dd, &algo, &check));
+      if (check.state != CUBLAS_STATUS_SUCCESS || check.workspaceSize > ws)
+        throw std::runtime_error("recorded algorithm incompatible");
+      float alpha = Scalar(values[2]) * Scalar(values[3]), beta = 0;
+      LT(cublasLtMatmul(handle, desc, &alpha, a, ad, b, bd, &beta, d, dd, d, dd,
+                        &algo, workspace, ws, nullptr));
+      std::vector<uint16_t> actual(elements);
+      CU(cudaMemcpy(actual.data(), d, actual.size() * 2,
+                    cudaMemcpyDeviceToHost));
+      Save(std::string(argv[4]) + "/" + name + ".replay.bf16", actual);
+      std::printf("%s{\"expert\":%d,\"rows\":%d,\"elements\":%zu}",
+                  first ? "" : ",", expert, rows, actual.size());
+      std::fflush(stdout);
+      first = false;
+      total += actual.size();
+      LT(cublasLtMatrixLayoutDestroy(ad));
+      LT(cublasLtMatrixLayoutDestroy(bd));
+      LT(cublasLtMatrixLayoutDestroy(dd));
+      LT(cublasLtMatmulDescDestroy(desc));
+      CU(cudaFree(a));
+      CU(cudaFree(b));
+      CU(cudaFree(asf));
+      CU(cudaFree(bsf));
+      CU(cudaFree(d));
+    }
+    CU(cudaFree(workspace));
+    LT(cublasLtDestroy(handle));
+    std::printf("],\"elements\":%zu}\n", total);
+    return 0;
+  } catch (const std::exception& e) {
+    std::fprintf(stderr, "%s\n", e.what());
+    return 2;
+  }
+}
