@@ -24,6 +24,7 @@ struct Json {
   Type type = Type::kNull;
   bool boolean = false;
   double number = 0.0;
+  // String value; for numbers, optional original spelling requested at parse.
   std::string str;
   std::vector<Json> array;
   // Object members in insertion order.
@@ -53,7 +54,10 @@ struct Json {
 };
 
 // Parse a JSON document. Returns a failure Status with a message on error.
-Status ParseJson(const std::string& text, Json* out);
+// Ordinary model/config parsing does not retain numeric spelling. Chat tool
+// rendering opts in to preserve integers without changing numeric accessors.
+Status ParseJson(const std::string& text, Json* out,
+                 bool preserve_number_text = false);
 
 }  // namespace io
 }  // namespace q4t

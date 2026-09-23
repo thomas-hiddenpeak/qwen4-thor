@@ -15,10 +15,11 @@ struct Parser {
   const char* end;
   const char* begin;
   std::string err;
+  bool preserve_number_text;
 
-  explicit Parser(const std::string& text)
+  explicit Parser(const std::string& text, bool preserve_numbers)
       : p(text.data()), end(text.data() + text.size()),
-        begin(text.data()) {}
+        begin(text.data()), preserve_number_text(preserve_numbers) {}
 
   bool Ok() const { return err.empty(); }
   bool Fail(const std::string& msg) {
@@ -253,6 +254,7 @@ struct Parser {
     std::string num(start, p);
     out->type = Json::Type::kNumber;
     out->number = std::strtod(num.c_str(), nullptr);
+    out->str = preserve_number_text ? std::move(num) : std::string();
     return true;
   }
 };
@@ -301,8 +303,9 @@ double Json::AsDouble(double def) const {
   return IsNumber() ? number : def;
 }
 
-Status ParseJson(const std::string& text, Json* out) {
-  Parser parser(text);
+Status ParseJson(const std::string& text, Json* out,
+                 bool preserve_number_text) {
+  Parser parser(text, preserve_number_text);
   if (!parser.ParseValue(out)) {
     return Status::Fail("JSON parse error: " + parser.err);
   }

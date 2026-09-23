@@ -98,3 +98,36 @@ TTFT 字段或单次短输出结果解释成 decode 吞吐。
 位置元数据版本（SHA dbefb9dd794ebb1da71471d19709b3fb1dbec6415f6f8e47994b124ddb3401a8）
 真实流式/非流式重采；可直接以 --reference 使用，不需要每次重跑旧二进制。
 它只保存边界输出，不作为性能参考。
+
+
+## 模型原生聊天模板 HTTP 对照
+
+`run_chat_template.py` 启动单个服务，通过本目录的 evalscope 发送21组
+原生prompt→messages→原生prompt，共63条请求；不会预先探测HTTP。
+输入模板与分词器摘要固定，服务MTP关闭，greedy、单流；保存实际请求、
+原始数据库、输出全文、usage与finish。已有服务运行时拒绝启动。
+
+```bash
+python3 tools/evalscope/run_chat_template.py \
+  --model-dir ~/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream \
+  --output .q4t-work/e2e/chat-template-replay-<唯一标识>
+```
+
+21组覆盖文本、多轮、思考设置、工具输入格式及数字序列化。11组有
+独立答案，另10组只检查与原生模板差分一致，不代表任务答案正确。
+该工具不能替代五档长messages性能、非法输入或视觉门禁。模板默认
+启用思考；关闭思考需传`chat_template_kwargs.enable_thinking=false`。
+思考设置与MTP开关相互独立。工具输入渲染不意味着输出已经实现
+OpenAI结构化tool_calls解析。裸prompt由调用方负责模板。
+
+仅当该版本完整HTTP E2E门禁通过后，才可做模板字节细核对：
+
+```bash
+g++-14 -std=c++23 -O2 -Wall -Wextra -Iinclude \
+  tools/verify/verify_chat_template.cpp src/server/chat_template.cpp \
+  src/io/json.cpp -o build/verify_chat_template
+build/verify_chat_template tools/evalscope/fixtures/chat_template_cases.jsonl
+```
+
+字节参考由模型自带Jinja模板生成并冻结，来源与摘要见同目录metadata。
+字节检查通过不替代HTTP或性能接受，测试失败不得重写参考迎合实现。

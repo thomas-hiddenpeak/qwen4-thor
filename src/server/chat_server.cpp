@@ -28,6 +28,7 @@
 #include "q4t/io/json.h"
 #include "q4t/io/weight_loader.h"
 #include "q4t/runtime/memory_budget.h"
+#include "q4t/server/chat_template.h"
 #include "q4t/vision/processor.h"
 #include "q4t/vision/vision.h"
 
@@ -257,30 +258,26 @@ bool DecodeImageUrl(const std::string& url, std::string* out,
   return true;
 }
 
-// Render one message's `content` to a prompt string. Text parts are appended
-// verbatim; image parts append the literal <|image_pad|> placeholder (the
-// tokenizer encodes it as a single image_token_id = 248056) and push the
-// decoded image bytes to `items` (as a 1-frame VisionItem); video parts
-// append <|video_pad|> (video_token_id = 248057) and push their decoded frames
-// as a multi-frame VisionItem. Items are appended in content-part order so the
-// vision feature rows line up with the placeholders left-to-right. Returns
-// false (with err) on a bad image_url / video frame; on success the rendered
-// text is returned.
+// Render and collect content once, preserving model vision boundaries and
+// item order. HTTP video_frames is the transport adapter for a video item.
 std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
-                          std::string* err) {
+                          std::string* err, bool add_vision_id,
+                          int* image_count, int* video_count) {
   std::string out;
   const io::Json* content = m.Find("content");
-  if (content == nullptr) return out;
+  if (content == nullptr || content->IsNull()) return out;
   if (content->IsString()) return content->str;
-  if (!content->IsArray()) return out;
+  if (!content->IsArray()) {
+    *err = "Unexpected content type.";
+    return out;
+  }
   for (const io::Json& part : content->array) {
-    const io::Json* text = part.Find("text");
-    if (text != nullptr && text->IsString()) {
-      out += text->str;
-      continue;
-    }
     const io::Json* iu = part.Find("image_url");
     if (iu != nullptr) {
+      if (m.GetString("role") == "system") {
+        *err = "System message cannot contain images.";
+        return {};
+      }
       std::string url;
       if (iu->IsObject()) {
         url = iu->GetString("url", "");
@@ -293,11 +290,17 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
       item.kind = VisionItem::kImage;
       item.frames.push_back(std::move(bytes));
       items->push_back(std::move(item));
-      out += "<|image_pad|>";
+      ++*image_count;
+      if (add_vision_id) out += "Picture " + std::to_string(*image_count) + ": ";
+      out += "<|vision_start|><|image_pad|><|vision_end|>";
       continue;
     }
     const io::Json* vf = part.Find("video_frames");
     if (vf != nullptr) {
+      if (m.GetString("role") == "system") {
+        *err = "System message cannot contain videos.";
+        return {};
+      }
       if (!vf->IsArray()) {
         if (err) *err = "video_frames must be an array of base64 data urls";
         return std::string();
@@ -320,10 +323,18 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
         return std::string();
       }
       items->push_back(std::move(item));
-      out += "<|video_pad|>";
+      ++*video_count;
+      if (add_vision_id) out += "Video " + std::to_string(*video_count) + ": ";
+      out += "<|vision_start|><|video_pad|><|vision_end|>";
       continue;
     }
-    // unknown part type: skip
+    const io::Json* text = part.Find("text");
+    if (text && text->IsString()) {
+      out += text->str;
+      continue;
+    }
+    *err = "Unexpected item type in content.";
+    return {};
   }
   return out;
 }
@@ -1387,7 +1398,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     return;
   }
   io::Json req;
-  Status s = io::ParseJson(body, &req);
+  Status s = io::ParseJson(body, &req, true);
   if (!s.ok()) {
     SendError(fd, 400, "invalid JSON: " + s.message());
     return;
@@ -1408,31 +1419,45 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   const bool include_usage =
       stream_options && stream_options->GetBool("include_usage", false);
 
-  // Build the prompt from the messages array. Each message's `content` may be
-  // a plain string or an OpenAI-style array of parts (text + image_url +
-  // video_frames). Image parts render as a <|image_pad|> placeholder (the
-  // tokenizer encodes it as a single image_token_id = 248056); video parts
-  // render as <|video_pad|> (video_token_id = 248057). Decoded bytes are
-  // collected into `items` in content-part (prompt position) order.
+  // Decode transport content once; the model template owns role boundaries,
+  // reasoning history and tool serialization. Bare prompts remain verbatim.
   std::string prompt;
   std::vector<VisionItem> items;
-  const io::Json* messages = req.GetArray("messages");
-  if (messages && messages->IsArray()) {
+  const io::Json* messages = req.Find("messages");
+  if (messages) {
+    if (!messages->IsArray()) {
+      SendError(fd, 400, "messages must be an array");
+      return;
+    }
+    const io::Json* options = req.Find("chat_template_kwargs");
+    if (options && !options->IsObject()) {
+      SendError(fd, 400, "chat_template_kwargs must be an object");
+      return;
+    }
+    const io::Json* vision_id = options ? options->Find("add_vision_id") : nullptr;
+    if (!vision_id) vision_id = req.Find("add_vision_id");
+    if (vision_id && !vision_id->IsBool()) {
+      SendError(fd, 400, "add_vision_id must be boolean");
+      return;
+    }
+    int image_count = 0, video_count = 0;
+    std::vector<std::string> contents;
     for (const io::Json& m : messages->array) {
-      const std::string role = m.GetString("role", "");
-      if (!role.empty()) {
-        if (!prompt.empty()) prompt += "\n";
-        prompt += role + ": ";
-      }
-      std::string cerr;
-      prompt += RenderContent(m, &items, &cerr);
-      if (!cerr.empty()) {
-        SendError(fd, 400, cerr);
+      std::string error;
+      contents.push_back(RenderContent(m, &items, &error,
+                                      vision_id && vision_id->boolean,
+                                      &image_count, &video_count));
+      if (!error.empty()) {
+        SendError(fd, 400, error);
         return;
       }
     }
+    Status rendered = RenderChatPrompt(req, contents, &prompt);
+    if (!rendered) {
+      SendError(fd, 400, rendered.message());
+      return;
+    }
   } else {
-    // Fallback: a bare "prompt" string field.
     prompt = req.GetString("prompt", "");
   }
   if (prompt.empty()) {

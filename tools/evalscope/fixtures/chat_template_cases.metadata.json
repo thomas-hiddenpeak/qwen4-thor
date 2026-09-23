@@ -1,0 +1,10 @@
+{
+  "model": "Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+  "tokenizer_sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+  "fixtures_sha256": "670afc63b321539c2f86aff7c15a1b351bd7bb35ca9e01373466c7ad2353f27c",
+  "cases": 21,
+  "reference_renderer": "Transformers 5.17.0, checkpoint chat_template.jinja, add_generation_prompt=True",
+  "fixed_answer_cases": 11,
+  "limitations": "Text/template input contract only. Thinking/tool cases without answer check differential output, not task accuracy. Does not replace five-context performance, negative HTTP, or vision gates."
+}
