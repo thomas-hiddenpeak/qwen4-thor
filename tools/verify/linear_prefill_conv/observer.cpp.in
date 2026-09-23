@@ -1,0 +1,28 @@
+#include <cuda_runtime_api.h>
+#include <dlfcn.h>
+#include <atomic>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <string>
+#include <cstring>
+#include <vector>
+namespace {
+std::atomic<cudaKernel_t> conv{nullptr},update{nullptr},prep{nullptr};
+int capture_index=0,layer=-1,phase=0;bool ok=true;const uint16_t *input=nullptr,*output=nullptr,*state=nullptr;
+template<class T>T Resolve(const char* n){auto f=reinterpret_cast<T>(dlsym(RTLD_NEXT,n));if(!f)std::_Exit(127);return f;}
+template<class T>T* Ptr(void** a,int i){return *static_cast<T**>(a[i]);}
+std::string Base(){return std::string(std::getenv("Q4T_GDN_CAPTURE_DIR"))+"/layer-"+std::to_string(layer);}
+bool Save(const std::string& name,const void* p,size_t n){FILE*f=std::fopen(name.c_str(),"wb");if(!f)return false;bool good=std::fwrite(p,1,n,f)==n;return std::fclose(f)==0&&good;}
+bool Capture(const char* suffix,const void* p,size_t n,cudaStream_t stream){static auto copy=Resolve<decltype(&cudaMemcpyAsync)>("cudaMemcpyAsync");static auto sync=Resolve<decltype(&cudaStreamSynchronize)>("cudaStreamSynchronize");std::vector<unsigned char>b(n);return copy(b.data(),p,n,cudaMemcpyDeviceToHost,stream)==cudaSuccess&&sync(stream)==cudaSuccess&&Save(Base()+suffix,b.data(),n);}
+}
+extern "C" cudaError_t __cudaGetKernel(cudaKernel_t*k,const void*fn){static auto real=Resolve<cudaError_t(*)(cudaKernel_t*,const void*)>("__cudaGetKernel");auto s=real(k,fn);if(s==cudaSuccess){const char*n=nullptr;static auto name=Resolve<decltype(&cudaFuncGetName)>("cudaFuncGetName");if(name(&n,fn)==cudaSuccess&&n&&std::strstr(n,"linear_attention_cu")){if(std::strstr(n,"CausalConv1dWithCkptKernel"))conv=*k;if(std::strstr(n,"Conv1dUpdateStateKernel"))update=*k;if(std::strstr(n,"GdnRegPrepNormKernel"))prep=*k;}}return s;}
+extern "C" cudaError_t __cudaLaunchKernel(cudaKernel_t k,dim3 grid,dim3 block,void**a,size_t smem,cudaStream_t stream){
+ static auto real=Resolve<cudaError_t(*)(cudaKernel_t,dim3,dim3,void**,size_t,cudaStream_t)>("__cudaLaunchKernel");bool enabled=std::getenv("Q4T_GDN_CAPTURE_DIR")!=nullptr;bool take=enabled&&k==conv&&*static_cast<int*>(a[5])==4096;
+ if(take){layer=capture_index+capture_index/3;ok=phase==0&&capture_index<36;input=Ptr<uint16_t>(a,0);output=Ptr<uint16_t>(a,1);state=Ptr<uint16_t>(a,2);ok=ok&&input!=output&&*static_cast<int*>(a[6])==10240&&*static_cast<int*>(a[7])==4&&*static_cast<int*>(a[8])==0&&grid.y==4096&&Capture(".input.bf16",input,size_t(4096)*10240*2,stream)&&Capture(".history-before.bf16",state,30720*2,stream)&&Capture(".weights.bf16",Ptr<uint16_t>(a,4),40960*2,stream);phase=1;}
+ if(enabled&&k==prep&&*static_cast<int*>(a[1])==4096){ok=ok&&phase==2&&Ptr<uint16_t>(a,0)==output&&*static_cast<int*>(a[2])==16&&*static_cast<int*>(a[3])==128&&*static_cast<int*>(a[4])==10240&&Capture(".gdn-input.bf16",output,size_t(4096)*10240*2,stream);char m[160];int n=std::snprintf(m,sizeof(m),"{\"layer\":%d,\"capture_index\":%d,\"tokens\":4096,\"ok\":%s}\n",layer,capture_index,ok?"true":"false");if(n>0&&size_t(n)<sizeof(m))Save(Base()+".meta.json",m,n);std::fprintf(stderr,"[full-prefill-conv] layer=%d ok=%d\n",layer,ok);++capture_index;phase=0;}
+ auto s=real(k,grid,block,a,smem,stream);if(!enabled||s!=cudaSuccess)return s;
+ if(take)ok=ok&&Capture(".output.bf16",output,size_t(4096)*10240*2,stream)&&Capture(".history-after-conv.bf16",state,30720*2,stream);
+ if(k==update&&*static_cast<int*>(a[2])==4096){ok=ok&&phase==1&&Ptr<uint16_t>(a,0)==state&&Ptr<uint16_t>(a,1)==input&&*static_cast<int*>(a[3])==10240&&*static_cast<int*>(a[4])==4&&Capture(".history-updated.bf16",state,30720*2,stream);phase=2;}
+ return s;
+}

@@ -1,0 +1,25 @@
+from pathlib import Path
+import json,hashlib,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/linear-prefill-conv-20260923';c=o/'observed-captures';d=o/'reference'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for block in iter(lambda:stream.read(4*1024*1024),b''):h.update(block)
+ return h.hexdigest()
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+r=json.loads((o/'convolution-reference.json').read_text());assert r['complete'] and r['elements']==1509949440 and r['mismatches']['device']==0
+for record in r['records']:
+ b='layer-'+str(record['layer']);raw=np.fromfile(c/(b+'.input.bf16'),dtype='<u2').reshape(4096,10240);history=np.fromfile(c/(b+'.history-before.bf16'),dtype='<u2');updated=np.fromfile(c/(b+'.history-updated.bf16'),dtype='<u2').reshape(10240,3)
+ assert not np.count_nonzero(history) and (c/(b+'.history-before.bf16')).read_bytes()==(c/(b+'.history-after-conv.bf16')).read_bytes() and np.array_equal(raw[-3:].T,updated)
+ actual=np.fromfile(c/(b+'.output.bf16'),dtype='<u2');assert sha(c/(b+'.output.bf16'))==sha(c/(b+'.gdn-input.bf16'))==sha(d/(b+'.device.bf16'))
+ for kind in ['cpu','device','fp64']:
+  values=np.fromfile(d/(b+'.'+kind+'.bf16'),dtype='<u2');idx=np.flatnonzero(values!=actual);assert len(idx)==record['mismatches'][kind] and np.array_equal(idx,np.fromfile(d/(b+'.'+kind+'.differences.i32'),dtype='<i4'))
+for record in json.loads((o/'checkpoint-binding.json').read_text()):
+ file=Path(record['path']);st=file.stat();assert st.st_size==record['size'] and st.st_mtime_ns==record['mtime_ns']
+ with file.open('rb') as f:f.seek(record['offset']);raw=f.read(record['bytes']);assert len(raw)==record['bytes'] and hashlib.sha256(raw).hexdigest()==record['sha256']
+for name,h in json.loads((o/'gdn-binding.json').read_text()).items():assert sha(root/name)==h
+for f in p.iterdir():
+ if f.is_file():shutil.copy2(f,o/f.name)
+save(o/'artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})
+print('audit passed',r['elements'],r['mismatches'],'36 checkpoint weights and histories;full GDN inputbound;runtime unchanged')

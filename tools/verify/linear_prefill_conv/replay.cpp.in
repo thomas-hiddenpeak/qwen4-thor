@@ -1,0 +1,24 @@
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+template<class T>std::vector<T> Read(const std::string& p,size_t n){std::ifstream f(p,std::ios::binary|std::ios::ate);if(!f||size_t(f.tellg())!=n*sizeof(T))throw std::runtime_error(p);std::vector<T>v(n);f.seekg(0);if(!f.read(reinterpret_cast<char*>(v.data()),n*sizeof(T)))throw std::runtime_error(p);return v;}
+uint32_t Bits(float x){uint32_t b;std::memcpy(&b,&x,4);return b;}
+float B(uint16_t x){uint32_t b=uint32_t(x)<<16;float f;std::memcpy(&f,&b,4);return f;}
+uint16_t Round(float x){uint32_t b=Bits(x);return uint16_t((b+0x7fff+((b>>16)&1))>>16);}
+template<class T>void Save(const std::string&p,const std::vector<T>&v){std::ofstream f(p,std::ios::binary);if(!f.write(reinterpret_cast<const char*>(v.data()),v.size()*sizeof(T)))throw std::runtime_error(p);}
+int main(int argc,char**argv){try{
+ if(argc!=4){throw std::runtime_error("captures outputs layer");}std::string name="layer-"+std::string(argv[3]),b=std::string(argv[1])+"/"+name,o=std::string(argv[2])+"/"+name;
+ constexpr size_t n=size_t(4096)*10240;auto x=Read<uint16_t>(b+".input.bf16",n),w=Read<uint16_t>(b+".weights.bf16",40960),history=Read<uint16_t>(b+".history-before.bf16",30720),actual=Read<uint16_t>(b+".output.bf16",n);
+ std::vector<float>acc(n);std::vector<uint16_t>cpu(n),high(n);size_t bad_cpu=0,bad_high=0;
+ #pragma omp parallel for reduction(+:bad_cpu,bad_high)
+ for(size_t i=0;i<n;++i){int t=int(i/10240),c=int(i%10240);float a=0;double h=0;
+  for(int k=0;k<4;++k){int src=t-3+k;float v=B(src<0?history[c*3+src+3]:x[size_t(src)*10240+c]),weight=B(w[c*4+k]);a=std::fma(v,weight,a);h+=double(v)*double(weight);}
+  acc[i]=a;float ex=float(std::exp(-double(a)));cpu[i]=Round(a/(1.f+ex));double z=std::exp(-std::abs(h)),sig=h>=0?1/(1+z):z/(1+z);high[i]=Round(float(h*sig));bad_cpu+=cpu[i]!=actual[i];bad_high+=high[i]!=actual[i];
+ }
+ Save(o+".acc.f32",acc);Save(o+".cpu.bf16",cpu);Save(o+".fp64.bf16",high);std::printf("{\"layer\":%s,\"elements\":41943040,\"cpu_mismatches\":%zu,\"fp64_mismatches\":%zu}\n",argv[3],bad_cpu,bad_high);return 0;
+}catch(const std::exception&e){std::fprintf(stderr,"%s\n",e.what());return 2;}}

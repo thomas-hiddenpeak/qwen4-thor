@@ -45,9 +45,9 @@ QSA使用QsaDecodeSplit，其余使用SparseAttentionKernel。实际分支
 | 边界 | 必须保存的输入/状态 | 独立核对对象 | 当前限制 |
 |---|---|---|---|
 | GDN状态交接 | prefill最终S，decode前S，seq_id | 原样交接、形状和层身份 | 本次原4K首decode已验证 |
-| GDN单步 | 实际conv后QKV、a/b、dt_bias/A_log、S前后、y | 归一化、衰减、delta、秩1更新和读出 | 首decode指定算术全同；原4K prefill初态至末态亦已独立递推，仍以实际卷积输出为前处理输入 |
-| linear短卷积 | 原始QKV、卷积权重、3项历史、输出及新历史 | 因果窗口、激活及状态顺序 | 36层末prefill/首decode窗口、历史和指定算术已核对；不覆盖全部token |
-| GDN prefill | 初始S、全序列QKV/a/b、norm前后和最终S | 全递推与BF16中间边界 | 36层4096位置的q/k归一化及全递推同指定参考；非线性复用设备数学函数，卷积/投影尚非全token独立来源 |
+| GDN单步 | 实际conv后QKV、a/b、dt_bias/A_log、S前后、y | 归一化、衰减、delta、秩1更新和读出 | 首decode指定算术全同；原4K prefill初态至末态亦已独立递推，完整卷积已接通，原始QKV/a/b投影仍为实际输入 |
+| linear短卷积 | 原始QKV、卷积权重、3项历史、输出及新历史 | 因果窗口、激活及状态顺序 | 原4K完整36层4096位置及首decode窗口已核对；原始QKV投影仍为实际输入，其他请求未覆盖 |
+| GDN prefill | 初始S、全序列QKV/a/b、norm前后和最终S | 全递推与BF16中间边界 | 36层4096位置的q/k归一化及全递推同指定参考；非线性复用设备数学函数，完整卷积已接通，投影尚非全token独立来源 |
 | QSA cache/indexer | 位置、RoPE、KV页表/新增槽、压缩索引、分数和top-k | 因果可见集、索引选择、softmax及attention | 12个全attention层末prefill/首decode已核对选择、KV、压缩/indexer和attention指定算术；不覆盖全部prefill query或其他上下文 |
 | PLE | token历史、hash参数、SSD行身份、反量化值、卷积历史 | 查表身份、门控投影、因果conv与trunk加法 | 全请求查表内容同预期SSD行；门控/投影/卷积仅末10个prefill及首decode等报告范围，不覆盖全token算术 |
 | GRRead/Write | 四路trunk、norm权重、投影/门控、写回BF16边界 | 混合、注入、残差与融合舍入顺序 | 48层末prefill/首decode的实际权重、投影、混合、写回及层间交接已接通；不是全部token独立前向 |
@@ -55,7 +55,7 @@ QSA使用QsaDecodeSplit，其余使用SparseAttentionKernel。实际分支
 
 参考分两层：独立高精度公式检查数学对象；按指定精度/顺序的参考
 解释实际舍入。必须报告全部差异，不临时添加容忍条件；算术解释
-不能覆盖任务质量退化。下一步补完整prefill卷积与投影的实际输入来源，
+不能覆盖任务质量退化。下一步补完整prefill投影的实际输入来源，
 同时保留原4K错误、已知E4M3尺度问题与其他请求尚未证明的限制。
 不以局部算术一致或旧文档“已闭合”代替真实任务质量。
 
@@ -85,3 +85,7 @@ QSA使用QsaDecodeSplit，其余使用SparseAttentionKernel。实际分支
 [交接/归一化/混合](HC_HANDOFF_REFERENCE_2026-09-23.md)和
 [投影](HC_PROJECTION_REFERENCE_2026-09-23.md)。这些报告的样本范围
 不能互相放大；原4K错误答案仍未修复，生产运行时未改。
+
+完整4K短卷积的后续证据见[完整卷积报告](LINEAR_PREFILL_CONV_REFERENCE_2026-09-23.md)：
+所有1509949440个输出同CPU累加+设备SiLU，接通完整GDN输入；
+原始全token QKV/a/b投影的独立来源仍待补齐。

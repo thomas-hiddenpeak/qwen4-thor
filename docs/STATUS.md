@@ -20,6 +20,12 @@ TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间�
 
 ## 当前决策摘要
 
+- **完整4K短卷积已接通GDN全路径。**
+  新观测先三侧HTTP仍原错、服务0；36组权重同checkpoint，初始/
+  更新历史与因果窗口一致。1509949440输出同CPU四项fma+设备
+  SiLU，CPU3252/FP6410296差异保留；完整输出同此前GDN输入。
+  生产未改、原错未修复；下一步全prefill原始QKV/a/b投影来源，
+  见[完整卷积报告](LINEAR_PREFILL_CONV_REFERENCE_2026-09-23.md)。
 - **完整prefill q/k归一化接通全递推。**
   复用已绑定HTTP快照，36层603979776个q/k值同CPU算术+设备
   rsqrt；纯CPU6335项、FP647648项差异完整保留。重建完整qkv

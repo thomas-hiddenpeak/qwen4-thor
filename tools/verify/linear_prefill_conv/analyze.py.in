@@ -1,0 +1,33 @@
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import json,struct,hashlib,subprocess,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/linear-prefill-conv-20260923';c=o/'observed-captures';old=root/'.q4t-work/e2e/gdn-prefill-reference-20260923';d=o/'reference'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for block in iter(lambda:stream.read(4*1024*1024),b''):h.update(block)
+ return h.hexdigest()
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+for name in ['build','replay-build','silu-build']:assert (p/(name+'.log')).stat().st_size==0
+d.mkdir(exist_ok=False);manifest=json.loads((old/'artifact-binding.json').read_text());binding={};weights=[];records=[]
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');index=json.loads((model/'model.safetensors.index.json').read_text())['weight_map']
+for l in range(48):
+ if l%4==3:continue
+ b=f'layer-{l}';raw=np.fromfile(c/(b+'.input.bf16'),dtype='<u2').reshape(4096,10240);before=np.fromfile(c/(b+'.history-before.bf16'),dtype='<u2');after=np.fromfile(c/(b+'.history-updated.bf16'),dtype='<u2').reshape(10240,3)
+ assert len(before)==30720 and not np.count_nonzero(before);assert (c/(b+'.history-before.bf16')).read_bytes()==(c/(b+'.history-after-conv.bf16')).read_bytes();assert np.array_equal(raw[-3:].T,after)
+ f=old/'observed-captures'/(b+'.prefill-qkv-before.bf16');h=sha(f);assert h==manifest['observed-captures/'+f.name] and h==sha(c/(b+'.output.bf16'))==sha(c/(b+'.gdn-input.bf16'));binding[str(f.relative_to(root))]=h;save(o/'gdn-binding.json',binding)
+ name=f'model.language_model.layers.{l}.linear_attn.conv1d.weight';file=model/index[name];st=file.stat()
+ with file.open('rb') as stream:
+  n=struct.unpack('<Q',stream.read(8))[0];info=json.loads(stream.read(n))[name];assert info['shape']==[10240,1,4] and info['dtype']=='BF16';a,z=info['data_offsets'];stream.seek(8+n+a);w=stream.read(z-a)
+ assert file.stat()==st and w==(c/(b+'.weights.bf16')).read_bytes();weights.append({'layer':l,'tensor':name,'path':str(file),'offset':8+n+a,'bytes':len(w),'sha256':hashlib.sha256(w).hexdigest(),'size':st.st_size,'mtime_ns':st.st_mtime_ns});save(o/'checkpoint-binding.json',weights)
+ for tool,args in [('replay',[c,d,l]),('silu',[d,l])]:
+  with (o/(b+'.'+tool+'.json')).open('w') as out,(o/(b+'.'+tool+'.stderr')).open('w') as err:r=subprocess.run([str(p/tool)]+list(map(str,args)),stdout=out,stderr=err,env={**os.environ,'OMP_NUM_THREADS':'12'})
+  assert r.returncode==0
+ actual=np.fromfile(c/(b+'.output.bf16'),dtype='<u2');diff={}
+ for kind in ['cpu','device','fp64']:
+  value=np.fromfile(d/(b+'.'+kind+'.bf16'),dtype='<u2');assert value.size==actual.size==41943040;idx=np.flatnonzero(value!=actual);idx.astype('<i4').tofile(d/(b+'.'+kind+'.differences.i32'));diff[kind]=len(idx)
+ check=json.loads((o/(b+'.replay.json')).read_text());assert check['cpu_mismatches']==diff['cpu'] and check['fp64_mismatches']==diff['fp64']
+ record={'layer':l,'elements':len(actual),'mismatches':diff,'zero_initial_history':True,'history_not_changed_by_convolution':True,'updated_history_from_last_three_raw_inputs':True};records.append(record);print(record,flush=True)
+ save(o/'convolution-reference.json',{'records':records,'complete':len(records)==36,'elements':sum(x['elements'] for x in records),'mismatches':{k:sum(x['mismatches'][k] for x in records) for k in diff},'runtime_changed':False,'whole_model_correctness_proven':False})
