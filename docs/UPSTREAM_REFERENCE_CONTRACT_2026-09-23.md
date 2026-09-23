@@ -46,7 +46,8 @@ QSA使用QsaDecodeSplit，其余使用SparseAttentionKernel。实际分支
 |---|---|---|---|
 | GDN状态交接 | prefill最终S，decode前S，seq_id | 原样交接、形状和层身份 | 本次原4K首decode已验证 |
 | GDN单步 | 实际conv后QKV、a/b、dt_bias/A_log、S前后、y | 归一化、衰减、delta、秩1更新和读出 | 首decode指定算术全同；原4K prefill初态至末态亦已独立递推，完整卷积已接通，全行输入投影已绑定/重放，HC混合输入仍为实际数据 |
-| linear输入投影 | 全行mixed输入、QKV/z/a/b权重/输出、算法 | 权重身份、矩阵布局/重放、FP64参考及下游全行绑定 | 36层4096行已捕获/重放，FP64差异保留；HC混合输入仍为实际数据，z下游全行尚未绑定 |
+| linear输入投影 | 全行mixed输入、QKV/z/a/b权重/输出、算法 | 权重身份、矩阵布局/重放、FP64参考及下游全行绑定 | 36层4096行已捕获/重放，FP64差异保留；HC混合输入仍为实际数据，z下游全行已绑定NormGate |
+| linear输出端 | 全行GDN输出、z、norm/out权重及输出、残差消费者 | NormGate指定算术、输出投影重放/FP64及实际消费 | 原4K36层全位置已核对；设备基础数学/cuBLAS不是完全独立的硬件精度证明 |
 | linear短卷积 | 原始QKV、卷积权重、3项历史、输出及新历史 | 因果窗口、激活及状态顺序 | 原4K完整36层4096位置及首decode窗口已核对；原始QKV已绑定全行输入投影，其他请求未覆盖 |
 | GDN prefill | 初始S、全序列QKV/a/b、norm前后和最终S | 全递推与BF16中间边界 | 36层4096位置的q/k归一化及全递推同指定参考；非线性复用设备数学函数，完整卷积与全行输入投影已接通，HC输入本身仍为实际数据 |
 | QSA cache/indexer | 位置、RoPE、KV页表/新增槽、压缩索引、分数和top-k | 因果可见集、索引选择、softmax及attention | 12个全attention层末prefill/首decode已核对选择、KV、压缩/indexer和attention指定算术；不覆盖全部prefill query或其他上下文 |
@@ -56,7 +57,7 @@ QSA使用QsaDecodeSplit，其余使用SparseAttentionKernel。实际分支
 
 参考分两层：独立高精度公式检查数学对象；按指定精度/顺序的参考
 解释实际舍入。必须报告全部差异，不临时添加容忍条件；算术解释
-不能覆盖任务质量退化。下一步补完整prefill NormGate与out_proj的实际交接，
+不能覆盖任务质量退化。下一步梳理完整prefill HC混合/残差的全位置参考与采集容量，
 同时保留原4K错误、已知E4M3尺度问题与其他请求尚未证明的限制。
 不以局部算术一致或旧文档“已闭合”代替真实任务质量。
 
@@ -89,4 +90,4 @@ QSA使用QsaDecodeSplit，其余使用SparseAttentionKernel。实际分支
 
 完整4K短卷积的后续证据见[完整卷积报告](LINEAR_PREFILL_CONV_REFERENCE_2026-09-23.md)：
 所有1509949440个输出同CPU累加+设备SiLU，接通完整GDN输入；
-全token QKV/a/b投影的后续绑定与重放见[输入投影报告后续](LINEAR_PROJECTION_REFERENCE_2026-09-23.md)，HC输入来源及linear输出端全行仍待补齐。
+全token QKV/a/b投影的后续绑定与重放见[输入投影报告后续](LINEAR_PROJECTION_REFERENCE_2026-09-23.md)，HC输入来源仍待补齐，linear输出端全行见[输出报告后续](LINEAR_OUTPUT_REFERENCE_2026-09-23.md)。

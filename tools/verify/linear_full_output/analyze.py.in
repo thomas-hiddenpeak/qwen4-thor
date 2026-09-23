@@ -1,0 +1,45 @@
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import json,hashlib,struct,subprocess,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/linear-full-output-v2-20260923';c=o/'observed-captures';d=o/'reference';gdn=root/'.q4t-work/e2e/gdn-prefill-reference-20260923';proj=root/'.q4t-work/e2e/linear-full-projection-20260923'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for block in iter(lambda:stream.read(4*1024*1024),b''):h.update(block)
+ return h.hexdigest()
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+def run(tool,args,name):
+ with (o/(name+'.json')).open('w') as out,(o/(name+'.stderr')).open('w') as err:r=subprocess.run([str(p/tool)]+list(map(str,args)),stdout=out,stderr=err,env={**os.environ,'OMP_NUM_THREADS':'12'})
+ assert r.returncode==0,(tool,r.returncode)
+def decode(f):return (np.fromfile(f,dtype='<u2').astype(np.uint32)<<16).view(np.float32)
+def rounded(v):
+ b=v.astype(np.float32).view(np.uint32);return ((b+0x7fff+((b>>16)&1))>>16).astype(np.uint16)
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+for name in ['build','replay-build','fp64-build','norm-build','nonlinear-build']:assert (p/(name+'.log')).stat().st_size==0
+d.mkdir(exist_ok=False);gm=json.loads((gdn/'artifact-binding.json').read_text());pm=json.loads((proj/'artifact-binding.json').read_text());bindings=[];weights=[]
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');index=json.loads((model/'model.safetensors.index.json').read_text())['weight_map']
+for l in range(48):
+ if l%4==3:continue
+ b=f'layer-{l}.prefill';meta=json.loads((c/(b+'.norm.norm.json')).read_text());assert np.float32(meta['eps'])==np.float32(1e-6)
+ for old,manifest,source,target in [(gdn,gm,f'layer-{l}.prefill-y.bf16',b+'.norm.input.bf16'),(proj,pm,b+'.z.output.bf16',b+'.norm.z.bf16')]:
+  f=old/'observed-captures'/source;h=sha(f);assert h==manifest['observed-captures/'+source] and h==sha(c/target);bindings.append({'source':str(f.relative_to(root)),'target':target,'sha256':h})
+ assert sha(c/(b+'.norm.output.bf16'))==sha(c/(b+'.out.input.bf16')) and sha(c/(b+'.out.output.bf16'))==sha(c/(b+'.out.consumer.bf16'))
+ for tag,suffix,shape in [('norm','norm.weight',[128]),('out','out_proj.weight',[2560,6144])]:
+  name=f'model.language_model.layers.{l}.linear_attn.{suffix}';file=model/index[name];st=file.stat()
+  with file.open('rb') as f:
+   size=struct.unpack('<Q',f.read(8))[0];info=json.loads(f.read(size))[name];assert info['dtype']=='BF16' and info['shape']==shape;start,end=info['data_offsets'];f.seek(8+size+start);raw=f.read(end-start)
+  assert file.stat()==st and raw==(c/(b+'.'+tag+'.weights.bf16')).read_bytes();weights.append({'tensor':name,'path':str(file),'offset':8+size+start,'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),'size':st.st_size,'mtime_ns':st.st_mtime_ns})
+ save(o/'checkpoint-binding.json',weights);save(o/'boundary-binding.json',bindings)
+ run('norm',[c,d,l],f'layer-{l}.norm-cpu');print('norm CPU',l,flush=True)
+run('nonlinear',[d],'nonlinear')
+records=[]
+for l in range(48):
+ if l%4==3:continue
+ b=f'layer-{l}.prefill.norm';y=decode(c/(b+'.input.bf16')).reshape(-1,128);w=decode(c/(b+'.weights.bf16'));inv=np.fromfile(d/(b+'.cuda-inv.f32'),dtype='<f4');sig=np.fromfile(d/(b+'.cuda-sig.f32'),dtype='<f4').reshape(-1,128);value=rounded(((y*inv[:,None])*w)*sig).reshape(-1);value.tofile(d/(b+'.device.bf16'));actual=np.fromfile(c/(b+'.output.bf16'),dtype='<u2');diff={}
+ for kind in ['cpu','device','fp64']:
+  v=np.fromfile(d/(b+'.'+kind+'.bf16'),dtype='<u2');assert len(v)==len(actual)==25165824;idx=np.flatnonzero(v!=actual);idx.astype('<i4').tofile(d/(b+'.'+kind+'.differences.i32'));diff[kind]=len(idx)
+ record={'layer':l,'elements':len(actual),'mismatches':diff};records.append(record);print(record,flush=True)
+ save(o/'norm-reference.json',{'records':records,'complete':len(records)==36,'elements':sum(x['elements'] for x in records),'mismatches':{k:sum(x['mismatches'][k] for x in records) for k in diff}})
+for tool in ['replay','fp64']:
+ run(tool,[c,d],tool+'-reference');r=json.loads((o/(tool+'-reference.json')).read_text());assert len(r['records'])==36;print(tool,'elements',sum(x['elements'] for x in r['records']),'mismatches',sum(x['mismatches'] for x in r['records']),flush=True)

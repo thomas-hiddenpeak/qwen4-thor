@@ -1,0 +1,23 @@
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+template<class T>std::vector<T> Read(const std::string& p,size_t n){std::ifstream f(p,std::ios::binary|std::ios::ate);if(!f||size_t(f.tellg())!=n*sizeof(T))throw std::runtime_error(p);std::vector<T>v(n);f.seekg(0);if(!f.read(reinterpret_cast<char*>(v.data()),n*sizeof(T)))throw std::runtime_error(p);return v;}
+uint32_t Bits(float x){uint32_t b;std::memcpy(&b,&x,4);return b;}
+float B(uint16_t x){uint32_t b=uint32_t(x)<<16;float f;std::memcpy(&f,&b,4);return f;}
+uint16_t Round(float x){uint32_t b=Bits(x);return uint16_t((b+0x7fff+((b>>16)&1))>>16);}
+template<class T>void Save(const std::string&p,const std::vector<T>&v){std::ofstream f(p,std::ios::binary);if(!f.write(reinterpret_cast<const char*>(v.data()),v.size()*sizeof(T)))throw std::runtime_error(p);}
+int main(int argc,char**argv){try{
+ if(argc!=4){throw std::runtime_error("captures outputs layer");}std::string name="layer-"+std::string(argv[3])+".prefill.norm",b=std::string(argv[1])+"/"+name,o=std::string(argv[2])+"/"+name;
+ constexpr size_t heads=4096*48,n=heads*128;auto x=Read<uint16_t>(b+".input.bf16",n),z=Read<uint16_t>(b+".z.bf16",n),w=Read<uint16_t>(b+".weights.bf16",128),actual=Read<uint16_t>(b+".output.bf16",n);std::vector<float>mean(heads),zf(n);std::vector<uint16_t>cpu(n),high(n);size_t bad=0,bad_high=0;
+ #pragma omp parallel for reduction(+:bad,bad_high)
+ for(size_t h=0;h<heads;++h){float square[128];double ss=0;for(int i=0;i<128;++i){float v=B(x[h*128+i]);square[i]=v*v;ss+=double(v)*v;}
+  for(int off=64;off;off>>=1){for(int i=0;i<off;++i)square[i]+=square[i+off];}mean[h]=square[0]/128.f+1e-6f;float inv=float(1.0/std::sqrt(double(mean[h])));double inv64=1.0/std::sqrt(ss/128.0+double(1e-6f));
+  for(int i=0;i<128;++i){size_t at=h*128+i;float gate=B(z[at]);zf[at]=gate;float sig=1.f/(1.f+float(std::exp(-double(gate))));cpu[at]=Round(((B(x[at])*inv)*B(w[i]))*sig);double v=double(B(x[at]))*inv64*double(B(w[i]))/(1+std::exp(-double(gate)));high[at]=Round(float(v));bad+=cpu[at]!=actual[at];bad_high+=high[at]!=actual[at];}
+ }
+ Save(o+".mean.f32",mean);Save(o+".z.f32",zf);Save(o+".cpu.bf16",cpu);Save(o+".fp64.bf16",high);std::printf("{\"layer\":%s,\"elements\":25165824,\"cpu_mismatches\":%zu,\"fp64_mismatches\":%zu}\n",argv[3],bad,bad_high);return 0;
+}catch(const std::exception&e){std::fprintf(stderr,"%s\n",e.what());return 2;}}

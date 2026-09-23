@@ -30,11 +30,15 @@ def main():
     parser.add_argument('--binary', type=Path, default=ROOT / 'build/q4t')
     parser.add_argument('--model-dir', type=Path, required=True)
     parser.add_argument('--port', type=int, default=8000)
+    parser.add_argument('--startup-timeout', type=int, default=180,
+                        help='Seconds to wait for model loading before HTTP requests')
     parser.add_argument('--fixtures', type=Path,
                         help='Existing quality-inputs or performance matrix root')
     parser.add_argument('--reference', type=Path,
                         help='Prior results.json: require identical prompts and outputs')
     args = parser.parse_args()
+    if args.startup_timeout <= 0:
+        parser.error('startup-timeout must be positive')
     out = args.output.resolve()
     if not any(out.is_relative_to(ROOT / d) for d in ['build', '.q4t-work']):
         parser.error('output must be under build/ or .q4t-work/')
@@ -92,21 +96,22 @@ def main():
     command = [str(binary), 'serve', '--model-dir', str(model), '--port', str(args.port),
                '--max-seq', '1', '--max-prefill', '8192', '--max-len', '208896',
                '--max-tokens', '256', '--no-mtp']
-    save(out / 'server-command.json', {'argv': command, 'removed_environment': removed})
+    save(out / 'server-command.json', {'argv': command, 'removed_environment': removed,
+                                       'startup_timeout_seconds': args.startup_timeout})
     results = []
     passed = False
     failure = None
     with (out / 'server.log').open('w') as log:
         server = subprocess.Popen(command, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT)
         try:
-            for _ in range(180):
+            for _ in range(args.startup_timeout):
                 if server.poll() is not None:
                     raise RuntimeError('server exited during startup')
                 if 'serving on port' in (out / 'server.log').read_text():
                     break
                 time.sleep(1)
             else:
-                raise RuntimeError('server startup timeout')
+                raise RuntimeError(f'server startup timeout after {args.startup_timeout}s')
             for case, inputs, count, minimum, maximum, tokens, streaming in cases:
                 case.mkdir()
                 shutil.copyfile(inputs, case / 'requests.jsonl')

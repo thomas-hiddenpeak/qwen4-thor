@@ -1,0 +1,35 @@
+from pathlib import Path
+import json,hashlib,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/linear-full-output-v2-20260923';c=o/'observed-captures';d=o/'reference'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for block in iter(lambda:stream.read(4*1024*1024),b''):h.update(block)
+ return h.hexdigest()
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+norm=json.loads((o/'norm-reference.json').read_text());replay=json.loads((o/'replay-reference.json').read_text());high=json.loads((o/'fp64-reference.json').read_text());assert norm['complete'] and norm['elements']==905969664 and norm['mismatches']['device']==0;assert len(replay['records'])==len(high['records'])==36 and replay['total_mismatches']==0 and sum(x['elements'] for x in replay['records'])==377487360
+for record in norm['records']:
+ b=f"layer-{record['layer']}.prefill.norm";actual=np.fromfile(c/(b+'.output.bf16'),dtype='<u2');assert sha(c/(b+'.output.bf16'))==sha(c/(b.replace('.norm','.out')+'.input.bf16'))
+ for kind in ['cpu','device','fp64']:
+  value=np.fromfile(d/(b+'.'+kind+'.bf16'),dtype='<u2');idx=np.flatnonzero(value!=actual);assert len(idx)==record['mismatches'][kind] and np.array_equal(idx,np.fromfile(d/(b+'.'+kind+'.differences.i32'),dtype='<i4'))
+previous=root/'.q4t-work/e2e/linear-output-reference-20260923';pm=json.loads((previous/'artifact-binding.json').read_text());assert sha(previous/'output-reference.json')==pm['output-reference.json'];old_out={x['layer']:x for x in json.loads((previous/'output-reference.json').read_text())['records'] if x['phase']=='prefill' and x['stage']=='out'};last_rows=[]
+for record in high['records']:
+ b=f"layer-{record['layer']}.prefill.out";actual=np.fromfile(c/(b+'.output.bf16'),dtype='<u2');assert len(actual)==record['elements'];assert sha(c/(b+'.output.bf16'))==sha(c/(b+'.consumer.bf16'))==sha(d/(b+'.replay.bf16'))
+ y=np.fromfile(d/(b+'.fp64.f64'),dtype='<f8');bits=y.astype(np.float32).view(np.uint32);value=((bits+0x7fff+((bits>>16)&1))>>16).astype(np.uint16);assert np.array_equal(value,np.fromfile(d/(b+'.fp64.bf16'),dtype='<u2'));idx=np.flatnonzero(value!=actual);assert len(idx)==record['mismatches'] and np.array_equal(idx,np.fromfile(d/(b+'.fp64.differences.i32'),dtype='<i4'))
+ last=np.flatnonzero(value[-2560:]!=actual[-2560:]);assert last.tolist()==old_out[record['layer']]['mismatch_indices'];last_rows.append({'layer':record['layer'],'mismatches':len(last)})
+save(o/'previous-fp64-binding.json',{'source_sha256':sha(previous/'output-reference.json'),'records':last_rows,'mismatches':sum(x['mismatches'] for x in last_rows)})
+for binding in json.loads((o/'boundary-binding.json').read_text()):assert sha(root/binding['source'])==sha(c/binding['target'])==binding['sha256']
+for binding in json.loads((o/'checkpoint-binding.json').read_text()):
+ f=Path(binding['path']);st=f.stat();assert st.st_size==binding['size'] and st.st_mtime_ns==binding['mtime_ns']
+ with f.open('rb') as stream:stream.seek(binding['offset']);raw=stream.read(binding['bytes']);assert len(raw)==binding['bytes'] and hashlib.sha256(raw).hexdigest()==binding['sha256']
+for group in ['before','observed','after']:assert json.loads((o/group/'server-command.json').read_text())['startup_timeout_seconds']==600
+failed=root/'.q4t-work/e2e/linear-full-output-20260923';failure=json.loads((failed/'before/exit.json').read_text());assert failure['completed']==0 and failure['server']==-15 and 'startup timeout' in failure['failure'];fm=json.loads((failed/'failure-binding.json').read_text())
+for name,h in fm.items():assert sha(failed/name)==h
+save(o/'initial-failure-binding.json',{'manifest_sha256':sha(failed/'failure-binding.json'),'directory':str(failed),'reason':failure})
+summary={'norm_elements':norm['elements'],'norm_mismatches':norm['mismatches'],'projection_elements':sum(x['elements'] for x in replay['records']),'recorded_algorithm_mismatches':0,'projection_fp64_mismatches':sum(x['mismatches'] for x in high['records']),'full_residual_consumer_bound':True,'runtime_changed':False,'evaluation_startup_timeout_configurable':True,'whole_model_correctness_proven':False};save(o/'output-summary.json',summary)
+for f in p.iterdir():
+ if f.is_file():shutil.copy2(f,o/f.name)
+save(o/'artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})
+print(summary)
