@@ -20,6 +20,12 @@ TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间�
 
 ## 当前决策摘要
 
+- **主注意力四组投影已接通权重与残差边界。**
+  新观测先三侧HTTP仍原错、服务0，1632份旧记录不变；96次
+  权重匹配checkpoint，输入/输出接通既有变换、attention及HC。
+  decode CPU与prefill记录算法各190464输出全同；FP64差异
+  350/17项保留。生产未改，下一步PLE非恒等边界，见
+  [主注意力投影报告](QSA_MAIN_PROJECTION_REFERENCE_2026-09-23.md)。
 - **主注意力q/k归一化、gate拆分及旋转局部一致。**
   新观测先三侧HTTP仍原错、服务0，1176份旧记录不变；实际权重
   同checkpoint，gate147456项字节复制正确，归一化与旋转各
