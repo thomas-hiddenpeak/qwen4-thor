@@ -1,0 +1,27 @@
+"""Checkpoint BF16 router projection reference on already gated HTTP inputs."""
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import hashlib,json,struct
+import numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2]
+out=root/'.q4t-work/e2e/moe-token-combine-20260923';capture=out/'observed-captures'
+assert json.loads((out/'exit.json').read_text())['observer_preserved_tested_output']
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');index=json.loads((model/'model.safetensors.index.json').read_text())['weight_map']
+def bf16(bits):return (bits.astype(np.uint32)<<16).view(np.float32).astype(np.float64)
+def rounded(v):
+ bits=np.asarray(v,dtype=np.float32).view(np.uint32);return ((bits+np.uint32(0x7fff)+((bits>>16)&1))>>16).astype(np.uint16)
+records=[]
+for layer in range(48):
+ base=capture/f'layer-{layer}';name=f'model.language_model.layers.{layer}.mlp.gate.weight'
+ with (model/index[name]).open('rb') as f:
+  size=struct.unpack('<Q',f.read(8))[0];raw=f.read(size);h=json.loads(raw);m=h[name];assert m['dtype']=='BF16' and m['shape']==[512,2560]
+  a,b=m['data_offsets'];f.seek(8+size+a);data=f.read(b-a)
+ assert len(data)==512*2560*2
+ w=bf16(np.frombuffer(data,dtype='<u2')).reshape(512,2560);x=bf16(np.fromfile(str(base)+'.x.bf16',dtype='<u2'));actual=np.fromfile(str(base)+'.logits.bf16',dtype='<u2');ids=np.fromfile(str(base)+'.ids.i32',dtype='<i4');assert x.size==2560 and actual.size==512
+ ref=w@x;bits=rounded(ref);expected_ids=np.lexsort((np.arange(512),-bf16(bits)))[:10]
+ mismatch=np.flatnonzero(bits!=actual)
+ records.append({'layer':layer,'weight_sha256':hashlib.sha256(data).hexdigest(),'header_sha256':hashlib.sha256(raw).hexdigest(),'bf16_bit_mismatches':len(mismatch),'mismatch_indices':mismatch.tolist(),'actual_topk_matches_reference_logits':bool(np.array_equal(ids,expected_ids)),'actual_topk':ids.tolist(),'reference_topk':expected_ids.tolist(),'max_abs_vs_fp64':float(np.max(np.abs(bf16(actual)-ref)))})
+ np.savez(str(base)+'.router-reference.npz',fp64=ref,bf16_bits=bits)
+report={'layers':48,'logits_compared':48*512,'bf16_bit_mismatches':sum(r['bf16_bit_mismatches'] for r in records),'all_topk_matches':all(r['actual_topk_matches_reference_logits'] for r in records),'records':records,'limitation':'Projection uses actual captured BF16 MoE input, not an independent preceding-layer state. FP64 reference through FP32 to BF16 does not emulate every cuBLAS accumulation.'}
+(out/'router-reference.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({k:v for k,v in report.items() if k!='records'},indent=2))

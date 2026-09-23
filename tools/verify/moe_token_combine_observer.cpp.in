@@ -1,0 +1,162 @@
+// Read-only last-prefill-token boundaries. CUDA13.3/model-shape diagnostic.
+#include <cuda_runtime_api.h>
+#include <dlfcn.h>
+#include <algorithm>
+#include <array>
+#include <atomic>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <vector>
+namespace {
+std::atomic<cudaKernel_t> router{nullptr}, mapping{nullptr}, grouped{nullptr},
+    combined{nullptr};
+std::atomic<int> next_layer{0};
+thread_local int layer = -1;
+thread_local std::array<int32_t, 10> ids{};
+thread_local bool router_ok = false, mapping_ok = false, grouped_ok = false;
+constexpr int kT = 4096, kToken = 4095, kHs = 2560, kE = 512, kSlots = 10;
+template <typename T> T Resolve(const char* name) {
+  auto fn = reinterpret_cast<T>(dlsym(RTLD_NEXT, name));
+  if (!fn) std::_Exit(127);
+  return fn;
+}
+std::string Base() {
+  const char* dir = std::getenv("Q4T_TOKEN_CAPTURE_DIR");
+  return std::string(dir ? dir : "") + "/layer-" + std::to_string(layer);
+}
+bool Save(const std::string& path, const void* data, size_t bytes) {
+  FILE* f = std::fopen(path.c_str(), "wb");
+  if (!f) return false;
+  const bool ok = std::fwrite(data, 1, bytes, f) == bytes;
+  return std::fclose(f) == 0 && ok;
+}
+bool Read(void* dst, const void* src, size_t bytes, cudaStream_t stream) {
+  static const auto copy = Resolve<decltype(&cudaMemcpyAsync)>("cudaMemcpyAsync");
+  static const auto sync = Resolve<decltype(&cudaStreamSynchronize)>(
+      "cudaStreamSynchronize");
+  return copy(dst, src, bytes, cudaMemcpyDeviceToHost, stream) == cudaSuccess &&
+         sync(stream) == cudaSuccess;
+}
+bool Capture(const char* suffix, const void* src, size_t bytes,
+             cudaStream_t stream) {
+  std::vector<unsigned char> data(bytes);
+  return Read(data.data(), src, bytes, stream) &&
+         Save(Base() + suffix, data.data(), bytes);
+}
+template <typename T> T* Pointer(void** args, int index) {
+  return *static_cast<T**>(args[index]);
+}
+}
+extern "C" cudaError_t __cudaGetKernel(cudaKernel_t* kernel, const void* fn) {
+  using Get = cudaError_t (*)(cudaKernel_t*, const void*);
+  static const auto real = Resolve<Get>("__cudaGetKernel");
+  const auto status = real(kernel, fn);
+  if (status == cudaSuccess) {
+    const char* name = nullptr;
+    static const auto get_name = Resolve<decltype(&cudaFuncGetName)>(
+        "cudaFuncGetName");
+    if (get_name(&name, fn) == cudaSuccess && name) {
+      if (std::strstr(name, "RouterTopkKernel") &&
+          std::strstr(name, "5model")) router = *kernel;
+      if (std::strstr(name, "BuildRowOfFlatKernel")) mapping = *kernel;
+      if (std::strstr(name, "CombineGroupedKernel")) grouped = *kernel;
+      if (std::strstr(name, "MoECombineKernel") &&
+          std::strstr(name, "5model")) combined = *kernel;
+    }
+  }
+  return status;
+}
+extern "C" cudaError_t __cudaLaunchKernel(cudaKernel_t kernel, dim3 grid,
+    dim3 block, void** args, size_t shared, cudaStream_t stream) {
+  using Launch = cudaError_t (*)(cudaKernel_t, dim3, dim3, void**, size_t,
+                                cudaStream_t);
+  static const auto real = Resolve<Launch>("__cudaLaunchKernel");
+  const bool enabled = std::getenv("Q4T_TOKEN_CAPTURE_DIR") != nullptr;
+  if (enabled && kernel == grouped && layer >= 0 && layer < 48 &&
+      *static_cast<int*>(args[5]) == kT &&
+      *static_cast<int*>(args[3]) == kSlots &&
+      *static_cast<int*>(args[4]) == kHs) {
+    std::array<int32_t, kSlots> rows{};
+    grouped_ok = Read(rows.data(), Pointer<int32_t>(args, 1) + kToken * kSlots,
+                      sizeof(rows), stream) &&
+        Save(Base() + ".rows.i32", rows.data(), sizeof(rows)) &&
+        Capture(".weights.f32", Pointer<float>(args, 2) + kToken * kSlots,
+                kSlots * sizeof(float), stream) &&
+        Capture(".before.f32", Pointer<float>(args, 6) + kToken * kHs,
+                kHs * sizeof(float), stream);
+    std::vector<uint16_t> down(kSlots * kHs);
+    for (int slot = 0; slot < kSlots && grouped_ok; ++slot) {
+      grouped_ok = rows[slot] >= 0 && rows[slot] < kT * kSlots &&
+          Read(down.data() + slot * kHs,
+               Pointer<uint16_t>(args, 0) + static_cast<size_t>(rows[slot]) * kHs,
+               kHs * sizeof(uint16_t), stream);
+    }
+    grouped_ok = grouped_ok &&
+        Save(Base() + ".experts.bf16", down.data(), down.size() * 2);
+  }
+  const auto status = real(kernel, grid, block, args, shared, stream);
+  if (!enabled || status != cudaSuccess) return status;
+  if (kernel == router && *static_cast<int*>(args[3]) == kT &&
+      *static_cast<int*>(args[4]) == kE &&
+      *static_cast<int*>(args[5]) == kSlots) {
+    layer = next_layer.fetch_add(1);
+    router_ok = mapping_ok = grouped_ok = false;
+    if (layer >= 48) return status;
+    router_ok = Read(ids.data(), Pointer<int32_t>(args, 1) + kToken * kSlots,
+                     sizeof(ids), stream) &&
+        Save(Base() + ".ids.i32", ids.data(), sizeof(ids)) &&
+        Capture(".logits.bf16", Pointer<uint16_t>(args, 0) + kToken * kE,
+                kE * sizeof(uint16_t), stream) &&
+        Capture(".router-weights.f32", Pointer<float>(args, 2) + kToken * kSlots,
+                kSlots * sizeof(float), stream);
+  }
+  if (layer < 0 || layer >= 48) return status;
+  if (kernel == mapping && *static_cast<int*>(args[2]) == kT) {
+    std::array<int32_t, kE + 1> offsets{};
+    mapping_ok = router_ok && Read(offsets.data(), Pointer<int32_t>(args, 1),
+                                  sizeof(offsets), stream) &&
+        Save(Base() + ".offsets.i32", offsets.data(), sizeof(offsets));
+    for (int slot = 0; slot < kSlots && mapping_ok; ++slot) {
+      const int e = ids[slot];
+      if (e < 0 || e >= kE) { mapping_ok = false; break; }
+      const int count = offsets[e + 1] - offsets[e];
+      if (count <= 0 || count > kT) { mapping_ok = false; break; }
+      std::vector<int32_t> list(count);
+      mapping_ok = Read(list.data(), Pointer<int32_t>(args, 0) + e * kT,
+                        list.size() * sizeof(int32_t), stream) &&
+          Save(Base() + ".list-" + std::to_string(slot) + ".i32",
+               list.data(), list.size() * sizeof(int32_t));
+    }
+  }
+  if (kernel == grouped && *static_cast<int*>(args[5]) == kT) {
+    grouped_ok = grouped_ok && Capture(".routed.f32",
+        Pointer<float>(args, 6) + kToken * kHs, kHs * sizeof(float), stream);
+  }
+  if (kernel == combined && *static_cast<int*>(args[5]) == kT &&
+      *static_cast<int*>(args[6]) == kHs) {
+    const bool ok = router_ok && mapping_ok && grouped_ok &&
+        Capture(".merge-routed.f32", Pointer<float>(args, 0) + kToken * kHs,
+                kHs * sizeof(float), stream) &&
+        Capture(".shared.bf16", Pointer<uint16_t>(args, 1) + kToken * kHs,
+                kHs * sizeof(uint16_t), stream) &&
+        Capture(".x.bf16", Pointer<uint16_t>(args, 2) + kToken * kHs,
+                kHs * sizeof(uint16_t), stream) &&
+        Capture(".gate.bf16", Pointer<uint16_t>(args, 3),
+                kHs * sizeof(uint16_t), stream) &&
+        Capture(".output.bf16", Pointer<uint16_t>(args, 4) + kToken * kHs,
+                kHs * sizeof(uint16_t), stream);
+    char metadata[256];
+    const int n = std::snprintf(metadata, sizeof(metadata),
+        "{\"layer\":%d,\"tokens\":%d,\"token\":%d,\"hs\":%d,"
+        "\"slots\":%d,\"block\":%u,\"ok\":%s}\n",
+        layer, kT, kToken, kHs, kSlots, block.x, ok ? "true" : "false");
+    const bool saved = n > 0 && static_cast<size_t>(n) < sizeof(metadata) &&
+        Save(Base() + ".meta.json", metadata, static_cast<size_t>(n));
+    std::fprintf(stderr, "[moe-token-capture] layer=%d ok=%d\n", layer,
+                 ok && saved);
+  }
+  return status;
+}
