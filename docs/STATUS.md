@@ -15,11 +15,11 @@
 中间量化有148339项错误，均覆盖48层。给定错误尺度的后续FP4/
 矩阵乘参考一致不能消除尺度缺陷。修正传播与错答因果尚未闭合。
 
-最新完成：完整QSA主投影/变换边界和输出消费者已绑定，三侧HTTP
-保持原错答、服务正常退出，72组实际权重同checkpoint。48次主
-投影780140544个输出同记录算法重放，1315131项FP64舍入差异
-保留，末行CPU/设备及旧参考一致。完整q/k norm与RoPE算术仍待
-核对，详见 [QSA报告](QSA_FULL_REFERENCE_2026-09-24.md)。
+最新完成：完整QSA q/k归一化和RoPE各327155712个BF16值，
+同CPU指定顺序+设备数学参考。CPU数学/FP64 norm差异1186/2508，
+RoPE差异99253/176991，全部保留；144份完整参考无损恢复通过。
+主投影/变换及attention已有条件参考，完整indexer评分链仍待补齐，
+详见 [QSA报告](QSA_FULL_REFERENCE_2026-09-24.md)。
 
 此前完整QSA选择/attention指定算术相同；高精度保留概率与门控
 BF16舍入后仍有175500项差异。以上均为实际输入上的条件参考，
@@ -88,7 +88,7 @@ BF16舍入后仍有175500项差异。以上均为实际输入上的条件参考�
 | MoE路由/量化 | 全router/mapping/gather、输入及中间量化；E4M3错误确实到达实际计算 | FP64 router舍入后103行集合变化，未建任务因果；错误尺度未修正传播 | [路由](MOE_ROUTER_REFERENCE_2026-09-24.md)、[输入量化](MOE_INPUT_QUANT_REFERENCE_2026-09-24.md)、[中间量化](MOE_INTER_QUANT_REFERENCE_2026-09-24.md) |
 | MoE专家/合并 | 全GU/down重放及FP64、路由合并、shared投影/SwiGLU及最终MoE合并 | 使用实际量化/路由输入；共享分支存在保留的高精度差异 | [GU](MOE_GU_REFERENCE_2026-09-24.md)、[down](MOE_DOWN_REFERENCE_2026-09-24.md)、[shared](MOE_SHARED_REFERENCE_2026-09-24.md) |
 | PLE | 全prefill key/value投影、norm/gate/广播、卷积/历史及HC交接 | 逐算子条件参考，不是独立组合前向 | [投影](PLE_PROJECTION_REFERENCE_2026-09-23.md)、[卷积/门控](PLE_CONV_REFERENCE_2026-09-23.md) |
-| QSA | 全query选择/KV/attention指定算术，主投影重放/FP64及变换/输出消费者边界 | 高精度差异保留；全量norm/RoPE算术与完整indexer评分链待补齐 | [完整QSA](QSA_FULL_REFERENCE_2026-09-24.md)、[旧局部范围](QSA_SELECTION_REFERENCE_2026-09-23.md) |
+| QSA | 全query选择/KV/attention指定算术，主投影重放/FP64、norm/RoPE参考及实际消费者边界 | 高精度差异保留；完整indexer评分链待补齐，未传播高精度norm到RoPE | [完整QSA](QSA_FULL_REFERENCE_2026-09-24.md)、[旧局部范围](QSA_SELECTION_REFERENCE_2026-09-23.md) |
 | 输出头 | 七次最终mixer、全词表logits、argmax、后续token交接 | 上游仍为实际主干，没有从原始输入独立生成 | [mixer](FINAL_MIXER_REFERENCE_2026-09-23.md)、[logits](OUTPUT_HEAD_REFERENCE_2026-09-23.md) |
 
 参考依赖与接口见 [上游参考合同](UPSTREAM_REFERENCE_CONTRACT_2026-09-23.md)。
@@ -97,10 +97,10 @@ SGLang在本机的现有对照未形成稳定、可比的整模型oracle，不�
 
 ## 下一步执行顺序
 
-1. 复用完整QSA主投影快照，完成全query q/k归一化及RoPE算术
-   参考，明确FP32归约/FMA与设备数学依赖，完整保留高精度差异。
-2. 接通并核对完整indexer评分来源及所有query的实际消费，保留
-   高精度与指定算术差异，不以接近或低差异率当作通过。
+1. 新最小观测接通完整indexer query/key投影、查询norm/RoPE、
+   压缩key、评分矩阵及汇总消费者；仍先关闭/开启/关闭HTTP。
+2. 复用冻结数据核对完整indexer各算子及选择评分交接，保留高精度
+   与指定算术差异，不以接近或低差异率当作通过。
 3. 在逐算子条件参考之外建立组合前向/修正传播对照，明确已知尺度
    缺陷与错误答案的因果边界；不能把算子检查数量当成完成标准。
 4. 只有形成具体、可回退且有证据支持的修复才改运行时，仍先完整

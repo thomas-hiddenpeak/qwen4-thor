@@ -1,0 +1,21 @@
+"""Audit complete coverage and distinguish query-side from unique query counts."""
+from pathlib import Path
+import json,hashlib,numpy as np,shutil
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/qsa-full-transform-20260924';records=json.loads((o/'reference.json').read_text());summary=json.loads((o/'summary.json').read_text());assert records['complete'];records=records['records']
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+expected={(l,side,phase,v) for l in range(3,48,4) for side in ['q','k'] for phase in ['norm','rope'] for v in ['device','cpu','fp64']};assert len(records)==len(expected)==144 and {(r['layer'],r['side'],r['phase'],r['variant']) for r in records}==expected
+counts={};ret=[]
+for r in records:
+ delta=o/r['delta'];assert sha(delta)==r['delta_sha256'];z=np.load(delta);idx=z['indices'];qc=z['query_mismatches'];heads=24 if r['side']=='q' else 2;assert len(idx)==r['mismatches'] and np.array_equal(qc,np.bincount(idx//(heads*256),minlength=4096));assert np.count_nonzero(qc)==r['affected_queries']
+ counts[r['layer'],r['side'],r['phase'],r['variant']]=qc
+for phase in ['norm','rope']:
+ for variant in ['device','cpu','fp64']:
+  merged=[]
+  for l in range(3,48,4):merged.append(counts[l,'q',phase,variant]+counts[l,'k',phase,variant])
+  merged=np.array(merged);row={'phase':phase,'variant':variant,'elements':327155712,'query_layer_slots':49152,'query_side_layer_slots':98304,'affected_query_layers':int(np.count_nonzero(merged)),'affected_query_side_layers':sum(r['affected_queries'] for r in records if r['phase']==phase and r['variant']==variant),'mismatches':int(merged.sum()),'largest_query_mismatches':int(merged.max())};assert row['mismatches']==summary['by_phase'][phase][variant]['mismatches'];assert row['affected_query_side_layers']==summary['by_phase'][phase][variant]['affected_queries'];ret.append(row);np.save(o/f'{phase}-{variant}.query-layer-mismatches.npy',merged)
+result={'records':ret,'legacy_summary_field_definition':'summary.json by_phase affected_queries sums side-specific counts: query x q/k-side x layer, not unique query x layer. Use affected_query_layers here for deduplicated queries.','reference_json_sha256':sha(o/'reference.json'),'summary_json_sha256':sha(o/'summary.json'),'complete_coverage_verified':True}
+(o/'coverage-audit.json').write_text(json.dumps(result,indent=2)+'\n');shutil.copy2(p/'audit.py',o/'audit.py');print(result)

@@ -1,0 +1,56 @@
+from pathlib import Path
+import hashlib,json,shutil,subprocess,os,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/qsa-full-transform-20260924';d=o/'reference';s=root/'.q4t-work/e2e/qsa-full-main-20260924';q=root/'.q4t-work/e2e/qsa-full-selection-20260924';c=s/'observed-captures';qc=q/'observed-captures'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+def round_bf16(values):
+ bits=values.astype('<f4').view('<u4');return ((bits+np.uint32(0x7fff)+((bits>>16)&1))>>16).astype('<u2')
+assert (p/'build.log').stat().st_size==0 and not any(d.iterdir());assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+sm=json.loads((s/'artifact-binding.json').read_text());qm=json.loads((q/'artifact-binding.json').read_text())
+for name in ['exit.json','checkpoint-binding.json','qsa-binding.json']:assert sha(s/name)==sm[name]
+assert json.loads((s/'exit.json').read_text())['observer_preserved_tested_output'];assert json.loads((s/'qsa-binding.json').read_text())['manifest_sha256']==sha(q/'artifact-binding.json')
+bindings=[]
+for l in range(3,48,4):
+ names=['main-qg.output.bf16','main-k.output.bf16','epsilon.f32']
+ for side in ['q','k']:names += [f'{side}-norm.output.bf16',f'{side}-norm.weights.bf16']+[f'rope-{side}.'+suffix for suffix in ['theta.f32','positions.i32','seqids.i32','rope-row-0.i32','rope-row-1.i32','rope-row-2.i32']]
+ for source,manifest,suffixes in [(s,sm,names),(q,qm,['q.bf16','write-k.bf16'])]:
+  for suffix in suffixes:
+   name=f'observed-captures/layer-{l}.prefill.{suffix}';assert sha(source/name)==manifest[name];bindings.append({'file':str((source/name).relative_to(root)),'sha256':manifest[name]})
+ for side in ['q','k']:
+  ids=np.fromfile(c/f'layer-{l}.prefill.rope-{side}.seqids.i32',dtype='<i4');assert ids.size==4096 and np.all(ids==0)
+for w in json.loads((s/'checkpoint-binding.json').read_text())['weights']:
+ if not w['key'].endswith(('.q_norm.weight','.k_norm.weight')):continue
+ f=Path(w['file']);st=f.stat();assert st.st_size==w['size'] and st.st_mtime_ns==w['mtime_ns']
+ with f.open('rb') as stream:stream.seek(w['offset']);assert hashlib.sha256(stream.read(w['bytes'])).hexdigest()==w['sha256']
+reserve=20*1024**3;budget=1000000000;assert shutil.disk_usage(o).free>reserve+budget
+save('input-binding.json',bindings);save('plan.json',{'source_manifest_sha256':sha(s/'artifact-binding.json'),'qsa_manifest_sha256':sha(q/'artifact-binding.json'),'reference_budget_bytes':budget,'reserve_bytes':reserve,'scope':'All 12x4096 Q/K norm and RoPE. Norm CPU 8 warp XOR reductions then sequential warp sum; CPU or device rsqrt. RoPE CPU explicit FMA current*cos with device pow/cos/sin or double CPU functions rounded FP32. Separate FP64 norm and RoPE formulas. RoPE always uses actual captured normalized input, not propagated norm reference.','retention':'All six BF16 reference variants losslessly base+delta, every differing index and unrounded value retained (FP32 promoted exactly to FP64 for device/cpu variants). Full variance/inverses and device/CPU/FP64 frequency/angle/cos/sin tables retained. Matching final unrounded outputs not persisted.'})
+records=[]
+for l in range(3,48,4):
+ for side,heads in [('q',24),('k',2)]:
+  assert shutil.disk_usage(o).free>reserve+budget
+  name=f'layer-{l}.{side}';prefix=d/name;n=4096*heads*256
+  run=subprocess.run([str(p/'reference'),str(c),str(qc),str(prefix),str(l),side],capture_output=True,text=True,env={**os.environ,'OMP_NUM_THREADS':'8'});(o/(name+'.stdout')).write_text(run.stdout);(o/(name+'.stderr')).write_text(run.stderr);assert run.returncode==0,run.stderr
+  data=json.loads(run.stdout);assert data['layer']==l and data['side']==side and data['rows']==4096 and len(data['records'])==6
+  for suffix,dtype,count,positive in [('variance.f32','<f4',4096*heads,True),('variance.f64','<f8',4096*heads,True),('device-inv.f32','<f4',4096*heads,True),('cpu-inv.f32','<f4',4096*heads,True),('fp64-inv.f64','<f8',4096*heads,True)]+[(v+'-'+k+'.'+('f64' if v=='fp64' else 'f32'),'<f8' if v=='fp64' else '<f4',32 if k=='freq' else 4096*32, k=='freq') for v in ['device','cpu','fp64'] for k in ['freq','angle','cos','sin']]:
+   arr=np.fromfile(str(prefix)+'.'+suffix,dtype=dtype);assert arr.size==count and np.isfinite(arr).all() and (not positive or (arr>0).all())
+  mp=np.fromfile(str(prefix)+'.math-positions.i32',dtype='<i4').reshape(4096,32);positions=np.fromfile(c/f'layer-{l}.prefill.rope-{side}.positions.i32',dtype='<i4');rr=np.array([np.fromfile(c/f'layer-{l}.prefill.rope-{side}.rope-row-{row}.i32',dtype='<i4') for row in range(3)]);assert np.array_equal(mp,rr[np.arange(32)[None,:]%3,positions[:,None]])
+  for result in data['records']:
+   phase=result['phase'];v=result['variant'];assert phase in ['norm','rope'] and v in ['device','cpu','fp64'] and result['elements']==n
+   base=c/f'layer-{l}.prefill.{side}-norm.output.bf16' if phase=='norm' else qc/(f'layer-{l}.prefill.'+('q.bf16' if side=='q' else 'write-k.bf16'))
+   actual=np.fromfile(base,dtype='<u2');assert actual.size==n;tag=str(prefix)+'.'+phase+'.'+v;f=Path(tag+'.bf16');ref=np.fromfile(f,dtype='<u2');assert ref.size==n;idx=np.flatnonzero(ref!=actual).astype('<i4');assert len(idx)==result['mismatches'] and np.array_equal(idx,np.fromfile(tag+'.differences.i32',dtype='<i4'))
+   raw=np.fromfile(tag+'.differences.f64',dtype='<f8');assert len(raw)==len(idx) and np.isfinite(raw).all() and np.array_equal(round_bf16(raw),ref[idx]);counts=np.bincount(idx//(heads*256),minlength=4096).astype('<i4');delta=Path(tag+'.delta.npz');np.savez_compressed(delta,indices=idx,values=ref[idx],query_mismatches=counts);z=np.load(delta);rebuilt=actual.copy();rebuilt[z['indices']]=z['values'];assert np.array_equal(rebuilt,ref);digest=sha(f);assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==digest
+   result.update(layer=l,side=side,base=str(base.relative_to(root)),base_sha256=sha(base),delta=str(delta.relative_to(o)),delta_sha256=sha(delta),reference_sha256=digest,zero_sign_only=int(np.count_nonzero(((actual[idx]&0x7fff)==0)&((ref[idx]&0x7fff)==0))),affected_queries=int(np.count_nonzero(counts)),last_row_mismatches=int(counts[-1]));records.append(result);f.unlink()
+  save('reference.json',{'records':records,'complete':len(records)==144});print({'layer':l,'side':side,'results':[{k:r[k] for k in ['phase','variant','mismatches','zero_sign_only']} for r in data['records']]},flush=True)
+for r in records:
+ base=root/r['base'];assert sha(base)==r['base_sha256'];delta=o/r['delta'];assert sha(delta)==r['delta_sha256'];z=np.load(delta);rebuilt=np.fromfile(base,dtype='<u2');rebuilt[z['indices']]=z['values'];assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==r['reference_sha256']
+summary={'records':len(records),'input_files_bound':len(bindings),'all_references_reconstructed':True,'runtime_changed':False,'whole_model_correctness_proven':False,'rope_uses_actual_norm_input':True,'by_phase':{}}
+for phase in ['norm','rope']:
+ summary['by_phase'][phase]={v:{key:sum(r[key] for r in records if r['phase']==phase and r['variant']==v) for key in ['elements','mismatches','zero_sign_only','affected_queries','last_row_mismatches']} for v in ['device','cpu','fp64']}
+assert all(x['elements']==327155712 for part in summary['by_phase'].values() for x in part.values());summary['free_after']=shutil.disk_usage(o).free
+for name in ['run.py','reference.cu','reference','build.log']:shutil.copy2(p/name,o/name)
+summary['artifact_bytes_before_sealing']=sum(f.stat().st_size for f in o.rglob('*') if f.is_file());assert summary['artifact_bytes_before_sealing']<budget
+save('summary.json',summary);print(summary,flush=True)

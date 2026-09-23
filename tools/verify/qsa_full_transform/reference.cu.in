@@ -1,0 +1,256 @@
+#include <cuda_runtime.h>
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+using U = uint16_t;
+#define CU(x)                                             \
+  do {                                                    \
+    if ((x) != cudaSuccess) throw std::runtime_error(#x); \
+  } while (0)
+float Decode(U x) {
+  uint32_t b = uint32_t(x) << 16;
+  float f;
+  std::memcpy(&f, &b, 4);
+  return f;
+}
+U Round(double v) {
+  float f = float(v);
+  uint32_t b;
+  std::memcpy(&b, &f, 4);
+  return U((b + 0x7fff + ((b >> 16) & 1)) >> 16);
+}
+template <class T>
+std::vector<T> Read(const std::string& p, size_t n) {
+  std::ifstream f(p, std::ios::binary | std::ios::ate);
+  if (!f || size_t(f.tellg()) != n * sizeof(T)) throw std::runtime_error(p);
+  std::vector<T> v(n);
+  f.seekg(0);
+  if (!f.read(reinterpret_cast<char*>(v.data()), n * sizeof(T)))
+    throw std::runtime_error(p);
+  return v;
+}
+template <class T>
+void Save(const std::string& p, const std::vector<T>& v) {
+  std::ofstream f(p, std::ios::binary);
+  if (!f.write(reinterpret_cast<const char*>(v.data()), v.size() * sizeof(T)))
+    throw std::runtime_error(p);
+}
+template <class T>
+T* Upload(const std::vector<T>& v) {
+  T* d;
+  CU(cudaMalloc(&d, v.size() * sizeof(T)));
+  CU(cudaMemcpy(d, v.data(), v.size() * sizeof(T), cudaMemcpyHostToDevice));
+  return d;
+}
+__global__ void Inv(const float* var, float* inv, int n) {
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i < n) inv[i] = rsqrtf(var[i]);
+}
+__global__ void Angles(const int* pos, float theta, float* freq, float* angle,
+                       float* co, float* si) {
+  int t = blockIdx.x, i = threadIdx.x;
+  float f = powf(theta, -2.f * i / 64.f);
+  float a = float(pos[t * 32 + i]) * f;
+  if (t == 0) freq[i] = f;
+  angle[t * 32 + i] = a;
+  co[t * 32 + i] = cosf(a);
+  si[t * 32 + i] = sinf(a);
+}
+int main(int argc, char** argv) {
+  try {
+    if (argc != 6)
+      throw std::runtime_error(
+          "main_captures qsa_captures output_prefix layer side");
+    int layer = std::stoi(argv[4]);
+    std::string side = argv[5];
+    if (side != "q" && side != "k") throw std::runtime_error("side");
+    int heads = side == "q" ? 24 : 2, rows = 4096, groups = rows * heads;
+    size_t n = size_t(groups) * 256;
+    std::string base = std::string(argv[1]) + "/layer-" +
+                       std::to_string(layer) + ".prefill",
+                qsa = std::string(argv[2]) + "/layer-" + std::to_string(layer) +
+                      ".prefill",
+                o = argv[3];
+    auto norm = Read<U>(base + "." + side + "-norm.output.bf16", n),
+         rope = Read<U>(qsa + (side == "q" ? ".q.bf16" : ".write-k.bf16"), n),
+         weight = Read<U>(base + "." + side + "-norm.weights.bf16", 256);
+    std::vector<U> x(n);
+    if (side == "q") {
+      auto qg = Read<U>(base + ".main-qg.output.bf16", n * 2);
+      for (int h = 0; h < groups; ++h)
+        std::memcpy(x.data() + size_t(h) * 256, qg.data() + size_t(h) * 512,
+                    512);
+    } else
+      x = Read<U>(base + ".main-k.output.bf16", n);
+    float eps = Read<float>(base + ".epsilon.f32", 1)[0],
+          theta = Read<float>(base + ".rope-" + side + ".theta.f32", 1)[0];
+    auto positions = Read<int>(base + ".rope-" + side + ".positions.i32", rows);
+    std::vector<int> pos(rows * 32);
+    for (int row = 0; row < 3; ++row) {
+      auto rp = Read<int>(
+          base + ".rope-" + side + ".rope-row-" + std::to_string(row) + ".i32",
+          rows);
+      for (int t = 0; t < rows; ++t) {
+        if (positions[t] < 0 || positions[t] >= rows)
+          throw std::runtime_error("position");
+        for (int i = row; i < 32; i += 3) pos[t * 32 + i] = rp[positions[t]];
+      }
+    }
+    std::vector<float> var(groups), cpu_inv(groups), device_inv(groups);
+    std::vector<double> var64(groups), inv64(groups);
+#pragma omp parallel for
+    for (int h = 0; h < groups; ++h) {
+      float values[256], next[256];
+      double sum64 = 0;
+      for (int j = 0; j < 256; ++j) {
+        float f = Decode(x[size_t(h) * 256 + j]);
+        values[j] = f * f;
+        sum64 = std::fma(double(f), double(f), sum64);
+      }
+      for (int off = 16; off > 0; off >>= 1) {
+        for (int j = 0; j < 256; ++j) next[j] = values[j] + values[j ^ off];
+        std::memcpy(values, next, sizeof(values));
+      }
+      float sum = 0;
+      for (int w = 0; w < 8; ++w) sum += values[w * 32];
+      var[h] = sum / 256.f + eps;
+      cpu_inv[h] = float(1.0 / std::sqrt(double(var[h])));
+      var64[h] = sum64 / 256. + double(eps);
+      inv64[h] = 1. / std::sqrt(var64[h]);
+    }
+    float *dv = Upload(var), *di;
+    CU(cudaMalloc(&di, groups * 4));
+    Inv<<<(groups + 255) / 256, 256>>>(dv, di, groups);
+    CU(cudaGetLastError());
+    CU(cudaMemcpy(device_inv.data(), di, groups * 4, cudaMemcpyDeviceToHost));
+    CU(cudaFree(dv));
+    CU(cudaFree(di));
+    std::vector<float> freq(32), angle(rows * 32), co(rows * 32), si(rows * 32),
+        cf(32), ca(rows * 32), cc(rows * 32), cs(rows * 32);
+    std::vector<double> df(32), da(rows * 32), dc(rows * 32), ds(rows * 32);
+    int* dp = Upload(pos);
+    float *dfreq, *dangle, *dco, *dsi;
+    CU(cudaMalloc(&dfreq, 32 * 4));
+    CU(cudaMalloc(&dangle, rows * 32 * 4));
+    CU(cudaMalloc(&dco, rows * 32 * 4));
+    CU(cudaMalloc(&dsi, rows * 32 * 4));
+    Angles<<<rows, 32>>>(dp, theta, dfreq, dangle, dco, dsi);
+    CU(cudaGetLastError());
+    CU(cudaMemcpy(freq.data(), dfreq, 32 * 4, cudaMemcpyDeviceToHost));
+    CU(cudaMemcpy(angle.data(), dangle, rows * 32 * 4, cudaMemcpyDeviceToHost));
+    CU(cudaMemcpy(co.data(), dco, rows * 32 * 4, cudaMemcpyDeviceToHost));
+    CU(cudaMemcpy(si.data(), dsi, rows * 32 * 4, cudaMemcpyDeviceToHost));
+    CU(cudaFree(dp));
+    CU(cudaFree(dfreq));
+    CU(cudaFree(dangle));
+    CU(cudaFree(dco));
+    CU(cudaFree(dsi));
+    for (int i = 0; i < 32; ++i) {
+      cf[i] = float(std::pow(double(theta), double(-2.f * i / 64.f)));
+      df[i] = std::pow(double(theta), -2. * i / 64.);
+    }
+#pragma omp parallel for
+    for (int j = 0; j < rows * 32; ++j) {
+      ca[j] = float(pos[j]) * cf[j % 32];
+      cc[j] = float(std::cos(double(ca[j])));
+      cs[j] = float(std::sin(double(ca[j])));
+      da[j] = double(pos[j]) * df[j % 32];
+      dc[j] = std::cos(da[j]);
+      ds[j] = std::sin(da[j]);
+    }
+    Save(o + ".variance.f32", var);
+    Save(o + ".variance.f64", var64);
+    Save(o + ".device-inv.f32", device_inv);
+    Save(o + ".cpu-inv.f32", cpu_inv);
+    Save(o + ".fp64-inv.f64", inv64);
+    Save(o + ".math-positions.i32", pos);
+    Save(o + ".device-freq.f32", freq);
+    Save(o + ".device-angle.f32", angle);
+    Save(o + ".device-cos.f32", co);
+    Save(o + ".device-sin.f32", si);
+    Save(o + ".cpu-freq.f32", cf);
+    Save(o + ".cpu-angle.f32", ca);
+    Save(o + ".cpu-cos.f32", cc);
+    Save(o + ".cpu-sin.f32", cs);
+    Save(o + ".fp64-freq.f64", df);
+    Save(o + ".fp64-angle.f64", da);
+    Save(o + ".fp64-cos.f64", dc);
+    Save(o + ".fp64-sin.f64", ds);
+    std::printf("{\"layer\":%d,\"side\":\"%s\",\"rows\":4096,\"records\":[",
+                layer, side.c_str());
+    bool first = true;
+    for (int phase = 0; phase < 2; ++phase)
+      for (int variant = 0; variant < 3; ++variant) {
+        std::vector<double> raw(n);
+        std::vector<U> bits(n);
+        const auto& actual = phase == 0 ? norm : rope;
+#pragma omp parallel for
+        for (int h = 0; h < groups; ++h) {
+          int t = h / heads;
+          for (int j = 0; j < 256; ++j) {
+            size_t ix = size_t(h) * 256 + j;
+            double value;
+            if (phase == 0) {
+              float f = Decode(x[ix]), w = Decode(weight[j]);
+              if (variant == 2)
+                value = double(f) * inv64[h] * (1. + double(w));
+              else {
+                float rs = variant == 0 ? device_inv[h] : cpu_inv[h];
+                value = double((f * rs) * (1.f + w));
+              }
+            } else if (j >= 64)
+              value = Decode(norm[ix]);
+            else {
+              int i = j % 32, at = t * 32 + i;
+              float a = Decode(norm[size_t(h) * 256 + i]),
+                    b = Decode(norm[size_t(h) * 256 + i + 32]);
+              if (variant == 2)
+                value = j < 32 ? double(a) * dc[at] - double(b) * ds[at]
+                               : double(a) * ds[at] + double(b) * dc[at];
+              else {
+                float c = variant == 0 ? co[at] : cc[at],
+                      s = variant == 0 ? si[at] : cs[at];
+                value = double(j < 32 ? std::fma(a, c, -(b * s))
+                                      : std::fma(b, c, a * s));
+              }
+            }
+            raw[ix] = value;
+            bits[ix] = Round(value);
+          }
+        }
+        std::vector<int32_t> idx;
+        std::vector<double> different;
+        for (size_t i = 0; i < n; ++i) {
+          if (!std::isfinite(raw[i]))
+            throw std::runtime_error("nonfinite reference");
+          if (bits[i] != actual[i]) {
+            idx.push_back(int32_t(i));
+            different.push_back(raw[i]);
+          }
+        }
+        const char* ph = phase == 0 ? "norm" : "rope";
+        const char* va = variant == 0   ? "device"
+                         : variant == 1 ? "cpu"
+                                        : "fp64";
+        std::string b = o + "." + ph + "." + va;
+        Save(b + ".bf16", bits);
+        Save(b + ".differences.i32", idx);
+        Save(b + ".differences.f64", different);
+        std::printf(
+            "%s{\"phase\":\"%s\",\"variant\":\"%s\",\"elements\":%zu,"
+            "\"mismatches\":%zu}",
+            first ? "" : ",", ph, va, n, idx.size());
+        first = false;
+      }
+    std::printf("]}\n");
+    return 0;
+  } catch (const std::exception& e) {
+    std::fprintf(stderr, "%s\n", e.what());
+    return 2;
+  }
+}
