@@ -1,0 +1,69 @@
+"""Bounded HTTP observer validation; no quality repair or performance acceptance."""
+from pathlib import Path
+import base64,hashlib,json,os,pickle,shutil,sqlite3,subprocess
+p=Path(__file__).resolve().parent;root=p.parents[2]
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+budget=json.loads((p/'capacity.json').read_text());assert shutil.disk_usage(p).free>budget['capture_bytes']+budget['residual_reference_bytes']+budget['spare_bytes']
+accepted='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+assert hashlib.sha256((root/'build/q4t').read_bytes()).hexdigest()==accepted
+assert not (p/'build.log').read_text().strip()
+for proc in Path('/proc').iterdir():
+ if not proc.name.isdigit():continue
+ try:a=(proc/'cmdline').read_bytes().split(b'\0');exe=(proc/'exe').resolve(strict=True)
+ except OSError:continue
+ assert not(exe.name.startswith('q4t') and b'serve' in a)
+prior=root/'.q4t-work/e2e/hc-full-boundaries-20260923'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for block in iter(lambda:stream.read(4*1024*1024),b''):h.update(block)
+ return h.hexdigest()
+pm=json.loads((prior/'artifact-binding.json').read_text());prior_records=[]
+for l in range(48):
+ for suffix in ['mix.mlp.output.bf16','write.block.bf16']:
+  name=f'hc-{l}.prefill.{suffix}';key='observed-captures/'+name;assert sha(prior/key)==pm[key];prior_records.append({'file':key,'sha256':pm[key]})
+prior_binding={'manifest_sha256':sha(prior/'artifact-binding.json'),'records':prior_records}
+router_prior=root/'.q4t-work/e2e/moe-full-down-20260924';rm=json.loads((router_prior/'artifact-binding.json').read_text());router_bind=[]
+for l in range(48):
+ for suffix in ['combine-after.f32']:
+  name=f'observed-captures/layer-{l}.{suffix}';assert sha(router_prior/name)==rm[name];router_bind.append({'file':name,'sha256':rm[name]})
+router_binding={'manifest_sha256':sha(router_prior/'artifact-binding.json'),'records':router_bind}
+base=root/'.q4t-work/prepared/e4m3-rounding-20260923/recovery-inputs'
+manifest=json.loads((base/'manifest.json').read_text());req=[json.loads(x) for x in (base/'requests.jsonl').read_text().splitlines()]
+i=next(i for i,x in enumerate(manifest) if x['length']==4096)
+fixtures=p/'inputs';fixtures.mkdir(exist_ok=False);save(fixtures/'manifest.json',[manifest[i]]);(fixtures/'requests.jsonl').write_text(json.dumps(req[i])+'\n')
+out=root/'.q4t-work/e2e/moe-full-shared-20260924';out.mkdir(exist_ok=False)
+capture=out/'observed-captures';capture.mkdir()
+plan={'binary_sha256':accepted,'observer_sha256':hashlib.sha256((p/'observer.so').read_bytes()).hexdigest(),'groups':['before','observed','after'],'http_requests':3,'request_sha256':manifest[i]['prompt_sha256'],'expected_answer':manifest[i]['expected'],'known_baseline_answer':'600440','layer_count':48,'mapping_layers':48,'scope':'Full4096 shared GU/SwiGLU/down outputs and weights, actual algorithms, final MoECombine consumers. Frozen HC input/final block and routed output bound by full-byte comparison. No arithmetic or task correctness claim. Diagnostic timing excluded.'}
+save(out/'plan.json',plan)
+save(out/'prior-binding.json',prior_binding)
+save(out/'router-prior-binding.json',router_binding)
+for name in ['run.py','observer.cpp','observer.so','build.log','capacity.json']:shutil.copy2(p/name,out/name)
+records=[]
+try:
+ for group in plan['groups']:
+  assert hashlib.sha256((root/'build/q4t').read_bytes()).hexdigest()==accepted
+  env={k:v for k,v in os.environ.items() if not k.startswith('Q4T_') and k!='LD_PRELOAD'}
+  if group=='observed':env.update(LD_PRELOAD=str(p/'observer.so'),Q4T_GDN_CAPTURE_DIR=str(capture),Q4T_HC_PRIOR=str(prior/'observed-captures'),Q4T_ROUTED_PRIOR=str(router_prior/'observed-captures'))
+  cmd=['python3','tools/evalscope/run_acceptance.py','--startup-timeout','600','--mode','quality','--output',str(out/group),'--model-dir','/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream','--fixtures',str(fixtures)]
+  save(out/f'{group}-command.json',cmd)
+  with (out/f'{group}-driver.log').open('w') as log:code=subprocess.run(cmd,cwd=root,env=env,stdout=log,stderr=subprocess.STDOUT).returncode
+  d=out/group;end=json.loads((d/'exit.json').read_text());assert end['server']==0 and end['completed']==1
+  with sqlite3.connect('file:'+str(next((d/'quality').rglob('benchmark_data.db')))+'?mode=ro',uri=True) as db:
+   db.row_factory=sqlite3.Row;rows=db.execute('select * from result').fetchall()
+  assert len(rows)==1;row=rows[0];actual=json.loads(row['request']);assert all(actual[k]==v for k,v in req[i].items())
+  cs=[c for m in pickle.loads(base64.b64decode(row['response_messages'])) for c in m.get('choices',[])]
+  text=''.join(c.get('delta',c.get('message',{})).get('content','') for c in cs);finish=[c['finish_reason'] for c in cs if c.get('finish_reason')]
+  assert row['success'] and row['prompt_tokens']==4096 and row['completion_tokens']==7 and finish==['stop'] and text=='600440'
+  assert code==1 and not end['http_output_checks_passed']
+  assert (d/'binary.sha256').read_text().strip()==accepted
+  log=(d/'server.log').read_text();assert 'MTP disabled; plain decode' in log
+  if group=='observed':
+   for suffix in ['source.json','swiglu.json','complete.json','gu.gemm.json','down.gemm.json']:
+    metas=[json.loads(f.read_text()) for f in capture.glob('*.'+suffix)];assert len(metas)==48 and all(x['ok'] for x in metas)
+   assert log.count('[moe-full-shared]')==48 and 'ok=0' not in log and '[moe-full-shared]' not in log.split('serving on port')[0]
+  records.append({'group':group,'text':text,'known_wrong':True,'server_exit':end['server'],'quality_exit':code,'input_tokens':4096,'output_tokens':7,'finish':finish})
+  save(out/'raw-http-audit.json',records);print(records[-1],flush=True)
+ save(out/'exit.json',{'capture_exit':0,'http_records_verified':3,'observer_preserved_tested_output':True,'task_answer_correct':False,'runtime_changed':False,'performance_accepted':False})
+except BaseException as e:
+ save(out/'exit.json',{'capture_exit':1,'error':repr(e),'runtime_changed':False});raise

@@ -1,0 +1,33 @@
+from pathlib import Path
+import json,hashlib,struct,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/moe-full-shared-20260924';c=o/'observed-captures';hc=root/'.q4t-work/e2e/hc-full-boundaries-20260923';routed=root/'.q4t-work/e2e/moe-full-down-20260924';model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream')
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output'];assert sha(root/'build/q4t')==json.loads((o/'plan.json').read_text())['binary_sha256']
+for name,source in [('prior-binding.json',hc),('router-prior-binding.json',routed)]:
+ binding=json.loads((o/name).read_text());assert sha(source/'artifact-binding.json')==binding['manifest_sha256']
+ for r in binding['records']:assert sha(source/r['file'])==r['sha256']
+index=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];headers={};weights=[]
+def tensor(key,expected_shape):
+ f=model/index[key]
+ with f.open('rb') as s:
+  if f not in headers:
+   size=struct.unpack('<Q',s.read(8))[0];headers[f]=(size,json.loads(s.read(size)))
+  size,h=headers[f];info=h[key];assert info['dtype']=='BF16' and info['shape']==expected_shape;a,b=info['data_offsets'];offset=8+size+a;s.seek(offset);raw=s.read(b-a)
+ assert len(raw)==int(np.prod(expected_shape))*2;st=f.stat();weights.append({'key':key,'file':str(f),'offset':offset,'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),'size':st.st_size,'mtime_ns':st.st_mtime_ns});return raw
+records=[]
+for l in range(48):
+ name=f'layer-{l}';prefix=f'model.language_model.layers.{l}.mlp.'
+ for suffix in ['source.json','swiglu.json','complete.json','gu.gemm.json','down.gemm.json']:assert json.loads((c/(name+'.'+suffix)).read_text())['ok']
+ gate=tensor(prefix+'shared_expert.gate_proj.weight',[640,2560]);up=tensor(prefix+'shared_expert.up_proj.weight',[640,2560]);down=tensor(prefix+'shared_expert.down_proj.weight',[2560,640]);scalar=tensor(prefix+'shared_expert_gate.weight',[1,2560]);assert (c/(name+'.gu.weights.bf16')).read_bytes()==gate+up and (c/(name+'.down.weights.bf16')).read_bytes()==down and (c/(name+'.gate.weights.bf16')).read_bytes()==scalar
+ for stage,n,k in [('gu',1280,2560),('down',2560,640)]:
+  meta=json.loads((c/(name+'.'+stage+'.gemm.json')).read_text());assert meta['m']==4096 and meta['n']==n and meta['k']==k and meta['workspace_bytes']==33554432;assert (c/(name+'.'+stage+'.algo.bin')).stat().st_size==64
+ for suffix,cols in [('gu.output.bf16',1280),('inter.bf16',640),('down.output.bf16',2560)]:
+  bits=np.fromfile(c/(name+'.'+suffix),dtype='<u2');assert len(bits)==4096*cols and np.isfinite((bits.astype('<u4')<<16).view('<f4')).all()
+ meta=json.loads((c/(name+'.complete.json')).read_text());assert meta['tokens']==4096 and meta['block']==256 and meta['hs']==2560
+ records.append({'layer':l,'checkpoint_tensors':4,'gu_elements':4096*1280,'swiglu_elements':4096*640,'down_elements':4096*2560,'final_elements_bound_to_hc':4096*2560,'routed_fp32_elements_bound':4096*2560});save('boundary-reference.json',{'records':records,'complete':len(records)==48});print(records[-1],flush=True)
+save('checkpoint-binding.json',weights);summary={key:sum(r[key] for r in records) for key in records[0] if key!='layer'};summary.update(layers=48,checkpoint_bytes=sum(w['bytes'] for w in weights),shared_gu_and_down_actual_inputs_bound=True,final_moe_output_equal_frozen_hc_block=True,routed_input_equal_frozen_routed_combine=True,shared_gemm_arithmetic_verified=False,swiglu_arithmetic_verified=False,final_combine_arithmetic_verified=False,runtime_changed=False,whole_model_correctness_proven=False,task_causality_established=False);save('summary.json',summary);shutil.copy2(p/'analyze.py',o/'analyze.py');save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'});print(summary,flush=True)

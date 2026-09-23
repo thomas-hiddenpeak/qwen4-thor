@@ -1,0 +1,254 @@
+#include <cuda_runtime_api.h>
+#include <cublasLt.h>
+#include <dlfcn.h>
+#include <atomic>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <vector>
+namespace {
+template <class T>
+T Resolve(const char* n) {
+  auto f = reinterpret_cast<T>(dlsym(RTLD_NEXT, n));
+  if (!f) std::_Exit(127);
+  return f;
+}
+template <class T>
+T* Ptr(void** a, int i) {
+  return *static_cast<T**>(a[i]);
+}
+bool Save(const std::string& n, const void* p, size_t bytes) {
+  FILE* f = std::fopen(n.c_str(), "wb");
+  if (!f) return false;
+  bool ok = std::fwrite(p, 1, bytes, f) == bytes;
+  return std::fclose(f) == 0 && ok;
+}
+bool Read(void* p, const void* x, size_t bytes, cudaStream_t s) {
+  static auto copy = Resolve<decltype(&cudaMemcpyAsync)>("cudaMemcpyAsync");
+  static auto sync =
+      Resolve<decltype(&cudaStreamSynchronize)>("cudaStreamSynchronize");
+  return copy(p, x, bytes, cudaMemcpyDeviceToHost, s) == cudaSuccess &&
+         sync(s) == cudaSuccess;
+}
+bool Capture(const std::string& n, const void* x, size_t bytes,
+             cudaStream_t s) {
+  std::vector<unsigned char> b(bytes);
+  return Read(b.data(), x, bytes, s) && Save(n, b.data(), bytes);
+}
+bool Compare(const std::string& n, const void* x, size_t bytes,
+             cudaStream_t s) {
+  std::vector<unsigned char> b(bytes), chunk(1048576);
+  if (!Read(b.data(), x, bytes, s)) return false;
+  FILE* f = std::fopen(n.c_str(), "rb");
+  if (!f) return false;
+  bool ok = true;
+  size_t pos = 0;
+  while (pos < bytes) {
+    size_t amount = bytes - pos;
+    if (amount > chunk.size()) amount = chunk.size();
+    if (std::fread(chunk.data(), 1, amount, f) != amount ||
+        std::memcmp(chunk.data(), b.data() + pos, amount)) {
+      ok = false;
+      break;
+    }
+    pos += amount;
+  }
+  ok = ok && std::fgetc(f) == EOF;
+  return std::fclose(f) == 0 && ok;
+}
+std::atomic<cudaKernel_t> grouped_kernel{}, swiglu_kernel{}, combine_kernel{};
+int layer = -1, stage = 4;
+bool context_ok = false;
+std::string base, hc_source, routed_source;
+const void *shared_x = nullptr, *gu_output = nullptr, *inter_output = nullptr,
+           *down_output = nullptr;
+void Meta(const std::string& f, bool ok, const char* extra = "") {
+  std::string s =
+      std::string("{\"ok\":") + (ok ? "true" : "false") + extra + "}\n";
+  Save(f, s.data(), s.size());
+}
+template <typename T>
+bool Layout(cublasLtMatrixLayout_t layout, cublasLtMatrixLayoutAttribute_t key,
+            T* value) {
+  static const auto get = Resolve<decltype(&cublasLtMatrixLayoutGetAttribute)>(
+      "cublasLtMatrixLayoutGetAttribute");
+  size_t size = 0;
+  return get(layout, key, value, sizeof(T), &size) == CUBLAS_STATUS_SUCCESS &&
+         size == sizeof(T);
+}
+template <typename T>
+bool Attribute(cublasLtMatmulDesc_t desc, cublasLtMatmulDescAttributes_t key,
+               T* value) {
+  static const auto get = Resolve<decltype(&cublasLtMatmulDescGetAttribute)>(
+      "cublasLtMatmulDescGetAttribute");
+  size_t size = 0;
+  return get(desc, key, value, sizeof(T), &size) == CUBLAS_STATUS_SUCCESS &&
+         size == sizeof(T);
+}
+bool Shape(cublasLtMatrixLayout_t desc, uint64_t rows, uint64_t cols,
+           cudaDataType_t type) {
+  uint64_t r = 0, c = 0;
+  int64_t ld = 0;
+  cudaDataType_t t{};
+  cublasLtOrder_t order{};
+  return Layout(desc, CUBLASLT_MATRIX_LAYOUT_ROWS, &r) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_COLS, &c) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_LD, &ld) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_TYPE, &t) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_ORDER, &order) && r == rows &&
+         c == cols && ld == static_cast<int64_t>(rows) && t == type &&
+         order == CUBLASLT_ORDER_COL;
+}
+}  // namespace
+extern "C" cudaError_t __cudaGetKernel(cudaKernel_t* kernel, const void* fn) {
+  static auto real =
+      Resolve<cudaError_t (*)(cudaKernel_t*, const void*)>("__cudaGetKernel");
+  auto result = real(kernel, fn);
+  if (result == cudaSuccess) {
+    const char* name = nullptr;
+    static auto get = Resolve<decltype(&cudaFuncGetName)>("cudaFuncGetName");
+    if (get(&name, fn) == cudaSuccess && name) {
+      if (std::strstr(name, "CombineGroupedKernel")) grouped_kernel = *kernel;
+      if (std::strstr(name, "5model")) {
+        if (std::strstr(name, "SwiGLUKernel")) swiglu_kernel = *kernel;
+        if (std::strstr(name, "MoECombineKernel")) combine_kernel = *kernel;
+      }
+    }
+  }
+  return result;
+}
+extern "C" cudaError_t __cudaLaunchKernel(cudaKernel_t kernel, dim3 grid,
+                                          dim3 block, void** a, size_t smem,
+                                          cudaStream_t stream) {
+  static auto real =
+      Resolve<cudaError_t (*)(cudaKernel_t, dim3, dim3, void**, size_t,
+                              cudaStream_t)>("__cudaLaunchKernel");
+  const char *dir = std::getenv("Q4T_GDN_CAPTURE_DIR"),
+             *hc = std::getenv("Q4T_HC_PRIOR"),
+             *routed = std::getenv("Q4T_ROUTED_PRIOR");
+  if (!dir || !hc || !routed) return real(kernel, grid, block, a, smem, stream);
+  bool grouped = kernel == grouped_kernel && *static_cast<int*>(a[5]) == 4096;
+  bool swiglu = kernel == swiglu_kernel && *static_cast<int*>(a[2]) == 4096;
+  bool combined = kernel == combine_kernel && *static_cast<int*>(a[5]) == 4096;
+  bool ok = context_ok;
+  if (swiglu) {
+    ok = ok && stage == 1 && *static_cast<int*>(a[3]) == 640 &&
+         Ptr<uint16_t>(a, 0) == gu_output && block.x == 256 && block.y == 1 &&
+         block.z == 1 && grid.x == 10240 && grid.y == 1 && grid.z == 1 &&
+         smem == 0 &&
+         Compare(base + ".gu.output.bf16", Ptr<uint16_t>(a, 0),
+                 size_t(4096) * 1280 * 2, stream);
+  }
+  if (combined) {
+    ok = ok && stage == 3 && *static_cast<int*>(a[6]) == 2560 &&
+         Ptr<uint16_t>(a, 1) == down_output &&
+         Ptr<uint16_t>(a, 2) == shared_x && block.x == 256 && block.y == 1 &&
+         block.z == 1 && grid.x == 4096 && grid.y == 1 && grid.z == 1 &&
+         smem == 0 &&
+         Compare(routed_source, Ptr<float>(a, 0), size_t(4096) * 2560 * 4,
+                 stream) &&
+         Compare(base + ".down.output.bf16", Ptr<uint16_t>(a, 1),
+                 size_t(4096) * 2560 * 2, stream) &&
+         Compare(hc_source + ".mix.mlp.output.bf16", Ptr<uint16_t>(a, 2),
+                 size_t(4096) * 2560 * 2, stream) &&
+         Capture(base + ".gate.weights.bf16", Ptr<uint16_t>(a, 3), 2560 * 2,
+                 stream);
+  }
+  auto result = real(kernel, grid, block, a, smem, stream);
+  if (grouped) {
+    ++layer;
+    context_ok = stage == 4 && layer < 48 && result == cudaSuccess &&
+                 *static_cast<int*>(a[3]) == 10 &&
+                 *static_cast<int*>(a[4]) == 2560;
+    base = std::string(dir) + "/layer-" + std::to_string(layer);
+    hc_source = std::string(hc) + "/hc-" + std::to_string(layer) + ".prefill";
+    routed_source = std::string(routed) + "/layer-" + std::to_string(layer) +
+                    ".combine-after.f32";
+    context_ok = context_ok && Compare(routed_source, Ptr<float>(a, 6),
+                                       size_t(4096) * 2560 * 4, stream);
+    stage = 0;
+    shared_x = gu_output = inter_output = down_output = nullptr;
+    Meta(base + ".source.json", context_ok);
+  }
+  if (swiglu) {
+    ok = ok && result == cudaSuccess &&
+         Capture(base + ".inter.bf16", Ptr<uint16_t>(a, 1),
+                 size_t(4096) * 640 * 2, stream);
+    inter_output = Ptr<uint16_t>(a, 1);
+    stage = 2;
+    context_ok = ok;
+    Meta(base + ".swiglu.json", ok);
+  }
+  if (combined) {
+    ok = ok && result == cudaSuccess &&
+         Compare(hc_source + ".write.block.bf16", Ptr<uint16_t>(a, 4),
+                 size_t(4096) * 2560 * 2, stream);
+    stage = 4;
+    context_ok = ok;
+    Meta(base + ".complete.json", ok,
+         ",\"tokens\":4096,\"block\":256,\"hs\":2560");
+    std::fprintf(stderr, "[moe-full-shared] layer=%d ok=%d\n", layer, ok);
+  }
+  return result;
+}
+extern "C" cublasStatus_t CUBLASWINAPI
+cublasLtMatmul(cublasLtHandle_t handle, cublasLtMatmulDesc_t desc,
+               const void* alpha, const void* a, cublasLtMatrixLayout_t ad,
+               const void* b, cublasLtMatrixLayout_t bd, const void* beta,
+               const void* c, cublasLtMatrixLayout_t cd, void* d,
+               cublasLtMatrixLayout_t dd, const cublasLtMatmulAlgo_t* algo,
+               void* workspace, size_t workspace_bytes, cudaStream_t stream) {
+  static auto real = Resolve<decltype(&cublasLtMatmul)>("cublasLtMatmul");
+  auto result = real(handle, desc, alpha, a, ad, b, bd, beta, c, cd, d, dd,
+                     algo, workspace, workspace_bytes, stream);
+  if (!std::getenv("Q4T_GDN_CAPTURE_DIR") || (stage != 0 && stage != 2))
+    return result;
+  int n = stage == 0 ? 1280 : 2560, k = stage == 0 ? 2560 : 640;
+  if (!Shape(ad, k, n, CUDA_R_16BF) || !Shape(bd, k, 4096, CUDA_R_16BF) ||
+      !Shape(dd, n, 4096, CUDA_R_16BF))
+    return result;
+  cublasComputeType_t compute{};
+  cudaDataType_t scale{};
+  cublasLtEpilogue_t epilogue{};
+  cublasLtPointerMode_t mode{};
+  cublasOperation_t ta{}, tb{};
+  bool ok = context_ok && result == CUBLAS_STATUS_SUCCESS &&
+            Attribute(desc, CUBLASLT_MATMUL_DESC_COMPUTE_TYPE, &compute) &&
+            compute == CUBLAS_COMPUTE_32F &&
+            Attribute(desc, CUBLASLT_MATMUL_DESC_SCALE_TYPE, &scale) &&
+            scale == CUDA_R_32F &&
+            Attribute(desc, CUBLASLT_MATMUL_DESC_EPILOGUE, &epilogue) &&
+            epilogue == CUBLASLT_EPILOGUE_DEFAULT &&
+            Attribute(desc, CUBLASLT_MATMUL_DESC_POINTER_MODE, &mode) &&
+            mode == CUBLASLT_POINTER_MODE_HOST &&
+            Attribute(desc, CUBLASLT_MATMUL_DESC_TRANSA, &ta) &&
+            ta == CUBLAS_OP_T &&
+            Attribute(desc, CUBLASLT_MATMUL_DESC_TRANSB, &tb) &&
+            tb == CUBLAS_OP_N && *static_cast<const float*>(alpha) == 1.f &&
+            *static_cast<const float*>(beta) == 0.f &&
+            workspace_bytes == 33554432 && algo;
+  std::string stem = base + (stage == 0 ? ".gu" : ".down");
+  if (stage == 0) {
+    ok = ok && Compare(hc_source + ".mix.mlp.output.bf16", b,
+                       size_t(4096) * 2560 * 2, stream);
+    shared_x = b;
+    gu_output = d;
+  } else {
+    ok = ok && b == inter_output &&
+         Compare(base + ".inter.bf16", b, size_t(4096) * 640 * 2, stream);
+    down_output = d;
+  }
+  ok = ok && Capture(stem + ".weights.bf16", a, size_t(n) * k * 2, stream) &&
+       Capture(stem + ".output.bf16", d, size_t(4096) * n * 2, stream) &&
+       Save(stem + ".algo.bin", algo, sizeof(*algo));
+  char extra[200];
+  std::snprintf(extra, sizeof(extra),
+                ",\"m\":4096,\"n\":%d,\"k\":%d,\"workspace_bytes\":%zu", n, k,
+                workspace_bytes);
+  Meta(stem + ".gemm.json", ok, extra);
+  context_ok = ok;
+  ++stage;
+  return result;
+}

@@ -20,6 +20,13 @@ TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间�
 
 ## 当前决策摘要
 
+- **完整shared与最终MoE消费者边界已接通。**
+  新观测首项三侧HTTP仍原错、服务0，48层240份元数据全通过。
+  192组实际权重匹配checkpoint，GU/SwiGLU/down完整输出保存；
+  routed输入与最终HC block全字节接通。算术尚未验证，生产未改，
+  下一步完整共享投影与门控合并参考，见
+  [shared报告](MOE_SHARED_REFERENCE_2026-09-24.md)。
+
 - **重复清零证据回收约1.97GB。**
   48份路由合并前FP32缓冲完整校验后只读共享，原manifest
   全部127818条记录保持；元数据变化留档，可用约24.88GB。
