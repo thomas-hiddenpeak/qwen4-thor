@@ -453,10 +453,45 @@ input量化100项和GU10482项清单全量核对，证据：
 模板分别为`tools/verify/moe_scale_inter_l1/`、`moe_scale_down_l1/`
 及`moe_scale_routed_combine_l1/`。
 
+## 四分支 layer1 共享分支、最终 MoE 与 HC 写回
+
+用各支自身mixed重算shared GU、CPU有序SwiGLU/BF16、shared down；
+自身mixed与共享门权重经CPU256路FMA点积/树归约、设备sigmoid。
+四组checkpoint权重重读，GU gate/up拼接逐字节核对。再用自身
+routed F32、门值及shared down做CPU FMA/BF16，原分支完整
+GU/inter/down/最终MoE逐位恢复。门值dot/sigmoid仅对齐之前的
+条件参考，不是直接捕获的内部值；最终MoE输出是实际捕获值。
+
+| 修正 | shared GU BF16差异 | shared SwiGLU BF16差异 | shared down BF16差异 | 最终MoE BF16差异 |
+|---|---:|---:|---:|---:|
+| 输入单项 | 3179113 | 1966186 | 7511190 | 10105693 |
+| 中间单项 | 3581267 | 2124581 | 8194448 | 10178071 |
+| 双项 | 3778117 | 2195212 | 8475405 | 10197051 |
+
+门值sigmoid差异4079/4093/4093项F32；三支最终MoE影响
+4079/4094/4094 token。使用各支自己的MLP注入门值与attention
+后主干做HC残差写回，原支41943040个BF16完整恢复，摘要与
+实际layer2 HC read trunk相同。三支写回差异21894180/24145945/
+25402375项BF16，影响token仍4079/4094/4094，均在输入支持集。
+
+完整输出与所有差异保留，inter/final rawF32及门点积保存，HC写回
+保存差异处rawF32；检查有限性/BF16舍入。记录cuBLAS/设备初等
+函数是明确依赖，不等于独立高精度整模型。helper零警告，真实
+终态后封存清单全量核对：
+
+- `.q4t-work/e2e/moe-scale-shared-l1-20260924/`：139项，
+  728314338字节；工具`tools/verify/moe_scale_shared_l1/`。
+- `.q4t-work/e2e/moe-scale-hc-mlp-write-l1-20260924/`：36项，
+  907243849字节；工具`tools/verify/moe_scale_hc_mlp_write_l1/`。
+
+至此layer0的三类尺度干预经过完整layer1并到达layer2入口，
+不是已修正所有层的模型，也没有得到最终答案因果。生产未改，
+无新HTTP或性能结论。下一层需要继续自身主干，不能跳回旧捕获。
+
 ## 待完成
 
-1. 四支已到layer1 routed F32；按各支新mixed重算共享GU/门值/
-   SwiGLU/down，再合并最终MoE并用自身MLP门值/主干写回。
+1. 四支已到layer2入口；继续自身主干的HC attention读取、线性
+   注意力/GDN与MoE。复用已验证算术，明确新层权重/算法/状态绑定。
 2. 建立可比多层与最终答案因果证据；不能由局部影响计数或
    格式正确性宣布错答已解释或修复。
 3. 保留规范修正候选原HTTP任务退化事实；任何运行时修复仍须

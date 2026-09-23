@@ -1,0 +1,56 @@
+"""Four own mixed inputs -> shared branch -> final layer1 MoE output."""
+from pathlib import Path
+import hashlib,json,subprocess,shutil,os
+import numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];e=root/'.q4t-work/e2e';o=e/p.name;s=e/'moe-full-shared-20260924';h=e/'hc-full-boundaries-20260923';u=e/'moe-scale-hc-mlp-read-l1-20260924';r=e/'moe-scale-routed-combine-l1-20260924';m=e/'moe-full-shared-nonlinear-20260924'
+def sha(f):
+ z=hashlib.sha256()
+ with f.open('rb') as a:
+  for b in iter(lambda:a.read(4*1024*1024),b''):z.update(b)
+ return z.hexdigest()
+def save(n,x):(o/n).write_text(json.dumps(x,indent=2)+'\n')
+assert not any((o/'reference').iterdir());assert (p/'build.log').stat().st_size==0
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+budget=1000000000;reserve=20*1024**3;assert shutil.disk_usage(o).free>reserve+budget
+sources=[s,h,u,r,m];man={x.name:json.loads((x/'artifact-binding.json').read_text()) for x in sources};bindings=[]
+def bind(x,n):
+ f=x/n;v=sha(f);assert v==man[x.name][n],f;bindings.append({'file':str(f.relative_to(root)),'sha256':v});return f
+for x in [s,h]:assert json.loads(bind(x,'exit.json').read_text())['observer_preserved_tested_output']
+for x in [u,r]:assert json.loads(bind(x,'reference.json').read_text())['complete']
+actual={n:bind(s,'observed-captures/layer-1.'+n) for n in ['gu.weights.bf16','gu.output.bf16','gu.algo.bin','down.weights.bf16','down.output.bf16','down.algo.bin','gate.weights.bf16','inter.bf16']}
+xold=bind(h,'observed-captures/hc-1.prefill.mix.mlp.output.bf16');final=bind(h,'observed-captures/hc-1.prefill.write.block.bf16');table=bind(m,'reference/sigmoid-table.f32');dotold=bind(m,'reference/layer-1.dot.f32');sigold=bind(m,'reference/layer-1.sigmoid.f32')
+weights=[w for w in json.loads(bind(s,'checkpoint-binding.json').read_text()) if '.layers.1.' in w['key']];assert len(weights)==4
+rawweights={}
+for w in weights:
+ f=Path(w['file']);st=f.stat();assert st.st_size==w['size'] and st.st_mtime_ns==w['mtime_ns']
+ with f.open('rb') as z:z.seek(w['offset']);raw=z.read(w['bytes']);assert hashlib.sha256(raw).hexdigest()==w['sha256']
+ rawweights[w['key'].split('.mlp.')[1]]=raw
+assert rawweights['shared_expert.gate_proj.weight']+rawweights['shared_expert.up_proj.weight']==actual['gu.weights.bf16'].read_bytes()
+assert rawweights['shared_expert.down_proj.weight']==actual['down.weights.bf16'].read_bytes() and rawweights['shared_expert_gate.weight']==actual['gate.weights.bf16'].read_bytes()
+branches=['baseline','input_fixed','inter_fixed','both_fixed'];paths={}
+for b in branches:paths[b]=(bind(u,'reference/'+b+'/hc-1.prefill.mix.mlp.device.bf16'),bind(r,'reference/'+b+'/layer-1.combine-reference.f32'))
+assert sha(paths['baseline'][0])==sha(xold)
+save('input-binding.json',bindings);save('checkpoint-binding.json',weights);save('source-manifests.json',{x.name:sha(x/'artifact-binding.json') for x in sources})
+save('plan.json',{'budget_bytes':budget,'reserve_bytes':reserve,'scope':'Own mixed -> recorded shared GU -> CPU ordered SwiGLU/device sigmoid table -> BF16 -> recorded shared down; own mixed -> CPU256-lane dot/tree -> device sigmoid; combine own routed F32 + gate*own shared down with CPU FMA/BF16. Baseline restores GU/inter/down/final plus prior conditional dot/sigmoid references.','dependencies':'Recorded cuBLAS and device sigmoid. Gate dot/sigmoid were prior references, not directly observed internal runtime values. Final output is actually observed.','retention':'Complete shared GU/inter/down/gate and final BF16, raw inter/final F32 and gate dot, all differences/token counts; no GEMM accumulator capture.','endpoint':'Layer1 complete MoE output, before HC residual write'})
+def run(tag,tool,args):
+ proc=subprocess.run([str(p/tool)]+list(map(str,args)),capture_output=True,text=True,env={**os.environ,'OMP_NUM_THREADS':'8'});(o/(tag+'.stdout')).write_text(proc.stdout);(o/(tag+'.stderr')).write_text(proc.stderr);assert proc.returncode==0,proc.stderr;return json.loads(proc.stdout) if proc.stdout.strip() else None
+records=[]
+def inspect(b,stage,f,base,dtype,width):
+ a=np.fromfile(base,dtype=dtype);x=np.fromfile(f,dtype=dtype);assert len(x)==len(a)==4096*width
+ decoded=(x.astype('<u4')<<16).view('<f4') if dtype=='<u2' else x.view('<f4');assert np.isfinite(decoded).all()
+ idx=np.flatnonzero(x!=a).astype('<i4');idx.tofile(str(f)+'.differences.i32');counts=np.bincount(idx//width,minlength=4096).astype('<i4');counts.tofile(str(f)+'.token-differences.i32')
+ if b=='baseline':assert len(idx)==0,(stage,len(idx))
+ rec={'branch':b,'stage':stage,'elements':len(x),'mismatches':len(idx),'changed_tokens':int(np.count_nonzero(counts))};records.append(rec);print(rec,flush=True)
+for b in branches:
+ d=o/'reference'/b;d.mkdir();x,routed=paths[b]
+ run(b+'-gu','gemm',[actual['gu.weights.bf16'],x,actual['gu.output.bf16'],d/'gu',1280,2560,actual['gu.algo.bin']]);inspect(b,'gu',d/'gu.replay.bf16',actual['gu.output.bf16'],'<u2',1280)
+ run(b+'-cpu','cpu',[x,actual['gate.weights.bf16'],d/'gu.replay.bf16',table,d/'shared']);inspect(b,'inter',d/'shared.inter.bf16',actual['inter.bf16'],'<u2',640);inspect(b,'gate-dot',d/'shared.dot.f32',dotold,'<u4',1)
+ run(b+'-sigmoid','device',[d/'shared.dot.f32',4096,d/'sigmoid.f32']);inspect(b,'sigmoid',d/'sigmoid.f32',sigold,'<u4',1)
+ run(b+'-down','gemm',[actual['down.weights.bf16'],d/'shared.inter.bf16',actual['down.output.bf16'],d/'down',2560,640,actual['down.algo.bin']]);inspect(b,'down',d/'down.replay.bf16',actual['down.output.bf16'],'<u2',2560)
+ run(b+'-final','final',[routed,d/'down.replay.bf16',d/'sigmoid.f32',final,d/'final']);inspect(b,'final',d/'final.bf16',final,'<u2',2560)
+ for n in ['shared.inter','final']:
+  raw=np.fromfile(d/(n+'.f32'),dtype='<f4');bits=raw.view('<u4');bf=np.fromfile(d/(n+'.bf16'),dtype='<u2');assert np.isfinite(raw).all() and np.array_equal(((bits+np.uint32(0x7fff)+((bits>>16)&1))>>16).astype('<u2'),bf)
+ save('reference.json',{'records':records,'complete':len(records)==24})
+for n in ['run.py','gemm.cpp','cpu.cpp','device.cu','final.cpp','common.h','gemm','cpu','device','final','build.log']:shutil.copy2(p/n,o/n)
+save('summary.json',{'records':records,'runtime_changed':False,'whole_model_correctness_proven':False,'task_causality_established':False,'endpoint':'Layer1 complete MoE output before HC residual'})
+assert sum(f.stat().st_size for f in o.rglob('*') if f.is_file())<budget

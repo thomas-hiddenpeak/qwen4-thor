@@ -1,0 +1,39 @@
+#include "common.h"
+int main(int argc, char** argv) {
+  try {
+    if (argc != 6)
+      throw std::runtime_error("residual block gate actual prefix");
+    constexpr size_t n = size_t(4096) * 10240;
+    auto r = Read<uint16_t>(argv[1], n),
+         x = Read<uint16_t>(argv[2], 4096 * 2560),
+         g = Read<uint16_t>(argv[3], 4096 * 4), a = Read<uint16_t>(argv[4], n);
+    std::vector<uint16_t> out(n);
+    std::vector<float> raw(n);
+    size_t bad = 0;
+#pragma omp parallel for reduction(+ : bad)
+    for (size_t i = 0; i < n; ++i) {
+      size_t t = i / 10240, b = (i % 10240) / 2560, c = i % 2560;
+      raw[i] = std::fma(B(x[t * 2560 + c]), B(g[t * 4 + b]), B(r[i]));
+      out[i] = Round(raw[i]);
+      bad += out[i] != a[i];
+    }
+    std::vector<int32_t> idx;
+    std::vector<float> diff;
+    for (size_t i = 0; i < n; ++i) {
+      if (!std::isfinite(raw[i])) throw std::runtime_error("nonfinite");
+      if (out[i] != a[i]) {
+        idx.push_back(int32_t(i));
+        diff.push_back(raw[i]);
+      }
+    }
+    std::string p = argv[5];
+    Save(p + ".bf16", out);
+    Save(p + ".differences.i32", idx);
+    Save(p + ".differences.f32", diff);
+    std::printf("{\"elements\":%zu,\"mismatches\":%zu}\n", n, bad);
+    return 0;
+  } catch (const std::exception& e) {
+    std::fprintf(stderr, "%s\n", e.what());
+    return 2;
+  }
+}

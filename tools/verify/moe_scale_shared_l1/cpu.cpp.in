@@ -1,0 +1,41 @@
+#include "common.h"
+int main(int argc, char** argv) {
+  try {
+    if (argc != 6)
+      throw std::runtime_error("input gate_weight GU table prefix");
+    auto x = Read<uint16_t>(argv[1], 4096 * 2560);
+    auto w = Read<uint16_t>(argv[2], 2560);
+    auto gu = Read<uint16_t>(argv[3], 4096 * 1280);
+    auto table = Read<float>(argv[4], 65536);
+    std::vector<float> dot(4096), raw(4096 * 640);
+    std::vector<uint16_t> inter(raw.size());
+#pragma omp parallel for
+    for (int t = 0; t < 4096; ++t) {
+      float parts[256]{};
+      for (int j = 0; j < 2560; ++j)
+        parts[j % 256] =
+            std::fma(B(x[size_t(t) * 2560 + j]), B(w[j]), parts[j % 256]);
+      for (int off = 128; off; off >>= 1)
+        for (int j = 0; j < off; ++j) parts[j] += parts[j + off];
+      dot[t] = parts[0];
+      for (int j = 0; j < 640; ++j) {
+        size_t at = size_t(t) * 640 + j, pos = size_t(t) * 1280 + j;
+        raw[at] = (B(gu[pos]) * table[gu[pos]]) * B(gu[pos + 640]);
+        inter[at] = Round(raw[at]);
+      }
+    }
+    for (auto v : dot)
+      if (!std::isfinite(v)) throw std::runtime_error("dot");
+    for (auto v : raw)
+      if (!std::isfinite(v)) throw std::runtime_error("swiglu");
+    std::string out = argv[5];
+    Save(out + ".dot.f32", dot);
+    Save(out + ".inter.f32", raw);
+    Save(out + ".inter.bf16", inter);
+    std::printf("{\"gate_elements\":4096,\"inter_elements\":2621440}\n");
+    return 0;
+  } catch (const std::exception& e) {
+    std::fprintf(stderr, "%s\n", e.what());
+    return 2;
+  }
+}
