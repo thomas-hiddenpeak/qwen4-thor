@@ -1,0 +1,43 @@
+from pathlib import Path
+import json,hashlib,struct,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/moe-full-gu-20260924';c=o/'observed-captures';prior=root/'.q4t-work/e2e/moe-full-gather-20260924';router=root/'.q4t-work/e2e/moe-full-router-20260924'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+assert sha(root/'build/q4t')==json.loads((o/'plan.json').read_text())['binary_sha256']
+for name,source in [('prior-binding.json',prior),('router-prior-binding.json',router)]:
+ binding=json.loads((o/name).read_text());assert sha(source/'artifact-binding.json')==binding['manifest_sha256']
+ for r in binding['records']:assert sha(source/r['file'])==r['sha256']
+cp=json.loads((o/'checkpoint-plan.json').read_text());bylayer={l:[] for l in range(48)}
+for r in cp['records']:bylayer[r['layer']].append(r)
+records=[];checkpoint_bytes=0;checkpoint_tensors=0
+for l in range(48):
+ name=f'layer-{l}';ids=np.fromfile(router/'observed-captures'/(name+'.ids.i32'),dtype='<i4');counts=np.fromfile(prior/'observed-captures'/(name+'.counts.i32'),dtype='<i4');offsets=np.fromfile(prior/'observed-captures'/(name+'.offsets.i32'),dtype='<i4');inverse=np.fromfile(prior/'observed-captures'/(name+'.row-of-flat.i32'),dtype='<i4');all_flats=[];changed_order=0
+ assert sorted(r['expert'] for r in bylayer[l])==np.flatnonzero(counts).tolist()
+ for record in bylayer[l]:
+  e=record['expert'];rows=record['rows'];stem=f'{name}.expert-{e}';assert rows==counts[e];planname=stem+'.plan';assert sha(p/'parameters'/planname)==cp['plan_hashes'][planname]
+  expected_plan=''.join(f"{t['file']}\t{t['offset']}\t{t['bytes']}\n" for t in record['tensors']);assert (p/'parameters'/planname).read_text()==expected_plan
+  values=[]
+  for t in record['tensors']:
+   f=Path(t['file']);st=f.stat();assert st.st_size==t['size'] and st.st_mtime_ns==t['mtime_ns']
+   with f.open('rb') as s:s.seek(t['offset']);raw=s.read(t['bytes'])
+   assert len(raw)==t['bytes'] and hashlib.sha256(raw).hexdigest()==t['sha256'];values.append(raw);checkpoint_bytes+=len(raw);checkpoint_tensors+=1
+  for suffix in ['input.json','gu.json','inter.json']:assert json.loads((c/(stem+'.'+suffix)).read_text())['ok']
+  gu=json.loads((c/(stem+'.gu.json')).read_text());inter=json.loads((c/(stem+'.inter.json')).read_text());assert gu['rows']==inter['rows']==rows and gu['n']==1280 and gu['k']==2560 and gu['workspace_bytes']==33554432
+  scalars=[struct.unpack('<f',values[i])[0] for i in [2,3,6,7,8]];assert np.isfinite(scalars).all() and min(scalars)>0 and values[2]==values[6] and values[3]==values[7]
+  assert float.fromhex(gu['alpha_hex'])==float(np.float32(scalars[0])*np.float32(scalars[1]));assert (c/(stem+'.down-input-scale.f32')).read_bytes()==values[8]
+  flats=np.fromfile(c/(stem+'.flats.i32'),dtype='<i4');reorder=np.fromfile(c/(stem+'.reorder.i32'),dtype='<i4');assert len(flats)==len(reorder)==rows;assert np.all((flats>=0)&(flats<40960)) and np.all(ids[flats]==e);assert np.array_equal(np.sort(reorder),np.arange(rows)) and np.array_equal(reorder,inverse[flats]-offsets[e]);all_flats.extend(flats.tolist());changed_order+=int(np.count_nonzero(reorder!=np.arange(rows)))
+  assert (c/(stem+'.gu-output.bf16')).stat().st_size==rows*1280*2 and (c/(stem+'.algo.bin')).stat().st_size==64 and (c/(stem+'.inter-packed.bin')).stat().st_size==rows*320
+  physical=np.fromfile(c/(stem+'.inter-sf-physical.bin'),dtype='u1');logical=np.fromfile(c/(stem+'.inter-sf-logical.bin'),dtype='u1');blocks=(rows+127)//128;assert len(physical)==blocks*10*512 and len(logical)==rows*40
+  expected=physical.reshape(blocks,10,32,4,4).transpose(0,3,2,1,4).reshape(blocks*128,40)[:rows];assert np.array_equal(expected.ravel(),logical)
+ assert np.array_equal(np.sort(all_flats),np.arange(40960))
+ for suffix in ['source.json','complete.json']:assert json.loads((c/(name+'.'+suffix)).read_text())['ok']
+ complete=json.loads((c/(name+'.complete.json')).read_text());assert complete['calls']==len(bylayer[l]) and complete['rows']==40960
+ records.append({'layer':l,'expert_calls':len(bylayer[l]),'rows':40960,'row_positions_changed_from_prior':changed_order,'gu_outputs_captured':40960*1280,'inter_fp4_values_captured':40960*640,'inter_sf_layout_bytes_verified':40960*40});save('boundary-reference.json',{'records':records,'complete':len(records)==48});print(records[-1],flush=True)
+summary={key:sum(r[key] for r in records) for key in ['expert_calls','rows','row_positions_changed_from_prior','gu_outputs_captured','inter_fp4_values_captured','inter_sf_layout_bytes_verified']};summary.update(checkpoint_tensor_segments=checkpoint_tensors,checkpoint_bytes_compared=checkpoint_bytes,layers=48,actual_gu_weights_full_byte_equal_checkpoint=True,gather_inputs_equal_frozen_after_row_reorder=True,gu_output_equal_swiglu_input=True,gu_arithmetic_verified=False,inter_quant_arithmetic_verified=False,runtime_changed=False,whole_model_correctness_proven=False,task_causality_established=False);save('summary.json',summary)
+shutil.copy2(p/'analyze.py',o/'analyze.py')
+save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'});print(summary,flush=True)

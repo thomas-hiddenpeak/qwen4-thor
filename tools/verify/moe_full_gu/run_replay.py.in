@@ -1,0 +1,23 @@
+from pathlib import Path
+import json,hashlib,shutil,subprocess,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/moe-full-gu-20260924';c=o/'observed-captures';prior=root/'.q4t-work/e2e/moe-full-gather-20260924';d=o/'reference'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output'];assert json.loads((o/'boundary-reference.json').read_text())['complete'];assert not (p/'replay-build.log').read_text().strip()
+assert not d.exists();assert shutil.disk_usage(o).free>5_033_164_800+20*1024**3;d.mkdir();shutil.copy2(o/'artifact-binding.json',o/'boundary-artifact-binding.json')
+for k,v in json.loads((o/'boundary-artifact-binding.json').read_text()).items():assert sha(o/k)==v
+records=[]
+for l in range(48):
+ cmd=[str(p/'replay'),str(c),str(prior/'observed-captures'),str(p/'parameters'),str(d),str(l)]
+ with (o/f'replay-layer-{l}.json').open('w') as out,(o/f'replay-layer-{l}.stderr').open('w') as err:result=subprocess.run(cmd,stdout=out,stderr=err)
+ assert result.returncode==0,{'layer':l,'exit':result.returncode};r=json.loads((o/f'replay-layer-{l}.json').read_text());assert r['layer']==l and r['elements']==40960*1280
+ for item in r['records']:
+  stem=f"layer-{l}.expert-{item['expert']}";a=np.fromfile(c/(stem+'.gu-output.bf16'),dtype='<u2');b=np.fromfile(d/(stem+'.replay.bf16'),dtype='<u2');assert len(a)==len(b)==item['elements']==item['rows']*1280;idx=np.flatnonzero(a!=b);assert len(idx)==item['mismatches']==0 and np.array_equal(idx,np.fromfile(d/(stem+'.replay-differences.i32'),dtype='<i4'))
+ assert sum(x['elements'] for x in r['records'])==r['elements'] and r['mismatches']==0;records.append({'layer':l,'calls':len(r['records']),'elements':r['elements'],'mismatches':r['mismatches'],'cublas_version':r['cublas_version']});save('replay-reference.json',{'records':records,'complete':len(records)==48});print(records[-1],flush=True)
+summary=json.loads((o/'summary.json').read_text());summary.update(recorded_algorithm_replay_elements=sum(r['elements'] for r in records),recorded_algorithm_replay_mismatches=sum(r['mismatches'] for r in records),independent_gu_arithmetic_verified=False);save('summary.json',summary)
+for name in ['replay.cpp','replay','replay-build.log','run_replay.py']:shutil.copy2(p/name,o/name)
+save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'});print(summary,flush=True)

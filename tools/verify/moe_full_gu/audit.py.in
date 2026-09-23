@@ -1,0 +1,28 @@
+from pathlib import Path
+import json,hashlib,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/moe-full-gu-20260924';c=o/'observed-captures';d=o/'reference';old=root/'.q4t-work/e2e/moe-token-gu-reference-20260923'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+manifest=json.loads((o/'artifact-binding.json').read_text())
+for key,value in manifest.items():assert sha(o/key)==value
+assert sha(root/'build/q4t')==json.loads((o/'plan.json').read_text())['binary_sha256']
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+replay=json.loads((o/'replay-reference.json').read_text());assert replay['complete'] and len(replay['records'])==48
+old_manifest=json.loads((old/'artifact-binding.json').read_text())['sha256'];tails=[];calls=elements=0
+for l in range(48):
+ result=json.loads((o/f'replay-layer-{l}.json').read_text());assert result['mismatches']==0
+ for r in result['records']:
+  e=r['expert'];stem=f'layer-{l}.expert-{e}';expected=np.fromfile(c/(stem+'.gu-output.bf16'),dtype='<u2').reshape(r['rows'],1280);actual=np.fromfile(d/(stem+'.replay.bf16'),dtype='<u2').reshape(r['rows'],1280);assert np.array_equal(expected,actual);calls+=1;elements+=actual.size
+  flats=np.fromfile(c/(stem+'.flats.i32'),dtype='<i4');rows=np.flatnonzero(flats//10==4095);assert len(rows)<=1
+  if len(rows):
+   key='observed-captures/'+stem+'.gu-output.bf16';old_sha=sha(old/key);previous=np.fromfile(old/key,dtype='<u2');assert previous.size==1280 and np.array_equal(previous,expected[rows[0]])
+   tails.append({'layer':l,'expert':e,'current_row':int(rows[0]),'flat':int(flats[rows[0]]),'file':key,'sha256_recorded_now':old_sha,'included_in_old_manifest':False})
+assert calls==21197 and elements==2516582400 and len(tails)==480
+for l in range(48):assert sorted(r['flat']%10 for r in tails if r['layer']==l)==list(range(10))
+save('previous-tail-binding.json',{'source_manifest_sha256':sha(old/'artifact-binding.json'),'limitation':'Old manifest binds summaries/tools but does not list these output files; their hashes are first recorded here. Byte equality is against files currently present, not a historical hash guarantee.','records':tails})
+summary=json.loads((o/'summary.json').read_text());assert summary['recorded_algorithm_replay_elements']==elements and summary['recorded_algorithm_replay_mismatches']==0;summary['previous_prefill_tail_outputs_equal']=len(tails);save('summary.json',summary);shutil.copy2(p/'audit.py',o/'audit.py')
+save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'});print(summary,flush=True)
