@@ -1,0 +1,30 @@
+from pathlib import Path
+import hashlib,json,shutil,subprocess,os,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/qsa-full-selection-reference-20260924';d=o/'reference';s=root/'.q4t-work/e2e/qsa-full-selection-20260924';c=s/'observed-captures'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert (p/'build.log').stat().st_size==0;assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+manifest=json.loads((s/'artifact-binding.json').read_text());assert sha(s/'exit.json')==manifest['exit.json'] and json.loads((s/'exit.json').read_text())['observer_preserved_tested_output']
+binding=[]
+for l in range(3,48,4):
+ for suffix in ['scores.f32','selection.i32','length.i32','write-positions.i32']:
+  name=f'observed-captures/layer-{l}.prefill.{suffix}';assert sha(s/name)==manifest[name];binding.append({'file':str((s/name).relative_to(root)),'sha256':manifest[name]})
+save('input-binding.json',binding);reserve=20*1024**3;budget=1000000000;assert shutil.disk_usage(o).free>reserve+budget
+save('plan.json',{'source_manifest_sha256':sha(s/'artifact-binding.json'),'reserve_bytes':reserve,'reference_budget_bytes':budget,'scope':'All49152 QSA queries: scalar CPU comparison network exact order plus independent std::sort score cutoff semantics. Actual captured scores are inputs, not independently computed scores.','retention':'Every complete selection reference reconstructed from original selection base plus full index/value delta; lengths, threshold and tie counts retained for all rows. No model forward or attention arithmetic.'})
+records=[]
+for l in range(3,48,4):
+ assert shutil.disk_usage(o).free>reserve+100000000
+ name=f'layer-{l}.prefill';r=subprocess.run([str(p/'reference'),str(c),str(d),str(l)],capture_output=True,text=True,env={**os.environ,'OMP_NUM_THREADS':'8'});(o/(name+'.stdout')).write_text(r.stdout);(o/(name+'.stderr')).write_text(r.stderr);assert r.returncode==0,r.stderr;record=json.loads(r.stdout)
+ base=c/(name+'.selection.i32');actual=np.fromfile(base,dtype='<i4');f=d/(name+'.expected.i32');ref=np.fromfile(f,dtype='<i4');assert len(actual)==len(ref)==record['slots'];idx=np.flatnonzero(actual!=ref).astype('<i4');assert len(idx)==record['mismatches']
+ length=np.fromfile(c/(name+'.length.i32'),dtype='<i4');expected_length=np.fromfile(d/(name+'.expected-length.i32'),dtype='<i4');assert len(expected_length)==4096 and np.count_nonzero(length!=expected_length)==record['length_mismatches'] and expected_length.sum()==record['selected_indices']
+ semantic=np.fromfile(d/(name+'.semantic-bad.u8'),dtype='u1');assert len(semantic)==4096 and np.count_nonzero(semantic)==record['semantic_errors'];sparse=np.fromfile(d/(name+'.sparse.u8'),dtype='u1');ties=np.fromfile(d/(name+'.boundary-ties.i32'),dtype='<i4');chosen=np.fromfile(d/(name+'.selected-ties.i32'),dtype='<i4');assert int(sparse.sum())==record['sparse_rows'] and np.count_nonzero((sparse!=0)&(chosen>0)&(ties>chosen))==record['split_boundary_tie_rows']
+ delta=d/(name+'.delta.npz');np.savez_compressed(delta,indices=idx,values=ref[idx]);z=np.load(delta);rebuilt=actual.copy();rebuilt[z['indices']]=z['values'];assert np.array_equal(rebuilt,ref);h=sha(f);assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==h;record.update(base=str(base.relative_to(root)),base_sha256=sha(base),reference_sha256=h,delta=str(delta.relative_to(o)),delta_sha256=sha(delta));records.append(record);save('reference.json',{'records':records,'complete':len(records)==12});f.unlink();print(record,flush=True)
+for r in records:
+ base=root/r['base'];assert sha(base)==r['base_sha256'];delta=o/r['delta'];assert sha(delta)==r['delta_sha256'];z=np.load(delta);rebuilt=np.fromfile(base,dtype='<i4');rebuilt[z['indices']]=z['values'];assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==r['reference_sha256']
+keys=['queries','slots','selected_indices','mismatches','length_mismatches','semantic_errors','sparse_rows','split_boundary_tie_rows'];summary={key:sum(r[key] for r in records) for key in keys};summary.update(all_references_reconstructed=True,runtime_changed=False,score_computation_verified=False,attention_arithmetic_verified=False,whole_model_correctness_proven=False,free_after=shutil.disk_usage(o).free);save('summary.json',summary)
+for f in ['run.py','reference.cpp','reference','build.log']:shutil.copy2(p/f,o/f)
+save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'});print(summary,flush=True)

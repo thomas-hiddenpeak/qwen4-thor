@@ -1,0 +1,127 @@
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+template <class T>
+std::vector<T> Read(const std::string& p, size_t n) {
+  std::ifstream f(p, std::ios::binary | std::ios::ate);
+  if (!f || size_t(f.tellg()) != n * sizeof(T)) throw std::runtime_error(p);
+  std::vector<T> v(n);
+  f.seekg(0);
+  if (!f.read(reinterpret_cast<char*>(v.data()), n * sizeof(T)))
+    throw std::runtime_error(p);
+  return v;
+}
+template <class T>
+void Save(const std::string& p, const std::vector<T>& v) {
+  std::ofstream f(p, std::ios::binary);
+  if (!f.write(reinterpret_cast<const char*>(v.data()), v.size() * sizeof(T)))
+    throw std::runtime_error(p);
+}
+int main(int argc, char** argv) {
+  try {
+    if (argc != 4) throw std::runtime_error("captures output layer");
+    int l = std::stoi(argv[3]);
+    std::string name = "layer-" + std::to_string(l) + ".prefill",
+                b = std::string(argv[1]) + "/" + name,
+                o = std::string(argv[2]) + "/" + name;
+    auto scores = Read<float>(b + ".scores.f32", 4096 * 2048);
+    auto actual = Read<int32_t>(b + ".selection.i32", 4096 * 2052),
+         length = Read<int32_t>(b + ".length.i32", 4096),
+         positions = Read<int32_t>(b + ".write-positions.i32", 4096);
+    for (float v : scores)
+      if (!std::isfinite(v)) throw std::runtime_error("nonfinite score");
+    for (int t = 0; t < 4096; ++t)
+      if (positions[t] != t) throw std::runtime_error("positions");
+    std::vector<int32_t> out(actual.size(), -1), lens(4096), ties(4096),
+        chosen_ties(4096);
+    std::vector<float> threshold(4096);
+    std::vector<uint8_t> semantic_bad(4096), sparse(4096);
+    size_t mismatches = 0, length_bad = 0, semantic_errors = 0,
+           selected_total = 0;
+#pragma omp parallel for reduction(+ : mismatches, length_bad, \
+                                       semantic_errors, selected_total)
+    for (int t = 0; t < 4096; ++t) {
+      int groups = (t + 1) / 4, tail = (t + 1) % 4, n;
+      int32_t* row = out.data() + size_t(t) * 2052;
+      const float* score = scores.data() + size_t(t) * 2048;
+      if (groups <= 512) {
+        n = t + 1;
+        for (int j = 0; j < n; ++j) row[j] = j;
+      } else {
+        sparse[t] = 1;
+        float values[2048];
+        int ids[2048];
+        for (int j = 0; j < 2048; ++j) {
+          values[j] = j < groups ? score[j] : -1e30f;
+          ids[j] = j;
+        }
+        // Independent scalar comparator traversal; equal keys never swap.
+        for (int k = 2; k <= 2048; k *= 2)
+          for (int j = k / 2; j > 0; j /= 2)
+            for (int i = 0; i < 2048; ++i) {
+              int peer = i ^ j;
+              if (i < peer && ((i & k) == 0 ? values[i] > values[peer]
+                                            : values[i] < values[peer])) {
+                std::swap(values[i], values[peer]);
+                std::swap(ids[i], ids[peer]);
+              }
+            }
+        std::vector<float> sorted(score, score + groups);
+        std::sort(sorted.begin(), sorted.end());
+        float cutoff = sorted[groups - 512];
+        threshold[t] = cutoff;
+        for (int j = 0; j < groups; ++j) ties[t] += score[j] == cutoff;
+        bool seen[2048] = {};
+        for (int j = 0; j < 512; ++j) {
+          int g = ids[1536 + j];
+          bool valid = g >= 0 && g < groups && !seen[g];
+          if (valid) {
+            seen[g] = true;
+            valid = score[g] >= cutoff;
+            chosen_ties[t] += score[g] == cutoff;
+          }
+          if (!valid) semantic_bad[t] = 1;
+          if (j && values[1535 + j] > values[1536 + j]) semantic_bad[t] = 1;
+          for (int z = 0; z < 4; ++z) row[j * 4 + z] = g * 4 + z;
+        }
+        for (int j = 0; j < groups; ++j)
+          if (!seen[j] && score[j] > cutoff) semantic_bad[t] = 1;
+        n = 2048;
+        for (int j = 0; j < tail; ++j) row[n++] = t + 1 - tail + j;
+      }
+      lens[t] = n;
+      length_bad += n != length[t];
+      selected_total += n;
+      semantic_errors += semantic_bad[t];
+      for (int j = 0; j < 2052; ++j)
+        mismatches += row[j] != actual[size_t(t) * 2052 + j];
+    }
+    Save(o + ".expected.i32", out);
+    Save(o + ".expected-length.i32", lens);
+    Save(o + ".threshold.f32", threshold);
+    Save(o + ".boundary-ties.i32", ties);
+    Save(o + ".selected-ties.i32", chosen_ties);
+    Save(o + ".sparse.u8", sparse);
+    Save(o + ".semantic-bad.u8", semantic_bad);
+    size_t sparse_rows = 0, split_ties = 0;
+    for (int t = 0; t < 4096; ++t) {
+      sparse_rows += sparse[t];
+      split_ties += sparse[t] && chosen_ties[t] > 0 && ties[t] > chosen_ties[t];
+    }
+    std::printf(
+        "{\"layer\":%d,\"queries\":4096,\"slots\":%zu,\"selected_indices\":%zu,"
+        "\"mismatches\":%zu,\"length_mismatches\":%zu,\"semantic_errors\":%zu,"
+        "\"sparse_rows\":%zu,\"split_boundary_tie_rows\":%zu}\n",
+        l, out.size(), selected_total, mismatches, length_bad, semantic_errors,
+        sparse_rows, split_ties);
+    return 0;
+  } catch (const std::exception& e) {
+    std::fprintf(stderr, "%s\n", e.what());
+    return 2;
+  }
+}
