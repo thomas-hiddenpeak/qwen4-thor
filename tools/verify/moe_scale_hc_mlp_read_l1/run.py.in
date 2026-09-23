@@ -1,0 +1,58 @@
+from pathlib import Path
+import hashlib,json,subprocess,shutil,os,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];e=root/'.q4t-work/e2e';o=e/p.name;d=o/'reference';ple=e/'moe-scale-hc-attn-write-l1-20260924';hc=e/'hc-full-boundaries-20260923';proj=e/'hc-full-projection-20260924';mix=e/'hc-full-mix-20260924';hcdir=hc/'observed-captures';pc=proj/'observed-captures';stem='hc-1.prefill.mlp';read='hc-1.prefill.fused';mixed='hc-1.prefill.mix.mlp'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as z:
+  for b in iter(lambda:z.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(n,x):(o/n).write_text(json.dumps(x,indent=2)+'\n')
+def rounded(v):
+ b=v.astype('<f4').view('<u4');return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype('<u2')
+assert not any(d.iterdir());assert all((p/(x+'-build.log')).stat().st_size==0 for x in ['norm','gemm','mix']);assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e';budget=2500000000;reserve=20*1024**3;assert shutil.disk_usage(o).free>reserve+budget
+man={x.name:json.loads((x/'artifact-binding.json').read_text()) for x in [ple,hc,proj,mix]};bindings=[]
+def bind(s,n):
+ f=s/n;v=sha(f);assert v==man[s.name][n];bindings.append({'file':str(f.relative_to(root)),'sha256':v});return f
+for s in [hc,proj]:assert json.loads(bind(s,'exit.json').read_text())['observer_preserved_tested_output']
+assert json.loads(bind(ple,'reference.json').read_text())['complete'];branches=['baseline','input_fixed','inter_fixed','both_fixed']
+for b in branches:bind(ple,'reference/'+b+'.bf16')
+for suffix in ['output.bf16','normed.bf16','norm-weights.bf16','eps.f32']:bind(hc,'observed-captures/'+read+'.'+suffix)
+for suffix in ['normed.bf16','up.bf16','output.bf16']:bind(hc,'observed-captures/'+mixed+'.'+suffix)
+for stage in ['down','up','inject']:
+ for suffix in ['weights.bf16','algo.bin']:bind(proj,'observed-captures/'+stem+'.'+stage+'.'+suffix)
+for suffix in ['down.output.bf16','up.input.bf16','inject.output.bf16','inject.gate.bf16']:bind(proj,'observed-captures/'+stem+'.'+suffix)
+silu=np.fromfile(bind(proj,'silu-table.f32'),dtype='<f4');gate=np.fromfile(bind(proj,'gate-table.f32'),dtype='<f4');table=bind(mix,'sigmoid-table.f32');assert len(silu)==len(gate)==65536
+assert sha(ple/'reference/baseline.bf16')==sha(hcdir/(read+'.output.bf16'));assert sha(hcdir/(read+'.normed.bf16'))==sha(hcdir/(mixed+'.normed.bf16'))
+weights=[]
+for source in [hc,proj]:
+ for w in json.loads(bind(source,'checkpoint-binding.json').read_text()):
+  if not w['key'].startswith('model.language_model.layers.1.mlp_hyper_connection.'):continue
+  f=Path(w.get('file',w.get('path')));st=f.stat();assert st.st_size==w['size'] and st.st_mtime_ns==w['mtime_ns']
+  with f.open('rb') as z:z.seek(w['offset']);assert hashlib.sha256(z.read(w['bytes'])).hexdigest()==w['sha256']
+  weights.append(w)
+assert len(weights)==4;save('checkpoint-binding.json',weights);save('input-binding.json',bindings);save('source-manifests.json',{s.name:sha(s/'artifact-binding.json') for s in [ple,hc,proj,mix]});save('plan.json',{'budget_bytes':budget,'reserve_bytes':reserve,'scope':'Four layer1 HC MLP-read chains from own post-attention residual: norm -> down -> scaled SiLU -> up -> four-branch sigmoid weighted mix; independent inject projection -> scaled sigmoid gate. Recorded BF16 cuBLASLt algorithms, CPU specified norm/mix with device rsqrt and frozen exhaustive BF16 nonlinear tables. Baseline restores all7 stages. New gate saved for later residual write. Ends at MoE mixed input and new MLP residual inject gate; router and experts not run.','retention':'Complete BF16 stage outputs, all mismatch indices/token counts, norm primitive inputs/results and norm mismatch pre-round values. Matching final raw and GEMM accumulators not saved.','helpers':'norm/gemm/mix built from archived reference sources, zero warnings'})
+def run(name,args):
+ r=subprocess.run([str(p/args[0])]+[str(x) for x in args[1:]],capture_output=True,text=True,env={**os.environ,'OMP_NUM_THREADS':'8'});(o/(name+'.stdout')).write_text(r.stdout);(o/(name+'.stderr')).write_text(r.stderr);assert r.returncode==0,r.stderr;return json.loads(r.stdout)
+records=[];oldtrunk=np.fromfile(hcdir/(read+'.output.bf16'),dtype='<u2').reshape(4096,10240)
+def inspect(branch,stage,f,base,width,allowed,expected=None):
+ a=np.fromfile(base,dtype='<u2').reshape(4096,width);b=np.fromfile(f,dtype='<u2').reshape(4096,width);assert np.isfinite((b.astype('<u4')<<16).view('<f4')).all();idx=np.flatnonzero(a.reshape(-1)!=b.reshape(-1)).astype('<i4');counts=np.bincount(idx//width,minlength=4096).astype('<i4');mask=counts>0;assert not np.any(mask&~allowed)
+ if expected is not None:assert len(idx)==expected
+ if branch=='baseline':assert len(idx)==0
+ pr=d/branch/stage;idx.tofile(str(pr)+'.differences.i32');counts.tofile(str(pr)+'.token-differences.i32');r={'branch':branch,'stage':stage,'elements':a.size,'mismatches':len(idx),'changed_tokens':int(mask.sum()),'output':str(f.relative_to(o)),'output_sha256':sha(f)};records.append(r);print(r,flush=True);return mask
+for branch in branches:
+ assert shutil.disk_usage(o).free>reserve+500000000
+ out=d/branch;out.mkdir();trunk=ple/'reference'/(branch+'.bf16');allowed=np.any(np.fromfile(trunk,dtype='<u2').reshape(4096,10240)!=oldtrunk,axis=1)
+ r=run(branch+'-norm',['norm',trunk,hcdir/(read+'.norm-weights.bf16'),hcdir/(read+'.eps.f32'),hcdir/(read+'.normed.bf16'),out/'norm',1,0,4096]);norm=out/'norm.device.bf16';normmask=inspect(branch,'norm',norm,hcdir/(read+'.normed.bf16'),10240,allowed,r['variants'][0]['mismatches'])
+ raw=np.fromfile(out/'norm.device.differences.f64',dtype='<f8');idx=np.fromfile(out/'norm.device.indices.i32',dtype='<i4');assert len(raw)==len(idx) and np.array_equal(rounded(raw),np.fromfile(norm,dtype='<u2')[idx])
+ def gemm(stage,number,x,base,width,support):
+  rr=run(branch+'-'+stage,['gemm',pc,out,hcdir,1,'mlp',number,x]);f=out/(stem+'.'+stage+'.replay.bf16');mask=inspect(branch,stage,f,base,width,support,rr['total_mismatches']);return f,mask
+ down,downmask=gemm('down',0,norm,pc/(stem+'.down.output.bf16'),320,normmask)
+ si=out/'silu.bf16';rounded(silu[np.fromfile(down,dtype='<u2')]).tofile(si);simask=inspect(branch,'silu',si,pc/(stem+'.up.input.bf16'),320,downmask)
+ up,upmask=gemm('up',1,si,hcdir/(mixed+'.up.bf16'),10240,simask)
+ inj,injmask=gemm('inject',2,norm,pc/(stem+'.inject.output.bf16'),4,normmask)
+ gf=out/'gate.bf16';rounded(gate[np.fromfile(inj,dtype='<u2')]).tofile(gf);inspect(branch,'gate',gf,pc/(stem+'.inject.gate.bf16'),4,injmask)
+ rr=run(branch+'-mix',['mix',hcdir,out,1,'mlp',table,up,norm]);mf=out/(mixed+'.device.bf16');inspect(branch,'mix',mf,hcdir/(mixed+'.output.bf16'),2560,normmask|upmask,rr['mismatches'][0])
+ save('reference.json',{'records':records,'complete':len(records)==28})
+summary={'records':len(records),'outputs':[r for r in records if r['stage'] in ['mix','gate']],'baseline_all_stages_match':True,'runtime_changed':False,'whole_model_correctness_proven':False,'task_causality_established':False,'propagation_endpoint':'layer1 MoE mixed input and prepared MLP HC inject gate; no router or experts computed'}
+for n in ['run.py','norm.cu','gemm.cpp','mix.cpp','common.h','norm','gemm','mix','norm-build.log','gemm-build.log','mix-build.log']:shutil.copy2(p/n,o/n)
+summary['artifact_bytes_before_sealing']=sum(f.stat().st_size for f in o.rglob('*') if f.is_file());assert summary['artifact_bytes_before_sealing']<budget;save('summary.json',summary);print(summary,flush=True)

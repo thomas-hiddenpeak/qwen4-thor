@@ -1,0 +1,47 @@
+// Elementary device exponential only; no production router kernel is called.
+#include <cuda_runtime.h>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+#define CU(x)                                             \
+  do {                                                    \
+    if ((x) != cudaSuccess) throw std::runtime_error(#x); \
+  } while (0)
+__global__ void Sigmoid(const float* x, float* y) {
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i < 40960) y[i] = __expf(x[i]);
+}
+int main(int argc, char** argv) {
+  try {
+    if (argc != 2) throw std::runtime_error("directory");
+    for (int l = 1; l < 2; ++l) {
+      std::string b = std::string(argv[1]) + "/layer-" + std::to_string(l);
+      std::vector<float> x(40960), y(40960);
+      std::ifstream f(b + ".deltas.f32", std::ios::binary | std::ios::ate);
+      if (!f || f.tellg() != 163840) throw std::runtime_error(b);
+      f.seekg(0);
+      if (!f.read(reinterpret_cast<char*>(x.data()), 163840))
+        throw std::runtime_error("read");
+      float *dx, *dy;
+      CU(cudaMalloc(&dx, 163840));
+      CU(cudaMalloc(&dy, 163840));
+      CU(cudaMemcpy(dx, x.data(), 163840, cudaMemcpyHostToDevice));
+      Sigmoid<<<160, 256>>>(dx, dy);
+      CU(cudaGetLastError());
+      CU(cudaMemcpy(y.data(), dy, 163840, cudaMemcpyDeviceToHost));
+      std::ofstream out(b + ".device-exp.f32", std::ios::binary);
+      out.write(reinterpret_cast<char*>(y.data()), 163840);
+      if (!out) throw std::runtime_error("write");
+      CU(cudaFree(dx));
+      CU(cudaFree(dy));
+    }
+    return 0;
+  } catch (const std::exception& e) {
+    std::fprintf(stderr, "%s\n", e.what());
+    return 1;
+  }
+}

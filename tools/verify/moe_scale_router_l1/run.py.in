@@ -1,0 +1,61 @@
+"""Own new mixed input -> layer1 router logits, top10 IDs and weights."""
+from pathlib import Path
+import hashlib,json,subprocess,shutil
+import numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];e=root/'.q4t-work/e2e';o=e/p.name;d=o/'reference';s=e/'moe-full-router-20260924';u=e/'moe-scale-hc-mlp-read-l1-20260924';hc=e/'hc-full-boundaries-20260923'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as z:
+  for b in iter(lambda:z.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(n,x):(o/n).write_text(json.dumps(x,indent=2)+'\n')
+def dec(a):return (a.astype('<u4')<<16).view('<f4')
+assert not any(d.iterdir());assert (p/'build.log').stat().st_size==0
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+budget=200000000;reserve=20*1024**3;assert shutil.disk_usage(o).free>reserve+budget
+sources=[s,u,hc];man={x.name:json.loads((x/'artifact-binding.json').read_text()) for x in sources};bindings=[]
+def bind(x,n):
+ f=x/n;h=sha(f);assert h==man[x.name][n],f;bindings.append({'file':str(f.relative_to(root)),'sha256':h});return f
+for x in [s,hc]:assert json.loads(bind(x,'exit.json').read_text())['observer_preserved_tested_output']
+assert json.loads(bind(u,'reference.json').read_text())['complete']
+actual={n:bind(s,'observed-captures/layer-1.'+n) for n in ['weights.bf16','algo.bin','logits.bf16','ids.i32','router-weights.f32']}
+oldinput=bind(hc,'observed-captures/hc-1.prefill.mix.mlp.output.bf16')
+branches=['baseline','input_fixed','inter_fixed','both_fixed'];paths={b:bind(u,'reference/'+b+'/hc-1.prefill.mix.mlp.device.bf16') for b in branches}
+assert sha(paths['baseline'])==sha(oldinput)
+weights=[w for w in json.loads(bind(s,'checkpoint-binding.json').read_text()) if '.layers.1.' in w['key']];assert len(weights)==1
+for w in weights:
+ f=Path(w['file']);st=f.stat();assert st.st_size==w['size'] and st.st_mtime_ns==w['mtime_ns']
+ with f.open('rb') as z:z.seek(w['offset']);assert hashlib.sha256(z.read(w['bytes'])).hexdigest()==w['sha256']
+ assert sha(actual['weights.bf16'])==w['sha256']
+save('input-binding.json',bindings);save('checkpoint-binding.json',weights);save('source-manifests.json',{x.name:sha(x/'artifact-binding.json') for x in sources})
+save('plan.json',{'budget_bytes':budget,'reserve_bytes':reserve,'scope':'Four own layer1 HC MLP mixed inputs -> recorded BF16 router projection [4096,2560]x[2560,512] -> CPU descending value/ascending expert ID top10 -> device exp and CPU sequential10 sum, reciprocal and weights. Baseline restores all logits/IDs/weights. All downstream routing must use newly generated IDs/weights. Layer0 interventions only, no added layer1 scale repair.','dependencies':'Recorded cuBLASLt and device __expf; no high precision whole-model proof.','retention':'Full logits, IDs, selected-logit deltas, device exp, weights, all differences/row counts and full changed-set records. No GEMM accumulators.','production_source_sha256':sha(root/'src/model/moe.cu')})
+oldlogits=np.fromfile(actual['logits.bf16'],dtype='<u2');oldids=np.fromfile(actual['ids.i32'],dtype='<i4').reshape(4096,10);oldw=np.fromfile(actual['router-weights.f32'],dtype='<u4').reshape(4096,10);oldx=np.fromfile(oldinput,dtype='<u2').reshape(4096,2560);records=[]
+for b in branches:
+ out=d/b;out.mkdir()
+ with (o/(b+'.replay.stdout')).open('w') as log,(o/(b+'.replay.stderr')).open('w') as err:proc=subprocess.run([str(p/'replay'),str(s/'observed-captures'),str(out),str(paths[b])],stdout=log,stderr=err)
+ assert proc.returncode==0
+ rr=json.loads((o/(b+'.replay.stdout')).read_text());r=rr['records'][0]
+ logits=np.fromfile(out/'layer-1.replay.bf16',dtype='<u2');assert len(logits)==4096*512
+ values=dec(logits).reshape(4096,512);assert np.isfinite(values).all() and np.all(values>-1e30)
+ idx=np.flatnonzero(logits!=oldlogits).astype('<i4');assert len(idx)==r['mismatches'];idx.tofile(out/'logit-differences.i32');counts=np.bincount(idx//512,minlength=4096).astype('<i4');counts.tofile(out/'logit-token-differences.i32')
+ changed=np.any(np.fromfile(paths[b],dtype='<u2').reshape(4096,2560)!=oldx,axis=1);assert not np.any((counts>0)&~changed)
+ ids=np.argsort(-values,axis=1,kind='stable')[:,:10].astype('<i4');ids.tofile(out/'layer-1.ids.i32');selected=np.take_along_axis(values,ids,axis=1);delta=selected-selected[:,:1];delta.tofile(out/'layer-1.deltas.f32')
+ with (o/(b+'.exp.stdout')).open('w') as log,(o/(b+'.exp.stderr')).open('w') as err:proc=subprocess.run([str(p/'exp'),str(out)],stdout=log,stderr=err)
+ assert proc.returncode==0
+ ex=np.fromfile(out/'layer-1.device-exp.f32',dtype='<f4').reshape(4096,10);sums=np.zeros(4096,dtype='<f4')
+ for j in range(10):sums+=ex[:,j]
+ rw=ex*(np.float32(1)/sums)[:,None];assert np.isfinite(rw).all() and np.all(rw>=0);rw.tofile(out/'layer-1.router-weights.f32')
+ iddiff=np.flatnonzero(ids.reshape(-1)!=oldids.reshape(-1)).astype('<i4');iddiff.tofile(out/'id-differences.i32')
+ wdiff=np.flatnonzero(rw.view('<u4').reshape(-1)!=oldw.reshape(-1)).astype('<i4');wdiff.tofile(out/'weight-differences.i32')
+ orderrows=np.flatnonzero(np.any(ids!=oldids,axis=1)).astype('<i4');setrows=np.flatnonzero(np.any(np.sort(ids,axis=1)!=np.sort(oldids,axis=1),axis=1)).astype('<i4');orderrows.tofile(out/'changed-order-rows.i32');setrows.tofile(out/'changed-set-rows.i32')
+ assert not np.any(~changed[orderrows]) and not np.any(~changed[wdiff//10])
+ details=[]
+ for t in setrows:
+  removed=sorted(set(oldids[t])-set(ids[t]));added=sorted(set(ids[t])-set(oldids[t]));details.append({'token':int(t),'before_ids':oldids[t].tolist(),'after_ids':ids[t].tolist(),'removed':list(map(int,removed)),'added':list(map(int,added))})
+ (out/'changed-sets.json').write_text(json.dumps(details,indent=2)+'\n')
+ if b=='baseline':assert len(idx)==len(iddiff)==len(wdiff)==0
+ r.update(branch=b,logit_changed_tokens=int(np.count_nonzero(counts)),id_differences=len(iddiff),weight_differences=len(wdiff),changed_order_tokens=len(orderrows),changed_set_tokens=len(setrows),replaced_expert_slots=sum(len(x['added']) for x in details))
+ records.append(r);save('reference.json',{'records':records,'complete':len(records)==4});print(r,flush=True)
+for n in ['run.py','replay.cpp','exp.cu','replay','exp','build.log']:shutil.copy2(p/n,o/n)
+save('summary.json',{'records':records,'runtime_changed':False,'whole_model_correctness_proven':False,'task_causality_established':False,'endpoint':'Layer1 router logits/new top10 IDs/new router weights; quantization/expert calculations pending'})
+assert sum(f.stat().st_size for f in o.rglob('*') if f.is_file())<budget
