@@ -1,0 +1,49 @@
+from pathlib import Path
+import hashlib,json,subprocess,os,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];e=root/'.q4t-work/e2e';o=e/p.name;d=o/'reference';s=e/'moe-scale-propagation-l0-20260924';u=e/'moe-full-gu-20260924';g=e/'moe-full-gather-20260924';old=e/'moe-full-inter-quant-20260924'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as z:
+  for b in iter(lambda:z.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(n,x):(o/n).write_text(json.dumps(x,indent=2)+'\n')
+assert not any(d.iterdir());assert (p/'build.log').stat().st_size==0;assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e';budget=1500000000;reserve=20*1024**3;assert shutil.disk_usage(o).free>reserve+budget
+man={x.name:json.loads((x/'artifact-binding.json').read_text()) for x in [s,u,g,old]};bindings=[]
+def bind(x,n):
+ f=x/n;h=sha(f);assert h==man[x.name][n];bindings.append({'file':str(f.relative_to(root)),'sha256':h});return f
+for x in [u,g]:assert json.loads(bind(x,'exit.json').read_text())['observer_preserved_tested_output']
+counts=np.fromfile(bind(g,'observed-captures/layer-0.counts.i32'),dtype='<i4');table=bind(old,'reference/device-sigmoid.f32');prior=json.loads(bind(s,'gu-reference.json').read_text());assert prior['complete'];assert sum(x['rows'] for x in prior['records'])==40960
+for ex in np.flatnonzero(counts):
+ stem=f'layer-0.expert-{ex}'
+ for suffix in ['gu-output.bf16','inter-sf-logical.bin','inter-packed.bin','down-input-scale.f32','flats.i32']:bind(u,'observed-captures/'+stem+'.'+suffix)
+ bind(s,'gu/'+stem+'.replay.bf16')
+save('input-binding.json',bindings);save('plan.json',{'source_manifests':{x.name:sha(x/'artifact-binding.json') for x in [s,u,g,old]},'budget_bytes':budget,'reserve_bytes':reserve,'scope':'Four branches baseline/input high fix/intermediate high fix/both. Intermediate high fix only changes ratios [248,432), retains legacy subnormal rules. Full four-branch quantization outputs; baseline/input_fixed must reproduce previous frozen stage before new branches. No production/new HTTP.','legacy_encoder':'Independent finite positive code table; subnormal half-up clamped7, normal nearest-even then code>=120 mapped126. Equivalent accepted high-range overflow, not an RNE repair.','retention':'All FP32 activation/ratios, scales, packed payload, full difference indices and row distribution for all four branches. Actual GU and changed GU remain in frozen bound sources.'})
+prior=e/'moe-scale-inter-l0-20260924';prior_manifest=json.loads((prior/'artifact-binding.json').read_text());save('prior-manifest.json',{'sha256':sha(prior/'artifact-binding.json')})
+for name,h in prior_manifest.items():
+ if name.startswith('reference/'):assert sha(prior/name)==h
+results=[]
+for mode in ['baseline','input_fixed','inter_fixed','both_fixed']:
+ proc=subprocess.run([str(p/'inter'),str(u/'observed-captures'),str(s/'gu'),str(g/'observed-captures'),str(table),str(d),mode],capture_output=True,text=True,env={**os.environ,'OMP_NUM_THREADS':'8'});(o/(mode+'.stdout')).write_text(proc.stdout);(o/(mode+'.stderr')).write_text(proc.stderr);assert proc.returncode==0,proc.stderr;r=json.loads(proc.stdout);assert r['mode']==mode and sorted(x['expert'] for x in r['records'])==list(np.flatnonzero(counts));assert sum(x['groups'] for x in r['records'])==1638400
+ if mode=='baseline':assert r['sf_changes']==r['fp4_changes']==r['changed_rows']==0
+ tokens=[]
+ for item in r['records']:
+  ex=item['expert'];stem=f'layer-0.expert-{ex}';base=u/'observed-captures'/stem;tag=d/(stem+'.'+mode);rows=counts[ex];sf=np.fromfile(str(tag)+'.sf.bin',dtype='u1');packed=np.fromfile(str(tag)+'.packed.bin',dtype='u1');a=np.fromfile(str(base)+'.inter-sf-logical.bin',dtype='u1');b=np.fromfile(str(base)+'.inter-packed.bin',dtype='u1');sd=np.flatnonzero(sf!=a);pd=np.flatnonzero(packed!=b);assert len(sd)==item['sf_changes'] and np.array_equal(sd,np.fromfile(str(tag)+'.sf-differences.i32',dtype='<i4')) and np.array_equal(pd,np.fromfile(str(tag)+'.packed-differences.i32',dtype='<i4'));assert np.count_nonzero((packed&15)!=(b&15))+np.count_nonzero((packed>>4)!=(b>>4))==item['fp4_changes'];changed=np.any(sf.reshape(rows,40)!=a.reshape(rows,40),axis=1)|np.any(packed.reshape(rows,320)!=b.reshape(rows,320),axis=1);assert int(changed.sum())==item['changed_rows'];assert np.array_equal(changed,np.fromfile(str(tag)+'.row-differences.i32',dtype='<i4')>0)
+  gu=np.fromfile(str(base)+'.gu-output.bf16',dtype='<u2').reshape(rows,1280);new=np.fromfile(s/'gu'/(stem+'.replay.bf16'),dtype='<u2').reshape(rows,1280);gu_changed=np.any(gu!=new,axis=1);assert mode in ['inter_fixed','both_fixed'] or not np.any(changed&~gu_changed);flat=np.fromfile(str(base)+'.flats.i32',dtype='<i4');tokens.extend((flat[changed]//10).tolist())
+  for suffix,n in [('values.f32',rows*640),('ratios.f32',rows*40)]:
+   arr=np.fromfile(str(tag)+'.'+suffix,dtype='<f4');assert len(arr)==n and np.isfinite(arr).all()
+ if mode in ['baseline','input_fixed']:
+  for f in d.glob('*.'+mode+'.*'):
+   name=str(f.relative_to(o));assert sha(f)==prior_manifest[name]
+ else:
+  parent='baseline' if mode=='inter_fixed' else 'input_fixed'
+  repair_counts={'sf_changes_vs_parent':0,'fp4_changes_vs_parent':0,'groups_outside_high_range_changed':0}
+  for item in r['records']:
+   stem=f"layer-0.expert-{item['expert']}";a=d/(stem+'.'+parent);b=d/(stem+'.'+mode)
+   for suffix in ['values.f32','ratios.f32']:assert sha(Path(str(a)+'.'+suffix))==sha(Path(str(b)+'.'+suffix))
+   ratio=np.fromfile(str(b)+'.ratios.f32',dtype='<f4');sf=np.fromfile(str(b)+'.sf.bin',dtype='u1');psf=np.fromfile(str(a)+'.sf.bin',dtype='u1');idx=np.flatnonzero(sf!=psf);assert np.all((ratio[idx]>=248)&(ratio[idx]<432))
+   pack=np.fromfile(str(b)+'.packed.bin',dtype='u1');pp=np.fromfile(str(a)+'.packed.bin',dtype='u1');pd=np.flatnonzero(pack!=pp);assert np.all(np.isin(pd//8,idx));repair_counts['sf_changes_vs_parent']+=len(idx);repair_counts['fp4_changes_vs_parent']+=int(np.count_nonzero((pack&15)!=(pp&15))+np.count_nonzero((pack>>4)!=(pp>>4)))
+  r['repair_vs_parent']=repair_counts
+ r['unique_changed_tokens']=len(set(tokens));results.append(r);print({k:v for k,v in r.items() if k!='records'},flush=True)
+save('reference.json',{'branches':results,'complete':True});summary={'branches':[{k:v for k,v in r.items() if k!='records'} for r in results],'groups_per_branch':1638400,'fp4_elements_per_branch':26214400,'high_only_intervention':True,'runtime_changed':False,'whole_model_correctness_proven':False,'propagation_endpoint':'four branches layer0 intermediate FP4; new branches down/combine pending'}
+for n in ['inter.cpp','common.h','inter','build.log','run.py']:shutil.copy2(p/n,o/n)
+summary['artifact_bytes_before_sealing']=sum(f.stat().st_size for f in o.rglob('*') if f.is_file());assert summary['artifact_bytes_before_sealing']<budget;save('summary.json',summary);print(summary,flush=True)

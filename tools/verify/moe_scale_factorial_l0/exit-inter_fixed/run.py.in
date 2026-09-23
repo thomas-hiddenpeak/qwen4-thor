@@ -1,0 +1,49 @@
+from pathlib import Path
+import hashlib,json,subprocess,os,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];e=root/'.q4t-work/e2e';o=e/p.name;i=e/'moe-scale-factorial-inter-l0-20260924';s=e/'moe-full-down-20260924';u=e/'moe-full-gu-20260924';shared=e/'moe-full-shared-20260924';math=e/'moe-full-shared-nonlinear-20260924';hc=e/'hc-full-boundaries-20260923';plans=root/'.q4t-work/prepared/moe-full-down-20260924/parameters'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as z:
+  for b in iter(lambda:z.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(n,x):(o/n).write_text(json.dumps(x,indent=2)+'\n')
+assert not any((o/'down').iterdir());assert all((p/(n+'-build.log')).stat().st_size==0 for n in ['down','combine','final']);assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e';budget=1500000000;reserve=20*1024**3;assert shutil.disk_usage(o).free>reserve+budget
+man={x.name:json.loads((x/'artifact-binding.json').read_text()) for x in [i,s,u,shared,math,hc]};bindings=[]
+def bind(x,n):
+ f=x/n;h=sha(f);assert h==man[x.name][n];bindings.append({'file':str(f.relative_to(root)),'sha256':h});return f
+for x in [s,u,shared,hc]:assert json.loads(bind(x,'exit.json').read_text())['observer_preserved_tested_output']
+assert json.loads(bind(i,'reference.json').read_text())['complete'];counts=np.fromfile(bind(s,'observed-captures/layer-0.counts.i32'),dtype='<i4');assert counts.sum()==40960
+for n in ['row-of-flat.i32','router-weights.f32','combine-before.f32','combine-after.f32']:bind(s,'observed-captures/layer-0.'+n)
+actual=bind(hc,'observed-captures/hc-0.prefill.write.block.bf16');shared_down=bind(shared,'observed-captures/layer-0.down.output.bf16');sig=bind(math,'reference/layer-0.sigmoid.f32');cp=json.loads(bind(s,'checkpoint-plan.json').read_text());weights=[r for r in cp['records'] if r['layer']==0];changed_tokens=set();changed_input_rows={}
+for ex in np.flatnonzero(counts):
+ stem=f'layer-0.expert-{ex}';rows=counts[ex]
+ for n in ['reorder.i32','flats.i32','down-output.bf16','algo.bin']:bind(s,'observed-captures/'+stem+'.'+n)
+ flat=np.fromfile(bind(u,'observed-captures/'+stem+'.flats.i32'),dtype='<i4');order=np.fromfile(s/'observed-captures'/(stem+'.reorder.i32'),dtype='<i4');target=np.fromfile(s/'observed-captures'/(stem+'.flats.i32'),dtype='<i4');assert np.array_equal(np.sort(order),np.arange(rows)) and np.array_equal(flat[order],target)
+ delta=np.fromfile(bind(i,'reference/'+stem+'.inter_fixed.row-differences.i32'),dtype='<i4')>0;changed_input_rows[int(ex)]=delta[order];changed_tokens.update((flat[delta]//10).tolist())
+ for srcsuffix,dstsuffix in [('sf.bin','inter-sf-logical.bin'),('packed.bin','inter-packed.bin')]:shutil.copy2(bind(i,'reference/'+stem+'.inter_fixed.'+srcsuffix),o/'inputs'/(stem+'.'+dstsuffix))
+for r in weights:
+ name=f"layer-0.expert-{r['expert']}.plan";assert sha(plans/name)==cp['plan_hashes'][name]
+ for t in r['tensors']:
+  f=Path(t['file']);st=f.stat();assert st.st_size==t['size'] and st.st_mtime_ns==t['mtime_ns']
+  with f.open('rb') as z:z.seek(t['offset']);assert hashlib.sha256(z.read(t['bytes'])).hexdigest()==t['sha256']
+save('checkpoint-binding.json',weights);save('input-binding.json',bindings);save('plan.json',{'source_manifests':{x.name:sha(x/'artifact-binding.json') for x in [i,s,u,shared,math,hc]},'budget_bytes':budget,'reserve_bytes':reserve,'scope':'Continue layer0 inter_fixed high-range correction: upstream hash-bound intermediate high-range correction, recorded down GEMM, CPU ten-slot FMA accumulation and unchanged actual shared down/gate FMA+BF16. First reconstruct baseline combined outputs exactly. Propagation ends at MLP block input to HC write, not residual trunk or layer1.','retention':'Complete new down BF16, original and changed routed F32/final pre-round F32/BF16, all differences and per-token counts; original operands remain frozen. Shared path uses actual output and bound prior device sigmoid.'})
+def run(name,args):
+ r=subprocess.run([str(p/args[0])]+[str(x) for x in args[1:]],capture_output=True,text=True,env={**os.environ,'OMP_NUM_THREADS':'8'});(o/(name+'.stdout')).write_text(r.stdout);(o/(name+'.stderr')).write_text(r.stderr);assert r.returncode==0,r.stderr;return json.loads(r.stdout)
+for mode in ['baseline','inter_fixed']:
+ d=o/'combined'/mode;d.mkdir()
+ if mode=='inter_fixed':
+  dr=run('down',['down',s/'observed-captures',o/'inputs',plans,o/'down','0']);assert dr['elements']==104857600 and len(dr['records'])==len(weights)
+  for r in dr['records']:
+   ex=r['expert'];stem=f'layer-0.expert-{ex}';base=np.fromfile(s/'observed-captures'/(stem+'.down-output.bf16'),dtype='<u2').reshape(counts[ex],2560);new=np.fromfile(o/'down'/(stem+'.replay.bf16'),dtype='<u2').reshape(counts[ex],2560);idx=np.flatnonzero(base.reshape(-1)!=new.reshape(-1));assert len(idx)==r['mismatches'] and np.array_equal(idx,np.fromfile(o/'down'/(stem+'.replay-differences.i32'),dtype='<i4'));changed=np.any(base!=new,axis=1);assert not np.any(changed&~changed_input_rows[ex]);assert np.isfinite((new.astype('<u4')<<16).view('<f4')).all();r['changed_rows']=int(changed.sum())
+  save('down-reference.json',dr);print({'down_elements':dr['elements'],'down_changes':dr['mismatches']},flush=True)
+ cr=run(mode+'-combine',['combine',s/'observed-captures',d,'0','baseline' if mode=='baseline' else o/'down']);fr=run(mode+'-final',['final',d/'layer-0.combine-reference.f32',shared_down,sig,actual,d/'final']);assert cr['elements']==fr['elements']==10485760
+ if mode=='baseline':assert cr['fp32_bit_mismatches']==fr['mismatches']==0
+ for phase,ref,base,dtype,width in [('routed',d/'layer-0.combine-reference.f32',s/'observed-captures/layer-0.combine-after.f32','<u4',2560),('final',d/'final.bf16',actual,'<u2',2560)]:
+  raw=np.fromfile(ref,dtype='<f4') if phase=='routed' else (np.fromfile(ref,dtype='<u2').astype('<u4')<<16).view('<f4');assert np.isfinite(raw).all()
+  a=np.fromfile(base,dtype=dtype);b=np.fromfile(ref,dtype=dtype);idx=np.flatnonzero(a!=b).astype('<i4');expected=cr['fp32_bit_mismatches'] if phase=='routed' else fr['mismatches'];assert len(idx)==expected;counts_by_token=np.bincount(idx//width,minlength=4096).astype('<i4');assert set(np.flatnonzero(counts_by_token)).issubset(changed_tokens);idx.tofile(d/(phase+'.differences.i32'));counts_by_token.tofile(d/(phase+'.token-differences.i32'))
+  if phase=='routed':cr['changed_tokens']=int(np.count_nonzero(counts_by_token))
+  else:fr['changed_tokens']=int(np.count_nonzero(counts_by_token))
+ save(mode+'-summary.json',{'routed':cr,'final':fr});print({'mode':mode,'routed':cr,'final':fr},flush=True)
+summary={'down':{'elements':dr['elements'],'mismatches':dr['mismatches'],'changed_rows':sum(r['changed_rows'] for r in dr['records'])},'baseline':json.loads((o/'baseline-summary.json').read_text()),'inter_fixed':json.loads((o/'inter_fixed-summary.json').read_text()),'quant_changed_tokens':len(changed_tokens),'runtime_changed':False,'whole_model_correctness_proven':False,'task_causality_established':False,'propagation_endpoint':'layer0 MLP block output before HC residual write; layer1 not propagated'}
+for n in ['run.py','reused-build.json','down.cpp','combine.cpp','final.cpp','common.h','down','combine','final','down-build.log','combine-build.log','final-build.log']:shutil.copy2(p/n,o/n)
+summary['artifact_bytes_before_sealing']=sum(f.stat().st_size for f in o.rglob('*') if f.is_file());assert summary['artifact_bytes_before_sealing']<budget;save('summary.json',summary);print(summary,flush=True)

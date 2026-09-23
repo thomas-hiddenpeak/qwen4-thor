@@ -1,0 +1,20 @@
+from pathlib import Path
+import json,hashlib,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];e=root/'.q4t-work/e2e';o=e/p.name
+sources={'input_fixed':e/'moe-scale-exit-l0-20260924','inter_fixed':e/'moe-scale-exit-inter_fixed-l0-20260924','both_fixed':e/'moe-scale-exit-both_fixed-l0-20260924'}
+def sha(f):return hashlib.sha256(f.read_bytes()).hexdigest()
+def save(n,x):(o/n).write_text(json.dumps(x,indent=2)+'\n')
+assert not any(o.iterdir());bindings=[];values={};mask={}
+for name,s in sources.items():
+ m=json.loads((s/'artifact-binding.json').read_text())
+ for f in [s/'summary.json',s/f'combined/{name}/final.bf16',s/'combined/baseline/final.bf16']:
+  assert sha(f)==m[str(f.relative_to(s))];bindings.append({'file':str(f.relative_to(root)),'sha256':sha(f)})
+ b=np.fromfile(s/'combined/baseline/final.bf16',dtype='<u2').reshape(4096,2560);v=np.fromfile(s/f'combined/{name}/final.bf16',dtype='<u2').reshape(4096,2560)
+ if values:assert np.array_equal(b,baseline)
+ baseline=b;values[name]=v;mask[name]=np.any(v!=b,axis=1)
+a=mask['input_fixed'];b=mask['inter_fixed'];both=mask['both_fixed'];assert np.array_equal(both,a|b);assert np.array_equal(values['both_fixed'][~a],values['inter_fixed'][~a]);assert np.array_equal(values['both_fixed'][~(a|b)],baseline[~(a|b)])
+summary={'tokens':{k:int(v.sum()) for k,v in mask.items()},'input_inter_overlap_tokens':int(np.count_nonzero(a&b)),'input_only_tokens':int(np.count_nonzero(a&~b)),'inter_only_tokens':int(np.count_nonzero(b&~a)),'both_equals_union':True,'both_equals_inter_outside_input_affected_tokens':True,'no_change_outside_union':True,'runtime_changed':False,'whole_model_correctness_proven':False,'task_causality_established':False}
+for name,v in mask.items():np.flatnonzero(v).astype('<i4').tofile(o/(name+'.tokens.i32'))
+for x,y in [('both_fixed','input_fixed'),('both_fixed','inter_fixed'),('input_fixed','inter_fixed')]:
+ idx=np.flatnonzero(values[x].reshape(-1)!=values[y].reshape(-1)).astype('<i4');idx.tofile(o/(x+'-vs-'+y+'.differences.i32'));summary[x+'_vs_'+y]={'elements':len(idx),'tokens':int(np.unique(idx//2560).size)}
+save('input-binding.json',bindings);save('source-manifests.json',{k:sha(v/'artifact-binding.json') for k,v in sources.items()});save('summary.json',summary);shutil.copy2(p/'run.py',o/'run.py');print(summary,flush=True)
