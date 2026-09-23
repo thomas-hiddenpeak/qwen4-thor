@@ -1,0 +1,62 @@
+from pathlib import Path
+import json,hashlib,struct,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/hc-full-boundaries-20260923';c=o/'observed-captures'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+metas=[json.loads(f.read_text()) for f in c.glob('*.hc.json')];assert len(metas)==240 and all(x['ok'] and x['tokens']==4096 for x in metas)
+assert [sum(x['kind']==k for x in metas) for k in range(4)]==[48,48,48,96]
+old=root/'.q4t-work/e2e/hc-projection-reference-20260923';manifest=json.loads((old/'artifact-binding.json').read_text());assert sha(old/'previous-binding.json')==manifest['previous-binding.json'];prev={x['file']:x['sha256'] for x in json.loads((old/'previous-binding.json').read_text())['records']}
+tails=[]
+for f in sorted(c.glob('*.bf16')):
+ prior=old/'observed-captures'/f.name;assert sha(prior)==prev[f.name],f.name
+ data=prior.read_bytes()
+ with f.open('rb') as s:s.seek(-len(data),2);assert s.read()==data,f.name
+ tails.append({'file':f.name,'last_row_or_weight_sha256':prev[f.name]})
+save('previous-binding.json',{'manifest_sha256':sha(old/'artifact-binding.json'),'records':tails})
+edges=[];cache={}
+def digest(f):
+ if f not in cache:cache[f]=sha(f)
+ return cache[f]
+def edge(a,b):
+ assert digest(a)==digest(b),(a,b)
+ edges.append({'source':str(a.relative_to(root)),'target':str(b.relative_to(root)),'sha256':digest(a),'bytes':a.stat().st_size})
+def hc(l,k):return c/f'hc-{l}.prefill.{k}.bf16'
+for l in range(48):
+ for a,b in [('read.trunk','fused.residual'),('read.output','mix.attn.normed'),('fused.output','write.residual'),('fused.normed','mix.mlp.normed')]:edge(hc(l,a),hc(l,b))
+ if l>1:edge(hc(l-1,'write.output'),hc(l,'read.trunk'))
+prior_manifests={}
+def oldedge(prefix,name,target):
+ directory=root/'.q4t-work/e2e'/prefix
+ if prefix not in prior_manifests:prior_manifests[prefix]=json.loads((directory/'artifact-binding.json').read_text())
+ f=directory/name;assert digest(f)==prior_manifests[prefix][name];edge(f,target)
+oldedge('model-input-reference-20260923','observed-captures/step-0.expanded.bf16',hc(0,'read.trunk'))
+for l in range(48):
+ if l%4==3:continue
+ oldedge('linear-full-projection-20260923',f'observed-captures/layer-{l}.prefill.qkv.input.bf16',hc(l,'mix.attn.output'))
+ oldedge('linear-full-output-v2-20260923',f'observed-captures/layer-{l}.prefill.out.output.bf16',hc(l,'fused.block'))
+save('boundary-binding.json',edges)
+a=np.memmap(hc(0,'write.output'),dtype='<u2',mode='r',shape=(4096,10240));b=np.memmap(hc(1,'read.trunk'),dtype='<u2',mode='r',shape=(4096,10240));counts=np.count_nonzero(a!=b,axis=1);save('ple-transition.json',{'expected_nonidentity':True,'changed_elements':int(counts.sum()),'changed_per_row':counts.tolist(),'arithmetic_verified_here':False})
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');index=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];weights=[]
+for l in range(48):
+ for kind,stage in [('read','attn'),('fused','mlp')]:
+  key=f'model.language_model.layers.{l}.{stage}_hyper_connection.hc_norm.weight';f=model/index[key]
+  with f.open('rb') as s:
+   n=struct.unpack('<Q',s.read(8))[0];meta=json.loads(s.read(n))[key];assert meta['dtype']=='BF16' and np.prod(meta['shape'])==10240;start,end=meta['data_offsets'];offset=8+n+start;s.seek(offset);data=s.read(end-start)
+  assert data==hc(l,kind+'.norm-weights').read_bytes();assert np.fromfile(c/f'hc-{l}.prefill.{kind}.eps.f32',dtype='<f4').tolist()==[float(np.float32(1e-6))]
+  weights.append({'key':key,'path':str(f),'offset':offset,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest(),'size':f.stat().st_size,'mtime_ns':f.stat().st_mtime_ns})
+save('checkpoint-binding.json',weights)
+r=json.loads((o/'residual-reference.json').read_text());assert len(r['records'])==96 and r['cpu_mismatches']==0
+for item in r['records']:
+ name=f"hc-{item['layer']}.prefill.{item['kind']}";assert sha(c/(name+'.output.bf16'))==sha(o/'reference'/(name+'.cpu.bf16'));assert (o/'reference'/(name+'.fp64-differences.i32')).stat().st_size==item['fp64_mismatches']*4
+summary={'residual_elements':sum(x['elements'] for x in r['records']),'cpu_fma_mismatches':r['cpu_mismatches'],'fp64_product_sum_then_fp32_mismatches':r['fp64_mismatches'],'full_identity_edges':len(edges),'previous_tail_or_weight_bindings':len(tails),'checkpoint_norm_weights':len(weights),'ple_nonidentity_elements':int(counts.sum()),'whole_model_correctness_proven':False,'runtime_changed':False,'full_norm_mix_projection_arithmetic_verified':False}
+save('summary.json',summary)
+for f in p.iterdir():
+ if f.is_file():shutil.copy2(f,o/f.name)
+save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})
+print(summary,flush=True)

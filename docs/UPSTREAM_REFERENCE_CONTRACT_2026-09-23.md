@@ -52,12 +52,12 @@ QSA使用QsaDecodeSplit，其余使用SparseAttentionKernel。实际分支
 | GDN prefill | 初始S、全序列QKV/a/b、norm前后和最终S | 全递推与BF16中间边界 | 36层4096位置的q/k归一化及全递推同指定参考；非线性复用设备数学函数，完整卷积与全行输入投影已接通，HC输入本身仍为实际数据 |
 | QSA cache/indexer | 位置、RoPE、KV页表/新增槽、压缩索引、分数和top-k | 因果可见集、索引选择、softmax及attention | 12个全attention层末prefill/首decode已核对选择、KV、压缩/indexer和attention指定算术；不覆盖全部prefill query或其他上下文 |
 | PLE | token历史、hash参数、SSD行身份、反量化值、卷积历史 | 查表身份、门控投影、因果conv与trunk加法 | 全请求查表内容同预期SSD行；门控/投影/卷积仅末10个prefill及首decode等报告范围，不覆盖全token算术 |
-| GRRead/Write | 四路trunk、norm权重、投影/门控、写回BF16边界 | 混合、注入、残差与融合舍入顺序 | 48层末prefill/首decode的实际权重、投影、混合、写回及层间交接已接通；不是全部token独立前向 |
+| GRRead/Write | 四路trunk、norm权重、投影/门控、写回BF16边界 | 混合、注入、残差与融合舍入顺序 | 48层末prefill/首decode权重、投影、混合已核对；完整4K残差及311条交接已绑定，全部token的norm/mix/投影算术仍待补齐 |
 | 最终head | 最终trunk、mix/norm/词表投影、logits及argmax | logit、排序与首处分歧 | 七次最终mixer/全词表/选择/下一步输入已核对；上游实际主干不等于从原始输入独立生成 |
 
 参考分两层：独立高精度公式检查数学对象；按指定精度/顺序的参考
 解释实际舍入。必须报告全部差异，不临时添加容忍条件；算术解释
-不能覆盖任务质量退化。下一步梳理完整prefill HC混合/残差的全位置参考与采集容量，
+不能覆盖任务质量退化。下一步复用冻结快照重建完整prefill HC归一化与混合算术，
 同时保留原4K错误、已知E4M3尺度问题与其他请求尚未证明的限制。
 不以局部算术一致或旧文档“已闭合”代替真实任务质量。
 

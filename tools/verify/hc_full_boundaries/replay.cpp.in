@@ -1,0 +1,24 @@
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+template<class T>std::vector<T> Read(const std::string& p,size_t n){std::ifstream f(p,std::ios::binary|std::ios::ate);if(!f||size_t(f.tellg())!=n*sizeof(T))throw std::runtime_error(p);std::vector<T>v(n);f.seekg(0);if(!f.read(reinterpret_cast<char*>(v.data()),n*sizeof(T)))throw std::runtime_error(p);return v;}
+uint32_t Bits(float x){uint32_t b;std::memcpy(&b,&x,4);return b;}
+float B(uint16_t x){uint32_t b=uint32_t(x)<<16;float f;std::memcpy(&f,&b,4);return f;}
+uint16_t Round(float x){uint32_t b=Bits(x);return uint16_t((b+0x7fff+((b>>16)&1))>>16);}
+template<class T>void Save(const std::string&p,const std::vector<T>&v){std::ofstream f(p,std::ios::binary);if(!f.write(reinterpret_cast<const char*>(v.data()),v.size()*sizeof(T)))throw std::runtime_error(p);}
+int main(int argc,char**argv){try{
+ if(argc!=3){throw std::runtime_error("captures outputs");}bool first=true;size_t total=0,high_total=0;std::printf("{\"records\":[");
+ for(int l=0;l<48;++l)for(const char*kind:{"fused","write"}){
+  std::string name="hc-"+std::to_string(l)+".prefill."+kind,b=std::string(argv[1])+"/"+name,o=std::string(argv[2])+"/"+name;constexpr size_t n=size_t(4096)*10240;
+  auto residual=Read<uint16_t>(b+".residual.bf16",n),block=Read<uint16_t>(b+".block.bf16",size_t(4096)*2560),gate=Read<uint16_t>(b+".gate.bf16",4096*4),actual=Read<uint16_t>(b+".output.bf16",n);std::vector<uint16_t>result(n);std::vector<int32_t>high_diff;size_t bad=0,high_bad=0;
+  #pragma omp parallel for reduction(+:bad,high_bad)
+  for(size_t i=0;i<n;++i){size_t t=i/10240,branch=(i%10240)/2560,c=i%2560;float x=B(block[t*2560+c]),g=B(gate[t*4+branch]),r=B(residual[i]);result[i]=Round(std::fma(x,g,r));bad+=result[i]!=actual[i];high_bad+=Round(float(double(x)*double(g)+double(r)))!=actual[i];}
+  if(high_bad){for(size_t i=0;i<n;++i){size_t t=i/10240,branch=(i%10240)/2560,c=i%2560;double x=B(block[t*2560+c]),g=B(gate[t*4+branch]),r=B(residual[i]);if(Round(float(x*g+r))!=actual[i])high_diff.push_back(int32_t(i));}}
+  Save(o+".cpu.bf16",result);Save(o+".fp64-differences.i32",high_diff);std::printf("%s{\"layer\":%d,\"kind\":\"%s\",\"elements\":%zu,\"cpu_mismatches\":%zu,\"fp64_mismatches\":%zu}",first?"":",",l,kind,n,bad,high_bad);std::fflush(stdout);first=false;total+=bad;high_total+=high_bad;
+ }std::printf("],\"cpu_mismatches\":%zu,\"fp64_mismatches\":%zu}\n",total,high_total);return 0;
+}catch(const std::exception&e){std::fprintf(stderr,"%s\n",e.what());return 2;}}
