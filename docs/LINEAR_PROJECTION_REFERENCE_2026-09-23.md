@@ -95,3 +95,60 @@ raw-http-audit.json、observed-captures、previous-binding.json、
 replay-result.json、replay/及artifact-binding.json。独立重放退出0，
 原始输出文件另行逐字节复核；构建失败与随后零警告日志均保留。
 仓库保存算法观测和独立重放模板。
+
+## 后续：完整4096行输入投影（2026-09-23）
+
+此前同形状重放复制末行输入，本轮改为捕获并重放实际完整矩阵，
+不将旧末行结论扩展成全序列结论。生产运行时未改，仍2392f6b1。
+
+新观测器零警告构建后首项原4K无观测→观测→无观测HTTP，三侧
+仍4096输入、7输出、600440、stop，服务0、质量驱动1。288份
+投影元数据、144份prefill算法完整，workspace均32 MiB。
+观测一致不等于任务质量通过，诊断时间不进入性能结果。
+
+36层QKV/z/a/b实际输入均为[4096,2560]，每层四个输入完整字节
+相同；权重逐字节匹配checkpoint的相应BF16矩阵。QKV全部行同
+完整短卷积输入，a/b全部行同完整GDN的a/beta输入，均核对旧证据
+artifact-binding。z完整输出本轮已捕获，但下游NormGate的全行消费
+尚未直接观测，不将末行证据放大。
+
+记录实际cuBLASLt算法、布局、BF16输入/输出、FP32计算、alpha1/
+beta0，在4096行原始输入上重放144次，2430074880个BF16输出
+全部逐位一致。算法兼容性检查通过，cuBLAS版本记录在原始结果中。
+这里仍使用同一cuBLAS算法，是脱离模型调度的全矩阵重放，不是
+独立证明cuBLAS底层算术或硬件正确。
+
+另将实际BF16权重与全行输入精确扩展为FP64，使用独立Dgemm路径
+完成全量点积，再经FP32→BF16舍入，与HTTP输出比较如下：
+
+| 投影 | FP64参考舍入后不同的BF16值数 |
+|---|---:|
+| QKV | 2017085 |
+| z | 551949 |
+| a | 5080 |
+| b | 4876 |
+| 合计 | 2578990 |
+
+FP64完整分数、舍入结果及所有差异索引留存，不设临时阈值、不删去
+差异。该参考也是GPU库路径，不能声称完全独立于设备数学实现。
+每次末行的差异索引还与此前独立CPU FP64参考逐项交叉核对，仍为
+原638项；绑定旧参考摘要，非重新生成旧结果后再比较。
+
+首版FP64辅助程序使用cuda_runtime_api.h时传double**给cudaMalloc，
+编译类型错误留档；显式转换后零警告，尚未执行数值测试时即修正。
+HTTP计划的scope文字还保留旧“last prefill token”，其同时记录的
+full_prefill_rows=4096、观测器源码和实际文件大小明确本轮范围；
+原计划不覆盖，另存scope-clarification.json说明，永久模板已更正文字。
+
+全量核查再次比较记录算法结果、FP64舍入与差异索引、checkpoint
+权重和上下游全行边界，退出0。当前给定实际混合输入时，完整输入
+投影→卷积→q/k归一化→GDN递推已接通指定参考。但混合输入本身
+尚非全token独立生成，z门控及最终out_proj全行尚未核对，原错题
+仍未修复，已知E4M3编码问题仍在，不能据此认定整模型正确。
+
+下一步补完整NormGate与linear out_proj及其实际输出交接。
+新证据`.q4t-work/e2e/linear-full-projection-20260923/`，包含三侧HTTP、
+全行投影快照、算法、checkpoint/boundary/previous-fp64绑定、全量
+重放/FP64原件及artifact-binding。工具在tools/verify/linear_full_projection/；
+必要构建零警告后先run.py HTTP，再analyze.py→audit.py，不能覆盖
+已有证据。没有运行旧bench、改变生产计算或接受新性能结论。

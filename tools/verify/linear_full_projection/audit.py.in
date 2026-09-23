@@ -1,0 +1,33 @@
+from pathlib import Path
+import json,hashlib,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/linear-full-projection-20260923';c=o/'observed-captures';d=o/'reference'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for block in iter(lambda:stream.read(4*1024*1024),b''):h.update(block)
+ return h.hexdigest()
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+r=json.loads((o/'replay-reference.json').read_text());high=json.loads((o/'fp64-reference.json').read_text());assert len(r['records'])==len(high['records'])==144 and r['total_mismatches']==0
+assert sum(x['elements'] for x in r['records'])==36*4096*(10240+6144+48+48)
+previous=root/'.q4t-work/e2e/linear-prefill-algorithm-20260923';manifest=json.loads((previous/'artifact-binding.json').read_text());assert sha(previous/'previous-binding.json')==manifest['previous-binding.json'];link=json.loads((previous/'previous-binding.json').read_text());earlier=root/'.q4t-work/e2e/linear-projection-reference-v2-20260923/projection-reference.json';assert sha(earlier)==link['previous_reference_sha256'];old_records={(x['layer'],x['stage']):x for x in json.loads(earlier.read_text())['records'] if x['phase']=='prefill'}
+last_rows=[]
+for record in high['records']:
+ b=f"layer-{record['layer']}.prefill.{record['stage']}";actual=np.fromfile(c/(b+'.output.bf16'),dtype='<u2');assert actual.size==record['elements'] and sha(c/(b+'.output.bf16'))==sha(d/(b+'.replay.bf16'))
+ value=np.fromfile(d/(b+'.fp64.f64'),dtype='<f8');assert value.size==actual.size and np.isfinite(value).all();bits=value.astype(np.float32).view(np.uint32);rounded=((bits+0x7fff+((bits>>16)&1))>>16).astype(np.uint16);assert np.array_equal(rounded,np.fromfile(d/(b+'.fp64.bf16'),dtype='<u2'));idx=np.flatnonzero(rounded!=actual);assert len(idx)==record['mismatches'] and np.array_equal(idx,np.fromfile(d/(b+'.fp64.differences.i32'),dtype='<i4'))
+ width=record['elements']//4096;last=np.flatnonzero(rounded[-width:]!=actual[-width:]);old=old_records[(record['layer'],record['stage'])];assert last.tolist()==old['mismatch_indices'];last_rows.append({'layer':record['layer'],'stage':record['stage'],'fp64_last_row_mismatches':len(last)})
+save(o/'previous-fp64-binding.json',{'earlier_reference_sha256':sha(earlier),'records':last_rows,'last_row_mismatches':sum(x['fp64_last_row_mismatches'] for x in last_rows)})
+for binding in json.loads((o/'boundary-binding.json').read_text()):
+ a=root/binding['old'];b=root/binding['new'];assert sha(a)==binding['old_sha256']
+ if binding['kind']=='full-output':assert sha(b)==sha(a)
+ else:
+  with b.open('rb') as f:f.seek(4095*binding['width']*2);assert f.read()==a.read_bytes()
+for binding in json.loads((o/'checkpoint-binding.json').read_text()):
+ f=Path(binding['path']);st=f.stat();assert st.st_size==binding['size'] and st.st_mtime_ns==binding['mtime_ns']
+ with f.open('rb') as stream:stream.seek(binding['offset']);raw=stream.read(binding['bytes']);assert len(raw)==binding['bytes'] and hashlib.sha256(raw).hexdigest()==binding['sha256']
+summary={'calls':144,'elements':sum(x['elements'] for x in r['records']),'recorded_algorithm_mismatches':0,'fp64_mismatches':sum(x['mismatches'] for x in high['records']),'fp64_by_stage':{s:sum(x['mismatches'] for x in high['records'] if x['stage']==s) for s in ['qkv','z','a','b']},'runtime_changed':False,'whole_model_correctness_proven':False,'limitation':'Actual mixed input supplied. Replay uses same cuBLAS algorithm;FP64 usesseparateDgemm,notindependenthardwareproof. z downstream full-outputnotcaptured. Original4Kanswerstillwrong.'};save(o/'projection-summary.json',summary)
+for f in p.iterdir():
+ if f.is_file():shutil.copy2(f,o/f.name)
+save(o/'artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})
+print(summary)

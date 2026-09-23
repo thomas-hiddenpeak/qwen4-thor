@@ -1,0 +1,44 @@
+from pathlib import Path
+import json,hashlib,struct,subprocess,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/linear-full-projection-20260923';c=o/'observed-captures';d=o/'reference';old=root/'.q4t-work/e2e/linear-prefill-algorithm-20260923';conv=root/'.q4t-work/e2e/linear-prefill-conv-20260923';gdn=root/'.q4t-work/e2e/gdn-prefill-reference-20260923'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for block in iter(lambda:stream.read(4*1024*1024),b''):h.update(block)
+ return h.hexdigest()
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+for name in ['build','replay-build','fp64-build']:assert (p/(name+'.log')).stat().st_size==0
+d.mkdir(exist_ok=False)
+save(o/'scope-clarification.json',{'full_prefill_rows':4096,'note':'Original plan retains last-row wording from older capture; full_prefill_rows field, capture sizes and controller source establish actual full-row scope. Original plan preserved.'})
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');index=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];weights=[];bindings=[];old_meta=json.loads((old/'artifact-binding.json').read_text());conv_meta=json.loads((conv/'artifact-binding.json').read_text());gdn_meta=json.loads((gdn/'artifact-binding.json').read_text())
+assert sha(old/'previous-binding.json')==old_meta['previous-binding.json']
+old_hash={x['file']:x['sha256'] for x in json.loads((old/'previous-binding.json').read_text())['records']}
+for l in range(48):
+ if l%4==3:continue
+ common=None
+ for stage,n in [('qkv',10240),('z',6144),('a',48),('b',48)]:
+  b=f'layer-{l}.prefill.{stage}';inp=c/(b+'.input.bf16');out=c/(b+'.output.bf16');assert inp.stat().st_size==4096*2560*2 and out.stat().st_size==4096*n*2
+  h=sha(inp)
+  if common is None:common=h
+  assert common==h
+  for suffix,width in [('input.bf16',2560),('output.bf16',n)]:
+   a=old/'observed-captures'/(b+'.'+suffix);new=c/(b+'.'+suffix)
+   # Previous snapshots are bound through a per-file manifest when present.
+   assert sha(a)==old_hash[a.name]
+   with new.open('rb') as f:f.seek((4096-1)*width*2);assert f.read(width*2)==a.read_bytes()
+   bindings.append({'old':str(a.relative_to(root)),'old_sha256':sha(a),'new':str(new.relative_to(root)),'kind':'last-row','width':width})
+  name=f'model.language_model.layers.{l}.linear_attn.in_proj_{stage}.weight';file=model/index[name];st=file.stat()
+  with file.open('rb') as f:
+   size=struct.unpack('<Q',f.read(8))[0];info=json.loads(f.read(size))[name];assert info['dtype']=='BF16' and info['shape']==[n,2560];start,end=info['data_offsets'];f.seek(8+size+start);w=f.read(end-start)
+  assert file.stat()==st and w==(c/(b+'.weights.bf16')).read_bytes();weights.append({'tensor':name,'path':str(file),'offset':8+size+start,'bytes':len(w),'sha256':hashlib.sha256(w).hexdigest(),'size':st.st_size,'mtime_ns':st.st_mtime_ns})
+  bound=None;manifest=None
+  if stage=='qkv':bound=conv/'observed-captures'/f'layer-{l}.input.bf16';manifest=conv_meta
+  if stage in ['a','b']:bound=gdn/'observed-captures'/f"layer-{l}.prefill-{'a' if stage=='a' else 'beta'}.bf16";manifest=gdn_meta
+  if bound is not None:
+   h=sha(bound);assert h==manifest['observed-captures/'+bound.name] and h==sha(out);bindings.append({'old':str(bound.relative_to(root)),'old_sha256':h,'new':str(out.relative_to(root)),'kind':'full-output'})
+ save(o/'checkpoint-binding.json',weights);save(o/'boundary-binding.json',bindings)
+for tool in ['replay','fp64']:
+ with (o/(tool+'-reference.json')).open('w') as out,(o/(tool+'.stderr')).open('w') as err:r=subprocess.run([str(p/tool),str(c),str(d)],stdout=out,stderr=err)
+ assert r.returncode==0,(tool,r.returncode)
+ record=json.loads((o/(tool+'-reference.json')).read_text());assert len(record['records'])==144;print(tool,'elements',sum(x['elements'] for x in record['records']),'mismatches',sum(x['mismatches'] for x in record['records']),flush=True)
