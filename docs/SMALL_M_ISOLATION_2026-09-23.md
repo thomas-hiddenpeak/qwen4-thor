@@ -154,3 +154,27 @@ raw-performance-audit.json保存全部20项双参考比较，包括首请求
 候选不改源码或重构建，工作区混合候选也保持原样。只比较相邻
 正式前后，固定fcb5925仍单独保留，不能由正式对照自动豁免。
 尚未完成，不作性能或运行时接受结论。
+
+相邻复核前侧正式版已完成四档12响应，原始SQLite/SSE核对
+通过，输出均同正式参考，驱动/服务0，原PID2353849已退出。
+独立候选服务PID2357839已接续，控制会话24545仍活跃。
+raw-completed-service-audit.json保存已结束服务审计；候选和
+后侧正式未完成，尚无相邻性能结论。
+
+## 源码调用范围补充（不是实测覆盖）
+
+静态核对隔离源码与只读checkpoint配置：Bf16SmallMGemm接在公共
+Bf16Gemm入口，不能把它理解为仅作用于HTTP并发2/3/4。主干
+GDN/QKV/GR/PLE/router/shared expert/head大多传M=T，但存在：
+
+- 短上下文非池化indexer传M=T×indexer_n_heads，实际头数4；
+  因而T=1也可进入M=4。池化T=1另走IndexerDecodeScores分支。
+- MTP fc_hidden传M=T×hc，实际hc=4，T=1亦为M=4；本轮MTP关闭。
+- 草稿BF16专家按每专家compact后的行数调用，小行数不等于
+  HTTP并发数。vision也共用此入口，文本测试不证明视觉覆盖。
+
+来源摘要保存在prepared/candidate-decomposition-20260923/
+small-m-static-scope.json。以上只是源码可达形状，不是kernel观察、
+数值验证或新增性能结论。即使默认serve性能复核通过，也不能
+直接接受为所有消费者已验证；仍需评估相关路径一致性及实际
+价值。当前相邻测试继续原配置，不因本次核对改变测试中参数。
