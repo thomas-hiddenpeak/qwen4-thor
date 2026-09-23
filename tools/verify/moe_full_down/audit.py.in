@@ -1,0 +1,19 @@
+from pathlib import Path
+import json,hashlib,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/moe-full-down-20260924'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+manifest=json.loads((o/'artifact-binding.json').read_text())
+for key,digest in manifest.items():assert sha(o/key)==digest
+assert sha(root/'build/q4t')==json.loads((o/'plan.json').read_text())['binary_sha256']
+reference=json.loads((o/'combine-reference.json').read_text());assert reference['complete'] and len(reference['records'])==48;total=bad=0
+for l,r in enumerate(reference['records']):
+ assert r['layer']==l and r['elements']==4096*2560;assert sha(o/r['base_file'])==r['base_sha256'];actual=np.fromfile(o/r['base_file'],dtype='<u4');reconstructed=actual.copy()
+ with np.load(o/'reference'/f'layer-{l}.combine-delta.npz') as delta:
+  idx=delta['indices'];bits=delta['bits'];assert len(idx)==len(bits)==r['fp32_bit_mismatches'] and np.all(np.diff(idx)>0) and np.all((idx>=0)&(idx<len(actual)));reconstructed[idx]=bits
+ assert hashlib.sha256(reconstructed.tobytes()).hexdigest()==r['reference_sha256'];assert np.count_nonzero(reconstructed!=actual)==r['fp32_bit_mismatches'];total+=r['elements'];bad+=r['fp32_bit_mismatches']
+summary=json.loads((o/'summary.json').read_text());assert total==summary['combine_reference_elements']==503316480 and bad==summary['combine_cpu_fp32_bit_mismatches'];assert summary['pre_combine_all_positive_zero'];assert not list((o/'reference').glob('*.combine-reference.f32'));save('audit-summary.json',{'manifest_entries_verified':len(manifest),'complete_combine_reference_reconstructed':True,'combine_reference_elements':total,'combine_cpu_fp32_bit_mismatches':bad,'temporary_full_references_removed_only_after_lossless_verification':True,'down_arithmetic_verified':False,'shared_expert_and_final_moe_combine_verified':False,'runtime_changed':False,'whole_model_correctness_proven':False});shutil.copy2(p/'audit.py',o/'audit.py');save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'});print(json.loads((o/'audit-summary.json').read_text()),flush=True)

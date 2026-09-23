@@ -1,0 +1,441 @@
+#include <cuda_runtime_api.h>
+#include <cublasLt.h>
+#include <dlfcn.h>
+#include <atomic>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <vector>
+#include <fstream>
+namespace {
+template <class T>
+T Resolve(const char* n) {
+  auto f = reinterpret_cast<T>(dlsym(RTLD_NEXT, n));
+  if (!f) std::_Exit(127);
+  return f;
+}
+template <class T>
+T* Ptr(void** a, int i) {
+  return *static_cast<T**>(a[i]);
+}
+bool Save(const std::string& n, const void* p, size_t bytes) {
+  FILE* f = std::fopen(n.c_str(), "wb");
+  if (!f) return false;
+  bool ok = std::fwrite(p, 1, bytes, f) == bytes;
+  return std::fclose(f) == 0 && ok;
+}
+bool Read(void* p, const void* x, size_t bytes, cudaStream_t s) {
+  static auto copy = Resolve<decltype(&cudaMemcpyAsync)>("cudaMemcpyAsync");
+  static auto sync =
+      Resolve<decltype(&cudaStreamSynchronize)>("cudaStreamSynchronize");
+  return copy(p, x, bytes, cudaMemcpyDeviceToHost, s) == cudaSuccess &&
+         sync(s) == cudaSuccess;
+}
+bool Capture(const std::string& n, const void* x, size_t bytes,
+             cudaStream_t s) {
+  std::vector<unsigned char> b(bytes);
+  return Read(b.data(), x, bytes, s) && Save(n, b.data(), bytes);
+}
+bool Compare(const std::string& n, const void* x, size_t bytes,
+             cudaStream_t s) {
+  std::vector<unsigned char> b(bytes), chunk(1048576);
+  if (!Read(b.data(), x, bytes, s)) return false;
+  FILE* f = std::fopen(n.c_str(), "rb");
+  if (!f) return false;
+  bool ok = true;
+  size_t pos = 0;
+  while (pos < bytes) {
+    size_t amount = bytes - pos;
+    if (amount > chunk.size()) amount = chunk.size();
+    if (std::fread(chunk.data(), 1, amount, f) != amount ||
+        std::memcmp(chunk.data(), b.data() + pos, amount)) {
+      ok = false;
+      break;
+    }
+    pos += amount;
+  }
+  ok = ok && std::fgetc(f) == EOF;
+  return std::fclose(f) == 0 && ok;
+}
+
+bool File(const std::string& path, std::vector<uint8_t>* out) {
+  std::ifstream f(path, std::ios::binary | std::ios::ate);
+  if (!f) return false;
+  auto n = f.tellg();
+  if (n < 0) return false;
+  out->resize(size_t(n));
+  f.seekg(0);
+  return bool(f.read(reinterpret_cast<char*>(out->data()), n));
+}
+bool Equal(const std::vector<uint8_t>& expected, const void* gpu,
+           cudaStream_t stream) {
+  std::vector<uint8_t> actual(expected.size());
+  return Read(actual.data(), gpu, actual.size(), stream) && actual == expected;
+}
+bool TensorPlan(const std::string& path,
+                std::vector<std::vector<uint8_t>>* data) {
+  std::ifstream plan(path);
+  if (!plan) return false;
+  data->clear();
+  for (int i = 0; i < 4; ++i) {
+    std::string file;
+    size_t off = 0, n = 0;
+    if (!(plan >> file >> off >> n)) return false;
+    std::ifstream f(file, std::ios::binary);
+    if (!f) return false;
+    f.seekg(off);
+    std::vector<uint8_t> v(n);
+    if (!f.read(reinterpret_cast<char*>(v.data()), n)) return false;
+    data->push_back(std::move(v));
+  }
+  return true;
+}
+float Scalar(const std::vector<uint8_t>& v) {
+  float x = 0;
+  if (v.size() == 4) std::memcpy(&x, v.data(), 4);
+  return x;
+}
+void Meta(const std::string& name, bool ok, const std::string& extra = "") {
+  std::string v =
+      std::string("{\"ok\":") + (ok ? "true" : "false") + extra + "}\n";
+  Save(name, v.data(), v.size());
+}
+template <typename T>
+bool Layout(cublasLtMatrixLayout_t layout, cublasLtMatrixLayoutAttribute_t key,
+            T* value) {
+  static const auto get = Resolve<decltype(&cublasLtMatrixLayoutGetAttribute)>(
+      "cublasLtMatrixLayoutGetAttribute");
+  size_t size = 0;
+  return get(layout, key, value, sizeof(T), &size) == CUBLAS_STATUS_SUCCESS &&
+         size == sizeof(T);
+}
+template <typename T>
+bool Attribute(cublasLtMatmulDesc_t desc, cublasLtMatmulDescAttributes_t key,
+               T* value) {
+  static const auto get = Resolve<decltype(&cublasLtMatmulDescGetAttribute)>(
+      "cublasLtMatmulDescGetAttribute");
+  size_t size = 0;
+  return get(desc, key, value, sizeof(T), &size) == CUBLAS_STATUS_SUCCESS &&
+         size == sizeof(T);
+}
+bool Shape(cublasLtMatrixLayout_t desc, uint64_t rows, uint64_t cols,
+           cudaDataType_t type) {
+  uint64_t r = 0, c = 0;
+  int64_t ld = 0;
+  cudaDataType_t t{};
+  cublasLtOrder_t order{};
+  return Layout(desc, CUBLASLT_MATRIX_LAYOUT_ROWS, &r) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_COLS, &c) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_LD, &ld) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_TYPE, &t) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_ORDER, &order) && r == rows &&
+         c == cols && ld == static_cast<int64_t>(rows) && t == type &&
+         order == CUBLASLT_ORDER_COL;
+}
+
+struct Pending {
+  int expert = -1, rows = 0;
+  bool ok = false;
+  float scale = 0;
+  const void* packed = nullptr;
+  const void* sf = nullptr;
+  std::string name, old;
+  std::vector<int32_t> reorder;
+};
+Pending gather_pending, down_pending;
+std::atomic<cudaKernel_t> lists_kernel{}, gather_kernel{}, inter_kernel{},
+    combine_kernel{};
+int layer = -1, gather_calls = 0, inter_calls = 0, down_calls = 0,
+    total_rows = 0;
+bool layer_ok = false;
+std::string base;
+std::vector<int32_t> counts(512), offsets(513);
+std::vector<const void*> outputs(512);
+bool Reordered(const std::string& file, const void* gpu, size_t width,
+               const Pending& state, cudaStream_t stream) {
+  std::vector<uint8_t> expected, actual(size_t(state.rows) * width);
+  if (!File(file, &expected) || expected.size() != actual.size() ||
+      !Read(actual.data(), gpu, actual.size(), stream))
+    return false;
+  for (int row = 0; row < state.rows; ++row)
+    if (std::memcmp(actual.data() + size_t(row) * width,
+                    expected.data() + size_t(state.reorder[row]) * width,
+                    width))
+      return false;
+  return true;
+}
+}  // namespace
+extern "C" cudaError_t __cudaGetKernel(cudaKernel_t* k, const void* fn) {
+  static auto real =
+      Resolve<cudaError_t (*)(cudaKernel_t*, const void*)>("__cudaGetKernel");
+  auto result = real(k, fn);
+  if (result == cudaSuccess) {
+    const char* n = nullptr;
+    static auto name = Resolve<decltype(&cudaFuncGetName)>("cudaFuncGetName");
+    if (name(&n, fn) == cudaSuccess && n) {
+      if (std::strstr(n, "BuildTokenListsKernel")) lists_kernel = *k;
+      if (std::strstr(n, "GatherQuantKernel")) gather_kernel = *k;
+      if (std::strstr(n, "SwiGLUQuantKernel")) inter_kernel = *k;
+      if (std::strstr(n, "CombineGroupedKernel")) combine_kernel = *k;
+    }
+  }
+  return result;
+}
+extern "C" cudaError_t __cudaLaunchKernel(cudaKernel_t k, dim3 grid, dim3 block,
+                                          void** a, size_t smem,
+                                          cudaStream_t stream) {
+  static auto real =
+      Resolve<cudaError_t (*)(cudaKernel_t, dim3, dim3, void**, size_t,
+                              cudaStream_t)>("__cudaLaunchKernel");
+  const char *dir = std::getenv("Q4T_GDN_CAPTURE_DIR"),
+             *prior = std::getenv("Q4T_GU_PRIOR"),
+             *gather = std::getenv("Q4T_GATHER_PRIOR"),
+             *router = std::getenv("Q4T_ROUTER_PRIOR");
+  if (!dir || !prior || !gather || !router)
+    return real(k, grid, block, a, smem, stream);
+  bool build = k == lists_kernel && *static_cast<int*>(a[1]) == 4096;
+  if (build) {
+    ++layer;
+    base = std::string(dir) + "/layer-" + std::to_string(layer);
+    gather_pending = {};
+    down_pending = {};
+    gather_calls = inter_calls = down_calls = total_rows = 0;
+    outputs.assign(512, nullptr);
+    layer_ok = layer < 48 && *static_cast<int*>(a[2]) == 10 &&
+               *static_cast<int*>(a[3]) == 512 &&
+               Compare(std::string(router) + "/layer-" + std::to_string(layer) +
+                           ".ids.i32",
+                       Ptr<int32_t>(a, 0), 40960 * 4, stream);
+  }
+  bool take_inter = k == inter_kernel && gather_pending.expert >= 0;
+  Pending snap = gather_pending;
+  if (take_inter) {
+    snap.scale = *static_cast<float*>(a[6]);
+    snap.ok = snap.ok && *static_cast<int*>(a[3]) == snap.rows &&
+              *static_cast<int*>(a[4]) == 640 &&
+              *static_cast<int*>(a[5]) == 10 &&
+              Reordered(snap.old + ".gu-output.bf16", Ptr<uint16_t>(a, 0),
+                        1280 * 2, snap, stream);
+    std::vector<uint8_t> scale;
+    snap.ok = snap.ok && File(snap.old + ".down-input-scale.f32", &scale) &&
+              scale.size() == 4 &&
+              std::memcmp(scale.data(), &snap.scale, 4) == 0;
+  }
+  bool combine =
+      k == combine_kernel && *static_cast<int*>(a[5]) == 4096 && layer >= 0;
+  bool combine_ok = false;
+  if (combine) {
+    combine_ok = layer_ok && *static_cast<int*>(a[3]) == 10 &&
+                 *static_cast<int*>(a[4]) == 2560 && total_rows == 40960 &&
+                 gather_calls == inter_calls && inter_calls == down_calls &&
+                 gather_pending.expert < 0 && down_pending.expert < 0;
+    for (int e = 0; e < 512 && combine_ok; ++e) {
+      if (counts[e]) {
+        auto expected = Ptr<uint16_t>(a, 0) + size_t(offsets[e]) * 2560;
+        combine_ok =
+            outputs[e] == expected &&
+            Compare(base + ".expert-" + std::to_string(e) + ".down-output.bf16",
+                    expected, size_t(counts[e]) * 2560 * 2, stream);
+      } else
+        combine_ok = outputs[e] == nullptr;
+    }
+    combine_ok = combine_ok &&
+                 Compare(std::string(router) + "/layer-" +
+                             std::to_string(layer) + ".router-weights.f32",
+                         Ptr<float>(a, 2), 40960 * 4, stream) &&
+                 Capture(base + ".row-of-flat.i32", Ptr<int32_t>(a, 1),
+                         40960 * 4, stream) &&
+                 Capture(base + ".router-weights.f32", Ptr<float>(a, 2),
+                         40960 * 4, stream) &&
+                 Capture(base + ".combine-before.f32", Ptr<float>(a, 6),
+                         size_t(4096) * 2560 * 4, stream);
+  }
+  auto result = real(k, grid, block, a, smem, stream);
+  if (build) {
+    layer_ok = layer_ok && result == cudaSuccess &&
+               Read(counts.data(), Ptr<int32_t>(a, 4), 512 * 4, stream) &&
+               Compare(std::string(gather) + "/layer-" + std::to_string(layer) +
+                           ".counts.i32",
+                       Ptr<int32_t>(a, 4), 512 * 4, stream);
+    offsets[0] = 0;
+    for (int e = 0; e < 512; ++e) offsets[e + 1] = offsets[e] + counts[e];
+    layer_ok = layer_ok && offsets[512] == 40960 &&
+               Save(base + ".counts.i32", counts.data(), 512 * 4) &&
+               Save(base + ".offsets.i32", offsets.data(), 513 * 4);
+    Meta(base + ".source.json", layer_ok);
+  }
+  if (k == gather_kernel && *static_cast<int*>(a[5]) == 4096 && layer >= 0) {
+    Pending state;
+    state.expert = *static_cast<int*>(a[3]);
+    state.rows = *static_cast<int*>(a[2]);
+    state.name = base + ".expert-" + std::to_string(state.expert);
+    state.old = std::string(prior) + "/layer-" + std::to_string(layer) +
+                ".expert-" + std::to_string(state.expert);
+    state.ok = layer_ok && result == cudaSuccess && state.expert >= 0 &&
+               state.expert < 512 && state.rows > 0 && state.rows <= 4096 &&
+               *static_cast<int*>(a[4]) == 10 &&
+               *static_cast<int*>(a[6]) == 2560 &&
+               *static_cast<int*>(a[7]) == 40 && gather_pending.expert < 0 &&
+               down_pending.expert < 0;
+    if (state.ok)
+      state.ok = state.rows == counts[state.expert] && !outputs[state.expert];
+    std::vector<uint8_t> old_raw;
+    std::vector<int32_t> flats(state.ok ? state.rows : 0), inverse(40960, -1);
+    state.reorder.resize(flats.size());
+    if (state.ok)
+      state.ok = Read(flats.data(), Ptr<int32_t>(a, 1) + state.expert * 4096,
+                      state.rows * 4, stream) &&
+                 File(state.old + ".flats.i32", &old_raw) &&
+                 old_raw.size() == size_t(state.rows) * 4;
+    for (int r = 0; r < state.rows && state.ok; ++r) {
+      int32_t f;
+      std::memcpy(&f, old_raw.data() + r * 4, 4);
+      state.ok = f >= 0 && f < 40960;
+      if (state.ok) {
+        state.ok = inverse[f] < 0;
+        inverse[f] = r;
+      }
+    }
+    for (int r = 0; r < state.rows && state.ok; ++r) {
+      int f = flats[r];
+      state.ok = f >= 0 && f < 40960;
+      if (state.ok) {
+        state.reorder[r] = inverse[f];
+        state.ok = state.reorder[r] >= 0;
+      }
+    }
+    state.ok =
+        state.ok &&
+        Save(state.name + ".flats.i32", flats.data(), flats.size() * 4) &&
+        Save(state.name + ".reorder.i32", state.reorder.data(),
+             state.reorder.size() * 4);
+    gather_pending = state;
+    ++gather_calls;
+    layer_ok = layer_ok && state.ok;
+  }
+  if (take_inter) {
+    snap.packed = Ptr<uint8_t>(a, 1);
+    snap.sf = Ptr<uint8_t>(a, 2);
+    snap.ok = snap.ok && result == cudaSuccess &&
+              Reordered(snap.old + ".inter-packed.bin", snap.packed, 320, snap,
+                        stream);
+    std::vector<uint8_t> physical(size_t((snap.rows + 127) / 128) * 10 * 512),
+        logical;
+    snap.ok = snap.ok &&
+              Read(physical.data(), snap.sf, physical.size(), stream) &&
+              File(snap.old + ".inter-sf-logical.bin", &logical) &&
+              logical.size() == size_t(snap.rows) * 40;
+    for (int r = 0; r < snap.rows && snap.ok; ++r)
+      for (int g = 0; g < 40 && snap.ok; ++g) {
+        size_t ix = size_t(r / 128) * 10 * 512 + size_t(g / 4) * 512 +
+                    (r % 32) * 16 + ((r % 128) / 32) * 4 + g % 4;
+        snap.ok = physical[ix] == logical[size_t(snap.reorder[r]) * 40 + g];
+      }
+    Meta(snap.name + ".input.json", snap.ok,
+         ",\"rows\":" + std::to_string(snap.rows));
+    down_pending = snap;
+    gather_pending = {};
+    ++inter_calls;
+    layer_ok = layer_ok && snap.ok;
+  }
+  if (combine) {
+    combine_ok = combine_ok && result == cudaSuccess &&
+                 Capture(base + ".combine-after.f32", Ptr<float>(a, 6),
+                         size_t(4096) * 2560 * 4, stream);
+    Meta(base + ".complete.json", combine_ok,
+         ",\"calls\":" + std::to_string(down_calls) +
+             ",\"rows\":" + std::to_string(total_rows));
+    std::fprintf(stderr, "[moe-full-down] layer=%d calls=%d ok=%d\n", layer,
+                 down_calls, combine_ok);
+  }
+  return result;
+}
+extern "C" cublasStatus_t CUBLASWINAPI
+cublasLtMatmul(cublasLtHandle_t handle, cublasLtMatmulDesc_t desc,
+               const void* alpha, const void* a, cublasLtMatrixLayout_t ad,
+               const void* b, cublasLtMatrixLayout_t bd, const void* beta,
+               const void* c, cublasLtMatrixLayout_t cd, void* d,
+               cublasLtMatrixLayout_t dd, const cublasLtMatmulAlgo_t* algo,
+               void* workspace, size_t workspace_bytes, cudaStream_t stream) {
+  static auto real = Resolve<decltype(&cublasLtMatmul)>("cublasLtMatmul");
+  auto result = real(handle, desc, alpha, a, ad, b, bd, beta, c, cd, d, dd,
+                     algo, workspace, workspace_bytes, stream);
+  if (!down_pending.packed || b != down_pending.packed) return result;
+  Pending snap = down_pending;
+  down_pending = {};
+  cublasLtPointerMode_t mode{};
+  cublasOperation_t ta{}, tb{};
+  cublasLtMatmulMatrixScale_t sa{}, sb{};
+  cublasComputeType_t compute{};
+  cudaDataType_t scale{};
+  cublasLtEpilogue_t epilogue{};
+  const void *wsf = nullptr, *asf = nullptr;
+  bool ok =
+      snap.ok && result == CUBLAS_STATUS_SUCCESS &&
+      Shape(ad, 640, 2560, CUDA_R_4F_E2M1) &&
+      Shape(bd, 640, snap.rows, CUDA_R_4F_E2M1) &&
+      Shape(dd, 2560, snap.rows, CUDA_R_16BF) &&
+      Attribute(desc, CUBLASLT_MATMUL_DESC_POINTER_MODE, &mode) &&
+      mode == CUBLASLT_POINTER_MODE_HOST &&
+      Attribute(desc, CUBLASLT_MATMUL_DESC_TRANSA, &ta) && ta == CUBLAS_OP_T &&
+      Attribute(desc, CUBLASLT_MATMUL_DESC_TRANSB, &tb) && tb == CUBLAS_OP_N &&
+      Attribute(desc, CUBLASLT_MATMUL_DESC_A_SCALE_MODE, &sa) &&
+      sa == CUBLASLT_MATMUL_MATRIX_SCALE_VEC16_UE4M3 &&
+      Attribute(desc, CUBLASLT_MATMUL_DESC_B_SCALE_MODE, &sb) &&
+      sb == CUBLASLT_MATMUL_MATRIX_SCALE_VEC16_UE4M3 &&
+      Attribute(desc, CUBLASLT_MATMUL_DESC_A_SCALE_POINTER, &wsf) &&
+      Attribute(desc, CUBLASLT_MATMUL_DESC_B_SCALE_POINTER, &asf) &&
+      asf == snap.sf &&
+      Attribute(desc, CUBLASLT_MATMUL_DESC_COMPUTE_TYPE, &compute) &&
+      compute == CUBLAS_COMPUTE_32F &&
+      Attribute(desc, CUBLASLT_MATMUL_DESC_SCALE_TYPE, &scale) &&
+      scale == CUDA_R_32F &&
+      Attribute(desc, CUBLASLT_MATMUL_DESC_EPILOGUE, &epilogue) &&
+      epilogue == CUBLASLT_EPILOGUE_DEFAULT &&
+      *static_cast<const float*>(beta) == 0 && workspace_bytes == 33554432 &&
+      algo;
+  const char* plans = std::getenv("Q4T_DOWN_PLANS");
+  std::vector<std::vector<uint8_t>> values;
+  ok = ok && plans &&
+       TensorPlan(std::string(plans) + "/layer-" + std::to_string(layer) +
+                      ".expert-" + std::to_string(snap.expert) + ".plan",
+                  &values);
+  float actual_alpha = 0;
+  if (ok) {
+    ok = values[0].size() == 819200 && values[1].size() == 102400 &&
+         values[2].size() == 4 && values[3].size() == 4;
+  }
+  if (ok) {
+    std::vector<uint8_t> physical(102400);
+    for (int r = 0; r < 2560; ++r)
+      for (int g = 0; g < 40; ++g) {
+        size_t ix = size_t(r / 128) * 10 * 512 + size_t(g / 4) * 512 +
+                    (r % 32) * 16 + ((r % 128) / 32) * 4 + g % 4;
+        physical[ix] = values[1][size_t(r) * 40 + g];
+      }
+    actual_alpha = *static_cast<const float*>(alpha);
+    ok = Scalar(values[2]) == snap.scale &&
+         actual_alpha == Scalar(values[3]) * snap.scale &&
+         Equal(values[0], a, stream) && Equal(physical, wsf, stream);
+  }
+  ok = ok &&
+       Capture(snap.name + ".down-output.bf16", d, size_t(snap.rows) * 2560 * 2,
+               stream) &&
+       Save(snap.name + ".algo.bin", algo, sizeof(*algo));
+  char extra[256];
+  std::snprintf(extra, sizeof(extra),
+                ",\"rows\":%d,\"n\":2560,\"k\":640,\"alpha_hex\":\"%a\","
+                "\"workspace_bytes\":%zu",
+                snap.rows, double(actual_alpha), workspace_bytes);
+  Meta(snap.name + ".down.json", ok, extra);
+  outputs[snap.expert] = d;
+  ++down_calls;
+  total_rows += snap.rows;
+  layer_ok = layer_ok && ok;
+  if (!ok)
+    std::fprintf(stderr, "[moe-full-down-error] layer=%d expert=%d\n", layer,
+                 snap.expert);
+  return result;
+}

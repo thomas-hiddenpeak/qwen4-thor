@@ -1,0 +1,85 @@
+// CPU reconstruction of the actual ten-slot FP32 accumulation order.
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+template <class T>
+std::vector<T> Read(const std::string& path, size_t size) {
+  std::ifstream f(path, std::ios::binary | std::ios::ate);
+  if (!f || size_t(f.tellg()) != size * sizeof(T))
+    throw std::runtime_error(path);
+  std::vector<T> v(size);
+  f.seekg(0);
+  if (!f.read(reinterpret_cast<char*>(v.data()), size * sizeof(T)))
+    throw std::runtime_error(path);
+  return v;
+}
+float Decode(uint16_t x) {
+  uint32_t b = uint32_t(x) << 16;
+  float f;
+  std::memcpy(&f, &b, 4);
+  return f;
+}
+uint32_t Bits(float f) {
+  uint32_t b;
+  std::memcpy(&b, &f, 4);
+  return b;
+}
+template <class T>
+void Save(const std::string& path, const std::vector<T>& v) {
+  std::ofstream f(path, std::ios::binary);
+  if (!f.write(reinterpret_cast<const char*>(v.data()), v.size() * sizeof(T)))
+    throw std::runtime_error(path);
+}
+int main(int argc, char** argv) {
+  try {
+    if (argc != 4) throw std::runtime_error("captures outputs layer");
+    int l = std::stoi(argv[3]);
+    std::string name = "layer-" + std::to_string(l);
+    std::string base = std::string(argv[1]) + "/" + name,
+                out = std::string(argv[2]) + "/" + name;
+    auto counts = Read<int32_t>(base + ".counts.i32", 512);
+    auto mapping = Read<int32_t>(base + ".row-of-flat.i32", 40960);
+    auto weights = Read<float>(base + ".router-weights.f32", 40960);
+    constexpr size_t size = 4096 * 2560;
+    auto before = Read<float>(base + ".combine-before.f32", size);
+    auto after = Read<float>(base + ".combine-after.f32", size);
+    std::vector<uint16_t> down;
+    for (int e = 0; e < 512; ++e)
+      if (counts[e]) {
+        auto v = Read<uint16_t>(
+            base + ".expert-" + std::to_string(e) + ".down-output.bf16",
+            size_t(counts[e]) * 2560);
+        down.insert(down.end(), v.begin(), v.end());
+      }
+    if (down.size() != size_t(40960) * 2560)
+      throw std::runtime_error("down shape");
+    for (int r : mapping)
+      if (r < 0 || r >= 40960) throw std::runtime_error("mapping range");
+    std::vector<float> reference(size);
+    size_t bad = 0;
+#pragma omp parallel for reduction(+ : bad)
+    for (size_t i = 0; i < size; ++i) {
+      int t = i / 2560, c = i % 2560;
+      float acc = 0;
+      for (int slot = 0; slot < 10; ++slot) {
+        int flat = t * 10 + slot;
+        acc = std::fma(weights[flat],
+                       Decode(down[size_t(mapping[flat]) * 2560 + c]), acc);
+      }
+      reference[i] = before[i] + acc;
+      bad += Bits(reference[i]) != Bits(after[i]);
+    }
+    Save(out + ".combine-reference.f32", reference);
+    std::printf("{\"layer\":%d,\"elements\":%zu,\"fp32_bit_mismatches\":%zu}\n",
+                l, size, bad);
+    return 0;
+  } catch (const std::exception& e) {
+    std::fprintf(stderr, "%s\n", e.what());
+    return 2;
+  }
+}

@@ -1,0 +1,22 @@
+from pathlib import Path
+import json,hashlib,shutil,subprocess,os,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/moe-full-down-20260924';c=o/'observed-captures';d=o/'reference'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output'];assert json.loads((o/'boundary-reference.json').read_text())['complete'];assert not (p/'combine-build.log').read_text().strip();assert shutil.disk_usage(o).free>20*1024**3+600_000_000;assert not d.exists();d.mkdir();shutil.copy2(o/'artifact-binding.json',o/'boundary-artifact-binding.json')
+m=json.loads((o/'boundary-artifact-binding.json').read_text());records=[]
+for l in range(48):
+ name=f'layer-{l}'
+ for path in c.glob(name+'.*'):
+  key=str(path.relative_to(o));assert sha(path)==m[key]
+ cmd=[str(p/'combine'),str(c),str(d),str(l)]
+ with (o/f'combine-layer-{l}.json').open('w') as out,(o/f'combine-layer-{l}.stderr').open('w') as err:r=subprocess.run(cmd,stdout=out,stderr=err,env=dict(os.environ,OMP_NUM_THREADS='8'))
+ assert r.returncode==0;r=json.loads((o/f'combine-layer-{l}.json').read_text());assert r['layer']==l and r['elements']==4096*2560
+ temp=d/(name+'.combine-reference.f32');bits=np.fromfile(temp,dtype='<u4');actual=np.fromfile(c/(name+'.combine-after.f32'),dtype='<u4');assert len(bits)==len(actual)==r['elements'];assert np.isfinite(bits.view('<f4')).all();idx=np.flatnonzero(bits!=actual).astype('<i4');assert len(idx)==r['fp32_bit_mismatches'];digest=sha(temp);delta=d/(name+'.combine-delta.npz');np.savez_compressed(delta,indices=idx,bits=bits[idx]);loaded=np.load(delta);rebuilt=actual.copy();rebuilt[loaded['indices']]=loaded['bits'];assert np.array_equal(rebuilt,bits) and hashlib.sha256(rebuilt.tobytes()).hexdigest()==digest;loaded.close();r.update(reference_sha256=digest,base_file=str((c/(name+'.combine-after.f32')).relative_to(o)),base_sha256=sha(c/(name+'.combine-after.f32')),encoding='base actual FP32 bits plus exact index/replacement-bit delta',lossless_reconstruction_verified=True);records.append(r);save('combine-reference.json',{'records':records,'complete':len(records)==48});temp.unlink();print(r,flush=True)
+summary=json.loads((o/'summary.json').read_text());summary.update(combine_reference_elements=sum(r['elements'] for r in records),combine_cpu_fp32_bit_mismatches=sum(r['fp32_bit_mismatches'] for r in records),combine_arithmetic_verified=all(r['fp32_bit_mismatches']==0 for r in records),combine_reference_scope='CPU ten-slot FP32 fma then add actual pre-combine value; destination is actual zero-initialized routed buffer; shared expert/final MoE combine and down arithmetic separately pending.');save('summary.json',summary)
+for name in ['combine.cpp','combine','combine-build.log','run_combine.py']:shutil.copy2(p/name,o/name)
+save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'});print(summary,flush=True)

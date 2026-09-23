@@ -1,0 +1,21 @@
+from pathlib import Path
+import json,struct,hashlib
+p=Path(__file__).resolve().parent;root=p.parents[2];model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');source=root/'.q4t-work/e2e/moe-full-gather-20260924';m=json.loads((source/'artifact-binding.json').read_text());index=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];headers={};plans=p/'parameters';plans.mkdir(exist_ok=False);records=[];plan_hashes={}
+for l in range(48):
+ f=source/'observed-captures'/f'layer-{l}.counts.i32';raw=f.read_bytes();assert hashlib.sha256(raw).hexdigest()==m[str(f.relative_to(source))];counts=struct.unpack('<512i',raw)
+ for e,n in enumerate(counts):
+  if not n:continue
+  specs=[];items=[]
+  for part,kind,shape,dtype in [('down','weight',[2560,320],'U8'),('down','weight_scale',[2560,40],None),('down','input_scale',None,'F32'),('down','weight_scale_2',None,'F32')]:
+   key=f'model.language_model.layers.{l}.mlp.experts.{e}.{part}_proj.{kind}';path=model/index[key];assert not any(ch.isspace() for ch in str(path))
+   with path.open('rb') as s:
+    if path not in headers:
+     size=struct.unpack('<Q',s.read(8))[0];headers[path]=(size,json.loads(s.read(size)))
+    size,h=headers[path];info=h[key]
+    if shape is not None:assert info['shape']==shape
+    if dtype is not None:assert info['dtype']==dtype
+    a,b=info['data_offsets'];offset=8+size+a;s.seek(offset);data=s.read(b-a)
+   expected=819200 if kind=='weight' else 102400 if kind=='weight_scale' else 4;assert len(data)==expected;specs.append(f'{path}\t{offset}\t{len(data)}');st=path.stat();items.append({'key':key,'file':str(path),'offset':offset,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest(),'size':st.st_size,'mtime_ns':st.st_mtime_ns})
+  name=f'layer-{l}.expert-{e}.plan';f=plans/name;f.write_text('\n'.join(specs)+'\n');plan_hashes[name]=hashlib.sha256(f.read_bytes()).hexdigest();records.append({'layer':l,'expert':e,'rows':n,'tensors':items})
+ print({'prepared_layer':l,'active':sum(n>0 for n in counts)},flush=True)
+(p/'checkpoint-plan.json').write_text(json.dumps({'source_manifest_sha256':hashlib.sha256((source/'artifact-binding.json').read_bytes()).hexdigest(),'records':records,'plan_hashes':plan_hashes},indent=2)+'\n');print({'experts':len(records)},flush=True)
