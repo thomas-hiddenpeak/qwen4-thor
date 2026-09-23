@@ -1,0 +1,29 @@
+from pathlib import Path
+import json,hashlib,subprocess,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/gdn-prefill-reference-20260923';c=o/'observed-captures';old=root/'.q4t-work/e2e/gdn-state-handoff-20260923/observed-captures';d=o/'reference'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for block in iter(lambda:stream.read(4*1024*1024),b''):h.update(block)
+ return h.hexdigest()
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+for name in ['build.log','replay-build.log','parameters-build.log']:assert (p/name).stat().st_size==0
+bindings={}
+for f in old.iterdir():
+ if not f.name.endswith(('.bf16','.f32')):continue
+ assert sha(f)==sha(c/f.name),f.name;bindings[f.name]=sha(f)
+save(o/'previous-binding.json',bindings)
+records=[]
+for l in range(48):
+ if l%4==3:continue
+ b=str(c/f'layer-{l}');before=np.fromfile(b+'.prefill-state-before.f32',dtype='<u4');assert len(before)==48*128*128 and not np.count_nonzero(before)
+ raw=np.memmap(b+'.prefill-qkv-before.bf16',dtype='<u2',mode='r',shape=(4096,10240));norm=np.memmap(b+'.prefill-qkv-normalized.bf16',dtype='<u2',mode='r',shape=(4096,10240));assert np.array_equal(raw[:,4096:],norm[:,4096:])
+ assert Path(b+'.prefill-dt-bias.bf16').read_bytes()==Path(b+'.dt-bias.bf16').read_bytes() and Path(b+'.prefill-a-log.bf16').read_bytes()==Path(b+'.a-log.bf16').read_bytes()
+ assert Path(b+'.prefill-state-final.f32').read_bytes()==Path(b+'.decode-state-before.f32').read_bytes()
+ records.append({'layer':l,'initial_state_elements':len(before),'initial_state_all_positive_zero':True,'unchanged_value_elements':4096*6144,'raw_qkv_sha256':sha(Path(b+'.prefill-qkv-before.bf16')),'normalized_qkv_sha256':sha(Path(b+'.prefill-qkv-normalized.bf16'))})
+save(o/'input-binding.json',{'records':records,'previous_files':len(bindings),'state_elements':36*48*128*128,'value_elements':36*4096*6144,'whole_prefill_recurrence_verified':False})
+d.mkdir(exist_ok=False)
+with (o/'parameters.log').open('w') as log:r=subprocess.run([str(p/'parameters'),str(c),str(d)],stdout=log,stderr=subprocess.STDOUT)
+assert r.returncode==0
+print('binding passed:36 zero initial states,all value channels unchanged,old state/decode snapshots identical;device elementary parameters prepared')

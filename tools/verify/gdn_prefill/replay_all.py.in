@@ -1,0 +1,12 @@
+from pathlib import Path
+import json,subprocess,os
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/gdn-prefill-reference-20260923';c=o/'observed-captures';d=o/'reference'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output'] and (p/'replay-build.log').stat().st_size==0
+records=[]
+for l in range(48):
+ if l%4==3:continue
+ if l:
+  with (o/f'layer-{l}-v1.json').open('w') as out,(o/f'layer-{l}-v1.stderr').open('w') as err:r=subprocess.run([str(p/'replay'),str(c),str(d),str(l),'1'],stdout=out,stderr=err,env={**os.environ,'OMP_NUM_THREADS':'12'})
+  assert r.returncode==0
+ record=json.loads((o/f'layer-{l}-v1.json').read_text());records.append(record);print(record,flush=True)
+ (o/'recurrence-reference.json').write_text(json.dumps({'records':records,'complete':len(records)==36,'state_mismatches':sum(x['state_mismatches'] for x in records),'output_mismatches':sum(x['output_mismatches'] for x in records)},indent=2)+'\n')
