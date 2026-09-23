@@ -1,0 +1,56 @@
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='8'
+import json,struct,hashlib,subprocess,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/output-head-reference-20260923';c=o/'observed-captures';data=o/'reference'
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for block in iter(lambda:stream.read(4*1024*1024),b''):h.update(block)
+ return h.hexdigest()
+def read(f,dt='<u2'):return np.fromfile(f,dtype=dt)
+def decode(x):return (x.astype(np.uint32)<<16).view(np.float32)
+def roundbf(x):
+ b=x.astype(np.float32).view(np.uint32);return ((b+0x7fff+((b>>16)&1))>>16).astype(np.uint16)
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+assert json.loads((o/'capture-steps.json').read_text())=={'steps':7,'decode_steps':6,'metadata':40}
+assert (p/'build.log').stat().st_size==0 and (p/'replay-build.log').stat().st_size==0
+data.mkdir(exist_ok=False)
+old=root/'.q4t-work/e2e/ple-lookup-reference-20260923/observed-captures';bindings={}
+for f in old.iterdir():assert f.read_bytes()==(c/f.name).read_bytes(),f.name;bindings[f.name]=sha(f)
+save(o/'previous-binding.json',bindings)
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');index=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];name='lm_head.weight';weightfile=model/index[name];st=weightfile.stat()
+with weightfile.open('rb') as f,(c/'lm-weights.bf16').open('rb') as actual:
+ size=struct.unpack('<Q',f.read(8))[0];info=json.loads(f.read(size))[name];assert info['dtype']=='BF16' and info['shape']==[248320,2560];start,end=info['data_offsets'];assert end-start==248320*2560*2;origin=8+size+start;f.seek(origin)
+ remaining=end-start
+ while remaining:
+  n=min(4*1024*1024,remaining);a=f.read(n);b=actual.read(n);assert len(a)==n and a==b;remaining-=n
+ assert not actual.read(1)
+assert weightfile.stat()==st
+save(o/'checkpoint-binding.json',{'path':str(weightfile),'tensor':name,'shape':info['shape'],'dtype':info['dtype'],'offset':origin,'bytes':end-start,'size':st.st_size,'mtime_ns':st.st_mtime_ns,'device':st.st_dev,'inode':st.st_ino,'tensor_sha256':sha(c/'lm-weights.bf16')})
+with (o/'cpu-reference.json').open('w') as log:
+ result=subprocess.run([str(p/'replay'),str(c),str(data)],env={**os.environ,'OMP_NUM_THREADS':'12'},stdout=log,stderr=subprocess.PIPE,text=True)
+(o/'cpu-stderr.log').write_text(result.stderr);assert result.returncode==0
+cpu=json.loads((o/'cpu-reference.json').read_text());assert cpu['total_mismatches']==0
+w=np.memmap(c/'lm-weights.bf16',dtype='<u2',mode='r',shape=(248320,2560));x=np.stack([decode(read(c/f'step-{i}.lm-input.bf16')) for i in range(7)]).astype(np.float64);fp64=np.empty((7,248320),dtype=np.float64)
+for start in range(0,248320,4096):
+ end=min(start+4096,248320);fp64[:,start:end]=x@decode(w[start:end]).astype(np.float64).T
+fp64.tofile(data/'logits.fp64');records=[]
+for step in range(7):
+ b=str(c/f'step-{step}');raw=read(b+'.logits.bf16');values=decode(raw);assert raw.size==248320 and np.isfinite(values).all()
+ reference=read(data/f'step-{step}.cpu.bf16');assert np.array_equal(raw,reference)
+ q=roundbf(fp64[step]);diff=np.flatnonzero(q!=raw);diff.astype('<i4').tofile(data/f'step-{step}.fp64-differences.i32')
+ chosen=int(np.argmax(values));best=float(values[chosen]);ties=np.flatnonzero(values==best).tolist();order=np.argsort(-values,kind='stable');high=int(np.argmax(fp64[step]));highrounded=int(np.argmax(decode(q)))
+ if step>0:
+  assert Path(b+'.argmax-input.bf16').read_bytes()==raw.tobytes()
+  chunks=values.reshape(970,256);indices=np.argmax(chunks,axis=1)+np.arange(970)*256
+  assert np.array_equal(read(b+'.partial-indices.i32','<i4'),indices)
+  assert np.array_equal(read(b+'.partial-values.f32','<f4').view(np.uint32),values[indices].view(np.uint32))
+  assert read(b+'.selected.i32','<i4').tolist()==[chosen]
+ if step<6:assert read(c/f'step-{step+1}.tokens.i32','<i4').tolist()==[chosen]
+ records.append({'step':step,'elements':len(raw),'cpu_mismatches':0,'fp64_rounded_mismatches':len(diff),'selected':chosen,'maximum':best,'ties':ties,'runner_up':int(order[1]),'runner_up_score':float(values[order[1]]),'fp64_selected':high,'fp64_rounded_selected':highrounded,'fp64_top_margin':float(fp64[step,high]-np.partition(fp64[step],-2)[-2])})
+generation=json.loads((model/'generation_config.json').read_text());eos=generation['eos_token_id'];assert records[-1]['selected'] in eos
+vocab=json.loads((model/'tokenizer.json').read_text());ids={v:k for k,v in vocab['model']['vocab'].items()};ids.update({t['id']:t['content'] for t in vocab['added_tokens']});tokens=[ids[r['selected']] for r in records];assert ''.join(tokens[:-1])=='600440'
+save(o/'output-reference.json',{'records':records,'total_elements':7*248320,'cpu_mismatches':0,'fp64_rounded_mismatches':sum(r['fp64_rounded_mismatches'] for r in records),'selected_tokens':tokens,'greedy_chunks_checked':6*970,'next_inputs_checked':6,'previous_files':len(bindings),'limitation':'One original4K request. Actual final mixer output is an input to this reference, not independently validated. Whole prefill GDN and whole-model quality remain unresolved.'})
+print(json.dumps(records,indent=2),flush=True)

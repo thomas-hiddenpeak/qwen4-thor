@@ -1,0 +1,36 @@
+from pathlib import Path
+import hashlib,json,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/output-head-reference-20260923';c=o/'observed-captures'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for block in iter(lambda:stream.read(4*1024*1024),b''):h.update(block)
+ return h.hexdigest()
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+r=json.loads((o/'output-reference.json').read_text());assert r['total_elements']==1738240 and r['cpu_mismatches']==0 and r['fp64_rounded_mismatches']==109
+assert [x['selected'] for x in r['records']]==[21,15,15,19,19,15,248046]
+assert r['next_inputs_checked']==6 and r['greedy_chunks_checked']==5820
+for x in r['records']:
+ step=x['step'];actual=c/f'step-{step}.logits.bf16';assert actual.read_bytes()==(o/'reference'/f'step-{step}.cpu.bf16').read_bytes()
+ assert x['selected']==x['fp64_selected']==x['fp64_rounded_selected']
+ values=(np.fromfile(actual,dtype='<u2').astype(np.uint32)<<16).view(np.float32);assert int(np.argmax(values))==x['selected']
+ if step<6:assert np.fromfile(c/f'step-{step+1}.tokens.i32',dtype='<i4').tolist()==[x['selected']]
+ if step:
+  assert (c/f'step-{step}.argmax-input.bf16').read_bytes()==actual.read_bytes()
+  indices=np.argmax(values.reshape(970,256),axis=1)+np.arange(970)*256
+  assert np.array_equal(indices,np.fromfile(c/f'step-{step}.partial-indices.i32',dtype='<i4'))
+  assert np.array_equal(values[indices].view(np.uint32),np.fromfile(c/f'step-{step}.partial-values.f32',dtype='<f4').view(np.uint32))
+  assert np.fromfile(c/f'step-{step}.selected.i32',dtype='<i4').tolist()==[x['selected']]
+for name,h in json.loads((o/'previous-binding.json').read_text()).items():assert sha(c/name)==h
+binding=json.loads((o/'checkpoint-binding.json').read_text());f=Path(binding['path']);st=f.stat();assert (st.st_size,st.st_mtime_ns,st.st_ino,st.st_dev)==(binding['size'],binding['mtime_ns'],binding['inode'],binding['device'])
+assert sha(c/'lm-weights.bf16')==binding['tensor_sha256']
+with f.open('rb') as checkpoint,(c/'lm-weights.bf16').open('rb') as actual:
+ checkpoint.seek(binding['offset']);remaining=binding['bytes']
+ while remaining:
+  n=min(4*1024*1024,remaining);a=actual.read(n);assert len(a)==n and checkpoint.read(n)==a;remaining-=n
+ assert not actual.read(1)
+for name in ['analyze.py','analyze.log','audit.py','prepare.py','replay.cpp','replay','replay-build.log']:shutil.copy2(p/name,o/name)
+save(o/'artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})
+print('audit passed:1738240 lm_head BF16 values,5820 argmax chunks,6 next-token handoffs;109 FP64 rounding differences retained;all7 selections unchanged')

@@ -20,6 +20,12 @@ TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间�
 
 ## 当前决策摘要
 
+- **lm_head全词表与greedy交接核对一致。**
+  新观测先三侧原4K HTTP仍600440、服务0，40份元数据完整；
+  七次实际权重同checkpoint，1738240个logits同独立CPU指定算术。
+  FP64舍入109项差异保留，但七次argmax均相同；5820组GPU局部
+  最大值与六次下步输入接通。生产未改、原错未修复；下一步最终
+  mixer及全prefill GDN，见[输出头报告](OUTPUT_HEAD_REFERENCE_2026-09-23.md)。
 - **原4K请求的输入embedding与四分支入口全同。**
   新观测先三侧HTTP仍原错、服务0，旧56份记录不变；4102个
   实际输入token的96个不同权重行匹配checkpoint，10501120
