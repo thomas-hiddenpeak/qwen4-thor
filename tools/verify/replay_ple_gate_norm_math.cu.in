@@ -1,0 +1,9 @@
+#include <cuda_runtime.h>
+#include <cstdio>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+#define CU(x) do{if((x)!=cudaSuccess)throw std::runtime_error(#x);}while(0)
+__global__ void Elementary(const float* a,float* out,int n,bool gate){int i=threadIdx.x;if(i<n){if(gate){float g=sqrtf(fabsf(a[i])+1e-6f)*(a[i]<0?-1.f:1.f);out[i]=1.f/(1.f+__expf(-g));}else out[i]=rsqrtf(a[i]);}}
+int main(int argc,char** argv){try{if(argc!=2)throw std::runtime_error("directory");for(const char* phase:{"prefill","decode"})for(int kind=0;kind<4;++kind){int n=phase[0]=='p'?40:4;std::string b=std::string(argv[1])+"/"+phase+(kind==3?".gate":".norm-"+std::to_string(kind));std::ifstream f(b+(kind==3?".raw.f32":".mean.f32"),std::ios::binary|std::ios::ate);if(!f||f.tellg()!=n*4)throw std::runtime_error("input");f.seekg(0);std::vector<float> v(n);if(!f.read(reinterpret_cast<char*>(v.data()),n*4))throw std::runtime_error("read");float *a,*out;CU(cudaMalloc(&a,n*4));CU(cudaMalloc(&out,n*4));CU(cudaMemcpy(a,v.data(),n*4,cudaMemcpyHostToDevice));Elementary<<<1,64>>>(a,out,n,kind==3);CU(cudaGetLastError());CU(cudaMemcpy(v.data(),out,n*4,cudaMemcpyDeviceToHost));std::ofstream o(b+(kind==3?".device.f32":".inv.f32"),std::ios::binary);o.write(reinterpret_cast<char*>(v.data()),n*4);if(!o)throw std::runtime_error("write");CU(cudaFree(a));CU(cudaFree(out));}return 0;}catch(const std::exception& e){std::fprintf(stderr,"%s\n",e.what());return 1;}}

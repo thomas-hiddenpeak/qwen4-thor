@@ -20,6 +20,12 @@ TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间�
 
 ## 当前决策摘要
 
+- **PLE门控与三组归一化接通卷积输入。**
+  新观测先三侧HTTP仍原错、服务0，旧20份记录不变；三组实际
+  权重同checkpoint，337920 norm输出由CPU算术+设备rsqrt复现，
+  44门值、112640广播乘法输出全同。纯CPU1项和FP644项保留。
+  生产未改，下一步PLE key/value投影与embedding来源，见
+  [PLE报告后续](PLE_CONV_REFERENCE_2026-09-23.md)。
 - **PLE卷积历史与L0→L1主干注入边界局部一致。**
   新观测先三侧HTTP仍原错、服务0；实际卷积权重同checkpoint，
   92160项历史传递与两次更新全同，20480最终输出同FP64及三种

@@ -1,0 +1,47 @@
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import json,struct,hashlib,shutil,subprocess,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/ple-gate-norm-20260923';c=o/'observed-captures';old=root/'.q4t-work/e2e/ple-conv-reference-20260923/observed-captures';data=o/'data'
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+def sha(f):return hashlib.sha256(f.read_bytes()).hexdigest()
+def read(f,dt='<u2'):return np.fromfile(f,dtype=dt)
+def dec(v):return (np.asarray(v,dtype=np.uint16).astype(np.uint32)<<16).view(np.float32).astype(np.float64)
+def rnd(v):
+ b=np.asarray(v,dtype=np.float32).view(np.uint32);return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype(np.uint16)
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+assert all((p/f).stat().st_size==0 for f in ['build.log','cpu-build.log','nonlinear-build.log'])
+data.mkdir(exist_ok=False);bindings={}
+for f in old.iterdir():
+ assert f.read_bytes()==(c/f.name).read_bytes(),f.name;bindings[f.name]=sha(f)
+save(o/'previous-binding.json',bindings)
+for f in c.iterdir():
+ if f.suffix in ['.bf16','.f32']:shutil.copy2(f,data/f.name)
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');idx=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];records=[]
+for phase in ['prefill','decode']:
+ rows=10 if phase=='prefill' else 1;b=str(data/phase)
+ for kind,name in enumerate(['key','query','conv']):
+  nb=b+f'.norm-{kind}';w=read(nb+'.weights.bf16');x=read(nb+'.input.bf16').reshape(rows,4,2560);expected=read(nb+'.output.bf16').reshape(rows,4,2560);eps=read(nb+'.eps.f32','<f4')[0];assert eps==np.float32(1e-6)
+  key=f'model.language_model.layers.1.ple.norm_{name}.weight'
+  with (model/idx[key]).open('rb') as f:
+   size=struct.unpack('<Q',f.read(8))[0];info=json.loads(f.read(size))[key];assert info['dtype']=='BF16' and np.prod(info['shape'])==10240;a,z=info['data_offsets'];f.seek(8+size+a);assert f.read(z-a)==w.tobytes()
+  xd=dec(x);ref=xd/np.sqrt(np.mean(xd*xd,axis=-1,keepdims=True)+float(eps))*(1+dec(w).reshape(1,4,2560));bits=rnd(ref);bad=np.flatnonzero(bits.ravel()!=expected.ravel());np.savez(nb+'.fp64.npz',values=ref,bits=bits);records.append({'phase':phase,'kind':name,'elements':rows*10240,'fp64_mismatches':len(bad),'indices':bad.tolist(),'weight_shape':info['shape'],'weight_sha256':hashlib.sha256(w.tobytes()).hexdigest()})
+ assert Path(b+'.norm-0.output.bf16').read_bytes()==Path(b+'.gate.key.bf16').read_bytes()
+ assert Path(b+'.norm-1.output.bf16').read_bytes()==Path(b+'.gate.query.bf16').read_bytes()
+ assert Path(b+'.norm-1.input.bf16').read_bytes()[-20480:]==Path(b+'.trunk.bf16').read_bytes()
+ assert Path(b+'.gate.output.bf16').read_bytes()==Path(b+'.gated.gate.bf16').read_bytes()
+ assert Path(b+'.gated.output.bf16').read_bytes()==Path(b+'.norm-2.input.bf16').read_bytes()
+ assert Path(b+'.norm-2.output.bf16').read_bytes()==Path(b+'.x.bf16').read_bytes()
+ assert Path(b+'.gated.output.bf16').read_bytes()[-20480:]==Path(b+'.gated.bf16').read_bytes()
+ key=dec(read(b+'.gate.key.bf16')).reshape(rows*4,2560);query=dec(read(b+'.gate.query.bf16')).reshape(rows*4,2560);scale=read(b+'.gate.scale.f32','<f4')[0];assert scale==np.float32(1)/np.sqrt(np.float32(2560));raw=np.sum(key*query,axis=1)*float(scale);g=np.sqrt(abs(raw)+float(np.float32(1e-6)))*np.where(raw<0,-1,1);ref=1/(1+np.exp(-g));bits=rnd(ref);expected=read(b+'.gate.output.bf16');bad=np.flatnonzero(bits!=expected);np.savez(b+'.gate.fp64.npz',raw=raw,values=ref,bits=bits);records.append({'phase':phase,'kind':'gate','elements':rows*4,'fp64_mismatches':len(bad),'indices':bad.tolist(),'actual_scale_bits':int(np.asarray(scale).view(np.uint32))})
+ gate=dec(expected).reshape(rows,4,1);value=dec(read(b+'.gated.value.bf16')).reshape(rows,1,2560);bits=rnd(gate*value);expected=read(b+'.gated.output.bf16').reshape(rows,4,2560);bad=np.flatnonzero(bits.ravel()!=expected.ravel());assert len(bad)==0;np.savez(b+'.gated.fp64.npz',bits=bits);records.append({'phase':phase,'kind':'gated','elements':rows*10240,'fp64_mismatches':len(bad),'indices':bad.tolist()})
+save(o/'fp64-reference.json',records)
+save(o/'declared-variants.json',{'norm0':'CPU lane8 square-fma,10 groups/lane,XOR reduction,CPU rsqrt, x*(rs*(1+w)),BF16','norm1':'Same with independent device rsqrt only','gate0':'CPU sequential2560 fma,actual FP32 scale,sqrt+sign+sigmoid using CPU math,then BF16','gate1':'Same CPU raw dot+scale,independent device sqrt/sign/__expf/sigmoid then CPU BF16','limitation':'Actual key/value projections and embedding origins remain unverified; mathematical primitives retain device dependence in variant1.'})
+exits={}
+for name,args in [('prepare',[str(p/'cpu'),str(data),'prepare']),('nonlinear',[str(p/'nonlinear'),str(data)]),('finish',[str(p/'cpu'),str(data),'finish'])]:
+ with (o/(name+'.stdout')).open('w') as out,(o/(name+'.stderr')).open('w') as err:exits[name]=subprocess.run(args,stdout=out,stderr=err).returncode
+ save(o/'reference-exit.json',exits);assert exits[name]==0
+r=json.loads((o/'finish.stdout').read_text());assert len(r['records'])==16
+for x in r['records']:
+ b=str(data/x['phase'])+('.gate' if x['kind']==3 else f".norm-{x['kind']}");bits=read(b+f".variant-{x['variant']}.bf16");expected=read(b+'.output.bf16');bad=np.flatnonzero(bits!=expected);assert len(bad)==x['mismatches'];x['indices']=bad.tolist()
+save(o/'gate-norm-reference.json',r);print('FP64 norm/gate/gated',[sum(x['fp64_mismatches'] for x in records if (x['kind'] in ['key','query','conv'] if k=='norm' else x['kind']==k)) for k in ['norm','gate','gated']],'variants',r['totals'],'old_files',len(bindings))

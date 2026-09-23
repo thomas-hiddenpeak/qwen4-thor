@@ -62,3 +62,44 @@ artifact-binding.json、历史快照及全部变体输出。没有新的性能�
 下一步向前连接PLE门控和分组归一化的实际输入/权重，然后投影、
 FP8转换、hash/SSD查表来源。全prefill GDN状态独立生成和最终头部
 等仍未确认，不因这两个token的注入结果相同而省略。
+
+
+## 后续：三次归一化与门控来源
+
+新观测按ple_layer源文件标识捕获实际GroupedRmsNorm、PleGate、
+GatedValue。每个阶段依次key/query/conv三次norm，各实际指针
+绑定gate两输入、gate→gated乘法、gated→conv norm，以及conv
+norm/gated→上一轮卷积实际参数。prefill保留末10行4086–4095，
+decode保留首行4096，因此前一轮卷积所需的所有10行输入均被覆盖。
+
+观测零警告构建后首项三侧原4K HTTP仍600440、4096输入/7输出、
+stop，服务退出0、质量驱动1；10组新元数据完整，此前20份卷积
+记录逐字节不变，才进行离线分析。不是质量验收通过。
+
+三组norm权重各10240项，实际字节均同checkpoint中的
+layers.1.ple.norm_key/norm_query/norm_conv.weight [10240]，
+epsilon为FP32的1e-6。query原始输入最后行同实际trunk；norm
+key/query输出同gate输入；gate输出同gated输入；gated输出同
+conv norm输入；conv norm全部输出同卷积所读末10/当前1行。
+
+CPU按每lane八项平方顺序fma、每lane十组累加、warp XOR归约，
+FP32均方加epsilon，再用x*(rs*(1+w))及BF16舍入。纯CPU rsqrt
+版本337920输出有1项不同：prefill conv norm展开索引5390。
+仅替换为独立设备rsqrt后全部位同；纯FP64参考另有4项不同。
+三类结果与完整索引保留，不改变容忍阈值或重采样。
+
+Gate实际scale逐位同host的1.f/sqrt(float(2560))；CPU按2560项
+顺序fma生成点积后乘该scale，再sqrt(abs(raw)+1e-6)带原符号，
+最后sigmoid/BF16。CPU数学函数与独立设备sqrt/__expf版本均44
+个门值位同，使用实际scale的FP64参考也同。GatedValue将门值
+广播到每分支，FP64乘法再FP32→BF16的112640结果全部位同。
+这些局部输出均直接捕获，区别于融合卷积仅能比较最终结果。
+
+全部构建零警告、参考和审计退出0；生产未改，原质量失败仍在。
+证据目录`.q4t-work/e2e/ple-gate-norm-20260923/`包含三侧HTTP、
+fp64-reference.json、gate-norm-reference.json、previous-binding.json、
+artifact-binding.json以及CPU/设备数学函数全部参考输出。
+
+这补齐给定key/value投影输出下的PLE门控、归一化到卷积链路，
+不是key/value投影或SSD embedding来源证明。下一步检查这两组
+投影的实际权重和输入，再追溯FP8转换、hash与SSD行读取。

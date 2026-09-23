@@ -1,0 +1,33 @@
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+float Decode(uint16_t v){uint32_t b=uint32_t(v)<<16;float f;std::memcpy(&f,&b,4);return f;}
+uint16_t Round(float f){uint32_t b;std::memcpy(&b,&f,4);return (b+0x7fff+((b>>16)&1))>>16;}
+template<class T>std::vector<T> Read(const std::string& s,size_t n){std::ifstream f(s,std::ios::binary|std::ios::ate);if(!f||size_t(f.tellg())!=n*sizeof(T))throw std::runtime_error(s);std::vector<T> v(n);f.seekg(0);if(!f.read(reinterpret_cast<char*>(v.data()),n*sizeof(T)))throw std::runtime_error(s);return v;}
+template<class T>void Save(const std::string& s,const std::vector<T>& v){std::ofstream f(s,std::ios::binary);f.write(reinterpret_cast<const char*>(v.data()),v.size()*sizeof(T));if(!f)throw std::runtime_error(s);}
+int main(int argc,char** argv){try{
+ if(argc!=3)throw std::runtime_error("directory prepare|finish");
+ bool prepare=std::string(argv[2])=="prepare",first=true;size_t total[4]{};if(!prepare)std::printf("{\"records\":[");
+ for(const char* phase:{"prefill","decode"}){int rows=phase[0]=='p'?10:1;std::string prefix=std::string(argv[1])+"/"+phase;
+  for(int kind=0;kind<3;++kind){std::string b=prefix+".norm-"+std::to_string(kind);auto x=Read<uint16_t>(b+".input.bf16",rows*10240),w=Read<uint16_t>(b+".weights.bf16",10240),expected=Read<uint16_t>(b+".output.bf16",rows*10240);float eps=Read<float>(b+".eps.f32",1)[0];std::vector<float> mean(rows*4);
+   for(int branch=0;branch<rows*4;++branch){float lane[32]{};for(int t=0;t<32;++t)for(int i=t;i<320;i+=32){int off=branch*2560+i*8;float v=Decode(x[off]),s=v*v;for(int j=1;j<8;++j){v=Decode(x[off+j]);s=std::fma(v,v,s);}lane[t]+=s;}
+    for(int off=16;off>0;off>>=1){float copy[32];std::memcpy(copy,lane,sizeof(lane));for(int t=0;t<32;++t)lane[t]=copy[t]+copy[t^off];}mean[branch]=lane[0]/2560.f+eps;
+   }
+   if(prepare){Save(b+".mean.f32",mean);continue;}
+   auto inv=Read<float>(b+".inv.f32",rows*4);
+   for(int variant=0;variant<2;++variant){std::vector<uint16_t> out(rows*10240);size_t bad=0;for(int i=0;i<rows*10240;++i){float rs=variant?inv[i/2560]:float(1.0/std::sqrt(double(mean[i/2560])));out[i]=Round(Decode(x[i])*(rs*(1.f+Decode(w[i%10240]))));bad+=out[i]!=expected[i];}Save(b+".variant-"+std::to_string(variant)+".bf16",out);total[variant]+=bad;std::printf("%s{\"phase\":\"%s\",\"kind\":%d,\"variant\":%d,\"elements\":%d,\"mismatches\":%zu}",first?"":",",phase,kind,variant,rows*10240,bad);first=false;}
+  }
+  std::string b=prefix+".gate";auto key=Read<uint16_t>(b+".key.bf16",rows*10240),query=Read<uint16_t>(b+".query.bf16",rows*10240),expected=Read<uint16_t>(b+".output.bf16",rows*4);float scale=Read<float>(b+".scale.f32",1)[0];std::vector<float> raw(rows*4);
+  for(int branch=0;branch<rows*4;++branch){float acc=0;for(int d=0;d<2560;++d){int i=branch*2560+d;acc=std::fma(Decode(key[i]),Decode(query[i]),acc);}raw[branch]=acc*scale;}
+  if(prepare){Save(b+".raw.f32",raw);continue;}
+  auto device=Read<float>(b+".device.f32",rows*4);
+  for(int variant=0;variant<2;++variant){std::vector<uint16_t> out(rows*4);size_t bad=0;for(int i=0;i<rows*4;++i){float g=float(std::sqrt(double(std::fabs(raw[i])+1e-6f)))*(raw[i]<0?-1.f:1.f);float cpu=1.f/(1.f+float(std::exp(-double(g))));out[i]=Round(variant?device[i]:cpu);bad+=out[i]!=expected[i];}Save(b+".variant-"+std::to_string(variant)+".bf16",out);total[variant+2]+=bad;std::printf("%s{\"phase\":\"%s\",\"kind\":3,\"variant\":%d,\"elements\":%d,\"mismatches\":%zu}",first?"":",",phase,variant,rows*4,bad);first=false;}
+ }
+ if(!prepare){std::printf("],\"totals\":[%zu,%zu,%zu,%zu]}\n",total[0],total[1],total[2],total[3]);}
+ return 0;
+}catch(const std::exception& e){std::fprintf(stderr,"%s\n",e.what());return 1;}}

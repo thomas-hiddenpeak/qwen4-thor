@@ -1,0 +1,17 @@
+from pathlib import Path
+import json,hashlib,shutil
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/ple-gate-norm-20260923';c=o/'observed-captures'
+def sha(f):return hashlib.sha256(f.read_bytes()).hexdigest()
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+for f in c.iterdir():
+ if f.suffix in ['.bf16','.f32']:assert f.read_bytes()==(o/'data'/f.name).read_bytes()
+for name,h in json.loads((o/'previous-binding.json').read_text()).items():assert sha(c/name)==h
+r=json.loads((o/'gate-norm-reference.json').read_text());assert r['totals']==[1,0,0,0]
+for phase in ['prefill','decode']:
+ for kind in range(3):assert (o/'data'/f'{phase}.norm-{kind}.variant-1.bf16').read_bytes()==(c/f'{phase}.norm-{kind}.output.bf16').read_bytes()
+ for variant in [0,1]:assert (o/'data'/f'{phase}.gate.variant-{variant}.bf16').read_bytes()==(c/f'{phase}.gate.output.bf16').read_bytes()
+for name in ['analyze.py','analyze.log','cpu.cpp','cpu','cpu-build.log','nonlinear.cu','nonlinear','nonlinear-build.log','audit.py','prepare.py']:shutil.copy2(p/name,o/name)
+save(o/'artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})
+print('audit passed:337920 norm,44 gate,112640 gated outputs; original quality failure unchanged')
