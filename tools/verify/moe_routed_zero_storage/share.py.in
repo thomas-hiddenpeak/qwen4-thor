@@ -1,0 +1,58 @@
+"""Share identical frozen FP32 zero artifacts; never edits file contents or manifests."""
+from pathlib import Path
+import hashlib,json,os,stat,shutil
+p=Path(__file__).resolve().parent;root=p.parents[2];out=root/'.q4t-work/e2e/moe-routed-zero-storage-20260924';out.mkdir(exist_ok=False)
+allowed=[root/'.q4t-work/e2e'/name for name in ['moe-full-down-20260924']]
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,value):(out/name).write_text(json.dumps(value,indent=2)+'\n')
+def snapshot(f):
+ s=f.stat();return {'device':s.st_dev,'inode':s.st_ino,'bytes':s.st_size,'mtime_ns':s.st_mtime_ns,'mode':stat.S_IMODE(s.st_mode),'nlink':s.st_nlink,'blocks':s.st_blocks}
+manifest_hashes={str(d.relative_to(root)):sha(d/'artifact-binding.json') for d in allowed};manifests={d:json.loads((d/'artifact-binding.json').read_text()) for d in allowed};inventory=json.loads((p/'candidate-inventory.json').read_text());groups=[];free_before=shutil.disk_usage(root).free
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+for group in inventory['groups']:
+ files=[]
+ for item in group['files']:
+  f=root/item['file'];assert not f.is_symlink() and f.is_file() and f.resolve()==f
+  directory=next(d for d in allowed if f.is_relative_to(d));relative=str(f.relative_to(directory));assert f.suffix=='.f32' and f.name.endswith('.combine-before.f32') and manifests[directory][relative]==group['sha256']
+  before=snapshot(f);assert before['bytes']==group['bytes'] and before['inode']==item['inode'] and before['device']==item['device'] and before['nlink']==1
+  assert sha(f)==group['sha256'] and snapshot(f)==before
+  files.append(dict(file=item['file'],before=before))
+ assert len(files)>1 and len({x['before']['device'] for x in files})==1
+ groups.append({'sha256':group['sha256'],'bytes':group['bytes'],'files':files})
+save('preflight.json',{'manifest_hashes':manifest_hashes,'free_before':free_before,'groups':groups});print({'preflight_groups':len(groups),'paths':sum(len(g['files']) for g in groups)},flush=True)
+with (out/'journal.jsonl').open('x') as journal:
+ def record(value):journal.write(json.dumps(value)+'\n');journal.flush();os.fsync(journal.fileno())
+ for g in groups:
+  canonical=root/g['files'][0]['file'];assert snapshot(canonical)==g['files'][0]['before'];record({'operation':'make_readonly','file':str(canonical.relative_to(root)),'before':g['files'][0]['before']});os.chmod(canonical,g['files'][0]['before']['mode']&~0o222);assert sha(canonical)==g['sha256']
+  for item in g['files'][1:]:
+   f=root/item['file'];assert snapshot(f)==item['before'];tmp=f.with_name(f.name+'.share-pending');assert not tmp.exists();record({'operation':'replace_with_readonly_hardlink','canonical':str(canonical.relative_to(root)),'target':item['file'],'before':item['before'],'sha256':g['sha256']});os.link(canonical,tmp)
+   try:
+    assert snapshot(f)==item['before'] and tmp.stat().st_ino==canonical.stat().st_ino;os.replace(tmp,f)
+    directory=os.open(f.parent,os.O_RDONLY|os.O_DIRECTORY)
+    try:os.fsync(directory)
+    finally:os.close(directory)
+   finally:
+    if tmp.exists():tmp.unlink()
+   record({'operation':'completed','file':item['file'],'after':snapshot(f)})
+  assert canonical.stat().st_nlink==len(g['files']);assert sha(canonical)==g['sha256'];print({'shared_group':str(canonical.relative_to(root)),'paths':len(g['files'])},flush=True)
+# Audit every path in both original manifests. Hash each inode once; all aliases
+# are validated against that inode's current size and contents.
+cache={};verified=0
+for directory,manifest in manifests.items():
+ assert sha(directory/'artifact-binding.json')==manifest_hashes[str(directory.relative_to(root))]
+ for name,digest in manifest.items():
+  f=directory/name;assert f.is_file() and not f.is_symlink();s=f.stat();key=(s.st_dev,s.st_ino,s.st_size,s.st_mtime_ns)
+  if key not in cache:cache[key]=sha(f)
+  assert cache[key]==digest,(f,digest,cache[key]);verified+=1
+for g in groups:
+ inode=(root/g['files'][0]['file']).stat().st_ino
+ for item in g['files']:
+  f=root/item['file'];s=f.stat();assert s.st_ino==inode and s.st_nlink==len(g['files']) and not(stat.S_IMODE(s.st_mode)&0o222) and s.st_size==g['bytes']
+saved=sum(sum(x['before']['blocks']*512 for x in g['files'][1:]) for g in groups);summary={'groups':len(groups),'paths':sum(len(g['files']) for g in groups),'replaced_duplicate_inodes':sum(len(g['files'])-1 for g in groups),'released_allocated_bytes':saved,'free_before':free_before,'free_after':shutil.disk_usage(root).free,'original_manifest_entries_verified':verified,'original_manifests_unchanged':True,'all_paths_and_bytes_preserved':True,'shared_artifacts_readonly':True,'runtime_changed':False,'quality_or_performance_acceptance':False,'metadata_note':'Hardlinked files now share canonical inode/mtime and readonly mode. Original per-path metadata retained in preflight and journal. Never modify a shared artifact in place; materialize a private copy first.'};save('summary.json',summary)
+for f in p.iterdir():
+ if f.is_file():shutil.copy2(f,out/f.name)
+save('artifact-binding.json',{str(f.relative_to(out)):sha(f) for f in sorted(out.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'});print(summary,flush=True)

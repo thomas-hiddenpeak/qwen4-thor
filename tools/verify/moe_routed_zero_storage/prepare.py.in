@@ -1,0 +1,7 @@
+from pathlib import Path
+import json,hashlib
+p=Path(__file__).resolve().parent;root=p.parents[2];source=root/'.q4t-work/e2e/moe-full-down-20260924';m=json.loads((source/'artifact-binding.json').read_text());size=4096*2560*4;digest=hashlib.sha256(bytes(size)).hexdigest();files=[]
+assert json.loads((source/'summary.json').read_text())['pre_combine_all_positive_zero']
+for l in range(48):
+ key=f'observed-captures/layer-{l}.combine-before.f32';f=source/key;st=f.stat();assert st.st_size==size and m[key]==digest;files.append({'file':str(f.relative_to(root)),'inode':st.st_ino,'device':st.st_dev})
+p.joinpath('candidate-inventory.json').open('x').write(json.dumps({'groups':[{'sha256':digest,'bytes':size,'files':files}]},indent=2)+'\n')
