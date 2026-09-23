@@ -1,0 +1,16 @@
+"""Run only after capture and analyze processes exit; stdout stays outside archive."""
+from pathlib import Path
+import hashlib,json,shutil
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/qsa-full-main-20260924'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+assert json.loads((o/'summary.json').read_text())['metadata_records']==120
+assert len(json.loads((o/'raw-http-audit.json').read_text()))==3
+for name in ['run.log','analyze.log','seal.py']:shutil.copy2(p/name,o/name)
+f=o/'artifact-binding.json';assert not f.exists();binding={str(x.relative_to(o)):sha(x) for x in sorted(o.rglob('*')) if x.is_file()};f.write_text(json.dumps(binding,indent=2)+'\n')
+for name,expected in binding.items():assert sha(o/name)==expected
+print({'entries':len(binding),'all_hashes_verified':True,'runtime_sha256':sha(root/'build/q4t')})

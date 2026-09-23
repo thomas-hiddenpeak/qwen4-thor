@@ -1,0 +1,50 @@
+from pathlib import Path
+import hashlib,json,shutil,subprocess,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/qsa-full-main-reference-20260924';d=o/'reference';s=root/'.q4t-work/e2e/qsa-full-main-20260924';old=root/'.q4t-work/e2e/qsa-main-projections-20260923'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+def rounded(vals):
+ bits=vals.astype('<f4').view('<u4');return ((bits+np.uint32(0x7fff)+((bits>>16)&1))>>16).astype('<u2')
+assert (p/'build.log').stat().st_size==0 and not any(d.iterdir());assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+sm=json.loads((s/'artifact-binding.json').read_text());om=json.loads((old/'artifact-binding.json').read_text())
+for name in ['exit.json','projection-map.json','checkpoint-binding.json','hc-binding.json','qsa-binding.json']:assert sha(s/name)==sm[name]
+assert json.loads((s/'exit.json').read_text())['observer_preserved_tested_output'];maps=json.loads((s/'projection-map.json').read_text());assert len(maps)==48
+reserve=20*1024**3;budget=1000000000;assert shutil.disk_usage(o).free>reserve+budget
+save('plan.json',{'source_manifest_sha256':sha(s/'artifact-binding.json'),'old_manifest_sha256':sha(old/'artifact-binding.json'),'reference_budget_bytes':budget,'reserve_bytes':reserve,'scope':'48 full4096 QSA main projection GEMMs; recorded cuBLASLt algorithms and FP64 Dgemm via FP32/BF16 rounding. CPU sequential FP64 FMA checks each last row. Actual captured inputs, not composed model forward.','retention':'Every full BF16 replay/reference recovered from captured base plus full delta; all differing FP64 values and complete last CPU/GPU rows retained. Matching non-tail unrounded FP64 not retained.'})
+binding={};old_binding=[]
+for r in maps:
+ for key in ['input','output','weight','algorithm']:
+  f=root/r[key];assert sha(f)==r[key+'_sha256'];binding[r[key]]=r[key+'_sha256']
+for w in json.loads((s/'checkpoint-binding.json').read_text())['weights']:
+ f=Path(w['file']);st=f.stat();assert st.st_size==w['size'] and st.st_mtime_ns==w['mtime_ns']
+ with f.open('rb') as stream:stream.seek(w['offset']);assert hashlib.sha256(stream.read(w['bytes'])).hexdigest()==w['sha256']
+save('input-binding.json',binding);records=[]
+for r in maps:
+ assert shutil.disk_usage(o).free>reserve+budget
+ l=r['layer'];kind=r['stage'];n=r['n'];name=f'layer-{l}.main-{kind}';base=root/r['output'];prefix=d/name
+ args=[str(p/'reference'),str(root/r['weight']),str(root/r['input']),str(base),str(prefix),str(n),str(r['k']),str(root/r['algorithm'])]
+ run=subprocess.run(args,capture_output=True,text=True);(o/(name+'.stdout')).write_text(run.stdout);(o/(name+'.stderr')).write_text(run.stderr);assert run.returncode==0,run.stderr
+ result=json.loads(run.stdout);result.update(name=name,layer=l,stage=kind,base=r['output'],base_sha256=sha(base));actual=np.fromfile(base,dtype='<u2');assert len(actual)==result['elements']==4096*n
+ for variant,key in [('replay','replay_mismatches'),('fp64','mismatches')]:
+  f=d/(name+'.'+variant+'.bf16');ref=np.fromfile(f,dtype='<u2');assert len(ref)==len(actual);idx=np.flatnonzero(ref!=actual).astype('<i4');assert len(idx)==result[key]
+  if variant=='fp64':
+   assert np.array_equal(idx,np.fromfile(str(prefix)+'.differences.i32',dtype='<i4'));vals=np.fromfile(str(prefix)+'.differences.f64',dtype='<f8');assert np.isfinite(vals).all() and np.array_equal(rounded(vals),ref[idx]);result['zero_sign_only']=int(np.count_nonzero(((ref[idx]&0x7fff)==0)&((actual[idx]&0x7fff)==0)))
+  delta=d/(name+'.'+variant+'.delta.npz');np.savez_compressed(delta,indices=idx,values=ref[idx]);z=np.load(delta);rebuilt=actual.copy();rebuilt[z['indices']]=z['values'];assert np.array_equal(rebuilt,ref);h=sha(f);assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==h;result[variant+'_reference_sha256']=h;result[variant+'_delta_sha256']=sha(delta)
+  if variant=='fp64':
+   last=np.fromfile(str(prefix)+'.last.f64',dtype='<f8');cpu=np.fromfile(str(prefix)+'.cpu-last.f64',dtype='<f8');assert len(last)==len(cpu)==n and np.array_equal(rounded(last),ref[-n:]);assert np.count_nonzero(cpu.view('<u8')!=last.view('<u8'))==result['cpu_last_raw_mismatches'];assert np.count_nonzero(rounded(cpu)!=rounded(last))==result['cpu_last_rounded_mismatches']
+   prior=old/f'replayed/layer-{l}.prefill.main-{kind}.fp64.npz';rel=str(prior.relative_to(old));assert sha(prior)==om[rel];old_binding.append({'file':rel,'sha256':om[rel]});z=np.load(prior);prior_bits=z['bits'];assert prior_bits.size==n;bad=np.flatnonzero(prior_bits.reshape(-1)!=ref[-n:]).astype('<i4');np.savez_compressed(str(prefix)+'.old-last-differences.npz',indices=bad,current=ref[-n:][bad],prior=prior_bits.reshape(-1)[bad]);result['old_last_rounded_mismatches']=len(bad)
+  f.unlink()
+ records.append(result);save('reference.json',{'records':records,'complete':len(records)==48});print(result,flush=True)
+for r in records:
+ base=root/r['base'];assert sha(base)==r['base_sha256'];actual=np.fromfile(base,dtype='<u2')
+ for variant in ['replay','fp64']:
+  f=d/(r['name']+'.'+variant+'.delta.npz');assert sha(f)==r[variant+'_delta_sha256'];z=np.load(f);rebuilt=actual.copy();rebuilt[z['indices']]=z['values'];assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==r[variant+'_reference_sha256']
+summary={key:sum(r[key] for r in records) for key in ['elements','mismatches','replay_mismatches','cpu_last_elements','cpu_last_raw_mismatches','cpu_last_rounded_mismatches','old_last_rounded_mismatches','zero_sign_only']};summary.update(records=len(records),all_references_reconstructed=True,runtime_changed=False,whole_model_correctness_proven=False,free_after=shutil.disk_usage(o).free,by_stage={stage:{key:sum(r[key] for r in records if r['stage']==stage) for key in ['elements','mismatches','replay_mismatches']} for stage in ['qg','k','v','out']})
+save('old-binding.json',old_binding);save('summary.json',summary)
+for name in ['run.py','reference.cpp','reference','build.log']:shutil.copy2(p/name,o/name)
+assert sum(f.stat().st_size for f in o.rglob('*') if f.is_file())<budget
+print(summary,flush=True)

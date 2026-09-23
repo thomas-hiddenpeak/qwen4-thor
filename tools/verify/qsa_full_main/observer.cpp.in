@@ -1,0 +1,325 @@
+#include <cuda_runtime_api.h>
+#include <cublasLt.h>
+#include <dlfcn.h>
+#include <atomic>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <vector>
+namespace {
+std::atomic<cudaKernel_t> kernels[6]{};
+int index_ = -1, layer_ = -1, stage_ = 4;
+const uint16_t *x_ = nullptr, *qg_ = nullptr, *k_ = nullptr, *v_ = nullptr,
+               *q_ = nullptr, *gate_ = nullptr, *attn_ = nullptr,
+               *out_ = nullptr;
+template <class T>
+T Resolve(const char* n) {
+  auto f = reinterpret_cast<T>(dlsym(RTLD_NEXT, n));
+  if (!f) std::_Exit(127);
+  return f;
+}
+template <class T>
+T* Ptr(void** a, int i) {
+  return *static_cast<T**>(a[i]);
+}
+std::string Base() {
+  return std::string(std::getenv("Q4T_QSA_CAPTURE_DIR")) + "/layer-" +
+         std::to_string(layer_) + ".prefill";
+}
+std::string Prior(const char* env, const char* head,
+                  const std::string& suffix) {
+  return std::string(std::getenv(env)) + "/" + head + std::to_string(layer_) +
+         ".prefill." + suffix;
+}
+std::string Qsa(const std::string& s) {
+  return Prior("Q4T_QSA_SOURCE", "layer-", s);
+}
+std::string Hc(const std::string& s) {
+  return Prior("Q4T_HC_SOURCE", "hc-", s);
+}
+bool Save(const std::string& f, const void* p, size_t n) {
+  FILE* h = std::fopen(f.c_str(), "wb");
+  if (!h) return false;
+  bool ok = std::fwrite(p, 1, n, h) == n;
+  return std::fclose(h) == 0 && ok;
+}
+bool Read(void* p, const void* d, size_t n, cudaStream_t stream) {
+  static auto cp = Resolve<decltype(&cudaMemcpyAsync)>("cudaMemcpyAsync");
+  static auto sync =
+      Resolve<decltype(&cudaStreamSynchronize)>("cudaStreamSynchronize");
+  return cp(p, d, n, cudaMemcpyDeviceToHost, stream) == cudaSuccess &&
+         sync(stream) == cudaSuccess;
+}
+bool Capture(const std::string& f, const void* d, size_t n,
+             cudaStream_t stream) {
+  std::vector<unsigned char> b(n);
+  return Read(b.data(), d, n, stream) && Save(f, b.data(), n);
+}
+bool Equal(const std::string& f, const void* d, size_t n, cudaStream_t stream) {
+  std::vector<unsigned char> a(n), b(n);
+  FILE* h = std::fopen(f.c_str(), "rb");
+  if (!h) return false;
+  bool ok = std::fread(a.data(), 1, n, h) == n && std::fgetc(h) == EOF;
+  ok = std::fclose(h) == 0 && ok;
+  return ok && Read(b.data(), d, n, stream) && a == b;
+}
+void Meta(const std::string& kind, bool ok) {
+  char b[160];
+  int n = std::snprintf(
+      b, sizeof(b),
+      "{\"layer\":%d,\"kind\":\"%s\",\"tokens\":4096,\"ok\":%s}\n", layer_,
+      kind.c_str(), ok ? "true" : "false");
+  if (n > 0 && size_t(n) < sizeof(b)) Save(Base() + "." + kind + ".json", b, n);
+  std::fprintf(stderr, "[qsa-main-full] layer=%d kind=%s ok=%d\n", layer_,
+               kind.c_str(), ok);
+}
+constexpr size_t kMixed = size_t(4096) * 2560 * 2, kQ = size_t(4096) * 6144 * 2,
+                 kKV = size_t(4096) * 512 * 2;
+void Projection(const uint16_t* w, const uint16_t* x, uint16_t* y, int n, int k,
+                cudaStream_t stream, const cublasLtMatmulAlgo_t* algo,
+                size_t ws, bool contract) {
+  if (n == 12288 && k == 2560) {
+    bool ready = stage_ == 4 && out_ == nullptr;
+    ++index_;
+    layer_ = index_ * 4 + 3;
+    stage_ = 0;
+    x_ = x;
+    q_ = gate_ = attn_ = nullptr;
+    contract = contract && ready;
+  }
+  if (index_ < 0 || index_ >= 12 || stage_ >= 4) return;
+  const int widths[4] = {12288, 512, 512, 2560},
+            inputs[4] = {2560, 2560, 2560, 6144};
+  if (n != widths[stage_] || k != inputs[stage_]) return;
+  const char* names[4] = {"qg", "k", "v", "out"};
+  std::string tag = std::string("main-") + names[stage_];
+  bool ok = contract && algo && ws == 33554432;
+  ok = ok && (stage_ == 3 ? x == attn_ : x == x_) &&
+       Equal(stage_ == 3 ? Qsa("attention-output.bf16")
+                         : Hc("mix.attn.output.bf16"),
+             x, size_t(4096) * k * 2, stream);
+  ok = ok &&
+       Capture(Base() + "." + tag + ".weights.bf16", w, size_t(n) * k * 2,
+               stream) &&
+       Save(Base() + "." + tag + ".algo.bin", algo, sizeof(*algo));
+  if (stage_ < 2)
+    ok = ok && Capture(Base() + "." + tag + ".output.bf16", y,
+                       size_t(4096) * n * 2, stream);
+  else
+    ok = ok && Equal(stage_ == 2 ? Qsa("write-v.bf16") : Hc("fused.block.bf16"),
+                     y, size_t(4096) * n * 2, stream);
+  if (stage_ == 0)
+    qg_ = y;
+  else if (stage_ == 1)
+    k_ = y;
+  else if (stage_ == 2)
+    v_ = y;
+  else
+    out_ = y;
+  Meta(tag, ok);
+  ++stage_;
+}
+}  // namespace
+extern "C" cudaError_t __cudaGetKernel(cudaKernel_t* k, const void* fn) {
+  static auto real =
+      Resolve<cudaError_t (*)(cudaKernel_t*, const void*)>("__cudaGetKernel");
+  auto s = real(k, fn);
+  if (s == cudaSuccess) {
+    const char* n = nullptr;
+    static auto name = Resolve<decltype(&cudaFuncGetName)>("cudaFuncGetName");
+    if (name(&n, fn) == cudaSuccess && n) {
+      const char* names[6] = {
+          "QKDeinterleaveNormKernel", "PartialRopeKernelILi24EE",
+          "PartialRopeKernelILi2EE",  "WriteKVKernel",
+          "SparseAttentionKernel",    "CombineAndGroupedNormKernel"};
+      for (int i = 0; i < 6; ++i)
+        if (std::strstr(n, names[i]) &&
+            (i != 3 || std::strstr(n, "full_attention_cu")))
+          kernels[i] = *k;
+    }
+  }
+  return s;
+}
+extern "C" cudaError_t __cudaLaunchKernel(cudaKernel_t k, dim3 grid, dim3 block,
+                                          void** a, size_t smem,
+                                          cudaStream_t stream) {
+  static auto real =
+      Resolve<cudaError_t (*)(cudaKernel_t, dim3, dim3, void**, size_t,
+                              cudaStream_t)>("__cudaLaunchKernel");
+  int kind = -1;
+  for (int i = 0; i < 6; ++i)
+    if (k == kernels[i]) kind = i;
+  bool take = std::getenv("Q4T_QSA_CAPTURE_DIR") && kind >= 0 && layer_ >= 3 &&
+              layer_ < 48;
+  if (take) {
+    int t = kind == 0 || kind == 3   ? *static_cast<int*>(a[7])
+            : kind == 1 || kind == 2 ? *static_cast<int*>(a[8])
+            : kind == 4              ? int(grid.x)
+                                     : *static_cast<int*>(a[6]);
+    take = t == 4096 && (kind != 5 || out_ != nullptr);
+  }
+  bool ok = true;
+  std::string tag;
+  float theta = 0;
+  if (take) {
+    const char* names[6] = {"norm",     "rope-q",    "rope-k",
+                            "write-kv", "attention", "consumer"};
+    tag = names[kind];
+    if (kind == 0) {
+      q_ = Ptr<uint16_t>(a, 2);
+      gate_ = Ptr<uint16_t>(a, 3);
+      ok = stage_ == 3 && qg_ == Ptr<uint16_t>(a, 0) &&
+           k_ == Ptr<uint16_t>(a, 5) && *static_cast<int*>(a[4]) == 24 &&
+           *static_cast<int*>(a[8]) == 2 && *static_cast<int*>(a[9]) == 256 &&
+           block.x == 256 && grid.x == 4096 * 26;
+      float eps = *static_cast<float*>(a[10]);
+      ok = ok && Equal(Base() + ".main-qg.output.bf16", qg_, 2 * kQ, stream) &&
+           Equal(Base() + ".main-k.output.bf16", k_, kKV, stream) &&
+           Capture(Base() + ".q-norm.weights.bf16", Ptr<uint16_t>(a, 1), 512,
+                   stream) &&
+           Capture(Base() + ".k-norm.weights.bf16", Ptr<uint16_t>(a, 6), 512,
+                   stream) &&
+           Save(Base() + ".epsilon.f32", &eps, 4);
+    } else if (kind == 1 || kind == 2) {
+      int nh = kind == 1 ? 24 : 2;
+      auto x = Ptr<uint16_t>(a, 0);
+      int maxlen = *static_cast<int*>(a[6]);
+      theta = *static_cast<float*>(a[7]);
+      ok = stage_ == 3 && x == (kind == 1 ? q_ : k_) &&
+           *static_cast<int*>(a[1]) == nh && *static_cast<int*>(a[2]) == 256 &&
+           *static_cast<int*>(a[3]) == 64 && maxlen == 208896 &&
+           *static_cast<int*>(a[10]) == 3 * 208896 && block.x == 256;
+      std::vector<int> ids(4096), positions(4096);
+      if (Ptr<int>(a, 9))
+        ok = ok && Read(ids.data(), Ptr<int>(a, 9), 4096 * 4, stream);
+      for (int id : ids) ok = ok && id == 0;
+      ok = ok && Read(positions.data(), Ptr<int>(a, 4), 4096 * 4, stream);
+      for (int j = 0; j < 4096; ++j) ok = ok && positions[j] == j;
+      ok = ok &&
+           Save(Base() + "." + tag + ".seqids.i32", ids.data(), 4096 * 4) &&
+           Save(Base() + "." + tag + ".positions.i32", positions.data(),
+                4096 * 4) &&
+           Save(Base() + "." + tag + ".theta.f32", &theta, 4) &&
+           Equal(Base() + "." + (kind == 1 ? "q" : "k") + "-norm.output.bf16",
+                 x, size_t(4096) * nh * 256 * 2, stream);
+      for (int row = 0; row < 3; ++row)
+        ok = ok &&
+             Capture(Base() + "." + tag + ".rope-row-" + std::to_string(row) +
+                         ".i32",
+                     Ptr<int>(a, 5) + size_t(row) * maxlen, 4096 * 4, stream);
+    } else if (kind == 3) {
+      ok = stage_ == 3 && Ptr<uint16_t>(a, 0) == k_ &&
+           Ptr<uint16_t>(a, 1) == v_ && *static_cast<int*>(a[3]) == 2 &&
+           *static_cast<int*>(a[4]) == 256 &&
+           Equal(Qsa("write-k.bf16"), k_, kKV, stream) &&
+           Equal(Qsa("write-v.bf16"), v_, kKV, stream) &&
+           Equal(Qsa("write-positions.i32"), Ptr<int>(a, 5), 4096 * 4, stream);
+    } else if (kind == 4) {
+      attn_ = Ptr<uint16_t>(a, 5);
+      ok = stage_ == 3 && Ptr<uint16_t>(a, 0) == q_ &&
+           Ptr<uint16_t>(a, 6) == gate_ && *static_cast<int*>(a[7]) == 24 &&
+           *static_cast<int*>(a[8]) == 2 && *static_cast<int*>(a[9]) == 256 &&
+           Equal(Qsa("q.bf16"), q_, kQ, stream) &&
+           Equal(Qsa("gate.bf16"), gate_, kQ, stream);
+    } else {
+      ok = stage_ == 4 && Ptr<uint16_t>(a, 0) == out_ &&
+           *static_cast<int*>(a[7]) == 4 && *static_cast<int*>(a[8]) == 2560 &&
+           Equal(Hc("fused.block.bf16"), out_, kMixed, stream);
+    }
+  }
+  auto result = real(k, grid, block, a, smem, stream);
+  if (take) {
+    ok = ok && result == cudaSuccess;
+    if (ok && kind == 0)
+      ok = Capture(Base() + ".q-norm.output.bf16", q_, kQ, stream) &&
+           Capture(Base() + ".k-norm.output.bf16", k_, kKV, stream) &&
+           Equal(Qsa("gate.bf16"), gate_, kQ, stream);
+    else if (ok && (kind == 1 || kind == 2))
+      ok = Equal(Qsa(kind == 1 ? "q.bf16" : "write-k.bf16"),
+                 kind == 1 ? q_ : k_, kind == 1 ? kQ : kKV, stream);
+    else if (ok && kind == 4)
+      ok = Equal(Qsa("attention-output.bf16"), attn_, kQ, stream);
+    Meta(tag, ok);
+    if (kind == 5) out_ = nullptr;
+  }
+  return result;
+}
+namespace {
+template <typename T>
+bool Layout(cublasLtMatrixLayout_t layout, cublasLtMatrixLayoutAttribute_t key,
+            T* value) {
+  static const auto get = Resolve<decltype(&cublasLtMatrixLayoutGetAttribute)>(
+      "cublasLtMatrixLayoutGetAttribute");
+  size_t size = 0;
+  return get(layout, key, value, sizeof(T), &size) == CUBLAS_STATUS_SUCCESS &&
+         size == sizeof(T);
+}
+template <typename T>
+bool Attribute(cublasLtMatmulDesc_t desc, cublasLtMatmulDescAttributes_t key,
+               T* value) {
+  static const auto get = Resolve<decltype(&cublasLtMatmulDescGetAttribute)>(
+      "cublasLtMatmulDescGetAttribute");
+  size_t size = 0;
+  return get(desc, key, value, sizeof(T), &size) == CUBLAS_STATUS_SUCCESS &&
+         size == sizeof(T);
+}
+bool Shape(cublasLtMatrixLayout_t desc, uint64_t rows, uint64_t cols,
+           cudaDataType_t type) {
+  uint64_t r = 0, c = 0;
+  int64_t ld = 0;
+  cudaDataType_t t{};
+  cublasLtOrder_t order{};
+  return Layout(desc, CUBLASLT_MATRIX_LAYOUT_ROWS, &r) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_COLS, &c) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_LD, &ld) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_TYPE, &t) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_ORDER, &order) && r == rows &&
+         c == cols && ld == static_cast<int64_t>(rows) && t == type &&
+         order == CUBLASLT_ORDER_COL;
+}
+}  // namespace
+
+extern "C" cublasStatus_t CUBLASWINAPI
+cublasLtMatmul(cublasLtHandle_t handle, cublasLtMatmulDesc_t desc,
+               const void* alpha, const void* a, cublasLtMatrixLayout_t ad,
+               const void* b, cublasLtMatrixLayout_t bd, const void* beta,
+               const void* c, cublasLtMatrixLayout_t cd, void* d,
+               cublasLtMatrixLayout_t dd, const cublasLtMatmulAlgo_t* algo,
+               void* workspace, size_t workspace_bytes, cudaStream_t stream) {
+  static auto real = Resolve<decltype(&cublasLtMatmul)>("cublasLtMatmul");
+  auto result = real(handle, desc, alpha, a, ad, b, bd, beta, c, cd, d, dd,
+                     algo, workspace, workspace_bytes, stream);
+  if (!std::getenv("Q4T_QSA_CAPTURE_DIR") || result != CUBLAS_STATUS_SUCCESS)
+    return result;
+  uint64_t n = 0, k = 0;
+  cublasComputeType_t compute{};
+  cudaDataType_t scale{};
+  cublasLtEpilogue_t epilogue{};
+  cublasLtPointerMode_t mode{};
+  cublasOperation_t ta{}, tb{};
+  if (Layout(ad, CUBLASLT_MATRIX_LAYOUT_COLS, &n) &&
+      Layout(ad, CUBLASLT_MATRIX_LAYOUT_ROWS, &k) &&
+      ((k == 2560 && (n == 12288 || n == 512)) || (k == 6144 && n == 2560)) &&
+      Shape(ad, k, n, CUDA_R_16BF) && Shape(bd, k, 4096, CUDA_R_16BF) &&
+      Shape(dd, n, 4096, CUDA_R_16BF) && Shape(cd, n, 4096, CUDA_R_16BF)) {
+    bool ok = Attribute(desc, CUBLASLT_MATMUL_DESC_COMPUTE_TYPE, &compute) &&
+              compute == CUBLAS_COMPUTE_32F &&
+              Attribute(desc, CUBLASLT_MATMUL_DESC_SCALE_TYPE, &scale) &&
+              scale == CUDA_R_32F &&
+              Attribute(desc, CUBLASLT_MATMUL_DESC_EPILOGUE, &epilogue) &&
+              epilogue == CUBLASLT_EPILOGUE_DEFAULT &&
+              Attribute(desc, CUBLASLT_MATMUL_DESC_POINTER_MODE, &mode) &&
+              mode == CUBLASLT_POINTER_MODE_HOST &&
+              Attribute(desc, CUBLASLT_MATMUL_DESC_TRANSA, &ta) &&
+              ta == CUBLAS_OP_T &&
+              Attribute(desc, CUBLASLT_MATMUL_DESC_TRANSB, &tb) &&
+              tb == CUBLAS_OP_N && *static_cast<const float*>(alpha) == 1.f &&
+              *static_cast<const float*>(beta) == 0.f;
+    Projection(static_cast<const uint16_t*>(a), static_cast<const uint16_t*>(b),
+               static_cast<uint16_t*>(d), int(n), int(k), stream, algo,
+               workspace_bytes, ok);
+  }
+  return result;
+}

@@ -15,13 +15,16 @@
 中间量化有148339项错误，均覆盖48层。给定错误尺度的后续FP4/
 矩阵乘参考一致不能消除尺度缺陷。修正传播与错答因果尚未闭合。
 
-最新完成：完整QSA的49152个query、301989888个attention输出
-同分离设备原语+CPU指定累加参考；完整选择顺序及最高分集合也
-核对一致。依赖设备MMA/softmax/sigmoid，不是独立整模型证明。
-全query高精度对照亦完成：FP64最终舍入差异85672536项；加入
-概率及门控前BF16舍入后仍有175500项，均完整保留。末query的
-CPU/设备BF16对照相同，不能据此判定全模型正确。两轮终态清单
-生成时机问题已核对并修正，见 [QSA报告](QSA_FULL_REFERENCE_2026-09-24.md)。
+最新完成：完整QSA主投影/变换边界和输出消费者已绑定，三侧HTTP
+保持原错答、服务正常退出，72组实际权重同checkpoint。48次主
+投影780140544个输出同记录算法重放，1315131项FP64舍入差异
+保留，末行CPU/设备及旧参考一致。完整q/k norm与RoPE算术仍待
+核对，详见 [QSA报告](QSA_FULL_REFERENCE_2026-09-24.md)。
+
+此前完整QSA选择/attention指定算术相同；高精度保留概率与门控
+BF16舍入后仍有175500项差异。以上均为实际输入上的条件参考，
+不是从原始token独立生成整模型结果。两轮日志清单生成时机问题
+已修正并保留原证据，后续均在写入进程终态后封存。
 
 ## 目标与工作规则
 
@@ -85,7 +88,7 @@ CPU/设备BF16对照相同，不能据此判定全模型正确。两轮终态清
 | MoE路由/量化 | 全router/mapping/gather、输入及中间量化；E4M3错误确实到达实际计算 | FP64 router舍入后103行集合变化，未建任务因果；错误尺度未修正传播 | [路由](MOE_ROUTER_REFERENCE_2026-09-24.md)、[输入量化](MOE_INPUT_QUANT_REFERENCE_2026-09-24.md)、[中间量化](MOE_INTER_QUANT_REFERENCE_2026-09-24.md) |
 | MoE专家/合并 | 全GU/down重放及FP64、路由合并、shared投影/SwiGLU及最终MoE合并 | 使用实际量化/路由输入；共享分支存在保留的高精度差异 | [GU](MOE_GU_REFERENCE_2026-09-24.md)、[down](MOE_DOWN_REFERENCE_2026-09-24.md)、[shared](MOE_SHARED_REFERENCE_2026-09-24.md) |
 | PLE | 全prefill key/value投影、norm/gate/广播、卷积/历史及HC交接 | 逐算子条件参考，不是独立组合前向 | [投影](PLE_PROJECTION_REFERENCE_2026-09-23.md)、[卷积/门控](PLE_CONV_REFERENCE_2026-09-23.md) |
-| QSA | 全query选择顺序/集合、KV写入/实际消费、指定attention算术 | 全query高精度/舍入差异已保留；完整评分、Q/gate投影、变换及out_proj消费者待补齐 | [完整QSA](QSA_FULL_REFERENCE_2026-09-24.md)、[旧局部范围](QSA_SELECTION_REFERENCE_2026-09-23.md) |
+| QSA | 全query选择/KV/attention指定算术，主投影重放/FP64及变换/输出消费者边界 | 高精度差异保留；全量norm/RoPE算术与完整indexer评分链待补齐 | [完整QSA](QSA_FULL_REFERENCE_2026-09-24.md)、[旧局部范围](QSA_SELECTION_REFERENCE_2026-09-23.md) |
 | 输出头 | 七次最终mixer、全词表logits、argmax、后续token交接 | 上游仍为实际主干，没有从原始输入独立生成 | [mixer](FINAL_MIXER_REFERENCE_2026-09-23.md)、[logits](OUTPUT_HEAD_REFERENCE_2026-09-23.md) |
 
 参考依赖与接口见 [上游参考合同](UPSTREAM_REFERENCE_CONTRACT_2026-09-23.md)。
@@ -94,8 +97,8 @@ SGLang在本机的现有对照未形成稳定、可比的整模型oracle，不�
 
 ## 下一步执行顺序
 
-1. 补完整QSA主投影、归一化/RoPE来源与out_proj实际消费者；
-   新观测仍先三侧HTTP，已有冻结证据优先复用。
+1. 复用完整QSA主投影快照，完成全query q/k归一化及RoPE算术
+   参考，明确FP32归约/FMA与设备数学依赖，完整保留高精度差异。
 2. 接通并核对完整indexer评分来源及所有query的实际消费，保留
    高精度与指定算术差异，不以接近或低差异率当作通过。
 3. 在逐算子条件参考之外建立组合前向/修正传播对照，明确已知尺度
