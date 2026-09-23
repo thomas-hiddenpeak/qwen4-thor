@@ -1,0 +1,127 @@
+#include <cuda_runtime_api.h>
+#include <dlfcn.h>
+#include <cublasLt.h>
+#include <atomic>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <vector>
+namespace {
+std::atomic<cudaKernel_t> kernel[4]{};
+int counts[2][2]{};
+std::atomic<cudaKernel_t> conversion{nullptr},gemv{nullptr},scale_kernel{nullptr};int conversion_counts[2]{};
+int proj_phase=-1,proj_stage=2;bool scale_done=false;const uint16_t *embedding=nullptr,*projected_key=nullptr,*projected_value=nullptr;
+
+std::atomic<cudaKernel_t> extra[3]{};int ec[3][2]{};
+const uint16_t* norm_out[2][3]{};const uint16_t* gate_out[2]{};const uint16_t* gated_out[2]{};
+
+const uint16_t* input[2]{};const uint16_t* state[2]{};
+template<class T>T Resolve(const char* name){auto p=reinterpret_cast<T>(dlsym(RTLD_NEXT,name));if(!p)std::_Exit(127);return p;}
+template<class T>T* Ptr(void** a,int i){return *static_cast<T**>(a[i]);}
+bool Save(const std::string& s,const void* p,size_t n){FILE* f=std::fopen(s.c_str(),"wb");if(!f)return false;bool ok=std::fwrite(p,1,n,f)==n;return std::fclose(f)==0&&ok;}
+bool Read(void* h,const void* d,size_t n,cudaStream_t stream){static auto copy=Resolve<decltype(&cudaMemcpyAsync)>("cudaMemcpyAsync");static auto sync=Resolve<decltype(&cudaStreamSynchronize)>("cudaStreamSynchronize");return copy(h,d,n,cudaMemcpyDeviceToHost,stream)==cudaSuccess&&sync(stream)==cudaSuccess;}
+bool Capture(const std::string& s,const void* d,size_t n,cudaStream_t stream){std::vector<unsigned char> v(n);return Read(v.data(),d,n,stream)&&Save(s,v.data(),n);}
+void Projection(const uint16_t* w,const uint16_t* x,const uint16_t* y,int m,int n,int k,float alpha,cudaStream_t stream,const cublasLtMatmulAlgo_t* algo=nullptr,size_t ws=0){
+ if(!std::getenv("Q4T_PLE_CAPTURE_DIR")||!scale_done||proj_stage>=2||x!=embedding||k!=2560||m!=(proj_phase?1:4096)||n!=(proj_stage?2560:10240))return;
+ int rows=proj_phase?1:10;bool ok=alpha==1.f;std::string base=std::string(std::getenv("Q4T_PLE_CAPTURE_DIR"))+(proj_phase?"/decode":"/prefill")+(proj_stage?".projection-value":".projection-key");
+ if(proj_stage)projected_value=y;else projected_key=y;
+ ok=ok&&Capture(base+".weights.bf16",w,size_t(n)*k*2,stream)&&Capture(base+".input.bf16",x+size_t(m-rows)*k,size_t(rows)*k*2,stream)&&Capture(base+".output.bf16",y+size_t(m-rows)*n,size_t(rows)*n*2,stream);
+ if(!proj_phase)ok=ok&&algo&&ws==33554432&&Save(base+".algo.bin",algo,sizeof(*algo));
+ char meta[200];int len=std::snprintf(meta,sizeof(meta),"{\"phase\":%d,\"stage\":%d,\"rows\":%d,\"m\":%d,\"n\":%d,\"k\":%d,\"ok\":%s}\n",proj_phase,proj_stage,rows,m,n,k,ok?"true":"false");if(len>0&&size_t(len)<sizeof(meta))Save(base+".json",meta,len);std::fprintf(stderr,"[ple-projection] phase=%d stage=%d ok=%d\n",proj_phase,proj_stage,ok);++proj_stage;
+}
+}
+extern "C" cudaError_t __cudaGetKernel(cudaKernel_t* k,const void* fn){
+ static auto real=Resolve<cudaError_t(*)(cudaKernel_t*,const void*)>("__cudaGetKernel");auto status=real(k,fn);
+ if(status==cudaSuccess){const char* n=nullptr;static auto name=Resolve<decltype(&cudaFuncGetName)>("cudaFuncGetName");if(name(&n,fn)==cudaSuccess&&n){if(std::strstr(n,"Fp8ToBf16Kernel")&&std::strstr(n,"fp8_convert_cu"))conversion=*k;if(std::strstr(n,"Bf16GevKernel"))gemv=*k;if(std::strstr(n,"ScaleBf16Kernel")&&std::strstr(n,"model_cu"))scale_kernel=*k;if(std::strstr(n,"ple_layer_cu")){
+ const char* enames[3]={"GroupedRmsNormKernel","PleGateKernel","GatedValueKernel"};for(int i=0;i<3;++i)if(std::strstr(n,enames[i]))extra[i]=*k;
+ const char* names[4]={"DepthwiseConvAddKernel","DepthwiseConvAddMultiSeqKernel","PleConvUpdateStateKernel","PleConvUpdateStateMultiSeqKernel"};for(int i=0;i<4;++i)if(std::strstr(n,names[i]))kernel[i]=*k;
+ }}}return status;
+}
+extern "C" cudaError_t __cudaLaunchKernel(cudaKernel_t k,dim3 grid,dim3 block,void** a,size_t smem,cudaStream_t stream){
+ static auto real=Resolve<cudaError_t(*)(cudaKernel_t,dim3,dim3,void**,size_t,cudaStream_t)>("__cudaLaunchKernel");
+ int kind=-1;for(int i=0;i<4;++i)if(k==kernel[i])kind=i;
+ bool take=false,ok=true;int phase=0,t=0,c=0,kk=4,dil=3,len=9;std::string base;
+ if(std::getenv("Q4T_PLE_CAPTURE_DIR")&&kind>=0){
+  bool multi=kind%2;phase=multi?1:0;
+  if(kind<2){t=*static_cast<int*>(a[multi?7:6]);c=*static_cast<int*>(a[multi?8:7]);kk=*static_cast<int*>(a[multi?9:8]);dil=*static_cast<int*>(a[multi?10:9]);len=*static_cast<int*>(a[multi?11:10]);}
+  else{t=multi?int(grid.y):*static_cast<int*>(a[2]);c=*static_cast<int*>(a[3]);len=*static_cast<int*>(a[4]);}
+  if(t==(multi?1:4096)&&(!multi||counts[1][0]==1)){take=counts[kind/2][phase]++==0;}
+  if(take){base=std::string(std::getenv("Q4T_PLE_CAPTURE_DIR"))+(phase?"/decode":"/prefill");ok=c==10240&&kk==4&&dil==3&&len==9;
+   if(multi){int seq=-1;ok=ok&&Read(&seq,Ptr<int>(a,kind<2?6:2),4,stream)&&seq==0;}
+   if(kind<2){ok=ok&&Ptr<uint16_t>(a,0)==norm_out[phase][2]&&Ptr<uint16_t>(a,3)==gated_out[phase];input[phase]=Ptr<uint16_t>(a,0);state[phase]=Ptr<uint16_t>(a,2);int rows=phase?1:10;ok=ok&&Ptr<uint16_t>(a,4)&&Capture(base+".x.bf16",input[phase]+size_t(t-rows)*c,size_t(rows)*c*2,stream)&&Capture(base+".weights.bf16",Ptr<uint16_t>(a,1),size_t(c)*kk*2,stream)&&Capture(base+".state-before.bf16",state[phase],size_t(c)*len*2,stream)&&Capture(base+".gated.bf16",Ptr<uint16_t>(a,3)+size_t(t-1)*c,c*2,stream)&&Capture(base+".trunk.bf16",Ptr<uint16_t>(a,4)+size_t(t-1)*c,c*2,stream);}
+   else{ok=ok&&Ptr<uint16_t>(a,0)==state[phase]&&Ptr<uint16_t>(a,1)==input[phase]&&Capture(base+".update-before.bf16",Ptr<uint16_t>(a,0),size_t(c)*len*2,stream);}
+  }
+ }
+ int ek=-1,et=0,ep=0,ei=0,rows=0;bool etake=false,eok=true;std::string eb;
+ if(std::getenv("Q4T_PLE_CAPTURE_DIR"))for(int i=0;i<3;++i)if(k==extra[i])ek=i;
+ if(ek>=0){et=*static_cast<int*>(a[3]);ep=et==4096?0:1;rows=ep?1:10;
+  if(et==4096||(et==1&&counts[1][0]==1)){ei=ec[ek][ep]++;etake=ei<(ek==0?3:1);}
+  if(etake){eb=std::string(std::getenv("Q4T_PLE_CAPTURE_DIR"))+(ep?"/decode":"/prefill")+(ek==0?".norm-"+std::to_string(ei):ek==1?".gate":".gated");eok=*static_cast<int*>(a[4])==4&&*static_cast<int*>(a[5])==2560;
+   if(ek==0){if(ei==0)eok=eok&&proj_phase==ep&&proj_stage==2&&Ptr<uint16_t>(a,0)==projected_key;if(ei==2)eok=eok&&Ptr<uint16_t>(a,0)==gated_out[ep];norm_out[ep][ei]=Ptr<uint16_t>(a,2);float eps=*static_cast<float*>(a[6]);eok=eok&&Capture(eb+".input.bf16",Ptr<uint16_t>(a,0)+size_t(et-rows)*10240,size_t(rows)*10240*2,stream)&&Capture(eb+".weights.bf16",Ptr<uint16_t>(a,1),10240*2,stream)&&Save(eb+".eps.f32",&eps,4);}
+   if(ek==1){eok=eok&&Ptr<uint16_t>(a,0)==norm_out[ep][0]&&Ptr<uint16_t>(a,1)==norm_out[ep][1];gate_out[ep]=Ptr<uint16_t>(a,2);float scale=*static_cast<float*>(a[6]);eok=eok&&Capture(eb+".key.bf16",Ptr<uint16_t>(a,0)+size_t(et-rows)*10240,size_t(rows)*10240*2,stream)&&Capture(eb+".query.bf16",Ptr<uint16_t>(a,1)+size_t(et-rows)*10240,size_t(rows)*10240*2,stream)&&Save(eb+".scale.f32",&scale,4);}
+   if(ek==2){eok=eok&&proj_phase==ep&&proj_stage==2&&Ptr<uint16_t>(a,1)==projected_value&&Ptr<uint16_t>(a,0)==gate_out[ep];gated_out[ep]=Ptr<uint16_t>(a,2);eok=eok&&Capture(eb+".gate.bf16",Ptr<uint16_t>(a,0)+size_t(et-rows)*4,size_t(rows)*4*2,stream)&&Capture(eb+".value.bf16",Ptr<uint16_t>(a,1)+size_t(et-rows)*2560,size_t(rows)*2560*2,stream);}
+  }
+ }
+ bool stake=std::getenv("Q4T_PLE_CAPTURE_DIR")&&k==scale_kernel&&proj_phase>=0&&proj_stage==0&&!scale_done&&Ptr<uint16_t>(a,0)==embedding;bool sok=true;std::string sb;
+ if(stake){int total=*static_cast<int*>(a[1]),rows=proj_phase?1:10;sok=total==(proj_phase?2560:4096*2560);sb=std::string(std::getenv("Q4T_PLE_CAPTURE_DIR"))+(proj_phase?"/decode":"/prefill")+".scale";float scale=*static_cast<float*>(a[2]);sok=sok&&Save(sb+".f32",&scale,4)&&Capture(sb+".before.bf16",embedding+size_t(total-rows*2560),size_t(rows)*2560*2,stream);}
+ auto status=real(k,grid,block,a,smem,stream);
+ if(stake&&status==cudaSuccess){int total=*static_cast<int*>(a[1]),rows=proj_phase?1:10;sok=sok&&Capture(sb+".after.bf16",embedding+size_t(total-rows*2560),size_t(rows)*2560*2,stream);scale_done=sok;char meta[128];int len=std::snprintf(meta,sizeof(meta),"{\"phase\":%d,\"rows\":%d,\"ok\":%s}\n",proj_phase,rows,sok?"true":"false");if(len>0&&size_t(len)<sizeof(meta))Save(sb+".json",meta,len);std::fprintf(stderr,"[ple-scale] phase=%d ok=%d\n",proj_phase,sok);}
+
+ if(std::getenv("Q4T_PLE_CAPTURE_DIR")&&status==cudaSuccess&&k==conversion){size_t count=*static_cast<size_t*>(a[2]);int cp=count==size_t(4096)*2560?0:count==2560?1:-1;if(cp>=0&&(!cp||conversion_counts[0]==1)&&conversion_counts[cp]++==0){proj_phase=cp;proj_stage=0;scale_done=false;embedding=Ptr<uint16_t>(a,1);projected_key=projected_value=nullptr;int rows=cp?1:10;std::string b=std::string(std::getenv("Q4T_PLE_CAPTURE_DIR"))+(cp?"/decode":"/prefill")+".embedding";bool cok=Capture(b+".fp8",Ptr<uint8_t>(a,0)+count-size_t(rows)*2560,size_t(rows)*2560,stream)&&Capture(b+".bf16",embedding+count-size_t(rows)*2560,size_t(rows)*2560*2,stream);char meta[160];int len=std::snprintf(meta,sizeof(meta),"{\"phase\":%d,\"count\":%zu,\"rows\":%d,\"ok\":%s}\n",cp,count,rows,cok?"true":"false");if(len>0&&size_t(len)<sizeof(meta))Save(b+".json",meta,len);std::fprintf(stderr,"[ple-conversion] phase=%d ok=%d\n",cp,cok);}}
+ if(status==cudaSuccess&&k==gemv)Projection(Ptr<uint16_t>(a,0),Ptr<uint16_t>(a,1),Ptr<uint16_t>(a,2),1,*static_cast<int*>(a[3]),*static_cast<int*>(a[4]),*static_cast<float*>(a[5]),stream);
+
+ if(etake&&status==cudaSuccess){int width=ek==1?4:10240;eok=eok&&Capture(eb+".output.bf16",Ptr<uint16_t>(a,2)+size_t(et-rows)*width,size_t(rows)*width*2,stream);char meta[160];int n=std::snprintf(meta,sizeof(meta),"{\"kind\":%d,\"stage\":%d,\"phase\":%d,\"rows\":%d,\"ok\":%s}\n",ek,ei,ep,rows,eok?"true":"false");if(n>0&&size_t(n)<sizeof(meta))Save(eb+".json",meta,n);std::fprintf(stderr,"[ple-gate-norm] kind=%d stage=%d phase=%d ok=%d\n",ek,ei,ep,eok);}
+
+ if(take&&status==cudaSuccess){
+  if(kind<2)ok=ok&&Capture(base+".output.bf16",Ptr<uint16_t>(a,5)+size_t(t-1)*c,c*2,stream);
+  else ok=ok&&Capture(base+".state-after.bf16",Ptr<uint16_t>(a,0),size_t(c)*len*2,stream);
+  char meta[200];int n=std::snprintf(meta,sizeof(meta),"{\"kind\":%d,\"phase\":%d,\"tokens\":%d,\"channels\":%d,\"kernel\":%d,\"dilation\":%d,\"state_len\":%d,\"ok\":%s}\n",kind,phase,t,c,kk,dil,len,ok?"true":"false");if(n>0&&size_t(n)<sizeof(meta))Save(base+".kind-"+std::to_string(kind)+".json",meta,n);std::fprintf(stderr,"[ple-conv] kind=%d phase=%d ok=%d\n",kind,phase,ok);
+ }
+ return status;
+}
+
+namespace {
+template <typename T>
+bool Layout(cublasLtMatrixLayout_t layout, cublasLtMatrixLayoutAttribute_t key,
+            T* value) {
+  static const auto get = Resolve<decltype(&cublasLtMatrixLayoutGetAttribute)>(
+      "cublasLtMatrixLayoutGetAttribute");
+  size_t size = 0;
+  return get(layout, key, value, sizeof(T), &size) == CUBLAS_STATUS_SUCCESS &&
+         size == sizeof(T);
+}
+template <typename T>
+bool Attribute(cublasLtMatmulDesc_t desc, cublasLtMatmulDescAttributes_t key,
+               T* value) {
+  static const auto get = Resolve<decltype(&cublasLtMatmulDescGetAttribute)>(
+      "cublasLtMatmulDescGetAttribute");
+  size_t size = 0;
+  return get(desc, key, value, sizeof(T), &size) == CUBLAS_STATUS_SUCCESS &&
+         size == sizeof(T);
+}
+bool Shape(cublasLtMatrixLayout_t desc, uint64_t rows, uint64_t cols,
+           cudaDataType_t type) {
+  uint64_t r = 0, c = 0;
+  int64_t ld = 0;
+  cudaDataType_t t{};
+  cublasLtOrder_t order{};
+  return Layout(desc, CUBLASLT_MATRIX_LAYOUT_ROWS, &r) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_COLS, &c) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_LD, &ld) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_TYPE, &t) &&
+         Layout(desc, CUBLASLT_MATRIX_LAYOUT_ORDER, &order) &&
+         r == rows && c == cols && ld == static_cast<int64_t>(rows) &&
+         t == type && order == CUBLASLT_ORDER_COL;
+}
+}
+
+
+extern "C" cublasStatus_t CUBLASWINAPI cublasLtMatmul(cublasLtHandle_t handle,cublasLtMatmulDesc_t desc,const void* alpha,const void* a,cublasLtMatrixLayout_t ad,const void* b,cublasLtMatrixLayout_t bd,const void* beta,const void* c,cublasLtMatrixLayout_t cd,void* d,cublasLtMatrixLayout_t dd,const cublasLtMatmulAlgo_t* algo,void* workspace,size_t ws,cudaStream_t stream){
+ static auto real=Resolve<decltype(&cublasLtMatmul)>("cublasLtMatmul");auto result=real(handle,desc,alpha,a,ad,b,bd,beta,c,cd,d,dd,algo,workspace,ws,stream);
+ if(!std::getenv("Q4T_PLE_CAPTURE_DIR")||result!=CUBLAS_STATUS_SUCCESS||b!=embedding||proj_phase!=0||proj_stage>=2)return result;
+ uint64_t n=0;cublasComputeType_t pc{};cudaDataType_t ps{};cublasLtEpilogue_t pe{};cublasLtPointerMode_t pm{};cublasOperation_t pa{},pb{};
+ if(Layout(ad,CUBLASLT_MATRIX_LAYOUT_COLS,&n)&&(n==10240||n==2560)&&Shape(ad,2560,n,CUDA_R_16BF)&&Shape(bd,2560,4096,CUDA_R_16BF)&&Shape(cd,n,4096,CUDA_R_16BF)&&Shape(dd,n,4096,CUDA_R_16BF)&&Attribute(desc,CUBLASLT_MATMUL_DESC_COMPUTE_TYPE,&pc)&&pc==CUBLAS_COMPUTE_32F&&Attribute(desc,CUBLASLT_MATMUL_DESC_SCALE_TYPE,&ps)&&ps==CUDA_R_32F&&Attribute(desc,CUBLASLT_MATMUL_DESC_EPILOGUE,&pe)&&pe==CUBLASLT_EPILOGUE_DEFAULT&&Attribute(desc,CUBLASLT_MATMUL_DESC_POINTER_MODE,&pm)&&pm==CUBLASLT_POINTER_MODE_HOST&&Attribute(desc,CUBLASLT_MATMUL_DESC_TRANSA,&pa)&&pa==CUBLAS_OP_T&&Attribute(desc,CUBLASLT_MATMUL_DESC_TRANSB,&pb)&&pb==CUBLAS_OP_N&&*static_cast<const float*>(beta)==0.f)Projection(static_cast<const uint16_t*>(a),static_cast<const uint16_t*>(b),static_cast<const uint16_t*>(d),4096,int(n),2560,*static_cast<const float*>(alpha),stream,algo,ws);
+ return result;
+}

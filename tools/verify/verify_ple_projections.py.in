@@ -1,0 +1,49 @@
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import json,struct,hashlib,subprocess,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/ple-projection-reference-v2-20260923';c=o/'observed-captures';old=root/'.q4t-work/e2e/ple-gate-norm-20260923/observed-captures';replayed=o/'replayed'
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+def sha(f):return hashlib.sha256(f.read_bytes()).hexdigest()
+def read(f,dt='<u2'):return np.fromfile(f,dtype=dt)
+def dec(v):return (v.astype(np.uint32)<<16).view(np.float32).astype(np.float64)
+def rnd(v):
+ b=np.asarray(v,dtype=np.float32).view(np.uint32);return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype(np.uint16)
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+assert all((p/f).stat().st_size==0 for f in ['build.log','decode-build.log','prefill-build.log'])
+replayed.mkdir(exist_ok=False);bindings={}
+for f in old.iterdir():assert f.read_bytes()==(c/f.name).read_bytes(),f.name;bindings[f.name]=sha(f)
+save(o/'previous-binding.json',bindings)
+v1=root/'.q4t-work/e2e/ple-projection-reference-20260923';v1bindings={}
+for f in (v1/'observed-captures').iterdir():assert f.read_bytes()==(c/f.name).read_bytes(),f.name;v1bindings[f.name]=sha(f)
+save(o/'v1-binding.json',v1bindings)
+
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');idx=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];records=[];conversions=[]
+for phase in ['prefill','decode']:
+ rows=10 if phase=='prefill' else 1;b=str(c/phase);fp8=read(b+'.embedding.fp8','u1');e=(fp8>>3)&15;m=fp8&7;assert not np.any((e==15)&(m==7));value=np.where(e==0,m.astype(np.float64)/512,np.ldexp(1+m.astype(np.float64)/8,e.astype(np.int32)-7));value=np.where(fp8&128,-value,value);bits=rnd(value);actual=read(b+'.embedding.bf16');assert np.array_equal(bits,actual)
+ np.savez(replayed/f'{phase}.conversion-reference.npz',values=value,bits=bits)
+ assert Path(b+'.scale.before.bf16').read_bytes()==Path(b+'.embedding.bf16').read_bytes()
+ scale=read(b+'.scale.f32','<f4')[0];name='model.language_model.layers.1.ple.ple_embedding.ngram_embedding.weight_scale'
+ with (model/idx[name]).open('rb') as f:
+  size=struct.unpack('<Q',f.read(8))[0];info=json.loads(f.read(size))[name];assert info['dtype']=='BF16' and info['shape']==[1];a,z=info['data_offsets'];f.seek(8+size+a);scale_bits=np.frombuffer(f.read(z-a),dtype='<u2');assert scale==dec(scale_bits)[0]
+ scaled=rnd(dec(actual)*float(scale));assert scaled.tobytes()==Path(b+'.scale.after.bf16').read_bytes();np.savez(replayed/f'{phase}.scale-reference.npz',scale=scale,bits=scaled)
+
+ conversions.append({'phase':phase,'elements':len(bits),'mismatches':0,'distinct_codes':len(np.unique(fp8)),'exponent15_elements':int(np.count_nonzero(e==15)),'max_abs':float(np.max(abs(value))),'actual_weight_scale':float(scale),'scaled_mismatches':0})
+ for stage,n in [('key',10240),('value',2560)]:
+  base=b+'.projection-'+stage;wfile=Path(base+'.weights.bf16');xfile=Path(base+'.input.bf16');yfile=Path(base+'.output.bf16');name=f'model.language_model.layers.1.ple.{stage}_proj.weight'
+  with (model/idx[name]).open('rb') as f:
+   size=struct.unpack('<Q',f.read(8))[0];info=json.loads(f.read(size))[name];assert info['dtype']=='BF16' and info['shape']==[n,2560];a,z=info['data_offsets'];f.seek(8+size+a);assert f.read(z-a)==wfile.read_bytes()
+  assert xfile.read_bytes()==Path(b+'.scale.after.bf16').read_bytes()
+  assert yfile.read_bytes()==Path(b+('.norm-0.input.bf16' if stage=='key' else '.gated.value.bf16')).read_bytes()
+  w=dec(read(wfile)).reshape(n,2560);x=dec(read(xfile)).reshape(rows,2560);expected=read(yfile).reshape(rows,n);ref=x@w.T;bits=rnd(ref);bad=np.flatnonzero(bits.ravel()!=expected.ravel());del w;np.savez(replayed/f'{phase}.projection-{stage}.fp64.npz',values=ref,bits=bits)
+  records.append({'phase':phase,'stage':stage,'elements':rows*n,'fp64_mismatches':len(bad),'indices':bad.tolist(),'weights_sha256':sha(wfile),'input_sha256':sha(xfile),'output_sha256':sha(yfile)})
+save(o/'conversion-reference.json',conversions);save(o/'projection-reference.json',records)
+exits={}
+for phase in ['decode','prefill']:
+ with (o/(phase+'.stdout')).open('w') as out,(o/(phase+'.stderr')).open('w') as err:exits[phase]=subprocess.run([str(p/phase),str(c),str(replayed)],stdout=out,stderr=err).returncode
+ save(o/'reference-exit.json',exits);assert exits[phase]==0
+ r=json.loads((o/(phase+'.stdout')).read_text());assert len(r['records'])==2
+ for x in r['records']:
+  b=f"{phase}.projection-{x['stage']}";suffix='.cpu.bf16' if phase=='decode' else '.replay.bf16';assert (replayed/(b+suffix)).read_bytes()==(c/(b+'.output.bf16')).read_bytes();assert x['mismatches']==0
+ assert r['total_mismatches']==0;save(o/(phase+'-reference.json'),r)
+print('old_files',len(bindings),'FP64',[(x['phase'],x['stage'],x['fp64_mismatches']) for x in records],'conversion',conversions,'projection_outputs',sum(x['elements'] for x in records))

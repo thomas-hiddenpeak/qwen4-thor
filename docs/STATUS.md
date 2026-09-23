@@ -20,6 +20,13 @@ TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间�
 
 ## 当前决策摘要
 
+- **PLE转换、实际缩放和两组投影已接通。**
+  首轮漏掉model.cu原地weight_scale，输入断言失败留档；v2新增
+  缩放观测并重做三侧HTTP仍原错、服务0，首轮92份记录不变。
+  实际系数/权重同checkpoint，28160转换与缩放各全同，投影
+  prefill重放128000/decode CPU12800全同，FP64175项差异保留。
+  生产未改；下一步token/hash/SSD行来源，见
+  [PLE投影报告](PLE_PROJECTION_REFERENCE_2026-09-23.md)。
 - **PLE门控与三组归一化接通卷积输入。**
   新观测先三侧HTTP仍原错、服务0，旧20份记录不变；三组实际
   权重同checkpoint，337920 norm输出由CPU算术+设备rsqrt复现，

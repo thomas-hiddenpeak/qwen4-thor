@@ -1,0 +1,19 @@
+from pathlib import Path
+import json,hashlib,shutil
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/ple-projection-reference-v2-20260923';c=o/'observed-captures'
+def sha(f):return hashlib.sha256(f.read_bytes()).hexdigest()
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+for manifest in ['previous-binding.json','v1-binding.json']:
+ for name,h in json.loads((o/manifest).read_text()).items():assert sha(c/name)==h
+records=json.loads((o/'projection-reference.json').read_text());assert len(records)==4
+for x in records:
+ b=f"{x['phase']}.projection-{x['stage']}"
+ for tag in ['weights','input','output']:assert sha(c/(b+'.'+tag+'.bf16'))==x[tag+'_sha256']
+ suffix='.cpu.bf16' if x['phase']=='decode' else '.replay.bf16';assert (o/'replayed'/(b+suffix)).read_bytes()==(c/(b+'.output.bf16')).read_bytes()
+for phase,n in [('prefill',128000),('decode',12800)]:
+ r=json.loads((o/(phase+'-reference.json')).read_text());assert len(r['records'])==2 and r['total_mismatches']==0 and sum(x['elements'] for x in r['records'])==n
+for name in ['analyze.py','analyze.log','decode.cpp','decode','decode-build.log','prefill.cpp','prefill','prefill-build.log','audit.py']:shutil.copy2(p/name,o/name)
+save(o/'artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})
+print('audit passed:140800 projection outputs;28160 conversion and scale outputs each; SSD row origin not yet verified')
