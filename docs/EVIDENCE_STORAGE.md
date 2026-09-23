@@ -91,3 +91,32 @@ logits、10个选中专家及softmax路由权重，再扩展专家计算。
 保存再需472104960字节。已有routed、输入x、最终HC block可作
 全字节来源比较，不重复保存；参考继续逐层无损差异存储并保留
 20GiB余量。新增观测必须先三侧HTTP，之后才核对算术。
+
+
+## 2026-09-24：Linear/GDN重复证据共享，为完整QSA留出空间
+
+范围仅为linear-full-projection-20260923、linear-full-output-v2-20260923、
+linear-prefill-conv-20260923、gdn-prefill-reference-20260923及
+gdn-prefill-norm-20260923五个冻结目录。按原manifest筛出至少
+16MiB、原nlink=1的BF16文件，逐个重新读取并确认摘要/元数据后，
+将360组1188条路径中的828份独立重复副本原子替换为只读硬链接。
+
+释放实际分配39938170880字节，约39.94GB；可用空间由
+21590544384增至61526712320字节。五个原manifest全部8613条
+记录事后重读复核，manifest本身、原路径和文件字节全部保持。
+逐路径原元数据、readonly及替换操作均存preflight/fsync journal；
+inode、nlink、mtime和权限变化不能说成元数据不变。
+
+证据：`.q4t-work/e2e/linear-evidence-storage-20260924/`；模板：
+`tools/verify/linear_evidence_storage/`。生产、模型及reference/未改，
+没有运行HTTP或推理测试；这是存储治理，不构成质量/性能验收。
+共享文件只读使用，新实验需要写入时必须建立独立副本。
+
+下一步完整QSA选择/attention消费者边界。预算12层×4096 query，
+保存完整Q、gate、attention输出、scores、selection、lengths、
+写入K/V、实际cache前缀和位置/页表，逻辑数据2819948544字节。
+采集预算3.2GB、参考1GB，另保留20GiB；selection在attention
+消费者现场比对，避免二次保存。cache预算以实际页表可映射至
+0..4095槽为前提，超出即停止且保留失败，不能静默截断。
+该预算绑定源码摘要，但新observer尚未实现/测试；后续仍先
+三侧HTTP再数值分析，原错答与完整QSA算术问题仍待确认。

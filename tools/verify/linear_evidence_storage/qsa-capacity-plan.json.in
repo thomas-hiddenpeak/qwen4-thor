@@ -1,0 +1,90 @@
+{
+  "status": "budget only; observer not implemented or tested",
+  "scope": "12 QSA layers, all4096 prefill queries, selection/cache handoff and attention output; later stages still cover projections/indexer arithmetic",
+  "dimensions_and_item_bytes": {
+    "query": [
+      12,
+      4096,
+      6144,
+      2
+    ],
+    "gate": [
+      12,
+      4096,
+      6144,
+      2
+    ],
+    "attention_output": [
+      12,
+      4096,
+      6144,
+      2
+    ],
+    "scores": [
+      12,
+      4096,
+      2048,
+      4
+    ],
+    "selection": [
+      12,
+      4096,
+      2052,
+      4
+    ],
+    "selection_lengths": [
+      12,
+      4096,
+      4
+    ],
+    "write_k_and_v": [
+      12,
+      4096,
+      1024,
+      2
+    ],
+    "cache_prefix": [
+      12,
+      4096,
+      1024,
+      2
+    ],
+    "page_table": [
+      12,
+      4096,
+      4
+    ],
+    "write_positions": [
+      12,
+      4096,
+      4
+    ]
+  },
+  "bytes": {
+    "query": 603979776,
+    "gate": 603979776,
+    "attention_output": 603979776,
+    "scores": 402653184,
+    "selection": 403439616,
+    "selection_lengths": 196608,
+    "write_k_and_v": 100663296,
+    "cache_prefix": 100663296,
+    "page_table": 196608,
+    "write_positions": 196608
+  },
+  "logical_total_bytes": 2819948544,
+  "capture_budget_bytes": 3200000000,
+  "reference_budget_bytes": 1000000000,
+  "reserve_bytes": 21474836480,
+  "constraints": [
+    "reuse selection at attention consumer by full byte comparison rather than second copy",
+    "cache budget assumes physical slots0..4095 verified from actual page table; abort for out-of-budget mapping, never silently truncate",
+    "capture complete all-query sources/outputs, not only final query",
+    "first test after observer build must be tools/evalscope unobserved/observed/unobserved HTTP",
+    "numeric work only after full observer-invariance gate; original wrong quality outcome remains explicit"
+  ],
+  "code_sha256": {
+    "src/model/full_attention.cu": "eddbb842e9ec9f88b0a62874958d225820c28e664b5aa14af6953ea57248d6aa",
+    "tools/verify/qsa_selection_observer.cpp.in": "d42bad5cb87ee6f2d9de380db03d2b36e8e8a19af0c141d42177bf3808f92601"
+  }
+}

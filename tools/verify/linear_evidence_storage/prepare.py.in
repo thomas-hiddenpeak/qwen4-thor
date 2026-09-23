@@ -1,0 +1,16 @@
+from pathlib import Path
+import json,hashlib,collections
+p=Path(__file__).resolve().parent;root=p.parents[2]
+names=['linear-full-projection-20260923','linear-full-output-v2-20260923','linear-prefill-conv-20260923','gdn-prefill-reference-20260923','gdn-prefill-norm-20260923']
+groups=collections.defaultdict(list);manifests={}
+for name in names:
+ directory=root/'.q4t-work/e2e'/name;m=directory/'artifact-binding.json';manifests[name]=hashlib.sha256(m.read_bytes()).hexdigest()
+ for rel,digest in json.loads(m.read_text()).items():
+  f=directory/rel
+  if f.suffix!='.bf16' or f.is_symlink():continue
+  s=f.stat()
+  if s.st_size<16*1024**2 or s.st_nlink!=1:continue
+  groups[(s.st_size,digest)].append({'file':str(f.relative_to(root)),'inode':s.st_ino,'device':s.st_dev,'allocated':s.st_blocks*512})
+g=[{'bytes':size,'sha256':digest,'files':files} for (size,digest),files in groups.items() if len(files)>1]
+result={'sources':names,'manifest_hashes':manifests,'groups':g,'estimated_released_allocated_bytes':sum(sum(f['allocated'] for f in x['files'][1:]) for x in g),'note':'Manifest/stat-only inventory; must re-read all candidate content before sharing.'}
+(p/'candidate-inventory.json').write_text(json.dumps(result,indent=2)+'\n');print({'groups':len(g),'paths':sum(len(x['files']) for x in g),'potential_bytes':result['estimated_released_allocated_bytes']})
