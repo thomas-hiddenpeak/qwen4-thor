@@ -1,0 +1,28 @@
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+float Decode(uint16_t v){uint32_t b=uint32_t(v)<<16;float f;std::memcpy(&f,&b,4);return f;}
+uint16_t Round(float f){uint32_t b;std::memcpy(&b,&f,4);return (b+0x7fff+((b>>16)&1))>>16;}
+template<class T>std::vector<T> Read(const std::string& s,size_t n){std::ifstream f(s,std::ios::binary|std::ios::ate);if(!f||size_t(f.tellg())!=n*sizeof(T))throw std::runtime_error(s);std::vector<T> v(n);f.seekg(0);if(!f.read(reinterpret_cast<char*>(v.data()),n*sizeof(T)))throw std::runtime_error(s);return v;}
+template<class T>void Save(const std::string& s,const std::vector<T>& v){std::ofstream f(s,std::ios::binary);f.write(reinterpret_cast<const char*>(v.data()),v.size()*sizeof(T));if(!f)throw std::runtime_error(s);}
+int main(int argc,char** argv){try{
+ if(argc!=3)throw std::runtime_error("directory prepare|finish");
+ std::string mode=argv[2];bool first=true;size_t totals[3]{};if(mode=="finish")std::printf("{\"records\":[");
+ for(const char* phase:{"prefill","decode"}){bool decode=phase[0]=='d';std::string b=std::string(argv[1])+"/"+phase;
+  auto x=Read<uint16_t>(b+".x.bf16",(decode?1:10)*10240),w=Read<uint16_t>(b+".weights.bf16",10240*4),state=Read<uint16_t>(b+".state-before.bf16",10240*9),gated=Read<uint16_t>(b+".gated.bf16",10240),trunk=Read<uint16_t>(b+".trunk.bf16",10240),expected=Read<uint16_t>(b+".output.bf16",10240);
+  if(mode=="prepare"){std::vector<float> acc(10240);for(int c=0;c<10240;++c)for(int j=0;j<4;++j){float v=decode?(j<3?Decode(state[c*9+j*3]):Decode(x[c])):Decode(x[j*3*10240+c]);acc[c]=std::fma(Decode(w[c*4+j]),v,acc[c]);}Save(b+".acc.f32",acc);}
+  else if(mode=="finish"){auto acc=Read<float>(b+".acc.f32",10240),ex=Read<float>(b+".exp.f32",10240),device=Read<float>(b+".silu.f32",10240);
+   for(int v=0;v<3;++v){std::vector<uint16_t> out(10240),conv(10240),ple(10240);size_t bad=0;
+    for(int c=0;c<10240;++c){float e=v?ex[c]:float(std::exp(-double(acc[c])));float si=v==2?device[c]:acc[c]/(1.f+e);conv[c]=Round(si);ple[c]=Round(Decode(gated[c])+Decode(conv[c]));out[c]=Round(Decode(trunk[c])+Decode(ple[c]));bad+=out[c]!=expected[c];}
+    Save(b+".variant-"+std::to_string(v)+".bf16",out);Save(b+".conv-"+std::to_string(v)+".bf16",conv);Save(b+".ple-"+std::to_string(v)+".bf16",ple);totals[v]+=bad;std::printf("%s{\"phase\":\"%s\",\"variant\":%d,\"elements\":10240,\"mismatches\":%zu}",first?"":",",phase,v,bad);first=false;
+   }
+  }else throw std::runtime_error("mode");
+ }
+ if(mode=="finish"){std::printf("],\"totals\":[%zu,%zu,%zu]}\n",totals[0],totals[1],totals[2]);}
+ return 0;
+}catch(const std::exception& e){std::fprintf(stderr,"%s\n",e.what());return 1;}}

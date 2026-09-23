@@ -1,0 +1,16 @@
+from pathlib import Path
+import json,hashlib,shutil
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/ple-conv-reference-20260923';c=o/'observed-captures'
+def sha(f):return hashlib.sha256(f.read_bytes()).hexdigest()
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+for f in c.glob('*.bf16'):assert f.read_bytes()==(o/'data'/f.name).read_bytes()
+for name,h in json.loads((o/'hc-binding.json').read_text()).items():assert sha(root/name)==h
+r=json.loads((o/'conv-reference.json').read_text());assert len(r['records'])==6 and r['totals']==[0,0,0]
+for phase in ['prefill','decode']:
+ for variant in range(3):assert (o/'data'/f'{phase}.variant-{variant}.bf16').read_bytes()==(c/f'{phase}.output.bf16').read_bytes()
+assert all(x['fp64_final_mismatches']==0 for x in json.loads((o/'fp64-reference.json').read_text()))
+for name in ['analyze.py','analyze.log','cpu.cpp','cpu','cpu-build.log','nonlinear.cu','nonlinear','nonlinear-build.log','audit.py','initial-cpu.cpp','initial-cpu-build.log','initial-analyze.log']:shutil.copy2(p/name,o/name)
+save(o/'artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})
+print('audit passed:20480 fused final outputs;92160-element state handoff and both updates; no intermediate-value proof')

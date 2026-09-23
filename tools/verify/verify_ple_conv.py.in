@@ -1,0 +1,37 @@
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import json,struct,hashlib,shutil,subprocess,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/ple-conv-reference-20260923';c=o/'observed-captures';hc=root/'.q4t-work/e2e/hc-projection-reference-20260923';data=o/'data'
+def save(f,v):f.write_text(json.dumps(v,indent=2)+'\n')
+def sha(f):return hashlib.sha256(f.read_bytes()).hexdigest()
+def read(f,dt='<u2'):return np.fromfile(f,dtype=dt)
+def dec(v):return (np.asarray(v,dtype=np.uint16).astype(np.uint32)<<16).view(np.float32)
+def rnd(v):
+ b=np.asarray(v,dtype=np.float32).view(np.uint32);return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype(np.uint16)
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+assert all((p/f).stat().st_size==0 for f in ['build.log','cpu-build.log','nonlinear-build.log'])
+data.mkdir(exist_ok=False)
+for f in c.glob('*.bf16'):shutil.copy2(f,data/f.name)
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');idx=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];name='model.language_model.layers.1.ple.conv1d.weight'
+with (model/idx[name]).open('rb') as f:
+ size=struct.unpack('<Q',f.read(8))[0];info=json.loads(f.read(size))[name];assert info['dtype']=='BF16' and info['shape']==[10240,1,4];a,z=info['data_offsets'];f.seek(8+size+a);weights=f.read(z-a)
+hm=json.loads((hc/'artifact-binding.json').read_text());assert sha(hc/'previous-binding.json')==hm['previous-binding.json'];hh={x['file']:x['sha256'] for x in json.loads((hc/'previous-binding.json').read_text())['records']};bindings={};records=[];previous=None
+for phase in ['prefill','decode']:
+ b=str(data/phase);x=read(b+'.x.bf16').reshape(-1,10240);state=read(b+'.state-before.bf16').reshape(10240,9);after=read(b+'.state-after.bf16').reshape(10240,9);w=read(b+'.weights.bf16').reshape(10240,4);trunk=read(b+'.trunk.bf16');out=read(b+'.output.bf16');gated=read(b+'.gated.bf16');assert w.tobytes()==weights;assert state.tobytes()==Path(b+'.update-before.bf16').read_bytes()
+ if phase=='prefill':assert np.all(state==0) and np.array_equal(after,x[-9:].T);previous=after.copy();taps=x[[0,3,6,9]].T
+ else:assert np.array_equal(state,previous) and np.array_equal(after,np.concatenate([state[:,1:],x.T],axis=1));taps=np.concatenate([state[:,[0,3,6]],x.T],axis=1)
+ for layer,suffix,value in [(0,'write.output',trunk),(1,'read.trunk',out)]:
+  h=hc/'observed-captures'/f'hc-{layer}.{phase}.{suffix}.bf16';assert sha(h)==hh[h.name] and h.read_bytes()==value.tobytes();bindings[str(h.relative_to(root))]=sha(h)
+ acc=np.sum(dec(taps).astype(np.float64)*dec(w).astype(np.float64),axis=1);si=acc/(1+np.exp(-acc));conv=rnd(si);ple=rnd(dec(gated)+dec(conv));ref=rnd(dec(trunk)+dec(ple));bad=np.flatnonzero(ref!=out);np.savez(b+'.fp64.npz',acc=acc,silu=si,conv=conv,ple=ple,output=ref)
+ records.append({'phase':phase,'elements':10240,'fp64_final_mismatches':len(bad),'indices':bad.tolist(),'trunk_changed_elements':int(np.count_nonzero(trunk!=out))})
+save(o/'hc-binding.json',bindings);save(o/'fp64-reference.json',records)
+save(o/'declared-variants.json',{'0':'CPU four FP32 fma + CPU exp rounded FP32 + CPU division + three BF16 roundings','1':'Same CPU arithmetic but independent device __expf only','2':'CPU four fma + independent device SiLU + CPU BF16/additions','limitation':'Fused kernel does not expose actual conv/SiLU/PLE intermediate values. Equal final output alone is not intermediate-value proof.'})
+exits={}
+for name,args in [('prepare',[str(p/'cpu'),str(data),'prepare']),('nonlinear',[str(p/'nonlinear'),str(data)]),('finish',[str(p/'cpu'),str(data),'finish'])]:
+ with (o/(name+'.stdout')).open('w') as out,(o/(name+'.stderr')).open('w') as err:exits[name]=subprocess.run(args,stdout=out,stderr=err).returncode
+ save(o/'reference-exit.json',exits);assert exits[name]==0
+r=json.loads((o/'finish.stdout').read_text());assert len(r['records'])==6
+for x in r['records']:
+ b=str(data/x['phase']);bits=read(b+f".variant-{x['variant']}.bf16");expected=read(b+'.output.bf16');bad=np.flatnonzero(bits!=expected);assert len(bad)==x['mismatches'];x['indices']=bad.tolist()
+save(o/'conv-reference.json',r);print('FP64',sum(x['fp64_final_mismatches'] for x in records),'variants',r['totals'],'state_values_per_snapshot',10240*9,'trunk_changed',[x['trunk_changed_elements'] for x in records])

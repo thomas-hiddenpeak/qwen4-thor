@@ -1,0 +1,12 @@
+#include <cuda_runtime.h>
+#include <cstdio>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+#define CU(x) do{if((x)!=cudaSuccess)throw std::runtime_error(#x);}while(0)
+__global__ void Elementary(const float* a,float* ex,float* si){int i=blockIdx.x*blockDim.x+threadIdx.x;if(i<10240){float e=__expf(-a[i]);ex[i]=e;si[i]=a[i]/(1.f+e);}}
+void Save(const std::string& s,float* d){std::vector<float> v(10240);CU(cudaMemcpy(v.data(),d,v.size()*4,cudaMemcpyDeviceToHost));std::ofstream f(s,std::ios::binary);f.write(reinterpret_cast<char*>(v.data()),v.size()*4);if(!f)throw std::runtime_error(s);}
+int main(int argc,char** argv){try{if(argc!=2)throw std::runtime_error("directory");
+ for(const char* phase:{"prefill","decode"}){std::string b=std::string(argv[1])+"/"+phase;std::ifstream f(b+".acc.f32",std::ios::binary|std::ios::ate);if(!f||f.tellg()!=40960)throw std::runtime_error("input");f.seekg(0);std::vector<float> a(10240);if(!f.read(reinterpret_cast<char*>(a.data()),40960))throw std::runtime_error("read");float *d,*ex,*si;CU(cudaMalloc(&d,40960));CU(cudaMalloc(&ex,40960));CU(cudaMalloc(&si,40960));CU(cudaMemcpy(d,a.data(),40960,cudaMemcpyHostToDevice));Elementary<<<40,256>>>(d,ex,si);CU(cudaGetLastError());Save(b+".exp.f32",ex);Save(b+".silu.f32",si);CU(cudaFree(d));CU(cudaFree(ex));CU(cudaFree(si));}return 0;
+}catch(const std::exception& e){std::fprintf(stderr,"%s\n",e.what());return 1;}}
