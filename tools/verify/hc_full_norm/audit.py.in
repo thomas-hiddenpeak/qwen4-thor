@@ -1,0 +1,31 @@
+from pathlib import Path
+import json,hashlib,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/hc-full-norm-20260924';old=root/'.q4t-work/e2e/hc-full-boundaries-20260923';c=old/'observed-captures';d=o/'reference'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+plan=json.loads((o/'plan.json').read_text());assert sha(old/'artifact-binding.json')==plan['source_manifest_sha256'];m=json.loads((old/'artifact-binding.json').read_text())
+for r in json.loads((o/'input-binding.json').read_text()):assert sha(old/r['file'])==r['sha256']==m[r['file']]
+assert sha(old/'checkpoint-binding.json')==m['checkpoint-binding.json']
+for r in json.loads((old/'checkpoint-binding.json').read_text()):
+ f=Path(r['path']);st=f.stat();assert st.st_size==r['size'] and st.st_mtime_ns==r['mtime_ns']
+ with f.open('rb') as s:s.seek(r['offset']);data=s.read(r['bytes']);assert len(data)==r['bytes'] and hashlib.sha256(data).hexdigest()==r['sha256']
+cpu=json.loads((o/'cpu-reference.json').read_text());device=json.loads((o/'device-reference.json').read_text());assert len(cpu['records'])==len(device['records'])==96
+records=[];totals={k:0 for k in ['cpu','device','fp64']};different_lane_groups=0
+for cr,dr in zip(cpu['records'],device['records']):
+ name=cr['name'];assert name==dr['name'] and cr['elements']==dr['elements']==4096*10240
+ actual=np.fromfile(c/(name+('.output.bf16' if name.endswith('.read') else '.normed.bf16')),dtype='<u2');counts={};tails={}
+ for kind,count in [('cpu',cr['mismatches']),('device',dr['mismatches']),('fp64',cr['fp64_mismatches'])]:
+  values=np.fromfile(d/(name+'.'+kind+'.bf16'),dtype='<u2');assert values.size==actual.size;idx=np.flatnonzero(values!=actual);assert len(idx)==count;assert np.array_equal(idx,np.fromfile(d/(name+'.'+kind+'.differences.i32'),dtype='<i4'));counts[kind]=len(idx);totals[kind]+=len(idx);tails[kind]=np.flatnonzero(values[-10240:]!=actual[-10240:]).tolist()
+ mean=np.fromfile(d/(name+'.mean.f32'),dtype='<f4').reshape(-1,32);inv=np.fromfile(d/(name+'.device-inv.f32'),dtype='<f4').reshape(-1,32);assert mean.shape==inv.shape==(16384,32) and np.isfinite(mean).all() and (mean>0).all() and np.isfinite(inv).all();different_lane_groups+=int(np.any(mean!=mean[:,:1],axis=1).sum())
+ records.append({'name':name,'elements':actual.size,'mismatches':counts,'last_row_indices':tails})
+assert totals['cpu']==cpu['total_mismatches'] and totals['device']==device['total_mismatches'] and totals['fp64']==cpu['fp64_mismatches']
+summary={'elements':sum(r['elements'] for r in records),'mismatches':totals,'mean_groups_with_lane_variation':different_lane_groups,'all_device_assisted_outputs_equal':totals['device']==0,'reference':'CPU eight-square fma chains, 10 local accumulations, all32lane XOR and FP32 readout; only rsqrt from CUDA. FP64 formula rounds through FP32 to BF16.','whole_model_correctness_proven':False,'runtime_changed':False,'next':'Full HC mix arithmetic; full projection sources pending.'};save('summary.json',summary);save('audited-records.json',records)
+for f in p.iterdir():
+ if f.is_file():shutil.copy2(f,o/f.name)
+save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'})
+print(summary,flush=True)

@@ -166,3 +166,33 @@ previous-binding.json及artifact-binding.json可审计。工具模板位于
 `tools/verify/hc_full_boundaries/`。生产源码/接受二进制未改。
 下一步复用冻结快照核对全位置HC归一化与混合，再补全投影来源；
 全位置MoE/QSA/PLE及其他请求仍不能由这些局部一致性替代验收。
+
+
+## 2026-09-24后续：完整4K HC归一化
+
+复用上一节已完成三侧HTTP观测一致性检查的冻结快照；先核对
+source manifest和384份实际输入/权重/epsilon/输出，再执行参考。
+没有新生产候选或新观测器，没有重跑HTTP，也不能标成质量验收通过。
+参考所需输出/均方/设备倒数约24.56GB，开跑可用51.06GB，另预留
+20GiB；全部变体及所有差异索引保留，未删旧证据。两工具零警告构建。
+
+48层read/fused两类，共96次、4026531840个BF16输出。融合路径
+使用已经核对过的实际BF16写回结果，保留残差舍入边界；权重按
+checkpoint逐字节再核对，缩放为(1+weight)，非直接weight。
+CPU重建每lane八个平方的fma链、10组局部累加、32个lane各自的
+XOR16/8/4/2/1归约、FP32均方加epsilon，以及x*(rs*(1+w))乘法分组。
+本样本1572864组最终均方的32个lane结果恰好全同，但参考没有
+预先用lane0代替其他lane。
+
+纯CPU倒平方根参考13832项差异；仅改为设备rsqrtf，其余计算仍由
+CPU执行时，全部输出逐位一致。独立double平方和、倒平方根和乘法
+再转FP32/BF16的公式参考29533项差异，全部保留；不宣称CUDA
+数学近似被完全独立证明，也不把FP64差异一概归因于rsqrt。
+全行末位置的CPU/device差异索引与旧局部参考192条检查一致。
+
+证据`.q4t-work/e2e/hc-full-norm-20260924/`包含384份input-binding、
+全部CPU/device/FP64 BF16输出、均方及设备倒数、完整差异索引、
+audited-records、previous-last-row-binding和artifact-binding。
+工具模板`tools/verify/hc_full_norm/`。生产源码/接受二进制未改，
+原4K错误未修复。下一步全位置HC混合算术；磁盘余量约25GiB，
+下一阶段须先预算存储，不能直接复制更多大规模中间量。

@@ -1,0 +1,42 @@
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+float Decode(uint16_t v) {uint32_t b=uint32_t(v)<<16;float f;std::memcpy(&f,&b,4);return f;}
+uint16_t Round(float f) {uint32_t b;std::memcpy(&b,&f,4);return (b+0x7fff+((b>>16)&1))>>16;}
+template<class T>std::vector<T> Read(const std::string& s,size_t n) {std::ifstream f(s,std::ios::binary|std::ios::ate);if(!f||size_t(f.tellg())!=n*sizeof(T))throw std::runtime_error(s);std::vector<T> v(n);f.seekg(0);if(!f.read(reinterpret_cast<char*>(v.data()),n*sizeof(T)))throw std::runtime_error(s);return v;}
+template<class T>void Write(const std::string& s,const std::vector<T>& v) {std::ofstream f(s,std::ios::binary);f.write(reinterpret_cast<const char*>(v.data()),v.size()*sizeof(T));if(!f)throw std::runtime_error(s);}
+int main(int argc,char** argv) {try {
+ if(argc!=4)throw std::runtime_error("captures outputs cpu|device");
+ bool device=std::string(argv[3])=="device";if(!device&&std::string(argv[3])!="cpu")throw std::runtime_error("mode");
+ size_t total=0,high_total=0;bool first=true;std::printf("{\"records\":[");
+ constexpr size_t groups=4096*4,n=groups*2560;
+ for(int l=0;l<48;++l)for(const char* kind:{"read","fused"}) {
+  bool read=std::string(kind)=="read";std::string name="hc-"+std::to_string(l)+".prefill."+kind,b=std::string(argv[1])+"/"+name,o=std::string(argv[2])+"/"+name;
+  auto x=Read<uint16_t>(b+(read?".trunk.bf16":".output.bf16"),n),w=Read<uint16_t>(b+".norm-weights.bf16",10240),expected=Read<uint16_t>(b+(read?".output.bf16":".normed.bf16"),n);
+  float eps=Read<float>(b+".eps.f32",1)[0];std::vector<float> mean(groups*32),inv(groups*32);std::vector<double> high_inv(device?0:groups);
+  if(device)inv=Read<float>(o+".device-inv.f32",groups*32);
+  else {
+   #pragma omp parallel for
+   for(size_t g=0;g<groups;++g) {
+    float lane[32]{};
+    for(int t=0;t<32;++t)for(int i=t;i<320;i+=32) {size_t off=g*2560+i*8;float v=Decode(x[off]);float s=v*v;for(int j=1;j<8;++j) {v=Decode(x[off+j]);s=std::fma(v,v,s);}lane[t]+=s;}
+    for(int off=16;off>0;off>>=1) {float copy[32];std::memcpy(copy,lane,sizeof(lane));for(int t=0;t<32;++t)lane[t]=copy[t]+copy[t^off];}
+    for(int t=0;t<32;++t) {size_t k=g*32+t;mean[k]=lane[t]/2560.0f+eps;inv[k]=float(1.0/std::sqrt(double(mean[k])));}
+    double sum=0;for(int i=0;i<2560;++i) {double v=Decode(x[g*2560+i]);sum+=v*v;}high_inv[g]=1.0/std::sqrt(sum/2560.0+double(eps));
+   }
+   Write(o+".mean.f32",mean);
+  }
+  std::vector<uint16_t> y(n),high(device?0:n);size_t bad=0,high_bad=0;
+  #pragma omp parallel for reduction(+:bad,high_bad)
+  for(size_t i=0;i<n;++i) {size_t g=i/2560,k=g*32+((i%2560)/8)%32;float weight=Decode(w[i%10240]);float scaled=inv[k]*(1.0f+weight);y[i]=Round(Decode(x[i])*scaled);bad+=y[i]!=expected[i];if(!device) {high[i]=Round(float(double(Decode(x[i]))*high_inv[g]*(1.0+double(weight))));high_bad+=high[i]!=expected[i];}}
+  std::string mode=device?"device":"cpu";Write(o+"."+mode+".bf16",y);std::vector<int32_t> diff;for(size_t i=0;i<n;++i)if(y[i]!=expected[i])diff.push_back(int32_t(i));Write(o+"."+mode+".differences.i32",diff);
+  if(!device) {Write(o+".fp64.bf16",high);diff.clear();for(size_t i=0;i<n;++i)if(high[i]!=expected[i])diff.push_back(int32_t(i));Write(o+".fp64.differences.i32",diff);}
+  std::printf("%s{\"name\":\"%s\",\"elements\":%zu,\"mismatches\":%zu,\"fp64_mismatches\":%zu}",first?"":",",name.c_str(),n,bad,high_bad);std::fflush(stdout);first=false;total+=bad;high_total+=high_bad;
+ }
+ std::printf("],\"total_mismatches\":%zu,\"fp64_mismatches\":%zu}\n",total,high_total);return 0;
+} catch(const std::exception& e) {std::fprintf(stderr,"%s\n",e.what());return 2;}}

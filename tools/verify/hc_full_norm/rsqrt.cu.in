@@ -1,0 +1,17 @@
+#include <cuda_runtime.h>
+#include <cstdio>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+#define CU(x) do {if((x)!=cudaSuccess)throw std::runtime_error(#x);}while(0)
+__global__ void Inv(const float* in,float* out,int n) {int i=blockIdx.x*blockDim.x+threadIdx.x;if(i<n)out[i]=rsqrtf(in[i]);}
+int main(int argc,char** argv) {try {
+ if(argc!=2)throw std::runtime_error("directory");
+ constexpr int n=4096*4*32;constexpr size_t bytes=n*sizeof(float);std::vector<float>x(n),y(n);float *dx,*dy;CU(cudaMalloc(&dx,bytes));CU(cudaMalloc(&dy,bytes));
+ for(int l=0;l<48;++l)for(const char* kind:{"read","fused"}) {
+  std::string b=std::string(argv[1])+"/hc-"+std::to_string(l)+".prefill."+kind;std::ifstream f(b+".mean.f32",std::ios::binary|std::ios::ate);if(!f||size_t(f.tellg())!=bytes)throw std::runtime_error(b);f.seekg(0);if(!f.read(reinterpret_cast<char*>(x.data()),bytes))throw std::runtime_error("read");
+  CU(cudaMemcpy(dx,x.data(),bytes,cudaMemcpyHostToDevice));Inv<<<(n+255)/256,256>>>(dx,dy,n);CU(cudaGetLastError());CU(cudaMemcpy(y.data(),dy,bytes,cudaMemcpyDeviceToHost));std::ofstream out(b+".device-inv.f32",std::ios::binary);out.write(reinterpret_cast<char*>(y.data()),bytes);if(!out)throw std::runtime_error("write");
+ }
+ CU(cudaFree(dx));CU(cudaFree(dy));return 0;
+} catch(const std::exception& e) {std::fprintf(stderr,"%s\n",e.what());return 1;}}

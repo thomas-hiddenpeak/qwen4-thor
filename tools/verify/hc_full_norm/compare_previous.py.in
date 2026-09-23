@@ -1,0 +1,11 @@
+from pathlib import Path
+import json,hashlib
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/hc-full-norm-20260924';old=root/'.q4t-work/e2e/hc-norm-reference-20260923'
+def sha(f):return hashlib.sha256(f.read_bytes()).hexdigest()
+m=json.loads((old/'artifact-binding.json').read_text());results=json.loads((o/'audited-records.json').read_text());checks=[]
+for kind in ['cpu','device']:
+ f=old/f'order-{kind}-audited.json';assert sha(f)==m[f.name];prior={r['name']:r for r in json.loads(f.read_text())['records']}
+ for r in results:
+  assert r['last_row_indices'][kind]==prior[r['name']]['indices'];checks.append({'name':r['name'],'kind':kind,'indices':r['last_row_indices'][kind]})
+f=o/'previous-last-row-binding.json';f.write_text(json.dumps({'source_manifest_sha256':sha(old/'artifact-binding.json'),'checks':checks,'scope':'CPU/device mismatch index sets for last prefill row; FP64 evaluation ordering differs and is not asserted identical.'},indent=2)+'\n')
+print({'last_row_checks':len(checks),'all_equal':True})

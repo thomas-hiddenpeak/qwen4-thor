@@ -1,0 +1,21 @@
+from pathlib import Path
+import hashlib,json,shutil
+p=Path(__file__).resolve().parent;root=p.parents[2];old=root/'.q4t-work/e2e/hc-full-boundaries-20260923';o=root/'.q4t-work/e2e/hc-full-norm-20260924';m=json.loads((old/'artifact-binding.json').read_text())
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as s:
+  for b in iter(lambda:s.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+for f in ['exit.json','raw-http-audit.json','checkpoint-binding.json','boundary-binding.json']:assert sha(old/f)==m[f]
+assert json.loads((old/'exit.json').read_text())['observer_preserved_tested_output']
+for log in ['build.log','rsqrt-build.log']:assert (p/log).stat().st_size==0
+need=4096*10240*96*2*3+4096*4*32*96*4*2;free=shutil.disk_usage(o).free;assert free>need+20*1024**3
+plan={'source':str(old),'source_manifest_sha256':sha(old/'artifact-binding.json'),'reference_bytes_without_difference_indices':need,'free_bytes_before':free,'reserve_bytes':20*1024**3,'scope':'All 4096 prefill positions, 48 layers read/fused norms; actual BF16 input and checkpoint-bound weights. CPU arithmetic/all warp lanes, CUDA only rsqrt. No new runtime or observer.','whole_model_correctness_proven':False};(o/'plan.json').write_text(json.dumps(plan,indent=2)+'\n')
+records=[]
+for l in range(48):
+ for kind in ['read','fused']:
+  suffixes=['norm-weights.bf16','eps.f32']+(['trunk.bf16','output.bf16'] if kind=='read' else ['output.bf16','normed.bf16'])
+  for suffix in suffixes:
+   name=f'observed-captures/hc-{l}.prefill.{kind}.{suffix}';assert sha(old/name)==m[name];records.append({'file':name,'sha256':m[name]})
+(o/'input-binding.json').write_text(json.dumps(records,indent=2)+'\n');print({'bound_files':len(records),'budget':plan},flush=True)
