@@ -1,0 +1,35 @@
+from pathlib import Path
+import json,struct,hashlib,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/moe-full-gather-20260924';c=o/'observed-captures';prior=root/'.q4t-work/e2e/hc-full-boundaries-20260923';router=root/'.q4t-work/e2e/moe-full-router-20260924'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+for name,source in [('prior-binding.json',prior),('router-prior-binding.json',router)]:
+ binding=json.loads((o/name).read_text());assert sha(source/'artifact-binding.json')==binding['manifest_sha256']
+ for r in binding['records']:assert sha(source/r['file'])==r['sha256']
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');index=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];headers={};weights=[];records=[]
+for l in range(48):
+ name=f'layer-{l}';ids=np.fromfile(router/'observed-captures'/(name+'.ids.i32'),dtype='<i4').reshape(4096,10);assert np.all(np.diff(np.sort(ids,axis=1),axis=1)>0)
+ counts=np.fromfile(c/(name+'.counts.i32'),dtype='<i4');offsets=np.fromfile(c/(name+'.offsets.i32'),dtype='<i4');flat=np.fromfile(c/(name+'.lists.i32'),dtype='<i4');rows=np.fromfile(c/(name+'.row-of-flat.i32'),dtype='<i4');assert len(counts)==512 and len(offsets)==513 and len(flat)==len(rows)==40960
+ assert np.array_equal(counts,np.bincount(ids.ravel(),minlength=512));assert np.array_equal(offsets,np.r_[0,np.cumsum(counts,dtype=np.int64)]);assert np.array_equal(np.sort(flat),np.arange(40960));inverse=np.empty(40960,dtype=np.int32);inverse[flat]=np.arange(40960,dtype=np.int32);assert np.array_equal(rows,inverse)
+ scales=np.fromfile(c/(name+'.input-scales.f32'),dtype='<f4');assert len(scales)==512 and np.isfinite(scales).all() and np.all(scales>0)
+ for e in range(512):
+  for part in ['gate','up']:
+   key=f'model.language_model.layers.{l}.mlp.experts.{e}.{part}_proj.input_scale';f=model/index[key]
+   with f.open('rb') as s:
+    if f not in headers:
+     size=struct.unpack('<Q',s.read(8))[0];headers[f]=(size,json.loads(s.read(size)))
+    size,h=headers[f];info=h[key];assert info['dtype']=='F32';a,b=info['data_offsets'];assert b-a==4;offset=8+size+a;s.seek(offset);data=s.read(4)
+   assert data==scales[e:e+1].tobytes();weights.append({'key':key,'file':str(f),'offset':offset,'bytes':4,'sha256':hashlib.sha256(data).hexdigest(),'size':f.stat().st_size,'mtime_ns':f.stat().st_mtime_ns})
+  me=int(counts[e]);assert np.all(ids.ravel()[flat[offsets[e]:offsets[e+1]]]==e)
+  if not me:continue
+  stem=f'{name}.expert-{e}';meta=json.loads((c/(stem+'.gather.json')).read_text());assert meta['ok'] and meta['rows']==me and meta['expert']==e;assert (c/(stem+'.packed.bin')).stat().st_size==me*1280
+  physical=np.fromfile(c/(stem+'.sf-physical.bin'),dtype=np.uint8);logical=np.fromfile(c/(stem+'.sf-logical.bin'),dtype=np.uint8);blocks=(me+127)//128;assert len(physical)==blocks*40*512 and len(logical)==me*160
+  expected=physical.reshape(blocks,40,32,4,4).transpose(0,3,2,1,4).reshape(blocks*128,160)[:me];assert np.array_equal(expected.ravel(),logical)
+ meta=json.loads((c/(name+'.consumer.json')).read_text());active=int(np.count_nonzero(counts));assert meta['ok'] and meta['total_rows']==40960 and meta['gather_calls']==active
+ records.append({'layer':l,'active_experts':active,'rows':len(flat),'max_expert_rows':int(counts.max()),'mapping_exact':True,'scale_layout_exact':True,'fp4_payload_elements':len(flat)*2560,'sf_logical_elements':len(flat)*160});save('mapping-reference.json',{'records':records,'complete':len(records)==48});print(records[-1],flush=True)
+save('checkpoint-binding.json',weights);summary={'layers':48,'active_expert_calls':sum(r['active_experts'] for r in records),'flat_assignments':sum(r['rows'] for r in records),'mapping_mismatches':0,'checkpoint_input_scale_bindings':len(weights),'sf_layout_elements':sum(r['sf_logical_elements'] for r in records),'fp4_payload_elements_captured':sum(r['fp4_payload_elements'] for r in records),'quantization_arithmetic_verified':False,'runtime_changed':False,'whole_model_correctness_proven':False};save('summary.json',summary);print(summary,flush=True)

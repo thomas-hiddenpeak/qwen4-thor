@@ -1,0 +1,38 @@
+#include <cuda_runtime_api.h>
+#include <cublasLt.h>
+#include <dlfcn.h>
+#include <atomic>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <vector>
+namespace {
+template<class T>T Resolve(const char*n){auto f=reinterpret_cast<T>(dlsym(RTLD_NEXT,n));if(!f)std::_Exit(127);return f;}
+template<class T>T* Ptr(void**a,int i){return *static_cast<T**>(a[i]);}
+bool Save(const std::string&n,const void*p,size_t bytes){FILE*f=std::fopen(n.c_str(),"wb");if(!f)return false;bool ok=std::fwrite(p,1,bytes,f)==bytes;return std::fclose(f)==0&&ok;}
+bool Read(void*p,const void*x,size_t bytes,cudaStream_t s){static auto copy=Resolve<decltype(&cudaMemcpyAsync)>("cudaMemcpyAsync");static auto sync=Resolve<decltype(&cudaStreamSynchronize)>("cudaStreamSynchronize");return copy(p,x,bytes,cudaMemcpyDeviceToHost,s)==cudaSuccess&&sync(s)==cudaSuccess;}
+bool Capture(const std::string&n,const void*x,size_t bytes,cudaStream_t s){std::vector<unsigned char>b(bytes);return Read(b.data(),x,bytes,s)&&Save(n,b.data(),bytes);}
+bool Compare(const std::string&n,const void*x,size_t bytes,cudaStream_t s){std::vector<unsigned char>b(bytes),chunk(1048576);if(!Read(b.data(),x,bytes,s))return false;FILE*f=std::fopen(n.c_str(),"rb");if(!f)return false;bool ok=true;size_t pos=0;while(pos<bytes){size_t amount=bytes-pos;if(amount>chunk.size())amount=chunk.size();if(std::fread(chunk.data(),1,amount,f)!=amount||std::memcmp(chunk.data(),b.data()+pos,amount)){ok=false;break;}pos+=amount;}ok=ok&&std::fgetc(f)==EOF;return std::fclose(f)==0&&ok;}
+std::atomic<cudaKernel_t> lists_kernel{},map_kernel{},gather_kernel{},combine_kernel{};
+int layer=-1,calls=0,total_rows=0;bool context_ok=false;std::string base;const void *list_ptr=nullptr,*row_ptr=nullptr,*x_ptr=nullptr,*scale_ptr=nullptr;std::vector<int32_t> counts(512),offsets(513),flat(40960);std::vector<bool> seen(512);
+void Meta(const std::string&name,bool ok,const std::string&extra=""){std::string s=std::string("{\"ok\":")+(ok?"true":"false")+extra+"}\n";Save(name,s.data(),s.size());}
+}
+extern "C" cudaError_t __cudaGetKernel(cudaKernel_t*k,const void*fn){static auto real=Resolve<cudaError_t(*)(cudaKernel_t*,const void*)>("__cudaGetKernel");auto r=real(k,fn);if(r==cudaSuccess){const char*n=nullptr;static auto name=Resolve<decltype(&cudaFuncGetName)>("cudaFuncGetName");if(name(&n,fn)==cudaSuccess&&n){if(std::strstr(n,"BuildTokenListsKernel"))lists_kernel=*k;if(std::strstr(n,"BuildRowOfFlatKernel"))map_kernel=*k;if(std::strstr(n,"GatherQuantKernel"))gather_kernel=*k;if(std::strstr(n,"CombineGroupedKernel"))combine_kernel=*k;}}return r;}
+extern "C" cudaError_t __cudaLaunchKernel(cudaKernel_t k,dim3 grid,dim3 block,void**a,size_t smem,cudaStream_t stream){static auto real=Resolve<cudaError_t(*)(cudaKernel_t,dim3,dim3,void**,size_t,cudaStream_t)>("__cudaLaunchKernel");const char*dir=std::getenv("Q4T_GDN_CAPTURE_DIR"),*prior=std::getenv("Q4T_HC_PRIOR"),*router=std::getenv("Q4T_ROUTER_PRIOR");if(!dir||!prior||!router)return real(k,grid,block,a,smem,stream);
+ bool build=k==lists_kernel&&*static_cast<int*>(a[1])==4096;
+ if(build){++layer;base=std::string(dir)+"/layer-"+std::to_string(layer);calls=total_rows=0;seen.assign(512,false);x_ptr=scale_ptr=nullptr;list_ptr=Ptr<int32_t>(a,5);row_ptr=nullptr;context_ok=layer<48&&*static_cast<int*>(a[2])==10&&*static_cast<int*>(a[3])==512&&Compare(std::string(router)+"/layer-"+std::to_string(layer)+".ids.i32",Ptr<int32_t>(a,0),40960*4,stream);}
+ auto result=real(k,grid,block,a,smem,stream);
+ if(build){context_ok=context_ok&&result==cudaSuccess&&Read(counts.data(),Ptr<int32_t>(a,4),512*4,stream)&&Save(base+".counts.i32",counts.data(),512*4);Meta(base+".lists-source.json",context_ok);}
+ if(k==map_kernel&&*static_cast<int*>(a[2])==4096&&layer>=0){bool ok=context_ok&&result==cudaSuccess&&Ptr<int32_t>(a,0)==list_ptr&&Read(offsets.data(),Ptr<int32_t>(a,1),513*4,stream);row_ptr=Ptr<int32_t>(a,3);ok=ok&&offsets[0]==0&&offsets[512]==40960;for(int e=0;e<512&&ok;++e){int n=offsets[e+1]-offsets[e];ok=n>=0&&n<=4096&&n==counts[e];if(n)ok=ok&&Read(flat.data()+offsets[e],static_cast<const int32_t*>(list_ptr)+e*4096,n*4,stream);}ok=ok&&Save(base+".offsets.i32",offsets.data(),513*4)&&Save(base+".lists.i32",flat.data(),40960*4)&&Capture(base+".row-of-flat.i32",row_ptr,40960*4,stream);Meta(base+".mapping.json",ok);context_ok=ok;}
+ if(k==gather_kernel&&*static_cast<int*>(a[5])==4096&&layer>=0){int rows=*static_cast<int*>(a[2]),e=*static_cast<int*>(a[3]);std::string name=base+".expert-"+std::to_string(e);bool ok=context_ok&&result==cudaSuccess&&e>=0&&e<512&&rows>0&&rows<=4096&&*static_cast<int*>(a[4])==10&&*static_cast<int*>(a[6])==2560&&*static_cast<int*>(a[7])==40&&Ptr<int32_t>(a,1)==list_ptr;
+  if(ok)ok=!seen[e]&&rows==offsets[e+1]-offsets[e];
+  if(!x_ptr){x_ptr=Ptr<uint16_t>(a,0);scale_ptr=Ptr<float>(a,8);ok=ok&&Compare(std::string(prior)+"/hc-"+std::to_string(layer)+".prefill.mix.mlp.output.bf16",x_ptr,size_t(4096)*2560*2,stream)&&Capture(base+".input-scales.f32",scale_ptr,512*4,stream);}
+  ok=ok&&Ptr<uint16_t>(a,0)==x_ptr&&Ptr<float>(a,8)==scale_ptr;
+  std::vector<int32_t> current(rows>0&&rows<=4096?rows:0);if(ok)ok=Read(current.data(),static_cast<const int32_t*>(list_ptr)+e*4096,rows*4,stream)&&std::memcmp(current.data(),flat.data()+offsets[e],rows*4)==0;
+  if(ok){size_t bytes=size_t((rows+127)/128)*40*512;std::vector<uint8_t> sf(bytes),compact(size_t(rows)*160);ok=Capture(name+".packed.bin",Ptr<uint8_t>(a,9),size_t(rows)*1280,stream)&&Read(sf.data(),Ptr<uint8_t>(a,10),bytes,stream)&&Save(name+".sf-physical.bin",sf.data(),bytes);for(int r=0;r<rows;++r)for(int g=0;g<160;++g){size_t index=size_t(r/128)*40*512+size_t(g/4)*512+(r%32)*16+((r%128)/32)*4+(g%4);compact[size_t(r)*160+g]=sf[index];}ok=ok&&Save(name+".sf-logical.bin",compact.data(),compact.size());seen[e]=true;total_rows+=rows;++calls;}
+  Meta(name+".gather.json",ok,",\"rows\":"+std::to_string(rows)+",\"expert\":"+std::to_string(e));if(!ok)std::fprintf(stderr,"[moe-full-gather-error] layer=%d expert=%d\n",layer,e);context_ok=ok;
+ }
+ if(k==combine_kernel&&*static_cast<int*>(a[5])==4096&&layer>=0){bool ok=context_ok&&result==cudaSuccess&&*static_cast<int*>(a[3])==10&&*static_cast<int*>(a[4])==2560&&Ptr<int32_t>(a,1)==row_ptr&&total_rows==40960;for(int e=0;e<512;++e)ok=ok&&(seen[e]==(counts[e]>0));ok=ok&&Compare(base+".row-of-flat.i32",row_ptr,40960*4,stream)&&Compare(std::string(router)+"/layer-"+std::to_string(layer)+".router-weights.f32",Ptr<float>(a,2),40960*4,stream);Meta(base+".consumer.json",ok,",\"gather_calls\":"+std::to_string(calls)+",\"total_rows\":"+std::to_string(total_rows));std::fprintf(stderr,"[moe-full-gather] layer=%d calls=%d ok=%d\n",layer,calls,ok);}
+ return result;}

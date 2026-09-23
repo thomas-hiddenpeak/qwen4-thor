@@ -20,6 +20,13 @@ TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间�
 
 ## 当前决策摘要
 
+- **完整4K MoE映射及gather边界已接通。**
+  新观测先三侧HTTP仍原错、服务0。1966080个flat分配与逆映射
+  全同，21197次gather完整采集；49152份gate/up输入尺度匹配
+  checkpoint，314572800个SF布局字节一致。5033164800个FP4
+  值已保存但量化算术未验，已知E4M3问题仍在。生产未改，下一步
+  冻结快照全行量化参考，见[MoE gather报告](MOE_GATHER_REFERENCE_2026-09-24.md)。
+
 - **完整4K MoE路由已核对，FP64选中集合有103行变化。**
   新观测先三侧HTTP仍原错、服务0。100663296 logits同记录算法，
   FP64舍入51380项差异；1966080个Top10 ID及CPU+设备exp权重
