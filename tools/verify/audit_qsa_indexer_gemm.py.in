@@ -1,0 +1,8 @@
+from pathlib import Path
+import json,hashlib,shutil
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/qsa-indexer-gemm-20260923';r=json.loads((o/'replay-result.json').read_text());assert len(r['records'])==12 and r['total_mismatches']==0 and sum(x['elements'] for x in r['records'])==98304
+files=list((o/'replayed').glob('*.replay.bf16'));assert len(files)==12
+for f in files:assert f.read_bytes()==(o/'observed-captures'/f.name.replace('.replay.bf16','.output.bf16')).read_bytes()
+for f in ['build.log','replay-build.log']:assert (p/f).stat().st_size==0
+for f in ['analyze.py','analyze.log','audit.py','replay.cpp','replay','replay-build.log']:shutil.copy2(p/f,o/f)
+files=['observer.cpp','observer.so','run.py','analyze.py','audit.py','replay.cpp','replay','gemm-reference.json','previous-binding.json','raw-http-audit.json','replay-result.json'];(o/'artifact-binding.json').write_text(json.dumps({f:hashlib.sha256((o/f).read_bytes()).hexdigest() for f in files},indent=2)+'\n');print('All replay outputs byte-verified.')

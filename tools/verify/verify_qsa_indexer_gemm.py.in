@@ -1,0 +1,23 @@
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import json,numpy as np,hashlib
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/qsa-indexer-gemm-20260923';c=o/'observed-captures';old=root/'.q4t-work/e2e/qsa-indexer-reference-20260923/observed-captures'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+def dec(b):return (np.frombuffer(b,dtype='<u2').astype(np.uint32)<<16).view(np.float32).astype(np.float64)
+def rnd(v):
+ b=np.asarray(v,dtype=np.float32).view(np.uint32);return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype(np.uint16)
+binding=[]
+for f in old.iterdir():
+ if f.suffix not in ['.bf16','.i32','.f32','.json']:continue
+ assert f.read_bytes()==(c/f.name).read_bytes(),f.name
+ binding.append({'name':f.name,'sha256':hashlib.sha256(f.read_bytes()).hexdigest()})
+(o/'previous-binding.json').write_text(json.dumps({'files':len(binding),'records':binding,'all_equal':True},indent=2)+'\n')
+records=[]
+for l in range(3,48,4):
+ base=str(c/f'layer-{l}.prefill');g=base+'.gemm';keys=Path(g+'.keys.bf16').read_bytes();q=Path(g+'.query.bf16').read_bytes();actual=Path(g+'.output.bf16').read_bytes();meta=json.loads(Path(g+'.gemm.json').read_text());assert meta['ok'] and meta['workspace_bytes']==33554432
+ assert keys[:1024*128*2]==Path(base+'.compressed.bf16').read_bytes()
+ assert q==Path(base+'.iq.bf16').read_bytes() and actual==Path(base+'.index-dot.bf16').read_bytes()
+ ref=dec(q).reshape(4,128)@dec(keys[:1024*128*2]).reshape(1024,128).T;bits=rnd(ref);observed=np.frombuffer(actual,dtype='<u2').reshape(4,2048)[:,:1024];bad=np.flatnonzero(bits.reshape(-1)!=observed.reshape(-1));np.savez(g+'.reference.npz',fp64=ref,bf16_bits=bits)
+ records.append({'layer':l,'elements_visible':4096,'fp64_bf16_mismatches':len(bad),'indices':bad.tolist(),'all_boundaries_equal':True,'query_sha256':hashlib.sha256(q).hexdigest(),'all_keys_sha256':hashlib.sha256(keys).hexdigest()})
+r={'records':records,'calls':12,'visible_elements':49152,'fp64_mismatches':sum(x['fp64_bf16_mismatches'] for x in records),'limitation':'Actual cuBLAS operands and algorithm; captures only four final query rows. Only first1024 keys have visible score semantics; all2048 captured for faithful GEMM replay. No mathematical oracle for masked columns.'};(o/'gemm-reference.json').write_text(json.dumps(r,indent=2)+'\n');print({k:v for k,v in r.items() if k!='records'})

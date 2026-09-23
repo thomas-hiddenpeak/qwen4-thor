@@ -111,3 +111,34 @@ initial-compression-reference.json、sass-order-reference.json、
 sass-order-decision.json、compressed-k-exact.sass、input-binding.json、
 artifact-binding.json及各变体输出。下一步补prefill评分GEMM实际
 算法/操作数，再连接原始indexer及全注意力投影与位置变换来源。
+
+## 后续：prefill评分GEMM实际操作数与算法重放
+
+新观测以规范化query和压缩key核的实际输出指针识别评分调用，
+逐层检查BF16列主序布局、FP32 compute/scale、默认epilogue、
+A转置/B不转置、alpha1/beta0及32MiB workspace。记录每次实际
+算法，捕获M16384/N2048/K128矩阵的最后4个query行、全部2048个
+key行、对应4×2048输出，不只从前序函数推测GEMM读取对象。
+
+零警告构建后首项三侧tools/evalscope原4K HTTP仍600440、4096
+输入/7输出、stop，三服务0、质量驱动1。12份GEMM完整，780份
+此前实际快照/元数据逐字节不变，才进行参考分析和独立重放。
+
+实际最后4个query逐字节同IndexerQueryNormRope输出；前1024个
+可见key逐字节同compressed缓存；GEMM输出逐字节同IndexerReduce
+实际S输入。以这些直接捕获操作数重算49152个可见点积，FP64经
+FP32→BF16仍有原4项不同，差异索引及参考值完整保留。
+
+独立进程使用记录算法，AlgoCheck验证兼容性，cuBLAS130501，
+保持矩阵形状、布局、全部2048 key和32MiB workspace。将捕获的
+4个query行循环复制成16384行，只核对最后4行；不是原始全行
+输入。12次、98304个BF16结果全部同HTTP，原始文件逐字节再核对。
+因此原4项可在脱离模型调度的同算法GEMM中复现，未独立证明cuBLAS
+内部累加算术。后1024列为因果mask不可见列，只为完整重放保留，
+不对其赋予模型分数语义或建立高精度通过结论。
+
+证据目录`.q4t-work/e2e/qsa-indexer-gemm-20260923/`，含三侧HTTP、
+gemm-reference.json、replay-result.json、previous-binding.json、
+artifact-binding.json及全部实际操作数。工具零警告、执行/审计退出0。
+生产和接受二进制未改，原4K质量失败仍在。下一步连接原始indexer
+query/key投影、query归一化/RoPE以及全注意力投影来源。
