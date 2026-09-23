@@ -89,3 +89,33 @@ CUBLAS_COMPUTE_32F、FP32主机alpha=1/beta=0、默认epilogue。
 三侧HTTP、96份GEMM快照、gemm-binding.json、shared-reference.json、
 previous-capture-comparison.json和artifact-binding.json；prepared保留
 构建、控制器及分析脚本。仓库保存独立GEMM观测与绑定工具模板。
+
+## 冻结算法的独立进程重放（2026-09-23）
+
+基于上一节已核对的接受版HTTP快照，独立诊断程序零警告编译。
+没有运行时改动，没有测试已拒绝候选；复用对应三侧HTTP观测一致性
+证据，不把已知错题说成质量通过。重放前核对接受二进制SHA、
+96份操作数绑定、workspace大小，并确认没有模型服务在运行。
+
+每次保留实际M/N/K、BF16布局、FP32计算、alpha=1/beta=0、32MiB
+workspace及捕获的算法对象，使用本机同版cuBLASLt 130501。
+通过cublasLtMatmulAlgoCheck确认记录算法在重建描述符上有效且
+workspace足够；不重新选择启发式算法。权重使用实际完整矩阵。
+输入把捕获的末token一行复制到全部4096行，因此是同形状冻结
+行实验，**不是原4096行完整输入重放**。仅核对第4095行输出。
+
+96次调用、184320个BF16输出全部同HTTP快照，重放退出0；
+对FP64参考仍为gate/up78项、down64项差异。包括第43层gate分量214
+的高抵消差异，全部可在脱离模型其余执行调度的进程中复现。
+这证明这些差异不需要模型其余调度才能产生；并不穷尽排除并发
+问题，也不是cuBLAS内部算术的独立证明或任务错误的因果证明。
+
+共享支路本轮定位已从“是否装载/布局/调度引入差异”收窄到
+记录算法对这些输入的数值行为。保持142项记录，不为了追求
+FP64逐位一致直接替换生产GEMM。后续优先补全路由专家gate/up
+及激活量化参考，避免将整体正确性工作无限停留在单一库归约上。
+
+证据：`.q4t-work/e2e/moe-shared-gemm-replay-20260923/`内的计划、
+96份输出、replay.json、analysis.json、exit.json及artifact-binding.json；
+prepared同名目录保留零警告构建和程序。永久工具为
+`tools/verify/replay_moe_shared_gemm.cpp.in`，仅支持本模型与当前ABI。
