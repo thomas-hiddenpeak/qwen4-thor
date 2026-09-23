@@ -246,3 +246,16 @@ SHA256为2a5813f2f0877a4671e0415bef8aca42b131cdd24035062f5e87e02858a45853，
 首项固定质量HTTP已启动，会话97219，证据
 accepted-workspace-recovery-quality-20260923；仍使用原11题及
 正式输出参考，无前置低层测试。
+
+恢复版本首项固定质量HTTP现已11/11原始核对通过，全部答案及
+完整输出同正式，驱动/服务0，会话97219结束。新SHA2a5813f2，
+没有前置低层测试。五档性能HTTP现已启动，会话41428，证据
+accepted-workspace-recovery-performance-20260923，仍按五档各
+三次/输出256/MTP关闭/单流及原正式输出参考执行。恢复后的
+性能尚待确认，不把固定质量通过解释为已知模型错误已解决。
+
+恢复来源追加核对：src/、include/及CMakeLists.txt的HEAD内容
+与7364767无差异，工作区这些路径亦与HEAD无差异。Release、
+g++14、CUDA13.3、SM110a配置已记录于source-recovery-audit.json。
+这只是源码/构建配置来源核对，不是二进制逐字节一致或性能
+验收证明；五档HTTP仍在运行，不进行前置数值/性能细分析。
