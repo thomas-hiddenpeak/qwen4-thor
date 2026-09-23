@@ -1,0 +1,50 @@
+from pathlib import Path
+import hashlib,json,shutil,subprocess,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/ple-full-norm-reference-20260924';d=o/'reference';s=root/'.q4t-work/e2e/ple-full-gate-norm-20260924';c=s/'observed-captures';prior=root/'.q4t-work/e2e/ple-full-conv-20260924';pc=prior/'observed-captures'
+def sha(f):
+ h=hashlib.sha256()
+ with f.open('rb') as stream:
+  for b in iter(lambda:stream.read(4*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def save(name,v):(o/name).write_text(json.dumps(v,indent=2)+'\n')
+assert (p/'build.log').stat().st_size==0;assert sha(root/'build/q4t')=='2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e'
+sm=json.loads((s/'artifact-binding.json').read_text());pm=json.loads((prior/'artifact-binding.json').read_text())
+for f in ['exit.json','prior-binding.json','checkpoint-binding.json']:assert sha(s/f)==sm[f]
+assert json.loads((s/'exit.json').read_text())['observer_preserved_tested_output'];assert json.loads((s/'prior-binding.json').read_text())['manifest_sha256']==sha(prior/'artifact-binding.json')
+paths=[(c/'prefill.norm-0.input.bf16',c/'prefill.norm-0.weights.bf16',c/'prefill.norm-0.eps.f32',c/'prefill.norm-0.output.bf16'),(pc/'prefill.trunk.bf16',c/'prefill.norm-1.weights.bf16',c/'prefill.norm-1.eps.f32',c/'prefill.norm-1.output.bf16'),(pc/'prefill.gated.bf16',c/'prefill.norm-2.weights.bf16',c/'prefill.norm-2.eps.f32',pc/'prefill.x.bf16'),(c/'prefill.norm-0.output.bf16',c/'prefill.norm-1.output.bf16',c/'prefill.gate.scale.f32',c/'prefill.gate.output.bf16')]
+binding=[];seen=set()
+for row in paths:
+ for f in row:
+  if f in seen:continue
+  seen.add(f);source=s if f.is_relative_to(s) else prior;manifest=sm if source==s else pm;name=str(f.relative_to(source));assert sha(f)==manifest[name];binding.append({'file':str(f.relative_to(root)),'sha256':manifest[name]})
+save('input-binding.json',binding)
+for w in json.loads((s/'checkpoint-binding.json').read_text()):
+ f=Path(w['file']);st=f.stat();assert st.st_size==w['size'] and st.st_mtime_ns==w['mtime_ns']
+ with f.open('rb') as stream:stream.seek(w['offset']);assert hashlib.sha256(stream.read(w['bytes'])).hexdigest()==w['sha256']
+reserve=20*1024**3;budget=100000000;assert shutil.disk_usage(o).free>reserve+budget
+save('plan.json',{'source_manifest_sha256':sha(s/'artifact-binding.json'),'prior_manifest_sha256':sha(prior/'artifact-binding.json'),'reserve_bytes':reserve,'total_budget_bytes':budget,'chunk_rows':128,'scope':'All4096 tokens three PLE norms and gate, from actual inputs and checkpoint-bound weights. CPU specified FP32 reduction with device-only rsqrt or gate sqrt/sign/sigmoid; pure CPU and FP64 references. Not independent whole-model or composed PLE.','retention':'Complete BF16 variants losslessly reconstructed from actual base plus deltas. All FP32/FP64 primitive arguments and device primitive results saved. Unrounded FP64 output saved for every final mismatch; matching unrounded output not saved.'})
+records=[]
+for kind,(x,w,param,basefile) in enumerate(paths):
+ width=4 if kind==3 else 10240;actual=np.fromfile(basefile,dtype='<u2');assert len(actual)==4096*width
+ for start in range(0,4096,128):
+  assert shutil.disk_usage(o).free>reserve+20000000
+  name=f'kind-{kind}-{start}';args=[p/'reference',x,w,param,basefile,d/name,kind,start,128];run=subprocess.run([str(x) for x in args],capture_output=True,text=True);(o/(name+'.stdout')).write_text(run.stdout);(o/(name+'.stderr')).write_text(run.stderr);assert run.returncode==0,run.stderr;record=json.loads(run.stdout);assert record['elements']==128*width and record['kind']==kind and record['first_row']==start
+  base=actual[start*width:(start+128)*width]
+  for v in record['variants']:
+   f=d/(name+'.'+v['name']+'.bf16');ref=np.fromfile(f,dtype='<u2');assert len(ref)==len(base) and np.isfinite((ref.astype('<u4')<<16).view('<f4')).all();idx=np.flatnonzero(ref!=base).astype('<i4');assert len(idx)==v['mismatches'] and np.array_equal(idx,np.fromfile(d/(name+'.'+v['name']+'.indices.i32'),dtype='<i4'))
+   if v['name']=='fp64':
+    raw=np.fromfile(d/(name+'.fp64.differences.f64'),dtype='<f8');bits=raw.astype('<f4').view('<u4');assert len(raw)==len(idx) and np.array_equal(((bits+0x7fff+((bits>>16)&1))>>16).astype('<u2'),ref[idx])
+   delta=d/(name+'.'+v['name']+'.delta.npz');np.savez_compressed(delta,indices=idx,values=ref[idx]);z=np.load(delta);rebuilt=base.copy();rebuilt[z['indices']]=z['values'];assert np.array_equal(rebuilt,ref);h=sha(f);assert hashlib.sha256(rebuilt.tobytes()).hexdigest()==h;v.update(delta=str(delta.relative_to(o)),delta_sha256=sha(delta),reference_sha256=h,zero_sign_only=int(np.count_nonzero(((base[idx]&0x7fff)==0)&((ref[idx]&0x7fff)==0))));f.unlink()
+  record.update(base=str(basefile.relative_to(root)),width=width);records.append(record);save('reference.json',{'records':records,'complete':len(records)==128});print({'kind':kind,'first_row':start,'mismatches':{v['name']:v['mismatches'] for v in record['variants']}},flush=True)
+full=[]
+for kind,(_,_,_,basefile) in enumerate(paths):
+ source=s if basefile.is_relative_to(s) else prior;manifest=sm if source==s else pm;assert sha(basefile)==manifest[str(basefile.relative_to(source))];actual=np.fromfile(basefile,dtype='<u2')
+ for variant in ['device','cpu','fp64']:
+  rebuilt=actual.copy();offset=0;bad=0
+  for r in [r for r in records if r['kind']==kind]:
+   assert r['first_row']*r['width']==offset;v=next(v for v in r['variants'] if v['name']==variant);f=o/v['delta'];assert sha(f)==v['delta_sha256'];z=np.load(f);chunk=rebuilt[offset:offset+r['elements']];chunk[z['indices']]=z['values'];assert hashlib.sha256(chunk.tobytes()).hexdigest()==v['reference_sha256'];offset+=r['elements'];bad+=v['mismatches']
+  assert offset==len(actual) and np.count_nonzero(rebuilt!=actual)==bad;full.append({'kind':kind,'variant':variant,'elements':len(actual),'mismatches':bad,'reference_sha256':hashlib.sha256(rebuilt.tobytes()).hexdigest()})
+save('full-reference-audit.json',full);summary={'norm_elements':3*4096*10240,'gate_elements':4096*4,'chunks':len(records),'mismatches':{stage:{variant:sum(r['mismatches'] for r in full if (r['kind']==3 if stage=='gate' else r['kind']<3) and r['variant']==variant) for variant in ['device','cpu','fp64']} for stage in ['norm','gate']},'zero_sign_only':sum(v['zero_sign_only'] for r in records for v in r['variants']),'all_references_reconstructed':True,'runtime_changed':False,'whole_model_correctness_proven':False,'free_after':shutil.disk_usage(o).free};save('summary.json',summary)
+for name in ['run.py','reference.cu','common.h','reference','build.log']:shutil.copy2(p/name,o/name)
+assert sum(f.stat().st_size for f in o.rglob('*') if f.is_file())<budget
+save('artifact-binding.json',{str(f.relative_to(o)):sha(f) for f in sorted(o.rglob('*')) if f.is_file() and f.name!='artifact-binding.json'});print(summary,flush=True)

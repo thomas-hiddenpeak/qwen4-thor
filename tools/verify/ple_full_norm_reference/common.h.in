@@ -1,0 +1,40 @@
+#pragma once
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+float B(uint16_t v) {
+  uint32_t b = uint32_t(v) << 16;
+  float f;
+  std::memcpy(&f, &b, 4);
+  return f;
+}
+uint16_t Round(float v) {
+  uint32_t b;
+  std::memcpy(&b, &v, 4);
+  return uint16_t((b + 0x7fff + ((b >> 16) & 1)) >> 16);
+}
+template <class T>
+std::vector<T> Read(const std::string& p, size_t n) {
+  std::ifstream f(p, std::ios::binary | std::ios::ate);
+  if (!f || size_t(f.tellg()) != n * sizeof(T)) throw std::runtime_error(p);
+  std::vector<T> v(n);
+  f.seekg(0);
+  if (!f.read(reinterpret_cast<char*>(v.data()), n * sizeof(T)))
+    throw std::runtime_error(p);
+  return v;
+}
+template <class T>
+void Save(const std::string& p, const std::vector<T>& v) {
+  std::ofstream f(p, std::ios::binary);
+  if (!f.write(reinterpret_cast<const char*>(v.data()), v.size() * sizeof(T)))
+    throw std::runtime_error(p);
+}
+double Sig64(double x) {
+  double z = std::exp(-std::abs(x));
+  return x >= 0 ? 1 / (1 + z) : z / (1 + z);
+}
