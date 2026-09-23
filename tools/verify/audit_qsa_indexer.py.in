@@ -1,0 +1,13 @@
+from pathlib import Path
+import json,hashlib,shutil,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/qsa-indexer-reference-20260923';c=o/'observed-captures';scale=np.fromfile(o/'device-scale.f32',dtype='<f4');records=[]
+for l in range(3,48,4):
+ b=str(c/f'layer-{l}.prefill');dot=(np.fromfile(b+'.index-dot.bf16',dtype='<u2').astype(np.uint32)<<16).view(np.float32).reshape(4,2048)[:,:1024];s=np.zeros(1024,dtype=np.float32)
+ for h in range(4):s+=np.maximum(dot[h],np.float32(0))
+ expected=np.fromfile(b+'.index-logits.f32',dtype='<f4');result=np.full(2048,np.float32(-1e30));result[:1024]=s*scale[0];bad=np.flatnonzero(result.view(np.uint32)!=expected.view(np.uint32));records.append({'layer':l,'elements':2048,'mismatches':len(bad),'indices':bad.tolist()});result.tofile(o/f'layer-{l}.prefill.reduce-complete.f32')
+ assert (o/f'layer-{l}.decode.cpu-scores.f32').read_bytes()==(c/f'layer-{l}.decode.index-logits.f32').read_bytes()
+r={'records':records,'total_mismatches':sum(x['mismatches'] for x in records),'device_scale_values':scale.tolist(),'device_scale_bits':scale.view(np.uint32).tolist()};assert r['total_mismatches']==0;(o/'reduce-audited.json').write_text(json.dumps(r,indent=2)+'\n')
+assert all((p/f).stat().st_size==0 for f in ['build.log','decode-build.log','scale-build.log'])
+for f in ['analyze.py','analyze.log','decode.cpp','decode','decode-build.log','scale.cu','scale','scale-build.log','audit.py']:shutil.copy2(p/f,o/f)
+files=['observer.cpp','observer.so','run.py','analyze.py','decode.cpp','decode','scale.cu','scale','audit.py','indexer-reference.json','decode-reference.json','reduce-audited.json','reduce-device-scale.json','previous-binding.json','raw-http-audit.json','device-scale.f32'];(o/'artifact-binding.json').write_text(json.dumps({f:hashlib.sha256((o/f).read_bytes()).hexdigest() for f in files},indent=2)+'\n')
+print('Both score reductions: 24576 FP32 each, all byte-identical.')

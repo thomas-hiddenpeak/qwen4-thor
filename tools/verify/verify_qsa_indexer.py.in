@@ -1,0 +1,48 @@
+from pathlib import Path
+import os
+os.environ['OPENBLAS_NUM_THREADS']='1'
+import json,struct,hashlib,numpy as np
+p=Path(__file__).resolve().parent;root=p.parents[2];o=root/'.q4t-work/e2e/qsa-indexer-reference-20260923';c=o/'observed-captures';old=root/'.q4t-work/e2e/qsa-selection-reference-20260923/observed-captures'
+assert json.loads((o/'exit.json').read_text())['observer_preserved_tested_output']
+model=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream');idx=json.loads((model/'model.safetensors.index.json').read_text())['weight_map'];headers={}
+def read(s,dt='<u2'):return np.fromfile(s,dtype=dt)
+def dec(b):return (np.asarray(b,dtype=np.uint16).astype(np.uint32)<<16).view(np.float32).astype(np.float64)
+def rnd(v):
+ b=np.asarray(v,dtype=np.float32).view(np.uint32);return ((b+np.uint32(0x7fff)+((b>>16)&1))>>16).astype(np.uint16)
+bind=[]
+for f in old.iterdir():
+ if f.suffix not in ['.bf16','.i32','.f32','.json']:continue
+ assert f.read_bytes()==(c/f.name).read_bytes(),f.name
+ bind.append({'file':f.name,'sha256':hashlib.sha256(f.read_bytes()).hexdigest()})
+(o/'previous-binding.json').write_text(json.dumps({'files':len(bind),'records':bind,'all_equal':True},indent=2)+'\n')
+records=[]
+for l in range(3,48,4):
+ prior_raw=prior_ck=None
+ for phase in ['prefill','decode']:
+  base=str(c/f'layer-{l}.{phase}');raw=read(base+'.index-raw.bf16').reshape(-1,128);source=read(base+'.ik-input.bf16').reshape(-1,128);ck=read(base+'.compressed.bf16').reshape(1024,128);weight=read(base+'.ik-norm.bf16');params=read(base+'.compressed-params.f32','<f4');theta,eps=map(float,params)
+  assert theta==1e7 and params[1]==np.float32(1e-6)
+  name=f'model.language_model.layers.{l}.self_attn.indexer.k_layernorm.weight';file=model/idx[name]
+  with file.open('rb') as f:
+   if file not in headers:
+    size=struct.unpack('<Q',f.read(8))[0];headers[file]=(size,json.loads(f.read(size)))
+   size,h=headers[file];info=h[name];assert info['dtype']=='BF16' and info['shape']==[128];a,b=info['data_offsets'];f.seek(8+size+a);assert f.read(b-a)==weight.tobytes()
+  if phase=='prefill':assert np.array_equal(raw,source);prior_raw=raw.copy();prior_ck=ck.copy()
+  else:
+   assert np.array_equal(raw[:4096],prior_raw) and np.array_equal(raw[4096:],source) and np.array_equal(ck,prior_ck)
+   assert Path(base+'.iq.bf16').read_bytes()==Path(base+'.score-iq.bf16').read_bytes() and Path(base+'.compressed.bf16').read_bytes()==Path(base+'.score-ck.bf16').read_bytes()
+  assert Path(base+'.index-logits.f32').read_bytes()==Path(base+'.scores.f32').read_bytes()
+  ropes=np.stack([read(base+f'.rope-{r}.i32','<i4') for r in range(3)]);assert np.array_equal(ropes[0],ropes[1]) and np.array_equal(ropes[0],ropes[2])
+  mean=dec(raw[:4096]).reshape(1024,4,128).mean(axis=1);norm=mean/np.sqrt(np.mean(mean*mean,axis=1,keepdims=True)+eps)*(1+dec(weight));reference=norm.copy()
+  for d in range(64):
+   pair=d%32;angle=ropes[d%3,np.arange(1024)*4]*theta**(-2*pair/64);co=np.cos(angle);si=np.sin(angle)
+   reference[:,d]=norm[:,d]*co-norm[:,d+32]*si if d<32 else norm[:,d-32]*si+norm[:,d]*co
+  bits=rnd(reference);bad=np.flatnonzero(bits.reshape(-1)!=ck.reshape(-1));np.savez(base+'.compressed-reference.npz',mean=mean,norm=norm,fp64=reference,bf16_bits=bits)
+  q=dec(read(base+'.iq.bf16')).reshape(4,128);dots=q@dec(ck).T;actual=read(base+'.index-logits.f32','<f4');assert np.all(actual[1024:]==np.float32(-1e30))
+  record={'layer':l,'phase':phase,'compressed_elements':131072,'compressed_fp64_mismatches':len(bad),'compressed_indices':bad.tolist(),'norm_weight_sha256':hashlib.sha256(weight.tobytes()).hexdigest()}
+  if phase=='prefill':
+   stored=read(base+'.index-dot.bf16').reshape(4,2048)[:,:1024];record['prefill_dot_bf16_mismatches']=int(np.count_nonzero(stored!=rnd(dots)));dot=dec(stored).astype(np.float32);s=np.zeros(1024,dtype=np.float32)
+   for h in range(4):s+=np.maximum(dot[h],np.float32(0))
+   reduction=s*np.float32(1/np.sqrt(128.));record['reduce_fp32_mismatches']=int(np.count_nonzero(reduction.view(np.uint32)!=actual[:1024].view(np.uint32)))
+  fp64score=np.maximum(dots,0).sum(axis=0)/np.sqrt(128.);record['score_fp64_to_fp32_mismatches']=int(np.count_nonzero(fp64score.astype(np.float32).view(np.uint32)!=actual[:1024].view(np.uint32)));record['max_abs_score_vs_fp64']=float(np.max(abs(fp64score-actual[:1024])));np.savez(base+'.score-reference.npz',dots_fp64=dots,scores_fp64=fp64score);records.append(record)
+r={'records':records,'compressed_prefill_mismatches':sum(x['compressed_fp64_mismatches'] for x in records if x['phase']=='prefill'),'prefill_dot_mismatches':sum(x.get('prefill_dot_bf16_mismatches',0) for x in records),'prefill_reduce_mismatches':sum(x.get('reduce_fp32_mismatches',0) for x in records),'raw_written_elements':12*4097*128,'compressed_preserved_elements':12*1024*128,'limitation':'First decode does not complete a new group; no claim for group-completion decode. Prefill query/ck snapshots do not independently bind actual GEMM operands/algorithm. FP64 compression differs from runtime FP32/math approximations.'}
+(o/'indexer-reference.json').write_text(json.dumps(r,indent=2)+'\n');print({k:v for k,v in r.items() if k!='records'})

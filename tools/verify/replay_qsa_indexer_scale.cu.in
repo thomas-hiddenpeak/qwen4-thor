@@ -1,0 +1,5 @@
+#include <cuda_runtime.h>
+#include <cstdio>
+#include <cstdlib>
+__global__ void Scale(float* out,int hd){out[0]=rsqrtf(float(hd));out[1]=1.0f/sqrtf(float(hd));}
+int main(int argc,char** argv){if(argc!=2)return 1;float* d=nullptr;float v[2];if(cudaMalloc(&d,8)!=cudaSuccess)return 2;Scale<<<1,1>>>(d,std::atoi(argv[1]));if(cudaGetLastError()!=cudaSuccess||cudaMemcpy(v,d,8,cudaMemcpyDeviceToHost)!=cudaSuccess)return 3;if(cudaFree(d)!=cudaSuccess)return 4;return std::fwrite(v,4,2,stdout)==2?0:5;}

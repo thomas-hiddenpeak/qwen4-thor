@@ -20,6 +20,12 @@ TTFT 包含 HTTP/分词/prefill；decode 按首 token 后总生成数/总时间�
 
 ## 当前决策摘要
 
+- **索引分数汇总/首decode计算已复现，压缩key差异未解。**
+  新观测先三侧HTTP仍原错、服务0，raw写入及历史/压缩key交接位同。
+  实际norm权重同checkpoint；prefill CPU reduce用设备rsqrt缩放后
+  与decode CPU fma各24576分数全同。初始缩放1 ULP造成的11447项
+  差异保留；压缩key仍1680项、prefill点积仍4项FP64差异未解。
+  下一步压缩归一化/RoPE算术，见[索引报告](QSA_INDEXER_REFERENCE_2026-09-23.md)。
 - **QSA按分离设备原语+CPU在线递推全部位同。**
   冻结HTTP快照独立重建Tensor Core QK/PV、设备exp/门值，CPU
   显式fma/除法/两次BF16舍入后147456输出全同；原93/102与43122

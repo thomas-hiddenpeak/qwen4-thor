@@ -1,0 +1,19 @@
+#include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+float Decode(uint16_t v){uint32_t b=uint32_t(v)<<16;float f;std::memcpy(&f,&b,4);return f;}
+template<class T>std::vector<T> Read(const std::string& s,size_t n){std::ifstream f(s,std::ios::binary|std::ios::ate);if(!f||size_t(f.tellg())!=n*sizeof(T))throw std::runtime_error(s);std::vector<T> v(n);f.seekg(0);if(!f.read(reinterpret_cast<char*>(v.data()),n*sizeof(T)))throw std::runtime_error(s);return v;}
+int main(int argc,char** argv){try{
+ if(argc!=3){throw std::runtime_error("captures outputs");}bool first=true;size_t total=0;std::printf("{\"records\":[");
+ for(int l=3;l<48;l+=4){std::string name="layer-"+std::to_string(l)+".decode",b=std::string(argv[1])+"/"+name;auto q=Read<uint16_t>(b+".score-iq.bf16",512),ck=Read<uint16_t>(b+".score-ck.bf16",1024*128);auto expected=Read<float>(b+".index-logits.f32",2048);std::vector<float> out(2048,-1e30f);float scale=1.0f/std::sqrt(128.0f);size_t bad=0;
+  for(int g=0;g<1024;++g){float sum=0;for(int h=0;h<4;++h){float dot=0;for(int d=0;d<128;++d)dot=std::fma(Decode(q[h*128+d]),Decode(ck[g*128+d]),dot);sum+=std::fmax(dot,0.0f);}out[g]=sum*scale;}
+  for(int g=0;g<2048;++g)bad+=std::memcmp(&out[g],&expected[g],4)!=0;
+  std::ofstream f(std::string(argv[2])+"/"+name+".cpu-scores.f32",std::ios::binary);f.write(reinterpret_cast<const char*>(out.data()),8192);if(!f)throw std::runtime_error("write");std::printf("%s{\"layer\":%d,\"elements\":2048,\"mismatches\":%zu}",first?"":",",l,bad);first=false;total+=bad;
+ }
+ std::printf("],\"total_mismatches\":%zu}\n",total);return 0;
+}catch(const std::exception& e){std::fprintf(stderr,"%s\n",e.what());return 1;}}
