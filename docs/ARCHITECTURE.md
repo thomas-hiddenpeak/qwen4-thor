@@ -2,7 +2,8 @@
 
 > 设计意图文档。实现细节以代码为准。
 > 状态: 初稿 (2026-09-03), 随实现推进修订。
-> 2026-09-20：评估规则见 [EVALUATION.md](EVALUATION.md)，实现进度见 STATUS.md。
+> 当前发布范围见 [收敛验收](RELEASE_TEXT_V1_2026-09-28.md)。
+> 下列模块包含实验路径；模块存在不表示该路径已通过当前发布验收。
 
 ## 设计原则
 
@@ -12,8 +13,9 @@
 2. **PLE SSD Stream 是一等公民**, 不是外挂优化。查找表的
    异步读取与 GPU 计算重叠是架构核心, 从第一天就按生产路径
    实现。
-3. **以真实使用环境为准**：推理服务为原生 C++/CUDA；首项测试使用
-   tools/evalscope 的 HTTP E2E，评估工具可使用 Python，不属于推理依赖。
+3. **以真实使用环境为准**：推理服务为原生 C++/CUDA；性能优化首项
+   测试使用tools/evalscope HTTP E2E，Bug修复可先做针对性直接测试，
+   详见[EVALUATION.md](EVALUATION.md)。评估工具Python不是推理依赖。
 4. **统一物理内存不等于零拷贝**：CPU/GPU 共享物理 DRAM，但代码仍有
    host/device 分配、cudaMemcpy 和同步。预算必须计入实际复制与缓存行为，
    不能从统一内存推导所有数据共享同一指针或复制无成本。
@@ -96,7 +98,7 @@ GPU 层计算掩盖; 仅当读取超过重叠窗口时才同步等待。
   W4A4 当前保留 cuBLASLt tensor core；历史 SIMT 候选未获收益，
   不据此排除 grouped 执行等其他方案。见 [MoE 执行合同](../dataflow-engine/MOE_DEVICE_PLAN.md) |
 | HTTP | 轻量 C++ HTTP (自研或 cpp-httplib 级) | 无重依赖; OpenAI 兼容语义 |
-| JSON | 自研递归下降解析器 | 输入边界候选增加深度/节点/字符串预算；默认部署与验收范围见 STATUS/INPUT_BOUNDARY_2026-09-27.md |
+| JSON | 自研递归下降解析器 | 已部署深度/节点/字符串预算；现行合同见 RELEASE_TEXT_V1_2026-09-28.md |
 | Tokenizer | 自研 BPE (解析 tokenizer.json) | 无 Python 依赖 |
 
 ## PD-ready 架构 (Prefill/Decode 可分离)

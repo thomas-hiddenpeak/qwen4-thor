@@ -53,11 +53,17 @@
 | [MTP_BATCHING.md](MTP_BATCHING.md) | MTP 批处理设计与阶段 | MTP 批处理推进时 |
 | [DATAFLOW_OPTIMIZATION.md](DATAFLOW_OPTIMIZATION.md) | 当前数据流预算、假设与决策边界 | 数据流优化推进时 |
 
-## 现行入口（2026-09-20）
+## 现行入口（2026-09-28）
 
-先读 [STATUS.md](STATUS.md) 与 [EVALUATION.md](EVALUATION.md)。本轮先治理文档，
-再默认关闭 MTP，以 evalscope 建立五档单流基线。E2E 是改动后的第一项测试，
-通过后才细分析，不运行任何前置测试或 bench。
+先读 [STATUS.md](STATUS.md) 与 [EVALUATION.md](EVALUATION.md)。
+当前已交付基线为[首版私有文本版本](RELEASE_TEXT_V1_2026-09-28.md)，
+阶段切换复核见[基线交接](BASELINE_HANDOFF_2026-09-28.md)。
+[收敛清单](CONVERGENCE_2026-09-28.md)已完成；上表专题中的
+“候选”“进行中”是当时记录，不能作为当前待办或发布结论。
+
+性能优化第一项测试仍为evalscope HTTP E2E；Bug修复可先做直接
+回归。不使用bench。先冻结范围、成组修改、统一验收，只有具体
+失败才做定位/消融；未改动且身份一致的证据复用。
 
 [历史状态快照](HISTORY_STATUS_2026-09-20.md) 与
 [历史数据流分析](HISTORY_DATAFLOW_2026-09-20.md) 保存旧内容，不作为现行结论。

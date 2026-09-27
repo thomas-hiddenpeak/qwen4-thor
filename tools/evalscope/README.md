@@ -44,19 +44,21 @@ quality_reference.json 来自 2026-09-20 完整数学修复后的真实 HTTP 结
 e98969c8d0d08572437745000d2a741a83b97d09600e60cf2ffd746643b3dcd3。
 只证明这 11 道合成检索题，不是全面模型质量基准。
 
-performance_reference.json 当前为2026-09-27完整E4M3修复干净构建：
-`1572d0fc6497fd55db370018714cff7b755c607b590c4de04f55cac080c20552`。
-来源与参数见performance_reference.metadata.json。五档decode为
-18.665/17.949/18.234/17.900/17.177tok/s；TTFT为
-0.805/2.635/5.175/30.451/159.170秒。
+performance_reference.json 当前对应2026-09-28首版私有文本部署，二进制
+`e659a108899b192c74eafcc484f3a38334d8999826cc4f8a21d07eeddadba7cb`。
+来源、源码摘要与参数以performance_reference.metadata.json为准。
+五档数据和必要修复的性能代价见
+[收敛验收](../../docs/RELEASE_TEXT_V1_2026-09-28.md)，不在本入口复制数值。
+它不代表严格无回退证明；此前8K配对差异记录继续保留。
+上一正式参考保存在performance_reference_pre_text_v1_20260928.json
+及同名metadata文件；更早的数值修复结论见
+[E4M3报告](../../docs/E4M3_NUMERICAL_FIX_2026-09-27.md)。
+quality_reference.json保持原有有界任务参考，不能当作整模型oracle。
 
-这是数值修复后的新参考，不是与旧版同时段配对的无回退证明。
-输入与历史一致，前四档输出摘要改变、200K相同；不要求正确编码
-复现旧错误计算的输出。旧fcb5925参考完整保存在
-performance_reference_legacy_20260921.json和Git历史。
-质量11题全文同旧参考，因此quality_reference.json保持不变；
-另测的15道推理题为13/15，不能将11题通过写成模型语义全对。
-验收边界见[数值修复报告](../../docs/E4M3_NUMERICAL_FIX_2026-09-27.md)。
+下一阶段优先将候选构建到独立build/或.q4t-work/子目录，显式传
+--binary，保留text-v1发布包不变。部署默认二进制的q4t.release.json
+记录了真实验收包与构建缓存；自行重建改变二进制后该元数据会过期，
+评估工具会拒绝旧身份，不能把旧验收结论套用到新候选。
 
 原 run_baseline.sh 每档三条不同输入，仍适用于初始负载采集；它与上述
 同输入重复矩阵不应混算。disconnect_e2e.py 专门复现断连并验证服务恢复。
