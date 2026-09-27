@@ -304,10 +304,8 @@ endif()
 # Host-only release-contract slice; the exact required list rejects absent
 # tokenizer registration when ICU is unavailable. No CUDA/model GPU tests run.
 if(Q4T_BUILD_TESTS)
-  add_executable(q4t_host_tests
-    tests/test_main.cpp tests/io_json_test.cpp
-    tests/server_http_request_test.cpp tests/server_chat_contract_test.cpp
-    src/server/http_request.cpp src/server/chat_contract.cpp)
+  include(cmake/HostTestSources.cmake)
+  add_executable(q4t_host_tests ${Q4T_HOST_TEST_SOURCES})
   target_include_directories(q4t_host_tests PRIVATE include)
   target_link_libraries(q4t_host_tests PRIVATE q4t_io)
   if(Q4T_HAS_ICU)

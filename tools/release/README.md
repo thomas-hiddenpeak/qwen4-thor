@@ -7,6 +7,23 @@
 
 ## 不可误绿的主机检查
 
+公共Linux开发/CI入口（CMake >= 3.25、C++23编译器、Python 3）：
+
+```sh
+cmake -S tests/host -B build/public-host -DCMAKE_CXX_COMPILER=g++-14
+cmake --build build/public-host --parallel
+ctest --test-dir build/public-host --no-tests=error --output-on-failure
+python3 tools/verify/test_gate/run.py --cxx g++-14 \
+  --output build/public-host/test-gate-new
+```
+
+公共入口与Thor共享host测试源码清单，实际运行全部18项JSON/HTTP/
+请求合同及16项测试框架反例，无CUDA、ICU、模型文件或私有证据依赖。
+反例输出目录每次新建。公共CI不构建runner，不覆盖真实tokenizer、
+GPU完成/状态、HTTP推理或五档性能；下面的22项发布检查保持独立且必需。
+
+Thor发布主机入口：
+
 ```sh
 cmake -S . -B build -DQ4T_BUILD_TESTS=ON
 cmake --build build --target q4t_host_tests --parallel

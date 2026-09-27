@@ -10,11 +10,12 @@ ROOT = Path(__file__).resolve().parents[3]
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--output', type=Path, required=True)
+    p.add_argument('--cxx', default='g++-14')
     args = p.parse_args()
     out = args.output.resolve()
     assert any(out.is_relative_to(ROOT / d) for d in ['build', '.q4t-work'])
     out.mkdir(parents=True, exist_ok=False)
-    build = ['g++-14', '-std=c++23', '-Wall', '-Wextra', '-Iinclude',
+    build = [args.cxx, '-std=c++23', '-Wall', '-Wextra', '-Werror', '-Iinclude',
              'tests/test_main.cpp']
     with (out / 'build.log').open('w') as log:
         for name, extra in [('runner', ['tools/verify/test_gate/cases.cpp']), ('empty', [])]:
