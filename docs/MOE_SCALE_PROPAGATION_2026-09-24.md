@@ -579,10 +579,50 @@ Y及最终状态全部恢复；额外CPU/FP64 norm差异169/209项仍保留。
 layer2 attention注入门值和layer1最终写回主干继续，不能换回实际
 捕获分支的上游输入。
 
+## 四分支 layer2 NormGate、输出投影与 attention HC 写回
+
+各支自身GDN Y/Z进入NormGate，CPU树形平方归约、设备rsqrt/
+sigmoid、三次F32乘法再BF16；本层输出权重重读checkpoint，
+记录cuBLAS算法检查兼容后执行。原支25165824个NormGate与
+10485760个投影BF16全部恢复，输出同捕获HC消费者。额外CPU/
+FP64 norm差异184/276项仍保留。
+
+| 修正 | NormGate BF16差异 | out BF16差异 | HC写回 BF16差异 | 影响token |
+|---|---:|---:|---:|---:|
+| 输入单项 | 22398858 | 9385579 | 23230590 | 4079 |
+| 中间单项 | 22823698 | 9547822 | 25428873 | 4094 |
+| 双项 | 22963982 | 9601499 | 26592601 | 4094 |
+
+随后各支自身out、layer1最终残差、layer2 attention注入门值进入
+CPU显式FMA/BF16 HC写回。原支41943040项全部恢复且同本层
+MLP residual消费者。两阶段各支均有限，变化不超自身输入支持集。
+完整BF16、全部差异、数学值按原范围保留；HC仅保存差异处的
+舍入前F32，不保存相同位置的舍入前值。
+
+norm及HC通用helper复用封存二进制/源码，准备和运行均验证；
+nonlinear/replay增加层号参数后新编译零警告。无生产/观测修改，
+没有新HTTP、最终答案质量或性能结论。全部运行进程终态后才
+封存，清单逐项核对：
+
+- `.q4t-work/e2e/moe-scale-linear-output-l2-20260924/`：147项，
+  2871697170逻辑字节；模板`tools/verify/moe_scale_linear_output_l2/`。
+- `.q4t-work/e2e/moe-scale-hc-attn-write-l2-20260924/`：37项，
+  937721328逻辑字节；模板`tools/verify/moe_scale_hc_attn_write_l2/`。
+
+为控制增长，仅新生成NormGate数学F32/差异索引无损压缩，36份
+全部流式解压核对原SHA/长度后移除新原始副本，节省约1.06GB。
+compression.json提供完整重建映射，BF16端点保持原格式，旧证据
+不改；详见[EVIDENCE_STORAGE.md](EVIDENCE_STORAGE.md)。
+
+终点是layer2注意力后的主干`reference/BRANCH.bf16`，下一步
+自身MLP HC读取及router/MoE。当前空闲23271292928字节，约
+21.7GiB；后续必须先形成满足20GiB余量的保存预算，不能直接
+按旧阶段全量重复副本铺开。差异广泛传播仍不能说明错答改善。
+
 ## 待完成
 
-1. 四支已到layer2 GDN输出/状态；接自身NormGate/输出、HC写回
-   和后续MoE，保持新层权重/状态绑定。
+1. 四支已到layer2注意力后主干；接自身MLP HC读取、router/MoE，
+   先满足证据保存预算与20GiB余量，保持本层权重/状态绑定。
 2. 建立可比多层与最终答案因果证据；不能由局部影响计数或
    格式正确性宣布错答已解释或修复。
 3. 保留规范修正候选原HTTP任务退化事实；任何运行时修复仍须
