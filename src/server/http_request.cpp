@@ -1,6 +1,11 @@
 #include "q4t/server/http_request.h"
 
 #include <unistd.h>
+#include <poll.h>
+#include <sys/socket.h>
+
+#include <cerrno>
+#include <chrono>
 
 #include <charconv>
 #include <string_view>
@@ -25,7 +30,35 @@ std::string_view Trim(std::string_view s) {
 }  // namespace
 
 bool ReadHttpRequest(int fd, std::string* method, std::string* path,
-                     std::string* body) {
+                     std::string* body, int timeout_ms, HttpBodyLease* lease,
+                     int* failure_status) {
+  if (failure_status) *failure_status = 400;
+  if (timeout_ms <= 0) return false;
+  const auto deadline = std::chrono::steady_clock::now() +
+                        std::chrono::milliseconds(timeout_ms);
+  const auto read_some = [&](char* data, size_t size) -> ssize_t {
+    for (;;) {
+      const auto remaining = std::chrono::duration_cast<
+          std::chrono::milliseconds>(deadline -
+                                    std::chrono::steady_clock::now()).count();
+      if (remaining <= 0) {
+        if (failure_status) *failure_status = 408;
+        return -1;
+      }
+      pollfd event{fd, POLLIN, 0};
+      const int ready = ::poll(&event, 1, static_cast<int>(remaining));
+      if (ready < 0 && errno == EINTR) continue;
+      if (ready == 0) {
+        if (failure_status) *failure_status = 408;
+        return -1;
+      }
+      if (ready < 0) return -1;
+      const ssize_t n = ::recv(fd, data, size, MSG_DONTWAIT);
+      if (n < 0 && (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR))
+        continue;
+      return n;
+    }
+  };
   constexpr size_t kMaxHeader = 64 * 1024;
   constexpr size_t kMaxBody = 16 * 1024 * 1024;
   std::string buf;
@@ -33,7 +66,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
   size_t header_end = std::string::npos;
   while ((header_end = buf.find("\r\n\r\n")) == std::string::npos) {
     if (buf.size() >= kMaxHeader) return false;
-    const ssize_t n = ::read(fd, tmp, sizeof(tmp));
+    const ssize_t n = read_some(tmp, sizeof(tmp));
     if (n <= 0) return false;
     buf.append(tmp, static_cast<size_t>(n));
   }
@@ -93,11 +126,19 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
     pos = end + 2;
   }
   if (version == "HTTP/1.1" && !seen_host) return false;
+  if (target == "/v1/chat/completions") {
+    if (lease && !lease->Acquire(length)) {
+      if (failure_status) *failure_status = 503;
+      return false;
+    }
+  } else if (length > 4096) {
+    return false;
+  }
   *method = verb;
   *path = target;
   // Do not keep a string_view into buf across an append/reallocation.
   while (buf.size() - head_len < length) {
-    const ssize_t n = ::read(fd, tmp, sizeof(tmp));
+    const ssize_t n = read_some(tmp, sizeof(tmp));
     if (n <= 0) return false;
     buf.append(tmp, static_cast<size_t>(n));
   }

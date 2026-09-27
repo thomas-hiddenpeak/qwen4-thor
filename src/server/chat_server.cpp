@@ -722,8 +722,14 @@ Status ChatServer::Run() {
 
 void ChatServer::HandleClient(int fd) {
   std::string method, path, body;
-  if (!ReadHttpRequest(fd, &method, &path, &body)) {
-    SendSimple(fd, 400, "Bad Request", "bad request", "text/plain");
+  HttpBodyLease lease(body_budget_);
+  int failure_status = 400;
+  if (!ReadHttpRequest(fd, &method, &path, &body, 30000, &lease,
+                       &failure_status)) {
+    const char* reason = failure_status == 408 ? "Request Timeout" :
+                         failure_status == 503 ? "Service Unavailable" :
+                                                 "Bad Request";
+    SendSimple(fd, failure_status, reason, reason, "text/plain");
     return;
   }
   const auto t0 = std::chrono::steady_clock::now();
@@ -1245,6 +1251,10 @@ void ChatServer::HandleMetrics(int fd) {
   }
   gauge("q4t_num_requests_running", "In-flight request threads.",
         active_conns_.load());
+  gauge("q4t_request_body_bytes", "Reserved chat body bytes (48 MiB cap).",
+        body_budget_.Used());
+  gauge("q4t_active_chats", "Parsing, queued and generating chat requests.",
+        active_chats_.load());
   gauge("q4t_seq_slots_total", "Sequence-state pool size (max_seq).", max_seq_);
   gauge("q4t_seq_slots_free", "Free sequence-state slots.", free_slots);
   gauge("q4t_gpu_healthy", "1 if no sticky CUDA error observed, else 0.",
@@ -1438,6 +1448,16 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     SendError(fd, 503, "GPU unhealthy after a device error; restart the server");
     return;
   }
+  const int chat_limit = std::max(8, max_seq_ * 2);
+  if (active_chats_.fetch_add(1) >= chat_limit) {
+    active_chats_.fetch_sub(1);
+    SendError(fd, 503, "text request capacity exhausted");
+    return;
+  }
+  struct ChatGuard {
+    std::atomic<int>& count;
+    ~ChatGuard() { count.fetch_sub(1); }
+  } chat_guard{active_chats_};
   io::Json req;
   Status s = io::ParseJson(body, &req, true, kRequestJsonLimits);
   if (!s.ok()) {
@@ -1473,13 +1493,13 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     request_id = "chatcmpl-auto-" +
                  std::to_string(next_request_id_.fetch_add(1));
   }
-  auto deadline = std::chrono::steady_clock::time_point::max();
+  auto deadline = t_arrive + std::chrono::minutes(20);
   if (const io::Json* timeout = req.Find("request_timeout_ms")) {
     const double value = timeout->AsDouble(-1);
-    if (!timeout->IsNumber() || !(value >= 1 && value <= 86400000) ||
+    if (!timeout->IsNumber() || !(value >= 1 && value <= 1200000) ||
         value != static_cast<double>(static_cast<int64_t>(value))) {
       SendError(fd, 400,
-                "request_timeout_ms must be an integer in [1,86400000]");
+                "request_timeout_ms must be an integer in [1,1200000]");
       return;
     }
     deadline = t_arrive +

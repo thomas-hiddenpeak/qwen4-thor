@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "purpose": "Frozen synthetic text requests and historical references; restores the exact inputs used by text-v1 qualification without untracked historical directories. Not new model outputs.",
+  "uncompressed_bytes": 8873072,
+  "archive_sha256": "b1f87cdc548011374c461db60839de13e80fdf755dd01079bbebe3bf743b1e63",
+  "files": {
+    "quality/inputs/manifest.json": "e2a542bf2c27b4404844b2e60e861c80e6c670d32bcd78685ad053f7fb833ae1",
+    "quality/inputs/requests.jsonl": "22cce46de658df1988cacbe311bc74a7d6f1e7125c48e11e1cd9a0dd97ab4c42",
+    "quality/server-command.json": "7a565d3536cb7e3af2106ab68b49973cfb804995fb0b925233480c2d09eae71a",
+    "quality/results.json": "1cea9071e8639483fd62d3d107013bad00c31e193fdcc0a205e4cb7b388eda38",
+    "performance/inputs/context-1024.jsonl": "7f4994034f3e7461f3dcde7324f5b3850fc82691a085f33ec57708903a67aa5a",
+    "performance/context-1024/requests.jsonl": "7f4994034f3e7461f3dcde7324f5b3850fc82691a085f33ec57708903a67aa5a",
+    "performance/inputs/context-4096.jsonl": "7a238b2c1e7430ec8feb605aa0074ac019740c3652595829c33c3d63227b94f8",
+    "performance/context-4096/requests.jsonl": "7a238b2c1e7430ec8feb605aa0074ac019740c3652595829c33c3d63227b94f8",
+    "performance/inputs/context-8192.jsonl": "94fdbf700124a464643dc61aedffb033751f360e154e1d757e06bf15c4f3fef0",
+    "performance/context-8192/requests.jsonl": "94fdbf700124a464643dc61aedffb033751f360e154e1d757e06bf15c4f3fef0",
+    "performance/inputs/context-45056.jsonl": "7e993e1bba5512f3d6af11af4472b1d032b68bc38475b6730e8fc9f3ae31f83b",
+    "performance/context-45056/requests.jsonl": "7e993e1bba5512f3d6af11af4472b1d032b68bc38475b6730e8fc9f3ae31f83b",
+    "performance/inputs/context-204800.jsonl": "f2816035b1b6671289ce6bd6317569a2adb697c49fce83ff18644db8e28a7f60",
+    "performance/context-204800/requests.jsonl": "f2816035b1b6671289ce6bd6317569a2adb697c49fce83ff18644db8e28a7f60",
+    "performance/results.json": "2a72d67f8f9c3d705f666b8316b3c4dbf37ef60e929bd6ebcd3bd46d2efcb1b4",
+    "fault-plan.json": "1648410dad9a0f3fd5bb84d1fb38fdefe53caf9e24793b9aff29e7f29a86e51a"
+  },
+  "sources": [
+    "listen-quality-20260927",
+    "listen-performance-20260927",
+    "request-control-readback-20260927"
+  ]
+}

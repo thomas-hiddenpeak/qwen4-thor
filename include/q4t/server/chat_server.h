@@ -25,6 +25,7 @@
 #include <unordered_set>
 #include <vector>
 
+#include "q4t/server/http_request.h"
 #include "q4t/model/model.h"
 #include "q4t/mtp/mtp.h"
 #include "q4t/server/request_control.h"
@@ -269,6 +270,8 @@ class ChatServer {
   // In-flight request-thread cap: bounds how many connections may be waiting
   // in the AllocSeqId queue at once, so a connection flood cannot spawn
   // unbounded threads. Excess connections are refused (503) to shed load.
+  HttpBodyBudget body_budget_{48 * 1024 * 1024};
+  std::atomic<int> active_chats_{0};
   std::atomic<int> active_conns_{0};
   int conn_cap_ = 512;
   // Graceful shutdown (signal handler -> RequestStop): stop_requested_ breaks

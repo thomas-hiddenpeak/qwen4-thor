@@ -4,6 +4,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include <chrono>
 #include <string>
 #include <thread>
 
@@ -86,11 +87,63 @@ Q4T_TEST(http_request_line_and_header_budget) {
 Q4T_TEST(http_body_capacity_and_trailing_bytes) {
   std::string body;
   const std::string data(16 * 1024 * 1024, 'x');
-  Q4T_CHECK(Read("POST / HTTP/1.1\r\nHost: local\r\n"
+  Q4T_CHECK(Read("POST /v1/chat/completions HTTP/1.1\r\nHost: local\r\n"
                  "Content-Length: 16777216\r\n\r\n" + data, &body));
   Q4T_CHECK(body == data);
   Q4T_CHECK(Read("POST / HTTP/1.1\r\nHost: local\r\n"
                  "Content-Length: 2\r\n\r\n{}trailing", &body));
   Q4T_CHECK(body == "{}");  // Caller closes without dispatching another request.
+  return true;
+}
+
+Q4T_TEST(http_absolute_deadline_and_body_budget) {
+  using namespace q4t::server;
+  HttpBodyBudget budget(8);
+  {
+    HttpBodyLease a(budget), b(budget);
+    Q4T_CHECK(a.Acquire(8));
+    Q4T_CHECK(!b.Acquire(1));
+    Q4T_CHECK(budget.Used() == 8);
+  }
+  Q4T_CHECK(budget.Used() == 0);
+  for (bool body_phase : {false, true}) {
+    int fd[2];
+    Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);
+    std::thread writer([&] {
+      const std::string prefix = body_phase ?
+          "POST /v1/chat/completions HTTP/1.1\r\nHost: local\r\n"
+          "Content-Length: 8\r\n\r\n" : "GET / HTTP/1.1\r\nX: ";
+      send(fd[0], prefix.data(), prefix.size(), MSG_NOSIGNAL);
+      for (int i = 0; i < 5; ++i) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(30));
+        if (send(fd[0], "x", 1, MSG_NOSIGNAL) < 0) break;
+      }
+    });
+    std::string method, path, body;
+    int status = 0;
+    bool ok;
+    {
+      HttpBodyLease lease(budget);
+      ok = ReadHttpRequest(fd[1], &method, &path, &body, 90, &lease, &status);
+    }
+    shutdown(fd[1], SHUT_RDWR);
+    writer.join();
+    close(fd[0]);
+    close(fd[1]);
+    Q4T_CHECK(!ok && status == 408 && budget.Used() == 0);
+  }
+  int fd[2];
+  Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);
+  const std::string wire = "POST /v1/chat/completions HTTP/1.1\r\n"
+                           "Host: local\r\nContent-Length: 9\r\n\r\n";
+  send(fd[0], wire.data(), wire.size(), MSG_NOSIGNAL);
+  std::string method, path, body;
+  HttpBodyLease lease(budget);
+  int status = 0;
+  const bool ok = ReadHttpRequest(fd[1], &method, &path, &body, 1000,
+                                   &lease, &status);
+  close(fd[0]);
+  close(fd[1]);
+  Q4T_CHECK(!ok && status == 503 && budget.Used() == 0);
   return true;
 }

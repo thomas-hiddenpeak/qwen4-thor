@@ -14,7 +14,7 @@ Linux `io_uring` 从本地 NVMe 异步流式读取,与 GPU 计算重叠,释放�
 - **文本推理**: 48 层完整 forward (36 linear_attention + 12 full_attention),
   NVFP4 W4A4 量化, Paged KV cache, greedy 生成
 - **多模态**: 27 层 ViT, 图像 + 视频输入 (OpenAI `image_url` / `video_frames`
-  base64 接入), 3D MRoPE；候选默认拒绝媒体，须显式
+  base64 接入), 3D MRoPE；当前版本默认拒绝媒体，须显式
   `serve --allow-media`进入未验收实验路径（部署身份见STATUS）
 - **MTP 推测解码**: draft、主模型验证与多序列调度已实现；默认关闭，
   不属于当前文本基线的完整验收范围
@@ -27,7 +27,8 @@ Linux `io_uring` 从本地 NVMe 异步流式读取,与 GPU 计算重叠,释放�
 - **HTTP API**: OpenAI 风格 chat/completions 流式/非流式接口，以及模型、
   健康、指标和取消接口；仅 greedy，不代表支持全部 OpenAI 参数语义
 - **验证边界**: 已有数值缺陷修复、状态/故障测试和五档 HTTP 性能参考。
-  尚未完成商用发布验收；当前结论见 [STATUS](docs/STATUS.md)，
+  [首版私有文本部署](docs/RELEASE_TEXT_V1_2026-09-28.md)已验收；
+  公网多租户与业务SLA另行验收。当前结论见 [STATUS](docs/STATUS.md)，
   已知缺陷与未覆盖项见 [完善度审计](docs/PROJECT_READINESS_REVIEW_2026-09-27.md)
 
 ## 目标模型
@@ -62,7 +63,7 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
   -DQ4T_CUDA_ARCHITECTURES=110a
 cmake --build build --parallel
 
-# 开发测试（可能有跳过项；退出成功不等于发布验收通过）
+# 开发测试（默认SKIP也非零退出；发布范围与入口见tools/release）
 ctest --test-dir build --output-on-failure
 ```
 

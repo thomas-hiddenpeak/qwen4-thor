@@ -1,0 +1,18 @@
+{
+  "date": "2026-09-27",
+  "binary_sha256": "b5f38e48ae9357e73d415d24ce5307038da5fa39f9eb297ad3678056c2dd3376",
+  "runtime_source_base_commit": "7e57cfe",
+  "runtime_source_sha256": {
+    "src/main.cpp": "c8e13ad7ba6708ba6643c164a683beb6315b10c81ee59c3d49bfd7cc488a610c",
+    "include/q4t/server/chat_server.h": "f17c5cfc45f14609b6039800849a6f8e4a285790eb59bd1d0e97f26037626e54",
+    "src/server/chat_server.cpp": "703bb32ee27eb5409fae89aab4a68cf5fc8eea8632b7748e004c5bd5e6d7e49a"
+  },
+  "results_sha256": "2a72d67f8f9c3d705f666b8316b3c4dbf37ef60e929bd6ebcd3bd46d2efcb1b4",
+  "mtp": false,
+  "concurrency": 1,
+  "output_tokens": 256,
+  "repeats": 3,
+  "source": ".q4t-work/e2e/listen-performance-20260927/results.json",
+  "scope": "Measured listen-address baseline; all historical ranges overlap, strict non-regression not proven",
+  "previous": "performance_reference_pre_listen_address_20260927.json"
+}

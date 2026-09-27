@@ -1,0 +1,19 @@
+# Optional user service. Render absolute @PYTHON@, @PACKAGE@ and @STATE@.
+# Activation/rollback must be performed while this service is stopped.
+[Unit]
+Description=Qwen4 Thor private text runner
+StartLimitIntervalSec=300
+StartLimitBurst=3
+
+[Service]
+Type=simple
+ExecStart=@PYTHON@ @PACKAGE@/release.py supervise --root @STATE@
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=40
+KillMode=control-group
+NoNewPrivileges=true
+UMask=0077
+
+[Install]
+WantedBy=default.target

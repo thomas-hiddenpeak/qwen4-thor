@@ -55,7 +55,18 @@ def main():
     (out / 'commit.txt').write_bytes(subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT))
     (out / 'worktree.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=ROOT))
     shutil.copyfile(__file__, out / 'run_acceptance.py')
-    shutil.copyfile(ROOT / 'build/CMakeCache.txt', out / 'CMakeCache.txt')
+    cache = binary.parent / 'CMakeCache.txt'
+    deployment = binary.with_name(binary.name + '.release.json')
+    if deployment.is_file():
+        identity = json.loads(deployment.read_text())
+        if identity['binary_sha256'] != hashlib.sha256(binary.read_bytes()).hexdigest():
+            raise RuntimeError('deployment identity is stale; qualify the rebuilt binary')
+        cache = Path(identity['build_cache'])
+        if hashlib.sha256(cache.read_bytes()).hexdigest() != identity['build_cache_sha256']:
+            raise RuntimeError('deployment build-cache identity differs')
+    if not cache.is_file():
+        raise RuntimeError('binary must have its actual CMakeCache.txt alongside')
+    shutil.copyfile(cache, out / 'CMakeCache.txt')
     evalscope = ROOT / 'tools/evalscope/.venv/bin/evalscope'
     python = evalscope.with_name('python')
     (out / 'evalscope-version.txt').write_bytes(subprocess.check_output(

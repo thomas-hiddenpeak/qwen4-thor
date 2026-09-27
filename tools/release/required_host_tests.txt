@@ -20,3 +20,4 @@ tokenizer_load_real
 tokenizer_golden_encode
 tokenizer_roundtrip_real
 tokenizer_special_tokens
+http_absolute_deadline_and_body_budget
