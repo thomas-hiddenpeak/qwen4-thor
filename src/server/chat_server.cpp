@@ -40,14 +40,27 @@ namespace {
 
 constexpr const char* kDefaultModelName = "qwen3.8-flash-next";
 
-// Do not consume input or treat a TCP write-half-close as cancellation:
-// an HTTP client may shutdown(SHUT_WR) and still read the response.
-// POLLERR/POLLHUP identify a failed or fully hung-up connection. A graceful
-// peer FIN alone remains ambiguous until the existing response write fails.
+// HTTP EOF ends the response lifetime, including TCP write-half-close. This
+// endpoint deliberately does not support half-close-and-wait clients.
+// Do not consume bytes: request parsing remains the sole socket reader.
 bool ClientConnectionFailed(int fd) {
-  pollfd peer{fd, 0, 0};
+  pollfd peer{fd, POLLRDHUP, 0};
   return poll(&peer, 1, 0) > 0 &&
-         (peer.revents & (POLLERR | POLLHUP)) != 0;
+         (peer.revents & (POLLRDHUP | POLLERR | POLLHUP)) != 0;
+}
+
+bool RequestCancelled(RequestControl* control, int fd) {
+  if (control->Cancelled()) return true;
+  if (ClientConnectionFailed(fd))
+    control->Cancel(RequestControl::State::kDisconnect);
+  return control->Cancelled();
+}
+
+bool ValidRequestKey(const std::string& key) {
+  return key.size() == 64 &&
+         std::all_of(key.begin(), key.end(), [](unsigned char c) {
+           return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f');
+         });
 }
 
 // A successful launch is not a completed result. Drain the existing stream
@@ -658,6 +671,7 @@ Status ChatServer::Run() {
   listen_fd_ = listen_fd;  // RequestStop() shutdown(2)s this to break accept
   std::fprintf(stderr, "[q4t] serving on port %d (model %s)\n", port_,
                model_name_.c_str());
+  Status run_status;
   while (true) {
     sockaddr_in client{};
     socklen_t clen = sizeof(client);
@@ -666,8 +680,8 @@ Status ChatServer::Run() {
     if (fd < 0) {
       if (stop_requested_.load()) break;  // RequestStop() shutdown() the socket
       if (errno == EINTR) continue;
-      ::close(listen_fd);
-      return Status::Fail(std::string("accept: ") + std::strerror(errno));
+      run_status = Status::Fail(std::string("accept: ") + std::strerror(errno));
+      break;  // Fatal accept errors must drain existing handlers too.
     }
     int nodelay = 1;
     ::setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &nodelay, sizeof(nodelay));
@@ -697,10 +711,20 @@ Status ChatServer::Run() {
       ::close(fd);
       continue;
     }
+    {
+      const std::lock_guard<std::mutex> lock(connections_mu_);
+      connections_.insert(fd);
+    }
     std::thread([this, fd]() {
       HandleClient(fd);
-      ::close(fd);
-      active_conns_.fetch_sub(1, std::memory_order_relaxed);
+      {
+        const std::lock_guard<std::mutex> lock(connections_mu_);
+        connections_.erase(fd);
+        ::close(fd);
+      }
+      // Publish all handler cleanup before Run observes zero and destroys
+      // server-owned state. This decrement is the thread's last access.
+      active_conns_.fetch_sub(1, std::memory_order_release);
     }).detach();
   }
   // Graceful shutdown (RequestStop broke the accept loop): stop the scheduler
@@ -709,18 +733,26 @@ Status ChatServer::Run() {
   // drain before returning — they are detached and cannot be joined, so the
   // destructor's frees must not race a live request thread.
   std::fprintf(stderr, "[q4t] shutting down: draining in-flight requests...\n");
+  requests_.CancelAll();
+  {
+    const std::lock_guard<std::mutex> lock(connections_mu_);
+    for (int fd : connections_) ::shutdown(fd, SHUT_RDWR);
+  }
   StopScheduler();
   {
     const std::lock_guard<std::mutex> lock(seq_mu_);
     seq_stopping_ = true;
   }
   seq_cv_.notify_all();
-  for (int i = 0; i < 150 && active_conns_.load() > 0; ++i)
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));  // <= 15 s
+  // All socket reads/writes were interrupted above. Never destroy model or
+  // scheduler state while a detached request thread still owns it.
+  while (active_conns_.load(std::memory_order_acquire) > 0)
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  listen_fd_.store(-1, std::memory_order_relaxed);
   ::close(listen_fd);
   std::fprintf(stderr, "[q4t] shutdown complete (%d in-flight remaining)\n",
                active_conns_.load(std::memory_order_relaxed));
-  return Status();
+  return run_status;
 }
 
 void ChatServer::HandleClient(int fd) {
@@ -755,6 +787,23 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     HandleMetrics(fd);
     return;
   }
+  if (path == "/v1/requests/cancel" && method == "POST") {
+    io::Json req;
+    if (!io::ParseJson(body, &req, true).ok() || !req.IsObject() ||
+        !ValidRequestKey(req.GetString("cancel_token"))) {
+      SendError(fd, 400, "invalid cancellation request");
+      return;
+    }
+    if (!requests_.Cancel(req.GetString("request_id"),
+                          req.GetString("cancel_token"))) {
+      SendError(fd, 404, "no cancellable request with these credentials");
+      return;
+    }
+    seq_cv_.notify_all();
+    SendSimple(fd, 202, "Accepted", "{\"cancel_requested\":true}",
+               "application/json");
+    return;
+  }
   if (path == "/v1/chat/completions" && method == "POST") {
     HandleChat(fd, body);
     return;
@@ -763,25 +812,21 @@ void ChatServer::Dispatch(int fd, const std::string& method,
              "{\"error\":{\"message\":\"not found\"}}", "application/json");
 }
 
-int ChatServer::AllocSeqId() {
+int ChatServer::AllocSeqId(RequestControl* control, int fd) {
   std::unique_lock<std::mutex> lock(seq_mu_);
-  // Queue (block) until a slot frees rather than rejecting — this bounds the
-  // number of in-flight requests to max_seq so GPU resources are never
-  // over-committed (excess requests wait here instead of OOM-ing the box).
-  seq_cv_.wait(lock, [this] {
-    if (seq_stopping_) return true;
-    for (int i = 0; i < max_seq_; ++i)
-      if (seq_free_[static_cast<size_t>(i)]) return true;
-    return false;
-  });
-  if (seq_stopping_) return -1;
-  for (int i = 0; i < max_seq_; ++i) {
-    if (seq_free_[static_cast<size_t>(i)]) {
-      seq_free_[static_cast<size_t>(i)] = false;
-      return i;
+  for (;;) {
+    if (seq_stopping_) return -1;
+    if (RequestCancelled(control, fd)) return -2;
+    for (int i = 0; i < max_seq_; ++i) {
+      if (seq_free_[static_cast<size_t>(i)]) {
+        seq_free_[static_cast<size_t>(i)] = false;
+        return i;
+      }
     }
+    // Socket EOF/deadlines need no extra watcher thread. Explicit cancellation
+    // wakes this wait; timeout bounds polling even if a notification races it.
+    seq_cv_.wait_for(lock, std::chrono::milliseconds(100));
   }
-  return -1;
 }
 
 void ChatServer::FreeSeqId(int seq_id) {
@@ -821,7 +866,7 @@ void ChatServer::RunOnePrefillChunk() {
     const std::lock_guard<std::mutex> lock(model_mu_);
     if (!gpu_healthy_.load(std::memory_order_relaxed)) {
       s = Status::Fail("chunk prefill: GPU unhealthy");
-    } else if (ClientConnectionFailed(req->fd)) {
+    } else if (RequestCancelled(req->control, req->fd)) {
       req->cancelled = true;
     } else {
       if (req->seq->stage == model::ModelSequence::Stage::kIdle) {
@@ -848,7 +893,7 @@ void ChatServer::RunOnePrefillChunk() {
       // before handing shared scratch to another request.
       const Status completion = FinishHostReadback(copy_error, &gpu_healthy_);
       if (s.ok()) s = completion;
-      if (s.ok() && ClientConnectionFailed(req->fd)) {
+      if (s.ok() && RequestCancelled(req->control, req->fd)) {
         req->cancelled = true;
       }
       if (!s.ok() && cudaPeekAtLastError() != cudaSuccess) {
@@ -933,6 +978,14 @@ void ChatServer::SchedulerLoop() {
       while (!prefill_pending_.empty() &&
              static_cast<int>(pf.size()) < max_seq_) {
         PrefillReq* p = prefill_pending_.front();
+        if (RequestCancelled(p->control, p->fd)) {
+          prefill_pending_.erase(prefill_pending_.begin());
+          p->pending = false;
+          p->done = true;
+          p->ok = false;
+          p->cv.notify_one();
+          continue;
+        }
         if (ttot + p->len > max_prefill_) break;  // token budget
         ttot += p->len;
         pf.push_back(p);
@@ -955,6 +1008,7 @@ void ChatServer::SchedulerLoop() {
       Status sp;
       {
         const std::lock_guard<std::mutex> lock(model_mu_);
+        cudaError_t copy_error = cudaSuccess;
         if (Bp == 1) {
           model::ModelSequence tmp;
           sp = model::ModelBeginSequence(model_, &tmp, nullptr, pf[0]->seq_id);
@@ -964,11 +1018,10 @@ void ChatServer::SchedulerLoop() {
                                      nullptr, pf[0]->seq_id,
                                      model::LogitsRows::kLastRow);
           if (sp.ok()) {
-            const cudaError_t copy_error = cudaMemcpyAsync(
+            copy_error = cudaMemcpyAsync(
                 pf[0]->h_logits,
                 d_prefill_logits_,
                 static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost, nullptr);
-            sp = FinishHostReadback(copy_error, &gpu_healthy_);
           }
         } else {
           std::vector<int32_t> pk_tokens;
@@ -988,7 +1041,6 @@ void ChatServer::SchedulerLoop() {
             gpu_healthy_.store(false, std::memory_order_relaxed);
           if (sp.ok()) {
             // Head output row i belongs to packed sequence i.
-            cudaError_t copy_error = cudaSuccess;
             for (int i = 0; i < Bp; ++i) {
               const cudaError_t error = cudaMemcpyAsync(
                   pf[i]->h_logits,
@@ -997,9 +1049,13 @@ void ChatServer::SchedulerLoop() {
                   nullptr);
               if (copy_error == cudaSuccess) copy_error = error;
             }
-            sp = FinishHostReadback(copy_error, &gpu_healthy_);
           }
         }
+        // Even a failed forward may have queued GPU writes. Drain before
+        // publishing completion so cancellation/cleanup cannot reuse buffers
+        // still owned by that work. Device failure takes precedence over abort.
+        const Status completion = FinishHostReadback(copy_error, &gpu_healthy_);
+        if (sp.ok()) sp = completion;
       }
       {
         const std::lock_guard<std::mutex> lock(sched_mu_);
@@ -1144,7 +1200,9 @@ void ChatServer::SchedulerLoop() {
 void ChatServer::RequestStop() {
   stop_requested_.store(true, std::memory_order_relaxed);
   // shutdown(2) is async-signal-safe and wakes the blocked accept(2).
-  if (listen_fd_ >= 0) ::shutdown(listen_fd_, SHUT_RDWR);
+  static_assert(std::atomic<int>::is_always_lock_free);
+  const int fd = listen_fd_.load(std::memory_order_relaxed);
+  if (fd >= 0) ::shutdown(fd, SHUT_RDWR);
 }
 
 void ChatServer::StopScheduler() {
@@ -1420,6 +1478,62 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     return;
   }
 
+  const io::Json* external_id = req.Find("request_id");
+  const io::Json* cancel_key = req.Find("cancel_token");
+  const std::string key = req.GetString("cancel_token");
+  std::string request_id = req.GetString("request_id");
+  if ((external_id && (!external_id->IsString() || request_id.empty() ||
+                       request_id.size() > 128 ||
+                       request_id.starts_with("chatcmpl-auto-") ||
+                       !std::all_of(request_id.begin(), request_id.end(),
+                                    [](unsigned char c) {
+                                      return std::isalnum(c) || c == '-' ||
+                                             c == '_';
+                                    }))) ||
+      (external_id && (!cancel_key || !cancel_key->IsString() ||
+                       !ValidRequestKey(key))) ||
+      (!external_id && cancel_key)) {
+    SendError(fd, 400, "request_id requires a fresh 64-hex cancel_token");
+    return;
+  }
+  if (!external_id) {
+    request_id = "chatcmpl-auto-" +
+                 std::to_string(next_request_id_.fetch_add(1));
+  }
+  auto deadline = std::chrono::steady_clock::time_point::max();
+  if (const io::Json* timeout = req.Find("request_timeout_ms")) {
+    const double value = timeout->AsDouble(-1);
+    if (!timeout->IsNumber() || !(value >= 1 && value <= 86400000) ||
+        value != static_cast<double>(static_cast<int64_t>(value))) {
+      SendError(fd, 400,
+                "request_timeout_ms must be an integer in [1,86400000]");
+      return;
+    }
+    deadline = t_arrive +
+               std::chrono::milliseconds(static_cast<int64_t>(value));
+  }
+  auto control = requests_.Register(request_id, key, deadline);
+  if (!control) {
+    SendError(fd, 409, "request_id already active");
+    return;
+  }
+  struct Registration {
+    RequestRegistry& registry;
+    std::shared_ptr<RequestControl> control;
+    ~Registration() { registry.Remove(control); }
+  } registration{requests_, control};
+  const auto cancelled = [&] { return RequestCancelled(control.get(), fd); };
+  bool abort_counted = false;
+  const auto count_abort = [&] {
+    if (!abort_counted) {
+      metrics_.requests_aborted.fetch_add(1, std::memory_order_relaxed);
+      abort_counted = true;
+      std::fprintf(stderr, "[q4t] request cancelled id=%s reason=%s\n",
+                   request_id.c_str(), control->Reason());
+    }
+    err_guard.ok = true;
+  };
+
   // max_tokens (default to the server cap).
   int max_tokens = static_cast<int>(
       req.GetInt("max_tokens", max_tokens_default_));
@@ -1488,7 +1602,12 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // scratch safety and GPU-stream ordering. CPU post-processing (D2H, argmax,
   // tokenize, SSE) and encoding run OUTSIDE model_mu_, overlapping another
   // request's GPU forward.
-  const int seq_id = AllocSeqId();  // blocks (queues) until a slot frees
+  const int seq_id = AllocSeqId(control.get(), fd);
+  if (seq_id == -2) {
+    count_abort();
+    SendError(fd, 409, "request cancelled before admission");
+    return;
+  }
   if (seq_id < 0) {
     SendError(fd, 503, "server shutting down");
     return;
@@ -1519,6 +1638,13 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     }
     FreeSeqId(seq_id);
   };
+
+  if (cancelled()) {
+    count_abort();
+    cleanup();
+    SendError(fd, 409, "request cancelled before encoding");
+    return;
+  }
 
   // 1. Encode prompt (CPU, outside model_mu_). The tokenizer's ICU regex
   // engine is not thread-safe, so Encode is serialized behind tok_mu_.
@@ -1701,6 +1827,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   if (scheduled_chunk_prefill) {
     ChunkPrefillReq pr;
     pr.fd = fd;
+    pr.control = control.get();
     pr.seq = &seq;
     pr.seq_id = seq_id;
     pr.ids = ids.data();
@@ -1718,6 +1845,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     s = pr.ok ? Status() : Status::Fail("scheduled chunk prefill failed");
   } else if (batched_prefill) {
     PrefillReq pr;
+    pr.control = control.get();
+    pr.fd = fd;
     pr.seq_id = seq_id;
     pr.ids = ids.data();
     pr.len = T;
@@ -1741,7 +1870,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     }
   } else {
     const std::lock_guard<std::mutex> lock(model_mu_);
-    s = model::ModelBeginSequence(model_, &seq, nullptr, seq_id);
+    s = cancelled() ? Status::Fail("request cancelled")
+                    : model::ModelBeginSequence(model_, &seq, nullptr, seq_id);
     if (s.ok()) {
       if (!chunked) {
         // Keep full trunk output for MTP, but only the final logits row.
@@ -1753,7 +1883,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         // Intermediate chunks only produce trunk/state; the final chunk
         // writes one logits row at the start of the shared buffer.
         while (s.ok() && seq.position < T) {
-          if (ClientConnectionFailed(fd)) {
+          if (cancelled()) {
             prefill_cancelled = true;
             s = Status::Fail("client disconnected during prefill");
             break;
@@ -1799,15 +1929,16 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       }
     }
   }
-  if (prefill_cancelled && gpu_healthy_.load(std::memory_order_relaxed)) {
+  if ((prefill_cancelled || cancelled()) &&
+      gpu_healthy_.load(std::memory_order_relaxed)) {
     // Scheduler chunks have drained before notification; the inline path
     // drains above. The request thread still owns fd and all request buffers.
     std::fprintf(stderr, "[q4t] prefill cancelled seq=%d position=%d total=%d\n",
                  seq_id, seq.position, T);
-    metrics_.requests_aborted.fetch_add(1, std::memory_order_relaxed);
-    err_guard.ok = true;
+    count_abort();
     model::ModelEndSequence(&seq);
     cleanup();
+    SendError(fd, 409, "request cancelled during prefill");
     return;
   }
   if (!s.ok()) {
@@ -1818,15 +1949,16 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   }
 
   // 3. Decode loop (greedy).
-  const std::string id = "chatcmpl-" + std::to_string(std::time(nullptr));
+  const std::string id = request_id;
   const std::string model_field = model_name_;
   const int created = static_cast<int>(std::time(nullptr));
   bool client_disconnected = false;
   const auto write_stream = [&](const std::string& data) {
     if (client_disconnected) return false;
-    if (WriteAll(fd, data)) return true;
+    if (!cancelled() && WriteAll(fd, data)) return true;
     client_disconnected = true;
-    metrics_.requests_aborted.fetch_add(1, std::memory_order_relaxed);
+    control->Cancel(RequestControl::State::kDisconnect);
+    count_abort();
     return false;
   };
 
@@ -1951,6 +2083,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   if (use_mtp) {
     bool done = false;
     while (!done && static_cast<int>(generated.size()) < max_tokens) {
+      if (cancelled()) break;
       if (!mtp_sched) break;
       // Register this step's input with the scheduler.
       mtp_ar.mtp_b = mtp_b;
@@ -2050,6 +2183,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       }
     }
     for (int step = 0; step < max_tokens; ++step) {
+      if (cancelled()) break;
       generated.push_back(next_token);
       if (is_stop_token(next_token)) {
         finish_reason = "stop";
@@ -2150,6 +2284,20 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       std::chrono::duration<double>(std::chrono::steady_clock::now() - t_arrive)
           .count());
 
+  // The handler has left every scheduler list and all submitted work is
+  // complete. Linearize terminal completion before publishing success.
+  if (cancelled() || !control->Finish()) {
+    count_abort();
+    if (stream) {
+      WriteAll(fd,
+               "data: {\"error\":{\"message\":\"request cancelled\"}}\r\n\r\n");
+      WriteAll(fd, "data: [DONE]\r\n\r\n");
+    } else {
+      SendError(fd, 409, "request cancelled");
+    }
+    cleanup();
+    return;
+  }
   // 4. Finalize.
   if (stream) {
     write_stream(SseChunk(id, model_field, "", "", finish_reason, 0));

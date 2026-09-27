@@ -1,0 +1,17 @@
+{
+  "date": "2026-09-27",
+  "binary_sha256": "2319b14ae7ba1c9ed17b54fff836cc281b460cc640a23bc596bd5f5a30f80ab4",
+  "runtime_source_base_commit": "b353e3e",
+  "runtime_source_sha256": {
+    "src/server/chat_server.cpp": "06338a0bb94f55c40a1a42069180a5695898728d8d5c668b6d8b9f473a083e78",
+    "include/q4t/server/chat_server.h": "3396755392391c80640cf8ceca7927ecd4748c27fa25d826b088ffd2d919798d"
+  },
+  "results_sha256": "309e7341732161b515acb46909da53536d594863227d05d06ff110cdfe52580c",
+  "mtp": false,
+  "concurrency": 1,
+  "output_tokens": 256,
+  "repeats": 3,
+  "source": ".q4t-work/e2e/prefill-cancel-performance-20260927/results.json",
+  "scope": "Measured cancellation-fix baseline; historical comparison only, strict non-regression not proven",
+  "previous": "performance_reference_pre_cancel_20260927.json"
+}

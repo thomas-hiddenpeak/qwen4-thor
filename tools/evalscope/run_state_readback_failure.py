@@ -18,6 +18,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--lifecycle', type=Path, required=True)
     ap.add_argument('--output', type=Path, required=True)
+    ap.add_argument('--binary', type=Path, help='Explicit candidate; lifecycle supplies fixtures only')
     args = ap.parse_args()
     out = args.output.resolve()
     assert any(out.is_relative_to(ROOT / p) for p in ['build', '.q4t-work'])
@@ -26,8 +27,11 @@ def main():
     assert summary['failure'] is None and summary['server_exit'] == 0
     plan = json.loads((prior / 'plan.json').read_text())
     command, payload = plan['command'], plan['cases']['A']
+    if args.binary:
+        command[0] = str(args.binary.resolve())
     digest = hashlib.sha256(Path(command[0]).read_bytes()).hexdigest()
-    assert digest == json.loads((prior / 'identity.json').read_text())['binary_sha256']
+    if not args.binary:
+        assert digest == json.loads((prior / 'identity.json').read_text())['binary_sha256']
     out.mkdir(parents=True, exist_ok=False)
     for path in [Path(__file__), ROOT / 'tools/evalscope/run_state_lifecycle.py',
                  ROOT / 'tools/verify/readback_fault.cpp.in']:

@@ -22,10 +22,12 @@
 #include <mutex>
 #include <string>
 #include <thread>
+#include <unordered_set>
 #include <vector>
 
 #include "q4t/model/model.h"
 #include "q4t/mtp/mtp.h"
+#include "q4t/server/request_control.h"
 #include "q4t/status.h"
 #include "q4t/runtime/memory_budget.h"
 #include "q4t/text/tokenizer.h"
@@ -135,7 +137,11 @@ class ChatServer {
   // (D2H/argmax/tokenize/SSE) and encoding run OUTSIDE `model_mu_` on a
   // per-request CUDA stream, so one request's D2H overlaps another request's
   // forward on the GPU.
-  int AllocSeqId();  // blocks (queues) until a slot frees; -1 only on shutdown
+  int AllocSeqId(RequestControl* control, int fd);
+  RequestRegistry requests_;
+  std::mutex connections_mu_;
+  std::unordered_set<int> connections_;
+  std::atomic<uint64_t> next_request_id_{0};
   void FreeSeqId(int seq_id);
   std::mutex model_mu_;   // serializes all model forwards (main + MTP + vision)
   std::mutex seq_mu_;     // guards the seq_id free pool
@@ -203,6 +209,8 @@ class ChatServer {
   // for the whole prefill, so no lifetime race); `h_logits` is the request's
   // [vocab] host buffer that the scheduler D2Hs the sequence's last row into.
   struct PrefillReq {
+    RequestControl* control = nullptr;
+    int fd = -1;
     int seq_id = 0;
     const int32_t* ids = nullptr;
     int len = 0;
@@ -215,6 +223,7 @@ class ChatServer {
   // Request thread owns these buffers and waits until the entire prompt is
   // done. Only the scheduler advances seq between chunk completions.
   struct ChunkPrefillReq {
+    RequestControl* control = nullptr;
     int fd = -1;  // Borrowed until done; owned by the waiting request thread.
     bool cancelled = false;
     model::ModelSequence* seq = nullptr;
@@ -261,7 +270,7 @@ class ChatServer {
   // Graceful shutdown (signal handler -> RequestStop): stop_requested_ breaks
   // the accept loop; listen_fd_ is shutdown(2) to interrupt a blocked accept.
   std::atomic<bool> stop_requested_{false};
-  int listen_fd_ = -1;
+  std::atomic<int> listen_fd_{-1};
   // GPU health: a forward's CUDA error is sticky (it poisons every later
   // forward), so once one is observed the server reports unhealthy (healthz
   // 503) and refuses new requests (503) instead of silently failing them all.
