@@ -54,6 +54,7 @@ def main():
     assert completed['functional_pass']
     assert sha(package/'q4t')==digest==read(q/'plan.json')['binary_sha256']
     audit_host_gate(q/'host')
+    host=read(q/'host/result.json')
     direct=read(q/'input/summary.json');assert direct['failure'] is None and direct['server_exit']==0 and len(direct['rejections'])==55
     assert read(q/'input/identity.json')['binary_sha256']==digest
     raw_rows=0
