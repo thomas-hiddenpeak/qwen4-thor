@@ -1,0 +1,39 @@
+{
+  "start_utc": "2026-09-27T04:58:26Z",
+  "deadline_utc": "2026-09-27T12:58:26Z",
+  "baseline_sha256": "2392f6b1fb33f28744d0e63812e47be98b4c6f224e22f087bd627d050f8bbe9e",
+  "fixed_sha256": "a984c2848b22feaa0f09549b06db2de6a839685d2be01f2e8d61be4b199d2443",
+  "model_dir": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "tokenizer_binding": {
+    "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    "config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624"
+  },
+  "new_count": 120,
+  "legacy_count": 26,
+  "http_count": 292,
+  "sequence": [
+    "baseline-first:74",
+    "fixed:146",
+    "baseline-last:72"
+  ],
+  "decision": "Full pairing and structural validity required; new total, all 8 task counts and all 5 context counts must not decrease. Otherwise no upgrade, at most 8 frozen losses repeated once per binary, all evidence retained. Empirical screen only, no population/performance claim.",
+  "repeat_selection": "Sort losses by length,task,id; take one per task/context cell, then fill to8 with remaining ordered losses; only if primary screen fails without structural errors. No prompt or binary changes.",
+  "new_evidence_budget_bytes": 800000000,
+  "minimum_free_bytes": 21474836480,
+  "plan_sha256": "2c99aa802f7a0268b2d1bb2bb20265c0267e733db7b70a8f427ad592b4dc56eb",
+  "fixture_binding": {
+    "all/manifest.json": "b280b8ac2ddd0c73dd263080232b09979d8d871a2e99145742ba6f5fab991d2d",
+    "all/requests.jsonl": "5fa624ce0c8f8a126fd5389a34abb4c6cb9f8d6e20921d9e1339bcab4f2c4797",
+    "baseline-first/manifest.json": "c8db75f8629391d04ff367c1b059ca95761418fe69c2f8d85bd2c7780911f592",
+    "baseline-first/requests.jsonl": "af1d033cce2f97ae06ea8b3657e323732d62bf74e1d69d45d3e92014bcece76a",
+    "baseline-last/manifest.json": "8bb9be0fabacf6f06973d7ca14f49e9ea49dc2678d4c22409d396bb8ff111fd5",
+    "baseline-last/requests.jsonl": "cda99630711a62e994ab94e5cefd90fad3483c475d1d1c553bea6a3595ab9192"
+  },
+  "source_sha256": {
+    "validate.py": "36a4eeaaf3dd712995f4a68e6f303bdf1562c873210c2356510bd8775dad0460",
+    "run.py": "c19ea1c9e3afa0b5440a7b4e82483b2a445b27459ffc5c9c574299189d7785a2",
+    "prepare.py": "c8c374e1f390bb8eab1f2c7bc574832edeb329f648b968d31e3d43748b4bca1f",
+    "analyze.py": "461c97997941d4fe825a3d4c54fed506382c04fc34737ce2d1a73422bf5c5ef2"
+  }
+}
