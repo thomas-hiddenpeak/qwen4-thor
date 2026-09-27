@@ -98,13 +98,11 @@ bool RunMtpStep(const MtpModel& mtp, const int32_t* d_ids, const int* positions,
 
 Q4T_TEST(mtp_draft_forward) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex) || !FileExists(kMtpDir) ||
       !FileExists(kPleSidecar)) {
-    std::printf("  (skipped: model or MTP dir not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model or MTP dir not found)");
   }
 
   // 1. Load a small main model (2 layers) for the shared embed/lm_head.
@@ -292,13 +290,11 @@ Q4T_TEST(mtp_draft_forward) {
 // pattern and not comparable to the reference.
 Q4T_TEST(mtp_draft_multi_seq) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex) || !FileExists(kMtpDir) ||
       !FileExists(kPleSidecar)) {
-    std::printf("  (skipped: model or MTP dir not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model or MTP dir not found)");
   }
   const int B = 4;  // number of concurrent draft sequences
   const int T = 2;  // tokens per sequence (B*T = 8 <= max_prefill)

@@ -2,7 +2,7 @@
 // checkpoint. Loads the layer-0 attn_hyper_connection weights, runs mix and
 // combine on a random [T, hc*hs] input, and compares against a full CPU
 // reference that mirrors the grouped RMSNorm, low-rank gate, and inject math.
-// Skipped (reported as pass) when CUDA or the real model is absent.
+// Reported as SKIP when CUDA or the real model is absent.
 #include "q4t/io/weight_loader.h"
 #include "q4t/model/hyperconnection.h"
 #include "q4t/test.h"
@@ -137,12 +137,10 @@ std::vector<float> FromBf16(const std::vector<uint16_t>& v) {
 
 Q4T_TEST(hyperconnection_mix_combine) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex)) {
-    std::printf("  (skipped: model index not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model index not found)");
   }
 
   WeightIndex* index = nullptr;

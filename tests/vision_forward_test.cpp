@@ -292,16 +292,13 @@ bool RunCase(const std::string& case_name, VisionTower& tower,
 
 Q4T_TEST(vision_forward) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex)) {
-    std::printf("  (skipped: model index not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model index not found)");
   }
   if (!FileExists(kRefJson)) {
-    std::printf("  (skipped: vision reference not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: vision reference not found)");
   }
 
   // Open the weight loader + load vision weights (shared by both cases).

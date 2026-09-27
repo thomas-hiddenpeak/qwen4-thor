@@ -4,7 +4,7 @@
 // output (and final SSM state) against a full CPU reference that mirrors the
 // projections, causal conv1d (SiLU), the Gated DeltaNet recurrence, the
 // per-head RMSNorm*sigmoid gate (output_gate_type), and the output
-// projection. Skipped (reported as pass) when CUDA or the real model is
+// projection. Reported as SKIP when CUDA or the real model is
 // absent.
 #include "q4t/io/weight_loader.h"
 #include "q4t/model/linear_attention.h"
@@ -118,12 +118,10 @@ std::vector<float> CpuLinearBf16(const std::vector<float>& x,
 
 Q4T_TEST(linear_attention_forward) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex)) {
-    std::printf("  (skipped: model index not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model index not found)");
   }
 
   WeightIndex* index = nullptr;

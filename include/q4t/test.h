@@ -7,7 +7,9 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <exception>
 #include <functional>
+#include <unordered_set>
 #include <string>
 #include <vector>
 
@@ -28,16 +30,63 @@ inline void Register(const std::string& name, std::function<bool()> fn) {
   Registry().push_back({name, std::move(fn)});
 }
 
-// Run all registered tests. Returns the number of failures.
-inline int RunAllTests() {
-  int failures = 0;
-  for (const auto& c : Registry()) {
-    bool ok = c.fn();
-    std::printf("[%s] %s\n", ok ? "PASS" : "FAIL", c.name.c_str());
-    if (!ok) ++failures;
+struct SkipTest {
+  std::string reason;
+};
+
+[[noreturn]] inline void Skip(const std::string& reason) {
+  throw SkipTest{reason};
+}
+
+// Validate selection before running anything. A missing prerequisite is never
+// a pass; strict callers require every selected check to actually complete.
+inline int RunTests(const std::vector<std::string>& names,
+                    bool allow_skips = false) {
+  if (names.empty()) {
+    std::fprintf(stderr, "No tests selected\n");
+    return 2;
   }
-  std::printf("%zu tests, %d failed\n", Registry().size(), failures);
-  return failures;
+  std::unordered_set<std::string> registered, selected;
+  for (const auto& c : Registry()) {
+    if (!registered.insert(c.name).second) {
+      std::fprintf(stderr, "Duplicate test registration: %s\n", c.name.c_str());
+      return 2;
+    }
+  }
+  for (const auto& name : names) {
+    if (!registered.contains(name) || !selected.insert(name).second) {
+      std::fprintf(stderr, "Unknown or duplicate selected test: %s\n",
+                   name.c_str());
+      return 2;
+    }
+  }
+  int passed = 0, failed = 0, skipped = 0;
+  for (const auto& c : Registry()) {
+    if (!selected.contains(c.name)) continue;
+    try {
+      const bool ok = c.fn();
+      std::printf("[%s] %s\n", ok ? "PASS" : "FAIL", c.name.c_str());
+      ok ? ++passed : ++failed;
+    } catch (const SkipTest& skip) {
+      ++skipped;
+      std::printf("[SKIP] %s: %s\n", c.name.c_str(), skip.reason.c_str());
+    } catch (const std::exception& error) {
+      ++failed;
+      std::printf("[FAIL] %s: %s\n", c.name.c_str(), error.what());
+    } catch (...) {
+      ++failed;
+      std::printf("[FAIL] %s: unknown exception\n", c.name.c_str());
+    }
+  }
+  std::printf("%zu tests, %d passed, %d failed, %d skipped\n",
+              names.size(), passed, failed, skipped);
+  return failed || (skipped && !allow_skips) ? 1 : 0;
+}
+
+inline int RunAllTests() {
+  std::vector<std::string> names;
+  for (const auto& c : Registry()) names.push_back(c.name);
+  return RunTests(names);
 }
 
 // RAII: temporarily force the shared-state GDN prefill kernel (Q4T_GDN_REG=0)
@@ -90,3 +139,5 @@ class GdnRegOff {
       return false;                                                        \
     }                                                                      \
   } while (0)
+
+#define Q4T_SKIP(reason) ::q4t::test::Skip(reason)

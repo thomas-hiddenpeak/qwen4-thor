@@ -89,8 +89,7 @@ bool CheckImage(const char* name, bool identity) {
   const std::string gt_path =
       std::string(kDir) + "/vision_proc_gt_" + name + ".txt";
   if (!FileExists(png_path.c_str()) || !FileExists(gt_path.c_str())) {
-    std::printf("  [%s] skipped: reference files absent\n", name);
-    return true;
+    Q4T_SKIP(std::string(name) + ": reference files absent");
   }
   std::vector<uint8_t> png = ReadFile(png_path.c_str());
   std::vector<uint8_t> gt = ReadFile(gt_path.c_str());

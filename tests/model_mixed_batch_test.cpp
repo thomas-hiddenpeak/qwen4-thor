@@ -93,12 +93,10 @@ Q4T_TEST(model_mixed_batch) {
   // register-state kernel is ON by default). See q4t::test::GdnRegOff.
   q4t::test::GdnRegOff gdn_reg_off;
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex) || !FileExists(kPleSidecar)) {
-    std::printf("  (skipped: model not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model not found)");
   }
 
   ModelConfig cfg;

@@ -121,13 +121,11 @@ double MaxAbsDiff(const std::vector<uint16_t>& a,
 
 Q4T_TEST(vision_e2e) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex) || !FileExists(kPleSidecar) ||
       !FileExists(kTestImage)) {
-    std::printf("  (skipped: model, PLE sidecar, or test image not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model, PLE sidecar, or test image not found)");
   }
 
   // --- Load the main model (2 layers, including the PLE layer).

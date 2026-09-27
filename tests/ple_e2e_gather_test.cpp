@@ -78,8 +78,7 @@ std::string MakePatternFile(size_t nbytes) {
 
 Q4T_TEST(ple_e2e_gather_matches_cpu_reference) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
 
   const size_t kRowBytes = 160;
@@ -175,8 +174,7 @@ Q4T_TEST(ple_e2e_gather_matches_cpu_reference) {
 
 Q4T_TEST(ple_e2e_capacity_guard) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   const size_t kRowBytes = 160;
   NgramHashParams params;

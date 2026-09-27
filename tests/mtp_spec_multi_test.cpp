@@ -136,12 +136,10 @@ Q4T_TEST(mtp_spec_multi_step) {
   // register-state kernel is ON by default). See q4t::test::GdnRegOff.
   q4t::test::GdnRegOff gdn_reg_off;
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex) || !FileExists(kMtpDir) || !FileExists(kPleSidecar)) {
-    std::printf("  (skipped: model or MTP dir not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model or MTP dir not found)");
   }
 
   const int B = 2;

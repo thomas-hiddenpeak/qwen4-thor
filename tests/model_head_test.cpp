@@ -97,12 +97,10 @@ uint16_t* AllocBf16(const std::vector<float>& h) {
 
 Q4T_TEST(model_head_load) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex)) {
-    std::printf("  (skipped: model index not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model index not found)");
   }
   WeightIndex* index = nullptr;
   Status s = WeightIndex::Open(kIndex, &index);
@@ -130,8 +128,7 @@ Q4T_TEST(model_head_load) {
 
 Q4T_TEST(model_head_forward) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
 
   // Synthetic small dims.

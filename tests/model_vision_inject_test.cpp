@@ -80,12 +80,10 @@ double MaxAbsDiff(const std::vector<uint16_t>& a, const std::vector<uint16_t>& b
 
 Q4T_TEST(model_vision_inject) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex) || !FileExists(kPleSidecar)) {
-    std::printf("  (skipped: model or PLE sidecar not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model or PLE sidecar not found)");
   }
 
   const int num_layers = [] {

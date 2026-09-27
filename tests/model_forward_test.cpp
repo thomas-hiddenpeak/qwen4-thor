@@ -75,12 +75,10 @@ float Bf16ToFloat(uint16_t b) {
 
 Q4T_TEST(model_forward_e2e) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex) || !FileExists(kPleSidecar)) {
-    std::printf("  (skipped: model or PLE sidecar not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model or PLE sidecar not found)");
   }
 
   const int num_layers = [] {
@@ -178,12 +176,10 @@ Q4T_TEST(model_forward_e2e) {
 // prefill/decode equivalence is exact up to GEMM-shape rounding.
 Q4T_TEST(model_decode_step) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex) || !FileExists(kPleSidecar)) {
-    std::printf("  (skipped: model or PLE sidecar not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model or PLE sidecar not found)");
   }
 
   const int num_layers = [] {
@@ -278,12 +274,10 @@ Q4T_TEST(model_decode_step) {
 // net proving the refactored stage-boundary API is behavior-preserving.
 Q4T_TEST(model_sequence_api) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex) || !FileExists(kPleSidecar)) {
-    std::printf("  (skipped: model or PLE sidecar not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model or PLE sidecar not found)");
   }
 
   const int num_layers = [] {
@@ -429,12 +423,10 @@ Q4T_TEST(model_sequence_api) {
 //     (prompt + tokens fed to decode steps, for the reference's fixed mode)
 Q4T_TEST(model_forward_dump_decode) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex) || !FileExists(kPleSidecar)) {
-    std::printf("  (skipped: model or PLE sidecar not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model or PLE sidecar not found)");
   }
 
   const char* out_prefix = std::getenv("Q4T_DECODE_OUT");
@@ -773,12 +765,10 @@ Q4T_TEST(model_forward_dump_decode) {
 // token-for-token. Writes to Q4T_DUMP_LOGITS (default /tmp/cpp.logits.bin).
 Q4T_TEST(model_forward_dump_logits) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex) || !FileExists(kPleSidecar)) {
-    std::printf("  (skipped: model or PLE sidecar not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model or PLE sidecar not found)");
   }
 
   const char* out_path = std::getenv("Q4T_DUMP_LOGITS");
@@ -851,12 +841,10 @@ Q4T_TEST(model_forward_dump_logits) {
 //       (proves trunk_out IS exactly the HeadForward input).
 Q4T_TEST(model_trunk_out) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex) || !FileExists(kPleSidecar)) {
-    std::printf("  (skipped: model or PLE sidecar not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model or PLE sidecar not found)");
   }
 
   const int num_layers = [] {
@@ -978,12 +966,10 @@ Q4T_TEST(model_trunk_out) {
 // correctness gate for multi-request scheduling.
 Q4T_TEST(model_multi_seq_isolation) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex) || !FileExists(kPleSidecar)) {
-    std::printf("  (skipped: model or PLE sidecar not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model or PLE sidecar not found)");
   }
 
   const int num_layers = [] {
@@ -1138,12 +1124,10 @@ Q4T_TEST(model_multi_seq_isolation) {
 // state-slicing bug would produce a large, systematic divergence, not noise).
 Q4T_TEST(model_decode_batch_multi) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex) || !FileExists(kPleSidecar)) {
-    std::printf("  (skipped: model or PLE sidecar not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model or PLE sidecar not found)");
   }
 
   const int num_layers = [] {

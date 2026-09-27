@@ -36,8 +36,7 @@ bool FileExists(const char* path) {
 
 Q4T_TEST(weight_index_parse_real) {
   if (!FileExists(kIndex)) {
-    std::printf("  (skipped: real index.json not present)\n");
-    return true;
+    Q4T_SKIP("(skipped: real index.json not present)");
   }
   WeightIndex* idx = nullptr;
   Status s = WeightIndex::Open(kIndex, &idx);
@@ -66,8 +65,7 @@ Q4T_TEST(weight_index_parse_real) {
 
 Q4T_TEST(weight_loader_read_matches_direct_shard) {
   if (!FileExists(kIndex)) {
-    std::printf("  (skipped: real index.json not present)\n");
-    return true;
+    Q4T_SKIP("(skipped: real index.json not present)");
   }
   WeightIndex* idx = nullptr;
   Q4T_CHECK(WeightIndex::Open(kIndex, &idx).ok());
@@ -119,8 +117,7 @@ Q4T_TEST(weight_loader_read_matches_direct_shard) {
 
 Q4T_TEST(weight_loader_lru_eviction) {
   if (!FileExists(kIndex)) {
-    std::printf("  (skipped: real index.json not present)\n");
-    return true;
+    Q4T_SKIP("(skipped: real index.json not present)");
   }
   WeightIndex* idx = nullptr;
   Q4T_CHECK(WeightIndex::Open(kIndex, &idx).ok());

@@ -26,8 +26,7 @@ bool FileExists(const char* path) {
 
 Q4T_TEST(model_config_parse_real) {
   if (!FileExists(kRealConfig)) {
-    std::printf("  (skipped: real config.json not present)\n");
-    return true;
+    Q4T_SKIP("(skipped: real config.json not present)");
   }
   ModelConfig cfg;
   auto s = ParseModelConfig(kRealConfig, &cfg);

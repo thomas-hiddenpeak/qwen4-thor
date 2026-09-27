@@ -173,8 +173,7 @@ bool CheckCase(const q4t::io::Json& c, const std::string& case_name) {
 Q4T_TEST(video_processor) {
   const std::string json_path = std::string(kDir) + "/video_processor_ref.json";
   if (!FileExists(json_path.c_str())) {
-    std::printf("  [video_processor] skipped: reference absent\n");
-    return true;
+    Q4T_SKIP("[video_processor] skipped: reference absent");
   }
   std::vector<uint8_t> raw = ReadFile(json_path.c_str());
   std::string content(raw.begin(), raw.end());

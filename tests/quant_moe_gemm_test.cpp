@@ -2,7 +2,7 @@
 // the real checkpoint. Builds a routing that exercises M_e = 1/2/3 (including
 // a shared expert), runs MoERoutedForward, and compares against a full CPU
 // reference that mirrors the FP4 quantization, SwiGLU, and router-weighted
-// sum. Skipped (reported as pass) when CUDA or the real model is absent.
+// sum. Reported as SKIP when CUDA or the real model is absent.
 #include "q4t/io/weight_loader.h"
 #include "q4t/quant/fp4_gemm.h"
 #include "q4t/quant/format.h"
@@ -143,16 +143,14 @@ std::vector<float> DequantWeightRow(const uint8_t* packed, const uint8_t* sf,
 
 Q4T_TEST(moe_gemm_routed_forward_matches_reference) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   WeightIndex* idx = nullptr;
   WeightLoader* loader = nullptr;
   if (!FileExists(kIndex) ||
       !WeightIndex::Open(kIndex, &idx).ok() ||
       !WeightLoader::Create(kModelDir, *idx, 16, &loader).ok()) {
-    std::printf("  (skipped: real model not present)\n");
-    return true;
+    Q4T_SKIP("(skipped: real model not present)");
   }
   MoEWeightLayout w;
   Status s = LoadMoEWeights(*loader, kLayer, kE, kHs, kMoeIs, &w, 0);

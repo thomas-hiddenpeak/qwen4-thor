@@ -3,7 +3,7 @@
 // kernel, and the native cuBLASLt W4A4 GEMM.
 //
 // The format and swizzle tests are pure host code. The kernel and GEMM tests
-// require a CUDA device and are skipped (reported as pass) when none is
+// require a CUDA device and are reported as SKIP when none is
 // available.
 #include "q4t/quant/act_quant.h"
 #include "q4t/quant/dequant.h"
@@ -249,8 +249,7 @@ Q4T_TEST(quant_swizzle_roundtrip) {
 
 Q4T_TEST(quant_dequant_kernel) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   const int N = 2, K = 32;  // 2 groups per row
   const int groups = K / 16;
@@ -303,8 +302,7 @@ Q4T_TEST(quant_dequant_kernel) {
 
 Q4T_TEST(quant_act_quant_kernel) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   const int M = 5, K = 64;  // K multiple of 32
   const int groups = K / 16;
@@ -368,8 +366,7 @@ Q4T_TEST(quant_act_quant_kernel) {
 
 Q4T_TEST(quant_fp4_gemm_w4a4) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   const float inv_w_global = 0.29f;  // = weight_scale_2
   const float inv_a_global = 0.41f;  // = input_scale

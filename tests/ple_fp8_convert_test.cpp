@@ -3,7 +3,7 @@
 // The kernel is a pure byte->BF16 function, so we validate it against a CPU
 // reference e4m3fn decoder over a set of crafted bytes (zero, subnormals,
 // normals, negatives, max finite, NaN). Requires a CUDA device; skipped
-// (reported as pass) when none is available.
+// when none is available (reported as SKIP).
 #include "q4t/ple/fp8_convert.h"
 #include "q4t/test.h"
 
@@ -53,8 +53,7 @@ bool CudaAvailable() {
 
 Q4T_TEST(ple_fp8_to_bf16_matches_reference) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
 
   // Crafted bytes covering the e4m3fn range.
@@ -118,8 +117,7 @@ Q4T_TEST(ple_fp8_to_bf16_matches_reference) {
 
 Q4T_TEST(ple_fp8_to_bf16_empty) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   // count == 0 must be a no-op success.
   cudaStream_t stream = nullptr;

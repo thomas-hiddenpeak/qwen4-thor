@@ -49,12 +49,10 @@ bool CudaAvailable() {
 
 Q4T_TEST(ple_working_memory_under_100mib) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kSidecar)) {
-    std::printf("  (skipped: PLE sidecar not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: PLE sidecar not found)");
   }
 
   // Production config (matches ModelConfig defaults in model.h).

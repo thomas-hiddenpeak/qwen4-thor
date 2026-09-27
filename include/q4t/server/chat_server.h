@@ -54,11 +54,13 @@ struct ServerOptions {
   int max_seq = 8;
   // Plain greedy decode is the default; MTP requires explicit opt-in.
   bool no_mtp = true;
-  // OOM-safe memory budget (vllm-style gpu_memory_utilization). The server
+  // Experimental media path; default service contract is text-only.
+  bool allow_media = false;
+  // Startup memory budget (vllm-style gpu_memory_utilization). The server
   // reserves mem_fraction x MemTotal for the whole engine (weights + state
   // pools + per-request headroom) and caps max_len/max_seq to what fits, so
-  // an over-aggressive config can never OOM the unified-memory box. 0.90 is
-  // the safe default (10% left for the OS / page cache / other processes).
+  // many oversized configurations can be capped before allocation. This is
+  // not a bound on media decoding or other processes. The default is 0.90.
   // Set no_budget=true to disable the cap (legacy behavior, user's own risk).
   double mem_fraction = 0.90;
   bool no_budget = false;
@@ -296,6 +298,7 @@ class ChatServer {
 
   std::string model_name_;
   std::string host_ = "127.0.0.1";
+  bool allow_media_ = false;
   int port_ = 8000;
   int max_tokens_default_ = 256;
   std::vector<int32_t> stop_token_ids_;  // generation_config, not PLE padding

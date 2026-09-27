@@ -190,6 +190,7 @@ target_include_directories(q4t_runtime PUBLIC include)
 # ---------------------------------------------------------------------------
 add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/http_request.cpp
+  src/server/chat_contract.cpp
                              src/server/chat_template.cpp)
 target_include_directories(q4t_server PUBLIC include)
 target_link_libraries(q4t_server PUBLIC q4t_model q4t_text q4t_io q4t_runtime
@@ -258,6 +259,8 @@ if(Q4T_BUILD_TESTS)
     tests/ple_working_memory_test.cpp
     tests/io_json_test.cpp
     tests/server_http_request_test.cpp
+    tests/server_chat_contract_test.cpp
+    src/server/chat_contract.cpp
     src/server/http_request.cpp
     tests/io_safetensors_test.cpp
     tests/io_model_config_test.cpp
@@ -296,4 +299,21 @@ if(Q4T_BUILD_TESTS)
   target_include_directories(q4t_tests PRIVATE include)
   target_link_libraries(q4t_tests PRIVATE ${Q4T_TEST_LIBS})
   add_test(NAME q4t_tests COMMAND q4t_tests)
+endif()
+
+# Host-only release-contract slice; the exact required list rejects absent
+# tokenizer registration when ICU is unavailable. No CUDA/model GPU tests run.
+if(Q4T_BUILD_TESTS)
+  add_executable(q4t_host_tests
+    tests/test_main.cpp tests/io_json_test.cpp
+    tests/server_http_request_test.cpp tests/server_chat_contract_test.cpp
+    src/server/http_request.cpp src/server/chat_contract.cpp)
+  target_include_directories(q4t_host_tests PRIVATE include)
+  target_link_libraries(q4t_host_tests PRIVATE q4t_io)
+  if(Q4T_HAS_ICU)
+    target_sources(q4t_host_tests PRIVATE tests/text_tokenizer_test.cpp)
+    target_link_libraries(q4t_host_tests PRIVATE q4t_text)
+  endif()
+  add_test(NAME q4t_host_contracts COMMAND q4t_host_tests --required-list
+    ${CMAKE_CURRENT_SOURCE_DIR}/tools/release/required_host_tests.txt)
 endif()

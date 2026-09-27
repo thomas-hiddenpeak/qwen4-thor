@@ -14,7 +14,8 @@ Linux `io_uring` 从本地 NVMe 异步流式读取,与 GPU 计算重叠,释放�
 - **文本推理**: 48 层完整 forward (36 linear_attention + 12 full_attention),
   NVFP4 W4A4 量化, Paged KV cache, greedy 生成
 - **多模态**: 27 层 ViT, 图像 + 视频输入 (OpenAI `image_url` / `video_frames`
-  base64 接入), 3D MRoPE
+  base64 接入), 3D MRoPE；候选默认拒绝媒体，须显式
+  `serve --allow-media`进入未验收实验路径（部署身份见STATUS）
 - **MTP 推测解码**: draft、主模型验证与多序列调度已实现；默认关闭，
   不属于当前文本基线的完整验收范围
 - **连续批处理**: token 级打包、多请求调度；已完成有界槽位和生命周期
@@ -80,7 +81,7 @@ ctest --test-dir build --output-on-failure
 ./build/q4t serve \
   [--model-dir DIR] [--host 127.0.0.1] [--port 8080] \
   [--max-len N] [--max-seq N] [--max-prefill N] [--max-tokens N] \
-  [--mtp] [--mem-fraction 0.90]
+  [--mtp] [--allow-media] [--mem-fraction 0.90]
 
 ```
 

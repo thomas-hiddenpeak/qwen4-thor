@@ -103,12 +103,10 @@ std::vector<float> GroupedRmsNorm(const std::vector<float>& x,
 
 Q4T_TEST(ple_layer_forward) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex)) {
-    std::printf("  (skipped: model index not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model index not found)");
   }
 
   WeightIndex* index = nullptr;

@@ -23,6 +23,8 @@ def main():
     ap.add_argument('--quality-run', type=Path, required=True)
     ap.add_argument('--output', type=Path, required=True)
     ap.add_argument('--port', type=int, default=18093)
+    ap.add_argument('--contract', action='store_true',
+                    help='Also check the text/greedy parameter contract')
     args = ap.parse_args()
     out = args.output.resolve()
     assert any(out.is_relative_to(ROOT / d) for d in ['build', '.q4t-work'])
@@ -35,6 +37,12 @@ def main():
     prompt = next(r['prompt'] for r in requests if hashlib.sha256(
         r['prompt'].encode()).hexdigest() == expected['prompt_sha256'])
     payload = {'prompt': prompt, 'max_tokens': 32, 'stream': False}
+    if args.contract:
+        payload.update(temperature=0, top_p=1, n=1, seed=20260920,
+                       presence_penalty=0, frequency_penalty=0,
+                       repetition_penalty=1, stop=[], logprobs=False,
+                       top_logprobs=0, logit_bias={},
+                       response_format={'type': 'text'}, user='contract-test')
     command = json.loads((prior / 'server-command.json').read_text())['argv']
     command[0] = str(args.binary.resolve())
     for k, v in [('--port', str(args.port)), ('--max-len', '8192')]:
@@ -110,11 +118,34 @@ def main():
             for n in [0, -1, 1.5, '1', True, None, 2147483648, 1e20]:
                 invalid['max-tokens-' + repr(n)] = json.dumps(
                     {'prompt': 'hello', 'max_tokens': n}).encode()
+            if args.contract:
+                fields = {'temperature': 0.8, 'top_p': 0.9, 'n': 2,
+                          'presence_penalty': 1, 'frequency_penalty': 1,
+                          'repetition_penalty': 1.1, 'stop': ['END'],
+                          'logprobs': True, 'top_logprobs': 1,
+                          'logit_bias': {'1': 1}, 'top_k': 1,
+                          'response_format': {'type': 'json_object'},
+                          'tool_choice': 'required', 'parallel_tool_calls': False,
+                          'max_completion_tokens': 1, 'model': 'unknown',
+                          'temprature': 0, 'seed': 9007199254740992,
+                          'stream_options': {'include_usage': 1},
+                          'chat_template_kwargs': {'enable_thinking': False}}
+                for key, value in fields.items():
+                    invalid['contract-' + key] = json.dumps(
+                        {'prompt': 'hello', key: value}).encode()
+                invalid['contract-both-inputs'] = json.dumps(
+                    {'prompt': 'hello', 'messages': [{'role': 'user', 'content': 'hello'}]}).encode()
+                for kind, part in [('image', {'type': 'image_url', 'image_url': {'url': 'invalid'}}),
+                                   ('video', {'video_frames': ['invalid']})]:
+                    invalid['media-' + kind] = json.dumps(
+                        {'messages': [{'role': 'user', 'content': [part]}]}).encode()
             for label, data in invalid.items():
                 response = request_http('/v1/chat/completions', data)
                 (out / (label + '-request.bin')).write_bytes(data)
                 save(out / (label + '-response.json'), response)
                 assert response['status'] == 400, label
+                if label.startswith('media-'):
+                    assert 'media disabled' in response['body']
                 records.append({'case': label, 'health': healthy()})
             # Cancellation shares the same parser budgets and strict grammar.
             for label in ['deep', 'nodes', 'duplicate']:

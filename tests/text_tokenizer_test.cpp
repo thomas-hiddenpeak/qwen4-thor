@@ -75,8 +75,7 @@ const GoldenCase kGoldenCases[] = {
 
 Q4T_TEST(tokenizer_load_real) {
   if (!FileExists(kRealTokenizer)) {
-    std::printf("  (skipped: real tokenizer.json not present)\n");
-    return true;
+    Q4T_SKIP("(skipped: real tokenizer.json not present)");
   }
   std::unique_ptr<Tokenizer> tok;
   auto s = Tokenizer::Load(kRealTokenizer, TokenizerLimits{}, &tok);
@@ -91,8 +90,7 @@ Q4T_TEST(tokenizer_load_real) {
 
 Q4T_TEST(tokenizer_golden_encode) {
   if (!FileExists(kRealTokenizer)) {
-    std::printf("  (skipped: real tokenizer.json not present)\n");
-    return true;
+    Q4T_SKIP("(skipped: real tokenizer.json not present)");
   }
   std::unique_ptr<Tokenizer> tok;
   auto s = Tokenizer::Load(kRealTokenizer, TokenizerLimits{}, &tok);
@@ -116,8 +114,7 @@ Q4T_TEST(tokenizer_golden_encode) {
 
 Q4T_TEST(tokenizer_roundtrip_real) {
   if (!FileExists(kRealTokenizer)) {
-    std::printf("  (skipped: real tokenizer.json not present)\n");
-    return true;
+    Q4T_SKIP("(skipped: real tokenizer.json not present)");
   }
   std::unique_ptr<Tokenizer> tok;
   auto s = Tokenizer::Load(kRealTokenizer, TokenizerLimits{}, &tok);
@@ -137,8 +134,7 @@ Q4T_TEST(tokenizer_roundtrip_real) {
 
 Q4T_TEST(tokenizer_special_tokens) {
   if (!FileExists(kRealTokenizer)) {
-    std::printf("  (skipped: real tokenizer.json not present)\n");
-    return true;
+    Q4T_SKIP("(skipped: real tokenizer.json not present)");
   }
   std::unique_ptr<Tokenizer> tok;
   auto s = Tokenizer::Load(kRealTokenizer, TokenizerLimits{}, &tok);

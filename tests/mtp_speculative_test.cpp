@@ -92,12 +92,10 @@ int ArgmaxBf16(const uint16_t* lg, int vocab) {
 
 Q4T_TEST(mtp_speculative_step) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex) || !FileExists(kMtpDir) || !FileExists(kPleSidecar)) {
-    std::printf("  (skipped: model or MTP dir not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model or MTP dir not found)");
   }
 
   // 1. Load a small main model (2 layers) for the shared embed/lm_head.

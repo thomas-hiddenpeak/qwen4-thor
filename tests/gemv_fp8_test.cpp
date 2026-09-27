@@ -86,8 +86,7 @@ int ArgmaxBf16(const std::vector<uint16_t>& y) {
 //    and the shadow is actually allocated (not the gated no-op).
 Q4T_TEST(fp8_shadow_quantize_roundtrip) {
   if (!CudaAvailable()) {
-    std::printf("  (no CUDA, skipped)\n");
-    return true;
+    Q4T_SKIP("(no CUDA, skipped)");
   }
   const int N = 40, K = 128;
   std::mt19937 rng(7);
@@ -132,8 +131,7 @@ Q4T_TEST(fp8_shadow_quantize_roundtrip) {
 //    GEMV (so the FP8 path is genuinely taken, not silently BF16).
 Q4T_TEST(fp8_gev_matches_reference_in_noise_band) {
   if (!CudaAvailable()) {
-    std::printf("  (no CUDA, skipped)\n");
-    return true;
+    Q4T_SKIP("(no CUDA, skipped)");
   }
   const int N = 512, K = 256;
   std::mt19937 rng(11);
@@ -194,8 +192,7 @@ Q4T_TEST(fp8_gev_matches_reference_in_noise_band) {
 //    Fp8SmallMGemm (batched decode); above the cap -> BF16 (cuBLASLt).
 Q4T_TEST(proj_gemm_dispatches_fp8_by_m) {
   if (!CudaAvailable()) {
-    std::printf("  (no CUDA, skipped)\n");
-    return true;
+    Q4T_SKIP("(no CUDA, skipped)");
   }
   const int N = 320, K = 128;
   std::mt19937 rng(23);
@@ -281,8 +278,7 @@ Q4T_TEST(proj_gemm_dispatches_fp8_by_m) {
 //    frozen hidden. A clearly-separated argmax is preserved under FP8.
 Q4T_TEST(fp8_head_argmax_preserved_for_confident_token) {
   if (!CudaAvailable()) {
-    std::printf("  (no CUDA, skipped)\n");
-    return true;
+    Q4T_SKIP("(no CUDA, skipped)");
   }
   const int N = 2048, K = 256;  // vocab-ish x hidden
   std::mt19937 rng(31);
@@ -336,8 +332,7 @@ Q4T_TEST(fp8_head_argmax_preserved_for_confident_token) {
 //    differs, so a tight tolerance). Confirms the batched FP8 path is correct.
 Q4T_TEST(fp8_small_m_matches_per_row_gev) {
   if (!CudaAvailable()) {
-    std::printf("  (no CUDA, skipped)\n");
-    return true;
+    Q4T_SKIP("(no CUDA, skipped)");
   }
   const int N = 512, K = 256, MAXM = 4;
   std::mt19937 rng(41);

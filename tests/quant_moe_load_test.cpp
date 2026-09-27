@@ -4,7 +4,7 @@
 //   2. Swizzled scale factors un-swizzle back to the source weight_scale bytes.
 //   3. gate_proj and up_proj share identical weight_scale_2 / input_scale.
 //   4. A full W4A4 GEMM on a loaded expert matches a CPU dequant reference.
-// Skipped (reported as pass) when the real model directory is absent.
+// Reported as SKIP when the real model directory is absent.
 #include "q4t/io/weight_loader.h"
 #include "q4t/quant/fp4_gemm.h"
 #include "q4t/quant/format.h"
@@ -98,13 +98,11 @@ std::string Name(int e, const char* proj, const char* suf) {
 
 Q4T_TEST(moe_load_packed_matches_shard) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   Ctx c;
   if (!OpenCtx(&c)) {
-    std::printf("  (skipped: real model not present)\n");
-    return true;
+    Q4T_SKIP("(skipped: real model not present)");
   }
   MoEWeightLayout w;
   Status s = LoadMoEWeights(*c.loader, kLayer, kE, kHs, kMoeIs, &w, 0);
@@ -155,13 +153,11 @@ Q4T_TEST(moe_load_packed_matches_shard) {
 
 Q4T_TEST(moe_load_sf_unswizzle_matches_shard) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   Ctx c;
   if (!OpenCtx(&c)) {
-    std::printf("  (skipped: real model not present)\n");
-    return true;
+    Q4T_SKIP("(skipped: real model not present)");
   }
   MoEWeightLayout w;
   Status s = LoadMoEWeights(*c.loader, kLayer, kE, kHs, kMoeIs, &w, 0);
@@ -235,13 +231,11 @@ Q4T_TEST(moe_load_sf_unswizzle_matches_shard) {
 
 Q4T_TEST(moe_load_gate_up_share_scale) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   Ctx c;
   if (!OpenCtx(&c)) {
-    std::printf("  (skipped: real model not present)\n");
-    return true;
+    Q4T_SKIP("(skipped: real model not present)");
   }
   MoEWeightLayout w;
   Status s = LoadMoEWeights(*c.loader, kLayer, kE, kHs, kMoeIs, &w, 0);
@@ -283,13 +277,11 @@ Q4T_TEST(moe_load_gate_up_share_scale) {
 
 Q4T_TEST(moe_load_gemm_matches_reference) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   Ctx c;
   if (!OpenCtx(&c)) {
-    std::printf("  (skipped: real model not present)\n");
-    return true;
+    Q4T_SKIP("(skipped: real model not present)");
   }
   MoEWeightLayout w;
   Status s = LoadMoEWeights(*c.loader, kLayer, kE, kHs, kMoeIs, &w, 0);

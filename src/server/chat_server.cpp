@@ -31,6 +31,7 @@
 #include "q4t/io/weight_loader.h"
 #include "q4t/runtime/memory_budget.h"
 #include "q4t/server/chat_template.h"
+#include "q4t/server/chat_contract.h"
 #include "q4t/server/http_request.h"
 #include "q4t/server/request_json.h"
 #include "q4t/vision/processor.h"
@@ -378,6 +379,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
     return Status::Fail("port must be in [1,65535]");
   }
   host_ = opts.host;
+  allow_media_ = opts.allow_media;
   PhaseTimer total("startup_total");
   {
     PhaseTimer pt("tokenizer");
@@ -1443,13 +1445,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     return;
   }
 
-  if (!req.IsObject()) {
-    SendError(fd, 400, "request must be a JSON object");
-    return;
-  }
-  if (const io::Json* value = req.Find("stream");
-      value && !value->IsBool()) {
-    SendError(fd, 400, "stream must be boolean");
+  s = ValidateChatContract(req, model_name_, allow_media_);
+  if (!s.ok()) {
+    SendError(fd, 400, s.message());
     return;
   }
 
@@ -1509,17 +1507,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     err_guard.ok = true;
   };
 
-  // Validate before any floating-to-integer conversion or narrowing.
-  int max_tokens = max_tokens_default_;
-  if (const io::Json* value = req.Find("max_tokens")) {
-    const double n = value->AsDouble(-1);
-    if (!value->IsNumber() || !std::isfinite(n) || n < 1 ||
-        n > 2147483647.0 || std::trunc(n) != n) {
-      SendError(fd, 400, "max_tokens must be an integer in [1,2147483647]");
-      return;
-    }
-    max_tokens = static_cast<int>(n);
-  }
+  // ValidateChatContract checked type and range before registration.
+  int max_tokens = static_cast<int>(
+      req.GetInt("max_tokens", max_tokens_default_));
   // Upper bound: decode stops at max_len_ anyway (KV cache), so a huge
   // max_tokens only pins a seq slot and grows host buffers; cap it so one
   // request cannot starve the pool.

@@ -98,8 +98,7 @@ Q4T_TEST(safetensors_open_real_scale_file) {
       "model-plefp8-scale.safetensors";
   int fd = open(path.c_str(), O_RDONLY);
   if (fd < 0) {
-    std::printf("  (skipped: real scale file not present)\n");
-    return true;
+    Q4T_SKIP("(skipped: real scale file not present)");
   }
   close(fd);
 

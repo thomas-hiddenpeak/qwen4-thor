@@ -113,12 +113,10 @@ void ResetLinearState(DecoderLayer& layer, cudaStream_t stream) {
 
 Q4T_TEST(decoder_layer_forward) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex)) {
-    std::printf("  (skipped: model index not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model index not found)");
   }
 
   WeightIndex* index = nullptr;
@@ -302,12 +300,10 @@ Q4T_TEST(decoder_layer_forward) {
 // model is absent.
 Q4T_TEST(decoder_layer_ple_injection) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   if (!FileExists(kIndex)) {
-    std::printf("  (skipped: model index not found)\n");
-    return true;
+    Q4T_SKIP("(skipped: model index not found)");
   }
 
   WeightIndex* index = nullptr;

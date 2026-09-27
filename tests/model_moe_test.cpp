@@ -3,7 +3,7 @@
 // runs MoEForward on random [T, hs] input, and compares against a full CPU
 // reference that mirrors the router top-k (softmax over the selected k), the
 // NVFP4 routed experts (dequant + SwiGLU), the BF16 shared expert, and the
-// gated combine. Skipped (reported as pass) when CUDA or the model is absent.
+// gated combine. Reported as SKIP when CUDA or the model is absent.
 #include "q4t/io/weight_loader.h"
 #include "q4t/model/moe.h"
 #include "q4t/quant/format.h"
@@ -164,15 +164,13 @@ struct ExpertDequant {
 
 Q4T_TEST(moe_forward_end_to_end) {
   if (!CudaAvailable()) {
-    std::printf("  (skipped: no CUDA device)\n");
-    return true;
+    Q4T_SKIP("(skipped: no CUDA device)");
   }
   WeightIndex* idx = nullptr;
   WeightLoader* loader = nullptr;
   if (!FileExists(kIndex) || !WeightIndex::Open(kIndex, &idx).ok() ||
       !WeightLoader::Create(kModelDir, *idx, 16, &loader).ok()) {
-    std::printf("  (skipped: real model not present)\n");
-    return true;
+    Q4T_SKIP("(skipped: real model not present)");
   }
 
   // Load routed NVFP4 experts + BF16 router/shared weights.
