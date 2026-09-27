@@ -138,6 +138,52 @@ int main(int argc, char** argv) {
               prefill_state, prefill_pollution);
   std::printf("prefill logits_bf16=%zu guard_checks=4 interleave/ABA=passed\n",
               prefill_logits);
+  // Compare identical output-head shapes; all-row and last-row projection
+  // are distinct existing numerical paths, not a completion-mode difference.
+  Check(ModelBeginSequence(m, &seq, nullptr, 1));
+  Check(ModelPrefill(m, &seq, prompt.data(), 13, logits, nullptr, nullptr,
+                     nullptr, 1, LogitsRows::kLastRow));
+  const auto single_prefill = State(m, 1);
+  const auto single_prefill_logits = Logits(m, logits);
+  std::printf("all-row vs last-row reference: state=%zu logits=%zu\n",
+              Differences(single_prefill, expected_prefill),
+              Differences(single_prefill_logits, expected_prefill_logits));
+  // The deferred path must not publish launch success as committed state.
+  Check(ModelDecodeStepSeq(m, &seq, 97, logits, nullptr));
+  const auto single_decode = State(m, 1);
+  const auto single_logits = Logits(m, logits);
+  Check(ModelBeginSequence(m, &seq, nullptr, 1));
+  Check(ModelPrefill(m, &seq, prompt.data(), 13, logits, nullptr, nullptr,
+                     nullptr, 1, LogitsRows::kLastRow,
+                     SequenceCompletion::kDeferred));
+  Require(seq.position == 0 && seq.history.empty() && seq.HasPending(),
+          "prefill launch published committed state");
+  Require(!ModelPrefill(m, &seq, prompt.data(), 13, logits, nullptr).ok(),
+          "pending prefill reentered");
+  Cuda(cudaStreamSynchronize(nullptr));
+  Require(seq.position == 0 && seq.HasPending(), "implicit host commit");
+  Check(ModelCompleteSequence(&seq, nullptr));
+  Require(seq.position == 13 && !seq.HasPending(), "prefill commit missing");
+  Require(State(m, 1) == single_prefill &&
+              Logits(m, logits) == single_prefill_logits,
+          "deferred prefill changed state/logits");
+  Check(ModelDecodeStepSeq(m, &seq, 97, logits, nullptr, nullptr, 1,
+                           SequenceCompletion::kDeferred));
+  Require(seq.position == 13 && seq.SubmittedPosition() == 14,
+          "decode launch advanced committed cursor");
+  Check(ModelCompleteSequence(&seq, nullptr));
+  Require(State(m, 1) == single_decode && Logits(m, logits) == single_logits,
+          "deferred decode changed state/logits");
+  Check(ModelDecodeStepSeq(m, &seq, 211, logits, nullptr, nullptr, 1,
+                           SequenceCompletion::kDeferred));
+  Require(!ModelEndSequence(&seq).ok() && seq.HasPending(),
+          "pending work recycled before completion");
+  Require(!ModelCompleteSequence(&seq, nullptr).ok() && !seq.HasPending() &&
+              seq.stage == ModelSequence::Stage::kFailed && seq.position == 14,
+          "failed sequence committed or remained pending");
+  Check(ModelEndSequence(&seq));
+  Require(State(m, 0) == sentinel, "deferred path polluted other slot");
+  std::puts("deferred submit/complete/reentry/failure/recycle: passed");
   Cuda(cudaFree(logits));
   m.Free();
   return decode_state || decode_logits || pollution || prefill_logits ||

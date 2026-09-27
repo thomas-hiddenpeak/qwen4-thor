@@ -69,15 +69,19 @@ bool ValidRequestKey(const std::string& key) {
 
 // A successful launch is not a completed result. Drain the existing stream
 // boundary even if a copy failed, and never publish stale host output.
-Status FinishHostReadback(cudaError_t copy_error,
-                          std::atomic<bool>* gpu_healthy) {
-  const cudaError_t sync_error = cudaStreamSynchronize(nullptr);
-  const cudaError_t error =
-      copy_error != cudaSuccess ? copy_error : sync_error;
-  if (error == cudaSuccess) return Status();
-  gpu_healthy->store(false, std::memory_order_relaxed);
-  return Status::Fail(std::string("GPU result readback: ") +
-                      cudaGetErrorString(error));
+Status FinishHostReadback(
+    cudaError_t copy_error, std::atomic<bool>* gpu_healthy,
+    std::span<model::ModelSequence* const> sequences = {},
+    const Status& submitted = Status()) {
+  return model::CompleteSequenceWork(sequences, submitted, [&] {
+    const cudaError_t sync_error = cudaStreamSynchronize(nullptr);
+    const cudaError_t error =
+        copy_error != cudaSuccess ? copy_error : sync_error;
+    if (error == cudaSuccess) return Status();
+    gpu_healthy->store(false, std::memory_order_relaxed);
+    return Status::Fail(std::string("GPU result readback: ") +
+                        cudaGetErrorString(error));
+  });
 }
 
 // le boundaries (seconds) shared by MetricHistogram::Observe and /metrics.
@@ -851,7 +855,7 @@ void ChatServer::RunOnePrefillChunk() {
         s = model::ModelPrefillTextChunk(
             model_, req->seq, req->ids, req->len, count,
             last ? d_prefill_logits_ : nullptr, nullptr, nullptr,
-            model::LogitsRows::kLastRow);
+            model::LogitsRows::kLastRow, model::SequenceCompletion::kDeferred);
       }
       cudaError_t copy_error = cudaSuccess;
       if (s.ok() && last) {
@@ -863,8 +867,7 @@ void ChatServer::RunOnePrefillChunk() {
       }
       // A host cursor is not device completion. Drain even a failed forward
       // before handing shared scratch to another request.
-      const Status completion = FinishHostReadback(copy_error, &gpu_healthy_);
-      if (s.ok()) s = completion;
+      s = FinishHostReadback(copy_error, &gpu_healthy_, {&req->seq, 1}, s);
       if (s.ok() && RequestCancelled(req->control, req->fd)) {
         req->cancelled = true;
       }
@@ -879,7 +882,7 @@ void ChatServer::RunOnePrefillChunk() {
       chunk_prefill_pending_.push_back(req);
     } else {
       req->ok = s.ok() && !req->cancelled && last && !scheduler_stop_;
-      if (!req->ok) req->seq->stage = model::ModelSequence::Stage::kFailed;
+      if (!req->ok) req->seq->Fail();
       req->done = true;
       req->cv.notify_one();
     }
@@ -923,12 +926,14 @@ void ChatServer::SchedulerLoop() {
       if (scheduler_stop_) {
         // Drain: wake any request that is still waiting so it can exit.
         for (ActiveRequest* r : active_) {
+          if (r->pending && r->seq) r->seq->Fail();
           r->pending = false;
           r->done = true;
           r->next_token = -1;  // sentinel: scheduler is shutting down
           r->cv.notify_one();
         }
         for (PrefillReq* p : prefill_pending_) {
+          p->seq->Fail();
           p->pending = false;
           p->done = true;
           p->ok = false;  // sentinel: scheduler is shutting down
@@ -936,7 +941,7 @@ void ChatServer::SchedulerLoop() {
         }
         prefill_pending_.clear();
         for (ChunkPrefillReq* p : chunk_prefill_pending_) {
-          p->seq->stage = model::ModelSequence::Stage::kFailed;
+          p->seq->Fail();
           p->ok = false;
           p->done = true;
           p->cv.notify_one();
@@ -951,6 +956,7 @@ void ChatServer::SchedulerLoop() {
              static_cast<int>(pf.size()) < max_seq_) {
         PrefillReq* p = prefill_pending_.front();
         if (RequestCancelled(p->control, p->fd)) {
+          p->seq->Fail();
           prefill_pending_.erase(prefill_pending_.begin());
           p->pending = false;
           p->done = true;
@@ -978,17 +984,20 @@ void ChatServer::SchedulerLoop() {
     if (!pf.empty()) {
       const int Bp = static_cast<int>(pf.size());
       Status sp;
+      std::vector<model::ModelSequence*> sequences;
+      for (auto* request : pf) sequences.push_back(request->seq);
       {
         const std::lock_guard<std::mutex> lock(model_mu_);
         cudaError_t copy_error = cudaSuccess;
         if (Bp == 1) {
-          model::ModelSequence tmp;
-          sp = model::ModelBeginSequence(model_, &tmp, nullptr, pf[0]->seq_id);
+          sp = model::ModelBeginSequence(model_, pf[0]->seq, nullptr,
+                                          pf[0]->seq_id);
           if (sp.ok())
-            sp = model::ModelPrefill(model_, &tmp, pf[0]->ids, pf[0]->len,
+            sp = model::ModelPrefill(model_, pf[0]->seq, pf[0]->ids, pf[0]->len,
                                      d_prefill_logits_, nullptr, nullptr,
                                      nullptr, pf[0]->seq_id,
-                                     model::LogitsRows::kLastRow);
+                                     model::LogitsRows::kLastRow,
+                                     model::SequenceCompletion::kDeferred);
           if (sp.ok()) {
             copy_error = cudaMemcpyAsync(
                 pf[0]->h_logits,
@@ -1001,10 +1010,15 @@ void ChatServer::SchedulerLoop() {
           for (int i = 0; i < Bp; ++i) {
             pk_lens[i] = pf[i]->len;
             pk_seq[i] = pf[i]->seq_id;
+            if (sp.ok()) sp = pf[i]->seq->Begin(pf[i]->seq_id);
+            if (sp.ok())
+              sp = pf[i]->seq->Submit(
+                  {pf[i]->ids, static_cast<size_t>(pf[i]->len)},
+                  model::ModelSequence::Stage::kDecode, model_.cfg.max_len);
             pk_tokens.insert(pk_tokens.end(), pf[i]->ids,
                              pf[i]->ids + pf[i]->len);
           }
-          sp = model::ModelPrefillBatch(model_, pk_tokens.data(),
+          if (sp.ok()) sp = model::ModelPrefillBatch(model_, pk_tokens.data(),
                                         pk_lens.data(), pk_seq.data(), Bp,
                                         d_prefill_logits_, nullptr,
                                         model::PrefillBatchLogitsRows::
@@ -1026,8 +1040,7 @@ void ChatServer::SchedulerLoop() {
         // Even a failed forward may have queued GPU writes. Drain before
         // publishing completion so cancellation/cleanup cannot reuse buffers
         // still owned by that work. Device failure takes precedence over abort.
-        const Status completion = FinishHostReadback(copy_error, &gpu_healthy_);
-        if (sp.ok()) sp = completion;
+        sp = FinishHostReadback(copy_error, &gpu_healthy_, sequences, sp);
       }
       {
         const std::lock_guard<std::mutex> lock(sched_mu_);
@@ -1116,11 +1129,15 @@ void ChatServer::SchedulerLoop() {
                                        model_.ple_hash.ngram_size - 1));
     for (int i = 0; i < B; ++i) {
       tokens[i] = plain_reqs[i]->token;
-      positions[i] = plain_reqs[i]->position;
-      seq_ids[i] = plain_reqs[i]->seq_id;
-      std::copy(plain_reqs[i]->ple_hist.begin(), plain_reqs[i]->ple_hist.end(),
-                hist_flat.begin() + static_cast<size_t>(i) *
-                                        (model_.ple_hash.ngram_size - 1));
+      const auto& seq = *plain_reqs[i]->seq;
+      positions[i] = seq.position;
+      seq_ids[i] = seq.seq_id;
+      const int width = model_.ple_hash.ngram_size - 1;
+      for (int j = 0; j < width; ++j) {
+        const int src = seq.position - (width - j);
+        hist_flat[static_cast<size_t>(i) * width + j] =
+            src >= 0 ? seq.history[src] : model_.cfg.eos_token_id;
+      }
     }
 
     // Q4T_PROFILE_DECODE=1: bracket each decode step with the CUDA profiler
@@ -1130,31 +1147,36 @@ void ChatServer::SchedulerLoop() {
         std::getenv("Q4T_PROFILE_DECODE") != nullptr;
     if (kProfileDecode) cudaProfilerStart();
     Status s;
+    std::vector<model::ModelSequence*> sequences;
+    for (auto* request : plain_reqs) sequences.push_back(request->seq);
     {
       const std::lock_guard<std::mutex> lock(model_mu_);
-      s = model::ModelDecodeBatchMulti(model_, tokens.data(), positions.data(),
-                                       seq_ids.data(), hist_flat.data(), B,
-                                       d_sched_logits_, nullptr, nullptr);
+      for (int i = 0; i < B && s.ok(); ++i)
+        s = sequences[i]->Submit({&tokens[i], 1},
+                                  model::ModelSequence::Stage::kDecode,
+                                  model_.cfg.max_len);
+      if (s.ok())
+        s = model::ModelDecodeBatchMulti(model_, tokens.data(), positions.data(),
+                                         seq_ids.data(), hist_flat.data(), B,
+                                         d_sched_logits_, nullptr, nullptr);
       if (!s.ok() && cudaPeekAtLastError() != cudaSuccess)
         gpu_healthy_.store(false, std::memory_order_relaxed);
+      cudaError_t copy_error = cudaSuccess;
       if (s.ok()) {
-        // GPU argmax: [B, vocab] -> B token ids (moves the 248320-wide
-        // reduction off the CPU and shrinks the D2H from B*vocab to B ints).
         s = model::ArgmaxBf16Rows(d_sched_logits_, B, vocab, d_sched_tokens_,
                                   nullptr);
-        if (s.ok()) {
-          const cudaError_t copy_error = cudaMemcpyAsync(
+        if (s.ok())
+          copy_error = cudaMemcpyAsync(
               h_sched_tokens_.data(), d_sched_tokens_,
               static_cast<size_t>(B) * sizeof(int32_t),
               cudaMemcpyDeviceToHost, nullptr);
-          s = FinishHostReadback(copy_error, &gpu_healthy_);
-        }
       }
+      // Includes launch/argmax failures: scratch cannot escape before drain.
+      s = FinishHostReadback(copy_error, &gpu_healthy_, sequences, s);
     }
     if (kProfileDecode) cudaProfilerStop();
 
-    // Wake each request with its next token (or -1 on failure). The request
-    // thread owns the state-machine advance (position/history) after this.
+    // State is committed (or failed) before notifying the request thread.
     {
       const std::lock_guard<std::mutex> lock(sched_mu_);
       for (int i = 0; i < B; ++i) {
@@ -1591,9 +1613,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // GPU work uses the DEFAULT stream (the model's per-forward scratch is a
   // single shared allocation, and per-sequence state is pooled + isolated by
   // seq_id), so model forwards are serialized behind model_mu_ for both
-  // scratch safety and GPU-stream ordering. CPU post-processing (D2H, argmax,
-  // tokenize, SSE) and encoding run OUTSIDE model_mu_, overlapping another
-  // request's GPU forward.
+  // scratch safety and GPU-stream ordering. GPU readback completes under
+  // the lock; tokenization and SSE output use the completed host result.
   const int seq_id = AllocSeqId(control.get(), fd);
   if (seq_id == -2) {
     count_abort();
@@ -1704,7 +1725,6 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   }
 
   const int vocab = model_.cfg.vocab;
-  const int eos = static_cast<int>(model_.cfg.eos_token_id);
   const auto is_stop_token = [this](int32_t token) {
     return std::find(stop_token_ids_.begin(), stop_token_ids_.end(), token) !=
            stop_token_ids_.end();
@@ -1839,6 +1859,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     PrefillReq pr;
     pr.control = control.get();
     pr.fd = fd;
+    pr.seq = &seq;
     pr.seq_id = seq_id;
     pr.ids = ids.data();
     pr.len = T;
@@ -1851,15 +1872,6 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       pr.cv.wait(lock, [&] { return pr.done; });
     }
     s = pr.ok ? Status() : Status::Fail("batched prefill failed");
-    if (s.ok()) {
-      // ModelPrefillBatch reset + populated this sequence's per-layer state and
-      // the scheduler D2H'd the last-token row into h_logits; the ModelSequence
-      // is host-only, so set up its decode state machine here.
-      seq.stage = model::ModelSequence::Stage::kDecode;
-      seq.position = T;
-      seq.seq_id = seq_id;
-      seq.history.assign(ids.begin(), ids.end());
-    }
   } else {
     const std::lock_guard<std::mutex> lock(model_mu_);
     s = cancelled() ? Status::Fail("request cancelled")
@@ -1869,7 +1881,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         // Keep full trunk output for MTP, but only the final logits row.
         s = model::ModelPrefill(model_, &seq, ids.data(), T, d_prefill_logits_,
                                 nullptr, mtp_loaded_ ? d_trunk_full : nullptr,
-                                vptr, seq_id, model::LogitsRows::kLastRow);
+                                vptr, seq_id, model::LogitsRows::kLastRow,
+                                model::SequenceCompletion::kDeferred);
       } else {
         // Text chunks share the sequence's slot, position and PLE history.
         // Intermediate chunks only produce trunk/state; the final chunk
@@ -1888,38 +1901,25 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
               last ? d_prefill_logits_ : nullptr, nullptr,
               d_trunk_full
                   ? d_trunk_full + static_cast<size_t>(base) * trunk_hc_dim
-                  : nullptr, model::LogitsRows::kLastRow);
+                  : nullptr, model::LogitsRows::kLastRow,
+              last ? model::SequenceCompletion::kDeferred
+                   : model::SequenceCompletion::kWait);
+          if (last || !s.ok()) break;
         }
       }
     }
-    // First decode token: D2H the last prefill row into h_logits WHILE holding
-    // model_mu_, so the shared d_prefill_logits_ is safe from the next prefill.
-    if (s.ok()) {
-      const cudaError_t copy_error = cudaMemcpyAsync(
+    cudaError_t copy_error = cudaSuccess;
+    if (s.ok())
+      copy_error = cudaMemcpyAsync(
           h_logits.data(), d_prefill_logits_, static_cast<size_t>(vocab) * 2,
           cudaMemcpyDeviceToHost, nullptr);
-      s = FinishHostReadback(copy_error, &gpu_healthy_);
-    }
-  }
-  // DIAG: the prefill kernels are async; surface any launch/async error now
-  // (otherwise it shows up later at the next sync point as a misleading
-  // "memset"/"H2D" failure).
-  // Scheduler results have already passed checked readback. Re-synchronizing
-  // here could wait for an unrelated chunk submitted after this notification.
-  if (!batched_prefill && !scheduled_chunk_prefill) {
-    const cudaError_t se = cudaStreamSynchronize(nullptr);
-    const cudaError_t le = cudaGetLastError();
-    if (se != cudaSuccess || le != cudaSuccess) {
-      std::fprintf(stderr,
-                   "[q4t][diag] prefill seq_id=%d T=%d streamSync=%s "
-                   "lastErr=%s\n",
-                   seq_id, T, cudaGetErrorString(se), cudaGetErrorString(le));
-      gpu_healthy_.store(false, std::memory_order_relaxed);
-      if (s.ok()) {
-        s = Status::Fail(std::string("prefill completion: ") +
-                         cudaGetErrorString(se != cudaSuccess ? se : le));
-      }
-    }
+    model::ModelSequence* sequence = &seq;
+    // Drain and commit while holding model_mu_, also on failed submission.
+    const auto pending = seq.HasPending()
+        ? std::span<model::ModelSequence* const>(&sequence, 1)
+        : std::span<model::ModelSequence* const>();
+    s = FinishHostReadback(copy_error, &gpu_healthy_, pending, s);
+    if (!s.ok()) seq.Fail();
   }
   if ((prefill_cancelled || cancelled()) &&
       gpu_healthy_.load(std::memory_order_relaxed)) {
@@ -2063,12 +2063,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     mtp_sched = scheduler_active_ && d_sched_logits_ &&
                 static_cast<int>(active_.size()) < max_seq_;
     if (mtp_sched) {
-      mtp_ar.seq_id = seq_id;
       mtp_ar.is_mtp = true;
       mtp_ar.seq = &seq;
       mtp_ar.mtp_g = d_mtp_g;
-      mtp_ar.ple_hist.resize(
-          static_cast<size_t>(model_.ple_hash.ngram_size - 1), eos);
+
       const std::lock_guard<std::mutex> lock(sched_mu_);
       active_.push_back(&mtp_ar);
     }
@@ -2167,9 +2165,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         static_cast<int>(active_.size()) < max_seq_;
     ActiveRequest ar;
     if (use_sched) {
-      ar.seq_id = seq_id;
-      ar.ple_hist.resize(static_cast<size_t>(model_.ple_hash.ngram_size - 1),
-                         eos);
+      ar.seq = &seq;
       {
         const std::lock_guard<std::mutex> lock(sched_mu_);
         active_.push_back(&ar);
@@ -2207,15 +2203,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       if (use_sched) {
         // Register this step's token with the scheduler (position + PLE
         // context are read from the per-sequence state BEFORE advancing).
-        ar.position = seq.position;
         ar.token = tok_id;
-        const int hist_w = model_.ple_hash.ngram_size - 1;
-        const size_t hsz = seq.history.size();
-        for (int j = 0; j < hist_w; ++j) {
-          const long src = static_cast<long>(hsz) - (hist_w - j);
-          ar.ple_hist[j] = (src >= 0) ? seq.history[static_cast<size_t>(src)]
-                                      : static_cast<int32_t>(eos);
-        }
         {
           const std::lock_guard<std::mutex> lock(sched_mu_);
           ar.pending = true;
@@ -2233,22 +2221,19 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           break;
         }
         next_token = ar.next_token;
-        // Advance the per-sequence state machine (owned by this thread).
-        seq.position = ar.position + 1;
-        seq.history.push_back(tok_id);
       } else {
         // Fallback: single-sequence decode (B1 path).
         const std::lock_guard<std::mutex> lock(model_mu_);
         s = model::ModelDecodeStepSeq(model_, &seq, tok_id, d_prefill_logits_,
-                                      nullptr, nullptr, seq_id);
-        if (!s.ok()) {
-          generation_failed = true;
-          break;
-        }
-        const cudaError_t copy_error = cudaMemcpyAsync(
-            h_logits.data(), d_prefill_logits_,
-            static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost, nullptr);
-        s = FinishHostReadback(copy_error, &gpu_healthy_);
+                                      nullptr, nullptr, seq_id,
+                                      model::SequenceCompletion::kDeferred);
+        cudaError_t copy_error = cudaSuccess;
+        if (s.ok())
+          copy_error = cudaMemcpyAsync(
+              h_logits.data(), d_prefill_logits_,
+              static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost, nullptr);
+        model::ModelSequence* sequence = &seq;
+        s = FinishHostReadback(copy_error, &gpu_healthy_, {&sequence, 1}, s);
         if (!s.ok()) {
           generation_failed = true;
           break;
@@ -2267,6 +2252,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       sched_cv_.notify_one();
     }
   }
+  if (generation_failed) seq.Fail();
   model::ModelEndSequence(&seq);
 
   metrics_.prompt_tokens_total.fetch_add(static_cast<uint64_t>(T),

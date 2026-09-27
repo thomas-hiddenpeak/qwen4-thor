@@ -1438,133 +1438,107 @@ Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx,
 // PD-ready 阶段边界 API (see model.h).
 // ---------------------------------------------------------------------------
 
+Status ModelCompleteSequence(ModelSequence* seq, cudaStream_t stream,
+                             const Status& submitted) {
+  return CompleteSequenceWork({&seq, 1}, submitted, [stream] {
+    const cudaError_t error = cudaStreamSynchronize(stream);
+    if (error != cudaSuccess)
+      return Status::Fail(std::string("sequence completion: ") +
+                          cudaGetErrorString(error));
+    return Status();
+  });
+}
+
 Status ModelBeginSequence(const Model& m, ModelSequence* seq,
                           cudaStream_t stream, int seq_id) {
-  if (!seq) return Status::Fail("ModelBeginSequence: null seq");
-  if (seq_id < 0 || seq_id >= m.cfg.max_seq) {
-    return Status::Fail("ModelBeginSequence: invalid sequence slot");
-  }
+  if (!seq || seq_id < 0 || seq_id >= m.cfg.max_seq || seq->HasPending())
+    return Status::Fail("ModelBeginSequence: invalid slot or pending work");
   Status s = ResetAllLayers(m, stream, seq_id);
-  if (!s.ok()) return s;
-  seq->stage = ModelSequence::Stage::kPrefill;
-  seq->position = 0;
-  seq->seq_id = seq_id;
-  seq->history.clear();
-  return Status();
+  const cudaError_t error = cudaStreamSynchronize(stream);
+  if (error != cudaSuccess)
+    s = Status::Fail(std::string("sequence reset: ") +
+                     cudaGetErrorString(error));
+  if (!s.ok()) {
+    seq->Fail();
+    return s;
+  }
+  return seq->Begin(seq_id);
 }
 
 Status ModelPrefill(const Model& m, ModelSequence* seq,
                     const int32_t* input_ids, int T, uint16_t* logits,
                     cudaStream_t stream, uint16_t* trunk_out,
                     const VisionFeatures* vision, int seq_id,
-                    LogitsRows logits_rows) {
-  if (!seq) return Status::Fail("ModelPrefill: null seq");
+                    LogitsRows logits_rows, SequenceCompletion completion) {
+  if (!seq || !input_ids) return Status::Fail("ModelPrefill: null input");
   if (seq_id == -1) seq_id = seq->seq_id;
   if (seq->seq_id < 0 || seq->seq_id >= m.cfg.max_seq ||
-      seq_id != seq->seq_id) {
-    return Status::Fail("ModelPrefill: sequence slot mismatch");
-  }
-  if (seq->stage != ModelSequence::Stage::kPrefill) {
-    return Status::Fail("ModelPrefill: sequence not in prefill stage");
-  }
-  if (seq->position != 0 || !seq->history.empty()) {
-    return Status::Fail("ModelPrefill: partial prompt requires chunk API");
-  }
-  const ModelConfig& cfg = m.cfg;
-  if (T <= 0) return Status::Fail("ModelPrefill: T must be > 0");
-  if (T > cfg.max_prefill) {
-    return Status::Fail("ModelPrefill: T exceeds max_prefill");
-  }
-  // Per-layer state was reset by ModelBeginSequence; run the prefill.
-  Status s = RunPrefill(m, input_ids, T, logits, stream, trunk_out, vision,
-                        seq_id, logits_rows);
+      seq_id != seq->seq_id || seq->stage != ModelSequence::Stage::kPrefill ||
+      seq->position != 0 || T <= 0 || T > m.cfg.max_prefill)
+    return Status::Fail("ModelPrefill: invalid sequence or range");
+  Status s = seq->Submit({input_ids, static_cast<size_t>(T)},
+                         ModelSequence::Stage::kDecode, m.cfg.max_len);
   if (!s.ok()) return s;
-  // Handoff point: per-layer KV/SSM state is now ready for decode (or for
-  // PD separation — the runner can take ownership of the state here).
-  seq->stage = ModelSequence::Stage::kDecode;
-  seq->position = T;
-  seq->history.assign(input_ids, input_ids + T);
-  return Status();
+  s = RunPrefill(m, input_ids, T, logits, stream, trunk_out, vision,
+                 seq_id, logits_rows);
+  if (!s.ok()) seq->Fail();
+  return completion == SequenceCompletion::kWait
+             ? ModelCompleteSequence(seq, stream, s) : s;
 }
 
 Status ModelPrefillTextChunk(const Model& m, ModelSequence* seq,
                             const int32_t* prompt, int prompt_length,
                             int chunk_length, uint16_t* logits,
                             cudaStream_t stream, uint16_t* trunk_out,
-                            LogitsRows logits_rows) {
-  if (!seq || !prompt) {
+                            LogitsRows logits_rows,
+                            SequenceCompletion completion) {
+  if (!seq || !prompt)
     return Status::Fail("ModelPrefillTextChunk: null sequence or prompt");
-  }
-  if (seq->stage != ModelSequence::Stage::kPrefill) {
-    return Status::Fail("ModelPrefillTextChunk: sequence not in prefill stage");
-  }
-  const ModelConfig& cfg = m.cfg;
   const int base = seq->position;
-  if (prompt_length <= 0 || prompt_length > cfg.max_len || base < 0 ||
+  if (seq->stage != ModelSequence::Stage::kPrefill ||
+      prompt_length <= 0 || prompt_length > m.cfg.max_len || base < 0 ||
       base >= prompt_length || chunk_length <= 0 ||
-      chunk_length > cfg.max_prefill || chunk_length > prompt_length - base) {
-    return Status::Fail("ModelPrefillTextChunk: invalid prompt or chunk range");
-  }
-  if (seq->seq_id < 0 || seq->seq_id >= cfg.max_seq ||
-      seq->history.size() != static_cast<size_t>(base)) {
-    return Status::Fail("ModelPrefillTextChunk: invalid sequence slot/history");
-  }
-  // Reserve before GPU work so appending a successfully queued chunk cannot
-  // allocate after recurrent state has begun advancing.
-  seq->history.reserve(prompt_length);
-  Status s = base == 0
+      chunk_length > m.cfg.max_prefill || chunk_length > prompt_length - base ||
+      seq->seq_id < 0 || seq->seq_id >= m.cfg.max_seq)
+    return Status::Fail("ModelPrefillTextChunk: invalid sequence or range");
+  const auto next = base + chunk_length == prompt_length
+                        ? ModelSequence::Stage::kDecode
+                        : ModelSequence::Stage::kPrefill;
+  Status s = seq->Submit({prompt + base, static_cast<size_t>(chunk_length)},
+                         next, m.cfg.max_len);
+  if (!s.ok()) return s;
+  s = base == 0
       ? RunPrefill(m, prompt, chunk_length, logits, stream, trunk_out,
                    nullptr, seq->seq_id, logits_rows)
       : ModelDecodeBatch(m, prompt + base, chunk_length, base,
                          seq->history.data(), base, logits, stream,
                          trunk_out, false, seq->seq_id, logits_rows);
-  if (!s.ok()) {
-    seq->stage = ModelSequence::Stage::kFailed;
-    return s;
-  }
-  seq->history.insert(seq->history.end(), prompt + base,
-                      prompt + base + chunk_length);
-  seq->position = base + chunk_length;
-  if (seq->position == prompt_length) {
-    seq->stage = ModelSequence::Stage::kDecode;
-  }
-  return Status();
+  if (!s.ok()) seq->Fail();
+  return completion == SequenceCompletion::kWait
+             ? ModelCompleteSequence(seq, stream, s) : s;
 }
 
 Status ModelDecodeStepSeq(const Model& m, ModelSequence* seq,
                           int32_t token_id, uint16_t* logits,
                           cudaStream_t stream, uint16_t* trunk_out,
-                          int seq_id) {
+                          int seq_id, SequenceCompletion completion) {
   if (!seq) return Status::Fail("ModelDecodeStepSeq: null seq");
   if (seq_id == -1) seq_id = seq->seq_id;
   if (seq->seq_id < 0 || seq->seq_id >= m.cfg.max_seq ||
-      seq_id != seq->seq_id) {
-    return Status::Fail("ModelDecodeStepSeq: sequence slot mismatch");
-  }
-  if (seq->stage != ModelSequence::Stage::kDecode) {
-    return Status::Fail("ModelDecodeStepSeq: sequence not in decode stage");
-  }
-  const ModelConfig& cfg = m.cfg;
-  const int position = seq->position;
-  if (position >= cfg.max_len) {
-    return Status::Fail("ModelDecodeStepSeq: position exceeds max_len");
-  }
-  // history = tokens already seen (prompt + previously decoded); the PLE
-  // n-gram context for this token is the last (ngram_size-1) of them.
-  Status s = ModelDecodeStep(m, token_id, position, seq->history.data(),
-                             logits, stream, trunk_out, seq_id);
+      seq_id != seq->seq_id || seq->stage != ModelSequence::Stage::kDecode)
+    return Status::Fail("ModelDecodeStepSeq: invalid sequence slot/stage");
+  Status s = seq->Submit({&token_id, 1}, ModelSequence::Stage::kDecode,
+                         m.cfg.max_len);
   if (!s.ok()) return s;
-  // Advance the state machine.
-  seq->position = position + 1;
-  seq->history.push_back(token_id);
-  return Status();
+  s = ModelDecodeStep(m, token_id, seq->position, seq->history.data(),
+                      logits, stream, trunk_out, seq_id);
+  if (!s.ok()) seq->Fail();
+  return completion == SequenceCompletion::kWait
+             ? ModelCompleteSequence(seq, stream, s) : s;
 }
 
-void ModelEndSequence(ModelSequence* seq) {
-  if (!seq) return;
-  seq->stage = ModelSequence::Stage::kIdle;
-  seq->position = 0;
-  seq->history.clear();
+Status ModelEndSequence(ModelSequence* seq) {
+  return seq ? seq->End() : Status::Fail("ModelEndSequence: null seq");
 }
 
 // ---------------------------------------------------------------------------

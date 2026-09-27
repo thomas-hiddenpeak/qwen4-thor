@@ -2,18 +2,11 @@
 
 模型专用数据流引擎 · 筹备文档 · 2026-09-20
 
-状态：完整执行计划仍在筹备；MoE、QSA 与 decode top-k 固定形状子链
-已在 runner 实现并通过 E2E。最新候选及证据见 [STATUS.md](STATUS.md)。
-QTDE 是暂定工作名，子链优化不代表完整数据流引擎完成。
-“数据流机器”保留为设计理念；软件项目称“数据流引擎”。
-
-目标：在 Thor 上运行当前 Qwen3.8-Flash-Next-NVFP4-SSD-Stream
-checkpoint，以完整状态转换为优化单位，显式设计数据依赖、生命周期、
-物理布局、数值语义和资源预算。kernel 边界由这些约束推导。
-
-确立的采纳原则：**保持当前精度、不造成性能回退时，降低系统复杂度
-本身就是有效收益，不要求同时获得速度提升。** 此原则同时适用于当前
-runner 和新引擎；具体证据要求见 [验证标准](VALIDATION.md#采纳原则复杂度降低是独立收益)。
+本目录保留历史提案和已完成实验的来源，不维护当前实施计划。
+R0–R4、D/P/S与plans/*.json均不驱动runner执行；不能作为当前待办。
+维护范围和验证入口统一见[STATUS](../docs/STATUS.md)与
+[EVALUATION](../docs/EVALUATION.md)。实际序列API见
+[model.h](../include/q4t/model/model.h)，状态定义由其包含的sequence.h提供。
 
 ## 阅读顺序
 

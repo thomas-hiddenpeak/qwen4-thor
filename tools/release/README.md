@@ -17,10 +17,10 @@ python3 tools/verify/test_gate/run.py --cxx g++-14 \
   --output build/public-host/test-gate-new
 ```
 
-公共入口与Thor共享host测试源码清单，实际运行全部18项JSON/HTTP/
-请求合同及16项测试框架反例，无CUDA、ICU、模型文件或私有证据依赖。
+公共入口与Thor共享host测试源码清单，实际运行全部26项JSON/HTTP/
+请求/序列状态合同及16项测试框架反例，无CUDA、ICU、模型文件或私有证据依赖。
 反例输出目录每次新建。公共CI不构建runner，不覆盖真实tokenizer、
-GPU完成/状态、HTTP推理或五档性能；下面的22项发布检查保持独立且必需。
+GPU完成/状态、HTTP推理或五档性能；下面的30项发布检查保持独立且必需。
 
 Thor发布主机入口：
 
@@ -32,8 +32,8 @@ python3 tools/release/check_host_contracts.py \
   --output .q4t-work/host-gate-new
 ```
 
-此命令使用已跟踪的required_host_tests.txt，按精确名称要求22项JSON、
-HTTP、请求合同与真实tokenizer检查。不能传自定义筛选缩减检查项，
+此命令使用已跟踪的required_host_tests.txt，按精确名称要求30项JSON、
+HTTP、请求/序列合同与真实tokenizer检查。不能传自定义筛选缩减检查项，
 缺少ICU/模型/注册项或任一SKIP都不能通过；输出目录必须新建。
 二进制/清单摘要、注册列表、原始日志和passed结果写入输出目录。
 它是发布的**主机前置条件**，不能代替下面的运行时/数值/性能验收。

@@ -26,6 +26,7 @@
 #include "q4t/io/weight_loader.h"
 #include "q4t/model/decoder_layer.h"
 #include "q4t/model/model_head.h"
+#include "q4t/model/sequence.h"
 #include "q4t/ple/ngram_hash.h"
 #include "q4t/ple/ple_embedding.h"
 #include "q4t/status.h"
@@ -420,34 +421,14 @@ Status ModelMixedBatch(const Model& m, const int32_t* tokens, const int* lens,
                        cudaStream_t stream);
 
 // ---------------------------------------------------------------------------
-// PD-ready 阶段边界 API (Prefill/Decode 可分离, 见 ARCHITECTURE.md)。
-//
-// ModelSequence 是 runner 侧的轻量序列状态机 (host only, 不拥有 device
-// 内存): 跟踪阶段 (prefill -> decode)、绝对 position、PLE n-gram history。
-// 它让 runner 能把 prefill 与 decode 驱动为独立操作:
-//
-//   ModelBeginSequence(seq)          // 重置 per-layer 状态 (KV/SSM/conv),
-//                                    // 阶段 = kPrefill
-//   ModelPrefill(m, seq, ids, T, logits)   // 完成 prefill, 阶段 = kDecode;
-//                                    // 此时 per-layer KV/SSM 状态已就绪,
-//                                    // 可整体交出 (PD 分离的 handoff 点)
-//   ModelDecodeStepSeq(m, seq, tok, logits) // 一个 decode token, 自动维护
-//                                    // position 与 PLE history
-//   ModelEndSequence(seq)            // 序列结束 (状态机复位, 不释放 device
-//                                    // 内存 — 内存归 Model 所有)
-//
-// 与 ModelForward/ModelDecodeStep 等价 (ModelForward = Begin + Prefill),
-// 但阶段边界显式化, 供 runner 的 PD 分离场景驱动。
-struct ModelSequence {
-  enum class Stage { kIdle, kPrefill, kDecode, kFailed };
-  Stage stage = Stage::kIdle;
-  int position = 0;  // 下一个 token 的绝对 position
-  // Pooled recurrent-state slice index (Phase 2 continuous batching). The
-  // per-layer SSM/conv/KV/PLE/rope state is allocated [max_seq, ...]; this
-  // sequence uses slice `seq_id`. 0 = legacy single-sequence layout.
-  int seq_id = 0;
-  std::vector<int32_t> history;  // 已见 token (prompt + 已 decode), PLE 上下文
-};
+// Sequence APIs wait for checked GPU completion by default. kDeferred leaves
+// position/history committed at the old prefix and retains a pending advance.
+// The caller must complete it (including failures) under scratch ownership,
+// using ModelCompleteSequence or CompleteSequenceWork with a checked GPU wait.
+// Low-level packed APIs do not own host cursors; their caller uses the SAME
+// ModelSequence Submit/CompleteSequenceWork contract for all packed sequences.
+Status ModelCompleteSequence(ModelSequence* seq, cudaStream_t stream,
+                             const Status& submitted = Status());
 
 // 重置 per-layer 状态 (KV/SSM/conv 清零), 序列进入 kPrefill 阶段。
 // 等价于 ModelForward 内部的 ResetState 循环。`seq_id` 选择池化的 recurrent
@@ -457,7 +438,7 @@ Status ModelBeginSequence(const Model& m, ModelSequence* seq,
 
 // 完成 prefill: seq 须处于 kPrefill 阶段。input_ids [T] -> logits [T, vocab]
 // (device BF16)。成功后阶段 = kDecode, position = T, history = prompt。
-// 调用返回时 per-layer KV/SSM 状态已就绪 (PD 分离的 handoff 点)。
+// 默认等待GPU完成；kDeferred仅入队，须显式完成后才可交接。
 // trunk_out: 可选, 非 null 时把 pre-final-mixer 多流 [T, hc*hs] 拷入
 // (MTP scheme A 钩子, 见 ModelDecodeStep 的说明)。
 // vision: 可选, 非 null 且 num_tokens>0 时把 image token 的 embedding 替换为
@@ -467,26 +448,21 @@ Status ModelPrefill(const Model& m, ModelSequence* seq, const int32_t* input_ids
                     int T, uint16_t* logits, cudaStream_t stream,
                     uint16_t* trunk_out = nullptr,
                     const VisionFeatures* vision = nullptr, int seq_id = -1,
-                    LogitsRows logits_rows = LogitsRows::kAllRows);
+                    LogitsRows logits_rows = LogitsRows::kAllRows,
+                    SequenceCompletion completion = SequenceCompletion::kWait);
 
-// Queue one text-only prompt chunk starting at seq->position. prompt contains
-// the same complete prompt [prompt_length] on every call; chunk_length must
-// fit max_prefill and the remaining prompt. Uses seq->seq_id as the sole slot
-// identity. On success, position/history include this chunk; stage stays
-// kPrefill until the final chunk, then becomes kDecode. On forward failure,
-// stage becomes kFailed: reset with ModelBeginSequence before reuse.
-// These are stream-ordered host cursors, not GPU completion or rollback.
-// The caller must check stream completion before publishing results/reusing
-// buffers. No vision/MRoPE prompt chunking or scheduling fairness is implied.
-// logits/trunk_out describe this chunk only, with the same optional-output
-// semantics as ModelDecodeBatch. kLastRow selects the last row of this
-// chunk, not the last row of the complete prompt.
+// Submit a chunk from the committed prefix. kDeferred requires completion
+// before the next chunk or reuse. The final chunk transitions to kDecode only
+// after successful completion. Failed execution requires reset before reuse.
+// kLastRow affects logits only, not the optional complete trunk output.
 Status ModelPrefillTextChunk(const Model& m, ModelSequence* seq,
                             const int32_t* prompt, int prompt_length,
                             int chunk_length, uint16_t* logits,
                             cudaStream_t stream,
                             uint16_t* trunk_out = nullptr,
-                            LogitsRows logits_rows = LogitsRows::kAllRows);
+                            LogitsRows logits_rows = LogitsRows::kAllRows,
+                            SequenceCompletion completion =
+                                SequenceCompletion::kWait);
 
 // 一个 decode step: seq 须处于 kDecode 阶段。token_id 写入 position,
 // -> logits [1, vocab]。自动 ++position 并追加 history (PLE 上下文)。
@@ -494,10 +470,13 @@ Status ModelPrefillTextChunk(const Model& m, ModelSequence* seq,
 // seq_id=-1 uses seq->seq_id; an explicit different slot is rejected.
 Status ModelDecodeStepSeq(const Model& m, ModelSequence* seq, int32_t token_id,
                           uint16_t* logits, cudaStream_t stream,
-                          uint16_t* trunk_out = nullptr, int seq_id = -1);
+                          uint16_t* trunk_out = nullptr, int seq_id = -1,
+                          SequenceCompletion completion =
+                              SequenceCompletion::kWait);
 
 // 序列结束: 状态机复位为 kIdle (不释放 device 内存, 内存归 Model 所有)。
-void ModelEndSequence(ModelSequence* seq);
+// Refuses to discard pending work; callers must finish it first.
+Status ModelEndSequence(ModelSequence* seq);
 
 // ---------------------------------------------------------------------------
 // 主模型 recurrent 状态快照 (推测解码回滚用)。

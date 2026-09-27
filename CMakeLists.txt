@@ -258,6 +258,7 @@ if(Q4T_BUILD_TESTS)
     tests/ple_e2e_gather_test.cpp
     tests/ple_working_memory_test.cpp
     tests/io_json_test.cpp
+    tests/model_sequence_test.cpp
     tests/server_http_request_test.cpp
     tests/server_chat_contract_test.cpp
     src/server/chat_contract.cpp
