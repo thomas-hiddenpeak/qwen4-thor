@@ -1,6 +1,6 @@
 # Local single-runner qualification profile
 
-`q4t.conf.in` is a tested-profile candidate for a local nginx-to-runner hop.
+`q4t.conf.in` is a qualified local profile for a local nginx-to-runner hop.
 It is **not an enabled service or a public deployment configuration**. The
 front listener is loopback only. Render the three `@...@` markers using the
 qualification tool; all logs and temporary bodies belong under its output
@@ -25,6 +25,7 @@ Reproduce with an existing nginx binary (no root or service installation):
 ```sh
 python3 tools/evalscope/run_proxy_admission.py \
   --nginx /absolute/path/to/nginx --binary build/q4t \
+  --backend-host 127.0.0.1 \
   --lifecycle .q4t-work/e2e/request-cancellation-v5-20260927 \
   --quality-run .q4t-work/e2e/request-control-quality-20260927 \
   --performance-run .q4t-work/e2e/request-control-performance-20260927 \
@@ -37,9 +38,11 @@ completion. It records exact binaries/configuration, requests and responses.
 
 Production prerequisites remain explicit:
 
-- Prevent direct backend access. The current runner binds INADDR_ANY; this
-  profile does not configure a firewall or change that binding. Apply verified
-  network isolation before exposing any service.
+- Prevent direct backend access. The accepted listen-address build defaults to
+  loopback and supports `serve --host 127.0.0.1`; use the accepted binary
+  identified in docs/STATUS.md. Older runners bind INADDR_ANY. This profile
+  does not configure a firewall. Loopback does not isolate other local
+  processes or shared-network-namespace tenants.
 - TLS, authentication, tenant authorization and rate policy are separate work.
   Cancellation credentials do not authenticate the service.
 - Header-incomplete clients and a flood against the control endpoints can

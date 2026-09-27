@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[2]
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--nginx', type=Path, required=True)
+    ap.add_argument('--backend-host', help='Explicit numeric IPv4 bind address')
     ap.add_argument('--binary', type=Path, required=True)
     ap.add_argument('--output', type=Path, required=True)
     ap.add_argument('--lifecycle', type=Path, required=True)
@@ -34,6 +35,8 @@ def main():
     plan = json.loads((prior / 'plan.json').read_text())
     cmd = plan['command']
     cmd[0] = str(args.binary.resolve())
+    if args.backend_host:
+        cmd += ['--host', args.backend_host]
     cmd[cmd.index('--max-seq') + 1] = '1'
     cmd[cmd.index('--max-len') + 1] = '208896'
     back = int(cmd[cmd.index('--port') + 1])

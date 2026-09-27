@@ -38,6 +38,8 @@ namespace q4t {
 namespace server {
 
 struct ServerOptions {
+  // Numeric IPv4 only. Remote access requires an explicit address.
+  std::string host = "127.0.0.1";
   int port = 8000;
   std::string model_dir;
   int max_tokens = 256;  // default cap when the request omits max_tokens
@@ -293,6 +295,7 @@ class ChatServer {
                          std::string* err);
 
   std::string model_name_;
+  std::string host_ = "127.0.0.1";
   int port_ = 8000;
   int max_tokens_default_ = 256;
   std::vector<int32_t> stop_token_ids_;  // generation_config, not PLE padding

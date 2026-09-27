@@ -418,6 +418,15 @@ struct PhaseTimer {
 }  // namespace
 
 Status ChatServer::Start(const ServerOptions& opts) {
+  // Validate before loading the tokenizer or allocating model resources.
+  in_addr address{};
+  if (::inet_pton(AF_INET, opts.host.c_str(), &address) != 1) {
+    return Status::Fail("host must be a numeric IPv4 address");
+  }
+  if (opts.port < 1 || opts.port > 65535) {
+    return Status::Fail("port must be in [1,65535]");
+  }
+  host_ = opts.host;
   PhaseTimer total("startup_total");
   {
     PhaseTimer pt("tokenizer");
@@ -655,7 +664,10 @@ Status ChatServer::Run() {
   ::setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one));
   sockaddr_in addr{};
   addr.sin_family = AF_INET;
-  addr.sin_addr.s_addr = htonl(INADDR_ANY);
+  if (::inet_pton(AF_INET, host_.c_str(), &addr.sin_addr) != 1) {
+    ::close(listen_fd);
+    return Status::Fail("invalid listen address");
+  }
   addr.sin_port = htons(static_cast<uint16_t>(port_));
   if (::bind(listen_fd, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) <
       0) {
@@ -669,8 +681,8 @@ Status ChatServer::Run() {
     return Status::Fail("listen: " + err);
   }
   listen_fd_ = listen_fd;  // RequestStop() shutdown(2)s this to break accept
-  std::fprintf(stderr, "[q4t] serving on port %d (model %s)\n", port_,
-               model_name_.c_str());
+  std::fprintf(stderr, "[q4t] serving on port %d (host %s, model %s)\n",
+               port_, host_.c_str(), model_name_.c_str());
   Status run_status;
   while (true) {
     sockaddr_in client{};

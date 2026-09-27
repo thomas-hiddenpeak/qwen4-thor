@@ -1,0 +1,18 @@
+{
+  "date": "2026-09-27",
+  "binary_sha256": "432fc48980b52b829d7fb9119b44b3f167ba57f5dd1d51bd47f9fc14bf85ccac",
+  "runtime_source_base_commit": "166a841",
+  "runtime_source_sha256": {
+    "include/q4t/server/request_control.h": "cb0f13e2a2622f98a2acd3981a7b6c0b87eefad65e008751eec88393ff1ea38b",
+    "include/q4t/server/chat_server.h": "48171fa96474f445748736a45790d683f2c5fec20cb2704a39967a1462252031",
+    "src/server/chat_server.cpp": "15d3f4171640384ead186c519968825d8b6e468622c71fd75bfc0f8ff68e902f"
+  },
+  "results_sha256": "97f8bc10ea74377b49123307783d808a760271f20cc6f5187a9f75245b449744",
+  "mtp": false,
+  "concurrency": 1,
+  "output_tokens": 256,
+  "repeats": 3,
+  "source": ".q4t-work/e2e/request-control-performance-20260927/results.json",
+  "scope": "Measured request-control baseline; all historical ranges overlap, strict non-regression not proven",
+  "previous": "performance_reference_pre_request_control_20260927.json"
+}

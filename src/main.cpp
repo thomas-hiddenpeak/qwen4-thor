@@ -53,7 +53,7 @@ void PrintUsage(const char* prog) {
       "  generate  Single greedy generation\n"
       "            (q4t generate \"prompt\" [--max-tokens N])\n"
       "  serve     OpenAI-compatible HTTP API server\n"
-      "            (q4t serve [--port N] [--model-dir DIR] "
+      "            (q4t serve [--host IPv4] [--port N] [--model-dir DIR] "
       "[--max-tokens N] [--max-prefill N] [--max-len N] [--max-seq N] "
       "[--mtp | --no-mtp])\n"
       "            MTP is disabled by default.\n"
@@ -791,7 +791,9 @@ int RunServe(int argc, char** argv) {
 
   for (int i = 2; i < argc; ++i) {
     const std::string a = argv[i];
-    if (a == "--port" && i + 1 < argc) {
+    if (a == "--host" && i + 1 < argc) {
+      opts.host = argv[++i];
+    } else if (a == "--port" && i + 1 < argc) {
       opts.port = std::atoi(argv[++i]);
     } else if (a == "--model-dir" && i + 1 < argc) {
       opts.model_dir = argv[++i];
