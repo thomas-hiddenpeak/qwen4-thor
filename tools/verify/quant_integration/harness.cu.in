@@ -1,0 +1,189 @@
+#include <algorithm>
+#include <cmath>
+#include <fstream>
+#include <cstdio>
+#include <stdexcept>
+#include <vector>
+#define CU(x)                                             \
+  do {                                                    \
+    if ((x) != cudaSuccess) throw std::runtime_error(#x); \
+  } while (0)
+// Independent FP4 nearest-even codebook; native CUDA supplies FP8 encoding.
+__device__ int RefFp4(float x) {
+  if (fabsf(x) >= 6.0f) return 7 | (x < 0 ? 8 : 0);
+  const float values[8] = {0, .5f, 1, 1.5f, 2, 3, 4, 6};
+  int best = 0;
+  float distance = fabsf(x);
+  for (int i = 1; i < 8; ++i) {
+    float d = fabsf(fabsf(x) - values[i]);
+    if (d < distance || (d == distance && !(i & 1))) {
+      best = i;
+      distance = d;
+    }
+  }
+  return best | (x < 0 ? 8 : 0);
+}
+__global__ void Reference(const uint16_t* x, int rows, int k, bool down,
+                          float scale, uint8_t* packed, uint8_t* sf) {
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i >= rows * k / 16) return;
+  int row = i / (k / 16), group = i % (k / 16);
+  float a[16], maximum = 0;
+  for (int j = 0; j < 16; ++j) {
+    int pos = row * k * (down ? 2 : 1) + group * 16 + j;
+    float v =
+        __bfloat162float(*reinterpret_cast<const __nv_bfloat16*>(x + pos));
+    if (down) {
+      float u = __bfloat162float(
+          *reinterpret_cast<const __nv_bfloat16*>(x + pos + k));
+      float sigmoid = 1.0f / (1.0f + __expf(-v));
+      v = v * sigmoid * u;
+    }
+    a[j] = v;
+    maximum = fmaxf(maximum, fabsf(v));
+  }
+  float block = maximum > 0 ? maximum / 6.0f : 1.0f;
+  uint8_t code =
+      __nv_cvt_float_to_fp8(block / scale, __NV_SATFINITE, __NV_E4M3);
+  sf[i] = code;
+  __nv_fp8_e4m3 value;
+  value.__x = code;
+  float effective = static_cast<float>(value) * scale;
+  float inv = effective > 0 ? 1.0f / effective : 0;
+  for (int j = 0; j < 8; ++j)
+    packed[i * 8 + j] =
+        RefFp4(a[2 * j] * inv) | (RefFp4(a[2 * j + 1] * inv) << 4);
+}
+template <class T>
+T* Allocate(size_t n) {
+  T* p;
+  CU(cudaMalloc(&p, n * sizeof(T)));
+  return p;
+}
+template <class T>
+std::vector<T> Read(T* p, size_t n) {
+  std::vector<T> v(n);
+  CU(cudaMemcpy(v.data(), p, n * sizeof(T), cudaMemcpyDeviceToHost));
+  return v;
+}
+int main(int argc, char** argv) {
+  static_assert(kBatchBytes >= sizeof(DeviceBatch));
+  try {
+    constexpr int rows = 130, hidden = 2560;
+    auto* x = Allocate<uint16_t>(rows * hidden);
+    auto* list = Allocate<int32_t>(rows * 10);
+    auto* scales = Allocate<float>(10);
+    auto* ids = Allocate<int32_t>(10);
+    auto* p = Allocate<uint8_t>(rows * hidden / 2);
+    auto* sf = Allocate<uint8_t>(2 * 40 * 512);
+    auto* rp = Allocate<uint8_t>(rows * hidden / 2);
+    auto* rs = Allocate<uint8_t>(rows * hidden / 16);
+    auto* dp = Allocate<uint8_t>(10 * kPackedStride);
+    auto* ds = Allocate<uint8_t>(10 * kScaleStride);
+    auto* batch = Allocate<DeviceBatch>(1);
+    auto* y = Allocate<uint16_t>(10 * hidden);
+    std::vector<int32_t> mapping(rows * 10), expert_ids(10);
+    for (int i = 0; i < rows * 10; ++i) mapping[i] = (i % rows) * 10;
+    for (int i = 0; i < 10; ++i) expert_ids[i] = 9 - i;
+    CU(cudaMemcpy(list, mapping.data(), mapping.size() * 4,
+                  cudaMemcpyHostToDevice));
+    CU(cudaMemcpy(ids, expert_ids.data(), 40, cudaMemcpyHostToDevice));
+    size_t bad_sf = 0, bad_fp4 = 0, bad_alpha = 0, groups_checked = 0;
+    size_t high = 0, subnormal = 0, zero = 0;
+    for (bool down : {false, true}) {
+      int k = down ? 640 : hidden, groups = k / 16, tiles = (groups + 3) / 4;
+      std::vector<uint16_t> input(rows * k * (down ? 2 : 1));
+      for (size_t i = 0; i < input.size(); ++i) {
+        float v =
+            std::ldexp(float(int(i * 17 % 31) - 15), int(i / 16 % 25) - 12);
+        if ((i / 16) % 17 == 0) v = 0;
+        __nv_bfloat16 b = __float2bfloat16(v);
+        input[i] = *reinterpret_cast<uint16_t*>(&b);
+      }
+      if (argc == 3) {
+        std::ifstream file(argv[down ? 2 : 1], std::ios::binary);
+        if (!file.read(reinterpret_cast<char*>(input.data()), input.size() * 2))
+          throw std::runtime_error("capture too small");
+      }
+      CU(cudaMemcpy(x, input.data(), input.size() * 2, cudaMemcpyHostToDevice));
+      for (float scale :
+           {0.00001f, 0.001f, 0.1f, 1.0f, 10.0f, 1000.0f, 1000000.0f}) {
+        std::vector<float> global(10, scale);
+        CU(cudaMemcpy(scales, global.data(), 40, cudaMemcpyHostToDevice));
+        Reference<<<(rows * groups + 255) / 256, 256>>>(x, rows, k, down, scale,
+                                                        rp, rs);
+        CU(cudaGetLastError());
+        auto ref_p = Read(rp, size_t(rows) * k / 2),
+             ref_s = Read(rs, size_t(rows) * groups);
+        for (auto c : ref_s) {
+          high += c >= 0x78;
+          subnormal += c > 0 && c < 8;
+          zero += c == 0;
+        }
+        auto check = [&](const char* name) {
+          CU(cudaGetLastError());
+          auto actual_p = Read(p, size_t(rows) * k / 2);
+          auto actual_s = Read(sf, size_t(2) * tiles * 512);
+          size_t before = bad_sf + bad_fp4;
+          for (int r = 0; r < rows; ++r)
+            for (int g = 0; g < groups; ++g) {
+              size_t offset = (r % 32) * 16 + (r % 128 / 32) * 4 + g % 4 +
+                              (g / 4) * 512 + (r / 128) * tiles * 512;
+              bad_sf += actual_s[offset] != ref_s[r * groups + g];
+            }
+          for (size_t i = 0; i < actual_p.size(); ++i)
+            bad_fp4 += actual_p[i] != ref_p[i];
+          groups_checked += size_t(rows) * groups;
+          std::printf("%s scale=%g mismatches=%zu\n", name, double(scale),
+                      bad_sf + bad_fp4 - before);
+        };
+        if (down) {
+          SwiGLUQuantKernel<<<(rows * groups + 255) / 256, 256>>>(
+              x, p, sf, rows, k, tiles, scale);
+          check("prefill-inter");
+        } else {
+          ActQuantKernel<<<(rows * groups + 255) / 256, 256>>>(x, p, sf, rows,
+                                                               k, tiles, scale);
+          check("generic-input");
+          GatherQuantKernel<<<(rows * groups + 255) / 256, 256>>>(
+              x, list, rows, 0, 10, rows, k, tiles, scales, p, sf);
+          check("prefill-input");
+        }
+        StageWeights weights{p, sf, scales, scales, 0, 0};
+        if (down)
+          PrepareMoEDecodeKernel<true><<<(10 * groups + 255) / 256, 256>>>(
+              x, ids, weights, batch, dp, ds, y);
+        else
+          PrepareMoEDecodeKernel<false><<<(10 * groups + 255) / 256, 256>>>(
+              x, ids, weights, batch, dp, ds, y);
+        CU(cudaGetLastError());
+        auto dec_p = Read(dp, 10 * kPackedStride),
+             dec_s = Read(ds, 10 * kScaleStride);
+        auto metadata = Read(batch, 1);
+        for (int slot = 0; slot < 10; ++slot) {
+          int r = down ? slot : 0;
+          bad_alpha += metadata[0].alpha[slot] != scale * scale;
+          for (int g = 0; g < groups; ++g)
+            bad_sf += dec_s[slot * kScaleStride + (g / 4) * 512 + g % 4] !=
+                      ref_s[r * groups + g];
+          for (int j = 0; j < k / 2; ++j)
+            bad_fp4 += dec_p[slot * kPackedStride + j] != ref_p[r * k / 2 + j];
+        }
+        groups_checked += 10 * groups;
+      }
+    }
+    const std::vector<void*> allocations = {x,  list, scales, ids, p,     sf,
+                                            rp, rs,   dp,     ds,  batch, y};
+    for (void* ptr : allocations) CU(cudaFree(ptr));
+    std::printf(
+        "groups=%zu sf=%zu fp4=%zu alpha=%zu high=%zu subnormal=%zu zero=%zu\n",
+        groups_checked, bad_sf, bad_fp4, bad_alpha, high, subnormal, zero);
+    return bad_sf || bad_fp4 || bad_alpha ||
+                   (argc == 1 && (!high || !subnormal || !zero))
+               ? 1
+               : 0;
+  } catch (const std::exception& e) {
+    std::fprintf(stderr, "%s\n", e.what());
+    return 2;
+  }
+}

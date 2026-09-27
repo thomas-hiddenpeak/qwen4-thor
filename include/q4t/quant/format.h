@@ -120,10 +120,14 @@ inline __host__ __device__ float E4m3ToFloat(uint8_t code) {
 inline __host__ __device__ uint8_t FloatToE4m3(float v) {
   float a = v < 0.0f ? -v : v;
   if (a == 0.0f) return 0;
+  if (a >= 448.0f) return 0x7E;
   // Subnormal range: [0, 2^-6). The subnormal step is 2^-9.
   if (a < 0.015625f) {  // < 2^-6
-    int man = static_cast<int>(a * 512.0f + 0.5f);
-    if (man > 7) man = 7;
+    const float scaled = a * 512.0f;
+    int man = static_cast<int>(scaled);
+    const float rem = scaled - man;
+    if (rem > 0.5f || (rem == 0.5f && (man & 1))) ++man;
+    // A rounded code of 8 is the smallest normal value.
     return static_cast<uint8_t>(man);
   }
   // Normal range: a >= 2^-6. Find e = floor(log2(a)) so that m = a / 2^e
@@ -153,14 +157,8 @@ inline __host__ __device__ uint8_t FloatToE4m3(float v) {
     man = 0;
     exp++;
   }
-  if (exp > 14) {
+  if (exp > 15 || (exp == 15 && man > 6)) {
     return 0x7E;  // saturate to max normal (448.0)
-  }
-  if (exp < 1) {
-    // Carried back into subnormal (only at the 2^-6 boundary).
-    int sm = static_cast<int>(a * 512.0f + 0.5f);
-    if (sm > 7) sm = 7;
-    return static_cast<uint8_t>(sm);
   }
   return static_cast<uint8_t>((exp << 3) | man);
 }
