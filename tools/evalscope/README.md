@@ -1,7 +1,8 @@
 # HTTP E2E 验收
 
-顺序与接受条件见 [EVALUATION.md](../../docs/EVALUATION.md)。改动后必要构建，
-第一项测试是真实 evalscope HTTP E2E；不运行前置单测、bench 或 profile。
+顺序与接受条件见 [EVALUATION.md](../../docs/EVALUATION.md)。性能优化
+必要构建后的第一项测试为真实evalscope HTTP E2E，不使用bench。
+Bug修复可先做针对缺陷的数值/差分测试；语义分数不能替代数值合同。
 
 ## 质量与同输入性能重放
 
@@ -43,17 +44,19 @@ quality_reference.json 来自 2026-09-20 完整数学修复后的真实 HTTP 结
 e98969c8d0d08572437745000d2a741a83b97d09600e60cf2ffd746643b3dcd3。
 只证明这 11 道合成检索题，不是全面模型质量基准。
 
-performance_reference.json 更新为 2026-09-21 短路径 top-k 寄存器网络
-完整五档结果，二进制 SHA-256：
-a13e3c3942a4a95856296352ac9cb06dbf41f4054d128868de8f7c65134e9e38。
-输入/输出摘要一致，计时整体更新，不拼接最优档位；旧参考保留在
-Git 历史、原报告及本地 performance-before.json。
-五档 decode 18.611/17.871/18.161/17.855/17.072 tok/s；4K decode
-约 +0.76%，8K TTFT 5.547→5.488 秒，其余重复范围重叠。
-完整 E2E 后 352 组、277598448 个槽/长度逐位一致，4K HTTP
-选择累计 decode 226.446→60.105 ms，prefill 25.608→10.869 ms。
-见 [短路径 top-k 报告](../../docs/SHORT_TOPK_2026-09-21.md)。
-后续仍逐档比较，不能因质量输出不变就忽略性能回退。
+performance_reference.json 当前为2026-09-27完整E4M3修复干净构建：
+`1572d0fc6497fd55db370018714cff7b755c607b590c4de04f55cac080c20552`。
+来源与参数见performance_reference.metadata.json。五档decode为
+18.665/17.949/18.234/17.900/17.177tok/s；TTFT为
+0.805/2.635/5.175/30.451/159.170秒。
+
+这是数值修复后的新参考，不是与旧版同时段配对的无回退证明。
+输入与历史一致，前四档输出摘要改变、200K相同；不要求正确编码
+复现旧错误计算的输出。旧fcb5925参考完整保存在
+performance_reference_legacy_20260921.json和Git历史。
+质量11题全文同旧参考，因此quality_reference.json保持不变；
+另测的15道推理题为13/15，不能将11题通过写成模型语义全对。
+验收边界见[数值修复报告](../../docs/E4M3_NUMERICAL_FIX_2026-09-27.md)。
 
 原 run_baseline.sh 每档三条不同输入，仍适用于初始负载采集；它与上述
 同输入重复矩阵不应混算。disconnect_e2e.py 专门复现断连并验证服务恢复。
