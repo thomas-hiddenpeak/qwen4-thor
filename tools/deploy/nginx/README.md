@@ -7,7 +7,8 @@ qualification tool; all logs and temporary bodies belong under its output
 folder, not `/etc` or system service directories.
 
 Generation requests share a global limit of 4 (including uploads and queued
-requests); cancellation, health and metrics share a separate limit of 8.
+requests). Cancellation has a separate limit of 8; health and metrics each
+have their own limit of 4. Monitoring cannot consume the cancellation budget.
 The key is the configured server name, not a caller-provided address or ID.
 The profile intentionally uses bounded admission and returns 429 before an
 excess generation request reaches the runner. These are qualification values,

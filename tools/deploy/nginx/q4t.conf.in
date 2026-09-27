@@ -14,7 +14,9 @@ http {
   scgi_temp_path @PREFIX@/scgi;
   # Global keys, never client-chosen IDs: all callers share these budgets.
   limit_conn_zone $server_name zone=generation:1m;
-  limit_conn_zone $server_name zone=control:1m;
+  limit_conn_zone $server_name zone=cancellation:1m;
+  limit_conn_zone $server_name zone=health:1m;
+  limit_conn_zone $server_name zone=metrics:1m;
   limit_conn_status 429;
   server {
     listen 127.0.0.1:@FRONT_PORT@;
@@ -40,15 +42,15 @@ http {
     }
     location = /v1/requests/cancel {
       client_max_body_size 4k;
-      limit_conn control 8;
+      limit_conn cancellation 8;
       proxy_pass http://127.0.0.1:@BACK_PORT@;
     }
     location = /healthz {
-      limit_conn control 8;
+      limit_conn health 4;
       proxy_pass http://127.0.0.1:@BACK_PORT@;
     }
     location = /metrics {
-      limit_conn control 8;
+      limit_conn metrics 4;
       proxy_pass http://127.0.0.1:@BACK_PORT@;
     }
     location / { return 404; }

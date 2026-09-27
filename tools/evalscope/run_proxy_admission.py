@@ -47,7 +47,7 @@ def main():
     nginx = [str(args.nginx.resolve()), '-p', str(out), '-c', str(out / 'nginx.conf')]
     shutil.copy2(__file__, out)
     shutil.copy2(template, out)
-    save('plan.json', dict(server=cmd, nginx=nginx, binary_sha256=sha(args.binary), nginx_sha256=sha(args.nginx), template_sha256=sha(template), generation_limit=4, control_limit=8))
+    save('plan.json', dict(server=cmd, nginx=nginx, binary_sha256=sha(args.binary), nginx_sha256=sha(args.nginx), template_sha256=sha(template), generation_limit=4, cancellation_limit=8, health_limit=4, metrics_limit=4))
     (out / 'nginx-version.txt').write_bytes(subprocess.check_output([nginx[0], '-V'], stderr=subprocess.STDOUT))
     (out / 'config-check.txt').write_bytes(subprocess.check_output(nginx + ['-t'], stderr=subprocess.STDOUT))
     (out / 'source-commit.txt').write_bytes(subprocess.check_output(['git', 'rev-parse', 'HEAD']))
