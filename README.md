@@ -15,16 +15,19 @@ Linux `io_uring` 从本地 NVMe 异步流式读取,与 GPU 计算重叠,释放�
   NVFP4 W4A4 量化, Paged KV cache, greedy 生成
 - **多模态**: 27 层 ViT, 图像 + 视频输入 (OpenAI `image_url` / `video_frames`
   base64 接入), 3D MRoPE
-- **MTP 推测解码**: 1 层 draft + 主模型验证 + 接受/回退; 多序列批处理
-  (调度 lockstep) + chunked MTP 长上下文投机解码 (44K 上下文精度无损)
-- **连续批处理**: token 级打包, 多请求并发调度, 无跨序列污染
-- **长上下文**: 262K (`--max-len 262144 --max-seq 1` 实测可行), 流式 top-k
-  QSA 召回 (移除 8192 硬上限)
-- **OOM 可靠性**: 启动内存预算 (`--mem-fraction`, 默认 0.90) + auto-length
-  推导 + 运行时 preflight 软降级, 任何配置不 OOM
-- **OpenAI 兼容 API**: chat/completions (流式/非流式) + healthz
-- **验证**: 76 项测试全绿零警告; `tools/verify/` 三件套对
-  transformers 5.16.1 参考 48 层全量基线 OVERALL PASS
+- **MTP 推测解码**: draft、主模型验证与多序列调度已实现；默认关闭，
+  不属于当前文本基线的完整验收范围
+- **连续批处理**: token 级打包、多请求调度；已完成有界槽位和生命周期
+  验证，不能据此保证所有路径均不存在状态污染
+- **长上下文**: 流式 top-k QSA；当前正式单流评估覆盖 1K、4K、8K、44K、
+  200K，历史 262K 运行记录不代替当前发布验收
+- **资源管理**: 启动内存预算、auto-length 和运行时 preflight；不保证
+  任意配置或异常输入不 OOM，媒体解压等预算仍待完善
+- **HTTP API**: OpenAI 风格 chat/completions 流式/非流式接口，以及模型、
+  健康、指标和取消接口；仅 greedy，不代表支持全部 OpenAI 参数语义
+- **验证边界**: 已有数值缺陷修复、状态/故障测试和五档 HTTP 性能参考。
+  尚未完成商用发布验收；当前结论见 [STATUS](docs/STATUS.md)，
+  已知缺陷与未覆盖项见 [完善度审计](docs/PROJECT_READINESS_REVIEW_2026-09-27.md)
 
 ## 目标模型
 
@@ -58,7 +61,7 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
   -DQ4T_CUDA_ARCHITECTURES=110a
 cmake --build build --parallel
 
-# 测试 (76 项)
+# 开发测试（可能有跳过项；退出成功不等于发布验收通过）
 ctest --test-dir build --output-on-failure
 ```
 
@@ -75,22 +78,24 @@ ctest --test-dir build --output-on-failure
 
 # OpenAI 兼容 API 服务
 ./build/q4t serve \
-  [--model-dir DIR] [--port 8080] \
+  [--model-dir DIR] [--host 127.0.0.1] [--port 8080] \
   [--max-len N] [--max-seq N] [--max-prefill N] [--max-tokens N] \
-  [--no-mtp] [--mem-fraction 0.90] [--no-budget]
+  [--mtp] [--mem-fraction 0.90]
 
-# 吞吐基准
-./build/q4t bench-decode [--batch B] [--steps N] [--prompt P] [--max-len L]
-./build/q4t bench-prefill [--batch B] [--prompt P] [--sweep]
 ```
 
-serve 请求体支持 OpenAI chat/completions 格式, content 可为字符串或
+serve 默认监听 127.0.0.1，MTP 默认关闭。性能评估使用
+[tools/evalscope](tools/evalscope/README.md) 的真实 HTTP E2E；bench 不作为
+性能验收依据。Bug 修复按 [EVALUATION](docs/EVALUATION.md) 选择直接测试。
+
+serve 请求体使用 OpenAI chat/completions 风格, content 可为字符串或
 parts 数组; 图像用 `image_url` (base64 data URL), 视频用 `video_frames`
 (base64 帧数组)。
 
 **长上下文注意**: `--max-len` 按需最小 (如 44K 用 49152), 单请求场景
 显式 `--max-seq 1`; 未 pin `--max-len` 时按 `--mem-fraction` 自动推导
-(auto-length), 装不下的配置会 CAPPED 回退而非 OOM。
+(auto-length)。预算器可对部分超预算配置执行 CAPPED 回退；这不覆盖
+系统其他进程、运行时异常输入或全部主机内存分配。
 
 ## 文档
 

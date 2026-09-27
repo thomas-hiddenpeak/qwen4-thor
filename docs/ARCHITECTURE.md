@@ -81,7 +81,7 @@ GPU 层计算掩盖; 仅当读取超过重叠窗口时才同步等待。
 | full-attn KV+indexer (12 层) | 33356 B/token/seq (随 max_len×max_seq) |
 | linear SSM state (36 层, FP32) | 110.4 MB/seq (O(1), 不随序列增长) |
 | **合计** | `--mem-fraction` (默认 0.90) × MemTotal 预算; 启动前推导
-  (max_len, max_seq) 上限, 装不下 CAPPED 回退, 任何配置不 OOM |
+  (max_len, max_seq) 上限，可对部分超预算配置 CAPPED 回退；不保证所有分配无 OOM |
 
 > 262144×seq1 实测峰值 ~96 GB (余 25.6 GB); 262144×seq4 OOM (~158 GB)。
 > 详见 PHASES.md "长上下文 262K 内存预算" + STATUS.md OOM 可靠性条目。
@@ -96,7 +96,7 @@ GPU 层计算掩盖; 仅当读取超过重叠窗口时才同步等待。
   W4A4 当前保留 cuBLASLt tensor core；历史 SIMT 候选未获收益，
   不据此排除 grouped 执行等其他方案。见 [MoE 执行合同](../dataflow-engine/MOE_DEVICE_PLAN.md) |
 | HTTP | 轻量 C++ HTTP (自研或 cpp-httplib 级) | 无重依赖; OpenAI 兼容语义 |
-| JSON | 有界解析器 (自研, 参考 Qwen3x-Orin 的 bounded JSON) | 拒绝无界分配 |
+| JSON | 自研递归下降解析器 | 当前缺少深度等输入边界，已复现栈崩溃；见完善度审计，不得视为有界解析 |
 | Tokenizer | 自研 BPE (解析 tokenizer.json) | 无 Python 依赖 |
 
 ## PD-ready 架构 (Prefill/Decode 可分离)

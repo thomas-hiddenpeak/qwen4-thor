@@ -1273,7 +1273,8 @@ void ChatServer::HandleMetrics(int fd) {
           metrics_.requests_total.load());
   counter("q4t_requests_success_total", "Requests that finished generating.",
           metrics_.requests_success.load());
-  counter("q4t_requests_error_total", "Requests rejected before generation.",
+  counter("q4t_requests_error_total",
+          "Requests rejected or failed during generation.",
           metrics_.requests_error.load());
   counter("q4t_requests_aborted_total", "Requests aborted by client disconnect.",
           metrics_.requests_aborted.load());
@@ -1991,6 +1992,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   std::vector<int32_t> generated;
   int next_token = -1;
   std::string finish_reason = "stop";
+  bool generation_failed = false;
 
   // Every prefill path reads its selected final row under model_mu_ and
   // checks stream completion before publishing h_logits to this thread.
@@ -2113,7 +2115,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       }
       if (mtp_ar.mtp_accepted_count <= 0) {
         // Scheduler failed the step or is shutting down.
-        finish_reason = "stop";
+        generation_failed = true;
         break;
       }
       for (int i = 0; i < mtp_ar.mtp_accepted_count &&
@@ -2248,7 +2250,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         }
         if (ar.next_token < 0) {
           // Scheduler failed the forward or is shutting down.
-          finish_reason = "stop";
+          generation_failed = true;
           break;
         }
         next_token = ar.next_token;
@@ -2261,7 +2263,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         s = model::ModelDecodeStepSeq(model_, &seq, tok_id, d_prefill_logits_,
                                       nullptr, nullptr, seq_id);
         if (!s.ok()) {
-          finish_reason = "stop";
+          generation_failed = true;
           break;
         }
         const cudaError_t copy_error = cudaMemcpyAsync(
@@ -2269,7 +2271,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
             static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost, nullptr);
         s = FinishHostReadback(copy_error, &gpu_healthy_);
         if (!s.ok()) {
-          finish_reason = "stop";
+          generation_failed = true;
           break;
         }
         next_token = argmax(h_logits.data());
@@ -2306,6 +2308,26 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       WriteAll(fd, "data: [DONE]\r\n\r\n");
     } else {
       SendError(fd, 409, "request cancelled");
+    }
+    cleanup();
+    return;
+  }
+  if (generation_failed) {
+    err_guard.ok = false;
+    std::fprintf(stderr, "[q4t] generation failed id=%s\n", id.c_str());
+    // The HTTP status is already committed for streaming requests. Publish
+    // an error terminal, never a normal stop/usage or a successful request.
+    if (stream) {
+      WriteAll(fd,
+               "data: {\"error\":{\"message\":\"generation failed\","
+               "\"type\":\"server_error\",\"code\":\"generation_failed\"}}"
+               "\r\n\r\n");
+      WriteAll(fd, "data: [DONE]\r\n\r\n");
+    } else {
+      SendSimple(fd, 500, "Internal Server Error",
+                 "{\"error\":{\"message\":\"generation failed\","
+                 "\"type\":\"server_error\",\"code\":\"generation_failed\"}}",
+                 "application/json");
     }
     cleanup();
     return;
@@ -2350,7 +2372,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       resp += "}";
       SendSimple(fd, 200, "OK", resp, "application/json");
     } else {
+      err_guard.ok = false;
       SendError(fd, 500, "decode failed");
+      cleanup();
+      return;
     }
   }
 
