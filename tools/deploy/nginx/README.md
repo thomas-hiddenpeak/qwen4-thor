@@ -59,3 +59,7 @@ Official directive semantics:
 [connection limits](https://nginx.org/en/docs/http/ngx_http_limit_conn_module.html).
 `limit_conn` starts counting after complete headers, so it is not a complete
 slow-header defense.
+
+For independent data/control connection pools, see [the two-process profile](ISOLATED.md).
+It uses separate nginx masters and a separate control port; it is not a drop-in
+replacement for clients that send every API call to the data address.

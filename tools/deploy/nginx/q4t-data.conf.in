@@ -1,0 +1,42 @@
+# Isolated data process profile. Start in its own nginx master.
+# Render @PREFIX@, @FRONT_PORT@ and @BACK_PORT@ with absolute/local values.
+worker_processes 1;
+pid @PREFIX@/nginx.pid;
+error_log @PREFIX@/error.log notice;
+events { worker_connections 128; }
+http {
+  log_format qualification '$request_method $uri $status $upstream_status $request_time';
+  access_log @PREFIX@/access.log qualification;
+  client_body_temp_path @PREFIX@/body;
+  proxy_temp_path @PREFIX@/proxy;
+  fastcgi_temp_path @PREFIX@/fastcgi;
+  uwsgi_temp_path @PREFIX@/uwsgi;
+  scgi_temp_path @PREFIX@/scgi;
+  # Global keys, never client-chosen IDs: all callers share these budgets.
+  limit_conn_zone $server_name zone=generation:1m;
+  limit_conn_status 429;
+  server {
+    listen 127.0.0.1:@FRONT_PORT@;
+    server_name q4t_local;
+    client_max_body_size 16m;
+    client_header_timeout 10s;
+    client_body_timeout 10s;
+    send_timeout 10s;
+    keepalive_timeout 5s;
+    proxy_http_version 1.1;
+    proxy_set_header Connection close;
+    proxy_buffering off;
+    proxy_request_buffering on;
+    proxy_ignore_client_abort off;
+    proxy_next_upstream off;
+    proxy_connect_timeout 2s;
+    proxy_send_timeout 30s;
+    # Inactivity timeout, not a whole-request deadline; 200K prefill exceeds 60s.
+    proxy_read_timeout 600s;
+    location = /v1/chat/completions {
+      limit_conn generation 4;
+      proxy_pass http://127.0.0.1:@BACK_PORT@;
+    }
+    location / { return 404; }
+  }
+}
