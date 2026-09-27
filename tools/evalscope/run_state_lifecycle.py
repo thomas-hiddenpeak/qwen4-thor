@@ -29,6 +29,7 @@ def main():
     ap.add_argument('--reference-run', type=Path, required=True)
     ap.add_argument('--binary', type=Path, default=ROOT / 'build/q4t')
     ap.add_argument('--port', type=int, default=8000)
+    ap.add_argument('--require-early-cancel', action='store_true')
     args = ap.parse_args()
     out = args.output.resolve()
     assert any(out.is_relative_to(ROOT / p) for p in ['build', '.q4t-work'])
@@ -49,6 +50,7 @@ def main():
     for flag, value in [('--port', str(args.port)), ('--max-seq', '2'), ('--max-len', '65536')]:
         command[command.index(flag) + 1] = value
     save(out / 'plan.json', {'command': command, 'cases': cases,
+         'require_early_cancel': args.require_early_cancel,
          'checks': ['A-B-A', 'long-short overlap twice', 'prefill reset then A',
                     'decode reset then A'],
          'limits': 'HTTP text/usage/finish and occupancy, not all logits or performance; no fault injection'})
@@ -179,6 +181,12 @@ def main():
                     return int(next(x.split()[1] for x in text.splitlines() if x.startswith('q4t_requests_aborted_total ')))
                 assert aborted(after) == aborted(before) + 1
                 assert request(label + '-recovery', cases['A']) == a
+                if args.require_early_cancel and not decode:
+                    import re
+                    trace = (out / 'server.log').read_text()
+                    matches = re.findall(r'prefill cancelled seq=\d+ position=(\d+) total=(\d+)', trace)
+                    assert matches and int(matches[-1][0]) < int(matches[-1][1]) == 45056
+                    save(out / 'early-cancel.json', {'position': int(matches[-1][0]), 'total': 45056})
                 records.append({'case': label, 'passed': True})
                 print(label + ': passed', flush=True)
             idle('final')

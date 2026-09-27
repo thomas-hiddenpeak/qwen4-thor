@@ -4,6 +4,7 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
+#include <poll.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <unistd.h>
@@ -38,6 +39,16 @@ namespace server {
 namespace {
 
 constexpr const char* kDefaultModelName = "qwen3.8-flash-next";
+
+// Do not consume input or treat a TCP write-half-close as cancellation:
+// an HTTP client may shutdown(SHUT_WR) and still read the response.
+// POLLERR/POLLHUP identify a failed or fully hung-up connection. A graceful
+// peer FIN alone remains ambiguous until the existing response write fails.
+bool ClientConnectionFailed(int fd) {
+  pollfd peer{fd, 0, 0};
+  return poll(&peer, 1, 0) > 0 &&
+         (peer.revents & (POLLERR | POLLHUP)) != 0;
+}
 
 // A successful launch is not a completed result. Drain the existing stream
 // boundary even if a copy failed, and never publish stale host output.
@@ -810,6 +821,8 @@ void ChatServer::RunOnePrefillChunk() {
     const std::lock_guard<std::mutex> lock(model_mu_);
     if (!gpu_healthy_.load(std::memory_order_relaxed)) {
       s = Status::Fail("chunk prefill: GPU unhealthy");
+    } else if (ClientConnectionFailed(req->fd)) {
+      req->cancelled = true;
     } else {
       if (req->seq->stage == model::ModelSequence::Stage::kIdle) {
         s = model::ModelBeginSequence(model_, req->seq, nullptr, req->seq_id);
@@ -835,6 +848,9 @@ void ChatServer::RunOnePrefillChunk() {
       // before handing shared scratch to another request.
       const Status completion = FinishHostReadback(copy_error, &gpu_healthy_);
       if (s.ok()) s = completion;
+      if (s.ok() && ClientConnectionFailed(req->fd)) {
+        req->cancelled = true;
+      }
       if (!s.ok() && cudaPeekAtLastError() != cudaSuccess) {
         gpu_healthy_.store(false, std::memory_order_relaxed);
       }
@@ -842,10 +858,10 @@ void ChatServer::RunOnePrefillChunk() {
   }
   {
     const std::lock_guard<std::mutex> lock(sched_mu_);
-    if (s.ok() && !last && !scheduler_stop_) {
+    if (s.ok() && !req->cancelled && !last && !scheduler_stop_) {
       chunk_prefill_pending_.push_back(req);
     } else {
-      req->ok = s.ok() && last && !scheduler_stop_;
+      req->ok = s.ok() && !req->cancelled && last && !scheduler_stop_;
       if (!req->ok) req->seq->stage = model::ModelSequence::Stage::kFailed;
       req->done = true;
       req->cv.notify_one();
@@ -1681,8 +1697,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       getenv("Q4T_NO_BATCH_PREFILL") == nullptr;
   const bool scheduled_chunk_prefill =
       scheduler_active_ && !mtp_loaded_ && chunked && vptr == nullptr;
+  bool prefill_cancelled = false;
   if (scheduled_chunk_prefill) {
     ChunkPrefillReq pr;
+    pr.fd = fd;
     pr.seq = &seq;
     pr.seq_id = seq_id;
     pr.ids = ids.data();
@@ -1696,6 +1714,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         pr.cv.wait(lock, [&] { return pr.done; });
       }
     }
+    prefill_cancelled = pr.cancelled;
     s = pr.ok ? Status() : Status::Fail("scheduled chunk prefill failed");
   } else if (batched_prefill) {
     PrefillReq pr;
@@ -1734,6 +1753,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         // Intermediate chunks only produce trunk/state; the final chunk
         // writes one logits row at the start of the shared buffer.
         while (s.ok() && seq.position < T) {
+          if (ClientConnectionFailed(fd)) {
+            prefill_cancelled = true;
+            s = Status::Fail("client disconnected during prefill");
+            break;
+          }
           const int base = seq.position;
           const int c = std::min(chunk, T - base);
           const bool last = (base + c == T);
@@ -1774,6 +1798,17 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                          cudaGetErrorString(se != cudaSuccess ? se : le));
       }
     }
+  }
+  if (prefill_cancelled && gpu_healthy_.load(std::memory_order_relaxed)) {
+    // Scheduler chunks have drained before notification; the inline path
+    // drains above. The request thread still owns fd and all request buffers.
+    std::fprintf(stderr, "[q4t] prefill cancelled seq=%d position=%d total=%d\n",
+                 seq_id, seq.position, T);
+    metrics_.requests_aborted.fetch_add(1, std::memory_order_relaxed);
+    err_guard.ok = true;
+    model::ModelEndSequence(&seq);
+    cleanup();
+    return;
   }
   if (!s.ok()) {
     model::ModelEndSequence(&seq);

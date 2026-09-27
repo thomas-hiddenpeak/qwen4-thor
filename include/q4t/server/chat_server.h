@@ -215,6 +215,8 @@ class ChatServer {
   // Request thread owns these buffers and waits until the entire prompt is
   // done. Only the scheduler advances seq between chunk completions.
   struct ChunkPrefillReq {
+    int fd = -1;  // Borrowed until done; owned by the waiting request thread.
+    bool cancelled = false;
     model::ModelSequence* seq = nullptr;
     int seq_id = 0;
     const int32_t* ids = nullptr;
