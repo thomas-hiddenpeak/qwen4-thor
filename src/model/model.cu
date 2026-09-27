@@ -1441,6 +1441,9 @@ Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx,
 Status ModelBeginSequence(const Model& m, ModelSequence* seq,
                           cudaStream_t stream, int seq_id) {
   if (!seq) return Status::Fail("ModelBeginSequence: null seq");
+  if (seq_id < 0 || seq_id >= m.cfg.max_seq) {
+    return Status::Fail("ModelBeginSequence: invalid sequence slot");
+  }
   Status s = ResetAllLayers(m, stream, seq_id);
   if (!s.ok()) return s;
   seq->stage = ModelSequence::Stage::kPrefill;
@@ -1456,6 +1459,11 @@ Status ModelPrefill(const Model& m, ModelSequence* seq,
                     const VisionFeatures* vision, int seq_id,
                     LogitsRows logits_rows) {
   if (!seq) return Status::Fail("ModelPrefill: null seq");
+  if (seq_id == -1) seq_id = seq->seq_id;
+  if (seq->seq_id < 0 || seq->seq_id >= m.cfg.max_seq ||
+      seq_id != seq->seq_id) {
+    return Status::Fail("ModelPrefill: sequence slot mismatch");
+  }
   if (seq->stage != ModelSequence::Stage::kPrefill) {
     return Status::Fail("ModelPrefill: sequence not in prefill stage");
   }
@@ -1528,6 +1536,11 @@ Status ModelDecodeStepSeq(const Model& m, ModelSequence* seq,
                           cudaStream_t stream, uint16_t* trunk_out,
                           int seq_id) {
   if (!seq) return Status::Fail("ModelDecodeStepSeq: null seq");
+  if (seq_id == -1) seq_id = seq->seq_id;
+  if (seq->seq_id < 0 || seq->seq_id >= m.cfg.max_seq ||
+      seq_id != seq->seq_id) {
+    return Status::Fail("ModelDecodeStepSeq: sequence slot mismatch");
+  }
   if (seq->stage != ModelSequence::Stage::kDecode) {
     return Status::Fail("ModelDecodeStepSeq: sequence not in decode stage");
   }

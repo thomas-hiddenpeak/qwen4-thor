@@ -462,10 +462,11 @@ Status ModelBeginSequence(const Model& m, ModelSequence* seq,
 // (MTP scheme A 钩子, 见 ModelDecodeStep 的说明)。
 // vision: 可选, 非 null 且 num_tokens>0 时把 image token 的 embedding 替换为
 // 视觉特征 (见 VisionFeatures)。
+// seq_id=-1 uses seq->seq_id; an explicit different slot is rejected.
 Status ModelPrefill(const Model& m, ModelSequence* seq, const int32_t* input_ids,
                     int T, uint16_t* logits, cudaStream_t stream,
                     uint16_t* trunk_out = nullptr,
-                    const VisionFeatures* vision = nullptr, int seq_id = 0,
+                    const VisionFeatures* vision = nullptr, int seq_id = -1,
                     LogitsRows logits_rows = LogitsRows::kAllRows);
 
 // Queue one text-only prompt chunk starting at seq->position. prompt contains
@@ -490,9 +491,10 @@ Status ModelPrefillTextChunk(const Model& m, ModelSequence* seq,
 // 一个 decode step: seq 须处于 kDecode 阶段。token_id 写入 position,
 // -> logits [1, vocab]。自动 ++position 并追加 history (PLE 上下文)。
 // 等价于 ModelDecodeStep (history 由 seq 内部维护)。trunk_out 同上。
+// seq_id=-1 uses seq->seq_id; an explicit different slot is rejected.
 Status ModelDecodeStepSeq(const Model& m, ModelSequence* seq, int32_t token_id,
                           uint16_t* logits, cudaStream_t stream,
-                          uint16_t* trunk_out = nullptr, int seq_id = 0);
+                          uint16_t* trunk_out = nullptr, int seq_id = -1);
 
 // 序列结束: 状态机复位为 kIdle (不释放 device 内存, 内存归 Model 所有)。
 void ModelEndSequence(ModelSequence* seq);
