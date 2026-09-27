@@ -1,4 +1,4 @@
-// Independent E4M3 contract audit. Run only after HTTP E2E gate review.
+// Independent E4M3 bug regression; may run before HTTP (2026-09-27 policy).
 // See docs/QUANT_REFERENCE_CONTRACT_2026-09-23.md for scope and usage.
 #include <cuda_fp8.h>
 #include <cuda_runtime.h>
