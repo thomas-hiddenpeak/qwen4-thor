@@ -37,8 +37,10 @@ MTP关闭、max_seq=1，五档1K/4K/8K/44K/200K。范围和完整证据见
 
 2026-09-28：公共Linux入口已实现，与Thor发布入口共享host测试源码
 清单，无CUDA/ICU/私有模型依赖；本机18项公共合同、16项框架反例、
-原22项发布主机检查全部通过，无SKIP，构建零警告。已配置GitHub
-公共CI，远端结果待核对。EVALUATION补清结构整理/工具的验证顺序。
+原22项发布主机检查全部通过，无SKIP，构建零警告。GitHub Ubuntu
+公共CI也实际通过18项合同与16项框架反例，绑定实现提交a40b28b，
+[运行记录](https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/36341555659)。
+本阶段出口已满足。EVALUATION补清结构整理/工具的验证顺序。
 106项运行时源码、部署二进制及发布必测清单身份未变；仍为text-v1 /
 e659a108，未跑模型HTTP或五档性能。证据：.q4t-work/host-ci-20260928/。
 本阶段仅交付检查入口；提交/游标责任收拢未做，kernel、同步路径和
