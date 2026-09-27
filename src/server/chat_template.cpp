@@ -1,4 +1,5 @@
 #include "q4t/server/chat_template.h"
+#include "q4t/server/request_json.h"
 
 #include <charconv>
 #include <cmath>
@@ -198,7 +199,8 @@ Status AppendToolCalls(const io::Json& message, bool has_content,
       if (arguments->str.empty())
         arguments = nullptr;
       else {
-        Status s = io::ParseJson(arguments->str, &parsed, true);
+        Status s = io::ParseJson(arguments->str, &parsed, true,
+                                 kRequestJsonLimits);
         if (!s) return Status::Fail("invalid tool arguments JSON");
         arguments = &parsed;
       }

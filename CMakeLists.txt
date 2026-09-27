@@ -189,6 +189,7 @@ target_include_directories(q4t_runtime PUBLIC include)
 # q4t_server — OpenAI-compatible HTTP server (POSIX sockets, no deps)
 # ---------------------------------------------------------------------------
 add_library(q4t_server STATIC src/server/chat_server.cpp
+  src/server/http_request.cpp
                              src/server/chat_template.cpp)
 target_include_directories(q4t_server PUBLIC include)
 target_link_libraries(q4t_server PUBLIC q4t_model q4t_text q4t_io q4t_runtime
@@ -256,6 +257,8 @@ if(Q4T_BUILD_TESTS)
     tests/ple_e2e_gather_test.cpp
     tests/ple_working_memory_test.cpp
     tests/io_json_test.cpp
+    tests/server_http_request_test.cpp
+    src/server/http_request.cpp
     tests/io_safetensors_test.cpp
     tests/io_model_config_test.cpp
     tests/io_weight_loader_test.cpp

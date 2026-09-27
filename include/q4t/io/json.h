@@ -4,10 +4,11 @@
 // arrays, strings with \u escapes, numbers, true/false/null). It is
 // deliberately small and dependency-free, and is reused for every JSON file in
 // the model directory (safetensors headers, config.json, tokenizer_config.json,
-// ...). Not a general-purpose JSON library: no duplicate-key detection beyond
-// last-wins, no streaming, numbers are stored as double.
+// ...). No streaming; numbers are stored as double. Duplicate keys retain
+// first-match lookup unless explicitly rejected by the parse limits.
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 #include <string>
 #include <utility>
@@ -48,16 +49,25 @@ struct Json {
   bool GetBool(const std::string& key, bool def = false) const;
   const Json* GetArray(const std::string& key) const;
 
-  // Numeric conversions (no-op if not a number).
+  // Integer conversion returns def for non-finite, fractional or out-of-range
+  // values. AsDouble preserves a stored number.
   int64_t AsInt(int64_t def = 0) const;
   double AsDouble(double def = 0.0) const;
+};
+
+struct JsonParseLimits {
+  size_t max_depth = 64;
+  size_t max_values = 4 * 1024 * 1024;  // Includes object keys.
+  size_t max_string_bytes = 256 * 1024 * 1024;  // Total decoded bytes.
+  bool reject_duplicate_keys = false;
 };
 
 // Parse a JSON document. Returns a failure Status with a message on error.
 // Ordinary model/config parsing does not retain numeric spelling. Chat tool
 // rendering opts in to preserve integers without changing numeric accessors.
 Status ParseJson(const std::string& text, Json* out,
-                 bool preserve_number_text = false);
+                 bool preserve_number_text = false,
+                 const JsonParseLimits& limits = {});
 
 }  // namespace io
 }  // namespace q4t

@@ -72,3 +72,68 @@ Q4T_TEST(json_parse_errors) {
   Q4T_CHECK(!ParseJson("", &j).ok());  // empty
   return true;
 }
+
+Q4T_TEST(json_rejects_deep_input_before_recursing) {
+  Json j;
+  Q4T_CHECK(ParseJson(std::string(64, '[') + "0" +
+                         std::string(64, ']'), &j).ok());
+  Q4T_CHECK(!ParseJson(std::string(65, '[') + "0" +
+                          std::string(65, ']'), &j).ok());
+  Q4T_CHECK(!ParseJson(std::string(100000, '[') + "0" +
+                          std::string(100000, ']'), &j).ok());
+  Q4T_CHECK(ParseJson("[]", &j).ok() && j.array.empty());
+  return true;
+}
+
+Q4T_TEST(json_resource_limits_and_duplicate_keys) {
+  Json j;
+  q4t::io::JsonParseLimits limits;
+  limits.max_values = 3;
+  Q4T_CHECK(ParseJson("[1,2]", &j, false, limits).ok());
+  Q4T_CHECK(!ParseJson("[1,2,3]", &j, false, limits).ok());
+  Q4T_CHECK(ParseJson(R"({"x":1})", &j, false, limits).ok());
+  Q4T_CHECK(!ParseJson(R"({"x":1,"y":2})", &j, false, limits).ok());
+  limits.max_values = 100;
+  limits.max_string_bytes = 4;
+  Q4T_CHECK(ParseJson(R"({"x":"abc"})", &j, false, limits).ok());
+  Q4T_CHECK(!ParseJson(R"({"x":"abcd"})", &j, false, limits).ok());
+  limits.reject_duplicate_keys = true;
+  Q4T_CHECK(!ParseJson(R"({"x":1,"\u0078":2})", &j, false, limits).ok());
+  limits.reject_duplicate_keys = false;
+  Q4T_CHECK(ParseJson(R"({"x":1,"x":2})", &j, false, limits).ok());
+  Q4T_CHECK(j.GetInt("x") == 1);
+  return true;
+}
+
+Q4T_TEST(json_strict_numbers_and_safe_integer_conversion) {
+  Json j;
+  for (const char* bad : {"-", "01", "-01", "+1", ".1", "1.", "1e",
+                          "1e+", "1e-", "1e999", "1e-999", "NaN", "Infinity"})
+    Q4T_CHECK(!ParseJson(bad, &j).ok());
+  Q4T_CHECK(ParseJson("-0.125e+2", &j).ok());
+  Q4T_CHECK(j.AsDouble() == -12.5 && j.AsInt(7) == 7);
+  Q4T_CHECK(ParseJson("9223372036854775808", &j).ok());
+  Q4T_CHECK(j.AsInt(7) == 7);
+  Q4T_CHECK(ParseJson("-9223372036854775808", &j).ok());
+  Q4T_CHECK(j.AsInt() == INT64_MIN);
+  Q4T_CHECK(ParseJson("9007199254740993", &j, true).ok());
+  Q4T_CHECK(j.str == "9007199254740993");
+  j.number = std::nan("");
+  Q4T_CHECK(j.AsInt(7) == 7);
+  return true;
+}
+
+Q4T_TEST(json_strict_unicode_and_controls) {
+  Json j;
+  for (const char* bad : {R"("\ud800")", R"("\udc00")",
+                          R"("\ud800\u0041")", "\"a\tb\"",
+                          "\"\xc0\xaf\"", "\"\xed\xa0\x80\"",
+                          "\"\xf4\x90\x80\x80\"", "\"\xe2\x82\""})
+    Q4T_CHECK(!ParseJson(bad, &j).ok());
+  Q4T_CHECK(ParseJson(R"("\ud83d\ude80")", &j).ok());
+  Q4T_CHECK(j.str == "\xf0\x9f\x9a\x80");
+  Q4T_CHECK(ParseJson("\"中文\xf0\x9f\x9a\x80\"", &j).ok());
+  Q4T_CHECK(ParseJson(R"("\u0000\t")", &j).ok());
+  Q4T_CHECK(j.str.size() == 2 && j.str[0] == '\0');
+  return true;
+}

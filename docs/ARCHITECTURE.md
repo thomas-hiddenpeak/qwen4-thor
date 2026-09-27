@@ -96,7 +96,7 @@ GPU 层计算掩盖; 仅当读取超过重叠窗口时才同步等待。
   W4A4 当前保留 cuBLASLt tensor core；历史 SIMT 候选未获收益，
   不据此排除 grouped 执行等其他方案。见 [MoE 执行合同](../dataflow-engine/MOE_DEVICE_PLAN.md) |
 | HTTP | 轻量 C++ HTTP (自研或 cpp-httplib 级) | 无重依赖; OpenAI 兼容语义 |
-| JSON | 自研递归下降解析器 | 当前缺少深度等输入边界，已复现栈崩溃；见完善度审计，不得视为有界解析 |
+| JSON | 自研递归下降解析器 | 输入边界候选增加深度/节点/字符串预算；默认部署与验收范围见 STATUS/INPUT_BOUNDARY_2026-09-27.md |
 | Tokenizer | 自研 BPE (解析 tokenizer.json) | 无 Python 依赖 |
 
 ## PD-ready 架构 (Prefill/Decode 可分离)

@@ -13,6 +13,7 @@
 #include <cctype>
 #include <cerrno>
 #include <chrono>
+#include <cmath>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
@@ -30,6 +31,8 @@
 #include "q4t/io/weight_loader.h"
 #include "q4t/runtime/memory_budget.h"
 #include "q4t/server/chat_template.h"
+#include "q4t/server/http_request.h"
+#include "q4t/server/request_json.h"
 #include "q4t/vision/processor.h"
 #include "q4t/vision/vision.h"
 
@@ -125,58 +128,6 @@ bool WriteAll(int fd, const std::string& s) {
   return WriteAll(fd, s.data(), s.size());
 }
 
-// Read the full HTTP request: request line + headers (until blank line) +
-// Content-Length body. Returns false on a malformed or closed request.
-bool ReadRequest(int fd, std::string* method, std::string* path,
-                 std::string* body) {
-  std::string buf;
-  char tmp[4096];
-  size_t header_end = std::string::npos;
-  while (header_end == std::string::npos) {
-    const ssize_t n = ::read(fd, tmp, sizeof(tmp));
-    if (n <= 0) return false;
-    buf.append(tmp, static_cast<size_t>(n));
-    header_end = buf.find("\r\n\r\n");
-    if (buf.size() > 1 << 20) return false;  // header guard
-  }
-  const size_t head_len = header_end + 4;
-  std::string head = buf.substr(0, header_end);
-  std::string rest = buf.substr(head_len);
-
-  const size_t line_end = head.find("\r\n");
-  std::string request_line = (line_end == std::string::npos)
-                                 ? head
-                                 : head.substr(0, line_end);
-  {
-    const size_t sp1 = request_line.find(' ');
-    const size_t sp2 = request_line.rfind(' ');
-    if (sp1 == std::string::npos || sp2 == std::string::npos || sp2 <= sp1) {
-      return false;
-    }
-    *method = request_line.substr(0, sp1);
-    *path = request_line.substr(sp1 + 1, sp2 - sp1 - 1);
-  }
-
-  // Content-Length (case-insensitive scan of headers).
-  size_t content_length = 0;
-  std::string lower = head;
-  for (auto& c : lower) c = static_cast<char>(std::tolower(c));
-  const size_t cl = lower.find("content-length:");
-  if (cl != std::string::npos) {
-    size_t i = cl + std::string("content-length:").size();
-    while (i < head.size() && (head[i] == ' ' || head[i] == '\t')) ++i;
-    content_length = static_cast<size_t>(std::strtoul(head.c_str() + i, nullptr,
-                                                      10));
-  }
-  if (content_length > (16u << 20)) return false;  // body guard
-  while (rest.size() < content_length) {
-    const ssize_t n = ::read(fd, tmp, sizeof(tmp));
-    if (n <= 0) return false;
-    rest.append(tmp, static_cast<size_t>(n));
-  }
-  *body = rest.substr(0, content_length);
-  return true;
-}
 
 void SendSimple(int fd, int code, const char* status, const std::string& body,
                 const std::string& content_type) {
@@ -769,7 +720,7 @@ Status ChatServer::Run() {
 
 void ChatServer::HandleClient(int fd) {
   std::string method, path, body;
-  if (!ReadRequest(fd, &method, &path, &body)) {
+  if (!ReadHttpRequest(fd, &method, &path, &body)) {
     SendSimple(fd, 400, "Bad Request", "bad request", "text/plain");
     return;
   }
@@ -801,7 +752,8 @@ void ChatServer::Dispatch(int fd, const std::string& method,
   }
   if (path == "/v1/requests/cancel" && method == "POST") {
     io::Json req;
-    if (!io::ParseJson(body, &req, true).ok() || !req.IsObject() ||
+    if (!io::ParseJson(body, &req, true, kRequestJsonLimits).ok() ||
+        !req.IsObject() ||
         !ValidRequestKey(req.GetString("cancel_token"))) {
       SendError(fd, 400, "invalid cancellation request");
       return;
@@ -1485,9 +1437,19 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     return;
   }
   io::Json req;
-  Status s = io::ParseJson(body, &req, true);
+  Status s = io::ParseJson(body, &req, true, kRequestJsonLimits);
   if (!s.ok()) {
     SendError(fd, 400, "invalid JSON: " + s.message());
+    return;
+  }
+
+  if (!req.IsObject()) {
+    SendError(fd, 400, "request must be a JSON object");
+    return;
+  }
+  if (const io::Json* value = req.Find("stream");
+      value && !value->IsBool()) {
+    SendError(fd, 400, "stream must be boolean");
     return;
   }
 
@@ -1547,10 +1509,17 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     err_guard.ok = true;
   };
 
-  // max_tokens (default to the server cap).
-  int max_tokens = static_cast<int>(
-      req.GetInt("max_tokens", max_tokens_default_));
-  if (max_tokens <= 0) max_tokens = 1;
+  // Validate before any floating-to-integer conversion or narrowing.
+  int max_tokens = max_tokens_default_;
+  if (const io::Json* value = req.Find("max_tokens")) {
+    const double n = value->AsDouble(-1);
+    if (!value->IsNumber() || !std::isfinite(n) || n < 1 ||
+        n > 2147483647.0 || std::trunc(n) != n) {
+      SendError(fd, 400, "max_tokens must be an integer in [1,2147483647]");
+      return;
+    }
+    max_tokens = static_cast<int>(n);
+  }
   // Upper bound: decode stops at max_len_ anyway (KV cache), so a huge
   // max_tokens only pins a seq slot and grows host buffers; cap it so one
   // request cannot starve the pool.
