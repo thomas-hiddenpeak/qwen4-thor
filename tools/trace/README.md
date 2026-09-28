@@ -170,3 +170,10 @@ frame上限16MiB。单个受限文件的解析/IO不可抢占，deadline非故�
 列表算法核对Cache，再要求32/64逐请求计数与原影子结果完全一致。输出
 逐请求CSV、容量汇总与核验JSON，不改变在线观察器的32/64容量或其成本。
 所有容量保持相同完整请求顺序与prefill合同，不重新发送HTTP。
+
+`replay_hybrid.py --directory RUN --baseline CAPACITY_RUN --output NEW
+--checker CHECKER --binary BINARY`比较64/128/256槽、固定区占0/25/50/75/100%，
+余下LRU；排名只用原冻结校准。prefill扣除固定命中后，剩余并集放不入动态
+区则bypass，不污染动态顺序。初始化固定区计费；同时比较每请求重置和连续
+保留。逐组独立列表核对，0/100端点匹配原纯LRU/静态；test_hybrid.py提供
+直接合同。结果仅离线，见docs/MOE_HYBRID_2026-09-28.md。
