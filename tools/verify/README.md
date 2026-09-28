@@ -10,6 +10,14 @@ C++ NVFP4 W4A4 与 transformers 参考的差异可能来自激活量化、浮点
 分支的相同输入对照才有意义：例如 T=8 或 256 不覆盖 2048 预算后的稀疏
 选择路径。首个 full-attention 层出现不等于稀疏分支已经被验证。
 
+## serve入口与能力检查
+
+`serve_options/run.py --binary BUILD/q4t --quality-run QUALITY_RUN --output
+.q4t-work/serve-entry-check`验证真实CLI在加载前拒绝非法参数，并启动默认
+及显式媒体两种服务，检查实际单槽、视觉加载开关、文本SSE及默认媒体拒绝。
+需要Thor和已有1024-token质量夹具；媒体开启仅验证加载与文本，不代表
+媒体生成验收。无需权重的参数/能力组合合同同时进入公共host CI。
+
 ## Model设备内存所有权
 
 `model_owner/run.py`在Thor上链接指定构建的真实库，检查空对象、部分
