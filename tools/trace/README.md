@@ -177,3 +177,25 @@ frame上限16MiB。单个受限文件的解析/IO不可抢占，deadline非故�
 区则bypass，不污染动态顺序。初始化固定区计费；同时比较每请求重置和连续
 保留。逐组独立列表核对，0/100端点匹配原纯LRU/静态；test_hybrid.py提供
 直接合同。结果仅离线，见docs/MOE_HYBRID_2026-09-28.md。
+
+## 专家ID分布（不做缓存回放）
+
+`distribution.py --plan tools/trace/distribution-plan-20260928.json --output NEW`
+核验固定计划的常规完整轨迹，分别统计prefill/decode、48层全部512专家。
+依赖NumPy；输出逐请求NPZ、逐批/类别/场景/长度分组NPZ、主聊天样本密集
+experts.csv、逐层layers.csv、完整身份和重复标记。只消费已提交forward；
+非成功请求保留在逐请求数据，聚合排除。相同输入token在同类别/模型身份
+下按首次成功记录生成unique_input视图，all和原批次仍保留；不同路由的
+重复会显式标记，不隐去差异。模型/类别不能凭专家编号混合解释。
+
+频次为选择次数，block_presence为块内出现一次，request_presence为阶段内
+出现一次；等权先逐请求归一化，无阶段的请求不进入该阶段分母。Top-N仅
+为同样本描述性集中度，排序相同计数时ID升序；零频不补入稳定性名单。
+半段按阶段实际行数二分，名单不足64活跃专家的层不参与Top64重合均值。
+未观察到不能称死专家，场景相关不等于因果语义分工。
+
+`summarize_distribution.py --directory NEW`重算分组并生成readout/汇总、
+场景表和跨请求名单重合；输出不能覆盖。`test_distribution.py --checker
+CHECKER`运行直接合同，也可在末尾指定unittest用例名称只重验受影响项。
+本轮来源、排除项、口径及结论见docs/MOE_DISTRIBUTION_2026-09-28.md。
+公开仓不包含私有轨迹；缺源即失败。没有发送模型HTTP或评价缓存策略。
