@@ -5,22 +5,23 @@
 
 ## 当前结论
 
-**默认入口已更新为`text-v1-maintenance-20260928` / `45df506f`。**
-安装的是已验收二进制原件，治理成本已由用户接受；单Thor、文本greedy、
-MTP关闭、max_seq=1不变。新包与源码/构建缓存身份校验通过，默认入口
-启动、1024-token HTTP精确输出/usage/SSE、槽位释放及正常停止通过。
-已实际验证旧版恢复并重新安装维护版；当前没有常驻服务。
+**默认入口已更新为`text-v1-server-owner-20260928` / `d9d02f92`。**
+用户已接受本轮所有权与服务拆分的实测性能代价；单Thor、文本greedy、
+MTP关闭、max_seq=1保持。安装已验收二进制原件，未重建默认静态库。
+1172个封存文件、115项运行时源码、发布包及构建缓存身份复核通过。
+默认启动、1024-token精确输出/usage/SSE、槽位释放和正常停止通过；
+已实际恢复旧45df506f后重新安装新版，当前没有常驻服务。
 
-包：.q4t-work/releases/text-v1-maintenance-20260928/；默认身份见
-build/q4t.release.json。部署证据：
-.q4t-work/runner-maintenance-deployment-20260928/deployment.json。
-旧text-v1包及默认二进制备份保留，正式五档参考和原验收证据未改写。
-停止服务后可运行该证据目录的rollback-default.py恢复旧默认及元数据。
-上一轮提交/完成治理交付关闭；MoE路由草案留待后续独立推进和评估，未实施offload。
+包：.q4t-work/releases/text-v1-server-owner-20260928/；默认身份见
+build/q4t.release.json。部署证据与rollback-default.py位于
+.q4t-work/server-owner-deployment-20260928/；停止服务后可恢复旧默认。
+成本接受决定：.q4t-work/server-owner-acceptance-20260928/decision.json。
+原性能测量、五档参考及旧发布包均保留，不将本轮成本接受写成性能持平，
+也不更改后续通用门槛。两项治理交付关闭；实验路径隔离与MoE继续暂缓。
 
-## 当前维护增量：两项改造完成，功能通过，性能代价待决
+## 当前维护增量：两项改造完成，实测代价已接受
 
-实现365f1f2已推送main，无额外分支；候选d9d02f92未替换默认45df506f。
+实现365f1f2已推送main，无额外分支；已接受d9d02f92并替换默认45df506f。
 只推进Model设备内存owner和ChatServer职责拆分。ModelOwner不可复制/
 移动，失败加载检查完成后释放部分资源，拒绝覆盖已加载模型；服务
 停止并释放MTP借用后由owner释放Model，补上原服务缺少Model释放的责任。
@@ -39,7 +40,7 @@ HTTP质量11/11、模板63条、取消8组、decode故障4组、prefill读回故
 首次缺少网络声明头的构建失败保留；修复后运行时与验证期间身份未变。
 [实现提交CI](https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/36367178347)。
 
-候选与当前默认各完成一次五档矩阵，每档三条、输出256token，输出均与
+候选d9d02f92与当时默认45df506f各完成一次五档矩阵，每档三条、输出256token，输出均与
 冻结参考一致。下表decode为三次调和均值变化，TTFT为三次算术均值变化；
 首请求与后续请求分别记录，没有追加采样或修改参考。
 
@@ -53,9 +54,9 @@ HTTP质量11/11、模板63条、取消8组、decode故障4组、prefill读回故
 
 1K/4K/8K后续TTFT、8K后续decode在较慢方向超出原版重复范围，故未满足
 EVALUATION的性能持平出口；一次候选/原版对照不证明因果或稳定尾延迟。
-建议接受本轮测得的小幅代价以保留生命周期修复与维护收益，但该决定尚
-未作出，不沿用上一轮成本接受。默认45df506f及回滚材料保持不变。
-候选包已准备并核对115项运行时文件与二进制，未激活，无常驻服务。
+用户随后明确接受本轮实测性能代价，据此关闭待决项并更新默认；上述
+未满足严格持平出口的测量结论保持不变，未重复五档或修改参考。
+发布包与115项运行时文件、二进制及实际构建缓存一致；部署检查见上文。
 
 完整证据：.q4t-work/server-owner-20260928/audited-results.json；同目录
 package/为候选包，artifact-binding.json为封存清单。未做：实验路径
