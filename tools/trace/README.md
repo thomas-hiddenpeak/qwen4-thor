@@ -205,3 +205,9 @@ CHECKER`运行直接合同，也可在末尾指定unittest用例名称只重验�
 同层top-10的边际经验概率（全512及最高10位、CSV/Markdown）。每层总和10，
 不是全部选择份额的总和1；不等于固定十位同时出现的概率。默认聊天去重
 组，可选择populations.json中的其他组；输出不覆盖原数据。
+
+`top_expert_sets.py --directory DISTRIBUTION_RESULTS --output NEW --top-n 30`
+将每层同样本Top-N名单与每个token实际top10比较，输出各专家入选概率、
+选择覆盖率、平均重合个数、至少一个/全部十个概率和0–10个重合计数。
+后两概率从原始轨迹直接计算，不假设专家独立；prefill这里按token而非块。
+可用--population选择分组。全部属于同样本描述统计，不是缓存预测。
