@@ -135,13 +135,8 @@ class ChatServer {
   void HandleMetrics(int fd);
   void HandleChat(int fd, const std::string& body);
 
-  // B1 multi-request scheduling. The model's per-forward scratch (GEMM ws,
-  // PLE gather, MTP speculative buffers) is a single shared allocation, so all
-  // model forwards are serialized behind `model_mu_`; the per-sequence
-  // recurrent state is pooled and isolated by seq_id. CPU post-processing
-  // (D2H/argmax/tokenize/SSE) and encoding run OUTSIDE `model_mu_` on a
-  // per-request CUDA stream, so one request's D2H overlaps another request's
-  // forward on the GPU.
+  // Shared scratch is protected by model_mu_ through default-stream GPU
+  // completion and host readback. Only then can another request reuse it.
   int AllocSeqId(RequestControl* control, int fd);
   RequestRegistry requests_;
   std::mutex connections_mu_;
@@ -168,18 +163,10 @@ class ChatServer {
   // forward has produced this request's result. `next_token` carries the
   // plain-decode argmax back; `mtp_*` carry the MTP step output.
   struct ActiveRequest {
-    int seq_id = 0;        // pooled-state slice index
-    int position = 0;      // absolute position of the token to decode
     int32_t token = 0;     // the token to feed (this request's next input)
-    std::vector<int32_t> ple_hist;  // PLE n-gram context (ngram_size-1, oldest
-                                     // first, EOS-filled) for `token`
-    model::ModelSequence* seq = nullptr;  // the request's main sequence (owned
-                                           // by the request thread; the
-                                           // scheduler reads its
-                                           // position/history/seq_id/stage to
-                                           // run the MTP step — the request
-                                           // thread is blocked on `cv` for the
-                                           // whole step, so no race)
+    // Borrowed while the request thread waits on cv. The scheduler uses
+    // this single state for submission and completion, including plain decode.
+    model::ModelSequence* seq = nullptr;
     bool pending = false;  // token registered, awaiting the packed forward
     bool done = false;     // scheduler produced `next_token`
     int32_t next_token = 0;
@@ -216,6 +203,7 @@ class ChatServer {
   struct PrefillReq {
     RequestControl* control = nullptr;
     int fd = -1;
+    model::ModelSequence* seq = nullptr;
     int seq_id = 0;
     const int32_t* ids = nullptr;
     int len = 0;

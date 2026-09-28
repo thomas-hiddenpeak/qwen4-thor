@@ -17,7 +17,7 @@ assert any(out.is_relative_to(ROOT / x) for x in ['build', '.q4t-work'])
 out.mkdir(parents=True, exist_ok=False)
 shutil.copy2(__file__, out / 'run.py')
 shutil.copy2(Path(__file__).with_name('check.cu'), out / 'check.cu')
-for name in ['include/q4t/model/model.h', 'src/model/model.cu']:
+for name in ['include/q4t/model/model.h', 'include/q4t/model/sequence.h', 'src/model/model.cu']:
     dest = out / name
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_bytes((ROOT / name).read_bytes())

@@ -1,0 +1,38 @@
+name: Public host contracts
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  host-contracts:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Install host compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++-14 cmake
+      - name: Configure without CUDA or model fixtures
+        run: >-
+          cmake -S tests/host -B build/public-host
+          -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-14
+      - name: Build with warnings as errors
+        run: cmake --build build/public-host --parallel 2
+      - name: Run all public host contracts
+        run: >-
+          ctest --test-dir build/public-host --no-tests=error
+          --output-on-failure --verbose
+      - name: Verify strict test-runner failures
+        run: >-
+          python3 tools/verify/test_gate/run.py --cxx g++-14
+          --output build/public-host/test-gate
+      - name: Check frozen host evidence audit
+        run: python3 -B tools/release/test_host_gate_audit.py

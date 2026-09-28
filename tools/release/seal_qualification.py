@@ -13,6 +13,24 @@ def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 def read(path):return json.loads(path.read_text())
 
 
+def audit_host_gate(directory):
+    """Check the frozen names and actual passes, not a second hardcoded count."""
+    manifest = directory / 'required_host_tests.txt'
+    expected = [s for s in manifest.read_text().splitlines()
+                if s and not s.startswith('#')]
+    host = read(directory / 'result.json')
+    log = (directory / 'run.log').read_text()
+    passed = [s[7:] for s in log.splitlines() if s.startswith('[PASS] ')]
+    assert expected and len(set(expected)) == len(expected)
+    assert host['passed'] and host['exit'] == 0
+    assert host['manifest_sha256'] == sha(manifest)
+    assert host['required_tests'] == expected
+    assert len(passed) == len(expected) and set(passed) == set(expected)
+    assert '[SKIP]' not in log and '[FAIL]' not in log
+    assert f'{len(expected)} tests, {len(expected)} passed, 0 failed, 0 skipped' in log
+    return len(expected)
+
+
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--qualification',type=Path,required=True)
@@ -35,7 +53,8 @@ def main():
     digest=completed['binary_sha256']
     assert completed['functional_pass']
     assert sha(package/'q4t')==digest==read(q/'plan.json')['binary_sha256']
-    host=read(q/'host/result.json');assert host['passed'] and len(host['required_tests'])==22
+    audit_host_gate(q/'host')
+    host=read(q/'host/result.json')
     direct=read(q/'input/summary.json');assert direct['failure'] is None and direct['server_exit']==0 and len(direct['rejections'])==55
     assert read(q/'input/identity.json')['binary_sha256']==digest
     raw_rows=0
