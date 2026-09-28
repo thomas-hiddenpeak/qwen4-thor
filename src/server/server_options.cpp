@@ -30,6 +30,10 @@ Status ValidateServerOptions(const ServerOptions& options) {
   if (!std::isfinite(options.mem_fraction) || options.mem_fraction <= 0 ||
       options.mem_fraction > 1)
     return Status::Fail("mem-fraction must be finite and in (0,1]");
+  if (options.moe_trace_dir.empty() != options.moe_trace_workload.empty())
+    return Status::Fail("moe-trace-dir and moe-trace-workload are required together");
+  if (options.moe_trace_max_mib < 1 || options.moe_trace_max_mib > 4096)
+    return Status::Fail("moe-trace-max-mib must be in [1,4096]");
   return Status();
 }
 
@@ -60,14 +64,20 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--max-prefill") integer = &parsed.max_prefill;
     if (key == "--max-len") integer = &parsed.max_len;
     if (key == "--max-seq") integer = &parsed.max_seq;
+    if (key == "--moe-trace-max-mib") integer = &parsed.moe_trace_max_mib;
     if (!integer && key != "--host" && key != "--model-dir" &&
-        key != "--mem-fraction")
+        key != "--mem-fraction" && key != "--moe-trace-dir" &&
+        key != "--moe-trace-workload")
       return Status::Fail("unknown serve option: " + std::string(key));
     if (++i == args.size() || args[i].empty() || args[i].starts_with("--"))
       return Status::Fail("missing value for " + std::string(key));
     const auto value = args[i];
     if (key == "--host") {
       parsed.host = value;
+    } else if (key == "--moe-trace-dir") {
+      parsed.moe_trace_dir = value;
+    } else if (key == "--moe-trace-workload") {
+      parsed.moe_trace_workload = value;
     } else if (key == "--model-dir") {
       parsed.model_dir = value;
     } else {

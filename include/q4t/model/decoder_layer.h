@@ -39,6 +39,8 @@
 #include "q4t/quant/moe_weights.h"
 #include "q4t/status.h"
 
+namespace q4t::trace { class RouterCollector; }
+
 namespace q4t {
 namespace model {
 
@@ -154,7 +156,9 @@ Status DecoderLayerForward(const DecoderLayer& layer, const uint16_t* hyper_inpu
                            int tokens_per_seq = 0,
                            uint16_t* ple_conv_ckpt = nullptr,
                            const RaggedBatch* ragged = nullptr,
-                           int max_position = -1);
+                           int max_position = -1,
+                           trace::RouterCollector* trace = nullptr,
+                           int layer_id = -1);
 // `max_position`: exact maximum logical position, or -1 for device readback.
 // `ple_conv_ckpt` (MTP verify rollback, PLE layer only): when non-null and
 // num_ckpt > 0, save the per-token PLE short-conv state after each of the

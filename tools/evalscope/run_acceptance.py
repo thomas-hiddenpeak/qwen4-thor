@@ -36,7 +36,12 @@ def main():
                         help='Existing quality-inputs or performance matrix root')
     parser.add_argument('--reference', type=Path,
                         help='Prior results.json: require identical prompts and outputs')
+    parser.add_argument('--moe-trace-dir', type=Path)
+    parser.add_argument('--moe-trace-workload', type=Path)
+    parser.add_argument('--moe-trace-max-mib', type=int, default=1024)
     args = parser.parse_args()
+    if bool(args.moe_trace_dir) != bool(args.moe_trace_workload):
+        parser.error('trace directory and workload must be supplied together')
     if args.startup_timeout <= 0:
         parser.error('startup-timeout must be positive')
     out = args.output.resolve()
@@ -107,6 +112,10 @@ def main():
     command = [str(binary), 'serve', '--model-dir', str(model), '--port', str(args.port),
                '--max-seq', '1', '--max-prefill', '8192', '--max-len', '208896',
                '--max-tokens', '256', '--no-mtp']
+    if args.moe_trace_dir:
+        command += ['--moe-trace-dir', str(args.moe_trace_dir.resolve()),
+                    '--moe-trace-workload', str(args.moe_trace_workload.resolve()),
+                    '--moe-trace-max-mib', str(args.moe_trace_max_mib)]
     save(out / 'server-command.json', {'argv': command, 'removed_environment': removed,
                                        'startup_timeout_seconds': args.startup_timeout})
     results = []

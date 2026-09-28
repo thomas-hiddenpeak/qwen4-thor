@@ -28,6 +28,8 @@
 #include "q4t/quant/moe_weights.h"
 #include "q4t/status.h"
 
+namespace q4t::trace { class RouterCollector; }
+
 namespace q4t {
 namespace model {
 
@@ -86,7 +88,8 @@ size_t MoEForwardWorkspaceBytes(int T, int k, int hs, int moe_is, int shared_is,
 Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
                   const MoEExtraWeights& extra, uint16_t* y, int T, int k,
                   void* workspace, size_t workspace_bytes, void* gemm_ws,
-                  size_t gemm_ws_bytes, cudaStream_t stream);
+                  size_t gemm_ws_bytes, cudaStream_t stream,
+                  trace::RouterCollector* trace = nullptr, int layer_id = -1);
 
 }  // namespace model
 }  // namespace q4t

@@ -460,7 +460,8 @@ Status DecoderLayerForward(const DecoderLayer& layer,
                            uint16_t* conv_ckpt, int num_ckpt, int seq_id,
                            const int* d_seq_id, const int* d_rope_pos,
                            int tokens_per_seq, uint16_t* ple_conv_ckpt,
-                           const RaggedBatch* ragged, int max_position) {
+                           const RaggedBatch* ragged, int max_position,
+                           trace::RouterCollector* trace, int layer_id) {
   const int hs = layer.hs, hc_dim = layer.hc_dim, hc = layer.hc;
   if (T <= 0) return Status();
   // Pooled recurrent-state slices for this sequence (seq_id selects the
@@ -592,7 +593,8 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   if (!s.ok()) return s;
   // 5. MoE.
   s = MoEForward(d_mixed, layer.routed, layer.mlp, d_block, T, layer.topk,
-                 d_moe_ws, layout.moe_bytes, d_moe_gemm, kGemmWs, stream);
+                 d_moe_ws, layout.moe_bytes, d_moe_gemm, kGemmWs, stream,
+                 trace, layer_id);
   if (!s.ok()) {
     return s;
   }

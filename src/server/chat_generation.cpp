@@ -165,7 +165,12 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   uint16_t* d_mtp_g = nullptr;  // MTP rolling draft trunk [hc*hs] (Stage 2c:
                                 // per-request, so concurrent MTP requests don't
                                 // share the legacy d_g_/d_g_next_ double buffer)
+  trace::RequestOutcome trace_outcome = trace::RequestOutcome::kFailed;
+  uint64_t trace_output_tokens = 0;
   auto cleanup = [&]() {
+    if (router_trace_) router_trace_->EndRequest(
+        control->Cancelled() ? trace::RequestOutcome::kCancelled : trace_outcome,
+        trace_output_tokens);
     if (d_trunk_full) {
       cudaFree(d_trunk_full);
       d_trunk_full = nullptr;
@@ -274,6 +279,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     cleanup();
     return;
   }
+  if (router_trace_) router_trace_->BeginRequest(ids, request_id);
   // Chunk 0 is a true prefill (state reset + rope table + PLE history);
   // chunks 1.. are ModelDecodeBatch calls that CONTINUE from the existing
   // per-layer state (linear SSM/conv recurrence, full-attention KV/indexer
@@ -407,6 +413,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                     : model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
     if (s.ok()) {
       if (!chunked) {
+        if (router_trace_) router_trace_->BeginForward(
+            trace::RouteStage::kPrefill, 0, T);
         // Keep full trunk output for MTP, but only the final logits row.
         s = model::ModelPrefill(model_.Get(), &seq, ids.data(), T, d_prefill_logits_,
                                 nullptr, mtp_loaded_ ? d_trunk_full : nullptr,
@@ -425,14 +433,20 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           const int base = seq.position;
           const int c = std::min(chunk, T - base);
           const bool last = (base + c == T);
+          if (router_trace_) router_trace_->BeginForward(
+              trace::RouteStage::kPrefill, base, c);
           s = model::ModelPrefillTextChunk(
               model_.Get(), &seq, ids.data(), T, c,
               last ? d_prefill_logits_ : nullptr, nullptr,
               d_trunk_full
                   ? d_trunk_full + static_cast<size_t>(base) * trunk_hc_dim
                   : nullptr, model::LogitsRows::kLastRow,
-              last ? model::SequenceCompletion::kDeferred
-                   : model::SequenceCompletion::kWait);
+              model::SequenceCompletion::kDeferred);
+          if (!last) {
+            model::ModelSequence* sequence = &seq;
+            s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {&sequence, 1},
+                                   s, router_trace_.get());
+          }
           if (last || !s.ok()) break;
         }
       }
@@ -447,7 +461,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     const auto pending = seq.HasPending()
         ? std::span<model::ModelSequence* const>(&sequence, 1)
         : std::span<model::ModelSequence* const>();
-    s = FinishHostReadback(copy_error, &gpu_healthy_, pending, s);
+    s = FinishHostReadback(copy_error, &gpu_healthy_, pending, s, router_trace_.get());
     if (!s.ok()) seq.Fail();
   }
   if ((prefill_cancelled || cancelled()) &&
@@ -753,6 +767,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       } else {
         // Fallback: single-sequence decode (B1 path).
         const std::lock_guard<std::mutex> lock(model_mu_);
+        if (router_trace_) router_trace_->BeginForward(
+            trace::RouteStage::kDecode, seq.position, 1);
         s = model::ModelDecodeStepSeq(model_.Get(), &seq, tok_id, d_prefill_logits_,
                                       nullptr, nullptr, seq_id,
                                       model::SequenceCompletion::kDeferred);
@@ -762,7 +778,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
               h_logits.data(), d_prefill_logits_,
               static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost, nullptr);
         model::ModelSequence* sequence = &seq;
-        s = FinishHostReadback(copy_error, &gpu_healthy_, {&sequence, 1}, s);
+        s = FinishHostReadback(copy_error, &gpu_healthy_, {&sequence, 1}, s, router_trace_.get());
         if (!s.ok()) {
           generation_failed = true;
           break;
@@ -781,6 +797,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       sched_cv_.notify_one();
     }
   }
+  trace_output_tokens = generated.size();
   if (generation_failed) seq.Fail();
   model::ModelEndSequence(&seq);
 
@@ -873,6 +890,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     }
   }
 
+  trace_outcome = client_disconnected ? trace::RequestOutcome::kCancelled
+                                      : trace::RequestOutcome::kSuccess;
   if (!client_disconnected) {
     metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
   }

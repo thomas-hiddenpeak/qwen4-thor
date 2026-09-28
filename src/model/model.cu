@@ -470,7 +470,8 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                                    m.ws_bytes, stream, layer_ssm_ckpt,
                                    layer_conv_ckpt, num_ckpt, seq_id, d_seq_id,
                                    m.d_rope_pos, tokens_per_seq,
-                                   layer_ple_conv_ckpt, ragged, max_position);
+                                   layer_ple_conv_ckpt, ragged, max_position,
+                                   m.router_trace, l);
     if (!s.ok()) return s;
     if (!m.layers[l].is_full_attention) lin_idx++;
     if (m.layers[l].has_ple) ple_idx++;

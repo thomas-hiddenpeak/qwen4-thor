@@ -21,9 +21,13 @@ namespace detail {
 Status FinishHostReadback(
     cudaError_t copy_error, std::atomic<bool>* gpu_healthy,
     std::span<model::ModelSequence* const> sequences,
-    const Status& submitted) {
-  return model::CompleteSequenceWork(sequences, submitted, [&] {
+    const Status& submitted, trace::RouterCollector* trace) {
+  const cudaError_t trace_error = trace ? trace->Readback(nullptr) : cudaSuccess;
+  bool gpu_complete = false;
+  const Status result = model::CompleteSequenceWork(sequences, submitted, [&] {
     const cudaError_t sync_error = cudaStreamSynchronize(nullptr);
+    gpu_complete = sync_error == cudaSuccess;
+    if (copy_error == cudaSuccess) copy_error = trace_error;
     const cudaError_t error =
         copy_error != cudaSuccess ? copy_error : sync_error;
     if (error == cudaSuccess) return Status();
@@ -31,6 +35,8 @@ Status FinishHostReadback(
     return Status::Fail(std::string("GPU result readback: ") +
                         cudaGetErrorString(error));
   });
+  if (trace) trace->Complete(submitted.ok(), gpu_complete, result.ok());
+  return result;
 }
 
 }
@@ -99,6 +105,8 @@ void ChatServer::RunOnePrefillChunk() {
       const int count = std::min(max_prefill_, req->len - base);
       last = base + count == req->len;
       if (s.ok()) {
+        if (router_trace_) router_trace_->BeginForward(
+            trace::RouteStage::kPrefill, base, count);
         s = model::ModelPrefillTextChunk(
             model_.Get(), req->seq, req->ids, req->len, count,
             last ? d_prefill_logits_ : nullptr, nullptr, nullptr,
@@ -114,7 +122,7 @@ void ChatServer::RunOnePrefillChunk() {
       }
       // A host cursor is not device completion. Drain even a failed forward
       // before handing shared scratch to another request.
-      s = FinishHostReadback(copy_error, &gpu_healthy_, {&req->seq, 1}, s);
+      s = FinishHostReadback(copy_error, &gpu_healthy_, {&req->seq, 1}, s, router_trace_.get());
       if (s.ok() && RequestCancelled(req->control, req->fd)) {
         req->cancelled = true;
       }
@@ -239,6 +247,8 @@ void ChatServer::SchedulerLoop() {
         if (Bp == 1) {
           sp = model::ModelBeginSequence(model_.Get(), pf[0]->seq, nullptr,
                                           pf[0]->seq_id);
+          if (sp.ok() && router_trace_) router_trace_->BeginForward(
+              trace::RouteStage::kPrefill, 0, pf[0]->len);
           if (sp.ok())
             sp = model::ModelPrefill(model_.Get(), pf[0]->seq, pf[0]->ids, pf[0]->len,
                                      d_prefill_logits_, nullptr, nullptr,
@@ -287,7 +297,7 @@ void ChatServer::SchedulerLoop() {
         // Even a failed forward may have queued GPU writes. Drain before
         // publishing completion so cancellation/cleanup cannot reuse buffers
         // still owned by that work. Device failure takes precedence over abort.
-        sp = FinishHostReadback(copy_error, &gpu_healthy_, sequences, sp);
+        sp = FinishHostReadback(copy_error, &gpu_healthy_, sequences, sp, router_trace_.get());
       }
       {
         const std::lock_guard<std::mutex> lock(sched_mu_);
@@ -402,6 +412,8 @@ void ChatServer::SchedulerLoop() {
         s = sequences[i]->Submit({&tokens[i], 1},
                                   model::ModelSequence::Stage::kDecode,
                                   model_.Get().cfg.max_len);
+      if (s.ok() && router_trace_) router_trace_->BeginForward(
+          trace::RouteStage::kDecode, positions[0], B);
       if (s.ok())
         s = model::ModelDecodeBatchMulti(model_.Get(), tokens.data(), positions.data(),
                                          seq_ids.data(), hist_flat.data(), B,
@@ -419,7 +431,7 @@ void ChatServer::SchedulerLoop() {
               cudaMemcpyDeviceToHost, nullptr);
       }
       // Includes launch/argmax failures: scratch cannot escape before drain.
-      s = FinishHostReadback(copy_error, &gpu_healthy_, sequences, s);
+      s = FinishHostReadback(copy_error, &gpu_healthy_, sequences, s, router_trace_.get());
     }
     if (kProfileDecode) cudaProfilerStop();
 

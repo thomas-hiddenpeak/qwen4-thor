@@ -25,7 +25,11 @@ extern "C" cudaError_t CUDARTAPI cudaMemcpyAsync(
   static const auto real = Resolve<decltype(&cudaMemcpyAsync)>("cudaMemcpyAsync");
   const char* size_env = std::getenv("Q4T_TEST_READBACK_BYTES");
   const char* mode = std::getenv("Q4T_TEST_READBACK_MODE");
-  if (size_env && mode && kind == cudaMemcpyDeviceToHost &&
+  const char* kind_env = std::getenv("Q4T_TEST_READBACK_KIND");
+  const auto expected_kind = kind_env && std::strcmp(kind_env, "D2D") == 0
+                                 ? cudaMemcpyDeviceToDevice
+                                 : cudaMemcpyDeviceToHost;
+  if (size_env && mode && kind == expected_kind &&
       bytes == std::strtoull(size_env, nullptr, 10) && !fired.exchange(true)) {
     std::fprintf(stderr, "[readback-fault] mode=%s bytes=%zu\n", mode, bytes);
     if (std::strcmp(mode, "copy") == 0) return cudaErrorInvalidValue;

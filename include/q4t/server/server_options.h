@@ -35,6 +35,10 @@ struct ServerOptions {
   // Set no_budget=true to disable the cap (legacy behavior, user's own risk).
   double mem_fraction = 0.90;
   bool no_budget = false;
+  // Controlled full-request observation; empty directory means zero capture.
+  std::string moe_trace_dir;
+  std::string moe_trace_workload;
+  int moe_trace_max_mib = 1024;
 };
 
 // Derived once from validated options, never a second configuration source.

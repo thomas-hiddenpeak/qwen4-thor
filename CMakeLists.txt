@@ -154,6 +154,14 @@ target_link_libraries(q4t_quant PUBLIC q4t_io CUDA::cudart CUDA::cublasLt)
 # ---------------------------------------------------------------------------
 # q4t_model — model layer (hyper-connection backbone, attention, MoE)
 # ---------------------------------------------------------------------------
+add_library(q4t_trace STATIC src/trace/router_trace.cpp
+  src/trace/router_collector.cpp src/trace/sha256.cpp)
+target_include_directories(q4t_trace PUBLIC include)
+target_link_libraries(q4t_trace PUBLIC CUDA::cudart)
+add_executable(q4t_router_trace_check tools/trace/router_trace_check.cpp
+  src/trace/router_trace.cpp)
+target_include_directories(q4t_router_trace_check PRIVATE include)
+
 add_library(q4t_model STATIC
   src/model/hyperconnection.cu
   src/model/linear_attention.cu
@@ -176,7 +184,7 @@ add_library(q4t_model STATIC
   src/vision/vision.cu
   src/vision/processor.cpp)
 target_include_directories(q4t_model PUBLIC include third_party)
-target_link_libraries(q4t_model PUBLIC q4t_io q4t_quant q4t_ple CUDA::cudart
+target_link_libraries(q4t_model PUBLIC q4t_trace q4t_io q4t_quant q4t_ple CUDA::cudart
                     CUDA::cublasLt)
 
 # ---------------------------------------------------------------------------

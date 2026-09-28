@@ -25,6 +25,7 @@
 #include <unordered_set>
 #include <vector>
 
+#include "q4t/trace/router_collector.h"
 #include "q4t/server/http_request.h"
 #include "q4t/server/server_options.h"
 #include "q4t/model/model_owner.h"
@@ -274,6 +275,7 @@ class ChatServer {
   bool budget_valid_ = false;
   std::unique_ptr<text::Tokenizer> tok_;
   model::ModelOwner model_;
+  std::unique_ptr<trace::RouterCollector> router_trace_;
   // MTP draft model (optional). Borrowed embed/lm_head from model_ must be
   // freed before model_ (destructor order: members destruct in reverse
   // declaration order, so mtp_ is destroyed before model_).

@@ -34,6 +34,8 @@ ChatServer::~ChatServer() {
   // B2b: stop the scheduler thread FIRST (it touches model_.Get() + d_sched_logits_
   // under model_mu_, so it must be joined before those are freed).
   StopScheduler();
+  model_.Get().router_trace = nullptr;
+  router_trace_.reset();
   if (d_sched_logits_) {
     cudaFree(d_sched_logits_);
     d_sched_logits_ = nullptr;
@@ -290,6 +292,28 @@ Status ChatServer::Start(const ServerOptions& opts) {
   video_proc_cfg_ = proc_cfg_;
   video_proc_cfg_.min_pixels = 4096;
   video_proc_cfg_.max_pixels = 25165824;
+
+  if (!opts.moe_trace_dir.empty()) {
+    if (max_seq_ != 1 || !opts.no_mtp || opts.allow_media ||
+        std::getenv("Q4T_MOE_DUMP")) {
+      std::fprintf(stderr, "[q4t][trace] unsupported mode; capture disabled\n");
+    } else {
+      auto capture = std::make_unique<trace::RouterCollector>();
+      trace::RouterTraceConfig tc;
+      tc.layers = cfg.num_layers; tc.experts = cfg.E;
+      tc.top_k = cfg.topk; tc.max_rows = cfg.max_prefill;
+      Status capture_status = capture->Start(
+          opts.moe_trace_dir, opts.moe_trace_workload, cfg.index_path, tc,
+          cfg.max_len, uint64_t(opts.moe_trace_max_mib) * 1024 * 1024);
+      if (capture_status.ok()) {
+        router_trace_ = std::move(capture);
+        model_.Get().router_trace = router_trace_.get();
+      } else {
+        std::fprintf(stderr, "[q4t][trace] disabled: %s\n",
+                     capture_status.message().c_str());
+      }
+    }
+  }
 
   // B2b continuous batching: the scheduler's packed-logits buffer (device
   // [max_seq, vocab]) + a GPU-argmax token buffer (device [max_seq] + host

@@ -9,7 +9,8 @@ bool ValidRequestKey(const std::string& key);
 Status FinishHostReadback(
     cudaError_t copy_error, std::atomic<bool>* gpu_healthy,
     std::span<model::ModelSequence* const> sequences = {},
-    const Status& submitted = Status());
+    const Status& submitted = Status(),
+    trace::RouterCollector* trace = nullptr);
 std::string JsonEscape(const std::string& s);
 bool WriteAll(int fd, const char* data, size_t len);
 bool WriteAll(int fd, const std::string& s);

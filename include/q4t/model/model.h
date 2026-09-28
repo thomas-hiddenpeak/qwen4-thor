@@ -31,6 +31,8 @@
 #include "q4t/ple/ple_embedding.h"
 #include "q4t/status.h"
 
+namespace q4t::trace { class RouterCollector; }
+
 namespace q4t {
 namespace model {
 
@@ -81,6 +83,8 @@ struct ModelConfig {
 
 // The full model: head + decoder layers + PLE embedding + persistent buffers.
 struct Model {
+  // Optional observer, borrowed from serve; never controls execution.
+  trace::RouterCollector* router_trace = nullptr;
   ModelConfig cfg;
   ModelHeadWeights head;
   std::vector<DecoderLayer> layers;  // size = cfg.num_layers

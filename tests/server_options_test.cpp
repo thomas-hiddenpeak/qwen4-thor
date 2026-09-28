@@ -94,3 +94,19 @@ Q4T_TEST(serve_validates_before_load_and_preserves_failed_parse) {
   Q4T_CHECK(!q4t::server::ValidateServerOptions(options).ok());
   return true;
 }
+
+Q4T_TEST(serve_trace_options_are_explicit_and_bounded) {
+  auto options = Defaults();
+  Q4T_CHECK(options.moe_trace_dir.empty());
+  Q4T_CHECK(!Parse({"--moe-trace-dir", ".q4t-work/trace"}, &options));
+  Q4T_CHECK(options.moe_trace_dir.empty());
+  Q4T_CHECK(Parse({"--moe-trace-dir", ".q4t-work/trace",
+                   "--moe-trace-workload", ".q4t-work/workload.json",
+                   "--moe-trace-max-mib", "128"}, &options));
+  Q4T_CHECK(options.moe_trace_max_mib == 128);
+  for (const auto value : {"0", "4097", "1.5", "-1", "nan"}) {
+    Q4T_CHECK(!Parse({"--moe-trace-max-mib", value}, &options));
+    Q4T_CHECK(options.moe_trace_max_mib == 128);
+  }
+  return true;
+}

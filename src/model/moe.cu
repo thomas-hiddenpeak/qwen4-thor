@@ -9,6 +9,7 @@
 //   6. shared_down = shared_swiglu @ shared_down^T [T, hs] (Bf16Gemm)
 //   7. y = routed + sigmoid(x @ gate_scalar) * shared_down  (kernel)
 #include "q4t/model/moe.h"
+#include "q4t/trace/router_collector.h"
 
 #include <cuda_bf16.h>
 #include <cuda_runtime.h>
@@ -325,7 +326,8 @@ size_t MoEForwardWorkspaceBytes(int T, int k, int hs, int moe_is, int shared_is,
 Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
                   const MoEExtraWeights& extra, uint16_t* y, int T, int k,
                   void* workspace, size_t workspace_bytes, void* gemm_ws,
-                  size_t gemm_ws_bytes, cudaStream_t stream) {
+                  size_t gemm_ws_bytes, cudaStream_t stream,
+                  trace::RouterCollector* trace, int layer_id) {
   const int hs = extra.hs;
   const int E = extra.E;
   const int shared_is = extra.shared_is;
@@ -366,6 +368,10 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
   // 2. top-k + softmax.
   RouterTopkKernel<<<T, kBlock, 0, stream>>>(d_logits, d_eid, d_rw, T, E, k);
   if (cudaGetLastError() != cudaSuccess) return Status::Fail("topk launch");
+  if (trace) {
+    s = trace->CaptureLayer(layer_id, d_eid, T, k, stream);
+    if (!s.ok()) return s;
+  }
   DumpRouterTopk(d_eid, d_rw, T, k);
   // 3. routed experts (NVFP4).
   if (cudaMemsetAsync(d_routed, 0, static_cast<size_t>(T) * hs * sizeof(float),

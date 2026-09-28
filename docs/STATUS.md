@@ -17,9 +17,32 @@ build/q4t.release.json。部署证据与rollback-default.py位于
 .q4t-work/serve-entry-deployment-20260928/；停止服务后可恢复旧默认。
 成本接受决定：.q4t-work/serve-entry-acceptance-20260928/decision.json。
 原性能测量、五档参考及旧发布包均保留，不将本轮成本接受写成性能持平，
-也不更改后续通用门槛。所有权、服务拆分与入口治理交付关闭；MoE host基础见下文，运行时采集未接入。
+也不更改后续通用门槛。所有权、服务拆分与入口治理交付关闭；MoE受控采集候选见下文，默认部署不变。
 
-## MoE 增量：host 轨迹基础完成，采集器尚未接入
+## MoE 运行时增量：受控采集已实现，成组验收中
+
+候选4bc183a3已接入默认scheduler、chunked prefill及inline/fallback路径。
+显式传递层号，request/forward/stage来自服务实际入口与ModelSequence；
+不按T或全局调用次数推测。默认关闭；仅单序列文本greedy、MTP/媒体关。
+每层复制已有ID，forward末尾D2H复用原受检查同步；四个固定pinned槽位
+交给后台writer，当前8192 chunk为15 MiB device + 60 MiB pinned。
+队列满/配额/写盘失败停收并保持incomplete；CUDA错误传播到原服务失败
+路径，最终drain失败时隔离缓冲至进程退出。未实现异步执行器或专家缓存。
+
+真实样本保存输入token与SHA256、HTTP ID映射、分层轨迹和请求终态；
+启动命令、相关环境、模型config/index与工作负载副本另存摘要。
+离线工具检查来源/完整性，输出逐层阶段频次及同样本事后覆盖，不推导吞吐。
+这是受控文件采集；普通文件IO阻塞时尚无硬关闭时限，不作为长期采样交付。
+
+零警告构建、46项Thor host、42项公共host、49项独立格式样例及15项来源
+分析检查通过。初版2856e3d3的off/on HTTP质量均11/11且真实轨迹完整；
+审查发现D2D立即错误需显式传到完成检查，修正后固定为4bc183a3并重新
+验收，不将初版证据冒称最终候选。旧默认98a75fb4完整五档输出通过。
+最终候选质量、取消/故障及off/on五档仍在运行，尚无性能接受或部署结论。
+证据：.q4t-work/moe-trace-runtime-20260928/；操作入口见
+[轨迹工具](../tools/trace/README.md)。
+
+## 此前 MoE host 轨迹基础（运行时接入前）
 
 本批冻结为离线基础：C++请求/forward/阶段/完成类型、小端CRC分帧读写、
 有界内存检查器及失败反例。无运行时接入，无Router/kernel/调度改动；
