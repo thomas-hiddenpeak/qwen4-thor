@@ -115,3 +115,34 @@ atom padding、四个FP32 scale；假设256字节对齐slot为2,765,056字节。
 结果不声称硬件容量认证；旧122/59 GB不能当缓存容量，详见分析报告。
 输出逐请求/层/阶段的选择命中、并集命中、整组全命中、缺失直方图、逻辑
 加载和峰值驻留槽字节；所有组/字节是逻辑值，不折算吞吐或NVMe物理读取。
+
+## 请求完成边界的在线影子统计
+
+`shadow.py`是独立观察进程，只消费采集器原子发布的request-N.bin，服务继续
+运行时按请求序号处理。没有runner接入、逐层及时可见性或权重控制；晚一个
+请求看到路由，不能据此证明补载能够及时完成。记录处理耗时、积压峰值和RSS。
+完整decode不再截64步；32/64槽、静态/LRU、prefill_reset/continuous并行统计，
+沿用上述prefill bypass与付费填充合同。取消/失败请求的已提交前缀仍算历史，
+未提交forward不更新状态，请求终态单列；不得悄悄跳过失败后继续当完整流。
+
+```bash
+python3 -B tools/trace/shadow.py --directory .q4t-work/NEW-capture \
+  --binary build/q4t --checker /path/to/q4t_router_trace_check \
+  --calibration .q4t-work/frozen-calibration.json --output .q4t-work/NEW-shadow
+```
+
+在服务采集开始前启动，服务正常停止后才输出complete。已完成的旧run拒绝称为
+在线观测。校准文件为不超过1MiB的JSON，含48×512完整rankings及
+model_index_sha256；须从已验证校准集导出并保存原来源摘要，不能从新评估
+请求反向训练。默认最多64请求、每bin最多256MiB、请求统计输出最多128MiB（另有status/校准元数据）、
+等待最长7200秒、轮询250ms；显式参数只能缩小请求数/期限。解析器自身的
+frame上限16MiB。单个受限文件的解析/IO不可抢占，deadline非故障文件系统硬超时。
+源失败/缺口、损坏、超限或超时会非0停收并保留status.complete=false；不发
+服务信号、不等待服务配合。已发布输入应保持只读；需要新观察时用新输出目录。
+
+`test_shadow.py --checker ... --output build/shadow-contracts`运行直接合同；
+`verify_shadow.py --directory CAPTURE --output SHADOW --checker ... --binary ...`
+正常停机后重新验证完整来源，再用独立有序列表算法重算全部prefill/decode、
+静态/LRU及两种保留模式。`run_shadow_study.py`运行固定编写材料、任务切换
+和三个多轮对话对，保存全部HTTP请求/响应；不把它称作生产样本或语义质量基准。
+影子开启的质量与五档成本由tools/evalscope另行验收，不能从本工具逻辑字节推吞吐。

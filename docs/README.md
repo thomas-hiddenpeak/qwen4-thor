@@ -52,6 +52,7 @@
 | [REFERENCE_MTP.md](REFERENCE_MTP.md) | MTP / 投机解码参考调研 | MTP 相关时 |
 | [MTP_BATCHING.md](MTP_BATCHING.md) | MTP 批处理设计与阶段 | MTP 批处理推进时 |
 | [DATAFLOW_OPTIMIZATION.md](DATAFLOW_OPTIMIZATION.md) | 当前数据流预算、假设与决策边界 | 数据流优化推进时 |
+| [MOE_SHADOW_2026-09-28.md](MOE_SHADOW_2026-09-28.md) | 有界请求完成边界影子观察、完整长度验证与资源成本 | 功能通过，严格持平未通过 |
 | [MOE_CACHE_REPLAY_2026-09-28.md](MOE_CACHE_REPLAY_2026-09-28.md) | 固定容量静态/LRU回放、预算与影子阶段决策 | 本轮离线交付 |
 | [MOE_ROUTING_TRACE.md](MOE_ROUTING_TRACE.md) | MoE受控采集边界、首轮证据与下一阶段离线缓存回放 | 设计或实现进展变化时 |
 
