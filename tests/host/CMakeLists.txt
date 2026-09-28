@@ -30,3 +30,8 @@ add_test(NAME q4t_router_trace_wire_contracts
     --checker $<TARGET_FILE:q4t_router_trace_check>
     --output ${CMAKE_CURRENT_BINARY_DIR}/trace-wire-tests)
 set_tests_properties(q4t_router_trace_wire_contracts PROPERTIES TIMEOUT 180)
+
+add_test(NAME q4t_router_cache_replay_contracts
+  COMMAND ${Python3_EXECUTABLE} -B
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../tools/trace/test_replay.py)
+set_tests_properties(q4t_router_cache_replay_contracts PROPERTIES TIMEOUT 180)

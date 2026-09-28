@@ -1,0 +1,151 @@
+{
+  "window": 64,
+  "capacities": [
+    32,
+    64,
+    128,
+    256
+  ],
+  "sources": {
+    "chat": ".q4t-work/moe-router-study-20260928/chat/trace",
+    "external": ".q4t-work/moe-trace-runtime-20260928/trace-performance-on"
+  },
+  "calibration": [
+    {
+      "source": "chat",
+      "file": "request-6.bin",
+      "name": "math-s1-8192",
+      "sha256": "19f91b0d3f7773fd2eabe836f851c9bdadfe4c07992ef81fb8a9f1eb5660321f"
+    },
+    {
+      "source": "chat",
+      "file": "request-7.bin",
+      "name": "python-s1-1024",
+      "sha256": "a9e15eee1407677f7ac3b87c89adf5c12bf7c86ca7da42798ca1c2d0e6fb6716"
+    },
+    {
+      "source": "chat",
+      "file": "request-8.bin",
+      "name": "python-s1-8192",
+      "sha256": "a47cfe551196cd5ac6dbadf01a72c12551587721ea34f08bbc0e4b9436ec342a"
+    },
+    {
+      "source": "chat",
+      "file": "request-10.bin",
+      "name": "systems-s1-8192",
+      "sha256": "4fd0d3aba2601d6869293bc479565f3c51fcb134ca63c0aa9dd39ae67defae22"
+    },
+    {
+      "source": "chat",
+      "file": "request-12.bin",
+      "name": "systems-s1-1024",
+      "sha256": "c167cac4d4702d90c3ec36997abcd014a36d2e9dca4bb420d9b91b3edd811824"
+    },
+    {
+      "source": "chat",
+      "file": "request-13.bin",
+      "name": "chinese-s1-8192",
+      "sha256": "1ba43799b8bd85f91229086bc1077c880f7ed94b5e04328d29f7a7daaf721b69"
+    },
+    {
+      "source": "chat",
+      "file": "request-14.bin",
+      "name": "chinese-s1-1024",
+      "sha256": "0154c5447613a6aab0db645ba43b60282862860baa375ac18fa59c4166aef77a"
+    },
+    {
+      "source": "chat",
+      "file": "request-16.bin",
+      "name": "math-s1-1024",
+      "sha256": "b1148fe17908b1ba4033e655118eb24f1ffb67060d3f324441d40e9c2b80e169"
+    }
+  ],
+  "evaluation": {
+    "heldout": [
+      {
+        "source": "chat",
+        "file": "request-1.bin",
+        "name": "python-s2-1024",
+        "sha256": "8a18cfce3583c58e69549eb6f56a7fca770f2de28a4f9c1b88058ff7b3a94570"
+      },
+      {
+        "source": "chat",
+        "file": "request-2.bin",
+        "name": "math-s2-1024",
+        "sha256": "562bb3a02a31d164e9a7b03470ab6c214af6c724ea2169fdef94778b48d1dff6"
+      },
+      {
+        "source": "chat",
+        "file": "request-3.bin",
+        "name": "chinese-s2-8192",
+        "sha256": "24eff5b70c32425094600676ed39ad4985e5c25eb65bc2178a151c155907721a"
+      },
+      {
+        "source": "chat",
+        "file": "request-4.bin",
+        "name": "chinese-s2-1024",
+        "sha256": "b964e9e91aa1ab8863bd271307c46d8f9418b79081dceefcfad876d9f430213e"
+      },
+      {
+        "source": "chat",
+        "file": "request-5.bin",
+        "name": "systems-s2-1024",
+        "sha256": "c18622ca98cf778dac5a0a9d856aed9ef4cc75a871e3c2df4bf61a311e46e543"
+      },
+      {
+        "source": "chat",
+        "file": "request-9.bin",
+        "name": "python-s2-8192",
+        "sha256": "a86e5c27b8ff52561bc8159ee024fd476ef9e0a88a468cc9790a1931bcf721bf"
+      },
+      {
+        "source": "chat",
+        "file": "request-11.bin",
+        "name": "systems-s2-8192",
+        "sha256": "c946192cda16573f6dd7da7f104687953a3459edcbc4ea301ccfe40d9e75cfcf"
+      },
+      {
+        "source": "chat",
+        "file": "request-15.bin",
+        "name": "math-s2-8192",
+        "sha256": "dae61aa37de6ac494f8f5344c4b986a85e648af223bb978c37df6ee278e5fa7e"
+      }
+    ],
+    "external": [
+      {
+        "source": "external",
+        "file": "request-1.bin",
+        "name": "external-1024",
+        "sha256": "53dff8ee6f5d62ca4a471a76b54f21b4216bcd5a9a30e50c60d7fce5856cedf0"
+      },
+      {
+        "source": "external",
+        "file": "request-4.bin",
+        "name": "external-4096",
+        "sha256": "1518cda59ad866d06fc50fbda40f64e4b32deae49e38b4580cd56d24235a9235"
+      },
+      {
+        "source": "external",
+        "file": "request-7.bin",
+        "name": "external-8192",
+        "sha256": "de50b1856435081ebcc8124434dce59573e1b28c1bfa534a45c49948d14c9837"
+      },
+      {
+        "source": "external",
+        "file": "request-10.bin",
+        "name": "external-45056",
+        "sha256": "d413d726924a6591c7a25098ff73e505c1da9c94e2a60f4715a8ddbe2b2c327d"
+      },
+      {
+        "source": "external",
+        "file": "request-13.bin",
+        "name": "external-204800",
+        "sha256": "7e135ed2736c7910cffa96e9335d32a92c0df7b87c31f4adf94966a55088ac0c"
+      }
+    ]
+  },
+  "manifest_sha256": {
+    "chat": "baf48cb2acdf44ebfc944725059415e9f740570595d972e06ad31aaf1e08fee2",
+    "external": "c6a6d6fcc0d84a35244c4f3005161f415bba709c747917a3bb72fdffac3b2ef3"
+  }
+}
