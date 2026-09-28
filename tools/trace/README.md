@@ -146,3 +146,20 @@ frame上限16MiB。单个受限文件的解析/IO不可抢占，deadline非故�
 静态/LRU及两种保留模式。`run_shadow_study.py`运行固定编写材料、任务切换
 和三个多轮对话对，保存全部HTTP请求/响应；不把它称作生产样本或语义质量基准。
 影子开启的质量与五档成本由tools/evalscope另行验收，不能从本工具逻辑字节推吞吐。
+
+## EvalScope 多场景初步采样
+
+`run_evalscope_scenarios.py --output NEW --model-dir MODEL --checker CHECKER
+--calibration FROZEN`使用现有EvalScope发送24条编写请求：六类任务各四种
+材料规模，按规模轮换场景，单流、greedy、关闭思考/MTP、输出上限128。
+冻结requests.jsonl后再启动服务，保存EvalScope数据库、输出全文、命令、
+来源身份及逐请求路由/影子JSON；每次独立目录，不覆盖、不续写旧run。
+默认binary为build/q4t，端口18085，可显式指定。材料是合成订单与日志，
+不是生产流量；HTTP成功不等于答案正确，截断输出不按完整答案计分。
+
+采样结束后运行`analyze_evalscope_scenarios.py --directory NEW --checker CHECKER
+--binary BINARY`，完整验证来源并独立重算所有层/阶段/策略，再核对HTTP ID，
+输出analysis/requests.csv、summary.json和文件摘要。分析目录不能覆盖。
+连续模式沿全run实际顺序保留；按场景汇总是该顺序的切片，并非各场景独立
+冷启动。校准始终使用旧冻结排名，不用新请求训练。命中率先求和再相除。
+这轮仅扩展路由材料，不替代正式质量基准或五档同输入性能接受结论。
