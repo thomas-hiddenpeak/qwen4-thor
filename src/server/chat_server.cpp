@@ -78,13 +78,13 @@ struct PhaseTimer {
 
 Status ChatServer::Start(const ServerOptions& opts) {
   // Validate before loading the tokenizer or allocating model resources.
-  in_addr address{};
-  if (::inet_pton(AF_INET, opts.host.c_str(), &address) != 1) {
-    return Status::Fail("host must be a numeric IPv4 address");
-  }
-  if (opts.port < 1 || opts.port > 65535) {
-    return Status::Fail("port must be in [1,65535]");
-  }
+  const Status validated = ValidateServerOptions(opts);
+  if (!validated.ok()) return validated;
+  const ServerCapabilities capabilities = CapabilitiesFor(opts);
+  std::fprintf(stderr,
+               "[q4t][capabilities] requested=%s mtp=%d media=%d max_seq=%d\n",
+               capabilities.Experimental() ? "experimental" : "text-greedy",
+               capabilities.mtp, capabilities.media, opts.max_seq);
   host_ = opts.host;
   allow_media_ = opts.allow_media;
   PhaseTimer total("startup_total");
@@ -130,7 +130,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
     runtime::BudgetRequest breq;
     breq.mem_fraction = opts.mem_fraction;
     breq.max_len = opts.max_len;
-    breq.max_seq = opts.max_seq > 0 ? opts.max_seq : 8;
+    breq.max_seq = opts.max_seq;
     breq.max_prefill =
         opts.max_prefill > 0 ? opts.max_prefill : 8192;
     budget_ = runtime::ComputeMemoryBudget(runtime::BudgetModelParams{},
@@ -154,7 +154,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
   if (eff_max_len > 0) cfg.max_len = eff_max_len;
   // B1: pool the per-sequence recurrent state for up to max_seq concurrent
   // requests. Each in-flight request owns one seq_id.
-  max_seq_ = eff_max_seq > 0 ? eff_max_seq : 8;
+  max_seq_ = eff_max_seq;
   cfg.max_seq = max_seq_;
   seq_free_.assign(static_cast<size_t>(max_seq_), true);
   conn_cap_ = std::max(max_seq_ * 8, 128);  // in-flight request-thread cap
@@ -219,7 +219,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // Load the MTP draft model (optional). Borrowed embed/lm_head from the main
   // model. On failure the server falls back to plain decode (mirrors the CLI
   // --mtp behavior). Skipped entirely when opts.no_mtp is set.
-  if (opts.no_mtp) {
+  if (!capabilities.mtp) {
     std::fprintf(stderr, "[q4t] MTP disabled; plain decode\n");
   } else {
     PhaseTimer pt("mtp_load");
@@ -248,7 +248,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // "model.visual." tensors, skip gracefully (the server then serves text
   // only and rejects image parts). The loader is read-only (mmap) and is
   // released after the weights are copied to device.
-  {
+  if (capabilities.media) {
     PhaseTimer pt("vision_load");
     io::WeightIndex* index = nullptr;
     s = io::WeightIndex::Open(cfg.index_path, &index);
@@ -272,7 +272,13 @@ Status ChatServer::Start(const ServerOptions& opts) {
       }
       delete index;
     }
+  } else {
+    std::fprintf(stderr, "[q4t] media disabled; vision tower not loaded\n");
   }
+  std::fprintf(stderr,
+               "[q4t][capabilities] effective mtp=%d media_allowed=%d "
+               "vision_loaded=%d max_seq=%d\n",
+               mtp_loaded_, allow_media_, vision_tower_ != nullptr, max_seq_);
 
   port_ = opts.port;
   max_tokens_default_ = opts.max_tokens;

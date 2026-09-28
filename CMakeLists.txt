@@ -190,6 +190,7 @@ target_include_directories(q4t_runtime PUBLIC include)
 # q4t_server — OpenAI-compatible HTTP server (POSIX sockets, no deps)
 # ---------------------------------------------------------------------------
 add_library(q4t_server STATIC src/server/chat_server.cpp
+  src/server/server_options.cpp
   src/server/chat_http.cpp
   src/server/chat_input.cpp
   src/server/chat_metrics.cpp

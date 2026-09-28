@@ -789,36 +789,12 @@ int RunServe(int argc, char** argv) {
   q4t::server::ServerOptions opts;
   opts.model_dir = kDefaultModelDir;
 
-  for (int i = 2; i < argc; ++i) {
-    const std::string a = argv[i];
-    if (a == "--host" && i + 1 < argc) {
-      opts.host = argv[++i];
-    } else if (a == "--port" && i + 1 < argc) {
-      opts.port = std::atoi(argv[++i]);
-    } else if (a == "--model-dir" && i + 1 < argc) {
-      opts.model_dir = argv[++i];
-    } else if (a == "--max-tokens" && i + 1 < argc) {
-      opts.max_tokens = std::atoi(argv[++i]);
-    } else if (a == "--max-prefill" && i + 1 < argc) {
-      opts.max_prefill = std::atoi(argv[++i]);
-    } else if (a == "--max-len" && i + 1 < argc) {
-      opts.max_len = std::atoi(argv[++i]);
-    } else if (a == "--max-seq" && i + 1 < argc) {
-      opts.max_seq = std::atoi(argv[++i]);
-    } else if (a == "--mtp") {
-      opts.no_mtp = false;
-    } else if (a == "--allow-media") {
-      opts.allow_media = true;
-    } else if (a == "--no-mtp") {
-      opts.no_mtp = true;
-    } else if (a == "--mem-fraction" && i + 1 < argc) {
-      opts.mem_fraction = std::atof(argv[++i]);
-    } else if (a == "--no-budget") {
-      opts.no_budget = true;
-    } else {
-      std::fprintf(stderr, "Unknown option: %s\n", a.c_str());
-      return 2;
-    }
+  std::vector<std::string_view> arguments;
+  for (int i = 2; i < argc; ++i) arguments.emplace_back(argv[i]);
+  const auto parsed = q4t::server::ParseServerOptions(arguments, &opts);
+  if (!parsed.ok()) {
+    std::fprintf(stderr, "serve options: %s\n", parsed.message().c_str());
+    return 2;
   }
 
   q4t::server::ChatServer server;
