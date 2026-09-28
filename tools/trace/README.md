@@ -163,3 +163,10 @@ frame上限16MiB。单个受限文件的解析/IO不可抢占，deadline非故�
 连续模式沿全run实际顺序保留；按场景汇总是该顺序的切片，并非各场景独立
 冷启动。校准始终使用旧冻结排名，不用新请求训练。命中率先求和再相除。
 这轮仅扩展路由材料，不替代正式质量基准或五档同输入性能接受结论。
+
+已封存的24条多场景轨迹还可用`replay_scenario_capacities.py --directory RUN
+--output NEW --checker CHECKER --binary BINARY`做离线32/64/128/256槽扩展。
+它校验原analysis/bindings.json、完整来源与冻结校准，逐需求组用独立有序
+列表算法核对Cache，再要求32/64逐请求计数与原影子结果完全一致。输出
+逐请求CSV、容量汇总与核验JSON，不改变在线观察器的32/64容量或其成本。
+所有容量保持相同完整请求顺序与prefill合同，不重新发送HTTP。
