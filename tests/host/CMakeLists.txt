@@ -17,3 +17,16 @@ enable_testing()
 # Run the complete public registry, strictly: no filters or allowed skips.
 add_test(NAME q4t_public_host_contracts COMMAND q4t_host_tests)
 set_tests_properties(q4t_public_host_contracts PROPERTIES TIMEOUT 180)
+
+# Offline trace validation shares no runtime/CUDA dependencies.
+add_executable(q4t_router_trace_check ../../tools/trace/router_trace_check.cpp
+  ../../src/trace/router_trace.cpp)
+target_include_directories(q4t_router_trace_check PRIVATE ../../include)
+target_compile_options(q4t_router_trace_check PRIVATE -Wall -Wextra -Werror)
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+add_test(NAME q4t_router_trace_wire_contracts
+  COMMAND ${Python3_EXECUTABLE} -B
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../tools/trace/test_wire.py
+    --checker $<TARGET_FILE:q4t_router_trace_check>
+    --output ${CMAKE_CURRENT_BINARY_DIR}/trace-wire-tests)
+set_tests_properties(q4t_router_trace_wire_contracts PROPERTIES TIMEOUT 180)

@@ -10,6 +10,12 @@ C++ NVFP4 W4A4 与 transformers 参考的差异可能来自激活量化、浮点
 分支的相同输入对照才有意义：例如 T=8 或 256 不覆盖 2048 预算后的稀疏
 选择路径。首个 full-attention 层出现不等于稀疏分支已经被验证。
 
+## MoE 路由轨迹格式检查
+
+[host 轨迹工具](../trace/README.md)提供类型、读写器和离线完整性检查，
+公共 CTest 自动运行合同与独立格式反例。当前尚未接入 serve/GPU，
+不能用于宣称真实路由采集、热点分布或缓存命中率已通过。
+
 ## serve入口与能力检查
 
 `serve_options/run.py --binary BUILD/q4t --quality-run QUALITY_RUN --output
