@@ -199,3 +199,9 @@ experts.csv、逐层layers.csv、完整身份和重复标记。只消费已提�
 CHECKER`运行直接合同，也可在末尾指定unittest用例名称只重验受影响项。
 本轮来源、排除项、口径及结论见docs/MOE_DISTRIBUTION_2026-09-28.md。
 公开仓不包含私有轨迹；缺源即失败。没有发送模型HTTP或评价缓存策略。
+
+`expert_probabilities.py --directory DISTRIBUTION_RESULTS --output NEW
+--population authored:unique_input`以token路由次数为分母导出每个专家进入
+同层top-10的边际经验概率（全512及最高10位、CSV/Markdown）。每层总和10，
+不是全部选择份额的总和1；不等于固定十位同时出现的概率。默认聊天去重
+组，可选择populations.json中的其他组；输出不覆盖原数据。
