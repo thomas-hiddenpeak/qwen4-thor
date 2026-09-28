@@ -20,8 +20,9 @@ mkdir -p .q4t-work/moe-trace
 
 目录必须位于当前仓库 `.q4t-work/` 内，父目录已存在，运行目录必须全新。
 检查启动日志 `[q4t][trace] enabled full-request`，再发送普通 HTTP 请求。
-不支持的模式或采集初始化失败会明确报告 disabled，业务继续运行，不能把
-这种运行当成采集通过。不能同时使用旧 `Q4T_MOE_DUMP`。
+不支持的模式、配额不足或采集池OOM会明确报告 disabled，业务继续运行，
+不能把这种运行当成采集通过；其他CUDA初始化错误则使启动失败。
+不能同时使用旧 `Q4T_MOE_DUMP`。
 
 请求完成后后台生成 `request-N.bin`、实际小端 uint32 输入 `.tokens`、
 关联 HTTP ID 的 `.json`；取消/失败也保留自己的终态，内部 N 不复用。
@@ -72,5 +73,7 @@ CUDA错误仍进入原服务失败/不健康路径。关闭态不建池、不启
 检查host合同与49项独立格式/CLI样例；`test_analyze.py --checker ... --output ...`
 检查来源绑定和不完整样本反例。`run_capture_checks.py`接受候选binary/checker、
 既有quality/performance证据和全新output，实际运行取消、inline/fallback、
-不支持模式、配额、写盘/队列压力及采集CUDA故障；测试shim不会链接进runner。
+不支持模式、配额、写盘/关闭失败、队列压力、池分配失败、停止/崩溃及
+采集CUDA故障；测试shim不会链接进runner。`--case NAME`可重复选择受影响
+用例，未知、重复或空名称退出非0；不传则执行全部15项。
 这些检查与HTTP质量、五档性能分别记录，不将合成数据当作真实采集验收。

@@ -309,6 +309,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
         router_trace_ = std::move(capture);
         model_.Get().router_trace = router_trace_.get();
       } else {
+        if (capture->HasCudaFailure()) return capture_status;
         std::fprintf(stderr, "[q4t][trace] disabled: %s\n",
                      capture_status.message().c_str());
       }

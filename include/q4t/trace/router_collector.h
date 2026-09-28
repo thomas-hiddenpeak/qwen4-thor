@@ -28,6 +28,7 @@ class RouterCollector {
                       cudaStream_t stream);
   cudaError_t Readback(cudaStream_t stream);
   void Complete(bool submitted, bool gpu_complete, bool committed);
+  bool HasCudaFailure() const { return failure_.load() == Failure::kCuda; }
   void Stop();  // Called only after request/scheduler users have stopped.
 
  private:
@@ -39,7 +40,8 @@ class RouterCollector {
     kIO,
     kContract,
     kCuda,
-    kRequestLimit
+    kRequestLimit,
+    kAllocation
   };
   struct Slot {
     std::atomic<bool> ready{false};
@@ -59,6 +61,7 @@ class RouterCollector {
   Slot* Reserve(Kind kind);
   void Publish();
   void Fail(Failure reason);
+  Status AllocationFailure(cudaError_t error);
   void Worker();
   void Manifest(bool complete);
   static const char* Reason(Failure reason);

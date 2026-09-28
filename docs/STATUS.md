@@ -21,7 +21,7 @@ build/q4t.release.json。部署证据与rollback-default.py位于
 
 ## MoE 运行时增量：受控采集已实现，成组验收中
 
-候选4bc183a3已接入默认scheduler、chunked prefill及inline/fallback路径。
+候选3b414633已接入默认scheduler、chunked prefill及inline/fallback路径。
 显式传递层号，request/forward/stage来自服务实际入口与ModelSequence；
 不按T或全局调用次数推测。默认关闭；仅单序列文本greedy、MTP/媒体关。
 每层复制已有ID，forward末尾D2H复用原受检查同步；四个固定pinned槽位
@@ -34,11 +34,15 @@ build/q4t.release.json。部署证据与rollback-default.py位于
 离线工具检查来源/完整性，输出逐层阶段频次及同样本事后覆盖，不推导吞吐。
 这是受控文件采集；普通文件IO阻塞时尚无硬关闭时限，不作为长期采样交付。
 
-零警告构建、46项Thor host、42项公共host、49项独立格式样例及15项来源
-分析检查通过。初版2856e3d3的off/on HTTP质量均11/11且真实轨迹完整；
-审查发现D2D立即错误需显式传到完成检查，修正后固定为4bc183a3并重新
-验收，不将初版证据冒称最终候选。旧默认98a75fb4完整五档输出通过。
-最终候选质量、取消/故障及off/on五档仍在运行，尚无性能接受或部署结论。
+最终候选3b414633零警告构建，46项Thor host通过；42项公共host、49项
+格式与15项来源分析检查通过。off/on HTTP质量各11/11，开启态11份
+轨迹完整，共139131840个真实专家ID。12项采集取消/故障检查在4bc183a3
+通过，producer/worker/同步与调度源码身份不变，明确复用；最终候选另跑
+device OOM、第三个pinned分配失败及manifest close失败3项全部通过。
+普通OOM禁用采集且业务健康，部分池完整回收；其他CUDA初始化错误不
+降级为OOM。close失败保持incomplete，已保存flush成功/close失败反例。
+旧默认98a75fb4完整五档输出通过；最终候选off/on五档与业务专项仍在
+运行，尚无性能接受或部署结论。默认二进制与发布元数据不变。
 证据：.q4t-work/moe-trace-runtime-20260928/；操作入口见
 [轨迹工具](../tools/trace/README.md)。
 

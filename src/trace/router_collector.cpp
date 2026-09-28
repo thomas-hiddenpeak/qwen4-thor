@@ -52,12 +52,29 @@ const char* RouterCollector::Reason(Failure f) {
       return "cuda_failure";
     case Failure::kRequestLimit:
       return "request_limit";
+    case Failure::kAllocation:
+      return "allocation_failed";
   }
   return "unknown";
 }
 void RouterCollector::Fail(Failure reason) {
   auto expected = Failure::kNone;
   failure_.compare_exchange_strong(expected, reason);
+}
+Status RouterCollector::AllocationFailure(cudaError_t error) {
+  // Optional allocation exhaustion must not leak a stale CUDA error into
+  // the first business launch. Never downgrade other CUDA errors to OOM.
+  if (error == cudaErrorMemoryAllocation) {
+    const auto last = cudaGetLastError();
+    Fail(last == cudaSuccess || last == cudaErrorMemoryAllocation
+             ? Failure::kAllocation
+             : Failure::kCuda);
+  } else {
+    Fail(Failure::kCuda);
+  }
+  Manifest(false);
+  return Status::Fail("trace pool allocation: " +
+                      std::string(cudaGetErrorString(error)));
 }
 Status RouterCollector::Start(const std::string& directory,
                               const std::string& workload,
@@ -140,13 +157,13 @@ Status RouterCollector::Start(const std::string& directory,
              .ok())
       throw std::runtime_error("trace launch metadata hash");
     Manifest(false);
-    if (cudaMalloc(reinterpret_cast<void**>(&device_), slot_bytes_) !=
-        cudaSuccess)
-      return Status::Fail("trace device pool allocation failed");
+    auto allocation =
+        cudaMalloc(reinterpret_cast<void**>(&device_), slot_bytes_);
+    if (allocation != cudaSuccess) return AllocationFailure(allocation);
     for (auto& slot : slots_) {
-      if (cudaMallocHost(reinterpret_cast<void**>(&slot.host), slot_bytes_) !=
-          cudaSuccess)
-        return Status::Fail("trace pinned pool allocation failed");
+      allocation =
+          cudaMallocHost(reinterpret_cast<void**>(&slot.host), slot_bytes_);
+      if (allocation != cudaSuccess) return AllocationFailure(allocation);
     }
     worker_ = std::thread([this] { Worker(); });
     std::fprintf(stderr,
@@ -296,6 +313,7 @@ void RouterCollector::Manifest(bool complete) {
   file.flush();
   if (!file) throw std::runtime_error("trace manifest write failed");
   file.close();
+  if (!file) throw std::runtime_error("trace manifest close failed");
   fs::rename(directory_ + "/manifest.partial", directory_ + "/manifest.json");
 }
 void RouterCollector::Worker() {
