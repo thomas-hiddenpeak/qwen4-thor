@@ -168,6 +168,7 @@ add_library(q4t_model STATIC
   src/model/decoder_layer.cu
   src/model/model_head.cu
   src/model/model.cu
+  src/model/model_owner.cpp
   src/model/gemv.cu
   src/model/gemv_hc_inject.cu
   src/mtp/moe_bf16.cu
@@ -189,6 +190,11 @@ target_include_directories(q4t_runtime PUBLIC include)
 # q4t_server — OpenAI-compatible HTTP server (POSIX sockets, no deps)
 # ---------------------------------------------------------------------------
 add_library(q4t_server STATIC src/server/chat_server.cpp
+  src/server/chat_http.cpp
+  src/server/chat_input.cpp
+  src/server/chat_metrics.cpp
+  src/server/chat_scheduler.cpp
+  src/server/chat_generation.cpp
   src/server/http_request.cpp
   src/server/chat_contract.cpp
                              src/server/chat_template.cpp)

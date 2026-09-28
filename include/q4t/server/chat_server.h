@@ -26,7 +26,7 @@
 #include <vector>
 
 #include "q4t/server/http_request.h"
-#include "q4t/model/model.h"
+#include "q4t/model/model_owner.h"
 #include "q4t/mtp/mtp.h"
 #include "q4t/server/request_control.h"
 #include "q4t/status.h"
@@ -301,7 +301,7 @@ class ChatServer {
   runtime::MemoryBudget budget_;
   bool budget_valid_ = false;
   std::unique_ptr<text::Tokenizer> tok_;
-  model::Model model_;
+  model::ModelOwner model_;
   // MTP draft model (optional). Borrowed embed/lm_head from model_ must be
   // freed before model_ (destructor order: members destruct in reverse
   // declaration order, so mtp_ is destroyed before model_).

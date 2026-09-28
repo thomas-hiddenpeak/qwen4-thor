@@ -60,8 +60,10 @@ def main():
     (out / 'worktree.patch').write_bytes(subprocess.check_output(
         ['git', 'diff', 'HEAD'], cwd=ROOT))
     source_files = ['CMakeLists.txt', 'include/q4t/io/json.h', 'src/io/json.cpp',
-                    'include/q4t/server/chat_template.h',
-                    'src/server/chat_template.cpp', 'src/server/chat_server.cpp']
+                    'include/q4t/model/model_owner.h', 'src/model/model_owner.cpp']
+    source_files += sorted(str(p.relative_to(ROOT)) for directory in
+                           ['include/q4t/server', 'src/server']
+                           for p in (ROOT / directory).glob('*') if p.is_file())
     save(out / 'source-hashes.json', {f: sha(ROOT / f) for f in source_files})
     cases = [json.loads(line) for line in FIXTURES.read_text().splitlines()]
     manifest = []

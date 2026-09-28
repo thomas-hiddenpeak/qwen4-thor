@@ -12,7 +12,7 @@ out = a.output.resolve()
 assert any(out.is_relative_to(ROOT / x) for x in ['build', '.q4t-work'])
 out.mkdir(parents=True, exist_ok=False)
 shutil.copy2(__file__, out)
-s = (ROOT / 'src/server/chat_server.cpp').read_text()
+s = (ROOT / 'src/server/chat_http.cpp').read_text()
 start = s.index('bool ClientConnectionFailed(')
 function = s[start:s.index('\n}\n', start) + 3]
 source = '''#include <arpa/inet.h>
