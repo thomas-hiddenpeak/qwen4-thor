@@ -78,7 +78,7 @@ def package(args):
         text = text.replace('server_name q4t_local;', 'server_name q4t_local;\n    if ($http_transfer_encoding != "") { return 400; }')
         (target / f'{kind}.conf.in').write_text(text)
     if not args.compatibility_snapshot:
-        names = subprocess.check_output(['git','ls-files','--cached','--others','--exclude-standard','--','src','include','CMakeLists.txt','tests','tools/release','tools/evalscope','tools/deploy'],cwd=ROOT,text=True).splitlines()
+        names = subprocess.check_output(['git','ls-files','--cached','--others','--exclude-standard','--','src','include','CMakeLists.txt','cmake','tests','tools/release','tools/evalscope','tools/deploy'],cwd=ROOT,text=True).splitlines()
         for name in sorted(set(names)):
             source=ROOT/name
             if source.is_file():
