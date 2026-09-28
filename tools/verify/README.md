@@ -1,13 +1,26 @@
-# tools/verify/ — 数值辅助对照工具
+# tools/verify/ — 合同检查与数值辅助对照工具
 
 执行顺序与接受条件以 [EVALUATION.md](../../docs/EVALUATION.md) 为准。
-改动后先通过真实 HTTP evalscope E2E，再使用这些工具进行必要的数值细分析。
+性能优化先通过真实HTTP E2E；缺陷修复和结构治理可先做直接合同检查，
+再验证受影响HTTP行为。专项通过不替代质量与五档性能验收。
 本目录保留历史比较方法；脚本 PASS 不能单独证明全模型精度或无回退。
 
 C++ NVFP4 W4A4 与 transformers 参考的差异可能来自激活量化、浮点归约、
 算子实现差异或实现错误，不能预先认定“就是量化噪声”。全模型、覆盖目标
 分支的相同输入对照才有意义：例如 T=8 或 256 不覆盖 2048 预算后的稀疏
 选择路径。首个 full-attention 层出现不等于稀疏分支已经被验证。
+
+## Model设备内存所有权
+
+`model_owner/run.py`在Thor上链接指定构建的真实库，检查空对象、部分
+加载失败及重试、分配失败、拒绝覆盖已加载模型和完整加载/销毁。
+追踪cudaMalloc/cudaFree，拒绝重复释放或残留分配；无CUDA直接失败，
+不计SKIP。需只读模型权重，不是公共host CI，也不是性能测试。
+
+```bash
+python3 tools/verify/model_owner/run.py --build build \
+  --model /path/to/model --output .q4t-work/model-owner-check
+```
 
 ## 稀疏注意力布局逐位对照
 
