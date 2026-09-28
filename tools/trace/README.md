@@ -1,8 +1,9 @@
 # MoE 路由采集与检查
 
 受控完整请求采集，默认关闭。仅支持实际 max_seq=1、文本 greedy、MTP关、
-媒体关；不改变 scheduler、prefill chunk 或 Router 算法。当前默认部署仍为
-98a75fb4，使用包含采集代码的候选构建；本功能不等于专家 offload。
+媒体关；不改变 scheduler、prefill chunk 或 Router 算法。默认部署已包含
+采集功能，具体版本与成本接受见[当前状态](../../docs/STATUS.md)。
+本功能不等于专家 offload。
 
 ## 使用
 
@@ -11,8 +12,8 @@
 
 ```bash
 mkdir -p .q4t-work/moe-trace
-# 用已构建的候选 q4t 替换 /path/to/q4t，模型目录保持只读。
-/path/to/q4t serve --model-dir /path/to/model --max-seq 1 \
+# 使用默认已安装版本，模型目录保持只读。
+./build/q4t serve --model-dir /path/to/model --max-seq 1 \
   --max-prefill 8192 --max-len 208896 --no-mtp \
   --moe-trace-dir .q4t-work/moe-trace/run-001 \
   --moe-trace-workload /path/to/requests.jsonl --moe-trace-max-mib 1024
@@ -32,7 +33,7 @@ mkdir -p .q4t-work/moe-trace
 ```bash
 python3 -B tools/trace/analyze.py \
   --directory .q4t-work/moe-trace/run-001 \
-  --binary /path/to/q4t --checker /path/to/q4t_router_trace_check \
+  --binary ./build/q4t --checker /path/to/q4t_router_trace_check \
   --output .q4t-work/moe-trace/run-001-analysis.json
 ```
 
