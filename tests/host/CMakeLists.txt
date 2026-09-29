@@ -42,3 +42,24 @@ add_test(NAME q4t_router_shadow_contracts
     --checker $<TARGET_FILE:q4t_router_trace_check>
     --output ${CMAKE_CURRENT_BINARY_DIR}/shadow-contracts)
 set_tests_properties(q4t_router_shadow_contracts PROPERTIES TIMEOUT 180)
+
+# test_distribution.py needs numpy. Prefer a machine-local venv when present
+# (.q4t-work/venvs/public-host); otherwise the default interpreter, which the
+# CI workflow provisions with python3-numpy.
+find_program(Q4T_DISTRIBUTION_PYTHON
+  NAMES python3
+  PATHS ${CMAKE_CURRENT_SOURCE_DIR}/../../.q4t-work/venvs/public-host/bin
+  NO_DEFAULT_PATH)
+if(NOT Q4T_DISTRIBUTION_PYTHON)
+  set(Q4T_DISTRIBUTION_PYTHON ${Python3_EXECUTABLE})
+endif()
+add_test(NAME q4t_router_distribution_contracts
+  COMMAND ${Q4T_DISTRIBUTION_PYTHON} -B
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../tools/trace/test_distribution.py
+    --checker $<TARGET_FILE:q4t_router_trace_check>)
+set_tests_properties(q4t_router_distribution_contracts PROPERTIES TIMEOUT 180)
+
+add_test(NAME q4t_router_hybrid_contracts
+  COMMAND ${Python3_EXECUTABLE} -B
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../tools/trace/test_hybrid.py)
+set_tests_properties(q4t_router_hybrid_contracts PROPERTIES TIMEOUT 180)

@@ -71,7 +71,8 @@ CUDA错误仍进入原服务失败/不健康路径。关闭态不建池、不启
 ## 验证入口
 
 `ctest --test-dir build/public-host --no-tests=error --output-on-failure`
-检查host合同与49项独立格式/CLI样例；`test_analyze.py --checker ... --output ...`
+检查host合同、49项独立格式/CLI样例及回放/影子/分布/混合合同
+（distribution合同需要numpy）；`test_analyze.py --checker ... --output ...`
 检查来源绑定和不完整样本反例。`run_capture_checks.py`接受候选binary/checker、
 既有quality/performance证据和全新output，实际运行取消、inline/fallback、
 不支持模式、配额、写盘/关闭失败、队列压力、池分配失败、停止/崩溃及
@@ -217,3 +218,29 @@ N=1..512，给出选择覆盖80/90/95/99%与整组概率50/80/90/95%目标的最
 最小性限于同样本频率排名路径，不是所有专家组合或运行时缓存的最优解。
 prefill仍按token。输出完整曲线、目标表和最大/最小名次直方图；无模型执行。
 见docs/MOE_LAYER_TOPN_2026-09-28.md。
+
+## 主试验原始路由分析（2026-09-29 入库）
+
+以下脚本只读受控采集的 `request-*.bin`，依赖NumPy；输出不得覆盖封存
+证据。专家身份为 `(layer_id, expert_id)`，逐层独立，跨层不共享。
+
+`export_raw_routing.py --directory RUN --output NEW`把轨迹导出为可读文本：
+`routing.csv`（逐 request/forward/layer 的 top-k 专家 ID，按 [row, top-k]
+顺序展开）、每请求 `request-N.tokens.txt`、`requests.json` 与
+`manifest.json`。不新增聚合或缓存/吞吐结论。主试验导出证据见
+.q4t-work/moe-raw-export-20260929/。
+
+`layer_topn_heldout.py TRACE_DIR OUT_DIR`把同样本事后Top-N升级为
+校准→留出：16唯一请求按(领域,长度)分层8/8，每(阶段,层)按校准频次排名、
+留出定最小N，输出 `per_layer_topn.csv`、`expert_lists_90.json`（每层具体
+专家ID，可直接驻留）与 `results.json`。主试验为
+.q4t-work/moe-router-study-20260928/trace/（20请求，含4条精确重复；
+请求7无decode）。结果是容量画像，非运行时收益证明；封存结果与本报告
+见 .q4t-work/moe-topn-90-20260929/REPORT.md。
+
+`analyze_locality.py TRACE_DIR OUT_DIR`做独立局部性分析：确定性重复、
+逐层集中度、时间局部性衰减（lag 1..64 vs 随机基线）、跨层local-ID
+独立性、prefill/decode分歧、位置漂移、领域分离、逐层工作集。v1曾把48层
+bitmask跨层OR造成专家ID碰撞，其跨层工作集结论作废；现行口径逐层计算、
+跨层求和实例数（总空间48×512=24576）。报告见
+.q4t-work/moe-locality-20260929/REPORT.md（v2）。

@@ -1,9 +1,48 @@
 # 当前状态
 
-更新：2026-09-28。代码是实现事实来源；验收规则见 [EVALUATION.md](EVALUATION.md)。
+更新：2026-09-30。代码是实现事实来源；验收规则见 [EVALUATION.md](EVALUATION.md)。
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
 ## 当前结论
+
+## 每层驻留名单（90%选择覆盖）已升级为校准→留出口径
+
+2026-09-29：同样本事后口径升级为校准→留出：16唯一请求按(领域,长度)
+分层8/8（请求7无decode，decode为8/7）；每(阶段,层)按校准频次排名、
+留出定最小N。decode N90逐层144–324（和10387槽），prefill 136–287
+（和10806）；两阶段共用统一容量取324/层=15552槽≈43.0 GB（slot
+2,765,056 B，仅路由专家；共享专家/KV/状态/workspace另计）。留出N90
+系统性高于同样本5–25%，部署容量应以留出口径为准，同样本仅作乐观
+下界。逐层具体专家ID名单在
+.q4t-work/moe-topn-90-20260929/expert_lists_90.json，作为下一步驻留
+设计的静态基线候选；进入驻留设计前须以独立业务材料重校准、明确总
+预算扣除项与补载安全合同。容量画像，非运行时收益证明；无模型/HTTP
+运行。复现：tools/trace/layer_topn_heldout.py（2026-09-30入库，与封存
+结果逐字节一致）。
+
+## 主试验原始路由独立局部性分析已收敛（v2口径）
+
+2026-09-29：v1把48层bitmask跨层OR造成专家ID碰撞，跨层工作集结论
+作废；v2改逐层计算、跨层求和实例数（总空间48×512=24576）。单token
+工作集48×10=480实例；逐层8/16/32-token窗口工作集45.2/70.4/104.5
+(/512)，增长缓慢无饱和。时间局部性集中在≤8 token（lag-1重合为随机
+基线2.3倍，lag-32回落到基线以下）；层间Top-32 Jaccard 0.040仅略高于
+随机，跨层共享无结构红利；prefill/decode同层Top-64 Jaccard 0.116，
+热点不可跨阶段复用。方向与回放/影子结论一致：收益空间在逐层小容量
+LRU（32/64槽/层）。主试验原始路由已导出为可读文本（143M，gzip后43M，
+27条目）供外部分析；导出与分析脚本均已入库。无模型/HTTP运行。报告
+.q4t-work/moe-locality-20260929/REPORT.md（v2），证据
+.q4t-work/moe-raw-export-20260929/。
+
+## MoE分析工具收口（2026-09-30）
+
+09-29分析脚本layer_topn_heldout.py与analyze_locality.py入库
+tools/trace/（与封存结果逐项一致）；test_distribution.py（8项）与
+test_hybrid.py（6项）接入公共host CTest，6项测试全部通过；三份MoE
+专题文档（分层Top-N、混合分析、EvalScope多场景）补登docs/README.md
+索引。公共host合同现为6项；distribution合同需要numpy（CI经apt安装
+python3-numpy，本机优先.q4t-work/venvs/public-host专用venv）。无
+运行时/模型/reference改动。
 
 **默认入口已更新为`text-v1-moe-trace-20260928` / `3b414633`。**
 用户已明确接受本轮MoE采集候选的实测性能代价。单Thor、文本greedy、

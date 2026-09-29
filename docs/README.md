@@ -55,6 +55,9 @@
 | [MOE_DISTRIBUTION_2026-09-28.md](MOE_DISTRIBUTION_2026-09-28.md) | 历史轨迹专家ID分布、阶段/层/场景差异和稳定性 | 统计完成，与缓存命中分开 |
 | [MOE_SHADOW_2026-09-28.md](MOE_SHADOW_2026-09-28.md) | 有界请求完成边界影子观察、完整长度验证与资源成本 | 功能通过，严格持平未通过 |
 | [MOE_CACHE_REPLAY_2026-09-28.md](MOE_CACHE_REPLAY_2026-09-28.md) | 固定容量静态/LRU回放、预算与影子阶段决策 | 本轮离线交付 |
+| [MOE_LAYER_TOPN_2026-09-28.md](MOE_LAYER_TOPN_2026-09-28.md) | 每层Top-N完整曲线与覆盖/整组目标的最小名单 | 同样本描述性，非运行时最优 |
+| [MOE_HYBRID_2026-09-28.md](MOE_HYBRID_2026-09-28.md) | 固定热点与动态LRU混合容量离线比较 | 离线探索，不认定统一最优比例 |
+| [MOE_EVALSCOPE_SCENARIOS_2026-09-28.md](MOE_EVALSCOPE_SCENARIOS_2026-09-28.md) | 24条多场景采样、32/64槽影子统计与128/256离线容量 | 采样完成，非生产代表性 |
 | [MOE_ROUTING_TRACE.md](MOE_ROUTING_TRACE.md) | MoE受控采集边界、首轮证据与下一阶段离线缓存回放 | 设计或实现进展变化时 |
 
 ## 现行入口（2026-09-28）

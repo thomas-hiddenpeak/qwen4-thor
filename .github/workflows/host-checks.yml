@@ -19,7 +19,7 @@ jobs:
       - name: Install host compiler
         run: |
           sudo apt-get update
-          sudo apt-get install -y g++-14 cmake
+          sudo apt-get install -y g++-14 cmake python3-numpy
       - name: Configure without CUDA or model fixtures
         run: >-
           cmake -S tests/host -B build/public-host
