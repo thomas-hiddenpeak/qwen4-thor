@@ -60,6 +60,9 @@ struct BudgetRequest {
   int max_len = 0;            // 0 = auto-derive from budget
   int max_seq = 8;            // max concurrent sequences
   int max_prefill = 8192;     // max tokens per forward pass
+  // Extra fixed cost beyond weights + measured constants (e.g. tiered
+  // residency per-layer pinned staging buffers).
+  size_t extra_fixed_bytes = 0;
 };
 
 // Computed memory budget (result of ComputeMemoryBudget).

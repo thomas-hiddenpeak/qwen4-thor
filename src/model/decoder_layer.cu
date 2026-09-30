@@ -278,6 +278,7 @@ void DecoderLayer::Free() {
   conv_state = ple_conv_state = kv_cache = idx_raw = idx_comp = nullptr;
   page_table = nullptr;
   // routed (NVFP4) buffers (MoEWeightLayout has no Free; free manually).
+  moe_residency.Free();
   if (routed.gu_packed) cudaFree(routed.gu_packed);
   if (routed.gu_sf) cudaFree(routed.gu_sf);
   if (routed.dn_packed) cudaFree(routed.dn_packed);
@@ -329,11 +330,15 @@ void DecoderLayer::ResetState(int seq_id, cudaStream_t stream) const {
 Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
                         int hc, int lowrank, float eps, int E, int moe_is,
                         int shared_is, int k, int max_len, int max_seq,
-                        DecoderLayer* out, cudaStream_t stream) {
+                        DecoderLayer* out, cudaStream_t stream,
+                        int moe_resident_slots,
+                        const std::vector<int>* hot_experts,
+                        bool hot_protected) {
   out->layer_id = layer_id;
   out->hs = hs;
   out->hc = hc;
   out->hc_dim = hc * hs;
+  out->moe_is = moe_is;
   out->is_full_attention = (layer_id % 4 == 3);
   out->topk = k;
   out->max_len = max_len;
@@ -435,9 +440,22 @@ Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
   }
 
   // 3. MoE (routed NVFP4 + BF16 router/shared).
-  s = quant::LoadMoEWeights(loader, layer_id, E, hs, moe_is, &out->routed,
-                            stream);
-  if (!s.ok()) return s;
+  if (moe_resident_slots > 0) {
+    // Tiered residency: C slots instead of all E experts; missing experts are
+    // loaded on demand (MoEResidency). `routed` stays default-constructed.
+    s = out->moe_residency.Init(loader, layer_id, E, hs, moe_is,
+                                moe_resident_slots, stream);
+    if (!s.ok()) return s;
+    if (hot_experts && !hot_experts->empty()) {
+      s = out->moe_residency.InitHot(*hot_experts, stream);
+      if (!s.ok()) return s;
+      if (hot_protected) out->moe_residency.SetHotProtected();
+    }
+  } else {
+    s = quant::LoadMoEWeights(loader, layer_id, E, hs, moe_is, &out->routed,
+                              stream);
+    if (!s.ok()) return s;
+  }
   s = LoadMoEExtra(loader, base + ".mlp", E, hs, shared_is, &out->mlp, stream);
   if (!s.ok()) return s;
 
@@ -509,9 +527,12 @@ Status DecoderLayerForward(const DecoderLayer& layer,
                                  : layer.idx_comp + seq * layer.max_len * 128)
                      : nullptr;
 
+  // The router always emits E = mlp.E expert IDs (512) regardless of the
+  // routed layout's slot mode, so the workspace is sized with the router E
+  // and the architecture moe_is (the slot layout keeps no moe_is of its own).
   const DecoderWorkspaceLayout layout = MakeDecoderWorkspaceLayout(
-      T, layer.is_full_attention, layer.has_ple, hc, hs, layer.routed.E,
-      layer.routed.moe_is, layer.mlp.shared_is, layer.topk, &layer.full,
+      T, layer.is_full_attention, layer.has_ple, hc, hs, layer.mlp.E,
+      layer.moe_is, layer.mlp.shared_is, layer.topk, &layer.full,
       std::max(layer.attn_hc.lowrank, layer.mlp_hc.lowrank));
   if (layout.total_bytes > workspace_bytes) {
     return Status::Fail("DecoderLayerForward: workspace too small");
@@ -591,10 +612,17 @@ Status DecoderLayerForward(const DecoderLayer& layer,
                               d_mixed, d_normed, d_hc_ws, kGemmWs,
                               &hc_mix_scratch, &gate_storage);
   if (!s.ok()) return s;
-  // 5. MoE.
-  s = MoEForward(d_mixed, layer.routed, layer.mlp, d_block, T, layer.topk,
+  // 5. MoE. In slot mode the routed weights live in the per-layer C-slot
+  // residency pool; the router still emits the full 512-expert IDs and
+  // MoEForward remaps them to slots (missing experts load on demand).
+  const quant::MoEWeightLayout& routed_layout =
+      layer.moe_residency.Slots() > 0 ? layer.moe_residency.Layout()
+                                      : layer.routed;
+  const quant::MoEResidency* residency =
+      layer.moe_residency.Slots() > 0 ? &layer.moe_residency : nullptr;
+  s = MoEForward(d_mixed, routed_layout, layer.mlp, d_block, T, layer.topk,
                  d_moe_ws, layout.moe_bytes, d_moe_gemm, kGemmWs, stream,
-                 trace, layer_id);
+                 trace, layer_id, residency);
   if (!s.ok()) {
     return s;
   }

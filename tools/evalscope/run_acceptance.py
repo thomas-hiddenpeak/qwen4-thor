@@ -32,22 +32,75 @@ def main():
     parser.add_argument('--port', type=int, default=8000)
     parser.add_argument('--startup-timeout', type=int, default=180,
                         help='Seconds to wait for model loading before HTTP requests')
+    parser.add_argument('--max-len', type=int, default=208896,
+                        help='serve --max-len (total sequence capacity)')
+    parser.add_argument('--extra-lengths', type=str, default='',
+                        help='comma-separated extra performance tiers '
+                             '(e.g. 261887); appended after the fixed five')
+    parser.add_argument('--target-total', type=int, default=0,
+                        help='Total context (input+output) that extra-length '
+                             'tiers must reach; per-request max_tokens becomes '
+                             'target-total - input length and the acceptance '
+                             'check uses that output count')
     parser.add_argument('--fixtures', type=Path,
                         help='Existing quality-inputs or performance matrix root')
+    parser.add_argument('--allow-unqualified-binary', action='store_true',
+                        help='Skip the deployment-identity check for a '
+                             'candidate binary that has not been installed '
+                             'as the default yet; the output still records '
+                             'binary sha256, commit and worktree patch')
     parser.add_argument('--reference', type=Path,
                         help='Prior results.json: require identical prompts and outputs')
     parser.add_argument('--moe-trace-dir', type=Path)
     parser.add_argument('--moe-trace-workload', type=Path)
     parser.add_argument('--moe-trace-max-mib', type=int, default=1024)
+    parser.add_argument('--moe-resident-slots', type=int, default=0,
+                        help='serve --moe-resident-slots (0 = all experts '
+                             'resident, the baseline path)')
+    parser.add_argument('--moe-hot-list', type=Path,
+                        help='serve --moe-hot-list JSON (per-layer static '
+                             'hot list for tiered residency)')
     args = parser.parse_args()
     if bool(args.moe_trace_dir) != bool(args.moe_trace_workload):
         parser.error('trace directory and workload must be supplied together')
+    if args.moe_resident_slots < 0 or args.moe_resident_slots > 512:
+        parser.error('moe-resident-slots must be in [0,512]')
+    if args.moe_hot_list and args.moe_resident_slots == 0:
+        parser.error('moe-hot-list requires moe-resident-slots > 0')
     if args.startup_timeout <= 0:
         parser.error('startup-timeout must be positive')
+    if args.max_len <= 0:
+        parser.error('max-len must be positive')
+    extra_lengths = []
+    if args.extra_lengths:
+        for item in args.extra_lengths.split(','):
+            item = item.strip()
+            if not item:
+                continue
+            try:
+                value = int(item)
+            except ValueError:
+                parser.error(f'extra-lengths entry is not an int: {item}')
+            if value <= 0:
+                parser.error(f'extra-lengths entry must be positive: {item}')
+            extra_lengths.append(value)
+    if len(set(extra_lengths)) != len(extra_lengths):
+        parser.error('extra-lengths entries must be unique')
+    if args.target_total <= 0:
+        if args.target_total != 0:
+            parser.error('target-total must be positive')
+    elif extra_lengths:
+        for value in extra_lengths:
+            if value >= args.target_total:
+                parser.error(
+                    f'target-total {args.target_total} leaves no output room '
+                    f'for input length {value}')
     out = args.output.resolve()
     if not any(out.is_relative_to(ROOT / d) for d in ['build', '.q4t-work']):
         parser.error('output must be under build/ or .q4t-work/')
-    out.mkdir(parents=True, exist_ok=False)
+    if out.exists() and any(out.iterdir()):
+        parser.error(f'output dir {out} exists and is not empty')
+    out.mkdir(parents=True, exist_ok=True)
     binary = args.binary.resolve()
     model = args.model_dir.resolve()
     env = os.environ.copy()
@@ -62,7 +115,7 @@ def main():
     shutil.copyfile(__file__, out / 'run_acceptance.py')
     cache = binary.parent / 'CMakeCache.txt'
     deployment = binary.with_name(binary.name + '.release.json')
-    if deployment.is_file():
+    if deployment.is_file() and not args.allow_unqualified_binary:
         identity = json.loads(deployment.read_text())
         if identity['binary_sha256'] != hashlib.sha256(binary.read_bytes()).hexdigest():
             raise RuntimeError('deployment identity is stale; qualify the rebuilt binary')
@@ -88,7 +141,7 @@ def main():
     elif args.mode == 'performance':
         prepared.mkdir()
         cases = []
-        for length in LENGTHS:
+        for length in list(LENGTHS) + extra_lengths:
             target = prepared / f'context-{length}.jsonl'
             if args.fixtures:
                 first = (args.fixtures / f'context-{length}/requests.jsonl').read_text().splitlines()[0]
@@ -98,7 +151,11 @@ def main():
                                 '--number', '1', '--output', str(target)], check=True)
                 first = target.read_text().splitlines()[0]
             target.write_text((first + '\n') * 3)
-            cases.append((out / f'context-{length}', target, 3, length, length, 256, True))
+            tokens = 256
+            if args.target_total and length in extra_lengths:
+                tokens = args.target_total - length
+            cases.append((out / f'context-{length}', target, 3, length, length,
+                          tokens, True))
     else:
         prepared.mkdir()
         target = prepared / 'context-1024.jsonl'
@@ -110,12 +167,16 @@ def main():
                  for streaming in [True, False] for limit in [1, 2, 8]]
     reference = json.loads(args.reference.read_text()) if args.reference else None
     command = [str(binary), 'serve', '--model-dir', str(model), '--port', str(args.port),
-               '--max-seq', '1', '--max-prefill', '8192', '--max-len', '208896',
-               '--max-tokens', '256', '--no-mtp']
+               '--max-seq', '1', '--max-prefill', '8192', '--max-len',
+               str(args.max_len), '--max-tokens', '256', '--no-mtp']
     if args.moe_trace_dir:
         command += ['--moe-trace-dir', str(args.moe_trace_dir.resolve()),
                     '--moe-trace-workload', str(args.moe_trace_workload.resolve()),
                     '--moe-trace-max-mib', str(args.moe_trace_max_mib)]
+    if args.moe_resident_slots > 0:
+        command += ['--moe-resident-slots', str(args.moe_resident_slots)]
+        if args.moe_hot_list:
+            command += ['--moe-hot-list', str(args.moe_hot_list.resolve())]
     save(out / 'server-command.json', {'argv': command, 'removed_environment': removed,
                                        'startup_timeout_seconds': args.startup_timeout})
     results = []
@@ -211,8 +272,12 @@ def main():
                                          (r['actual_output'] - 1) / (r['latency'] - r['ttft'])} for r in parsed]}
                     results.append(item)
                     save(out / 'results.json', results)
+                    expected_output = 256
+                    if args.target_total and minimum in extra_lengths:
+                        expected_output = args.target_total - minimum
                     if not item['deterministic'] or len({r['prompt_sha256'] for r in parsed}) != 1 or not all(
-                            r['actual_input'] == minimum and r['actual_output'] == 256 and
+                            r['actual_input'] == minimum and
+                            r['actual_output'] == expected_output and
                             r['finish'] == ['length'] for r in parsed):
                         raise RuntimeError('performance request/determinism acceptance failed')
                     if reference:

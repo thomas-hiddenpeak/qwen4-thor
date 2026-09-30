@@ -201,6 +201,16 @@ Status WeightLoader::ReadTensor(const std::string& name, void* dst) const {
   return sh->file->ReadTensor(*info, dst);
 }
 
+Status WeightLoader::ReadRange(const std::string& name, uint64_t offset,
+                               size_t length, void* dst) const {
+  const std::string* shard = impl_->index->ShardOf(name);
+  if (!shard) return Status::Fail("tensor not in index: " + name);
+  Impl::Shard* sh = nullptr;
+  Status s = impl_->EnsureOpen(*shard, &sh);
+  if (!s.ok()) return s;
+  return sh->file->ReadRange(offset, length, dst);
+}
+
 Status WeightLoader::ReadTensorToDevice(const std::string& name, void* dst,
                                         void* device_dst,
                                         cudaStream_t stream) const {

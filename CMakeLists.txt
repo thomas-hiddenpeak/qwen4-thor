@@ -147,6 +147,7 @@ add_library(q4t_quant STATIC
   src/quant/moe_weights.cpp
   src/quant/moe_gemm.cu
   src/quant/moe_decode.cu
+  src/quant/moe_residency.cpp
   src/quant/lt_cache.cpp)
 target_include_directories(q4t_quant PUBLIC include)
 target_link_libraries(q4t_quant PUBLIC q4t_io CUDA::cudart CUDA::cublasLt)
@@ -284,6 +285,7 @@ if(Q4T_BUILD_TESTS)
     tests/quant_fp4_test.cpp
     tests/quant_moe_load_test.cpp
     tests/quant_moe_gemm_test.cpp
+    tests/quant_moe_residency_test.cpp
     tests/model_hyperconnection_test.cpp
     tests/model_linear_attention_test.cpp
     tests/model_full_attention_test.cpp

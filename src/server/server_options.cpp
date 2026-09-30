@@ -34,6 +34,14 @@ Status ValidateServerOptions(const ServerOptions& options) {
     return Status::Fail("moe-trace-dir and moe-trace-workload are required together");
   if (options.moe_trace_max_mib < 1 || options.moe_trace_max_mib > 4096)
     return Status::Fail("moe-trace-max-mib must be in [1,4096]");
+  // 512 is the qwen4_exp routed-expert count (architecture constant).
+  if (options.moe_resident_slots < 0 || options.moe_resident_slots > 512)
+    return Status::Fail("moe-resident-slots must be in [0,512]");
+  if (options.moe_hot_protect &&
+      (options.moe_resident_slots <= 0 || options.moe_hot_list.empty())) {
+    return Status::Fail(
+        "moe-hot-protect requires moe-resident-slots > 0 and moe-hot-list");
+  }
   return Status();
 }
 
@@ -58,6 +66,10 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.no_budget = true;
       continue;
     }
+    if (key == "--moe-hot-protect") {
+      parsed.moe_hot_protect = true;
+      continue;
+    }
     int* integer = nullptr;
     if (key == "--port") integer = &parsed.port;
     if (key == "--max-tokens") integer = &parsed.max_tokens;
@@ -65,9 +77,10 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--max-len") integer = &parsed.max_len;
     if (key == "--max-seq") integer = &parsed.max_seq;
     if (key == "--moe-trace-max-mib") integer = &parsed.moe_trace_max_mib;
+    if (key == "--moe-resident-slots") integer = &parsed.moe_resident_slots;
     if (!integer && key != "--host" && key != "--model-dir" &&
         key != "--mem-fraction" && key != "--moe-trace-dir" &&
-        key != "--moe-trace-workload")
+        key != "--moe-trace-workload" && key != "--moe-hot-list")
       return Status::Fail("unknown serve option: " + std::string(key));
     if (++i == args.size() || args[i].empty() || args[i].starts_with("--"))
       return Status::Fail("missing value for " + std::string(key));
@@ -80,6 +93,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.moe_trace_workload = value;
     } else if (key == "--model-dir") {
       parsed.model_dir = value;
+    } else if (key == "--moe-hot-list") {
+      parsed.moe_hot_list = value;
     } else {
       const char* end = value.data() + value.size();
       const auto result =

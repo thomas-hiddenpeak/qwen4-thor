@@ -71,6 +71,14 @@ struct ModelConfig {
   int max_seq = 1;
   float eps = 1e-6f;
 
+  // Tiered expert residency: C resident slots per MoE layer (0 = all E
+  // experts resident, the bit-identical baseline path).
+  int moe_resident_slots = 0;
+  // Optional per-layer static hot list JSON (layer id -> expert id array).
+  std::string moe_hot_list;
+  // Protect hot-list experts from LRU eviction (dynamic capacity C - hot).
+  bool moe_hot_protect = false;
+
   // PLE SSD stream (the core differentiator).
   std::string ple_sidecar;  // path to the 51 GB FP8 n-gram table
   int64_t ple_total_rows = 320001536;
@@ -85,6 +93,15 @@ struct ModelConfig {
 struct Model {
   // Optional observer, borrowed from serve; never controls execution.
   trace::RouterCollector* router_trace = nullptr;
+  // Owned weight loader. Kept alive for the model's lifetime only when
+  // tiered MoE residency is enabled (moe_resident_slots > 0): on-demand
+  // expert loads stream shards from NVMe after startup, so the borrowed
+  // pointers held by each layer's MoEResidency must outlive LoadModel.
+  // Released (reset) at the end of LoadModel when residency is disabled,
+  // preserving the baseline path exactly. The loader borrows the index, so
+  // both must outlive the model together.
+  std::unique_ptr<io::WeightIndex> weight_index;
+  std::unique_ptr<io::WeightLoader> weight_loader;
   ModelConfig cfg;
   ModelHeadWeights head;
   std::vector<DecoderLayer> layers;  // size = cfg.num_layers
@@ -510,6 +527,23 @@ Status ModelSnapshotState(const Model& m, ModelStateSnapshot* snap,
 // 恢复 recurrent 状态 (host -> device)。验证后回滚调用。
 Status ModelRestoreState(const Model& m, const ModelStateSnapshot& snap,
                          cudaStream_t stream);
+
+// Aggregate per-layer MoE residency counters (all-zero when tiered
+// residency is disabled, i.e. every layer has Slots() == 0).
+inline quant::MoEResidency::Stats SumResidencyStats(const Model& m) {
+  quant::MoEResidency::Stats total;
+  for (const auto& layer : m.layers) {
+    const auto& s = layer.moe_residency.GetStats();
+    total.resolve_calls += s.resolve_calls;
+    total.expert_lookups += s.expert_lookups;
+    total.hits += s.hits;
+    total.misses += s.misses;
+    total.loads += s.loads;
+    total.evictions += s.evictions;
+    total.load_bytes += s.load_bytes;
+  }
+  return total;
+}
 
 }  // namespace model
 }  // namespace q4t

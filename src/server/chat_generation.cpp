@@ -15,6 +15,43 @@
 #include "q4t/server/request_json.h"
 
 namespace q4t::server {
+namespace {
+
+// Diagnostic-only memory snapshot (device + host + page cache) for the
+// acceptance memory ledger. Never touches the compute path.
+void LogMemorySnapshot(const char* phase, const std::string& id) {
+  size_t free_bytes = 0, total_bytes = 0;
+  if (cudaMemGetInfo(&free_bytes, &total_bytes) != cudaSuccess) return;
+  long rss_kb = 0;
+  if (FILE* st = std::fopen("/proc/self/status", "r")) {
+    char line[256];
+    while (std::fgets(line, sizeof line, st)) {
+      if (std::strncmp(line, "VmRSS:", 6) == 0) {
+        rss_kb = std::atol(line + 6);
+        break;
+      }
+    }
+    std::fclose(st);
+  }
+  long mem_free_kb = 0, cached_kb = 0;
+  if (FILE* mi = std::fopen("/proc/meminfo", "r")) {
+    char line[256];
+    while (std::fgets(line, sizeof line, mi)) {
+      if (std::strncmp(line, "MemFree:", 8) == 0) mem_free_kb = std::atol(line + 8);
+      if (std::strncmp(line, "Cached:", 7) == 0) cached_kb = std::atol(line + 7);
+      if (mem_free_kb != 0 && cached_kb != 0) break;
+    }
+    std::fclose(mi);
+  }
+  std::fprintf(stderr,
+               "[q4t][mem] phase=%s id=%s dev_used_gb=%.3f dev_total_gb=%.3f "
+               "rss_mb=%.1f mem_free_gb=%.3f cached_gb=%.3f\n",
+               phase, id.c_str(), (total_bytes - free_bytes) / 1e9,
+               total_bytes / 1e9, rss_kb / 1024.0,
+               mem_free_kb * 1024.0 / 1e9, cached_kb * 1024.0 / 1e9);
+}
+
+}  // namespace
 using detail::RequestCancelled;
 using detail::ValidRequestKey;
 using detail::FinishHostReadback;
@@ -800,6 +837,34 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   trace_output_tokens = generated.size();
   if (generation_failed) seq.Fail();
   model::ModelEndSequence(&seq);
+  LogMemorySnapshot("request_end", id);
+  if (residency_enabled_) {
+    // Per-request residency load activity (cumulative counters; max_seq=1
+    // makes the delta exact). Evidences on-demand load volume for acceptance.
+    const auto now = model::SumResidencyStats(model_.Get());
+    const auto& prev = residency_stats_prev_;
+    std::fprintf(stderr,
+                 "[q4t][residency] id=%s finish=%s in=%d out=%zu "
+                 "loads=%llu load_mb=%.1f misses=%llu hits=%llu "
+                 "evictions=%llu dmiss=%llu dlook=%llu pmiss=%llu "
+                 "plook=%llu\n",
+                 id.c_str(), finish_reason.c_str(), T, generated.size(),
+                 static_cast<unsigned long long>(now.loads - prev.loads),
+                 (now.load_bytes - prev.load_bytes) / 1e6,
+                 static_cast<unsigned long long>(now.misses - prev.misses),
+                 static_cast<unsigned long long>(now.hits - prev.hits),
+                 static_cast<unsigned long long>(
+                     now.evictions - prev.evictions),
+                 static_cast<unsigned long long>(
+                     now.decode_misses - prev.decode_misses),
+                 static_cast<unsigned long long>(
+                     now.decode_lookups - prev.decode_lookups),
+                 static_cast<unsigned long long>(
+                     now.prefill_misses - prev.prefill_misses),
+                 static_cast<unsigned long long>(
+                     now.prefill_lookups - prev.prefill_lookups));
+    residency_stats_prev_ = now;
+  }
 
   metrics_.prompt_tokens_total.fetch_add(static_cast<uint64_t>(T),
                                          std::memory_order_relaxed);

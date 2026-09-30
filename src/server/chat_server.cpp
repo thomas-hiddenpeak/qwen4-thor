@@ -15,6 +15,7 @@
 #include <cuda_runtime.h>
 #include "q4t/io/json.h"
 #include "q4t/io/weight_loader.h"
+#include "q4t/quant/moe_residency.h"
 #include "q4t/runtime/memory_budget.h"
 #include "q4t/vision/vision.h"
 
@@ -135,6 +136,22 @@ Status ChatServer::Start(const ServerOptions& opts) {
     breq.max_seq = opts.max_seq;
     breq.max_prefill =
         opts.max_prefill > 0 ? opts.max_prefill : 8192;
+    // Tiered residency: only C of the 512 routed experts per layer stay
+    // resident; the rest stream from NVMe on demand. Charge the resident
+    // weight bytes only, plus each layer's pinned staging buffer.
+    if (opts.moe_resident_slots > 0) {
+      constexpr int kE = 512, kLayers = 48, kHs = 2560, kMoeIs = 640;
+      const size_t expert_bytes =
+          static_cast<size_t>(2 * kMoeIs) * (kHs / 2) +
+          static_cast<size_t>(kHs) * (kMoeIs / 2) +
+          static_cast<size_t>(2 * kMoeIs) * (kHs / 16) +
+          static_cast<size_t>(kHs) * (kMoeIs / 16) + 4 * sizeof(float);
+      weights -= static_cast<size_t>(kE - opts.moe_resident_slots) *
+                 kLayers * expert_bytes;
+      breq.extra_fixed_bytes =
+          static_cast<size_t>(kLayers) *
+          quant::MoEResidencyStagingBytes(kHs, kMoeIs);
+    }
     budget_ = runtime::ComputeMemoryBudget(runtime::BudgetModelParams{},
                                            breq, weights, mem_total);
     budget_valid_ = true;
@@ -154,6 +171,10 @@ Status ChatServer::Start(const ServerOptions& opts) {
   cfg.ple_sidecar = opts.model_dir + "/ple/qwen3.8-flash-next-ple-fp8.bin";
   if (opts.max_prefill > 0) cfg.max_prefill = opts.max_prefill;
   if (eff_max_len > 0) cfg.max_len = eff_max_len;
+  cfg.moe_resident_slots = opts.moe_resident_slots;
+  cfg.moe_hot_list = opts.moe_hot_list;
+  cfg.moe_hot_protect = opts.moe_hot_protect;
+  residency_enabled_ = opts.moe_resident_slots > 0;
   // B1: pool the per-sequence recurrent state for up to max_seq concurrent
   // requests. Each in-flight request owns one seq_id.
   max_seq_ = eff_max_seq;

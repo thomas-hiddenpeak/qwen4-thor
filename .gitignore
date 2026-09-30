@@ -36,3 +36,6 @@ tools/vision_processor_ref.json
 tools/video_processor_ref.json
 tools/vision_debug.json
 tools/vision_debug.py
+
+# CTest temp output
+Testing/

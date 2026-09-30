@@ -36,6 +36,7 @@
 #include "q4t/model/moe.h"
 #include "q4t/model/ple_layer.h"
 #include "q4t/model/ragged_batch.h"
+#include "q4t/quant/moe_residency.h"
 #include "q4t/quant/moe_weights.h"
 #include "q4t/status.h"
 
@@ -53,6 +54,7 @@ struct DecoderLayer {
   int hs = 2560;
   int hc = 4;
   int hc_dim = 10240;
+  int moe_is = 640;  // moe_intermediate_size (arch constant; workspace sizing)
   int topk = 10;  // num_experts_per_tok (MoE router top-k)
   bool is_full_attention = false;  // layer_id % 4 == 3
   bool has_ple = false;  // layer_id + 1 in ple_layer_ids (0-indexed layer 1)
@@ -64,8 +66,11 @@ struct DecoderLayer {
   // PLE layer (only loaded for the PLE layer; weights stay null otherwise).
   PleLayerWeights ple;
 
-  // MoE (every layer).
+  // MoE (every layer). In slot mode (moe_residency.Slots() > 0) `routed` is
+  // the default-constructed layout and the routed weights live in
+  // moe_residency's C-slot pool; forward selects the live layout.
   quant::MoEWeightLayout routed;
+  quant::MoEResidency moe_residency;
   MoEExtraWeights mlp;
 
   // Hyper-Connection GatedResiduals (both use_mix + use_combine).
@@ -127,7 +132,10 @@ size_t DecoderLayerWorkspaceBytes(int T, bool is_full_attention, bool has_ple,
 Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
                         int hc, int lowrank, float eps, int E, int moe_is,
                         int shared_is, int k, int max_len, int max_seq,
-                        DecoderLayer* out, cudaStream_t stream);
+                        DecoderLayer* out, cudaStream_t stream,
+                        int moe_resident_slots = 0,
+                        const std::vector<int>* hot_experts = nullptr,
+                        bool hot_protected = false);
 
 // Run one decoder layer forward for a single sequence (prefill).
 //

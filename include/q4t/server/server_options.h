@@ -39,6 +39,16 @@ struct ServerOptions {
   std::string moe_trace_dir;
   std::string moe_trace_workload;
   int moe_trace_max_mib = 1024;
+  // Tiered expert residency: C resident slots per MoE layer. 0 (default) =
+  // all 512 experts resident (baseline, bit-identical path). C > 0 loads C
+  // slots per layer and streams missing experts from NVMe on demand.
+  int moe_resident_slots = 0;
+  // Optional per-layer static hot list: JSON object mapping layer id (string)
+  // to an array of expert ids, used to fill the initial slots. Empty = none.
+  std::string moe_hot_list;
+  // Protect the hot-list experts from LRU eviction (the dynamic capacity
+  // becomes C - hot). Requires moe_resident_slots > 0 and a hot list.
+  bool moe_hot_protect = false;
 };
 
 // Derived once from validated options, never a second configuration source.

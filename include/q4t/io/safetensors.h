@@ -77,6 +77,11 @@ class SafetensorsFile {
 
   // Read a tensor's bytes into `dst` (must be at least byte_size()).
   Status ReadTensor(const TensorInfo& t, void* dst) const;
+  // Read `length` bytes from the data region starting at `data_start`
+  // (TensorInfo::data_start coordinates). One pread covers several adjacent
+  // tensors, which the residency loader uses to fetch an expert's
+  // down/gate/up weights (or scale blocks) in a single contiguous read.
+  Status ReadRange(uint64_t data_start, uint64_t length, void* dst) const;
   // Read a tensor's bytes into `dst`, then H2D-copy to `device_dst` on
   // `stream` (both must be at least byte_size()).
   Status ReadTensorToDevice(const TensorInfo& t, void* dst, void* device_dst,

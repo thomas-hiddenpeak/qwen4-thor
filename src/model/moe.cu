@@ -19,11 +19,13 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <numeric>
 #include <string>
 #include <vector>
 
 #include "q4t/model/linear.h"
 #include "q4t/quant/moe_gemm.h"
+#include "q4t/quant/moe_residency.h"
 
 namespace q4t {
 namespace model {
@@ -37,6 +39,33 @@ __device__ __forceinline__ float Bf16ToFloat(uint16_t b) {
   float f;
   std::memcpy(&f, &bits, sizeof(f));
   return f;
+}
+
+// Slot-mode sub-chunk prefill helpers (see MoEForward): move a sub-chunk's
+// token rows in/out of the full-token buffers. One thread per element.
+__global__ void GatherTokenRowsKernel(const uint16_t* __restrict__ x,
+                                      const int32_t* __restrict__ token_list,
+                                      int rows, int hs,
+                                      uint16_t* __restrict__ out) {
+  const int idx = blockIdx.x * blockDim.x + threadIdx.x;
+  const int total = rows * hs;
+  if (idx >= total) return;
+  const int r = idx / hs;
+  const int c = idx % hs;
+  out[static_cast<size_t>(r) * hs + c] =
+      x[static_cast<size_t>(token_list[r]) * hs + c];
+}
+
+__global__ void ScatterTokenRowsKernel(const float* __restrict__ in,
+                                       const int32_t* __restrict__ token_list,
+                                       int rows, int hs, float* __restrict__ y) {
+  const int idx = blockIdx.x * blockDim.x + threadIdx.x;
+  const int total = rows * hs;
+  if (idx >= total) return;
+  const int r = idx / hs;
+  const int c = idx % hs;
+  y[static_cast<size_t>(token_list[r]) * hs + c] =
+      in[static_cast<size_t>(r) * hs + c];
 }
 __device__ __forceinline__ uint16_t FloatToBf16(float f) {
   const __nv_bfloat16 b = __float2bfloat16_rn(f);
@@ -327,7 +356,8 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
                   const MoEExtraWeights& extra, uint16_t* y, int T, int k,
                   void* workspace, size_t workspace_bytes, void* gemm_ws,
                   size_t gemm_ws_bytes, cudaStream_t stream,
-                  trace::RouterCollector* trace, int layer_id) {
+                  trace::RouterCollector* trace, int layer_id,
+                  const quant::MoEResidency* residency) {
   const int hs = extra.hs;
   const int E = extra.E;
   const int shared_is = extra.shared_is;
@@ -373,13 +403,224 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
     if (!s.ok()) return s;
   }
   DumpRouterTopk(d_eid, d_rw, T, k);
-  // 3. routed experts (NVFP4).
-  if (cudaMemsetAsync(d_routed, 0, static_cast<size_t>(T) * hs * sizeof(float),
-                      stream) != cudaSuccess)
-    return Status::Fail("memset routed");
-  s = quant::MoERoutedForward(x, d_eid, d_rw, d_routed, routed, routed_ws,
-                              gemm_ws, gemm_ws_bytes, T, k, stream);
-  if (!s.ok()) return s;
+  // 2b/3. Routed experts (NVFP4). In slot mode the router's full E expert
+  //     IDs must be mapped to the layer's C resident slots; missing experts
+  //     load on demand, stream-ordered after every earlier GEMM that read the
+  //     evicted slot and before any GEMM that reads the new one (see
+  //     moe_residency.h). The trace above already captured the ORIGINAL ids.
+  if (residency) {
+    const int C = residency->Slots();
+    if (C < k) return Status::Fail("residency slots below top-k");
+    std::vector<int32_t> ids_h(static_cast<size_t>(T) * k);
+    std::vector<float> rw_h(static_cast<size_t>(T) * k);
+    if (cudaMemcpyAsync(ids_h.data(), d_eid,
+                        ids_h.size() * sizeof(int32_t),
+                        cudaMemcpyDeviceToHost, stream) != cudaSuccess)
+      return Status::Fail("residency D2H expert ids");
+    if (cudaMemcpyAsync(rw_h.data(), d_rw, rw_h.size() * sizeof(float),
+                        cudaMemcpyDeviceToHost, stream) != cudaSuccess)
+      return Status::Fail("residency D2H router weights");
+    if (cudaStreamSynchronize(stream) != cudaSuccess)
+      return Status::Fail("residency stream sync");
+
+    for (int i = 0; i < static_cast<int>(ids_h.size()); ++i) {
+      if (ids_h[i] < 0 || ids_h[i] >= E) {
+        return Status::Fail("residency expert id out of range");
+      }
+    }
+
+    // Cluster tokens by expert-set similarity before partitioning. The
+    // grouped GEMM computes each token's full top-k sum in the router's
+    // top-k order regardless of token order, and results scatter back to the
+    // original token rows, so reordering tokens is numerically invisible.
+    // Adjacent tokens then share expert sets, which keeps sub-chunk expert
+    // sets overlapping and cuts evictions/reloads to near the distinct set.
+    std::vector<int32_t> order(T);
+    std::iota(order.begin(), order.end(), 0);
+    std::vector<int32_t> keys(static_cast<size_t>(T) * k);
+    for (int t = 0; t < T; ++t) {
+      int32_t* key = keys.data() + static_cast<size_t>(t) * k;
+      for (int j = 0; j < k; ++j) {
+        key[j] = ids_h[static_cast<size_t>(t) * k + j];
+      }
+      std::sort(key, key + k);
+    }
+    std::sort(order.begin(), order.end(),
+              [&](int a, int b) {
+                const int32_t* ka = keys.data() + static_cast<size_t>(a) * k;
+                const int32_t* kb = keys.data() + static_cast<size_t>(b) * k;
+                return std::lexicographical_compare(ka, ka + k, kb, kb + k);
+              });
+
+    // Partition the (sorted) tokens into sub-chunks whose distinct
+    // NON-protected expert set fits the dynamic capacity. Resolve keeps at
+    // most that many experts loadable at once; protected hot slots are always
+    // resident and never evicted, so they do not count. Each token belongs to
+    // exactly one sub-chunk, so every token's routed sum is unchanged.
+    const int D =
+        residency->HotProtected() ? C - residency->ProtectedCount() : C;
+    std::vector<std::vector<int32_t>> chunks;
+    {
+      std::vector<uint8_t> in_set(E, 0);
+      std::vector<int32_t> cur;
+      int distinct = 0;
+      auto flush = [&]() {
+        chunks.push_back(std::move(cur));
+        cur.clear();
+        std::fill(in_set.begin(), in_set.end(), 0);
+        distinct = 0;
+      };
+      for (int oi = 0; oi < T; ++oi) {
+        const int t = order[oi];
+        std::vector<int> fresh;
+        for (int j = 0; j < k; ++j) {
+          const int e = ids_h[static_cast<size_t>(t) * k + j];
+          if (!in_set[e]) {
+            in_set[e] = 1;
+            fresh.push_back(e);
+          }
+        }
+        if (distinct + static_cast<int>(fresh.size()) > D) {
+          for (int e : fresh) in_set[e] = 0;  // roll back the probe
+          if (!cur.empty()) flush();
+          for (int e : fresh) {
+            in_set[e] = 1;
+            ++distinct;
+          }
+        } else {
+          distinct += static_cast<int>(fresh.size());
+        }
+        cur.push_back(t);
+      }
+      if (!cur.empty()) flush();
+    }
+
+    // Multi-sub-chunk pipeline: per sub-chunk, commit its staged experts
+    // (H2D stream-ordered after the previous sub-chunk's GEMM, so evicting a
+    // slot is safe), gather its rows, run the grouped GEMM, scatter the
+    // result back. While the GPU runs sub-chunk j's GEMM, the host stages
+    // sub-chunk j+1's missing experts (NVMe read + swizzle) in parallel, so
+    // the next commit finds them ready.
+    const size_t xsub_b = static_cast<size_t>(T) * hs * sizeof(uint16_t);
+    const size_t ysub_b = static_cast<size_t>(T) * hs * sizeof(float);
+    const size_t idsub_b = static_cast<size_t>(T) * k * sizeof(int32_t);
+    const size_t idx_b = static_cast<size_t>(T) * sizeof(int32_t);
+    struct SubBuf {
+      uint8_t* p = nullptr;
+      cudaStream_t s;
+      ~SubBuf() {
+        if (p) cudaFreeAsync(p, s);
+      }
+    } buf{nullptr, stream};
+    if (cudaMallocAsync(&buf.p, xsub_b + ysub_b + 2 * idsub_b + idx_b,
+                        stream) != cudaSuccess)
+      return Status::Fail("residency sub-chunk buffers");
+    uint16_t* d_xsub = reinterpret_cast<uint16_t*>(buf.p);
+    float* d_ysub = reinterpret_cast<float*>(buf.p + xsub_b);
+    int32_t* d_idsub =
+        reinterpret_cast<int32_t*>(buf.p + xsub_b + ysub_b);
+    float* d_rwsub =
+        reinterpret_cast<float*>(buf.p + xsub_b + ysub_b + idsub_b);
+    int32_t* d_tokidx =
+        reinterpret_cast<int32_t*>(buf.p + xsub_b + ysub_b + 2 * idsub_b);
+    if (cudaMemsetAsync(d_routed, 0,
+                        static_cast<size_t>(T) * hs * sizeof(float),
+                        stream) != cudaSuccess)
+      return Status::Fail("memset routed");
+
+    struct Sub {
+      const std::vector<int32_t>* toks = nullptr;
+      std::vector<int32_t> slots;  // slot id per (token, top-k) entry
+      quant::MoEResidency::LoadPlan plan;
+    };
+    std::vector<Sub> subs(chunks.size());
+    for (size_t j = 0; j < chunks.size(); ++j) {
+      subs[j].toks = &chunks[j];
+      subs[j].slots.resize(chunks[j].size() * static_cast<size_t>(k));
+    }
+    auto plan_sub = [&](int j) -> Status {
+      const auto& toks = *subs[j].toks;
+      const int T_sub = static_cast<int>(toks.size());
+      std::vector<int32_t> exp_sub(static_cast<size_t>(T_sub) * k);
+      for (int i = 0; i < T_sub; ++i) {
+        const size_t base = static_cast<size_t>(toks[i]) * k;
+        for (int jj = 0; jj < k; ++jj) {
+          exp_sub[static_cast<size_t>(i) * k + jj] = ids_h[base + jj];
+        }
+      }
+      return residency->PlanResolve(exp_sub.data(), T_sub * k,
+                                    subs[j].slots.data(), &subs[j].plan);
+    };
+
+    Status ps = plan_sub(0);
+    if (!ps.ok()) return ps;
+    ps = residency->LoadPhase1(subs[0].plan);
+    if (!ps.ok()) return ps;
+    for (size_t j = 0; j < chunks.size(); ++j) {
+      const auto& toks = *subs[j].toks;
+      const int T_sub = static_cast<int>(toks.size());
+      // Commit sub-chunk j's staged experts (H2D after sub-chunk j-1's GEMM).
+      s = residency->LoadPhase2(subs[j].plan, stream);
+      if (!s.ok()) return s;
+      std::vector<float> rw_sub(static_cast<size_t>(T_sub) * k);
+      for (int i = 0; i < T_sub; ++i) {
+        const size_t base = static_cast<size_t>(toks[i]) * k;
+        for (int jj = 0; jj < k; ++jj) {
+          rw_sub[static_cast<size_t>(i) * k + jj] = rw_h[base + jj];
+        }
+      }
+      if (cudaMemcpyAsync(d_tokidx, toks.data(),
+                          static_cast<size_t>(T_sub) * sizeof(int32_t),
+                          cudaMemcpyHostToDevice, stream) != cudaSuccess)
+        return Status::Fail("residency H2D token idx");
+      const int total = T_sub * hs;
+      GatherTokenRowsKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0,
+                              stream>>>(x, d_tokidx, T_sub, hs, d_xsub);
+      if (cudaGetLastError() != cudaSuccess)
+        return Status::Fail("residency gather launch");
+      if (cudaMemcpyAsync(d_idsub, subs[j].slots.data(),
+                          subs[j].slots.size() * sizeof(int32_t),
+                          cudaMemcpyHostToDevice, stream) != cudaSuccess)
+        return Status::Fail("residency H2D slot ids");
+      if (cudaMemcpyAsync(d_rwsub, rw_sub.data(),
+                          rw_sub.size() * sizeof(float),
+                          cudaMemcpyHostToDevice, stream) != cudaSuccess)
+        return Status::Fail("residency H2D router weights");
+      if (cudaMemsetAsync(d_ysub, 0,
+                          static_cast<size_t>(T_sub) * hs * sizeof(float),
+                          stream) != cudaSuccess)
+        return Status::Fail("residency memset sub-chunk out");
+      // Slot-mode loads/evictions are stream-ordered on the caller's stream;
+      // the GEMM must therefore run single-stream (Q4T_MOE_STREAMS=1,
+      // enforced at model load) or its extra streams would read a slot
+      // before its load H2D lands or after it is evicted.
+      s = quant::MoERoutedForward(d_xsub, d_idsub, d_rwsub, d_ysub, routed,
+                                  routed_ws, gemm_ws, gemm_ws_bytes, T_sub,
+                                  k, stream);
+      if (!s.ok()) return s;
+      ScatterTokenRowsKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0,
+                               stream>>>(d_ysub, d_tokidx, T_sub, hs,
+                                         d_routed);
+      if (cudaGetLastError() != cudaSuccess)
+        return Status::Fail("residency scatter launch");
+      // Stage sub-chunk j+1 while the GPU runs sub-chunk j's GEMM.
+      if (j + 1 < chunks.size()) {
+        ps = plan_sub(j + 1);
+        if (!ps.ok()) return ps;
+        ps = residency->LoadPhase1(subs[j + 1].plan);
+        if (!ps.ok()) return ps;
+      }
+    }
+  } else {
+    // 3. routed experts (NVFP4).
+    if (cudaMemsetAsync(d_routed, 0,
+                        static_cast<size_t>(T) * hs * sizeof(float),
+                        stream) != cudaSuccess)
+      return Status::Fail("memset routed");
+    s = quant::MoERoutedForward(x, d_eid, d_rw, d_routed, routed, routed_ws,
+                                gemm_ws, gemm_ws_bytes, T, k, stream);
+    if (!s.ok()) return s;
+  }
   // 4. shared gate/up.
   s = CheckGemm(ProjGemm(x, extra.shared_gu, &extra.shared_gu_fp8, d_gu, T,
                          2 * shared_is, hs, 1.0f, 0.0f, gemm_ws, gemm_ws_bytes,

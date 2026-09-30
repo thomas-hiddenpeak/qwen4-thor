@@ -68,6 +68,11 @@ class WeightLoader {
   const TensorInfo* FindTensor(const std::string& name) const;
   // Read `name`'s bytes into `dst` (>= byte_size).
   Status ReadTensor(const std::string& name, void* dst) const;
+  // Read `length` bytes from the shard that holds tensor `name`, starting at
+  // data-region offset `offset` (TensorInfo::data_start coordinates). Lets
+  // the residency loader fetch several adjacent tensors with one pread.
+  Status ReadRange(const std::string& name, uint64_t offset, size_t length,
+                   void* dst) const;
   // Read `name`'s bytes into `dst`, then H2D-copy to `device_dst` on `stream`.
   Status ReadTensorToDevice(const std::string& name, void* dst,
                             void* device_dst, cudaStream_t stream) const;

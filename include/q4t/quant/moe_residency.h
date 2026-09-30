@@ -1,0 +1,211 @@
+// Per-layer tiered expert residency for the NVFP4 routed-expert MoE.
+//
+// A layer keeps C device slots (C << E) instead of all E experts. Each slot
+// holds one expert's packed weights + swizzled scale blocks + FP32 scales,
+// laid out exactly like one expert slice of MoEWeightLayout, so the existing
+// grouped-GEMM paths consume slot IDs unchanged when the layout is in slot
+// mode. Missing experts are loaded on demand from the checkpoint (NVMe read
+// + host swizzle + H2D); victims are chosen by LRU among the slots not
+// needed by the current forward.
+//
+// Safety contract:
+//   * A slot is only overwritten after every earlier GEMM that read it has
+//     completed, because the H2D of the new expert is enqueued on the same
+//     stream after those GEMMs (Phase 2).
+//   * A forward only reads a slot after its load H2D, because the GEMMs are
+//     enqueued after the H2D on the same stream.
+//   * Host staging is a pool of kMaxLoadThreads pinned buffers, one per load
+//     worker thread. Phase 1 (NVMe read + swizzle) writes a buffer while the
+//     previous H2D of that buffer may still be in flight; reusing a buffer
+//     therefore waits (cudaEventSynchronize) for the H2D that last used it.
+//
+// Load pipeline (see Resolve / PlanResolve / LoadPhase1 / LoadPhase2):
+//   Plan    : host-only; maps the needed set to slots, picks victims for the
+//             misses (LRU, never a protected hot slot, never a slot still
+//             needed by this call).
+//   Phase 1 : parallel host work (thread pool): NVMe read + scale merge +
+//             swizzle into per-thread staging buffers. Blocking.
+//   Phase 2 : stream work: H2D of every staged expert into its slot, in plan
+//             order, plus the host identity/scale bookkeeping.
+// Callers that can overlap Phase 1 with GPU compute (prefill sub-chunk
+// pipelines) use Plan/Phase1/Phase2 directly; the convenience Resolve()
+// runs all three phases back to back.
+//
+// Numerical contract: loading expert e into any slot produces the exact same
+// device bytes as LoadMoEWeights would for expert e (same read, same swizzle,
+// same scales), so resident and on-demand experts are bit-identical to the
+// all-experts-resident path.
+#pragma once
+
+#include <cuda_runtime.h>
+
+#include <cstdint>
+#include <string>
+#include <vector>
+
+#include "q4t/io/weight_loader.h"
+#include "q4t/quant/moe_weights.h"
+#include "q4t/status.h"
+
+namespace q4t {
+namespace quant {
+
+// Device bytes for one layer's C-slot layout (C x per-expert slice, the
+// exact allocation MoEResidency::Init performs).
+size_t MoEResidencyLayerBytes(int hs, int moe_is, int C);
+// Pinned staging bytes for ONE load worker (the exact per-buffer allocation
+// MoEResidency::Init performs; the layer allocates MoEResidencyLoadThreads()
+// of them).
+size_t MoEResidencyStagingBytes(int hs, int moe_is);
+// Load worker threads from Q4T_MOE_LOAD_THREADS (default 8, clamped to
+// [1, kMaxLoadThreads]). The budget and the residency must agree on this.
+int MoEResidencyLoadThreads();
+
+// One layer's C-slot expert residency. Not copyable; owned by the layer.
+class MoEResidency {
+ public:
+  // Max load worker threads; the memory budget and the residency
+  // must agree on this (see MoEResidencyLoadThreads).
+  static constexpr int kMaxLoadThreads = 8;
+
+  // Cumulative counters (host-side, single-threaded per layer in this
+  // service; max_seq=1 contract).
+  struct Stats {
+    uint64_t resolve_calls = 0;  // Resolve() invocations
+    uint64_t expert_lookups = 0;  // needed-expert entries examined
+    uint64_t hits = 0;  // lookups already resident
+    uint64_t misses = 0;  // lookups that required a load
+    uint64_t loads = 0;  // experts loaded (incl. initial hot list)
+    uint64_t evictions = 0;  // slots overwritten
+    double load_bytes = 0.0;  // bytes read from checkpoint
+    // Per-phase split (decode = single-token forwards, prefill = chunked).
+    uint64_t decode_lookups = 0;
+    uint64_t decode_misses = 0;
+    uint64_t prefill_lookups = 0;
+    uint64_t prefill_misses = 0;
+  };
+
+  // A planned set of expert loads: expert i goes into slot i. PlanResolve
+  // fills it; LoadPhase1 stages the bytes; LoadPhase2 copies them to device
+  // and updates the host identity/scale state.
+  struct LoadPlan {
+    std::vector<int> experts;
+    std::vector<int> slots;
+    // LoadPhase1 fills workers[i] with the staging buffer index that staged
+    // expert i; LoadPhase2 commits expert i from that buffer.
+    std::vector<int> workers;
+    bool empty() const { return experts.empty(); }
+    void clear() {
+      experts.clear();
+      slots.clear();
+      workers.clear();
+    }
+  };
+
+  // Allocate C slots and bind the checkpoint loader. No experts are loaded.
+  // `stream` is used for the initial hot-list loads; later loads use the
+  // stream passed to the load phases (stream-ordered safety, see header).
+  Status Init(const io::WeightLoader& loader, int layer_id, int E, int hs,
+              int moe_is, int C, cudaStream_t stream);
+
+  // Load the static hot list into the slots (duplicates and entries >= E are
+  // ignored; at most C distinct experts are loaded).
+  Status InitHot(const std::vector<int>& hot_experts, cudaStream_t stream);
+
+  // Mark the currently resident hot experts as protected: victim selection
+  // never evicts them. Call after InitHot. With H protected experts the
+  // dynamic capacity is C - H; callers must keep each Resolve call's
+  // distinct NON-protected expert set within C - H.
+  void SetHotProtected();
+  bool HotProtected() const { return hot_protected_; }
+  // Number of protected (hot) slots.
+  int ProtectedCount() const { return protected_count_; }
+
+  // Plan a needed-expert set to slots (host-only, no device work).
+  //   needed : host array of n expert IDs (0..E-1, duplicates allowed)
+  //   slot_of: host array of n ints, receives the slot index per entry
+  //   decode_phase: true for single-token (decode) forwards; used only for
+  //                 per-phase miss statistics.
+  // Misses are collected into `plan` with their victim slots; nothing is
+  // loaded or evicted yet. The caller must keep the distinct needed set
+  // within the available (non-protected) capacity, as Resolve does.
+  Status PlanResolve(const int32_t* needed, int n, int32_t* slot_of,
+                     LoadPlan* plan, bool decode_phase = false) const;
+
+  // Phase 1: stage every expert of `plan` (NVMe read + merge + swizzle) in
+  // parallel on a thread pool. Blocking; per-thread pinned staging. Fills
+  // plan.workers with the staging buffer index per expert.
+  Status LoadPhase1(LoadPlan& plan) const;
+
+  // Phase 2: H2D of every staged expert into its slot, enqueued on `stream`
+  // (stream-ordered after any earlier GEMM that read the evicted slot and
+  // before any GEMM that reads the new one), then update host state.
+  Status LoadPhase2(const LoadPlan& plan, cudaStream_t stream,
+                    bool* loaded = nullptr) const;
+
+  // Convenience: Plan + Phase 1 + Phase 2 back to back (decode path).
+  // `loaded` reports whether any load was enqueued.
+  Status Resolve(const int32_t* needed, int n, int32_t* slot_of,
+                 cudaStream_t stream, bool* loaded = nullptr,
+                 bool decode_phase = false) const;
+
+  // The C-slot device layout (E = C, slot_mode = true). Valid after Init.
+  const MoEWeightLayout& Layout() const { return layout_; }
+  int Slots() const { return C_; }
+  // Expert currently in a slot (-1 = empty). Test/diagnostic accessor.
+  int SlotExpert(int slot) const { return slot_expert_[slot]; }
+  int Experts() const { return E_; }
+  int ResidentCount() const { return resident_count_; }
+  size_t DeviceBytes() const { return layout_.TotalBytes(); }
+  const Stats& GetStats() const { return stats_; }
+
+  // Free all device buffers (idempotent).
+  void Free();
+
+ private:
+  // Stage one expert (read + merge + swizzle) into worker `t`'s staging
+  // buffer, waiting first for that buffer's last H2D to complete.
+  Status StageExpert(int expert, int t) const;
+
+  // Commit one staged expert from worker `t`'s buffer into its slot
+  // (H2D + host state).
+  Status CommitExpert(int expert, int slot, int t, cudaStream_t stream) const;
+
+  const io::WeightLoader* loader_ = nullptr;  // borrowed from Model::weight_loader; valid for the model's lifetime
+  int layer_id_ = 0;
+  int E_ = 0;
+  int hs_ = 0;
+  int moe_is_ = 0;
+  int C_ = 0;
+
+  mutable MoEWeightLayout layout_;  // E = C, slot_mode = true
+
+  // Host state.
+  mutable std::vector<int> slot_expert_;  // [C] expert id in slot, -1 = empty
+  mutable std::vector<int> expert_slot_;  // [E] slot of expert, -1 = not resident
+  mutable std::vector<uint64_t> slot_tick_;  // [C] LRU recency (higher = newer)
+  mutable uint64_t tick_ = 0;
+  mutable int resident_count_ = 0;
+
+  // Protected hot slots (never evicted).
+  mutable std::vector<uint8_t> slot_protected_;  // [C]
+  bool hot_protected_ = false;
+  int protected_count_ = 0;
+
+  // Per-slot FP32 scales are kept in layout_ (gu_w_scale2_h etc., sized C).
+
+  // Pinned staging pool, one buffer per load worker (see header safety
+  // contract). Raw cudaHostAlloc pointers: the C++ allocator's pages are not
+  // valid cudaFreeHost targets.
+  int load_threads_ = 1;
+  mutable std::vector<uint8_t*> staging_;
+  mutable std::vector<bool> staging_in_flight_;
+  mutable cudaEvent_t staging_event_[kMaxLoadThreads] = {nullptr};
+  size_t staging_bytes_ = 0;
+
+  mutable Stats stats_;
+  bool inited_ = false;
+};
+
+}  // namespace quant
+}  // namespace q4t

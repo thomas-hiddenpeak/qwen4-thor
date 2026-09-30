@@ -17,6 +17,8 @@
 // layers (they run sequentially); its size is the max over all layers.
 #include "q4t/model/model.h"
 
+#include "q4t/io/json.h"
+
 #include <cuda_bf16.h>
 #include <cuda_runtime.h>
 
@@ -26,6 +28,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <fstream>
+#include <iterator>
 #include <memory>
 #include <string>
 #include <utility>
@@ -104,6 +108,8 @@ void Model::Free() {
   head.Free();
   for (auto& l : layers) l.Free();
   layers.clear();
+  weight_loader.reset();
+  weight_index.reset();
   if (ple_emb) delete ple_emb;
   ple_emb = nullptr;
   auto freep = [](void* p) {
@@ -197,14 +203,12 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   // On Jetson Thor's 122 GB unified memory, keeping the ~84 GB of file
   // mappings alive alongside the ~84 GB of GPU weights exceeds the budget.
   // (Same fix as qwen35-thor model.cpp: "统一内存: 立即释放 mmap".)
-  std::unique_ptr<io::WeightIndex> index;
   {
     io::WeightIndex* raw = nullptr;
     Status s = io::WeightIndex::Open(cfg.index_path, &raw);
     if (!s.ok()) return s;
-    index.reset(raw);
+    m->weight_index.reset(raw);
   }
-  std::unique_ptr<io::WeightLoader> loader;
   {
     io::WeightLoader* raw = nullptr;
     // max_open_shards = 32: the parallel MoE expert load reads from multiple
@@ -214,10 +218,11 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
     // the kernel VMA/page-table locks). A 32-shard LRU keeps the active mmap
     // set small; each layer's experts span only a few shards, so eviction is
     // rare.
-    Status s = io::WeightLoader::Create(cfg.model_dir, *index, 32, &raw);
+    Status s = io::WeightLoader::Create(cfg.model_dir, *m->weight_index, 32, &raw);
     if (!s.ok()) return s;
-    loader.reset(raw);
+    m->weight_loader.reset(raw);
   }
+  io::WeightLoader& loader = *m->weight_loader;
   Status s;
 
   const int hc_dim = cfg.hc * cfg.hs;
@@ -226,18 +231,82 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   double t0 = lt ? NowMs() : 0.0;
 
   // 1. Head (embed + lm_head + mixer).
-  s = LoadModelHead(*loader, cfg.vocab, cfg.hs, cfg.hc, cfg.lowrank, cfg.eps,
+  s = LoadModelHead(loader, cfg.vocab, cfg.hs, cfg.hc, cfg.lowrank, cfg.eps,
                     &m->head, stream);
   if (!s.ok()) return s;
   if (lt) t_head = NowMs() - t0;
 
   // 2. Decoder layers [0, num_layers).
   m->layers.resize(cfg.num_layers);
+  // Tiered residency keeps the loader for the model's lifetime (on-demand
+  // expert loads); the baseline path releases it once loading is done.
+  const bool keep_loader = cfg.moe_resident_slots > 0;
+  if (keep_loader) {
+    // Slot-mode stream safety (residency-layer guard; GEMM itself untouched):
+    // on-demand expert loads/evictions are stream-ordered on the caller's
+    // stream, but MoERoutedForward's extra GEMM streams read slot weights
+    // without waiting for those H2Ds (cross-stream race -> wrong weights).
+    // The GEMM stream count is env-configured (Q4T_MOE_STREAMS, default 4);
+    // slot mode forces single-stream GEMM so every slot read is ordered after
+    // its load and before its eviction. Set before the first forward.
+    const char* env = std::getenv("Q4T_MOE_STREAMS");
+    const int n = env ? std::atoi(env) : 4;
+    if (n != 1) {
+      setenv("Q4T_MOE_STREAMS", "1", 1);
+      std::fprintf(stderr,
+                   "[q4t][residency] Q4T_MOE_STREAMS forced to 1: slot-mode "
+                   "loads are stream-ordered; extra GEMM streams would race "
+                   "slot H2Ds\n");
+    }
+  }
+  // Optional per-layer static hot lists for tiered residency (JSON object
+  // mapping layer id -> array of expert ids). Missing layers get no fill.
+  std::vector<std::vector<int>> hot_lists(cfg.num_layers);
+  if (cfg.moe_resident_slots > 0 && !cfg.moe_hot_list.empty()) {
+    std::ifstream hot_in(cfg.moe_hot_list);
+    if (!hot_in) {
+      return Status::Fail("cannot open moe-hot-list: " + cfg.moe_hot_list);
+    }
+    const std::string hot_text((std::istreambuf_iterator<char>(hot_in)),
+                               std::istreambuf_iterator<char>());
+    io::Json hot_doc;
+    s = io::ParseJson(hot_text, &hot_doc);
+    if (!s.ok() || !hot_doc.IsObject()) {
+      return Status::Fail("invalid moe-hot-list JSON (want object)");
+    }
+    for (const auto& [key, value] : hot_doc.object) {
+      if (!value.IsArray()) {
+        return Status::Fail("moe-hot-list layer entry must be an array: " +
+                            key);
+      }
+      long layer = 0;
+      try {
+        layer = std::stol(key);
+      } catch (const std::exception&) {
+        return Status::Fail("moe-hot-list layer key is not an int: " + key);
+      }
+      if (layer < 0 || layer >= cfg.num_layers) {
+        return Status::Fail("moe-hot-list layer out of range: " + key);
+      }
+      for (const auto& e : value.array) {
+        if (!e.IsNumber() || e.number < 0 || e.number >= cfg.E ||
+            e.number != static_cast<int64_t>(e.number)) {
+          return Status::Fail("moe-hot-list expert id out of range: " + key);
+        }
+        hot_lists[layer].push_back(static_cast<int>(e.number));
+      }
+    }
+  }
   t0 = lt ? NowMs() : 0.0;
   for (int l = 0; l < cfg.num_layers; ++l) {
-    s = LoadDecoderLayer(*loader, l, cfg.hs, cfg.hc, cfg.lowrank, cfg.eps,
+    const std::vector<int>* hot =
+        (cfg.moe_resident_slots > 0 && !hot_lists[l].empty())
+            ? &hot_lists[l]
+            : nullptr;
+    s = LoadDecoderLayer(loader, l, cfg.hs, cfg.hc, cfg.lowrank, cfg.eps,
                          cfg.E, cfg.moe_is, cfg.shared_is, cfg.topk,
-                         cfg.max_len, cfg.max_seq, &m->layers[l], stream);
+                         cfg.max_len, cfg.max_seq, &m->layers[l], stream,
+                         cfg.moe_resident_slots, hot, cfg.moe_hot_protect);
     if (!s.ok()) return s;
   }
   if (lt) t_layers = NowMs() - t0;
@@ -259,7 +328,7 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
         "model.language_model.layers." + std::to_string(ple_layer) + ".ple";
     m->ple_hash.ngram_size = cfg.ple_ngram_size;
     m->ple_hash.heads_per_ngram = cfg.ple_heads_per_ngram;
-    s = LoadPleHashParams(*loader, ple_prefix, &m->ple_hash,
+    s = LoadPleHashParams(loader, ple_prefix, &m->ple_hash,
                           &m->ple_weight_scale, stream);
     if (!s.ok()) return s;
 
@@ -350,9 +419,9 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   m->ws_bytes = ws;
   if (!(s = alloc(&m->d_ws, ws))) return s;
 
-  // All weights are on GPU. `loader`/`index` (unique_ptr) release the
-  // mmap'd safetensors shards at scope exit, dropping the file mappings
-  // before the decode loop runs. Sync first so every H2D copy has landed
+  // All weights are on GPU. `index` (unique_ptr) releases the weight
+  // index at scope exit; the loader's shard mappings are released below
+  // (baseline) or kept for the model's lifetime (tiered residency). Sync first so every H2D copy has landed
   // (the reads are async on `stream`).
   t0 = lt ? NowMs() : 0.0;
   cudaStreamSynchronize(stream);
@@ -362,6 +431,14 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
                  "[q4t][load] head=%.0f ms layers=%.0f ms ple=%.0f ms "
                  "buffers=%.0f ms sync=%.0f ms\n",
                  t_head, t_layers, t_ple, t_buf, t_sync);
+  }
+  // Baseline path (no tiered residency): release the loader now, as before,
+  // dropping the shard mappings before the decode loop. Tiered residency
+  // keeps it for the model's lifetime: on-demand expert loads stream shards
+  // from NVMe after startup, and each layer's MoEResidency borrows it.
+  if (!keep_loader) {
+    m->weight_loader.reset();
+    m->weight_index.reset();
   }
   return Status();
 }

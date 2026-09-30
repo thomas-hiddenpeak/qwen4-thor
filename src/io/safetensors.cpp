@@ -234,6 +234,28 @@ Status SafetensorsFile::ReadTensor(const TensorInfo& t, void* dst) const {
   return Status();
 }
 
+Status SafetensorsFile::ReadRange(uint64_t data_start, uint64_t length,
+                                  void* dst) const {
+  if (impl_->data_offset + data_start + length > impl_->map_len) {
+    return Status::Fail("read range extends past file end");
+  }
+  // pread, same rationale as ReadTensor (thread-safe, no per-page faults).
+  const off_t base = static_cast<off_t>(impl_->data_offset + data_start);
+  size_t got = 0;
+  while (got < length) {
+    const ssize_t r = pread(impl_->fd, static_cast<char*>(dst) + got,
+                            length - got, base + static_cast<off_t>(got));
+    if (r < 0) {
+      if (errno == EINTR) continue;
+      return Status::Fail("pread failed for range");
+    }
+    if (r == 0) break;  // unexpected EOF
+    got += static_cast<size_t>(r);
+  }
+  if (got != length) return Status::Fail("short pread for range");
+  return Status();
+}
+
 Status SafetensorsFile::ReadTensorToDevice(const TensorInfo& t, void* dst,
                                            void* device_dst,
                                            cudaStream_t stream) const {

@@ -429,3 +429,136 @@ Q4T_TEST(moe_forward_end_to_end) {
   Q4T_CHECK(l2 < 2e-2f);
   return true;
 }
+
+// Differential contract: slot-mode residency forward must be BIT-EXACT to the
+// all-experts-resident forward for the same input (same experts, same weight
+// bytes, same router). Runs both the prefill path (T>1, MoERoutedForward) and
+// the decode path (T=1, MoEDeviceDecode). C=64 < distinct experts selected,
+// so on-demand loads + LRU evictions are exercised.
+Q4T_TEST(moe_forward_residency_bitexact) {
+  if (!CudaAvailable()) {
+    Q4T_SKIP("(skipped: no CUDA device)");
+  }
+  WeightIndex* idx = nullptr;
+  WeightLoader* loader = nullptr;
+  if (!FileExists(kIndex) || !WeightIndex::Open(kIndex, &idx).ok() ||
+      !WeightLoader::Create(kModelDir, *idx, 16, &loader).ok()) {
+    Q4T_SKIP("(skipped: real model not present)");
+  }
+
+  MoEWeightLayout routed;
+  Status s = LoadMoEWeights(*loader, kLayer, kE, kHs, kMoeIs, &routed, 0);
+  if (!s.ok()) {
+    std::printf("  routed load failed: %s\n", s.message().c_str());
+    return false;
+  }
+  MoEExtraWeights extra;
+  s = LoadMoEExtra(*loader, kMlpPrefix, kE, kHs, kSharedIs, &extra, 0);
+  if (!s.ok()) {
+    std::printf("  extra load failed: %s\n", s.message().c_str());
+    return false;
+  }
+
+  const int C = 64;
+  q4t::quant::MoEResidency res;
+  s = res.Init(*loader, kLayer, kE, kHs, kMoeIs, C, 0);
+  if (!s.ok()) {
+    std::printf("  residency init failed: %s\n", s.message().c_str());
+    return false;
+  }
+
+  const size_t gemm_ws = 32 * 1024 * 1024;
+  void* d_gemm_ws = nullptr;
+  cudaMalloc(&d_gemm_ws, gemm_ws);
+
+  auto run_case = [&](int T) -> bool {
+    std::mt19937 rng(777 + T);
+    std::normal_distribution<float> dist(0.0f, 1.0f);
+    std::vector<float> x_f(static_cast<size_t>(T) * kHs);
+    for (auto& v : x_f) v = dist(rng);
+    std::vector<uint16_t> x_bf16(x_f.size());
+    for (size_t i = 0; i < x_f.size(); ++i) {
+      const __nv_bfloat16 b = __float2bfloat16(x_f[i]);
+      x_bf16[i] = *reinterpret_cast<const uint16_t*>(&b);
+    }
+
+    const size_t ws_bytes = q4t::model::MoEForwardWorkspaceBytes(
+        T, kTopK, kHs, kMoeIs, kSharedIs, kE);
+    uint8_t* d_ws = nullptr;
+    uint16_t* d_x = nullptr;
+    uint16_t* d_y = nullptr;
+    cudaMalloc(&d_ws, ws_bytes);
+    cudaMalloc(&d_x, x_bf16.size() * 2);
+    cudaMalloc(&d_y, static_cast<size_t>(T) * kHs * 2);
+    cudaMemcpy(d_x, x_bf16.data(), x_bf16.size() * 2, cudaMemcpyHostToDevice);
+
+    s = MoEForward(d_x, routed, extra, d_y, T, kTopK, d_ws, ws_bytes,
+                   d_gemm_ws, gemm_ws, 0);
+    if (!s.ok()) {
+      std::printf("  T=%d baseline MoEForward failed: %s\n", T,
+                  s.message().c_str());
+      return false;
+    }
+    if (cudaDeviceSynchronize() != cudaSuccess) return false;
+    std::vector<uint16_t> y_base(static_cast<size_t>(T) * kHs);
+    cudaMemcpy(y_base.data(), d_y, y_base.size() * 2,
+               cudaMemcpyDeviceToHost);
+
+    s = MoEForward(d_x, res.Layout(), extra, d_y, T, kTopK, d_ws, ws_bytes,
+                   d_gemm_ws, gemm_ws, 0, nullptr, kLayer, &res);
+    if (!s.ok()) {
+      std::printf("  T=%d residency MoEForward failed: %s\n", T,
+                  s.message().c_str());
+      return false;
+    }
+    if (cudaDeviceSynchronize() != cudaSuccess) return false;
+    std::vector<uint16_t> y_slot(static_cast<size_t>(T) * kHs);
+    cudaMemcpy(y_slot.data(), d_y, y_slot.size() * 2,
+               cudaMemcpyDeviceToHost);
+
+    bool same = (y_base == y_slot);
+    size_t first_diff = y_base.size();
+    for (size_t i = 0; i < y_base.size(); ++i) {
+      if (y_base[i] != y_slot[i]) {
+        first_diff = i;
+        break;
+      }
+    }
+    std::printf("  T=%d C=%d: BIT-EXACT=%s loads=%llu misses=%llu\n", T, C,
+                same ? "true" : "false",
+                (unsigned long long)res.GetStats().loads,
+                (unsigned long long)res.GetStats().misses);
+    if (!same) {
+      const size_t t = first_diff / kHs;
+      const size_t c = first_diff % kHs;
+      std::printf("  first diff at token=%zu col=%zu base=%f slot=%f\n", t, c,
+                  Bf16ToFloat(y_base[first_diff]),
+                  Bf16ToFloat(y_slot[first_diff]));
+    }
+    cudaFree(d_ws);
+    cudaFree(d_x);
+    cudaFree(d_y);
+    return same;
+  };
+
+  const bool prefill_ok = run_case(32);
+  const bool decode_ok = run_case(1);
+
+  cudaFree(d_gemm_ws);
+  res.Free();
+  extra.Free();
+  if (routed.gu_packed) cudaFree(routed.gu_packed);
+  if (routed.gu_sf) cudaFree(routed.gu_sf);
+  if (routed.dn_packed) cudaFree(routed.dn_packed);
+  if (routed.dn_sf) cudaFree(routed.dn_sf);
+  if (routed.gu_w_scale2) cudaFree(routed.gu_w_scale2);
+  if (routed.gu_input_scale) cudaFree(routed.gu_input_scale);
+  if (routed.dn_w_scale2) cudaFree(routed.dn_w_scale2);
+  if (routed.dn_input_scale) cudaFree(routed.dn_input_scale);
+  delete loader;
+  delete idx;
+
+  Q4T_CHECK(prefill_ok);
+  Q4T_CHECK(decode_ok);
+  return true;
+}

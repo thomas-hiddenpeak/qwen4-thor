@@ -104,7 +104,7 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
   p.max_prefill = req.max_prefill > 0 ? req.max_prefill : params.max_prefill;
 
   b.weights = weights_bytes;
-  b.fixed = FixedBytes(p, weights_bytes);
+  b.fixed = FixedBytes(p, weights_bytes) + req.extra_fixed_bytes;
 
   const int kHardMaxLen = 262144;  // model context ceiling
   const int kMinLen = 2048;        // below this the server is not useful

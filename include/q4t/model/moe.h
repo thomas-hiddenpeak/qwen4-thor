@@ -25,6 +25,7 @@
 
 #include "q4t/io/weight_loader.h"
 #include "q4t/model/gemv.h"
+#include "q4t/quant/moe_residency.h"
 #include "q4t/quant/moe_weights.h"
 #include "q4t/status.h"
 
@@ -85,11 +86,18 @@ size_t MoEForwardWorkspaceBytes(int T, int k, int hs, int moe_is, int shared_is,
 //   gemm_ws  : separate cuBLASLt workspace (>= ~32 MiB), shared by the BF16
 //              GEMMs and MoERoutedForward
 //   stream   : CUDA stream
+//   residency: optional per-layer tiered expert residency (slot mode). When
+//              non-null, `routed` must be residency->Layout() (E = slot
+//              count). After the router top-k, the expert IDs are read back,
+//              resolved to slots (missing experts are loaded on demand,
+//              stream-ordered), and written back before the routed GEMM.
+//              The trace (if any) captures the ORIGINAL expert IDs.
 Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
                   const MoEExtraWeights& extra, uint16_t* y, int T, int k,
                   void* workspace, size_t workspace_bytes, void* gemm_ws,
                   size_t gemm_ws_bytes, cudaStream_t stream,
-                  trace::RouterCollector* trace = nullptr, int layer_id = -1);
+                  trace::RouterCollector* trace = nullptr, int layer_id = -1,
+                  const quant::MoEResidency* residency = nullptr);
 
 }  // namespace model
 }  // namespace q4t

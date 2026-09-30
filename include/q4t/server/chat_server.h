@@ -281,6 +281,10 @@ class ChatServer {
   // declaration order, so mtp_ is destroyed before model_).
   mtp::MtpModel mtp_;
   bool mtp_loaded_ = false;
+  // Tiered residency observability (max_seq=1 contract: the delta between
+  // consecutive request completions is that request's own load activity).
+  bool residency_enabled_ = false;
+  quant::MoEResidency::Stats residency_stats_prev_{};
   int mtp_k_ = 3;  // matches the CLI default (实测最优, 见 docs/LOG.md)
   // NOTE (Stage 2c): the legacy shared rolling draft-trunk buffers d_g_/
   // d_g_next_ are gone — concurrent MTP requests would corrupt each other's
