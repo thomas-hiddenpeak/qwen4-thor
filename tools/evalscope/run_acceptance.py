@@ -60,6 +60,9 @@ def main():
     parser.add_argument('--moe-hot-list', type=Path,
                         help='serve --moe-hot-list JSON (per-layer static '
                              'hot list for tiered residency)')
+    parser.add_argument('--request-deadline-ms', type=int, default=0,
+                        help='serve --request-deadline-ms (0 = server '
+                             'default 1200000; must be in [1000,10800000])')
     args = parser.parse_args()
     if bool(args.moe_trace_dir) != bool(args.moe_trace_workload):
         parser.error('trace directory and workload must be supplied together')
@@ -69,6 +72,9 @@ def main():
         parser.error('moe-hot-list requires moe-resident-slots > 0')
     if args.startup_timeout <= 0:
         parser.error('startup-timeout must be positive')
+    if args.request_deadline_ms and not (
+            1000 <= args.request_deadline_ms <= 10800000):
+        parser.error('request-deadline-ms must be in [1000,10800000]')
     if args.max_len <= 0:
         parser.error('max-len must be positive')
     extra_lengths = []
@@ -177,6 +183,8 @@ def main():
         command += ['--moe-resident-slots', str(args.moe_resident_slots)]
         if args.moe_hot_list:
             command += ['--moe-hot-list', str(args.moe_hot_list.resolve())]
+    if args.request_deadline_ms > 0:
+        command += ['--request-deadline-ms', str(args.request_deadline_ms)]
     save(out / 'server-command.json', {'argv': command, 'removed_environment': removed,
                                        'startup_timeout_seconds': args.startup_timeout})
     results = []
