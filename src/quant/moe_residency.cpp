@@ -198,6 +198,19 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
       return Status::Fail("residency L2 event create failed");
     }
   }
+  // Persistent load workers are created last so no Init failure path
+  // leaks a running pool (Free only stops/joins when inited_).
+  workers_.clear();
+  for (int t = 0; t < load_threads_; ++t) {
+    LoadWorker* w = new (std::nothrow) LoadWorker();
+    if (!w) {
+      for (auto* x : workers_) delete x;
+      workers_.clear();
+      return Status::Fail("residency load worker alloc failed");
+    }
+    workers_.push_back(w);
+    w->th = std::thread([this, w] { LoadWorkerLoop(w); });
+  }
   inited_ = true;
   (void)stream;
   return Status();
@@ -723,30 +736,61 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
   // a buffer for the next chunk is safe because StageExpert waits on the
   // event recorded by the commit that last H2D'd from it.
   const int cnt = std::min(load_threads_, n - off);
-  std::atomic<int> first_err{0};  // 0 = ok, else 1
-  std::vector<std::thread> pool;
-  pool.reserve(cnt);
+  plan.first_err.store(0, std::memory_order_relaxed);
   for (int t = 0; t < cnt; ++t) {
-    const int i = off + t;
-    pool.emplace_back([&, t, i]() {
-      int buf = -1;
-      Status s = StageExpert(plan.experts[i],
-                             plan.needed_mark.empty() ? nullptr
-                                                     : &plan.needed_mark,
-                             &buf);
-      if (!s.ok()) {
-        first_err.store(1, std::memory_order_relaxed);
-      } else {
-        plan.workers[i] = buf;
-      }
-    });
+    LoadWorker* w = workers_[t];
+    {
+      std::lock_guard<std::mutex> lk(w->mu);
+      w->plan = &plan;
+      w->idx = off + t;
+      w->finished = false;
+    }
+    w->need.notify_one();
   }
-  for (auto& th : pool) th.join();
-  if (first_err.load(std::memory_order_relaxed) != 0) {
+  for (int t = 0; t < cnt; ++t) {
+    LoadWorker* w = workers_[t];
+    std::unique_lock<std::mutex> lk(w->mu);
+    w->done.wait(lk, [&] { return w->finished; });
+  }
+  if (plan.first_err.load(std::memory_order_relaxed) != 0) {
     return Status::Fail("residency parallel stage failed");
   }
   plan.next_stage = off + cnt;
   return Status();
+}
+
+// Persistent load worker: waits for a stage task, stages one expert, and
+// signals the caller. The task (plan pointer + entry index) is fully
+// specified at dispatch; LoadPhase1 does not return until every dispatched
+// worker has finished, so the plan outlives the task.
+void MoEResidency::LoadWorkerLoop(LoadWorker* w) const {
+  while (true) {
+    LoadPlan* plan;
+    int idx;
+    {
+      std::unique_lock<std::mutex> lk(w->mu);
+      w->need.wait(lk, [&] { return w->stop || w->idx >= 0; });
+      if (w->stop) break;
+      plan = w->plan;
+      idx = w->idx;
+      w->idx = -1;
+    }
+    int buf = -1;
+    Status s = StageExpert(plan->experts[idx],
+                           plan->needed_mark.empty() ? nullptr
+                                                    : &plan->needed_mark,
+                           &buf);
+    if (s.ok()) {
+      plan->workers[idx] = buf;
+    } else {
+      plan->first_err.store(1, std::memory_order_relaxed);
+    }
+    {
+      std::lock_guard<std::mutex> lk(w->mu);
+      w->finished = true;
+    }
+    w->done.notify_one();
+  }
 }
 
 Status MoEResidency::LoadPhase2(LoadPlan& plan, cudaStream_t stream,
@@ -791,6 +835,18 @@ Status MoEResidency::Resolve(const int32_t* needed, int n, int32_t* slot_of,
 
 void MoEResidency::Free() {
   if (!inited_) return;
+  for (auto* w : workers_) {
+    {
+      std::lock_guard<std::mutex> lk(w->mu);
+      w->stop = true;
+    }
+    w->need.notify_one();
+  }
+  for (auto* w : workers_) {
+    if (w->th.joinable()) w->th.join();
+    delete w;
+  }
+  workers_.clear();
   auto free_if = [](void** p) {
     if (*p) {
       cudaFree(*p);

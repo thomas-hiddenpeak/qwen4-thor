@@ -49,9 +49,12 @@
 
 #include <cuda_runtime.h>
 
+#include <atomic>
+#include <condition_variable>
 #include <cstdint>
 #include <mutex>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include "q4t/io/weight_loader.h"
@@ -128,6 +131,8 @@ class MoEResidency {
     // so L2 victim selection can prefer buffers whose expert is not still
     // needed by the same plan.
     std::vector<uint8_t> needed_mark;
+    // LoadPhase1 resets this to 0; a worker stores 1 on stage failure.
+    std::atomic<int> first_err{0};
     bool empty() const { return experts.empty(); }
     bool fully_committed() const { return next_commit >= experts.size(); }
     void clear() {
@@ -207,6 +212,22 @@ class MoEResidency {
   // (no NVMe read); an L2 miss evicts an LRU victim (never an in-flight
   // buffer, preferring experts not in *needed_mark) and NVMe-reads + merges
   // + swizzles into it. *buf_out receives the buffer index.
+  // One persistent load worker (created in Init, joined in Free).
+  // LoadPhase1 dispatches one stage task per worker and waits for
+  // completion, instead of creating and destroying load_threads_
+  // std::threads on every call (that create/join cost is a fixed
+  // per-miss-chunk overhead on the decode hot path).
+  struct LoadWorker {
+    std::thread th;
+    std::mutex mu;
+    std::condition_variable need;  // worker waits for a task
+    std::condition_variable done;  // caller waits for task completion
+    LoadPlan* plan = nullptr;
+    int idx = -1;
+    bool finished = true;
+    bool stop = false;
+  };
+
   Status StageExpert(int expert, const std::vector<uint8_t>* needed_mark,
                      int* buf_out) const;
 
@@ -218,6 +239,9 @@ class MoEResidency {
   // (H2D + host state).
   Status CommitExpert(int expert, int slot, int buf, cudaStream_t stream)
       const;
+
+  // Body of one persistent load worker (see LoadWorker).
+  void LoadWorkerLoop(LoadWorker* w) const;
 
   const io::WeightLoader* loader_ = nullptr;  // borrowed from Model::weight_loader; valid for the model's lifetime
   int layer_id_ = 0;
@@ -266,6 +290,9 @@ class MoEResidency {
   // DecoderLayer is default-constructed via vector::resize in model.cu.
   mutable std::mutex* l2_mu_ = nullptr;
   size_t staging_bytes_ = 0;
+
+  // Persistent load workers (see LoadWorker above).
+  mutable std::vector<LoadWorker*> workers_;
 
   mutable Stats stats_;
   bool inited_ = false;
