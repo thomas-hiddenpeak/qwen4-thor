@@ -848,7 +848,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                  "[q4t][residency] id=%s finish=%s in=%d out=%zu "
                  "loads=%llu load_mb=%.1f misses=%llu hits=%llu "
                  "evictions=%llu dmiss=%llu dlook=%llu pmiss=%llu "
-                 "plook=%llu\n",
+                 "plook=%llu l2h=%llu l2m=%llu l2ev=%llu nvme_mb=%.1f\n",
                  id.c_str(), finish_reason.c_str(), T, generated.size(),
                  static_cast<unsigned long long>(now.loads - prev.loads),
                  (now.load_bytes - prev.load_bytes) / 1e6,
@@ -863,7 +863,13 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                  static_cast<unsigned long long>(
                      now.prefill_misses - prev.prefill_misses),
                  static_cast<unsigned long long>(
-                     now.prefill_lookups - prev.prefill_lookups));
+                     now.prefill_lookups - prev.prefill_lookups),
+                 static_cast<unsigned long long>(now.l2_hits - prev.l2_hits),
+                 static_cast<unsigned long long>(
+                     now.l2_misses - prev.l2_misses),
+                 static_cast<unsigned long long>(
+                     now.l2_evictions - prev.l2_evictions),
+                 (now.nvme_read_bytes - prev.nvme_read_bytes) / 1e6);
     residency_stats_prev_ = now;
   }
 

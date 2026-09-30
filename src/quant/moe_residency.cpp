@@ -44,6 +44,21 @@ int MoEResidencyLoadThreads() {
   return std::max(1, std::min(n, MoEResidency::kMaxLoadThreads));
 }
 
+int MoEResidencyL2Slots() {
+  // Default 128: the steady-state decode working set beyond the C GPU slots
+  // is tens of experts per layer (measured miss rates imply ~16-44), so 128
+  // keeps it warm with margin; prefill sub-chunks (distinct miss set up to
+  // the dynamic capacity) also benefit. The floor is the load worker count
+  // so every worker can own a distinct buffer in flight.
+  int n = 128;
+  const char* env = std::getenv("Q4T_MOE_L2_SLOTS");
+  if (env) {
+    const int v = std::atoi(env);
+    if (v > 0) n = v;
+  }
+  return std::max(MoEResidencyLoadThreads(), std::min(n, 512));
+}
+
 size_t MoEResidencyLayerBytes(int hs, int moe_is, int C) {
   const size_t gu_sf_block = SfBufferSize(2 * moe_is, hs);
   const size_t dn_sf_block = SfBufferSize(hs, moe_is);
@@ -135,20 +150,52 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
   resident_count_ = 0;
   protected_count_ = 0;
 
-  // Pinned staging pool, one buffer per load worker (see header): a worker
-  // reuses its own buffer for the next expert; reusing it waits
-  // (cudaEventSynchronize) for the H2D that last used it.
-  staging_bytes_ = MoEResidencyStagingBytes(hs, moe_is);
-  staging_.assign(load_threads_, nullptr);
-  staging_in_flight_.assign(load_threads_, false);
-  for (int t = 0; t < load_threads_; ++t) {
-    if (cudaHostAlloc(&staging_[t], staging_bytes_,
-                      cudaHostAllocDefault) != cudaSuccess) {
-      return Status::Fail("residency pinned staging alloc failed");
+  // One-shot test-only fault hook (off unless the env var names a valid
+  // expert): the first stage of that expert fails, then the hook disarms.
+  fail_expert_ = -1;
+  fail_armed_ = false;
+  const char* fail_env = std::getenv("Q4T_RESIDENCY_FAIL_EXPERT");
+  if (fail_env) {
+    const int v = std::atoi(fail_env);
+    if (v >= 0 && v < E_) {
+      fail_expert_ = v;
+      fail_armed_ = true;
     }
-    if (cudaEventCreateWithFlags(&staging_event_[t],
+  }
+
+  // Pinned L2 pool (see header): one block, L buffers. A buffer is never
+  // rewritten until the H2D that last read it completed (per-buffer event),
+  // and victim selection skips in-flight buffers.
+  staging_bytes_ = MoEResidencyStagingBytes(hs, moe_is);
+  l2_slots_ = MoEResidencyL2Slots();
+  l2_block_ = nullptr;
+  l2_buf_.assign(l2_slots_, nullptr);
+  l2_expert_.assign(l2_slots_, -1);
+  expert_l2buf_.assign(E_, -1);
+  l2_tick_.assign(l2_slots_, 0);
+  l2_in_flight_.assign(l2_slots_, false);
+  l2_claimed_.assign(l2_slots_, false);
+  l2_event_.assign(l2_slots_, nullptr);
+  l2_mu_ = new (std::nothrow) std::mutex();
+  if (!l2_mu_) {
+    return Status::Fail("residency L2 mutex alloc failed");
+  }
+  if (cudaHostAlloc(reinterpret_cast<void**>(&l2_block_),
+                    static_cast<size_t>(l2_slots_) * staging_bytes_,
+                    cudaHostAllocDefault) != cudaSuccess) {
+    delete l2_mu_;
+    l2_mu_ = nullptr;
+    return Status::Fail("residency L2 pinned alloc failed");
+  }
+  for (int b = 0; b < l2_slots_; ++b) {
+    l2_buf_[b] = l2_block_ + static_cast<size_t>(b) * staging_bytes_;
+    if (cudaEventCreateWithFlags(&l2_event_[b],
                                  cudaEventDisableTiming) != cudaSuccess) {
-      return Status::Fail("residency staging event create failed");
+      cudaFreeHost(l2_block_);
+      l2_block_ = nullptr;
+      delete l2_mu_;
+      l2_mu_ = nullptr;
+      return Status::Fail("residency L2 event create failed");
     }
   }
   inited_ = true;
@@ -156,12 +203,86 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
   return Status();
 }
 
-// Stage one expert (read + merge + swizzle) into worker `t`'s staging
-// buffer. Waits first for the H2D that last used that buffer so the host
-// writes cannot race an in-flight copy of the previous expert.
-Status MoEResidency::StageExpert(int expert, int t) const {
+// Pick the LRU L2 buffer that is not in flight and not claimed by the
+// current stage chunk. First pass also skips buffers whose expert is still
+// needed by the current plan (evicting it would force a same-plan NVMe
+// re-read); if every free buffer holds a needed expert, fall back to the
+// plain LRU (the re-read is correct, just slower); if every buffer is
+// in flight or claimed, wait for the LRU in-flight H2D to complete.
+int MoEResidency::PickL2Victim(const std::vector<uint8_t>* needed_mark)
+    const {
+  const bool has_mark = needed_mark != nullptr && !needed_mark->empty();
+  int v = -1;
+  uint64_t best = UINT64_MAX;
+  for (int b = 0; b < l2_slots_; ++b) {
+    if (l2_in_flight_[b]) {
+      // Lazy release: the H2D that set the flag may have completed.
+      if (cudaEventQuery(l2_event_[b]) != cudaSuccess) continue;
+      l2_in_flight_[b] = false;
+    }
+    if (l2_claimed_[b]) continue;
+    const int e = l2_expert_[b];
+    if (e >= 0 && has_mark && (*needed_mark)[e]) continue;
+    if (l2_tick_[b] < best) {
+      best = l2_tick_[b];
+      v = b;
+    }
+  }
+  if (v < 0) {
+    // Fallback: evict even a still-needed expert (the same plan re-reads it
+    // from NVMe in a later chunk; correct, just slower). Never an in-flight
+    // or claimed buffer.
+    best = UINT64_MAX;
+    for (int b = 0; b < l2_slots_; ++b) {
+      if (l2_in_flight_[b] || l2_claimed_[b]) continue;
+      if (l2_tick_[b] < best) {
+        best = l2_tick_[b];
+        v = b;
+      }
+    }
+  }
+  if (v < 0) {
+    // Every buffer is in flight or claimed: wait for the LRU in-flight
+    // buffer's H2D to complete. Claimed buffers commit before the next
+    // stage chunk, and l2_slots_ >= load_threads_, so at least one
+    // in-flight buffer is always releasable here.
+    best = UINT64_MAX;
+    for (int b = 0; b < l2_slots_; ++b) {
+      if (!l2_in_flight_[b]) continue;
+      if (l2_tick_[b] < best) {
+        best = l2_tick_[b];
+        v = b;
+      }
+    }
+    if (v >= 0 && cudaEventSynchronize(l2_event_[v]) == cudaSuccess) {
+      l2_in_flight_[v] = false;
+    } else {
+      v = -1;
+    }
+  }
+  return v;
+}
+
+// Stage one expert into an L2 buffer: an L2 hit reuses the cached payload
+// (no NVMe read); an L2 miss evicts an LRU victim and NVMe-reads + merges +
+// swizzles into it. *buf_out receives the buffer index.
+Status MoEResidency::StageExpert(int expert,
+                                 const std::vector<uint8_t>* needed_mark,
+                                 int* buf_out) const {
   if (expert < 0 || expert >= E_) {
     return Status::Fail("expert out of range");
+  }
+  // One-shot test-only fault hook: fail the first stage of the armed expert
+  // before any L2/slot state is touched, then disarm. The plan-local slot
+  // reservation is dropped with the plan, so a failed load leaves the slot
+  // bookkeeping consistent (the next load of the expert is a clean miss).
+  {
+    std::lock_guard<std::mutex> lk(*l2_mu_);
+    if (fail_armed_ && expert == fail_expert_) {
+      fail_armed_ = false;
+      return Status::Fail("residency fault injection: expert " +
+                          std::to_string(expert) + " (test hook)");
+    }
   }
   // Per-projection byte sizes; down/gate/up are equal by construction
   // (hs*moe_is/2 weights, hs*moe_is/16 SF).
@@ -170,19 +291,56 @@ Status MoEResidency::StageExpert(int expert, int t) const {
   const size_t gu_sf_block = layout_.gu_sf_block();
   const size_t dn_sf_block = layout_.dn_sf_block();
 
-  if (staging_in_flight_[t]) {
-    if (cudaEventSynchronize(staging_event_[t]) != cudaSuccess) {
-      return Status::Fail("residency staging wait failed");
+  int b;
+  bool hit = false;
+  {
+    std::lock_guard<std::mutex> lk(*l2_mu_);
+    b = expert_l2buf_[expert];
+    if (b >= 0) {
+      // L2 hit: the buffer already holds this expert's payload; no read.
+      // Claim it so a same-chunk miss cannot evict it before our commit.
+      l2_tick_[b] = ++tick_;
+      l2_claimed_[b] = true;
+      ++stats_.l2_hits;
+      hit = true;
+    } else {
+      b = PickL2Victim(needed_mark);
+      if (b < 0) {
+        return Status::Fail("no residency L2 buffer available");
+      }
+      const int old = l2_expert_[b];
+      if (old >= 0) {
+        expert_l2buf_[old] = -1;
+        ++stats_.l2_evictions;
+      }
+      l2_expert_[b] = expert;
+      expert_l2buf_[expert] = b;
+      l2_tick_[b] = ++tick_;
+      ++stats_.l2_misses;
     }
-    staging_in_flight_[t] = false;
   }
-  // Staging is in CHECKPOINT file order so the range fast path can read
+  *buf_out = b;
+  if (hit) {
+    // The payload is already staged in the buffer; no read, merge, or
+    // swizzle. A concurrent in-flight H2D only reads the buffer, and our
+    // commit H2D is stream-ordered after it, so no wait is needed.
+    return Status();
+  }
+  // A miss always picks a non-in-flight buffer, but keep the defensive wait
+  // in case the flag went stale under us.
+  if (l2_in_flight_[b]) {
+    if (cudaEventSynchronize(l2_event_[b]) != cudaSuccess) {
+      return Status::Fail("residency L2 wait failed");
+    }
+    l2_in_flight_[b] = false;
+  }
+  // L2 buffer is in CHECKPOINT file order so the range fast path can read
   // straight into it: weights [dn|ga|up] (w_bytes each), then SF
   // [dn|ga|up] packed at s_bytes each, the gate+up SF merge scratch, the
   // swizzled SF blocks, and the scalar scales. Total bytes equal
   // MoEResidencyStagingBytes (3*w + 5*s + sf blocks + 16); the SF region
   // must stay packed or the tail overflows the pinned buffer.
-  uint8_t* p = staging_[t];
+  uint8_t* p = l2_buf_[b];
   uint8_t* w_dn = p;
   uint8_t* w_ga = p + w_bytes;
   uint8_t* w_up = p + 2 * w_bytes;
@@ -253,6 +411,8 @@ Status MoEResidency::StageExpert(int expert, int t) const {
                                  w_dn))) {
       return s;
     }
+    stats_.nvme_read_bytes +=
+        static_cast<double>(3 * w_bytes + 3 * s_bytes + 6 * sizeof(float));
     const std::string dn_s_name =
         ExpertName(layer_id_, expert, "down_proj", "weight_scale");
     if (!(s = loader_->ReadRange(dn_s_name, dn_s->data_start, 3 * s_bytes,
@@ -289,6 +449,8 @@ Status MoEResidency::StageExpert(int expert, int t) const {
     std::string n;
     n = ExpertName(layer_id_, expert, "down_proj", "weight");
     if (!(s = loader_->ReadTensor(n, w_dn))) return s;
+    stats_.nvme_read_bytes +=
+        static_cast<double>(3 * w_bytes + 3 * s_bytes + 4 * sizeof(float));
     n = ExpertName(layer_id_, expert, "gate_proj", "weight");
     if (!(s = loader_->ReadTensor(n, w_ga))) return s;
     n = ExpertName(layer_id_, expert, "up_proj", "weight");
@@ -320,10 +482,10 @@ Status MoEResidency::StageExpert(int expert, int t) const {
   return Status();
 }
 
-// Commit one staged expert into its slot: H2D (stream-ordered after any
-// earlier GEMM that read the evicted slot, before any GEMM that reads the
-// new expert) plus host identity/scale bookkeeping.
-Status MoEResidency::CommitExpert(int expert, int slot, int t,
+// Commit one staged expert into its slot: H2D from its L2 buffer
+// (stream-ordered after any earlier GEMM that read the evicted slot, before
+// any GEMM that reads the new expert) plus host identity/scale bookkeeping.
+Status MoEResidency::CommitExpert(int expert, int slot, int buf,
                                   cudaStream_t stream) const {
   if (expert < 0 || expert >= E_) {
     return Status::Fail("expert out of range");
@@ -336,10 +498,10 @@ Status MoEResidency::CommitExpert(int expert, int slot, int t,
   const size_t gu_sf_block = layout_.gu_sf_block();
   const size_t dn_sf_block = layout_.dn_sf_block();
 
-  // Staging is in checkpoint file order (see StageExpert):
+  // L2 buffer is in checkpoint file order (see StageExpert):
   // [w_dn|w_ga|w_up|s_dn|s_ga|s_up|gu_s_merged|gu_sw|dn_sw|scal] with the
   // SF region packed at s_bytes each (total = MoEResidencyStagingBytes).
-  uint8_t* p = staging_[t];
+  uint8_t* p = l2_buf_[buf];
   uint8_t* w_dn = p;
   uint8_t* w_ga = p + w_bytes;
   uint8_t* w_up = p + 2 * w_bytes;
@@ -378,12 +540,16 @@ Status MoEResidency::CommitExpert(int expert, int slot, int t,
                 stream)))
     return s;
 
-  // Mark this staging buffer in flight until its last H2D completes (the
-  // next reuser waits on the event).
-  if (cudaEventRecord(staging_event_[t], stream) != cudaSuccess) {
-    return Status::Fail("residency staging event record failed");
+  // Mark this L2 buffer in flight until its last H2D completes (victim
+  // selection skips it; a same-expert L2 hit may still use it read-only).
+  if (cudaEventRecord(l2_event_[buf], stream) != cudaSuccess) {
+    return Status::Fail("residency L2 event record failed");
   }
-  staging_in_flight_[t] = true;
+  {
+    std::lock_guard<std::mutex> lk(*l2_mu_);
+    l2_in_flight_[buf] = true;
+    l2_claimed_[buf] = false;
+  }
 
   // Host identity + scales (the GEMM wrappers read the host scale vectors).
   layout_.gu_w_scale2_h[slot] = scal[0];
@@ -453,8 +619,10 @@ Status MoEResidency::PlanResolve(const int32_t* needed, int n,
   ++stats_.resolve_calls;
 
   // Mark the needed set so victim selection never evicts an expert that this
-  // call still has to load (avoids a load-evict-reload cycle).
-  std::vector<uint8_t> needed_mark(E_, 0);
+  // call still has to load (avoids a load-evict-reload cycle). Kept on the
+  // plan so LoadPhase1's L2 victim selection sees the same marks.
+  plan->needed_mark.assign(E_, 0);
+  std::vector<uint8_t>& needed_mark = plan->needed_mark;
   for (int i = 0; i < n; ++i) {
     const int e = needed[i];
     if (e < 0 || e >= E_) {
@@ -549,10 +717,11 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
   const int off = static_cast<int>(plan.next_stage);
   if (off >= n) return Status();  // fully staged
   if (off == 0) plan.workers.assign(n, 0);
-  // One chunk per call: entry off + t is staged by worker t into staging
-  // buffer t, so a buffer holds at most one expert at a time. Reusing a
-  // buffer for the next chunk is safe because StageExpert waits on the
-  // staging event recorded by the commit that last H2D'd from it.
+  // One chunk per call: worker t stages entry off + t into an L2 buffer
+  // (hit or miss). Buffers are never shared between workers because victim
+  // selection is serialized and skips in-flight and claimed buffers. Reusing
+  // a buffer for the next chunk is safe because StageExpert waits on the
+  // event recorded by the commit that last H2D'd from it.
   const int cnt = std::min(load_threads_, n - off);
   std::atomic<int> first_err{0};  // 0 = ok, else 1
   std::vector<std::thread> pool;
@@ -560,11 +729,15 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
   for (int t = 0; t < cnt; ++t) {
     const int i = off + t;
     pool.emplace_back([&, t, i]() {
-      Status s = StageExpert(plan.experts[i], t);
+      int buf = -1;
+      Status s = StageExpert(plan.experts[i],
+                             plan.needed_mark.empty() ? nullptr
+                                                     : &plan.needed_mark,
+                             &buf);
       if (!s.ok()) {
         first_err.store(1, std::memory_order_relaxed);
       } else {
-        plan.workers[i] = t;
+        plan.workers[i] = buf;
       }
     });
   }
@@ -632,17 +805,27 @@ void MoEResidency::Free() {
   free_if(reinterpret_cast<void**>(&layout_.gu_input_scale));
   free_if(reinterpret_cast<void**>(&layout_.dn_w_scale2));
   free_if(reinterpret_cast<void**>(&layout_.dn_input_scale));
-  for (int t = 0; t < load_threads_; ++t) {
-    if (staging_[t]) {
-      cudaFreeHost(staging_[t]);
-      staging_[t] = nullptr;
-    }
-    if (staging_event_[t]) {
-      cudaEventDestroy(staging_event_[t]);
-      staging_event_[t] = nullptr;
+  for (int b = 0; b < l2_slots_; ++b) {
+    if (l2_event_[b]) {
+      cudaEventDestroy(l2_event_[b]);
+      l2_event_[b] = nullptr;
     }
   }
-  staging_.clear();
+  if (l2_block_) {
+    cudaFreeHost(l2_block_);
+    l2_block_ = nullptr;
+  }
+  if (l2_mu_) {
+    delete l2_mu_;
+    l2_mu_ = nullptr;
+  }
+  l2_buf_.clear();
+  l2_expert_.clear();
+  expert_l2buf_.clear();
+  l2_tick_.clear();
+  l2_in_flight_.clear();
+  l2_claimed_.clear();
+  l2_event_.clear();
   inited_ = false;
 }
 

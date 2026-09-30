@@ -14,22 +14,32 @@
 //     stream after those GEMMs (Phase 2).
 //   * A forward only reads a slot after its load H2D, because the GEMMs are
 //     enqueued after the H2D on the same stream.
-//   * Host staging is a pool of kMaxLoadThreads pinned buffers, one per load
-//     worker thread. Phase 1 (NVMe read + swizzle) writes a buffer while the
+//   * The L2 pool (below) is a per-layer pinned CPU cache of expert
+//     payloads. Phase 1 (NVMe read + swizzle) writes an L2 buffer while the
 //     previous H2D of that buffer may still be in flight; reusing a buffer
 //     therefore waits (cudaEventSynchronize) for the H2D that last used it.
+//     Victim selection never picks an in-flight buffer.
 //
 // Load pipeline (see Resolve / PlanResolve / LoadPhase1 / LoadPhase2):
 //   Plan    : host-only; maps the needed set to slots, picks victims for the
 //             misses (LRU, never a protected hot slot, never a slot still
-//             needed by this call).
-//   Phase 1 : parallel host work (thread pool): NVMe read + scale merge +
-//             swizzle into per-thread staging buffers. Blocking.
+//             needed by this call); records the needed set (plan.needed_mark)
+//             so L2 victim selection prefers buffers whose expert is not
+//             still needed by the same plan.
+//   Phase 1 : parallel host work (thread pool): for each miss, an L2 hit
+//             reuses the cached payload; an L2 miss NVMe-reads + scale-merges
+//             + swizzles into an evicted L2 buffer. Blocking.
 //   Phase 2 : stream work: H2D of every staged expert into its slot, in plan
 //             order, plus the host identity/scale bookkeeping.
 // Callers that can overlap Phase 1 with GPU compute (prefill sub-chunk
 // pipelines) use Plan/Phase1/Phase2 directly; the convenience Resolve()
 // runs all three phases back to back.
+//
+// L2 sizing: Q4T_MOE_L2_SLOTS (default 128, clamped to [8, 512]) pinned
+// buffers per layer, each MoEResidencyStagingBytes. The steady-state decode
+// working set beyond the C GPU slots is tens of experts per layer, so the
+// L2 keeps it warm and steady-state misses are H2D-from-RAM instead of
+// NVMe reads.
 //
 // Numerical contract: loading expert e into any slot produces the exact same
 // device bytes as LoadMoEWeights would for expert e (same read, same swizzle,
@@ -40,6 +50,7 @@
 #include <cuda_runtime.h>
 
 #include <cstdint>
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -60,6 +71,10 @@ size_t MoEResidencyStagingBytes(int hs, int moe_is);
 // Load worker threads from Q4T_MOE_LOAD_THREADS (default 8, clamped to
 // [1, kMaxLoadThreads]). The budget and the residency must agree on this.
 int MoEResidencyLoadThreads();
+// Per-layer L2 CPU cache buffers from Q4T_MOE_L2_SLOTS (default 128,
+// clamped to [MoEResidencyLoadThreads(), 512]). The budget must charge
+// kLayers x this x MoEResidencyStagingBytes.
+int MoEResidencyL2Slots();
 
 // One layer's C-slot expert residency. Not copyable; owned by the layer.
 class MoEResidency {
@@ -77,37 +92,49 @@ class MoEResidency {
     uint64_t misses = 0;  // lookups that required a load
     uint64_t loads = 0;  // experts loaded (incl. initial hot list)
     uint64_t evictions = 0;  // slots overwritten
-    double load_bytes = 0.0;  // bytes read from checkpoint
+    double load_bytes = 0.0;  // bytes copied H2D into slots (per commit)
+    double nvme_read_bytes = 0.0;  // bytes actually read from checkpoint
     // Per-phase split (decode = single-token forwards, prefill = chunked).
     uint64_t decode_lookups = 0;
     uint64_t decode_misses = 0;
     uint64_t prefill_lookups = 0;
     uint64_t prefill_misses = 0;
+    // L2 (CPU RAM) cache counters: misses are the NVMe reads, hits reuse a
+    // cached payload (H2D only); evictions are L2 buffers overwritten.
+    uint64_t l2_hits = 0;
+    uint64_t l2_misses = 0;
+    uint64_t l2_evictions = 0;
   };
 
   // A planned set of expert loads: expert i goes into slot i. PlanResolve
-  // fills it; LoadPhase1 stages the next chunk of entries (at most one per
-  // staging buffer); LoadPhase2 copies the staged chunk to device and
-  // updates the host identity/scale state. A staging buffer may only be
-  // reused after its H2D completed (staging-event wait in StageExpert), so
-  // callers must interleave the phases: Phase1 stages at most one chunk
-  // ahead of Phase2 (see Resolve and the prefill loop in moe.cu).
+  // fills it; LoadPhase1 stages the next chunk of entries into L2 buffers
+  // (one per worker); LoadPhase2 copies the staged chunk to device and
+  // updates the host identity/scale state. An L2 buffer may only be
+  // rewritten after its H2D completed (victim selection skips in-flight and
+  // claimed buffers), so callers must interleave the phases: Phase1 stages
+  // at most one chunk ahead of Phase2 (see Resolve and the prefill loop in
+  // moe.cu).
   struct LoadPlan {
     std::vector<int> experts;
     std::vector<int> slots;
-    // LoadPhase1 fills workers[i] with the staging buffer index that staged
+    // LoadPhase1 fills workers[i] with the L2 buffer index that staged
     // expert i; LoadPhase2 commits expert i from that buffer.
     std::vector<int> workers;
     // [next_commit, next_stage) is staged but not yet committed;
     // next_stage == experts.size() means fully staged.
     size_t next_stage = 0;
     size_t next_commit = 0;
+    // PlanResolve fills this (size E): 1 for every expert this plan loads,
+    // so L2 victim selection can prefer buffers whose expert is not still
+    // needed by the same plan.
+    std::vector<uint8_t> needed_mark;
     bool empty() const { return experts.empty(); }
     bool fully_committed() const { return next_commit >= experts.size(); }
     void clear() {
       experts.clear();
       slots.clear();
       workers.clear();
+      needed_mark.clear();
       next_stage = 0;
       next_commit = 0;
     }
@@ -176,13 +203,21 @@ class MoEResidency {
   void Free();
 
  private:
-  // Stage one expert (read + merge + swizzle) into worker `t`'s staging
-  // buffer, waiting first for that buffer's last H2D to complete.
-  Status StageExpert(int expert, int t) const;
+  // Stage one expert into an L2 buffer: an L2 hit reuses the cached payload
+  // (no NVMe read); an L2 miss evicts an LRU victim (never an in-flight
+  // buffer, preferring experts not in *needed_mark) and NVMe-reads + merges
+  // + swizzles into it. *buf_out receives the buffer index.
+  Status StageExpert(int expert, const std::vector<uint8_t>* needed_mark,
+                     int* buf_out) const;
 
-  // Commit one staged expert from worker `t`'s buffer into its slot
+  // LRU victim among non-in-flight L2 buffers (-1 if none; impossible while
+  // in-flight count < l2_slots_).
+  int PickL2Victim(const std::vector<uint8_t>* needed_mark) const;
+
+  // Commit one staged expert from L2 buffer `buf` into its slot
   // (H2D + host state).
-  Status CommitExpert(int expert, int slot, int t, cudaStream_t stream) const;
+  Status CommitExpert(int expert, int slot, int buf, cudaStream_t stream)
+      const;
 
   const io::WeightLoader* loader_ = nullptr;  // borrowed from Model::weight_loader; valid for the model's lifetime
   int layer_id_ = 0;
@@ -207,13 +242,29 @@ class MoEResidency {
 
   // Per-slot FP32 scales are kept in layout_ (gu_w_scale2_h etc., sized C).
 
-  // Pinned staging pool, one buffer per load worker (see header safety
-  // contract). Raw cudaHostAlloc pointers: the C++ allocator's pages are not
-  // valid cudaFreeHost targets.
+  // Pinned L2 pool (see header safety contract). One cudaHostAlloc block
+  // per layer, sub-allocated into l2_slots_ buffers of staging_bytes_ each.
+  // Raw cudaHostAlloc pointer: the C++ allocator's pages are not valid
+  // cudaFreeHost targets.
   int load_threads_ = 1;
-  mutable std::vector<uint8_t*> staging_;
-  mutable std::vector<bool> staging_in_flight_;
-  mutable cudaEvent_t staging_event_[kMaxLoadThreads] = {nullptr};
+  int l2_slots_ = 0;
+  mutable uint8_t* l2_block_ = nullptr;
+  mutable std::vector<uint8_t*> l2_buf_;  // [L]
+  mutable std::vector<int> l2_expert_;  // [L] expert in buffer, -1 = empty
+  mutable std::vector<int> expert_l2buf_;  // [E] buffer of expert, -1 = absent
+  // One-shot test-only fault hook (Q4T_RESIDENCY_FAIL_EXPERT): the first
+  // stage of that expert fails with "residency fault injection" and the
+  // hook disarms. Off (-1) unless the env var names a valid expert.
+  mutable int fail_expert_ = -1;
+  mutable bool fail_armed_ = false;
+
+  mutable std::vector<uint64_t> l2_tick_;  // [L] LRU recency
+  mutable std::vector<bool> l2_in_flight_;  // [L] H2D pending
+  mutable std::vector<bool> l2_claimed_;  // [L] staged by the current chunk, not yet committed
+  mutable std::vector<cudaEvent_t> l2_event_;  // [L]
+  // Heap-allocated so the class keeps its (unused) implicit copyability;
+  // DecoderLayer is default-constructed via vector::resize in model.cu.
+  mutable std::mutex* l2_mu_ = nullptr;
   size_t staging_bytes_ = 0;
 
   mutable Stats stats_;

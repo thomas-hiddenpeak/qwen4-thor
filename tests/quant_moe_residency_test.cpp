@@ -22,6 +22,7 @@
 
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <fcntl.h>
 #include <string>
@@ -441,6 +442,101 @@ Q4T_TEST(residency_hot_list_dedup_cap) {
   res.Free();
   delete c.loader;
   delete c.idx;
+  return true;
+}
+
+Q4T_TEST(residency_l2_cache_hit_evict) {
+  if (!CudaAvailable()) {
+    Q4T_SKIP("(skipped: no CUDA device)");
+  }
+  Ctx c;
+  if (!OpenCtx(&c)) {
+    Q4T_SKIP("(skipped: real model not present)");
+  }
+  // Small L2 pool (8 buffers) so one eviction is forced by the sequence
+  // below. The floor is the load-thread count (default 8), so 8 is the
+  // smallest usable value.
+  setenv("Q4T_MOE_L2_SLOTS", "8", 1);
+  const int C = 4;
+  MoEResidency res;
+  bool ok = res.Init(*c.loader, kLayer, kE, kHs, kMoeIs, C, 0).ok();
+  auto fail = [&](const char* msg) {
+    std::printf("  %s\n", msg);
+    res.Free();
+    delete c.loader;
+    delete c.idx;
+    unsetenv("Q4T_MOE_L2_SLOTS");
+    return false;
+  };
+  if (!ok) return fail("init failed");
+  auto resolve = [&](const std::vector<int>& needed,
+                     std::vector<int>* slot_of) -> bool {
+    std::vector<int32_t> in(needed.begin(), needed.end());
+    slot_of->assign(needed.size(), -1);
+    bool loaded = false;
+    Status s = res.Resolve(in.data(), static_cast<int>(in.size()),
+                           slot_of->data(), 0, &loaded);
+    if (!s.ok()) {
+      std::printf("  resolve failed: %s\n", s.message().c_str());
+      return false;
+    }
+    return true;
+  };
+  std::vector<int> so;
+  // A: fill slots 0..3 with experts 0..3 (4 slot misses, 4 L2 misses).
+  if (!resolve({0, 1, 2, 3}, &so)) return fail("A resolve failed");
+  // B: expert 0 is resident -> slot hit, no staging.
+  if (!resolve({0}, &so)) return fail("B resolve failed");
+  // C: 4,5,6,7 miss. All slots share step A's tick except slot 0 (refreshed
+  // by B), so victims are 1,2,3,0 in index order: slots become 0<-7,
+  // 1<-4, 2<-5, 3<-6. L2: 4 more misses, no eviction yet (8 buffers, 8
+  // experts).
+  if (!resolve({4, 5, 6, 7}, &so)) return fail("C resolve failed");
+  // D: expert 0 was evicted from its slot but its L2 buffer is still warm
+  // -> slot miss + L2 hit; all slots share step C's tick, so the victim is
+  // slot 0 (lowest index, expert 7). Slot 0<-0.
+  if (!resolve({0}, &so)) return fail("D resolve failed");
+  // E: expert 8 is a slot miss and an L2 miss; the LRU L2 buffer (one of
+  // experts 1-3; expert 0's buffer was refreshed by D) is evicted; slots
+  // 1-3 share step C's tick while slot 0 is newer, so the victim is slot 1
+  // (expert 4). Slot 1<-8.
+  if (!resolve({8}, &so)) return fail("E resolve failed");
+  cudaStreamSynchronize(0);
+  // Numerical contract through the L2 pool: every resident slot must be
+  // bit-identical to the direct per-expert reference.
+  const int check_expert[4] = {0, 8, 5, 6};
+  for (int slot = 0; slot < 4; ++slot) {
+    if (!SlotMatchesReference(c, &res, check_expert[slot], slot)) {
+      return fail("l2 slot bytes mismatch");
+    }
+  }
+  const MoEResidency::Stats st = res.GetStats();
+  // loads: 4 (A) + 4 (C) + 1 (D) + 1 (E) = 10; slot misses: 4+4+1+1 = 10;
+  // slot hits: 1 (B); slot evictions: 4 (C) + 1 (D) + 1 (E) = 6.
+  // L2: hits 1 (D), misses 9 (A,C,E), evictions 1 (E evicts expert 1).
+  if (st.loads != 10 || st.misses != 10 || st.hits != 1 ||
+      st.evictions != 6) {
+    std::printf("  slot stats wrong: loads=%llu misses=%llu hits=%llu "
+                "evictions=%llu\n",
+                (unsigned long long)st.loads, (unsigned long long)st.misses,
+                (unsigned long long)st.hits,
+                (unsigned long long)st.evictions);
+    return fail("slot stats wrong");
+  }
+  if (st.l2_hits != 1 || st.l2_misses != 9 || st.l2_evictions != 1) {
+    std::printf("  l2 stats wrong: hits=%llu misses=%llu evictions=%llu\n",
+                (unsigned long long)st.l2_hits,
+                (unsigned long long)st.l2_misses,
+                (unsigned long long)st.l2_evictions);
+    return fail("l2 stats wrong");
+  }
+  if (st.nvme_read_bytes <= 0.0) {
+    return fail("nvme_read_bytes not counted");
+  }
+  res.Free();
+  delete c.loader;
+  delete c.idx;
+  unsetenv("Q4T_MOE_L2_SLOTS");
   return true;
 }
 

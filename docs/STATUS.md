@@ -5,6 +5,22 @@
 
 ## 当前结论
 
+## 分层专家驻留：L2 CPU 缓存与补载故障钩子已实现（2026-10-01 凌晨，矩阵运行中）
+
+候选矩阵（23:46 二进制，4c5cddea）仍在跑（204800 档），GPU 验证待其
+结束。本轮完成（仅驻留层/服务层/测试，GEMM 冻结未动）：
+(1) L2 CPU 专家缓存——每层 pinned LRU 池（Q4T_MOE_L2_SLOTS 默认 128，
+约 +17 GB 固定项，预算核算后 max_len=262144 不被 cap），命中快路径
+免 NVMe 读，victim 跳过 in-flight/claimed，全忙同步等待；统计新增
+l2h/l2m/l2ev/nvme_mb。这是冻结出口“CPU 二级缓存”的实现，供候选
+decode 若 <50% 门槛时启用。
+(2) 一次性补载故障钩子 Q4T_RESIDENCY_FAIL_EXPERT（仅测试默认关），
+affected-fault.sh 两步合同所需。
+(3) 新单测 residency_l2_cache_hit_evict。零警告构建；23:46 冻结二进制
+封存于 bin-2346-fixed/；build/q4t 现为 L2+钩子构建（未 GPU 验证，
+不得用于验收）。矩阵完成后：compare_e2e.py → 新二进制 q4t_tests
+（106 项）+ bitexact-c256 + affected 四查 → 填验收报告。
+
 ## 分层专家驻留：修复二进制全矩阵重跑中（2026-10-01 00:13 启动）
 
 23:46 二进制（sha256 4c5cddea，commit 509665d，工作区干净）按冻结轮

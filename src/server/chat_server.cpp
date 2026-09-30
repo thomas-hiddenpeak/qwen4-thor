@@ -138,7 +138,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
         opts.max_prefill > 0 ? opts.max_prefill : 8192;
     // Tiered residency: only C of the 512 routed experts per layer stay
     // resident; the rest stream from NVMe on demand. Charge the resident
-    // weight bytes only, plus each layer's pinned staging buffer.
+    // weight bytes only, plus each layer's pinned L2 expert cache
+    // (MoEResidencyL2Slots() staging-sized buffers).
     if (opts.moe_resident_slots > 0) {
       constexpr int kE = 512, kLayers = 48, kHs = 2560, kMoeIs = 640;
       const size_t expert_bytes =
@@ -149,7 +150,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
       weights -= static_cast<size_t>(kE - opts.moe_resident_slots) *
                  kLayers * expert_bytes;
       breq.extra_fixed_bytes =
-          static_cast<size_t>(kLayers) *
+          static_cast<size_t>(kLayers) * quant::MoEResidencyL2Slots() *
           quant::MoEResidencyStagingBytes(kHs, kMoeIs);
     }
     budget_ = runtime::ComputeMemoryBudget(runtime::BudgetModelParams{},
