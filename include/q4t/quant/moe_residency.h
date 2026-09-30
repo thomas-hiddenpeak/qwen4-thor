@@ -86,19 +86,30 @@ class MoEResidency {
   };
 
   // A planned set of expert loads: expert i goes into slot i. PlanResolve
-  // fills it; LoadPhase1 stages the bytes; LoadPhase2 copies them to device
-  // and updates the host identity/scale state.
+  // fills it; LoadPhase1 stages the next chunk of entries (at most one per
+  // staging buffer); LoadPhase2 copies the staged chunk to device and
+  // updates the host identity/scale state. A staging buffer may only be
+  // reused after its H2D completed (staging-event wait in StageExpert), so
+  // callers must interleave the phases: Phase1 stages at most one chunk
+  // ahead of Phase2 (see Resolve and the prefill loop in moe.cu).
   struct LoadPlan {
     std::vector<int> experts;
     std::vector<int> slots;
     // LoadPhase1 fills workers[i] with the staging buffer index that staged
     // expert i; LoadPhase2 commits expert i from that buffer.
     std::vector<int> workers;
+    // [next_commit, next_stage) is staged but not yet committed;
+    // next_stage == experts.size() means fully staged.
+    size_t next_stage = 0;
+    size_t next_commit = 0;
     bool empty() const { return experts.empty(); }
+    bool fully_committed() const { return next_commit >= experts.size(); }
     void clear() {
       experts.clear();
       slots.clear();
       workers.clear();
+      next_stage = 0;
+      next_commit = 0;
     }
   };
 
@@ -132,15 +143,17 @@ class MoEResidency {
   Status PlanResolve(const int32_t* needed, int n, int32_t* slot_of,
                      LoadPlan* plan, bool decode_phase = false) const;
 
-  // Phase 1: stage every expert of `plan` (NVMe read + merge + swizzle) in
-  // parallel on a thread pool. Blocking; per-thread pinned staging. Fills
-  // plan.workers with the staging buffer index per expert.
+  // Phase 1: stage the next chunk of `plan` (at most load_threads_
+  // entries, entry next_stage + t by worker t into staging buffer t) in
+  // parallel (NVMe read + merge + swizzle). Blocking; per-thread pinned
+  // staging. No-op when the plan is fully staged.
   Status LoadPhase1(LoadPlan& plan) const;
 
-  // Phase 2: H2D of every staged expert into its slot, enqueued on `stream`
-  // (stream-ordered after any earlier GEMM that read the evicted slot and
-  // before any GEMM that reads the new one), then update host state.
-  Status LoadPhase2(const LoadPlan& plan, cudaStream_t stream,
+  // Phase 2: H2D of every staged-but-uncommitted entry of `plan` into its
+  // slot, enqueued on `stream` (stream-ordered after any earlier GEMM that
+  // read the evicted slot and before any GEMM that reads the new one),
+  // then update host state. No-op when nothing is staged.
+  Status LoadPhase2(LoadPlan& plan, cudaStream_t stream,
                     bool* loaded = nullptr) const;
 
   // Convenience: Plan + Phase 1 + Phase 2 back to back (decode path).

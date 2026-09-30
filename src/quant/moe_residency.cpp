@@ -177,20 +177,26 @@ Status MoEResidency::StageExpert(int expert, int t) const {
     staging_in_flight_[t] = false;
   }
   // Staging is in CHECKPOINT file order so the range fast path can read
-  // straight into it: weights [dn|ga|up], SF [dn|ga|up], then the
-  // gate+up SF merge scratch, the swizzled SF blocks, and the scalar
-  // scales. Total bytes equal MoEResidencyStagingBytes unchanged.
+  // straight into it: weights [dn|ga|up] (w_bytes each), then SF
+  // [dn|ga|up] packed at s_bytes each, the gate+up SF merge scratch, the
+  // swizzled SF blocks, and the scalar scales. Total bytes equal
+  // MoEResidencyStagingBytes (3*w + 5*s + sf blocks + 16); the SF region
+  // must stay packed or the tail overflows the pinned buffer.
   uint8_t* p = staging_[t];
   uint8_t* w_dn = p;
   uint8_t* w_ga = p + w_bytes;
   uint8_t* w_up = p + 2 * w_bytes;
   uint8_t* s_dn = p + 3 * w_bytes;
-  uint8_t* s_ga = p + 4 * w_bytes;
-  uint8_t* s_up = p + 5 * w_bytes;
-  uint8_t* gu_s_merged = p + 6 * w_bytes;
+  uint8_t* s_ga = s_dn + s_bytes;
+  uint8_t* s_up = s_ga + s_bytes;
+  uint8_t* gu_s_merged = s_up + s_bytes;
   uint8_t* gu_sw = gu_s_merged + 2 * s_bytes;
   uint8_t* dn_sw = gu_sw + gu_sf_block;
   float* scal = reinterpret_cast<float*>(dn_sw + dn_sf_block);
+  if (reinterpret_cast<uint8_t*>(scal) + 4 * sizeof(float) >
+      p + staging_bytes_) {
+    return Status::Fail("residency staging layout exceeds buffer");
+  }
 
   Status s;
   // Fast path: the checkpoint keeps each expert's down/gate/up weights
@@ -331,14 +337,19 @@ Status MoEResidency::CommitExpert(int expert, int slot, int t,
   const size_t dn_sf_block = layout_.dn_sf_block();
 
   // Staging is in checkpoint file order (see StageExpert):
-  // [w_dn|w_ga|w_up|s_dn|s_ga|s_up|gu_s_merged|gu_sw|dn_sw|scal].
+  // [w_dn|w_ga|w_up|s_dn|s_ga|s_up|gu_s_merged|gu_sw|dn_sw|scal] with the
+  // SF region packed at s_bytes each (total = MoEResidencyStagingBytes).
   uint8_t* p = staging_[t];
   uint8_t* w_dn = p;
   uint8_t* w_ga = p + w_bytes;
   uint8_t* w_up = p + 2 * w_bytes;
-  uint8_t* gu_sw = p + 6 * w_bytes + 2 * s_bytes;
+  uint8_t* gu_sw = p + 3 * w_bytes + 5 * s_bytes;
   uint8_t* dn_sw = gu_sw + gu_sf_block;
   const float* scal = reinterpret_cast<const float*>(dn_sw + dn_sf_block);
+  if (reinterpret_cast<const uint8_t*>(scal) + 4 * sizeof(float) >
+      p + staging_bytes_) {
+    return Status::Fail("residency staging layout exceeds buffer");
+  }
 
   Status s;
   // H2D into the slot.
@@ -405,8 +416,12 @@ Status MoEResidency::InitHot(const std::vector<int>& hot_experts,
   }
   Status s = LoadPhase1(plan);
   if (!s.ok()) return s;
-  s = LoadPhase2(plan, stream);
-  if (!s.ok()) return s;
+  while (!plan.fully_committed()) {
+    s = LoadPhase2(plan, stream);
+    if (!s.ok()) return s;
+    s = LoadPhase1(plan);
+    if (!s.ok()) return s;
+  }
   for (int i = 0; i < static_cast<int>(plan.experts.size()); ++i) {
     slot_tick_[plan.slots[i]] = ++tick_;
   }
@@ -449,6 +464,11 @@ Status MoEResidency::PlanResolve(const int32_t* needed, int n,
   }
 
   std::vector<uint8_t> reserved(C_, 0);
+  // In-call dedup: the needed list repeats experts (one entry per token
+  // top-k slot). A miss reserves a slot but does not commit it, so without
+  // this map every repeat of the same expert would miss again and reserve a
+  // second slot, exhausting capacity even when the DISTINCT set fits.
+  std::vector<int32_t> planned(E_, -1);
   for (int i = 0; i < n; ++i) {
     const int e = needed[i];
     ++stats_.expert_lookups;
@@ -458,6 +478,7 @@ Status MoEResidency::PlanResolve(const int32_t* needed, int n,
       ++stats_.prefill_lookups;
     }
     int slot = expert_slot_[e];
+    if (slot < 0) slot = planned[e];
     if (slot >= 0) {
       slot_tick_[slot] = tick_;
       ++stats_.hits;
@@ -494,10 +515,27 @@ Status MoEResidency::PlanResolve(const int32_t* needed, int n,
       }
     }
     if (v < 0) {
+      int distinct = 0;
+      for (int e = 0; e < E_; ++e)
+        if (needed_mark[e]) ++distinct;
+      int resident = 0;
+      for (int e = 0; e < E_; ++e)
+        if (needed_mark[e] && expert_slot_[e] >= 0) ++resident;
+      int reserved_n = 0;
+      for (int s = 0; s < C_; ++s)
+        if (reserved[s]) ++reserved_n;
+      std::fprintf(stderr,
+                   "[q4t][residency][diag] layer=%d C=%d protected=%d "
+                   "distinct=%d resident=%d misses_so_far=%d reserved=%d "
+                   "n=%d decode=%d\n",
+                   layer_id_, C_, protected_count_, distinct, resident,
+                   static_cast<int>(stats_.misses), reserved_n, n,
+                   decode_phase);
       return Status::Fail("no residency slot available (needed set exceeds "
                           "dynamic capacity)");
     }
     reserved[v] = 1;
+    planned[e] = v;
     plan->experts.push_back(e);
     plan->slots.push_back(v);
     slot_of[i] = v;
@@ -507,25 +545,25 @@ Status MoEResidency::PlanResolve(const int32_t* needed, int n,
 
 Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
   if (!inited_) return Status::Fail("residency not initialized");
-  if (plan.empty()) return Status();
   const int n = static_cast<int>(plan.experts.size());
-  plan.workers.assign(n, 0);
-  const int nt = load_threads_;
-  std::atomic<int> next{0};
+  const int off = static_cast<int>(plan.next_stage);
+  if (off >= n) return Status();  // fully staged
+  if (off == 0) plan.workers.assign(n, 0);
+  // One chunk per call: entry off + t is staged by worker t into staging
+  // buffer t, so a buffer holds at most one expert at a time. Reusing a
+  // buffer for the next chunk is safe because StageExpert waits on the
+  // staging event recorded by the commit that last H2D'd from it.
+  const int cnt = std::min(load_threads_, n - off);
   std::atomic<int> first_err{0};  // 0 = ok, else 1
   std::vector<std::thread> pool;
-  pool.reserve(nt);
-  for (int t = 0; t < nt; ++t) {
-    pool.emplace_back([&, t]() {
-      while (true) {
-        if (first_err.load(std::memory_order_relaxed) != 0) return;
-        const int i = next.fetch_add(1, std::memory_order_relaxed);
-        if (i >= n) return;
-        Status s = StageExpert(plan.experts[i], t);
-        if (!s.ok()) {
-          first_err.store(1, std::memory_order_relaxed);
-          return;
-        }
+  pool.reserve(cnt);
+  for (int t = 0; t < cnt; ++t) {
+    const int i = off + t;
+    pool.emplace_back([&, t, i]() {
+      Status s = StageExpert(plan.experts[i], t);
+      if (!s.ok()) {
+        first_err.store(1, std::memory_order_relaxed);
+      } else {
         plan.workers[i] = t;
       }
     });
@@ -534,18 +572,18 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
   if (first_err.load(std::memory_order_relaxed) != 0) {
     return Status::Fail("residency parallel stage failed");
   }
+  plan.next_stage = off + cnt;
   return Status();
 }
 
-Status MoEResidency::LoadPhase2(const LoadPlan& plan, cudaStream_t stream,
+Status MoEResidency::LoadPhase2(LoadPlan& plan, cudaStream_t stream,
                                 bool* loaded) const {
   if (!inited_) return Status::Fail("residency not initialized");
-  if (loaded) *loaded = false;
-  if (plan.empty()) return Status();
+  if (plan.next_commit >= plan.next_stage) return Status();  // nothing staged
   if (plan.workers.size() != plan.experts.size()) {
     return Status::Fail("residency plan missing worker map");
   }
-  for (int i = 0; i < static_cast<int>(plan.experts.size()); ++i) {
+  for (size_t i = plan.next_commit; i < plan.next_stage; ++i) {
     const int e = plan.experts[i];
     const int v = plan.slots[i];
     // Only an overwrite of an occupied slot is an eviction; loading an empty
@@ -556,6 +594,7 @@ Status MoEResidency::LoadPhase2(const LoadPlan& plan, cudaStream_t stream,
     slot_tick_[v] = tick_;
     if (loaded) *loaded = true;
   }
+  plan.next_commit = plan.next_stage;
   return Status();
 }
 
@@ -565,9 +604,16 @@ Status MoEResidency::Resolve(const int32_t* needed, int n, int32_t* slot_of,
   LoadPlan plan;
   Status s = PlanResolve(needed, n, slot_of, &plan, decode_phase);
   if (!s.ok()) return s;
+  if (loaded) *loaded = false;
   s = LoadPhase1(plan);
   if (!s.ok()) return s;
-  return LoadPhase2(plan, stream, loaded);
+  while (!plan.fully_committed()) {
+    s = LoadPhase2(plan, stream, loaded);
+    if (!s.ok()) return s;
+    s = LoadPhase1(plan);
+    if (!s.ok()) return s;
+  }
+  return Status();
 }
 
 void MoEResidency::Free() {

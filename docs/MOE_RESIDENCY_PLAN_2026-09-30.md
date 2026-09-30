@@ -131,3 +131,25 @@ C=64 且 MTP/draft 条件化后估算 ≈ 16+8.52+2.68+0.4+0.075+2+8.86+5.37+0.0
   （内存包络内）或更大 C/预取，不放宽门槛。
 - 产物：queue-baseline-c256.sh、compare_e2e.py、e2e-baseline-s0-current/、
   e2e-cand-c256/、compare-report.txt（均 .q4t-work/moe-residency-20260930/）。
+
+## 冻结轮执行记录（2026-09-30 晚，追加）
+
+1. 基线矩阵（C=0，18:22–18:49，18:06 构建）：六档×3 全部通过；
+   目标档 3/3 in=261887 out=257 finish=length；decode 调和均值
+   1024/4096/8192/45056/204800/261887 = 18.569/17.861/18.140/
+   17.780/17.134/16.848 tok/s；TTFT 均值 0.80/2.65/5.18/30.56/
+   159.64/213.01 s；内存峰值 91,345,694,720 B。
+2. 候选矩阵（C=256+hot-256）启动即段错误（rc=139）。gdb 定位：
+   StageExpert 的 memcpy 写穿 pinned staging——18:06 构建将 SF 区
+   放到 w 对齐偏移（s_ga=4w、s_up=5w、gu_s_merged=6w），布局总长
+   6w+2s+块+16，超出 MoEResidencyStagingBytes 分配 3w+5s+块+16，
+   每专家越界 3*(w−s)=2,150,400 B（w=819,200、s=102,400）。
+   exp12（15:58 构建）未含该布局改动，故当时通过。
+3. 修复（驻留层，GEMM 未动）：StageExpert/CommitExpert 的 SF 偏移
+   改回打包（s_dn=3w、s_ga=+s、s_up=+s、gu_s_merged=+s；
+   CommitExpert gu_sw=3w+5s），两函数各加"布局超出缓冲"快速失败。
+   零警告重建。
+4. 复验与重跑：bitexact-c256（C=256 vs C=0，1024/8192 逐位）通过后，
+   同一修复二进制重跑基线+候选全矩阵（保持同一二进制口径）；
+   18:22 基线结果保留为 C=0 路径跨构建稳定性证据（C=0 代码路径
+   未受本次改动影响）。

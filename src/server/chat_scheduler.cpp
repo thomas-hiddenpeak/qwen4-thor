@@ -300,6 +300,11 @@ void ChatServer::SchedulerLoop() {
         sp = FinishHostReadback(copy_error, &gpu_healthy_, sequences, sp, router_trace_.get());
       }
       {
+        if (!sp.ok()) {
+          std::fprintf(stderr,
+                       "[q4t][sched] batched prefill failed Bp=%d: %s\n",
+                       Bp, sp.message().c_str());
+        }
         const std::lock_guard<std::mutex> lock(sched_mu_);
         for (int i = 0; i < Bp; ++i) {
           pf[i]->pending = false;

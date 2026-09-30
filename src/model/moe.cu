@@ -465,6 +465,23 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
       std::vector<int32_t> cur;
       int distinct = 0;
       auto flush = [&]() {
+        if (cur.empty()) return;
+        int actual = 0;
+        {
+          std::vector<uint8_t> chk(E, 0);
+          for (int tt : cur)
+            for (int jj = 0; jj < k; ++jj) {
+              const int e = ids_h[static_cast<size_t>(tt) * k + jj];
+              if (!chk[e]) {
+                chk[e] = 1;
+                ++actual;
+              }
+            }
+        }
+        std::fprintf(stderr,
+                     "[q4t][residency][diag] layer=%d flush size=%zu "
+                     "book=%d actual=%d\n",
+                     layer_id, cur.size(), distinct, actual);
         chunks.push_back(std::move(cur));
         cur.clear();
         std::fill(in_set.begin(), in_set.end(), 0);
@@ -483,14 +500,41 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
         if (distinct + static_cast<int>(fresh.size()) > D) {
           for (int e : fresh) in_set[e] = 0;  // roll back the probe
           if (!cur.empty()) flush();
-          for (int e : fresh) {
-            in_set[e] = 1;
-            ++distinct;
+          // The flush emptied the bookkeeping: re-probe against the NEW
+          // chunk, or experts shared with the previous chunk are missed and
+          // the chunk's true distinct set can exceed D (observed: book=256
+          // actual=257 at C=256, PlanResolve capacity failure).
+          fresh.clear();
+          for (int j = 0; j < k; ++j) {
+            const int e = ids_h[static_cast<size_t>(t) * k + j];
+            if (!in_set[e]) {
+              in_set[e] = 1;
+              fresh.push_back(e);
+            }
           }
+          distinct += static_cast<int>(fresh.size());
         } else {
           distinct += static_cast<int>(fresh.size());
         }
         cur.push_back(t);
+        if (oi % 64 == 63) {
+          int cnt = 0;
+          std::vector<uint8_t> chk(E, 0);
+          for (int tt : cur)
+            for (int jj = 0; jj < k; ++jj) {
+              const int e = ids_h[static_cast<size_t>(tt) * k + jj];
+              if (!chk[e]) {
+                chk[e] = 1;
+                ++cnt;
+              }
+            }
+          if (cnt != distinct || cnt > D) {
+            std::fprintf(stderr,
+                         "[q4t][residency][diag] layer=%d oi=%d t=%d "
+                         "INVARIANT BROKEN book=%d actual=%d D=%d\n",
+                         layer_id, oi, t, distinct, cnt, D);
+          }
+        }
       }
       if (!cur.empty()) flush();
     }
@@ -552,6 +596,27 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
                                     subs[j].slots.data(), &subs[j].plan);
     };
 
+    {
+      int maxd = 0;
+      for (const auto& c : chunks) {
+        std::vector<uint8_t> seen(E, 0);
+        int d = 0;
+        for (int tt : c)
+          for (int jj = 0; jj < k; ++jj) {
+            const int e = ids_h[static_cast<size_t>(tt) * k + jj];
+            if (!seen[e]) {
+              seen[e] = 1;
+              ++d;
+            }
+          }
+        if (d > maxd) maxd = d;
+      }
+      std::fprintf(stderr,
+                   "[q4t][residency][diag] layer=%d T=%d D=%d chunks=%zu "
+                   "max_distinct=%d resident_before=%d\n",
+                   layer_id, T, D, chunks.size(), maxd,
+                   residency->ResidentCount());
+    }
     Status ps = plan_sub(0);
     if (!ps.ok()) return ps;
     ps = residency->LoadPhase1(subs[0].plan);
@@ -559,9 +624,16 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
     for (size_t j = 0; j < chunks.size(); ++j) {
       const auto& toks = *subs[j].toks;
       const int T_sub = static_cast<int>(toks.size());
-      // Commit sub-chunk j's staged experts (H2D after sub-chunk j-1's GEMM).
-      s = residency->LoadPhase2(subs[j].plan, stream);
-      if (!s.ok()) return s;
+      // Commit sub-chunk j's staged chunks (H2D after sub-chunk j-1's GEMM,
+      // before sub-chunk j's GEMM). The stage-ahead below commits sub-chunk
+      // j fully during the previous iteration, so this only does work for
+      // j = 0.
+      while (!subs[j].plan.fully_committed()) {
+        s = residency->LoadPhase2(subs[j].plan, stream);
+        if (!s.ok()) return s;
+        ps = residency->LoadPhase1(subs[j].plan);
+        if (!ps.ok()) return ps;
+      }
       std::vector<float> rw_sub(static_cast<size_t>(T_sub) * k);
       for (int i = 0; i < T_sub; ++i) {
         const size_t base = static_cast<size_t>(toks[i]) * k;
@@ -603,12 +675,21 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
                                          d_routed);
       if (cudaGetLastError() != cudaSuccess)
         return Status::Fail("residency scatter launch");
-      // Stage sub-chunk j+1 while the GPU runs sub-chunk j's GEMM.
+      // Stage sub-chunk j+1 while the GPU runs sub-chunk j's GEMM: stage
+      // chunk 0, then commit + stage the remaining chunks. Their H2Ds are
+      // stream-ordered after sub-chunk j's GEMM, so any slot eviction is
+      // safe for sub-chunk j.
       if (j + 1 < chunks.size()) {
         ps = plan_sub(j + 1);
         if (!ps.ok()) return ps;
         ps = residency->LoadPhase1(subs[j + 1].plan);
         if (!ps.ok()) return ps;
+        while (!subs[j + 1].plan.fully_committed()) {
+          s = residency->LoadPhase2(subs[j + 1].plan, stream);
+          if (!s.ok()) return s;
+          ps = residency->LoadPhase1(subs[j + 1].plan);
+          if (!ps.ok()) return ps;
+        }
       }
     }
   } else {
