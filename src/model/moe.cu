@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "q4t/model/linear.h"
+#include "q4t/quant/moe_decode.h"
 #include "q4t/quant/moe_gemm.h"
 #include "q4t/quant/moe_residency.h"
 
@@ -592,8 +593,11 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
           exp_sub[static_cast<size_t>(i) * k + jj] = ids_h[base + jj];
         }
       }
+      // T_sub == 1 is the decode step; report its lookups/misses in the
+      // decode phase counters (acceptance split prefill vs decode loads).
       return residency->PlanResolve(exp_sub.data(), T_sub * k,
-                                    subs[j].slots.data(), &subs[j].plan);
+                                    subs[j].slots.data(), &subs[j].plan,
+                                    T_sub == 1);
     };
 
     {
@@ -666,9 +670,34 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
       // the GEMM must therefore run single-stream (Q4T_MOE_STREAMS=1,
       // enforced at model load) or its extra streams would read a slot
       // before its load H2D lands or after it is evicted.
-      s = quant::MoERoutedForward(d_xsub, d_idsub, d_rwsub, d_ysub, routed,
-                                  routed_ws, gemm_ws, gemm_ws_bytes, T_sub,
-                                  k, stream);
+      // Decode (T_sub == 1) uses the fixed-shape device decode path
+      // directly. MoERoutedForward's dispatch for that path requires
+      // E == 512, which the C-slot layout (E == C) does not satisfy, so
+      // routing slot-mode decode through it would fall back to the
+      // host-orchestrated grouped GEMM (measured ~4x slower per token).
+      // The device decode kernel itself is generic in E (its per-expert
+      // stride is a constant, not derived from weights.E), so it is safe
+      // to call it directly with the C-slot layout and slot IDs. GEMM
+      // (moe_gemm.cu) is frozen for this goal; the dispatch therefore
+      // lives in the residency layer (see the GEMM-freeze scope in
+      // docs/MOE_RESIDENCY_PLAN_2026-09-30.md).
+      if (T_sub == 1 && k == 10 && routed.hs == 2560 &&
+          routed.moe_is == 640) {
+        quant::MoEWorkspace ws;
+        const int R = k;  // M == 1
+        ws.a_packed_bytes = static_cast<size_t>(R) * (routed.hs / 2);
+        ws.a_sf_bytes = quant::SfBufferSize(R, routed.hs);
+        ws.gu_out_bytes =
+            static_cast<size_t>(R) * (2 * routed.moe_is) * sizeof(uint16_t);
+        ws.dn_out_bytes = static_cast<size_t>(R) * routed.hs * sizeof(uint16_t);
+        ws.Init(static_cast<uint8_t*>(routed_ws));
+        s = quant::MoEDeviceDecode(d_xsub, d_idsub, d_rwsub, d_ysub, routed,
+                                   ws, gemm_ws, gemm_ws_bytes, stream);
+      } else {
+        s = quant::MoERoutedForward(d_xsub, d_idsub, d_rwsub, d_ysub,
+                                   routed, routed_ws, gemm_ws,
+                                   gemm_ws_bytes, T_sub, k, stream);
+      }
       if (!s.ok()) return s;
       ScatterTokenRowsKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0,
                                stream>>>(d_ysub, d_tokidx, T_sub, hs,

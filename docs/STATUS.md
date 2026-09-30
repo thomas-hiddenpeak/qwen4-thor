@@ -5,28 +5,26 @@
 
 ## 当前结论
 
-## 分层专家驻留：staging 缓冲复用竞态已修复，数值合同恢复，全矩阵重跑中（2026-09-30 晚）
+## 分层专家驻留：decode 慢速 GEMM 回退与 20 分钟超时已修复，全矩阵重跑中（2026-09-30 深夜）
 
-C 槽/层驻留（expert→slot 映射、LRU、静态热点初装、stream-ordered
-缺失补载、加载完成后使用、安全复用）已实现。`--moe-resident-slots 0`
-（默认）= 原全常驻路径逐位不变，可随时回退。目标长度档按用户口径为
-**总上下文 262144**（输入 261887 + 输出 257），261887/261888 边界
-调查关闭。三个驻留层缺陷（staging SF 布局越界、PlanResolve 去重、分块
-器跨 chunk 共享专家漏计）先后修复后，19:32 二进制 bitexact 复验仍失
-败：二分 C=512+hot-512-full（零按需补载）同样 char 0 分歧且 8192 输出
-退化为常量重复，det-c0 双跑逐位一致（C=0 确定性成立）。bytecmp/
-slotmap 定位根因：LoadPhase1 的 8 个 worker 各自把同一 plan 的多个专家
-依次 stage 进自己的单个 pinned 缓冲（覆盖前一专家），全部 stage 完才
-commit → 每槽实际含至多 8 个专家之一（504/512 槽错误专家），簿记却正
-确 → forward 用错权重。修复：分块 stage+commit（Phase1 每次至多一个
-chunk、每缓冲至多一个专家；Phase2 commit 已 stage 块；调用方按块交
-错；prefill stage-ahead 重叠保留，驱逐安全依赖 stream 顺序）；GEMM 未
-动。验证：bytecmp2 512/512 逐字节一致；q4t_tests 104 项通过；c512full
-与 bitexact-c256 均 BIT-EXACT=True（1024/8192）。20:24 二进制
-（md5 be1c54c5）为新口径。内存峰值（RSS+GPU 口径）：s0=91.33 GB，
-c256=57.71 GB——超 54 GB 门槛 3.7 GB，用户已明确接受（决策记录见计划
-文档）。GEMM 按用户指示冻结至本目标完成。下一步：同一 20:24 二进制重
-跑全矩阵（基线 C=0 + 候选 C=256+hot-256，六档×3）→ 冻结口径对比。
+冻结轮首跑（20:24 二进制）：基线 C=0 六档×3 全过（目标档 3/3
+in=261887 out=257，内存峰值 91.35 GB）；候选 C=256+hot-256 三档逐位
+一致但 decode 仅基线 22%（50% 门槛 FAIL），45056 档被服务端 20 分钟
+默认 deadline 取消后 runner 中止。根因：(a) 槽位模式 E==C≠512 使
+decode 落到 host 编排分组 GEMM（约 4x 慢），与补载无关；(b) 服务端
+默认 deadline 短于冻结客户端超时（7200s/10800s）。修复（仅驻留层/
+服务层，GEMM 冻结未动）：槽位模式 decode 直调 MoEDeviceDecode（核按
+常量 per-expert 步长寻址，E 无关；workspace 与 GEMM 路径逐项一致）；
+新增 --request-deadline-ms（上限 10800000）；驻留统计分列
+decode/prefill lookups/misses。验证：零警告构建（23:38 二进制）；
+q4t_tests 105/105；bitexact-c256 1024/8192 均 BIT-EXACT=True；C=256
+启动 3/3。ab-decode 中 20:24 二进制的 c256/c512full 启动段错误未复现
+（当前二进制 3/3 OK），记为瞬态，矩阵中持续观察。目标长度档按用户
+口径为**总上下文 262144**（输入 261887 + 输出 257），边界调查已关
+闭。内存峰值（RSS+GPU 口径）：s0=91.33 GB，c256=57.71 GB——超 54 GB
+门槛 3.7 GB，用户已明确接受（决策记录见计划文档）。下一步：同一
+23:38 二进制重跑全矩阵（基线 C=0 + 候选 C=256+hot-256，均带
+--request-deadline-ms 10800000，六档×3）→ 冻结口径对比。
 验收报告骨架：
 [MOE_RESIDENCY_ACCEPTANCE_2026-09-30.md](MOE_RESIDENCY_ACCEPTANCE_2026-09-30.md)；
 计划与冻结轮：[MOE_RESIDENCY_PLAN_2026-09-30.md](MOE_RESIDENCY_PLAN_2026-09-30.md)。

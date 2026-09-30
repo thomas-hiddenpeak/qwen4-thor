@@ -42,6 +42,8 @@ Status ValidateServerOptions(const ServerOptions& options) {
     return Status::Fail(
         "moe-hot-protect requires moe-resident-slots > 0 and moe-hot-list");
   }
+  if (options.request_deadline_ms < 1000 || options.request_deadline_ms > 10800000)
+    return Status::Fail("request-deadline-ms must be in [1000,10800000]");
   return Status();
 }
 
@@ -78,6 +80,7 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--max-seq") integer = &parsed.max_seq;
     if (key == "--moe-trace-max-mib") integer = &parsed.moe_trace_max_mib;
     if (key == "--moe-resident-slots") integer = &parsed.moe_resident_slots;
+    if (key == "--request-deadline-ms") integer = &parsed.request_deadline_ms;
     if (!integer && key != "--host" && key != "--model-dir" &&
         key != "--mem-fraction" && key != "--moe-trace-dir" &&
         key != "--moe-trace-workload" && key != "--moe-hot-list")

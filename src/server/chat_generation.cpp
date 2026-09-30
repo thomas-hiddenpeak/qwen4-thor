@@ -123,13 +123,14 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     request_id = "chatcmpl-auto-" +
                  std::to_string(next_request_id_.fetch_add(1));
   }
-  auto deadline = t_arrive + std::chrono::minutes(20);
+  auto deadline = t_arrive +
+                  std::chrono::milliseconds(request_deadline_ms_);
   if (const io::Json* timeout = req.Find("request_timeout_ms")) {
     const double value = timeout->AsDouble(-1);
-    if (!timeout->IsNumber() || !(value >= 1 && value <= 1200000) ||
+    if (!timeout->IsNumber() || !(value >= 1 && value <= 10800000) ||
         value != static_cast<double>(static_cast<int64_t>(value))) {
       SendError(fd, 400,
-                "request_timeout_ms must be an integer in [1,1200000]");
+                "request_timeout_ms must be an integer in [1,10800000]");
       return;
     }
     deadline = t_arrive +

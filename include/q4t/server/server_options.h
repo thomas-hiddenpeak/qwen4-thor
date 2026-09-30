@@ -49,6 +49,10 @@ struct ServerOptions {
   // Protect the hot-list experts from LRU eviction (the dynamic capacity
   // becomes C - hot). Requires moe_resident_slots > 0 and a hot list.
   bool moe_hot_protect = false;
+  // Default per-request deadline in milliseconds (arrival -> cancellation).
+  // 1200000 (20 min) is the historical default; raise it for workloads whose
+  // first request carries long on-demand expert loads (tiered residency).
+  int request_deadline_ms = 1200000;
 };
 
 // Derived once from validated options, never a second configuration source.

@@ -175,6 +175,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
   cfg.moe_hot_list = opts.moe_hot_list;
   cfg.moe_hot_protect = opts.moe_hot_protect;
   residency_enabled_ = opts.moe_resident_slots > 0;
+  request_deadline_ms_ = opts.request_deadline_ms;
   // B1: pool the per-sequence recurrent state for up to max_seq concurrent
   // requests. Each in-flight request owns one seq_id.
   max_seq_ = eff_max_seq;
