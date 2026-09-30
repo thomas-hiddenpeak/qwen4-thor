@@ -133,6 +133,9 @@ class MoEResidency {
     std::vector<uint8_t> needed_mark;
     // LoadPhase1 resets this to 0; a worker stores 1 on stage failure.
     std::atomic<int> first_err{0};
+    // First stage error message (written by the first failing worker only;
+    // LoadPhase1 reads it after waiting on every worker, so no race).
+    std::string first_err_msg;
     bool empty() const { return experts.empty(); }
     bool fully_committed() const { return next_commit >= experts.size(); }
     void clear() {
@@ -142,6 +145,8 @@ class MoEResidency {
       needed_mark.clear();
       next_stage = 0;
       next_commit = 0;
+      first_err.store(0, std::memory_order_relaxed);
+      first_err_msg.clear();
     }
   };
 
@@ -276,13 +281,24 @@ class MoEResidency {
   mutable std::vector<uint8_t*> l2_buf_;  // [L]
   mutable std::vector<int> l2_expert_;  // [L] expert in buffer, -1 = empty
   mutable std::vector<int> expert_l2buf_;  // [E] buffer of expert, -1 = absent
-  // One-shot test-only fault hook (Q4T_RESIDENCY_FAIL_EXPERT): the first
-  // stage of that expert fails with "residency fault injection" and the
-  // hook disarms. Off (-1) unless the env var names a valid expert.
+  // One-shot test-only fault hook (Q4T_RESIDENCY_FAIL_EXPERT):
+  // "first" -> the first request-time stage in the whole model (any
+  // layer/expert, after every layer's InitHot) fails exactly once
+  // (global one-shot; see g_first_fault_fired); <int> -> the first
+  // stage of that expert fails. The failure message contains
+  // "residency fault injection" and the hook disarms. Off unless the
+  // env var is "first" or a valid expert id. The hook only fires after
+  // init_done_ so an armed hot expert cannot kill startup.
   mutable int fail_expert_ = -1;
+  mutable bool fail_first_ = false;
   mutable bool fail_armed_ = false;
+  mutable bool init_done_ = false;
 
   mutable std::vector<uint64_t> l2_tick_;  // [L] LRU recency
+  // L2 recency clock, separate from tick_ (the slot LRU clock): L2
+  // staging must not advance slot ticks or same-call slot commits
+  // would outrun in-call hits and break LRU victim order.
+  mutable uint64_t l2_recency_ = 0;
   mutable std::vector<bool> l2_in_flight_;  // [L] H2D pending
   mutable std::vector<bool> l2_claimed_;  // [L] staged by the current chunk, not yet committed
   mutable std::vector<cudaEvent_t> l2_event_;  // [L]

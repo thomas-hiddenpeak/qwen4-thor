@@ -14,6 +14,12 @@ namespace quant {
 
 namespace {
 
+// "first" fault hook: exactly one request-time stage across ALL layers
+// fails. A per-layer one-shot would fire once per layer (each layer's
+// first stage), so a second request would hit the next layer's armed
+// hook and the recovery contract (step 2 must succeed) would break.
+std::atomic<bool> g_first_fault_fired{false};
+
 std::string ExpertName(int layer_id, int expert, const char* proj,
                        const char* suffix) {
   return "model.language_model.layers." + std::to_string(layer_id) +
@@ -150,16 +156,24 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
   resident_count_ = 0;
   protected_count_ = 0;
 
-  // One-shot test-only fault hook (off unless the env var names a valid
-  // expert): the first stage of that expert fails, then the hook disarms.
+  // One-shot test-only fault hook (off unless the env var is "first" or
+  // names a valid expert): the matching stage fails, then the hook
+  // disarms. "first" fires on the first request-time stage (after
+  // InitHot), deterministic even when the armed expert is hot.
   fail_expert_ = -1;
+  fail_first_ = false;
   fail_armed_ = false;
   const char* fail_env = std::getenv("Q4T_RESIDENCY_FAIL_EXPERT");
   if (fail_env) {
-    const int v = std::atoi(fail_env);
-    if (v >= 0 && v < E_) {
-      fail_expert_ = v;
+    if (std::strcmp(fail_env, "first") == 0) {
+      fail_first_ = true;
       fail_armed_ = true;
+    } else {
+      const int v = std::atoi(fail_env);
+      if (v >= 0 && v < E_) {
+        fail_expert_ = v;
+        fail_armed_ = true;
+      }
     }
   }
 
@@ -291,10 +305,21 @@ Status MoEResidency::StageExpert(int expert,
   // bookkeeping consistent (the next load of the expert is a clean miss).
   {
     std::lock_guard<std::mutex> lk(*l2_mu_);
-    if (fail_armed_ && expert == fail_expert_) {
-      fail_armed_ = false;
-      return Status::Fail("residency fault injection: expert " +
-                          std::to_string(expert) + " (test hook)");
+    if (fail_armed_ && init_done_) {
+      bool fire = false;
+      if (fail_first_) {
+        // Global one-shot: the first request-time stage in the whole
+        // model fails, no matter which layer owns it.
+        fire = !g_first_fault_fired.exchange(true,
+                                             std::memory_order_acq_rel);
+      } else {
+        fire = expert == fail_expert_;
+      }
+      if (fire) {
+        fail_armed_ = false;
+        return Status::Fail("residency fault injection: expert " +
+                            std::to_string(expert) + " (test hook)");
+      }
     }
   }
   // Per-projection byte sizes; down/gate/up are equal by construction
@@ -312,7 +337,7 @@ Status MoEResidency::StageExpert(int expert,
     if (b >= 0) {
       // L2 hit: the buffer already holds this expert's payload; no read.
       // Claim it so a same-chunk miss cannot evict it before our commit.
-      l2_tick_[b] = ++tick_;
+      l2_tick_[b] = ++l2_recency_;
       l2_claimed_[b] = true;
       ++stats_.l2_hits;
       hit = true;
@@ -328,7 +353,7 @@ Status MoEResidency::StageExpert(int expert,
       }
       l2_expert_[b] = expert;
       expert_l2buf_[expert] = b;
-      l2_tick_[b] = ++tick_;
+      l2_tick_[b] = ++l2_recency_;
       ++stats_.l2_misses;
     }
   }
@@ -604,6 +629,7 @@ Status MoEResidency::InitHot(const std::vector<int>& hot_experts,
   for (int i = 0; i < static_cast<int>(plan.experts.size()); ++i) {
     slot_tick_[plan.slots[i]] = ++tick_;
   }
+  init_done_ = true;
   return Status();
 }
 
@@ -753,7 +779,8 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
     w->done.wait(lk, [&] { return w->finished; });
   }
   if (plan.first_err.load(std::memory_order_relaxed) != 0) {
-    return Status::Fail("residency parallel stage failed");
+    return Status::Fail("residency parallel stage failed: " +
+                        plan.first_err_msg);
   }
   plan.next_stage = off + cnt;
   return Status();
@@ -783,7 +810,11 @@ void MoEResidency::LoadWorkerLoop(LoadWorker* w) const {
     if (s.ok()) {
       plan->workers[idx] = buf;
     } else {
-      plan->first_err.store(1, std::memory_order_relaxed);
+      if (plan->first_err.exchange(1, std::memory_order_acq_rel) == 0) {
+        // Only the first failing worker writes; LoadPhase1 reads after
+        // waiting on every worker's done (happens-before via the cv).
+        plan->first_err_msg = s.message();
+      }
     }
     {
       std::lock_guard<std::mutex> lk(w->mu);

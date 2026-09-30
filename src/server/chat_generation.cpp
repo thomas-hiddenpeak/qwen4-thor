@@ -427,7 +427,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       }
     }
     prefill_cancelled = pr.cancelled;
-    s = pr.ok ? Status() : Status::Fail("scheduled chunk prefill failed");
+    s = pr.ok ? Status()
+              : Status::Fail("scheduled chunk prefill failed" +
+                             (pr.err.empty()
+                                  ? std::string()
+                                  : std::string(": ") + pr.err));
   } else if (batched_prefill) {
     PrefillReq pr;
     pr.control = control.get();

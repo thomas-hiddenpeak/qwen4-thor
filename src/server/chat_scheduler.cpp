@@ -137,6 +137,7 @@ void ChatServer::RunOnePrefillChunk() {
       chunk_prefill_pending_.push_back(req);
     } else {
       req->ok = s.ok() && !req->cancelled && last && !scheduler_stop_;
+      if (!s.ok()) req->err = s.message();
       if (!req->ok) req->seq->Fail();
       req->done = true;
       req->cv.notify_one();

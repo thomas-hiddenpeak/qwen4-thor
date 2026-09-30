@@ -5,21 +5,74 @@
 
 ## 当前结论
 
-## 第一轮矩阵 261887 档 req2/3 运行中；验收报告已填五档实测（2026-10-01 03:15）
+## 四查门 #4 运行中（新二进制 f2e9de7f）；fault 钩子全局一次性修复（2026-10-01 05:10）
 
-261887 档（总上下文 262144）req1 于 02:41 完成（in=261887 out=257，
-loads=2891k/7.99 TB，未超冻结超时），req2 进行中，预计 03:45–04:00
-全矩阵完成。验收报告已填入五档实测：decode 22–30% 基线（均 <50%
-门槛，FAIL 如实记录），逐位一致 5/6，基线全矩阵内存峰值 91.33 GB。
-实测修正冻结分析：页缓存预热未生效（204800 档 TTFT 三请求持平
-~1240s，工作集远超 RAM 被挤出）；evictions==loads 证实非热点槽池
-常满，逐 miss 补载+逐层串行是 decode 慢的根因。compare_e2e.py 修复
-两处缺陷（PENDING 档容忍、tag 透传，仅测试工具）。auto-r2 编排
-（02:48 部署）待队列结束后执行四查门并自动启动第二轮矩阵（L2-128
-+常驻加载线程池）；auto-post-r2.sh（03:13 部署，pid 9118）在四查门通过
-后自动执行受影响检查（11 题质量集 + 6 请求业务对照）。compare_e2e.py
-已扩展解析 L2 计数器（l2hit%/nvme_mb）。GEMM 冻结第三次确认（ce0f29f）不变。
+四查门 #3（04:49，二进制 b22a1049）：q4t_tests 106/106 PASS、
+bitexact 两档 BIT-EXACT=True PASS、affected-cancel PASS（取消后重发
+逐位一致）；affected-fault FAIL 且暴露两个缺陷：(1) "first" 钩子按层
+布防——每层实例各自 arm，step1 在 layer 0 首个 stage 失败后，step2
+又在 layer 1 首个 stage 失败（server.log diag 证实：step1 死于
+layer 0、step2 死于 layer 1），恢复合同（step2 必须成功）被破坏；
+(2) 错误消息在 LoadPhase1 被压成 "residency parallel stage failed"、
+在 ChunkPrefillReq（仅 bool ok）再次丢失，HTTP 500 正文不含
+"fault injection"，测试无法验证失败原因。
 
+修复（仅驻留层+服务层，GEMM 冻结未动；二进制 f2e9de7f，05:05
+零警告构建）：(1) "first" 钩子改全局一次性（g_first_fault_fired
+原子量，全模型恰好一个请求期 stage 失败；expert-id 模式语义不变）；
+(2) 错误消息全链传播：LoadPlan.first_err_msg（首个失败 worker 写入，
+cv 等待建立 happens-before）→ LoadPhase1 "residency parallel stage
+failed: <msg>" → ChunkPrefillReq.err → HTTP 500 正文
+"scheduled chunk prefill failed: residency fault injection: expert N
+(test hook)"。门 #3 日志封存 verify-r2-binary.log-run3-b22a1049。
+05:07 启动门 #4（f2e9de7f，setsid）；auto-r2c.sh 观察门 #4，四查全过
+才 setsid 启动第二轮矩阵（queue-r2-l2pool.sh，L2-128+C=256+常驻池，
+六档×3，r2-* tag）→ 再跑 post-r2-affected.sh（11 题质量集+6 请求
+业务对照）。NVMe 单 miss 分解（05:05 实测）：3.28 MB 随机 pread
+未命中页缓存中位 1.44 ms/p90 2.07 ms，顺序 4 MB 2.3 GB/s——NVMe 非
+6.2 ms 有效单 miss 成本之源，~4 ms 管线开销（页缓存压力/单流同步/
+chunk 互斥往返）待第三轮逐 miss 计时定位，详见
+MOE_RESIDENCY_L2_PREDICTION_2026-10-01.md 新增节。
+
+## 第一轮矩阵完成：六档 decode 22.0–29.8% 基线（全 FAIL）；四查门修复后重跑中（2026-10-01 04:50）
+
+第一轮冻结全矩阵（23:46 二进制 4c5cddea，00:13–03:37）完成：基线 C=0
+与候选 C=256+hot-256 均六档×3 全过，逐位一致 6/6（18/18 输出），目标档
+token 合同 3/3（in=261887 out=257 finish=length，总上下文 262144）。
+decode 比值 1024/4096/8192/45056/204800/261887 = 0.246/0.233/0.220/
+0.264/0.298/0.229，全部 <50% 门槛（FAIL 如实记录）。内存峰值：基线
+91.33 GB / 候选 58.49 GB（用户已接受超支）。候选加载量 261887 档
+2891k/7.99 TB×3。根因不变：逐 miss 逐层串行 NVMe 补载
+（evictions==loads，非热点槽池常满）。
+
+四查门（verify-r2-binary.sh）第一轮跑（04:18，旧二进制 104c8b09）：
+q4t_tests 106/106 PASS、bitexact-c256 两档 BIT-EXACT=True PASS、
+affected-cancel PASS（mid-prefill/mid-decode 取消后同请求重发逐位一致，
+槽位/状态恢复正确）；affected-fault FAIL——钩子按专家 id=401 布防而
+401 是 layer 2 热点，InitHot 并行装载阶段触发钩子杀死启动
+（"residency parallel stage failed"），curl rc=7。
+
+修复（仅驻留层，GEMM 冻结未动；新二进制 b22a1049，04:43 构建）：
+(1) 故障钩子新增 "first" 模式（Q4T_RESIDENCY_FAIL_EXPERT=first：首个
+请求期 stage 失败）+ init_done_ 守卫（InitHot 结束前钩子不触发，布防
+热点专家不再杀死启动）；affected-fault.sh 改用 first 模式。
+(2) L2 recency 时钟与槽位 LRU tick 分离（l2_recency_）：L2 staging
+不再推进槽位 tick，同调用内槽位 commit 不会压过 in-call 命中破坏
+LRU victim 顺序。
+四查门重跑（04:49 启动，setsid，新二进制，日志 verify-r2-binary.log）：
+q4t_tests + bitexact + affected-fault + affected-cancel 全过才自动进入
+第二轮矩阵。
+
+L2 离线预测（MOE_RESIDENCY_L2_PREDICTION_2026-10-01.md，聊天轨迹
+校准→留出 + 联合 C×L2 扫描）：第二轮 L2-128+C=256 预计 ~30% 基线
+（L2-128 只接 ~6% GPU miss，仍低于 50% 门槛）；同内存下加 GPU 槽优于
+加 CPU L2（C=384 无 L2，78.6 GB，~61% > C=256+L2-128，78.6 GB，~30%）；
+验收夹具工作集 W≈270（第一轮 miss 率反推）明显小于聊天轨迹 349，
+**C=324（68.4 GB，+14.4 GB 超支）在夹具上可能接近基线**——第三轮
+首选候选。内存超支幅度（C=324/384）属新增超支，需用户明确授权后
+才启动第三轮；NVMe 单 miss 6.2ms（≈450 MB/s）偏低，第三轮可并行做
+逐 miss 时延分解/预取（GEMM 仍冻结）。GEMM 冻结用户再次确认
+（"GEMM 暂时不修改,我们等当前目标完成后再讨论"）。
 
 ## 第二轮自动推进编排已就位；GEMM 冻结第三次确认（2026-10-01 02:48）
 

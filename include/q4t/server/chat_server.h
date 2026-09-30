@@ -188,6 +188,8 @@ class ChatServer {
   };
   // Request thread owns these buffers and waits until the entire prompt is
   // done. Only the scheduler advances seq between chunk completions.
+  // err carries the scheduler-side failure message (e.g. residency fault
+  // injection) so the request thread can surface it in the HTTP error.
   struct ChunkPrefillReq {
     RequestControl* control = nullptr;
     int fd = -1;  // Borrowed until done; owned by the waiting request thread.
@@ -199,6 +201,7 @@ class ChatServer {
     uint16_t* h_logits = nullptr;
     bool done = false;
     bool ok = false;
+    std::string err;  // set by the scheduler when ok=false
     std::condition_variable cv;
   };
   void RunOnePrefillChunk();
