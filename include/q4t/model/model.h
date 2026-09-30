@@ -553,5 +553,48 @@ inline quant::MoEResidency::Stats SumResidencyStats(const Model& m) {
   return total;
 }
 
+// Plain snapshot of the per-layer MoE residency timing counters (the
+// atomics in MoEResidency::TimingStats are loaded once per layer).
+// count/ns are summed across layers; max is the max of the per-layer maxes
+// (cumulative, not per-request). All-zero when residency is disabled.
+struct ResidencyTimingSnapshot {
+  uint64_t stage_count = 0, stage_ns = 0, stage_max_ns = 0;
+  uint64_t pread_count = 0, pread_ns = 0, pread_max_ns = 0;
+  uint64_t swz_count = 0, swz_ns = 0, swz_max_ns = 0;
+  uint64_t phase1_count = 0, phase1_ns = 0, phase1_max_ns = 0;
+  uint64_t d2h_count = 0, d2h_ns = 0, d2h_max_ns = 0;
+  bool enabled = false;
+};
+
+inline ResidencyTimingSnapshot SumResidencyTiming(const Model& m) {
+  ResidencyTimingSnapshot total;
+  for (const auto& layer : m.layers) {
+    const auto& t = layer.moe_residency.GetTiming();
+    total.enabled = total.enabled ||
+                    t.enabled.load(std::memory_order_relaxed);
+    total.stage_count += t.stage_count.load(std::memory_order_relaxed);
+    total.stage_ns += t.stage_ns.load(std::memory_order_relaxed);
+    total.stage_max_ns =
+        std::max(total.stage_max_ns, t.stage_max_ns.load(std::memory_order_relaxed));
+    total.pread_count += t.pread_count.load(std::memory_order_relaxed);
+    total.pread_ns += t.pread_ns.load(std::memory_order_relaxed);
+    total.pread_max_ns =
+        std::max(total.pread_max_ns, t.pread_max_ns.load(std::memory_order_relaxed));
+    total.swz_count += t.swz_count.load(std::memory_order_relaxed);
+    total.swz_ns += t.swz_ns.load(std::memory_order_relaxed);
+    total.swz_max_ns =
+        std::max(total.swz_max_ns, t.swz_max_ns.load(std::memory_order_relaxed));
+    total.phase1_count += t.phase1_count.load(std::memory_order_relaxed);
+    total.phase1_ns += t.phase1_ns.load(std::memory_order_relaxed);
+    total.phase1_max_ns =
+        std::max(total.phase1_max_ns, t.phase1_max_ns.load(std::memory_order_relaxed));
+    total.d2h_count += t.d2h_count.load(std::memory_order_relaxed);
+    total.d2h_ns += t.d2h_ns.load(std::memory_order_relaxed);
+    total.d2h_max_ns =
+        std::max(total.d2h_max_ns, t.d2h_max_ns.load(std::memory_order_relaxed));
+  }
+  return total;
+}
+
 }  // namespace model
 }  // namespace q4t

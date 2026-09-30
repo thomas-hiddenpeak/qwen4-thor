@@ -109,6 +109,37 @@ class MoEResidency {
     uint64_t l2_evictions = 0;
   };
 
+  // Per-miss pipeline timing. Enabled only when Q4T_RESIDENCY_TIMING=1
+  // (default off, zero overhead when disabled). The stage/pread/swz
+  // counters are written by the persistent load workers (atomic); phase1
+  // and d2h are recorded by the caller thread. All *_ns are cumulative
+  // nanoseconds; the server takes per-request deltas.
+  struct TimingStats {
+    std::atomic<bool> enabled{false};
+    std::atomic<uint64_t> stage_count{0}, stage_ns{0}, stage_max_ns{0};
+    std::atomic<uint64_t> pread_count{0}, pread_ns{0}, pread_max_ns{0};
+    std::atomic<uint64_t> swz_count{0}, swz_ns{0}, swz_max_ns{0};
+    std::atomic<uint64_t> phase1_count{0}, phase1_ns{0}, phase1_max_ns{0};
+    std::atomic<uint64_t> d2h_count{0}, d2h_ns{0}, d2h_max_ns{0};
+    void Reset() {
+      stage_count.store(0);
+      stage_ns.store(0);
+      stage_max_ns.store(0);
+      pread_count.store(0);
+      pread_ns.store(0);
+      pread_max_ns.store(0);
+      swz_count.store(0);
+      swz_ns.store(0);
+      swz_max_ns.store(0);
+      phase1_count.store(0);
+      phase1_ns.store(0);
+      phase1_max_ns.store(0);
+      d2h_count.store(0);
+      d2h_ns.store(0);
+      d2h_max_ns.store(0);
+    }
+  };
+
   // A planned set of expert loads: expert i goes into slot i. PlanResolve
   // fills it; LoadPhase1 stages the next chunk of entries into L2 buffers
   // (one per worker); LoadPhase2 copies the staged chunk to device and
@@ -208,11 +239,29 @@ class MoEResidency {
   int ResidentCount() const { return resident_count_; }
   size_t DeviceBytes() const { return layout_.TotalBytes(); }
   const Stats& GetStats() const { return stats_; }
+  bool TimingEnabled() const {
+    return timing_.enabled.load(std::memory_order_relaxed);
+  }
+  const TimingStats& GetTiming() const { return timing_; }
+  // Records one router D2H + stream-sync round trip (from MoEForward).
+  void RecordD2HSync(uint64_t ns) const;
 
   // Free all device buffers (idempotent).
   void Free();
 
  private:
+  // Atomic max update for the timing max counters (relaxed; a lost
+  // update only under-reports the max, never corrupts).
+  static void AtomicMaxU64(std::atomic<uint64_t>& dst, uint64_t v) {
+    uint64_t cur = dst.load(std::memory_order_relaxed);
+    while (v > cur &&
+           !dst.compare_exchange_weak(cur, v, std::memory_order_relaxed)) {
+    }
+  }
+  // Timing recorders (no-ops when timing is disabled).
+  void RecordStageNs(uint64_t ns) const;
+  void RecordPhase1Ns(uint64_t ns) const;
+
   // Stage one expert into an L2 buffer: an L2 hit reuses the cached payload
   // (no NVMe read); an L2 miss evicts an LRU victim (never an in-flight
   // buffer, preferring experts not in *needed_mark) and NVMe-reads + merges
@@ -311,6 +360,7 @@ class MoEResidency {
   mutable std::vector<LoadWorker*> workers_;
 
   mutable Stats stats_;
+  mutable TimingStats timing_;
   bool inited_ = false;
 };
 

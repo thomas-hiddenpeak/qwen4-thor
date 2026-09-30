@@ -297,6 +297,32 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
       }
     }
   }
+  // Per-layer slot count: with a static hot list present, the layer's GPU
+  // capacity is the list length capped by --moe-resident-slots; without a
+  // list it is the global value. This enables non-uniform per-layer
+  // residency (goal: 允许按层非均匀分配). Uniform lists (every layer of
+  // length C) keep the legacy behavior exactly: c_layer == C for all l.
+  std::vector<int> c_layer(cfg.num_layers, cfg.moe_resident_slots);
+  int c_total = 0;
+  bool nonuniform = false;
+  for (int l = 0; l < cfg.num_layers; ++l) {
+    if (cfg.moe_resident_slots > 0 && !hot_lists[l].empty()) {
+      c_layer[l] = std::min<int>(static_cast<int>(hot_lists[l].size()),
+                                 cfg.moe_resident_slots);
+    }
+    if (c_layer[l] != cfg.moe_resident_slots) nonuniform = true;
+    c_total += c_layer[l];
+  }
+  if (lt && nonuniform) {
+    std::fprintf(stderr,
+                 "[q4t][residency] non-uniform per-layer C: total=%d "
+                 "(max/layer=%d): ",
+                 c_total, cfg.moe_resident_slots);
+    for (int l = 0; l < cfg.num_layers; ++l) {
+      std::fprintf(stderr, "%d%s", c_layer[l],
+                   l + 1 < cfg.num_layers ? "," : "\n");
+    }
+  }
   t0 = lt ? NowMs() : 0.0;
   for (int l = 0; l < cfg.num_layers; ++l) {
     const std::vector<int>* hot =
@@ -306,7 +332,7 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
     s = LoadDecoderLayer(loader, l, cfg.hs, cfg.hc, cfg.lowrank, cfg.eps,
                          cfg.E, cfg.moe_is, cfg.shared_is, cfg.topk,
                          cfg.max_len, cfg.max_seq, &m->layers[l], stream,
-                         cfg.moe_resident_slots, hot, cfg.moe_hot_protect);
+                         c_layer[l], hot, cfg.moe_hot_protect);
     if (!s.ok()) return s;
   }
   if (lt) t_layers = NowMs() - t0;

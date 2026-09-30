@@ -875,6 +875,49 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                      now.l2_evictions - prev.l2_evictions),
                  (now.nvme_read_bytes - prev.nvme_read_bytes) / 1e6);
     residency_stats_prev_ = now;
+    // Optional per-miss pipeline timing (Q4T_RESIDENCY_TIMING=1). Per-request
+    // deltas of count/ns; max is cumulative (upper bound). Diagnostic only.
+    const auto tim_now = model::SumResidencyTiming(model_.Get());
+    if (tim_now.enabled) {
+      const auto& tp = residency_timing_prev_;
+      auto avg_us = [](uint64_t ns, uint64_t cnt) {
+        return cnt ? (static_cast<double>(ns) / cnt) / 1e3 : 0.0;
+      };
+      std::fprintf(stderr,
+                   "[q4t][residency][timing] id=%s "
+                   "stage_n=%llu stage_avg_us=%.1f stage_max_us=%.1f "
+                   "pread_n=%llu pread_avg_us=%.1f pread_max_us=%.1f "
+                   "swz_n=%llu swz_avg_us=%.1f swz_max_us=%.1f "
+                   "phase1_n=%llu phase1_avg_us=%.1f phase1_max_us=%.1f "
+                   "d2h_n=%llu d2h_avg_us=%.1f d2h_max_us=%.1f\n",
+                   id.c_str(),
+                   static_cast<unsigned long long>(
+                       tim_now.stage_count - tp.stage_count),
+                   avg_us(tim_now.stage_ns - tp.stage_ns,
+                          tim_now.stage_count - tp.stage_count),
+                   tim_now.stage_max_ns / 1e3,
+                   static_cast<unsigned long long>(
+                       tim_now.pread_count - tp.pread_count),
+                   avg_us(tim_now.pread_ns - tp.pread_ns,
+                          tim_now.pread_count - tp.pread_count),
+                   tim_now.pread_max_ns / 1e3,
+                   static_cast<unsigned long long>(
+                       tim_now.swz_count - tp.swz_count),
+                   avg_us(tim_now.swz_ns - tp.swz_ns,
+                          tim_now.swz_count - tp.swz_count),
+                   tim_now.swz_max_ns / 1e3,
+                   static_cast<unsigned long long>(
+                       tim_now.phase1_count - tp.phase1_count),
+                   avg_us(tim_now.phase1_ns - tp.phase1_ns,
+                          tim_now.phase1_count - tp.phase1_count),
+                   tim_now.phase1_max_ns / 1e3,
+                   static_cast<unsigned long long>(
+                       tim_now.d2h_count - tp.d2h_count),
+                   avg_us(tim_now.d2h_ns - tp.d2h_ns,
+                          tim_now.d2h_count - tp.d2h_count),
+                   tim_now.d2h_max_ns / 1e3);
+      residency_timing_prev_ = tim_now;
+    }
   }
 
   metrics_.prompt_tokens_total.fetch_add(static_cast<uint64_t>(T),

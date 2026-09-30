@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <atomic>
 #include <cstdlib>
+#include <chrono>
 #include <cstring>
 #include <thread>
 
@@ -176,6 +177,10 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
       }
     }
   }
+  // Optional per-miss pipeline timing (diagnostic; default off).
+  const char* tim_env = std::getenv("Q4T_RESIDENCY_TIMING");
+  timing_.enabled.store(tim_env != nullptr && std::atoi(tim_env) != 0,
+                        std::memory_order_relaxed);
 
   // Pinned L2 pool (see header): one block, L buffers. A buffer is never
   // rewritten until the H2D that last read it completed (per-buffer event),
@@ -293,12 +298,46 @@ int MoEResidency::PickL2Victim(const std::vector<uint8_t>* needed_mark)
 // Stage one expert into an L2 buffer: an L2 hit reuses the cached payload
 // (no NVMe read); an L2 miss evicts an LRU victim and NVMe-reads + merges +
 // swizzles into it. *buf_out receives the buffer index.
+namespace {
+// Nanoseconds elapsed since t0 (0 when timing is off and t0 is empty).
+uint64_t NowNs(std::chrono::steady_clock::time_point t0) {
+  return static_cast<uint64_t>(
+      std::chrono::duration_cast<std::chrono::nanoseconds>(
+          std::chrono::steady_clock::now() - t0)
+          .count());
+}
+}  // namespace
+
+void MoEResidency::RecordD2HSync(uint64_t ns) const {
+  if (!timing_.enabled.load(std::memory_order_relaxed)) return;
+  timing_.d2h_count.fetch_add(1, std::memory_order_relaxed);
+  timing_.d2h_ns.fetch_add(ns, std::memory_order_relaxed);
+  AtomicMaxU64(timing_.d2h_max_ns, ns);
+}
+
+void MoEResidency::RecordStageNs(uint64_t ns) const {
+  if (!timing_.enabled.load(std::memory_order_relaxed)) return;
+  timing_.stage_count.fetch_add(1, std::memory_order_relaxed);
+  timing_.stage_ns.fetch_add(ns, std::memory_order_relaxed);
+  AtomicMaxU64(timing_.stage_max_ns, ns);
+}
+
+void MoEResidency::RecordPhase1Ns(uint64_t ns) const {
+  if (!timing_.enabled.load(std::memory_order_relaxed)) return;
+  timing_.phase1_count.fetch_add(1, std::memory_order_relaxed);
+  timing_.phase1_ns.fetch_add(ns, std::memory_order_relaxed);
+  AtomicMaxU64(timing_.phase1_max_ns, ns);
+}
+
 Status MoEResidency::StageExpert(int expert,
                                  const std::vector<uint8_t>* needed_mark,
                                  int* buf_out) const {
   if (expert < 0 || expert >= E_) {
     return Status::Fail("expert out of range");
   }
+  const bool tim = timing_.enabled.load(std::memory_order_relaxed);
+  const auto t_stage0 =
+      tim ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
   // One-shot test-only fault hook: fail the first stage of the armed expert
   // before any L2/slot state is touched, then disarm. The plan-local slot
   // reservation is dropped with the plan, so a failed load leaves the slot
@@ -362,6 +401,7 @@ Status MoEResidency::StageExpert(int expert,
     // The payload is already staged in the buffer; no read, merge, or
     // swizzle. A concurrent in-flight H2D only reads the buffer, and our
     // commit H2D is stream-ordered after it, so no wait is needed.
+    if (tim) RecordStageNs(NowNs(t_stage0));
     return Status();
   }
   // A miss always picks a non-in-flight buffer, but keep the defensive wait
@@ -395,6 +435,8 @@ Status MoEResidency::StageExpert(int expert,
   }
 
   Status s;
+  const auto t_read0 =
+      tim ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
   // Fast path: the checkpoint keeps each expert's down/gate/up weights
   // contiguous (verified below per expert), so one pread fetches all three
   // (likewise the SF blocks and the six scalar scales). Fewer, larger,
@@ -511,12 +553,27 @@ Status MoEResidency::StageExpert(int expert,
     }
   }
 
+  if (tim) {
+    const uint64_t rns = NowNs(t_read0);
+    timing_.pread_count.fetch_add(1, std::memory_order_relaxed);
+    timing_.pread_ns.fetch_add(rns, std::memory_order_relaxed);
+    AtomicMaxU64(timing_.pread_max_ns, rns);
+  }
+  const auto t_swz0 =
+      tim ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
   // Merge gate+up scales then swizzle both blocks (identical to the
   // LoadMoEWeights per-expert path, so device bytes match bit-for-bit).
   std::memcpy(gu_s_merged, s_ga, s_bytes);
   std::memcpy(gu_s_merged + s_bytes, s_up, s_bytes);
   SwizzleSfInto(gu_s_merged, 2 * moe_is_, hs_, gu_sw);
   SwizzleSfInto(s_dn, hs_, moe_is_, dn_sw);
+  if (tim) {
+    const uint64_t sns = NowNs(t_swz0);
+    timing_.swz_count.fetch_add(1, std::memory_order_relaxed);
+    timing_.swz_ns.fetch_add(sns, std::memory_order_relaxed);
+    AtomicMaxU64(timing_.swz_max_ns, sns);
+    RecordStageNs(NowNs(t_stage0));
+  }
   return Status();
 }
 
@@ -755,6 +812,9 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
   const int n = static_cast<int>(plan.experts.size());
   const int off = static_cast<int>(plan.next_stage);
   if (off >= n) return Status();  // fully staged
+  const bool tim = timing_.enabled.load(std::memory_order_relaxed);
+  const auto t_p1 =
+      tim ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
   if (off == 0) plan.workers.assign(n, 0);
   // One chunk per call: worker t stages entry off + t into an L2 buffer
   // (hit or miss). Buffers are never shared between workers because victim
@@ -779,9 +839,11 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
     w->done.wait(lk, [&] { return w->finished; });
   }
   if (plan.first_err.load(std::memory_order_relaxed) != 0) {
+    if (tim) RecordPhase1Ns(NowNs(t_p1));
     return Status::Fail("residency parallel stage failed: " +
                         plan.first_err_msg);
   }
+  if (tim) RecordPhase1Ns(NowNs(t_p1));
   plan.next_stage = off + cnt;
   return Status();
 }

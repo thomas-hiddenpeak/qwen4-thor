@@ -139,16 +139,37 @@ Status ChatServer::Start(const ServerOptions& opts) {
     // Tiered residency: only C of the 512 routed experts per layer stay
     // resident; the rest stream from NVMe on demand. Charge the resident
     // weight bytes only, plus each layer's pinned L2 expert cache
-    // (MoEResidencyL2Slots() staging-sized buffers).
+    // (MoEResidencyL2Slots() staging-sized buffers). With a per-layer hot
+    // list the resident count is min(list length, C cap) per layer
+    // (non-uniform allocation, same rule as model load); without one it is
+    // the uniform C. Slot bytes come from the exact residency allocation.
     if (opts.moe_resident_slots > 0) {
       constexpr int kE = 512, kLayers = 48, kHs = 2560, kMoeIs = 640;
-      const size_t expert_bytes =
-          static_cast<size_t>(2 * kMoeIs) * (kHs / 2) +
-          static_cast<size_t>(kHs) * (kMoeIs / 2) +
-          static_cast<size_t>(2 * kMoeIs) * (kHs / 16) +
-          static_cast<size_t>(kHs) * (kMoeIs / 16) + 4 * sizeof(float);
-      weights -= static_cast<size_t>(kE - opts.moe_resident_slots) *
-                 kLayers * expert_bytes;
+      const size_t slot_bytes =
+          quant::MoEResidencyLayerBytes(kHs, kMoeIs, 1);
+      int resident_slots = kLayers * opts.moe_resident_slots;
+      if (!opts.moe_hot_list.empty()) {
+        std::ifstream hot_in(opts.moe_hot_list);
+        const std::string hot_text{std::istreambuf_iterator<char>(hot_in),
+                                   std::istreambuf_iterator<char>()};
+        io::Json hot_doc;
+        if (io::ParseJson(hot_text, &hot_doc).ok() && hot_doc.IsObject()) {
+          resident_slots = 0;
+          for (int l = 0; l < kLayers; ++l) {
+            int c_l = opts.moe_resident_slots;
+            const io::Json* entry = hot_doc.Find(std::to_string(l));
+            if (entry != nullptr && entry->IsArray()) {
+              c_l = std::min<int>(static_cast<int>(entry->array.size()),
+                                  opts.moe_resident_slots);
+            }
+            resident_slots += c_l;
+          }
+        }
+        // Unreadable/invalid list: keep the uniform estimate; model load
+        // fails with a clear error before any request is served.
+      }
+      weights -= static_cast<size_t>(kE * kLayers - resident_slots) *
+                 slot_bytes;
       breq.extra_fixed_bytes =
           static_cast<size_t>(kLayers) * quant::MoEResidencyL2Slots() *
           quant::MoEResidencyStagingBytes(kHs, kMoeIs);

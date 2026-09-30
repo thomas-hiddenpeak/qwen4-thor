@@ -288,6 +288,7 @@ class ChatServer {
   // consecutive request completions is that request's own load activity).
   bool residency_enabled_ = false;
   quant::MoEResidency::Stats residency_stats_prev_{};
+  model::ResidencyTimingSnapshot residency_timing_prev_{};
   // Default per-request deadline (ms); see ServerOptions::request_deadline_ms.
   int request_deadline_ms_ = 1200000;
   int mtp_k_ = 3;  // matches the CLI default (实测最优, 见 docs/LOG.md)

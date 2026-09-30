@@ -14,6 +14,7 @@
 #include <cuda_bf16.h>
 #include <cuda_runtime.h>
 
+#include <chrono>
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
@@ -414,6 +415,10 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
     if (C < k) return Status::Fail("residency slots below top-k");
     std::vector<int32_t> ids_h(static_cast<size_t>(T) * k);
     std::vector<float> rw_h(static_cast<size_t>(T) * k);
+    const bool tim = residency->TimingEnabled();
+    const auto t_d2h =
+        tim ? std::chrono::steady_clock::now()
+            : std::chrono::steady_clock::time_point{};
     if (cudaMemcpyAsync(ids_h.data(), d_eid,
                         ids_h.size() * sizeof(int32_t),
                         cudaMemcpyDeviceToHost, stream) != cudaSuccess)
@@ -423,6 +428,12 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
       return Status::Fail("residency D2H router weights");
     if (cudaStreamSynchronize(stream) != cudaSuccess)
       return Status::Fail("residency stream sync");
+    if (tim) {
+      residency->RecordD2HSync(static_cast<uint64_t>(
+          std::chrono::duration_cast<std::chrono::nanoseconds>(
+              std::chrono::steady_clock::now() - t_d2h)
+              .count()));
+    }
 
     for (int i = 0; i < static_cast<int>(ids_h.size()); ++i) {
       if (ids_h[i] < 0 || ids_h[i] >= E) {
