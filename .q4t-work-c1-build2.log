@@ -1,6 +1,0 @@
-  916 |     ring_claimed_[rb] = false;
-      |     ~~~~~~~~~~~~~~~~^
-gmake[2]: *** [CMakeFiles/q4t_quant.dir/build.make:153: CMakeFiles/q4t_quant.dir/src/quant/moe_residency.cpp.o] Error 1
-gmake[1]: *** [CMakeFiles/Makefile2:237: CMakeFiles/q4t_quant.dir/all] Error 2
-gmake: *** [Makefile:101: all] Error 2
-BUILD_RC=0
