@@ -4,7 +4,21 @@
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
 ## 当前结论
-## 第三轮二进制构建修复（TimingStats 原子量破坏可移动性）；auto-r3-resume 五查门在途，过后自动启动 r3 矩阵（2026-10-01 09:35）
+## 五查门全过（7f013d73）；第三轮矩阵运行中（r3-cand-c256 → r3-cand-nu15552，六档×3，~20:00 出报告）（2026-10-01 09:59）
+
+五查门全过（09:33–09:59）：q4t_tests 106/106；bitexact-c256
+BIT-EXACT×2；bitexact-nu BIT-EXACT×2（按层非均匀 C 路径数值与
+C=0 逐位一致）；跨二进制 C=0 逐位一致×2（基线复用 r2-baseline-s0
+有效）；fault（500+注入消息 → 200+逐位一致）；cancel（取消后重发
+与基线一致）。09:59:27 自动启动 queue-r3-final.sh（pid 2595010）：
+r3-cand-c256（C=256+hot-256+L2-8）→ r3-cand-nu15552（cap=446+
+hot-nu-15552+L2-8，用户授权超支），六档×3，预计 ~20:00 完成出两份
+compare 报告；auto-r3b 随后自动 post-r3-affected（质量×2+业务×2）。
+GEMM 冻结（第七次确认）。
+下一步：跟踪矩阵 → 回填验收报告 §6 / 内存账（budget_backfill.py）/
+R3 决策包定稿。
+
+## 第三轮二进制构建修复（TimingStats 原子量破坏可移动性）；auto-r3-resume 链重启（2026-10-01 09:35）
 
 auto-r3 链 09:20 在重建步骤失败停止（设计行为）：62edd6a 新增的
 MoEResidency::TimingStats 含 std::atomic（非可移动），使
