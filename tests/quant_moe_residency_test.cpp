@@ -454,8 +454,9 @@ Q4T_TEST(residency_l2_cache_hit_evict) {
     Q4T_SKIP("(skipped: real model not present)");
   }
   // Small L2 pool (8 buffers) so one eviction is forced by the sequence
-  // below. The floor is the load-thread count (default 8), so 8 is the
-  // smallest usable value.
+  // below. The floor is the load-thread count (16 since the C1 pipeline),
+  // so pin the load threads to 8 to keep 8 the smallest usable pool.
+  setenv("Q4T_MOE_LOAD_THREADS", "8", 1);
   setenv("Q4T_MOE_L2_SLOTS", "8", 1);
   const int C = 4;
   MoEResidency res;
@@ -465,6 +466,7 @@ Q4T_TEST(residency_l2_cache_hit_evict) {
     res.Free();
     delete c.loader;
     delete c.idx;
+    unsetenv("Q4T_MOE_LOAD_THREADS");
     unsetenv("Q4T_MOE_L2_SLOTS");
     return false;
   };
@@ -536,6 +538,7 @@ Q4T_TEST(residency_l2_cache_hit_evict) {
   res.Free();
   delete c.loader;
   delete c.idx;
+  unsetenv("Q4T_MOE_LOAD_THREADS");
   unsetenv("Q4T_MOE_L2_SLOTS");
   return true;
 }

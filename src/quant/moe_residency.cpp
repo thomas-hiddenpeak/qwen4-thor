@@ -138,10 +138,11 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
                   static_cast<size_t>(C) * dn_sf_block)))
     return s;
   // C2 (path C design 2026-10-01): one block for all four per-slot scale
-  // vectors, contiguous in the order CommitExpert copies them from the L2
-  // staging buffer ([gu_w_scale2 | gu_input_scale | dn_w_scale2 |
-  // dn_input_scale], C floats each), so the four 4-byte H2Ds become one
-  // 16-byte H2D.
+  // arrays (array-major, C floats each, in the order
+  // [gu_w_scale2 | gu_input_scale | dn_w_scale2 | dn_input_scale]). The
+  // arrays keep their original stride-C layout, so CommitExpert still
+  // copies each slot's four scales with four 4-byte H2Ds (the 2026-10-01
+  // 16-byte merge was invalid for C > 1 and has been reverted).
   if (!(s = alloc(reinterpret_cast<void**>(&scal_block_), 4 * scal_bytes)))
     return s;
   layout_.gu_w_scale2 = reinterpret_cast<float*>(scal_block_);
@@ -686,9 +687,11 @@ Status MoEResidency::CommitExpert(int expert, int slot, int buf,
   Status s;
   // H2D into the slot. C2: gate+up are contiguous in the L2 buffer and in
   // the slot (per-slot stride moe_is*hs == 2*w_bytes), so one copy covers
-  // both; the four per-slot scales are contiguous on device (merged
-  // allocation, see Init) and in the buffer, so one 16-byte copy covers all
-  // four. 9 H2D calls per expert become 5.
+  // both. The four per-slot scales live in four separate C-float device
+  // arrays (array-major, stride C; see Init's merged allocation), so the
+  // buffer's 4-float scale region needs four 4-byte copies, one per array.
+  // (The earlier 16-byte merge wrote scal[1..3] into gu_w_scale2[slot+1..3]
+  // and left the other three arrays stale; fixed 2026-10-01.)
   uint8_t* gu_dst =
       layout_.gu_packed + static_cast<size_t>(slot) * moe_is_ * hs_;
   if (!(s = H2D(w_ga, gu_dst, 2 * w_bytes, stream))) return s;
@@ -701,7 +704,14 @@ Status MoEResidency::CommitExpert(int expert, int slot, int buf,
   if (!(s = H2D(dn_sw, layout_.dn_sf + static_cast<size_t>(slot) * dn_sf_block,
                 dn_sf_block, stream)))
     return s;
-  if (!(s = H2D(scal, layout_.gu_w_scale2 + slot, 4 * sizeof(float),
+  if (!(s = H2D(&scal[0], layout_.gu_w_scale2 + slot, sizeof(float), stream)))
+    return s;
+  if (!(s = H2D(&scal[1], layout_.gu_input_scale + slot, sizeof(float),
+                stream)))
+    return s;
+  if (!(s = H2D(&scal[2], layout_.dn_w_scale2 + slot, sizeof(float), stream)))
+    return s;
+  if (!(s = H2D(&scal[3], layout_.dn_input_scale + slot, sizeof(float),
                 stream)))
     return s;
 
