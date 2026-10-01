@@ -52,6 +52,22 @@ Q4T_MOE_L2_SLOTS=8 ./build/q4t serve \
   --moe-hot-list .q4t-work/moe-residency-20260930/hot-lists/hot-nu-15552.json
 ```
 
+最终候选（C1+C2+C3+C4+C5+C6，B=12288 = C=256 每层命中 top-n，
+2026-10-02 冻结）：
+
+```bash
+Q4T_MOE_L2_SLOTS=16 Q4T_MOE_MIRROR_K=8 Q4T_MOE_MAX_OPEN_SHARDS=200 \
+  ./build/q4t serve \
+  --model-dir ~/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream \
+  --port 8000 --max-seq 1 --max-prefill 8192 --max-len 262144 \
+  --max-tokens 256 --no-mtp \
+  --moe-resident-slots 256 \
+  --moe-hot-list .q4t-work/moe-residency-20260930/hot-lists/hot-final-12288.json
+```
+
+（`Q4T_MOE_MAX_OPEN_SHARDS=200` ≥ 模型 197 分片，全部保持打开；
+0 = 索引内全部分片+8。基线 C=0 不受该变量影响。）
+
 启动后自检：
 - `/health` 200；
 - 1024 档短请求输出与基线逐位一致（部署后必做，命令见 §4）；
@@ -69,12 +85,19 @@ Q4T_MOE_L2_SLOTS=8 ./build/q4t serve \
 3. **C4 驱逐镜像回退**：`Q4T_MOE_MIRROR_K=0` 重启即关闭每层
    K=8 pinned 镜像环（-1,061,693,696 B），回到 C1+C2+C3 行为
    （回退边界，verify-c1 K=0 双跑口径）；缺省 K=8。
-4. **版本级回退**：第一轮二进制封存于
+4. **C6 max-open-shards 回退**：`Q4T_MOE_MAX_OPEN_SHARDS=32`（或不设）
+   重启即回到 32 槽 open-shard LRU（C6 前行为）；验收配置 200
+   （全 197 分片常开）。C6 只改分片打开/驱逐时机，不改数值。
+5. **C5 页缓存保留回退**：无运行时开关；回退 = 回到 C5 前 commit
+   （b9a973c^ = 82bae2c）重建。C5 只让专家分片跳过析构
+   POSIX_FADV_DONTNEED（页缓存保留），不改数值；回退后按需专家
+   pread 回退 NVMe（pilot 实测 decode 10.05→6.45 tps）。
+6. **版本级回退**：第一轮二进制封存于
    `.q4t-work/moe-residency-20260930/bin-2346-fixed/`（sha256
    4c5cddea…，无 L2）；工作分支 `codex/moe-residency-20260930` 的
    阶段 commit 可回退；默认部署（`text-v1-moe-trace-20260928` /
    `3b414633`）不受影响，可用 `rollback-default.py` 恢复。
-5. 回退后验证：1024 档输出与回退前基线逐位一致。
+7. 回退后验证：1024 档输出与回退前基线逐位一致。
 
 ## 4. 部署后验证命令
 

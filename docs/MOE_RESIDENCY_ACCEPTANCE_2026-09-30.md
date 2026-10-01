@@ -197,17 +197,24 @@ l2h≈721–760/l2m≈418k），与离线预测（L2-128 只接 ~6% GPU miss）
 分支 2（最终候选 C=256）；两者均不过 → 分支 3（C4 驱逐镜像 +
 C3 页缓存预热复测，否则按差距报告）。
 
-## 6b. 最终候选验收（C1+C2+C3+C4，final-acceptance；待填）
+## 6b. 最终候选验收（C1+C2+C3+C4+C5+C6，final-acceptance；待填）
 
 > 本节在 r3 矩阵 + verify-c1 双跑（K=0 回退边界 / K=8 最终候选）
-> + 合并 C1+C2+C4 + 冻结最终候选后，由 final-acceptance.sh <B>
+> + 合并 C1+C2+C4 + C5（页缓存保留）+ C6（max-open-shards）+
+> 冻结最终候选后，由 final-acceptance.sh <B>
 >（C3 页缓存协议 + 全矩阵，基线 C=0 与候选同协议同预热节奏，
-> 候选 Q4T_MOE_MIRROR_K=8）实测回填。同一候选配置须同时满足
-> 容量/内存/性能/正确性才写"通过"。
+> 候选 Q4T_MOE_MIRROR_K=8、Q4T_MOE_MAX_OPEN_SHARDS=200）实测回填。
+> 同一候选配置须同时满足容量/内存/性能/正确性才写"通过"。
 
 - 最终候选 B：____（选择依据：R3_DECISION 末节算法；B=12288=C=256
   每层 top-n 为用户 07:25 授权超支候选，内存门标注 USER_APPROVED_OVERRUN）
-- 二进制：____（合并 C1+C2+C4 后 sha256；verify-c1 六查结果：K=0 ____ / K=8 ____）
+- 二进制：____（C1+C2+C3+C4+C5+C6，sha256 ed68cd3d148e5fef…；
+  verify-c1 六查结果（C1+C2+C3+C4）：K=0 PASS / K=8 PASS；
+  C5+C6 受影响项重验：质量 11 题 + 业务 6 项 bitexact ____）
+- C5/C6 试点证据（final-acceptance 前，pilot-45056-c5b/c6，C3 协议）：
+  45056 档 decode 6.45→10.05 tps（基线 17.84，=56%，超 50% 门槛）；
+  dpread 5.4→0.49 ms/miss；C5 根因=专家分片析构 FADV_DONTNEED 抹页
+  缓存，C6 根因=32 槽 LRU 下 shard 驱逐/重开（~1.5 ms/次）
 - C4 镜像统计（K=8）：mirror_hits=____ / writebacks=____ / skips=____；pinned +1,061,693,696 B（已计入预算与实测峰值）
 - §5 分支判定：____（section5-branch.txt）
 - C3 证据（基线/候选）：page_cache_delta_gb=____ / pread_avg=____ /
