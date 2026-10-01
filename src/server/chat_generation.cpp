@@ -889,6 +889,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                    "pread_n=%llu pread_avg_us=%.1f pread_max_us=%.1f "
                    "swz_n=%llu swz_avg_us=%.1f swz_max_us=%.1f "
                    "phase1_n=%llu phase1_avg_us=%.1f phase1_max_us=%.1f "
+                   "dstage_n=%llu dstage_avg_us=%.1f dstage_max_us=%.1f "
+                   "dpread_n=%llu dpread_avg_us=%.1f dpread_max_us=%.1f "
+                   "dphase1_n=%llu dphase1_avg_us=%.1f dphase1_max_us=%.1f "
                    "d2h_n=%llu d2h_avg_us=%.1f d2h_max_us=%.1f\n",
                    id.c_str(),
                    static_cast<unsigned long long>(
@@ -911,6 +914,21 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                    avg_us(tim_now.phase1_ns - tp.phase1_ns,
                           tim_now.phase1_count - tp.phase1_count),
                    tim_now.phase1_max_ns / 1e3,
+                   static_cast<unsigned long long>(
+                       tim_now.dstage_count - tp.dstage_count),
+                   avg_us(tim_now.dstage_ns - tp.dstage_ns,
+                          tim_now.dstage_count - tp.dstage_count),
+                   tim_now.dstage_max_ns / 1e3,
+                   static_cast<unsigned long long>(
+                       tim_now.dpread_count - tp.dpread_count),
+                   avg_us(tim_now.dpread_ns - tp.dpread_ns,
+                          tim_now.dpread_count - tp.dpread_count),
+                   tim_now.dpread_max_ns / 1e3,
+                   static_cast<unsigned long long>(
+                       tim_now.dphase1_count - tp.dphase1_count),
+                   avg_us(tim_now.dphase1_ns - tp.dphase1_ns,
+                          tim_now.dphase1_count - tp.dphase1_count),
+                   tim_now.dphase1_max_ns / 1e3,
                    static_cast<unsigned long long>(
                        tim_now.d2h_count - tp.d2h_count),
                    avg_us(tim_now.d2h_ns - tp.d2h_ns,

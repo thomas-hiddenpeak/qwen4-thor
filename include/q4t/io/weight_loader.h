@@ -41,6 +41,7 @@ class WeightIndex {
   const std::string* ShardOf(const std::string& name) const;
   bool Has(const std::string& name) const;
   size_t num_tensors() const;
+  size_t num_shards() const;
   uint64_t total_size() const;
 
   // (shard file, tensor names in that shard) pairs, in index order.
@@ -79,6 +80,13 @@ class WeightLoader {
 
   // Number of shards currently open (for diagnostics).
   size_t open_shards() const;
+
+  // Make shards whose name contains `shard_marker` keep their page-cache
+  // pages across LRU eviction (applied to open shards and to every shard
+  // opened afterwards). Empty marker: all shards. Tiered MoE residency sets
+  // this for the expert shards so on-demand expert preads stay on the warm
+  // page cache instead of falling back to NVMe after each shard eviction.
+  void SetKeepPageCache(bool keep, const std::string& shard_marker);
 
  private:
   struct Impl;

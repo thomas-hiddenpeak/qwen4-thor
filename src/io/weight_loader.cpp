@@ -96,6 +96,8 @@ bool WeightIndex::Has(const std::string& name) const {
 
 size_t WeightIndex::num_tensors() const { return impl_->weight_map.size(); }
 
+size_t WeightIndex::num_shards() const { return impl_->groups.size(); }
+
 uint64_t WeightIndex::total_size() const { return impl_->total_size; }
 
 std::vector<std::pair<std::string, std::vector<std::string>>>
@@ -111,6 +113,10 @@ struct WeightLoader::Impl {
   const WeightIndex* index = nullptr;
   size_t max_open = 8;
   std::mutex* owner_mu = nullptr;  // the loader's mutex (set in Create)
+  // Page-cache retention (tiered MoE residency): shards whose name contains
+  // keep_marker (empty = all) skip the destructor's FADV_DONTNEED.
+  bool keep_page_cache = false;
+  std::string keep_marker;
 
   struct Shard {
     std::unique_ptr<SafetensorsFile> file;
@@ -152,12 +158,30 @@ Status WeightLoader::Impl::EnsureOpen(const std::string& shard,
   SafetensorsFile* f = nullptr;
   Status s = SafetensorsFile::Open(path, &f);
   if (!s.ok()) return s;
+  if (keep_page_cache &&
+      (keep_marker.empty() || shard.find(keep_marker) != std::string::npos)) {
+    f->SetKeepPageCache(true);
+  }
   Shard sh;
   sh.file.reset(f);
   auto inserted = open.emplace(shard, std::move(sh));
   lru.push_back(shard);
   *out = &inserted.first->second;
   return Status();
+}
+
+void WeightLoader::SetKeepPageCache(bool keep,
+                                    const std::string& shard_marker) {
+  std::lock_guard<std::mutex> lock(mu_);
+  impl_->keep_page_cache = keep;
+  impl_->keep_marker = shard_marker;
+  for (auto& [name, sh] : impl_->open) {
+    if (keep &&
+        (shard_marker.empty() ||
+         name.find(shard_marker) != std::string::npos)) {
+      sh.file->SetKeepPageCache(true);
+    }
+  }
 }
 
 WeightLoader::WeightLoader(Impl* impl) : impl_(impl) {}

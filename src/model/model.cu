@@ -211,14 +211,31 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   }
   {
     io::WeightLoader* raw = nullptr;
-    // max_open_shards = 32: the parallel MoE expert load reads from multiple
-    // shards concurrently. NOTE: we deliberately do NOT pre-open all ~197
-    // shards (tried OpenAllShards, measured 3x SLOWER on warm cache: 197
-    // simultaneous mmaps make the 14 worker threads' page faults contend on
-    // the kernel VMA/page-table locks). A 32-shard LRU keeps the active mmap
-    // set small; each layer's experts span only a few shards, so eviction is
-    // rare.
-    Status s = io::WeightLoader::Create(cfg.model_dir, *m->weight_index, 32, &raw);
+    // max_open_shards: the parallel MoE expert load reads from multiple
+    // shards concurrently. A small LRU (32) thrashes under tiered residency
+    // decode: each expert miss does ~15 EnsureOpen calls on its shard, and
+    // with 16 staging workers and only 32 open slots the shard is evicted
+    // (munmap) and reopened (open+mmap+200 KB header JSON parse, ~1.5 ms)
+    // between those calls, so the decode miss critical path is dominated by
+    // reopens, not preads. Raising the cap so all ~197 shards stay open
+    // removes the reopen cost. This does NOT repeat the old OpenAllShards
+    // regression (docs/log/2026-09-19): that pre-opened every shard at
+    // startup and read data through the mmap, so 14 workers' data page
+    // faults contended on the kernel VMA/page-table locks. Here shards open
+    // lazily on first use and data is read with pread (no process page
+    // faults; the mmap is touched only for the header), so keeping them
+    // open costs only the one-time header parse plus virtual address space.
+    // Override with Q4T_MOE_MAX_OPEN_SHARDS (0 = all shards in the index).
+    size_t max_open_shards = 32;
+    if (const char* env = std::getenv("Q4T_MOE_MAX_OPEN_SHARDS")) {
+      const int v = std::atoi(env);
+      if (v > 0) max_open_shards = static_cast<size_t>(v);
+      else if (v == 0) {
+        max_open_shards = m->weight_index->num_shards() + 8;
+      }
+    }
+    Status s = io::WeightLoader::Create(cfg.model_dir, *m->weight_index,
+                                       max_open_shards, &raw);
     if (!s.ok()) return s;
     m->weight_loader.reset(raw);
   }
@@ -242,6 +259,17 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   // expert loads); the baseline path releases it once loading is done.
   const bool keep_loader = cfg.moe_resident_slots > 0;
   if (keep_loader) {
+    // C5 (page-cache retention, residency layer; GEMM untouched): slot mode
+    // streams experts from ~192 shards for the model's lifetime, but the
+    // open-shard LRU evicts shards as they rotate out of the 32-entry set,
+    // and the SafetensorsFile destructor then issues POSIX_FADV_DONTNEED on
+    // the whole evicted shard. That wipes the page-cache pages the C3
+    // pre-warm filled, so every on-demand expert pread falls back to NVMe
+    // (~4 ms) instead of the warm cache (~0.5 ms) -- the dominant decode
+    // miss critical-path cost (pilot-45056: pread_avg 4.0 ms, decode
+    // 4.86 tps = 27% of baseline vs the 50% gate). Keep the expert shards'
+    // pages; non-expert shards (already GPU-resident) still evict as before.
+    loader.SetKeepPageCache(true, "-experts-");
     // Slot-mode stream safety (residency-layer guard; GEMM itself untouched):
     // on-demand expert loads/evictions are stream-ordered on the caller's
     // stream, but MoERoutedForward's extra GEMM streams read slot weights

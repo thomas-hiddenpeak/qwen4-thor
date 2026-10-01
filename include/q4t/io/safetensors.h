@@ -89,6 +89,13 @@ class SafetensorsFile {
 
   uint64_t file_size() const;
 
+  // Keep this file's clean page-cache pages on destruction (skip the
+  // POSIX_FADV_DONTNEED eviction). Used by tiered MoE residency, where the
+  // expert shards are streamed on demand for the model's lifetime and the
+  // page cache is the C3 pre-warm tier; evicting a shard's pages when it
+  // leaves the open-shard LRU would force every later pread back to NVMe.
+  void SetKeepPageCache(bool keep);
+
  private:
   struct Impl;
   explicit SafetensorsFile(Impl* impl);

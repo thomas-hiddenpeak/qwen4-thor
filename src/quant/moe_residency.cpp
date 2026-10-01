@@ -400,6 +400,27 @@ void MoEResidency::RecordPhase1Ns(uint64_t ns) const {
   AtomicMaxU64(timing_->phase1_max_ns, ns);
 }
 
+void MoEResidency::RecordDStageNs(uint64_t ns) const {
+  if (!timing_->enabled.load(std::memory_order_relaxed)) return;
+  timing_->dstage_count.fetch_add(1, std::memory_order_relaxed);
+  timing_->dstage_ns.fetch_add(ns, std::memory_order_relaxed);
+  AtomicMaxU64(timing_->dstage_max_ns, ns);
+}
+
+void MoEResidency::RecordDPreadNs(uint64_t ns) const {
+  if (!timing_->enabled.load(std::memory_order_relaxed)) return;
+  timing_->dpread_count.fetch_add(1, std::memory_order_relaxed);
+  timing_->dpread_ns.fetch_add(ns, std::memory_order_relaxed);
+  AtomicMaxU64(timing_->dpread_max_ns, ns);
+}
+
+void MoEResidency::RecordDPhase1Ns(uint64_t ns) const {
+  if (!timing_->enabled.load(std::memory_order_relaxed)) return;
+  timing_->dphase1_count.fetch_add(1, std::memory_order_relaxed);
+  timing_->dphase1_ns.fetch_add(ns, std::memory_order_relaxed);
+  AtomicMaxU64(timing_->dphase1_max_ns, ns);
+}
+
 void MoEResidency::ReleaseMissClaim(int expert, int buf, bool hit) const {
   std::lock_guard<std::mutex> lk(*l2_mu_);
   if (!hit) {
@@ -425,7 +446,7 @@ void MoEResidency::ReleaseRingClaim(int expert, int ring) const {
 Status MoEResidency::StageExpert(int expert,
                                  const std::vector<uint8_t>* needed_mark,
                                  int* buf_out, StatsDelta* delta,
-                                 bool* hit_out) const {
+                                 bool* hit_out, bool decode_phase) const {
   if (expert < 0 || expert >= E_) {
     return Status::Fail("expert out of range");
   }
@@ -491,6 +512,7 @@ Status MoEResidency::StageExpert(int expert,
         if (delta) ++delta->mirror_hits;
         else ++stats_.mirror_hits;
         if (tim) RecordStageNs(NowNs(t_stage0));
+        if (tim && decode_phase) RecordDStageNs(NowNs(t_stage0));
         return Status();
       }
       b = PickL2Victim(needed_mark);
@@ -522,6 +544,7 @@ Status MoEResidency::StageExpert(int expert,
     // swizzle. A concurrent in-flight H2D only reads the buffer, and our
     // commit H2D is stream-ordered after it, so no wait is needed.
     if (tim) RecordStageNs(NowNs(t_stage0));
+    if (tim && decode_phase) RecordDStageNs(NowNs(t_stage0));
     return Status();
   }
   // Release the miss claim and undo the buffer bookkeeping if staging
@@ -716,6 +739,7 @@ Status MoEResidency::StageExpert(int expert,
     timing_->pread_count.fetch_add(1, std::memory_order_relaxed);
     timing_->pread_ns.fetch_add(rns, std::memory_order_relaxed);
     AtomicMaxU64(timing_->pread_max_ns, rns);
+    if (decode_phase) RecordDPreadNs(rns);
   }
   const auto t_swz0 =
       tim ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
@@ -731,6 +755,7 @@ Status MoEResidency::StageExpert(int expert,
     timing_->swz_ns.fetch_add(sns, std::memory_order_relaxed);
     AtomicMaxU64(timing_->swz_max_ns, sns);
     RecordStageNs(NowNs(t_stage0));
+    if (decode_phase) RecordDStageNs(NowNs(t_stage0));
   }
   return Status();
 }
@@ -1007,6 +1032,7 @@ Status MoEResidency::PlanResolve(const int32_t* needed, int n,
     return Status::Fail("residency resolve set too large");
   }
   plan->clear();
+  plan->decode_phase = decode_phase;
   ++tick_;
   ++stats_.resolve_calls;
 
@@ -1148,6 +1174,7 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
                         plan.first_err_msg);
   }
   if (tim) RecordPhase1Ns(NowNs(t_p1));
+  if (tim && plan.decode_phase) RecordDPhase1Ns(NowNs(t_p1));
   plan.next_stage = off + cnt;
   plan.next_commit = off + cnt;
   return Status();
@@ -1180,7 +1207,7 @@ void MoEResidency::LoadWorkerLoop(LoadWorker* w) const {
     Status s = StageExpert(plan->experts[idx],
                            plan->needed_mark.empty() ? nullptr
                                                     : &plan->needed_mark,
-                           &buf, &w->delta_, &hit);
+                           &buf, &w->delta_, &hit, plan->decode_phase);
     if (s.ok()) {
       plan->workers[idx] = buf;
       Status cs = CommitExpert(plan->experts[idx], plan->slots[idx], buf,

@@ -68,6 +68,9 @@ struct SafetensorsFile::Impl {
   int fd = -1;
   void* map = nullptr;
   size_t map_len = 0;
+  // When true, the destructor skips POSIX_FADV_DONTNEED so this file's
+  // page-cache pages survive shard-LRU eviction (tiered MoE residency).
+  bool keep_page_cache = false;
   uint64_t data_offset = 0;  // where the data region starts (after header)
   std::vector<TensorInfo> tensors;
   // name -> index into `tensors`, built once in Open. Find() becomes O(1)
@@ -87,13 +90,17 @@ SafetensorsFile::~SafetensorsFile() {
   // of the memory it needs for runtime allocations. POSIX_FADV_DONTNEED
   // actively reclaims them. (Qwen3x-Orin avoids this entirely by reading
   // shards with ::read into pinned staging instead of mmap.)
-  if (impl_->fd >= 0) {
+  if (impl_->fd >= 0 && !impl_->keep_page_cache) {
     posix_fadvise(impl_->fd, 0, 0, POSIX_FADV_DONTNEED);
   }
   if (impl_->map) munmap(impl_->map, impl_->map_len);
   if (impl_->fd >= 0) close(impl_->fd);
   delete impl_;
   impl_ = nullptr;
+}
+
+void SafetensorsFile::SetKeepPageCache(bool keep) {
+  impl_->keep_page_cache = keep;
 }
 
 Status SafetensorsFile::Open(const std::string& path, SafetensorsFile** out) {

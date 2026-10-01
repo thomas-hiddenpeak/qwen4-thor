@@ -145,6 +145,11 @@ class MoEResidency {
     std::atomic<uint64_t> swz_count{0}, swz_ns{0}, swz_max_ns{0};
     std::atomic<uint64_t> phase1_count{0}, phase1_ns{0}, phase1_max_ns{0};
     std::atomic<uint64_t> d2h_count{0}, d2h_ns{0}, d2h_max_ns{0};
+    // Decode-phase split (C5 diagnosis): the decode miss critical path is
+    // measured separately from prefill so the per-miss cost can be isolated.
+    std::atomic<uint64_t> dstage_count{0}, dstage_ns{0}, dstage_max_ns{0};
+    std::atomic<uint64_t> dpread_count{0}, dpread_ns{0}, dpread_max_ns{0};
+    std::atomic<uint64_t> dphase1_count{0}, dphase1_ns{0}, dphase1_max_ns{0};
     void Reset() {
       stage_count.store(0);
       stage_ns.store(0);
@@ -158,6 +163,15 @@ class MoEResidency {
       phase1_count.store(0);
       phase1_ns.store(0);
       phase1_max_ns.store(0);
+      dstage_count.store(0);
+      dstage_ns.store(0);
+      dstage_max_ns.store(0);
+      dpread_count.store(0);
+      dpread_ns.store(0);
+      dpread_max_ns.store(0);
+      dphase1_count.store(0);
+      dphase1_ns.store(0);
+      dphase1_max_ns.store(0);
       d2h_count.store(0);
       d2h_ns.store(0);
       d2h_max_ns.store(0);
@@ -191,6 +205,10 @@ class MoEResidency {
     // First stage error message (written by the first failing worker only;
     // LoadPhase1 reads it after waiting on every worker, so no race).
     std::string first_err_msg;
+    // True when this plan is a decode step (T_sub == 1); lets the timing
+    // counters split decode from prefill so the decode miss critical path
+    // can be measured directly.
+    bool decode_phase = false;
     bool empty() const { return experts.empty(); }
     bool fully_committed() const { return next_commit >= experts.size(); }
     void clear() {
@@ -284,6 +302,10 @@ class MoEResidency {
   // Timing recorders (no-ops when timing is disabled).
   void RecordStageNs(uint64_t ns) const;
   void RecordPhase1Ns(uint64_t ns) const;
+  // Decode-phase timing records (C5 diagnosis).
+  void RecordDStageNs(uint64_t ns) const;
+  void RecordDPreadNs(uint64_t ns) const;
+  void RecordDPhase1Ns(uint64_t ns) const;
 
   // Stage one expert into an L2 buffer: an L2 hit reuses the cached payload
   // (no NVMe read); an L2 miss evicts an LRU victim (never an in-flight
@@ -355,7 +377,8 @@ class MoEResidency {
 
   Status StageExpert(int expert, const std::vector<uint8_t>* needed_mark,
                      int* buf_out, StatsDelta* delta = nullptr,
-                     bool* hit_out = nullptr) const;
+                     bool* hit_out = nullptr,
+                     bool decode_phase = false) const;
 
   // Undo a miss-path stage bookkeeping after a stage or commit failure:
   // drop the buffer<->expert mapping (miss only; a hit buffer still holds

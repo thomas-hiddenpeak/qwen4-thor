@@ -563,6 +563,10 @@ struct ResidencyTimingSnapshot {
   uint64_t swz_count = 0, swz_ns = 0, swz_max_ns = 0;
   uint64_t phase1_count = 0, phase1_ns = 0, phase1_max_ns = 0;
   uint64_t d2h_count = 0, d2h_ns = 0, d2h_max_ns = 0;
+  // Decode-phase split (C5 diagnosis).
+  uint64_t dstage_count = 0, dstage_ns = 0, dstage_max_ns = 0;
+  uint64_t dpread_count = 0, dpread_ns = 0, dpread_max_ns = 0;
+  uint64_t dphase1_count = 0, dphase1_ns = 0, dphase1_max_ns = 0;
   bool enabled = false;
 };
 
@@ -592,6 +596,18 @@ inline ResidencyTimingSnapshot SumResidencyTiming(const Model& m) {
     total.d2h_ns += t.d2h_ns.load(std::memory_order_relaxed);
     total.d2h_max_ns =
         std::max(total.d2h_max_ns, t.d2h_max_ns.load(std::memory_order_relaxed));
+    total.dstage_count += t.dstage_count.load(std::memory_order_relaxed);
+    total.dstage_ns += t.dstage_ns.load(std::memory_order_relaxed);
+    total.dstage_max_ns =
+        std::max(total.dstage_max_ns, t.dstage_max_ns.load(std::memory_order_relaxed));
+    total.dpread_count += t.dpread_count.load(std::memory_order_relaxed);
+    total.dpread_ns += t.dpread_ns.load(std::memory_order_relaxed);
+    total.dpread_max_ns =
+        std::max(total.dpread_max_ns, t.dpread_max_ns.load(std::memory_order_relaxed));
+    total.dphase1_count += t.dphase1_count.load(std::memory_order_relaxed);
+    total.dphase1_ns += t.dphase1_ns.load(std::memory_order_relaxed);
+    total.dphase1_max_ns =
+        std::max(total.dphase1_max_ns, t.dphase1_max_ns.load(std::memory_order_relaxed));
   }
   return total;
 }

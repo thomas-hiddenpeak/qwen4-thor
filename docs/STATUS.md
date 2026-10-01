@@ -1,9 +1,92 @@
 # 当前状态
 
-更新：2026-10-01。代码是实现事实来源；验收规则见 [EVALUATION.md](EVALUATION.md)。
+更新：2026-10-02。代码是实现事实来源；验收规则见 [EVALUATION.md](EVALUATION.md)。
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
 ## 当前结论
+
+## C6 max-open-shards 修复：45056 decode 10.05 tps = 56% 基线，超 50% 门槛；final-acceptance 在途（2026-10-02 05:30）
+
+C6（驻留层，GEMM 冻结）：c5b 分段计时定位 decode miss 临界路径主因不是
+pread 而是 shard reopen——每个 decode miss 做 ~15 次 EnsureOpen，32 槽
+open-shard LRU 在调用之间把 shard munmap 驱逐再重开（open+mmap+200 KB
+header 解析，~1.5 ms），dpread 5.4 ms/miss（c5b：dstage 5.4/dpread
+5.4/dphase1 4.6 ms，decode 6.45 tps=36%）。修复：Q4T_MOE_MAX_OPEN_SHARDS
+（默认 32，0=索引内全部分片）；验收配置 200 ≥ 197 分片，全部保持打开
+（数据仍走 pread、无进程页错误，mmap 仅触碰 header，不重复 09-19
+OpenAllShards 回归——那次是启动预开全部分片且数据走 mmap，14 worker
+页错误争 VMA 锁）。C6 试点（C3 协议，45056×3）：decode
+9.97/10.05/10.12 tps（基线 17.84，=56%，门槛 50%=8.9），TTFT 133.5 s，
+dpread 0.49 ms/miss、dstage 0.71、dphase1 0.88；post-warmup 页缓存
+68.7 GB（C5 保留生效），MemAvailable 65.5 GB。
+
+C5+C6 已并入 C3 验收协议（c3-pagecache-protocol.sh 把
+Q4T_MOE_MAX_OPEN_SHARDS=200 传播到探针服务器与验收矩阵，protocol.log
+记录有效值；基线 C=0 不受影响）。
+
+下一步：final-quality-business B=12288（质量 11 题 + 业务 6 项 bitexact，
+新二进制 ed68cd3d 受影响项重验）→ PASS 后 final-acceptance B=12288 全
+矩阵（基线 C=0 + 候选，五档 + 261887 目标档，每档 3 次，内存门
+USER_APPROVED_OVERRUN 口径）→ 报告定稿。GEMM 冻结（用户 10-02 再确认：
+目标完成前不改，之后另行讨论）。
+
+## C5 页缓存保留修复生效（decode 4.86→6.45 tps）；decode 分段计时在途（2026-10-02 02:55）
+
+C5（驻留层，GEMM 冻结）两件事：(1) **页缓存保留**：open-shard LRU 驱逐
+专家分片时，SafetensorsFile 析构原本对整片发 POSIX_FADV_DONTNEED，把
+C3 预热填的页缓存页全抹掉，导致每次按需专家 pread 回退 NVMe（~4 ms）。
+新增 SetKeepPageCache(true, "-experts-") 让专家分片跳过 DONTNEED（非专家
+分片照旧）。pilot-45056（修前）vs pilot-45056-c5（修后）：pread_avg
+4.0→0.87 ms，decode 4.86→6.45 tps（基线 17.84，=36%，门槛 50%），
+TTFT 220→136 s；meminfo 页缓存 post-warmup 4.65→68 GB（保留生效）。
+(2) **decode 分段计时**（C5 诊断）：dstage/dpread/dphase1 计数器已接线
+并打印到 [residency][timing]，用于隔离 decode miss 临界路径（stage vs
+pread vs phase1/H2D）。pilot-45056-c5b 在途（~12 min）取数。
+
+单测：safetensors_keep_page_cache 新增；Tegra 6.8 内核 mincore 对常规
+文件返回 0（功能不可用），测试改为先探测 mincore、不可用则仅验证 API
+路径并跳过驻留断言（端到端效果由 pilot 覆盖）。108/108 通过。
+
+差距：6.45 tps = 36% < 50% 门槛（8.9 tps）。定量：decode 25.8
+miss/token × ~3.8 ms/miss ≈ 99 ms/token 开销（基线 56 ms/token）。
+待 c5b 分段数据定位主因：若 dpread 高（页缓存被请求期内存压力逐出）→
+保页/降压；若 dphase1 高（H2D/commit）→ 优化 H2D 路径；若 dstage 高
+（锁/排队）→ 降竞争。GEMM 冻结不变（用户 10-02 再确认）。
+
+下一步：c5b 分段 → 定位 decode miss 临界路径主因 → 在驻留层内修复
+（GEMM 不动）→ 重验受影响项（bitexact/定向）→ final-acceptance
+B=12288 全矩阵。
+
+## [D] K=8 六查 PASS、path-c 已合并+重建；final-acceptance 前 45056 试点在途（2026-10-02 00:40）
+
+[D] verify-c1 K=8（最终候选 C1+C2+C3+C4）23:46:46 六查全 PASS（FAIL=0，
+预算 fixed=63.76 GB 含 1.06 GB 镜像项，K=8 口径正确）；queue-post-verify
+全链 business_rc=0 / vc_K0_rc=0 / vc_K8_rc=0。path-c 已合并主工作分支
+（82bae2c，00:08）并重建（BUILD_RC=0，00:30，build/q4t
+d08a44fad57a）。
+
+用户 10-02 三项指示：(1) 目标档口径=总上下文 262144（256k），不是输入
+256k；不再纠结 261887/261888 一字之差——现目标档 in=261887+out=257=
+262144（finish=length）即满足，验收矩阵不改。(2) 即使内存预算超支，
+支持 C=256 每层按命中次数 top-n——即 B=12288（hot-final-12288.json，
+与 hot-256.json 同集合，已核验），保持 USER_APPROVED_OVERRUN 口径
+（内存门记录实测峰值，性能/正确性门不放宽）。(3) GEMM 冻结再确认：
+目标完成前不修改，之后另行讨论。
+
+final-acceptance 前风险复核：r3 c256 矩阵（B=12288 同席位配置，无
+C1/C2/C3/C4）各档 decode 22–28% 基线；verify-c1 定向 45056（C1+C2+C4）
+仅 +2–3% vs r3 c256（4.84–4.90 vs 4.74–4.76 tps）；设计文档自述 C1
+对单 miss decode 层收益小（stage 仍在临界路径）。定量：50% 门槛需
+≤2.2 ms/miss（现 25.6 miss/token×~5.8 ms≈148 ms 开销）。先跑 15 min
+试点（pilot-45056.sh：C3 协议 drop_caches→启动→45056 预热×8，候选
+配置 C=256/L2=16/K=8/Q4T_RESIDENCY_TIMING=1，45056×3 SSE 计时），
+实测冷/热 pread_avg 与 decode tps，再决定是否直接进 ~5h final-
+acceptance B=12288；若试点 <50%，先定位 decode miss 临界路径再跑
+长验收。
+
+下一步：试点结果 → （≥50%）final-acceptance B=12288 全矩阵；（<50%）
+按 timing 分段定位并修 decode miss 临界路径（驻留层内，GEMM 不动）
+→ 重验受影响项 → final-acceptance。GEMM 冻结不变。
 
 ## [C] verify-c1 K=0 六查全 PASS；[D] K=8 最终候选六查在途（2026-10-01 23:40）
 
