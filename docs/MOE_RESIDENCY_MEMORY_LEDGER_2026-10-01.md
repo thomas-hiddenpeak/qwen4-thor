@@ -70,6 +70,22 @@ MoEResidencyStagingBytes(2560, 640)（文件序布局 [dn|ga|up] 权重 +
 （fixed = weights + 公共项 + extra_fixed；服务启动日志 [q4t][budget] 为
 逐项实测输出，基线/候选日志已存于 e2e-*/server.log。）
 
+### 1.5 C1 二进制（16 worker，路径 C 设计 §4）内存增量
+
+C1（stage→commit 流水线 + worker 8→16）与 C2（ga+up H2D 合并）不改
+GPU 侧分配；仅 pinned CPU 侧变化（每层每 worker 1 块 staging，
+3,276,816 B）：
+
+| 项 | 8 worker（r2/r3 二进制） | 16 worker（C1 二进制） | Δ |
+|---|---:|---:|---:|
+| pinned staging | 48×8×3,276,816 = 1,258,297,344 B (1.26 GB) | 48×16×3,276,816 = 2,516,594,688 B (2.34 GB) | +1,258,297,344 B |
+| L2 下限 | ≥8 | ≥16（L2-8 配置在 C1 二进制下非法，自动抬到 16） | — |
+
+C1 验证配置 C=256+hot-256+L2-16 的 pinned 驻留合计 =
+2.34 + 2.34 = 4.68 GB（r3 c256+L2-8 为 2.52 GB，Δ ≈ +2.16 GB）。
+C1 二进制启动后以 [q4t][budget] 日志逐项核对回填。
+
+
 nu-15552 预算推导（代码可复核）：常驻专家权重 = 15552 × 2,764,816 B =
 42,998,418,432 B（42.998 GB；按层 C_l 256..446 之和 = 15552，DP 最优，
 tools/trace/make_hot_list_nu.py）；非路由权重 16,046,918,080 B（16.05
