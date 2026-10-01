@@ -11,7 +11,7 @@
 // Safety contract:
 //   * A slot is only overwritten after every earlier GEMM that read it has
 //     completed, because the H2D of the new expert is enqueued on the same
-//     stream after those GEMMs (Phase 2).
+//     stream after those GEMMs (the commit, which C1 runs inside Phase 1).
 //   * A forward only reads a slot after its load H2D, because the GEMMs are
 //     enqueued after the H2D on the same stream.
 //   * The L2 pool (below) is a per-layer pinned CPU cache of expert
@@ -28,15 +28,22 @@
 //             still needed by the same plan.
 //   Phase 1 : parallel host work (thread pool): for each miss, an L2 hit
 //             reuses the cached payload; an L2 miss NVMe-reads + scale-merges
-//             + swizzles into an evicted L2 buffer. Blocking.
-//   Phase 2 : stream work: H2D of every staged expert into its slot, in plan
-//             order, plus the host identity/scale bookkeeping.
+//             + swizzles into an evicted L2 buffer. C1 pipeline: as soon as a
+//             worker finishes staging, it commits that expert itself (H2D on
+//             the model stream, stream-ordered after any earlier GEMM and
+//             before any later GEMM), so each H2D overlaps the remaining
+//             NVMe reads of the chunk. Blocking until the whole chunk is
+//             staged and committed.
+//   Phase 2 : no-op since the C1 pipeline (commits happen in Phase 1); kept
+//             for API compatibility with the prefill pipeline in moe.cu,
+//             which still alternates Phase2/Phase1 until fully committed.
 // Callers that can overlap Phase 1 with GPU compute (prefill sub-chunk
 // pipelines) use Plan/Phase1/Phase2 directly; the convenience Resolve()
-// runs all three phases back to back.
+// runs the phases back to back.
 //
-// L2 sizing: Q4T_MOE_L2_SLOTS (default 128, clamped to [8, 512]) pinned
-// buffers per layer, each MoEResidencyStagingBytes. The steady-state decode
+// L2 sizing: Q4T_MOE_L2_SLOTS (default 128, clamped to [16, 512]; the floor
+// is the load worker count since the C1 pipeline) pinned buffers per layer,
+// each MoEResidencyStagingBytes. The steady-state decode
 // working set beyond the C GPU slots is tens of experts per layer, so the
 // L2 keeps it warm and steady-state misses are H2D-from-RAM instead of
 // NVMe reads.
@@ -79,13 +86,22 @@ int MoEResidencyLoadThreads();
 // clamped to [MoEResidencyLoadThreads(), 512]). The budget must charge
 // kLayers x this x MoEResidencyStagingBytes.
 int MoEResidencyL2Slots();
+// Per-layer eviction mirror ring buffers from Q4T_MOE_MIRROR_K (default 8,
+// clamped to [0, 32]; 0 disables C4). The budget must charge kLayers x
+// this x MoEResidencyMirrorBytes.
+int MoEResidencyMirrorK();
+// Pinned mirror-ring bytes for ONE evicted expert payload
+// ([w_dn|w_ga|w_up|gu_sw|dn_sw|scal]).
+size_t MoEResidencyMirrorBytes(int hs, int moe_is);
 
 // One layer's C-slot expert residency. Not copyable; owned by the layer.
 class MoEResidency {
  public:
   // Max load worker threads; the memory budget and the residency
-  // must agree on this (see MoEResidencyLoadThreads).
-  static constexpr int kMaxLoadThreads = 8;
+  // must agree on this (see MoEResidencyLoadThreads). 16 since the C1
+  // pipeline (path C design 2026-10-01): more parallel NVMe readers
+  // saturate the drive; the L2 floor follows the worker count.
+  static constexpr int kMaxLoadThreads = 16;
 
   // Cumulative counters (host-side, single-threaded per layer in this
   // service; max_seq=1 contract).
@@ -108,6 +124,13 @@ class MoEResidency {
     uint64_t l2_hits = 0;
     uint64_t l2_misses = 0;
     uint64_t l2_evictions = 0;
+    // C4 (path C design 2026-10-01, branch 3): eviction mirror ring.
+    // writebacks = D2Hs of evicted expert payloads into the ring; hits =
+    // miss-path consults served from the ring (H2D from RAM, no NVMe);
+    // skips = writebacks dropped because every ring buffer was in flight.
+    uint64_t mirror_hits = 0;
+    uint64_t mirror_writebacks = 0;
+    uint64_t mirror_skips = 0;
   };
 
   // Per-miss pipeline timing. Enabled only when Q4T_RESIDENCY_TIMING=1
@@ -214,18 +237,17 @@ class MoEResidency {
 
   // Phase 1: stage the next chunk of `plan` (at most load_threads_
   // entries, entry next_stage + t by worker t into staging buffer t) in
-  // parallel (NVMe read + merge + swizzle). Blocking; per-thread pinned
+  // parallel (NVMe read + merge + swizzle), each worker committing its
+  // expert as soon as staging finishes (C1). Blocking; per-thread pinned
   // staging. No-op when the plan is fully staged.
   Status LoadPhase1(LoadPlan& plan) const;
 
-  // Phase 2: H2D of every staged-but-uncommitted entry of `plan` into its
-  // slot, enqueued on `stream` (stream-ordered after any earlier GEMM that
-  // read the evicted slot and before any GEMM that reads the new one),
-  // then update host state. No-op when nothing is staged.
+  // Phase 2: no-op since the C1 pipeline (commits happen in Phase 1); kept
+  // for API compatibility. No-op when nothing is staged.
   Status LoadPhase2(LoadPlan& plan, cudaStream_t stream,
                     bool* loaded = nullptr) const;
 
-  // Convenience: Plan + Phase 1 + Phase 2 back to back (decode path).
+  // Convenience: Plan + Phase 1 (stage+commit) back to back (decode path).
   // `loaded` reports whether any load was enqueued.
   Status Resolve(const int32_t* needed, int n, int32_t* slot_of,
                  cudaStream_t stream, bool* loaded = nullptr,
@@ -272,6 +294,52 @@ class MoEResidency {
   // completion, instead of creating and destroying load_threads_
   // std::threads on every call (that create/join cost is a fixed
   // per-miss-chunk overhead on the decode hot path).
+  // Per-worker counter delta. C1 pipeline: workers stage AND commit, so the
+  // counters they touch (loads, evictions, L2, nvme bytes, resident count)
+  // accumulate here worker-locally; LoadPhase1 merges every dispatched
+  // worker's delta into stats_ after the chunk barrier (happens-before via
+  // the done condition variable). Stats therefore stays caller-thread-only,
+  // copyable, and SumResidencyStats unchanged.
+  struct StatsDelta {
+    uint64_t loads = 0;
+    double load_bytes = 0.0;
+    uint64_t evictions = 0;
+    double nvme_read_bytes = 0.0;
+    uint64_t l2_hits = 0;
+    uint64_t l2_misses = 0;
+    uint64_t l2_evictions = 0;
+    uint64_t mirror_hits = 0;
+    uint64_t mirror_writebacks = 0;
+    uint64_t mirror_skips = 0;
+    int resident_delta = 0;
+    void Reset() {
+      loads = 0;
+      load_bytes = 0.0;
+      evictions = 0;
+      nvme_read_bytes = 0.0;
+      l2_hits = 0;
+      l2_misses = 0;
+      l2_evictions = 0;
+      mirror_hits = 0;
+      mirror_writebacks = 0;
+      mirror_skips = 0;
+      resident_delta = 0;
+    }
+    void MergeInto(Stats& s, int& resident_count) const {
+      s.loads += loads;
+      s.load_bytes += load_bytes;
+      s.evictions += evictions;
+      s.nvme_read_bytes += nvme_read_bytes;
+      s.l2_hits += l2_hits;
+      s.l2_misses += l2_misses;
+      s.l2_evictions += l2_evictions;
+      s.mirror_hits += mirror_hits;
+      s.mirror_writebacks += mirror_writebacks;
+      s.mirror_skips += mirror_skips;
+      resident_count += resident_delta;
+    }
+  };
+
   struct LoadWorker {
     std::thread th;
     std::mutex mu;
@@ -281,19 +349,30 @@ class MoEResidency {
     int idx = -1;
     bool finished = true;
     bool stop = false;
+    cudaStream_t stream = nullptr;  // C1: commit stream for this task
+    StatsDelta delta_;  // C1: counters staged+committed by this task
   };
 
   Status StageExpert(int expert, const std::vector<uint8_t>* needed_mark,
-                     int* buf_out) const;
+                     int* buf_out, StatsDelta* delta = nullptr,
+                     bool* hit_out = nullptr) const;
+
+  // Undo a miss-path stage bookkeeping after a stage or commit failure:
+  // drop the buffer<->expert mapping (miss only; a hit buffer still holds
+  // the payload) and release the claim so the buffer is pickable again.
+  void ReleaseMissClaim(int expert, int buf, bool hit) const;
+  // C4: undo a mirror-ring claim (commit failure on a ring buffer).
+  void ReleaseRingClaim(int expert, int ring) const;
 
   // LRU victim among non-in-flight L2 buffers (-1 if none; impossible while
   // in-flight count < l2_slots_).
   int PickL2Victim(const std::vector<uint8_t>* needed_mark) const;
 
   // Commit one staged expert from L2 buffer `buf` into its slot
-  // (H2D + host state).
-  Status CommitExpert(int expert, int slot, int buf, cudaStream_t stream)
-      const;
+  // (H2D + host state). C1: called by the staging worker as soon as the
+  // stage finishes (stream-ordered safety as in the header contract).
+  Status CommitExpert(int expert, int slot, int buf, cudaStream_t stream,
+                      StatsDelta* delta = nullptr) const;
 
   // Body of one persistent load worker (see LoadWorker).
   void LoadWorkerLoop(LoadWorker* w) const;
@@ -326,7 +405,16 @@ class MoEResidency {
   // Raw cudaHostAlloc pointer: the C++ allocator's pages are not valid
   // cudaFreeHost targets.
   int load_threads_ = 1;
+  // C1: stream the workers commit on. Set from Init's stream; the service
+  // runs single-stream (Q4T_MOE_STREAMS=1, enforced at model load), so it
+  // is the same stream every load phase and GEMM uses.
+  cudaStream_t commit_stream_ = nullptr;
   int l2_slots_ = 0;
+  // C2: single device block holding all four per-slot scale vectors
+  // ([gu_w_scale2 | gu_input_scale | dn_w_scale2 | dn_input_scale], C
+  // floats each) so CommitExpert H2Ds all four scales in one copy. The
+  // layout_ scale pointers point into it; Free() releases the block once.
+  uint8_t* scal_block_ = nullptr;
   mutable uint8_t* l2_block_ = nullptr;
   mutable std::vector<uint8_t*> l2_buf_;  // [L]
   mutable std::vector<int> l2_expert_;  // [L] expert in buffer, -1 = empty
@@ -352,6 +440,27 @@ class MoEResidency {
   mutable std::vector<bool> l2_in_flight_;  // [L] H2D pending
   mutable std::vector<bool> l2_claimed_;  // [L] staged by the current chunk, not yet committed
   mutable std::vector<cudaEvent_t> l2_event_;  // [L]
+  // C4 (path C design 2026-10-01, branch 3): per-layer eviction mirror
+  // ring. K pinned buffers, each mirror_bytes_ bytes, holding the payload
+  // of recently evicted slot experts in the layout
+  // [w_dn|w_ga|w_up|gu_sw|dn_sw|scal] (the slot payload minus the raw SF
+  // region, which only the NVMe miss path needs). CommitExpert D2Hs the
+  // evicted expert into the ring (stream-ordered before the H2D that
+  // overwrites the slot); the StageExpert miss path consults the ring
+  // before the L2 pool. Ring buffers are addressed by negative buf
+  // indices (-(k+1)) so one CommitExpert serves both buffer kinds.
+  // in_flight covers both copy directions (D2H write-back or H2D read);
+  // it is set at entry publication and released lazily by event query.
+  int mirror_k_ = 0;
+  uint8_t* mirror_block_ = nullptr;
+  std::vector<uint8_t*> mirror_buf_;  // [K]
+  mutable std::vector<int> mirror_expert_;  // [K] expert in ring slot, -1 = empty
+  mutable std::vector<int> expert_mirror_;  // [E] ring slot of expert, -1 = absent
+  mutable std::vector<bool> ring_in_flight_;  // [K] async copy pending / payload being written
+  mutable std::vector<bool> ring_claimed_;  // [K] claimed by the current chunk
+  std::vector<cudaEvent_t> ring_event_;  // [K]
+  mutable int mirror_cursor_ = 0;  // oldest ring slot (write-back target)
+  size_t mirror_bytes_ = 0;
   // Heap-allocated so the class keeps its (unused) implicit copyability;
   // DecoderLayer is default-constructed via vector::resize in model.cu.
   mutable std::mutex* l2_mu_ = nullptr;

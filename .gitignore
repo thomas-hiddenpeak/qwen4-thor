@@ -39,3 +39,4 @@ tools/vision_debug.py
 
 # CTest temp output
 Testing/
+.q4t-work-c1-build*.log

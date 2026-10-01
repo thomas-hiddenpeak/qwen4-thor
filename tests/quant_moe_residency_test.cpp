@@ -454,9 +454,13 @@ Q4T_TEST(residency_l2_cache_hit_evict) {
     Q4T_SKIP("(skipped: real model not present)");
   }
   // Small L2 pool (8 buffers) so one eviction is forced by the sequence
-  // below. The floor is the load-thread count (default 8), so 8 is the
-  // smallest usable value.
+  // below. The floor is the load-thread count (16 since the C1 pipeline),
+  // so pin the load threads to 8 to keep 8 the smallest usable pool.
+  setenv("Q4T_MOE_LOAD_THREADS", "8", 1);
   setenv("Q4T_MOE_L2_SLOTS", "8", 1);
+  // C4 is a separate mechanism with its own test; disable the mirror ring
+  // so step D exercises the L2 hit path it asserts on.
+  setenv("Q4T_MOE_MIRROR_K", "0", 1);
   const int C = 4;
   MoEResidency res;
   bool ok = res.Init(*c.loader, kLayer, kE, kHs, kMoeIs, C, 0).ok();
@@ -465,7 +469,9 @@ Q4T_TEST(residency_l2_cache_hit_evict) {
     res.Free();
     delete c.loader;
     delete c.idx;
+    unsetenv("Q4T_MOE_LOAD_THREADS");
     unsetenv("Q4T_MOE_L2_SLOTS");
+    unsetenv("Q4T_MOE_MIRROR_K");
     return false;
   };
   if (!ok) return fail("init failed");
@@ -536,7 +542,151 @@ Q4T_TEST(residency_l2_cache_hit_evict) {
   res.Free();
   delete c.loader;
   delete c.idx;
+  unsetenv("Q4T_MOE_LOAD_THREADS");
   unsetenv("Q4T_MOE_L2_SLOTS");
+  unsetenv("Q4T_MOE_MIRROR_K");
+  return true;
+}
+
+// C4 (path C design 2026-10-01, branch 3): eviction mirror ring. An expert
+// evicted from a slot is D2H-mirrored into the ring; a re-request is served
+// from the ring (mirror hit, H2D from pinned RAM) instead of the L2 pool or
+// NVMe. Numerical contract: the slot bytes after a ring-served load are
+// bit-identical to the direct per-expert reference.
+Q4T_TEST(residency_mirror_ring_hit) {
+  if (!CudaAvailable()) {
+    Q4T_SKIP("(skipped: no CUDA device)");
+  }
+  Ctx c;
+  if (!OpenCtx(&c)) {
+    Q4T_SKIP("(skipped: real model not present)");
+  }
+  // L2=8 at the 8-thread floor (C1): 12 staged experts force the L2
+  // evictions that leave experts 0..7 only in the mirror ring. The mirror
+  // ring is consulted on the L2-miss branch, so an expert must be evicted
+  // from the L2 pool before a re-request can be a mirror hit.
+  // One load worker: LoadPhase1 commits expert off+t with worker t, so a
+  // single worker makes the per-chunk commit (and thus mirror write-back)
+  // order deterministic, which the ring-position comments below rely on.
+  setenv("Q4T_MOE_L2_SLOTS", "8", 1);
+  setenv("Q4T_MOE_LOAD_THREADS", "1", 1);
+  setenv("Q4T_MOE_MIRROR_K", "8", 1);
+  const int C = 4;
+  MoEResidency res;
+  if (!res.Init(*c.loader, kLayer, kE, kHs, kMoeIs, C, 0).ok()) {
+    std::printf("  init failed\n");
+    res.Free();
+    delete c.loader;
+    delete c.idx;
+    unsetenv("Q4T_MOE_L2_SLOTS");
+    unsetenv("Q4T_MOE_LOAD_THREADS");
+    unsetenv("Q4T_MOE_MIRROR_K");
+    return false;
+  }
+  auto resolve = [&](const std::vector<int>& needed,
+                     std::vector<int>* slot_of) -> bool {
+    std::vector<int32_t> in(needed.begin(), needed.end());
+    slot_of->assign(needed.size(), -1);
+    bool loaded = false;
+    Status s = res.Resolve(in.data(), static_cast<int>(in.size()),
+                           slot_of->data(), 0, &loaded);
+    if (!s.ok()) {
+      std::printf("  resolve failed: %s\n", s.message().c_str());
+      return false;
+    }
+    return true;
+  };
+  auto fail = [&](const char* msg) {
+    std::printf("  %s\n", msg);
+    res.Free();
+    delete c.loader;
+    delete c.idx;
+    unsetenv("Q4T_MOE_L2_SLOTS");
+    unsetenv("Q4T_MOE_LOAD_THREADS");
+    unsetenv("Q4T_MOE_MIRROR_K");
+    return false;
+  };
+  std::vector<int> so;
+  // A: fill slots 0..3 with experts 0..3 (4 slot misses, 4 L2 misses,
+  // L2 buffers 0..3).
+  if (!resolve({0, 1, 2, 3}, &so)) return fail("A resolve failed");
+  // B: experts 4..7 miss; the empty L2 buffers 4..7 are taken (no L2
+  // eviction); all four slots are evicted (experts 0..3), each
+  // D2H-mirrored into the ring (4 write-backs, ring 0..3).
+  if (!resolve({4, 5, 6, 7}, &so)) return fail("B resolve failed");
+  // B2: experts 8..11 miss; the L2 LRU buffers (experts 0..3) are evicted
+  // from the L2 pool, and slots 0..3 are evicted again (experts 4..7),
+  // mirrored into ring 4..7. After this, experts 0..7 exist only in the
+  // mirror ring.
+  if (!resolve({8, 9, 10, 11}, &so)) return fail("B2 resolve failed");
+  const int slot_of_b2[4] = {so[0], so[1], so[2], so[3]};
+  cudaStreamSynchronize(0);
+  // C: expert 0 is a slot miss and an L2 miss (evicted in B2); the mirror
+  // ring still holds it (ring 0) -> mirror hit, committed from pinned RAM.
+  // Its commit mirrors the evicted slot-0 expert (8) into the ring: the
+  // cursor wraps to ring 0, which is claimed by this very read, so the
+  // write-back lands on ring 1 (evicting expert 5's entry).
+  if (!resolve({0}, &so)) return fail("C resolve failed");
+  const int slot_of_c0 = so[0];
+  // D: expert 2 likewise -> mirror hit (it is in ring 2; C's write-back
+  // took ring 1, so the entry survives).
+  if (!resolve({2}, &so)) return fail("D resolve failed");
+  const int slot_of_d2 = so[0];
+  cudaStreamSynchronize(0);
+  // Numerical contract: every resident slot must be bit-identical to the
+  // direct per-expert reference, including the two ring-served slots.
+  // Final slots: 0<-0 (C), 1<-2 (D), 2<-10, 3<-11 (B2).
+  if (!SlotMatchesReference(c, &res, 0, slot_of_c0)) {
+    return fail("mirror slot bytes mismatch (C, ring-served)");
+  }
+  if (!SlotMatchesReference(c, &res, 2, slot_of_d2)) {
+    return fail("mirror slot bytes mismatch (D, ring-served)");
+  }
+  if (!SlotMatchesReference(c, &res, 10, slot_of_b2[2])) {
+    return fail("mirror slot bytes mismatch (B2)");
+  }
+  if (!SlotMatchesReference(c, &res, 11, slot_of_b2[3])) {
+    return fail("mirror slot bytes mismatch (B2)");
+  }
+  const MoEResidency::Stats st = res.GetStats();
+  // loads: 4 (A) + 4 (B) + 4 (B2) + 1 (C) + 1 (D) = 14; slot misses 14,
+  // slot hits 0; slot evictions: 4 (B) + 4 (B2) + 1 (C) + 1 (D) = 10.
+  // Mirror: write-backs 4 (B) + 4 (B2) + 1 (C) + 1 (D) = 10; hits 2
+  // (C, D); skips 0 (the sync after B2 leaves the ring fully available).
+  // L2: misses 12 (A, B, B2 only; l2_misses counts NVMe->L2 stagings, and
+  // C and D are ring hits that never stage into the L2 pool), hits 0,
+  // evictions 4 (B2 evicts experts 0..3).
+  if (st.loads != 14 || st.misses != 14 || st.hits != 0 ||
+      st.evictions != 10) {
+    std::printf("  slot stats wrong: loads=%llu misses=%llu hits=%llu "
+                "evictions=%llu\n",
+                (unsigned long long)st.loads, (unsigned long long)st.misses,
+                (unsigned long long)st.hits,
+                (unsigned long long)st.evictions);
+    return fail("slot stats wrong");
+  }
+  if (st.mirror_writebacks != 10 || st.mirror_hits != 2 ||
+      st.mirror_skips != 0) {
+    std::printf("  mirror stats wrong: writebacks=%llu hits=%llu "
+                "skips=%llu\n",
+                (unsigned long long)st.mirror_writebacks,
+                (unsigned long long)st.mirror_hits,
+                (unsigned long long)st.mirror_skips);
+    return fail("mirror stats wrong");
+  }
+  if (st.l2_hits != 0 || st.l2_misses != 12 || st.l2_evictions != 4) {
+    std::printf("  l2 stats wrong: hits=%llu misses=%llu evictions=%llu\n",
+                (unsigned long long)st.l2_hits,
+                (unsigned long long)st.l2_misses,
+                (unsigned long long)st.l2_evictions);
+    return fail("l2 stats wrong");
+  }
+  res.Free();
+  delete c.loader;
+  delete c.idx;
+  unsetenv("Q4T_MOE_L2_SLOTS");
+  unsetenv("Q4T_MOE_LOAD_THREADS");
+  unsetenv("Q4T_MOE_MIRROR_K");
   return true;
 }
 

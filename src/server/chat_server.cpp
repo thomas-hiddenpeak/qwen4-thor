@@ -170,9 +170,14 @@ Status ChatServer::Start(const ServerOptions& opts) {
       }
       weights -= static_cast<size_t>(kE * kLayers - resident_slots) *
                  slot_bytes;
+      // C4 (path C design 2026-10-01, branch 3): the per-layer eviction
+      // mirror ring (Q4T_MOE_MIRROR_K, default 8) is pinned host memory
+      // charged to the fixed budget; 0 disables it.
       breq.extra_fixed_bytes =
           static_cast<size_t>(kLayers) * quant::MoEResidencyL2Slots() *
-          quant::MoEResidencyStagingBytes(kHs, kMoeIs);
+          quant::MoEResidencyStagingBytes(kHs, kMoeIs) +
+          static_cast<size_t>(kLayers) * quant::MoEResidencyMirrorK() *
+          quant::MoEResidencyMirrorBytes(kHs, kMoeIs);
     }
     budget_ = runtime::ComputeMemoryBudget(runtime::BudgetModelParams{},
                                            breq, weights, mem_total);
