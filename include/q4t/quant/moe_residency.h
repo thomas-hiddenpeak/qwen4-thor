@@ -52,6 +52,7 @@
 #include <atomic>
 #include <condition_variable>
 #include <cstdint>
+#include <memory>
 #include <mutex>
 #include <string>
 #include <thread>
@@ -240,9 +241,9 @@ class MoEResidency {
   size_t DeviceBytes() const { return layout_.TotalBytes(); }
   const Stats& GetStats() const { return stats_; }
   bool TimingEnabled() const {
-    return timing_.enabled.load(std::memory_order_relaxed);
+    return timing_->enabled.load(std::memory_order_relaxed);
   }
-  const TimingStats& GetTiming() const { return timing_; }
+  const TimingStats& GetTiming() const { return *timing_; }
   // Records one router D2H + stream-sync round trip (from MoEForward).
   void RecordD2HSync(uint64_t ns) const;
 
@@ -360,7 +361,11 @@ class MoEResidency {
   mutable std::vector<LoadWorker*> workers_;
 
   mutable Stats stats_;
-  mutable TimingStats timing_;
+  // Heap-allocated (like l2_mu_) so the class keeps its implicit
+  // movability: TimingStats holds std::atomics, which are non-copyable
+  // and non-movable; DecoderLayer is default-constructed via
+  // vector::resize in model.cu, which instantiates the move ctor.
+  mutable std::unique_ptr<TimingStats> timing_{new TimingStats()};
   bool inited_ = false;
 };
 

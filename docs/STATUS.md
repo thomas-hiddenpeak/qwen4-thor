@@ -4,7 +4,29 @@
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
 ## 当前结论
-## 第二轮矩阵完成：六档 decode 21.6–29.6% 基线（全 FAIL，如实记录）；post-r2-affected 在途，auto-r3 链待命（2026-10-01 08:55）
+## 第三轮二进制构建修复（TimingStats 原子量破坏可移动性）；auto-r3-resume 五查门在途，过后自动启动 r3 矩阵（2026-10-01 09:35）
+
+auto-r3 链 09:20 在重建步骤失败停止（设计行为）：62edd6a 新增的
+MoEResidency::TimingStats 含 std::atomic（非可移动），使
+DecoderLayer 隐式移动构造被删除，model.cu `layers.resize` 编译失败
+（此前 g++ -fsyntax-only 单文件语法检查未覆盖 libstdc++ 模板实例化）。
+修复：TimingStats 装箱 unique_ptr（与 l2_mu_ 堆分配保可移动性模式
+一致），21 处记录点改 `timing_->`，model.cu 保持原 resize；完整构建
+零警告，二进制 7f013d73。GEMM 冻结（第七次确认，本轮仅驻留层
+头文件/实现）。
+
+执行链：auto-r3-resume.sh（09:33，setsid）重建（no-op）→ 五查门
+verify-r3-binary.sh（在途 ~40 min：q4t_tests 106 + bitexact-c256 +
+bitexact-nu + 跨二进制 C=0 逐位一致 + fault + cancel）→ 全过自动
+启动 queue-r3-final.sh（r3-cand-c256 C=256+hot-256+L2-8 →
+r3-cand-nu15552 cap=446+hot-nu-15552+L2-8，六档×3，基线复用
+r2-baseline-s0）→ 两份 compare 报告；auto-r3b 观察器存活，矩阵后
+自动 post-r3-affected（11 题质量×2 + 业务×2）。任一门失败即停。
+timing-collect 已完成（第二轮二进制 45056 单条：loads=430524、
+load_mb≈1.19 TB、misses=418236、L2 命中 0.16%）。预计 ~20:00
+前后出 r3 两份对比。
+
+## 第二轮矩阵完成：六档 decode 21.6–29.6% 基线（全 FAIL，如实记录）；post-r2-affected 完成（2026-10-01 09:12）
 
 第二轮全矩阵（f2e9de7f，05:29–08:42）完成：基线 C=0 与候选
 C=256+hot-256+L2-128 均六档×3 全过，逐位一致 6/6，目标档 token

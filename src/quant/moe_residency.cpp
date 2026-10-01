@@ -179,7 +179,7 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
   }
   // Optional per-miss pipeline timing (diagnostic; default off).
   const char* tim_env = std::getenv("Q4T_RESIDENCY_TIMING");
-  timing_.enabled.store(tim_env != nullptr && std::atoi(tim_env) != 0,
+  timing_->enabled.store(tim_env != nullptr && std::atoi(tim_env) != 0,
                         std::memory_order_relaxed);
 
   // Pinned L2 pool (see header): one block, L buffers. A buffer is never
@@ -309,24 +309,24 @@ uint64_t NowNs(std::chrono::steady_clock::time_point t0) {
 }  // namespace
 
 void MoEResidency::RecordD2HSync(uint64_t ns) const {
-  if (!timing_.enabled.load(std::memory_order_relaxed)) return;
-  timing_.d2h_count.fetch_add(1, std::memory_order_relaxed);
-  timing_.d2h_ns.fetch_add(ns, std::memory_order_relaxed);
-  AtomicMaxU64(timing_.d2h_max_ns, ns);
+  if (!timing_->enabled.load(std::memory_order_relaxed)) return;
+  timing_->d2h_count.fetch_add(1, std::memory_order_relaxed);
+  timing_->d2h_ns.fetch_add(ns, std::memory_order_relaxed);
+  AtomicMaxU64(timing_->d2h_max_ns, ns);
 }
 
 void MoEResidency::RecordStageNs(uint64_t ns) const {
-  if (!timing_.enabled.load(std::memory_order_relaxed)) return;
-  timing_.stage_count.fetch_add(1, std::memory_order_relaxed);
-  timing_.stage_ns.fetch_add(ns, std::memory_order_relaxed);
-  AtomicMaxU64(timing_.stage_max_ns, ns);
+  if (!timing_->enabled.load(std::memory_order_relaxed)) return;
+  timing_->stage_count.fetch_add(1, std::memory_order_relaxed);
+  timing_->stage_ns.fetch_add(ns, std::memory_order_relaxed);
+  AtomicMaxU64(timing_->stage_max_ns, ns);
 }
 
 void MoEResidency::RecordPhase1Ns(uint64_t ns) const {
-  if (!timing_.enabled.load(std::memory_order_relaxed)) return;
-  timing_.phase1_count.fetch_add(1, std::memory_order_relaxed);
-  timing_.phase1_ns.fetch_add(ns, std::memory_order_relaxed);
-  AtomicMaxU64(timing_.phase1_max_ns, ns);
+  if (!timing_->enabled.load(std::memory_order_relaxed)) return;
+  timing_->phase1_count.fetch_add(1, std::memory_order_relaxed);
+  timing_->phase1_ns.fetch_add(ns, std::memory_order_relaxed);
+  AtomicMaxU64(timing_->phase1_max_ns, ns);
 }
 
 Status MoEResidency::StageExpert(int expert,
@@ -335,7 +335,7 @@ Status MoEResidency::StageExpert(int expert,
   if (expert < 0 || expert >= E_) {
     return Status::Fail("expert out of range");
   }
-  const bool tim = timing_.enabled.load(std::memory_order_relaxed);
+  const bool tim = timing_->enabled.load(std::memory_order_relaxed);
   const auto t_stage0 =
       tim ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
   // One-shot test-only fault hook: fail the first stage of the armed expert
@@ -555,9 +555,9 @@ Status MoEResidency::StageExpert(int expert,
 
   if (tim) {
     const uint64_t rns = NowNs(t_read0);
-    timing_.pread_count.fetch_add(1, std::memory_order_relaxed);
-    timing_.pread_ns.fetch_add(rns, std::memory_order_relaxed);
-    AtomicMaxU64(timing_.pread_max_ns, rns);
+    timing_->pread_count.fetch_add(1, std::memory_order_relaxed);
+    timing_->pread_ns.fetch_add(rns, std::memory_order_relaxed);
+    AtomicMaxU64(timing_->pread_max_ns, rns);
   }
   const auto t_swz0 =
       tim ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
@@ -569,9 +569,9 @@ Status MoEResidency::StageExpert(int expert,
   SwizzleSfInto(s_dn, hs_, moe_is_, dn_sw);
   if (tim) {
     const uint64_t sns = NowNs(t_swz0);
-    timing_.swz_count.fetch_add(1, std::memory_order_relaxed);
-    timing_.swz_ns.fetch_add(sns, std::memory_order_relaxed);
-    AtomicMaxU64(timing_.swz_max_ns, sns);
+    timing_->swz_count.fetch_add(1, std::memory_order_relaxed);
+    timing_->swz_ns.fetch_add(sns, std::memory_order_relaxed);
+    AtomicMaxU64(timing_->swz_max_ns, sns);
     RecordStageNs(NowNs(t_stage0));
   }
   return Status();
@@ -812,7 +812,7 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
   const int n = static_cast<int>(plan.experts.size());
   const int off = static_cast<int>(plan.next_stage);
   if (off >= n) return Status();  // fully staged
-  const bool tim = timing_.enabled.load(std::memory_order_relaxed);
+  const bool tim = timing_->enabled.load(std::memory_order_relaxed);
   const auto t_p1 =
       tim ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
   if (off == 0) plan.workers.assign(n, 0);
