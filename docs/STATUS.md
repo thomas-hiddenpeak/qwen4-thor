@@ -5,6 +5,23 @@
 
 ## 当前结论
 
+## 业务 12/12 逐位一致 PASS；verify-c1 K=0 回退边界六查在途（2026-10-01 23:30）
+
+queue-post-verify 在途：[A] 业务 nu15552+c256 重跑（修参后，r3
+二进制 efce31d8）6/6+6/6 OK；[B] 对 base 逐位比对 12/12
+bitexact=True → BUSINESS-COMPARE PASS（post-r3-affected 业务证据
+链闭合：质量 3/3 + 业务 12/12）。[C] verify-c1 K=0（回退边界
+C1+C2+C3）六查在途（~80 min），随后 [D] K=8（最终候选）。
+verify-c1 首跑（K=8）FAIL=1 原因：fault 脚本 env 行截断（已修）
++ 定向 45056 run1 decode -0.1%（噪声级；TTFT 三跑 -6.4~-7.9%，
+设计 C1 出口为 TTFT 对比；双跑复测）。文档已按 C1+C2+C3+C4
+口径更新（验收报告 §6b、部署回退 §3 C4 条目）。合并范围确认：
+代码取 path-c（4 commit）、文档取主分支；主 build 重建等 [A]
+结束（已完成）后、双跑结束后进行。GEMM 冻结（用户再确认）。
+
+下一步：[C] K=0 → [D] K=8 → 合并 C1+C2+C4 + 重建 → 冻结最终
+候选 B（R3_DECISION 算法）→ final-acceptance → 报告定稿。
+
 ## C4 已实现，verify-c1 六查 4 过 / 1 脚本缺陷已修 / 1 在途；验收队列在途（2026-10-01 21:00）
 
 C4 驱逐镜像已实现于 path-c 分支（wt-c1 887a3fe，107/107 单测，
