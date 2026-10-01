@@ -94,3 +94,41 @@ python3 .q4t-work/moe-residency-20260930/affected/affected_http.py \
   槽位簿记保持一致（加载完成才标记驻留）；一次性故障注入检查见
   验收报告 §7。
 - GEMM 冻结至本目标完成（用户 2026-09-30 指示）。
+
+## 6. 最终验收执行规程（2026-10-01，r3 矩阵后）
+
+前提：r3 自动链（auto-r3c → compare → post-r3-affected →
+auto-c1-verify/verify-c1）全部完成，verify-c1 六查通过，
+section5-branch.txt 已写出。
+
+1. **合并 C1+C2 二进制**：path-c 分支（wt-c1 @ df02f60）并入工作
+   分支主 HEAD（merge-tree 核验 0 冲突；7e3cadc 之后主分支仅
+   docs/scripts 改动，src/ 零差异），重建 build/q4t，记录 sha256。
+   合并前 verify-c1 已用同一 commit 的 worktree 二进制（ba7327a9）
+   完成六查，合并后以 1024 档 bitexact 复验。
+2. **冻结 B**：按 R3_DECISION 末节选择算法，B ∈ {7680,8448,9216,
+   9984}（§5 分支 1/2 且 C≥224 时追加 10752），取同时满足
+   内存（rss+gpu 峰值+模型页缓存增量 ≤54 GB）、性能（六档 decode
+   调和均值 ≥50% 基线）、正确性（bit-exact+质量+业务+受影响检查）
+   的最大 B；估算峰值 49.2/51.1/53.1/55.1 GB（ledger §1.6），
+   B=9984 页缓存预算为负，优先从 9216 起验。
+3. **最终验收**（C3 页缓存协议 + 全矩阵，基线与候选同节奏）：
+
+```bash
+bash .q4t-work/moe-residency-20260930/final-acceptance.sh <B>
+# 内部：c3-pagecache-protocol.sh acc-base-c0 (C=0) --acceptance
+#       c3-pagecache-protocol.sh acc-final-<B> (cap/hot-final-<B>, L2-16)
+#       compare_e2e.py acc-base-c0 acc-final-<B>
+#       内存门：rss+gpu 峰值 + 模型页缓存增量 ≤ 54,000,000,000 B
+```
+
+4. **正确性收尾**：bitexact-final.sh（C=0 vs 候选，1024/8192）+
+   质量 11 题 + 业务 6 请求 + 受影响检查（补载失败/取消/槽位复用/
+   跨请求状态，post-r3-affected 已覆盖质量/业务，故障/取消在
+   verify-c1 [4/6][5/6]）。
+5. **定稿**：验收报告（MOE_RESIDENCY_ACCEPTANCE_2026-09-30.md）
+   与本文按实测回填；同一候选配置同时满足容量/内存/性能/正确性
+   才写"通过"；否则按失败维度报告差距，不放宽目标。
+
+回退（最终候选失败时）：按 §3 运行级回退到 `--moe-resident-slots 0`；
+版本级回退到合并前 commit（合并前 HEAD 已记录于本节执行日志）。
