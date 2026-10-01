@@ -393,6 +393,11 @@ Status MoEResidency::StageExpert(int expert,
       l2_expert_[b] = expert;
       expert_l2buf_[expert] = b;
       l2_tick_[b] = ++l2_recency_;
+      l2_claimed_[b] = true;
+      // Claim the buffer so a concurrent miss in the same chunk
+      // cannot pick it as a victim and overwrite the payload while
+      // this worker is still reading it from NVMe. Released by
+      // CommitExpert on success or by release_miss_claim on error.
       ++stats_.l2_misses;
     }
   }
@@ -404,10 +409,21 @@ Status MoEResidency::StageExpert(int expert,
     if (tim) RecordStageNs(NowNs(t_stage0));
     return Status();
   }
+  // Release the miss claim and undo the buffer bookkeeping if staging
+  // fails after the claim (the claim is otherwise released by
+  // CommitExpert). Only reached on the miss path (the hit path
+  // returns above).
+  auto release_miss_claim = [&]() {
+    std::lock_guard<std::mutex> lk(*l2_mu_);
+    if (l2_expert_[b] == expert) l2_expert_[b] = -1;
+    if (expert_l2buf_[expert] == b) expert_l2buf_[expert] = -1;
+    l2_claimed_[b] = false;
+  };
   // A miss always picks a non-in-flight buffer, but keep the defensive wait
   // in case the flag went stale under us.
   if (l2_in_flight_[b]) {
     if (cudaEventSynchronize(l2_event_[b]) != cudaSuccess) {
+      release_miss_claim();
       return Status::Fail("residency L2 wait failed");
     }
     l2_in_flight_[b] = false;
@@ -431,6 +447,7 @@ Status MoEResidency::StageExpert(int expert,
   float* scal = reinterpret_cast<float*>(dn_sw + dn_sf_block);
   if (reinterpret_cast<uint8_t*>(scal) + 4 * sizeof(float) >
       p + staging_bytes_) {
+    release_miss_claim();
     return Status::Fail("residency staging layout exceeds buffer");
   }
 
@@ -489,6 +506,7 @@ Status MoEResidency::StageExpert(int expert,
   if (w_ok && s_ok) {
     if (!(s = loader_->ReadRange(dn_w_name, dn_w->data_start, 3 * w_bytes,
                                  w_dn))) {
+      release_miss_claim();
       return s;
     }
     stats_.nvme_read_bytes +=
@@ -497,6 +515,7 @@ Status MoEResidency::StageExpert(int expert,
         ExpertName(layer_id_, expert, "down_proj", "weight_scale");
     if (!(s = loader_->ReadRange(dn_s_name, dn_s->data_start, 3 * s_bytes,
                                  s_dn))) {
+      release_miss_claim();
       return s;
     }
     if (sc_ok) {
@@ -506,6 +525,7 @@ Status MoEResidency::StageExpert(int expert,
                     std::to_string(layer_id_) + ".mlp.experts." +
                     std::to_string(expert) + ".down_proj.input_scale",
                 sc[0]->data_start, 6 * sizeof(float), file_scal))) {
+        release_miss_claim();
         return s;
       }
       scal[0] = file_scal[3];  // gate.weight_scale_2
@@ -521,26 +541,47 @@ Status MoEResidency::StageExpert(int expert,
         const std::string n = "model.language_model.layers." +
                               std::to_string(layer_id_) + ".mlp.experts." +
                               std::to_string(expert) + "." + sc4[i];
-        if (!(s = loader_->ReadTensor(n, &scal[i]))) return s;
+        if (!(s = loader_->ReadTensor(n, &scal[i]))) {
+          release_miss_claim();
+          return s;
+        }
       }
     }
   } else {
     // Legacy per-tensor path (bit-identical bytes, arbitrary layout).
     std::string n;
     n = ExpertName(layer_id_, expert, "down_proj", "weight");
-    if (!(s = loader_->ReadTensor(n, w_dn))) return s;
+    if (!(s = loader_->ReadTensor(n, w_dn))) {
+      release_miss_claim();
+      return s;
+    }
     stats_.nvme_read_bytes +=
         static_cast<double>(3 * w_bytes + 3 * s_bytes + 4 * sizeof(float));
     n = ExpertName(layer_id_, expert, "gate_proj", "weight");
-    if (!(s = loader_->ReadTensor(n, w_ga))) return s;
+    if (!(s = loader_->ReadTensor(n, w_ga))) {
+      release_miss_claim();
+      return s;
+    }
     n = ExpertName(layer_id_, expert, "up_proj", "weight");
-    if (!(s = loader_->ReadTensor(n, w_up))) return s;
+    if (!(s = loader_->ReadTensor(n, w_up))) {
+      release_miss_claim();
+      return s;
+    }
     n = ExpertName(layer_id_, expert, "down_proj", "weight_scale");
-    if (!(s = loader_->ReadTensor(n, s_dn))) return s;
+    if (!(s = loader_->ReadTensor(n, s_dn))) {
+      release_miss_claim();
+      return s;
+    }
     n = ExpertName(layer_id_, expert, "gate_proj", "weight_scale");
-    if (!(s = loader_->ReadTensor(n, s_ga))) return s;
+    if (!(s = loader_->ReadTensor(n, s_ga))) {
+      release_miss_claim();
+      return s;
+    }
     n = ExpertName(layer_id_, expert, "up_proj", "weight_scale");
-    if (!(s = loader_->ReadTensor(n, s_up))) return s;
+    if (!(s = loader_->ReadTensor(n, s_up))) {
+      release_miss_claim();
+      return s;
+    }
     const char* sc4[4] = {"gate_proj.weight_scale_2",
                           "gate_proj.input_scale",
                           "down_proj.weight_scale_2",
@@ -549,7 +590,10 @@ Status MoEResidency::StageExpert(int expert,
       const std::string n = "model.language_model.layers." +
                             std::to_string(layer_id_) + ".mlp.experts." +
                             std::to_string(expert) + "." + sc4[i];
-      if (!(s = loader_->ReadTensor(n, &scal[i]))) return s;
+      if (!(s = loader_->ReadTensor(n, &scal[i]))) {
+        release_miss_claim();
+        return s;
+      }
     }
   }
 

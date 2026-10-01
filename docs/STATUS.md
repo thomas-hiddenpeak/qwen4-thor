@@ -4,6 +4,35 @@
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
 ## 当前结论
+## 第三轮矩阵首跑失败（L2 miss 竞态）→ 修复验证全过（efce31d8）→ auto-r3c 重跑链已启动（2026-10-01 12:10）
+
+09:59 启动的第三轮矩阵两候选均在 ~1.5 min 内 rc=1（1024 档
+out=28/46 提前 EOS）。根因：L2 miss 路径竞态——StageExpert miss
+分支分配 L2 缓冲时未置 l2_claimed_，同 chunk 并发 miss 可经
+PickL2Victim 选中该缓冲作 victim，NVMe 读未完成时覆写 payload →
+输出损坏（L2-8/9 下 3/3 DIFF，L2-128 下 3/3 MATCH，与 r2 矩阵
+bit-exact 6/6 一致）。修复（仅驻留层，GEMM 冻结第八次确认）：miss
+路径同锁内分配后立即 claim，CommitExpert 成功释放，全部错误路径
+经 release_miss_claim 释放。验证（efce31d8）：q4t_tests 106/106；
+L2-8 5/5、L2-128 2/2 与 r2-baseline-s0 content 逐字一致
+（compare-l2fix.py OVERALL: PASS）；bitexact-nu（cap=446+
+hot-nu-15552+L2-8）1024/8192 BIT-EXACT。基线复用 r2-baseline-s0
+仍有效（C=0 路径未受修复影响，跨二进制一致性经 L2-8 A/B 5/5
+再确认）。
+
+12:09 auto-r3c（pid 2621362，setsid）重跑链启动：
+timing-collect-r3（efce31d8，L2-8，单条 45056，逐 miss 五段
+计时——此前 timing-collect 跑在无 timing 特性的 r2 二进制上，
+数据缺失）→ queue-r3-final（r3-cand-c256 → r3-cand-nu15552，
+六档×3，基线复用 r2-baseline-s0）→ post-r3-affected（质量×3+
+业务×3），日志 auto-r3c.log。预计 ~22:00–23:00 出两份 compare
+报告。GEMM 冻结（第八次确认；git 核验 GEMM 文件最后改动
+2026-09-27，本轮 diff 仅驻留层）。
+
+下一步：跟踪 auto-r3c → 依据 r3 矩阵与逐 miss 计时数据定路径 C
+（补载管线优化：r2 证据 25.7 miss/token × ~5.8 ms/miss ≈
+150 ms/token 开销，需降至 ~2 ms/miss 量级才可能过 50% 门槛）。
+
 ## 五查门全过（7f013d73）；第三轮矩阵运行中（r3-cand-c256 → r3-cand-nu15552，六档×3，~20:00 出报告）（2026-10-01 09:59）
 
 五查门全过（09:33–09:59）：q4t_tests 106/106；bitexact-c256
