@@ -4,6 +4,24 @@
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
 ## 当前结论
+## final-quality-business [4/4] 脚本参数缺陷修复；business cand 重跑在途（2026-10-02 06:15）
+
+chain（05:27 首启，二进制 ed68cd3d，commit 0c94a28）：[1/4] quality
+base（C=0）05:32 rc=0；[2/4] quality cand（B=12288/L2-16/K=8）05:47
+rc=0（11 题 HTTP/输出检查通过）；[3/4] business base 05:54 rc=0（6
+项，200k 档 lat=165.9 s）。[4/4] business cand 启动即 FAIL：
+affected_http.py 的 serve_extra 为位置参数，argparse 不认
+--moe-resident-slots/--moe-hot-list 旗标（服务器未启动，无污染）。
+修复：run_business 在 "$@" 前加 "--"（tools/acceptance + 工作副本，
+diff 一致）。按"已通过且身份未变证据复用"只重跑 business cand
+（06:15 setsid 在途，C=256/L2-16/K=8，页缓存热）；完成后比对
+（quality manifest-exact + base-vs-cand identical、business
+bit-identical x6）→ PASS 则启动 final-acceptance B=12288 全矩阵
+（C3 协议，基线 C=0 + 候选，五档 + 261887 目标档 in=261887+out=257
+=总上下文 262144，每档 3 次，内存门 USER_APPROVED_OVERRUN 口径：
+记录实测峰值，性能/正确性门不放宽）。GEMM 冻结（用户 10-02 再
+确认：目标完成前不改，之后另行讨论）。
+
 
 ## C6 max-open-shards 修复：45056 decode 10.05 tps = 56% 基线，超 50% 门槛；final-acceptance 在途（2026-10-02 05:30）
 

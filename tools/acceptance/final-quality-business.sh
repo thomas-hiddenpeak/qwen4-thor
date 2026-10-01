@@ -53,7 +53,7 @@ run_business() {  # $1 tag, rest extra serve args
   local tag=$1; shift
   python3 "$W/affected/affected_http.py" \
     --requests "$FIXB/requests.jsonl" --out "$W/affected/final-business-$B-$tag" \
-    --port $PORT "$@"
+    --port $PORT -- "$@"
 }
 
 echo_log "=== [1/4] quality baseline (C=0) ==="
