@@ -151,3 +151,36 @@ MoEForward 驻留段 + moe_residency.cpp）：
   (b) 消除 ~4 ms 管线开销（待计时定位后定向优化）；(c) 若 d2h 同步占比
   高，可评估把 id 映射与 GEMM 重叠（需保持数值合同不变）。定量目标：
   单 miss 6.2 ms → ~2 ms，C=256 下 decode 达 ~54% 基线（过 50% 门槛）。
+
+## 最终候选 B 选择算法（r3 报告 + C3 证据 + verify-c1 后执行，2026-10-01 14:15）
+
+输入（全部为实测，不用估算）：
+- r3 两份 compare 报告（c256 / nu15552 vs r2-baseline-s0，六档×3，
+  含 261887 目标档）→ §5 分支；
+- C3 页缓存协议证据（c3-*/evidence.json：page_cache_delta_gb、
+  pread_avg、重读因子）；
+- verify-c1 六查结果（C1+C2 二进制正确性 + 45056 定向 TTFT/decode）；
+- 各 B 的 [q4t][budget] 启动账 + memory-peak.json（rss+gpu 峰值）。
+
+候选集：B ∈ {7680, 8448, 9216, 9984}（平均 C 160/176/192/208，
+按层 DP 最优 C_l，hot/cap-final 已生成并核验）；若 §5 分支 1/2
+指向 C≥224，追加 B=10752（平均 C 224，cap-final-10752.json 已备）。
+
+选择规则（同一候选配置必须同时满足三条，否则不达标）：
+1. **内存**：rss+gpu 峰值（service_total_physical_peak_bytes）+
+   模型相关页缓存增量（C3 evidence）≤ 54,000,000,000 B；整机 RAM
+   与 swap 分列记录，不以 swap 掩盖超支。
+2. **性能**：六档（含 261887）decode 调和均值 ≥ 同条件基线 50%，
+   每档 3 次，首请求与后续请求分列。
+3. **正确性**：C=0 vs 候选 1024/8192 bit-exact；固定 11 题质量集 +
+   业务 final_validation 子集输出对照；补载失败/取消/槽位复用/
+   跨请求状态受影响检查通过。
+
+在满足全部三条的 B 中取**最大 B**（miss 更少、稳态更稳）。若无一
+满足：按失败维度报告差距（内存超多少 / 哪档 decode 差多少 / 哪项
+正确性失败），评估 §5 分支 3（C4 驱逐镜像 + C3 预热）或替代实现，
+**不放宽目标、不把未达标标记为完成**。
+
+执行：final-acceptance.sh <B>（C3 协议 + 全矩阵，基线 C=0 与候选
+同协议同预热节奏）→ compare-report-final-B.txt + memory-gate-final-
+B.json → 验收报告定稿 + 部署/回退说明更新。
