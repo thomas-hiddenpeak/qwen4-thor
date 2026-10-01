@@ -40,10 +40,11 @@ Status H2D(const void* src, void* dst, size_t bytes, cudaStream_t stream) {
 }  // namespace
 
 int MoEResidencyLoadThreads() {
-  // Default 8: the range-read fast path issues few, large, contiguous
-  // preads per expert, so more parallel workers saturate the NVMe without
-  // the random-read latency pile-up the old 10-small-read path had.
-  int n = 8;
+  // Default 16 (C1 pipeline, path C design 2026-10-01): the range-read fast
+  // path issues few, large, contiguous preads per expert, so more parallel
+  // workers saturate the NVMe without the random-read latency pile-up the
+  // old 10-small-read path had. The L2 floor follows this count.
+  int n = 16;
   if (const char* env = std::getenv("Q4T_MOE_LOAD_THREADS")) {
     const int v = std::atoi(env);
     if (v > 0) n = v;
@@ -56,7 +57,8 @@ int MoEResidencyL2Slots() {
   // is tens of experts per layer (measured miss rates imply ~16-44), so 128
   // keeps it warm with margin; prefill sub-chunks (distinct miss set up to
   // the dynamic capacity) also benefit. The floor is the load worker count
-  // so every worker can own a distinct buffer in flight.
+  // (16 since the C1 pipeline) so every worker can own a distinct buffer in
+  // flight; an explicit smaller request is raised to the floor.
   int n = 128;
   const char* env = std::getenv("Q4T_MOE_L2_SLOTS");
   if (env) {
@@ -105,6 +107,7 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
   moe_is_ = moe_is;
   C_ = C;
   load_threads_ = MoEResidencyLoadThreads();
+  commit_stream_ = stream;
 
   layout_.E = C;
   layout_.hs = hs;
@@ -134,16 +137,17 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
   if (!(s = alloc(reinterpret_cast<void**>(&layout_.dn_sf),
                   static_cast<size_t>(C) * dn_sf_block)))
     return s;
-  if (!(s = alloc(reinterpret_cast<void**>(&layout_.gu_w_scale2), scal_bytes)))
+  // C2 (path C design 2026-10-01): one block for all four per-slot scale
+  // vectors, contiguous in the order CommitExpert copies them from the L2
+  // staging buffer ([gu_w_scale2 | gu_input_scale | dn_w_scale2 |
+  // dn_input_scale], C floats each), so the four 4-byte H2Ds become one
+  // 16-byte H2D.
+  if (!(s = alloc(reinterpret_cast<void**>(&scal_block_), 4 * scal_bytes)))
     return s;
-  if (!(s = alloc(reinterpret_cast<void**>(&layout_.gu_input_scale),
-                  scal_bytes)))
-    return s;
-  if (!(s = alloc(reinterpret_cast<void**>(&layout_.dn_w_scale2), scal_bytes)))
-    return s;
-  if (!(s = alloc(reinterpret_cast<void**>(&layout_.dn_input_scale),
-                  scal_bytes)))
-    return s;
+  layout_.gu_w_scale2 = reinterpret_cast<float*>(scal_block_);
+  layout_.gu_input_scale = reinterpret_cast<float*>(scal_block_) + C;
+  layout_.dn_w_scale2 = reinterpret_cast<float*>(scal_block_) + 2 * C;
+  layout_.dn_input_scale = reinterpret_cast<float*>(scal_block_) + 3 * C;
 
   layout_.gu_w_scale2_h.assign(C, 0.0f);
   layout_.gu_input_scale_h.assign(C, 0.0f);
@@ -329,9 +333,22 @@ void MoEResidency::RecordPhase1Ns(uint64_t ns) const {
   AtomicMaxU64(timing_->phase1_max_ns, ns);
 }
 
+void MoEResidency::ReleaseMissClaim(int expert, int buf, bool hit) const {
+  std::lock_guard<std::mutex> lk(*l2_mu_);
+  if (!hit) {
+    // Miss path: the payload is unreadable/untrusted; drop the mapping so a
+    // later lookup cannot treat this buffer as a hit. A hit buffer still
+    // holds the payload, so only the claim is released.
+    if (l2_expert_[buf] == expert) l2_expert_[buf] = -1;
+    if (expert_l2buf_[expert] == buf) expert_l2buf_[expert] = -1;
+  }
+  l2_claimed_[buf] = false;
+}
+
 Status MoEResidency::StageExpert(int expert,
                                  const std::vector<uint8_t>* needed_mark,
-                                 int* buf_out) const {
+                                 int* buf_out, StatsDelta* delta,
+                                 bool* hit_out) const {
   if (expert < 0 || expert >= E_) {
     return Status::Fail("expert out of range");
   }
@@ -378,7 +395,8 @@ Status MoEResidency::StageExpert(int expert,
       // Claim it so a same-chunk miss cannot evict it before our commit.
       l2_tick_[b] = ++l2_recency_;
       l2_claimed_[b] = true;
-      ++stats_.l2_hits;
+      if (delta) ++delta->l2_hits;
+      else ++stats_.l2_hits;
       hit = true;
     } else {
       b = PickL2Victim(needed_mark);
@@ -388,7 +406,8 @@ Status MoEResidency::StageExpert(int expert,
       const int old = l2_expert_[b];
       if (old >= 0) {
         expert_l2buf_[old] = -1;
-        ++stats_.l2_evictions;
+        if (delta) ++delta->l2_evictions;
+        else ++stats_.l2_evictions;
       }
       l2_expert_[b] = expert;
       expert_l2buf_[expert] = b;
@@ -397,11 +416,13 @@ Status MoEResidency::StageExpert(int expert,
       // Claim the buffer so a concurrent miss in the same chunk
       // cannot pick it as a victim and overwrite the payload while
       // this worker is still reading it from NVMe. Released by
-      // CommitExpert on success or by release_miss_claim on error.
-      ++stats_.l2_misses;
+      // CommitExpert on success or by ReleaseMissClaim on error.
+      if (delta) ++delta->l2_misses;
+      else ++stats_.l2_misses;
     }
   }
   *buf_out = b;
+  if (hit_out) *hit_out = hit;
   if (hit) {
     // The payload is already staged in the buffer; no read, merge, or
     // swizzle. A concurrent in-flight H2D only reads the buffer, and our
@@ -413,12 +434,7 @@ Status MoEResidency::StageExpert(int expert,
   // fails after the claim (the claim is otherwise released by
   // CommitExpert). Only reached on the miss path (the hit path
   // returns above).
-  auto release_miss_claim = [&]() {
-    std::lock_guard<std::mutex> lk(*l2_mu_);
-    if (l2_expert_[b] == expert) l2_expert_[b] = -1;
-    if (expert_l2buf_[expert] == b) expert_l2buf_[expert] = -1;
-    l2_claimed_[b] = false;
-  };
+  auto release_miss_claim = [&]() { ReleaseMissClaim(expert, b, false); };
   // A miss always picks a non-in-flight buffer, but keep the defensive wait
   // in case the flag went stale under us.
   if (l2_in_flight_[b]) {
@@ -509,8 +525,10 @@ Status MoEResidency::StageExpert(int expert,
       release_miss_claim();
       return s;
     }
-    stats_.nvme_read_bytes +=
+    const double nvme_bytes =
         static_cast<double>(3 * w_bytes + 3 * s_bytes + 6 * sizeof(float));
+    if (delta) delta->nvme_read_bytes += nvme_bytes;
+    else stats_.nvme_read_bytes += nvme_bytes;
     const std::string dn_s_name =
         ExpertName(layer_id_, expert, "down_proj", "weight_scale");
     if (!(s = loader_->ReadRange(dn_s_name, dn_s->data_start, 3 * s_bytes,
@@ -555,8 +573,10 @@ Status MoEResidency::StageExpert(int expert,
       release_miss_claim();
       return s;
     }
-    stats_.nvme_read_bytes +=
+    const double nvme_bytes =
         static_cast<double>(3 * w_bytes + 3 * s_bytes + 4 * sizeof(float));
+    if (delta) delta->nvme_read_bytes += nvme_bytes;
+    else stats_.nvme_read_bytes += nvme_bytes;
     n = ExpertName(layer_id_, expert, "gate_proj", "weight");
     if (!(s = loader_->ReadTensor(n, w_ga))) {
       release_miss_claim();
@@ -624,8 +644,12 @@ Status MoEResidency::StageExpert(int expert,
 // Commit one staged expert into its slot: H2D from its L2 buffer
 // (stream-ordered after any earlier GEMM that read the evicted slot, before
 // any GEMM that reads the new expert) plus host identity/scale bookkeeping.
+// C1: called by the staging worker as soon as staging finishes, so the H2D
+// overlaps the remaining NVMe reads of the chunk. Counters route through
+// `delta` (worker-local; merged by LoadPhase1 after the chunk barrier).
 Status MoEResidency::CommitExpert(int expert, int slot, int buf,
-                                  cudaStream_t stream) const {
+                                  cudaStream_t stream,
+                                  StatsDelta* delta) const {
   if (expert < 0 || expert >= E_) {
     return Status::Fail("expert out of range");
   }
@@ -643,7 +667,6 @@ Status MoEResidency::CommitExpert(int expert, int slot, int buf,
   uint8_t* p = l2_buf_[buf];
   uint8_t* w_dn = p;
   uint8_t* w_ga = p + w_bytes;
-  uint8_t* w_up = p + 2 * w_bytes;
   uint8_t* gu_sw = p + 3 * w_bytes + 5 * s_bytes;
   uint8_t* dn_sw = gu_sw + gu_sf_block;
   const float* scal = reinterpret_cast<const float*>(dn_sw + dn_sf_block);
@@ -652,13 +675,23 @@ Status MoEResidency::CommitExpert(int expert, int slot, int buf,
     return Status::Fail("residency staging layout exceeds buffer");
   }
 
+  // Only an overwrite of an occupied slot is an eviction; loading an empty
+  // slot (initial fill) is not. (Moved here from LoadPhase2 with the C1
+  // pipeline.)
+  if (slot_expert_[slot] >= 0) {
+    if (delta) ++delta->evictions;
+    else ++stats_.evictions;
+  }
+
   Status s;
-  // H2D into the slot.
+  // H2D into the slot. C2: gate+up are contiguous in the L2 buffer and in
+  // the slot (per-slot stride moe_is*hs == 2*w_bytes), so one copy covers
+  // both; the four per-slot scales are contiguous on device (merged
+  // allocation, see Init) and in the buffer, so one 16-byte copy covers all
+  // four. 9 H2D calls per expert become 5.
   uint8_t* gu_dst =
       layout_.gu_packed + static_cast<size_t>(slot) * moe_is_ * hs_;
-  if (!(s = H2D(w_ga, gu_dst, w_bytes, stream))) return s;
-  if (!(s = H2D(w_up, gu_dst + moe_is_ * (hs_ / 2), w_bytes, stream)))
-    return s;
+  if (!(s = H2D(w_ga, gu_dst, 2 * w_bytes, stream))) return s;
   uint8_t* dn_dst =
       layout_.dn_packed + static_cast<size_t>(slot) * hs_ * (moe_is_ / 2);
   if (!(s = H2D(w_dn, dn_dst, w_bytes, stream))) return s;
@@ -668,14 +701,7 @@ Status MoEResidency::CommitExpert(int expert, int slot, int buf,
   if (!(s = H2D(dn_sw, layout_.dn_sf + static_cast<size_t>(slot) * dn_sf_block,
                 dn_sf_block, stream)))
     return s;
-  if (!(s = H2D(&scal[0], layout_.gu_w_scale2 + slot, sizeof(float), stream)))
-    return s;
-  if (!(s = H2D(&scal[1], layout_.gu_input_scale + slot, sizeof(float),
-                stream)))
-    return s;
-  if (!(s = H2D(&scal[2], layout_.dn_w_scale2 + slot, sizeof(float), stream)))
-    return s;
-  if (!(s = H2D(&scal[3], layout_.dn_input_scale + slot, sizeof(float),
+  if (!(s = H2D(scal, layout_.gu_w_scale2 + slot, 4 * sizeof(float),
                 stream)))
     return s;
 
@@ -695,14 +721,26 @@ Status MoEResidency::CommitExpert(int expert, int slot, int buf,
   layout_.gu_input_scale_h[slot] = scal[1];
   layout_.dn_w_scale2_h[slot] = scal[2];
   layout_.dn_input_scale_h[slot] = scal[3];
-  if (slot_expert_[slot] < 0) ++resident_count_;
+  if (slot_expert_[slot] < 0) {
+    if (delta) ++delta->resident_delta;
+    else ++resident_count_;
+  }
   if (slot_expert_[slot] >= 0) expert_slot_[slot_expert_[slot]] = -1;
   slot_expert_[slot] = expert;
   expert_slot_[expert] = slot;
-  ++stats_.loads;
-  stats_.load_bytes +=
-      static_cast<double>(3 * w_bytes + 3 * s_bytes +
-                          4 * sizeof(float));
+  // LRU recency for this slot (moved here from LoadPhase2 with the C1
+  // pipeline).
+  slot_tick_[slot] = tick_;
+  if (delta) {
+    ++delta->loads;
+    delta->load_bytes +=
+        static_cast<double>(3 * w_bytes + 3 * s_bytes + 4 * sizeof(float));
+  } else {
+    ++stats_.loads;
+    stats_.load_bytes +=
+        static_cast<double>(3 * w_bytes + 3 * s_bytes +
+                            4 * sizeof(float));
+  }
   return Status();
 }
 
@@ -719,11 +757,11 @@ Status MoEResidency::InitHot(const std::vector<int>& hot_experts,
     plan.slots.push_back(slot);
     ++slot;
   }
-  Status s = LoadPhase1(plan);
-  if (!s.ok()) return s;
+  // C1: LoadPhase1 stages and commits each chunk (commit_stream_ is the
+  // single model stream; `stream` is the same by contract).
+  (void)stream;
+  Status s;
   while (!plan.fully_committed()) {
-    s = LoadPhase2(plan, stream);
-    if (!s.ok()) return s;
     s = LoadPhase1(plan);
     if (!s.ok()) return s;
   }
@@ -861,10 +899,11 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
       tim ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
   if (off == 0) plan.workers.assign(n, 0);
   // One chunk per call: worker t stages entry off + t into an L2 buffer
-  // (hit or miss). Buffers are never shared between workers because victim
-  // selection is serialized and skips in-flight and claimed buffers. Reusing
-  // a buffer for the next chunk is safe because StageExpert waits on the
-  // event recorded by the commit that last H2D'd from it.
+  // (hit or miss) and commits it (C1). Buffers are never shared between
+  // workers because victim selection is serialized and skips in-flight and
+  // claimed buffers. Reusing a buffer for the next chunk is safe because
+  // StageExpert waits on the event recorded by the commit that last H2D'd
+  // from it.
   const int cnt = std::min(load_threads_, n - off);
   plan.first_err.store(0, std::memory_order_relaxed);
   for (int t = 0; t < cnt; ++t) {
@@ -873,6 +912,7 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
       std::lock_guard<std::mutex> lk(w->mu);
       w->plan = &plan;
       w->idx = off + t;
+      w->stream = commit_stream_;
       w->finished = false;
     }
     w->need.notify_one();
@@ -882,6 +922,12 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
     std::unique_lock<std::mutex> lk(w->mu);
     w->done.wait(lk, [&] { return w->finished; });
   }
+  // C1: the commits happened in the workers; merge their counter deltas
+  // here (Stats stays caller-thread-only; happens-before via the done cv)
+  // and advance the commit cursor with the stage cursor.
+  for (int t = 0; t < cnt; ++t) {
+    workers_[t]->delta_.MergeInto(stats_, resident_count_);
+  }
   if (plan.first_err.load(std::memory_order_relaxed) != 0) {
     if (tim) RecordPhase1Ns(NowNs(t_p1));
     return Status::Fail("residency parallel stage failed: " +
@@ -889,6 +935,7 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
   }
   if (tim) RecordPhase1Ns(NowNs(t_p1));
   plan.next_stage = off + cnt;
+  plan.next_commit = off + cnt;
   return Status();
 }
 
@@ -896,6 +943,11 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
 // signals the caller. The task (plan pointer + entry index) is fully
 // specified at dispatch; LoadPhase1 does not return until every dispatched
 // worker has finished, so the plan outlives the task.
+// C1: after a successful stage the worker commits the expert itself (H2D on
+// the task stream, stream-ordered after any earlier GEMM and before any
+// later GEMM on the single model stream), so the H2D overlaps the remaining
+// NVMe reads of the chunk. Counters accumulate in w->delta_ and are merged
+// by LoadPhase1 after the chunk barrier.
 void MoEResidency::LoadWorkerLoop(LoadWorker* w) const {
   while (true) {
     LoadPlan* plan;
@@ -908,13 +960,26 @@ void MoEResidency::LoadWorkerLoop(LoadWorker* w) const {
       idx = w->idx;
       w->idx = -1;
     }
+    w->delta_.Reset();
     int buf = -1;
+    bool hit = false;
     Status s = StageExpert(plan->experts[idx],
                            plan->needed_mark.empty() ? nullptr
                                                     : &plan->needed_mark,
-                           &buf);
+                           &buf, &w->delta_, &hit);
     if (s.ok()) {
       plan->workers[idx] = buf;
+      Status cs = CommitExpert(plan->experts[idx], plan->slots[idx], buf,
+                               w->stream, &w->delta_);
+      if (!cs.ok()) {
+        // Undo the stage bookkeeping so the buffer is pickable again.
+        ReleaseMissClaim(plan->experts[idx], buf, hit);
+        if (plan->first_err.exchange(1, std::memory_order_acq_rel) == 0) {
+          // Only the first failing worker writes; LoadPhase1 reads after
+          // waiting on every worker's done (happens-before via the cv).
+          plan->first_err_msg = "commit: " + cs.message();
+        }
+      }
     } else {
       if (plan->first_err.exchange(1, std::memory_order_acq_rel) == 0) {
         // Only the first failing worker writes; LoadPhase1 reads after
@@ -932,41 +997,33 @@ void MoEResidency::LoadWorkerLoop(LoadWorker* w) const {
 
 Status MoEResidency::LoadPhase2(LoadPlan& plan, cudaStream_t stream,
                                 bool* loaded) const {
+  // C1: commits happen inside LoadPhase1 (each worker commits its expert as
+  // soon as staging finishes), so next_commit always tracks next_stage and
+  // there is nothing to do here. Kept for API compatibility with the
+  // prefill pipeline in moe.cu, which still alternates Phase2/Phase1 until
+  // the plan is fully committed.
+  (void)stream;
   if (!inited_) return Status::Fail("residency not initialized");
-  if (plan.next_commit >= plan.next_stage) return Status();  // nothing staged
-  if (plan.workers.size() != plan.experts.size()) {
-    return Status::Fail("residency plan missing worker map");
-  }
-  for (size_t i = plan.next_commit; i < plan.next_stage; ++i) {
-    const int e = plan.experts[i];
-    const int v = plan.slots[i];
-    // Only an overwrite of an occupied slot is an eviction; loading an empty
-    // slot (initial fill) is not.
-    if (slot_expert_[v] >= 0) ++stats_.evictions;
-    Status s = CommitExpert(e, v, plan.workers[i], stream);
-    if (!s.ok()) return s;
-    slot_tick_[v] = tick_;
-    if (loaded) *loaded = true;
-  }
-  plan.next_commit = plan.next_stage;
+  if (loaded && plan.next_commit < plan.next_stage) *loaded = true;
   return Status();
 }
 
 Status MoEResidency::Resolve(const int32_t* needed, int n, int32_t* slot_of,
                              cudaStream_t stream, bool* loaded,
                              bool decode_phase) const {
+  // C1: LoadPhase1 stages and commits each chunk (the workers commit on
+  // commit_stream_, the single model stream; `stream` is the same stream by
+  // the single-stream contract).
+  (void)stream;
   LoadPlan plan;
   Status s = PlanResolve(needed, n, slot_of, &plan, decode_phase);
   if (!s.ok()) return s;
   if (loaded) *loaded = false;
-  s = LoadPhase1(plan);
-  if (!s.ok()) return s;
   while (!plan.fully_committed()) {
-    s = LoadPhase2(plan, stream, loaded);
-    if (!s.ok()) return s;
     s = LoadPhase1(plan);
     if (!s.ok()) return s;
   }
+  if (loaded) *loaded = !plan.experts.empty();
   return Status();
 }
 
@@ -994,10 +1051,15 @@ void MoEResidency::Free() {
   free_if(reinterpret_cast<void**>(&layout_.gu_sf));
   free_if(reinterpret_cast<void**>(&layout_.dn_packed));
   free_if(reinterpret_cast<void**>(&layout_.dn_sf));
-  free_if(reinterpret_cast<void**>(&layout_.gu_w_scale2));
-  free_if(reinterpret_cast<void**>(&layout_.gu_input_scale));
-  free_if(reinterpret_cast<void**>(&layout_.dn_w_scale2));
-  free_if(reinterpret_cast<void**>(&layout_.dn_input_scale));
+  // C2: the four scale pointers point into one block; free it once.
+  if (scal_block_) {
+    cudaFree(scal_block_);
+    scal_block_ = nullptr;
+  }
+  layout_.gu_w_scale2 = nullptr;
+  layout_.gu_input_scale = nullptr;
+  layout_.dn_w_scale2 = nullptr;
+  layout_.dn_input_scale = nullptr;
   for (int b = 0; b < l2_slots_; ++b) {
     if (l2_event_[b]) {
       cudaEventDestroy(l2_event_[b]);
