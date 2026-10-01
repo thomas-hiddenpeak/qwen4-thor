@@ -149,6 +149,22 @@ B=10752 为条件候选（§5 分支 1/2 且 C≥224 时进入选择集，R3_DEC
 峰值低于估算时的 9984）；miss/step 由 final_dp_result.json（BUDGETS
 含 10752）按同口径（÷1143 步）换算。
 
+### 1.7 C5/C6（2026-10-02）内存影响 — 预算侧
+
+C5（页缓存保留）与 C6（max-open-shards）均不改 GPU/pinned 分配，
+只改变模型相关页缓存的驻留行为，因此 rss+gpu 权威峰值不变，影响
+落在单列的"模型相关页缓存增量"项。
+
+| 项 | 机制 | 物理内存影响 |
+|---|---|---|
+| C5 页缓存保留 | 专家分片跳过析构 POSIX_FADV_DONTNEED，open-shard LRU 驱逐后页缓存页保留 | rss+gpu 峰值不变；模型页缓存增量**增大**（不再被驱逐回 NVMe）。pilot-45056-c5 post-warmup 页缓存 4.65→68 GB |
+| C6 max-open-shards=200 | 全部 ~197 分片保持 open（mmap+fd），数据仍走 pread，mmap 仅触碰 header | 每分片一次性 header 解析 ~200 KB（197×200 KB≈40 MB，可忽略）+ 虚拟地址空间；不新增 pinned/GPU。pread 数据页计入页缓存增量 |
+
+结论：C5+C6 不改变 §1.4/§1.6 的 rss+gpu 预算合计；54 GB 内存门的
+"模型页缓存增量"项按 C3 协议实测（post-matrix − post-load）回填，
+C5 使该项比 C5 前更大（页缓存保留），已在 pilot 中体现。GEMM 冻结
+不变（用户 10-02 指示）。
+
 ## 2. 实测侧（权威）
 
 monitor_memory.py，矩阵 e2e-baseline-s0-current / e2e-cand-c256
