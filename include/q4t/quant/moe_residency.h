@@ -86,6 +86,13 @@ int MoEResidencyLoadThreads();
 // clamped to [MoEResidencyLoadThreads(), 512]). The budget must charge
 // kLayers x this x MoEResidencyStagingBytes.
 int MoEResidencyL2Slots();
+// Per-layer eviction mirror ring buffers from Q4T_MOE_MIRROR_K (default 8,
+// clamped to [0, 32]; 0 disables C4). The budget must charge kLayers x
+// this x MoEResidencyMirrorBytes.
+int MoEResidencyMirrorK();
+// Pinned mirror-ring bytes for ONE evicted expert payload
+// ([w_dn|w_ga|w_up|gu_sw|dn_sw|scal]).
+size_t MoEResidencyMirrorBytes(int hs, int moe_is);
 
 // One layer's C-slot expert residency. Not copyable; owned by the layer.
 class MoEResidency {
@@ -117,6 +124,13 @@ class MoEResidency {
     uint64_t l2_hits = 0;
     uint64_t l2_misses = 0;
     uint64_t l2_evictions = 0;
+    // C4 (path C design 2026-10-01, branch 3): eviction mirror ring.
+    // writebacks = D2Hs of evicted expert payloads into the ring; hits =
+    // miss-path consults served from the ring (H2D from RAM, no NVMe);
+    // skips = writebacks dropped because every ring buffer was in flight.
+    uint64_t mirror_hits = 0;
+    uint64_t mirror_writebacks = 0;
+    uint64_t mirror_skips = 0;
   };
 
   // Per-miss pipeline timing. Enabled only when Q4T_RESIDENCY_TIMING=1
@@ -294,6 +308,9 @@ class MoEResidency {
     uint64_t l2_hits = 0;
     uint64_t l2_misses = 0;
     uint64_t l2_evictions = 0;
+    uint64_t mirror_hits = 0;
+    uint64_t mirror_writebacks = 0;
+    uint64_t mirror_skips = 0;
     int resident_delta = 0;
     void Reset() {
       loads = 0;
@@ -303,6 +320,9 @@ class MoEResidency {
       l2_hits = 0;
       l2_misses = 0;
       l2_evictions = 0;
+      mirror_hits = 0;
+      mirror_writebacks = 0;
+      mirror_skips = 0;
       resident_delta = 0;
     }
     void MergeInto(Stats& s, int& resident_count) const {
@@ -313,6 +333,9 @@ class MoEResidency {
       s.l2_hits += l2_hits;
       s.l2_misses += l2_misses;
       s.l2_evictions += l2_evictions;
+      s.mirror_hits += mirror_hits;
+      s.mirror_writebacks += mirror_writebacks;
+      s.mirror_skips += mirror_skips;
       resident_count += resident_delta;
     }
   };
@@ -338,6 +361,8 @@ class MoEResidency {
   // drop the buffer<->expert mapping (miss only; a hit buffer still holds
   // the payload) and release the claim so the buffer is pickable again.
   void ReleaseMissClaim(int expert, int buf, bool hit) const;
+  // C4: undo a mirror-ring claim (commit failure on a ring buffer).
+  void ReleaseRingClaim(int expert, int ring) const;
 
   // LRU victim among non-in-flight L2 buffers (-1 if none; impossible while
   // in-flight count < l2_slots_).
@@ -415,6 +440,27 @@ class MoEResidency {
   mutable std::vector<bool> l2_in_flight_;  // [L] H2D pending
   mutable std::vector<bool> l2_claimed_;  // [L] staged by the current chunk, not yet committed
   mutable std::vector<cudaEvent_t> l2_event_;  // [L]
+  // C4 (path C design 2026-10-01, branch 3): per-layer eviction mirror
+  // ring. K pinned buffers, each mirror_bytes_ bytes, holding the payload
+  // of recently evicted slot experts in the layout
+  // [w_dn|w_ga|w_up|gu_sw|dn_sw|scal] (the slot payload minus the raw SF
+  // region, which only the NVMe miss path needs). CommitExpert D2Hs the
+  // evicted expert into the ring (stream-ordered before the H2D that
+  // overwrites the slot); the StageExpert miss path consults the ring
+  // before the L2 pool. Ring buffers are addressed by negative buf
+  // indices (-(k+1)) so one CommitExpert serves both buffer kinds.
+  // in_flight covers both copy directions (D2H write-back or H2D read);
+  // it is set at entry publication and released lazily by event query.
+  int mirror_k_ = 0;
+  uint8_t* mirror_block_ = nullptr;
+  std::vector<uint8_t*> mirror_buf_;  // [K]
+  mutable std::vector<int> mirror_expert_;  // [K] expert in ring slot, -1 = empty
+  mutable std::vector<int> expert_mirror_;  // [E] ring slot of expert, -1 = absent
+  mutable std::vector<bool> ring_in_flight_;  // [K] async copy pending / payload being written
+  mutable std::vector<bool> ring_claimed_;  // [K] claimed by the current chunk
+  std::vector<cudaEvent_t> ring_event_;  // [K]
+  mutable int mirror_cursor_ = 0;  // oldest ring slot (write-back target)
+  size_t mirror_bytes_ = 0;
   // Heap-allocated so the class keeps its (unused) implicit copyability;
   // DecoderLayer is default-constructed via vector::resize in model.cu.
   mutable std::mutex* l2_mu_ = nullptr;

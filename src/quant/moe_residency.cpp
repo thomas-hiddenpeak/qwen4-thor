@@ -68,6 +68,30 @@ int MoEResidencyL2Slots() {
   return std::max(MoEResidencyLoadThreads(), std::min(n, 512));
 }
 
+size_t MoEResidencyMirrorBytes(int hs, int moe_is) {
+  // [w_dn|w_ga|w_up|gu_sw|dn_sw|scal]: the slot payload minus the raw SF
+  // region (s_dn/s_ga/s_up/gu_s_merged), which only the NVMe miss path
+  // produces and needs.
+  const size_t w_bytes = static_cast<size_t>(hs) * (moe_is / 2);
+  return 3 * w_bytes + SfBufferSize(2 * moe_is, hs) +
+         SfBufferSize(hs, moe_is) + 4 * sizeof(float);
+}
+
+int MoEResidencyMirrorK() {
+  // C4 default 8 (path C design 2026-10-01, branch 3): the re-request
+  // locality evidence (main study, 20 requests) shows re-request
+  // probability significant only at lag <= 16; at the measured ~0.19
+  // evictions/layer/token, K=8 covers ~42 tokens of eviction history.
+  // 0 disables C4 (A/B against the C1+C2+C3 candidate).
+  int n = 8;
+  if (const char* env = std::getenv("Q4T_MOE_MIRROR_K")) {
+    const int v = std::atoi(env);
+    if (v >= 0) n = v;
+  }
+  if (n > 32) n = 32;
+  return n;
+}
+
 size_t MoEResidencyLayerBytes(int hs, int moe_is, int C) {
   const size_t gu_sf_block = SfBufferSize(2 * moe_is, hs);
   const size_t dn_sf_block = SfBufferSize(hs, moe_is);
@@ -138,11 +162,10 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
                   static_cast<size_t>(C) * dn_sf_block)))
     return s;
   // C2 (path C design 2026-10-01): one block for all four per-slot scale
-  // arrays (array-major, C floats each, in the order
-  // [gu_w_scale2 | gu_input_scale | dn_w_scale2 | dn_input_scale]). The
-  // arrays keep their original stride-C layout, so CommitExpert still
-  // copies each slot's four scales with four 4-byte H2Ds (the 2026-10-01
-  // 16-byte merge was invalid for C > 1 and has been reverted).
+  // vectors, laid out as four separate C-float arrays in the order the GEMM
+  // reads them ([gu_w_scale2 | gu_input_scale | dn_w_scale2 |
+  // dn_input_scale], C floats each). They are NOT contiguous per slot, so
+  // CommitExpert still issues four 4-byte H2Ds (one per array).
   if (!(s = alloc(reinterpret_cast<void**>(&scal_block_), 4 * scal_bytes)))
     return s;
   layout_.gu_w_scale2 = reinterpret_cast<float*>(scal_block_);
@@ -221,6 +244,49 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
       l2_mu_ = nullptr;
       return Status::Fail("residency L2 event create failed");
     }
+  }
+  // C4 (path C design 2026-10-01, branch 3): eviction mirror ring.
+  mirror_k_ = MoEResidencyMirrorK();
+  mirror_block_ = nullptr;
+  mirror_bytes_ = 0;
+  mirror_cursor_ = 0;
+  if (mirror_k_ > 0) {
+    mirror_bytes_ = MoEResidencyMirrorBytes(hs, moe_is);
+    if (cudaHostAlloc(reinterpret_cast<void**>(&mirror_block_),
+                      static_cast<size_t>(mirror_k_) * mirror_bytes_,
+                      cudaHostAllocDefault) != cudaSuccess) {
+      for (int b = 0; b < l2_slots_; ++b)
+        if (l2_event_[b]) cudaEventDestroy(l2_event_[b]);
+      cudaFreeHost(l2_block_);
+      l2_block_ = nullptr;
+      delete l2_mu_;
+      l2_mu_ = nullptr;
+      return Status::Fail("residency mirror pinned alloc failed");
+    }
+    ring_event_.assign(mirror_k_, nullptr);
+    mirror_buf_.assign(mirror_k_, nullptr);
+    for (int k = 0; k < mirror_k_; ++k) {
+      mirror_buf_[k] =
+          mirror_block_ + static_cast<size_t>(k) * mirror_bytes_;
+      if (cudaEventCreateWithFlags(&ring_event_[k],
+                                   cudaEventDisableTiming) != cudaSuccess) {
+        for (int j = 0; j < k; ++j)
+          if (ring_event_[j]) cudaEventDestroy(ring_event_[j]);
+        cudaFreeHost(mirror_block_);
+        mirror_block_ = nullptr;
+        for (int b = 0; b < l2_slots_; ++b)
+          if (l2_event_[b]) cudaEventDestroy(l2_event_[b]);
+        cudaFreeHost(l2_block_);
+        l2_block_ = nullptr;
+        delete l2_mu_;
+        l2_mu_ = nullptr;
+        return Status::Fail("residency mirror event create failed");
+      }
+    }
+    mirror_expert_.assign(mirror_k_, -1);
+    expert_mirror_.assign(E_, -1);
+    ring_in_flight_.assign(mirror_k_, false);
+    ring_claimed_.assign(mirror_k_, false);
   }
   // Persistent load workers are created last so no Init failure path
   // leaks a running pool (Free only stops/joins when inited_).
@@ -346,6 +412,16 @@ void MoEResidency::ReleaseMissClaim(int expert, int buf, bool hit) const {
   l2_claimed_[buf] = false;
 }
 
+void MoEResidency::ReleaseRingClaim(int expert, int ring) const {
+  // The commit only reads the ring payload, so a failed commit leaves it
+  // valid: release the claim (the buffer is pickable again) and keep the
+  // expert<->ring mapping. `expert` is unused; the signature mirrors
+  // ReleaseMissClaim for the worker's single call site.
+  (void)expert;
+  std::lock_guard<std::mutex> lk(*l2_mu_);
+  ring_claimed_[ring] = false;
+}
+
 Status MoEResidency::StageExpert(int expert,
                                  const std::vector<uint8_t>* needed_mark,
                                  int* buf_out, StatsDelta* delta,
@@ -400,6 +476,23 @@ Status MoEResidency::StageExpert(int expert,
       else ++stats_.l2_hits;
       hit = true;
     } else {
+      // C4: consult the eviction mirror ring before picking an L2 victim.
+      // A ring hit serves the payload from pinned RAM (CommitExpert H2Ds
+      // it) with no NVMe read and no L2 victim eviction. The buffer is
+      // claimed so a concurrent write-back cannot retarget it mid-read;
+      // the commit waits on ring_event_ if a write-back D2H is still
+      // filling the buffer.
+      int m = -1;
+      if (mirror_k_ > 0) m = expert_mirror_[expert];
+      if (m >= 0 && !ring_claimed_[m]) {
+        ring_claimed_[m] = true;
+        *buf_out = -(m + 1);
+        if (hit_out) *hit_out = true;
+        if (delta) ++delta->mirror_hits;
+        else ++stats_.mirror_hits;
+        if (tim) RecordStageNs(NowNs(t_stage0));
+        return Status();
+      }
       b = PickL2Victim(needed_mark);
       if (b < 0) {
         return Status::Fail("no residency L2 buffer available");
@@ -662,17 +755,23 @@ Status MoEResidency::CommitExpert(int expert, int slot, int buf,
   const size_t gu_sf_block = layout_.gu_sf_block();
   const size_t dn_sf_block = layout_.dn_sf_block();
 
-  // L2 buffer is in checkpoint file order (see StageExpert):
-  // [w_dn|w_ga|w_up|s_dn|s_ga|s_up|gu_s_merged|gu_sw|dn_sw|scal] with the
-  // SF region packed at s_bytes each (total = MoEResidencyStagingBytes).
-  uint8_t* p = l2_buf_[buf];
+  // buf >= 0: an L2 staging buffer in checkpoint file order (see
+  // StageExpert): [w_dn|w_ga|w_up|s_dn|s_ga|s_up|gu_s_merged|gu_sw|dn_sw|
+  // scal] with the SF region packed at s_bytes each (total =
+  // MoEResidencyStagingBytes). buf < 0 (C4): a mirror ring buffer
+  // (-(k+1)) holding [w_dn|w_ga|w_up|gu_sw|dn_sw|scal] (total =
+  // MoEResidencyMirrorBytes): the slot payload minus the raw SF region.
+  const bool from_ring = buf < 0;
+  const int rb = from_ring ? -buf - 1 : buf;
+  uint8_t* p = from_ring ? mirror_buf_[rb] : l2_buf_[buf];
   uint8_t* w_dn = p;
   uint8_t* w_ga = p + w_bytes;
-  uint8_t* gu_sw = p + 3 * w_bytes + 5 * s_bytes;
+  uint8_t* gu_sw = from_ring ? p + 3 * w_bytes : p + 3 * w_bytes + 5 * s_bytes;
   uint8_t* dn_sw = gu_sw + gu_sf_block;
   const float* scal = reinterpret_cast<const float*>(dn_sw + dn_sf_block);
+  const size_t buf_bytes = from_ring ? mirror_bytes_ : staging_bytes_;
   if (reinterpret_cast<const uint8_t*>(scal) + 4 * sizeof(float) >
-      p + staging_bytes_) {
+      p + buf_bytes) {
     return Status::Fail("residency staging layout exceeds buffer");
   }
 
@@ -685,18 +784,114 @@ Status MoEResidency::CommitExpert(int expert, int slot, int buf,
   }
 
   Status s;
-  // H2D into the slot. C2: gate+up are contiguous in the L2 buffer and in
-  // the slot (per-slot stride moe_is*hs == 2*w_bytes), so one copy covers
-  // both. The four per-slot scales live in four separate C-float device
-  // arrays (array-major, stride C; see Init's merged allocation), so the
-  // buffer's 4-float scale region needs four 4-byte copies, one per array.
-  // (The earlier 16-byte merge wrote scal[1..3] into gu_w_scale2[slot+1..3]
-  // and left the other three arrays stale; fixed 2026-10-01.)
   uint8_t* gu_dst =
       layout_.gu_packed + static_cast<size_t>(slot) * moe_is_ * hs_;
-  if (!(s = H2D(w_ga, gu_dst, 2 * w_bytes, stream))) return s;
   uint8_t* dn_dst =
       layout_.dn_packed + static_cast<size_t>(slot) * hs_ * (moe_is_ / 2);
+  // C4: before overwriting an occupied slot, D2H the evicted expert's
+  // payload into the mirror ring. The D2Hs are stream-ordered before the
+  // H2D below, so the copy completes before the slot is overwritten. The
+  // ring is a pure cache: if every buffer is in flight (a concurrent
+  // commit still reads one) the write-back is dropped, which only makes
+  // the ring colder, never incorrect.
+  if (mirror_k_ > 0 && slot_expert_[slot] >= 0) {
+    const int old = slot_expert_[slot];
+    int m = -1;
+    {
+      std::lock_guard<std::mutex> lk(*l2_mu_);
+      for (int i = 0; i < mirror_k_ && m < 0; ++i) {
+        const int cand = (mirror_cursor_ + i) % mirror_k_;
+        if (ring_in_flight_[cand]) {
+          // Lazy release: the copy that set the flag may have completed.
+          if (cudaEventQuery(ring_event_[cand]) != cudaSuccess) continue;
+          ring_in_flight_[cand] = false;
+        }
+        if (ring_claimed_[cand]) continue;
+        m = cand;
+        ring_claimed_[m] = true;  // released after the D2H + event record
+        mirror_cursor_ = (m + 1) % mirror_k_;
+      }
+    }
+    if (m < 0) {
+      if (delta) ++delta->mirror_skips;
+      else ++stats_.mirror_skips;
+    } else {
+      uint8_t* mb = mirror_buf_[m];
+      bool ok =
+          cudaMemcpyAsync(mb, dn_dst, w_bytes, cudaMemcpyDeviceToHost,
+                          stream) == cudaSuccess &&
+          cudaMemcpyAsync(mb + w_bytes, gu_dst, 2 * w_bytes,
+                          cudaMemcpyDeviceToHost, stream) == cudaSuccess &&
+          cudaMemcpyAsync(mb + 3 * w_bytes,
+                          layout_.gu_sf + static_cast<size_t>(slot) *
+                              gu_sf_block,
+                          gu_sf_block, cudaMemcpyDeviceToHost, stream) ==
+              cudaSuccess &&
+          cudaMemcpyAsync(mb + 3 * w_bytes + gu_sf_block,
+                          layout_.dn_sf + static_cast<size_t>(slot) *
+                              dn_sf_block,
+                          dn_sf_block, cudaMemcpyDeviceToHost, stream) ==
+              cudaSuccess;
+      const size_t so = 3 * w_bytes + gu_sf_block + dn_sf_block;
+      ok = ok &&
+           cudaMemcpyAsync(mb + so, layout_.gu_w_scale2 + slot,
+                           sizeof(float), cudaMemcpyDeviceToHost, stream) ==
+               cudaSuccess &&
+           cudaMemcpyAsync(mb + so + sizeof(float),
+                           layout_.gu_input_scale + slot, sizeof(float),
+                           cudaMemcpyDeviceToHost, stream) == cudaSuccess &&
+           cudaMemcpyAsync(mb + so + 2 * sizeof(float),
+                           layout_.dn_w_scale2 + slot, sizeof(float),
+                           cudaMemcpyDeviceToHost, stream) == cudaSuccess &&
+           cudaMemcpyAsync(mb + so + 3 * sizeof(float),
+                           layout_.dn_input_scale + slot, sizeof(float),
+                           cudaMemcpyDeviceToHost, stream) == cudaSuccess;
+      if (!ok || cudaEventRecord(ring_event_[m], stream) != cudaSuccess) {
+        // Drop the write-back; the buffer is pickable again.
+        std::lock_guard<std::mutex> lk(*l2_mu_);
+        ring_claimed_[m] = false;
+      } else {
+        // Publish the entry only after the event is recorded, so the
+        // invariant "in_flight implies the event is recorded" holds and
+        // mirror hits can safely wait on it.
+        std::lock_guard<std::mutex> lk(*l2_mu_);
+        const int prev = mirror_expert_[m];
+        if (prev >= 0 && expert_mirror_[prev] == m) expert_mirror_[prev] = -1;
+        // Invalidate any stale entry for `old` elsewhere in the ring
+        // (re-eviction of an expert already mirrored).
+        for (int j = 0; j < mirror_k_; ++j) {
+          if (j != m && mirror_expert_[j] == old) mirror_expert_[j] = -1;
+        }
+        mirror_expert_[m] = old;
+        expert_mirror_[old] = m;
+        ring_in_flight_[m] = true;
+        ring_claimed_[m] = false;
+        if (delta) ++delta->mirror_writebacks;
+        else ++stats_.mirror_writebacks;
+      }
+    }
+  }
+  if (from_ring) {
+    // A write-back D2H may still be filling the buffer: the entry is
+    // published with in_flight set before the copy completes. Wait for the
+    // event so the H2Ds below read a complete payload. The buffer is
+    // claimed, so no new write-back can start on it in the meantime.
+    if (ring_in_flight_[rb]) {
+      if (cudaEventSynchronize(ring_event_[rb]) != cudaSuccess) {
+        return Status::Fail("residency mirror wait failed");
+      }
+      std::lock_guard<std::mutex> lk(*l2_mu_);
+      ring_in_flight_[rb] = false;
+    }
+  }
+  // H2D into the slot. C2: gate+up are contiguous in the source buffer and
+  // in the slot (per-slot stride moe_is*hs == 2*w_bytes), so one copy
+  // covers both. The four per-slot scales live in four separate C-float
+  // device arrays (GEMM contract: gu_w_scale2[e], gu_input_scale[e], ...;
+  // the merged allocation only shares one block, it does not interleave
+  // per slot), so each scale keeps its own 4-byte copy. 9 H2D calls per
+  // expert become 6.
+  if (!(s = H2D(w_ga, gu_dst, 2 * w_bytes, stream))) return s;
   if (!(s = H2D(w_dn, dn_dst, w_bytes, stream))) return s;
   if (!(s = H2D(gu_sw, layout_.gu_sf + static_cast<size_t>(slot) * gu_sf_block,
                 gu_sf_block, stream)))
@@ -704,23 +899,32 @@ Status MoEResidency::CommitExpert(int expert, int slot, int buf,
   if (!(s = H2D(dn_sw, layout_.dn_sf + static_cast<size_t>(slot) * dn_sf_block,
                 dn_sf_block, stream)))
     return s;
-  if (!(s = H2D(&scal[0], layout_.gu_w_scale2 + slot, sizeof(float), stream)))
+  if (!(s = H2D(&scal[0], layout_.gu_w_scale2 + slot, sizeof(float),
+                stream)))
     return s;
   if (!(s = H2D(&scal[1], layout_.gu_input_scale + slot, sizeof(float),
                 stream)))
     return s;
-  if (!(s = H2D(&scal[2], layout_.dn_w_scale2 + slot, sizeof(float), stream)))
+  if (!(s = H2D(&scal[2], layout_.dn_w_scale2 + slot, sizeof(float),
+                stream)))
     return s;
   if (!(s = H2D(&scal[3], layout_.dn_input_scale + slot, sizeof(float),
                 stream)))
     return s;
 
-  // Mark this L2 buffer in flight until its last H2D completes (victim
-  // selection skips it; a same-expert L2 hit may still use it read-only).
-  if (cudaEventRecord(l2_event_[buf], stream) != cudaSuccess) {
-    return Status::Fail("residency L2 event record failed");
-  }
-  {
+  // Mark the source buffer in flight until its last H2D completes (victim
+  // selection skips it; a same-expert hit may still use it read-only).
+  if (from_ring) {
+    if (cudaEventRecord(ring_event_[rb], stream) != cudaSuccess) {
+      return Status::Fail("residency mirror event record failed");
+    }
+    std::lock_guard<std::mutex> lk(*l2_mu_);
+    ring_in_flight_[rb] = true;
+    ring_claimed_[rb] = false;
+  } else {
+    if (cudaEventRecord(l2_event_[buf], stream) != cudaSuccess) {
+      return Status::Fail("residency L2 event record failed");
+    }
     std::lock_guard<std::mutex> lk(*l2_mu_);
     l2_in_flight_[buf] = true;
     l2_claimed_[buf] = false;
@@ -983,7 +1187,11 @@ void MoEResidency::LoadWorkerLoop(LoadWorker* w) const {
                                w->stream, &w->delta_);
       if (!cs.ok()) {
         // Undo the stage bookkeeping so the buffer is pickable again.
-        ReleaseMissClaim(plan->experts[idx], buf, hit);
+        if (buf < 0) {
+          ReleaseRingClaim(plan->experts[idx], -buf - 1);
+        } else {
+          ReleaseMissClaim(plan->experts[idx], buf, hit);
+        }
         if (plan->first_err.exchange(1, std::memory_order_acq_rel) == 0) {
           // Only the first failing worker writes; LoadPhase1 reads after
           // waiting on every worker's done (happens-before via the cv).
@@ -1084,6 +1292,24 @@ void MoEResidency::Free() {
     delete l2_mu_;
     l2_mu_ = nullptr;
   }
+  // C4: mirror ring.
+  for (int k = 0; k < mirror_k_; ++k) {
+    if (ring_event_[k]) {
+      cudaEventDestroy(ring_event_[k]);
+      ring_event_[k] = nullptr;
+    }
+  }
+  if (mirror_block_) {
+    cudaFreeHost(mirror_block_);
+    mirror_block_ = nullptr;
+  }
+  mirror_buf_.clear();
+  mirror_expert_.clear();
+  expert_mirror_.clear();
+  ring_in_flight_.clear();
+  ring_claimed_.clear();
+  ring_event_.clear();
+  mirror_k_ = 0;
   l2_buf_.clear();
   l2_expert_.clear();
   expert_l2buf_.clear();
