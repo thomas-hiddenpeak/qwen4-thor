@@ -4,6 +4,20 @@
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
 ## 当前结论
+## C3 协议补全 warm pread_avg 证据采集；自动链契约复核通过（2026-10-01 15:55）
+
+nu15552 矩阵在途（204800 档 2/3，随后 261887 目标档 ~18:00）期间：
+(1) C3 协议 --acceptance 分支补 Q4T_RESIDENCY_TIMING=1（基线/候选同设，
+C=0 零开销）+ 矩阵后从 e2e server.log 提取 warm pread_avg 入
+evidence.json，完成设计 §7.3 冷→暖证据对（原脚本仅采集冷侧，r3 矩阵
+server.log 实测 0 timing 行）；(2) auto-r3c/auto-c1-verify/verify-c1/
+queue-r3-final 全链 tag/正则/文件契约与 compare_e2e.py 实际输出逐行
+核对一致。GEMM 冻结（第十一次确认）。
+
+下一步：跟踪矩阵 → compare 报告 → §5 分支 → post-r3-affected →
+verify-c1 → 合并 C1+C2 → 冻结最终候选（含 C3）→ final-acceptance →
+报告定稿。
+
 ## nu15552 矩阵 4/6 档完成；部分分支读数：两候选均 <50%，§5 分支 3 大概率（2026-10-01 15:25）
 
 nu15552（按层 top-n、DP 最优 C_l 256..446、总 15552 槽、≈68.8 GB
