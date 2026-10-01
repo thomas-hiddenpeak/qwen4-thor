@@ -110,6 +110,14 @@ r3 矩阵 miss 数据 + 定向 trace 复核。
   ~0.2 GB）；B=8448 估算 51.1 GB + 1.06 GB ≈ 52.2 GB（页缓存预算
   ~1.8 GB）。C4 启用时 B 选择须重算（ledger §1.6 增 C4 列）。
 
+**C4 实施状态（2026-10-01 19:55）**：已实现于 path-c 分支
+（wt-c1，独立镜像环 + CommitExpert 写回钩子 + StageExpert miss
+分支命中路径 + mirror_hits/writebacks/skips 统计 + 单测
+residency_mirror_ring_hit；[q4t][budget] 已计入 48×K×2,764,816 B）。
+Q4T_MOE_MIRROR_K=0 关闭（回退边界 = C1+C2+C3）。验收顺序：
+verify-c1 双跑（K=0 回退边界 / K=8 最终候选）→ final-acceptance
+（B 按 R3_DECISION 算法，C4 启用口径）。
+
 ### C5 C 席位（r3 矩阵直接测量中）
 - nu-15552（按层 top-n，C_l 256..446）miss 数按席位比例下降；
   若其 decode ≥50% 基线 → 最终候选 = 54 GB 内最大 C（≈208–224）

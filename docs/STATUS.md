@@ -5,6 +5,24 @@
 
 ## 当前结论
 
+## C4 已实现，verify-c1 六查 4 过 / 1 脚本缺陷已修 / 1 在途；验收队列在途（2026-10-01 21:00）
+
+C4 驱逐镜像已实现于 path-c 分支（wt-c1 887a3fe，107/107 单测，
+含 residency_mirror_ring_hit）：每层 K=8 pinned 环（~1.06 GB，
+Q4T_MOE_MIRROR_K=0 关闭=回退边界 C1+C2+C3），CommitExpert
+stream-ordered D2H 写回，StageExpert miss 先查环再选 L2 victim。
+verify-c1（K=8）在途：单测/bitexact/跨二进制恒等/cancel 四项
+PASS；fault FAIL 为脚本 env 行截断（钩子未武装，已修）；定向
+45056×3 在途。post-r3-affected：质量 3/3 PASS、业务 base 6/6
+OK；业务 nu15552+c256 因旧版脚本缺 `--` 失败（已修，待重跑）。
+queue-post-verify（setsid）在途：当前 verify-c1 结束后自动
+业务重跑+逐位比对 → verify-c1 K=0 → verify-c1 K=8（PATH_C
+验收顺序双跑）。GEMM 冻结（用户再确认：目标完成前不改，之后
+另行讨论）。
+
+下一步：跟踪队列 → C1+C2+C4 合并主分支 → 冻结最终候选（B 按
+R3_DECISION 算法）→ final-acceptance → 报告定稿。
+
 ## r3 矩阵完成：两候选均 <50%（c256 22–28% / nu15552 28–37%），§5 分支 3 确认（2026-10-01 17:10）
 
 nu15552 六档 3/3 全完成（17:06:33，rc=0，18/18）：

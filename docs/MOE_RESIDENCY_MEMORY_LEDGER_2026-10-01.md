@@ -121,6 +121,15 @@ set-v1 校准切分（32 请求、197184 组，policy/final_validation 不
 估算以 r3 c256+L2-8 实测峰值（e2e-r3-cand-c256/memory-peak.json）
 为基准由 budget_backfill.py 回填，启动日志 [q4t][budget] 逐项核对。）
 
+C4 影响（驱逐镜像环，K=8 默认，2026-10-01 分支 3 触发）：pinned
++1,061,693,696 B（48 层 × 8 × 2,764,816 B，[q4t][budget]
+extra_fixed_bytes 已计入）。C4 启用时估算峰值：B=7680 ≈50.3 GB /
+B=8448 ≈52.2 GB / B=9216 ≈54.2 GB（超 ~0.2 GB）/ B=9984 ≈56.2 GB
+（超）/ B=10752 ≈58.2 GB（超）/ B=12288 ≈59.9 GB（实测 58.86 +
+1.06，用户授权超支口径）。C4 启用时 B=9216 为可能落入 54 GB 内
+的最大 B，B=8448 为安全档；最终选择以 final-acceptance 实测峰值
+（rss+gpu + 矩阵末态页缓存增量）为准。
+
 性能侧参考（同 DP 口径，miss/step = 48 层合计）：
 
 | B | uniform miss/step | DP 最优 miss/step | 节省 |
