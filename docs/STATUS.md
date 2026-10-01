@@ -4,6 +4,20 @@
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
 ## 当前结论
+## 隔离 10:04 无效 post-r3-affected（旧 auto-r3b 触发）；r3 矩阵在途（c256 204800 档 1/3）（2026-10-01 13:25）
+
+旧 auto-r3b 观察器在第一次矩阵尝试失败后于 10:04 触发 post-r3-affected
+（二进制 7f013d73，L2 修复前）：quality baseline 10/11 成功，第 11 条
+（204800 token 提示）客户端挂起 ~353 s 且从未到达服务端（server.log 无
+auto-10，shutdown 0 in-flight；服务端 30 s 读截止下到达必有痕迹）。同一
+fixture 08:43 曾 11/11 成功；单次发生按瞬态处理。部分输出已隔离为
+affected/r3-quality-base-INVALID-20261001T1004（必需：run_acceptance.py
+拒绝非空输出目录，不隔离则真实 post-r3-affected（auto-r3c 3/3，~18:30）
+会在 [1/4] 失败）。若再现，用 Q4T_ACCESS_LOG=1 harness 外复跑取 HTTP 痕迹。
+矩阵（13:22）：c256 四档完成（decode ~24–28% 基线，与 r2 一致、优化前
+预期内），204800 在途 1/3，随后 261887 → nu15552 → post-r3-affected →
+auto-c1-verify（§5 分支 + verify-c1）。GEMM 冻结（第十次确认）。
+
 ## C1+C2 实现完成并提交（path-c 分支 df02f60，UNVERIFIED 阶段快照）；r3 矩阵在途（c256 五档中）（2026-10-01 13:05）
 
 C1（stage→commit 流水线，worker 8→16）+C2（scale 4→1、gate/up
