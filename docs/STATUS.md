@@ -4,6 +4,19 @@
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
 ## 当前结论
+## C1+C2 实现完成并提交（path-c 分支 df02f60，UNVERIFIED 阶段快照）；r3 矩阵在途（c256 五档中）（2026-10-01 13:05）
+
+C1（stage→commit 流水线，worker 8→16）+C2（scale 4→1、gate/up
+2→1，每专家 9 次 H2D→5 次）按冻结设计实现，提交
+codex/moe-residency-path-c-20261001（df02f60）。并发安全审查通过
+（plan 内专家/槽位唯一、commit 全部入单模型流、失败路径
+ReleaseMissClaim、计数器 worker 局部合并）；wt-c1 独立构建零警告
+（q4t ba7327a9），主树工作区已还原。GPU 验证按计划在 r3 矩阵报告
+后进行（C1 验证配置 C=256+hot-256+L2-16，[q4t][budget] 逐项核对）。
+r3 矩阵（13:04）：c256 四档过、204800 prefill 在途，随后 261887 →
+nu15552（cap=446 按层 top-n，授权超支）→ post-r3-affected。
+GEMM 冻结（第十次确认）。
+
 ## r3 逐 miss 计时完成；路径 C 设计冻结（C1 流水线/C2 H2D 合并/C3 页缓存/C4 驱逐镜像/C5 席位）（2026-10-01 12:35）
 
 timing-collect-r3（efce31d8，C=256+hot-256+L2-8，45056+256）：
