@@ -25,6 +25,7 @@
 #include <vector>
 
 #include "q4t/model/linear.h"
+#include "q4t/model/moe_chunk_order.h"
 #include "q4t/quant/moe_decode.h"
 #include "q4t/quant/moe_gemm.h"
 #include "q4t/quant/moe_residency.h"
@@ -35,6 +36,25 @@ namespace model {
 namespace {
 
 constexpr int kBlock = 256;
+
+int MoEChunkOrderMode() {
+  static const int mode = [] {
+    const int parsed =
+        ParseMoEChunkOrder(std::getenv("Q4T_MOE_CHUNK_ORDER"));
+    if (parsed < 0) {
+      std::fprintf(stderr,
+                   "[q4t][residency] invalid Q4T_MOE_CHUNK_ORDER; "
+                   "expected 0 or 1\n");
+    } else {
+      std::fprintf(stderr,
+                   "[q4t][residency] chunk_order=%d policy=%s "
+                   "prefill_only=1 tie=original_chunk_index\n",
+                   parsed, parsed == 1 ? "greedy_overlap" : "original");
+    }
+    return parsed;
+  }();
+  return mode;
+}
 
 __device__ __forceinline__ float Bf16ToFloat(uint16_t b) {
   uint32_t bits = static_cast<uint32_t>(b) << 16;
@@ -411,6 +431,9 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
   //     evicted slot and before any GEMM that reads the new one (see
   //     moe_residency.h). The trace above already captured the ORIGINAL ids.
   if (residency) {
+    const int chunk_order_mode = MoEChunkOrderMode();
+    if (chunk_order_mode < 0)
+      return Status::Fail("Q4T_MOE_CHUNK_ORDER must be 0 or 1");
     const int C = residency->Slots();
     if (C < k) return Status::Fail("residency slots below top-k");
     std::vector<int32_t> ids_h(static_cast<size_t>(T) * k);
@@ -594,7 +617,7 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
       subs[j].toks = &chunks[j];
       subs[j].slots.resize(chunks[j].size() * static_cast<size_t>(k));
     }
-    auto plan_sub = [&](int j) -> Status {
+    auto plan_sub = [&](size_t j) -> Status {
       const auto& toks = *subs[j].toks;
       const int T_sub = static_cast<int>(toks.size());
       std::vector<int32_t> exp_sub(static_cast<size_t>(T_sub) * k);
@@ -648,25 +671,53 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
       std::fprintf(stderr,
                    "[q4t][residency][diag] layer=%d T=%d D=%d chunks=%zu "
                    "max_distinct=%d resident_before=%d overlap=%s "
-                   "new=%s\n",
+                   "new=%s chunk_order=%d diag_order=original_partition\n",
                    layer_id, T, D, chunks.size(), maxd,
-                   residency->ResidentCount(), ov.c_str(), nw.c_str());
+                   residency->ResidentCount(), ov.c_str(), nw.c_str(),
+                   chunk_order_mode);
     }
-    Status ps = plan_sub(0);
+    // Keep Sub indexed by its ORIGINAL chunk: token rows, slot storage and
+    // load plan always describe the same chunk, even for unequal chunk sizes.
+    // Membership is computed once; selection reads the live residency after
+    // the preceding LoadPhase1 worker barrier, without a new CUDA sync.
+    const bool reorder_chunks =
+        chunk_order_mode == 1 && T > 1 && chunks.size() > 1;
+    MoEChunkOrderSelector chunk_selector;
+    if (reorder_chunks) {
+      chunk_selector.Init(chunks.size(), E);
+      for (size_t j = 0; j < chunks.size(); ++j) {
+        for (int token : chunks[j]) {
+          for (int jj = 0; jj < k; ++jj) {
+            chunk_selector.AddExpert(
+                j, ids_h[static_cast<size_t>(token) * k + jj]);
+          }
+        }
+      }
+    }
+    auto select_chunk = [&](size_t original) -> size_t {
+      if (!reorder_chunks) return original;
+      return chunk_selector.SelectNext(
+          C, [&](int slot) { return residency->SlotExpert(slot); });
+    };
+    size_t current = select_chunk(0);
+    if (current >= subs.size())
+      return Status::Fail("residency chunk selection exhausted");
+    Status ps = plan_sub(current);
     if (!ps.ok()) return ps;
-    ps = residency->LoadPhase1(subs[0].plan);
+    ps = residency->LoadPhase1(subs[current].plan);
     if (!ps.ok()) return ps;
     for (size_t j = 0; j < chunks.size(); ++j) {
-      const auto& toks = *subs[j].toks;
+      Sub& sub = subs[current];
+      const auto& toks = *sub.toks;
       const int T_sub = static_cast<int>(toks.size());
       // Commit sub-chunk j's staged chunks (H2D after sub-chunk j-1's GEMM,
       // before sub-chunk j's GEMM). The stage-ahead below commits sub-chunk
       // j fully during the previous iteration, so this only does work for
       // j = 0.
-      while (!subs[j].plan.fully_committed()) {
-        s = residency->LoadPhase2(subs[j].plan, stream);
+      while (!sub.plan.fully_committed()) {
+        s = residency->LoadPhase2(sub.plan, stream);
         if (!s.ok()) return s;
-        ps = residency->LoadPhase1(subs[j].plan);
+        ps = residency->LoadPhase1(sub.plan);
         if (!ps.ok()) return ps;
       }
       std::vector<float> rw_sub(static_cast<size_t>(T_sub) * k);
@@ -685,8 +736,8 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
                               stream>>>(x, d_tokidx, T_sub, hs, d_xsub);
       if (cudaGetLastError() != cudaSuccess)
         return Status::Fail("residency gather launch");
-      if (cudaMemcpyAsync(d_idsub, subs[j].slots.data(),
-                          subs[j].slots.size() * sizeof(int32_t),
+      if (cudaMemcpyAsync(d_idsub, sub.slots.data(),
+                          sub.slots.size() * sizeof(int32_t),
                           cudaMemcpyHostToDevice, stream) != cudaSuccess)
         return Status::Fail("residency H2D slot ids");
       if (cudaMemcpyAsync(d_rwsub, rw_sub.data(),
@@ -740,14 +791,17 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
       // stream-ordered after sub-chunk j's GEMM, so any slot eviction is
       // safe for sub-chunk j.
       if (j + 1 < chunks.size()) {
-        ps = plan_sub(j + 1);
+        current = select_chunk(j + 1);
+        if (current >= subs.size())
+          return Status::Fail("residency chunk selection exhausted");
+        ps = plan_sub(current);
         if (!ps.ok()) return ps;
-        ps = residency->LoadPhase1(subs[j + 1].plan);
+        ps = residency->LoadPhase1(subs[current].plan);
         if (!ps.ok()) return ps;
-        while (!subs[j + 1].plan.fully_committed()) {
-          s = residency->LoadPhase2(subs[j + 1].plan, stream);
+        while (!subs[current].plan.fully_committed()) {
+          s = residency->LoadPhase2(subs[current].plan, stream);
           if (!s.ok()) return s;
-          ps = residency->LoadPhase1(subs[j + 1].plan);
+          ps = residency->LoadPhase1(subs[current].plan);
           if (!ps.ok()) return ps;
         }
       }

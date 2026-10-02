@@ -5,10 +5,14 @@ samples to the runner's server PID; --phase-file labels loading/warmup/requests.
 All *_kb fields are Linux KiB, *_bytes fields bytes. System Cached is global,
 not model-owned. GPU driver allocations, pinned memory and process residency
 may overlap on Thor; this monitor deliberately does not sum them for acceptance.
+For matched low-interference performance runs, use --interval 1
+--gpu-interval 10 --file-cache-mode endpoints. Live file cache then remains
+unknown, while prelaunch/post-exit file observations are reported separately.
 """
 import argparse
 import csv
 import json
+import math
 import os
 from pathlib import Path
 import signal
@@ -29,6 +33,40 @@ PROCESS_KEYS = ('rss_kb', 'anon_kb', 'file_kb', 'shmem_kb', 'hwm_kb',
                 'private_kb', 'locked_kb', 'vmpin_kb', 'process_swap_kb')
 SYSTEM_COLS = {k: 'system_' + k.lower() + '_kb' for k in MEM_KEYS}
 STOP = False
+
+
+class ObservationSchedule:
+    """Decimate expensive observations without carrying values forward.
+
+    Ages describe the last observation attempt, including failed attempts.
+    No timestamp/age implies a usable value; only the current fresh result
+    populates a byte column. Endpoints mode never scans files on a live PID.
+    """
+    def __init__(self, gpu_interval, file_cache_mode):
+        self.gpu_interval = gpu_interval
+        self.file_cache_mode = file_cache_mode
+        self.gpu_last_monotonic = None
+        self.gpu_last_end_t = None
+        self.cache_last_end_t = None
+
+    def gpu_due(self, now_monotonic, has_target):
+        return has_target and (self.gpu_last_monotonic is None or
+                               now_monotonic - self.gpu_last_monotonic >=
+                               self.gpu_interval)
+
+    def cache_due(self, first_sample, phase):
+        return (self.file_cache_mode == 'every_sample' or phase == 'after_exit'
+                or (first_sample and phase == 'before_start'))
+
+    def freshness(self, sample_end_t):
+        result = {}
+        for prefix, observed_t in [('gpu', self.gpu_last_end_t),
+                                   ('model_file_cache', self.cache_last_end_t)]:
+            result[prefix + '_last_observation_end_t'] = observed_t
+            result[prefix + '_observation_age_seconds'] = (
+                sample_end_t - observed_t
+                if observed_t is not None and sample_end_t >= observed_t else None)
+        return result
 
 
 def read_fields(path):
@@ -159,15 +197,18 @@ def gpu_used_bytes(pids):
     return gpu_observation(pids)[0]
 
 
-def summarize(rows, baseline, root, root_start, interval, stopped, existing):
+def summarize(rows, baseline, root, root_start, interval, stopped, existing,
+              gpu_interval=None, file_cache_mode='every_sample'):
     numeric = [key for key in rows[0] if key.endswith(('_kb', '_bytes'))] if rows else []
+    target_rows = [row for row in rows if row.get('root')]
     peaks = {}
     for key in numeric:
-        values = [row[key] for row in rows if row.get(key) is not None]
+        # Prelaunch/post-exit cache is useful context, not a live service peak.
+        candidates = target_rows if key.startswith('model_file_cache') else rows
+        values = [row[key] for row in candidates if row.get(key) is not None]
         peaks[key] = max(values) if values else None
     peaks_bytes = {key: (value * 1024 if key.endswith('_kb') else value)
                    for key, value in peaks.items() if value is not None}
-    target_rows = [row for row in rows if row.get('root')]
     before = any(row.get('phase') == 'before_start' for row in rows)
     unresolved = ['CUDA/pinned/process-resident overlap is not identified',
                   'sampling does not capture instantaneous allocation peaks']
@@ -175,13 +216,37 @@ def summarize(rows, baseline, root, root_start, interval, stopped, existing):
                               for row in target_rows):
         unresolved.insert(0, 'model-owned file cache is not fully observed')
     return {
-        'schema_version': 3, 'root_pid': root, 'root_start_ticks': root_start,
+        'schema_version': 4, 'root_pid': root, 'root_start_ticks': root_start,
         'baseline': baseline, 'sample_interval_seconds': interval,
+        'observation_policy': {
+            'resource_interval_seconds': interval,
+            'gpu_interval_seconds': gpu_interval if gpu_interval is not None else interval,
+            'file_cache_mode': file_cache_mode,
+            'file_cache_endpoints': ['before_start_first_sample', 'after_exit'],
+            'cadence': 'sequential best effort; actual sample windows are recorded',
+            'age_semantics': 'time since last observation attempt ended, not value freshness',
+            'carry_forward_values': False,
+        },
         'sampling_complete': stopped == 'target_exited',
         'stop_reason': stopped, 'prelaunch_sample_present': before,
         'existing_named_pids_at_start': sorted(existing),
         'sample_count': len(rows), 'target_sample_count': len(target_rows),
         'gpu_unknown_samples': sum(row.get('gpu_bytes') is None for row in target_rows),
+        'gpu_scheduled_skip_samples': sum(row.get('gpu_status') == 'scheduled_skip'
+                                          for row in target_rows),
+        'gpu_observed_samples': sum(row.get('gpu_fresh') is True for row in target_rows),
+        'gpu_failed_observations': sum(row.get('gpu_fresh') is True and
+                                      row.get('gpu_bytes') is None for row in target_rows),
+        'model_file_cache_observed_samples': sum(row.get('model_file_cache_fresh') is True
+                                                 for row in rows),
+        'model_file_cache_live_observed_samples': sum(row.get('model_file_cache_fresh') is True
+                                                      for row in target_rows),
+        'model_file_cache_live_peak_bytes': peaks.get('model_file_cache_bytes'),
+        'model_file_cache_endpoint_observations': [
+            {key: row.get(key) for key in ('t', 'phase', 'model_file_cache_bytes',
+                'model_file_cache_known_bytes', 'model_file_cache_start_t',
+                'model_file_cache_end_t', 'model_file_cache_status')}
+            for row in rows if not row.get('root') and row.get('model_file_cache_fresh')],
         'peaks_kb': {k: v for k, v in peaks.items() if k.endswith('_kb')},
         'peaks_bytes': peaks_bytes,
         'gpu_peak_bytes': peaks.get('gpu_bytes'),
@@ -195,6 +260,8 @@ def summarize(rows, baseline, root, root_start, interval, stopped, existing):
                   'PSS is proportional residency; RSS sums may count shared pages twice.',
                   'NVIDIA per-process bytes are driver accounting, not a disjoint physical category.',
                   'No stale GPU values are carried forward; gaps remain unknown.',
+                  'Planned GPU/file-cache skips are distinguished from failed attempts.',
+                  'File-cache endpoint observations do not establish a live cache peak.',
                   'Independent counter peaks must not be added as a simultaneous total.'],
     }
 
@@ -210,14 +277,25 @@ def main():
     ap.add_argument('--cgroup-path', type=Path,
                     help='Expected v2 cgroup; compare with actual PID membership')
     ap.add_argument('--interval', type=float, default=1.0)
+    ap.add_argument('--gpu-interval', type=float,
+                    help='GPU query interval in seconds; defaults to --interval')
+    ap.add_argument('--file-cache-mode', choices=('every_sample', 'endpoints'),
+                    default='every_sample',
+                    help='endpoints observes files only before launch and after PID exit')
     ap.add_argument('--wait-timeout', type=float, default=600)
     ap.add_argument('--baseline-json', type=Path)
     ap.add_argument('--phase-file', type=Path)
     ap.add_argument('--ready-file', type=Path)
     ap.add_argument('--stop-file', type=Path)
     args = ap.parse_args()
-    if args.interval <= 0 or args.wait_timeout <= 0:
+    if not all(math.isfinite(value) and value > 0
+               for value in (args.interval, args.wait_timeout)):
         ap.error('interval and wait-timeout must be positive')
+    gpu_every_sample = args.gpu_interval is None
+    if gpu_every_sample:
+        args.gpu_interval = args.interval
+    if not math.isfinite(args.gpu_interval) or args.gpu_interval <= 0:
+        ap.error('gpu-interval must be positive and finite')
     if args.cgroup_path:
         try:
             args.cgroup_path = normalize_cgroup(args.cgroup_path)
@@ -253,13 +331,19 @@ def main():
     root = args.pid
     root_start = None
     rows = []
+    schedule = ObservationSchedule(args.gpu_interval, args.file_cache_mode)
     reason = 'interrupted'
     cols = ['t', 'sample_end_t', 'sample_duration_seconds', 'phase', 'root',
             'root_start_ticks', 'nproc', *PROCESS_KEYS, 'cached_kb',
             'mem_used_kb', 'swap_used_kb', 'gpu_bytes', 'gpu_status',
+            'gpu_fresh', 'gpu_start_t', 'gpu_end_t',
+            'gpu_last_observation_end_t', 'gpu_observation_age_seconds',
             'model_file_cache_bytes', 'model_file_cache_known_bytes',
             'model_file_cache_files', 'model_file_cache_errors',
             'model_file_cache_start_t', 'model_file_cache_end_t',
+            'model_file_cache_fresh', 'model_file_cache_status',
+            'model_file_cache_mode', 'model_file_cache_last_observation_end_t',
+            'model_file_cache_observation_age_seconds',
             *SYSTEM_COLS.values()]
 
     def stop_handler(signum, frame):
@@ -320,24 +404,48 @@ def main():
                                   if 'MemTotal' in mi and 'MemFree' in mi else None)
             row['swap_used_kb'] = (mi['SwapTotal'] - mi['SwapFree']
                                    if 'SwapTotal' in mi and 'SwapFree' in mi else None)
-            row['gpu_bytes'], row['gpu_status'] = gpu_observation(pids)
-            if cache_paths:
+            row.update(gpu_bytes=None, gpu_fresh=False,
+                       gpu_status='scheduled_skip' if pids else 'no_target',
+                       model_file_cache_fresh=False,
+                       model_file_cache_mode=args.file_cache_mode,
+                       model_file_cache_status='scheduled_skip' if cache_paths else 'no_model_scope')
+            if pids and (gpu_every_sample or
+                         schedule.gpu_due(time.monotonic(), True)):
+                row['gpu_start_t'] = time.time()
+                row['gpu_bytes'], row['gpu_status'] = gpu_observation(pids)
+                row['gpu_end_t'] = time.time()
+                row['gpu_fresh'] = True
+                schedule.gpu_last_monotonic = time.monotonic()
+                schedule.gpu_last_end_t = row['gpu_end_t']
+            cache_row = {'sequence': len(rows), 'phase': row['phase'],
+                         'policy': args.file_cache_mode, 'observed': False,
+                         'status': row['model_file_cache_status']}
+            if cache_paths and schedule.cache_due(not rows, row['phase']):
                 cache = observe_files(cache_paths)
+                row['model_file_cache_fresh'] = True
+                row['model_file_cache_status'] = ('ok' if cache['resident_bytes'] is not None
+                                                  else 'partial_or_failed')
                 row['model_file_cache_bytes'] = cache['resident_bytes']
                 row['model_file_cache_known_bytes'] = cache['known_resident_lower_bytes']
                 row['model_file_cache_files'] = cache['observed_files']
                 row['model_file_cache_errors'] = len(cache['errors'])
                 row['model_file_cache_start_t'] = cache['start_t']
                 row['model_file_cache_end_t'] = cache['end_t']
-                cache_row = {'start_t': cache['start_t'], 'end_t': cache['end_t'],
+                schedule.cache_last_end_t = cache['end_t']
+                cache_row.update({'observed': True, 'status': row['model_file_cache_status'],
+                             'start_t': cache['start_t'], 'end_t': cache['end_t'],
                              'resident_pages': {str(i): value['cached_pages']
                                 for i, value in enumerate(cache['files'])},
                              'file_paths': [value['path'] for value in cache['files']]
                                 if cache['errors'] else None,
-                             'errors': cache['errors']}
+                             'errors': cache['errors']})
+            row['sample_end_t'] = time.time()
+            row.update(schedule.freshness(row['sample_end_t']))
+            if cache_paths:
+                cache_row.update(last_observation_end_t=schedule.cache_last_end_t,
+                                 observation_age_seconds=row['model_file_cache_observation_age_seconds'])
                 with (args.out / 'model-cache.jsonl').open('a') as cache_file:
                     cache_file.write(json.dumps(cache_row, separators=(',', ':')) + '\n')
-            row['sample_end_t'] = time.time()
             row['sample_duration_seconds'] = row['sample_end_t'] - now
             rows.append(row)
             writer.writerow(row)
@@ -351,7 +459,10 @@ def main():
                 reason = 'controller_stopped'
                 break
             time.sleep(max(0.0, args.interval - (time.time() - now)))
-    summary = summarize(rows, baseline, root, root_start, args.interval, reason, existing)
+    summary = summarize(rows, baseline, root, root_start, args.interval, reason, existing,
+                        args.gpu_interval, args.file_cache_mode)
+    summary['observation_policy']['gpu_mode'] = ('every_sample' if gpu_every_sample
+                                                  else 'interval')
     with (args.out / 'resource-samples.jsonl').open() as resource_file:
         summary['resource_observations'] = resource_summary(
             json.loads(line) for line in resource_file)
