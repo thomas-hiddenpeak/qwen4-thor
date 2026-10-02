@@ -92,6 +92,21 @@ int MoEResidencyMirrorK() {
   return n;
 }
 
+int MoEResidencyInlineMissLimit() {
+  // Phase B (2026-10-02): decode miss critical path after C5/C6 is the
+  // worker dispatch/wait round trip (dphase1 ~0.88 ms/miss vs dpread
+  // 0.49 ms). When a chunk has at most this many entries, run stage+commit
+  // on the caller thread to skip the mutex+cv round trip. Default 1 (the
+  // common decode case); 2 for two-miss layers; 0 disables (rollback).
+  int n = 1;
+  if (const char* env = std::getenv("Q4T_MOE_INLINE_MISS_LIMIT")) {
+    const int v = std::atoi(env);
+    if (v >= 0) n = v;
+  }
+  if (n > 2) n = 2;
+  return n;
+}
+
 size_t MoEResidencyLayerBytes(int hs, int moe_is, int C) {
   const size_t gu_sf_block = SfBufferSize(2 * moe_is, hs);
   const size_t dn_sf_block = SfBufferSize(hs, moe_is);
@@ -247,6 +262,7 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
   }
   // C4 (path C design 2026-10-01, branch 3): eviction mirror ring.
   mirror_k_ = MoEResidencyMirrorK();
+  inline_miss_limit_ = MoEResidencyInlineMissLimit();
   mirror_block_ = nullptr;
   mirror_bytes_ = 0;
   mirror_cursor_ = 0;
@@ -495,6 +511,13 @@ Status MoEResidency::StageExpert(int expert,
       l2_claimed_[b] = true;
       if (delta) ++delta->l2_hits;
       else ++stats_.l2_hits;
+      if (decode_phase) {
+        if (delta) ++delta->l2_decode_hits;
+        else ++stats_.l2_decode_hits;
+      } else {
+        if (delta) ++delta->l2_prefill_hits;
+        else ++stats_.l2_prefill_hits;
+      }
       hit = true;
     } else {
       // C4: consult the eviction mirror ring before picking an L2 victim.
@@ -524,6 +547,13 @@ Status MoEResidency::StageExpert(int expert,
         expert_l2buf_[old] = -1;
         if (delta) ++delta->l2_evictions;
         else ++stats_.l2_evictions;
+        if (decode_phase) {
+          if (delta) ++delta->l2_decode_evictions;
+          else ++stats_.l2_decode_evictions;
+        } else {
+          if (delta) ++delta->l2_prefill_evictions;
+          else ++stats_.l2_prefill_evictions;
+        }
       }
       l2_expert_[b] = expert;
       expert_l2buf_[expert] = b;
@@ -535,6 +565,13 @@ Status MoEResidency::StageExpert(int expert,
       // CommitExpert on success or by ReleaseMissClaim on error.
       if (delta) ++delta->l2_misses;
       else ++stats_.l2_misses;
+      if (decode_phase) {
+        if (delta) ++delta->l2_decode_misses;
+        else ++stats_.l2_decode_misses;
+      } else {
+        if (delta) ++delta->l2_prefill_misses;
+        else ++stats_.l2_prefill_misses;
+      }
     }
   }
   *buf_out = b;
@@ -1146,6 +1183,56 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
   // from it.
   const int cnt = std::min(load_threads_, n - off);
   plan.first_err.store(0, std::memory_order_relaxed);
+  // Phase B (2026-10-02): single-miss fast path. Small chunks run
+  // stage+commit on the caller thread, skipping the worker mutex+cv
+  // dispatch/wait round trip (dphase1). Semantics are identical to the
+  // worker path below (same StageExpert/CommitExpert, same claim release
+  // on failure, same counter merge, same cursors); larger chunks keep the
+  // original worker pipeline.
+  if (cnt <= inline_miss_limit_) {
+    StatsDelta delta;
+    for (int t = 0; t < cnt; ++t) {
+      const int i = off + t;
+      int buf = -1;
+      bool hit = false;
+      Status s = StageExpert(plan.experts[i],
+                             plan.needed_mark.empty() ? nullptr
+                                                     : &plan.needed_mark,
+                             &buf, &delta, &hit, plan.decode_phase);
+      if (s.ok()) {
+        plan.workers[i] = buf;
+        Status cs = CommitExpert(plan.experts[i], plan.slots[i], buf,
+                                 commit_stream_, &delta);
+        if (!cs.ok()) {
+          // Undo the stage bookkeeping so the buffer is pickable again
+          // (same as the worker path; remaining entries still run).
+          if (buf < 0) {
+            ReleaseRingClaim(plan.experts[i], -buf - 1);
+          } else {
+            ReleaseMissClaim(plan.experts[i], buf, hit);
+          }
+          if (plan.first_err.exchange(1, std::memory_order_acq_rel) == 0) {
+            plan.first_err_msg = "commit: " + cs.message();
+          }
+        }
+      } else {
+        if (plan.first_err.exchange(1, std::memory_order_acq_rel) == 0) {
+          plan.first_err_msg = s.message();
+        }
+      }
+    }
+    delta.MergeInto(stats_, resident_count_);
+    if (plan.first_err.load(std::memory_order_relaxed) != 0) {
+      if (tim) RecordPhase1Ns(NowNs(t_p1));
+      return Status::Fail("residency inline stage failed: " +
+                          plan.first_err_msg);
+    }
+    if (tim) RecordPhase1Ns(NowNs(t_p1));
+    if (tim && plan.decode_phase) RecordDPhase1Ns(NowNs(t_p1));
+    plan.next_stage = off + cnt;
+    plan.next_commit = off + cnt;
+    return Status();
+  }
   for (int t = 0; t < cnt; ++t) {
     LoadWorker* w = workers_[t];
     {

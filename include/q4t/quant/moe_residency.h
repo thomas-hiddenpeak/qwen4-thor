@@ -90,6 +90,11 @@ int MoEResidencyL2Slots();
 // clamped to [0, 32]; 0 disables C4). The budget must charge kLayers x
 // this x MoEResidencyMirrorBytes.
 int MoEResidencyMirrorK();
+// Single-miss fast path limit from Q4T_MOE_INLINE_MISS_LIMIT (default 1,
+// clamped to [0, 2]; 0 disables). When a LoadPhase1 chunk has at most this
+// many entries, stage+commit runs on the caller thread instead of the
+// worker mutex+cv dispatch/wait round trip (Phase B, 2026-10-02).
+int MoEResidencyInlineMissLimit();
 // Pinned mirror-ring bytes for ONE evicted expert payload
 // ([w_dn|w_ga|w_up|gu_sw|dn_sw|scal]).
 size_t MoEResidencyMirrorBytes(int hs, int moe_is);
@@ -124,6 +129,15 @@ class MoEResidency {
     uint64_t l2_hits = 0;
     uint64_t l2_misses = 0;
     uint64_t l2_evictions = 0;
+    // L2 per-phase split (observability item 1, 2026-10-02): the totals
+    // above remain the sum; these let decode vs prefill L2 hit rates be
+    // compared per request.
+    uint64_t l2_decode_hits = 0;
+    uint64_t l2_decode_misses = 0;
+    uint64_t l2_decode_evictions = 0;
+    uint64_t l2_prefill_hits = 0;
+    uint64_t l2_prefill_misses = 0;
+    uint64_t l2_prefill_evictions = 0;
     // C4 (path C design 2026-10-01, branch 3): eviction mirror ring.
     // writebacks = D2Hs of evicted expert payloads into the ring; hits =
     // miss-path consults served from the ring (H2D from RAM, no NVMe);
@@ -330,6 +344,12 @@ class MoEResidency {
     uint64_t l2_hits = 0;
     uint64_t l2_misses = 0;
     uint64_t l2_evictions = 0;
+    uint64_t l2_decode_hits = 0;
+    uint64_t l2_decode_misses = 0;
+    uint64_t l2_decode_evictions = 0;
+    uint64_t l2_prefill_hits = 0;
+    uint64_t l2_prefill_misses = 0;
+    uint64_t l2_prefill_evictions = 0;
     uint64_t mirror_hits = 0;
     uint64_t mirror_writebacks = 0;
     uint64_t mirror_skips = 0;
@@ -342,6 +362,12 @@ class MoEResidency {
       l2_hits = 0;
       l2_misses = 0;
       l2_evictions = 0;
+      l2_decode_hits = 0;
+      l2_decode_misses = 0;
+      l2_decode_evictions = 0;
+      l2_prefill_hits = 0;
+      l2_prefill_misses = 0;
+      l2_prefill_evictions = 0;
       mirror_hits = 0;
       mirror_writebacks = 0;
       mirror_skips = 0;
@@ -355,6 +381,12 @@ class MoEResidency {
       s.l2_hits += l2_hits;
       s.l2_misses += l2_misses;
       s.l2_evictions += l2_evictions;
+      s.l2_decode_hits += l2_decode_hits;
+      s.l2_decode_misses += l2_decode_misses;
+      s.l2_decode_evictions += l2_decode_evictions;
+      s.l2_prefill_hits += l2_prefill_hits;
+      s.l2_prefill_misses += l2_prefill_misses;
+      s.l2_prefill_evictions += l2_prefill_evictions;
       s.mirror_hits += mirror_hits;
       s.mirror_writebacks += mirror_writebacks;
       s.mirror_skips += mirror_skips;
@@ -475,6 +507,8 @@ class MoEResidency {
   // in_flight covers both copy directions (D2H write-back or H2D read);
   // it is set at entry publication and released lazily by event query.
   int mirror_k_ = 0;
+  // Phase B: inline stage+commit when a chunk has <= this many entries.
+  int inline_miss_limit_ = 1;
   uint8_t* mirror_block_ = nullptr;
   std::vector<uint8_t*> mirror_buf_;  // [K]
   mutable std::vector<int> mirror_expert_;  // [K] expert in ring slot, -1 = empty

@@ -852,7 +852,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                  "[q4t][residency] id=%s finish=%s in=%d out=%zu "
                  "loads=%llu load_mb=%.1f misses=%llu hits=%llu "
                  "evictions=%llu dmiss=%llu dlook=%llu pmiss=%llu "
-                 "plook=%llu l2h=%llu l2m=%llu l2ev=%llu nvme_mb=%.1f\n",
+                 "plook=%llu l2h=%llu l2m=%llu l2ev=%llu nvme_mb=%.1f "
+                 "mh=%llu mw=%llu msk=%llu ld2h=%llu ld2m=%llu "
+                 "ld2ev=%llu lp2h=%llu lp2m=%llu lp2ev=%llu\n",
                  id.c_str(), finish_reason.c_str(), T, generated.size(),
                  static_cast<unsigned long long>(now.loads - prev.loads),
                  (now.load_bytes - prev.load_bytes) / 1e6,
@@ -873,7 +875,25 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                      now.l2_misses - prev.l2_misses),
                  static_cast<unsigned long long>(
                      now.l2_evictions - prev.l2_evictions),
-                 (now.nvme_read_bytes - prev.nvme_read_bytes) / 1e6);
+                 (now.nvme_read_bytes - prev.nvme_read_bytes) / 1e6,
+                 static_cast<unsigned long long>(
+                     now.mirror_hits - prev.mirror_hits),
+                 static_cast<unsigned long long>(
+                     now.mirror_writebacks - prev.mirror_writebacks),
+                 static_cast<unsigned long long>(
+                     now.mirror_skips - prev.mirror_skips),
+                 static_cast<unsigned long long>(
+                     now.l2_decode_hits - prev.l2_decode_hits),
+                 static_cast<unsigned long long>(
+                     now.l2_decode_misses - prev.l2_decode_misses),
+                 static_cast<unsigned long long>(
+                     now.l2_decode_evictions - prev.l2_decode_evictions),
+                 static_cast<unsigned long long>(
+                     now.l2_prefill_hits - prev.l2_prefill_hits),
+                 static_cast<unsigned long long>(
+                     now.l2_prefill_misses - prev.l2_prefill_misses),
+                 static_cast<unsigned long long>(
+                     now.l2_prefill_evictions - prev.l2_prefill_evictions));
     residency_stats_prev_ = now;
     // Optional per-miss pipeline timing (Q4T_RESIDENCY_TIMING=1). Per-request
     // deltas of count/ns; max is cumulative (upper bound). Diagnostic only.

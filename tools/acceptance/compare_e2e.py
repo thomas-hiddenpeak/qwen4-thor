@@ -55,12 +55,15 @@ def residency_lines(tag):
             r' loads=(\d+) load_mb=([\d.]+) misses=(\d+) hits=(\d+)'
             r' evictions=(\d+)(?: dmiss=(\d+) dlook=(\d+) pmiss=(\d+)'
             r' plook=(\d+))?(?: l2h=(\d+) l2m=(\d+) l2ev=(\d+)'
-            r' nvme_mb=([\d.]+))?', line)
+            r' nvme_mb=([\d.]+))?(?: mh=(\d+) mw=(\d+) msk=(\d+)'
+            r' ld2h=(\d+) ld2m=(\d+) ld2ev=(\d+) lp2h=(\d+) lp2m=(\d+)'
+            r' lp2ev=(\d+))?', line)
         if m:
             out.append(dict(zip(
                 ['id', 'finish', 'in', 'out', 'loads', 'load_mb', 'misses',
                  'hits', 'evictions', 'dmiss', 'dlook', 'pmiss', 'plook',
-                 'l2h', 'l2m', 'l2ev', 'nvme_mb'],
+                 'l2h', 'l2m', 'l2ev', 'nvme_mb', 'mh', 'mw', 'msk',
+                 'ld2h', 'ld2m', 'ld2ev', 'lp2h', 'lp2m', 'lp2ev'],
                 m.groups())))
     return out
 
@@ -142,6 +145,15 @@ def main():
             hit_rate = 100.0 * l2h / (l2h + l2m) if (l2h + l2m) else 0.0
             extra += (f" l2h={l2h} l2m={l2m} l2ev={r['l2ev']}"
                       f" l2hit%={hit_rate:.1f} nvme_mb={r['nvme_mb']}")
+        if r.get('mh') is not None:
+            ld2h, ld2m = int(r['ld2h']), int(r['ld2m'])
+            lp2h, lp2m = int(r['lp2h']), int(r['lp2m'])
+            dh = 100.0 * ld2h / (ld2h + ld2m) if (ld2h + ld2m) else 0.0
+            ph = 100.0 * lp2h / (lp2h + lp2m) if (lp2h + lp2m) else 0.0
+            extra += (f" mh={r['mh']} mw={r['mw']} msk={r['msk']}"
+                      f" ld2h={ld2h} ld2m={ld2m} ld2ev={r['ld2ev']}"
+                      f" ld2hit%={dh:.1f} lp2h={lp2h} lp2m={lp2m}"
+                      f" lp2ev={r['lp2ev']} lp2hit%={ph:.1f}")
         print(f"  {r['id']} in={r['in']} out={r['out']} loads={r['loads']} "
               f"load_mb={r['load_mb']} misses={r['misses']} "
               f"evictions={r['evictions']}{extra}")

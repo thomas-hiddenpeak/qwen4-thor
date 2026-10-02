@@ -548,6 +548,15 @@ inline quant::MoEResidency::Stats SumResidencyStats(const Model& m) {
     total.l2_hits += s.l2_hits;
     total.l2_misses += s.l2_misses;
     total.l2_evictions += s.l2_evictions;
+    total.l2_decode_hits += s.l2_decode_hits;
+    total.l2_decode_misses += s.l2_decode_misses;
+    total.l2_decode_evictions += s.l2_decode_evictions;
+    total.l2_prefill_hits += s.l2_prefill_hits;
+    total.l2_prefill_misses += s.l2_prefill_misses;
+    total.l2_prefill_evictions += s.l2_prefill_evictions;
+    total.mirror_hits += s.mirror_hits;
+    total.mirror_writebacks += s.mirror_writebacks;
+    total.mirror_skips += s.mirror_skips;
     total.nvme_read_bytes += s.nvme_read_bytes;
   }
   return total;

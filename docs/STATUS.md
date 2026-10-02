@@ -4,6 +4,37 @@
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
 ## 当前结论
+## 新目标：四项内存中性 decode/TTFT 优化；Phase A/B 完成，Phase C 在途（2026-10-02 13:00）
+
+用户设定新目标（2026-10-02）：在已验收最终候选（ed68cd3d，B=12288，
+C=256 每层命中 top-n/L2-16/K=8/max-open-shards=200）基础上推进四项内存
+中性优化：(1) 可观测性（per-request residency 行打印 mh/mw/msk + L2
+decode/prefill 分列）；(2) 单 miss 快速路径（Q4T_MOE_INLINE_MISS_LIMIT）；
+(3) prefill TTFT 三件套（sub-chunk 切分/相邻 pread 合并/投机补载，目标档
+TTFT 937 s→≤656 s，重读因子 17.28→≤10）；(4) 驱逐策略权重优先（tick-LRU
+基础上引入 router 权重/频率优先，45056 decode ≥+10%）。GEMM 冻结；改动
+限定驻留层 + prefill 补载管线（moe.cu sub-chunk 切分/调度，不碰 GEMM
+内核）；不得新增内存超支（峰值 ≤68.34 GB）；验收 = 六档 decode ≥60%
+C=0 基线（当前 53–58%，50% 门槛不回退）+ 目标档 TTFT ≥30% 下降 +
+bitexact + 质量/业务/生命周期。
+
+Phase A（项 1）完成：per-request residency 行新增 mh/mw/msk + ld2*/lp2*
+（L2 decode/prefill 分列），compare_e2e.py 解析扩展；纯打印不改计算；
+bitexact B=12288（base C=0 vs candfinal）+ C=0 跨二进制（旧 ed68cd3d vs
+新）双档全过。
+Phase B（项 2）完成：Q4T_MOE_INLINE_MISS_LIMIT（默认 1，clamp [0,2]，
+0=回退）——LoadPhase1 chunk 条目数 ≤ 阈值时调用线程内联 stage+commit，
+跳过常驻 load worker 的 mutex+cv 派发/等待往返；多 miss chunk 保留原流水
+线。bitexact 全过；45056 定向×3 decode 9.98/10.05/10.08 tps（vs 候选
+9.9721 仅 +0.7%，目标 ≥10.97 未达）、TTFT 133.1–133.4 s 持平、内存峰值
+无新增超支（fixed=63.76 GB 含镜像项）。前提"phase1 屏障/调度开销为主要
+来源"被数据否定（dphase1 由实际 pread+swizzle+H2D 主导，worker 派发往返
+仅微秒级）→ 内联路径保留为可配置项（默认 1），不靠它追 +10%；decode 主
+杠杆为项 4（驱逐策略降 miss 数）与项 3（TTFT 三件套）。
+
+下一步：Phase C（TTFT 三件套）冻结假设/改动范围/出口 → 实现 → bitexact
+→ 目标档+204800 定向×3（TTFT/重读因子/加载量/decode）。GEMM 冻结不变。
+
 ## 最终候选验收完成：容量/性能/正确性 PASS，内存 USER_APPROVED_OVERRUN（2026-10-02 08:55）
 
 final-acceptance B=12288（二进制 ed68cd3d，C=256 每层命中 top-n/
