@@ -95,6 +95,18 @@ int MoEResidencyMirrorK();
 // many entries, stage+commit runs on the caller thread instead of the
 // worker mutex+cv dispatch/wait round trip (Phase B, 2026-10-02).
 int MoEResidencyInlineMissLimit();
+
+// Item 3b (2026-10-02): when true, a run of consecutive expert ids that
+// are file-contiguous in the checkpoint is read with one preadv per
+// region (weights, SF) instead of one pread per expert. Default true;
+// Q4T_MOE_PREAD_MERGE=0 rolls back to per-expert reads (bit-identical
+// bytes either way).
+bool MoEResidencyPreadMerge();
+// Item 3b: max experts per batched preadv run (one dispatch task). Default
+// 4, clamped to [1, 8]; 1 disables batching (per-expert reads even when
+// pread merge is on). Tunable without a rebuild to balance NVMe
+// sequentiality (larger runs) against worker parallelism (smaller runs).
+int MoEResidencyPreadMergeCap();
 // Pinned mirror-ring bytes for ONE evicted expert payload
 // ([w_dn|w_ga|w_up|gu_sw|dn_sw|scal]).
 size_t MoEResidencyMirrorBytes(int hs, int moe_is);
@@ -145,6 +157,10 @@ class MoEResidency {
     uint64_t mirror_hits = 0;
     uint64_t mirror_writebacks = 0;
     uint64_t mirror_skips = 0;
+    // Item 3b: batched preadv runs (consecutive expert ids read with one
+    // preadv per region); experts = total experts covered by those runs.
+    uint64_t pread_merge_runs = 0;
+    uint64_t pread_merge_experts = 0;
   };
 
   // Per-miss pipeline timing. Enabled only when Q4T_RESIDENCY_TIMING=1
@@ -164,6 +180,10 @@ class MoEResidency {
     std::atomic<uint64_t> dstage_count{0}, dstage_ns{0}, dstage_max_ns{0};
     std::atomic<uint64_t> dpread_count{0}, dpread_ns{0}, dpread_max_ns{0};
     std::atomic<uint64_t> dphase1_count{0}, dphase1_ns{0}, dphase1_max_ns{0};
+    // Item 3b: one event per batched preadv run (total ns across the
+    // run's regions), so pread_avg (per expert) stays comparable.
+    std::atomic<uint64_t> pread_merge_count{0}, pread_merge_ns{0},
+        pread_merge_max_ns{0};
     void Reset() {
       stage_count.store(0);
       stage_ns.store(0);
@@ -186,6 +206,9 @@ class MoEResidency {
       dphase1_count.store(0);
       dphase1_ns.store(0);
       dphase1_max_ns.store(0);
+      pread_merge_count.store(0);
+      pread_merge_ns.store(0);
+      pread_merge_max_ns.store(0);
       d2h_count.store(0);
       d2h_ns.store(0);
       d2h_max_ns.store(0);
@@ -353,6 +376,8 @@ class MoEResidency {
     uint64_t mirror_hits = 0;
     uint64_t mirror_writebacks = 0;
     uint64_t mirror_skips = 0;
+    uint64_t pread_merge_runs = 0;
+    uint64_t pread_merge_experts = 0;
     int resident_delta = 0;
     void Reset() {
       loads = 0;
@@ -371,6 +396,8 @@ class MoEResidency {
       mirror_hits = 0;
       mirror_writebacks = 0;
       mirror_skips = 0;
+      pread_merge_runs = 0;
+      pread_merge_experts = 0;
       resident_delta = 0;
     }
     void MergeInto(Stats& s, int& resident_count) const {
@@ -390,6 +417,8 @@ class MoEResidency {
       s.mirror_hits += mirror_hits;
       s.mirror_writebacks += mirror_writebacks;
       s.mirror_skips += mirror_skips;
+      s.pread_merge_runs += pread_merge_runs;
+      s.pread_merge_experts += pread_merge_experts;
       resident_count += resident_delta;
     }
   };
@@ -400,7 +429,10 @@ class MoEResidency {
     std::condition_variable need;  // worker waits for a task
     std::condition_variable done;  // caller waits for task completion
     LoadPlan* plan = nullptr;
-    int idx = -1;
+    // Item 3b: one task is a maximal run of consecutive pread-mergeable
+    // expert entries (batched preadv) or a single entry; entry indices
+    // into plan->experts.
+    const std::vector<int>* task = nullptr;
     bool finished = true;
     bool stop = false;
     cudaStream_t stream = nullptr;  // C1: commit stream for this task
@@ -411,6 +443,41 @@ class MoEResidency {
                      int* buf_out, StatsDelta* delta = nullptr,
                      bool* hit_out = nullptr,
                      bool decode_phase = false) const;
+
+  // Item 3b split of StageExpert: claim the L2 (or mirror-ring) buffer
+  // for `expert` and classify hit vs miss. On a miss the returned buffer
+  // is claimed and ready to be written (no concurrent stage can evict or
+  // reuse it until CommitExpert releases the claim, or ReleaseMissClaim
+  // on failure). Extracted so a run of adjacent experts can claim all of
+  // its buffers before one batched preadv fills them.
+  Status ClaimExpert(int expert, const std::vector<uint8_t>* needed_mark,
+                     int* buf_out, StatsDelta* delta, bool* hit_out,
+                     bool decode_phase) const;
+  // Item 3b: read the checkpoint payload into a claimed miss buffer (the
+  // legacy StageExpert read section, driven by the cached per-expert
+  // descriptor).
+  Status ReadExpert(int expert, int buf, StatsDelta* delta,
+                    bool decode_phase) const;
+  // Item 3b: merge the gate+up SF and swizzle both SF blocks (the legacy
+  // StageExpert swizzle section; device bytes are bit-identical).
+  void SwizzleExpert(int buf,
+                     const std::chrono::steady_clock::time_point& t_stage0,
+                     bool decode_phase) const;
+  // Item 3b: read a run of k consecutive expert ids (all fast +
+  // file-contiguous, same shard) into their claimed L2 buffers with one
+  // preadv per region (weights, SF) plus one pread for the scales. The
+  // bytes are identical to k per-expert ReadExpert calls; only the read
+  // pattern changes.
+  Status ReadRun(const LoadPlan& plan, const int* entries, int k,
+                 const int* bufs, StatsDelta* delta,
+                 bool decode_phase) const;
+  // Item 3b: stage one dispatch task (a pread-mergeable run or a single
+  // entry): claim every entry, read the miss sub-runs (batched preadv
+  // when >=2 adjacent misses), swizzle, and commit each entry. Per-entry
+  // failure semantics match the legacy per-entry path (first failure
+  // recorded in plan.first_err; remaining entries still run).
+  Status StageTask(LoadPlan& plan, const std::vector<int>& entries,
+                   StatsDelta* delta, cudaStream_t stream) const;
 
   // Undo a miss-path stage bookkeeping after a stage or commit failure:
   // drop the buffer<->expert mapping (miss only; a hit buffer still holds
@@ -509,6 +576,23 @@ class MoEResidency {
   int mirror_k_ = 0;
   // Phase B: inline stage+commit when a chunk has <= this many entries.
   int inline_miss_limit_ = 1;
+  // Item 3b: per-expert read descriptor, precomputed in Init (the
+  // checkpoint layout is static). The checkpoint keeps each layer's
+  // expert payloads in three region-major contiguous runs (all scalar
+  // scales, all SF blocks, all weights), each in expert-id order, so a
+  // run of consecutive expert ids fetches with one preadv per region.
+  struct ExpertReadDesc {
+    bool fast = false;        // weights & SF contiguous within the expert
+    bool sc_fast = false;     // the six scalar scales contiguous
+    bool contig_next = false; // payload file-contiguous with expert+1
+    uint64_t w_off = 0, w_end = 0;
+    uint64_t s_off = 0, s_end = 0;
+    uint64_t sc_off = 0, sc_end = 0;
+    std::string shard;        // shard holding the expert's tensors
+  };
+  std::vector<ExpertReadDesc> read_desc_;
+  bool pread_merge_ = true;
+  int pread_merge_cap_ = 4;
   uint8_t* mirror_block_ = nullptr;
   std::vector<uint8_t*> mirror_buf_;  // [K]
   mutable std::vector<int> mirror_expert_;  // [K] expert in ring slot, -1 = empty

@@ -185,13 +185,23 @@ def main():
             command += ['--moe-hot-list', str(args.moe_hot_list.resolve())]
     if args.request_deadline_ms > 0:
         command += ['--request-deadline-ms', str(args.request_deadline_ms)]
+    effective_q4t = {key: value for key, value in env.items()
+                     if key.startswith('Q4T_')}
+    hot_identity = None
+    if args.moe_hot_list:
+        hot_identity = {'path': str(args.moe_hot_list.resolve()),
+                        'sha256': hashlib.sha256(args.moe_hot_list.read_bytes()).hexdigest()}
     save(out / 'server-command.json', {'argv': command, 'removed_environment': removed,
+                                       'effective_q4t_environment': effective_q4t,
+                                       'hot_list': hot_identity,
                                        'startup_timeout_seconds': args.startup_timeout})
     results = []
     passed = False
     failure = None
     with (out / 'server.log').open('w') as log:
+        (out / 'memory-phase.txt').write_text('startup\n')
         server = subprocess.Popen(command, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT)
+        (out / 'server.pid').write_text(f'{server.pid}\n')
         try:
             for _ in range(args.startup_timeout):
                 if server.poll() is not None:
@@ -202,6 +212,7 @@ def main():
             else:
                 raise RuntimeError(f'server startup timeout after {args.startup_timeout}s')
             for case, inputs, count, minimum, maximum, tokens, streaming in cases:
+                (out / 'memory-phase.txt').write_text(f'requests:{case.name}\n')
                 case.mkdir()
                 shutil.copyfile(inputs, case / 'requests.jsonl')
                 cmd = [str(evalscope), 'perf', '--model', 'qwen3.8-flash-next',
@@ -303,12 +314,14 @@ def main():
             failure = f'{type(error).__name__}: {error}'
             raise
         finally:
+            (out / 'memory-phase.txt').write_text('shutdown\n')
             server.terminate()
             try:
                 server.wait(timeout=25)
             except subprocess.TimeoutExpired:
                 server.kill()
                 server.wait()
+            (out / 'memory-phase.txt').write_text('stopped\n')
             save(out / 'exit.json', {'server': server.returncode, 'completed': len(results),
                                       'http_output_checks_passed': passed and server.returncode == 0,
                                       'failure': failure})

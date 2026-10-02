@@ -56,7 +56,9 @@ class WeightIndex {
 
 // Reads tensors from the shards referenced by a WeightIndex. Shard files are
 // resolved relative to `model_dir` and opened lazily (mmap). A small LRU cache
-// keeps recently used shards open.
+// keeps recently used shards open. Each read retains its shard independently
+// of LRU eviction, without holding the cache lock during file reads. The index
+// must outlive the loader, and callers must finish before destroying it.
 class WeightLoader {
  public:
   static Status Create(const std::string& model_dir, const WeightIndex& index,
@@ -66,7 +68,13 @@ class WeightLoader {
   WeightLoader& operator=(const WeightLoader&) = delete;
 
   // Metadata for `name` (from the shard's header); nullptr if absent.
+  // The returned immutable metadata belongs to the loader and remains valid
+  // until its destruction, including across shard evictions and other calls.
   const TensorInfo* FindTensor(const std::string& name) const;
+  // Shard file (basename) holding `name`; nullptr if absent (the
+  // residency loader caches this per expert to skip re-resolution on each
+  // shard-direct read).
+  const std::string* ShardOf(const std::string& name) const;
   // Read `name`'s bytes into `dst` (>= byte_size).
   Status ReadTensor(const std::string& name, void* dst) const;
   // Read `length` bytes from the shard that holds tensor `name`, starting at
@@ -74,11 +82,21 @@ class WeightLoader {
   // the residency loader fetch several adjacent tensors with one pread.
   Status ReadRange(const std::string& name, uint64_t offset, size_t length,
                    void* dst) const;
+  // Shard-direct variant of ReadRange for callers that resolved the shard
+  // once and cache it (the residency loader caches it per expert).
+  Status ReadRangeShard(const std::string& shard, uint64_t offset,
+                        size_t length, void* dst) const;
+  // Scatter variant of ReadRangeShard (see SafetensorsFile::ReadRangev):
+  // one preadv copies a contiguous shard range into several buffers.
+  Status ReadRangevShard(const std::string& shard, uint64_t offset,
+                         size_t count, const void* const* dsts,
+                         const size_t* lens) const;
   // Read `name`'s bytes into `dst`, then H2D-copy to `device_dst` on `stream`.
   Status ReadTensorToDevice(const std::string& name, void* dst,
                             void* device_dst, cudaStream_t stream) const;
 
-  // Number of shards currently open (for diagnostics).
+  // Number of cached shard handles (for diagnostics). Evicted shards can
+  // remain open until their in-progress readers finish.
   size_t open_shards() const;
 
   // Make shards whose name contains `shard_marker` keep their page-cache

@@ -25,6 +25,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <fcntl.h>
+#include <memory>
 #include <string>
 #include <unistd.h>
 #include <vector>
@@ -65,6 +66,33 @@ bool CudaAvailable() {
 struct Ctx {
   WeightIndex* idx = nullptr;
   WeightLoader* loader = nullptr;
+};
+
+class ScopedEnv {
+ public:
+  ScopedEnv(const char* name, const char* value) : name_(name) {
+    const char* previous = std::getenv(name);
+    had_value_ = previous != nullptr;
+    if (previous) previous_ = previous;
+    setenv(name, value, 1);
+  }
+  ~ScopedEnv() {
+    if (had_value_) {
+      setenv(name_.c_str(), previous_.c_str(), 1);
+    } else {
+      unsetenv(name_.c_str());
+    }
+  }
+
+ private:
+  std::string name_;
+  std::string previous_;
+  bool had_value_ = false;
+};
+
+struct ResidencyCleanup {
+  MoEResidency& residency;
+  ~ResidencyCleanup() { residency.Free(); }
 };
 
 bool OpenCtx(Ctx* c) {
@@ -303,6 +331,58 @@ Q4T_TEST(residency_load_matches_reference) {
   res.Free();
   delete c.loader;
   delete c.idx;
+  return true;
+}
+
+// The merge-off rollback must load every requested expert exactly once,
+// including inline, worker, and later batches with nonzero plan offsets.
+// Check actual device payloads against independent checkpoint reads, not
+// merely the task indices or the stage/commit cursors.
+Q4T_TEST(residency_pread_merge_dispatch_contract) {
+  if (!CudaAvailable()) Q4T_SKIP("(skipped: no CUDA device)");
+  Ctx c;
+  if (!OpenCtx(&c)) Q4T_SKIP("(skipped: real model not present)");
+  std::unique_ptr<WeightIndex> index(c.idx);
+  std::unique_ptr<WeightLoader> loader(c.loader);
+  const ScopedEnv threads("Q4T_MOE_LOAD_THREADS", "4");
+  const ScopedEnv l2("Q4T_MOE_L2_SLOTS", "16");
+  const ScopedEnv mirror("Q4T_MOE_MIRROR_K", "0");
+  const ScopedEnv eviction("Q4T_MOE_EVICT_WEIGHT", "0");
+  const std::vector<int32_t> experts = {0, 1, 2, 127, 128, 255, 256,
+                                       510, 511};
+  for (const char* merge : {"0", "1"}) {
+    const ScopedEnv merge_env("Q4T_MOE_PREAD_MERGE", merge);
+    for (const char* limit : {"0", "1"}) {
+      const ScopedEnv inline_env("Q4T_MOE_INLINE_MISS_LIMIT", limit);
+      for (int n : {1, 2, 4, 9}) {
+        std::printf("  merge=%s inline=%s experts=%d\n", merge, limit, n);
+        MoEResidency res;
+        const ResidencyCleanup cleanup{res};
+        Q4T_CHECK(res.Init(*c.loader, kLayer, kE, kHs, kMoeIs, n, 0).ok());
+        std::vector<int32_t> slots(n, -1);
+        bool loaded = false;
+        Q4T_CHECK(res.Resolve(experts.data(), n, slots.data(), 0,
+                              &loaded).ok());
+        Q4T_CHECK(cudaStreamSynchronize(0) == cudaSuccess);
+        Q4T_CHECK(loaded && res.ResidentCount() == n);
+        Q4T_CHECK(res.GetStats().loads == static_cast<uint64_t>(n));
+        Q4T_CHECK(res.GetStats().misses == static_cast<uint64_t>(n));
+        std::vector<bool> occupied(n, false);
+        for (int i = 0; i < n; ++i) {
+          Q4T_CHECK(slots[i] >= 0 && slots[i] < n);
+          Q4T_CHECK(!occupied[slots[i]]);
+          occupied[slots[i]] = true;
+          Q4T_CHECK(SlotMatchesReference(c, &res, experts[i], slots[i]));
+        }
+        const std::vector<int32_t> original_slots = slots;
+        Q4T_CHECK(res.Resolve(experts.data(), n, slots.data(), 0,
+                              &loaded).ok());
+        Q4T_CHECK(!loaded && slots == original_slots);
+        Q4T_CHECK(res.GetStats().loads == static_cast<uint64_t>(n));
+        Q4T_CHECK(res.GetStats().hits == static_cast<uint64_t>(n));
+      }
+    }
+  }
   return true;
 }
 
@@ -715,4 +795,3 @@ Q4T_TEST(residency_invalid_inputs) {
   delete c.idx;
   return true;
 }
-

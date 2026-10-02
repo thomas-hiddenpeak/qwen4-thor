@@ -5,6 +5,8 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [MOE_OFFLOAD_REPAIR_2026-10-02.md](MOE_OFFLOAD_REPAIR_2026-10-02.md) | offload 基础修复 Goal 范围、身份与验证出口 | 修复与有界验证完成；总物理峰值未知 |
+| [MOE_OFFLOAD_DIAGNOSIS_2026-10-02.md](MOE_OFFLOAD_DIAGNOSIS_2026-10-02.md) | offload 分支、代码缺陷、内存/验收/离线方法审查及推进建议 | 诊断快照；后续修复见修复阶段 |
 | [GDN_VECTOR_LOAD_2026-09-21.md](GDN_VECTOR_LOAD_2026-09-21.md) | GDN 连续读取、完整 E2E 与状态等价证据 | 本轮验证更新 |
 | [2026-09-21 状态历史](HISTORY_STATUS_2026-09-21.md) | 完整保留 fcb5925 时的阶段记录，当前状态已精简 | 历史快照 |
 | [GRFrame read/write](GRFRAME_READWRITE_2026-09-21.md) | 提前 inject、frame 所有权与阶段验收 | 验收进行中 |

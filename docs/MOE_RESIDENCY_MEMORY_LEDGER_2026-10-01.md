@@ -1,20 +1,33 @@
 # MoE 分层驻留 — 262144 容量完整内存账（2026-10-01）
 
-目标要求：先建立 262144 容量下**可复核**的完整内存账，再确定各层席位与
-策略。本账分两部分：预算侧（代码可复核，逐项给出字节数与来源）与实测侧
-（monitor_memory.py 权威口径）。统一内存（Thor LPDDR5X 统一内存，
-MemTotal 131.92 GB），避免重复计数；整机 RAM 与 swap 分列记录。
+> 2026-10-02 纠正：下文 RSS+GPU 仅为该工具的进程/GPU 合计指标，
+> 不能与 post-load 之后的缓存增量相加后称完整物理峰值。C3 加载期
+> 已增长约 59.06 GB 全机 Cached，旧 68.34 GB 门禁未包含它；模型
+> 归属、RSS/CUDA/pinned/缓存重叠与同时点峰值尚待核清。预算公式与
+> 历史原始测量保留；本机现已验证逐文件缓存观察与CUDA记账校准，
+> 当前分项账及不可测边界见
+> [修复与核账](MOE_OFFLOAD_REPAIR_2026-10-02.md)。
 
-## 0. 测量口径
+本文件保留当时的预算与测量快照，供追溯；当前计量合同如下。
+预算侧的分配公式与实测分项不是同一个量，不自动等于完整物理占用。
 
-- 权威指标：`service_total_physical_peak_bytes` = 同一时刻
-  `rss(服务进程树) + gpu(nvidia-smi 逐进程)` 的时间峰值
-  （tools/evalscope/monitor_memory.py，1 Hz 采样）。
-- GPU 侧：nvidia-smi `--query-compute-apps=pid,used_memory`（Thor 统一
-  内存下 CUDA 分配的唯一可靠来源）。
-- 模型相关页缓存：NVMe 权重读取产生的 page cache（/proc/meminfo Cached
-  增量），与 rss 的 file 页可能重叠，**不重复计入**权威指标；单列报告。
-- swap：`SwapTotal − SwapFree`，单列报告，不用于掩盖物理超支。
+## 0. 当前测量口径（2026-10-02 纠正）
+
+- `service_total_physical_peak_bytes`：当前为null/INDETERMINATE。
+  旧版以RSS+NVIDIA逐进程计数的采样峰值填此列，不能证明完整去重
+  物理峰值；下文历史同名数字仅保留为旧合计指标。
+- NVIDIA逐进程计数是driver视图。当前64MiB device触碰校准显示
+  对应增量；上下文/所有引擎分配与OS视图的重叠尚未核清，不能把
+  该计数与RSS直接相加，也不能称为物理占用的唯一可靠来源。
+- 模型页缓存改为对明确文件集合按inode去重的cachestat观察，覆盖
+  加载前已有缓存及加载期，逐文件记录错误。全机Cached及其增量
+  只作背景数据；进程file页可能与模型cache重叠。
+- pinned可能出现在RssShmem/PssShmem；本机cudaHostAlloc校准中
+  VmPin/Locked均为0，所以这些字段不是完整pinned账。
+- 每行记录采样起止。逐文件扫描与CPU/driver查询跨越时间窗口，
+  分项峰值、窗口合计不能冒充严格同时点峰值。缺数据保留unknown。
+- swap仍单列；其他进程、内核与CUDA分配归属未闭合，不用于掩盖
+  超支或补出一个未经验证的总数。授权超支也不能替代完整测量。
 
 ## 1. 预算侧（代码可复核）
 

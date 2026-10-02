@@ -15,6 +15,8 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
+#include <filesystem>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -130,42 +132,50 @@ std::string MakeLargeSyntheticFile(const char* path, size_t nbytes) {
   ssize_t w = write(fd, &header_len, 8);
   w += write(fd, header.data(), header.size());
   w += write(fd, data.data(), data.size());
+  // FADV_DONTNEED does not reliably evict dirty pages. The cache contract
+  // concerns clean checkpoint pages, so finish writeback before observing it.
+  const bool clean = fsync(fd) == 0;
   close(fd);
-  return w == static_cast<ssize_t>(8 + header.size() + data.size()) ? path
-                                                                    : "";
+  return clean && w == static_cast<ssize_t>(8 + header.size() + data.size())
+             ? path
+             : "";
 }
 
-// Count 4 KB pages of `path` currently resident in the page cache via an
-// mmap + mincore (mincore reports residency without faulting pages in).
-size_t CountResidentPages(const char* path) {
+// Count pages without faulting them in. mincore returns 0 on success and
+// fills one byte per page; its return value is not a page count. Errors are
+// reported separately from a successful observation of zero resident pages.
+bool CountResidentPages(const char* path, size_t* resident) {
+  *resident = 0;
   int fd = open(path, O_RDONLY);
-  if (fd < 0) return 0;
+  if (fd < 0) return false;
   struct stat st;
   if (fstat(fd, &st) != 0) {
     close(fd);
-    return 0;
+    return false;
   }
   const size_t len = static_cast<size_t>(st.st_size);
   void* map = mmap(nullptr, len, PROT_READ, MAP_PRIVATE, fd, 0);
   if (map == MAP_FAILED) {
     close(fd);
-    return 0;
+    return false;
   }
-  const size_t pages = (len + 4095) / 4096;
+  const long page_size = sysconf(_SC_PAGESIZE);
+  if (page_size <= 0) {
+    munmap(map, len);
+    close(fd);
+    return false;
+  }
+  const size_t pages = (len + page_size - 1) / page_size;
   std::vector<unsigned char> vec(pages);
-  size_t resident = 0;
-  size_t done = 0;
-  char* m = static_cast<char*>(map);
-  while (done < pages) {
-    const ssize_t r = mincore(m + done * 4096, (pages - done) * 4096,
-                              vec.data() + done);
-    if (r <= 0) break;  // guard: mincore may return 0; never spin
-    for (ssize_t i = 0; i < r; ++i) resident += vec[done + i] & 1;
-    done += static_cast<size_t>(r);
+  const bool ok = mincore(map, len, vec.data()) == 0;
+  if (ok) {
+    for (unsigned char state : vec) *resident += state & 1;
+  } else {
+    std::perror("mincore");
   }
   munmap(map, len);
   close(fd);
-  return resident;
+  return ok;
 }
 
 Q4T_TEST(safetensors_keep_page_cache) {
@@ -174,68 +184,50 @@ Q4T_TEST(safetensors_keep_page_cache) {
   // survive (tiered MoE residency streams expert shards on demand and the
   // page cache is the C3 pre-warm tier).
   //
-  // Residency is observed via mmap + mincore. Some kernels (observed on
-  // Tegra 6.8) return 0 from mincore for regular files, making residency
-  // unobservable; in that case verify the API path only and skip the
-  // residency assertion (the end-to-end effect is covered by the
-  // residency pilot: pread_avg 4.0 ms -> 0.87 ms after C5).
-  const size_t nbytes = 16 * 1024 * 1024;  // 4096 pages of 4 KB
-  const char* evict_path = "/tmp/q4t_safetensors_evict_test.bin";
-  const char* keep_path = "/tmp/q4t_safetensors_keep_test.bin";
-  Q4T_CHECK(!MakeLargeSyntheticFile(evict_path, nbytes).empty());
-  Q4T_CHECK(!MakeLargeSyntheticFile(keep_path, nbytes).empty());
-
-  // Probe whether mincore reports residency on this kernel: read the file
-  // (populating the page cache), then mincore must report most pages
-  // resident. If it reports 0, mincore is non-functional here.
-  bool mincore_works = false;
-  {
-    SafetensorsFile* f = nullptr;
-    Q4T_CHECK(SafetensorsFile::Open(evict_path, &f).ok());
-    std::vector<uint8_t> buf(nbytes);
-    Q4T_CHECK(f->ReadRange(0, nbytes, buf.data()).ok());
-    delete f;
-    mincore_works = CountResidentPages(evict_path) > 4096 / 2;
-  }
-
-  if (!mincore_works) {
-    // API path only: SetKeepPageCache must be accepted and destruction
-    // must not fail or crash.
-    SafetensorsFile* f = nullptr;
-    Q4T_CHECK(SafetensorsFile::Open(keep_path, &f).ok());
-    f->SetKeepPageCache(true);
-    std::vector<uint8_t> buf(nbytes);
-    Q4T_CHECK(f->ReadRange(0, nbytes, buf.data()).ok());
-    delete f;
-    unlink(evict_path);
-    unlink(keep_path);
-    return true;
-  }
+  // Residency assertions are mandatory. Probe while the reader is alive;
+  // destroying the default reader first would evict the pages being probed.
+  const size_t nbytes = 16 * 1024 * 1024;
+  const long page_size = sysconf(_SC_PAGESIZE);
+  Q4T_CHECK(page_size > 0);
+  const size_t payload_pages = nbytes / page_size;
+  struct FixtureCleanup {
+    std::string dir;
+    ~FixtureCleanup() { std::filesystem::remove_all(dir); }
+  } fixture{".q4t-work/safetensors-page-cache-" + std::to_string(getpid())};
+  std::filesystem::create_directories(fixture.dir);
+  const std::string evict_path = fixture.dir + "/evict.safetensors";
+  const std::string keep_path = fixture.dir + "/keep.safetensors";
+  Q4T_CHECK(!MakeLargeSyntheticFile(evict_path.c_str(), nbytes).empty());
+  Q4T_CHECK(!MakeLargeSyntheticFile(keep_path.c_str(), nbytes).empty());
 
   // Evict path: default destruction drops the pages.
   {
     SafetensorsFile* f = nullptr;
     Q4T_CHECK(SafetensorsFile::Open(evict_path, &f).ok());
+    std::unique_ptr<SafetensorsFile> file(f);
     std::vector<uint8_t> buf(nbytes);
     Q4T_CHECK(f->ReadRange(0, nbytes, buf.data()).ok());  // populate cache
-    delete f;  // FADV_DONTNEED
+    size_t warm_resident = 0;
+    Q4T_CHECK(CountResidentPages(evict_path.c_str(), &warm_resident));
+    Q4T_CHECK(warm_resident > payload_pages * 9 / 10);
   }
-  const size_t evict_resident = CountResidentPages(evict_path);
-  Q4T_CHECK(evict_resident < 4096 / 2);  // most pages evicted
+  size_t evict_resident = 0;
+  Q4T_CHECK(CountResidentPages(evict_path.c_str(), &evict_resident));
+  Q4T_CHECK(evict_resident < payload_pages / 2);  // most pages evicted
 
   // Keep path: SetKeepPageCache(true) preserves the pages.
   {
     SafetensorsFile* f = nullptr;
     Q4T_CHECK(SafetensorsFile::Open(keep_path, &f).ok());
+    std::unique_ptr<SafetensorsFile> file(f);
     f->SetKeepPageCache(true);
     std::vector<uint8_t> buf(nbytes);
     Q4T_CHECK(f->ReadRange(0, nbytes, buf.data()).ok());  // populate cache
-    delete f;  // no FADV_DONTNEED
   }
-  const size_t keep_resident = CountResidentPages(keep_path);
-  Q4T_CHECK(keep_resident > 4096 * 9 / 10);  // pages retained
-
-  unlink(evict_path);
-  unlink(keep_path);
+  size_t keep_resident = 0;
+  Q4T_CHECK(CountResidentPages(keep_path.c_str(), &keep_resident));
+  Q4T_CHECK(keep_resident > payload_pages * 9 / 10);
+  std::printf("  mincore pages: payload=%zu evicted=%zu retained=%zu\n",
+              payload_pages, evict_resident, keep_resident);
   return true;
 }

@@ -21,6 +21,15 @@ namespace {
 // hook and the recovery contract (step 2 must succeed) would break.
 std::atomic<bool> g_first_fault_fired{false};
 
+// Item 3b: cap on the number of experts one dispatch task (one worker)
+// stages in a batched preadv run. Capping keeps NVMe read parallelism
+// across workers instead of letting one long run absorb the whole
+// chunk; each sub-run is still consecutive-id, so it batches with
+// preadv.
+// Item 3b: default cap on the experts per batched preadv run; the live
+// value comes from MoEResidencyPreadMergeCap() (Q4T_MOE_PREAD_MERGE_CAP).
+constexpr int kPreadMergeRunCapDefault = 4;
+
 std::string ExpertName(int layer_id, int expert, const char* proj,
                        const char* suffix) {
   return "model.language_model.layers." + std::to_string(layer_id) +
@@ -105,6 +114,28 @@ int MoEResidencyInlineMissLimit() {
   }
   if (n > 2) n = 2;
   return n;
+}
+
+bool MoEResidencyPreadMerge() {
+  // Item 3b (2026-10-02): batch the preads of a run of consecutive expert
+  // ids into one preadv per region (checkpoint keeps each layer's expert
+  // payloads in region-major contiguous runs, expert-id order). Default
+  // on; 0 rolls back to per-expert reads.
+  int n = 1;
+  if (const char* env = std::getenv("Q4T_MOE_PREAD_MERGE")) {
+    const int v = std::atoi(env);
+    if (v >= 0) n = v;
+  }
+  return n != 0;
+}
+
+int MoEResidencyPreadMergeCap() {
+  int n = kPreadMergeRunCapDefault;
+  if (const char* env = std::getenv("Q4T_MOE_PREAD_MERGE_CAP")) {
+    const int v = std::atoi(env);
+    if (v >= 1) n = v;
+  }
+  return std::min(n, 8);
 }
 
 size_t MoEResidencyLayerBytes(int hs, int moe_is, int C) {
@@ -224,6 +255,83 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
   const char* tim_env = std::getenv("Q4T_RESIDENCY_TIMING");
   timing_->enabled.store(tim_env != nullptr && std::atoi(tim_env) != 0,
                         std::memory_order_relaxed);
+
+  // Item 3b: precompute per-expert read descriptors (the checkpoint
+  // layout is static, so the stage-time fast-path checks move here once):
+  // fast-path flags, region offsets, shard name, and cross-expert
+  // contiguity for the batched preadv run path.
+  pread_merge_ = MoEResidencyPreadMerge();
+  pread_merge_cap_ = MoEResidencyPreadMergeCap();
+  read_desc_.resize(E_);
+  {
+    const size_t w_bytes = static_cast<size_t>(hs) * (moe_is / 2);
+    const size_t s_bytes = static_cast<size_t>(hs) * (moe_is / 16);
+    const char* sc_names[6] = {
+        "down_proj.input_scale", "down_proj.weight_scale_2",
+        "gate_proj.input_scale", "gate_proj.weight_scale_2",
+        "up_proj.input_scale", "up_proj.weight_scale_2"};
+    for (int e = 0; e < E_; ++e) {
+      ExpertReadDesc& d = read_desc_[e];
+      const std::string dn_w_name =
+          ExpertName(layer_id, e, "down_proj", "weight");
+      const io::TensorInfo* dn_w = loader_->FindTensor(dn_w_name);
+      const io::TensorInfo* ga_w = loader_->FindTensor(
+          ExpertName(layer_id, e, "gate_proj", "weight"));
+      const io::TensorInfo* up_w = loader_->FindTensor(
+          ExpertName(layer_id, e, "up_proj", "weight"));
+      const io::TensorInfo* dn_s = loader_->FindTensor(
+          ExpertName(layer_id, e, "down_proj", "weight_scale"));
+      const io::TensorInfo* ga_s = loader_->FindTensor(
+          ExpertName(layer_id, e, "gate_proj", "weight_scale"));
+      const io::TensorInfo* up_s = loader_->FindTensor(
+          ExpertName(layer_id, e, "up_proj", "weight_scale"));
+      d.fast = dn_w && ga_w && up_w && dn_s && ga_s && up_s &&
+               dn_w->byte_size() == w_bytes &&
+               ga_w->byte_size() == w_bytes &&
+               up_w->byte_size() == w_bytes &&
+               dn_s->byte_size() == s_bytes &&
+               ga_s->byte_size() == s_bytes &&
+               up_s->byte_size() == s_bytes &&
+               dn_w->data_end == ga_w->data_start &&
+               ga_w->data_end == up_w->data_start &&
+               dn_s->data_end == ga_s->data_start &&
+               ga_s->data_end == up_s->data_start;
+      if (d.fast) {
+        d.w_off = dn_w->data_start;
+        d.w_end = up_w->data_end;
+        d.s_off = dn_s->data_start;
+        d.s_end = up_s->data_end;
+        const std::string* sh = loader_->ShardOf(dn_w_name);
+        if (sh) d.shard = *sh;
+      }
+      const io::TensorInfo* sc[6] = {nullptr};
+      bool ok = true;
+      for (int i = 0; i < 6; ++i) {
+        const std::string n = "model.language_model.layers." +
+                              std::to_string(layer_id) + ".mlp.experts." +
+                              std::to_string(e) + "." + sc_names[i];
+        sc[i] = loader_->FindTensor(n);
+        ok = ok && sc[i] != nullptr && sc[i]->byte_size() == sizeof(float);
+      }
+      if (ok) {
+        for (int i = 1; i < 6; ++i) {
+          ok = ok && sc[i]->data_start == sc[0]->data_start + i * sizeof(float);
+        }
+      }
+      d.sc_fast = ok;
+      if (ok) {
+        d.sc_off = sc[0]->data_start;
+        d.sc_end = sc[5]->data_end;
+      }
+    }
+    for (int e = 0; e + 1 < E_; ++e) {
+      const ExpertReadDesc& a = read_desc_[e];
+      const ExpertReadDesc& b = read_desc_[e + 1];
+      read_desc_[e].contig_next =
+          a.fast && b.fast && a.sc_fast && b.sc_fast && a.shard == b.shard &&
+          a.w_end == b.w_off && a.s_end == b.s_off && a.sc_end == b.sc_off;
+    }
+  }
 
   // Pinned L2 pool (see header): one block, L buffers. A buffer is never
   // rewritten until the H2D that last read it completed (per-buffer event),
@@ -459,7 +567,14 @@ void MoEResidency::ReleaseRingClaim(int expert, int ring) const {
   ring_claimed_[ring] = false;
 }
 
-Status MoEResidency::StageExpert(int expert,
+// Item 3b: claim the L2 (or mirror-ring) buffer for `expert` and
+// classify hit vs miss. On a miss the returned buffer is claimed
+// (l2_claimed_) and ready to be written: no concurrent stage can evict
+// or reuse it until CommitExpert releases the claim (or ReleaseMissClaim
+// on failure). Extracted from StageExpert so a run of adjacent experts
+// can claim all of its buffers before one batched preadv fills them
+// (StageTask).
+Status MoEResidency::ClaimExpert(int expert,
                                  const std::vector<uint8_t>* needed_mark,
                                  int* buf_out, StatsDelta* delta,
                                  bool* hit_out, bool decode_phase) const {
@@ -492,14 +607,7 @@ Status MoEResidency::StageExpert(int expert,
       }
     }
   }
-  // Per-projection byte sizes; down/gate/up are equal by construction
-  // (hs*moe_is/2 weights, hs*moe_is/16 SF).
-  const size_t w_bytes = static_cast<size_t>(hs_) * (moe_is_ / 2);
-  const size_t s_bytes = static_cast<size_t>(hs_) * (moe_is_ / 16);
-  const size_t gu_sf_block = layout_.gu_sf_block();
-  const size_t dn_sf_block = layout_.dn_sf_block();
-
-  int b;
+  int b = -1;
   bool hit = false;
   {
     std::lock_guard<std::mutex> lk(*l2_mu_);
@@ -584,27 +692,35 @@ Status MoEResidency::StageExpert(int expert,
     if (tim && decode_phase) RecordDStageNs(NowNs(t_stage0));
     return Status();
   }
-  // Release the miss claim and undo the buffer bookkeeping if staging
-  // fails after the claim (the claim is otherwise released by
-  // CommitExpert). Only reached on the miss path (the hit path
-  // returns above).
-  auto release_miss_claim = [&]() { ReleaseMissClaim(expert, b, false); };
-  // A miss always picks a non-in-flight buffer, but keep the defensive wait
-  // in case the flag went stale under us.
+  // A miss always picks a non-in-flight buffer, but keep the defensive
+  // wait in case the flag went stale under us.
   if (l2_in_flight_[b]) {
     if (cudaEventSynchronize(l2_event_[b]) != cudaSuccess) {
-      release_miss_claim();
+      ReleaseMissClaim(expert, b, false);
       return Status::Fail("residency L2 wait failed");
     }
     l2_in_flight_[b] = false;
   }
-  // L2 buffer is in CHECKPOINT file order so the range fast path can read
-  // straight into it: weights [dn|ga|up] (w_bytes each), then SF
-  // [dn|ga|up] packed at s_bytes each, the gate+up SF merge scratch, the
-  // swizzled SF blocks, and the scalar scales. Total bytes equal
-  // MoEResidencyStagingBytes (3*w + 5*s + sf blocks + 16); the SF region
-  // must stay packed or the tail overflows the pinned buffer.
-  uint8_t* p = l2_buf_[b];
+  return Status();
+}
+
+// Item 3b: read the checkpoint payload into a claimed miss buffer. The
+// L2 buffer is in CHECKPOINT file order so the range fast path can read
+// straight into it: weights [dn|ga|up] (w_bytes each), then SF
+// [dn|ga|up] packed at s_bytes each, the gate+up SF merge scratch, the
+// swizzled SF blocks, and the scalar scales. Total bytes equal
+// MoEResidencyStagingBytes (3*w + 5*s + sf blocks + 16); the SF region
+// must stay packed or the tail overflows the pinned buffer.
+Status MoEResidency::ReadExpert(int expert, int buf, StatsDelta* delta,
+                                bool decode_phase) const {
+  const bool tim = timing_->enabled.load(std::memory_order_relaxed);
+  const auto t_read0 =
+      tim ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
+  const size_t w_bytes = static_cast<size_t>(hs_) * (moe_is_ / 2);
+  const size_t s_bytes = static_cast<size_t>(hs_) * (moe_is_ / 16);
+  const size_t gu_sf_block = layout_.gu_sf_block();
+  const size_t dn_sf_block = layout_.dn_sf_block();
+  uint8_t* p = l2_buf_[buf];
   uint8_t* w_dn = p;
   uint8_t* w_ga = p + w_bytes;
   uint8_t* w_up = p + 2 * w_bytes;
@@ -617,87 +733,32 @@ Status MoEResidency::StageExpert(int expert,
   float* scal = reinterpret_cast<float*>(dn_sw + dn_sf_block);
   if (reinterpret_cast<uint8_t*>(scal) + 4 * sizeof(float) >
       p + staging_bytes_) {
-    release_miss_claim();
     return Status::Fail("residency staging layout exceeds buffer");
   }
-
+  const auto& d = read_desc_[expert];
   Status s;
-  const auto t_read0 =
-      tim ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
-  // Fast path: the checkpoint keeps each expert's down/gate/up weights
-  // contiguous (verified below per expert), so one pread fetches all three
-  // (likewise the SF blocks and the six scalar scales). Fewer, larger,
-  // contiguous reads are much faster on NVMe than ten small random reads.
-  const std::string dn_w_name =
-      ExpertName(layer_id_, expert, "down_proj", "weight");
-  const io::TensorInfo* dn_w = loader_->FindTensor(dn_w_name);
-  const io::TensorInfo* ga_w = loader_->FindTensor(
-      ExpertName(layer_id_, expert, "gate_proj", "weight"));
-  const io::TensorInfo* up_w = loader_->FindTensor(
-      ExpertName(layer_id_, expert, "up_proj", "weight"));
-  const io::TensorInfo* dn_s = loader_->FindTensor(
-      ExpertName(layer_id_, expert, "down_proj", "weight_scale"));
-  const io::TensorInfo* ga_s = loader_->FindTensor(
-      ExpertName(layer_id_, expert, "gate_proj", "weight_scale"));
-  const io::TensorInfo* up_s = loader_->FindTensor(
-      ExpertName(layer_id_, expert, "up_proj", "weight_scale"));
-  const bool w_ok = dn_w && ga_w && up_w &&
-                    dn_w->byte_size() == w_bytes &&
-                    ga_w->byte_size() == w_bytes &&
-                    up_w->byte_size() == w_bytes &&
-                    dn_w->data_end == ga_w->data_start &&
-                    ga_w->data_end == up_w->data_start;
-  const bool s_ok = dn_s && ga_s && up_s &&
-                    dn_s->byte_size() == s_bytes &&
-                    ga_s->byte_size() == s_bytes &&
-                    up_s->byte_size() == s_bytes &&
-                    dn_s->data_end == ga_s->data_start &&
-                    ga_s->data_end == up_s->data_start;
-  // Six scalar scales, file order: dn.input_scale, dn.ws2, ga.input_scale,
-  // ga.ws2, up.input_scale, up.ws2 (each 4 B, contiguous when sc_ok).
-  const char* sc_names[6] = {
-      "down_proj.input_scale", "down_proj.weight_scale_2",
-      "gate_proj.input_scale", "gate_proj.weight_scale_2",
-      "up_proj.input_scale", "up_proj.weight_scale_2"};
-  const io::TensorInfo* sc[6] = {nullptr};
-  bool sc_ok = true;
-  for (int i = 0; i < 6; ++i) {
-    const std::string n = "model.language_model.layers." +
-                          std::to_string(layer_id_) + ".mlp.experts." +
-                          std::to_string(expert) + "." + sc_names[i];
-    sc[i] = loader_->FindTensor(n);
-    sc_ok = sc_ok && sc[i] != nullptr && sc[i]->byte_size() == sizeof(float);
-  }
-  if (sc_ok) {
-    for (int i = 1; i < 6; ++i) {
-      sc_ok = sc_ok && sc[i]->data_start == sc[0]->data_start + i * sizeof(float);
-    }
-  }
-  if (w_ok && s_ok) {
-    if (!(s = loader_->ReadRange(dn_w_name, dn_w->data_start, 3 * w_bytes,
-                                 w_dn))) {
-      release_miss_claim();
+  if (d.fast) {
+    // Fast path: the checkpoint keeps each expert's down/gate/up weights
+    // contiguous (precomputed in Init), so one pread fetches all three
+    // (likewise the SF blocks and the six scalar scales). Fewer, larger,
+    // contiguous reads are much faster on NVMe than ten small random
+    // reads.
+    if (!(s = loader_->ReadRangeShard(d.shard, d.w_off, 3 * w_bytes,
+                                      w_dn))) {
       return s;
     }
     const double nvme_bytes =
         static_cast<double>(3 * w_bytes + 3 * s_bytes + 6 * sizeof(float));
     if (delta) delta->nvme_read_bytes += nvme_bytes;
     else stats_.nvme_read_bytes += nvme_bytes;
-    const std::string dn_s_name =
-        ExpertName(layer_id_, expert, "down_proj", "weight_scale");
-    if (!(s = loader_->ReadRange(dn_s_name, dn_s->data_start, 3 * s_bytes,
-                                 s_dn))) {
-      release_miss_claim();
+    if (!(s = loader_->ReadRangeShard(d.shard, d.s_off, 3 * s_bytes,
+                                      s_dn))) {
       return s;
     }
-    if (sc_ok) {
+    if (d.sc_fast) {
       float file_scal[6];
-      if (!(s = loader_->ReadRange(
-                "model.language_model.layers." +
-                    std::to_string(layer_id_) + ".mlp.experts." +
-                    std::to_string(expert) + ".down_proj.input_scale",
-                sc[0]->data_start, 6 * sizeof(float), file_scal))) {
-        release_miss_claim();
+      if (!(s = loader_->ReadRangeShard(d.shard, d.sc_off,
+                                        6 * sizeof(float), file_scal))) {
         return s;
       }
       scal[0] = file_scal[3];  // gate.weight_scale_2
@@ -714,7 +775,6 @@ Status MoEResidency::StageExpert(int expert,
                               std::to_string(layer_id_) + ".mlp.experts." +
                               std::to_string(expert) + "." + sc4[i];
         if (!(s = loader_->ReadTensor(n, &scal[i]))) {
-          release_miss_claim();
           return s;
         }
       }
@@ -724,7 +784,6 @@ Status MoEResidency::StageExpert(int expert,
     std::string n;
     n = ExpertName(layer_id_, expert, "down_proj", "weight");
     if (!(s = loader_->ReadTensor(n, w_dn))) {
-      release_miss_claim();
       return s;
     }
     const double nvme_bytes =
@@ -733,27 +792,22 @@ Status MoEResidency::StageExpert(int expert,
     else stats_.nvme_read_bytes += nvme_bytes;
     n = ExpertName(layer_id_, expert, "gate_proj", "weight");
     if (!(s = loader_->ReadTensor(n, w_ga))) {
-      release_miss_claim();
       return s;
     }
     n = ExpertName(layer_id_, expert, "up_proj", "weight");
     if (!(s = loader_->ReadTensor(n, w_up))) {
-      release_miss_claim();
       return s;
     }
     n = ExpertName(layer_id_, expert, "down_proj", "weight_scale");
     if (!(s = loader_->ReadTensor(n, s_dn))) {
-      release_miss_claim();
       return s;
     }
     n = ExpertName(layer_id_, expert, "gate_proj", "weight_scale");
     if (!(s = loader_->ReadTensor(n, s_ga))) {
-      release_miss_claim();
       return s;
     }
     n = ExpertName(layer_id_, expert, "up_proj", "weight_scale");
     if (!(s = loader_->ReadTensor(n, s_up))) {
-      release_miss_claim();
       return s;
     }
     const char* sc4[4] = {"gate_proj.weight_scale_2",
@@ -765,12 +819,10 @@ Status MoEResidency::StageExpert(int expert,
                             std::to_string(layer_id_) + ".mlp.experts." +
                             std::to_string(expert) + "." + sc4[i];
       if (!(s = loader_->ReadTensor(n, &scal[i]))) {
-        release_miss_claim();
         return s;
       }
     }
   }
-
   if (tim) {
     const uint64_t rns = NowNs(t_read0);
     timing_->pread_count.fetch_add(1, std::memory_order_relaxed);
@@ -778,10 +830,27 @@ Status MoEResidency::StageExpert(int expert,
     AtomicMaxU64(timing_->pread_max_ns, rns);
     if (decode_phase) RecordDPreadNs(rns);
   }
+  return Status();
+}
+
+// Item 3b: merge the gate+up SF and swizzle both SF blocks (identical to
+// the LoadMoEWeights per-expert path, so device bytes match bit-for-bit).
+void MoEResidency::SwizzleExpert(
+    int buf, const std::chrono::steady_clock::time_point& t_stage0,
+    bool decode_phase) const {
+  const bool tim = timing_->enabled.load(std::memory_order_relaxed);
   const auto t_swz0 =
       tim ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
-  // Merge gate+up scales then swizzle both blocks (identical to the
-  // LoadMoEWeights per-expert path, so device bytes match bit-for-bit).
+  const size_t w_bytes = static_cast<size_t>(hs_) * (moe_is_ / 2);
+  const size_t s_bytes = static_cast<size_t>(hs_) * (moe_is_ / 16);
+  const size_t gu_sf_block = layout_.gu_sf_block();
+  uint8_t* p = l2_buf_[buf];
+  uint8_t* s_dn = p + 3 * w_bytes;
+  uint8_t* s_ga = s_dn + s_bytes;
+  uint8_t* s_up = s_ga + s_bytes;
+  uint8_t* gu_s_merged = s_up + s_bytes;
+  uint8_t* gu_sw = gu_s_merged + 2 * s_bytes;
+  uint8_t* dn_sw = gu_sw + gu_sf_block;
   std::memcpy(gu_s_merged, s_ga, s_bytes);
   std::memcpy(gu_s_merged + s_bytes, s_up, s_bytes);
   SwizzleSfInto(gu_s_merged, 2 * moe_is_, hs_, gu_sw);
@@ -794,15 +863,240 @@ Status MoEResidency::StageExpert(int expert,
     RecordStageNs(NowNs(t_stage0));
     if (decode_phase) RecordDStageNs(NowNs(t_stage0));
   }
+}
+
+// Stage one expert: claim + (miss ? read + swizzle : nothing). Kept for
+// the inline (single-miss) path and for singleton tasks; the worker path
+// uses StageTask so a run of adjacent experts can share one batched
+// preadv per region (item 3b).
+Status MoEResidency::StageExpert(int expert,
+                                 const std::vector<uint8_t>* needed_mark,
+                                 int* buf_out, StatsDelta* delta,
+                                 bool* hit_out, bool decode_phase) const {
+  const bool tim = timing_->enabled.load(std::memory_order_relaxed);
+  const auto t_stage0 =
+      tim ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
+  Status s = ClaimExpert(expert, needed_mark, buf_out, delta, hit_out,
+                         decode_phase);
+  if (!s.ok()) return s;
+  if (!*hit_out) {
+    if (!(s = ReadExpert(expert, *buf_out, delta, decode_phase))) {
+      ReleaseMissClaim(expert, *buf_out, false);
+      return s;
+    }
+    SwizzleExpert(*buf_out, t_stage0, decode_phase);
+  }
   return Status();
 }
 
-// Commit one staged expert into its slot: H2D from its L2 buffer
-// (stream-ordered after any earlier GEMM that read the evicted slot, before
-// any GEMM that reads the new expert) plus host identity/scale bookkeeping.
-// C1: called by the staging worker as soon as staging finishes, so the H2D
-// overlaps the remaining NVMe reads of the chunk. Counters route through
-// `delta` (worker-local; merged by LoadPhase1 after the chunk barrier).
+// Item 3b: read a run of k consecutive expert ids (all fast +
+// file-contiguous, same shard) into their claimed L2 buffers with one
+// preadv per region (weights, SF) plus one pread for the scales. The
+// bytes are identical to k per-expert ReadExpert calls; only the read
+// pattern changes (fewer syscalls, sequential NVMe access).
+Status MoEResidency::ReadRun(const LoadPlan& plan, const int* entries, int k,
+                             const int* bufs, StatsDelta* delta,
+                             bool decode_phase) const {
+  const bool tim = timing_->enabled.load(std::memory_order_relaxed);
+  const auto t_read0 =
+      tim ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
+  const size_t w_bytes = static_cast<size_t>(hs_) * (moe_is_ / 2);
+  const size_t s_bytes = static_cast<size_t>(hs_) * (moe_is_ / 16);
+  const int e0 = plan.experts[entries[0]];
+  const auto& d0 = read_desc_[e0];
+  // Weights: 3k iovecs (dn|ga|up per expert), one preadv.
+  std::vector<const void*> wdst;
+  std::vector<size_t> wlen;
+  wdst.reserve(3 * static_cast<size_t>(k));
+  wlen.reserve(3 * static_cast<size_t>(k));
+  for (int j = 0; j < k; ++j) {
+    uint8_t* p = l2_buf_[bufs[j]];
+    wdst.push_back(p);
+    wlen.push_back(w_bytes);
+    wdst.push_back(p + w_bytes);
+    wlen.push_back(w_bytes);
+    wdst.push_back(p + 2 * w_bytes);
+    wlen.push_back(w_bytes);
+  }
+  Status s;
+  if (!(s = loader_->ReadRangevShard(d0.shard, d0.w_off, 3 * k,
+                                     wdst.data(), wlen.data()))) {
+    return s;
+  }
+  // SF: 3k iovecs, one preadv.
+  std::vector<const void*> sdst;
+  std::vector<size_t> slen;
+  sdst.reserve(3 * static_cast<size_t>(k));
+  slen.reserve(3 * static_cast<size_t>(k));
+  for (int j = 0; j < k; ++j) {
+    uint8_t* p = l2_buf_[bufs[j]] + 3 * w_bytes;
+    sdst.push_back(p);
+    slen.push_back(s_bytes);
+    sdst.push_back(p + s_bytes);
+    slen.push_back(s_bytes);
+    sdst.push_back(p + 2 * s_bytes);
+    slen.push_back(s_bytes);
+  }
+  if (!(s = loader_->ReadRangevShard(d0.shard, d0.s_off, 3 * k,
+                                     sdst.data(), slen.data()))) {
+    return s;
+  }
+  // Scales: one pread of 24k bytes; scatter the four per-expert floats
+  // (same reorder as the per-expert fast path).
+  std::vector<float> file_scal(6 * static_cast<size_t>(k));
+  if (!(s = loader_->ReadRangeShard(
+            d0.shard, d0.sc_off,
+            6 * static_cast<size_t>(k) * sizeof(float), file_scal.data()))) {
+    return s;
+  }
+  const size_t gu_sf_block = layout_.gu_sf_block();
+  const size_t dn_sf_block = layout_.dn_sf_block();
+  for (int j = 0; j < k; ++j) {
+    uint8_t* p = l2_buf_[bufs[j]];
+    float* scal = reinterpret_cast<float*>(
+        p + 3 * w_bytes + 3 * s_bytes + 2 * s_bytes + gu_sf_block +
+        dn_sf_block);
+    scal[0] = file_scal[6 * j + 3];  // gate.weight_scale_2
+    scal[1] = file_scal[6 * j + 2];  // gate.input_scale
+    scal[2] = file_scal[6 * j + 1];  // down.weight_scale_2
+    scal[3] = file_scal[6 * j + 0];  // down.input_scale
+  }
+  const double nvme_bytes =
+      static_cast<double>(k * (3 * w_bytes + 3 * s_bytes + 6 * sizeof(float)));
+  if (delta) delta->nvme_read_bytes += nvme_bytes;
+  else stats_.nvme_read_bytes += nvme_bytes;
+  if (delta) {
+    delta->pread_merge_runs += 1;
+    delta->pread_merge_experts += static_cast<uint64_t>(k);
+  } else {
+    stats_.pread_merge_runs += 1;
+    stats_.pread_merge_experts += static_cast<uint64_t>(k);
+  }
+  if (tim) {
+    const uint64_t rns = NowNs(t_read0);
+    // Per-expert accounting: a run of k experts counts as k pread events
+    // (total run ns), so pread_avg stays per-expert and comparable to the
+    // per-expert ReadExpert path. The separate pread_merge_* counters keep
+    // the per-run view (one event per preadv run).
+    timing_->pread_count.fetch_add(static_cast<uint64_t>(k),
+                                   std::memory_order_relaxed);
+    timing_->pread_ns.fetch_add(rns, std::memory_order_relaxed);
+    AtomicMaxU64(timing_->pread_max_ns, rns);
+    timing_->pread_merge_count.fetch_add(1, std::memory_order_relaxed);
+    timing_->pread_merge_ns.fetch_add(rns, std::memory_order_relaxed);
+    AtomicMaxU64(timing_->pread_merge_max_ns, rns);
+    if (decode_phase) {
+      timing_->dpread_count.fetch_add(static_cast<uint64_t>(k),
+                                      std::memory_order_relaxed);
+      timing_->dpread_ns.fetch_add(rns, std::memory_order_relaxed);
+      AtomicMaxU64(timing_->dpread_max_ns, rns);
+    }
+  }
+  return Status();
+}
+
+// Item 3b: stage one dispatch task (a pread-mergeable run or a single
+// entry). Claims every entry's buffer first, reads the miss sub-runs
+// (one preadv per region when >=2 adjacent misses), swizzles, and
+// commits each entry. Per-entry failure semantics match the legacy
+// per-entry path: the first failure is recorded in plan.first_err, and
+// the remaining entries still run.
+Status MoEResidency::StageTask(LoadPlan& plan,
+                               const std::vector<int>& entries,
+                               StatsDelta* delta, cudaStream_t stream) const {
+  const bool tim = timing_->enabled.load(std::memory_order_relaxed);
+  const int k = static_cast<int>(entries.size());
+  std::vector<int> bufs(k, -1);
+  std::vector<char> hit(k, 0);
+  std::vector<bool> read_ok(k, true);
+  std::vector<std::chrono::steady_clock::time_point> t0(k);
+  // 1. Claim every entry (fault hook, victim selection, and in-flight
+  //    waits keep the legacy per-entry semantics; claims are released by
+  //    the commit or by the failure handling below).
+  for (int j = 0; j < k; ++j) {
+    const int i = entries[j];
+    t0[j] = tim ? std::chrono::steady_clock::now()
+                : std::chrono::steady_clock::time_point{};
+    bool hv = false;
+    Status s = ClaimExpert(plan.experts[i],
+                           plan.needed_mark.empty() ? nullptr
+                                                   : &plan.needed_mark,
+                           &bufs[j], delta, &hv, plan.decode_phase);
+    hit[j] = hv ? 1 : 0;
+    if (!s.ok()) {
+      read_ok[j] = false;
+      if (plan.first_err.exchange(1, std::memory_order_acq_rel) == 0) {
+        plan.first_err_msg = s.message();
+      }
+      continue;
+    }
+    plan.workers[i] = bufs[j];
+  }
+  // 2. Reads. Miss entries are partitioned into maximal consecutive-id
+  //    sub-runs (a hit or claim failure breaks the run); sub-runs of
+  //    >=2 adjacent mergeable experts use the batched preadv, the rest
+  //    fall back to the per-expert read.
+  int j = 0;
+  while (j < k) {
+    if (hit[j] || !read_ok[j]) {
+      ++j;
+      continue;
+    }
+    int r1 = j;
+    while (r1 + 1 < k) {
+      const int ea = plan.experts[entries[r1]];
+      const int eb = plan.experts[entries[r1 + 1]];
+      if (hit[r1 + 1] || !read_ok[r1 + 1] || eb != ea + 1 ||
+          !read_desc_[ea].contig_next) {
+        break;
+      }
+      ++r1;
+    }
+    if (r1 > j) {
+      Status s = ReadRun(plan, &entries[j], r1 - j + 1, &bufs[j], delta,
+                         plan.decode_phase);
+      if (!s.ok()) {
+        for (int t = j; t <= r1; ++t) {
+          read_ok[t] = false;
+          ReleaseMissClaim(plan.experts[entries[t]], bufs[t], false);
+        }
+        if (plan.first_err.exchange(1, std::memory_order_acq_rel) == 0) {
+          plan.first_err_msg = s.message();
+        }
+      }
+    } else {
+      Status s = ReadExpert(plan.experts[entries[j]], bufs[j], delta,
+                            plan.decode_phase);
+      if (!s.ok()) {
+        read_ok[j] = false;
+        ReleaseMissClaim(plan.experts[entries[j]], bufs[j], false);
+        if (plan.first_err.exchange(1, std::memory_order_acq_rel) == 0) {
+          plan.first_err_msg = s.message();
+        }
+      }
+    }
+    j = r1 + 1;
+  }
+  // 3. Swizzle + commit per entry (skipping failed claims/reads).
+  for (int t = 0; t < k; ++t) {
+    const int i = entries[t];
+    if (!read_ok[t]) continue;
+    if (!hit[t]) SwizzleExpert(bufs[t], t0[t], plan.decode_phase);
+    Status cs = CommitExpert(plan.experts[i], plan.slots[i], bufs[t], stream,
+                             delta);
+    if (!cs.ok()) {
+      if (bufs[t] < 0) {
+        ReleaseRingClaim(plan.experts[i], -bufs[t] - 1);
+      } else {
+        ReleaseMissClaim(plan.experts[i], bufs[t], hit[t]);
+      }
+      if (plan.first_err.exchange(1, std::memory_order_acq_rel) == 0) {
+        plan.first_err_msg = "commit: " + cs.message();
+      }
+    }
+  }
+  return Status();
+}
 Status MoEResidency::CommitExpert(int expert, int slot, int buf,
                                   cudaStream_t stream,
                                   StatsDelta* delta) const {
@@ -1175,51 +1469,54 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
   const auto t_p1 =
       tim ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
   if (off == 0) plan.workers.assign(n, 0);
-  // One chunk per call: worker t stages entry off + t into an L2 buffer
-  // (hit or miss) and commits it (C1). Buffers are never shared between
-  // workers because victim selection is serialized and skips in-flight and
-  // claimed buffers. Reusing a buffer for the next chunk is safe because
-  // StageExpert waits on the event recorded by the commit that last H2D'd
-  // from it.
   const int cnt = std::min(load_threads_, n - off);
   plan.first_err.store(0, std::memory_order_relaxed);
+  // Item 3b: partition the chunk into dispatch tasks. With pread_merge_ on,
+  // reorder the chunk's entries by expert id and group into maximal
+  // consecutive-id file-contiguous runs (capped at pread_merge_cap_ so one
+  // task does not absorb the whole chunk); each task is one worker unit and
+  // StageTask batches its reads with one preadv per region. With
+  // pread_merge_ off, each entry is a singleton task (legacy per-entry
+  // behavior). Reordering only changes NVMe read grouping and L2 claim
+  // order, never the device bytes (each expert still reads the same
+  // checkpoint ranges) or the slot mapping (plan.slots is per entry index);
+  // every H2D lands on commit_stream_ after the earlier GEMMs and before
+  // this chunk's GEMMs, so the commit order is safe.
+  std::vector<std::vector<int>> tasks;
+  tasks.reserve(cnt);
+  if (pread_merge_) {
+    std::vector<int> order(cnt);
+    for (int t = 0; t < cnt; ++t) order[t] = off + t;
+    std::sort(order.begin(), order.end(),
+              [&plan](int a, int b) { return plan.experts[a] < plan.experts[b]; });
+    int j = 0;
+    while (j < cnt) {
+      int r1 = j;
+      while (r1 + 1 < cnt) {
+        const int ea = plan.experts[order[r1]];
+        const int eb = plan.experts[order[r1 + 1]];
+        if (eb != ea + 1 || !read_desc_[ea].contig_next) break;
+        ++r1;
+      }
+      for (int s = j; s <= r1; s += pread_merge_cap_) {
+        const int e2 = std::min(r1, s + pread_merge_cap_ - 1);
+        tasks.emplace_back(order.begin() + s, order.begin() + e2 + 1);
+      }
+      j = r1 + 1;
+    }
+  } else {
+    for (int t = 0; t < cnt; ++t) tasks.push_back({off + t});
+  }
   // Phase B (2026-10-02): single-miss fast path. Small chunks run
   // stage+commit on the caller thread, skipping the worker mutex+cv
   // dispatch/wait round trip (dphase1). Semantics are identical to the
-  // worker path below (same StageExpert/CommitExpert, same claim release
-  // on failure, same counter merge, same cursors); larger chunks keep the
-  // original worker pipeline.
+  // worker path below (same StageTask/CommitExpert, same claim release on
+  // failure, same counter merge, same cursors); larger chunks keep the
+  // worker pipeline.
   if (cnt <= inline_miss_limit_) {
     StatsDelta delta;
-    for (int t = 0; t < cnt; ++t) {
-      const int i = off + t;
-      int buf = -1;
-      bool hit = false;
-      Status s = StageExpert(plan.experts[i],
-                             plan.needed_mark.empty() ? nullptr
-                                                     : &plan.needed_mark,
-                             &buf, &delta, &hit, plan.decode_phase);
-      if (s.ok()) {
-        plan.workers[i] = buf;
-        Status cs = CommitExpert(plan.experts[i], plan.slots[i], buf,
-                                 commit_stream_, &delta);
-        if (!cs.ok()) {
-          // Undo the stage bookkeeping so the buffer is pickable again
-          // (same as the worker path; remaining entries still run).
-          if (buf < 0) {
-            ReleaseRingClaim(plan.experts[i], -buf - 1);
-          } else {
-            ReleaseMissClaim(plan.experts[i], buf, hit);
-          }
-          if (plan.first_err.exchange(1, std::memory_order_acq_rel) == 0) {
-            plan.first_err_msg = "commit: " + cs.message();
-          }
-        }
-      } else {
-        if (plan.first_err.exchange(1, std::memory_order_acq_rel) == 0) {
-          plan.first_err_msg = s.message();
-        }
-      }
+    for (const auto& task : tasks) {
+      StageTask(plan, task, &delta, commit_stream_);
     }
     delta.MergeInto(stats_, resident_count_);
     if (plan.first_err.load(std::memory_order_relaxed) != 0) {
@@ -1233,18 +1530,21 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
     plan.next_commit = off + cnt;
     return Status();
   }
-  for (int t = 0; t < cnt; ++t) {
+  // Worker dispatch: one worker per task (tasks.size() <= cnt <=
+  // load_threads_). The task vectors live on this stack frame and outlive
+  // the dispatch because LoadPhase1 blocks until every worker finishes.
+  for (size_t t = 0; t < tasks.size(); ++t) {
     LoadWorker* w = workers_[t];
     {
       std::lock_guard<std::mutex> lk(w->mu);
       w->plan = &plan;
-      w->idx = off + t;
+      w->task = &tasks[t];
       w->stream = commit_stream_;
       w->finished = false;
     }
     w->need.notify_one();
   }
-  for (int t = 0; t < cnt; ++t) {
+  for (size_t t = 0; t < tasks.size(); ++t) {
     LoadWorker* w = workers_[t];
     std::unique_lock<std::mutex> lk(w->mu);
     w->done.wait(lk, [&] { return w->finished; });
@@ -1252,7 +1552,7 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
   // C1: the commits happened in the workers; merge their counter deltas
   // here (Stats stays caller-thread-only; happens-before via the done cv)
   // and advance the commit cursor with the stage cursor.
-  for (int t = 0; t < cnt; ++t) {
+  for (size_t t = 0; t < tasks.size(); ++t) {
     workers_[t]->delta_.MergeInto(stats_, resident_count_);
   }
   if (plan.first_err.load(std::memory_order_relaxed) != 0) {
@@ -1267,11 +1567,12 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
   return Status();
 }
 
-// Persistent load worker: waits for a stage task, stages one expert, and
-// signals the caller. The task (plan pointer + entry index) is fully
-// specified at dispatch; LoadPhase1 does not return until every dispatched
-// worker has finished, so the plan outlives the task.
-// C1: after a successful stage the worker commits the expert itself (H2D on
+// Persistent load worker: waits for a stage task (a pread-mergeable run of
+// entry indices, or a singleton), stages it via StageTask, and signals the
+// caller. The task (plan pointer + entry vector) is fully specified at
+// dispatch; LoadPhase1 does not return until every dispatched worker has
+// finished, so the plan and the task vector outlive the task.
+// C1: StageTask commits each expert as soon as its staging finishes (H2D on
 // the task stream, stream-ordered after any earlier GEMM and before any
 // later GEMM on the single model stream), so the H2D overlaps the remaining
 // NVMe reads of the chunk. Counters accumulate in w->delta_ and are merged
@@ -1279,46 +1580,22 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
 void MoEResidency::LoadWorkerLoop(LoadWorker* w) const {
   while (true) {
     LoadPlan* plan;
-    int idx;
+    const std::vector<int>* task;
     {
       std::unique_lock<std::mutex> lk(w->mu);
-      w->need.wait(lk, [&] { return w->stop || w->idx >= 0; });
+      w->need.wait(lk, [&] { return w->stop || w->task != nullptr; });
       if (w->stop) break;
       plan = w->plan;
-      idx = w->idx;
-      w->idx = -1;
+      task = w->task;
+      w->task = nullptr;
     }
     w->delta_.Reset();
-    int buf = -1;
-    bool hit = false;
-    Status s = StageExpert(plan->experts[idx],
-                           plan->needed_mark.empty() ? nullptr
-                                                    : &plan->needed_mark,
-                           &buf, &w->delta_, &hit, plan->decode_phase);
-    if (s.ok()) {
-      plan->workers[idx] = buf;
-      Status cs = CommitExpert(plan->experts[idx], plan->slots[idx], buf,
-                               w->stream, &w->delta_);
-      if (!cs.ok()) {
-        // Undo the stage bookkeeping so the buffer is pickable again.
-        if (buf < 0) {
-          ReleaseRingClaim(plan->experts[idx], -buf - 1);
-        } else {
-          ReleaseMissClaim(plan->experts[idx], buf, hit);
-        }
-        if (plan->first_err.exchange(1, std::memory_order_acq_rel) == 0) {
-          // Only the first failing worker writes; LoadPhase1 reads after
-          // waiting on every worker's done (happens-before via the cv).
-          plan->first_err_msg = "commit: " + cs.message();
-        }
-      }
-    } else {
-      if (plan->first_err.exchange(1, std::memory_order_acq_rel) == 0) {
-        // Only the first failing worker writes; LoadPhase1 reads after
-        // waiting on every worker's done (happens-before via the cv).
-        plan->first_err_msg = s.message();
-      }
-    }
+    // StageTask claims every entry, reads the miss sub-runs (one preadv per
+    // region when >=2 adjacent mergeable experts), swizzles, and commits
+    // each entry. Per-entry failure semantics (first_err, claim release)
+    // are handled inside StageTask; LoadPhase1 reads first_err after waiting
+    // on every worker's done (happens-before via the done cv).
+    StageTask(*plan, *task, &w->delta_, w->stream);
     {
       std::lock_guard<std::mutex> lk(w->mu);
       w->finished = true;

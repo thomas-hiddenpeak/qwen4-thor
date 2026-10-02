@@ -8,21 +8,26 @@ Criteria (frozen 2026-09-30):
   * TTFT arithmetic mean; total latency arithmetic mean (reported).
   * load volume from server.log [residency] lines (loads/load_mb/misses,
     decode vs prefill split).
-  * memory peak: service_total_physical_peak_bytes from memory-peak.json.
-  * correctness: per-tier output sha256 bit-exact baseline vs candidate;
+  * memory counters are diagnostic; the independent memory gate is required.
+  * correctness: per-tier HTTP text sha256 baseline vs candidate;
     target tier must have in=261887 out=257 finish=length (total 262144).
 """
+import argparse
+import hashlib
 import json
+import math
+import os
 import re
+import sys
 from pathlib import Path
 
-W = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[2]
+W = ROOT / '.q4t-work/moe-residency-20260930'
 TIERS = [1024, 4096, 8192, 45056, 204800, 261887]
 TARGET = 261887
 
 
 def harmonic(xs):
-    xs = [x for x in xs if x is not None and x > 0]
     return len(xs) / sum(1.0 / x for x in xs) if xs else float('nan')
 
 
@@ -34,7 +39,73 @@ def load_results(tag):
     p = W / f'e2e-{tag}' / 'results.json'
     if not p.is_file():
         return {}
-    return {it['length']: it for it in json.loads(p.read_text())}
+    rows = json.loads(p.read_text())
+    if not isinstance(rows, list):
+        raise ValueError(f'{p}: expected result list')
+    result = {it['length']: it for it in rows}
+    if len(result) != len(rows):
+        raise ValueError(f'{p}: duplicate tiers')
+    return result
+
+
+def validate_exit(tag):
+    """Require a successful runner AND server shutdown before accepting rows."""
+    path = W / f'e2e-{tag}' / 'exit.json'
+    raw = path.read_text()
+    try:
+        status = json.loads(raw)
+    except json.JSONDecodeError:
+        # Frozen legacy wrapper replaced exit.json with these key=value lines.
+        # Its runner exit code includes run_acceptance's server-exit check.
+        pairs = dict(line.split('=', 1) for line in raw.splitlines() if '=' in line)
+        if pairs.get('runner_rc') != '0' or pairs.get('tag') != tag:
+            raise ValueError(f'{tag}: legacy runner exit did not pass')
+        return
+    if (status.get('server') != 0 or
+            status.get('http_output_checks_passed') is not True or
+            status.get('failure') is not None or status.get('completed') != len(TIERS)):
+        raise ValueError(f'{tag}: runner/server completion contract failed')
+    wrapper = path.with_name('wrapper-exit.json')
+    if wrapper.is_file():
+        status = json.loads(wrapper.read_text())
+        if status.get('runner_rc') != 0 or status.get('monitor_rc') != 0:
+            raise ValueError(f'{tag}: wrapper runner/monitor exit failed')
+
+
+def validate_tier(tag, tier, item):
+    """Validate raw HTTP evidence before trusting cached summary metrics."""
+    path = W / f'e2e-{tag}' / f'context-{tier}' / 'responses.json'
+    rows = json.loads(path.read_text())
+    metrics, outputs = item['metrics'], item['outputs']
+    if not isinstance(rows, list) or len(rows) < 3:
+        raise ValueError('at least three HTTP responses are required')
+    if len(metrics) != len(rows) or len(outputs) != len(rows):
+        raise ValueError('response/metric/output counts differ')
+    prompt_hash = item['prompt_sha256']
+    if not isinstance(prompt_hash, str) or not re.fullmatch(r'[0-9a-f]{64}', prompt_hash):
+        raise ValueError('missing or invalid prompt identity')
+    expected_output = 257 if tier == TARGET else 256
+    for i, (row, metric, digest) in enumerate(zip(rows, metrics, outputs), 1):
+        if (row['success'] != 1 or row['actual_input'] != tier or
+                row['actual_output'] != expected_output or
+                row['finish'] != ['length']):
+            raise ValueError(f'run{i}: HTTP/token/finish contract failed')
+        if row['prompt_sha256'] != prompt_hash:
+            raise ValueError(f'run{i}: prompt identity differs')
+        if hashlib.sha256(row['text'].encode()).hexdigest() != digest:
+            raise ValueError(f'run{i}: output digest differs from saved text')
+        values = (metric['ttft'], metric['decode_tps'], row['ttft'], row['latency'])
+        if any(isinstance(v, bool) or not isinstance(v, (int, float)) or
+               not math.isfinite(v) or v <= 0 for v in values):
+            raise ValueError(f'run{i}: non-finite/non-positive metrics')
+        if row['latency'] <= row['ttft']:
+            raise ValueError(f'run{i}: latency must exceed TTFT')
+        rate = (expected_output - 1) / (row['latency'] - row['ttft'])
+        if (not math.isclose(metric['ttft'], row['ttft'], rel_tol=1e-9) or
+                not math.isclose(metric['decode_tps'], rate, rel_tol=1e-9)):
+            raise ValueError(f'run{i}: summary metrics differ from HTTP evidence')
+    if item.get('deterministic') is not True or len(set(outputs)) != 1:
+        raise ValueError('repeated output is not deterministic')
 
 
 def latencies(tag, tier):
@@ -77,18 +148,28 @@ def mem_peak(tag):
 
 
 def main():
-    import sys
-    args = sys.argv[1:]
-    base_tag = args[0] if len(args) > 0 else 'baseline-s0-current'
-    cand_tag = args[1] if len(args) > 1 else 'cand-c256'
+    global W
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('base_tag', nargs='?', default='baseline-s0-current')
+    parser.add_argument('cand_tag', nargs='?', default='cand-c256')
+    parser.add_argument('--work-dir', type=Path,
+                        default=Path(os.environ.get('Q4T_ACCEPTANCE_WORK_DIR', W)))
+    parser.add_argument('--minimum-ratio', type=float, default=0.5)
+    args = parser.parse_args()
+    if not math.isfinite(args.minimum_ratio) or args.minimum_ratio <= 0:
+        parser.error('--minimum-ratio must be finite and positive')
+    W = args.work_dir.resolve()
+    base_tag, cand_tag = args.base_tag, args.cand_tag
+    validate_exit(base_tag)
+    validate_exit(cand_tag)
     base = load_results(base_tag)
     cand = load_results(cand_tag)
     res_b = residency_lines(base_tag)
     res_c = residency_lines(cand_tag)
     print('== E2E matrix comparison (frozen criteria, 2026-09-30) ==')
     print(f"{'tier':>8} | {'base dec tps (hmean)':>22} | {'cand dec tps (hmean)':>22} | "
-          f"{'ratio':>6} | {'gate50%':>7} | base TTFT(s) | cand TTFT(s) | "
-          f"base lat(s) | cand lat(s) | bitexact")
+          f"{'ratio':>6} | {'gate':>7} | base TTFT(s) | cand TTFT(s) | "
+          f"base lat(s) | cand lat(s) | text-exact")
     all_pass = True
     pending = []
     for t in TIERS:
@@ -98,17 +179,26 @@ def main():
                   f"{'':>22} | {'':>6} | {'PENDING':>7} | - | - | - | - | -")
             continue
         b, c = base[t], cand[t]
+        try:
+            validate_tier(base_tag, t, b)
+            validate_tier(cand_tag, t, c)
+            if b['prompt_sha256'] != c['prompt_sha256']:
+                raise ValueError('baseline/candidate prompts differ')
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            all_pass = False
+            print(f'{t:>8} | INVALID: {error}')
+            continue
         bd = [m['decode_tps'] for m in b['metrics']]
         cd = [m['decode_tps'] for m in c['metrics']]
         bh, ch = harmonic(bd), harmonic(cd)
         ratio = ch / bh if bh and bh > 0 else float('nan')
-        ok = ratio >= 0.5
-        all_pass &= ok
+        ok = ratio >= args.minimum_ratio
+        exact = b['outputs'] == c['outputs']
+        all_pass &= ok and exact
         bt = [m['ttft'] for m in b['metrics']]
         ct = [m['ttft'] for m in c['metrics']]
         bl = latencies(base_tag, t)
         cl = latencies(cand_tag, t)
-        exact = b['outputs'] == c['outputs']
         print(f"{t:>8} | {bh:>22.4f} | {ch:>22.4f} | {ratio:>6.3f} | "
               f"{'PASS' if ok else 'FAIL':>7} | {mean(bt):>12.2f} | "
               f"{mean(ct):>12.2f} | "
@@ -121,18 +211,8 @@ def main():
             print(f"         run{i+1}: base ttft={bl['ttft']:.2f}s dec={bd[i]:.2f} "
                   f"| cand ttft={cl['ttft']:.2f}s dec={cd[i]:.2f}")
     # target tier token contract
-    print('\n== target tier token contract (total context 262144) ==')
-    for tag, ttag in [('base', base_tag), ('cand', cand_tag)]:
-        rp = W / f'e2e-{ttag}' / f'context-{TARGET}' / 'responses.json'
-        if not rp.is_file():
-            print(f"{tag}: PENDING (responses.json missing)")
-            continue
-        rows = json.loads(rp.read_text())
-        ok = all(r['actual_input'] == 261887 and r['actual_output'] == 257
-                 and r['finish'] == ['length'] for r in rows)
-        print(f"{tag}: in/out/finish per request = "
-              f"{[(r['actual_input'], r['actual_output'], r['finish']) for r in rows]} "
-              f"-> {'OK' if ok else 'FAIL'}")
+    print('\nTarget token contract: validated with every tier above '
+          '(261887 input + 257 output = 262144).')
     # load volume
     print('\n== residency load volume (candidate) ==')
     for r in res_c:
@@ -159,18 +239,22 @@ def main():
               f"evictions={r['evictions']}{extra}")
     print(f"baseline residency lines: {len(res_b)} (expected 0 for C=0)")
     # memory
-    print('\n== memory peak (service_total_physical_peak_bytes) ==')
+    print('\n== legacy RSS+driver diagnostic (not a physical-memory gate) ==')
     for tag in [base_tag, cand_tag]:
         v = mem_peak(tag)
-        print(f"  {tag}: {v}" + ('' if v is None else
-              f"  ({v/1e9:.3f} GB, budget 54.000 GB"
-              f"{', user-accepted overrun for C=256' if tag==cand_tag else ''})"))
-    print('\n== GATE: decode >= 50% of baseline per tier ==')
+        print(f"  {tag}: {v}" + ('' if v is None else f"  ({v/1e9:.3f} GB)"))
+    print(f'\n== GATE: valid HTTP evidence, identical text, decode >= '
+          f'{100 * args.minimum_ratio:g}% of baseline per tier ==')
     if pending:
         print(f"INCOMPLETE: pending tiers {pending} (gate not evaluable yet)")
     else:
         print('ALL PASS' if all_pass else 'FAIL (see tiers above)')
+    return 0 if all_pass and not pending else 1
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        sys.exit(main())
+    except (OSError, ValueError, KeyError, TypeError, ZeroDivisionError) as error:
+        print(f'INVALID EVIDENCE: {error}', file=sys.stderr)
+        sys.exit(1)

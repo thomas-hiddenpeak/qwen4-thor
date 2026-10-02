@@ -118,19 +118,21 @@ struct WeightLoader::Impl {
   bool keep_page_cache = false;
   std::string keep_marker;
 
-  struct Shard {
-    std::unique_ptr<SafetensorsFile> file;
-  };
   // Mutable: EnsureOpen is logically const (no observable change to the
   // loader's contract) but manages the open-shard cache.
-  mutable std::unordered_map<std::string, Shard> open;
+  using ShardHandle = std::shared_ptr<SafetensorsFile>;
+  mutable std::unordered_map<std::string, ShardHandle> open;
   mutable std::deque<std::string> lru;  // most-recent at back
+  // FindTensor returns a stable pointer. Cache metadata independently of the
+  // shard handles: LRU eviction must not invalidate a caller's TensorInfo.
+  // Entries are immutable and never erased during the loader's lifetime.
+  mutable std::unordered_map<std::string, TensorInfo> metadata;
 
-  Status EnsureOpen(const std::string& shard, Shard** out) const;
+  Status EnsureOpen(const std::string& shard, ShardHandle* out) const;
 };
 
 Status WeightLoader::Impl::EnsureOpen(const std::string& shard,
-                                      Shard** out) const {
+                                     ShardHandle* out) const {
   // Called concurrently by the parallel MoE expert load; guard the LRU cache.
   std::lock_guard<std::mutex> lock(*owner_mu);
   auto it = open.find(shard);
@@ -143,7 +145,7 @@ Status WeightLoader::Impl::EnsureOpen(const std::string& shard,
       }
     }
     lru.push_back(shard);
-    *out = &it->second;
+    *out = it->second;
     return Status();
   }
 
@@ -162,11 +164,9 @@ Status WeightLoader::Impl::EnsureOpen(const std::string& shard,
       (keep_marker.empty() || shard.find(keep_marker) != std::string::npos)) {
     f->SetKeepPageCache(true);
   }
-  Shard sh;
-  sh.file.reset(f);
-  auto inserted = open.emplace(shard, std::move(sh));
+  auto inserted = open.emplace(shard, std::shared_ptr<SafetensorsFile>(f));
   lru.push_back(shard);
-  *out = &inserted.first->second;
+  *out = inserted.first->second;
   return Status();
 }
 
@@ -179,7 +179,7 @@ void WeightLoader::SetKeepPageCache(bool keep,
     if (keep &&
         (shard_marker.empty() ||
          name.find(shard_marker) != std::string::npos)) {
-      sh.file->SetKeepPageCache(true);
+      sh->SetKeepPageCache(true);
     }
   }
 }
@@ -207,32 +207,61 @@ Status WeightLoader::Create(const std::string& model_dir,
 }
 
 const TensorInfo* WeightLoader::FindTensor(const std::string& name) const {
+  {
+    std::lock_guard<std::mutex> lock(mu_);
+    auto it = impl_->metadata.find(name);
+    if (it != impl_->metadata.end()) return &it->second;
+  }
   const std::string* shard = impl_->index->ShardOf(name);
   if (!shard) return nullptr;
-  Impl::Shard* sh = nullptr;
+  std::shared_ptr<SafetensorsFile> sh;
   if (!impl_->EnsureOpen(*shard, &sh).ok()) return nullptr;
-  return sh->file->Find(name);
+  const TensorInfo* info = sh->Find(name);
+  if (!info) return nullptr;
+  std::lock_guard<std::mutex> lock(mu_);
+  return &impl_->metadata.emplace(name, *info).first->second;
+}
+
+const std::string* WeightLoader::ShardOf(const std::string& name) const {
+  return impl_->index->ShardOf(name);
 }
 
 Status WeightLoader::ReadTensor(const std::string& name, void* dst) const {
   const std::string* shard = impl_->index->ShardOf(name);
   if (!shard) return Status::Fail("tensor not in index: " + name);
-  Impl::Shard* sh = nullptr;
+  std::shared_ptr<SafetensorsFile> sh;
   Status s = impl_->EnsureOpen(*shard, &sh);
   if (!s.ok()) return s;
-  const TensorInfo* info = sh->file->Find(name);
+  const TensorInfo* info = sh->Find(name);
   if (!info) return Status::Fail("tensor not in shard " + *shard + ": " + name);
-  return sh->file->ReadTensor(*info, dst);
+  return sh->ReadTensor(*info, dst);
 }
 
 Status WeightLoader::ReadRange(const std::string& name, uint64_t offset,
                                size_t length, void* dst) const {
   const std::string* shard = impl_->index->ShardOf(name);
   if (!shard) return Status::Fail("tensor not in index: " + name);
-  Impl::Shard* sh = nullptr;
+  std::shared_ptr<SafetensorsFile> sh;
   Status s = impl_->EnsureOpen(*shard, &sh);
   if (!s.ok()) return s;
-  return sh->file->ReadRange(offset, length, dst);
+  return sh->ReadRange(offset, length, dst);
+}
+
+Status WeightLoader::ReadRangeShard(const std::string& shard, uint64_t offset,
+                                    size_t length, void* dst) const {
+  std::shared_ptr<SafetensorsFile> sh;
+  Status s = impl_->EnsureOpen(shard, &sh);
+  if (!s.ok()) return s;
+  return sh->ReadRange(offset, length, dst);
+}
+
+Status WeightLoader::ReadRangevShard(const std::string& shard, uint64_t offset,
+                                     size_t count, const void* const* dsts,
+                                     const size_t* lens) const {
+  std::shared_ptr<SafetensorsFile> sh;
+  Status s = impl_->EnsureOpen(shard, &sh);
+  if (!s.ok()) return s;
+  return sh->ReadRangev(offset, count, dsts, lens);
 }
 
 Status WeightLoader::ReadTensorToDevice(const std::string& name, void* dst,
@@ -240,15 +269,18 @@ Status WeightLoader::ReadTensorToDevice(const std::string& name, void* dst,
                                         cudaStream_t stream) const {
   const std::string* shard = impl_->index->ShardOf(name);
   if (!shard) return Status::Fail("tensor not in index: " + name);
-  Impl::Shard* sh = nullptr;
+  std::shared_ptr<SafetensorsFile> sh;
   Status s = impl_->EnsureOpen(*shard, &sh);
   if (!s.ok()) return s;
-  const TensorInfo* info = sh->file->Find(name);
+  const TensorInfo* info = sh->Find(name);
   if (!info) return Status::Fail("tensor not in shard " + *shard + ": " + name);
-  return sh->file->ReadTensorToDevice(*info, dst, device_dst, stream);
+  return sh->ReadTensorToDevice(*info, dst, device_dst, stream);
 }
 
-size_t WeightLoader::open_shards() const { return impl_->open.size(); }
+size_t WeightLoader::open_shards() const {
+  std::lock_guard<std::mutex> lock(mu_);
+  return impl_->open.size();
+}
 
 }  // namespace io
 }  // namespace q4t

@@ -82,6 +82,16 @@ class SafetensorsFile {
   // tensors, which the residency loader uses to fetch an expert's
   // down/gate/up weights (or scale blocks) in a single contiguous read.
   Status ReadRange(uint64_t data_start, uint64_t length, void* dst) const;
+  // Scatter variant of ReadRange: read `length` bytes (sum of `lens`) from
+  // the contiguous data range starting at `data_start` into `count`
+  // destination buffers (dsts[i] receives lens[i] bytes, in order). One
+  // preadv normally copies the whole range; partial reads and EINTR are
+  // retried, and EOF before all bytes are read fails. Zero-length buffers
+  // are ignored. Large buffer counts split at the system iovec limit.
+  // The residency loader can fetch several adjacent experts' weight (or SF)
+  // regions in a single read instead of one pread per expert.
+  Status ReadRangev(uint64_t data_start, size_t count,
+                    const void* const* dsts, const size_t* lens) const;
   // Read a tensor's bytes into `dst`, then H2D-copy to `device_dst` on
   // `stream` (both must be at least byte_size()).
   Status ReadTensorToDevice(const TensorInfo& t, void* dst, void* device_dst,

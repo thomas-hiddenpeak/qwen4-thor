@@ -4,11 +4,14 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
+#include <sys/uio.h>
 #include <unistd.h>
 
 #include <cerrno>
 #include <cstring>
+#include <limits>
 #include <unordered_map>
+#include <vector>
 
 #include "q4t/io/json.h"
 
@@ -260,6 +263,66 @@ Status SafetensorsFile::ReadRange(uint64_t data_start, uint64_t length,
     got += static_cast<size_t>(r);
   }
   if (got != length) return Status::Fail("short pread for range");
+  return Status();
+}
+
+Status SafetensorsFile::ReadRangev(uint64_t data_start, size_t count,
+                                  const void* const* dsts,
+                                  const size_t* lens) const {
+  if (count > 0 && (!dsts || !lens)) {
+    return Status::Fail("missing read range buffers");
+  }
+  size_t total = 0;
+  for (size_t i = 0; i < count; ++i) {
+    if (lens[i] > std::numeric_limits<size_t>::max() - total) {
+      return Status::Fail("read range size overflow");
+    }
+    total += lens[i];
+  }
+  if (total == 0) return Status();
+  const uint64_t data_bytes = impl_->map_len - impl_->data_offset;
+  if (data_start > data_bytes || total > data_bytes - data_start) {
+    return Status::Fail("read range extends past file end");
+  }
+  // preadv: one syscall copies the contiguous file range into the
+  // scattered destinations (kernel-side scatter, no user-space copy).
+  // Omit empty entries so partial-read advancement always makes progress.
+  std::vector<struct iovec> iov;
+  iov.reserve(count);
+  for (size_t i = 0; i < count; ++i) {
+    if (lens[i] > 0) iov.push_back({const_cast<void*>(dsts[i]), lens[i]});
+  }
+  static const long max_iov = sysconf(_SC_IOV_MAX);
+  if (max_iov <= 0) return Status::Fail("cannot query preadv iovec limit");
+  const off_t base = static_cast<off_t>(impl_->data_offset + data_start);
+  size_t done = 0;
+  size_t idx = 0;
+  while (done < total) {
+    const size_t remaining = iov.size() - idx;
+    const int batch = static_cast<int>(
+        remaining < static_cast<size_t>(max_iov) ? remaining : max_iov);
+    const ssize_t r = preadv(impl_->fd, iov.data() + idx,
+                            batch, base + static_cast<off_t>(done));
+    if (r < 0) {
+      if (errno == EINTR) continue;
+      return Status::Fail("preadv failed for range");
+    }
+    if (r == 0) break;  // unexpected EOF
+    done += static_cast<size_t>(r);
+    size_t rem = static_cast<size_t>(r);
+    while (rem > 0) {
+      const size_t space = iov[idx].iov_len;
+      if (rem < space) {
+        iov[idx].iov_base = static_cast<char*>(iov[idx].iov_base) + rem;
+        iov[idx].iov_len -= rem;
+        rem = 0;
+      } else {
+        rem -= space;
+        ++idx;
+      }
+    }
+  }
+  if (done != total) return Status::Fail("short preadv for range");
   return Status();
 }
 
