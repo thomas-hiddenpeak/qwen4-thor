@@ -1,5 +1,49 @@
 # MoE 路由采集与检查
 
+## 实际offload分块的有界离线研究
+
+`run_offload_study.py`配合`offload_trace.py`、`offload_replay.py`和
+`offload_working_set.py`，消费完整成功请求的逐token路由。冻结范围与
+数据边界见[2026-10-02回放报告](../../docs/OFFLOAD_REPLAY_2026-10-02.md)。
+它不启动模型，不改变运行时，也不预测TTFT或实际SSD读取。
+
+当前固定比较C256/L2-16/mirror-8/PhaseD关闭：原lex分块tick-LRU，
+以及保持分块不变、按当前GPU重叠贪心重排的唯一候选。每forward另算
+同入口状态、原分块顺序的未来知情驱逐参照；其和不是全请求最优值。
+L2/mirror分别列`serial_eager`与`batch_deferred`条件，二者不是实际
+排程的上下界。InitHot实际读取单列并暖化模拟缓存；跨请求保持状态。
+
+同key token的C++非稳定排序由独立host helper复现。用与运行时相同
+的g++-14/libstdc++构建，产物只放build/或.q4t-work/：
+
+```bash
+g++-14 -std=c++23 -O2 -Wall -Wextra -Werror \
+  tools/trace/offload_sort.cpp -o build/offload_sort
+python3 -B tools/trace/run_offload_study.py \
+  --plan .q4t-work/offload-replay-goal-20261002/plan.json \
+  --layout .q4t-work/offload-replay-goal-20261002/layout.json \
+  --output .q4t-work/offload-replay-goal-20261002/new-run
+```
+
+plan绑定helper、旧采集binary/checker、当前binary、热点和两条完整
+源文件SHA；示例使用已冻结helper，不会自动切换到新编译路径。
+缺少私有输入、身份变化、容量不符、部分forward或失败终态均拒绝。
+输出目录必须全新；失败保存exit与已完成分项，不删除失败证据。
+
+文件layout只读取safetensors头部与索引，保留file/stat/header身份。
+8/12/16GiB专家对象池是假设全部空间用于原始专家payload的独立模型，
+不是memcg或整体RAM预算；不模拟Linux回收、readahead及并行pread顺序。
+旧采集binary的路由仅用于固定路由反事实比较，不宣称当前路由逐ID相同。
+
+直接工具合同：`test_offload_replay.py`、`test_offload_working_set.py`、
+`test_offload_log.py`；`test_offload_study.py --sort-helper HELPER`；
+`test_offload_trace.py --checker CHECKER --output NEW_OUTPUT`。
+`analyze_offload_log.py --log SERVER_LOG --output NEW_JSON`可从已有
+完整flush/overlap诊断提取固定顺序GPU补载下界，拒绝不完整日志；
+该下界不能约束改变chunk顺序的候选，也不代表物理IO下界。
+
+## 原始路由采集
+
 受控完整请求采集，默认关闭。仅支持实际 max_seq=1、文本 greedy、MTP关、
 媒体关；不改变 scheduler、prefill chunk 或 Router 算法。默认部署已包含
 采集功能，具体版本与成本接受见[当前状态](../../docs/STATUS.md)。
