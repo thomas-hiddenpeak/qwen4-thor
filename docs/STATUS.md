@@ -4,6 +4,22 @@
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
 ## 当前结论
+## RAM/缓存协议阶段：隔离校准完成，预算待冻结（2026-10-02 19:20）
+
+用户已允许启动下一阶段，计划见
+[RAM预算与缓存协议](OFFLOAD_RAM_PROTOCOL_2026-10-02.md)。本轮只做
+14阶段×3的小探针，无模型推理、无运行时代码修改、无模型cache清理。
+独立1GiB transient服务内，CUDA device增加64MiB时memcg current
+中位增量为0，而NVIDIA增加64MiB、KReclaimable减少同量；pinned和
+普通匿名页进入计费。外部预热32MiB cache的读取也不新增file计费。
+因此memory.max不能直接当q4t全部物理RAM上限。
+
+探针exit0、无OOM，服务/cgroup/任务文件已清理。下一步分别核设备/
+主机/cache覆盖，补有界HTTP与实际存储IO采样，处理预算无解仍回退
+启动、空热点层计费规则漂移等已发现边界，再冻结小规模HTTP协议。
+建议先探索C=256可运行资源范围；54GB是否为最终目标待选择，不
+自行恢复68.34GB旧口径或宣称新的总物理峰值。GEMM冻结、Phase D off。
+
 ## Offload 基础修复 Goal：修复与有界验证完成（2026-10-02）
 
 交付、身份与边界见 [修复报告](MOE_OFFLOAD_REPAIR_2026-10-02.md)。
