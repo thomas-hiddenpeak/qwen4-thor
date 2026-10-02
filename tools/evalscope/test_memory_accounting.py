@@ -139,6 +139,28 @@ class MemoryAccountingTest(unittest.TestCase):
         self.assertEqual(result['gpu_unknown_samples'], 1)
         self.assertEqual(result['existing_named_pids_at_start'], [99])
 
+    def test_cgroup_charge_is_not_a_complete_physical_budget(self):
+        with tempfile.TemporaryDirectory() as directory:
+            directory = Path(directory)
+            resource_summary = {
+                'observed_cgroup_counter_peaks_bytes': {
+                    'memory.current': 1024, 'memory.peak': 2048,
+                    'memory.swap.current': 0},
+                'binding_mismatch_samples': 1}
+            self.fixture(directory, [
+                {'t': 1, 'root': 12, 'rss_kb': 4, 'gpu_bytes': 5,
+                 'model_file_cache_bytes': 10}],
+                {'schema_version': 3, 'sampling_complete': True,
+                 'prelaunch_sample_present': True,
+                 'resource_observations': resource_summary})
+            result = evaluate_memory_csv(directory)
+            self.assertEqual(result['gate'], 'INDETERMINATE')
+            self.assertIsNone(result['candidate_total'])
+            self.assertEqual(result['observed_component_peaks_bytes']['cgroup_memory_peak_charge'], 2048)
+            self.assertIn('expected_and_actual_cgroup_mismatch', result['unresolved'])
+            self.assertIn('missing_raw_resource_samples', result['unresolved'])
+            self.assertIsNone(result['sources']['resource_samples_sha256'])
+
 
 if __name__ == '__main__':
     unittest.main()

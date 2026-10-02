@@ -274,6 +274,7 @@ if(Q4T_BUILD_TESTS)
     tests/ple_e2e_gather_test.cpp
     tests/ple_working_memory_test.cpp
     tests/io_json_test.cpp
+    tests/runtime_memory_budget_test.cpp
     tests/model_sequence_test.cpp
     tests/server_http_request_test.cpp
     tests/server_chat_contract_test.cpp
@@ -308,7 +309,7 @@ if(Q4T_BUILD_TESTS)
     tests/video_processor_test.cpp
     tests/vision_e2e_test.cpp
     tests/test_main.cpp)
-  set(Q4T_TEST_LIBS q4t_ple q4t_io q4t_quant q4t_model)
+  set(Q4T_TEST_LIBS q4t_ple q4t_io q4t_quant q4t_model q4t_runtime)
   if(Q4T_HAS_ICU)
     list(APPEND Q4T_TEST_SOURCES tests/text_tokenizer_test.cpp)
     list(APPEND Q4T_TEST_LIBS q4t_text)

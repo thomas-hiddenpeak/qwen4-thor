@@ -37,6 +37,47 @@ build/ 或 .q4t-work/。没有 --fixtures 时按固定算法生成语料；使�
 一致性并采集计时，性能仍需按总 decode token/总 decode 时间、每档重复
 范围与对照版本分析；不得用任意固定容忍百分比替代现行接受条件。
 
+## 有界资源探索与独立服务
+
+`run_acceptance.py --mode performance --perf-lengths 45056 --perf-repeats 3`
+只运行选定档位。plan/results/exit明确标为partial；不能替代五档或
+offload六档验收。显式选档时每发启动一个evalscope client，服务保持
+连续，客户端/tokenizer启动间隔与默认每档一次client的历史批次不同。
+`events.jsonl`与`request-boundaries.json`记录客户端前后时钟和HTTP
+单调时钟；HTTP的UTC是锚点映射估计。有效容量缺失或与请求值不一致
+时，在发请求前拒绝；legacy预算日志不能单独证明有效prefill值。
+
+`--systemd-unit q4t-UNIQUE.service`使服务出生于独立组，client和monitor
+留在组外；`--host-cache-max-bytes BYTES`设置memcg限额，swap固定0。
+本机需systemd与非交互sudo。Thor CUDA分配和外部已有缓存可能不计入
+此组，**不能将它称为全部物理RAM上限**。服务正常/错误退出后用10秒
+ExecStopPost窗口保留cg端点；辅助sleep计入unit尾部开销，准确模型PID
+另行记录。退出或清理失败均非零，已有同名unit拒绝复用。
+
+`run_budget_experiment.py`提供本轮冻结的C256/8192/262144、质量或45K×3
+入口，集成逐文件缓存门禁、独立服务、监控和工具/输入身份快照：
+
+```bash
+python3 tools/evalscope/run_budget_experiment.py --mode performance \
+  --binary build/q4t --model-dir "$Q4T_MODEL_DIR" \
+  --hot-list .q4t-work/moe-residency-20260930/hot-lists/hot-final-12288.json \
+  --fixtures .q4t-work/moe-residency-20260930/e2e-fixtures-v2 \
+  --output .q4t-work/e2e/ram-host16g --clear-model-cache \
+  --host-cache-max-bytes 17179869184
+```
+
+16GiB是本轮host/cache探索配置。冷态操作只向只读模型fd发送定向
+eviction advice，必须cachestat确认safetensors/bin payload驻留0；
+门禁失败保留现场并停止，请求间不清缓存/改额度。metadata可由组外
+tokenizer重新缓存，不能冒称全部cache为独占charge。此工具不负责
+选择新预算或自动扩大限额。协议与结论见
+[RAM/缓存协议](../../docs/OFFLOAD_RAM_PROTOCOL_2026-10-02.md)。
+
+monitor新增`--cgroup-path`，`resource-samples.jsonl`与CSV按sequence
+对齐，保存真实PID读存储字节、cg io.stat/memory/限额/事件/PSI与
+模型设备背景统计。分区与父盘不相加，服务IO含PLE/元数据等，
+`nvme_mb`仍是逻辑读取。缺测/身份变化/计数重置保留null与原因。
+
 ## 固定参考的边界
 
 quality_reference.json 来自 2026-09-20 完整数学修复后的真实 HTTP 结果，

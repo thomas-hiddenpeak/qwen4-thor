@@ -50,7 +50,15 @@ def evaluate_memory_csv(memory_dir, budget_bytes=54_000_000_000,
         rows = []
     target = [row for row in rows if number(row.get('root'))]
     schema = summary.get('schema_version', 1)
+    resources = summary.get('resource_observations')
+    resource_peaks = (resources or {}).get('observed_cgroup_counter_peaks_bytes', {})
     gaps = list(UNKNOWN)
+    if resources:
+        gaps.append('cgroup_charge_excludes_some_cuda_and_external_cache_paths')
+        if resources.get('binding_mismatch_samples'):
+            gaps.append('expected_and_actual_cgroup_mismatch')
+        if not (memory_dir / 'resource-samples.jsonl').is_file():
+            gaps.append('missing_raw_resource_samples')
     if not rows:
         gaps.append('missing_memory_csv')
     if not target:
@@ -128,6 +136,8 @@ def evaluate_memory_csv(memory_dir, budget_bytes=54_000_000_000,
         'sources': {'memory_csv': str(memory_dir / 'memory.csv'),
                     'memory_summary': str(memory_dir / 'memory-peak.json'),
                     'monitor_schema_version': schema,
+                    'resource_samples': str(memory_dir / 'resource-samples.jsonl'),
+                    'resource_samples_sha256': file_sha256(memory_dir / 'resource-samples.jsonl'),
                     'csv_sha256': file_sha256(memory_dir / 'memory.csv'),
                     'summary_sha256': file_sha256(memory_dir / 'memory-peak.json')},
         'coverage': {'sample_count': len(rows), 'target_samples': len(target),
@@ -138,6 +148,9 @@ def evaluate_memory_csv(memory_dir, budget_bytes=54_000_000_000,
                      'sampling_complete': summary.get('sampling_complete', False)},
         'legacy_component_caveat': ('v1 anon_kb is smaps Anonymous and file_kb is RSS minus Anonymous, not an independent file-ownership measurement.' if schema < 2 else None),
         'observed_component_peaks_bytes': {
+            'cgroup_memory_current_charge': resource_peaks.get('memory.current'),
+            'cgroup_memory_peak_charge': resource_peaks.get('memory.peak'),
+            'cgroup_swap_current': resource_peaks.get('memory.swap.current'),
             'process_tree_rss': rss_peak,
             'process_tree_pss': column_peak(target, 'pss_kb', 1024),
             'process_private_resident': private_peak,
@@ -152,6 +165,7 @@ def evaluate_memory_csv(memory_dir, budget_bytes=54_000_000_000,
             'global_cached_unattributed': cached_peak,
             'global_swap_used': column_peak(rows, 'swap_used_kb', 1024),
         },
+        'resource_observations': resources,
         'bounds': {
             'observed_service_physical_lower_bytes': lower_peak,
             'lower_basis': 'Maximum observed private residency when the process tree has exactly one process. Sequential model-cache/PSS sums are excluded from this bound.',

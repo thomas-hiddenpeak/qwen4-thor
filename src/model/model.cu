@@ -17,7 +17,7 @@
 // layers (they run sequentially); its size is the max over all layers.
 #include "q4t/model/model.h"
 
-#include "q4t/io/json.h"
+#include "q4t/runtime/residency_config.h"
 
 #include <cuda_bf16.h>
 #include <cuda_runtime.h>
@@ -28,8 +28,6 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <fstream>
-#include <iterator>
 #include <memory>
 #include <string>
 #include <utility>
@@ -198,6 +196,11 @@ Status LoadPleHashParams(const io::WeightLoader& loader,
 }
 
 Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
+  runtime::ResidencyConfig residency_config;
+  Status residency_status = runtime::LoadResidencyConfig(
+      cfg.moe_hot_list, cfg.num_layers, cfg.E, cfg.moe_resident_slots,
+      &residency_config);
+  if (!residency_status.ok()) return residency_status;
   m->cfg = cfg;
   // RAII: the mmap'd safetensors shards must be released on every exit path.
   // On Jetson Thor's 122 GB unified memory, keeping the ~84 GB of file
@@ -287,60 +290,13 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
                    "slot H2Ds\n");
     }
   }
-  // Optional per-layer static hot lists for tiered residency (JSON object
-  // mapping layer id -> array of expert ids). Missing layers get no fill.
-  std::vector<std::vector<int>> hot_lists(cfg.num_layers);
-  if (cfg.moe_resident_slots > 0 && !cfg.moe_hot_list.empty()) {
-    std::ifstream hot_in(cfg.moe_hot_list);
-    if (!hot_in) {
-      return Status::Fail("cannot open moe-hot-list: " + cfg.moe_hot_list);
-    }
-    const std::string hot_text((std::istreambuf_iterator<char>(hot_in)),
-                               std::istreambuf_iterator<char>());
-    io::Json hot_doc;
-    s = io::ParseJson(hot_text, &hot_doc);
-    if (!s.ok() || !hot_doc.IsObject()) {
-      return Status::Fail("invalid moe-hot-list JSON (want object)");
-    }
-    for (const auto& [key, value] : hot_doc.object) {
-      if (!value.IsArray()) {
-        return Status::Fail("moe-hot-list layer entry must be an array: " +
-                            key);
-      }
-      long layer = 0;
-      try {
-        layer = std::stol(key);
-      } catch (const std::exception&) {
-        return Status::Fail("moe-hot-list layer key is not an int: " + key);
-      }
-      if (layer < 0 || layer >= cfg.num_layers) {
-        return Status::Fail("moe-hot-list layer out of range: " + key);
-      }
-      for (const auto& e : value.array) {
-        if (!e.IsNumber() || e.number < 0 || e.number >= cfg.E ||
-            e.number != static_cast<int64_t>(e.number)) {
-          return Status::Fail("moe-hot-list expert id out of range: " + key);
-        }
-        hot_lists[layer].push_back(static_cast<int>(e.number));
-      }
-    }
-  }
-  // Per-layer slot count: with a static hot list present, the layer's GPU
-  // capacity is the list length capped by --moe-resident-slots; without a
-  // list it is the global value. This enables non-uniform per-layer
-  // residency (goal: 允许按层非均匀分配). Uniform lists (every layer of
-  // length C) keep the legacy behavior exactly: c_layer == C for all l.
-  std::vector<int> c_layer(cfg.num_layers, cfg.moe_resident_slots);
-  int c_total = 0;
-  bool nonuniform = false;
-  for (int l = 0; l < cfg.num_layers; ++l) {
-    if (cfg.moe_resident_slots > 0 && !hot_lists[l].empty()) {
-      c_layer[l] = std::min<int>(static_cast<int>(hot_lists[l].size()),
-                                 cfg.moe_resident_slots);
-    }
-    if (c_layer[l] != cfg.moe_resident_slots) nonuniform = true;
-    c_total += c_layer[l];
-  }
+  // The budget and loader share empty/missing-layer capacity semantics.
+  const auto& hot_lists = residency_config.hot_lists;
+  const auto& c_layer = residency_config.layer_slots;
+  const int c_total = static_cast<int>(residency_config.total_slots);
+  const bool nonuniform = std::any_of(
+      c_layer.begin(), c_layer.end(),
+      [&](int slots) { return slots != cfg.moe_resident_slots; });
   if (lt && nonuniform) {
     std::fprintf(stderr,
                  "[q4t][residency] non-uniform per-layer C: total=%d "

@@ -17,6 +17,7 @@ import sys
 import time
 
 from file_cache import model_files, observe_files
+from resource_metrics import ResourceSampler, normalize_cgroup, resource_summary
 
 MEM_KEYS = ('MemTotal', 'MemFree', 'MemAvailable', 'Cached', 'Buffers',
             'Shmem', 'SwapTotal', 'SwapFree', 'SwapCached', 'AnonPages',
@@ -174,7 +175,7 @@ def summarize(rows, baseline, root, root_start, interval, stopped, existing):
                               for row in target_rows):
         unresolved.insert(0, 'model-owned file cache is not fully observed')
     return {
-        'schema_version': 2, 'root_pid': root, 'root_start_ticks': root_start,
+        'schema_version': 3, 'root_pid': root, 'root_start_ticks': root_start,
         'baseline': baseline, 'sample_interval_seconds': interval,
         'sampling_complete': stopped == 'target_exited',
         'stop_reason': stopped, 'prelaunch_sample_present': before,
@@ -206,6 +207,8 @@ def main():
     ids.add_argument('--pid-file', type=Path)
     ap.add_argument('--out', required=True, type=Path)
     ap.add_argument('--model-dir', type=Path)
+    ap.add_argument('--cgroup-path', type=Path,
+                    help='Expected v2 cgroup; compare with actual PID membership')
     ap.add_argument('--interval', type=float, default=1.0)
     ap.add_argument('--wait-timeout', type=float, default=600)
     ap.add_argument('--baseline-json', type=Path)
@@ -215,9 +218,14 @@ def main():
     args = ap.parse_args()
     if args.interval <= 0 or args.wait_timeout <= 0:
         ap.error('interval and wait-timeout must be positive')
+    if args.cgroup_path:
+        try:
+            args.cgroup_path = normalize_cgroup(args.cgroup_path)
+        except ValueError as exc:
+            ap.error(str(exc))
     args.out.mkdir(parents=True, exist_ok=True)
     owned = ('memory.csv', 'memory-peak.json', 'model-cache-manifest.json',
-             'model-cache.jsonl')
+             'model-cache.jsonl', 'resource-samples.jsonl')
     conflicts = [str(args.out / name) for name in owned
                  if (args.out / name).exists()]
     conflicts += [str(path) for path in (args.ready_file, args.stop_file)
@@ -225,6 +233,8 @@ def main():
     if conflicts:
         ap.error('refusing to overwrite existing evidence: ' + ', '.join(conflicts))
     cache_paths = model_files(args.model_dir) if args.model_dir else []
+    resources = ResourceSampler(args.cgroup_path,
+                                cache_paths or ([args.model_dir] if args.model_dir else []))
     if cache_paths:
         manifest = [{'path': str(path), 'dev': path.stat().st_dev,
                      'inode': path.stat().st_ino, 'size_bytes': path.stat().st_size}
@@ -258,7 +268,8 @@ def main():
         STOP = True
     signal.signal(signal.SIGTERM, stop_handler)
     signal.signal(signal.SIGINT, stop_handler)
-    with (args.out / 'memory.csv').open('x', newline='') as file:
+    with (args.out / 'memory.csv').open('x', newline='') as file, \
+            (args.out / 'resource-samples.jsonl').open('x') as resource_file:
         writer = csv.DictWriter(file, fieldnames=cols)
         writer.writeheader()
         while not STOP:
@@ -296,6 +307,11 @@ def main():
                     row['phase'] = args.phase_file.read_text().strip() or row['phase']
                 except OSError:
                     pass
+            resource_row = resources.sample(root if pids else None, pids=pids)
+            resource_row.update(sequence=len(rows), phase=row['phase'],
+                                memory_sample_start_t=now)
+            resource_file.write(json.dumps(resource_row, separators=(',', ':')) + '\n')
+            resource_file.flush()
             row.update(process_memory(pids) if pids else {key: None for key in PROCESS_KEYS})
             mi = meminfo()
             row.update({column: mi.get(key) for key, column in SYSTEM_COLS.items()})
@@ -336,6 +352,9 @@ def main():
                 break
             time.sleep(max(0.0, args.interval - (time.time() - now)))
     summary = summarize(rows, baseline, root, root_start, args.interval, reason, existing)
+    with (args.out / 'resource-samples.jsonl').open() as resource_file:
+        summary['resource_observations'] = resource_summary(
+            json.loads(line) for line in resource_file)
     with (args.out / 'memory-peak.json').open('x') as summary_file:
         json.dump(summary, summary_file, indent=2)
         summary_file.write('\n')
