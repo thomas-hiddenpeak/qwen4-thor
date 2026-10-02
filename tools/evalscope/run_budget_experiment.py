@@ -10,6 +10,7 @@ import math
 import os
 from pathlib import Path
 import shutil
+import signal
 import subprocess
 import sys
 import time
@@ -25,6 +26,103 @@ def save(path, value):
     with path.open('x') as stream:
         json.dump(value, stream, indent=2)
         stream.write('\n')
+
+
+def process_group_state(pgid):
+    """Observe only the newly owned group; zombies cannot issue more work."""
+    try:
+        os.killpg(pgid, 0)
+    except ProcessLookupError:
+        return {'live_pids': [], 'zombie_pids': [], 'errors': [], 'absent': True}
+    except OSError as error:
+        return {'live_pids': [], 'zombie_pids': [], 'errors': [str(error)],
+                'absent': None}
+    live, zombies, errors = [], [], []
+    for entry in Path('/proc').iterdir():
+        if not entry.name.isdecimal():
+            continue
+        try:
+            fields = (entry / 'stat').read_text().rsplit(')', 1)[1].split()
+            if int(fields[2]) == pgid:
+                (zombies if fields[0] in ('Z', 'X') else live).append(int(entry.name))
+        except FileNotFoundError:
+            continue
+        except (OSError, ValueError, IndexError) as error:
+            errors.append({'pid': entry.name, 'error': str(error)})
+    return {'live_pids': sorted(live), 'zombie_pids': sorted(zombies),
+            'errors': errors, 'absent': False}
+
+
+def run_owned_runner(command, *, cwd, env, log, timeout, evidence,
+                     term_grace=5, kill_grace=5):
+    """Bound the runner and its evalscope descendants, separately from q4t.
+
+    q4t belongs to its independently owned systemd unit. Its exact-unit cleanup
+    remains the caller's responsibility. Never signal the wrapper's own group.
+    """
+    if evidence.exists():
+        raise FileExistsError('runner process-group evidence already exists')
+    proc = None
+    failure = None
+    record = {'started_t': time.time(), 'timeout_s': timeout, 'signals': [],
+              'runner_pid': None, 'pgid': None, 'runner_reaped': False,
+              'cleanup_complete': False}
+    try:
+        proc = subprocess.Popen(command, cwd=cwd, env=env, stdout=log,
+                                stderr=subprocess.STDOUT, start_new_session=True)
+        record.update(runner_pid=proc.pid, pgid=proc.pid)
+        returncode = proc.wait(timeout=timeout)
+    except BaseException as error:
+        failure = f'{type(error).__name__}: {error}'
+        raise
+    finally:
+        record['failure'] = failure
+        if proc is not None:
+            pgid = proc.pid
+            if pgid == os.getpgrp():
+                raise RuntimeError('refusing to clean the wrapper process group')
+            state = process_group_state(pgid)
+            record['before_cleanup'] = state
+            unexpected_children = failure is None and bool(state['live_pids'])
+            for sig, grace in ((signal.SIGTERM, term_grace),
+                               (signal.SIGKILL, kill_grace)):
+                if not state['live_pids'] and not state['errors']:
+                    break
+                try:
+                    os.killpg(pgid, sig)
+                    record['signals'].append({'signal': sig.name, 't': time.time()})
+                except ProcessLookupError:
+                    pass
+                except OSError as error:
+                    record.setdefault('signal_errors', []).append(str(error))
+                deadline = time.monotonic() + grace
+                while True:
+                    proc.poll()  # Reap our direct child when it has exited.
+                    state = process_group_state(pgid)
+                    if (not state['live_pids'] and not state['errors'] or
+                            time.monotonic() >= deadline):
+                        break
+                    time.sleep(.05)
+            try:
+                proc.wait(timeout=kill_grace)
+                record['runner_reaped'] = True
+            except subprocess.TimeoutExpired:
+                pass
+            record['returncode'] = proc.returncode
+            record['after_cleanup'] = process_group_state(pgid)
+            final = record['after_cleanup']
+            record['cleanup_complete'] = (record['runner_reaped'] and
+                not final['live_pids'] and not final['errors'] and
+                not record.get('signal_errors'))
+            record['descendant_reaping'] = ('orphan zombies observed; adopted '
+                'parent must reap; no live group member' if final['zombie_pids']
+                else 'no remaining group members observed')
+            record['unexpected_live_descendants_after_runner_exit'] = unexpected_children
+        record['ended_t'] = time.time()
+        save(evidence, record)
+        if failure is None and (not record['cleanup_complete'] or unexpected_children):
+            raise RuntimeError('runner left live descendants or group cleanup is unknown')
+    return returncode
 
 
 def clear_target_cache(paths):
@@ -226,6 +324,8 @@ def main():
         'max_len': 262144, 'max_seq': 1, 'max_prefill': 8192,
         'startup_timeout_s': 600, 'request_deadline_ms': 1800000,
         'runner_timeout_s': args.runner_timeout_s,
+        'runner_timeout_scope': 'owned runner session/process group; TERM then '
+                                'KILL with bounded waits; q4t cleaned by exact unit',
         'client_lifecycle': 'separate evalscope client per request in bounded mode',
         'effective_environment': {key: value for key, value in env.items()
                                   if key.startswith('Q4T_')},
@@ -277,9 +377,9 @@ def main():
             else:
                 raise RuntimeError('monitor not ready')
             with (out / 'runner.log').open('x') as log:
-                runner_rc = subprocess.run(command, cwd=ROOT, env=env,
-                                           stdout=log, stderr=subprocess.STDOUT,
-                                           timeout=args.runner_timeout_s).returncode
+                runner_rc = run_owned_runner(command, cwd=ROOT, env=env, log=log,
+                    timeout=args.runner_timeout_s,
+                    evidence=out / 'runner-process-group.json')
         except BaseException as error:
             failure = f'{type(error).__name__}: {error}'
             raise
