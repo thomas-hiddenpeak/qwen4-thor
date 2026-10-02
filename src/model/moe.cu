@@ -613,24 +613,44 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
 
     {
       int maxd = 0;
-      for (const auto& c : chunks) {
-        std::vector<uint8_t> seen(E, 0);
-        int d = 0;
-        for (int tt : c)
+      // Phase C diagnostic (2026-10-02): per-chunk distinct expert sets and
+      // the overlap between adjacent chunks. overlap(j,j+1) = experts in
+      // both; new(j+1) = experts in j+1 not in j (the reload pressure if the
+      // resident set tracks chunk j). Prints one compact line per layer.
+      std::vector<std::vector<uint8_t>> sets(chunks.size(),
+                                            std::vector<uint8_t>(E, 0));
+      std::vector<int> dcount(chunks.size(), 0);
+      for (size_t j = 0; j < chunks.size(); ++j) {
+        for (int tt : chunks[j])
           for (int jj = 0; jj < k; ++jj) {
             const int e = ids_h[static_cast<size_t>(tt) * k + jj];
-            if (!seen[e]) {
-              seen[e] = 1;
-              ++d;
+            if (!sets[j][e]) {
+              sets[j][e] = 1;
+              ++dcount[j];
             }
           }
-        if (d > maxd) maxd = d;
+        if (dcount[j] > maxd) maxd = dcount[j];
+      }
+      std::string ov, nw;
+      for (size_t j = 1; j < chunks.size(); ++j) {
+        int o = 0, n = 0;
+        for (int e = 0; e < E; ++e) {
+          if (sets[j][e] && sets[j - 1][e]) ++o;
+          if (sets[j][e] && !sets[j - 1][e]) ++n;
+        }
+        ov += std::to_string(o);
+        nw += std::to_string(n);
+        if (j + 1 < chunks.size()) {
+          ov += ",";
+          nw += ",";
+        }
       }
       std::fprintf(stderr,
                    "[q4t][residency][diag] layer=%d T=%d D=%d chunks=%zu "
-                   "max_distinct=%d resident_before=%d\n",
+                   "max_distinct=%d resident_before=%d overlap=%s "
+                   "new=%s\n",
                    layer_id, T, D, chunks.size(), maxd,
-                   residency->ResidentCount());
+                   residency->ResidentCount(), ov.c_str(), nw.c_str());
     }
     Status ps = plan_sub(0);
     if (!ps.ok()) return ps;
