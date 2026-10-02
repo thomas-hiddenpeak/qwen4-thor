@@ -1,4 +1,4 @@
-# MoE 分层专家驻留与按需加载 — 验收报告（DRAFT，第一轮矩阵完成）
+# MoE 分层专家驻留与按需加载 — 验收报告（最终候选 final-acceptance B=12288 完成，2026-10-02）
 
 状态（2026-10-01 14:25）：DRAFT。第一/二轮矩阵完成（§6/§6a，decode
 22–30% 基线，全档 FAIL <50% 门槛，如实记录；L2-128 命中率 <1%
@@ -197,44 +197,81 @@ l2h≈721–760/l2m≈418k），与离线预测（L2-128 只接 ~6% GPU miss）
 分支 2（最终候选 C=256）；两者均不过 → 分支 3（C4 驱逐镜像 +
 C3 页缓存预热复测，否则按差距报告）。
 
-## 6b. 最终候选验收（C1+C2+C3+C4+C5+C6，final-acceptance；待填）
+## 6b. 最终候选验收（C1+C2+C3+C4+C5+C6，final-acceptance B=12288，2026-10-02 06:44–08:55）
 
-> 本节在 r3 矩阵 + verify-c1 双跑（K=0 回退边界 / K=8 最终候选）
-> + 合并 C1+C2+C4 + C5（页缓存保留）+ C6（max-open-shards）+
-> 冻结最终候选后，由 final-acceptance.sh <B>
->（C3 页缓存协议 + 全矩阵，基线 C=0 与候选同协议同预热节奏，
-> 候选 Q4T_MOE_MIRROR_K=8、Q4T_MOE_MAX_OPEN_SHARDS=200）实测回填。
-> 同一候选配置须同时满足容量/内存/性能/正确性才写"通过"。
+> 本节由 final-acceptance.sh 12288（C3 页缓存协议 + 全矩阵，基线 C=0
+> 与候选同协议同预热节奏，候选 Q4T_MOE_MIRROR_K=8、
+> Q4T_MOE_L2_SLOTS=16、Q4T_MOE_MAX_OPEN_SHARDS=200）实测回填。
+> 冻结口径 compare_e2e.py（2026-09-30）；证据 compare-report-final-
+> 12288.txt、c3-acc-{base-c0,final-12288}/evidence.json、
+> e2e-acc-final-12288/memory/memory-peak.json、memory-gate-final-
+> 12288.json。
 
-- 最终候选 B：____（选择依据：R3_DECISION 末节算法；B=12288=C=256
-  每层 top-n 为用户 07:25 授权超支候选，内存门标注 USER_APPROVED_OVERRUN）
-- 二进制：____（C1+C2+C3+C4+C5+C6，sha256 ed68cd3d148e5fef…；
-  verify-c1 六查结果（C1+C2+C3+C4）：K=0 PASS / K=8 PASS；
-  C5+C6 受影响项重验：质量 11 题 + 业务 6 项 bitexact ____）
+- 最终候选 B：12288（C=256 每层命中 top-n；选择依据：R3_DECISION §5
+  分支 3——r3 两候选均 <50% → C4 驱逐镜像 + C3 页缓存预热再测；
+  B=12288 为用户 2026-10-01 07:25 授权的 C=256 配置，
+  hot-final-12288.json 与 hot-256.json 同集合已核验）
+- 二进制：ed68cd3d148e5fef…（C1+C2+C3+C4+C5+C6）；verify-c1 六查：
+  K=0（回退边界 C1+C2+C3）PASS / K=8（最终候选）PASS；C5+C6 受影响
+  项重验：final-quality-business B=12288 PASS（质量 11 题 manifest-
+  exact + 基线/候选逐字一致，业务 6 项 bit-identical，2026-10-02
+  06:44；同二进制、身份未变证据复用）
 - C5/C6 试点证据（final-acceptance 前，pilot-45056-c5b/c6，C3 协议）：
   45056 档 decode 6.45→10.05 tps（基线 17.84，=56%，超 50% 门槛）；
   dpread 5.4→0.49 ms/miss；C5 根因=专家分片析构 FADV_DONTNEED 抹页
   缓存，C6 根因=32 槽 LRU 下 shard 驱逐/重开（~1.5 ms/次）
-- C4 镜像统计（K=8）：mirror_hits=____ / writebacks=____ / skips=____；pinned +1,061,693,696 B（已计入预算与实测峰值）
-- §5 分支判定：____（section5-branch.txt）
-- C3 证据（基线/候选）：page_cache_delta_gb=____ / pread_avg=____ /
-  重读因子=____
-- 六档 decode（含 261887 目标档，每档 3 次，首/后续分列）：
+- C4 镜像统计（K=8）：二进制计数 mirror_hits 但未在 per-request
+  residency 行打印（可观测性缺口，记为后续项，不重跑矩阵）；验收
+  运行无独立 mirror 计数记录。K=8 ring 已启用，pinned
+  +1,061,693,696 B 已计入预算与实测峰值
+- §5 分支判定：分支 3（section5-branch.txt：both <50% → C4 + C3
+  预热，retest）
+- C3 证据：基线 page_cache_delta_gb=0.744（matrix 口径）/ pread_avg=
+  N/A（C=0 无按需加载）；候选 page_cache_delta_gb=6.786（matrix
+  口径）/ pread_avg=0.567 ms（冷，warmup 请求）/ 重读因子=17.28；
+  warm pread_avg=433.144 μs（18 个计时矩阵请求均值）
+- 六档 decode（含 261887 目标档，每档 3 次，hmean 冻结口径；首请求=
+  run1、后续=run2/3，逐 run 值见 compare-report-final-12288.txt）：
   | 档 | 基线 tps | 候选 tps | 比值 | ≥50%? |
   |---|---:|---:|---:|:---:|
-  | 1024 | | | | |
-  | 4096 | | | | |
-  | 8192 | | | | |
-  | 45056 | | | | |
-  | 204800 | | | | |
-  | 261887（总上下文 262144） | | | | |
-- TTFT / 总请求耗时 / 加载量：____
-- 内存门（rss+gpu 峰值 + 模型页缓存增量）：____ vs 54 GB（B=12288
-  按用户授权口径标注超支）；整机 RAM 与 swap 分列：____
-- 正确性：bit-exact（1024/8192）____；质量 11 题 manifest-exact ____；
-  业务 final_validation 6 请求逐位 ____；受影响检查（补载失败/取消/
-  槽位复用/跨请求状态）____
-- 结论：____（通过 / 按失败维度报告差距，不放宽目标）
+  | 1024 | 18.7029 | 10.0550 | 0.538 | PASS |
+  | 4096 | 17.9879 | 9.6959 | 0.539 | PASS |
+  | 8192 | 18.2674 | 9.6827 | 0.530 | PASS |
+  | 45056 | 17.9611 | 9.9721 | 0.555 | PASS |
+  | 204800 | 17.2030 | 9.9901 | 0.581 | PASS |
+  | 261887（总上下文 262144） | 17.0194 | 9.2313 | 0.542 | PASS |
+- TTFT / 总请求耗时 / 加载量：TTFT 基线 0.82→213.14 s、候选 4.68→
+  937.01 s（1024→261887 档）；总耗时基线 14.45→228.18 s、候选
+  30.05→964.74 s；请求超时冻结为 3 h（--request-deadline-ms
+  10800000 / evalscope total-timeout 10800），全部请求完成、无超时、
+  无输出不足。目标档服务端 token 计数 in=261887/out=257/finish=
+  length（基线/候选各 3/3，总上下文 262144，无截断）。候选加载量：
+  1024 档 18.8k–33.1k loads（49.9–91.6 GB/请求）、45056 档 419k
+  loads（1.16 TB/请求）、261887 档 2.89M loads（7.89 TB/请求）；
+  decode miss 8.7k/122950 槽（目标档/请求）
+- 内存门（rss+gpu 峰值 + 模型页缓存增量）：候选 61,056,069,632 B
+  （GPU 56,237,228,032 + RSS 4,819,537,920）+ 页缓存增量
+  7,286,489,088 B = 68,342,558,720 B（68.34 GB）vs 54 GB →
+  USER_APPROVED_OVERRUN（超 14.34 GB，用户 2026-10-01 07:25 授权
+  C=256 超支；记录实测峰值，非静默 FAIL、非放宽 PASS；严格 54 GB
+  口径未达成，本报告不标 PASS）；基线 C=0 rss+gpu 峰值
+  91,398,987,776 B（91.40 GB，仅参考）。整机 RAM 与 swap 分列：RAM
+  used 峰值 131,256,012,800 B（其中页缓存 76,940,783,616 B），swap
+  used 峰值 1,493,524,480 B（1.49 GB，未以 swap 掩盖预算）
+- 正确性：bit-exact 六档全部 yes（含 261887 目标档）；质量 11 题
+  manifest-exact=True + base-vs-cand identical=True；业务
+  final_validation 6 请求逐位一致（text + 输入/输出 token 数，
+  8243/45107/204851 三长度档）；受影响检查（补载失败注入/取消/槽位
+  复用/跨请求状态）= verify-c1 六查 K=8 PASS（2026-10-01 23:46）+
+  矩阵逐档 3 请求序列逐位一致
+- 结论：容量 PASS（总序列容量 262144，目标档 in=261887+out=257 实际
+  完成，3/3 finish=length，无截断）；性能 PASS（六档 decode 均 ≥50%
+  基线，53.0%–58.1%）；正确性 PASS（bit-exact + 质量 + 业务 +
+  生命周期）；内存 = USER_APPROVED_OVERRUN（实测 68.34 GB > 54 GB，
+  用户授权 C=256 超支并记录）。同一候选配置（ed68cd3d，C=256/
+  L2-16/K=8/max-open-shards=200）同时满足容量/性能/正确性与用户
+  授权的内存超支口径。回退：见 §8（K=0 回退边界 C1+C2+C3 已验证；
+  --moe-resident-slots 0 回到全常驻逐位不变路径）。
 
 ## 7. 受影响检查（矩阵后执行）
 

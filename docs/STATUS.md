@@ -4,23 +4,32 @@
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
 ## 当前结论
-## final-quality-business [4/4] 脚本参数缺陷修复；business cand 重跑在途（2026-10-02 06:15）
+## 最终候选验收完成：容量/性能/正确性 PASS，内存 USER_APPROVED_OVERRUN（2026-10-02 08:55）
 
-chain（05:27 首启，二进制 ed68cd3d，commit 0c94a28）：[1/4] quality
-base（C=0）05:32 rc=0；[2/4] quality cand（B=12288/L2-16/K=8）05:47
-rc=0（11 题 HTTP/输出检查通过）；[3/4] business base 05:54 rc=0（6
-项，200k 档 lat=165.9 s）。[4/4] business cand 启动即 FAIL：
-affected_http.py 的 serve_extra 为位置参数，argparse 不认
---moe-resident-slots/--moe-hot-list 旗标（服务器未启动，无污染）。
-修复：run_business 在 "$@" 前加 "--"（tools/acceptance + 工作副本，
-diff 一致）。按"已通过且身份未变证据复用"只重跑 business cand
-（06:15 setsid 在途，C=256/L2-16/K=8，页缓存热）；完成后比对
-（quality manifest-exact + base-vs-cand identical、business
-bit-identical x6）→ PASS 则启动 final-acceptance B=12288 全矩阵
-（C3 协议，基线 C=0 + 候选，五档 + 261887 目标档 in=261887+out=257
-=总上下文 262144，每档 3 次，内存门 USER_APPROVED_OVERRUN 口径：
-记录实测峰值，性能/正确性门不放宽）。GEMM 冻结（用户 10-02 再
-确认：目标完成前不改，之后另行讨论）。
+final-acceptance B=12288（二进制 ed68cd3d，C=256 每层命中 top-n/
+L2-16/K=8/max-open-shards=200；C3 协议基线 C=0 与候选同节奏）
+06:44–08:55 完成，冻结口径 compare_e2e：
+
+- 容量：目标档 in=261887+out=257=总上下文 262144，基线/候选各 3/3
+  finish=length，服务端 token 计数核对，无截断 → PASS
+- 性能（decode，hmean，每档 3 次，首/后续分列）：1024=53.8%、4096=
+  53.9%、8192=53.0%、45056=55.5%、204800=58.1%、261887=54.2% →
+  六档全部 ≥50% 基线 → PASS
+- 正确性：六档 bit-exact yes；质量 11 题 manifest-exact + 基线/候选
+  逐字一致；业务 6 项 bit-identical（8243/45107/204851）；生命周期
+  （补载失败/取消/槽位复用/跨请求）verify-c1 六查 K=8 PASS → PASS
+- 内存：候选 rss+gpu 峰值 61.056 GB + 模型页缓存增量 7.286 GB =
+  68.34 GB vs 54 GB → USER_APPROVED_OVERRUN（超 14.34 GB，用户
+  2026-10-01 07:25 授权 C=256 超支；记录实测峰值，非放宽 PASS，
+  严格 54 GB 口径未达成）；基线 C=0 峰值 91.40 GB（参考）；swap
+  used 峰值 1.49 GB（未掩盖预算）
+
+验收报告定稿：docs/MOE_RESIDENCY_ACCEPTANCE_2026-09-30.md §6b；
+部署/回退：docs/MOE_RESIDENCY_DEPLOY_2026-09-30.md（K=0 回退边界
+C1+C2+C3 已验证；--moe-resident-slots 0 回全常驻逐位不变）。
+后续项：per-request residency 行补 mirror_hits 打印（可观测性，
+不重跑矩阵）。GEMM 冻结（用户 10-02：目标完成前不改，之后另行
+讨论）。
 
 
 ## C6 max-open-shards 修复：45056 decode 10.05 tps = 56% 基线，超 50% 门槛；final-acceptance 在途（2026-10-02 05:30）
