@@ -80,6 +80,10 @@ def validate_plan(plan, *, check_sources=True):
             'scope must remain offline GPU residency only')
     if check_sources:
         require(plan.get('tool_sources'), 'missing tool source identities')
+        shared_header = ROOT / 'include/q4t/model/moe_partition.h'
+        require(any(Path(item['path']).resolve() == shared_header
+                    for item in plan['tool_sources']),
+                'missing shared production partition source identity')
         for item in plan['tool_sources']:
             verify_identity(item)
 

@@ -75,6 +75,19 @@ Status LoadMoEExtra(const io::WeightLoader& loader, const std::string& prefix,
 size_t MoEForwardWorkspaceBytes(int T, int k, int hs, int moe_is, int shared_is,
                                 int E);
 
+// Optional caller-owned observations for bounded numerical contracts. No row
+// capture or diagnostics allocation occurs when the pointer is null.
+struct MoEForwardDiagnostics {
+  bool partition_requested = false;
+  bool partition_applied = false;
+  bool partition_fallback = false;
+  size_t chunks = 0;
+  size_t singleton_chunks = 0;
+  size_t actual_executed_chunks = 0;
+  size_t actual_singleton_dispatches = 0;
+  std::vector<int32_t> executed_token_rows;
+};
+
 // Run the full MoE forward for one layer.
 //
 //   x        : device row-major [T, hs] uint16 (BF16) token activations
@@ -97,7 +110,8 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
                   void* workspace, size_t workspace_bytes, void* gemm_ws,
                   size_t gemm_ws_bytes, cudaStream_t stream,
                   trace::RouterCollector* trace = nullptr, int layer_id = -1,
-                  const quant::MoEResidency* residency = nullptr);
+                  const quant::MoEResidency* residency = nullptr,
+                  MoEForwardDiagnostics* diagnostics = nullptr);
 
 }  // namespace model
 }  // namespace q4t

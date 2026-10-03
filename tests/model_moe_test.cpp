@@ -16,15 +16,19 @@
 #include <cuda_runtime.h>
 
 #include <algorithm>
+#include <array>
+#include <bit>
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <fcntl.h>
 #include <map>
 #include <random>
 #include <string>
 #include <unistd.h>
+#include <utility>
 #include <vector>
 
 namespace {
@@ -560,5 +564,301 @@ Q4T_TEST(moe_forward_residency_bitexact) {
 
   Q4T_CHECK(prefill_ok);
   Q4T_CHECK(decode_ok);
+  return true;
+}
+
+namespace {
+
+// The acceptance runner fixes process environment before any MoE call. These
+// tests never toggle a mode that the runtime may have cached in a static.
+bool PartitionEnvironmentMatches() {
+  for (const auto& [name, expected] :
+       {std::pair{"Q4T_MOE_PARTITION", "1"},
+        std::pair{"Q4T_MOE_CHUNK_ORDER", "0"},
+        std::pair{"Q4T_MOE_STREAMS", "1"},
+        std::pair{"Q4T_MOE_EVICT_WEIGHT", "0"}}) {
+    const char* actual = std::getenv(name);
+    if (!actual || std::strcmp(actual, expected) != 0) {
+      std::printf("  required environment: %s=%s\n", name, expected);
+      return false;
+    }
+  }
+  return true;
+}
+
+template <typename T>
+struct PartitionDeviceBuffer {
+  T* data = nullptr;
+  ~PartitionDeviceBuffer() {
+    if (data) cudaFree(data);
+  }
+  bool Allocate(size_t count) {
+    return cudaMalloc(&data, count * sizeof(T)) == cudaSuccess;
+  }
+};
+
+struct PartitionRealWeights {
+  WeightIndex* index = nullptr;
+  WeightLoader* loader = nullptr;
+  MoEWeightLayout routed;
+  MoEExtraWeights extra;
+
+  ~PartitionRealWeights() {
+    extra.Free();
+    for (void* pointer :
+         {static_cast<void*>(routed.gu_packed),
+          static_cast<void*>(routed.gu_sf),
+          static_cast<void*>(routed.dn_packed),
+          static_cast<void*>(routed.dn_sf),
+          static_cast<void*>(routed.gu_w_scale2),
+          static_cast<void*>(routed.gu_input_scale),
+          static_cast<void*>(routed.dn_w_scale2),
+          static_cast<void*>(routed.dn_input_scale)}) {
+      if (pointer) cudaFree(pointer);
+    }
+    delete loader;
+    delete index;
+  }
+
+  bool Init() {
+    Q4T_CHECK(WeightIndex::Open(kIndex, &index).ok());
+    Q4T_CHECK(WeightLoader::Create(kModelDir, *index, 16, &loader).ok());
+    Q4T_CHECK(LoadMoEWeights(*loader, kLayer, kE, kHs, kMoeIs,
+                            &routed, 0).ok());
+    Q4T_CHECK(LoadMoEExtra(*loader, kMlpPrefix, kE, kHs, kSharedIs,
+                          &extra, 0).ok());
+    return true;
+  }
+};
+
+struct PartitionForwardSnapshot {
+  std::vector<uint16_t> output;
+  std::vector<int32_t> ids;
+  std::vector<float> router_weights;
+  std::vector<float> routed;
+};
+
+std::vector<uint16_t> PartitionInputRows(int tokens, uint32_t seed) {
+  std::mt19937 random(seed);
+  std::normal_distribution<float> normal(0.0f, 1.0f);
+  std::vector<uint16_t> input(static_cast<size_t>(tokens) * kHs);
+  for (auto& value : input) value = FloatToBf16(normal(random));
+  return input;
+}
+
+bool CapturePartitionForward(const uint8_t* workspace, const uint16_t* output,
+                             int tokens, PartitionForwardSnapshot* result) {
+  const size_t routed_bytes = q4t::quant::MoEWorkspace::RequiredBytes(
+      tokens, kTopK, kHs, kMoeIs);
+  // This is the MoEForward scratch layout, not the slot IDs
+  // uploaded to the separate per-chunk staging buffers.
+  const uint8_t* scratch = workspace + ((routed_bytes + 7) & ~size_t{7});
+  scratch += static_cast<size_t>(tokens) * kE * sizeof(uint16_t);
+  result->ids.resize(static_cast<size_t>(tokens) * kTopK);
+  const size_t ids_bytes = result->ids.size() * sizeof(int32_t);
+  Q4T_CHECK(cudaMemcpy(result->ids.data(), scratch, ids_bytes,
+                        cudaMemcpyDeviceToHost) == cudaSuccess);
+  scratch += ids_bytes;
+  result->router_weights.resize(result->ids.size());
+  const size_t weights_bytes = result->router_weights.size() * sizeof(float);
+  Q4T_CHECK(cudaMemcpy(result->router_weights.data(), scratch, weights_bytes,
+                        cudaMemcpyDeviceToHost) == cudaSuccess);
+  scratch += weights_bytes;
+  result->routed.resize(static_cast<size_t>(tokens) * kHs);
+  Q4T_CHECK(cudaMemcpy(result->routed.data(), scratch,
+                        result->routed.size() * sizeof(float),
+                        cudaMemcpyDeviceToHost) == cudaSuccess);
+  result->output.resize(result->routed.size());
+  Q4T_CHECK(cudaMemcpy(result->output.data(), output,
+                        result->output.size() * sizeof(uint16_t),
+                        cudaMemcpyDeviceToHost) == cudaSuccess);
+  return true;
+}
+
+bool ComparePartitionForward(const PartitionForwardSnapshot& baseline,
+                             const PartitionForwardSnapshot& candidate) {
+  Q4T_CHECK(baseline.ids == candidate.ids);
+  Q4T_CHECK(baseline.router_weights.size() == candidate.router_weights.size());
+  Q4T_CHECK(std::memcmp(baseline.router_weights.data(),
+                         candidate.router_weights.data(),
+                         baseline.router_weights.size() * sizeof(float)) == 0);
+  for (float weight : candidate.router_weights) {
+    Q4T_CHECK(std::isfinite(weight));
+  }
+  Q4T_CHECK(baseline.routed.size() == candidate.routed.size());
+  size_t routed_diffs = 0;
+  size_t first_routed = baseline.routed.size();
+  float max_abs = 0.0f;
+  for (size_t i = 0; i < baseline.routed.size(); ++i) {
+    Q4T_CHECK(std::isfinite(baseline.routed[i]));
+    Q4T_CHECK(std::isfinite(candidate.routed[i]));
+    if (std::bit_cast<uint32_t>(baseline.routed[i]) !=
+        std::bit_cast<uint32_t>(candidate.routed[i])) {
+      if (routed_diffs++ == 0) first_routed = i;
+      max_abs = std::max(max_abs,
+                         std::fabs(baseline.routed[i] - candidate.routed[i]));
+    }
+  }
+  // FP32 equality is reported for attribution; the pre-frozen acceptance
+  // assertion remains complete BF16 output equality, without tolerance.
+  std::printf("  routed_fp32: bit_differences=%zu max_abs=%.9g\n",
+              routed_diffs, max_abs);
+  if (routed_diffs) {
+    std::printf("  routed_fp32 first token=%zu col=%zu base=%.9g slot=%.9g\n",
+                first_routed / kHs, first_routed % kHs,
+                baseline.routed[first_routed], candidate.routed[first_routed]);
+  }
+  Q4T_CHECK(baseline.output.size() == candidate.output.size());
+  for (size_t i = 0; i < baseline.output.size(); ++i) {
+    Q4T_CHECK(std::isfinite(Bf16ToFloat(baseline.output[i])));
+    Q4T_CHECK(std::isfinite(Bf16ToFloat(candidate.output[i])));
+    if (baseline.output[i] != candidate.output[i]) {
+      std::printf("  BF16 first token=%zu col=%zu base=%.9g slot=%.9g\n",
+                  i / kHs, i % kHs, Bf16ToFloat(baseline.output[i]),
+                  Bf16ToFloat(candidate.output[i]));
+      return false;
+    }
+  }
+  return true;
+}
+
+bool RunPartitionNumericalCase(
+    const PartitionRealWeights& weights, q4t::quant::MoEResidency* residency,
+    const std::vector<uint16_t>& input,
+    const std::vector<int32_t>& expected_ids,
+    const std::vector<int32_t>& expected_order, size_t expected_chunks,
+    size_t expected_singletons) {
+  const int tokens = static_cast<int>(input.size() / kHs);
+  const size_t workspace_bytes = q4t::model::MoEForwardWorkspaceBytes(
+      tokens, kTopK, kHs, kMoeIs, kSharedIs, kE);
+  constexpr size_t kGemmBytes = 32 * 1024 * 1024;
+  PartitionDeviceBuffer<uint8_t> workspace, gemm;
+  PartitionDeviceBuffer<uint16_t> x, y;
+  Q4T_CHECK(workspace.Allocate(workspace_bytes));
+  Q4T_CHECK(gemm.Allocate(kGemmBytes));
+  Q4T_CHECK(x.Allocate(input.size()));
+  Q4T_CHECK(y.Allocate(input.size()));
+  Q4T_CHECK(cudaMemcpy(x.data, input.data(), input.size() * sizeof(uint16_t),
+                        cudaMemcpyHostToDevice) == cudaSuccess);
+  auto forward = [&](const MoEWeightLayout& routed,
+                     const q4t::quant::MoEResidency* slots,
+                     PartitionForwardSnapshot* result,
+                     q4t::model::MoEForwardDiagnostics* diagnostics) {
+    // A missed scatter must not inherit the full-resident reference output.
+    Q4T_CHECK(cudaMemset(workspace.data, 0xff, workspace_bytes) == cudaSuccess);
+    Q4T_CHECK(cudaMemset(y.data, 0xff, input.size() * sizeof(uint16_t)) ==
+               cudaSuccess);
+    const Status status = MoEForward(
+        x.data, routed, weights.extra, y.data, tokens, kTopK, workspace.data,
+        workspace_bytes, gemm.data, kGemmBytes, 0, nullptr, kLayer, slots,
+        diagnostics);
+    if (!status.ok()) {
+      std::printf("  MoEForward failed: %s\n", status.message().c_str());
+      return false;
+    }
+    Q4T_CHECK(cudaDeviceSynchronize() == cudaSuccess);
+    return CapturePartitionForward(workspace.data, y.data, tokens, result);
+  };
+  PartitionForwardSnapshot baseline, candidate;
+  q4t::model::MoEForwardDiagnostics diagnostics;
+  Q4T_CHECK(forward(weights.routed, nullptr, &baseline, nullptr));
+  Q4T_CHECK(forward(residency->Layout(), residency, &candidate, &diagnostics));
+  Q4T_CHECK(diagnostics.partition_requested);
+  Q4T_CHECK(diagnostics.partition_applied == (tokens > 1));
+  Q4T_CHECK(!diagnostics.partition_fallback);
+  Q4T_CHECK(diagnostics.chunks == diagnostics.actual_executed_chunks);
+  Q4T_CHECK(diagnostics.singleton_chunks ==
+             diagnostics.actual_singleton_dispatches);
+  Q4T_CHECK(diagnostics.executed_token_rows.size() ==
+             static_cast<size_t>(tokens));
+  std::vector<int32_t> visits = diagnostics.executed_token_rows;
+  std::sort(visits.begin(), visits.end());
+  for (int token = 0; token < tokens; ++token) {
+    Q4T_CHECK(visits[token] == token);
+  }
+  if (tokens == 1) {
+    Q4T_CHECK(diagnostics.chunks == 1);
+    Q4T_CHECK(diagnostics.actual_singleton_dispatches == 1);
+  } else {
+    Q4T_CHECK(diagnostics.chunks > 1);
+  }
+  if (!expected_ids.empty()) Q4T_CHECK(candidate.ids == expected_ids);
+  if (!expected_order.empty()) {
+    Q4T_CHECK(diagnostics.executed_token_rows == expected_order);
+    Q4T_CHECK(diagnostics.chunks == expected_chunks);
+    Q4T_CHECK(diagnostics.singleton_chunks == expected_singletons);
+  }
+  std::printf("  layer=%d C=%d T=%d applied=%d chunks=%zu singleton=%zu "
+              "executed=%zu singleton_dispatches=%zu\n",
+              kLayer, residency->Slots(), tokens,
+              static_cast<int>(diagnostics.partition_applied),
+              diagnostics.chunks, diagnostics.singleton_chunks,
+              diagnostics.actual_executed_chunks,
+              diagnostics.actual_singleton_dispatches);
+  const bool same = ComparePartitionForward(baseline, candidate);
+  std::printf("  layer=%d C=%d T=%d BF16_BIT_EXACT=%s\n", kLayer,
+              residency->Slots(), tokens, same ? "true" : "false");
+  return same;
+}
+
+}  // namespace
+
+Q4T_TEST(moe_partition_runtime_numerical_contract) {
+  Q4T_CHECK(PartitionEnvironmentMatches());
+  if (!CudaAvailable()) {
+    Q4T_SKIP("no CUDA device; required runner rejects skip");
+  }
+  if (!FileExists(kIndex)) {
+    Q4T_SKIP("model absent; required runner rejects skip");
+  }
+  PartitionRealWeights weights;
+  Q4T_CHECK(weights.Init());
+  {
+    q4t::quant::MoEResidency residency;
+    Q4T_CHECK(residency.Init(*weights.loader, kLayer, kE, kHs, kMoeIs,
+                             256, 0).ok());
+    Q4T_CHECK(RunPartitionNumericalCase(
+        weights, &residency, PartitionInputRows(1024, 1801), {}, {}, 0, 0));
+    // Keep the preceding prefill's cache state when checking decode bypass.
+    Q4T_CHECK(RunPartitionNumericalCase(
+        weights, &residency, PartitionInputRows(1, 778), {}, {}, 0, 0));
+  }
+
+  // Real routed/shared weights, with a controlled in-memory router. The first
+  // four input columns select exact per-token logits; all other columns keep
+  // seeded nonzero activations. No checkpoint file is modified.
+  constexpr int kTokens = 4;
+  const std::array<std::array<int32_t, kTopK>, 3> expert_sets{{
+      {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}},
+      {{0, 10, 11, 12, 13, 14, 15, 16, 17, 18}},
+      {{1, 2, 3, 4, 5, 6, 7, 8, 9, 19}},
+  }};
+  const std::array<int, kTokens> row_sets{1, 0, 2, 0};  // B, A, C, A
+  std::vector<uint16_t> gate(static_cast<size_t>(kE) * kHs, 0);
+  std::vector<int32_t> ids(kTokens * kTopK);
+  auto input = PartitionInputRows(kTokens, 24301);
+  for (int token = 0; token < kTokens; ++token) {
+    for (int column = 0; column < kTokens; ++column) {
+      input[static_cast<size_t>(token) * kHs + column] =
+          FloatToBf16(column == token ? 1.0f : 0.0f);
+    }
+    for (int rank = 0; rank < kTopK; ++rank) {
+      const int expert = expert_sets[row_sets[token]][(3 * rank + token) % 10];
+      ids[token * kTopK + rank] = expert;
+      gate[static_cast<size_t>(expert) * kHs + token] =
+          FloatToBf16(4.0f - 0.25f * rank);
+    }
+  }
+  Q4T_CHECK(cudaMemcpy(weights.extra.gate, gate.data(),
+                        gate.size() * sizeof(uint16_t),
+                        cudaMemcpyHostToDevice) == cudaSuccess);
+  q4t::quant::MoEResidency residency;
+  Q4T_CHECK(residency.Init(*weights.loader, kLayer, kE, kHs, kMoeIs,
+                           15, 0).ok());
+  // Lex packing creates [1,3], [0], [2]. Min-new must execute [1,3,2], [0],
+  // exercising changed expert M_e, noncontiguous gather/scatter and a T>1
+  // forward's actual single-row decode dispatch with full-resident reference.
+  Q4T_CHECK(RunPartitionNumericalCase(
+      weights, &residency, input, ids, {1, 3, 2, 0}, 2, 1));
   return true;
 }

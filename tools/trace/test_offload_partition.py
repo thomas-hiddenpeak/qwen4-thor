@@ -38,6 +38,23 @@ def plan_fixture():
 
 
 class PartitionStudyContracts(unittest.TestCase):
+    def test_shared_production_source_identity_is_required(self):
+        plan = plan_fixture()
+        plan['tool_sources'] = [dict(
+            path=str(ROOT / 'tools/trace/offload_partition.h'),
+            sha256='0' * 64)]
+        with patch('run_offload_partition.verify_identity') as verify:
+            with self.assertRaisesRegex(ValueError, 'shared production'):
+                validate_plan(plan)
+            verify.assert_not_called()
+            plan['tool_sources'].append(dict(
+                path=str(ROOT / 'include/q4t/model/moe_partition.h'),
+                sha256='1' * 64))
+            validate_plan(plan)
+            self.assertEqual(verify.call_args_list,
+                             [unittest.mock.call(item)
+                              for item in plan['tool_sources']])
+
     def test_policy_and_gate_are_frozen(self):
         validate_plan(plan_fixture(), check_sources=False)
         for key, value in [('work_budget_multiplier', 64),

@@ -5,6 +5,17 @@
 
 ## 当前结论
 
+
+## Offload分区运行时Goal启动（2026-10-03）
+
+用户已授权继续，范围见[分区运行时验证](OFFLOAD_PARTITION_RUNTIME_2026-10-03.md)。
+仅接入已离线通过的min_new_csr_v1，默认关闭、预算超限整forward
+回退，chunk_order保持0。先必要构建与真实HTTP，再统一host/数值
+合同，通过后45K初筛及条件完整六档/业务/生命周期。规则和原7处
+修改已封存，接线/数值夹具已静态复核；本轮尚未构建或测试。
+重点检验单token子块dispatch和scatter；GEMM/MTP/Phase D约束
+不变，54GB整体RAM继续未闭合，按阶段提交推送。
+
 ## Offload有界实验收敛：重排NO_GO，分区离线GO（2026-10-03）
 
 详见[本轮完整结果](OFFLOAD_AUTONOMOUS_2026-10-03.md)。干净binary

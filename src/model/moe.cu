@@ -26,6 +26,7 @@
 
 #include "q4t/model/linear.h"
 #include "q4t/model/moe_chunk_order.h"
+#include "q4t/model/moe_partition.h"
 #include "q4t/quant/moe_decode.h"
 #include "q4t/quant/moe_gemm.h"
 #include "q4t/quant/moe_residency.h"
@@ -50,6 +51,25 @@ int MoEChunkOrderMode() {
                    "[q4t][residency] chunk_order=%d policy=%s "
                    "prefill_only=1 tie=original_chunk_index\n",
                    parsed, parsed == 1 ? "greedy_overlap" : "original");
+    }
+    return parsed;
+  }();
+  return mode;
+}
+
+int MoEPartitionMode() {
+  static const int mode = [] {
+    const int parsed =
+        ParseMoEPartitionMode(std::getenv("Q4T_MOE_PARTITION"));
+    if (parsed < 0) {
+      std::fprintf(stderr,
+                   "[q4t][residency] invalid Q4T_MOE_PARTITION; "
+                   "expected 0 or 1\n");
+    } else {
+      std::fprintf(stderr,
+                   "[q4t][residency] partition=%d policy=%s "
+                   "prefill_only=1 budget=32*T*k\n",
+                   parsed, parsed == 1 ? "min_new_csr_v1" : "original");
     }
     return parsed;
   }();
@@ -379,7 +399,9 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
                   void* workspace, size_t workspace_bytes, void* gemm_ws,
                   size_t gemm_ws_bytes, cudaStream_t stream,
                   trace::RouterCollector* trace, int layer_id,
-                  const quant::MoEResidency* residency) {
+                  const quant::MoEResidency* residency,
+                  MoEForwardDiagnostics* diagnostics) {
+  if (diagnostics) *diagnostics = {};
   const int hs = extra.hs;
   const int E = extra.E;
   const int shared_is = extra.shared_is;
@@ -434,6 +456,13 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
     const int chunk_order_mode = MoEChunkOrderMode();
     if (chunk_order_mode < 0)
       return Status::Fail("Q4T_MOE_CHUNK_ORDER must be 0 or 1");
+    const int partition_mode = MoEPartitionMode();
+    if (partition_mode < 0)
+      return Status::Fail("Q4T_MOE_PARTITION must be 0 or 1");
+    if (partition_mode == 1 && chunk_order_mode != 0) {
+      return Status::Fail("Q4T_MOE_PARTITION requires chunk order 0");
+    }
+    if (diagnostics) diagnostics->partition_requested = partition_mode == 1;
     const int C = residency->Slots();
     if (C < k) return Status::Fail("residency slots below top-k");
     std::vector<int32_t> ids_h(static_cast<size_t>(T) * k);
@@ -467,9 +496,9 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
     // Cluster tokens by expert-set similarity before partitioning. The
     // grouped GEMM computes each token's full top-k sum in the router's
     // top-k order regardless of token order, and results scatter back to the
-    // original token rows, so reordering tokens is numerically invisible.
-    // Adjacent tokens then share expert sets, which keeps sub-chunk expert
-    // sets overlapping and cuts evictions/reloads to near the distinct set.
+    // original token rows. New sub-chunk shapes still require a numerical
+    // contract, especially when a singleton uses the direct decode dispatch.
+    // The candidate and original partition share this exact lex tie order.
     std::vector<int32_t> order(T);
     std::iota(order.begin(), order.end(), 0);
     std::vector<int32_t> keys(static_cast<size_t>(T) * k);
@@ -495,7 +524,26 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
     const int D =
         residency->HotProtected() ? C - residency->ProtectedCount() : C;
     std::vector<std::vector<int32_t>> chunks;
-    {
+    bool partition_applied = false;
+    bool partition_fallback = false;
+    PartitionCounters partition_counters;
+    const char* partition_reason = T == 1 ? "decode" : "unsupported";
+    if (partition_mode == 1 &&
+        MoEPartitionSupported(T, E, D, k, residency->HotProtected())) {
+      try {
+        auto result = PlanMoEPartition(E, D, k, residency->HotProtected(),
+                                       ids_h, order);
+        chunks = std::move(result.chunks);
+        partition_counters = result.counters;
+        partition_fallback = result.fallback;
+        partition_applied = !result.fallback;
+        partition_reason = result.fallback ? "budget" : "candidate";
+      } catch (const std::exception& error) {
+        return Status::Fail(std::string("MoE partition rejected: ") +
+                            error.what());
+      }
+    }
+    if (chunks.empty()) {
       std::vector<uint8_t> in_set(E, 0);
       std::vector<int32_t> cur;
       int distinct = 0;
@@ -574,6 +622,29 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
       if (!cur.empty()) flush();
     }
 
+    size_t singleton_chunks = 0;
+    for (const auto& chunk : chunks) singleton_chunks += chunk.size() == 1;
+    if (diagnostics) {
+      diagnostics->partition_applied = partition_applied;
+      diagnostics->partition_fallback = partition_fallback;
+      diagnostics->chunks = chunks.size();
+      diagnostics->singleton_chunks = singleton_chunks;
+    }
+    if (partition_mode == 1) {
+      std::fprintf(
+          stderr,
+          "[q4t][residency][partition] layer=%d T=%d "
+          "policy=min_new_csr_v1 requested=1 applied=%d fallback=%d "
+          "reason=%s chunks=%zu singleton_chunks=%zu "
+          "work_used=%llu work_budget=%llu metadata_bytes=%llu\n",
+          layer_id, T, partition_applied, partition_fallback,
+          partition_reason, chunks.size(), singleton_chunks,
+          static_cast<unsigned long long>(partition_counters.work_used),
+          static_cast<unsigned long long>(partition_counters.work_budget),
+          static_cast<unsigned long long>(
+              partition_counters.metadata_payload_bytes));
+    }
+
     // Multi-sub-chunk pipeline: per sub-chunk, commit its staged experts
     // (H2D stream-ordered after the previous sub-chunk's GEMM, so evicting a
     // slot is safe), gather its rows, run the grouped GEMM, scatter the
@@ -627,8 +698,8 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
           exp_sub[static_cast<size_t>(i) * k + jj] = ids_h[base + jj];
         }
       }
-      // T_sub == 1 is the decode step; report its lookups/misses in the
-      // decode phase counters (acceptance split prefill vs decode loads).
+      // Existing counters classify the sub-chunk shape. A singleton inside
+      // prefill also counts here; these are not whole-request phase totals.
       return residency->PlanResolve(exp_sub.data(), T_sub * k,
                                     subs[j].slots.data(), &subs[j].plan,
                                     T_sub == 1);
@@ -671,10 +742,13 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
       std::fprintf(stderr,
                    "[q4t][residency][diag] layer=%d T=%d D=%d chunks=%zu "
                    "max_distinct=%d resident_before=%d overlap=%s "
-                   "new=%s chunk_order=%d diag_order=original_partition\n",
+                   "new=%s chunk_order=%d diag_order=%s partition=%d\n",
                    layer_id, T, D, chunks.size(), maxd,
                    residency->ResidentCount(), ov.c_str(), nw.c_str(),
-                   chunk_order_mode);
+                   chunk_order_mode,
+                   partition_applied ? "min_new_partition"
+                                     : "original_partition",
+                   partition_mode);
     }
     // Keep Sub indexed by its ORIGINAL chunk: token rows, slot storage and
     // load plan always describe the same chunk, even for unequal chunk sizes.
@@ -775,6 +849,9 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
         ws.Init(static_cast<uint8_t*>(routed_ws));
         s = quant::MoEDeviceDecode(d_xsub, d_idsub, d_rwsub, d_ysub, routed,
                                    ws, gemm_ws, gemm_ws_bytes, stream);
+        if (s.ok() && diagnostics) {
+          ++diagnostics->actual_singleton_dispatches;
+        }
       } else {
         s = quant::MoERoutedForward(d_xsub, d_idsub, d_rwsub, d_ysub,
                                    routed, routed_ws, gemm_ws,
@@ -786,6 +863,11 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
                                          d_routed);
       if (cudaGetLastError() != cudaSuccess)
         return Status::Fail("residency scatter launch");
+      if (diagnostics) {
+        ++diagnostics->actual_executed_chunks;
+        diagnostics->executed_token_rows.insert(
+            diagnostics->executed_token_rows.end(), toks.begin(), toks.end());
+      }
       // Stage sub-chunk j+1 while the GPU runs sub-chunk j's GEMM: stage
       // chunk 0, then commit + stage the remaining chunks. Their H2Ds are
       // stream-ordered after sub-chunk j's GEMM, so any slot eviction is
