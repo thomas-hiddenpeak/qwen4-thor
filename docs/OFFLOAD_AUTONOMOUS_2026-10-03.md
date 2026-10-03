@@ -1,134 +1,200 @@
-# Offload自主推进：任务队列与验收（2026-10-03）
+# Offload自主推进结果（2026-10-03）
 
-## 窗口与授权
+## 本轮结论
 
-用户已要求规划多个任务并持续Goal推进，未来约10小时不在线。
-本轮从北京时间01:48开始，约11:48交接；常规实现、验证、阶段提交/
-推送自主完成。不为用满时间重复采样，不在剩余时间不足时启动无法
-完整收尾的新长任务。原模型目录/reference只读，原7处未提交改动保留。
+原定有界实验已完成：greedy_overlap重排在完整六档配对中为
+NO_GO_FULL_PERFORMANCE_SCREEN；保持Q4T_MOE_CHUNK_ORDER=0默认值。
+唯一后备min_new_csr_v1分区研究通过离线门槛，值得下一阶段接入验证，
+本轮没有把它接入运行时，也没有接受任何新的默认部署策略。
+54GB整体物理RAM目标仍为INDETERMINATE。
 
-入口HEAD664ad05，工作区binary46b3f977，原diff与旧binary已封存于
-`.q4t-work/offload-autonomous-20261003/`。54GB整体RAM目标仍未通过；
-16GiB仅是host/cache研究条件。GEMM冻结，MTP/Phase D关闭。
+这是按冻结出口收敛的结果，不为用满用户约10小时窗口增加采样或调参。
+数值/业务/生命周期D阶段以完整性能通过为前提，本轮未触发；
+D工具的9项host合同通过不等于真实模型D验证通过。
 
-## 有界任务队列
+## 范围、身份与协议
 
-| 阶段 | 任务 | 出口 |
-|---|---|---|
-| A | 干净源码身份、greedy_overlap可回退实现和低扰动采样 | 默认off、代码审查、零警告构建；未测试快照明确标记 |
-| B | 第一项测试为固定11题HTTP质量，后做off/on各45K×3 | 按下述冻结门槛GO或NO_GO，不追加有利重复 |
-| C | GO才完整五档+261887目标档各3次 | 输出/容量/逐档性能及资源覆盖独立判定 |
-| D | 对通过候选补数值、业务、生命周期；并行只读资源账本 | 证明什么、未证明什么分别记录 |
-| E | 若路线NO_GO，最多另研究一个有证据的分区候选 | 先冻结范围与出口；新在线优化仍HTTP前置 |
-| F | 阶段提交推送与交接 | 默认部署未通过策略保持off，保留失败及全部原改动 |
+入口HEAD664ad059，工作分支codex/moe-residency-20260930。
+模型/reference只读，GEMM与精度实现冻结，MTP和运行时Phase D关闭。
+原7处未提交修改独立保留；干净源码导出不包含这些Phase D/统计修改。
+运行时源码提交dba22c700a4cb46418f0d785b82d0e559578b118；
+候选q4t SHA256：
+`6ab2a8203407fb177b2377fbae29885c5464c5caf6d409bcc290b696685c2fad`。
+原build/q4t与封存基线为46b3f977；最终交付、远端提交和原diff保护
+证据保存于本机证据根的final-delivery.json及final-completion-audit.json。
 
-GPU模型工作串行。模型运行时不并发GPU测试、profile、重型离线回放
-或大IO任务；只读审阅/小元数据工作不争用推理资源。发生具体故障
-才定位/修复，重验受影响部分，不重跑身份未变的完整证据。
+证据根：`.q4t-work/offload-autonomous-20261003/`。下文JSON/日志路径
+未带前缀时均相对于该目录；原始数据按项目约定留在本机，不放入Git。
 
-## 第一个候选与身份
+重排只改变prefill子块执行顺序：按当前GPU槽位重叠最大选择下一块，
+平局用原子块索引；token分区、每行top-k顺序、GEMM和scatter行号不改。
+仅T>1且多子块时启用，decode不重排。固定C256/k10/T8192下新增
+bitset数据至多21,384B，另有vector/allocator开销；无新增GPU分配/同步。
+E2E包含选择器成本，但未独立测量该部分CPU时间。
 
-沿用前一阶段唯一候选：token分区和每行top-k次序不变，执行前按
-当前GPU驻留与未执行子块的重叠最大选择下一块，并列原子块索引。
-新开关Q4T_MOE_CHUNK_ORDER=0|1，默认0，decode不重排。不增加专家
-槽位/镜像容量，不改GEMM；新增host元数据与选块CPU成本须记录。
+首项测试为真实tools/evalscope HTTP固定11题（含200K），参考文本、
+长度和容量11/11通过。该质量组使用继承缓存、不限host/cache，
+不把其时间作为16GiB性能对照，也不推导全模型数值或任务质量通过。
+之后的初筛和完整矩阵均使用相同binary、C256、L2=16、mirror K8、
+max_open_shards=200、pread_merge=1、inline_load=1；max_seq=1、
+max_prefill=8192、max_len=262144。每组独立服务、MemoryMax=16GiB、
+swap=0，目标模型payload页缓存0起点，组内请求之间不清缓存。
+采样为资源1s、GPU10s、文件缓存仅启动前/退出后；运行期缓存峰未知。
 
-候选从已提交源码加本阶段补丁独立构建，不带原未提交Phase D/统计
-改动；off/on使用相同新binary，避免把旧工作区身份当本轮直接对照。
-已有HTTP可作固定文本输出参考，但性能必须在本轮相同协议下重建。
+## 重排：完整性能未通过
 
-## 冻结HTTP协议与决定规则
+45K初筛off/on各3次通过预先门槛：平均TTFT219.802→212.308秒
+（−3.41%），decode调和均值7.150→7.224 tok/s（+1.04%）。
+证据pilot-decision.json；初筛只允许继续完整矩阵。
 
-全部固定C256/hot-final-12288、L2=16/K8/maxopen200，单流、容量262144、
-prefill8192、MTP off、PhaseD off。质量首轮on使用继承缓存、不限制
-host/cache，11题含200K，与已通过固定输出逐字核对；它不证明性能。
+完整矩阵off→on，各1024/4096/8192/45056/204800/261887三次；
+末档输出257，其余256，总容量262144保持。36次请求的输出、prompt、
+usage、finish、容量和身份合同全部通过，两个服务及其客户端进程组
+正常退出，无live/zombie残留，unit已移除。
 
-质量通过后，同一新binary off→on各45056输入/256输出×3，分别在
-独立服务出生前设置16GiB host/cache、swap0。每组前定向只读cache
-advice，payload缓存0检查失败即保存停止；组内连续、不清缓存。
-每发独立evalscope client，首请求和后两请求分列。
+| 输入 | 平均TTFT off→on（秒） | 平均TTFT变化 | 最低decode变化 | 冻结门槛 |
+|---|---:|---:|---:|---|
+| 1024 | 10.149→10.179 | +0.30% | −1.47% | 未过：后两次TTFT、decode |
+| 4096 | 25.463→25.519 | +0.22% | +0.22% | 未过：首次及后两次TTFT |
+| 8192 | 37.955→37.255 | −1.84% | +0.11% | 通过 |
+| 45056 | 220.021→212.826 | −3.27% | +2.26% | 通过 |
+| 204800 | 1096.413→1054.651 | −3.81% | +0.97% | 通过 |
+| 261887 | 1416.519→1362.023 | −3.85% | −0.91% | 未过：decode |
 
-监控两侧统一：PID/cg/device/system约1s，GPU约10s，全模型filecache
-只在before_start/after_exit采集；运行期filecache留unknown，不携带
-旧值当fresh、不用端点当live峰。完整去重RAM与54GB保持未判通过。
-旧1s全文件扫描的性能数不能作本轮新协议基线。
+表中平均值用于描述，接受门槛始终为逐档：on首次TTFT≤off首次，
+on后两次最大TTFT≤off后两次最大值，on三次最低decode≥off最低值；
+六档必须全部通过。1K后两次最大TTFT9.851→9.933秒，最低decode
+7.003→6.900；4K首次25.164→25.313秒、后两次最大25.623→25.655；
+末档最低decode6.204→6.147。未调整门槛或追加有利重复。
 
-初筛GO要求同时满足：质量/输出/容量正确；on首请求TTFT小于off首发；
-on后两条TTFT都小于off后两条中的最小值；on各条decode不低于off
-三条最小值。该门槛是预先冻结的工程初筛，不是统计非劣性证明。
-否则NO_GO，不为找显著性增加重复或临时降低门槛。
+这是一轮有界工程筛选，三个观测/档、固定off→on顺序；不能证明
+统计非劣性、永久性退化或排除时段因素。只有整组首次1024请求紧接
+payload0，其余档首次继承组内状态，不统称冷请求。长档TTFT收益
+不能抵消未通过项。相对本轮off的改善未达TTFT−30%；没有本协议
+同条件C0对照，不签收历史60%C0 decode目标。
 
-GO后才完整1024/4096/8192/45056/204800/261887，每档3次；最后一档
-输出257，总长262144，其余输出256。同资源/监控协议、off与on分组，
-逐档记录质量与速度，不能用短档收益抵消长档回退。未跑完或缺证据
-明确标部分完成。60% decode/TTFT−30%历史目标另判，不凭小步收益
-自动宣称达标；阶段提交本身不构成验收。
+权威结果full-matrix-decision.json，SHA256：
+`51f47b158a66b9667c8cd4a78a295eff3abff004dd87b6abaa50c24f8f8d2c4a`。
+逐次值保留在该文件；描述表派生自matrix-metric-summary.json。
+initial-route-decision.json明确绑定合法NO_GO后才允许后备研究。
 
-在初筛结果出炉前补齐完整矩阵工程门槛：各档on首条TTFT不高于off
-首条，on后两条最大TTFT不高于off后两条最大值，on三条最小decode
-不低于off三条最小值；六档全部要求身份/输出/容量一致。这仍不是
-统计非劣性证明。只有整组首个1024请求是payload0后的首请求，其余
-档内首条继承组内状态，不统称冷请求。完整配对启动前至少留7小时
-窗口，另保留收尾时间；记录见`full-matrix-acceptance-plan.json`。
+## 资源：读量下降，但口径必须分开
 
-## 当前进度
+8条资源合成检查及四组raw审计首次通过，未修复或放宽审计规则。
+105个消费源共126,607,218B均记录SHA；19,702个样本、42个请求
+（初筛6+完整36）全部有读取计数上下界。最大边界不确定性0.9985s，
+墙钟/单调时钟差约1.04微秒；未发现计数重置或身份代际变化。
 
-A已完成：默认off实现和独立只读复核；dba22c7干净导出构建
-binary6ab2a820，零警告。B首项HTTP质量11/11通过，包含200K；
-随后共用在线helper的8项host合同，以及58项工具/监控合同通过。
-58项包含31项协议（固定输入身份与进程组超时）、5项采样调度、
-10项内存口径、12项资源观测。45K off→on各3次已完成并通过冻结
-初筛；完整性能接受尚未完成。首轮质量与性能工具快照分别保存，
-runtime一致。D新入口另外9项host合同通过，真实模型D仍未运行。
-固定C256/k10/T8192条件新增bitset数据至多21,384字节（另有vector/
-allocator元数据），无新增GPU分配/同步。完整矩阵每组显式保留
-21,600秒runner上限，单请求仍1,800秒；窗口不足不启动新长组。
-机器可读冻结计划：证据根`plan.json`；入口：`entry.json`及原diff。
+| 完整矩阵输入 | 三次PID read_bytes之和减少 |
+|---|---:|
+| 1024 | 0.0754% |
+| 4096 | 1.3585% |
+| 8192 | 2.2166% |
+| 45056 | 3.5492% |
+| 204800 | 5.1635% |
+| 261887 | 5.2375% |
 
-复核发现整组timeout可能遗留evalscope后代，因此在性能启动前修复
-自有runner进程组TERM→KILL及回收，原模型service仍按唯一unit清理。
-新增sleep后代/外部进程保护合同已通过，未以真实GPU长超时冒充已测。
-初筛比较也补固定质量/热点/模型身份绑定；实际首质量输入已核对，
-不为工具修复重跑。变更范围见`protocol-amendment-01.json`。
+259:1模型分区读取同方向，量级与PID相近；其上下界最多比PID高
+0.02767%。这支持读取量级，不把全局分区归为q4t独占，不将父盘
+259:0与分区相加。PID包括q4t全部文件读取；rchar及loader nvme_mb
+属于逻辑读量。cgroup io.stat仍明显低计：完整off/on分别9/7条
+请求的cgroup增量为0而PID为正，内核归属原因未知，不能据其签读量收益。
 
-## 资源账本与后备边界
-
-下表是现有源码分配估算，容量保持262144、L216/K8、MTP off，单位
-为十进制GB。包含估算margin/可选tensor，排除文件缓存，不能视为
-真实物理并集或直接据此接受54GB：
-
-| 每层槽位C | 估算分配GB | 距54GB余量GB |
+| 观测 | 完整off | 完整on |
 |---|---:|---:|
-| 256 | 66.629 | −12.629 |
-| 192 | 58.135 | −4.135 |
-| 160 | 53.889 | 0.111 |
-| 128 | 49.642 | 4.358 |
+| MemoryMax设置（B） | 17,179,869,184 | 17,179,869,184 |
+| kernel memory.peak（B） | 17,180,733,440 | 17,180,749,824 |
+| 实测超设置（B） | 864,256 | 880,640 |
+| memory.events.max | 110,055,471 | 104,736,106 |
+| OOM / swap | 0 / 0 | 0 / 0 |
+| NVIDIA采样峰（B） | 56,237,228,032 | 56,237,228,032 |
 
-固定L2/mirror显式分配约3.578GB，减少C不会自动减少这部分。全机
-MemTotal−MemFree可描述OS可见未空闲页，但包含其他进程/cache/
-kernel/driver预留；MemAvailable或baseline差值也不等于模型归属
-物理并集。54GB目标仍INDETERMINATE；本轮不偷偷切换验收定义。
-只读报告：`ram-capacity-review.json`、`physical-budget-definition-review.json`。
+唯一PID I/O缺测精确位于off sequence9211/shutdown，读取/proc/PID/io
+得到errno13 Permission denied，PID/startticks/cgroup身份仍一致；
+不影响42个请求的计数窗口。非PSI cgroup缺测仅启动前ENOENT，
+两种PSI全程ENOENT，均保留UNKNOWN。GPU每组启动期一次无匹配进程，
+启动前及退出后各一次无目标；其余未测值为计划跳过，不携带旧值。
+GPU实际fresh最长间隔11.0155s，资源开始间隔最长1.0121s；
+完整矩阵文件缓存仅端点0→约12.35GB，运行期未采样。
 
-## 首轮45K配对结果
+CUDA与既有共享缓存未被16GiB cgroup完整覆盖；NVIDIA、RSS/PSS、
+pinned/shmem、cgroup、文件缓存存在重叠且峰值不同步，禁止相加。
+运行期文件缓存与整体去重物理RAM并集仍未知，54GB仍INDETERMINATE。
+源码分配估算C256/C192/C160/C128分别66.629/58.135/53.889/49.642GB，
+均排除文件缓存，固定L2/mirror约3.578GB；不能凭C160估算批准54GB部署。
 
-| 指标 | off | on |
-|---|---|---|
-| 首条TTFT秒 | 218.476 | 211.841 |
-| 后两条TTFT秒 | 220.971 / 219.958 | 212.978 / 212.103 |
-| 三条decode tok/s | 7.107 / 7.172 / 7.172 | 7.194 / 7.216 / 7.262 |
-| 平均TTFT秒 | 219.802 | 212.308 |
-| decode调和均值tok/s | 7.150 | 7.224 |
+证据raw-resource-audit.json、raw-resource-summary.json、
+ram-capacity-review.json、physical-budget-definition-review.json。
+原始审计脚本audit_raw_resources.py SHA为
+`035f1f840d00350a7b6db62e1b8ef7f62a5fda02406dae91395d291a67652da4`；
+执行记录在raw-audit-execution-01/。其5s/10ms解释边界未改变性能门槛。
+需要复核时，在项目根运行以下命令，输出使用新路径以保留原证据：
 
-预先冻结初筛全部通过：平均TTFT−3.41%，decode调和均值+1.04%；
-三次输出及容量一致、两组payload0、监控/工具相同、退出清理正常。
-这是单档工程筛选，不是统计非劣性、完整性能或54GB接受。
-完整六档沿既定协议继续，后备分区不因初筛收益小而并行启动。
-证据：`pilot-decision.json`及`pilot-off/`、`pilot-on/`。
+```bash
+python3 -B .q4t-work/offload-autonomous-20261003/audit_raw_resources.py \
+  --self-test
+python3 -B .q4t-work/offload-autonomous-20261003/audit_raw_resources.py \
+  --output .q4t-work/offload-autonomous-20261003/raw-resource-audit-recheck.json
+```
 
-唯一后备研究先准备工具，不在首候选在途/GO时执行：主45K与业务
-45K各首8192-token forward的48层，共96层。候选按新增专家数最少
-组块，平局原lex rank；固定32*T*k工作预算，超限整forward回退。
-两组GPU补载均至少−15%、结构下界下降、块数不增、无预算回退才
-考虑在线；否则停止第二候选。不把离线补载或工具wall time当SSD/
-在线TTFT收益；分区改变也须重新验证数值，GEMM数学合同保持。
+## 唯一后备：分区本身通过离线筛选
+
+按partition-plan.json仅运行一次min_new_csr_v1：两个冻结45K来源
+各首个8192-token prefill forward、各48层，共96层；每样本/策略
+重置到相同热点，按新增专家最少选完整top-k行，平局原C++ lex rank，
+按构造顺序执行，不叠加重排。CSR访问与chunk重置行扫描预算32*T*k，
+超限丢弃整个候选forward并回退原分区；预处理/桶操作等另计，不称
+总指令或时间上限。每个样本独立要求GPU补载至少−15%、结构下界下降、
+块数不增、零预算回退；所有门槛均通过。
+
+| 样本 | GPU补载 off→候选 | 减少 | 块数 | 转换结构下界 |
+|---|---:|---:|---:|---:|
+| 主45K首forward | 70,077→36,096 | 48.49% | 984→356 | 65,245→31,610 |
+| 业务45K首forward | 71,317→37,620 | 47.25% | 990→364 | 66,264→32,921 |
+
+96次helper均rc0，无超时/错误输出；每样本回退层数0。两个48层
+样本的分区计时约46.75/46.05→113.89/113.14ms，额外约67ms，
+这是离线helper测时，不能当在线CPU成本；规划器向量payload峰
+358,112B，不含输入输出/验证/allocator，也不是RSS。
+
+结果仅为OFFLINE_GO_FOR_CONSIDERATION。没有回放整请求、L2/mirror
+或真实SSD，也没有数值/HTTP/TTFT接受。新分区产生单token子块：
+prefill中的runtime-decode补载计数4/7（原分区0）；不是实际decode
+请求变差的证据，但表明dispatch形状会改变，下一步必须检验数值合同。
+
+证据partition-run-01/decision.json，SHA256：
+`5ca9b71cce30fa9dce2c2a17d8709a48cb03e3aca4c865d794f2c04889c4d011`；
+身份、298个产物SHA及96次退出核对见
+partition-run-01-controller/verified-summary.json。
+
+## 验证与交付边界
+
+共133项host/工具检查通过：selector8、协议/监控58、D工具9、
+完整矩阵审计34、资源合成8、分区C++/Python各8。运行时与分区工具
+构建零警告。后续58项检查、资源raw读取和离线研究均在07:52:36
+完整性能控制进程终止后执行，未争用性能测量。
+
+收尾仅调整三个新C++工具文件的超长行。实验时11份源码已封存在
+partition-source-before-format/；原冻结partition-plan.json不改。
+当前排版对应partition-delivery-plan.json。重新构建后helper与测试
+二进制均与实验版本逐字节相同，Python工具未变，故复用16项检查与
+唯一一次研究；无重复模型/trace实验。证据partition-format-identity.json。
+
+D入口d-validation-entrypoints.json是早期计划快照，其中“5项未运行”
+注释由实际lifecycle-host-contracts.log的9项通过记录取代；真实模型
+D本轮不适用，未构建/执行q4t_tests，不把固定文本一致当数值证明。
+
+冻结队列是A实现→B初筛→C完整矩阵→条件D或唯一E→F收尾。
+首两阶段提交dba22c7、c88c6f3已推送；最终工作分支提交、远端一致性、
+原7处残余diff和证据核验见final-delivery.json/final-completion-audit.json。
+保留运行时开关默认0，不合并或部署未通过策略。
+
+## 下一阶段建议
+
+优先把同一分区算法作为默认关闭、可整体回退的候选接入，保持
+chunk_order=0及其余条件冻结。必要构建后首测固定HTTP质量；重点
+核验新块形状、单token分派和scatter对应的数值合同，再做同条件
+45K筛选，只有通过才完整六档与业务/生命周期验收。
+同时单独闭合54GB的覆盖口径与真实物理证据，保留PID/分区/cgroup
+三种I/O口径。离线47%–48%的GPU补载减少只决定研究优先级，
+不能预报同幅度的SSD、TTFT或RAM收益。
