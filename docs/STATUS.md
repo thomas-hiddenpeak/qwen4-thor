@@ -15,8 +15,10 @@
 修改已封存；干净快照26ca438构建7ce25d74零警告，首轮HTTP
 固定质量11/11通过，包含200K；48层分区实际应用、零回退。
 133项host/工具与两项真实权重数值合同首次通过，均零失败/跳过；
-BF16及所采FP32逐位相同，已覆盖singleton与非连续回填。接下来
-执行16GiB同binary45K off/on初筛；性能仍未验收。
+BF16及所采FP32逐位相同，已覆盖singleton与非连续回填。16GiB
+同binary45K off/on各3次初筛通过，平均TTFT219.6→155.6s
+（约−29.2%），decode均高于基线下限；48层应用且零回退。
+接下来执行完整六档；当前仅PASS_SCREENING，完整性能未验收。
 重点检验单token子块dispatch和scatter；GEMM/MTP/Phase D约束
 不变，54GB整体RAM继续未闭合，按阶段提交推送。
 
