@@ -67,5 +67,27 @@ GPU/RSS/cache峰相加。历史60%C0与TTFT−30%目标单列。
 INVALID。历史7工具与新8工具快照均按实际依赖核对。
 
 算法元数据只含核心向量payload，不含适配层输入/输出副本及
-allocator开销。完整HTTP、host、数值和性能测试仍未运行；
-接下来冻结执行身份并首测固定HTTP，提交不是验收通过。
+allocator开销。首轮固定11题HTTP于18:45正常收尾，11/11输出与
+参考逐项一致，包含200K；容量262144未缩减，server/monitor/runner
+均exit0，服务与进程组已清理。quality-decision.json核实48层共有
+1920次候选prefill、零回退/不支持，47个singleton子块；这些只证明
+路径应用，不能替代数值合同。
+执行身份冻结在runtime-screen-plan.json；工具快照9233d6b已推送，
+提交不是验收通过。
+
+18:51，受影响host/工具首次133/133通过：14适配+8算法+9离线
+Python+26分区协议+31旧重排协议+36矩阵审计+9生命周期工具，
+零失败/跳过，构建零警告。host-acceptance.json绑定完整来源和日志。
+
+18:54，干净源码的q4t_tests零警告构建，两项真实模型数值合同
+首次2/2通过、零失败/跳过。layer2 C64/T32+1输出逐位一致；
+C256/T1024实际11块、T1 bypass，以及C15/T4两块含singleton，
+完整BF16输出和router ID/权重均一致，实际执行/回填映射通过。
+三个新增形状的routed FP32 bit差异均0；仅这些层/形状有此证据，
+不外推全部中间值。受控fixture实际行序为1,3,2,0。
+
+numerical-decision.json SHA为
+4afebab4372b1c23e958b7fedef5ee68390673b6cf11e1e567cef67c09cf2c8b；
+测试binary为a4699b60，运行binary仍7ce25d74。HTTP→host→数值
+实际时序及构建/测试实物SHA已核对。下一步45K off/on各3次，
+性能尚未运行，不把这些正确性证据当性能或54GB整体RAM接受。
