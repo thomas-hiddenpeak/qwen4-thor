@@ -23,6 +23,7 @@ import traceback
 
 from isolated_service import IsolatedService, UNIT_PATTERN
 from monitor_memory import find_pids
+from offload_policy import AXES, partition_path_evidence, policy_environment
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -46,37 +47,44 @@ def require_idle_device():
         raise RuntimeError('GPU compute state unavailable or occupied')
 
 
-def contract_environment(chunk_order, mode):
+def contract_environment(chunk_order, mode, partition=0,
+                         policy_axis='chunk-order'):
     env = {k: v for k, v in os.environ.items()
            if not k.startswith('Q4T_') and k != 'LD_PRELOAD'}
-    env.update(Q4T_MOE_CHUNK_ORDER=str(chunk_order), Q4T_MOE_EVICT_WEIGHT='0',
-               Q4T_MOE_L2_SLOTS='16', Q4T_MOE_MIRROR_K='8',
-               Q4T_MOE_MAX_OPEN_SHARDS='200', Q4T_MOE_PREAD_MERGE='1',
-               Q4T_MOE_INLINE_MISS_LIMIT='1', Q4T_MOE_STREAMS='1')
+    env.update(policy_environment(chunk_order, partition, policy_axis))
+    env['Q4T_MOE_STREAMS'] = '1'
     if mode != 'business':
         env['Q4T_RESIDENCY_FAIL_EXPERT'] = 'first'
     return env
 
 
-def reference_identity(model_dir, fixtures_path, manifest_path, env):
+def reference_identity(model_dir, fixtures_path, manifest_path, env,
+                        policy_axis='chunk-order'):
     """Bind metadata only; never read model tensor payloads for identity."""
     model_dir = Path(model_dir).resolve()
-    return dict(model_dir=str(model_dir),
+    axis_env = ('Q4T_MOE_PARTITION' if policy_axis == 'partition'
+                else 'Q4T_MOE_CHUNK_ORDER')
+    result = dict(model_dir=str(model_dir),
                 model_config_sha256=sha(model_dir / 'config.json'),
                 model_index_sha256=sha(model_dir / 'model.safetensors.index.json'),
                 fixture_sha256=sha(fixtures_path), manifest_sha256=sha(manifest_path),
                 comparable_q4t_environment={k: v for k, v in env.items()
                     if k.startswith('Q4T_') and k not in
-                    ('Q4T_MOE_CHUNK_ORDER', 'Q4T_RESIDENCY_FAIL_EXPERT')})
+                    (axis_env, 'Q4T_RESIDENCY_FAIL_EXPERT')})
+    if policy_axis == 'partition':
+        result['policy_axis'] = policy_axis
+    return result
 
 
 def require_reference_identity(protocol, identity):
     for key, value in identity.items():
         if protocol.get(key) != value:
             raise ValueError('same-binary reference identity mismatch: ' + key)
+    axis_env = ('Q4T_MOE_PARTITION' if identity.get('policy_axis') == 'partition'
+                else 'Q4T_MOE_CHUNK_ORDER')
     effective = {k: v for k, v in protocol.get('effective_q4t_environment', {}).items()
                  if k.startswith('Q4T_') and k not in
-                 ('Q4T_MOE_CHUNK_ORDER', 'Q4T_RESIDENCY_FAIL_EXPERT')}
+                 (axis_env, 'Q4T_RESIDENCY_FAIL_EXPERT')}
     if effective != identity['comparable_q4t_environment']:
         raise ValueError('same-binary reference effective environment mismatch')
 
@@ -293,7 +301,9 @@ def main():
     for name in ('binary', 'model-dir', 'hot-list', 'fixtures', 'reference', 'output'):
         parser.add_argument('--' + name, type=Path, required=True)
     parser.add_argument('--expected-binary-sha256', required=True)
-    parser.add_argument('--chunk-order', type=int, choices=(0, 1), default=1)
+    parser.add_argument('--chunk-order', type=int, choices=(0, 1))
+    parser.add_argument('--policy-axis', choices=AXES, default='chunk-order')
+    parser.add_argument('--partition', type=int, choices=(0, 1), default=0)
     parser.add_argument('--reference-role', choices=('historical_precheck', 'same_binary'),
                         default='same_binary')
     parser.add_argument('--systemd-unit', required=True)
@@ -304,6 +314,13 @@ def main():
     parser.add_argument('--cancel-timeout-s', type=int, default=300)
     parser.add_argument('--contract-timeout-s', type=int, default=7200)
     args = parser.parse_args()
+    if args.chunk_order is None:
+        args.chunk_order = 0 if args.policy_axis == 'partition' else 1
+    try:
+        env = contract_environment(args.chunk_order, args.mode,
+                                   args.partition, args.policy_axis)
+    except ValueError as error:
+        parser.error(str(error))
     out = args.output.resolve()
     if not out.is_relative_to(ROOT / '.q4t-work'):
         parser.error('output must be under .q4t-work/')
@@ -331,10 +348,10 @@ def main():
                 digest != references[item['id']]['prompt_sha256'] or
                 digest != manifest[item['id']]['prompt_sha256'] or item.get('max_tokens') != 128):
             parser.error('fixture/reference/manifest identity mismatch')
-    env = contract_environment(args.chunk_order, args.mode)
-    identity = reference_identity(args.model_dir, fixtures_path, manifest_path, env)
+    identity = reference_identity(args.model_dir, fixtures_path, manifest_path,
+                                   env, args.policy_axis)
     if args.reference_role == 'historical_precheck':
-        if args.mode != 'business' or args.chunk_order != 0:
+        if args.mode != 'business' or args.chunk_order != 0 or args.partition != 0:
             parser.error('historical_precheck is only for off/business baseline collection')
     else:
         reference_protocol = json.loads((args.reference.parent / 'protocol.json').read_text())
@@ -345,6 +362,8 @@ def main():
             parser.error(str(error))
         if (reference_protocol['binary_sha256'] != args.expected_binary_sha256 or
                 reference_protocol['effective_q4t_environment']['Q4T_MOE_CHUNK_ORDER'] != '0' or
+                (args.policy_axis == 'partition' and
+                 reference_protocol['effective_q4t_environment'].get('Q4T_MOE_PARTITION') != '0') or
                 reference_protocol['mode'] != 'business' or not reference_exit['passed'] or
                 reference_protocol['hot_sha256'] != sha(args.hot_list) or
                 reference_protocol['fixture_sha256'] != sha(fixtures_path) or
@@ -363,7 +382,8 @@ def main():
                '--moe-hot-list', str(args.hot_list.resolve())]
     sources = [Path(__file__), ROOT / 'tools/evalscope/isolated_service.py',
                ROOT / 'tools/evalscope/monitor_memory.py', ROOT / 'tools/evalscope/resource_metrics.py',
-               ROOT / 'tools/evalscope/file_cache.py']
+               ROOT / 'tools/evalscope/file_cache.py',
+               ROOT / 'tools/evalscope/offload_policy.py']
     snapshot = out / 'tool-snapshot'; snapshot.mkdir()
     for source in sources:
         shutil.copy2(source, snapshot / source.name)
@@ -430,6 +450,11 @@ def main():
             diagnostic_scope='original partition membership, not executed chunk indices'))
         if activation not in runtime_log or not multichunk:
             raise RuntimeError('chunk-order activation or eligible multichunk path not recorded')
+        if args.policy_axis == 'partition':
+            path = partition_path_evidence(runtime_log, args.partition)
+            save(out / 'partition-path-evidence.json', path)
+            if not path['runtime_eligible']:
+                raise RuntimeError('partition candidate runtime eligibility failed')
     except BaseException as error:
         failure = repr(error)
         (out / 'failure.txt').write_text(traceback.format_exc())

@@ -17,6 +17,7 @@ import time
 
 from file_cache import model_files, observe_files
 from monitor_memory import find_pids
+from offload_policy import AXES, RUN_TOOLS, policy_environment
 from run_acceptance import LENGTHS, parse_lengths, performance_plan
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -168,15 +169,11 @@ def selected_performance_plan(mode, lengths=None, repeats=3, target_total=0):
     return plan
 
 
-def experiment_environment(chunk_order, inherited):
-    if chunk_order not in (0, 1):
-        raise ValueError('chunk-order must be zero or one')
+def experiment_environment(chunk_order, inherited, partition=0,
+                           policy_axis='chunk-order'):
     env = {key: value for key, value in inherited.items()
            if not key.startswith('Q4T_')}
-    env.update({'Q4T_MOE_L2_SLOTS': '16', 'Q4T_MOE_MIRROR_K': '8',
-                'Q4T_MOE_MAX_OPEN_SHARDS': '200', 'Q4T_MOE_EVICT_WEIGHT': '0',
-                'Q4T_MOE_PREAD_MERGE': '1', 'Q4T_MOE_INLINE_MISS_LIMIT': '1',
-                'Q4T_MOE_CHUNK_ORDER': str(chunk_order)})
+    env.update(policy_environment(chunk_order, partition, policy_axis))
     return env
 
 
@@ -227,6 +224,9 @@ def main():
     ap.add_argument('--clear-model-cache', action='store_true')
     ap.add_argument('--chunk-order', type=int, choices=(0, 1), default=0,
                     help='Explicit Q4T_MOE_CHUNK_ORDER; off and on use the same binary')
+    ap.add_argument('--policy-axis', choices=AXES, default='chunk-order')
+    ap.add_argument('--partition', type=int, choices=(0, 1), default=0,
+                    help='Partition axis requires chunk-order=0 for both runs')
     ap.add_argument('--perf-lengths', help='CSV selection; default bounded 45056. '
                     '261887 automatically requests 257 output tokens.')
     ap.add_argument('--perf-repeats', type=int, default=3,
@@ -242,6 +242,8 @@ def main():
     ap.add_argument('--port', type=int, default=8172)
     args = ap.parse_args()
     try:
+        env = experiment_environment(args.chunk_order, os.environ,
+                                     args.partition, args.policy_axis)
         plan = selected_performance_plan(args.mode, args.perf_lengths,
                                          args.perf_repeats, args.target_total)
     except ValueError as error:
@@ -280,14 +282,11 @@ def main():
         ap.error('GPU compute state unavailable or occupied')
     out.mkdir(parents=True, exist_ok=False)
     unit = f'q4t-ram-{time.time_ns()}-{os.getpid()}.service'
-    env = experiment_environment(args.chunk_order, os.environ)
     paths = model_files(args.model_dir)
     tool_dir = out / 'tools'
     tool_dir.mkdir()
     tool_hashes = {}
-    for name in ('run_budget_experiment.py', 'run_acceptance.py',
-                 'isolated_service.py', 'monitor_memory.py', 'file_cache.py',
-                 'resource_metrics.py', 'memory_accounting.py'):
+    for name in RUN_TOOLS + ('offload_policy.py',):
         source = ROOT / 'tools/evalscope' / name
         shutil.copyfile(source, tool_dir / name)
         tool_hashes[name] = hashlib.sha256(source.read_bytes()).hexdigest()
@@ -304,6 +303,7 @@ def main():
                                 for path in needed},
         'host_cache_max_bytes': args.host_cache_max_bytes, 'swap_max_bytes': 0,
         'chunk_order': args.chunk_order,
+        'policy_axis': args.policy_axis, 'partition': args.partition,
         'monitor': {'interval_seconds': args.monitor_interval,
                     'gpu_interval_seconds': args.gpu_interval,
                     'file_cache_mode': args.file_cache_mode,

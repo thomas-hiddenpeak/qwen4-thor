@@ -356,6 +356,28 @@ class MatrixFixture(unittest.TestCase):
         self.write(self.on / 'tools/run_acceptance.py', 'different tool')
         self.invalid('source SHA mismatch')
 
+    def test_legacy_axis_accepts_full_new_dependency_set(self):
+        self.tool_sha['offload_policy.py'] = sha(b'explicit helper dependency')
+        for directory in (self.off, self.on):
+            self.edit(directory / 'protocol.json',
+                      lambda p: p.update(tool_sha256=self.tool_sha))
+            self.write(directory / 'tools/offload_policy.py',
+                       'explicit helper dependency')
+        self.assertEqual(self.audit()['decision'], 'PASS_FULL_PERFORMANCE_SCREEN')
+
+    def test_legacy_axis_rejects_extra_or_missing_tool_dependencies(self):
+        path = self.on / 'protocol.json'
+        original = path.read_text()
+        for key, add in (('unexpected.py', True), ('run_acceptance.py', False)):
+            def change(p):
+                if add:
+                    p['tool_sha256'][key] = 'a' * 64
+                else:
+                    p['tool_sha256'].pop(key)
+            self.edit(path, change)
+            self.invalid('incomplete tool source identities')
+            path.write_text(original)
+
     def test_source_fixture_tamper(self):
         self.write(self.fixtures / 'context-1024/requests.jsonl', '{"prompt":"new"}\n')
         self.invalid('source SHA mismatch')

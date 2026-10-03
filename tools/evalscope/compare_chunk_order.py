@@ -10,6 +10,10 @@ import math
 from pathlib import Path
 import statistics
 
+from offload_policy import (AXES, bound_file, check_numerical,
+    check_partition_plan, check_policy_protocol, partition_path_evidence,
+    read_bound_json)
+
 ROOT = Path(__file__).resolve().parents[2]
 CAPACITY = {'max_len': 262144, 'max_seq': 1, 'max_prefill': 8192}
 # This comparator is intentionally specific to the frozen 2026-10-03 screen.
@@ -83,8 +87,30 @@ def screen_metrics(baseline, candidate):
             'inference_limit': 'observed ranges only; no statistical confidence claim'}
 
 
-def compare_evidence(baseline, candidate, quality):
+def compare_evidence(baseline, candidate, quality, *,
+                     policy_axis='chunk-order', plan_path=None,
+                     expected_plan_sha256=None, numerical_evidence_sha256=None):
     sources = {}
+    require(policy_axis in AXES, 'unknown policy axis')
+    plan = None
+    paths = {}
+    quality_reference = QUALITY_REFERENCE
+    quality_hashes = FROZEN_QUALITY_SHA256
+    if policy_axis == 'partition':
+        require(plan_path is not None, 'partition screen requires frozen plan')
+        plan = read_bound_json(plan_path, expected_plan_sha256, sources)
+        check_partition_plan(plan)
+        quality_reference = Path(plan['quality_reference_path'])
+        require(quality_reference.is_absolute(),
+                'quality reference requires an absolute frozen path')
+        quality_hashes = {
+            path: digest for path, digest in FROZEN_QUALITY_SHA256.items()
+            if path != str(QUALITY_REFERENCE)}
+        quality_hashes[str(quality_reference)] = plan['quality_reference_sha256']
+    else:
+        require(plan_path is None and expected_plan_sha256 is None and
+                numerical_evidence_sha256 is None,
+                'partition-only evidence arguments on chunk-order axis')
     def read(directory, relative):
         path = directory / relative
         raw = path.read_bytes()
@@ -97,7 +123,8 @@ def compare_evidence(baseline, candidate, quality):
         e = read(directory, 'http/exit.json')
         capacity = read(directory, 'http/capacity.json')
         command = read(directory, 'http/server-command.json')
-        require(p['mode'] == mode and p['chunk_order'] == order, 'wrong run mode/order')
+        require(p['mode'] == mode, 'wrong run mode/order')
+        check_policy_protocol(p, order, policy_axis)
         require(x['runner_rc'] == x['monitor_rc'] == 0 and not x['failure'] and
                 not x['cleanup_failed'] and
                 x['unit_after_cleanup']['LoadState'] == 'not-found', 'wrapper failed/unclean')
@@ -106,9 +133,8 @@ def compare_evidence(baseline, candidate, quality):
         require(capacity['matches_requested'] is True and
                 capacity['requested'] == capacity['effective'] == CAPACITY,
                 'capacity mismatch')
-        require(command['effective_q4t_environment'] == p['effective_environment'] and
-                p['effective_environment']['Q4T_MOE_CHUNK_ORDER'] == str(order),
-                'effective chunk-order environment mismatch')
+        require(command['effective_q4t_environment'] == p['effective_environment'],
+                'effective policy environment mismatch')
         require(command['isolation']['host_cache_max_bytes'] == p['host_cache_max_bytes']
                 and command['isolation']['swap_max_bytes'] == p['swap_max_bytes'] == 0,
                 'isolation mismatch')
@@ -127,20 +153,48 @@ def compare_evidence(baseline, candidate, quality):
                     'server command differs from frozen screen: ' + flag)
         binary_sha = (directory / 'http/binary.sha256').read_text().strip()
         require(binary_sha == p['binary_sha256'], 'binary identity mismatch')
+        if policy_axis == 'partition':
+            require(p['binary_sha256'] == plan['runtime_binary_sha256'] and
+                    p['tool_sha256'] == plan['tool_sha256'],
+                    'partition runtime/tools differ from frozen plan')
+            bound_file(p['binary'], p['binary_sha256'], sources)
+            cache = Path(p['binary']).parent / 'CMakeCache.txt'
+            digest = hashlib.sha256(cache.read_bytes()).hexdigest()
+            bound_file(cache, digest, sources)
+            bound_file(directory / 'http/CMakeCache.txt', digest, sources)
+            for name, digest in p['tool_sha256'].items():
+                bound_file(directory / 'tools' / name, digest, sources)
+            for path, digest in identities.items():
+                bound_file(path, digest, sources)
+            bound_file(directory / 'http/run_acceptance.py',
+                       p['tool_sha256']['run_acceptance.py'], sources)
+            argv = command['argv']
+            require(argv[:2] == [p['binary'], 'serve'] and
+                    argv.count('--no-mtp') == 1 and '--mtp' not in argv and
+                    '--no-budget' not in argv, 'server binary/MTP/budget differs')
+            for key, expected in CAPACITY.items():
+                flag = '--' + key.replace('_', '-')
+                require(argv.count(flag) == 1 and
+                        argv[argv.index(flag) + 1] == str(expected),
+                        'server capacity command differs: ' + flag)
+            log = directory / 'http/server.log'
+            raw = log.read_bytes()
+            sources[str(log)] = hashlib.sha256(raw).hexdigest()
+            paths[str(directory)] = partition_path_evidence(raw.decode(), order)
         return p, x, e
 
     q, qexit, qe = completed(quality, 'quality', 1)
     require(q['fixtures'] == str(QUALITY_FIXTURES) and all(
             q['input_config_sha256'].get(path) == digest
-            for path, digest in FROZEN_QUALITY_SHA256.items()),
+            for path, digest in quality_hashes.items()),
             'quality fixture/reference differs from frozen screen')
     require(q['fixture_sha256'] == {
-            Path(path).name: digest for path, digest in FROZEN_QUALITY_SHA256.items()
+            Path(path).name: digest for path, digest in quality_hashes.items()
             if Path(path).parent == QUALITY_FIXTURES},
             'quality manifest/requests identity mismatch')
     quality_command = read(quality, 'runner-command.json')
     require(quality_command.count('--reference') == 1 and
-            quality_command[quality_command.index('--reference') + 1] == str(QUALITY_REFERENCE),
+            quality_command[quality_command.index('--reference') + 1] == str(quality_reference),
             'frozen quality reference was not passed to runner')
     qr = read(quality, 'http/results.json')
     require(len(qr) == 11 and qe['completed'] == 11 and
@@ -218,23 +272,45 @@ def compare_evidence(baseline, candidate, quality):
     require(bp['binary_sha256'] == q['binary_sha256'], 'quality used another binary')
     require(qexit['ended_t'] <= bx['started_t'] and bx['ended_t'] <= cx['started_t'],
             'frozen quality -> off -> on ordering not established')
-    require({k:v for k,v in bp['effective_environment'].items() if k!='Q4T_MOE_CHUNK_ORDER'} ==
-            {k:v for k,v in cp['effective_environment'].items() if k!='Q4T_MOE_CHUNK_ORDER'},
-            'environment differs beyond chunk-order')
+    axis_environment = ('Q4T_MOE_PARTITION' if policy_axis == 'partition'
+                        else 'Q4T_MOE_CHUNK_ORDER')
+    require({k:v for k,v in bp['effective_environment'].items() if k!=axis_environment} ==
+            {k:v for k,v in cp['effective_environment'].items() if k!=axis_environment},
+            'environment differs beyond declared policy axis')
     require(all(a['text'] == b['text'] and a['prompt_sha256'] == b['prompt_sha256']
                 for a,b in zip(br,cr)), 'candidate output/prompt differs from baseline')
-    return {'schema': 1, **screen_metrics(bm,cm), 'source_sha256': sources,
+    result = {'schema': 1, **screen_metrics(bm,cm), 'source_sha256': sources,
             'frozen_contract': 'offload-autonomous-20261003/plan.json',
             'evidence_contracts_passed': True, 'quality_11_passed': True,
             'scope': 'single 45056 tier, three requests per condition',
             'total_physical_RAM': 'INDETERMINATE',
             'file_cache_during_requests': 'NOT_SAMPLED'}
+    if policy_axis == 'partition':
+        require(plan['frozen_at'] <= qexit['started_t'],
+                'partition plan was not frozen before first quality test')
+        numerical = check_numerical(plan, numerical_evidence_sha256, sources,
+                                   qexit['ended_t'], bx['started_t'])
+        result.update(policy_axis=policy_axis, frozen_contract=str(plan_path),
+                      plan_sha256=expected_plan_sha256,
+                      numerical_evidence_sha256=numerical_evidence_sha256,
+                      numerical=numerical, runtime_paths=paths)
+        eligible = all(path['runtime_eligible'] for path in paths.values())
+        result['runtime_eligibility_passed'] = eligible
+        if not eligible:
+            result.update(decision='NO_GO', screening_passed=False)
+        for path, digest in tuple(sources.items()):
+            bound_file(path, digest, sources)
+    return result
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('baseline', 'candidate', 'quality', 'output'):
         parser.add_argument('--' + name, required=True, type=Path)
+    parser.add_argument('--policy-axis', choices=AXES, default='chunk-order')
+    parser.add_argument('--plan', type=Path)
+    parser.add_argument('--expected-plan-sha256')
+    parser.add_argument('--numerical-evidence-sha256')
     args = parser.parse_args()
     out = args.output.resolve()
     if not any(out.is_relative_to(ROOT / d) for d in ('build', '.q4t-work')):
@@ -243,7 +319,10 @@ def main():
         parser.error('output already exists; earlier evidence is immutable')
     try:
         result = compare_evidence(args.baseline.resolve(), args.candidate.resolve(),
-                                  args.quality.resolve())
+            args.quality.resolve(), policy_axis=args.policy_axis,
+            plan_path=args.plan.resolve() if args.plan else None,
+            expected_plan_sha256=args.expected_plan_sha256,
+            numerical_evidence_sha256=args.numerical_evidence_sha256)
         rc = 0 if result['screening_passed'] else 1
     except (ValueError, KeyError, OSError, TypeError, IndexError) as error:
         result = {'schema': 1, 'decision': 'INVALID_EVIDENCE',

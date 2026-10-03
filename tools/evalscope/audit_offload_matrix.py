@@ -13,6 +13,8 @@ import math
 from pathlib import Path
 
 import compare_chunk_order as pilot
+from offload_policy import (AXES, check_partition_plan, check_policy_protocol,
+                            partition_path_evidence)
 
 ROOT = Path(__file__).resolve().parents[2]
 LENGTHS = [1024, 4096, 8192, 45056, 204800, 261887]
@@ -75,7 +77,8 @@ class Evidence:
             self.verify(path, digest)
 
 
-def reuse_pilot(evidence, decision_path):
+def reuse_pilot(evidence, decision_path, policy_axis='chunk-order',
+                expected_plan_sha256=None):
     """Reuse the completed first-test quality and screening with SHA closure."""
     saved = evidence.json(decision_path)
     require(saved['decision'] == 'PASS_SCREENING' and
@@ -88,18 +91,33 @@ def reuse_pilot(evidence, decision_path):
     base = decision_path.parent
     # The existing frozen pilot comparator independently rechecks its exact
     # 11 quality cases and three off/on observations; no inference is repeated.
+    kwargs = {}
+    if policy_axis == 'partition':
+        require(saved.get('policy_axis') == 'partition' and
+                saved['plan_sha256'] == expected_plan_sha256,
+                'pilot belongs to another policy axis or frozen plan')
+        kwargs = dict(policy_axis=policy_axis,
+                      plan_path=Path(saved['frozen_contract']),
+                      expected_plan_sha256=expected_plan_sha256,
+                      numerical_evidence_sha256=saved['numerical_evidence_sha256'])
+    else:
+        require(saved.get('policy_axis', 'chunk-order') == 'chunk-order',
+                'partition pilot cannot qualify a chunk-order matrix')
     recomputed = pilot.compare_evidence(base / 'pilot-off', base / 'pilot-on',
-                                        base / 'quality-on')
+                                        base / 'quality-on', **kwargs)
     require(saved == recomputed, 'saved pilot decision differs from its evidence')
     protocols = [evidence.json(base / name / 'protocol.json')
                  for name in ('quality-on', 'pilot-off', 'pilot-on')]
     for name, protocol in zip(('quality-on', 'pilot-off', 'pilot-on'), protocols):
         require(evidence.text(base / name / 'http/binary.sha256').strip() ==
                 protocol['binary_sha256'], 'reused binary identity mismatch')
-    return {'binary_sha256': protocols[0]['binary_sha256'],
+    result = {'binary_sha256': protocols[0]['binary_sha256'],
             'tool_sha256': protocols[1]['tool_sha256'],
             'ended_t': evidence.json(base / 'pilot-on/wrapper-exit.json')['ended_t'],
             'decision_source': str(decision_path)}
+    if policy_axis == 'partition':
+        result['numerical'] = recomputed['numerical']
+    return result
 
 
 def screen_tier(baseline, candidate):
@@ -291,9 +309,11 @@ def check_request(evidence, directory, length, index, row, boundary,
     return values[-1]
 
 
-def check_run(evidence, directory, order, plan, wrapper, reference, reference_sha):
+def check_run(evidence, directory, order, plan, wrapper, reference, reference_sha,
+              policy_axis='chunk-order'):
     p = evidence.json(directory / 'protocol.json')
-    require(p['mode'] == 'performance' and p['chunk_order'] == order and
+    check_policy_protocol(p, order, policy_axis)
+    require(p['mode'] == 'performance' and
             p['lengths'] == LENGTHS and p['repeats'] == 3 and
             p['binary_sha256'] == plan['runtime_binary_sha256'],
             'protocol binary/order/tiers differ from frozen matrix')
@@ -303,8 +323,6 @@ def check_run(evidence, directory, order, plan, wrapper, reference, reference_sh
             p['request_deadline_ms'] == plan['request_deadline_ms'] and
             {key: p[key] for key in CAPACITY} == CAPACITY,
             'protocol resource/capacity/deadline mismatch')
-    require(p['effective_environment'] == {**ENVIRONMENT, 'Q4T_MOE_CHUNK_ORDER': str(order)},
-            'runtime environment differs from frozen candidate')
     require(p['monitor'] == {'interval_seconds': 1.0, 'gpu_interval_seconds': 10.0,
                             'file_cache_mode': 'endpoints',
                             'live_file_cache_observation': 'NOT_SAMPLED'},
@@ -339,7 +357,14 @@ def check_run(evidence, directory, order, plan, wrapper, reference, reference_sh
     evidence.raw(build_cache)
     evidence.verify(directory / 'http/CMakeCache.txt',
                     evidence.sources[str(build_cache.resolve())])
-    require(set(p['tool_sha256']) == set(TOOLS), 'incomplete tool source identities')
+    expected_tools = [set(TOOLS) | {'offload_policy.py'}]
+    if policy_axis == 'chunk-order':
+        expected_tools.append(set(TOOLS))  # Historical seven-file runner only.
+    require(set(p['tool_sha256']) in expected_tools,
+            'incomplete tool source identities')
+    if policy_axis == 'partition':
+        require(p['tool_sha256'] == plan['tool_sha256'],
+                'partition tools differ from frozen plan')
     for name, digest in p['tool_sha256'].items():
         evidence.verify(directory / 'tools' / name, digest)
     evidence.verify(directory / 'http/run_acceptance.py', p['tool_sha256']['run_acceptance.py'])
@@ -418,13 +443,19 @@ def check_run(evidence, directory, order, plan, wrapper, reference, reference_sh
     require(boundaries[-1]['client_after']['unix_seconds'] <=
             peak['model_file_cache_endpoint_observations'][1]['t'],
             'monitor after-exit endpoint predates the last client')
+    runtime_path = None
+    if policy_axis == 'partition':
+        runtime_path = partition_path_evidence(
+            evidence.text(directory / 'http/server.log'), order)
     return {'protocol': p, 'wrapper': wrapper, 'group': group, 'identity': identity,
             'monitor': monitor, 'results': results, 'rows': rows_by_tier,
+            'runtime_path': runtime_path,
             'build_cache_sha256': evidence.sources[str(build_cache.resolve())],
             'evalscope_version': evidence.text(directory / 'http/evalscope-version.txt')}
 
 
-def audit_matrix(plan_path, baseline, candidate, pilot_decision):
+def audit_matrix(plan_path, baseline, candidate, pilot_decision, *,
+                 policy_axis='chunk-order', expected_plan_sha256=None):
     evidence = Evidence()
     result = {'schema': 1, 'decision': 'INVALID_EVIDENCE',
               'full_performance_screen_passed': False, 'performance_acceptance': False,
@@ -443,24 +474,44 @@ def audit_matrix(plan_path, baseline, candidate, pilot_decision):
         evidence.raw(Path(__file__))
         evidence.raw(Path(pilot.__file__))
         evidence.raw(Path(__file__).with_name('test_offload_matrix_audit.py'))
-        evidence.verify(plan_path, PLAN_SHA256)
+        require(policy_axis in AXES, 'unknown policy axis')
+        if policy_axis == 'partition':
+            require(isinstance(expected_plan_sha256, str) and
+                    len(expected_plan_sha256) == 64,
+                    'partition matrix requires explicit frozen plan SHA256')
+            evidence.verify(plan_path, expected_plan_sha256)
+        else:
+            require(expected_plan_sha256 is None,
+                    'chunk-order matrix uses its original frozen plan SHA256')
+            evidence.verify(plan_path, PLAN_SHA256)
         plan = evidence.json(plan_path)
+        if policy_axis == 'partition':
+            check_partition_plan(plan)
+            evidence.raw(Path(__file__).with_name('offload_policy.py'))
+        else:
+            require(plan.get('policy_axis', 'chunk-order') == 'chunk-order',
+                    'wrong matrix policy axis')
         require(plan['lengths'] == LENGTHS and plan['repeats'] == 3 and
                 plan['output_tokens'] == {'default': 256, '261887': 257}, 'wrong frozen plan')
         require(baseline != candidate, 'off/on require independent evidence directories')
         # Fail closed before touching in-progress responses or monitor sidecars.
         bx, cx = (check_completion(evidence, path) for path in (baseline, candidate))
-        reused = reuse_pilot(evidence, pilot_decision)
+        reused = (reuse_pilot(evidence, pilot_decision, policy_axis,
+                              expected_plan_sha256)
+                  if policy_axis == 'partition' else
+                  reuse_pilot(evidence, pilot_decision))
         require(reused['binary_sha256'] == plan['runtime_binary_sha256'],
                 'pilot quality used another binary')
         require(plan['frozen_at'] <= bx['started_t'] and
                 reused['ended_t'] <= bx['started_t'] and bx['ended_t'] <= cx['started_t'],
                 'pilot -> complete off -> on ordering not established')
         base = check_run(evidence, baseline, 0, plan, bx,
-                         pilot.PERF_REFERENCE, pilot.PERF_REFERENCE_SHA256)
+                         pilot.PERF_REFERENCE, pilot.PERF_REFERENCE_SHA256,
+                         policy_axis)
         candidate_run = check_run(evidence, candidate, 1, plan, cx,
                                   baseline / 'http/results.json',
-                                  evidence.sources[str(baseline / 'http/results.json')])
+                                  evidence.sources[str(baseline / 'http/results.json')],
+                                  policy_axis)
         bp, cp = base['protocol'], candidate_run['protocol']
         for key in ('binary', 'binary_sha256', 'tool_sha256', 'fixture_sha256', 'model_files',
                     'monitor', 'lengths', 'repeats', 'host_cache_max_bytes', 'swap_max_bytes',
@@ -487,6 +538,17 @@ def audit_matrix(plan_path, baseline, candidate, pilot_decision):
                   **screen_tier(b['metrics'], c['metrics'])}
                  for n, b, c in zip(LENGTHS, base['results'], candidate_run['results'])]
         passed = all(t['passed'] for t in tiers)
+        if policy_axis == 'partition':
+            eligible = all(run['runtime_path']['runtime_eligible']
+                           for run in (base, candidate_run))
+            passed = passed and eligible
+            result.update(policy_axis=policy_axis,
+                          plan_sha256=expected_plan_sha256,
+                          numerical_acceptance='PASS_FROZEN_BOUNDED_CONTRACTS',
+                          numerical=reused['numerical'],
+                          runtime_eligibility_passed=eligible,
+                          runtime_paths={'off': base['runtime_path'],
+                                         'on': candidate_run['runtime_path']})
         result.update(decision='PASS_FULL_PERFORMANCE_SCREEN' if passed else
                       'NO_GO_FULL_PERFORMANCE_SCREEN',
                       full_performance_screen_passed=passed,
@@ -507,13 +569,17 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('plan', 'baseline', 'candidate', 'pilot-decision', 'output'):
         parser.add_argument('--' + name, type=Path, required=True)
+    parser.add_argument('--policy-axis', choices=AXES, default='chunk-order')
+    parser.add_argument('--expected-plan-sha256')
     args = parser.parse_args()
     output = args.output.resolve()
     if not any(output.is_relative_to(ROOT / part) for part in ('build', '.q4t-work')):
         parser.error('output must be under build/ or .q4t-work/')
     # Reserve first: an existing report can never be overwritten, even on error.
     with output.open('x') as stream:
-        report = audit_matrix(args.plan, args.baseline, args.candidate, args.pilot_decision)
+        report = audit_matrix(args.plan, args.baseline, args.candidate,
+            args.pilot_decision, policy_axis=args.policy_axis,
+            expected_plan_sha256=args.expected_plan_sha256)
         json.dump(report, stream, indent=2, allow_nan=False)
         stream.write('\n')
     print(report['decision'])
