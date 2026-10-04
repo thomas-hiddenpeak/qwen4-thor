@@ -17,7 +17,8 @@ import time
 
 from file_cache import model_files, observe_files
 from monitor_memory import find_pids
-from offload_policy import AXES, RUN_TOOLS, policy_environment
+from offload_policy import (AXES, DIAGNOSTIC_SCOPE, RUN_TOOLS,
+                            policy_environment)
 from run_acceptance import LENGTHS, parse_lengths, performance_plan
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -170,10 +171,11 @@ def selected_performance_plan(mode, lengths=None, repeats=3, target_total=0):
 
 
 def experiment_environment(chunk_order, inherited, partition=0,
-                           policy_axis='chunk-order'):
+                           policy_axis='chunk-order', phase_diagnostics=False):
     env = {key: value for key, value in inherited.items()
            if not key.startswith('Q4T_')}
-    env.update(policy_environment(chunk_order, partition, policy_axis))
+    env.update(policy_environment(chunk_order, partition, policy_axis,
+                                  phase_diagnostics))
     return env
 
 
@@ -186,6 +188,8 @@ def runner_command(args, out, unit, plan):
                '--moe-resident-slots', '256', '--moe-hot-list', str(args.hot_list.resolve()),
                '--startup-timeout', '600', '--request-deadline-ms', '1800000',
                '--allow-unqualified-binary', '--systemd-unit', unit]
+    if getattr(args, 'phase_diagnostics', False):
+        command += ['--phase-diagnostics']
     if plan:
         command += ['--perf-lengths', ','.join(map(str, plan['lengths'])),
                     '--perf-repeats', str(plan['repeats'])]
@@ -227,6 +231,9 @@ def main():
     ap.add_argument('--policy-axis', choices=AXES, default='chunk-order')
     ap.add_argument('--partition', type=int, choices=(0, 1), default=0,
                     help='Partition axis requires chunk-order=0 for both runs')
+    ap.add_argument('--phase-diagnostics', action='store_true',
+                    help='Enable phase/cache snapshots and residency timing; '
+                    'quality or fixed 1K/4K/8K diagnosis only, never acceptance')
     ap.add_argument('--perf-lengths', help='CSV selection; default bounded 45056. '
                     '261887 automatically requests 257 output tokens.')
     ap.add_argument('--perf-repeats', type=int, default=3,
@@ -243,9 +250,13 @@ def main():
     args = ap.parse_args()
     try:
         env = experiment_environment(args.chunk_order, os.environ,
-                                     args.partition, args.policy_axis)
+                                     args.partition, args.policy_axis,
+                                     args.phase_diagnostics)
         plan = selected_performance_plan(args.mode, args.perf_lengths,
                                          args.perf_repeats, args.target_total)
+        if args.phase_diagnostics and plan and (
+                plan['lengths'] != [1024, 4096, 8192] or args.target_total):
+            raise ValueError('phase diagnosis requires ordered 1024,4096,8192')
     except ValueError as error:
         ap.error(str(error))
     if (args.runner_timeout_s <= 0 or any(not math.isfinite(value) or value <= 0
@@ -304,6 +315,10 @@ def main():
         'host_cache_max_bytes': args.host_cache_max_bytes, 'swap_max_bytes': 0,
         'chunk_order': args.chunk_order,
         'policy_axis': args.policy_axis, 'partition': args.partition,
+        'phase_diagnostics': args.phase_diagnostics,
+        'diagnostic_scope': (DIAGNOSTIC_SCOPE if args.phase_diagnostics
+                             else None),
+        'performance_acceptance': False,
         'monitor': {'interval_seconds': args.monitor_interval,
                     'gpu_interval_seconds': args.gpu_interval,
                     'file_cache_mode': args.file_cache_mode,
@@ -349,6 +364,8 @@ def main():
                 'runner_rc': None, 'monitor_rc': None,
                 'failure': 'cold payload gate failed; no service started',
                 'cleanup_failed': False, 'performance_qualification': False,
+                'diagnostic_scope': (DIAGNOSTIC_SCOPE
+                    if args.phase_diagnostics else None),
                 'performance_scope': plan['scope'] if plan else None,
                 'partial_offload_matrix': plan['partial_offload_matrix'] if plan else None,
                 'full_offload_matrix_completed': False,
@@ -424,6 +441,8 @@ def main():
                 'started_t': started, 'ended_t': time.time(),
                 'unit_after_cleanup': props, 'cleanup_failed': cleanup_failed,
                 'performance_qualification': False,
+                'diagnostic_scope': (DIAGNOSTIC_SCOPE
+                    if args.phase_diagnostics else None),
                 'performance_scope': plan['scope'] if plan else None,
                 'partial_performance_matrix': plan['partial'] if plan else None,
                 'partial_offload_matrix': plan['partial_offload_matrix'] if plan else None,

@@ -1314,6 +1314,23 @@ Status MoEResidency::CommitExpert(int expert, int slot, int buf,
   return Status();
 }
 
+MoEResidency::DiagnosticState MoEResidency::CopyDiagnosticState() const {
+  DiagnosticState state;
+  state.slot_experts = slot_expert_;
+  state.slot_ticks = slot_tick_;
+  state.slot_protected = slot_protected_;
+  state.slot_clock = tick_;
+  if (l2_mu_) {
+    const std::lock_guard<std::mutex> lock(*l2_mu_);
+    state.l2_experts = l2_expert_;
+    state.l2_ticks = l2_tick_;
+    state.l2_clock = l2_recency_;
+    state.mirror_experts = mirror_expert_;
+    state.mirror_cursor = mirror_cursor_;
+  }
+  return state;
+}
+
 Status MoEResidency::InitHot(const std::vector<int>& hot_experts,
                              cudaStream_t stream) {
   if (!inited_) return Status::Fail("residency not initialized");

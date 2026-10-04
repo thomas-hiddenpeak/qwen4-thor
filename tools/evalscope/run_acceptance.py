@@ -128,8 +128,21 @@ def request_timing(start, end, before, after):
             'within_client_boundaries': valid}
 
 
+def response_identity(messages):
+    """Use the actual response ID, never client order, to join server evidence."""
+    values = [message.get('id') for message in messages
+              if message.get('choices') or 'id' in message]
+    valid = bool(values) and all(isinstance(value, str) and
+        re.fullmatch(r'[A-Za-z0-9_-]{1,128}', value) for value in values)
+    valid = bool(valid and len(set(values)) == 1)
+    return {'response_id': values[0] if valid else None,
+            'response_id_valid': valid, 'response_ids_observed': values,
+            'response_id_source': 'actual HTTP/SSE response id fields'}
+
+
 def run_case(out, case, inputs, count, minimum, maximum, tokens, streaming,
-             evalscope, model, port, env, server, bounded, capacity, mode):
+             evalscope, model, port, env, server, bounded, capacity, mode,
+             phase_diagnostics=False):
     """Collect all available evidence even when the client returns nonzero."""
     parsed, boundaries, commands = [], [], []
     lines = inputs.read_text().splitlines()
@@ -183,6 +196,7 @@ def run_case(out, case, inputs, count, minimum, maximum, tokens, streaming,
                                   'start_time,completed_time from result order by start_time').fetchall()
         for row in rows:
             messages = pickle.loads(base64.b64decode(row[3]))
+            identity = response_identity(messages)
             choices = [choice for msg in messages for choice in msg.get('choices', [])]
             text = ''.join(c.get('delta', c.get('message', {})).get('content', '') for c in choices)
             finish = [c['finish_reason'] for c in choices if c.get('finish_reason')]
@@ -199,7 +213,8 @@ def run_case(out, case, inputs, count, minimum, maximum, tokens, streaming,
                       'request_stream': wire_request.get('stream'),
                       'requested_max_tokens': wire_request.get('max_tokens'),
                       'requested_capacity': capacity['requested'],
-                      'effective_capacity': capacity['effective'], 'timing': timing}
+                      'effective_capacity': capacity['effective'],
+                      'timing': timing, **identity}
             parsed.append(result)
             (case / f'output-{number - 1}.txt').write_text(text)
             boundaries.append({'request_index': number, 'request_group': label,
@@ -207,13 +222,16 @@ def run_case(out, case, inputs, count, minimum, maximum, tokens, streaming,
                                'http_timing': timing, 'success': row[0],
                                'actual_input': row[1], 'actual_output': row[2],
                                'finish': finish, 'requested_max_tokens': tokens,
-                               'capacity': capacity})
+                               'capacity': capacity, **identity})
         save(case / 'responses.json', parsed)
         save(case / 'request-boundaries.json', boundaries)
         if bounded:
             save(case / 'commands.json', commands)
         if code != 0 or len(databases) != 1 or len(rows) != client_count:
             raise RuntimeError(f'{label}: client/database/request count failed (rc={code}, databases={len(databases)}, rows={len(rows)})')
+        if phase_diagnostics and (not all(r['response_id_valid'] for r in parsed)
+                or len({r['response_id'] for r in parsed}) != len(parsed)):
+            raise RuntimeError(f'{label}: missing, conflicting or reused response id')
         if not all(r['success'] and r['timing']['within_client_boundaries'] and
                    r['requested_max_tokens'] == tokens for r in parsed):
             raise RuntimeError(f'{label}: HTTP/timing/requested output contract failed')
@@ -240,6 +258,9 @@ def run_case(out, case, inputs, count, minimum, maximum, tokens, streaming,
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mode', choices=['quality', 'performance', 'limits'], required=True)
+    parser.add_argument('--phase-diagnostics', action='store_true',
+                        help='Require response IDs for instrumented offload '
+                        'phase diagnosis; results never qualify performance')
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--binary', type=Path, default=ROOT / 'build/q4t')
     parser.add_argument('--model-dir', type=Path, required=True)
@@ -346,11 +367,18 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     event(out, 'runner_start', mode=args.mode)
     if plan is not None:
+        plan['diagnostic_scope'] = ('offload_phase_boundary_v1'
+                                    if args.phase_diagnostics else None)
         save(out / 'performance-plan.json', plan)
         print(f"Performance scope: {plan['scope']}; performance acceptance is not implied", flush=True)
     binary = args.binary.resolve()
     model = args.model_dir.resolve()
     env = os.environ.copy()
+    if args.phase_diagnostics:
+        env['Q4T_OFFLOAD_PHASE_DIAGNOSTICS'] = '1'
+        env['Q4T_RESIDENCY_TIMING'] = '1'
+    elif env.get('Q4T_OFFLOAD_PHASE_DIAGNOSTICS') not in (None, '0'):
+        raise RuntimeError('phase diagnostics environment requires explicit flag')
     removed = {}
     for key in list(env):
         if key.startswith(('Q4T_FP8', 'Q4T_PROFILE', 'Q4T_MTP_TIMING',
@@ -436,6 +464,9 @@ def main():
                         'sha256': hashlib.sha256(args.moe_hot_list.read_bytes()).hexdigest()}
     save(out / 'server-command.json', {'argv': command, 'removed_environment': removed,
                                        'effective_q4t_environment': effective_q4t,
+                                       'phase_diagnostics': args.phase_diagnostics,
+                                       'diagnostic_scope': ('offload_phase_boundary_v1'
+                                           if args.phase_diagnostics else None),
                                        'hot_list': hot_identity,
                                        'isolation': {'systemd_unit': args.systemd_unit,
                                                      'host_cache_max_bytes': args.host_cache_max_bytes,
@@ -471,6 +502,7 @@ def main():
             event(out, 'server_ready', pid=server.pid, capacity=capacity)
             if not capacity['matches_requested']:
                 raise RuntimeError('effective server capacity is missing or differs from requested capacity')
+            observed_response_ids = set()
             for case, inputs, count, minimum, maximum, tokens, streaming in cases:
                 (out / 'memory-phase.txt').write_text(f'requests:{case.name}\n')
                 case.mkdir()
@@ -478,7 +510,13 @@ def main():
                 parsed = run_case(out, case, inputs, count, minimum, maximum,
                                   tokens, streaming, evalscope, model, args.port,
                                   env, server, args.mode == 'performance' and
-                                  args.perf_lengths is not None, capacity, args.mode)
+                                  args.perf_lengths is not None, capacity,
+                                  args.mode, args.phase_diagnostics)
+                if args.phase_diagnostics:
+                    ids = {row['response_id'] for row in parsed}
+                    if observed_response_ids & ids:
+                        raise RuntimeError('response id reused between cases')
+                    observed_response_ids.update(ids)
                 if not all(isinstance(r['actual_input'], int) and
                            isinstance(r['actual_output'], int) and
                            0 < r['actual_input'] + r['actual_output'] <=
@@ -581,6 +619,9 @@ def main():
                                           'full_five_tier_completed': bool(plan and plan['full_five_tier_requested'] and clean),
                                           'full_offload_matrix_completed': bool(plan and plan['full_offload_matrix_requested'] and clean),
                                           'performance_acceptance': False,
+                                          'phase_diagnostics': args.phase_diagnostics,
+                                          'diagnostic_scope': ('offload_phase_boundary_v1'
+                                              if args.phase_diagnostics else None),
                                           'failure': failure, 'cleanup_failure': cleanup_failure})
         if server.returncode != 0:
             raise RuntimeError('server did not exit normally')

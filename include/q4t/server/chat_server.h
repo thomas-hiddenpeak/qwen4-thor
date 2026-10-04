@@ -287,6 +287,7 @@ class ChatServer {
   // Tiered residency observability (max_seq=1 contract: the delta between
   // consecutive request completions is that request's own load activity).
   bool residency_enabled_ = false;
+  bool offload_phase_diagnostics_ = false;
   quant::MoEResidency::Stats residency_stats_prev_{};
   model::ResidencyTimingSnapshot residency_timing_prev_{};
   // Default per-request deadline (ms); see ServerOptions::request_deadline_ms.

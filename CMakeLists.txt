@@ -205,6 +205,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_metrics.cpp
   src/server/chat_scheduler.cpp
   src/server/chat_generation.cpp
+  src/server/offload_diagnostics.cpp
   src/server/http_request.cpp
   src/server/chat_contract.cpp
                              src/server/chat_template.cpp)

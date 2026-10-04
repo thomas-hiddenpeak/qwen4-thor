@@ -7,6 +7,7 @@
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <fstream>
 #include <iterator>
 #include <string>
@@ -84,6 +85,19 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // Validate before loading the tokenizer or allocating model resources.
   const Status validated = ValidateServerOptions(opts);
   if (!validated.ok()) return validated;
+  const char* diagnostics = std::getenv("Q4T_OFFLOAD_PHASE_DIAGNOSTICS");
+  if (diagnostics && std::strcmp(diagnostics, "0") != 0 &&
+      std::strcmp(diagnostics, "1") != 0) {
+    return Status::Fail("Q4T_OFFLOAD_PHASE_DIAGNOSTICS must be 0 or 1");
+  }
+  offload_phase_diagnostics_ =
+      diagnostics && std::strcmp(diagnostics, "1") == 0;
+  if (offload_phase_diagnostics_ &&
+      (opts.max_seq != 1 || !opts.no_mtp || opts.allow_media ||
+       opts.moe_resident_slots <= 0)) {
+    return Status::Fail("offload diagnostics requires single-sequence "
+                        "text, explicit MTP off and residency enabled");
+  }
   const ServerCapabilities capabilities = CapabilitiesFor(opts);
   std::fprintf(stderr,
                "[q4t][capabilities] requested=%s mtp=%d media=%d max_seq=%d\n",
@@ -205,6 +219,9 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // request for a zero-capacity result. --no-budget is an explicit bypass.
   const int eff_max_len = budget_valid_ ? budget_.max_len : opts.max_len;
   const int eff_max_seq = budget_valid_ ? budget_.max_seq : opts.max_seq;
+  if (offload_phase_diagnostics_ && eff_max_seq != 1) {
+    return Status::Fail("offload diagnostics requires effective max_seq=1");
+  }
   if (eff_max_len > 0) cfg.max_len = eff_max_len;
   std::fprintf(stderr,
                "[q4t][capacity] requested_max_len=%d requested_max_seq=%d "
@@ -343,6 +360,12 @@ Status ChatServer::Start(const ServerOptions& opts) {
                "[q4t][capabilities] effective mtp=%d media_allowed=%d "
                "vision_loaded=%d max_seq=%d\n",
                mtp_loaded_, allow_media_, vision_tower_ != nullptr, max_seq_);
+  if (offload_phase_diagnostics_ && mtp_loaded_) {
+    return Status::Fail("offload diagnostics requires actual MTP off");
+  }
+  std::fprintf(stderr, "[q4t][offload_diag_config] enabled=%d "
+                       "schema=q4t.offload_phase.v1\n",
+               offload_phase_diagnostics_);
 
   port_ = opts.port;
   max_tokens_default_ = opts.max_tokens;

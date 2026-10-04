@@ -14,6 +14,9 @@ BASE_ENVIRONMENT = {
 RUN_TOOLS = ('run_budget_experiment.py', 'run_acceptance.py',
              'isolated_service.py', 'monitor_memory.py', 'file_cache.py',
              'resource_metrics.py', 'memory_accounting.py')
+DIAGNOSTIC_SCOPE = 'offload_phase_boundary_v1'
+DIAGNOSTIC_ENVIRONMENT = {'Q4T_OFFLOAD_PHASE_DIAGNOSTICS': '1',
+                          'Q4T_RESIDENCY_TIMING': '1'}
 
 
 def require(condition, message):
@@ -21,21 +24,29 @@ def require(condition, message):
         raise ValueError(message)
 
 
-def policy_environment(chunk_order, partition=0, policy_axis='chunk-order'):
+def policy_environment(chunk_order, partition=0, policy_axis='chunk-order',
+                       phase_diagnostics=False):
     require(policy_axis in AXES, 'unknown policy axis')
     require(type(chunk_order) is int and chunk_order in (0, 1),
             'chunk-order must be zero or one')
     require(type(partition) is int and partition in (0, 1),
             'partition must be zero or one')
+    require(type(phase_diagnostics) is bool, 'diagnostics must be explicit bool')
+    require(not phase_diagnostics or policy_axis == 'partition',
+            'phase diagnostics requires partition axis')
     if policy_axis == 'partition':
         require(chunk_order == 0, 'partition axis requires chunk-order zero')
         return {**BASE_ENVIRONMENT, 'Q4T_MOE_CHUNK_ORDER': '0',
-                'Q4T_MOE_PARTITION': str(partition)}
+                'Q4T_MOE_PARTITION': str(partition),
+                **(DIAGNOSTIC_ENVIRONMENT if phase_diagnostics else {})}
     require(partition == 0, 'chunk-order axis requires partition zero')
     return {**BASE_ENVIRONMENT, 'Q4T_MOE_CHUNK_ORDER': str(chunk_order)}
 
 
 def check_policy_protocol(protocol, state, policy_axis):
+    require(not protocol.get('phase_diagnostics') and
+            not protocol.get('diagnostic_scope'),
+            'instrumented diagnostics cannot qualify performance')
     require(protocol.get('policy_axis', 'chunk-order') == policy_axis,
             'evidence belongs to another policy axis')
     if policy_axis == 'partition':

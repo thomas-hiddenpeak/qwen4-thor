@@ -43,6 +43,7 @@ class RunnerContractTest(unittest.TestCase):
         self.latency = 1.0
         self.quality = False
         self.cleanup_error = False
+        self.response_id_override = None
 
     def tearDown(self):
         self.temp.cleanup()
@@ -101,7 +102,10 @@ class RunnerContractTest(unittest.TestCase):
                 prompt = json.loads(inputs[i])['prompt']
                 if self.quality:
                     length = int(prompt.split('-')[-1])
-                messages = [{'choices': [{'delta': {'content': 'ok'},
+                response_id = (self.response_id_override or
+                    f'chatcmpl-auto-{len(self.clients)}-{i}')
+                messages = [{'id': response_id,
+                             'choices': [{'delta': {'content': 'ok'},
                                            'finish_reason': 'stop' if self.quality else 'length'}]}]
                 request = {'prompt': prompt, 'stream': '--stream' in command, 'max_tokens': tokens}
                 encoded = base64.b64encode(pickle.dumps(messages)).decode()
@@ -155,6 +159,8 @@ class RunnerContractTest(unittest.TestCase):
             self.assertLessEqual(row['client_before']['monotonic_seconds'], row['client_after']['monotonic_seconds'])
             self.assertEqual(row['actual_input'], 45056)
             self.assertEqual(row['actual_output'], 256)
+            self.assertTrue(row['response_id_valid'])
+            self.assertTrue(row['response_id'].startswith('chatcmpl-auto-'))
         events = [json.loads(line) for line in (self.out / 'events.jsonl').read_text().splitlines()]
         self.assertEqual(events[0]['event'], 'runner_start')
         self.assertEqual(events[-1]['event'], 'server_after_shutdown')
@@ -163,6 +169,29 @@ class RunnerContractTest(unittest.TestCase):
         self.invoke('--perf-repeats', '1')
         self.assertTrue(self.read('exit.json')['partial_performance_matrix'])
         self.assertFalse(self.read('exit.json')['full_five_tier_completed'])
+
+    def test_diagnostics_are_explicit_and_preserve_partial_scope(self):
+        self.invoke('--perf-lengths', '1024,4096,8192',
+                    '--phase-diagnostics')
+        status = self.read('exit.json')
+        self.assertTrue(status['phase_diagnostics'])
+        self.assertFalse(status['performance_acceptance'])
+        self.assertTrue(status['partial_performance_matrix'])
+        env = self.read('server-command.json')['effective_q4t_environment']
+        self.assertEqual(env['Q4T_OFFLOAD_PHASE_DIAGNOSTICS'], '1')
+        self.assertEqual(env['Q4T_RESIDENCY_TIMING'], '1')
+
+    def test_diagnostics_reject_reused_response_ids(self):
+        self.response_id_override = 'same-id'
+        with self.assertRaisesRegex(RuntimeError, 'reused response id'):
+            self.invoke('--perf-lengths', '1024', '--phase-diagnostics')
+        self.assertEqual(len(self.clients), 2)
+
+    def test_diagnostics_reject_reuse_between_tiers(self):
+        self.response_id_override = 'same-id'
+        with self.assertRaisesRegex(RuntimeError, 'reused between cases'):
+            self.invoke('--perf-lengths', '1024,4096', '--perf-repeats', '1',
+                        '--phase-diagnostics')
 
     def test_partial_repeat_count_can_use_fixed_deterministic_reference(self):
         reference = self.root / 'reference.json'
@@ -266,6 +295,20 @@ class RunnerContractTest(unittest.TestCase):
 
 
 class EvidenceHelpersTest(unittest.TestCase):
+    def test_response_ids_require_one_real_consistent_value(self):
+        message = {'id': 'chatcmpl-auto-1', 'choices': [{'delta': {}}]}
+        value = runner.response_identity([message, message, {'usage': {}}])
+        self.assertTrue(value['response_id_valid'])
+        self.assertEqual(value['response_id'], 'chatcmpl-auto-1')
+        for messages in ([], [{'choices': [{}]}],
+                         [message, {'id': 'other'}],
+                         [{'id': 123, 'choices': [{}]}],
+                         [{'id': 'bad id', 'choices': [{}]}]):
+            with self.subTest(messages=messages):
+                value = runner.response_identity(messages)
+                self.assertFalse(value['response_id_valid'])
+                self.assertIsNone(value['response_id'])
+
     def test_capacity_unknown_duplicate_or_reduced_is_not_accepted(self):
         for text in ['', '[q4t][budget]   => max_len=1024 max_seq=1',
                      '[q4t][budget]   => max_len=4096 max_seq=1\n' * 2]:

@@ -317,6 +317,20 @@ class MoEResidency {
   int ResidentCount() const { return resident_count_; }
   size_t DeviceBytes() const { return layout_.TotalBytes(); }
   const Stats& GetStats() const { return stats_; }
+  // Host metadata only. Caller must exclude forwards and have drained the
+  // model stream. Lazy in-flight flags are intentionally not interpreted.
+  struct DiagnosticState {
+    std::vector<int> slot_experts;
+    std::vector<uint64_t> slot_ticks;
+    std::vector<uint8_t> slot_protected;
+    std::vector<int> l2_experts;
+    std::vector<uint64_t> l2_ticks;
+    std::vector<int> mirror_experts;
+    uint64_t slot_clock = 0;
+    uint64_t l2_clock = 0;
+    int mirror_cursor = 0;
+  };
+  DiagnosticState CopyDiagnosticState() const;
   bool TimingEnabled() const {
     return timing_->enabled.load(std::memory_order_relaxed);
   }

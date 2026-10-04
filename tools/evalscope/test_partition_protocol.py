@@ -55,6 +55,21 @@ def runtime_log(state, extra=''):
 
 
 class PolicyContracts(unittest.TestCase):
+    def test_phase_diagnostics_are_explicit_and_not_performance_evidence(self):
+        env = experiment_environment(0, {'PATH': '/bin'}, 1, 'partition', True)
+        self.assertEqual(env['Q4T_OFFLOAD_PHASE_DIAGNOSTICS'], '1')
+        self.assertEqual(env['Q4T_RESIDENCY_TIMING'], '1')
+        self.assertNotIn('Q4T_OFFLOAD_PHASE_DIAGNOSTICS',
+                        experiment_environment(0, env, 1, 'partition'))
+        protocol = {'policy_axis': 'partition', 'partition': 1,
+                    'chunk_order': 0, 'effective_environment': env,
+                    'phase_diagnostics': True,
+                    'diagnostic_scope': policy.DIAGNOSTIC_SCOPE}
+        with self.assertRaisesRegex(ValueError, 'cannot qualify performance'):
+            policy.check_policy_protocol(protocol, 1, 'partition')
+        with self.assertRaises(ValueError):
+            policy.policy_environment(0, 0, 'chunk-order', True)
+
     def test_partition_scrubs_inherited_axis_and_precision_flags(self):
         env = experiment_environment(0, {'PATH': '/bin',
             'Q4T_MOE_CHUNK_ORDER': '1', 'Q4T_MOE_PARTITION': '0',

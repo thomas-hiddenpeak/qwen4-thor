@@ -12,6 +12,7 @@
 #include <vector>
 #include <cuda_runtime.h>
 #include "q4t/server/chat_contract.h"
+#include "q4t/server/offload_diagnostics.h"
 #include "q4t/server/request_json.h"
 
 namespace q4t::server {
@@ -205,7 +206,30 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                                 // share the legacy d_g_/d_g_next_ double buffer)
   trace::RequestOutcome trace_outcome = trace::RequestOutcome::kFailed;
   uint64_t trace_output_tokens = 0;
+  std::unique_ptr<OffloadDiagnostics> offload_diagnostics;
+  if (offload_phase_diagnostics_)
+    offload_diagnostics = std::make_unique<OffloadDiagnostics>(request_id);
+  uint64_t diagnostic_decode_forwards = 0;
+  bool diagnostic_inference_ended = false;
+  const auto capture_diagnostics = [&](const char* event, bool full_cache) {
+    if (!offload_diagnostics) return;
+    const std::lock_guard<std::mutex> lock(model_mu_);
+    offload_diagnostics->Capture(
+        model_.Get(), event, diagnostic_decode_forwards, full_cache,
+        gpu_healthy_.load(std::memory_order_relaxed));
+  };
   auto cleanup = [&]() {
+    if (offload_diagnostics) {
+      if (!diagnostic_inference_ended)
+        capture_diagnostics("inference_end", true);
+      const char* outcome = "failed";
+      if (control->Cancelled()) outcome = "cancelled";
+      else if (trace_outcome == trace::RequestOutcome::kSuccess)
+        outcome = "success";
+      offload_diagnostics->Emit(outcome, trace_output_tokens,
+                               diagnostic_decode_forwards);
+      offload_diagnostics.reset();
+    }
     if (router_trace_) router_trace_->EndRequest(
         control->Cancelled() ? trace::RequestOutcome::kCancelled : trace_outcome,
         trace_output_tokens);
@@ -288,6 +312,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     vfeats.device = d_vfeats;
   }
   const int T = static_cast<int>(ids.size());
+  if (offload_diagnostics) offload_diagnostics->SetInputTokens(T);
   if (T >= max_len_) {
     SendError(fd, 400,
               "prompt too long for context: " + std::to_string(T) +
@@ -409,6 +434,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   const bool scheduled_chunk_prefill =
       scheduler_active_ && !mtp_loaded_ && chunked && vptr == nullptr;
   bool prefill_cancelled = false;
+  capture_diagnostics("prefill_begin", true);
   if (scheduled_chunk_prefill) {
     ChunkPrefillReq pr;
     pr.fd = fd;
@@ -524,6 +550,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     SendError(fd, 500, "prefill failed: " + s.message());
     return;
   }
+
+  // All prefill paths have completed their existing GPU readback boundary.
+  // max_seq=1 still owns the sole slot; no later request can mutate caches.
+  capture_diagnostics("prefill_end_decode_begin", true);
 
   // 3. Decode loop (greedy).
   const std::string id = request_id;
@@ -827,6 +857,14 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         }
         next_token = argmax(h_logits.data());
       }
+      if (offload_diagnostics) {
+        ++diagnostic_decode_forwards;
+        if (diagnostic_decode_forwards == 1 ||
+            diagnostic_decode_forwards == 8 ||
+            diagnostic_decode_forwards == 32) {
+          capture_diagnostics("decode_prefix", false);
+        }
+      }
     }
     if (use_sched) {
       {
@@ -840,6 +878,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     }
   }
   trace_output_tokens = generated.size();
+  capture_diagnostics("inference_end", true);
+  diagnostic_inference_ended = true;
   if (generation_failed) seq.Fail();
   model::ModelEndSequence(&seq);
   LogMemorySnapshot("request_end", id);
