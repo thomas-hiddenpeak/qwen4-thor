@@ -5,6 +5,15 @@
 
 ## 当前结论
 
+## Offload诊断Goal启动（2026-10-04 14:22）
+
+范围见[短档解码与整体RAM诊断](OFFLOAD_DIAGNOSTICS_2026-10-04.md)。
+入口f15190f，隔离分支codex/offload-diagnostics-20261004；原工作区
+七处修改独立保留。先补真实请求阶段/形状/cache末态与ID关联，干净
+构建后首测固定11题HTTP，再做合同和固定18请求短档off/on诊断。
+整体RAM仅在覆盖与去重成立时判54GB；缺口继续明确记录。上一轮
+NO_GO保留，候选默认off，GEMM/精度/MTP/Phase D状态不变。
+
 
 ## Offload分区运行时：完整性能NO_GO（2026-10-04）
 
