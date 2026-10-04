@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "status": "DRAFT_NOT_ACTIVE",
+  "reason": "Goal explicitly requests five tiers plus target capacity. Original early speed-failure stop would omit that scope; correct prospectively before any candidate history request, without rescuing a failed candidate.",
+  "change": "After both history arms pass all output/path/capacity/identity/cleanup contracts, run the original six-tier off/on commands regardless of history speed decision. History speed failure permanently vetoes overall GO. All other failures retain stop-and-investigate.",
+  "original_execution_plan_sha256": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+  "original_phase_plan_sha256": "7ca311700e9ede574ffec89deaa746d8dc0fcd3defdce66496aff09b6e266479",
+  "original_files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/plan.json": "7ca311700e9ede574ffec89deaa746d8dc0fcd3defdce66496aff09b6e266479",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/execution-plan.json": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/run_stage.py": "9a344d39139f4edba507f7d7d62774ff7276f20cec4391525804bd3c04bf21f4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/continue_inheritance.py": "1e3cd916cc7a068d1f017212a287a811a00ff351a410f0b5b839dae4c0b02b84",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/compare_groups.py": "c9e8a72a262c41994dd16610db4f893fbb89963e970f97faf6ff3bd4b873bd45"
+  },
+  "samples_thresholds_resources_unchanged": true,
+  "history_failure_permanently_vetoes_overall_GO": true,
+  "overall_GO_requires": [
+    "history speed gates PASS",
+    "six-tier speed gates PASS",
+    "quality/numerical/identity/capacity/resource-setting gates PASS",
+    "conditional canonical lifecycle9 and business6 PASS"
+  ],
+  "not_a_claim": "Not an original preregistration; this is a prospective protocol amendment during baseline collection. Original plan and decisions remain intact.",
+  "blindness_limit": "The root has examined progress counts and execution-context markers, but has not inspected or compared in-flight speed values. This is an agent attestation backed by tool-output history, not a machine-wide proof of unobserved data.",
+  "matrix_lengths": [
+    1024,
+    4096,
+    8192,
+    45056,
+    204800,
+    261887
+  ],
+  "repeats": 3,
+  "group_order": [
+    "matrix-off",
+    "matrix-on"
+  ],
+  "controller_sha256": "fef00e0fa4689b857ac46af7e3421cc34ed9be41f2f10de6f28f17c6c8f6d074",
+  "proposed_at": 1791112622.165035,
+  "prospective_boundary": "Before the first inheritance-on candidate performance request; fixed11 candidate quality HTTP has already completed and is not represented as unrun.",
+  "old_decision_fields_preserved": true,
+  "later_model_requests_allowed_scope": "Original inheritance/matrix local route fields remain immutable historical fields. This addendum authorizes only original six-tier coverage; business/lifecycle/next-candidate admission requires a separate overall history AND six-tier decision.",
+  "whole_physical_RAM_54GB": "INDETERMINATE; resource-setting PASS does not assert a whole physical RAM bound."
+}

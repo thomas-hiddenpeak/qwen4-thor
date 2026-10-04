@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "prepared_t": 1791111452.0487409,
+  "prepared_only": true,
+  "executed": false,
+  "raw_resources_read": false,
+  "tests_executed": 0,
+  "script_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/audit_resources.py",
+  "script_sha256": "b7b94dcd950389b9e2c0c985630ad702c8040acb05032a23eaf6c17e2ad42399",
+  "immutable_core_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/audit_raw_resources_frozen.py",
+  "immutable_core_sha256": "035f1f840d00350a7b6db62e1b8ef7f62a5fda02406dae91395d291a67652da4",
+  "accepted_group_shapes": {
+    "quality-on": {
+      "requests": 11,
+      "client_envelopes": 1
+    },
+    "inheritance-off": {
+      "requests": 21,
+      "client_envelopes": 21
+    },
+    "inheritance-on": {
+      "requests": 21,
+      "client_envelopes": 21
+    },
+    "matrix-off": {
+      "requests": 18,
+      "client_envelopes": 18
+    },
+    "matrix-on": {
+      "requests": 18,
+      "client_envelopes": 18
+    }
+  },
+  "terminal_rules": [
+    "explicitcompletedgroupsonly",
+    "allstartedgroupsmusthaveterminalcleanupbeforeanyrawread",
+    "fixedqualitypassrequired",
+    "validspeedNO_GOpermitsresourceinspection",
+    "coldfailurewithzeroservicerecordedbutcannotbeselectedascompletedgroup"
+  ],
+  "scope": [
+    "newmetadata/currentaxis/caseenumerationadapter",
+    "exactoldcounter/window/CSVsummarypurefunctionsreused",
+    "qualityonlywholebatchcontrollerdelta",
+    "historyroundandpositionretained",
+    "memory.currentpeakandmemory.peakdistinct",
+    "OOM/swapunknownandobservedpreserved",
+    "NVIDIApeakindependentofRSS/cgroup/cache",
+    "PIDallfilestorage/cgroup/partitiondeviceIOseparate",
+    "54GBphysicalunionstillINDETERMINATE"
+  ],
+  "invocation": [
+    "python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/audit_resources.py",
+    "--groups",
+    "quality-on,inheritance-off,inheritance-on",
+    "--plan-sha256",
+    "<frozen execution-plan SHA>",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/raw-resource-audit.json"
+  ],
+  "instruction": "Wait for root release and exact selected completed groups; no execution during active HTTP."
+}

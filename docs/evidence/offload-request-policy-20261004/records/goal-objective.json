@@ -1,0 +1,13 @@
+{
+  "goal": {
+    "threadId": "01a0fbc6-91d2-75c3-9501-692883eac85a",
+    "objective": "推进 Qwen4-Thor 真实权重 offload 的 prefill 优化：以已提交诊断分支 f3e3d21 为入口，冻结并实现一个默认关闭、按完整请求长度选择分区策略的候选（短请求保持旧路径，长请求保留 min_new 分区收益），保护原工作区七项未提交改动、只读模型/reference、固定现有缓存预算、MTP 关闭及数值/GEMM 合同。在本机 Thor 上以 tools/evalscope HTTP 为首次测试，依次完成质量、受影响的数值/边界验证与五档加目标容量 E2E，独立报告 prefill 与 decode、内存及证据限制；不得通过追加有利样本放宽门槛。交付可回退的代码与证据、阶段提交并推送工作分支，以及明确的 GO 或 NO_GO 和后续瓶颈判断。只有本候选通过完整验收后，才冻结第二阶段进一步降低 prefill 权重搬运/写回开销的单一候选；不把探索性的 10–20% 提升当成已验证承诺。",
+    "status": "active",
+    "tokensUsed": 817134,
+    "timeUsedSeconds": 2691,
+    "createdAt": 1791109957,
+    "updatedAt": 1791112649
+  },
+  "remainingTokens": null,
+  "completionBudgetReport": null
+}

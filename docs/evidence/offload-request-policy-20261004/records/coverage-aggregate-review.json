@@ -1,0 +1,43 @@
+{
+  "schema": "q4t.request_policy_coverage_aggregate_review.v1",
+  "reviewer": "/root/request_policy_runtime",
+  "reviewed_t": 1791112920.7738142,
+  "verdict": "NO_STATIC_BLOCKER_SUBJECT_TO_PROSPECTIVE_FREEZE",
+  "scope": "Static only; no controller/tests/model execution; no speed values read.",
+  "coverage_controller_sha256": "fef00e0fa4689b857ac46af7e3421cc34ed9be41f2f10de6f28f17c6c8f6d074",
+  "aggregate_controller_sha256": "9fd70bcbb4ec355a6810a841cf68cce38676208c4c5a7c8d240a05c85a3fa38d",
+  "draft_sha256": "eac173d8e3c404c080c52f43e37896c5af4e11dec5c991e383ea838df6e7c392",
+  "coverage_controller_changed_since_previous_review": false,
+  "inheritance_on_controller_start_exists_at_review": false,
+  "correct_behavior": [
+    "Aggregate independently recomputes history position and six-tier speed gates from completed group audits and requires equality with unchanged local decisions.",
+    "Business/lifecycle admission is historyPASS AND six-tierPASS after all quality/numerical/group identity/path/capacity/cleanup prerequisites.",
+    "History speed failure remains a permanent overall veto, including when all six-tier speed gates pass.",
+    "Next optimization admission remains false in all aggregate outcomes; separate final delivery acceptance is required.",
+    "Original local later_model_requests_allowed fields remain unchanged and are explicitly excluded as aggregate authorization.",
+    "PhysicalRAM54GB remains INDETERMINATE."
+  ],
+  "minimal_aggregate_fixes": [
+    "Require own aggregate SHA in final amendment source_sha256 plus old phase-plan, coverage-controller and original-file identity.",
+    "Bind all seven prerequisite decision files and their raw/log source hashes into aggregate evidence, including quality/host/numerical.",
+    "Require boolean local verdicts and consistent permanent-veto, failure-present and no-follow-on-authorization fields in coverage stage records.",
+    "Emit permanent-veto=true separately from observed history_failure_present in final performance decision."
+  ],
+  "required_final_amendment_bindings": [
+    "run_coverage_stage.py",
+    "aggregate_performance.py",
+    "coverage-amendment-draft.json",
+    "coverage-controller-review.json",
+    "coverage-aggregate-review.json",
+    "completed blindness/process snapshots; no mutable live logs"
+  ],
+  "prospective_scope": "Must freeze before inheritance-on candidate performance begins. Candidate fixed11 quality was already completed; no claim that all candidate requests are unrun.",
+  "performance_acceptance": false,
+  "goal_complete": false,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/run_coverage_stage.py": "fef00e0fa4689b857ac46af7e3421cc34ed9be41f2f10de6f28f17c6c8f6d074",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/aggregate_performance.py": "9fd70bcbb4ec355a6810a841cf68cce38676208c4c5a7c8d240a05c85a3fa38d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-amendment-draft.json": "eac173d8e3c404c080c52f43e37896c5af4e11dec5c991e383ea838df6e7c392",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-controller-review.json": "7cb54952b5d1a0a3c15ccd50dc6878f1b31a5dfe29bc70e8ac839c3785dcbe4b"
+  }
+}

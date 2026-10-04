@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "reviewed_t": 1791111103.9639456,
+  "scope": "Static review only; no tests, model execution, completed/live performance data, or raw resources read.",
+  "sources": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/compare_groups.py": "c9e8a72a262c41994dd16610db4f893fbb89963e970f97faf6ff3bd4b873bd45",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/phase_common.py": "adbd4b9aac6e471e4d80dfc987c96698f4202fe3c0c3ac08faaabe78411d5505",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/plan.json": "7ca311700e9ede574ffec89deaa746d8dc0fcd3defdce66496aff09b6e266479",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/execution-plan.json": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d"
+  },
+  "status": "PASS_STATIC_GATES_AND_PREREQUISITE_REVIEW",
+  "blocking_findings": [],
+  "verified": [
+    "inheritance invokes the frozen seven-position/three-round sequence_metrics helper; duplicate8192positions remain distinct",
+    "matrix selects exactly3 records for each frozen six tiers and uses firstTTFT<=, later2maxTTFT<=, decodeMin>= with no tolerance",
+    "both terminal group decisions must have passed contracts and match binary, source commit, execution plan and all recorded source hashes",
+    "valid speedNO_GO emits exit3, decisionNO_GO and later_model_requests_allowed=false; never appends repeats",
+    "performance_acceptance remainsfalse and physicalRAM54GB remainsINDETERMINATE",
+    "all original off/on group source hashes and decisionfile identities are retained; comparator source hash is attached for subsequent prerequisite checking"
+  ],
+  "nonblocking_limits": [
+    "Three observations per position/tier are observed-range screening, not statistical noninferiority or tail proof.",
+    "Comparator was added after initial execution-plan freeze; formulas match already frozen plan. Its own SHA is saved in comparison decision; this review binds current pre-history implementation without changing prior freeze or thresholds.",
+    "Off/on ordering check compares terminal end times; strict one-shot stage controller and prerequisite links establish sequential launch. This is not a standalone arbitrary-evidence comparator."
+  ],
+  "changes_made": false,
+  "tests_executed": 0,
+  "inflight_performance_inspected": false
+}

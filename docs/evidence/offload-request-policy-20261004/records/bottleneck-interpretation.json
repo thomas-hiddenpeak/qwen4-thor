@@ -1,0 +1,644 @@
+{
+  "schema": 1,
+  "created_t": 1791117793.0767353,
+  "author": "request_policy_runtime",
+  "scope": "Bounded interpretation of completed history and completed prior diagnostics plus frozen runtime source. No new acceptance audit or experiment.",
+  "reused_history_review_sha256": "8b512489ae20b3212da8507bcd2a8f2093efcbbffd426776dffd7c4ca945ad62",
+  "current_runtime_source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+  "current_runtime_binary_sha256": "34eb4cf5b53dfcc5b0783120fcdec438fd321dbd4c981f52eee581c96f7fb93a",
+  "current_decision": "NO_GO_PERMANENT_HISTORY_VETO",
+  "execution_authorized": false,
+  "second_optimization_frozen": false,
+  "second_optimization_implemented": false,
+  "confirmed_observations": [
+    {
+      "claim": "当前固定序列的三个长请求位置均观察到平均 TTFT 降低：16385 为 72.6818→52.8810 秒（−27.2432%），8193 为 38.3639→27.6816 秒（−27.8447%），45056 为 219.9606→157.5291 秒（−28.3830%）。这些是客户端首 token 延迟的样本内收益，不是独立 prefill kernel 提速或总体因果效应。",
+      "evidence": [
+        "history"
+      ],
+      "epistemic_status": "observed_in_completed_frozen_samples"
+    },
+    {
+      "claim": "短请求实际选择了 legacy，但四个短位置仍未通过：p2=8192、p4=1024、p6=4096、p7=8192。平均 TTFT 分别增加 1.4099%、0.7077%、0.3589%、0.4715%；最低 decode 分别降低 1.2308%、0.7735%、1.2031%、0.4861%。p3=8193 仅最低 decode 低 0.06548% 而未过。p1/p5 全门槛通过，不能抵消其他位置。",
+      "evidence": [
+        "history"
+      ],
+      "epistemic_status": "observed_and_frozen_gate_result"
+    },
+    {
+      "claim": "当前 on 臂 45 条层0 prefill 记录中有12个短 legacy 请求、27个普通候选块、6个 singleton 尾块；逐层直接观察到1296条候选 prefill、288条 singleton prefill、257040条真正 decode 记录，未见回退。off 臂同为45条层0记录，分区逐层日志关闭；off 的0条 decode 日志不代表0计算，也不是逐层观察到 decode 正确。",
+      "evidence": [
+        "history"
+      ],
+      "epistemic_status": "previous_independent_path_audit_reused"
+    }
+  ],
+  "completed_history_positions": [
+    {
+      "position": 1,
+      "input_tokens": 16385,
+      "mean_ttft_seconds": {
+        "off": 72.68180054899615,
+        "on": 52.88096357470689,
+        "on_minus_off": -19.80083697428926,
+        "percent_change": -27.243184435065217
+      },
+      "minimum_decode_tokens_per_second": {
+        "off": 6.616601433490465,
+        "on": 6.717992422429824,
+        "on_minus_off": 0.10139098893935916,
+        "percent_change": 1.5323726229928392
+      },
+      "failed_gates": []
+    },
+    {
+      "position": 2,
+      "input_tokens": 8192,
+      "mean_ttft_seconds": {
+        "off": 38.17988227160337,
+        "on": 38.71817845874466,
+        "on_minus_off": 0.5382961871412917,
+        "percent_change": 1.4098948323411964
+      },
+      "minimum_decode_tokens_per_second": {
+        "off": 6.286145965140902,
+        "on": 6.208774295053206,
+        "on_minus_off": -0.07737167008769585,
+        "percent_change": -1.2308284045065343
+      },
+      "failed_gates": [
+        "first_of_position_ttft",
+        "later_ttft",
+        "decode"
+      ]
+    },
+    {
+      "position": 3,
+      "input_tokens": 8193,
+      "mean_ttft_seconds": {
+        "off": 38.36394881658877,
+        "on": 27.681619967722025,
+        "on_minus_off": -10.682328848866742,
+        "percent_change": -27.844706236933693
+      },
+      "minimum_decode_tokens_per_second": {
+        "off": 6.949628904295337,
+        "on": 6.945078213842147,
+        "on_minus_off": -0.004550690453189787,
+        "percent_change": -0.06548105684286432
+      },
+      "failed_gates": [
+        "decode"
+      ]
+    },
+    {
+      "position": 4,
+      "input_tokens": 1024,
+      "mean_ttft_seconds": {
+        "off": 10.562605686330548,
+        "on": 10.63735671993345,
+        "on_minus_off": 0.0747510336029027,
+        "percent_change": 0.7076950122226089
+      },
+      "minimum_decode_tokens_per_second": {
+        "off": 7.014804738926467,
+        "on": 6.960544366262966,
+        "on_minus_off": -0.054260372663501144,
+        "percent_change": -0.7735122313868525
+      },
+      "failed_gates": [
+        "first_of_position_ttft",
+        "later_ttft",
+        "decode"
+      ]
+    },
+    {
+      "position": 5,
+      "input_tokens": 45056,
+      "mean_ttft_seconds": {
+        "off": 219.9605825112667,
+        "on": 157.52913580136374,
+        "on_minus_off": -62.43144670990296,
+        "percent_change": -28.383015719057358
+      },
+      "minimum_decode_tokens_per_second": {
+        "off": 7.1249318141077795,
+        "on": 7.2204848713867715,
+        "on_minus_off": 0.09555305727899199,
+        "percent_change": 1.3411083750975994
+      },
+      "failed_gates": []
+    },
+    {
+      "position": 6,
+      "input_tokens": 4096,
+      "mean_ttft_seconds": {
+        "off": 26.107347373384982,
+        "on": 26.201056606291484,
+        "on_minus_off": 0.09370923290650168,
+        "percent_change": 0.3589381623735344
+      },
+      "minimum_decode_tokens_per_second": {
+        "off": 6.487530055441564,
+        "on": 6.4094760636326,
+        "on_minus_off": -0.07805399180896355,
+        "percent_change": -1.2031388084821848
+      },
+      "failed_gates": [
+        "first_of_position_ttft",
+        "decode"
+      ]
+    },
+    {
+      "position": 7,
+      "input_tokens": 8192,
+      "mean_ttft_seconds": {
+        "off": 38.257633394716926,
+        "on": 38.43802685461318,
+        "on_minus_off": 0.18039345989625133,
+        "percent_change": 0.4715227887597484
+      },
+      "minimum_decode_tokens_per_second": {
+        "off": 6.270757812145451,
+        "on": 6.240273366675784,
+        "on_minus_off": -0.030484445469666888,
+        "percent_change": -0.48613654653706373
+      },
+      "failed_gates": [
+        "first_of_position_ttft",
+        "later_ttft",
+        "decode"
+      ]
+    }
+  ],
+  "cache_inheritance": {
+    "code_fact": "短 legacy 只改变当前 prefill 分区器选择。ModelBeginSequence 调 ResetAllLayers，DecoderLayer::ResetState 仅重置序列的 KV/indexer、SSM/conv/PLE 状态；MoEResidency 是模型层成员，后续 MoEForward 仍取同一对象。ModelEndSequence 也只结束序列 bookkeeping。没有按 request policy 重建 GPU residency、L2 或 mirror。",
+    "consequence": "同一服务中的短请求会承接先前长请求及其 decode 留下的专家 residency/L2/mirror 历史；OS 页缓存也未在请求之间清理。legacy 算法选择不等于两臂的请求入口缓存状态相同，更不等于全 legacy 运行的反事实末态。",
+    "current_evidence_limit": "当前正式 history 关闭阶段诊断，证明了策略选择和执行序列，未保存足以量化当前跨请求入口缓存/recency 差异的快照。缓存承接是代码与协议事实；它导致本次慢多少仍未知。",
+    "prior_diagnostic_context": "上一已完成诊断发现九对 prefill 末态在48层均不同，但 on 前1/8个真正 decode 步的 GPU 补载和 PID 读取九对全部更少。初始 L2 槽序/recency 也不完全相同，decode route 需求未穷尽控制，不能把末态不同直接判成根因或认为恢复前几个热专家即可解决。",
+    "evidence": [
+      "selector",
+      "model_lifetime_and_decode",
+      "persistent_residency",
+      "sequence_reset",
+      "frozen_sequence",
+      "completed_diagnostic_report"
+    ]
+  },
+  "logging_asymmetry": {
+    "code_chain": "MoERequestPartition 默认 context 的 PartitionMode 返回 global_mode。ModelDecodeStep / ModelDecodeBatchMulti 的 RunLayers 调用省略 request context；plain scheduler 同样只提交 decode 输入。on 要求全局 Q4T_MOE_PARTITION=1，因此真正 decode 的 T=1 落在 reason=decode，并在 moe.cu:664–676 每层 fprintf；off 全局0不输出这些 partition 行。T=1不运行候选分区 planner，日志激活不能称为decode算法被候选重新分区。",
+    "symmetric_scope": "新增层0请求记录在两臂均45条；这只说明新增层0条数对称。旧 decode partition 日志和其他按分块打印的旧 diag 行并非总开销对称。",
+    "observed_on_decode_records": 257040,
+    "observed_off_decode_partition_records": 0,
+    "causal_status": "存在日志输出/格式化/stdio锁/写入开销差异的代码与记录证据，但没有该项耗时或同策略匹配日志的反事实，不能认定它解释全部或任何特定百分比的回退，也不能事后从测量结果扣除估算开销。",
+    "evidence": [
+      "selector",
+      "model_lifetime_and_decode",
+      "scheduler_decode",
+      "partition_and_pipeline",
+      "history"
+    ]
+  },
+  "GPU_reload_vs_storage": {
+    "distinctions": [
+      "loads/load_bytes 在专家提交到 GPU 后递增；L2 命中或 mirror 命中仍可产生 GPU补载，但不需要checkpoint读取。它们是专家 payload 软件计数，不是已测得的实际 H2D 链路或SSD字节。",
+      "nvme_read_bytes 按软件请求的 checkpoint range 长度累加。WeightLoader 最终走 O_RDONLY 文件的 pread，可能由 OS 页缓存服务；软件字段名称并不把它变成 SSD 物理读计数。",
+      "mirror writeback 是 stream-ordered GPU→CPU pinned RAM 的 D2H 副本，不是 SSD 写入。减少它可能减少搬运/排序约束，但不能把字节数直接变成闪存写放大减少。",
+      "PID read_bytes 是进程全部文件的存储读取计费；分区/设备含背景 I/O；cgroup I/O 旧证据曾低计并平台。三者口径与时窗不同，不能相加或互相替代专家独占SSD读取。"
+    ],
+    "completed_counterexample": {
+      "experiment": "offload-partition-runtime-20261003, already completed old full-range policy",
+      "input_204800": {
+        "GPU_loads_later_two_change_percent": -49.812092052271076,
+        "PID_storage_read_three_trial_mean_change_percent": 3.285995043674661
+      },
+      "input_261887": {
+        "GPU_loads_later_two_change_percent": -49.739852122463844,
+        "PID_storage_read_three_trial_mean_change_percent": 3.542841335011482
+      },
+      "scope_warning": "GPU列用后两次，PID列用三次；只分别比较各自off/on，不构造跨口径比例。这是旧实验的反例，不能当本轮history或在途matrix的I/O结论。"
+    },
+    "completed_true_phase_counterexample": "上一诊断4K真正decode GPU loads均值约−0.3405%，PID读取却+4.4461%；1K真正decode PID均值+12.4022%，但最初1/8步读取均减少。读取局部性、缓存命中、回收/预读、路由需求或时序仍需分别检验。",
+    "evidence": [
+      "residency_counters_and_workers",
+      "read_bridge",
+      "buffered_read",
+      "completed_old_partition_report",
+      "completed_old_partition_summary",
+      "completed_diagnostic_summary",
+      "completed_diagnostic_report"
+    ]
+  },
+  "host_time_is_not_removable_wall_time": {
+    "code_fact": "pread/swizzle计时嵌套于stage计时；各worker并发执行，LoadPhase1在多worker barrier后累计host elapsed。专家完成staging后提交异步H2D/D2H，prefill外层又把下一子块LoadPhase1与当前GPU GEMM重叠。相同等待/工作可能被多个计数覆盖，host提交结束也不代表异步GPU搬运已完成。",
+    "interpretation": "累计stage+pread+swizzle+phase1既不是互斥墙钟分解，也不能直接相加为可消除的prefill时间上界。即便只取phase1，它也可能被GPU计算隐藏，并包含不可删除的权重准备/依赖等待；另一方面部分GPU排队和拷贝完成时间未由这些host计数独占计量。需请求阶段内同一时间轴的依赖关系和未被重叠隐藏的等待，才能估计某项消除后的可实现收益。",
+    "scope_limit": "旧诊断只支持host读取/staging参与瓶颈的方向性解释，不能定量给出剩余prefill提升百分比。当前history没有开启这些计时，不能把旧短档插桩累计值外推到当前长请求。",
+    "no_additional_10_to_20_percent_guarantee": true,
+    "evidence": [
+      "residency_counters_and_workers",
+      "partition_and_pipeline",
+      "completed_diagnostic_timing_rule",
+      "completed_diagnostic_report"
+    ]
+  },
+  "unresolved_causes": [
+    {
+      "candidate_cause": "跨请求GPU/L2/mirror及OS页缓存历史改变",
+      "status": "code-supported mechanism, current causal contribution unresolved"
+    },
+    {
+      "candidate_cause": "on独有真正decode逐层日志开销及按分块变化的旧日志量",
+      "status": "asymmetry observed, cost and contribution unmeasured"
+    },
+    {
+      "candidate_cause": "route需求/中间值差异、预读/页回收、文件局部性、调度和off→on时间漂移",
+      "status": "not separated by fixed-order three-sample experiment; no attribution"
+    },
+    {
+      "candidate_cause": "单独的D2H镜像写回或H2D搬运占据多少prefill关键路径",
+      "status": "possible measured mechanism in source, no current exclusive time budget or removable-wall bound"
+    }
+  ],
+  "why_means_cannot_authorize_GO": {
+    "rule": "原定每个位置都要通过首轮TTFT、后两轮最大TTFT和三轮最低decode。均值只是描述列，不是接受门槛；不同位置不能合并，更不能用长请求均值收益抵消短请求失败。",
+    "small_difference": "8193的−0.06548%最低decode差异不支持统计显著退化声明，但它仍触发已冻结工程门槛。不能看完数据后改容差、追加有利样本或以总体均值覆盖。",
+    "coverage": "有效history NO_GO永久否决本候选整体GO。六档继续仅完成既定覆盖，D和第二候选准入均关闭。",
+    "evidence": [
+      "history",
+      "frozen_sequence",
+      "coverage_veto"
+    ]
+  },
+  "prioritized_future_causal_research": [
+    {
+      "priority": 1,
+      "question": "先隔离测量路径：相同策略/负载/缓存预算下，真正decode日志的匹配或有界开关是否解释观察到的速度差？",
+      "proposal": "作为单独预注册诊断，先静态定义所有既有日志及证据采集的成本边界，再只改变日志这一因素；保留请求身份、输出和路径可审计性，提前固定样本/次序/退出规则。旧正式结果保留，不追溯扣减日志时间。",
+      "why_first": "日志不对称已经直接证实，先分离它可避免把观测开销误判为缓存或算法问题。",
+      "acceptance_limit": "仅因果研究；不是第二性能优化已冻结或已获准执行。"
+    },
+    {
+      "priority": 2,
+      "question": "在匹配的观测条件下，长→短入口缓存状态与decode路由需求分别影响多少？",
+      "proposal": "另冻少量固定前驱链和共同短目标请求，记录请求入口/prefill结束/真正decode前缀的GPU/L2/mirror成员与recency，并对齐真实route需求和读量窗口；控制或平衡前驱、组顺序和初始状态。可优先分析已保存的trace；不得把host ID快照当payload恢复，不扩大缓存预算。",
+      "why_second": "legacy bypass保留跨请求历史；已有诊断同时显示前1/8步改善、后续读取增加，单看末态或少数热专家不够。",
+      "acceptance_limit": "缓存与route采样会有开销，研究结果仍需区别插桩与正式性能；不得用追加样本补救本次NO_GO。"
+    },
+    {
+      "priority": 3,
+      "question": "还有多少长请求时间真正等待权重读取、H2D或mirror D2H，多少已被GPU计算隐藏？",
+      "proposal": "在前两项口径厘清后，单独预注册有界阶段时间轴，分别记录host并发工作、GPU依赖/拷贝完成、计算段和同阶段PID/设备读取窗口；估计互斥关键路径，而非累计timer总和。只有证实某一项可消除的时间后，才讨论独立的单一候选及新验收。",
+      "why_third": "此前长TTFT收益和GPU补载减少均真实可见，但SSD和host累计时间不能提供剩余收益预算。",
+      "acceptance_limit": "不改变GEMM/精度/MTP/缓存预算，不承诺额外10–20%，当前不冻结或实施任何候选。"
+    }
+  ],
+  "limitations": [
+    "Only completed history and completed prior diagnostic/old-experiment summaries plus frozen source were consulted; no current matrix speed or raw resource sample was read.",
+    "Quality, numerical validation and the completed 132-file history SHA audit are reused, not repeated. This interpretation adds no numerical acceptance.",
+    "Prior diagnostics used global partition on/off with instrumentation and a different source/binary/sequence. Their values are mechanism evidence, not effect sizes of the present request policy.",
+    "Three fixed-order observations per history position cannot establish statistical significance, tail behavior, cache causality or population-wide noninferiority.",
+    "Source confirms persistence and logging mechanisms; current actual cache membership and exclusive logging/copy wall time were not captured.",
+    "The total physical RAM 54 GB bound remains INDETERMINATE; 16 GiB is a host/cache accounting condition, not whole-system memory proof."
+  ],
+  "sources": {
+    "history": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/history-independent-review.json",
+      "sha256": "8b512489ae20b3212da8507bcd2a8f2093efcbbffd426776dffd7c4ca945ad62",
+      "line_ranges": [
+        {
+          "start": 13,
+          "end": 280
+        },
+        {
+          "start": 294,
+          "end": 316
+        },
+        {
+          "start": 494,
+          "end": 516
+        },
+        {
+          "start": 829,
+          "end": 844
+        }
+      ],
+      "scope": "Completed history independent review reused; numerical/quality/132-file chain not rerun"
+    },
+    "coverage_veto": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-amendment.json",
+      "sha256": "12c1579eba32cc91219bd2d3453cf65fca40bf7fc88022e12d1acab705e6a23e",
+      "line_ranges": [
+        {
+          "start": 15,
+          "end": 21
+        },
+        {
+          "start": 40,
+          "end": 43
+        }
+      ],
+      "scope": "Frozen permanent history veto and coverage-only authorization"
+    },
+    "frozen_sequence": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/plan.json",
+      "sha256": "7ca311700e9ede574ffec89deaa746d8dc0fcd3defdce66496aff09b6e266479",
+      "line_ranges": [
+        {
+          "start": 55,
+          "end": 81
+        }
+      ],
+      "scope": "Seven-position sequence, same service, no between-request clearing, original engineering gates"
+    },
+    "selector": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/include/q4t/model/moe_request_policy.h",
+      "sha256": "442fb05a1e1c8cc6705ab80e21503aa3057994764b41f41b7f6e2f7378cc2b45",
+      "line_ranges": [
+        {
+          "start": 17,
+          "end": 39
+        }
+      ],
+      "scope": "Request-length override selects a mode; default context returns global mode"
+    },
+    "model_lifetime_and_decode": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/src/model/model.cu",
+      "sha256": "a20ab4d80def50d9474b64cae629fc309ad6f8f2dcd3f819031ad7c262c9c3be",
+      "line_ranges": [
+        {
+          "start": 259,
+          "end": 264
+        },
+        {
+          "start": 496,
+          "end": 507
+        },
+        {
+          "start": 645,
+          "end": 650
+        },
+        {
+          "start": 918,
+          "end": 920
+        },
+        {
+          "start": 1072,
+          "end": 1076
+        },
+        {
+          "start": 1579,
+          "end": 1592
+        },
+        {
+          "start": 1659,
+          "end": 1679
+        }
+      ],
+      "scope": "Persistent model and reset/decode call paths"
+    },
+    "persistent_residency": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/include/q4t/model/decoder_layer.h",
+      "sha256": "0abef25988947f8d4e3b90203eebe3e48a7d6deb6c082bd81ea3e209c093eb18",
+      "line_ranges": [
+        {
+          "start": 69,
+          "end": 73
+        }
+      ],
+      "scope": "MoEResidency owned by each long-lived decoder layer"
+    },
+    "sequence_reset": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/src/model/decoder_layer.cu",
+      "sha256": "e9ffbb24b04062b34cb9b512378b2da0851bc182c944560adda9ae7a33fd5b37",
+      "line_ranges": [
+        {
+          "start": 293,
+          "end": 328
+        },
+        {
+          "start": 616,
+          "end": 626
+        }
+      ],
+      "scope": "Sequence resets KV/indexer/SSM/conv/PLE state; forward reuses layer MoEResidency"
+    },
+    "scheduler_decode": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/src/server/chat_scheduler.cpp",
+      "sha256": "5c6247961090335a66a924907161592a0f88d6893e4e3faf2d7720833286b34b",
+      "line_ranges": [
+        {
+          "start": 420,
+          "end": 434
+        }
+      ],
+      "scope": "Plain decode passes no request-partition override"
+    },
+    "partition_and_pipeline": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/src/model/moe.cu",
+      "sha256": "a59cb8c1a33160bdc942011e8afede7fb4ed46fa227f29852efff2f39da35e31",
+      "line_ranges": [
+        {
+          "start": 60,
+          "end": 76
+        },
+        {
+          "start": 469,
+          "end": 480
+        },
+        {
+          "start": 534,
+          "end": 565
+        },
+        {
+          "start": 584,
+          "end": 587
+        },
+        {
+          "start": 653,
+          "end": 677
+        },
+        {
+          "start": 679,
+          "end": 684
+        },
+        {
+          "start": 732,
+          "end": 736
+        },
+        {
+          "start": 773,
+          "end": 782
+        },
+        {
+          "start": 807,
+          "end": 827
+        },
+        {
+          "start": 892,
+          "end": 919
+        }
+      ],
+      "scope": "Effective partition selection, global-only true-decode diagnostics and compute/load overlap"
+    },
+    "residency_counters_and_workers": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/src/quant/moe_residency.cpp",
+      "sha256": "697b3ea48b421aa066efb51a49813dfbdcec79fa72770d0ab928d09414df9577",
+      "line_ranges": [
+        {
+          "start": 493,
+          "end": 524
+        },
+        {
+          "start": 613,
+          "end": 647
+        },
+        {
+          "start": 742,
+          "end": 753
+        },
+        {
+          "start": 826,
+          "end": 831
+        },
+        {
+          "start": 836,
+          "end": 864
+        },
+        {
+          "start": 1147,
+          "end": 1149
+        },
+        {
+          "start": 1175,
+          "end": 1188
+        },
+        {
+          "start": 1221,
+          "end": 1226
+        },
+        {
+          "start": 1250,
+          "end": 1285
+        },
+        {
+          "start": 1298,
+          "end": 1312
+        },
+        {
+          "start": 1480,
+          "end": 1501
+        },
+        {
+          "start": 1550,
+          "end": 1583
+        }
+      ],
+      "scope": "L2/mirror payload reuse, logical byte counters, async H2D/D2H, nested timers and parallel workers"
+    },
+    "read_bridge": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/src/io/weight_loader.cpp",
+      "sha256": "e9b8eb683902dbb7c5f81c052ee348faf45ba9b65aa6e2407be35ee8aabf6261",
+      "line_ranges": [
+        {
+          "start": 250,
+          "end": 255
+        }
+      ],
+      "scope": "Logical range request forwarded to safetensors file"
+    },
+    "buffered_read": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/src/io/safetensors.cpp",
+      "sha256": "7c6363fa04e765fca3558c8f3ca16146eac6e98b7e83baab80df0c03df8a6c76",
+      "line_ranges": [
+        {
+          "start": 109,
+          "end": 114
+        },
+        {
+          "start": 247,
+          "end": 266
+        }
+      ],
+      "scope": "O_RDONLY and pread; software byte counts are not block-device telemetry"
+    },
+    "completed_diagnostic_report": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/docs/OFFLOAD_DIAGNOSTICS_2026-10-04.md",
+      "sha256": "5361b76404148e5306f46a76bf904f65039f924845cabbf367c9024f0147feb2",
+      "line_ranges": [
+        {
+          "start": 103,
+          "end": 142
+        },
+        {
+          "start": 152,
+          "end": 163
+        },
+        {
+          "start": 199,
+          "end": 219
+        }
+      ],
+      "scope": "Completed previous diagnostic interpretation, causal and measurement limits; no current matrix data"
+    },
+    "completed_diagnostic_summary": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-diagnostics-20261004/result-summary.json",
+      "sha256": "41ffcbb30b791ed91c914daa6bfcc15ca30469f3a8fd3e95b08f0528037e0041",
+      "line_ranges": [
+        {
+          "start": 10,
+          "end": 132
+        }
+      ],
+      "scope": "Previously completed instrumented diagnostic per-tier stage summaries"
+    },
+    "completed_diagnostic_timing_rule": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-diagnostics-20261004/analysis-result.json",
+      "sha256": "4a6b14dbf72477ce8ec8d991475057e72f701fc0ef7e1a19157c92a6363a4b24",
+      "line_ranges": [
+        {
+          "start": 527534,
+          "end": 527546
+        }
+      ],
+      "scope": "Previously completed diagnostic warning about overlapping cumulative timers"
+    },
+    "completed_old_partition_report": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/docs/OFFLOAD_PARTITION_RUNTIME_2026-10-03.md",
+      "sha256": "f17ce2f8fbc8b2b364e521dbabf6379df700aaf7bc357b87854728505baff0d1",
+      "line_ranges": [
+        {
+          "start": 152,
+          "end": 192
+        }
+      ],
+      "scope": "Completed previous full-range partition experiment: separately scoped software and process/device I/O"
+    },
+    "completed_old_partition_summary": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/result-summary.json",
+      "sha256": "66692831c2ff0fdff2a25b248e347a8c611e7831544cde1c9b94677c3d360913",
+      "line_ranges": [
+        {
+          "start": 232,
+          "end": 262
+        },
+        {
+          "start": 282,
+          "end": 313
+        }
+      ],
+      "scope": "Already completed old 200K/target summaries; no current six-tier matrix consulted"
+    }
+  },
+  "actions": {
+    "source_edits": 0,
+    "existing_report_edits": 0,
+    "tests": 0,
+    "model_requests": 0,
+    "reruns": 0,
+    "current_matrix_speed_reads": 0,
+    "raw_resource_sample_reads": 0,
+    "new_artifacts": [
+      "bottleneck-interpretation.json"
+    ]
+  }
+}

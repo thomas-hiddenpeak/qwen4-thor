@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "status": "FINAL_REVIEW_BYTE_COPIES",
+  "files": [
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-independent-review.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/matrix-independent-review.json",
+      "bytes": 100973,
+      "sha256": "c3dce7110a3388b1db926f290d459c42cfc2f1f26191cd0cee57561c7b998a34",
+      "stage": "final_offline_independent_review",
+      "artifact_type": "completed_independent_review_or_summary"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-summary.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/matrix-summary.json",
+      "bytes": 9369,
+      "sha256": "fb2438dc3cc32b5d08b99d2b83f586bb2c403330c9e2c1f82a95e4c965b41721",
+      "stage": "final_offline_independent_review",
+      "artifact_type": "completed_independent_review_or_summary"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/resource-final-independent-review.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/resource-final-independent-review.json",
+      "bytes": 58394,
+      "sha256": "7f98d59bb3edd93525970e09006e7ff84dbb32291d71e717fc16a6a3d860c91d",
+      "stage": "final_offline_independent_review",
+      "artifact_type": "completed_independent_review_or_summary"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/raw-resource-summary.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/raw-resource-summary.json",
+      "bytes": 52590,
+      "sha256": "23deb37c8fec657fc0d0314dc252752707b8b58d4cb041d4a0b8286e373935d0",
+      "stage": "final_offline_independent_review",
+      "artifact_type": "completed_independent_review_or_summary"
+    }
+  ],
+  "new_count": 4,
+  "exact_existing_copies_reused": 0,
+  "payload_bytes": 221326,
+  "prior_manifest_sha256_preserved": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/delivery-staging/docs/evidence/offload-request-policy-20261004/manifest.json": "1f3812f81bcd5940bfd232f063199bc22bb09f37ba5529da374900fbecb88dd1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/delivery-staging/docs/evidence/offload-request-policy-20261004/baseline-additions-manifest.json": "83f8db86f9f34a0ee38dc22f9aa0f530e1a52490b5bf0894937dd565ab26f09a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/delivery-staging/docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json": "a801580000069228bb6dfe89606e24904bc9789e6d32f889f2b332b215e1c369"
+  },
+  "source_worktree_modified": false,
+  "performance_acceptance": false,
+  "goal_complete": false,
+  "authored_delivery_files": "Authored staging READMEs and later delivery-derived records are outside this closed evidence snapshot. Their final bytes are bound separately by the final package manifest; no claim covers future top-level phase files."
+}

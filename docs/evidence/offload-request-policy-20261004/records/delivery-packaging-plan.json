@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "status": "DELIVERY_PLAN_NOT_YET_EXECUTED",
+  "created_t": 1791115010.7183146,
+  "why": "Goal requires recoverable code and evidence; tracked documentation should not rely solely on ignored local links. This changes delivery packaging only, never runtime or acceptance gates.",
+  "write_only_after_frozen_controllers_terminal": true,
+  "source_worktree": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source",
+  "tracked_evidence_directory": "docs/evidence/offload-request-policy-20261004",
+  "tracked_controller_directory": "tools/evalscope/experiments/request_policy_20261004",
+  "small_evidence": [
+    "original plans and prospective coverage amendment plus freeze/order/review records",
+    "exact commands, clean source/build identities and prior independent proof reuse",
+    "all executed terminal decisions and any failures; original decisions unchanged",
+    "concise independent resource summary with full raw-audit SHA and limits",
+    "explicit conditional-delivery triggered/skipped status with frozen appendix and relevant reviews",
+    "raw manifest path/size/SHA/stage/type and origin-to-archive identity mapping"
+  ],
+  "exact_byte_controller_snapshots": [
+    "phase_common.py",
+    "build_candidate.py",
+    "freeze_execution.py",
+    "run_stage.py",
+    "run_direct_contracts.py",
+    "audit_group.py",
+    "continue_inheritance.py",
+    "run_coverage_stage.py",
+    "continue_coverage.py",
+    "compare_groups.py",
+    "aggregate_performance.py",
+    "audit_resources.py"
+  ],
+  "conditional_controller_snapshots_if_executed": [
+    "run_conditional_stage.py",
+    "run_conditional_delivery.py"
+  ],
+  "dependencies": [
+    "immutable raw-resource core exact byte snapshot; bind source SHA and existing core verification evidence",
+    "existing tracked runtime/tools and fixture generators identified by commit/file SHA",
+    "small necessary boundary fixtures or deterministic generation inputs if generator unavailable"
+  ],
+  "local_only": [
+    "full server/request/response logs",
+    "raw resource JSONL/CSV",
+    "model payloads/reference source",
+    "binaries/build trees/source tar",
+    "machine inode metadata lists"
+  ],
+  "limitations": [
+    "Git packet is not a backup of all raw evidence; hashes do not replace the originals",
+    "Archived controls bind absolute original paths/source/one-shot outputs; do not claim portable direct execution or run them in place",
+    "A new experiment requires new paths and new frozen identities; no mutation of original evidence",
+    "Document-only/archive commit differs from runtime source commit; prove runtime and actually executed tool bytes unchanged without rebuilding/retesting"
+  ],
+  "final_docs": [
+    "docs/OFFLOAD_REQUEST_POLICY_2026-10-04.md",
+    "docs/STATUS.md",
+    "docs/log/<actual local completion date>.md and index if new"
+  ],
+  "protection": [
+    "Only explicitly add own isolated-worktree files",
+    "Original main seven dirty files and main binary remain untouched",
+    "No PR/default enable/merge"
+  ],
+  "not_performance_acceptance": true
+}

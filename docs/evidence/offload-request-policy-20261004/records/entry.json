@@ -1,0 +1,15 @@
+{
+  "at": 1791109973.1834414,
+  "main_head": "f15190ff9447079f9557469ed5aff0b525197821",
+  "main_status": [
+    " M docs/STATUS.md",
+    " M docs/log/2026-10-02.md",
+    " M include/q4t/model/model.h",
+    " M include/q4t/quant/moe_residency.h",
+    " M src/model/moe.cu",
+    " M src/quant/moe_residency.cpp",
+    " M src/server/chat_generation.cpp"
+  ],
+  "main_diff_sha256": "33375caff6dcb3e638e2d2f001428883cbc0e400c5f1b7403a081826e9cd6947",
+  "base": "f3e3d21a4bbb06a3fb0a86dc1b72361454e83e87"
+}

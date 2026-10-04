@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "recorded_t": 1791113966.4553032,
+  "amendment_frozen_t": 1791113193.534745,
+  "candidate_history_started_t": 1791113930.2913537,
+  "prospective_order_proven": true,
+  "baseline_contracts_passed": true,
+  "baseline_request_count": 21,
+  "candidate_quality_preceded_amendment": true,
+  "performance_acceptance": false,
+  "source_sha256": {
+    ".q4t-work/offload-request-policy-20261004/coverage-amendment.json": "12c1579eba32cc91219bd2d3453cf65fca40bf7fc88022e12d1acab705e6a23e",
+    ".q4t-work/offload-request-policy-20261004/coverage-freeze-state.json": "ccf8ecb553827efd72faee8815a540633a140223cebbe289cf7d8d1db3ea9ee3",
+    ".q4t-work/offload-request-policy-20261004/inheritance-off-decision.json": "88868356a5bae8087babe1b49a6edbb670e64c8c6f25fd568475980346aafd28",
+    ".q4t-work/offload-request-policy-20261004/inheritance-on-controller-start.json": "54b627cb017028c91dc69e2680dd272bdd40a300d09b0e87235e554c4cb5a8dd"
+  }
+}

@@ -1,0 +1,1818 @@
+{
+  "schema": 1,
+  "status": "INDEPENDENTLY_RECOMPUTED_RESOURCE_SUMMARY_WITH_LIMITS",
+  "audit_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/raw-resource-audit.json",
+  "audit_sha256": "3fb0424b44d4fe40579e392cbf1e7532d6d0ca8195a56bc1b0a9fef484f5c053",
+  "groups": {
+    "quality-on": {
+      "http_requests": 11,
+      "client_envelopes": 1,
+      "raw_samples": 573,
+      "client_scope": "One whole batch of11 HTTP requests",
+      "group_resource_window": [
+        1791110935.9857523,
+        1791111508.7783594
+      ],
+      "client_first_to_last_window": [
+        1791110954.7482557,
+        1791111506.4402127
+      ],
+      "memory": {
+        "configured_max_bytes": "max",
+        "sampled_memory_current_peak_bytes": 58225020928,
+        "retained_memory_peak_bytes": 58275659776,
+        "sampled_current_minus_max_bytes": null,
+        "retained_peak_minus_max_bytes": null,
+        "sampled_current_minus_retained_peak_bytes": -50638848,
+        "NVIDIA_sampled_peak_bytes_independent": 56237228032,
+        "RSS_sampled_peak_bytes_independent": 4703010816,
+        "PSS_sampled_peak_bytes_independent": 4700466176,
+        "global_swap_used_peak_bytes_unattributed": 1443102720,
+        "sampled_cgroup_swap_current_peak_bytes": 0,
+        "retained_cgroup_swap_peak_bytes": 0,
+        "final_memory_events": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0
+        },
+        "final_swap_events": {
+          "high": 0,
+          "max": 0,
+          "fail": 0
+        }
+      },
+      "IO": {
+        "PID_read_bytes_sum_disjoint_client_envelopes": 36301004800,
+        "PID_rchar_sum_disjoint_client_envelopes": 3927974420032,
+        "cgroup_read_bytes_sum_disjoint_client_envelopes_by_device": {
+          "259:0": 36301004800
+        },
+        "partition_read_bytes_bounds_whole_first_to_last_client_span_including_gaps": {
+          "259:1": [
+            36328685568,
+            36329463808
+          ]
+        },
+        "exact_cgroup_PID_agreement_envelopes_by_device": {
+          "259:0": 1
+        },
+        "cgroup_zero_with_positive_PID_envelopes_by_device": {
+          "259:0": []
+        }
+      },
+      "coverage": {
+        "live_PID_samples": 570,
+        "fresh_GPU_samples": 52,
+        "scheduled_GPU_skips": 518,
+        "failed_GPU_observations": 0,
+        "process_IO_unknown_observations": 0,
+        "raw_max_unobserved_gap_s": 1.7171423435211182,
+        "GPU_max_unobserved_gap_s": 10.997822046279907,
+        "PSI": "UNKNOWN",
+        "PSI_missing_sample_counts": {
+          "memory.pressure": 573,
+          "io.pressure": 573
+        },
+        "live_file_cache_observations": 0,
+        "file_cache_endpoint_observations": 2,
+        "non_PSI_cgroup_unknown_phase_groups_from_original_audit": [
+          {
+            "field": "memory.current",
+            "phase": "before_start",
+            "count": 2
+          },
+          {
+            "field": "memory.peak",
+            "phase": "before_start",
+            "count": 2
+          },
+          {
+            "field": "memory.swap.current",
+            "phase": "before_start",
+            "count": 2
+          },
+          {
+            "field": "memory.swap.peak",
+            "phase": "before_start",
+            "count": 2
+          },
+          {
+            "field": "pids.current",
+            "phase": "before_start",
+            "count": 2
+          },
+          {
+            "field": "memory.max",
+            "phase": "before_start",
+            "count": 2
+          },
+          {
+            "field": "memory.high",
+            "phase": "before_start",
+            "count": 2
+          },
+          {
+            "field": "memory.swap.max",
+            "phase": "before_start",
+            "count": 2
+          },
+          {
+            "field": "memory.stat",
+            "phase": "before_start",
+            "count": 2
+          },
+          {
+            "field": "memory.events",
+            "phase": "before_start",
+            "count": 2
+          },
+          {
+            "field": "memory.events.local",
+            "phase": "before_start",
+            "count": 2
+          },
+          {
+            "field": "memory.swap.events",
+            "phase": "before_start",
+            "count": 2
+          },
+          {
+            "field": "cgroup.events",
+            "phase": "before_start",
+            "count": 2
+          },
+          {
+            "field": "io.stat",
+            "phase": "before_start",
+            "count": 2
+          },
+          {
+            "field": "cgroup.procs",
+            "phase": "before_start",
+            "count": 2
+          }
+        ]
+      }
+    },
+    "inheritance-off": {
+      "http_requests": 21,
+      "client_envelopes": 21,
+      "raw_samples": 2272,
+      "client_scope": "Separate serial client process envelopes; launch/teardown included",
+      "group_resource_window": [
+        1791111646.7277544,
+        1791113918.1490993
+      ],
+      "client_first_to_last_window": [
+        1791111667.9420662,
+        1791113915.9617808
+      ],
+      "memory": {
+        "configured_max_bytes": 17179869184,
+        "sampled_memory_current_peak_bytes": 17180045312,
+        "retained_memory_peak_bytes": 17179938816,
+        "sampled_current_minus_max_bytes": 176128,
+        "retained_peak_minus_max_bytes": 69632,
+        "sampled_current_minus_retained_peak_bytes": 106496,
+        "NVIDIA_sampled_peak_bytes_independent": 56237228032,
+        "RSS_sampled_peak_bytes_independent": 4695724032,
+        "PSS_sampled_peak_bytes_independent": 4693051392,
+        "global_swap_used_peak_bytes_unattributed": 1417674752,
+        "sampled_cgroup_swap_current_peak_bytes": 0,
+        "retained_cgroup_swap_peak_bytes": 0,
+        "final_memory_events": {
+          "low": 0,
+          "high": 0,
+          "max": 25024893,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0
+        },
+        "final_swap_events": {
+          "high": 0,
+          "max": 0,
+          "fail": 0
+        }
+      },
+      "IO": {
+        "PID_read_bytes_sum_disjoint_client_envelopes": 3239904509952,
+        "PID_rchar_sum_disjoint_client_envelopes": 7121171976600,
+        "cgroup_read_bytes_sum_disjoint_client_envelopes_by_device": {
+          "259:0": 209681915904
+        },
+        "partition_read_bytes_bounds_whole_first_to_last_client_span_including_gaps": {
+          "259:1": [
+            3240340176384,
+            3240379362816
+          ]
+        },
+        "exact_cgroup_PID_agreement_envelopes_by_device": {
+          "259:0": 0
+        },
+        "cgroup_zero_with_positive_PID_envelopes_by_device": {
+          "259:0": [
+            "sequence-r01-p06-context-4096:run1",
+            "sequence-r01-p07-context-8192:run1",
+            "sequence-r02-p01-context-16385:run1",
+            "sequence-r02-p02-context-8192:run1",
+            "sequence-r02-p03-context-8193:run1",
+            "sequence-r02-p04-context-1024:run1",
+            "sequence-r02-p05-context-45056:run1",
+            "sequence-r02-p06-context-4096:run1",
+            "sequence-r02-p07-context-8192:run1",
+            "sequence-r03-p01-context-16385:run1",
+            "sequence-r03-p02-context-8192:run1",
+            "sequence-r03-p03-context-8193:run1",
+            "sequence-r03-p04-context-1024:run1",
+            "sequence-r03-p05-context-45056:run1",
+            "sequence-r03-p06-context-4096:run1",
+            "sequence-r03-p07-context-8192:run1"
+          ]
+        }
+      },
+      "coverage": {
+        "live_PID_samples": 2270,
+        "fresh_GPU_samples": 207,
+        "scheduled_GPU_skips": 2063,
+        "failed_GPU_observations": 0,
+        "process_IO_unknown_observations": 0,
+        "raw_max_unobserved_gap_s": 1.011714220046997,
+        "GPU_max_unobserved_gap_s": 11.001542329788208,
+        "PSI": "UNKNOWN",
+        "PSI_missing_sample_counts": {
+          "memory.pressure": 2272,
+          "io.pressure": 2272
+        },
+        "live_file_cache_observations": 0,
+        "file_cache_endpoint_observations": 2,
+        "non_PSI_cgroup_unknown_phase_groups_from_original_audit": [
+          {
+            "field": "memory.current",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.peak",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.swap.current",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.swap.peak",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "pids.current",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.max",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.high",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.swap.max",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.stat",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.events",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.events.local",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.swap.events",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "cgroup.events",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "io.stat",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "cgroup.procs",
+            "phase": "before_start",
+            "count": 1
+          }
+        ]
+      }
+    },
+    "inheritance-on": {
+      "http_requests": 21,
+      "client_envelopes": 21,
+      "raw_samples": 1997,
+      "client_scope": "Separate serial client process envelopes; launch/teardown included",
+      "group_resource_window": [
+        1791113933.819267,
+        1791115930.1372733
+      ],
+      "client_first_to_last_window": [
+        1791113955.0384305,
+        1791115927.3248453
+      ],
+      "memory": {
+        "configured_max_bytes": 17179869184,
+        "sampled_memory_current_peak_bytes": 17180114944,
+        "retained_memory_peak_bytes": 17179934720,
+        "sampled_current_minus_max_bytes": 245760,
+        "retained_peak_minus_max_bytes": 65536,
+        "sampled_current_minus_retained_peak_bytes": 180224,
+        "NVIDIA_sampled_peak_bytes_independent": 56237228032,
+        "RSS_sampled_peak_bytes_independent": 4684894208,
+        "PSS_sampled_peak_bytes_independent": 4682232832,
+        "global_swap_used_peak_bytes_unattributed": 1389625344,
+        "sampled_cgroup_swap_current_peak_bytes": 0,
+        "retained_cgroup_swap_peak_bytes": 0,
+        "final_memory_events": {
+          "low": 0,
+          "high": 0,
+          "max": 24805971,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0
+        },
+        "final_swap_events": {
+          "high": 0,
+          "max": 0,
+          "fail": 0
+        }
+      },
+      "IO": {
+        "PID_read_bytes_sum_disjoint_client_envelopes": 3211154976768,
+        "PID_rchar_sum_disjoint_client_envelopes": 4710770765160,
+        "cgroup_read_bytes_sum_disjoint_client_envelopes_by_device": {
+          "259:0": 209122529280
+        },
+        "partition_read_bytes_bounds_whole_first_to_last_client_span_including_gaps": {
+          "259:1": [
+            3211218944000,
+            3211218944000
+          ]
+        },
+        "exact_cgroup_PID_agreement_envelopes_by_device": {
+          "259:0": 0
+        },
+        "cgroup_zero_with_positive_PID_envelopes_by_device": {
+          "259:0": [
+            "sequence-r01-p06-context-4096:run1",
+            "sequence-r01-p07-context-8192:run1",
+            "sequence-r02-p01-context-16385:run1",
+            "sequence-r02-p02-context-8192:run1",
+            "sequence-r02-p03-context-8193:run1",
+            "sequence-r02-p04-context-1024:run1",
+            "sequence-r02-p05-context-45056:run1",
+            "sequence-r02-p06-context-4096:run1",
+            "sequence-r02-p07-context-8192:run1",
+            "sequence-r03-p01-context-16385:run1",
+            "sequence-r03-p02-context-8192:run1",
+            "sequence-r03-p03-context-8193:run1",
+            "sequence-r03-p04-context-1024:run1",
+            "sequence-r03-p05-context-45056:run1",
+            "sequence-r03-p06-context-4096:run1",
+            "sequence-r03-p07-context-8192:run1"
+          ]
+        }
+      },
+      "coverage": {
+        "live_PID_samples": 1995,
+        "fresh_GPU_samples": 182,
+        "scheduled_GPU_skips": 1813,
+        "failed_GPU_observations": 0,
+        "process_IO_unknown_observations": 1,
+        "raw_max_unobserved_gap_s": 1.0118253231048584,
+        "GPU_max_unobserved_gap_s": 10.998365640640259,
+        "PSI": "UNKNOWN",
+        "PSI_missing_sample_counts": {
+          "memory.pressure": 1997,
+          "io.pressure": 1997
+        },
+        "live_file_cache_observations": 0,
+        "file_cache_endpoint_observations": 2,
+        "non_PSI_cgroup_unknown_phase_groups_from_original_audit": [
+          {
+            "field": "memory.current",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.peak",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.swap.current",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.swap.peak",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "pids.current",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.max",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.high",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.swap.max",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.stat",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.events",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.events.local",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.swap.events",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "cgroup.events",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "io.stat",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "cgroup.procs",
+            "phase": "before_start",
+            "count": 1
+          }
+        ]
+      }
+    },
+    "matrix-off": {
+      "http_requests": 18,
+      "client_envelopes": 18,
+      "raw_samples": 9289,
+      "client_scope": "Separate serial client process envelopes; launch/teardown included",
+      "group_resource_window": [
+        1791115949.240543,
+        1791125239.1049469
+      ],
+      "client_first_to_last_window": [
+        1791115970.4497726,
+        1791125236.5620246
+      ],
+      "memory": {
+        "configured_max_bytes": 17179869184,
+        "sampled_memory_current_peak_bytes": 17180119040,
+        "retained_memory_peak_bytes": 17180774400,
+        "sampled_current_minus_max_bytes": 249856,
+        "retained_peak_minus_max_bytes": 905216,
+        "sampled_current_minus_retained_peak_bytes": -655360,
+        "NVIDIA_sampled_peak_bytes_independent": 56237228032,
+        "RSS_sampled_peak_bytes_independent": 4736659456,
+        "PSS_sampled_peak_bytes_independent": 4734175232,
+        "global_swap_used_peak_bytes_unattributed": 1379401728,
+        "sampled_cgroup_swap_current_peak_bytes": 0,
+        "retained_cgroup_swap_peak_bytes": 0,
+        "final_memory_events": {
+          "low": 0,
+          "high": 0,
+          "max": 110020633,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0
+        },
+        "final_swap_events": {
+          "high": 0,
+          "max": 0,
+          "fail": 0
+        }
+      },
+      "IO": {
+        "PID_read_bytes_sum_disjoint_client_envelopes": 14382893867008,
+        "PID_rchar_sum_disjoint_client_envelopes": 46599361188096,
+        "cgroup_read_bytes_sum_disjoint_client_envelopes_by_device": {
+          "259:0": 284546609152
+        },
+        "partition_read_bytes_bounds_whole_first_to_last_client_span_including_gaps": {
+          "259:1": [
+            14382959833088,
+            14382959833088
+          ]
+        },
+        "exact_cgroup_PID_agreement_envelopes_by_device": {
+          "259:0": 0
+        },
+        "cgroup_zero_with_positive_PID_envelopes_by_device": {
+          "259:0": [
+            "context-45056:run3",
+            "context-204800:run1",
+            "context-204800:run2",
+            "context-204800:run3",
+            "context-261887:run1",
+            "context-261887:run2",
+            "context-261887:run3"
+          ]
+        }
+      },
+      "coverage": {
+        "live_PID_samples": 9287,
+        "fresh_GPU_samples": 845,
+        "scheduled_GPU_skips": 8442,
+        "failed_GPU_observations": 0,
+        "process_IO_unknown_observations": 0,
+        "raw_max_unobserved_gap_s": 1.0111424922943115,
+        "GPU_max_unobserved_gap_s": 11.00628399848938,
+        "PSI": "UNKNOWN",
+        "PSI_missing_sample_counts": {
+          "memory.pressure": 9289,
+          "io.pressure": 9289
+        },
+        "live_file_cache_observations": 0,
+        "file_cache_endpoint_observations": 2,
+        "non_PSI_cgroup_unknown_phase_groups_from_original_audit": [
+          {
+            "field": "memory.current",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.peak",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.swap.current",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.swap.peak",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "pids.current",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.max",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.high",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.swap.max",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.stat",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.events",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.events.local",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.swap.events",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "cgroup.events",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "io.stat",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "cgroup.procs",
+            "phase": "before_start",
+            "count": 1
+          }
+        ]
+      }
+    },
+    "matrix-on": {
+      "http_requests": 18,
+      "client_envelopes": 18,
+      "raw_samples": 6719,
+      "client_scope": "Separate serial client process envelopes; launch/teardown included",
+      "group_resource_window": [
+        1791125254.0325274,
+        1791131973.4484854
+      ],
+      "client_first_to_last_window": [
+        1791125275.2575002,
+        1791131971.5002768
+      ],
+      "memory": {
+        "configured_max_bytes": 17179869184,
+        "sampled_memory_current_peak_bytes": 17180131328,
+        "retained_memory_peak_bytes": 17180409856,
+        "sampled_current_minus_max_bytes": 262144,
+        "retained_peak_minus_max_bytes": 540672,
+        "sampled_current_minus_retained_peak_bytes": -278528,
+        "NVIDIA_sampled_peak_bytes_independent": 56237228032,
+        "RSS_sampled_peak_bytes_independent": 4760113152,
+        "PSS_sampled_peak_bytes_independent": 4757688320,
+        "global_swap_used_peak_bytes_unattributed": 1361313792,
+        "sampled_cgroup_swap_current_peak_bytes": 0,
+        "retained_cgroup_swap_peak_bytes": 0,
+        "final_memory_events": {
+          "low": 0,
+          "high": 0,
+          "max": 113277504,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0
+        },
+        "final_swap_events": {
+          "high": 0,
+          "max": 0,
+          "fail": 0
+        }
+      },
+      "IO": {
+        "PID_read_bytes_sum_disjoint_client_envelopes": 14811062145024,
+        "PID_rchar_sum_disjoint_client_envelopes": 24244362911976,
+        "cgroup_read_bytes_sum_disjoint_client_envelopes_by_device": {
+          "259:0": 318116114432
+        },
+        "partition_read_bytes_bounds_whole_first_to_last_client_span_including_gaps": {
+          "259:1": [
+            14811122212864,
+            14811122212864
+          ]
+        },
+        "exact_cgroup_PID_agreement_envelopes_by_device": {
+          "259:0": 0
+        },
+        "cgroup_zero_with_positive_PID_envelopes_by_device": {
+          "259:0": [
+            "context-45056:run1",
+            "context-45056:run2",
+            "context-45056:run3",
+            "context-204800:run1",
+            "context-204800:run2",
+            "context-204800:run3",
+            "context-261887:run1",
+            "context-261887:run2",
+            "context-261887:run3"
+          ]
+        }
+      },
+      "coverage": {
+        "live_PID_samples": 6717,
+        "fresh_GPU_samples": 611,
+        "scheduled_GPU_skips": 6106,
+        "failed_GPU_observations": 0,
+        "process_IO_unknown_observations": 0,
+        "raw_max_unobserved_gap_s": 1.0117225646972656,
+        "GPU_max_unobserved_gap_s": 10.997305870056152,
+        "PSI": "UNKNOWN",
+        "PSI_missing_sample_counts": {
+          "memory.pressure": 6719,
+          "io.pressure": 6719
+        },
+        "live_file_cache_observations": 0,
+        "file_cache_endpoint_observations": 2,
+        "non_PSI_cgroup_unknown_phase_groups_from_original_audit": [
+          {
+            "field": "memory.current",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.peak",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.swap.current",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.swap.peak",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "pids.current",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.max",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.high",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.swap.max",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.stat",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.events",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.events.local",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "memory.swap.events",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "cgroup.events",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "io.stat",
+            "phase": "before_start",
+            "count": 1
+          },
+          {
+            "field": "cgroup.procs",
+            "phase": "before_start",
+            "count": 1
+          }
+        ]
+      }
+    }
+  },
+  "matrix_tiers": {
+    "1024": {
+      "off": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          67460616192,
+          53500477440,
+          48062218240
+        ],
+        "PID_read_bytes_mean": 56341103957.333336,
+        "PID_rchar_mean": 52023852040,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            62705778688,
+            44872605696,
+            32970977280
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              67473502208,
+              67473502208
+            ],
+            [
+              53500489728,
+              53500489728
+            ],
+            [
+              48062287872,
+              48062287872
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17180033024,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 55765368832
+      },
+      "on": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          67447214080,
+          53391585280,
+          48130080768
+        ],
+        "PID_read_bytes_mean": 56322960042.666664,
+        "PID_rchar_mean": 52024773648,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            60199247872,
+            43031240704,
+            34902466560
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              67460096000,
+              67460096000
+            ],
+            [
+              53391585280,
+              53391585280
+            ],
+            [
+              48130129920,
+              48130129920
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17179869184,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 55767465984
+      },
+      "PID_read_bytes_mean_change_pct": -0.03220369036505133
+    },
+    "4096": {
+      "off": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          91739774976,
+          92810403840,
+          92795576320
+        ],
+        "PID_read_bytes_mean": 92448585045.33333,
+        "PID_rchar_mean": 138731497504,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            42816872448,
+            23905734656,
+            12795707392
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              91739860992,
+              91739865088
+            ],
+            [
+              92854059008,
+              92854063104
+            ],
+            [
+              92795580416,
+              92795580416
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17179869184,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 55733911552
+      },
+      "on": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          92098019328,
+          92866326528,
+          92771291136
+        ],
+        "PID_read_bytes_mean": 92578545664,
+        "PID_rchar_mean": 138731497504,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            55391637504,
+            53326860288,
+            33259937792
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              92098056192,
+              92098056192
+            ],
+            [
+              92866338816,
+              92866338816
+            ],
+            [
+              92771323904,
+              92771323904
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17179869184,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 55733911552
+      },
+      "PID_read_bytes_mean_change_pct": 0.14057610357469663
+    },
+    "8192": {
+      "off": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          106863173632,
+          105859371008,
+          105703063552
+        ],
+        "PID_read_bytes_mean": 106141869397.33333,
+        "PID_rchar_mean": 218830292000,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            10337210368,
+            6799515648,
+            6977593344
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              106863226880,
+              106863226880
+            ],
+            [
+              105859387392,
+              105859387392
+            ],
+            [
+              105703071744,
+              105703071744
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17180033024,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 55801020416
+      },
+      "on": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          106955022336,
+          105847410688,
+          105621278720
+        ],
+        "PID_read_bytes_mean": 106141237248,
+        "PID_rchar_mean": 218848724160,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            25958756352,
+            10317324288,
+            1728643072
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              106955038720,
+              106955038720
+            ],
+            [
+              105848336384,
+              105848336384
+            ],
+            [
+              105621286912,
+              105621286912
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17179869184,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 55801020416
+      },
+      "PID_read_bytes_mean_change_pct": -0.000595570190087269
+    },
+    "45056": {
+      "off": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          440948224000,
+          442072846336,
+          441968644096
+        ],
+        "PID_read_bytes_mean": 441663238144,
+        "PID_rchar_mean": 1142941379328,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            31317323776,
+            9047289856,
+            0
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              440948244480,
+              440948244480
+            ],
+            [
+              442073436160,
+              442073436160
+            ],
+            [
+              441971396608,
+              441971396608
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17179992064,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 56237228032
+      },
+      "on": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          439953092608,
+          441072418816,
+          441388466176
+        ],
+        "PID_read_bytes_mean": 440804659200,
+        "PID_rchar_mean": 605126893240,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            0,
+            0,
+            0
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              439960014848,
+              439960014848
+            ],
+            [
+              441072427008,
+              441072427008
+            ],
+            [
+              441388589056,
+              441388589056
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17180131328,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 56237228032
+      },
+      "PID_read_bytes_mean_change_pct": -0.19439674164596354
+    },
+    "204800": {
+      "off": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          1794233307136,
+          1795363741696,
+          1796448976896
+        ],
+        "PID_read_bytes_mean": 1795348675242.6667,
+        "PID_rchar_mean": 6092006752392,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            0,
+            0,
+            0
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              1794234966016,
+              1794234966016
+            ],
+            [
+              1795365666816,
+              1795365666816
+            ],
+            [
+              1796449697792,
+              1796449697792
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17180037120,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 56237228032
+      },
+      "on": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          1853668048896,
+          1855902314496,
+          1856939814912
+        ],
+        "PID_read_bytes_mean": 1855503392768,
+        "PID_rchar_mean": 3076760661808,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            0,
+            0,
+            0
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              1853691842560,
+              1853691842560
+            ],
+            [
+              1855905304576,
+              1855905304576
+            ],
+            [
+              1856941412352,
+              1856941412352
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17180127232,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 56237228032
+      },
+      "PID_read_bytes_mean_change_pct": 3.350586900185415
+    },
+    "261887": {
+      "off": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          2301921120256,
+          2301775552512,
+          2303366778880
+        ],
+        "PID_read_bytes_mean": 2302354483882.6665,
+        "PID_rchar_mean": 7888586622768,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            0,
+            0,
+            0
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              2301921636352,
+              2301921636352
+            ],
+            [
+              2301775798272,
+              2301775798272
+            ],
+            [
+              2303367520256,
+              2303367520256
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17180119040,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 56237228032
+      },
+      "on": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          2385620996096,
+          2384680427520,
+          2386708336640
+        ],
+        "PID_read_bytes_mean": 2385669920085.3335,
+        "PID_rchar_mean": 3989961753632,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            0,
+            0,
+            0
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              2385628753920,
+              2385628753920
+            ],
+            [
+              2384680660992,
+              2384680660992
+            ],
+            [
+              2386711015424,
+              2386711015424
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17180110848,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 56237228032
+      },
+      "PID_read_bytes_mean_change_pct": 3.618705841602843
+    }
+  },
+  "history_positions": [
+    {
+      "position": 1,
+      "input_tokens": 16385,
+      "off": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          170402000896,
+          172733788160,
+          172844105728
+        ],
+        "PID_read_bytes_mean": 171993298261.33334,
+        "PID_rchar_mean": 382984344136,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            104634437632,
+            0,
+            0
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              170458275840,
+              170497462272
+            ],
+            [
+              172733919232,
+              172733923328
+            ],
+            [
+              172888698368,
+              172888718848
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17179869184,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 56237228032
+      },
+      "on": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          163882688512,
+          167003152384,
+          166932271104
+        ],
+        "PID_read_bytes_mean": 165939370666.66666,
+        "PID_rchar_mean": 210446424024,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            100497481728,
+            0,
+            0
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              163895693312,
+              163895693312
+            ],
+            [
+              167003246592,
+              167003250688
+            ],
+            [
+              166932566016,
+              166932570112
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17179869184,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 56237228032
+      },
+      "PID_read_bytes_mean_change_pct": -3.5198624922397337
+    },
+    {
+      "position": 2,
+      "input_tokens": 8192,
+      "off": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          107523682304,
+          107159117824,
+          107143954432
+        ],
+        "PID_read_bytes_mean": 107275584853.33333,
+        "PID_rchar_mean": 219727938192,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            47062167552,
+            0,
+            0
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              107524308992,
+              107524308992
+            ],
+            [
+              107159191552,
+              107159191552
+            ],
+            [
+              107156307968,
+              107156328448
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17179869184,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 55801020416
+      },
+      "on": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          107574018048,
+          107388485632,
+          107438137344
+        ],
+        "PID_read_bytes_mean": 107466880341.33333,
+        "PID_rchar_mean": 219897514064,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            41626185728,
+            0,
+            0
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              107574079488,
+              107574079488
+            ],
+            [
+              107388592128,
+              107388596224
+            ],
+            [
+              107438370816,
+              107438370816
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17179869184,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 55801020416
+      },
+      "PID_read_bytes_mean_change_pct": 0.17832155216075396
+    },
+    {
+      "position": 3,
+      "input_tokens": 8193,
+      "off": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          101210300416,
+          101291810816,
+          101329391616
+        ],
+        "PID_read_bytes_mean": 101277167616,
+        "PID_rchar_mean": 215562270032,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            26175475712,
+            0,
+            0
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              101217230848,
+              101217230848
+            ],
+            [
+              101292052480,
+              101292052480
+            ],
+            [
+              101330595840,
+              101330595840
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17179869184,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 55801020416
+      },
+      "on": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          97236271104,
+          97148145664,
+          97196191744
+        ],
+        "PID_read_bytes_mean": 97193536170.66667,
+        "PID_rchar_mean": 121986801752,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            26190598144,
+            0,
+            0
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              97236279296,
+              97236279296
+            ],
+            [
+              97149505536,
+              97149509632
+            ],
+            [
+              97196220416,
+              97196220416
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17179910144,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 55801020416
+      },
+      "PID_read_bytes_mean_change_pct": -4.032134331418824
+    },
+    {
+      "position": 4,
+      "input_tokens": 1024,
+      "off": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          57493417984,
+          57533902848,
+          57502420992
+        ],
+        "PID_read_bytes_mean": 57509913941.333336,
+        "PID_rchar_mean": 53264336408,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            8790781952,
+            0,
+            0
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              57493467136,
+              57493467136
+            ],
+            [
+              57533947904,
+              57533952000
+            ],
+            [
+              57503604736,
+              57503604736
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17180045312,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 55700357120
+      },
+      "on": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          58241474560,
+          58251653120,
+          58220695552
+        ],
+        "PID_read_bytes_mean": 58237941077.333336,
+        "PID_rchar_mean": 53010894208,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            14112903168,
+            0,
+            0
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              58241548288,
+              58241548288
+            ],
+            [
+              58253058048,
+              58253066240
+            ],
+            [
+              58220806144,
+              58220806144
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17179983872,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 55700357120
+      },
+      "PID_read_bytes_mean_change_pct": 1.2659158849423369
+    },
+    {
+      "position": 5,
+      "input_tokens": 45056,
+      "off": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          439859150848,
+          440660246528,
+          440862257152
+        ],
+        "PID_read_bytes_mean": 440460551509.3333,
+        "PID_rchar_mean": 1143008656712,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            23019053056,
+            0,
+            0
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              439906340864,
+              439909138432
+            ],
+            [
+              440670535680,
+              440670539776
+            ],
+            [
+              440862830592,
+              440862830592
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17180045312,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 56237228032
+      },
+      "on": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          439278632960,
+          439244550144,
+          439431168000
+        ],
+        "PID_read_bytes_mean": 439318117034.6667,
+        "PID_rchar_mean": 605407062072,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            26695360512,
+            0,
+            0
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              439317176320,
+              439317180416
+            ],
+            [
+              439244947456,
+              439244947456
+            ],
+            [
+              439431233536,
+              439431237632
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17179869184,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 56237228032
+      },
+      "PID_read_bytes_mean_change_pct": -0.2593727113022526
+    },
+    {
+      "position": 6,
+      "input_tokens": 4096,
+      "off": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          94602956800,
+          94645149696,
+          94640328704
+        ],
+        "PID_read_bytes_mean": 94629478400,
+        "PID_rchar_mean": 139830054240,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            0,
+            0,
+            0
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              94763196416,
+              94765993984
+            ],
+            [
+              94645157888,
+              94645157888
+            ],
+            [
+              94640975872,
+              94640984064
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17179869184,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 55733911552
+      },
+      "on": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          95327481856,
+          95237517312,
+          95339814912
+        ],
+        "PID_read_bytes_mean": 95301604693.33333,
+        "PID_rchar_mean": 140084418048,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            0,
+            0,
+            0
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              95327539200,
+              95327543296
+            ],
+            [
+              95237599232,
+              95237603328
+            ],
+            [
+              95347249152,
+              95347253248
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17180008448,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 55733911552
+      },
+      "PID_read_bytes_mean_change_pct": 0.7102715820668903
+    },
+    {
+      "position": 7,
+      "input_tokens": 8192,
+      "off": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          106801004544,
+          106795507712,
+          106870013952
+        ],
+        "PID_read_bytes_mean": 106822175402.66667,
+        "PID_rchar_mean": 219346392480,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            0,
+            0,
+            0
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              106801094656,
+              106801098752
+            ],
+            [
+              106795520000,
+              106795520000
+            ],
+            [
+              106960089088,
+              106960097280
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17179869184,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 55801020416
+      },
+      "on": {
+        "n": 3,
+        "PID_read_bytes_by_repeat": [
+          106897866752,
+          106907258880,
+          106977501184
+        ],
+        "PID_read_bytes_mean": 106927542272,
+        "PID_rchar_mean": 219423807552,
+        "cgroup_read_bytes_by_device_by_repeat": {
+          "259:0": [
+            0,
+            0,
+            0
+          ]
+        },
+        "partition_read_bytes_bounds_by_repeat": {
+          "259:1": [
+            [
+              106897879040,
+              106897879040
+            ],
+            [
+              106907406336,
+              106907414528
+            ],
+            [
+              106977918976,
+              106977918976
+            ]
+          ]
+        },
+        "memory_current_observed_peak_inside_envelopes_bytes": 17180114944,
+        "NVIDIA_fresh_observed_peak_inside_envelopes_bytes": 55801020416
+      },
+      "PID_read_bytes_mean_change_pct": 0.09863763674176074
+    }
+  ],
+  "units": "Bytes are exact unless field explicitly names mean or percent; GiB conversion=2^30.",
+  "aggregate_coverage": {
+    "groups": 5,
+    "http_requests": 89,
+    "client_envelopes": 79,
+    "raw_samples": 20850
+  },
+  "interpretation_limits": [
+    "PID read_bytes is process storage accounting for all q4t file reads, not expert-only SSD bytes; rchar is logical read volume, not physical I/O.",
+    "Cgroup io.stat parent259:0 and global model partition259:1 represent different scopes. Their divergence/plateaus are observations, not zero I/O; never add PID/cgroup/device or parent+partition.",
+    "Group PID/cgroup sums cover disjoint client envelopes only. The partition group bound spans first-to-last client including gaps; the scopes are explicitly different and partition includes background.",
+    "Quality has11 requests in one batch envelope: no per-question I/O attribution. The remaining78 envelopes are serial clients, including launch/teardown; no pure prefill/decode split.",
+    "Per-bucket memory peaks use complete resource windows inside the client envelope and may miss boundary/intersample peaks. NVIDIA uses fresh complete observation windows only.",
+    "Sampled memory.current and retained memory.peak are distinct non-atomic counter observations. History sampled current exceeds retained peak with the same cgroup identity; values are retained and cause is unproven.",
+    "Quality MemoryMax=max; four performance groups configure16GiB and expose small recorded excesses and nonzero memory.events.max, with observed OOM/oom_kill/swap zero. These are not whole-RAM caps.",
+    "NVIDIA/RSS/PSS/cgroup/file cache views overlap and independent maxima occur at different times. They are never summed; sampled NVIDIA56237228032B is not physical-union proof.",
+    "PSI is missing; live model cache is deliberately not sampled. Two cache endpoints and sidecar digests cannot establish live cache peak. Per-file cache sidecars were not independently recomputed.",
+    "One inheritance-on shutdown PID I/O observation is unknown; all selected client-envelope counter comparisons remain independently valid. Scheduled GPU blanks are unknown intervals, not carried-forward values.",
+    "Off then on, three repeats, cache history and client/logging work limit causal attribution. Resource changes are descriptive and cannot overturn the permanent performance NO_GO.",
+    "Whole physicalRAM54GB remains INDETERMINATE. The offline protection-v1 visibility failure and successful v2 repair are separate from runtime/resource failures.",
+    "Non-PSI cgroup unavailable observations are pre-service before_start entries: two rows in quality and one in each other group. Raw overall missingness counts were independently recomputed; original audit phase-group labels are explicitly identified in the summary."
+  ],
+  "whole_physical_RAM_54GB": "INDETERMINATE",
+  "physical_union_peak_bytes": null,
+  "performance_acceptance": false,
+  "goal_complete": false
+}

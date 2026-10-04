@@ -1,0 +1,19 @@
+{
+  "test_binary_sha256": "34f105309b126dfe8b639317aa7953586280602d0721df6f2f6631af28f50556",
+  "runtime_binary_sha256": "34eb4cf5b53dfcc5b0783120fcdec438fd321dbd4c981f52eee581c96f7fb93a",
+  "required_list_sha256": "86f1c421357e519f8deee9b4c82fdb1566fa5e157c0ae97ff14413534be33327",
+  "required_tests": [
+    "moe_forward_residency_bitexact",
+    "moe_partition_runtime_numerical_contract",
+    "moe_request_policy_numerical_contract"
+  ],
+  "build_source": {
+    "archive_sha256": "d4e9ee718906a692a6af4dc030dde19f6c11d363c008bd9b013998fb9cb39a6d",
+    "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+    "export_files": 1216,
+    "source_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source",
+    "verified_t": 1791111598.612361
+  },
+  "recorded_t": 1791111598.616589,
+  "plan_sha256": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d"
+}

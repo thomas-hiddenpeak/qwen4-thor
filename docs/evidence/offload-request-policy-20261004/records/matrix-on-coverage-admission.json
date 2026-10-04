@@ -1,0 +1,13 @@
+{
+  "admitted_t": 1791125250.501591,
+  "plan_sha256": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+  "amendment_sha256": "12c1579eba32cc91219bd2d3453cf65fca40bf7fc88022e12d1acab705e6a23e",
+  "history_decision_sha256": "c8295b11a4fcb5837e2372705df5df30357ddc8225ee832eb969b1132435303f",
+  "history_decision": "NO_GO",
+  "overall_GO_still_possible": false,
+  "history_failure_permanently_vetoes_overall_GO": true,
+  "history_failure_present": true,
+  "authorizes_business_lifecycle_or_next_candidate": false,
+  "purpose": "original six-tier coverage; does not override history failure",
+  "automatic_retry": false
+}

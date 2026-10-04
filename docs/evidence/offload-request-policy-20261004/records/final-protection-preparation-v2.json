@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "status": "OFFLINE_AUDIT_REPAIR_PREPARED_NOT_EXECUTED",
+  "script_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/check_final_protection_v2.py",
+  "script_sha256": "6ef1dd078c8d58d15e0c61707c6c49f04bc22e6753b001e51c8950cd4904f590",
+  "invocation": [
+    "python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/check_final_protection_v2.py",
+    "--self-sha256",
+    "6ef1dd078c8d58d15e0c61707c6c49f04bc22e6753b001e51c8950cd4904f590"
+  ],
+  "output_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/final-protection.json",
+  "external_receipts_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/final-protection-execution-v2",
+  "external_receipts": [
+    "start.json",
+    "exit.json",
+    "run.log"
+  ],
+  "original_evidence_preserved": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/check_final_protection.py": "a15379de30ad28d9e92ef5134205a38ccc97c49b526fcab9fae94b27b5333ccc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/final-protection-preparation.json": "d749fa827ebfc24182944db921c3c479661dc265d25220936a33994d3dcf1851",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/final-protection-execution/start.json": "a120d27c5afefbb2be44d73ec6b4a74ebceb8de7b0d8f39c67dac92bd19af40e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/final-protection-execution/exit.json": "d3731f54e195e61157016881cdc639a4db5dbcb4c62ce2d5ea88117976afbba7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/final-protection-execution/run.log": "782d6dd6c8188e5575efa19b2a7b9cf85936bbb7f7ce617d12f9d7545ec9b3d4"
+  },
+  "first_attempt": {
+    "subprocess_returncode": 1,
+    "wrapper_failure_field": null,
+    "checker_final_protection_output_created": false,
+    "failed_function": "current_cleanup",
+    "failed_phase": "Pre-output current process visibility gate; protected binary/model/source audit had not begun.",
+    "logged_recorded_pids_present": [],
+    "logged_task_process_matches": [],
+    "logged_permission_error_pids": [
+      2794344,
+      2794347,
+      3475272
+    ],
+    "root_readonly_triage": {
+      "authority": "Parent root task instruction after read-only investigation; executable-only attribution is not inferred solely from the generic v1 traceback.",
+      "observations": [
+        "PID2794344 systemd, PID2794347 (sd-pam), PID3475272 sshd.",
+        "All three have readable stat/cmdline and only exe readlink denied despite same UID; described by root as non-dumpable system processes."
+      ]
+    },
+    "disposition": "Retain first failure as an audit visibility defect. No protection PASS, resource PASS or model failure is inferred."
+  },
+  "bounded_change": [
+    "Copy v1 into a new file; preserve original script, preparation and first-attempt receipts byte-for-byte.",
+    "Only direct os.readlink(/proc/PID/exe) PermissionError for an existing same-UID process with argv triggers sudo -n /usr/bin/readlink -- /proc/PID/exe.",
+    "Record each fallback's source, exact command, return code, stdout/stderr and before/after proc starttime; a nonzero/invalid/timeout/permission result or changed PID starttime still refuses.",
+    "If the process disappears during fallback, preserve the existing disappearing-process race behavior and record PROCESS_VANISHED; do not label it as resolved.",
+    "Replace the old filename-suffix self-argument exception with the exact v2 __file__ path. This narrows the argv exception and supports the new filename.",
+    "Keep recorded PID presence, PGID/argv/exe matching, exact-unit absence, all terminal gates and exclusive final-protection.json output behavior."
+  ],
+  "execution_preconditions": [
+    "Root confirms every already-started controller/group is terminal and clean; coverage controller itself has exited.",
+    "W remains clean at tested commit52b42b2; no raw audit or final matrix review runs concurrently.",
+    "Root records the v2 invocation separately and preserves any refusal; existing final-protection.json must cause refusal.",
+    "Only after protection succeeds within its stated scope proceed to offline raw audit/final matrix review and documentation packaging."
+  ],
+  "unchanged_limits": [
+    "Reference whole-tree unchanged remains UNKNOWN; tracked observations do not certify ignored/untracked reference contents.",
+    "Model228 paths use size/inode/device/mtime only; no model payload hashing.",
+    "Main build/q4t comparison remains against historical actual evidence, not a fabricated current-phase entry baseline.",
+    "Two current process snapshots and existing cleanup receipts are not continuous or whole-machine absence proof; GPU allocator/device-idle state is not separately measured.",
+    "This repairs an offline audit only and does not change any performance threshold, rerun a model or make a Goal-completion claim."
+  ],
+  "work_performed": {
+    "script_executed_or_imported": false,
+    "models_or_tests_run": false,
+    "model_payload_read": false,
+    "matrix_speed_or_raw_resource_streams_read": false,
+    "source_staging_report_or_old_evidence_written": false,
+    "new_files_only": [
+      "check_final_protection_v2.py",
+      "final-protection-preparation-v2.json"
+    ]
+  },
+  "independent_static_review": {
+    "reviewer": "/root/request_policy_runtime",
+    "decision": "PASS_WITH_LIMITS",
+    "script_sha256": "6ef1dd078c8d58d15e0c61707c6c49f04bc22e6753b001e51c8950cd4904f590",
+    "blocking_findings": [],
+    "reviewed": [
+      "Fallback only for same UID, nonempty argv and direct executable-readlink PermissionError; command is the requested read-only sudo -n /usr/bin/readlink -- exact proc path with existing30s timeout.",
+      "Returncode0 and absolute single-line path required; /proc stat starttime index19 and equality checks are correct.",
+      "Timeout, unresolved permissions/parsing or reused PID refuses; disappearing process retains prior race handling and is recorded.",
+      "Successful output and final visibility exceptions retain fallback observations; exact self-path exception is narrower than v1's suffix exception.",
+      "Old v1 script remains unchanged; no new source/runtime/output mutation path."
+    ],
+    "remaining_limit": "Two snapshots are not continuous or atomic whole-machine proof; an exec change within the same PID lifetime is not detected by starttime equality. Existing scope limits remain.",
+    "executed_or_imported": false,
+    "tests_model_or_raw_reads": false
+  }
+}

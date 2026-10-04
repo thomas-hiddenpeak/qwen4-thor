@@ -1,0 +1,73 @@
+[q4t][residency] chunk_order=0 policy=original prefill_only=1 tie=original_chunk_index
+[q4t][residency] partition=1 policy=min_new_csr_v1 prefill_only=1 budget=32*T*k
+[q4t][residency][partition] layer=2 T=32 policy=min_new_csr_v1 requested=1 applied=1 fallback=0 reason=candidate chunks=5 singleton_chunks=0 work_used=652 work_budget=10240 metadata_bytes=5380
+[q4t][residency][diag] layer=2 T=32 D=64 chunks=5 max_distinct=63 resident_before=0 overlap=9,16,8,1 new=54,46,49,19 chunk_order=0 diag_order=min_new_partition partition=1
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 cuBLASLt=130501
+[q4t][residency][diag] layer=2 flush size=1 book=10 actual=10
+[q4t][residency][partition] layer=2 T=1 policy=min_new_csr_v1 requested=1 applied=0 fallback=0 reason=decode chunks=1 singleton_chunks=1 work_used=0 work_budget=0 metadata_bytes=0
+[q4t][residency][diag] layer=2 T=1 D=64 chunks=1 max_distinct=10 resident_before=64 overlap= new= chunk_order=0 diag_order=original_partition partition=1
+[q4t][residency][partition] layer=2 T=1024 policy=min_new_csr_v1 requested=1 applied=1 fallback=0 reason=candidate chunks=11 singleton_chunks=0 work_used=84541 work_budget=327680 metadata_bytes=47112
+[q4t][residency][diag] layer=2 T=1024 D=256 chunks=11 max_distinct=256 resident_before=0 overlap=154,160,140,142,146,143,124,131,135,110 new=102,96,116,114,110,113,131,123,121,129 chunk_order=0 diag_order=min_new_partition partition=1
+[q4t][residency][diag] layer=2 flush size=1 book=10 actual=10
+[q4t][residency][partition] layer=2 T=1 policy=min_new_csr_v1 requested=1 applied=0 fallback=0 reason=decode chunks=1 singleton_chunks=1 work_used=0 work_budget=0 metadata_bytes=0
+[q4t][residency][diag] layer=2 T=1 D=256 chunks=1 max_distinct=10 resident_before=256 overlap= new= chunk_order=0 diag_order=original_partition partition=1
+[q4t][residency][partition] layer=2 T=4 policy=min_new_csr_v1 requested=1 applied=1 fallback=0 reason=candidate chunks=2 singleton_chunks=1 work_used=51 work_budget=1280 metadata_bytes=4260
+[q4t][residency][diag] layer=2 T=4 D=15 chunks=2 max_distinct=11 resident_before=0 overlap=1 new=9 chunk_order=0 diag_order=min_new_partition partition=1
+[q4t][residency][diag] layer=2 flush size=6 book=60 actual=60
+[q4t][residency][diag] layer=2 flush size=8 book=64 actual=64
+[q4t][residency][diag] layer=2 flush size=7 book=60 actual=60
+[q4t][residency][diag] layer=2 flush size=7 book=60 actual=60
+[q4t][residency][diag] layer=2 flush size=4 book=38 actual=38
+[q4t][residency][diag] layer=2 T=32 D=64 chunks=5 max_distinct=64 resident_before=0 overlap=10,14,15,7 new=54,46,45,31 chunk_order=0 diag_order=original_partition partition=0
+[q4t][residency][partition] layer=2 T=32 policy=min_new_csr_v1 requested=1 applied=1 fallback=0 reason=candidate chunks=5 singleton_chunks=0 work_used=652 work_budget=10240 metadata_bytes=5380
+[q4t][residency][diag] layer=2 T=32 D=64 chunks=5 max_distinct=63 resident_before=64 overlap=9,16,8,1 new=54,46,49,19 chunk_order=0 diag_order=min_new_partition partition=1
+[q4t][residency][partition] layer=2 T=32 policy=min_new_csr_v1 requested=1 applied=1 fallback=0 reason=candidate chunks=5 singleton_chunks=0 work_used=652 work_budget=10240 metadata_bytes=5380
+[q4t][residency][diag] layer=2 T=32 D=64 chunks=5 max_distinct=63 resident_before=64 overlap=9,16,8,1 new=54,46,49,19 chunk_order=0 diag_order=min_new_partition partition=1
+[q4t][residency][diag] layer=2 flush size=1 book=10 actual=10
+[q4t][residency][partition] layer=2 T=1 policy=min_new_csr_v1 requested=1 applied=0 fallback=0 reason=prefill_singleton chunks=1 singleton_chunks=1 work_used=0 work_budget=0 metadata_bytes=0
+[q4t][residency][diag] layer=2 T=1 D=64 chunks=1 max_distinct=10 resident_before=64 overlap= new= chunk_order=0 diag_order=original_partition partition=1
+[q4t][residency][diag] layer=2 flush size=2 book=10 actual=10
+[q4t][residency][diag] layer=2 flush size=1 book=10 actual=10
+[q4t][residency][diag] layer=2 flush size=1 book=10 actual=10
+[q4t][residency][diag] layer=2 T=4 D=15 chunks=3 max_distinct=10 resident_before=0 overlap=1,0 new=9,10 chunk_order=0 diag_order=original_partition partition=0
+[q4t][residency][partition] layer=2 T=4 policy=min_new_csr_v1 requested=1 applied=1 fallback=0 reason=candidate chunks=2 singleton_chunks=1 work_used=51 work_budget=1280 metadata_bytes=4260
+[q4t][residency][diag] layer=2 T=4 D=15 chunks=2 max_distinct=11 resident_before=15 overlap=1 new=9 chunk_order=0 diag_order=min_new_partition partition=1
+[q4t][residency][diag] layer=2 flush size=1 book=10 actual=10
+[q4t][residency][partition] layer=2 T=1 policy=min_new_csr_v1 requested=1 applied=0 fallback=0 reason=prefill_singleton chunks=1 singleton_chunks=1 work_used=0 work_budget=0 metadata_bytes=0
+[q4t][residency][diag] layer=2 T=1 D=15 chunks=1 max_distinct=10 resident_before=15 overlap= new= chunk_order=0 diag_order=original_partition partition=1
+[q4t][residency][diag] layer=2 flush size=2 book=10 actual=10
+[q4t][residency][diag] layer=2 flush size=1 book=10 actual=10
+[q4t][residency][diag] layer=2 flush size=1 book=10 actual=10
+[q4t][residency][diag] layer=2 T=4 D=15 chunks=3 max_distinct=10 resident_before=15 overlap=1,0 new=9,10 chunk_order=0 diag_order=original_partition partition=0
+  T=32 C=64: BIT-EXACT=true loads=225 misses=225
+  T=1 C=64: BIT-EXACT=true loads=231 misses=231
+[PASS] moe_forward_residency_bitexact
+  layer=2 C=256 T=1024 applied=1 chunks=11 singleton=0 executed=11 singleton_dispatches=0
+  routed_fp32: bit_differences=0 max_abs=0
+  layer=2 C=256 T=1024 BF16_BIT_EXACT=true
+  layer=2 C=256 T=1 applied=0 chunks=1 singleton=1 executed=1 singleton_dispatches=1
+  routed_fp32: bit_differences=0 max_abs=0
+  layer=2 C=256 T=1 BF16_BIT_EXACT=true
+  layer=2 C=15 T=4 applied=1 chunks=2 singleton=1 executed=2 singleton_dispatches=1
+  routed_fp32: bit_differences=0 max_abs=0
+  layer=2 C=15 T=4 BF16_BIT_EXACT=true
+[PASS] moe_partition_runtime_numerical_contract
+  routed_fp32: bit_differences=0 max_abs=0
+  request_policy layer=2 C=64 input_tokens=8192 base=0 T=32 mode=0 applied=0 chunks=5 singleton=0 BF16_BIT_EXACT=true
+  routed_fp32: bit_differences=0 max_abs=0
+  request_policy layer=2 C=64 input_tokens=8193 base=0 T=32 mode=1 applied=1 chunks=5 singleton=0 BF16_BIT_EXACT=true
+  routed_fp32: bit_differences=0 max_abs=0
+  request_policy layer=2 C=64 input_tokens=16385 base=8192 T=32 mode=1 applied=1 chunks=5 singleton=0 BF16_BIT_EXACT=true
+  routed_fp32: bit_differences=0 max_abs=0
+  request_policy layer=2 C=64 input_tokens=8193 base=8192 T=1 mode=1 applied=0 chunks=1 singleton=1 BF16_BIT_EXACT=true
+  routed_fp32: bit_differences=0 max_abs=0
+  request_policy layer=2 C=15 input_tokens=8192 base=0 T=4 mode=0 applied=0 chunks=3 singleton=2 BF16_BIT_EXACT=true
+  routed_fp32: bit_differences=0 max_abs=0
+  request_policy layer=2 C=15 input_tokens=16385 base=8192 T=4 mode=1 applied=1 chunks=2 singleton=1 BF16_BIT_EXACT=true
+  routed_fp32: bit_differences=0 max_abs=0
+  request_policy layer=2 C=15 input_tokens=16385 base=16384 T=1 mode=1 applied=0 chunks=1 singleton=1 BF16_BIT_EXACT=true
+  routed_fp32: bit_differences=0 max_abs=0
+  request_policy layer=2 C=15 input_tokens=8192 base=0 T=4 mode=0 applied=0 chunks=3 singleton=2 BF16_BIT_EXACT=true
+[PASS] moe_request_policy_numerical_contract
+3 tests, 3 passed, 0 failed, 0 skipped

@@ -1,0 +1,79 @@
+{
+  "schema": "q4t.request_policy_coverage_freeze_consistency.v1",
+  "reviewer": "/root/request_policy_runtime",
+  "reviewed_t": 1791113305.5485954,
+  "scope": "Read-only metadata/hash/timing review; no performance speed values or current performance result logs read; no tests/model/controller executed.",
+  "passed": true,
+  "checks": [
+    {
+      "name": "final amendment exact root provided SHA",
+      "passed": true
+    },
+    {
+      "name": "active status",
+      "passed": true
+    },
+    {
+      "name": "original execution/phase identities",
+      "passed": true
+    },
+    {
+      "name": "all original files unchanged",
+      "passed": true
+    },
+    {
+      "name": "all amendment bound files match",
+      "passed": true
+    },
+    {
+      "name": "final draft retained fields",
+      "passed": true
+    },
+    {
+      "name": "reviewed controller/draft exactly frozen",
+      "passed": true
+    },
+    {
+      "name": "quality before prospective baseline evidence and freeze",
+      "passed": true
+    },
+    {
+      "name": "same baseline process and off arm snapshots",
+      "passed": true
+    },
+    {
+      "name": "freeze actual executable and serial baseline flags",
+      "passed": true
+    },
+    {
+      "name": "freeze describes absent candidate performance and already completed quality",
+      "passed": true
+    },
+    {
+      "name": "fixed original six tier coverage",
+      "passed": true
+    },
+    {
+      "name": "permanent failure veto and explicit prospective limitation",
+      "passed": true
+    }
+  ],
+  "checks_total": 13,
+  "candidate_performance_start_t_if_present": null,
+  "candidate_start_timing_limit": "If absent now, run_coverage_stage still requires the eventual history-on controller start strictly after freeze. This absence is not a machine-wide blindness proof.",
+  "blindness_limit": "Recorded process/arm snapshots plus root access attestation; reviewers cannot prove no process anywhere observed metrics. Candidate quality was already run.",
+  "amendment_sha256": "12c1579eba32cc91219bd2d3453cf65fca40bf7fc88022e12d1acab705e6a23e",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-amendment.json": "12c1579eba32cc91219bd2d3453cf65fca40bf7fc88022e12d1acab705e6a23e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-freeze-state.json": "ccf8ecb553827efd72faee8815a540633a140223cebbe289cf7d8d1db3ea9ee3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-prospective-state.json": "49f038fc1d392b7982811120ecadf98973e07431faf9468f566a9fefae0f2844",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-controller-review.json": "7cb54952b5d1a0a3c15ccd50dc6878f1b31a5dfe29bc70e8ac839c3785dcbe4b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-aggregate-review.json": "610f92dff26216300a1792a380fc9051c9e9f2b18d53630151b7d41662352266",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-amendment-draft.json": "eac173d8e3c404c080c52f43e37896c5af4e11dec5c991e383ea838df6e7c392",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/goal-objective.json": "7cabd6198e1e74765729214a60e77ab4c9c117bc4682880e2a45334b79ec3b0a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/prerequisite-independent-review.json": "ba5e76e2ed47a7698144dbd1a6cc0cf81376bb16a46d45328ec815906d9faff0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/quality-decision.json": "0056d0e0cf4fed3e707f630e9110a120e77c658e724227028f04846cbf456720"
+  },
+  "goal_complete": false,
+  "performance_acceptance": false
+}

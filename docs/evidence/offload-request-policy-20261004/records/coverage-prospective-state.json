@@ -1,0 +1,15 @@
+{
+  "observed_t": 1791112677.796189,
+  "active_baseline_pid": 3420601,
+  "proc_uid": 2002,
+  "cmdline": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-build/q4t serve --model-dir /home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream --port 8182 --max-seq 1 --max-prefill 8192 --max-len 262144 --max-tokens 256 --no-mtp --moe-resident-slots 256 --moe-hot-list /home/rm01/models/dev/qwen4-thor/.q4t-work/moe-residency-20260930/hot-lists/hot-final-12288.json --request-deadline-ms 1800000 ",
+  "effective_selected_environment": {
+    "Q4T_MOE_PARTITION": "0",
+    "Q4T_MOE_REQUEST_PARTITION": "0"
+  },
+  "candidate_history_and_matrix_start_records_absent": true,
+  "candidate_history_output_directory_absent": true,
+  "candidate_quality_previously_executed": true,
+  "speed_value_access_attestation": "Root inspected progress counts and selected context log lines only; did not inspect or compare in-flight speed metrics. This does not prove machine-wide blindness.",
+  "original_execution_plan_sha256": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d"
+}

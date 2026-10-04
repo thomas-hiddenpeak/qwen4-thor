@@ -1,0 +1,8 @@
+{
+  "started_t": 1791112094.0128276,
+  "controller_sha256": "1e3cd916cc7a068d1f017212a287a811a00ff351a410f0b5b839dae4c0b02b84",
+  "plan_sha256": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+  "automatic_retry": false,
+  "scope": "wait existing off -> audit -> one on -> audit -> frozen compare",
+  "full_matrix_autostart": false
+}

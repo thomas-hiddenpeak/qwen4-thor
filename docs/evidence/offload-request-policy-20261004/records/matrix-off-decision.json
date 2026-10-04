@@ -1,0 +1,169 @@
+{
+  "schema": 1,
+  "passed": true,
+  "stage": "matrix-off",
+  "plan_sha256": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+  "status": "PASS_GROUP_CONTRACTS",
+  "ended_t": 1791125248.922154,
+  "recorded_t": 1791125249.7976434,
+  "runtime_binary_sha256": "34eb4cf5b53dfcc5b0783120fcdec438fd321dbd4c981f52eee581c96f7fb93a",
+  "runtime_source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-off-stage.json": "2243733f95336930c3367d6434c8fdc10bebd7c16623d669ef4963e4b7aa159c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/wrapper-exit.json": "05a19d85fb418ff1afdb0c10ea402c7e76900f5c5f38fa360e950631788540a1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/exit.json": "06e9e9e813902bf2b454d3a957e3f47089b52d683e762524b41baa7f9cb59a97",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/runner-process-group.json": "5ede6eb6c31d54c257417da7e7ea658f19f0f29dc15f616517a2225e95fadf1e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/isolation/cleanup.json": "6600e0d2793f453525c8c699921256f116a0b334390471e9e2a9640a5b5703c0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/capacity.json": "135b17d195db1d71febe10e60def33e3894bb0e867b253637ec833f2fa48dfb7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/protocol.json": "f8df81c7fef5567676be909decd8390ca13438a8519e27ab369ef7c6af8a6367",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/server-command.json": "8fda7a32383fd2d6d81c547cc3409bc835edb834aa56b2e2eee3dc8f1bfcde98",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/results.json": "a8c39cc389a7ef0ca3698cdc687b81b76cb60b30af3b989649fc541e83d44e20",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/cache-gate.json": "595f621568f518a19bfcdd3eeaf83f9ac402bb10a66ea08a9bc89f79688c37e3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/cache-advice-round-01.json": "87cacb564f730d05972cda7b0b736c16aa56e826ea141a9105ec0df57235d1d7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/cache-after-advice.json": "2e76a97c9baf67d2cb60caa59cfb6d821d681ed0326f53aa8de0c8d8d8742ab1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/matrix-off/http/results.json": "2540ede1b7d9cbae705689320e0feec0a9a78c13d53f7675c9ff231df26a6473",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-1024/responses.json": "6a6490f11573a402746f361054f2be85c994fafd6e27d32b979ca72ce18258bb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-4096/responses.json": "fb3bc1dd358b9e655152a4a086fb54a0dc763c64982fe22171488109e97311a3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-8192/responses.json": "02a283013eb0fe118254325186fb6a6ffbc51847d190630706d275d4c1f28423",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-45056/responses.json": "3907f8020d244f18eac65d183ad6888e9f5422a88d2f9c6761cb72778a1cb791",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-204800/responses.json": "f401585a2721cd6cea5d87e162312237576c56b15f5175b03a4ca5b297747deb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-261887/responses.json": "b506a5e6e4b49ef7416b785a0b2e0d58fd99643e358d0a41133065aa59a510ed",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/server.log": "ae4c3475fffef351a2534202d4187185d43c06d8cfb993762252c31720848517"
+  },
+  "runtime_path": {
+    "request_partition": 0,
+    "execution_records": 198,
+    "request_count": 18,
+    "runtime_eligible": true,
+    "selected_legacy_requests": 18,
+    "candidate_chunks": 0,
+    "singleton_tail_chunks": 0,
+    "numerical_acceptance": false,
+    "scope": "Actual layer-zero prefill execution; no decode or all-intermediate numerical proof."
+  },
+  "all_layer_runtime": {
+    "runtime_eligible": true,
+    "all_layers": 48,
+    "candidate_prefill_layer_forwards": 0,
+    "singleton_prefill_layer_forwards": 0,
+    "decode_layer_forwards": 0,
+    "budget_fallbacks": 0,
+    "unsupported_forwards": 0,
+    "scope": "Exact serial execution logs for all prefill chunks and output-minus-one decode forwards; no numerical proof.",
+    "numerical_acceptance": false
+  },
+  "output_contract": null,
+  "request_count": 18,
+  "metrics": [
+    {
+      "case": "context-1024",
+      "input_tokens": 1024,
+      "ttft": 11.856996699934825,
+      "decode_tps": 6.883848456904222
+    },
+    {
+      "case": "context-1024",
+      "input_tokens": 1024,
+      "ttft": 10.005840408150107,
+      "decode_tps": 7.312386575939766
+    },
+    {
+      "case": "context-1024",
+      "input_tokens": 1024,
+      "ttft": 9.050301264971495,
+      "decode_tps": 7.357713901006538
+    },
+    {
+      "case": "context-4096",
+      "input_tokens": 4096,
+      "ttft": 25.444428831804544,
+      "decode_tps": 6.446044873071906
+    },
+    {
+      "case": "context-4096",
+      "input_tokens": 4096,
+      "ttft": 25.970916076097637,
+      "decode_tps": 6.529191026406409
+    },
+    {
+      "case": "context-4096",
+      "input_tokens": 4096,
+      "ttft": 25.85418190085329,
+      "decode_tps": 6.534233534486884
+    },
+    {
+      "case": "context-8192",
+      "input_tokens": 8192,
+      "ttft": 38.09977787686512,
+      "decode_tps": 6.3117373515729165
+    },
+    {
+      "case": "context-8192",
+      "input_tokens": 8192,
+      "ttft": 38.03426927886903,
+      "decode_tps": 6.321178557624164
+    },
+    {
+      "case": "context-8192",
+      "input_tokens": 8192,
+      "ttft": 38.093626017915085,
+      "decode_tps": 6.321532968019262
+    },
+    {
+      "case": "context-45056",
+      "input_tokens": 45056,
+      "ttft": 219.92506215698086,
+      "decode_tps": 7.123539983484504
+    },
+    {
+      "case": "context-45056",
+      "input_tokens": 45056,
+      "ttft": 220.60293560707942,
+      "decode_tps": 7.139608726700946
+    },
+    {
+      "case": "context-45056",
+      "input_tokens": 45056,
+      "ttft": 220.2650241299998,
+      "decode_tps": 7.137863945904571
+    },
+    {
+      "case": "context-204800",
+      "input_tokens": 204800,
+      "ttft": 1100.2348595880903,
+      "decode_tps": 7.547756524950538
+    },
+    {
+      "case": "context-204800",
+      "input_tokens": 204800,
+      "ttft": 1096.7923907821532,
+      "decode_tps": 7.541414144031932
+    },
+    {
+      "case": "context-204800",
+      "input_tokens": 204800,
+      "ttft": 1096.9402809310704,
+      "decode_tps": 7.5453014968459255
+    },
+    {
+      "case": "context-261887",
+      "input_tokens": 261887,
+      "ttft": 1423.5008863520343,
+      "decode_tps": 6.123253732891205
+    },
+    {
+      "case": "context-261887",
+      "input_tokens": 261887,
+      "ttft": 1423.6459010927938,
+      "decode_tps": 6.142723405982926
+    },
+    {
+      "case": "context-261887",
+      "input_tokens": 261887,
+      "ttft": 1464.6475080740638,
+      "decode_tps": 6.127673293780871
+    }
+  ],
+  "performance_acceptance": false,
+  "numerical_acceptance": false
+}

@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "recorded_t": 1791116254.4396605,
+  "reason": "Valid history speed NO_GO permanently vetoes overall candidate GO under the prospectively frozen coverage addendum. Six-tier coverage cannot rescue this verdict.",
+  "business_lifecycle": "NOT_TRIGGERED_AFTER_VALID_HISTORY_NO_GO",
+  "next_optimization": "NOT_TRIGGERED_AFTER_VALID_HISTORY_NO_GO",
+  "prepared_conditional_appendix_is_not_execution": true,
+  "six_tier_coverage_remains_required": true,
+  "six_tier_complete": false,
+  "goal_complete": false,
+  "runtime_acceptance": false,
+  "absence_observed_paths": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/conditional-business-off",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/conditional-business-off-controller-start.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/conditional-business-off-stage.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/conditional-business-off-decision.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/conditional-all-on",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/conditional-all-on-controller-start.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/conditional-all-on-stage.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/conditional-all-on-decision.json"
+  ],
+  "absence_scope": "This phase-owned controller and evidence namespace, not machine-wide proof.",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-decision.json": "c8295b11a4fcb5837e2372705df5df30357ddc8225ee832eb969b1132435303f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-off-decision.json": "88868356a5bae8087babe1b49a6edbb670e64c8c6f25fd568475980346aafd28",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-on-decision.json": "415f48cffb79cc0f3be2850d3501d5107f4e4f039387924ccb4808684fe5656e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-amendment.json": "12c1579eba32cc91219bd2d3453cf65fca40bf7fc88022e12d1acab705e6a23e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/conditional-delivery-appendix.json": "492787c4e80747ca28e73b186436b857800288c6a76ab1dc7dd8024d731ed1a4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/conditional-next-candidate.json": "a5afb91a01abde0a9ac0a98f799394e7317a978826d4b974bd5e34ab4c50aa81"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "passed": true,
+  "stage": "quality-on",
+  "plan_sha256": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+  "status": "PASS_FIXED_HTTP_11",
+  "ended_t": 1791111518.915566,
+  "recorded_t": 1791111547.9062383,
+  "runtime_binary_sha256": "34eb4cf5b53dfcc5b0783120fcdec438fd321dbd4c981f52eee581c96f7fb93a",
+  "runtime_source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/quality-on-stage.json": "d5bd343ea2a6ec318239ad2987151c6f536afd5699a913c0c0016613c512014a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/wrapper-exit.json": "320444d43bad528b431d30e738283f54fec68f428cbdeed7965fc2427df07835",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/http/exit.json": "5e1a1a6e9fc7bf09fa575e5733e9d7fb6b74013cc35ddc609edb3eecdbdae8a8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/runner-process-group.json": "50cb43da0c30037333187eee7883d4d6c5866dc508306ab9893530f73296f090",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/http/isolation/cleanup.json": "c19a201aaf4b06ad3a06d093091068a9c49fabfd355a0f131ff5b6f7314cc992",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/http/capacity.json": "135b17d195db1d71febe10e60def33e3894bb0e867b253637ec833f2fa48dfb7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/protocol.json": "6b1c0ceb83c1ec56ae7f807e4af35b0cfc9374bf35cbf415746ba100d37f27b7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/http/server-command.json": "898c44c1706850c54d8eb8cd550520b0066afe240323a3faf6f12edfecb703fa",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/http/results.json": "2fded88ddf2342ab423a73ddc0296375e772d6e69baef76caf14263a6593b525",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/quality-on/http/results.json": "5f68957b17170d40824998f461a2b60633961a065b911039ccf569762c439b43",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/http/quality/responses.json": "18114fc1498b2471334ce112f65d4c0013787cbdb3fe8f63a764c169237d9cfe",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/http/server.log": "28cb8aaa5fa53960e35bd79a2090e386b9cf72bdd280374ee7f4de04369640db"
+  },
+  "runtime_path": {
+    "request_partition": 1,
+    "execution_records": 40,
+    "request_count": 11,
+    "runtime_eligible": true,
+    "selected_legacy_requests": 9,
+    "candidate_chunks": 31,
+    "singleton_tail_chunks": 0,
+    "numerical_acceptance": false,
+    "scope": "Actual layer-zero prefill execution; no decode or all-intermediate numerical proof."
+  },
+  "all_layer_runtime": {
+    "runtime_eligible": true,
+    "all_layers": 48,
+    "candidate_prefill_layer_forwards": 1488,
+    "singleton_prefill_layer_forwards": 0,
+    "decode_layer_forwards": 3168,
+    "budget_fallbacks": 0,
+    "unsupported_forwards": 0,
+    "scope": "Exact serial execution logs for all prefill chunks and output-minus-one decode forwards; no numerical proof.",
+    "numerical_acceptance": false
+  },
+  "output_contract": null,
+  "request_count": 11,
+  "metrics": [],
+  "performance_acceptance": false,
+  "numerical_acceptance": false
+}

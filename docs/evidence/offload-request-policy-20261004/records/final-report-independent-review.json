@@ -1,0 +1,332 @@
+{
+  "schema": 1,
+  "created_t": 1791133680.5123804,
+  "reviewer": "/root/request_policy_runtime",
+  "status": "PASS_CONTENT_WITH_PENDING_DELIVERY_CHECKS",
+  "passed_scoped_content_review": true,
+  "scope": "Pre-finalization report content only against completed independent evidence; no model/tests, rawresource reread/hash or finaldelivery certification.",
+  "reviewed_report_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/report-draft.md",
+  "reviewed_report_sha256": "3a0ab3729bf2087be6f6a78a3126932c56683a6c11597ce0373444abbf6718ce",
+  "initial_reviewed_report_sha256": "9956356aab8b162ab88e79629606c5550e0e8770f455faedff79a2070a50ed8b",
+  "narrow_revision_verified": true,
+  "blocking_content_findings": [],
+  "remaining_wording_findings": [],
+  "checks": [
+    {
+      "id": "verdict",
+      "passed": true,
+      "detail": "History andsix-tier NO_GO; shortfailures not compensated bylongbenefits;D andnextcandidate NOT_TRIGGERED."
+    },
+    {
+      "id": "scope",
+      "passed": true,
+      "detail": "42history+36matrix+11qualityHTTP;exactfive standardtiers plusactualtarget261887+257=262144."
+    },
+    {
+      "id": "history",
+      "passed": true,
+      "detail": "Sevenpositions separate, especiallytwo8192 positions;first/later-max/min gates andfivefailedpositions matchindependentreview."
+    },
+    {
+      "id": "matrix",
+      "passed": true,
+      "detail": "Short1024/4096/8192fail;long45056/204800/261887pass;1024firstTTFTpasses/laterfails. Displayedmeans/minima/rates matchreview rounding."
+    },
+    {
+      "id": "definitions",
+      "passed": true,
+      "detail": "TTFT client latency separatedfrompureprefill;decode=(usageOutput-1)/(latency-TTFT);inputrate=input/meanTTFT. Meansnotgates;fixedthree off→on samplesnotstatisticalproof."
+    },
+    {
+      "id": "implementation",
+      "passed": true,
+      "detail": "Fulltokenized lengthselector, immutableHTTPcontext,continuation/singleton inheritrequest;directAPIcross-callidentity caller-owned;defaultoff andglobalcompatibility/rollback documented."
+    },
+    {
+      "id": "identity",
+      "passed": true,
+      "detail": "Entryf3e3d21 distinguishedfromtested52b42b2/binary34eb4cf5 andfuture docs/archivecommit;original7excluded."
+    },
+    {
+      "id": "prerequisites",
+      "passed": true,
+      "detail": "HTTPfirst11before host139/numeric3;13BF16comparisons/11routerassertions/11observedFP32zero/new8small layer2cases notfull-sequencenumericalcertification."
+    },
+    {
+      "id": "qualityusage",
+      "passed": true,
+      "detail": "ActualEOS7tokens/6decodeperrequest,9short2long40chunks;requested32notmisrepresented."
+    },
+    {
+      "id": "amendment",
+      "passed": true,
+      "detail": "Prospectivemidbaseline amendment beforecandidatehistory butaftercandidatequality;originalplan retained;historypermanentveto."
+    },
+    {
+      "id": "pathlogs",
+      "passed": true,
+      "detail": "History45markers each,on1296candidate+288singleton+257040decode;matrix198markerseach,on9072candidate+220464decode match. Off absenceofall-layerlogs notzerowork."
+    },
+    {
+      "id": "logging",
+      "passed": true,
+      "detail": "Symmetrylimitedtonewlayer0records;globaltrueDecode logsasymmetric,costunmeasured andnot subtracted."
+    },
+    {
+      "id": "resourcecoverage",
+      "passed": true,
+      "detail": "20850samples/89HTTP/79envelopes/237endpointdeltas/316brackets/15raw/287metadata matchresourceindependentreview;qualityshared envelope notduplicated."
+    },
+    {
+      "id": "resourceunits",
+      "passed": true,
+      "detail": "Memory exactbytes,16GiB=17179869184;PIDtable decimalGB1e9;current/retainedpeak/excess matchsummary."
+    },
+    {
+      "id": "resourcegaps",
+      "passed": true,
+      "detail": "memory.maxpressure,smallexcess,current>retainedpeakanomaly,globalvscgroupswap,GPUgaps,unknownPIDIO,PSImissing/endpointcache allretained."
+    },
+    {
+      "id": "resourceattribution",
+      "passed": true,
+      "detail": "PID/cgroup/device scopes distinct;zero cgroupdeltasnotnoSSD;54GBphysicalunionINDETERMINATE,overlappingmaximanosum."
+    },
+    {
+      "id": "oldnew",
+      "passed": true,
+      "detail": "OldGPU later2≈half/PID3repeat+3.29/+3.54% explicitlyseparatefromcurrent+3.351/+3.619% andnotusedascurrentacceptance."
+    },
+    {
+      "id": "causality",
+      "passed": true,
+      "detail": "Persistentresidencymechanism distinguishedfrom speedcause;overlappinghosttimersnot removablewallbudget;noextra10–20%guarantee."
+    },
+    {
+      "id": "protection",
+      "passed": true,
+      "detail": "Original7diff,model228metadataonly,referencewholeTreeUNKNOWN,mainbinarypriorrecordnotinventedentrydigest;v1failure/v2read-onlyfix bothretained."
+    },
+    {
+      "id": "cleanup",
+      "passed": true,
+      "detail": "Fiveownedservices andtwosnapshots;no continuousmachinewideabsence orGPUallocatorrelease claim."
+    },
+    {
+      "id": "future",
+      "passed": true,
+      "detail": "Atmost3causalresearch suggestions,no secondcandidateimplementation/freezing/favorablerepeat."
+    },
+    {
+      "id": "revision",
+      "passed": true,
+      "detail": "Exactinverseoftwoannouncedwordingchanges reproducestheoriginal reviewedSHA9956356a;no othercontentchanged."
+    }
+  ],
+  "requirement_content_mapping": [
+    {
+      "id": "implementation",
+      "status": "CONTENT_COVERED_BY_COMPLETED_SCOPED_EVIDENCE",
+      "goal_completion_declared": false
+    },
+    {
+      "id": "thor_build",
+      "status": "CONTENT_COVERED_BY_COMPLETED_SCOPED_EVIDENCE",
+      "goal_completion_declared": false
+    },
+    {
+      "id": "http_first_quality",
+      "status": "CONTENT_COVERED_BY_COMPLETED_SCOPED_EVIDENCE",
+      "goal_completion_declared": false
+    },
+    {
+      "id": "host_numeric",
+      "status": "CONTENT_COVERED_BY_COMPLETED_SCOPED_EVIDENCE",
+      "goal_completion_declared": false
+    },
+    {
+      "id": "amendment",
+      "status": "CONTENT_COVERED_BY_COMPLETED_SCOPED_EVIDENCE",
+      "goal_completion_declared": false
+    },
+    {
+      "id": "inheritance",
+      "status": "CONTENT_COVERED_BY_COMPLETED_SCOPED_EVIDENCE",
+      "goal_completion_declared": false
+    },
+    {
+      "id": "six_tier_coverage",
+      "status": "CONTENT_COVERED_BY_COMPLETED_SCOPED_EVIDENCE",
+      "goal_completion_declared": false
+    },
+    {
+      "id": "overall_speed",
+      "status": "CONTENT_COVERED_BY_COMPLETED_SCOPED_EVIDENCE",
+      "goal_completion_declared": false
+    },
+    {
+      "id": "conditional_delivery_tests",
+      "status": "NOT_TRIGGERED_BY_VALID_NO_GO",
+      "goal_completion_declared": false
+    },
+    {
+      "id": "resources",
+      "status": "CONTENT_COVERED_BY_COMPLETED_SCOPED_EVIDENCE",
+      "goal_completion_declared": false
+    },
+    {
+      "id": "physical_ram_limit",
+      "status": "REPORTING_SATISFIED_VALUE_REMAINS_INDETERMINATE",
+      "goal_completion_declared": false
+    },
+    {
+      "id": "protection",
+      "status": "CONTENT_COVERED_BY_COMPLETED_SCOPED_EVIDENCE",
+      "goal_completion_declared": false
+    },
+    {
+      "id": "cleanup",
+      "status": "CONTENT_COVERED_BY_COMPLETED_SCOPED_EVIDENCE",
+      "goal_completion_declared": false
+    },
+    {
+      "id": "final_review",
+      "status": "PENDING_FINAL_PACKAGE_AND_POSTCOMMIT_DELIVERY",
+      "goal_completion_declared": false
+    },
+    {
+      "id": "docs_and_git",
+      "status": "PENDING_FINAL_PACKAGE_AND_POSTCOMMIT_DELIVERY",
+      "goal_completion_declared": false
+    },
+    {
+      "id": "final_report",
+      "status": "CONTENT_PASS_FINAL_ARCHIVED_BYTES_AND_LINKS_PENDING",
+      "goal_completion_declared": false
+    },
+    {
+      "id": "next_candidate",
+      "status": "NOT_TRIGGERED_BY_VALID_NO_GO",
+      "goal_completion_declared": false
+    }
+  ],
+  "delivery_links": [
+    {
+      "label": "小证据包与范围",
+      "target": "evidence/offload-request-policy-20261004/README.md",
+      "final_target": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/docs/evidence/offload-request-policy-20261004/README.md",
+      "exists_in_final_worktree_at_review": false,
+      "exists_in_staging_at_review": true,
+      "status": "PENDING_FINAL_DELIVERY_LINK_AND_HASH_CHECK"
+    },
+    {
+      "label": "原始证据索引",
+      "target": "evidence/offload-request-policy-20261004/raw-evidence-index.json",
+      "final_target": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/docs/evidence/offload-request-policy-20261004/raw-evidence-index.json",
+      "exists_in_final_worktree_at_review": false,
+      "exists_in_staging_at_review": true,
+      "status": "PENDING_FINAL_DELIVERY_LINK_AND_HASH_CHECK"
+    },
+    {
+      "label": "六档独立复核",
+      "target": "evidence/offload-request-policy-20261004/records/matrix-independent-review.json",
+      "final_target": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/docs/evidence/offload-request-policy-20261004/records/matrix-independent-review.json",
+      "exists_in_final_worktree_at_review": false,
+      "exists_in_staging_at_review": true,
+      "status": "PENDING_FINAL_DELIVERY_LINK_AND_HASH_CHECK"
+    },
+    {
+      "label": "六档摘要",
+      "target": "evidence/offload-request-policy-20261004/records/matrix-summary.json",
+      "final_target": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/docs/evidence/offload-request-policy-20261004/records/matrix-summary.json",
+      "exists_in_final_worktree_at_review": false,
+      "exists_in_staging_at_review": true,
+      "status": "PENDING_FINAL_DELIVERY_LINK_AND_HASH_CHECK"
+    },
+    {
+      "label": "资源独立复核",
+      "target": "evidence/offload-request-policy-20261004/records/resource-final-independent-review.json",
+      "final_target": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/docs/evidence/offload-request-policy-20261004/records/resource-final-independent-review.json",
+      "exists_in_final_worktree_at_review": false,
+      "exists_in_staging_at_review": true,
+      "status": "PENDING_FINAL_DELIVERY_LINK_AND_HASH_CHECK"
+    },
+    {
+      "label": "资源摘要",
+      "target": "evidence/offload-request-policy-20261004/records/raw-resource-summary.json",
+      "final_target": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/docs/evidence/offload-request-policy-20261004/records/raw-resource-summary.json",
+      "exists_in_final_worktree_at_review": false,
+      "exists_in_staging_at_review": true,
+      "status": "PENDING_FINAL_DELIVERY_LINK_AND_HASH_CHECK"
+    },
+    {
+      "label": "保护核对",
+      "target": "evidence/offload-request-policy-20261004/records/final-protection.json",
+      "final_target": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/docs/evidence/offload-request-policy-20261004/records/final-protection.json",
+      "exists_in_final_worktree_at_review": false,
+      "exists_in_staging_at_review": true,
+      "status": "PENDING_FINAL_DELIVERY_LINK_AND_HASH_CHECK"
+    },
+    {
+      "label": "最终小包清单",
+      "target": "evidence/offload-request-policy-20261004/package-manifest.json",
+      "final_target": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/docs/evidence/offload-request-policy-20261004/package-manifest.json",
+      "exists_in_final_worktree_at_review": false,
+      "exists_in_staging_at_review": false,
+      "status": "PENDING_FINAL_DELIVERY_LINK_AND_HASH_CHECK"
+    },
+    {
+      "label": "独立校验摘要",
+      "target": "evidence/offload-request-policy-20261004/package-manifest.sha256",
+      "final_target": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/docs/evidence/offload-request-policy-20261004/package-manifest.sha256",
+      "exists_in_final_worktree_at_review": false,
+      "exists_in_staging_at_review": false,
+      "status": "PENDING_FINAL_DELIVERY_LINK_AND_HASH_CHECK"
+    },
+    {
+      "label": "控制器原字节与依赖说明",
+      "target": "../tools/evalscope/experiments/request_policy_20261004/README.md",
+      "final_target": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tools/evalscope/experiments/request_policy_20261004/README.md",
+      "exists_in_final_worktree_at_review": false,
+      "exists_in_staging_at_review": true,
+      "status": "PENDING_FINAL_DELIVERY_LINK_AND_HASH_CHECK"
+    }
+  ],
+  "pending_delivery": [
+    "Finalize raw-evidence-index, package-manifest andindependentdigest;verify allreport-relative targetsaftercopytoW. Stagingexistenceisnotacceptance.",
+    "Bind finalarchived reportSHA tothisreviewed3a0ab372 content;anyfurtherchangesneedboundeddeltacheck.",
+    "UpdateSTATUS andappend-onlylog/index;commitonlyphasefiles,exclude original7dirtychanges.",
+    "Verify actualdeliverycommit/remotebranchHEAD/isolatedcleantree/packagehash andpostcommit originalworkspace protection.",
+    "Create/check postcommit delivery-audit.json outsideitsowndescribedcommit;donotclaimalreadyexists.",
+    "Finaloverallreviewmustbindmatrix/history/prereq/resource/protection/content reviewswithcompletedpackaging/deliveryreceiptsbeforeGoalcomplete."
+  ],
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/report-draft.md": "3a0ab3729bf2087be6f6a78a3126932c56683a6c11597ce0373444abbf6718ce",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-independent-review.json": "c3dce7110a3388b1db926f290d459c42cfc2f1f26191cd0cee57561c7b998a34",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-summary.json": "fb2438dc3cc32b5d08b99d2b83f586bb2c403330c9e2c1f82a95e4c965b41721",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/history-independent-review.json": "8b512489ae20b3212da8507bcd2a8f2093efcbbffd426776dffd7c4ca945ad62",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/prerequisite-independent-review.json": "ba5e76e2ed47a7698144dbd1a6cc0cf81376bb16a46d45328ec815906d9faff0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/resource-final-independent-review.json": "7f98d59bb3edd93525970e09006e7ff84dbb32291d71e717fc16a6a3d860c91d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/raw-resource-summary.json": "23deb37c8fec657fc0d0314dc252752707b8b58d4cb041d4a0b8286e373935d0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/final-protection.json": "c6fcfae0446558fe661df657d68115b07de965bded1c0430b69c623d07552825",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/completion-requirements-v2.json": "dbd4064003bbdc2cbff9efb2900c2cbd6d1697553ed1c80ca03a7ef121a0c6cf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/bottleneck-interpretation.json": "d34038ebed2cf8b54a0af2025c03c239cc97a17451a70a7b5a9790843da53861"
+  },
+  "performance_acceptance": false,
+  "goal_complete": false,
+  "whole_physical_RAM_54GB": "INDETERMINATE",
+  "business_lifecycle_allowed": false,
+  "next_optimization_allowed": false,
+  "actions": {
+    "raw_resource_files_read_or_hashed": 0,
+    "new_model_requests": 0,
+    "tests": 0,
+    "metrics_full_recomputation": 0,
+    "source_edits": 0,
+    "staging_edits": 0,
+    "report_edits": 0,
+    "new_artifacts": [
+      "final-report-independent-review.json"
+    ]
+  }
+}

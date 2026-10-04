@@ -1,0 +1,14 @@
+{
+  "server": 0,
+  "completed": 6,
+  "http_output_checks_passed": true,
+  "performance_scope": "six_tier",
+  "partial_performance_matrix": false,
+  "full_five_tier_completed": true,
+  "full_offload_matrix_completed": true,
+  "performance_acceptance": false,
+  "phase_diagnostics": false,
+  "diagnostic_scope": null,
+  "failure": null,
+  "cleanup_failure": null
+}

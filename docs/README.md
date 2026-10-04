@@ -5,6 +5,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [OFFLOAD_REQUEST_POLICY_2026-10-04.md](OFFLOAD_REQUEST_POLICY_2026-10-04.md) | 完整请求长度分区、混合历史与六档 HTTP、独立资源证据 | 有效 NO_GO；长档 TTFT 改善，短档/decode 门槛未过；默认关闭 |
 | [OFFLOAD_AUTONOMOUS_2026-10-03.md](OFFLOAD_AUTONOMOUS_2026-10-03.md) | 十小时自主队列、在线候选与冻结HTTP决定门槛 | Goal进行中，当前尚无新验收结论 |
 | [OFFLOAD_REPLAY_2026-10-02.md](OFFLOAD_REPLAY_2026-10-02.md) | 实际分块/驻留离线回放与候选收益边界 | Goal完成：重排减少约6%–7% GPU补载，未接受性能 |
 | [OFFLOAD_RAM_PROTOCOL_2026-10-02.md](OFFLOAD_RAM_PROTOCOL_2026-10-02.md) | RAM预算修复、缓存/实际IO协议与有界对照 | Goal完成；完整物理RAM及受限cg IO归属仍未闭合 |

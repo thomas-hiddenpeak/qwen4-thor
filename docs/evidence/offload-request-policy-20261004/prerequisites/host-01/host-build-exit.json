@@ -1,0 +1,32 @@
+{
+  "started_t": 1791111565.40726,
+  "command": [
+    "cmake",
+    "--build",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/request-host-build",
+    "--parallel",
+    "4"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source",
+  "returncode": 0,
+  "failure": null,
+  "automatic_retry": false,
+  "timeout_s": 600,
+  "signals": [],
+  "cleanup_complete": true,
+  "pid": 3420095,
+  "pgid": 3420095,
+  "group_before_cleanup": {
+    "live_pids": [],
+    "zombie_pids": [],
+    "errors": [],
+    "absent": true
+  },
+  "group_after_cleanup": {
+    "live_pids": [],
+    "zombie_pids": [],
+    "errors": [],
+    "absent": true
+  },
+  "ended_t": 1791111566.5223858
+}

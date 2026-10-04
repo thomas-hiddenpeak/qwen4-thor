@@ -1,0 +1,12 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/check_final_protection_v2.py",
+    "--self-sha256",
+    "6ef1dd078c8d58d15e0c61707c6c49f04bc22e6753b001e51c8950cd4904f590"
+  ],
+  "started_t": 1791132415.8428545,
+  "script_sha256": "6ef1dd078c8d58d15e0c61707c6c49f04bc22e6753b001e51c8950cd4904f590",
+  "scope": "specific offline /proc exe visibility repair; first failure preserved"
+}

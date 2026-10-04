@@ -1,0 +1,570 @@
+{
+  "schema": 1,
+  "reviewer": "/root/request_policy_review",
+  "status": "PASS_RESOURCE_EVIDENCE_WITH_EXPLICIT_GAPS",
+  "passed_scoped_review": true,
+  "blocking_findings": [],
+  "started_t": 1791132928.6231632,
+  "ended_t": 1791132932.9821265,
+  "method": "Standalone standard-library arithmetic over raw JSONL/CSV/controller snapshots; no adapter/core imports or execution, no models/tests/live queries.",
+  "audit_identity": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/raw-resource-audit.json",
+    "sha256": "3fb0424b44d4fe40579e392cbf1e7532d6d0ca8195a56bc1b0a9fef484f5c053",
+    "adapter_and_core_and_plan_pins": {
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/audit_resources.py": "b7b94dcd950389b9e2c0c985630ad702c8040acb05032a23eaf6c17e2ad42399",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/audit_raw_resources_frozen.py": "035f1f840d00350a7b6db62e1b8ef7f62a5fda02406dae91395d291a67652da4",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/execution-plan.json": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/plan.json": "7ca311700e9ede574ffec89deaa746d8dc0fcd3defdce66496aff09b6e266479",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/final-protection.json": "c6fcfae0446558fe661df657d68115b07de965bded1c0430b69c623d07552825"
+    }
+  },
+  "source_validation": {
+    "metadata_files_verified": 287,
+    "metadata_bytes_verified": 330781945,
+    "raw_files_verified": 15,
+    "raw_bytes_verified": 133607318,
+    "all_SHA_and_stat_match": true,
+    "metadata_index_canonical_sha256": "1f34291fdbf995271490edb749b3ad4cd655f3926911832bd56a0ceb90fe61d2",
+    "raw_source_sha256": {
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/http/isolation/endpoints.jsonl": "95fe89b89f0e2ece69589101c4775238c9800c20dfd7f0262718fe8eba98306c",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/memory/memory.csv": "7d09a76ac021ffb511e97665aec13ab26ff1323654f44fa985dc840c2c8a617a",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/memory/resource-samples.jsonl": "93a6e2a191747c17a622f93908852e97fc6d88acf2ddd314b3817eca591789f4",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/isolation/endpoints.jsonl": "f4b0837472fe6864a1801f9167e136eb3f38e578c6e2b20afc36c845407c7c9d",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/memory/memory.csv": "7a761098fba1a5520381347b2a640e57ef81a878ddd9df0fec416c2e07dd2116",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/memory/resource-samples.jsonl": "323388e441a98857e50b021a9d8ac9ec6489eed4d1781150fdb1c6d142a334fe",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/isolation/endpoints.jsonl": "d48e7defc884c5425de9f8fd1d60e0b391440b2e13001db95aedd437f02f4757",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/memory/memory.csv": "65f11bf74a85896bc0bd42171ab8206c4b5bfeddfd068531841597b6729fd0c5",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/memory/resource-samples.jsonl": "2ba6ed0eabb0b0809ef3b974127746726e4693ddf62f9caa8657ddeb9066a45e",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/isolation/endpoints.jsonl": "70df547cc4bcdc824aea35cdc2dfb1f815abaac9272a390fbdadde187f99f9b6",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/memory/memory.csv": "c81010cc66514569095f57cb7a73ab3b3e160eb46db7fc5d484af17470c2096b",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/memory/resource-samples.jsonl": "38aa30746c62b38cf7c4683dcbbad24c4efc93931f43096346d841bb1234e0bb",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/isolation/endpoints.jsonl": "412217f17e4df0166f6c15ff8844803b71c94d58203f08b41bbd1b403a72033e",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/memory/memory.csv": "a90677b3c56471142801eff8a43184cf38e4e10ab759cde6e0e7f9ac2af12391",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/memory/resource-samples.jsonl": "6d0cebc3465f7eb0d246d307b419cc588029fb2380ce575d38eec765bcecf01d"
+    }
+  },
+  "checks": {
+    "no_model_read": 294,
+    "pinned_identity": 5,
+    "audit_execution": 1,
+    "audit_log": 1,
+    "audit_time_order": 1,
+    "group_scope": 1,
+    "core_identity": 1,
+    "metadata_stat": 287,
+    "metadata_sha": 287,
+    "raw_stat": 15,
+    "raw_sha": 15,
+    "group_identity": 5,
+    "terminal_before_audit": 5,
+    "endpoint_labels": 5,
+    "sample_count": 5,
+    "sequences": 5,
+    "raw_wrapper_window": 5,
+    "endpoint_runner_window": 5,
+    "ordered_raw_windows": 5,
+    "CSV_raw_alignment": 20850,
+    "CSV_duration": 20850,
+    "cgroup_path": 20850,
+    "device_scope_stable": 20850,
+    "no_GPU_carry_forward": 18953,
+    "root_generation": 20839,
+    "binding_identity": 20839,
+    "raw_PID_generation": 20839,
+    "GPU_window": 1897,
+    "no_live_cache_sampling": 20839,
+    "one_generation": 5,
+    "memory_peaks": 5,
+    "missingness": 5,
+    "events": 5,
+    "limits": 5,
+    "summary_count": 35,
+    "raw_count": 20,
+    "CSV_peaks": 5,
+    "GPU_peak": 5,
+    "device_identity": 5,
+    "final_endpoint": 5,
+    "final_cgroup_identity": 5,
+    "retained_peak": 5,
+    "group_memory_limit": 5,
+    "retained_event": 25,
+    "boundary_count": 55,
+    "client_boundary_identity": 79,
+    "batch_shape": 79,
+    "boundary_label": 79,
+    "quality_one_batch": 1,
+    "serial_envelope_window": 79,
+    "clock_drift": 79,
+    "audit_envelope_identity": 79,
+    "controller_brackets_client": 79,
+    "controller_IO_delta": 237,
+    "bracket_algebra": 321,
+    "sample_IO_bounds": 316,
+    "independent_window_selection": 316,
+    "all_envelopes_in_order": 5,
+    "all_requests_covered": 5,
+    "expected_requests": 5,
+    "raw_window_gap": 5,
+    "GPU_window_gap": 5,
+    "metadata_stable_at_end": 287,
+    "raw_stable_at_end": 15
+  },
+  "groups": {
+    "quality-on": {
+      "raw_samples": 573,
+      "http_requests": 11,
+      "client_envelopes": 1,
+      "PID": 3417984,
+      "start_ticks": 133269039,
+      "cgroup_path": "/sys/fs/cgroup/system.slice/q4t-ram-1791110934529257985-3417961.service",
+      "cgroup_generations": [
+        "{\"device\": 29, \"inode\": 130560}"
+      ],
+      "current_peak_observation": {
+        "sequence": 535,
+        "phase": "requests:quality",
+        "start_t": 1791111471.7795775,
+        "end_t": 1791111471.7806308,
+        "cgroup_identity": {
+          "device": 29,
+          "inode": 130560
+        },
+        "memory_current_bytes": 58225020928,
+        "same_row_memory_peak_bytes": 58225020928
+      },
+      "retained_peak_observation": {
+        "value": 58275659776,
+        "resource_window": [
+          1791111508.3128579,
+          1791111508.3135393
+        ],
+        "cgroup_identity": {
+          "device": 29,
+          "inode": 130560
+        }
+      },
+      "current_peak_exceeds_retained_peak": false,
+      "counters_from_distinct_reads_not_atomic": true,
+      "source_count": 3,
+      "device_specs": {
+        "259:1": {
+          "device": "259:1",
+          "filesystem_dev": 66305,
+          "sysfs_path": "/sys/devices/platform/bus@0/a808480000.pcie/pci0005:00/0005:00:00.0/0005:01:00.0/nvme/nvme0/nvme0n1/nvme0n1p1",
+          "partition_parent_device": {
+            "value": "259:0",
+            "error": null
+          }
+        }
+      },
+      "all_independent_numeric_comparisons_match": true
+    },
+    "inheritance-off": {
+      "raw_samples": 2272,
+      "http_requests": 21,
+      "client_envelopes": 21,
+      "PID": 3420601,
+      "start_ticks": 133339943,
+      "cgroup_path": "/sys/fs/cgroup/system.slice/q4t-ram-1791111640432814796-3420580.service",
+      "cgroup_generations": [
+        "{\"device\": 29, \"inode\": 130653}"
+      ],
+      "current_peak_observation": {
+        "sequence": 1160,
+        "phase": "requests:sequence-r02-p05-context-45056:run1",
+        "start_t": 1791112806.9614096,
+        "end_t": 1791112806.962442,
+        "cgroup_identity": {
+          "device": 29,
+          "inode": 130653
+        },
+        "memory_current_bytes": 17180045312,
+        "same_row_memory_peak_bytes": 17179938816
+      },
+      "retained_peak_observation": {
+        "value": 17179938816,
+        "resource_window": [
+          1791113917.8873737,
+          1791113917.8880625
+        ],
+        "cgroup_identity": {
+          "device": 29,
+          "inode": 130653
+        }
+      },
+      "current_peak_exceeds_retained_peak": true,
+      "counters_from_distinct_reads_not_atomic": true,
+      "source_count": 3,
+      "device_specs": {
+        "259:1": {
+          "device": "259:1",
+          "filesystem_dev": 66305,
+          "sysfs_path": "/sys/devices/platform/bus@0/a808480000.pcie/pci0005:00/0005:00:00.0/0005:01:00.0/nvme/nvme0/nvme0n1/nvme0n1p1",
+          "partition_parent_device": {
+            "value": "259:0",
+            "error": null
+          }
+        }
+      },
+      "all_independent_numeric_comparisons_match": true
+    },
+    "inheritance-on": {
+      "raw_samples": 1997,
+      "http_requests": 21,
+      "client_envelopes": 21,
+      "PID": 3427217,
+      "start_ticks": 133568653,
+      "cgroup_path": "/sys/fs/cgroup/system.slice/q4t-ram-1791113930377419808-3427169.service",
+      "cgroup_generations": [
+        "{\"device\": 29, \"inode\": 131069}"
+      ],
+      "current_peak_observation": {
+        "sequence": 606,
+        "phase": "requests:sequence-r01-p07-context-8192:run1",
+        "start_t": 1791114539.9175656,
+        "end_t": 1791114539.9187112,
+        "cgroup_identity": {
+          "device": 29,
+          "inode": 131069
+        },
+        "memory_current_bytes": 17180114944,
+        "same_row_memory_peak_bytes": 17179918336
+      },
+      "retained_peak_observation": {
+        "value": 17179934720,
+        "resource_window": [
+          1791115929.3388994,
+          1791115929.3396049
+        ],
+        "cgroup_identity": {
+          "device": 29,
+          "inode": 131069
+        }
+      },
+      "current_peak_exceeds_retained_peak": true,
+      "counters_from_distinct_reads_not_atomic": true,
+      "source_count": 3,
+      "device_specs": {
+        "259:1": {
+          "device": "259:1",
+          "filesystem_dev": 66305,
+          "sysfs_path": "/sys/devices/platform/bus@0/a808480000.pcie/pci0005:00/0005:00:00.0/0005:01:00.0/nvme/nvme0/nvme0n1/nvme0n1p1",
+          "partition_parent_device": {
+            "value": "259:0",
+            "error": null
+          }
+        }
+      },
+      "all_independent_numeric_comparisons_match": true
+    },
+    "matrix-off": {
+      "raw_samples": 9289,
+      "http_requests": 18,
+      "client_envelopes": 18,
+      "PID": 3439246,
+      "start_ticks": 133770195,
+      "cgroup_path": "/sys/fs/cgroup/system.slice/q4t-ram-1791115945822483409-3439226.service",
+      "cgroup_generations": [
+        "{\"device\": 29, \"inode\": 131204}"
+      ],
+      "current_peak_observation": {
+        "sequence": 7085,
+        "phase": "requests:context-261887:run2",
+        "start_t": 1791123035.6706848,
+        "end_t": 1791123035.6717637,
+        "cgroup_identity": {
+          "device": 29,
+          "inode": 131204
+        },
+        "memory_current_bytes": 17180119040,
+        "same_row_memory_peak_bytes": 17180774400
+      },
+      "retained_peak_observation": {
+        "value": 17180774400,
+        "resource_window": [
+          1791125238.4830093,
+          1791125238.483699
+        ],
+        "cgroup_identity": {
+          "device": 29,
+          "inode": 131204
+        }
+      },
+      "current_peak_exceeds_retained_peak": false,
+      "counters_from_distinct_reads_not_atomic": true,
+      "source_count": 3,
+      "device_specs": {
+        "259:1": {
+          "device": "259:1",
+          "filesystem_dev": 66305,
+          "sysfs_path": "/sys/devices/platform/bus@0/a808480000.pcie/pci0005:00/0005:00:00.0/0005:01:00.0/nvme/nvme0/nvme0n1/nvme0n1p1",
+          "partition_parent_device": {
+            "value": "259:0",
+            "error": null
+          }
+        }
+      },
+      "all_independent_numeric_comparisons_match": true
+    },
+    "matrix-on": {
+      "raw_samples": 6719,
+      "http_requests": 18,
+      "client_envelopes": 18,
+      "PID": 3460810,
+      "start_ticks": 134700674,
+      "cgroup_path": "/sys/fs/cgroup/system.slice/q4t-ram-1791125250607999584-3460790.service",
+      "cgroup_generations": [
+        "{\"device\": 29, \"inode\": 132434}"
+      ],
+      "current_peak_observation": {
+        "sequence": 1196,
+        "phase": "requests:context-45056:run3",
+        "start_t": 1791126450.251102,
+        "end_t": 1791126450.2521706,
+        "cgroup_identity": {
+          "device": 29,
+          "inode": 132434
+        },
+        "memory_current_bytes": 17180131328,
+        "same_row_memory_peak_bytes": 17179897856
+      },
+      "retained_peak_observation": {
+        "value": 17180409856,
+        "resource_window": [
+          1791131973.413172,
+          1791131973.413875
+        ],
+        "cgroup_identity": {
+          "device": 29,
+          "inode": 132434
+        }
+      },
+      "current_peak_exceeds_retained_peak": false,
+      "counters_from_distinct_reads_not_atomic": true,
+      "source_count": 3,
+      "device_specs": {
+        "259:1": {
+          "device": "259:1",
+          "filesystem_dev": 66305,
+          "sysfs_path": "/sys/devices/platform/bus@0/a808480000.pcie/pci0005:00/0005:00:00.0/0005:01:00.0/nvme/nvme0/nvme0n1/nvme0n1p1",
+          "partition_parent_device": {
+            "value": "259:0",
+            "error": null
+          }
+        }
+      },
+      "all_independent_numeric_comparisons_match": true
+    }
+  },
+  "independent_recomputed_totals": {
+    "http_requests": 89,
+    "client_envelopes": 79,
+    "raw_samples": 20850
+  },
+  "summary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/raw-resource-summary.json",
+    "sha256": "23deb37c8fec657fc0d0314dc252752707b8b58d4cb041d4a0b8286e373935d0"
+  },
+  "known_nonblocking_observations": [
+    "PID read_bytes is process storage accounting for all q4t file reads, not expert-only SSD bytes; rchar is logical read volume, not physical I/O.",
+    "Cgroup io.stat parent259:0 and global model partition259:1 represent different scopes. Their divergence/plateaus are observations, not zero I/O; never add PID/cgroup/device or parent+partition.",
+    "Group PID/cgroup sums cover disjoint client envelopes only. The partition group bound spans first-to-last client including gaps; the scopes are explicitly different and partition includes background.",
+    "Quality has11 requests in one batch envelope: no per-question I/O attribution. The remaining78 envelopes are serial clients, including launch/teardown; no pure prefill/decode split.",
+    "Per-bucket memory peaks use complete resource windows inside the client envelope and may miss boundary/intersample peaks. NVIDIA uses fresh complete observation windows only.",
+    "Sampled memory.current and retained memory.peak are distinct non-atomic counter observations. History sampled current exceeds retained peak with the same cgroup identity; values are retained and cause is unproven.",
+    "Quality MemoryMax=max; four performance groups configure16GiB and expose small recorded excesses and nonzero memory.events.max, with observed OOM/oom_kill/swap zero. These are not whole-RAM caps.",
+    "NVIDIA/RSS/PSS/cgroup/file cache views overlap and independent maxima occur at different times. They are never summed; sampled NVIDIA56237228032B is not physical-union proof.",
+    "PSI is missing; live model cache is deliberately not sampled. Two cache endpoints and sidecar digests cannot establish live cache peak. Per-file cache sidecars were not independently recomputed.",
+    "One inheritance-on shutdown PID I/O observation is unknown; all selected client-envelope counter comparisons remain independently valid. Scheduled GPU blanks are unknown intervals, not carried-forward values.",
+    "Off then on, three repeats, cache history and client/logging work limit causal attribution. Resource changes are descriptive and cannot overturn the permanent performance NO_GO.",
+    "Whole physicalRAM54GB remains INDETERMINATE. The offline protection-v1 visibility failure and successful v2 repair are separate from runtime/resource failures.",
+    "Non-PSI cgroup unavailable observations are pre-service before_start entries: two rows in quality and one in each other group. Raw overall missingness counts were independently recomputed; original audit phase-group labels are explicitly identified in the summary."
+  ],
+  "protection_audit_note": "Original offline exe visibility failure is preserved separately and repaired by reviewed v2; no runtime request repeated and no runtime failure inferred.",
+  "scope_exclusions": [
+    "No model payload reads",
+    "No performance gate/path re-audit",
+    "No core self-tests rerun",
+    "No source/staging/report edits",
+    "No full per-file cache sidecar recomputation"
+  ],
+  "whole_physical_RAM_54GB": "INDETERMINATE",
+  "physical_union_peak_bytes": null,
+  "performance_acceptance": false,
+  "goal_complete": false,
+  "additional_metadata_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/raw-resource-audit.json": "3fb0424b44d4fe40579e392cbf1e7532d6d0ca8195a56bc1b0a9fef484f5c053",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/audit_resources.py": "b7b94dcd950389b9e2c0c985630ad702c8040acb05032a23eaf6c17e2ad42399",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/audit_raw_resources_frozen.py": "035f1f840d00350a7b6db62e1b8ef7f62a5fda02406dae91395d291a67652da4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/execution-plan.json": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/plan.json": "7ca311700e9ede574ffec89deaa746d8dc0fcd3defdce66496aff09b6e266479",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/final-protection.json": "c6fcfae0446558fe661df657d68115b07de965bded1c0430b69c623d07552825",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/raw-resource-audit-execution/start.json": "d2f1554e2bd45cbbf9abadfc1f9697c526ae746317046ddc1c1b1aa3fb7f1b26",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/raw-resource-audit-execution/exit.json": "1bd776d332b031e6e6092fb41710defd08580bae7b166c9b90246b65c55368ae",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/raw-resource-audit-execution/run.log": "5516793bf7bbb9ed36eb1e7d7c11189a3fb0a61ebbf31b8ef57622489f78411e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/protocol.json": "6b1c0ceb83c1ec56ae7f807e4af35b0cfc9374bf35cbf415746ba100d37f27b7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/memory/memory-peak.json": "2676815cd6e5ee671e509e66ed10cb571a0c8791967ac21c7f44e55f44639931",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/runner-process-group.json": "50cb43da0c30037333187eee7883d4d6c5866dc508306ab9893530f73296f090",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/wrapper-exit.json": "320444d43bad528b431d30e738283f54fec68f428cbdeed7965fc2427df07835",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/quality-on-stage.json": "d5bd343ea2a6ec318239ad2987151c6f536afd5699a913c0c0016613c512014a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/http/isolation/identity.json": "aa0223ae8ece8217f5b793316a9a4a800e8cd8b33d5dde3e8ef730bf76f05d64",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/http/quality/request-boundaries.json": "9a4ecd05748dc557968527282e7dde7d9dd51d29ec5c74c3f60ab0d67688e8e0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/http/quality/client-exit.json": "0ba98f8efd842fd01c6fcb0fff8499d38d24e887d2d7a17f5fccdbbe0c1b4cb9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/protocol.json": "95cc9249da484fe8d17fa76128e375eff14fb9eb12f2808a971e62bb6192496d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/memory/memory-peak.json": "e7abf559144f7da84487c4b00c7afe279e07d41fb4253a6a2360c819d1e54e6f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/runner-process-group.json": "d9ec6c3f2d08ebcd20c40166022626bb6f3bf320c1a32c49c5883f4d047481b3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/wrapper-exit.json": "67f6dada3a15d5e1760a973c93a6ce704bae4829af406b052105f339751a825a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-off-stage.json": "f508c353c0659215bd1b79b7fa6b5f6a787d34b828ce5c0e70c226f4f01bc612",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/isolation/identity.json": "2821cb7c1797f24d1e699d0175234ef86c7ebfdb1c05f3bb63bb134fafac7f47",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r01-p01-context-16385/request-boundaries.json": "eb412dffc9b8524417f8c3b5e919ecc88fdc333228f34068cf92ae57c8fa82a1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r01-p01-context-16385/run-1/client-exit.json": "a4ecf2984388fc348dbeffaf1ee8acc04d5e5c6ce00c58252cf3a4547a134e4d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r01-p02-context-8192/request-boundaries.json": "e7b69140271866707572e685485d394792cffe4eb3065eef8e82b56e64301f7e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r01-p02-context-8192/run-1/client-exit.json": "139d813d19757f35aa72b292a81d98d4938e3651300d6800041a0078d89e5232",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r01-p03-context-8193/request-boundaries.json": "df623e0dd8e3370db7b74f62696d1a851f1f0626d5191ba295f4b6d2a8d3b043",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r01-p03-context-8193/run-1/client-exit.json": "ab51e15bf6f215943087131f2cb4d6faaaa442c83c221dd4dcdc8feab4259ccb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r01-p04-context-1024/request-boundaries.json": "cbeea67e669ba85a629029b84b772b96ee14a3ee965f33d17c98e12639a40467",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r01-p04-context-1024/run-1/client-exit.json": "31c396e665351fdc758c312d9ced55d8dd8e6ce66db98c42079d6fa319add128",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r01-p05-context-45056/request-boundaries.json": "913e6b2b4406c868b0c3a6fa3064e6da21d825937d1dccd42995d9224441c83f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r01-p05-context-45056/run-1/client-exit.json": "3a4987824912d9690ebec84295d72a5a641a687d7062766ab5c3191d9c8cbac6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r01-p06-context-4096/request-boundaries.json": "60649ff2888cc01e7f539000f509333b222a986067476bbe3f27b460d56ec5a7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r01-p06-context-4096/run-1/client-exit.json": "0354ded203d4d50e5e5b92e91b924edd43dcd168e7d1ff1438c3cd5f1cb38584",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r01-p07-context-8192/request-boundaries.json": "6aba23c35e4b52391f904ca8e7fe644331f8616bd83259f3b768152f4dbb7f7d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r01-p07-context-8192/run-1/client-exit.json": "5fe747acfda102ca8ac1e516a951abe85531c84ae560f0b069a00882cd4722e7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r02-p01-context-16385/request-boundaries.json": "a668024630a36736abba909f573a630b57bc3544fec8bfd5959483ddd572b4d2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r02-p01-context-16385/run-1/client-exit.json": "3f84af1080367bdb428fbfdf408546553fc0abb5d9c4233b9e44868c8724dea7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r02-p02-context-8192/request-boundaries.json": "e1692d7ee848ceaf7a4b429ca9e021b05a1fa0989b55359ccb6120ebc20db979",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r02-p02-context-8192/run-1/client-exit.json": "56ebafdfae1d20c6ca698e1acc321f48f53518e4ea184b74b9cb5788e333bef2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r02-p03-context-8193/request-boundaries.json": "177475cfafc89386799662b1b8aa5c7b3a06b8f350aaaa2a8d8bd7cfb943fd50",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r02-p03-context-8193/run-1/client-exit.json": "9f9b9e72326200b1935611ecc36d3dec70c115a64fe4dce475d698f80e78b415",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r02-p04-context-1024/request-boundaries.json": "e07266a70aea4fdd4d75a564b20f63f65fd3bd124db81221d19be72de9ad5019",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r02-p04-context-1024/run-1/client-exit.json": "bac62470bd677b10450a67a799b3d3ab928ee157c48bd6fb5731821223a55a85",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r02-p05-context-45056/request-boundaries.json": "7c87a0633e660c934da73218a8cf0084eb79e485a701fd8d23af62928d9d60ac",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r02-p05-context-45056/run-1/client-exit.json": "94fafe442597f04ff6368d2a6b73e85af9114129ce989cb5b2db1d5e0cb415ed",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r02-p06-context-4096/request-boundaries.json": "36205862fd1aa5e166a056eb649a7b460ed3619c289408d10aed2909cd2dbea3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r02-p06-context-4096/run-1/client-exit.json": "2b302c35efff9e01c282c83c949b7ef02b4a970fb0ad6432be06208cdca30499",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r02-p07-context-8192/request-boundaries.json": "8517eac159d033c3012e48c4e3d0658544dae97edfcf548847b0a93b132bc5dc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r02-p07-context-8192/run-1/client-exit.json": "ae09d93691699eff5c5f115ad6e506d558bfcab2d7bf3c1322a99a395d5b9df6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r03-p01-context-16385/request-boundaries.json": "ad4f3c0b7c10e21f8b8eb6f371e721e0f882026324f5ec121af646ba91562c3a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r03-p01-context-16385/run-1/client-exit.json": "9a85c327b3ca91e63f13fb48ed34dcbc1ade15a3ea182dd23abc6aa74ac0a230",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r03-p02-context-8192/request-boundaries.json": "b94e8d780cf1add8fc501f5fa4a479cf28c640ae300f2ba12f4d365e21f84bdc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r03-p02-context-8192/run-1/client-exit.json": "fadbb942fc96d1b4fab584bba55ac8f7bf942b9669134421eb7084b9b97391d4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r03-p03-context-8193/request-boundaries.json": "b2d7136dea73e5847f56fd8b7744e9f8ecfc9a1dfb5b1f1d9b2e0670862cf4df",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r03-p03-context-8193/run-1/client-exit.json": "316919da50df2eee53b4e28b522d81ad8909e1fa73a8d11838e1e9addfd5a071",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r03-p04-context-1024/request-boundaries.json": "07f0b0c96cfd5deaf4d3e2c569e1d0580dcb09d283fcb04c9adbf9e4f2b5c5c3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r03-p04-context-1024/run-1/client-exit.json": "16e5e045538e15b591203343b633e08f141e5883425a077cc8ad72ec6c1ab316",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r03-p05-context-45056/request-boundaries.json": "2acb4f3952578136f63eaef1154cf5f4d8d5ebdb6571d4b074209e9c69f41d59",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r03-p05-context-45056/run-1/client-exit.json": "c024c3210c13e53161d28e0801447dfdec7772ac4db7be07a220a45b3897b962",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r03-p06-context-4096/request-boundaries.json": "2bb2afdcae91e87098151e5b30f2190ad866f4a0f77b5121132f626a4bbe6075",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r03-p06-context-4096/run-1/client-exit.json": "c9d53c9c5465689dadf2ee4ea9be65c1bcd9e3027356725b1e7118ea906fb355",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r03-p07-context-8192/request-boundaries.json": "435295b072400452ec61adde63436768979dda4fe82594dd0706567c52bc31dd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-off/http/sequence-r03-p07-context-8192/run-1/client-exit.json": "4d5e1d942db4d8156aa856ad1405604c456d2f746de64d0aa21a9a7d4df081ef",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/protocol.json": "96c1e89a82c545d9f61d9f579cacfec0f2e7d9e844b7a576a9f86f4557e670eb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/memory/memory-peak.json": "287cc09138c7769d0d7135af7aa761bea2292248231e873a500501663c4d9ffb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/runner-process-group.json": "2a533f2d76ff79576eb4502a4aabed105c0dfc10f919bdb66f6d71233f9de026",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/wrapper-exit.json": "529dd25f250e1c2166eb30dd0c4acf3d31b58a05bfc7d08c81a9c7c57566816f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-on-stage.json": "2119b1e7b06b50ba75c4190a319e696c88a5d34b46acdad52a30808987da64ac",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/isolation/identity.json": "7e7cf6215ba514cc16ca7d5308e53583016e6584adea9afbe585f0078c0ecc90",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r01-p01-context-16385/request-boundaries.json": "95dce34e788696bf644d5ef3a475a1a4c6269e4f82ade8967ddcbc690f5085fc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r01-p01-context-16385/run-1/client-exit.json": "4f47f9358e00c4f83d725266026b4fc4ed30022b775c024c6c0b7722929f29e7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r01-p02-context-8192/request-boundaries.json": "23a8718ef46442852372c8d91ba419ec95e63f1777aee448d62ab7ec0631985c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r01-p02-context-8192/run-1/client-exit.json": "fcdce518695ae35a7c3de9ddb50de875cdd7b72ee8ec490fe07fb84ddb539f65",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r01-p03-context-8193/request-boundaries.json": "5515022d858778a9e1953648455b06a10f70a4239d677f54b5a288c9ad1e5890",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r01-p03-context-8193/run-1/client-exit.json": "9c67965f9a8f24f46ecffa853c168646d1f8ba2a6459ed47feaaa4782c1dba89",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r01-p04-context-1024/request-boundaries.json": "621e0c7556db74239c5d8b0a3d0effd330e6acb3be4e330498bfbac3e03dae9e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r01-p04-context-1024/run-1/client-exit.json": "0fa70f80827b275ed833d598e1629e2b718dea539d95c82e71798fe4c3ff9a0d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r01-p05-context-45056/request-boundaries.json": "a690bdc0b64045d0b290ad518756f6ccbc1efbf6258d2197cb5be35b4f3a1064",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r01-p05-context-45056/run-1/client-exit.json": "79e24e27fb35fe9df9b1df9403f863117dbc9c52e1d5a06d698210af8c73307c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r01-p06-context-4096/request-boundaries.json": "30024d813f095456b53d901a2b54b5626170348474391ee982790da818dc5f7b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r01-p06-context-4096/run-1/client-exit.json": "685bda38836d29cb3cf9201b1606f1c0ecd4446ed0e20ace50f8b064831b12ec",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r01-p07-context-8192/request-boundaries.json": "d265c5dbf14e825f974c14c0fda28d3540a8100e2c8a6d39627cedbd91794bc5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r01-p07-context-8192/run-1/client-exit.json": "65a181481f189182e4686d9bab2d6871babeba4684f5ed57034bb0e988aa6c18",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r02-p01-context-16385/request-boundaries.json": "d478c7baa0324e78dcaa738f6a4e523187cfbf15eaed282b59d1a9fece84a591",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r02-p01-context-16385/run-1/client-exit.json": "0a95b926965c900c5af1d8c3cb314b39d5d8d99257c42ddc019e10aff7626245",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r02-p02-context-8192/request-boundaries.json": "e0585997b44f3199202572d5f15d06444cfbc501d2fbc1ed4c604c862ddfd791",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r02-p02-context-8192/run-1/client-exit.json": "6e1fec70abdc0c396f1fe2135875b6332e0ba75067a15345fc47a223d846832a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r02-p03-context-8193/request-boundaries.json": "eabb61b0e4f4c82121b13b854b9dabb92cbe873909847e9410bd1d5883137b4a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r02-p03-context-8193/run-1/client-exit.json": "55cd79b71cddf3f63a838dc9df1631fa87d7d5aab529c9a9e0880a9aa09e38a2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r02-p04-context-1024/request-boundaries.json": "ca6f0f5cb7db0427bd9b2123482ba05abd3ca3222db050ca3433a0d6a04ae263",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r02-p04-context-1024/run-1/client-exit.json": "a4a28f0d489212f388429f827dde1a9bc452e0ca8b2ea4903df98f0d5c896593",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r02-p05-context-45056/request-boundaries.json": "f5a964cc6cca5804a457a874c3fe2d69c9ad66c0f7f2c278fcf6ccbad9c8d431",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r02-p05-context-45056/run-1/client-exit.json": "94bfd71df7d4e5d59dc3c299bde9f054687bde8892b62661ee5c315a049bb8d3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r02-p06-context-4096/request-boundaries.json": "09c4b33e598bf705a85fed7b82fcfb17055a76f67949561e4ace7a1c8366daaa",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r02-p06-context-4096/run-1/client-exit.json": "a7cb58111cdfa31525f857fbac631502703967a37872c632e6a975f501f8f6ec",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r02-p07-context-8192/request-boundaries.json": "e2bbd90798e624252926035ca759eb857257e7a64a931a6633514aac2858a9e8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r02-p07-context-8192/run-1/client-exit.json": "40fe11abf1b4d6e24f2f7bd38419ad203f2c27713f6d9b8d6c780178ed345414",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r03-p01-context-16385/request-boundaries.json": "2ed213793973b7d424f9b68ce12d8234cb728306a018593b451ef0fd1e9cde21",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r03-p01-context-16385/run-1/client-exit.json": "3a227c5c66576b418c09713f239e70f16e49ad64775a92b45485f7fac4e6be0e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r03-p02-context-8192/request-boundaries.json": "cb9bb5e2475a44335ca78f900830edfba29fc3245db474e6aedfb2082efcaa18",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r03-p02-context-8192/run-1/client-exit.json": "e71b84b3d251efe6ea3fc7fec9a93045a811c10a114bd34d7409d7f2c43ded37",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r03-p03-context-8193/request-boundaries.json": "4b9acb119b8640223c814750ffedd2fafee5f3bfed0b8a68c290e64512ce122c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r03-p03-context-8193/run-1/client-exit.json": "b998310607e4ad0711ed711572035d4228ada1c1f2559e780866816238fb731b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r03-p04-context-1024/request-boundaries.json": "8009a42762a0fd27f6cd06af4fe6474b4062c115ff22ee55a1e0647d2c79d1de",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r03-p04-context-1024/run-1/client-exit.json": "10543d3591fd61cc3b2a248ccb6512cde478ba0afc6d2800caa9e1ec8da56aec",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r03-p05-context-45056/request-boundaries.json": "90be0a347881837c013207e3e1547b3d9cde199f8126d17074265e5d33ada879",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r03-p05-context-45056/run-1/client-exit.json": "8b628b42e4022e4f25848c827c59cc69487613bcdec7267b3e87ea67e6abb48f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r03-p06-context-4096/request-boundaries.json": "8688cc333cfc758305573de44cf035ff340b30e7d37b5f7a43dfa66a28b7d3be",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r03-p06-context-4096/run-1/client-exit.json": "f7d51cff8784b4b2bca468f88bed45bad3ace5390d5be23006093895062f48f9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r03-p07-context-8192/request-boundaries.json": "9d8d1eca1a9efe8cdd17b0b7f5827d1714e71b67249b597d0f87ee2ed9190b4e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on/http/sequence-r03-p07-context-8192/run-1/client-exit.json": "7ad29093f10d565475341fdcf47037f0f58584bdc41ba83df9602dad5eaa0495",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/protocol.json": "f8df81c7fef5567676be909decd8390ca13438a8519e27ab369ef7c6af8a6367",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/memory/memory-peak.json": "dd94435cbee8984be565619b6e28d474d1487eea55f6675cf59000ff8e4f1aee",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/runner-process-group.json": "5ede6eb6c31d54c257417da7e7ea658f19f0f29dc15f616517a2225e95fadf1e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/wrapper-exit.json": "05a19d85fb418ff1afdb0c10ea402c7e76900f5c5f38fa360e950631788540a1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-off-stage.json": "2243733f95336930c3367d6434c8fdc10bebd7c16623d669ef4963e4b7aa159c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/isolation/identity.json": "f376f05adbdff411baa032c319f6bdae71d09630cb07fe15170df7d7934f1b61",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-1024/request-boundaries.json": "28496a5876218f28f8854f3fca01fd9bf53ca72b347272296037f3295719880e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-1024/run-1/client-exit.json": "13bbf3fd8a78ae2b94decc7528e5b1fb7a112a2c436487c1d9cdb8c838ab4f0c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-1024/run-2/client-exit.json": "8c2af4fbee1bbc0b0689056c679f60463696799629ead74c1979710303b6392b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-1024/run-3/client-exit.json": "2eb710c8582dda6d904f6f891784a16b4e9f730c1d76a0e34cd7a97ca98b3099",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-4096/request-boundaries.json": "42235e71ddbc030a4242cac1e97b50faa6cf2bb58a9772bf4fd25f96f34fb480",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-4096/run-1/client-exit.json": "c6f3dd30823a1f29abd6917df41edbe6f4d4723740fcb41917ab255fc777c9aa",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-4096/run-2/client-exit.json": "da0b94345aef54f722acafdbf9361b099a4da8abc7e871a92bbd3c3f793c2f11",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-4096/run-3/client-exit.json": "a5370773ed144d00ce24d0203630418f2fed88eb5364ded8a7980b53b913e8cb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-8192/request-boundaries.json": "5b66119f6f4dbecb2eb6de177231a59066a6cfc0725925074175d97e87f5e66e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-8192/run-1/client-exit.json": "8202e60926a4fc16dcdbc6ed87a530e6696b5ad8308e7e4486896674d7138c1b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-8192/run-2/client-exit.json": "0a563c6035c4ba40d3ae0c0fdface08cd90b589379dc39edf66abde0fc11d4dc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-8192/run-3/client-exit.json": "9f15e52d4e2ffd4eb1b97e5183fedfb9ce41f58ef47c3ffbad47816bbb049e3d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-45056/request-boundaries.json": "2a8e3b7dd09954f787a893ddb77502cafd10fd287dbc4187bfec7a484e069751",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-45056/run-1/client-exit.json": "3375c6b8c2f8b06a7960bb8aa12afd8bd59dccc0dce160479d3e1fd19148aed6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-45056/run-2/client-exit.json": "8af5c71863a0e729d965c9c3521fe20a866c24dc728fd7a99c830a1cf77b2109",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-45056/run-3/client-exit.json": "397e1f5a014a6d54cb5319891e56ff0b7ad88c6f4ffe184bd2a0933f722d6994",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-204800/request-boundaries.json": "3cff6bfdf6e8a4065bab7fd4fdefc262a6c0a786cd7752624eb850564b3e8c56",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-204800/run-1/client-exit.json": "0a6596fdb8f243d789279a5470bdee351d5dfeb4f18800b292d276a2fd44ba5f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-204800/run-2/client-exit.json": "ade790ff8347188e5cbc6112b5c017363e2bc22b07487bd9567a82095e81b769",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-204800/run-3/client-exit.json": "17fb2450bef86e4fc7827bbab0e915818588d4c25e8f8d0cd1a6d63db7f38cd9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-261887/request-boundaries.json": "1a25b9d41db0ec8fb9ed025e40207f68afcb0db592b16e87bedec5f444872ee4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-261887/run-1/client-exit.json": "0ec598a3ed59394f7a6239c451e0d026b4649407b7fb956563433f56d71e6bbd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-261887/run-2/client-exit.json": "63d423cb451dfec4539af76e8057662f0bfc037482513e526349850d26909a3f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-261887/run-3/client-exit.json": "3c9caab112c9bb9d4e6282f236c1549e43449b43db79f002064d1b7589eff92f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/protocol.json": "3cc21f9d0d39810382c43a2b5c88480abe498ca048f629e0ecdad20b529246a1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/memory/memory-peak.json": "567a7ab3222026d770a4aae2d79028ceadbfa15bcbdbf72607605836e71d7302",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/runner-process-group.json": "b60d08d5e97b6f5605a721593fcfa1d297522edac32a87da0b10e5a3fd9d271c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/wrapper-exit.json": "42cb31c7cb31b426b6b4b15584f9fe93726767eaba7c6996a929932d4d952444",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-on-stage.json": "9f3c2b62000da2d59ac800663da6d82b40e3feb43197be83e9189b84e14ec8fb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/isolation/identity.json": "652d00ad5ae25c06d76f397a8bf10ba2e4f2e5fd80f8b38d151b10f9b8fe152d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-1024/request-boundaries.json": "9b85a9a753b11a6b6c420072a51c354d9c0ab4253794b004f745fa4c198271ad",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-1024/run-1/client-exit.json": "2daad2617a7fafc8ee3734347d5a0fd57667e50f282f933d0ee8f51d9d582c59",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-1024/run-2/client-exit.json": "13b1c642c9e5fbf50d20800dca8708c3f1ed1b0bbd5b151b7360fe345191b071",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-1024/run-3/client-exit.json": "a545b8998cf7a2f3f5687eb8926ef0543abdd24ee93295e95a00981d822978c0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-4096/request-boundaries.json": "4307f2acd26c6c86864e67c4584b1d5129c515f1f07778d4f8b7623ecaf4f9ef",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-4096/run-1/client-exit.json": "09bfbc70d82b06f458e268fe78158227370c7f75ee439525da287e1b253ccf41",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-4096/run-2/client-exit.json": "04d93253e3a0f8c960aa5d5f956b730236b978b8f0efc3c37573f777c5b9df1d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-4096/run-3/client-exit.json": "4b7aa24e9827eac3c313b707864db1d18213d67f37f54b5724e48a526ca31df5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-8192/request-boundaries.json": "61f187906d781d01f8432d09e4bd10c6a909998494940544843166b52b4ef880",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-8192/run-1/client-exit.json": "1bc198ca92384eaf4a2861fda13141756066a249484b6ee096c7b6d273158c87",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-8192/run-2/client-exit.json": "40a620d0fa18031c257003a0e7d037b41ae95ca569f4c017039e80f3d0a7fce2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-8192/run-3/client-exit.json": "426c6dccbfe1e5bf7490f285262c7045a889a0fac81299a69002bb7718983bcb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-45056/request-boundaries.json": "63e24c57807105e53aba318f6ffd5ab374d994d3d35b430d8c3673c424f91cda",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-45056/run-1/client-exit.json": "6762c7a868e1519fd35652cb6c87453a04d030a5507fe73f2f530ac1c8a9974d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-45056/run-2/client-exit.json": "fdc40e25b5a3219512e6c2d0c023142ece6c9db55161c49661a00a6634db9091",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-45056/run-3/client-exit.json": "26f0a5464f6119eb051999b911ca78136e150e65cac8c9204ff719d3c65f4685",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-204800/request-boundaries.json": "3ea3454c45a87320e7f053374e84477e2dbc781ee2ae6dd734d788c406c8b88f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-204800/run-1/client-exit.json": "719341b13c8a864d89f86a1dc8c25d421443151d263280854794493f1a156b21",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-204800/run-2/client-exit.json": "4cc924eb6d193ad4144328a54e513b129f67442bf6e267b8968a0b711f96f9ab",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-204800/run-3/client-exit.json": "05242f506a8ca929890b0dfa444ee8c5d60b7a03bf78af61340bf9812bed32b0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-261887/request-boundaries.json": "1a9ab4c73d3b115ca04a990f46b9c316d544a5d58acd6f48979a7e669c0bda8a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-261887/run-1/client-exit.json": "31375f9b0b17b506880a72d3e6bf0df88a13516aa3b98bf51992d393c2108093",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-261887/run-2/client-exit.json": "2554c8568290b03cff79460053ead0e2509a6d4bb82daa2dd59a3594bcdf3006",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-261887/run-3/client-exit.json": "b9b2660b0b83d7585b663ab80597b823e35a219c1cf77135b5670f717cdc08e5"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "script_sha256": "035f1f840d00350a7b6db62e1b8ef7f62a5fda02406dae91395d291a67652da4",
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-autonomous-20261003/audit_raw_resources.py",
+    "--self-test"
+  ],
+  "start_utc": "2026-10-02T23:53:49.180384+00:00",
+  "start_unix": 1790985229.180403,
+  "start_monotonic": 1206981.671095873,
+  "returncode": 0,
+  "end_utc": "2026-10-02T23:53:49.228406+00:00",
+  "end_unix": 1790985229.2284164,
+  "end_monotonic": 1206981.719109497,
+  "log_sha256": "5be5555609ee43ce415c5f7326aa244af048a09c05930ce64b9d16ac61f894a8",
+  "script_sha256_after": "035f1f840d00350a7b6db62e1b8ef7f62a5fda02406dae91395d291a67652da4"
+}

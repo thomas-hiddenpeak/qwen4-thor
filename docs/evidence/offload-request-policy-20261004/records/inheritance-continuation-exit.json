@@ -1,0 +1,74 @@
+{
+  "started_t": 1791112094.0128276,
+  "failure": null,
+  "decision": "NO_GO",
+  "automatic_retry": false,
+  "full_matrix_autostart": false,
+  "decision_sha256": "c8295b11a4fcb5837e2372705df5df30357ddc8225ee832eb969b1132435303f",
+  "ended_t": 1791115941.7958758,
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/audit_group.py",
+        "inheritance-off",
+        "--plan-sha256",
+        "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d"
+      ],
+      "started_t": 1791113929.126549,
+      "ended_t": 1791113929.8911612,
+      "returncode": 0,
+      "log_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-off-audit_group-continuation.log",
+      "log_sha256": "5e8f5f084584a165847b8951a86b984a64ae21543f39cff5c0990f0e22d210a2"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/run_stage.py",
+        "inheritance-on",
+        "--plan-sha256",
+        "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d"
+      ],
+      "started_t": 1791113929.8913436,
+      "ended_t": 1791115939.8047864,
+      "returncode": 0,
+      "log_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-on-run_stage-continuation.log",
+      "log_sha256": "87189cee287ae383c0db321995d4b27c2c34210fd858bf6fbbf67c9f198fe596"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/audit_group.py",
+        "inheritance-on",
+        "--plan-sha256",
+        "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d"
+      ],
+      "started_t": 1791115939.8049588,
+      "ended_t": 1791115941.3304427,
+      "returncode": 0,
+      "log_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-on-audit_group-continuation.log",
+      "log_sha256": "41bde0518fce28e211e55977832b65bf6d088955e2428b74e51ad9b1d077b23e"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/compare_groups.py",
+        "inheritance",
+        "--plan-sha256",
+        "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d"
+      ],
+      "started_t": 1791115941.3306324,
+      "ended_t": 1791115941.795476,
+      "returncode": 3,
+      "log_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-compare_groups-continuation.log",
+      "log_sha256": "dbca4211886dd549e14bdc3648f5ae30d1640061008418103f5c2109581729b5"
+    }
+  ],
+  "runtime_binary_sha256": "34eb4cf5b53dfcc5b0783120fcdec438fd321dbd4c981f52eee581c96f7fb93a",
+  "runtime_source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+  "plan_sha256": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d"
+}

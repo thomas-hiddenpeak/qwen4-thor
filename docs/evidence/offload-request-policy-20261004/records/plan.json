@@ -1,0 +1,132 @@
+{
+  "schema": 1,
+  "frozen_at": 1791110308.7462602,
+  "entry_commit": "f3e3d21a4bbb06a3fb0a86dc1b72361454e83e87",
+  "branch": "codex/offload-request-policy-20261004",
+  "policy": {
+    "axis": "request-partition",
+    "switch": "Q4T_MOE_REQUEST_PARTITION",
+    "default": 0,
+    "off": {
+      "Q4T_MOE_PARTITION": "0",
+      "Q4T_MOE_REQUEST_PARTITION": "0"
+    },
+    "on": {
+      "Q4T_MOE_PARTITION": "1",
+      "Q4T_MOE_REQUEST_PARTITION": "1"
+    },
+    "threshold_full_tokenized_input": 8192,
+    "short_mode": 0,
+    "long_mode": 1,
+    "threshold_selected_from_prior_evidence": true,
+    "immutable_explicit_context": true,
+    "chunk_T_is_not_request_length": true,
+    "serial_plaintext_only": true
+  },
+  "frozen_runtime": {
+    "C": 256,
+    "L2": 16,
+    "mirrorK": 8,
+    "max_open": 200,
+    "max_seq": 1,
+    "max_prefill": 8192,
+    "max_len": 262144,
+    "GEMM_precision_changes": false,
+    "MTP": false,
+    "PhaseD": false,
+    "diagnostics": false,
+    "chunk_order": 0
+  },
+  "sequence": [
+    "finish batched implementation, independent static review, clean source commit and zero-warning Thor build",
+    "FIRST TEST fixed11 tools/evalscope HTTP quality candidate-on",
+    "affected host contracts and three real-weight numerical contracts",
+    "inheritance off then on; 21 requests each",
+    "only inheritance PASS: six-tier off then on, 18 requests each",
+    "only full matrix PASS: business/lifecycle; resource audits and independent review",
+    "stage commits/push, protection/cleanup, honest final disposition"
+  ],
+  "quality": {
+    "cases": 11,
+    "host_cache_limit": null,
+    "clear_model_cache": false,
+    "reference": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/quality-on/http/results.json"
+  },
+  "inheritance_screen": {
+    "sequence": [
+      16385,
+      8192,
+      8193,
+      1024,
+      45056,
+      4096,
+      8192
+    ],
+    "rounds": 3,
+    "requests_per_arm": 21,
+    "output_tokens": 256,
+    "host_cache_max_bytes": 17179869184,
+    "swap_max_bytes": 0,
+    "same_server_within_arm": true,
+    "cache_clear_between_requests": false,
+    "position_specific_gates": [
+      "on round1 TTFT <= off round1 TTFT",
+      "max on rounds2,3 TTFT <= max off rounds2,3 TTFT",
+      "min on all3 decode >= min off all3 decode"
+    ],
+    "duplicate_length_positions_not_combined": true,
+    "baseline_new_lengths_quality_oracle": false,
+    "historical_fixture_output_check_existing_lengths": true,
+    "on_output_reference": "matching position in off arm",
+    "valid_NO_GO": "stop all later model requests; retain first evidence"
+  },
+  "full_matrix": {
+    "lengths": [
+      1024,
+      4096,
+      8192,
+      45056,
+      204800,
+      261887
+    ],
+    "repeats": 3,
+    "requests_per_arm": 18,
+    "output_tokens": {
+      "default": 256,
+      "261887": 257
+    },
+    "gates": [
+      "on first TTFT <= off first TTFT",
+      "max on later2 TTFT <= max off later2 TTFT",
+      "min on all3 decode >= min off all3 decode",
+      "all output/capacity/identity and all tiers pass"
+    ],
+    "host_cache_max_bytes": 17179869184,
+    "swap_max_bytes": 0,
+    "same_binary": true,
+    "fixed_order": [
+      "off",
+      "on"
+    ]
+  },
+  "cold_preparation": {
+    "maximum_advice_rounds": 2,
+    "each_round": "targeted model-files POSIX_FADV_DONTNEED then observe all226 files; record every round",
+    "final_payload_resident_bytes_required": 0,
+    "no_service_until_pass": true,
+    "no_retry_after_two_rounds": true,
+    "advice_success_is_not_zero_proof": true
+  },
+  "failure_policy": "No favorable repeats, no post-hoc threshold changes. Specific implementation or tooling failure may be fixed with first failure preserved and only affected checks rerun under new identity. A valid speed NO_GO stops later model requests for this candidate.",
+  "prior_full_NO_GO_preserved": true,
+  "resource_limits": {
+    "whole_physical_RAM_54GB": "INDETERMINATE",
+    "host_cache_limit_is_not_physical_union": true,
+    "no_sum_of_independent_peaks": true
+  },
+  "next_phase": "Only after full accepted candidate including delivery gates; freeze a separate single change reducing prefill weight transfer/mirror writeback. No guaranteed 10-20 percent gain.",
+  "model_reference_readonly": true,
+  "original7_protected": true,
+  "default_enable_or_merge": false,
+  "time_or_token_budget": null
+}

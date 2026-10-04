@@ -1,0 +1,16 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/check_final_protection.py",
+    "--self-sha256",
+    "a15379de30ad28d9e92ef5134205a38ccc97c49b526fcab9fae94b27b5333ccc"
+  ],
+  "started_t": 1791132034.6609714,
+  "script_sha256": "a15379de30ad28d9e92ef5134205a38ccc97c49b526fcab9fae94b27b5333ccc",
+  "scope": "post-coverage pre-documentation protection check",
+  "ended_t": 1791132034.825052,
+  "returncode": 1,
+  "failure": null,
+  "log_sha256": "782d6dd6c8188e5575efa19b2a7b9cf85936bbb7f7ce617d12f9d7545ec9b3d4"
+}

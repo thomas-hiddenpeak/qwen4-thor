@@ -1,0 +1,1311 @@
+{
+  "schema": 1,
+  "status": "FINAL_SMALL_PAYLOAD_INVENTORY",
+  "created_t": 1791134376.8194737,
+  "performance_disposition": "NO_GO_PERFORMANCE",
+  "optimization_accepted": false,
+  "runtime_source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+  "runtime_binary_sha256": "34eb4cf5b53dfcc5b0783120fcdec438fd321dbd4c981f52eee581c96f7fb93a",
+  "path_resolution": "All repository_path values relative to checkout root. Original absolute paths are local provenance, not portable execution inputs.",
+  "payload_count": 161,
+  "payload_bytes": 1361593,
+  "exact_original_copy_count": 147,
+  "entries": [
+    {
+      "repository_path": "docs/OFFLOAD_REQUEST_POLICY_2026-10-04.md",
+      "bytes": 21831,
+      "sha256": "3a0ab3729bf2087be6f6a78a3126932c56683a6c11597ce0373444abbf6718ce",
+      "provenance": "final_authored_document_or_inventory",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/report-draft.md",
+      "reviewed_draft_sha256": "3a0ab3729bf2087be6f6a78a3126932c56683a6c11597ce0373444abbf6718ce"
+    },
+    {
+      "repository_path": "docs/README.md",
+      "bytes": 11291,
+      "sha256": "0e54214f7274a14aacf3800a43049665d9fde6edc393a9b54a9d308a024d6c17",
+      "provenance": "final_authored_document_or_inventory"
+    },
+    {
+      "repository_path": "docs/STATUS.md",
+      "bytes": 115600,
+      "sha256": "37367e595a1601514bc73e40d0e6dc8822e94c18170cf727f1278d8f25fe50a1",
+      "provenance": "final_authored_document_or_inventory"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/README.md",
+      "bytes": 6029,
+      "sha256": "d3c6e6a88e29df50be81de1a9f1f88704ed67cf18324653b3c1f129f145759fe",
+      "provenance": "final_authored_document_or_inventory"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/baseline-additions-manifest.json",
+      "bytes": 8713,
+      "sha256": "83f8db86f9f34a0ee38dc22f9aa0f530e1a52490b5bf0894937dd565ab26f09a",
+      "provenance": "final_authored_document_or_inventory"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/boundary-fixtures.json",
+      "bytes": 2462,
+      "sha256": "2e4ab8ef44f75b3a3f495dda951f89ab3c71b2217e9be7b30bbf069f58cfff1f",
+      "provenance": "final_authored_document_or_inventory"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/dependencies.json",
+      "bytes": 10593,
+      "sha256": "7afd79988940d9588b5e554331248922ed03f1a8a6397bbfe3c8d2c3fdf46538",
+      "provenance": "final_authored_document_or_inventory"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/final-review-additions-manifest.json",
+      "bytes": 3132,
+      "sha256": "bfb0ee1978dce97e3f150dfe07009ce4a24db3261df3934568428472c12264ee",
+      "provenance": "final_authored_document_or_inventory"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/manifest.json",
+      "bytes": 46632,
+      "sha256": "1f3812f81bcd5940bfd232f063199bc22bb09f37ba5529da374900fbecb88dd1",
+      "provenance": "final_authored_document_or_inventory"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/host-build-exit.json",
+      "bytes": 733,
+      "sha256": "d98a496d5f368f84ade621d812cf1a0f5fff8c5eaffa2e6bd54e7469355c1296",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/host-build-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/host-build-start.json",
+      "bytes": 440,
+      "sha256": "cb69c7c69c8125a9841ff60db5150e4c3f754c3a9fa19352d55940111ed2a399",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/host-build-start.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/host-configure-exit.json",
+      "bytes": 914,
+      "sha256": "93d5f2d5130eb3e9f45e8df139ce836dc3551c8f9d64ec89c230f816ae314fea",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/host-configure-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/host-configure-start.json",
+      "bytes": 621,
+      "sha256": "17810e56e74cf2b4846d29710848b402f98f44dbd8d9d5eadff422960fa360f7",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/host-configure-start.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/request-host-tests-exit.json",
+      "bytes": 708,
+      "sha256": "6476d0def225d13a65fd3bc3f24c2fa0d688582b9e8a932f8e559f65d3925c95",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/request-host-tests-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/request-host-tests-start.json",
+      "bytes": 415,
+      "sha256": "3fffc8f69dc394fd9673ae438b68fcf7c0e1db734cee33c9e4600994051a9359",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/request-host-tests-start.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/request-host-tests.log",
+      "bytes": 477,
+      "sha256": "f6706bf6789118dcf7ab7c89b9018ee3032cb75e3748bdbb15eb5efc78519549",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/request-host-tests.log",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/test_chunk_order_protocol-exit.json",
+      "bytes": 688,
+      "sha256": "36421649146b1c90c53411f71452409b06efde68d1c3d2c84d75e880cd13e5bb",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/test_chunk_order_protocol-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/test_offload_matrix_audit-exit.json",
+      "bytes": 689,
+      "sha256": "11c513ab9fa75225112ea548d11bb8c893467135051a7703181d0b7c160256d9",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/test_offload_matrix_audit-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/test_partition_protocol-exit.json",
+      "bytes": 687,
+      "sha256": "42e4e4cb75ffba628f68d221364186f0e5dcb01701a57fc8f1e04f441d00ef59",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/test_partition_protocol-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/test_request_policy_protocol-exit.json",
+      "bytes": 692,
+      "sha256": "b4d502a960dcd409f76afae6ea587ef06afbd3f388c8537863370348630b644f",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/test_request_policy_protocol-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/test_run_acceptance-exit.json",
+      "bytes": 683,
+      "sha256": "31fdb80b2f4727e5b854081410210222bd7a98243d139e46c2cc97ccbe6d75e4",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/test_run_acceptance-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/prerequisites/numerical-01/numerical-build-exit.json",
+      "bytes": 765,
+      "sha256": "44ed7ddbe31277367615ed2bbb27df4cf060686de6ce7d638d6b6da73a6bc40e",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-01/numerical-build-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/prerequisites/numerical-01/numerical-build-start.json",
+      "bytes": 472,
+      "sha256": "acdc056e878ddd84ad15c30f14bf57bb5baeb0b1731d19977b088057fc11a623",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-01/numerical-build-start.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/prerequisites/numerical-01/numerical-identity-before.json",
+      "bytes": 917,
+      "sha256": "c27b741ecda1e4d90e471e1a25d521f6ad8c84be4cc89bbddc3d9f9c74c6247f",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-01/numerical-identity-before.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/prerequisites/numerical-01/numerical-tests-exit.json",
+      "bytes": 821,
+      "sha256": "0b35861ad3c7ec8a43dec130a894f9b7d6a0811a87f2b4ec34c7434e19660543",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-01/numerical-tests-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/prerequisites/numerical-01/numerical-tests-start.json",
+      "bytes": 529,
+      "sha256": "4ac0a1cbf09284c2ca2847170651dd80321d8ee0d79a87f3014069ef8da120ff",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-01/numerical-tests-start.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/prerequisites/numerical-01/numerical-tests.log",
+      "bytes": 7423,
+      "sha256": "45c6b825df702f4691d1da5662e9e9ffbdfdd140a01dfdde2df353e296383652",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-01/numerical-tests.log",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/prerequisites/raw-core/self-test-exit.json",
+      "bytes": 705,
+      "sha256": "8fcf469238691ef2993e5c453ffee4df549efa25e15c210b0e5ff116b47f655f",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-autonomous-20261003/raw-audit-execution-01/self-test-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/prerequisites/raw-core/self-test.log",
+      "bytes": 78,
+      "sha256": "5be5555609ee43ce415c5f7326aa244af048a09c05930ce64b9d16ac61f894a8",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-autonomous-20261003/raw-audit-execution-01/self-test.log",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/raw-evidence-index.json",
+      "bytes": 3624,
+      "sha256": "397097b8e97ae8577781dcbdb3817d9b9d7b1c263452a7c626fa06f21faeead5",
+      "provenance": "final_authored_document_or_inventory"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/bottleneck-interpretation.json",
+      "bytes": 27267,
+      "sha256": "d34038ebed2cf8b54a0af2025c03c239cc97a17451a70a7b5a9790843da53861",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/bottleneck-interpretation.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/build-exit.json",
+      "bytes": 308,
+      "sha256": "c81004e987ae1ce3c740b2eda66d2afb9f060c9678a2a5f27a90b887410b5ee6",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/build-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/build-identity.json",
+      "bytes": 1692,
+      "sha256": "1575aa5c92ad049d14d64898ed516e1e1530420cbe65ff139a5719065ae317f2",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/build-identity.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/candidate-source-identity.json",
+      "bytes": 351,
+      "sha256": "41cb8727d74986fcbfaffa0367f19cd7d146bff434043bb458ae186d9d0ac081",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source-identity.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/commands-proposal.json",
+      "bytes": 7563,
+      "sha256": "c1d74bf0a7594605627ebcf300c689107ce4d82c6b503ae1c0ce556004edabf4",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/commands-proposal.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/compare-groups-static-review.json",
+      "bytes": 2406,
+      "sha256": "312d83ec472062b973d7fee8282824b7aec8873c67349ad57f9bcfde7deccb20",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/compare-groups-static-review.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/completion-requirements-v2.json",
+      "bytes": 22105,
+      "sha256": "dbd4064003bbdc2cbff9efb2900c2cbd6d1697553ed1c80ca03a7ef121a0c6cf",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/completion-requirements-v2.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/conditional-stages-not-triggered.json",
+      "bytes": 2766,
+      "sha256": "a80b9416021a4cba3896b0e84cbd447bf76009a247888594cdd6dd5bb0a40c87",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/conditional-stages-not-triggered.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/configure-exit.json",
+      "bytes": 567,
+      "sha256": "6c0741486b708c9a1135673e352ce85b8ff7e189d21caa251c52c9ee3985004a",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/configure-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/continue-coverage-review.json",
+      "bytes": 3049,
+      "sha256": "cf0005a585d358d4b4ef05facb232f6b980a05c473b09f2a6d914177098ae28e",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/continue-coverage-review.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-aggregate-review.json",
+      "bytes": 3302,
+      "sha256": "610f92dff26216300a1792a380fc9051c9e9f2b18d53630151b7d41662352266",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-aggregate-review.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-amendment-draft.json",
+      "bytes": 3285,
+      "sha256": "eac173d8e3c404c080c52f43e37896c5af4e11dec5c991e383ea838df6e7c392",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-amendment-draft.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-amendment.json",
+      "bytes": 4947,
+      "sha256": "12c1579eba32cc91219bd2d3453cf65fca40bf7fc88022e12d1acab705e6a23e",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-amendment.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-continuation-exit.json",
+      "bytes": 8642,
+      "sha256": "f5869488698922e84aad4d64ff4aa1dbfe534777a354c738363cb65ec36b6f5c",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-continuation-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-continuation-start.json",
+      "bytes": 1247,
+      "sha256": "c57786323080984b965d0422e415da1dd2b3332b3532fdf9de9fefbe04ebc7eb",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-continuation-start.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-controller-review.json",
+      "bytes": 5281,
+      "sha256": "7cb54952b5d1a0a3c15ccd50dc6878f1b31a5dfe29bc70e8ac839c3785dcbe4b",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-controller-review.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-freeze-consistency-review.json",
+      "bytes": 3784,
+      "sha256": "71ddd83acf2e84d8f94ba1f3504ebc95d1526662bd94968dcca936e01b4cf2b1",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-freeze-consistency-review.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-freeze-state.json",
+      "bytes": 1731,
+      "sha256": "ccf8ecb553827efd72faee8815a540633a140223cebbe289cf7d8d1db3ea9ee3",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-freeze-state.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-order-proof.json",
+      "bytes": 949,
+      "sha256": "378ce187d9585e85edcc48106c416e4f5ba10459f9ad0c6a3d2edc58fa54536f",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-order-proof.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-prospective-state.json",
+      "bytes": 1131,
+      "sha256": "49f038fc1d392b7982811120ecadf98973e07431faf9468f566a9fefae0f2844",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-prospective-state.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-step-01-matrix-off-run-exit.json",
+      "bytes": 974,
+      "sha256": "a485a150af6033bd27a91838d417d4408005da867a6d414734af345240739266",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-step-01-matrix-off-run-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/baseline-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-step-01-matrix-off-run-start.json",
+      "bytes": 858,
+      "sha256": "8fd8d3487eac62c19913de721060afad2fc40f0b8d18620ae2f92bb5ffc24b38",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-step-01-matrix-off-run-start.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/baseline-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-step-02-matrix-off-audit-exit.json",
+      "bytes": 861,
+      "sha256": "6082ae05f29fabc0ead0b5ba184af720689de2dc17ae696a417c7ac141194829",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-step-02-matrix-off-audit-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/baseline-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-step-02-matrix-off-audit-start.json",
+      "bytes": 745,
+      "sha256": "99b4abb0db7c85e415173a282385a231436ad046dace87e7445c0158fd55a8dd",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-step-02-matrix-off-audit-start.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/baseline-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-step-03-matrix-on-run-exit.json",
+      "bytes": 971,
+      "sha256": "69da730dd8dd7281f69989d039ad2a849c9f8cb4a0e8d61e9b10f02535ed3305",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-step-03-matrix-on-run-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-step-03-matrix-on-run-start.json",
+      "bytes": 855,
+      "sha256": "9eefcd8179c555dac891db4e330784a543951d4462301de1f3137125125baaf4",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-step-03-matrix-on-run-start.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-step-04-matrix-on-audit-exit.json",
+      "bytes": 860,
+      "sha256": "669b97a78d1cf2d3bff6f1c044763e3db6c3d7ef0403b4b193242dddaca2a1b1",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-step-04-matrix-on-audit-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-step-04-matrix-on-audit-start.json",
+      "bytes": 744,
+      "sha256": "ed4139752587367e1a76cabefbeefedb32ad04af4a346dbf0ac9607df991e626",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-step-04-matrix-on-audit-start.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-step-05-matrix-compare-exit.json",
+      "bytes": 859,
+      "sha256": "7ed73e20ceffff16c14f886bc85e17167a78c198b68a4d6799179f3fd5f3305b",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-step-05-matrix-compare-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-step-05-matrix-compare-start.json",
+      "bytes": 743,
+      "sha256": "f118a4180da96d60b2a711f8255e4d87f13426bac187572daa8a4010a313b5cb",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-step-05-matrix-compare-start.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-step-06-aggregate-exit.json",
+      "bytes": 946,
+      "sha256": "a76b4c8e8032e7e088d946fd49f39aaefea0be61970e97f8ba4fb5c272a2c75f",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-step-06-aggregate-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/coverage-step-06-aggregate-start.json",
+      "bytes": 831,
+      "sha256": "c3069f575378a465dff636be1cfb8cbb58ed99babf0d4292deebeabe4eb89c28",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-step-06-aggregate-start.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/delivery-packaging-plan.json",
+      "bytes": 3102,
+      "sha256": "5619a236bd28df29b1dfd0af0e6129abc7646511cc82cd9d0918f89e95feb3bf",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/delivery-packaging-plan.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/entry.json",
+      "bytes": 501,
+      "sha256": "34b1d7000340d42d7c421038fd5cfa6bca3e7274327f3cde1b63493ad7ee155b",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/entry.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/execution-plan.json",
+      "bytes": 12266,
+      "sha256": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/execution-plan.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/final-protection-execution-v2/exit.json",
+      "bytes": 611,
+      "sha256": "515b8df9fadcc2f186e603b9b7d5c4d3cd0b74857d3cc5b32267aa440dcf7ccc",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/final-protection-execution-v2/exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/final-protection-execution-v2/run.log",
+      "bytes": 169,
+      "sha256": "0e1ac28f2c8dbbaa042857f9844a54238b00306f728da359d5eaee8bed5b059b",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/final-protection-execution-v2/run.log",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/final-protection-execution-v2/start.json",
+      "bytes": 457,
+      "sha256": "663ec8c6a6a3c67b46926d85a1372806c81633244fbe2c0ff1c83121a4f15a74",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/final-protection-execution-v2/start.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/final-protection-execution/exit.json",
+      "bytes": 587,
+      "sha256": "d3731f54e195e61157016881cdc639a4db5dbcb4c62ce2d5ea88117976afbba7",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/final-protection-execution/exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/final-protection-execution/run.log",
+      "bytes": 1066,
+      "sha256": "782d6dd6c8188e5575efa19b2a7b9cf85936bbb7f7ce617d12f9d7545ec9b3d4",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/final-protection-execution/run.log",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/final-protection-execution/start.json",
+      "bytes": 433,
+      "sha256": "a120d27c5afefbb2be44d73ec6b4a74ebceb8de7b0d8f39c67dac92bd19af40e",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/final-protection-execution/start.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/final-protection-preparation-v2.json",
+      "bytes": 6678,
+      "sha256": "cd6500bee85ab26abbdcb2dce2895f3b9619a2e2c0944eaae46fd5a0060aef2c",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/final-protection-preparation-v2.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/final-protection-preparation.json",
+      "bytes": 6668,
+      "sha256": "d749fa827ebfc24182944db921c3c479661dc265d25220936a33994d3dcf1851",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/final-protection-preparation.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/final-protection.json",
+      "bytes": 49817,
+      "sha256": "c6fcfae0446558fe661df657d68115b07de965bded1c0430b69c623d07552825",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/final-protection.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/final-report-independent-review.json",
+      "bytes": 15586,
+      "sha256": "f3d23d861268734a2197e92319f6e9cc4f3a59984f7222e3f0a11fba5d4461b3",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/final-report-independent-review.json",
+      "snapshot_manifest": null,
+      "note": "Final content review created after raw inventory snapshot; bound by final package."
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/first-test-admission.json",
+      "bytes": 1213,
+      "sha256": "965cb0b1a9e2fbc21c5d29798133aaade5d337405b6f9eb8ca1ce2092fa07df8",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/first-test-admission.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/goal-objective.json",
+      "bytes": 1240,
+      "sha256": "7cabd6198e1e74765729214a60e77ab4c9c117bc4682880e2a45334b79ec3b0a",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/goal-objective.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/history-independent-review.json",
+      "bytes": 50266,
+      "sha256": "8b512489ae20b3212da8507bcd2a8f2093efcbbffd426776dffd7c4ca945ad62",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/history-independent-review.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/host-decision.json",
+      "bytes": 9638,
+      "sha256": "21b65dc0985c795d8c58939a3554c23490d6e89f2cd6a0542fb9dbf87c62c8e1",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-decision.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/host-first-attempt.json",
+      "bytes": 9638,
+      "sha256": "21b65dc0985c795d8c58939a3554c23490d6e89f2cd6a0542fb9dbf87c62c8e1",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-first-attempt.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-continuation-exit.json",
+      "bytes": 3039,
+      "sha256": "18bcfe4e9aadca669c205b84ecb312b49c75dd1e76fc00dc9d4773f8b3ac7dce",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-continuation-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-continuation-start.json",
+      "bytes": 354,
+      "sha256": "f98428c6c11fbc59cdfafa8984ce202d6ea3edbd31e8e283645ec954caf3f5b0",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-continuation-start.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-decision.json",
+      "bytes": 28608,
+      "sha256": "c8295b11a4fcb5837e2372705df5df30357ddc8225ee832eb969b1132435303f",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-decision.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-off-command.json",
+      "bytes": 1075,
+      "sha256": "81140d9cb2733a2ea28c02413d1b0b4b4cd9a74f8f9669d84c068bf52ad6e49d",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-off-command.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-off-controller-exit.json",
+      "bytes": 1718,
+      "sha256": "4f75279b985b534ee7317060bb92ef05b72465a41c6cdc058fc74689b536cb4b",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-off-controller-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-off-controller-start.json",
+      "bytes": 1425,
+      "sha256": "33838b9dd71a13c12536ed412e92f3286e5b38f3d88a7b44a12d14e6789c0749",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-off-controller-start.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-off-decision.json",
+      "bytes": 15033,
+      "sha256": "88868356a5bae8087babe1b49a6edbb670e64c8c6f25fd568475980346aafd28",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-off-decision.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-off-stage.json",
+      "bytes": 1992,
+      "sha256": "f508c353c0659215bd1b79b7fa6b5f6a787d34b828ce5c0e70c226f4f01bc612",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-off-stage.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-on-command.json",
+      "bytes": 1231,
+      "sha256": "59d69da134273129fb4a7d7751f2e8d44b00bf8f2f54f5d8cc2d597419dbbab1",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-on-command.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-on-controller-exit.json",
+      "bytes": 1877,
+      "sha256": "b92bc23d8919f22dea16a9fd3943c4d2ede7474e21f3822078c382bb03f24f9d",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-on-controller-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-on-controller-start.json",
+      "bytes": 1585,
+      "sha256": "54b627cb017028c91dc69e2680dd272bdd40a300d09b0e87235e554c4cb5a8dd",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-on-controller-start.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-on-decision.json",
+      "bytes": 20092,
+      "sha256": "415f48cffb79cc0f3be2850d3501d5107f4e4f039387924ccb4808684fe5656e",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-on-decision.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-on-stage.json",
+      "bytes": 2152,
+      "sha256": "2119b1e7b06b50ba75c4190a319e696c88a5d34b46acdad52a30808987da64ac",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-on-stage.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-summary.json",
+      "bytes": 3997,
+      "sha256": "e0ab051a0a906c454355d0e3586539488326c9a34a46fb64163265f590b95f06",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-summary.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-decision.json",
+      "bytes": 16721,
+      "sha256": "5019f341a068237dab48bb6c80af6e1b2464c9d4299131cf7e196c98e043bd62",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-decision.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-final-review-plan.json",
+      "bytes": 15845,
+      "sha256": "bd2a3cc2b260ed13bcd2b05ce1585f7d743ef3c2640868c8b6f54e5b67aa0d9c",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-final-review-plan.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-independent-review.json",
+      "bytes": 100973,
+      "sha256": "c3dce7110a3388b1db926f290d459c42cfc2f1f26191cd0cee57561c7b998a34",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-independent-review.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/final-review-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-off-command.json",
+      "bytes": 1277,
+      "sha256": "c12adb19e4a638f6d3a1da744719cee505c942da7918bb70f6d6fd42d5c20338",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-off-command.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-off-controller-exit.json",
+      "bytes": 1933,
+      "sha256": "fdaf4a9d070c145f6f7a0bad26a04eb1185754f926dac24ed03a98df8be8f00e",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-off-controller-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/baseline-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-off-controller-start.json",
+      "bytes": 1640,
+      "sha256": "28fff0cbcc2697522a3fe4454e136eb67e5ba8a13ef264b2fe282f39fedb5a93",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-off-controller-start.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/baseline-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-off-coverage-admission.json",
+      "bytes": 638,
+      "sha256": "7a989065af4f9d8483defe4a15a7e2a486282276e008e3c0dd20efe8489185f9",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-off-coverage-admission.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/baseline-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-off-decision.json",
+      "bytes": 8132,
+      "sha256": "2072b2276b666fbc390cc158142baee57415beb7c7d576ad30a5d74073c68a47",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-off-decision.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/baseline-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-off-proof/http-exit.json",
+      "bytes": 362,
+      "sha256": "06e9e9e813902bf2b454d3a957e3f47089b52d683e762524b41baa7f9cb59a97",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/baseline-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-off-proof/isolation-cleanup.json",
+      "bytes": 623,
+      "sha256": "6600e0d2793f453525c8c699921256f116a0b334390471e9e2a9640a5b5703c0",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/isolation/cleanup.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/baseline-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-off-proof/runner-process-group.json",
+      "bytes": 581,
+      "sha256": "5ede6eb6c31d54c257417da7e7ea658f19f0f29dc15f616517a2225e95fadf1e",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/runner-process-group.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/baseline-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-off-proof/wrapper-exit.json",
+      "bytes": 748,
+      "sha256": "05a19d85fb418ff1afdb0c10ea402c7e76900f5c5f38fa360e950631788540a1",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/wrapper-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/baseline-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-off-stage.json",
+      "bytes": 2545,
+      "sha256": "2243733f95336930c3367d6434c8fdc10bebd7c16623d669ef4963e4b7aa159c",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-off-stage.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/baseline-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-on-command.json",
+      "bytes": 1299,
+      "sha256": "5ff68d2372aa6dd303392be1f547eca61b1e52a01f3e35b5d3c81cd921903186",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-on-command.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-on-controller-exit.json",
+      "bytes": 1956,
+      "sha256": "f6ea0f47ac39228283e8a1a313c525b88d591699944e1e6e85df3e4e01c277d0",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-on-controller-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-on-controller-start.json",
+      "bytes": 1663,
+      "sha256": "9983bbbf9197e3344415555609be7318da07484c26c0cd62d7197cd6206eb88d",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-on-controller-start.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-on-coverage-admission.json",
+      "bytes": 637,
+      "sha256": "cea476bf1cea692b2a3897196715c1ec86ef9a7f9ef0a99b9ad2364f07afd72a",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-on-coverage-admission.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-on-decision.json",
+      "bytes": 9440,
+      "sha256": "62f4b67775ae271d6ca8a55471111bfb80400bde72c26f316d42b6ef30542759",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-on-decision.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-on-proof/http-exit.json",
+      "bytes": 362,
+      "sha256": "06e9e9e813902bf2b454d3a957e3f47089b52d683e762524b41baa7f9cb59a97",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-on-proof/isolation-cleanup.json",
+      "bytes": 623,
+      "sha256": "bedd115e1329d80bff99531ee969b8d58a69531cdf364dfb296014384225bd47",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/isolation/cleanup.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-on-proof/runner-process-group.json",
+      "bytes": 581,
+      "sha256": "b60d08d5e97b6f5605a721593fcfa1d297522edac32a87da0b10e5a3fd9d271c",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/runner-process-group.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-on-proof/wrapper-exit.json",
+      "bytes": 746,
+      "sha256": "42cb31c7cb31b426b6b4b15584f9fe93726767eaba7c6996a929932d4d952444",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/wrapper-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-on-stage.json",
+      "bytes": 2569,
+      "sha256": "9f3c2b62000da2d59ac800663da6d82b40e3feb43197be83e9189b84e14ec8fb",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-on-stage.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/matrix-summary.json",
+      "bytes": 9369,
+      "sha256": "fb2438dc3cc32b5d08b99d2b83f586bb2c403330c9e2c1f82a95e4c965b41721",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-summary.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/final-review-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/numerical-decision.json",
+      "bytes": 4479,
+      "sha256": "c8efafe835a4ec3ba648890af8ea5aebdb015acbc513c8523d80a9bb66834d2c",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-decision.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/numerical-first-attempt.json",
+      "bytes": 4479,
+      "sha256": "c8efafe835a4ec3ba648890af8ea5aebdb015acbc513c8523d80a9bb66834d2c",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-first-attempt.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/performance-decision.json",
+      "bytes": 50372,
+      "sha256": "b00de0e2bdd65a57b9e1ee068d634f1ad8c90a03da623971239211a35444a208",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/performance-decision.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/plan.json",
+      "bytes": 4380,
+      "sha256": "7ca311700e9ede574ffec89deaa746d8dc0fcd3defdce66496aff09b6e266479",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/plan.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/prebuild-independent-review.json",
+      "bytes": 3484,
+      "sha256": "82f85b0b34f7177c16b1e7a9068e0d120ee654dcbed99c9029f8d5ef9092594c",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/prebuild-independent-review.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/prerequisite-independent-review.json",
+      "bytes": 22573,
+      "sha256": "ba5e76e2ed47a7698144dbd1a6cc0cf81376bb16a46d45328ec815906d9faff0",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/prerequisite-independent-review.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/protocol-proposal.json",
+      "bytes": 3290,
+      "sha256": "8c4e1030ac386d95e0598e0f1023a5391e1f146325ff1f5659d06875456b3663",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/protocol-proposal.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/quality-decision.json",
+      "bytes": 3794,
+      "sha256": "0056d0e0cf4fed3e707f630e9110a120e77c658e724227028f04846cbf456720",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/quality-decision.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/quality-on-command.json",
+      "bytes": 1057,
+      "sha256": "9318025760be1a6c65131865eb424c0c67862a7dad96a6801c2d07fffe0ef943",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/quality-on-command.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/quality-on-controller-exit.json",
+      "bytes": 1692,
+      "sha256": "821259d01a11457265f391052449536f4ace6d164a1ef2f96542402b6a2e580a",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/quality-on-controller-exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/quality-on-controller-start.json",
+      "bytes": 1399,
+      "sha256": "279c836ec28a37ca1aa610a2cc2b889467fca8f11343a1ca4536b2f7a055d592",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/quality-on-controller-start.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/quality-on-stage.json",
+      "bytes": 1964,
+      "sha256": "d5bd343ea2a6ec318239ad2987151c6f536afd5699a913c0c0016613c512014a",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/quality-on-stage.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/raw-resource-audit-execution/exit.json",
+      "bytes": 797,
+      "sha256": "1bd776d332b031e6e6092fb41710defd08580bae7b166c9b90246b65c55368ae",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/raw-resource-audit-execution/exit.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/raw-resource-audit-execution/run.log",
+      "bytes": 118,
+      "sha256": "5516793bf7bbb9ed36eb1e7d7c11189a3fb0a61ebbf31b8ef57622489f78411e",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/raw-resource-audit-execution/run.log",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/raw-resource-audit-execution/start.json",
+      "bytes": 642,
+      "sha256": "d2f1554e2bd45cbbf9abadfc1f9697c526ae746317046ddc1c1b1aa3fb7f1b26",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/raw-resource-audit-execution/start.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/raw-resource-summary.json",
+      "bytes": 52590,
+      "sha256": "23deb37c8fec657fc0d0314dc252752707b8b58d4cb041d4a0b8286e373935d0",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/raw-resource-summary.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/final-review-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/request-policy-static-review.json",
+      "bytes": 8226,
+      "sha256": "40539c1e79588e15178946118052d4a7fca27cba35335df53c13faf739a351ea",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/request-policy-static-review.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/required-numerical-tests.txt",
+      "bytes": 110,
+      "sha256": "86f1c421357e519f8deee9b4c82fdb1566fa5e157c0ae97ff14413534be33327",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/required-numerical-tests.txt",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/resource-adapter-independent-review.json",
+      "bytes": 3330,
+      "sha256": "742cfb041c30a3dbb6d84bc099d420ac26257d33e31d7d77b9cf44fbc83558ec",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/resource-adapter-independent-review.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/resource-audit-preparation.json",
+      "bytes": 2253,
+      "sha256": "0affff35e2ebd213bbf95cb0afa9aaeee36af8f2a3f7ab5be66eb1744fc7e7ee",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/resource-audit-preparation.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/resource-audit-reuse-proposal.json",
+      "bytes": 4636,
+      "sha256": "ba7dbbe4e176dcebb9954d69ef015b5bfbdcb8fc33a43c8b0dd0adbee0f4a889",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/resource-audit-reuse-proposal.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/records/resource-final-independent-review.json",
+      "bytes": 58394,
+      "sha256": "7f98d59bb3edd93525970e09006e7ff84dbb32291d71e717fc16a6a3d860c91d",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/resource-final-independent-review.json",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/final-review-additions-manifest.json"
+    },
+    {
+      "repository_path": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json",
+      "bytes": 17166,
+      "sha256": "a801580000069228bb6dfe89606e24904bc9789e6d32f889f2b332b215e1c369",
+      "provenance": "final_authored_document_or_inventory"
+    },
+    {
+      "repository_path": "docs/log/2026-10-05.md",
+      "bytes": 2059,
+      "sha256": "dda977b83decb14d172754ec4112e659f48f92e24bd46b593742ed973284fe92",
+      "provenance": "final_authored_document_or_inventory"
+    },
+    {
+      "repository_path": "docs/log/README.md",
+      "bytes": 3721,
+      "sha256": "843a1d43249ea07e389d6c516731a9507056d7d375504188ffb1a00e0604f4be",
+      "provenance": "final_authored_document_or_inventory"
+    },
+    {
+      "repository_path": "tools/evalscope/experiments/request_policy_20261004/README.md",
+      "bytes": 1925,
+      "sha256": "9db88e011190133dd5abbbcd3b250fc024bce9ab61fd475a1511df1d7d92cee7",
+      "provenance": "final_authored_document_or_inventory"
+    },
+    {
+      "repository_path": "tools/evalscope/experiments/request_policy_20261004/dependencies/audit_raw_resources_frozen.py",
+      "bytes": 37796,
+      "sha256": "035f1f840d00350a7b6db62e1b8ef7f62a5fda02406dae91395d291a67652da4",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/audit_raw_resources_frozen.py",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "tools/evalscope/experiments/request_policy_20261004/fixtures/context-16385/requests.jsonl",
+      "bytes": 80256,
+      "sha256": "d023665a97680ee0407520cb314d34d1323e528da0c8b160477b923931538bfb",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/history-fixtures/context-16385/requests.jsonl",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "tools/evalscope/experiments/request_policy_20261004/fixtures/context-8193/requests.jsonl",
+      "bytes": 40441,
+      "sha256": "be204f0c49f53238d94416c0a67228865928a2a10d608b19dc744c967da33480",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/history-fixtures/context-8193/requests.jsonl",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "tools/evalscope/experiments/request_policy_20261004/originals/aggregate_performance.py",
+      "bytes": 5584,
+      "sha256": "9fd70bcbb4ec355a6810a841cf68cce38676208c4c5a7c8d240a05c85a3fa38d",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/aggregate_performance.py",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "tools/evalscope/experiments/request_policy_20261004/originals/audit_group.py",
+      "bytes": 9009,
+      "sha256": "b7d1a7a512a9a63a8e6c14feff8da21ef7cfb1ab94456392ce5a4cf5485b5b1d",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/audit_group.py",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "tools/evalscope/experiments/request_policy_20261004/originals/audit_resources.py",
+      "bytes": 27044,
+      "sha256": "b7b94dcd950389b9e2c0c985630ad702c8040acb05032a23eaf6c17e2ad42399",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/audit_resources.py",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "tools/evalscope/experiments/request_policy_20261004/originals/build_candidate.py",
+      "bytes": 2177,
+      "sha256": "84cf0b764cb82b8267438bfcd19c53e13b3f6b215e533e734b8616975f361e4a",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/build_candidate.py",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "tools/evalscope/experiments/request_policy_20261004/originals/check_final_protection.py",
+      "bytes": 22654,
+      "sha256": "a15379de30ad28d9e92ef5134205a38ccc97c49b526fcab9fae94b27b5333ccc",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/check_final_protection.py",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "tools/evalscope/experiments/request_policy_20261004/originals/check_final_protection_v2.py",
+      "bytes": 25390,
+      "sha256": "6ef1dd078c8d58d15e0c61707c6c49f04bc22e6753b001e51c8950cd4904f590",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/check_final_protection_v2.py",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/terminal-additions-manifest.json"
+    },
+    {
+      "repository_path": "tools/evalscope/experiments/request_policy_20261004/originals/compare_groups.py",
+      "bytes": 2481,
+      "sha256": "c9e8a72a262c41994dd16610db4f893fbb89963e970f97faf6ff3bd4b873bd45",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/compare_groups.py",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "tools/evalscope/experiments/request_policy_20261004/originals/continue_coverage.py",
+      "bytes": 20964,
+      "sha256": "fbb96f5dbf506e438354df6258c7c607ea78d63001bb39b095fbff13f2b1ff8f",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/continue_coverage.py",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "tools/evalscope/experiments/request_policy_20261004/originals/continue_inheritance.py",
+      "bytes": 3073,
+      "sha256": "1e3cd916cc7a068d1f017212a287a811a00ff351a410f0b5b839dae4c0b02b84",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/continue_inheritance.py",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "tools/evalscope/experiments/request_policy_20261004/originals/freeze_execution.py",
+      "bytes": 3930,
+      "sha256": "cf889a344d6a600dcd9db3ffbb4f4a56490ac2be555a6a20dd23a2c8884ad24b",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/freeze_execution.py",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "tools/evalscope/experiments/request_policy_20261004/originals/phase_common.py",
+      "bytes": 10367,
+      "sha256": "adbd4b9aac6e471e4d80dfc987c96698f4202fe3c0c3ac08faaabe78411d5505",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/phase_common.py",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "tools/evalscope/experiments/request_policy_20261004/originals/run_coverage_stage.py",
+      "bytes": 5790,
+      "sha256": "fef00e0fa4689b857ac46af7e3421cc34ed9be41f2f10de6f28f17c6c8f6d074",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/run_coverage_stage.py",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "tools/evalscope/experiments/request_policy_20261004/originals/run_direct_contracts.py",
+      "bytes": 5281,
+      "sha256": "dd57f307be707b43dd0e3d57f90032ca60c7ddef0933ec8f75e2146b9769df08",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/run_direct_contracts.py",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    },
+    {
+      "repository_path": "tools/evalscope/experiments/request_policy_20261004/originals/run_stage.py",
+      "bytes": 3065,
+      "sha256": "9a344d39139f4edba507f7d7d62774ff7276f20cec4391525804bd3c04bf21f4",
+      "provenance": "exact_original_copy",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/run_stage.py",
+      "snapshot_manifest": "docs/evidence/offload-request-policy-20261004/manifest.json"
+    }
+  ],
+  "preserved_snapshot_manifest_sha256": {
+    "manifest.json": "1f3812f81bcd5940bfd232f063199bc22bb09f37ba5529da374900fbecb88dd1",
+    "baseline-additions-manifest.json": "83f8db86f9f34a0ee38dc22f9aa0f530e1a52490b5bf0894937dd565ab26f09a",
+    "terminal-additions-manifest.json": "a801580000069228bb6dfe89606e24904bc9789e6d32f889f2b332b215e1c369",
+    "final-review-additions-manifest.json": "bfb0ee1978dce97e3f150dfe07009ce4a24db3261df3934568428472c12264ee"
+  },
+  "runtime_and_tool_dependencies": {
+    "index_repository_path": "docs/evidence/offload-request-policy-20261004/dependencies.json",
+    "tracked_count": 21,
+    "sha256": "7afd79988940d9588b5e554331248922ed03f1a8a6397bbfe3c8d2c3fdf46538",
+    "validated_against_tested_commit": true
+  },
+  "raw_evidence_manifest": {
+    "origin_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004",
+    "relative_path": "raw-evidence-manifest.json",
+    "local_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/raw-evidence-manifest.json",
+    "bytes": 1622452,
+    "sha256": "516491aa91f4089fb914d947ff10cc33ae4127b291f27bd61d2e286ac98d3895",
+    "entry_count": 1900,
+    "indexed_payload_bytes": 614310175
+  },
+  "raw_manifest_entries_embedded": false,
+  "git_packet_is_full_raw_backup": false,
+  "model_and_reference_payloads_bundled": false,
+  "exclusions": [
+    "docs/evidence/offload-request-policy-20261004/package-manifest.json",
+    "docs/evidence/offload-request-policy-20261004/package-manifest.sha256",
+    "Later local delivery-audit.json and final-completion-audit.json plus independent delivery checks",
+    "Full raw payloads indexed by local raw-evidence-manifest.json; model/reference/environment remain external"
+  ],
+  "self_hash_rule": "This manifest excludes itself, its detached checksum and postcommit receipts. The detached checksum hashes only this manifest. Actual containing Git commit and remote identity are recorded after commit/push in local delivery-audit.json.",
+  "conditional_business_and_next_optimization": "NOT_TRIGGERED",
+  "limits": "Inventory completeness is for this small packet only; inherited historical PENDING fields remain snapshots. Numerical, memory and protection limits are preserved in the final report."
+}

@@ -1,0 +1,47 @@
+{
+  "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source",
+  "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-build/q4t",
+  "binary_sha256": "34eb4cf5b53dfcc5b0783120fcdec438fd321dbd4c981f52eee581c96f7fb93a",
+  "cmake_cache_sha256": "6575609031eae4b777ffd0be26f5c2146e982dbc12610c2b2b2d460452acccaa",
+  "compile_commands_sha256": "f686ca2c83357adb0565e26c02d2b831fb6d00fbe99a2b59737ecaced4faec55",
+  "warnings": 0,
+  "build_rc": 0,
+  "records": [
+    {
+      "name": "configure",
+      "command": [
+        "cmake",
+        "-S",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-build",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_CXX_COMPILER=/usr/bin/g++-14",
+        "-DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-14",
+        "-DQ4T_CUDA_ARCHITECTURES=110a",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+      ],
+      "started_t": 1791110757.0484333,
+      "ended_t": 1791110759.21262,
+      "returncode": 0
+    },
+    {
+      "name": "build",
+      "command": [
+        "cmake",
+        "--build",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-build",
+        "--target",
+        "q4t",
+        "--parallel",
+        "8"
+      ],
+      "started_t": 1791110759.2129247,
+      "ended_t": 1791110785.9990134,
+      "returncode": 0
+    }
+  ],
+  "runtime_tests_before_http": false,
+  "ended_t": 1791110786.0032759
+}

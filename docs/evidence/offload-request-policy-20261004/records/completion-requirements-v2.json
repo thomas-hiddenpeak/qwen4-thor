@@ -1,0 +1,357 @@
+{
+  "schema": "q4t.request_policy_completion_requirements.v2",
+  "created_t": 1791113421.0362551,
+  "author": "/root/request_policy_runtime",
+  "purpose": "Delivery requirements only; reuses completed evidence, does not declare any final completion or inspect performance speed values.",
+  "goal_complete": false,
+  "performance_acceptance": false,
+  "goal_objective": "推进 Qwen4-Thor 真实权重 offload 的 prefill 优化：以已提交诊断分支 f3e3d21 为入口，冻结并实现一个默认关闭、按完整请求长度选择分区策略的候选（短请求保持旧路径，长请求保留 min_new 分区收益），保护原工作区七项未提交改动、只读模型/reference、固定现有缓存预算、MTP 关闭及数值/GEMM 合同。在本机 Thor 上以 tools/evalscope HTTP 为首次测试，依次完成质量、受影响的数值/边界验证与五档加目标容量 E2E，独立报告 prefill 与 decode、内存及证据限制；不得通过追加有利样本放宽门槛。交付可回退的代码与证据、阶段提交并推送工作分支，以及明确的 GO 或 NO_GO 和后续瓶颈判断。只有本候选通过完整验收后，才冻结第二阶段进一步降低 prefill 权重搬运/写回开销的单一候选；不把探索性的 10–20% 提升当成已验证承诺。",
+  "effective_protocol": {
+    "original_plan_sha256": "7ca311700e9ede574ffec89deaa746d8dc0fcd3defdce66496aff09b6e266479",
+    "execution_plan_sha256": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+    "coverage_amendment_sha256": "12c1579eba32cc91219bd2d3453cf65fca40bf7fc88022e12d1acab705e6a23e",
+    "coverage_change": "Both valid history arms admit original full six-tier coverage even on history speedNO_GO;history failure permanently vetoes overallGO.",
+    "original_stop_rule_retained_as_history": true,
+    "old_local_routing_fields_are_not_authorization": true
+  },
+  "goal_wording_gap": {
+    "status": "RESOLVED_PROSPECTIVELY_BY_FROZEN_COVERAGE_AMENDMENT",
+    "explanation": "The Goal still requires full six-tier evidence. Early valid history speedNO_GO no longer omits that requested coverage;it remains a permanent acceptance veto. Safety/quality/identity/cleanup failures still stop dependent execution."
+  },
+  "runtime_identity": {
+    "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+    "runtime_binary_sha256": "34eb4cf5b53dfcc5b0783120fcdec438fd321dbd4c981f52eee581c96f7fb93a"
+  },
+  "requirements": [
+    {
+      "id": "implementation",
+      "requirement": "One default-off immutable full-input partition candidate; preserve numeric/GEMM/cache contracts and supported serialHTTP scope.",
+      "activation_gate": "unconditional",
+      "required_evidence": [
+        "runtime commit and scoped diff",
+        "prebuild-independent-review.json",
+        "candidate-source-identity.json",
+        "default-mode contract evidence"
+      ],
+      "completion_check": "Source/export identity binds the reviewed implementation; <=8192 legacy, >8192 min_new through scheduled/inline/continuation paths; default switch0; no hidden shared request selector.",
+      "limitations": [
+        "NonHTTP omitted-context APIs preserve global behavior; full request identity across direct API calls remains caller-owned."
+      ],
+      "existing_evidence_to_reuse": [
+        "prebuild-independent-review.json",
+        "host-decision.json",
+        "candidate-source-identity.json"
+      ],
+      "completion_declared": false
+    },
+    {
+      "id": "thor_build",
+      "requirement": "Local Thor zero-warning clean export build and independent runtime/test identities.",
+      "activation_gate": "unconditional",
+      "required_evidence": [
+        "build-identity.json",
+        "source archive digest and export identity",
+        "CMakeCache/compile_commands digests",
+        "runtime binary SHA",
+        "numerical test binary before/after SHA"
+      ],
+      "completion_check": "All runtime evidence is source52b42b2/binary34eb4cf5; test binary identity distinct and unchanged during numerical execution; no source drift.",
+      "limitations": [],
+      "existing_evidence_to_reuse": [
+        "build-identity.json",
+        "candidate-source-identity.json",
+        "numerical-decision.json",
+        "prerequisite-independent-review.json"
+      ],
+      "completion_declared": false
+    },
+    {
+      "id": "http_first_quality",
+      "requirement": "Fixed11 real HTTP is first runtime test; preserve quality and actual usage/path/capacity.",
+      "activation_gate": "unconditional",
+      "required_evidence": [
+        "first-test-admission.json",
+        "quality controller timestamps",
+        "quality-decision.json and raw bound sources"
+      ],
+      "completion_check": "Same frozen source/binary/plan;11 successful output comparisons; actual usage including EOS reported; HTTP completion precedes host/numeric starts.",
+      "limitations": [
+        "Controller-scope ordering is not a machine-wide absence proof; fixed quality is not full-model numerical proof."
+      ],
+      "existing_evidence_to_reuse": [
+        "quality-decision.json",
+        "first-test-admission.json",
+        "prerequisite-independent-review.json"
+      ],
+      "completion_declared": false
+    },
+    {
+      "id": "host_numeric",
+      "requirement": "Affected139 host/tool checks and three real-weight numerical contracts including8 new policy cases.",
+      "activation_gate": "unconditional",
+      "required_evidence": [
+        "host-decision.json",
+        "numerical-decision.json",
+        "required numerical list",
+        "raw logs and prerequisite-independent-review.json"
+      ],
+      "completion_check": "All exact selected checks complete with no skips/failures;BF16/router assertion evidence separated from observed FP32 comparisons and from whole-model quality.",
+      "limitations": [
+        "New full-input labels on small layer2 fixtures are not actual full8193-token numerical coverage;FP32 zero differences were observed in11 comparisons, not an added frozen equality assertion."
+      ],
+      "existing_evidence_to_reuse": [
+        "host-decision.json",
+        "numerical-decision.json",
+        "prerequisite-independent-review.json"
+      ],
+      "completion_declared": false
+    },
+    {
+      "id": "amendment",
+      "requirement": "Preserve prospective coverage amendment and original failed-route semantics without changing gates.",
+      "activation_gate": "unconditional",
+      "required_evidence": [
+        "coverage-amendment.json",
+        "coverage-freeze-state.json",
+        "coverage-prospective-state.json",
+        "both static controller reviews",
+        "coverage-freeze-consistency-review.json",
+        "eventual inheritance-on start timestamp"
+      ],
+      "completion_check": "Final amendment SHA12c1579e and all bound inputs match; freeze is before candidate inheritance performance; candidate quality was already completed; original plan/decisions remain byte-identical.",
+      "limitations": [
+        "This is an explicit blind-attested mid-baseline amendment, not the original preregistration and not machine-wide proof of blindness."
+      ],
+      "existing_evidence_to_reuse": [
+        "coverage-controller-review.json",
+        "coverage-aggregate-review.json",
+        "coverage-freeze-consistency-review.json"
+      ],
+      "completion_declared": false
+    },
+    {
+      "id": "inheritance",
+      "requirement": "Complete fixed7positions x3 rounds, both off/on; output/path/capacity/cleanup and separate per-position speed verdict.",
+      "activation_gate": "quality+host+numeric prerequisites PASS",
+      "required_evidence": [
+        "inheritance-off/on group decisions and source evidence",
+        "inheritance-decision.json",
+        "runtime request/all48layer path audit",
+        "repeat/position output comparisons"
+      ],
+      "completion_check": "42 valid requests, full8192/8193 boundary and long-to-short order, no pooling of two8192 positions; immutable original verdict and later_model_requests_allowed field retained.",
+      "limitations": [
+        "No in-flight performance values were read for this requirements artifact."
+      ],
+      "existing_evidence_to_reuse": [],
+      "completion_declared": false
+    },
+    {
+      "id": "six_tier_coverage",
+      "requirement": "Complete original five standard tiers plus261887 target, off then on, each tier3 requests.",
+      "activation_gate": "Both inheritance arms pass non-speed evidence contracts; proceed regardless of valid inheritance SPEED PASS/NO_GO under amendment.",
+      "required_evidence": [
+        "matrix-off/on coverage admissions and stage records",
+        "matrix-off/on group decisions with all36 raw requests",
+        "matrix-decision.json",
+        "original matrix command digests",
+        "cold-preparation rounds and final zero gate"
+      ],
+      "completion_check": "Exactly lengths1024,4096,8192,45056,204800,261887;18 requests per arm;outputs256 except261887->257;capacity262144;same source/binary/resources;all original speed gates reported.",
+      "limitations": [
+        "A history speedNO_GO cannot be erased by six-tierPASS. Any quality/path/capacity/identity/cleanup defect stops dependent work and requires preserved specific-failure handling. No added favorable samples."
+      ],
+      "existing_evidence_to_reuse": [],
+      "completion_declared": false
+    },
+    {
+      "id": "overall_speed",
+      "requirement": "Aggregate history AND six-tier verdict; old local routing flags do not authorize follow-on work.",
+      "activation_gate": "After all original inheritance and six-tier groups/contracts are complete",
+      "required_evidence": [
+        "performance-decision.json from pinned aggregate_performance.py",
+        "recomputed history positions/six tiers",
+        "all prerequisite/source hashes"
+      ],
+      "completion_check": "business_lifecycle_allowed equals historyPASS AND sixPASS after contract prerequisites;history failure permanent veto=true;next_optimization_allowed remainsfalse until separate final delivery.",
+      "limitations": [
+        "SpeedPASS alone is not runtime release acceptance. Fixed order and three samples cannot establish tail stability or tiny effects."
+      ],
+      "existing_evidence_to_reuse": [],
+      "completion_declared": false
+    },
+    {
+      "id": "conditional_delivery_tests",
+      "requirement": "Canonical lifecycle9 and business6 delivery evidence on the accepted performance candidate.",
+      "activation_gate": "Only aggregate performance-decision business_lifecycle_allowed=true",
+      "required_evidence": [
+        "Concrete canonical case IDs/commands/oracles and frozen delivery plan before execution",
+        "all lifecycle/business records and cleanup",
+        "same runtime identity"
+      ],
+      "completion_check": "All triggered cases pass their explicit contracts; failure preserved. If aggregate speedNO_GO, markNOT_TRIGGERED and do not run these model requests.",
+      "limitations": [
+        "Reuse only identical applicable prior evidence; no inference rerun for documentation alone."
+      ],
+      "existing_evidence_to_reuse": [],
+      "completion_declared": false
+    },
+    {
+      "id": "resources",
+      "requirement": "Audit all executed groups even onNO_GO; retain actual readings and attribution/overlap limitations.",
+      "activation_gate": "unconditional for every executed group",
+      "required_evidence": [
+        "raw resource audit and intervals/coverage",
+        "host/cache cgroup settings/current/peak/OOM/swap",
+        "PID and available device storage counters",
+        "NVIDIA/RSS/file-cache components with missingness",
+        "normal wrapper/runner/unit cleanup records"
+      ],
+      "completion_check": "Settings remainC256/L216/mirror8/maxopen200,maxseq1,maxprefill8192,maxlen262144,MTP/PhaseD/diagnostics off;observe rather than infer physical data movement;report gaps, actual peaks and any excess.",
+      "limitations": [
+        "16GiB is a host/cache setting, not a whole-physicalRAM cap. Do not add independent or overlapping peaks."
+      ],
+      "existing_evidence_to_reuse": [],
+      "completion_declared": false
+    },
+    {
+      "id": "physical_ram_limit",
+      "requirement": "Keep overall physicalRAM54GB unproven unless a new supported measurement actually establishes it.",
+      "activation_gate": "unconditional reporting constraint",
+      "required_evidence": [
+        "Explicit INDETERMINATE field and coverage limitations in final resource audit/report"
+      ],
+      "completion_check": "Unknown is notPASS;no53GB substitute, no sum of counters, no NVIDIAprocess counter relabeled as deduplicated union.",
+      "limitations": [
+        "This Goal requires honest memory evidence/limitations; it does not authorize claiming a54GB deployment envelope from16GiB host/cache settings."
+      ],
+      "existing_evidence_to_reuse": [],
+      "completion_declared": false
+    },
+    {
+      "id": "protection",
+      "requirement": "Protect original main worktree seven dirty paths and original main binary;model/reference remainreadonly.",
+      "activation_gate": "unconditional",
+      "required_evidence": [
+        "entry.json versus final main git status/diff SHA",
+        "original main binary identity versus final hash",
+        "model-entry.json versus final model metadata",
+        "reference unchanged audit and scoped action history"
+      ],
+      "completion_check": "Same original7 paths/diff SHA33375caf;unrelated changes never included in phase commit;record model metadata comparison and any limits of the read-only evidence.",
+      "limitations": [],
+      "existing_evidence_to_reuse": [
+        "entry.json",
+        "model-entry.json"
+      ],
+      "completion_declared": false
+    },
+    {
+      "id": "cleanup",
+      "requirement": "Close all owned runtime, monitor, runner and service resources without touching unrelated work.",
+      "activation_gate": "unconditional",
+      "required_evidence": [
+        "per-stage wrapper exit/process-group/isolated-service cleanup",
+        "final owned-process/service/GPU state audit"
+      ],
+      "completion_check": "Each actually created owned unit/process is gone/reaped;unknown or failed cleanup remains explicit and blocks clean-delivery declaration.",
+      "limitations": [],
+      "existing_evidence_to_reuse": [],
+      "completion_declared": false
+    },
+    {
+      "id": "final_review",
+      "requirement": "Independent final review of arithmetic, paths, outputs, resources, amendment chronology, failures and declared disposition.",
+      "activation_gate": "unconditional",
+      "required_evidence": [
+        "final-independent-review.json with exact source digests",
+        "all required decision/protection/cleanup/delivery evidence"
+      ],
+      "completion_check": "Review binds actual final evidence; original failures and local route flags retained; no threshold relaxation or favorable repeats; numeric/quality/performance/resource conclusions separate.",
+      "limitations": [
+        "Prebuild review and completed-prerequisite65checks are reusable inputs, not substitutes for final performance/resource review."
+      ],
+      "existing_evidence_to_reuse": [
+        "prebuild-independent-review.json",
+        "prerequisite-independent-review.json"
+      ],
+      "completion_declared": false
+    },
+    {
+      "id": "docs_and_git",
+      "requirement": "Update source STATUS/topic report and append dated log;commit/push only this phase, verify final remote and recovery identities.",
+      "activation_gate": "unconditional",
+      "required_evidence": [
+        "updated source/docs/STATUS.md",
+        "source/docs/OFFLOAD_REQUEST_POLICY_2026-10-04.md",
+        "append-only source/docs/log/2026-10-04.md and index if needed",
+        "own-files commit/diff and pushed branch remote-head verification",
+        "final delivery identity manifest"
+      ],
+      "completion_check": "Describe full Goal scope, original plan plus prospective amendment, actualGO/NO_GO and all limits;docs-only final commit distinguished from runtime52b42b2/binary34eb4cf5;original7excluded;clean isolated branch and remote match.",
+      "limitations": [
+        "Do not mutate source/HEAD while in-flight frozen controllers require52b42b2. Afterwards, reuse unchanged runtime evidence for docs-only commits. Commit/push is not acceptance."
+      ],
+      "existing_evidence_to_reuse": [],
+      "completion_declared": false
+    },
+    {
+      "id": "final_report",
+      "requirement": "Deliver explicitGO orNO_GO, separate prefill/TTFT anddecode, remaining bottleneck judgment and evidence limitations.",
+      "activation_gate": "unconditional after all applicable evidence work",
+      "required_evidence": [
+        "self-contained final report with source links and identities",
+        "separate TTFT/effective input rate/decode tables",
+        "failure-preserving disposition and next-step rationale"
+      ],
+      "completion_check": "Whole six-tier coverage and history verdict both visible;NO_GO delivered honestly if any speed gate fails;prefill benefit cannot compensate decode failure;no10-20percent promise.",
+      "limitations": [
+        "TTFT includes HTTP/queue/tokenization;input_tokens/TTFT is not pure prefill. Existing globaldecode log asymmetry and selected8192threshold must be disclosed."
+      ],
+      "existing_evidence_to_reuse": [],
+      "completion_declared": false
+    },
+    {
+      "id": "next_candidate",
+      "requirement": "Freeze one subsequent transfer/writeback optimization candidate only after this candidate complete acceptance.",
+      "activation_gate": "Only aggregate speedPASS, conditional delivery testsPASS, final protection/resource/cleanup/review and delivery gates satisfied",
+      "required_evidence": [
+        "Separate bounded hypothesis/scope/exit/validation plan for exactly one next candidate",
+        "explicit final acceptance identity and applicability"
+      ],
+      "completion_check": "No new optimization model requests or combined candidate changes before complete acceptance;extra10-20percent remains exploratory. If current candidateNO_GO, markNOT_TRIGGERED and retain next-bottleneck recommendation only.",
+      "limitations": [],
+      "existing_evidence_to_reuse": [],
+      "completion_declared": false
+    }
+  ],
+  "closure_logic": {
+    "success_branch": "All unconditional requirements satisfied;history AND six-tier speedPASS;conditional lifecycle/business and final delivery gatesPASS;freeze next single candidate as required byGoal.",
+    "rejection_branch": "All original history and six-tier coverage with valid evidence completed;at least one speed gateNO_GO permanently rejects candidate;resource/protection/cleanup/docs/git/final-review work still required;business/lifecycle and next-candidate gatesNOT_TRIGGERED.",
+    "invalid_evidence_branch": "Do not claimGO, performanceNO_GO based on speed, or completed full coverage. Preserve failure, identify specific defect, follow explicit affected-scope repair policy without favorable repeats.",
+    "physical_ram": "54GB remainsINDETERMINATE unless separately proven;never silently promotes toPASS."
+  },
+  "previous_draft_preserved": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/completion-requirements.json",
+    "sha256": "4ea7734c34e86d0fe0119c8e6989ae16c1364d3a916ca3aeb93a656edbdd0ca2",
+    "reason": "Pre-amendment analysis retained verbatim, including original Goal/stop-rule wording gap.",
+    "backup_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/completion-requirements-before-coverage.json"
+  },
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/goal-objective.json": "7cabd6198e1e74765729214a60e77ab4c9c117bc4682880e2a45334b79ec3b0a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/plan.json": "7ca311700e9ede574ffec89deaa746d8dc0fcd3defdce66496aff09b6e266479",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/execution-plan.json": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-amendment.json": "12c1579eba32cc91219bd2d3453cf65fca40bf7fc88022e12d1acab705e6a23e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-freeze-consistency-review.json": "71ddd83acf2e84d8f94ba1f3504ebc95d1526662bd94968dcca936e01b4cf2b1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/quality-decision.json": "0056d0e0cf4fed3e707f630e9110a120e77c658e724227028f04846cbf456720",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-decision.json": "21b65dc0985c795d8c58939a3554c23490d6e89f2cd6a0542fb9dbf87c62c8e1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-decision.json": "c8efafe835a4ec3ba648890af8ea5aebdb015acbc513c8523d80a9bb66834d2c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/prerequisite-independent-review.json": "ba5e76e2ed47a7698144dbd1a6cc0cf81376bb16a46d45328ec815906d9faff0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/entry.json": "34b1d7000340d42d7c421038fd5cfa6bca3e7274327f3cde1b63493ad7ee155b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/model-entry.json": "ab1aeb1a567a595579dbd36dd0d50a2713127b09ef2d427c20aa561cc2cc6b58",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/AGENTS.md": "75af4d0f18cc13c69d42973403c410c74a3f4ee31be1152d7b947b6cc944750c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/docs/EVALUATION.md": "ffea8680ae1a07bc57cfd05e310a5d847b3d85d288915c1274f9d93366fef443"
+  },
+  "no_performance_speed_values_read": true,
+  "tests_or_model_executed": false
+}

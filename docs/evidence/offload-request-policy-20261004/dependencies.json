@@ -1,0 +1,193 @@
+{
+  "schema": 1,
+  "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+  "path_resolution": {
+    "repository_path": "Relative to repository root; already tracked in the isolated source checkout at source_commit, not duplicated under delivery-staging.",
+    "archive_path_and_verification_paths": "Relative to repository root; resolve under delivery-staging before integration.",
+    "origin": "Absolute original local source path; not a portable archive-relative reference.",
+    "execution_plan_relative_to_this_index": "records/execution-plan.json"
+  },
+  "tracked_dependencies": [
+    {
+      "repository_path": "tools/evalscope/run_budget_experiment.py",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tools/evalscope/run_budget_experiment.py",
+      "bytes": 25884,
+      "sha256": "7c4fbbbf2601f6d6c2bbbf84e85ce8237378536a9073bae402e8fc0d59376156",
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "already_tracked": true
+    },
+    {
+      "repository_path": "tools/evalscope/run_acceptance.py",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tools/evalscope/run_acceptance.py",
+      "bytes": 40154,
+      "sha256": "5af2e62af5930ff9a543ff8b9cd6204652956f976f158ab3ba6546ebfde1022e",
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "already_tracked": true
+    },
+    {
+      "repository_path": "tools/evalscope/isolated_service.py",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tools/evalscope/isolated_service.py",
+      "bytes": 8269,
+      "sha256": "c561ec8a8cf1c05e2ceb8ba08959af3624db9ee832723103b691ee2edb713521",
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "already_tracked": true
+    },
+    {
+      "repository_path": "tools/evalscope/monitor_memory.py",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tools/evalscope/monitor_memory.py",
+      "bytes": 23266,
+      "sha256": "098d91eb208ce85961b23a88b029a80e122ff0b1b37bed7b9eaa898d1b5d6fc5",
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "already_tracked": true
+    },
+    {
+      "repository_path": "tools/evalscope/file_cache.py",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tools/evalscope/file_cache.py",
+      "bytes": 4959,
+      "sha256": "d25d6fa846af504e40eec850eb4f9c0cfa168f798d8aca826642214821eb9b73",
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "already_tracked": true
+    },
+    {
+      "repository_path": "tools/evalscope/resource_metrics.py",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tools/evalscope/resource_metrics.py",
+      "bytes": 18493,
+      "sha256": "4ec55a1bad3983d9e71621c72aa299538392b3f8efb4ec121b9ec28bd105a5ce",
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "already_tracked": true
+    },
+    {
+      "repository_path": "tools/evalscope/memory_accounting.py",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tools/evalscope/memory_accounting.py",
+      "bytes": 13851,
+      "sha256": "e0e7418359db1ee021e9d2aa096ef929212a62b47fd91d06086d0c11f4acf6f3",
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "already_tracked": true
+    },
+    {
+      "repository_path": "tools/evalscope/offload_policy.py",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tools/evalscope/offload_policy.py",
+      "bytes": 12340,
+      "sha256": "61be18ccf7820203ebb2901c766c75f7c665029308ef224766be04bfc43f75fd",
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "already_tracked": true
+    },
+    {
+      "repository_path": "tools/evalscope/request_policy_protocol.py",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tools/evalscope/request_policy_protocol.py",
+      "bytes": 12247,
+      "sha256": "b59d49c444887cc9a1ae19d8d8518cf8f8312b13afcf5bc7de64f8eb7f1aa0d0",
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "already_tracked": true
+    },
+    {
+      "repository_path": "tools/evalscope/prepare_inputs.py",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tools/evalscope/prepare_inputs.py",
+      "bytes": 3329,
+      "sha256": "abcdd7c57870ffac1807f4b26fd40f549c79cf49d302a2a281e3c0e936ee350a",
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "already_tracked": true
+    },
+    {
+      "repository_path": "tools/evalscope/prepare_quality.py",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tools/evalscope/prepare_quality.py",
+      "bytes": 3333,
+      "sha256": "140e7c8008f00928b271201d5116534af8f89ae7f57302a24c272a6c8607143a",
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "already_tracked": true
+    },
+    {
+      "repository_path": "tools/evalscope/audit_offload_matrix.py",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tools/evalscope/audit_offload_matrix.py",
+      "bytes": 34785,
+      "sha256": "3d6779458c7a69750547c6d40ce49df06eb094daf1115c63f449166e7bc9b85c",
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "already_tracked": true
+    },
+    {
+      "repository_path": "tools/evalscope/test_run_acceptance.py",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tools/evalscope/test_run_acceptance.py",
+      "bytes": 17472,
+      "sha256": "4e866e51cceee464a69cc564b6265da14499177b11fe2603fd977bd2736d6bbd",
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "already_tracked": true
+    },
+    {
+      "repository_path": "tools/evalscope/test_partition_protocol.py",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tools/evalscope/test_partition_protocol.py",
+      "bytes": 24625,
+      "sha256": "726a7a2078712bfaacc80ff464c9202d8b8696bde5370013cef58c7687d70b59",
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "already_tracked": true
+    },
+    {
+      "repository_path": "tools/evalscope/test_chunk_order_protocol.py",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tools/evalscope/test_chunk_order_protocol.py",
+      "bytes": 19518,
+      "sha256": "ab64a38f44186f6dcee72b02a81da59b3700bc6d7e6db9a467c37c223bc46b26",
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "already_tracked": true
+    },
+    {
+      "repository_path": "tools/evalscope/test_offload_matrix_audit.py",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tools/evalscope/test_offload_matrix_audit.py",
+      "bytes": 30689,
+      "sha256": "b58ad4ee86ecb89935ae7fbe27b60a40ef06d7080d5dd7ab8254f2420f24aef9",
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "already_tracked": true
+    },
+    {
+      "repository_path": "tools/evalscope/test_request_policy_protocol.py",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tools/evalscope/test_request_policy_protocol.py",
+      "bytes": 15040,
+      "sha256": "249d018e21179066219443d49fe9e5f3284530bf01e7af9dd2784243a6fdfbfe",
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "already_tracked": true
+    },
+    {
+      "repository_path": "include/q4t/model/moe_request_policy.h",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/include/q4t/model/moe_request_policy.h",
+      "bytes": 2580,
+      "sha256": "442fb05a1e1c8cc6705ab80e21503aa3057994764b41f41b7f6e2f7378cc2b45",
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "already_tracked": true
+    },
+    {
+      "repository_path": "tests/model_moe_test.cpp",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tests/model_moe_test.cpp",
+      "bytes": 42440,
+      "sha256": "7b261ba55ad0b34ad3c8d8c48d401db0bdcce85bb468a1337b86c5591ccacf72",
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "already_tracked": true
+    },
+    {
+      "repository_path": "tests/request_policy_host/CMakeLists.txt",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tests/request_policy_host/CMakeLists.txt",
+      "bytes": 688,
+      "sha256": "7c3c09a039ecc2efedf96584d71603bda824b355c8fedbae5d60d1bf6bb7868c",
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "already_tracked": true
+    },
+    {
+      "repository_path": "tests/request_policy_host/request_policy_test.cpp",
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tests/request_policy_host/request_policy_test.cpp",
+      "bytes": 5067,
+      "sha256": "e50af167757c732c4bd4be82902304a58a4ae04fad262da97cd91463d76cbe26",
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "already_tracked": true
+    }
+  ],
+  "immutable_raw_core": {
+    "archive_path": "tools/evalscope/experiments/request_policy_20261004/dependencies/audit_raw_resources_frozen.py",
+    "sha256": "035f1f840d00350a7b6db62e1b8ef7f62a5fda02406dae91395d291a67652da4",
+    "verification_exit": "docs/evidence/offload-request-policy-20261004/prerequisites/raw-core/self-test-exit.json",
+    "verification_log": "docs/evidence/offload-request-policy-20261004/prerequisites/raw-core/self-test.log",
+    "verification_scope": "Prior eight core examples reused by original source/log SHA; not rerun and not proof of current new adapter."
+  },
+  "external_dependencies": [
+    "Thor/CUDA/compiler and actual CMake configuration are identified by the archived build identity; binary/build trees remain local.",
+    "The original evalscope environment and read-only model/tokenizer are external dependencies. This packet does not bundle or certify a replacement environment.",
+    "Frozen existing fixture/reference/hot-list paths and hashes remain in records/execution-plan.json; they are not implicitly copied or treated as available from Git."
+  ],
+  "missing_raw_is_not_success": true
+}

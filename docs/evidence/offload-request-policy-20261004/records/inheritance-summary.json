@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "recorded_t": 1791116036.0355558,
+  "scope": "completed inheritance only; six-tier still pending",
+  "history_sha256": "c8295b11a4fcb5837e2372705df5df30357ddc8225ee832eb969b1132435303f",
+  "decision": "NO_GO",
+  "rows": [
+    {
+      "position": 1,
+      "input_tokens": 16385,
+      "mean_ttft_off_s": 72.68180054899615,
+      "mean_ttft_on_s": 52.88096357470689,
+      "mean_ttft_change_pct": -27.243184435065217,
+      "min_decode_off_tps": 6.616601433490465,
+      "min_decode_on_tps": 6.717992422429824,
+      "min_decode_change_pct": 1.5323726229928392,
+      "checks": {
+        "first_of_position_ttft": true,
+        "later_ttft": true,
+        "decode": true
+      },
+      "passed": true
+    },
+    {
+      "position": 2,
+      "input_tokens": 8192,
+      "mean_ttft_off_s": 38.17988227160337,
+      "mean_ttft_on_s": 38.71817845874466,
+      "mean_ttft_change_pct": 1.4098948323411964,
+      "min_decode_off_tps": 6.286145965140902,
+      "min_decode_on_tps": 6.208774295053206,
+      "min_decode_change_pct": -1.2308284045065343,
+      "checks": {
+        "first_of_position_ttft": false,
+        "later_ttft": false,
+        "decode": false
+      },
+      "passed": false
+    },
+    {
+      "position": 3,
+      "input_tokens": 8193,
+      "mean_ttft_off_s": 38.36394881658877,
+      "mean_ttft_on_s": 27.681619967722025,
+      "mean_ttft_change_pct": -27.844706236933693,
+      "min_decode_off_tps": 6.949628904295337,
+      "min_decode_on_tps": 6.945078213842147,
+      "min_decode_change_pct": -0.06548105684286432,
+      "checks": {
+        "first_of_position_ttft": true,
+        "later_ttft": true,
+        "decode": false
+      },
+      "passed": false
+    },
+    {
+      "position": 4,
+      "input_tokens": 1024,
+      "mean_ttft_off_s": 10.562605686330548,
+      "mean_ttft_on_s": 10.63735671993345,
+      "mean_ttft_change_pct": 0.7076950122226089,
+      "min_decode_off_tps": 7.014804738926467,
+      "min_decode_on_tps": 6.960544366262966,
+      "min_decode_change_pct": -0.7735122313868525,
+      "checks": {
+        "first_of_position_ttft": false,
+        "later_ttft": false,
+        "decode": false
+      },
+      "passed": false
+    },
+    {
+      "position": 5,
+      "input_tokens": 45056,
+      "mean_ttft_off_s": 219.9605825112667,
+      "mean_ttft_on_s": 157.52913580136374,
+      "mean_ttft_change_pct": -28.383015719057358,
+      "min_decode_off_tps": 7.1249318141077795,
+      "min_decode_on_tps": 7.2204848713867715,
+      "min_decode_change_pct": 1.3411083750975994,
+      "checks": {
+        "first_of_position_ttft": true,
+        "later_ttft": true,
+        "decode": true
+      },
+      "passed": true
+    },
+    {
+      "position": 6,
+      "input_tokens": 4096,
+      "mean_ttft_off_s": 26.107347373384982,
+      "mean_ttft_on_s": 26.201056606291484,
+      "mean_ttft_change_pct": 0.3589381623735344,
+      "min_decode_off_tps": 6.487530055441564,
+      "min_decode_on_tps": 6.4094760636326,
+      "min_decode_change_pct": -1.2031388084821848,
+      "checks": {
+        "first_of_position_ttft": false,
+        "later_ttft": true,
+        "decode": false
+      },
+      "passed": false
+    },
+    {
+      "position": 7,
+      "input_tokens": 8192,
+      "mean_ttft_off_s": 38.257633394716926,
+      "mean_ttft_on_s": 38.43802685461318,
+      "mean_ttft_change_pct": 0.4715227887597484,
+      "min_decode_off_tps": 6.270757812145451,
+      "min_decode_on_tps": 6.240273366675784,
+      "min_decode_change_pct": -0.48613654653706373,
+      "checks": {
+        "first_of_position_ttft": false,
+        "later_ttft": false,
+        "decode": false
+      },
+      "passed": false
+    }
+  ],
+  "descriptive_means_not_gates": true,
+  "sample_count_per_position": 3,
+  "fixed_arm_order": "off_then_on",
+  "no_statistical_or_causal_confidence_claim": true,
+  "whole_physical_RAM_54GB": "INDETERMINATE",
+  "conditional_delivery_allowed": false,
+  "next_optimization_allowed": false,
+  "coverage_still_required_by_frozen_amendment": true
+}

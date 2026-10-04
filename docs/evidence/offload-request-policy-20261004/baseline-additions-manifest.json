@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "status": "OPAQUE_COMPLETED_MATRIX_OFF_ADDITIONS",
+  "stage": "matrix-off",
+  "origin_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004",
+  "staging_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/delivery-staging",
+  "archive_path_base": "repository root",
+  "prior_manifest": {
+    "archive_path": "docs/evidence/offload-request-policy-20261004/manifest.json",
+    "sha256": "1f3812f81bcd5940bfd232f063199bc22bb09f37ba5529da374900fbecb88dd1",
+    "historical_copied_file_count": 91,
+    "treatment": "Unchanged historical manifest; these additions do not rewrite its scope or facts."
+  },
+  "completion_authority": "Parent root confirmed matrix-off completion and cleanup. This task archives opaque bytes only and does not independently judge performance, resources, or Goal completion.",
+  "copied_file_count": 13,
+  "copied_payload_bytes": 20640,
+  "files": [
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-off-coverage-admission.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/matrix-off-coverage-admission.json",
+      "stage": "matrix-off",
+      "artifact_type": "completed_baseline_controller_or_contract_record",
+      "bytes": 638,
+      "sha256": "7a989065af4f9d8483defe4a15a7e2a486282276e008e3c0dd20efe8489185f9",
+      "expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-off-controller-start.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/matrix-off-controller-start.json",
+      "stage": "matrix-off",
+      "artifact_type": "completed_baseline_controller_or_contract_record",
+      "bytes": 1640,
+      "sha256": "28fff0cbcc2697522a3fe4454e136eb67e5ba8a13ef264b2fe282f39fedb5a93",
+      "expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-off-controller-exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/matrix-off-controller-exit.json",
+      "stage": "matrix-off",
+      "artifact_type": "completed_baseline_controller_or_contract_record",
+      "bytes": 1933,
+      "sha256": "fdaf4a9d070c145f6f7a0bad26a04eb1185754f926dac24ed03a98df8be8f00e",
+      "expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-off-stage.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/matrix-off-stage.json",
+      "stage": "matrix-off",
+      "artifact_type": "completed_baseline_controller_or_contract_record",
+      "bytes": 2545,
+      "sha256": "2243733f95336930c3367d6434c8fdc10bebd7c16623d669ef4963e4b7aa159c",
+      "expected_sha256": "2243733f95336930c3367d6434c8fdc10bebd7c16623d669ef4963e4b7aa159c"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-off-decision.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/matrix-off-decision.json",
+      "stage": "matrix-off",
+      "artifact_type": "completed_baseline_controller_or_contract_record",
+      "bytes": 8132,
+      "sha256": "2072b2276b666fbc390cc158142baee57415beb7c7d576ad30a5d74073c68a47",
+      "expected_sha256": "2072b2276b666fbc390cc158142baee57415beb7c7d576ad30a5d74073c68a47"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-step-01-matrix-off-run-start.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/coverage-step-01-matrix-off-run-start.json",
+      "stage": "matrix-off",
+      "artifact_type": "completed_baseline_controller_or_contract_record",
+      "bytes": 858,
+      "sha256": "8fd8d3487eac62c19913de721060afad2fc40f0b8d18620ae2f92bb5ffc24b38",
+      "expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-step-01-matrix-off-run-exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/coverage-step-01-matrix-off-run-exit.json",
+      "stage": "matrix-off",
+      "artifact_type": "completed_baseline_controller_or_contract_record",
+      "bytes": 974,
+      "sha256": "a485a150af6033bd27a91838d417d4408005da867a6d414734af345240739266",
+      "expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-step-02-matrix-off-audit-start.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/coverage-step-02-matrix-off-audit-start.json",
+      "stage": "matrix-off",
+      "artifact_type": "completed_baseline_controller_or_contract_record",
+      "bytes": 745,
+      "sha256": "99b4abb0db7c85e415173a282385a231436ad046dace87e7445c0158fd55a8dd",
+      "expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-step-02-matrix-off-audit-exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/coverage-step-02-matrix-off-audit-exit.json",
+      "stage": "matrix-off",
+      "artifact_type": "completed_baseline_controller_or_contract_record",
+      "bytes": 861,
+      "sha256": "6082ae05f29fabc0ead0b5ba184af720689de2dc17ae696a417c7ac141194829",
+      "expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/wrapper-exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/matrix-off-proof/wrapper-exit.json",
+      "stage": "matrix-off",
+      "artifact_type": "completed_baseline_cleanup_record",
+      "bytes": 748,
+      "sha256": "05a19d85fb418ff1afdb0c10ea402c7e76900f5c5f38fa360e950631788540a1",
+      "expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/runner-process-group.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/matrix-off-proof/runner-process-group.json",
+      "stage": "matrix-off",
+      "artifact_type": "completed_baseline_cleanup_record",
+      "bytes": 581,
+      "sha256": "5ede6eb6c31d54c257417da7e7ea658f19f0f29dc15f616517a2225e95fadf1e",
+      "expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/matrix-off-proof/http-exit.json",
+      "stage": "matrix-off",
+      "artifact_type": "completed_baseline_cleanup_record",
+      "bytes": 362,
+      "sha256": "06e9e9e813902bf2b454d3a957e3f47089b52d683e762524b41baa7f9cb59a97",
+      "expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/isolation/cleanup.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/matrix-off-proof/isolation-cleanup.json",
+      "stage": "matrix-off",
+      "artifact_type": "completed_baseline_cleanup_record",
+      "bytes": 623,
+      "sha256": "6600e0d2793f453525c8c699921256f116a0b334390471e9e2a9640a5b5703c0",
+      "expected_sha256": null
+    }
+  ],
+  "verification": {
+    "all_destinations_absent_before_copy": true,
+    "all_sources_regular_files": true,
+    "parent_supplied_stage_and_decision_sha256_matched": true,
+    "original_and_archive_sha256_match": true,
+    "source_stat_and_sha256_stable_across_copy": true,
+    "metrics_parsed": false,
+    "metrics_displayed": false,
+    "metrics_compared": false,
+    "in_flight_matrix_on_data_read": false,
+    "raw_resource_streams_read": false,
+    "archived_scripts_imported_or_executed": false,
+    "models_or_tests_run": false
+  },
+  "scope": {
+    "original_91_archives_or_prior_manifest_written": false,
+    "source_worktree_written": false,
+    "report_draft_written": false,
+    "performance_acceptance_judgment": false,
+    "resource_acceptance_judgment": false,
+    "goal_completion_judgment": false
+  },
+  "final_package_status": "PENDING. A later final package manifest must include these additions and their immutable source mappings.",
+  "self_hash_policy": "This manifest does not include its own SHA256. Report its SHA256 separately and bind it from the later final package manifest; do not create a recursive self-hash."
+}

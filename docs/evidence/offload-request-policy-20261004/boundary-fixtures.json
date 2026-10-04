@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "status": "FROZEN_BOUNDARY_INPUT_BYTES_PRESERVED_NO_REGENERATION_RUN",
+  "path_resolution": {
+    "repository_path": "Relative to repository root; generator already tracked at source_commit in the source checkout.",
+    "recipe_source_freeze_source_archive_path": "Relative to repository root; resolve under delivery-staging before integration.",
+    "origin": "Absolute original local fixture path."
+  },
+  "generator": {
+    "repository_path": "tools/evalscope/prepare_inputs.py",
+    "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+    "sha256": "abcdd7c57870ffac1807f4b26fd40f549c79cf49d302a2a281e3c0e936ee350a",
+    "seed": 20260920,
+    "number": 1,
+    "model_tokenizer": "AutoTokenizer.from_pretrained(model_dir, local_files_only=True)",
+    "length_rule": "Overfill fixed technical notes; tokenize and trim; local count is preparation only, actual HTTP usage is the acceptance authority."
+  },
+  "recipe_source": "docs/evidence/offload-request-policy-20261004/records/commands-proposal.json",
+  "recipe_field": "fixture-preparation",
+  "freeze_source": "docs/evidence/offload-request-policy-20261004/records/execution-plan.json",
+  "boundaries": [
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/history-fixtures/context-8193/requests.jsonl",
+      "archive_path": "tools/evalscope/experiments/request_policy_20261004/fixtures/context-8193/requests.jsonl",
+      "bytes": 40441,
+      "sha256": "be204f0c49f53238d94416c0a67228865928a2a10d608b19dc744c967da33480",
+      "input_tokens": 8193
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/history-fixtures/context-16385/requests.jsonl",
+      "archive_path": "tools/evalscope/experiments/request_policy_20261004/fixtures/context-16385/requests.jsonl",
+      "bytes": 80256,
+      "sha256": "d023665a97680ee0407520cb314d34d1323e528da0c8b160477b923931538bfb",
+      "input_tokens": 16385
+    }
+  ],
+  "why_keep_bytes": "Only 120697 bytes total; preserves the exact boundary prompts without depending on unarchived tokenizer/transformers behavior. Generator existence alone does not prove cross-version byte identity.",
+  "old_inputs_untouched": true,
+  "existing_other_fixture_policy": "Remain at the original frozen local paths with execution-plan SHA bindings; no altered or regenerated old prompts.",
+  "generation_or_tokenizer_executed_during_packaging": false
+}

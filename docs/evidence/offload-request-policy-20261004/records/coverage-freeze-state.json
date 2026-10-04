@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "captured_at": 1791113193.534306,
+  "live_baseline_pid": 3420601,
+  "process_owner_uid": 2002,
+  "comm": "q4t",
+  "cmdline": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-build/q4t",
+    "serve",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--port",
+    "8182",
+    "--max-seq",
+    "1",
+    "--max-prefill",
+    "8192",
+    "--max-len",
+    "262144",
+    "--max-tokens",
+    "256",
+    "--no-mtp",
+    "--moe-resident-slots",
+    "256",
+    "--moe-hot-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-residency-20260930/hot-lists/hot-final-12288.json",
+    "--request-deadline-ms",
+    "1800000",
+    ""
+  ],
+  "selected_arm_environment": {
+    "Q4T_MOE_PARTITION": "0",
+    "Q4T_MOE_REQUEST_PARTITION": "0"
+  },
+  "candidate_performance_paths_absent": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-on-controller-start.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-off-controller-start.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-on-controller-start.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/inheritance-on"
+  ],
+  "candidate_quality_already_completed": true,
+  "quality_decision_sha256": "0056d0e0cf4fed3e707f630e9110a120e77c658e724227028f04846cbf456720",
+  "attestation": "Root has examined progress counts and execution-context markers, but has not inspected or compared in-flight speed values. This is an agent attestation, not a machine-wide proof of unobserved data."
+}

@@ -1,0 +1,37 @@
+{
+  "schema": "q4t.request_policy_prebuild_review.v1",
+  "reviewer": "/root/request_policy_review",
+  "verdict": "NO_BLOCKER_FOUND_IN_FROZEN_HTTP_SCOPE",
+  "not_acceptance": "No build, test or model execution performed. Static inspection only.",
+  "runtime_findings": [
+    "Immutable complete-input policy is copied into scheduler requests and explicitly forwarded through normal prefill, chunk continuation and inline fallback.",
+    "Both arms carry identity and produce one layer-zero policy record per prefill chunk.",
+    "Mode conflicts and unsupported enabled server modes reject before model load.",
+    "Model entry validates context length/base/range before sequence submission; direct MoE validates active context and selector dependencies.",
+    "A singleton long-request tail preserves long policy while using existing singleton dispatch.",
+    "No new GPU sync, math, GEMM, cache allocation, cache reset or mutable cross-request selector was added."
+  ],
+  "scope_limit": "Direct model API callers are responsible for reusing the same context across chunks; the implementation does not store and compare request identity across separate ModelSequence calls. HTTP keeps one const context and satisfies the frozen scope.",
+  "old_numeric_file_is_exact_prefix": true,
+  "new_numeric_test": "moe_request_policy_numerical_contract",
+  "new_numeric_cases": 8,
+  "new_host_tests": 8,
+  "numeric_contract": "Real layer2 router C64/T32 and T1; real expert/shared weights with controlled in-memory router C15/T4/T1 to distinguish legacy3chunks/2singleton versus min-new2chunks/1singleton. BF16 and router equality; routed FP32 differences reported separately. Full input length is a small-fixture policy label, not full model coverage.",
+  "protocol_finding": "Requested same-prompt output consistency across all three history rounds and both repeated8192 positions because one request per case makes local deterministic flag trivial. Protocol owner is implementing the checker.",
+  "files_sha256": {
+    "include/q4t/model/moe_request_policy.h": "442fb05a1e1c8cc6705ab80e21503aa3057994764b41f41b7f6e2f7378cc2b45",
+    "include/q4t/model/moe.h": "57be5e1c32c7185f1bfb3f66312e8776104780926e5f47cd3eeed19ffcbec100",
+    "include/q4t/model/model.h": "f6303189a6b68a5cabcbcfb16adff621d70ce5287334b928c1d459f09a8fbbae",
+    "include/q4t/model/decoder_layer.h": "0abef25988947f8d4e3b90203eebe3e48a7d6deb6c082bd81ea3e209c093eb18",
+    "include/q4t/server/chat_server.h": "a2fcc88543d887159b220be22314790638314d256557061d244cfe240d4e5799",
+    "src/model/moe.cu": "a59cb8c1a33160bdc942011e8afede7fb4ed46fa227f29852efff2f39da35e31",
+    "src/model/model.cu": "a20ab4d80def50d9474b64cae629fc309ad6f8f2dcd3f819031ad7c262c9c3be",
+    "src/model/decoder_layer.cu": "e9ffbb24b04062b34cb9b512378b2da0851bc182c944560adda9ae7a33fd5b37",
+    "src/server/chat_server.cpp": "cf0c0a87852eab5252dbc52455f7704af9740419047082f626db93cfdc4a6d08",
+    "src/server/chat_generation.cpp": "66360d6a19b6b40377d7e0db5a530e8c0799be92280f19e22cd5973ab65d6931",
+    "src/server/chat_scheduler.cpp": "5c6247961090335a66a924907161592a0f88d6893e4e3faf2d7720833286b34b",
+    "tests/model_moe_test.cpp": "7b261ba55ad0b34ad3c8d8c48d401db0bdcce85bb468a1337b86c5591ccacf72",
+    "tests/request_policy_host/CMakeLists.txt": "7c3c09a039ecc2efedf96584d71603bda824b355c8fedbae5d60d1bf6bb7868c",
+    "tests/request_policy_host/request_policy_test.cpp": "e50af167757c732c4bd4be82902304a58a4ae04fad262da97cd91463d76cbe26"
+  }
+}

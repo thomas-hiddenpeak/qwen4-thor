@@ -1,0 +1,183 @@
+{
+  "schema": 1,
+  "created_t": 1791126009.327135,
+  "reviewer": "request_policy_runtime",
+  "status": "PREPARED_WAIT_FOR_EXPLICIT_ROOT_MATRIX_TERMINAL",
+  "purpose": "Bounded independent review plan only. No matrix values or raw resources read and no review execution started.",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/compare_groups.py": "c9e8a72a262c41994dd16610db4f893fbb89963e970f97faf6ff3bd4b873bd45",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/audit_group.py": "b7d1a7a512a9a63a8e6c14feff8da21ef7cfb1ab94456392ce5a4cf5485b5b1d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/aggregate_performance.py": "9fd70bcbb4ec355a6810a841cf68cce38676208c4c5a7c8d240a05c85a3fa38d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/completion-requirements-v2.json": "dbd4064003bbdc2cbff9efb2900c2cbd6d1697553ed1c80ca03a7ef121a0c6cf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/history-independent-review.json": "8b512489ae20b3212da8507bcd2a8f2093efcbbffd426776dffd7c4ca945ad62"
+  },
+  "execution_start_gate": [
+    "Root explicitly reports matrix off/on, group audits, comparison and aggregate/continuation terminal state and authorizes actual review. Do not infer authorization from elapsed time or file presence.",
+    "Before result interpretation, verify that terminal records bind the exact frozen plan, amendment and both groups; if evidence/cleanup failed, preserve that failure and do not relabel it a valid speed NO_GO."
+  ],
+  "expected_scope": {
+    "lengths": [
+      1024,
+      4096,
+      8192,
+      45056,
+      204800,
+      261887
+    ],
+    "repeats_per_tier_per_arm": 3,
+    "requests_per_arm": 18,
+    "total_requests": 36,
+    "group_order": [
+      "off",
+      "on"
+    ],
+    "default_actual_output_tokens": 256,
+    "target_actual_input_tokens": 261887,
+    "target_actual_output_tokens": 257,
+    "target_actual_total_tokens": 262144,
+    "effective_capacity": {
+      "max_len": 262144,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "runtime_identity": {
+      "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+      "runtime_binary_sha256": "34eb4cf5b53dfcc5b0783120fcdec438fd321dbd4c981f52eee581c96f7fb93a"
+    },
+    "execution_plan_sha256": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+    "coverage_amendment_sha256": "12c1579eba32cc91219bd2d3453cf65fca40bf7fc88022e12d1acab705e6a23e"
+  },
+  "review_steps": [
+    {
+      "id": "terminal_and_identity",
+      "check": "Read each finished stage/controller/coverage admission, wrapper/server exit, runtime and source/config/tool identities. Verify original command and plan/amendment digests, archived clean runtime52b42b2/binary34eb4cf5 and per-run recorded commit/worktree patch. Distinguish a later docs-only commit from frozen executable identity; do not mutate source to satisfy an old checker.",
+      "files": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/execution-plan.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-amendment.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-{off,on}-coverage-admission.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-{off,on}-stage.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-{off,on}-controller-exit.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-continuation-exit.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/protocol.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/http/server-command.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/http/binary.sha256",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/http/commit.txt",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/http/worktree.patch"
+      ]
+    },
+    {
+      "id": "raw_request_and_usage",
+      "check": "For exactly six tiers x three ordered responses per arm, use completed responses.json entries directly, not decision metrics. Check actual_input, actual_output, requested_max_tokens, finish length, streaming response identity, success and timing boundaries. Resolve actual fixture/manifest paths from frozen protocol fixture paths and request commands, match prompt SHA and input/max-token request metadata. Preserve exporter schema limits: absent HTTP status is not invented, output count is actual usage rather than recounting text or SSE chunks.",
+      "files": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/http/context-{1024,4096,8192,45056,204800,261887}/responses.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/http/context-{length}/commands.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/http/context-{length}/run-{1,2,3}/command.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/http/context-{length}/run-{1,2,3}/client-exit.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/http/context-{length}/request-boundaries.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/protocol.json [fixtures/fixture_sha256 resolve exact requests.jsonl paths]"
+      ]
+    },
+    {
+      "id": "independent_arithmetic",
+      "check": "Use an independent standard-library calculation, with no import/call of compare_groups.py, aggregate_performance.py, audit_group.py or the project metric helpers. From each raw row take TTFT and latency, calculate decode_tps=(actual_output-1)/(latency-TTFT), require finite positive values, preserve acquisition order. For every tier apply all three unchanged gates, retain absolute and percent deltas, arithmetic mean TTFT, arithmetic mean decode and minimum decode separately; never substitute means for gates.",
+      "gates": {
+        "first_ttft": "on[0].ttft <= off[0].ttft",
+        "later_ttft": "max(on[1:3].ttft) <= max(off[1:3].ttft)",
+        "decode": "min(on[0:3].decode_tps) >= min(off[0:3].decode_tps)"
+      },
+      "additional_description": "If requested for the final table, actual_input/TTFT is a descriptive effective input rate and explicitly not pure prefill kernel throughput."
+    },
+    {
+      "id": "outputs_and_capacity",
+      "check": "Compare UTF-8 output text bytes or SHA exactly across all three repeats, paired off/on and frozen historical reference, with prompt SHA/input/output/finish equality. Validate requested/effective max_len262144/max_seq1/max_prefill8192 and actual target261887+257=262144, not CLI arguments alone. Output equality remains compatibility evidence, not whole-model intermediate numerical proof.",
+      "files": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/http/results.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/http/capacity.json",
+        "Exact historical reference path and SHA obtained from execution-plan.json performance_reference_path/performance_reference_sha256"
+      ]
+    },
+    {
+      "id": "ordered_actual_path",
+      "check": "Independently parse completed server logs with a small ordered key/value parser, using actual response IDs, full prompt length, base and T for every chunk. Check short<=8192 legacy and long>8192 request policy across all continuation chunks; check applied/reason/fallback. On selected prefill and all true decode, require exact ordered48-layer groups, correct T1 singleton distinction and actual_output-1 true-decode groups. Do not call the original path auditor as independent proof. Off has layer0/HTTP evidence and no global partition records; do not claim observed all-layer off decode.",
+      "files": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/http/server.log",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/http/context-{length}/responses.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-{off,on}-decision.json"
+      ],
+      "limits": "No new requirement that the six tiers execute a singleton tail: their actual lengths determine expected chunks. Earlier history singleton boundary evidence is reused."
+    },
+    {
+      "id": "cold_and_settings",
+      "check": "Verify at most two pre-service advice rounds, every retained round, no error, first zero stops, final all226-file payload-residency zero, no inference retry or between-request clear; compare off/on frozen effective environments, same16GiB host/cache and swap0, no MTP/PhaseD/diagnostics and unchanged budgets. Read configured isolation identity properties, not monitor raw resource samples.",
+      "files": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/cache-gate.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/cache-advice-round-{01,02}.json [only recorded rounds]",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/cache-after-advice.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/http/isolation/identity.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/protocol.json"
+      ]
+    },
+    {
+      "id": "owned_cleanup",
+      "check": "Verify server/runner/monitor/controller successful terminal contracts, no failure/cleanup failure, owned child process group reaped and absent without live/zombie/error members, exact owned unit removed. A reset-failed nonzero because already unloaded is interpreted with explicit stop and final not-found evidence, not silently treated as fatal or ignored. Do not inspect or stop unrelated processes or launch any cleanup during this read-only audit.",
+      "files": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/wrapper-exit.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/http/exit.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/runner-process-group.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-{off,on}/http/isolation/cleanup.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-{off,on}-controller-exit.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-{off,on}-stage.json"
+      ]
+    },
+    {
+      "id": "decision_and_provenance",
+      "check": "Compare independent values/gates to both group decisions and matrix-decision; verify every bound source hash without calling the original comparators. Follow performance-decision source bindings and frozen coverage admissions. Reuse completed history-independent-review and immutable history-decision SHA; do not repeat history quality/numerical/132-file audit. Overall history AND matrix must remain false because history is already validNO_GO, irrespective of six-tier result. Validate history_failure_present/permanent_veto true, business_lifecycle_allowed false and next_optimization_allowed false. Old local later_model_requests_allowed fields remain historical and are not authorization.",
+      "files": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-off-decision.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-on-decision.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-decision.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/performance-decision.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-decision.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/history-independent-review.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-amendment.json"
+      ]
+    }
+  ],
+  "limits_and_reporting": [
+    "Three fixed-order samples per tier: no confidence, tiny-effect significance, tail or population-wide claim; off->on order and inherited caches limit causal attribution.",
+    "TTFT includes HTTP/queue/tokenization and is separate from decode throughput. Arithmetic means are descriptive; first/later-max/min gates remain unchanged.",
+    "Global on decode logging is asymmetric; no estimated overhead is subtracted and no result is corrected to a hypothetical logger.",
+    "All raw resources and physical-memory arithmetic remain outside this performance/output/path review and belong to the separate resource audit. 54GB remainsINDETERMINATE;16GiB setting is not whole physicalRAM proof.",
+    "No extra samples, changed questions, new tolerances, repairs, benchmarks, model requests or tests are authorized by this plan. Any actual inconsistency is reported with preserved first evidence to root.",
+    "This review cannot complete final delivery alone: protection of original7/model/reference, resource audit, docs/commit/push/remote identity and overall final review remain separate Goal requirements."
+  ],
+  "planned_output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-independent-review.json",
+  "overall_history_verdict_already_fixed": {
+    "decision": "NO_GO",
+    "inheritance_decision_sha256": "c8295b11a4fcb5837e2372705df5df30357ddc8225ee832eb969b1132435303f",
+    "history_independent_review_sha256": "8b512489ae20b3212da8507bcd2a8f2093efcbbffd426776dffd7c4ca945ad62",
+    "business_lifecycle_allowed": false,
+    "next_optimization_allowed": false
+  },
+  "actions_this_preparation": {
+    "read_files": [
+      "compare_groups.py",
+      "audit_group.py",
+      "aggregate_performance.py",
+      "completion-requirements-v2.json",
+      "history-independent-review.json"
+    ],
+    "matrix_off_or_on_speed_reads": 0,
+    "matrix_raw_resource_reads": 0,
+    "model_requests": 0,
+    "tests": 0,
+    "reviewed_module_imports": 0,
+    "source_report_staging_edits": 0,
+    "new_artifacts": [
+      "matrix-final-review-plan.json"
+    ]
+  },
+  "actual_review_executed": false,
+  "automatic_start": false,
+  "waiting_for": "Root explicit matrix terminal authorization"
+}

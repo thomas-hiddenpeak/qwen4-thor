@@ -1,0 +1,23 @@
+{
+  "started_t": 1791131985.3338192,
+  "command": [
+    "python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/compare_groups.py",
+    "matrix",
+    "--plan-sha256",
+    "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d"
+  ],
+  "script": "compare_groups.py",
+  "entry_sha256": "c9e8a72a262c41994dd16610db4f893fbb89963e970f97faf6ff3bd4b873bd45",
+  "stage": "matrix",
+  "timeout_s": 1800,
+  "returncode": null,
+  "failure": null,
+  "pid": null,
+  "signals": [],
+  "child_controller_reaped": false,
+  "cleanup_unknown": false,
+  "automatic_retry": false,
+  "log_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-step-05-matrix-compare.log"
+}

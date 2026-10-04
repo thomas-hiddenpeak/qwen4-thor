@@ -1,0 +1,107 @@
+{
+  "schema": 1,
+  "passed": true,
+  "failure": null,
+  "started_t": 1791111589.2055113,
+  "ended_t": 1791111603.031476,
+  "groups": [
+    {
+      "name": "real_weight_numerical",
+      "passed": 3,
+      "request_policy_cases": [
+        "  request_policy layer=2 C=64 input_tokens=8192 base=0 T=32 mode=0 applied=0 chunks=5 singleton=0 BF16_BIT_EXACT=true",
+        "  request_policy layer=2 C=64 input_tokens=8193 base=0 T=32 mode=1 applied=1 chunks=5 singleton=0 BF16_BIT_EXACT=true",
+        "  request_policy layer=2 C=64 input_tokens=16385 base=8192 T=32 mode=1 applied=1 chunks=5 singleton=0 BF16_BIT_EXACT=true",
+        "  request_policy layer=2 C=64 input_tokens=8193 base=8192 T=1 mode=1 applied=0 chunks=1 singleton=1 BF16_BIT_EXACT=true",
+        "  request_policy layer=2 C=15 input_tokens=8192 base=0 T=4 mode=0 applied=0 chunks=3 singleton=2 BF16_BIT_EXACT=true",
+        "  request_policy layer=2 C=15 input_tokens=16385 base=8192 T=4 mode=1 applied=1 chunks=2 singleton=1 BF16_BIT_EXACT=true",
+        "  request_policy layer=2 C=15 input_tokens=16385 base=16384 T=1 mode=1 applied=0 chunks=1 singleton=1 BF16_BIT_EXACT=true",
+        "  request_policy layer=2 C=15 input_tokens=8192 base=0 T=4 mode=0 applied=0 chunks=3 singleton=2 BF16_BIT_EXACT=true"
+      ],
+      "test_binary_sha256": "34f105309b126dfe8b639317aa7953586280602d0721df6f2f6631af28f50556"
+    }
+  ],
+  "records": [
+    {
+      "started_t": 1791111589.4472563,
+      "command": [
+        "cmake",
+        "--build",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-build",
+        "--target",
+        "q4t_tests",
+        "--parallel",
+        "8"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source",
+      "returncode": 0,
+      "failure": null,
+      "automatic_retry": false,
+      "timeout_s": 600,
+      "signals": [],
+      "cleanup_complete": true,
+      "pid": 3420143,
+      "pgid": 3420143,
+      "group_before_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "group_after_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "ended_t": 1791111598.3920374
+    },
+    {
+      "started_t": 1791111598.6167836,
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-build/q4t_tests",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/required-numerical-tests.txt"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source",
+      "returncode": 0,
+      "failure": null,
+      "automatic_retry": false,
+      "timeout_s": 1800,
+      "signals": [],
+      "cleanup_complete": true,
+      "pid": 3420421,
+      "pgid": 3420421,
+      "group_before_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "group_after_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "ended_t": 1791111602.740027
+    }
+  ],
+  "runtime_binary_sha256": "34eb4cf5b53dfcc5b0783120fcdec438fd321dbd4c981f52eee581c96f7fb93a",
+  "runtime_source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+  "log_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-01/numerical-build.log": "1fec5b2c0a0e9d12a8629aa0a34ab069c54f1e154365780e646428269e7ebd2f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-01/numerical-tests.log": "45c6b825df702f4691d1da5662e9e9ffbdfdd140a01dfdde2df353e296383652"
+  },
+  "build_source": {
+    "archive_sha256": "d4e9ee718906a692a6af4dc030dde19f6c11d363c008bd9b013998fb9cb39a6d",
+    "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+    "export_files": 1216,
+    "source_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source",
+    "verified_t": 1791111598.612361
+  },
+  "test_binary_sha256_before": "34f105309b126dfe8b639317aa7953586280602d0721df6f2f6631af28f50556",
+  "test_binary_sha256_after": "34f105309b126dfe8b639317aa7953586280602d0721df6f2f6631af28f50556",
+  "plan_sha256": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+  "performance_acceptance": false
+}

@@ -1,0 +1,778 @@
+{
+  "schema": 1,
+  "status": "STAGING_PREREQUISITES_AND_COMPLETED_HISTORY_NOT_FINAL_DELIVERY",
+  "phase": "offload-request-policy-20261004",
+  "origin_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004",
+  "intended_repository_root": "source worktree after all frozen controllers terminate and root reviews",
+  "runtime_source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+  "runtime_binary_sha256": "34eb4cf5b53dfcc5b0783120fcdec438fd321dbd4c981f52eee581c96f7fb93a",
+  "copied_file_count": 91,
+  "copied_payload_bytes": 565591,
+  "copy_verification": "All 91 archived bytes match their origin SHA256; origin signatures remained unchanged across their copying. 47 copied files also match an existing frozen/prerequisite/completed-history SHA binding.",
+  "copied_files": [
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/plan.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/plan.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 4380,
+      "sha256": "7ca311700e9ede574ffec89deaa746d8dc0fcd3defdce66496aff09b6e266479",
+      "existing_expected_sha256": "7ca311700e9ede574ffec89deaa746d8dc0fcd3defdce66496aff09b6e266479"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/execution-plan.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/execution-plan.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 12266,
+      "sha256": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+      "existing_expected_sha256": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-amendment.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/coverage-amendment.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 4947,
+      "sha256": "12c1579eba32cc91219bd2d3453cf65fca40bf7fc88022e12d1acab705e6a23e",
+      "existing_expected_sha256": "12c1579eba32cc91219bd2d3453cf65fca40bf7fc88022e12d1acab705e6a23e"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-amendment-draft.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/coverage-amendment-draft.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 3285,
+      "sha256": "eac173d8e3c404c080c52f43e37896c5af4e11dec5c991e383ea838df6e7c392",
+      "existing_expected_sha256": "eac173d8e3c404c080c52f43e37896c5af4e11dec5c991e383ea838df6e7c392"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-prospective-state.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/coverage-prospective-state.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 1131,
+      "sha256": "49f038fc1d392b7982811120ecadf98973e07431faf9468f566a9fefae0f2844",
+      "existing_expected_sha256": "49f038fc1d392b7982811120ecadf98973e07431faf9468f566a9fefae0f2844"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-freeze-state.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/coverage-freeze-state.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 1731,
+      "sha256": "ccf8ecb553827efd72faee8815a540633a140223cebbe289cf7d8d1db3ea9ee3",
+      "existing_expected_sha256": "ccf8ecb553827efd72faee8815a540633a140223cebbe289cf7d8d1db3ea9ee3"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-order-proof.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/coverage-order-proof.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 949,
+      "sha256": "378ce187d9585e85edcc48106c416e4f5ba10459f9ad0c6a3d2edc58fa54536f",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-freeze-consistency-review.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/coverage-freeze-consistency-review.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 3784,
+      "sha256": "71ddd83acf2e84d8f94ba1f3504ebc95d1526662bd94968dcca936e01b4cf2b1",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-controller-review.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/coverage-controller-review.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 5281,
+      "sha256": "7cb54952b5d1a0a3c15ccd50dc6878f1b31a5dfe29bc70e8ac839c3785dcbe4b",
+      "existing_expected_sha256": "7cb54952b5d1a0a3c15ccd50dc6878f1b31a5dfe29bc70e8ac839c3785dcbe4b"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-aggregate-review.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/coverage-aggregate-review.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 3302,
+      "sha256": "610f92dff26216300a1792a380fc9051c9e9f2b18d53630151b7d41662352266",
+      "existing_expected_sha256": "610f92dff26216300a1792a380fc9051c9e9f2b18d53630151b7d41662352266"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/continue-coverage-review.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/continue-coverage-review.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 3049,
+      "sha256": "cf0005a585d358d4b4ef05facb232f6b980a05c473b09f2a6d914177098ae28e",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/compare-groups-static-review.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/compare-groups-static-review.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 2406,
+      "sha256": "312d83ec472062b973d7fee8282824b7aec8873c67349ad57f9bcfde7deccb20",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/goal-objective.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/goal-objective.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 1240,
+      "sha256": "7cabd6198e1e74765729214a60e77ab4c9c117bc4682880e2a45334b79ec3b0a",
+      "existing_expected_sha256": "7cabd6198e1e74765729214a60e77ab4c9c117bc4682880e2a45334b79ec3b0a"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/delivery-packaging-plan.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/delivery-packaging-plan.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 3102,
+      "sha256": "5619a236bd28df29b1dfd0af0e6129abc7646511cc82cd9d0918f89e95feb3bf",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/request-policy-static-review.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/request-policy-static-review.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 8226,
+      "sha256": "40539c1e79588e15178946118052d4a7fca27cba35335df53c13faf739a351ea",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/prebuild-independent-review.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/prebuild-independent-review.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 3484,
+      "sha256": "82f85b0b34f7177c16b1e7a9068e0d120ee654dcbed99c9029f8d5ef9092594c",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/prerequisite-independent-review.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/prerequisite-independent-review.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 22573,
+      "sha256": "ba5e76e2ed47a7698144dbd1a6cc0cf81376bb16a46d45328ec815906d9faff0",
+      "existing_expected_sha256": "ba5e76e2ed47a7698144dbd1a6cc0cf81376bb16a46d45328ec815906d9faff0"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/resource-adapter-independent-review.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/resource-adapter-independent-review.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 3330,
+      "sha256": "742cfb041c30a3dbb6d84bc099d420ac26257d33e31d7d77b9cf44fbc83558ec",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/resource-audit-preparation.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/resource-audit-preparation.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 2253,
+      "sha256": "0affff35e2ebd213bbf95cb0afa9aaeee36af8f2a3f7ab5be66eb1744fc7e7ee",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/resource-audit-reuse-proposal.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/resource-audit-reuse-proposal.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 4636,
+      "sha256": "ba7dbbe4e176dcebb9954d69ef015b5bfbdcb8fc33a43c8b0dd0adbee0f4a889",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/build-identity.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/build-identity.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 1692,
+      "sha256": "1575aa5c92ad049d14d64898ed516e1e1530420cbe65ff139a5719065ae317f2",
+      "existing_expected_sha256": "1575aa5c92ad049d14d64898ed516e1e1530420cbe65ff139a5719065ae317f2"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source-identity.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/candidate-source-identity.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 351,
+      "sha256": "41cb8727d74986fcbfaffa0367f19cd7d146bff434043bb458ae186d9d0ac081",
+      "existing_expected_sha256": "41cb8727d74986fcbfaffa0367f19cd7d146bff434043bb458ae186d9d0ac081"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/entry.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/entry.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 501,
+      "sha256": "34b1d7000340d42d7c421038fd5cfa6bca3e7274327f3cde1b63493ad7ee155b",
+      "existing_expected_sha256": "34b1d7000340d42d7c421038fd5cfa6bca3e7274327f3cde1b63493ad7ee155b"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/configure-exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/configure-exit.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 567,
+      "sha256": "6c0741486b708c9a1135673e352ce85b8ff7e189d21caa251c52c9ee3985004a",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/build-exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/build-exit.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 308,
+      "sha256": "c81004e987ae1ce3c740b2eda66d2afb9f060c9678a2a5f27a90b887410b5ee6",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/first-test-admission.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/first-test-admission.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 1213,
+      "sha256": "965cb0b1a9e2fbc21c5d29798133aaade5d337405b6f9eb8ca1ce2092fa07df8",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/quality-decision.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/quality-decision.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 3794,
+      "sha256": "0056d0e0cf4fed3e707f630e9110a120e77c658e724227028f04846cbf456720",
+      "existing_expected_sha256": "0056d0e0cf4fed3e707f630e9110a120e77c658e724227028f04846cbf456720"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/quality-on-stage.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/quality-on-stage.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 1964,
+      "sha256": "d5bd343ea2a6ec318239ad2987151c6f536afd5699a913c0c0016613c512014a",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/quality-on-controller-start.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/quality-on-controller-start.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 1399,
+      "sha256": "279c836ec28a37ca1aa610a2cc2b889467fca8f11343a1ca4536b2f7a055d592",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/quality-on-controller-exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/quality-on-controller-exit.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 1692,
+      "sha256": "821259d01a11457265f391052449536f4ace6d164a1ef2f96542402b6a2e580a",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-decision.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/host-decision.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 9638,
+      "sha256": "21b65dc0985c795d8c58939a3554c23490d6e89f2cd6a0542fb9dbf87c62c8e1",
+      "existing_expected_sha256": "21b65dc0985c795d8c58939a3554c23490d6e89f2cd6a0542fb9dbf87c62c8e1"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-first-attempt.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/host-first-attempt.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 9638,
+      "sha256": "21b65dc0985c795d8c58939a3554c23490d6e89f2cd6a0542fb9dbf87c62c8e1",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-decision.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/numerical-decision.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 4479,
+      "sha256": "c8efafe835a4ec3ba648890af8ea5aebdb015acbc513c8523d80a9bb66834d2c",
+      "existing_expected_sha256": "c8efafe835a4ec3ba648890af8ea5aebdb015acbc513c8523d80a9bb66834d2c"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-first-attempt.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/numerical-first-attempt.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 4479,
+      "sha256": "c8efafe835a4ec3ba648890af8ea5aebdb015acbc513c8523d80a9bb66834d2c",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/required-numerical-tests.txt",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/required-numerical-tests.txt",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 110,
+      "sha256": "86f1c421357e519f8deee9b4c82fdb1566fa5e157c0ae97ff14413534be33327",
+      "existing_expected_sha256": "86f1c421357e519f8deee9b4c82fdb1566fa5e157c0ae97ff14413534be33327"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/quality-on-command.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/quality-on-command.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 1057,
+      "sha256": "9318025760be1a6c65131865eb424c0c67862a7dad96a6801c2d07fffe0ef943",
+      "existing_expected_sha256": "9318025760be1a6c65131865eb424c0c67862a7dad96a6801c2d07fffe0ef943"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-off-command.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-off-command.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 1075,
+      "sha256": "81140d9cb2733a2ea28c02413d1b0b4b4cd9a74f8f9669d84c068bf52ad6e49d",
+      "existing_expected_sha256": "81140d9cb2733a2ea28c02413d1b0b4b4cd9a74f8f9669d84c068bf52ad6e49d"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-on-command.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-on-command.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 1231,
+      "sha256": "59d69da134273129fb4a7d7751f2e8d44b00bf8f2f54f5d8cc2d597419dbbab1",
+      "existing_expected_sha256": "59d69da134273129fb4a7d7751f2e8d44b00bf8f2f54f5d8cc2d597419dbbab1"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-off-command.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/matrix-off-command.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 1277,
+      "sha256": "c12adb19e4a638f6d3a1da744719cee505c942da7918bb70f6d6fd42d5c20338",
+      "existing_expected_sha256": "c12adb19e4a638f6d3a1da744719cee505c942da7918bb70f6d6fd42d5c20338"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-on-command.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/matrix-on-command.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 1299,
+      "sha256": "5ff68d2372aa6dd303392be1f547eca61b1e52a01f3e35b5d3c81cd921903186",
+      "existing_expected_sha256": "5ff68d2372aa6dd303392be1f547eca61b1e52a01f3e35b5d3c81cd921903186"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/commands-proposal.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/commands-proposal.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 7563,
+      "sha256": "c1d74bf0a7594605627ebcf300c689107ce4d82c6b503ae1c0ce556004edabf4",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/protocol-proposal.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/protocol-proposal.json",
+      "category": "frozen_protocol_or_completed_prerequisite",
+      "bytes": 3290,
+      "sha256": "8c4e1030ac386d95e0598e0f1023a5391e1f146325ff1f5659d06875456b3663",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/phase_common.py",
+      "archive_path": "tools/evalscope/experiments/request_policy_20261004/originals/phase_common.py",
+      "category": "exact_byte_controller_snapshot",
+      "bytes": 10367,
+      "sha256": "adbd4b9aac6e471e4d80dfc987c96698f4202fe3c0c3ac08faaabe78411d5505",
+      "existing_expected_sha256": "adbd4b9aac6e471e4d80dfc987c96698f4202fe3c0c3ac08faaabe78411d5505"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/build_candidate.py",
+      "archive_path": "tools/evalscope/experiments/request_policy_20261004/originals/build_candidate.py",
+      "category": "exact_byte_controller_snapshot",
+      "bytes": 2177,
+      "sha256": "84cf0b764cb82b8267438bfcd19c53e13b3f6b215e533e734b8616975f361e4a",
+      "existing_expected_sha256": "84cf0b764cb82b8267438bfcd19c53e13b3f6b215e533e734b8616975f361e4a"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/freeze_execution.py",
+      "archive_path": "tools/evalscope/experiments/request_policy_20261004/originals/freeze_execution.py",
+      "category": "exact_byte_controller_snapshot",
+      "bytes": 3930,
+      "sha256": "cf889a344d6a600dcd9db3ffbb4f4a56490ac2be555a6a20dd23a2c8884ad24b",
+      "existing_expected_sha256": "cf889a344d6a600dcd9db3ffbb4f4a56490ac2be555a6a20dd23a2c8884ad24b"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/run_stage.py",
+      "archive_path": "tools/evalscope/experiments/request_policy_20261004/originals/run_stage.py",
+      "category": "exact_byte_controller_snapshot",
+      "bytes": 3065,
+      "sha256": "9a344d39139f4edba507f7d7d62774ff7276f20cec4391525804bd3c04bf21f4",
+      "existing_expected_sha256": "9a344d39139f4edba507f7d7d62774ff7276f20cec4391525804bd3c04bf21f4"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/run_direct_contracts.py",
+      "archive_path": "tools/evalscope/experiments/request_policy_20261004/originals/run_direct_contracts.py",
+      "category": "exact_byte_controller_snapshot",
+      "bytes": 5281,
+      "sha256": "dd57f307be707b43dd0e3d57f90032ca60c7ddef0933ec8f75e2146b9769df08",
+      "existing_expected_sha256": "dd57f307be707b43dd0e3d57f90032ca60c7ddef0933ec8f75e2146b9769df08"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/audit_group.py",
+      "archive_path": "tools/evalscope/experiments/request_policy_20261004/originals/audit_group.py",
+      "category": "exact_byte_controller_snapshot",
+      "bytes": 9009,
+      "sha256": "b7d1a7a512a9a63a8e6c14feff8da21ef7cfb1ab94456392ce5a4cf5485b5b1d",
+      "existing_expected_sha256": "b7d1a7a512a9a63a8e6c14feff8da21ef7cfb1ab94456392ce5a4cf5485b5b1d"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/continue_inheritance.py",
+      "archive_path": "tools/evalscope/experiments/request_policy_20261004/originals/continue_inheritance.py",
+      "category": "exact_byte_controller_snapshot",
+      "bytes": 3073,
+      "sha256": "1e3cd916cc7a068d1f017212a287a811a00ff351a410f0b5b839dae4c0b02b84",
+      "existing_expected_sha256": "1e3cd916cc7a068d1f017212a287a811a00ff351a410f0b5b839dae4c0b02b84"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/run_coverage_stage.py",
+      "archive_path": "tools/evalscope/experiments/request_policy_20261004/originals/run_coverage_stage.py",
+      "category": "exact_byte_controller_snapshot",
+      "bytes": 5790,
+      "sha256": "fef00e0fa4689b857ac46af7e3421cc34ed9be41f2f10de6f28f17c6c8f6d074",
+      "existing_expected_sha256": "fef00e0fa4689b857ac46af7e3421cc34ed9be41f2f10de6f28f17c6c8f6d074"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/continue_coverage.py",
+      "archive_path": "tools/evalscope/experiments/request_policy_20261004/originals/continue_coverage.py",
+      "category": "exact_byte_controller_snapshot",
+      "bytes": 20964,
+      "sha256": "fbb96f5dbf506e438354df6258c7c607ea78d63001bb39b095fbff13f2b1ff8f",
+      "existing_expected_sha256": "fbb96f5dbf506e438354df6258c7c607ea78d63001bb39b095fbff13f2b1ff8f"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/compare_groups.py",
+      "archive_path": "tools/evalscope/experiments/request_policy_20261004/originals/compare_groups.py",
+      "category": "exact_byte_controller_snapshot",
+      "bytes": 2481,
+      "sha256": "c9e8a72a262c41994dd16610db4f893fbb89963e970f97faf6ff3bd4b873bd45",
+      "existing_expected_sha256": "c9e8a72a262c41994dd16610db4f893fbb89963e970f97faf6ff3bd4b873bd45"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/aggregate_performance.py",
+      "archive_path": "tools/evalscope/experiments/request_policy_20261004/originals/aggregate_performance.py",
+      "category": "exact_byte_controller_snapshot",
+      "bytes": 5584,
+      "sha256": "9fd70bcbb4ec355a6810a841cf68cce38676208c4c5a7c8d240a05c85a3fa38d",
+      "existing_expected_sha256": "9fd70bcbb4ec355a6810a841cf68cce38676208c4c5a7c8d240a05c85a3fa38d"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/audit_resources.py",
+      "archive_path": "tools/evalscope/experiments/request_policy_20261004/originals/audit_resources.py",
+      "category": "exact_byte_controller_snapshot",
+      "bytes": 27044,
+      "sha256": "b7b94dcd950389b9e2c0c985630ad702c8040acb05032a23eaf6c17e2ad42399",
+      "existing_expected_sha256": "b7b94dcd950389b9e2c0c985630ad702c8040acb05032a23eaf6c17e2ad42399"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-01/numerical-build-start.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/prerequisites/numerical-01/numerical-build-start.json",
+      "category": "completed_numerical_proof",
+      "bytes": 472,
+      "sha256": "acdc056e878ddd84ad15c30f14bf57bb5baeb0b1731d19977b088057fc11a623",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-01/numerical-build-exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/prerequisites/numerical-01/numerical-build-exit.json",
+      "category": "completed_numerical_proof",
+      "bytes": 765,
+      "sha256": "44ed7ddbe31277367615ed2bbb27df4cf060686de6ce7d638d6b6da73a6bc40e",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-01/numerical-identity-before.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/prerequisites/numerical-01/numerical-identity-before.json",
+      "category": "completed_numerical_proof",
+      "bytes": 917,
+      "sha256": "c27b741ecda1e4d90e471e1a25d521f6ad8c84be4cc89bbddc3d9f9c74c6247f",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-01/numerical-tests-start.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/prerequisites/numerical-01/numerical-tests-start.json",
+      "category": "completed_numerical_proof",
+      "bytes": 529,
+      "sha256": "4ac0a1cbf09284c2ca2847170651dd80321d8ee0d79a87f3014069ef8da120ff",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-01/numerical-tests-exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/prerequisites/numerical-01/numerical-tests-exit.json",
+      "category": "completed_numerical_proof",
+      "bytes": 821,
+      "sha256": "0b35861ad3c7ec8a43dec130a894f9b7d6a0811a87f2b4ec34c7434e19660543",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-01/numerical-tests.log",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/prerequisites/numerical-01/numerical-tests.log",
+      "category": "completed_numerical_proof",
+      "bytes": 7423,
+      "sha256": "45c6b825df702f4691d1da5662e9e9ffbdfdd140a01dfdde2df353e296383652",
+      "existing_expected_sha256": "45c6b825df702f4691d1da5662e9e9ffbdfdd140a01dfdde2df353e296383652"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/host-configure-start.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/host-configure-start.json",
+      "category": "completed_host_proof",
+      "bytes": 621,
+      "sha256": "17810e56e74cf2b4846d29710848b402f98f44dbd8d9d5eadff422960fa360f7",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/host-configure-exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/host-configure-exit.json",
+      "category": "completed_host_proof",
+      "bytes": 914,
+      "sha256": "93d5f2d5130eb3e9f45e8df139ce836dc3551c8f9d64ec89c230f816ae314fea",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/host-build-start.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/host-build-start.json",
+      "category": "completed_host_proof",
+      "bytes": 440,
+      "sha256": "cb69c7c69c8125a9841ff60db5150e4c3f754c3a9fa19352d55940111ed2a399",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/host-build-exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/host-build-exit.json",
+      "category": "completed_host_proof",
+      "bytes": 733,
+      "sha256": "d98a496d5f368f84ade621d812cf1a0f5fff8c5eaffa2e6bd54e7469355c1296",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/request-host-tests-start.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/request-host-tests-start.json",
+      "category": "completed_host_proof",
+      "bytes": 415,
+      "sha256": "3fffc8f69dc394fd9673ae438b68fcf7c0e1db734cee33c9e4600994051a9359",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/request-host-tests-exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/request-host-tests-exit.json",
+      "category": "completed_host_proof",
+      "bytes": 708,
+      "sha256": "6476d0def225d13a65fd3bc3f24c2fa0d688582b9e8a932f8e559f65d3925c95",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/request-host-tests.log",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/request-host-tests.log",
+      "category": "completed_host_proof",
+      "bytes": 477,
+      "sha256": "f6706bf6789118dcf7ab7c89b9018ee3032cb75e3748bdbb15eb5efc78519549",
+      "existing_expected_sha256": "f6706bf6789118dcf7ab7c89b9018ee3032cb75e3748bdbb15eb5efc78519549"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/test_run_acceptance-exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/test_run_acceptance-exit.json",
+      "category": "completed_host_proof",
+      "bytes": 683,
+      "sha256": "31fdb80b2f4727e5b854081410210222bd7a98243d139e46c2cc97ccbe6d75e4",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/test_partition_protocol-exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/test_partition_protocol-exit.json",
+      "category": "completed_host_proof",
+      "bytes": 687,
+      "sha256": "42e4e4cb75ffba628f68d221364186f0e5dcb01701a57fc8f1e04f441d00ef59",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/test_chunk_order_protocol-exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/test_chunk_order_protocol-exit.json",
+      "category": "completed_host_proof",
+      "bytes": 688,
+      "sha256": "36421649146b1c90c53411f71452409b06efde68d1c3d2c84d75e880cd13e5bb",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/test_offload_matrix_audit-exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/test_offload_matrix_audit-exit.json",
+      "category": "completed_host_proof",
+      "bytes": 689,
+      "sha256": "11c513ab9fa75225112ea548d11bb8c893467135051a7703181d0b7c160256d9",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/test_request_policy_protocol-exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/prerequisites/host-01/test_request_policy_protocol-exit.json",
+      "category": "completed_host_proof",
+      "bytes": 692,
+      "sha256": "b4d502a960dcd409f76afae6ea587ef06afbd3f388c8537863370348630b644f",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/audit_raw_resources_frozen.py",
+      "archive_path": "tools/evalscope/experiments/request_policy_20261004/dependencies/audit_raw_resources_frozen.py",
+      "category": "immutable_raw_core",
+      "bytes": 37796,
+      "sha256": "035f1f840d00350a7b6db62e1b8ef7f62a5fda02406dae91395d291a67652da4",
+      "existing_expected_sha256": "035f1f840d00350a7b6db62e1b8ef7f62a5fda02406dae91395d291a67652da4"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-autonomous-20261003/raw-audit-execution-01/self-test-exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/prerequisites/raw-core/self-test-exit.json",
+      "category": "reused_core_verification",
+      "bytes": 705,
+      "sha256": "8fcf469238691ef2993e5c453ffee4df549efa25e15c210b0e5ff116b47f655f",
+      "existing_expected_sha256": "8fcf469238691ef2993e5c453ffee4df549efa25e15c210b0e5ff116b47f655f"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-autonomous-20261003/raw-audit-execution-01/self-test.log",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/prerequisites/raw-core/self-test.log",
+      "category": "reused_core_verification",
+      "bytes": 78,
+      "sha256": "5be5555609ee43ce415c5f7326aa244af048a09c05930ce64b9d16ac61f894a8",
+      "existing_expected_sha256": "5be5555609ee43ce415c5f7326aa244af048a09c05930ce64b9d16ac61f894a8"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/history-fixtures/context-8193/requests.jsonl",
+      "archive_path": "tools/evalscope/experiments/request_policy_20261004/fixtures/context-8193/requests.jsonl",
+      "category": "frozen_small_boundary_input",
+      "bytes": 40441,
+      "sha256": "be204f0c49f53238d94416c0a67228865928a2a10d608b19dc744c967da33480",
+      "existing_expected_sha256": "be204f0c49f53238d94416c0a67228865928a2a10d608b19dc744c967da33480"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/history-fixtures/context-16385/requests.jsonl",
+      "archive_path": "tools/evalscope/experiments/request_policy_20261004/fixtures/context-16385/requests.jsonl",
+      "category": "frozen_small_boundary_input",
+      "bytes": 80256,
+      "sha256": "d023665a97680ee0407520cb314d34d1323e528da0c8b160477b923931538bfb",
+      "existing_expected_sha256": "d023665a97680ee0407520cb314d34d1323e528da0c8b160477b923931538bfb"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-off-decision.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-off-decision.json",
+      "category": "completed_history_evidence",
+      "bytes": 15033,
+      "sha256": "88868356a5bae8087babe1b49a6edbb670e64c8c6f25fd568475980346aafd28",
+      "existing_expected_sha256": "88868356a5bae8087babe1b49a6edbb670e64c8c6f25fd568475980346aafd28"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-on-decision.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-on-decision.json",
+      "category": "completed_history_evidence",
+      "bytes": 20092,
+      "sha256": "415f48cffb79cc0f3be2850d3501d5107f4e4f039387924ccb4808684fe5656e",
+      "existing_expected_sha256": "415f48cffb79cc0f3be2850d3501d5107f4e4f039387924ccb4808684fe5656e"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-decision.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-decision.json",
+      "category": "completed_history_evidence",
+      "bytes": 28608,
+      "sha256": "c8295b11a4fcb5837e2372705df5df30357ddc8225ee832eb969b1132435303f",
+      "existing_expected_sha256": "c8295b11a4fcb5837e2372705df5df30357ddc8225ee832eb969b1132435303f"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-summary.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-summary.json",
+      "category": "completed_history_evidence",
+      "bytes": 3997,
+      "sha256": "e0ab051a0a906c454355d0e3586539488326c9a34a46fb64163265f590b95f06",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-off-controller-start.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-off-controller-start.json",
+      "category": "completed_history_evidence",
+      "bytes": 1425,
+      "sha256": "33838b9dd71a13c12536ed412e92f3286e5b38f3d88a7b44a12d14e6789c0749",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-off-controller-exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-off-controller-exit.json",
+      "category": "completed_history_evidence",
+      "bytes": 1718,
+      "sha256": "4f75279b985b534ee7317060bb92ef05b72465a41c6cdc058fc74689b536cb4b",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-off-stage.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-off-stage.json",
+      "category": "completed_history_evidence",
+      "bytes": 1992,
+      "sha256": "f508c353c0659215bd1b79b7fa6b5f6a787d34b828ce5c0e70c226f4f01bc612",
+      "existing_expected_sha256": "f508c353c0659215bd1b79b7fa6b5f6a787d34b828ce5c0e70c226f4f01bc612"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-on-controller-start.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-on-controller-start.json",
+      "category": "completed_history_evidence",
+      "bytes": 1585,
+      "sha256": "54b627cb017028c91dc69e2680dd272bdd40a300d09b0e87235e554c4cb5a8dd",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-on-controller-exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-on-controller-exit.json",
+      "category": "completed_history_evidence",
+      "bytes": 1877,
+      "sha256": "b92bc23d8919f22dea16a9fd3943c4d2ede7474e21f3822078c382bb03f24f9d",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-on-stage.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-on-stage.json",
+      "category": "completed_history_evidence",
+      "bytes": 2152,
+      "sha256": "2119b1e7b06b50ba75c4190a319e696c88a5d34b46acdad52a30808987da64ac",
+      "existing_expected_sha256": "2119b1e7b06b50ba75c4190a319e696c88a5d34b46acdad52a30808987da64ac"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-continuation-start.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-continuation-start.json",
+      "category": "completed_history_evidence",
+      "bytes": 354,
+      "sha256": "f98428c6c11fbc59cdfafa8984ce202d6ea3edbd31e8e283645ec954caf3f5b0",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/inheritance-continuation-exit.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/inheritance-continuation-exit.json",
+      "category": "completed_history_evidence",
+      "bytes": 3039,
+      "sha256": "18bcfe4e9aadca669c205b84ecb312b49c75dd1e76fc00dc9d4773f8b3ac7dce",
+      "existing_expected_sha256": null
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/history-independent-review.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/history-independent-review.json",
+      "category": "completed_history_review_and_conditional_disposition",
+      "bytes": 50266,
+      "sha256": "8b512489ae20b3212da8507bcd2a8f2093efcbbffd426776dffd7c4ca945ad62",
+      "existing_expected_sha256": "8b512489ae20b3212da8507bcd2a8f2093efcbbffd426776dffd7c4ca945ad62"
+    },
+    {
+      "origin": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/conditional-stages-not-triggered.json",
+      "archive_path": "docs/evidence/offload-request-policy-20261004/records/conditional-stages-not-triggered.json",
+      "category": "completed_history_review_and_conditional_disposition",
+      "bytes": 2766,
+      "sha256": "a80b9416021a4cba3896b0e84cbd447bf76009a247888594cdd6dd5bb0a40c87",
+      "existing_expected_sha256": null
+    }
+  ],
+  "excluded_now": [
+    "Any in-flight matrix result, speed value, raw-resource stream or log",
+    "Conditional delivery controllers/appendix/results because this staged packet does not establish execution",
+    "Full raw-resource JSONL/CSV, server/request/response logs and databases",
+    "Binaries/build trees/source archive and model payloads",
+    "Machine inode lists and original seven dirty file contents"
+  ],
+  "pending_finalization": [
+    "Matrix/aggregate terminal decisions and any subsequent failure evidence",
+    "Independent completed resource audit summary plus full report SHA",
+    "Conditional delivery triggered/skipped disposition and applicable exact executed tools",
+    "Complete local raw manifest with origin/bytes/SHA/stage/type",
+    "Final source protection, process/unit cleanup and commit/push identity audit"
+  ],
+  "original_frozen_files_modified": false,
+  "source_worktree_modified": false,
+  "archived_tools_executed_or_imported": false,
+  "tests_or_models_run": 0,
+  "inflight_performance_read": false,
+  "git_packet_is_raw_backup": false,
+  "overall_performance_disposition_included": false,
+  "note": "This manifest binds copied source records only. Newly authored README/dependency notes are separate staging documentation; final delivery must bind the complete package after review.",
+  "history_disposition": {
+    "decision": "NO_GO",
+    "evidence_contracts_passed": true,
+    "decision_sha256": "c8295b11a4fcb5837e2372705df5df30357ddc8225ee832eb969b1132435303f",
+    "scope": "Completed 21+21 request history screen. Overall candidate cannot be accepted; original matrix coverage and final aggregate evidence remain pending.",
+    "independent_review_sha256": "8b512489ae20b3212da8507bcd2a8f2093efcbbffd426776dffd7c4ca945ad62",
+    "observation_limit": "Off: successful HTTP and 45 layer-zero request markers, no global-partition per-layer logs. On: 1296 candidate-prefill, 288 singleton-prefill and 257040 decode layer records. Off logged count zero does not mean no decode or full-layer observation."
+  },
+  "conditional_delivery": {
+    "triggered": false,
+    "reason": "Completed history NO_GO permanently vetoes conditional delivery and next optimization.",
+    "unexecuted_controllers_archived": false,
+    "preparations_remain_local": true
+  }
+}

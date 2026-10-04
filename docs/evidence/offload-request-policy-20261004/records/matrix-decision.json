@@ -1,0 +1,356 @@
+{
+  "passed": false,
+  "tiers": [
+    {
+      "input_tokens": 1024,
+      "checks": {
+        "first_ttft": true,
+        "later_ttft": false,
+        "decode": false
+      },
+      "passed": false,
+      "baseline": [
+        {
+          "case": "context-1024",
+          "input_tokens": 1024,
+          "ttft": 11.856996699934825,
+          "decode_tps": 6.883848456904222
+        },
+        {
+          "case": "context-1024",
+          "input_tokens": 1024,
+          "ttft": 10.005840408150107,
+          "decode_tps": 7.312386575939766
+        },
+        {
+          "case": "context-1024",
+          "input_tokens": 1024,
+          "ttft": 9.050301264971495,
+          "decode_tps": 7.357713901006538
+        }
+      ],
+      "candidate": [
+        {
+          "case": "context-1024",
+          "input_tokens": 1024,
+          "ttft": 11.785512559814379,
+          "decode_tps": 6.811316823630563
+        },
+        {
+          "case": "context-1024",
+          "input_tokens": 1024,
+          "ttft": 10.099853825988248,
+          "decode_tps": 7.263056837483938
+        },
+        {
+          "case": "context-1024",
+          "input_tokens": 1024,
+          "ttft": 9.277170413872227,
+          "decode_tps": 7.280485163556827
+        }
+      ]
+    },
+    {
+      "input_tokens": 4096,
+      "checks": {
+        "first_ttft": false,
+        "later_ttft": false,
+        "decode": false
+      },
+      "passed": false,
+      "baseline": [
+        {
+          "case": "context-4096",
+          "input_tokens": 4096,
+          "ttft": 25.444428831804544,
+          "decode_tps": 6.446044873071906
+        },
+        {
+          "case": "context-4096",
+          "input_tokens": 4096,
+          "ttft": 25.970916076097637,
+          "decode_tps": 6.529191026406409
+        },
+        {
+          "case": "context-4096",
+          "input_tokens": 4096,
+          "ttft": 25.85418190085329,
+          "decode_tps": 6.534233534486884
+        }
+      ],
+      "candidate": [
+        {
+          "case": "context-4096",
+          "input_tokens": 4096,
+          "ttft": 25.61695698602125,
+          "decode_tps": 6.425375305592177
+        },
+        {
+          "case": "context-4096",
+          "input_tokens": 4096,
+          "ttft": 26.009815023979172,
+          "decode_tps": 6.499126821211896
+        },
+        {
+          "case": "context-4096",
+          "input_tokens": 4096,
+          "ttft": 26.20830178190954,
+          "decode_tps": 6.4851836675774575
+        }
+      ]
+    },
+    {
+      "input_tokens": 8192,
+      "checks": {
+        "first_ttft": false,
+        "later_ttft": false,
+        "decode": false
+      },
+      "passed": false,
+      "baseline": [
+        {
+          "case": "context-8192",
+          "input_tokens": 8192,
+          "ttft": 38.09977787686512,
+          "decode_tps": 6.3117373515729165
+        },
+        {
+          "case": "context-8192",
+          "input_tokens": 8192,
+          "ttft": 38.03426927886903,
+          "decode_tps": 6.321178557624164
+        },
+        {
+          "case": "context-8192",
+          "input_tokens": 8192,
+          "ttft": 38.093626017915085,
+          "decode_tps": 6.321532968019262
+        }
+      ],
+      "candidate": [
+        {
+          "case": "context-8192",
+          "input_tokens": 8192,
+          "ttft": 38.86060851509683,
+          "decode_tps": 6.203117164933373
+        },
+        {
+          "case": "context-8192",
+          "input_tokens": 8192,
+          "ttft": 38.890393449924886,
+          "decode_tps": 6.213621504901087
+        },
+        {
+          "case": "context-8192",
+          "input_tokens": 8192,
+          "ttft": 38.72158947889693,
+          "decode_tps": 6.201621843235945
+        }
+      ]
+    },
+    {
+      "input_tokens": 45056,
+      "checks": {
+        "first_ttft": true,
+        "later_ttft": true,
+        "decode": true
+      },
+      "passed": true,
+      "baseline": [
+        {
+          "case": "context-45056",
+          "input_tokens": 45056,
+          "ttft": 219.92506215698086,
+          "decode_tps": 7.123539983484504
+        },
+        {
+          "case": "context-45056",
+          "input_tokens": 45056,
+          "ttft": 220.60293560707942,
+          "decode_tps": 7.139608726700946
+        },
+        {
+          "case": "context-45056",
+          "input_tokens": 45056,
+          "ttft": 220.2650241299998,
+          "decode_tps": 7.137863945904571
+        }
+      ],
+      "candidate": [
+        {
+          "case": "context-45056",
+          "input_tokens": 45056,
+          "ttft": 158.1615631559398,
+          "decode_tps": 7.239528854832133
+        },
+        {
+          "case": "context-45056",
+          "input_tokens": 45056,
+          "ttft": 157.0208353670314,
+          "decode_tps": 7.261760212925774
+        },
+        {
+          "case": "context-45056",
+          "input_tokens": 45056,
+          "ttft": 156.6086138628889,
+          "decode_tps": 7.250675898238368
+        }
+      ]
+    },
+    {
+      "input_tokens": 204800,
+      "checks": {
+        "first_ttft": true,
+        "later_ttft": true,
+        "decode": true
+      },
+      "passed": true,
+      "baseline": [
+        {
+          "case": "context-204800",
+          "input_tokens": 204800,
+          "ttft": 1100.2348595880903,
+          "decode_tps": 7.547756524950538
+        },
+        {
+          "case": "context-204800",
+          "input_tokens": 204800,
+          "ttft": 1096.7923907821532,
+          "decode_tps": 7.541414144031932
+        },
+        {
+          "case": "context-204800",
+          "input_tokens": 204800,
+          "ttft": 1096.9402809310704,
+          "decode_tps": 7.5453014968459255
+        }
+      ],
+      "candidate": [
+        {
+          "case": "context-204800",
+          "input_tokens": 204800,
+          "ttft": 754.0182433580048,
+          "decode_tps": 7.6326370139969155
+        },
+        {
+          "case": "context-204800",
+          "input_tokens": 204800,
+          "ttft": 753.6349551191088,
+          "decode_tps": 7.6560689727633715
+        },
+        {
+          "case": "context-204800",
+          "input_tokens": 204800,
+          "ttft": 754.4796720352024,
+          "decode_tps": 7.6398512194628365
+        }
+      ]
+    },
+    {
+      "input_tokens": 261887,
+      "checks": {
+        "first_ttft": true,
+        "later_ttft": true,
+        "decode": true
+      },
+      "passed": true,
+      "baseline": [
+        {
+          "case": "context-261887",
+          "input_tokens": 261887,
+          "ttft": 1423.5008863520343,
+          "decode_tps": 6.123253732891205
+        },
+        {
+          "case": "context-261887",
+          "input_tokens": 261887,
+          "ttft": 1423.6459010927938,
+          "decode_tps": 6.142723405982926
+        },
+        {
+          "case": "context-261887",
+          "input_tokens": 261887,
+          "ttft": 1464.6475080740638,
+          "decode_tps": 6.127673293780871
+        }
+      ],
+      "candidate": [
+        {
+          "case": "context-261887",
+          "input_tokens": 261887,
+          "ttft": 979.1154217259027,
+          "decode_tps": 6.18717488499028
+        },
+        {
+          "case": "context-261887",
+          "input_tokens": 261887,
+          "ttft": 978.8678472330794,
+          "decode_tps": 6.186356027769044
+        },
+        {
+          "case": "context-261887",
+          "input_tokens": 261887,
+          "ttft": 1001.0615658159368,
+          "decode_tps": 6.130643888197399
+        }
+      ]
+    }
+  ],
+  "scope": "six_tier",
+  "performance_acceptance": false,
+  "schema": 1,
+  "decision": "NO_GO",
+  "ended_t": 1791131983.8672361,
+  "recorded_t": 1791131985.7910504,
+  "runtime_binary_sha256": "34eb4cf5b53dfcc5b0783120fcdec438fd321dbd4c981f52eee581c96f7fb93a",
+  "runtime_source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+  "plan_sha256": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-off-stage.json": "2243733f95336930c3367d6434c8fdc10bebd7c16623d669ef4963e4b7aa159c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/wrapper-exit.json": "05a19d85fb418ff1afdb0c10ea402c7e76900f5c5f38fa360e950631788540a1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/exit.json": "06e9e9e813902bf2b454d3a957e3f47089b52d683e762524b41baa7f9cb59a97",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/runner-process-group.json": "5ede6eb6c31d54c257417da7e7ea658f19f0f29dc15f616517a2225e95fadf1e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/isolation/cleanup.json": "6600e0d2793f453525c8c699921256f116a0b334390471e9e2a9640a5b5703c0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/capacity.json": "135b17d195db1d71febe10e60def33e3894bb0e867b253637ec833f2fa48dfb7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/protocol.json": "f8df81c7fef5567676be909decd8390ca13438a8519e27ab369ef7c6af8a6367",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/server-command.json": "8fda7a32383fd2d6d81c547cc3409bc835edb834aa56b2e2eee3dc8f1bfcde98",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/results.json": "a8c39cc389a7ef0ca3698cdc687b81b76cb60b30af3b989649fc541e83d44e20",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/cache-gate.json": "595f621568f518a19bfcdd3eeaf83f9ac402bb10a66ea08a9bc89f79688c37e3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/cache-advice-round-01.json": "87cacb564f730d05972cda7b0b736c16aa56e826ea141a9105ec0df57235d1d7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/cache-after-advice.json": "2e76a97c9baf67d2cb60caa59cfb6d821d681ed0326f53aa8de0c8d8d8742ab1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/matrix-off/http/results.json": "2540ede1b7d9cbae705689320e0feec0a9a78c13d53f7675c9ff231df26a6473",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-1024/responses.json": "6a6490f11573a402746f361054f2be85c994fafd6e27d32b979ca72ce18258bb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-4096/responses.json": "fb3bc1dd358b9e655152a4a086fb54a0dc763c64982fe22171488109e97311a3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-8192/responses.json": "02a283013eb0fe118254325186fb6a6ffbc51847d190630706d275d4c1f28423",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-45056/responses.json": "3907f8020d244f18eac65d183ad6888e9f5422a88d2f9c6761cb72778a1cb791",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-204800/responses.json": "f401585a2721cd6cea5d87e162312237576c56b15f5175b03a4ca5b297747deb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/context-261887/responses.json": "b506a5e6e4b49ef7416b785a0b2e0d58fd99643e358d0a41133065aa59a510ed",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-off/http/server.log": "ae4c3475fffef351a2534202d4187185d43c06d8cfb993762252c31720848517",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-on-stage.json": "9f3c2b62000da2d59ac800663da6d82b40e3feb43197be83e9189b84e14ec8fb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/wrapper-exit.json": "42cb31c7cb31b426b6b4b15584f9fe93726767eaba7c6996a929932d4d952444",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/exit.json": "06e9e9e813902bf2b454d3a957e3f47089b52d683e762524b41baa7f9cb59a97",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/runner-process-group.json": "b60d08d5e97b6f5605a721593fcfa1d297522edac32a87da0b10e5a3fd9d271c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/isolation/cleanup.json": "bedd115e1329d80bff99531ee969b8d58a69531cdf364dfb296014384225bd47",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/capacity.json": "135b17d195db1d71febe10e60def33e3894bb0e867b253637ec833f2fa48dfb7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/protocol.json": "3cc21f9d0d39810382c43a2b5c88480abe498ca048f629e0ecdad20b529246a1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/server-command.json": "c486be52fcd9301eb36a85f518b0a658a2b44b89c9f48453ec59bdbaa6812109",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/results.json": "d1b8083f65c4193c0a0c9deeb179d6fb4ae859ac3e899c61b400a7a6a73929cf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/cache-gate.json": "595f621568f518a19bfcdd3eeaf83f9ac402bb10a66ea08a9bc89f79688c37e3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/cache-advice-round-01.json": "a2ba6f27681e587c348c25376ecabe7c00aa7c7387cffbb88e03de8cda0a1d12",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/cache-after-advice.json": "5abde44eeebed70016ad03e590873adedb25f7786404798724e2861a2170074e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-1024/responses.json": "5a002a103d78af4c0419a4e9113f1df28cc257317ca16f561a143ee3d2abc6a2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-4096/responses.json": "c1406700b33b136939fccc2659013d81471dfcfe85e2bc1b419426de8d695b48",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-8192/responses.json": "bc73cae4b4540482d37cd19423b1047e7681dd69f81273b7ca88496266afe750",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-45056/responses.json": "a1e025b0b0bce6e393d6b6190176b1732cf17fbb684894c5b6a0cbc4858251e7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-204800/responses.json": "afc55825a2a0d6afb74eacc10a52fd5d33345c39cad3a57ab6ddd9fedcadd261",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/context-261887/responses.json": "a414b891583d500c3c9d97488e2fe55bf0ddc76ee14cbc33cc4e4c4f7480b5f7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/matrix-on/http/server.log": "009fac447bdec5c72bc1997508df3b120eb042e701e50355319c2f2f13bff7c5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-off-decision.json": "2072b2276b666fbc390cc158142baee57415beb7c7d576ad30a5d74073c68a47",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-on-decision.json": "62f4b67775ae271d6ca8a55471111bfb80400bde72c26f316d42b6ef30542759",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/compare_groups.py": "c9e8a72a262c41994dd16610db4f893fbb89963e970f97faf6ff3bd4b873bd45"
+  },
+  "evidence_contracts_passed": true,
+  "prior_full_NO_GO_unchanged": true,
+  "later_model_requests_allowed": false,
+  "whole_physical_RAM_54GB": "INDETERMINATE"
+}

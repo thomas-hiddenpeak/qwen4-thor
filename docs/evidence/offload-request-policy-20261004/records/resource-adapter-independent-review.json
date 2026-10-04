@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "reviewer": "/root/request_policy_review",
+  "review_date": "2026-10-04",
+  "review_kind": "READ_ONLY_STATIC_CURRENT_ADAPTER",
+  "passed": true,
+  "blocking_findings": [],
+  "source_sha256": {
+    "audit_resources.py": "b7b94dcd950389b9e2c0c985630ad702c8040acb05032a23eaf6c17e2ad42399",
+    "resource-audit-preparation.json": "0affff35e2ebd213bbf95cb0afa9aaeee36af8f2a3f7ab5be66eb1744fc7e7ee"
+  },
+  "group_shapes": {
+    "quality-on": {"http_requests": 11, "client_envelopes": 1, "per_question_IO_attribution": false},
+    "inheritance-off": {"http_requests": 21, "client_envelopes": 21},
+    "inheritance-on": {"http_requests": 21, "client_envelopes": 21},
+    "matrix-off": {"http_requests": 18, "client_envelopes": 18},
+    "matrix-on": {"http_requests": 18, "client_envelopes": 18}
+  },
+  "checks": [
+    "Preparation binds the exact adapter SHA and current supported shapes.",
+    "Quality boundaries must all share one eleven-request client envelope; repeated question rows do not create eleven copies of one batch I/O delta.",
+    "History enumerates the frozen seven-position sequence across three rounds, retaining round and position; matrix enumerates six contexts with three separate client envelopes each.",
+    "Every started group must have terminal evidence before any raw resource stream is read, even when an earlier subset is selected.",
+    "A valid speed-only NO_GO permits offline inspection; each selected service group still needs passing HTTP, identity and cleanup contracts.",
+    "JSON metadata is decoded on its first bind and cached for later consumers; source signatures and SHA are retained and signatures rechecked after the bounded read.",
+    "PID generation, cgroup path, protocol axis, runtime/tool identity and runner/controller/client time containment are explicit gates.",
+    "PID read_bytes/rchar, cgroup I/O and whole-device counters are reported separately. Device traffic is not attributed wholly to q4t, and disk parents are never added to partitions.",
+    "Sampled memory.current peak and retained memory.peak are distinct, with their individual differences from memory.max retained.",
+    "NVIDIA, RSS, cgroup and file-cache observations are overlapping views; their independent peaks are not added into physical RAM.",
+    "Absent/unknown counters and wall-clock drift remain explicit rather than becoming zero, and 54GB physical union remains INDETERMINATE."
+  ],
+  "scope_limits": [
+    "No immutable core arithmetic or its prior eight examples were rerun or newly certified.",
+    "An HTTP/evidence-failed service group is refused by this adapter rather than silently counted as covered; separate failure evidence remains necessary.",
+    "Metadata stat stability plus read-time SHA is a trusted-workspace integrity check, not a defense against adversarial same-stat file replacement.",
+    "Client envelopes include client launch/teardown and are not exact HTTP-only intervals.",
+    "Root must release explicit completed groups after active HTTP has ended; the preparation invocation is an example, not automatic authorization."
+  ],
+  "executed_adapter": false,
+  "imported_adapter": false,
+  "tests_executed": 0,
+  "model_runs": 0,
+  "inflight_raw_or_speed_read": false,
+  "physical_union_peak_bytes": null,
+  "whole_physical_RAM_54GB": "INDETERMINATE"
+}

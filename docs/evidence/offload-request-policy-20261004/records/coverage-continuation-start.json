@@ -1,0 +1,24 @@
+{
+  "started_t": 1791113769.9942696,
+  "ended_t": null,
+  "controller_sha256": "fbb96f5dbf506e438354df6258c7c607ea78d63001bb39b095fbff13f2b1ff8f",
+  "plan_sha256": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+  "amendment_sha256": "12c1579eba32cc91219bd2d3453cf65fca40bf7fc88022e12d1acab705e6a23e",
+  "entry_sha256": {
+    "phase_common.py": "adbd4b9aac6e471e4d80dfc987c96698f4202fe3c0c3ac08faaabe78411d5505",
+    "continue_inheritance.py": "1e3cd916cc7a068d1f017212a287a811a00ff351a410f0b5b839dae4c0b02b84",
+    "run_coverage_stage.py": "fef00e0fa4689b857ac46af7e3421cc34ed9be41f2f10de6f28f17c6c8f6d074",
+    "audit_group.py": "b7d1a7a512a9a63a8e6c14feff8da21ef7cfb1ab94456392ce5a4cf5485b5b1d",
+    "compare_groups.py": "c9e8a72a262c41994dd16610db4f893fbb89963e970f97faf6ff3bd4b873bd45",
+    "aggregate_performance.py": "9fd70bcbb4ec355a6810a841cf68cce38676208c4c5a7c8d240a05c85a3fa38d"
+  },
+  "failure": null,
+  "decision": "INCOMPLETE",
+  "completed": false,
+  "automatic_retry": false,
+  "commands": [],
+  "history_failure_permanently_vetoes_overall_GO": true,
+  "next_phase_started": false,
+  "authorizes_business_lifecycle_or_next_candidate": false,
+  "scope": "Original six-tier matrix coverage and aggregate only"
+}

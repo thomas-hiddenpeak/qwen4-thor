@@ -1,0 +1,9 @@
+[PASS] request_policy_strict_opt_in
+[PASS] request_policy_default_preserves_global_mode
+[PASS] request_policy_complete_input_boundary
+[PASS] request_policy_observed_baseline_preserves_global
+[PASS] request_policy_chunk_and_singleton_keep_identity
+[PASS] request_policy_rejects_invalid_ranges_without_laundering
+[PASS] request_policy_log_identity_is_bounded_and_unambiguous
+[PASS] request_policy_opposite_requests_do_not_inherit_selection
+8 tests, 8 passed, 0 failed, 0 skipped

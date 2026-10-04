@@ -1,0 +1,27 @@
+{
+  "started_t": 1791125249.8453474,
+  "command": [
+    "python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/run_coverage_stage.py",
+    "matrix-on",
+    "--plan-sha256",
+    "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+    "--amendment-sha256",
+    "12c1579eba32cc91219bd2d3453cf65fca40bf7fc88022e12d1acab705e6a23e"
+  ],
+  "script": "run_coverage_stage.py",
+  "entry_sha256": "fef00e0fa4689b857ac46af7e3421cc34ed9be41f2f10de6f28f17c6c8f6d074",
+  "stage": "matrix-on",
+  "timeout_s": 23400,
+  "returncode": 0,
+  "failure": null,
+  "pid": 3460785,
+  "signals": [],
+  "child_controller_reaped": true,
+  "cleanup_unknown": false,
+  "automatic_retry": false,
+  "log_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-step-03-matrix-on-run.log",
+  "log_sha256": "dae5883f030af68b2b8dc61896b6414c3af2adedeb9f8b1d818c15cccb7163a6",
+  "ended_t": 1791131983.9139364
+}

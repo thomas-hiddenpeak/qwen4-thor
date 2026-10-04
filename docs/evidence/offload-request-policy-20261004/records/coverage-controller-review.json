@@ -1,0 +1,51 @@
+{
+  "schema": "q4t.request_policy_coverage_controller_review.v1",
+  "reviewer": "/root/request_policy_runtime",
+  "reviewed_t": 1791112815.0065174,
+  "verdict": "NO_STATIC_BLOCKER_SUBJECT_TO_PRE_CANDIDATE_PERFORMANCE_FREEZE",
+  "scope": "Static review only of new parent controller and amendment draft; no tests/model/controller executed and no speed values read.",
+  "controller_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/run_coverage_stage.py",
+  "controller_sha256": "fef00e0fa4689b857ac46af7e3421cc34ed9be41f2f10de6f28f17c6c8f6d074",
+  "draft_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-amendment-draft.json",
+  "draft_sha256": "eac173d8e3c404c080c52f43e37896c5af4e11dec5c991e383ea838df6e7c392",
+  "original_execution_plan_sha256": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+  "original_phase_plan_sha256": "7ca311700e9ede574ffec89deaa746d8dc0fcd3defdce66496aff09b6e266479",
+  "original_files_unchanged": true,
+  "inheritance_on_controller_start_exists_at_review": false,
+  "no_candidate_performance_claim_scope": "Only absence of this controller start record was observed here; root must capture process/arm and access-attestation evidence. Fixed11 candidate quality HTTP already ran successfully.",
+  "minimal_fixes": [
+    "Permanent history failure veto is constant true; observed history_failure_present is stored separately.",
+    "Require final amendment status FROZEN_ACTIVE, original plan linkage, unchanged samples/resources marker, exact matrix lengths/repeats/order and pinned original/addendum inputs.",
+    "Require quality completion before amendment, proposal not after freeze, and history-on controller start strictly after amendment freeze.",
+    "Recompute history gate result from completed group evidence and require exact positions/result while preserving the original history decision file and its old routing field.",
+    "Require matrix-on to follow successful matrix-off group and same-amendment admission/stage identity.",
+    "Recheck frozen source/plan, amendment identity and history decision digest after each coverage run.",
+    "Coverage admission/stage explicitly never authorizes business/lifecycle or next candidate."
+  ],
+  "unchanged_guards": [
+    "Old matrix command digests bind original6tiers x3 per arm, fixed off->on order, output limits, resource settings and cold protocol.",
+    "Quality/host/numerical and both history arm output/path/capacity/identity/cleanup audits must pass; valid history speed NO_GO alone may enter six-tier coverage.",
+    "Exclusive stage/admission evidence prevents favorable repeats; original controllers/plans and historical NO_GO remain unchanged.",
+    "Whole physicalRAM54GB remains INDETERMINATE; resource-setting acceptance is not whole-RAM proof."
+  ],
+  "required_before_activation": [
+    "Freeze coverage-amendment.json with statusFROZEN_ACTIVE, frozen_at, this final controller digest, original_files and source_sha256; bind this review and unchanged draft.",
+    "Capture completed fixed11 candidate quality identity and explicitly limit prospective claim to candidate history/formal performance.",
+    "Capture candidate-history-not-started process/arm evidence and truthful blindness/access attestation without inspecting in-flight speeds.",
+    "Complete freeze before any inheritance-on candidate performance request. If that ordering is lost, do not label the amendment prospective.",
+    "Do not bind growing live logs as immutable source_sha256; bind completed snapshots."
+  ],
+  "final_aggregation_warning": "Original compare_groups(matrix) may output later_model_requests_allowed=true when six-tier passes even if history failed. Preserve this local historical field, but do not use it as overall authorization. A separate final rollup must require history AND six-tier AND other required gates. Do not modify the pinned comparator to erase that distinction.",
+  "goal_completion": false,
+  "performance_acceptance": false,
+  "controller_executed": false,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/run_coverage_stage.py": "fef00e0fa4689b857ac46af7e3421cc34ed9be41f2f10de6f28f17c6c8f6d074",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-amendment-draft.json": "eac173d8e3c404c080c52f43e37896c5af4e11dec5c991e383ea838df6e7c392",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/plan.json": "7ca311700e9ede574ffec89deaa746d8dc0fcd3defdce66496aff09b6e266479",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/execution-plan.json": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/run_stage.py": "9a344d39139f4edba507f7d7d62774ff7276f20cec4391525804bd3c04bf21f4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/continue_inheritance.py": "1e3cd916cc7a068d1f017212a287a811a00ff351a410f0b5b839dae4c0b02b84",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/compare_groups.py": "c9e8a72a262c41994dd16610db4f893fbb89963e970f97faf6ff3bd4b873bd45"
+  }
+}

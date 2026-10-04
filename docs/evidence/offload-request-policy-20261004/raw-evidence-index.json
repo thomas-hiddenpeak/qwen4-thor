@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "status": "COMPACT_INDEX_TO_LOCAL_CLOSED_RAW_MANIFEST",
+  "manifest": {
+    "origin_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004",
+    "relative_path": "raw-evidence-manifest.json",
+    "local_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/raw-evidence-manifest.json",
+    "bytes": 1622452,
+    "sha256": "516491aa91f4089fb914d947ff10cc33ae4127b291f27bd61d2e286ac98d3895",
+    "entry_count": 1900,
+    "indexed_payload_bytes": 614310175
+  },
+  "raw_manifest_entries_embedded": false,
+  "Git_is_raw_backup": false,
+  "scope": "Five complete closed HTTP trees; host/numerical receipts; history fixtures; filtered host build; three offline execution receipt directories; fixed phase top-level artifacts; named tested build identities; direct verified external/source file bindings.",
+  "closed_trees": [
+    {
+      "name": "http:quality-on",
+      "included_files": 70,
+      "excluded_files": 0
+    },
+    {
+      "name": "http:inheritance-off",
+      "included_files": 451,
+      "excluded_files": 0
+    },
+    {
+      "name": "http:inheritance-on",
+      "included_files": 451,
+      "excluded_files": 0
+    },
+    {
+      "name": "http:matrix-off",
+      "included_files": 328,
+      "excluded_files": 0
+    },
+    {
+      "name": "http:matrix-on",
+      "included_files": 328,
+      "excluded_files": 0
+    },
+    {
+      "name": "host-01",
+      "included_files": 24,
+      "excluded_files": 0
+    },
+    {
+      "name": "numerical-01",
+      "included_files": 7,
+      "excluded_files": 0
+    },
+    {
+      "name": "history-fixtures",
+      "included_files": 6,
+      "excluded_files": 0
+    },
+    {
+      "name": "final-protection-execution",
+      "included_files": 3,
+      "excluded_files": 0
+    },
+    {
+      "name": "final-protection-execution-v2",
+      "included_files": 3,
+      "excluded_files": 0
+    },
+    {
+      "name": "raw-resource-audit-execution",
+      "included_files": 3,
+      "excluded_files": 0
+    },
+    {
+      "name": "request-host-build-selected",
+      "included_files": 25,
+      "excluded_files": 7
+    }
+  ],
+  "runtime_source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+  "runtime_binary_sha256": "34eb4cf5b53dfcc5b0783120fcdec438fd321dbd4c981f52eee581c96f7fb93a",
+  "missing_referenced_files": 0,
+  "SHA_mismatches": 0,
+  "excluded": "Mutable CONTINUE/report-draft, staging, whole source/export/build/model/reference trees, excluded regenerable objects, manifest itself and later packaging/commit/push receipts.",
+  "model_reference_limit": "No model payload or reference-tree scan. Model content hashes are prior bindings only; final protection is metadata-scoped; reference whole-tree unchanged remains unknown.",
+  "failure_preservation": "First failed offline protection attempt, v2 repair and successful second attempt are retained. Unexecuted conditional D/next preparations are explicitly labeled.",
+  "availability": "All indexed non-model files existed and SHA matched their stated bindings when indexed. Local path and digest do not supply, restore or back up raw bytes; missing local data must be reported missing.",
+  "final_package_manifest": "Not generated here; root binds this index and final documents after documentation is finished.",
+  "performance_acceptance": false,
+  "goal_complete": false,
+  "snapshot_scope": "Closed evidence and named fixed top-level files at inventory creation only; later derived/report/delivery/closure/push receipts are excluded and may be bound by the final package manifest. Not an inventory of all future phase-root files."
+}

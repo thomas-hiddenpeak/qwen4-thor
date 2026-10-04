@@ -1,0 +1,97 @@
+{
+  "schema": "q4t.request_policy_static_review.v1",
+  "reviewer": "/root/request_policy_review",
+  "scope": "Read-only implementation/design review; no test/model run; no runtime source edits.",
+  "reviewed_entry_commit": "f3e3d21a4bbb06a3fb0a86dc1b72361454e83e87",
+  "candidate": {
+    "full_input_threshold_tokens": 8192,
+    "short_policy": "legacy",
+    "long_policy": "min_new_csr_v1",
+    "default": "off",
+    "execution_scope": "serial text, MTP off, residency enabled"
+  },
+  "recommendation": "Proceed as a bounded applicability-policy candidate, not a proven root-cause correction or an additional long-prefill speedup.",
+  "methodology": [
+    "8192 is chosen using earlier failed short-tier results and aligns with the frozen prefill chunk size; disclose this training-on-prior-results fact.",
+    "Retain the previous full-range candidate NO_GO as an unchanged historical result.",
+    "Formal new candidate comparison is same-binary legacy partition off versus request policy on; comparing only against previously rejected full-range min_new does not establish acceptance relative to legacy.",
+    "Freeze all thresholds, challenge inputs, sequence order, stop rules and sample counts before tests; do not expand after favorable or unfavorable performance.",
+    "No evidence presently supports broad non-regression for every length above 8192, all text tasks, or arbitrary request histories.",
+    "A formal pass would qualify the already observed long-context benefit for the tested policy; it would not prove another 10–20 percent prefill reduction."
+  ],
+  "critical_contracts": [
+    {
+      "topic": "Request identity",
+      "requirement": "Choose policy from complete tokenized/expanded input once; carry immutable full length, request ID and derived chunk base through request thread, scheduler, Model, DecoderLayer and MoE.",
+      "evidence": "chat_generation.cpp:314,439,462; chat_scheduler.cpp:110,254; model.cu:1577–1604"
+    },
+    {
+      "topic": "Chunk continuation",
+      "requirement": "ModelPrefillTextChunk continuation goes through ModelDecodeBatch, also used for MTP verify. Explicit policy must reach it without enabling policy for MTP/decode calls. Check base, full length and range; singleton tail remains real prefill.",
+      "evidence": "model.cu:896–982,1577–1604"
+    },
+    {
+      "topic": "Reset and reuse",
+      "requirement": "Prefer an explicit value context. If stored in sequence state, Begin/End and failed/cancelled reuse must reset/refreeze it. Never use process mutable environment or thread_local to select per request.",
+      "evidence": "include/q4t/model/sequence.h:28–75; chat_scheduler.cpp:85–143,249–260"
+    },
+    {
+      "topic": "Scheduler and fallback",
+      "requirement": "Cover queued singleton prefill, requeued chunk prefill, and scheduler-inactive inline fallback. Policy must outlive worker execution and be preserved through each requeue.",
+      "evidence": "chat_generation.cpp:428–527; chat_scheduler.cpp:85–143,233–290"
+    },
+    {
+      "topic": "Unsupported paths",
+      "requirement": "Reject enabled unsupported max_seq>1, MTP, media and nonresidency at server startup; non-HTTP APIs without request context retain documented existing global behavior, never infer full length from current T.",
+      "evidence": "chat_server.cpp:84–108; model.cu:812–826,1166–1286,1289 onwards"
+    },
+    {
+      "topic": "Truth table",
+      "requirement": "Policy off preserves global partition semantics; policy on requires global partition=1 and chunk_order=0. Invalid or conflicting values reject before model load. Log the effective policy.",
+      "evidence": "moe.cu:459–465"
+    },
+    {
+      "topic": "History",
+      "requirement": "A short request using legacy still inherits GPU/L2/mirror/Linux cache state from prior long requests. No implicit cache reset, metadata restore or hidden prewarming is allowed.",
+      "evidence": "ModelBeginSequence resets recurrent state, not MoEResidency; OFFLOAD_DIAGNOSTICS_2026-10-04.md:199–220"
+    }
+  ],
+  "acceptance_coverage": [
+    "First actual test remains fixed tools/evalscope HTTP quality on the new binary; host/numerical checks follow.",
+    "Host coverage: strict parsing/truth table, thresholds 8192/8193, immutable full length and chunk-base validation, false/default context, request identity, cancellation/reuse ownership.",
+    "HTTP challenge boundary: 8192 and 8193, including long first chunk 8192 and singleton tail 1; add a predeclared middle length such as 16385 to challenge two full chunks plus singleton tail.",
+    "Preserve normal five tiers plus capacity target and same 16GiB host/cache settings. Disable diagnostic instrumentation in formal performance runs.",
+    "Explicit fixed long-to-short request sequence in one service is required to assess history risk; normal ascending six tiers does not cover it.",
+    "Current-binary true-weight numerical checks should cover legacy versus min_new layer output/router/FP32 contracts including singleton/noncontiguous scatter. Existing unchanged planner evidence can be cited as prior limited evidence, not wholesale certification of the new binary.",
+    "Runtime cancellation/load-failure and subsequent opposite-policy request need coverage if accepting lifecycle behavior. HTTP output equality alone does not prove internal numerical equality.",
+    "Same schema reason=decode historically denoted T==1. New request-policy logs should explicitly identify prefill_singleton instead of conflating shape and phase."
+  ],
+  "conditional_mirror_candidate": {
+    "rank": 2,
+    "eligibility": "Only a separately frozen phase after request policy conclusion; do not bundle into the current candidate.",
+    "motivation": "Diagnostic 8K candidate prefill had about 36,726 mirror writebacks but only about 206 mirror hits out of 37,589 GPU loads. This identifies substantial low-reuse traffic, not an exposed critical-path or TTFT bound.",
+    "minimal_safe_control": "An explicit actual-prefill writeback policy carried on LoadPlan into StageTask/CommitExpert can skip the optional victim D2H writeback while preserving mirror reads, event waits, claims, immutable payload identities and ring bookkeeping for entries actually present. Do not change mirror_k at runtime or reset IDs/events to fake a cold cache.",
+    "scope_choice_to_freeze": "Either all prefill writebacks off or nonfinal prefill chunks off with final chunk unchanged is a distinct candidate. The latter protects some decode handoff behavior but does not reproduce legacy terminal cache state; singleton final chunks are an important challenge. Select only one before testing.",
+    "why_not_decode_phase_flag": "LoadPlan.decode_phase currently reflects singleton subchunk shape and is contaminated by prefill singletons; it cannot select actual prefill policy safely.",
+    "proof_obligations": [
+      "Existing immutable cached expert payload remains valid when a later writeback is skipped; preserve source-buffer claims through H2D and event recording.",
+      "No writeback ring target may be repurposed while a pending H2D reads it; no GPU slot overwrite may race a GEMM.",
+      "Measure extra storage reads, increased miss costs, final cache state and all-tier decode instead of using low hit rate alone as success.",
+      "Final numerical, HTTP quality, full performance, cancellation and fault contracts remain necessary for an accepted runtime change."
+    ],
+    "code_evidence": [
+      "src/quant/moe_residency.cpp:1100–1316 CommitExpert",
+      "src/quant/moe_residency.cpp:632–649 mirror reads",
+      "src/quant/moe_residency.cpp:1482–1590 LoadPhase1 barrier",
+      "include/q4t/quant/moe_residency.h:583–614 mirror payload/event contract"
+    ]
+  },
+  "do_not_do": [
+    "No GPU cache size expansion",
+    "No GEMM/precision changes",
+    "No metadata-only cache restoration",
+    "No stream decoupling without slot lifetime ownership",
+    "No claim of strict total physical RAM from memcg or summed NVIDIA/RSS counters"
+  ],
+  "remaining": "Review final implementation diff after runtime agent completes; this file is a preimplementation design review, not an approval of unreviewed code."
+}

@@ -1,0 +1,25 @@
+{
+  "started_t": 1791125248.97798,
+  "command": [
+    "python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/audit_group.py",
+    "matrix-off",
+    "--plan-sha256",
+    "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d"
+  ],
+  "script": "audit_group.py",
+  "entry_sha256": "b7d1a7a512a9a63a8e6c14feff8da21ef7cfb1ab94456392ce5a4cf5485b5b1d",
+  "stage": "matrix-off",
+  "timeout_s": 1800,
+  "returncode": 0,
+  "failure": null,
+  "pid": 3460780,
+  "signals": [],
+  "child_controller_reaped": true,
+  "cleanup_unknown": false,
+  "automatic_retry": false,
+  "log_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-step-02-matrix-off-audit.log",
+  "log_sha256": "8859c7f208b172b42b218c8fc870bcf304f890b5cdfe5047f189cfba76d22746",
+  "ended_t": 1791125249.8434176
+}

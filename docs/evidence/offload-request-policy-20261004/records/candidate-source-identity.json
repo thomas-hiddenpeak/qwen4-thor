@@ -1,0 +1,8 @@
+{
+  "commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source",
+  "clean_export": true,
+  "excluded_original_dirty_paths": 7,
+  "created_t": 1791110757.0302489,
+  "archive_sha256": "d4e9ee718906a692a6af4dc030dde19f6c11d363c008bd9b013998fb9cb39a6d"
+}

@@ -1,0 +1,610 @@
+{
+  "schema": "q4t.request_policy_prerequisite_review.v1",
+  "reviewer": "/root/request_policy_review",
+  "recorded_t": 1791111848.184313,
+  "status": "PASS_COMPLETED_PREREQUISITE_REVIEW",
+  "scope": "Completed fixed HTTP, host and numerical evidence only; no current performance stage files or results were read. No tests, builds or model runs executed.",
+  "performance_acceptance": false,
+  "release_acceptance": false,
+  "checks": [
+    {
+      "check": "frozen execution plan identity",
+      "passed": true
+    },
+    {
+      "check": "quality accepted only local scope",
+      "passed": true
+    },
+    {
+      "check": "quality runtime and plan identity",
+      "passed": true
+    },
+    {
+      "check": "host accepted only local scope",
+      "passed": true
+    },
+    {
+      "check": "host runtime and plan identity",
+      "passed": true
+    },
+    {
+      "check": "host raw log host-build.log",
+      "passed": true
+    },
+    {
+      "check": "host raw log host-configure.log",
+      "passed": true
+    },
+    {
+      "check": "host raw log request-host-tests.log",
+      "passed": true
+    },
+    {
+      "check": "host raw log test_chunk_order_protocol.log",
+      "passed": true
+    },
+    {
+      "check": "host raw log test_offload_matrix_audit.log",
+      "passed": true
+    },
+    {
+      "check": "host raw log test_partition_protocol.log",
+      "passed": true
+    },
+    {
+      "check": "host raw log test_request_policy_protocol.log",
+      "passed": true
+    },
+    {
+      "check": "host raw log test_run_acceptance.log",
+      "passed": true
+    },
+    {
+      "check": "numerical accepted only local scope",
+      "passed": true
+    },
+    {
+      "check": "numerical runtime and plan identity",
+      "passed": true
+    },
+    {
+      "check": "numerical raw log numerical-build.log",
+      "passed": true
+    },
+    {
+      "check": "numerical raw log numerical-tests.log",
+      "passed": true
+    },
+    {
+      "check": "quality completed source quality-on-stage.json",
+      "passed": true
+    },
+    {
+      "check": "quality completed source wrapper-exit.json",
+      "passed": true
+    },
+    {
+      "check": "quality completed source exit.json",
+      "passed": true
+    },
+    {
+      "check": "quality completed source runner-process-group.json",
+      "passed": true
+    },
+    {
+      "check": "quality completed source cleanup.json",
+      "passed": true
+    },
+    {
+      "check": "quality completed source capacity.json",
+      "passed": true
+    },
+    {
+      "check": "quality completed source protocol.json",
+      "passed": true
+    },
+    {
+      "check": "quality completed source server-command.json",
+      "passed": true
+    },
+    {
+      "check": "quality completed source results.json",
+      "passed": true
+    },
+    {
+      "check": "quality completed source results.json",
+      "passed": true
+    },
+    {
+      "check": "quality completed source responses.json",
+      "passed": true
+    },
+    {
+      "check": "quality completed source server.log",
+      "passed": true
+    },
+    {
+      "check": "quality source11 status",
+      "passed": true
+    },
+    {
+      "check": "all11 current requests and manifest/ref output",
+      "passed": true
+    },
+    {
+      "check": "actual EOS7 and capacity",
+      "passed": true
+    },
+    {
+      "check": "actual unique HTTP ids",
+      "passed": true
+    },
+    {
+      "check": "first HTTP admitted before direct checks",
+      "passed": true
+    },
+    {
+      "check": "no known earlier phase runtime tests",
+      "passed": true
+    },
+    {
+      "check": "direct executions all clean first attempt",
+      "passed": true
+    },
+    {
+      "check": "host139 groups",
+      "passed": true
+    },
+    {
+      "check": "strict exact required numerical names",
+      "passed": true
+    },
+    {
+      "check": "eight actual policy/dispatch cases",
+      "passed": true
+    },
+    {
+      "check": "eleven observed FP32 comparisons zero differences",
+      "passed": true
+    },
+    {
+      "check": "old C64T32plus1 BF16 evidence",
+      "passed": true
+    },
+    {
+      "check": "old partition3case BF16 evidence",
+      "passed": true
+    },
+    {
+      "check": "runtime current file hash",
+      "passed": true
+    },
+    {
+      "check": "test current file hash",
+      "passed": true
+    },
+    {
+      "check": "cmake current file hash",
+      "passed": true
+    },
+    {
+      "check": "compile_commands current file hash",
+      "passed": true
+    },
+    {
+      "check": "test distinct from runtime and stable execution",
+      "passed": true
+    },
+    {
+      "check": "export archive consistent recorded identity",
+      "passed": true
+    },
+    {
+      "check": "critical exported file matches commit include/q4t/model/moe_request_policy.h",
+      "passed": true
+    },
+    {
+      "check": "critical exported file matches commit include/q4t/model/moe.h",
+      "passed": true
+    },
+    {
+      "check": "critical exported file matches commit include/q4t/model/model.h",
+      "passed": true
+    },
+    {
+      "check": "critical exported file matches commit include/q4t/model/decoder_layer.h",
+      "passed": true
+    },
+    {
+      "check": "critical exported file matches commit include/q4t/server/chat_server.h",
+      "passed": true
+    },
+    {
+      "check": "critical exported file matches commit src/model/moe.cu",
+      "passed": true
+    },
+    {
+      "check": "critical exported file matches commit src/model/model.cu",
+      "passed": true
+    },
+    {
+      "check": "critical exported file matches commit src/model/decoder_layer.cu",
+      "passed": true
+    },
+    {
+      "check": "critical exported file matches commit src/server/chat_server.cpp",
+      "passed": true
+    },
+    {
+      "check": "critical exported file matches commit src/server/chat_generation.cpp",
+      "passed": true
+    },
+    {
+      "check": "critical exported file matches commit src/server/chat_scheduler.cpp",
+      "passed": true
+    },
+    {
+      "check": "critical exported file matches commit tests/model_moe_test.cpp",
+      "passed": true
+    },
+    {
+      "check": "critical exported file matches commit tests/request_policy_host/request_policy_test.cpp",
+      "passed": true
+    },
+    {
+      "check": "critical exported file matches commit tests/request_policy_host/CMakeLists.txt",
+      "passed": true
+    },
+    {
+      "check": "router equality asserted in comparison helper",
+      "passed": true
+    },
+    {
+      "check": "numerical source does not assert FP32 equality",
+      "passed": true
+    },
+    {
+      "check": "build and new host/numeric logs no warnings",
+      "passed": true
+    }
+  ],
+  "checks_passed": 65,
+  "checks_total": 65,
+  "runtime_binary_sha256": "34eb4cf5b53dfcc5b0783120fcdec438fd321dbd4c981f52eee581c96f7fb93a",
+  "test_binary_sha256": "34f105309b126dfe8b639317aa7953586280602d0721df6f2f6631af28f50556",
+  "source_commit": "52b42b2e7775929ed9cd6a237c822bc6dfa87a06",
+  "quality": {
+    "requests": 11,
+    "outputs_per_request": 7,
+    "stop": "EOS",
+    "requested_max_tokens": 32,
+    "decode_forwards_per_request": 6,
+    "actual_request_contexts": "9 legacy short;2 long comprising31 min_new prefill chunks;40 total outerprefill chunks",
+    "coverage_limit": "No threshold8193/singletontail HTTP yet; those are not inferred from quality11 or numerical labels."
+  },
+  "numerical": {
+    "contracts": 3,
+    "comparisons_total": 13,
+    "router_bitwise_and_routed_fp32_comparisons": 11,
+    "new_policy_cases": [
+      [
+        2,
+        64,
+        8192,
+        0,
+        32,
+        0,
+        0,
+        5,
+        0,
+        "true"
+      ],
+      [
+        2,
+        64,
+        8193,
+        0,
+        32,
+        1,
+        1,
+        5,
+        0,
+        "true"
+      ],
+      [
+        2,
+        64,
+        16385,
+        8192,
+        32,
+        1,
+        1,
+        5,
+        0,
+        "true"
+      ],
+      [
+        2,
+        64,
+        8193,
+        8192,
+        1,
+        1,
+        0,
+        1,
+        1,
+        "true"
+      ],
+      [
+        2,
+        15,
+        8192,
+        0,
+        4,
+        0,
+        0,
+        3,
+        2,
+        "true"
+      ],
+      [
+        2,
+        15,
+        16385,
+        8192,
+        4,
+        1,
+        1,
+        2,
+        1,
+        "true"
+      ],
+      [
+        2,
+        15,
+        16385,
+        16384,
+        1,
+        1,
+        0,
+        1,
+        1,
+        "true"
+      ],
+      [
+        2,
+        15,
+        8192,
+        0,
+        4,
+        0,
+        0,
+        3,
+        2,
+        "true"
+      ]
+    ],
+    "bf16": "Complete layer output equality asserted for all13 comparisons.",
+    "router": "IDs and router weight bytes asserted equal in11 comparisons; first old C64T32/T1 test asserts only BF16 output.",
+    "fp32": "Observed zero bit differences in11 comparisons. Reporting-only field, not a frozen FP32 equality assertion.",
+    "coverage_limit": "Layer2 only, actualT=1/4/32/1024 atC=15/64/256. Fullinput labels8192/8193/16385 in the new8 cases are context selectors, not full-model executions. Controlled C15 cases replace router weights only in memory; expert/shared weights remain real."
+  },
+  "default_compatibility": {
+    "description": "Default empty context preserves global partition mode for non-HTTP callers. Inactive HTTP identity preserves global mode while adding symmetric logs. Active override rejects conflicting mode, selects by full request length, carries same identity through chunk continuation, and ordinary decode uses omitted context.",
+    "evidence": "Earlier static review plus committed/exported runtime files;8 host contracts cover parser/default/boundary/inactiveidentity/base/invalidrange/id and nonstickyvalues.",
+    "limit": "No blanket release certification for MTP/multimodal/multisequence. Direct API callers remain responsible for reusing the same context across separate sequence calls."
+  },
+  "identity_read_limits": [
+    "Current runtime/test binaries directly rehashed (about8.5MB total); source archive was not reread during active performance.",
+    "Critical14 exported runtime/test files directly matched to frozen commit. Full1216file export verification reused its existing pretest attestations and archive hash linkage.",
+    "First-test order is scoped to this phase controller artifacts; not a machine-wide absence proof.",
+    "Source byte count is the union of uniquely listed source files, not an observed device I/O counter; a few small metadata files were read more than once."
+  ],
+  "sources": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/execution-plan.json": {
+      "bytes": 12266,
+      "sha256": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/quality-decision.json": {
+      "bytes": 3794,
+      "sha256": "0056d0e0cf4fed3e707f630e9110a120e77c658e724227028f04846cbf456720"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-decision.json": {
+      "bytes": 9638,
+      "sha256": "21b65dc0985c795d8c58939a3554c23490d6e89f2cd6a0542fb9dbf87c62c8e1"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-decision.json": {
+      "bytes": 4479,
+      "sha256": "c8efafe835a4ec3ba648890af8ea5aebdb015acbc513c8523d80a9bb66834d2c"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/build-identity.json": {
+      "bytes": 1692,
+      "sha256": "1575aa5c92ad049d14d64898ed516e1e1530420cbe65ff139a5719065ae317f2"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source-identity.json": {
+      "bytes": 351,
+      "sha256": "41cb8727d74986fcbfaffa0367f19cd7d146bff434043bb458ae186d9d0ac081"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/first-test-admission.json": {
+      "bytes": 1213,
+      "sha256": "965cb0b1a9e2fbc21c5d29798133aaade5d337405b6f9eb8ca1ce2092fa07df8"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/quality-on-stage.json": {
+      "bytes": 1964,
+      "sha256": "d5bd343ea2a6ec318239ad2987151c6f536afd5699a913c0c0016613c512014a"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-01/numerical-identity-before.json": {
+      "bytes": 917,
+      "sha256": "c27b741ecda1e4d90e471e1a25d521f6ad8c84be4cc89bbddc3d9f9c74c6247f"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/host-build.log": {
+      "bytes": 389,
+      "sha256": "a7158cb6dbaa1b9164402867d23bb1f34a9f2974aa18bfba047f4e3db92f79a3"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/host-configure.log": {
+      "bytes": 446,
+      "sha256": "0ca3018b94f148d008bd349f89a97eeb08aeb67b4fa8c23ded9eaba068a62951"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/request-host-tests.log": {
+      "bytes": 477,
+      "sha256": "f6706bf6789118dcf7ab7c89b9018ee3032cb75e3748bdbb15eb5efc78519549"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/test_chunk_order_protocol.log": {
+      "bytes": 4649,
+      "sha256": "29cb7c7cc567c420b7db6a03c5172c78521e1655ebac9148abbc46e2afa44313"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/test_offload_matrix_audit.log": {
+      "bytes": 4399,
+      "sha256": "f971e190ab21410dbb5a0f52a2409d66ac769ca5ed2bcdbb33c51404e170e042"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/test_partition_protocol.log": {
+      "bytes": 4297,
+      "sha256": "d3f1dd2e6090860dc666e50013e965b0c2f9334f3a43dc1bfab9103500ee7bc5"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/test_request_policy_protocol.log": {
+      "bytes": 2873,
+      "sha256": "04499100f08c84efc138d85349e2045d56c2c60f4f194ca9ec25152dedfc682d"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/host-01/test_run_acceptance.log": {
+      "bytes": 11904,
+      "sha256": "af5e111f03836eff1bffed7173a3bc13713db182357ab5f964dffc9264b9c4ee"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-01/numerical-build.log": {
+      "bytes": 3834,
+      "sha256": "1fec5b2c0a0e9d12a8629aa0a34ab069c54f1e154365780e646428269e7ebd2f"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/numerical-01/numerical-tests.log": {
+      "bytes": 7423,
+      "sha256": "45c6b825df702f4691d1da5662e9e9ffbdfdd140a01dfdde2df353e296383652"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/wrapper-exit.json": {
+      "bytes": 741,
+      "sha256": "320444d43bad528b431d30e738283f54fec68f428cbdeed7965fc2427df07835"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/http/exit.json": {
+      "bytes": 358,
+      "sha256": "5e1a1a6e9fc7bf09fa575e5733e9d7fb6b74013cc35ddc609edb3eecdbdae8a8"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/runner-process-group.json": {
+      "bytes": 579,
+      "sha256": "50cb43da0c30037333187eee7883d4d6c5866dc508306ab9893530f73296f090"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/http/isolation/cleanup.json": {
+      "bytes": 623,
+      "sha256": "c19a201aaf4b06ad3a06d093091068a9c49fabfd355a0f131ff5b6f7314cc992"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/http/capacity.json": {
+      "bytes": 613,
+      "sha256": "135b17d195db1d71febe10e60def33e3894bb0e867b253637ec833f2fa48dfb7"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/protocol.json": {
+      "bytes": 61602,
+      "sha256": "6b1c0ceb83c1ec56ae7f807e4af35b0cfc9374bf35cbf415746ba100d37f27b7"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/http/server-command.json": {
+      "bytes": 1468,
+      "sha256": "898c44c1706850c54d8eb8cd550520b0066afe240323a3faf6f12edfecb703fa"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/http/results.json": {
+      "bytes": 19355,
+      "sha256": "2fded88ddf2342ab423a73ddc0296375e772d6e69baef76caf14263a6593b525"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/quality-on/http/results.json": {
+      "bytes": 15282,
+      "sha256": "5f68957b17170d40824998f461a2b60633961a065b911039ccf569762c439b43"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/http/quality/responses.json": {
+      "bytes": 17853,
+      "sha256": "18114fc1498b2471334ce112f65d4c0013787cbdb3fe8f63a764c169237d9cfe"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/.q4t-work/evidence/quality-on/http/server.log": {
+      "bytes": 2292998,
+      "sha256": "28cb8aaa5fa53960e35bd79a2090e386b9cf72bdd280374ee7f4de04369640db"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/required-numerical-tests.txt": {
+      "bytes": 110,
+      "sha256": "86f1c421357e519f8deee9b4c82fdb1566fa5e157c0ae97ff14413534be33327"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-build/q4t": {
+      "bytes": 4020752,
+      "sha256": "34eb4cf5b53dfcc5b0783120fcdec438fd321dbd4c981f52eee581c96f7fb93a"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-build/q4t_tests": {
+      "bytes": 4503840,
+      "sha256": "34f105309b126dfe8b639317aa7953586280602d0721df6f2f6631af28f50556"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-build/CMakeCache.txt": {
+      "bytes": 37476,
+      "sha256": "6575609031eae4b777ffd0be26f5c2146e982dbc12610c2b2b2d460452acccaa"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-build/compile_commands.json": {
+      "bytes": 99375,
+      "sha256": "f686ca2c83357adb0565e26c02d2b831fb6d00fbe99a2b59737ecaced4faec55"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source/include/q4t/model/moe_request_policy.h": {
+      "bytes": 2580,
+      "sha256": "442fb05a1e1c8cc6705ab80e21503aa3057994764b41f41b7f6e2f7378cc2b45"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source/include/q4t/model/moe.h": {
+      "bytes": 5295,
+      "sha256": "57be5e1c32c7185f1bfb3f66312e8776104780926e5f47cd3eeed19ffcbec100"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source/include/q4t/model/model.h": {
+      "bytes": 34397,
+      "sha256": "f6303189a6b68a5cabcbcfb16adff621d70ce5287334b928c1d459f09a8fbbae"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source/include/q4t/model/decoder_layer.h": {
+      "bytes": 9821,
+      "sha256": "0abef25988947f8d4e3b90203eebe3e48a7d6deb6c082bd81ea3e209c093eb18"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source/include/q4t/server/chat_server.h": {
+      "bytes": 15850,
+      "sha256": "a2fcc88543d887159b220be22314790638314d256557061d244cfe240d4e5799"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source/src/model/moe.cu": {
+      "bytes": 41042,
+      "sha256": "a59cb8c1a33160bdc942011e8afede7fb4ed46fa227f29852efff2f39da35e31"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source/src/model/model.cu": {
+      "bytes": 80389,
+      "sha256": "a20ab4d80def50d9474b64cae629fc309ad6f8f2dcd3f819031ad7c262c9c3be"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source/src/model/decoder_layer.cu": {
+      "bytes": 29683,
+      "sha256": "e9ffbb24b04062b34cb9b512378b2da0851bc182c944560adda9ae7a33fd5b37"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source/src/server/chat_server.cpp": {
+      "bytes": 19654,
+      "sha256": "cf0c0a87852eab5252dbc52455f7704af9740419047082f626db93cfdc4a6d08"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source/src/server/chat_generation.cpp": {
+      "bytes": 47096,
+      "sha256": "66360d6a19b6b40377d7e0db5a530e8c0799be92280f19e22cd5973ab65d6931"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source/src/server/chat_scheduler.cpp": {
+      "bytes": 19617,
+      "sha256": "5c6247961090335a66a924907161592a0f88d6893e4e3faf2d7720833286b34b"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source/tests/model_moe_test.cpp": {
+      "bytes": 42440,
+      "sha256": "7b261ba55ad0b34ad3c8d8c48d401db0bdcce85bb468a1337b86c5591ccacf72"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source/tests/request_policy_host/request_policy_test.cpp": {
+      "bytes": 5067,
+      "sha256": "e50af167757c732c4bd4be82902304a58a4ae04fad262da97cd91463d76cbe26"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source/tests/request_policy_host/CMakeLists.txt": {
+      "bytes": 688,
+      "sha256": "7c3c09a039ecc2efedf96584d71603bda824b355c8fedbae5d60d1bf6bb7868c"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/build.log": {
+      "bytes": 4876,
+      "sha256": "941a8d3df3577c7156a820ac188392e775174201d6df97046c1cbceb30d196e6"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/configure.log": {
+      "bytes": 1096,
+      "sha256": "f521706ccc0a95ef9a9aa1f70fc06d1d7dabe8b6ca1ab4d9006eebdcd10d534c"
+    }
+  },
+  "unique_source_bytes_read": 11509621
+}

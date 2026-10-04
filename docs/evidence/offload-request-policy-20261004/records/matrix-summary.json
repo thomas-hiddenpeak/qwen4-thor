@@ -1,0 +1,304 @@
+{
+  "schema": 1,
+  "review_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/matrix-independent-review.json",
+  "review_sha256": "c3dce7110a3388b1db926f290d459c42cfc2f1f26191cd0cee57561c7b998a34",
+  "matrix_decision": "NO_GO",
+  "overall_decision": "NO_GO_PERFORMANCE",
+  "tiers": [
+    {
+      "input_tokens": 1024,
+      "output_tokens": 256,
+      "checks": {
+        "first_ttft": true,
+        "later_ttft": false,
+        "decode": false
+      },
+      "passed": false,
+      "failed_gates": [
+        "later_ttft",
+        "decode"
+      ],
+      "first_ttft_seconds": {
+        "off": 11.856996699934825,
+        "on": 11.785512559814379,
+        "on_minus_off": -0.07148414012044668,
+        "percent_change": -0.602885721650237
+      },
+      "later_max_ttft_seconds": {
+        "off": 10.005840408150107,
+        "on": 10.099853825988248,
+        "on_minus_off": 0.09401341783814132,
+        "percent_change": 0.9395854221456945
+      },
+      "minimum_decode_tps": {
+        "off": 6.883848456904222,
+        "on": 6.811316823630563,
+        "on_minus_off": -0.07253163327365986,
+        "percent_change": -1.0536494771455018
+      },
+      "mean_ttft_seconds": {
+        "off": 10.304379457685476,
+        "on": 10.387512266558284,
+        "on_minus_off": 0.08313280887280783,
+        "percent_change": 0.8067716179726236
+      },
+      "mean_decode_tps": {
+        "off": 7.184649644616842,
+        "on": 7.118286274890442,
+        "on_minus_off": -0.06636336972639967,
+        "percent_change": -0.9236827543305903
+      },
+      "effective_input_tokens_per_second": {
+        "off": 99.375222370742,
+        "on": 98.57990765475977,
+        "on_minus_off": -0.7953147159822294,
+        "percent_change": -0.8003149044689684
+      }
+    },
+    {
+      "input_tokens": 4096,
+      "output_tokens": 256,
+      "checks": {
+        "first_ttft": false,
+        "later_ttft": false,
+        "decode": false
+      },
+      "passed": false,
+      "failed_gates": [
+        "first_ttft",
+        "later_ttft",
+        "decode"
+      ],
+      "first_ttft_seconds": {
+        "off": 25.444428831804544,
+        "on": 25.61695698602125,
+        "on_minus_off": 0.17252815421670675,
+        "percent_change": 0.6780586640681596
+      },
+      "later_max_ttft_seconds": {
+        "off": 25.970916076097637,
+        "on": 26.20830178190954,
+        "on_minus_off": 0.23738570581190288,
+        "percent_change": 0.9140444068909126
+      },
+      "minimum_decode_tps": {
+        "off": 6.446044873071906,
+        "on": 6.425375305592177,
+        "on_minus_off": -0.020669567479728812,
+        "percent_change": -0.3206550355563831
+      },
+      "mean_ttft_seconds": {
+        "off": 25.756508936251823,
+        "on": 25.94502459730332,
+        "on_minus_off": 0.18851566105149686,
+        "percent_change": 0.7319146454128456
+      },
+      "mean_decode_tps": {
+        "off": 6.5031564779884,
+        "on": 6.469895264793844,
+        "on_minus_off": -0.03326121319455577,
+        "percent_change": -0.5114625998488109
+      },
+      "effective_input_tokens_per_second": {
+        "off": 159.0277630457501,
+        "on": 157.87227276037083,
+        "on_minus_off": -1.1554902853792726,
+        "percent_change": -0.7265965786407036
+      }
+    },
+    {
+      "input_tokens": 8192,
+      "output_tokens": 256,
+      "checks": {
+        "first_ttft": false,
+        "later_ttft": false,
+        "decode": false
+      },
+      "passed": false,
+      "failed_gates": [
+        "first_ttft",
+        "later_ttft",
+        "decode"
+      ],
+      "first_ttft_seconds": {
+        "off": 38.09977787686512,
+        "on": 38.86060851509683,
+        "on_minus_off": 0.7608306382317096,
+        "percent_change": 1.9969424511886658
+      },
+      "later_max_ttft_seconds": {
+        "off": 38.093626017915085,
+        "on": 38.890393449924886,
+        "on_minus_off": 0.7967674320098013,
+        "percent_change": 2.091603019452881
+      },
+      "minimum_decode_tps": {
+        "off": 6.3117373515729165,
+        "on": 6.201621843235945,
+        "on_minus_off": -0.11011550833697115,
+        "percent_change": -1.7446148691458108
+      },
+      "mean_ttft_seconds": {
+        "off": 38.07589105788308,
+        "on": 38.82419714797288,
+        "on_minus_off": 0.7483060900898053,
+        "percent_change": 1.965301584018686
+      },
+      "mean_decode_tps": {
+        "off": 6.318149625738781,
+        "on": 6.206120171023469,
+        "on_minus_off": -0.11202945471531223,
+        "percent_change": -1.7731370947425495
+      },
+      "effective_input_tokens_per_second": {
+        "off": 215.1492656480842,
+        "on": 211.002431519121,
+        "on_minus_off": -4.1468341289632065,
+        "percent_change": -1.9274219302919282
+      }
+    },
+    {
+      "input_tokens": 45056,
+      "output_tokens": 256,
+      "checks": {
+        "first_ttft": true,
+        "later_ttft": true,
+        "decode": true
+      },
+      "passed": true,
+      "failed_gates": [],
+      "first_ttft_seconds": {
+        "off": 219.92506215698086,
+        "on": 158.1615631559398,
+        "on_minus_off": -61.763499001041055,
+        "percent_change": -28.083883844468225
+      },
+      "later_max_ttft_seconds": {
+        "off": 220.60293560707942,
+        "on": 157.0208353670314,
+        "on_minus_off": -63.58210024004802,
+        "percent_change": -28.821964705535674
+      },
+      "minimum_decode_tps": {
+        "off": 7.123539983484504,
+        "on": 7.239528854832133,
+        "on_minus_off": 0.11598887134762936,
+        "percent_change": 1.62824763553715
+      },
+      "mean_ttft_seconds": {
+        "off": 220.26434063135335,
+        "on": 157.26367079528669,
+        "on_minus_off": -63.00066983606666,
+        "percent_change": -28.60230106039183
+      },
+      "mean_decode_tps": {
+        "off": 7.13367088536334,
+        "on": 7.250654988665425,
+        "on_minus_off": 0.11698410330208464,
+        "percent_change": 1.6398864649350253
+      },
+      "effective_input_tokens_per_second": {
+        "off": 204.5542182218602,
+        "on": 286.49973494927707,
+        "on_minus_off": 81.94551672741687,
+        "percent_change": 40.06053624303092
+      }
+    },
+    {
+      "input_tokens": 204800,
+      "output_tokens": 256,
+      "checks": {
+        "first_ttft": true,
+        "later_ttft": true,
+        "decode": true
+      },
+      "passed": true,
+      "failed_gates": [],
+      "first_ttft_seconds": {
+        "off": 1100.2348595880903,
+        "on": 754.0182433580048,
+        "on_minus_off": -346.2166162300855,
+        "percent_change": -31.467519249454
+      },
+      "later_max_ttft_seconds": {
+        "off": 1096.9402809310704,
+        "on": 754.4796720352024,
+        "on_minus_off": -342.46060889586806,
+        "percent_change": -31.219621965672683
+      },
+      "minimum_decode_tps": {
+        "off": 7.541414144031932,
+        "on": 7.6326370139969155,
+        "on_minus_off": 0.09122286996498374,
+        "percent_change": 1.2096255188050575
+      },
+      "mean_ttft_seconds": {
+        "off": 1097.989177100438,
+        "on": 754.044290170772,
+        "on_minus_off": -343.9448869296659,
+        "percent_change": -31.324979708630018
+      },
+      "mean_decode_tps": {
+        "off": 7.544824055276131,
+        "on": 7.642852402074374,
+        "on_minus_off": 0.0980283467982428,
+        "percent_change": 1.2992794275923591
+      },
+      "effective_input_tokens_per_second": {
+        "off": 186.52278571710005,
+        "on": 271.6020831529909,
+        "on_minus_off": 85.07929743589082,
+        "percent_change": 45.61335340816268
+      }
+    },
+    {
+      "input_tokens": 261887,
+      "output_tokens": 257,
+      "checks": {
+        "first_ttft": true,
+        "later_ttft": true,
+        "decode": true
+      },
+      "passed": true,
+      "failed_gates": [],
+      "first_ttft_seconds": {
+        "off": 1423.5008863520343,
+        "on": 979.1154217259027,
+        "on_minus_off": -444.3854646261316,
+        "percent_change": -31.21778629621691
+      },
+      "later_max_ttft_seconds": {
+        "off": 1464.6475080740638,
+        "on": 1001.0615658159368,
+        "on_minus_off": -463.58594225812703,
+        "percent_change": -31.65170730176018
+      },
+      "minimum_decode_tps": {
+        "off": 6.123253732891205,
+        "on": 6.130643888197399,
+        "on_minus_off": 0.007390155306194579,
+        "percent_change": 0.1206900061400118
+      },
+      "mean_ttft_seconds": {
+        "off": 1437.264765172964,
+        "on": 986.3482782583063,
+        "on_minus_off": -450.91648691465764,
+        "percent_change": -31.37323740489758
+      },
+      "mean_decode_tps": {
+        "off": 6.131216810885,
+        "on": 6.168058266985574,
+        "on_minus_off": 0.0368414561005741,
+        "percent_change": 0.6008832705959533
+      },
+      "effective_input_tokens_per_second": {
+        "off": 182.21207834903257,
+        "on": 265.51169173472886,
+        "on_minus_off": 83.29961338569629,
+        "percent_change": 45.71574735354999
+      }
+    }
+  ],
+  "effective_input_rate_definition": "Fixed actual input tokens divided by arithmetic mean TTFT; descriptive client input rate, not isolated prefill kernel throughput or mean of individual rates.",
+  "note": "Descriptive means do not replace the three frozen per-tier gates; fixed three repeats and off-to-on order limit causal/statistical interpretation."
+}

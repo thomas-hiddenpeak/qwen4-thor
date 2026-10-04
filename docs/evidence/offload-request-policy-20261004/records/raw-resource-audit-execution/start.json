@@ -1,0 +1,16 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/audit_resources.py",
+    "--groups",
+    "quality-on,inheritance-off,inheritance-on,matrix-off,matrix-on",
+    "--plan-sha256",
+    "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/raw-resource-audit.json"
+  ],
+  "started_t": 1791132472.6181188,
+  "script_sha256": "b7b94dcd950389b9e2c0c985630ad702c8040acb05032a23eaf6c17e2ad42399",
+  "scope": "all five completed HTTP groups; first raw resource audit"
+}

@@ -1,0 +1,18 @@
+{
+  "name": "configure",
+  "command": [
+    "cmake",
+    "-S",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-source",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-build",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DCMAKE_CXX_COMPILER=/usr/bin/g++-14",
+    "-DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-14",
+    "-DQ4T_CUDA_ARCHITECTURES=110a",
+    "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+  ],
+  "started_t": 1791110757.0484333,
+  "ended_t": 1791110759.21262,
+  "returncode": 0
+}

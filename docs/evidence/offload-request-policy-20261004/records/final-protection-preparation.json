@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "status": "PREPARED_ONLY_NOT_EXECUTED",
+  "script_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/check_final_protection.py",
+  "script_sha256": "a15379de30ad28d9e92ef5134205a38ccc97c49b526fcab9fae94b27b5333ccc",
+  "invocation": [
+    "python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/check_final_protection.py",
+    "--self-sha256",
+    "a15379de30ad28d9e92ef5134205a38ccc97c49b526fcab9fae94b27b5333ccc"
+  ],
+  "output_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/final-protection.json",
+  "root_approved_execution_order": [
+    "Confirm coverage controller has exited and all five model groups are terminal.",
+    "Run protection check while W remains clean at52b42b2, before parallel raw audit or final matrix review starts.",
+    "Then run the offline raw resource audit and independent final matrix review.",
+    "Only afterwards copy final staging/docs into W and perform final documentation delivery."
+  ],
+  "external_invocation_records": {
+    "protection": "R/final-protection-execution/{start.json,exit.json,run.log}",
+    "resource_audit": "R/raw-resource-audit-execution/{start.json,exit.json,run.log}",
+    "reason": "Root-approved dedicated directories avoid confusing the checker's own in-flight invocation with a top-level experimental controller. No self-exemption is added.",
+    "first_failure": "Root preserves the first invocation start/exit/log even if terminal refusal creates no final-protection.json.",
+    "repair_scope": "A protection/parser failure is an offline audit issue; preserve evidence and repair only the audit as needed, without rerunning model requests."
+  },
+  "output_exists_policy": "Refuse existing file or symlink; output is created exclusively once. Gate refusal creates no output.",
+  "execution_preconditions": [
+    "Root releases only after every started controller/group is terminal and cleanup is complete; no active model or other task process.",
+    "Exactly the five actually started HTTP groups and both continuations are closed. All top-level/host/numerical start records have matching terminal receipts; unsupported new start-record schemas refuse execution.",
+    "Runtime source worktree is still clean at 52b42b2e7775929ed9cd6a237c822bc6dfa87a06. Execute before later documentation or evidence copies change W.",
+    "All current exact owned units/cgroups and recorded PID/PGID/task-path processes are absent; any present numeric PID may be reused and causes conservative refusal without signaling."
+  ],
+  "readonly_checks": [
+    "Original main seven-path status, HEAD and diff SHA33375caf, without archiving unrelated source contents.",
+    "Main build/q4t SHA46b3 compared only with preceding diagnostics protection-audit SHA2e85b63b; this phase entry.json does not contain that binary baseline.",
+    "Runtime SHA34eb, numerical-test SHA34f105, clean tested source commit, frozen source export, plans/tools/commands/fixtures and raw-audit entry/core digests.",
+    "Model exactly228 paths and size/inode/device/mtime_ns metadata only; hashing any path resolving within the model directory is prohibited.",
+    "Reference tracked Git observations only, with whole-tree unchanged UNKNOWN because no entry whole-tree baseline exists.",
+    "Terminal controller/wrapper/runner/monitor/unit records, current /proc snapshot and exact-unit systemctl show. No process/unit mutation and no resource or speed stream reads.",
+    "Recheck metadata stability, started-controller inventory and current cleanup state before producing a scoped result."
+  ],
+  "side_effects": {
+    "output_only": "final-protection.json",
+    "source_or_staging_or_report_writes": false,
+    "process_signals_or_service_mutations": false,
+    "project_module_imports": false,
+    "models_or_tests_executed": false,
+    "raw_resource_streams_read": false,
+    "performance_metrics_parsed_or_compared": false
+  },
+  "evidence_limits": [
+    "Main binary comparison is against preceding-stage actual evidence, not a field invented in this phase's entry record.",
+    "Metadata equality and final byte identity do not prove absence of transient writes throughout execution.",
+    "No whole reference-tree snapshot exists; ignored or untracked reference contents are not certified unchanged.",
+    "Some outer/build/history and monitor records lack captured PID/start ticks. Existing terminal/wait and PGID receipts plus current task-path scan are used; no identities are invented.",
+    "No separate GPU allocator/device-idle measurement is taken. Current owned-process/unit absence is not whole-device memory-release proof.",
+    "Hidden foreign-user processes are outside the whole-machine claim; observed permission errors cause refusal.",
+    "A scoped protection result is not performance/resource acceptance or Goal completion."
+  ],
+  "failure_behavior": "Missing terminal/cleanup/current-process proof refuses before output. A subsequent protection mismatch produces FAIL_OR_UNKNOWN and exit1. Scoped checks with explicit limitations produce exit0; whole_tree_readonly_proven always false.",
+  "executed": false,
+  "tests_executed": 0,
+  "independent_static_review": {
+    "reviewer": "/root/request_policy_runtime",
+    "decision": "PASS_WITH_LIMITS",
+    "script_sha256": "a15379de30ad28d9e92ef5134205a38ccc97c49b526fcab9fae94b27b5333ccc",
+    "blocking_findings": [],
+    "checked": [
+      "Five groups, continuations and top-level/host/numerical start-to-exit gates; two receipt-hash, inventory and cleanup snapshots.",
+      "Recorded numeric PID present causes conservative refusal without signaling; /proc stat PGID extraction is correct.",
+      "Exact owned unit, service PID, ControlGroup membership and current unit/cgroup absence.",
+      "Only output write is OUT.open('x'); no project import, process mutation or source write.",
+      "Model228 metadata-only, reference whole-tree UNKNOWN, historical main-binary evidence and GPU-inventory limitation are explicit.",
+      "Only the two known continuation names may use their actual continuation terminal schemas."
+    ],
+    "limitations": [
+      "Result uses two current snapshots and existing terminal receipts; it is not a machine-wide process-absence or continuous-no-write proof.",
+      "External invocation start/exit captures time spent in preflight gates before the output report's started_t.",
+      "Approved invocation order and dedicated receipt directory remain required."
+    ],
+    "executed_or_imported_checker": false,
+    "tests_executed": false,
+    "matrix_speed_or_raw_resources_read": false
+  }
+}

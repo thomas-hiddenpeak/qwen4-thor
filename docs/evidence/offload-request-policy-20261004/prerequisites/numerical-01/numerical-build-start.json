@@ -1,0 +1,19 @@
+{
+  "started_t": 1791111589.4472563,
+  "command": [
+    "cmake",
+    "--build",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-build",
+    "--target",
+    "q4t_tests",
+    "--parallel",
+    "8"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source",
+  "returncode": null,
+  "failure": null,
+  "automatic_retry": false,
+  "timeout_s": 600,
+  "signals": [],
+  "cleanup_complete": false
+}

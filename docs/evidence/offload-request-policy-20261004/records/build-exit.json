@@ -1,0 +1,15 @@
+{
+  "name": "build",
+  "command": [
+    "cmake",
+    "--build",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/candidate-build",
+    "--target",
+    "q4t",
+    "--parallel",
+    "8"
+  ],
+  "started_t": 1791110759.2129247,
+  "ended_t": 1791110785.9990134,
+  "returncode": 0
+}

@@ -1,0 +1,24 @@
+{
+  "started_t": 1791131985.850763,
+  "command": [
+    "python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/aggregate_performance.py",
+    "--plan-sha256",
+    "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+    "--amendment-sha256",
+    "12c1579eba32cc91219bd2d3453cf65fca40bf7fc88022e12d1acab705e6a23e"
+  ],
+  "script": "aggregate_performance.py",
+  "entry_sha256": "9fd70bcbb4ec355a6810a841cf68cce38676208c4c5a7c8d240a05c85a3fa38d",
+  "stage": null,
+  "timeout_s": 1800,
+  "returncode": null,
+  "failure": null,
+  "pid": null,
+  "signals": [],
+  "child_controller_reaped": false,
+  "cleanup_unknown": false,
+  "automatic_retry": false,
+  "log_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/coverage-step-06-aggregate.log"
+}

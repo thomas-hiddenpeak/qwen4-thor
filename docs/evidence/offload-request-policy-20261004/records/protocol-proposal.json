@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "status": "IMPLEMENTED_NOT_TESTED",
+  "parent_plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/plan.json",
+  "policy_axis": "request-partition",
+  "threshold_tokens": 8192,
+  "threshold_from_prior_observed_failure_tiers": true,
+  "new_lengths_are_bounded_challenges_not_statistical_holdout": true,
+  "runtime_env": {
+    "off": {
+      "Q4T_MOE_PARTITION": "0",
+      "Q4T_MOE_REQUEST_PARTITION": "0"
+    },
+    "on": {
+      "Q4T_MOE_PARTITION": "1",
+      "Q4T_MOE_REQUEST_PARTITION": "1"
+    }
+  },
+  "sequence": [
+    16385,
+    8192,
+    8193,
+    1024,
+    45056,
+    4096,
+    8192
+  ],
+  "rounds": 3,
+  "requests_per_arm": 21,
+  "output_tokens": 256,
+  "screen_order": [
+    "fixed11_HTTP_FIRST",
+    "affected_host_and_numeric",
+    "history_off",
+    "history_on",
+    "history_decision",
+    "conditional_full_off",
+    "conditional_full_on",
+    "conditional_business_lifecycle"
+  ],
+  "gates_by_each_of_7_positions": [
+    "on first TTFT <= off first TTFT",
+    "max on later2 TTFT <= max off later2 TTFT",
+    "min on all3 decode >= min off all3 decode"
+  ],
+  "different_positions_of_8192_never_combined": true,
+  "history_is_not_full_matrix": true,
+  "cold": {
+    "maximum_rounds": 2,
+    "stop_if_advice_error": true,
+    "stop_after_first_zero": true,
+    "per_round_observation_retained": true,
+    "complete_all226_model_file_set_required": true,
+    "final_payload_residency_bytes": 0,
+    "failure_starts_no_service": true,
+    "no_implicit_third_round": true
+  },
+  "fixture_preparation": {
+    "old_lengths": [
+      1024,
+      4096,
+      8192,
+      45056
+    ],
+    "copy_only_requests_files_from": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-residency-20260930/e2e-fixtures-v2",
+    "new_lengths": [
+      8193,
+      16385
+    ],
+    "tool": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source/tools/evalscope/prepare_inputs.py",
+    "number": 1,
+    "note": "Prepare using existing tokenizer tool; do not alter model. Existing lengths byte-identical copies. Freeze every request SHA before first sequence service. Old prompts/text checked against prior full matrix; novel off texts are paired comparator, not a quality oracle."
+  },
+  "evidence_reuse": {
+    "old_full_matrix_NO_GO": "preserved; never recertified by this experiment",
+    "old_fixture_and_expected_output": "content-hash-bound reuse",
+    "old_numeric": "shape/source historical context only; candidate source needs its frozen numerical runs",
+    "old_resource_RAM54GB": "INDETERMINATE; no sum of counters or independent peaks"
+  },
+  "helper_interfaces": {
+    "request_path_evidence": "(server_log_text, ordered raw response rows, state0or1); requires actual_input,response_id,response_id_valid; proves layer0 execution matching full prompt/chunks on BOTH arms",
+    "sequence_plan": "() -> requests with unique case, round, position,input_tokens,max_tokens; also partial flags",
+    "sequence_metrics": "(baseline,candidate); each21 rows with case,round,position,input_tokens,ttft,decode_tps; no automatic performance acceptance"
+  },
+  "performance_audit": "root owns full cleanup/identity/raw response/source/resource audit; helper path/gates alone never acceptance",
+  "automatic_retry": false
+}

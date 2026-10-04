@@ -1,0 +1,28 @@
+{
+  "started_t": 1791111566.522924,
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/request-host-build/q4t_request_policy_contracts"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source",
+  "returncode": 0,
+  "failure": null,
+  "automatic_retry": false,
+  "timeout_s": 600,
+  "signals": [],
+  "cleanup_complete": true,
+  "pid": 3420123,
+  "pgid": 3420123,
+  "group_before_cleanup": {
+    "live_pids": [],
+    "zombie_pids": [],
+    "errors": [],
+    "absent": true
+  },
+  "group_after_cleanup": {
+    "live_pids": [],
+    "zombie_pids": [],
+    "errors": [],
+    "absent": true
+  },
+  "ended_t": 1791111566.5243766
+}

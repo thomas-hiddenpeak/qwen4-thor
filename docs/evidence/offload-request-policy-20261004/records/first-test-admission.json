@@ -1,0 +1,27 @@
+{
+  "scope": "this phase controller artifacts; no machine-wide absence claim",
+  "phase_created_t": 1791110308.7462602,
+  "admitted_t": 1791110934.4180048,
+  "stage": "quality-on",
+  "plan_sha256": "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+  "existing_parent_artifacts_mtime_ns": {
+    "build-exit.json": 1791110785995577095,
+    "build-identity.json": 1791110785999577059,
+    "candidate-source-identity.json": 1791110757043844265,
+    "commands-proposal.json": 1791110435987172267,
+    "configure-exit.json": 1791110759207824145,
+    "entry.json": 1791109973186049303,
+    "execution-plan.json": 1791110916622420696,
+    "inheritance-off-command.json": 1791110609345282276,
+    "inheritance-on-command.json": 1791110609345282276,
+    "matrix-off-command.json": 1791110609345282276,
+    "matrix-on-command.json": 1791110609345282276,
+    "model-entry.json": 1791110336772382809,
+    "plan.json": 1791110308744745358,
+    "prebuild-independent-review.json": 1791110656204811274,
+    "protocol-proposal.json": 1791110435987172267,
+    "quality-on-command.json": 1791110609345282276,
+    "request-policy-static-review.json": 1791110218309986402
+  },
+  "known_non_http_test_attempts": []
+}
