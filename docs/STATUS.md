@@ -5,17 +5,26 @@
 
 ## 当前结论
 
-## Offload诊断Goal启动（2026-10-04 14:22）
+## Offload阶段诊断完成：读取增量并非只在decode开头（2026-10-04 15:38）
 
-范围见[短档解码与整体RAM诊断](OFFLOAD_DIAGNOSTICS_2026-10-04.md)。
-入口f15190f，隔离分支codex/offload-diagnostics-20261004；原工作区
-七处修改独立保留。先补真实请求阶段/形状/cache末态与ID关联，干净
-构建后首测固定11题HTTP，再做合同和固定18请求短档off/on诊断。
-整体RAM仅在覆盖与去重成立时判54GB；缺口继续明确记录。上一轮
-NO_GO保留，候选默认off，GEMM/精度/MTP/Phase D状态不变。
-默认关闭的阶段快照、HTTP关联/严格审计与RAM采样已成组写入并
-完成交叉静态复核；尚未构建或测试，接下来干净构建后首测HTTP。
+详见[短档解码与整体RAM诊断](OFFLOAD_DIAGNOSTICS_2026-10-04.md)。
+隔离分支codex/offload-diagnostics-20261004，源码0df355a、binary
+1a83afcc零警告；首测固定HTTP 11/11，工具139/139，短档off/on各9条
+输出/容量/阶段/身份与清理通过。原冷态前置失败16KiB、零推理，显式
+冻结一次环境恢复后全payload0再以新目录执行；原失败完整保留。
 
+真实decode PID均值1K/4K增12.40%/4.45%，8K减2.64%；但前1/8步
+GPU补载和PID读量九对均减少，不能归因为起始补载集中增加。48层
+prefill末态均变化，初始L2顺序亦不同、route需求未控制，因果未闭合。
+旧dmiss/pmiss确有prefill singleton污染，量小且1K无此污染，不能
+解释全部读取变化。插桩吞吐只作诊断，上一轮完整性能NO_GO不变。
+
+RAM采样656/602条正常完成；运行期nvmap0、DMA-BUF仅67.50MB显示
+对象，不能覆盖约56GB NVIDIA计数。memory.current采样最大分别比
+16GiB设置高176128/262144B；OOM/swap0。计数不可相加，54GB仍
+INDETERMINATE。默认关闭诊断/分区，GEMM/精度/MTP/Phase D冻结，
+原工作区七处修改保留。下一项建议是按完整请求长度让≤8192沿用旧
+分块的独立候选；尚未实现，需重新冻结HTTP/数值/完整性能验收。
 
 ## Offload分区运行时：完整性能NO_GO（2026-10-04）
 
