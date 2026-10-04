@@ -110,7 +110,8 @@ void ChatServer::RunOnePrefillChunk() {
         s = model::ModelPrefillTextChunk(
             model_.Get(), req->seq, req->ids, req->len, count,
             last ? d_prefill_logits_ : nullptr, nullptr, nullptr,
-            model::LogitsRows::kLastRow, model::SequenceCompletion::kDeferred);
+            model::LogitsRows::kLastRow, model::SequenceCompletion::kDeferred,
+            req->request_partition);
       }
       cudaError_t copy_error = cudaSuccess;
       if (s.ok() && last) {
@@ -255,7 +256,8 @@ void ChatServer::SchedulerLoop() {
                                      d_prefill_logits_, nullptr, nullptr,
                                      nullptr, pf[0]->seq_id,
                                      model::LogitsRows::kLastRow,
-                                     model::SequenceCompletion::kDeferred);
+                                     model::SequenceCompletion::kDeferred,
+                                     pf[0]->request_partition);
           if (sp.ok()) {
             copy_error = cudaMemcpyAsync(
                 pf[0]->h_logits,
@@ -263,6 +265,12 @@ void ChatServer::SchedulerLoop() {
                 static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost, nullptr);
           }
         } else {
+          for (const auto* request : pf) {
+            if (request->request_partition.Enabled()) {
+              sp = Status::Fail("request partition cannot pack sequences");
+              break;
+            }
+          }
           std::vector<int32_t> pk_tokens;
           std::vector<int> pk_lens(Bp), pk_seq(Bp);
           for (int i = 0; i < Bp; ++i) {

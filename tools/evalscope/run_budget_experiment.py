@@ -17,7 +17,7 @@ import time
 
 from file_cache import model_files, observe_files
 from monitor_memory import find_pids
-from offload_policy import (AXES, DIAGNOSTIC_SCOPE, RUN_TOOLS,
+from offload_policy import (RUN_AXES, DIAGNOSTIC_SCOPE, RUN_TOOLS,
                             policy_environment)
 from run_acceptance import LENGTHS, parse_lengths, performance_plan
 
@@ -149,6 +149,34 @@ def payload_residual(observation):
                if Path(row['path']).suffix in ('.safetensors', '.bin'))
 
 
+def prepare_cold_payload(paths, out, max_rounds=1):
+    """At most two pre-service advice rounds; preserve every observation."""
+    if type(max_rounds) is not int or max_rounds not in (1, 2):
+        raise ValueError('cold advice rounds must be one or two')
+    rounds = []
+    for number in range(1, max_rounds + 1):
+        errors = clear_target_cache(paths)
+        after = observe_files(paths)
+        residual = payload_residual(after)
+        current = {'round': number, 'advice_errors': errors,
+                   'payload_resident_bytes': residual,
+                   'cold_payload_established': not errors and residual == 0}
+        rounds.append(current)
+        if max_rounds > 1:
+            save(out / f'cache-advice-round-{number:02d}.json',
+                 {**current, 'observation': after})
+        if current['cold_payload_established'] or errors:
+            break
+    save(out / 'cache-after-advice.json', after)
+    gate = {'advice_errors': errors, 'payload_resident_bytes': residual,
+            'cold_payload_established': not errors and residual == 0,
+            'metadata_caches_not_exclusively_charged': True}
+    if max_rounds > 1:
+        gate.update(max_advice_rounds=max_rounds, rounds=rounds,
+                    pre_service_only=True, inference_retry=False)
+    return gate
+
+
 def selected_performance_plan(mode, lengths=None, repeats=3, target_total=0):
     """Keep the default bounded run; an explicit target tier emits 257 tokens."""
     if repeats != 3:
@@ -171,11 +199,12 @@ def selected_performance_plan(mode, lengths=None, repeats=3, target_total=0):
 
 
 def experiment_environment(chunk_order, inherited, partition=0,
-                           policy_axis='chunk-order', phase_diagnostics=False):
+                           policy_axis='chunk-order', phase_diagnostics=False,
+                           request_partition=0):
     env = {key: value for key, value in inherited.items()
            if not key.startswith('Q4T_')}
     env.update(policy_environment(chunk_order, partition, policy_axis,
-                                  phase_diagnostics))
+                                  phase_diagnostics, request_partition))
     return env
 
 
@@ -190,7 +219,9 @@ def runner_command(args, out, unit, plan):
                '--allow-unqualified-binary', '--systemd-unit', unit]
     if getattr(args, 'phase_diagnostics', False):
         command += ['--phase-diagnostics']
-    if plan:
+    if getattr(args, 'request_policy_sequence', False):
+        command += ['--request-policy-sequence']
+    elif plan:
         command += ['--perf-lengths', ','.join(map(str, plan['lengths'])),
                     '--perf-repeats', str(plan['repeats'])]
         if 261887 in plan['lengths']:
@@ -226,11 +257,17 @@ def main():
     ap.add_argument('--reference', type=Path)
     ap.add_argument('--host-cache-max-bytes', type=int)
     ap.add_argument('--clear-model-cache', action='store_true')
+    ap.add_argument('--cold-advice-rounds', type=int, choices=(1, 2), default=1,
+                    help='Bounded pre-service cache preparation; every round is '
+                         'retained and final payload residency must be zero')
     ap.add_argument('--chunk-order', type=int, choices=(0, 1), default=0,
                     help='Explicit Q4T_MOE_CHUNK_ORDER; off and on use the same binary')
-    ap.add_argument('--policy-axis', choices=AXES, default='chunk-order')
+    ap.add_argument('--policy-axis', choices=RUN_AXES, default='chunk-order')
     ap.add_argument('--partition', type=int, choices=(0, 1), default=0,
                     help='Partition axis requires chunk-order=0 for both runs')
+    ap.add_argument('--request-partition', type=int, choices=(0, 1), default=0)
+    ap.add_argument('--request-policy-sequence', action='store_true',
+                    help='Frozen 7-position x 3-round request policy challenge')
     ap.add_argument('--phase-diagnostics', action='store_true',
                     help='Enable phase/cache snapshots and residency timing; '
                     'quality or fixed 1K/4K/8K diagnosis only, never acceptance')
@@ -251,9 +288,19 @@ def main():
     try:
         env = experiment_environment(args.chunk_order, os.environ,
                                      args.partition, args.policy_axis,
-                                     args.phase_diagnostics)
+                                     args.phase_diagnostics, args.request_partition)
+        if args.request_policy_sequence and (
+                args.policy_axis != 'request-partition' or
+                args.mode != 'performance' or args.perf_lengths is not None or
+                args.target_total or args.perf_repeats != 3):
+            raise ValueError('request sequence requires its own axis and fixed selection')
+        if args.cold_advice_rounds != 1 and not args.clear_model_cache:
+            raise ValueError('cold advice rounds require explicit cache preparation')
         plan = selected_performance_plan(args.mode, args.perf_lengths,
                                          args.perf_repeats, args.target_total)
+        if args.request_policy_sequence:
+            from request_policy_protocol import sequence_plan
+            plan = sequence_plan()
         if args.phase_diagnostics and plan and (
                 plan['lengths'] != [1024, 4096, 8192] or args.target_total):
             raise ValueError('phase diagnosis requires ordered 1024,4096,8192')
@@ -297,7 +344,10 @@ def main():
     tool_dir = out / 'tools'
     tool_dir.mkdir()
     tool_hashes = {}
-    for name in RUN_TOOLS + ('offload_policy.py',):
+    tool_names = RUN_TOOLS + ('offload_policy.py',)
+    if args.policy_axis == 'request-partition':
+        tool_names += ('request_policy_protocol.py',)
+    for name in tool_names:
         source = ROOT / 'tools/evalscope' / name
         shutil.copyfile(source, tool_dir / name)
         tool_hashes[name] = hashlib.sha256(source.read_bytes()).hexdigest()
@@ -315,6 +365,10 @@ def main():
         'host_cache_max_bytes': args.host_cache_max_bytes, 'swap_max_bytes': 0,
         'chunk_order': args.chunk_order,
         'policy_axis': args.policy_axis, 'partition': args.partition,
+        **({'request_partition': args.request_partition,
+            'request_policy_sequence': args.request_policy_sequence,
+            'cold_advice_rounds': args.cold_advice_rounds}
+           if args.policy_axis == 'request-partition' else {}),
         'phase_diagnostics': args.phase_diagnostics,
         'diagnostic_scope': (DIAGNOSTIC_SCOPE if args.phase_diagnostics
                              else None),
@@ -351,13 +405,7 @@ def main():
     })
     save(out / 'cache-before.json', observe_files(paths))
     if args.clear_model_cache:
-        errors = clear_target_cache(paths)
-        after = observe_files(paths)
-        save(out / 'cache-after-advice.json', after)
-        residual = payload_residual(after)
-        gate = {'advice_errors': errors, 'payload_resident_bytes': residual,
-                'cold_payload_established': not errors and residual == 0,
-                'metadata_caches_not_exclusively_charged': True}
+        gate = prepare_cold_payload(paths, out, args.cold_advice_rounds)
         save(out / 'cache-gate.json', gate)
         if not gate['cold_payload_established']:
             save(out / 'wrapper-exit.json', {

@@ -166,7 +166,8 @@ Status DecoderLayerForward(const DecoderLayer& layer, const uint16_t* hyper_inpu
                            const RaggedBatch* ragged = nullptr,
                            int max_position = -1,
                            trace::RouterCollector* trace = nullptr,
-                           int layer_id = -1);
+                           int layer_id = -1,
+                           const MoERequestPartition& request_partition = {});
 // `max_position`: exact maximum logical position, or -1 for device readback.
 // `ple_conv_ckpt` (MTP verify rollback, PLE layer only): when non-null and
 // num_ckpt > 0, save the per-token PLE short-conv state after each of the

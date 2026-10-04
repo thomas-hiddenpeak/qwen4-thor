@@ -453,6 +453,37 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   return Status();
 }
 
+namespace {
+
+// Request identity may be carried without overriding the old global policy.
+// Only the explicit override narrows execution to the frozen serial text path.
+Status ValidateRequestPartition(const Model& m,
+                                const MoERequestPartition& policy,
+                                int tokens, int request_tokens, int base,
+                                int seq_id, bool vision = false,
+                                bool save_checkpoints = false) {
+  if (!policy.ValidForward(tokens) ||
+      (policy.HasRequest() &&
+       (policy.RequestTokens() != request_tokens || policy.Base() != base ||
+        policy.RequestTokens() > m.cfg.max_len))) {
+    return Status::Fail("request partition: inconsistent prompt or chunk");
+  }
+  if (policy.Enabled() &&
+      (ParseMoERequestPartitionMode(std::getenv("Q4T_MOE_PARTITION")) != 1 ||
+       ParseMoERequestPartitionMode(std::getenv("Q4T_MOE_CHUNK_ORDER")) != 0)) {
+    return Status::Fail("request partition requires global partition on "
+                        "and chunk order off");
+  }
+  if (policy.Enabled() &&
+      (m.cfg.max_seq != 1 || seq_id != 0 ||
+       m.cfg.moe_resident_slots <= 0 || vision || save_checkpoints)) {
+    return Status::Fail("request partition requires serial text residency");
+  }
+  return Status();
+}
+
+}  // namespace
+
 // Shared layer loop over [0, num_layers), reading `trunk`/`next` (ping-pong)
 // and the per-token PLE embeddings `ple_emb` (null when no PLE layer in range).
 // `ids64` / `hist` are the host int64 token ids and ngram history used to
@@ -461,6 +492,7 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
 // multi stream [T, hc*hs] (the trunk after the last decoder layer, before
 // hyper_connection_mixer) is copied here. This is the MTP draft model's
 // `hidden_states` input (see reference/vllm/.../nvidia/mtp.py).
+
 Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                  const int64_t* ids64, const int64_t* hist,
                  const int* host_positions, int T, uint16_t* logits,
@@ -471,7 +503,8 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                  int tokens_per_seq = 0, uint16_t* ple_conv_ckpt = nullptr,
                  const RaggedBatch* ragged = nullptr,
                  LogitsRows logits_rows = LogitsRows::kAllRows,
-                 bool sequence_last_rows = false) {
+                 bool sequence_last_rows = false,
+                 const MoERequestPartition& request_partition = {}) {
   const ModelConfig& cfg = m.cfg;
   // Every model entry point already owns the logical positions copied to
   // m.d_positions. Reduce once on host, not once per full-attention layer.
@@ -558,7 +591,7 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                                    layer_conv_ckpt, num_ckpt, seq_id, d_seq_id,
                                    m.d_rope_pos, tokens_per_seq,
                                    layer_ple_conv_ckpt, ragged, max_position,
-                                   m.router_trace, l);
+                                   m.router_trace, l, request_partition);
     if (!s.ok()) return s;
     if (!m.layers[l].is_full_attention) lin_idx++;
     if (m.layers[l].has_ple) ple_idx++;
@@ -709,7 +742,8 @@ Status RunPrefill(const Model& m, const int32_t* input_ids, int T,
                   uint16_t* logits, cudaStream_t stream,
                   uint16_t* trunk_out = nullptr,
                   const VisionFeatures* vision = nullptr, int seq_id = 0,
-                  LogitsRows logits_rows = LogitsRows::kAllRows) {
+                  LogitsRows logits_rows = LogitsRows::kAllRows,
+                  const MoERequestPartition& request_partition = {}) {
   const ModelConfig& cfg = m.cfg;
   // 1. ids + positions.
   if (cudaMemcpyAsync(m.d_ids, input_ids, T * sizeof(int32_t),
@@ -806,7 +840,7 @@ Status RunPrefill(const Model& m, const int32_t* input_ids, int T,
   return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(),
                    positions.data(), T, logits, stream, trunk_out, nullptr,
                    nullptr, 0, seq_id, nullptr, 0, nullptr, nullptr,
-                   logits_rows);
+                   logits_rows, false, request_partition);
 }
 
 Status ModelForward(const Model& m, const int32_t* input_ids, int T,
@@ -897,8 +931,13 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
                         int base_position, const int32_t* history,
                         int history_len, uint16_t* logits, cudaStream_t stream,
                         uint16_t* trunk_out, bool save_checkpoints,
-                        int seq_id, LogitsRows logits_rows) {
+                        int seq_id, LogitsRows logits_rows,
+                        const MoERequestPartition& request_partition) {
   const ModelConfig& cfg = m.cfg;
+  const Status policy_status = ValidateRequestPartition(
+      m, request_partition, T, request_partition.RequestTokens(),
+      base_position, seq_id, false, save_checkpoints);
+  if (!policy_status.ok()) return policy_status;
   if (T <= 0) return Status::Fail("ModelDecodeBatch: T must be > 0");
   if (T > cfg.max_prefill)
     return Status::Fail("ModelDecodeBatch: T exceeds max_prefill");
@@ -977,7 +1016,7 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
   return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(),
                    positions.data(), T, logits, stream, trunk_out, ssm_ckpt,
                    conv_ckpt, num_ckpt, seq_id, nullptr, 0, nullptr,
-                   nullptr, logits_rows);
+                   nullptr, logits_rows, false, request_partition);
 }
 
 // B2 continuous batching: decode ONE token for each of B sequences in a single
@@ -1557,18 +1596,23 @@ Status ModelPrefill(const Model& m, ModelSequence* seq,
                     const int32_t* input_ids, int T, uint16_t* logits,
                     cudaStream_t stream, uint16_t* trunk_out,
                     const VisionFeatures* vision, int seq_id,
-                    LogitsRows logits_rows, SequenceCompletion completion) {
+                    LogitsRows logits_rows, SequenceCompletion completion,
+                    const MoERequestPartition& request_partition) {
   if (!seq || !input_ids) return Status::Fail("ModelPrefill: null input");
   if (seq_id == -1) seq_id = seq->seq_id;
   if (seq->seq_id < 0 || seq->seq_id >= m.cfg.max_seq ||
       seq_id != seq->seq_id || seq->stage != ModelSequence::Stage::kPrefill ||
       seq->position != 0 || T <= 0 || T > m.cfg.max_prefill)
     return Status::Fail("ModelPrefill: invalid sequence or range");
+  const Status policy_status = ValidateRequestPartition(
+      m, request_partition, T, T, 0, seq_id,
+      vision && vision->num_tokens > 0);
+  if (!policy_status.ok()) return policy_status;
   Status s = seq->Submit({input_ids, static_cast<size_t>(T)},
                          ModelSequence::Stage::kDecode, m.cfg.max_len);
   if (!s.ok()) return s;
   s = RunPrefill(m, input_ids, T, logits, stream, trunk_out, vision,
-                 seq_id, logits_rows);
+                 seq_id, logits_rows, request_partition);
   if (!s.ok()) seq->Fail();
   return completion == SequenceCompletion::kWait
              ? ModelCompleteSequence(seq, stream, s) : s;
@@ -1579,7 +1623,8 @@ Status ModelPrefillTextChunk(const Model& m, ModelSequence* seq,
                             int chunk_length, uint16_t* logits,
                             cudaStream_t stream, uint16_t* trunk_out,
                             LogitsRows logits_rows,
-                            SequenceCompletion completion) {
+                            SequenceCompletion completion,
+                            const MoERequestPartition& request_partition) {
   if (!seq || !prompt)
     return Status::Fail("ModelPrefillTextChunk: null sequence or prompt");
   const int base = seq->position;
@@ -1589,6 +1634,10 @@ Status ModelPrefillTextChunk(const Model& m, ModelSequence* seq,
       chunk_length > m.cfg.max_prefill || chunk_length > prompt_length - base ||
       seq->seq_id < 0 || seq->seq_id >= m.cfg.max_seq)
     return Status::Fail("ModelPrefillTextChunk: invalid sequence or range");
+  const MoERequestPartition chunk_partition = request_partition.WithBase(base);
+  const Status policy_status = ValidateRequestPartition(
+      m, chunk_partition, chunk_length, prompt_length, base, seq->seq_id);
+  if (!policy_status.ok()) return policy_status;
   const auto next = base + chunk_length == prompt_length
                         ? ModelSequence::Stage::kDecode
                         : ModelSequence::Stage::kPrefill;
@@ -1597,10 +1646,11 @@ Status ModelPrefillTextChunk(const Model& m, ModelSequence* seq,
   if (!s.ok()) return s;
   s = base == 0
       ? RunPrefill(m, prompt, chunk_length, logits, stream, trunk_out,
-                   nullptr, seq->seq_id, logits_rows)
+                   nullptr, seq->seq_id, logits_rows, chunk_partition)
       : ModelDecodeBatch(m, prompt + base, chunk_length, base,
                          seq->history.data(), base, logits, stream,
-                         trunk_out, false, seq->seq_id, logits_rows);
+                         trunk_out, false, seq->seq_id, logits_rows,
+                         chunk_partition);
   if (!s.ok()) seq->Fail();
   return completion == SequenceCompletion::kWait
              ? ModelCompleteSequence(seq, stream, s) : s;

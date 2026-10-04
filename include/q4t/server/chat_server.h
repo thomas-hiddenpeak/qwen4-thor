@@ -174,6 +174,9 @@ class ChatServer {
   // for the whole prefill, so no lifetime race); `h_logits` is the request's
   // [vocab] host buffer that the scheduler D2Hs the sequence's last row into.
   struct PrefillReq {
+    explicit PrefillReq(const model::MoERequestPartition& policy)
+        : request_partition(policy) {}
+    const model::MoERequestPartition request_partition;
     RequestControl* control = nullptr;
     int fd = -1;
     model::ModelSequence* seq = nullptr;
@@ -191,6 +194,9 @@ class ChatServer {
   // err carries the scheduler-side failure message (e.g. residency fault
   // injection) so the request thread can surface it in the HTTP error.
   struct ChunkPrefillReq {
+    explicit ChunkPrefillReq(const model::MoERequestPartition& policy)
+        : request_partition(policy) {}
+    const model::MoERequestPartition request_partition;
     RequestControl* control = nullptr;
     int fd = -1;  // Borrowed until done; owned by the waiting request thread.
     bool cancelled = false;
@@ -288,6 +294,7 @@ class ChatServer {
   // consecutive request completions is that request's own load activity).
   bool residency_enabled_ = false;
   bool offload_phase_diagnostics_ = false;
+  bool request_partition_enabled_ = false;
   quant::MoEResidency::Stats residency_stats_prev_{};
   model::ResidencyTimingSnapshot residency_timing_prev_{};
   // Default per-request deadline (ms); see ServerOptions::request_deadline_ms.

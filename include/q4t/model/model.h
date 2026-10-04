@@ -290,12 +290,15 @@ Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
 // positions before `base_position`; the in-batch prefix supplies the rest.
 // The caller owns logits (T*vocab, or vocab for kLastRow) and
 // trunk_out (T*hc*hs); selecting logits rows never shortens trunk_out.
+// request_partition is only for an explicit prefill continuation; MTP callers
+// leave it empty. It must match base_position and forbids checkpoint saving.
 Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
                         int base_position, const int32_t* history,
                         int history_len, uint16_t* logits, cudaStream_t stream,
                         uint16_t* trunk_out = nullptr,
                         bool save_checkpoints = false, int seq_id = 0,
-                        LogitsRows logits_rows = LogitsRows::kAllRows);
+                        LogitsRows logits_rows = LogitsRows::kAllRows,
+                        const MoERequestPartition& request_partition = {});
 
 // B2 continuous batching: decode ONE token for each of B sequences in a SINGLE
 // packed forward (T = B). This is the bandwidth win — the 84 GB of weights is
@@ -465,17 +468,22 @@ Status ModelBeginSequence(const Model& m, ModelSequence* seq,
 // vision: 可选, 非 null 且 num_tokens>0 时把 image token 的 embedding 替换为
 // 视觉特征 (见 VisionFeatures)。
 // seq_id=-1 uses seq->seq_id; an explicit different slot is rejected.
+// request_partition, when supplied, identifies this entire prompt (not a
+// chunk). The active override is restricted to serial text residency.
 Status ModelPrefill(const Model& m, ModelSequence* seq, const int32_t* input_ids,
                     int T, uint16_t* logits, cudaStream_t stream,
                     uint16_t* trunk_out = nullptr,
                     const VisionFeatures* vision = nullptr, int seq_id = -1,
                     LogitsRows logits_rows = LogitsRows::kAllRows,
-                    SequenceCompletion completion = SequenceCompletion::kWait);
+                    SequenceCompletion completion = SequenceCompletion::kWait,
+                    const MoERequestPartition& request_partition = {});
 
 // Submit a chunk from the committed prefix. kDeferred requires completion
 // before the next chunk or reuse. The final chunk transitions to kDecode only
 // after successful completion. Failed execution requires reset before reuse.
 // kLastRow affects logits only, not the optional complete trunk output.
+// Reuse the immutable request_partition for all chunks. Its complete length
+// must equal prompt_length; this function derives the committed chunk base.
 Status ModelPrefillTextChunk(const Model& m, ModelSequence* seq,
                             const int32_t* prompt, int prompt_length,
                             int chunk_length, uint16_t* logits,
@@ -483,7 +491,8 @@ Status ModelPrefillTextChunk(const Model& m, ModelSequence* seq,
                             uint16_t* trunk_out = nullptr,
                             LogitsRows logits_rows = LogitsRows::kAllRows,
                             SequenceCompletion completion =
-                                SequenceCompletion::kWait);
+                                SequenceCompletion::kWait,
+                            const MoERequestPartition& request_partition = {});
 
 // 一个 decode step: seq 须处于 kDecode 阶段。token_id 写入 position,
 // -> logits [1, vocab]。自动 ++position 并追加 history (PLE 上下文)。

@@ -275,6 +275,9 @@ def main():
     parser.add_argument('--perf-lengths', type=str,
                         help='Explicit comma-separated performance tiers; selected-tier '
                              'runs use one client process per request and report partial scope')
+    parser.add_argument('--request-policy-sequence', action='store_true',
+                        help='Frozen 21-request boundary/history sequence; '
+                             'never substitutes for the six-tier matrix')
     parser.add_argument('--perf-repeats', type=int, default=3,
                         help='Requests per performance tier (default 3; fewer than 3 is partial)')
     parser.add_argument('--systemd-unit', type=str,
@@ -309,6 +312,12 @@ def main():
                         help='serve --request-deadline-ms (0 = server '
                              'default 1200000; must be in [1000,10800000])')
     args = parser.parse_args()
+    if args.request_policy_sequence and (args.mode != 'performance' or
+            args.perf_lengths is not None or args.extra_lengths or
+            args.target_total or args.perf_repeats != 3 or
+            args.phase_diagnostics):
+        parser.error('request-policy sequence requires uninstrumented performance '
+                     'without other tier/repeat selection')
     if args.perf_repeats <= 0:
         parser.error('--perf-repeats must be positive')
     if args.mode != 'performance' and (args.perf_lengths is not None or args.perf_repeats != 3):
@@ -359,6 +368,10 @@ def main():
                                     args.target_total, args.max_len, args.perf_lengths is not None)
         except ValueError as error:
             parser.error(str(error))
+    if args.request_policy_sequence:
+        from request_policy_protocol import sequence_plan
+        plan = sequence_plan(args.max_len)
+        lengths = plan['lengths']
     out = args.output.resolve()
     if not any(out.is_relative_to(ROOT / d) for d in ['build', '.q4t-work']):
         parser.error('output must be under build/ or .q4t-work/')
@@ -431,8 +444,16 @@ def main():
             tokens = 256
             if args.target_total and length in extra_lengths:
                 tokens = args.target_total - length
-            cases.append((out / f'context-{length}', target, args.perf_repeats, length, length,
-                          tokens, True))
+            if not args.request_policy_sequence:
+                cases.append((out / f'context-{length}', target, args.perf_repeats, length, length,
+                              tokens, True))
+        if args.request_policy_sequence:
+            for request in plan['requests']:
+                length = request['input_tokens']
+                target = prepared / (request['case'] + '.jsonl')
+                first = (prepared / f'context-{length}.jsonl').read_text().splitlines()[0]
+                target.write_text(first + '\n')
+                cases.append((out / request['case'], target, 1, length, length, 256, True))
     else:
         prepared.mkdir()
         target = prepared / 'context-1024.jsonl'
@@ -503,6 +524,7 @@ def main():
             if not capacity['matches_requested']:
                 raise RuntimeError('effective server capacity is missing or differs from requested capacity')
             observed_response_ids = set()
+            sequence_outputs = {}
             for case, inputs, count, minimum, maximum, tokens, streaming in cases:
                 (out / 'memory-phase.txt').write_text(f'requests:{case.name}\n')
                 case.mkdir()
@@ -510,9 +532,12 @@ def main():
                 parsed = run_case(out, case, inputs, count, minimum, maximum,
                                   tokens, streaming, evalscope, model, args.port,
                                   env, server, args.mode == 'performance' and
-                                  args.perf_lengths is not None, capacity,
+                                  (args.perf_lengths is not None or
+                                   args.request_policy_sequence), capacity,
                                   args.mode, args.phase_diagnostics)
-                if args.phase_diagnostics:
+                if args.phase_diagnostics or args.request_policy_sequence:
+                    if not all(row['response_id_valid'] for row in parsed):
+                        raise RuntimeError('missing or conflicting response id')
                     ids = {row['response_id'] for row in parsed}
                     if observed_response_ids & ids:
                         raise RuntimeError('response id reused between cases')
@@ -561,8 +586,16 @@ def main():
                             'partial_performance_matrix': plan['partial'],
                             'metrics': [{'ttft': r['ttft'], 'decode_tps':
                                          (r['actual_output'] - 1) / (r['latency'] - r['ttft'])} for r in parsed]}
+                    if args.request_policy_sequence:
+                        request = plan['requests'][len(results)]
+                        item.update({key: request[key] for key in
+                                     ('case', 'round', 'position', 'input_tokens')})
                     results.append(item)
                     save(out / 'results.json', results)
+                    if args.request_policy_sequence:
+                        previous = sequence_outputs.setdefault(item['prompt_sha256'], hashes[0])
+                        if any(value != previous for value in hashes):
+                            raise RuntimeError('history output changed across repetitions or positions')
                     expected_output = 256
                     if args.target_total and minimum in extra_lengths:
                         expected_output = args.target_total - minimum
@@ -572,7 +605,9 @@ def main():
                             r['finish'] == ['length'] for r in parsed):
                         raise RuntimeError('performance request/determinism acceptance failed')
                     if reference:
-                        old = next(r for r in reference if r['length'] == minimum)
+                        old = next(r for r in reference if
+                                   (r.get('case') == case.name if args.request_policy_sequence
+                                    else r['length'] == minimum))
                         expected_prompt = old.get('prompt_sha256')
                         if expected_prompt is None:
                             old_prompt = json.loads((args.reference.parent / f'context-{minimum}/requests.jsonl')

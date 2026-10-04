@@ -85,6 +85,30 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // Validate before loading the tokenizer or allocating model resources.
   const Status validated = ValidateServerOptions(opts);
   if (!validated.ok()) return validated;
+  const int request_partition = model::ParseMoERequestPartitionMode(
+      std::getenv("Q4T_MOE_REQUEST_PARTITION"));
+  if (request_partition < 0) {
+    return Status::Fail("Q4T_MOE_REQUEST_PARTITION must be 0 or 1");
+  }
+  request_partition_enabled_ = request_partition == 1;
+  if (request_partition_enabled_ &&
+      (opts.max_seq != 1 || !opts.no_mtp || opts.allow_media ||
+       opts.moe_resident_slots <= 0)) {
+    return Status::Fail("request partition requires single-sequence text, "
+                        "explicit MTP off and residency enabled");
+  }
+  if (request_partition_enabled_ &&
+      (model::ParseMoERequestPartitionMode(
+           std::getenv("Q4T_MOE_PARTITION")) != 1 ||
+       model::ParseMoERequestPartitionMode(
+           std::getenv("Q4T_MOE_CHUNK_ORDER")) != 0)) {
+    return Status::Fail("request partition requires Q4T_MOE_PARTITION=1 "
+                        "and Q4T_MOE_CHUNK_ORDER=0");
+  }
+  std::fprintf(stderr,
+               "[q4t][request_partition_config] enabled=%d "
+               "threshold_tokens=8192 selector=full_tokenized_prompt\n",
+               request_partition_enabled_);
   const char* diagnostics = std::getenv("Q4T_OFFLOAD_PHASE_DIAGNOSTICS");
   if (diagnostics && std::strcmp(diagnostics, "0") != 0 &&
       std::strcmp(diagnostics, "1") != 0) {

@@ -25,6 +25,7 @@
 
 #include "q4t/io/weight_loader.h"
 #include "q4t/model/gemv.h"
+#include "q4t/model/moe_request_policy.h"
 #include "q4t/quant/moe_residency.h"
 #include "q4t/quant/moe_weights.h"
 #include "q4t/status.h"
@@ -111,7 +112,8 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
                   size_t gemm_ws_bytes, cudaStream_t stream,
                   trace::RouterCollector* trace = nullptr, int layer_id = -1,
                   const quant::MoEResidency* residency = nullptr,
-                  MoEForwardDiagnostics* diagnostics = nullptr);
+                  MoEForwardDiagnostics* diagnostics = nullptr,
+                  const MoERequestPartition& request_partition = {});
 
 }  // namespace model
 }  // namespace q4t

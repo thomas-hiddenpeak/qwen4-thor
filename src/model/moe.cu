@@ -400,8 +400,18 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
                   size_t gemm_ws_bytes, cudaStream_t stream,
                   trace::RouterCollector* trace, int layer_id,
                   const quant::MoEResidency* residency,
-                  MoEForwardDiagnostics* diagnostics) {
+                  MoEForwardDiagnostics* diagnostics,
+                  const MoERequestPartition& request_partition) {
   if (diagnostics) *diagnostics = {};
+  if (!request_partition.ValidForward(T) ||
+      (request_partition.Enabled() && !residency)) {
+    return Status::Fail("invalid MoE request partition context");
+  }
+  if (request_partition.Enabled() &&
+      (MoEPartitionMode() != 1 || MoEChunkOrderMode() != 0)) {
+    return Status::Fail("request partition requires global partition on "
+                        "and chunk order off");
+  }
   const int hs = extra.hs;
   const int E = extra.E;
   const int shared_is = extra.shared_is;
@@ -456,10 +466,15 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
     const int chunk_order_mode = MoEChunkOrderMode();
     if (chunk_order_mode < 0)
       return Status::Fail("Q4T_MOE_CHUNK_ORDER must be 0 or 1");
-    const int partition_mode = MoEPartitionMode();
-    if (partition_mode < 0)
+    const int global_partition_mode = MoEPartitionMode();
+    if (global_partition_mode < 0)
       return Status::Fail("Q4T_MOE_PARTITION must be 0 or 1");
-    if (partition_mode == 1 && chunk_order_mode != 0) {
+    if (request_partition.Enabled() && global_partition_mode != 1) {
+      return Status::Fail("request partition requires Q4T_MOE_PARTITION=1");
+    }
+    const int partition_mode =
+        request_partition.PartitionMode(global_partition_mode);
+    if (global_partition_mode == 1 && chunk_order_mode != 0) {
       return Status::Fail("Q4T_MOE_PARTITION requires chunk order 0");
     }
     if (diagnostics) diagnostics->partition_requested = partition_mode == 1;
@@ -528,6 +543,11 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
     bool partition_fallback = false;
     PartitionCounters partition_counters;
     const char* partition_reason = T == 1 ? "decode" : "unsupported";
+    if (request_partition.HasRequest()) {
+      partition_reason = partition_mode == 0
+          ? (request_partition.Enabled() ? "request_legacy" : "global_legacy")
+          : (T == 1 ? "prefill_singleton" : "unsupported");
+    }
     if (partition_mode == 1 &&
         MoEPartitionSupported(T, E, D, k, residency->HotProtected())) {
       try {
@@ -629,6 +649,17 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
       diagnostics->partition_fallback = partition_fallback;
       diagnostics->chunks = chunks.size();
       diagnostics->singleton_chunks = singleton_chunks;
+    }
+    if (request_partition.HasRequest() && layer_id == 0) {
+      std::fprintf(
+          stderr,
+          "[q4t][request_partition] request=%s input_tokens=%d active=%d "
+          "partition=%d base=%d tokens=%d layer=0 applied=%d fallback=%d "
+          "reason=%s\n",
+          request_partition.RequestId().c_str(),
+          request_partition.RequestTokens(), request_partition.Enabled(),
+          partition_mode, request_partition.Base(), T, partition_applied,
+          partition_fallback, partition_reason);
     }
     if (partition_mode == 1) {
       std::fprintf(

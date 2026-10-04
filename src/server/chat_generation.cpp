@@ -312,6 +312,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     vfeats.device = d_vfeats;
   }
   const int T = static_cast<int>(ids.size());
+  const model::MoERequestPartition request_partition(
+      T, request_id, request_partition_enabled_);
   if (offload_diagnostics) offload_diagnostics->SetInputTokens(T);
   if (T >= max_len_) {
     SendError(fd, 400,
@@ -436,7 +438,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   bool prefill_cancelled = false;
   capture_diagnostics("prefill_begin", true);
   if (scheduled_chunk_prefill) {
-    ChunkPrefillReq pr;
+    ChunkPrefillReq pr(request_partition);
     pr.fd = fd;
     pr.control = control.get();
     pr.seq = &seq;
@@ -459,7 +461,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                                   ? std::string()
                                   : std::string(": ") + pr.err));
   } else if (batched_prefill) {
-    PrefillReq pr;
+    PrefillReq pr(request_partition);
     pr.control = control.get();
     pr.fd = fd;
     pr.seq = &seq;
@@ -487,7 +489,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         s = model::ModelPrefill(model_.Get(), &seq, ids.data(), T, d_prefill_logits_,
                                 nullptr, mtp_loaded_ ? d_trunk_full : nullptr,
                                 vptr, seq_id, model::LogitsRows::kLastRow,
-                                model::SequenceCompletion::kDeferred);
+                                model::SequenceCompletion::kDeferred,
+                                request_partition);
       } else {
         // Text chunks share the sequence's slot, position and PLE history.
         // Intermediate chunks only produce trunk/state; the final chunk
@@ -509,7 +512,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
               d_trunk_full
                   ? d_trunk_full + static_cast<size_t>(base) * trunk_hc_dim
                   : nullptr, model::LogitsRows::kLastRow,
-              model::SequenceCompletion::kDeferred);
+              model::SequenceCompletion::kDeferred, request_partition);
           if (!last) {
             model::ModelSequence* sequence = &seq;
             s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {&sequence, 1},

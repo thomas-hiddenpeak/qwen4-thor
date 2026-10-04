@@ -6,6 +6,7 @@ from pathlib import Path
 import re
 
 AXES = ('chunk-order', 'partition')
+RUN_AXES = AXES + ('request-partition',)
 BASE_ENVIRONMENT = {
     'Q4T_MOE_L2_SLOTS': '16', 'Q4T_MOE_MIRROR_K': '8',
     'Q4T_MOE_MAX_OPEN_SHARDS': '200', 'Q4T_MOE_EVICT_WEIGHT': '0',
@@ -25,15 +26,25 @@ def require(condition, message):
 
 
 def policy_environment(chunk_order, partition=0, policy_axis='chunk-order',
-                       phase_diagnostics=False):
-    require(policy_axis in AXES, 'unknown policy axis')
+                       phase_diagnostics=False, request_partition=0):
+    require(policy_axis in RUN_AXES, 'unknown policy axis')
     require(type(chunk_order) is int and chunk_order in (0, 1),
             'chunk-order must be zero or one')
     require(type(partition) is int and partition in (0, 1),
             'partition must be zero or one')
+    require(type(request_partition) is int and request_partition in (0, 1),
+            'request partition must be zero or one')
+    require(policy_axis == 'request-partition' or request_partition == 0,
+            'request partition requires its own policy axis')
     require(type(phase_diagnostics) is bool, 'diagnostics must be explicit bool')
     require(not phase_diagnostics or policy_axis == 'partition',
             'phase diagnostics requires partition axis')
+    if policy_axis == 'request-partition':
+        require(chunk_order == 0 and partition == request_partition,
+                'request axis requires chunk-order zero and matched master')
+        return {**BASE_ENVIRONMENT, 'Q4T_MOE_CHUNK_ORDER': '0',
+                'Q4T_MOE_PARTITION': str(partition),
+                'Q4T_MOE_REQUEST_PARTITION': str(request_partition)}
     if policy_axis == 'partition':
         require(chunk_order == 0, 'partition axis requires chunk-order zero')
         return {**BASE_ENVIRONMENT, 'Q4T_MOE_CHUNK_ORDER': '0',
@@ -49,7 +60,14 @@ def check_policy_protocol(protocol, state, policy_axis):
             'instrumented diagnostics cannot qualify performance')
     require(protocol.get('policy_axis', 'chunk-order') == policy_axis,
             'evidence belongs to another policy axis')
-    if policy_axis == 'partition':
+    if policy_axis == 'request-partition':
+        require(protocol.get('request_partition') == state and
+                protocol.get('partition') == state and
+                protocol['chunk_order'] == 0,
+                'request partition state/master differs from frozen experiment')
+        expected = policy_environment(0, state, policy_axis,
+                                      request_partition=state)
+    elif policy_axis == 'partition':
         require(protocol.get('partition') == state and
                 protocol['chunk_order'] == 0,
                 'partition state/order differs from frozen experiment')

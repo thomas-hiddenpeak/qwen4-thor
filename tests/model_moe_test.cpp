@@ -862,3 +862,176 @@ Q4T_TEST(moe_partition_runtime_numerical_contract) {
       weights, &residency, input, ids, {1, 3, 2, 0}, 2, 1));
   return true;
 }
+
+namespace {
+
+// The small activation shape verifies policy consumption inside MoE only.
+// full input length is a context label; this is not an 8193-token model run.
+bool RunRequestPolicyNumericalCase(
+    const PartitionRealWeights& weights, q4t::quant::MoEResidency* residency,
+    const std::vector<uint16_t>& input,
+    const q4t::model::MoERequestPartition& request,
+    const std::vector<int32_t>& expected_ids = {},
+    const std::vector<int32_t>& expected_order = {}, size_t expected_chunks = 0,
+    size_t expected_singletons = 0) {
+  const int tokens = static_cast<int>(input.size() / kHs);
+  Q4T_CHECK(request.Enabled());
+  Q4T_CHECK(request.ValidForward(tokens));
+  const size_t workspace_bytes = q4t::model::MoEForwardWorkspaceBytes(
+      tokens, kTopK, kHs, kMoeIs, kSharedIs, kE);
+  constexpr size_t kGemmBytes = 32 * 1024 * 1024;
+  PartitionDeviceBuffer<uint8_t> workspace, gemm;
+  PartitionDeviceBuffer<uint16_t> x, y;
+  Q4T_CHECK(workspace.Allocate(workspace_bytes));
+  Q4T_CHECK(gemm.Allocate(kGemmBytes));
+  Q4T_CHECK(x.Allocate(input.size()));
+  Q4T_CHECK(y.Allocate(input.size()));
+  Q4T_CHECK(cudaMemcpy(x.data, input.data(), input.size() * sizeof(uint16_t),
+                        cudaMemcpyHostToDevice) == cudaSuccess);
+  auto forward = [&](const MoEWeightLayout& routed,
+                     const q4t::quant::MoEResidency* slots,
+                     const q4t::model::MoERequestPartition& context,
+                     PartitionForwardSnapshot* result,
+                     q4t::model::MoEForwardDiagnostics* diagnostics) {
+    Q4T_CHECK(cudaMemset(workspace.data, 0xff, workspace_bytes) == cudaSuccess);
+    Q4T_CHECK(cudaMemset(y.data, 0xff, input.size() * sizeof(uint16_t)) ==
+               cudaSuccess);
+    const Status status = MoEForward(
+        x.data, routed, weights.extra, y.data, tokens, kTopK, workspace.data,
+        workspace_bytes, gemm.data, kGemmBytes, 0, nullptr, kLayer, slots,
+        diagnostics, context);
+    if (!status.ok()) {
+      std::printf("  request-policy MoEForward failed: %s\n",
+                  status.message().c_str());
+      return false;
+    }
+    Q4T_CHECK(cudaDeviceSynchronize() == cudaSuccess);
+    return CapturePartitionForward(workspace.data, y.data, tokens, result);
+  };
+  PartitionForwardSnapshot reference, selected;
+  q4t::model::MoEForwardDiagnostics diagnostics;
+  Q4T_CHECK(forward(weights.routed, nullptr, {}, &reference, nullptr));
+  Q4T_CHECK(forward(residency->Layout(), residency, request, &selected,
+                     &diagnostics));
+  const bool requested = request.RequestTokens() > 8192;
+  Q4T_CHECK(diagnostics.partition_requested == requested);
+  Q4T_CHECK(diagnostics.partition_applied == (requested && tokens > 1));
+  Q4T_CHECK(!diagnostics.partition_fallback);
+  Q4T_CHECK(diagnostics.chunks > 0);
+  Q4T_CHECK(diagnostics.chunks == diagnostics.actual_executed_chunks);
+  Q4T_CHECK(diagnostics.singleton_chunks ==
+             diagnostics.actual_singleton_dispatches);
+  auto visits = diagnostics.executed_token_rows;
+  Q4T_CHECK(visits.size() == static_cast<size_t>(tokens));
+  std::sort(visits.begin(), visits.end());
+  for (int token = 0; token < tokens; ++token) {
+    Q4T_CHECK(visits[token] == token);
+  }
+  if (tokens == 1) {
+    Q4T_CHECK(diagnostics.chunks == 1);
+    Q4T_CHECK(diagnostics.actual_singleton_dispatches == 1);
+  }
+  if (!expected_ids.empty()) Q4T_CHECK(selected.ids == expected_ids);
+  if (!expected_order.empty()) {
+    Q4T_CHECK(diagnostics.executed_token_rows == expected_order);
+    Q4T_CHECK(diagnostics.chunks == expected_chunks);
+    Q4T_CHECK(diagnostics.singleton_chunks == expected_singletons);
+  }
+  const bool same = ComparePartitionForward(reference, selected);
+  std::printf("  request_policy layer=%d C=%d input_tokens=%d base=%d T=%d "
+              "mode=%d applied=%d chunks=%zu singleton=%zu "
+              "BF16_BIT_EXACT=%s\n",
+              kLayer, residency->Slots(), request.RequestTokens(),
+              request.Base(), tokens, request.PartitionMode(1),
+              diagnostics.partition_applied, diagnostics.chunks,
+              diagnostics.singleton_chunks, same ? "true" : "false");
+  return same;
+}
+
+}  // namespace
+
+Q4T_TEST(moe_request_policy_numerical_contract) {
+  Q4T_CHECK(PartitionEnvironmentMatches());
+  if (!CudaAvailable()) {
+    Q4T_SKIP("no CUDA device; required runner rejects skip");
+  }
+  if (!FileExists(kIndex)) {
+    Q4T_SKIP("model absent; required runner rejects skip");
+  }
+  using q4t::model::MoERequestPartition;
+  PartitionRealWeights weights;
+  Q4T_CHECK(weights.Init());
+  {
+    // Real router, routed and shared weights. A long request's continuation
+    // still selects min-new for a small T; a short request selects legacy.
+    q4t::quant::MoEResidency residency;
+    Q4T_CHECK(residency.Init(*weights.loader, kLayer, kE, kHs, kMoeIs,
+                             64, 0).ok());
+    const auto input = PartitionInputRows(32, 809);
+    Q4T_CHECK(RunRequestPolicyNumericalCase(
+        weights, &residency, input,
+        MoERequestPartition(8192, "numeric-short")));
+    Q4T_CHECK(RunRequestPolicyNumericalCase(
+        weights, &residency, input,
+        MoERequestPartition(8193, "numeric-long")));
+    Q4T_CHECK(RunRequestPolicyNumericalCase(
+        weights, &residency, input,
+        MoERequestPartition(16385, "numeric-continuation").WithBase(8192)));
+    Q4T_CHECK(RunRequestPolicyNumericalCase(
+        weights, &residency, PartitionInputRows(1, 778),
+        MoERequestPartition(8193, "numeric-singleton").WithBase(8192)));
+  }
+
+  // Controlled in-memory router, unchanged real expert/shared weights. This
+  // fixture makes legacy and min-new membership differ, so a default argument
+  // accidentally bypassing request policy cannot pass by chance.
+  constexpr int kTokens = 4;
+  const std::array<std::array<int32_t, kTopK>, 3> expert_sets{{
+      {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}},
+      {{0, 10, 11, 12, 13, 14, 15, 16, 17, 18}},
+      {{1, 2, 3, 4, 5, 6, 7, 8, 9, 19}},
+  }};
+  const std::array<int, kTokens> row_sets{1, 0, 2, 0};
+  std::vector<uint16_t> gate(static_cast<size_t>(kE) * kHs, 0);
+  std::vector<int32_t> ids(kTokens * kTopK);
+  auto input = PartitionInputRows(kTokens, 24301);
+  for (int token = 0; token < kTokens; ++token) {
+    for (int column = 0; column < kTokens; ++column) {
+      input[static_cast<size_t>(token) * kHs + column] =
+          FloatToBf16(column == token ? 1.0f : 0.0f);
+    }
+    for (int rank = 0; rank < kTopK; ++rank) {
+      const int expert = expert_sets[row_sets[token]][(3 * rank + token) % 10];
+      ids[token * kTopK + rank] = expert;
+      gate[static_cast<size_t>(expert) * kHs + token] =
+          FloatToBf16(4.0f - 0.25f * rank);
+    }
+  }
+  Q4T_CHECK(cudaMemcpy(weights.extra.gate, gate.data(),
+                        gate.size() * sizeof(uint16_t),
+                        cudaMemcpyHostToDevice) == cudaSuccess);
+  q4t::quant::MoEResidency residency;
+  Q4T_CHECK(residency.Init(*weights.loader, kLayer, kE, kHs, kMoeIs,
+                           15, 0).ok());
+  Q4T_CHECK(RunRequestPolicyNumericalCase(
+      weights, &residency, input,
+      MoERequestPartition(8192, "controlled-short"), ids,
+      {1, 3, 0, 2}, 3, 2));
+  Q4T_CHECK(RunRequestPolicyNumericalCase(
+      weights, &residency, input,
+      MoERequestPartition(16385, "controlled-long").WithBase(8192), ids,
+      {1, 3, 2, 0}, 2, 1));
+  const std::vector<uint16_t> singleton(input.begin(), input.begin() + kHs);
+  const std::vector<int32_t> singleton_ids(ids.begin(), ids.begin() + kTopK);
+  Q4T_CHECK(RunRequestPolicyNumericalCase(
+      weights, &residency, singleton,
+      MoERequestPartition(16385, "controlled-tail").WithBase(16384),
+      singleton_ids, {0}, 1, 1));
+  // The same residency object retains its cache history. Request selection
+  // must return to legacy after the preceding long-policy contexts.
+  Q4T_CHECK(RunRequestPolicyNumericalCase(
+      weights, &residency, input,
+      MoERequestPartition(8192, "controlled-short-after-long"), ids,
+      {1, 3, 0, 2}, 3, 2));
+  return true;
+}
