@@ -208,6 +208,132 @@ def all_layer_partition_evidence(log, requests, state):
             'numerical_acceptance': False}
 
 
+def decode_log_path_evidence(log, requests, state, quiet):
+    """Audit the new log intervention using unchanged forward summaries.
+
+    The old parser above deliberately retains its original contract. Here every
+    request/chunk/layer must contain its existing forward diagnostic summary,
+    including every output-minus-one decode. T=1 alone never labels a phase.
+    These summaries precede expert execution; completed HTTP responses supply
+    completion evidence, not a claim about all intermediate numerical values.
+    """
+    require(type(quiet) is int and quiet in (0, 1), 'invalid quiet mode')
+    request_path_evidence(log, requests, state)
+    require(not quiet or state == 1, 'quiet experiment requires request policy')
+    activation = [line for line in log.splitlines()
+                  if '[q4t][residency] decode_partition_log_quiet=' in line]
+    require(len(activation) == 1 and re.search(
+        r'\[q4t\]\[residency\] decode_partition_log_quiet=' + str(quiet) +
+        r' scope=explicit_single_decode\s*$', activation[0]) is not None,
+        'missing, duplicated or wrong quiet activation')
+    require('INVARIANT BROKEN' not in log, 'residency invariant failure')
+    events = [line for line in log.splitlines()
+              if '[q4t][request_partition]' in line or
+              '[q4t][residency][partition]' in line or
+              ('[q4t][residency][diag]' in line and
+               ' flush ' not in line and ' oi=' not in line)]
+    partition_pattern = re.compile(
+        r'\[q4t\]\[residency\]\[partition\] layer=(\d+) T=(\d+) '
+        r'policy=min_new_csr_v1 requested=1 applied=([01]) fallback=([01]) '
+        r'reason=(\w+) chunks=(\d+) singleton_chunks=(\d+) '
+        r'work_used=(\d+) work_budget=(\d+) metadata_bytes=(\d+)\s*$')
+    diag_pattern = re.compile(
+        r'\[q4t\]\[residency\]\[diag\] layer=(\d+) T=(\d+) D=(\d+) '
+        r'chunks=(\d+) max_distinct=(\d+) resident_before=(\d+) '
+        r'overlap=([\d,]*) new=([\d,]*) chunk_order=(\d+) '
+        r'diag_order=(\w+) partition=([01])\s*$')
+    cursor = 0
+    counts = dict(candidate_prefill_layer_forwards=0,
+                  singleton_prefill_layer_forwards=0,
+                  legacy_prefill_layer_forwards=0, decode_layer_forwards=0,
+                  partition_decode_log_records=0, forward_diag_records=0)
+
+    def consume_layers(tokens, reason, partition):
+        nonlocal cursor
+        applied = int(reason == 'candidate')
+        emits_partition = partition == 1 and not (reason == 'decode' and quiet)
+        for layer in range(48):
+            logged_chunks = None
+            if emits_partition:
+                require(cursor < len(events), 'missing partition execution')
+                match = partition_pattern.search(events[cursor])
+                require(match is not None, 'missing or malformed partition log')
+                actual_layer, actual_tokens, actual_applied, fallback = map(
+                    int, match.groups()[:4])
+                chunks, singleton, work, budget, metadata = map(
+                    int, match.groups()[5:])
+                require((actual_layer, actual_tokens, actual_applied, fallback,
+                         match[5]) == (layer, tokens, applied, 0, reason),
+                        'partition request/chunk/layer/phase mismatch')
+                require(0 < chunks <= tokens and 0 <= singleton <= chunks and
+                        metadata >= 0, 'invalid partition dimensions')
+                if applied:
+                    require(tokens > 1 and budget == 32 * tokens * 10 and
+                            0 < work <= budget, 'invalid candidate planning')
+                else:
+                    require(tokens == chunks == singleton == 1 and
+                            work == budget == metadata == 0,
+                            'invalid singleton/decode planning')
+                logged_chunks = chunks
+                counts['partition_decode_log_records'] += int(reason == 'decode')
+                cursor += 1
+            require(cursor < len(events), 'missing forward diagnostic')
+            match = diag_pattern.search(events[cursor])
+            require(match is not None, 'missing or malformed forward diagnostic')
+            actual_layer, actual_tokens, capacity, chunks, distinct, resident = (
+                map(int, match.groups()[:6]))
+            require((actual_layer, actual_tokens) == (layer, tokens) and
+                    int(match[9]) == 0 and int(match[11]) == partition and
+                    match[10] == ('min_new_partition' if applied else
+                                  'original_partition'),
+                    'diagnostic request/chunk/layer/phase mismatch')
+            require(capacity > 0 and 0 < chunks <= tokens and
+                    0 < distinct <= capacity and 0 <= resident <= capacity and
+                    (logged_chunks is None or chunks == logged_chunks),
+                    'invalid forward diagnostic dimensions')
+            if tokens == 1:
+                require(chunks == 1, 'singleton diagnostic has extra chunks')
+            for values in (match[7], match[8]):
+                parts = values.split(',') if values else []
+                require(len(parts) == chunks - 1 and
+                        all(part.isdecimal() and 0 <= int(part) <= capacity
+                            for part in parts),
+                        'malformed forward overlap/new counters')
+            key = ('candidate_prefill_layer_forwards' if applied else
+                   'singleton_prefill_layer_forwards'
+                   if reason == 'prefill_singleton' else
+                   'decode_layer_forwards' if reason == 'decode' else
+                   'legacy_prefill_layer_forwards')
+            counts[key] += 1
+            counts['forward_diag_records'] += 1
+            cursor += 1
+
+    for request in requests:
+        length, output = request['actual_input'], request['actual_output']
+        require(type(output) is int and output > 0, 'invalid actual output count')
+        partition = int(state == 1 and length > THRESHOLD)
+        for base in range(0, length, THRESHOLD):
+            require(cursor < len(events) and
+                    '[q4t][request_partition]' in events[cursor],
+                    'missing prefill marker or unexpected forward execution')
+            cursor += 1
+            tokens = min(THRESHOLD, length - base)
+            reason = ('candidate' if tokens > 1 else 'prefill_singleton')
+            consume_layers(tokens, reason if partition else 'legacy', partition)
+        for _ in range(output - 1):
+            consume_layers(1, 'decode', state)
+    require(cursor == len(events), 'unexpected trailing forward execution')
+    return {'runtime_eligible': True, 'all_layers': 48, 'quiet': quiet, **counts,
+            'activation_observed': True, 'budget_fallbacks': 0,
+            'unsupported_forwards': 0,
+            'decode_evidence': 'observed unchanged per-layer forward diagnostics '
+                               'in full request/chunk order, matched to HTTP usage',
+            'scope': 'Exact serial forward summaries for all prefill chunks and '
+                     'output-minus-one decode forwards; summaries precede expert '
+                     'execution. HTTP completion and numerical proof are separate.',
+            'numerical_acceptance': False}
+
+
 def sequence_output_evidence(requests):
     """Same prompt must retain identical text across rounds and positions."""
     expected = sequence_plan()['requests']

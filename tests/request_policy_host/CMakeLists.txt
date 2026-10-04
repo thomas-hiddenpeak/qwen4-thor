@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(q4t_request_policy_contracts
-  ../test_main.cpp request_policy_test.cpp)
+  ../test_main.cpp request_policy_test.cpp decode_partition_log_test.cpp)
 target_include_directories(q4t_request_policy_contracts PRIVATE ../../include)
 target_compile_options(q4t_request_policy_contracts PRIVATE
   -Wall -Wextra -Werror)

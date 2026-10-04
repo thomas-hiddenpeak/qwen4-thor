@@ -1,5 +1,6 @@
 """Policy execution, history acceptance and bounded cold setup contracts."""
 import copy
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -10,11 +11,12 @@ from unittest.mock import patch
 from offload_policy import (BASE_ENVIRONMENT, check_policy_protocol,
                             policy_environment)
 from request_policy_protocol import (SEQUENCE, all_layer_partition_evidence,
+                                     decode_log_path_evidence,
                                      request_path_evidence,
                                      sequence_metrics, sequence_output_evidence,
                                      sequence_plan)
 from run_budget_experiment import (experiment_environment, prepare_cold_payload,
-                                  selected_performance_plan)
+                                  selected_performance_plan, parse_binary_switch)
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -240,6 +242,204 @@ class AllLayerContracts(unittest.TestCase):
         rows[0]['actual_output'] += 1
         with self.assertRaises(ValueError):
             all_layer_partition_evidence(log, rows, 1)
+
+
+class DecodeLogEnvironmentContracts(unittest.TestCase):
+    def test_three_states_are_explicit_and_inherited_flags_are_removed(self):
+        for state, quiet in ((0, 0), (1, 0), (1, 1)):
+            env = experiment_environment(0, {
+                'PATH': '/bin', 'Q4T_FP8_BAD': '1',
+                'Q4T_MOE_DECODE_PARTITION_LOG_QUIET': 'unexpected'},
+                state, 'request-partition-log', request_partition=state,
+                decode_partition_log_quiet=quiet)
+            self.assertEqual(env.pop('PATH'), '/bin')
+            self.assertNotIn('Q4T_FP8_BAD', env)
+            self.assertEqual(env['Q4T_MOE_DECODE_PARTITION_LOG_QUIET'], str(quiet))
+            protocol = dict(policy_axis='request-partition-log', partition=state,
+                            request_partition=state, chunk_order=0,
+                            decode_partition_log_quiet=quiet,
+                            effective_environment=env)
+            check_policy_protocol(protocol, state, 'request-partition-log', quiet)
+            for value in (1 - quiet, True, '1', None):
+                changed = dict(protocol, decode_partition_log_quiet=value)
+                with self.subTest(value=value), self.assertRaises(ValueError):
+                    check_policy_protocol(changed, state,
+                                          'request-partition-log', quiet)
+
+    def test_old_axes_do_not_gain_a_new_environment_key(self):
+        for axis, state in (('chunk-order', 0), ('partition', 1),
+                            ('request-partition', 1)):
+            request = state if axis == 'request-partition' else 0
+            env = policy_environment(0, state, axis, request_partition=request)
+            self.assertNotIn('Q4T_MOE_DECODE_PARTITION_LOG_QUIET', env)
+            with self.assertRaises(ValueError):
+                policy_environment(0, state, axis, request_partition=request,
+                                   decode_partition_log_quiet=1)
+
+    def test_unknown_axis_illegal_mode_and_unmatched_request_are_rejected(self):
+        for value in (-1, 2, True, '1', None):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                policy_environment(0, 1, 'request-partition-log',
+                    request_partition=1, decode_partition_log_quiet=value)
+        for partition, request, order in ((0, 0, 0), (0, 1, 0), (1, 0, 0),
+                                          (1, 1, 1)):
+            with self.assertRaises(ValueError):
+                policy_environment(order, partition, 'request-partition-log',
+                    request_partition=request, decode_partition_log_quiet=1)
+        with self.assertRaises(ValueError):
+            policy_environment(0, 1, 'unknown', request_partition=1)
+        with self.assertRaises(ValueError):
+            check_policy_protocol({}, 0, 'unknown')
+
+    def test_cli_switch_accepts_only_literal_zero_or_one(self):
+        self.assertEqual(parse_binary_switch('0'), 0)
+        self.assertEqual(parse_binary_switch('1'), 1)
+        for value in ('01', '+1', ' 1 ', 'true', '', '-1', '2', '1.0'):
+            with self.subTest(value=value):
+                with self.assertRaises(argparse.ArgumentTypeError):
+                    parse_binary_switch(value)
+
+
+class DecodeLogExecutionContracts(unittest.TestCase):
+    def fixture(self, state=1, quiet=1):
+        rows = [dict(response_id=f'request-{i}', response_id_valid=True,
+                     actual_input=length, actual_output=2)
+                for i, length in enumerate((8193, 16385, 8192, 1024, 1))]
+        events = ['[q4t][residency] '
+                  f'decode_partition_log_quiet={quiet} '
+                  'scope=explicit_single_decode']
+
+        def layers(tokens, reason, partition):
+            applied = int(reason == 'candidate')
+            for layer in range(48):
+                if partition and not (quiet and reason == 'decode'):
+                    events.append('[q4t][residency][partition] '
+                        f'layer={layer} T={tokens} policy=min_new_csr_v1 '
+                        f'requested=1 applied={applied} fallback=0 '
+                        f'reason={reason} chunks=1 '
+                        f'singleton_chunks={int(tokens == 1)} '
+                        f'work_used={applied} '
+                        f'work_budget={32 * tokens * 10 * applied} '
+                        'metadata_bytes=0')
+                order = 'min_new_partition' if applied else 'original_partition'
+                events.append('[q4t][residency][diag] '
+                    f'layer={layer} T={tokens} D=256 chunks=1 max_distinct=10 '
+                    f'resident_before=256 overlap= new= chunk_order=0 '
+                    f'diag_order={order} partition={partition}')
+
+        for row in rows:
+            length = row['actual_input']
+            partition = int(state and length > 8192)
+            for base in range(0, length, 8192):
+                tokens = min(8192, length - base)
+                applied = int(partition and tokens > 1)
+                reason = ('global_legacy' if not state else
+                          'request_legacy' if not partition else
+                          'candidate' if applied else 'prefill_singleton')
+                events.append('[q4t][request_partition] '
+                    f"request={row['response_id']} input_tokens={length} "
+                    f'active={state} partition={partition} base={base} '
+                    f'tokens={tokens} layer=0 applied={applied} '
+                    f'fallback=0 reason={reason}')
+                layers(tokens, reason, partition)
+            layers(1, 'decode', state)
+        return rows, '\n'.join(events)
+
+    def test_all_three_arms_observe_decode_even_when_partition_log_is_quiet(self):
+        for state, quiet in ((0, 0), (1, 0), (1, 1)):
+            rows, log = self.fixture(state, quiet)
+            result = decode_log_path_evidence(log, rows, state, quiet)
+            self.assertTrue(result['runtime_eligible'])
+            self.assertEqual(result['decode_layer_forwards'], 5 * 48)
+            self.assertEqual(result['forward_diag_records'], 13 * 48)
+            self.assertEqual(result['partition_decode_log_records'],
+                             5 * 48 if state and not quiet else 0)
+            self.assertEqual(result['singleton_prefill_layer_forwards'],
+                             2 * 48 if state else 0)
+            self.assertFalse(result['numerical_acceptance'])
+
+    def test_missing_extra_reordered_and_malformed_diagnostics_fail(self):
+        rows, log = self.fixture()
+        lines = log.splitlines()
+        indices = [i for i, line in enumerate(lines)
+                   if '[residency][diag]' in line]
+        reordered = lines.copy()
+        a, b = indices[0], indices[1]
+        reordered[a], reordered[b] = reordered[b], reordered[a]
+        for changed in ('\n'.join(lines[:indices[-1]] + lines[indices[-1] + 1:]),
+                        log + '\n' + lines[indices[-1]],
+                        '\n'.join(reordered),
+                        log.replace('T=1 D=256', 'tokens=1 D=256', 1),
+                        log.replace('D=256 chunks=1', 'D=0 chunks=1', 1),
+                        log.replace('overlap= new=', 'overlap=1 new=', 1)):
+            with self.subTest(changed=changed), self.assertRaises(ValueError):
+                decode_log_path_evidence(changed, rows, 1, 1)
+
+    def test_quiet_does_not_allow_missing_or_mislabelled_singleton_prefill(self):
+        rows, log = self.fixture()
+        lines = log.splitlines()
+        index = next(i for i, line in enumerate(lines)
+                     if 'reason=prefill_singleton chunks=' in line)
+        for changed in ('\n'.join(lines[:index] + lines[index + 1:]),
+                        log.replace('reason=prefill_singleton chunks=',
+                                    'reason=decode chunks=', 1),
+                        log.replace('reason=prefill_singleton',
+                                    'reason=decode', 1)):
+            with self.assertRaises(ValueError):
+                decode_log_path_evidence(changed, rows, 1, 1)
+
+    def test_unremoved_decode_log_and_wrongly_removed_control_log_fail(self):
+        rows, loud = self.fixture(1, 0)
+        _, quiet = self.fixture(1, 1)
+        with self.assertRaises(ValueError):
+            decode_log_path_evidence(loud.replace('log_quiet=0', 'log_quiet=1'),
+                                     rows, 1, 1)
+        with self.assertRaises(ValueError):
+            decode_log_path_evidence(quiet.replace('log_quiet=1', 'log_quiet=0'),
+                                     rows, 1, 0)
+        # The historical parser must never silently accept the quiet evidence.
+        with self.assertRaises(ValueError):
+            all_layer_partition_evidence(quiet, rows, 1)
+        self.assertTrue(all_layer_partition_evidence(loud, rows, 1)
+                        ['runtime_eligible'])
+
+    def test_missing_duplicate_wrong_activation_and_illegal_modes_fail(self):
+        rows, log = self.fixture()
+        activation, rest = log.split('\n', 1)
+        for changed in (rest, log + '\n' + activation,
+                        log.replace('log_quiet=1', 'log_quiet=0'),
+                        log.replace('log_quiet=1', 'log_quiet=2'),
+                        log.replace('scope=explicit_single_decode',
+                                    'scope=all_singletons')):
+            with self.assertRaises(ValueError):
+                decode_log_path_evidence(changed, rows, 1, 1)
+        for mode in (None, True, -1, 2, '1'):
+            with self.assertRaises(ValueError):
+                decode_log_path_evidence(log, rows, 1, mode)
+
+    def test_http_usage_or_request_order_cannot_invent_decode_evidence(self):
+        rows, log = self.fixture()
+        for value in (1, 3, True):
+            changed = copy.deepcopy(rows)
+            changed[0]['actual_output'] = value
+            with self.assertRaises(ValueError):
+                decode_log_path_evidence(log, changed, 1, 1)
+        with self.assertRaises(ValueError):
+            decode_log_path_evidence(log, rows[::-1], 1, 1)
+
+    def test_partition_dimension_and_diagnostic_phase_must_agree(self):
+        rows, log = self.fixture()
+        for changed in (log.replace('reason=candidate chunks=1',
+                                    'reason=candidate chunks=2', 1),
+                        log.replace('work_used=1', 'work_used=0', 1),
+                        log.replace('diag_order=min_new_partition',
+                                    'diag_order=original_partition', 1),
+                        log.replace('diag_order=original_partition partition=1',
+                                    'diag_order=original_partition partition=0', 1),
+                        log + '\n[q4t][residency][diag] layer=0 oi=63 t=63 '
+                        'INVARIANT BROKEN book=1 actual=2 D=256'):
+            with self.assertRaises(ValueError):
+                decode_log_path_evidence(changed, rows, 1, 1)
 
 
 class ColdPreparationContracts(unittest.TestCase):

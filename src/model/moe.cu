@@ -303,6 +303,25 @@ Status CheckGemm(const Bf16GemmResult& r) {
 
 }  // namespace
 
+int MoEDecodePartitionLogQuietMode() {
+  static const int mode = [] {
+    const int parsed = ParseMoEDecodePartitionLogQuietMode(
+        std::getenv("Q4T_MOE_DECODE_PARTITION_LOG_QUIET"));
+    if (parsed < 0) {
+      std::fprintf(stderr,
+                   "[q4t][residency] invalid "
+                   "Q4T_MOE_DECODE_PARTITION_LOG_QUIET; expected 0 or 1\n");
+    } else {
+      std::fprintf(stderr,
+                   "[q4t][residency] decode_partition_log_quiet=%d "
+                   "scope=explicit_single_decode\n",
+                   parsed);
+    }
+    return parsed;
+  }();
+  return mode;
+}
+
 void MoEExtraWeights::Free() {
   if (gate) cudaFree(gate);
   if (shared_gu) cudaFree(shared_gu);
@@ -401,11 +420,16 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
                   trace::RouterCollector* trace, int layer_id,
                   const quant::MoEResidency* residency,
                   MoEForwardDiagnostics* diagnostics,
-                  const MoERequestPartition& request_partition) {
+                  const MoERequestPartition& request_partition,
+                  MoEPartitionLogPhase log_phase) {
   if (diagnostics) *diagnostics = {};
   if (!request_partition.ValidForward(T) ||
       (request_partition.Enabled() && !residency)) {
     return Status::Fail("invalid MoE request partition context");
+  }
+  const int decode_log_quiet = MoEDecodePartitionLogQuietMode();
+  if (decode_log_quiet < 0) {
+    return Status::Fail("Q4T_MOE_DECODE_PARTITION_LOG_QUIET must be 0 or 1");
   }
   if (request_partition.Enabled() &&
       (MoEPartitionMode() != 1 || MoEChunkOrderMode() != 0)) {
@@ -661,7 +685,8 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
           partition_mode, request_partition.Base(), T, partition_applied,
           partition_fallback, partition_reason);
     }
-    if (partition_mode == 1) {
+    if (ShouldEmitMoEPartitionLog(partition_mode, decode_log_quiet, log_phase,
+                                 T, request_partition.HasRequest())) {
       std::fprintf(
           stderr,
           "[q4t][residency][partition] layer=%d T=%d "

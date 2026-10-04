@@ -5,6 +5,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [OFFLOAD_DECODE_LOG_2026-10-05.md](OFFLOAD_DECODE_LOG_2026-10-05.md) | 显式 decode 日志单因素候选、A/B/C 对照与冻结验收 | Goal进行中；实现与静态复核，尚无新测试结论 |
 | [OFFLOAD_REQUEST_POLICY_2026-10-04.md](OFFLOAD_REQUEST_POLICY_2026-10-04.md) | 完整请求长度分区、混合历史与六档 HTTP、独立资源证据 | 有效 NO_GO；长档 TTFT 改善，短档/decode 门槛未过；默认关闭 |
 | [OFFLOAD_AUTONOMOUS_2026-10-03.md](OFFLOAD_AUTONOMOUS_2026-10-03.md) | 十小时自主队列、在线候选与冻结HTTP决定门槛 | Goal进行中，当前尚无新验收结论 |
 | [OFFLOAD_REPLAY_2026-10-02.md](OFFLOAD_REPLAY_2026-10-02.md) | 实际分块/驻留离线回放与候选收益边界 | Goal完成：重排减少约6%–7% GPU补载，未接受性能 |

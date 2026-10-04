@@ -17,11 +17,17 @@ import time
 
 from file_cache import model_files, observe_files
 from monitor_memory import find_pids
-from offload_policy import (RUN_AXES, DIAGNOSTIC_SCOPE, RUN_TOOLS,
+from offload_policy import (REQUEST_AXES, RUN_AXES, DIAGNOSTIC_SCOPE, RUN_TOOLS,
                             policy_environment)
 from run_acceptance import LENGTHS, parse_lengths, performance_plan
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def parse_binary_switch(value):
+    if value not in ('0', '1'):
+        raise argparse.ArgumentTypeError('must be exactly 0 or 1')
+    return int(value)
 
 
 def save(path, value):
@@ -200,11 +206,12 @@ def selected_performance_plan(mode, lengths=None, repeats=3, target_total=0):
 
 def experiment_environment(chunk_order, inherited, partition=0,
                            policy_axis='chunk-order', phase_diagnostics=False,
-                           request_partition=0):
+                           request_partition=0, decode_partition_log_quiet=0):
     env = {key: value for key, value in inherited.items()
            if not key.startswith('Q4T_')}
     env.update(policy_environment(chunk_order, partition, policy_axis,
-                                  phase_diagnostics, request_partition))
+                                  phase_diagnostics, request_partition,
+                                  decode_partition_log_quiet))
     return env
 
 
@@ -266,6 +273,10 @@ def main():
     ap.add_argument('--partition', type=int, choices=(0, 1), default=0,
                     help='Partition axis requires chunk-order=0 for both runs')
     ap.add_argument('--request-partition', type=int, choices=(0, 1), default=0)
+    ap.add_argument('--decode-partition-log-quiet', type=parse_binary_switch,
+                    choices=(0, 1),
+                    default=0, help='Explicit quiet bit for request-partition-log '
+                    'axis; leaves prefill and forward diagnostics unchanged')
     ap.add_argument('--request-policy-sequence', action='store_true',
                     help='Frozen 7-position x 3-round request policy challenge')
     ap.add_argument('--phase-diagnostics', action='store_true',
@@ -288,9 +299,10 @@ def main():
     try:
         env = experiment_environment(args.chunk_order, os.environ,
                                      args.partition, args.policy_axis,
-                                     args.phase_diagnostics, args.request_partition)
+                                     args.phase_diagnostics, args.request_partition,
+                                     args.decode_partition_log_quiet)
         if args.request_policy_sequence and (
-                args.policy_axis != 'request-partition' or
+                args.policy_axis not in REQUEST_AXES or
                 args.mode != 'performance' or args.perf_lengths is not None or
                 args.target_total or args.perf_repeats != 3):
             raise ValueError('request sequence requires its own axis and fixed selection')
@@ -345,7 +357,7 @@ def main():
     tool_dir.mkdir()
     tool_hashes = {}
     tool_names = RUN_TOOLS + ('offload_policy.py',)
-    if args.policy_axis == 'request-partition':
+    if args.policy_axis in REQUEST_AXES:
         tool_names += ('request_policy_protocol.py',)
     for name in tool_names:
         source = ROOT / 'tools/evalscope' / name
@@ -368,7 +380,9 @@ def main():
         **({'request_partition': args.request_partition,
             'request_policy_sequence': args.request_policy_sequence,
             'cold_advice_rounds': args.cold_advice_rounds}
-           if args.policy_axis == 'request-partition' else {}),
+           if args.policy_axis in REQUEST_AXES else {}),
+        **({'decode_partition_log_quiet': args.decode_partition_log_quiet}
+           if args.policy_axis == 'request-partition-log' else {}),
         'phase_diagnostics': args.phase_diagnostics,
         'diagnostic_scope': (DIAGNOSTIC_SCOPE if args.phase_diagnostics
                              else None),

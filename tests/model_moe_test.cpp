@@ -729,6 +729,13 @@ bool RunPartitionNumericalCase(
     const std::vector<int32_t>& expected_order, size_t expected_chunks,
     size_t expected_singletons) {
   const int tokens = static_cast<int>(input.size() / kHs);
+  // This helper's one-row fixture is the decode-bypass case after prefill.
+  // Request-policy singleton prefill uses a separate helper below.
+  const auto log_phase = tokens == 1
+      ? q4t::model::MoEPartitionLogPhase::kSingleDecode
+      : q4t::model::MoEPartitionLogPhase::kUnknown;
+  std::printf("  partition_numerical log_phase=%s T=%d\n",
+              tokens == 1 ? "explicit_single_decode" : "unknown", tokens);
   const size_t workspace_bytes = q4t::model::MoEForwardWorkspaceBytes(
       tokens, kTopK, kHs, kMoeIs, kSharedIs, kE);
   constexpr size_t kGemmBytes = 32 * 1024 * 1024;
@@ -751,7 +758,7 @@ bool RunPartitionNumericalCase(
     const Status status = MoEForward(
         x.data, routed, weights.extra, y.data, tokens, kTopK, workspace.data,
         workspace_bytes, gemm.data, kGemmBytes, 0, nullptr, kLayer, slots,
-        diagnostics);
+        diagnostics, {}, log_phase);
     if (!status.ok()) {
       std::printf("  MoEForward failed: %s\n", status.message().c_str());
       return false;

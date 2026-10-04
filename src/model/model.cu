@@ -504,7 +504,9 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                  const RaggedBatch* ragged = nullptr,
                  LogitsRows logits_rows = LogitsRows::kAllRows,
                  bool sequence_last_rows = false,
-                 const MoERequestPartition& request_partition = {}) {
+                 const MoERequestPartition& request_partition = {},
+                 MoEPartitionLogPhase log_phase =
+                     MoEPartitionLogPhase::kUnknown) {
   const ModelConfig& cfg = m.cfg;
   // Every model entry point already owns the logical positions copied to
   // m.d_positions. Reduce once on host, not once per full-attention layer.
@@ -591,7 +593,8 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                                    layer_conv_ckpt, num_ckpt, seq_id, d_seq_id,
                                    m.d_rope_pos, tokens_per_seq,
                                    layer_ple_conv_ckpt, ragged, max_position,
-                                   m.router_trace, l, request_partition);
+                                   m.router_trace, l, request_partition,
+                                   log_phase);
     if (!s.ok()) return s;
     if (!m.layers[l].is_full_attention) lin_idx++;
     if (m.layers[l].has_ple) ple_idx++;
@@ -917,7 +920,9 @@ Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
 
   // 5. Layer loop + head.
   return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(),
-                   &pos, 1, logits, stream, trunk_out, nullptr, nullptr, 0, seq_id);
+                   &pos, 1, logits, stream, trunk_out, nullptr, nullptr, 0,
+                   seq_id, nullptr, 0, nullptr, nullptr, LogitsRows::kAllRows,
+                   false, {}, SingleDecodeLogPhase(1));
 }
 
 // Batched decode over T tokens at absolute positions [base..base+T-1] WITHOUT
@@ -1073,7 +1078,8 @@ Status ModelDecodeBatchMulti(const Model& m, const int32_t* tokens,
   //    per-layer state (selected per-token via d_seq_id).
   return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(),
                    positions, B, logits, stream, trunk_out, nullptr, nullptr, 0, 0,
-                   m.d_seq_id);
+                   m.d_seq_id, 0, nullptr, nullptr, LogitsRows::kAllRows, false,
+                   {}, SingleDecodeLogPhase(B));
 }
 
 // Phase 2 MTP multi-seq verify: feed `tokens_per_seq` tokens for EACH of B

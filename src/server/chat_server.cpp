@@ -16,6 +16,7 @@
 #include <cuda_runtime.h>
 #include "q4t/io/json.h"
 #include "q4t/io/weight_loader.h"
+#include "q4t/model/moe_partition_log.h"
 #include "q4t/quant/moe_residency.h"
 #include "q4t/runtime/memory_budget.h"
 #include "q4t/runtime/residency_config.h"
@@ -85,6 +86,9 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // Validate before loading the tokenizer or allocating model resources.
   const Status validated = ValidateServerOptions(opts);
   if (!validated.ok()) return validated;
+  if (model::MoEDecodePartitionLogQuietMode() < 0) {
+    return Status::Fail("Q4T_MOE_DECODE_PARTITION_LOG_QUIET must be 0 or 1");
+  }
   const int request_partition = model::ParseMoERequestPartitionMode(
       std::getenv("Q4T_MOE_REQUEST_PARTITION"));
   if (request_partition < 0) {
