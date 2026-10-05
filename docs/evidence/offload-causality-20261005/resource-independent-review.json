@@ -1,0 +1,955 @@
+{
+  "schema": 1,
+  "reviewer": "/root/reuse_and_runner",
+  "status": "PASS_INDEPENDENT_RESOURCE_REVIEW_WITH_KNOWN_LIMITS",
+  "passed": true,
+  "execution_plan_sha256": "a31b1692be9f9be962dd59842a73ccb262b999e627cfd1b771698f01ef7adb5e",
+  "resource_audit_sha256": "049d1970880f0b0076f5bda95955cd525786a9f10ea63f9b1516b9d02ad1c2fd",
+  "started_t": 1791181703.143907,
+  "ended_t": 1791181703.6917467,
+  "audit_rerun": false,
+  "new_data_collected": false,
+  "models_tests_or_HTTP_executed": 0,
+  "model_payload_reads": false,
+  "full_workflow_recertified": false,
+  "checks": [
+    {
+      "id": "FROZEN_ADAPTER_CORE_AND_REUSE",
+      "passed": true,
+      "detail": "Three resource source files match execution freeze; old eight synthetic examples cover bracket bounds, missing counter, reset, generation change, uncovered envelope, true zero, overlapping clock and unknown KiB column. Reuse does not certify the new adapter or new scope."
+    },
+    {
+      "id": "TERMINAL_AND_RAW_INVENTORY",
+      "passed": true,
+      "detail": "Completed pipeline precedes the audit; exact 16 group directories and controllers, 48 raw files / 25,008,638 bytes match report hashes and retained stat identity. Owned resource audit exited 0 with its process group absent."
+    },
+    {
+      "id": "GROUP_HTTP_WINDOW_IDENTITY",
+      "passed": true,
+      "detail": "16 terminal group decisions and controller/HTTP/monitor receipts precede audit; 64 unique cases match ordered scope and sequence hashes, response IDs, prompt/output hashes, input/output counts and saved client boundaries; each group has four envelopes."
+    },
+    {
+      "id": "INDEPENDENT_RAW_ARITHMETIC",
+      "passed": true,
+      "detail": "Independently read 3812 raw/CSV row pairs and 176 retained endpoints; recomputed 192 endpoint deltas and 256 sample interval bounds without importing or invoking the frozen auditor. Exact PID/start ticks, cgroup generation, device identity, monotonicity and 5 second uncertainty were checked in every reported known span."
+    },
+    {
+      "id": "MEMORY_UNKNOWN_RECOMPUTATION",
+      "passed": true,
+      "detail": "All 16 memory summaries match raw final cgroup observations, sampled cgroup maxima and KiB-to-byte/NVIDIA CSV peaks; missing counters and GPU skips remain absent, PSI and live file cache remain UNKNOWN. No independent memory peaks are added."
+    }
+  ],
+  "findings": [],
+  "report_counts": {
+    "closed_groups": 16,
+    "http_requests": 64,
+    "client_envelopes": 64,
+    "raw_files": 48,
+    "raw_bytes": 25008638,
+    "raw_CSV_sample_pairs": 3812,
+    "controller_endpoint_rows": 176,
+    "recomputed_controller_deltas": 192,
+    "recomputed_sample_bounds": 256,
+    "summary_counts": {
+      "sample_count": 3812,
+      "binding_mismatch_samples": 0,
+      "live_pid_sample_count": 3780,
+      "model_file_cache_observed_samples": 32,
+      "model_file_cache_live_observed_samples": 0,
+      "target_sample_count": 3780,
+      "gpu_unknown_samples": 3425,
+      "gpu_scheduled_skip_samples": 3425,
+      "gpu_observed_samples": 355,
+      "gpu_failed_observations": 0,
+      "process_io_unknown_observations": 4
+    },
+    "cgroup_unknown_observation_counts": {
+      "memory.current": 16,
+      "memory.peak": 16,
+      "memory.swap.current": 16,
+      "memory.swap.peak": 16,
+      "pids.current": 16,
+      "memory.max": 16,
+      "memory.high": 16,
+      "memory.swap.max": 16,
+      "memory.stat": 16,
+      "memory.events": 16,
+      "memory.events.local": 16,
+      "memory.swap.events": 16,
+      "cgroup.events": 16,
+      "io.stat": 16,
+      "memory.pressure": 3812,
+      "io.pressure": 3812,
+      "cgroup.procs": 16
+    },
+    "process_io_unknown_by_phase": {
+      "shutdown": 4
+    },
+    "known_controller_deltas": 192,
+    "known_bounds": 256
+  },
+  "io_summary_bytes": {
+    "pid_read_bytes": {
+      "min": 43404107776,
+      "max": 99224117248
+    },
+    "pid_rchar": {
+      "min": 49764069224,
+      "max": 214636053992
+    },
+    "cg_rbytes:259:0": {
+      "min": 6133182464,
+      "max": 80629919744
+    },
+    "cgroup_positive_PID_plateau_windows": 0,
+    "cgroup_PID_exact_agreement_windows": 0,
+    "cgroup_to_PID_ratio": {
+      "min": 0.1202037209424795,
+      "max": 0.8945016333167846
+    },
+    "client_envelope_seconds": {
+      "min": 47.60930609703064,
+      "max": 79.88939070701599
+    },
+    "boundary_uncertainty_seconds": {
+      "min": 0.5349977016448975,
+      "max": 0.9957413673400879
+    },
+    "device_259_1_lower_read_bytes": {
+      "min": 43404107776,
+      "max": 99236970496
+    },
+    "device_259_1_upper_read_bytes": {
+      "min": 43404107776,
+      "max": 99236970496
+    }
+  },
+  "io_ranges_by_condition_and_position_bytes": {
+    "AS": {
+      "0": {
+        "pid_read_bytes": {
+          "min": 67413790720,
+          "max": 67463057408
+        },
+        "pid_rchar": {
+          "min": 55965569456,
+          "max": 56015336288
+        },
+        "cg_rbytes:259:0": {
+          "min": 50796826624,
+          "max": 60345815040
+        }
+      },
+      "1": {
+        "pid_read_bytes": {
+          "min": 53407952896,
+          "max": 53431164928
+        },
+        "pid_rchar": {
+          "min": 50234089304,
+          "max": 50264502368
+        },
+        "cg_rbytes:259:0": {
+          "min": 36578254848,
+          "max": 45344051200
+        }
+      },
+      "2": {
+        "pid_read_bytes": {
+          "min": 47105388544,
+          "max": 48175001600
+        },
+        "pid_rchar": {
+          "min": 49838719472,
+          "max": 49874662184
+        },
+        "cg_rbytes:259:0": {
+          "min": 25928495104,
+          "max": 35177013248
+        }
+      },
+      "3": {
+        "pid_read_bytes": {
+          "min": 43404107776,
+          "max": 44596248576
+        },
+        "pid_rchar": {
+          "min": 49777893344,
+          "max": 49800011936
+        },
+        "cg_rbytes:259:0": {
+          "min": 20977074176,
+          "max": 25849790464
+        }
+      }
+    },
+    "CS": {
+      "0": {
+        "pid_read_bytes": {
+          "min": 67421786112,
+          "max": 67445510144
+        },
+        "pid_rchar": {
+          "min": 55960039808,
+          "max": 55990452872
+        },
+        "cg_rbytes:259:0": {
+          "min": 46397296640,
+          "max": 48897101824
+        }
+      },
+      "1": {
+        "pid_read_bytes": {
+          "min": 53397377024,
+          "max": 53463773184
+        },
+        "pid_rchar": {
+          "min": 50234089304,
+          "max": 50242383776
+        },
+        "cg_rbytes:259:0": {
+          "min": 23355985920,
+          "max": 35896619008
+        }
+      },
+      "2": {
+        "pid_read_bytes": {
+          "min": 46922436608,
+          "max": 48203857920
+        },
+        "pid_rchar": {
+          "min": 49849778768,
+          "max": 49888486304
+        },
+        "cg_rbytes:259:0": {
+          "min": 19381895168,
+          "max": 28676988928
+        }
+      },
+      "3": {
+        "pid_read_bytes": {
+          "min": 43434352640,
+          "max": 44851761152
+        },
+        "pid_rchar": {
+          "min": 49764069224,
+          "max": 49822130528
+        },
+        "cg_rbytes:259:0": {
+          "min": 14896762880,
+          "max": 23116206080
+        }
+      }
+    },
+    "AL": {
+      "0": {
+        "pid_read_bytes": {
+          "min": 99141390336,
+          "max": 99224117248
+        },
+        "pid_rchar": {
+          "min": 214577992688,
+          "max": 214636053992
+        },
+        "cg_rbytes:259:0": {
+          "min": 54413328384,
+          "max": 73601138688
+        }
+      },
+      "1": {
+        "pid_read_bytes": {
+          "min": 57743990784,
+          "max": 57832423424
+        },
+        "pid_rchar": {
+          "min": 53402577608,
+          "max": 53438520320
+        },
+        "cg_rbytes:259:0": {
+          "min": 16070066176,
+          "max": 36840865792
+        }
+      },
+      "2": {
+        "pid_read_bytes": {
+          "min": 46295855104,
+          "max": 46365835264
+        },
+        "pid_rchar": {
+          "min": 50004608912,
+          "max": 50032257152
+        },
+        "cg_rbytes:259:0": {
+          "min": 6838685696,
+          "max": 24227459072
+        }
+      },
+      "3": {
+        "pid_read_bytes": {
+          "min": 51023233024,
+          "max": 51074568192
+        },
+        "pid_rchar": {
+          "min": 49833189824,
+          "max": 49858073240
+        },
+        "cg_rbytes:259:0": {
+          "min": 6133182464,
+          "max": 19124334592
+        }
+      }
+    },
+    "CL": {
+      "0": {
+        "pid_read_bytes": {
+          "min": 94193369088,
+          "max": 94250766336
+        },
+        "pid_rchar": {
+          "min": 120037600832,
+          "max": 120079073192
+        },
+        "cg_rbytes:259:0": {
+          "min": 70714777600,
+          "max": 80629919744
+        }
+      },
+      "1": {
+        "pid_read_bytes": {
+          "min": 58209927168,
+          "max": 58257350656
+        },
+        "pid_rchar": {
+          "min": 52976794712,
+          "max": 52998913304
+        },
+        "cg_rbytes:259:0": {
+          "min": 30327504896,
+          "max": 40551239680
+        }
+      },
+      "2": {
+        "pid_read_bytes": {
+          "min": 45796425728,
+          "max": 45837643776
+        },
+        "pid_rchar": {
+          "min": 50026727504,
+          "max": 50059905392
+        },
+        "cg_rbytes:259:0": {
+          "min": 19326922752,
+          "max": 29020196864
+        }
+      },
+      "3": {
+        "pid_read_bytes": {
+          "min": 51298455552,
+          "max": 51346767872
+        },
+        "pid_rchar": {
+          "min": 49833189824,
+          "max": 49855308416
+        },
+        "cg_rbytes:259:0": {
+          "min": 17774907392,
+          "max": 31082881024
+        }
+      }
+    }
+  },
+  "memory_summary": {
+    "charge_peak_bytes": {
+      "min": 17179869184,
+      "max": 17179885568
+    },
+    "observed_current_peak_bytes": {
+      "min": 17179869184,
+      "max": 17180123136
+    },
+    "charge_peak_minus_max_bytes": {
+      "min": 0,
+      "max": 16384
+    },
+    "observed_current_peak_minus_max_bytes": {
+      "min": 0,
+      "max": 253952
+    },
+    "sampled_NVIDIA_peak_bytes": {
+      "min": 55700357120,
+      "max": 56235130880
+    },
+    "current_peak_above_final_memory_peak_groups": [
+      "b01-p01-as",
+      "b02-p03-as",
+      "b03-p01-al",
+      "b03-p02-cl",
+      "b03-p03-cs",
+      "b04-p02-as",
+      "b04-p03-al"
+    ],
+    "memory_max_bytes": 17179869184,
+    "oom_observed": 0,
+    "oom_kill_observed": 0,
+    "all_final_cgroup_swap_current_peak_and_limit_zero": true,
+    "memory_events_max_range": {
+      "min": 1944190,
+      "max": 2264634
+    },
+    "physical_union_peak_bytes": null,
+    "whole_physical_RAM_54GB": "INDETERMINATE"
+  },
+  "group_memory_observations": {
+    "b01-p01-as": {
+      "sample_count": 230,
+      "endpoint_count": 11,
+      "charge_peak_minus_max_bytes": 0,
+      "sampled_current_minus_max_bytes": 253952,
+      "sampled_current_minus_final_peak_bytes": 253952,
+      "sampled_NVIDIA_peak_bytes": 55700357120,
+      "memory_events_max": 1945681
+    },
+    "b01-p02-cs": {
+      "sample_count": 228,
+      "endpoint_count": 11,
+      "charge_peak_minus_max_bytes": 0,
+      "sampled_current_minus_max_bytes": 0,
+      "sampled_current_minus_final_peak_bytes": 0,
+      "sampled_NVIDIA_peak_bytes": 55700357120,
+      "memory_events_max": 1946871
+    },
+    "b01-p03-cl": {
+      "sample_count": 245,
+      "endpoint_count": 11,
+      "charge_peak_minus_max_bytes": 12288,
+      "sampled_current_minus_max_bytes": 0,
+      "sampled_current_minus_final_peak_bytes": -12288,
+      "sampled_NVIDIA_peak_bytes": 55798923264,
+      "memory_events_max": 2228132
+    },
+    "b01-p04-al": {
+      "sample_count": 256,
+      "endpoint_count": 11,
+      "charge_peak_minus_max_bytes": 8192,
+      "sampled_current_minus_max_bytes": 0,
+      "sampled_current_minus_final_peak_bytes": -8192,
+      "sampled_NVIDIA_peak_bytes": 55798923264,
+      "memory_events_max": 2264151
+    },
+    "b02-p01-cs": {
+      "sample_count": 226,
+      "endpoint_count": 11,
+      "charge_peak_minus_max_bytes": 0,
+      "sampled_current_minus_max_bytes": 0,
+      "sampled_current_minus_final_peak_bytes": 0,
+      "sampled_NVIDIA_peak_bytes": 55700357120,
+      "memory_events_max": 1944842
+    },
+    "b02-p02-al": {
+      "sample_count": 254,
+      "endpoint_count": 11,
+      "charge_peak_minus_max_bytes": 0,
+      "sampled_current_minus_max_bytes": 0,
+      "sampled_current_minus_final_peak_bytes": 0,
+      "sampled_NVIDIA_peak_bytes": 55798923264,
+      "memory_events_max": 2263357
+    },
+    "b02-p03-as": {
+      "sample_count": 227,
+      "endpoint_count": 11,
+      "charge_peak_minus_max_bytes": 0,
+      "sampled_current_minus_max_bytes": 4096,
+      "sampled_current_minus_final_peak_bytes": 4096,
+      "sampled_NVIDIA_peak_bytes": 55700357120,
+      "memory_events_max": 1945179
+    },
+    "b02-p04-cl": {
+      "sample_count": 242,
+      "endpoint_count": 11,
+      "charge_peak_minus_max_bytes": 16384,
+      "sampled_current_minus_max_bytes": 0,
+      "sampled_current_minus_final_peak_bytes": -16384,
+      "sampled_NVIDIA_peak_bytes": 55798923264,
+      "memory_events_max": 2228967
+    },
+    "b03-p01-al": {
+      "sample_count": 256,
+      "endpoint_count": 11,
+      "charge_peak_minus_max_bytes": 0,
+      "sampled_current_minus_max_bytes": 155648,
+      "sampled_current_minus_final_peak_bytes": 155648,
+      "sampled_NVIDIA_peak_bytes": 55798923264,
+      "memory_events_max": 2264634
+    },
+    "b03-p02-cl": {
+      "sample_count": 244,
+      "endpoint_count": 11,
+      "charge_peak_minus_max_bytes": 0,
+      "sampled_current_minus_max_bytes": 4096,
+      "sampled_current_minus_final_peak_bytes": 4096,
+      "sampled_NVIDIA_peak_bytes": 56235130880,
+      "memory_events_max": 2227823
+    },
+    "b03-p03-cs": {
+      "sample_count": 226,
+      "endpoint_count": 11,
+      "charge_peak_minus_max_bytes": 0,
+      "sampled_current_minus_max_bytes": 159744,
+      "sampled_current_minus_final_peak_bytes": 159744,
+      "sampled_NVIDIA_peak_bytes": 55700357120,
+      "memory_events_max": 1945140
+    },
+    "b03-p04-as": {
+      "sample_count": 226,
+      "endpoint_count": 11,
+      "charge_peak_minus_max_bytes": 0,
+      "sampled_current_minus_max_bytes": 0,
+      "sampled_current_minus_final_peak_bytes": 0,
+      "sampled_NVIDIA_peak_bytes": 55767465984,
+      "memory_events_max": 1944190
+    },
+    "b04-p01-cl": {
+      "sample_count": 243,
+      "endpoint_count": 11,
+      "charge_peak_minus_max_bytes": 0,
+      "sampled_current_minus_max_bytes": 0,
+      "sampled_current_minus_final_peak_bytes": 0,
+      "sampled_NVIDIA_peak_bytes": 56235130880,
+      "memory_events_max": 2228060
+    },
+    "b04-p02-as": {
+      "sample_count": 227,
+      "endpoint_count": 11,
+      "charge_peak_minus_max_bytes": 0,
+      "sampled_current_minus_max_bytes": 204800,
+      "sampled_current_minus_final_peak_bytes": 204800,
+      "sampled_NVIDIA_peak_bytes": 55700357120,
+      "memory_events_max": 1944989
+    },
+    "b04-p03-al": {
+      "sample_count": 255,
+      "endpoint_count": 11,
+      "charge_peak_minus_max_bytes": 0,
+      "sampled_current_minus_max_bytes": 204800,
+      "sampled_current_minus_final_peak_bytes": 204800,
+      "sampled_NVIDIA_peak_bytes": 55798923264,
+      "memory_events_max": 2264401
+    },
+    "b04-p04-cs": {
+      "sample_count": 227,
+      "endpoint_count": 11,
+      "charge_peak_minus_max_bytes": 0,
+      "sampled_current_minus_max_bytes": 0,
+      "sampled_current_minus_final_peak_bytes": 0,
+      "sampled_NVIDIA_peak_bytes": 55700357120,
+      "memory_events_max": 1944878
+    }
+  },
+  "known_issues": [
+    {
+      "id": "CGROUP_IO_DIVERGENCE",
+      "detail": "Cgroup parent-device I/O and PID read_bytes disagree in all 64 request windows; no zero-delta request plateau in this run. Low-count/near-platform behavior is retained as measured, without substituting PID or partition values."
+    },
+    {
+      "id": "CGROUP_MEMORY_COUNTER_DISAGREEMENT",
+      "detail": "Seven groups have sampled memory.current greater than their retained final memory.peak. Preserve both platform values; the largest sampled current is 253952 B above configured 16 GiB while final memory.peak excess is at most 16384 B. Neither column alone proves a strict no-overshoot bound."
+    },
+    {
+      "id": "UNOBSERVED_PHYSICAL_UNION",
+      "detail": "NVIDIA/process/cgroup/cache views overlap and are not a synchronized deduplicated physical union. Whole-machine 54 GB remains INDETERMINATE; NVIDIA peak neither certifies PASS nor an overall physical-memory FAIL."
+    },
+    {
+      "id": "UNKNOWN_COVERAGE",
+      "detail": "PSI unavailable, no live model-file-cache observations, GPU scheduled skips retained, four process-I/O misses at shutdown. Known request brackets do not erase missing lifecycle observations."
+    }
+  ],
+  "limits": [
+    "All I/O deltas cover the client process envelope including launch/teardown; not pure HTTP, prefill, decode, SSD expert-only bytes or a causal cache-cost partition.",
+    "PID read_bytes is process storage I/O; rchar is logical reads; the model partition 259:1 includes background traffic and cgroup 259:0 is a distinct accounting view. Do not add parent disk and partition.",
+    "Memory values are whole-service lifecycle peaks, not per-request peaks. Zero observed OOM and cgroup swap do not establish no pressure or no whole-machine swap.",
+    "Four service repetitions per condition; positions remain separate and 64 windows are not 64 independent service replicates. No performance acceptance or revised old NO_GO conclusion.",
+    "This review independently checked the selected resource provenance and arithmetic only. It reuses previous full execution review and does not rerun synthetic tests, auditor, controllers or final live cleanup."
+  ],
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/resource-audit.json": "049d1970880f0b0076f5bda95955cd525786a9f10ea63f9b1516b9d02ad1c2fd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/execution-plan.json": "a31b1692be9f9be962dd59842a73ccb262b999e627cfd1b771698f01ef7adb5e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/plan.json": "49c2c0e5a8ea3953f91b308cac6af23797ccd851a8e3e2d8c26e228ff7464e61",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/audit_resources.py": "4a9f5a137e73f85702b452258000581cf32ca844a92310b6b437bef1d570132c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/audit_resources.py": "10959f8021c7e2f6479ee77c8d163484054839a72fb172153bd723813f7ffde7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/audit_raw_resources_frozen.py": "035f1f840d00350a7b6db62e1b8ef7f62a5fda02406dae91395d291a67652da4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-autonomous-20261003/raw-audit-execution-01/self-test-exit.json": "8fcf469238691ef2993e5c453ffee4df549efa25e15c210b0e5ff116b47f655f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-autonomous-20261003/raw-audit-execution-01/self-test.log": "5be5555609ee43ce415c5f7326aa244af048a09c05930ce64b9d16ac61f894a8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/resource-audit-01-exit.json": "1edbbc1aca25d07ddc78fd5c1ed30884f85eba68d907c491e28d4b2eebe029d9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/resource-audit-01-start.json": "55dc194858f0ef93c7229448f0e44d60076ad1a251112c102c8b962c88d3f079",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/pipeline-execution/exit.json": "099609c8c4c4388bf45aa43ebfcd086aec4894c27a1c53bab935630d493f6c15",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/comparison-decision.json": "841974dc8045c2824359491b239d6e538bce30b6df71e30e5355eb5031adc032",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p01-as/http/isolation/endpoints.jsonl": "9640baa1c1df0c35efc83fd13ba02c11954e60e1524cf904093cde6e00310ada",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p01-as/memory/memory.csv": "13f68a6bfc8d4435e59b96ae3580d74488b5addc32b8eb1760b467e32bf46393",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p01-as/memory/resource-samples.jsonl": "efc8d5d501acd385c213dbc642073c740cbd89970fe0b4457ca1a773491d771d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p02-cs/http/isolation/endpoints.jsonl": "8a7519d23afafbb3e93e2621fb20a24d1794d6a90f5bffa10b66f741ade1a005",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p02-cs/memory/memory.csv": "a85307cddf70e08d60dba8d626d6cad276e9e587540050ed2d2dc28b4e6e3351",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p02-cs/memory/resource-samples.jsonl": "5f49b64244192d918213d72f3df981f21ea851d69a1daad61470855358c94129",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p03-cl/http/isolation/endpoints.jsonl": "98779ba0fdfd5512b7e390028764b4e512ca4742008790195670372d7a7f4bfe",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p03-cl/memory/memory.csv": "445ddb567559a0f4b8f834ec6427eb607bcac4e95a1c006ca88f12a5aafcb00e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p03-cl/memory/resource-samples.jsonl": "e2a5bf83578f7f6d267bcd933cea8e0950db0f89e3d7acc027e00faabe828ee9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p04-al/http/isolation/endpoints.jsonl": "de3cb5a819af1d6ca9f01b561200073390b57e2ffcb956dad8760441fa071ffd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p04-al/memory/memory.csv": "83dbc60c574ed29945c67095b37151ae84a0fcf85eedbd48c421195ffa8e4553",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p04-al/memory/resource-samples.jsonl": "a77eb5d9858dc36d5ec13fc7c30d66d078691a0c293c0a7bcbc528bc6f48206d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p01-cs/http/isolation/endpoints.jsonl": "f963b18ea671415f6f291e8f8d5513def4f45a97067cd00328b428b27815affa",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p01-cs/memory/memory.csv": "ba32799baff32cbf851ff96b33aabaff79757f523b0614c3bdcb72c159239925",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p01-cs/memory/resource-samples.jsonl": "ed44e37dd0f83c9e8e07c57984d25fe4d83a314aa4eed24a0d137a8d92affabb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p02-al/http/isolation/endpoints.jsonl": "96d02c9c8822c25f405e015b71255305453f1c3bed66cefff26c6e76d498b561",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p02-al/memory/memory.csv": "d0e9113095ce661807a54748f14b61d5eade62032330491df22819732952071d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p02-al/memory/resource-samples.jsonl": "75303a2b542cdde4a48b72be22e0f09915731b2ba7bbbf5608e81b6339f9cb5c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p03-as/http/isolation/endpoints.jsonl": "ffb07bb9d74a9c1f82c7e3a421bdb60f6c2f59d783f4bf8ab2f6136bba0c8c73",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p03-as/memory/memory.csv": "7465e69b88e2b686b7aa18ccc5f3513be778d122df4df534ef32e8a020778f9c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p03-as/memory/resource-samples.jsonl": "545b21f29f9aea15818ee45fbdee0e1f2f923237f99a92728e974c8d2ab3fb29",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p04-cl/http/isolation/endpoints.jsonl": "2e7ab97613f16b47092bd6292e6c532a9072622a43e55ae86e911facb7578ea3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p04-cl/memory/memory.csv": "e1429f2fde0d464ec7a29a5efbde6c4457b3ed621b4b55cfd219342efb5178b8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p04-cl/memory/resource-samples.jsonl": "8a676e5d6fee4033d9cdd958007924202f91bce2ec7748fefd75e851267a310c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p01-al/http/isolation/endpoints.jsonl": "49aef4ffdc1ea8e83d3e390587dec06154f83d2bbf4d23f7bc0518b58d0afd6b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p01-al/memory/memory.csv": "858fc6ecf57f55da2a019499d2f7753dfd221e8808fd110452777a65389c963c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p01-al/memory/resource-samples.jsonl": "4bde86a429a4033e5b68c8c22fae48c51c6db1f1f3feb2479bdc3abb41fc9db8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p02-cl/http/isolation/endpoints.jsonl": "1de456728a69eb18404df43e33db403074c27b5d4440180f43be3779ee9f2a6c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p02-cl/memory/memory.csv": "5ff67b8af08aa190191e4c7ece6f31b8a8ba1fb69a87a1b5406fbd856f917f17",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p02-cl/memory/resource-samples.jsonl": "272040d39b036fd204940aa335b6b6e091049c06c637ee7d044ae3864a28eebe",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p03-cs/http/isolation/endpoints.jsonl": "7620aa58da45a263b15e959b9f4cfdb8d0bb76d43a1b5535bf64ce5823f24cb2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p03-cs/memory/memory.csv": "9cb29df7fbf065e9447c4fb5e89d59086bba7a06c40ef3b94924600ae6230d3a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p03-cs/memory/resource-samples.jsonl": "416beda675c55c1c1710c65974680d5d6c1dd27dd6a103d70fa16f934eac72ec",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p04-as/http/isolation/endpoints.jsonl": "8cc30fc35b9999a350767e45c99422443daae0250213c17b25bd8743f9f7e4af",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p04-as/memory/memory.csv": "260af456bde66092e01a460da00a0e23387a333974593a9634860f78bc6259e3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p04-as/memory/resource-samples.jsonl": "2860bd5e17318d951f442dbfeca4167cc7811d72838861741767d284b2b36947",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p01-cl/http/isolation/endpoints.jsonl": "89d73ca32e877a4b547d5cf56a08d6d648a0d5235fb93daf3b6eebe4246f3601",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p01-cl/memory/memory.csv": "c8a3075017e794bb7aa458ca069bcf23dc4d9f29e0ac6d0d3294b1da50a96f13",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p01-cl/memory/resource-samples.jsonl": "88306fa905f4b579e738142307ac6cc48dddc113c433235240a0fd88c655cbfa",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p02-as/http/isolation/endpoints.jsonl": "44a31c3494fc77edd607ffd5368bbddb4efa709f2083394dd213de15a0dfd4a9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p02-as/memory/memory.csv": "cd018c4bf4e741ea12045b06f28881aa09c09f1df4b624ec5c7baf33e7691ba4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p02-as/memory/resource-samples.jsonl": "7802f194c3906ee0dda304a6edff72d5aaf0bd9e91d738158680245eb1a0418f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p03-al/http/isolation/endpoints.jsonl": "5b0d603451e6832fb16dfed0c768efa768579be423656fc858b33b593dae204f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p03-al/memory/memory.csv": "0613e52d5e42dad6b16b92e90dafdea7d6c33b3710c4a33f238da670d41e44b2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p03-al/memory/resource-samples.jsonl": "d38e2fd266ba72a3571cc6a0af326d29e9c39496cb72a32aa672c519ace88404",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p04-cs/http/isolation/endpoints.jsonl": "b4ad42624f37aa9b0cca4326a6b588e4715c9443c63a2e5eb58cf70903c22813",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p04-cs/memory/memory.csv": "716e065ca63a1b25a23f24fa751f7bcf8b771673e871bbe07a56bce8b4395722",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p04-cs/memory/resource-samples.jsonl": "02362363c1da59c269904bbedd89418f014aa8e53e5761e56f247dfd9266e7fb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b01-p01-as-stage.json": "db245a675ee2abd50e0909ff83a94bb2d2e04de1d0ee4328812656eef389e6d0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b01-p01-as-decision.json": "1e773c4937d2d41b0d795bab4d37bafa1ee89136e66067c06fb1c1fa77c31631",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b01-p01-as-controller-exit.json": "030317dc98acdebfaabffa8b076d58c0be425b4d89f91859fc738c9069c842a9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b01-p01-as-controller-start.json": "c65425c91642ee5cf78f9b5fb9d8f91dff0a2429cfde8225f33afdcbb58184b0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p01-as/protocol.json": "6bf6becdd9025427a4fe499e9e545b8f291c209d97c3309b1357667239dda053",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p01-as/http/exit.json": "d3a688e4b08e2b77796451d591711a0107f2ae13ad527bb8d03c109630acacef",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p01-as/wrapper-exit.json": "0ffdea19bf21682250f6c37caef807ba2eb8109d6d3868768625bf397b00c831",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p01-as/http/isolation/cleanup.json": "527fa24c8218ddb7ab21fc84a90e668f32a44f7f7d776281005dc1f165b91481",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p01-as/runner-process-group.json": "27ad4a138c1e987c901d9d249f01c7915d8786bde287a2f298a04d048ee4d94b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/sequences/b01-p01-as.json": "1bee348f657c8eeda62d8d498ebd6907b453e43e024e82e8df9fbf8d725ccf09",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p01-as/memory/memory-peak.json": "b087423634348eb45e0a0884f06b38343edec7e2140a95283c41e51bcfc3965e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p01-as/http/isolation/identity.json": "d7003321ee19e06fb1740f0b819cfe68f46560f995afe0855d472b1884932a9e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p01-as/http/b01-p01-as-r00-conditioning-context-1024/request-boundaries.json": "fd6987a2c1ed1c87dfae8f6416a05b504cdc83ed7b8833fdd4c652ed21dd0601",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p01-as/http/b01-p01-as-r00-conditioning-context-1024/run-1/client-exit.json": "390ab1213386542b38f9aa9b4bc0dab063fab24bb87d4211fee63c433a0faede",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p01-as/http/b01-p01-as-r01-probe-context-1024/request-boundaries.json": "c214678dd972c8ef0761ebe873e9a3e5cce27b7bd5f484cb48a6267ebbaacf38",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p01-as/http/b01-p01-as-r01-probe-context-1024/run-1/client-exit.json": "f70c4e2c880395e8c7a573c3673404affe31ac5a28b5a36b5870f0e4b1fccc36",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p01-as/http/b01-p01-as-r02-probe-context-1024/request-boundaries.json": "6a50194d205b0abfecb90959168ea66d6878825bb6d1ab1714a9f522632eddd6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p01-as/http/b01-p01-as-r02-probe-context-1024/run-1/client-exit.json": "e9362248de540a2baaf0ea771a724e99d48a9e4e472250efa38be01bbacf07e9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p01-as/http/b01-p01-as-r03-probe-context-1024/request-boundaries.json": "938466cc9f04fe3d439f74341dcde43173902b45845b0803147a44ecbfe212e8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p01-as/http/b01-p01-as-r03-probe-context-1024/run-1/client-exit.json": "b1e9a52e343ba510dbc2297c2e779f65246ac613ce31ecbf6431a0fb1a72411c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b01-p02-cs-stage.json": "22c06243d6f107798fbccd17417194a8e959efaf9b776a8a71dfe0859692dda0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b01-p02-cs-decision.json": "ea24b097c14be9b99b35f6d10e92dd34c7e729f7b6d32054fa71dfbebc39f9d4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b01-p02-cs-controller-exit.json": "4773674461f8260f73a5d30ef09dba0355ad5420090d1bc8813dc6c5acda3c33",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b01-p02-cs-controller-start.json": "8be91aebc41b260dacaf8e6ff4ce569c3a4cd254bfd5b8fe5acf3f1817c29b01",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p02-cs/protocol.json": "436d886e44a46a07a909788c3b802d504f3877950616ff2edde05bae4f851a89",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p02-cs/http/exit.json": "d3a688e4b08e2b77796451d591711a0107f2ae13ad527bb8d03c109630acacef",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p02-cs/wrapper-exit.json": "3fac63afcaff4af2528fcee4e2726e85bcd8af62e179bd14c9bf9d997a325a52",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p02-cs/http/isolation/cleanup.json": "2042473d5c1aa320182cc613ec93cccb7551bcb46f73f00b2e67e3b0e9a553fe",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p02-cs/runner-process-group.json": "343c0e91741caacdc595fbcd2ab6bc581427c1841fff16d6aaa1e258831a5ff1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/sequences/b01-p02-cs.json": "038070dc8e78c235bdea685096685f096fe9f6641eb7f22eee3c5a06695c63bd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p02-cs/memory/memory-peak.json": "3286da3e47e9d88f39fb47e5b90db5d07447a9a9c7048a7b6817f26422378598",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p02-cs/http/isolation/identity.json": "28a4796ccf7e335608adf945cfe735caf3321f75c4dcb04bd1eb66443bbebaf0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p02-cs/http/b01-p02-cs-r00-conditioning-context-1024/request-boundaries.json": "305f262f126a70b9e8e2f6fd206aea65924501e5bcec5e2e32e106a4579b2ee3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p02-cs/http/b01-p02-cs-r00-conditioning-context-1024/run-1/client-exit.json": "4d2d687b397bc55636b10e38d6138ad602507bb14f8db9cb56450d899d60f629",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p02-cs/http/b01-p02-cs-r01-probe-context-1024/request-boundaries.json": "fd896d27c79e19ade24da11e441da130a34f8844dd827fc0cf52c3dfd2c4124c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p02-cs/http/b01-p02-cs-r01-probe-context-1024/run-1/client-exit.json": "f5bfab9b2699e1516e101b160b2524b629a8c8de265c061571e6a7d80e82bc9a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p02-cs/http/b01-p02-cs-r02-probe-context-1024/request-boundaries.json": "1bd3bc641f06d2a332691fe5db53309f58fce389c5fdfc36f1bf2acc0db388e6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p02-cs/http/b01-p02-cs-r02-probe-context-1024/run-1/client-exit.json": "a943718f8bd57885e547cc14a331de7380d5045f2b38945055331c30d9951237",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p02-cs/http/b01-p02-cs-r03-probe-context-1024/request-boundaries.json": "a1bf19bce8c57e1a8a5b0aae6000624121233e48a57e63e30f11e584348183bd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p02-cs/http/b01-p02-cs-r03-probe-context-1024/run-1/client-exit.json": "f84805d331f0e2b90d7b60c8f9400332ab2c0a9802b8260f081d16a11e976e6b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b01-p03-cl-stage.json": "27bbfc08fe6e793564874cc81be1dcc58f0bc01ccb7aea94d3df6f47c16b15ae",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b01-p03-cl-decision.json": "68bba421994caee9bddaca09735d3f90de2255e727afde9b99cfd322d26d17cf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b01-p03-cl-controller-exit.json": "c9f62ddbba6b10ea915886e0e267c5efc48d5a83cee9f1fdc910e75982976446",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b01-p03-cl-controller-start.json": "8165db29a37033e5a0d355b46e292708222dcf049b27f22447a4248c7523aaad",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p03-cl/protocol.json": "4bf33502573822cbfa7dad36e20d5076d7ceca6048945bceb96419c56a53de66",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p03-cl/http/exit.json": "d3a688e4b08e2b77796451d591711a0107f2ae13ad527bb8d03c109630acacef",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p03-cl/wrapper-exit.json": "f4bf57e7e4e170222db6c8f0b717a78b97990597e7dc48af562e7bfb31b3fbe8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p03-cl/http/isolation/cleanup.json": "3636021917a572037e7819107e736ad8636f63ad061f679457d313cc2b1dc2ef",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p03-cl/runner-process-group.json": "5d1d5a4a49a0bd2870e5af4d21231dab64b77229023a8f7b4a07852610fdbc40",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/sequences/b01-p03-cl.json": "e9cf2792a9eb3dacf8ebaa6eb4de378e8f0d2b9226fa547579166a97a19b9dee",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p03-cl/memory/memory-peak.json": "d81071e775f517a15022dcfb422c1733e899a3ebf8d7fc2f82e4b6274bbee235",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p03-cl/http/isolation/identity.json": "9dffe079fe09f06c5d6823cadcbd955efe8a7776bdc115f3abbcd1cfe891c686",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p03-cl/http/b01-p03-cl-r00-conditioning-context-8193/request-boundaries.json": "9b356169ade5211d52c493b260af387015fd5e4075e0dd3d8ff07fae1eea8122",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p03-cl/http/b01-p03-cl-r00-conditioning-context-8193/run-1/client-exit.json": "de3eb520f2796acbebcba0568ec4d968e428b3491c4f02fe253f9d9f51a9967e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p03-cl/http/b01-p03-cl-r01-probe-context-1024/request-boundaries.json": "bc173b9038e69c5b976f596a28ed967996fdfddf6f722e256e31b8c992a16f81",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p03-cl/http/b01-p03-cl-r01-probe-context-1024/run-1/client-exit.json": "8dd43e5032b580b78ac85101f28724d0039b8ffaa49ca0b4881f9fec0134c28a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p03-cl/http/b01-p03-cl-r02-probe-context-1024/request-boundaries.json": "28c51533b0b1ed72e936c7389d420d959a95b10e05e5a846bd4c9327208c2299",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p03-cl/http/b01-p03-cl-r02-probe-context-1024/run-1/client-exit.json": "f3645fc5c2b4234c3f5862d0f8fbe7b9b95392f4580515fe6f27f5c1d5a1cb66",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p03-cl/http/b01-p03-cl-r03-probe-context-1024/request-boundaries.json": "0e2aa898b5b7cd70156a9d906b9c54633bb31b64fb7f991ae791949b74fe250b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p03-cl/http/b01-p03-cl-r03-probe-context-1024/run-1/client-exit.json": "6b4cbc2c8c584669538894682e885874498c6c5a8ba0eb4aefdd7a07d36a9fe5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b01-p04-al-stage.json": "c313d66b5a689cbe86036de87926e71777cd0cfb2bd099110a3dbfa3a0432a93",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b01-p04-al-decision.json": "a04f2d8cc69521235edda77559227f54295afb09576144e8c36d353ba2bb9006",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b01-p04-al-controller-exit.json": "e67d53479ce27a5b878abd5da1872eab543120fc953a5c9d86684f96340f94ba",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b01-p04-al-controller-start.json": "b12abde683ffe75d43eb4980bcd14eec9fcac3e585e2c062294c360da5818e20",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p04-al/protocol.json": "8ba226c7e3986180990bbb4242c144791a4cd072959e5cff3cf229675b92d0c4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p04-al/http/exit.json": "d3a688e4b08e2b77796451d591711a0107f2ae13ad527bb8d03c109630acacef",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p04-al/wrapper-exit.json": "4832312a6dd445e7426a0e7d025b5af74e03a55aed3d9cce4146644fce6894d5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p04-al/http/isolation/cleanup.json": "0a75f8862db7ba45c6eec8ea6601fbbb04449a006f9cd63fb1d88086e446b8eb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p04-al/runner-process-group.json": "67787fb3847c720642035ff9a64999a1c49e97eb8b96518b3363ba633cdf32b7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/sequences/b01-p04-al.json": "288bf51fc597223d578b46593d28cf649489f4703ced9f7ecb950527f7bc53af",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p04-al/memory/memory-peak.json": "d4f5fac84c5ab278b491ab9509faa75571a891896b120a3642707a105bfa7840",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p04-al/http/isolation/identity.json": "7b45964d8b05448d1aa6a4de25d5a0f0d5ff5eaae19dd9e762f50020c3e2b36d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p04-al/http/b01-p04-al-r00-conditioning-context-8193/request-boundaries.json": "337c1507f89124be3245b4e13633bd391cf02af72edd2da2f0c428cff6843d26",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p04-al/http/b01-p04-al-r00-conditioning-context-8193/run-1/client-exit.json": "64bc5a233fcb8e45ff02488b37c2c408b636b53901bca933429222db5cf0d67c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p04-al/http/b01-p04-al-r01-probe-context-1024/request-boundaries.json": "0d24e8340924c8d7992c2129983c94d4ca41ff26dce364ad1e8899a179809571",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p04-al/http/b01-p04-al-r01-probe-context-1024/run-1/client-exit.json": "2d4d94e441a98444fda7368af1c68d0e38cb78e8d8d100a09009db65fa7f4c19",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p04-al/http/b01-p04-al-r02-probe-context-1024/request-boundaries.json": "381789085dfadd0599c0c35c92bc5919052b6772ff04f54994eae2e405a8b224",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p04-al/http/b01-p04-al-r02-probe-context-1024/run-1/client-exit.json": "180d5a934efa0757e1c6bba10ef752ed7d1c2f74a14884e8544b5ff296ce9289",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p04-al/http/b01-p04-al-r03-probe-context-1024/request-boundaries.json": "3be98ef533fdcac12178d95f9de15c7182371a50c495efd856542b963b22966e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b01-p04-al/http/b01-p04-al-r03-probe-context-1024/run-1/client-exit.json": "1cc8281e65727dbf4956edc972ce19b39a6ffcfd68b10d7ee49de0b9f260090f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b02-p01-cs-stage.json": "8e60ea93536bf89dc61f5c3bbd44f1d85f3130dd05e96c728fed81f7e78723ac",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b02-p01-cs-decision.json": "5c88c6ffd658f746ce987545ee0a985a38e99f1cb8fdfaeb41a641f509de362d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b02-p01-cs-controller-exit.json": "748c2a34ee8dd3f9b9dc245c5bb5747782906ec66121396b92dc15bc559f0ab7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b02-p01-cs-controller-start.json": "592a924fee1d448da9d6736fa064184784cec04a6a1654da577d06adbde2ef11",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p01-cs/protocol.json": "1d2363b680dc4dd923bda9023e6909cefb40d71f168ed0b30dd283d633238664",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p01-cs/http/exit.json": "d3a688e4b08e2b77796451d591711a0107f2ae13ad527bb8d03c109630acacef",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p01-cs/wrapper-exit.json": "701e853df4f998fab1d17f945f867c26a50ad89a1c0b051c9e7c9b12f950111a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p01-cs/http/isolation/cleanup.json": "844772f02b2727a9c33f85e8dc1851d2ed1c7bb86de2cc24e0a3e7d7c2451f6b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p01-cs/runner-process-group.json": "4c86d26febe65e45495a66e7a8ffb98629b257bac868068731834e1f1dbbd7a1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/sequences/b02-p01-cs.json": "134d9824eaba0b19d41d47162322f686b31ea166450b2601a530fa748644599c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p01-cs/memory/memory-peak.json": "b7b6d533f3eb9e01f920322ab67e2bbc07014e07b201a8008d5f514e430babf8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p01-cs/http/isolation/identity.json": "48397021fe295348f68ffb4f2fb360a777325e0e17bc29920b73b5ecd68e244b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p01-cs/http/b02-p01-cs-r00-conditioning-context-1024/request-boundaries.json": "07428b6fdf247627c8f4f188aa882431080f5d88ead613ec68fa28586c0e23f9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p01-cs/http/b02-p01-cs-r00-conditioning-context-1024/run-1/client-exit.json": "5601033872a7444dee25db7977151aa754628d63d2022570abecaa127d021a49",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p01-cs/http/b02-p01-cs-r01-probe-context-1024/request-boundaries.json": "30ec1915f0de124173c20e083fadb702a4c00918b399e3fc048afdfb15d8e743",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p01-cs/http/b02-p01-cs-r01-probe-context-1024/run-1/client-exit.json": "adfff8785b1ef567fed1225218430078fe1120e1ab496775f51a6d7445d7301e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p01-cs/http/b02-p01-cs-r02-probe-context-1024/request-boundaries.json": "ca36259012631738b8d4fe411aefafba4a75ecaa3be4d354e030719cf9463c72",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p01-cs/http/b02-p01-cs-r02-probe-context-1024/run-1/client-exit.json": "f546dd603f73b0feee762d147ca35fec6d125b16cbd7d21e3e39b659b9a0903e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p01-cs/http/b02-p01-cs-r03-probe-context-1024/request-boundaries.json": "68f97ea9397e59ce96ff06c6ffc99370e0c7d770b8efcd1e40cace6826979fc1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p01-cs/http/b02-p01-cs-r03-probe-context-1024/run-1/client-exit.json": "79d1511c7defc8fd858cb0db48631e6b67acbfca7468563e89a8f3cfdc2e1539",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b02-p02-al-stage.json": "3192dd1a9b0f0735a4ea4d500b1cd3f7c0961d900fb5df7b96a0afe7d8374532",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b02-p02-al-decision.json": "89087148451f4d36300cb53d06d2e9a258c7e1138e2000dfe4fe705e0832bb1a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b02-p02-al-controller-exit.json": "b7f3e48428a24d95cd071a9a2313a43bcdf37a3069253cfc1fb3f09b8ac4e5fe",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b02-p02-al-controller-start.json": "5e9a23b52682a31eea9d18ebcb3d5eac880a502c68907d81058d6fc99cc1c91d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p02-al/protocol.json": "f7a0ecc9518a4c56ffcfb33c265be7efa4d80da28a884f0e845ffb32118c1723",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p02-al/http/exit.json": "d3a688e4b08e2b77796451d591711a0107f2ae13ad527bb8d03c109630acacef",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p02-al/wrapper-exit.json": "f0568e8a5d6aaf616b3cec84d9553fdedea2f161fd5c7ec8a9a781852400dbcf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p02-al/http/isolation/cleanup.json": "8469b33a5590bb18f527308082b3f8bf2f3f8588dc1222b35d9b132155a16ed3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p02-al/runner-process-group.json": "7bbda1cf4064d1da5727d2d49af2ffed0eb545336baf5d5d8b9f3087745dde4f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/sequences/b02-p02-al.json": "8a5b30cc0c532a1101c147bbcf33b73d4c648bd5f2eb5780f0609ecc74bcbf06",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p02-al/memory/memory-peak.json": "2ac876663e42be33b8ad565f47ad4b0abc5c5fd9ec1f7dcd86d8abd0f564bbc3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p02-al/http/isolation/identity.json": "5f7d53a6221f21ebf11ca329b5d87a5f90313cfd60481725fb505dd99b56fc1e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p02-al/http/b02-p02-al-r00-conditioning-context-8193/request-boundaries.json": "70883994c7d5678652a5e3c080a792c2ece336ff6ee2460fc2c9e332cbdb7c28",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p02-al/http/b02-p02-al-r00-conditioning-context-8193/run-1/client-exit.json": "d1a9b0b0daf7f56337dfac51550630833887fc37af0a7cf4657bde490b268651",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p02-al/http/b02-p02-al-r01-probe-context-1024/request-boundaries.json": "96757ae5b794d5f1b4dc12000ff3773a9128ca79c76e6852ac23e9733666aa25",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p02-al/http/b02-p02-al-r01-probe-context-1024/run-1/client-exit.json": "caf7dbf72889e512e0d6b6a0e34471eb418633c00e70c832d46112893c0fbf7b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p02-al/http/b02-p02-al-r02-probe-context-1024/request-boundaries.json": "8821f8ea27052e161d2de73eed4e193a8c01e687251fe4cf2ca37101e0599c4b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p02-al/http/b02-p02-al-r02-probe-context-1024/run-1/client-exit.json": "ce84aaf065db82d10840a756c242f604b03608b73edb9e25b7733d09a8445386",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p02-al/http/b02-p02-al-r03-probe-context-1024/request-boundaries.json": "901d59ab03b7e551be33202b8941937cf08b9abeb3beff89cdf3c5f62c73a989",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p02-al/http/b02-p02-al-r03-probe-context-1024/run-1/client-exit.json": "faaeceb216e51833e33b09b7054619b66e6ec546ec824d87866cca815cce5983",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b02-p03-as-stage.json": "bd651c553584752b14e048046004b5af6bc90cbbd213616d8ee62f990cd26178",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b02-p03-as-decision.json": "1f75d6e2623c1328aa89ff6f06aaf2605e65e5f3959c5d8ecde3e5f1663ef9e2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b02-p03-as-controller-exit.json": "73d4d9d25009c7ad86ab5e79e75c07713421b552f7f2c801bf49e0ba5cc9bcd1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b02-p03-as-controller-start.json": "7c1a12218aa4de3b7b92bde570a3e4889b4361d3870ee53ecc994efffc5ba8e8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p03-as/protocol.json": "abc0cebcd436087f9fcb55fd38aaa0dbbb92d85e8a631447b1a2e3cfc2cda6ba",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p03-as/http/exit.json": "d3a688e4b08e2b77796451d591711a0107f2ae13ad527bb8d03c109630acacef",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p03-as/wrapper-exit.json": "25eca366ffbb658bc7b3c11d90fbb59dfb67175fa05dbaefd2e92488187fbb0d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p03-as/http/isolation/cleanup.json": "2983f66de14de52d76d8d33eda263cdee50bfb80612e0d73740cc589314cdc44",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p03-as/runner-process-group.json": "c0237c6c017379c71e195c0a4b2cbe233259050ef0eb44530aa374c17803053b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/sequences/b02-p03-as.json": "3455673e28186ade58fc9eeca815a457904ba7090cfa87bec9bd3c9a8a3d75f0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p03-as/memory/memory-peak.json": "31af7f55f64ec6c02d6f3bf3f30fd3d9561ce3de0176ec8a56b7435921cbd1d3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p03-as/http/isolation/identity.json": "9ca5448cbb41487a0170246171e5ecbadfa6024becf633b84169ffda0238d5ab",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p03-as/http/b02-p03-as-r00-conditioning-context-1024/request-boundaries.json": "a74f53097448ee2fe27ba6c414459fd348f111122aa7e43f8a892db89228774f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p03-as/http/b02-p03-as-r00-conditioning-context-1024/run-1/client-exit.json": "f4bf728575791390e3e999c47b80890eda2003bbaae6f43af37acea8b0657394",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p03-as/http/b02-p03-as-r01-probe-context-1024/request-boundaries.json": "303e93a880703dd8d4e1352e56f729047730084ce629d69ced2f5950b8dc93d6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p03-as/http/b02-p03-as-r01-probe-context-1024/run-1/client-exit.json": "7ace23cc45db2d9ab2146cab8cd912659b05b3c0d45cedf6033f40a0e8d2d1c5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p03-as/http/b02-p03-as-r02-probe-context-1024/request-boundaries.json": "6320f5d20c8f332ee4d5339c94e54842246364209214127619ef8665e3499562",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p03-as/http/b02-p03-as-r02-probe-context-1024/run-1/client-exit.json": "07d17d1e18a4bc0730a2e56f375c4f4be248937f2289a09a2cfd612c0d1fd1b9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p03-as/http/b02-p03-as-r03-probe-context-1024/request-boundaries.json": "e49006620b1cb72b6d5deaba1111e7c530b805642f8d0d4bd10af32da4364a6d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p03-as/http/b02-p03-as-r03-probe-context-1024/run-1/client-exit.json": "d089972ca121d7791ca01ed75e116e646b99dacd05f31e06233e2f62ea094b1b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b02-p04-cl-stage.json": "01aa28875693dff6a2ad3b08721e361e71e4d009dccde7a82e866477da1226d1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b02-p04-cl-decision.json": "295683f9fd99577647d03d6190d931398a612e92dd050fa24ba5e52a8d62943d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b02-p04-cl-controller-exit.json": "541a03472b492959555ea7c17c7ec41440fb9317d5ba7bb9273b758b39071f6f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b02-p04-cl-controller-start.json": "ccffc3669b839e69f9db483f7349b0ce9cd490fe9fedf071681b608af3f06f17",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p04-cl/protocol.json": "058cc7ab2110eab99705444ff828447d128adb968efc70485d6f5f6c2d11a51a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p04-cl/http/exit.json": "d3a688e4b08e2b77796451d591711a0107f2ae13ad527bb8d03c109630acacef",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p04-cl/wrapper-exit.json": "59515a565c312f86133612541f0edaf9523f540f78ffe79b295f882cf3f9eb54",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p04-cl/http/isolation/cleanup.json": "fd4375e37d6029a0cb8e890a25710f59f3e6f4ddec93a92d45f4a36cb26111fb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p04-cl/runner-process-group.json": "b31647843a3c6738812b6d13659c3d6b7512a60da4a6806dba87a477e84dc8cb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/sequences/b02-p04-cl.json": "7630827708a2b069b0d8339ed2cf9102571372943706e64abec56bd9cf3482ec",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p04-cl/memory/memory-peak.json": "d87a53c69c2fad1218a66f2fde03a88b507a08bf7bc694685485c512745435ae",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p04-cl/http/isolation/identity.json": "ec2e33406f42df61bc1faaa884dea0edc940f7c94ad1c183fecc0eaf7c3d4dab",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p04-cl/http/b02-p04-cl-r00-conditioning-context-8193/request-boundaries.json": "1c711259202df6822872784b1527fb344e5f593633b946323bb3804983604436",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p04-cl/http/b02-p04-cl-r00-conditioning-context-8193/run-1/client-exit.json": "aecee4be86f3ceaf3897864b08e597cca95113e35c853fe3b313d7c76cfac14d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p04-cl/http/b02-p04-cl-r01-probe-context-1024/request-boundaries.json": "2cd4bf567a83893ac48afeaf51f086bad40dc342a74afddfc9c953e8d3db651b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p04-cl/http/b02-p04-cl-r01-probe-context-1024/run-1/client-exit.json": "74f64bdea54a14298d36e175e4aa8d72beb4c3177c12e2da396582f34561aba5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p04-cl/http/b02-p04-cl-r02-probe-context-1024/request-boundaries.json": "690c808ce32924f102b2ddfa2021aa72430f32dadc2d412323dfcb02bdadda60",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p04-cl/http/b02-p04-cl-r02-probe-context-1024/run-1/client-exit.json": "98b67a9033bc0ce42feab5e9d3061398b80f2c995b3a0c11f7b769c84ee61a6c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p04-cl/http/b02-p04-cl-r03-probe-context-1024/request-boundaries.json": "51fba8018d85df80d3d25608bdc5b552060175fd759ca77a0b215ab7b47f4cf5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b02-p04-cl/http/b02-p04-cl-r03-probe-context-1024/run-1/client-exit.json": "6852f7f24761f12d388171a2fb989db13dd2a1e5d903a31f618856a2981f9fbe",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b03-p01-al-stage.json": "923740ea66c2b2b06f9d7e825493044f5b2fb1db8cc57fc23b2263d59e25230d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b03-p01-al-decision.json": "e2ccb5a6cc8fd5a9e62a9f50077f1c2d6b6912e47bd36ebe52e3875fd116436a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b03-p01-al-controller-exit.json": "6a171751ab98b2e5b1fe2c20196f4724bdaa68c1791a5d3e247324c61f404273",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b03-p01-al-controller-start.json": "5ba69d3fb6e02828da15d0ddebf721790845168cfa210f124de05597f2912d62",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p01-al/protocol.json": "58191ebb95994d4be1ea9d30412d5b2533f545b1d6a4172263ce9d3c99a7d4ea",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p01-al/http/exit.json": "d3a688e4b08e2b77796451d591711a0107f2ae13ad527bb8d03c109630acacef",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p01-al/wrapper-exit.json": "21db929708269f0e4f8f59bf13683fa1c8a494c8376b9ba0a15eb6d92439d150",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p01-al/http/isolation/cleanup.json": "778eded27861719bdb8204a57198177f3ea4c5d1dfd8438dae937b1329d2d9d3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p01-al/runner-process-group.json": "b5998d7e82ded449895ba84b599c6cdfa958f2716de7b925db5b96bd075f36d4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/sequences/b03-p01-al.json": "edb405725109db664698ad4ca9673b2f832cf476cbca859e4f471dd3e419cf40",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p01-al/memory/memory-peak.json": "9969bf1060ee4ed4fccd7adecf015f8e6159e6eca3d10b76e8dfa40247864d91",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p01-al/http/isolation/identity.json": "ddce82adc819e1517da1c9654f648d78e7964719679f435f0a83d7f46a09caa1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p01-al/http/b03-p01-al-r00-conditioning-context-8193/request-boundaries.json": "54dd4581ef28470386a5278b397704751d562d8c5205dc820d4293338cae770c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p01-al/http/b03-p01-al-r00-conditioning-context-8193/run-1/client-exit.json": "b135c281254c06942117f214d79d44f0c918bbca414b197d70af98a8902a5501",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p01-al/http/b03-p01-al-r01-probe-context-1024/request-boundaries.json": "3980a6f3940c93a74263d983df68b7786189849fe7188e323a54e991e7ae7405",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p01-al/http/b03-p01-al-r01-probe-context-1024/run-1/client-exit.json": "1374a904bf016e01a686cf2c4e31a6639e48230d191462c7b47f79d94cda5504",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p01-al/http/b03-p01-al-r02-probe-context-1024/request-boundaries.json": "b9fa4f59874c17e4db796d08af4e240628f4752517b7584e762668de51c0a2ab",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p01-al/http/b03-p01-al-r02-probe-context-1024/run-1/client-exit.json": "709bbc343b5ed66825c42b4dab94931555c8a123271fab677b023519d106c5f7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p01-al/http/b03-p01-al-r03-probe-context-1024/request-boundaries.json": "7cc53344330ea45d350add76d0c09b524ab09e44bced4220a071eb048f777620",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p01-al/http/b03-p01-al-r03-probe-context-1024/run-1/client-exit.json": "50bacdc2b32db17238190d101ea0bba11a2b8fb7f3ddf1d03affddd2eed4d545",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b03-p02-cl-stage.json": "d18b7a8a4d3d5ec813b1752a29762a95278252526d22f1d646f0f957b34e0a32",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b03-p02-cl-decision.json": "985c05bb9291994b8efa27124994bd1dc13a0893ac2a161b794c013e0cef2fa4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b03-p02-cl-controller-exit.json": "20780a8e74ea9812ef89282444f5f08818e3c3f0e3942ada08e42a47384bf2de",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b03-p02-cl-controller-start.json": "22077bdd12501633128104696a93501b33cb03bd51643ceee34982847fee9ff6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p02-cl/protocol.json": "cd62eeb093975ff36f06614e4feb8475c363e47c7673ec677cdf0170cffa460f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p02-cl/http/exit.json": "d3a688e4b08e2b77796451d591711a0107f2ae13ad527bb8d03c109630acacef",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p02-cl/wrapper-exit.json": "c6f8dfc1870d20f9b715bbf0ff212ea8bd08d2d9be3fe344bec72ed27b2910fd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p02-cl/http/isolation/cleanup.json": "6e96d681b2684e08d73390f1814eff91b9ef13b15fa0372b7635499b9cbcc760",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p02-cl/runner-process-group.json": "38c48d83993170e5a910b6d9b479c56d84db9f5540920e7c37832f0116899058",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/sequences/b03-p02-cl.json": "a072ee6c1e35b7fd8cec4dc6419a6964d85a7426d285c0181b4e74f303e4e07c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p02-cl/memory/memory-peak.json": "81d73d8971abd32c97211964df700e7103cdc59dcb5e65e5a2ed2b7e1693f864",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p02-cl/http/isolation/identity.json": "1885b2ae41ff90ea9a42171960178e0f90a963314ef9fdb562296dae841dc9f9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p02-cl/http/b03-p02-cl-r00-conditioning-context-8193/request-boundaries.json": "e59297f29580301536eb984f1a5f23b8dcfe79a3acf3b037dc19915e92930fb6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p02-cl/http/b03-p02-cl-r00-conditioning-context-8193/run-1/client-exit.json": "cc78f7ac40cc2c47f32bd763caffec5ab1e2bd52103ae377426bec1e67399d7b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p02-cl/http/b03-p02-cl-r01-probe-context-1024/request-boundaries.json": "61584b19c9042a379e08504473e9bb897c6f8238c37075a1657c1faaf2954204",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p02-cl/http/b03-p02-cl-r01-probe-context-1024/run-1/client-exit.json": "51fe8bb5a34bc9ff25c592a157c67c3a5da68ef8b1dad25233dcab9268f1c450",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p02-cl/http/b03-p02-cl-r02-probe-context-1024/request-boundaries.json": "e06243486187391db4228817cfc23abd4929fb2e518a598d78105fe78e70b38a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p02-cl/http/b03-p02-cl-r02-probe-context-1024/run-1/client-exit.json": "69f5ea9667155dcec77cbcb8de09ef1e580b7e3bf554d0fcd078876e36b82bb1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p02-cl/http/b03-p02-cl-r03-probe-context-1024/request-boundaries.json": "c5f3da7f14fda902c3ec9070c281542f59c669d805a36f517787f43e9a1794de",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p02-cl/http/b03-p02-cl-r03-probe-context-1024/run-1/client-exit.json": "cb3f10d60e89caee61389c2f31344c1020270ecbe8c24416fe5d4fbf946354f1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b03-p03-cs-stage.json": "6429d349bc0d3c11242f9dd9d33b58e6721a018546132e25b391b058d71d9fe3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b03-p03-cs-decision.json": "ef148815b5aabec6d5deef89d5af0af61b9c1f5827d81144f2e9215166e5adf1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b03-p03-cs-controller-exit.json": "385f62836075cf590a9b0ad40a9b446ec11b706c65f00afbff0d520c0e2741f4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b03-p03-cs-controller-start.json": "185d9cb7ff387df250ef8a21fb7157db8b7eda9bbde18bb562fefab1e2274df4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p03-cs/protocol.json": "e5a611672f6d18eaf4182aa8301bc8aad57ae9c0024178d01e0911724da3fa35",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p03-cs/http/exit.json": "d3a688e4b08e2b77796451d591711a0107f2ae13ad527bb8d03c109630acacef",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p03-cs/wrapper-exit.json": "ad7b9a16188fce758d61705b4e59f924b0da57304f85b3a63d7d24b671d54c90",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p03-cs/http/isolation/cleanup.json": "ebdaf060d8559a0034ceabf3043b8a0155ac727ea9d01ba13294226a920b25a0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p03-cs/runner-process-group.json": "da3c5fe94902bdd080f2a5bdefc7c56c5b1cf2852957e613d93c1174199a3988",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/sequences/b03-p03-cs.json": "6442323e5156437bdf418876cda3c7c9b047828c58f544a7420a4486b32196bb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p03-cs/memory/memory-peak.json": "45f52015547456655ab57edac2b53445b933583e334f7236e4bc7edf5945746b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p03-cs/http/isolation/identity.json": "7b5d0e8a2b7a4628c18284540d87f05dae193fc16ea39ff15992abe02abb4ac8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p03-cs/http/b03-p03-cs-r00-conditioning-context-1024/request-boundaries.json": "97551bd45ed23e36f8f486475ecbf8d39e5615c82db7eeeb80aaf73239835874",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p03-cs/http/b03-p03-cs-r00-conditioning-context-1024/run-1/client-exit.json": "9ffebfacfc13020c38e4e7f2c340be4f23df81869a5cb6d885cbe1379924e4cd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p03-cs/http/b03-p03-cs-r01-probe-context-1024/request-boundaries.json": "853e31075c69d4208440d72d93169884ec8141eab7f728935423903a6931e901",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p03-cs/http/b03-p03-cs-r01-probe-context-1024/run-1/client-exit.json": "023de696a9a47ae8a8f61eb00dad6965c8713aa17a5c4a1d7e1a1281d562cc49",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p03-cs/http/b03-p03-cs-r02-probe-context-1024/request-boundaries.json": "4f42a839956fb53a18eb0346b98d8157cf717b83718e4955d8675c0400aa152d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p03-cs/http/b03-p03-cs-r02-probe-context-1024/run-1/client-exit.json": "b86db80ef4bb3a3b5e0ff2a70dfda1b8a0a07577c658ddb40a59a0937a3b0ed1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p03-cs/http/b03-p03-cs-r03-probe-context-1024/request-boundaries.json": "e16c72dd31644e1dbf2df0a76928c54d26095d0afdf2d71a2c8560199d15379b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p03-cs/http/b03-p03-cs-r03-probe-context-1024/run-1/client-exit.json": "0d30dd34c7992573a4cf2177cad6d22c862c2f5237222b5e27da2102d6646bd9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b03-p04-as-stage.json": "369d065f91ad4d3456e51e7165703e5a291fbaa0a10cde56474279a886d1a0b3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b03-p04-as-decision.json": "08b1589c936501d91bfc09a69feb03d5b21b33429f24d555e2b2c62427b937d0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b03-p04-as-controller-exit.json": "17b480b869066d68b9df5f45b1ad5bd045b04d234274053bd37bca82d5aa8823",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b03-p04-as-controller-start.json": "23cfb3d19ab01b4634b3ddc4e91cfabd6e575ba4bc7c48abd52bf38e7b54048c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p04-as/protocol.json": "3cff4ed0295134a1c9119782232d1e05c7b7dbe172af07f2d1d3d40679422174",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p04-as/http/exit.json": "d3a688e4b08e2b77796451d591711a0107f2ae13ad527bb8d03c109630acacef",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p04-as/wrapper-exit.json": "063e2e64ad8f51d2941098291c627224c4f945617f763b823e3f1f3b5b046438",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p04-as/http/isolation/cleanup.json": "bcdceff8ebce73fb21ac2caa741467ee0b0a8ffafea4696cf85396c8a40cd27a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p04-as/runner-process-group.json": "d8186d5aaf185538e71c1861a31a0832b1689649142d72dc9849e6167a0737b2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/sequences/b03-p04-as.json": "6c1ad5b44853bae650e810973af0658aa1ee341f172649a5b1398e167116500f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p04-as/memory/memory-peak.json": "f4d23329bf31482aaac885004761df21b058e27d9a1651b183b51fec10e8d594",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p04-as/http/isolation/identity.json": "42bed4d18a83f82aefcb0bbc9029caf3b33a8db85f00c730c59a4f9c23806292",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p04-as/http/b03-p04-as-r00-conditioning-context-1024/request-boundaries.json": "730ee8d46b1d3b74e62de94dd20fbffd2895fdc3a11b8316780531baad1d528d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p04-as/http/b03-p04-as-r00-conditioning-context-1024/run-1/client-exit.json": "cba011d45b0b30f06da670bc37ac177d88d7bb94c55c124d9dd9896be9a8d7f0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p04-as/http/b03-p04-as-r01-probe-context-1024/request-boundaries.json": "1b413721f97a4f441235b1aea8581e66f70301411a6d75d6d04b77b84f49ddf5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p04-as/http/b03-p04-as-r01-probe-context-1024/run-1/client-exit.json": "e00c00d438fcd54c038a0e301ee4a8b3d8ffa961fb6c285aa1c6b70347d7d50c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p04-as/http/b03-p04-as-r02-probe-context-1024/request-boundaries.json": "66a2ed9609cb51a4f2a7434eed48431ab11f201a79b159a62d3b3337d1d7b6fe",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p04-as/http/b03-p04-as-r02-probe-context-1024/run-1/client-exit.json": "767382f256ec173ac7d1d4fd691a390a09370b22f543d6b441bec68c91624370",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p04-as/http/b03-p04-as-r03-probe-context-1024/request-boundaries.json": "5596ebd2d344556847ce54ad83182daec03718f8cee693772fa0687074f2e815",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b03-p04-as/http/b03-p04-as-r03-probe-context-1024/run-1/client-exit.json": "ab9bc7d1d97f10862f173eeed4d7e9031ad3413ed614ca8afaaf12ea05bafed5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b04-p01-cl-stage.json": "626594d5253a8cc8c1387fc49f03e81449f6a936f307d5bec9d2d0ebd0de28c3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b04-p01-cl-decision.json": "a445c8a08a1baa1a80aac1edb01922f5b7e94aeef55b4bc01c76361e58a1157b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b04-p01-cl-controller-exit.json": "211d55f0d7d4b3de95d6d9b52d25da7df35ba0e5158441d0818bcce526ea4ef0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b04-p01-cl-controller-start.json": "cd1e3f492800de3280008d8d9f7c0eb05b85121394c5f67d94936ca4bcef9d02",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p01-cl/protocol.json": "fb3d74b15224e1834fd8ecc7be1163275321f06d798feedb7b33676e26fa50d4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p01-cl/http/exit.json": "d3a688e4b08e2b77796451d591711a0107f2ae13ad527bb8d03c109630acacef",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p01-cl/wrapper-exit.json": "bcee7a41a42e3913adcbdc47447be1efa8725026e65ad9e67eecd5b8c7dc04cf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p01-cl/http/isolation/cleanup.json": "bfcbd23b3fb91e373f4bc9ad78cb9c8927ccc10a3a6ca6a51a7553138ca5f612",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p01-cl/runner-process-group.json": "721decc12de9bb116ddf01294cfbe77c52248b89ab1d32e2195fb5b2e507af5b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/sequences/b04-p01-cl.json": "b1a41f781b3b3d2a7cf0a3915843f10456c8065b88d5af4e3bfd5ad9c487a271",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p01-cl/memory/memory-peak.json": "b54f75a8ccf378673c1fe09c0ccd52141039b08ec519af36af58817831082aa9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p01-cl/http/isolation/identity.json": "a7fa4e1141c94d4c3d7b9f9605d9af76dfe4d5ec87e4035bb8eb4cb010d080fc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p01-cl/http/b04-p01-cl-r00-conditioning-context-8193/request-boundaries.json": "2ef39b0f1389c248649d365b274bb4fde68182bcb26757c9b17affaa984d0409",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p01-cl/http/b04-p01-cl-r00-conditioning-context-8193/run-1/client-exit.json": "2955394d57971f194e446fb7bb8b4616df705321754a89d31f9245092b22b749",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p01-cl/http/b04-p01-cl-r01-probe-context-1024/request-boundaries.json": "6acde9e67e45446ee1e1a8a886d2cb8f3ced5b726a193212dc879d5d97052d54",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p01-cl/http/b04-p01-cl-r01-probe-context-1024/run-1/client-exit.json": "f3b8572007246ffd6609dc6b89ede4aec97654bc752655e430791c353d0736db",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p01-cl/http/b04-p01-cl-r02-probe-context-1024/request-boundaries.json": "7ca33f597d1ac0a192fe3bbce36af75b437d48097883e24b812e6471ea257ffd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p01-cl/http/b04-p01-cl-r02-probe-context-1024/run-1/client-exit.json": "eab57bd4ea9597ee21215d66ddf1c7797cc298a913ba36534c97ca3170c37c48",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p01-cl/http/b04-p01-cl-r03-probe-context-1024/request-boundaries.json": "d470fff90413395458a4ed909dd2ac6edabbaf597a2850338fcac8ea8d2ccbbc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p01-cl/http/b04-p01-cl-r03-probe-context-1024/run-1/client-exit.json": "5913679b62971b06226ef149dc74a22a9fa53ee1bcbf3c06b4f1681770cf71c0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b04-p02-as-stage.json": "335e9b975fff5423d1f4f87a54d3bd6f8bb3996238bf506f021af3c5d21a6752",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b04-p02-as-decision.json": "a6530a7847c73e4917822e8311740bb2e232d41f6a2945f6d9223155507ed958",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b04-p02-as-controller-exit.json": "2330a5a11d9335dc1ff46f29f6a52859bc6d3ba60eb7ef1829f30f3a74f40a07",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b04-p02-as-controller-start.json": "e23ed137ce6a45e17713529acecc5345f69258974d76962818fe406b60d58e61",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p02-as/protocol.json": "62b78806eca28d98430b8570cc7bd7ef669265e0ed1c8e90aa6aed6a900ece45",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p02-as/http/exit.json": "d3a688e4b08e2b77796451d591711a0107f2ae13ad527bb8d03c109630acacef",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p02-as/wrapper-exit.json": "a47d33bf174c932342fe254283a86b2e79155a1eaf0a1caf66d23898711f7e7a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p02-as/http/isolation/cleanup.json": "9a1c0455f1c18f70c2e894968681216994d7175850c02760596809fea3463c61",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p02-as/runner-process-group.json": "fd519c2e81d7898bac627ff87f768e4287bd07bbe6538c6a27d7abb725b1de6e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/sequences/b04-p02-as.json": "c9035d488f99f9cbb4a4f73bcb2060d4e528dfebaf7a425cb9b61bfbc370edbf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p02-as/memory/memory-peak.json": "bf758edaef56be76e20f9f01a7ecf0be2862f216208a4b9c8a223993b0856696",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p02-as/http/isolation/identity.json": "a2ac1a0c78ed805a8ecf5c2cdc8342d9edba0257ae3c19a50dfc38b585a112ec",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p02-as/http/b04-p02-as-r00-conditioning-context-1024/request-boundaries.json": "d6bf759fcca40c33368a0fc47e380b1954c8e2827ce86aff8edf739a758362d1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p02-as/http/b04-p02-as-r00-conditioning-context-1024/run-1/client-exit.json": "e722e6250b11480a5f579c4afedceacf2b21228c2be241be8d52579b878b7aff",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p02-as/http/b04-p02-as-r01-probe-context-1024/request-boundaries.json": "338305e6bc904da44b265f9a9994c9438420b6b8e993b2bd1cf4e79430767231",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p02-as/http/b04-p02-as-r01-probe-context-1024/run-1/client-exit.json": "0afc78681777e0144540505f7fd7d48e22666d9bf557bb7a0cb34f5503f8b4c8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p02-as/http/b04-p02-as-r02-probe-context-1024/request-boundaries.json": "72bc6522fd00c6d56758073e732e36ec743e6b320666319baa9bcc2c2cdf2757",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p02-as/http/b04-p02-as-r02-probe-context-1024/run-1/client-exit.json": "11d0d7498ab975878589b8748f1b1b5cb110e233a9ae00d09ce622de2ea492af",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p02-as/http/b04-p02-as-r03-probe-context-1024/request-boundaries.json": "dc3820844688b4a08b45f74b6bc44a14078ac14e56a4da6b2f5468911dd5aa90",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p02-as/http/b04-p02-as-r03-probe-context-1024/run-1/client-exit.json": "6ce711e70a22a1461a6d67c0ab0c733197326ce3da488c602e844f5c4ac0b1b1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b04-p03-al-stage.json": "e7d651153dfc3ac34545b2e912500930830296c74cc3bafb87720d10c858be3d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b04-p03-al-decision.json": "8ad9d8761f8d62e8f669b313315a012510f02980f3913b927bc3e7986874c323",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b04-p03-al-controller-exit.json": "73fd1c95078f78503142755d1a93686a7cf5024b8581dc1334f37e4ef3215fbf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b04-p03-al-controller-start.json": "8fa5d8baf1b6c8611d78c4ea71abf7189267f7bf8667d99224d073acf2556873",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p03-al/protocol.json": "0b61c2487a4827e4a75873318a7dd7127109499fe654409c436c8bebff3d4983",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p03-al/http/exit.json": "d3a688e4b08e2b77796451d591711a0107f2ae13ad527bb8d03c109630acacef",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p03-al/wrapper-exit.json": "f5dd1443f82f1c3af59a79feeb9b69e22c6356afb16f34b2443656ea1769d591",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p03-al/http/isolation/cleanup.json": "e91225ee614cd00f1c1d745cb6986736639d33daa076db048bc18bb2dd712941",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p03-al/runner-process-group.json": "5d909d27957317ac46af689141f8865cc533743760e496a5f8e0c14fa9b89403",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/sequences/b04-p03-al.json": "c9e8458f23c67f04670a5947cd59603c3fc3d384c636fb365070e294b433c6c6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p03-al/memory/memory-peak.json": "3b9a41a5a16098569b44a357eda388be60393dd4326eb45625f32e4dcf213492",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p03-al/http/isolation/identity.json": "d0816966e9ee86d80271fdc12e2344535e67e0bea9689f940ad46fc549da5a4c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p03-al/http/b04-p03-al-r00-conditioning-context-8193/request-boundaries.json": "befbaea0201c8501d0fc7d2655485f1a9147a7b2d6123978abed724a90f60395",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p03-al/http/b04-p03-al-r00-conditioning-context-8193/run-1/client-exit.json": "f7fe87b1b93db477593c421670075c39f28ca44dc1e412386a6b4cd6f6785cb7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p03-al/http/b04-p03-al-r01-probe-context-1024/request-boundaries.json": "f3aea6b40c742e609481256ae5710f36020b8cf987bc53827f92b6bae0d80d89",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p03-al/http/b04-p03-al-r01-probe-context-1024/run-1/client-exit.json": "f6d5ad8d2a0bc50cbb909e0370663f273092d06fa1a9688e88aa7a9c4cf25fa1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p03-al/http/b04-p03-al-r02-probe-context-1024/request-boundaries.json": "2494122bab56e83f404df5a2e6c9354126f619e96367ba1efa418b5e74074313",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p03-al/http/b04-p03-al-r02-probe-context-1024/run-1/client-exit.json": "97e2c387e3cb6c24080a5dbd179e858c7c3fc9afe8d5c22715565604e95f27fe",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p03-al/http/b04-p03-al-r03-probe-context-1024/request-boundaries.json": "8980c7e232d6bf214e12be73abda16bfd922d60357b3d0544c01667fd207ad58",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p03-al/http/b04-p03-al-r03-probe-context-1024/run-1/client-exit.json": "2bad6c22a5cdeabcb8e5069ee583f712108ade6072b7c0245eaee070ba408f35",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b04-p04-cs-stage.json": "5f950bf69f8e29c1ad087d71f5c0e06461f02ac17ca99ae4f8ea2485463315ea",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b04-p04-cs-decision.json": "38557575f587ce6b76046f8b2c3a9ea92ed20223436e93e80149d7fdefe4a42a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b04-p04-cs-controller-exit.json": "7c484dcebb895213abd4e96593e79e41131d64d2fa0435f55475bc2ad013b3f8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/b04-p04-cs-controller-start.json": "b4c2b2fce054d5666bba74235d86ab2c92b736b772886645ce2da06a72589806",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p04-cs/protocol.json": "1c02da677e5af642da1c7c4c8617ec03ad5e185bc0cd376f7a9792c538ef1beb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p04-cs/http/exit.json": "d3a688e4b08e2b77796451d591711a0107f2ae13ad527bb8d03c109630acacef",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p04-cs/wrapper-exit.json": "75bab2620ac55292fabd4f852aaa306fe286c8393c73adf47de40235592f000b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p04-cs/http/isolation/cleanup.json": "52f7a5b90e035d293a0952b28093439ca7277260479d1159b9698aeeb772e9d0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p04-cs/runner-process-group.json": "c13307269747eb40a5fa192889f9acbed5fb10791528bc43946583972c0b551d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/sequences/b04-p04-cs.json": "e19d60be99c3f7ab04ce0fcef3c318c65ce75728be9bce4937150ad7e94283e6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p04-cs/memory/memory-peak.json": "a90062435c74eb674abb344ad0f5d43214b23fa80100bde57928a8ea571a125d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p04-cs/http/isolation/identity.json": "f43ab35ef76444ffdf908c387f2363f1f91299dccbb10aa8776b3957fcf23d2f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p04-cs/http/b04-p04-cs-r00-conditioning-context-1024/request-boundaries.json": "4dd0badd2befd75ec88cad2296e38bdfc3aa277a9219c7b1fca8a6f3a77c27e1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p04-cs/http/b04-p04-cs-r00-conditioning-context-1024/run-1/client-exit.json": "f0bc08ca672fd2d045436cae5828c374303388b1a5451bd5e06ae6ba2ed9fc1b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p04-cs/http/b04-p04-cs-r01-probe-context-1024/request-boundaries.json": "d421390f4a9acfc93190d83ab25015e532a31aa02a3b21a28e8edab6299cec43",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p04-cs/http/b04-p04-cs-r01-probe-context-1024/run-1/client-exit.json": "0a5fec0f9a7db168cabff2cbbea0c7c3c52c740f74d6077e73acf106334cde08",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p04-cs/http/b04-p04-cs-r02-probe-context-1024/request-boundaries.json": "55b1a57e862cdacb4082089f58e722861c67c48156797ed7acf14f5042f9c76d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p04-cs/http/b04-p04-cs-r02-probe-context-1024/run-1/client-exit.json": "25fa0c81c6aa6e372496722f5aaabf6d9a542e2a04f9e337ac370f2868db57ca",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p04-cs/http/b04-p04-cs-r03-probe-context-1024/request-boundaries.json": "968ba46cf20939936c06f7771d74bad83b6f41e5d5a226f5e0400aae9d86608d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence/b04-p04-cs/http/b04-p04-cs-r03-probe-context-1024/run-1/client-exit.json": "abbf96e090b3863e243b05bef26b9a091b558e511d0d91962caedd808773d4e5"
+  }
+}

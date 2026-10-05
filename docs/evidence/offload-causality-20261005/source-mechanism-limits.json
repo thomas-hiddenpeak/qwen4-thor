@@ -1,0 +1,118 @@
+{
+  "schema": 1,
+  "date": "2026-10-05",
+  "status": "SOURCE_MECHANISM_LIMITS_ONLY_AWAIT_CLOSED_DATA",
+  "scope": "复用已绑定的源码与前期审阅，只规定本轮 16 服务、64 请求的解释边界；不读取新性能或资源结果，不选候选，不决定 Goal 出口。",
+  "identity": {
+    "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+    "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+    "runner_source_commit": "c3c4d305f7a800ded29ccbad5b2bd5e399197796",
+    "execution_plan_sha256": "a31b1692be9f9be962dd59842a73ccb262b999e627cfd1b771698f01ef7adb5e",
+    "scope_plan_sha256": "49c2c0e5a8ea3953f91b308cac6af23797ccd851a8e3e2d8c26e228ff7464e61",
+    "source_identity_reuse": "planning_review 已确认 delivery5539184 的 src/include 与被测 runtime6b51693 相同；下列源码位置沿用 OLD/source。此处不重新认证整棵源码或构建链。runner 提交不替代 runtime 身份。"
+  },
+  "sequence_identification": {
+    "design": "四个 Williams 平衡块，每块含 AS、CS、AL、CL；每个新服务依次运行 [P,1K,1K,1K]，P 为 1024 或 8193，输出固定 256。每条件四次服务启动，探针按位置分别保留。",
+    "can_describe_after_contracts_close": [
+      "各块、各探针位置的 C-A|S、C-A|L、L-S|A、L-S|C 和 arm×前驱差分；保留全部原值及同条件观测范围。",
+      "不同前驱之后，匹配的 1K 探针的 TTFT、HTTP 首 token 后持续时间及请求窗口 I/O 是否共同变化，以及位置 1→2→3 的差异是否持续或衰减。",
+      "若路径合同通过，可区分 C 的长前驱启用候选 prefill 与后继短探针使用 legacy 的执行事实；这只是执行路径和整体干预关联。"
+    ],
+    "cannot_identify_from_this_design_alone": [
+      "A/C 同时改变 global partition、request policy、decode quiet；不能分离某个 Enabled/getenv/support check、单行日志或共同诊断的独占耗时。",
+      "S1024 与 L8193 同时改变工作量、路由需求、分块、服务耗时和缓存历史；不是 8192/8193 局部阈值对照，也不是独立操控缓存的纯缓存实验。",
+      "位置 1 已受前驱影响；位置 2/3 还承接前面的探针。三个探针不构成三个独立服务重复，也没有未受条件化的冷启动 1K 对照。",
+      "块内位置和相邻条件平衡不保证跨块漂移、温度、调度、预读、回收或所有机器状态相同；四次服务启动不足以给出稳定尾部、纯噪声分布或新接受容差。",
+      "新服务省略旧 history 的更早累计历史；不能直接代表 45K/200K 压力、全部短档、完整五档验收或旧回退的唯一根因。",
+      "最终输出匹配不证明逐层路由、驻留 ID/LRU、加载次序及全部中间值一致；观察到交互不能单独证明缓存中介机制。"
+    ],
+    "references": ["scope_plan:analysis", "scope_plan:limitations", "planning_review:facts"]
+  },
+  "request_reset_and_cache_inheritance": [
+    {
+      "fact": "ModelBeginSequence 调用各层 ResetState 并完成 stream 同步；ResetState 清当前序列 KV/indexer、SSM/conv 与 PLE conv，不重建每层 MoEResidency。后续 forward 继续使用同一 residency 成员。",
+      "locations": [{"source": "model", "lines": [1585, 1598]}, {"source": "decoder", "lines": [293, 328]}, {"source": "decoder", "lines": [617, 628]}]
+    },
+    {
+      "fact": "计划只在服务开始前做定向冷处理，不在请求之间清缓存。因此前驱 prefill、前驱 decode 和前面探针都可影响后继的 GPU slot/LRU、L2、mirror 及 OS 页缓存；机制允许继承，不证明本次某个入口必然不同或贡献多少秒。",
+      "locations": [{"source": "residency_cpp", "lines": [1147, 1214]}, {"source": "residency_cpp", "lines": [1294, 1303]}],
+      "references": ["scope_plan:cold_contract", "residual_note:state_and_timing_limits"]
+    },
+    {
+      "fact": "CopyDiagnosticState 可只读复制 slot ID/ticks/protected、L2 ID/ticks、mirror ID/cursor；调用者必须排除 forward 并排空 model stream，lazy in-flight flags 不在其解释范围。它不是 GPU 内容证明，也不是缓存复位或恢复。",
+      "locations": [{"source": "residency_h", "lines": [314, 333]}, {"source": "residency_cpp", "lines": [1317, 1331]}]
+    },
+    {
+      "fact": "既有审阅确认无 residency Clear/Reset/Restore API。TimingStats::Reset 只清计数；InitHot 仅装入 hot list 并跳过已驻留专家，不清空整个缓存层级。新服务加相同 hot list 不等于逐项恢复同一 L2/LRU、异步调度或机器页缓存状态。",
+      "locations": [{"source": "residency_h", "lines": [166, 210]}, {"source": "residency_h", "lines": [263, 277]}, {"source": "residency_cpp", "lines": [1334, 1350]}],
+      "references": ["planning_review:facts"]
+    }
+  ],
+  "short_request_code_paths": {
+    "short_prefill": {
+      "fact": "完整输入≤8192 时，A 沿用 global=0；C request identity enabled，但阈值选 mode=0。两者均走 legacy 分块、不调用 min_new planner、不输出 partition 行。C 仍做 Enabled 分支中的模型入口 getenv/严格解析/串行约束，以及各层 global/chunk-order 检查；两边均携带并校验请求 identity。",
+      "logging_limit": "层0 request marker 两边都有，但 active/reason 文本不同；不能把条数一致当成字节一致。短 prefill forward diag 的 partition 字段两边为0。",
+      "locations": [{"source": "request_policy", "lines": [21, 34]}, {"source": "model", "lines": [460, 480]}, {"source": "moe", "lines": [425, 437]}, {"source": "moe", "lines": [490, 504]}, {"source": "moe", "lines": [575, 612]}, {"source": "moe", "lines": [677, 701]}]
+    },
+    "true_decode_t1": {
+      "fact": "真实单 token decode 传空 prefill identity 和显式 single-decode phase。A mode=0；C mode=1，额外经过 global/chunk-order 与 partition support 判定，但 rows>1 不满足，两边都不执行候选 planner，均回到 legacy 路径。这里是形状不支持回到 legacy，不是已运行 planner 后的预算失败。",
+      "logging_limit": "A 因 mode=0 不输出 partition 行，C 因 quiet+显式阶段抑制；目标行均为零，判断路径不同。T=1 的 prefill tail 带请求 identity，不能当真实 decode 去压制其 partition 日志。",
+      "locations": [{"source": "model", "lines": [922, 925]}, {"source": "model", "lines": [1079, 1082]}, {"source": "request_policy", "lines": [27, 34]}, {"source": "moe", "lines": [490, 502]}, {"source": "moe", "lines": [575, 590]}, {"source": "partition", "lines": [306, 312]}, {"source": "partition_log", "lines": [17, 28]}]
+    },
+    "common_work": {
+      "fact": "legacy flush 的集合复核与 fprintf、forward diag 的集合/字符串计算与 fprintf、host 向量分配、router D2H+stream sync、PlanResolve 及原加载实现仍在两臂执行。true decode forward diag 的 partition 字段 A=0/C=1。正式 decoder 传 diagnostics=nullptr，因此 partition_requested 的差异不是当前 HTTP 中的诊断对象写入差异。",
+      "cost_limit": "源码分支差异不是实际未隐藏成本；共同路径也可能有可优化成本，但不能仅凭 A/C 差值量化。当前没有某项独占秒数或剩余提速比例。",
+      "locations": [{"source": "moe", "lines": [504, 526]}, {"source": "moe", "lines": [590, 615]}, {"source": "moe", "lines": [744, 807]}, {"source": "decoder", "lines": [623, 628]}]
+    }
+  },
+  "io_and_timing_interpretation": [
+    {
+      "rule": "保留每条请求的完整 client 窗口 PID read_bytes/rchar 和窗口夹逼/unknown 标记；窗口含 prefill、decode 与服务开销，不能改称 decode I/O，不能按 decode 时长比例拆分或用 TTFT 秒数从字节中扣除。PID、cgroup、device 分列；不相加为总量，不把 rchar 或软件 nvme/load 字节当作独占物理 SSD 读取。",
+      "references": ["scope_plan:analysis.metrics", "scope_plan:analysis.no_partitioning_of_pure_cache_CPU_or_IO_causal_cost"]
+    },
+    {
+      "rule": "HTTP decode_duration=latency-TTFT 是首 token 后的端到端持续时间；固定256输出时255/duration 是相应吞吐口径，含服务/调度/发送等成本，不等于 GPU decode kernel 时间。它不能为完整 client I/O 自动提供阶段边界。",
+      "references": ["scope_plan:analysis"]
+    },
+    {
+      "rule": "已有 OffloadDiagnostics 在 prefill_begin、prefill_end_decode_begin、decode forward1/8/32、inference_end 取 PID read_bytes、统计及条件性缓存快照，可在另行冻结的机制研究中复用；本轮 phase_diagnostics=false，不能补造这些阶段数据。快照/计时插桩下的速度不能用作未插桩性能接受。",
+      "locations": [{"source": "chat_generation", "lines": [209, 230]}, {"source": "chat_generation", "lines": [439, 439]}, {"source": "chat_generation", "lines": [557, 559]}, {"source": "chat_generation", "lines": [863, 884]}, {"source": "offload_diagnostics", "lines": [139, 166]}],
+      "references": ["scope_plan:settings.phase_diagnostics", "planning_review:facts"]
+    },
+    {
+      "rule": "stage/pread/swizzle 是累计计时，worker 可以并发；stage 包含 read/swizzle，LoadPhase1 包含调度和等待这些 worker。不能把 phase1+stage+pread+swizzle 相加成独占关键路径，也不能把 worker累计和减出纯等待。router D2H timer 跨 cudaStreamSynchronize，可能等待此前排队的 GPU 工作，不是纯 D2H 复制时间，更不是 mirror D2H 时间。",
+      "locations": [{"source": "residency_h", "lines": [166, 185]}, {"source": "residency_cpp", "lines": [826, 864]}, {"source": "residency_cpp", "lines": [1004, 1020]}, {"source": "residency_cpp", "lines": [1527, 1583]}, {"source": "moe", "lines": [509, 526]}, {"source": "residency_cpp", "lines": [1147, 1180]}]
+    },
+    {
+      "rule": "PlanResolve 的 decode_phase 来自 T_sub==1，包含 prefill singleton；d* / shape_single_* 累计量不是整请求真实 decode 总量。需要显式阶段快照之差和正确请求边界才能解释阶段归属；不能按名称直接把 d* 全算给 decode。累计 max 也不能相减得到区间最大值。",
+      "locations": [{"source": "moe", "lines": [757, 761]}, {"source": "residency_h", "lines": [166, 185]}, {"source": "offload_diagnostics", "lines": [86, 106]}]
+    }
+  ],
+  "quantified_evidence_still_needed_before_selecting_runtime_candidate": [
+    "先关闭并审阅本轮全部合同及原始观测，报告各块各位置的方向、秒数、范围和资源窗口限制；不提前把任何模式写成结果，也不以事后噪声容差接受候选。",
+    "若指向状态继承，需要相关入口/出口 residency ID与LRU、路由需求、命中/加载/回写计数的阶段对应证据；只有 resident_count 或最终输出相同不足以匹配状态。OS 页缓存与调度未观测部分仍保留未知。",
+    "若指向短路径校验或共同日志/集合工作，需要证明其在该负载上的未隐藏 wall-time 成本，区分被其他工作覆盖的成本，并给出相对目标差距可解释的量级；源码存在不提供速度收益上界。",
+    "若指向 I/O/复制等待，需要真实 prefill/decode 边界上的 PID计数变化，以及可区分 CPU调度、读、H2D、mirror写回和前序GPU工作的时间关系；重叠累计计数不能代替这些证据。",
+    "候选范围、数值不变合同、默认关闭/可回退方式及验收门槛须事先冻结；之后按项目顺序以真实HTTP开头并完成相应接受范围。当前64条诊断序列及未来插桩速度都不自动给予运行时性能接受。"
+  ],
+  "candidate_selection": null,
+  "exclusive_cost_seconds": null,
+  "remaining_speedup_percent": null,
+  "goal_exit_decision": null,
+  "source_catalog": {
+    "residual_note": {"path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/residual-path-note.json", "sha256": "8c1edaa6765cb5b8edfbef5f74a5b580ce2a69ad0f931279a5ee6aa3a99abea3"},
+    "planning_review": {"path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/planning-review-summary.json", "sha256": "adfb4652c16b61d2d1eb605bac42071a73d9e4475dbd4b0b80d603bc2feb99af"},
+    "scope_plan": {"path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/plan.json", "sha256": "49c2c0e5a8ea3953f91b308cac6af23797ccd851a8e3e2d8c26e228ff7464e61"},
+    "moe": {"path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/moe.cu", "sha256": "c7d2b1975fabb5464c45000a14496dc97b270675f92e834d36eb926c58ee1548"},
+    "model": {"path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/model.cu", "sha256": "7a12ada0285a5eef2e395322879622ddbea3d11a029a17a86d76402cbd4c61a3"},
+    "decoder": {"path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/decoder_layer.cu", "sha256": "17b338976225a50064c5b5a0599658a7d5c2cf8cd0890bfa9468f8138369b212"},
+    "request_policy": {"path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/include/q4t/model/moe_request_policy.h", "sha256": "442fb05a1e1c8cc6705ab80e21503aa3057994764b41f41b7f6e2f7378cc2b45"},
+    "partition": {"path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/include/q4t/model/moe_partition.h", "sha256": "cdb01017f2c5bc041728423c18a70a3497bf89abdbeec2e4d8ac36e578a96275"},
+    "partition_log": {"path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/include/q4t/model/moe_partition_log.h", "sha256": "7cc35a633bad8588b71ccee5075c40a0ae43ed9f1dfbbbb00b17c4d037fde5f2"},
+    "residency_cpp": {"path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/quant/moe_residency.cpp", "sha256": "697b3ea48b421aa066efb51a49813dfbdcec79fa72770d0ab928d09414df9577"},
+    "residency_h": {"path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/include/q4t/quant/moe_residency.h", "sha256": "98d5b8f655d013fed1426cfe244a4c11647196f26f1199558caf2f37035b69a1"},
+    "chat_generation": {"path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/server/chat_generation.cpp", "sha256": "66360d6a19b6b40377d7e0db5a530e8c0799be92280f19e22cd5973ab65d6931"},
+    "offload_diagnostics": {"path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/server/offload_diagnostics.cpp", "sha256": "98394aac69310a46ec4030b00013bddc8138c2689b994a21813c146175f9d1e1"}
+  },
+  "actions": {"source_edits": 0, "tests": 0, "model_requests": 0, "new_performance_result_reads": 0, "new_resource_result_reads": 0, "new_candidates": 0}
+}

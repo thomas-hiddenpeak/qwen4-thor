@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "reviewer": "residual_source",
+  "status": "INSUFFICIENT_EVIDENCE_FOR_RUNTIME_CANDIDATE",
+  "scope": "独立核对已关闭摘要中的全部64条原值、冻结块内对比、位置汇总和资源边界；复用源码机制说明，不重验合同，不增加实验。",
+  "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "runner_source_commit": "c3c4d305f7a800ded29ccbad5b2bd5e399197796",
+  "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+  "plan_sha256": "a31b1692be9f9be962dd59842a73ccb262b999e627cfd1b771698f01ef7adb5e",
+  "decision": "现有数据支持前驱与后续请求表现有关，但没有把差异归到可直接修改的具体机制，也没有量化某候选能消除的未隐藏成本。可按本轮有界诊断范围闭合，不自动追加机制实验或runtime候选；不能写成无性能问题、已接受C或已证明无优化空间。",
+  "confirmed_observations": [
+    {
+      "finding": "主端点k1：L-S的decode持续时间在A/C各四块均为正。",
+      "A_block_differences_seconds": [1.5856144148856401, 0.6846830470021814, 1.2125816121697426, 1.477197770960629],
+      "C_block_differences_seconds": [1.3715282178018242, 1.254713609116152, 1.9150735028088093, 1.121430535102263],
+      "mean_differences_seconds": {"A": 1.2400192112545483, "C": 1.4156864662072621},
+      "interpretation": "前驱关联并非C独有；不能据此把C的分支或日志当唯一根因。k1 TTFT并非A/C所有块都同方向，A的block1 L-S为-0.111644秒。"
+    },
+    {
+      "finding": "主端点k1：C-A的decode持续时间符号混合，arm×前驱交互四块也正负各二。",
+      "C_minus_A_at_S_seconds": [0.37407433008775115, -0.2755806492641568, -0.3811880378052592, 0.17593161575496197],
+      "C_minus_A_at_L_seconds": [0.15998813300393522, 0.2944499128498137, 0.32130385283380747, -0.17983562010340393],
+      "interaction_seconds": [-0.21408619708381593, 0.5700305621139705, 0.7024918906390667, -0.3557672358583659],
+      "mean_C_minus_A_decode_seconds": {"S": -0.026690685306675732, "L": 0.14897656964603812},
+      "interpretation": "未得到稳定的C特有decode代价量。差异小于1%的均值描述不构成等价、无回退或接受容差证明。"
+    }
+  ],
+  "corrections_and_omissions_to_preserve": [
+    {
+      "finding": "不能只写k2/k3非单调而漏掉k3的稳定前驱关联：k3 L-S decode在A/C各四块仍全部更慢，TTFT也全部更慢。",
+      "k3_mean_L_minus_S": {
+        "A_decode_seconds": 0.8669145051972009,
+        "C_decode_seconds": 0.5628372742212377,
+        "A_TTFT_seconds": 1.1559217032045126,
+        "C_TTFT_seconds": 1.2732312307925895,
+        "A_client_PID_read_bytes_percent": 16.620210138544177,
+        "C_client_PID_read_bytes_percent": 17.11371034386593,
+        "A_client_PID_rchar_percent": 0.11661807100469268,
+        "C_client_PID_rchar_percent": 0.11662292826930543
+      },
+      "interpretation": "k2短暂趋近或反向不等于历史影响已消失，也不支持简单单调暖化解释。k3存储计数与逻辑读取变化不成比例，是值得保留的资源关联，尚不能分配到decode、专家读取或特定缓存层。"
+    },
+    {
+      "finding": "不是所有A/C对比都符号混合：k1在L下C的TTFT四块均更短，但仅约0.004至0.065秒；k2在L下C的decode四块均更快，均值约0.333秒。",
+      "interpretation": "须保留方向一致的次端点，不能因总体候选依据不足抹掉；这些点不能替代主端点或完整接受。"
+    },
+    {
+      "finding": "k1在S下平均TTFT C-A=-0.143042秒主要由block1的-0.626471秒牵动，其余三块约+0.012878、+0.043768、-0.002344秒。",
+      "interpretation": "不删block1、不另取有利子集，也不把平均改善称为稳健的C短prefill收益。"
+    },
+    {
+      "finding": "L条件化请求本身仍有明显既有策略收益：C较A平均TTFT减少10.799885秒（28.909%）；同时client PID读取减少4.984%、rchar减少44.055%。",
+      "interpretation": "不应把诊断闭合写成分区策略整体无价值；该结果涉及已有runtime与不同前驱工作，不能推出新runtime候选或撤销旧全范围NO_GO。"
+    }
+  ],
+  "why_no_specific_runtime_candidate_is_established": [
+    "短prefill两臂有效mode都为0；真实decode两臂都走legacy。分支检查和共同flush/diag仍存在，但本轮没有这些工作的独占wall-time证据，不能将任何HTTP差值直接记在它们名下。",
+    "请求Reset不清residency且本轮不在请求间清缓存，状态继承解释与观测相容；但没有阶段缓存ID/LRU、路由需求及阶段IO/等待对应证据，尚不能在GPU slot、L2、mirror、页缓存、调度/回收之间选择修改目标。",
+    "所有PID I/O指标是完整client窗口，不是decode-only；已有重叠timer也不能相加成关键路径。本轮无法量化某缓存或加载改动可挽回多少秒。",
+    "新服务只有四次每条件，k2/k3依赖前面请求；方向一致是观测，不提供iid、统计显著性、尾部或性能接受门槛。不能以接近零的均值接受旧候选，也不能以较大前驱效应宣布唯一因果机制。"
+  ],
+  "resource_boundaries": {
+    "cgroup_lower_than_PID_requests": 64,
+    "cgroup_plateau_with_positive_PID_requests": 0,
+    "counter_discontinuities": 0,
+    "whole_physical_RAM_54GB": "INDETERMINATE",
+    "interpretation": "此次cgroup相对PID低计64/64，但摘要显示平台为0，不应把旧轮平台现象搬入本轮。服务内存峰不当逐请求峰，不与NVIDIA计数相加为物理并集。无OOM/swap不证明去重54GB合同或某缓存机制已被定位。"
+  },
+  "acceptance": {"candidate_selected": false, "performance_acceptance": false, "statistical_significance_claim": false, "old_full_NO_GO_unchanged": true, "automatic_new_experiment": false, "remaining_speedup_estimate": null},
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/closed-results-summary.json": "94112b0ff12a8a5a919aefb2fdc318b6dc5cc25b0097fc5fc38794c4230f52a4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source-mechanism-limits.json": "a250f875d88aeba76f841cb359c9b25e0674d7a9b242808a79c5cefb6d3ff72e"
+  },
+  "actions": {"new_models_or_tests": 0, "new_experiments": 0, "runtime_edits": 0, "worktree_edits": 0, "raw_contract_reaudit": false}
+}

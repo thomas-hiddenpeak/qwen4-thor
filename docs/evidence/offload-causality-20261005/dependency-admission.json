@@ -1,0 +1,1715 @@
+{
+  "schema": 1,
+  "started_t": 1791177043.1082788,
+  "recorded_t": 1791177043.2828536,
+  "passed": true,
+  "failure": null,
+  "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source",
+  "venv_link": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/.venv",
+  "venv_resolved": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/verify_environment.py": "80869d88264298e536c59152e0a6b5be9b91ff0b1032b9b4c5a20a73c5629017",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/plan.json": "49c2c0e5a8ea3953f91b308cac6af23797ccd851a8e3e2d8c26e228ff7464e61",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/execution-plan.json": "4b4e4e8407371cfa72c06371a99aa73ba4cff970ac228d5f312ccf89b3d85299",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/tool-stage-delivery.json": "ade57a07fbaac24ca9320d7bed1b80b95d0b1655b8fdd728d4bc6d4476c0c0b0",
+    "/usr/bin/python3.12": "c86f21d0da9290ece2d7d49a3f7ed52aed59cb029abdf0ea25c79634f6cbe960",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/evalscope": "fa78857be6894b453d633b1db9eabd73c8ec98a68ccab63b4bc20701a3cc8c14",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/pyvenv.cfg": "3ac3142a317d992ba4dc0be624d402e6385bfaeeb76ea9221e4ba8aecf67b4b6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/tool-validation-admission.json": "db2f3870e36d9ca2e45611d25b697ce2f95bd27f96476ca5ce22c072e619926a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/analyze_http_trace.py": "4915f4774b195ea4e915da1d5525af1a5e06d9c9ee53e32b57d91306b8ab7501",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/analyze_http_trace.py": "4915f4774b195ea4e915da1d5525af1a5e06d9c9ee53e32b57d91306b8ab7501",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/audit_offload_diagnostics.py": "2d61772b3779530ebc6171aab2ed165b78746f148c55cb531155ae6a06347633",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/audit_offload_diagnostics.py": "2d61772b3779530ebc6171aab2ed165b78746f148c55cb531155ae6a06347633",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/audit_offload_matrix.py": "3d6779458c7a69750547c6d40ce49df06eb094daf1115c63f449166e7bc9b85c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/audit_offload_matrix.py": "3d6779458c7a69750547c6d40ce49df06eb094daf1115c63f449166e7bc9b85c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/causality_protocol.py": "a0227e6f41e41dcb57581923bfee84b62c0586e259dcf3435bef514bfd018295",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/causality_protocol.py": "a0227e6f41e41dcb57581923bfee84b62c0586e259dcf3435bef514bfd018295",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/compare_chunk_order.py": "adefa79c60ca0aa3d06ad55823f90562c5eaafca237f43189f9243fe39e9df89",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/compare_chunk_order.py": "adefa79c60ca0aa3d06ad55823f90562c5eaafca237f43189f9243fe39e9df89",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/disconnect_e2e.py": "ce84ed9366d8781c581b6e0f8b4b84241eab13e6df10444edef82e7cb7a76591",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/disconnect_e2e.py": "ce84ed9366d8781c581b6e0f8b4b84241eab13e6df10444edef82e7cb7a76591",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/file_cache.py": "d25d6fa846af504e40eec850eb4f9c0cfa168f798d8aca826642214821eb9b73",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/file_cache.py": "d25d6fa846af504e40eec850eb4f9c0cfa168f798d8aca826642214821eb9b73",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/isolated_service.py": "c561ec8a8cf1c05e2ceb8ba08959af3624db9ee832723103b691ee2edb713521",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/isolated_service.py": "c561ec8a8cf1c05e2ceb8ba08959af3624db9ee832723103b691ee2edb713521",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/memory_accounting.py": "e0e7418359db1ee021e9d2aa096ef929212a62b47fd91d06086d0c11f4acf6f3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/memory_accounting.py": "e0e7418359db1ee021e9d2aa096ef929212a62b47fd91d06086d0c11f4acf6f3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/monitor_memory.py": "098d91eb208ce85961b23a88b029a80e122ff0b1b37bed7b9eaa898d1b5d6fc5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/monitor_memory.py": "098d91eb208ce85961b23a88b029a80e122ff0b1b37bed7b9eaa898d1b5d6fc5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/observe_serve_logits_allocation.py": "8357d3b42f4ea4e8175623430c99106010c51e6ee5b72c392feda555e0bcab30",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/observe_serve_logits_allocation.py": "8357d3b42f4ea4e8175623430c99106010c51e6ee5b72c392feda555e0bcab30",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/offload_policy.py": "0aaf88178d23eca2e287f09d3aed82badae3665529827ce432976bf81bf3a898",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/offload_policy.py": "0aaf88178d23eca2e287f09d3aed82badae3665529827ce432976bf81bf3a898",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/physical_ram.py": "81f301aee0e3e0643a789dec8756f99574195995be95483ae0be71045baabf30",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/physical_ram.py": "81f301aee0e3e0643a789dec8756f99574195995be95483ae0be71045baabf30",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/prepare_inputs.py": "abcdd7c57870ffac1807f4b26fd40f549c79cf49d302a2a281e3c0e936ee350a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/prepare_inputs.py": "abcdd7c57870ffac1807f4b26fd40f549c79cf49d302a2a281e3c0e936ee350a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/prepare_quality.py": "140e7c8008f00928b271201d5116534af8f89ae7f57302a24c272a6c8607143a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/prepare_quality.py": "140e7c8008f00928b271201d5116534af8f89ae7f57302a24c272a6c8607143a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/profile_http.py": "8b687a672e90410d745e334f2efd47fa062be65af91f5901a37322a2fbec4ff7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/profile_http.py": "8b687a672e90410d745e334f2efd47fa062be65af91f5901a37322a2fbec4ff7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/profile_prefill_batch_rows.py": "5cb1300dea3c060adfc364613983c7f9dd7b9ad0fa2d263ce099d184e232c81b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/profile_prefill_batch_rows.py": "5cb1300dea3c060adfc364613983c7f9dd7b9ad0fa2d263ce099d184e232c81b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/profile_serve_logits_capacity.py": "19275a8b5d65cb31a50ccdc1d4b04885fa7b079308ec61e5a76a1d5fc33ae026",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/profile_serve_logits_capacity.py": "19275a8b5d65cb31a50ccdc1d4b04885fa7b079308ec61e5a76a1d5fc33ae026",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/request_policy_protocol.py": "8f2e53412fef4fe795cb5e8f3dcccd8b2048ae42696da658e81b05ebe381d6f8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/request_policy_protocol.py": "8f2e53412fef4fe795cb5e8f3dcccd8b2048ae42696da658e81b05ebe381d6f8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/resource_metrics.py": "4ec55a1bad3983d9e71621c72aa299538392b3f8efb4ec121b9ec28bd105a5ce",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/resource_metrics.py": "4ec55a1bad3983d9e71621c72aa299538392b3f8efb4ec121b9ec28bd105a5ce",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_accept_failure.py": "4e2fe2a3200b488c0752086088b2aa9853d5fed35ea8638434505d11015642e8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_accept_failure.py": "4e2fe2a3200b488c0752086088b2aa9853d5fed35ea8638434505d11015642e8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_acceptance.py": "2e47d633aa908b6ee885b80b192e14dfffbf627c73559f8a891b334cc64c25dd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_acceptance.py": "2e47d633aa908b6ee885b80b192e14dfffbf627c73559f8a891b334cc64c25dd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_budget_experiment.py": "4f3473ea567a98dd10b43be857fe42d374144deee9b2b16d7b982c2c653b01b1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_budget_experiment.py": "4f3473ea567a98dd10b43be857fe42d374144deee9b2b16d7b982c2c653b01b1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_chat_template.py": "dec305c3e3bd10f32caaebf3fb40d0cde2a6750c25aecb60268d5d76424ed022",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_chat_template.py": "dec305c3e3bd10f32caaebf3fb40d0cde2a6750c25aecb60268d5d76424ed022",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_chunk_interleave.py": "8ccb331d39640256a78853e007398a0379953436b5e2012e7ba8861fd9164cad",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_chunk_interleave.py": "8ccb331d39640256a78853e007398a0379953436b5e2012e7ba8861fd9164cad",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_chunk_lifecycle.py": "bfa4cf5feb1bcb57e2895930f6bb4347ef4816e449f574dbf49e7ce6cb3b93d5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_chunk_lifecycle.py": "bfa4cf5feb1bcb57e2895930f6bb4347ef4816e449f574dbf49e7ce6cb3b93d5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_control_soak.py": "864225353a6af2cb6a6e61678f31e5341d993a46427d36e74e0990e5d631fd69",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_control_soak.py": "864225353a6af2cb6a6e61678f31e5341d993a46427d36e74e0990e5d631fd69",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_decode_failure.py": "135455a1cf447154586acfb8a0743d6e29d46f976e16e3d3c99373508c579495",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_decode_failure.py": "135455a1cf447154586acfb8a0743d6e29d46f976e16e3d3c99373508c579495",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_input_boundary.py": "96790c27ad3446babb71e46cf4ba2812f7fa7d1d87c0fbac7562bd8e8d1d40de",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_input_boundary.py": "96790c27ad3446babb71e46cf4ba2812f7fa7d1d87c0fbac7562bd8e8d1d40de",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_isolated_control.py": "4ee82977660ff1d9534e502309b4b23b432d040aa2dc7ef9c07f8b174e243e85",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_isolated_control.py": "4ee82977660ff1d9534e502309b4b23b432d040aa2dc7ef9c07f8b174e243e85",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_offload_lifecycle.py": "4d9e3585745625e20fc86b975b892c91a3d5e54d454e2c8951f701045ac39b85",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_offload_lifecycle.py": "4d9e3585745625e20fc86b975b892c91a3d5e54d454e2c8951f701045ac39b85",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_prefill_batch_rows.py": "67acae1b55a79e0ea149352f6e84c85cf37144981b673438853af65b4eefa354",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_prefill_batch_rows.py": "67acae1b55a79e0ea149352f6e84c85cf37144981b673438853af65b4eefa354",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_prefill_consumers.py": "d91d99855ee2775d345c634dd57daf89b11cf777a7ed10ec6d540f3779daa074",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_prefill_consumers.py": "d91d99855ee2775d345c634dd57daf89b11cf777a7ed10ec6d540f3779daa074",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_proxy_admission.py": "1c021c3b3da8dd01b8a6adea5cdf643002fbb382058ac4842a64e28036eaf3d0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_proxy_admission.py": "1c021c3b3da8dd01b8a6adea5cdf643002fbb382058ac4842a64e28036eaf3d0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_request_cancellation.py": "9a79edd223fefa4e69c32148f1805941ac5ed4094f76a4f8e96b0fc74ad3473b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_request_cancellation.py": "9a79edd223fefa4e69c32148f1805941ac5ed4094f76a4f8e96b0fc74ad3473b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_state_lifecycle.py": "d751c1901680f2a94b9591edb3263b57295f5c4069c4cffa4e07359326886357",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_state_lifecycle.py": "d751c1901680f2a94b9591edb3263b57295f5c4069c4cffa4e07359326886357",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_state_readback_failure.py": "3e583acdfcd8dfa433080a97728808bdc57afad20f8fc5cf46c37def16efdcc8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_state_readback_failure.py": "3e583acdfcd8dfa433080a97728808bdc57afad20f8fc5cf46c37def16efdcc8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_vision_determinism.py": "59af9cd6ead61bcb99e89569e07e1fd4c4f4291936185618ce971b044cc6f542",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_vision_determinism.py": "59af9cd6ead61bcb99e89569e07e1fd4c4f4291936185618ce971b044cc6f542",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_causality_protocol.py": "6fefacc5f154f8f4355b62ccb1417b6e9b02ff03722ac8460e4f1cb9cbd4e14f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_causality_protocol.py": "6fefacc5f154f8f4355b62ccb1417b6e9b02ff03722ac8460e4f1cb9cbd4e14f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_chunk_order_protocol.py": "ab64a38f44186f6dcee72b02a81da59b3700bc6d7e6db9a467c37c223bc46b26",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_chunk_order_protocol.py": "ab64a38f44186f6dcee72b02a81da59b3700bc6d7e6db9a467c37c223bc46b26",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_isolated_service.py": "a34842a3bbad63c2647f456a2f48685047e9f6f1ae95377b66c03e0197b0734b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_isolated_service.py": "a34842a3bbad63c2647f456a2f48685047e9f6f1ae95377b66c03e0197b0734b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_memory_accounting.py": "559fb428478f0b7fb5c68321c6acba28136e1fff397404744668489a3ee80dae",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_memory_accounting.py": "559fb428478f0b7fb5c68321c6acba28136e1fff397404744668489a3ee80dae",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_monitor_schedule.py": "274136648b7729b28f4e52f0d86772b00c8acd9987fadf0f189ba321adbce422",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_monitor_schedule.py": "274136648b7729b28f4e52f0d86772b00c8acd9987fadf0f189ba321adbce422",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_offload_diagnostics.py": "462b64bc307d357ab464fe495a75584b327072fb19df4a97215d6206ae633ba1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_offload_diagnostics.py": "462b64bc307d357ab464fe495a75584b327072fb19df4a97215d6206ae633ba1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_offload_lifecycle.py": "808d88d47267f298aeea881e4c2dd256674c5257bfa0444cd7fd2b741f7629e2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_offload_lifecycle.py": "808d88d47267f298aeea881e4c2dd256674c5257bfa0444cd7fd2b741f7629e2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_offload_matrix_audit.py": "b58ad4ee86ecb89935ae7fbe27b60a40ef06d7080d5dd7ab8254f2420f24aef9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_offload_matrix_audit.py": "b58ad4ee86ecb89935ae7fbe27b60a40ef06d7080d5dd7ab8254f2420f24aef9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_partition_protocol.py": "726a7a2078712bfaacc80ff464c9202d8b8696bde5370013cef58c7687d70b59",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_partition_protocol.py": "726a7a2078712bfaacc80ff464c9202d8b8696bde5370013cef58c7687d70b59",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_physical_ram.py": "ee30b3ea159c3fbef95553d1efd20e1a1a4728c2025897ff0dde7d8938572ef3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_physical_ram.py": "ee30b3ea159c3fbef95553d1efd20e1a1a4728c2025897ff0dde7d8938572ef3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_request_policy_protocol.py": "3fb64edccb23c5f436b91dbea8b8b81f50032872821342decb9c0988af041ea7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_request_policy_protocol.py": "3fb64edccb23c5f436b91dbea8b8b81f50032872821342decb9c0988af041ea7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_resource_metrics.py": "291e64ce6fd95d178b8601733d3fb349df2eba0391a93f09948bc36bac7eb131",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_resource_metrics.py": "291e64ce6fd95d178b8601733d3fb349df2eba0391a93f09948bc36bac7eb131",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_run_acceptance.py": "4e866e51cceee464a69cc564b6265da14499177b11fe2603fd977bd2736d6bbd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_run_acceptance.py": "4e866e51cceee464a69cc564b6265da14499177b11fe2603fd977bd2736d6bbd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/execution-plan.json": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/history-a-command.json": "f002d218e2c8e030149e566166d3382ea06b08e0abc862085b76b5469844ccaf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-residency-20260930/hot-lists/hot-final-12288.json": "863e2ad6d3ccd3afeb7b67254ffd30a1dd15a020a44ed50ff886b37dce3ccb99",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/history-fixtures/context-1024/requests.jsonl": "7f4994034f3e7461f3dcde7324f5b3850fc82691a085f33ec57708903a67aa5a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/history-fixtures/context-8193/requests.jsonl": "be204f0c49f53238d94416c0a67228865928a2a10d608b19dc744c967da33480",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/model-entry.json": "5c72f5a2a3d05cdb542d45852e71a689eb5bb58b832b562e1a55b7fe74d14899",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/quality-c/http/evalscope-version.txt": "c92df6bdde330be219d62f48ec6490b01889436f2f59027aab200e74de619168",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/__init__.py": "0b8e72dc1a3018929702523609d2a5b0ff94abe446f88787426dac0827fc2c41",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/__init__.py": "23f00d77175c207a64233217735c8a3a55b0cdbe286341704cfab5918b60cd0c",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/base.py": "b100e1f65cb47c08f39ca6d4292b777f484ef2a64846da87cc2260eec68a04d7",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/benchmark_info.py": "ae1c6d8c53594e858a47f8e73244441fe65ea01112951280540e9f3ac00f74a3",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/cli.py": "66fd30d3403f0ca17a4828f67db8f6d081094921173093188ebcd1ad44be4931",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/start_app.py": "753ba34061ecc811b32bc364ba4b6e22882fcfdbc353e5ab4b89ae10d7601216",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/start_eval.py": "250eb81f27af61f1c0af400a9fe58467bbc53425994cf7a01c24fa9be4aa296e",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/start_perf.py": "2ae68181b001d2129e65cfb5dc53ccef37de7af1e6ea2c334082588d6a677f26",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/start_service.py": "aa600cdc85d6fe501c7cd7fe0735ac72dfc7d7bdf992af0e22ec3767fcdf837a",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/arguments.py": "db097b42bc3e2b946c8a61f37ee850f8b76d02db8d11fed5b8eca5ed71f317b1",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/benchmark.py": "39c261e1d3af37d5e7e34f5f3f25a8b4925a72271fdf427dc15b4cb0bd169b17",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/__init__.py": "4d55f9139f5df2f4a32306ebd5c7769c00d2573d95f948863aac66db5b80063f",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/http_client.py": "d0921ccad66d9e72b09ec8e4d97e4bd9dec1427f73a553d0ec568d2f17ad3a2e",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/metrics_consumer.py": "84a77dd761b51c6f7ba053977c649fb67f171a0afa390a46c72877739c24f08f",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/pipeline.py": "51fe66546160edf7f377b3b4f0374ffaa9467d937ced073cf0845eea36f43fb8",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/strategies/__init__.py": "5be4099503b33bc101d2081abde03535e7b47069a6bd2adefe94c66579712654",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/strategies/base.py": "3eccd333dcfa554c91c209a9637e4c850ff39d3c1551e5a84b56c9c83891b610",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/strategies/closed_loop.py": "7f83bf0f644a0d6a45c957f1972064a01d00e3c64d5cd4446e0c1056bd8b8c86",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/strategies/multi_turn.py": "f22a1c8825f5d28eeeea10d9d26ed6754bf3c119b89b3df233db258f174f6922",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/strategies/open_loop.py": "de5a17d8a696e4c0fe5e24a283cf998abb4579a7f1d8eb94f094c548cba2418a",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/main.py": "e7e33506468e918e896488319dfce43399a1d8ad716d04c91c68836be16ee5f5",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/multi_turn_args.py": "22911a0e4c8363857a8a4abf953ecc980f97fddfcc018dcb31026ff8b577a17d",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/multi_turn_benchmark.py": "79257bc258da42f59fca53615b1ca0dceeecf6fed2540454eaf26e2aaf68a696",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/__init__.py": "ac4bb826dc88c9acb7d6fb9f0d006aa21ef8808506f35bd0ee7119bc3ad5abe8",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/__init__.py": "f0345f12cb9a7105b9421efa7741ada180c02612f043e4c750ae5c1ecb0e0f15",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/base.py": "2480086c557cd7bd725c7bb48bca1afcdd612ae1936d29768abf9beb013a3ae5",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/custom_api.py": "a7a164a1e4076cbadea3951edbeecced8b1a24841478dabb9ff503e0ed43e53a",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/dashscope_api.py": "f01f569b14457348a411c7a1a56aee26e43bc37bd92199353c9b01d3f47b4487",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/default_api.py": "49bb0179f4fc06657a4ac06513d9aab8181a23411fa0caca13d1444cc58ce83b",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/openai_api.py": "f81601c750d5e8d3fc67d1442fcd7da948d267b722a41c6f03617da19557739d",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/openai_embedding_api.py": "08336b57a63166cdb4829425065aa8419a94f8501293a73f24c07883e317d1fe",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/openai_rerank_api.py": "7c9ea887ddf719dfdea9c9af3ff0ac0b22e317a09bc93b96f51ac5d2c190371d",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/openai_responses_api.py": "969f6a0098a66310af0768d67d73534656a5ccb090ff8af198a8b7159e3026e4",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/__init__.py": "02bc9c2f279539b1741195748648d17b7f433f34f73f4ecc1b6df901eb1cfc15",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/base.py": "f59ec676cf03cf9aa2d15e6eec452b83ef5516b52fbb97e6cf5feed19839d7be",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/custom.py": "1ef16b3ac8c7f36a62caa16540c9760f96a5831de9153c4f6fb8968f9066025e",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/dataset_args.py": "2c7332ce71fd63c417051da0307768bb1251e05dd2df3486747a1eee71d8d8bc",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/embedding_dataset.py": "a695965b1fd6eaa29a900744b67713b4319eb62b55d0ad292d37a3c5252967f6",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/flickr8k.py": "b38301906d03041434bfda32d6c031da2e4cf3e20e3b307299b67afc8631da56",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/kontext_bench.py": "3f28bc7e99b1fab54326ac9d6e9ca00086623a4581e5df3c3f79fce3e45be8d6",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/line_by_line.py": "20a76b05f48220ddc56d3875fe95b3aa4d598ad924673dd999f0c0508c90aa66",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/longalpaca.py": "9df6ca9c05b064eddc18e73a23cc14f86e6af26e515139725e422555d442d742",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/multi_turn.py": "fb95006e752bad01c4f7b2919bbe95a0b1df591b69fca85b2b29d0aabbbd8f71",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/openqa.py": "1e98d31baec95070a7cbfbc3463fa5098e31882bd22c515fbbfc20c0f7b04920",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/random_dataset.py": "09fb299a14540cd5ac405d23717f0f0c914637d35d0ad603d531eb85bcdb2ab4",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/random_vl_dataset.py": "a73abca20093395acee085b7bb686eba4e7bcd01989bbfec2020765c789ccf1b",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/rerank_dataset.py": "f9af8e6669a7947742bfde8f4dd2493165ba068b7140248fb62ea156f0a976e2",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/share_gpt.py": "a06f624dd6707dfe980c05a726439c4221633f5c1e416019d8e7956c32e9e245",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/speed_benchmark.py": "c6b6df74b6f6a98f9e66630aa3fb0222a136971408608045d1b3bf6a2771bbbe",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/swe_smith.py": "ada10618ace87db7f9427dcab9669771cd52927e743a8165800cc1c1de044e78",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/trie.py": "0dde54ad20dff44c8b6b4db044657da097f728632c2bb11ee93bff9d96e40f10",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/utils.py": "206c422e7182525cd59c36fc90f0681ad249235bb6330f8390668c6c0884cb2b",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/workload_trace.py": "b4582847d05f25a9c3757f5fad5171e3941d1b37ba2d1fd7f12e1a66e8b6a3af",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/registry.py": "b0931516592f8463c876e08252de097db4c7954cb651875bc49ec35a3cb49d8a",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/scenarios/__init__.py": "3d3316d356b7c0fd6e7b9d56d3b7413fd779b4de9ab2e5c93ca8250e7f7e05b6",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/scenarios/agentx.py": "f2e4c987b5773b7c2d2eba8e6d3086cbedba39ef7ea48c050e14e4cc2a5f0871",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/sla/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/sla/sla_criterion.py": "de5a736f88308b44186864d6066849ddabee1a705c2aab32bab8a82db7f2045b",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/sla/sla_run.py": "4b5575a51d18cdf30b060d964aa8d1a84aeccc74df30ddf3aa415d37b3493120",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/analysis_result.py": "dd6aa4af38d00b8c0f4efc5ba55fc8b8f705f7117928e2279a00adb7b3707801",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/benchmark_util.py": "7facfc76a58cbbe8371d0b90b14d6241c324000a4afbd459d2ab1c29715837e1",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/body_meta.py": "427d9630cbb606aed9ea73fe5a91e01142f4c40b5605be9821d87b52db97d05e",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/db_util.py": "39f1c60fa89a4a98fba2f58f79b78a7f12ceed70f4681dbfd009bea89d61c646",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/handler.py": "336da4c35173b10469aadefd17997464de9746737d6d0588a8d3d4d16b313825",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/local_server.py": "2d3d31b925c520862d679a0770a66e8b470f4f0b5c164051bbe3b926b0717318",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/log_utils.py": "63eb602789640f52ee6796b9f2e571a6c335803889ab08025e30cf9f3f890852",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/perf_constants.py": "c801ccb8c2e7be8deb632a5ef78b0d5575f9608a1e08cc78ff6273fb789daee3",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/perf_models.py": "9f08a602b849adc700700a9a9bc759b02e4e9c092d739372fc264e15bfe41a94",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/report/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/report/generate_report.py": "af02cf7c49d9c5def8ec9f3d0e83e1d53c05e8b85220648b5cfdcccc7eea954d",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/report/perf_charts.py": "e94f5e9f4c8a31031c06daae81db3474699a7a75e84f934325a315d1a82d6b12",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/report/perf_data.py": "001349552dfce27087a5ff8add1185d89cc274cf4040a69aa4bb5e12a25a147b",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/report/summary.py": "9874f5ca09889714397ad9e5ba0d933908aef049ffd04a6318f24b2649e134f4",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/rich_display.py": "270a0b437cdd1c9c404d718b0151fc4afba5db947087b8f7106c7c3ce60eed5a",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/trace_metrics.py": "de227507d05616eca7f36c7bde652c9b11f72a7c56d7daa3b2b2d82c440e2870",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/worker_util.py": "9f981bacf9bec58b357064739e5721b4aaad78d5f9f88d7479772f8e4ba0005e",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/workload_timeline.py": "405ae72a0ffdf7937b861cddc7d906be3b098eee8e8233951944a721946e7f90",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/version.py": "c553b9018bd5731a1e6543d35ab71129b831e8feb337e8d5d5e8139d1650ad26",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info/METADATA": "e41948ee7b7c43cfa415904637e666e45198b60ce85983fff366bd4392d0f77f",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info/RECORD": "c04c256e675bf00320592a72d2508b2939f341fd122690d0e44846699f1cad30",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info/entry_points.txt": "42be284e01a183f2be894b4ac151fa9565211470d4887f6dac8ab274719312e8",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info/WHEEL": "61532836a2b3111b7ec23519c09df7c41180c27165fb872a6d8913b566b88ad1",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info/INSTALLER": "e6184ce10e266134fdcfa401e8f1a95005bcd4f18d16b62b757323e2833fe9a9",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info/REQUESTED": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info/top_level.txt": "8cd47e1cc9f74d1f00b6896aeffe2b5bc216557e8686f615e7fd58fca6c92a56"
+  },
+  "metadata_query": {
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/.venv/bin/python",
+      "-B",
+      "-c",
+      "import importlib.metadata as m,json,sys; from pathlib import Path; d=m.distribution(\"evalscope\"); metadata=[p for p in d.files if p.name==\"METADATA\" and str(p.parent).endswith(\".dist-info\")]; assert len(metadata)==1; print(json.dumps({\"version\":d.version,\"name\":d.metadata[\"Name\"],\"package_location\":str(Path(d.locate_file(\"evalscope\")).resolve()),\"metadata_directory\":str(Path(d.locate_file(metadata[0])).resolve().parent),\"executable\":sys.executable,\"prefix\":sys.prefix,\"base_prefix\":sys.base_prefix,\"python_version\":sys.version,\"cache_tag\":sys.implementation.cache_tag}))"
+    ],
+    "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source",
+    "started_t": 1791177043.154535,
+    "returncode": 0,
+    "stdout": "{\"version\": \"1.12.0\", \"name\": \"evalscope\", \"package_location\": \"/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope\", \"metadata_directory\": \"/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info\", \"executable\": \"/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/.venv/bin/python\", \"prefix\": \"/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/.venv\", \"base_prefix\": \"/usr\", \"python_version\": \"3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]\", \"cache_tag\": \"cpython-312\"}\n",
+    "stderr": "",
+    "timeout_seconds": 30,
+    "evalscope_package_imported": false,
+    "http_or_model_launched": false,
+    "environment_scope": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONHOME": null,
+      "PYTHONPATH": null,
+      "PYTHONNOUSERSITE": null,
+      "VIRTUAL_ENV": null
+    },
+    "removed_environment_names": [],
+    "ended_t": 1791177043.2517426
+  },
+  "model_payload_reads": false,
+  "model_file_hashes": false,
+  "tests_executed": 0,
+  "services_started": 0,
+  "http_requests": 0,
+  "before": {
+    "evidence_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence",
+    "evidence_directory_absent": true,
+    "task_controller_starts_absent": true,
+    "machine_wide_server_absence_claim": false
+  },
+  "runner_source_commit": "c3c4d305f7a800ded29ccbad5b2bd5e399197796",
+  "tested_tool_source_commit": "c46721cfdbce3fd264d4c5187a9f78bbe0a08991",
+  "recovery_changes_documentation_only": true,
+  "phase_plan_sha256": "49c2c0e5a8ea3953f91b308cac6af23797ccd851a8e3e2d8c26e228ff7464e61",
+  "old_completed_venv_link": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope/.venv",
+  "venv_symlink_value": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv",
+  "old_completed_venv_symlink_value": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv",
+  "required_path_resolutions": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/.venv/bin/python": "/usr/bin/python3.12",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/.venv/bin/python3": "/usr/bin/python3.12",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/.venv/bin/evalscope": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/evalscope",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python3": "/usr/bin/python3.12"
+  },
+  "python_real_path": "/usr/bin/python3.12",
+  "python_sha256": "c86f21d0da9290ece2d7d49a3f7ed52aed59cb029abdf0ea25c79634f6cbe960",
+  "evalscope_entrypoint": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/.venv/bin/evalscope",
+  "evalscope_entrypoint_resolved": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/evalscope",
+  "pyvenv_cfg": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/pyvenv.cfg",
+  "relocated_tool_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/analyze_http_trace.py": "4915f4774b195ea4e915da1d5525af1a5e06d9c9ee53e32b57d91306b8ab7501",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/audit_offload_diagnostics.py": "2d61772b3779530ebc6171aab2ed165b78746f148c55cb531155ae6a06347633",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/audit_offload_matrix.py": "3d6779458c7a69750547c6d40ce49df06eb094daf1115c63f449166e7bc9b85c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/causality_protocol.py": "a0227e6f41e41dcb57581923bfee84b62c0586e259dcf3435bef514bfd018295",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/compare_chunk_order.py": "adefa79c60ca0aa3d06ad55823f90562c5eaafca237f43189f9243fe39e9df89",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/disconnect_e2e.py": "ce84ed9366d8781c581b6e0f8b4b84241eab13e6df10444edef82e7cb7a76591",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/file_cache.py": "d25d6fa846af504e40eec850eb4f9c0cfa168f798d8aca826642214821eb9b73",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/isolated_service.py": "c561ec8a8cf1c05e2ceb8ba08959af3624db9ee832723103b691ee2edb713521",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/memory_accounting.py": "e0e7418359db1ee021e9d2aa096ef929212a62b47fd91d06086d0c11f4acf6f3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/monitor_memory.py": "098d91eb208ce85961b23a88b029a80e122ff0b1b37bed7b9eaa898d1b5d6fc5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/observe_serve_logits_allocation.py": "8357d3b42f4ea4e8175623430c99106010c51e6ee5b72c392feda555e0bcab30",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/offload_policy.py": "0aaf88178d23eca2e287f09d3aed82badae3665529827ce432976bf81bf3a898",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/physical_ram.py": "81f301aee0e3e0643a789dec8756f99574195995be95483ae0be71045baabf30",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/prepare_inputs.py": "abcdd7c57870ffac1807f4b26fd40f549c79cf49d302a2a281e3c0e936ee350a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/prepare_quality.py": "140e7c8008f00928b271201d5116534af8f89ae7f57302a24c272a6c8607143a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/profile_http.py": "8b687a672e90410d745e334f2efd47fa062be65af91f5901a37322a2fbec4ff7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/profile_prefill_batch_rows.py": "5cb1300dea3c060adfc364613983c7f9dd7b9ad0fa2d263ce099d184e232c81b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/profile_serve_logits_capacity.py": "19275a8b5d65cb31a50ccdc1d4b04885fa7b079308ec61e5a76a1d5fc33ae026",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/request_policy_protocol.py": "8f2e53412fef4fe795cb5e8f3dcccd8b2048ae42696da658e81b05ebe381d6f8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/resource_metrics.py": "4ec55a1bad3983d9e71621c72aa299538392b3f8efb4ec121b9ec28bd105a5ce",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_accept_failure.py": "4e2fe2a3200b488c0752086088b2aa9853d5fed35ea8638434505d11015642e8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_acceptance.py": "2e47d633aa908b6ee885b80b192e14dfffbf627c73559f8a891b334cc64c25dd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_budget_experiment.py": "4f3473ea567a98dd10b43be857fe42d374144deee9b2b16d7b982c2c653b01b1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_chat_template.py": "dec305c3e3bd10f32caaebf3fb40d0cde2a6750c25aecb60268d5d76424ed022",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_chunk_interleave.py": "8ccb331d39640256a78853e007398a0379953436b5e2012e7ba8861fd9164cad",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_chunk_lifecycle.py": "bfa4cf5feb1bcb57e2895930f6bb4347ef4816e449f574dbf49e7ce6cb3b93d5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_control_soak.py": "864225353a6af2cb6a6e61678f31e5341d993a46427d36e74e0990e5d631fd69",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_decode_failure.py": "135455a1cf447154586acfb8a0743d6e29d46f976e16e3d3c99373508c579495",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_input_boundary.py": "96790c27ad3446babb71e46cf4ba2812f7fa7d1d87c0fbac7562bd8e8d1d40de",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_isolated_control.py": "4ee82977660ff1d9534e502309b4b23b432d040aa2dc7ef9c07f8b174e243e85",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_offload_lifecycle.py": "4d9e3585745625e20fc86b975b892c91a3d5e54d454e2c8951f701045ac39b85",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_prefill_batch_rows.py": "67acae1b55a79e0ea149352f6e84c85cf37144981b673438853af65b4eefa354",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_prefill_consumers.py": "d91d99855ee2775d345c634dd57daf89b11cf777a7ed10ec6d540f3779daa074",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_proxy_admission.py": "1c021c3b3da8dd01b8a6adea5cdf643002fbb382058ac4842a64e28036eaf3d0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_request_cancellation.py": "9a79edd223fefa4e69c32148f1805941ac5ed4094f76a4f8e96b0fc74ad3473b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_state_lifecycle.py": "d751c1901680f2a94b9591edb3263b57295f5c4069c4cffa4e07359326886357",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_state_readback_failure.py": "3e583acdfcd8dfa433080a97728808bdc57afad20f8fc5cf46c37def16efdcc8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_vision_determinism.py": "59af9cd6ead61bcb99e89569e07e1fd4c4f4291936185618ce971b044cc6f542",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_causality_protocol.py": "6fefacc5f154f8f4355b62ccb1417b6e9b02ff03722ac8460e4f1cb9cbd4e14f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_chunk_order_protocol.py": "ab64a38f44186f6dcee72b02a81da59b3700bc6d7e6db9a467c37c223bc46b26",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_isolated_service.py": "a34842a3bbad63c2647f456a2f48685047e9f6f1ae95377b66c03e0197b0734b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_memory_accounting.py": "559fb428478f0b7fb5c68321c6acba28136e1fff397404744668489a3ee80dae",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_monitor_schedule.py": "274136648b7729b28f4e52f0d86772b00c8acd9987fadf0f189ba321adbce422",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_offload_diagnostics.py": "462b64bc307d357ab464fe495a75584b327072fb19df4a97215d6206ae633ba1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_offload_lifecycle.py": "808d88d47267f298aeea881e4c2dd256674c5257bfa0444cd7fd2b741f7629e2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_offload_matrix_audit.py": "b58ad4ee86ecb89935ae7fbe27b60a40ef06d7080d5dd7ab8254f2420f24aef9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_partition_protocol.py": "726a7a2078712bfaacc80ff464c9202d8b8696bde5370013cef58c7687d70b59",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_physical_ram.py": "ee30b3ea159c3fbef95553d1efd20e1a1a4728c2025897ff0dde7d8938572ef3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_request_policy_protocol.py": "3fb64edccb23c5f436b91dbea8b8b81f50032872821342decb9c0988af041ea7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_resource_metrics.py": "291e64ce6fd95d178b8601733d3fb349df2eba0391a93f09948bc36bac7eb131",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_run_acceptance.py": "4e866e51cceee464a69cc564b6265da14499177b11fe2603fd977bd2736d6bbd"
+  },
+  "reused_tool_contracts": 163,
+  "input_availability": {
+    "fixtures": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/history-fixtures",
+    "hot_list": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-residency-20260930/hot-lists/hot-final-12288.json",
+    "model_directory": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "model_metadata_only": [
+      {
+        "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/config.json",
+        "readable": true,
+        "bytes_hashed": false,
+        "device": 66305,
+        "inode": 3293800,
+        "size": 4983,
+        "mtime_ns": 1788440422497571932
+      },
+      {
+        "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model.safetensors.index.json",
+        "readable": true,
+        "bytes_hashed": false,
+        "device": 66305,
+        "inode": 3294010,
+        "size": 35429343,
+        "mtime_ns": 1788441027439989409
+      },
+      {
+        "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/tokenizer.json",
+        "readable": true,
+        "bytes_hashed": false,
+        "device": 66305,
+        "inode": 3294019,
+        "size": 12809320,
+        "mtime_ns": 1788441030615934742
+      },
+      {
+        "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/tokenizer_config.json",
+        "readable": true,
+        "bytes_hashed": false,
+        "device": 66305,
+        "inode": 3294021,
+        "size": 17928,
+        "mtime_ns": 1788441030479937076
+      }
+    ]
+  },
+  "distribution": {
+    "version": "1.12.0",
+    "name": "evalscope",
+    "package_location": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope",
+    "metadata_directory": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info",
+    "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/.venv/bin/python",
+    "prefix": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/.venv",
+    "base_prefix": "/usr",
+    "python_version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "cache_tag": "cpython-312",
+    "prior_HTTP_version": "1.12.0",
+    "prior_version_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/quality-c/http/evalscope-version.txt",
+    "metadata_sources": [
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info/METADATA",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info/RECORD",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info/entry_points.txt",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info/WHEEL",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info/INSTALLER",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info/REQUESTED",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info/top_level.txt"
+    ],
+    "package_source_count": 80,
+    "package_source_paths": [
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/__init__.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/__init__.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/base.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/benchmark_info.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/cli.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/start_app.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/start_eval.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/start_perf.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/start_service.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/__init__.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/arguments.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/benchmark.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/__init__.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/http_client.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/metrics_consumer.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/pipeline.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/strategies/__init__.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/strategies/base.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/strategies/closed_loop.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/strategies/multi_turn.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/strategies/open_loop.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/main.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/multi_turn_args.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/multi_turn_benchmark.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/__init__.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/__init__.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/base.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/custom_api.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/dashscope_api.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/default_api.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/openai_api.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/openai_embedding_api.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/openai_rerank_api.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/openai_responses_api.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/__init__.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/base.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/custom.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/dataset_args.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/embedding_dataset.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/flickr8k.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/kontext_bench.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/line_by_line.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/longalpaca.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/multi_turn.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/openqa.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/random_dataset.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/random_vl_dataset.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/rerank_dataset.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/share_gpt.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/speed_benchmark.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/swe_smith.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/trie.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/utils.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/workload_trace.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/registry.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/scenarios/__init__.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/scenarios/agentx.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/sla/__init__.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/sla/sla_criterion.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/sla/sla_run.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/__init__.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/analysis_result.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/benchmark_util.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/body_meta.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/db_util.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/handler.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/local_server.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/log_utils.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/perf_constants.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/perf_models.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/report/__init__.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/report/generate_report.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/report/perf_charts.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/report/perf_data.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/report/summary.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/rich_display.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/trace_metrics.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/worker_util.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/workload_timeline.py",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/version.py"
+    ],
+    "historical_package_bytes_proven_equal": false
+  },
+  "after": {
+    "evidence_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/.q4t-work/evidence",
+    "evidence_directory_absent": true,
+    "task_controller_starts_absent": true,
+    "machine_wide_server_absence_claim": false
+  },
+  "status": "PASS_READONLY_DEPENDENCY_ADMISSION",
+  "source_metadata": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/verify_environment.py": {
+      "device": 66305,
+      "inode": 3811861,
+      "size": 19515,
+      "mtime_ns": 1791177043008179959
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/plan.json": {
+      "device": 66305,
+      "inode": 3811809,
+      "size": 19353,
+      "mtime_ns": 1791176503833620362
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/execution-plan.json": {
+      "device": 66305,
+      "inode": 3809933,
+      "size": 38257,
+      "mtime_ns": 1791176057661017271
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/tool-stage-delivery.json": {
+      "device": 66305,
+      "inode": 3811859,
+      "size": 242,
+      "mtime_ns": 1791176692084331480
+    },
+    "/usr/bin/python3.12": {
+      "device": 66305,
+      "inode": 5970,
+      "size": 7845048,
+      "mtime_ns": 1788171506000000000
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/evalscope": {
+      "device": 66305,
+      "inode": 4223003,
+      "size": 355,
+      "mtime_ns": 1789848715753064071
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/pyvenv.cfg": {
+      "device": 66305,
+      "inode": 4213624,
+      "size": 132,
+      "mtime_ns": 1789848696613130736
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/tool-validation-admission.json": {
+      "device": 66305,
+      "inode": 3809894,
+      "size": 12225,
+      "mtime_ns": 1791175752543856346
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/analyze_http_trace.py": {
+      "device": 66305,
+      "inode": 3808899,
+      "size": 6907,
+      "mtime_ns": 1791174533735498229
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/analyze_http_trace.py": {
+      "device": 66305,
+      "inode": 3810871,
+      "size": 6907,
+      "mtime_ns": 1791176503777620755
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/audit_offload_diagnostics.py": {
+      "device": 66305,
+      "inode": 3808900,
+      "size": 27544,
+      "mtime_ns": 1791174533735498229
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/audit_offload_diagnostics.py": {
+      "device": 66305,
+      "inode": 3810872,
+      "size": 27544,
+      "mtime_ns": 1791176503777620755
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/audit_offload_matrix.py": {
+      "device": 66305,
+      "inode": 3808901,
+      "size": 34785,
+      "mtime_ns": 1791174533735498229
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/audit_offload_matrix.py": {
+      "device": 66305,
+      "inode": 3810873,
+      "size": 34785,
+      "mtime_ns": 1791176503777620755
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/causality_protocol.py": {
+      "device": 66305,
+      "inode": 3809861,
+      "size": 7213,
+      "mtime_ns": 1791175006811727812
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/causality_protocol.py": {
+      "device": 66305,
+      "inode": 3810874,
+      "size": 7213,
+      "mtime_ns": 1791176503777620755
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/compare_chunk_order.py": {
+      "device": 66305,
+      "inode": 3808902,
+      "size": 20400,
+      "mtime_ns": 1791174533735498229
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/compare_chunk_order.py": {
+      "device": 66305,
+      "inode": 3810875,
+      "size": 20400,
+      "mtime_ns": 1791176503777620755
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/disconnect_e2e.py": {
+      "device": 66305,
+      "inode": 3808903,
+      "size": 10525,
+      "mtime_ns": 1791174533735498229
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/disconnect_e2e.py": {
+      "device": 66305,
+      "inode": 3810876,
+      "size": 10525,
+      "mtime_ns": 1791176503777620755
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/file_cache.py": {
+      "device": 66305,
+      "inode": 3808944,
+      "size": 4959,
+      "mtime_ns": 1791174533739498226
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/file_cache.py": {
+      "device": 66305,
+      "inode": 3810917,
+      "size": 4959,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/isolated_service.py": {
+      "device": 66305,
+      "inode": 3808961,
+      "size": 8269,
+      "mtime_ns": 1791174533739498226
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/isolated_service.py": {
+      "device": 66305,
+      "inode": 3810934,
+      "size": 8269,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/memory_accounting.py": {
+      "device": 66305,
+      "inode": 3808962,
+      "size": 13851,
+      "mtime_ns": 1791174533739498226
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/memory_accounting.py": {
+      "device": 66305,
+      "inode": 3810935,
+      "size": 13851,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/monitor_memory.py": {
+      "device": 66305,
+      "inode": 3808963,
+      "size": 23266,
+      "mtime_ns": 1791174533739498226
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/monitor_memory.py": {
+      "device": 66305,
+      "inode": 3810936,
+      "size": 23266,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/observe_serve_logits_allocation.py": {
+      "device": 66305,
+      "inode": 3808964,
+      "size": 4328,
+      "mtime_ns": 1791174533739498226
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/observe_serve_logits_allocation.py": {
+      "device": 66305,
+      "inode": 3810937,
+      "size": 4328,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/offload_policy.py": {
+      "device": 66305,
+      "inode": 3808965,
+      "size": 13969,
+      "mtime_ns": 1791174533739498226
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/offload_policy.py": {
+      "device": 66305,
+      "inode": 3810938,
+      "size": 13969,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/physical_ram.py": {
+      "device": 66305,
+      "inode": 3808966,
+      "size": 18036,
+      "mtime_ns": 1791174533739498226
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/physical_ram.py": {
+      "device": 66305,
+      "inode": 3810939,
+      "size": 18036,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/prepare_inputs.py": {
+      "device": 66305,
+      "inode": 3808967,
+      "size": 3329,
+      "mtime_ns": 1791174533739498226
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/prepare_inputs.py": {
+      "device": 66305,
+      "inode": 3810940,
+      "size": 3329,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/prepare_quality.py": {
+      "device": 66305,
+      "inode": 3808968,
+      "size": 3333,
+      "mtime_ns": 1791174533739498226
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/prepare_quality.py": {
+      "device": 66305,
+      "inode": 3810941,
+      "size": 3333,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/profile_http.py": {
+      "device": 66305,
+      "inode": 3808969,
+      "size": 9208,
+      "mtime_ns": 1791174533739498226
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/profile_http.py": {
+      "device": 66305,
+      "inode": 3810942,
+      "size": 9208,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/profile_prefill_batch_rows.py": {
+      "device": 66305,
+      "inode": 3808970,
+      "size": 8050,
+      "mtime_ns": 1791174533739498226
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/profile_prefill_batch_rows.py": {
+      "device": 66305,
+      "inode": 3810943,
+      "size": 8050,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/profile_serve_logits_capacity.py": {
+      "device": 66305,
+      "inode": 3808971,
+      "size": 6209,
+      "mtime_ns": 1791174533739498226
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/profile_serve_logits_capacity.py": {
+      "device": 66305,
+      "inode": 3810944,
+      "size": 6209,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/request_policy_protocol.py": {
+      "device": 66305,
+      "inode": 3808982,
+      "size": 19583,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/request_policy_protocol.py": {
+      "device": 66305,
+      "inode": 3810955,
+      "size": 19583,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/resource_metrics.py": {
+      "device": 66305,
+      "inode": 3808983,
+      "size": 18493,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/resource_metrics.py": {
+      "device": 66305,
+      "inode": 3810956,
+      "size": 18493,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_accept_failure.py": {
+      "device": 66305,
+      "inode": 3808984,
+      "size": 4797,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_accept_failure.py": {
+      "device": 66305,
+      "inode": 3810957,
+      "size": 4797,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_acceptance.py": {
+      "device": 66305,
+      "inode": 3808985,
+      "size": 42339,
+      "mtime_ns": 1791175155328407444
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_acceptance.py": {
+      "device": 66305,
+      "inode": 3810958,
+      "size": 42339,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_budget_experiment.py": {
+      "device": 66305,
+      "inode": 3808987,
+      "size": 28585,
+      "mtime_ns": 1791175155328407444
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_budget_experiment.py": {
+      "device": 66305,
+      "inode": 3810960,
+      "size": 28585,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_chat_template.py": {
+      "device": 66305,
+      "inode": 3808988,
+      "size": 9403,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_chat_template.py": {
+      "device": 66305,
+      "inode": 3810961,
+      "size": 9403,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_chunk_interleave.py": {
+      "device": 66305,
+      "inode": 3808989,
+      "size": 12231,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_chunk_interleave.py": {
+      "device": 66305,
+      "inode": 3810962,
+      "size": 12231,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_chunk_lifecycle.py": {
+      "device": 66305,
+      "inode": 3808990,
+      "size": 10944,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_chunk_lifecycle.py": {
+      "device": 66305,
+      "inode": 3810963,
+      "size": 10944,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_control_soak.py": {
+      "device": 66305,
+      "inode": 3808991,
+      "size": 10644,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_control_soak.py": {
+      "device": 66305,
+      "inode": 3810964,
+      "size": 10644,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_decode_failure.py": {
+      "device": 66305,
+      "inode": 3808992,
+      "size": 7014,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_decode_failure.py": {
+      "device": 66305,
+      "inode": 3810965,
+      "size": 7014,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_input_boundary.py": {
+      "device": 66305,
+      "inode": 3808993,
+      "size": 9778,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_input_boundary.py": {
+      "device": 66305,
+      "inode": 3810966,
+      "size": 9778,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_isolated_control.py": {
+      "device": 66305,
+      "inode": 3808994,
+      "size": 12001,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_isolated_control.py": {
+      "device": 66305,
+      "inode": 3810967,
+      "size": 12001,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_offload_lifecycle.py": {
+      "device": 66305,
+      "inode": 3808995,
+      "size": 28879,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_offload_lifecycle.py": {
+      "device": 66305,
+      "inode": 3810968,
+      "size": 28879,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_prefill_batch_rows.py": {
+      "device": 66305,
+      "inode": 3808996,
+      "size": 12383,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_prefill_batch_rows.py": {
+      "device": 66305,
+      "inode": 3810969,
+      "size": 12383,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_prefill_consumers.py": {
+      "device": 66305,
+      "inode": 3808997,
+      "size": 14100,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_prefill_consumers.py": {
+      "device": 66305,
+      "inode": 3810970,
+      "size": 14100,
+      "mtime_ns": 1791176503781620726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_proxy_admission.py": {
+      "device": 66305,
+      "inode": 3808998,
+      "size": 13528,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_proxy_admission.py": {
+      "device": 66305,
+      "inode": 3810971,
+      "size": 13528,
+      "mtime_ns": 1791176503785620699
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_request_cancellation.py": {
+      "device": 66305,
+      "inode": 3808999,
+      "size": 14048,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_request_cancellation.py": {
+      "device": 66305,
+      "inode": 3810972,
+      "size": 14048,
+      "mtime_ns": 1791176503785620699
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_state_lifecycle.py": {
+      "device": 66305,
+      "inode": 3809000,
+      "size": 10144,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_state_lifecycle.py": {
+      "device": 66305,
+      "inode": 3810973,
+      "size": 10144,
+      "mtime_ns": 1791176503785620699
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_state_readback_failure.py": {
+      "device": 66305,
+      "inode": 3809001,
+      "size": 4893,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_state_readback_failure.py": {
+      "device": 66305,
+      "inode": 3810974,
+      "size": 4893,
+      "mtime_ns": 1791176503785620699
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_vision_determinism.py": {
+      "device": 66305,
+      "inode": 3809002,
+      "size": 8384,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/run_vision_determinism.py": {
+      "device": 66305,
+      "inode": 3810975,
+      "size": 8384,
+      "mtime_ns": 1791176503785620699
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_causality_protocol.py": {
+      "device": 66305,
+      "inode": 3809864,
+      "size": 18495,
+      "mtime_ns": 1791175700224411947
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_causality_protocol.py": {
+      "device": 66305,
+      "inode": 3810976,
+      "size": 18495,
+      "mtime_ns": 1791176503785620699
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_chunk_order_protocol.py": {
+      "device": 66305,
+      "inode": 3809003,
+      "size": 19518,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_chunk_order_protocol.py": {
+      "device": 66305,
+      "inode": 3810977,
+      "size": 19518,
+      "mtime_ns": 1791176503785620699
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_isolated_service.py": {
+      "device": 66305,
+      "inode": 3809004,
+      "size": 3283,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_isolated_service.py": {
+      "device": 66305,
+      "inode": 3810978,
+      "size": 3283,
+      "mtime_ns": 1791176503785620699
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_memory_accounting.py": {
+      "device": 66305,
+      "inode": 3809005,
+      "size": 9008,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_memory_accounting.py": {
+      "device": 66305,
+      "inode": 3810979,
+      "size": 9008,
+      "mtime_ns": 1791176503785620699
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_monitor_schedule.py": {
+      "device": 66305,
+      "inode": 3809006,
+      "size": 6644,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_monitor_schedule.py": {
+      "device": 66305,
+      "inode": 3810980,
+      "size": 6644,
+      "mtime_ns": 1791176503785620699
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_offload_diagnostics.py": {
+      "device": 66305,
+      "inode": 3809007,
+      "size": 8913,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_offload_diagnostics.py": {
+      "device": 66305,
+      "inode": 3810981,
+      "size": 8913,
+      "mtime_ns": 1791176503785620699
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_offload_lifecycle.py": {
+      "device": 66305,
+      "inode": 3809008,
+      "size": 7351,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_offload_lifecycle.py": {
+      "device": 66305,
+      "inode": 3810982,
+      "size": 7351,
+      "mtime_ns": 1791176503785620699
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_offload_matrix_audit.py": {
+      "device": 66305,
+      "inode": 3809009,
+      "size": 30689,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_offload_matrix_audit.py": {
+      "device": 66305,
+      "inode": 3810983,
+      "size": 30689,
+      "mtime_ns": 1791176503785620699
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_partition_protocol.py": {
+      "device": 66305,
+      "inode": 3809010,
+      "size": 24625,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_partition_protocol.py": {
+      "device": 66305,
+      "inode": 3810984,
+      "size": 24625,
+      "mtime_ns": 1791176503785620699
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_physical_ram.py": {
+      "device": 66305,
+      "inode": 3809011,
+      "size": 9008,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_physical_ram.py": {
+      "device": 66305,
+      "inode": 3810985,
+      "size": 9008,
+      "mtime_ns": 1791176503785620699
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_request_policy_protocol.py": {
+      "device": 66305,
+      "inode": 3809012,
+      "size": 26089,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_request_policy_protocol.py": {
+      "device": 66305,
+      "inode": 3810986,
+      "size": 26089,
+      "mtime_ns": 1791176503785620699
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_resource_metrics.py": {
+      "device": 66305,
+      "inode": 3809013,
+      "size": 13170,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_resource_metrics.py": {
+      "device": 66305,
+      "inode": 3810987,
+      "size": 13170,
+      "mtime_ns": 1791176503785620699
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/test_run_acceptance.py": {
+      "device": 66305,
+      "inode": 3809014,
+      "size": 17472,
+      "mtime_ns": 1791174533743498223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/test_run_acceptance.py": {
+      "device": 66305,
+      "inode": 3810988,
+      "size": 17472,
+      "mtime_ns": 1791176503785620699
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/execution-plan.json": {
+      "device": 66305,
+      "inode": 3804824,
+      "size": 14042,
+      "mtime_ns": 1791140131165357318
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/history-a-command.json": {
+      "device": 66305,
+      "inode": 3804807,
+      "size": 1102,
+      "mtime_ns": 1791140042533204833
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-residency-20260930/hot-lists/hot-final-12288.json": {
+      "device": 66305,
+      "inode": 3688396,
+      "size": 59260,
+      "mtime_ns": 1790839740195224796
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/history-fixtures/context-1024/requests.jsonl": {
+      "device": 66305,
+      "inode": 3705163,
+      "size": 15405,
+      "mtime_ns": 1791110826319211941
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/history-fixtures/context-8193/requests.jsonl": {
+      "device": 66305,
+      "inode": 3705203,
+      "size": 40441,
+      "mtime_ns": 1791110828087196108
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/model-entry.json": {
+      "device": 66305,
+      "inode": 3811812,
+      "size": 58491,
+      "mtime_ns": 1791176503833620362
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/quality-c/http/evalscope-version.txt": {
+      "device": 66305,
+      "inode": 3804971,
+      "size": 7,
+      "mtime_ns": 1791140218133516589
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/__init__.py": {
+      "device": 66305,
+      "inode": 11946973,
+      "size": 657,
+      "mtime_ns": 1789848703709105950
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/__init__.py": {
+      "device": 66305,
+      "inode": 11956935,
+      "size": 50,
+      "mtime_ns": 1789848705885098366
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/base.py": {
+      "device": 66305,
+      "inode": 11956938,
+      "size": 581,
+      "mtime_ns": 1789848705885098366
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/benchmark_info.py": {
+      "device": 66305,
+      "inode": 11956941,
+      "size": 16661,
+      "mtime_ns": 1789848705885098366
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/cli.py": {
+      "device": 66305,
+      "inode": 11956945,
+      "size": 1053,
+      "mtime_ns": 1789848705885098366
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/start_app.py": {
+      "device": 66305,
+      "inode": 11956951,
+      "size": 1768,
+      "mtime_ns": 1789848705885098366
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/start_eval.py": {
+      "device": 66305,
+      "inode": 11956957,
+      "size": 774,
+      "mtime_ns": 1789848705885098366
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/start_perf.py": {
+      "device": 66305,
+      "inode": 11956961,
+      "size": 1212,
+      "mtime_ns": 1789848705885098366
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/cli/start_service.py": {
+      "device": 66305,
+      "inode": 11956965,
+      "size": 1909,
+      "mtime_ns": 1789848705885098366
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/__init__.py": {
+      "device": 66305,
+      "inode": 11958102,
+      "size": 0,
+      "mtime_ns": 1789848706081097683
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/arguments.py": {
+      "device": 66305,
+      "inode": 11958103,
+      "size": 43780,
+      "mtime_ns": 1789848706085097669
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/benchmark.py": {
+      "device": 66305,
+      "inode": 11958116,
+      "size": 7943,
+      "mtime_ns": 1789848706085097669
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/__init__.py": {
+      "device": 66305,
+      "inode": 11958128,
+      "size": 590,
+      "mtime_ns": 1789848706085097669
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/http_client.py": {
+      "device": 66305,
+      "inode": 11958130,
+      "size": 8038,
+      "mtime_ns": 1789848706085097669
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/metrics_consumer.py": {
+      "device": 66305,
+      "inode": 11958133,
+      "size": 7716,
+      "mtime_ns": 1789848706085097669
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/pipeline.py": {
+      "device": 66305,
+      "inode": 11958152,
+      "size": 2156,
+      "mtime_ns": 1789848706085097669
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/strategies/__init__.py": {
+      "device": 66305,
+      "inode": 11958156,
+      "size": 397,
+      "mtime_ns": 1789848706085097669
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/strategies/base.py": {
+      "device": 66305,
+      "inode": 11958159,
+      "size": 3479,
+      "mtime_ns": 1789848706089097655
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/strategies/closed_loop.py": {
+      "device": 66305,
+      "inode": 11958180,
+      "size": 7843,
+      "mtime_ns": 1789848706089097655
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/strategies/multi_turn.py": {
+      "device": 66305,
+      "inode": 11958183,
+      "size": 14003,
+      "mtime_ns": 1789848706089097655
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/core/strategies/open_loop.py": {
+      "device": 66305,
+      "inode": 11958185,
+      "size": 9650,
+      "mtime_ns": 1789848706089097655
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/main.py": {
+      "device": 66305,
+      "inode": 11958119,
+      "size": 7304,
+      "mtime_ns": 1789848706085097669
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/multi_turn_args.py": {
+      "device": 66305,
+      "inode": 11958121,
+      "size": 3293,
+      "mtime_ns": 1789848706085097669
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/multi_turn_benchmark.py": {
+      "device": 66305,
+      "inode": 11958123,
+      "size": 5455,
+      "mtime_ns": 1789848706085097669
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/__init__.py": {
+      "device": 66305,
+      "inode": 11958187,
+      "size": 170,
+      "mtime_ns": 1789848706089097655
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/__init__.py": {
+      "device": 66305,
+      "inode": 11958191,
+      "size": 314,
+      "mtime_ns": 1789848706089097655
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/base.py": {
+      "device": 66305,
+      "inode": 11958192,
+      "size": 4400,
+      "mtime_ns": 1789848706089097655
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/custom_api.py": {
+      "device": 66305,
+      "inode": 11958193,
+      "size": 8434,
+      "mtime_ns": 1789848706089097655
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/dashscope_api.py": {
+      "device": 66305,
+      "inode": 11958194,
+      "size": 3770,
+      "mtime_ns": 1789848706089097655
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/default_api.py": {
+      "device": 66305,
+      "inode": 11958211,
+      "size": 14265,
+      "mtime_ns": 1789848706093097641
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/openai_api.py": {
+      "device": 66305,
+      "inode": 11958213,
+      "size": 15829,
+      "mtime_ns": 1789848706093097641
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/openai_embedding_api.py": {
+      "device": 66305,
+      "inode": 11958216,
+      "size": 8750,
+      "mtime_ns": 1789848706093097641
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/openai_rerank_api.py": {
+      "device": 66305,
+      "inode": 11958218,
+      "size": 9456,
+      "mtime_ns": 1789848706093097641
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/api/openai_responses_api.py": {
+      "device": 66305,
+      "inode": 11958219,
+      "size": 12227,
+      "mtime_ns": 1789848706201097265
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/__init__.py": {
+      "device": 66305,
+      "inode": 11958237,
+      "size": 1142,
+      "mtime_ns": 1789848706201097265
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/base.py": {
+      "device": 66305,
+      "inode": 11958239,
+      "size": 19175,
+      "mtime_ns": 1789848706201097265
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/custom.py": {
+      "device": 66305,
+      "inode": 11958242,
+      "size": 6119,
+      "mtime_ns": 1789848706201097265
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/dataset_args.py": {
+      "device": 66305,
+      "inode": 11958244,
+      "size": 4682,
+      "mtime_ns": 1789848706201097265
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/embedding_dataset.py": {
+      "device": 66305,
+      "inode": 11958247,
+      "size": 7680,
+      "mtime_ns": 1789848706201097265
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/flickr8k.py": {
+      "device": 66305,
+      "inode": 11958249,
+      "size": 999,
+      "mtime_ns": 1789848706205097251
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/kontext_bench.py": {
+      "device": 66305,
+      "inode": 11958282,
+      "size": 1052,
+      "mtime_ns": 1789848706205097251
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/line_by_line.py": {
+      "device": 66305,
+      "inode": 11958285,
+      "size": 3502,
+      "mtime_ns": 1789848706205097251
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/longalpaca.py": {
+      "device": 66305,
+      "inode": 11958288,
+      "size": 1210,
+      "mtime_ns": 1789848706205097251
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/multi_turn.py": {
+      "device": 66305,
+      "inode": 11958290,
+      "size": 9945,
+      "mtime_ns": 1789848706205097251
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/openqa.py": {
+      "device": 66305,
+      "inode": 11958292,
+      "size": 1298,
+      "mtime_ns": 1789848706205097251
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/random_dataset.py": {
+      "device": 66305,
+      "inode": 11958294,
+      "size": 19001,
+      "mtime_ns": 1789848706205097251
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/random_vl_dataset.py": {
+      "device": 66305,
+      "inode": 11958297,
+      "size": 3847,
+      "mtime_ns": 1789848706205097251
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/rerank_dataset.py": {
+      "device": 66305,
+      "inode": 11958300,
+      "size": 6819,
+      "mtime_ns": 1789848706205097251
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/share_gpt.py": {
+      "device": 66305,
+      "inode": 11958303,
+      "size": 4606,
+      "mtime_ns": 1789848706209097237
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/speed_benchmark.py": {
+      "device": 66305,
+      "inode": 11958329,
+      "size": 2312,
+      "mtime_ns": 1789848706209097237
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/swe_smith.py": {
+      "device": 66305,
+      "inode": 11958331,
+      "size": 19035,
+      "mtime_ns": 1789848706209097237
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/trie.py": {
+      "device": 66305,
+      "inode": 11958334,
+      "size": 8461,
+      "mtime_ns": 1789848706209097237
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/utils.py": {
+      "device": 66305,
+      "inode": 11958336,
+      "size": 13225,
+      "mtime_ns": 1789848706209097237
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/datasets/workload_trace.py": {
+      "device": 66305,
+      "inode": 11958338,
+      "size": 11765,
+      "mtime_ns": 1789848706209097237
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/plugin/registry.py": {
+      "device": 66305,
+      "inode": 11958188,
+      "size": 1969,
+      "mtime_ns": 1789848706089097655
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/scenarios/__init__.py": {
+      "device": 66305,
+      "inode": 11958358,
+      "size": 160,
+      "mtime_ns": 1789848706209097237
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/scenarios/agentx.py": {
+      "device": 66305,
+      "inode": 11958360,
+      "size": 23622,
+      "mtime_ns": 1789848706209097237
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/sla/__init__.py": {
+      "device": 66305,
+      "inode": 11958364,
+      "size": 0,
+      "mtime_ns": 1789848706209097237
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/sla/sla_criterion.py": {
+      "device": 66305,
+      "inode": 11958366,
+      "size": 3260,
+      "mtime_ns": 1789848706209097237
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/sla/sla_run.py": {
+      "device": 66305,
+      "inode": 11958370,
+      "size": 17106,
+      "mtime_ns": 1789848706213097223
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/__init__.py": {
+      "device": 66305,
+      "inode": 11958375,
+      "size": 0,
+      "mtime_ns": 1789848706213097223
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/analysis_result.py": {
+      "device": 66305,
+      "inode": 11958376,
+      "size": 935,
+      "mtime_ns": 1789848706213097223
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/benchmark_util.py": {
+      "device": 66305,
+      "inode": 11958379,
+      "size": 29128,
+      "mtime_ns": 1789848706213097223
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/body_meta.py": {
+      "device": 66305,
+      "inode": 11958399,
+      "size": 226,
+      "mtime_ns": 1789848706213097223
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/db_util.py": {
+      "device": 66305,
+      "inode": 11958401,
+      "size": 20056,
+      "mtime_ns": 1789848706213097223
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/handler.py": {
+      "device": 66305,
+      "inode": 11958403,
+      "size": 6216,
+      "mtime_ns": 1789848706213097223
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/local_server.py": {
+      "device": 66305,
+      "inode": 11958405,
+      "size": 3719,
+      "mtime_ns": 1789848706213097223
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/log_utils.py": {
+      "device": 66305,
+      "inode": 11958406,
+      "size": 5656,
+      "mtime_ns": 1789848706217097209
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/perf_constants.py": {
+      "device": 66305,
+      "inode": 11958423,
+      "size": 3754,
+      "mtime_ns": 1789848706217097209
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/perf_models.py": {
+      "device": 66305,
+      "inode": 11958426,
+      "size": 23427,
+      "mtime_ns": 1789848706217097209
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/report/__init__.py": {
+      "device": 66305,
+      "inode": 11958455,
+      "size": 0,
+      "mtime_ns": 1789848706241097126
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/report/generate_report.py": {
+      "device": 66305,
+      "inode": 11958458,
+      "size": 6159,
+      "mtime_ns": 1789848706241097126
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/report/perf_charts.py": {
+      "device": 66305,
+      "inode": 11958461,
+      "size": 22332,
+      "mtime_ns": 1789848706241097126
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/report/perf_data.py": {
+      "device": 66305,
+      "inode": 11958465,
+      "size": 10975,
+      "mtime_ns": 1789848706241097126
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/report/summary.py": {
+      "device": 66305,
+      "inode": 11958467,
+      "size": 14890,
+      "mtime_ns": 1789848706241097126
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/rich_display.py": {
+      "device": 66305,
+      "inode": 11958430,
+      "size": 29449,
+      "mtime_ns": 1789848706217097209
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/trace_metrics.py": {
+      "device": 66305,
+      "inode": 11958433,
+      "size": 9628,
+      "mtime_ns": 1789848706241097126
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/worker_util.py": {
+      "device": 66305,
+      "inode": 11958448,
+      "size": 1099,
+      "mtime_ns": 1789848706241097126
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/perf/utils/workload_timeline.py": {
+      "device": 66305,
+      "inode": 11958449,
+      "size": 11894,
+      "mtime_ns": 1789848706241097126
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope/version.py": {
+      "device": 66305,
+      "inode": 11947066,
+      "size": 119,
+      "mtime_ns": 1789848703757105782
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info/METADATA": {
+      "device": 66305,
+      "inode": 11960520,
+      "size": 38965,
+      "mtime_ns": 1789848707269093546
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info/RECORD": {
+      "device": 66305,
+      "inode": 4222949,
+      "size": 188067,
+      "mtime_ns": 1789848715753064071
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info/entry_points.txt": {
+      "device": 66305,
+      "inode": 11960527,
+      "size": 56,
+      "mtime_ns": 1789848707269093546
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info/WHEEL": {
+      "device": 66305,
+      "inode": 11960522,
+      "size": 91,
+      "mtime_ns": 1789848707269093546
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info/INSTALLER": {
+      "device": 66305,
+      "inode": 4223015,
+      "size": 2,
+      "mtime_ns": 1789848715753064071
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info/REQUESTED": {
+      "device": 66305,
+      "inode": 4223013,
+      "size": 0,
+      "mtime_ns": 1789848715753064071
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/lib/python3.12/site-packages/evalscope-1.12.0.dist-info/top_level.txt": {
+      "device": 66305,
+      "inode": 11960532,
+      "size": 10,
+      "mtime_ns": 1789848707269093546
+    }
+  },
+  "bounded_bytes_hashed": 10387881,
+  "limitations": [
+    "This checks dependency availability and byte identities, not inference, client operation, throughput or model quality.",
+    "The single Python subprocess reads distribution metadata only; evalscope and its perf/CLI modules are not imported or executed.",
+    "The old HTTP version is matched; perf/CLI source hashes are new prospective bindings, not proof of historical package bytes.",
+    "No model file is hashed or opened for content. Selected model and tokenizer files are checked only for readability and metadata.",
+    "Only the selected distribution sources/metadata and interpreter are bound; transitive packages, native libraries, standard library and bytecode caches are not exhaustively certified.",
+    "Absent starts/evidence refers only to this attempt, not every process or server on the machine."
+  ]
+}

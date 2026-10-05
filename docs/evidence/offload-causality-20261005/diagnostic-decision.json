@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "recorded_t": 1791181826.9837642,
+  "decision": "INSUFFICIENT_EVIDENCE_FOR_RUNTIME_CANDIDATE",
+  "applicable_research_complete": true,
+  "delivery_complete": false,
+  "goal_complete": false,
+  "performance_acceptance": false,
+  "runtime_acceptance": false,
+  "prior_full_NO_GO_unchanged": true,
+  "default_flags_unchanged": true,
+  "runner_source_commit": "c3c4d305f7a800ded29ccbad5b2bd5e399197796",
+  "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+  "plan_sha256": "a31b1692be9f9be962dd59842a73ccb262b999e627cfd1b771698f01ef7adb5e",
+  "http_count": 64,
+  "service_count": 16,
+  "facts": [
+    "All16 groups and64 fixed HTTP requests passed their scope contracts.",
+    "k1 long versus short predecessor decode duration increased in both arms in all four blocks.",
+    "k1 C/A decode differences and interaction signs are mixed; no new tolerance inferred.",
+    "k3 long-predecessor TTFT and decode duration remain higher in both arms in all four blocks.",
+    "k1@L C TTFT and k2@L C decode show consistent local improvements, not a universal null effect.",
+    "Whole-client PID storage read changes by predecessor and probe position; it is not decode-only IO.",
+    "Code retains residency across requests, but IDs/LRU/routes and exclusive CPU/IO/transfer timings were not sampled."
+  ],
+  "residual_waits": {
+    "storage_wait_seconds": null,
+    "transfer_wait_seconds": null,
+    "host_wait_seconds": null,
+    "reason": "End-to-end metrics and whole-client bytes cannot partition unhidden waits; existing timers overlap."
+  },
+  "candidate_selected": null,
+  "remaining_prefill_speedup_percent": null,
+  "conditional_tasks": {
+    "mechanism_study": {
+      "status": "NOT_TRIGGERED",
+      "reason": "No identified actionable mechanism with quantified unhidden cost; bounded insufficient-evidence exit used."
+    },
+    "runtime_candidate": {
+      "status": "NOT_TRIGGERED",
+      "reason": "No identified actionable mechanism with quantified unhidden cost; bounded insufficient-evidence exit used."
+    },
+    "candidate_acceptance": {
+      "status": "NOT_TRIGGERED",
+      "reason": "No identified actionable mechanism with quantified unhidden cost; bounded insufficient-evidence exit used."
+    }
+  },
+  "remaining_questions": [
+    "Which per-layer residency/route changes mediate the predecessor and k3 effects?",
+    "Which non-overlapping read/transfer/host waits are actually exposed on the critical path?",
+    "How much perturbation would the required timing/state instrumentation introduce?"
+  ],
+  "no_extra_samples": true,
+  "no_benchmark": true,
+  "whole_physical_RAM_54GB": "INDETERMINATE",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/comparison-decision.json": "841974dc8045c2824359491b239d6e538bce30b6df71e30e5355eb5031adc032",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/resource-audit.json": "049d1970880f0b0076f5bda95955cd525786a9f10ea63f9b1516b9d02ad1c2fd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/final-protection.json": "aeb42176175d1f1f3f19483831774bb52b090436171ad00a162d8b7f81d50922",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/comparison-independent-review.json": "5751d5213919b5efe5f72dc72b0b094a981943898db01d5d82b8a03df8712605",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/resource-independent-review.json": "19d466c080b6540d883fd5600a8923cd441818e3b8ff905224e240ade98e054a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source-mechanism-limits.json": "a250f875d88aeba76f841cb359c9b25e0674d7a9b242808a79c5cefb6d3ff72e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/diagnosis-independent-review.json": "55fd9b752d5fb811dc6d281a8d2ac7d3491e81e58da35cdd625a7c55ce24beeb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/closed-results-summary.json": "94112b0ff12a8a5a919aefb2fdc318b6dc5cc25b0097fc5fc38794c4230f52a4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/all-64-requests.csv": "f2e44625a6ab8ce044fb0f2709823cd97b39f59899a78fadf0d1cee320e2797d"
+  }
+}

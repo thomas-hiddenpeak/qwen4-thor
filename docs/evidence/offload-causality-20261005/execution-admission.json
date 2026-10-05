@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "recorded_t": 1791177266.3325617,
+  "execution_admitted": true,
+  "plan_sha256": "a31b1692be9f9be962dd59842a73ccb262b999e627cfd1b771698f01ef7adb5e",
+  "runner_source_commit": "c3c4d305f7a800ded29ccbad5b2bd5e399197796",
+  "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/reuse-admission.json": "ec8597c4c6b15760af21294168fbd82890cfa248a0720517fba2f378a059fa88",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/tool-validation-admission.json": "db2f3870e36d9ca2e45611d25b697ce2f95bd27f96476ca5ce22c072e619926a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/dependency-admission.json": "3146bd07172cef791e73a262fe1b0aaed0173963c7224826cce9970a99cadf94",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/execution-independent-review.json": "f537196a06f5d7b004fd38314a904132425769f7129e0e41b23c73681a35d578",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/root-freeze-preflight.json": "01f396dce8c5531b1f918649c3e034b147a78ee2f4fcc2034e79aff5fc9f2cb0"
+  },
+  "scope": "offload_threshold_predecessor_v1",
+  "services": 16,
+  "http_requests": 64,
+  "model_requests_already_started": 0,
+  "performance_acceptance": false,
+  "no_automatic_retry": true,
+  "old_NO_GO_unchanged": true,
+  "attempt": 2
+}
