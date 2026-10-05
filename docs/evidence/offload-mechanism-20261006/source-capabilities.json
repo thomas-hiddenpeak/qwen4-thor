@@ -1,0 +1,28 @@
+{
+  "schema": "q4t.offload_mechanism.source_capabilities.v1",
+  "source_delivery": "d8482e46d904b3d43cb0f59b9766e064898b25c0",
+  "runtime_source": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "runtime_modified": false,
+  "stage_a": "Reuse phase diagnostics, residency timing and router capture in the old binary. No new runtime observer.",
+  "directly_observable": [
+    {"chain": "HTTP ID and token counts to actual prefill/decode boundaries", "source": "src/server/chat_generation.cpp:439,559,863,884; src/server/offload_diagnostics.cpp:139", "detail": "prefill_begin, prefill_end_decode_begin, decode_prefix at completed forwards 1/8/32, inference_end; capture timestamps and duration"},
+    {"chain": "previous inference_end to next prefill_begin exact cache metadata", "source": "src/quant/moe_residency.cpp:1317; src/server/offload_diagnostics.cpp:115", "detail": "48 layers: GPU slot IDs/ticks/protection, L2 IDs/ticks, mirror IDs/cursor; lazy in-flight flags intentionally omitted"},
+    {"chain": "true phase and decode intervals to counter increments", "source": "src/server/offload_diagnostics.cpp:54,149", "detail": "lookups, misses, loads, evictions, software bytes, L2/mirror/merged-read counters; process-wide PID read_bytes at boundaries; no rchar in phase snapshots"},
+    {"chain": "request HTTP ID and input token sidecar to ordered actual routes", "source": "src/trace/router_collector.cpp:196,230,245,267", "detail": "forward stage/position/rows and 48-layer top-k IDs; complete prefix and suffix retained; no router weights"},
+    {"chain": "phase intervals to existing timing increments", "source": "src/quant/moe_residency.cpp:714,838,897,1480; src/model/moe.cu:513", "detail": "nested/parallel stage, pread, swizzle, phase1, router readback+sync; cumulative maxima remain end maxima"}
+  ],
+  "not_closed": [
+    "Entry cache membership plus routes does not identify actual concurrent L2/mirror supply or victim decisions.",
+    "Process read_bytes covers all files and readahead/accounting; software nvme_read_bytes includes page-cache hits. Neither is exclusive SSD waiting time.",
+    "Worker sums overlap and are nested in phase1; pread_merge is also in pread; D2H sync may wait for previous GPU work. Never add these as exclusive time.",
+    "Cache continuity and predecessor association do not isolate a cache-tier causal intervention.",
+    "Observation on allocates 15728640 device and 62914560 pinned bytes and adds copies/output. One paired launch per condition cannot yield subtractable pure overhead, significance, epsilon, or performance acceptance.",
+    "GPU/RSS/cgroup/file-cache counters do not establish a deduplicated 54GB physical-memory union."
+  ],
+  "conditional_minimal_extension_not_implemented": {
+    "actual_supply": "Only when separately frozen: optional per-miss LoadPlan records. PlanResolve:1422-1474 records expert/slot/old slot expert. StageTask:1021-1033 records ClaimExpert result (negative buffer=mirror; nonnegative hit=L2; otherwise read path), preserving read/commit failure. Caller collects after the existing LoadPhase1:1564-1574 worker barrier. ClaimExpert:653 can record actual L2 victim under the existing lock. No worker log or new lock required.",
+    "host_routes": "moe.cu:520 already provides synchronized ids_h/rw_h; a future bounded host observer can reuse them without new CUDA copies.",
+    "wait_scope": "Optional mutually disjoint caller intervals for existing readback/sync, host preparation, phase1 calls and final readback. These are caller wall times overlapping GPU work, not exclusive transfer/storage/compute costs."
+  },
+  "read_only_review": "No build, test, model execution, payload scan or cache handling performed by this source review."
+}

@@ -282,6 +282,10 @@ def main():
                         help='Frozen four-request predecessor diagnosis JSON')
     parser.add_argument('--causality-sequence-sha256',
                         help='Required exact bytes SHA256 of causality JSON')
+    parser.add_argument('--mechanism-sequence', type=Path,
+                        help='Frozen four-request cache/route observation JSON')
+    parser.add_argument('--mechanism-sequence-sha256',
+                        help='Required exact bytes SHA256 of mechanism JSON')
     parser.add_argument('--perf-repeats', type=int, default=3,
                         help='Requests per performance tier (default 3; fewer than 3 is partial)')
     parser.add_argument('--systemd-unit', type=str,
@@ -305,7 +309,7 @@ def main():
                         help='Prior results.json: require identical prompts and outputs')
     parser.add_argument('--moe-trace-dir', type=Path)
     parser.add_argument('--moe-trace-workload', type=Path)
-    parser.add_argument('--moe-trace-max-mib', type=int, default=1024)
+    parser.add_argument('--moe-trace-max-mib', type=int)
     parser.add_argument('--moe-resident-slots', type=int, default=0,
                         help='serve --moe-resident-slots (0 = all experts '
                              'resident, the baseline path)')
@@ -316,7 +320,23 @@ def main():
                         help='serve --request-deadline-ms (0 = server '
                              'default 1200000; must be in [1000,10800000])')
     args = parser.parse_args()
+    trace_max_explicit = args.moe_trace_max_mib is not None
+    if not trace_max_explicit:
+        args.moe_trace_max_mib = 1024
     causality = args.causality_sequence is not None
+    mechanism = args.mechanism_sequence is not None
+    ordered_sequence = causality or mechanism
+    if mechanism != (args.mechanism_sequence_sha256 is not None):
+        parser.error('mechanism sequence and SHA256 must be supplied together')
+    if mechanism and (args.mode != 'performance' or causality or
+            args.request_policy_sequence or args.perf_lengths is not None or
+            args.extra_lengths or args.target_total or args.perf_repeats != 3
+            or args.phase_diagnostics or args.moe_trace_dir or
+            args.moe_trace_workload or trace_max_explicit or
+            not args.fixtures or args.moe_resident_slots != 256 or
+            not args.moe_hot_list):
+        parser.error('mechanism sequence requires frozen fixtures without '
+                     'other selections or explicit observation flags')
     if causality != (args.causality_sequence_sha256 is not None):
         parser.error('causality sequence and SHA256 must be supplied together')
     if causality and (args.mode != 'performance' or
@@ -398,7 +418,21 @@ def main():
         except (ValueError, OSError) as error:
             parser.error(str(error))
         lengths = plan['lengths']
+    if mechanism:
+        from mechanism_protocol import (mechanism_environment,
+                                         mechanism_request_identity,
+                                         read_mechanism_sequence)
+        try:
+            plan, sequence_content = read_mechanism_sequence(
+                args.mechanism_sequence, args.mechanism_sequence_sha256,
+                args.max_len)
+        except (ValueError, OSError) as error:
+            parser.error(str(error))
+        lengths = plan['lengths']
+        args.phase_diagnostics = plan['phase_diagnostics']
     out = args.output.resolve()
+    if mechanism and not out.is_relative_to(ROOT / '.q4t-work'):
+        parser.error('mechanism output must be under .q4t-work/ for route trace')
     if not any(out.is_relative_to(ROOT / d) for d in ['build', '.q4t-work']):
         parser.error('output must be under build/ or .q4t-work/')
     if out.exists() and any(out.iterdir()):
@@ -407,18 +441,26 @@ def main():
     event(out, 'runner_start', mode=args.mode)
     if causality:
         (out / 'causality-sequence.json').write_bytes(sequence_content)
-    diagnostic_scope = (plan['diagnostic_scope'] if causality else
+    if mechanism:
+        (out / 'mechanism-sequence.json').write_bytes(sequence_content)
+        if args.phase_diagnostics:
+            args.moe_trace_dir = out / 'trace'
+            args.moe_trace_workload = out / 'mechanism-sequence.json'
+            args.moe_trace_max_mib = plan['trace_max_mib']
+    diagnostic_scope = (plan['diagnostic_scope'] if ordered_sequence else
                         'offload_phase_boundary_v1'
                         if args.phase_diagnostics else None)
     if plan is not None:
-        if not causality:
+        if not ordered_sequence:
             plan['diagnostic_scope'] = diagnostic_scope
         save(out / 'performance-plan.json', plan)
         print(f"Performance scope: {plan['scope']}; performance acceptance is not implied", flush=True)
     binary = args.binary.resolve()
     model = args.model_dir.resolve()
     env = os.environ.copy()
-    if args.phase_diagnostics:
+    if mechanism:
+        env = mechanism_environment(plan, env)
+    elif args.phase_diagnostics:
         env['Q4T_OFFLOAD_PHASE_DIAGNOSTICS'] = '1'
         env['Q4T_RESIDENCY_TIMING'] = '1'
     elif env.get('Q4T_OFFLOAD_PHASE_DIAGNOSTICS') not in (None, '0'):
@@ -473,15 +515,15 @@ def main():
                                 '--model-dir', str(model), '--length', str(length),
                                 '--number', '1', '--output', str(target)], check=True)
                 first = target.read_text().splitlines()[0]
-            copies = 1 if causality else args.perf_repeats
+            copies = 1 if ordered_sequence else args.perf_repeats
             target.write_text((first + '\n') * copies)
             tokens = 256
             if args.target_total and length in extra_lengths:
                 tokens = args.target_total - length
-            if not args.request_policy_sequence and not causality:
+            if not args.request_policy_sequence and not ordered_sequence:
                 cases.append((out / f'context-{length}', target, args.perf_repeats, length, length,
                               tokens, True))
-        if args.request_policy_sequence or causality:
+        if args.request_policy_sequence or ordered_sequence:
             for request in plan['requests']:
                 length = request['input_tokens']
                 target = prepared / (request['case'] + '.jsonl')
@@ -522,6 +564,11 @@ def main():
                                        'effective_q4t_environment': effective_q4t,
                                        'phase_diagnostics': args.phase_diagnostics,
                                        'diagnostic_scope': diagnostic_scope,
+                                       **({'mechanism_observation':
+                                           plan['observation'],
+                                           'mechanism_sequence_sha256':
+                                           plan['sequence_sha256']}
+                                          if mechanism else {}),
                                        'hot_list': hot_identity,
                                        'isolation': {'systemd_unit': args.systemd_unit,
                                                      'host_cache_max_bytes': args.host_cache_max_bytes,
@@ -567,11 +614,12 @@ def main():
                                   tokens, streaming, evalscope, model, args.port,
                                   env, server, args.mode == 'performance' and
                                   (args.perf_lengths is not None or
-                                   args.request_policy_sequence or causality),
+                                   args.request_policy_sequence or
+                                   ordered_sequence),
                                   capacity,
                                   args.mode, args.phase_diagnostics)
                 if (args.phase_diagnostics or args.request_policy_sequence or
-                        causality):
+                        ordered_sequence):
                     if not all(row['response_id_valid'] for row in parsed):
                         raise RuntimeError('missing or conflicting response id')
                     ids = {row['response_id'] for row in parsed}
@@ -633,9 +681,16 @@ def main():
                         for row in parsed:
                             row.update(identity)
                         save(case / 'responses.json', parsed)
+                    if mechanism:
+                        request = plan['requests'][len(results)]
+                        identity = mechanism_request_identity(plan, request)
+                        item.update(identity)
+                        for row in parsed:
+                            row.update(identity)
+                        save(case / 'responses.json', parsed)
                     results.append(item)
                     save(out / 'results.json', results)
-                    if args.request_policy_sequence or causality:
+                    if args.request_policy_sequence or ordered_sequence:
                         previous = sequence_outputs.setdefault(item['prompt_sha256'], hashes[0])
                         if any(value != previous for value in hashes):
                             raise RuntimeError('history output changed across repetitions or positions')

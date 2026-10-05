@@ -224,9 +224,13 @@ def runner_command(args, out, unit, plan):
                '--moe-resident-slots', '256', '--moe-hot-list', str(args.hot_list.resolve()),
                '--startup-timeout', '600', '--request-deadline-ms', '1800000',
                '--allow-unqualified-binary', '--systemd-unit', unit]
-    if getattr(args, 'phase_diagnostics', False):
+    mechanism = getattr(args, 'mechanism_sequence', None) is not None
+    if getattr(args, 'phase_diagnostics', False) and not mechanism:
         command += ['--phase-diagnostics']
-    if getattr(args, 'causality_sequence', None) is not None:
+    if mechanism:
+        command += ['--mechanism-sequence', str(out / 'mechanism-sequence.json'),
+                    '--mechanism-sequence-sha256', args.mechanism_sequence_sha256]
+    elif getattr(args, 'causality_sequence', None) is not None:
         command += ['--causality-sequence', str(out / 'causality-sequence.json'),
                     '--causality-sequence-sha256', args.causality_sequence_sha256]
     elif getattr(args, 'request_policy_sequence', False):
@@ -286,6 +290,10 @@ def main():
                     help='Frozen four-request predecessor diagnosis JSON')
     ap.add_argument('--causality-sequence-sha256',
                     help='Required exact bytes SHA256 of causality JSON')
+    ap.add_argument('--mechanism-sequence', type=Path,
+                    help='Frozen four-request cache/route observation JSON')
+    ap.add_argument('--mechanism-sequence-sha256',
+                    help='Required exact bytes SHA256 of mechanism JSON')
     ap.add_argument('--phase-diagnostics', action='store_true',
                     help='Enable phase/cache snapshots and residency timing; '
                     'quality or fixed 1K/4K/8K diagnosis only, never acceptance')
@@ -304,6 +312,7 @@ def main():
     ap.add_argument('--port', type=int, default=8172)
     args = ap.parse_args()
     causality = args.causality_sequence is not None
+    mechanism = args.mechanism_sequence is not None
     sequence_content = None
     try:
         env = experiment_environment(args.chunk_order, os.environ,
@@ -312,6 +321,15 @@ def main():
                                      args.decode_partition_log_quiet)
         if causality != (args.causality_sequence_sha256 is not None):
             raise ValueError('causality sequence and SHA256 must be supplied together')
+        if mechanism != (args.mechanism_sequence_sha256 is not None):
+            raise ValueError('mechanism sequence and SHA256 must be supplied together')
+        if mechanism and (args.mode != 'performance' or causality or
+                args.policy_axis != 'request-partition-log' or
+                args.request_policy_sequence or args.perf_lengths is not None
+                or args.target_total or args.perf_repeats != 3 or
+                args.phase_diagnostics):
+            raise ValueError('mechanism sequence requires request-partition-log '
+                             'without other selections or observation flags')
         if causality and (args.mode != 'performance' or
                 args.policy_axis != 'request-partition-log' or
                 args.request_policy_sequence or args.perf_lengths is not None
@@ -337,17 +355,31 @@ def main():
             plan, sequence_content = read_causality_sequence(
                 args.causality_sequence, args.causality_sequence_sha256)
             check_causality_environment(plan, env)
-        if args.phase_diagnostics and plan and (
+        if mechanism:
+            from mechanism_protocol import (mechanism_environment,
+                                             read_mechanism_sequence)
+            plan, sequence_content = read_mechanism_sequence(
+                args.mechanism_sequence, args.mechanism_sequence_sha256)
+            state = int(plan['arm'] == 'C')
+            if (args.chunk_order != 0 or args.partition != state or
+                    args.request_partition != state or
+                    args.decode_partition_log_quiet != state):
+                raise ValueError('mechanism arm differs from explicit policy bits')
+            args.phase_diagnostics = plan['phase_diagnostics']
+            env = mechanism_environment(plan, os.environ)
+        if args.phase_diagnostics and not mechanism and plan and (
                 plan['lengths'] != [1024, 4096, 8192] or args.target_total):
             raise ValueError('phase diagnosis requires ordered 1024,4096,8192')
     except (ValueError, OSError) as error:
         ap.error(str(error))
-    diagnostic_scope = (plan['diagnostic_scope'] if causality else
+    diagnostic_scope = (plan['diagnostic_scope'] if causality or mechanism else
                         DIAGNOSTIC_SCOPE if args.phase_diagnostics else None)
     if (args.runner_timeout_s <= 0 or any(not math.isfinite(value) or value <= 0
             for value in (args.monitor_interval, args.gpu_interval))):
         ap.error('monitor intervals and runner timeout must be finite and positive')
     out = args.output.resolve()
+    if mechanism and not out.is_relative_to(ROOT / '.q4t-work'):
+        ap.error('mechanism output must be under .q4t-work/ for route trace')
     if not any(out.is_relative_to(ROOT / part) for part in ('build', '.q4t-work')):
         ap.error('output must be under build/ or .q4t-work/')
     if args.host_cache_max_bytes is not None and args.host_cache_max_bytes <= 0:
@@ -379,6 +411,8 @@ def main():
     out.mkdir(parents=True, exist_ok=False)
     if causality:
         (out / 'causality-sequence.json').write_bytes(sequence_content)
+    if mechanism:
+        (out / 'mechanism-sequence.json').write_bytes(sequence_content)
     unit = f'q4t-ram-{time.time_ns()}-{os.getpid()}.service'
     paths = model_files(args.model_dir)
     tool_dir = out / 'tools'
@@ -389,6 +423,8 @@ def main():
         tool_names += ('request_policy_protocol.py',)
     if causality:
         tool_names += ('causality_protocol.py',)
+    if mechanism:
+        tool_names += ('mechanism_protocol.py',)
     for name in tool_names:
         source = ROOT / 'tools/evalscope' / name
         shutil.copyfile(source, tool_dir / name)
@@ -418,6 +454,13 @@ def main():
             'causality_group_id': plan['group_id'],
             'causality_phase_plan_sha256': plan['phase_plan_sha256']}
            if causality else {}),
+        **({'mechanism_sequence_path': str(args.mechanism_sequence.resolve()),
+            'mechanism_sequence_sha256': args.mechanism_sequence_sha256,
+            'mechanism_group_id': plan['group_id'],
+            'mechanism_phase_plan_sha256': plan['phase_plan_sha256'],
+            'mechanism_observation': plan['observation'],
+            'mechanism_trace_max_mib': plan['trace_max_mib']}
+           if mechanism else {}),
         'phase_diagnostics': args.phase_diagnostics,
         'diagnostic_scope': diagnostic_scope,
         'performance_acceptance': False,

@@ -177,3 +177,14 @@ build/verify_chat_template tools/evalscope/fixtures/chat_template_cases.jsonl
 
 字节参考由模型自带Jinja模板生成并冻结，来源与摘要见同目录metadata。
 字节检查通过不替代HTTP或性能接受，测试失败不得重写参考迎合实现。
+
+
+### 固定缓存机制观察序列
+
+`--mechanism-sequence PATH --mechanism-sequence-sha256 SHA256` 是独立的
+`offload_cache_mechanism_v1` 诊断入口。严格固定8组，每服务4请求，
+观察on/off由序列派生；on联用既有phase diagnostics、residency timing
+和router trace（整服务128MiB），不能同时传手工phase/trace开关。
+入口限`.q4t-work/`，固定fixture、C256/hot-list，始终标记非性能接受。
+旧causality入口仍禁止插桩。范围、重复单位与证据限制见
+[机制计划](../../docs/OFFLOAD_MECHANISM_2026-10-06.md)。
