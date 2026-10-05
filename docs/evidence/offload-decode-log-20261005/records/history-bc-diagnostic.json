@@ -1,0 +1,716 @@
+{
+  "schema": 1,
+  "comparison": [
+    "B",
+    "C"
+  ],
+  "decision": "DESCRIPTIVE_ONLY",
+  "positions": [
+    {
+      "position": 1,
+      "input_tokens": 16385,
+      "B_samples": [
+        {
+          "case": "sequence-r01-p01-context-16385",
+          "input_tokens": 16385,
+          "round": 1,
+          "position": 1,
+          "ttft": 52.36949409288354,
+          "decode_tps": 6.746842177053732
+        },
+        {
+          "case": "sequence-r02-p01-context-16385",
+          "input_tokens": 16385,
+          "round": 2,
+          "position": 1,
+          "ttft": 52.89896283298731,
+          "decode_tps": 6.761026494752395
+        },
+        {
+          "case": "sequence-r03-p01-context-16385",
+          "input_tokens": 16385,
+          "round": 3,
+          "position": 1,
+          "ttft": 53.05086664715782,
+          "decode_tps": 6.6816909422572275
+        }
+      ],
+      "C_samples": [
+        {
+          "case": "sequence-r01-p01-context-16385",
+          "input_tokens": 16385,
+          "round": 1,
+          "position": 1,
+          "ttft": 52.59239515196532,
+          "decode_tps": 6.772815503571172
+        },
+        {
+          "case": "sequence-r02-p01-context-16385",
+          "input_tokens": 16385,
+          "round": 2,
+          "position": 1,
+          "ttft": 53.51534210704267,
+          "decode_tps": 6.690684354850823
+        },
+        {
+          "case": "sequence-r03-p01-context-16385",
+          "input_tokens": 16385,
+          "round": 3,
+          "position": 1,
+          "ttft": 53.50958054093644,
+          "decode_tps": 6.719748104252293
+        }
+      ],
+      "mean_ttft_seconds": {
+        "B": 52.77310785767622,
+        "C": 53.20577259998148,
+        "C_minus_B": 0.4326647423052563,
+        "percent_change": 0.8198583708052709
+      },
+      "first_ttft_seconds": {
+        "B": 52.36949409288354,
+        "C": 52.59239515196532,
+        "C_minus_B": 0.22290105908177793,
+        "percent_change": 0.4256314920408455
+      },
+      "later_max_ttft_seconds": {
+        "B": 53.05086664715782,
+        "C": 53.51534210704267,
+        "C_minus_B": 0.46447545988485217,
+        "percent_change": 0.8755285054513617
+      },
+      "mean_decode_tps": {
+        "B": 6.729853204687784,
+        "C": 6.727749320891429,
+        "C_minus_B": -0.002103883796355177,
+        "percent_change": -0.03126195672276122
+      },
+      "minimum_decode_tps": {
+        "B": 6.6816909422572275,
+        "C": 6.690684354850823,
+        "C_minus_B": 0.008993412593595096,
+        "percent_change": 0.13459785361693566
+      }
+    },
+    {
+      "position": 2,
+      "input_tokens": 8192,
+      "B_samples": [
+        {
+          "case": "sequence-r01-p02-context-8192",
+          "input_tokens": 8192,
+          "round": 1,
+          "position": 2,
+          "ttft": 38.3776334580034,
+          "decode_tps": 6.270571869107071
+        },
+        {
+          "case": "sequence-r02-p02-context-8192",
+          "input_tokens": 8192,
+          "round": 2,
+          "position": 2,
+          "ttft": 38.51246512704529,
+          "decode_tps": 6.215009849800794
+        },
+        {
+          "case": "sequence-r03-p02-context-8192",
+          "input_tokens": 8192,
+          "round": 3,
+          "position": 2,
+          "ttft": 38.41653270297684,
+          "decode_tps": 6.252287848798854
+        }
+      ],
+      "C_samples": [
+        {
+          "case": "sequence-r01-p02-context-8192",
+          "input_tokens": 8192,
+          "round": 1,
+          "position": 2,
+          "ttft": 38.44340010290034,
+          "decode_tps": 6.292137642003498
+        },
+        {
+          "case": "sequence-r02-p02-context-8192",
+          "input_tokens": 8192,
+          "round": 2,
+          "position": 2,
+          "ttft": 38.62481421302073,
+          "decode_tps": 6.248256703309213
+        },
+        {
+          "case": "sequence-r03-p02-context-8192",
+          "input_tokens": 8192,
+          "round": 3,
+          "position": 2,
+          "ttft": 38.62457429780625,
+          "decode_tps": 6.279671710162154
+        }
+      ],
+      "mean_ttft_seconds": {
+        "B": 38.435543762675174,
+        "C": 38.56426287124244,
+        "C_minus_B": 0.12871910856726743,
+        "percent_change": 0.3348960258297895
+      },
+      "first_ttft_seconds": {
+        "B": 38.3776334580034,
+        "C": 38.44340010290034,
+        "C_minus_B": 0.0657666448969394,
+        "percent_change": 0.17136711925946901
+      },
+      "later_max_ttft_seconds": {
+        "B": 38.51246512704529,
+        "C": 38.62481421302073,
+        "C_minus_B": 0.11234908597543836,
+        "percent_change": 0.2917213572406263
+      },
+      "mean_decode_tps": {
+        "B": 6.245956522568907,
+        "C": 6.273355351824955,
+        "C_minus_B": 0.02739882925604853,
+        "percent_change": 0.43866506526337723
+      },
+      "minimum_decode_tps": {
+        "B": 6.215009849800794,
+        "C": 6.248256703309213,
+        "C_minus_B": 0.03324685350841872,
+        "percent_change": 0.5349445022920563
+      }
+    },
+    {
+      "position": 3,
+      "input_tokens": 8193,
+      "B_samples": [
+        {
+          "case": "sequence-r01-p03-context-8193",
+          "input_tokens": 8193,
+          "round": 1,
+          "position": 3,
+          "ttft": 27.59833164513111,
+          "decode_tps": 6.919257537895939
+        },
+        {
+          "case": "sequence-r02-p03-context-8193",
+          "input_tokens": 8193,
+          "round": 2,
+          "position": 3,
+          "ttft": 27.68102197907865,
+          "decode_tps": 6.932811931620103
+        },
+        {
+          "case": "sequence-r03-p03-context-8193",
+          "input_tokens": 8193,
+          "round": 3,
+          "position": 3,
+          "ttft": 27.636614380171522,
+          "decode_tps": 7.025011400301894
+        }
+      ],
+      "C_samples": [
+        {
+          "case": "sequence-r01-p03-context-8193",
+          "input_tokens": 8193,
+          "round": 1,
+          "position": 3,
+          "ttft": 27.637988553149626,
+          "decode_tps": 6.944851825056915
+        },
+        {
+          "case": "sequence-r02-p03-context-8193",
+          "input_tokens": 8193,
+          "round": 2,
+          "position": 3,
+          "ttft": 27.77022106293589,
+          "decode_tps": 6.975188514258726
+        },
+        {
+          "case": "sequence-r03-p03-context-8193",
+          "input_tokens": 8193,
+          "round": 3,
+          "position": 3,
+          "ttft": 27.7636239528656,
+          "decode_tps": 6.983176770569613
+        }
+      ],
+      "mean_ttft_seconds": {
+        "B": 27.63865600146043,
+        "C": 27.723944522983704,
+        "C_minus_B": 0.0852885215232746,
+        "percent_change": 0.3085841855652083
+      },
+      "first_ttft_seconds": {
+        "B": 27.59833164513111,
+        "C": 27.637988553149626,
+        "C_minus_B": 0.039656908018514514,
+        "percent_change": 0.14369313525337546
+      },
+      "later_max_ttft_seconds": {
+        "B": 27.68102197907865,
+        "C": 27.77022106293589,
+        "C_minus_B": 0.08919908385723829,
+        "percent_change": 0.32223912803746035
+      },
+      "mean_decode_tps": {
+        "B": 6.959026956605979,
+        "C": 6.967739036628418,
+        "C_minus_B": 0.008712080022439395,
+        "percent_change": 0.12519106588844142
+      },
+      "minimum_decode_tps": {
+        "B": 6.919257537895939,
+        "C": 6.944851825056915,
+        "C_minus_B": 0.02559428716097578,
+        "percent_change": 0.36989932837157014
+      }
+    },
+    {
+      "position": 4,
+      "input_tokens": 1024,
+      "B_samples": [
+        {
+          "case": "sequence-r01-p04-context-1024",
+          "input_tokens": 1024,
+          "round": 1,
+          "position": 4,
+          "ttft": 10.630242896033451,
+          "decode_tps": 6.897450427904314
+        },
+        {
+          "case": "sequence-r02-p04-context-1024",
+          "input_tokens": 1024,
+          "round": 2,
+          "position": 4,
+          "ttft": 10.759370913961902,
+          "decode_tps": 6.968195775416571
+        },
+        {
+          "case": "sequence-r03-p04-context-1024",
+          "input_tokens": 1024,
+          "round": 3,
+          "position": 4,
+          "ttft": 11.013418446062133,
+          "decode_tps": 6.9527335024314985
+        }
+      ],
+      "C_samples": [
+        {
+          "case": "sequence-r01-p04-context-1024",
+          "input_tokens": 1024,
+          "round": 1,
+          "position": 4,
+          "ttft": 10.648089173948392,
+          "decode_tps": 6.971005979691514
+        },
+        {
+          "case": "sequence-r02-p04-context-1024",
+          "input_tokens": 1024,
+          "round": 2,
+          "position": 4,
+          "ttft": 10.765889192931354,
+          "decode_tps": 7.056820681211377
+        },
+        {
+          "case": "sequence-r03-p04-context-1024",
+          "input_tokens": 1024,
+          "round": 3,
+          "position": 4,
+          "ttft": 10.795338127063587,
+          "decode_tps": 6.983698808436378
+        }
+      ],
+      "mean_ttft_seconds": {
+        "B": 10.801010752019161,
+        "C": 10.736438831314445,
+        "C_minus_B": -0.06457192070471685,
+        "percent_change": -0.5978322046633067
+      },
+      "first_ttft_seconds": {
+        "B": 10.630242896033451,
+        "C": 10.648089173948392,
+        "C_minus_B": 0.01784627791494131,
+        "percent_change": 0.16788212733691577
+      },
+      "later_max_ttft_seconds": {
+        "B": 11.013418446062133,
+        "C": 10.795338127063587,
+        "C_minus_B": -0.2180803189985454,
+        "percent_change": -1.980132872155782
+      },
+      "mean_decode_tps": {
+        "B": 6.939459901917461,
+        "C": 7.003841823113089,
+        "C_minus_B": 0.06438192119562824,
+        "percent_change": 0.9277655913515481
+      },
+      "minimum_decode_tps": {
+        "B": 6.897450427904314,
+        "C": 6.971005979691514,
+        "C_minus_B": 0.07355555178719975,
+        "percent_change": 1.0664165339938192
+      }
+    },
+    {
+      "position": 5,
+      "input_tokens": 45056,
+      "B_samples": [
+        {
+          "case": "sequence-r01-p05-context-45056",
+          "input_tokens": 45056,
+          "round": 1,
+          "position": 5,
+          "ttft": 157.3267838449683,
+          "decode_tps": 7.164049778315603
+        },
+        {
+          "case": "sequence-r02-p05-context-45056",
+          "input_tokens": 45056,
+          "round": 2,
+          "position": 5,
+          "ttft": 157.63365893391892,
+          "decode_tps": 7.318525834251604
+        },
+        {
+          "case": "sequence-r03-p05-context-45056",
+          "input_tokens": 45056,
+          "round": 3,
+          "position": 5,
+          "ttft": 188.31685459101573,
+          "decode_tps": 7.238898973207468
+        }
+      ],
+      "C_samples": [
+        {
+          "case": "sequence-r01-p05-context-45056",
+          "input_tokens": 45056,
+          "round": 1,
+          "position": 5,
+          "ttft": 158.45965089602396,
+          "decode_tps": 7.2458049555560216
+        },
+        {
+          "case": "sequence-r02-p05-context-45056",
+          "input_tokens": 45056,
+          "round": 2,
+          "position": 5,
+          "ttft": 158.43809846392833,
+          "decode_tps": 7.251664113456625
+        },
+        {
+          "case": "sequence-r03-p05-context-45056",
+          "input_tokens": 45056,
+          "round": 3,
+          "position": 5,
+          "ttft": 158.48572514182888,
+          "decode_tps": 7.208866929632177
+        }
+      ],
+      "mean_ttft_seconds": {
+        "B": 167.75909912330098,
+        "C": 158.46115816726038,
+        "C_minus_B": -9.297940956040605,
+        "percent_change": -5.542436150784724
+      },
+      "first_ttft_seconds": {
+        "B": 157.3267838449683,
+        "C": 158.45965089602396,
+        "C_minus_B": 1.1328670510556549,
+        "percent_change": 0.7200725924531692
+      },
+      "later_max_ttft_seconds": {
+        "B": 188.31685459101573,
+        "C": 158.48572514182888,
+        "C_minus_B": -29.831129449186847,
+        "percent_change": -15.840923805770723
+      },
+      "mean_decode_tps": {
+        "B": 7.2404915285915585,
+        "C": 7.235445332881608,
+        "C_minus_B": -0.005046195709950574,
+        "percent_change": -0.0696941041920196
+      },
+      "minimum_decode_tps": {
+        "B": 7.164049778315603,
+        "C": 7.208866929632177,
+        "C_minus_B": 0.0448171513165736,
+        "percent_change": 0.625584030030435
+      }
+    },
+    {
+      "position": 6,
+      "input_tokens": 4096,
+      "B_samples": [
+        {
+          "case": "sequence-r01-p06-context-4096",
+          "input_tokens": 4096,
+          "round": 1,
+          "position": 6,
+          "ttft": 26.142869765870273,
+          "decode_tps": 6.44320034262594
+        },
+        {
+          "case": "sequence-r02-p06-context-4096",
+          "input_tokens": 4096,
+          "round": 2,
+          "position": 6,
+          "ttft": 26.12458744691685,
+          "decode_tps": 6.375630468222981
+        },
+        {
+          "case": "sequence-r03-p06-context-4096",
+          "input_tokens": 4096,
+          "round": 3,
+          "position": 6,
+          "ttft": 26.230050056939945,
+          "decode_tps": 6.422894617311089
+        }
+      ],
+      "C_samples": [
+        {
+          "case": "sequence-r01-p06-context-4096",
+          "input_tokens": 4096,
+          "round": 1,
+          "position": 6,
+          "ttft": 26.278348298976198,
+          "decode_tps": 6.4371081034552935
+        },
+        {
+          "case": "sequence-r02-p06-context-4096",
+          "input_tokens": 4096,
+          "round": 2,
+          "position": 6,
+          "ttft": 26.29863615008071,
+          "decode_tps": 6.446478826529755
+        },
+        {
+          "case": "sequence-r03-p06-context-4096",
+          "input_tokens": 4096,
+          "round": 3,
+          "position": 6,
+          "ttft": 26.271912929136306,
+          "decode_tps": 6.473076863454835
+        }
+      ],
+      "mean_ttft_seconds": {
+        "B": 26.16583575657569,
+        "C": 26.282965792731073,
+        "C_minus_B": 0.11713003615538398,
+        "percent_change": 0.4476449261741955
+      },
+      "first_ttft_seconds": {
+        "B": 26.142869765870273,
+        "C": 26.278348298976198,
+        "C_minus_B": 0.13547853310592473,
+        "percent_change": 0.518223646903504
+      },
+      "later_max_ttft_seconds": {
+        "B": 26.230050056939945,
+        "C": 26.29863615008071,
+        "C_minus_B": 0.06858609314076602,
+        "percent_change": 0.2614790783543208
+      },
+      "mean_decode_tps": {
+        "B": 6.4139084760533365,
+        "C": 6.452221264479961,
+        "C_minus_B": 0.03831278842662478,
+        "percent_change": 0.5973391820240037
+      },
+      "minimum_decode_tps": {
+        "B": 6.375630468222981,
+        "C": 6.4371081034552935,
+        "C_minus_B": 0.06147763523231209,
+        "percent_change": 0.9642597000990794
+      }
+    },
+    {
+      "position": 7,
+      "input_tokens": 8192,
+      "B_samples": [
+        {
+          "case": "sequence-r01-p07-context-8192",
+          "input_tokens": 8192,
+          "round": 1,
+          "position": 7,
+          "ttft": 38.524182606022805,
+          "decode_tps": 6.273553739083126
+        },
+        {
+          "case": "sequence-r02-p07-context-8192",
+          "input_tokens": 8192,
+          "round": 2,
+          "position": 7,
+          "ttft": 38.42196094500832,
+          "decode_tps": 6.279546123037946
+        },
+        {
+          "case": "sequence-r03-p07-context-8192",
+          "input_tokens": 8192,
+          "round": 3,
+          "position": 7,
+          "ttft": 38.575741252163425,
+          "decode_tps": 6.273352951512867
+        }
+      ],
+      "C_samples": [
+        {
+          "case": "sequence-r01-p07-context-8192",
+          "input_tokens": 8192,
+          "round": 1,
+          "position": 7,
+          "ttft": 38.54627508902922,
+          "decode_tps": 6.236283096922645
+        },
+        {
+          "case": "sequence-r02-p07-context-8192",
+          "input_tokens": 8192,
+          "round": 2,
+          "position": 7,
+          "ttft": 38.92157809413038,
+          "decode_tps": 6.279149418009095
+        },
+        {
+          "case": "sequence-r03-p07-context-8192",
+          "input_tokens": 8192,
+          "round": 3,
+          "position": 7,
+          "ttft": 38.75513667589985,
+          "decode_tps": 6.218926920087863
+        }
+      ],
+      "mean_ttft_seconds": {
+        "B": 38.50729493439818,
+        "C": 38.740996619686484,
+        "C_minus_B": 0.23370168528830249,
+        "percent_change": 0.606902369243123
+      },
+      "first_ttft_seconds": {
+        "B": 38.524182606022805,
+        "C": 38.54627508902922,
+        "C_minus_B": 0.02209248300641775,
+        "percent_change": 0.05734705193449763
+      },
+      "later_max_ttft_seconds": {
+        "B": 38.575741252163425,
+        "C": 38.92157809413038,
+        "C_minus_B": 0.34583684196695685,
+        "percent_change": 0.8965137953053981
+      },
+      "mean_decode_tps": {
+        "B": 6.275484271211313,
+        "C": 6.244786478339868,
+        "C_minus_B": -0.030697792871444918,
+        "percent_change": -0.48917010297150343
+      },
+      "minimum_decode_tps": {
+        "B": 6.273352951512867,
+        "C": 6.218926920087863,
+        "C_minus_B": -0.05442603142500335,
+        "percent_change": -0.8675748335167044
+      }
+    }
+  ],
+  "performance_acceptance": false,
+  "causal_limit": "Fixed A->B->C order is confounded by time drift; B/C measures observed total log-policy intervention, including scheduling/cache effects, not pure fprintf CPU time or a proven complete root cause.",
+  "pure_fprintf_time_estimate": null,
+  "log_walltime_upper_bound": null,
+  "ended_t": 1791147178.2665775,
+  "recorded_t": 1791147180.459734,
+  "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+  "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "plan_sha256": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/history-b-stage.json": "39226b47b39eafd89b77b46e8454448edd44e99f73abe8d1742cbe6d94b554f1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/wrapper-exit.json": "1c0dc8d0039dbc5c055841a2e95d818933f8ca739c6dc48b474545b95443955d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/exit.json": "eae28a4becc6cfce75dfd1942ab60c107520fc19346b33c4ff01088e5eee48a5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/runner-process-group.json": "023eede594bc42733fed2bece95301b508a280233834e362eced2a60a6125062",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/isolation/cleanup.json": "7e3e6634de017fc63469e46bb6a8c00aa46f02a24aa3b5b3295b59965160cced",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/capacity.json": "135b17d195db1d71febe10e60def33e3894bb0e867b253637ec833f2fa48dfb7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/protocol.json": "d204c764db167e2366f20140b5acd60e70a747d1c4e96f3f7f44cc510cb0321a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/server-command.json": "1fc34c1bee5a73ad049036a2557b09cdb12722d1ae93360c3cd6987d4ab26082",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/results.json": "a7dfbfc3e0d61f801a6cfbdb45b7b7a0e8e9d110569e7ba6a07bc1d8bee74225",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/cache-gate.json": "595f621568f518a19bfcdd3eeaf83f9ac402bb10a66ea08a9bc89f79688c37e3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/cache-advice-round-01.json": "129ab7f27b45e8d2ca9a84188c2fc450930780a568d405e607c0242b291415ac",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/cache-after-advice.json": "eb653c58772cf63f7106071fea49a1ff6515fc6d5b1f8d4d97260c8532c60d2f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/matrix-off/http/results.json": "2540ede1b7d9cbae705689320e0feec0a9a78c13d53f7675c9ff231df26a6473",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/sequence-r01-p01-context-16385/responses.json": "b19d554ee8dade79b37261f69a329dce5e0aa1d67a2bd81bf3154c3147f42462",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r01-p01-context-16385/responses.json": "0d0d830f7164378d05c7beafdf7c6a88cb87715d13638d4016a1df773c716956",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/sequence-r01-p02-context-8192/responses.json": "571c607f1ef9d9f5bb02de681090a49562fe9520567c0b342058849e3425ce26",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r01-p02-context-8192/responses.json": "12f3209e867a061e2bbf64f0828b515ca2bcdc012e88466c65a5eb692d8b01ba",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/sequence-r01-p03-context-8193/responses.json": "19946b539ae4f3787e5b605fc18a5fb22b6a93f98b4571135d9864d04faeb24b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r01-p03-context-8193/responses.json": "3543f68939232d1e1af8c7bc558d590bdda12c1b0c9100e7e74096307356a559",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/sequence-r01-p04-context-1024/responses.json": "2fc7373855522ae85b0049ac485848fbb6e1d85ae6f1abf007627bd95a5d223d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r01-p04-context-1024/responses.json": "57ee33c971aa6dfbfa996d51f225f40c430bc99c960b96beec7d2767179a9101",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/sequence-r01-p05-context-45056/responses.json": "336a25251e13cce362f8d7a54ead4bdfebaee2d103523a05174728d7548d92ad",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r01-p05-context-45056/responses.json": "a18898c79386e0525a88e42f29188550515ac05a00350ae7dcbf3d4b4c009a73",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/sequence-r01-p06-context-4096/responses.json": "7e560749065e3e173c98dfb67b1187b0321afeafd1e84c3ac6029b830155d881",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r01-p06-context-4096/responses.json": "4d5b45d9dcff028f9eeaa99137e3d7b680ba5a08a7a89d5994d68410b18cdb8c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/sequence-r01-p07-context-8192/responses.json": "e7509bca2dac6a5ca7d26ebdb9812982ad88648d01d07435a808f87f170c1264",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r01-p07-context-8192/responses.json": "1a735335ba87f8c9330da2f160c95c86d1dbb1fede088b7f7ffbf6b6ccee5033",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/sequence-r02-p01-context-16385/responses.json": "ffd9a6adf2281d3025481ad83eced00acdf5c36fd1ffcdcd87fc5e9dab7e9b7a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r02-p01-context-16385/responses.json": "201c8319960f686b4aa5976c3c762cb8fc7634e80d91b0b285928ce0e6f85b49",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/sequence-r02-p02-context-8192/responses.json": "b99ae8377afc32718e9ec6f382ecafc458a91652e08e2dcdbd5bb233730c80c1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r02-p02-context-8192/responses.json": "14db985f4ad80e2916081dd38ab4bfec308ee9693e9ec11686395b86c5d78ed0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/sequence-r02-p03-context-8193/responses.json": "02048b1b1a689cd72596b8a12058ee08f4d3b24c0e83d1bbbeda7183769fcee6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r02-p03-context-8193/responses.json": "17fb2c316f83bb670a4d3f0b0a4ce2dae24d43b78c0520ab10e45390a6a6653a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/sequence-r02-p04-context-1024/responses.json": "723aaf25e4d12eb7373062ffbcabe8907b9428a9455a964d3daadfda44078f54",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r02-p04-context-1024/responses.json": "f4c7f2544c12db7ebbab0d830cfe34b618124ef2cbc3bb922397c28dfffd309f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/sequence-r02-p05-context-45056/responses.json": "ef712fc71d4cec0ccfe236c178dce753c8c7026ac4613d903624fec18964b8db",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r02-p05-context-45056/responses.json": "9dd54ee2eb643a234196d81a03efe6aa780f0e33bb8b00440cc9d1cf6697fb0f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/sequence-r02-p06-context-4096/responses.json": "4306a472a01f18b40b86e749348d13897fa6af28fbf8510a1db7b39d07a78ff2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r02-p06-context-4096/responses.json": "95ebbd0da593a88df6bf1c38134e8dcfdb602311148572189a3b615e77e74b31",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/sequence-r02-p07-context-8192/responses.json": "056455b8ca0d6b2536b237a9cf6ecad245ffdff786cfa37e0757110a6260ddac",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r02-p07-context-8192/responses.json": "a89a07801a29e0e7b1c2e186fe1c45ac9dcfd232c86d179864a5fd5fcb467937",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/sequence-r03-p01-context-16385/responses.json": "b62649dfc197624d12cbdc6decfac8a407985c3b19a46a9a955ce11b6544cfe6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r03-p01-context-16385/responses.json": "c4b0bbed66c9166a4ad4abc51c6f654c54ba84ecd2bb8d4a4f56f553092cd81e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/sequence-r03-p02-context-8192/responses.json": "ed2d331cf531566a52276edb20bdbaf056c2d6ea720020d274797967f1879910",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r03-p02-context-8192/responses.json": "8ecffc3e175eddb95f0a5977a20418b8879c6f5a78f8642126849d87df660f00",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/sequence-r03-p03-context-8193/responses.json": "2c23507b0184fc96b2ce25bfd27863ca073b385ed8d72622fcb68151133e15ad",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r03-p03-context-8193/responses.json": "72ace9dabc9b769a784c597d76086e9f15d39ee2c499f67030fe5274edd73449",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/sequence-r03-p04-context-1024/responses.json": "92e58dd79e4368644c23fc8649b659e9fb33a680be60239bb24542696326754d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r03-p04-context-1024/responses.json": "8b4390229927205ed5656a9015d563cceca9e72aa07656cb1f6692aa371baa57",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/sequence-r03-p05-context-45056/responses.json": "9077f43d193376678a018bf97e286c4fb215f602ffd40cbb673e7c7400b48d67",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r03-p05-context-45056/responses.json": "fe914ecb335bbf8150e7a83b7a517e78884b9765259a237c94dfe1adb064ddbc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/sequence-r03-p06-context-4096/responses.json": "52621bd892095d12dd31c20d7fe84dbd9689900084517d4d1ce7ec3d5d17711c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r03-p06-context-4096/responses.json": "257d4c985e9f91bcc21c8753f3f5d6f82f15809dbcace294e671e29e12f2d37f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/sequence-r03-p07-context-8192/responses.json": "77985929b33ef418a9abc212835fd1d5240a18580b57d89470f136c26ff58d39",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r03-p07-context-8192/responses.json": "3d28d4e15be226a75cef1e05462a71e4533ab993c9082b8f544e2ee68e60a6a0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/server.log": "2f3e0c0bdadea6cb5a93183a4aab0ea90ed14cfb7523dc02af6f3bb9040f7636",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/history-c-stage.json": "632794e039003afc43dc2ef2cc229bbac2b65f2a285c7a9f325e8da3db365495",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/wrapper-exit.json": "53c28385e77b1e9f3a7b72c9facec9c4f3b5877efd94af80fa845db1a8180082",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/exit.json": "eae28a4becc6cfce75dfd1942ab60c107520fc19346b33c4ff01088e5eee48a5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/runner-process-group.json": "c98cd77ac8c09a18c01f527baa0a08abb9f657ceb9ea73f0aa0929a1a43fd127",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/isolation/cleanup.json": "ca4a201349910f037faed83e230e03e62819fbeb963a1b7e0a87cfa1a646b4a8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/capacity.json": "135b17d195db1d71febe10e60def33e3894bb0e867b253637ec833f2fa48dfb7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/protocol.json": "d462f425174babb2a077fc21f179de4963a987ab494a73bb8fa1b656bee6e501",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/server-command.json": "61ab2e13b9c5e868f2943c87706e2b8543e60c176fd90450473cd6722f11767f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/results.json": "ddd57e1752e9e1373657ad6b5e6070ece673d9b7dd437a0c476556d73dd02189",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/cache-gate.json": "595f621568f518a19bfcdd3eeaf83f9ac402bb10a66ea08a9bc89f79688c37e3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/cache-advice-round-01.json": "9e01343afdc01894de9a11c7b0a9b7042b9cc5aadf5c5a43bae17e83441ab820",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/cache-after-advice.json": "fe895ebfe37f613e98f3a3945ec77d63950ebff24213997902dfa64c93a2233d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/sequence-r01-p01-context-16385/responses.json": "68b474e2de7658c60662fc5eddc68971c7f5774411b308ddd21492dc3b4d343b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/sequence-r01-p02-context-8192/responses.json": "e5885c0766222cea1d10b55b27706736682b87acc97fb3bdff22176b0a8eeff9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/sequence-r01-p03-context-8193/responses.json": "2a6ea9987f9977a18c57c68c98c9a3ce0c90b9da56ea175bdf67acd6ccfc6892",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/sequence-r01-p04-context-1024/responses.json": "c76762ee12c72cca651b6d61ec94b4cdb5dd65467f72d72d1b3313d4ab02d002",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/sequence-r01-p05-context-45056/responses.json": "032829d317a3e87942c1966722f118d1a49176e5589d2b2fe79574e5d41e8540",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/sequence-r01-p06-context-4096/responses.json": "e782cc88f7914e1284d32fc83d93ea5531c0343f601a10ed86ba5bbf9fa13a9d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/sequence-r01-p07-context-8192/responses.json": "4e92155aeb318ec59948206812dd96f207ddf656ae7fddef12a7b1881fb2e6b3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/sequence-r02-p01-context-16385/responses.json": "adeea9c974df1d2d2095a3cbe98bb5f673d7c5d8d968308a514e238979b2f2f3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/sequence-r02-p02-context-8192/responses.json": "e94d4b90801506209b7b5e25a0b1e8ee221c5ec1ac0188343b989a1497d9d8b2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/sequence-r02-p03-context-8193/responses.json": "2f04fec8a496686acfa09595e937ef2ebb03b51359c76e6c6a8712cd4f1d4355",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/sequence-r02-p04-context-1024/responses.json": "82e1bfc31b1b95be88bc1b9d5f997bd73c3027c2333e510169426c96912634ed",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/sequence-r02-p05-context-45056/responses.json": "68c6cfe399eeeae2541589d91662b5aa5e2a5e7b63f47c502c404bff0f0b615d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/sequence-r02-p06-context-4096/responses.json": "8a9787f6638daf7fb364fe0dc810273f803efcc168085ac068251633056caf89",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/sequence-r02-p07-context-8192/responses.json": "c1af69acadf74d37ec12c4ae19287854b5504b25accf23981f196642e7f781b5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/sequence-r03-p01-context-16385/responses.json": "67b24496e04238fb2bb7f34763ea8ebca9fd0f2c54e4a728d23c8c474da78776",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/sequence-r03-p02-context-8192/responses.json": "ccdd75e2fcb1bb3da6fc870114dca736af2996d3eac92aec1a8c6aaab3efa52a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/sequence-r03-p03-context-8193/responses.json": "287420f565cbc1ec50dc5c37e088b88d67b803823bdfa0ac1d7dac3848ed4993",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/sequence-r03-p04-context-1024/responses.json": "c676266d9484d0fb6b20675694aacbdfb17d8df0aa6cef0cb1179517351f36fb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/sequence-r03-p05-context-45056/responses.json": "fd4e0a504cee1fab8a07b0b27010792281f6c2594e5a73670a16161a07d2300c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/sequence-r03-p06-context-4096/responses.json": "d0f87d3f3e06892a44e199194b5ec856621c65c0dee3fdc97cf40b5d1e76ab04",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/sequence-r03-p07-context-8192/responses.json": "7306156a6f7328f425d7400e0408ad2ec012b15c1fa41d5f270742755b23ccd0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/server.log": "5affa6a4c9387f7b6b9c8d98fab0dd67eb88001f2d3218e091f47dbe7cd7f36f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/compare_groups.py": "bbe59cdad5226a498c6bf4fcbdaae2b0323e7bb149b5fd6314f761ad3c069261",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/history-b-decision.json": "e203f336e540f8d6cbe05a5b5aad8f946619b65c24e75b6870a05024474db380",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/history-c-decision.json": "2d50a5a951064b3491a61dbfc10844cbb4985e58d620b799b75eedf4d309f570"
+  }
+}

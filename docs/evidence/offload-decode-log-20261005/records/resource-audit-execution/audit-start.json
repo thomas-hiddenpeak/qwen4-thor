@@ -1,0 +1,21 @@
+{
+  "started_t": 1791163203.4452007,
+  "command": [
+    "python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/audit_resources.py",
+    "--groups",
+    "quality-c,history-a,history-b,history-c,matrix-a,matrix-c",
+    "--plan-sha256",
+    "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/raw-resource-audit.json"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source",
+  "returncode": null,
+  "failure": null,
+  "automatic_retry": false,
+  "timeout_s": null,
+  "signals": [],
+  "cleanup_complete": false
+}

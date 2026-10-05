@@ -1,0 +1,33 @@
+{
+  "started_t": 1791140807.459824,
+  "command": [
+    "python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/run_direct_contracts.py",
+    "numerical",
+    "--plan-sha256",
+    "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source",
+  "returncode": 0,
+  "failure": null,
+  "automatic_retry": false,
+  "timeout_s": null,
+  "signals": [],
+  "cleanup_complete": true,
+  "pid": 3498987,
+  "pgid": 3498987,
+  "group_before_cleanup": {
+    "live_pids": [],
+    "zombie_pids": [],
+    "errors": [],
+    "absent": true
+  },
+  "group_after_cleanup": {
+    "live_pids": [],
+    "zombie_pids": [],
+    "errors": [],
+    "absent": true
+  },
+  "ended_t": 1791140821.633736
+}

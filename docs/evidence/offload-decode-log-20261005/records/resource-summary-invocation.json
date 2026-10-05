@@ -1,0 +1,29 @@
+{
+  "created_t": 1791163515.0655098,
+  "scope": "Completed offline resource summary invocation; exact nested receipt and log bindings, no model call",
+  "returncode": 0,
+  "cleanup_complete": true,
+  "command": [
+    "python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/summarize_resources.py",
+    "--audit-sha256",
+    "1c6dc10b64bf68ce087766f4dfd6dc4399fe835d8ae8aff3651b6713cfbd32f0",
+    "--plan-sha256",
+    "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2"
+  ],
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/resource-summary-execution/exit.json": "469f1fcff5b98a10611d392ffa3753006d03ba446948154d2bd77018381ffeb5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/resource-summary-execution/summary-exit.json": "469f1fcff5b98a10611d392ffa3753006d03ba446948154d2bd77018381ffeb5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/resource-summary-execution/summary-start.json": "d16adfde4bdc763d1adcc53a9d8b91e94ada088a387d58f3dd82b34cee9458d1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/resource-summary-execution/summary.log": "9e3cb056bcfa6a9835a8326a14c74d751c3e86966446929fd77a5a9857989fb6"
+  },
+  "source_bytes": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/resource-summary-execution/exit.json": 889,
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/resource-summary-execution/summary-exit.json": 889,
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/resource-summary-execution/summary-start.json": 596,
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/resource-summary-execution/summary.log": 246
+  },
+  "summarizer_sha256": "49fb4dc197ecea833d61b2bcb496da845ea879e11c680aa95aa6fc37191ccf87",
+  "output_sha256": "f1c3e6195d17863e9d1d146785ffcbbc42f34bc438e51fd3b4b3c58281e7839a"
+}

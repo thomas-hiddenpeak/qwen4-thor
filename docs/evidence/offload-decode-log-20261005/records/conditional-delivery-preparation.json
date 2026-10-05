@@ -1,0 +1,399 @@
+{
+  "schema": 1,
+  "status": "PREPARATION_ONLY_NOT_FROZEN_NOT_EXECUTED",
+  "prepared_t": 1791140814.7337077,
+  "prepared_by": "/root/decode_log_protocol",
+  "parent_conditional_delivery": {
+    "gate": "A/C history AND matrix plus quality/direct contracts PASS",
+    "scope": "If triggered, freeze and execute canonical business/lifecycle checks before runtime acceptance; no default enable/merge/deploy in this phase",
+    "not_triggered_on_speed_NO_GO": true
+  },
+  "automatic_execution": false,
+  "execution_authorized_by_this_record": false,
+  "tests_run": 0,
+  "model_or_HTTP_requests_run": 0,
+  "inflight_speed_or_runtime_results_read": false,
+  "source_controller_frozen_files_modified": false,
+  "requested_old_plan_filename_exists": false,
+  "actual_old_scope_source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/conditional-delivery-appendix.json",
+  "runtime_identity": {
+    "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+    "runtime_binary_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/candidate-build/q4t",
+    "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6"
+  },
+  "identity_note": "Runtime fields copied from frozen execution plan; this preparation did not reread binary or model tensor payloads.",
+  "recommendation": "Reuse the exact existing canonical Contracts.business/lifecycle operations, six fixtures and ordering. Only a narrow new local appendix/adapter boundary is needed if admitted. Do not duplicate the full runner collection or introduce additional scenarios.",
+  "fixed_generations_and_checks": {
+    "off_generation_requests": 6,
+    "off_checks": 6,
+    "on_generation_requests": 14,
+    "on_checks": 15,
+    "total_generation_requests": 20,
+    "total_checks": 21,
+    "health_and_cancel_HTTP_not_in_generation_counts": true
+  },
+  "two_service_groups": [
+    {
+      "group": "business-a",
+      "mode": "business",
+      "partition": 0,
+      "request_partition": 0,
+      "decode_partition_log_quiet": 0,
+      "generation_requests": 6,
+      "checks": 6,
+      "sequence": [
+        "business-1",
+        "business-2",
+        "business-3",
+        "business-4",
+        "business-5",
+        "business-6"
+      ],
+      "reference_role": "historical_precheck"
+    },
+    {
+      "group": "all-c",
+      "mode": "all",
+      "partition": 1,
+      "request_partition": 1,
+      "decode_partition_log_quiet": 1,
+      "generation_requests": 14,
+      "checks": 15,
+      "sequence": [
+        "fault-first",
+        "fault-recovery",
+        "slot-reuse-A-first",
+        "prefill-cancel",
+        "prefill-recovery-B",
+        "slot-reuse-A-again",
+        "same-process-A-B-A",
+        "decode-cancel",
+        "decode-recovery",
+        "business-1",
+        "business-2",
+        "business-3",
+        "business-4",
+        "business-5",
+        "business-6"
+      ],
+      "reference_role": "same_binary",
+      "extra_environment": {
+        "Q4T_RESIDENCY_FAIL_EXPERT": "first"
+      }
+    }
+  ],
+  "canonical_lifecycle_generation_count": 8,
+  "canonical_lifecycle_derived_checks": 1,
+  "canonical_lifecycle_checks": [
+    "fault-first",
+    "fault-recovery",
+    "slot-reuse-A-first",
+    "prefill-cancel",
+    "prefill-recovery-B",
+    "slot-reuse-A-again",
+    "same-process-A-B-A",
+    "decode-cancel",
+    "decode-recovery"
+  ],
+  "lifecycle_semantics": {
+    "fault-first": "first request-time expertclaim injectedfailure returnsHTTP500 withfaultinjectionchain; afterfree1 GPUhealthy; no partialH2Dfailure coverage.",
+    "fault-recovery": "same45107prompt128limit succeedsandmatchescurrentbusinessoffreference; same service.",
+    "prefill-cancel": "fixed2seconddelay afterslotoccupied thencancel API202; originalHTTP409 duringprefill; serverlog0<drainposition<45107; returnslotfree1 GPUhealthy. No in-kernel interruptionclaim.",
+    "prefill-recovery": "same45107prompt completedexactcurrentoffreference.",
+    "decode-cancel": "8243prompt streamtrue; waitactualnonemptycontent event thencancel202; originalSSEhascancelerror andno stop/lengthnormalfinish; slotfree1.",
+    "decode-recovery": "same8243prompt completedexactcurrentoffreference.",
+    "A-B-A_if_canonical9": "A=first8243approvedrevision, B=45107join. A-first and A-again returnedcompare records identical afterpartialprefillcancel andBrecovery; no extra task selection.",
+    "fault_env": "Only on/all addsQ4T_RESIDENCY_FAIL_EXPERT=first; off/business neverinjects.",
+    "retries": "One predeclaredsequence, noautomaticrerun or referencechanges. Concreteexecution/toolbug failures preserved and handled only underparentrepairrule."
+  },
+  "business_fixture_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-residency-20260930/affected/business-fixture",
+  "business_fixed_requests": [
+    {
+      "id": "quality-8k-fv-new-8192-approved_revision-0",
+      "prompt_sha256": "17ab3e74d2641a99b8182953585109bc626c2f9c19aae864adc0c78aba4fc3a3",
+      "actual_input": 8243,
+      "actual_output": 128,
+      "finish": "length",
+      "text_sha256": "b368c2cca52091af8cb37e1aef0ad6a365fb2ffd541ba9384e2ce503af76b501",
+      "max_tokens": 128
+    },
+    {
+      "id": "quality-8k-fv-new-8192-filtered_count-0",
+      "prompt_sha256": "b2332714e9b79ae927a5f7a7ec16f61569fb7deb8f7ddbe669f76cb85a71c23c",
+      "actual_input": 8243,
+      "actual_output": 128,
+      "finish": "length",
+      "text_sha256": "ce66492a7c33d75d92fbd6bc6a492762e02db00612ab76e882e33bfe9b2f59e0",
+      "max_tokens": 128
+    },
+    {
+      "id": "quality-44k-fv-new-45056-join-0",
+      "prompt_sha256": "c9cab04e87acd6b55cc980f97d6b5280c8ad90b6b8364bab0ce3b0c8dc63c5ea",
+      "actual_input": 45107,
+      "actual_output": 128,
+      "finish": "length",
+      "text_sha256": "f4aad751899f7a4560297c32b513b5e61fa0e84f6291613e6f0f074987ca89bf",
+      "max_tokens": 128
+    },
+    {
+      "id": "quality-44k-fv-new-45056-lookup-0",
+      "prompt_sha256": "e0321cc0ffe6f3a6e01b2680be84a75a828e3d721cf5d272e6faf5c27b555356",
+      "actual_input": 45107,
+      "actual_output": 128,
+      "finish": "length",
+      "text_sha256": "8523da3770375482ba22b7a130aa78a5a2e8c51073ff403c0f3ed6d7e5a7a50d",
+      "max_tokens": 128
+    },
+    {
+      "id": "quality-200k-fv-new-204800-approved_revision-0",
+      "prompt_sha256": "f5a087a4cd66a7108a9cf0d522cd5567c4e68c6c99c109899f65d2bd1939748a",
+      "actual_input": 204851,
+      "actual_output": 128,
+      "finish": "length",
+      "text_sha256": "ff046ba4ccde70eb6bc0052146167f9c0a38c0f2d61aff55351a7c5aa2a040ef",
+      "max_tokens": 128
+    },
+    {
+      "id": "quality-200k-fv-new-204800-lookup-0",
+      "prompt_sha256": "39a83e41d57f5763b1f9168a2c5dd4dbf89dc680fd46abecd49a8b330be75b1d",
+      "actual_input": 204851,
+      "actual_output": 128,
+      "finish": "length",
+      "text_sha256": "ca665b2768cb343c200acdd8edd929456a297331d519163a3a37aae9265f2f96",
+      "max_tokens": 128
+    }
+  ],
+  "business_scope": "Previously authored synthetic structured-register final_validation fixtures: approved_revision, filtered_count, join, lookup. These are six compatibility cases, not private production traffic or broad quality/semantic scoring.",
+  "business_wire_contract": "Keep existing messages=[{role:user,content:fixture.prompt}] unchanged, including existing formattedprompt inside wrapper; historical actualcounts8243/45107/204851 include51extra tokens. Do not silently switch to prompt= or remove wrapper.",
+  "business_coverage_limit": "Allsix actual inputs exceed8192 and select candidatepartition whenenabled; nominal8Kfixture is8243, notshortpath coverage. Shortlegacy andboundarycoverage remains in priorquality/history/numerical evidence.",
+  "oracle_chain": {
+    "old_reference": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-residency-20260930/affected/final-business-12288-base/results.json",
+    "historical_role": "Check exact fixture prompt/input identity; retain historical text/output/finish differences as compatibility observations. Not a mathematical or broad semantic oracle.",
+    "new_candidate_role": "Require closed successful business-a from the same 6b51693 binary; bind newly generated business-results.json, protocol, exit, path and cleanup evidence before all-c. Require exact six text/prompt/input/output/finish matches, including recovery references.",
+    "prior_unexecuted_D_is_not_reusable_runtime_evidence": true,
+    "frozen_fixture_and_oracle_bindings_verified": {
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-residency-20260930/affected/business-fixture/requests.jsonl": {
+        "expected_sha256": "1186a97205161b95c557e8cdc9aa9cb909fbeeb70b9b8e4ec3d2c4e71855ac67",
+        "actual_sha256": "1186a97205161b95c557e8cdc9aa9cb909fbeeb70b9b8e4ec3d2c4e71855ac67",
+        "matches": true,
+        "bytes": 2820816
+      },
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-residency-20260930/affected/business-fixture/manifest.json": {
+        "expected_sha256": "183ef1b653c35f1f9b635635b285417d9ddaa668c31568e74b8626d084df6fcb",
+        "actual_sha256": "183ef1b653c35f1f9b635635b285417d9ddaa668c31568e74b8626d084df6fcb",
+        "matches": true,
+        "bytes": 1326
+      },
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-residency-20260930/affected/final-business-12288-base/results.json": {
+        "expected_sha256": "f3a1789e236a70a9e0c7d07af9e96f2e0059fa3e7ac0918f4bb85044dea6471f",
+        "actual_sha256": "f3a1789e236a70a9e0c7d07af9e96f2e0059fa3e7ac0918f4bb85044dea6471f",
+        "matches": true,
+        "bytes": 5184
+      },
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-residency-20260930/hot-lists/hot-final-12288.json": {
+        "expected_sha256": "863e2ad6d3ccd3afeb7b67254ffd30a1dd15a020a44ed50ff886b37dce3ccb99",
+        "actual_sha256": "863e2ad6d3ccd3afeb7b67254ffd30a1dd15a020a44ed50ff886b37dce3ccb99",
+        "matches": true,
+        "bytes": 59260
+      },
+      "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/config.json": {
+        "expected_sha256": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+        "actual_sha256": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+        "matches": true,
+        "bytes": 4983
+      },
+      "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model.safetensors.index.json": {
+        "expected_sha256": "aa702aa8cadb463b728cfd6829e172b1124114080231c75712155e2490f8c607",
+        "actual_sha256": "aa702aa8cadb463b728cfd6829e172b1124114080231c75712155e2490f8c607",
+        "matches": true,
+        "bytes": 35429343
+      }
+    }
+  },
+  "old_command_identity": {
+    "record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/conditional-delivery-frozen-commands.json",
+    "sha256": "e4008d59cf45d884625a2ed74fdfbb3503dd3483d7bf1631429f35e6d9ccdd3c",
+    "commands": {
+      "business-off": [
+        "python3",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/run_conditional_stage.py",
+        "business-off",
+        "--plan-sha256",
+        "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+        "--appendix-sha256",
+        "492787c4e80747ca28e73b186436b857800288c6a76ab1dc7dd8024d731ed1a4"
+      ],
+      "all-on": [
+        "python3",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/run_conditional_stage.py",
+        "all-on",
+        "--plan-sha256",
+        "dd12d7cf8beaad1d5bf2db1d581ef95282b8da53b5c45fdd62bcc7580b0f3d9d",
+        "--appendix-sha256",
+        "492787c4e80747ca28e73b186436b857800288c6a76ab1dc7dd8024d731ed1a4"
+      ]
+    },
+    "meaning": "Historical prepared commands, never invoke for this phase; old NO_GO remains unchanged."
+  },
+  "prospective_argument_mapping_not_executable": {
+    "business": {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/candidate-build/q4t",
+      "model_dir": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+      "hot_list": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-residency-20260930/hot-lists/hot-final-12288.json",
+      "fixtures": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-residency-20260930/affected/business-fixture",
+      "appendix": "<NEW_FROZEN_CONDITIONAL_APPENDIX_REQUIRED>",
+      "plan_sha256": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+      "expected_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+      "policy_axis": "request-partition-log",
+      "chunk_order": 0,
+      "host_cache_max_bytes": 17179869184,
+      "port": 8184,
+      "startup_timeout_s": 600,
+      "request_timeout_s": 1800,
+      "cancel_timeout_s": 300,
+      "contract_timeout_s": 7200,
+      "mode": "business",
+      "partition": 0,
+      "request_partition": 0,
+      "reference_role": "historical_precheck",
+      "reference": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-residency-20260930/affected/final-business-12288-base/results.json",
+      "systemd_unit": "<NEW_UNIQUE_OWNED_UNIT_REQUIRED>",
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/conditional-business-a",
+      "decode_partition_log_quiet": 0
+    },
+    "all": {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/candidate-build/q4t",
+      "model_dir": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+      "hot_list": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-residency-20260930/hot-lists/hot-final-12288.json",
+      "fixtures": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-residency-20260930/affected/business-fixture",
+      "appendix": "<NEW_FROZEN_CONDITIONAL_APPENDIX_REQUIRED>",
+      "plan_sha256": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+      "expected_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+      "policy_axis": "request-partition-log",
+      "chunk_order": 0,
+      "host_cache_max_bytes": 17179869184,
+      "port": 8184,
+      "startup_timeout_s": 600,
+      "request_timeout_s": 1800,
+      "cancel_timeout_s": 300,
+      "contract_timeout_s": 7200,
+      "mode": "all",
+      "partition": 1,
+      "request_partition": 1,
+      "reference_role": "same_binary",
+      "reference": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/conditional-business-a/business-results.json",
+      "systemd_unit": "<NEW_UNIQUE_OWNED_UNIT_REQUIRED>",
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/conditional-all-c",
+      "decode_partition_log_quiet": 1
+    }
+  },
+  "current_canonical_tool_sha256": {
+    "run_offload_lifecycle.py": "4d9e3585745625e20fc86b975b892c91a3d5e54d454e2c8951f701045ac39b85",
+    "request_policy_protocol.py": "8f2e53412fef4fe795cb5e8f3dcccd8b2048ae42696da658e81b05ebe381d6f8",
+    "offload_policy.py": "0aaf88178d23eca2e287f09d3aed82badae3665529827ce432976bf81bf3a898",
+    "run_budget_experiment.py": "1b3c23023e55cd1f2c70448cd38aaef5a41695667a11f86363275c0e74ea16aa",
+    "isolated_service.py": "c561ec8a8cf1c05e2ceb8ba08959af3624db9ee832723103b691ee2edb713521",
+    "monitor_memory.py": "098d91eb208ce85961b23a88b029a80e122ff0b1b37bed7b9eaa898d1b5d6fc5",
+    "resource_metrics.py": "4ec55a1bad3983d9e71621c72aa299538392b3f8efb4ec121b9ec28bd105a5ce",
+    "memory_accounting.py": "e0e7418359db1ee021e9d2aa096ef929212a62b47fd91d06086d0c11f4acf6f3",
+    "file_cache.py": "d25d6fa846af504e40eec850eb4f9c0cfa168f798d8aca826642214821eb9b73",
+    "run_acceptance.py": "5af2e62af5930ff9a543ff8b9cd6204652956f976f158ab3ba6546ebfde1022e"
+  },
+  "canonical_methods_unchanged_from_old_appendix": {
+    "run_offload_lifecycle.py": true
+  },
+  "adapter_blockers_and_minimal_changes": [
+    {
+      "location": "canonical run_offload_lifecycle.py: AXES CLI, contract_environment, reference_identity/require_reference_identity",
+      "issue": "Only chunk-order/partition supported; inherited Q4T variables are scrubbed; outer env cannot enable request policy/quiet. Old comparable identity removes only a single axis setting.",
+      "needed": "Reuse unchanged Contracts methods through a scoped local adapter; explicitly bind request-partition-log environment A=0/0/0, C=1/1/1, preserve Q4T_MOE_STREAMS=1 and canonical failure injection; compare all non-axis settings while excluding and separately enforcing all three axis bits plus intentional one-shot fault flag."
+    },
+    {
+      "location": "old run_conditional_delivery.py: main admission and appendix binding; old run_conditional_stage.py",
+      "issue": "Hard binds old coverage amendment, inheritance/matrix decisions, previous aggregate script and runtime/source identity.",
+      "needed": "Use the current quality/host/numerical and A/C history+matrix+aggregate contracts, SHA closure, one-shot clean outputs, current runtime and new separately frozen appendix. No runtime or frozen canonical source changes; no silent reuse of the old admission gate."
+    },
+    {
+      "location": "old adapter audit_captured_paths success branch",
+      "issue": "Calls all_layer_partition_evidence which requires every decode partition record; quiet1 intentionally lacks them. New decode_log_path_evidence additionally requires the once-per-service startup activation line, absent from later per-request byte windows.",
+      "needed": "Validate actual startup activation exactly once and bind its raw byte source. For each successful captured request apply the new strict diag+partition contract to an explicitly source-backed composition of that verified activation and the request byte window, or equivalent scoped helper. Record that this is composition of observed fragments, not synthetic activation evidence."
+    },
+    {
+      "location": "old adapter audit_captured_paths decode_cancel branch",
+      "issue": "Counts reason=decode partition rows, so quiet1 would falsely derive zero decode. Cancelled HTTP does not provide usable final output usage.",
+      "needed": "After consuming exact full prefill chunks/layers, count observed unchanged T=1 diag summaries in complete ordered 48-layer groups, and require zero true-decode partition rows. Record actual cancelled output token count as unknown; never infer it from SSE chunks or from absent logs. Reusing a helper via observed_groups+1 requires an explicit surrogate-count scope override, never claim those are HTTP usage. Zero observed decode groups may be valid if cancellation occurs immediately after the prefill-produced first content token."
+    },
+    {
+      "location": "old adapter prefix_layer_evidence fault/prefill_cancel branches",
+      "issue": "These are intentional partial requests and cannot satisfy a full-success output-minus-one parser.",
+      "needed": "Retain the existing bounded planner-prefix and outer-chunk drain contracts (quiet does not suppress prefill); optionally corroborate unchanged diag summaries without turning first-fault planner prefix into complete numerical execution. Require no unowned/trailing request or partition events."
+    },
+    {
+      "location": "new conditional implementation/review boundary",
+      "issue": "Earlier static review certifies only old adapter bytes; unchanged canonical host tests do not cover a new quiet-aware local adapter.",
+      "needed": "If gate is met, freeze exact local adapter/controller changes and dependency hashes, perform independent static review and targeted offline contracts for completed/partial/fault/cancel evidence before conditional HTTP. Preserve any first tooling failure; no extra favorable performance samples."
+    }
+  ],
+  "resources_and_cleanup": {
+    "host_cache_max_bytes": 17179869184,
+    "swap_max_bytes": 0,
+    "max_len": 262144,
+    "max_seq": 1,
+    "max_prefill": 8192,
+    "resident_slots": 256,
+    "L2": 16,
+    "mirrorK": 8,
+    "MTP": false,
+    "PhaseD": false,
+    "chunk_order": 0,
+    "GEMM_or_precision_changes": false,
+    "cache_proposal": "Reuse exact prior final appendix protocol: each group at most two pre-service targeted advice/226-file observation rounds; first zero wins; final payload0. No request-to-request clearing or generated warmup. Must be explicitly frozen in the new appendix, not inherited from obsolete proposal text.",
+    "monitor": "Existing 1s raw resources / 10s NVIDIA / endpoint file cache; no stale GPU carryforward. Retain raw records and perform closed audit.",
+    "lifecycle_timings_are_performance_acceptance": false,
+    "owned_cleanup": {
+      "parent_controller_required": true,
+      "launch_via": "run_conditional_stage.py uses phase_common.run with dedicated process session, cwd=source, timeout=8400 seconds, interrupt_grace=400 seconds",
+      "parent_exact_unit_cleanup_required": "After child terminal, parent verifies exact frozen launch identity and stops/resets only that unit if needed; verify no live/zombie/error process-group entries. Unit is not part of caller PGID.",
+      "adapter_cleanup": "service SIGTERM120 then KILL30; natural monitor15 then stop30/TERM10/KILL10; owned unit stop40/reset15 plus properties; canonical worker futures drain15; all fallbacks/errors retained.",
+      "known_limit": "Python executor threads may hold process exit after a failed drain; outer owned-PGID timeout is mandatory. Do not claim delivery on cleanup failure."
+    },
+    "whole_physical_RAM_54GB": "INDETERMINATE"
+  },
+  "admission_before_any_execution": [
+    "Current quality/direct prerequisites and BOTH A/C history and complete six-tier matrix pass, with matching current runtime/source/tool identity and clean exits. B/C log-control improvement alone never admits delivery.",
+    "Root explicitly freezes a new local appendix and reviewed quiet-aware adapter boundary; this preparation is not that freeze and contains unresolved placeholders.",
+    "Run fixed business-a first; fully close its same-binary reference and cleanup before candidate all-c. Two new owned units and absent output paths; no automatic retries.",
+    "Candidate all-c must pass nine canonical lifecycle checks plus six business checks; closed resource audit, identity/protection and cleanup records remain required before runtime acceptance.",
+    "Any valid speed NO_GO keeps conditional delivery NOT_TRIGGERED. No default enable, merge, deploy or further optimization is authorized by this preparation."
+  ],
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/conditional-delivery-proposal.json": "8fff870158b5b761ee516061a6e64c615eab477ec74336cc85dd17b1946b828d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/conditional-delivery-appendix.json": "492787c4e80747ca28e73b186436b857800288c6a76ab1dc7dd8024d731ed1a4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/conditional-delivery-frozen-commands.json": "e4008d59cf45d884625a2ed74fdfbb3503dd3483d7bf1631429f35e6d9ccdd3c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/conditional-delivery-adapter-preparation.json": "367fc47806c743f260c6f52189d0e7edaf6147c70e6a15f51bf699339692e002",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/conditional-adapter-canonical-review.json": "e0ff4f88484c47512410a78b4fc70fedcdeeabc7d444ce230cb98129e1fd3337",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/conditional-delivery-controller-review.json": "095188940d9674c183b14d5969273a43f8cc8851d0b5f1779468a6474c5809c0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/run_conditional_delivery.py": "75b685ee22cabd8fc43dc80ec23cdd0c1bae2cfd53ce5c49868b63231e6fd8e9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/run_conditional_stage.py": "87a679831af07e3e347e292c6aae7486d5f36e02fa6591439d666a8057221939",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/plan.json": "ecfcd41ef3e6dd5ff9387f34a06c43e1c1f524cf01e3cc2f120ad8a519f0fd01",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/execution-plan.json": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope/run_offload_lifecycle.py": "4d9e3585745625e20fc86b975b892c91a3d5e54d454e2c8951f701045ac39b85",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope/request_policy_protocol.py": "8f2e53412fef4fe795cb5e8f3dcccd8b2048ae42696da658e81b05ebe381d6f8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope/offload_policy.py": "0aaf88178d23eca2e287f09d3aed82badae3665529827ce432976bf81bf3a898",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope/run_budget_experiment.py": "1b3c23023e55cd1f2c70448cd38aaef5a41695667a11f86363275c0e74ea16aa",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope/isolated_service.py": "c561ec8a8cf1c05e2ceb8ba08959af3624db9ee832723103b691ee2edb713521",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope/monitor_memory.py": "098d91eb208ce85961b23a88b029a80e122ff0b1b37bed7b9eaa898d1b5d6fc5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope/resource_metrics.py": "4ec55a1bad3983d9e71621c72aa299538392b3f8efb4ec121b9ec28bd105a5ce",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope/memory_accounting.py": "e0e7418359db1ee021e9d2aa096ef929212a62b47fd91d06086d0c11f4acf6f3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope/file_cache.py": "d25d6fa846af504e40eec850eb4f9c0cfa168f798d8aca826642214821eb9b73",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope/run_acceptance.py": "5af2e62af5930ff9a543ff8b9cd6204652956f976f158ab3ba6546ebfde1022e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-residency-20260930/affected/business-fixture/requests.jsonl": "1186a97205161b95c557e8cdc9aa9cb909fbeeb70b9b8e4ec3d2c4e71855ac67",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-residency-20260930/affected/business-fixture/manifest.json": "183ef1b653c35f1f9b635635b285417d9ddaa668c31568e74b8626d084df6fcb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-residency-20260930/affected/final-business-12288-base/results.json": "f3a1789e236a70a9e0c7d07af9e96f2e0059fa3e7ac0918f4bb85044dea6471f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-residency-20260930/hot-lists/hot-final-12288.json": "863e2ad6d3ccd3afeb7b67254ffd30a1dd15a020a44ed50ff886b37dce3ccb99",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model.safetensors.index.json": "aa702aa8cadb463b728cfd6829e172b1124114080231c75712155e2490f8c607"
+  }
+}

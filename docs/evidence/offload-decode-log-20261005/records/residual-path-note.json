@@ -1,0 +1,328 @@
+{
+  "schema": 1,
+  "created_t": 1791147443.9586933,
+  "scope": "仅解释已完成 history NO_GO 的残余路径差异；复用静态审查与旧缓存机制分析，不构成新实验、验收或下一优化阶段。",
+  "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+  "arms": {
+    "A": {
+      "global_partition": 0,
+      "request_partition": 0,
+      "quiet": 0
+    },
+    "C": {
+      "global_partition": 1,
+      "request_partition": 1,
+      "quiet": 1
+    }
+  },
+  "completed_history": {
+    "decision": "NO_GO",
+    "contracts": "A/B/C 各 21 请求通过；本说明复用 group 决定，不重做审计。",
+    "C_explicit_decode_layer_forwards": 257040,
+    "C_decode_partition_log_records": 0,
+    "C_retained_singleton_prefill_layer_records": 288,
+    "inference": "C 已实际去掉目标 decode partition 行仍未满足 A/C 冻结门槛，因此只移除此行不足以使当前候选通过；不能由此判定该日志没有成本或其他某项必为根因。"
+  },
+  "true_single_decode": [
+    {
+      "fact": "两臂使用相同显式 single-decode 标记和空 prefill identity；有效 partition_mode 为 A=0、C=1。C 仍检查 global=1 的 chunk_order 条件，并进入 MoEPartitionSupported 判定；T=1 使其返回 false，两臂均不执行候选 planner。",
+      "locations": [
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/model.cu",
+          "lines": [
+            922,
+            925
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/model.cu",
+          "lines": [
+            1079,
+            1082
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/include/q4t/model/moe_request_policy.h",
+          "lines": [
+            32,
+            34
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/moe.cu",
+          "lines": [
+            490,
+            504
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/moe.cu",
+          "lines": [
+            575,
+            584
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/include/q4t/model/moe_partition.h",
+          "lines": [
+            306,
+            312
+          ]
+        }
+      ]
+    },
+    {
+      "fact": "A 因 partition_mode=0 不进入 partition fprintf；C 因 quiet+显式阶段条件抑制同一 fprintf。两臂判断路径不同，但当前此行输出数同为零。配置 getter 与日志阶段传递在同 binary 的两臂均存在，其耗时未拆分。",
+      "locations": [
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/include/q4t/model/moe_partition_log.h",
+          "lines": [
+            23,
+            28
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/moe.cu",
+          "lines": [
+            430,
+            433
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/moe.cu",
+          "lines": [
+            688,
+            701
+          ]
+        }
+      ]
+    },
+    {
+      "fact": "legacy flush、每层 forward diag 及其集合计算均继续运行。diag 的 partition 字段 A=0、C=1；其他状态字段可能随 residency 改变。去掉 partition 行没有去掉这些日志，也未衡量各行成本。",
+      "locations": [
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/moe.cu",
+          "lines": [
+            594,
+            612
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/moe.cu",
+          "lines": [
+            764,
+            807
+          ]
+        }
+      ]
+    },
+    {
+      "fact": "正式 HTTP 的 MoEForwardDiagnostics 指针两臂均为 nullptr，故 partition_requested 的 0/1 差异不构成已运行的诊断对象写入差异。PlanResolve 仍两边按 T_sub==1 更新旧形状统计；计数规则相同，命中/缺失的数值可因缓存与路由状态不同。",
+      "locations": [
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/decoder_layer.cu",
+          "lines": [
+            623,
+            628
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/moe.cu",
+          "lines": [
+            504,
+            504
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/moe.cu",
+          "lines": [
+            669,
+            675
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/moe.cu",
+          "lines": [
+            757,
+            761
+          ]
+        }
+      ]
+    }
+  ],
+  "prefill_complete_input_le_8192": [
+    {
+      "fact": "A 的 request identity inactive，直接沿用 global=0；C identity active，完整输入阈值选择 mode=0。C 仍执行请求策略额外校验：模型入口 getenv/严格解析及串行配置判断、各层 cached global/chunk-order 校验；A 跳过 Enabled 分支。这里只确认源码分支差异，不推定其机器指令数或耗时。",
+      "locations": [
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/model.cu",
+          "lines": [
+            460,
+            480
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/moe.cu",
+          "lines": [
+            425,
+            437
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/moe.cu",
+          "lines": [
+            490,
+            502
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/include/q4t/model/moe_request_policy.h",
+          "lines": [
+            27,
+            34
+          ]
+        }
+      ]
+    },
+    {
+      "fact": "有效模式两边为 0，不调用 min_new planner、不输出 partition 行；两边继续旧 lex/legacy 分块及相同计算与加载实现。在相同路由 ID、容量和保护配置下 legacy 分块相同，但本次没有证明所有入口缓存/中间路由状态逐项匹配。",
+      "locations": [
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/moe.cu",
+          "lines": [
+            535,
+            565
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/moe.cu",
+          "lines": [
+            575,
+            667
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/moe.cu",
+          "lines": [
+            688,
+            701
+          ]
+        }
+      ]
+    },
+    {
+      "fact": "层 0 request marker 两边都保留：A active=0/reason=global_legacy，C active=1/reason=request_legacy；不能把条数相同称为字节完全相同。短 prefill 的 per-layer diag partition 字段两边都是 0。所有旧统计和日志规则未改；singleton prefill 仍由 request identity/unknown 阶段保护。",
+      "locations": [
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/moe.cu",
+          "lines": [
+            569,
+            574
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/moe.cu",
+          "lines": [
+            677,
+            701
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/moe.cu",
+          "lines": [
+            798,
+            807
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/include/q4t/model/moe_partition_log.h",
+          "lines": [
+            23,
+            28
+          ]
+        }
+      ]
+    }
+  ],
+  "state_and_timing_limits": [
+    {
+      "status": "已知持久机制，当前影响未量化",
+      "fact": "ModelBeginSequence 只经 ResetState 清 KV/indexer、SSM/conv/PLE；每层继续持有同一 MoEResidency。history 不在请求间清缓存，短请求可承接前驱 prefill/decode 的 GPU/L2/mirror 和 OS 页缓存历史。C 的长 prefill 分区与 A 不同，但不能仅据机制断言每个入口一定不同或决定了本次慢多少。",
+      "locations": [
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/model.cu",
+          "lines": [
+            1585,
+            1598
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/decoder_layer.cu",
+          "lines": [
+            293,
+            328
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/include/q4t/model/decoder_layer.h",
+          "lines": [
+            69,
+            73
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/decoder_layer.cu",
+          "lines": [
+            620,
+            628
+          ]
+        }
+      ]
+    },
+    {
+      "status": "未分离的可能因素",
+      "fact": "固定 A→B→C 次序未分离时间漂移、调度/回收/预读、路由需求及缓存命中变化。已匹配最终输出不等于逐层路由/缓存全同；旧诊断属于不同源码和插桩条件，只复用机制限制，不挪用其效应量。旧已完成矩阵中的短档位于长档之前，长请求前驱不是所有短档回退的必要条件。"
+    },
+    {
+      "status": "无定量上界",
+      "fact": "B/C 仅描述此次日志策略干预后的整体观测差异，不是纯 fprintf CPU 时间。上述分支、统计、剩余日志、搬运与缓存等待均未独占计时；不能相加、事后扣减或据此承诺额外提升百分比。"
+    }
+  ],
+  "future_causal_questions_only": [
+    "在事先平衡组次序且匹配前驱/路由需求的条件下，残余 A/C 差异中有多少来自入口缓存与运行时漂移？",
+    "保留日志规则下，短请求仍执行的 Enabled 校验与共同诊断工作有多少落在未被其他工作隐藏的路径上？",
+    "权重读取、H2D 与 mirror D2H 的哪些等待真正位于互斥关键路径，而非累计重叠时间？"
+  ],
+  "exclusive_cost_seconds": null,
+  "remaining_speedup_percent": null,
+  "whole_physical_RAM_54GB": "INDETERMINATE",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/execution-plan.json": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/plan.json": "ecfcd41ef3e6dd5ff9387f34a06c43e1c1f524cf01e3cc2f120ad8a519f0fd01",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/runtime-static-review.json": "3818d64469a7619a28c7cb6bf0b364032af08d3a4be5309d2aca0d635ae68083",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/history-decision.json": "68ee8db8cc5a6473b90082ad2f9b004c1d374d50c694c5e4e9f2ad37197ba26b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/history-a-decision.json": "418ae92fe55cff5c07bb56e0b75dcd9ea111c49f1df0f5283b33c3ec8a5099c1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/history-b-decision.json": "e203f336e540f8d6cbe05a5b5aad8f946619b65c24e75b6870a05024474db380",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/history-c-decision.json": "2d50a5a951064b3491a61dbfc10844cbb4985e58d620b799b75eedf4d309f570",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/bottleneck-interpretation.json": "d34038ebed2cf8b54a0af2025c03c239cc97a17451a70a7b5a9790843da53861",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/moe.cu": "c7d2b1975fabb5464c45000a14496dc97b270675f92e834d36eb926c58ee1548",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/model.cu": "7a12ada0285a5eef2e395322879622ddbea3d11a029a17a86d76402cbd4c61a3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/decoder_layer.cu": "17b338976225a50064c5b5a0599658a7d5c2cf8cd0890bfa9468f8138369b212",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/include/q4t/model/decoder_layer.h": "1011dbfa70db635958d792f3c7a02fadc0e4ed8e4b3f85ab951f139cdf84270b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/include/q4t/model/moe_request_policy.h": "442fb05a1e1c8cc6705ab80e21503aa3057994764b41f41b7f6e2f7378cc2b45",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/include/q4t/model/moe_partition.h": "cdb01017f2c5bc041728423c18a70a3497bf89abdbeec2e4d8ac36e578a96275",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/include/q4t/model/moe_partition_log.h": "7cc35a633bad8588b71ccee5075c40a0ae43ed9f1dfbbbb00b17c4d037fde5f2"
+  },
+  "actions": {
+    "source_edits": 0,
+    "tests": 0,
+    "model_requests": 0,
+    "current_matrix_result_reads": 0,
+    "raw_resource_sample_reads": 0,
+    "new_candidates": 0,
+    "new_artifacts": [
+      "residual-path-note.json"
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "recorded_t": 1791139086.3583667,
+  "main_head": "f15190ff9447079f9557469ed5aff0b525197821",
+  "main_status": [
+    " M docs/STATUS.md",
+    " M docs/log/2026-10-02.md",
+    " M include/q4t/model/model.h",
+    " M include/q4t/quant/moe_residency.h",
+    " M src/model/moe.cu",
+    " M src/quant/moe_residency.cpp",
+    " M src/server/chat_generation.cpp"
+  ],
+  "main_diff_sha256": "33375caff6dcb3e638e2d2f001428883cbc0e400c5f1b7403a081826e9cd6947",
+  "main_binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "sha256": "46b3f977b0653c2f317c63df5b9f6669d1f3bb1de17892970b605676dd5434bc"
+  },
+  "entry_commit": "ed75d60193439cbb9020977033304d773f9bb6b0",
+  "prior_phase_completion_audit": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/final-completion-audit.json",
+    "sha256": "da262ede3e3f533e0b2f8811570ff59d6d627bbadd8843ed95f942295d3c1f32"
+  },
+  "prior_performance_disposition": "NO_GO_PERFORMANCE",
+  "reference_whole_tree_entry": "NOT_RECORDED; no content writes allowed; tracked scope only"
+}

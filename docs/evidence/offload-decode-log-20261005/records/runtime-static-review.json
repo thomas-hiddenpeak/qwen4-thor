@@ -1,0 +1,108 @@
+{
+  "schema": 1,
+  "reviewer": "cache_causality_review",
+  "created_t": 1791139915.4592292,
+  "decision": "PASS_STATIC_RUNTIME_SCOPE",
+  "passed": true,
+  "scope": "Independent review of runtime diff and affected numerical/host contract source only; no review of own local controllers.",
+  "entry_commit": "ed75d60193439cbb9020977033304d773f9bb6b0",
+  "phase_plan_sha256": "ecfcd41ef3e6dd5ff9387f34a06c43e1c1f524cf01e3cc2f120ad8a519f0fd01",
+  "reviewed_tracked_diff_sha256": "8f95f353049f2541ca7ace632ca87ecfa4bc235fb4d66501ee8cb89f5bbb4f2a",
+  "reviewed_tracked_diff_paths": [
+    "include/q4t/model/decoder_layer.h",
+    "include/q4t/model/moe.h",
+    "src/model/decoder_layer.cu",
+    "src/model/model.cu",
+    "src/model/moe.cu",
+    "src/server/chat_server.cpp",
+    "tests/model_moe_test.cpp",
+    "tests/request_policy_host/CMakeLists.txt"
+  ],
+  "reviewed_new_paths": [
+    "include/q4t/model/moe_partition_log.h",
+    "tests/request_policy_host/decode_partition_log_test.cpp"
+  ],
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/include/q4t/model/moe_partition_log.h": "7cc35a633bad8588b71ccee5075c40a0ae43ed9f1dfbbbb00b17c4d037fde5f2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/include/q4t/model/moe.h": "b28a4d3365e23dca40728543486a27329d861f7678c1e8d96c0cfe2cc07fc56d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/include/q4t/model/decoder_layer.h": "1011dbfa70db635958d792f3c7a02fadc0e4ed8e4b3f85ab951f139cdf84270b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/moe.cu": "c7d2b1975fabb5464c45000a14496dc97b270675f92e834d36eb926c58ee1548",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/model.cu": "7a12ada0285a5eef2e395322879622ddbea3d11a029a17a86d76402cbd4c61a3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/model/decoder_layer.cu": "17b338976225a50064c5b5a0599658a7d5c2cf8cd0890bfa9468f8138369b212",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/server/chat_server.cpp": "31a24712cdcea3fd0d2e15e87989a53fe622305902673b6c2001a874a36b10a1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/server/chat_scheduler.cpp": "5c6247961090335a66a924907161592a0f88d6893e4e3faf2d7720833286b34b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/src/server/chat_generation.cpp": "66360d6a19b6b40377d7e0db5a530e8c0799be92280f19e22cd5973ab65d6931",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tests/model_moe_test.cpp": "a33de97c876edebc6f68a7d62b6f2f615212b266e16258262de73f7518199e5e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tests/request_policy_host/CMakeLists.txt": "f68e5bd2eec6660717ba1f0fb699ec724484ae11568012d4c34a1db5a91db6d5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tests/request_policy_host/decode_partition_log_test.cpp": "bba18b665b789693f143a4cc55430d365725ffa0d3cc127295a3ec0ab1e0f60c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tests/request_policy_host/request_policy_test.cpp": "e50af167757c732c4bd4be82902304a58a4ae04fad262da97cd91463d76cbe26"
+  },
+  "checks": [
+    {
+      "name": "single_log_guard_only",
+      "passed": true,
+      "evidence": "src/model/moe.cu:688 replaces only the old partition_mode == 1 fprintf guard. Existing partition planner, diagnostics counters, flush/forward/error logs, expert pipeline and numerical expressions are unchanged."
+    },
+    {
+      "name": "explicit_phase_plumbing",
+      "passed": true,
+      "evidence": "RunLayers -> DecoderLayerForward -> MoEForward appends a logging-only enum with kUnknown default. Only ModelDecodeStep and ModelDecodeBatchMulti mark it, with latter restricted to B == 1. Expanded RunLayers optional arguments preserve seq_id/d_seq_id/tokens_per_seq/ragged/logits_rows/request context positions."
+    },
+    {
+      "name": "scheduler_and_fallback",
+      "passed": true,
+      "evidence": "Unchanged scheduler calls ModelDecodeBatchMulti after kDecode Submit; unchanged fallback calls ModelDecodeStepSeq, which calls ModelDecodeStep. Both reach the explicit single-decode marker for this max_seq=1 MTP-off phase."
+    },
+    {
+      "name": "prefill_unknown_and_batch_protection",
+      "passed": true,
+      "evidence": "Other RunLayers callers retain kUnknown, including ModelDecodeBatch used for continuation/verification. Guard additionally requires T == 1 and no request context. Prefill T1 and long singleton tails retain records; unknown direct callers, B>1 and contradictory prefill identity cannot suppress logs."
+    },
+    {
+      "name": "strict_default_and_cached_identity",
+      "passed": true,
+      "evidence": "Parser accepts only unset/0/1; unset defaults 0. ChatServer::Start validates before tokenizer/model allocation, MoEForward rejects invalid values, one cached function logs explicit_single_decode configuration once. Phase enum does not affect partition selection."
+    },
+    {
+      "name": "compute_cache_budget_unchanged",
+      "passed": true,
+      "evidence": "Reviewed changed runtime paths contain argument plumbing/config validation/logging guard only. No src/quant or GEMM kernel changes appear in git diff; no cache budget, eviction, precision, payload or stream-operation changes were introduced."
+    },
+    {
+      "name": "host_contract_source_coverage",
+      "passed": true,
+      "declared_total": 15,
+      "counts": {
+        "tests/request_policy_host/decode_partition_log_test.cpp": 7,
+        "tests/request_policy_host/request_policy_test.cpp": 8
+      },
+      "evidence": "Seven new declared host contracts cover strict opt-in, default logs, explicit phase, prefill identity/tails, other batch shapes and global-off preservation; eight prior request policy cases remain."
+    },
+    {
+      "name": "numerical_fixture_scope",
+      "passed": true,
+      "required_tests": [
+        "moe_forward_residency_bitexact",
+        "moe_partition_runtime_numerical_contract",
+        "moe_request_policy_numerical_contract"
+      ],
+      "request_policy_case_count": 8,
+      "evidence": "Only RunPartitionNumericalCase adds log_phase and a descriptive print. Its sole T1 invocation is the existing post-prefill decode-bypass fixture; the separate request-policy singleton helper remains unknown and keeps its context. Existing comparisons, dispatch assertions and eight request-policy cases are unchanged."
+    }
+  ],
+  "actionable_findings": [],
+  "limits": [
+    "Static source review is not compilation, host execution, HTTP quality, numerical or performance acceptance.",
+    "The cached getter check and phase plumbing run in every applicable MoE forward; this common overhead and removed fprintf timing must be measured by the frozen same-binary arms.",
+    "Enum validity is a caller logging contract, not a new model-stage validator; unknown callers conservatively retain old logs.",
+    "Actual quiet suppression and retained per-layer execution evidence require the planned HTTP/log audit; no claim that it explains all prior regression."
+  ],
+  "actions": {
+    "model_requests": 0,
+    "tests_executed": 0,
+    "code_changes": 0,
+    "new_artifacts": [
+      "runtime-static-review.json"
+    ]
+  }
+}

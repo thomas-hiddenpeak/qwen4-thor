@@ -1,0 +1,22 @@
+{
+  "stop_rc": 0,
+  "stop_stderr": "",
+  "reset_rc": 1,
+  "reset_stderr": "Failed to reset failed state of unit q4t-ram-1791156481710749164-3540374.service: Unit q4t-ram-1791156481710749164-3540374.service not loaded.\n",
+  "properties_after": {
+    "MainPID": "0",
+    "ControlPID": "0",
+    "Result": "success",
+    "ExecMainCode": "0",
+    "ExecMainStatus": "0",
+    "ControlGroup": "",
+    "IOAccounting": "no",
+    "MemoryAccounting": "yes",
+    "MemoryMax": "infinity",
+    "MemorySwapMax": "infinity",
+    "LoadState": "not-found",
+    "ActiveState": "inactive",
+    "SubState": "dead"
+  },
+  "unit_removed": true
+}

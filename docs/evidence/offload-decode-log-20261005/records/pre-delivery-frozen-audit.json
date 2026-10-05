@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "checked_t": 1791163203.417679,
+  "plan_sha256": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+  "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+  "checks": "Clean tested worktree, all frozen files, binary, full committed export and build input identities verified by frozen()",
+  "pipeline_exit_sha256": "6600342e2c34ad4c7dc7cf91df860ab09d3c2e29fa00a38bb49d3e6f8924347b"
+}

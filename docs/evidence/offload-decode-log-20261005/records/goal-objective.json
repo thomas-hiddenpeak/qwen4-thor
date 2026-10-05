@@ -1,0 +1,13 @@
+{
+  "goal": {
+    "threadId": "01a0fbc6-91d2-75c3-9501-692883eac85a",
+    "objective": "推进 Qwen4-Thor 下一轮真实 offload 优化：从已交付 ed75d60（被测运行时 52b42b2）的 NO_GO 结论继续，先定位短档 decode 回退中已证实存在的逐层日志不对称及跨请求缓存继承影响，冻结一个可回退、默认关闭的单一候选，目标是保留长上下文 prefill 收益并消除短档/decode 性能回退。先做有界静态/已有证据分析，再按预先冻结的同身份对照检验单一假设；性能候选首次测试为本机 Thor tools/evalscope HTTP，质量通过后完成受影响直接合同及五档加目标容量完整 E2E，长→短边界另作固定挑战。只做一个候选，不追加有利样本、不事后改门槛；因具体执行或工具缺陷可保留失败并修复受影响项。若候选未过，交付清楚的 NO_GO 和剩余因果问题并收束，不自动开展第二候选。保护原工作区七项未提交改动、模型/reference 只读、现有缓存预算及精度/GEMM合同，MTP关闭；分别报告 TTFT、decode、存储读取、内存及测量限制，54GB 未证实即保持未知。完成可审查代码与证据、更新状态和日志、阶段 commit/push 到独立工作分支，明确候选接受与阶段完成的区别。",
+    "status": "active",
+    "tokensUsed": 311388,
+    "timeUsedSeconds": 543,
+    "createdAt": 1791138922,
+    "updatedAt": 1791139466
+  },
+  "remainingTokens": null,
+  "completionBudgetReport": null
+}

@@ -1,0 +1,21 @@
+{
+  "pid": 3540394,
+  "properties": {
+    "MainPID": "3540394",
+    "ControlPID": "0",
+    "Result": "success",
+    "ExecMainCode": "0",
+    "ExecMainStatus": "0",
+    "ControlGroup": "/system.slice/q4t-ram-1791156481710749164-3540374.service",
+    "IOAccounting": "yes",
+    "MemoryAccounting": "yes",
+    "MemoryMax": "17179869184",
+    "MemorySwapMax": "0",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "membership": [
+    "0::/system.slice/q4t-ram-1791156481710749164-3540374.service"
+  ]
+}

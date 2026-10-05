@@ -1,0 +1,8 @@
+{
+  "commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/candidate-source",
+  "clean_export": true,
+  "excluded_original_dirty_paths": 7,
+  "created_t": 1791140005.647536,
+  "archive_sha256": "d79f5a8937e2a9f37071cd4e47f73ba410e7512af9b6205e0c1dde41c711d17f"
+}

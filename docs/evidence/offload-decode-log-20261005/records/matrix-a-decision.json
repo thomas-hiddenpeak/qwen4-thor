@@ -1,0 +1,178 @@
+{
+  "schema": 1,
+  "passed": true,
+  "stage": "matrix-a",
+  "arm": "A",
+  "request_partition": 0,
+  "decode_partition_log_quiet": 0,
+  "plan_sha256": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+  "status": "PASS_GROUP_CONTRACTS",
+  "ended_t": 1791156479.0538967,
+  "recorded_t": 1791156480.8251133,
+  "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+  "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/matrix-a-stage.json": "45fe4c1b832946ecf63062b4281a2e550af39c2208651694902fcf8e5adbc7d6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-a/wrapper-exit.json": "aa2967098e77e311e71873e013a3164e72bdeb57f85586da3f24f79c92e8b9c4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-a/http/exit.json": "06e9e9e813902bf2b454d3a957e3f47089b52d683e762524b41baa7f9cb59a97",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-a/runner-process-group.json": "41de784cc960e4793bb0edac3120cdc4e6c9b1424e28acb9cd0d7796cecc6b84",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-a/http/isolation/cleanup.json": "230893627eb139184c0a58c5637cec6ee15cea06a85c7c3fea087ad328bc354a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-a/http/capacity.json": "135b17d195db1d71febe10e60def33e3894bb0e867b253637ec833f2fa48dfb7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-a/protocol.json": "8bef18cd3dd250a44963498ff94403c99cf081fce6073b14d521822511183871",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-a/http/server-command.json": "5c7862522a15c6c8292851facf2e0b7697bbded60f4b321305d68e8b322693d7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-a/http/results.json": "1212b29988de5df962ceeab893d774b243868284b3371b2ee84cc01b9d5d3c31",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-a/cache-gate.json": "595f621568f518a19bfcdd3eeaf83f9ac402bb10a66ea08a9bc89f79688c37e3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-a/cache-advice-round-01.json": "c3cc61c1454eb1b8c514222fc1ab240d2fc78e69a08b91c963b96d1cd675aed5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-a/cache-after-advice.json": "f0500fe624ba1f5246b917f11b04529c5ce22f145cc3a6a74b4371db43b37d77",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/matrix-off/http/results.json": "2540ede1b7d9cbae705689320e0feec0a9a78c13d53f7675c9ff231df26a6473",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-a/http/context-1024/responses.json": "feef99e03310c0a98f8c276192f4a45512cb0d3f48296d25fc3943ef5c671cd1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-a/http/context-4096/responses.json": "78be9a1956c0e0e67849d19fe48312ea7f42817759163ed5bfa4085d4f40d48c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-a/http/context-8192/responses.json": "4a59a7e81c5e728e8c66c3016dc7feae59e22a20047093d5016ff4081a85defe",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-a/http/context-45056/responses.json": "807261095e331d152afe2b0088cf70c7978ad44c89fe68672abac8386298f19b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-a/http/context-204800/responses.json": "3ae1b6fc04cf0da1629b0719b0dd1afd0727f502e81635e06e1e6516afc4db08",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-a/http/context-261887/responses.json": "fe77d472d3a658dc76a0a9a02ae52aaa7399ea913640d0d1f801c61b6792ea19",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-a/http/server.log": "347b9ce9bc5eea9b9953b34a38a17991b693493ee10e3e139c0c4b933a4cd334"
+  },
+  "runtime_path": {
+    "request_partition": 0,
+    "execution_records": 198,
+    "request_count": 18,
+    "runtime_eligible": true,
+    "selected_legacy_requests": 18,
+    "candidate_chunks": 0,
+    "singleton_tail_chunks": 0,
+    "numerical_acceptance": false,
+    "scope": "Actual layer-zero prefill execution; no decode or all-intermediate numerical proof."
+  },
+  "all_layer_runtime": {
+    "runtime_eligible": true,
+    "all_layers": 48,
+    "quiet": 0,
+    "candidate_prefill_layer_forwards": 0,
+    "singleton_prefill_layer_forwards": 0,
+    "legacy_prefill_layer_forwards": 9504,
+    "decode_layer_forwards": 220464,
+    "partition_decode_log_records": 0,
+    "forward_diag_records": 229968,
+    "activation_observed": true,
+    "budget_fallbacks": 0,
+    "unsupported_forwards": 0,
+    "decode_evidence": "observed unchanged per-layer forward diagnostics in full request/chunk order, matched to HTTP usage",
+    "scope": "Exact serial forward summaries for all prefill chunks and output-minus-one decode forwards; summaries precede expert execution. HTTP completion and numerical proof are separate.",
+    "numerical_acceptance": false
+  },
+  "output_contract": null,
+  "request_count": 18,
+  "metrics": [
+    {
+      "case": "context-1024",
+      "input_tokens": 1024,
+      "ttft": 12.190830220934004,
+      "decode_tps": 6.854972735261432
+    },
+    {
+      "case": "context-1024",
+      "input_tokens": 1024,
+      "ttft": 10.182296999031678,
+      "decode_tps": 7.242378858779454
+    },
+    {
+      "case": "context-1024",
+      "input_tokens": 1024,
+      "ttft": 9.220761633012444,
+      "decode_tps": 7.410843524209918
+    },
+    {
+      "case": "context-4096",
+      "input_tokens": 4096,
+      "ttft": 25.500140000134706,
+      "decode_tps": 6.450423988028176
+    },
+    {
+      "case": "context-4096",
+      "input_tokens": 4096,
+      "ttft": 26.119946769904345,
+      "decode_tps": 6.494551296474062
+    },
+    {
+      "case": "context-4096",
+      "input_tokens": 4096,
+      "ttft": 26.136366507038474,
+      "decode_tps": 6.517935260061085
+    },
+    {
+      "case": "context-8192",
+      "input_tokens": 8192,
+      "ttft": 38.37251108093187,
+      "decode_tps": 6.185334055998856
+    },
+    {
+      "case": "context-8192",
+      "input_tokens": 8192,
+      "ttft": 38.53586503583938,
+      "decode_tps": 6.241090650666907
+    },
+    {
+      "case": "context-8192",
+      "input_tokens": 8192,
+      "ttft": 38.3283385138493,
+      "decode_tps": 6.249674823728818
+    },
+    {
+      "case": "context-45056",
+      "input_tokens": 45056,
+      "ttft": 221.8961192520801,
+      "decode_tps": 7.059946515099366
+    },
+    {
+      "case": "context-45056",
+      "input_tokens": 45056,
+      "ttft": 222.89511137688532,
+      "decode_tps": 7.061480413706461
+    },
+    {
+      "case": "context-45056",
+      "input_tokens": 45056,
+      "ttft": 222.53267334098928,
+      "decode_tps": 7.100844161827347
+    },
+    {
+      "case": "context-204800",
+      "input_tokens": 204800,
+      "ttft": 1105.8103659669869,
+      "decode_tps": 7.4937477925250375
+    },
+    {
+      "case": "context-204800",
+      "input_tokens": 204800,
+      "ttft": 1101.4564203680493,
+      "decode_tps": 7.440252462735944
+    },
+    {
+      "case": "context-204800",
+      "input_tokens": 204800,
+      "ttft": 1101.8305022451095,
+      "decode_tps": 7.535582229164357
+    },
+    {
+      "case": "context-261887",
+      "input_tokens": 261887,
+      "ttft": 1425.442028468009,
+      "decode_tps": 6.1134037785202064
+    },
+    {
+      "case": "context-261887",
+      "input_tokens": 261887,
+      "ttft": 1426.6371678009164,
+      "decode_tps": 6.121604827118869
+    },
+    {
+      "case": "context-261887",
+      "input_tokens": 261887,
+      "ttft": 1425.643872109009,
+      "decode_tps": 6.099742759776361
+    }
+  ],
+  "performance_acceptance": false,
+  "numerical_acceptance": false
+}

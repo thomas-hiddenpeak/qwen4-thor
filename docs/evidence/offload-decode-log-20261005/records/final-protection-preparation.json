@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "prepared_t": 1791161532.9711554,
+  "status": "PREPARED_NOT_EXECUTED",
+  "checker_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/check_final_protection.py",
+  "checker_sha256": "a25c5d9033b6b395b3e699577679972d7d6ce8e02c824804b3d2207ce90cedae",
+  "based_on": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/check_final_protection_v2.py",
+    "sha256": "6ef1dd078c8d58d15e0c61707c6c49f04bc22e6753b001e51c8950cd4904f590",
+    "reused": "Read-only process/PGID, same-UID exe visibility fallback, owned unit/cgroup checks; adapted to current entry and pipeline."
+  },
+  "command": [
+    "python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/check_final_protection.py",
+    "--self-sha256",
+    "a25c5d9033b6b395b3e699577679972d7d6ce8e02c824804b3d2207ce90cedae"
+  ],
+  "run_only_after": [
+    "pipeline-execution/exit.json completed=true and all17 step/6 HTTP group receipts terminal",
+    "Outer pipeline process/session reaped and other task-path offline audit processes idle",
+    "Before source worktree final documentation/evidence edits; W must remain clean at tested6b516935"
+  ],
+  "checks": [
+    "MAIN HEAD, exact seven dirty status rows and diff SHA against this phase entry; MAIN binary direct entry SHA",
+    "All frozen inputs and runtime/numerical binary identity; archive identity hashed, exported source tree not recursively re-audited",
+    "228 model file paths and size/inode/device/mtime metadata plus only explicitly frozen top-level config.json and model.safetensors.index.json SHA",
+    "Recorded process/PGID, six exact owned units/cgroups, task executable/path scan and frozen TCP ports in current namespace",
+    "reference tracked status only; UNKNOWN_WHOLE_TREE_UNCHANGED remains explicit"
+  ],
+  "model_content_scope": {
+    "weight_payload_read": false,
+    "allowlisted_JSON_files": [
+      {
+        "name": "config.json",
+        "entry_bytes": 4983
+      },
+      {
+        "name": "model.safetensors.index.json",
+        "entry_bytes": 35429343
+      }
+    ],
+    "max_bytes_per_allowlisted_file": 67108864,
+    "note": "Index is35.4MB metadata, not a weight tensor; no claim it is a tiny config. All other model content hashing is rejected."
+  },
+  "outputs": [
+    "final-protection.json exclusively created after terminal gate; never overwrites existing output"
+  ],
+  "failure_behavior": "Before terminal admission: refuse without final result and without process/model/source checks. After admission: preserve FAIL_OR_UNKNOWN in exclusive final result; no signals, stop, retry, cache action or inference.",
+  "limits": [
+    "Preparation and AST parsing only, not a cleanup/protection pass.",
+    "Snapshot equality is not continuous no-write proof or weight payload byte equality.",
+    "reference lacks entry full-tree evidence, ignored/untracked content remains unknown.",
+    "No GPU allocator release, whole-device idle or54GB physical memory conclusion.",
+    "After source documentation edits, use separate delivery diff/identity audit; do not rerun this clean-source checker to pretend unchanged execution identity."
+  ],
+  "actions": {
+    "checker_runs": 0,
+    "model_requests": 0,
+    "tests_executed": 0,
+    "cache_operations": 0,
+    "source_or_MAIN_edits": 0
+  }
+}

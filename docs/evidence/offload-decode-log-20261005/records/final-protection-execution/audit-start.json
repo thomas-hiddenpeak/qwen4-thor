@@ -1,0 +1,17 @@
+{
+  "started_t": 1791163234.9159467,
+  "command": [
+    "python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/check_final_protection.py",
+    "--self-sha256",
+    "a25c5d9033b6b395b3e699577679972d7d6ce8e02c824804b3d2207ce90cedae"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source",
+  "returncode": null,
+  "failure": null,
+  "automatic_retry": false,
+  "timeout_s": null,
+  "signals": [],
+  "cleanup_complete": false
+}

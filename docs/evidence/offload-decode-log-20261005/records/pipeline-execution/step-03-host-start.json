@@ -1,0 +1,18 @@
+{
+  "started_t": 1791140800.2008555,
+  "command": [
+    "python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/run_direct_contracts.py",
+    "host",
+    "--plan-sha256",
+    "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source",
+  "returncode": null,
+  "failure": null,
+  "automatic_retry": false,
+  "timeout_s": null,
+  "signals": [],
+  "cleanup_complete": false
+}

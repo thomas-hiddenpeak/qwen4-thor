@@ -1,0 +1,17 @@
+{
+  "status": "NOT_TRIGGERED",
+  "created_t": 1791163300.9384594,
+  "reason": "History permanent veto and full matrix NO_GO; prospective conditional business/lifecycle acceptance stage not reached.",
+  "business_lifecycle_executed": false,
+  "second_candidate_executed": false,
+  "default_enabled": false,
+  "merged_or_deployed": false,
+  "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "plan_sha256": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/history-decision.json": "68ee8db8cc5a6473b90082ad2f9b004c1d374d50c694c5e4e9f2ad37197ba26b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/performance-decision.json": "006a4cafc3dc0de7ed149f13b74f53d398797950eaeac84ec60f0fb3618717a9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/conditional-delivery-preparation.json": "7f024d5b02fde3c738371d07e567a5292f77ee225b6dacfea2429a40a8750e2b"
+  },
+  "preparation_is_not_pass_evidence": true
+}

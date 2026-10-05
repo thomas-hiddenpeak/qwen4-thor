@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+  "canonical_tools": [
+    {
+      "repository_path": "tools/evalscope/run_budget_experiment.py",
+      "commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+      "sha256": "1b3c23023e55cd1f2c70448cd38aaef5a41695667a11f86363275c0e74ea16aa"
+    },
+    {
+      "repository_path": "tools/evalscope/run_acceptance.py",
+      "commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+      "sha256": "5af2e62af5930ff9a543ff8b9cd6204652956f976f158ab3ba6546ebfde1022e"
+    },
+    {
+      "repository_path": "tools/evalscope/isolated_service.py",
+      "commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+      "sha256": "c561ec8a8cf1c05e2ceb8ba08959af3624db9ee832723103b691ee2edb713521"
+    },
+    {
+      "repository_path": "tools/evalscope/monitor_memory.py",
+      "commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+      "sha256": "098d91eb208ce85961b23a88b029a80e122ff0b1b37bed7b9eaa898d1b5d6fc5"
+    },
+    {
+      "repository_path": "tools/evalscope/file_cache.py",
+      "commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+      "sha256": "d25d6fa846af504e40eec850eb4f9c0cfa168f798d8aca826642214821eb9b73"
+    },
+    {
+      "repository_path": "tools/evalscope/resource_metrics.py",
+      "commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+      "sha256": "4ec55a1bad3983d9e71621c72aa299538392b3f8efb4ec121b9ec28bd105a5ce"
+    },
+    {
+      "repository_path": "tools/evalscope/memory_accounting.py",
+      "commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+      "sha256": "e0e7418359db1ee021e9d2aa096ef929212a62b47fd91d06086d0c11f4acf6f3"
+    },
+    {
+      "repository_path": "tools/evalscope/offload_policy.py",
+      "commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+      "sha256": "0aaf88178d23eca2e287f09d3aed82badae3665529827ce432976bf81bf3a898"
+    },
+    {
+      "repository_path": "tools/evalscope/request_policy_protocol.py",
+      "commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+      "sha256": "8f2e53412fef4fe795cb5e8f3dcccd8b2048ae42696da658e81b05ebe381d6f8"
+    }
+  ],
+  "external_resource_core": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/audit_raw_resources_frozen.py",
+    "sha256": "035f1f840d00350a7b6db62e1b8ef7f62a5fda02406dae91395d291a67652da4"
+  },
+  "fixtures": "Exact existing prompt paths/SHA and tokenizer/model dependencies remain in records/execution-plan.json; prompts are not copied.",
+  "archived_sources_executable_in_place": false,
+  "limit": "One-shot scripts bind absolute original directories and some execute at import time. Inspect archived bytes; never import or rerun them in place. A new experiment needs newly frozen paths and commands."
+}

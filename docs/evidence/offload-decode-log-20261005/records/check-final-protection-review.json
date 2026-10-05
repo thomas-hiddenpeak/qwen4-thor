@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "reviewer": "/root/decode_log_protocol",
+  "recorded_t": 1791161727.895331,
+  "review_kind": "READ_ONLY_STATIC_FINAL_PROTECTION_CHECKER",
+  "decision": "PASS_STATIC_WITH_EXPLICIT_SCOPE_LIMITS",
+  "review_passed": true,
+  "reviewed_checker": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/check_final_protection.py",
+  "reviewed_checker_sha256": "a25c5d9033b6b395b3e699577679972d7d6ce8e02c824804b3d2207ce90cedae",
+  "blocking_findings": [],
+  "checks": [
+    {
+      "id": "reviewed_identity",
+      "passed": true,
+      "finding": "Checker bytes match supplied a25c5d90 SHA. All six literal PINS were independently hashed and match current phase plan/execution/entry/model-entry/numerical-decision/entry-main.diff. No script or project module was imported or executed."
+    },
+    {
+      "id": "current_MAIN_baseline",
+      "passed": true,
+      "finding": "MAIN resolves to the original project root. Current entry.json itself records main HEAD f15190ff, exactly seven status paths/diff33375caf and main binary46b3f977. The checker requires these current-entry values; it does not import the preceding phase as substitute baseline."
+    },
+    {
+      "id": "runtime_and_numerical_identity",
+      "passed": true,
+      "finding": "Checks current tested source6b51693, runtime8447d898, numerical test64ec1cba, frozen archive/build/tool/input SHA set and clean W. Numerical before/after digest is bound to the pinned current numerical decision. Frozen source export directory is explicitly not rescanned; reported scope accurately says archive/identity/build inputs only."
+    },
+    {
+      "id": "terminal_admission",
+      "passed": true,
+      "finding": "Refuses before process/model/source audit unless all six named group controller start/exit/stage receipts plus pipeline/direct/history/matrix/aggregate decisions exist. Matches the prospective 17-step pipeline ordering, per-step command/time/allowed exit0 or valid comparison3, completed summary and cleaned owned PGIDs. Completed quality/direct receipt schemas and 8 host/2 numerical subprocess counts agree with actual emitted metadata."
+    },
+    {
+      "id": "owned_HTTP_identity",
+      "passed": true,
+      "finding": "For each exact group, compares frozen command/controller/start/stage identities; records actual port, wrapper/runner cleanup, runtime binary, unit name bound to wrapper PID, launch unit and service PID/cgroup membership. Extra group/controller starts are refused. This is a protection/cleanup check, not a replacement output/performance audit."
+    },
+    {
+      "id": "read_only_process_scope",
+      "passed": true,
+      "finding": "No kill/signal/service-stop/cache-advice/model launch is present. Existing numeric PID reuse fails closed without signaling. Current scans inspect visible argv/PGID and same-UID executable; self is excluded by PID and exact checker path. Remaining task-path processes, visibility gaps or owned ports/listeners make the result fail/unknown."
+    },
+    {
+      "id": "read_only_privileged_fallback",
+      "passed": true,
+      "finding": "PermissionError on same-UID exe permits only sudo -n /usr/bin/readlink -- /proc/PID/exe. Requires unchanged PID start ticks, rc0 and one absolute output line; unresolved or reused PID refuses. This is not used to kill, stop or mutate any process."
+    },
+    {
+      "id": "unit_and_network_snapshot",
+      "passed": true,
+      "finding": "Current unit queries use only systemctl show for exact recorded units. Require not-found/inactive/MainPID0/ControlPID0/empty cgroup, absent cgroup directory and no frozen TCP port listeners in current network namespace. Returncode need not be0 for a not-found unit; absence properties are the actual gate."
+    },
+    {
+      "id": "model_and_reference_limits",
+      "passed": true,
+      "finding": "Model contents may only be hashed for exact config.json and safetensors index allowlist, not tensor payload. Remaining model check is file-set/size/inode/device/mtime metadata across228 entries and rejects symlinks/nonregulars. Reference uses tracked Git observations only; explicitly UNKNOWN_WHOLE_TREE_UNCHANGED without whole-tree entry evidence."
+    },
+    {
+      "id": "filesystem_writes",
+      "passed": true,
+      "finding": "Only final-protection.json is created exclusively under new R, never overwritten. Script makes no model/reference/MAIN/W write. Git commands are read-only and use GIT_OPTIONAL_LOCKS=0; no project module import, candidate rebuild or cache mutation."
+    },
+    {
+      "id": "end_consistency",
+      "passed": true,
+      "finding": "Hashes read metadata again, reruns terminal inventory equality and takes a second process/unit/port snapshot. Existing failures or visibility uncertainty cannot become PASS. Repeated snapshots still do not establish continuous absence or GPU allocator release."
+    },
+    {
+      "id": "honest_final_scope",
+      "passed": true,
+      "finding": "Output explicitly keeps whole_tree_readonly_proven=false, performance_or_resource_acceptance=false, goal_complete=false and no whole-device idle/physical-memory claim. Failure before the report try block can produce no final-protection.json; the separately owned invocation log/exit must be retained."
+    }
+  ],
+  "execution_admission": "Only after all started pipeline/group processes finish and other offline task-path agents are idle; run before W docs/archive changes. This review does not execute the checker or certify final protection.",
+  "limitations": [
+    "No checker runtime execution, model/test run, cache action, process signal or in-flight matrix/resource read occurred.",
+    "Only completed quality/direct metadata schemas were read to verify the checker data contract; runtime/history performance was not re-reviewed.",
+    "Current process scanning is snapshot-only, may conservatively refuse unrelated reused numeric PIDs or concurrent task-path utilities, and intentionally does not inspect hidden foreign-user executable paths.",
+    "Source export payload directory is not rehashed here; frozen archive and clean tracked worktree identities plus prior pipeline source validation are the stated evidence boundary.",
+    "No final source/MAIN/model/reference/process protection result has been established by this static review. Retain actual checker invocation and any first failure before making final claims."
+  ],
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/check_final_protection.py": "a25c5d9033b6b395b3e699577679972d7d6ce8e02c824804b3d2207ce90cedae",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/phase_common.py": "adbd4b9aac6e471e4d80dfc987c96698f4202fe3c0c3ac08faaabe78411d5505",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/run_pipeline.py": "3330e4c2743bd22ef87538afc74e6654dc0595c7e8248ad070cc7ca3f6a15a05",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/execution-plan.json": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/plan.json": "ecfcd41ef3e6dd5ff9387f34a06c43e1c1f524cf01e3cc2f120ad8a519f0fd01",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/entry.json": "92b96442efea8397008b330ebff6f1c94b94f3c2198b7edb30126255cab40c5f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/model-entry.json": "12619754ecba661f975921614d54b04df12a5b1bcb4bb2191e832b524cebd54b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/numerical-decision.json": "aeabac23ff7c13215c4615fc9a0789c6ee66110846406ed5116160e5e46ecd71",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/entry-main.diff": "33375caff6dcb3e638e2d2f001428883cbc0e400c5f1b7403a081826e9cd6947",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-decision.json": "fd6caaad3478264a185508d3d7e02fb50fe2de9386d037af0dc7603769f2f9f1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/quality-c-controller-exit.json": "250a96ea76bd72bdf1e5ded0b039beecb61d95d0c56ebb1b71cb5397167d8e9e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/quality-c-stage.json": "322ac4e65a65bccb59b0c8c819f0f365733b839849461048dc5c469aeee4e3d3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/quality-c/wrapper-exit.json": "8e0f6c61b7f68f4d1bcf7310a5a39b4d1b4de50de7e356c8119eb09e7cd73f13",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/quality-c/runner-process-group.json": "a9ac5cf9cef1ce36e47c2ff9a03ac73cb958f2087c95d626518f3a3e4e8e9298",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/quality-c/http/exit.json": "5e1a1a6e9fc7bf09fa575e5733e9d7fb6b74013cc35ddc609edb3eecdbdae8a8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/quality-c/http/isolation/identity.json": "b0f426df768436b47bd86a77a308ef182f6bcc41b7533e8c4f37d91b542215ff",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/quality-c/http/isolation/cleanup.json": "cb73e2ddb4e264052499b0479420d0a09013704f07f9874a91f730f105224da7"
+  },
+  "actions": {
+    "checker_executed": false,
+    "project_module_imports": 0,
+    "tests": 0,
+    "model_requests": 0,
+    "inflight_matrix_or_resource_reads": 0,
+    "W_or_frozen_file_writes": 0,
+    "new_files": [
+      "check-final-protection-review.json"
+    ]
+  }
+}

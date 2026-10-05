@@ -1,0 +1,13 @@
+{
+  "recorded_t": 1791140173.7246628,
+  "status": "PASS_READONLY_EXECUTION_ADMISSION",
+  "execution_plan_sha256": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+  "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+  "frozen_files_verified": 54,
+  "export_and_build_binding_verified": true,
+  "worktree_clean": true,
+  "port8183_listeners": [],
+  "model_or_tests_started": false,
+  "next": "Execute frozen pipeline exactly once: first stage quality-c HTTP."
+}

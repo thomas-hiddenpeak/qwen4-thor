@@ -1,0 +1,221 @@
+{
+  "schema": 1,
+  "created_t": 1791163856.9713252,
+  "reviewer": "decode_log_protocol",
+  "review_passed": true,
+  "decision": "FINAL_REPORT_CONSISTENT_WITH_TERMINAL_EVIDENCE",
+  "review_passed_meaning": "The final narrative, current status, new daily entry and indexes accurately describe scoped completed evidence and NO_GO. This is not candidate acceptance, package execution, push verification or overall Goal completion.",
+  "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+  "plan_sha256": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+  "report_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/docs/OFFLOAD_DECODE_LOG_2026-10-05.md",
+  "report_sha256": "ab106fc2a2bb2fb40b248949ed191f0579af9f23eaef83ece1191c2d99f620b3",
+  "method": "Read the final report and current sections/indexes; reuse completed prerequisite/history reviews and final matrix/resource reviews; compare 25 displayed table rows at their published precision to independently reviewed summaries. No original responses, runtime logs, resource CSVs or model files were rescanned for this review.",
+  "checks": [
+    {
+      "name": "identity_and_fixed_scope",
+      "passed": true,
+      "detail": "One default-off candidate, same tested binary for A/B/C, fixed 11 quality + 63 history + 36 matrix = 110 HTTP; 17-step terminal collection is explicitly separate from performance acceptance."
+    },
+    {
+      "name": "quality_and_numeric_limits",
+      "passed": true,
+      "detail": "11 bounded reference-compatible requests, cap32/actual7 EOS; missing status codes disclosed. 157 host/tool contracts, three selected numerical contracts, 13 BF16 comparisons and 11 FP32 observations reported with layer/small-shape limitations."
+    },
+    {
+      "name": "history_permanent_veto",
+      "passed": true,
+      "detail": "All seven history rows match reviewed rounding and gates; failed positions 2/4/6/7 remain a permanent veto. No sample addition/exclusion or retrospective change to the old NO_GO."
+    },
+    {
+      "name": "BC_noncausal_description",
+      "passed": true,
+      "detail": "Seven mean-decode differences and the retained B45K third TTFT match the history review. Fixed A/B/C order and time/cache/scheduling confounding prohibit isolated fprintf-cost or statistical claims."
+    },
+    {
+      "name": "matrix_complete_and_exact_gates",
+      "passed": true,
+      "detail": "All six rows match reviewed rounding. 1K minimum decode -0.006640789% and 4K -0.103982198% remain failed exact gates without an epsilon or statistical-significance claim; 4K first TTFT also fails. Target capacity is 261887+257=262144."
+    },
+    {
+      "name": "execution_path_and_usage_limits",
+      "passed": true,
+      "detail": "Quiet C decode partition absence is supported by full diag/request/layer alignment; history singleton retention is preserved. Matrix SSE usage absence is explicitly disclosed; DB token columns and normalized records supply the bounded length check. Diags precede computation and do not prove full-model numerics."
+    },
+    {
+      "name": "resource_definitions_and_tables",
+      "passed": true,
+      "detail": "Six PID read_bytes/rchar rows and six memory rows match reviewed values. PID all-file storage reads, logical reads, cgroup/device counters, current/peak and NVIDIA observations remain separate."
+    },
+    {
+      "name": "resource_missingness_and_54GB",
+      "passed": true,
+      "detail": "100 client envelopes, 22850 samples, 99 cgroup/PID disagreements, 62 zero-cgroup/positive-PID cases, 1.122s/11.003s observation gaps, missing livecache/PSI and unknown physical RAM union remain explicit. Cgroup swap0 is separate from observed whole-system swap1329594368..1599184896 bytes. Overall54GB is INDETERMINATE."
+    },
+    {
+      "name": "protection_scope_and_chronology",
+      "passed": true,
+      "detail": "Full frozen export check precedes resource audit; final protection follows it. Corrected wording only places both before final docs. MAIN seven diffs/binary/HEAD and model metadata are scoped snapshots; no payload-byte or reference-whole-tree proof is claimed."
+    },
+    {
+      "name": "conditional_exit",
+      "passed": true,
+      "detail": "Business/lifecycle NOT_TRIGGERED, old20 generations/21 checks not reused as execution proof, no second candidate/default enable/merge/deploy."
+    },
+    {
+      "name": "status_log_indexes",
+      "passed": true,
+      "detail": "Current status and new daily entry agree with the final narrative and distinguish collected contracts from performance NO_GO; report and log index paths are correct. Historical entries remain historical, not new runtime claims."
+    },
+    {
+      "name": "delivery_paths_and_boundaries",
+      "passed": true,
+      "detail": "Three report packet links and the new log evidence link resolve to the planned packager destinations. They are prospective at this review; packet/commit/push receipts are not asserted to exist."
+    }
+  ],
+  "numeric_table_rows_checked": 25,
+  "findings": [],
+  "resolved_findings": [
+    {
+      "finding": "Original phrase placed the complete export check after resource audit, although its recorded timestamp was immediately before the audit.",
+      "resolution": "Root removed the opening resource-audit chronology qualifier before final report hashing. No evidence, threshold or runtime changed."
+    }
+  ],
+  "pending_delivery_checks": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/docs/evidence/offload-decode-log-20261005/README.md",
+      "exists_at_review": false,
+      "required": "Create once using the reviewed packager; validate all report/log evidence links after packaging."
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/docs/evidence/offload-decode-log-20261005/records/raw-resource-summary.json",
+      "exists_at_review": false,
+      "required": "Copy exact reviewed summary bytes to this target."
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/docs/evidence/offload-decode-log-20261005/raw-evidence-index.json",
+      "exists_at_review": false,
+      "required": "Bind the full local raw manifest, preserving local-only/non-portable boundary."
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/delivery-audit.json",
+      "exists_at_review": false,
+      "required": "Record actual later commit/push identity separately from tested runtime source; not covered by this review."
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/final-completion-audit.json",
+      "exists_at_review": false,
+      "required": "Complete the final itemized check only after package and publication work are actually finished."
+    }
+  ],
+  "performance_acceptance": false,
+  "goal_complete": false,
+  "limitations": [
+    "Prior raw quality/history reviews were reused; matrix and resource raw verification is delegated to their named final reviews with their own stated limits.",
+    "This review does not rerun any model/test/audit, recreate any process snapshot, or claim whole-tree immutability.",
+    "Final package manifest must bind this exact report and review; any later final-document edit invalidates this report binding and needs a bounded recheck."
+  ],
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/docs/OFFLOAD_DECODE_LOG_2026-10-05.md": {
+      "sha256": "ab106fc2a2bb2fb40b248949ed191f0579af9f23eaef83ece1191c2d99f620b3",
+      "bytes": 13300
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/docs/STATUS.md": {
+      "sha256": "b9bf5272152f5a2b7bb7d30efacb9d1728b8e0763cad41685eefd16d606d7d2d",
+      "bytes": 117275
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/docs/log/2026-10-05.md": {
+      "sha256": "b6c44be947bb938336698258111c6ac5e364c47aeba0293d3b277172c01ec2f4",
+      "bytes": 4648
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/docs/README.md": {
+      "sha256": "41cb2d5a785ad4ea031ef0a425171b4a885be81df81782aeab973d46fbf2f098",
+      "bytes": 11507
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/docs/log/README.md": {
+      "sha256": "447e10ef40db73491c20c273e48685bd4d5191ceb961d56c2ccc769c9ff9d26e",
+      "bytes": 3700
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/completed-contracts-review.json": {
+      "sha256": "63ef1e217908a2b51951ff9fc0b1d33b42758a436054f22f92bb3710a23258ca",
+      "bytes": 13231
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/history-results-review.json": {
+      "sha256": "0a76f2b873adbc5ce1ef778e9caa78a5ccb6d5ddd3b6227cda373c671547f7e7",
+      "bytes": 35185
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/matrix-independent-review.json": {
+      "sha256": "327d7fe0b51ffedd04a9de7e58bd92f868750a52c4ed66db61397859dbdf2d16",
+      "bytes": 50234
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/resource-final-independent-review.json": {
+      "sha256": "9197969c05cde9d5ce70fb75621179ff083b0f462cf12175ad6f06327d264cd8",
+      "bytes": 120274
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/runtime-static-review.json": {
+      "sha256": "3818d64469a7619a28c7cb6bf0b364032af08d3a4be5309d2aca0d635ae68083",
+      "bytes": 7507
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/matrix-summary.json": {
+      "sha256": "d2a9cb24d9bacff438c2681562d951048e0254bebdc96570e9016c3ff2d9e5f1",
+      "bytes": 6516
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/raw-resource-summary.json": {
+      "sha256": "f1c3e6195d17863e9d1d146785ffcbbc42f34bc438e51fd3b4b3c58281e7839a",
+      "bytes": 254172
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/matrix-decision.json": {
+      "sha256": "9e0d8029bbc4d62b12c064747050d97a769c89649434c0d82a236171443612e9",
+      "bytes": 39986
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/history-decision.json": {
+      "sha256": "68ee8db8cc5a6473b90082ad2f9b004c1d374d50c694c5e4e9f2ad37197ba26b",
+      "bytes": 35979
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/performance-decision.json": {
+      "sha256": "006a4cafc3dc0de7ed149f13b74f53d398797950eaeac84ec60f0fb3618717a9",
+      "bytes": 33360
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/conditional-stages-not-triggered.json": {
+      "sha256": "cd93ad74c69b979d038d31782bf8023c8a5d59b61acdc27aadbbcdb6118d1dbb",
+      "bytes": 1087
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/final-protection.json": {
+      "sha256": "4023fd1893f300ab4be0e1862dd1ad57fe488215362634d584c4b979b4afce8e",
+      "bytes": 52168
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/pre-delivery-frozen-audit.json": {
+      "sha256": "7075af8cc89e7339c1ae731bbc8e1ec095539ae39a94b34f9169a40b027d515e",
+      "bytes": 534
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/pipeline-execution/exit.json": {
+      "sha256": "6600342e2c34ad4c7dc7cf91df860ab09d3c2e29fa00a38bb49d3e6f8924347b",
+      "bytes": 2600
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/resource-audit-execution/exit.json": {
+      "sha256": "bab8dc519230d1a025be7e2100dd920a05ebac1a6829f7202e8e3b254b62be82",
+      "bytes": 990
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/resource-summary-execution/exit.json": {
+      "sha256": "469f1fcff5b98a10611d392ffa3753006d03ba446948154d2bd77018381ffeb5",
+      "bytes": 889
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/root-final-tools-static-review.json": {
+      "sha256": "ce223974c6a15c731d760767129c68179fa41907732e883dc19d759aff1c1375",
+      "bytes": 1590
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/prepare_delivery.py": {
+      "sha256": "05cad0e744d8e318bb95e7f3c564ea33fe200f9252c18d9575ecea2b09a35717",
+      "bytes": 23161
+    }
+  },
+  "actions": {
+    "model_requests": 0,
+    "tests": 0,
+    "raw_log_or_CSV_rescans": 0,
+    "W_edits": 0,
+    "new_artifacts": [
+      "final-report-independent-review.json"
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "status": "PASS_ROOT_STATIC_TOOL_CONTROLLER_REVIEW",
+  "created_t": 1791139964.251719,
+  "phase_plan_sha256": "ecfcd41ef3e6dd5ff9387f34a06c43e1c1f524cf01e3cc2f120ad8a519f0fd01",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope/offload_policy.py": "0aaf88178d23eca2e287f09d3aed82badae3665529827ce432976bf81bf3a898",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope/request_policy_protocol.py": "8f2e53412fef4fe795cb5e8f3dcccd8b2048ae42696da658e81b05ebe381d6f8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope/run_budget_experiment.py": "1b3c23023e55cd1f2c70448cd38aaef5a41695667a11f86363275c0e74ea16aa",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope/test_request_policy_protocol.py": "3fb64edccb23c5f436b91dbea8b8b81f50032872821342decb9c0988af041ea7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/run_direct_contracts.py": "9eac1f50d33737c1beebe66459a0e82691cf003c983053ca2da3d87895b3da47",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/compare_groups.py": "bbe59cdad5226a498c6bf4fcbdaae2b0323e7bb149b5fd6314f761ad3c069261",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/phase_common.py": "adbd4b9aac6e471e4d80dfc987c96698f4202fe3c0c3ac08faaabe78411d5505",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/audit_resources.py": "10959f8021c7e2f6479ee77c8d163484054839a72fb172153bd723813f7ffde7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/audit_group.py": "8c4fbfcc9f7d19d4aa38b84db1e2ed51a3aeee839d243733bc7cc53b828a904f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/run_stage.py": "df13572955bbdbcffac0803cfe7b904f58490e5e8ada20fd6ee7627aafe64cb3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/build_candidate.py": "36564eb29f5606547346b29b1a6eb115a2ea412c3035e73d6d0c06b6bf3fbee9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/run_pipeline.py": "3330e4c2743bd22ef87538afc74e6654dc0595c7e8248ad070cc7ca3f6a15a05"
+  },
+  "checks": [
+    "New axis preserves old environment and original parser; explicit strict quiet CLI/protocol",
+    "All A/B/C parse prefill marker, retained per-layer partition and unchanged diag in exact full request/chunk/layer order",
+    "C decode partition missing is not zero decode: remaining full layer summaries and actual HTTP output-minus-one bound phase",
+    "Startup quiet activation exactly once; singleton prefill retained; missing/extra/malformed/out-of-order records rejected",
+    "New 11 Python and 7 C++ host contracts are source-reviewed only; planned host total157, no tests yet",
+    "Numerical fixture T1 explicit phase, fullresident versus residency; execution verifies quiet1 and frozen phase records, three existing numerical names",
+    "Controllers stop on any execution/quality/direct/contract/cold/cleanup defect; no favorable reruns",
+    "Valid history speed NO_GO permits original frozen matrix only and remains permanent A/C veto; B/C descriptive never replaces A/C gates",
+    "Pipeline has17 fixed steps; rc3 allowed only compare steps; no automatic conditional model tests or second candidate",
+    "Source/export/build/tools identities frozen before first HTTP; isolated own process-group and exact-service cleanup reused",
+    "Resource adapter arm/terminal mapping only; six counter/window/arithmetic functions byte-identical to previously reviewed source",
+    "Six groups110HTTP/100client envelopes; overlapping resources remain separate;54GB unknown"
+  ],
+  "immutable_resource_functions_verified": [
+    "require",
+    "finite",
+    "signature",
+    "Metadata",
+    "audit_envelope",
+    "audit_completed_group"
+  ],
+  "tests_or_models_executed": false,
+  "does_not_certify_runtime_tests": true,
+  "pending": [
+    "Independent runtime static review",
+    "Clean commit/export/build",
+    "Execution identity/commands freeze",
+    "Actual firstHTTP and subsequent tests"
+  ]
+}

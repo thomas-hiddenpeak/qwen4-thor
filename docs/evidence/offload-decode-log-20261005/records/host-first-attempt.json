@@ -1,0 +1,323 @@
+{
+  "schema": 1,
+  "passed": true,
+  "failure": null,
+  "started_t": 1791140800.551908,
+  "ended_t": 1791140807.447995,
+  "groups": [
+    {
+      "name": "test_run_acceptance",
+      "passed": 21
+    },
+    {
+      "name": "test_partition_protocol",
+      "passed": 27
+    },
+    {
+      "name": "test_chunk_order_protocol",
+      "passed": 31
+    },
+    {
+      "name": "test_offload_matrix_audit",
+      "passed": 36
+    },
+    {
+      "name": "test_request_policy_protocol",
+      "passed": 27
+    },
+    {
+      "name": "request_policy_host",
+      "passed": 15,
+      "frozen_contract": {
+        "source_relative": "tests/request_policy_host",
+        "build_directory": "request-host-build",
+        "target": "q4t_request_policy_contracts",
+        "expected_tests": 15
+      }
+    }
+  ],
+  "records": [
+    {
+      "started_t": 1791140800.829672,
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "test_run_acceptance",
+        "-v"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope",
+      "returncode": 0,
+      "failure": null,
+      "automatic_retry": false,
+      "timeout_s": 600,
+      "signals": [],
+      "cleanup_complete": true,
+      "pid": 3498905,
+      "pgid": 3498905,
+      "group_before_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "group_after_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "ended_t": 1791140801.1440513
+    },
+    {
+      "started_t": 1791140801.1446345,
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "test_partition_protocol",
+        "-v"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope",
+      "returncode": 0,
+      "failure": null,
+      "automatic_retry": false,
+      "timeout_s": 600,
+      "signals": [],
+      "cleanup_complete": true,
+      "pid": 3498906,
+      "pgid": 3498906,
+      "group_before_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "group_after_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "ended_t": 1791140801.7091322
+    },
+    {
+      "started_t": 1791140801.7094438,
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "test_chunk_order_protocol",
+        "-v"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope",
+      "returncode": 0,
+      "failure": null,
+      "automatic_retry": false,
+      "timeout_s": 600,
+      "signals": [],
+      "cleanup_complete": true,
+      "pid": 3498907,
+      "pgid": 3498907,
+      "group_before_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "group_after_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "ended_t": 1791140804.1760592
+    },
+    {
+      "started_t": 1791140804.1763933,
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "test_offload_matrix_audit",
+        "-v"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope",
+      "returncode": 0,
+      "failure": null,
+      "automatic_retry": false,
+      "timeout_s": 600,
+      "signals": [],
+      "cleanup_complete": true,
+      "pid": 3498914,
+      "pgid": 3498914,
+      "group_before_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "group_after_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "ended_t": 1791140805.4415853
+    },
+    {
+      "started_t": 1791140805.4419239,
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "test_request_policy_protocol",
+        "-v"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope",
+      "returncode": 0,
+      "failure": null,
+      "automatic_retry": false,
+      "timeout_s": 600,
+      "signals": [],
+      "cleanup_complete": true,
+      "pid": 3498915,
+      "pgid": 3498915,
+      "group_before_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "group_after_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "ended_t": 1791140805.605921
+    },
+    {
+      "started_t": 1791140805.60622,
+      "command": [
+        "cmake",
+        "-S",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/candidate-source/tests/request_policy_host",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/request-host-build",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_CXX_COMPILER=/usr/bin/g++-14"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source",
+      "returncode": 0,
+      "failure": null,
+      "automatic_retry": false,
+      "timeout_s": 600,
+      "signals": [],
+      "cleanup_complete": true,
+      "pid": 3498916,
+      "pgid": 3498916,
+      "group_before_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "group_after_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "ended_t": 1791140805.9735706
+    },
+    {
+      "started_t": 1791140805.9739323,
+      "command": [
+        "cmake",
+        "--build",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/request-host-build",
+        "--parallel",
+        "4"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source",
+      "returncode": 0,
+      "failure": null,
+      "automatic_retry": false,
+      "timeout_s": 600,
+      "signals": [],
+      "cleanup_complete": true,
+      "pid": 3498949,
+      "pgid": 3498949,
+      "group_before_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "group_after_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "ended_t": 1791140807.1390684
+    },
+    {
+      "started_t": 1791140807.1396294,
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/request-host-build/q4t_request_policy_contracts"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source",
+      "returncode": 0,
+      "failure": null,
+      "automatic_retry": false,
+      "timeout_s": 600,
+      "signals": [],
+      "cleanup_complete": true,
+      "pid": 3498982,
+      "pgid": 3498982,
+      "group_before_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "group_after_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "ended_t": 1791140807.1412494
+    }
+  ],
+  "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+  "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "log_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/host-build.log": "ce5daeae831a6220a7a08e5ec724477858aed481a46e3ec616916a81595e67e9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/host-configure.log": "db608e349844491fe3c492a091589b8f3871bd260ac6ce3fd17944c7e55e3a83",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/request-host-tests.log": "9a232c6def7c2a26c4c01cbfe918e51404ae14f1728c886c6633b063bdbcfe64",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/test_chunk_order_protocol.log": "a89abd705e5b8a8588272454ba2b15470afbe6876fb77dfbb30c2b6c914453fa",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/test_offload_matrix_audit.log": "56cade13c3a918589b7f7d32620a4a50d67e9c8dfd3e0b6778c61641bc66e0f5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/test_partition_protocol.log": "70588a6fdc1a3543e15067ed405de59f3677fb3d9edb0d812a9def7238a4c2e9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/test_request_policy_protocol.log": "c4b9c9004a459d226862dd462f952928c4a02048126322701d3453749d8bb617",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/test_run_acceptance.log": "98eaa1186471b8768201240d8d4f411081fc61509026a33dfef146f7d1ce9f64"
+  },
+  "build_source": {
+    "archive_sha256": "d79f5a8937e2a9f37071cd4e47f73ba410e7512af9b6205e0c1dde41c711d17f",
+    "source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+    "export_files": 1378,
+    "source_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/candidate-source",
+    "verified_t": 1791140800.8018022
+  },
+  "test_binary_sha256_before": null,
+  "test_binary_sha256_after": null,
+  "plan_sha256": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+  "performance_acceptance": false
+}

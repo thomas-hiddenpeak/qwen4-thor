@@ -1,0 +1,29 @@
+{
+  "runner_rc": 0,
+  "monitor_rc": 0,
+  "failure": null,
+  "started_t": 1791156485.0546281,
+  "ended_t": 1791163180.5549107,
+  "unit_after_cleanup": {
+    "MainPID": "0",
+    "ControlPID": "0",
+    "Result": "success",
+    "ExecMainCode": "0",
+    "ExecMainStatus": "0",
+    "ControlGroup": "",
+    "IOAccounting": "no",
+    "MemoryAccounting": "yes",
+    "MemoryMax": "infinity",
+    "MemorySwapMax": "infinity",
+    "LoadState": "not-found",
+    "ActiveState": "inactive",
+    "SubState": "dead"
+  },
+  "cleanup_failed": false,
+  "performance_qualification": false,
+  "diagnostic_scope": null,
+  "performance_scope": "six_tier",
+  "partial_performance_matrix": false,
+  "partial_offload_matrix": false,
+  "full_offload_matrix_completed": true
+}

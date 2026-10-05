@@ -1,0 +1,15 @@
+{
+  "started_t": 1791140817.1744494,
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/candidate-build/q4t_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/required-numerical-tests.txt"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source",
+  "returncode": null,
+  "failure": null,
+  "automatic_retry": false,
+  "timeout_s": 1800,
+  "signals": [],
+  "cleanup_complete": false
+}

@@ -1,0 +1,26 @@
+{
+  "started_t": 1791156485.1556067,
+  "timeout_s": 21600,
+  "signals": [],
+  "runner_pid": 3540378,
+  "pgid": 3540378,
+  "runner_reaped": true,
+  "cleanup_complete": true,
+  "failure": null,
+  "before_cleanup": {
+    "live_pids": [],
+    "zombie_pids": [],
+    "errors": [],
+    "absent": true
+  },
+  "returncode": 0,
+  "after_cleanup": {
+    "live_pids": [],
+    "zombie_pids": [],
+    "errors": [],
+    "absent": true
+  },
+  "descendant_reaping": "no remaining group members observed",
+  "unexpected_live_descendants_after_runner_exit": false,
+  "ended_t": 1791163180.4849951
+}

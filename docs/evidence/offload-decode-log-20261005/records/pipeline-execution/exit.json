@@ -1,0 +1,115 @@
+{
+  "ended_t": 1791163184.216346,
+  "completed": true,
+  "completed_steps": [
+    {
+      "step": 1,
+      "label": "quality-c-run",
+      "returncode": 0,
+      "ended_t": 1791140799.770858
+    },
+    {
+      "step": 2,
+      "label": "quality-c-audit",
+      "returncode": 0,
+      "ended_t": 1791140800.1995711
+    },
+    {
+      "step": 3,
+      "label": "host",
+      "returncode": 0,
+      "ended_t": 1791140807.4591014
+    },
+    {
+      "step": 4,
+      "label": "numerical",
+      "returncode": 0,
+      "ended_t": 1791140821.633736
+    },
+    {
+      "step": 5,
+      "label": "history-a-run",
+      "returncode": 0,
+      "ended_t": 1791143117.6227276
+    },
+    {
+      "step": 6,
+      "label": "history-a-audit",
+      "returncode": 0,
+      "ended_t": 1791143119.271816
+    },
+    {
+      "step": 7,
+      "label": "history-b-run",
+      "returncode": 0,
+      "ended_t": 1791145160.9394572
+    },
+    {
+      "step": 8,
+      "label": "history-b-audit",
+      "returncode": 0,
+      "ended_t": 1791145163.4993207
+    },
+    {
+      "step": 9,
+      "label": "history-c-run",
+      "returncode": 0,
+      "ended_t": 1791147178.2763622
+    },
+    {
+      "step": 10,
+      "label": "history-c-audit",
+      "returncode": 0,
+      "ended_t": 1791147179.912742
+    },
+    {
+      "step": 11,
+      "label": "history-compare",
+      "returncode": 3,
+      "ended_t": 1791147180.4709382
+    },
+    {
+      "step": 12,
+      "label": "matrix-a-run",
+      "returncode": 0,
+      "ended_t": 1791156479.0633433
+    },
+    {
+      "step": 13,
+      "label": "matrix-a-audit",
+      "returncode": 0,
+      "ended_t": 1791156480.8392563
+    },
+    {
+      "step": 14,
+      "label": "matrix-c-run",
+      "returncode": 0,
+      "ended_t": 1791163180.8947654
+    },
+    {
+      "step": 15,
+      "label": "matrix-c-audit",
+      "returncode": 0,
+      "ended_t": 1791163182.4418724
+    },
+    {
+      "step": 16,
+      "label": "matrix-compare",
+      "returncode": 3,
+      "ended_t": 1791163183.0935268
+    },
+    {
+      "step": 17,
+      "label": "aggregate",
+      "returncode": 3,
+      "ended_t": 1791163184.2128048
+    }
+  ],
+  "failure": null,
+  "decision": "NO_GO_PERFORMANCE",
+  "plan_sha256": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+  "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+  "next_model_stage_automatically_allowed": false,
+  "scope": "Pipeline success means frozen collection and decisions completed, not candidate acceptance."
+}

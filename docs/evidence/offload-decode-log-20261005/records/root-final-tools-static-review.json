@@ -1,0 +1,22 @@
+{
+  "created_t": 1791162790.172659,
+  "review_passed": true,
+  "scope": "Bounded read-only/static review of final offline tools; no execution/model or resource-result claim",
+  "source_sha256": {
+    "audit_resources.py": "10959f8021c7e2f6479ee77c8d163484054839a72fb172153bd723813f7ffde7",
+    "check_final_protection.py": "a25c5d9033b6b395b3e699577679972d7d6ce8e02c824804b3d2207ce90cedae",
+    "summarize_resources.py": "49fb4dc197ecea833d61b2bcb496da845ea879e11c680aa95aa6fc37191ccf87",
+    "prepare_delivery.py": "05cad0e744d8e318bb95e7f3c564ea33fe200f9252c18d9575ecea2b09a35717"
+  },
+  "checks": [
+    "resource invocation requires six completed groups and final pipeline gate added by root",
+    "protection compares current phase entry MAIN binary/head/seven diffs, model metadata and two allowed JSON hashes; never signals processes",
+    "resource summary preserves all three samples and nulls, splits memory counters, keeps physical54GB unknown",
+    "packager enumerates only owned closed trees and named build objects; never walks model/reference; original MAIN diff/model entry/protocol/raw responses excluded from Git",
+    "required existing file names and all six capacity receipt paths observed present",
+    "one-shot output checks and self-excluding manifest; docs must finalize after clean tested-source checks",
+    "new final reviews must bind final decision/audit/article SHA before packaging"
+  ],
+  "execution_pending": true,
+  "preparation_note": "First inline writer failed Python parse before execution; corrected writer does not rerun any model/test/auditor."
+}

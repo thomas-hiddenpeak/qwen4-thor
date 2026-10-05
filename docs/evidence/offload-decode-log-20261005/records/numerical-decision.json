@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "passed": true,
+  "failure": null,
+  "started_t": 1791140807.811799,
+  "ended_t": 1791140821.6186578,
+  "groups": [
+    {
+      "name": "real_weight_numerical",
+      "passed": 3,
+      "request_policy_cases": [
+        "  request_policy layer=2 C=64 input_tokens=8192 base=0 T=32 mode=0 applied=0 chunks=5 singleton=0 BF16_BIT_EXACT=true",
+        "  request_policy layer=2 C=64 input_tokens=8193 base=0 T=32 mode=1 applied=1 chunks=5 singleton=0 BF16_BIT_EXACT=true",
+        "  request_policy layer=2 C=64 input_tokens=16385 base=8192 T=32 mode=1 applied=1 chunks=5 singleton=0 BF16_BIT_EXACT=true",
+        "  request_policy layer=2 C=64 input_tokens=8193 base=8192 T=1 mode=1 applied=0 chunks=1 singleton=1 BF16_BIT_EXACT=true",
+        "  request_policy layer=2 C=15 input_tokens=8192 base=0 T=4 mode=0 applied=0 chunks=3 singleton=2 BF16_BIT_EXACT=true",
+        "  request_policy layer=2 C=15 input_tokens=16385 base=8192 T=4 mode=1 applied=1 chunks=2 singleton=1 BF16_BIT_EXACT=true",
+        "  request_policy layer=2 C=15 input_tokens=16385 base=16384 T=1 mode=1 applied=0 chunks=1 singleton=1 BF16_BIT_EXACT=true",
+        "  request_policy layer=2 C=15 input_tokens=8192 base=0 T=4 mode=0 applied=0 chunks=3 singleton=2 BF16_BIT_EXACT=true"
+      ],
+      "explicit_log_phase_records": [
+        "partition_numerical log_phase=unknown T=1024",
+        "partition_numerical log_phase=explicit_single_decode T=1",
+        "partition_numerical log_phase=unknown T=4"
+      ],
+      "test_binary_sha256": "64ec1cba2458dea35782eacc9e4710b92a97c2298aec6461003d580e653d4541"
+    }
+  ],
+  "records": [
+    {
+      "started_t": 1791140808.0852754,
+      "command": [
+        "cmake",
+        "--build",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/candidate-build",
+        "--target",
+        "q4t_tests",
+        "--parallel",
+        "8"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source",
+      "returncode": 0,
+      "failure": null,
+      "automatic_retry": false,
+      "timeout_s": 600,
+      "signals": [],
+      "cleanup_complete": true,
+      "pid": 3498992,
+      "pgid": 3498992,
+      "group_before_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "group_after_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "ended_t": 1791140816.9229207
+    },
+    {
+      "started_t": 1791140817.1744494,
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/candidate-build/q4t_tests",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/required-numerical-tests.txt"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source",
+      "returncode": 0,
+      "failure": null,
+      "automatic_retry": false,
+      "timeout_s": 1800,
+      "signals": [],
+      "cleanup_complete": true,
+      "pid": 3499278,
+      "pgid": 3499278,
+      "group_before_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "group_after_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "ended_t": 1791140821.2996726
+    }
+  ],
+  "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+  "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "log_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/numerical-01/numerical-build.log": "edba54a9a2bd5c8076602cb6921b61a16bde55ec860f8baff7b5d93b50998312",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/numerical-01/numerical-tests.log": "c48585c37124f0ebc15962ef9254b667a7a2b89b0ff6d3851a0298c7511bfa73"
+  },
+  "build_source": {
+    "archive_sha256": "d79f5a8937e2a9f37071cd4e47f73ba410e7512af9b6205e0c1dde41c711d17f",
+    "source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+    "export_files": 1378,
+    "source_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/candidate-source",
+    "verified_t": 1791140817.169924
+  },
+  "test_binary_sha256_before": "64ec1cba2458dea35782eacc9e4710b92a97c2298aec6461003d580e653d4541",
+  "test_binary_sha256_after": "64ec1cba2458dea35782eacc9e4710b92a97c2298aec6461003d580e653d4541",
+  "plan_sha256": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+  "performance_acceptance": false
+}

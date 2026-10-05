@@ -1,0 +1,140 @@
+{
+  "schema": 1,
+  "reviewer": "cache_causality_review",
+  "recorded_t": 1791141693.0737891,
+  "decision": "PASS_COMPLETED_PREREQUISITES_WITH_SCOPE_LIMITS",
+  "passed": true,
+  "scope": "Terminal quality-c, host and numerical evidence only; no in-flight performance results, full-phase completion or performance/resource acceptance.",
+  "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+  "plan_sha256": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+  "verified": {
+    "all_bound_source_and_log_SHA_match": true,
+    "first_HTTP_then_host_then_numerical_order": true,
+    "quality_fixed_requests": 11,
+    "quality_output_reference_and_usage_match": true,
+    "quality_actual_output_each": 7,
+    "quality_requested_max_tokens": 32,
+    "quality_finish": "stop",
+    "quality_status_code": "not retained by evalscope DB; success flag and complete output/usage checked",
+    "quality_capacity": [
+      262144,
+      1,
+      8192
+    ],
+    "quality_owned_cleanup": "stop succeeded; final not-found/MainPID0; runner reaped",
+    "independent_raw_quality_event_order": {
+      "method": "Inline read-only reconstruction from original server.log and response identities, without importing canonical parser; completed before later reviewer formatting check stopped.",
+      "prefill_markers": 40,
+      "candidate_prefill_layer_forwards": 1488,
+      "legacy_prefill_layer_forwards": 432,
+      "true_decode_forwards": 66,
+      "true_decode_layer_forward_diagnostics": 3168,
+      "all_forward_diagnostics": 5088,
+      "partition_records": 1488,
+      "true_decode_partition_records": 0
+    },
+    "host_groups": {
+      "test_run_acceptance": 21,
+      "test_partition_protocol": 27,
+      "test_chunk_order_protocol": 31,
+      "test_offload_matrix_audit": 36,
+      "test_request_policy_protocol": 27,
+      "request_policy_host": 15
+    },
+    "host_total": 157,
+    "numerical_tests": [
+      "moe_forward_residency_bitexact",
+      "moe_partition_runtime_numerical_contract",
+      "moe_request_policy_numerical_contract"
+    ],
+    "numerical_required_pass": 3,
+    "selected_BF16_exact_comparisons": 13,
+    "request_policy_small_shape_cases": 8,
+    "FP32_zero_difference_observations_not_additional_gate": 11,
+    "explicit_C256_T1_single_decode": "phase label and retained D256 T1 diagnostic present; partition record suppressed",
+    "unknown_direct_C64_T1": "old reason=decode partition log retained, as intended",
+    "prefill_singleton_records_retained": 2,
+    "test_binary_before_after_current_SHA_match": true
+  },
+  "findings": [],
+  "reviewer_validation_stops": [
+    {
+      "cause": "First inline review incorrectly required normalized http_status_code=200.",
+      "resolution": "All11 values explicitly null because this DB does not retain HTTP status. Checked original success/output/usage contract instead; no runtime failure or rerun."
+    },
+    {
+      "cause": "Second inline review added an overly strict one-line unittest ... ok count; test_run_acceptance has20 same-line matches while original Ran21/OK and exit0 are intact.",
+      "resolution": "Used original frozen Ran-count/OK/exit/cleanup contract. No extra acceptance gate, test, model request or evidence mutation."
+    }
+  ],
+  "limits": [
+    "Fixed11 is bounded output/usage compatibility, not broad semantic quality or full-model intermediate numerical proof.",
+    "Forward diagnostics precede expert computation. HTTP completion and selected numerical assertions remain separate; diagnostics are never used as a numerical substitute.",
+    "Numerical assertions cover selected layer2 weights and fixed small shapes.8192/8193/16385 labels in request-policy fixtures are not full-length numerical tensors.",
+    "Stdout phase labels are buffered separately from stderr; explicit T1 attribution uses unique C256 shape, retained diagnostic and previously reviewed fixture source, not adjacency timing.",
+    "Quality contains no singleton prefill tail. Its retention here is observed only in numeric fixtures; later history coverage is not included.",
+    "First-test ordering is scoped to owned controller records, not machine-wide absence of other work.",
+    "Cleanup reset-failed rc1 reflects an already unloaded unit; stop success and final absence were checked.",
+    "No history/matrix speed, whole54GB memory, conditional delivery or overall Goal acceptance is asserted."
+  ],
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/execution-plan.json": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/plan.json": "ecfcd41ef3e6dd5ff9387f34a06c43e1c1f524cf01e3cc2f120ad8a519f0fd01",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/quality-decision.json": "3cc794d589ffc18c2e2ddf02889b3b95cddb2e75f9d96822357380129734a025",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-decision.json": "fd6caaad3478264a185508d3d7e02fb50fe2de9386d037af0dc7603769f2f9f1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/numerical-decision.json": "aeabac23ff7c13215c4615fc9a0789c6ee66110846406ed5116160e5e46ecd71",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/quality-c-stage.json": "322ac4e65a65bccb59b0c8c819f0f365733b839849461048dc5c469aeee4e3d3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/quality-c/wrapper-exit.json": "8e0f6c61b7f68f4d1bcf7310a5a39b4d1b4de50de7e356c8119eb09e7cd73f13",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/quality-c/http/exit.json": "5e1a1a6e9fc7bf09fa575e5733e9d7fb6b74013cc35ddc609edb3eecdbdae8a8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/quality-c/runner-process-group.json": "a9ac5cf9cef1ce36e47c2ff9a03ac73cb958f2087c95d626518f3a3e4e8e9298",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/quality-c/http/isolation/cleanup.json": "cb73e2ddb4e264052499b0479420d0a09013704f07f9874a91f730f105224da7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/quality-c/http/capacity.json": "135b17d195db1d71febe10e60def33e3894bb0e867b253637ec833f2fa48dfb7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/quality-c/protocol.json": "d5b2f5f7c998d5719fe0a44fafecc82580d97fc604bee9d92d27f75f0070fb77",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/quality-c/http/server-command.json": "b9e2efd7abf31ca043b498bffc5b57be36c8f28fc6970da8fe6e73e0dd32c9ec",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/quality-c/http/results.json": "5883f1152fbe5e832ae4ccaa843dcec117afaaa368b2af088252bdc2b6a3ee86",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/quality-on/http/results.json": "5f68957b17170d40824998f461a2b60633961a065b911039ccf569762c439b43",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/quality-c/http/quality/responses.json": "952a744eddb144d2061d8ba7b10128f56a099d801729daa6b01fd268f67e05d9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/quality-c/http/server.log": "72b37fbc99d900311f5a37e3663c3810173239a12f27ac4e29c69182f1ce8f6f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/host-build.log": "ce5daeae831a6220a7a08e5ec724477858aed481a46e3ec616916a81595e67e9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/host-configure.log": "db608e349844491fe3c492a091589b8f3871bd260ac6ce3fd17944c7e55e3a83",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/request-host-tests.log": "9a232c6def7c2a26c4c01cbfe918e51404ae14f1728c886c6633b063bdbcfe64",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/test_chunk_order_protocol.log": "a89abd705e5b8a8588272454ba2b15470afbe6876fb77dfbb30c2b6c914453fa",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/test_offload_matrix_audit.log": "56cade13c3a918589b7f7d32620a4a50d67e9c8dfd3e0b6778c61641bc66e0f5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/test_partition_protocol.log": "70588a6fdc1a3543e15067ed405de59f3677fb3d9edb0d812a9def7238a4c2e9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/test_request_policy_protocol.log": "c4b9c9004a459d226862dd462f952928c4a02048126322701d3453749d8bb617",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/test_run_acceptance.log": "98eaa1186471b8768201240d8d4f411081fc61509026a33dfef146f7d1ce9f64",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-first-attempt.json": "fd6caaad3478264a185508d3d7e02fb50fe2de9386d037af0dc7603769f2f9f1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/host-build-exit.json": "7c916ce8f007012e6857f83cd938ba141a02b52594a310bb2563279798952b99",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/host-configure-exit.json": "aa22600483633718ca8b9dcdce52ce50dda29fca2190523a365adbffba387d2c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/request-host-tests-exit.json": "fdbcffa2f85e209d6ab975a3bde0f91ce1e9e4ca62ee4eb0435fa270cbadb560",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/test_chunk_order_protocol-exit.json": "74964b607e6d311894bddd3ac14170333fd0f1a0e39edb8577e92a620ea770be",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/test_offload_matrix_audit-exit.json": "1bbf3eb38eee1cf3d06aa5ea1e74de19c29ecf7073bc61ceb15f674611bf20f5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/test_partition_protocol-exit.json": "fba7a27a47e6baef941a4e33b9a97527425a3e1f8d1966af049013b32383f806",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/test_request_policy_protocol-exit.json": "af2b986492b17bc59dffd133e4395bcc2c437d93427758401275aa85c2ec4996",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/host-01/test_run_acceptance-exit.json": "d559cc54cd63cedfc440246dbd79a394f52f2d062f3b3e1c2d5b673dd343cfcc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/numerical-01/numerical-build.log": "edba54a9a2bd5c8076602cb6921b61a16bde55ec860f8baff7b5d93b50998312",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/numerical-01/numerical-tests.log": "c48585c37124f0ebc15962ef9254b667a7a2b89b0ff6d3851a0298c7511bfa73",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/numerical-first-attempt.json": "aeabac23ff7c13215c4615fc9a0789c6ee66110846406ed5116160e5e46ecd71",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/numerical-01/numerical-build-exit.json": "51abca53131ad13d2438dee2e41fc6fa2e5e123c481715d1c8b98827c379dc25",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/numerical-01/numerical-tests-exit.json": "da03ae2710d443c12e95618fa4ee099b441599d23258056ac370bfd822773da2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/first-test-admission.json": "dd20c3232844de1f9575c170d8536b558f9b06b18e495e2687e660ff06bc7f84",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/numerical-01/numerical-identity-before.json": "d2f286850f831de9b1d9c25e8f62a62e90ca1ca1d6f45d3d917c3dde27d27002",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/runtime-static-review.json": "3818d64469a7619a28c7cb6bf0b364032af08d3a4be5309d2aca0d635ae68083",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/candidate-build/q4t_tests": "64ec1cba2458dea35782eacc9e4710b92a97c2298aec6461003d580e653d4541",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/candidate-build/q4t": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/required-numerical-tests.txt": "86f1c421357e519f8deee9b4c82fdb1566fa5e157c0ae97ff14413534be33327",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tests/model_moe_test.cpp": "a33de97c876edebc6f68a7d62b6f2f615212b266e16258262de73f7518199e5e"
+  },
+  "source_file_count": 46,
+  "actions": {
+    "tests_executed": 0,
+    "model_requests": 0,
+    "cache_operations": 0,
+    "in_flight_performance_results_read": 0,
+    "frozen_or_workspace_writes": 0,
+    "new_artifacts": [
+      "completed-contracts-review.json"
+    ]
+  }
+}

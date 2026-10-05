@@ -1,0 +1,191 @@
+{
+  "schema": 1,
+  "frozen_at": 1791139308.228264,
+  "entry_commit": "ed75d60193439cbb9020977033304d773f9bb6b0",
+  "branch": "codex/offload-decode-log-20261005",
+  "single_candidate": {
+    "switch": "Q4T_MOE_DECODE_PARTITION_LOG_QUIET",
+    "default": 0,
+    "effect": "Suppress only the existing per-layer [residency][partition] fprintf on explicitly marked serial true-decode with T=1 and no prefill request context. Keep all planning, counters, other logs, errors, GEMM/cache/precision unchanged.",
+    "phase_identity": "Separate logging-only phase. Scheduler ModelDecodeBatchMulti B==1 and fallback ModelDecodeStep explicitly mark; prefill/continuation/unknown direct callers/B>1 retain logs.",
+    "startup_identity": "One cached configuration line with quiet value and explicit_single_decode scope; all arms verify it.",
+    "rollback": "quiet=0 restores old log behavior; request/global partition defaults remain0."
+  },
+  "arms": {
+    "A": {
+      "partition": 0,
+      "request_partition": 0,
+      "quiet": 0,
+      "role": "new same-binary legacy baseline"
+    },
+    "B": {
+      "partition": 1,
+      "request_partition": 1,
+      "quiet": 0,
+      "role": "same-binary request policy with original decode partition log; diagnosis only"
+    },
+    "C": {
+      "partition": 1,
+      "request_partition": 1,
+      "quiet": 1,
+      "role": "sole candidate"
+    }
+  },
+  "runtime_fixed": {
+    "C": 256,
+    "L2": 16,
+    "mirrorK": 8,
+    "max_open": 200,
+    "max_seq": 1,
+    "max_prefill": 8192,
+    "max_len": 262144,
+    "MTP": false,
+    "PhaseD": false,
+    "phase_diagnostics": false,
+    "chunk_order": 0,
+    "GEMM_precision_changes": false
+  },
+  "first_test": {
+    "stage": "quality-c",
+    "cases": 11,
+    "arm": "C",
+    "host_cache_max_bytes": null,
+    "clear_model_cache": false,
+    "source": "Existing fixed11 quality input, exact old output/usage oracle; not broad model quality."
+  },
+  "sequence": [
+    "batched implementation/tools and independent static review",
+    "clean commit/export and zero-warning local Thor build; build is not a test",
+    "FIRST TEST tools/evalscope quality-c fixed11",
+    "affected host/tool checks then the three selected existing real-weight numerical contracts with quiet1",
+    "history-a then history-b then history-c, each fixed21; audit all contracts after each",
+    "history B/C descriptive intervention and A/C fixed gates; valid speedNO_GO does not skip matrix",
+    "matrix-a then matrix-c, each original six tiers x3; audit contracts",
+    "aggregate A/C history AND matrix; resource analysis all executed groups; bounded independent review",
+    "conditional acceptance checks only if performance and all earlier contracts PASS; otherwise NOT_TRIGGERED",
+    "stage documentation/evidence, owned commit/push/protection, explicit GO or NO_GO; no second candidate"
+  ],
+  "history": {
+    "sequence": [
+      16385,
+      8192,
+      8193,
+      1024,
+      45056,
+      4096,
+      8192
+    ],
+    "rounds": 3,
+    "requests_per_arm": 21,
+    "output_tokens": 256,
+    "same_service_within_arm": true,
+    "clear_between_requests": false,
+    "arms_in_order": [
+      "A",
+      "B",
+      "C"
+    ],
+    "acceptance_comparison": [
+      "A",
+      "C"
+    ],
+    "diagnostic_comparison": [
+      "B",
+      "C"
+    ],
+    "gates": [
+      "C first TTFT at each position <= A first TTFT",
+      "max C later2 TTFT at each position <= max A later2 TTFT",
+      "min C all3 decode at each position >= min A all3 decode"
+    ],
+    "duplicate8192_positions_separate": true,
+    "causal_limit": "Fixed A->B->C order is confounded by time drift; B/C measures observed total log-policy intervention, including scheduling/cache effects, not pure fprintf CPU time or a proven complete root cause."
+  },
+  "matrix": {
+    "lengths": [
+      1024,
+      4096,
+      8192,
+      45056,
+      204800,
+      261887
+    ],
+    "repeats": 3,
+    "requests_per_arm": 18,
+    "arms_in_order": [
+      "A",
+      "C"
+    ],
+    "output_tokens": {
+      "default": 256,
+      "261887": 257
+    },
+    "gates": [
+      "C first TTFT <= A first TTFT",
+      "max C later2 TTFT <= max A later2 TTFT",
+      "min C all3 decode >= min A all3 decode",
+      "All original tiers and output/capacity/path/identity/cleanup contracts pass"
+    ],
+    "runs_after_valid_history_speed_NO_GO": true,
+    "history_failure_remains_permanent_veto": true
+  },
+  "resource_conditions": {
+    "performance_host_cache_max_bytes": 17179869184,
+    "performance_swap_max_bytes": 0,
+    "quality_host_cache_max_bytes": null,
+    "whole_physical_RAM_54GB": "INDETERMINATE",
+    "no_sum_overlapping_or_independent_peaks": true,
+    "PID_cgroup_device_software_counters_separate": true
+  },
+  "cold_preparation": {
+    "maximum_advice_rounds": 2,
+    "final_payload_resident_bytes_required": 0,
+    "scope": "targeted readonly model-file cache advice before each performance service only",
+    "advice_success_is_not_zero_proof": true,
+    "stop_on_failed_cold_gate": true
+  },
+  "evidence_contract": {
+    "old_http_prerequisite_reused": false,
+    "same_new_binary_all_arms": true,
+    "strict_http_usage_capacity_output": true,
+    "prefill_layer0_and_all48_candidate_partition_logs_retained": true,
+    "singleton_prefill_partition_logs_retained": true,
+    "quiet_decode_partition_lines_required": 0,
+    "quiet_decode_execution_evidence": "Existing unchanged [residency][diag] per-layer forward summary, matched serially against full prefill chunks, request markers and output-minus-one decode; absence alone is not execution proof.",
+    "default_parser_not_weakened": true,
+    "no_extra_per_token_replacement_log": true,
+    "existing_trace_findings_reused_not_new_sampling": true
+  },
+  "prior_findings": {
+    "old_candidate_performance": "NO_GO remains unchanged",
+    "matrix_short_requests_before_any_long_request": true,
+    "long_predecessor_not_necessary_for_all_short_regressions": true,
+    "cross_request_residency_persists": true,
+    "cache_causal_contribution": "UNKNOWN",
+    "log_walltime_bound": "UNKNOWN"
+  },
+  "failure_policy": {
+    "contract_identity_capacity_output_cleanup_or_cold_failure": "stop dependent work, preserve all evidence; fix only a concrete identified defect with new output/identity and recheck affected items",
+    "valid_speed_NO_GO": "continue only already frozen matrix coverage, then reject and deliver; no favorable repeats",
+    "no_posthoc_gate_change": true,
+    "no_second_candidate": true
+  },
+  "conditional_delivery": {
+    "gate": "A/C history AND matrix plus quality/direct contracts PASS",
+    "scope": "If triggered, freeze and execute canonical business/lifecycle checks before runtime acceptance; no default enable/merge/deploy in this phase",
+    "not_triggered_on_speed_NO_GO": true
+  },
+  "protection": {
+    "original7_dirty_paths": true,
+    "main_binary_snapshot_recorded": true,
+    "model_reference_readonly": true,
+    "existing_evidence_readonly": true
+  },
+  "required_numerical_tests": [
+    "moe_forward_residency_bitexact",
+    "moe_partition_runtime_numerical_contract",
+    "moe_request_policy_numerical_contract"
+  ],
+  "expected_http_requests_before_conditional": 110,
+  "time_or_token_budget": null
+}

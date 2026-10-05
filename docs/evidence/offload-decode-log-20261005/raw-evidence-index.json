@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "raw_manifest_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/raw-evidence-manifest.json",
+  "raw_manifest_sha256": "60f0fcfe199bff2546289a5d6248b8b8d1053dde99368c2fb891d0e3748c4a62",
+  "raw_manifest_bytes": 1164921,
+  "file_count": 2267,
+  "total_bytes": 648359141,
+  "raw_manifest_entries_embedded": false,
+  "raw_data_backup": false,
+  "limit": "Full raw data remain local. SHA values cannot reconstruct missing logs, databases, resources, binaries or external model dependencies."
+}

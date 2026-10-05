@@ -1,0 +1,24 @@
+{
+  "requested": {
+    "max_len": 262144,
+    "max_seq": 1,
+    "max_prefill": 8192
+  },
+  "effective": {
+    "max_len": 262144,
+    "max_seq": 1,
+    "max_prefill": 8192
+  },
+  "reported_requested": {
+    "max_len": 262144,
+    "max_seq": 1,
+    "max_prefill": 8192
+  },
+  "source": "server effective capacity report",
+  "matches_requested": true,
+  "budget_enabled": "1",
+  "budget_feasible": "true",
+  "raw_lines": [
+    "requested_max_len=262144 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=262144 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true"
+  ]
+}

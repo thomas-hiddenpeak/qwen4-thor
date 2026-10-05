@@ -1,0 +1,191 @@
+{
+  "schema": 1,
+  "created_t": 1791163566.4737635,
+  "review_passed": true,
+  "performance_acceptance": false,
+  "decision": "NO_GO_PERFORMANCE",
+  "acceptance_comparison": [
+    "A",
+    "C"
+  ],
+  "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+  "plan_sha256": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+  "request_count": 36,
+  "tiers": [
+    {
+      "input_tokens": 1024,
+      "A": {
+        "first_ttft_seconds": 12.190830220934004,
+        "later_max_ttft_seconds": 10.182296999031678,
+        "mean_ttft_seconds": 10.531296284326041,
+        "minimum_decode_tps": 6.854972735261432,
+        "mean_decode_tps": 7.169398372750268
+      },
+      "C": {
+        "first_ttft_seconds": 11.67507340782322,
+        "later_max_ttft_seconds": 9.939691902138293,
+        "mean_ttft_seconds": 10.26929401862435,
+        "minimum_decode_tps": 6.854517511012344,
+        "mean_decode_tps": 7.154255054662259
+      },
+      "checks": {
+        "first_ttft": true,
+        "later_ttft": true,
+        "decode": false
+      },
+      "passed": false,
+      "A_to_C_mean_TTFT_percent": -2.487844408020634,
+      "A_to_C_min_decode_percent": -0.0066407886168073915
+    },
+    {
+      "input_tokens": 4096,
+      "A": {
+        "first_ttft_seconds": 25.500140000134706,
+        "later_max_ttft_seconds": 26.136366507038474,
+        "mean_ttft_seconds": 25.918817759025842,
+        "minimum_decode_tps": 6.450423988028176,
+        "mean_decode_tps": 6.487636848187774
+      },
+      "C": {
+        "first_ttft_seconds": 25.827700027031824,
+        "later_max_ttft_seconds": 26.010755543829873,
+        "mean_ttft_seconds": 25.93760849822623,
+        "minimum_decode_tps": 6.443716695361915,
+        "mean_decode_tps": 6.498609377348963
+      },
+      "checks": {
+        "first_ttft": false,
+        "later_ttft": true,
+        "decode": false
+      },
+      "passed": false,
+      "A_to_C_mean_TTFT_percent": 0.0724984425412023,
+      "A_to_C_min_decode_percent": -0.10398219835952016
+    },
+    {
+      "input_tokens": 8192,
+      "A": {
+        "first_ttft_seconds": 38.37251108093187,
+        "later_max_ttft_seconds": 38.53586503583938,
+        "mean_ttft_seconds": 38.41223821020685,
+        "minimum_decode_tps": 6.185334055998856,
+        "mean_decode_tps": 6.225366510131527
+      },
+      "C": {
+        "first_ttft_seconds": 38.19378081406467,
+        "later_max_ttft_seconds": 38.234726183116436,
+        "mean_ttft_seconds": 38.20285769171702,
+        "minimum_decode_tps": 6.2274137826013245,
+        "mean_decode_tps": 6.261179401234116
+      },
+      "checks": {
+        "first_ttft": true,
+        "later_ttft": true,
+        "decode": true
+      },
+      "passed": true,
+      "A_to_C_mean_TTFT_percent": -0.5450880454922147,
+      "A_to_C_min_decode_percent": 0.6803145346961026
+    },
+    {
+      "input_tokens": 45056,
+      "A": {
+        "first_ttft_seconds": 221.8961192520801,
+        "later_max_ttft_seconds": 222.89511137688532,
+        "mean_ttft_seconds": 222.44130132331824,
+        "minimum_decode_tps": 7.059946515099366,
+        "mean_decode_tps": 7.074090363544391
+      },
+      "C": {
+        "first_ttft_seconds": 157.28423230699264,
+        "later_max_ttft_seconds": 156.2917001498863,
+        "mean_ttft_seconds": 156.47668329028724,
+        "minimum_decode_tps": 7.161260601089591,
+        "mean_decode_tps": 7.231705603069545
+      },
+      "checks": {
+        "first_ttft": true,
+        "later_ttft": true,
+        "decode": true
+      },
+      "passed": true,
+      "A_to_C_mean_TTFT_percent": -29.654842711584163,
+      "A_to_C_min_decode_percent": 1.435054582545936
+    },
+    {
+      "input_tokens": 204800,
+      "A": {
+        "first_ttft_seconds": 1105.8103659669869,
+        "later_max_ttft_seconds": 1101.8305022451095,
+        "mean_ttft_seconds": 1103.0324295267153,
+        "minimum_decode_tps": 7.440252462735944,
+        "mean_decode_tps": 7.489860828141779
+      },
+      "C": {
+        "first_ttft_seconds": 752.4625491660554,
+        "later_max_ttft_seconds": 753.7586845140904,
+        "mean_ttft_seconds": 753.2506441196892,
+        "minimum_decode_tps": 7.654178762637633,
+        "mean_decode_tps": 7.668748163417791
+      },
+      "checks": {
+        "first_ttft": true,
+        "later_ttft": true,
+        "decode": true
+      },
+      "passed": true,
+      "A_to_C_mean_TTFT_percent": -31.710924905182438,
+      "A_to_C_min_decode_percent": 2.8752559267730016
+    },
+    {
+      "input_tokens": 261887,
+      "A": {
+        "first_ttft_seconds": 1425.442028468009,
+        "later_max_ttft_seconds": 1426.6371678009164,
+        "mean_ttft_seconds": 1425.9076894593115,
+        "minimum_decode_tps": 6.099742759776361,
+        "mean_decode_tps": 6.111583788471812
+      },
+      "C": {
+        "first_ttft_seconds": 979.4170877251308,
+        "later_max_ttft_seconds": 978.2015513579827,
+        "mean_ttft_seconds": 978.4655232507115,
+        "minimum_decode_tps": 6.199438726475003,
+        "mean_decode_tps": 6.21189212786834
+      },
+      "checks": {
+        "first_ttft": true,
+        "later_ttft": true,
+        "decode": true
+      },
+      "passed": true,
+      "A_to_C_mean_TTFT_percent": -31.379462325381326,
+      "A_to_C_min_decode_percent": 1.6344290345499335
+    }
+  ],
+  "matrix_failed_lengths": [
+    1024,
+    4096
+  ],
+  "history_failed_positions": [
+    2,
+    4,
+    6,
+    7
+  ],
+  "history_failure_is_permanent_veto": true,
+  "gates": [
+    "C first TTFT <= A first TTFT",
+    "max C later2 TTFT <= max A later2 TTFT",
+    "min C all3 decode >= min A all3 decode",
+    "All original tiers and output/capacity/path/identity/cleanup contracts pass"
+  ],
+  "threshold_note": "Exact frozen comparisons with no epsilon. The 1K minimum-decode change of -0.006640789% remains a failed gate; no statistical-significance claim.",
+  "whole_physical_RAM_54GB": "INDETERMINATE",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/execution-plan.json": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/matrix-decision.json": "9e0d8029bbc4d62b12c064747050d97a769c89649434c0d82a236171443612e9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/performance-decision.json": "006a4cafc3dc0de7ed149f13b74f53d398797950eaeac84ec60f0fb3618717a9"
+  }
+}

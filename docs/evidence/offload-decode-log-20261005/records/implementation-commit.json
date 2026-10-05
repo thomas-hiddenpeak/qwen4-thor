@@ -1,0 +1,27 @@
+{
+  "recorded_t": 1791140005.3459606,
+  "commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "branch": "codex/offload-decode-log-20261005",
+  "files": [
+    "docs/README.md",
+    "docs/STATUS.md",
+    "docs/log/2026-10-05.md",
+    "docs/OFFLOAD_DECODE_LOG_2026-10-05.md",
+    "include/q4t/model/moe.h",
+    "include/q4t/model/decoder_layer.h",
+    "include/q4t/model/moe_partition_log.h",
+    "src/model/moe.cu",
+    "src/model/model.cu",
+    "src/model/decoder_layer.cu",
+    "src/server/chat_server.cpp",
+    "tests/model_moe_test.cpp",
+    "tests/request_policy_host/CMakeLists.txt",
+    "tests/request_policy_host/decode_partition_log_test.cpp",
+    "tools/evalscope/offload_policy.py",
+    "tools/evalscope/request_policy_protocol.py",
+    "tools/evalscope/run_budget_experiment.py",
+    "tools/evalscope/test_request_policy_protocol.py"
+  ],
+  "runtime_acceptance": false,
+  "tests_executed": false
+}

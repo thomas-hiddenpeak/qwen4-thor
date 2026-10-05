@@ -1,0 +1,18 @@
+{
+  "started_t": 1791140805.4419239,
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "test_request_policy_protocol",
+    "-v"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope",
+  "returncode": null,
+  "failure": null,
+  "automatic_retry": false,
+  "timeout_s": 600,
+  "signals": [],
+  "cleanup_complete": false
+}

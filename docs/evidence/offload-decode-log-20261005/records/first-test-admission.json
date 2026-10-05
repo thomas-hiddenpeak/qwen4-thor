@@ -1,0 +1,29 @@
+{
+  "scope": "this phase controller artifacts; no machine-wide absence claim",
+  "phase_created_t": 1791139308.228264,
+  "admitted_t": 1791140215.4047446,
+  "stage": "quality-c",
+  "plan_sha256": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+  "existing_parent_artifacts_mtime_ns": {
+    "CONTINUE.json": 1791139086467102530,
+    "build-attempt.json": 1791140035509216467,
+    "build-identity.json": 1791140035509216467,
+    "candidate-source-identity.json": 1791140005665266090,
+    "entry.json": 1791139086359102810,
+    "execution-admission.json": 1791140173717440540,
+    "execution-plan.json": 1791140131165357318,
+    "goal-objective.json": 1791139495058184833,
+    "history-a-command.json": 1791140042533204833,
+    "history-b-command.json": 1791140042533204833,
+    "history-c-command.json": 1791140042533204833,
+    "implementation-commit.json": 1791140005345266625,
+    "matrix-a-command.json": 1791140042533204833,
+    "matrix-c-command.json": 1791140042533204833,
+    "model-entry.json": 1791139086363102799,
+    "plan.json": 1791139308222574380,
+    "quality-c-command.json": 1791140042533204833,
+    "root-static-tool-review.json": 1791139964245335495,
+    "runtime-static-review.json": 1791139915457418105
+  },
+  "known_non_http_test_attempts": []
+}

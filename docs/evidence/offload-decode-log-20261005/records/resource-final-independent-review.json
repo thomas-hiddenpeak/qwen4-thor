@@ -1,0 +1,4481 @@
+{
+  "schema": 1,
+  "created_t": 1791163510.548994,
+  "review_passed": true,
+  "decision": "PASS_WITH_MEASUREMENT_GAPS",
+  "reviewer": "decode_log_design",
+  "review_method": "Separate arithmetic and source checks without importing or executing audit_resources.py, summarize_resources.py, or the frozen core. Reviewer authored the adapter and summarizer; this is a separate verification pass, not independent authorship.",
+  "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+  "plan_sha256": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+  "raw_audit_sha256": "1c6dc10b64bf68ce087766f4dfd6dc4399fe835d8ae8aff3651b6713cfbd32f0",
+  "raw_summary_sha256": "f1c3e6195d17863e9d1d146785ffcbbc42f34bc438e51fd3b4b3c58281e7839a",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/raw-resource-audit.json": {
+      "sha256": "1c6dc10b64bf68ce087766f4dfd6dc4399fe835d8ae8aff3651b6713cfbd32f0",
+      "bytes": 1563093
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/raw-resource-summary.json": {
+      "sha256": "f1c3e6195d17863e9d1d146785ffcbbc42f34bc438e51fd3b4b3c58281e7839a",
+      "bytes": 254172
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/execution-plan.json": {
+      "sha256": "4814e3f1e0581fe18335f950a814b315e08711e277e764807f28d5afb1349fb2",
+      "bytes": 14042
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/pipeline-execution/exit.json": {
+      "sha256": "6600342e2c34ad4c7dc7cf91df860ab09d3c2e29fa00a38bb49d3e6f8924347b",
+      "bytes": 2600
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/performance-decision.json": {
+      "sha256": "006a4cafc3dc0de7ed149f13b74f53d398797950eaeac84ec60f0fb3618717a9",
+      "bytes": 33360
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/resource-audit-execution/exit.json": {
+      "sha256": "bab8dc519230d1a025be7e2100dd920a05ebac1a6829f7202e8e3b254b62be82",
+      "bytes": 990
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/resource-audit-execution/audit-exit.json": {
+      "sha256": "bab8dc519230d1a025be7e2100dd920a05ebac1a6829f7202e8e3b254b62be82",
+      "bytes": 990
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/resource-summary-execution/exit.json": {
+      "sha256": "469f1fcff5b98a10611d392ffa3753006d03ba446948154d2bd77018381ffeb5",
+      "bytes": 889
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/resource-summary-execution/summary-exit.json": {
+      "sha256": "469f1fcff5b98a10611d392ffa3753006d03ba446948154d2bd77018381ffeb5",
+      "bytes": 889
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/quality-c/http/isolation/endpoints.jsonl": {
+      "sha256": "916622b160d1cee6ba07e04c230869295641e9d1db814b598386efb5b4d7a9d6",
+      "bytes": 21134
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/quality-c/memory/memory.csv": {
+      "sha256": "0c45fb0d789fcaba2f245bb8d950d5ed6c19061ccc3fce865a40b2b9894e7636",
+      "bytes": 279786
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/isolation/endpoints.jsonl": {
+      "sha256": "b8c39d40c92793aa2acae1a9054b542740d58bae77dab6754ed76599e409d62e",
+      "bytes": 196882
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/memory/memory.csv": {
+      "sha256": "e4cbc1a8501d7bdb5a7e60549bf744b2077367317c0d028d00dede6d8ff76d87",
+      "bytes": 1177133
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/http/isolation/endpoints.jsonl": {
+      "sha256": "a43524bd33f9e2cdf7b71970288c60c48108269babf75eb1ff9ffd4267925f3d",
+      "bytes": 196661
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-b/memory/memory.csv": {
+      "sha256": "841ed9f3b5be27bbc9035d0910788424fb6538c4a7159f0792205d0ebef8df7b",
+      "bytes": 1046595
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/http/isolation/endpoints.jsonl": {
+      "sha256": "58ecf20857cfab8d30f59f012d9b5c272031ca4a6a67290baae80feae5ae7f73",
+      "bytes": 196962
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-c/memory/memory.csv": {
+      "sha256": "7bac9084cc1a1754df3891cf1a9c0e054c7004c6050d995a59fcf614a18670f4",
+      "bytes": 1033341
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-a/http/isolation/endpoints.jsonl": {
+      "sha256": "efe517a77f44746d2fd86aa84f6027f52e1cc9f441421eb74052309a4a16a358",
+      "bytes": 169836
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-a/memory/memory.csv": {
+      "sha256": "16fcc36366e8a4a62c64b168c0fe839dc60309a10e0a55fdbadb1955e6f349ec",
+      "bytes": 4629885
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-c/http/isolation/endpoints.jsonl": {
+      "sha256": "1c2e106f9a20d70377d17d50d732a915045b23a8361408e291bd3ec6f1749ef3",
+      "bytes": 169945
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/matrix-c/memory/memory.csv": {
+      "sha256": "62fcd2c87e62913c92a02b03a4e31af46576ef4914b1bb9c8c8f50a614dea598",
+      "bytes": 3340833
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/memory/resource-samples.jsonl": {
+      "sha256": "256635d1b9ff2cbae526435f0bdd290b7e062fa6d99362869b9ab5bd1adbb634",
+      "bytes": 13388942
+    }
+  },
+  "checks_passed": 996,
+  "checks": [
+    {
+      "name": "runtime_and_plan_binding",
+      "passed": true
+    },
+    {
+      "name": "completed_pipeline_and_preserved_NO_GO",
+      "passed": true
+    },
+    {
+      "name": "resource_coverage",
+      "passed": true
+    },
+    {
+      "name": "quality-c_identity_and_coverage",
+      "passed": true
+    },
+    {
+      "name": "quality-c_summary_exact_transcription",
+      "passed": true
+    },
+    {
+      "name": "quality-c_endpoint_SHA",
+      "passed": true
+    },
+    {
+      "name": "quality-c_unique_endpoint_labels",
+      "passed": true
+    },
+    {
+      "name": "quality-c_quality_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "quality-c_quality_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "quality-c_quality_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "quality-c_quality_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "quality-c_quality_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "quality-c_quality_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "quality-c_quality_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "quality-c_quality_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "quality-c_quality_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "quality-c_cg_rbytes:259:0_summary_visibility",
+      "passed": true
+    },
+    {
+      "name": "quality-c_memory_final_endpoint",
+      "passed": true
+    },
+    {
+      "name": "quality-c_CSV_SHA",
+      "passed": true
+    },
+    {
+      "name": "quality-c_CSV_coverage_and_GPU_peak",
+      "passed": true
+    },
+    {
+      "name": "quality-c_full_CSV_sample_window_math",
+      "passed": true
+    },
+    {
+      "name": "quality-c_GPU_fresh_window_math",
+      "passed": true
+    },
+    {
+      "name": "quality-c_file_cache_window_math",
+      "passed": true
+    },
+    {
+      "name": "history-a_identity_and_coverage",
+      "passed": true
+    },
+    {
+      "name": "history-a_summary_exact_transcription",
+      "passed": true
+    },
+    {
+      "name": "history-a_endpoint_SHA",
+      "passed": true
+    },
+    {
+      "name": "history-a_unique_endpoint_labels",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p01-context-16385:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p01-context-16385:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p01-context-16385:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p01-context-16385:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p01-context-16385:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p02-context-8192:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p02-context-8192:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p02-context-8192:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p02-context-8192:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p02-context-8192:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p03-context-8193:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p03-context-8193:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p03-context-8193:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p03-context-8193:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p03-context-8193:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p04-context-1024:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p04-context-1024:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p04-context-1024:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p04-context-1024:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p04-context-1024:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p05-context-45056:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p05-context-45056:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p05-context-45056:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p05-context-45056:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p05-context-45056:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p06-context-4096:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p06-context-4096:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p06-context-4096:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p06-context-4096:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p06-context-4096:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p07-context-8192:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p07-context-8192:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p07-context-8192:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p07-context-8192:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p07-context-8192:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r01-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p01-context-16385:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p01-context-16385:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p01-context-16385:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p01-context-16385:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p01-context-16385:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p02-context-8192:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p02-context-8192:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p02-context-8192:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p02-context-8192:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p02-context-8192:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p03-context-8193:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p03-context-8193:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p03-context-8193:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p03-context-8193:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p03-context-8193:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p04-context-1024:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p04-context-1024:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p04-context-1024:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p04-context-1024:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p04-context-1024:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p05-context-45056:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p05-context-45056:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p05-context-45056:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p05-context-45056:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p05-context-45056:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p06-context-4096:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p06-context-4096:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p06-context-4096:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p06-context-4096:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p06-context-4096:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p07-context-8192:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p07-context-8192:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p07-context-8192:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p07-context-8192:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p07-context-8192:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r02-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p01-context-16385:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p01-context-16385:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p01-context-16385:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p01-context-16385:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p01-context-16385:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p02-context-8192:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p02-context-8192:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p02-context-8192:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p02-context-8192:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p02-context-8192:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p03-context-8193:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p03-context-8193:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p03-context-8193:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p03-context-8193:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p03-context-8193:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p04-context-1024:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p04-context-1024:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p04-context-1024:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p04-context-1024:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p04-context-1024:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p05-context-45056:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p05-context-45056:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p05-context-45056:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p05-context-45056:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p05-context-45056:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p06-context-4096:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p06-context-4096:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p06-context-4096:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p06-context-4096:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p06-context-4096:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p07-context-8192:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p07-context-8192:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p07-context-8192:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p07-context-8192:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p07-context-8192:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_sequence-r03-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-a_cg_rbytes:259:0_summary_visibility",
+      "passed": true
+    },
+    {
+      "name": "history-a_memory_final_endpoint",
+      "passed": true
+    },
+    {
+      "name": "history-a_CSV_SHA",
+      "passed": true
+    },
+    {
+      "name": "history-a_CSV_coverage_and_GPU_peak",
+      "passed": true
+    },
+    {
+      "name": "history-a_full_CSV_sample_window_math",
+      "passed": true
+    },
+    {
+      "name": "history-a_GPU_fresh_window_math",
+      "passed": true
+    },
+    {
+      "name": "history-a_file_cache_window_math",
+      "passed": true
+    },
+    {
+      "name": "history-b_identity_and_coverage",
+      "passed": true
+    },
+    {
+      "name": "history-b_summary_exact_transcription",
+      "passed": true
+    },
+    {
+      "name": "history-b_endpoint_SHA",
+      "passed": true
+    },
+    {
+      "name": "history-b_unique_endpoint_labels",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p01-context-16385:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p01-context-16385:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p01-context-16385:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p01-context-16385:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p01-context-16385:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p02-context-8192:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p02-context-8192:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p02-context-8192:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p02-context-8192:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p02-context-8192:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p03-context-8193:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p03-context-8193:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p03-context-8193:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p03-context-8193:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p03-context-8193:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p04-context-1024:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p04-context-1024:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p04-context-1024:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p04-context-1024:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p04-context-1024:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p05-context-45056:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p05-context-45056:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p05-context-45056:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p05-context-45056:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p05-context-45056:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p06-context-4096:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p06-context-4096:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p06-context-4096:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p06-context-4096:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p06-context-4096:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p07-context-8192:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p07-context-8192:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p07-context-8192:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p07-context-8192:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p07-context-8192:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r01-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p01-context-16385:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p01-context-16385:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p01-context-16385:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p01-context-16385:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p01-context-16385:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p02-context-8192:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p02-context-8192:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p02-context-8192:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p02-context-8192:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p02-context-8192:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p03-context-8193:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p03-context-8193:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p03-context-8193:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p03-context-8193:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p03-context-8193:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p04-context-1024:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p04-context-1024:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p04-context-1024:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p04-context-1024:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p04-context-1024:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p05-context-45056:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p05-context-45056:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p05-context-45056:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p05-context-45056:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p05-context-45056:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p06-context-4096:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p06-context-4096:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p06-context-4096:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p06-context-4096:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p06-context-4096:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p07-context-8192:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p07-context-8192:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p07-context-8192:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p07-context-8192:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p07-context-8192:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r02-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p01-context-16385:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p01-context-16385:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p01-context-16385:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p01-context-16385:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p01-context-16385:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p02-context-8192:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p02-context-8192:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p02-context-8192:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p02-context-8192:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p02-context-8192:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p03-context-8193:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p03-context-8193:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p03-context-8193:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p03-context-8193:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p03-context-8193:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p04-context-1024:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p04-context-1024:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p04-context-1024:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p04-context-1024:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p04-context-1024:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p05-context-45056:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p05-context-45056:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p05-context-45056:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p05-context-45056:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p05-context-45056:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p06-context-4096:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p06-context-4096:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p06-context-4096:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p06-context-4096:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p06-context-4096:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p07-context-8192:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p07-context-8192:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p07-context-8192:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p07-context-8192:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p07-context-8192:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_sequence-r03-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-b_cg_rbytes:259:0_summary_visibility",
+      "passed": true
+    },
+    {
+      "name": "history-b_memory_final_endpoint",
+      "passed": true
+    },
+    {
+      "name": "history-b_CSV_SHA",
+      "passed": true
+    },
+    {
+      "name": "history-b_CSV_coverage_and_GPU_peak",
+      "passed": true
+    },
+    {
+      "name": "history-b_full_CSV_sample_window_math",
+      "passed": true
+    },
+    {
+      "name": "history-b_GPU_fresh_window_math",
+      "passed": true
+    },
+    {
+      "name": "history-b_file_cache_window_math",
+      "passed": true
+    },
+    {
+      "name": "history-c_identity_and_coverage",
+      "passed": true
+    },
+    {
+      "name": "history-c_summary_exact_transcription",
+      "passed": true
+    },
+    {
+      "name": "history-c_endpoint_SHA",
+      "passed": true
+    },
+    {
+      "name": "history-c_unique_endpoint_labels",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p01-context-16385:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p01-context-16385:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p01-context-16385:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p01-context-16385:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p01-context-16385:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p02-context-8192:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p02-context-8192:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p02-context-8192:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p02-context-8192:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p02-context-8192:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p03-context-8193:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p03-context-8193:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p03-context-8193:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p03-context-8193:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p03-context-8193:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p04-context-1024:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p04-context-1024:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p04-context-1024:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p04-context-1024:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p04-context-1024:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p05-context-45056:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p05-context-45056:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p05-context-45056:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p05-context-45056:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p05-context-45056:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p06-context-4096:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p06-context-4096:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p06-context-4096:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p06-context-4096:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p06-context-4096:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p07-context-8192:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p07-context-8192:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p07-context-8192:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p07-context-8192:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p07-context-8192:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r01-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p01-context-16385:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p01-context-16385:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p01-context-16385:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p01-context-16385:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p01-context-16385:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p02-context-8192:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p02-context-8192:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p02-context-8192:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p02-context-8192:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p02-context-8192:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p03-context-8193:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p03-context-8193:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p03-context-8193:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p03-context-8193:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p03-context-8193:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p04-context-1024:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p04-context-1024:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p04-context-1024:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p04-context-1024:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p04-context-1024:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p05-context-45056:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p05-context-45056:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p05-context-45056:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p05-context-45056:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p05-context-45056:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p06-context-4096:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p06-context-4096:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p06-context-4096:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p06-context-4096:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p06-context-4096:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p07-context-8192:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p07-context-8192:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p07-context-8192:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p07-context-8192:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p07-context-8192:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r02-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p01-context-16385:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p01-context-16385:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p01-context-16385:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p01-context-16385:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p01-context-16385:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p01-context-16385:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p02-context-8192:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p02-context-8192:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p02-context-8192:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p02-context-8192:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p02-context-8192:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p02-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p03-context-8193:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p03-context-8193:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p03-context-8193:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p03-context-8193:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p03-context-8193:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p03-context-8193:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p04-context-1024:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p04-context-1024:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p04-context-1024:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p04-context-1024:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p04-context-1024:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p04-context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p05-context-45056:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p05-context-45056:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p05-context-45056:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p05-context-45056:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p05-context-45056:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p05-context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p06-context-4096:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p06-context-4096:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p06-context-4096:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p06-context-4096:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p06-context-4096:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p06-context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p07-context-8192:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p07-context-8192:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p07-context-8192:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p07-context-8192:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p07-context-8192:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_sequence-r03-p07-context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "history-c_cg_rbytes:259:0_summary_visibility",
+      "passed": true
+    },
+    {
+      "name": "history-c_memory_final_endpoint",
+      "passed": true
+    },
+    {
+      "name": "history-c_CSV_SHA",
+      "passed": true
+    },
+    {
+      "name": "history-c_CSV_coverage_and_GPU_peak",
+      "passed": true
+    },
+    {
+      "name": "history-c_full_CSV_sample_window_math",
+      "passed": true
+    },
+    {
+      "name": "history-c_GPU_fresh_window_math",
+      "passed": true
+    },
+    {
+      "name": "history-c_file_cache_window_math",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_identity_and_coverage",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_summary_exact_transcription",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_endpoint_SHA",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_unique_endpoint_labels",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run2_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run2_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run2_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run2_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run2_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run3_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run3_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run3_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run3_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run3_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-1024:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run2_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run2_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run2_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run2_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run2_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run3_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run3_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run3_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run3_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run3_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-4096:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run2_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run2_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run2_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run2_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run2_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run3_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run3_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run3_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run3_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run3_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-8192:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run2_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run2_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run2_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run2_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run2_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run3_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run3_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run3_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run3_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run3_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-45056:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run2_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run2_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run2_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run2_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run2_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run3_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run3_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run3_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run3_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run3_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-204800:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run2_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run2_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run2_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run2_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run2_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run3_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run3_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run3_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run3_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run3_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_context-261887:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_cg_rbytes:259:0_summary_visibility",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_memory_final_endpoint",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_CSV_SHA",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_CSV_coverage_and_GPU_peak",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_full_CSV_sample_window_math",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_GPU_fresh_window_math",
+      "passed": true
+    },
+    {
+      "name": "matrix-a_file_cache_window_math",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_identity_and_coverage",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_summary_exact_transcription",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_endpoint_SHA",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_unique_endpoint_labels",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run2_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run2_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run2_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run2_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run2_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run3_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run3_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run3_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run3_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run3_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-1024:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run2_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run2_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run2_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run2_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run2_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run3_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run3_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run3_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run3_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run3_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-4096:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run2_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run2_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run2_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run2_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run2_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run3_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run3_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run3_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run3_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run3_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-8192:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run2_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run2_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run2_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run2_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run2_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run3_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run3_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run3_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run3_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run3_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-45056:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run2_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run2_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run2_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run2_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run2_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run3_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run3_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run3_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run3_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run3_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-204800:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run1_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run1_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run1_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run1_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run1_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run1_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run2_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run2_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run2_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run2_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run2_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run2_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run3_endpoint_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run3_pid_read_bytes",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run3_pid_rchar",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run3_cg_rbytes:259:0",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run3_client_bracket",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_context-261887:run3_bound_algebra",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_cg_rbytes:259:0_summary_visibility",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_memory_final_endpoint",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_CSV_SHA",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_CSV_coverage_and_GPU_peak",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_full_CSV_sample_window_math",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_GPU_fresh_window_math",
+      "passed": true
+    },
+    {
+      "name": "matrix-c_file_cache_window_math",
+      "passed": true
+    },
+    {
+      "name": "matrix_1024_tier_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix_1024_pid_read_bytes_means",
+      "passed": true
+    },
+    {
+      "name": "matrix_1024_pid_rchar_means",
+      "passed": true
+    },
+    {
+      "name": "matrix_1024_unavailable_metrics",
+      "passed": true
+    },
+    {
+      "name": "matrix_4096_tier_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix_4096_pid_read_bytes_means",
+      "passed": true
+    },
+    {
+      "name": "matrix_4096_pid_rchar_means",
+      "passed": true
+    },
+    {
+      "name": "matrix_4096_unavailable_metrics",
+      "passed": true
+    },
+    {
+      "name": "matrix_8192_tier_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix_8192_pid_read_bytes_means",
+      "passed": true
+    },
+    {
+      "name": "matrix_8192_pid_rchar_means",
+      "passed": true
+    },
+    {
+      "name": "matrix_8192_unavailable_metrics",
+      "passed": true
+    },
+    {
+      "name": "matrix_45056_tier_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix_45056_pid_read_bytes_means",
+      "passed": true
+    },
+    {
+      "name": "matrix_45056_pid_rchar_means",
+      "passed": true
+    },
+    {
+      "name": "matrix_45056_unavailable_metrics",
+      "passed": true
+    },
+    {
+      "name": "matrix_204800_tier_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix_204800_pid_read_bytes_means",
+      "passed": true
+    },
+    {
+      "name": "matrix_204800_pid_rchar_means",
+      "passed": true
+    },
+    {
+      "name": "matrix_204800_unavailable_metrics",
+      "passed": true
+    },
+    {
+      "name": "matrix_261887_tier_identity",
+      "passed": true
+    },
+    {
+      "name": "matrix_261887_pid_read_bytes_means",
+      "passed": true
+    },
+    {
+      "name": "matrix_261887_pid_rchar_means",
+      "passed": true
+    },
+    {
+      "name": "matrix_261887_unavailable_metrics",
+      "passed": true
+    },
+    {
+      "name": "history_a_resource_stream_SHA",
+      "passed": true
+    },
+    {
+      "name": "history_a_raw_current_exceeds_peak",
+      "passed": true
+    },
+    {
+      "name": "limitations_preserved",
+      "passed": true
+    }
+  ],
+  "coverage": {
+    "groups": 6,
+    "HTTP_requests": 110,
+    "client_envelopes": 100,
+    "raw_sources_cross_checked": 13,
+    "raw_bytes_cross_checked": 25847935,
+    "controller_endpoint_rows": 218,
+    "controller_delta_recomputations": 300,
+    "client_bracket_time_checks": 100,
+    "reported_counter_bound_algebra_checks": 400,
+    "CSV_samples_recounted": 22850
+  },
+  "matrix_tiers": [
+    {
+      "input_tokens": 1024,
+      "PID_read_bytes": {
+        "A_mean": 55980782933.333336,
+        "C_mean": 56328131925.333336,
+        "percent_change": 0.6204789818921475
+      },
+      "PID_rchar_bytes": {
+        "A_mean": 52040440984.0,
+        "C_mean": 52027538472.0,
+        "percent_change": -0.024793241094878127
+      }
+    },
+    {
+      "input_tokens": 4096,
+      "PID_read_bytes": {
+        "A_mean": 92384957781.33333,
+        "C_mean": 92582218410.66667,
+        "percent_change": 0.2135202895261923
+      },
+      "PID_rchar_bytes": {
+        "A_mean": 138736105544.0,
+        "C_mean": 138729654288.0,
+        "percent_change": -0.004650019527863147
+      }
+    },
+    {
+      "input_tokens": 8192,
+      "PID_read_bytes": {
+        "A_mean": 106149893461.33333,
+        "C_mean": 106094122325.33333,
+        "percent_change": -0.05253998301968377
+      },
+      "PID_rchar_bytes": {
+        "A_mean": 218838586472.0,
+        "C_mean": 218835821648.0,
+        "percent_change": -0.0012634079046947022
+      }
+    },
+    {
+      "input_tokens": 45056,
+      "PID_read_bytes": {
+        "A_mean": 441605248341.3333,
+        "C_mean": 440738141525.3333,
+        "percent_change": -0.19635337651824347
+      },
+      "PID_rchar_bytes": {
+        "A_mean": 1142894377320.0,
+        "C_mean": 605092793744.0,
+        "percent_change": -47.056105467690166
+      }
+    },
+    {
+      "input_tokens": 204800,
+      "PID_read_bytes": {
+        "A_mean": 1795708076032.0,
+        "C_mean": 1855185734314.6667,
+        "percent_change": 3.312211994618597
+      },
+      "PID_rchar_bytes": {
+        "A_mean": 6092007674000.0,
+        "C_mean": 3076815036680.0,
+        "percent_change": -49.49423570473329
+      }
+    },
+    {
+      "input_tokens": 261887,
+      "PID_read_bytes": {
+        "A_mean": 2303787985578.6665,
+        "C_mean": 2385582241109.3335,
+        "percent_change": 3.550424606894631
+      },
+      "PID_rchar_bytes": {
+        "A_mean": 7888792141352.0,
+        "C_mean": 3989951615944.0,
+        "percent_change": -49.42252825969131
+      }
+    }
+  ],
+  "memory_table": {
+    "quality-c": {
+      "memory_max_bytes": "max",
+      "sample_current_peak_bytes": 58460938240,
+      "final_charge_peak_bytes": 58525949952,
+      "charge_peak_minus_max_bytes": null,
+      "current_peak_minus_max_bytes": null,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      },
+      "cgroup_swap_peak_bytes": 0,
+      "NVIDIA_peak_bytes": 56237228032
+    },
+    "history-a": {
+      "memory_max_bytes": 17179869184,
+      "sample_current_peak_bytes": 17180061696,
+      "final_charge_peak_bytes": 17179930624,
+      "charge_peak_minus_max_bytes": 61440,
+      "current_peak_minus_max_bytes": 192512,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 25028618,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      },
+      "cgroup_swap_peak_bytes": 0,
+      "NVIDIA_peak_bytes": 56237228032
+    },
+    "history-b": {
+      "memory_max_bytes": 17179869184,
+      "sample_current_peak_bytes": 17180127232,
+      "final_charge_peak_bytes": 17179914240,
+      "charge_peak_minus_max_bytes": 45056,
+      "current_peak_minus_max_bytes": 258048,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 24799467,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      },
+      "cgroup_swap_peak_bytes": 0,
+      "NVIDIA_peak_bytes": 56237228032
+    },
+    "history-c": {
+      "memory_max_bytes": 17179869184,
+      "sample_current_peak_bytes": 17180073984,
+      "final_charge_peak_bytes": 17179930624,
+      "charge_peak_minus_max_bytes": 61440,
+      "current_peak_minus_max_bytes": 204800,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 24813084,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      },
+      "cgroup_swap_peak_bytes": 0,
+      "NVIDIA_peak_bytes": 56237228032
+    },
+    "matrix-a": {
+      "memory_max_bytes": 17179869184,
+      "sample_current_peak_bytes": 17180127232,
+      "final_charge_peak_bytes": 17180778496,
+      "charge_peak_minus_max_bytes": 909312,
+      "current_peak_minus_max_bytes": 258048,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 110049560,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      },
+      "cgroup_swap_peak_bytes": 0,
+      "NVIDIA_peak_bytes": 56237228032
+    },
+    "matrix-c": {
+      "memory_max_bytes": 17179869184,
+      "sample_current_peak_bytes": 17180131328,
+      "final_charge_peak_bytes": 17180508160,
+      "charge_peak_minus_max_bytes": 638976,
+      "current_peak_minus_max_bytes": 262144,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 113274427,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      },
+      "cgroup_swap_peak_bytes": 0,
+      "NVIDIA_peak_bytes": 56237228032
+    }
+  },
+  "cgroup_IO_observability": {
+    "quality-c": {
+      "envelopes": 1,
+      "agreement_count": {
+        "cg_rbytes:259:0": 1
+      },
+      "plateau_count": {
+        "cg_rbytes:259:0": 0
+      },
+      "less_than_PID": {
+        "cg_rbytes:259:0": 0
+      },
+      "greater_than_PID": {
+        "cg_rbytes:259:0": 0
+      }
+    },
+    "history-a": {
+      "envelopes": 21,
+      "agreement_count": {
+        "cg_rbytes:259:0": 0
+      },
+      "plateau_count": {
+        "cg_rbytes:259:0": 16
+      },
+      "less_than_PID": {
+        "cg_rbytes:259:0": 21
+      },
+      "greater_than_PID": {
+        "cg_rbytes:259:0": 0
+      }
+    },
+    "history-b": {
+      "envelopes": 21,
+      "agreement_count": {
+        "cg_rbytes:259:0": 0
+      },
+      "plateau_count": {
+        "cg_rbytes:259:0": 14
+      },
+      "less_than_PID": {
+        "cg_rbytes:259:0": 21
+      },
+      "greater_than_PID": {
+        "cg_rbytes:259:0": 0
+      }
+    },
+    "history-c": {
+      "envelopes": 21,
+      "agreement_count": {
+        "cg_rbytes:259:0": 0
+      },
+      "plateau_count": {
+        "cg_rbytes:259:0": 16
+      },
+      "less_than_PID": {
+        "cg_rbytes:259:0": 21
+      },
+      "greater_than_PID": {
+        "cg_rbytes:259:0": 0
+      }
+    },
+    "matrix-a": {
+      "envelopes": 18,
+      "agreement_count": {
+        "cg_rbytes:259:0": 0
+      },
+      "plateau_count": {
+        "cg_rbytes:259:0": 8
+      },
+      "less_than_PID": {
+        "cg_rbytes:259:0": 18
+      },
+      "greater_than_PID": {
+        "cg_rbytes:259:0": 0
+      }
+    },
+    "matrix-c": {
+      "envelopes": 18,
+      "agreement_count": {
+        "cg_rbytes:259:0": 0
+      },
+      "plateau_count": {
+        "cg_rbytes:259:0": 8
+      },
+      "less_than_PID": {
+        "cg_rbytes:259:0": 18
+      },
+      "greater_than_PID": {
+        "cg_rbytes:259:0": 0
+      }
+    }
+  },
+  "sampling": {
+    "quality-c": {
+      "sample_count": 573,
+      "GPU_fresh_count": 52,
+      "GPU_scheduled_skip_count": 518,
+      "resource_max_unobserved_gap_seconds": 1.1221113204956055,
+      "GPU_max_unobserved_gap_seconds": 10.996440649032593,
+      "system_swap_observed_min_bytes": 1329594368,
+      "system_swap_observed_max_bytes": 1599184896,
+      "system_swap_scope": "Whole system CSV observation; not attributable to this q4t group."
+    },
+    "history-a": {
+      "sample_count": 2280,
+      "GPU_fresh_count": 208,
+      "GPU_scheduled_skip_count": 2070,
+      "resource_max_unobserved_gap_seconds": 1.010115623474121,
+      "GPU_max_unobserved_gap_seconds": 11.000922441482544,
+      "system_swap_observed_min_bytes": 1507434496,
+      "system_swap_observed_max_bytes": 1528406016,
+      "system_swap_scope": "Whole system CSV observation; not attributable to this q4t group."
+    },
+    "history-b": {
+      "sample_count": 2028,
+      "GPU_fresh_count": 185,
+      "GPU_scheduled_skip_count": 1841,
+      "resource_max_unobserved_gap_seconds": 1.0119376182556152,
+      "GPU_max_unobserved_gap_seconds": 10.999063968658447,
+      "system_swap_observed_min_bytes": 1423810560,
+      "system_swap_observed_max_bytes": 1507434496,
+      "system_swap_scope": "Whole system CSV observation; not attributable to this q4t group."
+    },
+    "history-c": {
+      "sample_count": 2001,
+      "GPU_fresh_count": 182,
+      "GPU_scheduled_skip_count": 1817,
+      "resource_max_unobserved_gap_seconds": 1.0095367431640625,
+      "GPU_max_unobserved_gap_seconds": 10.998240232467651,
+      "system_swap_observed_min_bytes": 1421713408,
+      "system_swap_observed_max_bytes": 1423286272,
+      "system_swap_scope": "Whole system CSV observation; not attributable to this q4t group."
+    },
+    "matrix-a": {
+      "sample_count": 9283,
+      "GPU_fresh_count": 844,
+      "GPU_scheduled_skip_count": 8437,
+      "resource_max_unobserved_gap_seconds": 1.0090150833129883,
+      "GPU_max_unobserved_gap_seconds": 10.999387741088867,
+      "system_swap_observed_min_bytes": 1404936192,
+      "system_swap_observed_max_bytes": 1421713408,
+      "system_swap_scope": "Whole system CSV observation; not attributable to this q4t group."
+    },
+    "matrix-c": {
+      "sample_count": 6685,
+      "GPU_fresh_count": 608,
+      "GPU_scheduled_skip_count": 6075,
+      "resource_max_unobserved_gap_seconds": 1.0088541507720947,
+      "GPU_max_unobserved_gap_seconds": 11.002711296081543,
+      "system_swap_observed_min_bytes": 1391828992,
+      "system_swap_observed_max_bytes": 1404936192,
+      "system_swap_scope": "Whole system CSV observation; not attributable to this q4t group."
+    }
+  },
+  "current_peak_inconsistency_raw_example": {
+    "stage": "history-a",
+    "sequence": 1946,
+    "phase": "requests:sequence-r03-p05-context-45056:run1",
+    "sample_window": [
+      1791142774.8347752,
+      1791142774.835778
+    ],
+    "identity": {
+      "device": 29,
+      "inode": 134425
+    },
+    "current_bytes": 17180061696,
+    "same_sample_peak_bytes": 17179930624,
+    "final_peak_bytes": 17179930624,
+    "cause": "UNKNOWN; preserve original counters without correction"
+  },
+  "limits": [
+    "Preceding HTTP/numerical/history reviews are reused; this review adds no inference or performance acceptance.",
+    "Six controller endpoint files and six CSVs were directly verified; only history-a resource JSONL was rescanned. Other groups sampled-current maxima and all raw sample-counter interval selections reuse the immutable audit, with reported bracket algebra/time checks only.",
+    "PID read_bytes and rchar cover all process file reads over client envelopes, not expert-only SSD traffic. rchar is logical reads, not storage bytes.",
+    "syscr exists in raw endpoints but was not retained by the frozen audit; summary correctly leaves it unknown. No software shape I/O was inferred.",
+    "Cgroup I/O disagreement/plateaus do not imply absent SSD traffic. Parent-device, partition, PID and cgroup counters remain separate.",
+    "All final observed cgroup OOM/oom_kill and swap peaks are zero, but memory.events max is nonzero in performance groups; whole-system swap observations are nonzero and unattributed.",
+    "NVIDIA peaks, cgroup current/peak and cache views are not a physical union. Current/peak inconsistencies remain raw observations of unknown cause.",
+    "PSI is unavailable; fresh GPU windows are separated by approximately eleven-second gaps; endpoint cache samples do not bound runtime cache peaks.",
+    "A preliminary read-only inventory display failed before verification because of relative-path normalization; corrected without changing or rerunning any audit, summary, test or model."
+  ],
+  "whole_physical_RAM_54GB": "INDETERMINATE",
+  "physical_union_peak_bytes": null,
+  "performance_acceptance": false,
+  "actions": {
+    "models": 0,
+    "tests": 0,
+    "source_edits": 0,
+    "audit_reruns": 0,
+    "summary_reruns": 0,
+    "new_artifacts": [
+      "resource-final-independent-review.json"
+    ]
+  }
+}
