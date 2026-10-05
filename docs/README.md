@@ -5,7 +5,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
-| [OFFLOAD_MECHANISM_2026-10-06.md](OFFLOAD_MECHANISM_2026-10-06.md) | 缓存状态、路由与真实阶段等待机制 | Goal启动；固定8服务/32HTTP，观测off/on配对 |
+| [OFFLOAD_MECHANISM_2026-10-06.md](OFFLOAD_MECHANISM_2026-10-06.md) | 缓存状态、路由与阶段读取机制 | 8服务/32HTTP闭合；供给变化与存储读差分列，无新运行时候选 |
 | [OFFLOAD_CAUSALITY_2026-10-05.md](OFFLOAD_CAUSALITY_2026-10-05.md) | 组序与阈值前驱诊断、证据复用与后续单一候选 | 16服务/64HTTP诊断完成；候选依据不足，旧NO_GO保持 |
 | [OFFLOAD_DECODE_LOG_2026-10-05.md](OFFLOAD_DECODE_LOG_2026-10-05.md) | 显式 decode 日志单因素候选、A/B/C 对照与冻结验收 | 完整性能 NO_GO；日志抑制生效，短档仍未过，默认关闭 |
 | [OFFLOAD_REQUEST_POLICY_2026-10-04.md](OFFLOAD_REQUEST_POLICY_2026-10-04.md) | 完整请求长度分区、混合历史与六档 HTTP、独立资源证据 | 有效 NO_GO；长档 TTFT 改善，短档/decode 门槛未过；默认关闭 |

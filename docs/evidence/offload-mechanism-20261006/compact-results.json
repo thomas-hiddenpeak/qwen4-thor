@@ -1,0 +1,2097 @@
+{
+  "schema": "q4t.offload-mechanism.public-compact.v1",
+  "status": "CLOSED_MECHANISM_INTERPRETED_NO_RUNTIME_CANDIDATE_SELECTED",
+  "projection_method": "Direct selection of recorded fields from closed interpretation and independent reviews; no new statistics/model/tests/trace parsing. Excludes private text/tokens, raw request IDs and per-ID trace.",
+  "identity": {
+    "scope_plan_sha256": "2fdd504c5bef648e882371b9be3fc50e2b98f2089576d5dc983d9997b367990a",
+    "execution_plan_sha256": "7170959e8084bbda642ffa8b37bdaf5de1b26d29e7cf028989a8c374aa1fb3c1",
+    "recovery_plan_sha256": "2d1487b7559e34cff2d5bcae4e48d82a122ca82b1024901bd0705d61d2dcbf17",
+    "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+    "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+    "runner_source_commit": "c4856f480542c12cedb7faf8b58e97e1478b80b8"
+  },
+  "scope": "既有32HTTP固定采集的独立机制解释；不新增实验，不运行模型/测试，不修改运行时。全部S/L比较为同arm同k的on组单cell描述；k0/k1/k2/k3不混池。",
+  "service_count": 8,
+  "http_count": 32,
+  "observed_request_count": 16,
+  "performance_acceptance": false,
+  "validation": {
+    "total_contracts": 131,
+    "batch_counts": {
+      "initial_tools": 100,
+      "analysis_synthetics": 16,
+      "binding_fix": 6,
+      "newline_fix": 4,
+      "loaded_environment_fix": 5
+    },
+    "scope": "Recorded bounded batch totals; each passed in its first batch. Prior quality11/C++15/numerical3 only reused within original coverage; no new full quality/numerical/five-tier acceptance."
+  },
+  "completion": {
+    "collection_closed": true,
+    "resource_owner_rc": 0,
+    "resource_owner_cleanup_complete": true,
+    "resource_owner_group_absent": true,
+    "resource_report_inside_owner_lifetime": true,
+    "resource_owner_after_collection_closure": true,
+    "services": 8,
+    "http_requests": 32,
+    "logical_successful_steps": 16,
+    "physical_group_and_audit_attempts": 19,
+    "failed_audits_retained": 3,
+    "repeated_HTTP_requests": 0,
+    "decision_versions": "m01 r3 preserved; m02 through m08 r4"
+  },
+  "owned_receipts": {
+    "mechanism-analysis-01": {
+      "returncode": 0,
+      "failure": null,
+      "cleanup_complete": true
+    },
+    "resource-audit-01": {
+      "returncode": 0,
+      "failure": null,
+      "cleanup_complete": true
+    },
+    "mechanism-summary-01": {
+      "returncode": 0,
+      "failure": null,
+      "cleanup_complete": true
+    },
+    "final-protection-01": {
+      "returncode": 0,
+      "failure": null,
+      "cleanup_complete": true
+    }
+  },
+  "mechanism_review": {
+    "status": "PASS_BOUNDED_MECHANISM_EVIDENCE",
+    "passed": true,
+    "checks": {
+      "closed_services": 8,
+      "http_requests": 32,
+      "observed_requests": 16,
+      "phase_snapshots": 96,
+      "full_cache_snapshots": 48,
+      "phase_intervals_recomputed": 80,
+      "whole_phases_recomputed": 32,
+      "exact_inter_request_metadata_links": 12,
+      "same_length_route_comparisons": 92,
+      "same_length_ordered_routes_equal": 92,
+      "same_k_SL_AC_pairs": 12,
+      "summary_cache_boundaries_independently_recomputed": 36,
+      "counter_residual_tuples": [
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "total_L2_hits": 0,
+      "mirror_hits_per_interval_range": [
+        2,
+        812
+      ],
+      "tail_decode_forwards": 223,
+      "tail_route_occurrences": 107040,
+      "tail_share_of_observed_decode_interval_range": [
+        0.8109281091774507,
+        0.8467874737883901
+      ],
+      "capture_total_ns_range": [
+        1579822,
+        41402394
+      ],
+      "AC_short_GPU_mapping_membership_relative_age_equal_at_all_three_boundaries": true,
+      "service_scoped_unique_response_ids": 32,
+      "distinct_raw_response_ids_across_services": 4,
+      "per_service_unique_response_ids": 4
+    },
+    "blocking_findings": []
+  },
+  "findings": [
+    {
+      "id": "route_control",
+      "finding": "六个同arm同k的S/L比较，以及六个同前驱同k的A/C比较，prompt、input token、output文本摘要和完整ordered top-k ID摘要均相同；每个路由分段的changed layers与demand L1差为0。因而本次计数差不是需求条目增加造成；trace不记录router权重，不能扩展到全激活相等。",
+      "evidence": "same_arm_S_to_L[*].route_identity; same_predecessor_A_to_C[*].route_identity"
+    },
+    {
+      "id": "k1_prefill",
+      "finding": "L−S 的k1 prefill loads A为454、C为411；入口缺失distinct需求下界分别增加448、440，余量差为+6、−29。此算术说明额外加载总数大部分与不同入口成员下的必需首载下界同量级，不能把454/411全部称作可消除的thrashing。TTFT A增加0.236119s，C增加0.316810s；真实prefill时间分别增加0.236031s、0.316802s。",
+      "evidence": "same_arm_S_to_L[k1].gpu_load_lower_bound_difference.prefill"
+    },
+    {
+      "id": "k1_decode_supply",
+      "finding": "k1 decode 的L−S：A loads+227、mirror hits−470、实际read misses+697；C loads+129、mirror hits−452、read misses+581。L2 hits均0。因此GPU加载数量增加并不能单独解释实际软件读次数增加；mirror实际供给减少是已观测的另一项计数变化。软件读分别增加1,927,082,328与1,606,362,744字节；HTTP decode增加0.721227s与1.477086s，不能将计数分解换算为这些耗时的独占贡献。",
+      "evidence": "same_arm_S_to_L[k1].whole_phases.decode"
+    },
+    {
+      "id": "late_decode",
+      "finding": "差异延续到forward32→255。A k1尾段loads仅+14，但mirror hits−460、read misses+474、软件读+1,310,526,576B、PID读+1,828,732,928B、elapsed+0.471070s。C k1尾段loads反而−59，mirror hits−428、read misses+369、软件读+1,020,220,056B、PID读+1,869,193,216B、elapsed+0.988762s。C这一直接反例排除“所有较慢尾段都由更多GPU加载数解释”。",
+      "evidence": "same_arm_S_to_L[k1].five_intervals.decode_32_end"
+    },
+    {
+      "id": "k2_direction_reversal",
+      "finding": "k2不是应删除的热身异常。L−S 的prefill loads A/C为+18/+36，decode为+308/+239；软件读两阶段也均增加，但PID读两阶段均减少，HTTP TTFT为−0.659156/−0.750439s、decode为−0.402398/−0.402375s。这个单次方向反转反驳以软件工作量或“长前驱”标签单调预测请求时间，不证明稳定加速或噪声分布。",
+      "evidence": "same_arm_S_to_L[k2]"
+    },
+    {
+      "id": "k3_bytes_and_time",
+      "finding": "k3 prefill loads仅A+4/C+8，decode+114/+102；软件读总差A58,061,304B、C55,296,480B，而PID读总差A7,623,929,856B、C7,825,158,144B。TTFT仍+0.819408/+1.058292s，HTTP decode+0.764740/+1.212422s。C的HTTP decode与phase decode差不同（phase差1.250449s），须保持客户端首token边界与服务端phase边界独立。不能把几千万软件字节等同于多出的约7.6–7.8GB进程storage读，更不能据此断言SSD独占等待或page-cache命中率。",
+      "evidence": "same_arm_S_to_L[k3].http and whole_phases"
+    },
+    {
+      "id": "actual_supply",
+      "finding": "16条观测请求的32个prefill/decode阶段实际L2 hits全部0；80个相邻phase区间的lookups=hits+misses、loads=misses、loads=L2hits+mirrorhits+readmisses均成立。每个成功软件read miss计2,764,824B。mirror hits是实际供给计数，入口mirror/L2成员重叠不是供给。零L2 hit不证明可删除L2 pinned staging缓冲，也不说明增加L2容量有收益。",
+      "evidence": "counter_contract; observed_phase_work_bounds; source ClaimExpert and StageTask"
+    },
+    {
+      "id": "recorded_history_continuity",
+      "finding": "4个on服务各3个请求间隙，共12个 previous inference_end→next prefill_begin 的全部记录metadata精确一致，changed layers=0。未观察到请求边界软件metadata重置；payload、OS page-cache和in-flight状态不在此合同内。",
+      "evidence": "cross_request_metadata_continuity"
+    },
+    {
+      "id": "k3_cache_state",
+      "finding": "k3 S/L入口GPU mapping在48层全部不同，A/C分别11,251/11,283个物理slot位置不同；GPU成员集仍有16/15层不同，但共同occupied专家的相对age差均0、protected槽均0。k3结束成员集仍14/13层不同。故共同专家recency已吻合不能推出有效cache状态完全相同；slot-index平票规则可能保留布局依赖，但尚未逐plan回放证明它造成了多少可避免load。raw ticks增长不计作reload。",
+      "evidence": "same_arm_S_to_L[k3].recorded_cache_differences; PlanResolve tie rule"
+    }
+  ],
+  "same_arm_S_to_L": [
+    {
+      "position": 1,
+      "left": {
+        "group": "m02-as-on",
+        "condition": "AS"
+      },
+      "right": {
+        "group": "m07-al-on",
+        "condition": "AL"
+      },
+      "direction": "right minus left",
+      "recorded_cache_differences": {
+        "prefill_begin": {
+          "gpu_slots": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 48,
+            "changed_buffer_count": 11784,
+            "common_occupied_experts_with_changed_relative_age": 9303,
+            "protected_changed_slot_count": 0,
+            "left_protected_slot_count": 0
+          },
+          "l2": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 48,
+            "changed_buffer_count": 767,
+            "common_occupied_experts_with_changed_relative_age": 36
+          },
+          "mirror": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 48,
+            "changed_buffer_count": 383
+          }
+        },
+        "prefill_end_decode_begin": {
+          "gpu_slots": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 47,
+            "changed_buffer_count": 11601,
+            "common_occupied_experts_with_changed_relative_age": 0,
+            "protected_changed_slot_count": 0,
+            "left_protected_slot_count": 0
+          },
+          "l2": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 40,
+            "changed_buffer_count": 734,
+            "common_occupied_experts_with_changed_relative_age": 543
+          },
+          "mirror": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 48,
+            "changed_buffer_count": 360
+          }
+        },
+        "inference_end": {
+          "gpu_slots": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 18,
+            "changed_buffer_count": 11431,
+            "common_occupied_experts_with_changed_relative_age": 0,
+            "protected_changed_slot_count": 0,
+            "left_protected_slot_count": 0
+          },
+          "l2": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 29,
+            "changed_buffer_count": 726,
+            "common_occupied_experts_with_changed_relative_age": 258
+          },
+          "mirror": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 33,
+            "changed_buffer_count": 336
+          }
+        }
+      },
+      "gpu_load_lower_bound_difference": {
+        "prefill": {
+          "actual_loads_delta": 454,
+          "entry_absent_lower_bound_delta": 448,
+          "residual_above_lower_bound_delta": 6,
+          "interpretation": "恒等式 actual=入口缺失下界+余量；差值拆分不等于因果贡献或可实现节省。"
+        },
+        "decode": {
+          "actual_loads_delta": 227,
+          "entry_absent_lower_bound_delta": 74,
+          "residual_above_lower_bound_delta": 153,
+          "interpretation": "恒等式 actual=入口缺失下界+余量；差值拆分不等于因果贡献或可实现节省。"
+        }
+      },
+      "route_identity": {
+        "same_prompt_text_sha256": true,
+        "same_input_tokens_sha256": true,
+        "same_output_sha256": true,
+        "same_ordered_route_sha256": true
+      },
+      "http_right_minus_left": {
+        "ttft": 0.23611901700496674,
+        "latency_seconds": 0.9573465071152896,
+        "decode_duration_seconds": 0.7212274901103228,
+        "decode_tps": -0.14214510508205258
+      },
+      "whole_phase_right_minus_left": {
+        "prefill": {
+          "elapsed_seconds": 0.236031265,
+          "pid_storage_read_bytes": 1873068032,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": -454,
+            "misses": 454,
+            "loads": 454,
+            "nvme_read_bytes": 1244170800,
+            "l2_hits": 0,
+            "l2_misses": 450,
+            "mirror_hits": 4
+          }
+        },
+        "decode": {
+          "elapsed_seconds": 0.721300841,
+          "pid_storage_read_bytes": 2593742848,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": -227,
+            "misses": 227,
+            "loads": 227,
+            "nvme_read_bytes": 1927082328,
+            "l2_hits": 0,
+            "l2_misses": 697,
+            "mirror_hits": -470
+          }
+        }
+      }
+    },
+    {
+      "position": 1,
+      "left": {
+        "group": "m03-cs-on",
+        "condition": "CS"
+      },
+      "right": {
+        "group": "m06-cl-on",
+        "condition": "CL"
+      },
+      "direction": "right minus left",
+      "recorded_cache_differences": {
+        "prefill_begin": {
+          "gpu_slots": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 48,
+            "changed_buffer_count": 11852,
+            "common_occupied_experts_with_changed_relative_age": 9302,
+            "protected_changed_slot_count": 0,
+            "left_protected_slot_count": 0
+          },
+          "l2": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 48,
+            "changed_buffer_count": 767,
+            "common_occupied_experts_with_changed_relative_age": 32
+          },
+          "mirror": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 48,
+            "changed_buffer_count": 383
+          }
+        },
+        "prefill_end_decode_begin": {
+          "gpu_slots": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 47,
+            "changed_buffer_count": 11653,
+            "common_occupied_experts_with_changed_relative_age": 0,
+            "protected_changed_slot_count": 0,
+            "left_protected_slot_count": 0
+          },
+          "l2": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 44,
+            "changed_buffer_count": 725,
+            "common_occupied_experts_with_changed_relative_age": 561
+          },
+          "mirror": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 48,
+            "changed_buffer_count": 377
+          }
+        },
+        "inference_end": {
+          "gpu_slots": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 16,
+            "changed_buffer_count": 11466,
+            "common_occupied_experts_with_changed_relative_age": 0,
+            "protected_changed_slot_count": 0,
+            "left_protected_slot_count": 0
+          },
+          "l2": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 28,
+            "changed_buffer_count": 713,
+            "common_occupied_experts_with_changed_relative_age": 272
+          },
+          "mirror": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 27,
+            "changed_buffer_count": 351
+          }
+        }
+      },
+      "gpu_load_lower_bound_difference": {
+        "prefill": {
+          "actual_loads_delta": 411,
+          "entry_absent_lower_bound_delta": 440,
+          "residual_above_lower_bound_delta": -29,
+          "interpretation": "恒等式 actual=入口缺失下界+余量；差值拆分不等于因果贡献或可实现节省。"
+        },
+        "decode": {
+          "actual_loads_delta": 129,
+          "entry_absent_lower_bound_delta": 53,
+          "residual_above_lower_bound_delta": 76,
+          "interpretation": "恒等式 actual=入口缺失下界+余量；差值拆分不等于因果贡献或可实现节省。"
+        }
+      },
+      "route_identity": {
+        "same_prompt_text_sha256": true,
+        "same_input_tokens_sha256": true,
+        "same_output_sha256": true,
+        "same_ordered_route_sha256": true
+      },
+      "http_right_minus_left": {
+        "ttft": 0.31681043514981866,
+        "latency_seconds": 1.7938961971085519,
+        "decode_duration_seconds": 1.4770857619587332,
+        "decode_tps": -0.295304131929238
+      },
+      "whole_phase_right_minus_left": {
+        "prefill": {
+          "elapsed_seconds": 0.316801563,
+          "pid_storage_read_bytes": 1884688384,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": -411,
+            "misses": 411,
+            "loads": 411,
+            "nvme_read_bytes": 1175050200,
+            "l2_hits": 0,
+            "l2_misses": 425,
+            "mirror_hits": -14
+          }
+        },
+        "decode": {
+          "elapsed_seconds": 1.477218147,
+          "pid_storage_read_bytes": 3032518656,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": -129,
+            "misses": 129,
+            "loads": 129,
+            "nvme_read_bytes": 1606362744,
+            "l2_hits": 0,
+            "l2_misses": 581,
+            "mirror_hits": -452
+          }
+        }
+      }
+    },
+    {
+      "position": 2,
+      "left": {
+        "group": "m02-as-on",
+        "condition": "AS"
+      },
+      "right": {
+        "group": "m07-al-on",
+        "condition": "AL"
+      },
+      "direction": "right minus left",
+      "recorded_cache_differences": {
+        "prefill_begin": {
+          "gpu_slots": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 18,
+            "changed_buffer_count": 11431,
+            "common_occupied_experts_with_changed_relative_age": 0,
+            "protected_changed_slot_count": 0,
+            "left_protected_slot_count": 0
+          },
+          "l2": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 29,
+            "changed_buffer_count": 726,
+            "common_occupied_experts_with_changed_relative_age": 258
+          },
+          "mirror": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 33,
+            "changed_buffer_count": 336
+          }
+        },
+        "prefill_end_decode_begin": {
+          "gpu_slots": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 38,
+            "changed_buffer_count": 11321,
+            "common_occupied_experts_with_changed_relative_age": 0,
+            "protected_changed_slot_count": 0,
+            "left_protected_slot_count": 0
+          },
+          "l2": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 40,
+            "changed_buffer_count": 718,
+            "common_occupied_experts_with_changed_relative_age": 566
+          },
+          "mirror": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 46,
+            "changed_buffer_count": 363
+          }
+        },
+        "inference_end": {
+          "gpu_slots": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 16,
+            "changed_buffer_count": 11251,
+            "common_occupied_experts_with_changed_relative_age": 0,
+            "protected_changed_slot_count": 0,
+            "left_protected_slot_count": 0
+          },
+          "l2": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 12,
+            "changed_buffer_count": 722,
+            "common_occupied_experts_with_changed_relative_age": 138
+          },
+          "mirror": {
+            "mapping_changed_layer_count": 47,
+            "membership_changed_layer_count": 24,
+            "changed_buffer_count": 348
+          }
+        }
+      },
+      "gpu_load_lower_bound_difference": {
+        "prefill": {
+          "actual_loads_delta": 18,
+          "entry_absent_lower_bound_delta": 0,
+          "residual_above_lower_bound_delta": 18,
+          "interpretation": "恒等式 actual=入口缺失下界+余量；差值拆分不等于因果贡献或可实现节省。"
+        },
+        "decode": {
+          "actual_loads_delta": 308,
+          "entry_absent_lower_bound_delta": 6,
+          "residual_above_lower_bound_delta": 302,
+          "interpretation": "恒等式 actual=入口缺失下界+余量；差值拆分不等于因果贡献或可实现节省。"
+        }
+      },
+      "route_identity": {
+        "same_prompt_text_sha256": true,
+        "same_input_tokens_sha256": true,
+        "same_output_sha256": true,
+        "same_ordered_route_sha256": true
+      },
+      "http_right_minus_left": {
+        "ttft": -0.659155610948801,
+        "latency_seconds": -1.0615538398269564,
+        "decode_duration_seconds": -0.40239822887815535,
+        "decode_tps": 0.08463823048426988
+      },
+      "whole_phase_right_minus_left": {
+        "prefill": {
+          "elapsed_seconds": -0.659386716,
+          "pid_storage_read_bytes": -1380425728,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": -18,
+            "misses": 18,
+            "loads": 18,
+            "nvme_read_bytes": 69120600,
+            "l2_hits": 0,
+            "l2_misses": 25,
+            "mirror_hits": -7
+          }
+        },
+        "decode": {
+          "elapsed_seconds": -0.402531313,
+          "pid_storage_read_bytes": -190648320,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": -308,
+            "misses": 308,
+            "loads": 308,
+            "nvme_read_bytes": 99533664,
+            "l2_hits": 0,
+            "l2_misses": 36,
+            "mirror_hits": 272
+          }
+        }
+      }
+    },
+    {
+      "position": 2,
+      "left": {
+        "group": "m03-cs-on",
+        "condition": "CS"
+      },
+      "right": {
+        "group": "m06-cl-on",
+        "condition": "CL"
+      },
+      "direction": "right minus left",
+      "recorded_cache_differences": {
+        "prefill_begin": {
+          "gpu_slots": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 16,
+            "changed_buffer_count": 11466,
+            "common_occupied_experts_with_changed_relative_age": 0,
+            "protected_changed_slot_count": 0,
+            "left_protected_slot_count": 0
+          },
+          "l2": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 28,
+            "changed_buffer_count": 713,
+            "common_occupied_experts_with_changed_relative_age": 272
+          },
+          "mirror": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 27,
+            "changed_buffer_count": 351
+          }
+        },
+        "prefill_end_decode_begin": {
+          "gpu_slots": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 36,
+            "changed_buffer_count": 11376,
+            "common_occupied_experts_with_changed_relative_age": 0,
+            "protected_changed_slot_count": 0,
+            "left_protected_slot_count": 0
+          },
+          "l2": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 40,
+            "changed_buffer_count": 717,
+            "common_occupied_experts_with_changed_relative_age": 560
+          },
+          "mirror": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 47,
+            "changed_buffer_count": 363
+          }
+        },
+        "inference_end": {
+          "gpu_slots": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 15,
+            "changed_buffer_count": 11283,
+            "common_occupied_experts_with_changed_relative_age": 0,
+            "protected_changed_slot_count": 0,
+            "left_protected_slot_count": 0
+          },
+          "l2": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 5,
+            "changed_buffer_count": 731,
+            "common_occupied_experts_with_changed_relative_age": 136
+          },
+          "mirror": {
+            "mapping_changed_layer_count": 46,
+            "membership_changed_layer_count": 24,
+            "changed_buffer_count": 332
+          }
+        }
+      },
+      "gpu_load_lower_bound_difference": {
+        "prefill": {
+          "actual_loads_delta": 36,
+          "entry_absent_lower_bound_delta": 0,
+          "residual_above_lower_bound_delta": 36,
+          "interpretation": "恒等式 actual=入口缺失下界+余量；差值拆分不等于因果贡献或可实现节省。"
+        },
+        "decode": {
+          "actual_loads_delta": 239,
+          "entry_absent_lower_bound_delta": 5,
+          "residual_above_lower_bound_delta": 234,
+          "interpretation": "恒等式 actual=入口缺失下界+余量；差值拆分不等于因果贡献或可实现节省。"
+        }
+      },
+      "route_identity": {
+        "same_prompt_text_sha256": true,
+        "same_input_tokens_sha256": true,
+        "same_output_sha256": true,
+        "same_ordered_route_sha256": true
+      },
+      "http_right_minus_left": {
+        "ttft": -0.7504389379173517,
+        "latency_seconds": -1.1528143221512437,
+        "decode_duration_seconds": -0.40237538423389196,
+        "decode_tps": 0.08491970577459984
+      },
+      "whole_phase_right_minus_left": {
+        "prefill": {
+          "elapsed_seconds": -0.742562444,
+          "pid_storage_read_bytes": -1622786048,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": -36,
+            "misses": 36,
+            "loads": 36,
+            "nvme_read_bytes": 113357784,
+            "l2_hits": 0,
+            "l2_misses": 41,
+            "mirror_hits": -5
+          }
+        },
+        "decode": {
+          "elapsed_seconds": -0.4023491,
+          "pid_storage_read_bytes": -565428224,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": -239,
+            "misses": 239,
+            "loads": 239,
+            "nvme_read_bytes": 66355776,
+            "l2_hits": 0,
+            "l2_misses": 24,
+            "mirror_hits": 215
+          }
+        }
+      }
+    },
+    {
+      "position": 3,
+      "left": {
+        "group": "m02-as-on",
+        "condition": "AS"
+      },
+      "right": {
+        "group": "m07-al-on",
+        "condition": "AL"
+      },
+      "direction": "right minus left",
+      "recorded_cache_differences": {
+        "prefill_begin": {
+          "gpu_slots": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 16,
+            "changed_buffer_count": 11251,
+            "common_occupied_experts_with_changed_relative_age": 0,
+            "protected_changed_slot_count": 0,
+            "left_protected_slot_count": 0
+          },
+          "l2": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 12,
+            "changed_buffer_count": 722,
+            "common_occupied_experts_with_changed_relative_age": 138
+          },
+          "mirror": {
+            "mapping_changed_layer_count": 47,
+            "membership_changed_layer_count": 24,
+            "changed_buffer_count": 348
+          }
+        },
+        "prefill_end_decode_begin": {
+          "gpu_slots": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 24,
+            "changed_buffer_count": 11243,
+            "common_occupied_experts_with_changed_relative_age": 0,
+            "protected_changed_slot_count": 0,
+            "left_protected_slot_count": 0
+          },
+          "l2": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 40,
+            "changed_buffer_count": 720,
+            "common_occupied_experts_with_changed_relative_age": 555
+          },
+          "mirror": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 43,
+            "changed_buffer_count": 352
+          }
+        },
+        "inference_end": {
+          "gpu_slots": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 14,
+            "changed_buffer_count": 11206,
+            "common_occupied_experts_with_changed_relative_age": 0,
+            "protected_changed_slot_count": 0,
+            "left_protected_slot_count": 0
+          },
+          "l2": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 12,
+            "changed_buffer_count": 729,
+            "common_occupied_experts_with_changed_relative_age": 178
+          },
+          "mirror": {
+            "mapping_changed_layer_count": 44,
+            "membership_changed_layer_count": 21,
+            "changed_buffer_count": 341
+          }
+        }
+      },
+      "gpu_load_lower_bound_difference": {
+        "prefill": {
+          "actual_loads_delta": 4,
+          "entry_absent_lower_bound_delta": 0,
+          "residual_above_lower_bound_delta": 4,
+          "interpretation": "恒等式 actual=入口缺失下界+余量；差值拆分不等于因果贡献或可实现节省。"
+        },
+        "decode": {
+          "actual_loads_delta": 114,
+          "entry_absent_lower_bound_delta": -1,
+          "residual_above_lower_bound_delta": 115,
+          "interpretation": "恒等式 actual=入口缺失下界+余量；差值拆分不等于因果贡献或可实现节省。"
+        }
+      },
+      "route_identity": {
+        "same_prompt_text_sha256": true,
+        "same_input_tokens_sha256": true,
+        "same_output_sha256": true,
+        "same_ordered_route_sha256": true
+      },
+      "http_right_minus_left": {
+        "ttft": 0.8194081059191376,
+        "latency_seconds": 1.5841480777598917,
+        "decode_duration_seconds": 0.7647399718407542,
+        "decode_tps": -0.1653592525858958
+      },
+      "whole_phase_right_minus_left": {
+        "prefill": {
+          "elapsed_seconds": 0.819619107,
+          "pid_storage_read_bytes": 5579288576,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": -4,
+            "misses": 4,
+            "loads": 4,
+            "nvme_read_bytes": 8294472,
+            "l2_hits": 0,
+            "l2_misses": 3,
+            "mirror_hits": 1
+          }
+        },
+        "decode": {
+          "elapsed_seconds": 0.764732767,
+          "pid_storage_read_bytes": 2044641280,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": -114,
+            "misses": 114,
+            "loads": 114,
+            "nvme_read_bytes": 49766832,
+            "l2_hits": 0,
+            "l2_misses": 18,
+            "mirror_hits": 96
+          }
+        }
+      }
+    },
+    {
+      "position": 3,
+      "left": {
+        "group": "m03-cs-on",
+        "condition": "CS"
+      },
+      "right": {
+        "group": "m06-cl-on",
+        "condition": "CL"
+      },
+      "direction": "right minus left",
+      "recorded_cache_differences": {
+        "prefill_begin": {
+          "gpu_slots": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 15,
+            "changed_buffer_count": 11283,
+            "common_occupied_experts_with_changed_relative_age": 0,
+            "protected_changed_slot_count": 0,
+            "left_protected_slot_count": 0
+          },
+          "l2": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 5,
+            "changed_buffer_count": 731,
+            "common_occupied_experts_with_changed_relative_age": 136
+          },
+          "mirror": {
+            "mapping_changed_layer_count": 46,
+            "membership_changed_layer_count": 24,
+            "changed_buffer_count": 332
+          }
+        },
+        "prefill_end_decode_begin": {
+          "gpu_slots": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 25,
+            "changed_buffer_count": 11269,
+            "common_occupied_experts_with_changed_relative_age": 0,
+            "protected_changed_slot_count": 0,
+            "left_protected_slot_count": 0
+          },
+          "l2": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 42,
+            "changed_buffer_count": 730,
+            "common_occupied_experts_with_changed_relative_age": 539
+          },
+          "mirror": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 46,
+            "changed_buffer_count": 354
+          }
+        },
+        "inference_end": {
+          "gpu_slots": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 13,
+            "changed_buffer_count": 11252,
+            "common_occupied_experts_with_changed_relative_age": 0,
+            "protected_changed_slot_count": 0,
+            "left_protected_slot_count": 0
+          },
+          "l2": {
+            "mapping_changed_layer_count": 48,
+            "membership_changed_layer_count": 11,
+            "changed_buffer_count": 725,
+            "common_occupied_experts_with_changed_relative_age": 170
+          },
+          "mirror": {
+            "mapping_changed_layer_count": 47,
+            "membership_changed_layer_count": 23,
+            "changed_buffer_count": 334
+          }
+        }
+      },
+      "gpu_load_lower_bound_difference": {
+        "prefill": {
+          "actual_loads_delta": 8,
+          "entry_absent_lower_bound_delta": 0,
+          "residual_above_lower_bound_delta": 8,
+          "interpretation": "恒等式 actual=入口缺失下界+余量；差值拆分不等于因果贡献或可实现节省。"
+        },
+        "decode": {
+          "actual_loads_delta": 102,
+          "entry_absent_lower_bound_delta": -2,
+          "residual_above_lower_bound_delta": 104,
+          "interpretation": "恒等式 actual=入口缺失下界+余量；差值拆分不等于因果贡献或可实现节省。"
+        }
+      },
+      "route_identity": {
+        "same_prompt_text_sha256": true,
+        "same_input_tokens_sha256": true,
+        "same_output_sha256": true,
+        "same_ordered_route_sha256": true
+      },
+      "http_right_minus_left": {
+        "ttft": 1.058292071102187,
+        "latency_seconds": 2.270713933277875,
+        "decode_duration_seconds": 1.2124218621756881,
+        "decode_tps": -0.2592097858689195
+      },
+      "whole_phase_right_minus_left": {
+        "prefill": {
+          "elapsed_seconds": 1.020328218,
+          "pid_storage_read_bytes": 5563478016,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": -8,
+            "misses": 8,
+            "loads": 8,
+            "nvme_read_bytes": 30413064,
+            "l2_hits": 0,
+            "l2_misses": 11,
+            "mirror_hits": -3
+          }
+        },
+        "decode": {
+          "elapsed_seconds": 1.250449417,
+          "pid_storage_read_bytes": 2261680128,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": -102,
+            "misses": 102,
+            "loads": 102,
+            "nvme_read_bytes": 24883416,
+            "l2_hits": 0,
+            "l2_misses": 9,
+            "mirror_hits": 93
+          }
+        }
+      }
+    }
+  ],
+  "same_predecessor_A_to_C": [
+    {
+      "position": 1,
+      "left": {
+        "group": "m02-as-on",
+        "condition": "AS"
+      },
+      "right": {
+        "group": "m03-cs-on",
+        "condition": "CS"
+      },
+      "direction": "right minus left",
+      "route_identity": {
+        "same_prompt_text_sha256": true,
+        "same_input_tokens_sha256": true,
+        "same_output_sha256": true,
+        "same_ordered_route_sha256": true
+      },
+      "http_right_minus_left": {
+        "ttft": -0.07033997192047536,
+        "latency_seconds": -0.6984529548790306,
+        "decode_duration_seconds": -0.6281129829585552,
+        "decode_tps": 0.12856824085341323
+      },
+      "whole_phase_right_minus_left": {
+        "prefill": {
+          "elapsed_seconds": -0.070341275,
+          "pid_storage_read_bytes": 10760192,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": 0,
+            "misses": 0,
+            "loads": 0,
+            "nvme_read_bytes": -16588944,
+            "l2_hits": 0,
+            "l2_misses": -6,
+            "mirror_hits": 6
+          }
+        },
+        "decode": {
+          "elapsed_seconds": -0.62815376,
+          "pid_storage_read_bytes": -23867392,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": 0,
+            "misses": 0,
+            "loads": 0,
+            "nvme_read_bytes": 11059296,
+            "l2_hits": 0,
+            "l2_misses": 4,
+            "mirror_hits": -4
+          }
+        }
+      }
+    },
+    {
+      "position": 1,
+      "left": {
+        "group": "m07-al-on",
+        "condition": "AL"
+      },
+      "right": {
+        "group": "m06-cl-on",
+        "condition": "CL"
+      },
+      "direction": "right minus left",
+      "route_identity": {
+        "same_prompt_text_sha256": true,
+        "same_input_tokens_sha256": true,
+        "same_output_sha256": true,
+        "same_ordered_route_sha256": true
+      },
+      "http_right_minus_left": {
+        "ttft": 0.01035144622437656,
+        "latency_seconds": 0.1380967351142317,
+        "decode_duration_seconds": 0.12774528888985515,
+        "decode_tps": -0.02459078599377218
+      },
+      "whole_phase_right_minus_left": {
+        "prefill": {
+          "elapsed_seconds": 0.010429023,
+          "pid_storage_read_bytes": 22380544,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": 43,
+            "misses": -43,
+            "loads": -43,
+            "nvme_read_bytes": -85709544,
+            "l2_hits": 0,
+            "l2_misses": -31,
+            "mirror_hits": -12
+          }
+        },
+        "decode": {
+          "elapsed_seconds": 0.127763546,
+          "pid_storage_read_bytes": 414908416,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": 98,
+            "misses": -98,
+            "loads": -98,
+            "nvme_read_bytes": -309660288,
+            "l2_hits": 0,
+            "l2_misses": -112,
+            "mirror_hits": 14
+          }
+        }
+      }
+    },
+    {
+      "position": 2,
+      "left": {
+        "group": "m02-as-on",
+        "condition": "AS"
+      },
+      "right": {
+        "group": "m03-cs-on",
+        "condition": "CS"
+      },
+      "direction": "right minus left",
+      "route_identity": {
+        "same_prompt_text_sha256": true,
+        "same_input_tokens_sha256": true,
+        "same_output_sha256": true,
+        "same_ordered_route_sha256": true
+      },
+      "http_right_minus_left": {
+        "ttft": 0.02205849182792008,
+        "latency_seconds": -0.03669206495396793,
+        "decode_duration_seconds": -0.05875055678188801,
+        "decode_tps": 0.012235806933830418
+      },
+      "whole_phase_right_minus_left": {
+        "prefill": {
+          "elapsed_seconds": 0.014171567,
+          "pid_storage_read_bytes": 52817920,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": 0,
+            "misses": 0,
+            "loads": 0,
+            "nvme_read_bytes": 11059296,
+            "l2_hits": 0,
+            "l2_misses": 4,
+            "mirror_hits": -4
+          }
+        },
+        "decode": {
+          "elapsed_seconds": -0.058695038,
+          "pid_storage_read_bytes": 1949696,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": 0,
+            "misses": 0,
+            "loads": 0,
+            "nvme_read_bytes": 13824120,
+            "l2_hits": 0,
+            "l2_misses": 5,
+            "mirror_hits": -5
+          }
+        }
+      }
+    },
+    {
+      "position": 2,
+      "left": {
+        "group": "m07-al-on",
+        "condition": "AL"
+      },
+      "right": {
+        "group": "m06-cl-on",
+        "condition": "CL"
+      },
+      "direction": "right minus left",
+      "route_identity": {
+        "same_prompt_text_sha256": true,
+        "same_input_tokens_sha256": true,
+        "same_output_sha256": true,
+        "same_ordered_route_sha256": true
+      },
+      "http_right_minus_left": {
+        "ttft": -0.0692248351406306,
+        "latency_seconds": -0.12795254727825522,
+        "decode_duration_seconds": -0.05872771213762462,
+        "decode_tps": 0.012517282224160375
+      },
+      "whole_phase_right_minus_left": {
+        "prefill": {
+          "elapsed_seconds": -0.069004161,
+          "pid_storage_read_bytes": -189542400,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": -18,
+            "misses": 18,
+            "loads": 18,
+            "nvme_read_bytes": 55296480,
+            "l2_hits": 0,
+            "l2_misses": 20,
+            "mirror_hits": -2
+          }
+        },
+        "decode": {
+          "elapsed_seconds": -0.058512825,
+          "pid_storage_read_bytes": -372830208,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": 69,
+            "misses": -69,
+            "loads": -69,
+            "nvme_read_bytes": -19353768,
+            "l2_hits": 0,
+            "l2_misses": -7,
+            "mirror_hits": -62
+          }
+        }
+      }
+    },
+    {
+      "position": 3,
+      "left": {
+        "group": "m02-as-on",
+        "condition": "AS"
+      },
+      "right": {
+        "group": "m03-cs-on",
+        "condition": "CS"
+      },
+      "direction": "right minus left",
+      "route_identity": {
+        "same_prompt_text_sha256": true,
+        "same_input_tokens_sha256": true,
+        "same_output_sha256": true,
+        "same_ordered_route_sha256": true
+      },
+      "http_right_minus_left": {
+        "ttft": -0.17548216716386378,
+        "latency_seconds": -0.20117643428966403,
+        "decode_duration_seconds": -0.025694267125800252,
+        "decode_tps": 0.005685265650715365
+      },
+      "whole_phase_right_minus_left": {
+        "prefill": {
+          "elapsed_seconds": -0.175231213,
+          "pid_storage_read_bytes": -15654912,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": 0,
+            "misses": 0,
+            "loads": 0,
+            "nvme_read_bytes": 11059296,
+            "l2_hits": 0,
+            "l2_misses": 4,
+            "mirror_hits": -4
+          }
+        },
+        "decode": {
+          "elapsed_seconds": -0.02579972,
+          "pid_storage_read_bytes": 40755200,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": 0,
+            "misses": 0,
+            "loads": 0,
+            "nvme_read_bytes": -2764824,
+            "l2_hits": 0,
+            "l2_misses": -1,
+            "mirror_hits": 1
+          }
+        }
+      }
+    },
+    {
+      "position": 3,
+      "left": {
+        "group": "m07-al-on",
+        "condition": "AL"
+      },
+      "right": {
+        "group": "m06-cl-on",
+        "condition": "CL"
+      },
+      "direction": "right minus left",
+      "route_identity": {
+        "same_prompt_text_sha256": true,
+        "same_input_tokens_sha256": true,
+        "same_output_sha256": true,
+        "same_ordered_route_sha256": true
+      },
+      "http_right_minus_left": {
+        "ttft": 0.06340179801918566,
+        "latency_seconds": 0.4853894212283194,
+        "decode_duration_seconds": 0.42198762320913374,
+        "decode_tps": -0.08816526763230836
+      },
+      "whole_phase_right_minus_left": {
+        "prefill": {
+          "elapsed_seconds": 0.025477898,
+          "pid_storage_read_bytes": -31465472,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": -4,
+            "misses": 4,
+            "loads": 4,
+            "nvme_read_bytes": 33177888,
+            "l2_hits": 0,
+            "l2_misses": 12,
+            "mirror_hits": -8
+          }
+        },
+        "decode": {
+          "elapsed_seconds": 0.45991693,
+          "pid_storage_read_bytes": 257794048,
+          "stats": {
+            "expert_lookups": 0,
+            "hits": 12,
+            "misses": -12,
+            "loads": -12,
+            "nvme_read_bytes": -27648240,
+            "l2_hits": 0,
+            "l2_misses": -10,
+            "mirror_hits": -2
+          }
+        }
+      }
+    }
+  ],
+  "k1_tail_32_to_255": [
+    {
+      "position": 1,
+      "left": {
+        "group": "m02-as-on",
+        "condition": "AS"
+      },
+      "right": {
+        "group": "m07-al-on",
+        "condition": "AL"
+      },
+      "right_minus_left": {
+        "elapsed_seconds": 0.471070415,
+        "pid_storage_read_bytes": 1828732928,
+        "stats": {
+          "expert_lookups": 0,
+          "hits": -14,
+          "misses": 14,
+          "loads": 14,
+          "nvme_read_bytes": 1310526576,
+          "l2_hits": 0,
+          "l2_misses": 474,
+          "mirror_hits": -460
+        }
+      }
+    },
+    {
+      "position": 1,
+      "left": {
+        "group": "m03-cs-on",
+        "condition": "CS"
+      },
+      "right": {
+        "group": "m06-cl-on",
+        "condition": "CL"
+      },
+      "right_minus_left": {
+        "elapsed_seconds": 0.988762087,
+        "pid_storage_read_bytes": 1869193216,
+        "stats": {
+          "expert_lookups": 0,
+          "hits": 59,
+          "misses": -59,
+          "loads": -59,
+          "nvme_read_bytes": 1020220056,
+          "l2_hits": 0,
+          "l2_misses": 369,
+          "mirror_hits": -428
+        }
+      }
+    }
+  ],
+  "counter_contract": {
+    "disjoint_intervals": 80,
+    "arithmetic_failures": 0,
+    "whole_phases": 32,
+    "l2_hit_nonzero_phases": 0,
+    "software_bytes_per_successful_read_miss": 2764824,
+    "interpretation": "这是软件成功读取请求字节，包括page-cache命中；PID storage read_bytes覆盖所有进程文件，均不是exclusive时间。"
+  },
+  "cross_request_metadata_continuity": [
+    {
+      "group_id": "m02-as-on",
+      "from_position": 0,
+      "to_position": 1,
+      "equal_all_metadata": true,
+      "changed_layer_count": 0,
+      "layers": [],
+      "scope": "exact recorded fields, not payload/in-flight state"
+    },
+    {
+      "group_id": "m02-as-on",
+      "from_position": 1,
+      "to_position": 2,
+      "equal_all_metadata": true,
+      "changed_layer_count": 0,
+      "layers": [],
+      "scope": "exact recorded fields, not payload/in-flight state"
+    },
+    {
+      "group_id": "m02-as-on",
+      "from_position": 2,
+      "to_position": 3,
+      "equal_all_metadata": true,
+      "changed_layer_count": 0,
+      "layers": [],
+      "scope": "exact recorded fields, not payload/in-flight state"
+    },
+    {
+      "group_id": "m03-cs-on",
+      "from_position": 0,
+      "to_position": 1,
+      "equal_all_metadata": true,
+      "changed_layer_count": 0,
+      "layers": [],
+      "scope": "exact recorded fields, not payload/in-flight state"
+    },
+    {
+      "group_id": "m03-cs-on",
+      "from_position": 1,
+      "to_position": 2,
+      "equal_all_metadata": true,
+      "changed_layer_count": 0,
+      "layers": [],
+      "scope": "exact recorded fields, not payload/in-flight state"
+    },
+    {
+      "group_id": "m03-cs-on",
+      "from_position": 2,
+      "to_position": 3,
+      "equal_all_metadata": true,
+      "changed_layer_count": 0,
+      "layers": [],
+      "scope": "exact recorded fields, not payload/in-flight state"
+    },
+    {
+      "group_id": "m06-cl-on",
+      "from_position": 0,
+      "to_position": 1,
+      "equal_all_metadata": true,
+      "changed_layer_count": 0,
+      "layers": [],
+      "scope": "exact recorded fields, not payload/in-flight state"
+    },
+    {
+      "group_id": "m06-cl-on",
+      "from_position": 1,
+      "to_position": 2,
+      "equal_all_metadata": true,
+      "changed_layer_count": 0,
+      "layers": [],
+      "scope": "exact recorded fields, not payload/in-flight state"
+    },
+    {
+      "group_id": "m06-cl-on",
+      "from_position": 2,
+      "to_position": 3,
+      "equal_all_metadata": true,
+      "changed_layer_count": 0,
+      "layers": [],
+      "scope": "exact recorded fields, not payload/in-flight state"
+    },
+    {
+      "group_id": "m07-al-on",
+      "from_position": 0,
+      "to_position": 1,
+      "equal_all_metadata": true,
+      "changed_layer_count": 0,
+      "layers": [],
+      "scope": "exact recorded fields, not payload/in-flight state"
+    },
+    {
+      "group_id": "m07-al-on",
+      "from_position": 1,
+      "to_position": 2,
+      "equal_all_metadata": true,
+      "changed_layer_count": 0,
+      "layers": [],
+      "scope": "exact recorded fields, not payload/in-flight state"
+    },
+    {
+      "group_id": "m07-al-on",
+      "from_position": 2,
+      "to_position": 3,
+      "equal_all_metadata": true,
+      "changed_layer_count": 0,
+      "layers": [],
+      "scope": "exact recorded fields, not payload/in-flight state"
+    }
+  ],
+  "work_bound_contract": {
+    "formula": "F=phase入口GPU不存在、但本phase至少路由一次的distinct(layer,expert)数；现有成功按需GPU load路径下 loads>=F。对固定入口成员/路由，0<=可能可避免的GPU loads<=actual_loads-F；该上界不保证有限容量/整段needed集合约束下可达。",
+    "why_membership_is_usable_here": "该下界只断言入口GPU缺失的每个需求身份至少发生一次GPU装载；不把带重复次数的route overlap当actual hit，不使用L2/mirror入口成员推断来源。",
+    "residual_is_not_a_reload_counter": "余量可包含入口resident先被逐出再首次使用、capacity/needed-set约束必需的再次加载、或真正可避免重载；这些未由aggregate区分。",
+    "fixed_entry_scope": "替换策略若同时改变更早请求及本phase入口，当前F不是新入口的全局工作量下界；须按对应反事实入口重算。",
+    "numbers": "1K probes prefill的actual−F为6,036–6,097，占实际loads约47.7–49.5%；decode为2,334–3,113，约36.7–43.1%。不是没有空间，也不是已证明存在同量可避免工作。",
+    "repeat_load_lower_bound": "max(0,loads−本phase distinct需求)仅下界同phase中超过每身份首个load的load次数，不断言可避免。1K探针两phase该下界均0；8193 conditioning A至少49,000，C至少14,657次。",
+    "source_locations": [
+      "analyze_mechanism.py:193-209 (sets of demanded IDs)",
+      "summarize_mechanism.py:250-258 (distinct absent pairs)",
+      "src/quant/moe_residency.cpp:1382-1478 (PlanResolve needed set, per-plan dedup, eligible LRU)"
+    ],
+    "probe_prefill_upper_bound_fraction_range": [
+      0.4769097631972307,
+      0.4952032520325203
+    ]
+  },
+  "conditioning_8193_separate": {
+    "rows": [
+      {
+        "condition": "AL",
+        "http": {
+          "ttft": 37.38808287982829,
+          "latency_seconds": 74.27878098282963,
+          "decode_duration_seconds": 36.89069810300134,
+          "decode_tps": 6.912311588358199
+        },
+        "prefill": {
+          "elapsed_ns": 37378950326,
+          "pid_storage_read_bytes": 73307258880
+        },
+        "stats": {
+          "resolve_calls": 1044,
+          "expert_lookups": 3932640,
+          "loads": 71471,
+          "l2_hits": 0,
+          "l2_misses": 70685,
+          "mirror_hits": 786,
+          "nvme_read_bytes": 195431584440,
+          "shape_single_lookups": 480
+        },
+        "work_bounds": {
+          "condition": "AL",
+          "group_id": "m07-al-on",
+          "position": 0,
+          "role": "conditioning",
+          "actual_input": 8193,
+          "phase": "prefill",
+          "actual_gpu_loads": 71471,
+          "distinct_demand_layer_expert_pairs": 22471,
+          "entry_absent_distinct_pairs_load_lower_bound": 10587,
+          "loads_above_entry_lower_bound": 60884,
+          "upper_bound_fraction_of_actual_loads": 0.8518699892263996,
+          "within_phase_repeated_loads_count_lower_bound": 49000,
+          "interpretation": "同一实际入口GPU成员和完整路由下，下界之外只是可能可避免加载的上界；不是已证明可避免重载，也不是实际L2来源或读取字节下界。"
+        }
+      },
+      {
+        "condition": "CL",
+        "http": {
+          "ttft": 26.791015750961378,
+          "latency_seconds": 63.3220886499621,
+          "decode_duration_seconds": 36.53107289900072,
+          "decode_tps": 6.980358904459533
+        },
+        "prefill": {
+          "elapsed_ns": 26781991555,
+          "pid_storage_read_bytes": 70049390592
+        },
+        "stats": {
+          "resolve_calls": 409,
+          "expert_lookups": 3932640,
+          "loads": 37128,
+          "l2_hits": 0,
+          "l2_misses": 36940,
+          "mirror_hits": 188,
+          "nvme_read_bytes": 102132598560,
+          "shape_single_lookups": 490
+        },
+        "work_bounds": {
+          "condition": "CL",
+          "group_id": "m06-cl-on",
+          "position": 0,
+          "role": "conditioning",
+          "actual_input": 8193,
+          "phase": "prefill",
+          "actual_gpu_loads": 37128,
+          "distinct_demand_layer_expert_pairs": 22471,
+          "entry_absent_distinct_pairs_load_lower_bound": 10587,
+          "loads_above_entry_lower_bound": 26541,
+          "upper_bound_fraction_of_actual_loads": 0.7148513251454428,
+          "within_phase_repeated_loads_count_lower_bound": 14657,
+          "interpretation": "同一实际入口GPU成员和完整路由下，下界之外只是可能可避免加载的上界；不是已证明可避免重载，也不是实际L2来源或读取字节下界。"
+        }
+      }
+    ],
+    "interpretation": "A/C长conditioning ordered route摘要相同。C prefill resolve_calls409 vs A1044；loads37,128 vs71,471，少34,343；实际read misses36,940 vs70,685，软件读102,132,598,560 vs195,431,584,440B，少93,298,985,880B。此处有真实工作量减少，和已存在的C分区策略相符；不能把已知C变更重新宣称为本阶段新候选，也不能据此覆盖既有NO_GO或推断后续1K改善。8193 phase包含tail，shape_single不能替代prefill/decode边界。"
+  },
+  "observation_bundle": {
+    "count": 16,
+    "interpretation": "16个on−off差保留k与执行顺序。TTFT差范围约−0.136162至+0.261900s，decode差约−0.655437至+0.599338s；它们是混合观测bundle+固定顺序+服务历史的单对差，不是纯开销、误差条、epsilon或统计噪声分布。",
+    "repair_gaps": "m01完成后原审计及r2离线失败，r3复用同4HTTP；m02完成后r3对加载后环境合同失败，r4复用同4HTTP。无重跑HTTP，旧失败保留，但审计修复间隔改变了服务间时间间隔；AS off→on配对及on服务间序列受此限制。其余配对也只有固定顺序的单服务，不能靠扣除bundle差修正phase时间。",
+    "inference_boundary": "只对本次观测bundle下机制给直接数字，不把它们自动外推到off或旧64条样本；不合池。",
+    "contrasts": [
+      {
+        "pair_index": 1,
+        "condition": "AS",
+        "position": 0,
+        "role": "conditioning",
+        "service_execution_order": [
+          "m01-as-off",
+          "m02-as-on"
+        ],
+        "off_group": "m01-as-off",
+        "on_group": "m02-as-on",
+        "on_minus_off": {
+          "ttft": -0.06660264893434942,
+          "latency_seconds": -0.02961542597040534,
+          "decode_duration_seconds": 0.03698722296394408,
+          "decode_tps": -0.00680405415670382
+        }
+      },
+      {
+        "pair_index": 1,
+        "condition": "AS",
+        "position": 1,
+        "role": "probe",
+        "service_execution_order": [
+          "m01-as-off",
+          "m02-as-on"
+        ],
+        "off_group": "m01-as-off",
+        "on_group": "m02-as-on",
+        "on_minus_off": {
+          "ttft": -0.13616240909323096,
+          "latency_seconds": -0.20582149224355817,
+          "decode_duration_seconds": -0.0696590831503272,
+          "decode_tps": 0.013979656767683757
+        }
+      },
+      {
+        "pair_index": 1,
+        "condition": "AS",
+        "position": 2,
+        "role": "probe",
+        "service_execution_order": [
+          "m01-as-off",
+          "m02-as-on"
+        ],
+        "off_group": "m01-as-off",
+        "on_group": "m02-as-on",
+        "on_minus_off": {
+          "ttft": -0.07075640489347279,
+          "latency_seconds": 0.05220741289667785,
+          "decode_duration_seconds": 0.12296381779015064,
+          "decode_tps": -0.02565643756463043
+        }
+      },
+      {
+        "pair_index": 1,
+        "condition": "AS",
+        "position": 3,
+        "role": "probe",
+        "service_execution_order": [
+          "m01-as-off",
+          "m02-as-on"
+        ],
+        "off_group": "m01-as-off",
+        "on_group": "m02-as-on",
+        "on_minus_off": {
+          "ttft": 0.05464984802529216,
+          "latency_seconds": -0.08920402987860143,
+          "decode_duration_seconds": -0.1438538779038936,
+          "decode_tps": 0.03167172063692725
+        }
+      },
+      {
+        "pair_index": 2,
+        "condition": "CS",
+        "position": 0,
+        "role": "conditioning",
+        "service_execution_order": [
+          "m03-cs-on",
+          "m04-cs-off"
+        ],
+        "off_group": "m04-cs-off",
+        "on_group": "m03-cs-on",
+        "on_minus_off": {
+          "ttft": -0.060973457992076874,
+          "latency_seconds": 0.20110974414274096,
+          "decode_duration_seconds": 0.26208320213481784,
+          "decode_tps": -0.048298897193760126
+        }
+      },
+      {
+        "pair_index": 2,
+        "condition": "CS",
+        "position": 1,
+        "role": "probe",
+        "service_execution_order": [
+          "m03-cs-on",
+          "m04-cs-off"
+        ],
+        "off_group": "m04-cs-off",
+        "on_group": "m03-cs-on",
+        "on_minus_off": {
+          "ttft": 0.020166564034298062,
+          "latency_seconds": 0.36299297702498734,
+          "decode_duration_seconds": 0.3428264129906893,
+          "decode_tps": -0.07213992238187394
+        }
+      },
+      {
+        "pair_index": 2,
+        "condition": "CS",
+        "position": 2,
+        "role": "probe",
+        "service_execution_order": [
+          "m03-cs-on",
+          "m04-cs-off"
+        ],
+        "off_group": "m04-cs-off",
+        "on_group": "m03-cs-on",
+        "on_minus_off": {
+          "ttft": 0.26189964287914336,
+          "latency_seconds": 0.8402952160686255,
+          "decode_duration_seconds": 0.5783955731894821,
+          "decode_tps": -0.12269296370564309
+        }
+      },
+      {
+        "pair_index": 2,
+        "condition": "CS",
+        "position": 3,
+        "role": "probe",
+        "service_execution_order": [
+          "m03-cs-on",
+          "m04-cs-off"
+        ],
+        "off_group": "m04-cs-off",
+        "on_group": "m03-cs-on",
+        "on_minus_off": {
+          "ttft": 0.14641272486187518,
+          "latency_seconds": 0.23492781375534832,
+          "decode_duration_seconds": 0.08851508889347315,
+          "decode_tps": -0.019651460065948534
+        }
+      },
+      {
+        "pair_index": 3,
+        "condition": "CL",
+        "position": 0,
+        "role": "conditioning",
+        "service_execution_order": [
+          "m05-cl-off",
+          "m06-cl-on"
+        ],
+        "off_group": "m05-cl-off",
+        "on_group": "m06-cl-on",
+        "on_minus_off": {
+          "ttft": -0.10167035111226141,
+          "latency_seconds": 0.18371025589294732,
+          "decode_duration_seconds": 0.28538060700520873,
+          "decode_tps": -0.054959884480087595
+        }
+      },
+      {
+        "pair_index": 3,
+        "condition": "CL",
+        "position": 1,
+        "role": "probe",
+        "service_execution_order": [
+          "m05-cl-off",
+          "m06-cl-on"
+        ],
+        "off_group": "m05-cl-off",
+        "on_group": "m06-cl-on",
+        "on_minus_off": {
+          "ttft": -0.005181971006095409,
+          "latency_seconds": 0.05518759205006063,
+          "decode_duration_seconds": 0.06036956305615604,
+          "decode_tps": -0.011599544338351642
+        }
+      },
+      {
+        "pair_index": 3,
+        "condition": "CL",
+        "position": 2,
+        "role": "probe",
+        "service_execution_order": [
+          "m05-cl-off",
+          "m06-cl-on"
+        ],
+        "off_group": "m05-cl-off",
+        "on_group": "m06-cl-on",
+        "on_minus_off": {
+          "ttft": -0.12000627303496003,
+          "latency_seconds": -0.07296432997100055,
+          "decode_duration_seconds": 0.04704194306395948,
+          "decode_tps": -0.010057294117917337
+        }
+      },
+      {
+        "pair_index": 3,
+        "condition": "CL",
+        "position": 3,
+        "role": "probe",
+        "service_execution_order": [
+          "m05-cl-off",
+          "m06-cl-on"
+        ],
+        "off_group": "m05-cl-off",
+        "on_group": "m06-cl-on",
+        "on_minus_off": {
+          "ttft": -0.03239270020276308,
+          "latency_seconds": 0.5669450189452618,
+          "decode_duration_seconds": 0.5993377191480249,
+          "decode_tps": -0.12586156889381872
+        }
+      },
+      {
+        "pair_index": 4,
+        "condition": "AL",
+        "position": 0,
+        "role": "conditioning",
+        "service_execution_order": [
+          "m07-al-on",
+          "m08-al-off"
+        ],
+        "off_group": "m08-al-off",
+        "on_group": "m07-al-on",
+        "on_minus_off": {
+          "ttft": 0.01698140986263752,
+          "latency_seconds": -0.6384558952413499,
+          "decode_duration_seconds": -0.6554373051039875,
+          "decode_tps": 0.12066719597816533
+        }
+      },
+      {
+        "pair_index": 4,
+        "condition": "AL",
+        "position": 1,
+        "role": "probe",
+        "service_execution_order": [
+          "m07-al-on",
+          "m08-al-off"
+        ],
+        "off_group": "m08-al-off",
+        "on_group": "m07-al-on",
+        "on_minus_off": {
+          "ttft": 0.035529273794963956,
+          "latency_seconds": 0.3282101459335536,
+          "decode_duration_seconds": 0.2926808721385896,
+          "decode_tps": -0.05699789988480575
+        }
+      },
+      {
+        "pair_index": 4,
+        "condition": "AL",
+        "position": 2,
+        "role": "probe",
+        "service_execution_order": [
+          "m07-al-on",
+          "m08-al-off"
+        ],
+        "off_group": "m08-al-off",
+        "on_group": "m07-al-on",
+        "on_minus_off": {
+          "ttft": 0.05338504631072283,
+          "latency_seconds": 0.04439056129194796,
+          "decode_duration_seconds": -0.008994485018774867,
+          "decode_tps": 0.001913344016012175
+        }
+      },
+      {
+        "pair_index": 4,
+        "condition": "AL",
+        "position": 3,
+        "role": "probe",
+        "service_execution_order": [
+          "m07-al-on",
+          "m08-al-off"
+        ],
+        "off_group": "m08-al-off",
+        "on_group": "m07-al-on",
+        "on_minus_off": {
+          "ttft": -0.07529711001552641,
+          "latency_seconds": -0.32776582008227706,
+          "decode_duration_seconds": -0.25246871006675065,
+          "decode_tps": 0.05300356495473668
+        }
+      }
+    ]
+  },
+  "timing_and_io_limits": [
+    "phase1与worker stage/pread/swizzle重叠；pread_merge包含在pread，不相加，不从elapsed扣成compute/wait。",
+    "D2H含stream sync和先前工作等待，异步H2D与mirror enqueue不提供搬运独占时间。",
+    "相邻snapshots是真实分段；累积prefix不能相加，累积max不能相减为段内max。",
+    "HTTP TTFT和服务端prefill、客户端decode和服务端decode有不同边界，分别保留。",
+    "PID read_bytes覆盖所有本进程文件，software nvme_read_bytes包括page-cache命中；两者差值不是被识别的page-cache命中率。",
+    "resource报告仅补充其已有client-envelope/PID范围；设备/cgroup读不相等时，不升级成专家物理IO或因果归因。"
+  ],
+  "candidate_decision": {
+    "decision": "本轮闭合为新的机制结论；有界GPU替换研究方向有工作量空间，但尚无已证明节省、可直接实施的新runtime候选。",
+    "reason_not_exclusive_time": "不因缺exclusive timing否决候选。当前阻碍是未识别具体哪些1K加载可由一项代码变更消除；actual−入口缺失约6K/2.3–3.1K只是上界，1K aggregate尚不能证明任何具体重复load可避免。",
+    "narrowest_gpu_next_step_if_separately_authorized": {
+      "action": "优先用已冻结ordered route与真实入口slot/age，在离线纯读取回放中重建现有PlanResolve的完整needed集合、prefill分块、reserved和slot-index平票；先逐phase复现实际miss/load及三端点。无需新增HTTP或runtime观测即可检验GPU工作假说。",
+      "candidate_to_test_only_after_baseline_reproduction": "仅将eligible最老tick平票时的slot-index次序改为稳定expert-ID次序，是一项可逆、容量不变的候选方向；它可能去除物理布局依赖，但方向不保证减少loads，不能现在选中。也不预设该变更优于现行规则。",
+      "falsifier": "现行回放不能完全复现实际计数/端点，则停止策略解释并定位合同；替代平票没有减少实际needed序列上的loads、或任何受保护/容量合同改变，则该候选不成立。",
+      "work_unit": "每phase GPU loads及GPU load_bytes；不把GPU工作减少当NVMe/PID读取或秒数减少。",
+      "not_started": true
+    },
+    "narrowest_lower_cache_observation_if_that_mechanism_is_chosen": {
+      "action": "可选默认off、仅有界请求的per-miss记录：layer/resolve或forward、expert、GPU victim/slot、ClaimExpert实际source(L2/mirror/read)、buffer与victim身份；worker按原plan index写入预分配记录，在已有Phase1 barrier后归并，不新增同步/worker日志。",
+      "why": "本轮已有实际供给数量变化；若要选择mirror/L2策略，缺的是哪些身份与替换次序造成变化，继续只采相同聚合阶段计数不会填补此缺口。",
+      "source_locations": [
+        "src/quant/moe_residency.cpp:610-683 ClaimExpert",
+        "src/quant/moe_residency.cpp:1021-1033 StageTask",
+        "src/quant/moe_residency.cpp:1422-1474 GPU victim selection",
+        "src/quant/moe_residency.cpp:1564-1574 existing Phase1 completion"
+      ],
+      "exclusive_timing_needed_only_for": "若命题具体是减少critical-path等待，再记录已有caller等待/依赖边界的互斥span；aggregate供应策略的可避免工作证据并不必须等待此计时。",
+      "not_started": true
+    },
+    "not_supported_now": [
+      "仅据L2 hits=0删除staging缓冲或扩大L2",
+      "仅据大D2H/phase1计数宣布transfer/host bottleneck并承诺速度",
+      "据k3 PID差强选page-cache/readahead修复",
+      "据mapping changed count宣称11K次reload"
+    ],
+    "acceptance": "任何后续runtime候选另冻结范围与可证伪工作预测，保持精度/容量/内存合同，按用户性能任务HTTP-first及完整五档E2E规则验收；本报告不启动它、不改变原NO_GO。"
+  },
+  "resources": {
+    "status": "PASS_WITH_RETAINED_UNKNOWN_AND_ACCOUNTING_LIMITS",
+    "passed": true,
+    "counter_domains": {
+      "root_PID_IO": "q4t root process generation-bound read_bytes and logical rchar, all files; not expert-only SSD or process-tree sum.",
+      "cgroup_IO": "io.stat perdevice259:0 retained separately; agreement with PID0/32, plateau with positivePID0/32.",
+      "device_IO": "Global model partition259:1 includes background; parent259:0 not added. Interval overlap14/32; exact controllerPID inside devicebound13/32; attribution to q4t false32/32.",
+      "NVIDIA": "Matching compute-process PIDs from the monitored process tree; driver accounting, not disjoint physical RAM.",
+      "memory_domains_never_added": true
+    },
+    "retained_gaps": {
+      "PSI_unknown_services": 8,
+      "PSI_reason": "memory.pressure and io.pressure absent",
+      "non_PSI_missing_records": 120,
+      "non_PSI_scope": "15 per service at sequence0 before_start; no truncation",
+      "GPU_scheduled_skips": 1724,
+      "GPU_unknown_samples": 1724,
+      "GPU_fresh_observed": 178,
+      "GPU_fresh_failures": 0,
+      "GPU_status_counts": {
+        "ok": 170,
+        "no_matching_compute_process": 8,
+        "no_target": 16,
+        "scheduled_skip": 1724
+      },
+      "no_matching_compute_process": "Reader preserves status and numeric zero as collector defines; not conflated with scheduled unknown.",
+      "PID_IO_unknowns": [
+        {
+          "group_id": "m01-as-off",
+          "sequence": 229,
+          "phase": "shutdown",
+          "reason": "Permission denied reading /proc/3668758/io; valid process identity retained",
+          "outside_request_bounds": true
+        },
+        {
+          "group_id": "m07-al-on",
+          "sequence": 254,
+          "phase": "shutdown",
+          "reason": "process_exited_or_identity_changed; stat ENOENT and identity null",
+          "outside_request_bounds": true
+        }
+      ],
+      "all_unknown_and_discontinuity_lists_untruncated": true,
+      "identity_findings": 0,
+      "counter_discontinuities": 0,
+      "sampler_rows": 1918,
+      "target_rows": 1902,
+      "live_PID_rows": 1901,
+      "binding_mismatches": 0,
+      "cache_endpoint_observations": 16,
+      "live_cache_observations": 0,
+      "live_cache_peak_bytes": null,
+      "per_file_cache_sidecar_not_recomputed": true
+    },
+    "performance_acceptance": false,
+    "physical_union_peak_bytes": null,
+    "whole_physical_RAM_54GB": "INDETERMINATE",
+    "memory": {
+      "actual_cgroup_limit_bytes": 17179869184,
+      "actual_swap_limit_bytes": 0,
+      "memory_deltas_and_positive_max_events": [
+        {
+          "group_id": "m01-as-off",
+          "charge_peak_minus_max_bytes": 0,
+          "observed_current_peak_minus_max_bytes": 0,
+          "sampled_current_above_retained_peak": false,
+          "final_memory_events_max": 1943928
+        },
+        {
+          "group_id": "m02-as-on",
+          "charge_peak_minus_max_bytes": 4096,
+          "observed_current_peak_minus_max_bytes": 167936,
+          "sampled_current_above_retained_peak": true,
+          "final_memory_events_max": 1945115
+        },
+        {
+          "group_id": "m03-cs-on",
+          "charge_peak_minus_max_bytes": 0,
+          "observed_current_peak_minus_max_bytes": 0,
+          "sampled_current_above_retained_peak": false,
+          "final_memory_events_max": 1945951
+        },
+        {
+          "group_id": "m04-cs-off",
+          "charge_peak_minus_max_bytes": 0,
+          "observed_current_peak_minus_max_bytes": 0,
+          "sampled_current_above_retained_peak": false,
+          "final_memory_events_max": 1944851
+        },
+        {
+          "group_id": "m05-cl-off",
+          "charge_peak_minus_max_bytes": 0,
+          "observed_current_peak_minus_max_bytes": 0,
+          "sampled_current_above_retained_peak": false,
+          "final_memory_events_max": 2227653
+        },
+        {
+          "group_id": "m06-cl-on",
+          "charge_peak_minus_max_bytes": 4096,
+          "observed_current_peak_minus_max_bytes": 0,
+          "sampled_current_above_retained_peak": false,
+          "final_memory_events_max": 2231346
+        },
+        {
+          "group_id": "m07-al-on",
+          "charge_peak_minus_max_bytes": 0,
+          "observed_current_peak_minus_max_bytes": 200704,
+          "sampled_current_above_retained_peak": true,
+          "final_memory_events_max": 2268800
+        },
+        {
+          "group_id": "m08-al-off",
+          "charge_peak_minus_max_bytes": 0,
+          "observed_current_peak_minus_max_bytes": 0,
+          "sampled_current_above_retained_peak": false,
+          "final_memory_events_max": 2265645
+        }
+      ],
+      "zero_observed_OOM_or_cgroup_swap_is_not_no_pressure_proof": true,
+      "positive_overruns_and_sampled_current_above_retained_peak_preserved": true
+    },
+    "trace": {
+      "service_directory_bytes": {
+        "m02-as-on": 41614448,
+        "m03-cs-on": 41614448,
+        "m06-cl-on": 48526583,
+        "m07-al-on": 48526583
+      },
+      "total_directory_bytes": 180282062,
+      "total_budget_bytes": 536870912,
+      "offline_trace_reads_not_measured_service_PID_IO": true
+    }
+  },
+  "source_bindings": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/mechanism-interpretation.json": {
+      "sha256": "155e32fa20e195e54f7793ceb208e2e87c349dd6e0356e6bb9c95fbcbc8f6f82",
+      "binding": "direct file SHA256"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/mechanism-independent-review.json": {
+      "sha256": "8f34bcc0283867d8011c7285a142a4058055b8518b25e4dc14afa80230960e91",
+      "binding": "direct file SHA256"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/resource-independent-review.json": {
+      "sha256": "5e99d79c4a8c3af19aefb183c0c257bfb3750e00a0704a4acccf9caf261fdbcc",
+      "binding": "direct file SHA256"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/final-independent-review.json": {
+      "sha256": "988dbc1c92d4010b76d0fa6c57f02ffbaed36b81cc100e49b449f735e407b2ca",
+      "binding": "direct file SHA256"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/tool-validation-admission.json": {
+      "sha256": "4816d98c6c41c934810d05bfb9a31ce13056293ff31ec2d8b7bddda76c8b4f4c",
+      "binding": "direct file SHA256"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/repair-validation-plan.json": {
+      "sha256": "6ed32b2e7c91cae0148e950262f15f7a078c9d93ac48e7f63ae2fc665748f436",
+      "binding": "direct file SHA256"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/repair2-validation-plan.json": {
+      "sha256": "c6c764e1229b3cea1204125a9f83dc12d36cf74ce8d9552a98c0ddfe34e6d32d",
+      "binding": "direct file SHA256"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/repair3-validation-plan.json": {
+      "sha256": "e313cec90b1a827d7b7e45e42ab640d405cd60922418483a378620f4d0f9d7c3",
+      "binding": "direct file SHA256"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/mechanism-analysis-01-exit.json": {
+      "sha256": "bebbfc013d7b9e97ee8d3c726029add9901027803dd0cc75ca5533c7fe7c7e40",
+      "binding": "direct file SHA256"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/resource-audit-01-exit.json": {
+      "sha256": "d3c47bf976b6b242fc969de7a3c030cd9065a354e7ad3c5cca6d16780b0d9758",
+      "binding": "direct file SHA256"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/mechanism-summary-01-exit.json": {
+      "sha256": "08c49dbeedf94a676f15eab7a9d5a012f78895dc8b9dd6d7aac7dab78f75b2ea",
+      "binding": "direct file SHA256"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/final-protection.json": {
+      "sha256": "a70035878eb0b0f51aff7db28f550543bb04be268a10620d2cc1a20bfe83a4f6",
+      "binding": "direct file SHA256"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/final-protection-01-exit.json": {
+      "sha256": "28471e39c7319e09e7f66d039bc10bbb30009b76690d62e79804bc850a46b00f",
+      "binding": "direct file SHA256"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/plan.json": {
+      "sha256": "2fdd504c5bef648e882371b9be3fc50e2b98f2089576d5dc983d9997b367990a",
+      "binding": "inherited from interpretation.source_report_bindings"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/execution-plan.json": {
+      "sha256": "7170959e8084bbda642ffa8b37bdaf5de1b26d29e7cf028989a8c374aa1fb3c1",
+      "binding": "inherited from interpretation.source_report_bindings"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/recovery-plan-r4.json": {
+      "sha256": "2d1487b7559e34cff2d5bcae4e48d82a122ca82b1024901bd0705d61d2dcbf17",
+      "binding": "inherited from interpretation.source_report_bindings"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/mechanism-analysis.json": {
+      "sha256": "b42e5c47d117a3ca8ad7ebc8b55e5259b92a2aecb69c732e7449f0a1e71bf9eb",
+      "binding": "inherited from interpretation.source_report_bindings"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/resource-audit.json": {
+      "sha256": "333e70323edc444ed866266a33d71453a7064808b5dcc7ff06256fb595b400b9",
+      "binding": "inherited from interpretation.source_report_bindings"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/mechanism-summary.json": {
+      "sha256": "fc1cb2e344f11992f3272dc84a09f0b1daa7880fa830930edcd1100ffdd5bc03",
+      "binding": "inherited from interpretation.input_bindings"
+    }
+  }
+}
