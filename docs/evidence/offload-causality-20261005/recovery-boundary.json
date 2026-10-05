@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "created_t": 1791176503.8405027,
+  "prior_attempt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005",
+  "reason": "Missing ignored evalscope environment link before server startup",
+  "original_attempt_preserved": true,
+  "prior_model_starts": 0,
+  "prior_http_requests": 0,
+  "prior_cold_advice_and_monitor_ran": true,
+  "scope_unchanged": true,
+  "service_count": 16,
+  "http_count": 64,
+  "runtime_code_changes": false,
+  "tool_code_changes": false,
+  "passed_tool_contracts_reused": 163,
+  "branch": "codex/offload-causality-recovery-20261005",
+  "source_relocated_to": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source",
+  "dependency_link": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source/tools/evalscope/.venv",
+  "dependency_target": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv"
+}

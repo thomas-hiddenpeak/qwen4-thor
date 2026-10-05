@@ -1,0 +1,133 @@
+{
+  "schema": 1,
+  "reviewer": "reuse_and_runner",
+  "recorded_t": 1791176573.0545413,
+  "passed": true,
+  "status": "CONFIRMED_PRE_SERVICE_DEPENDENCY_FAILURE_ZERO_HTTP",
+  "execution_plan_sha256": "4b4e4e8407371cfa72c06371a99aa73ba4cff970ac228d5f312ccf89b3d85299",
+  "runner_source_commit": "c46721cfdbce3fd264d4c5187a9f78bbe0a08991",
+  "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+  "failure": {
+    "group": "b01-p01-as",
+    "stage": "evalscope package-version lookup before service command/launch",
+    "exception": "FileNotFoundError",
+    "missing_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/.venv/bin/python",
+    "dependency_link_absent": true,
+    "runtime_code_or_numerical_failure": false
+  },
+  "observed_coverage": {
+    "group_controller_attempts": 1,
+    "completed_groups": 0,
+    "q4t_service_starts": 0,
+    "HTTP_requests": 0,
+    "formal_performance_samples": 0,
+    "cache_advice_rounds": 1,
+    "cold_payload_resident_bytes_after_advice": 0,
+    "resource_monitor_started": true,
+    "root_PID_bound_by_monitor": null
+  },
+  "zero_inference_evidence": {
+    "event_names": [
+      "runner_start"
+    ],
+    "absent_HTTP_artifacts": [
+      "server.pid",
+      "server.log",
+      "server-command.json",
+      "isolation",
+      "results.json",
+      "exit.json"
+    ],
+    "no_request_case_directories": true,
+    "source_control_flow": "Version-lookup exception precedes server-command creation and IsolatedService/Popen construction; inference/client code is unreachable on this recorded path."
+  },
+  "cleanup": {
+    "wrapper_returncode": 1,
+    "runner_returncode": 1,
+    "monitor_returncode": 0,
+    "outer_stage_group_absent": true,
+    "wrapper_group_absent": true,
+    "runner_reaped_and_group_absent": true,
+    "owned_unit": "q4t-ram-1791176335413553734-3588010.service",
+    "owned_unit_terminal": "not-found/MainPID0",
+    "scope": "Recorded owned process groups and intended unit; not a machine-wide process/GPU absence claim."
+  },
+  "dependency_observation": {
+    "old_worktree_link": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/tools/evalscope/.venv",
+    "old_link_target": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv",
+    "intended_shared_environment": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv",
+    "existing_executables": {
+      "python": {
+        "path": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+        "resolved": "/usr/bin/python3.12",
+        "is_symlink": true,
+        "link_target": "/usr/bin/python3.12",
+        "mode": "0o755"
+      },
+      "python3": {
+        "path": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python3",
+        "resolved": "/usr/bin/python3.12",
+        "is_symlink": true,
+        "link_target": "python",
+        "mode": "0o755"
+      },
+      "evalscope": {
+        "path": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/evalscope",
+        "resolved": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/evalscope",
+        "is_symlink": false,
+        "link_target": null,
+        "mode": "0o775"
+      }
+    },
+    "evalscope_version_in_prior_accepted_run": "1.12.0",
+    "prior_entrypoint_shebang": "#!/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python3",
+    "current_interpreter_or_package_version_executed": false
+  },
+  "minimum_recovery_boundary": [
+    "Keep this failed root and all raw evidence immutable. Use a fresh sibling attempt2 root/worktree at the same clean runner c46721cf; no runtime/tool source change is needed for the observed missing-directory dependency.",
+    "Create only the missing ignored .venv link in attempt2 to the exact pre-existing shared environment; verify the resolved Python/evalscope targets, executable access and entrypoint shebang, and prospectively record dependency identity/version before admitting a service.",
+    "A metadata-only version/import lookup through the actual attempt2 interpreter may verify the specific repaired prerequisite; it is not a model warmup or repeated quality/performance sample.",
+    "Keep original phase-plan and all16 sequence JSON bytes, fixture/hash/oracle bindings, arms, four Williams blocks, four positions,256 outputs, budgets and endpoints unchanged. Recreate all root-dependent commands/controllers and freeze a distinct attempt2 execution identity.",
+    "Bind the original failure review and preservation manifest, prior scoped quality/numeric/C++ evidence and tool163 evidence. Match new worktree tool bytes to tested tool hashes rather than rerunning unchanged tests solely because paths moved.",
+    "Start attempt2 at group1 and collect the exact16 services/64HTTP once. Original attempt produced no service or HTTP performance sample to reuse, discard or selectively replace.",
+    "Repeat the already frozen per-service cold gate in attempt2; prior targeted advice and monitoring changed environment, so do not claim the whole machine remained untouched or identically cold.",
+    "New independent execution review/admission must validate fresh directory ownership, split runtime/runner identities and full terminal resource gating. Preserve a future concrete failure instead of automatic retry or favorable expansion."
+  ],
+  "performance_acceptance": false,
+  "recovery_executed": false,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/pipeline-execution/exit.json": "606a47f35cbe8fa1adae8164291a9e683a0d9398212329189fa3336368e7e9ab",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/b01-p01-as-stage.json": "c8d644ebcabb886e6408b20676f0d880b130a16263a2ea69f63691732490c343",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/b01-p01-as-controller-exit.json": "6a81eb7151027e093897eb6fb132633956c5e415ed305ca1a2c8b856a5f968e3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/pipeline-execution/step-01-b01-p01-as-run-exit.json": "1974bc534479fbd14f65a96219a0817bf2de5a333b0abc6a697476ada19b507b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/.q4t-work/evidence/b01-p01-as/wrapper-exit.json": "0233c8f34e7f68cbd2d6ef952b61e457e5336edce89186ad3e1d89449e391dfd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/.q4t-work/evidence/b01-p01-as/runner-process-group.json": "07c6482a90582b54d57b90507931553eb9cdae4969d627b950e1afb90763a4f8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/.q4t-work/evidence/b01-p01-as/protocol.json": "fcf2df28d45710d0a6aceb6b0b89168569899276549b142c6ebfaaa893bc664d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/.q4t-work/evidence/b01-p01-as/cache-gate.json": "595f621568f518a19bfcdd3eeaf83f9ac402bb10a66ea08a9bc89f79688c37e3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/.q4t-work/evidence/b01-p01-as/memory/memory-peak.json": "c543feefb32de1af67df46733711a4ea2664cad14b9664908c8bf1605cf02bab",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/.q4t-work/evidence/b01-p01-as/http/events.jsonl": "4a6bbfd9171e125a53d4ac0360fa61d9ff0d0cd924ce54d3d9a3e2e49c6d7f02",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/.q4t-work/evidence/b01-p01-as/runner.log": "427dbcce7829bb773d09c8c7c9d9af68baed8b2c732d4c44d59dc0c010c026b7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source/tools/evalscope/run_acceptance.py": "2e47d633aa908b6ee885b80b192e14dfffbf627c73559f8a891b334cc64c25dd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/evalscope-version.txt": "c92df6bdde330be219d62f48ec6490b01889436f2f59027aab200e74de619168",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/evalscope": "fa78857be6894b453d633b1db9eabd73c8ec98a68ccab63b4bc20701a3cc8c14"
+  },
+  "actions": {
+    "tests_executed": 0,
+    "model_requests": 0,
+    "controllers_executed": 0,
+    "cache_operations": 0,
+    "dependency_changes": 0,
+    "source_mutations": 0,
+    "raw_resource_streams_read": 0,
+    "new_artifacts": [
+      "first-execution-failure-review.json"
+    ]
+  },
+  "limits": [
+    "Monitor summary/terminal metadata were inspected; raw memory/resource sample streams were not read.",
+    "This review confirms the owned recorded failure path, not arbitrary unobserved external activity.",
+    "Zero model/HTTP does not mean zero environment activity: one targeted cold-cache round and monitoring completed.",
+    "Recovery remains a proposed bounded new attempt and is not executed or admitted by this receipt."
+  ]
+}
