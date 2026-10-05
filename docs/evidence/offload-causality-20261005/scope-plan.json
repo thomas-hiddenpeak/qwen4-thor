@@ -1,0 +1,743 @@
+{
+  "schema": 1,
+  "created_t": 1791174836.5781965,
+  "status": "SCOPE_FROZEN_EXECUTION_NOT_ADMITTED",
+  "goal_scope": "Bounded threshold-predecessor diagnosis before choosing any runtime optimization",
+  "base_delivery_commit": "5539184610ea674b377426896a2385bf2ffc053f",
+  "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "runtime_binary_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/candidate-build/q4t",
+  "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+  "runtime_build_identity_sha256": "cd32b08a698a947853fda951d005edfbb482c1f274760f35505ee186cc7a2b65",
+  "runner_source_commit": "TO_BE_FROZEN_AFTER_TOOL_CHANGES",
+  "runtime_modifications_in_this_stage": false,
+  "arms": {
+    "A": {
+      "partition": 0,
+      "request_partition": 0,
+      "decode_partition_log_quiet": 0
+    },
+    "C": {
+      "partition": 1,
+      "request_partition": 1,
+      "decode_partition_log_quiet": 1
+    }
+  },
+  "conditions": {
+    "AS": {
+      "arm": "A",
+      "predecessor": "S",
+      "predecessor_tokens": 1024
+    },
+    "CS": {
+      "arm": "C",
+      "predecessor": "S",
+      "predecessor_tokens": 1024
+    },
+    "AL": {
+      "arm": "A",
+      "predecessor": "L",
+      "predecessor_tokens": 8193
+    },
+    "CL": {
+      "arm": "C",
+      "predecessor": "L",
+      "predecessor_tokens": 8193
+    }
+  },
+  "block_orders": [
+    [
+      "AS",
+      "CS",
+      "CL",
+      "AL"
+    ],
+    [
+      "CS",
+      "AL",
+      "AS",
+      "CL"
+    ],
+    [
+      "AL",
+      "CL",
+      "CS",
+      "AS"
+    ],
+    [
+      "CL",
+      "AS",
+      "AL",
+      "CS"
+    ]
+  ],
+  "groups": [
+    {
+      "id": "b01-p01-as",
+      "block": 1,
+      "block_position": 1,
+      "condition": "AS",
+      "arm": "A",
+      "predecessor": "S",
+      "predecessor_tokens": 1024,
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "b01-p02-cs",
+      "block": 1,
+      "block_position": 2,
+      "condition": "CS",
+      "arm": "C",
+      "predecessor": "S",
+      "predecessor_tokens": 1024,
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "b01-p03-cl",
+      "block": 1,
+      "block_position": 3,
+      "condition": "CL",
+      "arm": "C",
+      "predecessor": "L",
+      "predecessor_tokens": 8193,
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 8193,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "b01-p04-al",
+      "block": 1,
+      "block_position": 4,
+      "condition": "AL",
+      "arm": "A",
+      "predecessor": "L",
+      "predecessor_tokens": 8193,
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 8193,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "b02-p01-cs",
+      "block": 2,
+      "block_position": 1,
+      "condition": "CS",
+      "arm": "C",
+      "predecessor": "S",
+      "predecessor_tokens": 1024,
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "b02-p02-al",
+      "block": 2,
+      "block_position": 2,
+      "condition": "AL",
+      "arm": "A",
+      "predecessor": "L",
+      "predecessor_tokens": 8193,
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 8193,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "b02-p03-as",
+      "block": 2,
+      "block_position": 3,
+      "condition": "AS",
+      "arm": "A",
+      "predecessor": "S",
+      "predecessor_tokens": 1024,
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "b02-p04-cl",
+      "block": 2,
+      "block_position": 4,
+      "condition": "CL",
+      "arm": "C",
+      "predecessor": "L",
+      "predecessor_tokens": 8193,
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 8193,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "b03-p01-al",
+      "block": 3,
+      "block_position": 1,
+      "condition": "AL",
+      "arm": "A",
+      "predecessor": "L",
+      "predecessor_tokens": 8193,
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 8193,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "b03-p02-cl",
+      "block": 3,
+      "block_position": 2,
+      "condition": "CL",
+      "arm": "C",
+      "predecessor": "L",
+      "predecessor_tokens": 8193,
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 8193,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "b03-p03-cs",
+      "block": 3,
+      "block_position": 3,
+      "condition": "CS",
+      "arm": "C",
+      "predecessor": "S",
+      "predecessor_tokens": 1024,
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "b03-p04-as",
+      "block": 3,
+      "block_position": 4,
+      "condition": "AS",
+      "arm": "A",
+      "predecessor": "S",
+      "predecessor_tokens": 1024,
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "b04-p01-cl",
+      "block": 4,
+      "block_position": 1,
+      "condition": "CL",
+      "arm": "C",
+      "predecessor": "L",
+      "predecessor_tokens": 8193,
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 8193,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "b04-p02-as",
+      "block": 4,
+      "block_position": 2,
+      "condition": "AS",
+      "arm": "A",
+      "predecessor": "S",
+      "predecessor_tokens": 1024,
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "b04-p03-al",
+      "block": 4,
+      "block_position": 3,
+      "condition": "AL",
+      "arm": "A",
+      "predecessor": "L",
+      "predecessor_tokens": 8193,
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 8193,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "b04-p04-cs",
+      "block": 4,
+      "block_position": 4,
+      "condition": "CS",
+      "arm": "C",
+      "predecessor": "S",
+      "predecessor_tokens": 1024,
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    }
+  ],
+  "service_count": 16,
+  "http_count": 64,
+  "independent_services_per_condition": 4,
+  "primary_endpoint": "probe position1 after conditioning",
+  "secondary_endpoints": [
+    "conditioning first request",
+    "probe position2",
+    "probe position3"
+  ],
+  "input_bindings": {
+    "1024": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/history-fixtures/context-1024/requests.jsonl",
+      "file_sha256": "7f4994034f3e7461f3dcde7324f5b3850fc82691a085f33ec57708903a67aa5a",
+      "first_line_sha256_without_line_ending": "0a100a6181b4eb1b91384c885c33ac1292a0fb87137ba14dbe24a53eb61399f3",
+      "reuse_first_line": true
+    },
+    "8193": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/history-fixtures/context-8193/requests.jsonl",
+      "file_sha256": "be204f0c49f53238d94416c0a67228865928a2a10d608b19dc744c967da33480",
+      "first_line_sha256_without_line_ending": "e747727ccd7af62a4813af101c1b0f575e34d3e3e6607ae8330b909ec23927b7",
+      "reuse_first_line": true
+    }
+  },
+  "settings": {
+    "host_cache_max_bytes": 17179869184,
+    "swap_max_bytes": 0,
+    "gpu_cache_slots": 256,
+    "l2_config_value": 16,
+    "mirror_config_value": 8,
+    "max_open": 200,
+    "max_seq": 1,
+    "max_prefill": 8192,
+    "max_len": 262144,
+    "mtp": false,
+    "phase_diagnostics": false,
+    "chunk_order": 0,
+    "precision_and_gemm_changes": false,
+    "budget_changes": false
+  },
+  "cold_contract": {
+    "service_start_only": true,
+    "max_targeted_advice_rounds": 2,
+    "payload_file_count": 226,
+    "required_resident_bytes": 0,
+    "clear_between_requests": false,
+    "whole_machine_state_equal_claim": false
+  },
+  "reuse": {
+    "runtime_quality": "Prior fixed11 only, subject to identical runtime/build/model/env bindings",
+    "cpp_and_numerical": "Prior C++15 and real-weight numerical3; no runtime changes",
+    "python_tools": "Affected tool contracts must be newly validated as one group; prior142 are not automatic evidence for modified runner",
+    "identity": "Freeze runner clean HEAD separately from binary runtime_source; commit.txt belongs to runner ROOT",
+    "old_performance_decisions": "NO_GO unchanged; new64 are diagnostic and never appended to old acceptance samples"
+  },
+  "analysis": {
+    "retain_all_requests": true,
+    "separate_probe_positions": true,
+    "service_is_independent_unit": true,
+    "report_raw_values_and_same_cell_observed_range": true,
+    "blockwise_contrasts": [
+      "C-A at S",
+      "C-A at L",
+      "L-S at A",
+      "L-S at C",
+      "mode by predecessor difference-in-differences"
+    ],
+    "metrics": [
+      "TTFT_seconds",
+      "decode_duration_seconds",
+      "decode_tokens_per_second",
+      "PID_storage_read_bytes",
+      "PID_logical_rchar",
+      "cgroup_and_device_IO_separately",
+      "memory_counters_and_observability_limits"
+    ],
+    "no_candidate_acceptance": true,
+    "no_epsilon_estimated_for_acceptance": true,
+    "no_claim_of_significant_micro_effect_or_tail_estimate": true,
+    "no_partitioning_of_pure_cache_CPU_or_IO_causal_cost": true
+  },
+  "stopping": {
+    "successful_collection": "Exactly16 services and64HTTP, then close data and audit",
+    "contract_identity_cold_or_cleanup_failure": "Stop dependent work, preserve failure, fix only concrete defect in a new attempt identity",
+    "valid_small_or_inconclusive_effect": "Complete the fixed scope; no favorable repeats",
+    "automatic_4K_8K_or_long_matrix_expansion": false,
+    "automatic_second_candidate": false
+  },
+  "limitations": [
+    "L8193 matches the direct predecessor of old1K history failure, but fresh service omits the earlier seven-request accumulated history.",
+    "This is threshold-predecessor intervention, not45K/200K pressure or exact cache-state restoration.",
+    "Within-block positions and directed neighbor orders are balanced; across-block transitions, elapsed wall time, temperature and machine state are not guaranteed balanced.",
+    "First probe already follows P; probes2/3 also inherit preceding probes, so none is an unconditioned cold1K request.",
+    "Four independent services per cell do not stabilize tails or establish a new acceptance tolerance.",
+    "54GB whole physical RAM remains indeterminate until independently demonstrated."
+  ],
+  "next_admission": [
+    "Narrow sequence tool extension, old history/tier paths preserved",
+    "Batched affected Python tool tests, no runtime/bench/profile tests",
+    "Record evidence reuse with runtime/build/export/model/environment identity checks",
+    "Separate clean runner commit, exact commands/sequence/schema/tools/resources frozen in execution-plan.json",
+    "Independent protocol review before first service; this scope plan alone never launches a service"
+  ],
+  "later_goal_tasks": [
+    "Interpret all fixed contrasts; distinguish reproducible observations from unresolved causality",
+    "Only if justified, freeze a bounded mechanism study and at most one default-off reversible runtime candidate; no unconditional second experiment",
+    "Any new runtime candidate: real HTTP first, affected direct/numerical contracts, prospectively fixed full five tiers plus capacity/history/resource and required quality/lifecycle acceptance",
+    "Otherwise deliver evidence-insufficient or NO_GO findings and explicit remaining questions; update docs/log and stage commit/push"
+  ]
+}

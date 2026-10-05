@@ -5,6 +5,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [OFFLOAD_CAUSALITY_2026-10-05.md](OFFLOAD_CAUSALITY_2026-10-05.md) | 组序与阈值前驱诊断、证据复用与后续单一候选 | Goal已启动；16服务/64HTTP范围冻结，尚未新测试 |
 | [OFFLOAD_DECODE_LOG_2026-10-05.md](OFFLOAD_DECODE_LOG_2026-10-05.md) | 显式 decode 日志单因素候选、A/B/C 对照与冻结验收 | 完整性能 NO_GO；日志抑制生效，短档仍未过，默认关闭 |
 | [OFFLOAD_REQUEST_POLICY_2026-10-04.md](OFFLOAD_REQUEST_POLICY_2026-10-04.md) | 完整请求长度分区、混合历史与六档 HTTP、独立资源证据 | 有效 NO_GO；长档 TTFT 改善，短档/decode 门槛未过；默认关闭 |
 | [OFFLOAD_AUTONOMOUS_2026-10-03.md](OFFLOAD_AUTONOMOUS_2026-10-03.md) | 十小时自主队列、在线候选与冻结HTTP决定门槛 | Goal进行中，当前尚无新验收结论 |
