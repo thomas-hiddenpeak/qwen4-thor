@@ -226,7 +226,10 @@ def runner_command(args, out, unit, plan):
                '--allow-unqualified-binary', '--systemd-unit', unit]
     if getattr(args, 'phase_diagnostics', False):
         command += ['--phase-diagnostics']
-    if getattr(args, 'request_policy_sequence', False):
+    if getattr(args, 'causality_sequence', None) is not None:
+        command += ['--causality-sequence', str(out / 'causality-sequence.json'),
+                    '--causality-sequence-sha256', args.causality_sequence_sha256]
+    elif getattr(args, 'request_policy_sequence', False):
         command += ['--request-policy-sequence']
     elif plan:
         command += ['--perf-lengths', ','.join(map(str, plan['lengths'])),
@@ -279,6 +282,10 @@ def main():
                     'axis; leaves prefill and forward diagnostics unchanged')
     ap.add_argument('--request-policy-sequence', action='store_true',
                     help='Frozen 7-position x 3-round request policy challenge')
+    ap.add_argument('--causality-sequence', type=Path,
+                    help='Frozen four-request predecessor diagnosis JSON')
+    ap.add_argument('--causality-sequence-sha256',
+                    help='Required exact bytes SHA256 of causality JSON')
     ap.add_argument('--phase-diagnostics', action='store_true',
                     help='Enable phase/cache snapshots and residency timing; '
                     'quality or fixed 1K/4K/8K diagnosis only, never acceptance')
@@ -296,11 +303,22 @@ def main():
                     help='Overall bound; explicitly increase for a frozen full matrix')
     ap.add_argument('--port', type=int, default=8172)
     args = ap.parse_args()
+    causality = args.causality_sequence is not None
+    sequence_content = None
     try:
         env = experiment_environment(args.chunk_order, os.environ,
                                      args.partition, args.policy_axis,
                                      args.phase_diagnostics, args.request_partition,
                                      args.decode_partition_log_quiet)
+        if causality != (args.causality_sequence_sha256 is not None):
+            raise ValueError('causality sequence and SHA256 must be supplied together')
+        if causality and (args.mode != 'performance' or
+                args.policy_axis != 'request-partition-log' or
+                args.request_policy_sequence or args.perf_lengths is not None
+                or args.target_total or args.perf_repeats != 3 or
+                args.phase_diagnostics):
+            raise ValueError('causality sequence requires uninstrumented '
+                             'request-partition-log without other selections')
         if args.request_policy_sequence and (
                 args.policy_axis not in REQUEST_AXES or
                 args.mode != 'performance' or args.perf_lengths is not None or
@@ -313,11 +331,19 @@ def main():
         if args.request_policy_sequence:
             from request_policy_protocol import sequence_plan
             plan = sequence_plan()
+        if causality:
+            from causality_protocol import (check_causality_environment,
+                                            read_causality_sequence)
+            plan, sequence_content = read_causality_sequence(
+                args.causality_sequence, args.causality_sequence_sha256)
+            check_causality_environment(plan, env)
         if args.phase_diagnostics and plan and (
                 plan['lengths'] != [1024, 4096, 8192] or args.target_total):
             raise ValueError('phase diagnosis requires ordered 1024,4096,8192')
-    except ValueError as error:
+    except (ValueError, OSError) as error:
         ap.error(str(error))
+    diagnostic_scope = (plan['diagnostic_scope'] if causality else
+                        DIAGNOSTIC_SCOPE if args.phase_diagnostics else None)
     if (args.runner_timeout_s <= 0 or any(not math.isfinite(value) or value <= 0
             for value in (args.monitor_interval, args.gpu_interval))):
         ap.error('monitor intervals and runner timeout must be finite and positive')
@@ -351,6 +377,8 @@ def main():
     if gpu.returncode or gpu.stdout.strip():
         ap.error('GPU compute state unavailable or occupied')
     out.mkdir(parents=True, exist_ok=False)
+    if causality:
+        (out / 'causality-sequence.json').write_bytes(sequence_content)
     unit = f'q4t-ram-{time.time_ns()}-{os.getpid()}.service'
     paths = model_files(args.model_dir)
     tool_dir = out / 'tools'
@@ -359,6 +387,8 @@ def main():
     tool_names = RUN_TOOLS + ('offload_policy.py',)
     if args.policy_axis in REQUEST_AXES:
         tool_names += ('request_policy_protocol.py',)
+    if causality:
+        tool_names += ('causality_protocol.py',)
     for name in tool_names:
         source = ROOT / 'tools/evalscope' / name
         shutil.copyfile(source, tool_dir / name)
@@ -383,9 +413,13 @@ def main():
            if args.policy_axis in REQUEST_AXES else {}),
         **({'decode_partition_log_quiet': args.decode_partition_log_quiet}
            if args.policy_axis == 'request-partition-log' else {}),
+        **({'causality_sequence_path': str(args.causality_sequence.resolve()),
+            'causality_sequence_sha256': args.causality_sequence_sha256,
+            'causality_group_id': plan['group_id'],
+            'causality_phase_plan_sha256': plan['phase_plan_sha256']}
+           if causality else {}),
         'phase_diagnostics': args.phase_diagnostics,
-        'diagnostic_scope': (DIAGNOSTIC_SCOPE if args.phase_diagnostics
-                             else None),
+        'diagnostic_scope': diagnostic_scope,
         'performance_acceptance': False,
         'monitor': {'interval_seconds': args.monitor_interval,
                     'gpu_interval_seconds': args.gpu_interval,
@@ -426,8 +460,7 @@ def main():
                 'runner_rc': None, 'monitor_rc': None,
                 'failure': 'cold payload gate failed; no service started',
                 'cleanup_failed': False, 'performance_qualification': False,
-                'diagnostic_scope': (DIAGNOSTIC_SCOPE
-                    if args.phase_diagnostics else None),
+                'diagnostic_scope': diagnostic_scope,
                 'performance_scope': plan['scope'] if plan else None,
                 'partial_offload_matrix': plan['partial_offload_matrix'] if plan else None,
                 'full_offload_matrix_completed': False,
@@ -503,8 +536,7 @@ def main():
                 'started_t': started, 'ended_t': time.time(),
                 'unit_after_cleanup': props, 'cleanup_failed': cleanup_failed,
                 'performance_qualification': False,
-                'diagnostic_scope': (DIAGNOSTIC_SCOPE
-                    if args.phase_diagnostics else None),
+                'diagnostic_scope': diagnostic_scope,
                 'performance_scope': plan['scope'] if plan else None,
                 'partial_performance_matrix': plan['partial'] if plan else None,
                 'partial_offload_matrix': plan['partial_offload_matrix'] if plan else None,

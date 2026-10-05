@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "recorded_t": 1791175883.111104,
+  "runtime_modified": false,
+  "new_http_requests": 0,
+  "tools_passed": 163,
+  "reused_evidence": {
+    "fixed_http_quality": 11,
+    "cpp_contracts": 15,
+    "numerical": 3
+  },
+  "failure_history": [
+    "host01:82 directory errors,81 pass",
+    "host02:81 pass,1 test expected-message mismatch",
+    "host03:single corrected assertion pass"
+  ],
+  "execution_admitted": false,
+  "performance_acceptance": false,
+  "records": {
+    "tool-validation-admission.json": "db2f3870e36d9ca2e45611d25b697ce2f95bd27f96476ca5ce22c072e619926a",
+    "reuse-admission.json": "ec8597c4c6b15760af21294168fbd82890cfa248a0720517fba2f378a059fa88",
+    "validation-checker-note.json": "3c7e5cc03d193e5958dc7d4bcb3a10a819639fb19a6f5c00b6fa8ab740494dcc"
+  }
+}

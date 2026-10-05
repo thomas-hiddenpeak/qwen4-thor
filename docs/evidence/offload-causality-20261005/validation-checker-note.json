@@ -1,0 +1,9 @@
+{
+  "recorded_t": 1791175797.2717056,
+  "kind": "pre-test checker failure retained",
+  "script": "finish_tool_validation.py",
+  "first_attempt": "Assertion counting lines ending ... ok failed because runner stdout splits unittest progress lines; no test subprocess started.",
+  "correction": "Count all 82 case headers and retain unittest summary FAILED (failures=1), then execute only the failing case.",
+  "model_or_http_launched": false,
+  "original_tool_exit_code": 1
+}

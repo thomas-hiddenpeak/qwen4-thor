@@ -278,6 +278,10 @@ def main():
     parser.add_argument('--request-policy-sequence', action='store_true',
                         help='Frozen 21-request boundary/history sequence; '
                              'never substitutes for the six-tier matrix')
+    parser.add_argument('--causality-sequence', type=Path,
+                        help='Frozen four-request predecessor diagnosis JSON')
+    parser.add_argument('--causality-sequence-sha256',
+                        help='Required exact bytes SHA256 of causality JSON')
     parser.add_argument('--perf-repeats', type=int, default=3,
                         help='Requests per performance tier (default 3; fewer than 3 is partial)')
     parser.add_argument('--systemd-unit', type=str,
@@ -312,6 +316,16 @@ def main():
                         help='serve --request-deadline-ms (0 = server '
                              'default 1200000; must be in [1000,10800000])')
     args = parser.parse_args()
+    causality = args.causality_sequence is not None
+    if causality != (args.causality_sequence_sha256 is not None):
+        parser.error('causality sequence and SHA256 must be supplied together')
+    if causality and (args.mode != 'performance' or
+            args.request_policy_sequence or args.perf_lengths is not None or
+            args.extra_lengths or args.target_total or args.perf_repeats != 3
+            or args.phase_diagnostics or args.moe_trace_dir or
+            args.moe_trace_workload or not args.fixtures):
+        parser.error('causality sequence requires frozen fixtures and '
+                     'uninstrumented performance without other selections')
     if args.request_policy_sequence and (args.mode != 'performance' or
             args.perf_lengths is not None or args.extra_lengths or
             args.target_total or args.perf_repeats != 3 or
@@ -372,6 +386,18 @@ def main():
         from request_policy_protocol import sequence_plan
         plan = sequence_plan(args.max_len)
         lengths = plan['lengths']
+    sequence_content = None
+    if causality:
+        from causality_protocol import (causality_request_identity,
+                                        check_causality_environment,
+                                        read_causality_sequence)
+        try:
+            plan, sequence_content = read_causality_sequence(
+                args.causality_sequence, args.causality_sequence_sha256,
+                args.max_len)
+        except (ValueError, OSError) as error:
+            parser.error(str(error))
+        lengths = plan['lengths']
     out = args.output.resolve()
     if not any(out.is_relative_to(ROOT / d) for d in ['build', '.q4t-work']):
         parser.error('output must be under build/ or .q4t-work/')
@@ -379,9 +405,14 @@ def main():
         parser.error(f'output dir {out} exists and is not empty')
     out.mkdir(parents=True, exist_ok=True)
     event(out, 'runner_start', mode=args.mode)
+    if causality:
+        (out / 'causality-sequence.json').write_bytes(sequence_content)
+    diagnostic_scope = (plan['diagnostic_scope'] if causality else
+                        'offload_phase_boundary_v1'
+                        if args.phase_diagnostics else None)
     if plan is not None:
-        plan['diagnostic_scope'] = ('offload_phase_boundary_v1'
-                                    if args.phase_diagnostics else None)
+        if not causality:
+            plan['diagnostic_scope'] = diagnostic_scope
         save(out / 'performance-plan.json', plan)
         print(f"Performance scope: {plan['scope']}; performance acceptance is not implied", flush=True)
     binary = args.binary.resolve()
@@ -392,6 +423,8 @@ def main():
         env['Q4T_RESIDENCY_TIMING'] = '1'
     elif env.get('Q4T_OFFLOAD_PHASE_DIAGNOSTICS') not in (None, '0'):
         raise RuntimeError('phase diagnostics environment requires explicit flag')
+    if causality:
+        check_causality_environment(plan, env)
     removed = {}
     for key in list(env):
         if key.startswith(('Q4T_FP8', 'Q4T_PROFILE', 'Q4T_MTP_TIMING',
@@ -440,20 +473,22 @@ def main():
                                 '--model-dir', str(model), '--length', str(length),
                                 '--number', '1', '--output', str(target)], check=True)
                 first = target.read_text().splitlines()[0]
-            target.write_text((first + '\n') * args.perf_repeats)
+            copies = 1 if causality else args.perf_repeats
+            target.write_text((first + '\n') * copies)
             tokens = 256
             if args.target_total and length in extra_lengths:
                 tokens = args.target_total - length
-            if not args.request_policy_sequence:
+            if not args.request_policy_sequence and not causality:
                 cases.append((out / f'context-{length}', target, args.perf_repeats, length, length,
                               tokens, True))
-        if args.request_policy_sequence:
+        if args.request_policy_sequence or causality:
             for request in plan['requests']:
                 length = request['input_tokens']
                 target = prepared / (request['case'] + '.jsonl')
                 first = (prepared / f'context-{length}.jsonl').read_text().splitlines()[0]
                 target.write_text(first + '\n')
-                cases.append((out / request['case'], target, 1, length, length, 256, True))
+                cases.append((out / request['case'], target, 1, length, length,
+                              request['max_tokens'], True))
     else:
         prepared.mkdir()
         target = prepared / 'context-1024.jsonl'
@@ -486,8 +521,7 @@ def main():
     save(out / 'server-command.json', {'argv': command, 'removed_environment': removed,
                                        'effective_q4t_environment': effective_q4t,
                                        'phase_diagnostics': args.phase_diagnostics,
-                                       'diagnostic_scope': ('offload_phase_boundary_v1'
-                                           if args.phase_diagnostics else None),
+                                       'diagnostic_scope': diagnostic_scope,
                                        'hot_list': hot_identity,
                                        'isolation': {'systemd_unit': args.systemd_unit,
                                                      'host_cache_max_bytes': args.host_cache_max_bytes,
@@ -533,9 +567,11 @@ def main():
                                   tokens, streaming, evalscope, model, args.port,
                                   env, server, args.mode == 'performance' and
                                   (args.perf_lengths is not None or
-                                   args.request_policy_sequence), capacity,
+                                   args.request_policy_sequence or causality),
+                                  capacity,
                                   args.mode, args.phase_diagnostics)
-                if args.phase_diagnostics or args.request_policy_sequence:
+                if (args.phase_diagnostics or args.request_policy_sequence or
+                        causality):
                     if not all(row['response_id_valid'] for row in parsed):
                         raise RuntimeError('missing or conflicting response id')
                     ids = {row['response_id'] for row in parsed}
@@ -590,9 +626,16 @@ def main():
                         request = plan['requests'][len(results)]
                         item.update({key: request[key] for key in
                                      ('case', 'round', 'position', 'input_tokens')})
+                    if causality:
+                        request = plan['requests'][len(results)]
+                        identity = causality_request_identity(plan, request)
+                        item.update(identity)
+                        for row in parsed:
+                            row.update(identity)
+                        save(case / 'responses.json', parsed)
                     results.append(item)
                     save(out / 'results.json', results)
-                    if args.request_policy_sequence:
+                    if args.request_policy_sequence or causality:
                         previous = sequence_outputs.setdefault(item['prompt_sha256'], hashes[0])
                         if any(value != previous for value in hashes):
                             raise RuntimeError('history output changed across repetitions or positions')
@@ -655,8 +698,7 @@ def main():
                                           'full_offload_matrix_completed': bool(plan and plan['full_offload_matrix_requested'] and clean),
                                           'performance_acceptance': False,
                                           'phase_diagnostics': args.phase_diagnostics,
-                                          'diagnostic_scope': ('offload_phase_boundary_v1'
-                                              if args.phase_diagnostics else None),
+                                          'diagnostic_scope': diagnostic_scope,
                                           'failure': failure, 'cleanup_failure': cleanup_failure})
         if server.returncode != 0:
             raise RuntimeError('server did not exit normally')
