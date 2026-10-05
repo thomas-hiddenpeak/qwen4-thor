@@ -1,0 +1,473 @@
+{
+  "schema": 1,
+  "scope": "offload_cache_mechanism_v1",
+  "created_t": 1791220518.6034594,
+  "base_delivery": "d8482e46d904b3d43cb0f59b9766e064898b25c0",
+  "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "runtime_binary_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/candidate-build/q4t",
+  "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+  "objective": "Bind predecessor/probe cache states to observed routes, phase counters and PID reads; assess observation bundle differences without claiming exclusive waits.",
+  "service_count": 8,
+  "http_count": 32,
+  "observed_service_count": 4,
+  "observed_http_count": 16,
+  "groups": [
+    {
+      "id": "m01-as-off",
+      "index": 1,
+      "pair_index": 1,
+      "pair_position": 1,
+      "condition": "AS",
+      "arm": "A",
+      "predecessor": "S",
+      "predecessor_tokens": 1024,
+      "observation": "off",
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "m02-as-on",
+      "index": 2,
+      "pair_index": 1,
+      "pair_position": 2,
+      "condition": "AS",
+      "arm": "A",
+      "predecessor": "S",
+      "predecessor_tokens": 1024,
+      "observation": "on",
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "m03-cs-on",
+      "index": 3,
+      "pair_index": 2,
+      "pair_position": 1,
+      "condition": "CS",
+      "arm": "C",
+      "predecessor": "S",
+      "predecessor_tokens": 1024,
+      "observation": "on",
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "m04-cs-off",
+      "index": 4,
+      "pair_index": 2,
+      "pair_position": 2,
+      "condition": "CS",
+      "arm": "C",
+      "predecessor": "S",
+      "predecessor_tokens": 1024,
+      "observation": "off",
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "m05-cl-off",
+      "index": 5,
+      "pair_index": 3,
+      "pair_position": 1,
+      "condition": "CL",
+      "arm": "C",
+      "predecessor": "L",
+      "predecessor_tokens": 8193,
+      "observation": "off",
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 8193,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "m06-cl-on",
+      "index": 6,
+      "pair_index": 3,
+      "pair_position": 2,
+      "condition": "CL",
+      "arm": "C",
+      "predecessor": "L",
+      "predecessor_tokens": 8193,
+      "observation": "on",
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 8193,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "m07-al-on",
+      "index": 7,
+      "pair_index": 4,
+      "pair_position": 1,
+      "condition": "AL",
+      "arm": "A",
+      "predecessor": "L",
+      "predecessor_tokens": 8193,
+      "observation": "on",
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 8193,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    },
+    {
+      "id": "m08-al-off",
+      "index": 8,
+      "pair_index": 4,
+      "pair_position": 2,
+      "condition": "AL",
+      "arm": "A",
+      "predecessor": "L",
+      "predecessor_tokens": 8193,
+      "observation": "off",
+      "requests": [
+        {
+          "position": 0,
+          "role": "conditioning",
+          "input_tokens": 8193,
+          "output_tokens": 256
+        },
+        {
+          "position": 1,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 2,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        },
+        {
+          "position": 3,
+          "role": "probe",
+          "input_tokens": 1024,
+          "output_tokens": 256
+        }
+      ]
+    }
+  ],
+  "fixtures": {
+    "1024": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/history-fixtures/context-1024/requests.jsonl",
+      "sha256": "7f4994034f3e7461f3dcde7324f5b3850fc82691a085f33ec57708903a67aa5a",
+      "first_line_sha256": "e13b22cf2685e6b5878f5bb31c7d5013b37c9453feb72860d67ee22d98a91012"
+    },
+    "8193": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/history-fixtures/context-8193/requests.jsonl",
+      "sha256": "be204f0c49f53238d94416c0a67228865928a2a10d608b19dc744c967da33480",
+      "first_line_sha256": "be204f0c49f53238d94416c0a67228865928a2a10d608b19dc744c967da33480"
+    }
+  },
+  "settings": {
+    "policy_axis": "request-partition-log",
+    "arms": {
+      "A": [
+        0,
+        0,
+        0
+      ],
+      "C": [
+        1,
+        1,
+        1
+      ]
+    },
+    "max_seq": 1,
+    "max_prefill": 8192,
+    "max_len": 262144,
+    "output_tokens": 256,
+    "concurrency": 1,
+    "host_cache_max_bytes": 17179869184,
+    "swap_max_bytes": 0,
+    "resident_slots": 256,
+    "l2_slots": 16,
+    "mirror_slots": 8,
+    "max_open_shards": 200,
+    "chunk_order": 0,
+    "mtp": false,
+    "phase_d": false,
+    "precision_and_GEMM_unchanged": true
+  },
+  "observation_bundle": {
+    "off": {
+      "phase_diagnostics": false,
+      "residency_timing": false,
+      "router_trace": false
+    },
+    "on": {
+      "phase_diagnostics": true,
+      "residency_timing": true,
+      "router_trace": true
+    },
+    "trace_max_mib": 128,
+    "trace_quota_scope": "whole service, including all four requests and metadata",
+    "max_all_service_trace_bytes": 536870912,
+    "expected_trace_device_allocation_bytes": 15728640,
+    "expected_trace_pinned_allocation_bytes": 62914560,
+    "trace_slots": 4,
+    "trace_layers": 48,
+    "trace_top_k": 10,
+    "trace_experts": 512,
+    "phase_events": [
+      "prefill_begin",
+      "prefill_end_decode_begin",
+      "decode_forward_1",
+      "decode_forward_8",
+      "decode_forward_32",
+      "inference_end"
+    ],
+    "note": "Use actual runtime event spelling when binding existing phase v1 schema; do not rewrite runtime schema."
+  },
+  "collection_contract": {
+    "primary_probe": 1,
+    "secondary_probes": [
+      2,
+      3
+    ],
+    "conditioning": 0,
+    "one_independent_service_per_cell": true,
+    "inter_request_cache_reset": false,
+    "cold_prep_before_each_service": true,
+    "cold_max_advice_rounds": 2,
+    "cold_observed_file_count": 226,
+    "cold_payload_resident_bytes": 0,
+    "cold_count_note": "Observed file set includes metadata; do not label all226 as payload.",
+    "retain_every_sample": true,
+    "automatic_retry": false,
+    "analyse_only_after_all_terminals": true,
+    "prior_64_samples_pooled": false,
+    "performance_acceptance": false,
+    "expected_output_oracles": {
+      "1024": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r01-p04-context-1024/responses.json",
+      "8193": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source/.q4t-work/evidence/history-a/http/sequence-r01-p03-context-8193/responses.json"
+    },
+    "trace_complete": true,
+    "trace_successful_requests": 4,
+    "trace_missing_or_dropped_records_allowed": 0,
+    "disk_min_free_before_launch_bytes": 2147483648
+  },
+  "analysis": {
+    "endpoints": [
+      "TTFT",
+      "decode duration and255/duration",
+      "explicit phase PID read_bytes",
+      "per-phase actual residency counters",
+      "full cache ID/order/tick transitions",
+      "actual per-layer router top-k demand and phase identity",
+      "nested timing increments reported separately",
+      "snapshot durations",
+      "whole client resource envelopes and service memory"
+    ],
+    "cache_links": [
+      "previous inference_end to next prefill_begin exact metadata continuity",
+      "prefill_begin to prefill_end state and demand",
+      "prefill_end to decode1/8/32/end actual aggregate counts and phase reads",
+      "k1 and k3 predecessor contrasts under same arm; k2 separately"
+    ],
+    "route_links": [
+      "trace request/http ID,input/output token counts and256 outputs",
+      "all48 layers and forward stage/rows/position",
+      "compare same input route streams across observed arms/predecessors; retain differences",
+      "entry cache membership and route overlap only descriptive, not actual concurrent L2/mirror source attribution"
+    ],
+    "observation_contrasts": "Each adjacent off/on pair at same condition and probe position; signs retain order; one launch/cell cannot estimate stable noise or pure instrumentation cost.",
+    "timing_limits": "phase1,stage,pread,swizzle overlap or nest; never add into exclusive time. D2H includes queued GPU wait; max deltas are not interval maxima. No phase bytes are inferred by time ratios.",
+    "inference_limits": "No isolated cache intervention, fixed8 order is not Williams balancing, no iid/significance/epsilon or tail claim. Bundle allocates GPU and pinned memory and emits IO; on-off is not a subtractable pure timing overhead.",
+    "memory_54GB": "INDETERMINATE unless separately established; counters never summed into physical union"
+  },
+  "stop_rules": [
+    "Any identity/output/SSE/usage/capacity/path/cold/cleanup failure stops dependent services; preserve failed attempt.",
+    "First observed service must pass all phase/trace completeness and identity contracts before later groups.",
+    "Trace overflow/failure/disabled fallback is a contract failure even when HTTP succeeds.",
+    "No favorable resampling; valid inconclusive metrics still complete fixed32.",
+    "No new service when disk admission or exclusive owned service checks fail."
+  ],
+  "reuse": {
+    "runtime_unchanged": true,
+    "new_build": false,
+    "previous_quality_11_cpp15_numerical3": "Reuse bound original evidence within original coverage; not proof observation bundle preserves every numerical intermediate.",
+    "new_http": "All32 outputs/usage/contracts checked; observed16 verify bundle behavior.",
+    "tools": "Batch affected runner/protocol/phase contracts before collection; reuse unaffected identities. Record failures and only fix/retest affected items."
+  },
+  "conditional_followup": {
+    "new_runtime_observation": "Only if fixed collection identifies a specific missing mechanism needed for an actionable hypothesis; freeze one bounded extension separately before editing.",
+    "optimization": "At most one candidate, only with concrete mechanism and plausible quantified benefit; prospectively freeze new runtime HTTP-first/direct-numerical/full-five-tier+capacity/history/quality/resources before implementation.",
+    "not_automatic": [
+      "additional samples",
+      "4K/8K/long tiers",
+      "new profiler/bench",
+      "cache reset",
+      "second candidate"
+    ],
+    "valid_exit": "New cache/route/phase mechanism findings and explicit unresolved exposed-wait attribution can close bounded study; do not merely repeat old aggregate conclusion."
+  },
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/delivery-audit.json": "b1de4c092d2e598a7aa812e7a385209e5257d3f6dc9c55c60c3a3abd379d4904",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/final-completion-audit.json": "45f8ef54f84503aa020dfd98aae953f2f110dbeea9a4069d628b2b4e5135c060",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/diagnostic-decision.json": "f142486f40ecb9b7c6cf97671af0fb243bb7d391e6655ac668e0a4e6723c7285",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source-mechanism-limits.json": "a250f875d88aeba76f841cb359c9b25e0674d7a9b242808a79c5cefb6d3ff72e"
+  }
+}
