@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "recorded_t": 1791271154.1590855,
+  "base": "39b879d86124b0340749a83236d94cc8b9e6afb7",
+  "branch": "codex/offload-supply-20261006",
+  "stage": "decode_supply_identification_and_direct_race_bound",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/source-supply-contract-r2.json": "f3a3daa414e8dfe680203bea12b72f0f1dc299a03a2a8f8d193c7e8462af7767",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/source-schedule-contract.json": "27ab38ea95fd1c2dfe9b38759fa5498442be98a724244eaaa9f0da2d09592e61",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/replay-inputs.json": "2601f561d96c8ebb861afcb41d70249512ae3480e8abe611767d356b976f5407",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/baseline-replay.json": "87e2bff6ab96615022662bb6235295c0447f83cab43e47f02f8c1ba2a47ffd5a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/replay-independent-review.json": "44f38f7392da57fc3f9c2033c76cca9dcb7dd03717d307f62057ac2e92c69d30",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/final-goal-audit.json": "1eea8012966fdadb070748478747fb903c782d63557de74caad24453d034661c"
+  },
+  "fixed_groups": [
+    "m02-as-on",
+    "m03-cs-on",
+    "m06-cl-on",
+    "m07-al-on"
+  ],
+  "requests_per_group": 4,
+  "decode_forwards_per_request": 255,
+  "layers": 48,
+  "experts": 512,
+  "top_k": 10,
+  "gpu_slots": 256,
+  "l2_slots": 16,
+  "mirror_slots": 8,
+  "phase_scope": "16 true decode phases; original complete route packets must be consumed and verified, prefill rows are skipped without simulation. Each decode is conditioned on its observed entry; prior full-chain exact GPU result is explicitly reused.",
+  "new_runtime_changes_initial_stage": false,
+  "new_model_runs_initial_stage": 0,
+  "new_HTTP_initial_stage": 0,
+  "bench": false,
+  "hypothesis": "Same-plan mirror reservation or overwrite before another GPU-missing expert is claimed directly loses entry-mirror supply and contributes to the long-predecessor k1 mirror-hit deficit.",
+  "mandatory_outputs": [
+    "Per-layer actual software read/mirror supply reconstructed from raw l2_clock deltas under aggregate-zero L2-hit and no-reset/overflow preconditions, with aggregate closure.",
+    "Ordered per-plan GPU miss/occupied victim projection from frozen GPU core, full GPU phase end equality, per-layer previous-baseline load identity and four disjoint decode-interval count closures.",
+    "Direct loss U=min(8,max(0,m-1),occupied victim count,missing intersect possiblemirror count); possiblemirror starts at actual decode entry and adds only strictly earlier GPU victim IDs. No task-contiguity guesses.",
+    "Sum U per layer capped by actual software read misses; group/k/phase totals and A/C S/L k1,k2,k3 contrasts, retain gains as well as losses.",
+    "Source-conditioned proofs of L2 capacity protection and no pending source-copy wait for true T=1, plus finite host counterexamples/contract checks.",
+    "Decision distinguishing direct race exclusion/admissibility from indirect history effects and unknown exposed IO/GPU/host timing."
+  ],
+  "decision_gate": {
+    "primary_position": 1,
+    "target": "observed S mirror_hits minus L mirror_hits within arm, separately A/C",
+    "max_direct_extra_losses": "U_long, never U_long minus U_short",
+    "if_both_arms_upper_less_than_positive_deficit": "Reject full same-phase direct-race explanation; close this bounded mechanism stage with layer localization and explicit remaining indirect/history uncertainty, no new runtime or HTTP.",
+    "otherwise": "Before further implementation freeze one default-off narrow observer appendix and specific affected arm; do not infer race exists or promise speed from a loose bound.",
+    "not_allowed": [
+      "Claim a bound on indirect history benefit",
+      "Treat bounds as measured race frequency or speedup",
+      "Optimize GPU tie again",
+      "Claim global physical RAM54GB acceptance"
+    ]
+  },
+  "conditional_runtime_sampling_cap": {
+    "services_total_max": 5,
+    "HTTP_total_max": 27,
+    "quality": {
+      "services": 1,
+      "requests": 11,
+      "new_observer": "on",
+      "first_runtime_test": "tools/evalscope fixed existing quality set"
+    },
+    "diagnostic": {
+      "services": 4,
+      "requests_each": 4,
+      "arm_selection": "A if A direct bound does not exclude full direct explanation; otherwise C only if C does not exclude it. Same explicit existing arm settings.",
+      "cells": [
+        "S observer off",
+        "S observer on",
+        "L observer on",
+        "L observer off"
+      ],
+      "sequence": "[P,1024,1024,1024], output256; S P1024, L P8193; preserve k0/k1/k2/k3",
+      "appendix_required_before_runtime_edits": true
+    },
+    "observation_only_no_performance_acceptance": true
+  },
+  "tool_validation": "Freeze tool identity and test commands after grouped implementation/static review; run new direct host contracts once. Reuse unchanged prior55 contracts and exact baseline only within original scope. Preserve failures and target only affected repairs.",
+  "delivery": "Update STATUS and append log; stage commits/push separate branch; independent result review and final protection/remote identity audit."
+}

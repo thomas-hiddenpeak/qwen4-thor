@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "recorded_t": 1791272162.627626,
+  "passed": true,
+  "first_batch": true,
+  "tests_passed": 41,
+  "batches": [
+    {
+      "label": "bounds-contracts-01",
+      "tests": 22,
+      "returncode": 0,
+      "cleanup_complete": true,
+      "exit_sha256": "9b6accc26e1c92b85defebb7185c002db684e329aa7a1a52127cb64cc8073a42",
+      "log_sha256": "86a852042ff943e2c936c0792915b4cb2839f4a5d0b39ea6e21d3512682c0b65"
+    },
+    {
+      "label": "supply-contracts-01",
+      "tests": 19,
+      "returncode": 0,
+      "cleanup_complete": true,
+      "exit_sha256": "f8577052877c04d4648497a9f72973571f37a90f2a7720f76b03901ebb24456a",
+      "log_sha256": "21597331773b3a6cea158df3c2686fd1f59c016f673780c3b2284560491fe4c7"
+    }
+  ],
+  "validation_plan_sha256": "98a803430235d7358c6892a2356e29f399ca574135ff67cbc5dfa2f66abf0684",
+  "tool_static_review_sha256": "f72d1375319f1a8c2292ef04136ebafe203d3c787fb450debbcbe2795640c826",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/source/tools/trace/analyze_decode_supply.py": "5ac7a226cc108b1369a1010a96b86477f7e3e63d9bbc7938728e3aec5d563b30",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/source/tools/trace/test_analyze_decode_supply.py": "466becb604a109ac3bb964bfd98837d705c3f54946e3ed3a058d02a455447c3b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/source/tools/trace/decode_supply_bounds.py": "8c35bc78f36092c180847013c0651f22ba1040f8ab9abf56aac51684e8c7a06f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/source/tools/trace/test_decode_supply_bounds.py": "7ee564552987c4c3d666cbdb42d04620734443003cd8b16aa008c66b567467b2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/source/tools/trace/gpu_cache_replay.py": "7bca768a0c7cd447e295494c14966d64e460096c0422eb91857e628e677a4fd3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/source/tools/trace/run_gpu_cache_study.py": "040293f92ae61ba9703c4fa17b06f2af25442e84b5f93c6844dfed292e7699c7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/source/tools/trace/offload_trace.py": "0a425cb3c01cd627dba883c7404b39702ac3d6bbea1b37507f349840e6c89127",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/source/tools/trace/analyze.py": "21e459143f6c1518d202323ef1fd7f6be48f66a25ce1ec5cbd7b1720cfe260e4"
+  },
+  "models_launched": 0,
+  "HTTP_requests": 0,
+  "real_trace_analyses": 0,
+  "old_55_contracts_reused_with_unchanged_identity": true
+}
