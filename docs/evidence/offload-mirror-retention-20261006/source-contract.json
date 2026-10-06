@@ -1,0 +1,114 @@
+{
+  "schema": 1,
+  "base_commit": "69e2d0432b8f00317fbb07b1f286b25d2bd09d17",
+  "scope_sha256": "7b611ebf65f194f166d8d9e1635d88f5eced5e790d8fe38012fb754beff7e089",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/src/quant/moe_residency.cpp": "341a376b53ca3a42880551658fcab1ba4639cd0a5b99d3b9edac1a8261569165",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/include/q4t/quant/moe_residency.h": "ff2ec49fc51d713ee71e02013da69d27a30adcf42cf59c2d712e8bc9583264d3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/include/q4t/quant/moe_supply_observer.h": "a9e776c0916d987b354b052171b98dbc71ab5c3f8c7465b7e320efb9fe4ff7e1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/src/model/moe.cu": "c7d2b1975fabb5464c45000a14496dc97b270675f92e834d36eb926c58ee1548",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/src/model/decoder_layer.cu": "17b338976225a50064c5b5a0599658a7d5c2cf8cd0890bfa9468f8138369b212"
+  },
+  "facts": [
+    {
+      "path": "src/quant/moe_residency.cpp",
+      "lines": [
+        633,
+        660
+      ],
+      "fact": "Actual source precedence is L2, then unclaimed mirror, then READ. GPU hits never enter this claim path."
+    },
+    {
+      "path": "include/q4t/quant/moe_residency.h",
+      "lines": [
+        592,
+        602
+      ],
+      "fact": "The comment at598-599 saying ring before L2 is stale; executable cpp633-660 is authoritative. Offline stage leaves runtime/header untouched."
+    },
+    {
+      "path": "src/quant/moe_residency.cpp",
+      "lines": [
+        660,
+        670,
+        1322,
+        1354
+      ],
+      "fact": "Mirror hit preserves expert mapping and cursor, releases claim after recording source H2D event, and adds expert to GPU; GPU/mirror duplication is permitted. L2 hits likewise do not clear mirror mappings."
+    },
+    {
+      "path": "src/quant/moe_residency.cpp",
+      "lines": [
+        1193,
+        1217
+      ],
+      "fact": "Each occupied GPU overwrite attempts writeback. Scan from cursor takes first event-ready/unclaimed ring slot; no empty-slot, GPU-covered or L2-covered preference. Cursor advances at reservation."
+    },
+    {
+      "path": "src/quant/moe_residency.cpp",
+      "lines": [
+        1254,
+        1277
+      ],
+      "fact": "Publication follows event record, replaces target and invalidates same-expert mappings elsewhere. Abort releases reservation only; cursor and old mapping are not explicitly rolled back. Do not assume transaction semantics or payload rollback on CUDA errors."
+    },
+    {
+      "path": "src/quant/moe_residency.cpp",
+      "lines": [
+        1042,
+        1065,
+        1121,
+        1142,
+        1681,
+        1707
+      ],
+      "fact": "Task claims all entries before reads/commits; cross-task worker order is unknown. Host completion barrier closes tasks without being a new CUDA synchronization."
+    },
+    {
+      "path": "src/model/moe.cu",
+      "lines": [
+        513,
+        520,
+        747,
+        761,
+        927,
+        943
+      ],
+      "fact": "Each MoE forward synchronizes router D2H before planning; true T=1 decode therefore starts after prior stream events. Prefill subchunks within one forward carry live residency and use worker barriers, not a new stream drain between subchunks."
+    },
+    {
+      "path": "src/quant/moe_residency.cpp",
+      "lines": [
+        375,
+        417,
+        1368,
+        1380,
+        1401,
+        1437,
+        1838,
+        1855
+      ],
+      "fact": "Ring initialization/clearing belongs to Init/Free, not request/phase transition. Captured snapshots expose ring IDs/cursor and GPU/L2 membership. Current observer retains candidate aggregates/direct-loss witnesses, not a full ring lifecycle."
+    }
+  ],
+  "hypothesis": "GPU/L2-covered ring entries may occupy capacity while sole lower-cache copies are replaced. Endpoint redundancy and subsequent GPU victim reuse are opportunities, not proof of overwrite or saved READ.",
+  "identifiable_offline": [
+    "Captured snapshot disjoint GPU-only/L2-only/both/sole/empty classifications.",
+    "Fixed successful GPU plan miss/victim sets from existing exact GPU core, with full endpoints and prefix counts checked by runner.",
+    "Possible support from actual decode-entry mirrors union all strictly earlier occupied GPU victims; never last-K trim.",
+    "Latest prior victim plan gap i-j and strictly intervening victim count summed only over j<r<i; entry-only support gets no synthetic eviction date.",
+    "Independent first future GPU eviction and first GPU miss of each entry mirror, with end-of255 censoring.",
+    "Conservative common-miss candidate count intervals from observed C and separately capped common/only/total support."
+  ],
+  "not_identifiable": [
+    "Actual per-plan ring membership, claim availability, reserve target alternatives, event-query/publication order, skip history and complete mirror lifetime.",
+    "Unique lower-cache baseline replay from routes and phase endpoints.",
+    "Causal history decomposition, actual hypothetical READ savings or speed benefit; overlap alone cannot select a policy."
+  ],
+  "limits": [
+    "Plan0/1miss can be conditionally advanced from a fully known drained entry; multi-miss interleavings prevent general exact history reconstruction.",
+    "No old16/new8 pooling. No current-plan victims as current entry support. No claim about physical IO, exclusive waits, performance acceptance or54GB.",
+    "No model payload reads, tests, trace parsing, model/HTTP execution or runtime edits by this source audit."
+  ],
+  "recorded_t": 1791289424.7375202
+}

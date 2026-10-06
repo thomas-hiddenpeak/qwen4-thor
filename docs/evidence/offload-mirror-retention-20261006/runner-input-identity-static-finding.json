@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "recorded_t": 1791289553.0524323,
+  "stage": "pre_first_test_static_review",
+  "finding": "Same input length and ordered decode routes do not establish identical input token bytes.",
+  "reported_by": "root",
+  "old_source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/analyze_mirror_retention.py": "5bb4e1bf5652d5b331ab8508c191a57a76f6a2a00e6c535ff24ba52396e9b715",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/test_analyze_mirror_retention.py": "d5d5633d2b6206e159ba2b7434214130f0974ee40c866ad94607c44cec2cbba1"
+  },
+  "fixed_source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/analyze_mirror_retention.py": "560859e3ce8e739785a960fd9acc1fa10518d553a3cb3837d4dd36b1d967302b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/test_analyze_mirror_retention.py": "c0195b169aed228a6cde7f1faa376af8c27343d519c328008c5050aee5effec1"
+  },
+  "fix": "Bind S/L input identity to existing manifest token-sidecar SHA256; emit both hashes and same_input_tokens; require same_input_tokens in primary candidate gate in addition to length and ordered routes.",
+  "test_added": "Same length, same ordered routes, positive common interval and mixed entry ring but differing token SHA256 cannot nominate.",
+  "new_tests": 19,
+  "tests_run": false,
+  "actual_trace_passes": 0,
+  "new_HTTP": 0,
+  "manifest_reextracted": false
+}

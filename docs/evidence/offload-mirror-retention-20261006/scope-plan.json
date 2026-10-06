@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "recorded_t": 1791288857.895565,
+  "base": "69e2d0432b8f00317fbb07b1f286b25d2bd09d17",
+  "stage": "mirror_retention_opportunities_offline",
+  "groups": [
+    "s02-as-on",
+    "s03-al-on"
+  ],
+  "requests_per_group": 4,
+  "layers": 48,
+  "experts": 512,
+  "decode_forwards": 255,
+  "top_k": 10,
+  "gpu_slots": 256,
+  "l2_slots": 16,
+  "mirror_slots": 8,
+  "primary_position": 1,
+  "new_HTTP": 0,
+  "model_runs": 0,
+  "runtime_changes": false,
+  "hypothesis": "GPU/L2-covered mirror copies can occupy slots while sole lower-cache mirrors are replaced; observed endpoints and GPU victim reuse opportunity do not establish actual overwrite or speed benefit.",
+  "outputs": [
+    "Classify every captured entry/prefill-end/inference-end mirror disjointly as GPU-only, L2-only, both, sole or empty; record IDs/cursor, never interpolate states.",
+    "Reconstruct exactly97920 true-decode GPU layer-plans from each actual decode entry; validate full endpoint and four observed prefix counter deltas. No prefill policy replay.",
+    "For each miss derive latest strictly-prior GPU victim or actual decode-entry mirror support; histogram plan gap and strictly intervening victim counts by layer/request. These are opportunities, not mirror lifetime.",
+    "Compare aligned S/L k0..k3 needed/missing sets, common/S-only/L-only misses and support capacities. Route mismatch invalidates controlled interpretation and is retained.",
+    "Use observed per-layer accumulated entry_candidate counters and potential-support capacities to bound common-miss candidate difference; no point causal split.",
+    "For every entry-mirror expert record first future GPU eviction and first GPU miss, censored at255; endpoint duplicate presence does not imply retention until reuse.",
+    "Retain k0 input mismatch and k2/k3 reversals; old16 not pooled; include all8 requests and48 layers."
+  ],
+  "bound_definition": {
+    "possible": "actual decode-entry mirror union strictly earlier occupied GPU victims; never last-K trim",
+    "per_plan_partition_caps": "common/only possible miss counts independently capped atK=8, total capped atK separately; aggregate observed candidates must fit total",
+    "common_count_interval": "[max(0,C-U_only),min(C,U_common)] per side/layer; S-L by interval subtraction; sum layer bounds. Conservative feasible superset, not independent causal shares."
+  },
+  "decision_gate": {
+    "hypothesis_confirmable_here": false,
+    "missing_actual_fields": [
+      "per-plan mirror membership/claims",
+      "actual reserve target and available alternatives",
+      "publication/event-query order"
+    ],
+    "if_primary_common_difference_interval_strictly_positive": "GPU-miss-set difference alone cannot explain candidate deficit; nominate at most one future GPU-covered-mirror recycling rule for consideration if captured endpoints show mixed redundant/sole occupancy. No implementation or automatic runtime admission.",
+    "otherwise": "Report demand/retention non-identifiability; do not select strategy from endpoint redundancy alone.",
+    "additional_observer": "NOT_AUTOMATICALLY_TRIGGERED; close this fixed offline stage with evidence limits, no new requests or second rule."
+  },
+  "validation": "Batch new host analysis contracts before one actual eight-request trace pass. Reuse old GPU55/supply41/observer46 and HTTP/resource evidence only within unchanged scope/identity. Preserve first failures; repair/recheck affected only.",
+  "delivery": "Update STATUS/report, prepend log, bounded independent source/result review and MAIN protection; staged commit/push. No deep recursive re-audit of closed raw-resource evidence.",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-delivery-independent-review.json": "d6c0bafccc186b7aafaaf98d0748afaa6d8b17dc99b28558f300214b7cbdf86c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-result-independent-review.json": "58e8d71304b6f1d64d68c6862eee5282b1c5226e0eaca1979ba4f94e99a1e05a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-delivery-summary.json": "498a9414e1f51de326819777e2d242bcbc5cbd67136eb1750a2394c1eb613d2f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/s02-as-on-decision.json": "06ee0bf466ca3ca2cafbe77bd34e462e1dacf3aaa746ca6b76698a5219de8bcc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/s03-al-on-decision.json": "b37b92c0bebc0531b71de78f5809e233b73479861dbec6e3b61db7dc5668f571",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-execution-plan.json": "907111ee1b731521c286e90df3718457c11c25c340a3f66fabc90a03a7584b24"
+  }
+}

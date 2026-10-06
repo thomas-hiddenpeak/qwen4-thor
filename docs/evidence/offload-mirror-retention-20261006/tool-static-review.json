@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "passed": true,
+  "independent_review": true,
+  "status": "PASS_FOR_FROZEN_HOST_CONTRACT_BATCH_ONLY",
+  "scope_sha256": "7b611ebf65f194f166d8d9e1635d88f5eced5e790d8fe38012fb754beff7e089",
+  "scope": "New finite core, exact decode GPU runner, 26 core and 19 runner synthetic contracts; static inspection only. No runtime policy change.",
+  "tests_declared": 45,
+  "host_core_contracts": 26,
+  "runner_contracts": 19,
+  "tests_executed_by_reviewer": 0,
+  "actual_trace_passes_by_reviewer": 0,
+  "new_HTTP": 0,
+  "model_payload_reads": 0,
+  "actual_inputs_or_large_reports_read_by_reviewer": false,
+  "checks": [
+    "Snapshot classification is disjoint for GPU-only/L2-only/both/sole/empty; exact dimensions, occupied-ID uniqueness and cursor are checked. It classifies only captured endpoint membership.",
+    "Possible support is actual decode-entry mirror IDs union all strictly earlier occupied GPU victims. Current victims are added after analyzing a plan; no last-K/FIFO assumption or simulated lower-cache state.",
+    "Latest prior victim gap is p-q; strictly intervening victim count excludes the whole source and demand plans q and p. Entry-origin support receives no invented eviction time. First eviction and first miss are independent and right-censored at255.",
+    "Each side checks C against sum min(K,total supported misses); common/only capacities are capped separately. max(0,C-Uonly)..min(C,Ucommon) is a conservative outer interval, and per-layer S-L interval subtraction followed by sums remains conservative. Nonempty intervals follow from C<=Utotal<=Ucommon+Uonly.",
+    "Core contracts include a finite independent subset-enumeration oracle for all25 observed-count pair combinations, cap competition, last-K counterexample, order mismatch, source exhaustion, and invalid local plan facts.",
+    "Runner consumes each full selected trace through EOF, including prefill records without policy replay. Every true decode row uses immutable successful-path GPU planning; 4 cumulative prefixes, all48 physical GPU endpoints, source/observer/l2-clock closure and exact97920 layer-plan count are mandatory.",
+    "A corrupt trailer, wrong forward/prefix/endpoint/source identity, invalid observation or incomplete collection prevents pass. Partial results/plans retain false completion; outputs use exclusive creation and tracked/outside artifact paths are rejected.",
+    "The fixed 8-request manifest, exact source ledgers, parser input bindings and runtime identity are checked; same-source passed host-contract receipt is required before actual analysis. All bound files are SHA checked before and after analysis. Full actual-trace execution plan remains to be frozen.",
+    "Primary candidate gate requires k1 equal input lengths AND token-sidecar SHA equality AND ordered needed-route equality across48 layers AND strictly positive common interval lower bound AND mixed GPU-covered/sole occupancy in a single captured decode-entry layer on either side.",
+    "All k0..k3 comparisons remain; differing inputs/routes are explicit. Candidate output is only one future rule for consideration; no implementation, lower-cache replay, speed/physical I/O claim or automatic added observer."
+  ],
+  "first_static_findings": [
+    {
+      "id": "RET-S1",
+      "finding": "Frozen scope said captured endpoints without specifying which endpoint; draft runner and contract already required primary decode-entry only.",
+      "old_runner_sha256": "5bb4e1bf5652d5b331ab8508c191a57a76f6a2a00e6c535ff24ba52396e9b715",
+      "resolution": "Root explicitly confirmed before first tests and actual trace analysis: only k1 snapshots[1], with GPU-covered and sole occupants in the same layer on one side; do not expand to other endpoints after seeing results. This is a conservative admission interpretation, not evidence of actual overwrite alternatives.",
+      "status": "RESOLVED_PRE_EXECUTION_CLARIFICATION"
+    },
+    {
+      "id": "RET-S2",
+      "finding": "Root identified that equal input length and equal ordered routes do not establish equal input token bytes.",
+      "finding_record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/runner-input-identity-static-finding.json",
+      "resolution": "Final runner emits both token-sidecar SHA values and same_input_tokens, requires equality at the primary gate, and adds a differing-token/equal-length/equal-route positive-bound counterexample. Existing manifest bindings are reused without re-extraction.",
+      "status": "FIXED_BEFORE_FIRST_TEST"
+    },
+    {
+      "id": "RET-S3",
+      "finding": "Inherited owned.run default cwd was bound when the old module was defined; assigning owned.W does not change that default argument.",
+      "resolution": "Root confirmed every new owned invocation will pass explicit cwd=W and TMPDIR=R. Only existing run helper is reused; old frozen/export entrypoints are not called.",
+      "status": "RESOLVED_EXPLICIT_CALLER_CONTRACT"
+    },
+    {
+      "id": "RET-N1",
+      "finding": "Runner fills report.source_sha256 only on successful completion; failure reports retain scope/manifest/execution_plan SHA rather than embedding the full source ledger.",
+      "resolution": "Accepted within the externally frozen owned-execution scope; failed report must not be described as containing a complete standalone source ledger. No unrelated test expansion requested.",
+      "status": "NONBLOCKING_LIMIT"
+    }
+  ],
+  "blocking_findings": [],
+  "limits": [
+    "No tests, imports of new modules, actual-input statistics, route parsing, model inference, build, or payload reads were performed by this static reviewer. AST parsing and source hashes are not contract execution.",
+    "Finite oracle candidate subsets deliberately relax real cache history and concurrency; containment is validated conceptually, not joint attainability. Positive lower bounds exclude only a contemporaneous miss-set-composition explanation, not historical demand/writeback effects.",
+    "Endpoint mixed occupancy does not prove that a GPU-covered alternative existed at the actual reservation, stayed GPU-covered, or could safely be recycled. The concrete future rule still needs its own runtime conditions and acceptance stage.",
+    "Only the first frozen synthetic host-contract batch is admitted by this review. Actual eight-trace analysis still requires passed same-source45 contracts, clean tool commit and frozen execution/source identity."
+  ],
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/analyze_mirror_retention.py": "560859e3ce8e739785a960fd9acc1fa10518d553a3cb3837d4dd36b1d967302b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/mirror_retention.py": "2ee2fef0b57dad3479d86c7baf3d8845728f4949a57b34354b6cf37effc8496f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/analyze_decode_supply.py": "5ac7a226cc108b1369a1010a96b86477f7e3e63d9bbc7938728e3aec5d563b30",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/decode_supply_bounds.py": "8c35bc78f36092c180847013c0651f22ba1040f8ab9abf56aac51684e8c7a06f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/gpu_cache_replay.py": "7bca768a0c7cd447e295494c14966d64e460096c0422eb91857e628e677a4fd3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/run_gpu_cache_study.py": "040293f92ae61ba9703c4fa17b06f2af25442e84b5f93c6844dfed292e7699c7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/offload_trace.py": "0a425cb3c01cd627dba883c7404b39702ac3d6bbea1b37507f349840e6c89127",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/analyze.py": "21e459143f6c1518d202323ef1fd7f6be48f66a25ce1ec5cbd7b1720cfe260e4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/src/model/moe.cu": "c7d2b1975fabb5464c45000a14496dc97b270675f92e834d36eb926c58ee1548",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/src/quant/moe_residency.cpp": "341a376b53ca3a42880551658fcab1ba4639cd0a5b99d3b9edac1a8261569165",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/include/q4t/quant/moe_residency.h": "ff2ec49fc51d713ee71e02013da69d27a30adcf42cf59c2d712e8bc9583264d3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/include/q4t/quant/moe_supply_observer.h": "a9e776c0916d987b354b052171b98dbc71ab5c3f8c7465b7e320efb9fe4ff7e1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/test_mirror_retention.py": "2297ef68306e92c621aad186ae9e00723602dc4d700d50c64b551162f84a6e38",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/test_analyze_mirror_retention.py": "c0195b169aed228a6cde7f1faa376af8c27343d519c328008c5050aee5effec1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/scope-plan.json": "7b611ebf65f194f166d8d9e1635d88f5eced5e790d8fe38012fb754beff7e089",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/build_retention_manifest.py": "8814042e5b1da9ae1916ec397c211088673ed06ac9a6cc485f095cfc432272f5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/retention_common.py": "3c4f51f73f43b640374c39c974c65af9f96df30686cec8150742a408389cbb64",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/runner-input-identity-static-finding.json": "e1073b367d1c0cc662bbae3cf8260dcdd0f530f1fbd11ff06df13364bd486f97"
+  },
+  "recorded_t": 1791289664.6817708
+}

@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "recorded_t": 1791289202.1882503,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/build_retention_manifest.py": "8814042e5b1da9ae1916ec397c211088673ed06ac9a6cc485f095cfc432272f5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/scope-plan.json": "7b611ebf65f194f166d8d9e1635d88f5eced5e790d8fe38012fb754beff7e089",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/retention_common.py": "3c4f51f73f43b640374c39c974c65af9f96df30686cec8150742a408389cbb64"
+  },
+  "independent_static_review": "supply_observer_review PASS; cwd explicitly W; metadata projection only",
+  "trace_parsing_admitted": false
+}

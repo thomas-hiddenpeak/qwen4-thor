@@ -5,6 +5,20 @@
 
 ## 当前结论
 
+## Mirror保留历史 Goal：固定八请求离线研究（2026-10-06）
+
+见[冻结研究](OFFLOAD_MIRROR_RETENTION_2026-10-06.md)。承接69e2d04，在新
+隔离分支复用上一轮两组on共8请求，研究mirror中的GPU/L2冗余副本与
+后续供给机会。先从实际decode入口精确回放GPU missing/victim，再用
+逐层candidate累计量界定共同miss上的可用性差，不假定ring FIFO。
+
+scope已冻结，3.94MB输入投影首过；26项核心、19项runner合同首批45/45
+通过。输入token身份门在首测前补齐，原静态发现保留；实际trace分析待
+干净工具提交与执行身份冻结，尚无实际结果。
+本阶段零新增HTTP/模型，不改runtime；最多提名一项未来GPU冗余镜像回收
+规则，门槛不满足就以不可识别收束，不自动增加采样。旧NO_GO/默认关闭、
+精度/GEMM/预算、MTP/Phase D及54GB未知保持，MAIN七项修改独立保护。
+
 ## Decode缓存供给 Goal：竞争已观测，主要缺口来自入口机会（2026-10-06）
 
 见[完整供给报告](OFFLOAD_DECODE_SUPPLY_2026-10-06.md)。先复用旧16请求

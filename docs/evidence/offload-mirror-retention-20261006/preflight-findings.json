@@ -1,0 +1,6 @@
+{
+  "schema": 1,
+  "recorded_t": 1791288857.9185176,
+  "first_finding": "Initial scope assembly used Path(dot).parent instead of resolved cwd.parent and raised FileNotFoundError before writing scope.",
+  "resolution": "Used absolute Path.cwd(); original scope inputs read successfully; no source change, tests, trace parsing, HTTP or model execution."
+}

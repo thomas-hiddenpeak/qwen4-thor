@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "recorded_t": 1791289696.9257958,
+  "expected_tests": 45,
+  "first_batch": true,
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tools/trace",
+    "-p",
+    "test_*mirror_retention.py",
+    "-v"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/analyze_mirror_retention.py": "560859e3ce8e739785a960fd9acc1fa10518d553a3cb3837d4dd36b1d967302b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/mirror_retention.py": "2ee2fef0b57dad3479d86c7baf3d8845728f4949a57b34354b6cf37effc8496f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/analyze_decode_supply.py": "5ac7a226cc108b1369a1010a96b86477f7e3e63d9bbc7938728e3aec5d563b30",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/decode_supply_bounds.py": "8c35bc78f36092c180847013c0651f22ba1040f8ab9abf56aac51684e8c7a06f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/gpu_cache_replay.py": "7bca768a0c7cd447e295494c14966d64e460096c0422eb91857e628e677a4fd3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/run_gpu_cache_study.py": "040293f92ae61ba9703c4fa17b06f2af25442e84b5f93c6844dfed292e7699c7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/offload_trace.py": "0a425cb3c01cd627dba883c7404b39702ac3d6bbea1b37507f349840e6c89127",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/analyze.py": "21e459143f6c1518d202323ef1fd7f6be48f66a25ce1ec5cbd7b1720cfe260e4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/src/model/moe.cu": "c7d2b1975fabb5464c45000a14496dc97b270675f92e834d36eb926c58ee1548",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/src/quant/moe_residency.cpp": "341a376b53ca3a42880551658fcab1ba4639cd0a5b99d3b9edac1a8261569165",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/include/q4t/quant/moe_residency.h": "ff2ec49fc51d713ee71e02013da69d27a30adcf42cf59c2d712e8bc9583264d3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/include/q4t/quant/moe_supply_observer.h": "a9e776c0916d987b354b052171b98dbc71ab5c3f8c7465b7e320efb9fe4ff7e1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/test_mirror_retention.py": "2297ef68306e92c621aad186ae9e00723602dc4d700d50c64b551162f84a6e38",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/test_analyze_mirror_retention.py": "c0195b169aed228a6cde7f1faa376af8c27343d519c328008c5050aee5effec1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/scope-plan.json": "7b611ebf65f194f166d8d9e1635d88f5eced5e790d8fe38012fb754beff7e089",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/build_retention_manifest.py": "8814042e5b1da9ae1916ec397c211088673ed06ac9a6cc485f095cfc432272f5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/retention_common.py": "3c4f51f73f43b640374c39c974c65af9f96df30686cec8150742a408389cbb64",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/runner-input-identity-static-finding.json": "e1073b367d1c0cc662bbae3cf8260dcdd0f530f1fbd11ff06df13364bd486f97",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/tool-static-review.json": "db86ff7cae574b006567a53983c1da0a2236667132fa47e326d2d16fa807ca72"
+  },
+  "HTTP": 0,
+  "model_runs": 0,
+  "trace_passes": 0
+}
