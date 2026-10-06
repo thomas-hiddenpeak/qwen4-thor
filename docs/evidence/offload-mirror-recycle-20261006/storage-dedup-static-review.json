@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "passed": true,
+  "status": "PASS_BOUNDED_STORAGE_STATIC_REVIEW",
+  "reviewed_t": 1791316965.7224967,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage_dedup.py": "6fb1c2a198f1eda4554416e3ac4558681b3971d7313d2b79775fd8243fba42d9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-dedup-plan.json": "3feb568e7d8884ae08dde4050edf47220a11b3a93852549a47e21ee705658263"
+  },
+  "blocking_findings": [],
+  "checks": [
+    "Exact prepared manifest453 unique evidence paths in first14 terminal groups; 208 unique optional rebuildable paths disjoint under own candidate-build; metadata nlink1 everywhere. No candidate bytes read by reviewer.",
+    "Execution requires frozen plan SHA, m061 terminal and m062 absent start; every currently started planned group has rc0/cleanup/absent receipt and exact unit MainPID0 plus inactive/failed live state. No waiting/stopping services.",
+    "Every share candidate regular/non-symlink/canonical path and original complete metadata rechecked; all SHA and every duplicate byte-comparison before first mutation; canonical readonly then same-directory temporary hardlink plus atomic replace preserves original path/content.",
+    "Bindings from frozen ledgers and current decisions merged before mutation; bound candidate hashes checked, ledgers hash-checked before/after; no recursive source-ledger payload reads.",
+    "Default flag does not prune. After sharing, free>=original1GiB skips all deletion. Otherwise explicit flag required; each iteration rechecks interval/free, selects smallest sufficient file or largest remaining, records pre-delete SHA/metadata and free before/after, stops on sufficient space.",
+    "Optional deletions are exact prelisted objects/dependencies/static libraries or compiler probe binaries; runtime/test executables, compiler source/config/log/flags/link, MAIN/old/model/reference/source/export excluded. Unbound check rerun from current merged ledger.",
+    "Exclusive operation/preflight/journal/summary; journal fsync before/after mutations and directory fsync after replace/delete; normal exceptions retain failure.json and no automatic retry. Frozen HTTP startup threshold and requests unchanged."
+  ],
+  "limits": [
+    "Static script/manifest audit only; no model, test, dedup, delete, filesystem candidate-content read or live m061 inspection performed.",
+    "Shared original paths keep bytes/SHA but inode/nlink/permissions/possibly mtime change deliberately; scope metadata note states this. Existing finite proof content hashes retained, not reinterpreted as byte-invariant metadata.",
+    "Recorded process-group absence plus live exact-unit state is bounded owned-unit evidence, not global GPU/process idleness.",
+    "A signal can interrupt after durable journal and leave a pending hardlink; outer owner receipt plus journal must be retained and inspected, not rerun. No rollback guarantee claimed.",
+    "Final startup_space_gate_met may remain false if fixed safe candidates insufficient; parent must retain failure/space boundary and not lower threshold or add unplanned deletion."
+  ],
+  "candidate_paths_checked_from_manifest": 453,
+  "optional_rebuildable_paths_checked_from_manifest": 208,
+  "candidate_bytes_read": 0,
+  "tests_executed": 0,
+  "models_executed": 0,
+  "helper_executions": 0,
+  "files_mutated_by_reviewer": [
+    "storage-dedup-static-review.json"
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "passed": true,
+  "failure": null,
+  "started_t": 1791294615.28257,
+  "kind": "numerical",
+  "plan_sha256": "5e9f1627c85cd21a7467caed538fb80bc88cedb534f59fed6c094a922be8537e",
+  "runtime_source_commit": "1efc524fe379f1eca9ceefed690327ae77236c7f",
+  "runtime_binary_sha256": "6a1e3321499a45359068610ee5865a8b7c97930bb6eed6f0065acfa0c6178762",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-01/numerical-build.log": "edba54a9a2bd5c8076602cb6921b61a16bde55ec860f8baff7b5d93b50998312",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-01/numerical-build-exit.json": "e00d85346bc63a6e38e09bbe8dc234d1c2b53e6cc478178f29acabc3e5281dc2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-01/identity-before.json": "940e78709c267b3e02677667fe9269715eca411c4f38a0762eb07ca4dee3f769",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/required-numerical-tests.txt": "608c3120fd71a6b65fe84bd5654ded12b45d35ab7334c58238c01917cebb2703",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/q4t_tests": "a0427f3ceb8b57b5c403c27f7aabd210b5e66c6ca7a4e0d1c73197b73b26449f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-01/numerical-tests.log": "980474da1fad7f7753e0fbea497f0f693c1fd425bb919c606631edb853206e9a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-01/numerical-tests-exit.json": "90f46e8148182a5638e2963ebec9d3bcc85c0612496cc1b3823fdd1cf458b8f1"
+  },
+  "groups": [
+    {
+      "name": "mirror_recycle_real_weight",
+      "passed": 1,
+      "test_binary_sha256": "a0427f3ceb8b57b5c403c27f7aabd210b5e66c6ca7a4e0d1c73197b73b26449f",
+      "scope": "Fixed layer2/T1/C16/L28/K8/one worker"
+    }
+  ],
+  "ended_t": 1791294626.6205122,
+  "recorded_t": 1791294626.6205127,
+  "records": [
+    {
+      "started_t": 1791294615.3092082,
+      "command": [
+        "cmake",
+        "--build",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build",
+        "--target",
+        "q4t_tests",
+        "--parallel",
+        "8"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source",
+      "returncode": 0,
+      "failure": null,
+      "automatic_retry": false,
+      "timeout_s": 1800,
+      "signals": [],
+      "cleanup_complete": true,
+      "pid": 3831922,
+      "pgid": 3831922,
+      "group_before_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "group_after_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "ended_t": 1791294624.4015405
+    },
+    {
+      "started_t": 1791294624.4097044,
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/q4t_tests",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/required-numerical-tests.txt"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source",
+      "returncode": 0,
+      "failure": null,
+      "automatic_retry": false,
+      "timeout_s": 1800,
+      "signals": [],
+      "cleanup_complete": true,
+      "pid": 3832194,
+      "pgid": 3832194,
+      "group_before_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "group_after_cleanup": {
+        "live_pids": [],
+        "zombie_pids": [],
+        "errors": [],
+        "absent": true
+      },
+      "ended_t": 1791294626.4763129
+    }
+  ],
+  "performance_acceptance": false
+}

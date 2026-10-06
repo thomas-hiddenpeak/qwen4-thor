@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "passed": true,
+  "status": "PASS_STATIC_AFTER_BOUNDED_HELPER_REPAIRS",
+  "reviewed_t": 1791310334.0237024,
+  "scope": "Only final_protection.py and archive_delivery.py; no repeat runtime/HTTP/plan acceptance review",
+  "before_source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/final_protection.py": "936ff16dad3d51fb0dfc47120e27be1b969325f9ab4b7b0f3d5431d7b4dfea16",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/archive_delivery.py": "4b2fe70bf5322d54fd99c73d9f53c95cda5e02414bea526d84dd1ae68b9b1ad3"
+  },
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/final_protection.py": "a9a0bbd2c88736fef3aebad09565334d8f4fc217c253dc005dc17b5d69b76dcb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/archive_delivery.py": "966d7711e399e15fd5388f1a2c03ee000134e7a4a3678c7d60bc47601a41d206"
+  },
+  "retained_first_findings": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/delivery-tools-static-findings.json",
+    "sha256": "4171f4f00db872cce1941e62098d77a9d7480ce496856d9096e3fc4fdd3cd40b"
+  },
+  "repairs": [
+    {
+      "file": "final_protection.py",
+      "change": "Recognize only exact frozen cold-payload-gate failure, require false cold gate, None runner/monitor, nonzero owned controller exit and absent runner/http/memory artifacts; retain failed status in no_service_terminals rather than requiring nonexistent service cleanup. All normal started-service gates retained.",
+      "validation": "Static branch/source reading only; no synthetic cold-failure test or model run."
+    },
+    {
+      "file": "archive_delivery.py",
+      "change": "Preflight every target descendant/resolved containment and reject all symlink ancestors through W before any archive mutation. Explicitly include these findings/review records while retaining old preparation/handoff SHA records unchanged.",
+      "validation": "Static path-control reading plus AST syntax parse only; no symlink fixture/test created."
+    }
+  ],
+  "checks": [
+    "Protection reads model file metadata and only config/index contents; hashes current runtime/main binary and local metadata, never model weight payload. Reference check is tracked status only; old worktree HEAD/status scope unchanged.",
+    "Protection only owns this stage receipt/PGID/unit metadata; no signals/cache advice/tests/model execution. Failed outcomes remain visible, not converted to acceptance. Self exit and remote delivery are separately checked by root.",
+    "Archive reads root-level bounded metadata only, carries existing raw source digests without recursively opening sources, redacts text-like fields and omits raw response/prompt streams, refuses model/external source content.",
+    "Archive partial mode requires reason, preserves completed/failed/not-run and accepted HTTP counts; unknown attempts remain unknown; complete coverage remains distinct from pass/fail acceptance.",
+    "Default off, no approval/deploy action, and whole physical54GB INDETERMINATE stay explicit; helper execution cannot produce performance GO.",
+    "Archive checks collisions before exclusive writes and retains exact vs projected source/output SHA ledger; new static records are in finite compact list."
+  ],
+  "known_limits": [
+    "Current run has not taken the repaired no-service or symlink branches; no claim of runtime branch testing.",
+    "A partial unknown launch/cleanup failure remains a failed protection audit; only exact no-service cold exit is handled.",
+    "Protection metadata does not prove model byte equality/transient-write absence/global process or GPU idleness.",
+    "These helpers have not been executed by reviewer; full independent result review still waits all17 service terminals."
+  ],
+  "tests_executed": 0,
+  "helper_executions": 0,
+  "model_runs": 0,
+  "raw_evidence_reads": 0,
+  "model_payload_reads": 0,
+  "runtime_or_W_edits": false
+}

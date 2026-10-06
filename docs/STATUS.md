@@ -1,23 +1,35 @@
 # 当前状态
 
-更新：2026-10-06。代码是实现事实来源；验收规则见 [EVALUATION.md](EVALUATION.md)。
+更新：2026-10-07。代码是实现事实来源；验收规则见 [EVALUATION.md](EVALUATION.md)。
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
 ## 当前结论
 
-## GPU冗余mirror回收 Goal：单候选实施，等待HTTP首测（2026-10-06）
+## 2026-10-07：GPU-covered mirror回收评估完成，NO_GO，默认关闭
 
-见[候选协议](OFFLOAD_MIRROR_RECYCLE_2026-10-06.md)。从3a838473新建隔离
-分支，冻结默认关闭的真single-decode策略：完整plan中未驱逐GPU居民
-形成不可变覆盖集合，优先回收其mirror副本，保留claim/event和原fallback。
-worker不读取并发变化GPU映射，不叠加旧分区/日志候选。
+唯一候选 `Q4T_MOE_MIRROR_GPU_RECYCLE` 完成冻结17服务/131 HTTP及全部逐组合同；
+固定质量11题、主机24项、单层真实权重数值1项与独立结果核算通过。运行源码
+`1efc524fe379f1eca9ceefed690327ae77236c7f`，q4t SHA
+`6a1e3321499a45359068610ee5865a8b7c97930bb6eed6f0065acfa0c6178762`。
 
-默认关闭实现、工具接入、14项host/10项协议及一项真实权重数值合同源码
-已完成，runtime与协议静审通过；尚未构建/测试。首项为固定HTTP11，
-再相关直接/数值合同，然后history ABBA四服务84请求和完整六档36请求；
-合计上限17服务131HTTP。有效速度失败仍完成预定矩阵，不追加有利重复。
-MAIN七项修改/主binary与旧工作树独立保护；GEMM/精度/预算、MTP/Phase D、
-旧NO_GO及54GB未知保持。候选尚未质量/性能接受，默认始终关闭。
+性能为 **NO_GO**：六档仅8192/45056全部门通过，1024/4096/204800/261887失败；
+history两方向块14位置全有失败，11项最低decode下降，反转与全部轮次保留。
+ON changed=16,149证实实际选槽变化，不能代替速度收益。开关继续默认0，停止
+本候选，不在本轮追加第二策略；不宣称稳定显著提速或prefill因果。
+
+资源审计完成28,932样本/121 I/O包络；PSI全UNKNOWN、GPU scheduled-skip 26,259。
+采样memory.current/charge peak超16GiB最大分别262,144/860,160字节，原值保留；
+OOM/swap观测0，整体物理RAM≤54GB仍INDETERMINATE。数值通过仅限固定layer2/T1/
+GPU16/L2=8/mirror8单worker夹具，不能外推全层/任意并发精度。
+
+保留m062启动前磁盘失败（0服务/0HTTP）、独立存储余量修复及所有静态发现。
+存储结束比原1GiB门高28.73MiB，但32MiB余量目标差3.27MiB，target=false；
+246个新原件由两张独立gzip恢复map定位。原门与131请求计划未改。
+
+最终保护与235文件compact归档通过，MAIN原七项修改/完整diff/主binary与
+旧三工作树保持；模型/reference证据边界见[完整报告](OFFLOAD_MIRROR_RECYCLE_2026-10-06.md)。阶段在工作分支交付，旧NO_GO、
+精度/GEMM/预算及MTP/Phase D约束保持；提交推送不等于性能接受。
+本候选到此收敛，后续方向需另立有界依据与验收，不追加本轮采样。
 
 ## Mirror保留历史 Goal：共同缺失需求仍有供给差，提名一项候选（2026-10-06）
 

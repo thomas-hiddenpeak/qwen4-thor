@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "status": "PREPARED_STATIC_ONLY_NOT_EXECUTED",
+  "created_t": 1791294544.524444,
+  "script": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/final_protection.py",
+  "script_sha256": "936ff16dad3d51fb0dfc47120e27be1b969325f9ab4b7b0f3d5431d7b4dfea16",
+  "invocation": "Use existing owned run helper: run([/usr/bin/python3, -B, R/final_protection.py, --expected-head, FINAL_CLEAN_40HEX_HEAD, --self-label, final-protection-01], R, final-protection-01, cwd=W, timeout=180). Default output R/final-protection.json is exclusive. Root must inspect final-protection-01 actual exit/cleanup after checker exits.",
+  "writes": [
+    "R/final-protection.json (only on future invocation; exclusive)"
+  ],
+  "source_changes": "None in W or frozen scripts/plan; this new final-only script is outside execution-plan. No invocation during preparation.",
+  "coverage": [
+    "Pinned entry/model-entry/execution-plan SHA; original MAIN seven modifications, HEAD, complete git diff and build/q4t SHA unchanged.",
+    "All three prior delivered worktrees exact frozen HEAD and clean tracked/untracked Git status; no recursive old evidence hashing.",
+    "Exactly228 model path/size/inode/device/mtime metadata records; only config/index content hashes. SHA helper explicitly refuses all other model file paths.",
+    "Reference scope tracked Git status only.",
+    "Current expected final HEAD may be runtime commit or clean docs-only descendant on same branch; frozen runtime binary must still match.",
+    "All owned top-level *-start.json plus bounded direct host/numerical subdirectory receipts require matching terminal/cleanup; failed test outcomes are retained rather than relabelled as protection failures when cleanup complete.",
+    "One /proc metadata snapshot checks current absence of owned PGIDs, including HTTP runner groups; exact owned systemd unit names queried read-only. No stop/kill/reset or GPU query.",
+    "Own running checker start is explicitly excluded and later closed by root; unstarted frozen groups are listed, so protection does not pretend incomplete acceptance passed."
+  ],
+  "bounds": {
+    "top_plus_direct_receipts": 128,
+    "direct_contract_dirs": 12,
+    "metadata_json_max_bytes": 16777216,
+    "unit_count_max": 17,
+    "unit_query_timeout_seconds": 5,
+    "old_raw_resources_read": 0,
+    "weight_payload_reads_or_hashes": 0,
+    "new_HTTP_or_model_tests": 0
+  },
+  "limits": [
+    "Metadata equality cannot prove payload byte equality or absence of transient writes.",
+    "Tracked reference status does not cover ignored/untracked reference content.",
+    "Old tree HEAD/status does not hash ignored artifacts.",
+    "Owned absence is not global process/GPU idleness; PGID reuse conservatively fails.",
+    "Successful protection audit is separate from correctness/performance/full-matrix/resource acceptance and Git push/delivery closure.",
+    "Script is prepared and manually source-reviewed, not executed or syntax-tested; root can request independent static review before final use."
+  ]
+}

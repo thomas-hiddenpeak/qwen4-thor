@@ -1,0 +1,834 @@
+{
+  "schema": 1,
+  "passed": true,
+  "status": "PASS_COMPLETE_RESULT_REVIEW",
+  "mode": "complete",
+  "started_t": 1791324308.0059514,
+  "failure": null,
+  "model_runs": 0,
+  "http_requests_created": 0,
+  "tests_executed": 0,
+  "raw_log_reads": 0,
+  "raw_resource_reads": 0,
+  "weight_payload_reads": 0,
+  "default_enable_allowed": false,
+  "whole_physical_RAM_54GB": "INDETERMINATE",
+  "performance_acceptance": false,
+  "independent_arithmetic": true,
+  "plan_sha256": "5e9f1627c85cd21a7467caed538fb80bc88cedb534f59fed6c094a922be8537e",
+  "runtime_source_commit": "1efc524fe379f1eca9ceefed690327ae77236c7f",
+  "runtime_binary_sha256": "6a1e3321499a45359068610ee5865a8b7c97930bb6eed6f0065acfa0c6178762",
+  "started_service_count": 17,
+  "successful_audited_service_count": 17,
+  "accepted_http_request_count": 131,
+  "unrun_groups": [],
+  "failed_or_unaudited_groups": [],
+  "direct_status": {
+    "host": true,
+    "numerical": true
+  },
+  "counters_by_group": {
+    "q01-quality-on": {
+      "plans": 2456,
+      "attempts": 6216,
+      "preferred": 283,
+      "changed": 214,
+      "fallback": 5933,
+      "unavailable": 0,
+      "published": 283
+    },
+    "h01-off": {
+      "plans": 0,
+      "attempts": 0,
+      "preferred": 0,
+      "changed": 0,
+      "fallback": 0,
+      "unavailable": 0,
+      "published": 0
+    },
+    "h02-on": {
+      "plans": 95789,
+      "attempts": 162163,
+      "preferred": 6341,
+      "changed": 5269,
+      "fallback": 155820,
+      "unavailable": 2,
+      "published": 6341
+    },
+    "h03-on": {
+      "plans": 95789,
+      "attempts": 162163,
+      "preferred": 6321,
+      "changed": 5226,
+      "fallback": 155838,
+      "unavailable": 4,
+      "published": 6321
+    },
+    "h04-off": {
+      "plans": 0,
+      "attempts": 0,
+      "preferred": 0,
+      "changed": 0,
+      "fallback": 0,
+      "unavailable": 0,
+      "published": 0
+    },
+    "m011-1024-off": {
+      "plans": 0,
+      "attempts": 0,
+      "preferred": 0,
+      "changed": 0,
+      "fallback": 0,
+      "unavailable": 0,
+      "published": 0
+    },
+    "m012-1024-on": {
+      "plans": 13321,
+      "attempts": 20687,
+      "preferred": 1734,
+      "changed": 1434,
+      "fallback": 18953,
+      "unavailable": 0,
+      "published": 1734
+    },
+    "m021-4096-on": {
+      "plans": 14196,
+      "attempts": 24646,
+      "preferred": 1330,
+      "changed": 1110,
+      "fallback": 23316,
+      "unavailable": 0,
+      "published": 1330
+    },
+    "m022-4096-off": {
+      "plans": 0,
+      "attempts": 0,
+      "preferred": 0,
+      "changed": 0,
+      "fallback": 0,
+      "unavailable": 0,
+      "published": 0
+    },
+    "m031-8192-off": {
+      "plans": 0,
+      "attempts": 0,
+      "preferred": 0,
+      "changed": 0,
+      "fallback": 0,
+      "unavailable": 0,
+      "published": 0
+    },
+    "m032-8192-on": {
+      "plans": 15795,
+      "attempts": 26052,
+      "preferred": 1326,
+      "changed": 1134,
+      "fallback": 24726,
+      "unavailable": 0,
+      "published": 1326
+    },
+    "m041-45056-on": {
+      "plans": 10789,
+      "attempts": 19632,
+      "preferred": 563,
+      "changed": 472,
+      "fallback": 19069,
+      "unavailable": 0,
+      "published": 563
+    },
+    "m042-45056-off": {
+      "plans": 0,
+      "attempts": 0,
+      "preferred": 0,
+      "changed": 0,
+      "fallback": 0,
+      "unavailable": 0,
+      "published": 0
+    },
+    "m051-204800-off": {
+      "plans": 0,
+      "attempts": 0,
+      "preferred": 0,
+      "changed": 0,
+      "fallback": 0,
+      "unavailable": 0,
+      "published": 0
+    },
+    "m052-204800-on": {
+      "plans": 8723,
+      "attempts": 15807,
+      "preferred": 537,
+      "changed": 445,
+      "fallback": 15270,
+      "unavailable": 0,
+      "published": 537
+    },
+    "m061-261887-on": {
+      "plans": 15593,
+      "attempts": 26138,
+      "preferred": 1011,
+      "changed": 845,
+      "fallback": 25127,
+      "unavailable": 0,
+      "published": 1011
+    },
+    "m062-261887-off": {
+      "plans": 0,
+      "attempts": 0,
+      "preferred": 0,
+      "changed": 0,
+      "fallback": 0,
+      "unavailable": 0,
+      "published": 0
+    }
+  },
+  "retained_static_findings": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-static-finding-01.json",
+      "status": "STATIC_BLOCKING_FINDING",
+      "finding": "RunMirrorRecycleCase stack MoEResidency off/on has no Free call; MoEResidency has no destructor, so normal/early return leaves worker threads and allocated GPU/pinned state whose this is destroyed. Add test-local RAII Free guard immediately after constructing both objects; do not broaden runtime lifecycle."
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-lifecycle-static-finding.json",
+      "status": "BLOCKING_STATIC_FINDING_BEFORE_BUILD_OR_TEST",
+      "finding": "RunMirrorRecycleCase creates local MoEResidency off,on without Free. This type has no destructor that frees device/pinned resources or joins workers; normal and Q4T_CHECK early returns after successful Init leave workers retaining this pointers after object destruction. Earlier author static review missed this lifecycle issue."
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/resource-static-finding.json",
+      "status": "STATIC_FINDING_FIXED_BEFORE_EXECUTION",
+      "finding": "run_acceptance exit.completed counts results cases; a single matrix tier has one case with three HTTP repeats. Previous adapted terminal compared it with three request_count."
+    }
+  ],
+  "retained_contract_failures": [],
+  "retained_owner_failures": [],
+  "full_frozen_coverage_completed": true,
+  "history": [
+    [
+      {
+        "label": "h01-off/h02-on:p1",
+        "checks": {
+          "first_ttft": true,
+          "later_max_ttft": false,
+          "minimum_decode_tps": false
+        },
+        "passed": false,
+        "baseline_gate_values": {
+          "first_ttft": 72.04669430083595,
+          "later_max_ttft": 73.502921132138,
+          "minimum_decode_tps": 6.608530036430403
+        },
+        "candidate_gate_values": {
+          "first_ttft": 72.02957356185652,
+          "later_max_ttft": 73.84653697907925,
+          "minimum_decode_tps": 6.548949302782488
+        },
+        "failed_checks": [
+          "later_max_ttft",
+          "minimum_decode_tps"
+        ]
+      },
+      {
+        "label": "h01-off/h02-on:p2",
+        "checks": {
+          "first_ttft": false,
+          "later_max_ttft": true,
+          "minimum_decode_tps": false
+        },
+        "passed": false,
+        "baseline_gate_values": {
+          "first_ttft": 38.203461474971846,
+          "later_max_ttft": 38.621311801020056,
+          "minimum_decode_tps": 6.268443379606969
+        },
+        "candidate_gate_values": {
+          "first_ttft": 38.24853801494464,
+          "later_max_ttft": 38.58692303393036,
+          "minimum_decode_tps": 6.219144229259047
+        },
+        "failed_checks": [
+          "first_ttft",
+          "minimum_decode_tps"
+        ]
+      },
+      {
+        "label": "h01-off/h02-on:p3",
+        "checks": {
+          "first_ttft": false,
+          "later_max_ttft": false,
+          "minimum_decode_tps": false
+        },
+        "passed": false,
+        "baseline_gate_values": {
+          "first_ttft": 38.392955561866984,
+          "later_max_ttft": 38.692328999051824,
+          "minimum_decode_tps": 6.952806322163886
+        },
+        "candidate_gate_values": {
+          "first_ttft": 38.45755650405772,
+          "later_max_ttft": 38.785776966949925,
+          "minimum_decode_tps": 6.840930842040316
+        },
+        "failed_checks": [
+          "first_ttft",
+          "later_max_ttft",
+          "minimum_decode_tps"
+        ]
+      },
+      {
+        "label": "h01-off/h02-on:p4",
+        "checks": {
+          "first_ttft": true,
+          "later_max_ttft": false,
+          "minimum_decode_tps": false
+        },
+        "passed": false,
+        "baseline_gate_values": {
+          "first_ttft": 10.642857962986454,
+          "later_max_ttft": 10.631132428068668,
+          "minimum_decode_tps": 7.035206562405027
+        },
+        "candidate_gate_values": {
+          "first_ttft": 10.564694304019213,
+          "later_max_ttft": 10.681886752834544,
+          "minimum_decode_tps": 6.940867626510576
+        },
+        "failed_checks": [
+          "later_max_ttft",
+          "minimum_decode_tps"
+        ]
+      },
+      {
+        "label": "h01-off/h02-on:p5",
+        "checks": {
+          "first_ttft": true,
+          "later_max_ttft": true,
+          "minimum_decode_tps": false
+        },
+        "passed": false,
+        "baseline_gate_values": {
+          "first_ttft": 220.67784021096304,
+          "later_max_ttft": 226.39526547398418,
+          "minimum_decode_tps": 7.152189532528401
+        },
+        "candidate_gate_values": {
+          "first_ttft": 220.59956220304593,
+          "later_max_ttft": 222.73044140310958,
+          "minimum_decode_tps": 7.114861701429214
+        },
+        "failed_checks": [
+          "minimum_decode_tps"
+        ]
+      },
+      {
+        "label": "h01-off/h02-on:p6",
+        "checks": {
+          "first_ttft": true,
+          "later_max_ttft": false,
+          "minimum_decode_tps": false
+        },
+        "passed": false,
+        "baseline_gate_values": {
+          "first_ttft": 26.419975558063015,
+          "later_max_ttft": 26.111188140930608,
+          "minimum_decode_tps": 6.454031447706178
+        },
+        "candidate_gate_values": {
+          "first_ttft": 26.22389741614461,
+          "later_max_ttft": 26.8650017301552,
+          "minimum_decode_tps": 6.4165875815617515
+        },
+        "failed_checks": [
+          "later_max_ttft",
+          "minimum_decode_tps"
+        ]
+      },
+      {
+        "label": "h01-off/h02-on:p7",
+        "checks": {
+          "first_ttft": true,
+          "later_max_ttft": false,
+          "minimum_decode_tps": false
+        },
+        "passed": false,
+        "baseline_gate_values": {
+          "first_ttft": 38.77222585910931,
+          "later_max_ttft": 38.418175210943446,
+          "minimum_decode_tps": 6.247915890192161
+        },
+        "candidate_gate_values": {
+          "first_ttft": 38.471014621900395,
+          "later_max_ttft": 38.59521244792268,
+          "minimum_decode_tps": 6.203377690445848
+        },
+        "failed_checks": [
+          "later_max_ttft",
+          "minimum_decode_tps"
+        ]
+      }
+    ],
+    [
+      {
+        "label": "h04-off/h03-on:p1",
+        "checks": {
+          "first_ttft": true,
+          "later_max_ttft": false,
+          "minimum_decode_tps": false
+        },
+        "passed": false,
+        "baseline_gate_values": {
+          "first_ttft": 72.22052615392022,
+          "later_max_ttft": 73.53807072993368,
+          "minimum_decode_tps": 6.578872808028296
+        },
+        "candidate_gate_values": {
+          "first_ttft": 72.14795899717137,
+          "later_max_ttft": 73.94674296397716,
+          "minimum_decode_tps": 6.535254381835402
+        },
+        "failed_checks": [
+          "later_max_ttft",
+          "minimum_decode_tps"
+        ]
+      },
+      {
+        "label": "h04-off/h03-on:p2",
+        "checks": {
+          "first_ttft": false,
+          "later_max_ttft": true,
+          "minimum_decode_tps": false
+        },
+        "passed": false,
+        "baseline_gate_values": {
+          "first_ttft": 38.246354361996055,
+          "later_max_ttft": 38.57869350397959,
+          "minimum_decode_tps": 6.247607993203694
+        },
+        "candidate_gate_values": {
+          "first_ttft": 38.37123390007764,
+          "later_max_ttft": 38.562534336932,
+          "minimum_decode_tps": 6.217894536922369
+        },
+        "failed_checks": [
+          "first_ttft",
+          "minimum_decode_tps"
+        ]
+      },
+      {
+        "label": "h04-off/h03-on:p3",
+        "checks": {
+          "first_ttft": false,
+          "later_max_ttft": false,
+          "minimum_decode_tps": true
+        },
+        "passed": false,
+        "baseline_gate_values": {
+          "first_ttft": 38.441191107966006,
+          "later_max_ttft": 38.64392007119022,
+          "minimum_decode_tps": 6.886858386688943
+        },
+        "candidate_gate_values": {
+          "first_ttft": 38.55675544496626,
+          "later_max_ttft": 38.72819211403839,
+          "minimum_decode_tps": 6.926826642614391
+        },
+        "failed_checks": [
+          "first_ttft",
+          "later_max_ttft"
+        ]
+      },
+      {
+        "label": "h04-off/h03-on:p4",
+        "checks": {
+          "first_ttft": false,
+          "later_max_ttft": true,
+          "minimum_decode_tps": false
+        },
+        "passed": false,
+        "baseline_gate_values": {
+          "first_ttft": 10.636183850932866,
+          "later_max_ttft": 10.680711284046993,
+          "minimum_decode_tps": 6.969489296458935
+        },
+        "candidate_gate_values": {
+          "first_ttft": 10.686044367961586,
+          "later_max_ttft": 10.64997921185568,
+          "minimum_decode_tps": 6.960691433524251
+        },
+        "failed_checks": [
+          "first_ttft",
+          "minimum_decode_tps"
+        ]
+      },
+      {
+        "label": "h04-off/h03-on:p5",
+        "checks": {
+          "first_ttft": false,
+          "later_max_ttft": true,
+          "minimum_decode_tps": true
+        },
+        "passed": false,
+        "baseline_gate_values": {
+          "first_ttft": 221.05064296815544,
+          "later_max_ttft": 232.8468326991424,
+          "minimum_decode_tps": 7.097136179526197
+        },
+        "candidate_gate_values": {
+          "first_ttft": 221.12628574087285,
+          "later_max_ttft": 221.36869030399248,
+          "minimum_decode_tps": 7.122451947898157
+        },
+        "failed_checks": [
+          "first_ttft"
+        ]
+      },
+      {
+        "label": "h04-off/h03-on:p6",
+        "checks": {
+          "first_ttft": false,
+          "later_max_ttft": true,
+          "minimum_decode_tps": true
+        },
+        "passed": false,
+        "baseline_gate_values": {
+          "first_ttft": 26.226637441199273,
+          "later_max_ttft": 26.35287846205756,
+          "minimum_decode_tps": 6.4306702506255515
+        },
+        "candidate_gate_values": {
+          "first_ttft": 26.227480658795685,
+          "later_max_ttft": 26.320750201120973,
+          "minimum_decode_tps": 6.457090394772123
+        },
+        "failed_checks": [
+          "first_ttft"
+        ]
+      },
+      {
+        "label": "h04-off/h03-on:p7",
+        "checks": {
+          "first_ttft": true,
+          "later_max_ttft": false,
+          "minimum_decode_tps": false
+        },
+        "passed": false,
+        "baseline_gate_values": {
+          "first_ttft": 38.40243686782196,
+          "later_max_ttft": 38.3979185661301,
+          "minimum_decode_tps": 6.278851910547247
+        },
+        "candidate_gate_values": {
+          "first_ttft": 38.270761631196365,
+          "later_max_ttft": 38.445546839153394,
+          "minimum_decode_tps": 6.251987165910771
+        },
+        "failed_checks": [
+          "later_max_ttft",
+          "minimum_decode_tps"
+        ]
+      }
+    ]
+  ],
+  "tiers": [
+    {
+      "label": "context-1024",
+      "checks": {
+        "first_ttft": false,
+        "later_max_ttft": false,
+        "minimum_decode_tps": false
+      },
+      "passed": false,
+      "baseline_gate_values": {
+        "first_ttft": 11.821604833006859,
+        "later_max_ttft": 9.96374800405465,
+        "minimum_decode_tps": 6.955698458245741
+      },
+      "candidate_gate_values": {
+        "first_ttft": 11.834803699050099,
+        "later_max_ttft": 10.003835953073576,
+        "minimum_decode_tps": 6.899379599876091
+      },
+      "failed_checks": [
+        "first_ttft",
+        "later_max_ttft",
+        "minimum_decode_tps"
+      ]
+    },
+    {
+      "label": "context-4096",
+      "checks": {
+        "first_ttft": false,
+        "later_max_ttft": false,
+        "minimum_decode_tps": true
+      },
+      "passed": false,
+      "baseline_gate_values": {
+        "first_ttft": 25.457492141984403,
+        "later_max_ttft": 25.990407749079168,
+        "minimum_decode_tps": 6.478985608501668
+      },
+      "candidate_gate_values": {
+        "first_ttft": 25.634224718203768,
+        "later_max_ttft": 26.104874650016427,
+        "minimum_decode_tps": 6.4951252350318125
+      },
+      "failed_checks": [
+        "first_ttft",
+        "later_max_ttft"
+      ]
+    },
+    {
+      "label": "context-8192",
+      "checks": {
+        "first_ttft": true,
+        "later_max_ttft": true,
+        "minimum_decode_tps": true
+      },
+      "passed": true,
+      "baseline_gate_values": {
+        "first_ttft": 37.518604702083394,
+        "later_max_ttft": 38.347352992976084,
+        "minimum_decode_tps": 6.243913688519305
+      },
+      "candidate_gate_values": {
+        "first_ttft": 37.308788504917175,
+        "later_max_ttft": 38.20310846786015,
+        "minimum_decode_tps": 6.246117747088063
+      },
+      "failed_checks": []
+    },
+    {
+      "label": "context-45056",
+      "checks": {
+        "first_ttft": true,
+        "later_max_ttft": true,
+        "minimum_decode_tps": true
+      },
+      "passed": true,
+      "baseline_gate_values": {
+        "first_ttft": 219.8421211540699,
+        "later_max_ttft": 222.2010607640259,
+        "minimum_decode_tps": 7.147918712052679
+      },
+      "candidate_gate_values": {
+        "first_ttft": 219.12157148797996,
+        "later_max_ttft": 222.10427717585117,
+        "minimum_decode_tps": 7.149498001304663
+      },
+      "failed_checks": []
+    },
+    {
+      "label": "context-204800",
+      "checks": {
+        "first_ttft": false,
+        "later_max_ttft": true,
+        "minimum_decode_tps": false
+      },
+      "passed": false,
+      "baseline_gate_values": {
+        "first_ttft": 1107.496584514156,
+        "later_max_ttft": 1114.562322217971,
+        "minimum_decode_tps": 7.559317533128842
+      },
+      "candidate_gate_values": {
+        "first_ttft": 1112.2317825078499,
+        "later_max_ttft": 1112.55394074996,
+        "minimum_decode_tps": 7.5445735046799065
+      },
+      "failed_checks": [
+        "first_ttft",
+        "minimum_decode_tps"
+      ]
+    },
+    {
+      "label": "context-261887",
+      "checks": {
+        "first_ttft": true,
+        "later_max_ttft": false,
+        "minimum_decode_tps": true
+      },
+      "passed": false,
+      "baseline_gate_values": {
+        "first_ttft": 1439.8299708049744,
+        "later_max_ttft": 1436.4469570638612,
+        "minimum_decode_tps": 6.109843432146713
+      },
+      "candidate_gate_values": {
+        "first_ttft": 1436.3563776058145,
+        "later_max_ttft": 1439.5090023928788,
+        "minimum_decode_tps": 6.11980553318774
+      },
+      "failed_checks": [
+        "later_max_ttft"
+      ]
+    }
+  ],
+  "failed_checks": [
+    "h01-off/h02-on:p1:later_max_ttft",
+    "h01-off/h02-on:p1:minimum_decode_tps",
+    "h01-off/h02-on:p2:first_ttft",
+    "h01-off/h02-on:p2:minimum_decode_tps",
+    "h01-off/h02-on:p3:first_ttft",
+    "h01-off/h02-on:p3:later_max_ttft",
+    "h01-off/h02-on:p3:minimum_decode_tps",
+    "h01-off/h02-on:p4:later_max_ttft",
+    "h01-off/h02-on:p4:minimum_decode_tps",
+    "h01-off/h02-on:p5:minimum_decode_tps",
+    "h01-off/h02-on:p6:later_max_ttft",
+    "h01-off/h02-on:p6:minimum_decode_tps",
+    "h01-off/h02-on:p7:later_max_ttft",
+    "h01-off/h02-on:p7:minimum_decode_tps",
+    "h04-off/h03-on:p1:later_max_ttft",
+    "h04-off/h03-on:p1:minimum_decode_tps",
+    "h04-off/h03-on:p2:first_ttft",
+    "h04-off/h03-on:p2:minimum_decode_tps",
+    "h04-off/h03-on:p3:first_ttft",
+    "h04-off/h03-on:p3:later_max_ttft",
+    "h04-off/h03-on:p4:first_ttft",
+    "h04-off/h03-on:p4:minimum_decode_tps",
+    "h04-off/h03-on:p5:first_ttft",
+    "h04-off/h03-on:p6:first_ttft",
+    "h04-off/h03-on:p7:later_max_ttft",
+    "h04-off/h03-on:p7:minimum_decode_tps",
+    "context-1024:first_ttft",
+    "context-1024:later_max_ttft",
+    "context-1024:minimum_decode_tps",
+    "context-4096:first_ttft",
+    "context-4096:later_max_ttft",
+    "context-204800:first_ttft",
+    "context-204800:minimum_decode_tps",
+    "context-261887:later_max_ttft"
+  ],
+  "actual_changed": 16149,
+  "independent_performance_decision": "NO_GO",
+  "no_epsilon_used": true,
+  "no_statistical_significance_inferred": true,
+  "interpretation_limits": [
+    "Independent arithmetic from final audited JSON metrics; no raw timing remeasurement.",
+    "Transitive source ledgers bound through decision SHA, not recursively reread.",
+    "First failures present in owned receipts are retained; absence of transient writes is not proven.",
+    "Counter selection change is no avoided-read, causal-speed, or full numerical proof.",
+    "Resources are not recalculated here. 16GiB memcg is not physical54GB acceptance.",
+    "Default-off is the frozen contract and static-reviewed source identity, not a deployment check."
+  ],
+  "ended_t": 1791324308.0219147,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/execution-plan.json": "5e9f1627c85cd21a7467caed538fb80bc88cedb534f59fed6c094a922be8537e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/protocol-draft.json": "e8d966731df5cf7fa5dfd973a828bcc840d8afcc9f3af81bc131baa68e04b854",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/scope-plan.json": "a10255307a3582b27e738abd042a9db67cd10e8abc23b51addfd6e2471f61670",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/execution-admission.json": "79b18899aae41bc4dcde1706249dc87fb39037159f888afb8f789aaa3f6c285c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-controller-start.json": "381f830d1df3f8f0765ad690c46f77164f47afaf4ee812b5bdbe11855f51bd2b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-controller-exit.json": "40a087164921a0b12dd9bf0cbd054188fe819e525ed9c21058f5084b09c1a2b3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-stage.json": "eaf032b54f7971f9709f795c5f2b71b82e6b1e337bf3fff65dba1a50adeee1b1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-decision.json": "da0410e7cfe374f8d05e8830469b88ce658363c47642fccb44d5556c2a42a2a5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-controller-start.json": "46ea738a50ebc37b747ef1d1c52b0fc8af8b1a4bb7602ba0d8f81202f00105d9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-controller-exit.json": "d2e5eab6fcb51d313d419691263afa9e8dd7ca093075ed5ce08f33e1aba58005",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-stage.json": "5f0f68bad798eec7825493187718f8cbbe9c50c3dcd688bf4b6bfb5b66f35833",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-decision.json": "679659d72411e95ccca6d4b082f8664a87f491a47824940ec33c96e232647655",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-controller-start.json": "36eb449b94118119ff3249c42e316754cc403a34dfa032a01645ba910e852bed",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-controller-exit.json": "6d8fd3d627113102da2537d00c6e0a70c38d46e1ddc1017c4769fa27e00b3fcd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-stage.json": "47ff75dd2514a1eace53485dd9977d07d8b41bdf41a61424f2b2b7950181962f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-decision.json": "6324fe6b8c9ddedcaabe2d3ac34e8a0d4d608be369297ab16d3fc7cc7fd84f0b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-controller-start.json": "29110395ec83c89672e93ce90247588c188b839c7695cb0a90f4a7428f3a3688",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-controller-exit.json": "519f2dc241937d6e3be28590fb761e3026ccbc79c9dcbd66284527b23d5d41bb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-stage.json": "1d0db6ad768eecc73df7893eae5487cab36c0cb38ca800f43560d9ab2b47ccc0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-decision.json": "75875225b055df743a288870d2d92684d5d8929f77d61905ddb652ed96195b21",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-controller-start.json": "a4045ed3586be7b341ed59d022912991e48a5f1b120ca07cfd06b2d59eeecdd5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-controller-exit.json": "f785b4191b7ae94be5bd614ec796464009a990264aad56ea8aa84be652a0b147",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-stage.json": "46bf2e46b0156d84250212829cedd6dcc0d015b9952ea0a23281f34914166983",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-decision.json": "bb31e31410e85da092c476b7d138cece49a4acb5dca59cecb2b85412b3b88f00",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m011-1024-off-controller-start.json": "603e47142629c461a374d053a8308909b32650e757291ede948fcb0ae1342782",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m011-1024-off-controller-exit.json": "584a873d45e2f401803762bbeb7f58d11d37c112c0286a7e5e7db026c55fdee1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m011-1024-off-stage.json": "3d173e66f1775299fe50d55623480239f794b4acf3369d3fb073128c0cdb0ec2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m011-1024-off-decision.json": "d12e99c19e7c71611262dea80c7b96683260d18dc2ab3e5ccf3c61a639eb17ff",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m012-1024-on-controller-start.json": "89b186730eb235ed1428cbd6576ab984e82da771347eb718c963df5420bda164",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m012-1024-on-controller-exit.json": "7c3eaf0c3e44eaae6c832df1a1297c134282330332879a5e7cc3362742b5a78e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m012-1024-on-stage.json": "6cdabe773161cb1d31b1fc8e95327f0d1577f6d5120941808c21598e74a06b03",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m012-1024-on-decision.json": "78e58d9e7c4669659b9d13891c47a07179fa2dd0497ec70a97da45ad5b51cb20",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m021-4096-on-controller-start.json": "d96e2f065ebb5ae63c3c08b1bec98d9fe6aa36cea2496a762405b1186bf66e04",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m021-4096-on-controller-exit.json": "f395d58e028b81bee305979577f635b8dc62e953240b6cfd924180da05e8d27a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m021-4096-on-stage.json": "6d9a8df3d0bb5eb3d6bd64244a3f6c8b4044ce394499e6d6944e8a9037664bbf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m021-4096-on-decision.json": "ca4634650b5d6f0221dee002250e1b381488bdfedec7c74f31ada4c2601bb71e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m022-4096-off-controller-start.json": "98bd6d7ba3902f06880eae339e091dc6fa688399bc9c205c470b676855bae3da",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m022-4096-off-controller-exit.json": "6ff825ecd9d537806b1e1ef30c34396746a2d7cc280351b0d8fdbc45c310afe2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m022-4096-off-stage.json": "2a9ec7945a3017091d9d23ab585e7c8ccf9508d73e4b253cb769ab07b3f5daba",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m022-4096-off-decision.json": "46d77f56098bdac2460b9969806681100fb870c833d2214654353de2497aa33f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m031-8192-off-controller-start.json": "36b570bd4655cb576df559464132e205f336196ca8ffd6762f2aa741564ea3c3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m031-8192-off-controller-exit.json": "6f2552c11bac4afd6ec6c38d5d754f7aab11468ff1768cda08665d839c2b88b5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m031-8192-off-stage.json": "e98c104bee85853abfd3e5506c50b0b148d8c114d87cc6abe463be7c521e2d0c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m031-8192-off-decision.json": "fa06e56f45f614692f8f42e747b4a8d3f93326ee81735f76c8e35b540386821e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m032-8192-on-controller-start.json": "7ee3cec61ccb2fc252693b55f8af7fd1c9535842ac85b36bf5b0a0462ff8d240",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m032-8192-on-controller-exit.json": "b57c403f16083c645642310ffa918b14cdabcbf3ca9115cc11c74f59a830c54f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m032-8192-on-stage.json": "bd117c32af29785edeb52128cf4a0c592e80bb364e561584e5736d0ed2087b37",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m032-8192-on-decision.json": "8d2135a10a24e404d5f0b67e4cce3fbb42bd16aa0bbff1d25c49f4c72e81d07a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m041-45056-on-controller-start.json": "6255e94dbebef76c176e2a6834600b822df54a3cde32d80b5eb7d4b723bc03f6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m041-45056-on-controller-exit.json": "b9b87f0a198039b284b9c3bf85ea78faf52a123b2e8aaa87e27c7825d248bc4e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m041-45056-on-stage.json": "0c3797f1322a75a6dc8927d00f0f1e16e451a14332affeb5d2d418fd98f3adcf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m041-45056-on-decision.json": "69494d52e39c7031fd39ad5363b39df77bd02bba4c49d2960facbf5cc1fd5189",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m042-45056-off-controller-start.json": "5b942963adb8e9403fdd03e3f5ff8a8d1dad4c41ddf0bb695a0800d684dc700b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m042-45056-off-controller-exit.json": "43dc6c4f08cc1f0c285e64bb65d4b7797fb611621fb85624fcabfc7fe6f4eacb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m042-45056-off-stage.json": "564042689bd98e6fb67dd74aa74c822fbf42819db20e9c4bf08946d16002afdf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m042-45056-off-decision.json": "8061b405dde08643dcc61b46ebcf8ba3c4bf03454511f4275af315a215038054",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m051-204800-off-controller-start.json": "1ed9d3168c11561b3436193d6a3790839bb433582c9fdd68e793c2f83b567b8b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m051-204800-off-controller-exit.json": "fa9753d086f0214f3e510c63256204bc584589ef7aa9599d0e71e89e8ac4133c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m051-204800-off-stage.json": "b0c678884ecfc032571e593a46d72f83f23f29eace728b2ce0d4483092745fd2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m051-204800-off-decision.json": "2665b57a4b562e50a7cf22d444c7dfb7207bc2770154f80cec5622472c7b9da2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m052-204800-on-controller-start.json": "385cf3f1f4319928eedcefaef1e0925a537e0005b333bd8f2ba44c6147b28c67",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m052-204800-on-controller-exit.json": "9b3a1dae994514f9d4b170f1f4e067ad6ccc9aaefc5d0de8625dfe8c7cec9d20",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m052-204800-on-stage.json": "6c489724a3dc11d2735ec44bb17cf57c41ccefba921625016645475b2686dffa",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m052-204800-on-decision.json": "cca6fd0706a7520a01998eccb01e0ff68a357ea95623c07a4f74525276e7af30",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m061-261887-on-controller-start.json": "092ca612d23de66b44c11589e7a6604e3bb7b56279ad8a0bef7d65610c549b57",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m061-261887-on-controller-exit.json": "f4586f963220f50b7541b6dd6a04ca36302c1c53d22185a328708ad9975260cd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m061-261887-on-stage.json": "c3dd36dbd0ca8aed954a2ea2781be1126403a19f5d9492bd42da53892a9e7e93",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m061-261887-on-decision.json": "f95a7051eb26da6b18e79b0dac4364831cb4e06b49cf89e2824314fc12948da5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m062-261887-off-controller-start.json": "fdee09c061be2ac5843196a1dae33427437bb632efbc68206d59f454e938d97a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m062-261887-off-controller-exit.json": "b4c379db483790943dee12a6e74f07e630b1d390dcee872c7f9aea9375ec3367",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m062-261887-off-stage.json": "dc33b5656c127a9b59175da3f357a3135f4043ac09eba1743cb7a2396177d52c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m062-261887-off-decision.json": "fbd8a5485a97a0a986fc950df3055803c794223028c36199877818787b15f1f8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/quality-on/http/results.json": "5f68957b17170d40824998f461a2b60633961a065b911039ccf569762c439b43",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-first-attempt.json": "5ad41a68417e225ec1d6104a82f3618616ee8202c055d835c570b54951cb65ac",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-decision.json": "5ad41a68417e225ec1d6104a82f3618616ee8202c055d835c570b54951cb65ac",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-first-attempt.json": "9e32bd4d1acc98678ede8a16542ff5478daae5249b78dcd2d65cf9ef0a1557f0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-decision.json": "9e32bd4d1acc98678ede8a16542ff5478daae5249b78dcd2d65cf9ef0a1557f0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-static-finding-01.json": "c589dc58a0454d7560b8ed75d7c416512ce552d9c254fdf42717e373d0c818d7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-lifecycle-static-finding.json": "878660bd4656640c26c0aad1362229f5c6e183177666876fb3f6a52fc1488eb5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/resource-static-finding.json": "996b0280a2d7e11bdfbc87ea4c0d30d733f71859ea375e6c4f89c6eb9a8a017a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/build-01-exit.json": "c916a3519ffb4d2f9154ed298e81dcc42417ac920f4d14b6c917b9a8cd06da0f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/configure-01-exit.json": "1f983bd6d4bdd0eda41439a545581c59aa2eb270685c58bd6a510b58580501b1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/freeze-01-exit.json": "dfdff04512c2db0076e3ad589ef627c0b5a75ed83e864ae1c70a0feddbe41c57",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-audit-exit.json": "424d55a26d796e20a4fd59b6f63610e4fb3d6af566e5c03f9939ceba35783903",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-audit-exit.json": "f702db25c37bf688962a1041d32ffdb8a9663cb98112c2310cd34bfa18188823",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-audit-exit.json": "bec99b8bdbefdb3e998e8247517d098590ae1cd65894457d23a4e70d56c0778c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-audit-exit.json": "d55e4bc91417182d0293592e87eb89af726dd4cf79fd4c28556340c3e249a908",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/history-comparison-exit.json": "c541b5e6dc9ce1544e824d0ff4ac65121cd96b06997c4045aa29829db061eb61",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-01/host-build-exit.json": "6d84bcc16f592e025d7597b3e4857d18f4cf5b6520f1e99e8c5262b0fd35a416",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-01/host-configure-exit.json": "cabaa99c258dd4618a41c650c555bef768846eb6302f9500d8442f8edf1db55c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-01/host-tests-exit.json": "7ecf363c216451b4a0d0a7f236ff22d50dd6f813621b280f5f0c45d1dd80280a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-01/protocol-tests-exit.json": "631c0fc74bbd8229858bbc7b8f0041a8567e8913f26d90b7fc988c4c37db8b33",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m011-1024-off-audit-exit.json": "1bd3c045e2f10a607cbc2f4128292c2305c86922cafb2d90251908c499a36dc4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m012-1024-on-audit-exit.json": "3d5cfcb20295a1ccd2185bc521993ecbc5c22e801a190b3bf36989a0d36f8b2e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m021-4096-on-audit-exit.json": "43ee156594395f8cd6b433e14184fc64240dd51cafbc8fe1ee780c5927abddfa",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m022-4096-off-audit-exit.json": "41cb74cb1909dbc24da1fa36b9a56ff64fc867fc2df26d3687d96aa4f08b15f9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m031-8192-off-audit-exit.json": "223f9009427befa69bf2c441bc0cf225482cf76cdcd368365f0d8cdc561c2cd9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m032-8192-on-audit-exit.json": "69efd93b86084eaf53a8f516dff600bf834af07f48b70d52d64d80f7c13692cb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m041-45056-on-audit-exit.json": "173d2a25f84e19f4da5307e8cf75462abc209ad242212907626e868290877b87",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m042-45056-off-audit-exit.json": "55ad8ee1be03a84cd907904a7da25fa18275cc447822474136b2562368789372",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m051-204800-off-audit-exit.json": "22749bde4450466ccec464306cf70c3ef7644f050db656c23bca62a12ea4fe7e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m052-204800-on-audit-exit.json": "622c980982ddb0a0bd37b46368f6566258b41ffd5619fd6bdbaccce75aa504ad",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m061-261887-on-audit-exit.json": "b8722a4a13b2660a2e79d1de6f502f19cac4f087914e6a2d94bc4bcc5bde7784",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m062-261887-off-audit-exit.json": "45e72235301333bc8044eb6d2755ddaf80193fb65e28f5cbe068de0ab2972063",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-01/numerical-build-exit.json": "e00d85346bc63a6e38e09bbe8dc234d1c2b53e6cc478178f29acabc3e5281dc2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-01/numerical-tests-exit.json": "90f46e8148182a5638e2963ebec9d3bcc85c0612496cc1b3823fdd1cf458b8f1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/performance-comparison-exit.json": "cf2d61ba95f384c9431a37bef8a3913ea338a1bf203295557d1f9e69f86cd226",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-audit-exit.json": "1a44c483897698e04d2a8d2dcdf769c7824392c012d4dc10659d517ea3aad41a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/resource-audit-owned-exit.json": "b7546a22e2c5b8749e4d3e7a34622d4bf712feae5d75b777ef8ab12ba0b9c58b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression-execute-owned-exit.json": "5246aa9c1f21b0b6a6ddf340313507f04b0418f3fd96a647e38fb41a0a0e9d36",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression-prepare-owned-exit.json": "19bb4556aa6d64dbcc134efe9da5285ca37841ac6773a0e9db3d8f36e9f364fd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-dedup-owned-exit.json": "c2871775ed1311567e4b25042090997ab5feaa16935d0370bb58a3c5a0bddb67",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-reserve-execute-owned-exit.json": "855bf127197af9456b9fc8b9a627d202a30b953688a49744d309b717bfd72487",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-reserve-prepare-owned-exit.json": "92b52c6564ca70945ec46364c3be1fc3310adbf4cf1dca2f4c66644d5f16d681",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/history-decision.json": "aa721c6a4a57641e7bb5a57ccdae135fdeb9e596e8681bd1456656c34187c144",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/performance-decision.json": "c5b5ecf2583e67da33eb88a190199acd4e5ddb5ce6dca3a22c20cf3b572c9cdd"
+  },
+  "metadata_bytes_read": 827950,
+  "reviewer_script_sha256": "97ab85a89f04f393aa7517479f6aa8ed08a4a242052bdc2cbb0106b66c27c864"
+}

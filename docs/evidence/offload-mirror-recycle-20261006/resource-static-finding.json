@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "status": "STATIC_FINDING_FIXED_BEFORE_EXECUTION",
+  "recorded_t": 1791293152.882979,
+  "adapter_sha256_before": "a6716f1f874cbf5f433fd55571ab20e4bc129307fd7b7da19b83f9104e0bee55",
+  "adapter_sha256_after": "c786c17f3aeb7aac5c456464da1c2d92cb22f1cabdfa98911dfe977cdc2b8158",
+  "finding": "run_acceptance exit.completed counts results cases; a single matrix tier has one case with three HTTP repeats. Previous adapted terminal compared it with three request_count.",
+  "fix": "Require exit.completed=1 for matrix; group decision.request_count and resource boundary coverage remain three. Quality11/history21 unchanged.",
+  "source": "tools/evalscope/run_acceptance.py:748",
+  "tests_or_resource_parses_executed": 0
+}

@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "recorded_t": 1791318403.9810119,
+  "reviewer": "/root/recycle_protocol",
+  "passed": true,
+  "static_only": true,
+  "result": "PASS after one specific durability repair; no helper execution authorized by this record.",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage_compress.py": "04ed5e8bd935de196d373bd546902074a6789c612780272e0e2a12d5c18fe109",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression-policy.json": "68861179bfe11132dc4c823c1bd210cd47520b8a508282976a5fe25e9890aa50",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression-checklist.md": "191cb84712a7e6df82ee33e30a7620179876ab32cb0b1c0871b3acd197002cb8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage_dedup.py": "6fb1c2a198f1eda4554416e3ac4558681b3971d7313d2b79775fd8243fba42d9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression-static-finding-01.json": "e49b1efbb293dab5e73971bb4ff22537780292be8026e34d92f0ffd8a9679da3"
+  },
+  "script_sha256_before": "9ea252b00a93f633c7860860c6bb0308e9a9f77543329f98e3a4188891047d4b",
+  "script_sha256_after": "04ed5e8bd935de196d373bd546902074a6789c612780272e0e2a12d5c18fe109",
+  "initial_author_handoff_script_sha256": "05ddd7a601e8995728af88089188e330576cfea6e54a656831f8f7cc3f7dddee",
+  "findings_preserved": [
+    "storage-compression-static-finding-01.json"
+  ],
+  "checks": {
+    "bounded_scope": "Only new regular canonical nlink=1 files under this round evidence for first 16 frozen groups; SQLite/HTML, plus generated m052/m061 JSONL. 260 candidate / 16 MiB single / 100 MiB original / 512 MiB content-read caps; no model/reference/old evidence.",
+    "last_consumer": "run_acceptance finishes SQLite/JSONL consumption before group terminal. Existing audit_stage, resource_audit, compare_results and independent_result_review consume retained response/result/log/resource/tool/decision evidence, not selected payload classes. Current source/frozen/metadata bindings recursively exclude selected paths.",
+    "admission": "Frozen execution plan and source identities, first 16 stage/controller/audit/decisions passed, exact owned units inactive/failed and MainPID=0, m062 controller start absent, prior dedup summary successful and ledger/byte preservation affirmed, actual free below original 1 GiB. This is runtime admission, not currently asserted to have passed.",
+    "manifest": "prepare writes exclusive final candidate metadata list with policy/script/runtime/ledger/guard hashes; execute requires manifest SHA, same script and policy, unchanged guard/ledgers, exact inventory. No candidate payload read by prepare.",
+    "preflight": "Before mutations, all final candidates get original SHA and exact metadata check. Frozen old manifests and source ledgers are never rewritten.",
+    "recovery_durability": "New out entry in R and payload entry in out are now fsynced before destructive operations. gzip level 1 file is fsynced and full stream decompression SHA/length checked; payload directory and atomically replaced durable map synced before original unlink, then original directory synced.",
+    "space_stop": "Actual free checked before each next candidate. Reach original 1 GiB gate stops remaining candidates. No-saving gzip retains original; summary net allocation subtracts every retained gzip. Exhaustion can leave startup_space_gate_met=false without expansion or lowered gate.",
+    "failure_retention": "Exclusive first-failure record, journal and recovery map plus gzip preserved. No automatic retry, model rerun, hidden cleanup or roll-back claim. Crash after unlink before state update remains recoverable by verified map.",
+    "claim_boundary": "Storage-only. Default-off runtime and unknown global 54 GB acceptance unchanged. gzip requires verified restoration for consumers; original inode/mtime/mode not promised."
+  },
+  "limitations": [
+    "No preparation or compression was executed; no current m061 candidate contents or payloads were read.",
+    "Admission, actual candidate manifest, achieved free space, roundtrip verification and final ledger invariance remain future execution evidence.",
+    "This review does not validate quality, full-model numerical correctness, performance or physical RAM."
+  ],
+  "candidate_payload_bytes_read": 0,
+  "tests_run": false,
+  "model_run": false,
+  "source_W_edited": false,
+  "frozen_files_edited": false
+}

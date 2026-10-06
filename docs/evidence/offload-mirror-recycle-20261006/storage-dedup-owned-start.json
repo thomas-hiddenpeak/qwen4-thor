@@ -1,0 +1,19 @@
+{
+  "started_t": 1791319270.9488404,
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage_dedup.py",
+    "--scope-sha256",
+    "3feb568e7d8884ae08dde4050edf47220a11b3a93852549a47e21ee705658263",
+    "--execute-after-m061",
+    "--prune-rebuildable-if-needed"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source",
+  "returncode": null,
+  "failure": null,
+  "automatic_retry": false,
+  "timeout_s": 240,
+  "signals": [],
+  "cleanup_complete": false
+}

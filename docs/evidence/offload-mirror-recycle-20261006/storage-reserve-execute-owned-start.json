@@ -1,0 +1,20 @@
+{
+  "started_t": 1791319674.3555415,
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage_reserve_repair.py",
+    "execute",
+    "--policy-sha256",
+    "e041a16f5045abe2996967281269f673ed4afc6ae56567750ae9eaad38ca0939",
+    "--manifest-sha256",
+    "073ed8fcf7c672e5181791d768461894f225c3cb67ea10401ca7431a72a9674f"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source",
+  "returncode": null,
+  "failure": null,
+  "automatic_retry": false,
+  "timeout_s": 240,
+  "signals": [],
+  "cleanup_complete": false
+}

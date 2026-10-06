@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "recorded_t": 1791324942.7486525,
+  "scope": "Four post-archive delivery records; original 235-file manifest and README unchanged",
+  "primary_manifest_sha256": "9745a3e4731977b754a5b91e0ff684d89bc5f482047bb235cd9d6909d0ec8fc6",
+  "primary_file_count": 235,
+  "performance_decision": "NO_GO",
+  "default_enabled": false,
+  "files": [
+    {
+      "source_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/delivery-review.json",
+      "archive_path": "delivery-review.json",
+      "sha256": "b2623a8878216857c4d52acd42ba3e9eeb7b2e69f1b36fa4b7dc59566c802c57",
+      "bytes": 101331,
+      "copy_kind": "exact"
+    },
+    {
+      "source_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/archive-delivery.json",
+      "archive_path": "archive-delivery.json",
+      "sha256": "a96c08e09c3db249da716a775021e7deec3c9f7d21436f29c17b9aaafbdc3de0",
+      "bytes": 42263,
+      "copy_kind": "exact"
+    },
+    {
+      "source_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/archive-delivery-owned-exit.json",
+      "archive_path": "archive-delivery-owned-exit.json",
+      "sha256": "29640c0015b74b118966cbe7e8be4ea005a641e659aa04aa03cd98dd2759ad3f",
+      "bytes": 964,
+      "copy_kind": "exact"
+    }
+  ]
+}

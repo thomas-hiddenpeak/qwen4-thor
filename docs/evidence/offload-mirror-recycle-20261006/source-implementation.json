@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "status": "IMPLEMENTED_STATIC_ONLY",
+  "tests_run": 0,
+  "model_runs": 0,
+  "builds_run": 0,
+  "files_sha256": {
+    "include/q4t/quant/moe_mirror_recycle.h": "9eccd2ca3ff655dbf7bbea241249be1f8fed8b0183d33d0f3422dfb527e8cbdb",
+    "include/q4t/quant/moe_residency.h": "ad3cf3675f922394305cdb6322c1d41517cee9933255718ff8711d7381cfced5",
+    "src/quant/moe_residency.cpp": "1404cd56eb72aa1b391a638765f258252ae1cb7b1df3d322ce5071c999b079b5",
+    "src/model/moe.cu": "f9dffd94fd1c233452235b5ca9735b4110a1f1aaa0a8a722a696d580571cf6c6",
+    "tests/mirror_recycle_host/CMakeLists.txt": "6f0549a00bd834a4e89c581124bbc9cc6071331ce7a81e7e2d064ff3c4a51b2b",
+    "tests/mirror_recycle_host/mirror_recycle_test.cpp": "fae3fb68487b07241d8b6ad2b39b8b4d66b38e85a7abcb5ec0f8537ea653f5cf"
+  },
+  "contracts": [
+    "mirror_recycle_strict_opt_in",
+    "mirror_recycle_requires_explicit_single_decode",
+    "mirror_recycle_snapshot_excludes_full_plan_victims",
+    "mirror_recycle_snapshot_ignores_invalid_empty_members",
+    "mirror_recycle_snapshot_remains_immutable_during_commits",
+    "mirror_recycle_prefers_covered_and_records_changed_target",
+    "mirror_recycle_wraparound_and_covered_tie_order",
+    "mirror_recycle_claimed_or_pending_cannot_be_selected",
+    "mirror_recycle_no_covered_keeps_first_eligible_fallback",
+    "mirror_recycle_empty_and_out_of_range_are_not_covered",
+    "mirror_recycle_no_slot_preserves_skip",
+    "mirror_recycle_each_eligibility_query_at_most_once",
+    "mirror_recycle_reservations_exclude_other_workers",
+    "mirror_recycle_exhaustive_small_ring_rank_oracle"
+  ],
+  "coverage_limits": [
+    "Host contracts exercise metadata selection and explicit scope, not actual CUDA payload copies.",
+    "Real numeric candidate test must enter PlanResolve with explicit_single_decode=true and require changed>0; old Resolve numeric calls default false.",
+    "Default off keeps original ring loop; added boolean branch, vector member and statistics storage do exist."
+  ],
+  "runtime_paths": [
+    "Init strict env before allocation",
+    "MoEForward explicit phase T1 no prefill request",
+    "PlanResolve complete reserved snapshot then dispatch",
+    "StageTask const coverage pointer",
+    "CommitExpert original lock plus bounded selection",
+    "Worker StatsDelta barrier merge"
+  ],
+  "no_runtime_unowned_files_changed": true
+}

@@ -1,0 +1,899 @@
+{
+  "schema": 1,
+  "passed": true,
+  "started_t": 1791324347.9401777,
+  "failure": null,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/entry.json": "ce67e9a6cbfea246bb511dd635fb18fd39d60fd09ef0589739ff69db8f4aaeea",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/model-entry.json": "31cfb5f2cae36d75f84dcd1b27d7a11ce5972e2b6ba9637b9eb8493cd91dd0f4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/execution-plan.json": "5e9f1627c85cd21a7467caed538fb80bc88cedb534f59fed6c094a922be8537e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/final-protection-01-start.json": "c55067612759489fc44c9bd3b750fa58d1b8c0c9d746d35155d5c3c2624cf724",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/build-01-start.json": "837d0ad027f387422da14424eae31997d48bae7f1403e324cf1089690ef869ea",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/build-01-exit.json": "c916a3519ffb4d2f9154ed298e81dcc42417ac920f4d14b6c917b9a8cd06da0f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/configure-01-start.json": "8cdcfc15fb1f1c0dc0d388a394be5f2c7cbedc2baae2f5bec6efeb62da0cc98f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/configure-01-exit.json": "1f983bd6d4bdd0eda41439a545581c59aa2eb270685c58bd6a510b58580501b1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/freeze-01-start.json": "b37d445fee90622a60fbfd2d9be5ee77a8b4ae6598345b7271f232c1bbe16253",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/freeze-01-exit.json": "dfdff04512c2db0076e3ad589ef627c0b5a75ed83e864ae1c70a0feddbe41c57",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-audit-start.json": "d78e3979a1744d82ea9b935a00a385129288a06d8f79b79deb27431a123d5824",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-audit-exit.json": "424d55a26d796e20a4fd59b6f63610e4fb3d6af566e5c03f9939ceba35783903",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-controller-start.json": "46ea738a50ebc37b747ef1d1c52b0fc8af8b1a4bb7602ba0d8f81202f00105d9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-controller-exit.json": "d2e5eab6fcb51d313d419691263afa9e8dd7ca093075ed5ce08f33e1aba58005",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-audit-start.json": "63af18f3dd2138229faa88acd983cf28f6b16409dd5e72b478a1dc7dec2e156c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-audit-exit.json": "f702db25c37bf688962a1041d32ffdb8a9663cb98112c2310cd34bfa18188823",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-controller-start.json": "36eb449b94118119ff3249c42e316754cc403a34dfa032a01645ba910e852bed",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-controller-exit.json": "6d8fd3d627113102da2537d00c6e0a70c38d46e1ddc1017c4769fa27e00b3fcd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-audit-start.json": "0e7015921cb76792bc1eabab48805af81b0c1630fbe644292b75162104b106d6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-audit-exit.json": "bec99b8bdbefdb3e998e8247517d098590ae1cd65894457d23a4e70d56c0778c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-controller-start.json": "29110395ec83c89672e93ce90247588c188b839c7695cb0a90f4a7428f3a3688",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-controller-exit.json": "519f2dc241937d6e3be28590fb761e3026ccbc79c9dcbd66284527b23d5d41bb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-audit-start.json": "9a9a890ee42df43f8c37f916220ec6a4be6fc48aae07bc13716eb5f1ae8ea6d8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-audit-exit.json": "d55e4bc91417182d0293592e87eb89af726dd4cf79fd4c28556340c3e249a908",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-controller-start.json": "a4045ed3586be7b341ed59d022912991e48a5f1b120ca07cfd06b2d59eeecdd5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-controller-exit.json": "f785b4191b7ae94be5bd614ec796464009a990264aad56ea8aa84be652a0b147",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/history-comparison-start.json": "6eeecbc0f2f43e7169f65e1df43faaa15dc26d3d3b5e672efb8fa9e9639a4e4e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/history-comparison-exit.json": "c541b5e6dc9ce1544e824d0ff4ac65121cd96b06997c4045aa29829db061eb61",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-01/host-build-start.json": "4a49becce109d5744487cce771defcef4cdf32053d27d6c3908b2536eefb116f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-01/host-build-exit.json": "6d84bcc16f592e025d7597b3e4857d18f4cf5b6520f1e99e8c5262b0fd35a416",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-01/host-configure-start.json": "16c9a0f05d474ca216c0ee146d1fb1ed9cc4f2440c2dcd54f8a38b2e7e1e84b8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-01/host-configure-exit.json": "cabaa99c258dd4618a41c650c555bef768846eb6302f9500d8442f8edf1db55c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-01/host-tests-start.json": "c2164325c8317c4c5cf8c5b50e2a63760c72a68e2cb28eadd97fa7c24bbcfa6f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-01/host-tests-exit.json": "7ecf363c216451b4a0d0a7f236ff22d50dd6f813621b280f5f0c45d1dd80280a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-01/protocol-tests-start.json": "06aa752e2a2a77a8940e5215f42c665c6c122b289b28de9e79a71832d6d96a89",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-01/protocol-tests-exit.json": "631c0fc74bbd8229858bbc7b8f0041a8567e8913f26d90b7fc988c4c37db8b33",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/independent-result-review-01-start.json": "121e9de18aab37e7f1e722ecffd6cd863944890789f599e960e13ba173333f5b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/independent-result-review-01-exit.json": "708354071f03a0f95e422d178342804b885dd86f6fa808b4fa677048bb701804",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m011-1024-off-audit-start.json": "9d8a9890e46653c864a37f66d52a4d58a43231e8234845f22f4b64eb27529e66",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m011-1024-off-audit-exit.json": "1bd3c045e2f10a607cbc2f4128292c2305c86922cafb2d90251908c499a36dc4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m011-1024-off-controller-start.json": "603e47142629c461a374d053a8308909b32650e757291ede948fcb0ae1342782",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m011-1024-off-controller-exit.json": "584a873d45e2f401803762bbeb7f58d11d37c112c0286a7e5e7db026c55fdee1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m012-1024-on-audit-start.json": "bf77418df3d2dae95ab6116fb9a500cd1762353ce38869c5de3ed10fe9587461",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m012-1024-on-audit-exit.json": "3d5cfcb20295a1ccd2185bc521993ecbc5c22e801a190b3bf36989a0d36f8b2e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m012-1024-on-controller-start.json": "89b186730eb235ed1428cbd6576ab984e82da771347eb718c963df5420bda164",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m012-1024-on-controller-exit.json": "7c3eaf0c3e44eaae6c832df1a1297c134282330332879a5e7cc3362742b5a78e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m021-4096-on-audit-start.json": "947fdaf29fe8c29f32d66932d9853db09ee60c5f09f3f4a718f3683c6290396d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m021-4096-on-audit-exit.json": "43ee156594395f8cd6b433e14184fc64240dd51cafbc8fe1ee780c5927abddfa",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m021-4096-on-controller-start.json": "d96e2f065ebb5ae63c3c08b1bec98d9fe6aa36cea2496a762405b1186bf66e04",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m021-4096-on-controller-exit.json": "f395d58e028b81bee305979577f635b8dc62e953240b6cfd924180da05e8d27a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m022-4096-off-audit-start.json": "20b1a52cd3b4bd15f9235e135260e9d38641337c0417c6f08bdc1472eebbf050",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m022-4096-off-audit-exit.json": "41cb74cb1909dbc24da1fa36b9a56ff64fc867fc2df26d3687d96aa4f08b15f9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m022-4096-off-controller-start.json": "98bd6d7ba3902f06880eae339e091dc6fa688399bc9c205c470b676855bae3da",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m022-4096-off-controller-exit.json": "6ff825ecd9d537806b1e1ef30c34396746a2d7cc280351b0d8fdbc45c310afe2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m031-8192-off-audit-start.json": "04f391604885213156ce95575a9991fe4c14756fb1ccfbd1068846a910e73a10",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m031-8192-off-audit-exit.json": "223f9009427befa69bf2c441bc0cf225482cf76cdcd368365f0d8cdc561c2cd9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m031-8192-off-controller-start.json": "36b570bd4655cb576df559464132e205f336196ca8ffd6762f2aa741564ea3c3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m031-8192-off-controller-exit.json": "6f2552c11bac4afd6ec6c38d5d754f7aab11468ff1768cda08665d839c2b88b5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m032-8192-on-audit-start.json": "9c63d546afebe5c89f525db5831f5b5c09d44763d5612e9878e5af2fd323a061",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m032-8192-on-audit-exit.json": "69efd93b86084eaf53a8f516dff600bf834af07f48b70d52d64d80f7c13692cb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m032-8192-on-controller-start.json": "7ee3cec61ccb2fc252693b55f8af7fd1c9535842ac85b36bf5b0a0462ff8d240",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m032-8192-on-controller-exit.json": "b57c403f16083c645642310ffa918b14cdabcbf3ca9115cc11c74f59a830c54f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m041-45056-on-audit-start.json": "af2f1e456ea47af900d6c431249b0febf7de999b729c36c9862c2839b04ec08b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m041-45056-on-audit-exit.json": "173d2a25f84e19f4da5307e8cf75462abc209ad242212907626e868290877b87",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m041-45056-on-controller-start.json": "6255e94dbebef76c176e2a6834600b822df54a3cde32d80b5eb7d4b723bc03f6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m041-45056-on-controller-exit.json": "b9b87f0a198039b284b9c3bf85ea78faf52a123b2e8aaa87e27c7825d248bc4e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m042-45056-off-audit-start.json": "fd416f13b469825895e5b176f3b5617e8fa4278fc4eaa524142afc78022f9abe",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m042-45056-off-audit-exit.json": "55ad8ee1be03a84cd907904a7da25fa18275cc447822474136b2562368789372",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m042-45056-off-controller-start.json": "5b942963adb8e9403fdd03e3f5ff8a8d1dad4c41ddf0bb695a0800d684dc700b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m042-45056-off-controller-exit.json": "43dc6c4f08cc1f0c285e64bb65d4b7797fb611621fb85624fcabfc7fe6f4eacb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m051-204800-off-audit-start.json": "8009c21b6479e1fc7b025ceb9fd362ec379942e92a3efa23037c449eb26a1f2e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m051-204800-off-audit-exit.json": "22749bde4450466ccec464306cf70c3ef7644f050db656c23bca62a12ea4fe7e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m051-204800-off-controller-start.json": "1ed9d3168c11561b3436193d6a3790839bb433582c9fdd68e793c2f83b567b8b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m051-204800-off-controller-exit.json": "fa9753d086f0214f3e510c63256204bc584589ef7aa9599d0e71e89e8ac4133c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m052-204800-on-audit-start.json": "f7f86e20d97d32ec2e9117c56085b8ed14caf7a5e9fbc427b56338aee4bb1296",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m052-204800-on-audit-exit.json": "622c980982ddb0a0bd37b46368f6566258b41ffd5619fd6bdbaccce75aa504ad",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m052-204800-on-controller-start.json": "385cf3f1f4319928eedcefaef1e0925a537e0005b333bd8f2ba44c6147b28c67",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m052-204800-on-controller-exit.json": "9b3a1dae994514f9d4b170f1f4e067ad6ccc9aaefc5d0de8625dfe8c7cec9d20",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m061-261887-on-audit-start.json": "eb645aacaf8ccb8b835129f78b58a51d74d258d0884aeba7f0b72b517d1bca2e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m061-261887-on-audit-exit.json": "b8722a4a13b2660a2e79d1de6f502f19cac4f087914e6a2d94bc4bcc5bde7784",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m061-261887-on-controller-start.json": "092ca612d23de66b44c11589e7a6604e3bb7b56279ad8a0bef7d65610c549b57",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m061-261887-on-controller-exit.json": "f4586f963220f50b7541b6dd6a04ca36302c1c53d22185a328708ad9975260cd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m062-261887-off-audit-start.json": "ec8f82519b93400a66c47c96032871db6139dd81a590acee68f8b898392f4531",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m062-261887-off-audit-exit.json": "45e72235301333bc8044eb6d2755ddaf80193fb65e28f5cbe068de0ab2972063",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m062-261887-off-controller-start.json": "fdee09c061be2ac5843196a1dae33427437bb632efbc68206d59f454e938d97a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m062-261887-off-controller-exit.json": "b4c379db483790943dee12a6e74f07e630b1d390dcee872c7f9aea9375ec3367",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-01/numerical-build-start.json": "002bf2620a765320410e9cf32ff64e6b2ab930832e7edc778935cd22f5ff690d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-01/numerical-build-exit.json": "e00d85346bc63a6e38e09bbe8dc234d1c2b53e6cc478178f29acabc3e5281dc2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-01/numerical-tests-start.json": "d207e1fe45ed478ef3b1a466bf7c30615e31794b6b936f0fd232ee698769e63b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-01/numerical-tests-exit.json": "90f46e8148182a5638e2963ebec9d3bcc85c0612496cc1b3823fdd1cf458b8f1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/performance-comparison-start.json": "a3b1dfa0eb99c0907e990f5fc271db8c91b5f336e2a90d78646ac7b6b93b70e1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/performance-comparison-exit.json": "cf2d61ba95f384c9431a37bef8a3913ea338a1bf203295557d1f9e69f86cd226",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-audit-start.json": "6e2abbfe44c59dc25f308b7a0aac48ce37ce08c94f7c7042a584ab80a6b6d290",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-audit-exit.json": "1a44c483897698e04d2a8d2dcdf769c7824392c012d4dc10659d517ea3aad41a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-controller-start.json": "381f830d1df3f8f0765ad690c46f77164f47afaf4ee812b5bdbe11855f51bd2b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-controller-exit.json": "40a087164921a0b12dd9bf0cbd054188fe819e525ed9c21058f5084b09c1a2b3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/resource-audit-owned-start.json": "802a8203e3b87ea7d49002d166d67c458a9511c13c70819ac5fc6f4b8073b8f7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/resource-audit-owned-exit.json": "b7546a22e2c5b8749e4d3e7a34622d4bf712feae5d75b777ef8ab12ba0b9c58b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression-execute-owned-start.json": "b3b1da4a960ac6caf73a74f69571dd2a61c8de4dddc2e3abc8b9de13ba32d7aa",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression-execute-owned-exit.json": "5246aa9c1f21b0b6a6ddf340313507f04b0418f3fd96a647e38fb41a0a0e9d36",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression-prepare-owned-start.json": "e45a13d5e66116b67beb18519e4086e819eb90905438e920b5eec6584a4351bb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression-prepare-owned-exit.json": "19bb4556aa6d64dbcc134efe9da5285ca37841ac6773a0e9db3d8f36e9f364fd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-dedup-owned-start.json": "5532cabbb110ea55fd1440c26ca4df99f2bf9ec52c77b770980bd8ecdaabb014",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-dedup-owned-exit.json": "c2871775ed1311567e4b25042090997ab5feaa16935d0370bb58a3c5a0bddb67",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-reserve-execute-owned-start.json": "a0e391f68c6961bb06f230dd1a5c48b3dd5343010a982e77777e9b6b9ea15c2c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-reserve-execute-owned-exit.json": "855bf127197af9456b9fc8b9a627d202a30b953688a49744d309b717bfd72487",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-reserve-prepare-owned-start.json": "80948f1a3e39061c81e5b45d779220ec014dcf8a249e8bbd1e06de9555d90e60",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-reserve-prepare-owned-exit.json": "92b52c6564ca70945ec46364c3be1fc3310adbf4cf1dca2f4c66644d5f16d681",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/protocol.json": "8dbd8528a96fd332ec4642552a8f2a3a0fd3c4f45f57206461ede764a2aea2ec",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/wrapper-exit.json": "598ab664795904a512ca9cab2cf3ab861e8070fbeb2122536ba2a0575d8992bb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/runner-process-group.json": "8c7f008c2fb137c0f2954fe50d596acddc904e3599ca4cc33016a10524d74748",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/http/isolation/cleanup.json": "de891eb0801b03a843145208f338969b4d55d60bb642785df5147d1b36c59767",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/protocol.json": "ba2d6822dc2c5f8103dd5ec786dabebeb84791d519a84d021f3b459ed3457e99",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/wrapper-exit.json": "eb1f78b47e7e6690949ad720b062b287807cdad412df32630ca9c1860ddd0507",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/runner-process-group.json": "8578c21cb6c7381bb19e69f64c84f208481b0f83ce9ca6c453ba5511122f1dbe",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/isolation/cleanup.json": "51506b1b0947062360f81dae373f02c96f602e0cae12b689a1a365ece2eb0d57",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/protocol.json": "469e67d4823cdd32542b00b4027449359dc4ab31f3bb155376cdcaa76098bd5c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/wrapper-exit.json": "26d624893284c2e5def28bbd7fc19a50bb6440938f19c81702bbcac8989d0e36",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/runner-process-group.json": "06dab7db654f63ecb8f459ac82bb0b404fffced3bb28bf9e39d4c921d4f59e3c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/isolation/cleanup.json": "2a4c4a3e889cc5b4051f351599c24fde360f70a75c29ec5bf80c7460da9d6303",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/protocol.json": "2d8be03baa2f5a46f9d670a7858afcbb41399f670127432a721d93032b989c17",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/wrapper-exit.json": "e7c37197245204b8a89783fb280eecfd6cafcb62c47a96bbef95760de7ee571c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/runner-process-group.json": "4a84c2b46fcba5f189935203cc43127d5288a58fbaa9d1dea7349639eac8a7bf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/isolation/cleanup.json": "67ccb7be958a97eba2247002cef56177b2b9b5f26cb21900d469693dc40baf2c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/protocol.json": "f27b3e14a24351f17a1cb67b0b378533c1561232565ae96a9ed539d0e3b5a26d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/wrapper-exit.json": "6e12963d8e74e321770848f449060825db6d1abf678231e1284a467b74b8b26c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/runner-process-group.json": "2ead124f224ca4e60c7b2afcbe357b225514aecc84aa646b3950cf81f836fd77",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/isolation/cleanup.json": "e98b1b46a218cc8d2f13d1f32af59136977782592a8991e9ae16f9be0ff3f092",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m011-1024-off/protocol.json": "acd0372586e0fc3a3183f7c8ba35767434c7ef5020f65f6b522bc8e4af052f8a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m011-1024-off/wrapper-exit.json": "3e354ccffba12237fc38411abb3b86d460317978bb2e8777e3705442e5638f2f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m011-1024-off/runner-process-group.json": "87c812e69e8c79cc0dcfdce46a5a997e3af637a7c78cb8f9dffe5b9c267413b8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m011-1024-off/http/isolation/cleanup.json": "538126bb8d4fcd7bf4af7b96020d2209ed6986234fc1a929f71975736d7dde82",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m012-1024-on/protocol.json": "c096ae66595e11f5b371359f53e58602be405130d45fb85de71f195147b00677",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m012-1024-on/wrapper-exit.json": "62a699894e243e403bf54050e9f34c1d1b5de0d8b7cae497f6e18b5672126183",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m012-1024-on/runner-process-group.json": "ca14f469d34087a1dbae5c54ca0741ef32a56bde45e29f7a4a2cca8d72e66c16",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m012-1024-on/http/isolation/cleanup.json": "150c71122950d481adfda2e5c648110fd3e4b0ce8afc510cb94aa3990ecfed4e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m021-4096-on/protocol.json": "3c356580a165acfe756a21a022faf3b82777514bd1ec72e2b1af090f3bdc92b8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m021-4096-on/wrapper-exit.json": "1658769525a7f9692c8d8ba782db45a138b72f161d43540ed47f709ca7c7ab8b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m021-4096-on/runner-process-group.json": "eb42a7ff8e4e56e6cfe82012cadb5829f40fde95cbcc3fc9f4fc3921c892e2f3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m021-4096-on/http/isolation/cleanup.json": "d831e6ed66f6f45bf41ff5f01504df2474a26814198470e93a9486d9e77577b2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m022-4096-off/protocol.json": "25f6b2522a8615047bfba508fbbf16b4c26ed5ae4cb5cffbe64036bfc7a1a6e8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m022-4096-off/wrapper-exit.json": "2e51f9cb3e20d10247f04e99c5b2d95d5b35b2899120ac399abee82d8af5e0be",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m022-4096-off/runner-process-group.json": "a350ecb2887760255e83e4ba1133541998e8e6e58c4a940fe8c2ecb8c5a5ca02",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m022-4096-off/http/isolation/cleanup.json": "8ffb040d38285c7e020642b75aefff4f93078f62cf3ef599fe5b6f58fcc3ce23",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m031-8192-off/protocol.json": "c6889e598e1c907e5748f0353a080df2dccd19ba89231ad58bc178235996fa55",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m031-8192-off/wrapper-exit.json": "1187123fdebf2ebb6c5e4814f4ef85b6dc8597874cd88076e90b51bc089ec315",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m031-8192-off/runner-process-group.json": "0007b365ec3721f2d4f30b3fcc02a134018b4060d29952d054f0a69329c034d5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m031-8192-off/http/isolation/cleanup.json": "cbeabcdf3878fffdda3956f08eb73e351e0ac56707d830ad299a886ddf5202b0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m032-8192-on/protocol.json": "f901bb290719da8e8cbea65bb43826fa94d25ac6833e5feeefd81eb1ad15637f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m032-8192-on/wrapper-exit.json": "8aa8fccbc62fe4fe3cb1b33d33fc961b19f6082d48c30d4ff750fc00548ae4ac",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m032-8192-on/runner-process-group.json": "ebb786e97e3cec1e0459441a182c9992da5d9832ed01ad45495af458f90544f5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m032-8192-on/http/isolation/cleanup.json": "e4bd2eefbbbb5360ceb700cf5bbdf6977b5ee65d8bfc6bc6c94d40459dae3c11",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m041-45056-on/protocol.json": "d30819cf0b515ca358fa0a802a4818d68fade7dcda8aa8d58b0ba084f88ccd64",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m041-45056-on/wrapper-exit.json": "21e8e656035da67f31df19a3aa98cba465e706c9caecdb29837f3ff39589d9a7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m041-45056-on/runner-process-group.json": "03bbe483840ccfcf6c0a2149d29c8280bf725aaf2dd840cea15fe98c16cb7f68",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m041-45056-on/http/isolation/cleanup.json": "b3e7594b73a7c73ea466ef9d1e81115235aa7313f922f30fd3a1fe37240220f3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m042-45056-off/protocol.json": "785249c3ef1accaa466f125c047bb4f8fb1a75176c71878447e9eecb46dd4179",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m042-45056-off/wrapper-exit.json": "4706d7bf1d5519adee9bc338253dea119a10979378ecd95e25f8a0bdd5ada567",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m042-45056-off/runner-process-group.json": "efbbb417fae2c2847a8bdf935973f7c764269e09e88737fca59003f05b36eb70",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m042-45056-off/http/isolation/cleanup.json": "30e30582bbc0aff93cc4d839a669ecd99d2f66720c70bb5d0858e254ee2c3f2b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m051-204800-off/protocol.json": "a8a6d5b813e6026f3df23a2d7cfd2696ae2a3d909c64ccfaf693a6e3e9904c08",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m051-204800-off/wrapper-exit.json": "4096f1785af7db9f8f80f2253193573a62b080f5882276d8d97520155281659b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m051-204800-off/runner-process-group.json": "8a6f42dd54f6ced7ab2ec909e53b216414b88902604f925d9f62f2d8e50fcd90",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m051-204800-off/http/isolation/cleanup.json": "1fa6865abb75b5f1089c9b2999883bd9b60c727fea03a7d63be247c021d5f50e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m052-204800-on/protocol.json": "a7add927f0860dbf7e816c38955c630cbfb7b46b938b8f62e86b5a81c15cd185",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m052-204800-on/wrapper-exit.json": "d204517d87a65ddb384b6b44c9552ba0d9dd809a0bbe6af2a3c5c1172f4e7aa8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m052-204800-on/runner-process-group.json": "7ef591fe96540c4c2ede3278080ef80d4f2aafa72b4ba69457dae44a6f8380b9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m052-204800-on/http/isolation/cleanup.json": "177f6ea0b7523a9a467392c887102f1377d942169cce453f8dde77dfc16ed1ed",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m061-261887-on/protocol.json": "b2f7fd24b009f3c04ccf8b7f2528e38f965deb8cd8c0bf1a945f4832549d4654",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m061-261887-on/wrapper-exit.json": "6bc44213647f45e3d3773cea9f9267cc93751bb7021882c37d0889dcbd4af789",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m061-261887-on/runner-process-group.json": "8c7017a9a533df2ca93321501ab14fe2ba457f5f8c8a023922dedf0e502ecbc8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m061-261887-on/http/isolation/cleanup.json": "c28307e2e23eda77ef978c11d09b07982e925e2940d073458aa6ba3b9c25f577",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m062-261887-off/protocol.json": "08b7e9d926dc635fa63d69612437d8f466ff5a1f348bd014919ae915c90d372c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m062-261887-off/wrapper-exit.json": "8afa09978cc957d38bc047d5d744f422b92811d24db5cfb9699c7f00db90b6cf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m062-261887-off/runner-process-group.json": "ac8556bf4a9267ce22ef51a924c5c18bcd49a5b93a0f044c7ccfd68cc8277933",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m062-261887-off/http/isolation/cleanup.json": "36097b6877fd2c31b3d4d0a57b088f6a917430dc3f159c4b57dbbb36228c259e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/final_protection.py": "a9a0bbd2c88736fef3aebad09565334d8f4fc217c253dc005dc17b5d69b76dcb"
+  },
+  "checks": {
+    "MAIN": {
+      "head": "f15190ff9447079f9557469ed5aff0b525197821",
+      "status": [
+        " M docs/STATUS.md",
+        " M docs/log/2026-10-02.md",
+        " M include/q4t/model/model.h",
+        " M include/q4t/quant/moe_residency.h",
+        " M src/model/moe.cu",
+        " M src/quant/moe_residency.cpp",
+        " M src/server/chat_generation.cpp"
+      ],
+      "diff_sha256": "33375caff6dcb3e638e2d2f001428883cbc0e400c5f1b7403a081826e9cd6947",
+      "binary_sha256": "46b3f977b0653c2f317c63df5b9f6669d1f3bb1de17892970b605676dd5434bc"
+    },
+    "old_worktrees": {
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source": "3a838473a7fa9ebefba9356266d4e1c8946cf7d9",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/source": "8ea3d329a236e35dd0aba35ad619912e3e76cc28",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source": "69e2d0432b8f00317fbb07b1f286b25d2bd09d17"
+    },
+    "model": {
+      "metadata_records": 228,
+      "config_index_sha256": {
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model.safetensors.index.json": "aa702aa8cadb463b728cfd6829e172b1124114080231c75712155e2490f8c607"
+      },
+      "payload_hashed": false,
+      "payload_read": false
+    },
+    "current_tree": {
+      "head": "1efc524fe379f1eca9ceefed690327ae77236c7f",
+      "runtime_source_commit": "1efc524fe379f1eca9ceefed690327ae77236c7f",
+      "documentation_changes": [],
+      "runtime_binary_sha256": "6a1e3321499a45359068610ee5865a8b7c97930bb6eed6f0065acfa0c6178762"
+    },
+    "owned_cleanup": {
+      "receipts": [
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/build-01-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/build-01-exit.json",
+          "pgid": 3825849,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/configure-01-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/configure-01-exit.json",
+          "pgid": 3825643,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/freeze-01-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/freeze-01-exit.json",
+          "pgid": 3827000,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-audit-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-audit-exit.json",
+          "pgid": 3835806,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-controller-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-controller-exit.json",
+          "pgid": 3832266,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-audit-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-audit-exit.json",
+          "pgid": 3843086,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-controller-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-controller-exit.json",
+          "pgid": 3835831,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-audit-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-audit-exit.json",
+          "pgid": 3851778,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-controller-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-controller-exit.json",
+          "pgid": 3843105,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-audit-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-audit-exit.json",
+          "pgid": 3855119,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-controller-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-controller-exit.json",
+          "pgid": 3851803,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/history-comparison-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/history-comparison-exit.json",
+          "pgid": 3855134,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-01/host-build-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-01/host-build-exit.json",
+          "pgid": 3831867,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-01/host-configure-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-01/host-configure-exit.json",
+          "pgid": 3831834,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-01/host-tests-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-01/host-tests-exit.json",
+          "pgid": 3831895,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-01/protocol-tests-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-01/protocol-tests-exit.json",
+          "pgid": 3831896,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/independent-result-review-01-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/independent-result-review-01-exit.json",
+          "pgid": 3902943,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m011-1024-off-audit-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m011-1024-off-audit-exit.json",
+          "pgid": 3856532,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m011-1024-off-controller-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m011-1024-off-controller-exit.json",
+          "pgid": 3855164,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m012-1024-on-audit-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m012-1024-on-audit-exit.json",
+          "pgid": 3857903,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m012-1024-on-controller-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m012-1024-on-controller-exit.json",
+          "pgid": 3856555,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m021-4096-on-audit-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m021-4096-on-audit-exit.json",
+          "pgid": 3862095,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m021-4096-on-controller-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m021-4096-on-controller-exit.json",
+          "pgid": 3857940,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m022-4096-off-audit-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m022-4096-off-audit-exit.json",
+          "pgid": 3863634,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m022-4096-off-controller-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m022-4096-off-controller-exit.json",
+          "pgid": 3862228,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m031-8192-off-audit-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m031-8192-off-audit-exit.json",
+          "pgid": 3865055,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m031-8192-off-controller-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m031-8192-off-controller-exit.json",
+          "pgid": 3863659,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m032-8192-on-audit-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m032-8192-on-audit-exit.json",
+          "pgid": 3866479,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m032-8192-on-controller-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m032-8192-on-controller-exit.json",
+          "pgid": 3865077,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m041-45056-on-audit-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m041-45056-on-audit-exit.json",
+          "pgid": 3868150,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m041-45056-on-controller-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m041-45056-on-controller-exit.json",
+          "pgid": 3866503,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m042-45056-off-audit-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m042-45056-off-audit-exit.json",
+          "pgid": 3869813,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m042-45056-off-controller-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m042-45056-off-controller-exit.json",
+          "pgid": 3868172,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m051-204800-off-audit-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m051-204800-off-audit-exit.json",
+          "pgid": 3875814,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m051-204800-off-controller-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m051-204800-off-controller-exit.json",
+          "pgid": 3869833,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m052-204800-on-audit-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m052-204800-on-audit-exit.json",
+          "pgid": 3881940,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m052-204800-on-controller-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m052-204800-on-controller-exit.json",
+          "pgid": 3875833,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m061-261887-on-audit-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m061-261887-on-audit-exit.json",
+          "pgid": 3890384,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m061-261887-on-controller-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m061-261887-on-controller-exit.json",
+          "pgid": 3881962,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m062-261887-off-audit-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m062-261887-off-audit-exit.json",
+          "pgid": 3902851,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m062-261887-off-controller-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m062-261887-off-controller-exit.json",
+          "pgid": 3896414,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-01/numerical-build-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-01/numerical-build-exit.json",
+          "pgid": 3831922,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-01/numerical-tests-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-01/numerical-tests-exit.json",
+          "pgid": 3832194,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/performance-comparison-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/performance-comparison-exit.json",
+          "pgid": 3902871,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-audit-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-audit-exit.json",
+          "pgid": 3831795,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-controller-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-controller-exit.json",
+          "pgid": 3827072,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/resource-audit-owned-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/resource-audit-owned-exit.json",
+          "pgid": 3902885,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression-execute-owned-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression-execute-owned-exit.json",
+          "pgid": 3891402,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression-prepare-owned-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression-prepare-owned-exit.json",
+          "pgid": 3891197,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-dedup-owned-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-dedup-owned-exit.json",
+          "pgid": 3890540,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-reserve-execute-owned-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-reserve-execute-owned-exit.json",
+          "pgid": 3892433,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        },
+        {
+          "start": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-reserve-prepare-owned-start.json",
+          "exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-reserve-prepare-owned-exit.json",
+          "pgid": 3892405,
+          "returncode": 0,
+          "failure": null,
+          "cleanup_complete": true,
+          "currently_absent": true
+        }
+      ],
+      "units": [
+        {
+          "group": "q01-quality-on",
+          "unit": "q4t-ram-1791293688196480753-3827072.service",
+          "properties": {
+            "MainPID": "0",
+            "LoadState": "not-found",
+            "ActiveState": "inactive"
+          },
+          "show_returncode": 0,
+          "runner_pgid": 3827076
+        },
+        {
+          "group": "h01-off",
+          "unit": "q4t-ram-1791294676070462866-3832266.service",
+          "properties": {
+            "MainPID": "0",
+            "LoadState": "not-found",
+            "ActiveState": "inactive"
+          },
+          "show_returncode": 0,
+          "runner_pgid": 3832273
+        },
+        {
+          "group": "h02-on",
+          "unit": "q4t-ram-1791297033714208773-3835831.service",
+          "properties": {
+            "MainPID": "0",
+            "LoadState": "not-found",
+            "ActiveState": "inactive"
+          },
+          "show_returncode": 0,
+          "runner_pgid": 3835845
+        },
+        {
+          "group": "h03-on",
+          "unit": "q4t-ram-1791299357891436869-3843105.service",
+          "properties": {
+            "MainPID": "0",
+            "LoadState": "not-found",
+            "ActiveState": "inactive"
+          },
+          "show_returncode": 0,
+          "runner_pgid": 3843109
+        },
+        {
+          "group": "h04-off",
+          "unit": "q4t-ram-1791301676483640547-3851803.service",
+          "properties": {
+            "MainPID": "0",
+            "LoadState": "not-found",
+            "ActiveState": "inactive"
+          },
+          "show_returncode": 0,
+          "runner_pgid": 3851831
+        },
+        {
+          "group": "m011-1024-off",
+          "unit": "q4t-ram-1791304064200047645-3855164.service",
+          "properties": {
+            "MainPID": "0",
+            "LoadState": "not-found",
+            "ActiveState": "inactive"
+          },
+          "show_returncode": 0,
+          "runner_pgid": 3855168
+        },
+        {
+          "group": "m012-1024-on",
+          "unit": "q4t-ram-1791304337254005500-3856555.service",
+          "properties": {
+            "MainPID": "0",
+            "LoadState": "not-found",
+            "ActiveState": "inactive"
+          },
+          "show_returncode": 0,
+          "runner_pgid": 3856559
+        },
+        {
+          "group": "m021-4096-on",
+          "unit": "q4t-ram-1791304667160164785-3857940.service",
+          "properties": {
+            "MainPID": "0",
+            "LoadState": "not-found",
+            "ActiveState": "inactive"
+          },
+          "show_returncode": 0,
+          "runner_pgid": 3857944
+        },
+        {
+          "group": "m022-4096-off",
+          "unit": "q4t-ram-1791304973956607005-3862228.service",
+          "properties": {
+            "MainPID": "0",
+            "LoadState": "not-found",
+            "ActiveState": "inactive"
+          },
+          "show_returncode": 0,
+          "runner_pgid": 3862260
+        },
+        {
+          "group": "m031-8192-off",
+          "unit": "q4t-ram-1791305312028260603-3863659.service",
+          "properties": {
+            "MainPID": "0",
+            "LoadState": "not-found",
+            "ActiveState": "inactive"
+          },
+          "show_returncode": 0,
+          "runner_pgid": 3863665
+        },
+        {
+          "group": "m032-8192-on",
+          "unit": "q4t-ram-1791305644915828582-3865077.service",
+          "properties": {
+            "MainPID": "0",
+            "LoadState": "not-found",
+            "ActiveState": "inactive"
+          },
+          "show_returncode": 0,
+          "runner_pgid": 3865081
+        },
+        {
+          "group": "m041-45056-on",
+          "unit": "q4t-ram-1791305963321907445-3866503.service",
+          "properties": {
+            "MainPID": "0",
+            "LoadState": "not-found",
+            "ActiveState": "inactive"
+          },
+          "show_returncode": 0,
+          "runner_pgid": 3866507
+        },
+        {
+          "group": "m042-45056-off",
+          "unit": "q4t-ram-1791306813503405270-3868172.service",
+          "properties": {
+            "MainPID": "0",
+            "LoadState": "not-found",
+            "ActiveState": "inactive"
+          },
+          "show_returncode": 0,
+          "runner_pgid": 3868176
+        },
+        {
+          "group": "m051-204800-off",
+          "unit": "q4t-ram-1791307691297396566-3869833.service",
+          "properties": {
+            "MainPID": "0",
+            "LoadState": "not-found",
+            "ActiveState": "inactive"
+          },
+          "show_returncode": 0,
+          "runner_pgid": 3869837
+        },
+        {
+          "group": "m052-204800-on",
+          "unit": "q4t-ram-1791311199707494755-3875833.service",
+          "properties": {
+            "MainPID": "0",
+            "LoadState": "not-found",
+            "ActiveState": "inactive"
+          },
+          "show_returncode": 0,
+          "runner_pgid": 3875837
+        },
+        {
+          "group": "m061-261887-on",
+          "unit": "q4t-ram-1791314733105007134-3881962.service",
+          "properties": {
+            "MainPID": "0",
+            "LoadState": "not-found",
+            "ActiveState": "inactive"
+          },
+          "show_returncode": 0,
+          "runner_pgid": 3881966
+        },
+        {
+          "group": "m062-261887-off",
+          "unit": "q4t-ram-1791319731999400008-3896414.service",
+          "properties": {
+            "MainPID": "0",
+            "LoadState": "not-found",
+            "ActiveState": "inactive"
+          },
+          "show_returncode": 0,
+          "runner_pgid": 3896418
+        }
+      ],
+      "unstarted_groups": [],
+      "no_service_terminals": [],
+      "self_excluded": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/final-protection-01-start.json",
+      "current_checker_pgid": 3902996,
+      "proc_snapshot_groups": 60
+    }
+  },
+  "new_HTTP": 0,
+  "model_runs": 0,
+  "status": "FINAL_PROTECTION_PASS",
+  "limits": [
+    "Model size/inode/device/mtime and config/index equality do not prove weight byte equality or exclude transient writes; payloads never opened.",
+    "Reference scope is tracked Git status only; old delivered trees use HEAD/status, without rereading old evidence or ignored files.",
+    "Owned receipt cleanup and current PGID/unit absence do not prove global GPU/process idleness; PGID reuse fails conservatively.",
+    "Current checker receipt is excluded while it runs; root must close its own actual exit/cleanup and later push/delivery metadata separately.",
+    "Failed test/controller outcomes remain visible; protection PASS is not quality, numerical, speed, resource, full-matrix or 54GB acceptance.",
+    "No old raw-resource/trace reread, model inference, tests, GPU query or cache advice is performed. Only exact owned systemd units are queried."
+  ],
+  "ended_t": 1791324348.6622121
+}

@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "recorded_t": 1791319645.4444215,
+  "reviewer": "/root/recycle_protocol",
+  "passed": true,
+  "static_only": true,
+  "findings": [],
+  "repairs_during_this_review": [],
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage_reserve_repair.py": "ea582f068f14ef693ee78cf44de9f08067b7380448ad37d4728a271c6ad48ab9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-reserve-repair-policy.json": "e041a16f5045abe2996967281269f673ed4afc6ae56567750ae9eaad38ca0939",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-reserve-repair-checklist.md": "a41c3d6df5174d3735ced0a3c67bf063da4474b650e9785765db192be3a96f18",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/archive_delivery.py": "f38290696747205ee79574fd44682ec04f775b671e50bafea68bf693db46859b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression-plan.json": "c965e764e0f596aa035e556a09c272fc14c9b853ebc0ac29fa60cd5af580b991",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression/preflight.json": "ab50700e74572a013a15b6e765fb3dc67d471618833d54fd88075b3206df5c48",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression/compression.json": "967bf70cb1ed901180a0119a5b722197e3835815e1e5a89602e35cd6fa80aa21",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression/summary.json": "06a0bbcdeba2ec113a065602fc34d23cb662ed20c8ceb86dba4303950f7e49a1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m062-preflight-first-failure.json": "a264316e952b8b3ce9472ef9c16ce01f1cef3cfa36d317d557e39394961ef0bb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage_compress.py": "04ed5e8bd935de196d373bd546902074a6789c612780272e0e2a12d5c18fe109",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage_dedup.py": "6fb1c2a198f1eda4554416e3ac4558681b3971d7313d2b79775fd8243fba42d9"
+  },
+  "checks": {
+    "concrete_failure_boundary": "Bound m062-preflight-first-failure states runner line47 failure before controller/service/HTTP; zero additional HTTP requested by repair. Existing first failure and both prior storage results preserved.",
+    "exact_scope": "Metadata-only comparison confirms remaining candidates equal old 246-candidate manifest minus unique old map original, exactly 245 unique paths. Each before metadata equals old manifest and preflight; every recorded_original_sha256 matches old preflight. Total logical 62,383,022 and allocated 62,611,456 bytes. No payload read for these comparisons.",
+    "candidate_kind": "Uses already-reviewed permitted() for first16 SQLite/HTML and generated m052/m061 JSONL only, regular canonical nlink1. No old/model/reference/frozen input or source dependency candidate. Current recursive ledger bindings checked before prepare/execute.",
+    "admission": "Exact frozen execution plan/source identity, first16 terminal stage/controller/audit/decision, exact owned units inactive/failed MainPID0, m062 controller start absent and output directory absent. Prior m062 preflight failure phase/no HTTP and old storage summary counts/success bound. Actual free below storage target is required.",
+    "prior_evidence": "protected_metadata_sha256 verifies old scripts/policies/manifests/preflight/journal/maps/summaries/static finding/review and m062 first failure before and after. Old gzip only snapshot checked; no reread/write/remove, original compressed path excluded from candidates.",
+    "manifest": "Exclusive prepare manifest binds current script and policy, candidates, runtime, guard receipts and ledgers. Execute requires manifest SHA and identical current candidate inventory/guard/ledger identities.",
+    "original_identity": "Execute computes all candidate hashes before mutation, verifies recorded old preflight SHA and metadata, then full gzip1 stream decompression SHA/length before any original unlink.",
+    "durable_recovery": "New separate output directory/payload entry chain fsynced including R; compressed file and payload directory synced, durable new map fsynced and atomically replaced before original unlink; original parent synced. Separate old/new maps, no overwrites of old map.",
+    "bounded_stop": "One exact 245-item list, 16MiB single file and shared512MiB read cap, no expansion. Checks actual free before each next candidate, stops at 1GiB+32MiB. Exhaustion records target false without changing frozen1GiB runner gate. Net allocation subtracts all gzip allocations including originals retained for no saving.",
+    "failure_retention": "Exclusive new first-failure; durable new journal/map/payload retained on partial exit. No automatic retry, model rerun, deletion of failed evidence or lowered acceptance threshold.",
+    "archive": "Explicit new root policy/plan/checklist, helper and five nested compact storage files added. Existing failure/review patterns retain m062 first failure and this independent review. Both maps archived with original/gzip recorded locator/SHA, distinct local payload roots, no gzip/raw reads.16MiB archive bound and prior symlink/partial-delivery protection retained."
+  },
+  "limitations": [
+    "Static review only; no prepare, execute, archive, tests or model run.",
+    "Actual admission, candidate identity hashes, achieved free space, roundtrip verification and final ledger invariance are future execution evidence.",
+    "32MiB reserve is a storage target, not a guarantee against future unrelated disk writes. Frozen experimental1GiB minimum unchanged.",
+    "No new numerical/full-model/performance/physical54GB conclusion; runtime remains default disabled."
+  ],
+  "candidate_payload_bytes_read": 0,
+  "old_gzip_bytes_read": 0,
+  "tests_run": false,
+  "model_run": false,
+  "source_W_edited": false,
+  "frozen_execution_files_edited": false
+}

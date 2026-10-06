@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "recorded_t": 1791319354.8586159,
+  "group_id": "m062-261887-off",
+  "failure": "AssertionError: shutil.disk_usage(R).free >= plan[min_free_disk_bytes]",
+  "line": 47,
+  "exec_chunk_id": "a0702a",
+  "exec_exit_code": 1,
+  "phase": "preflight_before_controller",
+  "service_started": false,
+  "HTTP_requests_sent": 0,
+  "controller_start_exists": false,
+  "evidence_output_exists": false,
+  "current_free_disk_bytes": 1071853568,
+  "minimum_free_disk_bytes": 1073741824,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/run_stage.py": "c3e0b0c2702616e28a3e6b1b717fa705879979c961613f4b9b0391f4294f9ef0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression/summary.json": "06a0bbcdeba2ec113a065602fc34d23cb662ed20c8ceb86dba4303950f7e49a1"
+  },
+  "automatic_retry": false,
+  "repair_scope": "Only own already-completed unbound new evidence; preserve compression map and first failure; create separately reviewed bounded reserve repair; frozen runner and acceptance threshold unchanged."
+}

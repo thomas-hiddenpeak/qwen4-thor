@@ -1,0 +1,36 @@
+{
+  "started_t": 1791324347.9091954,
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/final_protection.py",
+    "--expected-head",
+    "1efc524fe379f1eca9ceefed690327ae77236c7f",
+    "--self-label",
+    "final-protection-01",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/final-protection.json"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source",
+  "returncode": 0,
+  "failure": null,
+  "automatic_retry": false,
+  "timeout_s": 180,
+  "signals": [],
+  "cleanup_complete": true,
+  "pid": 3902996,
+  "pgid": 3902996,
+  "group_before_cleanup": {
+    "live_pids": [],
+    "zombie_pids": [],
+    "errors": [],
+    "absent": true
+  },
+  "group_after_cleanup": {
+    "live_pids": [],
+    "zombie_pids": [],
+    "errors": [],
+    "absent": true
+  },
+  "ended_t": 1791324348.6744058
+}

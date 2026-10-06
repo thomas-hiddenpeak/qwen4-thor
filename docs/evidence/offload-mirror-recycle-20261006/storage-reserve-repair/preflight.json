@@ -1,0 +1,3628 @@
+{
+  "started_t": 1791319674.6047308,
+  "manifest_sha256": "073ed8fcf7c672e5181791d768461894f225c3cb67ea10401ca7431a72a9674f",
+  "policy_sha256": "e041a16f5045abe2996967281269f673ed4afc6ae56567750ae9eaad38ca0939",
+  "entries": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r01-p01-context-16385/run-1/20261006_215146/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957251,
+        "bytes": 151552,
+        "allocated_bytes": 151552,
+        "mtime_ns": 1791294819635644576,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "fa074c7d8a173a022ab4e541ca9f118eb340d47008a7ab36da7a7af370853704",
+      "original_sha256": "fa074c7d8a173a022ab4e541ca9f118eb340d47008a7ab36da7a7af370853704"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r01-p01-context-16385/run-1/20261006_215146/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957258,
+        "bytes": 166228,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791294820047643600,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "ff491a1918c4e30a8959102588b49297aae9e47000e2fe2f16ee6adfdfc5d23e",
+      "original_sha256": "ff491a1918c4e30a8959102588b49297aae9e47000e2fe2f16ee6adfdfc5d23e"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r01-p02-context-8192/run-1/20261006_215343/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957275,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791294903967439635,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "4d3391cae775f70c6bbb112bb32d36343ec9047b994e4c60775f8065768c4b45",
+      "original_sha256": "4d3391cae775f70c6bbb112bb32d36343ec9047b994e4c60775f8065768c4b45"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r01-p02-context-8192/run-1/20261006_215343/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957282,
+        "bytes": 166184,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791294904347438690,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "d0104c1645d743565cb900215da30abbdf9545d3266cc18b866e92b34de662e1",
+      "original_sha256": "d0104c1645d743565cb900215da30abbdf9545d3266cc18b866e92b34de662e1"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r01-p03-context-8193/run-1/20261006_215507/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957298,
+        "bytes": 110592,
+        "allocated_bytes": 110592,
+        "mtime_ns": 1791294984459235309,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "40c60245be98586746fb74d95ad3eb3a3ea2e460c94a7aa5b1274ed809b5e898",
+      "original_sha256": "40c60245be98586746fb74d95ad3eb3a3ea2e460c94a7aa5b1274ed809b5e898"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r01-p03-context-8193/run-1/20261006_215507/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957305,
+        "bytes": 166139,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791294984835234337,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "b17901a615d1cf6839b047db801eb0f04d4c049ce545bc967ff52fbb3bd914f7",
+      "original_sha256": "b17901a615d1cf6839b047db801eb0f04d4c049ce545bc967ff52fbb3bd914f7"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r01-p04-context-1024/run-1/20261006_215627/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957321,
+        "bytes": 77824,
+        "allocated_bytes": 77824,
+        "mtime_ns": 1791295036639098905,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "0afdcb0acdc2d02ee273d8d2ad37d81c0780ad7a31041c7c97b9f38b0ffff7bf",
+      "original_sha256": "0afdcb0acdc2d02ee273d8d2ad37d81c0780ad7a31041c7c97b9f38b0ffff7bf"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r01-p04-context-1024/run-1/20261006_215627/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957328,
+        "bytes": 166171,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791295037019097901,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "2bce78911971a8fa351a5520e4c9105232bab9298dd8f5c7ffeceb5beb8b881e",
+      "original_sha256": "2bce78911971a8fa351a5520e4c9105232bab9298dd8f5c7ffeceb5beb8b881e"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r01-p05-context-45056/run-1/20261006_215720/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957344,
+        "bytes": 290816,
+        "allocated_bytes": 290816,
+        "mtime_ns": 1791295298394378155,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "c37c8826288a7c58b893684440f6a4861f88b98441a7d3fbfd6bdac12e2a8d2c",
+      "original_sha256": "c37c8826288a7c58b893684440f6a4861f88b98441a7d3fbfd6bdac12e2a8d2c"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r01-p05-context-45056/run-1/20261006_215720/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957351,
+        "bytes": 166219,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791295298778377061,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "906b6a244ee0dd5eb314a5842e6a4265ec9c3775766a34c408c0758e9e24ff2d",
+      "original_sha256": "906b6a244ee0dd5eb314a5842e6a4265ec9c3775766a34c408c0758e9e24ff2d"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r01-p06-context-4096/run-1/20261006_220141/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957367,
+        "bytes": 94208,
+        "allocated_bytes": 94208,
+        "mtime_ns": 1791295369778173371,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "289a20fecef231afb9b729cbefff9833ac1941abd4a6f4cabff5b7a00d010e3d",
+      "original_sha256": "289a20fecef231afb9b729cbefff9833ac1941abd4a6f4cabff5b7a00d010e3d"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r01-p06-context-4096/run-1/20261006_220141/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957374,
+        "bytes": 166169,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791295370162172262,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "b582e66d84d3735336df1b940da6f69553ea81383fbcc7106aba375196e59d6a",
+      "original_sha256": "b582e66d84d3735336df1b940da6f69553ea81383fbcc7106aba375196e59d6a"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r01-p07-context-8192/run-1/20261006_220253/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957390,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791295454529926781,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "695528a8e773234226f23a1e8b86d4f7e12bf4d26ee99a7c0e59fdd84dddf2e8",
+      "original_sha256": "695528a8e773234226f23a1e8b86d4f7e12bf4d26ee99a7c0e59fdd84dddf2e8"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r01-p07-context-8192/run-1/20261006_220253/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957397,
+        "bytes": 166163,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791295454917925644,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "c823d44480fdfccade7e694fbdf7aa94d62c724a2ca2074ebc54e6afe95064d8",
+      "original_sha256": "c823d44480fdfccade7e694fbdf7aa94d62c724a2ca2074ebc54e6afe95064d8"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r02-p01-context-16385/run-1/20261006_220418/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957413,
+        "bytes": 151552,
+        "allocated_bytes": 151552,
+        "mtime_ns": 1791295571941579968,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "6f5724381d5e4bdc897d9b942211295f9b441b329a83cdb278f102d65d727c4b",
+      "original_sha256": "6f5724381d5e4bdc897d9b942211295f9b441b329a83cdb278f102d65d727c4b"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r02-p01-context-16385/run-1/20261006_220418/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957420,
+        "bytes": 166222,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791295572341578777,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "3147946975eae4a86756bb8c7561cf38193fd24de348672db32d36dec07da277",
+      "original_sha256": "3147946975eae4a86756bb8c7561cf38193fd24de348672db32d36dec07da277"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r02-p02-context-8192/run-1/20261006_220615/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957436,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791295656297327703,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "0c06d67b18049bb26f819a72de0789c7f0e18d001d0f8661157613026d3a9513",
+      "original_sha256": "0c06d67b18049bb26f819a72de0789c7f0e18d001d0f8661157613026d3a9513"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r02-p02-context-8192/run-1/20261006_220615/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957443,
+        "bytes": 166185,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791295656677326562,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "43af44b18fb4b856ea780f9c95fe65ad252dae518db0e31dac4f56c243c16699",
+      "original_sha256": "43af44b18fb4b856ea780f9c95fe65ad252dae518db0e31dac4f56c243c16699"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r02-p03-context-8193/run-1/20261006_220739/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957459,
+        "bytes": 110592,
+        "allocated_bytes": 110592,
+        "mtime_ns": 1791295737101084047,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "28190f975f7423a052f42398deea4dc65233ba766d480dce57cc2f383f2ee854",
+      "original_sha256": "28190f975f7423a052f42398deea4dc65233ba766d480dce57cc2f383f2ee854"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r02-p03-context-8193/run-1/20261006_220739/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957466,
+        "bytes": 166169,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791295737477082909,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "2403b281319605e1f63202b0ad0b0e968cd8fd26fbba4cf7fced883b1baaa097",
+      "original_sha256": "2403b281319605e1f63202b0ad0b0e968cd8fd26fbba4cf7fced883b1baaa097"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r02-p04-context-1024/run-1/20261006_220900/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957482,
+        "bytes": 77824,
+        "allocated_bytes": 77824,
+        "mtime_ns": 1791295789480925187,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "6a0e29b803fdf9b30e203f5a2cdc255fb9cfa420a92379ee47346a62a274134b",
+      "original_sha256": "6a0e29b803fdf9b30e203f5a2cdc255fb9cfa420a92379ee47346a62a274134b"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r02-p04-context-1024/run-1/20261006_220900/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957489,
+        "bytes": 166170,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791295789860924032,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "da0f710a18cb38144f22fdfcc62fd183c2a1bdb4ac5242752e68334fb4643899",
+      "original_sha256": "da0f710a18cb38144f22fdfcc62fd183c2a1bdb4ac5242752e68334fb4643899"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r02-p05-context-45056/run-1/20261006_220952/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957505,
+        "bytes": 290816,
+        "allocated_bytes": 290816,
+        "mtime_ns": 1791296056618428990,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "081161b3bd6848d6d4c0c96e8d878aa97d9f2b09752d7a7c36423c73762916a9",
+      "original_sha256": "081161b3bd6848d6d4c0c96e8d878aa97d9f2b09752d7a7c36423c73762916a9"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r02-p05-context-45056/run-1/20261006_220952/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957512,
+        "bytes": 166241,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791296056994440318,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "767a10ad3fa200bad19ddd96672c520955799c83c3ff066d9f21d2023b310a6d",
+      "original_sha256": "767a10ad3fa200bad19ddd96672c520955799c83c3ff066d9f21d2023b310a6d"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r02-p06-context-4096/run-1/20261006_221419/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957528,
+        "bytes": 94208,
+        "allocated_bytes": 94208,
+        "mtime_ns": 1791296127312439589,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "9419e9e1e4e327e9eba811992addf4d1866a117425d11fa2a5027e8be9b9cd82",
+      "original_sha256": "9419e9e1e4e327e9eba811992addf4d1866a117425d11fa2a5027e8be9b9cd82"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r02-p06-context-4096/run-1/20261006_221419/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957535,
+        "bytes": 166129,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791296127696449890,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "7c93f06efa71f3653eac206e101752387348ca9d986f09d6c833d3d2e007720a",
+      "original_sha256": "7c93f06efa71f3653eac206e101752387348ca9d986f09d6c833d3d2e007720a"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r02-p07-context-8192/run-1/20261006_221530/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957551,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791296211566554752,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "aba336929b7f3fd0d7e68ce88824205708dbcd85acd86f866e91ab39ddd100ca",
+      "original_sha256": "aba336929b7f3fd0d7e68ce88824205708dbcd85acd86f866e91ab39ddd100ca"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r02-p07-context-8192/run-1/20261006_221530/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957558,
+        "bytes": 166187,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791296211942563576,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "e453f72ccb2040c3910ef18d135758ad3f77e0f8a5c93389dbcea72a017cef79",
+      "original_sha256": "e453f72ccb2040c3910ef18d135758ad3f77e0f8a5c93389dbcea72a017cef79"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r03-p01-context-16385/run-1/20261006_221655/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957574,
+        "bytes": 151552,
+        "allocated_bytes": 151552,
+        "mtime_ns": 1791296328853072389,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "681e49643a92a8d70a42db3b94bbc2110c6ac4abe37a109d829723e1f84230cb",
+      "original_sha256": "681e49643a92a8d70a42db3b94bbc2110c6ac4abe37a109d829723e1f84230cb"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r03-p01-context-16385/run-1/20261006_221655/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957581,
+        "bytes": 166225,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791296329237079917,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "afec4f02eec96be13882a88c3a0a574cc058c682621fd645c380bcc243192216",
+      "original_sha256": "afec4f02eec96be13882a88c3a0a574cc058c682621fd645c380bcc243192216"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r03-p02-context-8192/run-1/20261006_221852/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957597,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791296413346630611,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "09abd23fb43c727f2a094d863ec0f073795eca700d74b6b918996e11766f0419",
+      "original_sha256": "09abd23fb43c727f2a094d863ec0f073795eca700d74b6b918996e11766f0419"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r03-p02-context-8192/run-1/20261006_221852/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957604,
+        "bytes": 166159,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791296413722637128,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "729b5ade8fb1a1d7e5439ad8021c6ff3d36c95a190ce8ac9090f22845a70ffd7",
+      "original_sha256": "729b5ade8fb1a1d7e5439ad8021c6ff3d36c95a190ce8ac9090f22845a70ffd7"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r03-p03-context-8193/run-1/20261006_222016/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957620,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791296493979951844,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "ea69c1653a342da4e6bc9cd44b802774931695b192fd55407e4a4d2f6fb5a789",
+      "original_sha256": "ea69c1653a342da4e6bc9cd44b802774931695b192fd55407e4a4d2f6fb5a789"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r03-p03-context-8193/run-1/20261006_222016/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957627,
+        "bytes": 166161,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791296494379958034,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "5f98c4dcd7feed505416b97462ca32b15651bbeb701c2018ac3c08e2c1bd1a41",
+      "original_sha256": "5f98c4dcd7feed505416b97462ca32b15651bbeb701c2018ac3c08e2c1bd1a41"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r03-p04-context-1024/run-1/20261006_222137/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957643,
+        "bytes": 77824,
+        "allocated_bytes": 77824,
+        "mtime_ns": 1791296546156731948,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "a88d36bd02d8a06553855a9a2638c47a5234ca32fe7d028d7de95840cde8bc30",
+      "original_sha256": "a88d36bd02d8a06553855a9a2638c47a5234ca32fe7d028d7de95840cde8bc30"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r03-p04-context-1024/run-1/20261006_222137/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957650,
+        "bytes": 166171,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791296546532737373,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "ae2bd8e25bf260aa23768d0a3976040687c17e01125fea2bbc443f47ab7fff69",
+      "original_sha256": "ae2bd8e25bf260aa23768d0a3976040687c17e01125fea2bbc443f47ab7fff69"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r03-p05-context-45056/run-1/20261006_222229/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957666,
+        "bytes": 290816,
+        "allocated_bytes": 290816,
+        "mtime_ns": 1791296813396011657,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "4cb47b16dea098603c5fcd2a65644bc19aa5223c9e575ba88183f7a6598e476f",
+      "original_sha256": "4cb47b16dea098603c5fcd2a65644bc19aa5223c9e575ba88183f7a6598e476f"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r03-p05-context-45056/run-1/20261006_222229/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957673,
+        "bytes": 166240,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791296813776015629,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "5f66bb62c85c65cf8584d45f670c4b5eca060304a5123fde61647ea19b62522d",
+      "original_sha256": "5f66bb62c85c65cf8584d45f670c4b5eca060304a5123fde61647ea19b62522d"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r03-p06-context-4096/run-1/20261006_222656/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957689,
+        "bytes": 94208,
+        "allocated_bytes": 94208,
+        "mtime_ns": 1791296884320725932,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "89d049bdbd099506d8c33aef1886f70cd439329c624a5cb6b47045c226f88816",
+      "original_sha256": "89d049bdbd099506d8c33aef1886f70cd439329c624a5cb6b47045c226f88816"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r03-p06-context-4096/run-1/20261006_222656/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957698,
+        "bytes": 166135,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791296884696729580,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "9dab083929a9cb08f4d6432f1aa37ff6eace6ffb78270df3887b8566f11f02d4",
+      "original_sha256": "9dab083929a9cb08f4d6432f1aa37ff6eace6ffb78270df3887b8566f11f02d4"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r03-p07-context-8192/run-1/20261006_222807/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957714,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791296968777512162,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "654f6d9d030a33de3e2f88d55495eb1a9f34cb293757f99e5ca9406f31f22ba6",
+      "original_sha256": "654f6d9d030a33de3e2f88d55495eb1a9f34cb293757f99e5ca9406f31f22ba6"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r03-p07-context-8192/run-1/20261006_222807/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957722,
+        "bytes": 166153,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791296969181515771,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "16a96341a78b93e65fc4cc61c15b1c227cd8b0aecd670106b13f2dc4142b51a3",
+      "original_sha256": "16a96341a78b93e65fc4cc61c15b1c227cd8b0aecd670106b13f2dc4142b51a3"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r01-p01-context-16385/run-1/20261006_223100/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957826,
+        "bytes": 151552,
+        "allocated_bytes": 151552,
+        "mtime_ns": 1791297173491187268,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "6e7bf5bb42e1f25f5cdcdc7a7aa0a67973fba230a6ac7f2188541a69fd11082b",
+      "original_sha256": "6e7bf5bb42e1f25f5cdcdc7a7aa0a67973fba230a6ac7f2188541a69fd11082b"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r01-p01-context-16385/run-1/20261006_223100/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957833,
+        "bytes": 166227,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791297173895190307,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "32d3b8be1868dd94310e7b307400657cd4672e0d915edbf9afe3b8ce0757fbe4",
+      "original_sha256": "32d3b8be1868dd94310e7b307400657cd4672e0d915edbf9afe3b8ce0757fbe4"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r01-p02-context-8192/run-1/20261006_223256/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957850,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791297257791802642,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "9b2a07d306684622c25ccf40eec3354aef261c6b29f26693ce61eff834f05a1d",
+      "original_sha256": "9b2a07d306684622c25ccf40eec3354aef261c6b29f26693ce61eff834f05a1d"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r01-p02-context-8192/run-1/20261006_223256/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957857,
+        "bytes": 166177,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791297258199805533,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "7d20b7c3911510cb0815a01c2c18c551d90e42e491ad41a8a990ec223ba73aed",
+      "original_sha256": "7d20b7c3911510cb0815a01c2c18c551d90e42e491ad41a8a990ec223ba73aed"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r01-p03-context-8193/run-1/20261006_223421/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957873,
+        "bytes": 110592,
+        "allocated_bytes": 110592,
+        "mtime_ns": 1791297338756361701,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "ce615a2c551c5f82f0da5a35b0d94b71456d8da7372447431e8e6993da2471e5",
+      "original_sha256": "ce615a2c551c5f82f0da5a35b0d94b71456d8da7372447431e8e6993da2471e5"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r01-p03-context-8193/run-1/20261006_223421/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957880,
+        "bytes": 166152,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791297339136364259,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "2b36bc508f3f50effa9039cdc58b5d6c06ce1b65561c0c95fb6c07be75af0590",
+      "original_sha256": "2b36bc508f3f50effa9039cdc58b5d6c06ce1b65561c0c95fb6c07be75af0590"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r01-p04-context-1024/run-1/20261006_223542/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957896,
+        "bytes": 77824,
+        "allocated_bytes": 77824,
+        "mtime_ns": 1791297391424710800,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "dfdce629e00148f133d43d341537e0fcf369e89198c147eeea61313d9d7b9adb",
+      "original_sha256": "dfdce629e00148f133d43d341537e0fcf369e89198c147eeea61313d9d7b9adb"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r01-p04-context-1024/run-1/20261006_223542/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957903,
+        "bytes": 166160,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791297391828713437,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "e15074ab90e11a6bde21bfc94189d955878308032cc4c5bc8571fbea01902426",
+      "original_sha256": "e15074ab90e11a6bde21bfc94189d955878308032cc4c5bc8571fbea01902426"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r01-p05-context-45056/run-1/20261006_223634/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957919,
+        "bytes": 290816,
+        "allocated_bytes": 290816,
+        "mtime_ns": 1791297653294313751,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "fdef6709c968320a3818670899181ade5275de9a938a6d2e8bf3a0c20592ee95",
+      "original_sha256": "fdef6709c968320a3818670899181ade5275de9a938a6d2e8bf3a0c20592ee95"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r01-p05-context-45056/run-1/20261006_223634/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957926,
+        "bytes": 166224,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791297653698316086,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "63730e302436d244171b9274309b907e2411ed0027ffe0e2ae45f192c01d78a4",
+      "original_sha256": "63730e302436d244171b9274309b907e2411ed0027ffe0e2ae45f192c01d78a4"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r01-p06-context-4096/run-1/20261006_224056/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957942,
+        "bytes": 94208,
+        "allocated_bytes": 94208,
+        "mtime_ns": 1791297724450719565,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "8205a064f30cc3fa28fc2535bc92751d0b39ee9731ab5235441162fd6534c450",
+      "original_sha256": "8205a064f30cc3fa28fc2535bc92751d0b39ee9731ab5235441162fd6534c450"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r01-p06-context-4096/run-1/20261006_224056/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957949,
+        "bytes": 166126,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791297724838721750,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "5a5333cfa5a3d2513568fcdf0d81cd910e1da483d53eef89032c6c19462c5958",
+      "original_sha256": "5a5333cfa5a3d2513568fcdf0d81cd910e1da483d53eef89032c6c19462c5958"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r01-p07-context-8192/run-1/20261006_224207/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957965,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791297809347191174,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "c81d904189d864483ace450a48e331b376085c7ba8db2f4cffa5a061d0713358",
+      "original_sha256": "c81d904189d864483ace450a48e331b376085c7ba8db2f4cffa5a061d0713358"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r01-p07-context-8192/run-1/20261006_224207/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957972,
+        "bytes": 166182,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791297809727193257,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "c5de020eeed35d66fd10d1194a8a099969d3682e700b43ff64470d12a871b212",
+      "original_sha256": "c5de020eeed35d66fd10d1194a8a099969d3682e700b43ff64470d12a871b212"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r02-p01-context-16385/run-1/20261006_224332/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3957988,
+        "bytes": 151552,
+        "allocated_bytes": 151552,
+        "mtime_ns": 1791297927314722916,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "d2842cad035f0bfa668aba2255721540d600ea10716e3b9771193e08aae98f00",
+      "original_sha256": "d2842cad035f0bfa668aba2255721540d600ea10716e3b9771193e08aae98f00"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r02-p01-context-16385/run-1/20261006_224332/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3957995,
+        "bytes": 166226,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791297927722719473,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "b53aa7d0d875d90bd6919cc94a51bd330a11f98b56a504327fa4ebfa6479a678",
+      "original_sha256": "b53aa7d0d875d90bd6919cc94a51bd330a11f98b56a504327fa4ebfa6479a678"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r02-p02-context-8192/run-1/20261006_224530/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958011,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791298012026079157,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "ae15b2e445c5ada96146bb27f86f651d6045988f3d2be58b20bc7eea4d8dba3d",
+      "original_sha256": "ae15b2e445c5ada96146bb27f86f651d6045988f3d2be58b20bc7eea4d8dba3d"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r02-p02-context-8192/run-1/20261006_224530/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958018,
+        "bytes": 166184,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791298012422076467,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "8eeca984018a3ee719a0666b1678b9ff9075040d635437ee574c8e434081d438",
+      "original_sha256": "8eeca984018a3ee719a0666b1678b9ff9075040d635437ee574c8e434081d438"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r02-p03-context-8193/run-1/20261006_224655/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958034,
+        "bytes": 110592,
+        "allocated_bytes": 110592,
+        "mtime_ns": 1791298093361581990,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "8b5b86689454eb1b2a957be24cac3f9addddbeea51390bfc090d78ba79f9e0f3",
+      "original_sha256": "8b5b86689454eb1b2a957be24cac3f9addddbeea51390bfc090d78ba79f9e0f3"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r02-p03-context-8193/run-1/20261006_224655/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958041,
+        "bytes": 166181,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791298093781579697,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "c8b41e1ac9fdbe5486767a0f865b6591b894214995b61c8c7358731442837547",
+      "original_sha256": "c8b41e1ac9fdbe5486767a0f865b6591b894214995b61c8c7358731442837547"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r02-p04-context-1024/run-1/20261006_224816/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958057,
+        "bytes": 77824,
+        "allocated_bytes": 77824,
+        "mtime_ns": 1791298146277313651,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "98da7427afd6d61eecf46687369d8a228e58d65972a93c330a23a9f902591c8f",
+      "original_sha256": "98da7427afd6d61eecf46687369d8a228e58d65972a93c330a23a9f902591c8f"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r02-p04-context-1024/run-1/20261006_224816/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958064,
+        "bytes": 166161,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791298146681311756,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "66dd40fc794e0c17056540627a60d3a3a375844e13a866e8437b3c908b9b89af",
+      "original_sha256": "66dd40fc794e0c17056540627a60d3a3a375844e13a866e8437b3c908b9b89af"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r02-p05-context-45056/run-1/20261006_224909/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958080,
+        "bytes": 290816,
+        "allocated_bytes": 290816,
+        "mtime_ns": 1791298410328479285,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "ef381eeccd58c901eb2471c4e9b324ef6beab1b77ac6a31285d563580a7b1d7f",
+      "original_sha256": "ef381eeccd58c901eb2471c4e9b324ef6beab1b77ac6a31285d563580a7b1d7f"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r02-p05-context-45056/run-1/20261006_224909/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958087,
+        "bytes": 166241,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791298410744478509,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "71a32c630254d5dda90566227a9d99d91675390542fdc24a60cd4b89d9f7fea4",
+      "original_sha256": "71a32c630254d5dda90566227a9d99d91675390542fdc24a60cd4b89d9f7fea4"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r02-p06-context-4096/run-1/20261006_225333/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958103,
+        "bytes": 94208,
+        "allocated_bytes": 94208,
+        "mtime_ns": 1791298482220365275,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "d034c80ad50b198ecf1031bae799b4f3c18ab5d88471edaf8acfbd53b17c83de",
+      "original_sha256": "d034c80ad50b198ecf1031bae799b4f3c18ab5d88471edaf8acfbd53b17c83de"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r02-p06-context-4096/run-1/20261006_225333/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958110,
+        "bytes": 166134,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791298482612364759,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "e9482dc6b8bd24718c11989fc63bc273b9ed289aa31b08b5bbc793262a5ddea6",
+      "original_sha256": "e9482dc6b8bd24718c11989fc63bc273b9ed289aa31b08b5bbc793262a5ddea6"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r02-p07-context-8192/run-1/20261006_225445/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958126,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791298567432277421,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "aae97af40688bea49e4b76cd5e02a76bbd0aeaac94bbd24a59368fcd44fd4f83",
+      "original_sha256": "aae97af40688bea49e4b76cd5e02a76bbd0aeaac94bbd24a59368fcd44fd4f83"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r02-p07-context-8192/run-1/20261006_225445/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958133,
+        "bytes": 166104,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791298567848277105,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "e07137ed15a07ee71c6c287ebf51033c888756dcebf3e9ac8ccc651a4e5155b3",
+      "original_sha256": "e07137ed15a07ee71c6c287ebf51033c888756dcebf3e9ac8ccc651a4e5155b3"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r03-p01-context-16385/run-1/20261006_225610/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958149,
+        "bytes": 151552,
+        "allocated_bytes": 151552,
+        "mtime_ns": 1791298685584226625,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "f2f0f247ee245252f85cb8a70f4ccebfaab54e1cce4ba115fd48e9d32dfbecd0",
+      "original_sha256": "f2f0f247ee245252f85cb8a70f4ccebfaab54e1cce4ba115fd48e9d32dfbecd0"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r03-p01-context-16385/run-1/20261006_225610/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958156,
+        "bytes": 166195,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791298685988226574,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "c2ba2e0396242ec490a86ea78bd41bf59794027caa1b5d48e47fd51f80f2ce39",
+      "original_sha256": "c2ba2e0396242ec490a86ea78bd41bf59794027caa1b5d48e47fd51f80f2ce39"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r03-p02-context-8192/run-1/20261006_225809/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958172,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791298770632232389,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "79cb6b5f0b4f9d1191d58edc89f196ddd0b3ae44b40cf2cb1b7e9e09f8c59329",
+      "original_sha256": "79cb6b5f0b4f9d1191d58edc89f196ddd0b3ae44b40cf2cb1b7e9e09f8c59329"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r03-p02-context-8192/run-1/20261006_225809/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958179,
+        "bytes": 166184,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791298771056232495,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "780a60bb83adad82cca30471791a9be52442f5f849fa2ab39507a0d9d7863f2d",
+      "original_sha256": "780a60bb83adad82cca30471791a9be52442f5f849fa2ab39507a0d9d7863f2d"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r03-p03-context-8193/run-1/20261006_225934/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958195,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791298852060265458,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "7066474bf8a71882ff4708a7c023c3bae15e869ec16e4126f739726f38015451",
+      "original_sha256": "7066474bf8a71882ff4708a7c023c3bae15e869ec16e4126f739726f38015451"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r03-p03-context-8193/run-1/20261006_225934/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958202,
+        "bytes": 166178,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791298852468265685,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "e9628c55b7b34ab7f56f2a7c1a01126c8a432d59b63f4573818b667783681f56",
+      "original_sha256": "e9628c55b7b34ab7f56f2a7c1a01126c8a432d59b63f4573818b667783681f56"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r03-p04-context-1024/run-1/20261006_230055/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958218,
+        "bytes": 77824,
+        "allocated_bytes": 77824,
+        "mtime_ns": 1791298904924299425,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "89fa5fede0a3fc37b597c34f4470511e508ea807d1509283f70c7a486ea9f207",
+      "original_sha256": "89fa5fede0a3fc37b597c34f4470511e508ea807d1509283f70c7a486ea9f207"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r03-p04-context-1024/run-1/20261006_230055/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958225,
+        "bytes": 166157,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791298905336299725,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "b8213597a042a80d206545594e9d4f207fae970a4ece5f0dc2c5baf5a9ec9e9f",
+      "original_sha256": "b8213597a042a80d206545594e9d4f207fae970a4ece5f0dc2c5baf5a9ec9e9f"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r03-p05-context-45056/run-1/20261006_230148/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958241,
+        "bytes": 290816,
+        "allocated_bytes": 290816,
+        "mtime_ns": 1791299168024582266,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "ccdb2529bf3a507a3aa2e30f93eb389d27a4db29360c6a0687ddb2e0df8ee956",
+      "original_sha256": "ccdb2529bf3a507a3aa2e30f93eb389d27a4db29360c6a0687ddb2e0df8ee956"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r03-p05-context-45056/run-1/20261006_230148/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958248,
+        "bytes": 166204,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791299168408582791,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "c9d4d91ba063b78b52c969b5bc1dcfb5e19e6cc53a0cae37c617aeb2f9913eeb",
+      "original_sha256": "c9d4d91ba063b78b52c969b5bc1dcfb5e19e6cc53a0cae37c617aeb2f9913eeb"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r03-p06-context-4096/run-1/20261006_230611/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958264,
+        "bytes": 94208,
+        "allocated_bytes": 94208,
+        "mtime_ns": 1791299239464684513,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "c33e39293447819c107e5656d143223af5acd9a4fa8d2c0fea0632b262c06c39",
+      "original_sha256": "c33e39293447819c107e5656d143223af5acd9a4fa8d2c0fea0632b262c06c39"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r03-p06-context-4096/run-1/20261006_230611/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958271,
+        "bytes": 166168,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791299239864685109,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "a1eb8eff500540b3b8bfb897f9fff8cf3b4a49765358fe86de6d23162e25a9a5",
+      "original_sha256": "a1eb8eff500540b3b8bfb897f9fff8cf3b4a49765358fe86de6d23162e25a9a5"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r03-p07-context-8192/run-1/20261006_230722/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958287,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791299324368816695,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "e5b41f199b50ccfe47a794153208ee81051ef76aeb796e2bc4687022f0523f76",
+      "original_sha256": "e5b41f199b50ccfe47a794153208ee81051ef76aeb796e2bc4687022f0523f76"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r03-p07-context-8192/run-1/20261006_230722/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958294,
+        "bytes": 166184,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791299324784817369,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "528abf91ca5166191e6f08c5d6c95c41d48a963762dd9cb0649db98fdcaa6a6e",
+      "original_sha256": "528abf91ca5166191e6f08c5d6c95c41d48a963762dd9cb0649db98fdcaa6a6e"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r01-p01-context-16385/run-1/20261006_230944/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958397,
+        "bytes": 151552,
+        "allocated_bytes": 151552,
+        "mtime_ns": 1791299497653115574,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "edcab3f3b437452fa0ebac65ff577e58716871988e9058c996dc477316b22d1a",
+      "original_sha256": "edcab3f3b437452fa0ebac65ff577e58716871988e9058c996dc477316b22d1a"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r01-p01-context-16385/run-1/20261006_230944/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958404,
+        "bytes": 166215,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791299498033116265,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "d18825ccc53d82ccc13bbd2cc9bef7041dc5400e9a39247855056cd48de80ba2",
+      "original_sha256": "d18825ccc53d82ccc13bbd2cc9bef7041dc5400e9a39247855056cd48de80ba2"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r01-p02-context-8192/run-1/20261006_231141/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958421,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791299582521273349,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "98fdd1233b65c3582d7a0a7d0399c87dba2c53f75513e2ad9b95dcd37682b5c4",
+      "original_sha256": "98fdd1233b65c3582d7a0a7d0399c87dba2c53f75513e2ad9b95dcd37682b5c4"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r01-p02-context-8192/run-1/20261006_231141/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958428,
+        "bytes": 166184,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791299582925274116,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "330ed19cbcab6599986bf01899993951e9d2ba8df74737ad6e3051da7f663d84",
+      "original_sha256": "330ed19cbcab6599986bf01899993951e9d2ba8df74737ad6e3051da7f663d84"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r01-p03-context-8193/run-1/20261006_231306/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958444,
+        "bytes": 110592,
+        "allocated_bytes": 110592,
+        "mtime_ns": 1791299663569429615,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "1b181d48232fbf8a769bb92d4c268f356d316132e5fc8be0cf9ef5f25fdf1fb1",
+      "original_sha256": "1b181d48232fbf8a769bb92d4c268f356d316132e5fc8be0cf9ef5f25fdf1fb1"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r01-p03-context-8193/run-1/20261006_231306/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958451,
+        "bytes": 166145,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791299663969430399,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "74e78022fc17a9410a33ac06c0ca324f68bc1be00b308ca19d069fb59307cad5",
+      "original_sha256": "74e78022fc17a9410a33ac06c0ca324f68bc1be00b308ca19d069fb59307cad5"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r01-p04-context-1024/run-1/20261006_231426/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958467,
+        "bytes": 77824,
+        "allocated_bytes": 77824,
+        "mtime_ns": 1791299716185533594,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "27d4cd5c8a436d8df34ab481f6f35a97de7375df3b0268a4228938a91dafe517",
+      "original_sha256": "27d4cd5c8a436d8df34ab481f6f35a97de7375df3b0268a4228938a91dafe517"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r01-p04-context-1024/run-1/20261006_231426/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958474,
+        "bytes": 166171,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791299716581534383,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "8a1fe740ed9ca2a748a29920cde12237b9a2de121ab51df3fb429e6bac8e00f1",
+      "original_sha256": "8a1fe740ed9ca2a748a29920cde12237b9a2de121ab51df3fb429e6bac8e00f1"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r01-p05-context-45056/run-1/20261006_231519/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958490,
+        "bytes": 290816,
+        "allocated_bytes": 290816,
+        "mtime_ns": 1791299978314262137,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "3fad8a5caf6a767b614dafb939a75048ba464ef0abf1679022328ecb2a625aef",
+      "original_sha256": "3fad8a5caf6a767b614dafb939a75048ba464ef0abf1679022328ecb2a625aef"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r01-p05-context-45056/run-1/20261006_231519/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958497,
+        "bytes": 166223,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791299978698263810,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "d721451c3c95cb9d77fa59742e9fdc549f10ea823ba077906b83c76d5317a364",
+      "original_sha256": "d721451c3c95cb9d77fa59742e9fdc549f10ea823ba077906b83c76d5317a364"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r01-p06-context-4096/run-1/20261006_231941/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958513,
+        "bytes": 94208,
+        "allocated_bytes": 94208,
+        "mtime_ns": 1791300049458563695,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "a78d51aa5125551add756a40bceb15e78fc994e7a425430c08e2f94c78c3a7f3",
+      "original_sha256": "a78d51aa5125551add756a40bceb15e78fc994e7a425430c08e2f94c78c3a7f3"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r01-p06-context-4096/run-1/20261006_231941/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958520,
+        "bytes": 166155,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791300049842565279,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "ae3e63cf498af86bc72996e2c3f83039b7122fddd88295ddf5321fde1f35d936",
+      "original_sha256": "ae3e63cf498af86bc72996e2c3f83039b7122fddd88295ddf5321fde1f35d936"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r01-p07-context-8192/run-1/20261006_232052/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958536,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791300133606900732,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "4e4d15efa3299d35a232699ada3a78a987dd45ac5d05c1f4eea0eeba7bc49c35",
+      "original_sha256": "4e4d15efa3299d35a232699ada3a78a987dd45ac5d05c1f4eea0eeba7bc49c35"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r01-p07-context-8192/run-1/20261006_232052/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958543,
+        "bytes": 166181,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791300134010902305,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "e0123890c5e4c0e6493d3f8fd1e9e3db224637d3e66be220befbc03d3860ff4b",
+      "original_sha256": "e0123890c5e4c0e6493d3f8fd1e9e3db224637d3e66be220befbc03d3860ff4b"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r02-p01-context-16385/run-1/20261006_232217/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958559,
+        "bytes": 151552,
+        "allocated_bytes": 151552,
+        "mtime_ns": 1791300251511342967,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "c8dda836d524633da363f5a94ef955932a7872aa5059392a2b6a75925d4adf56",
+      "original_sha256": "c8dda836d524633da363f5a94ef955932a7872aa5059392a2b6a75925d4adf56"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r02-p01-context-16385/run-1/20261006_232217/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958566,
+        "bytes": 166228,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791300251919344445,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "2b36b57d47b41afdb7fc80f8ccc858cb2a9457912bdbb0c06cb581fcbac497b6",
+      "original_sha256": "2b36b57d47b41afdb7fc80f8ccc858cb2a9457912bdbb0c06cb581fcbac497b6"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r02-p02-context-8192/run-1/20261006_232414/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958582,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791300336123642425,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "b820bc9f92946f3e309147cb2bb463e379761cbb7db211e9a057b99ced12e0a8",
+      "original_sha256": "b820bc9f92946f3e309147cb2bb463e379761cbb7db211e9a057b99ced12e0a8"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r02-p02-context-8192/run-1/20261006_232414/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958589,
+        "bytes": 166181,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791300336499643727,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "a4bacd3a47c864105949b1b95e5d02b3e89cc29db1055314adb53c7328a20090",
+      "original_sha256": "a4bacd3a47c864105949b1b95e5d02b3e89cc29db1055314adb53c7328a20090"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r02-p03-context-8193/run-1/20261006_232539/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958605,
+        "bytes": 110592,
+        "allocated_bytes": 110592,
+        "mtime_ns": 1791300416815916432,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "742eb119e4aae1d6939578f95780010fdf826719fa6f56fa3d7154e3eb74cf25",
+      "original_sha256": "742eb119e4aae1d6939578f95780010fdf826719fa6f56fa3d7154e3eb74cf25"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r02-p03-context-8193/run-1/20261006_232539/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958612,
+        "bytes": 166160,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791300417191917685,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "bacaa819392b881def4b95f598e0160459a4da6efca031b0dbc0ceebadd2f14e",
+      "original_sha256": "bacaa819392b881def4b95f598e0160459a4da6efca031b0dbc0ceebadd2f14e"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r02-p04-context-1024/run-1/20261006_232700/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958628,
+        "bytes": 77824,
+        "allocated_bytes": 77824,
+        "mtime_ns": 1791300469536090163,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "46c7f01d3ae703b7c8b5c9aa393c44602eaa0f893652fc0759dbab6de9f9f94a",
+      "original_sha256": "46c7f01d3ae703b7c8b5c9aa393c44602eaa0f893652fc0759dbab6de9f9f94a"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r02-p04-context-1024/run-1/20261006_232700/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958635,
+        "bytes": 166168,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791300469956091532,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "8dadbe07270c951554f085e40f15af0f90bf3fdee548bce37aa05ec9c84e83b3",
+      "original_sha256": "8dadbe07270c951554f085e40f15af0f90bf3fdee548bce37aa05ec9c84e83b3"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r02-p05-context-45056/run-1/20261006_232753/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958651,
+        "bytes": 290816,
+        "allocated_bytes": 290816,
+        "mtime_ns": 1791300731956906498,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "d1abbf02bd06232e1c1a466ba0a793b162686b99a0769c184d80336d8baaf5cf",
+      "original_sha256": "d1abbf02bd06232e1c1a466ba0a793b162686b99a0769c184d80336d8baaf5cf"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r02-p05-context-45056/run-1/20261006_232753/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958658,
+        "bytes": 166195,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791300732336907632,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "cb72e9681223855c6da0760c94b4ad5e15834694e76e931d5ecf6d93a9d9e074",
+      "original_sha256": "cb72e9681223855c6da0760c94b4ad5e15834694e76e931d5ecf6d93a9d9e074"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r02-p06-context-4096/run-1/20261006_233215/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958674,
+        "bytes": 94208,
+        "allocated_bytes": 94208,
+        "mtime_ns": 1791300802829116196,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "8e15049e570c950fe2e1b22db5d139e26085d005f26c9406293b979726af2ac6",
+      "original_sha256": "8e15049e570c950fe2e1b22db5d139e26085d005f26c9406293b979726af2ac6"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r02-p06-context-4096/run-1/20261006_233215/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958681,
+        "bytes": 166159,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791300803233117381,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "89a9fe65b0236d0681eb9eae74ca43ad55d3d4381669a0c88c0a513a5b88ed9b",
+      "original_sha256": "89a9fe65b0236d0681eb9eae74ca43ad55d3d4381669a0c88c0a513a5b88ed9b"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r02-p07-context-8192/run-1/20261006_233326/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3958697,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791300887389361871,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "4fe644962aa8dc4c99470aea0a0ab91ec43cd128e168939ecfd1aa6fa3b1ac44",
+      "original_sha256": "4fe644962aa8dc4c99470aea0a0ab91ec43cd128e168939ecfd1aa6fa3b1ac44"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r02-p07-context-8192/run-1/20261006_233326/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3958704,
+        "bytes": 166182,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791300887793363034,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "b30c9198f921bfb971aa60ebe85c29c911c6fabef3c007027083ed508be3a412",
+      "original_sha256": "b30c9198f921bfb971aa60ebe85c29c911c6fabef3c007027083ed508be3a412"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r03-p01-context-16385/run-1/20261006_233450/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4064949,
+        "bytes": 151552,
+        "allocated_bytes": 151552,
+        "mtime_ns": 1791301005441697945,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "8f3a3a8e66a177b57d6c437f7a63adcdd7277be7b0ad448510e2cf752433c6ed",
+      "original_sha256": "8f3a3a8e66a177b57d6c437f7a63adcdd7277be7b0ad448510e2cf752433c6ed"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r03-p01-context-16385/run-1/20261006_233450/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4064956,
+        "bytes": 166227,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791301005825699027,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "0bda9938b31877be3db844504c56883a8418a8d5f686c61048ba3abc3463cd32",
+      "original_sha256": "0bda9938b31877be3db844504c56883a8418a8d5f686c61048ba3abc3463cd32"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r03-p02-context-8192/run-1/20261006_233648/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4064968,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791301090017934619,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "a2fe1abad6f229d1f21e342b2c5377f6c7d50f582b518cfef6bfe6b79c7005eb",
+      "original_sha256": "a2fe1abad6f229d1f21e342b2c5377f6c7d50f582b518cfef6bfe6b79c7005eb"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r03-p02-context-8192/run-1/20261006_233648/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4064975,
+        "bytes": 166128,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791301090397935675,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "8003c01ac7ac614caf00e4532b94401573efe0d8e4d325a5600bf6039e9c5167",
+      "original_sha256": "8003c01ac7ac614caf00e4532b94401573efe0d8e4d325a5600bf6039e9c5167"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r03-p03-context-8193/run-1/20261006_233813/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4064991,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791301170686157706,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "c6c95822fdf877eef7299b6393263e49d28d7ed65fc311c71cb21fdeb0083692",
+      "original_sha256": "c6c95822fdf877eef7299b6393263e49d28d7ed65fc311c71cb21fdeb0083692"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r03-p03-context-8193/run-1/20261006_233813/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4064998,
+        "bytes": 166166,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791301171066158751,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "30a0707e816c77fd99eb1bd7c7df1716c085924207096a77b28caa710aeb7198",
+      "original_sha256": "30a0707e816c77fd99eb1bd7c7df1716c085924207096a77b28caa710aeb7198"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r03-p04-context-1024/run-1/20261006_233934/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4065014,
+        "bytes": 77824,
+        "allocated_bytes": 77824,
+        "mtime_ns": 1791301223322302061,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "c14007e6d6040410f6e1160b60ea45a03584225c3b463cfd587644437a3217b4",
+      "original_sha256": "c14007e6d6040410f6e1160b60ea45a03584225c3b463cfd587644437a3217b4"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r03-p04-context-1024/run-1/20261006_233934/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4065021,
+        "bytes": 166137,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791301223698303089,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "015b70babbb8a7ea34ba47c0b44562059a76b82bb1ed596831d7db413d45cc1e",
+      "original_sha256": "015b70babbb8a7ea34ba47c0b44562059a76b82bb1ed596831d7db413d45cc1e"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r03-p05-context-45056/run-1/20261006_234026/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4065037,
+        "bytes": 290816,
+        "allocated_bytes": 290816,
+        "mtime_ns": 1791301485599010279,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "9c0844d877f03854ab620f1c762871c01ebcfb710e420345027a9b5c969a32a1",
+      "original_sha256": "9c0844d877f03854ab620f1c762871c01ebcfb710e420345027a9b5c969a32a1"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r03-p05-context-45056/run-1/20261006_234026/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4065044,
+        "bytes": 166218,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791301486011011379,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "3cc417aa547cc1773874f2a48838e326d41f698230bf3d3e7412599addc58534",
+      "original_sha256": "3cc417aa547cc1773874f2a48838e326d41f698230bf3d3e7412599addc58534"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r03-p06-context-4096/run-1/20261006_234449/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4065060,
+        "bytes": 94208,
+        "allocated_bytes": 94208,
+        "mtime_ns": 1791301556871200250,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "25cde3b02de6251bd9ab5b93bf6f1d4f7a852ac0cce05254e576fed2be80f735",
+      "original_sha256": "25cde3b02de6251bd9ab5b93bf6f1d4f7a852ac0cce05254e576fed2be80f735"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r03-p06-context-4096/run-1/20261006_234449/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4065067,
+        "bytes": 166166,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791301557279201336,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "0924013a3d0cd54e89e56170b6d452dcc83b6dd4b29cb26290c793594263703a",
+      "original_sha256": "0924013a3d0cd54e89e56170b6d452dcc83b6dd4b29cb26290c793594263703a"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r03-p07-context-8192/run-1/20261006_234600/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4065083,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791301641507424802,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "6828674d304d704adea6a87699b2f11cf34688c951488179cac902e11dd74e3b",
+      "original_sha256": "6828674d304d704adea6a87699b2f11cf34688c951488179cac902e11dd74e3b"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r03-p07-context-8192/run-1/20261006_234600/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4065090,
+        "bytes": 166182,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791301641915425882,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "ba2ae0c3e27d59bbf6f40d889e7887098119d65ea671c2c99d72eae01626cfd1",
+      "original_sha256": "ba2ae0c3e27d59bbf6f40d889e7887098119d65ea671c2c99d72eae01626cfd1"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r01-p01-context-16385/run-1/20261006_234823/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4065180,
+        "bytes": 151552,
+        "allocated_bytes": 151552,
+        "mtime_ns": 1791301816347885783,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "66ba363c43148525985501a6d70637efeda9e0a3ed0be106b7d6af16a7ce60c1",
+      "original_sha256": "66ba363c43148525985501a6d70637efeda9e0a3ed0be106b7d6af16a7ce60c1"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r01-p01-context-16385/run-1/20261006_234823/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4065187,
+        "bytes": 166200,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791301816755886855,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "3d1646f63014d826282eb88fa79144bd5ce3833854365e1d10dedd888f3dcf54",
+      "original_sha256": "3d1646f63014d826282eb88fa79144bd5ce3833854365e1d10dedd888f3dcf54"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r01-p02-context-8192/run-1/20261006_235019/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4065204,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791301900824107394,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "42cbf4f36bf550294ec35bf9e6c723cce34ae2473048bba659aa68d4c3751cf2",
+      "original_sha256": "42cbf4f36bf550294ec35bf9e6c723cce34ae2473048bba659aa68d4c3751cf2"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r01-p02-context-8192/run-1/20261006_235019/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4065211,
+        "bytes": 166151,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791301901204108389,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "b034d65dcb8a1694bb4b891210ec5d54dd33458aae66e26f4fcd2f9b82bc6b38",
+      "original_sha256": "b034d65dcb8a1694bb4b891210ec5d54dd33458aae66e26f4fcd2f9b82bc6b38"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r01-p03-context-8193/run-1/20261006_235144/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4065227,
+        "bytes": 110592,
+        "allocated_bytes": 110592,
+        "mtime_ns": 1791301981712689936,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "e71f63ab9d447581edec4ca96512a0e3fbc36ac75f95224eff8bddd14d859d5d",
+      "original_sha256": "e71f63ab9d447581edec4ca96512a0e3fbc36ac75f95224eff8bddd14d859d5d"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r01-p03-context-8193/run-1/20261006_235144/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4065234,
+        "bytes": 166155,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791301982088695051,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "56a047463197f9d13cd3133c448159fbdb0ff8d0fd011393fb80ae46a9f02959",
+      "original_sha256": "56a047463197f9d13cd3133c448159fbdb0ff8d0fd011393fb80ae46a9f02959"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r01-p04-context-1024/run-1/20261006_235305/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4065250,
+        "bytes": 77824,
+        "allocated_bytes": 77824,
+        "mtime_ns": 1791302033809375025,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "b2eedd7f9f1d75f4fb0036365d1b6aeb75aed188ebad1aed81fb46ed81ff3d01",
+      "original_sha256": "b2eedd7f9f1d75f4fb0036365d1b6aeb75aed188ebad1aed81fb46ed81ff3d01"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r01-p04-context-1024/run-1/20261006_235305/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4065257,
+        "bytes": 166172,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791302034213380159,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "d10347c7e618d62a5c7db00cf8b957de6d742b28056aca4c8a3e499db59fc742",
+      "original_sha256": "d10347c7e618d62a5c7db00cf8b957de6d742b28056aca4c8a3e499db59fc742"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r01-p05-context-45056/run-1/20261006_235357/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4065273,
+        "bytes": 290816,
+        "allocated_bytes": 290816,
+        "mtime_ns": 1791302295820233065,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "96fa2efc0f1131befce73ffdfc937537c9b89d38e1bcb7c2f8bfaf5c5d3f788b",
+      "original_sha256": "96fa2efc0f1131befce73ffdfc937537c9b89d38e1bcb7c2f8bfaf5c5d3f788b"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r01-p05-context-45056/run-1/20261006_235357/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4065280,
+        "bytes": 166219,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791302296232236931,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "e2bd31d9e068494973ecdcd72bd99d7b2e0a76c4b46068de8a658546b242f106",
+      "original_sha256": "e2bd31d9e068494973ecdcd72bd99d7b2e0a76c4b46068de8a658546b242f106"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r01-p06-context-4096/run-1/20261006_235819/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4065296,
+        "bytes": 94208,
+        "allocated_bytes": 94208,
+        "mtime_ns": 1791302367024877849,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "cc97541dca7b6aa2b1655cb54fffd9af3f9e9997938456d704dfe6dba9966d15",
+      "original_sha256": "cc97541dca7b6aa2b1655cb54fffd9af3f9e9997938456d704dfe6dba9966d15"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r01-p06-context-4096/run-1/20261006_235819/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4065303,
+        "bytes": 166163,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791302367404881168,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "6b4d1564781117b42b24e979f141f11b301a0cf5dd9e37c1c9acfc06d20730eb",
+      "original_sha256": "6b4d1564781117b42b24e979f141f11b301a0cf5dd9e37c1c9acfc06d20730eb"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r01-p07-context-8192/run-1/20261006_235930/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4065319,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791302451493587500,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "daa3e9ea469c241e4c934bedb6fdad08d1dbe40020ed31d55303071ddd721dc7",
+      "original_sha256": "daa3e9ea469c241e4c934bedb6fdad08d1dbe40020ed31d55303071ddd721dc7"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r01-p07-context-8192/run-1/20261006_235930/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4065326,
+        "bytes": 166181,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791302451869590539,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "a47eb07a73025315fca11f858e772d1ce6ac24ebd16d8ca17a5c44a05575138e",
+      "original_sha256": "a47eb07a73025315fca11f858e772d1ce6ac24ebd16d8ca17a5c44a05575138e"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r02-p01-context-16385/run-1/20261007_000054/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4065342,
+        "bytes": 151552,
+        "allocated_bytes": 151552,
+        "mtime_ns": 1791302569210492702,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "1fa0eba972cb6693866afb3cfba7979cb0371fb18fde80062c2bc9ce6c49e427",
+      "original_sha256": "1fa0eba972cb6693866afb3cfba7979cb0371fb18fde80062c2bc9ce6c49e427"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r02-p01-context-16385/run-1/20261007_000054/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4065349,
+        "bytes": 166186,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791302569590495486,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "15fb4afae9074506f42f98cc3ec5dcfcd0c3176647f5f06ec9759bbb863de7eb",
+      "original_sha256": "15fb4afae9074506f42f98cc3ec5dcfcd0c3176647f5f06ec9759bbb863de7eb"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r02-p02-context-8192/run-1/20261007_000252/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4065365,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791302653807093239,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "76b94abd28b646fa882c610949683d22dca3486f652f436232fd5d09d8ba8b21",
+      "original_sha256": "76b94abd28b646fa882c610949683d22dca3486f652f436232fd5d09d8ba8b21"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r02-p02-context-8192/run-1/20261007_000252/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4065372,
+        "bytes": 166183,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791302654183095827,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "3467bc1e0306b78768cfe49450babb0a13400c6ec5c29d5b5dee8f1c8ececacf",
+      "original_sha256": "3467bc1e0306b78768cfe49450babb0a13400c6ec5c29d5b5dee8f1c8ececacf"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r02-p03-context-8193/run-1/20261007_000417/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4065396,
+        "bytes": 110592,
+        "allocated_bytes": 110592,
+        "mtime_ns": 1791302734807635719,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "0d80d7a35d4cc1214e83f985a23e0355becd682b89b18ba0f5fcdf7d34509550",
+      "original_sha256": "0d80d7a35d4cc1214e83f985a23e0355becd682b89b18ba0f5fcdf7d34509550"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r02-p03-context-8193/run-1/20261007_000417/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4065538,
+        "bytes": 166177,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791302735199638275,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "5f4ebe58c642f38545b4ae2e581b01f387ea4ae9e0dfe535bdde410c57e6ef72",
+      "original_sha256": "5f4ebe58c642f38545b4ae2e581b01f387ea4ae9e0dfe535bdde410c57e6ef72"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r02-p04-context-1024/run-1/20261007_000538/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4066482,
+        "bytes": 77824,
+        "allocated_bytes": 77824,
+        "mtime_ns": 1791302787551974131,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "48a2464486b5aad2bd1cd010568fa4c591e0f261d5e8b9b460533f5d3df01362",
+      "original_sha256": "48a2464486b5aad2bd1cd010568fa4c591e0f261d5e8b9b460533f5d3df01362"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r02-p04-context-1024/run-1/20261007_000538/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4066489,
+        "bytes": 166172,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791302787931976531,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "65ccbf119310f93f6913b9512382cca6d966492b69dbf3fc5f4ebcf4964998ce",
+      "original_sha256": "65ccbf119310f93f6913b9512382cca6d966492b69dbf3fc5f4ebcf4964998ce"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r02-p05-context-45056/run-1/20261007_000630/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4066505,
+        "bytes": 290816,
+        "allocated_bytes": 290816,
+        "mtime_ns": 1791303061761587852,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "2971a638535d5259a0333399b484a59d20ed6c84f058563a088bbf39ea5b91de",
+      "original_sha256": "2971a638535d5259a0333399b484a59d20ed6c84f058563a088bbf39ea5b91de"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r02-p05-context-45056/run-1/20261007_000630/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4066512,
+        "bytes": 166198,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791303062169590105,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "14d3e7fef6f542a1714dbe4d234a8ca7491e6399d5e86c15d706e2d8e52b634a",
+      "original_sha256": "14d3e7fef6f542a1714dbe4d234a8ca7491e6399d5e86c15d706e2d8e52b634a"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r02-p06-context-4096/run-1/20261007_001105/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4066528,
+        "bytes": 94208,
+        "allocated_bytes": 94208,
+        "mtime_ns": 1791303133065976565,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "38d8ce8abdb27c153d3537eef4eb2adb22d7fb77e507f0c19bfe26eea0f61a8f",
+      "original_sha256": "38d8ce8abdb27c153d3537eef4eb2adb22d7fb77e507f0c19bfe26eea0f61a8f"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r02-p06-context-4096/run-1/20261007_001105/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4066535,
+        "bytes": 166163,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791303133441978588,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "9bf3386e59a898e31dd662602ce2f72b61b86123132d76e87e51eda5b4e0c001",
+      "original_sha256": "9bf3386e59a898e31dd662602ce2f72b61b86123132d76e87e51eda5b4e0c001"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r02-p07-context-8192/run-1/20261007_001216/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4066551,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791303217542424718,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "b1e75afd1c2e4be8ac0a1f22ab9113c48aa5b924a10700865f3539f454c7e5e4",
+      "original_sha256": "b1e75afd1c2e4be8ac0a1f22ab9113c48aa5b924a10700865f3539f454c7e5e4"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r02-p07-context-8192/run-1/20261007_001216/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4066558,
+        "bytes": 166182,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791303217946426833,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "37e6be6d2d613f126dce03175e8bbf1675f8302925fc715e55041868843050ad",
+      "original_sha256": "37e6be6d2d613f126dce03175e8bbf1675f8302925fc715e55041868843050ad"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r03-p01-context-16385/run-1/20261007_001340/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4066574,
+        "bytes": 151552,
+        "allocated_bytes": 151552,
+        "mtime_ns": 1791303335207030212,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "49d2a9a7df98aab963a59c3f60c6c6da7213d0600019ba18be9012221db5abf5",
+      "original_sha256": "49d2a9a7df98aab963a59c3f60c6c6da7213d0600019ba18be9012221db5abf5"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r03-p01-context-16385/run-1/20261007_001340/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4066581,
+        "bytes": 166214,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791303335611032258,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "0872adc45cf2625a4c9e548b98f193a9ceaec398b9006e0a8185ea60695e0ab0",
+      "original_sha256": "0872adc45cf2625a4c9e548b98f193a9ceaec398b9006e0a8185ea60695e0ab0"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r03-p02-context-8192/run-1/20261007_001538/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4066597,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791303419951455097,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "aacaaa82f3c58a29f572c6a15bdd03598ad1d81b99ccd66ccdb3ea768e5981ed",
+      "original_sha256": "aacaaa82f3c58a29f572c6a15bdd03598ad1d81b99ccd66ccdb3ea768e5981ed"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r03-p02-context-8192/run-1/20261007_001538/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4066604,
+        "bytes": 166188,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791303420363457143,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "64628bb2797bb2b38619031ae71cccc7179b4b82470e4d80ab3845a5b498cb42",
+      "original_sha256": "64628bb2797bb2b38619031ae71cccc7179b4b82470e4d80ab3845a5b498cb42"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r03-p03-context-8193/run-1/20261007_001703/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4066620,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791303500535851898,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "7d721f4f84f47a6779ed4582ef01ee8c4c82df0df4aef21cac0694c62ccd6a82",
+      "original_sha256": "7d721f4f84f47a6779ed4582ef01ee8c4c82df0df4aef21cac0694c62ccd6a82"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r03-p03-context-8193/run-1/20261007_001703/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4066627,
+        "bytes": 166175,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791303500911853734,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "21acc3f43777cebbc3bb6f7a0fa4c685c11262bcccf3390d38b31c0b456d543e",
+      "original_sha256": "21acc3f43777cebbc3bb6f7a0fa4c685c11262bcccf3390d38b31c0b456d543e"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r03-p04-context-1024/run-1/20261007_001823/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4066643,
+        "bytes": 77824,
+        "allocated_bytes": 77824,
+        "mtime_ns": 1791303552844106196,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "d3dcc5bcee409de58b1eaf2ff4472f7d0b63ce250251ee400b6510a70a9ff213",
+      "original_sha256": "d3dcc5bcee409de58b1eaf2ff4472f7d0b63ce250251ee400b6510a70a9ff213"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r03-p04-context-1024/run-1/20261007_001823/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4066650,
+        "bytes": 166171,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791303553224108034,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "9c3b88a174a266572ae58a7cd3dcec6b8fd9d27c62e8a58d17f949a227c08d7f",
+      "original_sha256": "9c3b88a174a266572ae58a7cd3dcec6b8fd9d27c62e8a58d17f949a227c08d7f"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r03-p05-context-45056/run-1/20261007_001916/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4066666,
+        "bytes": 290816,
+        "allocated_bytes": 290816,
+        "mtime_ns": 1791303814657348871,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "769543a3407fb1da0970a4746c8596945f0207641f9473b8a11a0fc35fc63a77",
+      "original_sha256": "769543a3407fb1da0970a4746c8596945f0207641f9473b8a11a0fc35fc63a77"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r03-p05-context-45056/run-1/20261007_001916/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4066673,
+        "bytes": 166193,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791303815037350646,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "f57812544e205353fa53e254cece7b38063e7abbd206e458b5a344ccee84e033",
+      "original_sha256": "f57812544e205353fa53e254cece7b38063e7abbd206e458b5a344ccee84e033"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r03-p06-context-4096/run-1/20261007_002338/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4066689,
+        "bytes": 94208,
+        "allocated_bytes": 94208,
+        "mtime_ns": 1791303885913680311,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "a2cd24a8f10d3007ee5dd32721b08f98f5ef5bb4653161c15a6ff30e28554208",
+      "original_sha256": "a2cd24a8f10d3007ee5dd32721b08f98f5ef5bb4653161c15a6ff30e28554208"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r03-p06-context-4096/run-1/20261007_002338/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4066696,
+        "bytes": 166139,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791303886289682054,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "f225f321198bf316fe776707a2e8c4a1ac6fdeb8b6998ba47eec55554d94c508",
+      "original_sha256": "f225f321198bf316fe776707a2e8c4a1ac6fdeb8b6998ba47eec55554d94c508"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r03-p07-context-8192/run-1/20261007_002449/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4066712,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791303970078068969,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "795650937d27a7ce9e5a03741abc52964042c16a373b41b8e86219a24f1f16c0",
+      "original_sha256": "795650937d27a7ce9e5a03741abc52964042c16a373b41b8e86219a24f1f16c0"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r03-p07-context-8192/run-1/20261007_002449/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4066719,
+        "bytes": 166178,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791303970474070791,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "1baabc28ab669052d5f84b81b65548357dbea978da70341f70269e1092231ccc",
+      "original_sha256": "1baabc28ab669052d5f84b81b65548357dbea978da70341f70269e1092231ccc"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m011-1024-off/http/context-1024/run-1/20261007_002811/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4066787,
+        "bytes": 77824,
+        "allocated_bytes": 77824,
+        "mtime_ns": 1791304141595875909,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "429d16d5ed5629a4477d54eb749c5639d5774a67ed2f9dcc6bf9786bae901db6",
+      "original_sha256": "429d16d5ed5629a4477d54eb749c5639d5774a67ed2f9dcc6bf9786bae901db6"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m011-1024-off/http/context-1024/run-1/20261007_002811/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4066794,
+        "bytes": 166134,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791304141971879965,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "62564155dcb0f9225c7aecc5a89b2d32b1ce22bc7a79326ff815824ae504b6c0",
+      "original_sha256": "62564155dcb0f9225c7aecc5a89b2d32b1ce22bc7a79326ff815824ae504b6c0"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m011-1024-off/http/context-1024/run-2/20261007_002904/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4066808,
+        "bytes": 77824,
+        "allocated_bytes": 77824,
+        "mtime_ns": 1791304191536401717,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "2d687bdc36f836a6bafc077c77b3cdd93a0e486cd349e6549a557d8295be5cd6",
+      "original_sha256": "2d687bdc36f836a6bafc077c77b3cdd93a0e486cd349e6549a557d8295be5cd6"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m011-1024-off/http/context-1024/run-2/20261007_002904/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4066815,
+        "bytes": 166143,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791304191912405582,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "b1f7a5ae570bfcfeb6217ea79cff6e7436ebe9eb5652910923fdc45b67949324",
+      "original_sha256": "b1f7a5ae570bfcfeb6217ea79cff6e7436ebe9eb5652910923fdc45b67949324"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m011-1024-off/http/context-1024/run-3/20261007_002954/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4066826,
+        "bytes": 77824,
+        "allocated_bytes": 77824,
+        "mtime_ns": 1791304240128890081,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "95633dbc300c8ec9d11140935f97fdee9ab573988e71489a0b43f1d1f5030d65",
+      "original_sha256": "95633dbc300c8ec9d11140935f97fdee9ab573988e71489a0b43f1d1f5030d65"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m011-1024-off/http/context-1024/run-3/20261007_002954/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4066833,
+        "bytes": 166114,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791304240504893776,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "b3627d595dc76d3f32e49206dec45fb77dfc713486f372279e182669e012e732",
+      "original_sha256": "b3627d595dc76d3f32e49206dec45fb77dfc713486f372279e182669e012e732"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m012-1024-on/http/context-1024/run-1/20261007_003243/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4066899,
+        "bytes": 77824,
+        "allocated_bytes": 77824,
+        "mtime_ns": 1791304414762486194,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "22b99b8ea95104607185d2eae473caf6f18232beba50e539aed0c3809b60e8d6",
+      "original_sha256": "22b99b8ea95104607185d2eae473caf6f18232beba50e539aed0c3809b60e8d6"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m012-1024-on/http/context-1024/run-1/20261007_003243/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4066906,
+        "bytes": 166132,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791304415178489740,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "46084a950fa2f0e56a0b6f5ce0043efa748099f41a0aac8202b0d5db26d27754",
+      "original_sha256": "46084a950fa2f0e56a0b6f5ce0043efa748099f41a0aac8202b0d5db26d27754"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m012-1024-on/http/context-1024/run-2/20261007_003338/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4066920,
+        "bytes": 77824,
+        "allocated_bytes": 77824,
+        "mtime_ns": 1791304465282909119,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "a38468e30ad513ab1e495c2a776d2f613b9b9d23f9bd16846750fc06723095d6",
+      "original_sha256": "a38468e30ad513ab1e495c2a776d2f613b9b9d23f9bd16846750fc06723095d6"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m012-1024-on/http/context-1024/run-2/20261007_003338/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4066927,
+        "bytes": 166167,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791304465670912310,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "8afaa58b8e1e5145ee7e4ce29e2365bd78e99ea024ec9fade407eacf7de8e523",
+      "original_sha256": "8afaa58b8e1e5145ee7e4ce29e2365bd78e99ea024ec9fade407eacf7de8e523"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m012-1024-on/http/context-1024/run-3/20261007_003428/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4066938,
+        "bytes": 77824,
+        "allocated_bytes": 77824,
+        "mtime_ns": 1791304514407306439,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "223d262a2e3b79d35338036a8b7375cd82c0c107795606160120df915f8537d3",
+      "original_sha256": "223d262a2e3b79d35338036a8b7375cd82c0c107795606160120df915f8537d3"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m012-1024-on/http/context-1024/run-3/20261007_003428/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4066945,
+        "bytes": 166129,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791304514831309812,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "0351f9d6085228c2f4ee3aa907ebec69d5d54e9eafb5f2b1cd073e44207997ad",
+      "original_sha256": "0351f9d6085228c2f4ee3aa907ebec69d5d54e9eafb5f2b1cd073e44207997ad"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m021-4096-on/http/context-4096/run-1/20261007_003814/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067011,
+        "bytes": 94208,
+        "allocated_bytes": 94208,
+        "mtime_ns": 1791304761785139690,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "7be3fe93c729185738baef50dad106045c510af03f09c26557c608d677f1275e",
+      "original_sha256": "7be3fe93c729185738baef50dad106045c510af03f09c26557c608d677f1275e"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m021-4096-on/http/context-4096/run-1/20261007_003814/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067018,
+        "bytes": 166156,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791304762189142496,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "3e0978d6fea7d3b9d87ae0d92e104c2297fbe73837d3f61fdb0517794983c24e",
+      "original_sha256": "3e0978d6fea7d3b9d87ae0d92e104c2297fbe73837d3f61fdb0517794983c24e"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m021-4096-on/http/context-4096/run-2/20261007_003925/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067032,
+        "bytes": 94208,
+        "allocated_bytes": 94208,
+        "mtime_ns": 1791304832377622417,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "5a897c9748ef0fc906a8deb2e74a5c0b4cb9f8cb6b62acfae23cf7d8736494a6",
+      "original_sha256": "5a897c9748ef0fc906a8deb2e74a5c0b4cb9f8cb6b62acfae23cf7d8736494a6"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m021-4096-on/http/context-4096/run-2/20261007_003925/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067039,
+        "bytes": 166171,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791304832785625166,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "785782c94db4d59ba6f723c5d349843da4510a38640e30607f65174734491eb5",
+      "original_sha256": "785782c94db4d59ba6f723c5d349843da4510a38640e30607f65174734491eb5"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m021-4096-on/http/context-4096/run-3/20261007_004035/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067050,
+        "bytes": 94208,
+        "allocated_bytes": 94208,
+        "mtime_ns": 1791304902354087286,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "ad0973d6fa032f7b45fee9292c3d9f034dcdc76ef670b8414516d60ddb51b7c2",
+      "original_sha256": "ad0973d6fa032f7b45fee9292c3d9f034dcdc76ef670b8414516d60ddb51b7c2"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m021-4096-on/http/context-4096/run-3/20261007_004035/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067057,
+        "bytes": 166157,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791304902758089934,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "039455c51db3a0344e018fc734a951f0874de330aa38aab4f87c25b1c3a9b38d",
+      "original_sha256": "039455c51db3a0344e018fc734a951f0874de330aa38aab4f87c25b1c3a9b38d"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m022-4096-off/http/context-4096/run-1/20261007_004320/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067123,
+        "bytes": 94208,
+        "allocated_bytes": 94208,
+        "mtime_ns": 1791305067679141214,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "cdd958f48ea18a270e7e5745cd33eb59ff66e5bfced6f2fcff59d050876ed80a",
+      "original_sha256": "cdd958f48ea18a270e7e5745cd33eb59ff66e5bfced6f2fcff59d050876ed80a"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m022-4096-off/http/context-4096/run-1/20261007_004320/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067130,
+        "bytes": 166162,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791305068051143526,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "9c792bbcedd9648a26db91ce8719edcca1ead073091d8e088118f179f141df75",
+      "original_sha256": "9c792bbcedd9648a26db91ce8719edcca1ead073091d8e088118f179f141df75"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m022-4096-off/http/context-4096/run-2/20261007_004431/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067144,
+        "bytes": 94208,
+        "allocated_bytes": 94208,
+        "mtime_ns": 1791305137623571720,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "7768a7e45e5c01a8d835a0826e86b892190517c83b6c77107727df13f7bded96",
+      "original_sha256": "7768a7e45e5c01a8d835a0826e86b892190517c83b6c77107727df13f7bded96"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m022-4096-off/http/context-4096/run-2/20261007_004431/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067151,
+        "bytes": 166117,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791305138023574159,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "95afcbe24211e6a42cc59777ede9469ea8f81cff1359cbb5daff61812e95d424",
+      "original_sha256": "95afcbe24211e6a42cc59777ede9469ea8f81cff1359cbb5daff61812e95d424"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m022-4096-off/http/context-4096/run-3/20261007_004541/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067162,
+        "bytes": 94208,
+        "allocated_bytes": 94208,
+        "mtime_ns": 1791305207899996744,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "2b3092c6dc930c612dc97c3aa46419c155568f91b2e758dc73085e1e188e8978",
+      "original_sha256": "2b3092c6dc930c612dc97c3aa46419c155568f91b2e758dc73085e1e188e8978"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m022-4096-off/http/context-4096/run-3/20261007_004541/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067169,
+        "bytes": 166166,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791305208279999023,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "221bedb721f17d234d4dc39ca883a36d4d18a793b4c5d57b9da34170bcb18df2",
+      "original_sha256": "221bedb721f17d234d4dc39ca883a36d4d18a793b4c5d57b9da34170bcb18df2"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m031-8192-off/http/context-8192/run-1/20261007_004859/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067235,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791305420317244789,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "d2ad0f7c640ceedd3570c4a9f61265dc04b38e09b7bc1d6a83593e986c0c4200",
+      "original_sha256": "d2ad0f7c640ceedd3570c4a9f61265dc04b38e09b7bc1d6a83593e986c0c4200"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m031-8192-off/http/context-8192/run-1/20261007_004859/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067242,
+        "bytes": 166156,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791305420705247027,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "9b458e5cdf4e6f3d7220eb9fd5d0786cb1a245650a4b07c89fbcf03e54f1379f",
+      "original_sha256": "9b458e5cdf4e6f3d7220eb9fd5d0786cb1a245650a4b07c89fbcf03e54f1379f"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m031-8192-off/http/context-8192/run-2/20261007_005023/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067256,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791305504273726110,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "26e7f1f3cdfd6f862ea8062a58ba9ce49466888e5733ca60635fe49cb8907896",
+      "original_sha256": "26e7f1f3cdfd6f862ea8062a58ba9ce49466888e5733ca60635fe49cb8907896"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m031-8192-off/http/context-8192/run-2/20261007_005023/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067263,
+        "bytes": 166185,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791305504677728412,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "86eee0613dfdb54237fea1c6579f65fec9bd61098ea52f9bcff1250642875bee",
+      "original_sha256": "86eee0613dfdb54237fea1c6579f65fec9bd61098ea52f9bcff1250642875bee"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m031-8192-off/http/context-8192/run-3/20261007_005147/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067274,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791305588206202034,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "f72097fb6d66af4b1a9f724562c4670c7a90c8580e5fdb02ea69df4fcf628852",
+      "original_sha256": "f72097fb6d66af4b1a9f724562c4670c7a90c8580e5fdb02ea69df4fcf628852"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m031-8192-off/http/context-8192/run-3/20261007_005147/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067281,
+        "bytes": 166183,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791305588582204156,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "ffe5efd06f0078a0133fe999c539f3b87dc5566b09a37381ba824ef3487aaa2a",
+      "original_sha256": "ffe5efd06f0078a0133fe999c539f3b87dc5566b09a37381ba824ef3487aaa2a"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m032-8192-on/http/context-8192/run-1/20261007_005431/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067347,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791305751979118448,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "f0d6c9380c271ecc3cc0f6ec40389c3b1802d3b337e3ec3525f767328c50f09e",
+      "original_sha256": "f0d6c9380c271ecc3cc0f6ec40389c3b1802d3b337e3ec3525f767328c50f09e"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m032-8192-on/http/context-8192/run-1/20261007_005431/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067354,
+        "bytes": 166157,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791305752387120713,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "eb9c49ff94ae8b9d208715c7eae0920de1578f0d5a063a267d41e49512d48613",
+      "original_sha256": "eb9c49ff94ae8b9d208715c7eae0920de1578f0d5a063a267d41e49512d48613"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m032-8192-on/http/context-8192/run-2/20261007_005555/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067368,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791305835951583273,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "e56924f983b20dc9722b18e7698e1a6bc0bb3321ce60b0ab7e770e79fa31d754",
+      "original_sha256": "e56924f983b20dc9722b18e7698e1a6bc0bb3321ce60b0ab7e770e79fa31d754"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m032-8192-on/http/context-8192/run-2/20261007_005555/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067375,
+        "bytes": 166185,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791305836351585481,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "e7006909e216211267747cf988977ace1108380e20069b71b3d0621638de5a2f",
+      "original_sha256": "e7006909e216211267747cf988977ace1108380e20069b71b3d0621638de5a2f"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m032-8192-on/http/context-8192/run-3/20261007_005719/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067386,
+        "bytes": 114688,
+        "allocated_bytes": 114688,
+        "mtime_ns": 1791305919956045522,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "310280f5c8768b14e06f829a87b07cef832ee49d479b102ed986f485e1821bcb",
+      "original_sha256": "310280f5c8768b14e06f829a87b07cef832ee49d479b102ed986f485e1821bcb"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m032-8192-on/http/context-8192/run-3/20261007_005719/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067393,
+        "bytes": 166184,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791305920376047828,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "a183caac828daafc56b8835f44a75d7d630367e35e0ea09c40afec71e4ca70c8",
+      "original_sha256": "a183caac828daafc56b8835f44a75d7d630367e35e0ea09c40afec71e4ca70c8"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m041-45056-on/http/context-45056/run-1/20261007_005950/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067459,
+        "bytes": 290816,
+        "allocated_bytes": 290816,
+        "mtime_ns": 1791306246697476075,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "a26151e72fcd6a0846170f34c36168492d54e6d06f4a9e356e558fdde2d3a080",
+      "original_sha256": "a26151e72fcd6a0846170f34c36168492d54e6d06f4a9e356e558fdde2d3a080"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m041-45056-on/http/context-45056/run-1/20261007_005950/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067466,
+        "bytes": 166212,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791306247073471188,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "681b9799a3fc57df3847bae73b84b3967ec24ade39e1b1764357eb581ffc20f8",
+      "original_sha256": "681b9799a3fc57df3847bae73b84b3967ec24ade39e1b1764357eb581ffc20f8"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m041-45056-on/http/context-45056/run-2/20261007_010410/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067480,
+        "bytes": 290816,
+        "allocated_bytes": 290816,
+        "mtime_ns": 1791306508566888454,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "c8668d6409e25055868ce93403b744580b276d30db345faaff28b3e3d522bac8",
+      "original_sha256": "c8668d6409e25055868ce93403b744580b276d30db345faaff28b3e3d522bac8"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m041-45056-on/http/context-45056/run-2/20261007_010410/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067487,
+        "bytes": 166225,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791306508946885698,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "979175276f690b0680fe6db835938091abe319218168338e52bd29d7a3c97e66",
+      "original_sha256": "979175276f690b0680fe6db835938091abe319218168338e52bd29d7a3c97e66"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m041-45056-on/http/context-45056/run-3/20261007_010832/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067498,
+        "bytes": 290816,
+        "allocated_bytes": 290816,
+        "mtime_ns": 1791306771805473321,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "2ef4867e3c1b63501ee556328116f601debf62d303bb2d1185df7140af581e14",
+      "original_sha256": "2ef4867e3c1b63501ee556328116f601debf62d303bb2d1185df7140af581e14"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m041-45056-on/http/context-45056/run-3/20261007_010832/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067505,
+        "bytes": 166243,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791306772233471698,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "f458a1146db036084246c0090b6f48670fabbb2ac8afc54eb19709270bcf8259",
+      "original_sha256": "f458a1146db036084246c0090b6f48670fabbb2ac8afc54eb19709270bcf8259"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m042-45056-off/http/context-45056/run-1/20261007_011400/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067571,
+        "bytes": 290816,
+        "allocated_bytes": 290816,
+        "mtime_ns": 1791307097984672320,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "1a97f7dd0d3e01d9d2ae94b129030098a12de2e12e58c8b45536d9b2a3f4f388",
+      "original_sha256": "1a97f7dd0d3e01d9d2ae94b129030098a12de2e12e58c8b45536d9b2a3f4f388"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m042-45056-off/http/context-45056/run-1/20261007_011400/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067578,
+        "bytes": 166194,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791307098384671772,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "d2eefbe6c6951821a54de2068749932720149a748d88b9e00590ddfa7a9d89e8",
+      "original_sha256": "d2eefbe6c6951821a54de2068749932720149a748d88b9e00590ddfa7a9d89e8"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m042-45056-off/http/context-45056/run-2/20261007_011821/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067592,
+        "bytes": 290816,
+        "allocated_bytes": 290816,
+        "mtime_ns": 1791307360960467145,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "af43690ada5d4c9acc74138595e03cbbd4c86da7a01bff847318074f205604f7",
+      "original_sha256": "af43690ada5d4c9acc74138595e03cbbd4c86da7a01bff847318074f205604f7"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m042-45056-off/http/context-45056/run-2/20261007_011821/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067599,
+        "bytes": 166241,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791307361336467041,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "1c209cef5b2cf05bff26023cbab535ca2856623e73e32fba42d8cbfc1a5c21c2",
+      "original_sha256": "1c209cef5b2cf05bff26023cbab535ca2856623e73e32fba42d8cbfc1a5c21c2"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m042-45056-off/http/context-45056/run-3/20261007_012244/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067610,
+        "bytes": 290816,
+        "allocated_bytes": 290816,
+        "mtime_ns": 1791307623904486366,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "b361e1b02d0b326323b1191e10010dc571a1a974ba87565e07668253a03c55f9",
+      "original_sha256": "b361e1b02d0b326323b1191e10010dc571a1a974ba87565e07668253a03c55f9"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m042-45056-off/http/context-45056/run-3/20261007_012244/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067617,
+        "bytes": 166238,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791307624276486504,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "25ed6254856a03404e2545e31ada913995e2d382f6990831e0d1651b08968591",
+      "original_sha256": "25ed6254856a03404e2545e31ada913995e2d382f6990831e0d1651b08968591"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m051-204800-off/http/context-204800/run-1/20261007_012838/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067683,
+        "bytes": 1052672,
+        "allocated_bytes": 1052672,
+        "mtime_ns": 1791308861480803662,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "9ee502bfdb1115302b5c60ce19be140a1519328f1f6a809d1dbdaee346cc60f5",
+      "original_sha256": "9ee502bfdb1115302b5c60ce19be140a1519328f1f6a809d1dbdaee346cc60f5"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m051-204800-off/http/context-204800/run-1/20261007_012838/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067690,
+        "bytes": 166305,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791308861856807072,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "b537b51b5da46a0ed63ab47ca9756644154db152ebccda5f44464786e4101fc0",
+      "original_sha256": "b537b51b5da46a0ed63ab47ca9756644154db152ebccda5f44464786e4101fc0"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m051-204800-off/http/context-204800/run-2/20261007_014744/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067704,
+        "bytes": 1052672,
+        "allocated_bytes": 1052672,
+        "mtime_ns": 1791310015207819684,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "6c2d8d948204c5456774533268e24c519e48eb0157288fe3a0689e364ef8dae4",
+      "original_sha256": "6c2d8d948204c5456774533268e24c519e48eb0157288fe3a0689e364ef8dae4"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m051-204800-off/http/context-204800/run-2/20261007_014744/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067711,
+        "bytes": 166310,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791310015619821593,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "33a11d48518926072699ec7b676bec41290892d00b10b6223fb7fd93023e51e1",
+      "original_sha256": "33a11d48518926072699ec7b676bec41290892d00b10b6223fb7fd93023e51e1"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m051-204800-off/http/context-204800/run-3/20261007_020658/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067722,
+        "bytes": 1052672,
+        "allocated_bytes": 1052672,
+        "mtime_ns": 1791311160005805396,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "ca79eb168ae0c6bbec388c79504de9ba3dad7e4e720edf896669974b58162eb2",
+      "original_sha256": "ca79eb168ae0c6bbec388c79504de9ba3dad7e4e720edf896669974b58162eb2"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m051-204800-off/http/context-204800/run-3/20261007_020658/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067729,
+        "bytes": 166269,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791311160377809448,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "d9fe4cbcb9e79c140e4d2567c252e9e6abc249c4220976114b70dd1227d1a17d",
+      "original_sha256": "d9fe4cbcb9e79c140e4d2567c252e9e6abc249c4220976114b70dd1227d1a17d"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m052-204800-on/http/context-204800/requests.jsonl",
+      "before": {
+        "device": 66305,
+        "inode": 4067786,
+        "bytes": 2933931,
+        "allocated_bytes": 2936832,
+        "mtime_ns": 1791311224266494375,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "f2816035b1b6671289ce6bd6317569a2adb697c49fce83ff18644db8e28a7f60",
+      "original_sha256": "f2816035b1b6671289ce6bd6317569a2adb697c49fce83ff18644db8e28a7f60"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m052-204800-on/http/context-204800/run-1/20261007_022706/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067795,
+        "bytes": 1052672,
+        "allocated_bytes": 1052672,
+        "mtime_ns": 1791312374666355631,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "5ec5a39114a3d8536bbb4042074fa8eb659bcb8bdf9a28d29cdd5034467fb10e",
+      "original_sha256": "5ec5a39114a3d8536bbb4042074fa8eb659bcb8bdf9a28d29cdd5034467fb10e"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m052-204800-on/http/context-204800/run-1/20261007_022706/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067802,
+        "bytes": 166308,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791312375042347346,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "fd91987911786515508a69d3761edb7703797153483b3893fab37cd310c3e0d0",
+      "original_sha256": "fd91987911786515508a69d3761edb7703797153483b3893fab37cd310c3e0d0"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m052-204800-on/http/context-204800/run-1/requests.jsonl",
+      "before": {
+        "device": 66305,
+        "inode": 4067788,
+        "bytes": 977977,
+        "allocated_bytes": 978944,
+        "mtime_ns": 1791311224266494375,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "832610be5b7b728507ab8234816ccad46879457ef6a01428a251ee73f4de87cb",
+      "original_sha256": "832610be5b7b728507ab8234816ccad46879457ef6a01428a251ee73f4de87cb"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m052-204800-on/http/context-204800/run-2/20261007_024618/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067816,
+        "bytes": 1052672,
+        "allocated_bytes": 1052672,
+        "mtime_ns": 1791313526286682153,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "3eebd4ab41f56cadb9ce5dc01ff7572584f336fcc1d15fbd8f4a33e02f51b7e6",
+      "original_sha256": "3eebd4ab41f56cadb9ce5dc01ff7572584f336fcc1d15fbd8f4a33e02f51b7e6"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m052-204800-on/http/context-204800/run-2/20261007_024618/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067823,
+        "bytes": 166261,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791313526698682478,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "0732586693ca3af5749a94003daebcf37c184f975fe79e23c7042b255885b19a",
+      "original_sha256": "0732586693ca3af5749a94003daebcf37c184f975fe79e23c7042b255885b19a"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m052-204800-on/http/context-204800/run-2/requests.jsonl",
+      "before": {
+        "device": 66305,
+        "inode": 4067809,
+        "bytes": 977977,
+        "allocated_bytes": 978944,
+        "mtime_ns": 1791312375710332658,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "832610be5b7b728507ab8234816ccad46879457ef6a01428a251ee73f4de87cb",
+      "original_sha256": "832610be5b7b728507ab8234816ccad46879457ef6a01428a251ee73f4de87cb"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m052-204800-on/http/context-204800/run-3/20261007_030529/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067834,
+        "bytes": 1052672,
+        "allocated_bytes": 1052672,
+        "mtime_ns": 1791314674785668532,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "8b5af5c5bd27736897a6c46d3baa54b40d794f15fc89141492d9ccba92c47216",
+      "original_sha256": "8b5af5c5bd27736897a6c46d3baa54b40d794f15fc89141492d9ccba92c47216"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m052-204800-on/http/context-204800/run-3/20261007_030529/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067841,
+        "bytes": 166310,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791314675161674794,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "bcecba2bc9aa79406c4775c6139fed09e00162e74b0ffc8e375ee6515393452a",
+      "original_sha256": "bcecba2bc9aa79406c4775c6139fed09e00162e74b0ffc8e375ee6515393452a"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m052-204800-on/http/context-204800/run-3/requests.jsonl",
+      "before": {
+        "device": 66305,
+        "inode": 4067827,
+        "bytes": 977977,
+        "allocated_bytes": 978944,
+        "mtime_ns": 1791313527370683009,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "832610be5b7b728507ab8234816ccad46879457ef6a01428a251ee73f4de87cb",
+      "original_sha256": "832610be5b7b728507ab8234816ccad46879457ef6a01428a251ee73f4de87cb"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m052-204800-on/http/inputs/context-204800.jsonl",
+      "before": {
+        "device": 66305,
+        "inode": 4067774,
+        "bytes": 2933931,
+        "allocated_bytes": 2936832,
+        "mtime_ns": 1791311203250271420,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "f2816035b1b6671289ce6bd6317569a2adb697c49fce83ff18644db8e28a7f60",
+      "original_sha256": "f2816035b1b6671289ce6bd6317569a2adb697c49fce83ff18644db8e28a7f60"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m061-261887-on/http/context-261887/run-1/20261007_032600/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067907,
+        "bytes": 1323008,
+        "allocated_bytes": 1323008,
+        "mtime_ns": 1791316240249860846,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "18d563dc007fdda81947ff71d70108b0f364326045a197a28112f85b5e938380",
+      "original_sha256": "18d563dc007fdda81947ff71d70108b0f364326045a197a28112f85b5e938380"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m061-261887-on/http/context-261887/run-1/20261007_032600/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067914,
+        "bytes": 166293,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791316240621863792,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "2d9c19b12508a56ac201c226d75f55087cc7d0ff8efaef569d7c1b4bb44cd945",
+      "original_sha256": "2d9c19b12508a56ac201c226d75f55087cc7d0ff8efaef569d7c1b4bb44cd945"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m061-261887-on/http/context-261887/run-1/requests.jsonl",
+      "before": {
+        "device": 66305,
+        "inode": 4067900,
+        "bytes": 1249575,
+        "allocated_bytes": 1253376,
+        "mtime_ns": 1791314757710991314,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "b4052fd5fca661951016ff4889662ffd2de383544215ef40b6ec77b637412048",
+      "original_sha256": "b4052fd5fca661951016ff4889662ffd2de383544215ef40b6ec77b637412048"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m061-261887-on/http/context-261887/run-2/20261007_035043/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067928,
+        "bytes": 1323008,
+        "allocated_bytes": 1323008,
+        "mtime_ns": 1791317726704381223,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "76f2f5fec5dda3dcb9440be92bcfc149e6cdb3429005363a7345ddab82e1808a",
+      "original_sha256": "76f2f5fec5dda3dcb9440be92bcfc149e6cdb3429005363a7345ddab82e1808a"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m061-261887-on/http/context-261887/run-2/20261007_035043/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067935,
+        "bytes": 166290,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791317727084382725,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "4ba78fee151b096d007f1925b167b7198ffc66d40dc3865d5eb9460868ba034a",
+      "original_sha256": "4ba78fee151b096d007f1925b167b7198ffc66d40dc3865d5eb9460868ba034a"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m061-261887-on/http/context-261887/run-2/requests.jsonl",
+      "before": {
+        "device": 66305,
+        "inode": 4067921,
+        "bytes": 1249575,
+        "allocated_bytes": 1253376,
+        "mtime_ns": 1791316241285869050,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "b4052fd5fca661951016ff4889662ffd2de383544215ef40b6ec77b637412048",
+      "original_sha256": "b4052fd5fca661951016ff4889662ffd2de383544215ef40b6ec77b637412048"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m061-261887-on/http/context-261887/run-3/20261007_041530/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 4067946,
+        "bytes": 1323008,
+        "allocated_bytes": 1323008,
+        "mtime_ns": 1791319206677977006,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "e1fb21cbd11e743481c5d8ab093d9c344c1fb7e858dac0e5ae4dfb51afae8d40",
+      "original_sha256": "e1fb21cbd11e743481c5d8ab093d9c344c1fb7e858dac0e5ae4dfb51afae8d40"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m061-261887-on/http/context-261887/run-3/20261007_041530/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 4067953,
+        "bytes": 166321,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791319207045980395,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "d3f45179eac51ff740da894d3b3f061fccf0e1de269f98a6c4d57ce5ad10b76e",
+      "original_sha256": "d3f45179eac51ff740da894d3b3f061fccf0e1de269f98a6c4d57ce5ad10b76e"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m061-261887-on/http/context-261887/run-3/requests.jsonl",
+      "before": {
+        "device": 66305,
+        "inode": 4067939,
+        "bytes": 1249575,
+        "allocated_bytes": 1253376,
+        "mtime_ns": 1791317727768385430,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "b4052fd5fca661951016ff4889662ffd2de383544215ef40b6ec77b637412048",
+      "original_sha256": "b4052fd5fca661951016ff4889662ffd2de383544215ef40b6ec77b637412048"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/m061-261887-on/http/inputs/context-261887.jsonl",
+      "before": {
+        "device": 66305,
+        "inode": 4067886,
+        "bytes": 3748725,
+        "allocated_bytes": 3751936,
+        "mtime_ns": 1791314736682666500,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "4a86589756c478e1bb79d902297523fbf57624892507b9759c123d5088838a42",
+      "original_sha256": "4a86589756c478e1bb79d902297523fbf57624892507b9759c123d5088838a42"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/http/quality/20261006_213508/qwen3.8-flash-next/parallel_1_number_11/benchmark_data.db",
+      "before": {
+        "device": 66305,
+        "inode": 3956958,
+        "bytes": 1253376,
+        "allocated_bytes": 1253376,
+        "mtime_ns": 1791294562028193754,
+        "mode": 420,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "f69c31f0b5f640769f457bd968d7835759bcdcdb1cb1626ef9bb4067be56059e",
+      "original_sha256": "f69c31f0b5f640769f457bd968d7835759bcdcdb1cb1626ef9bb4067be56059e"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/http/quality/20261006_213508/qwen3.8-flash-next/perf_report.html",
+      "before": {
+        "device": 66305,
+        "inode": 3956967,
+        "bytes": 167413,
+        "allocated_bytes": 167936,
+        "mtime_ns": 1791294562816192294,
+        "mode": 436,
+        "nlink": 1
+      },
+      "recorded_original_sha256": "0af9a844b2ca24a90fdcd8d7ddf82ff965faacd0fd1e466dea4480b573371f29",
+      "original_sha256": "0af9a844b2ca24a90fdcd8d7ddf82ff965faacd0fd1e466dea4480b573371f29"
+    }
+  ],
+  "free_before": 1048375296,
+  "ledger_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/CONTINUE.json": "eefadeb8f8e3a6b9a220f887e7f668b39a95167d143ef4465222b2f625e515f9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/archive-checklist.json": "a7a6e8a65a3f148fa1012a3246efb4e7ab88a9057bd82e79f710786d8993e7ea",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/archive-handoff.json": "07a9a426f22a237db5d79e0cc6e2e30a85395c13b9a7b6c9d67c7ba1c573aeef",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/archive-reserve-extension.json": "efd7480e15f99341b3aed4f406e4cb60abf67b2e2f3b9379a055b2c23ca98b3e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/archive-storage-extension.json": "0aece76bc138d0cf5b3ac0a400f3064abc776100add3288cbd25ee057e858620",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/audit-interface-static-review.json": "2e5dc1b6bb7736cd79bc9bbccf61a9db88337a9c0cadb129f8e1357d49f720ec",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/audit-static-handoff.json": "4f30c904ad2699b11102d3d09897a0ea9663c647c6cac2fa7695837eb5cc64ad",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/build-01-exit.json": "c916a3519ffb4d2f9154ed298e81dcc42417ac920f4d14b6c917b9a8cd06da0f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/build-01-start.json": "837d0ad027f387422da14424eae31997d48bae7f1403e324cf1089690ef869ea",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/build-identity.json": "b8b7e6fb1490fbbf55ab963f3f74514c7fb913c40a2036b7dba21386ae8dfb6f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-source-identity.json": "a30ea929b53e4ebe220ac25ac50332e85171e58247ac115cc10047d24985e1e6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/comparison-handoff.json": "c92d412c731cb6456a79fa7a428ebc58865861a195885750b01a27108f1bc5ca",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/configure-01-exit.json": "1f983bd6d4bdd0eda41439a545581c59aa2eb270685c58bd6a510b58580501b1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/configure-01-start.json": "8cdcfc15fb1f1c0dc0d388a394be5f2c7cbedc2baae2f5bec6efeb62da0cc98f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/delivery-tools-static-findings.json": "4171f4f00db872cce1941e62098d77a9d7480ce496856d9096e3fc4fdd3cd40b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/delivery-tools-static-review.json": "a6ca57ef945658917ea75706222ebed180260a41682db2f800a53c1f9b8c372a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/dependency-admission.json": "86e55db98d637a99c108ff283db8b3994feeb30e9201612f0587ab9374c5765a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/entry.json": "ce67e9a6cbfea246bb511dd635fb18fd39d60fd09ef0589739ff69db8f4aaeea",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/execution-admission.json": "79b18899aae41bc4dcde1706249dc87fb39037159f888afb8f789aaa3f6c285c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/execution-plan.json": "5e9f1627c85cd21a7467caed538fb80bc88cedb534f59fed6c094a922be8537e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/execution-static-review.json": "758cc5480f485bed1b83c736396e631eded64dbbfbf23f1eb397db2a6a0a73f5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/final-protection-preparation.json": "778fa5dbc8d031bfb6ca62dd6e3b137cfddcaa07c884cbb2d8594e6cd6fbfd65",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/first-test-admission.json": "fd088eae585d3d1b7849130f65dc7f5292d55efbf828fe1d1438bc7ed18162b7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/freeze-01-exit.json": "dfdff04512c2db0076e3ad589ef627c0b5a75ed83e864ae1c70a0feddbe41c57",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/freeze-01-start.json": "b37d445fee90622a60fbfd2d9be5ee77a8b4ae6598345b7271f232c1bbe16253",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-audit-exit.json": "424d55a26d796e20a4fd59b6f63610e4fb3d6af566e5c03f9939ceba35783903",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-audit-start.json": "d78e3979a1744d82ea9b935a00a385129288a06d8f79b79deb27431a123d5824",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-command.json": "9b3d996782b97b39f09ff1435aeb699805cfac2aa4c21b2027d436b84c39ee4d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-controller-exit.json": "d2e5eab6fcb51d313d419691263afa9e8dd7ca093075ed5ce08f33e1aba58005",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-controller-start.json": "46ea738a50ebc37b747ef1d1c52b0fc8af8b1a4bb7602ba0d8f81202f00105d9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-decision.json": "679659d72411e95ccca6d4b082f8664a87f491a47824940ec33c96e232647655",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-stage.json": "5f0f68bad798eec7825493187718f8cbbe9c50c3dcd688bf4b6bfb5b66f35833",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-audit-exit.json": "f702db25c37bf688962a1041d32ffdb8a9663cb98112c2310cd34bfa18188823",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-audit-start.json": "63af18f3dd2138229faa88acd983cf28f6b16409dd5e72b478a1dc7dec2e156c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-command.json": "b191b952c3166bd7896592a342e9849dc709eca4945e2442f517b5e6618b8f18",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-controller-exit.json": "6d8fd3d627113102da2537d00c6e0a70c38d46e1ddc1017c4769fa27e00b3fcd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-controller-start.json": "36eb449b94118119ff3249c42e316754cc403a34dfa032a01645ba910e852bed",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-decision.json": "6324fe6b8c9ddedcaabe2d3ac34e8a0d4d608be369297ab16d3fc7cc7fd84f0b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-stage.json": "47ff75dd2514a1eace53485dd9977d07d8b41bdf41a61424f2b2b7950181962f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-audit-exit.json": "bec99b8bdbefdb3e998e8247517d098590ae1cd65894457d23a4e70d56c0778c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-audit-start.json": "0e7015921cb76792bc1eabab48805af81b0c1630fbe644292b75162104b106d6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-command.json": "781384800291e757b76ed1e324c012cf415ed99c0f38b40811014018b72e5e08",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-controller-exit.json": "519f2dc241937d6e3be28590fb761e3026ccbc79c9dcbd66284527b23d5d41bb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-controller-start.json": "29110395ec83c89672e93ce90247588c188b839c7695cb0a90f4a7428f3a3688",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-decision.json": "75875225b055df743a288870d2d92684d5d8929f77d61905ddb652ed96195b21",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-stage.json": "1d0db6ad768eecc73df7893eae5487cab36c0cb38ca800f43560d9ab2b47ccc0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-audit-exit.json": "d55e4bc91417182d0293592e87eb89af726dd4cf79fd4c28556340c3e249a908",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-audit-start.json": "9a9a890ee42df43f8c37f916220ec6a4be6fc48aae07bc13716eb5f1ae8ea6d8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-command.json": "c8246fe3708ab2a24ef9baf4d6fa3c22b539401e3cbc93e1a0b8ab68b81e00c0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-controller-exit.json": "f785b4191b7ae94be5bd614ec796464009a990264aad56ea8aa84be652a0b147",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-controller-start.json": "a4045ed3586be7b341ed59d022912991e48a5f1b120ca07cfd06b2d59eeecdd5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-decision.json": "bb31e31410e85da092c476b7d138cece49a4acb5dca59cecb2b85412b3b88f00",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-stage.json": "46bf2e46b0156d84250212829cedd6dcc0d015b9952ea0a23281f34914166983",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/harness-static-review.json": "d3d5c328d50abfdb41d51866aeb8737c966e899e38c8be6c67ba550e82f74baf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/history-comparison-exit.json": "c541b5e6dc9ce1544e824d0ff4ac65121cd96b06997c4045aa29829db061eb61",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/history-comparison-start.json": "6eeecbc0f2f43e7169f65e1df43faaa15dc26d3d3b5e672efb8fa9e9639a4e4e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/history-decision.json": "aa721c6a4a57641e7bb5a57ccdae135fdeb9e596e8681bd1456656c34187c144",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-decision.json": "5ad41a68417e225ec1d6104a82f3618616ee8202c055d835c570b54951cb65ac",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/host-first-attempt.json": "5ad41a68417e225ec1d6104a82f3618616ee8202c055d835c570b54951cb65ac",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/independent-review-plan.json": "da5efa259ecabd536cfed1f1b34b1a5700f40d6671295bed1c533462f7e12d83",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m011-1024-off-audit-exit.json": "1bd3c045e2f10a607cbc2f4128292c2305c86922cafb2d90251908c499a36dc4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m011-1024-off-audit-start.json": "9d8a9890e46653c864a37f66d52a4d58a43231e8234845f22f4b64eb27529e66",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m011-1024-off-command.json": "e49955d560095335d1e6b0810a22eb22b81201804640c144101eb36c3b992f80",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m011-1024-off-controller-exit.json": "584a873d45e2f401803762bbeb7f58d11d37c112c0286a7e5e7db026c55fdee1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m011-1024-off-controller-start.json": "603e47142629c461a374d053a8308909b32650e757291ede948fcb0ae1342782",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m011-1024-off-decision.json": "d12e99c19e7c71611262dea80c7b96683260d18dc2ab3e5ccf3c61a639eb17ff",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m011-1024-off-stage.json": "3d173e66f1775299fe50d55623480239f794b4acf3369d3fb073128c0cdb0ec2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m012-1024-on-audit-exit.json": "3d5cfcb20295a1ccd2185bc521993ecbc5c22e801a190b3bf36989a0d36f8b2e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m012-1024-on-audit-start.json": "bf77418df3d2dae95ab6116fb9a500cd1762353ce38869c5de3ed10fe9587461",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m012-1024-on-command.json": "056b1137916364d5b8dd7280467cdb4eab64fa80089b085c648a4cc4fd4465b9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m012-1024-on-controller-exit.json": "7c3eaf0c3e44eaae6c832df1a1297c134282330332879a5e7cc3362742b5a78e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m012-1024-on-controller-start.json": "89b186730eb235ed1428cbd6576ab984e82da771347eb718c963df5420bda164",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m012-1024-on-decision.json": "78e58d9e7c4669659b9d13891c47a07179fa2dd0497ec70a97da45ad5b51cb20",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m012-1024-on-stage.json": "6cdabe773161cb1d31b1fc8e95327f0d1577f6d5120941808c21598e74a06b03",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m021-4096-on-audit-exit.json": "43ee156594395f8cd6b433e14184fc64240dd51cafbc8fe1ee780c5927abddfa",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m021-4096-on-audit-start.json": "947fdaf29fe8c29f32d66932d9853db09ee60c5f09f3f4a718f3683c6290396d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m021-4096-on-command.json": "0c98c97b14944243edf3689d053469d95eff4bad61ddaeadee42ae7dc72683d4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m021-4096-on-controller-exit.json": "f395d58e028b81bee305979577f635b8dc62e953240b6cfd924180da05e8d27a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m021-4096-on-controller-start.json": "d96e2f065ebb5ae63c3c08b1bec98d9fe6aa36cea2496a762405b1186bf66e04",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m021-4096-on-decision.json": "ca4634650b5d6f0221dee002250e1b381488bdfedec7c74f31ada4c2601bb71e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m021-4096-on-stage.json": "6d9a8df3d0bb5eb3d6bd64244a3f6c8b4044ce394499e6d6944e8a9037664bbf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m022-4096-off-audit-exit.json": "41cb74cb1909dbc24da1fa36b9a56ff64fc867fc2df26d3687d96aa4f08b15f9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m022-4096-off-audit-start.json": "20b1a52cd3b4bd15f9235e135260e9d38641337c0417c6f08bdc1472eebbf050",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m022-4096-off-command.json": "89cfa47ba561c387c0a7fdd4338d6ed02353f5174efc7b8f6f6a4762faceaa75",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m022-4096-off-controller-exit.json": "6ff825ecd9d537806b1e1ef30c34396746a2d7cc280351b0d8fdbc45c310afe2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m022-4096-off-controller-start.json": "98bd6d7ba3902f06880eae339e091dc6fa688399bc9c205c470b676855bae3da",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m022-4096-off-decision.json": "46d77f56098bdac2460b9969806681100fb870c833d2214654353de2497aa33f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m022-4096-off-stage.json": "2a9ec7945a3017091d9d23ab585e7c8ccf9508d73e4b253cb769ab07b3f5daba",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m031-8192-off-audit-exit.json": "223f9009427befa69bf2c441bc0cf225482cf76cdcd368365f0d8cdc561c2cd9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m031-8192-off-audit-start.json": "04f391604885213156ce95575a9991fe4c14756fb1ccfbd1068846a910e73a10",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m031-8192-off-command.json": "0aa7f840f8f658edcb477f644ab418a90d56de4e6059af0b0103101c6861936b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m031-8192-off-controller-exit.json": "6f2552c11bac4afd6ec6c38d5d754f7aab11468ff1768cda08665d839c2b88b5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m031-8192-off-controller-start.json": "36b570bd4655cb576df559464132e205f336196ca8ffd6762f2aa741564ea3c3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m031-8192-off-decision.json": "fa06e56f45f614692f8f42e747b4a8d3f93326ee81735f76c8e35b540386821e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m031-8192-off-stage.json": "e98c104bee85853abfd3e5506c50b0b148d8c114d87cc6abe463be7c521e2d0c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m032-8192-on-audit-exit.json": "69efd93b86084eaf53a8f516dff600bf834af07f48b70d52d64d80f7c13692cb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m032-8192-on-audit-start.json": "9c63d546afebe5c89f525db5831f5b5c09d44763d5612e9878e5af2fd323a061",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m032-8192-on-command.json": "f5bd2ce840738c5f6271bffd8a8d0e3c7890d9b558ed0b13c30d373bd843d2fa",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m032-8192-on-controller-exit.json": "b57c403f16083c645642310ffa918b14cdabcbf3ca9115cc11c74f59a830c54f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m032-8192-on-controller-start.json": "7ee3cec61ccb2fc252693b55f8af7fd1c9535842ac85b36bf5b0a0462ff8d240",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m032-8192-on-decision.json": "8d2135a10a24e404d5f0b67e4cce3fbb42bd16aa0bbff1d25c49f4c72e81d07a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m032-8192-on-stage.json": "bd117c32af29785edeb52128cf4a0c592e80bb364e561584e5736d0ed2087b37",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m041-45056-on-audit-exit.json": "173d2a25f84e19f4da5307e8cf75462abc209ad242212907626e868290877b87",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m041-45056-on-audit-start.json": "af2f1e456ea47af900d6c431249b0febf7de999b729c36c9862c2839b04ec08b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m041-45056-on-command.json": "eb191ba38ff260b5b43825cbaa33d3c1833626481cac25c2f463e4ceeddcb81c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m041-45056-on-controller-exit.json": "b9b87f0a198039b284b9c3bf85ea78faf52a123b2e8aaa87e27c7825d248bc4e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m041-45056-on-controller-start.json": "6255e94dbebef76c176e2a6834600b822df54a3cde32d80b5eb7d4b723bc03f6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m041-45056-on-decision.json": "69494d52e39c7031fd39ad5363b39df77bd02bba4c49d2960facbf5cc1fd5189",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m041-45056-on-stage.json": "0c3797f1322a75a6dc8927d00f0f1e16e451a14332affeb5d2d418fd98f3adcf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m042-45056-off-audit-exit.json": "55ad8ee1be03a84cd907904a7da25fa18275cc447822474136b2562368789372",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m042-45056-off-audit-start.json": "fd416f13b469825895e5b176f3b5617e8fa4278fc4eaa524142afc78022f9abe",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m042-45056-off-command.json": "8cb23f914699ee3b7e764893d60d7ac203629f7b13a70049cec268ffcdab7407",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m042-45056-off-controller-exit.json": "43dc6c4f08cc1f0c285e64bb65d4b7797fb611621fb85624fcabfc7fe6f4eacb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m042-45056-off-controller-start.json": "5b942963adb8e9403fdd03e3f5ff8a8d1dad4c41ddf0bb695a0800d684dc700b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m042-45056-off-decision.json": "8061b405dde08643dcc61b46ebcf8ba3c4bf03454511f4275af315a215038054",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m042-45056-off-stage.json": "564042689bd98e6fb67dd74aa74c822fbf42819db20e9c4bf08946d16002afdf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m051-204800-off-audit-exit.json": "22749bde4450466ccec464306cf70c3ef7644f050db656c23bca62a12ea4fe7e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m051-204800-off-audit-start.json": "8009c21b6479e1fc7b025ceb9fd362ec379942e92a3efa23037c449eb26a1f2e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m051-204800-off-command.json": "abdc808caa10713858eb9d5a32081380548110e3d7275cf438ceab77f3aa4efd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m051-204800-off-controller-exit.json": "fa9753d086f0214f3e510c63256204bc584589ef7aa9599d0e71e89e8ac4133c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m051-204800-off-controller-start.json": "1ed9d3168c11561b3436193d6a3790839bb433582c9fdd68e793c2f83b567b8b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m051-204800-off-decision.json": "2665b57a4b562e50a7cf22d444c7dfb7207bc2770154f80cec5622472c7b9da2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m051-204800-off-stage.json": "b0c678884ecfc032571e593a46d72f83f23f29eace728b2ce0d4483092745fd2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m052-204800-on-audit-exit.json": "622c980982ddb0a0bd37b46368f6566258b41ffd5619fd6bdbaccce75aa504ad",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m052-204800-on-audit-start.json": "f7f86e20d97d32ec2e9117c56085b8ed14caf7a5e9fbc427b56338aee4bb1296",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m052-204800-on-command.json": "4be8906295fd12964cf7591ae9c324f84c133e09b696837ca8db1ac5668fa25c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m052-204800-on-controller-exit.json": "9b3a1dae994514f9d4b170f1f4e067ad6ccc9aaefc5d0de8625dfe8c7cec9d20",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m052-204800-on-controller-start.json": "385cf3f1f4319928eedcefaef1e0925a537e0005b333bd8f2ba44c6147b28c67",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m052-204800-on-decision.json": "cca6fd0706a7520a01998eccb01e0ff68a357ea95623c07a4f74525276e7af30",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m052-204800-on-stage.json": "6c489724a3dc11d2735ec44bb17cf57c41ccefba921625016645475b2686dffa",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m061-261887-on-audit-exit.json": "b8722a4a13b2660a2e79d1de6f502f19cac4f087914e6a2d94bc4bcc5bde7784",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m061-261887-on-audit-start.json": "eb645aacaf8ccb8b835129f78b58a51d74d258d0884aeba7f0b72b517d1bca2e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m061-261887-on-command.json": "8594d59861e3cedfff79fe8d52be6ff8a2c6a628fdf18a8d786ed93d08db7224",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m061-261887-on-controller-exit.json": "f4586f963220f50b7541b6dd6a04ca36302c1c53d22185a328708ad9975260cd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m061-261887-on-controller-start.json": "092ca612d23de66b44c11589e7a6604e3bb7b56279ad8a0bef7d65610c549b57",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m061-261887-on-decision.json": "f95a7051eb26da6b18e79b0dac4364831cb4e06b49cf89e2824314fc12948da5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m061-261887-on-stage.json": "c3dd36dbd0ca8aed954a2ea2781be1126403a19f5d9492bd42da53892a9e7e93",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m062-261887-off-command.json": "730fbdeabd0257796b73f591ce34557a9e8f8420f01903e3fe20da3a4d22b785",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m062-preflight-first-failure.json": "a264316e952b8b3ce9472ef9c16ce01f1cef3cfa36d317d557e39394961ef0bb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/model-entry.json": "31cfb5f2cae36d75f84dcd1b27d7a11ce5972e2b6ba9637b9eb8493cd91dd0f4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-decision.json": "9e32bd4d1acc98678ede8a16542ff5478daae5249b78dcd2d65cf9ef0a1557f0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-design.json": "e0dc8a51b92f8d089bf508362225170f188a16a0b0b349e6c22d0073664edcbc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-first-attempt.json": "9e32bd4d1acc98678ede8a16542ff5478daae5249b78dcd2d65cf9ef0a1557f0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-lifecycle-static-finding.json": "878660bd4656640c26c0aad1362229f5c6e183177666876fb3f6a52fc1488eb5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-runner-static-review.json": "45272a9a0b3eff2e582c3c926d3ae858b0d7c8ed9bdd7f81f1ef6fd2376bf4db",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-static-finding-01.json": "c589dc58a0454d7560b8ed75d7c416512ce552d9c254fdf42717e373d0c818d7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-static-review.json": "76d0d0ef71efe5af3974b804eaaa963ddd324d606a5d322f7897e1e96525fe99",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/protocol-draft.json": "e8d966731df5cf7fa5dfd973a828bcc840d8afcc9f3af81bc131baa68e04b854",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/protocol-static-handoff.json": "018a123995e20e14abd43a86d47e2bc937a5b96e3132b8e36616588b2f5e7cb8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/protocol-static-review.json": "7f2a4265c31f1a240c6c89415da4cd7e440d810551218e77f305a4fb2542b4db",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-audit-exit.json": "1a44c483897698e04d2a8d2dcdf769c7824392c012d4dc10659d517ea3aad41a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-audit-start.json": "6e2abbfe44c59dc25f308b7a0aac48ce37ce08c94f7c7042a584ab80a6b6d290",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-command.json": "56185c2484eba7b810a47cbb59bb20d70436f001f010091c7313951d4d78f219",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-controller-exit.json": "40a087164921a0b12dd9bf0cbd054188fe819e525ed9c21058f5084b09c1a2b3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-controller-start.json": "381f830d1df3f8f0765ad690c46f77164f47afaf4ee812b5bdbe11855f51bd2b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-decision.json": "da0410e7cfe374f8d05e8830469b88ce658363c47642fccb44d5556c2a42a2a5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-stage.json": "eaf032b54f7971f9709f795c5f2b71b82e6b1e337bf3fff65dba1a50adeee1b1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/resource-dependencies.json": "418562f1b3bf53a878a4dee6d6aa0ea12f76409cde3a016e8b2d14c64c70a488",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/resource-static-finding.json": "996b0280a2d7e11bdfbc87ea4c0d30d733f71859ea375e6c4f89c6eb9a8a017a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/runtime-static-review.json": "9e835a5b1422bff48b45b8dd1625860020cc5d482921054da0d8b9869fb1f31e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/scope-plan.json": "a10255307a3582b27e738abd042a9db67cd10e8abc23b51addfd6e2471f61670",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source-design.json": "6fa550b1d29d72bd5be4353e66f173249f24956ca8f5b340cda09aab999535df",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source-implementation.json": "8409c4b80929f38920d2fb3ea5ccb64642f147311be6cdd7c456a22887b55be6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-dedup-owned-exit.json": "c2871775ed1311567e4b25042090997ab5feaa16935d0370bb58a3c5a0bddb67",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-dedup-owned-start.json": "5532cabbb110ea55fd1440c26ca4df99f2bf9ec52c77b770980bd8ecdaabb014",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-dedup-plan.json": "3feb568e7d8884ae08dde4050edf47220a11b3a93852549a47e21ee705658263",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-dedup-static-review.json": "55cecaa8e3c00a76ad971c14614d090e29cb09b1d25d6c47b50886935e23afad",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-reserve-prepare-owned-start.json": "80948f1a3e39061c81e5b45d779220ec014dcf8a249e8bbd1e06de9555d90e60",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-reserve-repair-policy.json": "e041a16f5045abe2996967281269f673ed4afc6ae56567750ae9eaad38ca0939",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-reserve-repair-static-review.json": "5c3847cf5d5e081f89ac4962b6cf7249b052639ec380899b8c953772ce1e4a5f"
+  },
+  "protected_prior_metadata_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-dedup/preflight.json": "be946d6c615d03ea02769e52dc517067b416e5c9ef4a8afa1aaa21c217d6c5b8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-dedup/journal.jsonl": "4b849c4bc816e30f2e88f14259d3144c908afdd755d21966035274bb9268e437",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-dedup/summary.json": "060905ab7e4300ab484b7407bb19e5b8f8de275ef6585759b954d0a62018bcbe",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-dedup/operation.json": "a1e2d0868a2a6ff90917d9ae29c3829ecf47d290146a2fd6c8c687631f2ac5eb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression/preflight.json": "ab50700e74572a013a15b6e765fb3dc67d471618833d54fd88075b3206df5c48",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression/compression.json": "967bf70cb1ed901180a0119a5b722197e3835815e1e5a89602e35cd6fa80aa21",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression/journal.jsonl": "9958b49e83087128693709fddbebec6e672feaab736518d24c6fa8d7333667c7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression/summary.json": "06a0bbcdeba2ec113a065602fc34d23cb662ed20c8ceb86dba4303950f7e49a1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage_compress.py": "04ed5e8bd935de196d373bd546902074a6789c612780272e0e2a12d5c18fe109",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage_dedup.py": "6fb1c2a198f1eda4554416e3ac4558681b3971d7313d2b79775fd8243fba42d9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression-policy.json": "68861179bfe11132dc4c823c1bd210cd47520b8a508282976a5fe25e9890aa50",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression-plan.json": "c965e764e0f596aa035e556a09c272fc14c9b853ebc0ac29fa60cd5af580b991",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-dedup-plan.json": "3feb568e7d8884ae08dde4050edf47220a11b3a93852549a47e21ee705658263",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression-static-review.json": "c11ef9edbdc76d9a2738b4d9b9e67c821d3dce10e2838de209a25f8a4ee6693d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression-static-finding-01.json": "e49b1efbb293dab5e73971bb4ff22537780292be8026e34d92f0ffd8a9679da3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m062-preflight-first-failure.json": "a264316e952b8b3ce9472ef9c16ce01f1cef3cfa36d317d557e39394961ef0bb"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "status": "PREPARED_NOT_EXECUTED",
+  "recorded_t": 1791319641.223061,
+  "archive_helper_before_sha256": "66569011498f21c86f7d54bd9c49693a8222c14998cc04462940c413596f5127",
+  "archive_helper_after_sha256": "f38290696747205ee79574fd44682ec04f775b671e50bafea68bf693db46859b",
+  "changes": [
+    "Add finite reserve repair policy/final plan/checklist and independent helper",
+    "Add five explicit reserve metadata paths: preflight/map/pending-map/journal/summary",
+    "Retain existing static finding/review/firstfailure/owned-receipt patterns including m062 preflight first failure",
+    "Carry two gzip payload roots with original SHA/length and recorded gzip locator/SHA; never stat/hash/read gzip contents",
+    "Separate unchanged runner gate and 32MiB storage target in archived summary"
+  ],
+  "script_sha256": "ea582f068f14ef693ee78cf44de9f08067b7380448ad37d4728a271c6ad48ab9",
+  "policy_sha256": "e041a16f5045abe2996967281269f673ed4afc6ae56567750ae9eaad38ca0939",
+  "validation": "AST parse only; independent static review pending; no helper/storage/test/model execution, no W edit or candidate payload read"
+}

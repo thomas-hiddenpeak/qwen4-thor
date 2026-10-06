@@ -1,0 +1,324 @@
+{
+  "schema": 1,
+  "passed": true,
+  "group_id": "q01-quality-on",
+  "plan_sha256": "5e9f1627c85cd21a7467caed538fb80bc88cedb534f59fed6c094a922be8537e",
+  "started_t": 1791294590.125952,
+  "failure": null,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/protocol-draft.json": "e8d966731df5cf7fa5dfd973a828bcc840d8afcc9f3af81bc131baa68e04b854",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-stage.json": "eaf032b54f7971f9709f795c5f2b71b82e6b1e337bf3fff65dba1a50adeee1b1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/q01-quality-on-controller-exit.json": "40a087164921a0b12dd9bf0cbd054188fe819e525ed9c21058f5084b09c1a2b3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/wrapper-exit.json": "598ab664795904a512ca9cab2cf3ab861e8070fbeb2122536ba2a0575d8992bb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/http/exit.json": "5e1a1a6e9fc7bf09fa575e5733e9d7fb6b74013cc35ddc609edb3eecdbdae8a8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/runner-process-group.json": "8c7f008c2fb137c0f2954fe50d596acddc904e3599ca4cc33016a10524d74748",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/http/isolation/cleanup.json": "de891eb0801b03a843145208f338969b4d55d60bb642785df5147d1b36c59767",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/http/capacity.json": "135b17d195db1d71febe10e60def33e3894bb0e867b253637ec833f2fa48dfb7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/protocol.json": "8dbd8528a96fd332ec4642552a8f2a3a0fd3c4f45f57206461ede764a2aea2ec",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/http/server-command.json": "7691cf5be486d47aa00a9001a79cf58c0a05dfd0ca446bb099f4c871b05b0fde",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/http/binary.sha256": "5063fabddf13867912b4d40cc9c87b311fb5f0feedb5d089b2eecb67db2cc333",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/http/commit.txt": "008c338838d2904322a4b97f5bff46a22ffd2a02a7ca8e05425eafa394643cec",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/http/worktree.patch": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/tools/run_budget_experiment.py": "82ff67c5b90c81ec24ba2402a7ca23ce7e436b8a0d0860cc22caa452e2efb944",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/tools/run_acceptance.py": "c3d3353224a7d9f6c4cab112dedeb913a30580ba3884f3feb9c2e6cc37fd5846",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/tools/isolated_service.py": "c561ec8a8cf1c05e2ceb8ba08959af3624db9ee832723103b691ee2edb713521",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/tools/monitor_memory.py": "098d91eb208ce85961b23a88b029a80e122ff0b1b37bed7b9eaa898d1b5d6fc5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/tools/file_cache.py": "d25d6fa846af504e40eec850eb4f9c0cfa168f798d8aca826642214821eb9b73",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/tools/resource_metrics.py": "4ec55a1bad3983d9e71621c72aa299538392b3f8efb4ec121b9ec28bd105a5ce",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/tools/memory_accounting.py": "e0e7418359db1ee021e9d2aa096ef929212a62b47fd91d06086d0c11f4acf6f3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/tools/offload_policy.py": "f3e213aec87964c20de17416bff45575dde59b69717bf4f06a04e7b37a7499a2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/tools/mirror_recycle_protocol.py": "cb26dc9272d86fde3f152a398d29a5cb4f4f720286ac53c3989db215bfb3b201",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/http/results.json": "5421162324581ed5892687490550e85517faa0e8e5a30802f79d89ac266db30e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/quality-on/http/results.json": "5f68957b17170d40824998f461a2b60633961a065b911039ccf569762c439b43",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/http/quality/responses.json": "28727359e1c6533243639fadf353ea1c73f4e2439ae853aeb75df9c3dddd738d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/q01-quality-on/http/server.log": "2424d18592b3e2e368a1d7dbb3425bb9291808b9a19a0773235eedbaa02a2784",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/audit_stage.py": "ae69bbb2810a54148e030f0e1c2ea1b25527d23626d08849ff3206516c4896cb"
+  },
+  "performance_acceptance": false,
+  "numerical_acceptance": false,
+  "status": "PASS_FIXED_HTTP_11",
+  "kind": "quality",
+  "arm": "B",
+  "mirror_gpu_recycle": 1,
+  "runtime_source_commit": "1efc524fe379f1eca9ceefed690327ae77236c7f",
+  "runtime_binary_sha256": "6a1e3321499a45359068610ee5865a8b7c97930bb6eed6f0065acfa0c6178762",
+  "ended_t": 1791294576.8200397,
+  "runtime_path": {
+    "request_partition": 0,
+    "execution_records": 40,
+    "request_count": 11,
+    "runtime_eligible": true,
+    "selected_legacy_requests": 11,
+    "candidate_chunks": 0,
+    "singleton_tail_chunks": 0,
+    "numerical_acceptance": false,
+    "scope": "Actual layer-zero prefill execution; no decode or all-intermediate numerical proof."
+  },
+  "recycle": {
+    "schema": "q4t.mirror_gpu_recycle.v1",
+    "enabled": 1,
+    "passed": true,
+    "request_count": 11,
+    "requests": [
+      {
+        "response_id": "chatcmpl-auto-0",
+        "plans": 202,
+        "attempts": 471,
+        "preferred": 17,
+        "changed": 12,
+        "fallback": 454,
+        "unavailable": 0,
+        "published": 17
+      },
+      {
+        "response_id": "chatcmpl-auto-1",
+        "plans": 212,
+        "attempts": 486,
+        "preferred": 36,
+        "changed": 23,
+        "fallback": 450,
+        "unavailable": 0,
+        "published": 36
+      },
+      {
+        "response_id": "chatcmpl-auto-2",
+        "plans": 208,
+        "attempts": 453,
+        "preferred": 26,
+        "changed": 20,
+        "fallback": 427,
+        "unavailable": 0,
+        "published": 26
+      },
+      {
+        "response_id": "chatcmpl-auto-3",
+        "plans": 229,
+        "attempts": 577,
+        "preferred": 24,
+        "changed": 18,
+        "fallback": 553,
+        "unavailable": 0,
+        "published": 24
+      },
+      {
+        "response_id": "chatcmpl-auto-4",
+        "plans": 222,
+        "attempts": 572,
+        "preferred": 23,
+        "changed": 18,
+        "fallback": 549,
+        "unavailable": 0,
+        "published": 23
+      },
+      {
+        "response_id": "chatcmpl-auto-5",
+        "plans": 221,
+        "attempts": 523,
+        "preferred": 26,
+        "changed": 21,
+        "fallback": 497,
+        "unavailable": 0,
+        "published": 26
+      },
+      {
+        "response_id": "chatcmpl-auto-6",
+        "plans": 232,
+        "attempts": 630,
+        "preferred": 21,
+        "changed": 17,
+        "fallback": 609,
+        "unavailable": 0,
+        "published": 21
+      },
+      {
+        "response_id": "chatcmpl-auto-7",
+        "plans": 229,
+        "attempts": 604,
+        "preferred": 23,
+        "changed": 16,
+        "fallback": 581,
+        "unavailable": 0,
+        "published": 23
+      },
+      {
+        "response_id": "chatcmpl-auto-8",
+        "plans": 229,
+        "attempts": 603,
+        "preferred": 33,
+        "changed": 23,
+        "fallback": 570,
+        "unavailable": 0,
+        "published": 33
+      },
+      {
+        "response_id": "chatcmpl-auto-9",
+        "plans": 224,
+        "attempts": 608,
+        "preferred": 32,
+        "changed": 28,
+        "fallback": 576,
+        "unavailable": 0,
+        "published": 32
+      },
+      {
+        "response_id": "chatcmpl-auto-10",
+        "plans": 248,
+        "attempts": 689,
+        "preferred": 22,
+        "changed": 18,
+        "fallback": 667,
+        "unavailable": 0,
+        "published": 22
+      }
+    ],
+    "totals": {
+      "plans": 2456,
+      "attempts": 6216,
+      "preferred": 283,
+      "changed": 214,
+      "fallback": 5933,
+      "unavailable": 0,
+      "published": 283
+    },
+    "selection_change_observed": true,
+    "declared_scope": "explicit_single_decode",
+    "runtime_phase_gate_proven_by_parser": false,
+    "numerical_acceptance": false,
+    "performance_acceptance": false,
+    "read_savings_or_speed_inferred_from_counters": false
+  },
+  "output_contract": null,
+  "request_count": 11,
+  "metrics": [],
+  "full_matrix_completed": false,
+  "pair_output_comparison_pending": false,
+  "recorded_t": 1791294590.301398,
+  "requests": [
+    {
+      "response_id": "chatcmpl-auto-0",
+      "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+      "actual_input": 1024,
+      "actual_output": 7,
+      "finish": [
+        "stop"
+      ],
+      "text_sha256": "4236b5fda71f8600cb789858b7796a921cad5bffa7e9431bb6fbc760ae9527c4",
+      "text_utf8_bytes": 6
+    },
+    {
+      "response_id": "chatcmpl-auto-1",
+      "prompt_sha256": "f17889bf3cec9aead6db4da85c4d517a4d795407932c30b9f273363dec239dd0",
+      "actual_input": 1024,
+      "actual_output": 7,
+      "finish": [
+        "stop"
+      ],
+      "text_sha256": "a2d3058d185e332f041c82d19f9e69c72ee0083b5cd12d0aa139e5f0a3a82517",
+      "text_utf8_bytes": 6
+    },
+    {
+      "response_id": "chatcmpl-auto-2",
+      "prompt_sha256": "e647c72568b4bf9589fd5c63e8a214898769f0285839cf53987c0e47ec12e4ff",
+      "actual_input": 1024,
+      "actual_output": 7,
+      "finish": [
+        "stop"
+      ],
+      "text_sha256": "6c77bcf6c38b5d7a4e7cffc80092afb9276df254c5b3ceca9ec683100cd9b15b",
+      "text_utf8_bytes": 6
+    },
+    {
+      "response_id": "chatcmpl-auto-3",
+      "prompt_sha256": "4e4b462f767736bc27913543654afae84da78917924d4f2d60f8990a6b7a3a94",
+      "actual_input": 4096,
+      "actual_output": 7,
+      "finish": [
+        "stop"
+      ],
+      "text_sha256": "cb357112f8e9ee220cb97e543bfe842800f5a805c9ab781ef48ef97eb0333c99",
+      "text_utf8_bytes": 6
+    },
+    {
+      "response_id": "chatcmpl-auto-4",
+      "prompt_sha256": "0e349879840c9c0cf3261f3263359482be3c1b4a9383c9bd68561014acefba6f",
+      "actual_input": 4096,
+      "actual_output": 7,
+      "finish": [
+        "stop"
+      ],
+      "text_sha256": "7124ab808804eb53398068b38e68ca591057e6540584d3fc02f2c861fe27bbc0",
+      "text_utf8_bytes": 6
+    },
+    {
+      "response_id": "chatcmpl-auto-5",
+      "prompt_sha256": "c40c8baf22c4a45590d30a327475c9f2163af28cee13baef0bf290cd74779074",
+      "actual_input": 4096,
+      "actual_output": 7,
+      "finish": [
+        "stop"
+      ],
+      "text_sha256": "4cac386c0b8783d90abab0b55d91ed878017db3723bb7c24a548b59e9811cd8b",
+      "text_utf8_bytes": 6
+    },
+    {
+      "response_id": "chatcmpl-auto-6",
+      "prompt_sha256": "b8198a7998b20d7edd3ada87edecbce958843b6bcafcf9d4983a239c6324fa02",
+      "actual_input": 8192,
+      "actual_output": 7,
+      "finish": [
+        "stop"
+      ],
+      "text_sha256": "e6319db514d30728158a3a306638d85f9c44eb72a08e3b6306867fda70359402",
+      "text_utf8_bytes": 6
+    },
+    {
+      "response_id": "chatcmpl-auto-7",
+      "prompt_sha256": "d3f37a78f3f642d958c455757b859a222ab47784de1833847a5a5954aa37abb6",
+      "actual_input": 8192,
+      "actual_output": 7,
+      "finish": [
+        "stop"
+      ],
+      "text_sha256": "9f2945cea215d6515a7b36b46b71cb0562a0629edc90aee47b435bb56f25d4a6",
+      "text_utf8_bytes": 6
+    },
+    {
+      "response_id": "chatcmpl-auto-8",
+      "prompt_sha256": "46616386557835b6e297f422fe33ed022202e321bde2729c7232a741939c9a47",
+      "actual_input": 8192,
+      "actual_output": 7,
+      "finish": [
+        "stop"
+      ],
+      "text_sha256": "a12687ff57e7602233020a95916bd75746473bbd1c262f3cb071b11de48634b7",
+      "text_utf8_bytes": 6
+    },
+    {
+      "response_id": "chatcmpl-auto-9",
+      "prompt_sha256": "8e7d6e535925c3552adaf57319be27d987365520fa852409366c05cf32b6c423",
+      "actual_input": 45056,
+      "actual_output": 7,
+      "finish": [
+        "stop"
+      ],
+      "text_sha256": "c73f4e0e82deddf53f30ac110a0d599c2ba4b45b59b262ad3f4892b1b2373a4a",
+      "text_utf8_bytes": 6
+    },
+    {
+      "response_id": "chatcmpl-auto-10",
+      "prompt_sha256": "12ba2ea94933c44aea775a49a5380161413c7d377208ae35c8ad20fab8c6f150",
+      "actual_input": 204800,
+      "actual_output": 7,
+      "finish": [
+        "stop"
+      ],
+      "text_sha256": "7f9c8412ad575e46516d69c53b9e2e64a20b45f3c0a027524b3848dbd00aa21d",
+      "text_utf8_bytes": 6
+    }
+  ],
+  "archive_projection": {
+    "source_sha256": "da0410e7cfe374f8d05e8830469b88ce658363c47642fccb44d5556c2a42a2a5",
+    "request_text_omitted": true,
+    "prompt_body_never_copied": true
+  }
+}

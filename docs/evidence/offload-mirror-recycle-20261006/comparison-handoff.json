@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "status": "PREPARED_STATIC_ONLY_NOT_EXECUTED",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/compare_results.py": "16c48c328353f2c27de5b02c58aba576bb94b9054eedb744e975267e7b06448b"
+  },
+  "interfaces": [
+    "history --plan-sha256 HASH => history-decision.json",
+    "all --plan-sha256 HASH => performance-decision.json"
+  ],
+  "new_tests_executed": 0,
+  "model_runs": 0,
+  "raw_log_reads": 0,
+  "raw_resource_reads": 0,
+  "requirements": [
+    "fixed17 groups,131HTTP; history84 then matrix36 plus quality11",
+    "history four-group exact output identity with all21 ordered requests each",
+    "two independent history pairs,7positions x3rounds each",
+    "matrix six fixed lengths matched by arm regardless execution order",
+    "TTFT first<=,max later2<=;min3 decode>=; no epsilon",
+    "history speed veto retained in full result; speedNO_GO rc0 continues frozen matrix",
+    "contract failure rc1 and exclusive output retains first outcome",
+    "actual changed>0 separately required in final experimental screening",
+    "performance_acceptance/resource_acceptance/default_enable remain false;54GB unknown"
+  ],
+  "provenance": "Binds already passed group decision JSON digest and embedded source maps; no second raw-source read or route/resource parsing."
+}

@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "passed": true,
+  "status": "PASS_BOUNDED_HARNESS_STATIC_REVIEW",
+  "reviewed_t": 1791293343.8438656,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/resource_audit.py": "c786c17f3aeb7aac5c456464da1c2d92cb22f1cabdfa98911dfe977cdc2b8158",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/compare_results.py": "16c48c328353f2c27de5b02c58aba576bb94b9054eedb744e975267e7b06448b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/run_direct_contracts.py": "746e5d35f996c80eccb7e60d37ed33b91d0607480d59aa5752f9591dc9588583",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/recycle_common.py": "b0b464d82063d4b9eead4133eec67d5832b31d9a06b7323ca0169c4be2be5097",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/run_stage.py": "c3e0b0c2702616e28a3e6b1b717fa705879979c961613f4b9b0391f4294f9ef0"
+  },
+  "checks": [
+    "First owned test quality11, direct host/numerical only after quality decision; later services need predecessor/direct contracts; source frozen and explicit cwd protects old worktrees",
+    "Host14+protocol10, new numerical required-list1 and strict PASS/noSKIP expected five markers; cleanup receipts retained on failures",
+    "Audit-stage identities/environment/strict input-source binding compatible with wrapper producer; exact output groups, request paths, single-tier reporting",
+    "Resource adapter fixed17groups/131HTTP/121envelopes; quality one envelope, history84, matrix36; expected completed=1 for matrix case vs 3 requests now corrected",
+    "Existing raw resource arithmetic reused with immutable source hashes; terminal gate before raw read; old raw/model payload not consumed; 4GiB cap/one pass/gaps retained",
+    "Comparator keeps all history fourgroup exact outputs equal, ABBA blocks separately14positions, all six matrix tiers separately, first/later2/min_decode noepsilon; history veto permanent",
+    "No favorable retries or second matrix; valid speed failure rc0 remains bounded coverage, contractfailure rc1; exclusive first-result files",
+    "Counter activation requires actual changed>0, preferred alone not a causal or performance claim; resources/physical54GB not promoted to performance acceptance"
+  ],
+  "retained_static_findings": [
+    "numerical-static-finding-01.json / numerical-lifecycle-static-finding.json: RAII missing initially, fixed before execution",
+    "resource-static-finding.json: HTTP completed counts cases rather than requests for matrix, fixed before execution"
+  ],
+  "limitations": [
+    "Static review only; no controller/model/test executed by reviewer.",
+    "Existing helpers prove their old arithmetic scope, not all adapted runtime behavior; real frozen execution still needed.",
+    "Partial Init/CUDA fault lifecycle limits remain."
+  ],
+  "executed_tests": 0,
+  "model_runs": 0
+}

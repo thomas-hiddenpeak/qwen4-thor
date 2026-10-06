@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "status": "PREPARED_STATIC_ONLY_WAIT_ROOT_TO_EXECUTE",
+  "script": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/independent_result_review.py",
+  "sha256": "97ab85a89f04f393aa7517479f6aa8ed08a4a242052bdc2cbb0106b66c27c864",
+  "prepared_t": 1791294662.1936502,
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/independent_result_review.py",
+    "--plan-sha256",
+    "EXECUTION_SHA",
+    "--mode",
+    "complete|early",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/independent-result-review.json"
+  ],
+  "limits": {
+    "file_bytes": 33554432,
+    "metadata_bytes": 134217728,
+    "root_and_direct_receipts_max": 256,
+    "raw_log_reads": 0,
+    "raw_resource_reads": 0,
+    "model_payload_reads": 0,
+    "test_model_runs": 0
+  },
+  "complete_mode": "17 successful terminal services/131 accepted HTTP plus host24/numerical1; independent 14 history and 6 matrix extrema gates, crossarm output/usage, seven per-request counter sums, activation and all saved decisions source-bound",
+  "early_mode": "Concrete retained service/audit/direct failure required; every started service terminal/cleanup; accepted HTTP count separate from failed/unaudited and unrun; no 131/full performance assertion",
+  "reuse_boundary": "Uses final audited metric JSON as input, no raw TTFT remeasurement or deep transitive source scans. Frozen direct numerical result reused, not reexecuted.",
+  "execution_performed": false
+}

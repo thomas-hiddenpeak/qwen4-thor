@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "status": "PREPARED_STATIC_ONLY_NOT_EXECUTED",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/audit_resources.py": "10959f8021c7e2f6479ee77c8d163484054839a72fb172153bd723813f7ffde7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/audit_raw_resources_frozen.py": "035f1f840d00350a7b6db62e1b8ef7f62a5fda02406dae91395d291a67652da4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-autonomous-20261003/raw-audit-execution-01/self-test-exit.json": "8fcf469238691ef2993e5c453ffee4df549efa25e15c210b0e5ff116b47f655f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-autonomous-20261003/raw-audit-execution-01/self-test.log": "5be5555609ee43ce415c5f7326aa244af048a09c05930ce64b9d16ac61f894a8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/resource_audit.py": "c786c17f3aeb7aac5c456464da1c2d92cb22f1cabdfa98911dfe977cdc2b8158",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/protocol-draft.json": "e8d966731df5cf7fa5dfd973a828bcc840d8afcc9f3af81bc131baa68e04b854",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/scope-plan.json": "a10255307a3582b27e738abd042a9db67cd10e8abc23b51addfd6e2471f61670",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tools/evalscope/monitor_memory.py": "098d91eb208ce85961b23a88b029a80e122ff0b1b37bed7b9eaa898d1b5d6fc5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tools/evalscope/resource_metrics.py": "4ec55a1bad3983d9e71621c72aa299538392b3f8efb4ec121b9ec28bd105a5ce",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tools/evalscope/memory_accounting.py": "e0e7418359db1ee021e9d2aa096ef929212a62b47fd91d06086d0c11f4acf6f3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tools/evalscope/file_cache.py": "d25d6fa846af504e40eec850eb4f9c0cfa168f798d8aca826642214821eb9b73",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tools/evalscope/isolated_service.py": "c561ec8a8cf1c05e2ceb8ba08959af3624db9ee832723103b691ee2edb713521",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/resource-static-finding.json": "996b0280a2d7e11bdfbc87ea4c0d30d733f71859ea375e6c4f89c6eb9a8a017a"
+  },
+  "execution": "/usr/bin/python3 -B R/resource_audit.py --plan-sha256 EXECUTION_PLAN_SHA --output R/resource-audit.json",
+  "group_count": 17,
+  "http_count": 131,
+  "client_envelope_count": 121,
+  "quality_envelopes": 1,
+  "history_envelopes": 84,
+  "matrix_envelopes": 36,
+  "raw_read_limits": {
+    "single_file_bytes": 268435456,
+    "total_bytes": 4294967296,
+    "max_rows_per_group": 40000,
+    "raw_parse_passes": 1
+  },
+  "reused_functions": [
+    "Metadata",
+    "audit_envelope",
+    "audit_completed_group",
+    "Sources",
+    "read_samples",
+    "controller_delta",
+    "select_brackets",
+    "bounded_delta"
+  ],
+  "changed_bindings": [
+    "adapter.EVIDENCE",
+    "adapter.case_specifications",
+    "core.MAX_TOTAL_BYTES=4GiB pre-approved before any resource read"
+  ],
+  "old_arithmetic_contracts_reused": 8,
+  "new_tests_executed": 0,
+  "new_or_old_raw_resources_read": 0,
+  "model_payload_reads": 0,
+  "source_roles": {
+    "BASE": "Reusable metadata/group/envelope arithmetic; old main/terminal admission never called.",
+    "CORE": "Bounded single-pass reader, independent raw-summary closure, PID/cgroup/device counts and uncertainty; no old main gate.",
+    "RECEIPT": "Unchanged arithmetic examples only; does not certify new scope or identity adaptation.",
+    "resource_metrics.py": "Current monitor producer contract, actual copied source hash bound per group.",
+    "physical_ram.py": "No physical union measured; helper not executed/imported, no attribution inferred. Existing interpretation remains INDETERMINATE."
+  },
+  "requires_root_freeze": [
+    "Every source_sha256 entry plus resource-dependencies.json in execution-plan frozen_files",
+    "Execution plan protocol_plan_path/groups/group_ids/service_count17/http_count131 match frozen protocol draft",
+    "All17 HTTP/controller decisions terminal/pass/identity/clean before first raw sample parse"
+  ],
+  "limitations": [
+    "Quality11 shares one client IO envelope; exact individual HTTP timing remains separately recorded.",
+    "memory.current sample peak and memory.peak final charge peak separately retained; no clipping of exceedance.",
+    "PSI missing/GPU scheduled skips/unknown counts/cgroup plateaus/counter resets/bracket drift remain unknown, never zero-filled.",
+    "No per-request memory peak, no exact HTTP-only storage IO, no pure SSD waiting or causal speed fraction.",
+    "Physical RAM54GB remains INDETERMINATE; NVIDIA/cgroup/PID/cache peaks overlap and cannot be summed."
+  ],
+  "static_findings": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/resource-static-finding.json"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "status": "PREPARED_NOT_EXECUTED",
+  "recorded_t": 1791318458.5422962,
+  "archive_helper_before_sha256": "966d7711e399e15fd5388f1a2c03ee000134e7a4a3678c7d60bc47601a41d206",
+  "archive_helper_after_sha256": "66569011498f21c86f7d54bd9c49693a8222c14998cc04462940c413596f5127",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/archive_delivery.py": "66569011498f21c86f7d54bd9c49693a8222c14998cc04462940c413596f5127"
+  },
+  "changes": [
+    "Explicit finite root plan/policy/checklist and two storage script additions",
+    "Explicit ten nested storage metadata names; no recursive reads or payload glob",
+    "Copy existing static findings/reviews/first failures and owned receipts through original bounded root patterns",
+    "Carry durable compression map original SHA/length and gzip locator/SHA without stat/hash/decompress payload",
+    "Preserve journal and pending compression map for interrupted operations; unbound interrupted gzip hash remains unknown",
+    "Summarize actual storage counts/free/allocation separately, do not change any acceptance result"
+  ],
+  "validation": "AST parse only; no helper/storage/test/model execution; no W edits or candidate payload reads",
+  "compression_final_script_sha256": "04ed5e8bd935de196d373bd546902074a6789c612780272e0e2a12d5c18fe109",
+  "compression_static_review": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression-static-review.json"
+}

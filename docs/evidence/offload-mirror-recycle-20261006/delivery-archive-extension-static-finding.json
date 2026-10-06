@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "recorded_t": 1791324611.7293994,
+  "kind": "CONCRETE_STATIC_ARCHIVE_OMISSION_BEFORE_EXECUTION",
+  "passed_before_fix": false,
+  "reported_by": "root",
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/archive_delivery.py",
+  "helper_sha256_before": "f38290696747205ee79574fd44682ec04f775b671e50bafea68bf693db46859b",
+  "helper_sha256_after": "473d3628f6cb24eb2a4fcbae1d6e20ce629c4e222a179e51f13b9fe0b9d911f7",
+  "finding": "The archive-* exclusion and absent explicit entries would omit archive-storage-extension.json and archive-reserve-extension.json, losing their preserved helper before/after SHA history.",
+  "minimal_repair": "Add the exact two names through ARCHIVE_EXTENSIONS and exempt only these two from the archive-* exclusion. All other earlier archive attempts remain excluded; no recursion or new payload reads.",
+  "retained_extension_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/archive-storage-extension.json": "0aece76bc138d0cf5b3ac0a400f3064abc776100add3288cbd25ee057e858620",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/archive-reserve-extension.json": "efd7480e15f99341b3aed4f406e4cb60abf67b2e2f3b9379a055b2c23ca98b3e"
+  },
+  "validation": "AST parse only; independent incremental static review pending. No archival/storage/test/model execution; no W edits."
+}

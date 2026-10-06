@@ -1,0 +1,19 @@
+{
+  "started_t": 1791293251.518375,
+  "command": [
+    "cmake",
+    "--build",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build",
+    "--target",
+    "q4t",
+    "--parallel",
+    "8"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source",
+  "returncode": null,
+  "failure": null,
+  "automatic_retry": false,
+  "timeout_s": 1800,
+  "signals": [],
+  "cleanup_complete": false
+}

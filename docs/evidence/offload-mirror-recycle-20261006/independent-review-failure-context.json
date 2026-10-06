@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "recorded_t": 1791324401.079268,
+  "reviewer": "/root/recycle_protocol",
+  "passed": true,
+  "scope": "Supplemental compact failure accounting; original independent result review unchanged.",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/independent-result-review.json": "c6ce81c1c0fbac0c21b2913a93e08f884d8d415f206445a455c0c3d3da156b8f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/independent-result-review-01-exit.json": "708354071f03a0f95e422d178342804b885dd86f6fa808b4fa677048bb701804",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-static-finding-01.json": "c589dc58a0454d7560b8ed75d7c416512ce552d9c254fdf42717e373d0c818d7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-lifecycle-static-finding.json": "878660bd4656640c26c0aad1362229f5c6e183177666876fb3f6a52fc1488eb5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/resource-static-finding.json": "996b0280a2d7e11bdfbc87ea4c0d30d733f71859ea375e6c4f89c6eb9a8a017a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/delivery-tools-static-findings.json": "4171f4f00db872cce1941e62098d77a9d7480ce496856d9096e3fc4fdd3cd40b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression-static-finding-01.json": "e49b1efbb293dab5e73971bb4ff22537780292be8026e34d92f0ffd8a9679da3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m062-preflight-first-failure.json": "a264316e952b8b3ce9472ef9c16ce01f1cef3cfa36d317d557e39394961ef0bb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-reserve-repair/summary.json": "5a9d32014440ba7ba5da36a12db03a916ff71d31b3bec6a00d3d26f1be4a4499",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/independent-review-context-first-failure.json": "bde75e1414cfeac6ced1954fc95d05133ea788de7a84151bd30d5573f66390f4"
+  },
+  "evidence_contracts_passed": true,
+  "final_successful_service_count": 17,
+  "accepted_HTTP_request_count": 131,
+  "performance_decision": "NO_GO",
+  "all_first_passed": false,
+  "retained_pre_execution_static_finding_paths": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-static-finding-01.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-lifecycle-static-finding.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/resource-static-finding.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/delivery-tools-static-findings.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-compression-static-finding-01.json"
+  ],
+  "retained_startup_failure": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/m062-preflight-first-failure.json",
+    "phase": "preflight_before_controller",
+    "original_minimum_free_disk_bytes": 1073741824,
+    "HTTP_requests_sent": 0,
+    "service_started": false
+  },
+  "bounded_storage_repair": {
+    "passed": true,
+    "startup_space_gate_met": true,
+    "storage_target_met": false,
+    "minimum_free_bytes": 1073741824,
+    "storage_target_free_bytes": 1107296256,
+    "free_after": 1103863808,
+    "candidate_count": 245,
+    "compressed_count": 245,
+    "unprocessed_count": 0,
+    "prior_storage_evidence_unchanged": true,
+    "extra_HTTP_requests": 0,
+    "frozen_runner_changed": false
+  },
+  "supplemental_context_writer_first_failure": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/independent-review-context-first-failure.json",
+  "interpretation": [
+    "The original result reviewer enumerates frozen static findings and owned exit failures; its empty retained_owner_failures list is not evidence that every preparation or pre-controller attempt passed.",
+    "The later static delivery and gzip durability findings, plus m062 pre-controller disk assertion, remain retained source-bound records. They are not extra HTTP attempts or successful first-pass claims.",
+    "All245 bounded repair candidates were processed; original1GiB startup gate passed, but extra32MiB storage reserve target was not met. No candidate expansion or threshold change.",
+    "One owned independent arithmetic review passed; all131 planned HTTP requests have final audited contracts. NO_GO gates retain every frozen rejection without epsilon or favorable resampling.",
+    "Numerical contract pass covers the selected fixture only; no new whole-model numerical or physical54GB claim."
+  ],
+  "default_enable_allowed": false,
+  "whole_physical_RAM_54GB": "INDETERMINATE",
+  "new_model_runs": 0,
+  "new_tests": 0,
+  "raw_or_payload_reads": 0
+}

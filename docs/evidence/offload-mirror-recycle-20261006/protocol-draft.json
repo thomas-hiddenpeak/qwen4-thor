@@ -1,0 +1,232 @@
+{
+  "schema": 1,
+  "status": "DRAFT_NOT_EXECUTION_ADMISSION",
+  "switch": "Q4T_MOE_MIRROR_GPU_RECYCLE",
+  "default": 0,
+  "scope": "explicit_single_decode_T1",
+  "runtime_fixed": {
+    "C": 256,
+    "L2": 16,
+    "mirrorK": 8,
+    "max_open": 200,
+    "max_seq": 1,
+    "max_prefill": 8192,
+    "max_len": 262144,
+    "mtp": false,
+    "partition": 0,
+    "request_partition": 0,
+    "quiet": 0,
+    "chunk_order": 0,
+    "supply_observer": false,
+    "route_trace": false,
+    "phase_diagnostics": false
+  },
+  "first_test": {
+    "group": "q01-quality-on",
+    "requests": 11,
+    "host_cache_max_bytes": null
+  },
+  "history": {
+    "sequence": [
+      16385,
+      8192,
+      8193,
+      1024,
+      45056,
+      4096,
+      8192
+    ],
+    "rounds": 3,
+    "output_tokens": 256,
+    "group_order": [
+      "h01-off",
+      "h02-on",
+      "h03-on",
+      "h04-off"
+    ],
+    "comparison_blocks": [
+      [
+        "h01-off",
+        "h02-on"
+      ],
+      [
+        "h04-off",
+        "h03-on"
+      ]
+    ],
+    "positions_separate": true
+  },
+  "matrix": {
+    "lengths": [
+      1024,
+      4096,
+      8192,
+      45056,
+      204800,
+      261887
+    ],
+    "repeats": 3,
+    "service_per_arm_per_tier": true,
+    "output_tokens_default": 256,
+    "output_tokens_target": 257
+  },
+  "groups": [
+    {
+      "id": "q01-quality-on",
+      "kind": "quality",
+      "arm": 1,
+      "requests": 11
+    },
+    {
+      "id": "h01-off",
+      "kind": "history",
+      "arm": 0,
+      "requests": 21
+    },
+    {
+      "id": "h02-on",
+      "kind": "history",
+      "arm": 1,
+      "requests": 21
+    },
+    {
+      "id": "h03-on",
+      "kind": "history",
+      "arm": 1,
+      "requests": 21
+    },
+    {
+      "id": "h04-off",
+      "kind": "history",
+      "arm": 0,
+      "requests": 21
+    },
+    {
+      "id": "m011-1024-off",
+      "kind": "matrix",
+      "arm": 0,
+      "requests": 3,
+      "input_tokens": 1024,
+      "output_tokens": 256
+    },
+    {
+      "id": "m012-1024-on",
+      "kind": "matrix",
+      "arm": 1,
+      "requests": 3,
+      "input_tokens": 1024,
+      "output_tokens": 256
+    },
+    {
+      "id": "m021-4096-on",
+      "kind": "matrix",
+      "arm": 1,
+      "requests": 3,
+      "input_tokens": 4096,
+      "output_tokens": 256
+    },
+    {
+      "id": "m022-4096-off",
+      "kind": "matrix",
+      "arm": 0,
+      "requests": 3,
+      "input_tokens": 4096,
+      "output_tokens": 256
+    },
+    {
+      "id": "m031-8192-off",
+      "kind": "matrix",
+      "arm": 0,
+      "requests": 3,
+      "input_tokens": 8192,
+      "output_tokens": 256
+    },
+    {
+      "id": "m032-8192-on",
+      "kind": "matrix",
+      "arm": 1,
+      "requests": 3,
+      "input_tokens": 8192,
+      "output_tokens": 256
+    },
+    {
+      "id": "m041-45056-on",
+      "kind": "matrix",
+      "arm": 1,
+      "requests": 3,
+      "input_tokens": 45056,
+      "output_tokens": 256
+    },
+    {
+      "id": "m042-45056-off",
+      "kind": "matrix",
+      "arm": 0,
+      "requests": 3,
+      "input_tokens": 45056,
+      "output_tokens": 256
+    },
+    {
+      "id": "m051-204800-off",
+      "kind": "matrix",
+      "arm": 0,
+      "requests": 3,
+      "input_tokens": 204800,
+      "output_tokens": 256
+    },
+    {
+      "id": "m052-204800-on",
+      "kind": "matrix",
+      "arm": 1,
+      "requests": 3,
+      "input_tokens": 204800,
+      "output_tokens": 256
+    },
+    {
+      "id": "m061-261887-on",
+      "kind": "matrix",
+      "arm": 1,
+      "requests": 3,
+      "input_tokens": 261887,
+      "output_tokens": 257
+    },
+    {
+      "id": "m062-261887-off",
+      "kind": "matrix",
+      "arm": 0,
+      "requests": 3,
+      "input_tokens": 261887,
+      "output_tokens": 257
+    }
+  ],
+  "service_count": 17,
+  "http_count": 131,
+  "gates": [
+    "on_first_ttft <= off_first_ttft",
+    "max_on_later2_ttft <= max_off_later2_ttft",
+    "min_on_all3_decode_tps >= min_off_all3_decode_tps"
+  ],
+  "epsilon": null,
+  "performance_host_cache_max_bytes": 17179869184,
+  "performance_swap_max_bytes": 0,
+  "cold_advice_rounds_max": 2,
+  "cold_payload_resident_bytes_required": 0,
+  "min_free_disk_bytes": 1073741824,
+  "monitor_interval_s": 1,
+  "gpu_interval_s": 10,
+  "file_cache_mode": "endpoints",
+  "failure_policy": {
+    "contract_failure": "STOP_DEPENDENT_KEEP_FIRST_FIX_ONLY_IDENTIFIED_DEFECT",
+    "speed_failure": "PERMANENT_VETO_CONTINUE_ONLY_FROZEN_COVERAGE",
+    "automatic_retry": false,
+    "second_candidate": false,
+    "additional_matrix": false
+  },
+  "required_numerical_tests": [
+    "moe_mirror_gpu_recycle_numerical_contract"
+  ],
+  "whole_physical_RAM_54GB": "INDETERMINATE",
+  "runtime_acceptance": false,
+  "group_order_limit": "History ABBA does not remove all drift; matrix alternates order across tiers but each tier remains order-confounded.",
+  "no_payload_hash": true,
+  "numerical_scope": "One deterministic real-weight fully-resident reference vs same-cache OFF/ON; require ON changed==1, complete BF16/router and OFF_ON_FP32 equality; compare slot identities/ticks, not all raw slot payload bytes."
+}

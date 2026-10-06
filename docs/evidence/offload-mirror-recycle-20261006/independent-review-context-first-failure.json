@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "recorded_t": 1791324401.0785172,
+  "passed": false,
+  "phase": "supplemental_compact_context_writer_before_output",
+  "exec_chunk_id": "7f24cb",
+  "exec_exit_code": 1,
+  "error": "AssertionError: incorrectly assumed storage_target_met is true",
+  "observed_storage_target_met": false,
+  "observed_startup_space_gate_met": true,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage-reserve-repair/summary.json": "5a9d32014440ba7ba5da36a12db03a916ff71d31b3bec6a00d3d26f1be4a4499"
+  },
+  "existing_independent_result_review_unchanged": true,
+  "correction": "Carry both stored booleans exactly; original1GiB startup gate passed, extra32MiB storage target was not met after exhausting245 candidates.",
+  "model_or_HTTP_or_tests_repeated": false
+}

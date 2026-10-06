@@ -1,0 +1,197 @@
+{
+  "passed": true,
+  "storage_only": true,
+  "ended_t": 1791319273.3353198,
+  "plan_sha256": "5e9f1627c85cd21a7467caed538fb80bc88cedb534f59fed6c094a922be8537e",
+  "scope_sha256": "3feb568e7d8884ae08dde4050edf47220a11b3a93852549a47e21ee705658263",
+  "candidate_count": 453,
+  "shared_replacements": 428,
+  "released_duplicate_allocated_bytes": 33353728,
+  "released_rebuildable_allocated_bytes": 11272192,
+  "removed_rebuildable": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/libq4t_model.a",
+      "original_sha256": "e757fa60f1f7cb02cb79ff50b8239919c95533f2d58f5d18906fd3166b1312ea",
+      "allocated_bytes": 3665920,
+      "free_before": 1062490112,
+      "free_after": 1066156032
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/CMakeFiles/4.4.3/CMakeDetermineCompilerABI_CUDA.bin",
+      "original_sha256": "49b5a500c7784da1ab5cdbac3da41e14ee555a6eb16731dbf4166a9a6031d8ae",
+      "allocated_bytes": 1064960,
+      "free_before": 1066156032,
+      "free_after": 1067220992
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/CMakeFiles/4.4.3/CompilerIdCUDA/a.out",
+      "original_sha256": "c688e87b36ef12f8fef956765e45039983c49184635742033a20b907e4a730f0",
+      "allocated_bytes": 1024000,
+      "free_before": 1067220992,
+      "free_after": 1068244992
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/libq4t_server.a",
+      "original_sha256": "bf2b95e9c5fa7cab290c0de9d85f61951d5b5e1553536628199b6331b4ab5a97",
+      "allocated_bytes": 692224,
+      "free_before": 1068244992,
+      "free_after": 1068937216
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/CMakeFiles/q4t_model.dir/src/model/full_attention.cu.o",
+      "original_sha256": "031f494c1e1a7c0dd9953b4f755c5542e7075d52997675756033f7da82c717dd",
+      "allocated_bytes": 610304,
+      "free_before": 1068937216,
+      "free_after": 1069547520
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/libq4t_quant.a",
+      "original_sha256": "2cff6ce0e9c425174112c842dd883d71fb660f273569e7b03effb9dc3723bbea",
+      "allocated_bytes": 540672,
+      "free_before": 1069543424,
+      "free_after": 1070084096
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/CMakeFiles/q4t_model.dir/src/model/linear_attention.cu.o",
+      "original_sha256": "e443121ab94e85fced43343fa6a907c7d0b59cd47886abb48bfd05e68c99e15b",
+      "allocated_bytes": 507904,
+      "free_before": 1070084096,
+      "free_after": 1070592000
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/CMakeFiles/q4t_model.dir/src/model/decode_topk.cu.o",
+      "original_sha256": "014b2f19ad1c6ba104d4df962f40098f269bb2e21f3bad8968196214d7371edc",
+      "allocated_bytes": 360448,
+      "free_before": 1070592000,
+      "free_after": 1070952448
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/libq4t_io.a",
+      "original_sha256": "1694ad204ddce44263f2831b7ecbba8dfdd824a007da86f52274c18d6711c3bc",
+      "allocated_bytes": 262144,
+      "free_before": 1070952448,
+      "free_after": 1071214592
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/CMakeFiles/q4t_model.dir/src/model/ple_layer.cu.o",
+      "original_sha256": "bd15b1b99ee7cad2b4857771d7bc8f4ccbf98ad252bdca885a81225520c847cf",
+      "allocated_bytes": 233472,
+      "free_before": 1071214592,
+      "free_after": 1071448064
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/CMakeFiles/q4t_model.dir/src/vision/processor.cpp.o",
+      "original_sha256": "036c4ce7931fbeeb52c0366dac4e51b00a112bd228c3bf04c0d3f7980aad9ffc",
+      "allocated_bytes": 208896,
+      "free_before": 1071443968,
+      "free_after": 1071652864
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/CMakeFiles/q4t_model.dir/src/model/moe.cu.o",
+      "original_sha256": "6f47b37f7cc9d578fdc88e3078335763c4a6875a9c36b334f153a85d95de5af8",
+      "allocated_bytes": 200704,
+      "free_before": 1071652864,
+      "free_after": 1071853568
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/CMakeFiles/q4t_model.dir/src/model/model.cu.o",
+      "original_sha256": "9522b34ac6b457945f59f7c31a4420cd97b4b8d46ec162f77ce09cf8bdbd1da3",
+      "allocated_bytes": 184320,
+      "free_before": 1071853568,
+      "free_after": 1072037888
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/CMakeFiles/q4t_model.dir/src/model/streaming_topk.cu.o",
+      "original_sha256": "131636a26060700495feea3c68601ffbd56df8b4d35be611b1073cc55f469020",
+      "allocated_bytes": 184320,
+      "free_before": 1072037888,
+      "free_after": 1072222208
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/CMakeFiles/q4t_model.dir/src/mtp/mtp.cu.o",
+      "original_sha256": "9922635552e8959963747b0b0724cd96637fd7b173ee205401db30828452cc3c",
+      "allocated_bytes": 184320,
+      "free_before": 1072218112,
+      "free_after": 1072402432
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/CMakeFiles/q4t_model.dir/src/model/hyperconnection.cu.o",
+      "original_sha256": "f83282a3b659baa420cddd3fd93522ce64d678a378c1dea88bb90b074d0f644e",
+      "allocated_bytes": 180224,
+      "free_before": 1072402432,
+      "free_after": 1072582656
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/CMakeFiles/q4t_tests.dir/tests/model_moe_test.cpp.o",
+      "original_sha256": "626a7f9927b3cfbbc092a569c9f59c9eb4fe808ade263307a979d1e463745323",
+      "allocated_bytes": 176128,
+      "free_before": 1072582656,
+      "free_after": 1072758784
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/CMakeFiles/q4t_quant.dir/src/quant/moe_residency.cpp.o",
+      "original_sha256": "83b03d677967b150511028d5fa310b3c027faa822ea2f91c21e6c70e612c9a91",
+      "allocated_bytes": 167936,
+      "free_before": 1072758784,
+      "free_after": 1072926720
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/libq4t_trace.a",
+      "original_sha256": "e143c35afd516e3eb95e90e46bbfd0e4d337493851668d8b8e3f8fa9aa824275",
+      "allocated_bytes": 163840,
+      "free_before": 1072926720,
+      "free_after": 1073090560
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/CMakeFiles/q4t_model.dir/src/vision/vision.cu.o",
+      "original_sha256": "1598b5c93d295b2a4b9fff9913e3f8de3e812f510b3a61dae16bf655a86e5032",
+      "allocated_bytes": 159744,
+      "free_before": 1073086464,
+      "free_after": 1073246208
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/CMakeFiles/q4t_tests.dir/tests/model_forward_test.cpp.o",
+      "original_sha256": "9d50461a0db4322027498c6f88fe52d4c6056f9b3907c8a8300caccc997df8ee",
+      "allocated_bytes": 159744,
+      "free_before": 1073246208,
+      "free_after": 1073405952
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/CMakeFiles/q4t_model.dir/src/model/short_topk.cu.o",
+      "original_sha256": "92e128080aba2425b0e832bac7a70821eea4a9471919159928e56766be52b5f2",
+      "allocated_bytes": 139264,
+      "free_before": 1073405952,
+      "free_after": 1073545216
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/CMakeFiles/q4t_model.dir/src/mtp/moe_bf16.cu.o",
+      "original_sha256": "e4e8817b11ce36a3f4c8f2015601986e134f471f231385de709de1d1154e473d",
+      "allocated_bytes": 126976,
+      "free_before": 1073545216,
+      "free_after": 1073672192
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/CMakeFiles/q4t_model.dir/src/model/model_head.cu.o",
+      "original_sha256": "a307a3385fe60ec5f8c0bd7c9c8f24c6eefc1517679b1a0bfcdc807646dcf064",
+      "allocated_bytes": 69632,
+      "free_before": 1073672192,
+      "free_after": 1073741824
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.fatbin",
+      "original_sha256": "01e215791d821ada559b31af255d61d725453c266681dfd305fd44eab103debb",
+      "allocated_bytes": 4096,
+      "free_before": 1073737728,
+      "free_after": 1073741824
+    }
+  ],
+  "original_ledgers_unchanged": true,
+  "all_evidence_paths_and_byte_sha_preserved": true,
+  "free_before": 1030127616,
+  "free_after": 1073741824,
+  "minimum_free_bytes": 1073741824,
+  "startup_space_gate_met": true,
+  "model_or_tests_run": false,
+  "content_hash_read_bytes": 129156516,
+  "metadata_note": "Only exact byte duplicates may share after complete preflight. Every original path/content remains. Readonly canonical mode/inode/nlink/mtime may replace target metadata. Build pruning is optional only if hardlink result remains below unchanged 1 GiB gate. No tests or model runs."
+}

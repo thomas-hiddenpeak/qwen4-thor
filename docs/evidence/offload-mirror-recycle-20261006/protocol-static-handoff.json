@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "status": "IMPLEMENTED_STATIC_READY_NOT_TESTED",
+  "scope_plan_sha256": "a10255307a3582b27e738abd042a9db67cd10e8abc23b51addfd6e2471f61670",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tools/evalscope/offload_policy.py": "f3e213aec87964c20de17416bff45575dde59b69717bf4f06a04e7b37a7499a2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tools/evalscope/run_budget_experiment.py": "82ff67c5b90c81ec24ba2402a7ca23ce7e436b8a0d0860cc22caa452e2efb944",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tools/evalscope/mirror_recycle_protocol.py": "cb26dc9272d86fde3f152a398d29a5cb4f4f720286ac53c3989db215bfb3b201",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tools/evalscope/test_mirror_recycle_protocol.py": "9e57e2c376803a643634e1a07121eb86e9c5ba9b0e33974d7c27c56e91f59abc"
+  },
+  "test_definitions": {
+    "offload_policy.py": [],
+    "run_budget_experiment.py": [],
+    "mirror_recycle_protocol.py": [],
+    "test_mirror_recycle_protocol.py": [
+      "test_explicit_off_on_and_scrub_inherited_experiments",
+      "test_reject_other_policy_or_diagnostics",
+      "test_strict_switch_and_legacy_unchanged",
+      "test_tampered_protocol_and_hidden_observation_rejected",
+      "test_enabled_counts_close_and_zero_request_allowed",
+      "test_disabled_all_zero_and_preferred_alone_not_activation",
+      "test_startup_scope_state_schema_missing_or_duplicate_rejected",
+      "test_missing_duplicate_out_of_order_unknown_or_malformed_summary",
+      "test_counter_closure_subsets_and_disabled_work_rejected",
+      "test_invalid_http_identity_output_or_duplicate_id_rejected"
+    ]
+  },
+  "new_contract_count": 10,
+  "executed_tests": 0,
+  "model_runs": 0,
+  "http_requests": 0,
+  "changes": [
+    "new mirror-recycle axis rejects bundled partition/quiet/chunk-order/diagnostics",
+    "strict CLI 0/1 survives scrub through explicit environment/protocol",
+    "fixed21 history permitted on new axis with original sequence generator",
+    "startup and id-bound seven-counter summaries validate selection counters, per-request decode-layer bound, off all-zero",
+    "no run_acceptance or isolation/resource arithmetic edits"
+  ],
+  "parser": {
+    "file": "tools/evalscope/mirror_recycle_protocol.py",
+    "function": "mirror_recycle_evidence(log, requests, enabled)",
+    "request_fields": [
+      "response_id",
+      "response_id_valid",
+      "actual_output"
+    ],
+    "activation_field": "selection_change_observed",
+    "activation_meaning": "sum(changed)>0; preferred alone is not actual intervention",
+    "phase_gate_scope": "declared startup plus count bound only; static/C++ explicit-phase contract needed"
+  },
+  "coverage_reuse": [
+    "unchanged fixed11 fixtures/oracle",
+    "unchanged history sequence/metric functions",
+    "unchanged five-tier/target fixture and three-repeat mechanics",
+    "unchanged isolation/monitor/raw-resource arithmetic"
+  ],
+  "audit_adaptation_needed": [
+    "R controllers fixed17 groups/131 requests; quality first, then direct/numerical",
+    "identity protocol tool_sha varies: history includes request_policy_protocol; new axis always mirror_recycle_protocol",
+    "request_path_evidence(log, requests, 0) and unchanged legacy path assertions",
+    "ABBA history separate block gates and each tier gate; no epsilon/retry"
+  ],
+  "unresolved_failures": []
+}

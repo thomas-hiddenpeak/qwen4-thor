@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "recorded_t": 1791324720.1252835,
+  "reviewer": "/root/recycle_protocol",
+  "passed": true,
+  "static_only": true,
+  "scope": "Only exact archive-extension allowlist increment; prior passed helper review reused.",
+  "helper_sha256_before": "f38290696747205ee79574fd44682ec04f775b671e50bafea68bf693db46859b",
+  "helper_sha256_after": "473d3628f6cb24eb2a4fcbae1d6e20ce629c4e222a179e51f13b9fe0b9d911f7",
+  "reversing_exact_three_edits_reconstructs_before_sha256": true,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/archive_delivery.py": "473d3628f6cb24eb2a4fcbae1d6e20ce629c4e222a179e51f13b9fe0b9d911f7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/delivery-archive-extension-static-finding.json": "23f3e45fc9fdc28b9426df777cec854e84571c4d3a25d1520e70462bcbee15d7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/archive-storage-extension.json": "0aece76bc138d0cf5b3ac0a400f3064abc776100add3288cbd25ee057e858620",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/archive-reserve-extension.json": "efd7480e15f99341b3aed4f406e4cb60abf67b2e2f3b9379a055b2c23ca98b3e"
+  },
+  "checks": [
+    "ARCHIVE_EXTENSIONS contains exactly archive-storage-extension.json and archive-reserve-extension.json.",
+    "These exact names are unioned into the finite root metadata names before filtering.",
+    "The archive-* exclusion exempts only these exact names. All other prior archive attempts remain excluded.",
+    "No additional recursion, source-path following, raw/gzip/payload reads, changes to runtime or acceptance behavior.",
+    "Existing *finding*.json and *review*.json retain the original omission finding and this incremental review."
+  ],
+  "first_finding_preserved": "delivery-archive-extension-static-finding.json",
+  "new_findings": [],
+  "helper_executed": false,
+  "archive_executed": false,
+  "tests_run": false,
+  "raw_or_model_payload_reads": 0,
+  "W_modified": false
+}

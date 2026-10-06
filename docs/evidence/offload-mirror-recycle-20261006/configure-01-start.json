@@ -1,0 +1,22 @@
+{
+  "started_t": 1791293249.4949446,
+  "command": [
+    "cmake",
+    "-S",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-source",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DCMAKE_CXX_COMPILER=/usr/bin/g++-14",
+    "-DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-14",
+    "-DQ4T_CUDA_ARCHITECTURES=110a",
+    "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source",
+  "returncode": null,
+  "failure": null,
+  "automatic_retry": false,
+  "timeout_s": 600,
+  "signals": [],
+  "cleanup_complete": false
+}

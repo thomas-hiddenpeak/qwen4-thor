@@ -1,0 +1,34 @@
+{
+  "started_t": 1791293251.518375,
+  "command": [
+    "cmake",
+    "--build",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/candidate-build",
+    "--target",
+    "q4t",
+    "--parallel",
+    "8"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source",
+  "returncode": 0,
+  "failure": null,
+  "automatic_retry": false,
+  "timeout_s": 1800,
+  "signals": [],
+  "cleanup_complete": true,
+  "pid": 3825849,
+  "pgid": 3825849,
+  "group_before_cleanup": {
+    "live_pids": [],
+    "zombie_pids": [],
+    "errors": [],
+    "absent": true
+  },
+  "group_after_cleanup": {
+    "live_pids": [],
+    "zombie_pids": [],
+    "errors": [],
+    "absent": true
+  },
+  "ended_t": 1791293278.9162428
+}

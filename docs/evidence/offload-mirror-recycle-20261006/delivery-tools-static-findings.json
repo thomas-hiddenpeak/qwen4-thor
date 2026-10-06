@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "status": "STATIC_FINDINGS_BEFORE_DELIVERY_HELPER_EXECUTION",
+  "recorded_t": 1791310228.6982865,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/final_protection.py": "936ff16dad3d51fb0dfc47120e27be1b969325f9ab4b7b0f3d5431d7b4dfea16",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/archive_delivery.py": "4b2fe70bf5322d54fd99c73d9f53c95cda5e02414bea526d84dd1ae68b9b1ad3"
+  },
+  "findings": [
+    {
+      "file": "final_protection.py",
+      "finding": "Any existing per-group evidence directory is treated as a started HTTP service and requires runner-process-group.json plus http/isolation/cleanup.json. A frozen cold gate failure creates protocol/cache/wrapper but launches no service, so supported partial delivery cannot pass protection with this valid no-service terminal.",
+      "required_repair": "Before service-only files, inspect wrapper terminal. Validate the exact no-service cold-gate shape (runner_rc/monitor_rc None, no service PID, failed cold gate, nonzero owner exit), record no service started, and skip nonexistent service-unit cleanup. Do not silently waive active/unknown failures."
+    },
+    {
+      "file": "archive_delivery.py",
+      "finding": "Target-file and DEST checks do not reject intermediate groups/harness symlink directories; writing a nonexisting child could escape the intended archive subtree.",
+      "required_repair": "During preflight for every target, reject symlink ancestors through destination and require resolved target containment before any mutation; preserve collision/no-overwrite behavior."
+    }
+  ],
+  "not_findings": [
+    "Model audit uses only 228 metadata records plus config/index content; payload/ref content not opened.",
+    "Existing failed outcome return codes remain visible and do not become performance acceptance.",
+    "Partial archive declares accepted requests separately from unknown attempted and missing groups; archive is not acceptance; default off/54GB unknown remain explicit."
+  ],
+  "executed_helpers": 0,
+  "tests_executed": 0,
+  "raw_evidence_reads": 0,
+  "model_payload_reads": 0
+}

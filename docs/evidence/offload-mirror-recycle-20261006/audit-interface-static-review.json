@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "passed": true,
+  "status": "LIMITED_STATIC_INTERFACE_REVIEW_NO_EXECUTION",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/audit_stage.py": "ae69bbb2810a54148e030f0e1c2ea1b25527d23626d08849ff3206516c4896cb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/run_stage.py": "c3e0b0c2702616e28a3e6b1b717fa705879979c961613f4b9b0391f4294f9ef0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/compare_results.py": "16c48c328353f2c27de5b02c58aba576bb94b9054eedb744e975267e7b06448b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/resource_audit.py": "c786c17f3aeb7aac5c456464da1c2d92cb22f1cabdfa98911dfe977cdc2b8158",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tools/evalscope/run_acceptance.py": "c3d3353224a7d9f6c4cab112dedeb913a30580ba3884f3feb9c2e6cc37fd5846",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tools/evalscope/mirror_recycle_protocol.py": "cb26dc9272d86fde3f152a398d29a5cb4f4f720286ac53c3989db215bfb3b201"
+  },
+  "scope": [
+    "Every wrapper input_config_sha256 item is required in execution frozen_files; wrapper/server env and actualbinary path/sha/sourcecommit/emptyworktree.patch bound.",
+    "Quality expects11 exact oracle requests; history21 exact ordered cases and matrix one case with3 rows; resource completed field handles case count1 separately from HTTP3.",
+    "History sequence_output evidence preserves repeated prompts; compare_results also checks all4 service outputs across blocks before independent extrema gates.",
+    "Cold protocol uses at most2 pre-service advice rounds with zero final payload residency and no extra post-success advice; oldraw/payload are not read in this review.",
+    "Ownedcontroller/wrapper/processgroup/unitcleanup and runtime requestphase/counterparser integration use shared identities.",
+    "Group requests field contains original output text; archive_delivery must project it and never copy group-decision verbatim."
+  ],
+  "blocking_findings": [],
+  "tests_executed": 0,
+  "raw_log_resource_reads": 0,
+  "limits": [
+    "Static interface consistency only; does not execute or replace remaining HTTP/runtime/resource acceptance.",
+    "No second execution of already passed quality/host/numerical checks."
+  ]
+}

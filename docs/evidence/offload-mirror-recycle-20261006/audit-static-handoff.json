@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "status": "STATIC_ADAPTER_HANDOFF_NOT_EXECUTED",
+  "created_t": 1791293163.0824826,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/audit_stage.py": "ae69bbb2810a54148e030f0e1c2ea1b25527d23626d08849ff3206516c4896cb"
+  },
+  "interface": "group --plan-sha256; group id/kind/arm integer0or1/requests, matrix input_tokens/output_tokens",
+  "contracts": [
+    "quality fixed11 outputs/usage vs frozen oracle",
+    "samebinary/source/cleanworktree/CUDAserve MTPoff capacity",
+    "protocol mirror-recycle exactenv and copiedtool set",
+    "input_config_sha256 each key must match execution frozen_files",
+    "cold2round max/zero payload/frozen226 files/16GiB no swap",
+    "history fixed21 seq and source metric/output consistency",
+    "matrix single tier3 no fullmatrix claim",
+    "request_path_evidence state0 plus new request sevencounter parser",
+    "no pending off/on counterpart required before future group",
+    "immutable try/finally first audit failure record"
+  ],
+  "static_dependencies_read": [
+    "recycle_common.py",
+    "run_stage.py",
+    "offload-decode-log-20261005/audit_group.py",
+    "source/tools/evalscope/run_acceptance.py",
+    "source/tools/evalscope/run_budget_experiment.py"
+  ],
+  "tests_executed": 0,
+  "model_runs": 0,
+  "requested_parent_followup": "independent static audit before freeze; execution root only"
+}

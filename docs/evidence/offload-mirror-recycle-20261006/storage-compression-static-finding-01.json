@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "recorded_t": 1791318403.980583,
+  "reviewer": "/root/recycle_protocol",
+  "kind": "independent_static_finding",
+  "passed_before_fix": false,
+  "script_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/storage_compress.py",
+  "script_sha256_before": "9ea252b00a93f633c7860860c6bb0308e9a9f77543329f98e3a4188891047d4b",
+  "script_sha256_after": "04ed5e8bd935de196d373bd546902074a6789c612780272e0e2a12d5c18fe109",
+  "finding": "After creating storage-compression and payload, only child directories were fsynced. The entry of the new restoration root in R was not durably synced before originals could be unlinked.",
+  "impact": "A crash could lose the restoration root directory entry after original unlink was durable, despite verified gzip and durable map files within the new directory.",
+  "repair": "After both mkdir calls, sync_dir(out) and sync_dir(R), before preflight/compression/original unlink.",
+  "resolved_by_static_read": true,
+  "execution_or_model_tests": false,
+  "candidate_payload_bytes_read": 0,
+  "scope": "Only this unfrozen delivery helper; runtime, frozen execution files, original evidence, model and reference unchanged."
+}

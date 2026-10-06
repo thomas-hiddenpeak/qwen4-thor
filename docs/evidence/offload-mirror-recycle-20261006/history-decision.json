@@ -1,0 +1,1552 @@
+{
+  "schema": 1,
+  "scope": "history",
+  "passed": false,
+  "decision": "NO_GO",
+  "evidence_contracts_passed": true,
+  "plan_sha256": "5e9f1627c85cd21a7467caed538fb80bc88cedb534f59fed6c094a922be8537e",
+  "started_t": 1791304041.283488,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/protocol-draft.json": "e8d966731df5cf7fa5dfd973a828bcc840d8afcc9f3af81bc131baa68e04b854",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-decision.json": "679659d72411e95ccca6d4b082f8664a87f491a47824940ec33c96e232647655",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-decision.json": "6324fe6b8c9ddedcaabe2d3ac34e8a0d4d608be369297ab16d3fc7cc7fd84f0b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-decision.json": "bb31e31410e85da092c476b7d138cece49a4acb5dca59cecb2b85412b3b88f00",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-decision.json": "75875225b055df743a288870d2d92684d5d8929f77d61905ddb652ed96195b21",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/compare_results.py": "16c48c328353f2c27de5b02c58aba576bb94b9054eedb744e975267e7b06448b"
+  },
+  "group_decision_provenance": {
+    "h01-off": {
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/protocol-draft.json": "e8d966731df5cf7fa5dfd973a828bcc840d8afcc9f3af81bc131baa68e04b854",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-stage.json": "5f0f68bad798eec7825493187718f8cbbe9c50c3dcd688bf4b6bfb5b66f35833",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h01-off-controller-exit.json": "d2e5eab6fcb51d313d419691263afa9e8dd7ca093075ed5ce08f33e1aba58005",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/wrapper-exit.json": "eb1f78b47e7e6690949ad720b062b287807cdad412df32630ca9c1860ddd0507",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/exit.json": "eae28a4becc6cfce75dfd1942ab60c107520fc19346b33c4ff01088e5eee48a5",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/runner-process-group.json": "8578c21cb6c7381bb19e69f64c84f208481b0f83ce9ca6c453ba5511122f1dbe",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/isolation/cleanup.json": "51506b1b0947062360f81dae373f02c96f602e0cae12b689a1a365ece2eb0d57",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/capacity.json": "135b17d195db1d71febe10e60def33e3894bb0e867b253637ec833f2fa48dfb7",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/protocol.json": "ba2d6822dc2c5f8103dd5ec786dabebeb84791d519a84d021f3b459ed3457e99",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/server-command.json": "11a788dc975cd0e2515f56bcb0d7a25244d7573eb90c294198535b57e3fa5c0c",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/binary.sha256": "5063fabddf13867912b4d40cc9c87b311fb5f0feedb5d089b2eecb67db2cc333",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/commit.txt": "008c338838d2904322a4b97f5bff46a22ffd2a02a7ca8e05425eafa394643cec",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/worktree.patch": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/tools/run_budget_experiment.py": "82ff67c5b90c81ec24ba2402a7ca23ce7e436b8a0d0860cc22caa452e2efb944",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/tools/run_acceptance.py": "c3d3353224a7d9f6c4cab112dedeb913a30580ba3884f3feb9c2e6cc37fd5846",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/tools/isolated_service.py": "c561ec8a8cf1c05e2ceb8ba08959af3624db9ee832723103b691ee2edb713521",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/tools/monitor_memory.py": "098d91eb208ce85961b23a88b029a80e122ff0b1b37bed7b9eaa898d1b5d6fc5",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/tools/file_cache.py": "d25d6fa846af504e40eec850eb4f9c0cfa168f798d8aca826642214821eb9b73",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/tools/resource_metrics.py": "4ec55a1bad3983d9e71621c72aa299538392b3f8efb4ec121b9ec28bd105a5ce",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/tools/memory_accounting.py": "e0e7418359db1ee021e9d2aa096ef929212a62b47fd91d06086d0c11f4acf6f3",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/tools/offload_policy.py": "f3e213aec87964c20de17416bff45575dde59b69717bf4f06a04e7b37a7499a2",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/tools/request_policy_protocol.py": "8f2e53412fef4fe795cb5e8f3dcccd8b2048ae42696da658e81b05ebe381d6f8",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/tools/mirror_recycle_protocol.py": "cb26dc9272d86fde3f152a398d29a5cb4f4f720286ac53c3989db215bfb3b201",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/results.json": "489444b6261f919338568698d026d86ecfc76c484efb0a2379a27b3a189c6e8e",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/cache-gate.json": "595f621568f518a19bfcdd3eeaf83f9ac402bb10a66ea08a9bc89f79688c37e3",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/cache-advice-round-01.json": "cc8dc423d1fad25021adeb2b4d2f702c15f6be01a8ee95e5746dd583fc2c2a7f",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/cache-after-advice.json": "e96c331a88935f3e1246b5790cd8c1067fc363add815e18b19c95eab0b6bdc51",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/matrix-off/http/results.json": "2540ede1b7d9cbae705689320e0feec0a9a78c13d53f7675c9ff231df26a6473",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r01-p01-context-16385/responses.json": "6bbc145b991818b888818231ffd35304f3eef998403cf33088fd922ab16ebd7c",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r01-p02-context-8192/responses.json": "0d63e6ab60b7e581a4b805f4bb3d38af582297500eb6e683209c65c3059464a0",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r01-p03-context-8193/responses.json": "d201150a87e5c23c32b6f339c41db224ded2bc2c722261228df08a5787b3b2b7",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r01-p04-context-1024/responses.json": "a015eef7192b4a9d61e81febab27b8879487f47821128cb142bc236e380ce90f",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r01-p05-context-45056/responses.json": "955911e80ce425d3ac18d71c84d9966d19544c3d03288de0e6c1f2f8bc81d699",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r01-p06-context-4096/responses.json": "dbadbd4dbfcdf328b1e5bb610b5700ffe6ac5be0940c760e21a609104d1e074c",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r01-p07-context-8192/responses.json": "fa87762c2c97a3e5b2bd65aa55b9a9697b825c0c8e81cfcece1e86f625ffb214",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r02-p01-context-16385/responses.json": "88e511e30aab4db6a65e3e447edf5ce511bf113c9a4e5e7d788de89d0bc35fe7",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r02-p02-context-8192/responses.json": "19f44f07c371296d8f60ad12eea6bdd138375dfc1924b777744a50990c8b8db7",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r02-p03-context-8193/responses.json": "838dfc2964a6846a7eefdff984e29e44184a6df0bd6c1bfd49d7392e8bf681ef",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r02-p04-context-1024/responses.json": "7bc33f080c3e623ddb4821ef3b3bf23df88eb5c2fbf6708c55de42f1eaa6d759",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r02-p05-context-45056/responses.json": "4f4f5be05a6dc7874763c89e5ed9a5fe08bc8e5ebad6d52dbe6cec074fdb833f",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r02-p06-context-4096/responses.json": "2799626638fff544a9ce81ca6a526e613efcf655e196b254123432fe2a69f3de",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r02-p07-context-8192/responses.json": "a39bfae26b7b73a847f78d059ac44a33da8f953f6068f2dc68cbef564b87fdd7",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r03-p01-context-16385/responses.json": "562966fc21f0502e5eb66fd04e170940f5cfe2f9731376994467361c9da760f0",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r03-p02-context-8192/responses.json": "0701a0bada462dabec300193ba3dc17997a5ee74023fbdfd3e74109e15070673",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r03-p03-context-8193/responses.json": "248af3c06c9f08bb0d10004eb0d78f4124d7f62b932b82d94b8bcb63f037167c",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r03-p04-context-1024/responses.json": "4ea22bf3feaf6e78a0bb167ff64a4f0c68532178b3d8f8a92df3cbf20689325e",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r03-p05-context-45056/responses.json": "a07f8a6471ab11bf0c9a46c1f12ea8c09b1afea110b8dfd46a11724b48e5badc",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r03-p06-context-4096/responses.json": "e6023224825450b49cc70d09c540962e961a3ecd7827a8657a6f8e0564889c23",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/sequence-r03-p07-context-8192/responses.json": "43a605cf10aee6786de8dbbfdfe1b0033dd612bbb704f4d5fe9b9cce2fc8727b",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h01-off/http/server.log": "c0f9aa0298e02cffb5e28051228185a1727801b39b41959d9a3a282f5e6dc505",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/audit_stage.py": "ae69bbb2810a54148e030f0e1c2ea1b25527d23626d08849ff3206516c4896cb"
+    },
+    "h02-on": {
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/protocol-draft.json": "e8d966731df5cf7fa5dfd973a828bcc840d8afcc9f3af81bc131baa68e04b854",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-stage.json": "47ff75dd2514a1eace53485dd9977d07d8b41bdf41a61424f2b2b7950181962f",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h02-on-controller-exit.json": "6d8fd3d627113102da2537d00c6e0a70c38d46e1ddc1017c4769fa27e00b3fcd",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/wrapper-exit.json": "26d624893284c2e5def28bbd7fc19a50bb6440938f19c81702bbcac8989d0e36",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/exit.json": "eae28a4becc6cfce75dfd1942ab60c107520fc19346b33c4ff01088e5eee48a5",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/runner-process-group.json": "06dab7db654f63ecb8f459ac82bb0b404fffced3bb28bf9e39d4c921d4f59e3c",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/isolation/cleanup.json": "2a4c4a3e889cc5b4051f351599c24fde360f70a75c29ec5bf80c7460da9d6303",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/capacity.json": "135b17d195db1d71febe10e60def33e3894bb0e867b253637ec833f2fa48dfb7",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/protocol.json": "469e67d4823cdd32542b00b4027449359dc4ab31f3bb155376cdcaa76098bd5c",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/server-command.json": "c318f704e0005fff4190dd27e2f83da9f066249355bde6e3966cf82eb5843628",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/binary.sha256": "5063fabddf13867912b4d40cc9c87b311fb5f0feedb5d089b2eecb67db2cc333",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/commit.txt": "008c338838d2904322a4b97f5bff46a22ffd2a02a7ca8e05425eafa394643cec",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/worktree.patch": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/tools/run_budget_experiment.py": "82ff67c5b90c81ec24ba2402a7ca23ce7e436b8a0d0860cc22caa452e2efb944",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/tools/run_acceptance.py": "c3d3353224a7d9f6c4cab112dedeb913a30580ba3884f3feb9c2e6cc37fd5846",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/tools/isolated_service.py": "c561ec8a8cf1c05e2ceb8ba08959af3624db9ee832723103b691ee2edb713521",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/tools/monitor_memory.py": "098d91eb208ce85961b23a88b029a80e122ff0b1b37bed7b9eaa898d1b5d6fc5",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/tools/file_cache.py": "d25d6fa846af504e40eec850eb4f9c0cfa168f798d8aca826642214821eb9b73",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/tools/resource_metrics.py": "4ec55a1bad3983d9e71621c72aa299538392b3f8efb4ec121b9ec28bd105a5ce",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/tools/memory_accounting.py": "e0e7418359db1ee021e9d2aa096ef929212a62b47fd91d06086d0c11f4acf6f3",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/tools/offload_policy.py": "f3e213aec87964c20de17416bff45575dde59b69717bf4f06a04e7b37a7499a2",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/tools/request_policy_protocol.py": "8f2e53412fef4fe795cb5e8f3dcccd8b2048ae42696da658e81b05ebe381d6f8",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/tools/mirror_recycle_protocol.py": "cb26dc9272d86fde3f152a398d29a5cb4f4f720286ac53c3989db215bfb3b201",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/results.json": "027cfb238f2c504d1b45e26965ec64ef524db027babf579cee4ba0e77d9f8ae4",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/cache-gate.json": "595f621568f518a19bfcdd3eeaf83f9ac402bb10a66ea08a9bc89f79688c37e3",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/cache-advice-round-01.json": "64cfb1d67f1ea0f59e05c115f4e94e8749c2816a51c48c1bc3be30d6ab2c6b26",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/cache-after-advice.json": "1db4b60b028e09d4d653f70f909f2f25b6b4131647c206853e34500188cc6cd4",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/matrix-off/http/results.json": "2540ede1b7d9cbae705689320e0feec0a9a78c13d53f7675c9ff231df26a6473",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r01-p01-context-16385/responses.json": "05babc7d7dc97ec735c3c0f611671f019f08b5f0409b238987aa7cc40712c1e1",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r01-p02-context-8192/responses.json": "2dbc90441eb609db39fbaa1b88e1135dfd53b40db3074b0086603cff07e0ed97",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r01-p03-context-8193/responses.json": "e9a5a1d32e03258544be9fdf2b631745c08f1ecaaa011af88800f72a24c9dd89",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r01-p04-context-1024/responses.json": "1c680ac1a0427a702874e7de1927d6f32afd728d551d9d029daa475a194f3c99",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r01-p05-context-45056/responses.json": "b199fbb13cec85f4bb437e3f012acbb162878f632e3ea1802035c2025e805c7e",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r01-p06-context-4096/responses.json": "b57e679946d9e69d43fa9c9c03066106aac16b3015dde41a631baf16f5a3596b",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r01-p07-context-8192/responses.json": "9b5ab4fe85bffb37854c2a7e8984a2e5828c48e7acf0607b49512a9b0fc4ce7a",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r02-p01-context-16385/responses.json": "33771c28b44555e58df7930f668374c182aa857d83165a65fcbb200cd85d7c16",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r02-p02-context-8192/responses.json": "ff97fccc616111c4bac1e4a0d8a7b6dad3062dc5e10509753e473c98dbdd2392",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r02-p03-context-8193/responses.json": "5f6b222c57c167475d1275c8cbfbd4f5c0ab9d26fd0427afc7b4be38985dac6e",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r02-p04-context-1024/responses.json": "7b5ab69e718355498b76e1bc4392457aa618e38495164b6de872dabcfc0c15f4",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r02-p05-context-45056/responses.json": "6cb14d50dc7493e158c2eb5c18cd9e0234707e0dd3f5cdaa125726531df55bec",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r02-p06-context-4096/responses.json": "5c4e14884f910e021fb77996ecc2b6a2f1d977751d541fffdc4bda22a335c56a",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r02-p07-context-8192/responses.json": "e5e7ff973f1ac68160c8446ce0937e178be9cd2f4477df02184a1afdc895baf6",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r03-p01-context-16385/responses.json": "667e5258adf9d508d8f6375b863b4750eddae51bfa2edd463eb95c34fc0d3b61",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r03-p02-context-8192/responses.json": "8b5935904fad176ec0f3944395e01955052a4e28b19de0a101677e6d2688f40a",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r03-p03-context-8193/responses.json": "222d3b4978bc458eef01bdec292b0eb7f993589981fb4a2b46f55dcffba29b00",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r03-p04-context-1024/responses.json": "7c09c1632a1675ca1b4839377b3499b770347ee7aae1d4b63b8b9f01677b8ddf",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r03-p05-context-45056/responses.json": "48084dbde96c28563ddfc0efeeb2ebd21dfdce9c8c906f5def7cb26a0b501b6d",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r03-p06-context-4096/responses.json": "a3aafdcc288e44db7f591cd57cc6ea1772fc96ce41551c68fdf4f542191d57e0",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/sequence-r03-p07-context-8192/responses.json": "cf950d7ff48f5424edd86675ab2e3745cb71c87cdde0d7a5f307821673585c2f",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h02-on/http/server.log": "ef5ee42d79c08ab50e6d1c54477a6e4f1b14a4d77efcf238b396e17fa675d954",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/audit_stage.py": "ae69bbb2810a54148e030f0e1c2ea1b25527d23626d08849ff3206516c4896cb"
+    },
+    "h04-off": {
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/protocol-draft.json": "e8d966731df5cf7fa5dfd973a828bcc840d8afcc9f3af81bc131baa68e04b854",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-stage.json": "46bf2e46b0156d84250212829cedd6dcc0d015b9952ea0a23281f34914166983",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h04-off-controller-exit.json": "f785b4191b7ae94be5bd614ec796464009a990264aad56ea8aa84be652a0b147",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/wrapper-exit.json": "6e12963d8e74e321770848f449060825db6d1abf678231e1284a467b74b8b26c",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/exit.json": "eae28a4becc6cfce75dfd1942ab60c107520fc19346b33c4ff01088e5eee48a5",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/runner-process-group.json": "2ead124f224ca4e60c7b2afcbe357b225514aecc84aa646b3950cf81f836fd77",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/isolation/cleanup.json": "e98b1b46a218cc8d2f13d1f32af59136977782592a8991e9ae16f9be0ff3f092",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/capacity.json": "135b17d195db1d71febe10e60def33e3894bb0e867b253637ec833f2fa48dfb7",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/protocol.json": "f27b3e14a24351f17a1cb67b0b378533c1561232565ae96a9ed539d0e3b5a26d",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/server-command.json": "cca336d12bc397878738cec2b01716e03ffe898a8c095c5cd7d7e7dadd67af8f",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/binary.sha256": "5063fabddf13867912b4d40cc9c87b311fb5f0feedb5d089b2eecb67db2cc333",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/commit.txt": "008c338838d2904322a4b97f5bff46a22ffd2a02a7ca8e05425eafa394643cec",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/worktree.patch": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/tools/run_budget_experiment.py": "82ff67c5b90c81ec24ba2402a7ca23ce7e436b8a0d0860cc22caa452e2efb944",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/tools/run_acceptance.py": "c3d3353224a7d9f6c4cab112dedeb913a30580ba3884f3feb9c2e6cc37fd5846",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/tools/isolated_service.py": "c561ec8a8cf1c05e2ceb8ba08959af3624db9ee832723103b691ee2edb713521",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/tools/monitor_memory.py": "098d91eb208ce85961b23a88b029a80e122ff0b1b37bed7b9eaa898d1b5d6fc5",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/tools/file_cache.py": "d25d6fa846af504e40eec850eb4f9c0cfa168f798d8aca826642214821eb9b73",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/tools/resource_metrics.py": "4ec55a1bad3983d9e71621c72aa299538392b3f8efb4ec121b9ec28bd105a5ce",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/tools/memory_accounting.py": "e0e7418359db1ee021e9d2aa096ef929212a62b47fd91d06086d0c11f4acf6f3",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/tools/offload_policy.py": "f3e213aec87964c20de17416bff45575dde59b69717bf4f06a04e7b37a7499a2",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/tools/request_policy_protocol.py": "8f2e53412fef4fe795cb5e8f3dcccd8b2048ae42696da658e81b05ebe381d6f8",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/tools/mirror_recycle_protocol.py": "cb26dc9272d86fde3f152a398d29a5cb4f4f720286ac53c3989db215bfb3b201",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/results.json": "2a3b4dfc61c2c84ba64482e433c2dedeaeb1ce23695cd37037252ec76a01108d",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/cache-gate.json": "595f621568f518a19bfcdd3eeaf83f9ac402bb10a66ea08a9bc89f79688c37e3",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/cache-advice-round-01.json": "4a1651dfb0120958388d09ea9315565177eb40f6db3807dba786764544c97f65",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/cache-after-advice.json": "d2467f82aea5ebbb820af0dc08019052b4cae3b27b594dd6ccdafed1dd3e9614",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/matrix-off/http/results.json": "2540ede1b7d9cbae705689320e0feec0a9a78c13d53f7675c9ff231df26a6473",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r01-p01-context-16385/responses.json": "a21145071fc25d72860d78255d71a0caa5445912d2a1004db63821e757aa9f33",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r01-p02-context-8192/responses.json": "bd523fa4300f12e53e1be913897ed12ae1ec5144010a3db1a103b068d1b67dd7",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r01-p03-context-8193/responses.json": "9f85cd66a519ab5e67f0119ed361e77159f8d9f6f46d19fd9d7225a6c51db823",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r01-p04-context-1024/responses.json": "6c2dbbac845e46841283327ef28679af4e82aa2fb779b17460e90b4eff67bfb1",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r01-p05-context-45056/responses.json": "49c00eefb88f8b91c9b41bde3ba8df66312a6c0cd641c3a1cd8497304c171f61",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r01-p06-context-4096/responses.json": "ffe9f22b7612667bc7c114dbe19d908e57405c6338abbca930372160368ecd7c",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r01-p07-context-8192/responses.json": "431709a3cc7cb37024271e4f575ce464601dc9d74d59e7bf9c09ff3a5ffe449d",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r02-p01-context-16385/responses.json": "5e63f12864c2eee755bd8248c38d2d81ddff02d96a95b60cefe422d43cb83ad4",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r02-p02-context-8192/responses.json": "c2f19489f554273df4df9d3e78e0b32a7452e0c4848f387a87d06df44deeb90d",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r02-p03-context-8193/responses.json": "a8ba08a1a8d977e91aa4f553f92a415cbb6b80e6ed0063a4ed43deb75cbd8623",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r02-p04-context-1024/responses.json": "b936dd5f1e671e53ce28b9e0aa52b77641bd66218e296ef75ba053fee18da9d6",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r02-p05-context-45056/responses.json": "f5d1ffd2393b781aefdafb5ca55d888335041f86b85203a4f96e37507779fd22",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r02-p06-context-4096/responses.json": "4e5d36ff96801994d29edfa135115c33ef55995ca4f063ac96b3266e34457114",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r02-p07-context-8192/responses.json": "15b545776789d17b4b26c4642362d8b4db6a8f9b92b813c16d6a87e16fb19dfc",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r03-p01-context-16385/responses.json": "38cbdd8c4edf08eaf142e35aae7fc2aac49d21bc9ca9323168f85618e471aa40",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r03-p02-context-8192/responses.json": "1ae88e89593d1af066b950e5f829586dd0635d4f25e779ead2145d4cca1eec48",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r03-p03-context-8193/responses.json": "148a98bc67143f7709971ba41f0eeed1e88ee094804b5378d787f9b3d927dca8",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r03-p04-context-1024/responses.json": "38e46119e60b58f0a89cc1584f8d0c37e13ddad0e62a08319bf1a778666ab72a",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r03-p05-context-45056/responses.json": "ae11ed62fcac341e834155c5f2a8e9b30d376de9419fee9248f13c50e8a3c160",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r03-p06-context-4096/responses.json": "5845b061c1d54e92cef0bbf02b7a3c307cfe8875b60f04f50dc692ec5600e276",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/sequence-r03-p07-context-8192/responses.json": "f78a099077d2934b4f90b3c003cf57e7fd3e5c91a43d3d4d0758ae46e72c5672",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h04-off/http/server.log": "7efb96bdb3c08a60578e3c2d4ab5607e422bcf03c7fc98230a991b7360f5f6f9",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/audit_stage.py": "ae69bbb2810a54148e030f0e1c2ea1b25527d23626d08849ff3206516c4896cb"
+    },
+    "h03-on": {
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/protocol-draft.json": "e8d966731df5cf7fa5dfd973a828bcc840d8afcc9f3af81bc131baa68e04b854",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-stage.json": "1d0db6ad768eecc73df7893eae5487cab36c0cb38ca800f43560d9ab2b47ccc0",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/h03-on-controller-exit.json": "519f2dc241937d6e3be28590fb761e3026ccbc79c9dcbd66284527b23d5d41bb",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/wrapper-exit.json": "e7c37197245204b8a89783fb280eecfd6cafcb62c47a96bbef95760de7ee571c",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/exit.json": "eae28a4becc6cfce75dfd1942ab60c107520fc19346b33c4ff01088e5eee48a5",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/runner-process-group.json": "4a84c2b46fcba5f189935203cc43127d5288a58fbaa9d1dea7349639eac8a7bf",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/isolation/cleanup.json": "67ccb7be958a97eba2247002cef56177b2b9b5f26cb21900d469693dc40baf2c",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/capacity.json": "135b17d195db1d71febe10e60def33e3894bb0e867b253637ec833f2fa48dfb7",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/protocol.json": "2d8be03baa2f5a46f9d670a7858afcbb41399f670127432a721d93032b989c17",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/server-command.json": "d08a9f7419a77c1ac971af533570f80a96366442528a707bac1c0c152251bae5",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/binary.sha256": "5063fabddf13867912b4d40cc9c87b311fb5f0feedb5d089b2eecb67db2cc333",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/commit.txt": "008c338838d2904322a4b97f5bff46a22ffd2a02a7ca8e05425eafa394643cec",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/worktree.patch": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/tools/run_budget_experiment.py": "82ff67c5b90c81ec24ba2402a7ca23ce7e436b8a0d0860cc22caa452e2efb944",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/tools/run_acceptance.py": "c3d3353224a7d9f6c4cab112dedeb913a30580ba3884f3feb9c2e6cc37fd5846",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/tools/isolated_service.py": "c561ec8a8cf1c05e2ceb8ba08959af3624db9ee832723103b691ee2edb713521",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/tools/monitor_memory.py": "098d91eb208ce85961b23a88b029a80e122ff0b1b37bed7b9eaa898d1b5d6fc5",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/tools/file_cache.py": "d25d6fa846af504e40eec850eb4f9c0cfa168f798d8aca826642214821eb9b73",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/tools/resource_metrics.py": "4ec55a1bad3983d9e71621c72aa299538392b3f8efb4ec121b9ec28bd105a5ce",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/tools/memory_accounting.py": "e0e7418359db1ee021e9d2aa096ef929212a62b47fd91d06086d0c11f4acf6f3",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/tools/offload_policy.py": "f3e213aec87964c20de17416bff45575dde59b69717bf4f06a04e7b37a7499a2",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/tools/request_policy_protocol.py": "8f2e53412fef4fe795cb5e8f3dcccd8b2048ae42696da658e81b05ebe381d6f8",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/tools/mirror_recycle_protocol.py": "cb26dc9272d86fde3f152a398d29a5cb4f4f720286ac53c3989db215bfb3b201",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/results.json": "d75be9e6223f6e3c5ce912273294ab24c0fd5505c423482fb8734379fdf08426",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/cache-gate.json": "595f621568f518a19bfcdd3eeaf83f9ac402bb10a66ea08a9bc89f79688c37e3",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/cache-advice-round-01.json": "4799ee8dd0c5cfda766ba442f06e86e270e173040cc2d6359ccaa04a343fde74",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/cache-after-advice.json": "054ac7bc19945971040add247ed845c549f57db551cd2d2e6171c765d9987d19",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/matrix-off/http/results.json": "2540ede1b7d9cbae705689320e0feec0a9a78c13d53f7675c9ff231df26a6473",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r01-p01-context-16385/responses.json": "b5d885a4dac4757cb8ef4360ff64c6c02b95b5c7394c5b481ddc0b53325e77dd",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r01-p02-context-8192/responses.json": "3de56f7e70dcc4a89fcd918fb1567b359159c604ed4b3ca3bc044dbd7bc26522",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r01-p03-context-8193/responses.json": "5e7665264cd7ec7290860b21b482dad345c76a027db1257a9666ae1b276d3597",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r01-p04-context-1024/responses.json": "377048d338ba66598ec7d86a7df6c839b41a67d5eaa50599776db548a2f8a195",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r01-p05-context-45056/responses.json": "dadef72e1536ca3e04fce354ed1c04f83fd394210d6c79309347bb288ea026c9",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r01-p06-context-4096/responses.json": "b126349b9992c0233f92fa7f76d2b7054e428e601220c63e05c7de914b413a65",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r01-p07-context-8192/responses.json": "9c5958df71b184905fe0e36d698db7f366e09b2635f3ce4a79b780780f959c07",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r02-p01-context-16385/responses.json": "a2e8884f54e1cbc889937932aff2a0cda99347dd643e214fea6fc454582a611f",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r02-p02-context-8192/responses.json": "e5d618c59dfe3c03491fee1953f33e37ac05c24e5b6d9f40c65571053417924a",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r02-p03-context-8193/responses.json": "cc9d6b2306a10193f4216009c794c2b96020c50e6223fea7a0c439db46d17510",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r02-p04-context-1024/responses.json": "49dcaad47670ae815d17c44c35f44ef8560c1d8d3bb847f2824c964b56cd4ed0",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r02-p05-context-45056/responses.json": "98c9bcec9b0d000f7701c92c7fb6c0c6b4eef428340aa3eacbf274210ae40a27",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r02-p06-context-4096/responses.json": "f2b4f4df0a0322e4222b0f5811985eb990df06c36abb020e72893279587064a7",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r02-p07-context-8192/responses.json": "afc6485728c5af342d87926317ca26891b96ec04f3b8847f14212aac889a06b9",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r03-p01-context-16385/responses.json": "4d0299a71765b9f8dda7ffddb49c0a292f66b2fe3efca321308707a029b029db",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r03-p02-context-8192/responses.json": "1bdc07922486454855ccb3d9fec6d6aab16468a7fd65455cc5fc297960bdf3bc",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r03-p03-context-8193/responses.json": "6a8293756e7d93781043fb8df710da50e1cabef84d165a6297f9138dc983db16",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r03-p04-context-1024/responses.json": "7ffeda1eecb485259c189d3bf8ceb6a289ff729009fe7b4a9255b5a39c48d2b4",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r03-p05-context-45056/responses.json": "ffb6becd0914e34e0279279680432a3f7e7f66d5edbdb8870377b786f82b5053",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r03-p06-context-4096/responses.json": "d093ba3bde9a0184ada29806804dc655f940cc1b48fd870f4f99ab28fc9dd501",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/sequence-r03-p07-context-8192/responses.json": "1a5fb0ed6541e05de75aee38161778e1c69f625223af2aab67467bcae84533b1",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/.q4t-work/evidence/h03-on/http/server.log": "678e0d1ccdaac4585df81aa06ddf9d32399a2d05b2adcc34ce672d1c6922a9ee",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/audit_stage.py": "ae69bbb2810a54148e030f0e1c2ea1b25527d23626d08849ff3206516c4896cb"
+    }
+  },
+  "failure": null,
+  "performance_acceptance": false,
+  "resource_acceptance": false,
+  "default_enable_allowed": false,
+  "whole_physical_RAM_54GB": "INDETERMINATE",
+  "raw_log_reads": 0,
+  "raw_resource_reads": 0,
+  "runtime_source_commit": "1efc524fe379f1eca9ceefed690327ae77236c7f",
+  "runtime_binary_sha256": "6a1e3321499a45359068610ee5865a8b7c97930bb6eed6f0065acfa0c6178762",
+  "ended_t": 1791303983.5032918,
+  "selection_change": {
+    "changed_by_group": {
+      "h01-off": 0,
+      "h02-on": 5269,
+      "h04-off": 0,
+      "h03-on": 5226
+    },
+    "total_changed": 10495,
+    "observed": true,
+    "meaning": "Actual different ring target; no avoided-read or speed inference."
+  },
+  "four_group_exact_outputs_equal": true,
+  "rounds_retained_per_position": 3,
+  "blocks": [
+    {
+      "baseline_group": "h01-off",
+      "candidate_group": "h02-on",
+      "positions": [
+        {
+          "label": "h01-off/h02-on:p1",
+          "passed": false,
+          "checks": {
+            "first_ttft": true,
+            "later_max_ttft": false,
+            "minimum_decode_tps": false
+          },
+          "failed_checks": [
+            "later_max_ttft",
+            "minimum_decode_tps"
+          ],
+          "baseline": [
+            {
+              "case": "sequence-r01-p01-context-16385",
+              "input_tokens": 16385,
+              "round": 1,
+              "position": 1,
+              "repeat": 1,
+              "ttft": 72.04669430083595,
+              "decode_tps": 6.6465152253632125
+            },
+            {
+              "case": "sequence-r02-p01-context-16385",
+              "input_tokens": 16385,
+              "round": 2,
+              "position": 1,
+              "repeat": 1,
+              "ttft": 73.502921132138,
+              "decode_tps": 6.643906641954696
+            },
+            {
+              "case": "sequence-r03-p01-context-16385",
+              "input_tokens": 16385,
+              "round": 3,
+              "position": 1,
+              "repeat": 1,
+              "ttft": 73.19784349016845,
+              "decode_tps": 6.608530036430403
+            }
+          ],
+          "candidate": [
+            {
+              "case": "sequence-r01-p01-context-16385",
+              "input_tokens": 16385,
+              "round": 1,
+              "position": 1,
+              "repeat": 1,
+              "ttft": 72.02957356185652,
+              "decode_tps": 6.57604399951291
+            },
+            {
+              "case": "sequence-r02-p01-context-16385",
+              "input_tokens": 16385,
+              "round": 2,
+              "position": 1,
+              "repeat": 1,
+              "ttft": 73.84653697907925,
+              "decode_tps": 6.593283735533474
+            },
+            {
+              "case": "sequence-r03-p01-context-16385",
+              "input_tokens": 16385,
+              "round": 3,
+              "position": 1,
+              "repeat": 1,
+              "ttft": 73.74085245211609,
+              "decode_tps": 6.548949302782488
+            }
+          ],
+          "baseline_gate_values": {
+            "first_ttft": 72.04669430083595,
+            "later_max_ttft": 73.502921132138,
+            "minimum_decode_tps": 6.608530036430403
+          },
+          "candidate_gate_values": {
+            "first_ttft": 72.02957356185652,
+            "later_max_ttft": 73.84653697907925,
+            "minimum_decode_tps": 6.548949302782488
+          },
+          "candidate_relative_change_percent": {
+            "first_ttft": -0.023763392818465512,
+            "later_max_ttft": 0.46748597422885396,
+            "minimum_decode_tps": -0.9015731686088713
+          },
+          "relative_change_meaning": "Positive TTFT change is slower; positive decode TPS change is faster. No epsilon or significance claim.",
+          "position": 1,
+          "input_tokens": 16385
+        },
+        {
+          "label": "h01-off/h02-on:p2",
+          "passed": false,
+          "checks": {
+            "first_ttft": false,
+            "later_max_ttft": true,
+            "minimum_decode_tps": false
+          },
+          "failed_checks": [
+            "first_ttft",
+            "minimum_decode_tps"
+          ],
+          "baseline": [
+            {
+              "case": "sequence-r01-p02-context-8192",
+              "input_tokens": 8192,
+              "round": 1,
+              "position": 2,
+              "repeat": 1,
+              "ttft": 38.203461474971846,
+              "decode_tps": 6.268443379606969
+            },
+            {
+              "case": "sequence-r02-p02-context-8192",
+              "input_tokens": 8192,
+              "round": 2,
+              "position": 2,
+              "repeat": 1,
+              "ttft": 38.621311801020056,
+              "decode_tps": 6.343143625218705
+            },
+            {
+              "case": "sequence-r03-p02-context-8192",
+              "input_tokens": 8192,
+              "round": 3,
+              "position": 2,
+              "repeat": 1,
+              "ttft": 38.41289949300699,
+              "decode_tps": 6.2698543322034785
+            }
+          ],
+          "candidate": [
+            {
+              "case": "sequence-r01-p02-context-8192",
+              "input_tokens": 8192,
+              "round": 1,
+              "position": 2,
+              "repeat": 1,
+              "ttft": 38.24853801494464,
+              "decode_tps": 6.278956180031772
+            },
+            {
+              "case": "sequence-r02-p02-context-8192",
+              "input_tokens": 8192,
+              "round": 2,
+              "position": 2,
+              "repeat": 1,
+              "ttft": 38.58692303393036,
+              "decode_tps": 6.274667848374883
+            },
+            {
+              "case": "sequence-r03-p02-context-8192",
+              "input_tokens": 8192,
+              "round": 3,
+              "position": 2,
+              "repeat": 1,
+              "ttft": 38.571586831938475,
+              "decode_tps": 6.219144229259047
+            }
+          ],
+          "baseline_gate_values": {
+            "first_ttft": 38.203461474971846,
+            "later_max_ttft": 38.621311801020056,
+            "minimum_decode_tps": 6.268443379606969
+          },
+          "candidate_gate_values": {
+            "first_ttft": 38.24853801494464,
+            "later_max_ttft": 38.58692303393036,
+            "minimum_decode_tps": 6.219144229259047
+          },
+          "candidate_relative_change_percent": {
+            "first_ttft": 0.11799072186777781,
+            "later_max_ttft": -0.08904090898534944,
+            "minimum_decode_tps": -0.7864655922123598
+          },
+          "relative_change_meaning": "Positive TTFT change is slower; positive decode TPS change is faster. No epsilon or significance claim.",
+          "position": 2,
+          "input_tokens": 8192
+        },
+        {
+          "label": "h01-off/h02-on:p3",
+          "passed": false,
+          "checks": {
+            "first_ttft": false,
+            "later_max_ttft": false,
+            "minimum_decode_tps": false
+          },
+          "failed_checks": [
+            "first_ttft",
+            "later_max_ttft",
+            "minimum_decode_tps"
+          ],
+          "baseline": [
+            {
+              "case": "sequence-r01-p03-context-8193",
+              "input_tokens": 8193,
+              "round": 1,
+              "position": 3,
+              "repeat": 1,
+              "ttft": 38.392955561866984,
+              "decode_tps": 6.959152706743025
+            },
+            {
+              "case": "sequence-r02-p03-context-8193",
+              "input_tokens": 8193,
+              "round": 2,
+              "position": 3,
+              "repeat": 1,
+              "ttft": 38.692328999051824,
+              "decode_tps": 6.999015138974361
+            },
+            {
+              "case": "sequence-r03-p03-context-8193",
+              "input_tokens": 8193,
+              "round": 3,
+              "position": 3,
+              "repeat": 1,
+              "ttft": 38.52935826405883,
+              "decode_tps": 6.952806322163886
+            }
+          ],
+          "candidate": [
+            {
+              "case": "sequence-r01-p03-context-8193",
+              "input_tokens": 8193,
+              "round": 1,
+              "position": 3,
+              "repeat": 1,
+              "ttft": 38.45755650405772,
+              "decode_tps": 6.87745989714276
+            },
+            {
+              "case": "sequence-r02-p03-context-8193",
+              "input_tokens": 8193,
+              "round": 2,
+              "position": 3,
+              "repeat": 1,
+              "ttft": 38.587991926120594,
+              "decode_tps": 6.840930842040316
+            },
+            {
+              "case": "sequence-r03-p03-context-8193",
+              "input_tokens": 8193,
+              "round": 3,
+              "position": 3,
+              "repeat": 1,
+              "ttft": 38.785776966949925,
+              "decode_tps": 6.865092110431256
+            }
+          ],
+          "baseline_gate_values": {
+            "first_ttft": 38.392955561866984,
+            "later_max_ttft": 38.692328999051824,
+            "minimum_decode_tps": 6.952806322163886
+          },
+          "candidate_gate_values": {
+            "first_ttft": 38.45755650405772,
+            "later_max_ttft": 38.785776966949925,
+            "minimum_decode_tps": 6.840930842040316
+          },
+          "candidate_relative_change_percent": {
+            "first_ttft": 0.1682624878583283,
+            "later_max_ttft": 0.24151548980262394,
+            "minimum_decode_tps": -1.6090694165741048
+          },
+          "relative_change_meaning": "Positive TTFT change is slower; positive decode TPS change is faster. No epsilon or significance claim.",
+          "position": 3,
+          "input_tokens": 8193
+        },
+        {
+          "label": "h01-off/h02-on:p4",
+          "passed": false,
+          "checks": {
+            "first_ttft": true,
+            "later_max_ttft": false,
+            "minimum_decode_tps": false
+          },
+          "failed_checks": [
+            "later_max_ttft",
+            "minimum_decode_tps"
+          ],
+          "baseline": [
+            {
+              "case": "sequence-r01-p04-context-1024",
+              "input_tokens": 1024,
+              "round": 1,
+              "position": 4,
+              "repeat": 1,
+              "ttft": 10.642857962986454,
+              "decode_tps": 7.062591189684532
+            },
+            {
+              "case": "sequence-r02-p04-context-1024",
+              "input_tokens": 1024,
+              "round": 2,
+              "position": 4,
+              "repeat": 1,
+              "ttft": 10.62072544102557,
+              "decode_tps": 7.035206562405027
+            },
+            {
+              "case": "sequence-r03-p04-context-1024",
+              "input_tokens": 1024,
+              "round": 3,
+              "position": 4,
+              "repeat": 1,
+              "ttft": 10.631132428068668,
+              "decode_tps": 7.062697750016572
+            }
+          ],
+          "candidate": [
+            {
+              "case": "sequence-r01-p04-context-1024",
+              "input_tokens": 1024,
+              "round": 1,
+              "position": 4,
+              "repeat": 1,
+              "ttft": 10.564694304019213,
+              "decode_tps": 6.953544773652437
+            },
+            {
+              "case": "sequence-r02-p04-context-1024",
+              "input_tokens": 1024,
+              "round": 2,
+              "position": 4,
+              "repeat": 1,
+              "ttft": 10.681886752834544,
+              "decode_tps": 6.9459605075644
+            },
+            {
+              "case": "sequence-r03-p04-context-1024",
+              "input_tokens": 1024,
+              "round": 3,
+              "position": 4,
+              "repeat": 1,
+              "ttft": 10.632358851842582,
+              "decode_tps": 6.940867626510576
+            }
+          ],
+          "baseline_gate_values": {
+            "first_ttft": 10.642857962986454,
+            "later_max_ttft": 10.631132428068668,
+            "minimum_decode_tps": 7.035206562405027
+          },
+          "candidate_gate_values": {
+            "first_ttft": 10.564694304019213,
+            "later_max_ttft": 10.681886752834544,
+            "minimum_decode_tps": 6.940867626510576
+          },
+          "candidate_relative_change_percent": {
+            "first_ttft": -0.7344235847088987,
+            "later_max_ttft": 0.477412214637396,
+            "minimum_decode_tps": -1.3409547403850586
+          },
+          "relative_change_meaning": "Positive TTFT change is slower; positive decode TPS change is faster. No epsilon or significance claim.",
+          "position": 4,
+          "input_tokens": 1024
+        },
+        {
+          "label": "h01-off/h02-on:p5",
+          "passed": false,
+          "checks": {
+            "first_ttft": true,
+            "later_max_ttft": true,
+            "minimum_decode_tps": false
+          },
+          "failed_checks": [
+            "minimum_decode_tps"
+          ],
+          "baseline": [
+            {
+              "case": "sequence-r01-p05-context-45056",
+              "input_tokens": 45056,
+              "round": 1,
+              "position": 5,
+              "repeat": 1,
+              "ttft": 220.67784021096304,
+              "decode_tps": 7.152189532528401
+            },
+            {
+              "case": "sequence-r02-p05-context-45056",
+              "input_tokens": 45056,
+              "round": 2,
+              "position": 5,
+              "repeat": 1,
+              "ttft": 226.24944628286175,
+              "decode_tps": 7.191538074373744
+            },
+            {
+              "case": "sequence-r03-p05-context-45056",
+              "input_tokens": 45056,
+              "round": 3,
+              "position": 5,
+              "repeat": 1,
+              "ttft": 226.39526547398418,
+              "decode_tps": 7.226465898900277
+            }
+          ],
+          "candidate": [
+            {
+              "case": "sequence-r01-p05-context-45056",
+              "input_tokens": 45056,
+              "round": 1,
+              "position": 5,
+              "repeat": 1,
+              "ttft": 220.59956220304593,
+              "decode_tps": 7.125272291380014
+            },
+            {
+              "case": "sequence-r02-p05-context-45056",
+              "input_tokens": 45056,
+              "round": 2,
+              "position": 5,
+              "repeat": 1,
+              "ttft": 222.73044140310958,
+              "decode_tps": 7.114861701429214
+            },
+            {
+              "case": "sequence-r03-p05-context-45056",
+              "input_tokens": 45056,
+              "round": 3,
+              "position": 5,
+              "repeat": 1,
+              "ttft": 221.9597215380054,
+              "decode_tps": 7.155799601257025
+            }
+          ],
+          "baseline_gate_values": {
+            "first_ttft": 220.67784021096304,
+            "later_max_ttft": 226.39526547398418,
+            "minimum_decode_tps": 7.152189532528401
+          },
+          "candidate_gate_values": {
+            "first_ttft": 220.59956220304593,
+            "later_max_ttft": 222.73044140310958,
+            "minimum_decode_tps": 7.114861701429214
+          },
+          "candidate_relative_change_percent": {
+            "first_ttft": -0.03547162136545712,
+            "later_max_ttft": -1.618772399326407,
+            "minimum_decode_tps": -0.521907744885941
+          },
+          "relative_change_meaning": "Positive TTFT change is slower; positive decode TPS change is faster. No epsilon or significance claim.",
+          "position": 5,
+          "input_tokens": 45056
+        },
+        {
+          "label": "h01-off/h02-on:p6",
+          "passed": false,
+          "checks": {
+            "first_ttft": true,
+            "later_max_ttft": false,
+            "minimum_decode_tps": false
+          },
+          "failed_checks": [
+            "later_max_ttft",
+            "minimum_decode_tps"
+          ],
+          "baseline": [
+            {
+              "case": "sequence-r01-p06-context-4096",
+              "input_tokens": 4096,
+              "round": 1,
+              "position": 6,
+              "repeat": 1,
+              "ttft": 26.419975558063015,
+              "decode_tps": 6.454031447706178
+            },
+            {
+              "case": "sequence-r02-p06-context-4096",
+              "input_tokens": 4096,
+              "round": 2,
+              "position": 6,
+              "repeat": 1,
+              "ttft": 26.093803828116506,
+              "decode_tps": 6.504992380578197
+            },
+            {
+              "case": "sequence-r03-p06-context-4096",
+              "input_tokens": 4096,
+              "round": 3,
+              "position": 6,
+              "repeat": 1,
+              "ttft": 26.111188140930608,
+              "decode_tps": 6.473947615632542
+            }
+          ],
+          "candidate": [
+            {
+              "case": "sequence-r01-p06-context-4096",
+              "input_tokens": 4096,
+              "round": 1,
+              "position": 6,
+              "repeat": 1,
+              "ttft": 26.22389741614461,
+              "decode_tps": 6.457965530151161
+            },
+            {
+              "case": "sequence-r02-p06-context-4096",
+              "input_tokens": 4096,
+              "round": 2,
+              "position": 6,
+              "repeat": 1,
+              "ttft": 26.8650017301552,
+              "decode_tps": 6.448103495696335
+            },
+            {
+              "case": "sequence-r03-p06-context-4096",
+              "input_tokens": 4096,
+              "round": 3,
+              "position": 6,
+              "repeat": 1,
+              "ttft": 26.238129608798772,
+              "decode_tps": 6.4165875815617515
+            }
+          ],
+          "baseline_gate_values": {
+            "first_ttft": 26.419975558063015,
+            "later_max_ttft": 26.111188140930608,
+            "minimum_decode_tps": 6.454031447706178
+          },
+          "candidate_gate_values": {
+            "first_ttft": 26.22389741614461,
+            "later_max_ttft": 26.8650017301552,
+            "minimum_decode_tps": 6.4165875815617515
+          },
+          "candidate_relative_change_percent": {
+            "first_ttft": -0.7421586802284774,
+            "later_max_ttft": 2.886937144169832,
+            "minimum_decode_tps": -0.5801624371962855
+          },
+          "relative_change_meaning": "Positive TTFT change is slower; positive decode TPS change is faster. No epsilon or significance claim.",
+          "position": 6,
+          "input_tokens": 4096
+        },
+        {
+          "label": "h01-off/h02-on:p7",
+          "passed": false,
+          "checks": {
+            "first_ttft": true,
+            "later_max_ttft": false,
+            "minimum_decode_tps": false
+          },
+          "failed_checks": [
+            "later_max_ttft",
+            "minimum_decode_tps"
+          ],
+          "baseline": [
+            {
+              "case": "sequence-r01-p07-context-8192",
+              "input_tokens": 8192,
+              "round": 1,
+              "position": 7,
+              "repeat": 1,
+              "ttft": 38.77222585910931,
+              "decode_tps": 6.300329289200826
+            },
+            {
+              "case": "sequence-r02-p07-context-8192",
+              "input_tokens": 8192,
+              "round": 2,
+              "position": 7,
+              "repeat": 1,
+              "ttft": 38.418175210943446,
+              "decode_tps": 6.316525116939626
+            },
+            {
+              "case": "sequence-r03-p07-context-8192",
+              "input_tokens": 8192,
+              "round": 3,
+              "position": 7,
+              "repeat": 1,
+              "ttft": 38.23819968407042,
+              "decode_tps": 6.247915890192161
+            }
+          ],
+          "candidate": [
+            {
+              "case": "sequence-r01-p07-context-8192",
+              "input_tokens": 8192,
+              "round": 1,
+              "position": 7,
+              "repeat": 1,
+              "ttft": 38.471014621900395,
+              "decode_tps": 6.222019655063853
+            },
+            {
+              "case": "sequence-r02-p07-context-8192",
+              "input_tokens": 8192,
+              "round": 2,
+              "position": 7,
+              "repeat": 1,
+              "ttft": 38.59521244792268,
+              "decode_tps": 6.203377690445848
+            },
+            {
+              "case": "sequence-r03-p07-context-8192",
+              "input_tokens": 8192,
+              "round": 3,
+              "position": 7,
+              "repeat": 1,
+              "ttft": 38.46917630801909,
+              "decode_tps": 6.22599110753536
+            }
+          ],
+          "baseline_gate_values": {
+            "first_ttft": 38.77222585910931,
+            "later_max_ttft": 38.418175210943446,
+            "minimum_decode_tps": 6.247915890192161
+          },
+          "candidate_gate_values": {
+            "first_ttft": 38.471014621900395,
+            "later_max_ttft": 38.59521244792268,
+            "minimum_decode_tps": 6.203377690445848
+          },
+          "candidate_relative_change_percent": {
+            "first_ttft": -0.7768737299309603,
+            "later_max_ttft": 0.460816361024885,
+            "minimum_decode_tps": -0.7128489008027206
+          },
+          "relative_change_meaning": "Positive TTFT change is slower; positive decode TPS change is faster. No epsilon or significance claim.",
+          "position": 7,
+          "input_tokens": 8192
+        }
+      ],
+      "passed": false
+    },
+    {
+      "baseline_group": "h04-off",
+      "candidate_group": "h03-on",
+      "positions": [
+        {
+          "label": "h04-off/h03-on:p1",
+          "passed": false,
+          "checks": {
+            "first_ttft": true,
+            "later_max_ttft": false,
+            "minimum_decode_tps": false
+          },
+          "failed_checks": [
+            "later_max_ttft",
+            "minimum_decode_tps"
+          ],
+          "baseline": [
+            {
+              "case": "sequence-r01-p01-context-16385",
+              "input_tokens": 16385,
+              "round": 1,
+              "position": 1,
+              "repeat": 1,
+              "ttft": 72.22052615392022,
+              "decode_tps": 6.597989268938529
+            },
+            {
+              "case": "sequence-r02-p01-context-16385",
+              "input_tokens": 16385,
+              "round": 2,
+              "position": 1,
+              "repeat": 1,
+              "ttft": 73.49591805785894,
+              "decode_tps": 6.578872808028296
+            },
+            {
+              "case": "sequence-r03-p01-context-16385",
+              "input_tokens": 16385,
+              "round": 3,
+              "position": 1,
+              "repeat": 1,
+              "ttft": 73.53807072993368,
+              "decode_tps": 6.598706443558079
+            }
+          ],
+          "candidate": [
+            {
+              "case": "sequence-r01-p01-context-16385",
+              "input_tokens": 16385,
+              "round": 1,
+              "position": 1,
+              "repeat": 1,
+              "ttft": 72.14795899717137,
+              "decode_tps": 6.599922623047878
+            },
+            {
+              "case": "sequence-r02-p01-context-16385",
+              "input_tokens": 16385,
+              "round": 2,
+              "position": 1,
+              "repeat": 1,
+              "ttft": 73.94674296397716,
+              "decode_tps": 6.638486820825938
+            },
+            {
+              "case": "sequence-r03-p01-context-16385",
+              "input_tokens": 16385,
+              "round": 3,
+              "position": 1,
+              "repeat": 1,
+              "ttft": 73.55292019504122,
+              "decode_tps": 6.535254381835402
+            }
+          ],
+          "baseline_gate_values": {
+            "first_ttft": 72.22052615392022,
+            "later_max_ttft": 73.53807072993368,
+            "minimum_decode_tps": 6.578872808028296
+          },
+          "candidate_gate_values": {
+            "first_ttft": 72.14795899717137,
+            "later_max_ttft": 73.94674296397716,
+            "minimum_decode_tps": 6.535254381835402
+          },
+          "candidate_relative_change_percent": {
+            "first_ttft": -0.10047996132593884,
+            "later_max_ttft": 0.5557287946053258,
+            "minimum_decode_tps": -0.6630075921161827
+          },
+          "relative_change_meaning": "Positive TTFT change is slower; positive decode TPS change is faster. No epsilon or significance claim.",
+          "position": 1,
+          "input_tokens": 16385
+        },
+        {
+          "label": "h04-off/h03-on:p2",
+          "passed": false,
+          "checks": {
+            "first_ttft": false,
+            "later_max_ttft": true,
+            "minimum_decode_tps": false
+          },
+          "failed_checks": [
+            "first_ttft",
+            "minimum_decode_tps"
+          ],
+          "baseline": [
+            {
+              "case": "sequence-r01-p02-context-8192",
+              "input_tokens": 8192,
+              "round": 1,
+              "position": 2,
+              "repeat": 1,
+              "ttft": 38.246354361996055,
+              "decode_tps": 6.257450927341593
+            },
+            {
+              "case": "sequence-r02-p02-context-8192",
+              "input_tokens": 8192,
+              "round": 2,
+              "position": 2,
+              "repeat": 1,
+              "ttft": 38.57869350397959,
+              "decode_tps": 6.289062694807081
+            },
+            {
+              "case": "sequence-r03-p02-context-8192",
+              "input_tokens": 8192,
+              "round": 3,
+              "position": 2,
+              "repeat": 1,
+              "ttft": 38.467120371060446,
+              "decode_tps": 6.247607993203694
+            }
+          ],
+          "candidate": [
+            {
+              "case": "sequence-r01-p02-context-8192",
+              "input_tokens": 8192,
+              "round": 1,
+              "position": 2,
+              "repeat": 1,
+              "ttft": 38.37123390007764,
+              "decode_tps": 6.217894536922369
+            },
+            {
+              "case": "sequence-r02-p02-context-8192",
+              "input_tokens": 8192,
+              "round": 2,
+              "position": 2,
+              "repeat": 1,
+              "ttft": 38.562534336932,
+              "decode_tps": 6.281033099715415
+            },
+            {
+              "case": "sequence-r03-p02-context-8192",
+              "input_tokens": 8192,
+              "round": 3,
+              "position": 2,
+              "repeat": 1,
+              "ttft": 38.45869973511435,
+              "decode_tps": 6.269694610438586
+            }
+          ],
+          "baseline_gate_values": {
+            "first_ttft": 38.246354361996055,
+            "later_max_ttft": 38.57869350397959,
+            "minimum_decode_tps": 6.247607993203694
+          },
+          "candidate_gate_values": {
+            "first_ttft": 38.37123390007764,
+            "later_max_ttft": 38.562534336932,
+            "minimum_decode_tps": 6.217894536922369
+          },
+          "candidate_relative_change_percent": {
+            "first_ttft": 0.3265135727698931,
+            "later_max_ttft": -0.04188624751100267,
+            "minimum_decode_tps": -0.47559732162529844
+          },
+          "relative_change_meaning": "Positive TTFT change is slower; positive decode TPS change is faster. No epsilon or significance claim.",
+          "position": 2,
+          "input_tokens": 8192
+        },
+        {
+          "label": "h04-off/h03-on:p3",
+          "passed": false,
+          "checks": {
+            "first_ttft": false,
+            "later_max_ttft": false,
+            "minimum_decode_tps": true
+          },
+          "failed_checks": [
+            "first_ttft",
+            "later_max_ttft"
+          ],
+          "baseline": [
+            {
+              "case": "sequence-r01-p03-context-8193",
+              "input_tokens": 8193,
+              "round": 1,
+              "position": 3,
+              "repeat": 1,
+              "ttft": 38.441191107966006,
+              "decode_tps": 6.886858386688943
+            },
+            {
+              "case": "sequence-r02-p03-context-8193",
+              "input_tokens": 8193,
+              "round": 2,
+              "position": 3,
+              "repeat": 1,
+              "ttft": 38.64392007119022,
+              "decode_tps": 6.912961621012627
+            },
+            {
+              "case": "sequence-r03-p03-context-8193",
+              "input_tokens": 8193,
+              "round": 3,
+              "position": 3,
+              "repeat": 1,
+              "ttft": 38.5641686830204,
+              "decode_tps": 6.9806826533927815
+            }
+          ],
+          "candidate": [
+            {
+              "case": "sequence-r01-p03-context-8193",
+              "input_tokens": 8193,
+              "round": 1,
+              "position": 3,
+              "repeat": 1,
+              "ttft": 38.55675544496626,
+              "decode_tps": 6.926826642614391
+            },
+            {
+              "case": "sequence-r02-p03-context-8193",
+              "input_tokens": 8193,
+              "round": 2,
+              "position": 3,
+              "repeat": 1,
+              "ttft": 38.72819211403839,
+              "decode_tps": 6.9756338065715875
+            },
+            {
+              "case": "sequence-r03-p03-context-8193",
+              "input_tokens": 8193,
+              "round": 3,
+              "position": 3,
+              "repeat": 1,
+              "ttft": 38.654057973995805,
+              "decode_tps": 6.976073665522229
+            }
+          ],
+          "baseline_gate_values": {
+            "first_ttft": 38.441191107966006,
+            "later_max_ttft": 38.64392007119022,
+            "minimum_decode_tps": 6.886858386688943
+          },
+          "candidate_gate_values": {
+            "first_ttft": 38.55675544496626,
+            "later_max_ttft": 38.72819211403839,
+            "minimum_decode_tps": 6.926826642614391
+          },
+          "candidate_relative_change_percent": {
+            "first_ttft": 0.3006263168996881,
+            "later_max_ttft": 0.2180732252134998,
+            "minimum_decode_tps": 0.5803554201535333
+          },
+          "relative_change_meaning": "Positive TTFT change is slower; positive decode TPS change is faster. No epsilon or significance claim.",
+          "position": 3,
+          "input_tokens": 8193
+        },
+        {
+          "label": "h04-off/h03-on:p4",
+          "passed": false,
+          "checks": {
+            "first_ttft": false,
+            "later_max_ttft": true,
+            "minimum_decode_tps": false
+          },
+          "failed_checks": [
+            "first_ttft",
+            "minimum_decode_tps"
+          ],
+          "baseline": [
+            {
+              "case": "sequence-r01-p04-context-1024",
+              "input_tokens": 1024,
+              "round": 1,
+              "position": 4,
+              "repeat": 1,
+              "ttft": 10.636183850932866,
+              "decode_tps": 7.079285128091168
+            },
+            {
+              "case": "sequence-r02-p04-context-1024",
+              "input_tokens": 1024,
+              "round": 2,
+              "position": 4,
+              "repeat": 1,
+              "ttft": 10.680711284046993,
+              "decode_tps": 6.969489296458935
+            },
+            {
+              "case": "sequence-r03-p04-context-1024",
+              "input_tokens": 1024,
+              "round": 3,
+              "position": 4,
+              "repeat": 1,
+              "ttft": 10.605043486924842,
+              "decode_tps": 7.034750715267445
+            }
+          ],
+          "candidate": [
+            {
+              "case": "sequence-r01-p04-context-1024",
+              "input_tokens": 1024,
+              "round": 1,
+              "position": 4,
+              "repeat": 1,
+              "ttft": 10.686044367961586,
+              "decode_tps": 6.987552138627936
+            },
+            {
+              "case": "sequence-r02-p04-context-1024",
+              "input_tokens": 1024,
+              "round": 2,
+              "position": 4,
+              "repeat": 1,
+              "ttft": 10.64997921185568,
+              "decode_tps": 6.960691433524251
+            },
+            {
+              "case": "sequence-r03-p04-context-1024",
+              "input_tokens": 1024,
+              "round": 3,
+              "position": 4,
+              "repeat": 1,
+              "ttft": 10.64374179393053,
+              "decode_tps": 7.014655680096827
+            }
+          ],
+          "baseline_gate_values": {
+            "first_ttft": 10.636183850932866,
+            "later_max_ttft": 10.680711284046993,
+            "minimum_decode_tps": 6.969489296458935
+          },
+          "candidate_gate_values": {
+            "first_ttft": 10.686044367961586,
+            "later_max_ttft": 10.64997921185568,
+            "minimum_decode_tps": 6.960691433524251
+          },
+          "candidate_relative_change_percent": {
+            "first_ttft": 0.46878201550029086,
+            "later_max_ttft": -0.28773432193804904,
+            "minimum_decode_tps": -0.12623396866616732
+          },
+          "relative_change_meaning": "Positive TTFT change is slower; positive decode TPS change is faster. No epsilon or significance claim.",
+          "position": 4,
+          "input_tokens": 1024
+        },
+        {
+          "label": "h04-off/h03-on:p5",
+          "passed": false,
+          "checks": {
+            "first_ttft": false,
+            "later_max_ttft": true,
+            "minimum_decode_tps": true
+          },
+          "failed_checks": [
+            "first_ttft"
+          ],
+          "baseline": [
+            {
+              "case": "sequence-r01-p05-context-45056",
+              "input_tokens": 45056,
+              "round": 1,
+              "position": 5,
+              "repeat": 1,
+              "ttft": 221.05064296815544,
+              "decode_tps": 7.1882117510243395
+            },
+            {
+              "case": "sequence-r02-p05-context-45056",
+              "input_tokens": 45056,
+              "round": 2,
+              "position": 5,
+              "repeat": 1,
+              "ttft": 232.8468326991424,
+              "decode_tps": 7.097136179526197
+            },
+            {
+              "case": "sequence-r03-p05-context-45056",
+              "input_tokens": 45056,
+              "round": 3,
+              "position": 5,
+              "repeat": 1,
+              "ttft": 220.7391030448489,
+              "decode_tps": 7.161307333474718
+            }
+          ],
+          "candidate": [
+            {
+              "case": "sequence-r01-p05-context-45056",
+              "input_tokens": 45056,
+              "round": 1,
+              "position": 5,
+              "repeat": 1,
+              "ttft": 221.12628574087285,
+              "decode_tps": 7.177729966147451
+            },
+            {
+              "case": "sequence-r02-p05-context-45056",
+              "input_tokens": 45056,
+              "round": 2,
+              "position": 5,
+              "repeat": 1,
+              "ttft": 221.03778046299703,
+              "decode_tps": 7.122451947898157
+            },
+            {
+              "case": "sequence-r03-p05-context-45056",
+              "input_tokens": 45056,
+              "round": 3,
+              "position": 5,
+              "repeat": 1,
+              "ttft": 221.36869030399248,
+              "decode_tps": 7.186145412726876
+            }
+          ],
+          "baseline_gate_values": {
+            "first_ttft": 221.05064296815544,
+            "later_max_ttft": 232.8468326991424,
+            "minimum_decode_tps": 7.097136179526197
+          },
+          "candidate_gate_values": {
+            "first_ttft": 221.12628574087285,
+            "later_max_ttft": 221.36869030399248,
+            "minimum_decode_tps": 7.122451947898157
+          },
+          "candidate_relative_change_percent": {
+            "first_ttft": 0.0342196574059761,
+            "later_max_ttft": -4.929481866725938,
+            "minimum_decode_tps": 0.3567039962540264
+          },
+          "relative_change_meaning": "Positive TTFT change is slower; positive decode TPS change is faster. No epsilon or significance claim.",
+          "position": 5,
+          "input_tokens": 45056
+        },
+        {
+          "label": "h04-off/h03-on:p6",
+          "passed": false,
+          "checks": {
+            "first_ttft": false,
+            "later_max_ttft": true,
+            "minimum_decode_tps": true
+          },
+          "failed_checks": [
+            "first_ttft"
+          ],
+          "baseline": [
+            {
+              "case": "sequence-r01-p06-context-4096",
+              "input_tokens": 4096,
+              "round": 1,
+              "position": 6,
+              "repeat": 1,
+              "ttft": 26.226637441199273,
+              "decode_tps": 6.454339540724229
+            },
+            {
+              "case": "sequence-r02-p06-context-4096",
+              "input_tokens": 4096,
+              "round": 2,
+              "position": 6,
+              "repeat": 1,
+              "ttft": 26.35287846205756,
+              "decode_tps": 6.461656040141527
+            },
+            {
+              "case": "sequence-r03-p06-context-4096",
+              "input_tokens": 4096,
+              "round": 3,
+              "position": 6,
+              "repeat": 1,
+              "ttft": 26.134916241979226,
+              "decode_tps": 6.4306702506255515
+            }
+          ],
+          "candidate": [
+            {
+              "case": "sequence-r01-p06-context-4096",
+              "input_tokens": 4096,
+              "round": 1,
+              "position": 6,
+              "repeat": 1,
+              "ttft": 26.227480658795685,
+              "decode_tps": 6.466600881020842
+            },
+            {
+              "case": "sequence-r02-p06-context-4096",
+              "input_tokens": 4096,
+              "round": 2,
+              "position": 6,
+              "repeat": 1,
+              "ttft": 26.212776504922658,
+              "decode_tps": 6.498797695434604
+            },
+            {
+              "case": "sequence-r03-p06-context-4096",
+              "input_tokens": 4096,
+              "round": 3,
+              "position": 6,
+              "repeat": 1,
+              "ttft": 26.320750201120973,
+              "decode_tps": 6.457090394772123
+            }
+          ],
+          "baseline_gate_values": {
+            "first_ttft": 26.226637441199273,
+            "later_max_ttft": 26.35287846205756,
+            "minimum_decode_tps": 6.4306702506255515
+          },
+          "candidate_gate_values": {
+            "first_ttft": 26.227480658795685,
+            "later_max_ttft": 26.320750201120973,
+            "minimum_decode_tps": 6.457090394772123
+          },
+          "candidate_relative_change_percent": {
+            "first_ttft": 0.003215118973232123,
+            "later_max_ttft": -0.12191556600864573,
+            "minimum_decode_tps": 0.41084588568356395
+          },
+          "relative_change_meaning": "Positive TTFT change is slower; positive decode TPS change is faster. No epsilon or significance claim.",
+          "position": 6,
+          "input_tokens": 4096
+        },
+        {
+          "label": "h04-off/h03-on:p7",
+          "passed": false,
+          "checks": {
+            "first_ttft": true,
+            "later_max_ttft": false,
+            "minimum_decode_tps": false
+          },
+          "failed_checks": [
+            "later_max_ttft",
+            "minimum_decode_tps"
+          ],
+          "baseline": [
+            {
+              "case": "sequence-r01-p07-context-8192",
+              "input_tokens": 8192,
+              "round": 1,
+              "position": 7,
+              "repeat": 1,
+              "ttft": 38.40243686782196,
+              "decode_tps": 6.278851910547247
+            },
+            {
+              "case": "sequence-r02-p07-context-8192",
+              "input_tokens": 8192,
+              "round": 2,
+              "position": 7,
+              "repeat": 1,
+              "ttft": 38.3979185661301,
+              "decode_tps": 6.2796423458564075
+            },
+            {
+              "case": "sequence-r03-p07-context-8192",
+              "input_tokens": 8192,
+              "round": 3,
+              "position": 7,
+              "repeat": 1,
+              "ttft": 38.29058784106746,
+              "decode_tps": 6.313550543224795
+            }
+          ],
+          "candidate": [
+            {
+              "case": "sequence-r01-p07-context-8192",
+              "input_tokens": 8192,
+              "round": 1,
+              "position": 7,
+              "repeat": 1,
+              "ttft": 38.270761631196365,
+              "decode_tps": 6.3104537981696485
+            },
+            {
+              "case": "sequence-r02-p07-context-8192",
+              "input_tokens": 8192,
+              "round": 2,
+              "position": 7,
+              "repeat": 1,
+              "ttft": 38.445546839153394,
+              "decode_tps": 6.267248014771505
+            },
+            {
+              "case": "sequence-r03-p07-context-8192",
+              "input_tokens": 8192,
+              "round": 3,
+              "position": 7,
+              "repeat": 1,
+              "ttft": 38.383363463915884,
+              "decode_tps": 6.251987165910771
+            }
+          ],
+          "baseline_gate_values": {
+            "first_ttft": 38.40243686782196,
+            "later_max_ttft": 38.3979185661301,
+            "minimum_decode_tps": 6.278851910547247
+          },
+          "candidate_gate_values": {
+            "first_ttft": 38.270761631196365,
+            "later_max_ttft": 38.445546839153394,
+            "minimum_decode_tps": 6.251987165910771
+          },
+          "candidate_relative_change_percent": {
+            "first_ttft": -0.34288250268807996,
+            "later_max_ttft": 0.1240386843918806,
+            "minimum_decode_tps": -0.4278607780404564
+          },
+          "relative_change_meaning": "Positive TTFT change is slower; positive decode TPS change is faster. No epsilon or significance claim.",
+          "position": 7,
+          "input_tokens": 8192
+        }
+      ],
+      "passed": false
+    }
+  ],
+  "request_count": 84,
+  "failed_checks": [
+    "h01-off/h02-on:p1:later_max_ttft",
+    "h01-off/h02-on:p1:minimum_decode_tps",
+    "h01-off/h02-on:p2:first_ttft",
+    "h01-off/h02-on:p2:minimum_decode_tps",
+    "h01-off/h02-on:p3:first_ttft",
+    "h01-off/h02-on:p3:later_max_ttft",
+    "h01-off/h02-on:p3:minimum_decode_tps",
+    "h01-off/h02-on:p4:later_max_ttft",
+    "h01-off/h02-on:p4:minimum_decode_tps",
+    "h01-off/h02-on:p5:minimum_decode_tps",
+    "h01-off/h02-on:p6:later_max_ttft",
+    "h01-off/h02-on:p6:minimum_decode_tps",
+    "h01-off/h02-on:p7:later_max_ttft",
+    "h01-off/h02-on:p7:minimum_decode_tps",
+    "h04-off/h03-on:p1:later_max_ttft",
+    "h04-off/h03-on:p1:minimum_decode_tps",
+    "h04-off/h03-on:p2:first_ttft",
+    "h04-off/h03-on:p2:minimum_decode_tps",
+    "h04-off/h03-on:p3:first_ttft",
+    "h04-off/h03-on:p3:later_max_ttft",
+    "h04-off/h03-on:p4:first_ttft",
+    "h04-off/h03-on:p4:minimum_decode_tps",
+    "h04-off/h03-on:p5:first_ttft",
+    "h04-off/h03-on:p6:first_ttft",
+    "h04-off/h03-on:p7:later_max_ttft",
+    "h04-off/h03-on:p7:minimum_decode_tps"
+  ],
+  "matrix_coverage_allowed": true,
+  "matrix_coverage_reason": "Complete the frozen coverage even if history vetoes acceptance. No retries, epsilon, extra matrix or second candidate.",
+  "interpretation_limits": [
+    "All frozen observations retained; no outlier removal or retry.",
+    "History ABBA and alternating matrix order do not remove all drift.",
+    "Observed extrema gates are not confidence intervals or tail claims.",
+    "Performance screening does not certify resources, physical54GB, all-model precision, or default enablement."
+  ],
+  "recorded_t": 1791304041.4236858
+}
