@@ -1,0 +1,100 @@
+{
+  "schema": "q4t.offload_supply.result_independent_review.v1",
+  "recorded_t": 1791272522.1111143,
+  "reviewer": "/root/gpu_replay_evidence",
+  "independent_review": true,
+  "passed": true,
+  "status": "PASS_INDEPENDENT_COUNT_CLOCK_CONTRAST_REVIEW",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/result-review-plan.json": "2bae53261f61b7eac5c5ffc76de4344bcd8bcf162cd1b5d4d81a4db383494bf7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/supply-analysis.json": "42948b8f2cad32b887efb4c399595bd0f86a58f2f8496a36c2acd5cc4462ca5e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/supply-analysis-01-exit.json": "c6881e41929729ad6f4d42c4a1a6cd11524db40eeaf1bde0e1a28d7b56115595",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/supply-analysis-01.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/execution-plan.json": "ca89aedf626465a41fbdca823e3c402fed31499477e7b131a04af6cb806ce57f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/execution-command.json": "d6b86f51f543de18267543ba6a26d4a466ac5956ccdea4aa829c92f518ac5425",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/execution-independent-review.json": "f834aae944411cfe940be563c0968a0f6a06d1ab53036d1bf9c74a30cc5d10e6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/scope-plan.json": "2bf0aa00fceebdc00d5b1e04ced774f3eb2ba4104d58e056a21d7c68205086e4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/tool-static-review.json": "f72d1375319f1a8c2292ef04136ebafe203d3c787fb450debbcbe2795640c826",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/validation-results.json": "9e9b1f7ca40c3add27cad45c3f5abfb459549ae2630921fd75dd2a66b0a4b060",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/supply-inputs.json": "a60951d231935ff2356e9afe0fd6f5fd06901ea3ac1c8a912c6177f6eff58707",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/baseline-replay.json": "87e2bff6ab96615022662bb6235295c0447f83cab43e47f02f8c1ba2a47ffd5a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/supply-independent-summary.json": "ebe4cbeef21e0d9cfc4b51f52c80aaa1564c6258be679f90f3823dd9ec6424db"
+  },
+  "frozen_plan_sha256": "2bae53261f61b7eac5c5ffc76de4344bcd8bcf162cd1b5d4d81a4db383494bf7",
+  "reviewed_report_sha256": "42948b8f2cad32b887efb4c399595bd0f86a58f2f8496a36c2acd5cc4462ca5e",
+  "source_bindings_match_report": 125,
+  "counts": {
+    "complete_requests": 16,
+    "GPU_endpoint_checked_flags": 16,
+    "full_iterator_exhausted_flags": 16,
+    "independently_verified_layer_clock_decompositions": 768,
+    "histograms_and_weighted_load_checks": 768,
+    "independently_verified_disjoint_counter_supply_windows": 64,
+    "independently_recomputed_S_to_L_contrasts": 6,
+    "true_decode_plans_accounted_by_histogram": 195840
+  },
+  "owned_exit": {
+    "returncode": 0,
+    "cleanup_complete": true,
+    "group_absent": true,
+    "exact_frozen_command": true,
+    "automatic_retry": false
+  },
+  "phase_gate": {
+    "decision": "DIRECT_RACE_NOT_EXCLUDED_OBSERVER_APPENDIX_REQUIRED",
+    "primary_endpoints": [
+      {
+        "arm": "A",
+        "position": 1,
+        "mirror_deficit": 470,
+        "load_delta": 227,
+        "software_read_delta": 697,
+        "short_direct_upper": 1419,
+        "long_direct_upper": 1540,
+        "positive_deficit_not_fully_explained": false,
+        "deficit_beyond_long_upper": 0,
+        "layers_with_mirror_loss": 45,
+        "layers_with_mirror_gain": 3,
+        "gross_mirror_loss": 491,
+        "gross_mirror_gain": 21
+      },
+      {
+        "arm": "C",
+        "position": 1,
+        "mirror_deficit": 452,
+        "load_delta": 129,
+        "software_read_delta": 581,
+        "short_direct_upper": 1419,
+        "long_direct_upper": 1487,
+        "positive_deficit_not_fully_explained": false,
+        "deficit_beyond_long_upper": 0,
+        "layers_with_mirror_loss": 44,
+        "layers_with_mirror_gain": 3,
+        "gross_mirror_loss": 461,
+        "gross_mirror_gain": 9
+      }
+    ],
+    "conditional_observer_arm": "A",
+    "this_is_not_race_occurrence_proof": true
+  },
+  "actions": {
+    "manifest_JSON_loads": 1,
+    "old_baseline_JSON_loads": 1,
+    "four_old_decision_loads": 0,
+    "195MB_report_loads": 0,
+    "actual_trace_parses_or_replays": 0,
+    "new_tests": 0,
+    "new_HTTP": 0,
+    "model_payload_reads": 0
+  },
+  "evidence_limits": [
+    "Per-layer read/mirror counts are identified actual captured-phase totals, not per-ID source order or measured race events.",
+    "U bounds only immediate direct same-plan lost-at-claim events along captured GPU trajectory; it does not constrain counterfactual downstream ring/history benefit.",
+    "Both primary U values exceed the observed mirror deficit, so current evidence cannot exclude full direct explanation, and also does not establish that it occurred.",
+    "New observer data must be recorded and validated separately; do not pool it with these16 old requests as a causal estimate or repeat-variance sample.",
+    "No exclusive SSD/H2D waiting, physicalIO, throughput, numericalquality or runtimeperformanceacceptance follows.",
+    "195840plan U computation is reused from singletestedtool execution; independent review checks all histogram/count/clock/contrast algebra without replaying traces."
+  ],
+  "blocking_findings": [],
+  "new_observer_separation": "Preserve existing W/runtime identities. A new observer needs separate source/binary and frozen appendix; its samples cannot be pooled with old16 as causal evidence."
+}

@@ -66,6 +66,7 @@
 #include <vector>
 
 #include "q4t/io/weight_loader.h"
+#include "q4t/quant/moe_supply_observer.h"
 #include "q4t/quant/moe_weights.h"
 #include "q4t/status.h"
 
@@ -79,7 +80,7 @@ size_t MoEResidencyLayerBytes(int hs, int moe_is, int C);
 // MoEResidency::Init performs; the layer allocates MoEResidencyLoadThreads()
 // of them).
 size_t MoEResidencyStagingBytes(int hs, int moe_is);
-// Load worker threads from Q4T_MOE_LOAD_THREADS (default 8, clamped to
+// Load worker threads from Q4T_MOE_LOAD_THREADS (default 16, clamped to
 // [1, kMaxLoadThreads]). The budget and the residency must agree on this.
 int MoEResidencyLoadThreads();
 // Per-layer L2 CPU cache buffers from Q4T_MOE_L2_SLOTS (default 128,
@@ -246,6 +247,8 @@ class MoEResidency {
     // counters split decode from prefill so the decode miss critical path
     // can be measured directly.
     bool decode_phase = false;
+    // Allocated only for enabled, in-scope shape-single observations.
+    std::unique_ptr<MoESupplyPlan> supply_observer;
     bool empty() const { return experts.empty(); }
     bool fully_committed() const { return next_commit >= experts.size(); }
     void clear() {
@@ -257,6 +260,7 @@ class MoEResidency {
       next_commit = 0;
       first_err.store(0, std::memory_order_relaxed);
       first_err_msg.clear();
+      supply_observer.reset();
     }
   };
 
@@ -329,6 +333,8 @@ class MoEResidency {
     uint64_t slot_clock = 0;
     uint64_t l2_clock = 0;
     int mirror_cursor = 0;
+    bool supply_observer_enabled = false;
+    std::shared_ptr<const MoESupplyState> supply_observer;
   };
   DiagnosticState CopyDiagnosticState() const;
   bool TimingEnabled() const {
@@ -466,7 +472,8 @@ class MoEResidency {
   // its buffers before one batched preadv fills them.
   Status ClaimExpert(int expert, const std::vector<uint8_t>* needed_mark,
                      int* buf_out, StatsDelta* delta, bool* hit_out,
-                     bool decode_phase) const;
+                     bool decode_phase, MoESupplyPlan* observer = nullptr,
+                     size_t observer_entry = 0) const;
   // Item 3b: read the checkpoint payload into a claimed miss buffer (the
   // legacy StageExpert read section, driven by the cached per-expert
   // descriptor).
@@ -508,7 +515,13 @@ class MoEResidency {
   // (H2D + host state). C1: called by the staging worker as soon as the
   // stage finishes (stream-ordered safety as in the header contract).
   Status CommitExpert(int expert, int slot, int buf, cudaStream_t stream,
-                      StatsDelta* delta = nullptr) const;
+                      StatsDelta* delta = nullptr,
+                      MoESupplyPlan* observer = nullptr,
+                      size_t observer_entry = 0) const;
+
+  void BeginSupplyObservation(LoadPlan& plan) const;
+  void FinishSupplyObservation(LoadPlan& plan, bool success) const;
+  void FailedSupplyPlanning(bool shape_single) const;
 
   // Body of one persistent load worker (see LoadWorker).
   void LoadWorkerLoop(LoadWorker* w) const;
@@ -625,6 +638,8 @@ class MoEResidency {
   mutable std::vector<LoadWorker*> workers_;
 
   mutable Stats stats_;
+  bool supply_observer_enabled_ = false;
+  mutable std::unique_ptr<MoESupplyState> supply_observer_;
   // Heap-allocated (like l2_mu_) so the class keeps its implicit
   // movability: TimingStats holds std::atomics, which are non-copyable
   // and non-movable; DecoderLayer is default-constructed via

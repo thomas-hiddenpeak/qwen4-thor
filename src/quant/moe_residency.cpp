@@ -170,6 +170,10 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
     return Status::Fail(
         "2*moe_is and hs must be multiples of 128 (per-expert SF blocks)");
   }
+  const int supply_setting =
+      MoESupplyObserverSetting(std::getenv("Q4T_MOE_SUPPLY_OBSERVER"));
+  if (supply_setting < 0)
+    return Status::Fail("Q4T_MOE_SUPPLY_OBSERVER must be 0 or 1");
   loader_ = &loader;
   layer_id_ = layer_id;
   E_ = E;
@@ -426,6 +430,19 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
     w->th = std::thread([this, w] { LoadWorkerLoop(w); });
   }
   inited_ = true;
+  supply_observer_enabled_ = supply_setting == 1;
+  if (supply_observer_enabled_)
+    supply_observer_.reset(new (std::nothrow) MoESupplyState());
+  if (layer_id_ == 0) {
+    std::fprintf(stderr,
+                 "[q4t][supply_observer] enabled=%d "
+                 "schema=q4t.moe_supply_observer.v1 "
+                 "plan_state_bytes=%zu persistent_state_bytes=%zu "
+                 "samples_per_layer=4 allocation_ok=%d\n",
+                 supply_observer_enabled_, sizeof(MoESupplyPlan),
+                 sizeof(MoESupplyState),
+                 !supply_observer_enabled_ || supply_observer_ != nullptr);
+  }
   (void)stream;
   return Status();
 }
@@ -577,7 +594,9 @@ void MoEResidency::ReleaseRingClaim(int expert, int ring) const {
 Status MoEResidency::ClaimExpert(int expert,
                                  const std::vector<uint8_t>* needed_mark,
                                  int* buf_out, StatsDelta* delta,
-                                 bool* hit_out, bool decode_phase) const {
+                                 bool* hit_out, bool decode_phase,
+                                 MoESupplyPlan* observer,
+                                 size_t observer_entry) const {
   if (expert < 0 || expert >= E_) {
     return Status::Fail("expert out of range");
   }
@@ -602,6 +621,7 @@ Status MoEResidency::ClaimExpert(int expert,
       }
       if (fire) {
         fail_armed_ = false;
+        if (observer) observer->ClaimFailure(observer_entry);
         return Status::Fail("residency fault injection: expert " +
                             std::to_string(expert) + " (test hook)");
       }
@@ -613,6 +633,7 @@ Status MoEResidency::ClaimExpert(int expert,
     std::lock_guard<std::mutex> lk(*l2_mu_);
     b = expert_l2buf_[expert];
     if (b >= 0) {
+      if (observer) observer->Claim(observer_entry, SupplySource::kL2);
       // L2 hit: the buffer already holds this expert's payload; no read.
       // Claim it so a same-chunk miss cannot evict it before our commit.
       l2_tick_[b] = ++l2_recency_;
@@ -637,6 +658,8 @@ Status MoEResidency::ClaimExpert(int expert,
       int m = -1;
       if (mirror_k_ > 0) m = expert_mirror_[expert];
       if (m >= 0 && !ring_claimed_[m]) {
+        if (observer)
+          observer->Claim(observer_entry, SupplySource::kMirror, m, false);
         ring_claimed_[m] = true;
         *buf_out = -(m + 1);
         if (hit_out) *hit_out = true;
@@ -648,7 +671,12 @@ Status MoEResidency::ClaimExpert(int expert,
       }
       b = PickL2Victim(needed_mark);
       if (b < 0) {
+        if (observer) observer->ClaimFailure(observer_entry);
         return Status::Fail("no residency L2 buffer available");
+      }
+      if (observer) {
+        observer->Claim(observer_entry, SupplySource::kRead, m,
+                        m >= 0 && ring_claimed_[m]);
       }
       const int old = l2_expert_[b];
       if (old >= 0) {
@@ -1010,6 +1038,7 @@ Status MoEResidency::StageTask(LoadPlan& plan,
   std::vector<char> hit(k, 0);
   std::vector<bool> read_ok(k, true);
   std::vector<std::chrono::steady_clock::time_point> t0(k);
+  MoESupplyPlan* observer = plan.supply_observer.get();
   // 1. Claim every entry (fault hook, victim selection, and in-flight
   //    waits keep the legacy per-entry semantics; claims are released by
   //    the commit or by the failure handling below).
@@ -1021,9 +1050,11 @@ Status MoEResidency::StageTask(LoadPlan& plan,
     Status s = ClaimExpert(plan.experts[i],
                            plan.needed_mark.empty() ? nullptr
                                                    : &plan.needed_mark,
-                           &bufs[j], delta, &hv, plan.decode_phase);
+                           &bufs[j], delta, &hv, plan.decode_phase,
+                           observer, i);
     hit[j] = hv ? 1 : 0;
     if (!s.ok()) {
+      if (observer) observer->entries[i].claim_error = true;
       read_ok[j] = false;
       if (plan.first_err.exchange(1, std::memory_order_acq_rel) == 0) {
         plan.first_err_msg = s.message();
@@ -1055,6 +1086,12 @@ Status MoEResidency::StageTask(LoadPlan& plan,
     if (r1 > j) {
       Status s = ReadRun(plan, &entries[j], r1 - j + 1, &bufs[j], delta,
                          plan.decode_phase);
+      if (observer) {
+        for (int t = j; t <= r1; ++t) {
+          observer->entries[entries[t]].read_ok = s.ok();
+          observer->entries[entries[t]].read_error = !s.ok();
+        }
+      }
       if (!s.ok()) {
         for (int t = j; t <= r1; ++t) {
           read_ok[t] = false;
@@ -1067,6 +1104,10 @@ Status MoEResidency::StageTask(LoadPlan& plan,
     } else {
       Status s = ReadExpert(plan.experts[entries[j]], bufs[j], delta,
                             plan.decode_phase);
+      if (observer) {
+        observer->entries[entries[j]].read_ok = s.ok();
+        observer->entries[entries[j]].read_error = !s.ok();
+      }
       if (!s.ok()) {
         read_ok[j] = false;
         ReleaseMissClaim(plan.experts[entries[j]], bufs[j], false);
@@ -1083,7 +1124,11 @@ Status MoEResidency::StageTask(LoadPlan& plan,
     if (!read_ok[t]) continue;
     if (!hit[t]) SwizzleExpert(bufs[t], t0[t], plan.decode_phase);
     Status cs = CommitExpert(plan.experts[i], plan.slots[i], bufs[t], stream,
-                             delta);
+                             delta, observer, i);
+    if (observer) {
+      observer->entries[i].commit_ok = cs.ok();
+      observer->entries[i].commit_error = !cs.ok();
+    }
     if (!cs.ok()) {
       if (bufs[t] < 0) {
         ReleaseRingClaim(plan.experts[i], -bufs[t] - 1);
@@ -1099,7 +1144,8 @@ Status MoEResidency::StageTask(LoadPlan& plan,
 }
 Status MoEResidency::CommitExpert(int expert, int slot, int buf,
                                   cudaStream_t stream,
-                                  StatsDelta* delta) const {
+                                  StatsDelta* delta, MoESupplyPlan* observer,
+                                  size_t observer_entry) const {
   if (expert < 0 || expert >= E_) {
     return Status::Fail("expert out of range");
   }
@@ -1164,11 +1210,14 @@ Status MoEResidency::CommitExpert(int expert, int slot, int buf,
         }
         if (ring_claimed_[cand]) continue;
         m = cand;
+        if (observer)
+          observer->Reserve(observer_entry, m, mirror_expert_[m]);
         ring_claimed_[m] = true;  // released after the D2H + event record
         mirror_cursor_ = (m + 1) % mirror_k_;
       }
     }
     if (m < 0) {
+      if (observer) observer->entries[observer_entry].writeback_skipped = true;
       if (delta) ++delta->mirror_skips;
       else ++stats_.mirror_skips;
     } else {
@@ -1205,12 +1254,14 @@ Status MoEResidency::CommitExpert(int expert, int slot, int buf,
       if (!ok || cudaEventRecord(ring_event_[m], stream) != cudaSuccess) {
         // Drop the write-back; the buffer is pickable again.
         std::lock_guard<std::mutex> lk(*l2_mu_);
+        if (observer) observer->Abort(observer_entry);
         ring_claimed_[m] = false;
       } else {
         // Publish the entry only after the event is recorded, so the
         // invariant "in_flight implies the event is recorded" holds and
         // mirror hits can safely wait on it.
         std::lock_guard<std::mutex> lk(*l2_mu_);
+        if (observer) observer->Publish(observer_entry);
         const int prev = mirror_expert_[m];
         if (prev >= 0 && expert_mirror_[prev] == m) expert_mirror_[prev] = -1;
         // Invalidate any stale entry for `old` elsewhere in the ring
@@ -1328,7 +1379,75 @@ MoEResidency::DiagnosticState MoEResidency::CopyDiagnosticState() const {
     state.mirror_experts = mirror_expert_;
     state.mirror_cursor = mirror_cursor_;
   }
+  state.supply_observer_enabled = supply_observer_enabled_;
+  if (supply_observer_) {
+    try {
+      state.supply_observer =
+          std::make_shared<MoESupplyState>(*supply_observer_);
+    } catch (const std::bad_alloc&) {
+      // Serialization emits an explicit scope failure; runtime is untouched.
+    }
+  }
   return state;
+}
+
+void MoEResidency::FailedSupplyPlanning(bool shape_single) const {
+  if (shape_single && supply_observer_) {
+    supply_observer_->Start();
+    supply_observer_->counters.Add(SupplyCounter::kPlansFailed);
+  }
+}
+
+void MoEResidency::BeginSupplyObservation(LoadPlan& plan) const {
+  if (!plan.decode_phase || !supply_observer_) return;
+  supply_observer_->Start();
+  size_t distinct = 0;
+  for (uint8_t value : plan.needed_mark) distinct += value != 0;
+  if (E_ != 512 || C_ != 256 || l2_slots_ != 16 || load_threads_ != 16 ||
+      mirror_k_ != 8 || plan.experts.size() > MoESupplyPlan::kMaxMisses ||
+      distinct != 10 || layer_id_ < 0 || layer_id_ >= 48 || tick_ == 0) {
+    supply_observer_->ScopeFailure();
+    return;
+  }
+  // Caller owns this layer after the previous Phase1 worker barrier and
+  // before dispatching this plan. The frozen max_seq=1/PhaseD-off contract
+  // permits metadata capture without another mutex acquisition or query.
+  plan.supply_observer.reset(new (std::nothrow) MoESupplyPlan());
+  if (!plan.supply_observer) {
+    supply_observer_->ScopeFailure();
+    return;
+  }
+  auto& observation = *plan.supply_observer;
+  observation.layer = layer_id_;
+  observation.plan_clock = tick_;
+  observation.count = plan.experts.size();
+  for (size_t i = 0; i < observation.count; ++i) {
+    auto& entry = observation.entries[i];
+    entry.expert = plan.experts[i];
+    entry.slot = plan.slots[i];
+    entry.victim = slot_expert_[entry.slot];
+    if (entry.victim >= 0 && plan.needed_mark[entry.victim])
+      observation.invalid = true;
+  }
+  std::copy(l2_expert_.begin(), l2_expert_.end(), observation.entry_l2.begin());
+  std::copy(mirror_expert_.begin(), mirror_expert_.end(),
+            observation.entry_mirror.begin());
+  std::copy(ring_claimed_.begin(), ring_claimed_.end(),
+            observation.entry_claimed.begin());
+  observation.CaptureEntry();
+  if (observation.invalid) {
+    supply_observer_->ScopeFailure();
+    plan.supply_observer.reset();
+  } else if (plan.empty()) {
+    FinishSupplyObservation(plan, true);
+  }
+}
+
+void MoEResidency::FinishSupplyObservation(LoadPlan& plan, bool success) const {
+  if (plan.supply_observer && supply_observer_) {
+    supply_observer_->Finish(*plan.supply_observer, success);
+    plan.supply_observer.reset();
+  }
 }
 
 Status MoEResidency::InitHot(const std::vector<int>& hot_experts,
@@ -1377,6 +1496,7 @@ Status MoEResidency::PlanResolve(const int32_t* needed, int n,
   if (!inited_) return Status::Fail("residency not initialized");
   if (n <= 0) return Status();
   if (n > (1 << 20)) {
+    FailedSupplyPlanning(decode_phase);
     return Status::Fail("residency resolve set too large");
   }
   plan->clear();
@@ -1392,6 +1512,7 @@ Status MoEResidency::PlanResolve(const int32_t* needed, int n,
   for (int i = 0; i < n; ++i) {
     const int e = needed[i];
     if (e < 0 || e >= E_) {
+      FailedSupplyPlanning(decode_phase);
       return Status::Fail("needed expert out of range");
     }
     needed_mark[e] = 1;
@@ -1465,6 +1586,7 @@ Status MoEResidency::PlanResolve(const int32_t* needed, int n,
                    layer_id_, C_, protected_count_, distinct, resident,
                    static_cast<int>(stats_.misses), reserved_n, n,
                    decode_phase);
+      FailedSupplyPlanning(decode_phase);
       return Status::Fail("no residency slot available (needed set exceeds "
                           "dynamic capacity)");
     }
@@ -1474,6 +1596,7 @@ Status MoEResidency::PlanResolve(const int32_t* needed, int n,
     plan->slots.push_back(v);
     slot_of[i] = v;
   }
+  BeginSupplyObservation(*plan);
   return Status();
 }
 
@@ -1524,6 +1647,12 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
   } else {
     for (int t = 0; t < cnt; ++t) tasks.push_back({off + t});
   }
+  if (plan.supply_observer) {
+    for (size_t task = 0; task < tasks.size(); ++task) {
+      for (int entry : tasks[task])
+        plan.supply_observer->entries[entry].task = static_cast<int>(task);
+    }
+  }
   // Phase B (2026-10-02): single-miss fast path. Small chunks run
   // stage+commit on the caller thread, skipping the worker mutex+cv
   // dispatch/wait round trip (dphase1). Semantics are identical to the
@@ -1536,6 +1665,8 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
       StageTask(plan, task, &delta, commit_stream_);
     }
     delta.MergeInto(stats_, resident_count_);
+    FinishSupplyObservation(
+        plan, plan.first_err.load(std::memory_order_relaxed) == 0);
     if (plan.first_err.load(std::memory_order_relaxed) != 0) {
       if (tim) RecordPhase1Ns(NowNs(t_p1));
       return Status::Fail("residency inline stage failed: " +
@@ -1572,6 +1703,8 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
   for (size_t t = 0; t < tasks.size(); ++t) {
     workers_[t]->delta_.MergeInto(stats_, resident_count_);
   }
+  FinishSupplyObservation(
+      plan, plan.first_err.load(std::memory_order_relaxed) == 0);
   if (plan.first_err.load(std::memory_order_relaxed) != 0) {
     if (tim) RecordPhase1Ns(NowNs(t_p1));
     return Status::Fail("residency parallel stage failed: " +
@@ -1667,6 +1800,8 @@ void MoEResidency::Free() {
     delete w;
   }
   workers_.clear();
+  supply_observer_.reset();
+  supply_observer_enabled_ = false;
   auto free_if = [](void** p) {
     if (*p) {
       cudaFree(*p);

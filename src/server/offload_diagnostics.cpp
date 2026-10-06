@@ -111,8 +111,53 @@ void WriteTiming(std::ostream& out, const model::ResidencyTimingSnapshot& t,
       << ",\"pread_merge_max_ns\":" << merge_max_ns << '}';
 }
 
+std::string SupplyJSON(const quant::MoEResidency::DiagnosticState& state) {
+  quant::MoESupplyState unavailable;
+  unavailable.ScopeFailure();
+  const auto& s = state.supply_observer ? *state.supply_observer : unavailable;
+  std::ostringstream out;
+  out.imbue(std::locale::classic());
+  out << "{\"schema\":\"q4t.moe_supply_observer.v1\",\"enabled\":true,"
+      << "\"plan_state_bytes\":" << sizeof(quant::MoESupplyPlan)
+      << ",\"persistent_state_bytes\":" << sizeof(quant::MoESupplyState)
+      << ",\"counters\":{";
+  for (size_t i = 0; i < quant::kSupplyCounterCount; ++i) {
+    if (i) out << ',';
+    out << '"' << quant::kSupplyCounterNames[i] << "\":" << s.counters.values[i];
+  }
+  out << "},\"samples\":[";
+  for (size_t i = 0; i < s.sample_count; ++i) {
+    if (i) out << ',';
+    const auto& sample = s.samples[i];
+    out << "{\"witness_seq\":" << sample.witness_seq
+        << ",\"layer\":" << sample.layer
+        << ",\"plan_clock\":" << sample.plan_clock
+        << ",\"entry_index\":" << sample.entry_index
+        << ",\"expert\":" << sample.expert
+        << ",\"source_task\":" << sample.source_task
+        << ",\"overwriting_task\":" << sample.overwriting_task
+        << ",\"GPU_victim\":" << sample.gpu_victim
+        << ",\"mirror_slot\":" << sample.mirror_slot
+        << ",\"entry_L2_present\":false,\"entry_mirror_candidate\":true"
+        << ",\"reserve_seq\":" << sample.reserve_seq
+        << ",\"claim_seq\":" << sample.claim_seq
+        << ",\"publication_seq_or_zero\":" << sample.publication_seq
+        << ",\"state_at_claim\":\""
+        << (sample.cause == quant::SupplyCause::kActive
+                ? "active_reservation" : "published")
+        << "\",\"publication_final_outcome\":\""
+        << (sample.publication == quant::SupplyPublication::kPublished
+                ? "published" : "aborted")
+        << "\",\"actual_source\":\"READ\",\"read_ok\":true,"
+        << "\"commit_ok\":true,\"plan_complete\":true}";
+  }
+  out << "]}";
+  return out.str();
+}
+
 void WriteCache(std::ostream& out,
-                const quant::MoEResidency::DiagnosticState& s, size_t layer) {
+                const quant::MoEResidency::DiagnosticState& s, size_t layer,
+                size_t* observer_bytes, bool* observer_complete) {
   out << "{\"layer\":" << layer << ",\"slot_experts\":";
   WriteArray(out, s.slot_experts);
   out << ",\"slot_ticks\":";
@@ -126,7 +171,20 @@ void WriteCache(std::ostream& out,
   out << ",\"mirror_experts\":";
   WriteArray(out, s.mirror_experts);
   out << ",\"slot_clock\":" << s.slot_clock << ",\"l2_clock\":" << s.l2_clock
-      << ",\"mirror_cursor\":" << s.mirror_cursor << '}';
+      << ",\"mirror_cursor\":" << s.mirror_cursor;
+  if (s.supply_observer_enabled) {
+    std::string observer = SupplyJSON(s);
+    // The frozen request has three full snapshots of 48 layers. Reserve
+    // 64 KiB for explicit short error objects; never silently drop fields.
+    if (*observer_bytes + observer.size() > (1U << 20) - (64U << 10)) {
+      observer = "{\"schema\":\"q4t.moe_supply_observer.v1\",\"enabled\":true,"
+                 "\"serialization_error\":\"observer_byte_cap\"}";
+      *observer_complete = false;
+    }
+    *observer_bytes += observer.size();
+    out << ",\"supply_observer\":" << observer;
+  }
+  out << '}';
 }
 
 }  // namespace
@@ -188,6 +246,8 @@ void OffloadDiagnostics::Emit(const char* outcome, uint64_t output_tokens,
   out << ",\"output_tokens\":" << output_tokens
       << ",\"decode_forwards_completed\":" << decode_forwards
       << ",\"snapshots\":[";
+  size_t observer_bytes = 0;
+  bool observer_complete = true;
   for (size_t i = 0; i < snapshots_.size(); ++i) {
     const auto& s = snapshots_[i];
     if (i) out << ',';
@@ -217,13 +277,20 @@ void OffloadDiagnostics::Emit(const char* outcome, uint64_t output_tokens,
       out << '[';
       for (size_t layer = 0; layer < s.layers.size(); ++layer) {
         if (layer) out << ',';
-        WriteCache(out, s.layers[layer], layer);
+        WriteCache(out, s.layers[layer], layer, &observer_bytes,
+                   &observer_complete);
       }
       out << ']';
     }
     out << '}';
   }
-  out << "]}\n";
+  out << ']';
+  if (observer_bytes) {
+    out << ",\"supply_observer_serialization\":{\"bytes\":" << observer_bytes
+        << ",\"limit_bytes\":1048576,\"complete\":"
+        << (observer_complete ? "true" : "false") << '}';
+  }
+  out << "}\n";
   const std::string line = out.str();
   // stdio serializes this one write with the server's other log writers.
   std::fwrite(line.data(), 1, line.size(), stderr);

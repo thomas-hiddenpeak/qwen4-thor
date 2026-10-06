@@ -1,0 +1,109 @@
+{
+  "schema": "q4t.supply_observer.independent_static_review.v1",
+  "recorded_t": 1791273495.9452016,
+  "reviewer": "/root/supply_observer_review",
+  "passed": true,
+  "status": "PASS_STATIC_READY_FOR_CLEAN_COMMIT_AND_NECESSARY_BUILD",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/include/q4t/quant/moe_supply_observer.h": "a9e776c0916d987b354b052171b98dbc71ab5c3f8c7465b7e320efb9fe4ff7e1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/include/q4t/quant/moe_residency.h": "ff2ec49fc51d713ee71e02013da69d27a30adcf42cf59c2d712e8bc9583264d3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/src/quant/moe_residency.cpp": "341a376b53ca3a42880551658fcab1ba4639cd0a5b99d3b9edac1a8261569165",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/src/server/offload_diagnostics.cpp": "5c83fcbf322c762760f9fa60d69ca4388c24799d54770492315585516885139d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/tools/trace/test_moe_supply_observer.cpp": "584a0ee25d6797b21729d79b886c181e9f4660de5b4ea68cb1be2ed1fe0a86e0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/tools/evalscope/supply_observer_protocol.py": "0ad00855f400b257c6bb04a566c82f399bb1aaaaa8150f32809ecb8edb6fbf08",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/tools/evalscope/test_supply_observer_protocol.py": "ac8b5aaf83594f647292a1f82e2de39667b0d8532769ae426b2c722bc5d0fdb0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/src/model/moe.cu": "c7d2b1975fabb5464c45000a14496dc97b270675f92e834d36eb926c58ee1548",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/src/server/chat_generation.cpp": "66360d6a19b6b40377d7e0db5a530e8c0799be92280f19e22cd5973ab65d6931",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/src/server/chat_scheduler.cpp": "5c6247961090335a66a924907161592a0f88d6893e4e3faf2d7720833286b34b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/CMakeLists.txt": "bbf000be74b367b80ebe911a827a17f50f4d8ddaf0bf17ef815083d8e2f470fc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/tools/evalscope/run_budget_experiment.py": "081497bd2ebc63657408b014e371b4d0380d409b264630d78ec169f096c8a821",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/tools/evalscope/run_acceptance.py": "c3d3353224a7d9f6c4cab112dedeb913a30580ba3884f3feb9c2e6cc37fd5846",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/tools/evalscope/offload_policy.py": "0aaf88178d23eca2e287f09d3aed82badae3665529827ce432976bf81bf3a898",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/tools/evalscope/mechanism_protocol.py": "7a30b6ee3412737bc53c0b640ee1396e055c0fe9441f91e9c78752633c86a776",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/tools/evalscope/audit_offload_diagnostics.py": "2d61772b3779530ebc6171aab2ed165b78746f148c55cb531155ae6a06347633",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-appendix.json": "3ee1895e726d99605a38b365b8ca3a64cf30d6b5da67e5914d8faca0bf4b9a1f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-implementation-admission.json": "11cd89d60b197f6bf8db912f62cf554e8f320b12ae57a4ad01cbf69aebfc9dbe",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-implementation-clarification.json": "2af06de0893b87e7ecefbafafe66939564158f09051843ae8e2218ee14ff2b59",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-serialization-clarification.json": "9d64ce2e1509073e23fdcf58ceceb34a7232d7317f814ec3a51096aa335a31f7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-preliminary-review.json": "d2a5021f1e2b59588dd87365fb84ddde81e9f65fbd540de9bbea7cafc62c4761",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-first-static-findings.json": "a07ef84eb6630c09e53336e5a4d10f2449e28b7363fb55657a0cf14d13769b66",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer_entry.py": "ef392033a39491619030237a5b5d9fc998d80d1aab79da718dee1e71326a4c22",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer_common.py": "5ea5b5499eb8c262ec6021f3ec348ede2eceda343b7741cfb7431ad104ebe2d0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/run_observer_stage.py": "4115dabe536871bfff3f8973ca3240cc3e1a970df72a1ce508e1be4492b4b281",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/audit_observer_stage.py": "d8b48b20aa01cb2abc9b0a406f6352db1b3a67d4e4e3fa3a0230bf9c2eab70b6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/build_observer.py": "d7c86c5b8fe7ce1a16723c0cd190d063d6bbf1e43221ba70310a529b734c2f9f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-dependency-admission.json": "1a6debb5e53659de07d3da626d37abd7205552ab3fa4cfdc05445f54eb9b9cbd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/q01-quality-on-command.json": "e6e2ac9ed9889ea7002cff4ea4ca89dc323f9c09a82918a29744a2af6e9ccf5a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/s01-as-off-command.json": "0ebd8304137181c53f6b84cf674ee7d3fb5bb359ab901f11ada40d29cd094cfd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/s02-as-on-command.json": "b16715458d681ec93bebfa6a312f82eaa84b96533501a26b56f598c93e0a2e9b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/s03-al-on-command.json": "3a9d3124901ed841599a833b619ca4701457a4c19cf80198c77c67a0a4a70f26",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/s04-al-off-command.json": "a193ce1583592651937829b550e834bc30169431f39914b402aaccbc4c9d2344",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-sequences/s01-as-off.json": "481eef0c331092b522bdea5d9c0071d24af15e60333dc14bd33a7084967a1bb0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-sequences/s02-as-on.json": "2bb04afa122c77f2b8d01312163503f9e83913fcebb1f29f8e104501292fc9ce",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-sequences/s03-al-on.json": "f4aa255b3600ec543c202edd3721a8ff9d7db97756ad5792de5097123bf375d6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-sequences/s04-al-off.json": "22a2e49bf562349f4111e02ee21ae185e45258eb461ba18b95edb22bee1bc5cc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/phase_common.py": "4698bf6914d0751355e2fa32581a6da068e8ff4f60cafb307613569999f95c06",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-independent-static-review.json": "24b14bed8888cb16010ae64d2459ac483b4cb2a633e2792ef00f5b42a376019f"
+  },
+  "appendix_sha256": "3ee1895e726d99605a38b365b8ca3a64cf30d6b5da67e5914d8faca0bf4b9a1f",
+  "blocking_findings": [],
+  "first_findings_preserved": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-first-static-findings.json",
+    "sha256": "a07ef84eb6630c09e53336e5a4d10f2449e28b7363fb55657a0cf14d13769b66",
+    "resolved": [
+      {
+        "id": "STRICT_ENV_PARSE",
+        "resolution": "MoESupplyObserverSetting accepts unset/0/1 only; Init rejects other values before resource allocation."
+      },
+      {
+        "id": "PLANNER_CAPACITY_FAILURE_ACCOUNTING",
+        "resolution": "PlanResolve no-slot return records FailedSupplyPlanning for observed shape-single attempt."
+      }
+    ]
+  },
+  "runtime_review": {
+    "default_off": "No observer plan/persistent allocation; strict process setting once per residency Init, inactive pointer checks only in hot paths. Startup logs setting. No byte-identical/zero-overhead claim.",
+    "same_schedule": "Original task partition, sorting/merge, worker dispatch and done barriers, GPUvictims, inline limit and data movement preserved. Added metadata operations cannot prescribe event order but can perturb wall-clock scheduling.",
+    "locking": "No added lock acquisitions or CUDA query/synchronization/copy calls in diff. Caller-owned entry capture after preceding Phase1 barrier; shared event fields only within existing l2_mu sections. Own-entry unpacked flags written by owning task and consumed after existing barrier.",
+    "entry_ownership_proof": "All production PlanResolve callsites reviewed: model/moe.cu plan_sub is followed synchronously by LoadPhase1; first invocation precedes first dispatch, next subchunk invocation follows completed prior LoadPhase1 and fully_committed loop. Pending GPU work does not mutate host metadata. Resolve wrapper similarly runs all Phase1 calls synchronously. Server model_mu serializes forwards; arbitrary concurrent public API calls are outside admitted scope.",
+    "causality": "Reservation recorded before ring_claimed, source at actual successful branch, publication/abort under existing lock. READ while active remains causal after later abort; abort before claim restores opportunity. Initial L2 priority and claimed mirrors excluded from candidates. Failed plans retain partial counts and emit no confirmed witnesses.",
+    "closure": "Zero-miss plans finalized at planning tail; inline and worker paths finalized once after merge/barrier even on failure. Successful sources/candidates/writebacks close. Cumulative counters saturate with explicit overflow. Plan-local event seq bounded by admitted10 entries and once-per-entry claim/reserve/final outcome.",
+    "bounded_storage": "Fixed arrays <=10 misses, static_assert plan/state each<=4096B, last4 confirmed samples, no pinned/GPU payload allocation. Serialization off omitted; on compact-payload byte count plus complete metadata, protocol accounts field names and metadata under1MiB.",
+    "scope": "shape_single includes singleton prefill. Actual decode only phase difference; T1 entry-completion proof is not applied to singleton prefill. E512/C256/L216/workers16/mirror8/top10 checked."
+  },
+  "protocol_review": {
+    "requests": "5 service commands freeze quality11 first plus A000 short off/on and long on/off4 each=27 HTTP, diagnostic old bundle on in every cell, no warmup/test HTTP or within-chain reset.",
+    "quality_reference": "Reuse exact old fixtures and output oracle only; newA000/16GiB/observer-on/phase-on configuration is a new quality run. Actual output1 admits0 decode forwards/no prefixes/all-zero decode deltas.",
+    "observer_validation": "Full field/schema/uint64/size/retention/source/commit/candidate/reservation closures; actual decode each layer plans=forward count and raw-clock=L2+READ; aggregate source/writeback matches original counters. Witness task/ID/sequence/source/read/commit/phase verified. Unknown losses/errors/incomplete records fail closed.",
+    "carry": "Consecutive requests require full cache and stats identity on both observer-on and off cells. Old snapshots stripped only in validation copy, raw original retained.",
+    "serialization": "Observer and top serialization metadata presence must match setting; exact compact object byte sum, limit and complete enforced; real additional JSON includes field names and top metadata.",
+    "limits": "Observed direct losses in instrumented run only. No old/new pooled causal estimate, physical SSD attribution, exclusive wait or performance acceptance."
+  },
+  "harness_review": {
+    "entry_adapter": "Patches only imported mechanism protocol functions in process and redirects unchanged owned runner through explicit adapter, preserving wrapper/service/client ownership paths.",
+    "ownership": "M.phase_common run/cleanup reused with W=O and explicit run cwd=O; inherited Q4T andLD_PRELOAD removed by owned environment. Interrupt cleanup checks exact wrapperPID/unit/binary/launch before stop. Old frozen/export never called.",
+    "ordering": "q01 requires no prior observer-contract/diagnostic starts and writes first-runtime admission. Each later cell requires predecessor pass and contracts pass, frozen hashes and clean source checked before/after.",
+    "build": "Clean committed git archive to R/observer-export; local g++14 CUDA110a Release q4t target only; owned configure/build and zero-warning requirement, no tests/model execution."
+  },
+  "contract_sources_reviewed": {
+    "cpp_cases": 23,
+    "python_test_methods": 23,
+    "execution_status": "NOT_RUN; allowed only after new quality11 per frozen order"
+  },
+  "execution_admitted": false,
+  "pending": [
+    "clean committed export/binary/build identity",
+    "exact complete execution-plan bindings and independent execution admission",
+    "quality11 then grouped observer contracts then diagnostic16",
+    "terminal resources/protection/delivery audits"
+  ],
+  "actions": {
+    "new_tests": 0,
+    "new_HTTP": 0,
+    "builds": 0,
+    "model_payload_reads": 0,
+    "AST_static_parsing": true
+  },
+  "supersedes_review_sha256": "24b14bed8888cb16010ae64d2459ac483b4cb2a633e2792ef00f5b42a376019f",
+  "supersedes_reason": "Runtime author added two bounded C++ cases before final freeze; reviewed merged-read failure and unfinished-reservation case, correct declared host count21 to23. Original review retained."
+}

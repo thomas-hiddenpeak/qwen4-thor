@@ -1,0 +1,339 @@
+{
+  "schema": 1,
+  "recorded_t": 1791272507.6313229,
+  "status": "IMPLEMENTATION_SCOPE_FROZEN_EXECUTION_NOT_ADMITTED",
+  "parent_scope_sha256": "2bf0aa00fceebdc00d5b1e04ced774f3eb2ba4104d58e056a21d7c68205086e4",
+  "offline_analysis_sha256": "42948b8f2cad32b887efb4c399595bd0f86a58f2f8496a36c2acd5cc4462ca5e",
+  "offline_owner_exit_sha256": "c6881e41929729ad6f4d42c4a1a6cd11524db40eeaf1bde0e1a28d7b56115595",
+  "offline_gate": {
+    "A": {
+      "long_upper": 1540,
+      "mirror_deficit": 470
+    },
+    "C": {
+      "long_upper": 1487,
+      "mirror_deficit": 452
+    },
+    "selected_arm": "A",
+    "reason": "Prefrozen A-first rule; neither arm excluded. U is not measured loss."
+  },
+  "implementation_requires_independent_offline_result_review": true,
+  "observer_source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source",
+  "observer_branch": "codex/offload-supply-observer-20261006",
+  "source_base": "8ea3d329a236e35dd0aba35ad619912e3e76cc28",
+  "offline_checkout_must_remain_runtime_unchanged": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/source",
+  "design_draft_sha256": "2cf5dfdda6384c4a01584b769bdd8e9a27eb19417ac26df27ec0e722bc96d404",
+  "fixed_design": {
+    "hypothesis": "An occupied GPU overwrite reserves or publishes over a mirror holding another still-unclaimed GPU miss, and that miss subsequently chooses software READ instead of the mirror source it could use at plan entry.",
+    "minimal_observation": {
+      "preferred": "Exact cumulative counters plus at most four recent confirmed direct-loss witness records per layer. No full chronological trace, timestamps, payloads, extra event queries, or exclusive-wait profile.",
+      "enable": "One strict default-off process setting such as Q4T_MOE_SUPPLY_OBSERVER=1, read once during residency initialization. Log effective setting/schema/caps. Off has no observer allocation, lock acquisition, CUDA work, samples, or counter updates beyond the fixed cheap branch and inactive plan flag.",
+      "eligibility": "Observe successful PlanResolve calls with plan.decode_phase=true (the existing T_sub==1 shape marker), and <=10 distinct GPU misses under E=512/L2=16/workers=16/mirror=8. Record ineligible/scope-mismatch counters; do not silently truncate.",
+      "shape_caution": "The marker includes singleton prefill subchunks. Every exported name says shape_single or observer, never true_decode. True decode is obtained only by subtracting cumulative counters at prefill_end_decode_begin from inference_end for the same complete HTTP request.",
+      "startup": "InitHot/StageExpert paths receive no observer plan. Observations begin with completed PlanResolve planning, not with model loading."
+    },
+    "data_ownership": {
+      "plan": "Embed a fixed-capacity optional-active SupplyPlanObservation in LoadPlan, initialized only when enabled/eligible. Fixed arrays for <=10 misses, entry L2[16], mirror[8], entry mirror-claimed flags, and per-entry source/causal/error state. No heap allocation or formatting inside hot metadata locks.",
+      "identity": "Layer ID + monotonic raw PlanResolve slot_clock identifies the plan within a service. Each entry keeps original plan index, expert ID, GPU destination/victim identity, task ordinal, and source classification. Sequence numbers are plan-local and advanced only at observed metadata operations under existing l2_mu_.",
+      "lifetime": "Pass nullable plan observer and entry/task identity explicitly through StageTask -> ClaimExpert and CommitExpert. Existing non-StageTask callers use nullptr. Do not use a single mutable global/current-plan pointer: prefill has multiple LoadPlan objects.",
+      "threads": "Mutable cross-task pending/source/reservation state is accessed only while an existing l2_mu_ critical section is held. Entry-owned read/commit result flags may be written by the owning task and read by the caller only after the existing done barrier. No new observer mutex/atomic per event or CUDA synchronization.",
+      "caller_merge": "Only the LoadPhase1 caller folds finalized plan state into cumulative per-layer observer counters after every task has returned and existing StatsDelta values have merged. Both inline and worker paths must execute the same finalizer exactly once. Zero-miss plans finalize at successful PlanResolve because LoadPhase1 is never called."
+    },
+    "insertion_points": [
+      {
+        "where": "PlanResolve successful tail; before any LoadPhase1 dispatch",
+        "source": "src/quant/moe_residency.cpp:1374-1477",
+        "operation": "After all GPU misses/slots are known, capture entry L2/mirror mappings and claimed flags under l2_mu_, initialize every missing entry as pending, record initial source candidate flags and plan_clock. Planning errors do not produce a completed observation. Empty miss list produces a complete zero-load observed plan."
+      },
+      {
+        "where": "LoadPhase1 task partition, inline path and worker barrier",
+        "source": "src/quant/moe_residency.cpp:1480-1584",
+        "operation": "Attach task ordinals from the actual existing tasks vector (including merged runs), without regrouping. For eligible shape_single, require one batch; m<=10<=threads16. Preserve inline_miss_limit and dispatch/wait order. After merge/barrier finalize success or partial failure exactly once; do not skip observer finalization on first_err."
+      },
+      {
+        "where": "StageTask before/after actual ClaimExpert, read and commit calls",
+        "source": "src/quant/moe_residency.cpp:1004-1097",
+        "operation": "Forward observer pointer/entry/task. Preserve claim-all-before-read/commit. Record per-entry claim/read/commit status without replacing existing failure handling. A merged ReadRun failure marks every affected entry; do not invent per-expert successful reads from a failed aggregate call."
+      },
+      {
+        "where": "ClaimExpert existing source-selection lock",
+        "source": "src/quant/moe_residency.cpp:613-683",
+        "operation": "Record claim sequence and clear pending at the source decision. In the exact L2, MIRROR, or successful READ-allocation branch record actual source, selected buffer and mirror mapping/claimed state seen at claim. Classify direct loss before metadata mutation obscures the reason. A failed PickL2Victim or pre-source fault is CLAIM_ERROR, not READ."
+      },
+      {
+        "where": "ClaimExpert test fault and defensive wait failure",
+        "source": "src/quant/moe_residency.cpp:592-610,695-701",
+        "operation": "Preserve original fail/cleanup behavior. Mark fault attempt/failed claim when observer context exists; if READ was selected before a defensive wait failure, retain source intent but flag failure so the plan cannot satisfy successful-source closure."
+      },
+      {
+        "where": "CommitExpert mirror target reservation inside existing lock",
+        "source": "src/quant/moe_residency.cpp:1153-1169",
+        "operation": "Immediately before ring_claimed[m]=true, record target slot, prior mirror expert, overwriting GPU victim and committing task/entry. If target prior expert is an observed pending miss, mark a reservation; if it was an entry mirror candidate, retain a causal sequence link. Do not wait for publication to mark unavailability. No target: preserve mirror_skip and count skip only."
+      },
+      {
+        "where": "CommitExpert writeback abort or publication locks",
+        "source": "src/quant/moe_residency.cpp:1205-1227",
+        "operation": "On abort clear active reservation only if its sequence still matches, retaining historical witness outcome. On success mark the original entry mirror as destroyed by that reservation before replacing mapping. Distinguish published, aborted, or still-active when the later source claim occurs. Duplicate invalidation old IDs are outside needed under admitted scope; violation invalidates observer contract."
+      },
+      {
+        "where": "CommitExpert source release and successful return; StageTask error release",
+        "source": "src/quant/moe_residency.cpp:1230-1313;548-571;1084-1096",
+        "operation": "Read/commit success recorded independently of source choice. Keep ReleaseRingClaim/ReleaseMissClaim unchanged. No pending bit or observer record may outlive the LoadPlan worker barrier."
+      },
+      {
+        "where": "CopyDiagnosticState and existing full-cache phase snapshots",
+        "source": "include/q4t/quant/moe_residency.h:322-333;src/quant/moe_residency.cpp:1317-1331;src/server/offload_diagnostics.cpp:115-165,170-242",
+        "operation": "Copy cumulative per-layer observer counters and bounded samples into DiagnosticState and serialize a versioned supply_observer object only when enabled. Reuse the existing three full snapshots; preserve prefix cache_state=omitted behavior. Request/phase identity comes from the enclosing offload_diag record."
+      }
+    ],
+    "entry_classification": {
+      "raw_entry_mirror_present": "GPU-missing expert has a valid entry expert_mirror mapping; retain separately even if L2 has priority or ring is claimed.",
+      "entry_mirror_candidate": "GPU-missing, absent in entry L2, present in entry mirror, ring not claimed. No additional event query. This means source candidate under current ClaimExpert logic, not a measurement of readiness or wait.",
+      "true_decode_ready_proof": "For successful ordinary T=1 decode, router D2H + existing stream sync (moe.cu:513-521), single stream forced by model.cu:276-290, and previous worker barriers establish entry completion and no old claims. Validate scope and observed entry-claimed count; do not apply this proof to singleton prefill.",
+      "l2_priority": "Entry L2 source takes priority; a mirrored expert already in entry L2 is not counted as an initial mirror opportunity. Keep raw_entry_mirror_present and entry_l2_present counters so this subtraction is inspectable."
+    },
+    "causal_classification": {
+      "direct_read_active_reservation": "At claim: original entry mirror candidate, actual READ allocation succeeds, and its still-published mirror mapping is unavailable because a linked same-plan reservation currently owns that target. Link reserve_seq < claim_seq; owner task differs under actual claim-all semantics.",
+      "direct_read_after_publication": "At claim: original entry mirror candidate, actual READ succeeds, and a linked earlier reservation successfully published over its entry mirror before claim. Current GPU victims cannot recreate needed IDs in the same plan.",
+      "not_direct": [
+        "Reservation occurred but later expert still chose MIRROR or L2.",
+        "Reservation aborted before later claim and the unchanged mapping became usable again.",
+        "Expert was not a mirror candidate at plan entry.",
+        "Claim or read/commit failure; report partial evidence separately, not successful direct-read work.",
+        "A marked reservation without a causal unavailable state at claim."
+      ],
+      "writeback_abort_nuance": "A later writeback abort does not erase a real READ decision made while its reservation was active. Keep source-at-claim plus final publish/abort outcome; do not require publication success to recognize reservation-caused loss.",
+      "other_entry_loss": "Initial mirror candidate later chooses READ without one of the two verified causal links. Keep this explicit; it indicates another mechanism or a violated/incomplete observer premise. Never relabel it as reserve loss.",
+      "loss_identity": "Count each missing expert once; multiple reservations do not duplicate expert loss. In successful true decode, actual mirror hits must be entry candidates; a hit outside that set violates the admitted true-decode premise. For singleton prefill, keep outside-candidate hits as a separate observed category: incomplete prior events and general L2 fallback can change entry-L2 priority, so do not apply the true-T1 protection proof or reject the request from this prefill category alone."
+    },
+    "cumulative_counters": [
+      "plans_started",
+      "plans_complete",
+      "plans_failed",
+      "plans_scope_mismatch",
+      "planned_loads",
+      "source_l2",
+      "source_mirror",
+      "source_read",
+      "committed_loads",
+      "claim_errors",
+      "read_errors",
+      "commit_errors",
+      "entry_l2_present",
+      "entry_mirror_present",
+      "entry_mirror_candidate",
+      "entry_candidate_to_mirror",
+      "entry_candidate_to_l2",
+      "entry_candidate_to_read_direct_active",
+      "entry_candidate_to_read_direct_published",
+      "entry_candidate_to_read_other",
+      "entry_candidate_unclaimed",
+      "writeback_reservations",
+      "writeback_pending_missing_targets",
+      "writeback_pending_entry_candidate_targets",
+      "writeback_published",
+      "writeback_aborted",
+      "writeback_skipped",
+      "source_mirror_outside_entry_candidates",
+      "duplicate_claims",
+      "entry_claimed_mirrors",
+      "counter_overflow",
+      "samples_confirmed_total",
+      "samples_overwritten"
+    ],
+    "closures": {
+      "successful_plan": "planned_loads = source_l2 + source_mirror + source_read = committed_loads; every planned entry classified/committed exactly once; pending count=0; no error or scope-violation flags.",
+      "candidate_partition": "entry_mirror_candidate = entry_candidate_to_mirror + entry_candidate_to_l2 + entry_candidate_to_read_direct_active + entry_candidate_to_read_direct_published + entry_candidate_to_read_other (plus entry_candidate_unclaimed only for failed/partial plans).",
+      "successful_true_decode": "Per-layer true-decode phase delta plans_complete=255; plans_failed/scope_mismatch/errors/overflow/source_mirror_outside_entry_candidates=0. Source totals equal GPU loads, L2 hits, mirror hits and software misses for that actual phase; use new per-layer source counters plus existing aggregate counters and raw-clock identity. All layers sum to recorded totals. Do not impose true-decode mirror-candidate or entry-event premises on the separately reported singleton-prefill delta.",
+      "direct_loss_check": "Direct counts <= entry candidates and actual READ, and <= fixed actual-plan structural U when the new observed GPU route/victim stream is independently bound. Do not compare a new observer run to an old-run U as if schedules/entries were identical.",
+      "phase": "Use the existing prefill_begin, prefill_end_decode_begin, inference_end full snapshots for each request. True decode = last minus middle. Singleton prefill observations stay in first-to-middle delta. Snapshot monotonicity and counter overflow are checked.",
+      "partial_failure": "Counters remain monotonic and preserve actual attempts/successes on runtime errors; no rollback. Mark plan/HTTP incomplete, expose failed/unclaimed entries, and reject causal aggregate acceptance for that request. Do not force source=loads for failed commits."
+    },
+    "samples_and_size": {
+      "selection": "Per-layer fixed circular buffer of the last four confirmed direct-loss witnesses. Append from caller at the existing barrier; no worker formatting or file I/O. Samples supplement exact counters and do not estimate frequency.",
+      "fields": [
+        "layer",
+        "plan_clock",
+        "entry_index",
+        "expert",
+        "source_task",
+        "overwriting_task",
+        "GPU_victim",
+        "mirror_slot",
+        "entry_L2_present",
+        "entry_mirror_candidate",
+        "reserve_seq",
+        "claim_seq",
+        "publication_seq_or_zero",
+        "state_at_claim",
+        "publication_final_outcome",
+        "actual_source",
+        "read_ok",
+        "commit_ok",
+        "plan_complete"
+      ],
+      "phase_filter": "Samples carry cumulative plan_clock and witness sequence; phase readers retain only samples newer than entry checkpoint. Old samples and overwritten counts remain explicit. Do not reset runtime counters or cache state at request boundaries.",
+      "caps_proposed_for_appendix": {
+        "miss_entries_per_plan": 10,
+        "recent_witnesses_per_layer": 4,
+        "layers": 48,
+        "observer_plan_state_bytes_max": 4096,
+        "observer_persistent_bytes_per_layer_max": 4096,
+        "additional_observer_JSON_bytes_per_request_max": 1048576
+      },
+      "overflow": "Checked uint64 additions and explicit overflow/scope flags. Exhausting sample ring overwrites the oldest sample and increments samples_overwritten; exact counters continue. Serialization above frozen cap fails observation completeness rather than silently truncating required counters.",
+      "memory_limit": "Only small host diagnostic structures; no pinned payload allocation, ring/L2/GPU budget change. Measure/record diagnostic allocation size; this does not establish total physical RAM54GB."
+    },
+    "error_cleanup_and_lifetime": [
+      "Planning failure does not dispatch observer work; failed marker/counters must be finalized without falsely counting a successful plan.",
+      "Existing source fault, L2 wait, ReadExpert, ReadRun, H2D/event and CommitExpert failure paths retain their exact claim release behavior. Observer adds bookkeeping only.",
+      "LoadPhase1 always waits every dispatched worker even after first_err. Fold observer partial state after this existing barrier before returning either failure or success.",
+      "Zero-load and inline plans use the same completion rules; clear() resets observer activation so reused plans cannot leak marks or task identity.",
+      "Diagnostic snapshot is copied only under existing model exclusion after existing GPU completion; cleanup emits partial request on failure/cancellation. No observer-driven synchronization added.",
+      "Free joins existing workers before destroying residency observer counters/samples. No observer callback or pointer survives the plan, worker task, or residency instance."
+    ],
+    "non_goals": [
+      "whole-cache deterministic simulation",
+      "physical SSD bytes attribution",
+      "exclusive wait timing",
+      "new CUDA sync/event query",
+      "runtime scheduling/victim/admission policy changes",
+      "prefill optimization",
+      "second GPU tie candidate",
+      "performance acceptance or changing old NO_GO/default-off",
+      "global54GB acceptance"
+    ]
+  },
+  "implementation_clarifications": [
+    "Default-off plan/persistent observer allocations are absent; prefer optional unique_ptr fixed-size state created outside hot lock. Inactive pointer/flag is allowed, no claim of byte-identical code or proven zero runtime overhead.",
+    "No new cudaEventQuery/Sync/Memcpy; reuse existing branch outcomes and existing l2_mu_ sections.",
+    "True decode comes only from existing actual phase boundary differences, never raw shape_single totals.",
+    "Cumulative counters and up to4 recent loss samples perlayer are required; no full timing/event trace expansion.",
+    "Successful single-shape plans outside E512/C256/L216/workers16/mirror8/m<=10 set scope mismatch instead of silently disappearing. Off behavior does not impose observer-only scope errors.",
+    "No tensor/GEMM/cache policy/budget/scheduling/worker count changes. Source faults/error cleanup retain old behavior; observation failure is explicit in metadata."
+  ],
+  "allowed_runtime_paths": [
+    "include/q4t/quant/moe_supply_observer.h",
+    "include/q4t/quant/moe_residency.h",
+    "src/quant/moe_residency.cpp",
+    "src/server/offload_diagnostics.cpp"
+  ],
+  "other_allowed_new_paths": [
+    "tools/trace/test_moe_supply_observer.cpp",
+    "tools/evalscope/supply_observer_protocol.py",
+    "tools/evalscope/test_supply_observer_protocol.py"
+  ],
+  "documentation_paths": [
+    "docs/OFFLOAD_DECODE_SUPPLY_2026-10-06.md",
+    "docs/STATUS.md",
+    "docs/README.md",
+    "docs/log/2026-10-06.md",
+    "docs/log/README.md",
+    "docs/evidence/offload-supply-20261006/"
+  ],
+  "environment": {
+    "Q4T_MOE_SUPPLY_OBSERVER": "1 for quality and observed diagnostic cells; 0 for control cells",
+    "arm": "A: global/request/quiet0/0/0",
+    "MTP": false,
+    "PhaseD": false,
+    "gpu_slots": 256,
+    "L2_slots": 16,
+    "mirror_slots": 8,
+    "load_threads": 16,
+    "host_memory_max_bytes": 17179869184,
+    "swap_max": 0,
+    "max_open_experts": 200,
+    "max_seq": 1,
+    "max_prefill": 8192,
+    "max_len": 262144,
+    "other_precision_GEMM_stream_flags": "exact prior A runtime settings; models loaded setQ4T_MOE_STREAMS=1 recorded; no inherited Q4T/LD_PRELOAD"
+  },
+  "frozen_HTTP_total": 27,
+  "frozen_service_total": 5,
+  "order": [
+    {
+      "id": "q01-quality-on",
+      "observer": true,
+      "requests": 11,
+      "suite": "exact previous accepted quality11; fixed identity and prompts before execution",
+      "quality_first_runtime_test": true
+    },
+    {
+      "id": "s01-as-off",
+      "observer": false,
+      "inputs": [
+        1024,
+        1024,
+        1024,
+        1024
+      ],
+      "outputs": [
+        256,
+        256,
+        256,
+        256
+      ]
+    },
+    {
+      "id": "s02-as-on",
+      "observer": true,
+      "inputs": [
+        1024,
+        1024,
+        1024,
+        1024
+      ],
+      "outputs": [
+        256,
+        256,
+        256,
+        256
+      ]
+    },
+    {
+      "id": "s03-al-on",
+      "observer": true,
+      "inputs": [
+        8193,
+        1024,
+        1024,
+        1024
+      ],
+      "outputs": [
+        256,
+        256,
+        256,
+        256
+      ]
+    },
+    {
+      "id": "s04-al-off",
+      "observer": false,
+      "inputs": [
+        8193,
+        1024,
+        1024,
+        1024
+      ],
+      "outputs": [
+        256,
+        256,
+        256,
+        256
+      ]
+    }
+  ],
+  "diagnostic_bundle": "All4 have existing phase/cache snapshots+timing+routertrace identically on; only new supply observer differs. Fixed order S off/on, L on/off. Each service targeted cold preparation; no intra-service resets. Reuse original request text identities.",
+  "prior_to_HTTP": "Necessary local zero-warning build; freeze clean source export/binary/commands/model+wrapper dependencies/environment+all requests; independent admission. No host observer/protocol test before quality11 per chosen stricter order.",
+  "after_quality_pass": "One grouped batch of new pure-host observer finite contracts and protocol fixtures, then fixed diagnostic16. Reuse unchanged old GPU/offline41 contracts; no model microbench/numerical payload test or five-tier performance acceptance in this observation-only stage.",
+  "required_acceptance": [
+    "Quality11 response contracts and terminal/cleanup success, observer schema present and scope-valid under quality config; scope correct HTTP length separately from semantic score.",
+    "On all success phases exact new source/commit/entry-candidate/direct-loss closures; true decode perlayer plans=actualdecodeforwards, source counters aggregate to oldrecordedstats/rawclock deltas.",
+    "No unknown entry-candidate readloss, no source-mirror-outside-entry-candidate in true decode, no errors/scope mismatch/overflow/unfinished plan; if violated keep failed evidence and targeted diagnosis.",
+    "Confirmed directloss witnesses must link earlier reserve with cross-task actualREAD and committed success; active/published cause and abort finaloutcome distinguished.",
+    "All16 fixeddiagnostic requests output256 and validtrace/capacity/identity/cold preparation/resources/owned lifecycle; old16 not pooled with new.",
+    "Full original/raw off/on metrics and resource evidence retained. Do not label paired differences pure overhead or stable speed regressions. No global54GB claim."
+  ],
+  "failure_policy": "Preserve first failedbuild/test/HTTP/audit and stop dependent work. Diagnose concrete cause and revalidate only affected scope. Any new runtime retry/service attempt requires a bounded recovery record and remains within total5 services/27HTTP; do not silently spend extra requests.",
+  "completion_exit": "After fixed scope, report actual direct source losses or zero observations with observer perturbation limits; separate supply explanation from unknown indirect history/timing. Admit at most one evidence-backed future optimization candidate or reject; do not implement optimization in this observation stage."
+}

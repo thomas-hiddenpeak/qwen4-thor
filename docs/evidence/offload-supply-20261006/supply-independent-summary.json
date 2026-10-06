@@ -1,0 +1,1540 @@
+{
+  "schema": "q4t.offload_supply.independent_summary.v1",
+  "recorded_t": 1791272522.1097906,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/result-review-plan.json": "2bae53261f61b7eac5c5ffc76de4344bcd8bcf162cd1b5d4d81a4db383494bf7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/supply-analysis.json": "42948b8f2cad32b887efb4c399595bd0f86a58f2f8496a36c2acd5cc4462ca5e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/supply-analysis-01-exit.json": "c6881e41929729ad6f4d42c4a1a6cd11524db40eeaf1bde0e1a28d7b56115595",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/supply-analysis-01.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/execution-plan.json": "ca89aedf626465a41fbdca823e3c402fed31499477e7b131a04af6cb806ce57f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/execution-command.json": "d6b86f51f543de18267543ba6a26d4a466ac5956ccdea4aa829c92f518ac5425",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/execution-independent-review.json": "f834aae944411cfe940be563c0968a0f6a06d1ab53036d1bf9c74a30cc5d10e6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/scope-plan.json": "2bf0aa00fceebdc00d5b1e04ced774f3eb2ba4104d58e056a21d7c68205086e4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/tool-static-review.json": "f72d1375319f1a8c2292ef04136ebafe203d3c787fb450debbcbe2795640c826",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/validation-results.json": "9e9b1f7ca40c3add27cad45c3f5abfb459549ae2630921fd75dd2a66b0a4b060",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/supply-inputs.json": "a60951d231935ff2356e9afe0fd6f5fd06901ea3ac1c8a912c6177f6eff58707",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/baseline-replay.json": "87e2bff6ab96615022662bb6235295c0447f83cab43e47f02f8c1ba2a47ffd5a"
+  },
+  "status": "PASS_IDENTIFIED_SUPPLY_DIRECT_LOSS_NOT_EXCLUDED",
+  "runtime_source_commit": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+  "runner_source_commit": "8ea3d329a236e35dd0aba35ad619912e3e76cc28",
+  "requests": [
+    {
+      "group": "m02-as-on",
+      "arm": "A",
+      "position": 0,
+      "role": "conditioning",
+      "loads": 7128,
+      "software_read_misses": 6678,
+      "mirror_hits": 450,
+      "L2_hits": 0,
+      "mirror_writebacks": 7128,
+      "mirror_skips": 0,
+      "raw_direct_loss_upper": 1485,
+      "capped_direct_loss_upper": 1485,
+      "first32_raw_upper": 201,
+      "tail_32_to_255_raw_upper": 1284,
+      "last32_raw_upper": 150,
+      "last32_has_independent_read_cap": false
+    },
+    {
+      "group": "m02-as-on",
+      "arm": "A",
+      "position": 1,
+      "role": "primary",
+      "loads": 7000,
+      "software_read_misses": 6052,
+      "mirror_hits": 948,
+      "L2_hits": 0,
+      "mirror_writebacks": 7000,
+      "mirror_skips": 0,
+      "raw_direct_loss_upper": 1419,
+      "capped_direct_loss_upper": 1419,
+      "first32_raw_upper": 152,
+      "tail_32_to_255_raw_upper": 1267,
+      "last32_raw_upper": 145,
+      "last32_has_independent_read_cap": false
+    },
+    {
+      "group": "m02-as-on",
+      "arm": "A",
+      "position": 2,
+      "role": "secondary",
+      "loads": 6559,
+      "software_read_misses": 5984,
+      "mirror_hits": 575,
+      "L2_hits": 0,
+      "mirror_writebacks": 6559,
+      "mirror_skips": 0,
+      "raw_direct_loss_upper": 1167,
+      "capped_direct_loss_upper": 1167,
+      "first32_raw_upper": 131,
+      "tail_32_to_255_raw_upper": 1036,
+      "last32_raw_upper": 136,
+      "last32_has_independent_read_cap": false
+    },
+    {
+      "group": "m02-as-on",
+      "arm": "A",
+      "position": 3,
+      "role": "secondary",
+      "loads": 6367,
+      "software_read_misses": 5968,
+      "mirror_hits": 399,
+      "L2_hits": 0,
+      "mirror_writebacks": 6367,
+      "mirror_skips": 0,
+      "raw_direct_loss_upper": 1108,
+      "capped_direct_loss_upper": 1108,
+      "first32_raw_upper": 113,
+      "tail_32_to_255_raw_upper": 995,
+      "last32_raw_upper": 136,
+      "last32_has_independent_read_cap": false
+    },
+    {
+      "group": "m03-cs-on",
+      "arm": "C",
+      "position": 0,
+      "role": "conditioning",
+      "loads": 7128,
+      "software_read_misses": 6680,
+      "mirror_hits": 448,
+      "L2_hits": 0,
+      "mirror_writebacks": 7128,
+      "mirror_skips": 0,
+      "raw_direct_loss_upper": 1487,
+      "capped_direct_loss_upper": 1487,
+      "first32_raw_upper": 204,
+      "tail_32_to_255_raw_upper": 1283,
+      "last32_raw_upper": 150,
+      "last32_has_independent_read_cap": false
+    },
+    {
+      "group": "m03-cs-on",
+      "arm": "C",
+      "position": 1,
+      "role": "primary",
+      "loads": 7000,
+      "software_read_misses": 6056,
+      "mirror_hits": 944,
+      "L2_hits": 0,
+      "mirror_writebacks": 7000,
+      "mirror_skips": 0,
+      "raw_direct_loss_upper": 1419,
+      "capped_direct_loss_upper": 1419,
+      "first32_raw_upper": 148,
+      "tail_32_to_255_raw_upper": 1271,
+      "last32_raw_upper": 146,
+      "last32_has_independent_read_cap": false
+    },
+    {
+      "group": "m03-cs-on",
+      "arm": "C",
+      "position": 2,
+      "role": "secondary",
+      "loads": 6559,
+      "software_read_misses": 5989,
+      "mirror_hits": 570,
+      "L2_hits": 0,
+      "mirror_writebacks": 6559,
+      "mirror_skips": 0,
+      "raw_direct_loss_upper": 1166,
+      "capped_direct_loss_upper": 1166,
+      "first32_raw_upper": 127,
+      "tail_32_to_255_raw_upper": 1039,
+      "last32_raw_upper": 136,
+      "last32_has_independent_read_cap": false
+    },
+    {
+      "group": "m03-cs-on",
+      "arm": "C",
+      "position": 3,
+      "role": "secondary",
+      "loads": 6367,
+      "software_read_misses": 5967,
+      "mirror_hits": 400,
+      "L2_hits": 0,
+      "mirror_writebacks": 6367,
+      "mirror_skips": 0,
+      "raw_direct_loss_upper": 1113,
+      "capped_direct_loss_upper": 1113,
+      "first32_raw_upper": 117,
+      "tail_32_to_255_raw_upper": 996,
+      "last32_raw_upper": 136,
+      "last32_has_independent_read_cap": false
+    },
+    {
+      "group": "m06-cl-on",
+      "arm": "C",
+      "position": 0,
+      "role": "conditioning",
+      "loads": 6752,
+      "software_read_misses": 6485,
+      "mirror_hits": 267,
+      "L2_hits": 0,
+      "mirror_writebacks": 6752,
+      "mirror_skips": 0,
+      "raw_direct_loss_upper": 1147,
+      "capped_direct_loss_upper": 1147,
+      "first32_raw_upper": 253,
+      "tail_32_to_255_raw_upper": 894,
+      "last32_raw_upper": 14,
+      "last32_has_independent_read_cap": false
+    },
+    {
+      "group": "m06-cl-on",
+      "arm": "C",
+      "position": 1,
+      "role": "primary",
+      "loads": 7129,
+      "software_read_misses": 6637,
+      "mirror_hits": 492,
+      "L2_hits": 0,
+      "mirror_writebacks": 7129,
+      "mirror_skips": 0,
+      "raw_direct_loss_upper": 1487,
+      "capped_direct_loss_upper": 1487,
+      "first32_raw_upper": 241,
+      "tail_32_to_255_raw_upper": 1246,
+      "last32_raw_upper": 149,
+      "last32_has_independent_read_cap": false
+    },
+    {
+      "group": "m06-cl-on",
+      "arm": "C",
+      "position": 2,
+      "role": "secondary",
+      "loads": 6798,
+      "software_read_misses": 6013,
+      "mirror_hits": 785,
+      "L2_hits": 0,
+      "mirror_writebacks": 6798,
+      "mirror_skips": 0,
+      "raw_direct_loss_upper": 1296,
+      "capped_direct_loss_upper": 1296,
+      "first32_raw_upper": 179,
+      "tail_32_to_255_raw_upper": 1117,
+      "last32_raw_upper": 143,
+      "last32_has_independent_read_cap": false
+    },
+    {
+      "group": "m06-cl-on",
+      "arm": "C",
+      "position": 3,
+      "role": "secondary",
+      "loads": 6469,
+      "software_read_misses": 5976,
+      "mirror_hits": 493,
+      "L2_hits": 0,
+      "mirror_writebacks": 6469,
+      "mirror_skips": 0,
+      "raw_direct_loss_upper": 1140,
+      "capped_direct_loss_upper": 1140,
+      "first32_raw_upper": 138,
+      "tail_32_to_255_raw_upper": 1002,
+      "last32_raw_upper": 138,
+      "last32_has_independent_read_cap": false
+    },
+    {
+      "group": "m07-al-on",
+      "arm": "A",
+      "position": 0,
+      "role": "conditioning",
+      "loads": 7196,
+      "software_read_misses": 6916,
+      "mirror_hits": 280,
+      "L2_hits": 0,
+      "mirror_writebacks": 7194,
+      "mirror_skips": 2,
+      "raw_direct_loss_upper": 1263,
+      "capped_direct_loss_upper": 1263,
+      "first32_raw_upper": 280,
+      "tail_32_to_255_raw_upper": 983,
+      "last32_raw_upper": 23,
+      "last32_has_independent_read_cap": false
+    },
+    {
+      "group": "m07-al-on",
+      "arm": "A",
+      "position": 1,
+      "role": "primary",
+      "loads": 7227,
+      "software_read_misses": 6749,
+      "mirror_hits": 478,
+      "L2_hits": 0,
+      "mirror_writebacks": 7227,
+      "mirror_skips": 0,
+      "raw_direct_loss_upper": 1540,
+      "capped_direct_loss_upper": 1540,
+      "first32_raw_upper": 250,
+      "tail_32_to_255_raw_upper": 1290,
+      "last32_raw_upper": 152,
+      "last32_has_independent_read_cap": false
+    },
+    {
+      "group": "m07-al-on",
+      "arm": "A",
+      "position": 2,
+      "role": "secondary",
+      "loads": 6867,
+      "software_read_misses": 6020,
+      "mirror_hits": 847,
+      "L2_hits": 0,
+      "mirror_writebacks": 6867,
+      "mirror_skips": 0,
+      "raw_direct_loss_upper": 1338,
+      "capped_direct_loss_upper": 1338,
+      "first32_raw_upper": 202,
+      "tail_32_to_255_raw_upper": 1136,
+      "last32_raw_upper": 146,
+      "last32_has_independent_read_cap": false
+    },
+    {
+      "group": "m07-al-on",
+      "arm": "A",
+      "position": 3,
+      "role": "secondary",
+      "loads": 6481,
+      "software_read_misses": 5986,
+      "mirror_hits": 495,
+      "L2_hits": 0,
+      "mirror_writebacks": 6481,
+      "mirror_skips": 0,
+      "raw_direct_loss_upper": 1151,
+      "capped_direct_loss_upper": 1151,
+      "first32_raw_upper": 142,
+      "tail_32_to_255_raw_upper": 1009,
+      "last32_raw_upper": 137,
+      "last32_has_independent_read_cap": false
+    }
+  ],
+  "S_to_L_contrasts": [
+    {
+      "arm": "A",
+      "position": 1,
+      "mirror_deficit": 470,
+      "load_delta": 227,
+      "software_read_delta": 697,
+      "short_direct_upper": 1419,
+      "long_direct_upper": 1540,
+      "positive_deficit_not_fully_explained": false,
+      "deficit_beyond_long_upper": 0,
+      "layers_with_mirror_loss": 45,
+      "layers_with_mirror_gain": 3,
+      "gross_mirror_loss": 491,
+      "gross_mirror_gain": 21
+    },
+    {
+      "arm": "A",
+      "position": 2,
+      "mirror_deficit": -272,
+      "load_delta": 308,
+      "software_read_delta": 36,
+      "short_direct_upper": 1167,
+      "long_direct_upper": 1338,
+      "positive_deficit_not_fully_explained": false,
+      "deficit_beyond_long_upper": 0,
+      "layers_with_mirror_loss": 11,
+      "layers_with_mirror_gain": 33,
+      "gross_mirror_loss": 35,
+      "gross_mirror_gain": 307
+    },
+    {
+      "arm": "A",
+      "position": 3,
+      "mirror_deficit": -96,
+      "load_delta": 114,
+      "software_read_delta": 18,
+      "short_direct_upper": 1108,
+      "long_direct_upper": 1151,
+      "positive_deficit_not_fully_explained": false,
+      "deficit_beyond_long_upper": 0,
+      "layers_with_mirror_loss": 10,
+      "layers_with_mirror_gain": 31,
+      "gross_mirror_loss": 35,
+      "gross_mirror_gain": 131
+    },
+    {
+      "arm": "C",
+      "position": 1,
+      "mirror_deficit": 452,
+      "load_delta": 129,
+      "software_read_delta": 581,
+      "short_direct_upper": 1419,
+      "long_direct_upper": 1487,
+      "positive_deficit_not_fully_explained": false,
+      "deficit_beyond_long_upper": 0,
+      "layers_with_mirror_loss": 44,
+      "layers_with_mirror_gain": 3,
+      "gross_mirror_loss": 461,
+      "gross_mirror_gain": 9
+    },
+    {
+      "arm": "C",
+      "position": 2,
+      "mirror_deficit": -215,
+      "load_delta": 239,
+      "software_read_delta": 24,
+      "short_direct_upper": 1166,
+      "long_direct_upper": 1296,
+      "positive_deficit_not_fully_explained": false,
+      "deficit_beyond_long_upper": 0,
+      "layers_with_mirror_loss": 11,
+      "layers_with_mirror_gain": 36,
+      "gross_mirror_loss": 49,
+      "gross_mirror_gain": 264
+    },
+    {
+      "arm": "C",
+      "position": 3,
+      "mirror_deficit": -93,
+      "load_delta": 102,
+      "software_read_delta": 9,
+      "short_direct_upper": 1113,
+      "long_direct_upper": 1140,
+      "positive_deficit_not_fully_explained": false,
+      "deficit_beyond_long_upper": 0,
+      "layers_with_mirror_loss": 12,
+      "layers_with_mirror_gain": 30,
+      "gross_mirror_loss": 34,
+      "gross_mirror_gain": 127
+    }
+  ],
+  "primary_layer_localization": [
+    {
+      "arm": "A",
+      "position": 1,
+      "layers": [
+        {
+          "layer": 0,
+          "mirror_deficit": -1,
+          "software_read_delta": 9,
+          "load_delta": 10,
+          "long_direct_upper": 178,
+          "short_direct_upper": 170,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 1,
+          "mirror_deficit": 16,
+          "software_read_delta": 18,
+          "load_delta": 2,
+          "long_direct_upper": 54,
+          "short_direct_upper": 52,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 2,
+          "mirror_deficit": 1,
+          "software_read_delta": 13,
+          "load_delta": 12,
+          "long_direct_upper": 60,
+          "short_direct_upper": 56,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 3,
+          "mirror_deficit": 12,
+          "software_read_delta": 14,
+          "load_delta": 2,
+          "long_direct_upper": 11,
+          "short_direct_upper": 12,
+          "deficit_beyond_long_upper": 1
+        },
+        {
+          "layer": 4,
+          "mirror_deficit": 25,
+          "software_read_delta": 32,
+          "load_delta": 7,
+          "long_direct_upper": 33,
+          "short_direct_upper": 31,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 5,
+          "mirror_deficit": 5,
+          "software_read_delta": 16,
+          "load_delta": 11,
+          "long_direct_upper": 64,
+          "short_direct_upper": 54,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 6,
+          "mirror_deficit": 18,
+          "software_read_delta": 30,
+          "load_delta": 12,
+          "long_direct_upper": 60,
+          "short_direct_upper": 47,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 7,
+          "mirror_deficit": 8,
+          "software_read_delta": 12,
+          "load_delta": 4,
+          "long_direct_upper": 60,
+          "short_direct_upper": 59,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 8,
+          "mirror_deficit": 24,
+          "software_read_delta": 31,
+          "load_delta": 7,
+          "long_direct_upper": 34,
+          "short_direct_upper": 31,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 9,
+          "mirror_deficit": -4,
+          "software_read_delta": 18,
+          "load_delta": 22,
+          "long_direct_upper": 26,
+          "short_direct_upper": 16,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 10,
+          "mirror_deficit": 11,
+          "software_read_delta": 11,
+          "load_delta": 0,
+          "long_direct_upper": 30,
+          "short_direct_upper": 34,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 11,
+          "mirror_deficit": 9,
+          "software_read_delta": 20,
+          "load_delta": 11,
+          "long_direct_upper": 34,
+          "short_direct_upper": 23,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 12,
+          "mirror_deficit": 18,
+          "software_read_delta": 6,
+          "load_delta": -12,
+          "long_direct_upper": 18,
+          "short_direct_upper": 26,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 13,
+          "mirror_deficit": 20,
+          "software_read_delta": 24,
+          "load_delta": 4,
+          "long_direct_upper": 59,
+          "short_direct_upper": 60,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 14,
+          "mirror_deficit": 8,
+          "software_read_delta": 4,
+          "load_delta": -4,
+          "long_direct_upper": 16,
+          "short_direct_upper": 20,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 15,
+          "mirror_deficit": 11,
+          "software_read_delta": 20,
+          "load_delta": 9,
+          "long_direct_upper": 12,
+          "short_direct_upper": 7,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 16,
+          "mirror_deficit": 6,
+          "software_read_delta": 16,
+          "load_delta": 10,
+          "long_direct_upper": 7,
+          "short_direct_upper": 5,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 17,
+          "mirror_deficit": 8,
+          "software_read_delta": 11,
+          "load_delta": 3,
+          "long_direct_upper": 18,
+          "short_direct_upper": 18,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 18,
+          "mirror_deficit": 6,
+          "software_read_delta": 11,
+          "load_delta": 5,
+          "long_direct_upper": 41,
+          "short_direct_upper": 40,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 19,
+          "mirror_deficit": 5,
+          "software_read_delta": 15,
+          "load_delta": 10,
+          "long_direct_upper": 36,
+          "short_direct_upper": 21,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 20,
+          "mirror_deficit": -16,
+          "software_read_delta": 11,
+          "load_delta": 27,
+          "long_direct_upper": 36,
+          "short_direct_upper": 16,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 21,
+          "mirror_deficit": 6,
+          "software_read_delta": 14,
+          "load_delta": 8,
+          "long_direct_upper": 54,
+          "short_direct_upper": 52,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 22,
+          "mirror_deficit": 12,
+          "software_read_delta": 3,
+          "load_delta": -9,
+          "long_direct_upper": 58,
+          "short_direct_upper": 61,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 23,
+          "mirror_deficit": 25,
+          "software_read_delta": 5,
+          "load_delta": -20,
+          "long_direct_upper": 21,
+          "short_direct_upper": 41,
+          "deficit_beyond_long_upper": 4
+        },
+        {
+          "layer": 24,
+          "mirror_deficit": 2,
+          "software_read_delta": 35,
+          "load_delta": 33,
+          "long_direct_upper": 40,
+          "short_direct_upper": 19,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 25,
+          "mirror_deficit": 13,
+          "software_read_delta": 17,
+          "load_delta": 4,
+          "long_direct_upper": 11,
+          "short_direct_upper": 8,
+          "deficit_beyond_long_upper": 2
+        },
+        {
+          "layer": 26,
+          "mirror_deficit": 15,
+          "software_read_delta": 16,
+          "load_delta": 1,
+          "long_direct_upper": 37,
+          "short_direct_upper": 34,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 27,
+          "mirror_deficit": 3,
+          "software_read_delta": 16,
+          "load_delta": 13,
+          "long_direct_upper": 19,
+          "short_direct_upper": 11,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 28,
+          "mirror_deficit": 15,
+          "software_read_delta": 11,
+          "load_delta": -4,
+          "long_direct_upper": 34,
+          "short_direct_upper": 34,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 29,
+          "mirror_deficit": 3,
+          "software_read_delta": 3,
+          "load_delta": 0,
+          "long_direct_upper": 33,
+          "short_direct_upper": 32,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 30,
+          "mirror_deficit": 3,
+          "software_read_delta": 12,
+          "load_delta": 9,
+          "long_direct_upper": 19,
+          "short_direct_upper": 15,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 31,
+          "mirror_deficit": 17,
+          "software_read_delta": 26,
+          "load_delta": 9,
+          "long_direct_upper": 8,
+          "short_direct_upper": 3,
+          "deficit_beyond_long_upper": 9
+        },
+        {
+          "layer": 32,
+          "mirror_deficit": 29,
+          "software_read_delta": 9,
+          "load_delta": -20,
+          "long_direct_upper": 7,
+          "short_direct_upper": 12,
+          "deficit_beyond_long_upper": 22
+        },
+        {
+          "layer": 33,
+          "mirror_deficit": 2,
+          "software_read_delta": 11,
+          "load_delta": 9,
+          "long_direct_upper": 25,
+          "short_direct_upper": 19,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 34,
+          "mirror_deficit": 11,
+          "software_read_delta": 9,
+          "load_delta": -2,
+          "long_direct_upper": 38,
+          "short_direct_upper": 38,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 35,
+          "mirror_deficit": 6,
+          "software_read_delta": 13,
+          "load_delta": 7,
+          "long_direct_upper": 27,
+          "short_direct_upper": 24,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 36,
+          "mirror_deficit": 14,
+          "software_read_delta": 10,
+          "load_delta": -4,
+          "long_direct_upper": 11,
+          "short_direct_upper": 13,
+          "deficit_beyond_long_upper": 3
+        },
+        {
+          "layer": 37,
+          "mirror_deficit": 5,
+          "software_read_delta": 22,
+          "load_delta": 17,
+          "long_direct_upper": 21,
+          "short_direct_upper": 7,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 38,
+          "mirror_deficit": 12,
+          "software_read_delta": 6,
+          "load_delta": -6,
+          "long_direct_upper": 38,
+          "short_direct_upper": 46,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 39,
+          "mirror_deficit": 8,
+          "software_read_delta": 17,
+          "load_delta": 9,
+          "long_direct_upper": 8,
+          "short_direct_upper": 5,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 40,
+          "mirror_deficit": 7,
+          "software_read_delta": 8,
+          "load_delta": 1,
+          "long_direct_upper": 10,
+          "short_direct_upper": 11,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 41,
+          "mirror_deficit": 19,
+          "software_read_delta": 21,
+          "load_delta": 2,
+          "long_direct_upper": 9,
+          "short_direct_upper": 14,
+          "deficit_beyond_long_upper": 10
+        },
+        {
+          "layer": 42,
+          "mirror_deficit": 9,
+          "software_read_delta": 7,
+          "load_delta": -2,
+          "long_direct_upper": 24,
+          "short_direct_upper": 28,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 43,
+          "mirror_deficit": 7,
+          "software_read_delta": 12,
+          "load_delta": 5,
+          "long_direct_upper": 22,
+          "short_direct_upper": 18,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 44,
+          "mirror_deficit": 13,
+          "software_read_delta": 16,
+          "load_delta": 3,
+          "long_direct_upper": 19,
+          "short_direct_upper": 16,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 45,
+          "mirror_deficit": 15,
+          "software_read_delta": 19,
+          "load_delta": 4,
+          "long_direct_upper": 14,
+          "short_direct_upper": 18,
+          "deficit_beyond_long_upper": 1
+        },
+        {
+          "layer": 46,
+          "mirror_deficit": 6,
+          "software_read_delta": 6,
+          "load_delta": 0,
+          "long_direct_upper": 14,
+          "short_direct_upper": 14,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 47,
+          "mirror_deficit": 3,
+          "software_read_delta": 11,
+          "load_delta": 8,
+          "long_direct_upper": 32,
+          "short_direct_upper": 28,
+          "deficit_beyond_long_upper": 0
+        }
+      ],
+      "top_mirror_loss_layers": [
+        {
+          "layer": 32,
+          "mirror_deficit": 29,
+          "software_read_delta": 9,
+          "load_delta": -20,
+          "long_direct_upper": 7,
+          "short_direct_upper": 12,
+          "deficit_beyond_long_upper": 22
+        },
+        {
+          "layer": 4,
+          "mirror_deficit": 25,
+          "software_read_delta": 32,
+          "load_delta": 7,
+          "long_direct_upper": 33,
+          "short_direct_upper": 31,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 23,
+          "mirror_deficit": 25,
+          "software_read_delta": 5,
+          "load_delta": -20,
+          "long_direct_upper": 21,
+          "short_direct_upper": 41,
+          "deficit_beyond_long_upper": 4
+        },
+        {
+          "layer": 8,
+          "mirror_deficit": 24,
+          "software_read_delta": 31,
+          "load_delta": 7,
+          "long_direct_upper": 34,
+          "short_direct_upper": 31,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 13,
+          "mirror_deficit": 20,
+          "software_read_delta": 24,
+          "load_delta": 4,
+          "long_direct_upper": 59,
+          "short_direct_upper": 60,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 41,
+          "mirror_deficit": 19,
+          "software_read_delta": 21,
+          "load_delta": 2,
+          "long_direct_upper": 9,
+          "short_direct_upper": 14,
+          "deficit_beyond_long_upper": 10
+        },
+        {
+          "layer": 6,
+          "mirror_deficit": 18,
+          "software_read_delta": 30,
+          "load_delta": 12,
+          "long_direct_upper": 60,
+          "short_direct_upper": 47,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 12,
+          "mirror_deficit": 18,
+          "software_read_delta": 6,
+          "load_delta": -12,
+          "long_direct_upper": 18,
+          "short_direct_upper": 26,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 31,
+          "mirror_deficit": 17,
+          "software_read_delta": 26,
+          "load_delta": 9,
+          "long_direct_upper": 8,
+          "short_direct_upper": 3,
+          "deficit_beyond_long_upper": 9
+        },
+        {
+          "layer": 1,
+          "mirror_deficit": 16,
+          "software_read_delta": 18,
+          "load_delta": 2,
+          "long_direct_upper": 54,
+          "short_direct_upper": 52,
+          "deficit_beyond_long_upper": 0
+        }
+      ],
+      "top_mirror_gain_layers": [
+        {
+          "layer": 20,
+          "mirror_deficit": -16,
+          "software_read_delta": 11,
+          "load_delta": 27,
+          "long_direct_upper": 36,
+          "short_direct_upper": 16,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 9,
+          "mirror_deficit": -4,
+          "software_read_delta": 18,
+          "load_delta": 22,
+          "long_direct_upper": 26,
+          "short_direct_upper": 16,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 0,
+          "mirror_deficit": -1,
+          "software_read_delta": 9,
+          "load_delta": 10,
+          "long_direct_upper": 178,
+          "short_direct_upper": 170,
+          "deficit_beyond_long_upper": 0
+        }
+      ]
+    },
+    {
+      "arm": "C",
+      "position": 1,
+      "layers": [
+        {
+          "layer": 0,
+          "mirror_deficit": -4,
+          "software_read_delta": 7,
+          "load_delta": 11,
+          "long_direct_upper": 179,
+          "short_direct_upper": 170,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 1,
+          "mirror_deficit": 12,
+          "software_read_delta": 13,
+          "load_delta": 1,
+          "long_direct_upper": 52,
+          "short_direct_upper": 53,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 2,
+          "mirror_deficit": 4,
+          "software_read_delta": 8,
+          "load_delta": 4,
+          "long_direct_upper": 58,
+          "short_direct_upper": 56,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 3,
+          "mirror_deficit": 11,
+          "software_read_delta": 14,
+          "load_delta": 3,
+          "long_direct_upper": 14,
+          "short_direct_upper": 12,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 4,
+          "mirror_deficit": 25,
+          "software_read_delta": 16,
+          "load_delta": -9,
+          "long_direct_upper": 23,
+          "short_direct_upper": 31,
+          "deficit_beyond_long_upper": 2
+        },
+        {
+          "layer": 5,
+          "mirror_deficit": 9,
+          "software_read_delta": 14,
+          "load_delta": 5,
+          "long_direct_upper": 59,
+          "short_direct_upper": 55,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 6,
+          "mirror_deficit": 1,
+          "software_read_delta": 1,
+          "load_delta": 0,
+          "long_direct_upper": 49,
+          "short_direct_upper": 47,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 7,
+          "mirror_deficit": 13,
+          "software_read_delta": 11,
+          "load_delta": -2,
+          "long_direct_upper": 55,
+          "short_direct_upper": 58,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 8,
+          "mirror_deficit": 23,
+          "software_read_delta": 16,
+          "load_delta": -7,
+          "long_direct_upper": 24,
+          "short_direct_upper": 31,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 9,
+          "mirror_deficit": 2,
+          "software_read_delta": 26,
+          "load_delta": 24,
+          "long_direct_upper": 29,
+          "short_direct_upper": 16,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 10,
+          "mirror_deficit": 14,
+          "software_read_delta": 12,
+          "load_delta": -2,
+          "long_direct_upper": 27,
+          "short_direct_upper": 34,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 11,
+          "mirror_deficit": 8,
+          "software_read_delta": 13,
+          "load_delta": 5,
+          "long_direct_upper": 27,
+          "short_direct_upper": 23,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 12,
+          "mirror_deficit": 21,
+          "software_read_delta": 17,
+          "load_delta": -4,
+          "long_direct_upper": 23,
+          "short_direct_upper": 26,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 13,
+          "mirror_deficit": 15,
+          "software_read_delta": 23,
+          "load_delta": 8,
+          "long_direct_upper": 65,
+          "short_direct_upper": 60,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 14,
+          "mirror_deficit": 6,
+          "software_read_delta": 0,
+          "load_delta": -6,
+          "long_direct_upper": 16,
+          "short_direct_upper": 20,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 15,
+          "mirror_deficit": 5,
+          "software_read_delta": 21,
+          "load_delta": 16,
+          "long_direct_upper": 13,
+          "short_direct_upper": 7,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 16,
+          "mirror_deficit": 4,
+          "software_read_delta": 9,
+          "load_delta": 5,
+          "long_direct_upper": 5,
+          "short_direct_upper": 6,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 17,
+          "mirror_deficit": 2,
+          "software_read_delta": 6,
+          "load_delta": 4,
+          "long_direct_upper": 22,
+          "short_direct_upper": 18,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 18,
+          "mirror_deficit": 8,
+          "software_read_delta": 5,
+          "load_delta": -3,
+          "long_direct_upper": 38,
+          "short_direct_upper": 40,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 19,
+          "mirror_deficit": 15,
+          "software_read_delta": 10,
+          "load_delta": -5,
+          "long_direct_upper": 24,
+          "short_direct_upper": 20,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 20,
+          "mirror_deficit": 11,
+          "software_read_delta": 12,
+          "load_delta": 1,
+          "long_direct_upper": 22,
+          "short_direct_upper": 16,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 21,
+          "mirror_deficit": 5,
+          "software_read_delta": 8,
+          "load_delta": 3,
+          "long_direct_upper": 54,
+          "short_direct_upper": 52,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 22,
+          "mirror_deficit": -3,
+          "software_read_delta": 10,
+          "load_delta": 13,
+          "long_direct_upper": 77,
+          "short_direct_upper": 61,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 23,
+          "mirror_deficit": 24,
+          "software_read_delta": 6,
+          "load_delta": -18,
+          "long_direct_upper": 24,
+          "short_direct_upper": 42,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 24,
+          "mirror_deficit": 10,
+          "software_read_delta": 5,
+          "load_delta": -5,
+          "long_direct_upper": 17,
+          "short_direct_upper": 18,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 25,
+          "mirror_deficit": 8,
+          "software_read_delta": 11,
+          "load_delta": 3,
+          "long_direct_upper": 15,
+          "short_direct_upper": 8,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 26,
+          "mirror_deficit": 3,
+          "software_read_delta": 8,
+          "load_delta": 5,
+          "long_direct_upper": 44,
+          "short_direct_upper": 34,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 27,
+          "mirror_deficit": -2,
+          "software_read_delta": 8,
+          "load_delta": 10,
+          "long_direct_upper": 14,
+          "short_direct_upper": 11,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 28,
+          "mirror_deficit": 21,
+          "software_read_delta": 1,
+          "load_delta": -20,
+          "long_direct_upper": 24,
+          "short_direct_upper": 34,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 29,
+          "mirror_deficit": 4,
+          "software_read_delta": 5,
+          "load_delta": 1,
+          "long_direct_upper": 33,
+          "short_direct_upper": 32,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 30,
+          "mirror_deficit": 6,
+          "software_read_delta": 24,
+          "load_delta": 18,
+          "long_direct_upper": 28,
+          "short_direct_upper": 16,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 31,
+          "mirror_deficit": 14,
+          "software_read_delta": 15,
+          "load_delta": 1,
+          "long_direct_upper": 7,
+          "short_direct_upper": 3,
+          "deficit_beyond_long_upper": 7
+        },
+        {
+          "layer": 32,
+          "mirror_deficit": 29,
+          "software_read_delta": 13,
+          "load_delta": -16,
+          "long_direct_upper": 9,
+          "short_direct_upper": 12,
+          "deficit_beyond_long_upper": 20
+        },
+        {
+          "layer": 33,
+          "mirror_deficit": 2,
+          "software_read_delta": 15,
+          "load_delta": 13,
+          "long_direct_upper": 27,
+          "short_direct_upper": 19,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 34,
+          "mirror_deficit": 5,
+          "software_read_delta": 16,
+          "load_delta": 11,
+          "long_direct_upper": 43,
+          "short_direct_upper": 37,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 35,
+          "mirror_deficit": 5,
+          "software_read_delta": 16,
+          "load_delta": 11,
+          "long_direct_upper": 27,
+          "short_direct_upper": 23,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 36,
+          "mirror_deficit": 16,
+          "software_read_delta": 8,
+          "load_delta": -8,
+          "long_direct_upper": 10,
+          "short_direct_upper": 14,
+          "deficit_beyond_long_upper": 6
+        },
+        {
+          "layer": 37,
+          "mirror_deficit": 0,
+          "software_read_delta": 18,
+          "load_delta": 18,
+          "long_direct_upper": 17,
+          "short_direct_upper": 7,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 38,
+          "mirror_deficit": 15,
+          "software_read_delta": 1,
+          "load_delta": -14,
+          "long_direct_upper": 33,
+          "short_direct_upper": 46,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 39,
+          "mirror_deficit": 4,
+          "software_read_delta": 13,
+          "load_delta": 9,
+          "long_direct_upper": 8,
+          "short_direct_upper": 5,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 40,
+          "mirror_deficit": 16,
+          "software_read_delta": 8,
+          "load_delta": -8,
+          "long_direct_upper": 5,
+          "short_direct_upper": 11,
+          "deficit_beyond_long_upper": 11
+        },
+        {
+          "layer": 41,
+          "mirror_deficit": 17,
+          "software_read_delta": 18,
+          "load_delta": 1,
+          "long_direct_upper": 10,
+          "short_direct_upper": 14,
+          "deficit_beyond_long_upper": 7
+        },
+        {
+          "layer": 42,
+          "mirror_deficit": 15,
+          "software_read_delta": 16,
+          "load_delta": 1,
+          "long_direct_upper": 25,
+          "short_direct_upper": 28,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 43,
+          "mirror_deficit": 6,
+          "software_read_delta": 11,
+          "load_delta": 5,
+          "long_direct_upper": 18,
+          "short_direct_upper": 18,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 44,
+          "mirror_deficit": 20,
+          "software_read_delta": 26,
+          "load_delta": 6,
+          "long_direct_upper": 21,
+          "short_direct_upper": 16,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 45,
+          "mirror_deficit": 3,
+          "software_read_delta": 18,
+          "load_delta": 15,
+          "long_direct_upper": 19,
+          "short_direct_upper": 17,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 46,
+          "mirror_deficit": 3,
+          "software_read_delta": 19,
+          "load_delta": 16,
+          "long_direct_upper": 18,
+          "short_direct_upper": 14,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 47,
+          "mirror_deficit": 1,
+          "software_read_delta": 10,
+          "load_delta": 9,
+          "long_direct_upper": 36,
+          "short_direct_upper": 28,
+          "deficit_beyond_long_upper": 0
+        }
+      ],
+      "top_mirror_loss_layers": [
+        {
+          "layer": 32,
+          "mirror_deficit": 29,
+          "software_read_delta": 13,
+          "load_delta": -16,
+          "long_direct_upper": 9,
+          "short_direct_upper": 12,
+          "deficit_beyond_long_upper": 20
+        },
+        {
+          "layer": 4,
+          "mirror_deficit": 25,
+          "software_read_delta": 16,
+          "load_delta": -9,
+          "long_direct_upper": 23,
+          "short_direct_upper": 31,
+          "deficit_beyond_long_upper": 2
+        },
+        {
+          "layer": 23,
+          "mirror_deficit": 24,
+          "software_read_delta": 6,
+          "load_delta": -18,
+          "long_direct_upper": 24,
+          "short_direct_upper": 42,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 8,
+          "mirror_deficit": 23,
+          "software_read_delta": 16,
+          "load_delta": -7,
+          "long_direct_upper": 24,
+          "short_direct_upper": 31,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 12,
+          "mirror_deficit": 21,
+          "software_read_delta": 17,
+          "load_delta": -4,
+          "long_direct_upper": 23,
+          "short_direct_upper": 26,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 28,
+          "mirror_deficit": 21,
+          "software_read_delta": 1,
+          "load_delta": -20,
+          "long_direct_upper": 24,
+          "short_direct_upper": 34,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 44,
+          "mirror_deficit": 20,
+          "software_read_delta": 26,
+          "load_delta": 6,
+          "long_direct_upper": 21,
+          "short_direct_upper": 16,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 41,
+          "mirror_deficit": 17,
+          "software_read_delta": 18,
+          "load_delta": 1,
+          "long_direct_upper": 10,
+          "short_direct_upper": 14,
+          "deficit_beyond_long_upper": 7
+        },
+        {
+          "layer": 36,
+          "mirror_deficit": 16,
+          "software_read_delta": 8,
+          "load_delta": -8,
+          "long_direct_upper": 10,
+          "short_direct_upper": 14,
+          "deficit_beyond_long_upper": 6
+        },
+        {
+          "layer": 40,
+          "mirror_deficit": 16,
+          "software_read_delta": 8,
+          "load_delta": -8,
+          "long_direct_upper": 5,
+          "short_direct_upper": 11,
+          "deficit_beyond_long_upper": 11
+        }
+      ],
+      "top_mirror_gain_layers": [
+        {
+          "layer": 0,
+          "mirror_deficit": -4,
+          "software_read_delta": 7,
+          "load_delta": 11,
+          "long_direct_upper": 179,
+          "short_direct_upper": 170,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 22,
+          "mirror_deficit": -3,
+          "software_read_delta": 10,
+          "load_delta": 13,
+          "long_direct_upper": 77,
+          "short_direct_upper": 61,
+          "deficit_beyond_long_upper": 0
+        },
+        {
+          "layer": 27,
+          "mirror_deficit": -2,
+          "software_read_delta": 8,
+          "load_delta": 10,
+          "long_direct_upper": 14,
+          "short_direct_upper": 11,
+          "deficit_beyond_long_upper": 0
+        }
+      ]
+    }
+  ],
+  "decision": "DIRECT_RACE_NOT_EXCLUDED_OBSERVER_APPENDIX_REQUIRED",
+  "conditional_observer_arm_from_prefrozen_rule": "A",
+  "conditional_observer_services_max": 5,
+  "conditional_observer_HTTP_max": 27,
+  "observer_appendix_required_before_runtime_edits": true,
+  "models_launched_in_this_analysis": 0,
+  "new_HTTP_in_this_analysis": 0,
+  "performance_acceptance": false,
+  "limitations": [
+    "Per-layer read/mirror counts are identified actual captured-phase totals, not per-ID source order or measured race events.",
+    "U bounds only immediate direct same-plan lost-at-claim events along captured GPU trajectory; it does not constrain counterfactual downstream ring/history benefit.",
+    "Both primary U values exceed the observed mirror deficit, so current evidence cannot exclude full direct explanation, and also does not establish that it occurred.",
+    "New observer data must be recorded and validated separately; do not pool it with these16 old requests as a causal estimate or repeat-variance sample.",
+    "No exclusive SSD/H2D waiting, physicalIO, throughput, numericalquality or runtimeperformanceacceptance follows.",
+    "195840plan U computation is reused from singletestedtool execution; independent review checks all histogram/count/clock/contrast algebra without replaying traces."
+  ]
+}

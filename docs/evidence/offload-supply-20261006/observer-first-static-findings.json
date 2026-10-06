@@ -1,0 +1,28 @@
+{
+  "schema": "q4t.supply_observer.static_findings.v1",
+  "recorded_t": 1791273125.3778813,
+  "reviewer": "/root/supply_observer_review",
+  "status": "FIRST_FINDINGS_BEFORE_BUILD_TEST_RUNTIME",
+  "appendix_sha256": "3ee1895e726d99605a38b365b8ca3a64cf30d6b5da67e5914d8faca0bf4b9a1f",
+  "findings": [
+    {
+      "id": "STRICT_ENV_PARSE",
+      "severity": "medium",
+      "area": "runtime",
+      "finding": "Q4T_MOE_SUPPLY_OBSERVER initially accepted only exact1 as true while every other string silently disabled it, contrary to strict unset/0/1 setting.",
+      "source_excerpt": "supply_env && std::strcmp(supply_env, \"1\") == 0",
+      "required_fix": "Reject other explicit values, preserving owned initialization cleanup.",
+      "communicated": true
+    },
+    {
+      "id": "PLANNER_CAPACITY_FAILURE_ACCOUNTING",
+      "severity": "medium",
+      "area": "runtime",
+      "finding": "The no-slot PlanResolve failure returned without FailedSupplyPlanning while invalid-ID and oversized input paths recorded failure.",
+      "required_fix": "Preserve runtime return/cleanup and record observed shape-single failed planning.",
+      "communicated": true
+    }
+  ],
+  "new_tests": 0,
+  "new_HTTP": 0
+}

@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "recorded_t": 1791273182.0024626,
+  "appendix_sha256": "3ee1895e726d99605a38b365b8ca3a64cf30d6b5da67e5914d8faca0bf4b9a1f",
+  "scope": "Serialization cap evidence clarification before build or runtime",
+  "addition": "Top-level supply_observer_serialization only when observer on; fields bytes, limit_bytes=1048576, complete. bytes counts compact serialized observer subobjects across full layer snapshots, excluding field names. Protocol separately includes added field names and requires <=1MiB total additional observer data. Complete must be true for successful evidence. Off omits both layer observer and top metadata.",
+  "reason": "Make bounded serialization completeness explicit instead of silently dropping evidence; no scheduling or computational effect",
+  "tests_executed": 0,
+  "HTTP": 0
+}

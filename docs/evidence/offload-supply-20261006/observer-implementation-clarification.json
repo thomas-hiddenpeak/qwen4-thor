@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "recorded_t": 1791272996.1384406,
+  "scope": "observer implementation clarification before build/tests/runtime",
+  "appendix_sha256": "3ee1895e726d99605a38b365b8ca3a64cf30d6b5da67e5914d8faca0bf4b9a1f",
+  "conflict": "PlanResolve entry capture under l2_mu versus no added lock acquisitions; PlanResolve previously has no l2_mu acquisition",
+  "resolution": "Copy entry lower-cache metadata in caller-owned interval after previous LoadPhase1 worker barrier and before next worker dispatch. No added lock. All cross-worker claim/reserve/publish events remain inside original l2_mu sections.",
+  "preconditions": [
+    "max_seq=1",
+    "Phase D off",
+    "same-layer previous LoadPhase1 caller barrier complete",
+    "next tasks not dispatched"
+  ],
+  "review_required": "All PlanResolve callers including singleton prefill chunks must satisfy ownership; reviewer to verify. No scope or schedule change admitted.",
+  "new_tests": 0,
+  "new_HTTP": 0
+}
