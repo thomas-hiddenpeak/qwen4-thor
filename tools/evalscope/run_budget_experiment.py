@@ -206,12 +206,14 @@ def selected_performance_plan(mode, lengths=None, repeats=3, target_total=0):
 
 def experiment_environment(chunk_order, inherited, partition=0,
                            policy_axis='chunk-order', phase_diagnostics=False,
-                           request_partition=0, decode_partition_log_quiet=0):
+                           request_partition=0, decode_partition_log_quiet=0,
+                           mirror_gpu_recycle=0):
     env = {key: value for key, value in inherited.items()
            if not key.startswith('Q4T_')}
     env.update(policy_environment(chunk_order, partition, policy_axis,
                                   phase_diagnostics, request_partition,
-                                  decode_partition_log_quiet))
+                                  decode_partition_log_quiet,
+                                  mirror_gpu_recycle))
     return env
 
 
@@ -284,6 +286,10 @@ def main():
                     choices=(0, 1),
                     default=0, help='Explicit quiet bit for request-partition-log '
                     'axis; leaves prefill and forward diagnostics unchanged')
+    ap.add_argument('--mirror-gpu-recycle', type=parse_binary_switch,
+                    choices=(0, 1), default=0,
+                    help='Explicit GPU-covered mirror recycling bit; requires '
+                         'mirror-recycle axis and unchanged legacy policies')
     ap.add_argument('--request-policy-sequence', action='store_true',
                     help='Frozen 7-position x 3-round request policy challenge')
     ap.add_argument('--causality-sequence', type=Path,
@@ -318,7 +324,8 @@ def main():
         env = experiment_environment(args.chunk_order, os.environ,
                                      args.partition, args.policy_axis,
                                      args.phase_diagnostics, args.request_partition,
-                                     args.decode_partition_log_quiet)
+                                     args.decode_partition_log_quiet,
+                                     args.mirror_gpu_recycle)
         if causality != (args.causality_sequence_sha256 is not None):
             raise ValueError('causality sequence and SHA256 must be supplied together')
         if mechanism != (args.mechanism_sequence_sha256 is not None):
@@ -338,7 +345,7 @@ def main():
             raise ValueError('causality sequence requires uninstrumented '
                              'request-partition-log without other selections')
         if args.request_policy_sequence and (
-                args.policy_axis not in REQUEST_AXES or
+                args.policy_axis not in REQUEST_AXES + ('mirror-recycle',) or
                 args.mode != 'performance' or args.perf_lengths is not None or
                 args.target_total or args.perf_repeats != 3):
             raise ValueError('request sequence requires its own axis and fixed selection')
@@ -419,8 +426,10 @@ def main():
     tool_dir.mkdir()
     tool_hashes = {}
     tool_names = RUN_TOOLS + ('offload_policy.py',)
-    if args.policy_axis in REQUEST_AXES:
+    if args.policy_axis in REQUEST_AXES or args.request_policy_sequence:
         tool_names += ('request_policy_protocol.py',)
+    if args.policy_axis == 'mirror-recycle':
+        tool_names += ('mirror_recycle_protocol.py',)
     if causality:
         tool_names += ('causality_protocol.py',)
     if mechanism:
@@ -449,6 +458,12 @@ def main():
            if args.policy_axis in REQUEST_AXES else {}),
         **({'decode_partition_log_quiet': args.decode_partition_log_quiet}
            if args.policy_axis == 'request-partition-log' else {}),
+        **({'mirror_gpu_recycle': args.mirror_gpu_recycle,
+            'request_partition': args.request_partition,
+            'decode_partition_log_quiet': args.decode_partition_log_quiet,
+            'request_policy_sequence': args.request_policy_sequence,
+            'cold_advice_rounds': args.cold_advice_rounds}
+           if args.policy_axis == 'mirror-recycle' else {}),
         **({'causality_sequence_path': str(args.causality_sequence.resolve()),
             'causality_sequence_sha256': args.causality_sequence_sha256,
             'causality_group_id': plan['group_id'],

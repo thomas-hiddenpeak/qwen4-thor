@@ -756,9 +756,12 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
       }
       // Existing counters classify the sub-chunk shape. A singleton inside
       // prefill also counts here; these are not whole-request phase totals.
+      const bool explicit_single_decode = quant::MoEMirrorGpuRecycleScope(
+          log_phase == MoEPartitionLogPhase::kSingleDecode, T,
+          request_partition.HasRequest());
       return residency->PlanResolve(exp_sub.data(), T_sub * k,
                                     subs[j].slots.data(), &subs[j].plan,
-                                    T_sub == 1);
+                                    T_sub == 1, explicit_single_decode);
     };
 
     {

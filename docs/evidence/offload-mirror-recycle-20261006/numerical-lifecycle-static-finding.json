@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "status": "BLOCKING_STATIC_FINDING_BEFORE_BUILD_OR_TEST",
+  "recorded_t": 1791293150.1236298,
+  "source_before_sha256": "78b9461c0915dd608f4ef82862e6bbfe41bd7920127e2ac04220404005fc7b71",
+  "file": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tests/model_moe_test.cpp",
+  "finding": "RunMirrorRecycleCase creates local MoEResidency off,on without Free. This type has no destructor that frees device/pinned resources or joins workers; normal and Q4T_CHECK early returns after successful Init leave workers retaining this pointers after object destruction. Earlier author static review missed this lifecycle issue.",
+  "required_fix": "A local noncopyable RAII guard registered immediately after off/on construction; drain the shared model stream before Free on/off; guard destroyed before scratch buffers and before residency objects on every return. No runtime lifecycle changes.",
+  "existing_limit": "MoEResidency::Free returns immediately if !inited_; preexisting partial-Init failure resource cleanup is outside this fixture fix. Guard must still invoke Free on both constructed objects; no claim of fixing arbitrary Init allocation failures.",
+  "verification": "Independent protocol agent static review and root-owned later HTTP-first, build and numerical run. No execution performed as part of this finding.",
+  "wording_limit": "Assertions cover GPU slot identities/recency and selected-route outputs, not bytewise comparison of all resident-slot payloads.",
+  "tests_executed": 0,
+  "builds_executed": 0,
+  "model_payload_reads": 0
+}

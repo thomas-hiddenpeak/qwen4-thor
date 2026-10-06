@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "passed": true,
+  "status": "STATIC_REVIEW_PASS_NO_EXECUTION",
+  "recorded_t": 1791292975.3736784,
+  "review_scope": "Finite source inspection of new numerical contract, recycle_common and run_stage identity/order/ownership. Audit-stage inspected only for links to previous stage and HTTP identity; this is not execution admission.",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/recycle_common.py": "b0b464d82063d4b9eead4133eec67d5832b31d9a06b7323ca0169c4be2be5097",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/run_stage.py": "3e226a4fbb4032c560646d338fc8cebbf2bb851cf65ab4368c12922b29537564",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/audit_stage.py": "b861bc2b7f7a9b21a6777b417b9f4486aec3dee483179bc9d4ded911d6b47d19",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-design.json": "94cfeb0d8adebb66165422ff693078be4e5d7192cc2fb05250ec142c013756df",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tests/model_moe_test.cpp": "78b9461c0915dd608f4ef82862e6bbfe41bd7920127e2ac04220404005fc7b71",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/phase_common.py": "4698bf6914d0751355e2fa32581a6da068e8ff4f60cafb307613569999f95c06"
+  },
+  "checks": {
+    "worktree_binding": "owned.W is rebound to new source and run_stage passes cwd=W explicitly; inherited default cwd is not used. imported ownership helpers use the rebound global for current tools.",
+    "source_identity": "frozen verifies current clean HEAD, build source commit/zero warnings/rc, runtime binary digest, frozen file digests, build source map and dependency digests/path resolutions before and after each owned service.",
+    "first_test": "Index0 requires no previous controller-start receipts, no host/numerical evidence, records fixed HTTP-first admission. First output/receipt paths are exclusive. No tests executed during this review.",
+    "dependent_order": "Every later service requires previous audited stage plus host/numerical PASS of same plan/source/binary; matrix also requires history contracts and matrix-coverage permission independently of speed passed boolean.",
+    "retry_preservation": "Output must not exist; owned save/open use exclusive mode; no retry loop. Failure and process cleanup are retained before stage finally record.",
+    "ownership": "run_stage gives command and original PID receipt to exact-unit cleanup fallback; process group owned by imported runner is separate session and cleanup checks live/zombie/errors. Source explicitly limits absence to owned entrypoints, not whole machine.",
+    "numerical_source": "One test requires deliberate changed=1 under true decode, router/BF16/full resident oracle, exact OFF/ON FP32, identical GPU mapping, changed writeback reused, sole mirror source retained, planned victim excluded after fixed all-hit recency refresh. Unknown and prefill context fresh pairs must remain inactive.",
+    "numerical_peer_review": "Source implementation agent independently traced three-step ring/slot/claim sequence and confirmed plans3, preferred=changed=published1, fallback2, negative gates0; no execution."
+  },
+  "freeze_requirements": [
+    "Final execution-plan frozen_files must contain exact group command files, recycle_common.py/run_stage.py/audit_stage.py, imported phase_common.py and dependency-admission.json; plan not yet created at review time.",
+    "Final admission must bind this source snapshot or re-review only changed scripts.",
+    "Host/numerical decision source maps must bind required-list, actual test binary, command/exit logs and strict PASS counts; numerical runner must reject skip."
+  ],
+  "blocking_findings": [],
+  "limitations": [
+    "Does not claim HTTP/performance/runtime correctness passed.",
+    "Numerical test is layer2/T1/C16/L28/K8/singleworker. Candidate HTTP covers actual multithread production path separately; no injected event/error concurrency stress.",
+    "Does not read model weight payload or execute model/test commands."
+  ],
+  "tests_executed": 0,
+  "http_requests": 0,
+  "model_payload_reads": 0
+}

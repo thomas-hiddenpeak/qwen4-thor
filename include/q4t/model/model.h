@@ -566,6 +566,13 @@ inline quant::MoEResidency::Stats SumResidencyStats(const Model& m) {
     total.mirror_hits += s.mirror_hits;
     total.mirror_writebacks += s.mirror_writebacks;
     total.mirror_skips += s.mirror_skips;
+    total.mirror_gpu_recycle_plans += s.mirror_gpu_recycle_plans;
+    total.mirror_gpu_recycle_attempts += s.mirror_gpu_recycle_attempts;
+    total.mirror_gpu_recycle_preferred += s.mirror_gpu_recycle_preferred;
+    total.mirror_gpu_recycle_changed += s.mirror_gpu_recycle_changed;
+    total.mirror_gpu_recycle_fallback += s.mirror_gpu_recycle_fallback;
+    total.mirror_gpu_recycle_unavailable += s.mirror_gpu_recycle_unavailable;
+    total.mirror_gpu_recycle_published += s.mirror_gpu_recycle_published;
     total.nvme_read_bytes += s.nvme_read_bytes;
   }
   return total;

@@ -937,6 +937,33 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                      now.l2_prefill_misses - prev.l2_prefill_misses),
                  static_cast<unsigned long long>(
                      now.l2_prefill_evictions - prev.l2_prefill_evictions));
+    // One request-level record in both arms; no per-token policy logging.
+    std::fprintf(stderr,
+                 "[q4t][mirror_gpu_recycle] id=%s plans=%llu "
+                 "attempts=%llu preferred=%llu changed=%llu "
+                 "fallback=%llu unavailable=%llu published=%llu\n",
+                 id.c_str(),
+                 static_cast<unsigned long long>(
+                     now.mirror_gpu_recycle_plans -
+                     prev.mirror_gpu_recycle_plans),
+                 static_cast<unsigned long long>(
+                     now.mirror_gpu_recycle_attempts -
+                     prev.mirror_gpu_recycle_attempts),
+                 static_cast<unsigned long long>(
+                     now.mirror_gpu_recycle_preferred -
+                     prev.mirror_gpu_recycle_preferred),
+                 static_cast<unsigned long long>(
+                     now.mirror_gpu_recycle_changed -
+                     prev.mirror_gpu_recycle_changed),
+                 static_cast<unsigned long long>(
+                     now.mirror_gpu_recycle_fallback -
+                     prev.mirror_gpu_recycle_fallback),
+                 static_cast<unsigned long long>(
+                     now.mirror_gpu_recycle_unavailable -
+                     prev.mirror_gpu_recycle_unavailable),
+                 static_cast<unsigned long long>(
+                     now.mirror_gpu_recycle_published -
+                     prev.mirror_gpu_recycle_published));
     residency_stats_prev_ = now;
     // Optional per-miss pipeline timing (Q4T_RESIDENCY_TIMING=1). Per-request
     // deltas of count/ns; max is cumulative (upper bound). Diagnostic only.

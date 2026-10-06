@@ -5,6 +5,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [OFFLOAD_MIRROR_RECYCLE_2026-10-06.md](OFFLOAD_MIRROR_RECYCLE_2026-10-06.md) | 默认关闭GPU冗余mirror回收 | 单策略实施中；冻结17服务131HTTP，尚未测试 |
 | [OFFLOAD_MIRROR_RETENTION_2026-10-06.md](OFFLOAD_MIRROR_RETENTION_2026-10-06.md) | Mirror冗余占位与保留机会 | 8请求/45新合同通过，共同候选差下界10；仅提名GPU冗余mirror回收 |
 | [OFFLOAD_DECODE_SUPPLY_2026-10-06.md](OFFLOAD_DECODE_SUPPLY_2026-10-06.md) | Decode逐层供给与同plan竞争观测 | 5服务27HTTP与87新合同通过；22次直接损失不足以解释主入口机会缺口 |
 | [OFFLOAD_GPU_REPLAY_2026-10-06.md](OFFLOAD_GPU_REPLAY_2026-10-06.md) | 源码一致GPU缓存回放 | 16请求精确复现；固定入口/分块的prefill余量收紧，唯一平票候选NO_GO |

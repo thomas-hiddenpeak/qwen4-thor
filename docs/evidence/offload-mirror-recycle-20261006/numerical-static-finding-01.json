@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "passed": false,
+  "status": "STATIC_BLOCKING_FINDING",
+  "reviewed_t": 1791293064.6251543,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tests/model_moe_test.cpp": "78b9461c0915dd608f4ef82862e6bbfe41bd7920127e2ac04220404005fc7b71"
+  },
+  "finding": "RunMirrorRecycleCase stack MoEResidency off/on has no Free call; MoEResidency has no destructor, so normal/early return leaves worker threads and allocated GPU/pinned state whose this is destroyed. Add test-local RAII Free guard immediately after constructing both objects; do not broaden runtime lifecycle.",
+  "secondary_scope_note": "Current oracle compares slot IDs/ticks and complete BF16/router/OFF_ON_FP32 forward outputs; does not compare every raw slot byte. Keep claim bounded.",
+  "tests_executed": 0,
+  "model_runs": 0
+}

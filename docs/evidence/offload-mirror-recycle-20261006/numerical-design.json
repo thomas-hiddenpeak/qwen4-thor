@@ -1,0 +1,172 @@
+{
+  "schema": 1,
+  "status": "LIFECYCLE_FIX_STATIC_REVIEW_PENDING_NO_TESTS",
+  "created_t": 1791292652.6071634,
+  "test_name": "moe_mirror_gpu_recycle_numerical_contract",
+  "write_scope": [
+    "tests/model_moe_test.cpp"
+  ],
+  "first_test_constraint": "Do not run this or any host/model test before root-owned tools/evalscope HTTP first passes. No test/model/payload executed by reviewer.",
+  "existing_tests": {
+    "moe_forward_residency_bitexact": "T=1 uses default unknown phase; candidate inactive. Existing GEMM/weight format evidence only.",
+    "moe_partition_runtime_numerical_contract": "Explicit single-decode present but PARTITION=1 and no required changed selection; not sufficient for this candidate.",
+    "moe_request_policy_numerical_contract": "Prefill request context, including singleton, must not activate candidate; not sufficient for this candidate."
+  },
+  "fixture": {
+    "layer": 2,
+    "experts": 512,
+    "hidden_size": 2560,
+    "moe_intermediate_size": 640,
+    "shared_intermediate_size": 640,
+    "top_k": 10,
+    "gpu_slots": 16,
+    "l2_slots": 8,
+    "mirror_k": 8,
+    "load_workers": 1,
+    "inline_miss_limit": 0,
+    "global_partition": 0,
+    "chunk_order": 0,
+    "moe_streams": 1,
+    "eviction_weight": 0,
+    "precision": "Existing real NVFP4 routed and BF16 shared weights; only in-memory router controlled, no checkpoint modification",
+    "setup": [
+      "Independent OFF and ON Init from empty state; per-Init flag captured, RAII restores env",
+      "Resolve 0..15, synchronize; Resolve 16..23, synchronize; Resolve expert2, synchronize",
+      "Exact expected entry slots [16..23,2,9..15], ring [8,1,2,3,4,5,6,7], cursor1; setup has no candidate counters"
+    ],
+    "active_forwards": [
+      {
+        "ids": [
+          2,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24
+        ],
+        "assertion": "True single decode; only 24 missing. OFF overwrites ring1; ON recycles ring2 whose expert2 remains GPU-resident. ON changed==preferred==published==1, plans==attempts==1; GPU slot expert identities and recency identical."
+      },
+      {
+        "ids": [
+          9,
+          2,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23
+        ],
+        "assertion": "Re-read actual newly written payload9 through mirror in both arms, complete output equality; ON fallback only."
+      },
+      {
+        "ids": [
+          1,
+          2,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23
+        ],
+        "assertion": "Read sole expert1 preserved by candidate. ON mirror source and OFF NVMe/L2 miss; output equality, GPU slot expert identities and recency equal, ON total changed==1.",
+        "precondition": "After second forward, Resolve touches all 15 GPU residents except expert9 (all hits, no payload/ring changes). Thus expert9 is the next sole GPU victim and its existing mirror must be excluded from plan coverage. This preserves final changed=1 and checks victim exclusion in real runtime."
+      }
+    ],
+    "gate_negative_cases": [
+      "Fresh OFF/ON pair with kUnknown T=1 and no request: counters all zero, same ring, bitexact output",
+      "Fresh OFF/ON pair with kSingleDecode T=1 and inactive request identity (HasRequest true, Enabled false): prefill singleton excluded, counters all zero, same ring, bitexact output"
+    ],
+    "oracle": [
+      "Full-resident same-input same real routed/shared weights complete BF16 output bitexact and router IDs/weights bitexact for every forward",
+      "OFF/ON routed FP32 output bitexact, full-reference FP32 differences reported under existing contract",
+      "Finite outputs, poisoned scratch/output before each forward, expected IDs fixed",
+      "Explicit closed stats and exact changed ring/GPU identities, not only output equality"
+    ]
+  },
+  "concurrency_review": {
+    "invariants": [
+      "Snapshot built after all victims reserved, excludes every planned victim/incoming expert; immutable until all worker barriers complete",
+      "Worker must never read other worker mutable GPU maps; l2 mutex protects only ring metadata",
+      "Single worker + inline disabled forces actual worker dispatch and deterministic ring order; mirrors wait on source events, claims exclude source/other reservations",
+      "Selection preference cannot bypass ring claim/in-flight event eligibility, new writes publish only after event recorded",
+      "Source-agent host helper contracts cover arbitrary commit order/full-plan exclusion/busy and claimed selection; runtime fixture verifies real writeback/reuse"
+    ],
+    "limits": [
+      "Fixed layer2, shape T1, C16/L28/K8, single worker. Not all-layer model proof, multithread stress, CUDA fault injection or performance acceptance.",
+      "Existing abort partial-copy behavior is not repaired or certified here.",
+      "No causality or global speed inference from synthetic controlled router/history.",
+      "No complete raw-byte comparison of every resident slot: numerical comparisons cover fixed selected routes; metadata comparisons cover slot identities/recency."
+    ]
+  },
+  "commands": {
+    "required_env": {
+      "Q4T_MOE_PARTITION": "0",
+      "Q4T_MOE_CHUNK_ORDER": "0",
+      "Q4T_MOE_STREAMS": "1",
+      "Q4T_MOE_EVICT_WEIGHT": "0"
+    },
+    "selection": "candidate-build/q4t_tests --required-list R/required-numerical-tests.txt",
+    "skips": "Must reject CUDA/model skips",
+    "required_list_contents": "moe_mirror_gpu_recycle_numerical_contract\n"
+  },
+  "scope_sha256": "a10255307a3582b27e738abd042a9db67cd10e8abc23b51addfd6e2471f61670",
+  "tests_executed": 0,
+  "raw_model_payload_reads": 0,
+  "static_design_refinement": "Before any test: recognized second forward leaves mirror9 plus GPU9; without an explicit all-hit recency touch, third forward could legitimately prefer that duplicate and increment changed again. Added fixed recency touch so the third case also verifies whole-plan victim exclusion; no execution or favorable rerun occurred.",
+  "test_source_sha256": "cdfd5db92efb554e9d04c02476fd76c7828deb3290bc393fda702e039f9d96fc",
+  "expected_receipt": {
+    "summary": "1 tests, 1 passed, 0 failed, 0 skipped",
+    "case_markers": [
+      {
+        "case": "single-decode",
+        "steps": [
+          0,
+          1,
+          2
+        ],
+        "active": 1,
+        "changed": 1
+      },
+      {
+        "case": "unknown-singleton",
+        "steps": [
+          0
+        ],
+        "active": 0,
+        "changed": 0
+      },
+      {
+        "case": "prefill-singleton",
+        "steps": [
+          0
+        ],
+        "active": 0,
+        "changed": 0
+      }
+    ],
+    "per_case_output": "BF16_BIT_EXACT=true OFF_ON_FP32_BIT_EXACT=true",
+    "new_model_level_runs": 0,
+    "single_layer_forward_count": 15
+  },
+  "static_review": {
+    "whitespace_diff_check": "passed",
+    "execution": "not run; root owns build and HTTP-first admission",
+    "concurrency": "Snapshot pointer is immutable, StageTask passes no mutable GPU map, LoadPhase1 waits every dispatched worker before caller advances, selection holds existing ring mutex and claim/event guards. Single-worker numerical fixture does not prove arbitrary multiworker scheduling."
+  },
+  "lifecycle_fix": {
+    "finding_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-lifecycle-static-finding.json",
+    "finding_sha256": "878660bd4656640c26c0aad1362229f5c6e183177666876fb3f6a52fc1488eb5",
+    "change": "Local noncopyable guard immediately after off/on construction drains stream0 then invokes on.Free/off.Free before residency objects and scratch owners are destroyed; covers all exits after successful Init. Existing partial-Init allocation cleanup remains outside scope.",
+    "verification": "Independent static re-review pending; no build or test executed."
+  }
+}

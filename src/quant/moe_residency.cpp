@@ -174,6 +174,11 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
       MoESupplyObserverSetting(std::getenv("Q4T_MOE_SUPPLY_OBSERVER"));
   if (supply_setting < 0)
     return Status::Fail("Q4T_MOE_SUPPLY_OBSERVER must be 0 or 1");
+  const int recycle_setting =
+      ParseMoEMirrorGpuRecycle(std::getenv("Q4T_MOE_MIRROR_GPU_RECYCLE"));
+  if (recycle_setting < 0)
+    return Status::Fail("Q4T_MOE_MIRROR_GPU_RECYCLE must be 0 or 1");
+  mirror_gpu_recycle_enabled_ = recycle_setting == 1;
   loader_ = &loader;
   layer_id_ = layer_id;
   E_ = E;
@@ -434,6 +439,11 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
   if (supply_observer_enabled_)
     supply_observer_.reset(new (std::nothrow) MoESupplyState());
   if (layer_id_ == 0) {
+    std::fprintf(stderr,
+                 "[q4t][mirror_gpu_recycle] enabled=%d "
+                 "scope=explicit_single_decode "
+                 "schema=q4t.mirror_gpu_recycle.v1\n",
+                 mirror_gpu_recycle_enabled_);
     std::fprintf(stderr,
                  "[q4t][supply_observer] enabled=%d "
                  "schema=q4t.moe_supply_observer.v1 "
@@ -1124,7 +1134,9 @@ Status MoEResidency::StageTask(LoadPlan& plan,
     if (!read_ok[t]) continue;
     if (!hit[t]) SwizzleExpert(bufs[t], t0[t], plan.decode_phase);
     Status cs = CommitExpert(plan.experts[i], plan.slots[i], bufs[t], stream,
-                             delta, observer, i);
+                             delta, observer, i,
+                             plan.mirror_gpu_covered.empty()
+                                 ? nullptr : &plan.mirror_gpu_covered);
     if (observer) {
       observer->entries[i].commit_ok = cs.ok();
       observer->entries[i].commit_error = !cs.ok();
@@ -1145,7 +1157,8 @@ Status MoEResidency::StageTask(LoadPlan& plan,
 Status MoEResidency::CommitExpert(int expert, int slot, int buf,
                                   cudaStream_t stream,
                                   StatsDelta* delta, MoESupplyPlan* observer,
-                                  size_t observer_entry) const {
+                                  size_t observer_entry,
+                                  const std::vector<uint8_t>* gpu_covered) const {
   if (expert < 0 || expert >= E_) {
     return Status::Fail("expert out of range");
   }
@@ -1199,21 +1212,62 @@ Status MoEResidency::CommitExpert(int expert, int slot, int buf,
   if (mirror_k_ > 0 && slot_expert_[slot] >= 0) {
     const int old = slot_expert_[slot];
     int m = -1;
+    bool preferred_target = false;
     {
       std::lock_guard<std::mutex> lk(*l2_mu_);
-      for (int i = 0; i < mirror_k_ && m < 0; ++i) {
-        const int cand = (mirror_cursor_ + i) % mirror_k_;
-        if (ring_in_flight_[cand]) {
-          // Lazy release: the copy that set the flag may have completed.
-          if (cudaEventQuery(ring_event_[cand]) != cudaSuccess) continue;
-          ring_in_flight_[cand] = false;
+      if (gpu_covered) {
+        // The immutable plan snapshot excludes every victim and incoming
+        // expert. l2_mu_ protects the ring, not worker-written GPU maps.
+        const auto choice = PickMoEMirrorGpuRecycle(
+            mirror_cursor_, mirror_expert_, *gpu_covered, [&](int cand) {
+              if (ring_in_flight_[cand]) {
+                if (cudaEventQuery(ring_event_[cand]) != cudaSuccess)
+                  return false;
+                ring_in_flight_[cand] = false;
+              }
+              return !ring_claimed_[cand];
+            });
+        m = choice.slot;
+        preferred_target = choice.preferred;
+        auto& attempts = delta ? delta->mirror_gpu_recycle_attempts
+                               : stats_.mirror_gpu_recycle_attempts;
+        ++attempts;
+        if (choice.preferred) {
+          if (delta) ++delta->mirror_gpu_recycle_preferred;
+          else ++stats_.mirror_gpu_recycle_preferred;
+          if (choice.Changed()) {
+            if (delta) ++delta->mirror_gpu_recycle_changed;
+            else ++stats_.mirror_gpu_recycle_changed;
+          }
+        } else if (m >= 0) {
+          if (delta) ++delta->mirror_gpu_recycle_fallback;
+          else ++stats_.mirror_gpu_recycle_fallback;
+        } else {
+          if (delta) ++delta->mirror_gpu_recycle_unavailable;
+          else ++stats_.mirror_gpu_recycle_unavailable;
         }
-        if (ring_claimed_[cand]) continue;
-        m = cand;
-        if (observer)
-          observer->Reserve(observer_entry, m, mirror_expert_[m]);
-        ring_claimed_[m] = true;  // released after the D2H + event record
-        mirror_cursor_ = (m + 1) % mirror_k_;
+        if (m >= 0) {
+          if (observer)
+            observer->Reserve(observer_entry, m, mirror_expert_[m]);
+          ring_claimed_[m] = true;
+          mirror_cursor_ = (m + 1) % mirror_k_;
+        }
+      } else {
+        // Preserve the default branch's scan and event-query order.
+        for (int i = 0; i < mirror_k_ && m < 0; ++i) {
+          const int cand = (mirror_cursor_ + i) % mirror_k_;
+          if (ring_in_flight_[cand]) {
+            // Lazy release: the copy that set the flag may have completed.
+            if (cudaEventQuery(ring_event_[cand]) != cudaSuccess) continue;
+            ring_in_flight_[cand] = false;
+          }
+          if (ring_claimed_[cand]) continue;
+          m = cand;
+          if (observer)
+            observer->Reserve(observer_entry, m, mirror_expert_[m]);
+          ring_claimed_[m] = true;  // released after the D2H + event record
+          mirror_cursor_ = (m + 1) % mirror_k_;
+        }
       }
     }
     if (m < 0) {
@@ -1273,6 +1327,10 @@ Status MoEResidency::CommitExpert(int expert, int slot, int buf,
         expert_mirror_[old] = m;
         ring_in_flight_[m] = true;
         ring_claimed_[m] = false;
+        if (preferred_target) {
+          if (delta) ++delta->mirror_gpu_recycle_published;
+          else ++stats_.mirror_gpu_recycle_published;
+        }
         if (delta) ++delta->mirror_writebacks;
         else ++stats_.mirror_writebacks;
       }
@@ -1492,7 +1550,8 @@ void MoEResidency::SetHotProtected() {
 
 Status MoEResidency::PlanResolve(const int32_t* needed, int n,
                                  int32_t* slot_of, LoadPlan* plan,
-                                 bool decode_phase) const {
+                                 bool decode_phase,
+                                 bool explicit_single_decode) const {
   if (!inited_) return Status::Fail("residency not initialized");
   if (n <= 0) return Status();
   if (n > (1 << 20)) {
@@ -1595,6 +1654,12 @@ Status MoEResidency::PlanResolve(const int32_t* needed, int n,
     plan->experts.push_back(e);
     plan->slots.push_back(v);
     slot_of[i] = v;
+  }
+  if (mirror_gpu_recycle_enabled_ && explicit_single_decode &&
+      mirror_k_ > 0 && !plan->empty()) {
+    plan->mirror_gpu_covered =
+        BuildMoEMirrorGpuCoverage(E_, slot_expert_, reserved);
+    ++stats_.mirror_gpu_recycle_plans;
   }
   BeginSupplyObservation(*plan);
   return Status();

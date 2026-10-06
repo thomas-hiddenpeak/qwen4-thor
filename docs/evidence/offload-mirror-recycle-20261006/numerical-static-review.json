@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "status": "PASS_STATIC_AFTER_LIFECYCLE_REPAIR",
+  "passed": true,
+  "reviewed_t": 1791293203.1590633,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tests/model_moe_test.cpp": "cdfd5db92efb554e9d04c02476fd76c7828deb3290bc393fda702e039f9d96fc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-design.json": "e0dc8a51b92f8d089bf508362225170f188a16a0b0b349e6c22d0073664edcbc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/numerical-static-finding-01.json": "c589dc58a0454d7560b8ed75d7c416512ce552d9c254fdf42717e373d0c818d7"
+  },
+  "blocking_findings": [],
+  "retained_first_finding": "numerical-static-finding-01.json: initial local MoEResidency objects lacked explicit Free; fixed before any build/test",
+  "checks": [
+    "Independent OFF/ON empty Init snapshot equal before candidate; Resolve setup has candidate inactive",
+    "Fixed controlled router IDs/weights and real routed/shared weights; first ON preferred==changed==published==1; next true forwards test changed writeback payload reuse and retained sole mirror read",
+    "Full plan victim exclusion exercised by fixed all-hit recency refresh, with no candidate activity in setup/refresh",
+    "Full-resident reference compared to OFF and ON BF16 and router; OFF_ON_FP32 forced bitexact, finite outputs and poison initialized each forward",
+    "Negative unknown-singleton and inactive-prefill-request singleton suppress candidate even explicit phase",
+    "Environment guard restores exact previous values; cached global modes must be fixed before fresh-process execution",
+    "Scratch owners declared before off/on; immediately following noncopyable residency guard drains stream0, frees ON/OFF, joins successful Init workers before object/scratch destruction on normal and check-failure exits"
+  ],
+  "limits": [
+    "Not a first-pass static review; concrete lifecycle blocker retained and repaired without execution.",
+    "Fixed layer2/T1/C16/L28/K8/singleworker; not multithread stress/alllayer/model quality/fault injection.",
+    "Verifies slot identities/ticks and selected forward outputs, not every raw slot payload byte.",
+    "Existing partial Init failure cleanup and CUDA fault semantics not repaired; Free does nothing for !inited_.",
+    "No new weights payload read by reviewer; execution only after root HTTP first."
+  ],
+  "executed_tests": 0,
+  "model_runs": 0,
+  "runtime_acceptance": false
+}

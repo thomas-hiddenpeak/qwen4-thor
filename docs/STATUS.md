@@ -5,6 +5,20 @@
 
 ## 当前结论
 
+## GPU冗余mirror回收 Goal：单候选实施，等待HTTP首测（2026-10-06）
+
+见[候选协议](OFFLOAD_MIRROR_RECYCLE_2026-10-06.md)。从3a838473新建隔离
+分支，冻结默认关闭的真single-decode策略：完整plan中未驱逐GPU居民
+形成不可变覆盖集合，优先回收其mirror副本，保留claim/event和原fallback。
+worker不读取并发变化GPU映射，不叠加旧分区/日志候选。
+
+默认关闭实现、工具接入、14项host/10项协议及一项真实权重数值合同源码
+已完成，runtime与协议静审通过；尚未构建/测试。首项为固定HTTP11，
+再相关直接/数值合同，然后history ABBA四服务84请求和完整六档36请求；
+合计上限17服务131HTTP。有效速度失败仍完成预定矩阵，不追加有利重复。
+MAIN七项修改/主binary与旧工作树独立保护；GEMM/精度/预算、MTP/Phase D、
+旧NO_GO及54GB未知保持。候选尚未质量/性能接受，默认始终关闭。
+
 ## Mirror保留历史 Goal：共同缺失需求仍有供给差，提名一项候选（2026-10-06）
 
 见[完整保留研究](OFFLOAD_MIRROR_RETENTION_2026-10-06.md)。复用两组on共8

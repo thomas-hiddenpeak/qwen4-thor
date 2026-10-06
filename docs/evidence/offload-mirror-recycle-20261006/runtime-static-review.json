@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "passed": true,
+  "status": "PASS_BOUNDED_RUNTIME_STATIC_REVIEW",
+  "reviewer": "recycle_protocol",
+  "reviewed_t": 1791292750.3164084,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/include/q4t/quant/moe_residency.h": "ad3cf3675f922394305cdb6322c1d41517cee9933255718ff8711d7381cfced5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/include/q4t/quant/moe_mirror_recycle.h": "9eccd2ca3ff655dbf7bbea241249be1f8fed8b0183d33d0f3422dfb527e8cbdb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/src/quant/moe_residency.cpp": "1404cd56eb72aa1b391a638765f258252ae1cb7b1df3d322ce5071c999b079b5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/src/model/moe.cu": "f9dffd94fd1c233452235b5ca9735b4110a1f1aaa0a8a722a696d580571cf6c6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/src/model/model.cu": "7a12ada0285a5eef2e395322879622ddbea3d11a029a17a86d76402cbd4c61a3"
+  },
+  "blocking_findings": [],
+  "checks": {
+    "whole_plan_victims_excluded": "Coverage built only after complete reservation loop; reserved and empty slots excluded, incoming experts not added. Needed resident GPU hits remain covered.",
+    "immutable_thread_safe_snapshot": "Workers consume const pointer to plan-owned E-byte snapshot, never scan mutable GPU identity maps. LoadPhase1 completion barrier protects lifetime before reuse/destruction.",
+    "physical_coverage_scope": "True outer single decode router D2H cudaStreamSynchronize precedes planning; existing single model stream and max_seq=1/MTPoff scope required.",
+    "default_branch": "Original ring cursor/event query/claim/reserve order retained under null coverage; inactive plan carries empty vector and no scan.",
+    "explicit_phase": "Outer T==1 AND kSingleDecode AND !HasRequest; prefill singleton T_sub==1 alone cannot activate.",
+    "ring_safety": "Existing l2_mu retained around eligibility and one reserve; claim/event-ready rules unchanged; no new waits; source-ring claims remain protected. Publication, old mapping invalidation, abort and event paths unchanged except counter.",
+    "counters": "Worker-local StatsDelta Reset/Merge include six counters; caller adds plans before worker dispatch; inline and worker barriers merge once. attempts partition by preferred/fallback/unavailable; changed and published subset preferred.",
+    "lifecycle": "LoadPlan.clear clears snapshot; Resolve/InitHot default new parameter false. New exact0/1 parse before allocation; re-init reparses setting."
+  },
+  "limitations": [
+    "Static review only; no tests/HTTP/model runs executed.",
+    "Publication failure inherits existing non-atomic payload behavior, not claimed fixed.",
+    "ON scans more eligible slots and may change event lazy-release timing/cache history; no performance promise.",
+    "PlanResolve n<=0 returns before clear as before; supported MoE caller supplies positive top-k input; no new zero-input lifecycle claim.",
+    "Helper preconditions experts>0/reserved length match rely on existing initialized runtime construction."
+  ],
+  "executed_tests": 0,
+  "runtime_acceptance": false
+}

@@ -1,4 +1,5 @@
-// Logging policy only; never selects MoE partitions or changes computation.
+// Logging policy and an explicit decode phase shared with the opt-in mirror
+// cache policy. The logging switch never changes partitions or computation.
 #pragma once
 
 #include <cstring>

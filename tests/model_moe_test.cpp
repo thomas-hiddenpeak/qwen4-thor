@@ -1042,3 +1042,280 @@ Q4T_TEST(moe_request_policy_numerical_contract) {
       {1, 3, 0, 2}, 3, 2));
   return true;
 }
+
+namespace {
+
+// These knobs are read per residency Init, unlike the process-cached MoE
+// partition/stream modes, which the runner fixes before selecting this test.
+class MirrorRecycleEnvGuard {
+ public:
+  MirrorRecycleEnvGuard(const char* name, const char* value) : name_(name) {
+    if (const char* previous = std::getenv(name)) {
+      had_value_ = true;
+      previous_ = previous;
+    }
+    setenv(name, value, 1);
+  }
+  ~MirrorRecycleEnvGuard() {
+    if (had_value_)
+      setenv(name_.c_str(), previous_.c_str(), 1);
+    else
+      unsetenv(name_.c_str());
+  }
+
+ private:
+  std::string name_;
+  std::string previous_;
+  bool had_value_ = false;
+};
+
+// Residency has an explicit Free API, not an owning destructor. Register this
+// before either Init so every return joins initialized workers before their
+// residency objects die. Resolve/forward return after the worker barrier;
+// stream0 may still have copies queued, so drain it before releasing buffers.
+class MirrorRecycleResidencyGuard {
+ public:
+  MirrorRecycleResidencyGuard(q4t::quant::MoEResidency& off,
+                              q4t::quant::MoEResidency& on)
+      : off_(off), on_(on) {}
+  MirrorRecycleResidencyGuard(const MirrorRecycleResidencyGuard&) = delete;
+  MirrorRecycleResidencyGuard& operator=(const MirrorRecycleResidencyGuard&) =
+      delete;
+  ~MirrorRecycleResidencyGuard() {
+    cudaStreamSynchronize(0);
+    on_.Free();
+    off_.Free();
+  }
+
+ private:
+  q4t::quant::MoEResidency& off_;
+  q4t::quant::MoEResidency& on_;
+};
+
+bool MirrorRecycleCounters(const q4t::quant::MoEResidency::Stats& stats,
+                           uint64_t plans, uint64_t preferred, uint64_t changed,
+                           uint64_t fallback) {
+  Q4T_CHECK(stats.mirror_gpu_recycle_plans == plans);
+  Q4T_CHECK(stats.mirror_gpu_recycle_attempts == preferred + fallback);
+  Q4T_CHECK(stats.mirror_gpu_recycle_preferred == preferred);
+  Q4T_CHECK(stats.mirror_gpu_recycle_changed == changed);
+  Q4T_CHECK(stats.mirror_gpu_recycle_fallback == fallback);
+  Q4T_CHECK(stats.mirror_gpu_recycle_unavailable == 0);
+  Q4T_CHECK(stats.mirror_gpu_recycle_published == preferred);
+  return true;
+}
+
+bool PrepareMirrorRecycleState(const PartitionRealWeights& weights,
+                               q4t::quant::MoEResidency* residency,
+                               bool enabled) {
+  const MirrorRecycleEnvGuard mode("Q4T_MOE_MIRROR_GPU_RECYCLE",
+                                   enabled ? "1" : "0");
+  Q4T_CHECK(
+      residency->Init(*weights.loader, kLayer, kE, kHs, kMoeIs, 16, 0).ok());
+  auto resolve = [&](const std::vector<int32_t>& needed) {
+    std::vector<int32_t> slots(needed.size(), -1);
+    Q4T_CHECK(residency
+                  ->Resolve(needed.data(), static_cast<int>(needed.size()),
+                            slots.data(), 0)
+                  .ok());
+    Q4T_CHECK(cudaStreamSynchronize(0) == cudaSuccess);
+    return true;
+  };
+  Q4T_CHECK(resolve({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}));
+  Q4T_CHECK(resolve({16, 17, 18, 19, 20, 21, 22, 23}));
+  Q4T_CHECK(resolve({2}));
+  // Resolve deliberately lacks the explicit decode contract: setup must
+  // retain the legacy policy even in the enabled instance.
+  Q4T_CHECK(MirrorRecycleCounters(residency->GetStats(), 0, 0, 0, 0));
+  const auto state = residency->CopyDiagnosticState();
+  const std::vector<int> expected_slots{16, 17, 18, 19, 20, 21, 22, 23,
+                                        2,  9,  10, 11, 12, 13, 14, 15};
+  const std::vector<int> expected_ring{8, 1, 2, 3, 4, 5, 6, 7};
+  Q4T_CHECK(state.slot_experts == expected_slots);
+  Q4T_CHECK(state.l2_experts.size() == 8);
+  Q4T_CHECK(state.mirror_experts == expected_ring);
+  Q4T_CHECK(state.mirror_cursor == 1);
+  Q4T_CHECK(residency->GetStats().mirror_hits == 1);
+  Q4T_CHECK(residency->GetStats().mirror_skips == 0);
+  return true;
+}
+
+bool RunMirrorRecycleCase(const PartitionRealWeights& weights,
+                          const char* label,
+                          q4t::model::MoEPartitionLogPhase phase,
+                          const q4t::model::MoERequestPartition& request,
+                          bool active) {
+  const size_t workspace_bytes = q4t::model::MoEForwardWorkspaceBytes(
+      1, kTopK, kHs, kMoeIs, kSharedIs, kE);
+  constexpr size_t kGemmBytes = 32 * 1024 * 1024;
+  PartitionDeviceBuffer<uint8_t> workspace, gemm;
+  PartitionDeviceBuffer<uint16_t> x, y;
+  q4t::quant::MoEResidency off, on;
+  // Declared after scratch owners: teardown drains stream0 and frees both
+  // residencies before either their objects or any scratch buffer is freed.
+  const MirrorRecycleResidencyGuard residency_guard(off, on);
+  Q4T_CHECK(PrepareMirrorRecycleState(weights, &off, false));
+  Q4T_CHECK(PrepareMirrorRecycleState(weights, &on, true));
+  Q4T_CHECK(workspace.Allocate(workspace_bytes));
+  Q4T_CHECK(gemm.Allocate(kGemmBytes));
+  Q4T_CHECK(x.Allocate(kHs));
+  Q4T_CHECK(y.Allocate(kHs));
+  auto input = PartitionInputRows(1, 24302);
+  input[0] = FloatToBf16(1.0f);
+  Q4T_CHECK(cudaMemcpy(x.data, input.data(), input.size() * sizeof(uint16_t),
+                       cudaMemcpyHostToDevice) == cudaSuccess);
+  const std::array<std::array<int32_t, kTopK>, 3> routes{{
+      {{2, 16, 17, 18, 19, 20, 21, 22, 23, 24}},
+      {{9, 2, 16, 17, 18, 19, 20, 21, 22, 23}},
+      {{1, 2, 16, 17, 18, 19, 20, 21, 22, 23}},
+  }};
+  auto forward = [&](const MoEWeightLayout& layout,
+                     const q4t::quant::MoEResidency* residency,
+                     PartitionForwardSnapshot* result) {
+    Q4T_CHECK(cudaMemset(workspace.data, 0xff, workspace_bytes) == cudaSuccess);
+    Q4T_CHECK(cudaMemset(y.data, 0xff, kHs * sizeof(uint16_t)) == cudaSuccess);
+    const Status status =
+        MoEForward(x.data, layout, weights.extra, y.data, 1, kTopK,
+                   workspace.data, workspace_bytes, gemm.data, kGemmBytes, 0,
+                   nullptr, kLayer, residency, nullptr, request, phase);
+    if (!status.ok()) {
+      std::printf("  mirror recycle forward failed: %s\n",
+                  status.message().c_str());
+      return false;
+    }
+    Q4T_CHECK(cudaDeviceSynchronize() == cudaSuccess);
+    return CapturePartitionForward(workspace.data, y.data, 1, result);
+  };
+  for (int step = 0; step < (active ? 3 : 1); ++step) {
+    // Only the in-memory router changes. The complete routed/shared weight
+    // payload and input are identical for reference, OFF, and ON forwards.
+    std::vector<uint16_t> gate(static_cast<size_t>(kE) * kHs, 0);
+    for (int rank = 0; rank < kTopK; ++rank) {
+      gate[static_cast<size_t>(routes[step][rank]) * kHs] =
+          FloatToBf16(4.0f - 0.25f * rank);
+    }
+    Q4T_CHECK(cudaMemcpy(weights.extra.gate, gate.data(),
+                         gate.size() * sizeof(uint16_t),
+                         cudaMemcpyHostToDevice) == cudaSuccess);
+    const auto off_before = off.GetStats();
+    const auto on_before = on.GetStats();
+    PartitionForwardSnapshot reference, legacy, selected;
+    Q4T_CHECK(forward(weights.routed, nullptr, &reference));
+    Q4T_CHECK(forward(off.Layout(), &off, &legacy));
+    Q4T_CHECK(forward(on.Layout(), &on, &selected));
+    const std::vector<int32_t> expected_ids(routes[step].begin(),
+                                            routes[step].end());
+    Q4T_CHECK(reference.ids == expected_ids);
+    Q4T_CHECK(ComparePartitionForward(reference, legacy));
+    Q4T_CHECK(ComparePartitionForward(reference, selected));
+    Q4T_CHECK(ComparePartitionForward(legacy, selected));
+    Q4T_CHECK(std::memcmp(legacy.routed.data(), selected.routed.data(),
+                          legacy.routed.size() * sizeof(float)) == 0);
+    const auto off_state = off.CopyDiagnosticState();
+    const auto on_state = on.CopyDiagnosticState();
+    Q4T_CHECK(off_state.slot_experts == on_state.slot_experts);
+    Q4T_CHECK(off_state.slot_ticks == on_state.slot_ticks);
+    Q4T_CHECK(off.GetStats().loads == off_before.loads + 1);
+    Q4T_CHECK(on.GetStats().loads == on_before.loads + 1);
+    Q4T_CHECK(off.GetStats().mirror_writebacks ==
+              off_before.mirror_writebacks + 1);
+    Q4T_CHECK(on.GetStats().mirror_writebacks ==
+              on_before.mirror_writebacks + 1);
+    Q4T_CHECK(off.GetStats().mirror_skips == 0);
+    Q4T_CHECK(on.GetStats().mirror_skips == 0);
+    Q4T_CHECK(MirrorRecycleCounters(off.GetStats(), 0, 0, 0, 0));
+    Q4T_CHECK(MirrorRecycleCounters(on.GetStats(), active ? step + 1 : 0,
+                                    active ? 1 : 0, active ? 1 : 0,
+                                    active ? step : 0));
+    if (step == 0) {
+      const std::vector<int> legacy_ring{8, 9, 2, 3, 4, 5, 6, 7};
+      const std::vector<int> recycle_ring{8, 1, 9, 3, 4, 5, 6, 7};
+      Q4T_CHECK(off_state.mirror_experts == legacy_ring);
+      Q4T_CHECK(on_state.mirror_experts ==
+                (active ? recycle_ring : legacy_ring));
+      Q4T_CHECK(off_state.mirror_cursor == 2);
+      Q4T_CHECK(on_state.mirror_cursor == (active ? 3 : 2));
+      // Expert2 is a needed GPU hit, not a planned victim or incoming
+      // expert. Its mirror is redundant for the complete active plan.
+      Q4T_CHECK(on_state.slot_experts[8] == 2);
+      Q4T_CHECK(on_state.slot_experts[9] == 24);
+    } else if (step == 1) {
+      // Read the expert9 payload written to the different target slots.
+      Q4T_CHECK(off.GetStats().mirror_hits == off_before.mirror_hits + 1);
+      Q4T_CHECK(on.GetStats().mirror_hits == on_before.mirror_hits + 1);
+      // Make expert9 the next plan's victim. Its still-present mirror must
+      // NOT count as GPU-covered after the complete plan reserves that slot.
+      // These are all GPU hits, so no payload or ring content changes.
+      const std::vector<int32_t> refresh{16, 17, 18, 19, 20, 21, 22, 23,
+                                         2,  24, 11, 12, 13, 14, 15};
+      for (auto* residency : {&off, &on}) {
+        std::vector<int32_t> slots(refresh.size(), -1);
+        const auto before = residency->GetStats();
+        Q4T_CHECK(residency
+                      ->Resolve(refresh.data(),
+                                static_cast<int>(refresh.size()), slots.data(),
+                                0)
+                      .ok());
+        Q4T_CHECK(cudaStreamSynchronize(0) == cudaSuccess);
+        Q4T_CHECK(residency->GetStats().loads == before.loads);
+        Q4T_CHECK(residency->SlotExpert(10) == 9);
+      }
+    } else {
+      // The sole mirror of expert1 survived only in the candidate. Both
+      // the mirror and disk source must reproduce the same expert output.
+      Q4T_CHECK(off.GetStats().mirror_hits == off_before.mirror_hits);
+      Q4T_CHECK(off.GetStats().l2_misses == off_before.l2_misses + 1);
+      Q4T_CHECK(on.GetStats().mirror_hits == on_before.mirror_hits + 1);
+      Q4T_CHECK(on.GetStats().l2_misses == on_before.l2_misses);
+      Q4T_CHECK(on_state.slot_experts[10] == 1);
+    }
+    std::printf(
+        "  mirror_recycle case=%s step=%d layer=%d C=16 T=1 "
+        "active=%d changed=%llu BF16_BIT_EXACT=true "
+        "OFF_ON_FP32_BIT_EXACT=true\n",
+        label, step, kLayer, active,
+        static_cast<unsigned long long>(
+            on.GetStats().mirror_gpu_recycle_changed));
+  }
+  return true;
+}
+
+}  // namespace
+
+// Bounded real-weight contract, not an all-layer or concurrent stress proof.
+// Select alone in a fresh process after the HTTP-first performance gate.
+Q4T_TEST(moe_mirror_gpu_recycle_numerical_contract) {
+  for (const auto& [name, expected] :
+       {std::pair{"Q4T_MOE_PARTITION", "0"},
+        std::pair{"Q4T_MOE_CHUNK_ORDER", "0"},
+        std::pair{"Q4T_MOE_STREAMS", "1"},
+        std::pair{"Q4T_MOE_EVICT_WEIGHT", "0"}}) {
+    const char* actual = std::getenv(name);
+    if (!actual || std::strcmp(actual, expected) != 0) {
+      std::printf("  required environment: %s=%s\n", name, expected);
+      return false;
+    }
+  }
+  if (!CudaAvailable()) Q4T_SKIP("no CUDA; required runner rejects skip");
+  if (!FileExists(kIndex)) Q4T_SKIP("no model; required runner rejects skip");
+  const MirrorRecycleEnvGuard workers("Q4T_MOE_LOAD_THREADS", "1");
+  const MirrorRecycleEnvGuard l2("Q4T_MOE_L2_SLOTS", "8");
+  const MirrorRecycleEnvGuard mirror("Q4T_MOE_MIRROR_K", "8");
+  const MirrorRecycleEnvGuard inline_limit("Q4T_MOE_INLINE_MISS_LIMIT", "0");
+  const MirrorRecycleEnvGuard observer("Q4T_MOE_SUPPLY_OBSERVER", "0");
+  PartitionRealWeights weights;
+  Q4T_CHECK(weights.Init());
+  using q4t::model::MoEPartitionLogPhase;
+  using q4t::model::MoERequestPartition;
+  Q4T_CHECK(RunMirrorRecycleCase(
+      weights, "single-decode", MoEPartitionLogPhase::kSingleDecode, {}, true));
+  Q4T_CHECK(RunMirrorRecycleCase(weights, "unknown-singleton",
+                                 MoEPartitionLogPhase::kUnknown, {}, false));
+  // An inactive request identity still identifies prefill. Even an explicit
+  // decode phase cannot override HasRequest; no partition mode is changed.
+  Q4T_CHECK(RunMirrorRecycleCase(
+      weights, "prefill-singleton", MoEPartitionLogPhase::kSingleDecode,
+      MoERequestPartition(8193, "mirror-prefill", false).WithBase(8192),
+      false));
+  return true;
+}

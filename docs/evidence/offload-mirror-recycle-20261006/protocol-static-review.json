@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "passed": true,
+  "status": "STATIC_PROTOCOL_REVIEW_PASS_NO_EXECUTION",
+  "scope_plan_sha256": "a10255307a3582b27e738abd042a9db67cd10e8abc23b51addfd6e2471f61670",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tools/evalscope/offload_policy.py": "f3e213aec87964c20de17416bff45575dde59b69717bf4f06a04e7b37a7499a2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tools/evalscope/run_budget_experiment.py": "82ff67c5b90c81ec24ba2402a7ca23ce7e436b8a0d0860cc22caa452e2efb944",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tools/evalscope/mirror_recycle_protocol.py": "cb26dc9272d86fde3f152a398d29a5cb4f4f720286ac53c3989db215bfb3b201",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tools/evalscope/test_mirror_recycle_protocol.py": "9e57e2c376803a643634e1a07121eb86e9c5ba9b0e33974d7c27c56e91f59abc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tools/evalscope/run_acceptance.py": "c3d3353224a7d9f6c4cab112dedeb913a30580ba3884f3feb9c2e6cc37fd5846",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tools/evalscope/isolated_service.py": "c561ec8a8cf1c05e2ceb8ba08959af3624db9ee832723103b691ee2edb713521",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/tools/evalscope/request_policy_protocol.py": "8f2e53412fef4fe795cb5e8f3dcccd8b2048ae42696da658e81b05ebe381d6f8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/include/q4t/model/model.h": "3366aa73e581903073fc25b1d460edcd6d7a39615710bb9a80f160502110d2e7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/src/server/chat_generation.cpp": "969b1141f2303da269b9b53ab49da4d3f6958d8047086e1c9e23fc2633cf69d5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/src/quant/moe_residency.cpp": "1404cd56eb72aa1b391a638765f258252ae1cb7b1df3d322ce5071c999b079b5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source/src/model/moe.cu": "f9dffd94fd1c233452235b5ca9735b4110a1f1aaa0a8a722a696d580571cf6c6"
+  },
+  "handoff_sources_unchanged": true,
+  "executed_tests": 0,
+  "model_runs": 0,
+  "http_requests": 0,
+  "new_contract_definitions_reviewed": 10,
+  "checks": {
+    "environment_chain": "experiment_environment removes inherited Q4T keys, applies frozen mirror-recycle env exact 0/1; run_acceptance scrub prefixes exclude this key; isolated_service --setenv includes all Q4T keys. Same path for off/on.",
+    "axis_scope": "mirror-recycle requires chunk/order partition/request/quiet all0 and no phase diagnostics; non-mirror axis rejects active new bit; wrapper rejects causality/mechanism on this axis; history uses unchanged fixed21 sequence with exact explicit env.",
+    "protocol_identity": "Evidence records explicit axis/newbit/environment and tool hashes; history adds request_policy_protocol hash; mirror axis adds parser hash. check_policy_protocol exact effective env rejects hidden observer extras.",
+    "startup": "Init layer0 prints enabled plus explicit_single_decode and exact schema. Parser requires exactly one startup before ordered request summaries, matching enabled arm.",
+    "server_aggregation": "All7 new Stats fields aggregated over model layers and differenced per completed request before residency_stats_prev_ update. One separate line with HTTP id and no token-level logging. max_seq1 is the exact-delta contract.",
+    "stat_semantics": "attempts closes preferred+fallback+unavailable; changed and published are subsets of preferred. changed is a changed selected slot; preferred alone may choose legacy first slot. Parser selection_change_observed uses sum(changed)>0.",
+    "counter_parser": "Exact7 ordered unsigned fields, uint64 bounds, HTTP response id/order/uniqueness and output count, plans bounded by48*(output-1), no work when plans0, all0 required OFF. All0 ON request is allowed to retain observed inactivity.",
+    "output_bound": "Server ordinary decode pushes prefill first token then forwards at most output-1 times; stop token is included in generated count. Acceptance is restricted to successfully completed noncancelled HTTP requests.",
+    "scope_proof": "Runtime uses explicit kSingleDecode+outerT1+no prefill request, independently of shape decode_phase. Parser explicitly does not claim runtime phase gate proof; source/C++ contracts are complementary.",
+    "first_test_order": "Added test file contains10 definitions only. No tooling or test executed by reviewer; HTTP-first remains root controller responsibility."
+  },
+  "nonblocking_limits": [
+    "mirror_recycle_evidence does not itself run as wrapper acceptance; root stage controller must call and archive it per service.",
+    "Parser permits zero changed in an enabled service: it reports inactivity honestly. Root aggregate decision must require a policy-change witness before interpreting performance as candidate behavior.",
+    "Counter parser alone does not prove no prefill activation or numerical correctness; static gate/C++ and explicit candidate numerical contract are needed.",
+    "Existing resource and performance arithmetic is unchanged; static review does not certify future measured performance."
+  ],
+  "findings": [
+    {
+      "id": "phase-header-comment",
+      "severity": "documentation",
+      "file": "include/q4t/model/moe_partition_log.h",
+      "finding": "Header says logging-only while explicit phase now also gates opt-in cache policy. Sent to root for comment-only clarification; behavior unaffected."
+    }
+  ],
+  "blocking_findings": []
+}

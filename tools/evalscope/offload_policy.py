@@ -7,7 +7,7 @@ import re
 
 AXES = ('chunk-order', 'partition')
 REQUEST_AXES = ('request-partition', 'request-partition-log')
-RUN_AXES = AXES + REQUEST_AXES
+RUN_AXES = AXES + REQUEST_AXES + ('mirror-recycle',)
 BASE_ENVIRONMENT = {
     'Q4T_MOE_L2_SLOTS': '16', 'Q4T_MOE_MIRROR_K': '8',
     'Q4T_MOE_MAX_OPEN_SHARDS': '200', 'Q4T_MOE_EVICT_WEIGHT': '0',
@@ -28,8 +28,12 @@ def require(condition, message):
 
 def policy_environment(chunk_order, partition=0, policy_axis='chunk-order',
                        phase_diagnostics=False, request_partition=0,
-                       decode_partition_log_quiet=0):
+                       decode_partition_log_quiet=0, mirror_gpu_recycle=0):
     require(policy_axis in RUN_AXES, 'unknown policy axis')
+    require(type(mirror_gpu_recycle) is int and mirror_gpu_recycle in (0, 1),
+            'mirror GPU recycle must be zero or one')
+    require(policy_axis == 'mirror-recycle' or mirror_gpu_recycle == 0,
+            'mirror GPU recycle requires its own policy axis')
     require(type(chunk_order) is int and chunk_order in (0, 1),
             'chunk-order must be zero or one')
     require(type(partition) is int and partition in (0, 1),
@@ -47,6 +51,14 @@ def policy_environment(chunk_order, partition=0, policy_axis='chunk-order',
     require(type(phase_diagnostics) is bool, 'diagnostics must be explicit bool')
     require(not phase_diagnostics or policy_axis == 'partition',
             'phase diagnostics requires partition axis')
+    if policy_axis == 'mirror-recycle':
+        require(chunk_order == partition == request_partition ==
+                decode_partition_log_quiet == 0 and not phase_diagnostics,
+                'mirror recycle requires unchanged legacy policy and logs')
+        return {**BASE_ENVIRONMENT, 'Q4T_MOE_CHUNK_ORDER': '0',
+                'Q4T_MOE_PARTITION': '0', 'Q4T_MOE_REQUEST_PARTITION': '0',
+                'Q4T_MOE_DECODE_PARTITION_LOG_QUIET': '0',
+                'Q4T_MOE_MIRROR_GPU_RECYCLE': str(mirror_gpu_recycle)}
     if policy_axis in REQUEST_AXES:
         require(chunk_order == 0 and partition == request_partition,
                 'request axis requires chunk-order zero and matched master')
@@ -82,7 +94,17 @@ def check_policy_protocol(protocol, state, policy_axis,
             'instrumented diagnostics cannot qualify performance')
     require(protocol.get('policy_axis', 'chunk-order') == policy_axis,
             'evidence belongs to another policy axis')
-    if policy_axis in REQUEST_AXES:
+    if policy_axis == 'mirror-recycle':
+        actual = protocol.get('mirror_gpu_recycle')
+        require(type(actual) is int and actual == state and
+                protocol.get('partition') == 0 and
+                protocol.get('request_partition') == 0 and
+                protocol.get('decode_partition_log_quiet') == 0 and
+                protocol['chunk_order'] == 0,
+                'mirror recycle state or frozen policy differs')
+        expected = policy_environment(0, policy_axis=policy_axis,
+                                      mirror_gpu_recycle=state)
+    elif policy_axis in REQUEST_AXES:
         require(protocol.get('request_partition') == state and
                 protocol.get('partition') == state and
                 protocol['chunk_order'] == 0,

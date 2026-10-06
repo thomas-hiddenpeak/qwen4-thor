@@ -66,6 +66,7 @@
 #include <vector>
 
 #include "q4t/io/weight_loader.h"
+#include "q4t/quant/moe_mirror_recycle.h"
 #include "q4t/quant/moe_supply_observer.h"
 #include "q4t/quant/moe_weights.h"
 #include "q4t/status.h"
@@ -158,6 +159,14 @@ class MoEResidency {
     uint64_t mirror_hits = 0;
     uint64_t mirror_writebacks = 0;
     uint64_t mirror_skips = 0;
+    // Explicit single-decode GPU-covered mirror recycling (default off).
+    uint64_t mirror_gpu_recycle_plans = 0;
+    uint64_t mirror_gpu_recycle_attempts = 0;
+    uint64_t mirror_gpu_recycle_preferred = 0;
+    uint64_t mirror_gpu_recycle_changed = 0;
+    uint64_t mirror_gpu_recycle_fallback = 0;
+    uint64_t mirror_gpu_recycle_unavailable = 0;
+    uint64_t mirror_gpu_recycle_published = 0;
     // Item 3b: batched preadv runs (consecutive expert ids read with one
     // preadv per region); experts = total experts covered by those runs.
     uint64_t pread_merge_runs = 0;
@@ -238,6 +247,9 @@ class MoEResidency {
     // so L2 victim selection can prefer buffers whose expert is not still
     // needed by the same plan.
     std::vector<uint8_t> needed_mark;
+    // Immutable GPU coverage for the whole plan; empty when the policy is off
+    // or outside explicit single decode. Never refreshed by worker commits.
+    std::vector<uint8_t> mirror_gpu_covered;
     // LoadPhase1 resets this to 0; a worker stores 1 on stage failure.
     std::atomic<int> first_err{0};
     // First stage error message (written by the first failing worker only;
@@ -256,6 +268,7 @@ class MoEResidency {
       slots.clear();
       workers.clear();
       needed_mark.clear();
+      mirror_gpu_covered.clear();
       next_stage = 0;
       next_commit = 0;
       first_err.store(0, std::memory_order_relaxed);
@@ -287,12 +300,15 @@ class MoEResidency {
   //   needed : host array of n expert IDs (0..E-1, duplicates allowed)
   //   slot_of: host array of n ints, receives the slot index per entry
   //   decode_phase: true for single-token (decode) forwards; used only for
-  //                 per-phase miss statistics.
+  //                 per-phase miss statistics (shape, not request phase).
+  //   explicit_single_decode: caller proves ordinary single-request decode;
+  //                 enables the opt-in mirror policy, never prefill singletons.
   // Misses are collected into `plan` with their victim slots; nothing is
   // loaded or evicted yet. The caller must keep the distinct needed set
   // within the available (non-protected) capacity, as Resolve does.
   Status PlanResolve(const int32_t* needed, int n, int32_t* slot_of,
-                     LoadPlan* plan, bool decode_phase = false) const;
+                     LoadPlan* plan, bool decode_phase = false,
+                     bool explicit_single_decode = false) const;
 
   // Phase 1: stage the next chunk of `plan` (at most load_threads_
   // entries, entry next_stage + t by worker t into staging buffer t) in
@@ -396,6 +412,13 @@ class MoEResidency {
     uint64_t mirror_hits = 0;
     uint64_t mirror_writebacks = 0;
     uint64_t mirror_skips = 0;
+    // Explicit single-decode GPU-covered mirror recycling (default off).
+    uint64_t mirror_gpu_recycle_attempts = 0;
+    uint64_t mirror_gpu_recycle_preferred = 0;
+    uint64_t mirror_gpu_recycle_changed = 0;
+    uint64_t mirror_gpu_recycle_fallback = 0;
+    uint64_t mirror_gpu_recycle_unavailable = 0;
+    uint64_t mirror_gpu_recycle_published = 0;
     uint64_t pread_merge_runs = 0;
     uint64_t pread_merge_experts = 0;
     int resident_delta = 0;
@@ -416,6 +439,12 @@ class MoEResidency {
       mirror_hits = 0;
       mirror_writebacks = 0;
       mirror_skips = 0;
+      mirror_gpu_recycle_attempts = 0;
+      mirror_gpu_recycle_preferred = 0;
+      mirror_gpu_recycle_changed = 0;
+      mirror_gpu_recycle_fallback = 0;
+      mirror_gpu_recycle_unavailable = 0;
+      mirror_gpu_recycle_published = 0;
       pread_merge_runs = 0;
       pread_merge_experts = 0;
       resident_delta = 0;
@@ -437,6 +466,12 @@ class MoEResidency {
       s.mirror_hits += mirror_hits;
       s.mirror_writebacks += mirror_writebacks;
       s.mirror_skips += mirror_skips;
+      s.mirror_gpu_recycle_attempts += mirror_gpu_recycle_attempts;
+      s.mirror_gpu_recycle_preferred += mirror_gpu_recycle_preferred;
+      s.mirror_gpu_recycle_changed += mirror_gpu_recycle_changed;
+      s.mirror_gpu_recycle_fallback += mirror_gpu_recycle_fallback;
+      s.mirror_gpu_recycle_unavailable += mirror_gpu_recycle_unavailable;
+      s.mirror_gpu_recycle_published += mirror_gpu_recycle_published;
       s.pread_merge_runs += pread_merge_runs;
       s.pread_merge_experts += pread_merge_experts;
       resident_count += resident_delta;
@@ -517,7 +552,8 @@ class MoEResidency {
   Status CommitExpert(int expert, int slot, int buf, cudaStream_t stream,
                       StatsDelta* delta = nullptr,
                       MoESupplyPlan* observer = nullptr,
-                      size_t observer_entry = 0) const;
+                      size_t observer_entry = 0,
+                      const std::vector<uint8_t>* gpu_covered = nullptr) const;
 
   void BeginSupplyObservation(LoadPlan& plan) const;
   void FinishSupplyObservation(LoadPlan& plan, bool success) const;
@@ -595,12 +631,13 @@ class MoEResidency {
   // [w_dn|w_ga|w_up|gu_sw|dn_sw|scal] (the slot payload minus the raw SF
   // region, which only the NVMe miss path needs). CommitExpert D2Hs the
   // evicted expert into the ring (stream-ordered before the H2D that
-  // overwrites the slot); the StageExpert miss path consults the ring
-  // before the L2 pool. Ring buffers are addressed by negative buf
+  // overwrites the slot); ClaimExpert checks the L2 pool, then the ring,
+  // then reads the checkpoint. Ring buffers use negative buf
   // indices (-(k+1)) so one CommitExpert serves both buffer kinds.
   // in_flight covers both copy directions (D2H write-back or H2D read);
   // it is set at entry publication and released lazily by event query.
   int mirror_k_ = 0;
+  bool mirror_gpu_recycle_enabled_ = false;
   // Phase B: inline stage+commit when a chunk has <= this many entries.
   int inline_miss_limit_ = 1;
   // Item 3b: per-expert read descriptor, precomputed in Init (the

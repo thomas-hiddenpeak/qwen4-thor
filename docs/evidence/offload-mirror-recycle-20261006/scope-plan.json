@@ -1,0 +1,167 @@
+{
+  "schema": 1,
+  "scope": "gpu_covered_mirror_recycling_v1",
+  "frozen_t": 1791292412.7078137,
+  "base": "3a838473a7fa9ebefba9356266d4e1c8946cf7d9",
+  "branch": "codex/offload-mirror-recycle-20261006",
+  "single_candidate": {
+    "schema": 1,
+    "status": "STATIC_DESIGN_READY_NO_TESTS",
+    "runtime_entry": "CommitExpert (EnqueueUploadsAsync does not exist in this source)",
+    "env": {
+      "name": "Q4T_MOE_MIRROR_GPU_RECYCLE",
+      "accepted": [
+        "0",
+        "1"
+      ],
+      "unset": "0",
+      "invalid": "Init fails before allocations/worker creation; exact parse, no atoi"
+    },
+    "scope": {
+      "gate": "enabled && log_phase == MoEPartitionLogPhase::kSingleDecode && T == 1 && !request_partition.HasRequest()",
+      "why": "Current decode_phase == (T_sub == 1) includes prefill singleton; explicit phase is forwarded only ordinary decode entry points model.cu:925,1082. The outer route D2H synchronizes the stream before planning; prefill pipelining has no same physical completion proof.",
+      "limits": [
+        "max_seq=1",
+        "MTP off",
+        "Phase D off",
+        "one policy, no L2 preference or second rule"
+      ]
+    },
+    "implementation": [
+      "Parse exact env in Init before allocation; store enabled bool and print once layer 0 configuration scope.",
+      "Append bool explicit_single_decode=false to PlanResolve API (existing callers default false). moe.cu plan_sub supplies explicit phase gate separately from existing shape-only decode_phase. Resolve and InitHot remain candidate-inactive.",
+      "LoadPlan holds gpu_covered mark vector (empty when inactive). After the entire PlanResolve loop, and only active nonempty plan with mirror_k>0, initialize E bytes false and scan C current slots: mark valid resident experts only when reserved[slot]==false. This excludes every planned victim and every missing expert not yet uploaded. Coverage stays immutable for all workers/chunks and never grows as workers commit.",
+      "StageTask passes const mark pointer to CommitExpert. Workers never scan expert_slot_ or other slots to answer coverage; existing own-slot reads remain unchanged. Pointer lifetime is protected by existing Phase1 worker barrier.",
+      "CommitExpert under existing l2_mu_ preserves original branch exactly when pointer null. Active branch scans cursor order for event-ready unclaimed GPU-covered slot, recording first eligible legacy fallback. If no covered slot exists, select recorded first eligible slot. No blocking wait, new CUDA event, stream ordering, or claim/publication change. Reserve selected only once; same cursor advancement.",
+      "Publication/abort/in-flight/source-ring wait/identity and scales remain untouched. Count selection attempts separately from successful publications. Preserve existing mirror skip behavior.",
+      "Correct header stale source-priority comment: ClaimExpert tests L2 before mirror before read."
+    ],
+    "public_stats": [
+      "mirror_gpu_recycle_plans",
+      "mirror_gpu_recycle_attempts",
+      "mirror_gpu_recycle_preferred",
+      "mirror_gpu_recycle_changed",
+      "mirror_gpu_recycle_fallback",
+      "mirror_gpu_recycle_unavailable",
+      "mirror_gpu_recycle_published"
+    ],
+    "stats_semantics": {
+      "plans": "Caller increments only active nonempty planning snapshots.",
+      "attempts": "Worker selection attempts for occupied victim with active snapshot.",
+      "preferred": "An eligible GPU-covered target selected, whether same as first baseline eligible or changed.",
+      "changed": "Selected preferred target differs from first baseline eligible target; subset preferred proves selection actually changed.",
+      "fallback": "No eligible covered target, legacy eligible target selected.",
+      "unavailable": "No eligible slot, original skip.",
+      "published": "Successful writeback publication to a preferred target; <= preferred.",
+      "merge": "Worker-local StatsDelta only, merged after existing barrier; off fields remain zero. attempts == preferred + fallback + unavailable; changed <= preferred; published <= preferred. No timing or observer witnesses added."
+    },
+    "files": [
+      "include/q4t/quant/moe_residency.h",
+      "include/q4t/quant/moe_mirror_recycle.h (pure small helper)",
+      "src/quant/moe_residency.cpp",
+      "src/model/moe.cu",
+      "tests/quant_moe_mirror_recycle_test.cpp",
+      "CMakeLists.txt test target; parent owns model aggregator/server output"
+    ],
+    "cost": {
+      "off": "No coverage allocation/scan or additional ring/event scans; old selection path preserved. A mode branch/empty vector member and zero counter storage remain, so do not literally claim zero CPU instructions.",
+      "on": "At most E bytes snapshot plus C scan per nonempty true-decode plan; ring scan at most K (default 8), uses existing lock and bounded event queries. Candidate may lose on overhead; HTTP acceptance decides."
+    },
+    "contracts_after_http": [
+      "Strict env parse unset/0/1/empty/space/2/garbage",
+      "True decode eligibility excludes prefill singleton, unknown phase, batch T>1, request-prefill context",
+      "Full-plan snapshot excludes every reserved victim, empty slots and not-yet-loaded experts; preserves untouched residents including needed GPU hits",
+      "Worker selection honors cursor order among covered slots; no-covered fallback exact original first eligible; claimed/not-ready skipped; empty is fallback not a second preferred policy",
+      "K=0/all busy/all claimed/no coverage/empty plan; wraparound cursor",
+      "Same-plan stale incoming expert never added as coverage and current victims excluded independent commit order",
+      "Attempt counters close and preferred changed/publication relationships",
+      "Existing rollback/claim/event release contracts remain; numerical payload copying not changed; runtime quality and selected real numerical contracts after HTTP first"
+    ],
+    "risks": [
+      "Additional selection changes history and can hurt later mirror hit rate even while reducing duplicates; full five-tier/target/history acceptance required.",
+      "Snapshot covers residency until end of this plan only; future usefulness and redundant overwrite cause remain unproven.",
+      "cudaEventQuery error handling inherits baseline skip semantics; do not broaden error treatment in candidate.",
+      "Current source has existing writeback abort non-atomic payload issue; preserve and do not claim repaired.",
+      "Do not read mutable GPU maps from workers; l2_mu_ does not protect GPU map writes."
+    ],
+    "executed_tests": 0,
+    "model_runs": 0,
+    "raw_weight_payload_reads": 0
+  },
+  "source_design_sha256": "6fa550b1d29d72bd5be4353e66f173249f24956ca8f5b340cda09aab999535df",
+  "implementation_authorized": true,
+  "execution_admitted": false,
+  "first_test": "tools/evalscope fixed11 HTTP on candidate after clean build and static review; no earlier tests",
+  "arms": {
+    "A": {
+      "mirror_gpu_recycle": 0,
+      "partition": 0,
+      "request_partition": 0,
+      "quiet": 0
+    },
+    "B": {
+      "mirror_gpu_recycle": 1,
+      "partition": 0,
+      "request_partition": 0,
+      "quiet": 0
+    }
+  },
+  "runtime_fixed": {
+    "C": 256,
+    "L2": 16,
+    "mirrorK": 8,
+    "max_open": 200,
+    "max_seq": 1,
+    "max_prefill": 8192,
+    "max_len": 262144,
+    "MTP": false,
+    "PhaseD": false,
+    "chunk_order": 0,
+    "GEMM_precision_changes": false,
+    "supply_observer": false,
+    "route_trace": false,
+    "timing": false
+  },
+  "resource": {
+    "performance_host_cache_max_bytes": 17179869184,
+    "swap_max_bytes": 0,
+    "quality_host_cache_max_bytes": null,
+    "min_free_disk_bytes": 1073741824,
+    "model_payload_read_for_audit": false,
+    "whole_physical_RAM_54GB": "INDETERMINATE"
+  },
+  "bounded_acceptance": {
+    "quality_HTTP": 11,
+    "history": "ABBA four independent services x21; two directional blocks, gates apply separately",
+    "history_HTTP": 84,
+    "matrix_lengths": [
+      1024,
+      4096,
+      8192,
+      45056,
+      204800,
+      261887
+    ],
+    "matrix_repeats_per_arm": 3,
+    "matrix_HTTP": 36,
+    "matrix_pair_direction": "alternating AB/BA by fixed ascending tier",
+    "maximum_HTTP": 131,
+    "full_matrix_after_valid_history_speed_failure": true,
+    "new_tool_tests_only_after_first_HTTP": true
+  },
+  "acceptance_gates": [
+    "Exact output/usage/capacity/MTP/precision/source/cleanup/cold identity contracts",
+    "Candidate actually changes at least one safe mirror selection; changed <= preferred; published <= preferred; attempts = preferred + fallback + unavailable; OFF counters zero; true-decode gate only",
+    "Each history directional block at each of seven positions: B firstTTFT <= A firstTTFT; max B later2TTFT <= max A later2TTFT; min B all3decode >= min A all3decode",
+    "Each matrix tier: B firstTTFT <= A firstTTFT; max B later2TTFT <= max A later2TTFT; min B all3decode >= min A all3decode",
+    "All tiers/history and required correctness/quality/resource contracts pass; no posthoc epsilon; observed small failures are not evidence of statistical significance"
+  ],
+  "failure_policy": [
+    "Stop dependent execution on concrete runtime/quality/identity/capacity/cleanup/cold/disk contract failure, preserve first failure; repair/retest only affected work in new evidence identity",
+    "Valid speed NO_GO still completes the already frozen full matrix, then reject default-off; no favorable repeats or second candidate",
+    "No resource/physical RAM GO inferred from memcg-only limit or summed NVIDIA counters",
+    "Default remains off even if experimental acceptance passes; no merge or deployment"
+  ],
+  "reuse": "Old immutable passing contracts/results only within unchanged identity and coverage; no old perf substituted for same-new-binary control",
+  "next_freeze": "Detailed input/command/tool/acceptance sources and counts in protocol/execution manifest before build/test execution"
+}

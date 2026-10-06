@@ -1,0 +1,29 @@
+{
+  "recorded_t": 1791292273.1941745,
+  "base": "3a838473a7fa9ebefba9356266d4e1c8946cf7d9",
+  "working_branch": "codex/offload-mirror-recycle-20261006",
+  "main_head": "f15190ff9447079f9557469ed5aff0b525197821",
+  "main_status": [
+    " M docs/STATUS.md",
+    " M docs/log/2026-10-02.md",
+    " M include/q4t/model/model.h",
+    " M include/q4t/quant/moe_residency.h",
+    " M src/model/moe.cu",
+    " M src/quant/moe_residency.cpp",
+    " M src/server/chat_generation.cpp"
+  ],
+  "main_diff_sha256": "33375caff6dcb3e638e2d2f001428883cbc0e400c5f1b7403a081826e9cd6947",
+  "main_binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "sha256": "46b3f977b0653c2f317c63df5b9f6669d1f3bb1de17892970b605676dd5434bc"
+  },
+  "reference_tracked_status": [],
+  "prior_delivery_sha256": "58ab9a7e0ad336dbcaf63b1a134ed2f715e0395aac15c97e84bfbd2c2f2d73b9",
+  "old_worktrees": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source": "3a838473a7fa9ebefba9356266d4e1c8946cf7d9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/source": "8ea3d329a236e35dd0aba35ad619912e3e76cc28",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source": "69e2d0432b8f00317fbb07b1f286b25d2bd09d17"
+  },
+  "free_bytes": 3070816256,
+  "model_payload_hashed": false
+}
