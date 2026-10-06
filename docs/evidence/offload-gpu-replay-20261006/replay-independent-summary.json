@@ -1,0 +1,1380 @@
+{
+  "schema": 1,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/baseline-replay-01-exit.json": "1cb8e2d4e87a5a5025639bb7bed30ebaf24f2954a37ef8dec5f1ad0d1283c1d6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/candidate-replay-01-exit.json": "d164931553b39a6878853560f06fa01395b2f363655b106eb0e113e3b122554d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/scope-plan.json": "e294b25ea6f594bffea2de1aef35f17f80cca51f7949d9ef1affcaafcca43fd7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/execution-plan.json": "81fa7e936d445b4a9df97bc6a79f32970b2360e17336f799a59968c8a098ebd9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/replay-inputs.json": "2601f561d96c8ebb861afcb41d70249512ae3480e8abe611767d356b976f5407",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/baseline-replay.json": "87e2bff6ab96615022662bb6235295c0447f83cab43e47f02f8c1ba2a47ffd5a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/candidate-replay.json": "73521a518fb11ab0c29c6da3f7d1bbe4c926d61076b897fe6133152e86aacd0c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/replay_review.py": "0c0577c18d2acb88cdc269ad93068f63708c1e420d9ed02b26cbaab4cb3746bc"
+  },
+  "baseline_phase_rows": [
+    {
+      "loads": 13705,
+      "entry_distinct_bound": 7522,
+      "fixed_chunk_capacity_bound": 13651,
+      "combined_lower_bound": 13651,
+      "avoidable_load_upper_bound": 54,
+      "group": "m02-as-on",
+      "position": 0,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6183,
+      "upper_bound_shrink": 6129,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7128,
+      "entry_distinct_bound": 4080,
+      "fixed_chunk_capacity_bound": 140,
+      "combined_lower_bound": 4080,
+      "avoidable_load_upper_bound": 3048,
+      "group": "m02-as-on",
+      "position": 0,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 3048,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12300,
+      "entry_distinct_bound": 6209,
+      "fixed_chunk_capacity_bound": 12264,
+      "combined_lower_bound": 12264,
+      "avoidable_load_upper_bound": 36,
+      "group": "m02-as-on",
+      "position": 1,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6091,
+      "upper_bound_shrink": 6055,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7000,
+      "entry_distinct_bound": 4040,
+      "fixed_chunk_capacity_bound": 122,
+      "combined_lower_bound": 4040,
+      "avoidable_load_upper_bound": 2960,
+      "group": "m02-as-on",
+      "position": 1,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 2960,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12255,
+      "entry_distinct_bound": 6209,
+      "fixed_chunk_capacity_bound": 12217,
+      "combined_lower_bound": 12217,
+      "avoidable_load_upper_bound": 38,
+      "group": "m02-as-on",
+      "position": 2,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6046,
+      "upper_bound_shrink": 6008,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 6559,
+      "entry_distinct_bound": 4030,
+      "fixed_chunk_capacity_bound": 122,
+      "combined_lower_bound": 4030,
+      "avoidable_load_upper_bound": 2529,
+      "group": "m02-as-on",
+      "position": 2,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 2529,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12245,
+      "entry_distinct_bound": 6209,
+      "fixed_chunk_capacity_bound": 12210,
+      "combined_lower_bound": 12210,
+      "avoidable_load_upper_bound": 35,
+      "group": "m02-as-on",
+      "position": 3,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6036,
+      "upper_bound_shrink": 6001,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 6367,
+      "entry_distinct_bound": 4033,
+      "fixed_chunk_capacity_bound": 122,
+      "combined_lower_bound": 4033,
+      "avoidable_load_upper_bound": 2334,
+      "group": "m02-as-on",
+      "position": 3,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 2334,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 13705,
+      "entry_distinct_bound": 7522,
+      "fixed_chunk_capacity_bound": 13651,
+      "combined_lower_bound": 13651,
+      "avoidable_load_upper_bound": 54,
+      "group": "m03-cs-on",
+      "position": 0,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6183,
+      "upper_bound_shrink": 6129,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7128,
+      "entry_distinct_bound": 4080,
+      "fixed_chunk_capacity_bound": 140,
+      "combined_lower_bound": 4080,
+      "avoidable_load_upper_bound": 3048,
+      "group": "m03-cs-on",
+      "position": 0,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 3048,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12300,
+      "entry_distinct_bound": 6209,
+      "fixed_chunk_capacity_bound": 12264,
+      "combined_lower_bound": 12264,
+      "avoidable_load_upper_bound": 36,
+      "group": "m03-cs-on",
+      "position": 1,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6091,
+      "upper_bound_shrink": 6055,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7000,
+      "entry_distinct_bound": 4040,
+      "fixed_chunk_capacity_bound": 122,
+      "combined_lower_bound": 4040,
+      "avoidable_load_upper_bound": 2960,
+      "group": "m03-cs-on",
+      "position": 1,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 2960,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12255,
+      "entry_distinct_bound": 6209,
+      "fixed_chunk_capacity_bound": 12217,
+      "combined_lower_bound": 12217,
+      "avoidable_load_upper_bound": 38,
+      "group": "m03-cs-on",
+      "position": 2,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6046,
+      "upper_bound_shrink": 6008,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 6559,
+      "entry_distinct_bound": 4030,
+      "fixed_chunk_capacity_bound": 122,
+      "combined_lower_bound": 4030,
+      "avoidable_load_upper_bound": 2529,
+      "group": "m03-cs-on",
+      "position": 2,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 2529,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12245,
+      "entry_distinct_bound": 6209,
+      "fixed_chunk_capacity_bound": 12210,
+      "combined_lower_bound": 12210,
+      "avoidable_load_upper_bound": 35,
+      "group": "m03-cs-on",
+      "position": 3,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6036,
+      "upper_bound_shrink": 6001,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 6367,
+      "entry_distinct_bound": 4033,
+      "fixed_chunk_capacity_bound": 122,
+      "combined_lower_bound": 4033,
+      "avoidable_load_upper_bound": 2334,
+      "group": "m03-cs-on",
+      "position": 3,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 2334,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 37128,
+      "entry_distinct_bound": 10587,
+      "fixed_chunk_capacity_bound": 36929,
+      "combined_lower_bound": 36929,
+      "avoidable_load_upper_bound": 199,
+      "group": "m06-cl-on",
+      "position": 0,
+      "input_tokens": 8193,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 26541,
+      "upper_bound_shrink": 26342,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 6752,
+      "entry_distinct_bound": 4757,
+      "fixed_chunk_capacity_bound": 106,
+      "combined_lower_bound": 4757,
+      "avoidable_load_upper_bound": 1995,
+      "group": "m06-cl-on",
+      "position": 0,
+      "input_tokens": 8193,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 1995,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12711,
+      "entry_distinct_bound": 6649,
+      "fixed_chunk_capacity_bound": 12664,
+      "combined_lower_bound": 12664,
+      "avoidable_load_upper_bound": 47,
+      "group": "m06-cl-on",
+      "position": 1,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6062,
+      "upper_bound_shrink": 6015,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7129,
+      "entry_distinct_bound": 4093,
+      "fixed_chunk_capacity_bound": 147,
+      "combined_lower_bound": 4093,
+      "avoidable_load_upper_bound": 3036,
+      "group": "m06-cl-on",
+      "position": 1,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 3036,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12291,
+      "entry_distinct_bound": 6209,
+      "fixed_chunk_capacity_bound": 12250,
+      "combined_lower_bound": 12250,
+      "avoidable_load_upper_bound": 41,
+      "group": "m06-cl-on",
+      "position": 2,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6082,
+      "upper_bound_shrink": 6041,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 6798,
+      "entry_distinct_bound": 4035,
+      "fixed_chunk_capacity_bound": 124,
+      "combined_lower_bound": 4035,
+      "avoidable_load_upper_bound": 2763,
+      "group": "m06-cl-on",
+      "position": 2,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 2763,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12253,
+      "entry_distinct_bound": 6209,
+      "fixed_chunk_capacity_bound": 12218,
+      "combined_lower_bound": 12218,
+      "avoidable_load_upper_bound": 35,
+      "group": "m06-cl-on",
+      "position": 3,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6044,
+      "upper_bound_shrink": 6009,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 6469,
+      "entry_distinct_bound": 4031,
+      "fixed_chunk_capacity_bound": 124,
+      "combined_lower_bound": 4031,
+      "avoidable_load_upper_bound": 2438,
+      "group": "m06-cl-on",
+      "position": 3,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 2438,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 71471,
+      "entry_distinct_bound": 10587,
+      "fixed_chunk_capacity_bound": 70951,
+      "combined_lower_bound": 70951,
+      "avoidable_load_upper_bound": 520,
+      "group": "m07-al-on",
+      "position": 0,
+      "input_tokens": 8193,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 60884,
+      "upper_bound_shrink": 60364,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7196,
+      "entry_distinct_bound": 5015,
+      "fixed_chunk_capacity_bound": 142,
+      "combined_lower_bound": 5015,
+      "avoidable_load_upper_bound": 2181,
+      "group": "m07-al-on",
+      "position": 0,
+      "input_tokens": 8193,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 2181,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12754,
+      "entry_distinct_bound": 6657,
+      "fixed_chunk_capacity_bound": 12708,
+      "combined_lower_bound": 12708,
+      "avoidable_load_upper_bound": 46,
+      "group": "m07-al-on",
+      "position": 1,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6097,
+      "upper_bound_shrink": 6051,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7227,
+      "entry_distinct_bound": 4114,
+      "fixed_chunk_capacity_bound": 144,
+      "combined_lower_bound": 4114,
+      "avoidable_load_upper_bound": 3113,
+      "group": "m07-al-on",
+      "position": 1,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 3113,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12273,
+      "entry_distinct_bound": 6209,
+      "fixed_chunk_capacity_bound": 12231,
+      "combined_lower_bound": 12231,
+      "avoidable_load_upper_bound": 42,
+      "group": "m07-al-on",
+      "position": 2,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6064,
+      "upper_bound_shrink": 6022,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 6867,
+      "entry_distinct_bound": 4036,
+      "fixed_chunk_capacity_bound": 128,
+      "combined_lower_bound": 4036,
+      "avoidable_load_upper_bound": 2831,
+      "group": "m07-al-on",
+      "position": 2,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 2831,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12249,
+      "entry_distinct_bound": 6209,
+      "fixed_chunk_capacity_bound": 12212,
+      "combined_lower_bound": 12212,
+      "avoidable_load_upper_bound": 37,
+      "group": "m07-al-on",
+      "position": 3,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6040,
+      "upper_bound_shrink": 6003,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 6481,
+      "entry_distinct_bound": 4032,
+      "fixed_chunk_capacity_bound": 126,
+      "combined_lower_bound": 4032,
+      "avoidable_load_upper_bound": 2449,
+      "group": "m07-al-on",
+      "position": 3,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 2449,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    }
+  ],
+  "candidate_phase_rows": [
+    {
+      "loads": 13700,
+      "entry_distinct_bound": 7522,
+      "fixed_chunk_capacity_bound": 13651,
+      "combined_lower_bound": 13651,
+      "avoidable_load_upper_bound": 49,
+      "group": "m02-as-on",
+      "position": 0,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6178,
+      "upper_bound_shrink": 6129,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7253,
+      "entry_distinct_bound": 4115,
+      "fixed_chunk_capacity_bound": 161,
+      "combined_lower_bound": 4115,
+      "avoidable_load_upper_bound": 3138,
+      "group": "m02-as-on",
+      "position": 0,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 3138,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12300,
+      "entry_distinct_bound": 6209,
+      "fixed_chunk_capacity_bound": 12258,
+      "combined_lower_bound": 12258,
+      "avoidable_load_upper_bound": 42,
+      "group": "m02-as-on",
+      "position": 1,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6091,
+      "upper_bound_shrink": 6049,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7253,
+      "entry_distinct_bound": 4115,
+      "fixed_chunk_capacity_bound": 161,
+      "combined_lower_bound": 4115,
+      "avoidable_load_upper_bound": 3138,
+      "group": "m02-as-on",
+      "position": 1,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 3138,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12300,
+      "entry_distinct_bound": 6209,
+      "fixed_chunk_capacity_bound": 12258,
+      "combined_lower_bound": 12258,
+      "avoidable_load_upper_bound": 42,
+      "group": "m02-as-on",
+      "position": 2,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6091,
+      "upper_bound_shrink": 6049,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7253,
+      "entry_distinct_bound": 4115,
+      "fixed_chunk_capacity_bound": 161,
+      "combined_lower_bound": 4115,
+      "avoidable_load_upper_bound": 3138,
+      "group": "m02-as-on",
+      "position": 2,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 3138,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12300,
+      "entry_distinct_bound": 6209,
+      "fixed_chunk_capacity_bound": 12258,
+      "combined_lower_bound": 12258,
+      "avoidable_load_upper_bound": 42,
+      "group": "m02-as-on",
+      "position": 3,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6091,
+      "upper_bound_shrink": 6049,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7253,
+      "entry_distinct_bound": 4115,
+      "fixed_chunk_capacity_bound": 161,
+      "combined_lower_bound": 4115,
+      "avoidable_load_upper_bound": 3138,
+      "group": "m02-as-on",
+      "position": 3,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 3138,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 13700,
+      "entry_distinct_bound": 7522,
+      "fixed_chunk_capacity_bound": 13651,
+      "combined_lower_bound": 13651,
+      "avoidable_load_upper_bound": 49,
+      "group": "m03-cs-on",
+      "position": 0,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6178,
+      "upper_bound_shrink": 6129,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7253,
+      "entry_distinct_bound": 4115,
+      "fixed_chunk_capacity_bound": 161,
+      "combined_lower_bound": 4115,
+      "avoidable_load_upper_bound": 3138,
+      "group": "m03-cs-on",
+      "position": 0,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 3138,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12300,
+      "entry_distinct_bound": 6209,
+      "fixed_chunk_capacity_bound": 12258,
+      "combined_lower_bound": 12258,
+      "avoidable_load_upper_bound": 42,
+      "group": "m03-cs-on",
+      "position": 1,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6091,
+      "upper_bound_shrink": 6049,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7253,
+      "entry_distinct_bound": 4115,
+      "fixed_chunk_capacity_bound": 161,
+      "combined_lower_bound": 4115,
+      "avoidable_load_upper_bound": 3138,
+      "group": "m03-cs-on",
+      "position": 1,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 3138,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12300,
+      "entry_distinct_bound": 6209,
+      "fixed_chunk_capacity_bound": 12258,
+      "combined_lower_bound": 12258,
+      "avoidable_load_upper_bound": 42,
+      "group": "m03-cs-on",
+      "position": 2,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6091,
+      "upper_bound_shrink": 6049,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7253,
+      "entry_distinct_bound": 4115,
+      "fixed_chunk_capacity_bound": 161,
+      "combined_lower_bound": 4115,
+      "avoidable_load_upper_bound": 3138,
+      "group": "m03-cs-on",
+      "position": 2,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 3138,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12300,
+      "entry_distinct_bound": 6209,
+      "fixed_chunk_capacity_bound": 12258,
+      "combined_lower_bound": 12258,
+      "avoidable_load_upper_bound": 42,
+      "group": "m03-cs-on",
+      "position": 3,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6091,
+      "upper_bound_shrink": 6049,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7253,
+      "entry_distinct_bound": 4115,
+      "fixed_chunk_capacity_bound": 161,
+      "combined_lower_bound": 4115,
+      "avoidable_load_upper_bound": 3138,
+      "group": "m03-cs-on",
+      "position": 3,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 3138,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 37131,
+      "entry_distinct_bound": 10587,
+      "fixed_chunk_capacity_bound": 36929,
+      "combined_lower_bound": 36929,
+      "avoidable_load_upper_bound": 202,
+      "group": "m06-cl-on",
+      "position": 0,
+      "input_tokens": 8193,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 26544,
+      "upper_bound_shrink": 26342,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 6696,
+      "entry_distinct_bound": 4713,
+      "fixed_chunk_capacity_bound": 104,
+      "combined_lower_bound": 4713,
+      "avoidable_load_upper_bound": 1983,
+      "group": "m06-cl-on",
+      "position": 0,
+      "input_tokens": 8193,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 1983,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12707,
+      "entry_distinct_bound": 6638,
+      "fixed_chunk_capacity_bound": 12665,
+      "combined_lower_bound": 12665,
+      "avoidable_load_upper_bound": 42,
+      "group": "m06-cl-on",
+      "position": 1,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6069,
+      "upper_bound_shrink": 6027,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7253,
+      "entry_distinct_bound": 4115,
+      "fixed_chunk_capacity_bound": 161,
+      "combined_lower_bound": 4115,
+      "avoidable_load_upper_bound": 3138,
+      "group": "m06-cl-on",
+      "position": 1,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 3138,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12300,
+      "entry_distinct_bound": 6209,
+      "fixed_chunk_capacity_bound": 12258,
+      "combined_lower_bound": 12258,
+      "avoidable_load_upper_bound": 42,
+      "group": "m06-cl-on",
+      "position": 2,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6091,
+      "upper_bound_shrink": 6049,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7253,
+      "entry_distinct_bound": 4115,
+      "fixed_chunk_capacity_bound": 161,
+      "combined_lower_bound": 4115,
+      "avoidable_load_upper_bound": 3138,
+      "group": "m06-cl-on",
+      "position": 2,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 3138,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12300,
+      "entry_distinct_bound": 6209,
+      "fixed_chunk_capacity_bound": 12258,
+      "combined_lower_bound": 12258,
+      "avoidable_load_upper_bound": 42,
+      "group": "m06-cl-on",
+      "position": 3,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6091,
+      "upper_bound_shrink": 6049,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7253,
+      "entry_distinct_bound": 4115,
+      "fixed_chunk_capacity_bound": 161,
+      "combined_lower_bound": 4115,
+      "avoidable_load_upper_bound": 3138,
+      "group": "m06-cl-on",
+      "position": 3,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 3138,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 71465,
+      "entry_distinct_bound": 10587,
+      "fixed_chunk_capacity_bound": 70951,
+      "combined_lower_bound": 70951,
+      "avoidable_load_upper_bound": 514,
+      "group": "m07-al-on",
+      "position": 0,
+      "input_tokens": 8193,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 60878,
+      "upper_bound_shrink": 60364,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7174,
+      "entry_distinct_bound": 5048,
+      "fixed_chunk_capacity_bound": 143,
+      "combined_lower_bound": 5048,
+      "avoidable_load_upper_bound": 2126,
+      "group": "m07-al-on",
+      "position": 0,
+      "input_tokens": 8193,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 2126,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12728,
+      "entry_distinct_bound": 6645,
+      "fixed_chunk_capacity_bound": 12686,
+      "combined_lower_bound": 12686,
+      "avoidable_load_upper_bound": 42,
+      "group": "m07-al-on",
+      "position": 1,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6083,
+      "upper_bound_shrink": 6041,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7253,
+      "entry_distinct_bound": 4115,
+      "fixed_chunk_capacity_bound": 161,
+      "combined_lower_bound": 4115,
+      "avoidable_load_upper_bound": 3138,
+      "group": "m07-al-on",
+      "position": 1,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 3138,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12300,
+      "entry_distinct_bound": 6209,
+      "fixed_chunk_capacity_bound": 12258,
+      "combined_lower_bound": 12258,
+      "avoidable_load_upper_bound": 42,
+      "group": "m07-al-on",
+      "position": 2,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6091,
+      "upper_bound_shrink": 6049,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7253,
+      "entry_distinct_bound": 4115,
+      "fixed_chunk_capacity_bound": 161,
+      "combined_lower_bound": 4115,
+      "avoidable_load_upper_bound": 3138,
+      "group": "m07-al-on",
+      "position": 2,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 3138,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    },
+    {
+      "loads": 12300,
+      "entry_distinct_bound": 6209,
+      "fixed_chunk_capacity_bound": 12258,
+      "combined_lower_bound": 12258,
+      "avoidable_load_upper_bound": 42,
+      "group": "m07-al-on",
+      "position": 3,
+      "input_tokens": 1024,
+      "phase": "prefill",
+      "old_entry_only_upper_bound": 6091,
+      "upper_bound_shrink": 6049,
+      "layers_with_stronger_capacity_bound": 48
+    },
+    {
+      "loads": 7253,
+      "entry_distinct_bound": 4115,
+      "fixed_chunk_capacity_bound": 161,
+      "combined_lower_bound": 4115,
+      "avoidable_load_upper_bound": 3138,
+      "group": "m07-al-on",
+      "position": 3,
+      "input_tokens": 1024,
+      "phase": "decode",
+      "old_entry_only_upper_bound": 3138,
+      "upper_bound_shrink": 0,
+      "layers_with_stronger_capacity_bound": 0
+    }
+  ],
+  "candidate_comparisons": [
+    {
+      "group": "m02-as-on",
+      "position": 0,
+      "phases": {
+        "prefill": {
+          "baseline_loads": 13705,
+          "candidate_loads": 13700,
+          "delta_loads": -5
+        },
+        "decode": {
+          "baseline_loads": 7128,
+          "candidate_loads": 7253,
+          "delta_loads": 125
+        }
+      }
+    },
+    {
+      "group": "m02-as-on",
+      "position": 1,
+      "phases": {
+        "prefill": {
+          "baseline_loads": 12300,
+          "candidate_loads": 12300,
+          "delta_loads": 0
+        },
+        "decode": {
+          "baseline_loads": 7000,
+          "candidate_loads": 7253,
+          "delta_loads": 253
+        }
+      }
+    },
+    {
+      "group": "m02-as-on",
+      "position": 2,
+      "phases": {
+        "prefill": {
+          "baseline_loads": 12255,
+          "candidate_loads": 12300,
+          "delta_loads": 45
+        },
+        "decode": {
+          "baseline_loads": 6559,
+          "candidate_loads": 7253,
+          "delta_loads": 694
+        }
+      }
+    },
+    {
+      "group": "m02-as-on",
+      "position": 3,
+      "phases": {
+        "prefill": {
+          "baseline_loads": 12245,
+          "candidate_loads": 12300,
+          "delta_loads": 55
+        },
+        "decode": {
+          "baseline_loads": 6367,
+          "candidate_loads": 7253,
+          "delta_loads": 886
+        }
+      }
+    },
+    {
+      "group": "m03-cs-on",
+      "position": 0,
+      "phases": {
+        "prefill": {
+          "baseline_loads": 13705,
+          "candidate_loads": 13700,
+          "delta_loads": -5
+        },
+        "decode": {
+          "baseline_loads": 7128,
+          "candidate_loads": 7253,
+          "delta_loads": 125
+        }
+      }
+    },
+    {
+      "group": "m03-cs-on",
+      "position": 1,
+      "phases": {
+        "prefill": {
+          "baseline_loads": 12300,
+          "candidate_loads": 12300,
+          "delta_loads": 0
+        },
+        "decode": {
+          "baseline_loads": 7000,
+          "candidate_loads": 7253,
+          "delta_loads": 253
+        }
+      }
+    },
+    {
+      "group": "m03-cs-on",
+      "position": 2,
+      "phases": {
+        "prefill": {
+          "baseline_loads": 12255,
+          "candidate_loads": 12300,
+          "delta_loads": 45
+        },
+        "decode": {
+          "baseline_loads": 6559,
+          "candidate_loads": 7253,
+          "delta_loads": 694
+        }
+      }
+    },
+    {
+      "group": "m03-cs-on",
+      "position": 3,
+      "phases": {
+        "prefill": {
+          "baseline_loads": 12245,
+          "candidate_loads": 12300,
+          "delta_loads": 55
+        },
+        "decode": {
+          "baseline_loads": 6367,
+          "candidate_loads": 7253,
+          "delta_loads": 886
+        }
+      }
+    },
+    {
+      "group": "m06-cl-on",
+      "position": 0,
+      "phases": {
+        "prefill": {
+          "baseline_loads": 37128,
+          "candidate_loads": 37131,
+          "delta_loads": 3
+        },
+        "decode": {
+          "baseline_loads": 6752,
+          "candidate_loads": 6696,
+          "delta_loads": -56
+        }
+      }
+    },
+    {
+      "group": "m06-cl-on",
+      "position": 1,
+      "phases": {
+        "prefill": {
+          "baseline_loads": 12711,
+          "candidate_loads": 12707,
+          "delta_loads": -4
+        },
+        "decode": {
+          "baseline_loads": 7129,
+          "candidate_loads": 7253,
+          "delta_loads": 124
+        }
+      }
+    },
+    {
+      "group": "m06-cl-on",
+      "position": 2,
+      "phases": {
+        "prefill": {
+          "baseline_loads": 12291,
+          "candidate_loads": 12300,
+          "delta_loads": 9
+        },
+        "decode": {
+          "baseline_loads": 6798,
+          "candidate_loads": 7253,
+          "delta_loads": 455
+        }
+      }
+    },
+    {
+      "group": "m06-cl-on",
+      "position": 3,
+      "phases": {
+        "prefill": {
+          "baseline_loads": 12253,
+          "candidate_loads": 12300,
+          "delta_loads": 47
+        },
+        "decode": {
+          "baseline_loads": 6469,
+          "candidate_loads": 7253,
+          "delta_loads": 784
+        }
+      }
+    },
+    {
+      "group": "m07-al-on",
+      "position": 0,
+      "phases": {
+        "prefill": {
+          "baseline_loads": 71471,
+          "candidate_loads": 71465,
+          "delta_loads": -6
+        },
+        "decode": {
+          "baseline_loads": 7196,
+          "candidate_loads": 7174,
+          "delta_loads": -22
+        }
+      }
+    },
+    {
+      "group": "m07-al-on",
+      "position": 1,
+      "phases": {
+        "prefill": {
+          "baseline_loads": 12754,
+          "candidate_loads": 12728,
+          "delta_loads": -26
+        },
+        "decode": {
+          "baseline_loads": 7227,
+          "candidate_loads": 7253,
+          "delta_loads": 26
+        }
+      }
+    },
+    {
+      "group": "m07-al-on",
+      "position": 2,
+      "phases": {
+        "prefill": {
+          "baseline_loads": 12273,
+          "candidate_loads": 12300,
+          "delta_loads": 27
+        },
+        "decode": {
+          "baseline_loads": 6867,
+          "candidate_loads": 7253,
+          "delta_loads": 386
+        }
+      }
+    },
+    {
+      "group": "m07-al-on",
+      "position": 3,
+      "phases": {
+        "prefill": {
+          "baseline_loads": 12249,
+          "candidate_loads": 12300,
+          "delta_loads": 51
+        },
+        "decode": {
+          "baseline_loads": 6481,
+          "candidate_loads": 7253,
+          "delta_loads": 772
+        }
+      }
+    }
+  ],
+  "offline_work_gates": {
+    "all_prefill_nonincreasing": false,
+    "all_decode_nonincreasing": false,
+    "any_prefill_strict_reduction": true
+  },
+  "offline_work_decision": "NO_GO_OFFLINE_WORK",
+  "candidate_increasing_phases": [
+    {
+      "group": "m02-as-on",
+      "position": 0,
+      "phase": "decode",
+      "baseline_loads": 7128,
+      "candidate_loads": 7253,
+      "delta_loads": 125
+    },
+    {
+      "group": "m02-as-on",
+      "position": 1,
+      "phase": "decode",
+      "baseline_loads": 7000,
+      "candidate_loads": 7253,
+      "delta_loads": 253
+    },
+    {
+      "group": "m02-as-on",
+      "position": 2,
+      "phase": "prefill",
+      "baseline_loads": 12255,
+      "candidate_loads": 12300,
+      "delta_loads": 45
+    },
+    {
+      "group": "m02-as-on",
+      "position": 2,
+      "phase": "decode",
+      "baseline_loads": 6559,
+      "candidate_loads": 7253,
+      "delta_loads": 694
+    },
+    {
+      "group": "m02-as-on",
+      "position": 3,
+      "phase": "prefill",
+      "baseline_loads": 12245,
+      "candidate_loads": 12300,
+      "delta_loads": 55
+    },
+    {
+      "group": "m02-as-on",
+      "position": 3,
+      "phase": "decode",
+      "baseline_loads": 6367,
+      "candidate_loads": 7253,
+      "delta_loads": 886
+    },
+    {
+      "group": "m03-cs-on",
+      "position": 0,
+      "phase": "decode",
+      "baseline_loads": 7128,
+      "candidate_loads": 7253,
+      "delta_loads": 125
+    },
+    {
+      "group": "m03-cs-on",
+      "position": 1,
+      "phase": "decode",
+      "baseline_loads": 7000,
+      "candidate_loads": 7253,
+      "delta_loads": 253
+    },
+    {
+      "group": "m03-cs-on",
+      "position": 2,
+      "phase": "prefill",
+      "baseline_loads": 12255,
+      "candidate_loads": 12300,
+      "delta_loads": 45
+    },
+    {
+      "group": "m03-cs-on",
+      "position": 2,
+      "phase": "decode",
+      "baseline_loads": 6559,
+      "candidate_loads": 7253,
+      "delta_loads": 694
+    },
+    {
+      "group": "m03-cs-on",
+      "position": 3,
+      "phase": "prefill",
+      "baseline_loads": 12245,
+      "candidate_loads": 12300,
+      "delta_loads": 55
+    },
+    {
+      "group": "m03-cs-on",
+      "position": 3,
+      "phase": "decode",
+      "baseline_loads": 6367,
+      "candidate_loads": 7253,
+      "delta_loads": 886
+    },
+    {
+      "group": "m06-cl-on",
+      "position": 0,
+      "phase": "prefill",
+      "baseline_loads": 37128,
+      "candidate_loads": 37131,
+      "delta_loads": 3
+    },
+    {
+      "group": "m06-cl-on",
+      "position": 1,
+      "phase": "decode",
+      "baseline_loads": 7129,
+      "candidate_loads": 7253,
+      "delta_loads": 124
+    },
+    {
+      "group": "m06-cl-on",
+      "position": 2,
+      "phase": "prefill",
+      "baseline_loads": 12291,
+      "candidate_loads": 12300,
+      "delta_loads": 9
+    },
+    {
+      "group": "m06-cl-on",
+      "position": 2,
+      "phase": "decode",
+      "baseline_loads": 6798,
+      "candidate_loads": 7253,
+      "delta_loads": 455
+    },
+    {
+      "group": "m06-cl-on",
+      "position": 3,
+      "phase": "prefill",
+      "baseline_loads": 12253,
+      "candidate_loads": 12300,
+      "delta_loads": 47
+    },
+    {
+      "group": "m06-cl-on",
+      "position": 3,
+      "phase": "decode",
+      "baseline_loads": 6469,
+      "candidate_loads": 7253,
+      "delta_loads": 784
+    },
+    {
+      "group": "m07-al-on",
+      "position": 1,
+      "phase": "decode",
+      "baseline_loads": 7227,
+      "candidate_loads": 7253,
+      "delta_loads": 26
+    },
+    {
+      "group": "m07-al-on",
+      "position": 2,
+      "phase": "prefill",
+      "baseline_loads": 12273,
+      "candidate_loads": 12300,
+      "delta_loads": 27
+    },
+    {
+      "group": "m07-al-on",
+      "position": 2,
+      "phase": "decode",
+      "baseline_loads": 6867,
+      "candidate_loads": 7253,
+      "delta_loads": 386
+    },
+    {
+      "group": "m07-al-on",
+      "position": 3,
+      "phase": "prefill",
+      "baseline_loads": 12249,
+      "candidate_loads": 12300,
+      "delta_loads": 51
+    },
+    {
+      "group": "m07-al-on",
+      "position": 3,
+      "phase": "decode",
+      "baseline_loads": 6481,
+      "candidate_loads": 7253,
+      "delta_loads": 772
+    }
+  ],
+  "scope": {
+    "requests": 16,
+    "phases": 32,
+    "intervals": 80,
+    "counter_endpoints": 80,
+    "exact_gpu_layer_checkpoints": 2304,
+    "baseline_history_links": 12,
+    "candidate_history_links": 12,
+    "route_replays_by_reviewer": 0
+  },
+  "limitations": [
+    "Combined lower bound sums per-layer maxima of two valid bounds; it is not max of aggregate bounds. Residual is an upper bound on potentially avoidable GPU loads for fixed phase entry and chunk sequence.",
+    "The previous roughly6000 prefill entry-distinct gap omitted repeated capacity-forced loads. Its reduction by the capacity-aware bound is new localization, not a demonstrated optimization or speedup.",
+    "Candidate keeps its own state across each four-request chain. Later phase entry differs from baseline, so its load delta cannot be divided by the baseline same-entry residual as isolated phase-policy benefit.",
+    "Load bounds exclude repartitioning/kernel costs/lower-cache supply/physical reads/latency; decode phase bounds can remain loose.",
+    "No new HTTP/model run, GPU payload/numerical/E2E/runtime acceptance or54GB conclusion follows from replay."
+  ]
+}

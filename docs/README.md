@@ -5,7 +5,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
-| [OFFLOAD_GPU_REPLAY_2026-10-06.md](OFFLOAD_GPU_REPLAY_2026-10-06.md) | 源码一致GPU缓存回放 | 复用16请求，先计数/末态精确闭合，再比较单一平票候选 |
+| [OFFLOAD_GPU_REPLAY_2026-10-06.md](OFFLOAD_GPU_REPLAY_2026-10-06.md) | 源码一致GPU缓存回放 | 16请求精确复现；固定入口/分块的prefill余量收紧，唯一平票候选NO_GO |
 | [OFFLOAD_MECHANISM_2026-10-06.md](OFFLOAD_MECHANISM_2026-10-06.md) | 缓存状态、路由与阶段读取机制 | 8服务/32HTTP闭合；供给变化与存储读差分列，无新运行时候选 |
 | [OFFLOAD_CAUSALITY_2026-10-05.md](OFFLOAD_CAUSALITY_2026-10-05.md) | 组序与阈值前驱诊断、证据复用与后续单一候选 | 16服务/64HTTP诊断完成；候选依据不足，旧NO_GO保持 |
 | [OFFLOAD_DECODE_LOG_2026-10-05.md](OFFLOAD_DECODE_LOG_2026-10-05.md) | 显式 decode 日志单因素候选、A/B/C 对照与冻结验收 | 完整性能 NO_GO；日志抑制生效，短档仍未过，默认关闭 |

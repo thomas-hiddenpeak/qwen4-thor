@@ -1,0 +1,114 @@
+{
+  "schema": 1,
+  "recorded_t": 1791246968.9396067,
+  "decision": "NO_GO_OFFLINE_WORK",
+  "runtime_candidate_admitted": false,
+  "new_models": 0,
+  "new_HTTP": 0,
+  "new_GPU_tests": 0,
+  "bench": false,
+  "runner_source_commit": "15feb5772c017fe8aaff26f014d53a52362d2a24",
+  "branch": "codex/offload-gpu-replay-20261006",
+  "final_commit_receipt": "Local R/delivery-audit.json, written after the documentation commit and remote verification; not self-referential in Git.",
+  "validation": {
+    "first_batch_contracts": 55,
+    "build_warnings": 0,
+    "input_extract_clean": true,
+    "baseline_requests": 16,
+    "baseline_exact_intervals": 80,
+    "baseline_exact_phase_ends": 32,
+    "baseline_exact_entries": 16,
+    "layers_per_full_checkpoint": 48,
+    "candidate_requests": 16,
+    "candidate_offline_gates": {
+      "all_prefill_nonincreasing": false,
+      "all_decode_nonincreasing": false,
+      "any_prefill_strict_reduction": true
+    },
+    "candidate_decision": "NO_GO_OFFLINE_WORK"
+  },
+  "independent_result_review": {
+    "passed": true,
+    "independent_review": true,
+    "coverage": {
+      "owned_terminal": true,
+      "exact_manifest_counter_bindings": 80,
+      "exact_manifest_gpu_entry_and_phase_end_layer_bindings": 2304,
+      "phase_layer_bound_arithmetic": 3072,
+      "baseline_chain_links": 12,
+      "candidate_chain_links": 12,
+      "candidate_phase_gates_recomputed": 32,
+      "no_running_report_read": true,
+      "no_trace_or_model_read": true
+    }
+  },
+  "final_protection": {
+    "passed": true,
+    "runner_returncode": 0,
+    "runner_cleanup_complete": true,
+    "main": {
+      "head": "f15190ff9447079f9557469ed5aff0b525197821",
+      "status": [
+        " M docs/STATUS.md",
+        " M docs/log/2026-10-02.md",
+        " M include/q4t/model/model.h",
+        " M include/q4t/quant/moe_residency.h",
+        " M src/model/moe.cu",
+        " M src/quant/moe_residency.cpp",
+        " M src/server/chat_generation.cpp"
+      ],
+      "full_binary_diff_sha256": "33375caff6dcb3e638e2d2f001428883cbc0e400c5f1b7403a081826e9cd6947",
+      "main_binary_sha256": "46b3f977b0653c2f317c63df5b9f6669d1f3bb1de17892970b605676dd5434bc"
+    },
+    "model": {
+      "files": 228,
+      "inventory_and_metadata_equal": true,
+      "config_index_sha256": {
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model.safetensors.index.json": "aa702aa8cadb463b728cfd6829e172b1124114080231c75712155e2490f8c607"
+      },
+      "weight_payload_content_reads": 0,
+      "limit": "Path/size/device/inode/mtime equality plus config/index content only; no full weight byte equality or transient-write proof."
+    },
+    "reference": {
+      "observations": {
+        "main": {
+          "tracked_status": [],
+          "tracked_paths": []
+        },
+        "working_tree": {
+          "tracked_status": [],
+          "tracked_paths": []
+        }
+      },
+      "limit": "Tracked Git status/paths only; ignored/untracked reference contents and transient writes unproved."
+    },
+    "recorded_owned_operations": 7,
+    "recorded_owned_processes_absent": true,
+    "runtime_equal_to_base": "16be72c9d08d61986bcc2ab233df55bb64c42439"
+  },
+  "limits": [
+    "Combined lower bound sums per-layer maxima of two valid bounds; it is not max of aggregate bounds. Residual is an upper bound on potentially avoidable GPU loads for fixed phase entry and chunk sequence.",
+    "The previous roughly6000 prefill entry-distinct gap omitted repeated capacity-forced loads. Its reduction by the capacity-aware bound is new localization, not a demonstrated optimization or speedup.",
+    "Candidate keeps its own state across each four-request chain. Later phase entry differs from baseline, so its load delta cannot be divided by the baseline same-entry residual as isolated phase-policy benefit.",
+    "Load bounds exclude repartitioning/kernel costs/lower-cache supply/physical reads/latency; decode phase bounds can remain loose.",
+    "No new HTTP/model run, GPU payload/numerical/E2E/runtime acceptance or54GB conclusion follows from replay.",
+    "No whole physical RAM 54GB acceptance; prior runtime NO_GO and default-off unchanged.",
+    "Protection is limited to recorded identities and owned PID/PGIDs, not global GPU idle or proof against transient writes."
+  ],
+  "artifact_sha256": {
+    "scope-plan.json": "e294b25ea6f594bffea2de1aef35f17f80cca51f7949d9ef1affcaafcca43fd7",
+    "execution-plan.json": "81fa7e936d445b4a9df97bc6a79f32970b2360e17336f799a59968c8a098ebd9",
+    "execution-independent-review.json": "daec43136e0778ed2b3da318f452d226f982d3ae11c38073d64ee2a10f52663a",
+    "validation-admission.json": "c9b9c55eab13d23ddb054d972b78caca6e0b701886f385a8d8ca8445482bee5a",
+    "baseline-replay.json": "87e2bff6ab96615022662bb6235295c0447f83cab43e47f02f8c1ba2a47ffd5a",
+    "baseline-replay-01-exit.json": "1cb8e2d4e87a5a5025639bb7bed30ebaf24f2954a37ef8dec5f1ad0d1283c1d6",
+    "candidate-replay.json": "73521a518fb11ab0c29c6da3f7d1bbe4c926d61076b897fe6133152e86aacd0c",
+    "candidate-replay-01-exit.json": "d164931553b39a6878853560f06fa01395b2f363655b106eb0e113e3b122554d",
+    "replay-independent-review.json": "44f38f7392da57fc3f9c2033c76cca9dcb7dd03717d307f62057ac2e92c69d30",
+    "replay-independent-summary.json": "6836b9e75768ab232e4df26e4bd327d4d5251694a2c13e834ceb4713c2c7e7b3",
+    "final-protection.json": "77a09c043401e11e5f82eade99069efbe3e93e50d15585609f081aa04e56413c",
+    "final-protection-01-exit.json": "479b7d23d493138b61456150fbf82641e1fb5129dca28734110f2c886f72f52d",
+    "study-decision.json": "9fb77312f0f317477522f70d75fd9e6aa06aa3806cadb111eea422abefa36aaf"
+  }
+}
