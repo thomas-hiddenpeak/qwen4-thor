@@ -1,0 +1,37 @@
+{
+  "schema": "q4t.supply_observer.resource_static_review.v1",
+  "recorded_t": 1791273567.9312875,
+  "reviewer": "/root/supply_observer_review",
+  "passed": true,
+  "status": "PASS_STATIC_READY_TO_BIND_IN_EXECUTION_PLAN",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer_resource_audit.py": "374322b6501835aef82b8b2b8594130bdd9e1e83cbd47d12fcbbd3386c0438e1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/audit_resources.py": "10959f8021c7e2f6479ee77c8d163484054839a72fb172153bd723813f7ffde7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/audit_raw_resources_frozen.py": "035f1f840d00350a7b6db62e1b8ef7f62a5fda02406dae91395d291a67652da4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-autonomous-20261003/raw-audit-execution-01/self-test-exit.json": "8fcf469238691ef2993e5c453ffee4df549efa25e15c210b0e5ff116b47f655f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/tools/evalscope/run_acceptance.py": "c3d3353224a7d9f6c4cab112dedeb913a30580ba3884f3feb9c2e6cc37fd5846"
+  },
+  "blocking_findings": [],
+  "review": [
+    "Exactly5 terminal service decisions and fixedorder gates before raw reads; no oldphase admission/recovery invoked.",
+    "Immutable base/core arithmetic selected bySHA; only EVIDENCE andcase_specifications rebound. audit_completed_group contains no surviving oldquality-c admission assumptions.",
+    "Quality11HTTP share oneclient IOenvelope, diagnostics16 have16 envelopes; all27 requesttimingwindows retained; no per-question qualityIO attributed.",
+    "SQLite success accepts boolean true or integer1 as actual runnerrepresentation; author corrected strict isTrue before first execution.",
+    "Raw resource streams consumed once after terminal gates; bound trace .bin accepted only direct nonsymlink fixedtrace_root, finite128MiB andhash/stat checked; no route reparse or modelpayload reads.",
+    "PID storage, logicalrchar, cgroupIO, partitiondevice bounds remainseparate; missing/reset/PSI/plateau uncertainty explicit.",
+    "memory.current sampledpeak andmemory.peak chargepeak separately retained versus16GiB; no perrequestpeak derived, no54GBphysicalunion assertion.",
+    "Outputopenx preservesfirstfailure report, exit nonzero onincomplete audit."
+  ],
+  "actions": {
+    "new_tests": 0,
+    "new_HTTP": 0,
+    "new_raw_resource_parses": 0,
+    "model_payload_reads": 0,
+    "AST_static_parsing": true
+  },
+  "execution_admitted": false,
+  "required_at_execution": [
+    "Frozenplan mustbind adapter/base/core/selftestreceipt andselftest.log exactdigest.",
+    "Onlyrun afterquality andall4diagnostic stage decisions pass; bindnewbinary/source/plan and allraw immutable outputs."
+  ]
+}

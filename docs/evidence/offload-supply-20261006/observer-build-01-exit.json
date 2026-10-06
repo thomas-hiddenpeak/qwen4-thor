@@ -1,0 +1,34 @@
+{
+  "started_t": 1791273546.7915287,
+  "command": [
+    "cmake",
+    "--build",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-build",
+    "--target",
+    "q4t",
+    "--parallel",
+    "8"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source",
+  "returncode": 0,
+  "failure": null,
+  "automatic_retry": false,
+  "timeout_s": 600,
+  "signals": [],
+  "cleanup_complete": true,
+  "pid": 3786911,
+  "pgid": 3786911,
+  "group_before_cleanup": {
+    "live_pids": [],
+    "zombie_pids": [],
+    "errors": [],
+    "absent": true
+  },
+  "group_after_cleanup": {
+    "live_pids": [],
+    "zombie_pids": [],
+    "errors": [],
+    "absent": true
+  },
+  "ended_t": 1791273574.1388626
+}

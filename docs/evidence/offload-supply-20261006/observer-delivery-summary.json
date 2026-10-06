@@ -1,0 +1,2681 @@
+{
+  "schema": 1,
+  "plan_sha256": "907111ee1b731521c286e90df3718457c11c25c340a3f66fabc90a03a7584b24",
+  "runtime_source_commit": "75d26ff22391a4fd7549b1c39bf2b9c0f2cbbf89",
+  "runtime_binary_sha256": "72a321a422facac605c13740ac8eb78e253056a6719c88bea71e3bbae9ef843f",
+  "service_count": 5,
+  "request_count": 27,
+  "diagnostic_request_count": 16,
+  "contract_count": 46,
+  "resource_envelope_count": 17,
+  "decision": "DIRECT_SAME_PLAN_LOSS_OBSERVED_FUTURE_GUARD_CANDIDATE_ONLY",
+  "future_candidate": {
+    "name": "Skip writeback victims that hold an unclaimed needed entry mirror during the same plan",
+    "status": "NOT_IMPLEMENTED_NOT_PERFORMANCE_ADMITTED",
+    "rationale": "Observed successful direct READ losses provide a concrete removable local mechanism; changing writeback retention may change later history and speed.",
+    "required_next_scope": "Separate default-off implementation and frozen HTTP-first quality, full five-tier/target/history/resource performance acceptance."
+  },
+  "limits": [
+    "No causal frequency for the old16 requests: observer can perturb worker ordering.",
+    "New entry opportunities and direct losses are exact bookkeeping, not a counterfactual decomposition of historical speed.",
+    "No old direct bound is assumed valid for new entry histories; no new counterfactual GPU/lower-cache replay.",
+    "Raw cumulative/nested timers and PID read bytes are not exclusive SSD/H2D waiting or expert-only storage traffic.",
+    "At most one future candidate; no optimization implementation or performance acceptance. Prior NO_GO/default-off and54GB unknown persist."
+  ],
+  "recorded_t": 1791276911.63277,
+  "request_rows": [
+    {
+      "position": 0,
+      "actual_input": 1024,
+      "actual_output": 256,
+      "http_metric": {
+        "response_id": "chatcmpl-auto-0",
+        "actual_input": 1024,
+        "actual_output": 256,
+        "ttft": 11.970649740891531,
+        "latency": 48.88971855305135,
+        "decode_tps": 6.906999775574299
+      },
+      "observer_additional_json_bytes": 0,
+      "group": "s01-as-off",
+      "decode_stats": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 115272,
+        "misses": 7128,
+        "loads": 7128,
+        "evictions": 7128,
+        "load_bytes": 19707608448,
+        "nvme_read_bytes": 18466259496,
+        "shape_single_lookups": 122400,
+        "shape_single_misses": 7128,
+        "shape_multi_lookups": 0,
+        "shape_multi_misses": 0,
+        "l2_hits": 0,
+        "l2_misses": 6679,
+        "l2_evictions": 6679,
+        "l2_shape_single_hits": 0,
+        "l2_shape_single_misses": 6679,
+        "l2_shape_single_evictions": 6679,
+        "l2_shape_multi_hits": 0,
+        "l2_shape_multi_misses": 0,
+        "l2_shape_multi_evictions": 0,
+        "mirror_hits": 449,
+        "mirror_writebacks": 7128,
+        "mirror_skips": 0,
+        "pread_merge_runs": 11,
+        "pread_merge_experts": 22
+      }
+    },
+    {
+      "position": 1,
+      "actual_input": 1024,
+      "actual_output": 256,
+      "http_metric": {
+        "response_id": "chatcmpl-auto-1",
+        "actual_input": 1024,
+        "actual_output": 256,
+        "ttft": 10.03232485591434,
+        "latency": 45.120760378893465,
+        "decode_tps": 7.267351655875412
+      },
+      "observer_additional_json_bytes": 0,
+      "group": "s01-as-off",
+      "decode_stats": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 115400,
+        "misses": 7000,
+        "loads": 7000,
+        "evictions": 7000,
+        "load_bytes": 19353712000,
+        "nvme_read_bytes": 16729950024,
+        "shape_single_lookups": 122400,
+        "shape_single_misses": 7000,
+        "shape_multi_lookups": 0,
+        "shape_multi_misses": 0,
+        "l2_hits": 0,
+        "l2_misses": 6051,
+        "l2_evictions": 6051,
+        "l2_shape_single_hits": 0,
+        "l2_shape_single_misses": 6051,
+        "l2_shape_single_evictions": 6051,
+        "l2_shape_multi_hits": 0,
+        "l2_shape_multi_misses": 0,
+        "l2_shape_multi_evictions": 0,
+        "mirror_hits": 949,
+        "mirror_writebacks": 7000,
+        "mirror_skips": 0,
+        "pread_merge_runs": 11,
+        "pread_merge_experts": 22
+      }
+    },
+    {
+      "position": 2,
+      "actual_input": 1024,
+      "actual_output": 256,
+      "http_metric": {
+        "response_id": "chatcmpl-auto-2",
+        "actual_input": 1024,
+        "actual_output": 256,
+        "ttft": 9.087094685062766,
+        "latency": 43.55081520299427,
+        "decode_tps": 7.399085071715437
+      },
+      "observer_additional_json_bytes": 0,
+      "group": "s01-as-off",
+      "decode_stats": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 115841,
+        "misses": 6559,
+        "loads": 6559,
+        "evictions": 6559,
+        "load_bytes": 18134428144,
+        "nvme_read_bytes": 16553001288,
+        "shape_single_lookups": 122400,
+        "shape_single_misses": 6559,
+        "shape_multi_lookups": 0,
+        "shape_multi_misses": 0,
+        "l2_hits": 0,
+        "l2_misses": 5987,
+        "l2_evictions": 5987,
+        "l2_shape_single_hits": 0,
+        "l2_shape_single_misses": 5987,
+        "l2_shape_single_evictions": 5987,
+        "l2_shape_multi_hits": 0,
+        "l2_shape_multi_misses": 0,
+        "l2_shape_multi_evictions": 0,
+        "mirror_hits": 572,
+        "mirror_writebacks": 6559,
+        "mirror_skips": 0,
+        "pread_merge_runs": 11,
+        "pread_merge_experts": 22
+      }
+    },
+    {
+      "position": 3,
+      "actual_input": 1024,
+      "actual_output": 256,
+      "http_metric": {
+        "response_id": "chatcmpl-auto-3",
+        "actual_input": 1024,
+        "actual_output": 256,
+        "ttft": 8.511243232991546,
+        "latency": 42.134908919921145,
+        "decode_tps": 7.583944070057929
+      },
+      "observer_additional_json_bytes": 0,
+      "group": "s01-as-off",
+      "decode_stats": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 116033,
+        "misses": 6367,
+        "loads": 6367,
+        "evictions": 6367,
+        "load_bytes": 17603583472,
+        "nvme_read_bytes": 16500469632,
+        "shape_single_lookups": 122400,
+        "shape_single_misses": 6367,
+        "shape_multi_lookups": 0,
+        "shape_multi_misses": 0,
+        "l2_hits": 0,
+        "l2_misses": 5968,
+        "l2_evictions": 5968,
+        "l2_shape_single_hits": 0,
+        "l2_shape_single_misses": 5968,
+        "l2_shape_single_evictions": 5968,
+        "l2_shape_multi_hits": 0,
+        "l2_shape_multi_misses": 0,
+        "l2_shape_multi_evictions": 0,
+        "mirror_hits": 399,
+        "mirror_writebacks": 6367,
+        "mirror_skips": 0,
+        "pread_merge_runs": 11,
+        "pread_merge_experts": 22
+      }
+    },
+    {
+      "position": 0,
+      "actual_input": 1024,
+      "actual_output": 256,
+      "http_metric": {
+        "response_id": "chatcmpl-auto-0",
+        "actual_input": 1024,
+        "actual_output": 256,
+        "ttft": 11.815235423855484,
+        "latency": 49.08838081988506,
+        "decode_tps": 6.841386668353543
+      },
+      "observer_additional_json_bytes": 144583,
+      "group": "s02-as-on",
+      "decode_stats": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 115272,
+        "misses": 7128,
+        "loads": 7128,
+        "evictions": 7128,
+        "load_bytes": 19707608448,
+        "nvme_read_bytes": 18463494672,
+        "shape_single_lookups": 122400,
+        "shape_single_misses": 7128,
+        "shape_multi_lookups": 0,
+        "shape_multi_misses": 0,
+        "l2_hits": 0,
+        "l2_misses": 6678,
+        "l2_evictions": 6678,
+        "l2_shape_single_hits": 0,
+        "l2_shape_single_misses": 6678,
+        "l2_shape_single_evictions": 6678,
+        "l2_shape_multi_hits": 0,
+        "l2_shape_multi_misses": 0,
+        "l2_shape_multi_evictions": 0,
+        "mirror_hits": 450,
+        "mirror_writebacks": 7128,
+        "mirror_skips": 0,
+        "pread_merge_runs": 11,
+        "pread_merge_experts": 22
+      },
+      "observer_decode_counters": {
+        "plans_started": 12240,
+        "plans_complete": 12240,
+        "plans_failed": 0,
+        "plans_scope_mismatch": 0,
+        "planned_loads": 7128,
+        "source_l2": 0,
+        "source_mirror": 450,
+        "source_read": 6678,
+        "committed_loads": 7128,
+        "claim_errors": 0,
+        "read_errors": 0,
+        "commit_errors": 0,
+        "entry_l2_present": 0,
+        "entry_mirror_present": 453,
+        "entry_mirror_candidate": 453,
+        "entry_candidate_to_mirror": 450,
+        "entry_candidate_to_l2": 0,
+        "entry_candidate_to_read_direct_active": 3,
+        "entry_candidate_to_read_direct_published": 0,
+        "entry_candidate_to_read_other": 0,
+        "entry_candidate_unclaimed": 0,
+        "writeback_reservations": 7128,
+        "writeback_pending_missing_targets": 3,
+        "writeback_pending_entry_candidate_targets": 3,
+        "writeback_published": 7128,
+        "writeback_aborted": 0,
+        "writeback_skipped": 0,
+        "source_mirror_outside_entry_candidates": 0,
+        "duplicate_claims": 0,
+        "entry_claimed_mirrors": 0,
+        "counter_overflow": 0,
+        "samples_confirmed_total": 3,
+        "samples_overwritten": 0
+      },
+      "observer_prefill_counters": {
+        "plans_started": 0,
+        "plans_complete": 0,
+        "plans_failed": 0,
+        "plans_scope_mismatch": 0,
+        "planned_loads": 0,
+        "source_l2": 0,
+        "source_mirror": 0,
+        "source_read": 0,
+        "committed_loads": 0,
+        "claim_errors": 0,
+        "read_errors": 0,
+        "commit_errors": 0,
+        "entry_l2_present": 0,
+        "entry_mirror_present": 0,
+        "entry_mirror_candidate": 0,
+        "entry_candidate_to_mirror": 0,
+        "entry_candidate_to_l2": 0,
+        "entry_candidate_to_read_direct_active": 0,
+        "entry_candidate_to_read_direct_published": 0,
+        "entry_candidate_to_read_other": 0,
+        "entry_candidate_unclaimed": 0,
+        "writeback_reservations": 0,
+        "writeback_pending_missing_targets": 0,
+        "writeback_pending_entry_candidate_targets": 0,
+        "writeback_published": 0,
+        "writeback_aborted": 0,
+        "writeback_skipped": 0,
+        "source_mirror_outside_entry_candidates": 0,
+        "duplicate_claims": 0,
+        "entry_claimed_mirrors": 0,
+        "counter_overflow": 0,
+        "samples_confirmed_total": 0,
+        "samples_overwritten": 0
+      },
+      "direct_loss_read_fraction": 0.0004492362982929021,
+      "direct_loss_candidate_fraction": 0.006622516556291391
+    },
+    {
+      "position": 1,
+      "actual_input": 1024,
+      "actual_output": 256,
+      "http_metric": {
+        "response_id": "chatcmpl-auto-1",
+        "actual_input": 1024,
+        "actual_output": 256,
+        "ttft": 10.00546463392675,
+        "latency": 45.19903113809414,
+        "decode_tps": 7.245642466210538
+      },
+      "observer_additional_json_bytes": 151081,
+      "group": "s02-as-on",
+      "decode_stats": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 115400,
+        "misses": 7000,
+        "loads": 7000,
+        "evictions": 7000,
+        "load_bytes": 19353712000,
+        "nvme_read_bytes": 16743774144,
+        "shape_single_lookups": 122400,
+        "shape_single_misses": 7000,
+        "shape_multi_lookups": 0,
+        "shape_multi_misses": 0,
+        "l2_hits": 0,
+        "l2_misses": 6056,
+        "l2_evictions": 6056,
+        "l2_shape_single_hits": 0,
+        "l2_shape_single_misses": 6056,
+        "l2_shape_single_evictions": 6056,
+        "l2_shape_multi_hits": 0,
+        "l2_shape_multi_misses": 0,
+        "l2_shape_multi_evictions": 0,
+        "mirror_hits": 944,
+        "mirror_writebacks": 7000,
+        "mirror_skips": 0,
+        "pread_merge_runs": 11,
+        "pread_merge_experts": 22
+      },
+      "observer_decode_counters": {
+        "plans_started": 12240,
+        "plans_complete": 12240,
+        "plans_failed": 0,
+        "plans_scope_mismatch": 0,
+        "planned_loads": 7000,
+        "source_l2": 0,
+        "source_mirror": 944,
+        "source_read": 6056,
+        "committed_loads": 7000,
+        "claim_errors": 0,
+        "read_errors": 0,
+        "commit_errors": 0,
+        "entry_l2_present": 0,
+        "entry_mirror_present": 950,
+        "entry_mirror_candidate": 950,
+        "entry_candidate_to_mirror": 944,
+        "entry_candidate_to_l2": 0,
+        "entry_candidate_to_read_direct_active": 6,
+        "entry_candidate_to_read_direct_published": 0,
+        "entry_candidate_to_read_other": 0,
+        "entry_candidate_unclaimed": 0,
+        "writeback_reservations": 7000,
+        "writeback_pending_missing_targets": 6,
+        "writeback_pending_entry_candidate_targets": 6,
+        "writeback_published": 7000,
+        "writeback_aborted": 0,
+        "writeback_skipped": 0,
+        "source_mirror_outside_entry_candidates": 0,
+        "duplicate_claims": 0,
+        "entry_claimed_mirrors": 0,
+        "counter_overflow": 0,
+        "samples_confirmed_total": 6,
+        "samples_overwritten": 0
+      },
+      "observer_prefill_counters": {
+        "plans_started": 0,
+        "plans_complete": 0,
+        "plans_failed": 0,
+        "plans_scope_mismatch": 0,
+        "planned_loads": 0,
+        "source_l2": 0,
+        "source_mirror": 0,
+        "source_read": 0,
+        "committed_loads": 0,
+        "claim_errors": 0,
+        "read_errors": 0,
+        "commit_errors": 0,
+        "entry_l2_present": 0,
+        "entry_mirror_present": 0,
+        "entry_mirror_candidate": 0,
+        "entry_candidate_to_mirror": 0,
+        "entry_candidate_to_l2": 0,
+        "entry_candidate_to_read_direct_active": 0,
+        "entry_candidate_to_read_direct_published": 0,
+        "entry_candidate_to_read_other": 0,
+        "entry_candidate_unclaimed": 0,
+        "writeback_reservations": 0,
+        "writeback_pending_missing_targets": 0,
+        "writeback_pending_entry_candidate_targets": 0,
+        "writeback_published": 0,
+        "writeback_aborted": 0,
+        "writeback_skipped": 0,
+        "source_mirror_outside_entry_candidates": 0,
+        "duplicate_claims": 0,
+        "entry_claimed_mirrors": 0,
+        "counter_overflow": 0,
+        "samples_confirmed_total": 0,
+        "samples_overwritten": 0
+      },
+      "direct_loss_read_fraction": 0.0009907529722589167,
+      "direct_loss_candidate_fraction": 0.00631578947368421
+    },
+    {
+      "position": 2,
+      "actual_input": 1024,
+      "actual_output": 256,
+      "http_metric": {
+        "response_id": "chatcmpl-auto-2",
+        "actual_input": 1024,
+        "actual_output": 256,
+        "ttft": 9.035721273859963,
+        "latency": 43.76950341882184,
+        "decode_tps": 7.34155580684402
+      },
+      "observer_additional_json_bytes": 156339,
+      "group": "s02-as-on",
+      "decode_stats": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 115841,
+        "misses": 6559,
+        "loads": 6559,
+        "evictions": 6559,
+        "load_bytes": 18134428144,
+        "nvme_read_bytes": 16547471640,
+        "shape_single_lookups": 122400,
+        "shape_single_misses": 6559,
+        "shape_multi_lookups": 0,
+        "shape_multi_misses": 0,
+        "l2_hits": 0,
+        "l2_misses": 5985,
+        "l2_evictions": 5985,
+        "l2_shape_single_hits": 0,
+        "l2_shape_single_misses": 5985,
+        "l2_shape_single_evictions": 5985,
+        "l2_shape_multi_hits": 0,
+        "l2_shape_multi_misses": 0,
+        "l2_shape_multi_evictions": 0,
+        "mirror_hits": 574,
+        "mirror_writebacks": 6559,
+        "mirror_skips": 0,
+        "pread_merge_runs": 11,
+        "pread_merge_experts": 22
+      },
+      "observer_decode_counters": {
+        "plans_started": 12240,
+        "plans_complete": 12240,
+        "plans_failed": 0,
+        "plans_scope_mismatch": 0,
+        "planned_loads": 6559,
+        "source_l2": 0,
+        "source_mirror": 574,
+        "source_read": 5985,
+        "committed_loads": 6559,
+        "claim_errors": 0,
+        "read_errors": 0,
+        "commit_errors": 0,
+        "entry_l2_present": 0,
+        "entry_mirror_present": 574,
+        "entry_mirror_candidate": 574,
+        "entry_candidate_to_mirror": 574,
+        "entry_candidate_to_l2": 0,
+        "entry_candidate_to_read_direct_active": 0,
+        "entry_candidate_to_read_direct_published": 0,
+        "entry_candidate_to_read_other": 0,
+        "entry_candidate_unclaimed": 0,
+        "writeback_reservations": 6559,
+        "writeback_pending_missing_targets": 0,
+        "writeback_pending_entry_candidate_targets": 0,
+        "writeback_published": 6559,
+        "writeback_aborted": 0,
+        "writeback_skipped": 0,
+        "source_mirror_outside_entry_candidates": 0,
+        "duplicate_claims": 0,
+        "entry_claimed_mirrors": 0,
+        "counter_overflow": 0,
+        "samples_confirmed_total": 0,
+        "samples_overwritten": 0
+      },
+      "observer_prefill_counters": {
+        "plans_started": 0,
+        "plans_complete": 0,
+        "plans_failed": 0,
+        "plans_scope_mismatch": 0,
+        "planned_loads": 0,
+        "source_l2": 0,
+        "source_mirror": 0,
+        "source_read": 0,
+        "committed_loads": 0,
+        "claim_errors": 0,
+        "read_errors": 0,
+        "commit_errors": 0,
+        "entry_l2_present": 0,
+        "entry_mirror_present": 0,
+        "entry_mirror_candidate": 0,
+        "entry_candidate_to_mirror": 0,
+        "entry_candidate_to_l2": 0,
+        "entry_candidate_to_read_direct_active": 0,
+        "entry_candidate_to_read_direct_published": 0,
+        "entry_candidate_to_read_other": 0,
+        "entry_candidate_unclaimed": 0,
+        "writeback_reservations": 0,
+        "writeback_pending_missing_targets": 0,
+        "writeback_pending_entry_candidate_targets": 0,
+        "writeback_published": 0,
+        "writeback_aborted": 0,
+        "writeback_skipped": 0,
+        "source_mirror_outside_entry_candidates": 0,
+        "duplicate_claims": 0,
+        "entry_claimed_mirrors": 0,
+        "counter_overflow": 0,
+        "samples_confirmed_total": 0,
+        "samples_overwritten": 0
+      },
+      "direct_loss_read_fraction": 0.0,
+      "direct_loss_candidate_fraction": 0.0
+    },
+    {
+      "position": 3,
+      "actual_input": 1024,
+      "actual_output": 256,
+      "http_metric": {
+        "response_id": "chatcmpl-auto-3",
+        "actual_input": 1024,
+        "actual_output": 256,
+        "ttft": 8.487165563041344,
+        "latency": 42.372475222917274,
+        "decode_tps": 7.525384969462123
+      },
+      "observer_additional_json_bytes": 156859,
+      "group": "s02-as-on",
+      "decode_stats": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 116033,
+        "misses": 6367,
+        "loads": 6367,
+        "evictions": 6367,
+        "load_bytes": 17603583472,
+        "nvme_read_bytes": 16497704808,
+        "shape_single_lookups": 122400,
+        "shape_single_misses": 6367,
+        "shape_multi_lookups": 0,
+        "shape_multi_misses": 0,
+        "l2_hits": 0,
+        "l2_misses": 5967,
+        "l2_evictions": 5967,
+        "l2_shape_single_hits": 0,
+        "l2_shape_single_misses": 5967,
+        "l2_shape_single_evictions": 5967,
+        "l2_shape_multi_hits": 0,
+        "l2_shape_multi_misses": 0,
+        "l2_shape_multi_evictions": 0,
+        "mirror_hits": 400,
+        "mirror_writebacks": 6367,
+        "mirror_skips": 0,
+        "pread_merge_runs": 11,
+        "pread_merge_experts": 22
+      },
+      "observer_decode_counters": {
+        "plans_started": 12240,
+        "plans_complete": 12240,
+        "plans_failed": 0,
+        "plans_scope_mismatch": 0,
+        "planned_loads": 6367,
+        "source_l2": 0,
+        "source_mirror": 400,
+        "source_read": 5967,
+        "committed_loads": 6367,
+        "claim_errors": 0,
+        "read_errors": 0,
+        "commit_errors": 0,
+        "entry_l2_present": 0,
+        "entry_mirror_present": 401,
+        "entry_mirror_candidate": 401,
+        "entry_candidate_to_mirror": 400,
+        "entry_candidate_to_l2": 0,
+        "entry_candidate_to_read_direct_active": 1,
+        "entry_candidate_to_read_direct_published": 0,
+        "entry_candidate_to_read_other": 0,
+        "entry_candidate_unclaimed": 0,
+        "writeback_reservations": 6367,
+        "writeback_pending_missing_targets": 1,
+        "writeback_pending_entry_candidate_targets": 1,
+        "writeback_published": 6367,
+        "writeback_aborted": 0,
+        "writeback_skipped": 0,
+        "source_mirror_outside_entry_candidates": 0,
+        "duplicate_claims": 0,
+        "entry_claimed_mirrors": 0,
+        "counter_overflow": 0,
+        "samples_confirmed_total": 1,
+        "samples_overwritten": 0
+      },
+      "observer_prefill_counters": {
+        "plans_started": 0,
+        "plans_complete": 0,
+        "plans_failed": 0,
+        "plans_scope_mismatch": 0,
+        "planned_loads": 0,
+        "source_l2": 0,
+        "source_mirror": 0,
+        "source_read": 0,
+        "committed_loads": 0,
+        "claim_errors": 0,
+        "read_errors": 0,
+        "commit_errors": 0,
+        "entry_l2_present": 0,
+        "entry_mirror_present": 0,
+        "entry_mirror_candidate": 0,
+        "entry_candidate_to_mirror": 0,
+        "entry_candidate_to_l2": 0,
+        "entry_candidate_to_read_direct_active": 0,
+        "entry_candidate_to_read_direct_published": 0,
+        "entry_candidate_to_read_other": 0,
+        "entry_candidate_unclaimed": 0,
+        "writeback_reservations": 0,
+        "writeback_pending_missing_targets": 0,
+        "writeback_pending_entry_candidate_targets": 0,
+        "writeback_published": 0,
+        "writeback_aborted": 0,
+        "writeback_skipped": 0,
+        "source_mirror_outside_entry_candidates": 0,
+        "duplicate_claims": 0,
+        "entry_claimed_mirrors": 0,
+        "counter_overflow": 0,
+        "samples_confirmed_total": 0,
+        "samples_overwritten": 0
+      },
+      "direct_loss_read_fraction": 0.00016758840288252054,
+      "direct_loss_candidate_fraction": 0.0024937655860349127
+    },
+    {
+      "position": 0,
+      "actual_input": 8193,
+      "actual_output": 256,
+      "http_metric": {
+        "response_id": "chatcmpl-auto-0",
+        "actual_input": 8193,
+        "actual_output": 256,
+        "ttft": 37.57086447998881,
+        "latency": 74.72328514093533,
+        "decode_tps": 6.863617375759533
+      },
+      "observer_additional_json_bytes": 144570,
+      "group": "s03-al-on",
+      "decode_stats": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 115204,
+        "misses": 7196,
+        "loads": 7196,
+        "evictions": 7196,
+        "load_bytes": 19895615936,
+        "nvme_read_bytes": 19121522784,
+        "shape_single_lookups": 122400,
+        "shape_single_misses": 7196,
+        "shape_multi_lookups": 0,
+        "shape_multi_misses": 0,
+        "l2_hits": 0,
+        "l2_misses": 6916,
+        "l2_evictions": 6916,
+        "l2_shape_single_hits": 0,
+        "l2_shape_single_misses": 6916,
+        "l2_shape_single_evictions": 6916,
+        "l2_shape_multi_hits": 0,
+        "l2_shape_multi_misses": 0,
+        "l2_shape_multi_evictions": 0,
+        "mirror_hits": 280,
+        "mirror_writebacks": 7196,
+        "mirror_skips": 0,
+        "pread_merge_runs": 23,
+        "pread_merge_experts": 46
+      },
+      "observer_decode_counters": {
+        "plans_started": 12240,
+        "plans_complete": 12240,
+        "plans_failed": 0,
+        "plans_scope_mismatch": 0,
+        "planned_loads": 7196,
+        "source_l2": 0,
+        "source_mirror": 280,
+        "source_read": 6916,
+        "committed_loads": 7196,
+        "claim_errors": 0,
+        "read_errors": 0,
+        "commit_errors": 0,
+        "entry_l2_present": 0,
+        "entry_mirror_present": 283,
+        "entry_mirror_candidate": 283,
+        "entry_candidate_to_mirror": 280,
+        "entry_candidate_to_l2": 0,
+        "entry_candidate_to_read_direct_active": 3,
+        "entry_candidate_to_read_direct_published": 0,
+        "entry_candidate_to_read_other": 0,
+        "entry_candidate_unclaimed": 0,
+        "writeback_reservations": 7196,
+        "writeback_pending_missing_targets": 3,
+        "writeback_pending_entry_candidate_targets": 3,
+        "writeback_published": 7196,
+        "writeback_aborted": 0,
+        "writeback_skipped": 0,
+        "source_mirror_outside_entry_candidates": 0,
+        "duplicate_claims": 0,
+        "entry_claimed_mirrors": 0,
+        "counter_overflow": 0,
+        "samples_confirmed_total": 3,
+        "samples_overwritten": 0
+      },
+      "observer_prefill_counters": {
+        "plans_started": 48,
+        "plans_complete": 48,
+        "plans_failed": 0,
+        "plans_scope_mismatch": 0,
+        "planned_loads": 204,
+        "source_l2": 0,
+        "source_mirror": 4,
+        "source_read": 200,
+        "committed_loads": 204,
+        "claim_errors": 0,
+        "read_errors": 0,
+        "commit_errors": 0,
+        "entry_l2_present": 0,
+        "entry_mirror_present": 4,
+        "entry_mirror_candidate": 4,
+        "entry_candidate_to_mirror": 4,
+        "entry_candidate_to_l2": 0,
+        "entry_candidate_to_read_direct_active": 0,
+        "entry_candidate_to_read_direct_published": 0,
+        "entry_candidate_to_read_other": 0,
+        "entry_candidate_unclaimed": 0,
+        "writeback_reservations": 204,
+        "writeback_pending_missing_targets": 0,
+        "writeback_pending_entry_candidate_targets": 0,
+        "writeback_published": 204,
+        "writeback_aborted": 0,
+        "writeback_skipped": 0,
+        "source_mirror_outside_entry_candidates": 0,
+        "duplicate_claims": 0,
+        "entry_claimed_mirrors": 0,
+        "counter_overflow": 0,
+        "samples_confirmed_total": 0,
+        "samples_overwritten": 0
+      },
+      "direct_loss_read_fraction": 0.00043377674956622325,
+      "direct_loss_candidate_fraction": 0.01060070671378092
+    },
+    {
+      "position": 1,
+      "actual_input": 1024,
+      "actual_output": 256,
+      "http_metric": {
+        "response_id": "chatcmpl-auto-1",
+        "actual_input": 1024,
+        "actual_output": 256,
+        "ttft": 10.501694774953648,
+        "latency": 47.09230293589644,
+        "decode_tps": 6.969001413652089
+      },
+      "observer_additional_json_bytes": 150197,
+      "group": "s03-al-on",
+      "decode_stats": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 115173,
+        "misses": 7227,
+        "loads": 7227,
+        "evictions": 7227,
+        "load_bytes": 19981325232,
+        "nvme_read_bytes": 18665326824,
+        "shape_single_lookups": 122400,
+        "shape_single_misses": 7227,
+        "shape_multi_lookups": 0,
+        "shape_multi_misses": 0,
+        "l2_hits": 0,
+        "l2_misses": 6751,
+        "l2_evictions": 6751,
+        "l2_shape_single_hits": 0,
+        "l2_shape_single_misses": 6751,
+        "l2_shape_single_evictions": 6751,
+        "l2_shape_multi_hits": 0,
+        "l2_shape_multi_misses": 0,
+        "l2_shape_multi_evictions": 0,
+        "mirror_hits": 476,
+        "mirror_writebacks": 7227,
+        "mirror_skips": 0,
+        "pread_merge_runs": 10,
+        "pread_merge_experts": 20
+      },
+      "observer_decode_counters": {
+        "plans_started": 12240,
+        "plans_complete": 12240,
+        "plans_failed": 0,
+        "plans_scope_mismatch": 0,
+        "planned_loads": 7227,
+        "source_l2": 0,
+        "source_mirror": 476,
+        "source_read": 6751,
+        "committed_loads": 7227,
+        "claim_errors": 0,
+        "read_errors": 0,
+        "commit_errors": 0,
+        "entry_l2_present": 0,
+        "entry_mirror_present": 480,
+        "entry_mirror_candidate": 480,
+        "entry_candidate_to_mirror": 476,
+        "entry_candidate_to_l2": 0,
+        "entry_candidate_to_read_direct_active": 4,
+        "entry_candidate_to_read_direct_published": 0,
+        "entry_candidate_to_read_other": 0,
+        "entry_candidate_unclaimed": 0,
+        "writeback_reservations": 7227,
+        "writeback_pending_missing_targets": 4,
+        "writeback_pending_entry_candidate_targets": 4,
+        "writeback_published": 7227,
+        "writeback_aborted": 0,
+        "writeback_skipped": 0,
+        "source_mirror_outside_entry_candidates": 0,
+        "duplicate_claims": 0,
+        "entry_claimed_mirrors": 0,
+        "counter_overflow": 0,
+        "samples_confirmed_total": 4,
+        "samples_overwritten": 0
+      },
+      "observer_prefill_counters": {
+        "plans_started": 0,
+        "plans_complete": 0,
+        "plans_failed": 0,
+        "plans_scope_mismatch": 0,
+        "planned_loads": 0,
+        "source_l2": 0,
+        "source_mirror": 0,
+        "source_read": 0,
+        "committed_loads": 0,
+        "claim_errors": 0,
+        "read_errors": 0,
+        "commit_errors": 0,
+        "entry_l2_present": 0,
+        "entry_mirror_present": 0,
+        "entry_mirror_candidate": 0,
+        "entry_candidate_to_mirror": 0,
+        "entry_candidate_to_l2": 0,
+        "entry_candidate_to_read_direct_active": 0,
+        "entry_candidate_to_read_direct_published": 0,
+        "entry_candidate_to_read_other": 0,
+        "entry_candidate_unclaimed": 0,
+        "writeback_reservations": 0,
+        "writeback_pending_missing_targets": 0,
+        "writeback_pending_entry_candidate_targets": 0,
+        "writeback_published": 0,
+        "writeback_aborted": 0,
+        "writeback_skipped": 0,
+        "source_mirror_outside_entry_candidates": 0,
+        "duplicate_claims": 0,
+        "entry_claimed_mirrors": 0,
+        "counter_overflow": 0,
+        "samples_confirmed_total": 0,
+        "samples_overwritten": 0
+      },
+      "direct_loss_read_fraction": 0.0005925048141016146,
+      "direct_loss_candidate_fraction": 0.008333333333333333
+    },
+    {
+      "position": 2,
+      "actual_input": 1024,
+      "actual_output": 256,
+      "http_metric": {
+        "response_id": "chatcmpl-auto-2",
+        "actual_input": 1024,
+        "actual_output": 256,
+        "ttft": 8.825825517997146,
+        "latency": 43.26192301395349,
+        "decode_tps": 7.4050202706605575
+      },
+      "observer_additional_json_bytes": 155036,
+      "group": "s03-al-on",
+      "decode_stats": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 115533,
+        "misses": 6867,
+        "loads": 6867,
+        "evictions": 6867,
+        "load_bytes": 18985991472,
+        "nvme_read_bytes": 16655299776,
+        "shape_single_lookups": 122400,
+        "shape_single_misses": 6867,
+        "shape_multi_lookups": 0,
+        "shape_multi_misses": 0,
+        "l2_hits": 0,
+        "l2_misses": 6024,
+        "l2_evictions": 6024,
+        "l2_shape_single_hits": 0,
+        "l2_shape_single_misses": 6024,
+        "l2_shape_single_evictions": 6024,
+        "l2_shape_multi_hits": 0,
+        "l2_shape_multi_misses": 0,
+        "l2_shape_multi_evictions": 0,
+        "mirror_hits": 843,
+        "mirror_writebacks": 6867,
+        "mirror_skips": 0,
+        "pread_merge_runs": 11,
+        "pread_merge_experts": 22
+      },
+      "observer_decode_counters": {
+        "plans_started": 12240,
+        "plans_complete": 12240,
+        "plans_failed": 0,
+        "plans_scope_mismatch": 0,
+        "planned_loads": 6867,
+        "source_l2": 0,
+        "source_mirror": 843,
+        "source_read": 6024,
+        "committed_loads": 6867,
+        "claim_errors": 0,
+        "read_errors": 0,
+        "commit_errors": 0,
+        "entry_l2_present": 0,
+        "entry_mirror_present": 846,
+        "entry_mirror_candidate": 846,
+        "entry_candidate_to_mirror": 843,
+        "entry_candidate_to_l2": 0,
+        "entry_candidate_to_read_direct_active": 3,
+        "entry_candidate_to_read_direct_published": 0,
+        "entry_candidate_to_read_other": 0,
+        "entry_candidate_unclaimed": 0,
+        "writeback_reservations": 6867,
+        "writeback_pending_missing_targets": 3,
+        "writeback_pending_entry_candidate_targets": 3,
+        "writeback_published": 6867,
+        "writeback_aborted": 0,
+        "writeback_skipped": 0,
+        "source_mirror_outside_entry_candidates": 0,
+        "duplicate_claims": 0,
+        "entry_claimed_mirrors": 0,
+        "counter_overflow": 0,
+        "samples_confirmed_total": 3,
+        "samples_overwritten": 0
+      },
+      "observer_prefill_counters": {
+        "plans_started": 0,
+        "plans_complete": 0,
+        "plans_failed": 0,
+        "plans_scope_mismatch": 0,
+        "planned_loads": 0,
+        "source_l2": 0,
+        "source_mirror": 0,
+        "source_read": 0,
+        "committed_loads": 0,
+        "claim_errors": 0,
+        "read_errors": 0,
+        "commit_errors": 0,
+        "entry_l2_present": 0,
+        "entry_mirror_present": 0,
+        "entry_mirror_candidate": 0,
+        "entry_candidate_to_mirror": 0,
+        "entry_candidate_to_l2": 0,
+        "entry_candidate_to_read_direct_active": 0,
+        "entry_candidate_to_read_direct_published": 0,
+        "entry_candidate_to_read_other": 0,
+        "entry_candidate_unclaimed": 0,
+        "writeback_reservations": 0,
+        "writeback_pending_missing_targets": 0,
+        "writeback_pending_entry_candidate_targets": 0,
+        "writeback_published": 0,
+        "writeback_aborted": 0,
+        "writeback_skipped": 0,
+        "source_mirror_outside_entry_candidates": 0,
+        "duplicate_claims": 0,
+        "entry_claimed_mirrors": 0,
+        "counter_overflow": 0,
+        "samples_confirmed_total": 0,
+        "samples_overwritten": 0
+      },
+      "direct_loss_read_fraction": 0.00049800796812749,
+      "direct_loss_candidate_fraction": 0.0035460992907801418
+    },
+    {
+      "position": 3,
+      "actual_input": 1024,
+      "actual_output": 256,
+      "http_metric": {
+        "response_id": "chatcmpl-auto-3",
+        "actual_input": 1024,
+        "actual_output": 256,
+        "ttft": 9.792510135099292,
+        "latency": 44.66289403405972,
+        "decode_tps": 7.312795888306873
+      },
+      "observer_additional_json_bytes": 158507,
+      "group": "s03-al-on",
+      "decode_stats": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 115919,
+        "misses": 6481,
+        "loads": 6481,
+        "evictions": 6481,
+        "load_bytes": 17918772496,
+        "nvme_read_bytes": 16555766112,
+        "shape_single_lookups": 122400,
+        "shape_single_misses": 6481,
+        "shape_multi_lookups": 0,
+        "shape_multi_misses": 0,
+        "l2_hits": 0,
+        "l2_misses": 5988,
+        "l2_evictions": 5988,
+        "l2_shape_single_hits": 0,
+        "l2_shape_single_misses": 5988,
+        "l2_shape_single_evictions": 5988,
+        "l2_shape_multi_hits": 0,
+        "l2_shape_multi_misses": 0,
+        "l2_shape_multi_evictions": 0,
+        "mirror_hits": 493,
+        "mirror_writebacks": 6481,
+        "mirror_skips": 0,
+        "pread_merge_runs": 11,
+        "pread_merge_experts": 22
+      },
+      "observer_decode_counters": {
+        "plans_started": 12240,
+        "plans_complete": 12240,
+        "plans_failed": 0,
+        "plans_scope_mismatch": 0,
+        "planned_loads": 6481,
+        "source_l2": 0,
+        "source_mirror": 493,
+        "source_read": 5988,
+        "committed_loads": 6481,
+        "claim_errors": 0,
+        "read_errors": 0,
+        "commit_errors": 0,
+        "entry_l2_present": 0,
+        "entry_mirror_present": 495,
+        "entry_mirror_candidate": 495,
+        "entry_candidate_to_mirror": 493,
+        "entry_candidate_to_l2": 0,
+        "entry_candidate_to_read_direct_active": 2,
+        "entry_candidate_to_read_direct_published": 0,
+        "entry_candidate_to_read_other": 0,
+        "entry_candidate_unclaimed": 0,
+        "writeback_reservations": 6481,
+        "writeback_pending_missing_targets": 2,
+        "writeback_pending_entry_candidate_targets": 2,
+        "writeback_published": 6481,
+        "writeback_aborted": 0,
+        "writeback_skipped": 0,
+        "source_mirror_outside_entry_candidates": 0,
+        "duplicate_claims": 0,
+        "entry_claimed_mirrors": 0,
+        "counter_overflow": 0,
+        "samples_confirmed_total": 2,
+        "samples_overwritten": 0
+      },
+      "observer_prefill_counters": {
+        "plans_started": 0,
+        "plans_complete": 0,
+        "plans_failed": 0,
+        "plans_scope_mismatch": 0,
+        "planned_loads": 0,
+        "source_l2": 0,
+        "source_mirror": 0,
+        "source_read": 0,
+        "committed_loads": 0,
+        "claim_errors": 0,
+        "read_errors": 0,
+        "commit_errors": 0,
+        "entry_l2_present": 0,
+        "entry_mirror_present": 0,
+        "entry_mirror_candidate": 0,
+        "entry_candidate_to_mirror": 0,
+        "entry_candidate_to_l2": 0,
+        "entry_candidate_to_read_direct_active": 0,
+        "entry_candidate_to_read_direct_published": 0,
+        "entry_candidate_to_read_other": 0,
+        "entry_candidate_unclaimed": 0,
+        "writeback_reservations": 0,
+        "writeback_pending_missing_targets": 0,
+        "writeback_pending_entry_candidate_targets": 0,
+        "writeback_published": 0,
+        "writeback_aborted": 0,
+        "writeback_skipped": 0,
+        "source_mirror_outside_entry_candidates": 0,
+        "duplicate_claims": 0,
+        "entry_claimed_mirrors": 0,
+        "counter_overflow": 0,
+        "samples_confirmed_total": 0,
+        "samples_overwritten": 0
+      },
+      "direct_loss_read_fraction": 0.00033400133600534405,
+      "direct_loss_candidate_fraction": 0.00404040404040404
+    },
+    {
+      "position": 0,
+      "actual_input": 8193,
+      "actual_output": 256,
+      "http_metric": {
+        "response_id": "chatcmpl-auto-0",
+        "actual_input": 8193,
+        "actual_output": 256,
+        "ttft": 37.453261078102514,
+        "latency": 74.59279130003415,
+        "decode_tps": 6.865999609478566
+      },
+      "observer_additional_json_bytes": 0,
+      "group": "s04-al-off",
+      "decode_stats": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 115204,
+        "misses": 7196,
+        "loads": 7196,
+        "evictions": 7196,
+        "load_bytes": 19895615936,
+        "nvme_read_bytes": 19118757960,
+        "shape_single_lookups": 122400,
+        "shape_single_misses": 7196,
+        "shape_multi_lookups": 0,
+        "shape_multi_misses": 0,
+        "l2_hits": 0,
+        "l2_misses": 6915,
+        "l2_evictions": 6915,
+        "l2_shape_single_hits": 0,
+        "l2_shape_single_misses": 6915,
+        "l2_shape_single_evictions": 6915,
+        "l2_shape_multi_hits": 0,
+        "l2_shape_multi_misses": 0,
+        "l2_shape_multi_evictions": 0,
+        "mirror_hits": 281,
+        "mirror_writebacks": 7196,
+        "mirror_skips": 0,
+        "pread_merge_runs": 23,
+        "pread_merge_experts": 46
+      }
+    },
+    {
+      "position": 1,
+      "actual_input": 1024,
+      "actual_output": 256,
+      "http_metric": {
+        "response_id": "chatcmpl-auto-1",
+        "actual_input": 1024,
+        "actual_output": 256,
+        "ttft": 10.524281080812216,
+        "latency": 47.03388794185594,
+        "decode_tps": 6.984463047507879
+      },
+      "observer_additional_json_bytes": 0,
+      "group": "s04-al-off",
+      "decode_stats": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 115173,
+        "misses": 7227,
+        "loads": 7227,
+        "evictions": 7227,
+        "load_bytes": 19981325232,
+        "nvme_read_bytes": 18668091648,
+        "shape_single_lookups": 122400,
+        "shape_single_misses": 7227,
+        "shape_multi_lookups": 0,
+        "shape_multi_misses": 0,
+        "l2_hits": 0,
+        "l2_misses": 6752,
+        "l2_evictions": 6752,
+        "l2_shape_single_hits": 0,
+        "l2_shape_single_misses": 6752,
+        "l2_shape_single_evictions": 6752,
+        "l2_shape_multi_hits": 0,
+        "l2_shape_multi_misses": 0,
+        "l2_shape_multi_evictions": 0,
+        "mirror_hits": 475,
+        "mirror_writebacks": 7227,
+        "mirror_skips": 0,
+        "pread_merge_runs": 10,
+        "pread_merge_experts": 20
+      }
+    },
+    {
+      "position": 2,
+      "actual_input": 1024,
+      "actual_output": 256,
+      "http_metric": {
+        "response_id": "chatcmpl-auto-2",
+        "actual_input": 1024,
+        "actual_output": 256,
+        "ttft": 8.71800954407081,
+        "latency": 43.41011083894409,
+        "decode_tps": 7.350376324356095
+      },
+      "observer_additional_json_bytes": 0,
+      "group": "s04-al-off",
+      "decode_stats": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 115533,
+        "misses": 6867,
+        "loads": 6867,
+        "evictions": 6867,
+        "load_bytes": 18985991472,
+        "nvme_read_bytes": 16660829424,
+        "shape_single_lookups": 122400,
+        "shape_single_misses": 6867,
+        "shape_multi_lookups": 0,
+        "shape_multi_misses": 0,
+        "l2_hits": 0,
+        "l2_misses": 6026,
+        "l2_evictions": 6026,
+        "l2_shape_single_hits": 0,
+        "l2_shape_single_misses": 6026,
+        "l2_shape_single_evictions": 6026,
+        "l2_shape_multi_hits": 0,
+        "l2_shape_multi_misses": 0,
+        "l2_shape_multi_evictions": 0,
+        "mirror_hits": 841,
+        "mirror_writebacks": 6867,
+        "mirror_skips": 0,
+        "pread_merge_runs": 11,
+        "pread_merge_experts": 22
+      }
+    },
+    {
+      "position": 3,
+      "actual_input": 1024,
+      "actual_output": 256,
+      "http_metric": {
+        "response_id": "chatcmpl-auto-3",
+        "actual_input": 1024,
+        "actual_output": 256,
+        "ttft": 9.804489167174324,
+        "latency": 44.620115800062194,
+        "decode_tps": 7.3242972958332295
+      },
+      "observer_additional_json_bytes": 0,
+      "group": "s04-al-off",
+      "decode_stats": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 115919,
+        "misses": 6481,
+        "loads": 6481,
+        "evictions": 6481,
+        "load_bytes": 17918772496,
+        "nvme_read_bytes": 16553001288,
+        "shape_single_lookups": 122400,
+        "shape_single_misses": 6481,
+        "shape_multi_lookups": 0,
+        "shape_multi_misses": 0,
+        "l2_hits": 0,
+        "l2_misses": 5987,
+        "l2_evictions": 5987,
+        "l2_shape_single_hits": 0,
+        "l2_shape_single_misses": 5987,
+        "l2_shape_single_evictions": 5987,
+        "l2_shape_multi_hits": 0,
+        "l2_shape_multi_misses": 0,
+        "l2_shape_multi_evictions": 0,
+        "mirror_hits": 494,
+        "mirror_writebacks": 6481,
+        "mirror_skips": 0,
+        "pread_merge_runs": 11,
+        "pread_merge_experts": 22
+      }
+    }
+  ],
+  "S_L_accounting": [
+    {
+      "position": 0,
+      "same_input_length": false,
+      "mirror_deficit_S_minus_L": 170,
+      "entry_candidate_difference_S_minus_L": 170,
+      "direct_loss_difference_L_minus_S": 0,
+      "candidate_to_L2_difference_L_minus_S": 0,
+      "GPU_load_difference_L_minus_S": 68,
+      "L2_hit_difference_L_minus_S": 0,
+      "software_read_difference_L_minus_S": 238,
+      "interpretation": "Exact accounting identity in new instrumented runs; entry opportunities depend on preceding cache/scheduling history and are not an independent causal component."
+    },
+    {
+      "position": 1,
+      "same_input_length": true,
+      "mirror_deficit_S_minus_L": 468,
+      "entry_candidate_difference_S_minus_L": 470,
+      "direct_loss_difference_L_minus_S": -2,
+      "candidate_to_L2_difference_L_minus_S": 0,
+      "GPU_load_difference_L_minus_S": 227,
+      "L2_hit_difference_L_minus_S": 0,
+      "software_read_difference_L_minus_S": 695,
+      "interpretation": "Exact accounting identity in new instrumented runs; entry opportunities depend on preceding cache/scheduling history and are not an independent causal component."
+    },
+    {
+      "position": 2,
+      "same_input_length": true,
+      "mirror_deficit_S_minus_L": -269,
+      "entry_candidate_difference_S_minus_L": -272,
+      "direct_loss_difference_L_minus_S": 3,
+      "candidate_to_L2_difference_L_minus_S": 0,
+      "GPU_load_difference_L_minus_S": 308,
+      "L2_hit_difference_L_minus_S": 0,
+      "software_read_difference_L_minus_S": 39,
+      "interpretation": "Exact accounting identity in new instrumented runs; entry opportunities depend on preceding cache/scheduling history and are not an independent causal component."
+    },
+    {
+      "position": 3,
+      "same_input_length": true,
+      "mirror_deficit_S_minus_L": -93,
+      "entry_candidate_difference_S_minus_L": -94,
+      "direct_loss_difference_L_minus_S": 1,
+      "candidate_to_L2_difference_L_minus_S": 0,
+      "GPU_load_difference_L_minus_S": 114,
+      "L2_hit_difference_L_minus_S": 0,
+      "software_read_difference_L_minus_S": 21,
+      "interpretation": "Exact accounting identity in new instrumented runs; entry opportunities depend on preceding cache/scheduling history and are not an independent causal component."
+    }
+  ],
+  "off_on_descriptive_contrasts": [
+    {
+      "predecessor": "S",
+      "position": 0,
+      "ttft_on_minus_off": -0.15541431703604758,
+      "decode_tps_on_minus_off": -0.06561310722075575,
+      "decode_reads_on_minus_off": -1,
+      "decode_GPU_loads_on_minus_off": 0,
+      "limit": "Single sequential cell; scheduling/cache state can change. Not pure observer overhead or stable speed effect."
+    },
+    {
+      "predecessor": "S",
+      "position": 1,
+      "ttft_on_minus_off": -0.026860221987590194,
+      "decode_tps_on_minus_off": -0.02170918966487445,
+      "decode_reads_on_minus_off": 5,
+      "decode_GPU_loads_on_minus_off": 0,
+      "limit": "Single sequential cell; scheduling/cache state can change. Not pure observer overhead or stable speed effect."
+    },
+    {
+      "predecessor": "S",
+      "position": 2,
+      "ttft_on_minus_off": -0.051373411202803254,
+      "decode_tps_on_minus_off": -0.05752926487141696,
+      "decode_reads_on_minus_off": -2,
+      "decode_GPU_loads_on_minus_off": 0,
+      "limit": "Single sequential cell; scheduling/cache state can change. Not pure observer overhead or stable speed effect."
+    },
+    {
+      "predecessor": "S",
+      "position": 3,
+      "ttft_on_minus_off": -0.024077669950202107,
+      "decode_tps_on_minus_off": -0.05855910059580616,
+      "decode_reads_on_minus_off": -1,
+      "decode_GPU_loads_on_minus_off": 0,
+      "limit": "Single sequential cell; scheduling/cache state can change. Not pure observer overhead or stable speed effect."
+    },
+    {
+      "predecessor": "L",
+      "position": 0,
+      "ttft_on_minus_off": 0.11760340188629925,
+      "decode_tps_on_minus_off": -0.002382233719032456,
+      "decode_reads_on_minus_off": 1,
+      "decode_GPU_loads_on_minus_off": 0,
+      "limit": "Single sequential cell; scheduling/cache state can change. Not pure observer overhead or stable speed effect."
+    },
+    {
+      "predecessor": "L",
+      "position": 1,
+      "ttft_on_minus_off": -0.022586305858567357,
+      "decode_tps_on_minus_off": -0.015461633855790247,
+      "decode_reads_on_minus_off": -1,
+      "decode_GPU_loads_on_minus_off": 0,
+      "limit": "Single sequential cell; scheduling/cache state can change. Not pure observer overhead or stable speed effect."
+    },
+    {
+      "predecessor": "L",
+      "position": 2,
+      "ttft_on_minus_off": 0.10781597392633557,
+      "decode_tps_on_minus_off": 0.05464394630446279,
+      "decode_reads_on_minus_off": -2,
+      "decode_GPU_loads_on_minus_off": 0,
+      "limit": "Single sequential cell; scheduling/cache state can change. Not pure observer overhead or stable speed effect."
+    },
+    {
+      "predecessor": "L",
+      "position": 3,
+      "ttft_on_minus_off": -0.011979032075032592,
+      "decode_tps_on_minus_off": -0.011501407526356644,
+      "decode_reads_on_minus_off": 1,
+      "decode_GPU_loads_on_minus_off": 0,
+      "limit": "Single sequential cell; scheduling/cache state can change. Not pure observer overhead or stable speed effect."
+    }
+  ],
+  "retained_decode_witnesses": [
+    {
+      "group": "s02-as-on",
+      "position": 0,
+      "witness_seq": 1,
+      "layer": 16,
+      "plan_clock": 344,
+      "entry_index": 0,
+      "expert": 265,
+      "source_task": 1,
+      "overwriting_task": 0,
+      "GPU_victim": 169,
+      "mirror_slot": 6,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 2,
+      "claim_seq": 3,
+      "publication_seq_or_zero": 4,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    },
+    {
+      "group": "s02-as-on",
+      "position": 0,
+      "witness_seq": 1,
+      "layer": 30,
+      "plan_clock": 352,
+      "entry_index": 1,
+      "expert": 419,
+      "source_task": 2,
+      "overwriting_task": 1,
+      "GPU_victim": 285,
+      "mirror_slot": 5,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 3,
+      "claim_seq": 4,
+      "publication_seq_or_zero": 5,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    },
+    {
+      "group": "s02-as-on",
+      "position": 0,
+      "witness_seq": 1,
+      "layer": 47,
+      "plan_clock": 295,
+      "entry_index": 4,
+      "expert": 470,
+      "source_task": 5,
+      "overwriting_task": 0,
+      "GPU_victim": 496,
+      "mirror_slot": 2,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 2,
+      "claim_seq": 5,
+      "publication_seq_or_zero": 11,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    },
+    {
+      "group": "s02-as-on",
+      "position": 1,
+      "witness_seq": 1,
+      "layer": 0,
+      "plan_clock": 654,
+      "entry_index": 1,
+      "expert": 464,
+      "source_task": 5,
+      "overwriting_task": 0,
+      "GPU_victim": 463,
+      "mirror_slot": 6,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 2,
+      "claim_seq": 7,
+      "publication_seq_or_zero": 12,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    },
+    {
+      "group": "s02-as-on",
+      "position": 1,
+      "witness_seq": 1,
+      "layer": 13,
+      "plan_clock": 600,
+      "entry_index": 2,
+      "expert": 112,
+      "source_task": 2,
+      "overwriting_task": 3,
+      "GPU_victim": 493,
+      "mirror_slot": 2,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 3,
+      "claim_seq": 5,
+      "publication_seq_or_zero": 7,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    },
+    {
+      "group": "s02-as-on",
+      "position": 1,
+      "witness_seq": 1,
+      "layer": 21,
+      "plan_clock": 629,
+      "entry_index": 0,
+      "expert": 300,
+      "source_task": 2,
+      "overwriting_task": 0,
+      "GPU_victim": 336,
+      "mirror_slot": 5,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 4,
+      "claim_seq": 5,
+      "publication_seq_or_zero": 7,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    },
+    {
+      "group": "s02-as-on",
+      "position": 1,
+      "witness_seq": 1,
+      "layer": 23,
+      "plan_clock": 635,
+      "entry_index": 1,
+      "expert": 305,
+      "source_task": 2,
+      "overwriting_task": 0,
+      "GPU_victim": 296,
+      "mirror_slot": 1,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 2,
+      "claim_seq": 3,
+      "publication_seq_or_zero": 5,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    },
+    {
+      "group": "s02-as-on",
+      "position": 1,
+      "witness_seq": 1,
+      "layer": 26,
+      "plan_clock": 611,
+      "entry_index": 0,
+      "expert": 307,
+      "source_task": 0,
+      "overwriting_task": 1,
+      "GPU_victim": 117,
+      "mirror_slot": 2,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 2,
+      "claim_seq": 3,
+      "publication_seq_or_zero": 4,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    },
+    {
+      "group": "s02-as-on",
+      "position": 1,
+      "witness_seq": 1,
+      "layer": 28,
+      "plan_clock": 668,
+      "entry_index": 0,
+      "expert": 90,
+      "source_task": 0,
+      "overwriting_task": 1,
+      "GPU_victim": 148,
+      "mirror_slot": 2,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 2,
+      "claim_seq": 3,
+      "publication_seq_or_zero": 4,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    },
+    {
+      "group": "s02-as-on",
+      "position": 3,
+      "witness_seq": 2,
+      "layer": 0,
+      "plan_clock": 1145,
+      "entry_index": 2,
+      "expert": 161,
+      "source_task": 1,
+      "overwriting_task": 2,
+      "GPU_victim": 330,
+      "mirror_slot": 2,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 3,
+      "claim_seq": 4,
+      "publication_seq_or_zero": 5,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    },
+    {
+      "group": "s03-al-on",
+      "position": 0,
+      "witness_seq": 1,
+      "layer": 0,
+      "plan_clock": 264,
+      "entry_index": 6,
+      "expert": 330,
+      "source_task": 7,
+      "overwriting_task": 6,
+      "GPU_victim": 285,
+      "mirror_slot": 7,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 9,
+      "claim_seq": 10,
+      "publication_seq_or_zero": 13,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    },
+    {
+      "group": "s03-al-on",
+      "position": 0,
+      "witness_seq": 2,
+      "layer": 0,
+      "plan_clock": 359,
+      "entry_index": 2,
+      "expert": 180,
+      "source_task": 2,
+      "overwriting_task": 6,
+      "GPU_victim": 103,
+      "mirror_slot": 1,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 6,
+      "claim_seq": 7,
+      "publication_seq_or_zero": 15,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    },
+    {
+      "group": "s03-al-on",
+      "position": 0,
+      "witness_seq": 1,
+      "layer": 47,
+      "plan_clock": 346,
+      "entry_index": 1,
+      "expert": 417,
+      "source_task": 1,
+      "overwriting_task": 0,
+      "GPU_victim": 367,
+      "mirror_slot": 4,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 2,
+      "claim_seq": 3,
+      "publication_seq_or_zero": 4,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    },
+    {
+      "group": "s03-al-on",
+      "position": 1,
+      "witness_seq": 1,
+      "layer": 2,
+      "plan_clock": 557,
+      "entry_index": 4,
+      "expert": 85,
+      "source_task": 1,
+      "overwriting_task": 3,
+      "GPU_victim": 284,
+      "mirror_slot": 3,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 3,
+      "claim_seq": 4,
+      "publication_seq_or_zero": 10,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    },
+    {
+      "group": "s03-al-on",
+      "position": 1,
+      "witness_seq": 1,
+      "layer": 3,
+      "plan_clock": 714,
+      "entry_index": 0,
+      "expert": 477,
+      "source_task": 1,
+      "overwriting_task": 0,
+      "GPU_victim": 426,
+      "mirror_slot": 4,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 2,
+      "claim_seq": 3,
+      "publication_seq_or_zero": 4,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    },
+    {
+      "group": "s03-al-on",
+      "position": 1,
+      "witness_seq": 1,
+      "layer": 9,
+      "plan_clock": 575,
+      "entry_index": 7,
+      "expert": 223,
+      "source_task": 5,
+      "overwriting_task": 2,
+      "GPU_victim": 260,
+      "mirror_slot": 6,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 3,
+      "claim_seq": 9,
+      "publication_seq_or_zero": 12,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    },
+    {
+      "group": "s03-al-on",
+      "position": 1,
+      "witness_seq": 1,
+      "layer": 20,
+      "plan_clock": 554,
+      "entry_index": 2,
+      "expert": 117,
+      "source_task": 1,
+      "overwriting_task": 3,
+      "GPU_victim": 218,
+      "mirror_slot": 0,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 5,
+      "claim_seq": 6,
+      "publication_seq_or_zero": 11,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    },
+    {
+      "group": "s03-al-on",
+      "position": 2,
+      "witness_seq": 1,
+      "layer": 11,
+      "plan_clock": 977,
+      "entry_index": 0,
+      "expert": 351,
+      "source_task": 3,
+      "overwriting_task": 4,
+      "GPU_victim": 180,
+      "mirror_slot": 4,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 6,
+      "claim_seq": 7,
+      "publication_seq_or_zero": 10,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    },
+    {
+      "group": "s03-al-on",
+      "position": 2,
+      "witness_seq": 1,
+      "layer": 22,
+      "plan_clock": 799,
+      "entry_index": 6,
+      "expert": 86,
+      "source_task": 3,
+      "overwriting_task": 2,
+      "GPU_victim": 271,
+      "mirror_slot": 0,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 4,
+      "claim_seq": 6,
+      "publication_seq_or_zero": 10,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    },
+    {
+      "group": "s03-al-on",
+      "position": 2,
+      "witness_seq": 1,
+      "layer": 27,
+      "plan_clock": 822,
+      "entry_index": 0,
+      "expert": 181,
+      "source_task": 2,
+      "overwriting_task": 3,
+      "GPU_victim": 210,
+      "mirror_slot": 5,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 5,
+      "claim_seq": 7,
+      "publication_seq_or_zero": 8,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    },
+    {
+      "group": "s03-al-on",
+      "position": 3,
+      "witness_seq": 3,
+      "layer": 0,
+      "plan_clock": 1171,
+      "entry_index": 1,
+      "expert": 464,
+      "source_task": 5,
+      "overwriting_task": 2,
+      "GPU_victim": 406,
+      "mirror_slot": 2,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 3,
+      "claim_seq": 5,
+      "publication_seq_or_zero": 9,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    },
+    {
+      "group": "s03-al-on",
+      "position": 3,
+      "witness_seq": 1,
+      "layer": 1,
+      "plan_clock": 1071,
+      "entry_index": 2,
+      "expert": 72,
+      "source_task": 0,
+      "overwriting_task": 2,
+      "GPU_victim": 91,
+      "mirror_slot": 2,
+      "entry_L2_present": false,
+      "entry_mirror_candidate": true,
+      "reserve_seq": 3,
+      "claim_seq": 4,
+      "publication_seq_or_zero": 5,
+      "state_at_claim": "active_reservation",
+      "publication_final_outcome": "published",
+      "actual_source": "READ",
+      "read_ok": true,
+      "commit_ok": true,
+      "plan_complete": true
+    }
+  ],
+  "observed_direct_frequency": {
+    "direct_READ": 22,
+    "software_READ": 50365,
+    "fraction": 0.0004368112776729872,
+    "scope": "Eight new observer-on decode requests only. Events are not independent service replicates. This is not a global counterfactual speed/read saving bound."
+  },
+  "resources": {
+    "q01-quality-on": {
+      "counts": {
+        "sample_count": 1401,
+        "binding_mismatch_samples": 0,
+        "model_file_cache_observed_samples": 2,
+        "model_file_cache_live_observed_samples": 0,
+        "target_sample_count": 1399,
+        "live_pid_sample_count": 1399,
+        "gpu_unknown_samples": 1271,
+        "gpu_scheduled_skip_samples": 1271,
+        "gpu_observed_samples": 128,
+        "gpu_failed_observations": 0
+      },
+      "PSI_status": "UNKNOWN",
+      "PID_IO_unknown_records": 0,
+      "cgroup_unknown_records": 15,
+      "client_envelopes": 1,
+      "memory": {
+        "memory_max_bytes": 17179869184,
+        "charge_peak_bytes": 17179942912,
+        "observed_current_peak_bytes": 17180069888,
+        "charge_peak_minus_max_bytes": 73728,
+        "observed_current_peak_minus_max_bytes": 200704,
+        "final_memory_events": {
+          "value": {
+            "low": 0,
+            "high": 0,
+            "max": 18786188,
+            "oom": 0,
+            "oom_kill": 0,
+            "oom_group_kill": 0
+          },
+          "error": null
+        },
+        "final_swap_current": {
+          "value": 0,
+          "error": null
+        },
+        "final_swap_peak": {
+          "value": 0,
+          "error": null
+        },
+        "scope": "Whole service lifecycle; not per-request peaks"
+      },
+      "IO_windows": [
+        {
+          "label": "quality",
+          "pid_storage_read_bytes": {
+            "value": 2420215087104,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "pid_logical_rchar_bytes": {
+            "value": 6782876391748,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "cgroup_read_bytes_by_device": {
+            "cg_rbytes:259:0": {
+              "value": 170680434688,
+              "reason": null,
+              "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+            }
+          },
+          "cgroup_vs_PID": {
+            "cg_rbytes:259:0": {
+              "delta": 170680434688,
+              "pid_delta": 2420215087104,
+              "exactly_agrees": false,
+              "plateau_with_positive_PID": false
+            }
+          }
+        }
+      ]
+    },
+    "s01-as-off": {
+      "counts": {
+        "sample_count": 227,
+        "binding_mismatch_samples": 0,
+        "model_file_cache_observed_samples": 2,
+        "model_file_cache_live_observed_samples": 0,
+        "target_sample_count": 225,
+        "live_pid_sample_count": 225,
+        "gpu_unknown_samples": 204,
+        "gpu_scheduled_skip_samples": 204,
+        "gpu_observed_samples": 21,
+        "gpu_failed_observations": 0
+      },
+      "PSI_status": "UNKNOWN",
+      "PID_IO_unknown_records": 0,
+      "cgroup_unknown_records": 15,
+      "client_envelopes": 4,
+      "memory": {
+        "memory_max_bytes": 17179869184,
+        "charge_peak_bytes": 17179869184,
+        "observed_current_peak_bytes": 17179869184,
+        "charge_peak_minus_max_bytes": 0,
+        "observed_current_peak_minus_max_bytes": 0,
+        "final_memory_events": {
+          "value": {
+            "low": 0,
+            "high": 0,
+            "max": 1943993,
+            "oom": 0,
+            "oom_kill": 0,
+            "oom_group_kill": 0
+          },
+          "error": null
+        },
+        "final_swap_current": {
+          "value": 0,
+          "error": null
+        },
+        "final_swap_peak": {
+          "value": 0,
+          "error": null
+        },
+        "scope": "Whole service lifecycle; not per-request peaks"
+      },
+      "IO_windows": [
+        {
+          "label": "s01-as-off-r00-conditioning-context-1024:run1",
+          "pid_storage_read_bytes": {
+            "value": 67435679744,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "pid_logical_rchar_bytes": {
+            "value": 55979394381,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "cgroup_read_bytes_by_device": {
+            "cg_rbytes:259:0": {
+              "value": 50415259648,
+              "reason": null,
+              "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+            }
+          },
+          "cgroup_vs_PID": {
+            "cg_rbytes:259:0": {
+              "delta": 50415259648,
+              "pid_delta": 67435679744,
+              "exactly_agrees": false,
+              "plateau_with_positive_PID": false
+            }
+          }
+        },
+        {
+          "label": "s01-as-off-r01-probe-context-1024:run1",
+          "pid_storage_read_bytes": {
+            "value": 53363101696,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "pid_logical_rchar_bytes": {
+            "value": 50200912244,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "cgroup_read_bytes_by_device": {
+            "cg_rbytes:259:0": {
+              "value": 34892464128,
+              "reason": null,
+              "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+            }
+          },
+          "cgroup_vs_PID": {
+            "cg_rbytes:259:0": {
+              "delta": 34892464128,
+              "pid_delta": 53363101696,
+              "exactly_agrees": false,
+              "plateau_with_positive_PID": false
+            }
+          }
+        },
+        {
+          "label": "s01-as-off-r02-probe-context-1024:run1",
+          "pid_storage_read_bytes": {
+            "value": 48068468736,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "pid_logical_rchar_bytes": {
+            "value": 49860838893,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "cgroup_read_bytes_by_device": {
+            "cg_rbytes:259:0": {
+              "value": 19024384000,
+              "reason": null,
+              "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+            }
+          },
+          "cgroup_vs_PID": {
+            "cg_rbytes:259:0": {
+              "delta": 19024384000,
+              "pid_delta": 48068468736,
+              "exactly_agrees": false,
+              "plateau_with_positive_PID": false
+            }
+          }
+        },
+        {
+          "label": "s01-as-off-r03-probe-context-1024:run1",
+          "pid_storage_read_bytes": {
+            "value": 43405893632,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "pid_logical_rchar_bytes": {
+            "value": 49780659002,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "cgroup_read_bytes_by_device": {
+            "cg_rbytes:259:0": {
+              "value": 16212484096,
+              "reason": null,
+              "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+            }
+          },
+          "cgroup_vs_PID": {
+            "cg_rbytes:259:0": {
+              "delta": 16212484096,
+              "pid_delta": 43405893632,
+              "exactly_agrees": false,
+              "plateau_with_positive_PID": false
+            }
+          }
+        }
+      ]
+    },
+    "s02-as-on": {
+      "counts": {
+        "sample_count": 227,
+        "binding_mismatch_samples": 0,
+        "model_file_cache_observed_samples": 2,
+        "model_file_cache_live_observed_samples": 0,
+        "target_sample_count": 225,
+        "live_pid_sample_count": 225,
+        "gpu_unknown_samples": 204,
+        "gpu_scheduled_skip_samples": 204,
+        "gpu_observed_samples": 21,
+        "gpu_failed_observations": 0
+      },
+      "PSI_status": "UNKNOWN",
+      "PID_IO_unknown_records": 0,
+      "cgroup_unknown_records": 15,
+      "client_envelopes": 4,
+      "memory": {
+        "memory_max_bytes": 17179869184,
+        "charge_peak_bytes": 17179869184,
+        "observed_current_peak_bytes": 17179873280,
+        "charge_peak_minus_max_bytes": 0,
+        "observed_current_peak_minus_max_bytes": 4096,
+        "final_memory_events": {
+          "value": {
+            "low": 0,
+            "high": 0,
+            "max": 1947675,
+            "oom": 0,
+            "oom_kill": 0,
+            "oom_group_kill": 0
+          },
+          "error": null
+        },
+        "final_swap_current": {
+          "value": 0,
+          "error": null
+        },
+        "final_swap_peak": {
+          "value": 0,
+          "error": null
+        },
+        "scope": "Whole service lifecycle; not per-request peaks"
+      },
+      "IO_windows": [
+        {
+          "label": "s02-as-on-r00-conditioning-context-1024:run1",
+          "pid_storage_read_bytes": {
+            "value": 67471208448,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "pid_logical_rchar_bytes": {
+            "value": 55968335084,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "cgroup_read_bytes_by_device": {
+            "cg_rbytes:259:0": {
+              "value": 48537071616,
+              "reason": null,
+              "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+            }
+          },
+          "cgroup_vs_PID": {
+            "cg_rbytes:259:0": {
+              "delta": 48537071616,
+              "pid_delta": 67471208448,
+              "exactly_agrees": false,
+              "plateau_with_positive_PID": false
+            }
+          }
+        },
+        {
+          "label": "s02-as-on-r01-probe-context-1024:run1",
+          "pid_storage_read_bytes": {
+            "value": 53437001728,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "pid_logical_rchar_bytes": {
+            "value": 50228560483,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "cgroup_read_bytes_by_device": {
+            "cg_rbytes:259:0": {
+              "value": 34172694528,
+              "reason": null,
+              "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+            }
+          },
+          "cgroup_vs_PID": {
+            "cg_rbytes:259:0": {
+              "delta": 34172694528,
+              "pid_delta": 53437001728,
+              "exactly_agrees": false,
+              "plateau_with_positive_PID": false
+            }
+          }
+        },
+        {
+          "label": "s02-as-on-r02-probe-context-1024:run1",
+          "pid_storage_read_bytes": {
+            "value": 48076451840,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "pid_logical_rchar_bytes": {
+            "value": 49860838893,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "cgroup_read_bytes_by_device": {
+            "cg_rbytes:259:0": {
+              "value": 19837980672,
+              "reason": null,
+              "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+            }
+          },
+          "cgroup_vs_PID": {
+            "cg_rbytes:259:0": {
+              "delta": 19837980672,
+              "pid_delta": 48076451840,
+              "exactly_agrees": false,
+              "plateau_with_positive_PID": false
+            }
+          }
+        },
+        {
+          "label": "s02-as-on-r03-probe-context-1024:run1",
+          "pid_storage_read_bytes": {
+            "value": 43644526592,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "pid_logical_rchar_bytes": {
+            "value": 49788953474,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "cgroup_read_bytes_by_device": {
+            "cg_rbytes:259:0": {
+              "value": 15383781376,
+              "reason": null,
+              "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+            }
+          },
+          "cgroup_vs_PID": {
+            "cg_rbytes:259:0": {
+              "delta": 15383781376,
+              "pid_delta": 43644526592,
+              "exactly_agrees": false,
+              "plateau_with_positive_PID": false
+            }
+          }
+        }
+      ]
+    },
+    "s03-al-on": {
+      "counts": {
+        "sample_count": 256,
+        "binding_mismatch_samples": 0,
+        "model_file_cache_observed_samples": 2,
+        "model_file_cache_live_observed_samples": 0,
+        "target_sample_count": 254,
+        "live_pid_sample_count": 254,
+        "gpu_unknown_samples": 230,
+        "gpu_scheduled_skip_samples": 230,
+        "gpu_observed_samples": 24,
+        "gpu_failed_observations": 0
+      },
+      "PSI_status": "UNKNOWN",
+      "PID_IO_unknown_records": 0,
+      "cgroup_unknown_records": 15,
+      "client_envelopes": 4,
+      "memory": {
+        "memory_max_bytes": 17179869184,
+        "charge_peak_bytes": 17179869184,
+        "observed_current_peak_bytes": 17179869184,
+        "charge_peak_minus_max_bytes": 0,
+        "observed_current_peak_minus_max_bytes": 0,
+        "final_memory_events": {
+          "value": {
+            "low": 0,
+            "high": 0,
+            "max": 2267667,
+            "oom": 0,
+            "oom_kill": 0,
+            "oom_group_kill": 0
+          },
+          "error": null
+        },
+        "final_swap_current": {
+          "value": 0,
+          "error": null
+        },
+        "final_swap_peak": {
+          "value": 0,
+          "error": null
+        },
+        "scope": "Whole service lifecycle; not per-request peaks"
+      },
+      "IO_windows": [
+        {
+          "label": "s03-al-on-r00-conditioning-context-8193:run1",
+          "pid_storage_read_bytes": {
+            "value": 99363315712,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "pid_logical_rchar_bytes": {
+            "value": 214602876922,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "cgroup_read_bytes_by_device": {
+            "cg_rbytes:259:0": {
+              "value": 77465153536,
+              "reason": null,
+              "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+            }
+          },
+          "cgroup_vs_PID": {
+            "cg_rbytes:259:0": {
+              "delta": 77465153536,
+              "pid_delta": 99363315712,
+              "exactly_agrees": false,
+              "plateau_with_positive_PID": false
+            }
+          }
+        },
+        {
+          "label": "s03-al-on-r01-probe-context-1024:run1",
+          "pid_storage_read_bytes": {
+            "value": 57829150720,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "pid_logical_rchar_bytes": {
+            "value": 53399813612,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "cgroup_read_bytes_by_device": {
+            "cg_rbytes:259:0": {
+              "value": 37581881344,
+              "reason": null,
+              "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+            }
+          },
+          "cgroup_vs_PID": {
+            "cg_rbytes:259:0": {
+              "delta": 37581881344,
+              "pid_delta": 57829150720,
+              "exactly_agrees": false,
+              "plateau_with_positive_PID": false
+            }
+          }
+        },
+        {
+          "label": "s03-al-on-r02-probe-context-1024:run1",
+          "pid_storage_read_bytes": {
+            "value": 46373216256,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "pid_logical_rchar_bytes": {
+            "value": 50021198685,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "cgroup_read_bytes_by_device": {
+            "cg_rbytes:259:0": {
+              "value": 24184467456,
+              "reason": null,
+              "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+            }
+          },
+          "cgroup_vs_PID": {
+            "cg_rbytes:259:0": {
+              "delta": 24184467456,
+              "pid_delta": 46373216256,
+              "exactly_agrees": false,
+              "plateau_with_positive_PID": false
+            }
+          }
+        },
+        {
+          "label": "s03-al-on-r03-probe-context-1024:run1",
+          "pid_storage_read_bytes": {
+            "value": 51198607360,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "pid_logical_rchar_bytes": {
+            "value": 49855309250,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "cgroup_read_bytes_by_device": {
+            "cg_rbytes:259:0": {
+              "value": 22089465856,
+              "reason": null,
+              "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+            }
+          },
+          "cgroup_vs_PID": {
+            "cg_rbytes:259:0": {
+              "delta": 22089465856,
+              "pid_delta": 51198607360,
+              "exactly_agrees": false,
+              "plateau_with_positive_PID": false
+            }
+          }
+        }
+      ]
+    },
+    "s04-al-off": {
+      "counts": {
+        "sample_count": 257,
+        "binding_mismatch_samples": 0,
+        "model_file_cache_observed_samples": 2,
+        "model_file_cache_live_observed_samples": 0,
+        "target_sample_count": 255,
+        "live_pid_sample_count": 255,
+        "gpu_unknown_samples": 231,
+        "gpu_scheduled_skip_samples": 231,
+        "gpu_observed_samples": 24,
+        "gpu_failed_observations": 0
+      },
+      "PSI_status": "UNKNOWN",
+      "PID_IO_unknown_records": 0,
+      "cgroup_unknown_records": 15,
+      "client_envelopes": 4,
+      "memory": {
+        "memory_max_bytes": 17179869184,
+        "charge_peak_bytes": 17179906048,
+        "observed_current_peak_bytes": 17180102656,
+        "charge_peak_minus_max_bytes": 36864,
+        "observed_current_peak_minus_max_bytes": 233472,
+        "final_memory_events": {
+          "value": {
+            "low": 0,
+            "high": 0,
+            "max": 2268207,
+            "oom": 0,
+            "oom_kill": 0,
+            "oom_group_kill": 0
+          },
+          "error": null
+        },
+        "final_swap_current": {
+          "value": 0,
+          "error": null
+        },
+        "final_swap_peak": {
+          "value": 0,
+          "error": null
+        },
+        "scope": "Whole service lifecycle; not per-request peaks"
+      },
+      "IO_windows": [
+        {
+          "label": "s04-al-off-r00-conditioning-context-8193:run1",
+          "pid_storage_read_bytes": {
+            "value": 99364376576,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "pid_logical_rchar_bytes": {
+            "value": 214616701042,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "cgroup_read_bytes_by_device": {
+            "cg_rbytes:259:0": {
+              "value": 89874558976,
+              "reason": null,
+              "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+            }
+          },
+          "cgroup_vs_PID": {
+            "cg_rbytes:259:0": {
+              "delta": 89874558976,
+              "pid_delta": 99364376576,
+              "exactly_agrees": false,
+              "plateau_with_positive_PID": false
+            }
+          }
+        },
+        {
+          "label": "s04-al-off-r01-probe-context-1024:run1",
+          "pid_storage_read_bytes": {
+            "value": 57882050560,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "pid_logical_rchar_bytes": {
+            "value": 53405343260,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "cgroup_read_bytes_by_device": {
+            "cg_rbytes:259:0": {
+              "value": 41094848512,
+              "reason": null,
+              "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+            }
+          },
+          "cgroup_vs_PID": {
+            "cg_rbytes:259:0": {
+              "delta": 41094848512,
+              "pid_delta": 57882050560,
+              "exactly_agrees": false,
+              "plateau_with_positive_PID": false
+            }
+          }
+        },
+        {
+          "label": "s04-al-off-r02-probe-context-1024:run1",
+          "pid_storage_read_bytes": {
+            "value": 46410616832,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "pid_logical_rchar_bytes": {
+            "value": 50029493157,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "cgroup_read_bytes_by_device": {
+            "cg_rbytes:259:0": {
+              "value": 24287150080,
+              "reason": null,
+              "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+            }
+          },
+          "cgroup_vs_PID": {
+            "cg_rbytes:259:0": {
+              "delta": 24287150080,
+              "pid_delta": 46410616832,
+              "exactly_agrees": false,
+              "plateau_with_positive_PID": false
+            }
+          }
+        },
+        {
+          "label": "s04-al-off-r03-probe-context-1024:run1",
+          "pid_storage_read_bytes": {
+            "value": 51162836992,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "pid_logical_rchar_bytes": {
+            "value": 49844249954,
+            "reason": null,
+            "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+          },
+          "cgroup_read_bytes_by_device": {
+            "cg_rbytes:259:0": {
+              "value": 21729079296,
+              "reason": null,
+              "scope": "two controller snapshots; all q4t PID I/O, not expert-only reads"
+            }
+          },
+          "cgroup_vs_PID": {
+            "cg_rbytes:259:0": {
+              "delta": 21729079296,
+              "pid_delta": 51162836992,
+              "exactly_agrees": false,
+              "plateau_with_positive_PID": false
+            }
+          }
+        }
+      ]
+    }
+  },
+  "resource_limits": [
+    "Five services are the repetition units. No old service is pooled and no per-position observation is an independent service replicate.",
+    "PID storage read_bytes, logical rchar, cgroup I/O and partition device counters remain separate; device background traffic and parent disks are never added or attributed to expert SSD reads.",
+    "I/O envelopes include client launch/teardown. Eleven quality HTTP windows share one controller envelope and have no per-question I/O.",
+    "Missing samples, PSI, counter resets, cgroup plateaus and bracket uncertainty remain explicit unknowns; no interpolation or fake zeros.",
+    "memory.current sampled peak and memory.peak charge peak are distinct service-lifecycle observations, each compared to 16GiB separately.",
+    "NVIDIA, cgroup, process and file-cache views overlap and have noncoincident peaks; physical RAM54GB stays INDETERMINATE.",
+    "This does not divide exclusive waiting time, establish pure observer overhead, or accept a performance improvement."
+  ],
+  "whole_physical_RAM_54GB": "INDETERMINATE",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-analysis.json": "b94ea7185510563a29497d53933afb3487d0246a83d0c539d3514dac795ce73a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-resources.json": "395b2d6e6fb152bca37a125e2e4a446315a888a4f66b0612c517699f4d4bae59",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-contracts-decision.json": "211682c410958710c3fd88fe637394c8b8d6b4b03dc7b3ed0109ae2caf5c711c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/build_delivery_summary.py": "669a8a0b472c8a5421ae08afc22bfb25ad9bf03e2d7ee0614631546012f65301"
+  }
+}

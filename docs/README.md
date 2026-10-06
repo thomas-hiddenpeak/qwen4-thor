@@ -5,7 +5,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
-| [OFFLOAD_DECODE_SUPPLY_2026-10-06.md](OFFLOAD_DECODE_SUPPLY_2026-10-06.md) | Decode逐层供给与同plan竞争上界 | 先复用16请求离线识别，条件窄观测尚未启动 |
+| [OFFLOAD_DECODE_SUPPLY_2026-10-06.md](OFFLOAD_DECODE_SUPPLY_2026-10-06.md) | Decode逐层供给与同plan竞争观测 | 5服务27HTTP与87新合同通过；22次直接损失不足以解释主入口机会缺口 |
 | [OFFLOAD_GPU_REPLAY_2026-10-06.md](OFFLOAD_GPU_REPLAY_2026-10-06.md) | 源码一致GPU缓存回放 | 16请求精确复现；固定入口/分块的prefill余量收紧，唯一平票候选NO_GO |
 | [OFFLOAD_MECHANISM_2026-10-06.md](OFFLOAD_MECHANISM_2026-10-06.md) | 缓存状态、路由与阶段读取机制 | 8服务/32HTTP闭合；供给变化与存储读差分列，无新运行时候选 |
 | [OFFLOAD_CAUSALITY_2026-10-05.md](OFFLOAD_CAUSALITY_2026-10-05.md) | 组序与阈值前驱诊断、证据复用与后续单一候选 | 16服务/64HTTP诊断完成；候选依据不足，旧NO_GO保持 |

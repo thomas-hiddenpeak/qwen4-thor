@@ -1,0 +1,32 @@
+{
+  "started_t": 1791277213.5458999,
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/final_protection.py",
+    "--self-sha256",
+    "31e94fca3d67570c6bdf2d7b7906a5370333f73a74d009d12486d5e101e1675d"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source",
+  "returncode": 0,
+  "failure": null,
+  "automatic_retry": false,
+  "timeout_s": 900,
+  "signals": [],
+  "cleanup_complete": true,
+  "pid": 3802636,
+  "pgid": 3802636,
+  "group_before_cleanup": {
+    "live_pids": [],
+    "zombie_pids": [],
+    "errors": [],
+    "absent": true
+  },
+  "group_after_cleanup": {
+    "live_pids": [],
+    "zombie_pids": [],
+    "errors": [],
+    "absent": true
+  },
+  "ended_t": 1791277215.3121054
+}

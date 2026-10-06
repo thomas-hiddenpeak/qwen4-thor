@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "execution_admitted": true,
+  "execution_plan_sha256": "907111ee1b731521c286e90df3718457c11c25c340a3f66fabc90a03a7584b24",
+  "runtime_binary_sha256": "72a321a422facac605c13740ac8eb78e253056a6719c88bea71e3bbae9ef843f",
+  "recorded_t": 1791273828.1851683,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-execution-independent-review.json": "a5879486c8644f6f4075c45c8d8cdb4c862eda29608e8593fc8f93c82e1befdc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-independent-static-review-r2.json": "7c678f7931ae9c287b5645ac9af54765d9d6b3f4e726792dd0b65674a6d1c052",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-resource-independent-static-review.json": "0e7a28d8108bab0a4f130d35e20d4b2061af9b8ca5754fcf7a1577950c9e64ed",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-build-identity.json": "640b58997b1895ff77161bea53010e47b875469aee34c9be69fa56fc03b9aa1a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-dependency-admission.json": "1a6debb5e53659de07d3da626d37abd7205552ab3fa4cfdc05445f54eb9b9cbd"
+  },
+  "service_count": 5,
+  "HTTP_count": 27,
+  "first_test": "q01-quality-on fixed11",
+  "next": "46 host/protocol contracts then four fixed diagnostic services",
+  "performance_acceptance": false
+}

@@ -1,0 +1,384 @@
+{
+  "schema": 1,
+  "scope": "offload_decode_supply_observer_final_evidence_archive",
+  "archive_root_at_creation": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/docs/evidence/offload-supply-20261006",
+  "original_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006",
+  "archive_operation": "Exact small-file copies and one generated README; no tests, inference, trace or resource analysis.",
+  "runtime_source_commit": "75d26ff22391a4fd7549b1c39bf2b9c0f2cbbf89",
+  "runtime_binary_sha256": "72a321a422facac605c13740ac8eb78e253056a6719c88bea71e3bbae9ef843f",
+  "execution_plan_sha256": "907111ee1b731521c286e90df3718457c11c25c340a3f66fabc90a03a7584b24",
+  "service_count": 5,
+  "http_request_count": 27,
+  "new_contract_count": 87,
+  "new_contract_partition": {
+    "offline": 41,
+    "observer_host": 23,
+    "observer_protocol": 23
+  },
+  "preserved_historical_file_count": 9,
+  "new_exact_json_count": 20,
+  "new_exact_harness_count": 13,
+  "entries": [
+    {
+      "kind": "exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/final-protection-01-exit.json",
+      "relative_archive_path": "final-protection-01-exit.json",
+      "sha256": "6191d93e2f192f6d9d6140301e95fab92e81746128ab62e5cd923b7df0732e27",
+      "bytes": 801
+    },
+    {
+      "kind": "exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/final-protection-01-start.json",
+      "relative_archive_path": "final-protection-01-start.json",
+      "sha256": "b064bed4d907492f99944c0a9bed343d67200250138630a057ed65ae8093f49f",
+      "bytes": 508
+    },
+    {
+      "kind": "exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/final-protection-independent-static-review.json",
+      "relative_archive_path": "final-protection-independent-static-review.json",
+      "sha256": "1eafbeac69ffebfdf0d46943580e7d7b0307b0fe0f6b0e0e18f6f744614d2461",
+      "bytes": 7150
+    },
+    {
+      "kind": "exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/final-protection.json",
+      "relative_archive_path": "final-protection.json",
+      "sha256": "99b99e4d0e3322efc444586308edff5876a2bb9039b40d15bcb27a747fb7d4b3",
+      "bytes": 502580
+    },
+    {
+      "kind": "historical_layout_harness_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/admit_observer_analysis.py",
+      "relative_archive_path": "harness/admit_observer_analysis.py",
+      "sha256": "ac12a0a65ad5fc164bf66f504e9a7a0bcfdea690a7afc8a22d4f3db305ec332e",
+      "bytes": 2642
+    },
+    {
+      "kind": "historical_layout_harness_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/analyze_supply_observer.py",
+      "relative_archive_path": "harness/analyze_supply_observer.py",
+      "sha256": "0f0bda9217b6a6ec384ce50c94a04f6df949133cc98b66ee6597d7fee3f68574",
+      "bytes": 10163
+    },
+    {
+      "kind": "historical_layout_harness_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/audit_observer_stage.py",
+      "relative_archive_path": "harness/audit_observer_stage.py",
+      "sha256": "d8b48b20aa01cb2abc9b0a406f6352db1b3a67d4e4e3fa3a0230bf9c2eab70b6",
+      "bytes": 10686
+    },
+    {
+      "kind": "historical_layout_harness_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/build_delivery_summary.py",
+      "relative_archive_path": "harness/build_delivery_summary.py",
+      "sha256": "669a8a0b472c8a5421ae08afc22bfb25ad9bf03e2d7ee0614631546012f65301",
+      "bytes": 3171
+    },
+    {
+      "kind": "historical_layout_harness_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/build_observer.py",
+      "relative_archive_path": "harness/build_observer.py",
+      "sha256": "d7c86c5b8fe7ce1a16723c0cd190d063d6bbf1e43221ba70310a529b734c2f9f",
+      "bytes": 2525
+    },
+    {
+      "kind": "historical_layout_harness_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/final_protection.py",
+      "relative_archive_path": "harness/final_protection.py",
+      "sha256": "31e94fca3d67570c6bdf2d7b7906a5370333f73a74d009d12486d5e101e1675d",
+      "bytes": 44410
+    },
+    {
+      "kind": "historical_layout_harness_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/freeze_observer_execution.py",
+      "relative_archive_path": "harness/freeze_observer_execution.py",
+      "sha256": "e4c5fe2ffa01f3f935c02ccf25769a44a0cfe8d63a43a324c06a2f62cf886b31",
+      "bytes": 7105
+    },
+    {
+      "kind": "historical_layout_harness_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer_common.py",
+      "relative_archive_path": "harness/observer_common.py",
+      "sha256": "5ea5b5499eb8c262ec6021f3ec348ede2eceda343b7741cfb7431ad104ebe2d0",
+      "bytes": 2892
+    },
+    {
+      "kind": "historical_layout_harness_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer_entry.py",
+      "relative_archive_path": "harness/observer_entry.py",
+      "sha256": "ef392033a39491619030237a5b5d9fc998d80d1aab79da718dee1e71326a4c22",
+      "bytes": 2598
+    },
+    {
+      "kind": "historical_layout_harness_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer_resource_audit.py",
+      "relative_archive_path": "harness/observer_resource_audit.py",
+      "sha256": "374322b6501835aef82b8b2b8594130bdd9e1e83cbd47d12fcbbd3386c0438e1",
+      "bytes": 20763
+    },
+    {
+      "kind": "historical_layout_harness_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/review_observer_arithmetic.py",
+      "relative_archive_path": "harness/review_observer_arithmetic.py",
+      "sha256": "33bc39658fb7cb901b162755d39a1a0d92bd98f7ad0360706b5b8aba4415ed19",
+      "bytes": 9460
+    },
+    {
+      "kind": "historical_layout_harness_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/run_observer_contracts.py",
+      "relative_archive_path": "harness/run_observer_contracts.py",
+      "sha256": "d5f63e4d98fd0ddf1d340396b30f63caac8cb55fd9671d220d3a5cfc22bdd57c",
+      "bytes": 1727
+    },
+    {
+      "kind": "historical_layout_harness_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/run_observer_stage.py",
+      "relative_archive_path": "harness/run_observer_stage.py",
+      "sha256": "4115dabe536871bfff3f8973ca3240cc3e1a970df72a1ce508e1be4492b4b281",
+      "bytes": 2845
+    },
+    {
+      "kind": "exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-analysis-admission.json",
+      "relative_archive_path": "observer-analysis-admission.json",
+      "sha256": "d975dfc5b35ec8dd4754a7773a49fb6ef1f860dfb1daaaaddcdb2d199961f372",
+      "bytes": 5181
+    },
+    {
+      "kind": "exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-analysis-static-review.json",
+      "relative_archive_path": "observer-analysis-static-review.json",
+      "sha256": "67fe3706691a2232fa3a3ed7898a467dd10ecb8a15930b6f8fd8e9bce34f9de9",
+      "bytes": 4999
+    },
+    {
+      "kind": "preserved_historical_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-appendix.json",
+      "relative_archive_path": "observer-appendix.json",
+      "sha256": "3ee1895e726d99605a38b365b8ca3a64cf30d6b5da67e5914d8faca0bf4b9a1f",
+      "bytes": 24274
+    },
+    {
+      "kind": "exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-build-01-exit.json",
+      "relative_archive_path": "observer-build-01-exit.json",
+      "sha256": "5593c81579045b63b63d2bedc19b25fb062c7428b26313900771e9124a876f15",
+      "bytes": 751
+    },
+    {
+      "kind": "exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-build-01-start.json",
+      "relative_archive_path": "observer-build-01-start.json",
+      "sha256": "47921b636f7fc51f183f921dd1582799da0f5282382e10d5f5d4c99bfff01b4c",
+      "bytes": 458
+    },
+    {
+      "kind": "exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-configure-01-exit.json",
+      "relative_archive_path": "observer-configure-01-exit.json",
+      "sha256": "157bddc256116a4a437d5e5c9aaedaeb99116fcd1b3adf91ddfd9c9c49e38366",
+      "bytes": 999
+    },
+    {
+      "kind": "exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-configure-01-start.json",
+      "relative_archive_path": "observer-configure-01-start.json",
+      "sha256": "4b4f6f8da34dcef20b4efe08c2b7a6ad27bfc9d09c659482dc438d9b90ce8d83",
+      "bytes": 706
+    },
+    {
+      "kind": "exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-contracts-decision.json",
+      "relative_archive_path": "observer-contracts-decision.json",
+      "sha256": "211682c410958710c3fd88fe637394c8b8d6b4b03dc7b3ed0109ae2caf5c711c",
+      "bytes": 2952
+    },
+    {
+      "kind": "exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-delivery-summary.json",
+      "relative_archive_path": "observer-delivery-summary.json",
+      "sha256": "498a9414e1f51de326819777e2d242bcbc5cbd67136eb1750a2394c1eb613d2f",
+      "bytes": 88001
+    },
+    {
+      "kind": "exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-execution-admission.json",
+      "relative_archive_path": "observer-execution-admission.json",
+      "sha256": "11f820070b370890cd39f01ca3a8a60a1c6706d481a1468e8ab08c56295b3921",
+      "bytes": 1403
+    },
+    {
+      "kind": "exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-execution-independent-review.json",
+      "relative_archive_path": "observer-execution-independent-review.json",
+      "sha256": "a5879486c8644f6f4075c45c8d8cdb4c862eda29608e8593fc8f93c82e1befdc",
+      "bytes": 67105
+    },
+    {
+      "kind": "exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-execution-plan.json",
+      "relative_archive_path": "observer-execution-plan.json",
+      "sha256": "907111ee1b731521c286e90df3718457c11c25c340a3f66fabc90a03a7584b24",
+      "bytes": 71980
+    },
+    {
+      "kind": "preserved_historical_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-first-static-findings.json",
+      "relative_archive_path": "observer-first-static-findings.json",
+      "sha256": "a07ef84eb6630c09e53336e5a4d10f2449e28b7363fb55657a0cf14d13769b66",
+      "bytes": 1207
+    },
+    {
+      "kind": "preserved_historical_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-implementation-clarification.json",
+      "relative_archive_path": "observer-implementation-clarification.json",
+      "sha256": "2af06de0893b87e7ecefbafafe66939564158f09051843ae8e2218ee14ff2b59",
+      "bytes": 966
+    },
+    {
+      "kind": "preserved_historical_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-independent-static-review-r2.json",
+      "relative_archive_path": "observer-independent-static-review-r2.json",
+      "sha256": "7c678f7931ae9c287b5645ac9af54765d9d6b3f4e726792dd0b65674a6d1c052",
+      "bytes": 13666
+    },
+    {
+      "kind": "exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-resource-independent-static-review.json",
+      "relative_archive_path": "observer-resource-independent-static-review.json",
+      "sha256": "0e7a28d8108bab0a4f130d35e20d4b2061af9b8ca5754fcf7a1577950c9e64ed",
+      "bytes": 2792
+    },
+    {
+      "kind": "exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-result-arithmetic-review.json",
+      "relative_archive_path": "observer-result-arithmetic-review.json",
+      "sha256": "b1e9c158441907d4a6778f4d43d3bf72a90715d0abf218d5f4ceadb54d74603a",
+      "bytes": 18738
+    },
+    {
+      "kind": "exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-result-independent-review.json",
+      "relative_archive_path": "observer-result-independent-review.json",
+      "sha256": "58e8d71304b6f1d64d68c6862eee5282b1c5226e0eaca1979ba4f94e99a1e05a",
+      "bytes": 34398
+    },
+    {
+      "kind": "exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-result-resource-review-extract.json",
+      "relative_archive_path": "observer-result-resource-review-extract.json",
+      "sha256": "c4d8e59d31b8eaa39786528b559b8b1579df57ea5f4d645e67da4c0c432e7a0c",
+      "bytes": 628484
+    },
+    {
+      "kind": "exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-result-terminal-independent-review.json",
+      "relative_archive_path": "observer-result-terminal-independent-review.json",
+      "sha256": "5e18704c3787b85270de1741f124b68e46b97c3dc3da3adba1acf7c00f9e29e7",
+      "bytes": 30575
+    },
+    {
+      "kind": "preserved_historical_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-serialization-clarification.json",
+      "relative_archive_path": "observer-serialization-clarification.json",
+      "sha256": "9d64ce2e1509073e23fdcf58ceceb34a7232d7317f814ec3a51096aa335a31f7",
+      "bytes": 822
+    },
+    {
+      "kind": "preserved_historical_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/result-independent-review.json",
+      "relative_archive_path": "result-independent-review.json",
+      "sha256": "3244e0702f17efffb3e53155bd129b0ae74dfd05a0deef6c05956f40dbd83c41",
+      "bytes": 5797
+    },
+    {
+      "kind": "preserved_historical_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/scope-plan.json",
+      "relative_archive_path": "scope-plan.json",
+      "sha256": "2bf0aa00fceebdc00d5b1e04ced774f3eb2ba4104d58e056a21d7c68205086e4",
+      "bytes": 5315
+    },
+    {
+      "kind": "preserved_historical_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/supply-independent-summary.json",
+      "relative_archive_path": "supply-independent-summary.json",
+      "sha256": "ebe4cbeef21e0d9cfc4b51f52c80aaa1564c6258be679f90f3823dd9ec6424db",
+      "bytes": 45343
+    },
+    {
+      "kind": "preserved_historical_exact_copy",
+      "original_absolute_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/validation-results.json",
+      "relative_archive_path": "validation-results.json",
+      "sha256": "9e9b1f7ca40c3add27cad45c3f5abfb459549ae2630921fd75dd2a66b0a4b060",
+      "bytes": 2557
+    }
+  ],
+  "generated_files": [
+    {
+      "relative_archive_path": "README.md",
+      "sha256": "ca12f35b317dd426fc0d9607c66c46eefcc8e9094c4c894fa06ac5fd8ddab296",
+      "bytes": 4350,
+      "origin": "Generated archive guide from the exact copied delivery summary, validation results and final-protection receipts."
+    }
+  ],
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/admit_observer_analysis.py": "ac12a0a65ad5fc164bf66f504e9a7a0bcfdea690a7afc8a22d4f3db305ec332e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/analyze_supply_observer.py": "0f0bda9217b6a6ec384ce50c94a04f6df949133cc98b66ee6597d7fee3f68574",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/audit_observer_stage.py": "d8b48b20aa01cb2abc9b0a406f6352db1b3a67d4e4e3fa3a0230bf9c2eab70b6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/build_delivery_summary.py": "669a8a0b472c8a5421ae08afc22bfb25ad9bf03e2d7ee0614631546012f65301",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/build_observer.py": "d7c86c5b8fe7ce1a16723c0cd190d063d6bbf1e43221ba70310a529b734c2f9f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/final-protection-01-exit.json": "6191d93e2f192f6d9d6140301e95fab92e81746128ab62e5cd923b7df0732e27",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/final-protection-01-start.json": "b064bed4d907492f99944c0a9bed343d67200250138630a057ed65ae8093f49f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/final-protection-independent-static-review.json": "1eafbeac69ffebfdf0d46943580e7d7b0307b0fe0f6b0e0e18f6f744614d2461",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/final-protection.json": "99b99e4d0e3322efc444586308edff5876a2bb9039b40d15bcb27a747fb7d4b3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/final_protection.py": "31e94fca3d67570c6bdf2d7b7906a5370333f73a74d009d12486d5e101e1675d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/freeze_observer_execution.py": "e4c5fe2ffa01f3f935c02ccf25769a44a0cfe8d63a43a324c06a2f62cf886b31",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-analysis-admission.json": "d975dfc5b35ec8dd4754a7773a49fb6ef1f860dfb1daaaaddcdb2d199961f372",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-analysis-static-review.json": "67fe3706691a2232fa3a3ed7898a467dd10ecb8a15930b6f8fd8e9bce34f9de9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-appendix.json": "3ee1895e726d99605a38b365b8ca3a64cf30d6b5da67e5914d8faca0bf4b9a1f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-build-01-exit.json": "5593c81579045b63b63d2bedc19b25fb062c7428b26313900771e9124a876f15",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-build-01-start.json": "47921b636f7fc51f183f921dd1582799da0f5282382e10d5f5d4c99bfff01b4c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-configure-01-exit.json": "157bddc256116a4a437d5e5c9aaedaeb99116fcd1b3adf91ddfd9c9c49e38366",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-configure-01-start.json": "4b4f6f8da34dcef20b4efe08c2b7a6ad27bfc9d09c659482dc438d9b90ce8d83",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-contracts-decision.json": "211682c410958710c3fd88fe637394c8b8d6b4b03dc7b3ed0109ae2caf5c711c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-delivery-summary.json": "498a9414e1f51de326819777e2d242bcbc5cbd67136eb1750a2394c1eb613d2f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-execution-admission.json": "11f820070b370890cd39f01ca3a8a60a1c6706d481a1468e8ab08c56295b3921",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-execution-independent-review.json": "a5879486c8644f6f4075c45c8d8cdb4c862eda29608e8593fc8f93c82e1befdc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-execution-plan.json": "907111ee1b731521c286e90df3718457c11c25c340a3f66fabc90a03a7584b24",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-first-static-findings.json": "a07ef84eb6630c09e53336e5a4d10f2449e28b7363fb55657a0cf14d13769b66",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-implementation-clarification.json": "2af06de0893b87e7ecefbafafe66939564158f09051843ae8e2218ee14ff2b59",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-independent-static-review-r2.json": "7c678f7931ae9c287b5645ac9af54765d9d6b3f4e726792dd0b65674a6d1c052",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-resource-independent-static-review.json": "0e7a28d8108bab0a4f130d35e20d4b2061af9b8ca5754fcf7a1577950c9e64ed",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-result-arithmetic-review.json": "b1e9c158441907d4a6778f4d43d3bf72a90715d0abf218d5f4ceadb54d74603a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-result-independent-review.json": "58e8d71304b6f1d64d68c6862eee5282b1c5226e0eaca1979ba4f94e99a1e05a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-result-resource-review-extract.json": "c4d8e59d31b8eaa39786528b559b8b1579df57ea5f4d645e67da4c0c432e7a0c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-result-terminal-independent-review.json": "5e18704c3787b85270de1741f124b68e46b97c3dc3da3adba1acf7c00f9e29e7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-serialization-clarification.json": "9d64ce2e1509073e23fdcf58ceceb34a7232d7317f814ec3a51096aa335a31f7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer_common.py": "5ea5b5499eb8c262ec6021f3ec348ede2eceda343b7741cfb7431ad104ebe2d0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer_entry.py": "ef392033a39491619030237a5b5d9fc998d80d1aab79da718dee1e71326a4c22",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer_resource_audit.py": "374322b6501835aef82b8b2b8594130bdd9e1e83cbd47d12fcbbd3386c0438e1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/result-independent-review.json": "3244e0702f17efffb3e53155bd129b0ae74dfd05a0deef6c05956f40dbd83c41",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/review_observer_arithmetic.py": "33bc39658fb7cb901b162755d39a1a0d92bd98f7ad0360706b5b8aba4415ed19",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/run_observer_contracts.py": "d5f63e4d98fd0ddf1d340396b30f63caac8cb55fd9671d220d3a5cfc22bdd57c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/run_observer_stage.py": "4115dabe536871bfff3f8973ca3240cc3e1a970df72a1ce508e1be4492b4b281",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/scope-plan.json": "2bf0aa00fceebdc00d5b1e04ced774f3eb2ba4104d58e056a21d7c68205086e4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/supply-independent-summary.json": "ebe4cbeef21e0d9cfc4b51f52c80aaa1564c6258be679f90f3823dd9ec6424db",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/validation-results.json": "9e9b1f7ca40c3add27cad45c3f5abfb459549ae2630921fd75dd2a66b0a4b060"
+  },
+  "compact_projection_policy": {
+    "delivery_summary": "Copied existing compact projection exactly, with original source ledger retained.",
+    "resource_review_extract": "Copied existing compact resource review extract exactly; full resource report remains local.",
+    "final_protection": "Exact copy below 5MiB; no new projection created."
+  },
+  "harness_caveat": "Exact historical R-layout copies, not generic CLIs runnable from this archive directory.",
+  "omissions": [
+    "private prompt and response text",
+    "raw/group decision records",
+    "trace binaries",
+    "raw resource streams",
+    "117MB full resource report",
+    "model payloads"
+  ],
+  "self_binding": "This manifest deliberately does not hash or list itself."
+}

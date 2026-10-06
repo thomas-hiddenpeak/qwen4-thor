@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "passed": true,
+  "plan_sha256": "907111ee1b731521c286e90df3718457c11c25c340a3f66fabc90a03a7584b24",
+  "runtime_binary_sha256": "72a321a422facac605c13740ac8eb78e253056a6719c88bea71e3bbae9ef843f",
+  "host_contracts": 23,
+  "protocol_contracts": 23,
+  "total": 46,
+  "first_batch": true,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-contracts-build-01.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-contracts-build-01-start.json": "459eabc5ab554efd7beab79ccad7f31e9ed3fd8ab9534de50cb1151e0d3f9bc9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-contracts-build-01-exit.json": "c7fad7b25d0fc08882a6b9c1dec6e125d4b5eebb1de3cec27be4b3aa8858103f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-contracts-host-01.log": "453c42d36a43e5c0da4a2e7deebf7f72aa5ff757c6f47c976d9b08bf45c06eca",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-contracts-host-01-start.json": "2093a8287356c95a29a78fa706f16f0d271a7940d7530ce28e2482a2a955d17f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-contracts-host-01-exit.json": "3acbd22cf9c828a426a7fc579dbf2975f6355e4168e63a0b534d3e81c8d04557",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-contracts-protocol-01.log": "4cabd7fc039f57b685d349daf0d06d0c8f20a31b0912d8d1c2f4f3dee92e3d69",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-contracts-protocol-01-start.json": "587f894e140caa30523948b285a83f2b9da01dba71ddd5d198402fa7341bd212",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-contracts-protocol-01-exit.json": "bd27d1e628b4a52b589ca3c9b60b0425fd461e88e2a4d3a650f267eeb092fe19",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/include/q4t/quant/moe_supply_observer.h": "a9e776c0916d987b354b052171b98dbc71ab5c3f8c7465b7e320efb9fe4ff7e1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/tools/trace/test_moe_supply_observer.cpp": "584a0ee25d6797b21729d79b886c181e9f4660de5b4ea68cb1be2ed1fe0a86e0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/tools/evalscope/supply_observer_protocol.py": "0ad00855f400b257c6bb04a566c82f399bb1aaaaa8150f32809ecb8edb6fbf08",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/tools/evalscope/test_supply_observer_protocol.py": "ac8b5aaf83594f647292a1f82e2de39667b0d8532769ae426b2c722bc5d0fdb0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/run_observer_contracts.py": "d5f63e4d98fd0ddf1d340396b30f63caac8cb55fd9671d220d3a5cfc22bdd57c"
+  },
+  "recorded_t": 1791275285.5797925
+}

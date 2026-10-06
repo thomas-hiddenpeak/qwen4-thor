@@ -1,0 +1,59 @@
+{
+  "schema": "q4t.supply_observer.analysis_static_review.v1",
+  "recorded_t": 1791274146.7320344,
+  "reviewer": "/root/supply_observer_review",
+  "passed": true,
+  "status": "PASS_STATIC_ANALYSIS_METHOD_NOT_EXECUTED",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/analyze_supply_observer.py": "0f0bda9217b6a6ec384ce50c94a04f6df949133cc98b66ee6597d7fee3f68574",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer_common.py": "5ea5b5499eb8c262ec6021f3ec348ede2eceda343b7741cfb7431ad104ebe2d0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-execution-plan.json": "907111ee1b731521c286e90df3718457c11c25c340a3f66fabc90a03a7584b24",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer_resource_audit.py": "374322b6501835aef82b8b2b8594130bdd9e1e83cbd47d12fcbbd3386c0438e1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-analysis-first-static-findings.json": "84b6fb4779dc92a3065b93cea73fc1ac0417f2791fcd78bd3e1ea41acf196395",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/tools/evalscope/supply_observer_protocol.py": "0ad00855f400b257c6bb04a566c82f399bb1aaaaa8150f32809ecb8edb6fbf08",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/tools/evalscope/audit_offload_diagnostics.py": "2d61772b3779530ebc6171aab2ed165b78746f148c55cb531155ae6a06347633",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/audit_raw_resources_frozen.py": "035f1f840d00350a7b6db62e1b8ef7f62a5fda02406dae91395d291a67652da4"
+  },
+  "analysis_script_sha256": "0f0bda9217b6a6ec384ce50c94a04f6df949133cc98b66ee6597d7fee3f68574",
+  "first_findings_preserved": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-analysis-first-static-findings.json",
+    "sha256": "84b6fb4779dc92a3065b93cea73fc1ac0417f2791fcd78bd3e1ea41acf196395",
+    "resolved": [
+      "Zero-denominator fractions nowNone.",
+      "Every4row diagnosticcell and48 orderedlayerpair explicitlychecked; metrics joinedbyresponseID.",
+      "Bothmirror andREAD accounting identities checkedandoutput ataggregate andperlayer.",
+      "Contract/resourceplan/runtimeidentity checked; analysis-admission required beforeexecution, metadatahashes rechecked, rawcomplete-reader signatures retained."
+    ]
+  },
+  "method_review": [
+    "Within eachsuccessfultrue-decode layer, entrymirrorcandidate = actualmirrorhits + directREADloss +candidate_to_L2 becauseunknownloss/outsidecandidate arezero undervalidatedprotocol. Therefore SminusL mirror deficit equals SminusL candidate opportunities plusLminusS directloss plusLminusS candidate_to_L2.",
+    "Actualsource closure GPUloads=L2hits+mirrorhits+softwareREAD gives LminusS READ =LminusS GPUloads \u2212LminusS L2hits +SminusL mirrorhits. No causalindependence follows fromeither identity.",
+    "Allk0..3 retained; k0 marksdifferent inputlength, k1..3 use sameinput. Old16requests remainseparate.",
+    "Fractions quantifyactual directloss amongactualread/candidates innewinstrumented runs. They are notachievablegain forecasts. Undefined denominator yieldsNone.",
+    "On/off TTFT,TPS,read andGPUload contrasts aredescriptive foronesequentialcell percondition, withschedule/cacheperturbation limitations.",
+    "Only positive directlosstotal across8newobserver-on diagnosticdecode requests nominatesonefutureentry-needed mirrorwriteback-protection candidate. Zero observedloss nominatesnone. No candidateimplementedorperformanceadmitted.",
+    "Retained4recentperlayer witnessrecords arebounded supplementalexamples; exactcountertotals, notwitnessfrequency, driveanalysis.",
+    "Existingphase elapsed/pid_read fields matchAPI; timingremainsinclusive ofinstrumentation, PIDtraffic remainsallfiles andnotexpert-only/exclusiveSSD."
+  ],
+  "admission_requirements": [
+    "Separateanalysis-admission mustbindthisexactscript, thisreview, executionplan, all5terminalHTTPdecisions,46-contractdecision, resource reportandownedresource-auditexit.",
+    "Allterminaldependency/sourcehashes mustbe bound andverified beforeoneanalysisrun; analysischecks currentplan/binaryidentity andcompleted sourcecontracts.",
+    "Resource rawstreams are notreparsed/rehashed: reusecomplete-readerSHA withunchangeddevice/inode/size/mtime. Thisisexplicitintegrityscope, notfreshbyteequality ortransientwriteproof.",
+    "Independentactualresultreview remainsrequired afterallservices/resources/analysisclose."
+  ],
+  "blocking_findings": [],
+  "not_yet_established": [
+    "actualnewdirectlossfrequency",
+    "newS/Ldecompositionnumbers",
+    "quality/contracts/diagnosticruntimecompletion",
+    "resourceclosure",
+    "optimizationorperformanceacceptance"
+  ],
+  "reviewer_actions": {
+    "new_analysis_runs": 0,
+    "new_tests": 0,
+    "new_HTTP": 0,
+    "model_payload_reads": 0,
+    "AST_static_parsing": true
+  }
+}

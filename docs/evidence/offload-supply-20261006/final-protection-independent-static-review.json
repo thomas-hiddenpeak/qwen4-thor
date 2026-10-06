@@ -1,0 +1,74 @@
+{
+  "schema": "q4t.supply_observer.final_protection_static_review.v1",
+  "recorded_t": 1791274745.7933552,
+  "reviewer": "/root/supply_observer_review",
+  "passed": true,
+  "status": "PASS_STATIC_ONLY_DO_NOT_RUN_UNTIL_ALL_TERMINALS_CLOSED",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/final_protection.py": "31e94fca3d67570c6bdf2d7b7906a5370333f73a74d009d12486d5e101e1675d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/entry.json": "c99f4f8efd86c79f7a20caa66c34e5bb8305fb4f9dc0bf234aee1ba752393bbb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/model-entry.json": "6e75ab2eb8a73121eef88facf778fe542cdab62b59a54d5ee30fb81ab5b53eea",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/scope-plan.json": "2bf0aa00fceebdc00d5b1e04ced774f3eb2ba4104d58e056a21d7c68205086e4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/execution-plan.json": "ca89aedf626465a41fbdca823e3c402fed31499477e7b131a04af6cb806ce57f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/validation-results.json": "9e9b1f7ca40c3add27cad45c3f5abfb459549ae2630921fd75dd2a66b0a4b060",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/validation-plan.json": "98a803430235d7358c6892a2356e29f399ca574135ff67cbc5dfa2f66abf0684",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/result-independent-review.json": "3244e0702f17efffb3e53155bd129b0ae74dfd05a0deef6c05956f40dbd83c41",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-execution-plan.json": "907111ee1b731521c286e90df3718457c11c25c340a3f66fabc90a03a7584b24",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source-identity.json": "8cbe19ae404c45cee166a73597a21d675150213405ebd6acaf9d74e0ac6679d5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-build-identity.json": "640b58997b1895ff77161bea53010e47b875469aee34c9be69fa56fc03b9aa1a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-build-attempt.json": "7ea6e607c6b6b631166f6cc0702c5aec84472d6658b8e0ddd3601fb6cc86acf1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-execution-admission.json": "11f820070b370890cd39f01ca3a8a60a1c6706d481a1468e8ab08c56295b3921",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-execution-independent-review.json": "a5879486c8644f6f4075c45c8d8cdb4c862eda29608e8593fc8f93c82e1befdc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer_resource_audit.py": "374322b6501835aef82b8b2b8594130bdd9e1e83cbd47d12fcbbd3386c0438e1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/analyze_supply_observer.py": "0f0bda9217b6a6ec384ce50c94a04f6df949133cc98b66ee6597d7fee3f68574",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-analysis-static-review.json": "67fe3706691a2232fa3a3ed7898a467dd10ecb8a15930b6f8fd8e9bce34f9de9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-partition-runtime-20261003/audit_raw_resources_frozen.py": "035f1f840d00350a7b6db62e1b8ef7f62a5fda02406dae91395d291a67652da4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/audit_resources.py": "10959f8021c7e2f6479ee77c8d163484054839a72fb172153bd723813f7ffde7"
+  },
+  "checker_sha256": "31e94fca3d67570c6bdf2d7b7906a5370333f73a74d009d12486d5e101e1675d",
+  "blocking_findings": [],
+  "first_finding_and_resolution": {
+    "id": "TERMINAL_REPORT_BYTE_BOUND",
+    "first_draft_sha256": "f20c45dc397181514b5d21e5e09c6f6b715252c2d79905485aa733824ef8602b",
+    "finding": "Uniform32MiB JSON bound incompatible withresource aggregation embeddingterminaldecisions. Existing comparableM/resource-audit.json is69,091,252bytes; quality11 fullphase decision can alsobegreater.",
+    "resolution": "Sevenexactnewterminalreport paths permit<=256MiB inread+hash: resource,analysis,andfivegroupdecisions. OtherJSON32MiB/hash128MiB limitsunchanged; modelpayloadcontent stillforbidden.",
+    "timing": "Resolvedduringstaticreview beforecheckerfirstexecution."
+  },
+  "review": [
+    "MAIN expected7dirtypaths/head/fullbinarydiff/mainbinary boundagainstentry; no edits or resets.",
+    "W strictlyclean8ea3d32 withruntime/buildpaths equal39b base; originaloffline tools/41tests/16requests/gate resultreview identitiesreused.",
+    "O build75d26ff identity/export1621files/binary72a321a4/dependencies/312ledgerchecked; allowed latercleanHEADmustdescendfromexecutioncommit and changeonlydocs/evidence. Frozen312ledger containsnoOdocs/evidencepaths, so no conflict.",
+    "Model inventory228files usesstatonly plusconfig/indexhash. reference prooflimitedtotrackedGit status; ignored/untracked/transientwrites notclaimed.",
+    "Exact21prior ownedhelper labels required (4offline+2build+3contracts+5controllers+5audits+resource+analysis). Ownfinal-protection-01receipt excludedwhilecheckerexecutes; deliverymustcloseitafterreturn.",
+    "FiveHTTPservices/27requests, qualityfirst\u219246contracts\u21924diagnosticcells,17resourceclientenvelopes checkedfromterminalreceipts; no requests/tests/audits rerun.",
+    "Resource reportverifiesraw complete_file/consumedbytes/SHA/initial-finalstat andcurrentstat; registersREUSED beforelaterdecision/source ledgers, avoidingrawreparse/tracerehash.24tracebinaries=4services\u00d7(4requests+command+environment). Metadatahashes freshlychecked; same-stat byte replacement explicitlyunproved.",
+    "/proc scan onlyrecordedownedPIDs/PGIDs; PIDreuseorreadunknownfailsclosed; no signals/systemd/GPUquery, no globalGPUidle assertion.",
+    "Expectedactualproducer schema reviewed forentry/offline/build/dependencies/analysis/resource andfutureminimalresultreview. Missing/incompleteevidence failsclosed.",
+    "Only final-protection.json writtenwithopenx; firstfailure retained; selfSHAprovided andsource signaturesrechecked."
+  ],
+  "future_result_review_contract": {
+    "schema": 1,
+    "passed": true,
+    "plan_sha256": "907111ee1b731521c286e90df3718457c11c25c340a3f66fabc90a03a7584b24",
+    "analysis_sha256": "mustmatchclosedobserver-analysis.json",
+    "recorded_t": "afterownedanalysisexit",
+    "limits": "nonempty",
+    "blocking_findings": [],
+    "source_sha256": "mustincludeanalysis,resources,executionplanandreviewedclosuredependencies"
+  },
+  "remaining_execution_prerequisites": [
+    "All21ownedoperations mustactuallyexistandclose; qualitywasstillrunningatreviewtaskstart.",
+    "All5groupdecisions,46contracts,17windowresources,analysisadmission/resultandindependentresultreview mustactuallypass.",
+    "Finaldocs/evidencechangescommittedbeforechecker; requiredsource/runtimeidentitiespreserved.",
+    "Aftercheckerexit, rootdeliverymustverifyitsownfinalownedreceipt/cleanup andcommit/pushboundary."
+  ],
+  "actions": {
+    "checker_imports": 0,
+    "checker_executions": 0,
+    "new_tests": 0,
+    "new_HTTP": 0,
+    "model_payload_reads": 0,
+    "raw_resource_parses": 0,
+    "AST_static_parsing": true
+  }
+}

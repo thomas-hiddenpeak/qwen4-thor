@@ -1,0 +1,19 @@
+{
+  "started_t": 1791273546.7915287,
+  "command": [
+    "cmake",
+    "--build",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-build",
+    "--target",
+    "q4t",
+    "--parallel",
+    "8"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source",
+  "returncode": null,
+  "failure": null,
+  "automatic_retry": false,
+  "timeout_s": 600,
+  "signals": [],
+  "cleanup_complete": false
+}
