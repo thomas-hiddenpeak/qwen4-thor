@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "scope": "source_faithful_gpu_cache_replay_v1",
+  "recorded_t": 1791245486.5097196,
+  "base": "16be72c9d08d61986bcc2ab233df55bb64c42439",
+  "runtime": "6b5169355d7aa666653c3b7076676e64f697d313",
+  "runtime_binary_sha256": "8447d8982ba705518be23f255ddf8dc402e4feb1dbe9f42536acd9634cbb3aa6",
+  "observed_groups": [
+    "m02-as-on",
+    "m03-cs-on",
+    "m06-cl-on",
+    "m07-al-on"
+  ],
+  "services": 4,
+  "requests_per_service": 4,
+  "requests": 16,
+  "phases_per_request": [
+    "prefill",
+    "decode"
+  ],
+  "intervals_per_request": [
+    "prefill",
+    "decode_0_1",
+    "decode_1_8",
+    "decode_8_32",
+    "decode_32_end"
+  ],
+  "dimensions": {
+    "experts": 512,
+    "slots": 256,
+    "topk": 10,
+    "layers": 48
+  },
+  "new_HTTP": 0,
+  "new_model_runs": 0,
+  "bench": false,
+  "protected_in_captured_inputs": 0,
+  "baseline": {
+    "policy": "physical_slot",
+    "state_init": "Only first recorded prefill_begin per service; carry all subsequent state; compare before each request without resetting.",
+    "partition": "Exact runtime lex std::sort and selected production partition; A all legacy, C request≤8192 legacy/request>8192 min_new eligible only rows>1; true decode uses global policy but singleton legacy.",
+    "strict_counts": [
+      "resolve_calls",
+      "expert_lookups",
+      "hits",
+      "misses",
+      "loads",
+      "prefill_lookups",
+      "decode_lookups",
+      "prefill_misses",
+      "decode_misses"
+    ],
+    "strict_state": [
+      "slot_experts",
+      "slot_ticks",
+      "slot_protected",
+      "slot_clock"
+    ],
+    "state_boundaries": "All16 request entries and32 phase ends×48 layers; prefix1/8/32 counts only.",
+    "must_match_all": true
+  },
+  "candidate": {
+    "name": "resident_expert_id_oldest_tick_tie",
+    "max_candidates": 1,
+    "rule": "Keep empty-slot lowest-index rule. For occupied eligible oldest-tick ties only, compare (tick,resident_expert_id,slot) instead of (tick,slot). All needed/reserved/protected/plan/commit rules fixed.",
+    "entry": "Same first service entry as baseline; carry counterfactual states across all requests; never reseed from later observed states.",
+    "starts_only_after_baseline_complete_pass": true,
+    "offline_work_gates": [
+      "Every one of16 prefill phase load counts must not increase.",
+      "Every one of16 decode phase load counts must not increase.",
+      "At least one prefill phase must have strictly fewer loads.",
+      "Same route/chunk sequence/resolve-call count/capacity/protection contracts, no fallback added."
+    ],
+    "counts_not_performance_acceptance": true,
+    "failed_candidate_no_other_policy_search": true
+  },
+  "capacity_bounds": {
+    "scope": "For every phase and layer with actual entry and fixed actual chunk order: first chunk missing from entry, plus adjacent required-set capacity transition lower bounds. Sum per-layer bounds within phase; lower bound need not be jointly achievable.",
+    "formula": "first=|N0-entry|; transition=max(0,|N_next-N_prev|-(C-|N_prev|))",
+    "meaning": "Actual loads minus lower bound is an upper bound on avoidable loads for these fixed partitions, not demonstrated savings. Entry distinct lower bound is reported separately.",
+    "no_future_oracle_candidate": true
+  },
+  "validation": {
+    "order": "Implement core/helper/runner as a group; freeze exact test/build commands and source hashes; run one first bounded host/tool contract batch; only specific failures allow affected reruns.",
+    "new_core": "Snapshot identity/raw tick restoration, complete-needed exclusion, reservations, duplicate planned hits, protected/empty/LRU ties, singleton runtime classification, chain carry, overflow/invalid rejection.",
+    "new_helper": "Literal-runtime independent legacy reprobe, C++ equal-key sort, selected production min_new/fallback and singleton/request policy boundaries, malformed inputs.",
+    "new_runner": "Provenance/schema and no reset, phase/prefix boundaries including8193 singleton, strict mismatch rejection, entire iterator closure, output no-overwrite.",
+    "bound_formula": "Finite exhaustive set/cache transitions verifying lower-bound inequality, independently of replay implementation.",
+    "reuse": "Unchanged old trace parser/source-bound HTTP and numerical/tool evidence reused only within original scope."
+  },
+  "execution": {
+    "baseline": "One complete four-service replay, stop first concrete mismatch; preserve partial report and only diagnose failed scope.",
+    "candidate": "One fixed full four-service replay after baseline pass; no favorable reselection/retry.",
+    "resources": "Host-only generated artifacts under newR or W/.q4t-work; no model/reference payload reads.",
+    "runtime_conditional": "Offline work gate only permits consideration. Any runtime implementation must separately freeze exact quality/numerical/five-tier+capacity/history/resources and HTTP-first order before build/test. No such work admitted now."
+  },
+  "stop_rules": [
+    "Unreproducible baseline after targeted source/contract fixes: close with exact missing evidence and no candidate claim.",
+    "Candidate violates any fixed work gate: record offline rejection; no alternate tie strategy.",
+    "Baseline/candidate pass is not E2E, physical IO, quality, or54GB acceptance."
+  ],
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/entry.json": "ff07d9c1ae1c67e195072afb6173d2ec74731c6795efcc01784d2a2bc9dbd608",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/model-entry.json": "24cf55ef12750d30877f7f46318c516e09774b004ea5207e7e692419e0dfdc0b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/source-gpu-contract.json": "9acea5b635ba8267fb10d9b4cd63320ff153e003091bbd457e6836e7c6ed58de",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/source-schedule-contract.json": "38b82ce0d7aeebf4926e029f2b88e3640fd2a6546956409468bcfd70d67c6368",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/evidence-reuse-proposal.json": "9135e552d7779a32504c9b6f82d632a8a8f20955b16a7dce0587a52b650eb7b2"
+  }
+}

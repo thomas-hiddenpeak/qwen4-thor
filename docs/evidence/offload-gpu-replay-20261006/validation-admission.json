@@ -1,0 +1,41 @@
+{
+  "recorded_t": 1791246239.003375,
+  "passed": true,
+  "tests_passed": 55,
+  "first_batch": true,
+  "batches": [
+    {
+      "label": "core-contracts-01",
+      "tests": 27,
+      "log_sha256": "cc22bdff81ae901d34b4cb4ea64518ff2cd9be0a28b0cc898464fe1030823e54",
+      "exit_sha256": "5f98bb3cad93e91aa2bf43af1a406d337457ee8d0bebc71ac469a96c68c6000a"
+    },
+    {
+      "label": "schedule-contracts-01",
+      "tests": 11,
+      "log_sha256": "9620dbd3336de5f425a9243681b70da76d44d781948f6fe9530efa7a3b57144a",
+      "exit_sha256": "8797b839076ce1eb6098e291bd457988fff09c75318aa1f0dff3e9bb147a73b4"
+    },
+    {
+      "label": "runner-contracts-01",
+      "tests": 17,
+      "log_sha256": "2473b46cc7f0476a121f2cf7971c360465e762fd773a6510768a0669e243608f",
+      "exit_sha256": "2c05aa84eb6ef7eb02a70c07ecd3979b73978fbf37c384456fbc922820e5d579"
+    }
+  ],
+  "host_build_warnings": 0,
+  "runtime_unchanged": true,
+  "real_route_replays_executed": 0,
+  "models_launched": 0,
+  "HTTP_requests": 0,
+  "scope_sha256": "e294b25ea6f594bffea2de1aef35f17f80cca51f7949d9ef1affcaafcca43fd7",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/validation-plan.json": "12f7f093a271698a35b2859550c5750aa64339ca7be8ce1476a5593c0dbd3a1c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/validation-first-results.json": "2a388c7064b29e860ee043497d11aa80f6dc8a82ca68757badf5064184a19303",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/host-build-result.json": "512d61de47ae2112146d143bfee28ff14b4935e262bffda27b713b269ee2a0a4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/replay-inputs.json": "2601f561d96c8ebb861afcb41d70249512ae3480e8abe611767d356b976f5407",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/input-extract-01-exit.json": "b91509cfb87724820895112dff4e5aa87e4755f972b77021b8b8869f0f75a085",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/core-static-review.json": "e091d1d85456e5a88984c5a592b91d6a2d777ea2ad40ad3306bc4d07e8f8c64b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/runner-static-review-r3.json": "f48f7246b499b5b56229911a928bf311ea3dce651856ff376bf04a2cc2b63a52"
+  }
+}
