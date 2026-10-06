@@ -1,0 +1,751 @@
+{
+  "schema": 1,
+  "passed": true,
+  "checks": {
+    "endpoint_layer_classifications": 1152,
+    "decode_layer_plans": 97920,
+    "layer_opportunity_records": 384,
+    "prefix_counter_and_supply_records": 32,
+    "completed_requests": 8,
+    "paired_plan_capacities": 48960,
+    "per_layer_common_intervals": 192
+  },
+  "entry_mirror_first_event_records_recomputed": 3072,
+  "decision": "FUTURE_GPU_COVERED_MIRROR_RECYCLING_CANDIDATE_ONLY",
+  "rows": [
+    {
+      "group": "s02-as-on",
+      "position": 0,
+      "input_tokens": 1024,
+      "decode_entry_counts": {
+        "gpu_only": 3,
+        "l2_only": 0,
+        "both": 0,
+        "sole": 381,
+        "empty_slots": 0
+      },
+      "endpoints_counts": [
+        {
+          "gpu_only": 0,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 0,
+          "empty_slots": 384
+        },
+        {
+          "gpu_only": 3,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 381,
+          "empty_slots": 0
+        },
+        {
+          "gpu_only": 11,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 373,
+          "empty_slots": 0
+        }
+      ],
+      "opportunity_totals": {
+        "missing_total": 7128,
+        "supported_missing_total": 3298,
+        "potential_candidate_capacity": 3298,
+        "observed_candidates": 453
+      },
+      "GPU_counters": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 115272,
+        "misses": 7128,
+        "loads": 7128,
+        "evictions": 7128,
+        "prefill_lookups": 0,
+        "decode_lookups": 122400,
+        "prefill_misses": 0,
+        "decode_misses": 7128
+      },
+      "supply": {
+        "l2_hits": 0,
+        "l2_misses": 6678,
+        "mirror_hits": 450
+      }
+    },
+    {
+      "group": "s02-as-on",
+      "position": 1,
+      "input_tokens": 1024,
+      "decode_entry_counts": {
+        "gpu_only": 2,
+        "l2_only": 0,
+        "both": 0,
+        "sole": 382,
+        "empty_slots": 0
+      },
+      "endpoints_counts": [
+        {
+          "gpu_only": 11,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 373,
+          "empty_slots": 0
+        },
+        {
+          "gpu_only": 2,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 382,
+          "empty_slots": 0
+        },
+        {
+          "gpu_only": 27,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 357,
+          "empty_slots": 0
+        }
+      ],
+      "opportunity_totals": {
+        "missing_total": 7000,
+        "supported_missing_total": 3199,
+        "potential_candidate_capacity": 3198,
+        "observed_candidates": 950
+      },
+      "GPU_counters": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 115400,
+        "misses": 7000,
+        "loads": 7000,
+        "evictions": 7000,
+        "prefill_lookups": 0,
+        "decode_lookups": 122400,
+        "prefill_misses": 0,
+        "decode_misses": 7000
+      },
+      "supply": {
+        "l2_hits": 0,
+        "l2_misses": 6056,
+        "mirror_hits": 944
+      }
+    },
+    {
+      "group": "s02-as-on",
+      "position": 2,
+      "input_tokens": 1024,
+      "decode_entry_counts": {
+        "gpu_only": 2,
+        "l2_only": 0,
+        "both": 0,
+        "sole": 382,
+        "empty_slots": 0
+      },
+      "endpoints_counts": [
+        {
+          "gpu_only": 27,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 357,
+          "empty_slots": 0
+        },
+        {
+          "gpu_only": 2,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 382,
+          "empty_slots": 0
+        },
+        {
+          "gpu_only": 20,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 364,
+          "empty_slots": 0
+        }
+      ],
+      "opportunity_totals": {
+        "missing_total": 6559,
+        "supported_missing_total": 2757,
+        "potential_candidate_capacity": 2756,
+        "observed_candidates": 574
+      },
+      "GPU_counters": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 115841,
+        "misses": 6559,
+        "loads": 6559,
+        "evictions": 6559,
+        "prefill_lookups": 0,
+        "decode_lookups": 122400,
+        "prefill_misses": 0,
+        "decode_misses": 6559
+      },
+      "supply": {
+        "l2_hits": 0,
+        "l2_misses": 5985,
+        "mirror_hits": 574
+      }
+    },
+    {
+      "group": "s02-as-on",
+      "position": 3,
+      "input_tokens": 1024,
+      "decode_entry_counts": {
+        "gpu_only": 2,
+        "l2_only": 0,
+        "both": 0,
+        "sole": 382,
+        "empty_slots": 0
+      },
+      "endpoints_counts": [
+        {
+          "gpu_only": 20,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 364,
+          "empty_slots": 0
+        },
+        {
+          "gpu_only": 2,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 382,
+          "empty_slots": 0
+        },
+        {
+          "gpu_only": 17,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 367,
+          "empty_slots": 0
+        }
+      ],
+      "opportunity_totals": {
+        "missing_total": 6367,
+        "supported_missing_total": 2568,
+        "potential_candidate_capacity": 2567,
+        "observed_candidates": 401
+      },
+      "GPU_counters": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 116033,
+        "misses": 6367,
+        "loads": 6367,
+        "evictions": 6367,
+        "prefill_lookups": 0,
+        "decode_lookups": 122400,
+        "prefill_misses": 0,
+        "decode_misses": 6367
+      },
+      "supply": {
+        "l2_hits": 0,
+        "l2_misses": 5967,
+        "mirror_hits": 400
+      }
+    },
+    {
+      "group": "s03-al-on",
+      "position": 0,
+      "input_tokens": 8193,
+      "decode_entry_counts": {
+        "gpu_only": 5,
+        "l2_only": 0,
+        "both": 0,
+        "sole": 379,
+        "empty_slots": 0
+      },
+      "endpoints_counts": [
+        {
+          "gpu_only": 0,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 0,
+          "empty_slots": 384
+        },
+        {
+          "gpu_only": 5,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 379,
+          "empty_slots": 0
+        },
+        {
+          "gpu_only": 11,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 373,
+          "empty_slots": 0
+        }
+      ],
+      "opportunity_totals": {
+        "missing_total": 7196,
+        "supported_missing_total": 2361,
+        "potential_candidate_capacity": 2361,
+        "observed_candidates": 283
+      },
+      "GPU_counters": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 115204,
+        "misses": 7196,
+        "loads": 7196,
+        "evictions": 7196,
+        "prefill_lookups": 0,
+        "decode_lookups": 122400,
+        "prefill_misses": 0,
+        "decode_misses": 7196
+      },
+      "supply": {
+        "l2_hits": 0,
+        "l2_misses": 6916,
+        "mirror_hits": 280
+      }
+    },
+    {
+      "group": "s03-al-on",
+      "position": 1,
+      "input_tokens": 1024,
+      "decode_entry_counts": {
+        "gpu_only": 6,
+        "l2_only": 0,
+        "both": 0,
+        "sole": 378,
+        "empty_slots": 0
+      },
+      "endpoints_counts": [
+        {
+          "gpu_only": 11,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 373,
+          "empty_slots": 0
+        },
+        {
+          "gpu_only": 6,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 378,
+          "empty_slots": 0
+        },
+        {
+          "gpu_only": 12,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 372,
+          "empty_slots": 0
+        }
+      ],
+      "opportunity_totals": {
+        "missing_total": 7227,
+        "supported_missing_total": 3372,
+        "potential_candidate_capacity": 3371,
+        "observed_candidates": 480
+      },
+      "GPU_counters": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 115173,
+        "misses": 7227,
+        "loads": 7227,
+        "evictions": 7227,
+        "prefill_lookups": 0,
+        "decode_lookups": 122400,
+        "prefill_misses": 0,
+        "decode_misses": 7227
+      },
+      "supply": {
+        "l2_hits": 0,
+        "l2_misses": 6751,
+        "mirror_hits": 476
+      }
+    },
+    {
+      "group": "s03-al-on",
+      "position": 2,
+      "input_tokens": 1024,
+      "decode_entry_counts": {
+        "gpu_only": 2,
+        "l2_only": 0,
+        "both": 0,
+        "sole": 382,
+        "empty_slots": 0
+      },
+      "endpoints_counts": [
+        {
+          "gpu_only": 12,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 372,
+          "empty_slots": 0
+        },
+        {
+          "gpu_only": 2,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 382,
+          "empty_slots": 0
+        },
+        {
+          "gpu_only": 24,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 360,
+          "empty_slots": 0
+        }
+      ],
+      "opportunity_totals": {
+        "missing_total": 6867,
+        "supported_missing_total": 3074,
+        "potential_candidate_capacity": 3073,
+        "observed_candidates": 846
+      },
+      "GPU_counters": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 115533,
+        "misses": 6867,
+        "loads": 6867,
+        "evictions": 6867,
+        "prefill_lookups": 0,
+        "decode_lookups": 122400,
+        "prefill_misses": 0,
+        "decode_misses": 6867
+      },
+      "supply": {
+        "l2_hits": 0,
+        "l2_misses": 6024,
+        "mirror_hits": 843
+      }
+    },
+    {
+      "group": "s03-al-on",
+      "position": 3,
+      "input_tokens": 1024,
+      "decode_entry_counts": {
+        "gpu_only": 2,
+        "l2_only": 0,
+        "both": 0,
+        "sole": 382,
+        "empty_slots": 0
+      },
+      "endpoints_counts": [
+        {
+          "gpu_only": 24,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 360,
+          "empty_slots": 0
+        },
+        {
+          "gpu_only": 2,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 382,
+          "empty_slots": 0
+        },
+        {
+          "gpu_only": 18,
+          "l2_only": 0,
+          "both": 0,
+          "sole": 366,
+          "empty_slots": 0
+        }
+      ],
+      "opportunity_totals": {
+        "missing_total": 6481,
+        "supported_missing_total": 2687,
+        "potential_candidate_capacity": 2686,
+        "observed_candidates": 495
+      },
+      "GPU_counters": {
+        "resolve_calls": 12240,
+        "expert_lookups": 122400,
+        "hits": 115919,
+        "misses": 6481,
+        "loads": 6481,
+        "evictions": 6481,
+        "prefill_lookups": 0,
+        "decode_lookups": 122400,
+        "prefill_misses": 0,
+        "decode_misses": 6481
+      },
+      "supply": {
+        "l2_hits": 0,
+        "l2_misses": 5988,
+        "mirror_hits": 493
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "position": 0,
+      "input_tokens_S": 1024,
+      "input_tokens_L": 8193,
+      "input_token_sha256_S": "f20a1e84b086eb29d4f743039fd7f75bce0854cb382fc5c282182a4c4736acfa",
+      "input_token_sha256_L": "7fa0f9f66b8b1eaeebcbb0e14dec9d679fb802fea25ef9b414d67e4c4847c2dd",
+      "same_input_tokens": false,
+      "same_input_length": false,
+      "route_equal": false,
+      "observed_candidate_difference": 170,
+      "common_candidate_difference_interval": {
+        "lower": -124,
+        "upper": 305
+      },
+      "mixed_GPU_covered_and_sole_decode_entry_layers": [
+        {
+          "group": "s02-as-on",
+          "layer": 6
+        },
+        {
+          "group": "s02-as-on",
+          "layer": 21
+        },
+        {
+          "group": "s03-al-on",
+          "layer": 7
+        },
+        {
+          "group": "s03-al-on",
+          "layer": 15
+        },
+        {
+          "group": "s03-al-on",
+          "layer": 21
+        },
+        {
+          "group": "s03-al-on",
+          "layer": 30
+        },
+        {
+          "group": "s03-al-on",
+          "layer": 46
+        }
+      ],
+      "miss_count_totals": {
+        "common": 1541,
+        "S_only": 5587,
+        "L_only": 5655,
+        "S_total": 7128,
+        "L_total": 7196
+      },
+      "capacity_totals": {
+        "S": {
+          "common": 337,
+          "only": 2961,
+          "total": 3298
+        },
+        "L": {
+          "common": 142,
+          "only": 2219,
+          "total": 2361
+        }
+      }
+    },
+    {
+      "position": 1,
+      "input_tokens_S": 1024,
+      "input_tokens_L": 1024,
+      "input_token_sha256_S": "f20a1e84b086eb29d4f743039fd7f75bce0854cb382fc5c282182a4c4736acfa",
+      "input_token_sha256_L": "f20a1e84b086eb29d4f743039fd7f75bce0854cb382fc5c282182a4c4736acfa",
+      "same_input_tokens": true,
+      "same_input_length": true,
+      "route_equal": true,
+      "observed_candidate_difference": 470,
+      "common_candidate_difference_interval": {
+        "lower": 10,
+        "upper": 845
+      },
+      "mixed_GPU_covered_and_sole_decode_entry_layers": [
+        {
+          "group": "s02-as-on",
+          "layer": 26
+        },
+        {
+          "group": "s02-as-on",
+          "layer": 35
+        },
+        {
+          "group": "s03-al-on",
+          "layer": 6
+        },
+        {
+          "group": "s03-al-on",
+          "layer": 15
+        },
+        {
+          "group": "s03-al-on",
+          "layer": 21
+        },
+        {
+          "group": "s03-al-on",
+          "layer": 26
+        },
+        {
+          "group": "s03-al-on",
+          "layer": 46
+        }
+      ],
+      "miss_count_totals": {
+        "common": 6529,
+        "S_only": 471,
+        "L_only": 698,
+        "S_total": 7000,
+        "L_total": 7227
+      },
+      "capacity_totals": {
+        "S": {
+          "common": 2738,
+          "only": 460,
+          "total": 3198
+        },
+        "L": {
+          "common": 2795,
+          "only": 576,
+          "total": 3371
+        }
+      }
+    },
+    {
+      "position": 2,
+      "input_tokens_S": 1024,
+      "input_tokens_L": 1024,
+      "input_token_sha256_S": "f20a1e84b086eb29d4f743039fd7f75bce0854cb382fc5c282182a4c4736acfa",
+      "input_token_sha256_L": "f20a1e84b086eb29d4f743039fd7f75bce0854cb382fc5c282182a4c4736acfa",
+      "same_input_tokens": true,
+      "same_input_length": true,
+      "route_equal": true,
+      "observed_candidate_difference": -272,
+      "common_candidate_difference_interval": {
+        "lower": -447,
+        "upper": 214
+      },
+      "mixed_GPU_covered_and_sole_decode_entry_layers": [
+        {
+          "group": "s02-as-on",
+          "layer": 21
+        },
+        {
+          "group": "s02-as-on",
+          "layer": 26
+        },
+        {
+          "group": "s03-al-on",
+          "layer": 21
+        },
+        {
+          "group": "s03-al-on",
+          "layer": 26
+        }
+      ],
+      "miss_count_totals": {
+        "common": 6359,
+        "S_only": 200,
+        "L_only": 508,
+        "S_total": 6559,
+        "L_total": 6867
+      },
+      "capacity_totals": {
+        "S": {
+          "common": 2559,
+          "only": 197,
+          "total": 2756
+        },
+        "L": {
+          "common": 2568,
+          "only": 505,
+          "total": 3073
+        }
+      }
+    },
+    {
+      "position": 3,
+      "input_tokens_S": 1024,
+      "input_tokens_L": 1024,
+      "input_token_sha256_S": "f20a1e84b086eb29d4f743039fd7f75bce0854cb382fc5c282182a4c4736acfa",
+      "input_token_sha256_L": "f20a1e84b086eb29d4f743039fd7f75bce0854cb382fc5c282182a4c4736acfa",
+      "same_input_tokens": true,
+      "same_input_length": true,
+      "route_equal": true,
+      "observed_candidate_difference": -94,
+      "common_candidate_difference_interval": {
+        "lower": -188,
+        "upper": 111
+      },
+      "mixed_GPU_covered_and_sole_decode_entry_layers": [
+        {
+          "group": "s02-as-on",
+          "layer": 6
+        },
+        {
+          "group": "s02-as-on",
+          "layer": 26
+        },
+        {
+          "group": "s03-al-on",
+          "layer": 26
+        },
+        {
+          "group": "s03-al-on",
+          "layer": 35
+        }
+      ],
+      "miss_count_totals": {
+        "common": 6270,
+        "S_only": 97,
+        "L_only": 211,
+        "S_total": 6367,
+        "L_total": 6481
+      },
+      "capacity_totals": {
+        "S": {
+          "common": 2472,
+          "only": 95,
+          "total": 2567
+        },
+        "L": {
+          "common": 2476,
+          "only": 210,
+          "total": 2686
+        }
+      }
+    }
+  ],
+  "artifact_reads": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/retention-inputs.json": {
+      "sha256": "f3831ccc88e061aea3141f23f581be9c963da827ee3ded7761509d501c73dcb3",
+      "stat": [
+        66305,
+        3935589,
+        3941749,
+        1791289202779104740
+      ],
+      "read_passes": 1
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/decode-plans.json": {
+      "sha256": "f28cd33582ab47b97abda963933a82b5960ecf5e58343d888430e2f6856b4e83",
+      "stat": [
+        66305,
+        3935621,
+        7873924,
+        1791289829020220375
+      ],
+      "read_passes": 1
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/retention-analysis.json": {
+      "sha256": "bd91e5252d97ba4c1c975fc28f83d453f755588fde762e1df6c86416692d159c",
+      "stat": [
+        66305,
+        3935620,
+        31546234,
+        1791289829984235145
+      ],
+      "read_passes": 1
+    }
+  },
+  "analysis_source_ledger_matches_manifest_execution_union": true,
+  "route_payloads_reparsed": 0,
+  "GPU_state_replay_repeated": false,
+  "recorded_t": 1791290165.007938
+}

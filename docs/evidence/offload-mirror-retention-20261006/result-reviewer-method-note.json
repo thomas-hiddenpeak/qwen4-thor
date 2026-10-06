@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "recorded_t": 1791290163.5768085,
+  "scope": "independent review auxiliary arithmetic only; not project test or actual trace analysis",
+  "first_helper_sha256": "42bf49b49e53ce58a23f803cccaa167a206f4ad4de20636c3b752dfae6500715",
+  "finding": "Python Counter arithmetic removed zero-valued fields from independently summed prefix dictionaries; comparison rejected equal counts with different key presence.",
+  "fix": "Preserve the complete declared counter/category key sets when summing.",
+  "project_or_runtime_failure": false,
+  "artifact_or_trace_reread_required": false,
+  "actual_route_parse_passes": 0,
+  "fixed_helper_sha256": "f1478c40b5d42a8f7c286787203b632c8e36b4ee1bb9d44af64622029f7d819e"
+}

@@ -1,0 +1,297 @@
+{
+  "schema": 1,
+  "started_t": 1791290614.774774,
+  "passed": true,
+  "failure": null,
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/entry.json": "38568d818c01ea6eadca2f356c6680eb4b6d85d3b695c7dd1691b43ed5f3d484",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/model-entry.json": "31cfb5f2cae36d75f84dcd1b27d7a11ce5972e2b6ba9637b9eb8493cd91dd0f4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/execution-plan.json": "fd413fa124342029be9b9bd8c87cb7d76d420e8994bb40d87889cbb4fa0e797e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/validation-results.json": "6c22365828603ab880fb65b3c9e4050f0034529fdc123676c2f880982a3d3e0d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/retention-summary.json": "06bf0f299000a161d0bda3bfeafc39e6753787d7792247f41f4633688f2875c1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/result-independent-review.json": "207321b27e0e58ccd7e4625686028e79f1d17380dead66412f7b09ca6454c414",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/retention-inputs.json": "f3831ccc88e061aea3141f23f581be9c963da827ee3ded7761509d501c73dcb3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/input-extract-01-exit.json": "d933b52cef92939980ad069913190bd03a1b95f101c2deaf166cc504183ced58",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/contracts-01-exit.json": "f6f303d8b26a94cf35948a588b44c1e668e64ad227dbe34c075f65666e9d0e1c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/retention-analysis-01-exit.json": "7799d2b3b5bbe369fe02a95f4826490dd9ba5b9c80058bd5e0162315448fff3b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/final_protection.py": "15215ec92b8a5b813d88ba8813ed73f1643c88a476c0b4a6e034ea1f9affadce"
+  },
+  "new_HTTP": 0,
+  "model_runs": 0,
+  "protected_MAIN": {
+    "recorded_t": 1791288723.6212559,
+    "base": "69e2d0432b8f00317fbb07b1f286b25d2bd09d17",
+    "working_branch": "codex/offload-mirror-retention-20261006",
+    "main_head": "f15190ff9447079f9557469ed5aff0b525197821",
+    "main_status": [
+      " M docs/STATUS.md",
+      " M docs/log/2026-10-02.md",
+      " M include/q4t/model/model.h",
+      " M include/q4t/quant/moe_residency.h",
+      " M src/model/moe.cu",
+      " M src/quant/moe_residency.cpp",
+      " M src/server/chat_generation.cpp"
+    ],
+    "main_diff_sha256": "33375caff6dcb3e638e2d2f001428883cbc0e400c5f1b7403a081826e9cd6947",
+    "main_binary": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+      "sha256": "46b3f977b0653c2f317c63df5b9f6669d1f3bb1de17892970b605676dd5434bc"
+    },
+    "reference_tracked_status": [],
+    "prior_delivery_sha256": "d6c0bafccc186b7aafaaf98d0748afaa6d8b17dc99b28558f300214b7cbdf86c"
+  },
+  "model_metadata_records": 228,
+  "raw_trace_identity_reused": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s02-as-on/http/trace/request-1.bin": {
+      "sha256": "b32413b5e2bff7b83f7065d7749cccf3d4f9b712c96959dea4aba720b22d0e7b",
+      "stat": [
+        66305,
+        3933255,
+        1540156,
+        1791275695799411739
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s02-as-on/http/trace/request-1.json": {
+      "sha256": "303ca57841efe37a3b6dc8a3f20959b3af0fbd644fbca94902908e9b475a1707",
+      "stat": [
+        66305,
+        3933257,
+        66,
+        1791275646707552631
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s02-as-on/http/trace/request-1.tokens": {
+      "sha256": "f20a1e84b086eb29d4f743039fd7f75bce0854cb382fc5c282182a4c4736acfa",
+      "stat": [
+        66305,
+        3933256,
+        4096,
+        1791275646707552631
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s02-as-on/http/trace/manifest.json": {
+      "sha256": "012d9547a33cf9ddea8cf217e9bcaeb8036a666815a2cc26395fafc0acad307e",
+      "stat": [
+        66305,
+        3933349,
+        814,
+        1791275844707004444
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s02-as-on/http/trace/request-2.bin": {
+      "sha256": "67890db0159367d9ee5dc9bb21ecfc73fc8430078bcfa34daa7dbda7d1ca6969",
+      "stat": [
+        66305,
+        3933282,
+        1540156,
+        1791275746399270170
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s02-as-on/http/trace/request-2.json": {
+      "sha256": "4a8beb822ec0986c82bcd3615e2f03d424960c562b3a816e985b97e351e2ee39",
+      "stat": [
+        66305,
+        3933284,
+        66,
+        1791275701199396461
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s02-as-on/http/trace/request-2.tokens": {
+      "sha256": "f20a1e84b086eb29d4f743039fd7f75bce0854cb382fc5c282182a4c4736acfa",
+      "stat": [
+        66305,
+        3933283,
+        4096,
+        1791275701199396461
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s02-as-on/http/trace/request-3.bin": {
+      "sha256": "2080b7f0bf05d7197430210e898b73fe36c55a8f97d6940d7f47c49a8bf8fe83",
+      "stat": [
+        66305,
+        3933308,
+        1540156,
+        1791275795619135689
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s02-as-on/http/trace/request-3.json": {
+      "sha256": "d4ccc594ff3805d7e01c60058be73db1d4fe0fbbc37d38cf4b88286873c1bcca",
+      "stat": [
+        66305,
+        3933310,
+        66,
+        1791275751847255133
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s02-as-on/http/trace/request-3.tokens": {
+      "sha256": "f20a1e84b086eb29d4f743039fd7f75bce0854cb382fc5c282182a4c4736acfa",
+      "stat": [
+        66305,
+        3933309,
+        4096,
+        1791275751847255133
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s02-as-on/http/trace/request-4.bin": {
+      "sha256": "7f36f60522a920f2b3b50d78147f25c6d5addda19b949989a3e02764ace3687e",
+      "stat": [
+        66305,
+        3933334,
+        1540156,
+        1791275843463007736
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s02-as-on/http/trace/request-4.json": {
+      "sha256": "48a52088f3f469b068e6e9f3fcbc3473da7ac9ec8e1d79aa1a7cb271e579ca5f",
+      "stat": [
+        66305,
+        3933336,
+        66,
+        1791275801091120921
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s02-as-on/http/trace/request-4.tokens": {
+      "sha256": "f20a1e84b086eb29d4f743039fd7f75bce0854cb382fc5c282182a4c4736acfa",
+      "stat": [
+        66305,
+        3933335,
+        4096,
+        1791275801091120921
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s03-al-on/http/trace/request-1.bin": {
+      "sha256": "42e4a6c84f998cd7bb4399f061463dddd60dbf195e6cc520ec989aadb13b0587",
+      "stat": [
+        66305,
+        3933427,
+        8423615,
+        1791276010706578590
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s03-al-on/http/trace/request-1.json": {
+      "sha256": "713458bf2da92f1432131fe4c84b296039ae8dd55ef767d006fcdca4facd3db9",
+      "stat": [
+        66305,
+        3933429,
+        66,
+        1791275935986767148
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s03-al-on/http/trace/request-1.tokens": {
+      "sha256": "7fa0f9f66b8b1eaeebcbb0e14dec9d679fb802fea25ef9b414d67e4c4847c2dd",
+      "stat": [
+        66305,
+        3933428,
+        32772,
+        1791275935986767148
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s03-al-on/http/trace/manifest.json": {
+      "sha256": "4d26bd3c35ceb8ef2674049bc5281930200ceba7b758d8c49321a6153a6891f5",
+      "stat": [
+        66305,
+        3933521,
+        814,
+        1791276163422206170
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s03-al-on/http/trace/request-2.bin": {
+      "sha256": "99b467200c05aaeb6e5138128d7e646538cd8a439490d7875daf4f51c1cd7d5e",
+      "stat": [
+        66305,
+        3933454,
+        1540156,
+        1791276063390448306
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s03-al-on/http/trace/request-2.json": {
+      "sha256": "4a8beb822ec0986c82bcd3615e2f03d424960c562b3a816e985b97e351e2ee39",
+      "stat": [
+        66305,
+        3933456,
+        66,
+        1791276016294564672
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s03-al-on/http/trace/request-2.tokens": {
+      "sha256": "f20a1e84b086eb29d4f743039fd7f75bce0854cb382fc5c282182a4c4736acfa",
+      "stat": [
+        66305,
+        3933455,
+        4096,
+        1791276016294564672
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s03-al-on/http/trace/request-3.bin": {
+      "sha256": "f480305ee48ca6a154b622ff12b4e32c1aba256d22940a6eaf3b93265a96c985",
+      "stat": [
+        66305,
+        3933480,
+        1540156,
+        1791276112090329623
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s03-al-on/http/trace/request-3.json": {
+      "sha256": "d4ccc594ff3805d7e01c60058be73db1d4fe0fbbc37d38cf4b88286873c1bcca",
+      "stat": [
+        66305,
+        3933482,
+        66,
+        1791276068826434978
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s03-al-on/http/trace/request-3.tokens": {
+      "sha256": "f20a1e84b086eb29d4f743039fd7f75bce0854cb382fc5c282182a4c4736acfa",
+      "stat": [
+        66305,
+        3933481,
+        4096,
+        1791276068826434978
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s03-al-on/http/trace/request-4.bin": {
+      "sha256": "ba190ad704b0788588911e8025b960efc8db8d2bcb269be53c3e94fed905ace3",
+      "stat": [
+        66305,
+        3933506,
+        1540156,
+        1791276162190209115
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s03-al-on/http/trace/request-4.json": {
+      "sha256": "48a52088f3f469b068e6e9f3fcbc3473da7ac9ec8e1d79aa1a7cb271e579ca5f",
+      "stat": [
+        66305,
+        3933508,
+        66,
+        1791276117526316472
+      ]
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source/.q4t-work/evidence/s03-al-on/http/trace/request-4.tokens": {
+      "sha256": "f20a1e84b086eb29d4f743039fd7f75bce0854cb382fc5c282182a4c4736acfa",
+      "stat": [
+        66305,
+        3933507,
+        4096,
+        1791276117522316481
+      ]
+    }
+  },
+  "status": "FINAL_PROTECTION_PASS",
+  "tool_commit": "a2fdcfda40dbdc3d422542e9ee8ce48a8aa364bc",
+  "decision": "FUTURE_GPU_COVERED_MIRROR_RECYCLING_CANDIDATE_ONLY",
+  "closed_owned_labels": [
+    "input-extract-01",
+    "contracts-01",
+    "retention-analysis-01"
+  ],
+  "analysis_sha256": "bd91e5252d97ba4c1c975fc28f83d453f755588fde762e1df6c86416692d159c",
+  "review_sha256": "207321b27e0e58ccd7e4625686028e79f1d17380dead66412f7b09ca6454c414",
+  "limits": [
+    "No model payload hashing; metadata/config/index equality is not byte equality or proof against transient writes.",
+    "Reference scope is tracked Git status; raw trace SHA is reused with unchanged stat, without reparse/re-hash; same-stat byte substitution is not independently excluded.",
+    "Owned historical exit receipts are reused; this checker own exit and later documentation-only Git delivery still require closure; no global GPU idle claim.",
+    "No new performance or physical RAM measurement; old NO_GO/default-off and physical54GB INDETERMINATE remain."
+  ],
+  "ended_t": 1791290614.9810693
+}

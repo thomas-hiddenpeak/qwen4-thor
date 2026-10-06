@@ -1,0 +1,1606 @@
+{
+  "recorded_t": 1791288723.6551902,
+  "files": [
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/.msc",
+      "size": 20882,
+      "inode": 3294028,
+      "device": 66305,
+      "mtime_ns": 1788444005571882565
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/.mv",
+      "size": 36,
+      "inode": 3294027,
+      "device": 66305,
+      "mtime_ns": 1788444005575882590
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/README.md",
+      "size": 8047,
+      "inode": 3294015,
+      "device": 66305,
+      "mtime_ns": 1788441028487971336
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/chat_template.jinja",
+      "size": 8952,
+      "inode": 3293797,
+      "device": 66305,
+      "mtime_ns": 1788440422473571939
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/config.json",
+      "size": 4983,
+      "inode": 3293800,
+      "device": 66305,
+      "mtime_ns": 1788440422497571932
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/configuration.json",
+      "size": 76,
+      "inode": 3293802,
+      "device": 66305,
+      "mtime_ns": 1788440422485571936
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/generation_config.json",
+      "size": 202,
+      "inode": 3293804,
+      "device": 66305,
+      "mtime_ns": 1788440422469571940
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/hf_quant_config.json",
+      "size": 504,
+      "inode": 3293805,
+      "device": 66305,
+      "mtime_ns": 1788440422473571939
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00000-experts-0000-0127.safetensors",
+      "size": 354098208,
+      "inode": 3293810,
+      "device": 66305,
+      "mtime_ns": 1788440446477565178
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00000-experts-0128-0255.safetensors",
+      "size": 354099528,
+      "inode": 3293811,
+      "device": 66305,
+      "mtime_ns": 1788440448761564571
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00000-experts-0256-0383.safetensors",
+      "size": 354099528,
+      "inode": 3293806,
+      "device": 66305,
+      "mtime_ns": 1788440462149561133
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00000-experts-0384-0511.safetensors",
+      "size": 354099528,
+      "inode": 3293813,
+      "device": 66305,
+      "mtime_ns": 1788440436829567812
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00001-experts-0000-0127.safetensors",
+      "size": 354098208,
+      "inode": 3293812,
+      "device": 66305,
+      "mtime_ns": 1788440460621561515
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00001-experts-0128-0255.safetensors",
+      "size": 354099528,
+      "inode": 3293809,
+      "device": 66305,
+      "mtime_ns": 1788440465905560206
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00001-experts-0256-0383.safetensors",
+      "size": 354099528,
+      "inode": 3293814,
+      "device": 66305,
+      "mtime_ns": 1788440472253558676
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00001-experts-0384-0511.safetensors",
+      "size": 354099528,
+      "inode": 3293815,
+      "device": 66305,
+      "mtime_ns": 1788440435633568146
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00002-experts-0000-0127.safetensors",
+      "size": 354098208,
+      "inode": 3293816,
+      "device": 66305,
+      "mtime_ns": 1788440460069561653
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00002-experts-0128-0255.safetensors",
+      "size": 354099528,
+      "inode": 3293817,
+      "device": 66305,
+      "mtime_ns": 1788440447765564835
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00002-experts-0256-0383.safetensors",
+      "size": 354099528,
+      "inode": 3293818,
+      "device": 66305,
+      "mtime_ns": 1788440458901561948
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00002-experts-0384-0511.safetensors",
+      "size": 354099528,
+      "inode": 3293819,
+      "device": 66305,
+      "mtime_ns": 1788440462009561168
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00003-experts-0000-0127.safetensors",
+      "size": 354098208,
+      "inode": 3293820,
+      "device": 66305,
+      "mtime_ns": 1788440471117558946
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00003-experts-0128-0255.safetensors",
+      "size": 354099528,
+      "inode": 3293821,
+      "device": 66305,
+      "mtime_ns": 1788440476937557575
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00003-experts-0256-0383.safetensors",
+      "size": 354099528,
+      "inode": 3293822,
+      "device": 66305,
+      "mtime_ns": 1788440498597552801
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00003-experts-0384-0511.safetensors",
+      "size": 354099528,
+      "inode": 3293823,
+      "device": 66305,
+      "mtime_ns": 1788440479765556923
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00004-experts-0000-0127.safetensors",
+      "size": 354098208,
+      "inode": 3293824,
+      "device": 66305,
+      "mtime_ns": 1788440501865552124
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00004-experts-0128-0255.safetensors",
+      "size": 354099528,
+      "inode": 3293825,
+      "device": 66305,
+      "mtime_ns": 1788440481853556446
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00004-experts-0256-0383.safetensors",
+      "size": 354099528,
+      "inode": 3293826,
+      "device": 66305,
+      "mtime_ns": 1788440499945552520
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00004-experts-0384-0511.safetensors",
+      "size": 354099528,
+      "inode": 3293827,
+      "device": 66305,
+      "mtime_ns": 1788440501965552104
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00005-experts-0000-0127.safetensors",
+      "size": 354098208,
+      "inode": 3293828,
+      "device": 66305,
+      "mtime_ns": 1788440491945554213
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00005-experts-0128-0255.safetensors",
+      "size": 354099528,
+      "inode": 3293829,
+      "device": 66305,
+      "mtime_ns": 1788440488889554878
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00005-experts-0256-0383.safetensors",
+      "size": 354099528,
+      "inode": 3293830,
+      "device": 66305,
+      "mtime_ns": 1788440510169550456
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00005-experts-0384-0511.safetensors",
+      "size": 354099528,
+      "inode": 3293831,
+      "device": 66305,
+      "mtime_ns": 1788440508749550737
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00006-experts-0000-0127.safetensors",
+      "size": 354098208,
+      "inode": 3293832,
+      "device": 66305,
+      "mtime_ns": 1788440516613549212
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00006-experts-0128-0255.safetensors",
+      "size": 354099528,
+      "inode": 3293833,
+      "device": 66305,
+      "mtime_ns": 1788440507605550964
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00006-experts-0256-0383.safetensors",
+      "size": 354099528,
+      "inode": 3293834,
+      "device": 66305,
+      "mtime_ns": 1788440526529547380
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00006-experts-0384-0511.safetensors",
+      "size": 354099528,
+      "inode": 3293835,
+      "device": 66305,
+      "mtime_ns": 1788440529833546791
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00007-experts-0000-0127.safetensors",
+      "size": 354098208,
+      "inode": 3293836,
+      "device": 66305,
+      "mtime_ns": 1788440516241549282
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00007-experts-0128-0255.safetensors",
+      "size": 354099528,
+      "inode": 3293837,
+      "device": 66305,
+      "mtime_ns": 1788440525849547502
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00007-experts-0256-0383.safetensors",
+      "size": 354099528,
+      "inode": 3293838,
+      "device": 66305,
+      "mtime_ns": 1788440539633545111
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00007-experts-0384-0511.safetensors",
+      "size": 354099528,
+      "inode": 3293839,
+      "device": 66305,
+      "mtime_ns": 1788440525241547612
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00008-experts-0000-0127.safetensors",
+      "size": 354098208,
+      "inode": 3293840,
+      "device": 66305,
+      "mtime_ns": 1788440544697544279
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00008-experts-0128-0255.safetensors",
+      "size": 354099528,
+      "inode": 3293841,
+      "device": 66305,
+      "mtime_ns": 1788440530133546738
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00008-experts-0256-0383.safetensors",
+      "size": 354099528,
+      "inode": 3293842,
+      "device": 66305,
+      "mtime_ns": 1788440543989544394
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00008-experts-0384-0511.safetensors",
+      "size": 354099528,
+      "inode": 3293843,
+      "device": 66305,
+      "mtime_ns": 1788440548085543737
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00009-experts-0000-0127.safetensors",
+      "size": 354098208,
+      "inode": 3293844,
+      "device": 66305,
+      "mtime_ns": 1788440549557543505
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00009-experts-0128-0255.safetensors",
+      "size": 354099528,
+      "inode": 3293845,
+      "device": 66305,
+      "mtime_ns": 1788440553777542851
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00009-experts-0256-0383.safetensors",
+      "size": 354099528,
+      "inode": 3293846,
+      "device": 66305,
+      "mtime_ns": 1788440543793544426
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00009-experts-0384-0511.safetensors",
+      "size": 354099528,
+      "inode": 3293847,
+      "device": 66305,
+      "mtime_ns": 1788440566693540956
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00010-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293848,
+      "device": 66305,
+      "mtime_ns": 1788440577049539548
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00010-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293849,
+      "device": 66305,
+      "mtime_ns": 1788440556445542447
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00010-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293850,
+      "device": 66305,
+      "mtime_ns": 1788440581893538924
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00010-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293851,
+      "device": 66305,
+      "mtime_ns": 1788440560109541902
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00011-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293852,
+      "device": 66305,
+      "mtime_ns": 1788440589981537929
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00011-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293853,
+      "device": 66305,
+      "mtime_ns": 1788440591925537699
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00011-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293854,
+      "device": 66305,
+      "mtime_ns": 1788440565565541115
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00011-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293855,
+      "device": 66305,
+      "mtime_ns": 1788440596137537211
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00012-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293856,
+      "device": 66305,
+      "mtime_ns": 1788440571073540348
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00012-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293857,
+      "device": 66305,
+      "mtime_ns": 1788440602053536552
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00012-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293858,
+      "device": 66305,
+      "mtime_ns": 1788440607753535946
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00012-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293859,
+      "device": 66305,
+      "mtime_ns": 1788440580805539063
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00013-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293860,
+      "device": 66305,
+      "mtime_ns": 1788440588381538121
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00013-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293861,
+      "device": 66305,
+      "mtime_ns": 1788440591529537746
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00013-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293862,
+      "device": 66305,
+      "mtime_ns": 1788440620497534692
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00013-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293863,
+      "device": 66305,
+      "mtime_ns": 1788440598325536964
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00014-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293864,
+      "device": 66305,
+      "mtime_ns": 1788440628285533993
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00014-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293865,
+      "device": 66305,
+      "mtime_ns": 1788440628105534009
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00014-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293866,
+      "device": 66305,
+      "mtime_ns": 1788440633213533577
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00014-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293867,
+      "device": 66305,
+      "mtime_ns": 1788440635373533401
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00015-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293868,
+      "device": 66305,
+      "mtime_ns": 1788440609473535769
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00015-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293869,
+      "device": 66305,
+      "mtime_ns": 1788440613849535329
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00015-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293870,
+      "device": 66305,
+      "mtime_ns": 1788440651329532217
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00015-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293871,
+      "device": 66305,
+      "mtime_ns": 1788440646037532587
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00016-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293872,
+      "device": 66305,
+      "mtime_ns": 1788440623461534421
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00016-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293873,
+      "device": 66305,
+      "mtime_ns": 1788440633797533529
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00016-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293874,
+      "device": 66305,
+      "mtime_ns": 1788440635093533423
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00016-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293875,
+      "device": 66305,
+      "mtime_ns": 1788440651185532227
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00017-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293876,
+      "device": 66305,
+      "mtime_ns": 1788440642837532822
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00017-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293877,
+      "device": 66305,
+      "mtime_ns": 1788440664677531381
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00017-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293878,
+      "device": 66305,
+      "mtime_ns": 1788440652145532162
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00017-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293879,
+      "device": 66305,
+      "mtime_ns": 1788440668613531161
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00018-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293880,
+      "device": 66305,
+      "mtime_ns": 1788440647101532511
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00018-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293881,
+      "device": 66305,
+      "mtime_ns": 1788440679697530605
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00018-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293882,
+      "device": 66305,
+      "mtime_ns": 1788440669809531097
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00018-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293883,
+      "device": 66305,
+      "mtime_ns": 1788440665049531360
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00019-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293884,
+      "device": 66305,
+      "mtime_ns": 1788440683457530437
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00019-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293885,
+      "device": 66305,
+      "mtime_ns": 1788440680141530585
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00019-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293886,
+      "device": 66305,
+      "mtime_ns": 1788440662657531499
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00019-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293887,
+      "device": 66305,
+      "mtime_ns": 1788440698945529857
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00020-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293888,
+      "device": 66305,
+      "mtime_ns": 1788440679153530630
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00020-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293889,
+      "device": 66305,
+      "mtime_ns": 1788440681857530507
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00020-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293890,
+      "device": 66305,
+      "mtime_ns": 1788440707285529616
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00020-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293891,
+      "device": 66305,
+      "mtime_ns": 1788440689681530183
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00021-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293892,
+      "device": 66305,
+      "mtime_ns": 1788440700289529815
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00021-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293893,
+      "device": 66305,
+      "mtime_ns": 1788440711305529518
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00021-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293894,
+      "device": 66305,
+      "mtime_ns": 1788440711621529510
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00021-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293895,
+      "device": 66305,
+      "mtime_ns": 1788440694017530023
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00022-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293896,
+      "device": 66305,
+      "mtime_ns": 1788440715237529433
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00022-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293897,
+      "device": 66305,
+      "mtime_ns": 1788440721081529326
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00022-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293898,
+      "device": 66305,
+      "mtime_ns": 1788440706697529632
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00022-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293899,
+      "device": 66305,
+      "mtime_ns": 1788440728837529221
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00023-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293900,
+      "device": 66305,
+      "mtime_ns": 1788440717477529389
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00023-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293901,
+      "device": 66305,
+      "mtime_ns": 1788440725349529263
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00023-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293902,
+      "device": 66305,
+      "mtime_ns": 1788440720981529328
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00023-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293903,
+      "device": 66305,
+      "mtime_ns": 1788440742657529135
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00024-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293904,
+      "device": 66305,
+      "mtime_ns": 1788440742737529134
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00024-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293905,
+      "device": 66305,
+      "mtime_ns": 1788440749649529139
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00024-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293906,
+      "device": 66305,
+      "mtime_ns": 1788440735265529165
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00024-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293907,
+      "device": 66305,
+      "mtime_ns": 1788440737161529153
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00025-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293908,
+      "device": 66305,
+      "mtime_ns": 1788440748101529136
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00025-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293909,
+      "device": 66305,
+      "mtime_ns": 1788440752185529149
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00025-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293910,
+      "device": 66305,
+      "mtime_ns": 1788440752197529149
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00025-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293911,
+      "device": 66305,
+      "mtime_ns": 1788440752985529153
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00026-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293912,
+      "device": 66305,
+      "mtime_ns": 1788440758593529192
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00026-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293913,
+      "device": 66305,
+      "mtime_ns": 1788440771449529357
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00026-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293914,
+      "device": 66305,
+      "mtime_ns": 1788440763949529248
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00026-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293915,
+      "device": 66305,
+      "mtime_ns": 1788440776145529444
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00027-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293916,
+      "device": 66305,
+      "mtime_ns": 1788440766965529288
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00027-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293919,
+      "device": 66305,
+      "mtime_ns": 1788440769533529326
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00027-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293918,
+      "device": 66305,
+      "mtime_ns": 1788440787621529712
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00027-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293917,
+      "device": 66305,
+      "mtime_ns": 1788440781257529553
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00028-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293920,
+      "device": 66305,
+      "mtime_ns": 1788440777309529467
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00028-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293921,
+      "device": 66305,
+      "mtime_ns": 1788440787037529696
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00028-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293922,
+      "device": 66305,
+      "mtime_ns": 1788440792525529851
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00028-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293923,
+      "device": 66305,
+      "mtime_ns": 1788440787057529696
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00029-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293924,
+      "device": 66305,
+      "mtime_ns": 1788440818433530822
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00029-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293925,
+      "device": 66305,
+      "mtime_ns": 1788440793745529888
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00029-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293926,
+      "device": 66305,
+      "mtime_ns": 1788440802957530194
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00029-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293927,
+      "device": 66305,
+      "mtime_ns": 1788440806889530341
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00030-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293928,
+      "device": 66305,
+      "mtime_ns": 1788440805069530271
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00030-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293929,
+      "device": 66305,
+      "mtime_ns": 1788440809357530437
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00030-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293930,
+      "device": 66305,
+      "mtime_ns": 1788440813669530614
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00030-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293931,
+      "device": 66305,
+      "mtime_ns": 1788440814837530663
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00031-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293932,
+      "device": 66305,
+      "mtime_ns": 1788440812893530581
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00031-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293933,
+      "device": 66305,
+      "mtime_ns": 1788440822029530987
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00031-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293934,
+      "device": 66305,
+      "mtime_ns": 1788440838333531829
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00031-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293935,
+      "device": 66305,
+      "mtime_ns": 1788440826049531181
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00032-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293936,
+      "device": 66305,
+      "mtime_ns": 1788440828713531314
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00032-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293937,
+      "device": 66305,
+      "mtime_ns": 1788440832657531519
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00032-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293938,
+      "device": 66305,
+      "mtime_ns": 1788440846289532293
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00032-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293939,
+      "device": 66305,
+      "mtime_ns": 1788440846785532323
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00033-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293940,
+      "device": 66305,
+      "mtime_ns": 1788440849389532482
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00033-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293941,
+      "device": 66305,
+      "mtime_ns": 1788440840117531930
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00033-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293942,
+      "device": 66305,
+      "mtime_ns": 1788440845841532266
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00033-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293943,
+      "device": 66305,
+      "mtime_ns": 1788440848869532451
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00034-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293944,
+      "device": 66305,
+      "mtime_ns": 1788440855893532898
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00034-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293945,
+      "device": 66305,
+      "mtime_ns": 1788440866305533610
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00034-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293946,
+      "device": 66305,
+      "mtime_ns": 1788440859545533142
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00034-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293947,
+      "device": 66305,
+      "mtime_ns": 1788440876489534361
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00035-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293948,
+      "device": 66305,
+      "mtime_ns": 1788440878193534491
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00035-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293949,
+      "device": 66305,
+      "mtime_ns": 1788440864945533514
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00035-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293950,
+      "device": 66305,
+      "mtime_ns": 1788440880849534698
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00035-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293951,
+      "device": 66305,
+      "mtime_ns": 1788440866301533610
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00036-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293952,
+      "device": 66305,
+      "mtime_ns": 1788440878533534518
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00036-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293953,
+      "device": 66305,
+      "mtime_ns": 1788440880417534664
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00036-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293954,
+      "device": 66305,
+      "mtime_ns": 1788440890253535459
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00036-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293957,
+      "device": 66305,
+      "mtime_ns": 1788440890073535444
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00037-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293956,
+      "device": 66305,
+      "mtime_ns": 1788440887349535219
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00037-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293955,
+      "device": 66305,
+      "mtime_ns": 1788440898297536145
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00037-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293958,
+      "device": 66305,
+      "mtime_ns": 1788440899517536251
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00037-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293959,
+      "device": 66305,
+      "mtime_ns": 1788440903245536582
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00038-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293960,
+      "device": 66305,
+      "mtime_ns": 1788440907869537002
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00038-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293961,
+      "device": 66305,
+      "mtime_ns": 1788440910117537209
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00038-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293962,
+      "device": 66305,
+      "mtime_ns": 1788440908953537102
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00038-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293963,
+      "device": 66305,
+      "mtime_ns": 1788440912293537413
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00039-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293964,
+      "device": 66305,
+      "mtime_ns": 1788440916357537799
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00039-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293965,
+      "device": 66305,
+      "mtime_ns": 1788440919553538107
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00039-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293966,
+      "device": 66305,
+      "mtime_ns": 1788440930389539190
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00039-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293967,
+      "device": 66305,
+      "mtime_ns": 1788440924429538588
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00040-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293968,
+      "device": 66305,
+      "mtime_ns": 1788440936505539825
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00040-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293969,
+      "device": 66305,
+      "mtime_ns": 1788440932321539388
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00040-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293970,
+      "device": 66305,
+      "mtime_ns": 1788440939929540188
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00040-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293971,
+      "device": 66305,
+      "mtime_ns": 1788440930089539159
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00041-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293972,
+      "device": 66305,
+      "mtime_ns": 1788440939985540193
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00041-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293973,
+      "device": 66305,
+      "mtime_ns": 1788440938325540017
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00041-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293974,
+      "device": 66305,
+      "mtime_ns": 1788440954841325380
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00041-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293975,
+      "device": 66305,
+      "mtime_ns": 1788440949193436630
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00042-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293976,
+      "device": 66305,
+      "mtime_ns": 1788440966965090277
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00042-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293977,
+      "device": 66305,
+      "mtime_ns": 1788440950853403817
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00042-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293978,
+      "device": 66305,
+      "mtime_ns": 1788440955745307676
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00042-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293979,
+      "device": 66305,
+      "mtime_ns": 1788440956313296569
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00043-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293980,
+      "device": 66305,
+      "mtime_ns": 1788440973684962114
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00043-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293981,
+      "device": 66305,
+      "mtime_ns": 1788440972300988387
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00043-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293982,
+      "device": 66305,
+      "mtime_ns": 1788440966441100338
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00043-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293983,
+      "device": 66305,
+      "mtime_ns": 1788440968325064220
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00044-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293984,
+      "device": 66305,
+      "mtime_ns": 1788440984372761362
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00044-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293985,
+      "device": 66305,
+      "mtime_ns": 1788440983796772085
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00044-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293986,
+      "device": 66305,
+      "mtime_ns": 1788440973952957032
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00044-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293987,
+      "device": 66305,
+      "mtime_ns": 1788440992348613983
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00045-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293988,
+      "device": 66305,
+      "mtime_ns": 1788440991880622572
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00045-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293989,
+      "device": 66305,
+      "mtime_ns": 1788440986308725399
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00045-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293990,
+      "device": 66305,
+      "mtime_ns": 1788440997492520019
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00045-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293991,
+      "device": 66305,
+      "mtime_ns": 1788440997780514782
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00046-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293992,
+      "device": 66305,
+      "mtime_ns": 1788440995844550028
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00046-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293993,
+      "device": 66305,
+      "mtime_ns": 1788441011492268520
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00046-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293994,
+      "device": 66305,
+      "mtime_ns": 1788441012180256317
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00046-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293995,
+      "device": 66305,
+      "mtime_ns": 1788441006768352695
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00047-experts-0000-0127.safetensors",
+      "size": 354099744,
+      "inode": 3293996,
+      "device": 66305,
+      "mtime_ns": 1788441012344253412
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00047-experts-0128-0255.safetensors",
+      "size": 354101064,
+      "inode": 3293997,
+      "device": 66305,
+      "mtime_ns": 1788441019204132581
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00047-experts-0256-0383.safetensors",
+      "size": 354101064,
+      "inode": 3293998,
+      "device": 66305,
+      "mtime_ns": 1788441016376182219
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00047-experts-0384-0511.safetensors",
+      "size": 354101064,
+      "inode": 3293999,
+      "device": 66305,
+      "mtime_ns": 1788441023668054726
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/merges.txt",
+      "size": 3353259,
+      "inode": 3294000,
+      "device": 66305,
+      "mtime_ns": 1788440998460502431
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model-bf16-00001.safetensors",
+      "size": 1273114461,
+      "inode": 3294002,
+      "device": 66305,
+      "mtime_ns": 1788441072983233526
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model-bf16-00010.safetensors",
+      "size": 323564201,
+      "inode": 3294003,
+      "device": 66305,
+      "mtime_ns": 1788441027891981608
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model-bf16-00011.safetensors",
+      "size": 10727387912,
+      "inode": 3294005,
+      "device": 66305,
+      "mtime_ns": 1788441457602701387
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model-bf16-00012.safetensors",
+      "size": 3683689888,
+      "inode": 3294007,
+      "device": 66305,
+      "mtime_ns": 1788441195229472953
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model-plefp8-scale.safetensors",
+      "size": 146,
+      "inode": 3294009,
+      "device": 66305,
+      "mtime_ns": 1788441024148046389
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model.safetensors.index.json",
+      "size": 35429343,
+      "inode": 3294010,
+      "device": 66305,
+      "mtime_ns": 1788441027439989409
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/mtp/chat_template.jinja",
+      "size": 8952,
+      "inode": 3293799,
+      "device": 66305,
+      "mtime_ns": 1788440422489571934
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/mtp/config.json",
+      "size": 4983,
+      "inode": 3293801,
+      "device": 66305,
+      "mtime_ns": 1788440422485571936
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/mtp/generation_config.json",
+      "size": 202,
+      "inode": 3293803,
+      "device": 66305,
+      "mtime_ns": 1788440422469571940
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/mtp/hf_quant_config.json",
+      "size": 504,
+      "inode": 3293807,
+      "device": 66305,
+      "mtime_ns": 1788440422921571806
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/mtp/merges.txt",
+      "size": 3353259,
+      "inode": 3294001,
+      "device": 66305,
+      "mtime_ns": 1788440999100490816
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/mtp/model-bf16-00010.safetensors",
+      "size": 323564201,
+      "inode": 3294004,
+      "device": 66305,
+      "mtime_ns": 1788441029623951784
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/mtp/model-bf16-00011.safetensors",
+      "size": 10727387912,
+      "inode": 3294006,
+      "device": 66305,
+      "mtime_ns": 1788441505830304351
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/mtp/model-bf16-00012.safetensors",
+      "size": 3683689888,
+      "inode": 3294008,
+      "device": 66305,
+      "mtime_ns": 1788441190145539169
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/mtp/model.safetensors.index.json",
+      "size": 2802,
+      "inode": 3294011,
+      "device": 66305,
+      "mtime_ns": 1788441027759983886
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/mtp/preprocessor_config.json",
+      "size": 390,
+      "inode": 3294012,
+      "device": 66305,
+      "mtime_ns": 1788441028039979054
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/mtp/tokenizer.json",
+      "size": 12809320,
+      "inode": 3294018,
+      "device": 66305,
+      "mtime_ns": 1788441029863947657
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/mtp/tokenizer_config.json",
+      "size": 17928,
+      "inode": 3294020,
+      "device": 66305,
+      "mtime_ns": 1788441030155942639
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/mtp/video_preprocessor_config.json",
+      "size": 385,
+      "inode": 3294022,
+      "device": 66305,
+      "mtime_ns": 1788441030755932338
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/mtp/vocab.json",
+      "size": 6722759,
+      "inode": 3294024,
+      "device": 66305,
+      "mtime_ns": 1788441031623917455
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/ple/qwen3.8-flash-next-ple-fp8.bin",
+      "size": 51200245760,
+      "inode": 3294016,
+      "device": 66305,
+      "mtime_ns": 1788444005571882565
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/preprocessor_config.json",
+      "size": 390,
+      "inode": 3294013,
+      "device": 66305,
+      "mtime_ns": 1788441028195976367
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/ssd-stream.json",
+      "size": 493,
+      "inode": 3294017,
+      "device": 66305,
+      "mtime_ns": 1788441028751966789
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/tokenizer.json",
+      "size": 12809320,
+      "inode": 3294019,
+      "device": 66305,
+      "mtime_ns": 1788441030615934742
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/tokenizer_config.json",
+      "size": 17928,
+      "inode": 3294021,
+      "device": 66305,
+      "mtime_ns": 1788441030479937076
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/video_preprocessor_config.json",
+      "size": 385,
+      "inode": 3294023,
+      "device": 66305,
+      "mtime_ns": 1788441030907929728
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/vocab.json",
+      "size": 6722759,
+      "inode": 3294025,
+      "device": 66305,
+      "mtime_ns": 1788441031683916426
+    }
+  ],
+  "config_index_sha256": {
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model.safetensors.index.json": "aa702aa8cadb463b728cfd6829e172b1124114080231c75712155e2490f8c607"
+  },
+  "weight_payload_hashed": false
+}

@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "passed": true,
+  "reviewer": "/root/gpu_replay_source",
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/final_protection.py": "15215ec92b8a5b813d88ba8813ed73f1643c88a476c0b4a6e034ea1f9affadce"
+  },
+  "first_finding": {
+    "issue": "Entry and model-entry baseline files were read and recorded but not fixed to expected SHA, and were outside the execution62 source ledger.",
+    "status": "CLOSED_BEFORE_PROTECTION_EXECUTION",
+    "repair": "Exactly two explicit SHA assertions now bind entry.json and model-entry.json to their frozen baselines.",
+    "expected_sha256": {
+      "entry.json": "38568d818c01ea6eadca2f356c6680eb4b6d85d3b695c7dd1691b43ed5f3d484",
+      "model-entry.json": "31cfb5f2cae36d75f84dcd1b27d7a11ce5972e2b6ba9637b9eb8493cd91dd0f4"
+    }
+  },
+  "blocking_findings": [],
+  "scope": [
+    "Static review of bounded protection script only; previous narrow-schema review retained.",
+    "MAIN/model metadata/reference tracked scope, prior checkout identities, current tool commit/allowed paths, execution source hashes, reused trace stat identity and successful owned receipts.",
+    "Six final independent-review source bindings remain required; checker own terminal and later document-only delivery/remote equality remain root closure."
+  ],
+  "limits": [
+    "No protection execution/import, tests, model/HTTP, raw resource or trace reads/replay.",
+    "Model payload equality, transient writes and global GPU idle remain unproved; prior NO_GO/default-off and54GB INDETERMINATE remain."
+  ],
+  "recorded_t": 1791290574.9143116
+}

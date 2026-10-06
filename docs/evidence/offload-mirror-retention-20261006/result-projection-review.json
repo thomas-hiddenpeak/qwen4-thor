@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "passed": true,
+  "projection_sha256": "06bf0f299000a161d0bda3bfeafc39e6753787d7792247f41f4633688f2875c1",
+  "analysis_sha256": "bd91e5252d97ba4c1c975fc28f83d453f755588fde762e1df6c86416692d159c",
+  "all_request_and_comparison_fields_compared": true,
+  "requests": 8,
+  "classified_endpoints": 24,
+  "per_layer_intervals": 192,
+  "uses_already_loaded_analysis": true,
+  "actual_trace_passes": 0,
+  "recorded_t": 1791290239.5404701
+}

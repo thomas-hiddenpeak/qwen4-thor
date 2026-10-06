@@ -1,0 +1,245 @@
+{
+  "schema": 1,
+  "passed": true,
+  "independent_review": true,
+  "reviewer": "/root/supply_observer_review",
+  "scope_sha256": "7b611ebf65f194f166d8d9e1635d88f5eced5e790d8fe38012fb754beff7e089",
+  "execution_plan_sha256": "fd413fa124342029be9b9bd8c87cb7d76d420e8994bb40d87889cbb4fa0e797e",
+  "manifest_sha256": "f3831ccc88e061aea3141f23f581be9c963da827ee3ded7761509d501c73dcb3",
+  "analysis_sha256": "bd91e5252d97ba4c1c975fc28f83d453f755588fde762e1df6c86416692d159c",
+  "plans_sha256": "f28cd33582ab47b97abda963933a82b5960ecf5e58343d888430e2f6856b4e83",
+  "runner_source_commit": "a2fdcfda40dbdc3d422542e9ee8ce48a8aa364bc",
+  "runtime_source_commit": "75d26ff22391a4fd7549b1c39bf2b9c0f2cbbf89",
+  "runtime_binary_sha256": "72a321a422facac605c13740ac8eb78e253056a6719c88bea71e3bbae9ef843f",
+  "blocking_findings": [],
+  "scope": {
+    "requests": 8,
+    "layers": 48,
+    "true_decode_forwards_per_request": 255,
+    "new_host_contracts": 45,
+    "core_contracts": 26,
+    "runner_contracts": 19,
+    "actual_project_trace_passes": 1,
+    "owned_terminals": 3,
+    "new_HTTP": 0,
+    "model_runs": 0,
+    "runtime_changes": false
+  },
+  "independent_checks": {
+    "endpoint_layer_classifications": 1152,
+    "decode_layer_plans": 97920,
+    "layer_opportunity_records": 384,
+    "prefix_counter_and_supply_records": 32,
+    "completed_requests": 8,
+    "paired_plan_capacities": 48960,
+    "per_layer_common_intervals": 192
+  },
+  "entry_mirror_first_event_records_recomputed": 3072,
+  "reviewer_artifact_reads": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/retention-inputs.json": {
+      "sha256": "f3831ccc88e061aea3141f23f581be9c963da827ee3ded7761509d501c73dcb3",
+      "stat": [
+        66305,
+        3935589,
+        3941749,
+        1791289202779104740
+      ],
+      "read_passes": 1
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/decode-plans.json": {
+      "sha256": "f28cd33582ab47b97abda963933a82b5960ecf5e58343d888430e2f6856b4e83",
+      "stat": [
+        66305,
+        3935621,
+        7873924,
+        1791289829020220375
+      ],
+      "read_passes": 1
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/retention-analysis.json": {
+      "sha256": "bd91e5252d97ba4c1c975fc28f83d453f755588fde762e1df6c86416692d159c",
+      "stat": [
+        66305,
+        3935620,
+        31546234,
+        1791289829984235145
+      ],
+      "read_passes": 1
+    }
+  },
+  "new_route_parses_by_reviewer": 0,
+  "new_GPU_replays_by_reviewer": 0,
+  "raw_resource_reads_by_reviewer": 0,
+  "model_payload_reads_by_reviewer": 0,
+  "independent_review_first_attempt_passed": false,
+  "reviewer_method_correction": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/result-reviewer-method-note.json",
+    "sha256": "b4be5e90e5d90670630389d4b4b80d55dea94cbfba84f65b13aab93815661dc8",
+    "kind": "auxiliary_zero_key_aggregation",
+    "project_execution_failure": false,
+    "artifacts_reread": false,
+    "trace_reparsed": false
+  },
+  "observations": {
+    "GPU_misses": 54825,
+    "potential_supported_miss_occurrences": 23316,
+    "sum_per_plan_potential_capacity": 23310,
+    "observed_entry_candidate_occurrences": 4482,
+    "primary": {
+      "position": 1,
+      "same_input_tokens": true,
+      "same_input_length": true,
+      "ordered_route_IDs_equal": true,
+      "common_GPU_misses": 6529,
+      "S_only_GPU_misses": 471,
+      "L_only_GPU_misses": 698,
+      "observed_candidates_S": 950,
+      "observed_candidates_L": 480,
+      "candidate_difference_S_minus_L": 470,
+      "supported_exclusive_capacity_S": 460,
+      "supported_exclusive_capacity_L": 576,
+      "total_potential_capacity_S": 3198,
+      "total_potential_capacity_L": 3371,
+      "common_difference_interval": {
+        "lower": 10,
+        "upper": 845
+      },
+      "decode_entry_GPU_covered_S": 2,
+      "decode_entry_GPU_covered_L": 6,
+      "decode_entry_sole_S": 382,
+      "decode_entry_sole_L": 378,
+      "potential_misses_with_0_to_7_strictly_intervening_victims_S": 987,
+      "potential_misses_with_0_to_7_strictly_intervening_victims_L": 501
+    },
+    "all_positions_intervals": [
+      {
+        "position": 0,
+        "same_input_length": false,
+        "same_input_tokens": false,
+        "route_equal": false,
+        "common_candidate_difference_interval": {
+          "lower": -124,
+          "upper": 305
+        }
+      },
+      {
+        "position": 1,
+        "same_input_length": true,
+        "same_input_tokens": true,
+        "route_equal": true,
+        "common_candidate_difference_interval": {
+          "lower": 10,
+          "upper": 845
+        }
+      },
+      {
+        "position": 2,
+        "same_input_length": true,
+        "same_input_tokens": true,
+        "route_equal": true,
+        "common_candidate_difference_interval": {
+          "lower": -447,
+          "upper": 214
+        }
+      },
+      {
+        "position": 3,
+        "same_input_length": true,
+        "same_input_tokens": true,
+        "route_equal": true,
+        "common_candidate_difference_interval": {
+          "lower": -188,
+          "upper": 111
+        }
+      }
+    ]
+  },
+  "gate_assessment": {
+    "decision": "FUTURE_GPU_COVERED_MIRROR_RECYCLING_CANDIDATE_ONLY",
+    "all_frozen_requirements_met": true,
+    "input_length_and_SHA_match": true,
+    "ordered_route_match": true,
+    "primary_common_lower_bound_positive": true,
+    "primary_decode_entry_same_layer_GPUcovered_and_sole_mixed": true,
+    "future_candidate_count": 1,
+    "hypothesis_identified": false,
+    "runtime_candidate_admitted": false,
+    "automatic_new_observer": false
+  },
+  "projection_review": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/retention-summary.json",
+    "sha256": "06bf0f299000a161d0bda3bfeafc39e6753787d7792247f41f4633688f2875c1",
+    "all_fields_verified": true,
+    "requests": 8,
+    "endpoints": 24,
+    "layer_intervals": 192
+  },
+  "draft_fact_boundary_review": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/final-report-draft.md",
+    "reviewed_sha256": "05cd70d94916902ddc217ffee2357d2214322c1ffd0c999819cb6bc7ee8b271f",
+    "passed_for_current_quantitative_claims_and_limits": true,
+    "final_protection_and_delivery_text_pending": true,
+    "independent_method_correction_must_be_retained": true
+  },
+  "limits": [
+    "At k1, [10,845] is a conservative interval for the net S-minus-L accumulated entry-candidate count on aligned common GPU misses. The positive lower bound excludes an explanation consisting entirely of contemporaneous exclusive-miss composition. It does not attribute all470 observed candidates to retention or identify which ten events account for the bound.",
+    "The upper bound845 may exceed the total candidate difference470 because exclusive-miss contributions may be negative. Independent per-plan partition caps and summed layer intervals are outer relaxations, not a claim that every value is jointly achievable or a percentage decomposition of470.",
+    "Input identity is equality of SHA-bound token sidecars, and route identity is ordered top10 expert IDs. This is controlled recorded demand; it is not a claim about all router weights, hidden activations, numerical equivalence of arbitrary model executions or independent repeated services.",
+    "All k0..k3 and48 layers remain included. k0 has different inputs and routes; k2[-447,214] and k3[-188,111] include zero. Old sixteen requests are not pooled, and the eight requests/positions are not independent repetitions.",
+    "Possible mirror support includes captured decode-entry IDs plus all strictly earlier occupied GPU victims. It can exceed eight IDs and does not assert actual residency; it is never trimmed to the last eight victims. Capacity23310 versus observed candidates4482 is not avoidable READ work or a candidate savings ceiling.",
+    "Victim distances exclude entire source and demand plans, count strictly intervening occupied victim events and provide no within-plan ordering or wall-clock lifetime. The k1 counts987/501 for0..7 intervening victims describe potential reuse opportunities; their486 difference is not an identified cause of the470 candidate difference.",
+    "Captured endpoint GPU-covered copies S2/L6 and sole copies S382/L378 establish mixed occupancy only. They do not establish an available safe alternative at any actual reservation, continued GPU coverage, mirror survival until a future miss, overwrite causality or realizable benefit. Repeated boundary snapshots are not independent samples or physical RAM measurements.",
+    "The frozen gate nominates exactly one future GPU-covered-mirror recycling rule for consideration. No runtime policy was implemented or admitted; no additional observer is triggered. Any implementation needs current thread-safe state, original claim/in-flight/event protection and fallback, with a separate default-off HTTP-first acceptance stage.",
+    "This independent review did not reparse route payloads or raw resources and did not repeat GPU state replay. Exact GPU endpoints/EOF proof is reused from the SHA-bound successful runner and passed same-source45 contracts, while all projected missing/victim arithmetic, observed prefix counters, endpoint memberships and common intervals were recomputed independently.",
+    "The three current inputs/plans/analysis artifacts were each content-read and SHA-checked once, then retained in one reviewer session. Their stat signatures were rechecked at sealing. The old observer proof and its transitive raw evidence were not recursively reopened; finite local receipts/source identity were checked separately.",
+    "Project extraction,45 host contracts and actual eight-trace analysis passed on their first recorded runs. The independent auxiliary comparison did not pass on its first attempt: Python Counter addition dropped zero-valued keys. That reviewer-only mistake and corrected method are retained; no project test/data/trace rerun or artifact reread occurred.",
+    "Prior performance NO_GO/default-off, GEMM/precision/budget/MTP/Phase-D constraints and physical RAM54GB INDETERMINATE remain. No new model/HTTP/resource measurement, latency claim, physical I/O claim or global cleanliness proof is supplied by this review. Final MAIN/old-worktree protection and delivery still require their own closure."
+  ],
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/scope-plan.json": "7b611ebf65f194f166d8d9e1635d88f5eced5e790d8fe38012fb754beff7e089",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/execution-plan.json": "fd413fa124342029be9b9bd8c87cb7d76d420e8994bb40d87889cbb4fa0e797e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/validation-plan.json": "5ee9a2b62e7f7c1b3eb67e7cb4f2dac266888c432567b9723fee1ebf3e185014",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/validation-results.json": "6c22365828603ab880fb65b3c9e4050f0034529fdc123676c2f880982a3d3e0d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source-contract.json": "afcea6d9024f554c443298d06eb7f5e882060c70b79c4a42ed5d01c0845d2cab",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/tool-static-review.json": "db86ff7cae574b006567a53983c1da0a2236667132fa47e326d2d16fa807ca72",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/runner-input-identity-static-finding.json": "e1073b367d1c0cc662bbae3cf8260dcdd0f530f1fbd11ff06df13364bd486f97",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/input-extract-01-start.json": "9e825eebbd989c792d2451d25eb16da2842bb1eddeb775f23ceacc2262bb6788",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/input-extract-01-exit.json": "d933b52cef92939980ad069913190bd03a1b95f101c2deaf166cc504183ced58",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/input-extract-01.log": "4170da7bf514757e0c16ee790b58aaf6edbbe650dc632da38654a1c7b58b17d1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/contracts-01-start.json": "770a1696da7ce61890bf1bbb3abfa24c27b1f11cee1ec7ae7798f14d6d4efc3e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/contracts-01-exit.json": "f6f303d8b26a94cf35948a588b44c1e668e64ad227dbe34c075f65666e9d0e1c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/contracts-01.log": "cf612f044614bd83a9a2948b186633af9c5488d671eb9d213fca901e1cb8eae2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/retention-analysis-01-start.json": "739d813daa311b99fb3c930434e9ca0f14cef2a900ae3464364cc3be07597d52",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/retention-analysis-01-exit.json": "7799d2b3b5bbe369fe02a95f4826490dd9ba5b9c80058bd5e0162315448fff3b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/retention-analysis-01.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/analyze_mirror_retention.py": "560859e3ce8e739785a960fd9acc1fa10518d553a3cb3837d4dd36b1d967302b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/mirror_retention.py": "2ee2fef0b57dad3479d86c7baf3d8845728f4949a57b34354b6cf37effc8496f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/analyze_decode_supply.py": "5ac7a226cc108b1369a1010a96b86477f7e3e63d9bbc7938728e3aec5d563b30",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/decode_supply_bounds.py": "8c35bc78f36092c180847013c0651f22ba1040f8ab9abf56aac51684e8c7a06f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/gpu_cache_replay.py": "7bca768a0c7cd447e295494c14966d64e460096c0422eb91857e628e677a4fd3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/run_gpu_cache_study.py": "040293f92ae61ba9703c4fa17b06f2af25442e84b5f93c6844dfed292e7699c7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/offload_trace.py": "0a425cb3c01cd627dba883c7404b39702ac3d6bbea1b37507f349840e6c89127",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/analyze.py": "21e459143f6c1518d202323ef1fd7f6be48f66a25ce1ec5cbd7b1720cfe260e4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/src/model/moe.cu": "c7d2b1975fabb5464c45000a14496dc97b270675f92e834d36eb926c58ee1548",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/src/quant/moe_residency.cpp": "341a376b53ca3a42880551658fcab1ba4639cd0a5b99d3b9edac1a8261569165",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/include/q4t/quant/moe_residency.h": "ff2ec49fc51d713ee71e02013da69d27a30adcf42cf59c2d712e8bc9583264d3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/include/q4t/quant/moe_supply_observer.h": "a9e776c0916d987b354b052171b98dbc71ab5c3f8c7465b7e320efb9fe4ff7e1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/test_mirror_retention.py": "2297ef68306e92c621aad186ae9e00723602dc4d700d50c64b551162f84a6e38",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/test_analyze_mirror_retention.py": "c0195b169aed228a6cde7f1faa376af8c27343d519c328008c5050aee5effec1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/build_retention_manifest.py": "8814042e5b1da9ae1916ec397c211088673ed06ac9a6cc485f095cfc432272f5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/retention_common.py": "3c4f51f73f43b640374c39c974c65af9f96df30686cec8150742a408389cbb64",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/retention-inputs.json": "f3831ccc88e061aea3141f23f581be9c963da827ee3ded7761509d501c73dcb3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/decode-plans.json": "f28cd33582ab47b97abda963933a82b5960ecf5e58343d888430e2f6856b4e83",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/retention-analysis.json": "bd91e5252d97ba4c1c975fc28f83d453f755588fde762e1df6c86416692d159c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/result-terminal-review.json": "c097999f1ec60550a29d7cf0aada0a0c44a168cfbacaa282dbb8d9ea90a334f6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/result-arithmetic-independent-summary.json": "698fda76e68601aec822138b94d0b679cca6c9f1603a359e261bba9e89731485",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/result-projection-review.json": "c86c0a08df99b66cdb4b0e6de4e873e53cb9443ee4e07160cf9304e211c26c40",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/retention-summary.json": "06bf0f299000a161d0bda3bfeafc39e6753787d7792247f41f4633688f2875c1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/build_retention_summary.py": "cf15a9d7ea88f6b15cc2cbf47282c65dd59c61c0d3d4385265344c030c486717",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/result-reviewer-method-note.json": "b4be5e90e5d90670630389d4b4b80d55dea94cbfba84f65b13aab93815661dc8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/independent_recompute_retention.py": "f1478c40b5d42a8f7c286787203b632c8e36b4ee1bb9d44af64622029f7d819e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/independent_check_retention_projection.py": "a766abc63da0cae1e2455598b7c1682d17a4692647cdd8ec0b92fb3ee9fa5b08",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/seal_independent_retention_review.py": "9b0fcb5c86eb00564aee535b68d4dc258ac3aea0b94b0d2a8edfa86ff55d330f"
+  },
+  "recorded_t": 1791290360.7543805
+}

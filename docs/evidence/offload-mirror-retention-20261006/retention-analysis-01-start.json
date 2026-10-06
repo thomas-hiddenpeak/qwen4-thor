@@ -1,0 +1,31 @@
+{
+  "started_t": 1791289818.7963445,
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source/tools/trace/analyze_mirror_retention.py",
+    "--scope",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/scope-plan.json",
+    "--scope-sha256",
+    "7b611ebf65f194f166d8d9e1635d88f5eced5e790d8fe38012fb754beff7e089",
+    "--manifest",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/retention-inputs.json",
+    "--manifest-sha256",
+    "f3831ccc88e061aea3141f23f581be9c963da827ee3ded7761509d501c73dcb3",
+    "--execution-plan",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/execution-plan.json",
+    "--execution-plan-sha256",
+    "fd413fa124342029be9b9bd8c87cb7d76d420e8994bb40d87889cbb4fa0e797e",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/retention-analysis.json",
+    "--plans-output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/decode-plans.json"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source",
+  "returncode": null,
+  "failure": null,
+  "automatic_retry": false,
+  "timeout_s": 600,
+  "signals": [],
+  "cleanup_complete": false
+}
