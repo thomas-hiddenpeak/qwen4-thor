@@ -46,6 +46,10 @@
 namespace q4t {
 namespace mtp {
 
+// Optional request-local HTTP initialization diagnostics. Decode/scheduler
+// callers keep the default null pointer and do not create or record events.
+class MtpInitTiming;
+
 // Static configuration of the MTP draft model.
 struct MtpConfig {
   std::string mtp_dir;  // dir with model.safetensors.index.json + shards
@@ -238,7 +242,8 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids, const int* positi
                   uint16_t* multi_hidden, uint16_t* logits, int T,
                   cudaStream_t stream, const int* d_seq_id = nullptr,
                   bool compute_logits = true,
-                  model::LogitsRows logits_rows = model::LogitsRows::kAllRows);
+                  model::LogitsRows logits_rows = model::LogitsRows::kAllRows,
+                  MtpInitTiming* init_timing = nullptr);
 
 // Device bytes for the MtpForward `workspace` (the GEMM scratch plus the
 // forward intermediates for `T` tokens, the full-attention scratch, and the
@@ -285,7 +290,8 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
                       int32_t* out_d0, uint16_t* out_g, cudaStream_t stream,
                       int seq_id = 0,
                       model::LogitsRows logits_rows =
-                          model::LogitsRows::kAllRows);
+                          model::LogitsRows::kAllRows,
+                      MtpInitTiming* init_timing = nullptr);
 
 // 推测解码一步 (scheme A, 见本文件顶部 + reference/.../nvidia/mtp.py)。
 //

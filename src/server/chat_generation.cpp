@@ -7,10 +7,12 @@
 #include <cstdio>
 #include <cstring>
 #include <ctime>
+#include <memory>
 #include <span>
 #include <string>
 #include <vector>
 #include <cuda_runtime.h>
+#include "q4t/mtp/init_timing.h"
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/mtp_policy.h"
 #include "q4t/server/request_json.h"
@@ -304,6 +306,23 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           : 0;
   const char* mtp_fallback =
       !mtp_loaded_ && mtp_requested_ ? "load_failed" : "none";
+  std::unique_ptr<mtp::MtpInitTiming> init_timing;
+  const char* timing_env = getenv("Q4T_MTP_INIT_TIMING");
+  if (timing_env && std::strcmp(timing_env, "1") == 0 && mtp_loaded_ &&
+      max_seq_ == 1 && items.empty()) {
+    try {
+      init_timing = std::make_unique<mtp::MtpInitTiming>(
+          request_id, T, chunk, static_cast<size_t>(T) * trunk_hc_dim * 2,
+          t_arrive);
+    } catch (...) {
+      std::fprintf(stderr,
+                   "[q4t][mtp_init_timing] {\"schema_version\":1,"
+                   "\"response_id\":\"%s\",\"valid\":false,"
+                   "\"complete\":false,\"error\":\"setup_exception\"}\n",
+                   request_id.c_str());
+    }
+  }
+  if (init_timing) init_timing->MarkHost("trunk_prepare_begin");
   if (mtp_loaded_) {
     // Runtime heuristic in addition to the startup allocation estimate.
     // MemAvailable includes reclaimable file cache; it cannot guarantee that
@@ -323,14 +342,20 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           mem_avail / 1e9, need / 1e9, T);
       d_trunk_full = nullptr;
       mtp_fallback = "memory_preflight";
-    } else if (cudaMalloc(reinterpret_cast<void**>(&d_trunk_full),
-                          trunk_bytes) != cudaSuccess) {
-      std::fprintf(stderr,
-                   "[q4t] trunk alloc failed for T=%d; plain decode\n", T);
-      d_trunk_full = nullptr;
-      mtp_fallback = "trunk_allocation";
+    } else {
+      if (init_timing) init_timing->MarkHost("trunk_alloc_begin");
+      const auto allocation =
+          cudaMalloc(reinterpret_cast<void**>(&d_trunk_full), trunk_bytes);
+      if (init_timing) init_timing->MarkHost("trunk_alloc_end");
+      if (allocation != cudaSuccess) {
+        std::fprintf(stderr,
+                     "[q4t] trunk alloc failed for T=%d; plain decode\n", T);
+        d_trunk_full = nullptr;
+        mtp_fallback = "trunk_allocation";
+      }
     }
   }
+  if (init_timing) init_timing->MarkHost("trunk_prepare_end");
   std::vector<uint16_t> h_logits(static_cast<size_t>(vocab));
 
   auto argmax = [&](const uint16_t* h) {
@@ -403,11 +428,22 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     }
     s = pr.ok ? Status() : Status::Fail("batched prefill failed");
   } else {
+    if (init_timing) init_timing->MarkHost("main_lock_wait_begin");
     const std::lock_guard<std::mutex> lock(model_mu_);
+    if (init_timing) {
+      init_timing->MarkHost("main_lock_acquired");
+      init_timing->MarkHost("main_reset_begin");
+    }
     s = cancelled() ? Status::Fail("request cancelled")
                     : model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
+    if (init_timing) {
+      init_timing->MarkHost("main_reset_end");
+      init_timing->MarkHost("main_prefill_begin");
+      init_timing->MarkOuter(mtp::InitOuterPoint::kPrefillBegin, nullptr);
+    }
     if (s.ok()) {
       if (!chunked) {
+        if (init_timing) init_timing->MarkHost("main_chunk_begin", 0, T);
         if (router_trace_) router_trace_->BeginForward(
             trace::RouteStage::kPrefill, 0, T);
         // Keep full trunk output for MTP, but only the final logits row.
@@ -415,6 +451,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                                 nullptr, mtp_loaded_ ? d_trunk_full : nullptr,
                                 vptr, seq_id, model::LogitsRows::kLastRow,
                                 model::SequenceCompletion::kDeferred);
+        if (init_timing) init_timing->MarkHost("main_chunk_submit_end", 0, T);
       } else {
         // Text chunks share the sequence's slot, position and PLE history.
         // Intermediate chunks only produce trunk/state; the final chunk
@@ -428,6 +465,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           const int base = seq.position;
           const int c = std::min(chunk, T - base);
           const bool last = (base + c == T);
+          if (init_timing)
+            init_timing->MarkHost("main_chunk_begin", base, c);
           if (router_trace_) router_trace_->BeginForward(
               trace::RouteStage::kPrefill, base, c);
           s = model::ModelPrefillTextChunk(
@@ -437,15 +476,21 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                   ? d_trunk_full + static_cast<size_t>(base) * trunk_hc_dim
                   : nullptr, model::LogitsRows::kLastRow,
               model::SequenceCompletion::kDeferred);
+          if (init_timing)
+            init_timing->MarkHost("main_chunk_submit_end", base, c);
           if (!last) {
             model::ModelSequence* sequence = &seq;
             s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {&sequence, 1},
                                    s, router_trace_.get());
+            if (init_timing)
+              init_timing->MarkHost("main_chunk_complete", base, c);
           }
           if (last || !s.ok()) break;
         }
       }
     }
+    if (init_timing)
+      init_timing->MarkOuter(mtp::InitOuterPoint::kPrefillEnd, nullptr);
     cudaError_t copy_error = cudaSuccess;
     if (s.ok())
       copy_error = cudaMemcpyAsync(
@@ -457,6 +502,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         ? std::span<model::ModelSequence* const>(&sequence, 1)
         : std::span<model::ModelSequence* const>();
     s = FinishHostReadback(copy_error, &gpu_healthy_, pending, s, router_trace_.get());
+    if (init_timing) {
+      const int last_base = ((T - 1) / chunk) * chunk;
+      init_timing->MarkHost("main_chunk_complete", last_base, T - last_base);
+      init_timing->MarkHost("main_prefill_end");
+    }
     if (!s.ok()) seq.Fail();
   }
   if ((prefill_cancelled || cancelled()) &&
@@ -513,7 +563,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
 
   // Every prefill path reads its selected final row under model_mu_ and
   // checks stream completion before publishing h_logits to this thread.
+  if (init_timing) init_timing->MarkHost("prefill_argmax_begin");
   next_token = argmax(h_logits.data());
+  if (init_timing) init_timing->MarkHost("prefill_argmax_end");
   metrics_.ttft_seconds.Observe(
       std::chrono::duration<double>(std::chrono::steady_clock::now() - t_arrive)
           .count());
@@ -552,6 +604,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   }
   int32_t mtp_b = -1, mtp_d0 = -1;
   if (use_mtp) {
+    if (init_timing) init_timing->MarkHost("rolling_trunk_alloc_begin");
     if (cudaMalloc(reinterpret_cast<void**>(&d_mtp_g),
                    static_cast<size_t>(mtp_.cfg.hc) *
                        static_cast<size_t>(mtp_.cfg.hs) * 2) != cudaSuccess) {
@@ -559,28 +612,51 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       use_mtp = false;
       mtp_fallback = "rolling_trunk_allocation";
     }
+    if (init_timing) init_timing->MarkHost("rolling_trunk_alloc_end");
   }
   if (use_mtp) {
     {
+      if (init_timing) init_timing->MarkHost("init_lock_wait_begin");
       const std::lock_guard<std::mutex> lock(model_mu_);
+      if (init_timing) {
+        init_timing->MarkHost("init_lock_acquired");
+        init_timing->MarkHost("draft_reset_begin");
+        init_timing->MarkOuter(mtp::InitOuterPoint::kResetBegin, nullptr);
+      }
       s = mtp::MtpResetState(mtp_, nullptr, seq_id);
+      if (init_timing) {
+        init_timing->MarkOuter(mtp::InitOuterPoint::kResetEnd, nullptr);
+        init_timing->MarkHost("draft_reset_end");
+      }
       if (s.ok()) {
         mtp_b = next_token;
         // EAGLE shift: shifted_ids[p] = t_{p+1}, with t_P := b at the tail.
+        if (init_timing) init_timing->MarkHost("shift_begin");
         std::vector<int32_t> shifted(T);
         for (int i = 0; i < T - 1; ++i) shifted[i] = ids[i + 1];
         shifted[T - 1] = mtp_b;
         std::vector<int> pos(T);
         for (int i = 0; i < T; ++i) pos[i] = i;
+        if (init_timing) {
+          init_timing->MarkHost("shift_end");
+          init_timing->MarkHost("extend_begin");
+        }
         s = mtp::MtpDraftExtend(mtp_, shifted.data(), d_trunk_full, pos.data(),
                                 T, &mtp_d0, d_mtp_g, nullptr, seq_id,
-                                model::LogitsRows::kLastRow);
+                                model::LogitsRows::kLastRow, init_timing.get());
+        if (init_timing) init_timing->MarkHost("extend_end");
         if (s.ok()) {
+          if (init_timing) init_timing->MarkHost("checkpoint_reserve_begin");
           s = model::ModelReserveVerifyCheckpoints(model_.Get(), mtp_k_);
-          if (s.ok())
+          if (init_timing) init_timing->MarkHost("checkpoint_reserve_end");
+          if (s.ok()) {
+            if (init_timing) init_timing->MarkHost("scratch_reserve_begin");
             s = mtp::MtpReserveScratch(mtp_, mtp_k_ + 1);
+            if (init_timing) init_timing->MarkHost("scratch_reserve_end");
+          }
         }
       }
+      if (init_timing) init_timing->FinishInit(s.ok());
       if (!s.ok()) {
         std::fprintf(stderr,
                      "[q4t] MTP init failed (%s); plain decode for this "
@@ -595,8 +671,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // The prompt trunk is only needed for the draft-extend above; free it now so
   // decoding requests do not hold it (bounds concurrent memory).
   if (d_trunk_full) {
+    if (init_timing) init_timing->MarkHost("trunk_free_begin");
     cudaFree(d_trunk_full);
     d_trunk_full = nullptr;
+    if (init_timing) init_timing->MarkHost("trunk_free_end");
   }
   // Stage 2c (4b): the speculative steps are driven by the central scheduler,
   // which batches all concurrent MTP requests into ONE MtpSpeculativeStepMulti
@@ -644,6 +722,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       // Register this step's input with the scheduler.
       mtp_ar.mtp_b = mtp_b;
       mtp_ar.mtp_d0 = mtp_d0;
+      if (init_timing && mtp_steps == 0)
+        init_timing->MarkHost("first_step_submit");
       {
         const std::lock_guard<std::mutex> lock(sched_mu_);
         mtp_ar.pending = true;
@@ -651,10 +731,14 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       }
       sched_cv_.notify_one();
       // Block until the scheduler's batched step yields this step's output.
+      if (init_timing && mtp_steps == 0)
+        init_timing->MarkHost("first_step_wait_begin");
       {
         std::unique_lock<std::mutex> lock(sched_mu_);
         mtp_ar.cv.wait(lock, [&mtp_ar] { return mtp_ar.done; });
       }
+      if (init_timing && mtp_steps == 0)
+        init_timing->MarkHost("first_step_wait_end");
       if (mtp_ar.mtp_accepted_count <= 0) {
         // Scheduler failed the step or is shutting down.
         generation_failed = true;
@@ -677,8 +761,14 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           bool wrote = true;
           {
             const std::lock_guard<std::mutex> lock(tok_mu_);
-            if (tok_->Decode(one, true, &piece).ok())
+            if (tok_->Decode(one, true, &piece).ok()) {
+              const bool first_content = init_timing && !piece.empty() &&
+                                         !init_timing->FirstContentWritten();
+              if (first_content)
+                init_timing->MarkHost("first_content_write_begin");
               wrote = write_stream(SseChunk(id, model_field, "", piece, "", 0));
+              if (first_content && wrote) init_timing->FinishFirstContent();
+            }
           }
           if (!wrote) {  // client disconnected: stop, free the slot
             done = true;

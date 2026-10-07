@@ -181,6 +181,7 @@ add_library(q4t_model STATIC
   src/model/gemv_hc_inject.cu
   src/mtp/moe_bf16.cu
   src/mtp/mtp.cu
+  src/mtp/init_timing.cpp
   src/vision/vision.cu
   src/vision/processor.cpp)
 target_include_directories(q4t_model PUBLIC include third_party)

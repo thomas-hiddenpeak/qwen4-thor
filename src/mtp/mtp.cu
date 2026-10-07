@@ -25,6 +25,7 @@
 // The only new kernel vs the main model is the unit-weight combine (step 4a);
 // everything else reuses model:: primitives.
 #include "q4t/mtp/mtp.h"
+#include "q4t/mtp/init_timing.h"
 
 #include <cuda_bf16.h>
 #include <cuda_runtime.h>
@@ -680,7 +681,8 @@ Status ArgmaxBf16Rows(const uint16_t* logits, int rows, int vocab, int32_t* out,
 Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
                       const uint16_t* main_trunk, const int* positions, int T,
                       int32_t* out_d0, uint16_t* out_g, cudaStream_t stream,
-                      int seq_id, model::LogitsRows logits_rows) {
+                      int seq_id, model::LogitsRows logits_rows,
+                      MtpInitTiming* init_timing) {
   if (T <= 0) return Status::Fail("MtpDraftExtend: T must be > 0");
   if (seq_id < 0 || seq_id >= m.max_seq)
     return Status::Fail("MtpDraftExtend: seq_id out of range");
@@ -710,14 +712,17 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
     uint16_t* d_logits = nullptr;  // [logits_row_count, vocab]
     int* d_seqid = nullptr;
     auto cleanup = [&](Status s) -> Status {
+      if (init_timing) init_timing->MarkHost("extend_cleanup_begin");
       if (d_seqid) cudaFree(d_seqid);
       if (d_ids) cudaFree(d_ids);
       if (d_pos) cudaFree(d_pos);
       if (d_sample) cudaFree(d_sample);
       if (d_multi) cudaFree(d_multi);
       if (d_logits) cudaFree(d_logits);
+      if (init_timing) init_timing->MarkHost("extend_cleanup_end");
       return s;
     };
+    if (init_timing) init_timing->MarkHost("extend_alloc_begin");
     if (cudaMalloc(reinterpret_cast<void**>(&d_ids),
                    static_cast<size_t>(chunk) * sizeof(int32_t)) != cudaSuccess ||
         cudaMalloc(reinterpret_cast<void**>(&d_pos),
@@ -731,18 +736,27 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
         cudaMalloc(reinterpret_cast<void**>(&d_logits),
                    static_cast<size_t>(logits_row_count) * vocab *
                        sizeof(uint16_t)) !=
-            cudaSuccess)
+            cudaSuccess) {
+      if (init_timing) init_timing->MarkHost("extend_alloc_end");
       return cleanup(Status::Fail("MtpDraftExtend: chunked cudaMalloc"));
+    }
     if (m.max_seq > 1) {
       if (cudaMalloc(reinterpret_cast<void**>(&d_seqid),
-                     static_cast<size_t>(chunk) * sizeof(int)) != cudaSuccess)
+                     static_cast<size_t>(chunk) * sizeof(int)) != cudaSuccess) {
+        if (init_timing) init_timing->MarkHost("extend_alloc_end");
         return cleanup(
             Status::Fail("MtpDraftExtend: chunked cudaMalloc d_seqid"));
+      }
     }
+    if (init_timing) init_timing->MarkHost("extend_alloc_end");
     Status s;
     for (int base = 0; base < T; base += chunk) {
       const int c = (T - base < chunk) ? (T - base) : chunk;
       const bool last = (base + c >= T);
+      if (init_timing)
+        init_timing->BeginChunk(base, c, last,
+                               logits_rows == model::LogitsRows::kLastRow,
+                               stream);
       if (cudaMemcpyAsync(d_ids, shifted_ids + base,
                           static_cast<size_t>(c) * sizeof(int32_t),
                           cudaMemcpyHostToDevice, stream) != cudaSuccess)
@@ -762,9 +776,10 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
       s = MtpForward(m, d_ids, d_pos,
                      main_trunk + static_cast<size_t>(base) * hc_dim, d_sample,
                      d_multi, last ? d_logits : nullptr, c, stream, d_seqid,
-                     last, logits_rows);
+                     last, logits_rows, init_timing);
       if (!s.ok()) return cleanup(s);
     }
+    if (init_timing) init_timing->MarkHost("extend_finalize_begin");
     // out_g = last row's multi_hidden (draft trunk g_{last}).
     if (cudaMemcpy(out_g, d_multi + static_cast<size_t>(last_c - 1) * hc_dim,
                    static_cast<size_t>(hc_dim) * sizeof(uint16_t),
@@ -802,6 +817,7 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
   // layout (max_seq == 1) passes nullptr to MtpForward (bit-identical).
   int* d_seqid = nullptr;
   auto cleanup = [&](Status s) -> Status {
+    if (init_timing) init_timing->MarkHost("extend_cleanup_begin");
     if (d_seqid) cudaFree(d_seqid);
     if (!use_scratch) {
       if (d_ids) cudaFree(d_ids);
@@ -810,8 +826,12 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
       if (d_multi) cudaFree(d_multi);
       if (d_logits) cudaFree(d_logits);
     }
+    if (init_timing) init_timing->MarkHost("extend_cleanup_end");
     return s;
   };
+  // The HTTP diagnostic is S1 only. This interval is empty for step scratch;
+  // the separate multi-sequence d_seqid allocation below is not in its scope.
+  if (init_timing) init_timing->MarkHost("extend_alloc_begin");
   if (!use_scratch) {
     if (cudaMalloc(reinterpret_cast<void**>(&d_ids),
                    static_cast<size_t>(T) * sizeof(int32_t)) != cudaSuccess ||
@@ -826,10 +846,17 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
         cudaMalloc(reinterpret_cast<void**>(&d_logits),
                    static_cast<size_t>(logits_row_count) * vocab *
                        sizeof(uint16_t)) !=
-            cudaSuccess)
+            cudaSuccess) {
+      if (init_timing) init_timing->MarkHost("extend_alloc_end");
       return cleanup(Status::Fail("MtpDraftExtend: cudaMalloc"));
+    }
   }
+  if (init_timing) init_timing->MarkHost("extend_alloc_end");
 
+  if (init_timing)
+    init_timing->BeginChunk(0, T, true,
+                           forward_logits_rows == model::LogitsRows::kLastRow,
+                           stream);
   cudaMemcpy(d_ids, shifted_ids, static_cast<size_t>(T) * sizeof(int32_t),
              cudaMemcpyHostToDevice);
   cudaMemcpy(d_pos, positions, static_cast<size_t>(T) * sizeof(int),
@@ -846,9 +873,10 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
 
   Status s = MtpForward(m, d_ids, d_pos, main_trunk, d_sample, d_multi,
                         d_logits, T, stream, d_seqid, true,
-                        forward_logits_rows);
+                        forward_logits_rows, init_timing);
   if (!s.ok()) return cleanup(s);
 
+  if (init_timing) init_timing->MarkHost("extend_finalize_begin");
   // out_g = last row's multi_hidden (draft trunk g_{last}).
   if (cudaMemcpy(out_g, d_multi + static_cast<size_t>(T - 1) * hc_dim,
                  static_cast<size_t>(hc_dim) * sizeof(uint16_t),
@@ -1454,13 +1482,14 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
                   uint16_t* sample_hidden, uint16_t* multi_hidden,
                   uint16_t* logits, int T, cudaStream_t stream,
                   const int* d_seq_id, bool compute_logits,
-                  model::LogitsRows logits_rows) {
+                  model::LogitsRows logits_rows, MtpInitTiming* init_timing) {
   const int hs = m.cfg.hs, hc = m.cfg.hc, hc_dim = hc * hs;
   if (T <= 0) return Status();
   const auto& cfg = m.cfg;
   if (m.ws_bytes < MtpWorkspaceBytes(cfg, T, m.full_attn)) {
     return Status::Fail("MtpForward: workspace too small");
   }
+  if (init_timing) init_timing->MarkGpu(InitGpuPoint::kSetupBegin, stream);
   // Carve the workspace into per-submodule regions (mirrors
   // DecoderLayerForward): full-attention scratch, the BF16 MoE workspace, two
   // 32 MiB GEMM scratch regions (one for the MoE GEMMs, one for the HC/fc/lm
@@ -1502,6 +1531,8 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
   uint16_t* d_mlp_out = static_cast<uint16_t*>(carve(static_cast<size_t>(T) * hs * sizeof(uint16_t)));
 
   Status s;
+  if (init_timing)
+    init_timing->MarkGpu(InitGpuPoint::kProjectionsBegin, stream);
   // 1. emb = embed_tokens(input_ids) [T, hs].
   {
     model::ModelHeadWeights head_view;
@@ -1539,18 +1570,23 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
   UnitCombineKernel<<<(T * hc_dim + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
       d_trunk, d_prev_block, d_trunk, T, hc, hs);
   if (cudaGetLastError() != cudaSuccess) return Status::Fail("unit combine");
+  if (init_timing)
+    init_timing->MarkGpu(InitGpuPoint::kAttentionHcBegin, stream);
   // 4b. attn_hc.mix.
   s = model::HyperConnectionMix(m.attn_hc, d_trunk, d_mixed_attn,
                                 d_normed_attn, T, d_hc_gemm, kGemmWs, stream);
   if (!s.ok()) return s;
   // 4c. full attention. d_seq_id selects the per-token draft KV/indexer/rope
   // slice (multi-seq draft, Phase 2); null = single-seq (bit-identical).
+  if (init_timing)
+    init_timing->MarkGpu(InitGpuPoint::kAttentionBegin, stream);
   s = model::FullAttentionForward(m.full_attn, d_mixed_attn, d_attn_out,
                                   d_positions, m.d_rope_pos, m.kv_cache,
                                   m.page_table, m.idx_raw, m.idx_comp, T,
                                   d_attn_ws, attn_ws, stream, d_seq_id);
   if (!s.ok()) return s;
   // 4d. attn_hc.combine: trunk_a = attn_out + trunk (learned injection).
+  if (init_timing) init_timing->MarkGpu(InitGpuPoint::kMlpHcBegin, stream);
   s = model::HyperConnectionCombine(m.attn_hc, d_attn_out, d_trunk,
                                     d_normed_attn, d_trunk_a, T, d_hc_gemm,
                                     kGemmWs, stream);
@@ -1560,12 +1596,14 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
                                 T, d_hc_gemm, kGemmWs, stream);
   if (!s.ok()) return s;
   // 4f. BF16 MoE.
+  if (init_timing) init_timing->MarkGpu(InitGpuPoint::kMoeBegin, stream);
   s = MoeBf16Forward(d_mixed_mlp, m.moe, m.moe_extra, d_mlp_out, T, cfg.topk,
                      d_moe_ws, moe_carve, d_moe_gemm, kGemmWs, stream);
   if (!s.ok()) return s;
 
   // 5. Final mixer: combine (learned, using mlp_hc's injection) + mix.
   //    multi_hidden = mlp_hc.combine(mlp_out, trunk_a, normed_mlp) [T, hc*hs].
+  if (init_timing) init_timing->MarkGpu(InitGpuPoint::kMixerBegin, stream);
   s = model::HyperConnectionCombine(m.mlp_hc, d_mlp_out, d_trunk_a,
                                     d_normed_mlp, multi_hidden, T, d_hc_gemm,
                                     kGemmWs, stream);
@@ -1578,6 +1616,7 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
   // 6. Project all rows, or write only the last row to compact logits[0]. M=1
   // GEMV can round differently from the M=T GEMM. All upstream work stays at T.
   // Intermediate draft-extend chunks skip this projection entirely.
+  if (init_timing) init_timing->MarkGpu(InitGpuPoint::kHeadBegin, stream);
   if (compute_logits) {
     const bool last_row = logits_rows == model::LogitsRows::kLastRow;
     const int logits_row_count = last_row ? 1 : T;
@@ -1592,6 +1631,7 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
                                   d_hc_gemm, kGemmWs, stream));
     if (!s.ok()) return s;
   }
+  if (init_timing) init_timing->MarkGpu(InitGpuPoint::kEnd, stream);
   return Status();
 }
 
