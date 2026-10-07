@@ -573,7 +573,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         std::vector<int> pos(T);
         for (int i = 0; i < T; ++i) pos[i] = i;
         s = mtp::MtpDraftExtend(mtp_, shifted.data(), d_trunk_full, pos.data(),
-                                T, &mtp_d0, d_mtp_g, nullptr, seq_id);
+                                T, &mtp_d0, d_mtp_g, nullptr, seq_id,
+                                model::LogitsRows::kLastRow);
         if (s.ok()) {
           s = model::ModelReserveVerifyCheckpoints(model_.Get(), mtp_k_);
           if (s.ok())

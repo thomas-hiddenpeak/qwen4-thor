@@ -3,7 +3,18 @@
 更新：2026-10-08。代码是实现事实来源；验收规则见 [EVALUATION.md](EVALUATION.md)。
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
-## 当前阶段完成：MTP 有 decode 收益，仍不默认启用
+## 当前阶段：MTP 初始化末行 logits 优化已启动
+
+用户已授权继续 Goal，沿用同一工作分支。唯一候选显式选择初始
+DraftExtend 的末行投影与一行临时 logits；所有旧调用默认全行，
+持久 scratch、KV/上游计算和保守预算保持原合同。新构建目录保留
+上轮受测 binary；候选 `73c39bab` 已零警告构建，HTTP 与直接合同
+尚待验证，默认 MTP 关闭。
+顺序冻结为 HTTP 质量第一测、固定数值/完整 k3 回放、五档收益。
+不扩展 KV-only、提前发 token 或其他候选。见
+[本阶段协议](MTP_INIT_LAST_ROW_2026-10-08.md)。
+
+## 上一阶段完成：MTP 有 decode 收益，仍不默认启用
 
 沿用 `codex/mtp-admission-20261007` 完成有界 Goal，出口仍为
 **NO_GO_FOR_ENABLEMENT**。本轮只新增四项直接诊断及证据，服务

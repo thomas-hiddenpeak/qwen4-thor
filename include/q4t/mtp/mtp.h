@@ -215,7 +215,8 @@ Status MtpReserveScratch(MtpModel& m, int k_max);
 //   sample_hidden: device BF16 [T, hs] (out) — single stream for the lm_head.
 //   multi_hidden : device BF16 [T, hc*hs] (out) — pre-final-mixer multi stream
 //                 for the next draft step.
-//   logits       : device BF16 [T, vocab] (out) — lm_head(sample_hidden).
+//   logits       : device BF16 [T, vocab] (out) for kAllRows, or compact
+//                  [1, vocab] at the output base for kLastRow.
 //   stream       : CUDA stream.
 //   d_seq_id     : device int[T] (Phase 2 MTP multi-seq draft). When non-null,
 //                  the draft full-attention KV/indexer buffers (m.kv_cache /
@@ -227,11 +228,17 @@ Status MtpReserveScratch(MtpModel& m, int k_max);
 //                  (bit-identical to the prior behavior). The projection/MoE/
 //                  lm_head GEMMs are stateless and operate on the packed [T,...]
 //                  rows (weights read once).
+//   compute_logits: when false, skip lm_head; logits may be null.
+//   logits_rows  : selects lm_head rows only; sample_hidden, multi_hidden and
+//                  KV computation still cover all T rows. kLastRow projects
+//                  sample_hidden[T-1] with M=1; its GEMV rounding need not be
+//                  bit-identical to the final row of the M=T GEMM.
 Status MtpForward(const MtpModel& m, const int32_t* input_ids, const int* positions,
                   const uint16_t* hidden_states, uint16_t* sample_hidden,
                   uint16_t* multi_hidden, uint16_t* logits, int T,
                   cudaStream_t stream, const int* d_seq_id = nullptr,
-                  bool compute_logits = true);
+                  bool compute_logits = true,
+                  model::LogitsRows logits_rows = model::LogitsRows::kAllRows);
 
 // Device bytes for the MtpForward `workspace` (the GEMM scratch plus the
 // forward intermediates for `T` tokens, the full-attention scratch, and the
@@ -268,10 +275,17 @@ size_t MtpWorkspaceBytes(const MtpConfig& cfg, int T,
 //                 right slice. The internal extend inside
 //                 MtpSpeculativeStepMulti uses MtpForward + d_seq_id directly
 //                 (per-token seq ids), not this helper.
+//   logits_rows : kLastRow uses a compact [1, vocab] temporary without scratch
+//                 (only the final chunk projects logits). Its M=1
+//                 projection can change rounding and out_d0 versus kAllRows.
+//                 Persistent scratch always keeps the all-row path, even if
+//                 kLastRow is requested. All trunk and KV rows remain intact.
 Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
                       const uint16_t* main_trunk, const int* positions, int T,
                       int32_t* out_d0, uint16_t* out_g, cudaStream_t stream,
-                      int seq_id = 0);
+                      int seq_id = 0,
+                      model::LogitsRows logits_rows =
+                          model::LogitsRows::kAllRows);
 
 // 推测解码一步 (scheme A, 见本文件顶部 + reference/.../nvidia/mtp.py)。
 //

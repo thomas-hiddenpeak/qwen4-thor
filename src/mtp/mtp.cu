@@ -680,7 +680,7 @@ Status ArgmaxBf16Rows(const uint16_t* logits, int rows, int vocab, int32_t* out,
 Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
                       const uint16_t* main_trunk, const int* positions, int T,
                       int32_t* out_d0, uint16_t* out_g, cudaStream_t stream,
-                      int seq_id) {
+                      int seq_id, model::LogitsRows logits_rows) {
   if (T <= 0) return Status::Fail("MtpDraftExtend: T must be > 0");
   if (seq_id < 0 || seq_id >= m.max_seq)
     return Status::Fail("MtpDraftExtend: seq_id out of range");
@@ -694,18 +694,20 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
   // SSM/conv) and its full-attention KV/indexer is written at ABSOLUTE
   // positions (the per-seq pooled slice, zeroed by MtpResetState before the
   // first chunk), so each chunk continues from the KV the previous chunks
-  // wrote -- bit-identical to one big forward (same contract as the main
-  // model's chunked prefill). Only the LAST chunk computes logits (its final
-  // row is the first-draft-token argmax); intermediate chunks skip the lm_head
+  // wrote. Different GEMM row counts can round differently from one large
+  // forward. Only the LAST chunk computes logits; logits_rows selects all
+  // of that chunk or its final row. Intermediate chunks skip the lm_head
   // GEMM (a full-prompt [T, vocab] buffer would be ~22 GB at 44K).
   if (T > m.cfg.max_prefill) {
     const int chunk = m.cfg.max_prefill;
     const int last_c = (T % chunk == 0) ? chunk : (T % chunk);
+    const int logits_row_count =
+        logits_rows == model::LogitsRows::kLastRow ? 1 : last_c;
     int32_t* d_ids = nullptr;
     int* d_pos = nullptr;
     uint16_t* d_sample = nullptr;
     uint16_t* d_multi = nullptr;
-    uint16_t* d_logits = nullptr;  // [last_c, vocab] -- last chunk's rows
+    uint16_t* d_logits = nullptr;  // [logits_row_count, vocab]
     int* d_seqid = nullptr;
     auto cleanup = [&](Status s) -> Status {
       if (d_seqid) cudaFree(d_seqid);
@@ -727,7 +729,8 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
                    static_cast<size_t>(chunk) * hc_dim * sizeof(uint16_t)) !=
             cudaSuccess ||
         cudaMalloc(reinterpret_cast<void**>(&d_logits),
-                   static_cast<size_t>(last_c) * vocab * sizeof(uint16_t)) !=
+                   static_cast<size_t>(logits_row_count) * vocab *
+                       sizeof(uint16_t)) !=
             cudaSuccess)
       return cleanup(Status::Fail("MtpDraftExtend: chunked cudaMalloc"));
     if (m.max_seq > 1) {
@@ -759,7 +762,7 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
       s = MtpForward(m, d_ids, d_pos,
                      main_trunk + static_cast<size_t>(base) * hc_dim, d_sample,
                      d_multi, last ? d_logits : nullptr, c, stream, d_seqid,
-                     last);
+                     last, logits_rows);
       if (!s.ok()) return cleanup(s);
     }
     // out_g = last row's multi_hidden (draft trunk g_{last}).
@@ -770,8 +773,8 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
     // out_d0 = argmax of the last chunk's final logits row (first draft token).
     {
       Status s2 = ArgmaxBf16Rows(
-          d_logits + static_cast<size_t>(last_c - 1) * vocab, 1, vocab, d_ids,
-          stream);
+          d_logits + static_cast<size_t>(logits_row_count - 1) * vocab, 1,
+          vocab, d_ids, stream);
       if (!s2.ok()) return cleanup(s2);
       if (cudaMemcpy(out_d0, d_ids, sizeof(int32_t), cudaMemcpyDeviceToHost) !=
           cudaSuccess)
@@ -784,11 +787,16 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
   // case, T = a+1 <= k+1); otherwise fall back to per-call allocation (the
   // initial prompt extend, T = P, which is large and one-shot).
   const bool use_scratch = m.k_max > 0 && T <= m.k_max;
+  // Keep the persistent step path's projection shape and buffer layout.
+  const model::LogitsRows forward_logits_rows =
+      use_scratch ? model::LogitsRows::kAllRows : logits_rows;
+  const int logits_row_count =
+      forward_logits_rows == model::LogitsRows::kLastRow ? 1 : T;
   int32_t* d_ids = use_scratch ? m.d_ids_scratch : nullptr;
   int* d_pos = use_scratch ? m.d_pos_scratch : nullptr;
   uint16_t* d_sample = use_scratch ? m.d_spec_sample : nullptr;  // [T, hs]
   uint16_t* d_multi = use_scratch ? m.d_spec_multi : nullptr;    // [T, hc_dim]
-  uint16_t* d_logits = use_scratch ? m.d_spec_logits : nullptr;  // [T, vocab]
+  uint16_t* d_logits = use_scratch ? m.d_spec_logits : nullptr;
   // Per-token d_seq_id (constant = seq_id) for the pooled draft KV. Only
   // needed when the draft state is pooled (max_seq > 1); the single-seq
   // layout (max_seq == 1) passes nullptr to MtpForward (bit-identical).
@@ -816,7 +824,8 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
                    static_cast<size_t>(T) * hc_dim * sizeof(uint16_t)) !=
             cudaSuccess ||
         cudaMalloc(reinterpret_cast<void**>(&d_logits),
-                   static_cast<size_t>(T) * vocab * sizeof(uint16_t)) !=
+                   static_cast<size_t>(logits_row_count) * vocab *
+                       sizeof(uint16_t)) !=
             cudaSuccess)
       return cleanup(Status::Fail("MtpDraftExtend: cudaMalloc"));
   }
@@ -836,7 +845,8 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
   }
 
   Status s = MtpForward(m, d_ids, d_pos, main_trunk, d_sample, d_multi,
-                        d_logits, T, stream, d_seqid);
+                        d_logits, T, stream, d_seqid, true,
+                        forward_logits_rows);
   if (!s.ok()) return cleanup(s);
 
   // out_g = last row's multi_hidden (draft trunk g_{last}).
@@ -849,8 +859,9 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
   // (1 kernel + 4-byte D2H). d_ids is reused as the 1-int output (the input
   // ids are no longer needed after MtpForward).
   {
-    Status s = ArgmaxBf16Rows(d_logits + static_cast<size_t>(T - 1) * vocab,
-                              1, vocab, d_ids, stream);
+    Status s = ArgmaxBf16Rows(
+        d_logits + static_cast<size_t>(logits_row_count - 1) * vocab, 1, vocab,
+        d_ids, stream);
     if (!s.ok()) return cleanup(s);
     if (cudaMemcpy(out_d0, d_ids, sizeof(int32_t), cudaMemcpyDeviceToHost) !=
         cudaSuccess)
@@ -1442,7 +1453,8 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
                   const int* positions, const uint16_t* hidden_states,
                   uint16_t* sample_hidden, uint16_t* multi_hidden,
                   uint16_t* logits, int T, cudaStream_t stream,
-                  const int* d_seq_id, bool compute_logits) {
+                  const int* d_seq_id, bool compute_logits,
+                  model::LogitsRows logits_rows) {
   const int hs = m.cfg.hs, hc = m.cfg.hc, hc_dim = hc * hs;
   if (T <= 0) return Status();
   const auto& cfg = m.cfg;
@@ -1563,18 +1575,21 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
                                 d_normed_mlp, T, d_hc_gemm, kGemmWs, stream);
   if (!s.ok()) return s;
 
-  // 6. logits = lm_head(sample_hidden) [T, vocab]. Skipped when
-  // compute_logits is false (chunked draft-extend intermediate chunks: the
-  // [T, vocab] buffer is only needed for the final chunk's argmax — at 262K
-  // a full-prompt logits buffer would be ~130 GB).
+  // 6. Project all rows, or write only the last row to compact logits[0]. M=1
+  // GEMV can round differently from the M=T GEMM. All upstream work stays at T.
+  // Intermediate draft-extend chunks skip this projection entirely.
   if (compute_logits) {
+    const bool last_row = logits_rows == model::LogitsRows::kLastRow;
+    const int logits_row_count = last_row ? 1 : T;
+    const uint16_t* head_input =
+        sample_hidden + static_cast<size_t>(last_row ? T - 1 : 0) * hs;
     model::ModelHeadWeights head_view;
     head_view.lm_head = const_cast<uint16_t*>(m.lm_head);
     head_view.vocab = cfg.vocab;
     head_view.hs = hs;
-    s = CheckGemm(model::Bf16Gemm(sample_hidden, head_view.lm_head, logits, T,
-                                  cfg.vocab, hs, 1.0f, 0.0f, d_hc_gemm, kGemmWs,
-                                  stream));
+    s = CheckGemm(model::Bf16Gemm(head_input, head_view.lm_head, logits,
+                                  logits_row_count, cfg.vocab, hs, 1.0f, 0.0f,
+                                  d_hc_gemm, kGemmWs, stream));
     if (!s.ok()) return s;
   }
   return Status();
