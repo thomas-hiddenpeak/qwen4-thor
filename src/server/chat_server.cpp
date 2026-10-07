@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iterator>
+#include <limits>
 #include <string>
 #include <thread>
 #include <vector>
@@ -163,20 +164,25 @@ Status ChatServer::Start(const ServerOptions& opts) {
             mcfg.mtp_dir + "/model.safetensors.index.json", &raw_index);
         if (!s.ok()) return Status::Fail("MTP budget index: " + s.message());
         const std::unique_ptr<io::WeightIndex> mtp_index(raw_index);
-        breq.mtp_weights_bytes = mtp_index->total_size();
         io::WeightLoader* raw_loader = nullptr;
         s = io::WeightLoader::Create(mcfg.mtp_dir, *mtp_index, 1, &raw_loader);
         if (!s.ok()) return Status::Fail("MTP budget loader: " + s.message());
         const std::unique_ptr<io::WeightLoader> mtp_loader(raw_loader);
-        // Header metadata only. The loader reads each weight through one host
-        // vector; gate_up retains its capacity while loading down_proj.
+        // Sum mapped tensor bytes from shard headers: the exported index's
+        // total_size does not match the tensors listed in its MTP weight_map.
+        // The loader reads each weight through one host vector; gate_up
+        // retains its capacity while loading down_proj. No payload is read.
         for (const auto& group : mtp_index->ShardGroups()) {
           for (const auto& name : group.second) {
             const io::TensorInfo* tensor = mtp_loader->FindTensor(name);
             if (!tensor) return Status::Fail("MTP budget tensor: " + name);
+            const size_t bytes = static_cast<size_t>(tensor->byte_size());
+            if (bytes > std::numeric_limits<size_t>::max() -
+                            breq.mtp_weights_bytes)
+              return Status::Fail("MTP budget weight bytes overflow");
+            breq.mtp_weights_bytes += bytes;
             breq.mtp_load_host_bytes =
-                std::max(breq.mtp_load_host_bytes,
-                         static_cast<size_t>(tensor->byte_size()));
+                std::max(breq.mtp_load_host_bytes, bytes);
           }
         }
       }
