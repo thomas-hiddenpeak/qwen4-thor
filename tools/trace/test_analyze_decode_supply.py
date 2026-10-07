@@ -2,6 +2,7 @@
 
 from copy import deepcopy
 import json
+import os
 from pathlib import Path
 from types import SimpleNamespace
 import unittest
@@ -311,7 +312,10 @@ class SupplyDecisionContracts(unittest.TestCase):
     def test_output_is_exclusive_and_failed_input_is_retained(self):
         # Patched open avoids even temporary artifact creation during this
         # contract; the CLI must propagate no-overwrite instead of truncating.
-        output = Path(__file__).resolve().parents[3] / 'synthetic-report.json'
+        root = Path(os.environ.get(
+            'Q4T_TEST_OUTPUT_DIR',
+            Path(__file__).resolve().parents[2] / 'build/supply-contracts'))
+        output = root / 'synthetic-report.json'
         args = SimpleNamespace(output=output, scope_sha256='0' * 64,
             manifest_sha256='1' * 64, execution_plan_sha256='2' * 64,
             scope=Path('missing-scope'))
