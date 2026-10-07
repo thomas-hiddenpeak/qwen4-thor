@@ -1363,6 +1363,22 @@ Status ModelReserveVerifyCheckpoints(Model& m, int num_ckpt) {
   m.d_verify_ssm_ckpt = nullptr;
   m.d_verify_conv_ckpt = nullptr;
   m.d_verify_ple_conv_ckpt = nullptr;
+  m.verify_ckpt_cap = 0;
+  // Publish capacity only after all three allocations succeed. A failed grow
+  // leaves no partial checkpoint owner and remains safe to retry.
+  struct PendingCheckpoints {
+    Model* model;
+    ~PendingCheckpoints() {
+      if (!model) return;
+      if (model->d_verify_ssm_ckpt) cudaFree(model->d_verify_ssm_ckpt);
+      if (model->d_verify_conv_ckpt) cudaFree(model->d_verify_conv_ckpt);
+      if (model->d_verify_ple_conv_ckpt)
+        cudaFree(model->d_verify_ple_conv_ckpt);
+      model->d_verify_ssm_ckpt = nullptr;
+      model->d_verify_conv_ckpt = nullptr;
+      model->d_verify_ple_conv_ckpt = nullptr;
+    }
+  } pending{&m};
   // Pooled over max_seq (Phase 2 MTP multi-seq verify): [num_layers, max_seq,
   // cap, elems]. max_seq == 1 degenerates to the legacy [num_layers, cap,
   // elems] layout (bit-identical single-seq path).
@@ -1384,6 +1400,7 @@ Status ModelReserveVerifyCheckpoints(Model& m, int num_ckpt) {
                  ple_bytes) != cudaSuccess)
     return Status::Fail("ModelReserveVerifyCheckpoints: cudaMalloc ple_conv");
   m.verify_ckpt_cap = num_ckpt;
+  pending.model = nullptr;
   return Status();
 }
 

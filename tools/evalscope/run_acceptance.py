@@ -16,6 +16,8 @@ import subprocess
 import time
 
 from response_identity import response_identity
+from acceptance_mode import (performance_metrics, request_mode_evidence,
+                             startup_evidence)
 
 ROOT = Path(__file__).resolve().parents[2]
 LENGTHS = [1024, 4096, 8192, 45056, 204800]
@@ -30,6 +32,8 @@ def main():
     parser.add_argument('--mode', choices=['quality', 'performance', 'limits'], required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--binary', type=Path, default=ROOT / 'build/q4t')
+    parser.add_argument('--mtp', action='store_true',
+                        help='Require actual single-stream MTP execution; default is ordinary decode')
     parser.add_argument('--model-dir', type=Path, required=True)
     parser.add_argument('--port', type=int, default=8000)
     parser.add_argument('--startup-timeout', type=int, default=180,
@@ -44,6 +48,8 @@ def main():
     args = parser.parse_args()
     if bool(args.moe_trace_dir) != bool(args.moe_trace_workload):
         parser.error('trace directory and workload must be supplied together')
+    if args.mtp and args.moe_trace_dir:
+        parser.error('MoE trace acceptance supports ordinary decode only')
     if args.startup_timeout <= 0:
         parser.error('startup-timeout must be positive')
     out = args.output.resolve()
@@ -52,6 +58,23 @@ def main():
     out.mkdir(parents=True, exist_ok=False)
     binary = args.binary.resolve()
     model = args.model_dir.resolve()
+    decode_mode = 'mtp' if args.mtp else 'plain'
+    save(out / 'run-mode.json', {'schema_version': 1,
+                                'acceptance_mode': args.mode,
+                                'decode_mode': decode_mode,
+                                'binary': str(binary),
+                                'capacity': {'max_seq': 1, 'max_prefill': 8192,
+                                             'max_len': 208896},
+                                'timing_source': 'evalscope result database',
+                                'ttft_source': 'first_chunk_latency',
+                                'latency_source': 'latency',
+                                'decode_seconds_formula': 'latency - first_chunk_latency',
+                                'decode_tps_formula': '(completion_tokens - 1) / decode_seconds',
+                                'overall_tps_formula': 'completion_tokens / latency',
+                                'timing_limits': 'Client TTFT includes prefill/init; latency includes HTTP '
+                                                 'completion. Decode is a client estimate, not GPU timing. '
+                                                 'MTP may emit tokens in bursts; no exact token ITL '
+                                                 'or ITL percentiles are inferred.'})
     env = os.environ.copy()
     removed = {}
     for key in list(env):
@@ -64,6 +87,8 @@ def main():
     shutil.copyfile(__file__, out / 'run_acceptance.py')
     shutil.copyfile(Path(__file__).with_name('response_identity.py'),
                     out / 'response_identity.py')
+    shutil.copyfile(Path(__file__).with_name('acceptance_mode.py'),
+                    out / 'acceptance_mode.py')
     cache = binary.parent / 'CMakeCache.txt'
     deployment = binary.with_name(binary.name + '.release.json')
     if deployment.is_file():
@@ -115,14 +140,17 @@ def main():
     reference = json.loads(args.reference.read_text()) if args.reference else None
     command = [str(binary), 'serve', '--model-dir', str(model), '--port', str(args.port),
                '--max-seq', '1', '--max-prefill', '8192', '--max-len', '208896',
-               '--max-tokens', '256', '--no-mtp']
+               '--max-tokens', '256', '--mtp' if args.mtp else '--no-mtp']
     if args.moe_trace_dir:
         command += ['--moe-trace-dir', str(args.moe_trace_dir.resolve()),
                     '--moe-trace-workload', str(args.moe_trace_workload.resolve()),
                     '--moe-trace-max-mib', str(args.moe_trace_max_mib)]
     save(out / 'server-command.json', {'argv': command, 'removed_environment': removed,
-                                       'startup_timeout_seconds': args.startup_timeout})
+                                       'startup_timeout_seconds': args.startup_timeout,
+                                       'decode_mode': decode_mode})
     results = []
+    responses = []
+    startup = None
     passed = False
     failure = None
     with (out / 'server.log').open('w') as log:
@@ -136,6 +164,11 @@ def main():
                 time.sleep(1)
             else:
                 raise RuntimeError(f'server startup timeout after {args.startup_timeout}s')
+            startup = startup_evidence((out / 'server.log').read_text(), args.mtp)
+            save(out / 'startup-mode.json', startup)
+            if not startup['passed']:
+                raise RuntimeError('actual startup mode/capacity mismatch: ' +
+                                   '; '.join(startup['errors']))
             for case, inputs, count, minimum, maximum, tokens, streaming in cases:
                 case.mkdir()
                 shutil.copyfile(inputs, case / 'requests.jsonl')
@@ -170,11 +203,13 @@ def main():
                                    'actual_output': row[2], 'text': text, 'finish': finish,
                                    'prompt_sha256': hashlib.sha256(prompt.encode()).hexdigest(),
                                    'ttft': row[4], 'latency': row[5],
+                                   'decode_mode': decode_mode,
                                    'request_stream': wire_request.get('stream'),
                                    **response_identity(messages)})
                     (case / f'output-{i}.txt').write_text(text)
                 # Preserve failure evidence before checking acceptance.
                 save(case / 'responses.json', parsed)
+                responses.extend(parsed)
                 if len(rows) != count or not all(r['success'] for r in parsed):
                     raise RuntimeError('request count or HTTP success mismatch')
                 if not all(r['response_id_valid'] for r in parsed):
@@ -212,10 +247,10 @@ def main():
                 else:
                     hashes = [hashlib.sha256(r['text'].encode()).hexdigest() for r in parsed]
                     item = {'length': minimum, 'outputs': hashes,
+                            'decode_mode': decode_mode,
                             'prompt_sha256': parsed[0]['prompt_sha256'],
                             'deterministic': len(set(hashes)) == 1,
-                            'metrics': [{'ttft': r['ttft'], 'decode_tps':
-                                         (r['actual_output'] - 1) / (r['latency'] - r['ttft'])} for r in parsed]}
+                            'metrics': [performance_metrics(r) for r in parsed]}
                     results.append(item)
                     save(out / 'results.json', results)
                     if not item['deterministic'] or len({r['prompt_sha256'] for r in parsed}) != 1 or not all(
@@ -231,7 +266,8 @@ def main():
                             expected_prompt = hashlib.sha256(old_prompt.encode()).hexdigest()
                         if hashes != old['outputs'] or item['prompt_sha256'] != expected_prompt:
                             raise RuntimeError('performance output/prompt differs from reference')
-                print(f'{case.name}: HTTP/output checks passed', flush=True)
+                print(f'{case.name} ({decode_mode}): HTTP/output checks passed; '
+                      'execution-path audit pending server exit', flush=True)
             passed = True
         except Exception as error:
             failure = f'{type(error).__name__}: {error}'
@@ -243,9 +279,20 @@ def main():
             except subprocess.TimeoutExpired:
                 server.kill()
                 server.wait()
+            # The terminal path line may follow the final SSE write. Audit only
+            # after the owned process exits, when server.log is complete.
+            paths = request_mode_evidence((out / 'server.log').read_text(), responses, args.mtp)
+            save(out / 'request-modes.json', paths)
+            mode_passed = bool(startup and startup['passed'] and paths['passed'])
+            if not mode_passed and failure is None:
+                failure = 'actual execution mode not accepted: ' + '; '.join(paths['errors'])
             save(out / 'exit.json', {'server': server.returncode, 'completed': len(results),
-                                      'http_output_checks_passed': passed and server.returncode == 0,
+                                      'decode_mode': decode_mode,
+                                      'actual_mode_checks_passed': mode_passed,
+                                      'http_output_checks_passed': passed and mode_passed and server.returncode == 0,
                                       'failure': failure})
+        if failure:
+            raise RuntimeError(failure)
         if server.returncode != 0:
             raise RuntimeError('server did not exit normally')
 

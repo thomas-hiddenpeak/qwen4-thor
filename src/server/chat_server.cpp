@@ -83,6 +83,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
   const Status validated = ValidateServerOptions(opts);
   if (!validated.ok()) return validated;
   const ServerCapabilities capabilities = CapabilitiesFor(opts);
+  mtp_requested_ = capabilities.mtp;
   std::fprintf(stderr,
                "[q4t][capabilities] requested=%s mtp=%d media=%d max_seq=%d\n",
                capabilities.Experimental() ? "experimental" : "text-greedy",
@@ -151,10 +152,33 @@ Status ChatServer::Start(const ServerOptions& opts) {
       }
       if (capabilities.mtp) {
         mtp::MtpConfig mcfg;
+        mcfg.mtp_dir = opts.model_dir + "/mtp";
         mcfg.max_prefill = cfg.max_prefill;
         mcfg.max_len = full.max_len;
         breq.mtp_workspace_bytes =
             mtp::MtpWorkspaceBytes(mcfg, cfg.max_prefill, full);
+        breq.mtp_k = mtp_k_;
+        io::WeightIndex* raw_index = nullptr;
+        s = io::WeightIndex::Open(
+            mcfg.mtp_dir + "/model.safetensors.index.json", &raw_index);
+        if (!s.ok()) return Status::Fail("MTP budget index: " + s.message());
+        const std::unique_ptr<io::WeightIndex> mtp_index(raw_index);
+        breq.mtp_weights_bytes = mtp_index->total_size();
+        io::WeightLoader* raw_loader = nullptr;
+        s = io::WeightLoader::Create(mcfg.mtp_dir, *mtp_index, 1, &raw_loader);
+        if (!s.ok()) return Status::Fail("MTP budget loader: " + s.message());
+        const std::unique_ptr<io::WeightLoader> mtp_loader(raw_loader);
+        // Header metadata only. The loader reads each weight through one host
+        // vector; gate_up retains its capacity while loading down_proj.
+        for (const auto& group : mtp_index->ShardGroups()) {
+          for (const auto& name : group.second) {
+            const io::TensorInfo* tensor = mtp_loader->FindTensor(name);
+            if (!tensor) return Status::Fail("MTP budget tensor: " + name);
+            breq.mtp_load_host_bytes =
+                std::max(breq.mtp_load_host_bytes,
+                         static_cast<size_t>(tensor->byte_size()));
+          }
+        }
       }
       runtime::BudgetModelParams params;
       params.num_layers = cfg.num_layers;
@@ -162,6 +186,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
       params.hc = cfg.hc;
       params.vocab = cfg.vocab;
       params.has_mtp = capabilities.mtp;
+      params.mtp_experts = cfg.E;
+      params.mtp_moe_is = cfg.moe_is;
       params.has_ple = cfg.num_layers > 1;
       params.ple_capacity_tokens = cfg.ple_capacity_tokens;
       params.ple_row_bytes = static_cast<int>(cfg.ple_row_bytes);

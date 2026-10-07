@@ -94,3 +94,5 @@ q4t_add_python_contract(q4t_physical_ram_contracts
   tools/evalscope/test_physical_ram.py)
 q4t_add_python_contract(q4t_response_identity_contracts
   tools/evalscope/test_response_identity.py)
+q4t_add_python_contract(q4t_acceptance_mode_contracts
+  tools/evalscope/test_acceptance_mode.py)

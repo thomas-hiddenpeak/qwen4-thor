@@ -329,12 +329,14 @@ Q4T_TEST(mtp_spec_multi_step) {
   // The step does NOT advance the sequences (Stage 2c contract); the caller
   // does. Advance each seq over its accepted prefix [b_b, d_0..d_{a_b-1}].
   for (int b = 0; b < B; ++b) {
-    const int a = accepted_count[b];
-    seqs[b].position += 1 + a;
-    seqs[b].history.push_back(b_tok[b]);
-    for (int i = 0; i < a; ++i)
+    const int count = accepted_count[b];
+    Q4T_CHECK(count >= 1 && count <= k + 1);
+    seqs[b].position += count;
+    for (int i = 0; i < count; ++i)
       seqs[b].history.push_back(
-          accepted[static_cast<size_t>(b) * (k + 1) + 1 + i]);
+          accepted[static_cast<size_t>(b) * (k + 1) + i]);
+    Q4T_CHECK(seqs[b].position == (b == 0 ? T0 : T1) + count);
+    Q4T_CHECK(static_cast<int>(seqs[b].history.size()) == seqs[b].position);
   }
 
   bool ok = true;

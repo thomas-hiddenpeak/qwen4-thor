@@ -176,7 +176,9 @@ struct MtpModel {
 // Load the MTP draft model from `cfg.mtp_dir` (its own index + shards). The
 // `main_embed` / `main_lm_head` device pointers are borrowed from the main
 // model (see MtpModel). On success the caller owns the device memory (free
-// with MtpModel::Free).
+// with MtpModel::Free). A failed load drains its stream and releases partial
+// owned allocations; borrowed embedding/head weights are never released.
+// out must be empty. Reloading a live model is rejected without changing it.
 Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
                const uint16_t* main_lm_head, MtpModel* out, cudaStream_t stream);
 
@@ -195,7 +197,9 @@ Status MtpResetState(const MtpModel& m, cudaStream_t stream, int seq_id = -1);
 // Reserve the per-step speculative scratch buffers (ids/positions, verify
 // logits+trunk, extend logits+trunk+sample, rolling draft trunk) sized for a
 // speculative `k` up to `k_max`. Idempotent: grows only if `k_max` exceeds the
-// current capacity. Call once after LoadMtp, before the decode loop, so
+// current capacity. A failed grow releases all scratch and resets k_max to
+// zero, preserving model weights so the caller can retry or decode plainly.
+// Call once after LoadMtp, before the decode loop, so
 // MtpSpeculativeStep / MtpDraftExtend can use the persistent buffers instead of
 // per-step cudaMalloc/cudaFree (each cudaFree is an implicit device sync).
 Status MtpReserveScratch(MtpModel& m, int k_max);

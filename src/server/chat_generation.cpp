@@ -12,6 +12,7 @@
 #include <vector>
 #include <cuda_runtime.h>
 #include "q4t/server/chat_contract.h"
+#include "q4t/server/mtp_policy.h"
 #include "q4t/server/request_json.h"
 
 namespace q4t::server {
@@ -294,33 +295,25 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // (each chunk's trunk_out writes its [base, base+c) rows); the draft-extend
   // then runs over the full prompt in chunks (MtpDraftExtend's chunked path).
   // The draft KV/indexer is allocated at MTP load time (pooled over max_seq,
-  // max_len), so it is NOT a per-request cost -- the only per-request extra is
-  // this trunk buffer (T * hc_dim * 2, ~0.9 GB at 44K, ~5.4 GB at 262K). If
-  // the allocation fails (not enough headroom), fall back to plain decode.
+  // max_len). Per-request costs also include the draft-extend temporaries;
+  // the startup allocation estimate accounts for their overlap. If this
+  // trunk allocation fails, fall back to plain decode and record the path.
   const size_t trunk_hc_dim =
       mtp_loaded_
           ? static_cast<size_t>(mtp_.cfg.hc) * static_cast<size_t>(mtp_.cfg.hs)
           : 0;
+  const char* mtp_fallback =
+      !mtp_loaded_ && mtp_requested_ ? "load_failed" : "none";
   if (mtp_loaded_) {
-    // OOM preflight (runtime). On unified memory a large cudaMalloc does not
-    // merely fail — it can push MemFree to zero and trip the global OOM
-    // killer (the 2026-09-19 reboot). So before attempting the trunk
-    // allocation, gauge MemFree (which excludes reclaimable page cache) and
-    // fall back to plain decode if there is not enough headroom. The trunk
-    // buffer (T * hc_dim * 2) plus the MTP draft logits (max_prefill * vocab *
-    // 2, allocated inside MtpDraftExtend) plus a 2 GB safety margin must fit.
+    // Runtime heuristic in addition to the startup allocation estimate.
+    // MemAvailable includes reclaimable file cache; it cannot guarantee that
+    // a CUDA allocation succeeds or that the system avoids an OOM.
     const size_t trunk_bytes = static_cast<size_t>(T) * trunk_hc_dim * 2;
     const size_t draft_logits_bytes =
         static_cast<size_t>(max_prefill_) *
         static_cast<size_t>(model_.Get().cfg.vocab) * 2;
     const size_t kPreflightMargin = 2u * 1024u * 1024u * 1024u;  // 2 GB
     const size_t need = trunk_bytes + draft_logits_bytes + kPreflightMargin;
-    // MemAvailable (NOT MemFree): it includes reclaimable page cache, which is
-    // exactly what the kernel evicts to satisfy a fresh cudaMalloc. In steady
-    // state MemFree is only a few GB (weights + model-file cache fill it) but
-    // MemAvailable is ~120 GB, so MemFree would wrongly fall back on every
-    // request. MemAvailable < need means even cache eviction cannot satisfy
-    // the allocation -> the OOM killer would trip, so degrade to plain decode.
     const size_t mem_avail = runtime::ReadMemAvailable();
     if (mem_avail > 0 && mem_avail < need) {
       std::fprintf(
@@ -329,11 +322,13 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           "T=%d); plain decode\n",
           mem_avail / 1e9, need / 1e9, T);
       d_trunk_full = nullptr;
+      mtp_fallback = "memory_preflight";
     } else if (cudaMalloc(reinterpret_cast<void**>(&d_trunk_full),
                           trunk_bytes) != cudaSuccess) {
       std::fprintf(stderr,
                    "[q4t] trunk alloc failed for T=%d; plain decode\n", T);
       d_trunk_full = nullptr;
+      mtp_fallback = "trunk_allocation";
     }
   }
   std::vector<uint16_t> h_logits(static_cast<size_t>(vocab));
@@ -543,11 +538,18 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // chunked path accumulates the trunk across prefill chunks and runs the
   // draft-extend in chunks (MtpDraftExtend's chunked path). The draft
   // KV/indexer is allocated at MTP load time (not per-request), so the only
-  // per-request cost is the trunk buffer; if its allocation failed, d_trunk_full
-  // is null and we fall back to plain decode. MTP is precision-safe: the main
-  // model verifies every draft token, so the output is identical to pure
-  // greedy (only the throughput changes).
-  bool use_mtp = mtp_loaded_ && d_trunk_full != nullptr;
+  // trunk is one of the per-request costs. Exact equivalence to plain greedy
+  // also depends on the verifier's numerical/state contract, tested separately.
+  const bool prefill_only = max_tokens == 1 || is_stop_token(next_token);
+  int mtp_steps = 0;
+  int plain_steps = 0;
+  int plain_tail_tokens = 0;
+  bool plain_tail = false;
+  bool use_mtp = mtp_loaded_ && d_trunk_full != nullptr && !prefill_only;
+  if (use_mtp && !MtpStepFits(seq.position, max_len_, max_prefill_, mtp_k_)) {
+    use_mtp = false;
+    mtp_fallback = "context_tail";
+  }
   int32_t mtp_b = -1, mtp_d0 = -1;
   if (use_mtp) {
     if (cudaMalloc(reinterpret_cast<void**>(&d_mtp_g),
@@ -555,6 +557,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                        static_cast<size_t>(mtp_.cfg.hs) * 2) != cudaSuccess) {
       std::fprintf(stderr, "[q4t] MTP trunk alloc failed; plain decode\n");
       use_mtp = false;
+      mtp_fallback = "rolling_trunk_allocation";
     }
   }
   if (use_mtp) {
@@ -583,6 +586,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                      "request\n",
                      s.message().c_str());
         use_mtp = false;
+        mtp_fallback = "initialization";
       }
 
     }
@@ -603,22 +607,39 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   ActiveRequest mtp_ar;
   bool mtp_sched = false;
   if (use_mtp) {
-    mtp_sched = scheduler_active_ && d_sched_logits_ &&
+    const std::lock_guard<std::mutex> lock(sched_mu_);
+    mtp_sched = scheduler_active_ && !scheduler_stop_ && d_sched_logits_ &&
                 static_cast<int>(active_.size()) < max_seq_;
     if (mtp_sched) {
       mtp_ar.is_mtp = true;
       mtp_ar.seq = &seq;
       mtp_ar.mtp_g = d_mtp_g;
 
-      const std::lock_guard<std::mutex> lock(sched_mu_);
       active_.push_back(&mtp_ar);
+    } else {
+      // No speculative step has touched main state. Preserve the pending
+      // prefill token and enter the ordinary decode loop below.
+      use_mtp = false;
+      mtp_fallback = "scheduler_unavailable";
     }
   }
   if (use_mtp) {
     bool done = false;
     while (!done && static_cast<int>(generated.size()) < max_tokens) {
       if (cancelled()) break;
-      if (!mtp_sched) break;
+      if (is_stop_token(mtp_b)) {
+        generated.push_back(mtp_b);
+        finish_reason = "stop";
+        break;
+      }
+      if (!MtpStepFits(seq.position, max_len_, max_prefill_, mtp_k_)) {
+        // The verifier cannot write k+1 rows at the context tail. The prior
+        // accepted state is valid; continue from its pending correction token.
+        next_token = mtp_b;
+        use_mtp = false;
+        plain_tail = true;
+        break;
+      }
       // Register this step's input with the scheduler.
       mtp_ar.mtp_b = mtp_b;
       mtp_ar.mtp_d0 = mtp_d0;
@@ -638,11 +659,17 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         generation_failed = true;
         break;
       }
+      ++mtp_steps;
       for (int i = 0; i < mtp_ar.mtp_accepted_count &&
                           static_cast<int>(generated.size()) < max_tokens;
            ++i) {
         const int32_t tok_id = mtp_ar.mtp_accepted[i];
         generated.push_back(tok_id);
+        if (is_stop_token(tok_id)) {
+          done = true;
+          finish_reason = "stop";
+          break;
+        }
         if (stream) {
           std::vector<std::uint32_t> one(1, static_cast<std::uint32_t>(tok_id));
           std::string piece;
@@ -658,21 +685,18 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
             break;
           }
         }
-        if (is_stop_token(tok_id)) {
-          done = true;
-          break;
-        }
       }
       // Advance the main seq over the accepted prefix [b, d_0..d_{a-1}] (the
       // multi step does not touch seqs[b]).
       seq.position += mtp_ar.mtp_accepted_count;
       for (int i = 0; i < mtp_ar.mtp_accepted_count; ++i)
         seq.history.push_back(mtp_ar.mtp_accepted[i]);
+      if (done) break;  // EOS wins over a coincident output/context limit.
       if (static_cast<int>(generated.size()) >= max_tokens) {
         finish_reason = "length";
         break;
       }
-      if (seq.position + 1 >= max_len_) {
+      if (seq.position >= max_len_) {
         finish_reason = "length";
         break;  // cannot decode further without exceeding the KV cache
       }
@@ -703,20 +727,22 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     // Fallback: if the scheduler is unavailable (buffer alloc failed) or the
     // active pool is full, this request decodes on its own via
     // ModelDecodeStepSeq (the B1 single-sequence path).
-    const bool use_sched =
-        scheduler_active_ && d_sched_logits_ &&
-        static_cast<int>(active_.size()) < max_seq_;
+    bool use_sched = false;
     ActiveRequest ar;
-    if (use_sched) {
-      ar.seq = &seq;
-      {
-        const std::lock_guard<std::mutex> lock(sched_mu_);
+    {
+      const std::lock_guard<std::mutex> lock(sched_mu_);
+      use_sched = scheduler_active_ && !scheduler_stop_ && d_sched_logits_ &&
+                  static_cast<int>(active_.size()) < max_seq_;
+      if (use_sched) {
+        ar.seq = &seq;
         active_.push_back(&ar);
       }
     }
-    for (int step = 0; step < max_tokens; ++step) {
+    for (int step = static_cast<int>(generated.size()); step < max_tokens;
+         ++step) {
       if (cancelled()) break;
       generated.push_back(next_token);
+      if (plain_tail) ++plain_tail_tokens;
       if (is_stop_token(next_token)) {
         finish_reason = "stop";
         break;
@@ -785,6 +811,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         }
         next_token = argmax(h_logits.data());
       }
+      ++plain_steps;
     }
     if (use_sched) {
       {
@@ -798,6 +825,15 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     }
   }
   trace_output_tokens = generated.size();
+  const char* decode_path =
+      mtp_steps > 0 ? (max_seq_ == 1 ? "mtp_multi_b1" : "mtp_multi")
+      : plain_steps == 0 && prefill_only ? "prefill_only"
+                                       : "plain";
+  std::fprintf(stderr,
+               "[q4t][decode_path] id=%s requested_mtp=%d path=%s "
+               "mtp_steps=%d fallback=%s plain_tail_tokens=%d\n",
+               id.c_str(), mtp_requested_, decode_path, mtp_steps,
+               prefill_only ? "none" : mtp_fallback, plain_tail_tokens);
   if (generation_failed) seq.Fail();
   model::ModelEndSequence(&seq);
 

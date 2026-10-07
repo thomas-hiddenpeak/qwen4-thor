@@ -300,6 +300,7 @@ if(Q4T_BUILD_TESTS)
     tests/mtp_draft_test.cpp
     tests/mtp_speculative_test.cpp
     tests/mtp_spec_multi_test.cpp
+    tests/mtp_admission_test.cpp
     tests/vision_forward_test.cpp
     tests/model_vision_inject_test.cpp
     tests/vision_processor_test.cpp
@@ -315,6 +316,14 @@ if(Q4T_BUILD_TESTS)
   target_include_directories(q4t_tests PRIVATE include)
   target_link_libraries(q4t_tests PRIVATE ${Q4T_TEST_LIBS})
   add_test(NAME q4t_tests COMMAND q4t_tests)
+  # Targeted CUDA allocation-failure checks; never part of the full model
+  # registry because its link-time wrappers deliberately inject failures.
+  add_executable(q4t_mtp_lifecycle tests/mtp_lifecycle_test.cpp)
+  target_include_directories(q4t_mtp_lifecycle PRIVATE include)
+  target_link_libraries(q4t_mtp_lifecycle PRIVATE ${Q4T_TEST_LIBS})
+  target_link_options(q4t_mtp_lifecycle PRIVATE
+    LINKER:--wrap=cudaMalloc LINKER:--wrap=cudaFree
+    LINKER:--wrap=cudaStreamSynchronize)
 endif()
 
 # Host-only release-contract slice; the exact required list rejects absent

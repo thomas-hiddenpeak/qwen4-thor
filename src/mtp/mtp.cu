@@ -155,6 +155,54 @@ Status CheckGemm(const model::Bf16GemmResult& r) {
   return Status();
 }
 
+void FreeScratch(MtpModel& m) {
+  if (m.d_ids_scratch) cudaFree(m.d_ids_scratch);
+  if (m.d_pos_scratch) cudaFree(m.d_pos_scratch);
+  if (m.d_spec_logits) cudaFree(m.d_spec_logits);
+  if (m.d_spec_trunk) cudaFree(m.d_spec_trunk);
+  if (m.d_spec_multi) cudaFree(m.d_spec_multi);
+  if (m.d_spec_sample) cudaFree(m.d_spec_sample);
+  if (m.d_g) cudaFree(m.d_g);
+  if (m.d_ms_ids) cudaFree(m.d_ms_ids);
+  if (m.d_ms_pos) cudaFree(m.d_ms_pos);
+  if (m.d_ms_sample) cudaFree(m.d_ms_sample);
+  if (m.d_ms_multi) cudaFree(m.d_ms_multi);
+  if (m.d_ms_gather) cudaFree(m.d_ms_gather);
+  if (m.d_ms_g_pool) cudaFree(m.d_ms_g_pool);
+  if (m.d_ms_ext_seq) cudaFree(m.d_ms_ext_seq);
+  if (m.d_ms_vlogits) cudaFree(m.d_ms_vlogits);
+  if (m.d_ms_vtrunk) cudaFree(m.d_ms_vtrunk);
+  if (m.d_ms_ext_logits) cudaFree(m.d_ms_ext_logits);
+  if (m.d_ms_ext_multi) cudaFree(m.d_ms_ext_multi);
+  if (m.d_ms_ext_sample) cudaFree(m.d_ms_ext_sample);
+  if (m.d_ms_ext_ids) cudaFree(m.d_ms_ext_ids);
+  if (m.d_ms_ext_pos) cudaFree(m.d_ms_ext_pos);
+  if (m.d_ms_drafts) cudaFree(m.d_ms_drafts);
+  m.d_ids_scratch = nullptr;
+  m.d_pos_scratch = nullptr;
+  m.d_spec_logits = nullptr;
+  m.d_spec_trunk = nullptr;
+  m.d_spec_multi = nullptr;
+  m.d_spec_sample = nullptr;
+  m.d_g = nullptr;
+  m.d_ms_ids = nullptr;
+  m.d_ms_pos = nullptr;
+  m.d_ms_sample = nullptr;
+  m.d_ms_multi = nullptr;
+  m.d_ms_gather = nullptr;
+  m.d_ms_g_pool = nullptr;
+  m.d_ms_ext_seq = nullptr;
+  m.d_ms_vlogits = nullptr;
+  m.d_ms_vtrunk = nullptr;
+  m.d_ms_ext_logits = nullptr;
+  m.d_ms_ext_multi = nullptr;
+  m.d_ms_ext_sample = nullptr;
+  m.d_ms_ext_ids = nullptr;
+  m.d_ms_ext_pos = nullptr;
+  m.d_ms_drafts = nullptr;
+  m.k_max = 0;
+}
+
 }  // namespace
 
 void MtpModel::Free() {
@@ -177,28 +225,6 @@ void MtpModel::Free() {
   if (d_sample) cudaFree(d_sample);
   if (d_trunk) cudaFree(d_trunk);
   if (d_logits) cudaFree(d_logits);
-  if (d_ids_scratch) cudaFree(d_ids_scratch);
-  if (d_pos_scratch) cudaFree(d_pos_scratch);
-  if (d_spec_logits) cudaFree(d_spec_logits);
-  if (d_spec_trunk) cudaFree(d_spec_trunk);
-  if (d_spec_multi) cudaFree(d_spec_multi);
-  if (d_spec_sample) cudaFree(d_spec_sample);
-  if (d_g) cudaFree(d_g);
-  if (d_ms_ids) cudaFree(d_ms_ids);
-  if (d_ms_pos) cudaFree(d_ms_pos);
-  if (d_ms_sample) cudaFree(d_ms_sample);
-  if (d_ms_multi) cudaFree(d_ms_multi);
-  if (d_ms_gather) cudaFree(d_ms_gather);
-  if (d_ms_g_pool) cudaFree(d_ms_g_pool);
-  if (d_ms_ext_seq) cudaFree(d_ms_ext_seq);
-  if (d_ms_vlogits) cudaFree(d_ms_vlogits);
-  if (d_ms_vtrunk) cudaFree(d_ms_vtrunk);
-  if (d_ms_ext_logits) cudaFree(d_ms_ext_logits);
-  if (d_ms_ext_multi) cudaFree(d_ms_ext_multi);
-  if (d_ms_ext_sample) cudaFree(d_ms_ext_sample);
-  if (d_ms_ext_ids) cudaFree(d_ms_ext_ids);
-  if (d_ms_ext_pos) cudaFree(d_ms_ext_pos);
-  if (d_ms_drafts) cudaFree(d_ms_drafts);
   fc_embedding = nullptr;
   fc_hidden = nullptr;
   pre_fc_norm_embedding = nullptr;
@@ -212,34 +238,38 @@ void MtpModel::Free() {
   d_sample = nullptr;
   d_trunk = nullptr;
   d_logits = nullptr;
-  d_ids_scratch = nullptr;
-  d_pos_scratch = nullptr;
-  d_spec_logits = nullptr;
-  d_spec_trunk = nullptr;
-  d_spec_multi = nullptr;
-  d_spec_sample = nullptr;
-  d_g = nullptr;
-  d_ms_ids = nullptr;
-  d_ms_pos = nullptr;
-  d_ms_sample = nullptr;
-  d_ms_multi = nullptr;
-  d_ms_gather = nullptr;
-  d_ms_g_pool = nullptr;
-  d_ms_ext_seq = nullptr;
-  d_ms_vlogits = nullptr;
-  d_ms_vtrunk = nullptr;
-  d_ms_ext_logits = nullptr;
-  d_ms_ext_multi = nullptr;
-  d_ms_ext_sample = nullptr;
-  d_ms_ext_ids = nullptr;
-  d_ms_ext_pos = nullptr;
-  d_ms_drafts = nullptr;
-  k_max = 0;
+  FreeScratch(*this);
+  embed_tokens = nullptr;
+  lm_head = nullptr;
+  ws_bytes = 0;
+  kv_bytes = 0;
+  idx_bytes = 0;
+  max_seq = 1;
 }
 
 Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
                const uint16_t* main_lm_head, MtpModel* out,
                cudaStream_t stream) {
+  if (!out || !main_embed || !main_lm_head)
+    return Status::Fail("LoadMtp: model and borrowed weights are required");
+  if (out->embed_tokens || out->lm_head || out->fc_embedding ||
+      out->d_ids_scratch || out->k_max > 0)
+    return Status::Fail("LoadMtp: output already owns resources");
+  // Sub-loaders attach allocations to out as they proceed. Keep one failure
+  // owner until every load and copy has completed, including the null stream.
+  struct PendingLoad {
+    MtpModel* model;
+    cudaStream_t stream;
+    ~PendingLoad() {
+      if (!model) return;
+      const cudaError_t error = cudaStreamSynchronize(stream);
+      if (error != cudaSuccess) {
+        std::fprintf(stderr, "[q4t] MTP failed-load drain: %s\n",
+                     cudaGetErrorString(error));
+      }
+      model->Free();
+    }
+  } pending{out, stream};
   out->cfg = cfg;
   out->embed_tokens = main_embed;
   out->lm_head = main_lm_head;
@@ -413,9 +443,10 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
       cudaSuccess)
     return Status::Fail("cudaMalloc d_logits");
 
-  if (stream != nullptr && cudaStreamSynchronize(stream) != cudaSuccess) {
+  if (cudaStreamSynchronize(stream) != cudaSuccess) {
     return Status::Fail("stream sync failed");
   }
+  pending.model = nullptr;
   return Status();
 }
 
@@ -458,48 +489,15 @@ Status MtpReserveScratch(MtpModel& m, int k_max) {
   if (k_max <= 0) return Status::Fail("MtpReserveScratch: k_max must be > 0");
   if (k_max <= m.k_max) return Status();  // already sized for this k
   const int hs = m.cfg.hs, hc_dim = m.hc_dim(), vocab = m.cfg.vocab;
-  if (m.d_ids_scratch) cudaFree(m.d_ids_scratch);
-  if (m.d_pos_scratch) cudaFree(m.d_pos_scratch);
-  if (m.d_spec_logits) cudaFree(m.d_spec_logits);
-  if (m.d_spec_trunk) cudaFree(m.d_spec_trunk);
-  if (m.d_spec_multi) cudaFree(m.d_spec_multi);
-  if (m.d_spec_sample) cudaFree(m.d_spec_sample);
-  if (m.d_g) cudaFree(m.d_g);
-  if (m.d_ms_ids) cudaFree(m.d_ms_ids);
-  if (m.d_ms_pos) cudaFree(m.d_ms_pos);
-  if (m.d_ms_sample) cudaFree(m.d_ms_sample);
-  if (m.d_ms_multi) cudaFree(m.d_ms_multi);
-  if (m.d_ms_gather) cudaFree(m.d_ms_gather);
-  if (m.d_ms_g_pool) cudaFree(m.d_ms_g_pool);
-  if (m.d_ms_ext_seq) cudaFree(m.d_ms_ext_seq);
-  if (m.d_ms_vlogits) cudaFree(m.d_ms_vlogits);
-  if (m.d_ms_vtrunk) cudaFree(m.d_ms_vtrunk);
-  if (m.d_ms_ext_logits) cudaFree(m.d_ms_ext_logits);
-  if (m.d_ms_ext_multi) cudaFree(m.d_ms_ext_multi);
-  if (m.d_ms_ext_sample) cudaFree(m.d_ms_ext_sample);
-  if (m.d_ms_ext_ids) cudaFree(m.d_ms_ext_ids);
-  if (m.d_ms_ext_pos) cudaFree(m.d_ms_ext_pos);
-  m.d_ids_scratch = nullptr;
-  m.d_pos_scratch = nullptr;
-  m.d_spec_logits = nullptr;
-  m.d_spec_trunk = nullptr;
-  m.d_spec_multi = nullptr;
-  m.d_spec_sample = nullptr;
-  m.d_g = nullptr;
-  m.d_ms_ids = nullptr;
-  m.d_ms_pos = nullptr;
-  m.d_ms_sample = nullptr;
-  m.d_ms_multi = nullptr;
-  m.d_ms_gather = nullptr;
-  m.d_ms_g_pool = nullptr;
-  m.d_ms_ext_seq = nullptr;
-  m.d_ms_vlogits = nullptr;
-  m.d_ms_vtrunk = nullptr;
-  m.d_ms_ext_logits = nullptr;
-  m.d_ms_ext_multi = nullptr;
-  m.d_ms_ext_sample = nullptr;
-  m.d_ms_ext_ids = nullptr;
-  m.d_ms_ext_pos = nullptr;
+  FreeScratch(m);
+  // A failed grow must not leave the old capacity advertising partial new
+  // buffers. The model weights and borrowed head stay valid for retry/plain.
+  struct PendingScratch {
+    MtpModel* model;
+    ~PendingScratch() {
+      if (model) FreeScratch(*model);
+    }
+  } pending{&m};
   // k_max rows: verify uses k+1 tokens, extend uses a+1 <= k+1 tokens.
   if (cudaMalloc(reinterpret_cast<void**>(&m.d_ids_scratch),
                  static_cast<size_t>(k_max) * sizeof(int32_t)) != cudaSuccess)
@@ -589,6 +587,7 @@ Status MtpReserveScratch(MtpModel& m, int k_max) {
       return Status::Fail("MtpReserveScratch: d_ms_drafts");
   }
   m.k_max = k_max;
+  pending.model = nullptr;
   return Status();
 }
 
