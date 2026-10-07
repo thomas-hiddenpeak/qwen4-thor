@@ -132,3 +132,25 @@ state，不声称保存了全 KV；同位置重算覆盖 speculative KV/indexer�
 基线。普通/MTP HTTP 质量、长度与资源故障证据按未变身份复用。
 资源分别列 RSS/HWM 与系统 MemAvailable，不将历史/本轮之差称为
 当轮受控的总物理 RAM 增量。
+
+## 完整 k3 状态组（2026-10-08）
+
+首次运行 `mtp_k3_full_model_replay` 通过，无 skip，53 秒内完成。
+新增测试零警告，测试二进制 `aea26ebc`；服务 `7fe34d6` 与模型库
+`473aa421` 不变。实际 48 层、208896/8192/S1、原始 1024-token
+prompt，恰好 16 次自然 step、一次预定强制 step、17 次同形回放和
+一次额外 seed probe。未追加请求或改变 seed 寻找通过结果。
+
+自然 count=1/2/3/4 分别出现 2/1/2/11 次，即实际接受 0/1/2/3
+draft 全部覆盖；强制步骤实际 count=1。每步独立 host argmax、
+accepted prefix/correction、caller 状态、next_d0/next_g 均通过。
+全部 17 次 target logits、trunk、接受后 115,642,368 B recurrent
+状态逐位相同且有限；首步三个 raw checkpoint 行与独立读出相同。
+原始小型证据 46,300,139 B，结果及逐文件 SHA 见阶段目录
+`k3-replay-01-result.json`，完整输出见 `k3-replay-01.log`。
+
+raw checkpoint 比较独立于生产 reader，验证读取布局；它不独立证明
+writer 的逐 token 数学结果。同形回放限同位置、相同四 token、相同
+history 的 S1/slot0；不等于保存全部 KV，也不证明跨形状等价。
+上述具体算术与执行合同未发现未解决反例，允许进入固定五档实验
+收益测量；旧 cross-mode equality 失败仍保留，默认启用未获接受。
