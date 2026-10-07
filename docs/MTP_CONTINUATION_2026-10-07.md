@@ -82,3 +82,53 @@ MTP verify 分歧，不新增性能候选、offload、媒体、多流或动态 k
 阶段目录 `starting-identities.json` 保存原工作区 diff、main、默认
 与起点二进制、模型库身份；不哈希模型载荷。过程与结论在本文件
 补充，历史日志仅追加。
+
+## 首次诊断结果与唯一后续状态组
+
+测试二进制 `8a372182` 零警告；服务 `7fe34d6` 与模型库 `473aa421`
+均未改变。三项各首次执行一次，全部通过、无 skip。现有 hook 同步
+采集 451 文件、47,292,416 B，完整绑定 manifest；不用于计时。
+
+- 投影同实际输入重现 19/10240 个跨形状差异，最大绝对差 0.03125。
+  M1/M4/改 suffix 的每个输出均在预定义 FP32 累加加 BF16 RNE 包络
+  内，M4 首行不受后三行改变影响。这解释该投影有限样本，不给整模型
+  误差上界，也不把理论包络当作新的全模型相对 L2 容差。
+- MoE A/B/C/D 的首行全部逐位相同，A/B 的 25,600 个专家 down 元素
+  及独立 slot combine 均相同；未发现该固定输入的分派差错。
+- 八次 prefill 的完整持久状态及输出相同；两个首 token 的 plain
+  T1 与 verify T1 输出/trunk/recurrent state 均相同。两组 T4 更换
+  suffix 后首行及 checkpoint 0 状态相同，跨 T1/T4 仍有差异。
+- 首个自然分歧有明确数值：plain 的 token 220 和 359 同为 5.1875，
+  最低 ID 规则选 220；verify T4 为 359=5.125、220=4.96875。普通侧
+  确为同分，但 verify 有不等量位移，不能只称 tie-break 差异。
+  第 0 层 MoE 前后已放大输入差异；没有 router 采样，不宣称专家翻转。
+
+既有 k1 强制接受/拒绝和 cap1/cap3 证据不覆盖实际 k3 的全部选择
+结果。因此冻结唯一后续状态组：完整 48 层、正式 208896/8192/S1、
+既有 HTTP 1024-token 原始 prompt，16 次自然 k3 加一次预定强制首
+draft 拒绝。每步读取实际 drafts、全部 target logits 与 trunk，
+由独立 host argmax/前缀检查验证返回的 count、accepted、correction，
+同时核对 next_d0 与 next_g 的实际 extend 来源和 caller 状态所有权。
+
+每步保存 main recurrent 前态，复放完全相同 T4 输入，比对全部
+logits/trunk，再按接受边界核对后态；首步另独立读取三个 checkpoint
+原始行并检查逐行恢复。此为 S1 的有限诊断，snapshot 仅含 recurrent
+state，不声称保存了全 KV；同位置重算覆盖 speculative KV/indexer，
+其未来位置由因果选择屏蔽。不得为凑齐分支改变 prompt 或追加步数。
+记录实际观察到的接受数，缺少的自然分支不冒称已覆盖。
+
+强制拒绝的 seed 由该位置一次固定 suffix T4 target argmax+1 产生，
+恢复前态后执行实际 step；若改变 suffix 影响 target 导致未拒绝，
+明确记未覆盖，不自适应试种子。小型原始 logits/trunk 保留，recurrent
+状态只记比较结果，不保存 GB 级完整状态或权重载荷。
+
+不同形状计算不是现有规范中的逐位合同。只有上述具体算术/状态
+合同通过且没有未解决的执行反例，才进入固定配置的**实验性收益
+测量**；跨模式生成差异仍单列，旧 admission 的逐位诊断失败保留。
+这不等于证明整模型误差有统一上界，也不自动批准 MTP 启用。
+
+后续测量复用相同服务身份的 `performance-off-04` 五档 15 条作为
+历史基线，仅新增 MTP-on 同输入五档 15 条；不会看到结果后更换
+基线。普通/MTP HTTP 质量、长度与资源故障证据按未变身份复用。
+资源分别列 RSS/HWM 与系统 MemAvailable，不将历史/本轮之差称为
+当轮受控的总物理 RAM 增量。

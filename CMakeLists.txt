@@ -303,6 +303,9 @@ if(Q4T_BUILD_TESTS)
     tests/mtp_admission_test.cpp
     tests/model_decode_rope_test.cpp
     tests/mtp_checkpoint_layout_test.cpp
+    tests/mtp_path_triangle_test.cpp
+    tests/mtp_projection_path_test.cpp
+    tests/mtp_moe_path_test.cpp
     tests/vision_forward_test.cpp
     tests/model_vision_inject_test.cpp
     tests/vision_processor_test.cpp
