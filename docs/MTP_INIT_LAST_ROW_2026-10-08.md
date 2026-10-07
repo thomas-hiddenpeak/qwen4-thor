@@ -98,3 +98,37 @@ RSS、VmHWM、MemAvailable 和采样范围单列；历史极值之差不是受�
 模型库 `454a7cd4`。`candidate-identity.json` 绑定 123 个运行源码，
 构建日志、配置和精确 runtime patch 保留。当前仅构建完成，所有
 HTTP/数值/性能结果尚待执行；这个提交不表示优化已被接受。
+
+## 首次 HTTP 与直接合同结果
+
+按冻结顺序，第一测 quality-on-01 的 11/11 HTTP 固定题通过，
+实际 MTP 路径、正式容量和退出检查通过；runner/server/sampler
+均正常退出 0。随后测试二进制 `ae37f1bc` 零警告，服务/模型库/
+构建配置身份保持上述候选，未重跑质量。
+
+`mtp_init_last_row` 首次通过，六形状的 12 manual 加 12 wrapper
+路径、完整上游 hidden/cache、输出 canary、scratch 全行写出及
+借用 trunk 不变均精确通过。四个末行的 248,320 词表输出/路径均
+在预定义包络内，两个本来 M=1 的对照逐位一致：
+
+| T | 跨形状不同元素 | 最大绝对差 | All/Last 包络外 | All/Last seed |
+|---:|---:|---:|---:|---:|
+| 4 | 360 | 0.03125 | 0 / 0 | 96365 / 96365 |
+| 8 | 312 | 0.03125 | 0 / 0 | 96756 / 96756 |
+| 10 | 276 | 0.0625 | 0 / 0 | 21 / 21 |
+| 16 | 384 | 0.03125 | 0 / 0 | 220 / 220 |
+
+这是实际有限输入的计算/分块合同，不外推正式长矩阵或完整模型。
+本夹具先 reserve scratch，T=1/4 wrapper 覆盖已存在 scratch 情形，
+没有独立测试首次小 prompt 的无 scratch 临时路径。
+
+完整 k3 初始调用显式 Last 后首次通过：16 自然步骤的 count=1/2/3/4
+分布仍为 2/1/2/11，另一次强制拒绝通过；17 次 logits/trunk/接受
+后 recurrent state 同形回放逐位相同，三行 raw checkpoint 通过。
+两组证据及身份见阶段目录 `group.json`；下一步唯一五档测量。
+
+独立 HTTP 包装器还修正了异常退出时 owned process group 的清理，
+纯 host 三项检查通过，无模型调用。质量使用的原 wrapper 精确
+归档（SHA `79dd7994`）；性能使用修订版（`93175ecc`），版本与
+检查记录见 `wrapper-version-history.json`。核心 evalscope runner
+及候选运行时未变，不因工具异常清理加固重复已通过的质量测试。

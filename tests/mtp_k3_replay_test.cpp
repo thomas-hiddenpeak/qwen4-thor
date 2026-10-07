@@ -346,7 +346,8 @@ Q4T_TEST(mtp_k3_full_model_replay) {
   for (size_t i = 0; i < positions.size(); ++i) positions[i] = i;
   RequireStatus(q4t::mtp::MtpDraftExtend(
                     mtp, shifted.data(), trunk.data(), positions.data(),
-                    static_cast<int>(prompt.size()), &d0, g.data(), nullptr, 0),
+                    static_cast<int>(prompt.size()), &d0, g.data(), nullptr, 0,
+                    q4t::model::LogitsRows::kLastRow),
                 "initial draft extend");
   RequireCuda(cudaStreamSynchronize(nullptr), "initial extend completion");
   bool contracts = true, all_rows_checked = true, forced_reject = false;
