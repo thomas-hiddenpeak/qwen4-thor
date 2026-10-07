@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "status": "READ_ONLY_METADATA_CANDIDATES_NOT_VERIFIED_NOT_EXECUTED",
+  "created_unix": 1791349018.4319987,
+  "candidate_file": "frozen-evidence-manifest-candidates.json",
+  "scope": {
+    "root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/e2e",
+    "source_manifests": 58,
+    "min_numeric_size": 4194304,
+    "suffixes": [
+      ".bf16",
+      ".f32",
+      ".f64",
+      ".i32",
+      ".bin"
+    ],
+    "exclude_filename_substring": "weight",
+    "model_reference_paths_read": false,
+    "original_numeric_payload_bytes_read": 0
+  },
+  "exact_hash_candidate_groups": 257,
+  "independent_target_inodes": 399,
+  "potential_allocated_bytes": 4290404352,
+  "potential_gib": 3.9957504272460938,
+  "canonical_existing_readonly_hardlink_groups": 4,
+  "all_target_nlink_one": true,
+  "candidate_limitations": [
+    "Recorded manifest SHA equality is not a new byte verification; all candidate inodes must be SHA-read before execution.",
+    "Stat snapshot is not an execution manifest and may become stale.",
+    "Potential release excludes directory/journal overhead, so actual free-space delta differs.",
+    "Sources were top-level artifact-binding records; older previous-binding captures are not included.",
+    "Four groups use already shared readonly canonical files: preserve their contents/mode; new links increment canonical nlink.",
+    "Twenty GiB reserve is not reached by this candidate set."
+  ],
+  "safe_execution_protocol": [
+    "Freeze a new finite candidate manifest and source-manifest SHA; reject any path escaping exact e2e source, symlink, changed stat, mount change, active writer, or unexpected target nlink.",
+    "Read/hash each unique candidate inode, require size/SHA equal to original artifact-binding and stable pre/post read metadata. Do not read model or reference.",
+    "For independent canonical nlink1 only, journal original mode then remove writable bits. For existing readonly shared canonical do not chmod or write content.",
+    "For each target nlink1, append/fsync journal; create hardlink at new adjacent temp path then atomically replace original target and fsync containing directory. Never copy over an existing shared inode.",
+    "Verify original path bytes SHA/length through canonical and link identities; preserve original source manifests byte-for-byte. Keep fresh metadata, journal, candidates, source-manifest copies/hashes and summary.",
+    "Declare inode/mode/mtime/nlink changes; do not claim per-path metadata unchanged or infer runtime quality/performance."
+  ],
+  "restoration": [
+    "Need free capacity equal to materialized independent copies.",
+    "For each path, create separate new temporary file copied from the shared readonly artifact; SHA/length verify.",
+    "Apply original per-path mode and mtime from preserved preflight to the new private inode; atomically replace the alias. Never chmod/write the existing shared inode."
+  ],
+  "existing_tools": {
+    "best_template": "tools/verify/propagation_evidence_storage/share.py.in",
+    "why_not_directly_reusable": "Fixed historical roots, old source identities and inventory with no command-line isolation; executes top-level mutation. Adapt a new finite audited script, never run the template as-is.",
+    "other_templates": [
+      "tools/verify/evidence_storage/share.py.in",
+      "tools/verify/moe_gu_storage/share.py.in",
+      "tools/verify/linear_evidence_storage/share.py.in"
+    ],
+    "old_compression_not_selected": "docs/EVIDENCE_STORAGE.md permits original-path-changing gzip only for newly generated final-consumed evidence. Existing frozen numerical manifests bind original paths; compression would need a separately authorized archival contract. Mirror-recycle known finite compression candidates already exhausted."
+  },
+  "capture_weight_directories": "frozen-evidence-big-directory-metadata.json",
+  "capture_weight_exclusion_reason": "Large historical capture directories hold multiple stored weight copies. They are evidence under .q4t-work, not model directory, but this audit excludes their payloads under the no-model-payload-read boundary. Their stat-only size is not proof they can be removed."
+}

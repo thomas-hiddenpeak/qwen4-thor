@@ -1,0 +1,64 @@
+{
+  "cache_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache",
+  "venv_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/venv",
+  "venv_regular_files": {
+    "files": 73585,
+    "allocated_bytes_sum": 8162648064
+  },
+  "shared_inodes_with_cache": {
+    "files": 64504,
+    "allocated_bytes_sum": 7809875968
+  },
+  "shared_examples": [
+    {
+      "venv": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/venv/bin/ninja",
+      "cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/archive-v0/NVyc8NLuBAMB2f0K/ninja-1.13.2.data/scripts/ninja",
+      "nlink": 2
+    },
+    {
+      "venv": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/venv/bin/z3",
+      "cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/archive-v0/MbNrex-gShCC55zA/z3_solver-4.15.4.0.data/data/bin/z3",
+      "nlink": 2
+    },
+    {
+      "venv": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/venv/bin/py-spy",
+      "cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/archive-v0/3VBFBdrpeN4Pm4ZG/py_spy-0.4.2.data/scripts/py-spy",
+      "nlink": 2
+    },
+    {
+      "venv": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/venv/share/man/man1/ipython.1",
+      "cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/archive-v0/G5f82JyTPEQXFwjf/ipython-9.17.1.data/data/share/man/man1/ipython.1",
+      "nlink": 2
+    },
+    {
+      "venv": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/venv/share/man/man1/isympy.1",
+      "cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/archive-v0/Tg4a7LmA0yXs0hPv/sympy-1.14.0.data/data/share/man/man1/isympy.1",
+      "nlink": 2
+    }
+  ],
+  "venv_symlink_count": 4,
+  "venv_symlinks_into_cache": [],
+  "venv_symlinks_sample": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/venv/lib64",
+      "target": "lib",
+      "resolved_target": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/venv/lib"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/venv/bin/python3",
+      "target": "python",
+      "resolved_target": "/usr/bin/python3.12"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/venv/bin/python3.12",
+      "target": "python",
+      "resolved_target": "/usr/bin/python3.12"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/venv/bin/python",
+      "target": "/usr/bin/python3",
+      "resolved_target": "/usr/bin/python3.12"
+    }
+  ],
+  "recommendation": "Exclude this cache from this cleanup. Only 112.06 MiB of regular-file blocks are nlink=1; most archive bytes belong to installed venv hardlinks. No venv symlink into cache found, but stat-only scan does not inspect .pth/config/manifest path references. Keep the entire venv untouched."
+}

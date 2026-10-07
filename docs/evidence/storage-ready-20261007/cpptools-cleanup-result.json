@@ -1,0 +1,16 @@
+{
+  "completed_t": 1791349362.630896,
+  "removed_cache_root": "/home/rm01/.cache/vscode-cpptools",
+  "files_removed": 102,
+  "removed_allocated_bytes": 10780438528,
+  "free_bytes_before": 440815616,
+  "free_bytes_after": 11221434368,
+  "free_delta_bytes": 10780618752,
+  "quarantine_remaining": false,
+  "old_cache_remaining": false,
+  "all_frozen_evidence_untouched": true,
+  "model_reference_untouched": true,
+  "compiler_runtime_caches_untouched": true,
+  "build_and_venv_untouched": true,
+  "side_effect": "C/C++ editor may rebuild its index on demand"
+}

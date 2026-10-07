@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "status": "PASS_NO_CONCRETE_BLOCKER",
+  "reviewed_at": 1791349289.6687758,
+  "plan_sha256": "d72b7c69fed5745cca6d01a5a91cc80ccda879def6f60f81b8014ca9f17ccafa",
+  "candidate_files_metadata_verified": 102,
+  "expected_allocated_bytes": 10780438528,
+  "youngest_file_age_seconds": 644787.9806044102,
+  "payload_bytes_read": 0,
+  "mutations_performed": false,
+  "issues": [],
+  "review_notes": [
+    "Exact finite inventory is limited to disposable VS Code C/C++ index/precompiled-header cache; model/reference/raw/venv/binary are outside roots.",
+    "Every current file matches frozen metadata, is uid-owned regular nlink1, and is a recognized .ipch/mmap_address.bin/.browse.VC.db[-wal/-shm/.lock] file.",
+    "Plan reports no cpptools process or readable fd/maps reference. Two unreadable same-user maps are disclosed, so universal absence of open mappings is not proven; this alone is not a blocker for disposable cache.",
+    "Atomic rename into unique quarantine must precede revalidation and unlink. A concurrently recreated original cache root must be left untouched.",
+    "Revalidate exact file and directory inventory after rename; refuse any changed/new/symlink entry, record/fsync journal, unlink only frozen paths and rmdir empty known directories.",
+    "Recovery is editor reindexing, not byte restoration. This cache deletion does not promise identical cache inode/mtime/content recovery."
+  ],
+  "initial_validator_finding": "Initial reviewer allowlist omitted .browse.VC.db.lock despite plan explicitly allowing .browse.VC.db*. Three stale lock files are part of this same disposable cache; no actual scope violation.",
+  "stale_lock_files": [
+    {
+      "relative_path": "309644ebaf9c1ef29ec9f92ef7bba5ab-2/.browse.VC.db.lock",
+      "dev": 66305,
+      "ino": 917743,
+      "size": 0,
+      "blocks": 0,
+      "mtime_ns": 1789117070989432926,
+      "ctime_ns": 1789117070989432926,
+      "mode": 384,
+      "uid": 2002,
+      "nlink": 1
+    },
+    {
+      "relative_path": "309644ebaf9c1ef29ec9f92ef7bba5ab-1/.browse.VC.db.lock",
+      "dev": 66305,
+      "ino": 917651,
+      "size": 0,
+      "blocks": 0,
+      "mtime_ns": 1788453510052623668,
+      "ctime_ns": 1788453510052623668,
+      "mode": 384,
+      "uid": 2002,
+      "nlink": 1
+    },
+    {
+      "relative_path": "309644ebaf9c1ef29ec9f92ef7bba5ab/.browse.VC.db.lock",
+      "dev": 66305,
+      "ino": 917533,
+      "size": 0,
+      "blocks": 0,
+      "mtime_ns": 1788444388961737750,
+      "ctime_ns": 1788444388961737750,
+      "mode": 384,
+      "uid": 2002,
+      "nlink": 1
+    }
+  ]
+}
