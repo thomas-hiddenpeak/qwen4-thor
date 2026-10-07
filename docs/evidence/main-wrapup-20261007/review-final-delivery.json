@@ -1,0 +1,119 @@
+{
+  "reviewer": "wrap_io final independent delivery audit",
+  "decision": "deliverable",
+  "blocking_findings": [],
+  "overclaims_found": [],
+  "conclusion": "The bounded research-tool and public I/O/startup-budget integration is ready for main delivery. The previously reported prefill overflow blocker is closed, direct contracts and the separate HTTP quality gate are complete, and final documentation matches the verified scope. Default deployment and performance acceptance are not part of this decision.",
+  "activity": "Read-only source/evidence review and report creation; no new inference, tests, builds, model scan, source edit, merge or deployment.",
+  "http_audit": {
+    "method": "Independently opened the completed raw SQLite database in read-only immutable mode. Decoded its base64 response_messages with an Unpickler that forbids global/object resolution, then compared every row against original-main quality reference, run results and quality-audit.json.",
+    "database": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/build/http-quality-01/quality/20261007_114423/qwen3.8-flash-next/parallel_1_number_11/benchmark_data.db",
+    "database_sha256": "8c7bf8dbfdc741961002a22f2a74de615620adc953193015c4d58f81120f9dc2",
+    "row_count": 11,
+    "passed_rows": 11,
+    "unique_response_ids": 11,
+    "verified_fields": [
+      "HTTP success",
+      "request streaming",
+      "exact prompt SHA256",
+      "exact output text and SHA256",
+      "input usage",
+      "output usage",
+      "single stop finish reason",
+      "one consistent actual response ID across each response",
+      "unique actual response ID across all 11 responses"
+    ],
+    "input_token_lengths": [
+      1024,
+      4096,
+      8192,
+      45056,
+      204800
+    ],
+    "output_tokens_per_case": 7,
+    "quality_client_output_limit": 32,
+    "reference_path": "tools/evalscope/fixtures/quality_reference.json",
+    "reference_sha256": "c3fc4073b75ba9abafe39299a2cd8b632664b89f35c14660706110ca78bc98dc",
+    "reference_unchanged_from_8ea85b1": true,
+    "reference_cases": 11,
+    "exit_report": {
+      "server": 0,
+      "completed": 11,
+      "http_output_checks_passed": true,
+      "failure": null
+    },
+    "outer_runner_exit": 0,
+    "server_observations": "server.log records requested/effective max_seq=1,max_prefill=8192,max_len=208896, MTP disabled, media_allowed=0, vision_loaded=0, no capacity reduction and shutdown complete with zero in-flight requests.",
+    "port_release_evidence": "quality-audit.json records port_released=true and no owned server processes after exit; this review did not open a fresh connection.",
+    "raw_http_hash_mismatches": []
+  },
+  "source_and_binary_identity": {
+    "runtime_source_commit": "e6b4bc07b522a8543c51026479c7d141d91ad200",
+    "http_runner_commit": "c811c11de2ed94b9a090fdeed3a4629301eaefed",
+    "binary_sha256": "0f52e926d28f2153e63b4eb093e596448e88e36dad355fb632cf1c2da029b8bc",
+    "binary_matches_quality_audit": true,
+    "runtime_files_changed_from_main": [
+      "include/q4t/io/weight_loader.h",
+      "include/q4t/runtime/memory_budget.h",
+      "src/io/weight_loader.cpp",
+      "src/runtime/memory_budget.cpp",
+      "src/server/chat_server.cpp",
+      "src/server/server_options.cpp"
+    ],
+    "runtime_changes_since_frozen_candidate": [],
+    "runtime_changed_file_sha256": {
+      "include/q4t/io/weight_loader.h": "5930e9244af48d578265571f71c021bafbd36e46cc85477ada19bd779b1cd49f",
+      "include/q4t/runtime/memory_budget.h": "05527a9c4e4990e443648fd182fe22336a2ecb98fa913c948829bb71cd563872",
+      "src/io/weight_loader.cpp": "6fa8dd924acdddf34542f8cf62bf928d128c37527234498f7079d83778a4aa31",
+      "src/runtime/memory_budget.cpp": "85c090d639538b15e63e300340b843273d93ce24a61e985b02d6fd829ea327c9",
+      "src/server/chat_server.cpp": "76b21834f37c4f6c3eff0a24aea6a13be6d7a17ce5937cd10846dfb774cc4865",
+      "src/server/server_options.cpp": "010d1fc3119b1e162bc00bf619f185272cd5b827d10ab8f49c42ad03ec3f638f"
+    },
+    "scope_assessment": "Exactly the six reviewed WeightLoader, memory-budget and server-startup/options files differ in include/src from 8ea85b1. No model, quantization, MoE policy, kernel or main target source changed; ReadRangev and offload runtime were not introduced. Subsequent edits are fixture/documentation/evidence changes."
+  },
+  "evidence_archive": {
+    "directory": "docs/evidence/main-wrapup-20261007",
+    "manifest_sha256": "64d949497e9344da8f336743631db56a9a60cc136e843c796bfa1cbc2ee32cf8",
+    "manifest_entries": 88,
+    "sha256_and_byte_count_mismatches": [],
+    "archived_http_results_match_original": true,
+    "archived_quality_audit_match_original": true,
+    "initial_failures_retained": "The archive retains first public-host failure, targeted supply repair, first startup script wording mismatch, corrected startup result and the separate actual-phase observation audit.",
+    "scope_note": "Large raw HTTP artifacts remain local and are covered by the audit manifest. This review verifies the 88-entry archive snapshot; adding this new review may require the root to extend its archive manifest."
+  },
+  "documentation_review": {
+    "files_sha256": {
+      "docs/MAIN_WRAPUP_2026-10-07.md": "e5d330bdefcd681cf4885ab1a1971bd38feb855ebb718590682f2e09302e3fb0",
+      "docs/STATUS.md": "9fac5106ff1bbe5492c330fb7a77210913608838cb0cdfca8a3f0dffb17b3285",
+      "docs/evidence/main-wrapup-20261007/README.md": "6880f669c43f00c0af66eb4d5037d5cc35c85de58e825d6d1902147e95905726"
+    },
+    "matched_claims": [
+      "Zero-warning Thor Release build",
+      "18 public CTest groups / 331 cases, with preserved initial failure and targeted repair",
+      "6 I/O contracts and same 6 under ASan/UBSan",
+      "14 budget contracts",
+      "Four actual startup rejection cases",
+      "HTTP quality 11/11 against unchanged reference, including 200K",
+      "Runtime source unchanged after the frozen candidate",
+      "No default binary replacement or claim of performance acceptance"
+    ],
+    "historical_status_handling": "STATUS clearly marks the 2026-09-28 deployment text as history rather than asserting this new binary was deployed.",
+    "remaining_procedural_work": "Root may finish authorized commit/merge/worktree handoff steps. The current report correctly phrases main checkout as the subsequent handoff action; this audit itself did not perform those mutations."
+  },
+  "prior_review_disposition": {
+    "BUDGET-REVIEW-1": "closed by <=8192 prefill validation before workspace sizing, direct host boundary pass and actual CLI rejection evidence audited in review-validation.json",
+    "MTP_omissions": "Explicitly retained limitations: independent BF16 draft weights, lazy scratch/checkpoints, overlapping request trunks and conservative small-T workspace. No full MTP memory/OOM acceptance is inferred."
+  },
+  "retained_acceptance_limits": [
+    "Fixed 11-case text quality regression is not a complete model numerical oracle or general task-quality benchmark.",
+    "No five-context performance/no-regression acceptance, speedup claim, 54 GB physical-RAM guarantee, long-duration validation, MTP/media generation acceptance or default deployment.",
+    "H2D-specific synthetic tests remain host doubles; actual HTTP exercises model loading but does not convert every synthetic device contract into a complete CUDA transfer oracle.",
+    "Captured public CI success is treated as evidence for executed host checks only, as the report states."
+  ],
+  "summary_artifact_sha256": {
+    "quality-audit.json": "17df9632941b9110c4b4ed907ebb21d687a77201816bdfc9c991264875d83aaa",
+    "validation-summary.json": "17a053c23c42809f265f8357ae486ece547900a8e1c716ae981006809ce7b348",
+    "review-validation.json": "f8061a44451a182849d2114d0ed73fea2ee01a8377b5eaa1f261f008c8c9d2f3",
+    "http-quality-01-exit.json": "0215e3eeaf4ae5c08259df601c59d809eec80ef51d16107f4d4f81aad0ee5447"
+  }
+}

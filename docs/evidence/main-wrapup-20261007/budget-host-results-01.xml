@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="1"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="0"
+	timestamp="2026-10-07T11:41:07"
+	>
+	<testcase name="q4t_budget_contracts" classname="q4t_budget_contracts" time="0.00159178" status="run">
+		<properties/>
+		<system-out>[PASS] budget_infeasible_capacity_never_becomes_a_minimum
+[PASS] budget_exact_fit_and_one_byte_short
+[PASS] budget_minimum_boundaries_fail_without_capacity_fallback
+[PASS] budget_sequence_cap_keeps_requested_and_effective_distinct
+[PASS] budget_auto_search_finds_largest_supported_capacity
+[PASS] budget_auto_minimum_preserves_requested_sequence_count
+[PASS] budget_default_fraction_and_prefill_use_effective_parameters
+[PASS] budget_text_baseline_tracks_resident_allocations
+[PASS] budget_context_ceiling_is_applied_to_explicit_requests
+[PASS] budget_mtp_off_has_no_draft_reservation
+[PASS] budget_ple_counts_all_ngram_heads_and_registered_pool
+[PASS] budget_runtime_workspace_sizes_override_reference_estimates
+[PASS] budget_kv_page_rounding_matches_allocated_state
+[PASS] budget_invalid_or_overflowed_estimate_fails_closed
+14 tests, 14 passed, 0 failed, 0 skipped
+</system-out>
+	</testcase>
+</testsuite>

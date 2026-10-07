@@ -1,0 +1,36 @@
+{
+  "source": "startup-contracts-02.json",
+  "actual_startup_log_grammar": "[q4t][startup] PHASE MILLISECONDS ms",
+  "cases": [
+    {
+      "log": "prefill-8193-02.log",
+      "startup_phases": [],
+      "model_load_observed": false,
+      "listener_observed": false
+    },
+    {
+      "log": "prefill-214748365-02.log",
+      "startup_phases": [],
+      "model_load_observed": false,
+      "listener_observed": false
+    },
+    {
+      "log": "prefill-2147483647-02.log",
+      "startup_phases": [],
+      "model_load_observed": false,
+      "listener_observed": false
+    },
+    {
+      "log": "infeasible-budget-02.log",
+      "startup_phases": [
+        "tokenizer",
+        "budget",
+        "startup_total"
+      ],
+      "model_load_observed": false,
+      "listener_observed": false
+    }
+  ],
+  "reran_startup": false,
+  "passed": true
+}

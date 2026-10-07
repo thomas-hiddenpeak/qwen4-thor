@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/startup_contracts.py", line 15, in <module>
+    if not passed: raise RuntimeError('prefill rejection differs: '+value)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: prefill rejection differs: 8193

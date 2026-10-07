@@ -5,6 +5,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [主线收尾与分支交接](MAIN_WRAPUP_2026-10-07.md) | 精选研究工具、公共 I/O/预算修复、历史 NO_GO 索引与验证边界 | 本轮收尾 |
 | [GDN_VECTOR_LOAD_2026-09-21.md](GDN_VECTOR_LOAD_2026-09-21.md) | GDN 连续读取、完整 E2E 与状态等价证据 | 本轮验证更新 |
 | [2026-09-21 状态历史](HISTORY_STATUS_2026-09-21.md) | 完整保留 fcb5925 时的阶段记录，当前状态已精简 | 历史快照 |
 | [GRFrame read/write](GRFRAME_READWRITE_2026-09-21.md) | 提前 inject、frame 所有权与阶段验收 | 验收进行中 |
@@ -54,11 +55,13 @@
 | [DATAFLOW_OPTIMIZATION.md](DATAFLOW_OPTIMIZATION.md) | 当前数据流预算、假设与决策边界 | 数据流优化推进时 |
 | [MOE_ROUTING_TRACE.md](MOE_ROUTING_TRACE.md) | MoE受控采集边界、首轮证据与下一阶段离线缓存回放 | 设计或实现进展变化时 |
 
-## 现行入口（2026-09-28）
+## 现行入口（2026-10-07）
 
 先读 [STATUS.md](STATUS.md) 与 [EVALUATION.md](EVALUATION.md)。
-当前已交付基线为[首版私有文本版本](RELEASE_TEXT_V1_2026-09-28.md)，
-阶段切换复核见[基线交接](BASELINE_HANDOFF_2026-09-28.md)。
+当前主线整合见[Offload 分支收尾](MAIN_WRAPUP_2026-10-07.md)。
+运行时部署与旧基线保留[首版私有文本版本](RELEASE_TEXT_V1_2026-09-28.md)
+及[基线交接](BASELINE_HANDOFF_2026-09-28.md)的历史记录；源码合并不等于
+覆盖原开发目录的默认二进制。
 [收敛清单](CONVERGENCE_2026-09-28.md)已完成；上表专题中的
 “候选”“进行中”是当时记录，不能作为当前待办或发布结论。
 

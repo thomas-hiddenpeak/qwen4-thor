@@ -1,0 +1,1634 @@
+{
+  "schema": 1,
+  "review_type": "read-only source scope audit; no test/build execution",
+  "base_commit": "8ea85b1b0cdf0f026247bf185bddbd536f916c82",
+  "head_commit": "e6b4bc07b522a8543c51026479c7d141d91ad200",
+  "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source",
+  "tracked_and_untracked_increment_files": [
+    {
+      "path": ".github/workflows/host-checks.yml",
+      "sha256": "cf825453d75b0f56b5bea3d68e39cddbf17ce3924199fa1d87ec57fceb59bf72"
+    },
+    {
+      "path": "docs/MAIN_WRAPUP_2026-10-07.md",
+      "sha256": "c891768ecadde0f17232ae8dddfbc47b21df037c96dc043b553ca346dbd2ace8"
+    },
+    {
+      "path": "docs/STATUS.md",
+      "sha256": "92d7961281fb19fd44d114e2321ade9b1b0a909826439f7cafd8acbcb36cf9d1"
+    },
+    {
+      "path": "docs/log/2026-10-07.md",
+      "sha256": "78adde5a611adc9bcf50878221db4b5fc9533035e5e0497ff85e419e4b649d7f"
+    },
+    {
+      "path": "docs/log/README.md",
+      "sha256": "f98f77821e370053a771ccea60b7b31fbd563e98502f2a4632f9027f8add534e"
+    },
+    {
+      "path": "include/q4t/io/weight_loader.h",
+      "sha256": "5930e9244af48d578265571f71c021bafbd36e46cc85477ada19bd779b1cd49f"
+    },
+    {
+      "path": "include/q4t/runtime/memory_budget.h",
+      "sha256": "05527a9c4e4990e443648fd182fe22336a2ecb98fa913c948829bb71cd563872"
+    },
+    {
+      "path": "src/io/weight_loader.cpp",
+      "sha256": "6fa8dd924acdddf34542f8cf62bf928d128c37527234498f7079d83778a4aa31"
+    },
+    {
+      "path": "src/runtime/memory_budget.cpp",
+      "sha256": "85c090d639538b15e63e300340b843273d93ce24a61e985b02d6fd829ea327c9"
+    },
+    {
+      "path": "src/server/chat_server.cpp",
+      "sha256": "76b21834f37c4f6c3eff0a24aea6a13be6d7a17ce5937cd10846dfb774cc4865"
+    },
+    {
+      "path": "src/server/server_options.cpp",
+      "sha256": "010d1fc3119b1e162bc00bf619f185272cd5b827d10ab8f49c42ad03ec3f638f"
+    },
+    {
+      "path": "tests/budget_host/CMakeLists.txt",
+      "sha256": "10b079cf4438393cbece5673ccaf4aa63e80862aefaa9ec4e888eace7add7eec"
+    },
+    {
+      "path": "tests/host/CMakeLists.txt",
+      "sha256": "be7ff7ab040d20051b1f7a7b5b5774beac36738255b6341db6079a26eb06ca91"
+    },
+    {
+      "path": "tests/io_host/CMakeLists.txt",
+      "sha256": "551cf1d48f3e2cf00c50d3b86f099def4617184389c16a372051b1ab1994bd79"
+    },
+    {
+      "path": "tests/runtime_memory_budget_test.cpp",
+      "sha256": "e61844e2eab4d6c27a883fa33029e768a166cd6bf27474c157b1287bc5804ba1"
+    },
+    {
+      "path": "tests/server_options_test.cpp",
+      "sha256": "3de81effc504787e344cc1547d1a421f3db6a37b14e84325fd2106a19423603a"
+    },
+    {
+      "path": "tests/weight_loader_contract_test.cpp",
+      "sha256": "1f70f70a175d670fc263a9679899e80af8bcf55ec08ba4f49682ae7b3fd6e8bd"
+    },
+    {
+      "path": "tools/evalscope/README.md",
+      "sha256": "047ff843b45f00b365f3b34f3737d28e69c6258cfde04e3e9efd22a7105ecace"
+    },
+    {
+      "path": "tools/evalscope/physical_ram.py",
+      "sha256": "81f301aee0e3e0643a789dec8756f99574195995be95483ae0be71045baabf30"
+    },
+    {
+      "path": "tools/evalscope/response_identity.py",
+      "sha256": "2102fb7a401786a55dba5b8845985b69a36b4279c52a6e4d1610a11ccd1b6e7a"
+    },
+    {
+      "path": "tools/evalscope/run_acceptance.py",
+      "sha256": "1d0cd14521b5e59d8f831473759c04d79511ccbe3526aa94eee89cda26d039e1"
+    },
+    {
+      "path": "tools/evalscope/test_physical_ram.py",
+      "sha256": "d91682cb11b54472ac32b92b8fd49d4a0b4a71eaa981373ce6a447653d517849"
+    },
+    {
+      "path": "tools/evalscope/test_response_identity.py",
+      "sha256": "128d7ffd040578b4506e061c1b7c7abea05f286eaf2e03e8f26c55c96023d63a"
+    },
+    {
+      "path": "tools/trace/README.md",
+      "sha256": "47bb99897c635040fd8cb449555e148f698c03142aaa1a135c7122bbf9e3e19f"
+    },
+    {
+      "path": "tools/trace/analyze_decode_supply.py",
+      "sha256": "8eda89f284f70e065a2a4b632443c61be9dfeae37c50dd1f8f2c4e43e611c06c"
+    },
+    {
+      "path": "tools/trace/analyze_evalscope_scenarios.py",
+      "sha256": "e5a753a18af54ddcaeda665544beb79ce7219d4a2fe975d9591aae7fe61fcf51"
+    },
+    {
+      "path": "tools/trace/analyze_locality.py",
+      "sha256": "cad2f0eb5b64f34318d0700955fdc3b7adc1899bf4c2177c856d63fe41885dca"
+    },
+    {
+      "path": "tools/trace/analyze_mirror_retention.py",
+      "sha256": "55ebafc8800c242af3af8214b3d7eb3334994e0c556caa9f5710502016c87813"
+    },
+    {
+      "path": "tools/trace/analyze_offload_log.py",
+      "sha256": "beb4ca291f956b6350545f1560c08ae14ddf676938e3ca02a6664f19e05d0ede"
+    },
+    {
+      "path": "tools/trace/decode_supply_bounds.py",
+      "sha256": "8c35bc78f36092c180847013c0651f22ba1040f8ab9abf56aac51684e8c7a06f"
+    },
+    {
+      "path": "tools/trace/distribution-plan-20260928.json",
+      "sha256": "b863fbb936f814c53ebfeeafa69e359c507cdb7431547862bb953c8e7e8effc7"
+    },
+    {
+      "path": "tools/trace/distribution.py",
+      "sha256": "d5e66be38d1a743d3fb961732c506b015dd60f16ae41497607d22a5b5ab33f53"
+    },
+    {
+      "path": "tools/trace/expert_probabilities.py",
+      "sha256": "399e21d559c67c4fb0e1c0c64e0f0c4fc1c4fae4a036754669783c7345c27f3b"
+    },
+    {
+      "path": "tools/trace/export_raw_routing.py",
+      "sha256": "dc4bc7532236f1642893eb0ff9979806adcbe12c90702826fd0dfc91738b7998"
+    },
+    {
+      "path": "tools/trace/gpu_cache_replay.py",
+      "sha256": "7bca768a0c7cd447e295494c14966d64e460096c0422eb91857e628e677a4fd3"
+    },
+    {
+      "path": "tools/trace/gpu_cache_schedule.cpp",
+      "sha256": "958bccd905b0a7cf46657677b20e768a31db53f3de4e231863f4e370150576fc"
+    },
+    {
+      "path": "tools/trace/layer_topn.py",
+      "sha256": "3004e0614177a0d58bba89776c1aa37f37ee1e453433cafa7957e387ad154d89"
+    },
+    {
+      "path": "tools/trace/layer_topn_heldout.py",
+      "sha256": "a8721e9f6da72ac266fe37c94cbaa0735830fc7e6e4597d5cbc33c80f338e2b9"
+    },
+    {
+      "path": "tools/trace/mirror_retention.py",
+      "sha256": "2ee2fef0b57dad3479d86c7baf3d8845728f4949a57b34354b6cf37effc8496f"
+    },
+    {
+      "path": "tools/trace/offload_sort.cpp",
+      "sha256": "1a9f8a701f3f40742a3d7fa4df4e4d2d87cc7c65f32e324cf492fd51d8d7b3ed"
+    },
+    {
+      "path": "tools/trace/offload_trace.py",
+      "sha256": "0a425cb3c01cd627dba883c7404b39702ac3d6bbea1b37507f349840e6c89127"
+    },
+    {
+      "path": "tools/trace/replay-plan-20260928.json",
+      "sha256": "5c96af9745d9f028dea947051c498d125478af3f48159a71a0a84ebb1acde3f2"
+    },
+    {
+      "path": "tools/trace/replay.py",
+      "sha256": "5dd98a845cc46841061a412d49cf7df4bc7498b2ba96c8e524169dff6a6a7c28"
+    },
+    {
+      "path": "tools/trace/replay_hybrid.py",
+      "sha256": "6274d4187892031addf83690338430308c6a7347fa82fb8e83ed1dd9994e8f23"
+    },
+    {
+      "path": "tools/trace/replay_scenario_capacities.py",
+      "sha256": "5aee4977afd5407faa635adb2b644a32870ccdfbd318a0d20598e8c80e5bb165"
+    },
+    {
+      "path": "tools/trace/research/README.md",
+      "sha256": "9556d147a5fca0466eedf224a64f0017659d0be3e6024f06f0f9e6faa532c227"
+    },
+    {
+      "path": "tools/trace/research/moe_partition.h",
+      "sha256": "cdb01017f2c5bc041728423c18a70a3497bf89abdbeec2e4d8ac36e578a96275"
+    },
+    {
+      "path": "tools/trace/run_evalscope_scenarios.py",
+      "sha256": "e3d8e59b9d875de36a7250fe7c9067b3349f68597e28e46a078a185fb867e5d2"
+    },
+    {
+      "path": "tools/trace/run_gpu_cache_study.py",
+      "sha256": "5e35478041bab9e9c51715d3c080b63848e3d784beed33ab73e53d95ab6c4efb"
+    },
+    {
+      "path": "tools/trace/run_shadow_study.py",
+      "sha256": "670a13bc5b93767ed4eba528ff949d9ae9802ff074be3c7ac65b9262534e181e"
+    },
+    {
+      "path": "tools/trace/shadow.py",
+      "sha256": "e05bb0f618e2b7b3294b1b677ea8fcac060d3544aa8fdba386a5addf15c5669d"
+    },
+    {
+      "path": "tools/trace/summarize_distribution.py",
+      "sha256": "c3d1b16f4310a7d81c6df5d4f4f5ede5a3226c68d4f03645b76c050b7f7b9de4"
+    },
+    {
+      "path": "tools/trace/summarize_replay.py",
+      "sha256": "65296f6831724cca026529a1908cd725188ca614945be864df10251fff2b32fa"
+    },
+    {
+      "path": "tools/trace/summarize_shadow.py",
+      "sha256": "46ca1aedfa23e10e3a0431574b28356c719989b67c45abd7a08bdd6366c96f05"
+    },
+    {
+      "path": "tools/trace/test_analyze_decode_supply.py",
+      "sha256": "466becb604a109ac3bb964bfd98837d705c3f54946e3ed3a058d02a455447c3b"
+    },
+    {
+      "path": "tools/trace/test_analyze_mirror_retention.py",
+      "sha256": "1a1c2fec0e9f91a75bb92f5d6ab082ee31a31ec79f0f8289884807e56cac9690"
+    },
+    {
+      "path": "tools/trace/test_decode_supply_bounds.py",
+      "sha256": "7ee564552987c4c3d666cbdb42d04620734443003cd8b16aa008c66b567467b2"
+    },
+    {
+      "path": "tools/trace/test_distribution.py",
+      "sha256": "ca26afb96e7c30c9929c2436908ee04a47de13ef36c3f48dc813b37ee4da6cda"
+    },
+    {
+      "path": "tools/trace/test_gpu_cache_replay.py",
+      "sha256": "9c636a93be5f4d4681acd5d8d3734953ceda2427f57a760272d91745be417822"
+    },
+    {
+      "path": "tools/trace/test_gpu_cache_schedule.py",
+      "sha256": "0d9dcad109045f6f6f516c6209ec7aec2261d27c667bb5c2a864b0715d5941aa"
+    },
+    {
+      "path": "tools/trace/test_gpu_cache_study.py",
+      "sha256": "3385bad8576904491ac82425854b80e669161a80cc40f632b04894aa2f14f275"
+    },
+    {
+      "path": "tools/trace/test_hybrid.py",
+      "sha256": "5574b90c845cdae4ec3498ef1c8e8306cde94690bc3f7e91dce57aea11f2bb91"
+    },
+    {
+      "path": "tools/trace/test_mirror_retention.py",
+      "sha256": "2297ef68306e92c621aad186ae9e00723602dc4d700d50c64b551162f84a6e38"
+    },
+    {
+      "path": "tools/trace/test_offload_log.py",
+      "sha256": "bb9988cab8399586a64a36bc1e692a725f2957a477e072780e4c373170170157"
+    },
+    {
+      "path": "tools/trace/test_offload_trace.py",
+      "sha256": "296471496f0c9689c8fa2d3b11e92788f6146617a337035345e97960b23b0a20"
+    },
+    {
+      "path": "tools/trace/test_replay.py",
+      "sha256": "f5e17f9ef12451093342668cfdad2737dded6d6312c3c19c50b3549fb6687f59"
+    },
+    {
+      "path": "tools/trace/test_shadow.py",
+      "sha256": "585570a6b0b5f7b300541ac7511e3d155ae14302de321a562e95619255725afb"
+    },
+    {
+      "path": "tools/trace/top_expert_sets.py",
+      "sha256": "e873662cc282c2f39a2ab3dfd9568e65a91aa47e2c7c89b3a776a8f1d06df877"
+    },
+    {
+      "path": "tools/trace/verify_replay.py",
+      "sha256": "f3f9bf51ca509e46345544eb9919a8f09dd30fceb70faa8f84698da01ea45398"
+    },
+    {
+      "path": "tools/trace/verify_shadow.py",
+      "sha256": "cf250a79bd734b6b8f19f6532a25b68198d3307366002c7e9fc9911d02406dfa"
+    }
+  ],
+  "runtime_paths": [
+    "include/q4t/io/weight_loader.h",
+    "include/q4t/runtime/memory_budget.h",
+    "src/io/weight_loader.cpp",
+    "src/runtime/memory_budget.cpp",
+    "src/server/chat_server.cpp",
+    "src/server/server_options.cpp"
+  ],
+  "unexpected_runtime_paths": [],
+  "raw_or_generated_files": [],
+  "absolute_private_machine_paths": [],
+  "tool_local_header": {
+    "source_commit": "15feb5772c017fe8aaff26f014d53a52362d2a24",
+    "source_path": "include/q4t/model/moe_partition.h",
+    "destination": "tools/trace/research/moe_partition.h",
+    "byte_identical": true,
+    "sha256": "cdb01017f2c5bc041728423c18a70a3497bf89abdbeec2e4d8ac36e578a96275",
+    "production_references": [],
+    "only_cpp_consumer": "tools/trace/gpu_cache_schedule.cpp",
+    "only_new_build_targets": "tests/host/CMakeLists.txt:q4t_gpu_cache_schedule and q4t_offload_sort",
+    "root_cmake_unchanged": true
+  },
+  "links": [
+    {
+      "source": "docs/MAIN_WRAPUP_2026-10-07.md",
+      "label": "分区报告",
+      "target": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/7672b591644add0bbc05b8782da3127c80edc04d/docs/OFFLOAD_PARTITION_RUNTIME_2026-10-03.md",
+      "validation": "local git object at immutable URL commit",
+      "exists": true
+    },
+    {
+      "source": "docs/MAIN_WRAPUP_2026-10-07.md",
+      "label": "请求策略",
+      "target": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/7672b591644add0bbc05b8782da3127c80edc04d/docs/OFFLOAD_REQUEST_POLICY_2026-10-04.md",
+      "validation": "local git object at immutable URL commit",
+      "exists": true
+    },
+    {
+      "source": "docs/MAIN_WRAPUP_2026-10-07.md",
+      "label": "诊断",
+      "target": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/7672b591644add0bbc05b8782da3127c80edc04d/docs/OFFLOAD_DIAGNOSTICS_2026-10-04.md",
+      "validation": "local git object at immutable URL commit",
+      "exists": true
+    },
+    {
+      "source": "docs/MAIN_WRAPUP_2026-10-07.md",
+      "label": "受控历史",
+      "target": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/7672b591644add0bbc05b8782da3127c80edc04d/docs/OFFLOAD_CAUSALITY_2026-10-05.md",
+      "validation": "local git object at immutable URL commit",
+      "exists": true
+    },
+    {
+      "source": "docs/MAIN_WRAPUP_2026-10-07.md",
+      "label": "机制",
+      "target": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/7672b591644add0bbc05b8782da3127c80edc04d/docs/OFFLOAD_MECHANISM_2026-10-06.md",
+      "validation": "local git object at immutable URL commit",
+      "exists": true
+    },
+    {
+      "source": "docs/MAIN_WRAPUP_2026-10-07.md",
+      "label": "报告",
+      "target": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/7672b591644add0bbc05b8782da3127c80edc04d/docs/OFFLOAD_DECODE_LOG_2026-10-05.md",
+      "validation": "local git object at immutable URL commit",
+      "exists": true
+    },
+    {
+      "source": "docs/MAIN_WRAPUP_2026-10-07.md",
+      "label": "报告",
+      "target": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/7672b591644add0bbc05b8782da3127c80edc04d/docs/OFFLOAD_GPU_REPLAY_2026-10-06.md",
+      "validation": "local git object at immutable URL commit",
+      "exists": true
+    },
+    {
+      "source": "docs/MAIN_WRAPUP_2026-10-07.md",
+      "label": "供给报告",
+      "target": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/7672b591644add0bbc05b8782da3127c80edc04d/docs/OFFLOAD_DECODE_SUPPLY_2026-10-06.md",
+      "validation": "local git object at immutable URL commit",
+      "exists": true
+    },
+    {
+      "source": "docs/MAIN_WRAPUP_2026-10-07.md",
+      "label": "保留报告",
+      "target": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/7672b591644add0bbc05b8782da3127c80edc04d/docs/OFFLOAD_MIRROR_RETENTION_2026-10-06.md",
+      "validation": "local git object at immutable URL commit",
+      "exists": true
+    },
+    {
+      "source": "docs/MAIN_WRAPUP_2026-10-07.md",
+      "label": "最终报告",
+      "target": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/7672b591644add0bbc05b8782da3127c80edc04d/docs/OFFLOAD_MIRROR_RECYCLE_2026-10-06.md",
+      "validation": "local git object at immutable URL commit",
+      "exists": true
+    },
+    {
+      "source": "tools/trace/README.md",
+      "label": "当前状态",
+      "target": "../../docs/STATUS.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "tools/trace/README.md",
+      "label": "收尾研究结论与历史报告入口",
+      "target": "../../docs/MAIN_WRAPUP_2026-10-07.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "tools/trace/README.md",
+      "label": "收尾研究结论与历史报告入口",
+      "target": "../../docs/MAIN_WRAPUP_2026-10-07.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "tools/trace/README.md",
+      "label": "收尾研究结论与历史报告入口",
+      "target": "../../docs/MAIN_WRAPUP_2026-10-07.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "tools/trace/README.md",
+      "label": "research",
+      "target": "research/README.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "tools/evalscope/README.md",
+      "label": "EVALUATION.md",
+      "target": "../../docs/EVALUATION.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "tools/evalscope/README.md",
+      "label": "收敛验收",
+      "target": "../../docs/RELEASE_TEXT_V1_2026-09-28.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "tools/evalscope/README.md",
+      "label": "E4M3报告",
+      "target": "../../docs/E4M3_NUMERICAL_FIX_2026-09-27.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "tools/evalscope/README.md",
+      "label": "HTTP 时间线报告",
+      "target": "../../docs/HTTP_TIMELINE_2026-09-20.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "EVALUATION.md",
+      "target": "EVALUATION.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "主线收尾",
+      "target": "MAIN_WRAPUP_2026-10-07.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "轨迹工具",
+      "target": "../tools/trace/README.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "代码CI",
+      "target": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/36385196276",
+      "validation": "external link not fetched during repository scope audit",
+      "exists": null
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "实现CI",
+      "target": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/36373380858",
+      "validation": "external link not fetched during repository scope audit",
+      "exists": null
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "实现提交CI",
+      "target": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/36367178347",
+      "validation": "external link not fetched during repository scope audit",
+      "exists": null
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "首版收敛验收",
+      "target": "RELEASE_TEXT_V1_2026-09-28.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "基线交接",
+      "target": "BASELINE_HANDOFF_2026-09-28.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "公共CI",
+      "target": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/36343286134",
+      "validation": "external link not fetched during repository scope audit",
+      "exists": null
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "服务合同与验收",
+      "target": "SERVICE_CONTRACT_2026-09-27.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "decode错误终态",
+      "target": "DECODE_FAILURE_2026-09-27.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "JSON/HTTP输入边界",
+      "target": "INPUT_BOUNDARY_2026-09-27.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "完善度审计",
+      "target": "PROJECT_READINESS_REVIEW_2026-09-27.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "独立控制报告",
+      "target": "ISOLATED_CONTROL_2026-09-27.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "控制预算与耐久报告",
+      "target": "CONTROL_BUDGET_2026-09-27.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "监听地址交付",
+      "target": "LISTEN_ADDRESS_2026-09-27.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "代理准入报告",
+      "target": "PROXY_ADMISSION_2026-09-27.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "请求取消交付",
+      "target": "REQUEST_CANCELLATION_2026-09-27.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "取消修复",
+      "target": "PREFILL_CANCEL_2026-09-27.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "状态交付",
+      "target": "STATE_ACCEPTANCE_2026-09-27.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "生命周期验收",
+      "target": "STATE_LIFECYCLE_2026-09-27.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "槽位修复",
+      "target": "SEQUENCE_SLOT_FIX_2026-09-27.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "修复接入报告",
+      "target": "E4M3_NUMERICAL_FIX_2026-09-27.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "248,432)编码为448及次正规舍入/进位缺陷。\n原4K输入/中间量化分别有1208940/148339项高区间错误，覆盖48层。\n本次修复共用编码函数；旧路径的条件矩阵乘一致不能抵消其尺度错误。\n\n此前交付（2026-09-27，以下为当时判定，最新验收见上）：停止逐层扩展，完成两个MoE量化点\nHTTP隔离及直接格式回归。原编码147项失败、仅高值27项失败，\n此前完整修复33146项全部一致，形成可独立复现补丁包。两个新\n运行时候选均新增1K错误且4K仍错，均不接受；已恢复原版本并\n核对三题HTTP。编码修复可验证，默认部署仍未通过质量要求。\n详见[有界交付结果",
+      "target": "CORRECTNESS_DELIVERY_2026-09-27.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "尺度传播",
+      "target": "MOE_SCALE_PROPAGATION_2026-09-24.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "EVIDENCE_STORAGE.md",
+      "target": "EVIDENCE_STORAGE.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "正确性恢复",
+      "target": "CORRECTNESS_CONFIRMATION_2026-09-23.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "尺度修正实验",
+      "target": "E4M3_ROUNDING_2026-09-23.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "高值单项实验",
+      "target": "E4M3_HIGH_ONLY_2026-09-23.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "查表",
+      "target": "PLE_LOOKUP_REFERENCE_2026-09-23.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "交接",
+      "target": "HC_HANDOFF_REFERENCE_2026-09-23.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "投影",
+      "target": "HC_PROJECTION_REFERENCE_2026-09-23.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "递推",
+      "target": "GDN_PREFILL_REFERENCE_2026-09-23.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "输入投影",
+      "target": "LINEAR_PROJECTION_REFERENCE_2026-09-23.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "输出",
+      "target": "LINEAR_OUTPUT_REFERENCE_2026-09-23.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "路由",
+      "target": "MOE_ROUTER_REFERENCE_2026-09-24.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "输入量化",
+      "target": "MOE_INPUT_QUANT_REFERENCE_2026-09-24.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "中间量化",
+      "target": "MOE_INTER_QUANT_REFERENCE_2026-09-24.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "GU",
+      "target": "MOE_GU_REFERENCE_2026-09-24.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "down",
+      "target": "MOE_DOWN_REFERENCE_2026-09-24.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "shared",
+      "target": "MOE_SHARED_REFERENCE_2026-09-24.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "投影",
+      "target": "PLE_PROJECTION_REFERENCE_2026-09-23.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "卷积/门控",
+      "target": "PLE_CONV_REFERENCE_2026-09-23.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "完整QSA",
+      "target": "QSA_FULL_REFERENCE_2026-09-24.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "旧局部范围",
+      "target": "QSA_SELECTION_REFERENCE_2026-09-23.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "mixer",
+      "target": "FINAL_MIXER_REFERENCE_2026-09-23.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "logits",
+      "target": "OUTPUT_HEAD_REFERENCE_2026-09-23.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "上游参考合同",
+      "target": "UPSTREAM_REFERENCE_CONTRACT_2026-09-23.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "质量评估结果",
+      "target": "QUALITY_REVIEW_RESULTS_2026-09-27.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "冻结计划",
+      "target": "QUALITY_REVIEW_2026-09-27.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "performance_reference.json",
+      "target": "../tools/evalscope/fixtures/performance_reference.json",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "历史入口快照",
+      "target": "HISTORY_STATUS_2026-09-24_CORRECTNESS.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "数据流项目状态",
+      "target": "../dataflow-engine/STATUS.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "MoE路由分析与缓存回放",
+      "target": "MOE_ROUTING_TRACE.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "静态预算",
+      "target": "DATAFLOW_OPTIMIZATION.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "本轮治理前完整快照",
+      "target": "HISTORY_STATUS_2026-09-24_CORRECTNESS.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "2026-09-21快照",
+      "target": "HISTORY_STATUS_2026-09-21.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "当天追加日志",
+      "target": "log/2026-09-28.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/STATUS.md",
+      "label": "README.md",
+      "target": "README.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-10-07",
+      "target": "2026-10-07.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-28",
+      "target": "2026-09-28.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-27",
+      "target": "2026-09-27.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-24",
+      "target": "2026-09-24.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-23",
+      "target": "2026-09-23.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-22",
+      "target": "2026-09-22.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-21",
+      "target": "2026-09-21.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-20",
+      "target": "2026-09-20.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-19",
+      "target": "2026-09-19.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-18",
+      "target": "2026-09-18.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-17",
+      "target": "2026-09-17.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-16",
+      "target": "2026-09-16.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-15",
+      "target": "2026-09-15.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-14",
+      "target": "2026-09-14.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-13",
+      "target": "2026-09-13.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-12",
+      "target": "2026-09-12.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-11",
+      "target": "2026-09-11.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-10",
+      "target": "2026-09-10.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-09",
+      "target": "2026-09-09.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-08",
+      "target": "2026-09-08.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-07",
+      "target": "2026-09-07.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-06",
+      "target": "2026-09-06.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-05",
+      "target": "2026-09-05.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-04",
+      "target": "2026-09-04.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/README.md",
+      "label": "2026-09-03",
+      "target": "2026-09-03.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    },
+    {
+      "source": "docs/log/2026-10-07.md",
+      "label": "主线收尾",
+      "target": "../MAIN_WRAPUP_2026-10-07.md",
+      "validation": "local relative target exists (anchor not checked)",
+      "exists": true
+    }
+  ],
+  "broken_links": [],
+  "public_host_groups": [
+    {
+      "ctest": "q4t_public_host_contracts",
+      "expected_count": 43,
+      "unit": "registered C++ test names",
+      "source": "cmake/HostTestSources.cmake",
+      "names": [
+        {
+          "name": "router_trace_hash_known_vectors",
+          "source": "tests/router_trace_hash_test.cpp"
+        },
+        {
+          "name": "router_trace_chunked_prefill_and_decode",
+          "source": "tests/router_trace_test.cpp"
+        },
+        {
+          "name": "router_trace_commit_requires_all_evidence",
+          "source": "tests/router_trace_test.cpp"
+        },
+        {
+          "name": "router_trace_rejects_layer_and_id_corruption",
+          "source": "tests/router_trace_test.cpp"
+        },
+        {
+          "name": "router_trace_positions_and_request_identity",
+          "source": "tests/router_trace_test.cpp"
+        },
+        {
+          "name": "router_trace_failed_forward_is_diagnostic",
+          "source": "tests/router_trace_test.cpp"
+        },
+        {
+          "name": "router_trace_bounds_and_empty_run",
+          "source": "tests/router_trace_test.cpp"
+        },
+        {
+          "name": "router_trace_wire_roundtrip_and_truncation",
+          "source": "tests/router_trace_test.cpp"
+        },
+        {
+          "name": "router_trace_write_failure_cannot_finish",
+          "source": "tests/router_trace_test.cpp"
+        },
+        {
+          "name": "router_trace_undrained_work_prevents_reuse",
+          "source": "tests/router_trace_test.cpp"
+        },
+        {
+          "name": "router_trace_counters_and_flush_failure",
+          "source": "tests/router_trace_test.cpp"
+        },
+        {
+          "name": "serve_default_is_single_text_greedy",
+          "source": "tests/server_options_test.cpp"
+        },
+        {
+          "name": "serve_capabilities_allow_explicit_combinations",
+          "source": "tests/server_options_test.cpp"
+        },
+        {
+          "name": "serve_rejects_malformed_numeric_options",
+          "source": "tests/server_options_test.cpp"
+        },
+        {
+          "name": "serve_validates_before_load_and_preserves_failed_parse",
+          "source": "tests/server_options_test.cpp"
+        },
+        {
+          "name": "serve_prefill_bound_precedes_workspace_sizing",
+          "source": "tests/server_options_test.cpp"
+        },
+        {
+          "name": "serve_trace_options_are_explicit_and_bounded",
+          "source": "tests/server_options_test.cpp"
+        },
+        {
+          "name": "json_parse_object_scalars",
+          "source": "tests/io_json_test.cpp"
+        },
+        {
+          "name": "json_parse_nested_arrays",
+          "source": "tests/io_json_test.cpp"
+        },
+        {
+          "name": "json_parse_string_escapes",
+          "source": "tests/io_json_test.cpp"
+        },
+        {
+          "name": "json_parse_errors",
+          "source": "tests/io_json_test.cpp"
+        },
+        {
+          "name": "json_rejects_deep_input_before_recursing",
+          "source": "tests/io_json_test.cpp"
+        },
+        {
+          "name": "json_resource_limits_and_duplicate_keys",
+          "source": "tests/io_json_test.cpp"
+        },
+        {
+          "name": "json_strict_numbers_and_safe_integer_conversion",
+          "source": "tests/io_json_test.cpp"
+        },
+        {
+          "name": "json_strict_unicode_and_controls",
+          "source": "tests/io_json_test.cpp"
+        },
+        {
+          "name": "sequence_commit_requires_completion",
+          "source": "tests/model_sequence_test.cpp"
+        },
+        {
+          "name": "sequence_rejects_reentry_and_early_recycle",
+          "source": "tests/model_sequence_test.cpp"
+        },
+        {
+          "name": "sequence_failed_submission_still_drains",
+          "source": "tests/model_sequence_test.cpp"
+        },
+        {
+          "name": "sequence_completion_failure_preserves_prefix",
+          "source": "tests/model_sequence_test.cpp"
+        },
+        {
+          "name": "sequence_invalid_input_does_not_poison_prefix",
+          "source": "tests/model_sequence_test.cpp"
+        },
+        {
+          "name": "sequence_chunk_and_decode_share_commit",
+          "source": "tests/model_sequence_test.cpp"
+        },
+        {
+          "name": "sequence_batch_failure_is_atomic",
+          "source": "tests/model_sequence_test.cpp"
+        },
+        {
+          "name": "sequence_rejects_duplicate_completion",
+          "source": "tests/model_sequence_test.cpp"
+        },
+        {
+          "name": "http_valid_length_and_header_names",
+          "source": "tests/server_http_request_test.cpp"
+        },
+        {
+          "name": "http_rejects_ambiguous_framing",
+          "source": "tests/server_http_request_test.cpp"
+        },
+        {
+          "name": "http_request_line_and_header_budget",
+          "source": "tests/server_http_request_test.cpp"
+        },
+        {
+          "name": "http_body_capacity_and_trailing_bytes",
+          "source": "tests/server_http_request_test.cpp"
+        },
+        {
+          "name": "http_absolute_deadline_and_body_budget",
+          "source": "tests/server_http_request_test.cpp"
+        },
+        {
+          "name": "chat_contract_greedy_neutral_options",
+          "source": "tests/server_chat_contract_test.cpp"
+        },
+        {
+          "name": "chat_contract_rejects_unimplemented_constraints",
+          "source": "tests/server_chat_contract_test.cpp"
+        },
+        {
+          "name": "chat_contract_rejects_wrong_types_and_ambiguous_input",
+          "source": "tests/server_chat_contract_test.cpp"
+        },
+        {
+          "name": "chat_contract_template_options_are_explicit",
+          "source": "tests/server_chat_contract_test.cpp"
+        },
+        {
+          "name": "chat_contract_media_rejected_before_decoding",
+          "source": "tests/server_chat_contract_test.cpp"
+        }
+      ]
+    },
+    {
+      "ctest": "q4t_router_trace_wire_contracts",
+      "expected_count": 49,
+      "unit": "independent wire/CLI cases",
+      "source": "tools/trace/test_wire.py",
+      "static_derivation": "1 golden + 2 outcomes + 1 mixed + 15 malformed + 19 mutations + 1 CRC + 7 truncations + 3 CLI"
+    },
+    {
+      "ctest": "q4t_router_trace_source_contracts",
+      "expected_count": 15,
+      "unit": "capture analysis cases",
+      "source": "tools/trace/test_analyze.py",
+      "static_derivation": "1 valid + 14 mutation cases"
+    },
+    {
+      "ctest": "q4t_router_cache_replay_contracts",
+      "expected_count": 13,
+      "unit": "unittest test methods (subTest iterations excluded)",
+      "source": "tools/trace/test_replay.py",
+      "names": [
+        "Contracts.test_cold_group_and_repeat",
+        "Contracts.test_protected_group",
+        "Contracts.test_permutation_invariant",
+        "Contracts.test_lru_tie",
+        "Contracts.test_prefill_union_bypass",
+        "Contracts.test_prefill_fits",
+        "Contracts.test_static_fill_and_no_admission",
+        "Contracts.test_cross_layer_identity",
+        "Contracts.test_reset_retention_and_charge",
+        "Contracts.test_no_future",
+        "Contracts.test_bytes",
+        "Contracts.test_plan_rejections",
+        "Contracts.test_invalid"
+      ]
+    },
+    {
+      "ctest": "q4t_router_shadow_contracts",
+      "expected_count": 13,
+      "unit": "unittest test methods (subTest iterations excluded)",
+      "source": "tools/trace/test_shadow.py",
+      "names": [
+        "Contracts.test_whole_request_and_reset",
+        "Contracts.test_full_decode_no_64_truncation",
+        "Contracts.test_live_publication",
+        "Contracts.test_cancelled_prefix",
+        "Contracts.test_failed_forward_not_consumed",
+        "Contracts.test_file_bound",
+        "Contracts.test_request_bound",
+        "Contracts.test_already_complete",
+        "Contracts.test_corrupt",
+        "Contracts.test_empty",
+        "Contracts.test_gap",
+        "Contracts.test_source_failure",
+        "Contracts.test_deadline"
+      ]
+    },
+    {
+      "ctest": "q4t_router_distribution_contracts",
+      "expected_count": 8,
+      "unit": "unittest test methods (subTest iterations excluded)",
+      "source": "tools/trace/test_distribution.py",
+      "names": [
+        "Contracts.test_histogram_matches_independent_counter",
+        "Contracts.test_zero_experts_and_mass",
+        "Contracts.test_uniform_entropy",
+        "Contracts.test_empty_is_not_zero_entropy",
+        "Contracts.test_zero_ties_not_hotspots",
+        "Contracts.test_invalid_id",
+        "Contracts.test_stage_counts_and_halves",
+        "Contracts.test_failed_forward_excluded"
+      ]
+    },
+    {
+      "ctest": "q4t_router_hybrid_contracts",
+      "expected_count": 6,
+      "unit": "unittest test methods (subTest iterations excluded)",
+      "source": "tools/trace/test_hybrid.py",
+      "names": [
+        "Contracts.test_pinned_never_evicted",
+        "Contracts.test_hits_precede_group_admission",
+        "Contracts.test_oversized_bypass_preserves_order",
+        "Contracts.test_pinned_demand_does_not_take_dynamic_slots",
+        "Contracts.test_static_endpoint_no_admission",
+        "Contracts.test_group_order_and_ties"
+      ]
+    },
+    {
+      "ctest": "q4t_offload_trace_contracts",
+      "expected_count": 17,
+      "unit": "unittest test methods (subTest iterations excluded)",
+      "source": "tools/trace/test_offload_trace.py",
+      "names": [
+        "OffloadTraceContracts.test_full_token_order_and_all_decode",
+        "OffloadTraceContracts.test_source_binary_is_bound",
+        "OffloadTraceContracts.test_expected_trace_sha_is_bound",
+        "OffloadTraceContracts.test_token_sha_rejected",
+        "OffloadTraceContracts.test_incomplete_manifest_rejected",
+        "OffloadTraceContracts.test_partial_sibling_rejected",
+        "OffloadTraceContracts.test_missing_sibling_rejected",
+        "OffloadTraceContracts.test_failed_request_rejected_before_consumption",
+        "OffloadTraceContracts.test_uncommitted_forward_rejected",
+        "OffloadTraceContracts.test_missing_layer_rejected",
+        "OffloadTraceContracts.test_duplicate_forward_rejected",
+        "OffloadTraceContracts.test_bad_expert_id_rejected",
+        "OffloadTraceContracts.test_duplicate_topk_id_rejected",
+        "OffloadTraceContracts.test_crc_rejected",
+        "OffloadTraceContracts.test_mutation_after_validation_rejected",
+        "OffloadTraceContracts.test_selected_request_metadata_bound",
+        "OffloadTraceContracts.test_missing_run_end_rejected"
+      ]
+    },
+    {
+      "ctest": "q4t_offload_log_contracts",
+      "expected_count": 3,
+      "unit": "unittest test methods (subTest iterations excluded)",
+      "source": "tools/trace/test_offload_log.py",
+      "names": [
+        "LogBoundsTest.test_bound_matches_exhaustive_feasible_resident_sets",
+        "LogBoundsTest.test_prefill_singleton_uses_runtime_decode_counter",
+        "LogBoundsTest.test_incomplete_diagnostics_are_rejected"
+      ]
+    },
+    {
+      "ctest": "q4t_gpu_cache_schedule_contracts",
+      "expected_count": 11,
+      "unit": "unittest test methods (subTest iterations excluded)",
+      "source": "tools/trace/test_gpu_cache_schedule.py",
+      "names": [
+        "GPUCacheScheduleContracts.test_legacy_reprobes_shared_experts_after_full_flush",
+        "GPUCacheScheduleContracts.test_legacy_fixed_bounded_random_reference",
+        "GPUCacheScheduleContracts.test_equal_keys_use_existing_cpp_sort_not_stable_row_order",
+        "GPUCacheScheduleContracts.test_min_new_golden_differs_from_legacy",
+        "GPUCacheScheduleContracts.test_min_new_independent_small_reference",
+        "GPUCacheScheduleContracts.test_fixed_max_prefill_shape_uses_production_work_budget",
+        "GPUCacheScheduleContracts.test_production_budget_fallback_discards_all_partial_chunks",
+        "GPUCacheScheduleContracts.test_singleton_keeps_legacy_for_either_selected_policy",
+        "GPUCacheScheduleContracts.test_invalid_headers_rejected_before_payload_allocation",
+        "GPUCacheScheduleContracts.test_duplicate_or_out_of_range_router_ids_rejected",
+        "GPUCacheScheduleContracts.test_truncated_or_trailing_payload_rejected"
+      ]
+    },
+    {
+      "ctest": "q4t_gpu_cache_replay_contracts",
+      "expected_count": 27,
+      "unit": "unittest test methods (subTest iterations excluded)",
+      "source": "tools/trace/test_gpu_cache_replay.py",
+      "names": [
+        "GpuCacheContracts.test_snapshot_restores_physical_slots_raw_clock_and_protection",
+        "GpuCacheContracts.test_snapshot_rejects_missing_and_invalid_metadata",
+        "GpuCacheContracts.test_rejects_unknown_policy_and_capacity_above_experts",
+        "GpuCacheContracts.test_empty_call_is_noop_even_at_max_clock",
+        "GpuCacheContracts.test_needed_requires_order_and_phase_requires_boolean",
+        "GpuCacheContracts.test_empty_slots_have_priority_and_lowest_index_for_both_policies",
+        "GpuCacheContracts.test_physical_slot_and_id_tie_are_the_only_policy_difference",
+        "GpuCacheContracts.test_id_never_overrides_strictly_older_tick",
+        "GpuCacheContracts.test_complete_needed_set_protects_a_later_lookup",
+        "GpuCacheContracts.test_planned_repeats_hit_once_reserved_slot",
+        "GpuCacheContracts.test_first_occurrence_order_controls_incoming_physical_mapping",
+        "GpuCacheContracts.test_all_hit_call_stamps_one_tick_not_per_entry",
+        "GpuCacheContracts.test_protected_resident_hits_touch_but_cannot_be_victims",
+        "GpuCacheContracts.test_protected_empty_slot_is_not_allocated",
+        "GpuCacheContracts.test_protected_capacity_failure_never_evicts_protected",
+        "GpuCacheContracts.test_capacity_failure_keeps_partial_clock_and_planned_touch",
+        "GpuCacheContracts.test_invalid_needed_ids_fail_after_clock_before_any_touches",
+        "GpuCacheContracts.test_oversized_input_fails_before_clock_mutation",
+        "GpuCacheContracts.test_overflow_is_rejected_without_tick_normalization",
+        "GpuCacheContracts.test_decode_counter_flag_tracks_subchunk_not_request_label",
+        "GpuCacheContracts.test_state_carry_and_serialized_restart_produce_same_suffix",
+        "GpuCacheContracts.test_id_policy_member_recency_is_invariant_to_slot_permutation",
+        "CapacityBoundContracts.test_spare_capacity_can_make_transition_bound_zero",
+        "CapacityBoundContracts.test_first_demand_uses_actual_entry_and_empty_slots_are_ignored",
+        "CapacityBoundContracts.test_bound_rejects_invalid_or_oversized_sets",
+        "CapacityBoundContracts.test_transition_bound_equals_exhaustive_best_admissible_cache",
+        "CapacityBoundContracts.test_phase_bound_never_exceeds_exhaustive_optimum"
+      ]
+    },
+    {
+      "ctest": "q4t_gpu_cache_study_contracts",
+      "expected_count": 19,
+      "unit": "unittest test methods (subTest iterations excluded)",
+      "source": "tools/trace/test_gpu_cache_study.py",
+      "names": [
+        "GPUCacheStudyContracts.test_manifest_accepts_exact_fixed_synthetic_scope",
+        "GPUCacheStudyContracts.test_manifest_rejects_fixed_scope_and_state_dimension_changes",
+        "GPUCacheStudyContracts.test_manifest_rejects_provenance_and_trace_contract_changes",
+        "GPUCacheStudyContracts.test_all_count_fields_and_state_fields_must_match_exactly",
+        "GPUCacheStudyContracts.test_prefix_checks_counts_without_inventing_unrecorded_gpu_state",
+        "GPUCacheStudyContracts.test_manifest_rejects_gpu_state_at_unrecorded_prefix",
+        "GPUCacheStudyContracts.test_baseline_gate_requires_all_identity_and_complete_evidence",
+        "GPUCacheStudyContracts.test_candidate_cannot_use_failed_baseline",
+        "GPUCacheStudyContracts.test_candidate_equal_work_does_not_meet_strict_prefill_gain",
+        "GPUCacheStudyContracts.test_candidate_reduction_is_offline_consideration_only",
+        "GPUCacheStudyContracts.test_earlier_prefill_gain_cannot_cancel_later_decode_regression",
+        "GPUCacheStudyContracts.test_candidate_cannot_change_pair_or_schedule_work",
+        "GPUCacheStudyContracts.test_chain_keeps_service_state_and_all_singleton_tail_boundaries",
+        "GPUCacheStudyContracts.test_wrong_forward_identity_rejects_before_complete_request",
+        "GPUCacheStudyContracts.test_corrupt_iterator_tail_is_retained_failure_not_published_pass",
+        "GPUCacheStudyContracts.test_bound_read_rejects_mutated_bytes",
+        "GPUCacheStudyContracts.test_cli_refuses_overwriting_retained_evidence",
+        "SourcePathContracts.test_archived_runtime_root_does_not_relocate_current_tools",
+        "SourcePathContracts.test_default_requires_current_runtime_bindings"
+      ]
+    },
+    {
+      "ctest": "q4t_decode_supply_bounds_contracts",
+      "expected_count": 22,
+      "unit": "unittest test methods (subTest iterations excluded)",
+      "source": "tools/trace/test_decode_supply_bounds.py",
+      "names": [
+        "DirectLossBoundContracts.test_empty_plan_and_disabled_mirror_have_zero_bound",
+        "DirectLossBoundContracts.test_single_miss_cannot_lose_its_entry_mirror_before_own_claim",
+        "DirectLossBoundContracts.test_empty_gpu_slots_cannot_write_back",
+        "DirectLossBoundContracts.test_four_independent_limits_have_explicit_expected_values",
+        "DirectLossBoundContracts.test_no_possible_needed_identity_has_zero_bound",
+        "DirectLossBoundContracts.test_possible_set_is_not_trimmed_to_mirror_capacity",
+        "DirectLossBoundContracts.test_possible_duplicates_and_generators_do_not_change_bound",
+        "DirectLossBoundContracts.test_arguments_remain_unchanged",
+        "DirectLossBoundContracts.test_duplicate_missing_or_victim_ids_are_rejected",
+        "DirectLossBoundContracts.test_overlap_and_excess_occupied_victims_are_rejected",
+        "DirectLossBoundContracts.test_invalid_ids_are_rejected_in_every_argument",
+        "DirectLossBoundContracts.test_invalid_containers_are_rejected",
+        "DirectLossBoundContracts.test_invalid_mirror_capacity_is_rejected",
+        "DirectLossBoundContracts.test_current_victims_propagate_only_to_later_plans",
+        "DirectLossBoundContracts.test_old_entry_identity_survives_a_skipped_writeback",
+        "DirectLossBoundContracts.test_reservation_loses_source_before_identity_publication",
+        "DirectLossBoundContracts.test_claim_first_protects_same_mirror_against_another_task",
+        "DirectLossBoundContracts.test_same_task_claim_all_prevents_loss_despite_positive_bound",
+        "DirectLossBoundContracts.test_distinct_tasks_can_attain_two_losses_with_identical_gpu_plan",
+        "DirectLossBoundContracts.test_finite_interleavings_obey_bound_with_every_small_entry_subset",
+        "DirectLossBoundContracts.test_three_miss_partial_tasks_and_inflight_targets_obey_bound",
+        "DirectLossBoundContracts.test_l2_capacity_protects_all_entry_needed_ids_in_finite_claim_orders"
+      ]
+    },
+    {
+      "ctest": "q4t_analyze_decode_supply_contracts",
+      "expected_count": 19,
+      "unit": "unittest test methods (subTest iterations excluded)",
+      "source": "tools/trace/test_analyze_decode_supply.py",
+      "names": [
+        "SupplyProjectionContracts.test_ordered_first_misses_and_occupied_victims",
+        "SupplyProjectionContracts.test_empty_victims_filtered_and_bad_router_rows_rejected",
+        "SupplyProjectionContracts.test_clock_supply_uses_delta_not_tick_max_or_sum",
+        "SupplyProjectionContracts.test_lower_metadata_requires_same_gpu_and_unique_valid_lower_ids",
+        "SupplyProjectionContracts.test_supply_delta_rejects_reset_or_boolean",
+        "SupplyProjectionContracts.test_interval_boundaries_include_full_223_forward_tail",
+        "SupplyProjectionContracts.test_full_synthetic_decode_skips_prefill_and_closes_all_layers",
+        "SupplyProjectionContracts.test_nonzero_aggregate_l2_hits_rejects_before_trace",
+        "SupplyProjectionContracts.test_lower_stats_must_match_bound_counter_projection",
+        "SupplyProjectionContracts.test_prefix_counter_mismatch_is_fatal",
+        "SupplyProjectionContracts.test_exhaustion_checks_parser_trailer_after_last_layer",
+        "SupplyProjectionContracts.test_per_layer_prior_identity_and_gpu_endpoint_are_mandatory",
+        "SupplyProjectionContracts.test_actual_read_mismatch_cannot_be_hidden_by_valid_gpu_replay",
+        "SupplyDecisionContracts.test_execution_binds_every_frozen_scope_source_identity",
+        "SupplyDecisionContracts.test_scope_rejects_new_sampling_dimensions_or_wrong_primary_gate",
+        "SupplyDecisionContracts.test_long_upper_alone_is_used_not_long_minus_short",
+        "SupplyDecisionContracts.test_both_primary_arms_strict_exclusion_and_reversals_retained",
+        "SupplyDecisionContracts.test_exact_equality_is_not_strict_exclusion_and_incomplete_rejected",
+        "SupplyDecisionContracts.test_output_is_exclusive_and_failed_input_is_retained"
+      ]
+    },
+    {
+      "ctest": "q4t_mirror_retention_contracts",
+      "expected_count": 26,
+      "unit": "unittest test methods (subTest iterations excluded)",
+      "source": "tools/trace/test_mirror_retention.py",
+      "names": [
+        "SnapshotContracts.test_disjoint_categories_and_physical_empty_slots",
+        "SnapshotContracts.test_default_dimensions_require_actual_capture_shape",
+        "SnapshotContracts.test_invalid_occupied_ids_and_duplicates_reject",
+        "SnapshotContracts.test_empty_slots_may_repeat_and_disabled_ring_cursor_is_zero",
+        "SnapshotContracts.test_snapshot_cursor_missing_field_and_unordered_array_reject",
+        "SnapshotContracts.test_snapshot_results_do_not_alias_input",
+        "RetentionContracts.test_entry_support_has_no_invented_eviction_time",
+        "RetentionContracts.test_unknown_nonmirror_entry_has_no_support",
+        "RetentionContracts.test_current_victims_enter_possible_set_only_next_plan",
+        "RetentionContracts.test_old_victims_are_not_trimmed_to_last_k",
+        "RetentionContracts.test_latest_prior_eviction_replaces_old_distance_only",
+        "RetentionContracts.test_intervening_count_excludes_both_endpoint_plans",
+        "RetentionContracts.test_entry_gpu_duplicate_first_eviction_precedes_first_miss",
+        "RetentionContracts.test_first_miss_and_first_eviction_are_independent_with_right_censoring",
+        "RetentionContracts.test_support_ten_but_per_plan_candidate_cap_is_eight",
+        "RetentionContracts.test_plan_sequence_is_fully_consumed_and_exact_length",
+        "RetentionContracts.test_late_plan_shape_and_invalid_ids_reject",
+        "RetentionContracts.test_counts_flags_and_dimensions_reject_bool_or_negative",
+        "RetentionContracts.test_results_and_iterable_inputs_are_copy_isolated",
+        "RetentionContracts.test_empty_phase_and_disabled_ring_have_zero_capacity",
+        "CommonIntervalContracts.test_hand_calculated_positive_common_difference_interval",
+        "CommonIntervalContracts.test_route_order_mismatch_is_retained_even_when_sets_match",
+        "CommonIntervalContracts.test_common_only_caps_are_separate_from_total_capacity",
+        "CommonIntervalContracts.test_independent_finite_candidate_assignments_fit_every_interval",
+        "CommonIntervalContracts.test_missing_tail_on_either_comparison_side_rejects",
+        "CommonIntervalContracts.test_zero_observed_candidates_have_zero_common_interval"
+      ]
+    },
+    {
+      "ctest": "q4t_analyze_mirror_retention_contracts",
+      "expected_count": 20,
+      "unit": "unittest test methods (subTest iterations excluded)",
+      "source": "tools/trace/test_analyze_mirror_retention.py",
+      "names": [
+        "RetentionRunnerContracts.test_frozen_scope_rejects_budget_scope_and_boolean_drift",
+        "RetentionRunnerContracts.test_invalid_ledger_rejected",
+        "RetentionRunnerContracts.test_manifest_requires_all_positions_and_exact_group_order",
+        "RetentionRunnerContracts.test_manifest_wrong_trace_hash_and_runtime_identity_fail",
+        "RetentionRunnerContracts.test_execution_requires_passed_contract_receipt_for_same_source",
+        "RetentionRunnerContracts.test_runtime_archive_requires_explicit_root_and_matching_receipt",
+        "RetentionRunnerContracts.test_snapshot_source_alias_and_observer_layer_identity_fail",
+        "RetentionRunnerContracts.test_observer_unknown_loss_or_incomplete_source_cannot_pass",
+        "RetentionRunnerContracts.test_full_trace_closes_gpu_prefixes_sources_and_retains_all_plans",
+        "RetentionRunnerContracts.test_corrupt_tail_after_last_decode_is_not_a_partial_pass",
+        "RetentionRunnerContracts.test_wrong_forward_identity_fails_before_any_projected_plan",
+        "RetentionRunnerContracts.test_wrong_prefix_counter_fails_at_that_prefix",
+        "RetentionRunnerContracts.test_wrong_physical_endpoint_fails_after_eof",
+        "RetentionRunnerContracts.test_wrong_per_layer_l2_clock_fails_after_gpu_closure",
+        "RetentionRunnerContracts.test_candidate_requires_positive_common_bound_and_ordered_route_equality",
+        "RetentionRunnerContracts.test_same_length_and_routes_with_different_input_tokens_cannot_nominate",
+        "RetentionRunnerContracts.test_l2_only_or_different_endpoint_redundancy_cannot_nominate",
+        "RetentionRunnerContracts.test_incomplete_or_omitted_comparison_position_cannot_pass",
+        "RetentionRunnerContracts.test_wrong_input_hash_retains_failure_and_existing_output_is_preserved",
+        "RetentionRunnerContracts.test_artifact_output_rejects_tracked_source_and_external_directory"
+      ]
+    },
+    {
+      "ctest": "q4t_physical_ram_contracts",
+      "expected_count": 12,
+      "unit": "unittest test methods (subTest iterations excluded)",
+      "source": "tools/evalscope/test_physical_ram.py",
+      "names": [
+        "PhysicalRamTest.test_linux_units_and_global_scope",
+        "PhysicalRamTest.test_bad_units_duplicates_and_inconsistency_remain_unknown",
+        "PhysicalRamTest.test_nvmap_zero_cannot_prove_zero_cuda",
+        "PhysicalRamTest.test_dma_object_size_is_not_physical_union",
+        "PhysicalRamTest.test_read_failure_is_unknown_with_window",
+        "PhysicalRamTest.test_source_truncation_does_not_parse_partial_total",
+        "PhysicalRamTest.test_sudo_failure_and_timeout_cannot_become_zero",
+        "PhysicalRamTest.test_decimation_never_carries_forward_driver_zero",
+        "PhysicalRamTest.test_pid_reuse_is_not_a_fresh_binding",
+        "PhysicalRamTest.test_summary_never_signs_physical_acceptance_or_sums_peaks",
+        "PhysicalRamTest.test_cli_preserves_existing_evidence",
+        "PhysicalRamTest.test_cli_stop_file_writes_one_endpoint_without_live_queries"
+      ]
+    },
+    {
+      "ctest": "q4t_response_identity_contracts",
+      "expected_count": 8,
+      "unit": "unittest test methods (subTest iterations excluded)",
+      "source": "tools/evalscope/test_response_identity.py",
+      "names": [
+        "ResponseIdentityTest.test_stream_chunks_share_actual_id",
+        "ResponseIdentityTest.test_nonstream_response",
+        "ResponseIdentityTest.test_usage_only_without_id_is_not_a_fabricated_id",
+        "ResponseIdentityTest.test_missing_id_on_content_or_finish_rejected",
+        "ResponseIdentityTest.test_mixed_ids_rejected_including_usage",
+        "ResponseIdentityTest.test_no_recorded_identity_rejected",
+        "ResponseIdentityTest.test_invalid_type_and_token_rejected_without_throwing",
+        "ResponseIdentityTest.test_maximum_length_id"
+      ]
+    }
+  ],
+  "independent_io_budget_groups": [
+    {
+      "source": "tests/runtime_memory_budget_test.cpp",
+      "expected_count": 14,
+      "names": [
+        "budget_infeasible_capacity_never_becomes_a_minimum",
+        "budget_exact_fit_and_one_byte_short",
+        "budget_minimum_boundaries_fail_without_capacity_fallback",
+        "budget_sequence_cap_keeps_requested_and_effective_distinct",
+        "budget_auto_search_finds_largest_supported_capacity",
+        "budget_auto_minimum_preserves_requested_sequence_count",
+        "budget_default_fraction_and_prefill_use_effective_parameters",
+        "budget_text_baseline_tracks_resident_allocations",
+        "budget_context_ceiling_is_applied_to_explicit_requests",
+        "budget_mtp_off_has_no_draft_reservation",
+        "budget_ple_counts_all_ngram_heads_and_registered_pool",
+        "budget_runtime_workspace_sizes_override_reference_estimates",
+        "budget_kv_page_rounding_matches_allocated_state",
+        "budget_invalid_or_overflowed_estimate_fails_closed"
+      ]
+    },
+    {
+      "source": "tests/weight_loader_contract_test.cpp",
+      "expected_count": 6,
+      "names": [
+        "weight_loader_metadata_survives_eviction",
+        "weight_loader_read_survives_eviction",
+        "weight_loader_device_read_survives_eviction",
+        "weight_loader_device_enqueue_survives_eviction",
+        "weight_loader_missing_tensor_and_shard",
+        "weight_loader_concurrent_small_cache"
+      ]
+    }
+  ],
+  "conclusions": [
+    "Runtime increment is limited to authorized WeightLoader ownership/metadata/diagnostic locking and startup memory-budget/max-prefill validation.",
+    "No MoEResidency/ReadRangev/offload observer/candidate kernel implementation entered src/include or runner targets.",
+    "Historical replay/distribution JSON files contain relative private evidence references and SHA identities only; they are not raw evidence and are not executed by CTest.",
+    "run_evalscope_scenarios.py and run_shadow_study.py are explicit generic capture tools from 8602015, using current-root or caller-supplied paths; CTest does not launch their main routines.",
+    "Read-only physical RAM collector intentionally references /proc and /sys and optionally sudo/cat; public tests use synthetic/mock observations.",
+    "Local and immutable-GitHub report links were checked against local files/git objects; no remote web fetch or model execution."
+  ],
+  "limitations": [
+    "Scope audit is not a correctness, numerical, performance or runtime acceptance test.",
+    "Expected unittest counts count named methods, not subTest loop iterations.",
+    "Concurrent authorized budget/server_options edits may follow this snapshot; final commit should retain reviewed identities or re-audit changed paths."
+  ],
+  "advisories": [
+    "docs/README.md does not directly index the new report; STATUS, trace README and daily log link it. Existing links resolve; this is discoverability only."
+  ],
+  "changed_during_inventory": [],
+  "scope_passed": true
+}

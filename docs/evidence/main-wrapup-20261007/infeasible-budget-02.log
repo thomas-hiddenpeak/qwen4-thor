@@ -1,0 +1,12 @@
+[q4t][capabilities] requested=text-greedy mtp=0 media=0 max_seq=1
+[q4t][startup] tokenizer 292 ms
+[q4t][budget] mem_total=131.92 GB fraction=0.01 budget=1.32 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=208896 max_seq=1 max_prefill=8192 feasible=0 reason=no_supported_capacity_fits_estimate
+[q4t][budget]   weights=84.00 GB  fixed=88.84 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=2348023808 mtp_workspace=0 forward_buffers=419594244 ple_working=76571648 mtp=0
+[q4t][budget]   per_request=0.00 GB (MTP trunk+draft_logits)  state_pool=0.00 GB
+[q4t][budget]   => max_len=0 max_seq=0
+[q4t][startup] budget 411 ms
+[q4t][startup] startup_total 703 ms
+serve start failed: no feasible allocation budget: no_supported_capacity_fits_estimate

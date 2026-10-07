@@ -1,0 +1,97 @@
+{
+  "reviewer": "wrap_io independent read-only budget review",
+  "status": "One new integration blocker reported; root assigned its repair. MTP accounting gaps are explicit scope limitations, per root decision.",
+  "reviewed_sha256": {
+    "include/q4t/runtime/memory_budget.h": "72566bf6a734dd48278daee0961d9def8a103bd5348b28615bfb32b7f97e747f",
+    "src/runtime/memory_budget.cpp": "85c090d639538b15e63e300340b843273d93ce24a61e985b02d6fd829ea327c9",
+    "src/server/chat_server.cpp": "76b21834f37c4f6c3eff0a24aea6a13be6d7a17ce5937cd10846dfb774cc4865",
+    "tests/runtime_memory_budget_test.cpp": "f24625aa530f1910ad21136e4886330152bc106479312e9531125f27971caa32",
+    "tests/budget_host/CMakeLists.txt": "10b079cf4438393cbece5673ccaf4aa63e80862aefaa9ec4e888eace7add7eec"
+  },
+  "actions": {
+    "source_edits": false,
+    "builds": false,
+    "tests": false,
+    "model_payload_reads": false,
+    "reference_reads": false
+  },
+  "blocking_findings": [
+    {
+      "id": "BUDGET-REVIEW-1",
+      "severity": "high",
+      "state": "reported_to_root_repair_assigned_not_reverified_by_reviewer",
+      "title": "Validate prefill size before calling actual workspace sizing functions",
+      "trigger": "A parsed --max-prefill 214748365 reaches startup workspace sizing; server validation previously only required a nonnegative integer.",
+      "evidence": [
+        "src/server/chat_server.cpp:143-150 invokes DecoderLayerWorkspaceBytes before ComputeMemoryBudget",
+        "src/model/decoder_layer.cu:181 calls MoEForwardWorkspaceBytes",
+        "src/model/moe.cu:312 calls quant::MoEWorkspace::RequiredBytes",
+        "src/quant/moe_gemm.cu:279 computes const int R = M * k, with k=10",
+        "src/model/full_attention.cu:1452-1454 only supports T in [1,8192]"
+      ],
+      "impact": "Signed integer overflow occurs before the new fail-closed allocation estimate can reject the request. Pure budget helper tests cannot cover this startup call chain.",
+      "recommended_repair": "Reject positive max_prefill above the actual runtime limit of 8192 before calling the sizing functions; preserve zero as the existing default sentinel. Add the boundary to the existing ServerOptions host contract and validate the changed contract once.",
+      "root_decision": "Root assigned the 8192 upper-bound validation and direct host boundary contract to the budget implementation agent."
+    }
+  ],
+  "verified_by_source_reasoning": [
+    "Explicit exact fits use <= for modeled fixed, transient and state terms. Per-sequence division is reached only after fits(bound,1), so there is no zero divisor or zero derived sequence count there.",
+    "Pinned capacities shorter than 2048 are accepted only in full; pinned larger capacities may shrink to >=2048. Automatic capacity searches 1024-token units while preserving requested sequence count. The tests explicitly cover these supported-capacity policies rather than assuming arbitrary fallback.",
+    "The pinned and automatic searches are bounded by 262144, and midpoints use lo+(hi-lo)/2. KV page rounding to 16 matches DecoderLayer and MTP allocations.",
+    "The main MTP-off state total at max_len=208896,max_seq=1 is 6546454540 bytes: 12 full KV/indexer/page-table pools, main RoPE, 36 SSM/conv pools, PLE conv, two selected-logit rows, device argmax and two per-sequence index/offset ints. This matches the independent allocation expressions in model.cu, decoder_layer.cu and chat_server.cpp.",
+    "Main forward buffers at max_prefill=8192 are 419594244 bytes: five per-token int arrays, embedding, two trunks, all 16 PLE heads (2560 BF16 values), plus the terminal ragged offset. The two per-sequence ints are charged in state_pool, not double counted.",
+    "PLE working storage 76571648 bytes agrees with two 131072x160 FP8 buffers, pinned row IDs, 32 MiB page pool and the documented ring estimate. Dynamic vector storage remains within an explicitly uncalibrated margin.",
+    "has_mtp=false excludes draft workspace and transient trunk/logits; it also avoids the added MTP full-attention and RoPE state. Serve wires this flag from capabilities, matching its LoadMtp branch.",
+    "The size_t saturating add/multiply and validated int architecture products prevent the reviewed pure-helper overflow cases from wrapping into a small feasible estimate on the target 64-bit platform. Positive fixed margin ensures a saturated state cannot satisfy remaining capacity even at SIZE_MAX budget.",
+    "Startup now rejects infeasible budget results before model_.Load and uses only feasible effective dimensions. --no-budget remains an explicit existing bypass.",
+    "The standalone tests/budget_host target builds only the pure estimator and 14 registered contracts with -Wall -Wextra -Werror, no CUDA/model dependency. I reviewed all 14 source contracts but did not run them."
+  ],
+  "scope_limitations": [
+    {
+      "id": "BUDGET-LIMIT-MTP-WEIGHTS",
+      "title": "Independent MTP BF16 weights are not explicitly included",
+      "evidence": [
+        "src/server/chat_server.cpp uses only cfg.index_path total_size",
+        "src/mtp/mtp.cu:251-255 opens a separate mtp/model.safetensors.index.json",
+        "src/mtp/moe_bf16.cu:247-250 allocates gate-up/down expert weights"
+      ],
+      "detail": "The separate MTP experts alone occupy 5033164800 bytes at the configured dimensions. The budget does not identify a separate MTP weight estimate; a conservative main index aggregate is not evidence that these distinct allocations are covered."
+    },
+    {
+      "id": "BUDGET-LIMIT-MTP-LAZY",
+      "title": "MTP persistent scratch/checkpoints are not explicit budget terms",
+      "evidence": [
+        "src/server/chat_generation.cpp:575-577",
+        "src/model/model.cu:1356-1385",
+        "src/mtp/mtp.cu:504-587"
+      ],
+      "detail": "First MTP use reserves verify checkpoints and speculative/multi-sequence scratch. At k=3, checkpoints alone are 346927104 bytes per sequence; the 2 GB general margin is not a proven bound as max_seq grows."
+    },
+    {
+      "id": "BUDGET-LIMIT-MTP-CONCURRENT-TRUNK",
+      "title": "Multiple MTP requests can retain prompt trunks concurrently",
+      "evidence": [
+        "src/runtime/memory_budget.cpp PerRequestBytes is charged once and its comment assumes serialized prefill bounds this peak",
+        "src/server/chat_generation.cpp:332 allocates d_trunk_full before model_mu_ is acquired at 410/562",
+        "src/server/chat_generation.cpp:592 frees the trunk after draft extension"
+      ],
+      "detail": "Serialized forwards do not serialize per-request buffer lifetimes. With two admitted MTP requests at max_len=262144, a second full trunk can add about 5.37 GB beyond the one-trunk estimate. Draft-extend also allocates ids, positions, sample and multi buffers that are not explicit transient terms."
+    },
+    {
+      "id": "BUDGET-LIMIT-WORKSPACE-UPPER-BOUND",
+      "title": "Small-prefill workspace is conservatively sized at requested upper context",
+      "evidence": [
+        "src/server/chat_server.cpp:139-157",
+        "src/model/full_attention.cu:1432-1438"
+      ],
+      "detail": "For T<=4 the MTP full-attention workspace depends on max_len. Serve sizes it before capping capacity, so a reduced effective context can be charged the larger upper-bound workspace. This is conservative and can reduce/reject a borderline MTP configuration; it is not an exact maximum-fit solver for real allocations."
+    }
+  ],
+  "root_scope_decision": "The integrated main acceptance remains MTP disabled. The allocation estimate is explicitly not an OOM or physical-memory guarantee. Existing MTP weight, lazy scratch and concurrent transient omissions are recorded as limitations rather than expanding this wrapup to complete MTP budgeting or acceptance.",
+  "test_coverage_limits": [
+    "The 14 budget contracts establish pure estimate arithmetic and modeled allocations, not complete runtime allocations or physical RAM safety.",
+    "The MTP contract checks the chosen workspace/state/transient deltas only; it does not validate the independent MTP weights, lazy scratch or concurrent request peak.",
+    "No startup call-chain test in the reviewed 14 catches the prefill multiplication overflow; the assigned ServerOptions boundary repair needs its own existing host contract."
+  ],
+  "conclusion": "No additional blocker found in the reviewed main MTP-off arithmetic or allocation expressions. Integration requires closing BUDGET-REVIEW-1 and retaining the documented MTP/physical-memory scope limits. This is a source review, not a test or release-acceptance result."
+}

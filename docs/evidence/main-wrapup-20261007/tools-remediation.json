@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "snapshot_commit": "e6b4bc07b522a8543c51026479c7d141d91ad200",
+  "failure": {
+    "log": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/test-public-host-01.log",
+    "log_sha256": "03a4ed1ceeb255bf6ff0375195bbab1c19b4fd12ae8ef4ea8bd7b61dde49a002",
+    "ctest": "q4t_analyze_decode_supply_contracts",
+    "test": "SupplyDecisionContracts.test_output_is_exclusive_and_failed_input_is_retained",
+    "observed": "ValueError: output outside artifact roots before Path.open mock was reached",
+    "first_run": "17 of 18 CTest groups passed; failing group ran all 19 methods with one error"
+  },
+  "cause": "The transplanted synthetic test kept the historical workspace-parent output fixture. The adapted CLI intentionally accepts only current checkout build/ or .q4t-work/. The stale fixture was rejected before it could exercise exclusive output opening and retained input-failure reporting.",
+  "change": {
+    "path": "tools/trace/test_analyze_decode_supply.py",
+    "before_sha256": "466becb604a109ac3bb964bfd98837d705c3f54946e3ed3a058d02a455447c3b",
+    "after_sha256": "dcac6a135aac94a7d21fcdc2a07853b07ed5242943cc95543391b41b4c7581d3",
+    "description": "Use Q4T_TEST_OUTPUT_DIR supplied by CTest; standalone fallback is current checkout build/supply-contracts. Path.open remains mocked, so no fixture file is created.",
+    "production_code_changed": false,
+    "artifact_guard_preserved": true,
+    "production_sha256": "8eda89f284f70e065a2a4b632443c61be9dfeae37c50dd1f8f2c4e43e611c06c"
+  },
+  "affected_validation": {
+    "rerun_only": "q4t_analyze_decode_supply_contracts",
+    "expected_method_count": 19,
+    "command": "ctest --test-dir build/public-host --no-tests=error --output-on-failure --verbose -R ^q4t_analyze_decode_supply_contracts$",
+    "reuse": "Other 17 passing CTest groups from test-public-host-01.log; their code/dependencies were not modified by this remediation.",
+    "run_by_subagent": false,
+    "status": "PENDING_ROOT_RETEST"
+  },
+  "notes_correction": {
+    "date": "2026-10-07",
+    "field": "tests/host/CMakeLists.txt adaptation prose / prior commentary",
+    "previous": 19,
+    "correct": 18,
+    "reason": "Initial manual grouping count was wrong; static CMake inventory and retained first unified CTest log both contain 18 groups.",
+    "evidence": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/test-public-host-01.log",
+    "evidence_sha256": "03a4ed1ceeb255bf6ff0375195bbab1c19b4fd12ae8ef4ea8bd7b61dde49a002",
+    "original_notes_preserved": true
+  },
+  "notes_final": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/tools-integration-notes-final.json",
+  "original_notes_sha256_unchanged": true
+}

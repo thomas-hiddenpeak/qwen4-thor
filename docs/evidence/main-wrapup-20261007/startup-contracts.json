@@ -1,0 +1,19 @@
+{
+  "binary_sha256": "0f52e926d28f2153e63b4eb093e596448e88e36dad355fb632cf1c2da029b8bc",
+  "removed_environment": {},
+  "cases": [
+    {
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/build/runtime/q4t",
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--max-prefill",
+        "8193"
+      ],
+      "exit_code": 2,
+      "passed": false
+    }
+  ],
+  "passed": false
+}

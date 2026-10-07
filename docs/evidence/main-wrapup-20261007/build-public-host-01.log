@@ -1,0 +1,26 @@
+[  4%] Building CXX object CMakeFiles/q4t_router_trace_check.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/tools/trace/router_trace_check.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/src/trace/sha256.cpp.o
+[ 13%] Building CXX object CMakeFiles/q4t_gpu_cache_schedule.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/tools/trace/gpu_cache_schedule.cpp.o
+[ 18%] Building CXX object CMakeFiles/q4t_offload_sort.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/tools/trace/offload_sort.cpp.o
+[ 22%] Building CXX object CMakeFiles/q4t_router_trace_check.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/src/trace/router_trace.cpp.o
+[ 27%] Linking CXX executable q4t_offload_sort
+[ 31%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/tests/router_trace_hash_test.cpp.o
+[ 31%] Built target q4t_offload_sort
+[ 36%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/tests/router_trace_test.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/src/trace/router_trace.cpp.o
+[ 45%] Linking CXX executable q4t_router_trace_check
+[ 45%] Built target q4t_router_trace_check
+[ 50%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/tests/test_main.cpp.o
+[ 54%] Linking CXX executable q4t_gpu_cache_schedule
+[ 54%] Built target q4t_gpu_cache_schedule
+[ 59%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/tests/server_options_test.cpp.o
+[ 63%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/src/server/server_options.cpp.o
+[ 68%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/tests/io_json_test.cpp.o
+[ 72%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/tests/model_sequence_test.cpp.o
+[ 77%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/tests/server_http_request_test.cpp.o
+[ 81%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/tests/server_chat_contract_test.cpp.o
+[ 86%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/src/server/http_request.cpp.o
+[ 90%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/src/server/chat_contract.cpp.o
+[ 95%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/src/io/json.cpp.o
+[100%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests

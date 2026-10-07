@@ -1,0 +1,26 @@
+UpdateCTestConfiguration  from :/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/build/io-sanitized/DartConfiguration.tcl
+Test project /home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/build/io-sanitized
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 1
+    Start 1: q4t_io_contracts
+
+1: Test command: /home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/build/io-sanitized/q4t_io_contracts
+1: Working Directory: /home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/build/io-sanitized
+1: Test timeout computed to be: 60
+1: [PASS] weight_loader_metadata_survives_eviction
+1: [PASS] weight_loader_read_survives_eviction
+1: [PASS] weight_loader_device_read_survives_eviction
+1: [PASS] weight_loader_device_enqueue_survives_eviction
+1: [PASS] weight_loader_missing_tensor_and_shard
+1: [PASS] weight_loader_concurrent_small_cache
+1: 6 tests, 6 passed, 0 failed, 0 skipped
+1/1 Test #1: q4t_io_contracts .................   Passed    0.08 sec
+
+100% tests passed out of 1
+
+Total Test time (real) =   0.08 sec

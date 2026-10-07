@@ -1,0 +1,18 @@
+{
+  "label": "test-budget-host-01",
+  "argv": [
+    "ctest",
+    "--test-dir",
+    "build/budget-host",
+    "--no-tests=error",
+    "--output-on-failure",
+    "--verbose",
+    "--output-junit",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/build/budget-host/results-01.xml"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source",
+  "started": 1791344467.6192267,
+  "pid": 3939116,
+  "exit_code": 0,
+  "ended": 1791344467.7331145
+}

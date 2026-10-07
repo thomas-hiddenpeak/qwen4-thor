@@ -1,0 +1,28 @@
+{
+  "label": "http-quality-01",
+  "argv": [
+    "python3",
+    "tools/evalscope/run_acceptance.py",
+    "--mode",
+    "quality",
+    "--binary",
+    "build/runtime/q4t",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--output",
+    "build/http-quality-01",
+    "--fixtures",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-trace-runtime-20260928/quality-off-final/inputs",
+    "--reference",
+    "tools/evalscope/fixtures/quality_reference.json",
+    "--port",
+    "18271",
+    "--startup-timeout",
+    "900"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source",
+  "started": 1791344619.1827583,
+  "pid": 3940579,
+  "exit_code": 0,
+  "ended": 1791344886.8393211
+}

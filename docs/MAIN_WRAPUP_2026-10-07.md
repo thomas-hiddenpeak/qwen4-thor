@@ -42,6 +42,45 @@ MTP 开启时，独立 BF16 draft 权重、lazy scratch/verify checkpoint 和
 本地审计根：`.q4t-work/main-wrapup-20261007/`；新构建和测试仅写其
 `source/build/`。原始开发状态在 `entry.json` 冻结。测试结果在完成后追加。
 
+## 验收结果与交接
+
+运行源码为 `e6b4bc07b522a8543c51026479c7d141d91ad200`；`c811c11`
+只修正供给工具测试夹具路径和过程记录，运行时身份未变。新 q4t SHA256：
+`0f52e926d28f2153e63b4eb093e596448e88e36dad355fb632cf1c2da029b8bc`。
+
+| 验证 | 结果与范围 |
+|---|---|
+| 本机构建 | Thor Release，g++ 14.2、CUDA 13.3.33、C++23/SM110a，零警告 |
+| 公共 host | 18 个 CTest 组、331 个命名合同完成；首轮 17/18 组通过，唯一失败组修复后 19/19 定向通过，其他 17 组复用 |
+| I/O | 6/6，ASan/UBSan 同 6 项通过；设备调用用 host double，真实模型加载由下方 HTTP 覆盖 |
+| 预算 | 14/14；四类实际入口拒绝通过（1% 无解预算及 8193/214748365/INT_MAX prefill），均未进入模型加载 |
+| HTTP 质量 | 11/11，与冻结参考精确一致，覆盖 1K/4K/8K/44K/200K，usage/stop/真实响应 ID 正确；服务退出 0，端口释放 |
+| 独立审计 | I/O、预算、入口边界、源码范围及验证记录交叉复核；原目录七项 diff 和旧二进制摘要不变 |
+| 公共 CI | [c811c11 检查通过](https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/37568128798)，仅证明实际执行的 host 检查 |
+
+HTTP 实际容量保持 max-seq=1、max-prefill=8192、max-len=208896，MTP/
+媒体关闭，没有预算降档。预算报告主 workspace=2,348,023,808 bytes，
+state pool=6,546,454,540 bytes；这些是模型项估算，不是整机 RAM 测量。
+本轮没有五档性能接受、默认部署或 MTP/媒体生成验收。
+
+首次失败均保留：供给分析测试曾使用旧仓库父目录落点；只改夹具，
+生产 artifact guard 未变。入口脚本首次错误匹配报错文案，实际程序
+已正确拒绝；更正文案后复验通过。该脚本原 `phase=model_load` 断言
+与实际日志格式不匹配，最终另按真实 `[q4t][startup]` 日志及源码返回
+位置审计，未用弱断言充当证明。冻结计划中公共组数 19 是静态计数笔误，
+实测注册为 18；未删除测试。原计划、失败和更正记录均不覆盖。
+
+精简证据在 [evidence/main-wrapup-20261007/](evidence/main-wrapup-20261007/README.md)，
+包含来源、源码与二进制身份、首次失败、定向重验、HTTP 摘要及保护检查。
+原始数据库/请求/服务日志仍在本机 `source/build/http-quality-01/`，
+完整路径与摘要见 quality-audit.json。
+
+后续主线工作区：
+`.q4t-work/main-wrapup-20261007/source/`，交接后检出 `main`。
+已验收二进制位于该工作区的 `build/runtime/q4t`；未替换原开发目录的
+`build/q4t`，也未写入旧部署元数据。原目录仍保留研究分支和七项未提交
+内容，后续主线任务应在这个干净工作区开展。研究分支保留作查证入口。
+
 ## 研究分支的保留价值与停止点
 
 所有 offload 后续分支均汇入同一研究历史，最新封存 tip 为

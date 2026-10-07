@@ -1,0 +1,133 @@
+{
+  "date": "2026-10-07",
+  "reviewer": "/root/wrap_budget",
+  "mode": "independent read-only source review",
+  "result": "no_blocking_findings",
+  "tests_executed": false,
+  "runtime_or_test_source_modified": false,
+  "reviewed_files_sha256": {
+    "include/q4t/io/weight_loader.h": "5930e9244af48d578265571f71c021bafbd36e46cc85477ada19bd779b1cd49f",
+    "src/io/weight_loader.cpp": "6fa8dd924acdddf34542f8cf62bf928d128c37527234498f7079d83778a4aa31",
+    "tests/weight_loader_contract_test.cpp": "1f70f70a175d670fc263a9679899e80af8bcf55ec08ba4f49682ae7b3fd6e8bd",
+    "tests/io_host/CMakeLists.txt": "551cf1d48f3e2cf00c50d3b86f099def4617184389c16a372051b1ab1994bd79",
+    "tools/evalscope/response_identity.py": "2102fb7a401786a55dba5b8845985b69a36b4279c52a6e4d1610a11ccd1b6e7a",
+    "tools/evalscope/test_response_identity.py": "128d7ffd040578b4506e061c1b7c7abea05f286eaf2e03e8f26c55c96023d63a",
+    "tools/evalscope/run_acceptance.py": "1d0cd14521b5e59d8f831473759c04d79511ccbe3526aa94eee89cda26d039e1"
+  },
+  "supporting_sources_read": [
+    "src/io/safetensors.cpp",
+    "include/q4t/io/safetensors.h",
+    "include/q4t/test.h",
+    "src/model/model.cu (loader/index ownership order)",
+    "src/mtp/mtp.cu (loader/index ownership order)",
+    "src/server/chat_generation.cpp (response/request ID contract)"
+  ],
+  "blocking_findings": [],
+  "io_review": [
+    {
+      "topic": "LRU and in-flight reads",
+      "locations": [
+        "src/io/weight_loader.cpp:117",
+        "src/io/weight_loader.cpp:127",
+        "src/io/weight_loader.cpp:199",
+        "src/io/weight_loader.cpp:211"
+      ],
+      "assessment": "EnsureOpen copies a shared shard handle while holding the cache mutex. Each public read retains that independent owner until after SafetensorsFile returns, so concurrent erase or unordered_map rehash cannot destroy the file or metadata being used. Payload pread and H2D enqueue run outside the cache lock. Failed open evicts first, as before, but leaves consistent open/LRU containers."
+    },
+    {
+      "topic": "Stable metadata",
+      "locations": [
+        "src/io/weight_loader.cpp:122",
+        "src/io/weight_loader.cpp:184",
+        "include/q4t/io/weight_loader.h:67"
+      ],
+      "assessment": "FindTensor keeps the source shard alive while copying TensorInfo, serializes map insertion, and returns loader-owned immutable values that are never erased. Map rehash preserves pointers/references to elements. Simultaneous first lookups for one name converge on the same retained value. Later callers read only immutable element fields."
+    },
+    {
+      "topic": "Destruction and diagnostics",
+      "locations": [
+        "src/io/weight_loader.cpp:164",
+        "src/io/weight_loader.cpp:224",
+        "include/q4t/io/weight_loader.h:58"
+      ],
+      "assessment": "The explicit contract requires WeightIndex to outlive WeightLoader and every call to finish before loader destruction. Within that contract, Impl destruction releases cached owners before the loader mutex is destroyed. The real main/MTP owners construct index before loader, preserving reverse destruction order. open_shards now locks the same mutex and explicitly reports cached handles, not all active descriptors."
+    },
+    {
+      "topic": "Asynchronous CUDA boundary",
+      "locations": [
+        "src/io/weight_loader.cpp:211",
+        "src/io/safetensors.cpp:237"
+      ],
+      "assessment": "ReadTensorToDevice reads into the caller-provided staging buffer, then enqueues H2D from that staging buffer. The shard lease needs to cover host read and TensorInfo access through enqueue, which it does. Returning does not promise device completion or extend caller staging/device storage lifetime; those remain the pre-existing caller obligations."
+    }
+  ],
+  "io_test_review": [
+    {
+      "test": "read/device-read eviction gates",
+      "locations": [
+        "tests/weight_loader_contract_test.cpp:135",
+        "tests/weight_loader_contract_test.cpp:175",
+        "tests/weight_loader_contract_test.cpp:206"
+      ],
+      "assessment": "The pread wrapper captures tensor-0 FD and blocks before its actual read. A cache-one tensor-1 read must complete while tensor-0 is blocked, then the test asserts no close before release and exactly one close after the first reader finishes. Old raw-owner eviction necessarily closes the captured FD while blocked; FD reuse may additionally produce wrong bytes. This directly hits the old lifetime defect without depending only on stress scheduling. Completion-before-release also detects a global lock held over payload IO."
+    },
+    {
+      "test": "metadata and concurrent cache pressure",
+      "locations": [
+        "tests/weight_loader_contract_test.cpp:235",
+        "tests/weight_loader_contract_test.cpp:293"
+      ],
+      "assessment": "Metadata test retains a pointer across 31 shard evictions and subsequent lookup; the old implementation returns a dangling pointer. Its exact failure mode is allocator-dependent unless a memory checker is used. Eight concurrent readers combine metadata, payload and open_shards calls, exercising rehash/eviction and the diagnostics mutex. Stress completion is supporting evidence, not a formal race proof."
+    },
+    {
+      "test": "test harness and cleanup",
+      "locations": [
+        "tests/weight_loader_contract_test.cpp:179",
+        "tests/io_host/CMakeLists.txt:1"
+      ],
+      "assessment": "Gate release, join and future.get occur before assertions, including ordinary gate timeout failures. Global close_gate is cleared after all worker completion. Fixture is destroyed after loader/index. The standalone CMake target uses synthetic files under its binary tree, links GNU syscall/CUDA wrappers and Threads, has strict warnings and a CTest timeout, and requires CUDA headers but no CUDA runtime libraries/device."
+    },
+    {
+      "test": "CUDA host double and missing entries",
+      "locations": [
+        "tests/weight_loader_contract_test.cpp:219",
+        "tests/weight_loader_contract_test.cpp:266"
+      ],
+      "assessment": "The host double checks source/destination/byte count/kind/stream forwarding and lease duration through enqueue. Missing index entry, missing tensor in shard and missing file are rejected without copy or output buffer mutation. The test comments correctly exclude actual asynchronous transfer semantics and device completion."
+    }
+  ],
+  "response_identity_review": [
+    {
+      "topic": "Helper acceptance/rejection",
+      "locations": [
+        "tools/evalscope/response_identity.py:10"
+      ],
+      "assessment": "Applicable messages are any message with nonempty choices or an id field. Every observed ID must be an ASCII token of 1..128 letters/digits/underscore/hyphen and all must match. Missing content/finish ID becomes None and fails. Present usage-only IDs participate, so conflicting usage IDs fail. Empty input or only unrecorded usage IDs fails. all() and the following boolean short-circuit ensure list/dict IDs are rejected before set(values), avoiding an unhashable-value exception."
+    },
+    {
+      "topic": "Runner integration and evidence retention",
+      "locations": [
+        "tools/evalscope/run_acceptance.py:65",
+        "tools/evalscope/run_acceptance.py:172",
+        "tools/evalscope/run_acceptance.py:177",
+        "tools/evalscope/run_acceptance.py:180"
+      ],
+      "assessment": "The runner copies the helper into the evidence directory alongside itself, adds actual observed IDs without replacing fixture IDs, saves responses.json before ID acceptance checks, then fails the current case on invalid identity. Existing outer exception/finally records failure and terminates the server. The helper import matches direct script execution, the established invocation mode."
+    },
+    {
+      "topic": "Synthetic helper coverage",
+      "locations": [
+        "tools/evalscope/test_response_identity.py:1"
+      ],
+      "assessment": "Tests cover stream/nonstream, missing content/finish IDs, mixed IDs including usage, empty identity evidence, non-string/unhashable IDs, invalid token characters/newline/oversize and the 128-character upper bound. Valid server auto-generated request IDs satisfy the regex. These are source-reviewed tests, not executed results from this review."
+    }
+  ],
+  "coverage_limits": [
+    "This review does not claim build, host tests, sanitizers, actual HTTP or device-copy execution passed.",
+    "Loader destruction concurrent with active calls is explicitly unsupported; shared shard ownership does not make the WeightLoader/WeightIndex objects themselves safe to destroy concurrently.",
+    "Opening/parsing a previously uncached shard remains under the cache mutex. The no-lock-during-IO property covered by the regression gates is payload reads, not parallel shard-header opening.",
+    "Actual open descriptors may transiently exceed max_open_shards because in-flight owners are intentionally retained. The header documents this diagnostic distinction.",
+    "response_identity validates IDs within each stored response message list. It does not establish uniqueness across separate database rows, correlate to a caller-supplied request ID, or prove the presence of usage-only messages omitted by evalscope.",
+    "The helper assumes messages are mapping objects, as does the runner immediately before invoking it. Malformed container/message shapes can raise and fail the runner before responses.json is assembled; this predates the identity addition and is outside its stated ID-only contract."
+  ]
+}

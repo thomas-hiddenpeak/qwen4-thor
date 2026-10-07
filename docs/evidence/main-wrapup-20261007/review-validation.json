@@ -1,0 +1,247 @@
+{
+  "reviewer": "wrap_io independent evidence and current-source audit",
+  "scope": "MTP-off bounded public runtime fixes plus their completed direct checks; HTTP results excluded by assignment",
+  "recommendation": "Accept the source/direct-contract layer for main integration. No remaining blocker found in this reviewed scope. The separate HTTP quality gate remains outside this report; this is not a complete runtime release or performance acceptance.",
+  "new_tests_or_builds_run": false,
+  "source_edits": false,
+  "http_evidence_read_or_assessed": false,
+  "identity": {
+    "head": "c811c11de2ed94b9a090fdeed3a4629301eaefed",
+    "worktree_clean_at_audit": false,
+    "frozen_commit": "e6b4bc07b522a8543c51026479c7d141d91ad200",
+    "freeze_mismatches": [
+      "docs/STATUS.md",
+      "docs/log/2026-10-07.md",
+      "tools/trace/test_analyze_decode_supply.py"
+    ],
+    "mismatch_assessment": "Only STATUS, current log and the failing supply fixture changed after freeze; all frozen runtime and direct I/O/budget/server-options source identities match. Source diff between frozen and current commit confirms no runtime changes.",
+    "q4t_binary_sha256": "0f52e926d28f2153e63b4eb093e596448e88e36dad355fb632cf1c2da029b8bc",
+    "startup_binary_identity_matches": true,
+    "current_source_sha256": {
+      "include/q4t/io/weight_loader.h": "5930e9244af48d578265571f71c021bafbd36e46cc85477ada19bd779b1cd49f",
+      "src/io/weight_loader.cpp": "6fa8dd924acdddf34542f8cf62bf928d128c37527234498f7079d83778a4aa31",
+      "include/q4t/runtime/memory_budget.h": "05527a9c4e4990e443648fd182fe22336a2ecb98fa913c948829bb71cd563872",
+      "src/runtime/memory_budget.cpp": "85c090d639538b15e63e300340b843273d93ce24a61e985b02d6fd829ea327c9",
+      "src/server/chat_server.cpp": "76b21834f37c4f6c3eff0a24aea6a13be6d7a17ce5937cd10846dfb774cc4865",
+      "src/server/server_options.cpp": "010d1fc3119b1e162bc00bf619f185272cd5b827d10ab8f49c42ad03ec3f638f",
+      "tests/weight_loader_contract_test.cpp": "1f70f70a175d670fc263a9679899e80af8bcf55ec08ba4f49682ae7b3fd6e8bd",
+      "tests/runtime_memory_budget_test.cpp": "e61844e2eab4d6c27a883fa33029e768a166cd6bf27474c157b1287bc5804ba1",
+      "tests/server_options_test.cpp": "3de81effc504787e344cc1547d1a421f3db6a37b14e84325fd2106a19423603a",
+      "tests/io_host/CMakeLists.txt": "551cf1d48f3e2cf00c50d3b86f099def4617184389c16a372051b1ab1994bd79",
+      "tests/budget_host/CMakeLists.txt": "10b079cf4438393cbece5673ccaf4aa63e80862aefaa9ec4e888eace7add7eec",
+      "tests/host/CMakeLists.txt": "be7ff7ab040d20051b1f7a7b5b5774beac36738255b6341db6079a26eb06ca91",
+      "tools/trace/test_analyze_decode_supply.py": "dcac6a135aac94a7d21fcdc2a07853b07ed5242943cc95543391b41b4c7581d3"
+    }
+  },
+  "completed_checks": {
+    "thor_runtime_build": {
+      "exit_code": 0,
+      "target": "q4t",
+      "configuration": "Release, g++-14 host/device host compiler, CUDA architecture 110a",
+      "warning_or_error_lines": [],
+      "evidence": "build-runtime-01.log and configure-runtime-01-start.json plus runtime CMakeCache.txt"
+    },
+    "regular_io": {
+      "cases": 6,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "exit_code": 0,
+      "evidence": "test-io-host-01.log"
+    },
+    "sanitized_io": {
+      "cases": 6,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "exit_code": 0,
+      "evidence": "test-io-sanitized-01.log",
+      "instrumentation": "ASan and UBSan flags confirmed in CMake configure argv, generated flags.make and link.txt; neither log reports a sanitizer diagnostic."
+    },
+    "budget": {
+      "cases": 14,
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0,
+      "exit_code": 0,
+      "evidence": "test-budget-host-01.log"
+    },
+    "public_host_initial": {
+      "ctest_groups": 18,
+      "passed_groups": 17,
+      "failed_groups": 1,
+      "skipped_groups": 0,
+      "exit_code": 8,
+      "cpp_registry": "43 tests, 43 passed, 0 failed, 0 skipped",
+      "failed_group": "q4t_analyze_decode_supply_contracts",
+      "failure": "One of 19 supply tests used a synthetic output path outside allowed artifact roots."
+    },
+    "public_host_targeted_repair": {
+      "ctest_groups": 1,
+      "cases": 19,
+      "passed": 19,
+      "failed": 0,
+      "exit_code": 0,
+      "evidence": "test-supply-repair-02.log",
+      "change": "Only fixture output path changed to Q4T_TEST_OUTPUT_DIR or source/build/supply-contracts. Analyzer code, production path restriction and contract expectations were unchanged.",
+      "reuse": "The other 17 CTest groups retain passing evidence and unchanged relevant source identities."
+    }
+  },
+  "prefill_blocker": {
+    "id": "BUDGET-REVIEW-1",
+    "state": "closed",
+    "source_evidence": [
+      "ValidateServerOptions now rejects max_prefill>8192 while retaining 0 as default.",
+      "ChatServer::Start calls ValidateServerOptions before tokenizer loading and workspace sizing.",
+      "ParseServerOptions validates before committing parsed options; src/main.cpp exits 2 for invalid serve options."
+    ],
+    "host_evidence": "serve_prefill_bound_precedes_workspace_sizing passes in the 43-case host registry. It covers 0/8192 acceptance, 8193/214748365/INT_MAX rejection, preservation of failed parse, direct validation and no-budget validation.",
+    "actual_binary_evidence": "The three 02 prefill logs contain only \"serve options: max-prefill must be in [0,8192]\"; each corresponding process exited 2. No startup phase or model-load output occurred.",
+    "first_failure": "test-startup-01 exited 1 because its expected text was \"max-prefill must be at most 8192\". The recorded binary correctly rejected 8193 with exit 2 and the current wording. The original script, raw log and failed JSON remain preserved.",
+    "repair": "Only expected text and distinct output paths changed in startup_contracts.py; binary SHA256 is identical across both attempts. All four 02 startup cases passed."
+  },
+  "infeasible_budget_raw_log_audit": {
+    "evidence": "infeasible-budget-02.log",
+    "observed_phases": [
+      "tokenizer",
+      "budget",
+      "startup_total"
+    ],
+    "observed_feasible_false": true,
+    "observed_zero_capacity": true,
+    "actual_model_load_marker_absent": true,
+    "terminal_error": "serve start failed: no feasible allocation budget: no_supported_capacity_fits_estimate",
+    "process_exit": 1,
+    "startup_report_port_released": true,
+    "source_control_flow": "ChatServer::Start returns on !budget_.feasible before the model_load PhaseTimer and model_.Load block.",
+    "script_limitation": "The historical absence assertion uses phase=model_load although real phase logs use [q4t][startup] model_load; absence of that incorrect string is not accepted as evidence. Closure rests on the preserved raw log, actual phase markers, terminal failure and reviewed return-before-load control flow. Original script/results were not edited by the reviewer."
+  },
+  "bookkeeping_note": {
+    "freeze_acceptance_count": "freeze.json says 19 public CTest groups",
+    "actual_registered_and_executed_groups": 18,
+    "final_reporting": "Report 18 groups covered using 17 unchanged initial passes plus the repaired 19-case supply group. Do not describe the first run as all passed or rewrite the frozen artifact."
+  },
+  "retained_limits": [
+    "I/O H2D contracts use a host cudaMemcpyAsync double. They cover lifetime/argument forwarding, not real device transfers or caller staging completion.",
+    "ASan/UBSan evidence is not TSan coverage and the bounded concurrency tests do not prove all interleavings.",
+    "Budget checks establish modeled allocation arithmetic, not physical RAM/OOM safety. Current header/report explicitly state allocation estimate only.",
+    "MTP independent BF16 weights, lazy scratch/checkpoints and concurrent full-prompt trunks remain incomplete and are documented in the header, report and scope document. No MTP OOM or full-MTP acceptance claim is supported.",
+    "No HTTP-quality result was read or assessed in this audit. No performance matrix, no-regression acceptance, default deployment, media generation or whole offload runtime acceptance is inferred."
+  ],
+  "exit_codes": {
+    "build-runtime-01": 0,
+    "test-io-host-01": 0,
+    "test-io-sanitized-01": 0,
+    "test-budget-host-01": 0,
+    "test-public-host-01": 8,
+    "test-supply-repair-02": 0,
+    "test-startup-01": 1,
+    "test-startup-02": 0
+  },
+  "junit": {
+    "public-host/results-01.xml": {
+      "sha256": "521e104aa38e9976ff4cea655b57eaf593b856c37916ec60d8b925aad0ff6b79",
+      "suite_attributes": {
+        "name": "(empty)",
+        "tests": "18",
+        "failures": "1",
+        "disabled": "0",
+        "skipped": "0",
+        "hostname": "",
+        "time": "24",
+        "timestamp": "2026-10-07T11:41:07"
+      }
+    },
+    "public-host/results-supply-02.xml": {
+      "sha256": "3a394ad3e650e3b233c9c80eaaea64d9dd785f1bad9e4c7ccd5466a6df40e537",
+      "suite_attributes": {
+        "name": "(empty)",
+        "tests": "1",
+        "failures": "0",
+        "disabled": "0",
+        "skipped": "0",
+        "hostname": "",
+        "time": "2",
+        "timestamp": "2026-10-07T11:43:05"
+      }
+    },
+    "io-host/results-01.xml": {
+      "sha256": "a46ffa56790ae530682bd0dccd5cf4d03887f15b82ed62d5a5862095f5cb6e38",
+      "suite_attributes": {
+        "name": "(empty)",
+        "tests": "1",
+        "failures": "0",
+        "disabled": "0",
+        "skipped": "0",
+        "hostname": "",
+        "time": "0",
+        "timestamp": "2026-10-07T11:41:07"
+      }
+    },
+    "io-sanitized/results-01.xml": {
+      "sha256": "3a024c389dbdb80d5e2dcca884bba0cab289fd04ced0d99b92b92ed2a9771006",
+      "suite_attributes": {
+        "name": "(empty)",
+        "tests": "1",
+        "failures": "0",
+        "disabled": "0",
+        "skipped": "0",
+        "hostname": "",
+        "time": "0",
+        "timestamp": "2026-10-07T11:41:07"
+      }
+    },
+    "budget-host/results-01.xml": {
+      "sha256": "8a3a74b17b2c045ad7a36bf3bee7e1d560d6180b6bd1b5a40a75fdde56484b54",
+      "suite_attributes": {
+        "name": "(empty)",
+        "tests": "1",
+        "failures": "0",
+        "disabled": "0",
+        "skipped": "0",
+        "hostname": "",
+        "time": "0",
+        "timestamp": "2026-10-07T11:41:07"
+      }
+    }
+  },
+  "artifact_sha256": {
+    "freeze.json": "aa022e540c9a36f174658d4af1891495a8f1b236676dde494a6df125aa704aa7",
+    "configure-runtime-01-start.json": "fca8138b0d659e9ba644f3f2fec49302eb2dad589699359d97b1c2085e1cec5e",
+    "configure-runtime-01-exit.json": "b4bc973da4e8052eaae6cbd1a0a50ae271bde2bbeefd45ccdd037cc12730b0fe",
+    "configure-io-sanitized-01-start.json": "6f5712c1a48e205631ddbab3545181b2aa96904217b3143ca779fa60b3478da7",
+    "startup_contracts-first.py": "3c2faa12a570dfc49792e213f48d279b3f09d039688a923fef7575661182c165",
+    "startup_contracts.py": "2a67bdb5aa0d385055b91062b61755357370d3f6cb69bfbf70e37f1b03c36aae",
+    "startup-contracts.json": "c847ddde447dde86704ba352372c510932e977d2626cc32a841a1fefa278d41a",
+    "startup-contracts-02.json": "ed6451f9d22c26496a175afaec643568371bd28a097ef6af7bb492389ddebcfc",
+    "prefill-8193.log": "e19c526a6c72cfb47abd3ff96d89b15dc110eee9c41b3aecb53bc9bc86853161",
+    "prefill-8193-02.log": "e19c526a6c72cfb47abd3ff96d89b15dc110eee9c41b3aecb53bc9bc86853161",
+    "prefill-214748365-02.log": "e19c526a6c72cfb47abd3ff96d89b15dc110eee9c41b3aecb53bc9bc86853161",
+    "prefill-2147483647-02.log": "e19c526a6c72cfb47abd3ff96d89b15dc110eee9c41b3aecb53bc9bc86853161",
+    "infeasible-budget-02.log": "eb5163ce3e176cee0f0ce0e6d500e27700df46004baa92a99f3bdc93219a7494",
+    "build-runtime-01-start.json": "b8176d64d8654c0457da28409ef29b3f79c00f178cd9b6b5817836201e8705e0",
+    "build-runtime-01-exit.json": "0d422b4c7070afd1d33315fc2bb165234515bcf254effe2f2917952c71b8be7c",
+    "build-runtime-01.log": "3970868efd7644becb0881fe42dbc138b598e6d48f6587088c7158f0dcdf4343",
+    "test-io-host-01-start.json": "bd9e87c0ac69b85ec70e8e571f7e5dc5262681b940af4e903abeb8ef0fdc8a60",
+    "test-io-host-01-exit.json": "333d31d1c742312f892896e2d54c1a38306d6c6ec8b95bee24dadb90aa8e89ec",
+    "test-io-host-01.log": "39effaa2ffb5d5f6782517fd9c6373f843e2e4ead00f701bf54721af1ec491ee",
+    "test-io-sanitized-01-start.json": "4133caca3109d1a4f4b2241575496c4e52549317d8410f36f59c4bac86fea353",
+    "test-io-sanitized-01-exit.json": "417533f9cf8dd60a8bdb31375c8f42398db23a0b682e793d18848412455a136a",
+    "test-io-sanitized-01.log": "1289c81cd974580cbff7ae2449896570cfc7007909685889ecbb2e015db20f4d",
+    "test-budget-host-01-start.json": "cd8298e5bb2c2ea399f02e166c808bfd6c876e1471f25232ade972374870778e",
+    "test-budget-host-01-exit.json": "576dd8c6d6b27d8492347f3cd122bc553527a04b3fb005c4892216bfd22ea999",
+    "test-budget-host-01.log": "831ab2545179cc6887c064e4267f488b43119959211f0cab3ad6e98a2282f946",
+    "test-public-host-01-start.json": "aa83e55b3ce109ef9fea3fd3f90b81b2bb969e84eb3f085bc989e0eef300d9b4",
+    "test-public-host-01-exit.json": "c6834fb561b9a36cc3e2139ffec54b3545665a50c8b1c2215248964b5e8b6c21",
+    "test-public-host-01.log": "03a4ed1ceeb255bf6ff0375195bbab1c19b4fd12ae8ef4ea8bd7b61dde49a002",
+    "test-supply-repair-02-start.json": "d9ada310b5bd96dde0591bfa22c8d73bd4d8e64471c1dfa33b5e8ec0fff3bcd5",
+    "test-supply-repair-02-exit.json": "efe58233c3159422f5ee8745b17876432791611f89d6042bae013e97ed7478fe",
+    "test-supply-repair-02.log": "5ea2d16549e4a08ed437ab5662e89c4fb11f2692e21e64a66c5c233097f8f221",
+    "test-startup-01-start.json": "55c8394453c35d83f9e2172945b8c7b2d5278332ccf1a4887b6a7cad489e179c",
+    "test-startup-01-exit.json": "5cb51491d4f391bc48e3511275d645c26ce1345e2002ce3891a3ef6c308e3fd2",
+    "test-startup-01.log": "1de5215d37a0d94f6a36b907194d1934aaae88f1967a099663146be28ced9957",
+    "test-startup-02-start.json": "fc3ec323a6cc58aee207c3994dbb2ff7fcee42095cb74f38bd8960714634f3a4",
+    "test-startup-02-exit.json": "6a8a6566190322ad2d71b58cf64a3126595b68530e969bddc2fb702fea5d1bf6",
+    "test-startup-02.log": "f442e0e16a3b2de89aaca729ba2d3ef6bb95d620cf719546ea009e280ca7fe2c"
+  }
+}

@@ -1,0 +1,742 @@
+{
+  "files": {
+    ".github/workflows/host-checks.yml": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": ".github/workflows/host-checks.yml",
+      "adaptations": [
+        "Install python3-numpy; move trace source test into CTest to avoid duplicate execution."
+      ],
+      "source_blob": "f30db427ff27c743a9fdbee52d769a207f062f28",
+      "last_changed_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_sha256": "f70fd4424783095c4b9c737f19fdb6fa662267ba6a331a567034e01cd7f08c84",
+      "integrated_sha256": "cf825453d75b0f56b5bea3d68e39cddbf17ce3924199fa1d87ec57fceb59bf72",
+      "byte_identical": false
+    },
+    "tests/host/CMakeLists.txt": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tests/host/CMakeLists.txt",
+      "adaptations": [
+        "Register 18 grouped public CTests (including root-owned response_identity); build offline schedule/sort helpers with -Wall -Wextra -Werror.",
+        "Set per-test TMPDIR/Q4T_TEST_OUTPUT_DIR in configured build tree; Python interpreter selectable with Python3_EXECUTABLE; no implicit private venv."
+      ],
+      "source_blob": "bd87b10e97e0451375decf82233fd5d52717b8d1",
+      "last_changed_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_sha256": "5775c4b08bc887c7fc4a4b61c5e54031a3644bde4080ba40e4c7556161c65b96",
+      "integrated_sha256": "be7ff7ab040d20051b1f7a7b5b5774beac36738255b6341db6079a26eb06ca91",
+      "byte_identical": false
+    },
+    "tools/trace/README.md": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/README.md",
+      "adaptations": [
+        "Document selected offline tools, explicit archived-runtime source roots, strict SHA ledgers, build output roots, and private-raw reproduction limits.",
+        "Replace unselected report pointers with docs/MAIN_WRAPUP_2026-10-07.md."
+      ],
+      "source_blob": "0ffff97b77d8c0757f63a177caac1dbc2e6ee338",
+      "last_changed_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_sha256": "fc91d95a53d078e136a84853b2f4add8dc7edbc4d632a5a2fafc96f191977efd",
+      "integrated_sha256": "47bb99897c635040fd8cb449555e148f698c03142aaa1a135c7122bbf9e3e19f",
+      "byte_identical": false
+    },
+    "tools/trace/analyze_evalscope_scenarios.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/analyze_evalscope_scenarios.py",
+      "adaptations": [],
+      "source_blob": "9aedf2de39f65b26f3e559de080310a148ea6115",
+      "last_changed_commit": "9718f702713782a77d9672e172e11958fc811185",
+      "source_sha256": "e5a753a18af54ddcaeda665544beb79ce7219d4a2fe975d9591aae7fe61fcf51",
+      "integrated_sha256": "e5a753a18af54ddcaeda665544beb79ce7219d4a2fe975d9591aae7fe61fcf51",
+      "byte_identical": true,
+      "local_python_dependencies": [
+        "tools/trace/analyze.py",
+        "tools/trace/run_shadow_study.py",
+        "tools/trace/summarize_shadow.py",
+        "tools/trace/verify_shadow.py"
+      ]
+    },
+    "tools/trace/analyze_locality.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/analyze_locality.py",
+      "adaptations": [],
+      "source_blob": "e5519c300d5aee2d1c5bbd78fcbd123f8dcb6d76",
+      "last_changed_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_sha256": "cad2f0eb5b64f34318d0700955fdc3b7adc1899bf4c2177c856d63fe41885dca",
+      "integrated_sha256": "cad2f0eb5b64f34318d0700955fdc3b7adc1899bf4c2177c856d63fe41885dca",
+      "byte_identical": true,
+      "local_python_dependencies": []
+    },
+    "tools/trace/distribution-plan-20260928.json": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/distribution-plan-20260928.json",
+      "adaptations": [],
+      "source_blob": "e8a7661743a8f3077e58e717b83835aaec49a997",
+      "last_changed_commit": "643665e1c4d75f5e2706fa0da68d49bfb470397d",
+      "source_sha256": "b863fbb936f814c53ebfeeafa69e359c507cdb7431547862bb953c8e7e8effc7",
+      "integrated_sha256": "b863fbb936f814c53ebfeeafa69e359c507cdb7431547862bb953c8e7e8effc7",
+      "byte_identical": true
+    },
+    "tools/trace/distribution.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/distribution.py",
+      "adaptations": [],
+      "source_blob": "f01cbc41f76b0ec6f8044ce11fca036fc8b17bcf",
+      "last_changed_commit": "643665e1c4d75f5e2706fa0da68d49bfb470397d",
+      "source_sha256": "d5e66be38d1a743d3fb961732c506b015dd60f16ae41497607d22a5b5ab33f53",
+      "integrated_sha256": "d5e66be38d1a743d3fb961732c506b015dd60f16ae41497607d22a5b5ab33f53",
+      "byte_identical": true,
+      "local_python_dependencies": [
+        "tools/trace/analyze.py",
+        "tools/trace/shadow.py"
+      ]
+    },
+    "tools/trace/expert_probabilities.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/expert_probabilities.py",
+      "adaptations": [],
+      "source_blob": "5180b9eeccad19b2e4852251863da069c9ed3ac2",
+      "last_changed_commit": "4d9b3501220cad4817e745a299da1b36ba8068c2",
+      "source_sha256": "399e21d559c67c4fb0e1c0c64e0f0c4fc1c4fae4a036754669783c7345c27f3b",
+      "integrated_sha256": "399e21d559c67c4fb0e1c0c64e0f0c4fc1c4fae4a036754669783c7345c27f3b",
+      "byte_identical": true,
+      "local_python_dependencies": [
+        "tools/trace/analyze.py",
+        "tools/trace/distribution.py"
+      ]
+    },
+    "tools/trace/export_raw_routing.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/export_raw_routing.py",
+      "adaptations": [],
+      "source_blob": "362aad37dd8aa17452ac548197bc1e3e3c057df4",
+      "last_changed_commit": "f349c1761943913013adfa8148cd23ef3d48bf05",
+      "source_sha256": "dc4bc7532236f1642893eb0ff9979806adcbe12c90702826fd0dfc91738b7998",
+      "integrated_sha256": "dc4bc7532236f1642893eb0ff9979806adcbe12c90702826fd0dfc91738b7998",
+      "byte_identical": true,
+      "local_python_dependencies": []
+    },
+    "tools/trace/layer_topn.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/layer_topn.py",
+      "adaptations": [],
+      "source_blob": "2dbbf3e454b5a2bc12f53fa20633a756d4be923a",
+      "last_changed_commit": "df220af5564da1d53f28efbf4adfaede0ae7682e",
+      "source_sha256": "3004e0614177a0d58bba89776c1aa37f37ee1e453433cafa7957e387ad154d89",
+      "integrated_sha256": "3004e0614177a0d58bba89776c1aa37f37ee1e453433cafa7957e387ad154d89",
+      "byte_identical": true,
+      "local_python_dependencies": [
+        "tools/trace/analyze.py",
+        "tools/trace/distribution.py"
+      ]
+    },
+    "tools/trace/layer_topn_heldout.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/layer_topn_heldout.py",
+      "adaptations": [],
+      "source_blob": "e43d5c9381eefcfae029aa4201fe26b35e680d87",
+      "last_changed_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_sha256": "a8721e9f6da72ac266fe37c94cbaa0735830fc7e6e4597d5cbc33c80f338e2b9",
+      "integrated_sha256": "a8721e9f6da72ac266fe37c94cbaa0735830fc7e6e4597d5cbc33c80f338e2b9",
+      "byte_identical": true,
+      "local_python_dependencies": []
+    },
+    "tools/trace/replay-plan-20260928.json": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/replay-plan-20260928.json",
+      "adaptations": [],
+      "source_blob": "3d1b2b8d2b5e3370a515d0b39500c45e3e6e940f",
+      "last_changed_commit": "826a443e9b295db42f617e429eb89ba16ffba3b4",
+      "source_sha256": "5c96af9745d9f028dea947051c498d125478af3f48159a71a0a84ebb1acde3f2",
+      "integrated_sha256": "5c96af9745d9f028dea947051c498d125478af3f48159a71a0a84ebb1acde3f2",
+      "byte_identical": true
+    },
+    "tools/trace/replay.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/replay.py",
+      "adaptations": [],
+      "source_blob": "8399902bda6efa9f464022e675d0d2cb93dc1d72",
+      "last_changed_commit": "826a443e9b295db42f617e429eb89ba16ffba3b4",
+      "source_sha256": "5dd98a845cc46841061a412d49cf7df4bc7498b2ba96c8e524169dff6a6a7c28",
+      "integrated_sha256": "5dd98a845cc46841061a412d49cf7df4bc7498b2ba96c8e524169dff6a6a7c28",
+      "byte_identical": true,
+      "local_python_dependencies": [
+        "tools/trace/analyze.py"
+      ]
+    },
+    "tools/trace/replay_hybrid.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/replay_hybrid.py",
+      "adaptations": [],
+      "source_blob": "0e31ed1cea98195349f32db47057040c1f649c15",
+      "last_changed_commit": "0086b59d4e2c79c683f12e025ae5904727728562",
+      "source_sha256": "6274d4187892031addf83690338430308c6a7347fa82fb8e83ed1dd9994e8f23",
+      "integrated_sha256": "6274d4187892031addf83690338430308c6a7347fa82fb8e83ed1dd9994e8f23",
+      "byte_identical": true,
+      "local_python_dependencies": [
+        "tools/trace/analyze.py",
+        "tools/trace/replay.py",
+        "tools/trace/run_shadow_study.py",
+        "tools/trace/shadow.py"
+      ]
+    },
+    "tools/trace/replay_scenario_capacities.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/replay_scenario_capacities.py",
+      "adaptations": [],
+      "source_blob": "83a71dbb5259b15dcd1616f5674ac07ac5167a0a",
+      "last_changed_commit": "100f10e7330b619100f8d6feb3776b1aaa2289b2",
+      "source_sha256": "5aee4977afd5407faa635adb2b644a32870ccdfbd318a0d20598e8c80e5bb165",
+      "integrated_sha256": "5aee4977afd5407faa635adb2b644a32870ccdfbd318a0d20598e8c80e5bb165",
+      "byte_identical": true,
+      "local_python_dependencies": [
+        "tools/trace/analyze.py",
+        "tools/trace/replay.py",
+        "tools/trace/run_shadow_study.py",
+        "tools/trace/shadow.py",
+        "tools/trace/summarize_shadow.py"
+      ]
+    },
+    "tools/trace/run_evalscope_scenarios.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/run_evalscope_scenarios.py",
+      "adaptations": [],
+      "source_blob": "c427708da77f22ab35c283c272a5637d1737b68b",
+      "last_changed_commit": "9718f702713782a77d9672e172e11958fc811185",
+      "source_sha256": "e3d8e59b9d875de36a7250fe7c9067b3349f68597e28e46a078a185fb867e5d2",
+      "integrated_sha256": "e3d8e59b9d875de36a7250fe7c9067b3349f68597e28e46a078a185fb867e5d2",
+      "byte_identical": true,
+      "local_python_dependencies": [
+        "tools/trace/analyze.py",
+        "tools/trace/run_shadow_study.py"
+      ]
+    },
+    "tools/trace/run_shadow_study.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/run_shadow_study.py",
+      "adaptations": [
+        "Add repeatable --corpus-file; default to existing current documents without the unselected historical replay report.",
+        "Current default corpus is not byte-identical to archived study; record limitation."
+      ],
+      "source_blob": "eee6cd7182dc36053d9d872dc7e34011e8b91095",
+      "last_changed_commit": "108610d9096f106ec369c90e99b94c59e8cb5711",
+      "source_sha256": "9c5ac8fca22d9757dd1c779776e00c618524aa4291caa8bfb9c9687ebf5d3fbb",
+      "integrated_sha256": "670a13bc5b93767ed4eba528ff949d9ae9802ff074be3c7ac65b9262534e181e",
+      "byte_identical": false,
+      "local_python_dependencies": []
+    },
+    "tools/trace/shadow.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/shadow.py",
+      "adaptations": [],
+      "source_blob": "5c851b58a16a39853f83f7687f0c7c62f977742b",
+      "last_changed_commit": "108610d9096f106ec369c90e99b94c59e8cb5711",
+      "source_sha256": "e05bb0f618e2b7b3294b1b677ea8fcac060d3544aa8fdba386a5addf15c5669d",
+      "integrated_sha256": "e05bb0f618e2b7b3294b1b677ea8fcac060d3544aa8fdba386a5addf15c5669d",
+      "byte_identical": true,
+      "local_python_dependencies": [
+        "tools/trace/analyze.py",
+        "tools/trace/replay.py"
+      ]
+    },
+    "tools/trace/summarize_distribution.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/summarize_distribution.py",
+      "adaptations": [],
+      "source_blob": "7264b858cb7428d1d9ad44b37b19cbcca76c7b0f",
+      "last_changed_commit": "643665e1c4d75f5e2706fa0da68d49bfb470397d",
+      "source_sha256": "c3d1b16f4310a7d81c6df5d4f4f5ede5a3226c68d4f03645b76c050b7f7b9de4",
+      "integrated_sha256": "c3d1b16f4310a7d81c6df5d4f4f5ede5a3226c68d4f03645b76c050b7f7b9de4",
+      "byte_identical": true,
+      "local_python_dependencies": [
+        "tools/trace/distribution.py"
+      ]
+    },
+    "tools/trace/summarize_replay.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/summarize_replay.py",
+      "adaptations": [],
+      "source_blob": "9a52facfef2645f5af2cbbbb9a329194421050e9",
+      "last_changed_commit": "826a443e9b295db42f617e429eb89ba16ffba3b4",
+      "source_sha256": "65296f6831724cca026529a1908cd725188ca614945be864df10251fff2b32fa",
+      "integrated_sha256": "65296f6831724cca026529a1908cd725188ca614945be864df10251fff2b32fa",
+      "byte_identical": true,
+      "local_python_dependencies": []
+    },
+    "tools/trace/summarize_shadow.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/summarize_shadow.py",
+      "adaptations": [],
+      "source_blob": "f71c54fb0d9ff38ed1eaeaf5d5544114081ccbb6",
+      "last_changed_commit": "108610d9096f106ec369c90e99b94c59e8cb5711",
+      "source_sha256": "46ca1aedfa23e10e3a0431574b28356c719989b67c45abd7a08bdd6366c96f05",
+      "integrated_sha256": "46ca1aedfa23e10e3a0431574b28356c719989b67c45abd7a08bdd6366c96f05",
+      "byte_identical": true,
+      "local_python_dependencies": []
+    },
+    "tools/trace/test_distribution.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/test_distribution.py",
+      "adaptations": [
+        "Use Q4T_TEST_OUTPUT_DIR (default build/distribution-contracts) for synthetic fixture output."
+      ],
+      "source_blob": "e9d88b5960c8003df314250191e601f666e50770",
+      "last_changed_commit": "643665e1c4d75f5e2706fa0da68d49bfb470397d",
+      "source_sha256": "058ee0f9bb1109e07994c2f3b4518868c2f26b4baef67be415d22e2d1cec1378",
+      "integrated_sha256": "ca26afb96e7c30c9929c2436908ee04a47de13ef36c3f48dc813b37ee4da6cda",
+      "byte_identical": false,
+      "local_python_dependencies": [
+        "tools/trace/distribution.py",
+        "tools/trace/test_shadow.py"
+      ]
+    },
+    "tools/trace/test_hybrid.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/test_hybrid.py",
+      "adaptations": [],
+      "source_blob": "dd260c92fd6c256088f1191ddefafede3f16800b",
+      "last_changed_commit": "0086b59d4e2c79c683f12e025ae5904727728562",
+      "source_sha256": "5574b90c845cdae4ec3498ef1c8e8306cde94690bc3f7e91dce57aea11f2bb91",
+      "integrated_sha256": "5574b90c845cdae4ec3498ef1c8e8306cde94690bc3f7e91dce57aea11f2bb91",
+      "byte_identical": true,
+      "local_python_dependencies": [
+        "tools/trace/replay_hybrid.py"
+      ]
+    },
+    "tools/trace/test_replay.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/test_replay.py",
+      "adaptations": [],
+      "source_blob": "0b28bb1650be6c93147e34abd097797931c2a3b8",
+      "last_changed_commit": "826a443e9b295db42f617e429eb89ba16ffba3b4",
+      "source_sha256": "f5e17f9ef12451093342668cfdad2737dded6d6312c3c19c50b3549fb6687f59",
+      "integrated_sha256": "f5e17f9ef12451093342668cfdad2737dded6d6312c3c19c50b3549fb6687f59",
+      "byte_identical": true,
+      "local_python_dependencies": [
+        "tools/trace/replay.py"
+      ]
+    },
+    "tools/trace/test_shadow.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/test_shadow.py",
+      "adaptations": [],
+      "source_blob": "db270837afc6a00e6d42326285db2aecc1031f69",
+      "last_changed_commit": "108610d9096f106ec369c90e99b94c59e8cb5711",
+      "source_sha256": "585570a6b0b5f7b300541ac7511e3d155ae14302de321a562e95619255725afb",
+      "integrated_sha256": "585570a6b0b5f7b300541ac7511e3d155ae14302de321a562e95619255725afb",
+      "byte_identical": true,
+      "local_python_dependencies": [
+        "tools/trace/shadow.py"
+      ]
+    },
+    "tools/trace/top_expert_sets.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/top_expert_sets.py",
+      "adaptations": [],
+      "source_blob": "e8f14ae6c857b61d40a43ca4ec7b2c5d43ae1a66",
+      "last_changed_commit": "ecd5dca0867d142c330802a7b2a12327e572c329",
+      "source_sha256": "e873662cc282c2f39a2ab3dfd9568e65a91aa47e2c7c89b3a776a8f1d06df877",
+      "integrated_sha256": "e873662cc282c2f39a2ab3dfd9568e65a91aa47e2c7c89b3a776a8f1d06df877",
+      "byte_identical": true,
+      "local_python_dependencies": [
+        "tools/trace/analyze.py",
+        "tools/trace/distribution.py"
+      ]
+    },
+    "tools/trace/verify_replay.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/verify_replay.py",
+      "adaptations": [],
+      "source_blob": "15f93b73b6dd68af30933fe67c8d8801d2d05813",
+      "last_changed_commit": "826a443e9b295db42f617e429eb89ba16ffba3b4",
+      "source_sha256": "f3f9bf51ca509e46345544eb9919a8f09dd30fceb70faa8f84698da01ea45398",
+      "integrated_sha256": "f3f9bf51ca509e46345544eb9919a8f09dd30fceb70faa8f84698da01ea45398",
+      "byte_identical": true,
+      "local_python_dependencies": [
+        "tools/trace/analyze.py"
+      ]
+    },
+    "tools/trace/verify_shadow.py": {
+      "source_commit": "86020155ac0c4d2fb48050d609b3351d870812ff",
+      "source_path": "tools/trace/verify_shadow.py",
+      "adaptations": [],
+      "source_blob": "d5a91c25df3cbffca456158a40c3b0a6535b92a0",
+      "last_changed_commit": "108610d9096f106ec369c90e99b94c59e8cb5711",
+      "source_sha256": "cf250a79bd734b6b8f19f6532a25b68198d3307366002c7e9fc9911d02406dfa",
+      "integrated_sha256": "cf250a79bd734b6b8f19f6532a25b68198d3307366002c7e9fc9911d02406dfa",
+      "byte_identical": true,
+      "local_python_dependencies": [
+        "tools/trace/analyze.py"
+      ]
+    },
+    "tools/trace/gpu_cache_replay.py": {
+      "source_commit": "15feb5772c017fe8aaff26f014d53a52362d2a24",
+      "source_path": "tools/trace/gpu_cache_replay.py",
+      "adaptations": [],
+      "source_blob": "333ab859dff110c53918eca6f03833b4157f6c2e",
+      "last_changed_commit": "15feb5772c017fe8aaff26f014d53a52362d2a24",
+      "source_sha256": "7bca768a0c7cd447e295494c14966d64e460096c0422eb91857e628e677a4fd3",
+      "integrated_sha256": "7bca768a0c7cd447e295494c14966d64e460096c0422eb91857e628e677a4fd3",
+      "byte_identical": true,
+      "local_python_dependencies": []
+    },
+    "tools/trace/gpu_cache_schedule.cpp": {
+      "source_commit": "15feb5772c017fe8aaff26f014d53a52362d2a24",
+      "source_path": "tools/trace/gpu_cache_schedule.cpp",
+      "adaptations": [
+        "Change one include to tools-local research/moe_partition.h; algorithm header byte-identical to original source."
+      ],
+      "source_blob": "067e41e61873a2c0863ab283cf1abd82e423256a",
+      "last_changed_commit": "15feb5772c017fe8aaff26f014d53a52362d2a24",
+      "source_sha256": "4204156652381dc017cd3d8f31cd32940ef4ea8f3d486ae8263196bb5f568a96",
+      "integrated_sha256": "958bccd905b0a7cf46657677b20e768a31db53f3de4e231863f4e370150576fc",
+      "byte_identical": false
+    },
+    "tools/trace/run_gpu_cache_study.py": {
+      "source_commit": "15feb5772c017fe8aaff26f014d53a52362d2a24",
+      "source_path": "tools/trace/run_gpu_cache_study.py",
+      "adaptations": [
+        "Add --runtime-source-root and shared source_paths function; current tools/header bindings stay in current checkout while runtime bindings require explicit archive root.",
+        "Permit only current checkout build/ or .q4t-work/ output; keep strict source/helper SHA validation."
+      ],
+      "source_blob": "7e9bd54c78abd2367bed0c982bd153791cef2a66",
+      "last_changed_commit": "15feb5772c017fe8aaff26f014d53a52362d2a24",
+      "source_sha256": "040293f92ae61ba9703c4fa17b06f2af25442e84b5f93c6844dfed292e7699c7",
+      "integrated_sha256": "5e35478041bab9e9c51715d3c080b63848e3d784beed33ab73e53d95ab6c4efb",
+      "byte_identical": false,
+      "local_python_dependencies": [
+        "tools/trace/gpu_cache_replay.py",
+        "tools/trace/offload_trace.py"
+      ]
+    },
+    "tools/trace/test_gpu_cache_replay.py": {
+      "source_commit": "15feb5772c017fe8aaff26f014d53a52362d2a24",
+      "source_path": "tools/trace/test_gpu_cache_replay.py",
+      "adaptations": [],
+      "source_blob": "fd4484d2a8e1be013d1c42ee865643f3cd375075",
+      "last_changed_commit": "15feb5772c017fe8aaff26f014d53a52362d2a24",
+      "source_sha256": "9c636a93be5f4d4681acd5d8d3734953ceda2427f57a760272d91745be417822",
+      "integrated_sha256": "9c636a93be5f4d4681acd5d8d3734953ceda2427f57a760272d91745be417822",
+      "byte_identical": true,
+      "local_python_dependencies": [
+        "tools/trace/gpu_cache_replay.py"
+      ]
+    },
+    "tools/trace/test_gpu_cache_schedule.py": {
+      "source_commit": "15feb5772c017fe8aaff26f014d53a52362d2a24",
+      "source_path": "tools/trace/test_gpu_cache_schedule.py",
+      "adaptations": [],
+      "source_blob": "99b9b1093867290bf0f16fd274326fddb2a68a4f",
+      "last_changed_commit": "15feb5772c017fe8aaff26f014d53a52362d2a24",
+      "source_sha256": "0d9dcad109045f6f6f516c6209ec7aec2261d27c667bb5c2a864b0715d5941aa",
+      "integrated_sha256": "0d9dcad109045f6f6f516c6209ec7aec2261d27c667bb5c2a864b0715d5941aa",
+      "byte_identical": true,
+      "local_python_dependencies": []
+    },
+    "tools/trace/test_gpu_cache_study.py": {
+      "source_commit": "15feb5772c017fe8aaff26f014d53a52362d2a24",
+      "source_path": "tools/trace/test_gpu_cache_study.py",
+      "adaptations": [
+        "Use Q4T_TEST_OUTPUT_DIR (default build/gpu-study-contracts); adapt local algorithm path.",
+        "Add synthetic contracts for explicit archived runtime paths and current-checkout default; keep current tool/header paths fixed."
+      ],
+      "source_blob": "06edda0e35e517d38dbdbd416b5e91e6a252c88c",
+      "last_changed_commit": "15feb5772c017fe8aaff26f014d53a52362d2a24",
+      "source_sha256": "95ddbcd02b6674e5e2d126bc139b44d3394e498461dbd22f5fe7d37e8da852b4",
+      "integrated_sha256": "3385bad8576904491ac82425854b80e669161a80cc40f632b04894aa2f14f275",
+      "byte_identical": false,
+      "local_python_dependencies": [
+        "tools/trace/run_gpu_cache_study.py"
+      ]
+    },
+    "tools/trace/analyze_decode_supply.py": {
+      "source_commit": "8ea3d329a236e35dd0aba35ad619912e3e76cc28",
+      "source_path": "tools/trace/analyze_decode_supply.py",
+      "adaptations": [
+        "Add --runtime-source-root and reuse shared source_paths; retain frozen scope/source SHA admission.",
+        "Permit only current checkout build/ or .q4t-work/ output."
+      ],
+      "source_blob": "adafb9fc45d919fa5720679554a1db0f73a8e1a3",
+      "last_changed_commit": "8ea3d329a236e35dd0aba35ad619912e3e76cc28",
+      "source_sha256": "5ac7a226cc108b1369a1010a96b86477f7e3e63d9bbc7938728e3aec5d563b30",
+      "integrated_sha256": "8eda89f284f70e065a2a4b632443c61be9dfeae37c50dd1f8f2c4e43e611c06c",
+      "byte_identical": false,
+      "local_python_dependencies": [
+        "tools/trace/decode_supply_bounds.py",
+        "tools/trace/gpu_cache_replay.py",
+        "tools/trace/offload_trace.py",
+        "tools/trace/run_gpu_cache_study.py"
+      ]
+    },
+    "tools/trace/decode_supply_bounds.py": {
+      "source_commit": "8ea3d329a236e35dd0aba35ad619912e3e76cc28",
+      "source_path": "tools/trace/decode_supply_bounds.py",
+      "adaptations": [],
+      "source_blob": "56edcb7d47ee25646c72c1b7d7aace72aa35e871",
+      "last_changed_commit": "8ea3d329a236e35dd0aba35ad619912e3e76cc28",
+      "source_sha256": "8c35bc78f36092c180847013c0651f22ba1040f8ab9abf56aac51684e8c7a06f",
+      "integrated_sha256": "8c35bc78f36092c180847013c0651f22ba1040f8ab9abf56aac51684e8c7a06f",
+      "byte_identical": true,
+      "local_python_dependencies": []
+    },
+    "tools/trace/test_analyze_decode_supply.py": {
+      "source_commit": "8ea3d329a236e35dd0aba35ad619912e3e76cc28",
+      "source_path": "tools/trace/test_analyze_decode_supply.py",
+      "adaptations": [
+        "After retained first unified CTest failure, relocate mocked report fixture from workspace parent to Q4T_TEST_OUTPUT_DIR (fallback current build/supply-contracts). Production artifact guard is unchanged."
+      ],
+      "source_blob": "69719f26c53755224851ff38c65256c1df93793e",
+      "last_changed_commit": "8ea3d329a236e35dd0aba35ad619912e3e76cc28",
+      "source_sha256": "466becb604a109ac3bb964bfd98837d705c3f54946e3ed3a058d02a455447c3b",
+      "integrated_sha256": "dcac6a135aac94a7d21fcdc2a07853b07ed5242943cc95543391b41b4c7581d3",
+      "byte_identical": false,
+      "local_python_dependencies": [
+        "tools/trace/analyze_decode_supply.py",
+        "tools/trace/gpu_cache_replay.py"
+      ]
+    },
+    "tools/trace/test_decode_supply_bounds.py": {
+      "source_commit": "8ea3d329a236e35dd0aba35ad619912e3e76cc28",
+      "source_path": "tools/trace/test_decode_supply_bounds.py",
+      "adaptations": [],
+      "source_blob": "ad668b83d2cfbec506d332a067b3c6261d21d80c",
+      "last_changed_commit": "8ea3d329a236e35dd0aba35ad619912e3e76cc28",
+      "source_sha256": "7ee564552987c4c3d666cbdb42d04620734443003cd8b16aa008c66b567467b2",
+      "integrated_sha256": "7ee564552987c4c3d666cbdb42d04620734443003cd8b16aa008c66b567467b2",
+      "byte_identical": true,
+      "local_python_dependencies": [
+        "tools/trace/decode_supply_bounds.py"
+      ]
+    },
+    "tools/trace/analyze_mirror_retention.py": {
+      "source_commit": "a2fdcfda40dbdc3d422542e9ee8ce48a8aa364bc",
+      "source_path": "tools/trace/analyze_mirror_retention.py",
+      "adaptations": [
+        "Add --runtime-source-root and shared source_paths; historical runtime path bindings remain covered by matching validated receipt identities.",
+        "Permit only current checkout build/ or .q4t-work/ output."
+      ],
+      "source_blob": "e0763c263dfe2f26bd024cb75eca6932187ab8c2",
+      "last_changed_commit": "a2fdcfda40dbdc3d422542e9ee8ce48a8aa364bc",
+      "source_sha256": "560859e3ce8e739785a960fd9acc1fa10518d553a3cb3837d4dd36b1d967302b",
+      "integrated_sha256": "55ebafc8800c242af3af8214b3d7eb3334994e0c556caa9f5710502016c87813",
+      "byte_identical": false,
+      "local_python_dependencies": [
+        "tools/trace/analyze_decode_supply.py",
+        "tools/trace/gpu_cache_replay.py",
+        "tools/trace/mirror_retention.py",
+        "tools/trace/offload_trace.py",
+        "tools/trace/run_gpu_cache_study.py"
+      ]
+    },
+    "tools/trace/mirror_retention.py": {
+      "source_commit": "a2fdcfda40dbdc3d422542e9ee8ce48a8aa364bc",
+      "source_path": "tools/trace/mirror_retention.py",
+      "adaptations": [],
+      "source_blob": "2d7a480d6bccf62890137c1137d748b7e8c05e23",
+      "last_changed_commit": "a2fdcfda40dbdc3d422542e9ee8ce48a8aa364bc",
+      "source_sha256": "2ee2fef0b57dad3479d86c7baf3d8845728f4949a57b34354b6cf37effc8496f",
+      "integrated_sha256": "2ee2fef0b57dad3479d86c7baf3d8845728f4949a57b34354b6cf37effc8496f",
+      "byte_identical": true,
+      "local_python_dependencies": []
+    },
+    "tools/trace/test_analyze_mirror_retention.py": {
+      "source_commit": "a2fdcfda40dbdc3d422542e9ee8ce48a8aa364bc",
+      "source_path": "tools/trace/test_analyze_mirror_retention.py",
+      "adaptations": [
+        "Use Q4T_TEST_OUTPUT_DIR (default build/mirror-contracts).",
+        "Add synthetic explicit archive-root contract: missing override and changed runtime SHA in validation receipt both reject."
+      ],
+      "source_blob": "cc860a9b9bd30b6e9b301715295715bcd905ddec",
+      "last_changed_commit": "a2fdcfda40dbdc3d422542e9ee8ce48a8aa364bc",
+      "source_sha256": "c0195b169aed228a6cde7f1faa376af8c27343d519c328008c5050aee5effec1",
+      "integrated_sha256": "1a1c2fec0e9f91a75bb92f5d6ab082ee31a31ec79f0f8289884807e56cac9690",
+      "byte_identical": false,
+      "local_python_dependencies": [
+        "tools/trace/analyze_mirror_retention.py",
+        "tools/trace/run_gpu_cache_study.py"
+      ]
+    },
+    "tools/trace/test_mirror_retention.py": {
+      "source_commit": "a2fdcfda40dbdc3d422542e9ee8ce48a8aa364bc",
+      "source_path": "tools/trace/test_mirror_retention.py",
+      "adaptations": [],
+      "source_blob": "1c656ea95a5a561b1e3047dc601bc641f55a6eae",
+      "last_changed_commit": "a2fdcfda40dbdc3d422542e9ee8ce48a8aa364bc",
+      "source_sha256": "2297ef68306e92c621aad186ae9e00723602dc4d700d50c64b551162f84a6e38",
+      "integrated_sha256": "2297ef68306e92c621aad186ae9e00723602dc4d700d50c64b551162f84a6e38",
+      "byte_identical": true,
+      "local_python_dependencies": [
+        "tools/trace/mirror_retention.py"
+      ]
+    },
+    "tools/evalscope/physical_ram.py": {
+      "source_commit": "0df355a434475a685ae62a5af9e9d234ca26fafc",
+      "source_path": "tools/evalscope/physical_ram.py",
+      "adaptations": [],
+      "source_blob": "b1ebaef7a7476c2bb3bbe9050e02d33ea42e12e2",
+      "last_changed_commit": "0df355a434475a685ae62a5af9e9d234ca26fafc",
+      "source_sha256": "81f301aee0e3e0643a789dec8756f99574195995be95483ae0be71045baabf30",
+      "integrated_sha256": "81f301aee0e3e0643a789dec8756f99574195995be95483ae0be71045baabf30",
+      "byte_identical": true,
+      "local_python_dependencies": []
+    },
+    "tools/evalscope/test_physical_ram.py": {
+      "source_commit": "0df355a434475a685ae62a5af9e9d234ca26fafc",
+      "source_path": "tools/evalscope/test_physical_ram.py",
+      "adaptations": [
+        "Use Q4T_TEST_OUTPUT_DIR (default build/physical-ram-contracts) for synthetic fixture output."
+      ],
+      "source_blob": "7e2b5ea43a87584cbc92a30fc5af24ab28ca5062",
+      "last_changed_commit": "0df355a434475a685ae62a5af9e9d234ca26fafc",
+      "source_sha256": "ee30b3ea159c3fbef95553d1efd20e1a1a4728c2025897ff0dde7d8938572ef3",
+      "integrated_sha256": "d91682cb11b54472ac32b92b8fd49d4a0b4a71eaa981373ce6a447653d517849",
+      "byte_identical": false,
+      "local_python_dependencies": [
+        "tools/evalscope/physical_ram.py"
+      ]
+    },
+    "tools/trace/offload_trace.py": {
+      "source_commit": "15feb5772c017fe8aaff26f014d53a52362d2a24",
+      "source_path": "tools/trace/offload_trace.py",
+      "adaptations": [],
+      "source_blob": "e796152d10fb87ae21d4df77d8b4ac7102538c5f",
+      "last_changed_commit": "664ad059b7631ecd72c5b9a69a55093760171a13",
+      "source_sha256": "0a425cb3c01cd627dba883c7404b39702ac3d6bbea1b37507f349840e6c89127",
+      "integrated_sha256": "0a425cb3c01cd627dba883c7404b39702ac3d6bbea1b37507f349840e6c89127",
+      "byte_identical": true,
+      "local_python_dependencies": [
+        "tools/trace/analyze.py"
+      ]
+    },
+    "tools/trace/analyze_offload_log.py": {
+      "source_commit": "15feb5772c017fe8aaff26f014d53a52362d2a24",
+      "source_path": "tools/trace/analyze_offload_log.py",
+      "adaptations": [],
+      "source_blob": "9ff1644053677313b2d59624e5a19b98d5d9672d",
+      "last_changed_commit": "664ad059b7631ecd72c5b9a69a55093760171a13",
+      "source_sha256": "beb4ca291f956b6350545f1560c08ae14ddf676938e3ca02a6664f19e05d0ede",
+      "integrated_sha256": "beb4ca291f956b6350545f1560c08ae14ddf676938e3ca02a6664f19e05d0ede",
+      "byte_identical": true,
+      "local_python_dependencies": [
+        "tools/trace/analyze.py"
+      ]
+    },
+    "tools/trace/offload_sort.cpp": {
+      "source_commit": "15feb5772c017fe8aaff26f014d53a52362d2a24",
+      "source_path": "tools/trace/offload_sort.cpp",
+      "adaptations": [],
+      "source_blob": "08fd95aabaf5833e0d5f699c66e01ed053f2b7da",
+      "last_changed_commit": "664ad059b7631ecd72c5b9a69a55093760171a13",
+      "source_sha256": "1a9f8a701f3f40742a3d7fa4df4e4d2d87cc7c65f32e324cf492fd51d8d7b3ed",
+      "integrated_sha256": "1a9f8a701f3f40742a3d7fa4df4e4d2d87cc7c65f32e324cf492fd51d8d7b3ed",
+      "byte_identical": true
+    },
+    "tools/trace/test_offload_trace.py": {
+      "source_commit": "15feb5772c017fe8aaff26f014d53a52362d2a24",
+      "source_path": "tools/trace/test_offload_trace.py",
+      "adaptations": [
+        "Require explicit --checker; remove obsolete private release checker default."
+      ],
+      "source_blob": "018a9c8c53a694e5003bdd24a88be1ade7601d94",
+      "last_changed_commit": "664ad059b7631ecd72c5b9a69a55093760171a13",
+      "source_sha256": "093c69b3f5c1587466286157c9eb714fc41a4a996c04bc5b5e2095ad9782dd3f",
+      "integrated_sha256": "296471496f0c9689c8fa2d3b11e92788f6146617a337035345e97960b23b0a20",
+      "byte_identical": false,
+      "local_python_dependencies": [
+        "tools/trace/offload_trace.py"
+      ]
+    },
+    "tools/trace/test_offload_log.py": {
+      "source_commit": "15feb5772c017fe8aaff26f014d53a52362d2a24",
+      "source_path": "tools/trace/test_offload_log.py",
+      "adaptations": [
+        "Use Q4T_TEST_OUTPUT_DIR (default build/offload-log-contracts) instead of system temporary directory."
+      ],
+      "source_blob": "54fb670a242812168adf27dfd1fc26a6d4efa61b",
+      "last_changed_commit": "664ad059b7631ecd72c5b9a69a55093760171a13",
+      "source_sha256": "28a8a4d62f8ec4fa90c3fa5438260685a21de65dc38f18dcd57ca667f438708b",
+      "integrated_sha256": "bb9988cab8399586a64a36bc1e692a725f2957a477e072780e4c373170170157",
+      "byte_identical": false,
+      "local_python_dependencies": [
+        "tools/trace/analyze_offload_log.py"
+      ]
+    },
+    "tools/trace/research/moe_partition.h": {
+      "source_commit": "15feb5772c017fe8aaff26f014d53a52362d2a24",
+      "source_path": "include/q4t/model/moe_partition.h",
+      "adaptations": [
+        "Relocated byte-for-byte into tools/trace/research; runtime does not include or build this copy."
+      ],
+      "source_blob": "d6a7a644f2cc7e8473edbed46adcaeae0bd58222",
+      "last_changed_commit": "26ca438b2497690755b929e1fa8d1ce7d7a755e3",
+      "source_sha256": "cdb01017f2c5bc041728423c18a70a3497bf89abdbeec2e4d8ac36e578a96275",
+      "integrated_sha256": "cdb01017f2c5bc041728423c18a70a3497bf89abdbeec2e4d8ac36e578a96275",
+      "byte_identical": true
+    },
+    "tools/trace/research/README.md": {
+      "source_commit": null,
+      "source_path": null,
+      "adaptations": [
+        "New provenance/boundary documentation for tool-local byte-identical partition algorithm."
+      ],
+      "integrated_sha256": "9556d147a5fca0466eedf224a64f0017659d0be3e6024f06f0f9e6faa532c227"
+    }
+  },
+  "schema": 1,
+  "scope": "Selected offline tools/host contracts only; no runtime offload or observer port.",
+  "base_commit": "8ea85b1b0cdf0f026247bf185bddbd536f916c82",
+  "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source",
+  "tests_run_by_this_agent": false,
+  "builds_run_by_this_agent": false,
+  "static_inventory": "Read source and dependency imports only; no model/private raw/reference access.",
+  "tool_dependencies": {
+    "host": [
+      "g++-14 C++23",
+      "CMake >= 3.25",
+      "Python >= 3.11 (hashlib.file_digest)",
+      "NumPy for distribution/locality/top-N tools"
+    ],
+    "runtime_libraries": "None for selected host tools; no CUDA or ICU required.",
+    "external_capture_samplers": "run_evalscope_scenarios and run_shadow_study require explicit runtime/model/checker/calibration; not invoked by public CTest.",
+    "parent_owned_registration": "tools/evalscope/test_response_identity.py is registered but authored by root."
+  },
+  "verification_commands": [
+    "cmake -S tests/host -B build/public-host -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-14",
+    "cmake --build build/public-host --parallel 2",
+    "ctest --test-dir build/public-host --no-tests=error --output-on-failure --verbose",
+    "python3 -B tools/verify/test_gate/run.py --cxx g++-14 --output build/public-host/test-gate",
+    "python3 -B tools/release/test_host_gate_audit.py"
+  ],
+  "reproduction_limits": [
+    "Public tests use synthetic contracts; no archived real replay or HTTP/model quality/performance evidence is newly established.",
+    "Private trace bins, sidecars, capture binary, checkpoint/observer/counter artifacts and source-bound manifests/plans/receipts are not shipped.",
+    "Transplanted source identity and local algorithm path differ from historical plans; old plan/source SHA bindings must fail until a new explicit source-bound plan is created, preserving old evidence.",
+    "Use --runtime-source-root to bind explicit read-only historical runtime checkout; omission does not discover or silently substitute any archive.",
+    "Historical GPU/lower-cache/observer source files are intentionally absent from main runtime; the offline partition header is byte-identical and isolated in tools/trace/research.",
+    "Historical plans replay-plan-20260928.json and distribution-plan-20260928.json name local frozen evidence that is absent in public checkout; missing source fails.",
+    "run_shadow_study default document corpus changed to current existing documents; exact old corpus requires explicit --corpus-file values and recorded identities.",
+    "Selection coverage/logical slot traffic/supply bounds/mirror opportunities are not runtime policy acceptance, physical SSD reads, aggregate physical RAM union, or speedup predictions."
+  ],
+  "excluded": [
+    "All historical docs/ copied by other commits; root writes one current wrapup report.",
+    "NO_GO offload policy/runtime/observer implementations.",
+    "Absolute-private-path offload experiment orchestrators.",
+    "Any private raw/model/reference files."
+  ],
+  "corrections": [
+    {
+      "date": "2026-10-07",
+      "field": "tests/host/CMakeLists.txt adaptation prose / prior commentary",
+      "previous": 19,
+      "correct": 18,
+      "reason": "Initial manual grouping count was wrong; static CMake inventory and retained first unified CTest log both contain 18 groups.",
+      "evidence": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/test-public-host-01.log",
+      "evidence_sha256": "03a4ed1ceeb255bf6ff0375195bbab1c19b4fd12ae8ef4ea8bd7b61dde49a002",
+      "original_notes_preserved": true
+    }
+  ],
+  "supersedes_for_current_inventory": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/tools-integration-notes.json",
+    "sha256": "98984d718db63f3480c7de0619a8a3d6ddd8bdc7c3da5c1dc243af36fef371cf",
+    "original_preserved": true
+  },
+  "remediation_test_status": "Not rerun by subagent; root must rerun only q4t_analyze_decode_supply_contracts."
+}

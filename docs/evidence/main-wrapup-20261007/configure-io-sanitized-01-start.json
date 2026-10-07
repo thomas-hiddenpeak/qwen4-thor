@@ -1,0 +1,16 @@
+{
+  "label": "configure-io-sanitized-01",
+  "argv": [
+    "cmake",
+    "-S",
+    "tests/io_host",
+    "-B",
+    "build/io-sanitized",
+    "-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+    "-DCMAKE_CXX_COMPILER=g++-14",
+    "-DCMAKE_CXX_FLAGS=-fsanitize=address,undefined -fno-omit-frame-pointer",
+    "-DCMAKE_EXE_LINKER_FLAGS=-fsanitize=address,undefined"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source",
+  "started": 1791344409.187531
+}

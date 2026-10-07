@@ -1,0 +1,5 @@
+[ 25%] Building CXX object CMakeFiles/q4t_budget_contracts.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/tests/test_main.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_budget_contracts.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/tests/runtime_memory_budget_test.cpp.o
+[ 75%] Building CXX object CMakeFiles/q4t_budget_contracts.dir/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/src/runtime/memory_budget.cpp.o
+[100%] Linking CXX executable q4t_budget_contracts
+[100%] Built target q4t_budget_contracts
