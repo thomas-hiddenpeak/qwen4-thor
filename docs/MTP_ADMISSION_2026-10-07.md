@@ -1,174 +1,153 @@
 # 单流文本 MTP 准入（2026-10-07）
 
-状态：资源合同通过，数值对照存在未解释差异，尚未准入。用户授权
-Goal 持续推进；唯一工作分支为
-`codex/mtp-admission-20261007`，起点 main `8cd297b`。原研究目录、两处
-未提交修改、已验收主线工作区和二进制不变。
+**阶段结论：NO_GO_FOR_ENABLEMENT，暂不启用 MTP。**
+资源、状态恢复及生成边界的具体缺陷已修复；实际完整模型服务中，
+相同输入的 MTP 与普通 greedy 仍产生不同的 256-token 输出。该差异
+尚未完成数值接入解释，不据此直接断言 MTP 算法错误，也不以短答案
+质量通过代替跨路径准入。本阶段按预设 NO_GO 出口收尾，不追加优化。
 
-## 目标与边界
+唯一工作分支 `codex/mtp-admission-20261007`，起点 main `8cd297b`。
+实现提交 `f02e75e`、`0284b60`、`ec0ae6f` 已推送。最终二进制 SHA-256：
+`7fe34d6ddd6bc78c4c9dea6537f72802c93fc60f09eb0b977105660480c627c7`。
+main、原默认二进制和两处未提交修改保持不变；测试服务已停止。
+本阶段不自动合并或部署，MTP 默认仍关闭。
 
-判断现有 MTP 能否可靠使用，以及是否值得显式启用。单 Thor、指定
-checkpoint、文本 greedy、max_seq=1、k=3、max_prefill=8192、
-max_len=208896；默认继续关闭。上下文尾部不足完整验证步时允许明确
-记录的普通 decode 收尾，不通过缩减正式五档容量取得通过。
+## 冻结范围与完成内容
 
-仅修明确的资源、生命周期、生成与验证入口缺陷。不引入 draft 量化、
-动态 k 优化、offload、媒体、多流或新的 kernel 性能候选。若正确性或
-收益不达标，以具体证据和 NO_GO 结束，不自动追加其他优化方向。
+单 Thor、指定 checkpoint、文本 greedy、S=1、k=3、max_prefill=8192、
+max_len=208896。仅修资源、生命周期、生成与验证入口的明确缺陷；
+不扩展 offload、媒体、多流、动态 k 或 kernel 性能优化。
 
-## 冻结任务
+- 补齐独立 MTP 权重、workspace、scratch、verify checkpoint、请求
+  trunk、临时缓冲及 host staging 预算。加载/扩容失败释放部分资源，
+  成功后才发布容量，借用的 main embedding/lm_head 不被释放。
+- 修复 scheduler 不可用时回退、上下文尾部普通 decode 收尾、输出
+  上限与 EOS 优先级；记录每个真实 HTTP ID 的实际执行路径。
+- 普通 scheduler 的 `ModelDecodeBatchMulti` 补写当前 token 的三行
+  RoPE 坐标；旧入口读取了 prefill 范围外仍为 0 的表项。
+- checkpoint 恢复按实际写入行数定位，区分分配容量与当前布局，
+  记录有效槽位并拒绝未写/陈旧状态；覆盖重置、增长及失败清理。
+- 扩展现有 evalscope runner 的 MTP 模式与容量/路径审计，保存原始
+  HTTP、失败与身份，不把静默回退或缩容计为 MTP 通过。
 
-1. 资源：按实际 LoadMtp、DraftExtend、ReserveScratch 与 verify
-   checkpoint 分配补齐独立权重、持久缓冲、临时峰值及加载 host staging
-   预算；预算仍是分配估算。修复部分加载/扩容失败的清理及容量发布。
-2. 生成：验证实际 `MtpSpeculativeStepMulti(B=1)` 的数值及接受/拒绝
-   回滚；正式 plain decode 作为对照，不以重新 prefill 冒充。修复
-   scheduler 不可用时的回退、上下文尾部、停止、取消等具体失败。
-3. 证据：扩展现有 evalscope runner 显式 MTP 模式，逐 HTTP ID 绑定
-   实际路径，拒绝把静默回退当作 MTP 结果；记录 TTFT、decode、整请求
-   耗时和内存。不修改既有参考、精度或接受门槛。
+兼容限制：旧 `ModelDecodeBatch(save_checkpoints=true)` 的单序列
+PLE kernel 没有完整保存 PLE checkpoint，现于 GPU 提交前明确拒绝，
+提示使用 `ModelVerifyMulti`。非 serve CLI 仍调用旧 `MtpSpeculativeStep`，
+会遇到该错误；本轮未迁移此入口，不宣称所有 MTP 入口可用。
 
-## 验收顺序与出口
+## 缺陷反例与定向修复
 
-- 不变主线二进制 `0f52e926` 的 HTTP 质量 11/11 按身份复用。先补其
-  五档性能基线（各 3 次、输出 256），旧部署和 offload 数据不替代。
-  该独立基线可与候选代码编写并行，禁止并行 GPU 测试或服务。
-- 修复按上述固定范围成组完成后，统一零警告构建、预算/资源故障
-  合同、MTP 直接数值/回滚测试和 runner 合成反例。直接合同只用于
-  缺陷修复，不证明完整模型质量；跨路径数值差异必须保留和解释。
-- 候选先做实际 HTTP 质量与输出边界（MTP off/on 分开）、上下文尾部
-  和取消恢复。只对具体失败定向修复、重验受影响项。
-- 获得性能接受结论仍需候选 off/on 各完整五档 HTTP E2E，同输入、
-  同容量、同规则。分别给出质量、性能与内存结论；单次或短上下文
-  收益不抵消其他档位回退。未运行、失败、模式回退均明确标记。
-- 内存采样以进程及整机可观察字段为界，分配估算或 RSS 不能证明
-  整机 RAM 上限；不进行大体积 tensor capture。现有约 10 GiB 磁盘
-  余量用于独立构建和有界 HTTP 证据。
+| 问题 | 修复前实测 | 修复后 |
+|---|---|---|
+| pooled decode RoPE | position=13/delta=0、position=14/delta=5 的三行均为 0 | 分别为 13、19；其他表项不变，真实四层前向完成 |
+| checkpoint 容量/布局 | cap1 与 cap3 的相同 prefill/verify 逐字节相同，但恢复后的 layer 1 SSM、conv 及后续 logits 不同 | 恢复状态及后续 probe 逐字节相同，未写行/无效槽/失效状态均拒绝 |
+| MTP 权重预算接入 | index 声明 14,734,642,001 B，导致 208896→129753 缩容，正式审计在 HTTP 前拒绝 | 31 个映射张量实际合计 5,214,301,696 B，全容量保持 |
 
-必要修改分批提交在同一工作分支，统一验收后给出可启用范围或明确
-NO_GO；本 Goal 不改变默认部署，不自动合并未经接受的 MTP 能力。
+只读 shard JSON 头与加载代码的独立核对确认：当前 BF16、FP8 shadows
+关闭时，31 张量合计等于实际独立权重分配，没有借用权重的重复计入。
+预算 adapter 改为映射张量尺寸求和并检查累计溢出，不修改模型或预算
+比例。最大 host staging 仍为 3,355,443,200 B。全容量总分配估算为
+113,469,410,520 B；估算不等于物理 RAM 上限，也不扩展到其他格式。
 
-## 第一组实现与直接检查
+本机 Release/C++23/CUDA 13.3/SM110a 构建零警告。22 项预算、2 项
+生成策略、18 项 runner 模式合同通过。真实 CUDA 生命周期覆盖
+22 个 scratch 分配失败点、3 个 checkpoint 分配失败点、部分加载
+两种 stream、真实嵌套加载失败/重试及借用权重保护；最终受影响的
+有效性检查亦通过。
 
-候选 q4t SHA-256 为
-`b839a6745deeb3712005c0cf8334f3019bbff6c69623ba9f0316bec3e603d416`。
-本机 Release/C++23/CUDA 13.3/SM110a 构建零警告。工作区
-`build/runtime-source-identity-01.json` 绑定 124 个运行时/构建源文件，
-包含新文件；不能只用未包含 untracked 文件的 Git diff 绑定身份。
+## 尚未闭合的数值与生成差异
 
-通过：22 项预算合同、2 项上下文边界合同、18 项 runner 模式反例；
-真实 CUDA 生命周期检查覆盖 22 个 scratch 分配失败点、3 个 checkpoint
-失败点、部分加载的两个 stream、真实第 8/39 分配点、成功/重试及借用
-权重不被释放。旧 multi 夹具的 accepted_count 越界已修复，原测试通过；
-它仍使用旧的受限参考，不能代替新准入测试。
+四层实际 B=1 plain/Multi 对照保留两代结果：
 
-新四层直接对照首次失败，记录于 `build/numerical-tests-01.log`：
-`numeric_equal=0, rollback_exact=1, greedy_equal=0`。固定后续 token 的
-首行 logits 最大绝对差 0.240234375、相对 L2 0.0466552478；自然 k=3
-首步 bonus=287 相同，下一 token 为 MTP 359、plain 220。输入、层数和
-路径见测试代码，属于短模型诊断，不推导完整模型任务质量。接受/拒绝
-同路径回滚及下一步固定 token 检查逐位相同；跨路径差异待解释，不
-预设新的容差或直接归因为回滚错误。
+| 候选 | 首行 logits 最大绝对差 / 相对 L2 | 结果 |
+|---|---|---|
+| 修复前 b839a674 | 0.240234375 / 0.0466552478 | numeric_equal=0，rollback_exact=1，greedy_equal=0 |
+| 修复后 30736563 | 0.203125 / 0.0400214922 | numeric_equal=0，rollback_exact=1，greedy_equal=0 |
 
-## 当前主线五档基线
+固定后续 token 的四行 argmax 相同，但自然生成首步 correction 仍为
+MTP 359 / plain 220。跨路径逐位不同本身不证明算法错误；同路径容量
+变化则必须逐位一致。旧 same-path rollback 对照共享恢复逻辑，不能
+代替后来增加的独立 cap1/cap3 反例。
 
-未修改的主线二进制 `0f52e926` 完成 15 条同输入 HTTP，输出与冻结
-参考一致、服务退出 0。TTFT 为三次算术均值，decode 为调和均值：
+唯一一次旧二进制 hook 采集为 492 文件、31,343,616 B。重复 prefill
+逐位相同；固定 token 的 layer 0 首个观测差异在 qkv_raw（首行
+19/10240 元素），自然首 bonus 更早在 x（4/2560）。这是有界定位，
+不是完整误差归因或新容差；hook 改变同步，不用于性能结论。
 
-| 输入 token | TTFT（秒） | decode（token/s） |
-|---:|---:|---:|
-| 1024 | 0.8202 | 18.5175 |
-| 4096 | 2.6258 | 17.8748 |
-| 8192 | 5.1614 | 18.1131 |
-| 45056 | 30.4047 | 17.8453 |
-| 204800 | 159.1450 | 17.1249 |
+完整模型的 1K HTTP 控制进一步观察到跨模式差异：
 
-原始证据位于旧主线工作区 `build/mtp-admission-baseline-off-20261007/`；
-本阶段外层目录的 `baseline-summary.json` 保存实际绝对路径和摘要。
-内存采样从运行中途开始，仅覆盖部分后续请求，不覆盖完整启动峰值。
-这些是本轮新测基线，尚无候选加速/持平接受结论。
+- 普通模式三次确定输出 SHA：`0e1e7da5…`。
+- MTP 取消后恢复输出 SHA：`055d47b9…`，1024 输入/256 输出，正常结束。
+- 全新服务仅一次正常 MTP 请求仍为 `055d47b9…`，实际 MTP 74 步，
+  请求语义、精度和容量相同，服务正常退出、槽位恢复、GPU 健康。
 
-## 首次失败后的有界补修
+因此该输入未观察到取消后的状态残留；MTP/普通模式的生成分叉在
+无取消的新进程也存在。首次取消专项因普通输出比较失败而返回失败
+的记录保留，不改写为整体通过。未发明阈值或将所有差异归为 near-tie。
 
-候选 b839a674 的普通模式 HTTP 质量 11/11、真实路径审计和退出通过，
-证据 `.q4t-work/evidence/quality-off-01/`。这不能排除计算合同缺陷。
+## HTTP 与性能证据
 
-代码审查定位两项具体问题，限定本轮补修范围：
+| 检查 | 结果与边界 |
+|---|---|
+| 普通模式固定质量 | 03 候选 11/11，含 200K；输出参考和实际路径通过 |
+| MTP 首次正式启动 | 03 因缩容被拒绝，0 条 HTTP；首次失败保留 |
+| MTP 补修后固定质量 | 04 全容量 11/11；逐 ID 均为 Multi B1，各 2 步，无回退 |
+| 上下文/故障边界 | 3 组各 4 条，12/12；MTP 后普通收尾、初始尾部、scheduler 分配故障回退，文本与修复后的普通模式一致 |
+| 输出上限 | off/on 各 6 条，均通过；1/2/8 token，流式及非流式，文本一致 |
+| 取消与恢复 | 取消协议/槽位通过；恢复响应完整，但与普通文本不一致；唯一新进程控制与恢复 MTP 文本一致 |
+| 普通模式五档 | 新旧各 15 条；同输入、各自三次输出确定，均为 256 token；五档新旧文本均不同 |
+| MTP 五档收益 | 数值/生成准入未闭合，按 NO_GO 出口未运行；不宣称 MTP 加速或性能接受 |
 
-- 实际 scheduler 使用的 `ModelDecodeBatchMulti` 未更新当前 token 的
-  三行 RoPE 坐标。prefill 只填输入范围，后续位置仍为 0；其他 decode
-  及 verify 入口写 logical position + rope delta。先保存真实调用反例，
-  再补齐写入，检查槽位和邻位隔离。旧普通模式只作兼容对照。
-- checkpoint 写入以当前 `num_ckpt` 排布，恢复以分配容量定位。预留
-  3 后使用 1 时步长不一致；原 same-path rollback 对照共享恢复逻辑，
-  不能证明状态正确。增加独立容量布局反例再修，不用原通过掩盖缺陷。
+04 相对 03 仅 MTP 预算 adapter 改变，`libq4t_model.a` 逐字节相同；
+直接计算/状态合同和普通固定质量按未变执行路径复用，并明确绑定
+原受测二进制。04 的普通五档、MTP 质量及边界为实际新运行。
 
-唯一一轮现有 hook 采集保留于外层 `linear-capture-01/`：492 文件、
-31,343,616 字节；重复 prefill 逐位相同，固定 token 首个观测差异在
-layer 0 的 qkv_raw（首行 19/10240 元素不同），自然首 bonus 则更早在
-输入 x（4/2560）。这支持投影算术路径也存在差异，不构成完整归因或
-新的误差门槛；hook 改变同步，数据不作性能依据。不追加大规模抓取。
+普通模式同输入描述性对照如下。TTFT 为算术均值，decode 为调和均值，
+整请求为算术均值；每档 3 次。旧普通路径有已证明的 RoPE 缺陷，因此
+旧文本只作兼容对照，不能要求恢复错误计算来维持输出。
 
-两项旧版反例已实际失败并保存于外层 `repro-old/`（含测试源码和库）：
-RoPE 两步三行均为 0，期望分别为 13 和 19；checkpoint 两种容量的
-prefill/verify 状态和 logits 逐字节相同，但恢复后 layer 1 SSM 有
-3,136,146/3,145,728 字节不同，后续 logits 有 343,074/496,640 字节不同。
+| 输入 token | 旧 TTFT(s) | 新 TTFT(s) | 旧 decode(tok/s) | 新 decode(tok/s) | 新整请求(s) |
+|---:|---:|---:|---:|---:|---:|
+| 1024 | 0.8202 | 0.7989 | 18.5175 | 18.5514 | 14.5445 |
+| 4096 | 2.6258 | 2.6307 | 17.8748 | 17.8913 | 16.8835 |
+| 8192 | 5.1614 | 5.1723 | 18.1131 | 18.1353 | 19.2332 |
+| 45056 | 30.4047 | 30.4499 | 17.8453 | 17.8581 | 44.7291 |
+| 204800 | 159.1450 | 159.1545 | 17.1249 | 17.0711 | 174.0920 |
 
-补丁按当前 verify 的实际行数定位，记录有效槽位，在新 forward、
-reset、增长/失败与销毁时失效；拒绝未写行、无效槽和不足容量。
-旧 `ModelDecodeBatch(save_checkpoints=true)` 的单序列 PLE kernel
-没有保存 PLE checkpoint，本轮在提交 GPU 工作前明确拒绝并指向
-`ModelVerifyMulti`。不宣称旧 standalone MTP 已获准入。
+Decode 变化依次 +0.18%、+0.09%、+0.12%、+0.07%、−0.31%。1K 首请求
+TTFT 旧 0.9308s、新 0.8703s，后两次均约 0.763–0.767s，不能把首档
+均值下降解释成稳定 prefill 加速。逐次值、首请求与后续范围保留。
+输出路径已变、每档仅三次；不宣称因果提速、严格持平或稳定尾延迟。
+SSE 可能成批发 token，没有精确 token 时间戳，不推导 ITL 分位数。
 
-修复前后分开保存身份；统一重验这两项、受影响生命周期与原数值对照。
-跨路径 `numeric_equal=0` 只表示逐位不同，不单独证明算法错误；同输入
-同算术容量变化必须逐位相同。修复后的 HTTP 质量、生成边界和收益仍
-分别判定，旧错误 plain 输出仅作兼容/修复代价对照。
+## 内存观察与交接
 
-修复候选 `3073656388802257502946503f413ae0a83fdb6bb00f08f32da0e066184d2cf3`
-已零警告构建；两项独立反例均由 FAIL 转 PASS，容量变化后的恢复状态
-与后续 logits 逐字节相同，所有有效性边界及加载/扩容失败清理通过。
-原四层诊断仍为 `numeric_equal=0, rollback_exact=1, greedy_equal=0`；
-固定后续 token 首行 logits 最大绝对差 0.203125、相对 L2 0.0400214922，
-自然首步 correction 仍为 MTP 359 / plain 220。保留在
-`build/*-03.log` 与 `build/direct-results-03.json`。这些有限观察尚未闭合
-跨路径生成/数值接入；完成冻结的 HTTP 合同后若仍未闭合，按 NO_GO
-出口停止 MTP 五档收益验收，不以未准入能力的局部速度声称加速。
+每秒读取 /proc，字段分开报告：
 
-兼容范围：非 serve 的旧 CLI 仍使用 `MtpSpeculativeStep`，会遇到
-上述 legacy PLE checkpoint 错误；本轮未将它迁移到 Multi，也不将
-它列入可用入口。当前分支是阶段候选，并非默认部署或全入口发布。
+| 运行 | 样本数 | 采样 RSS 最大(GiB) | 观察到 VmHWM 最大(GiB) | MemAvailable 最低(GiB) |
+|---|---:|---:|---:|---:|
+| MTP 04 固定质量 | 265 | 3.766 | 3.766 | 16.630 |
+| 普通 04 五档 | 862 | 0.879 | 1.668 | 29.995 |
 
-## MTP HTTP 首次启动失败与预算元数据补修
+两组工作负载不同，不能据此计算 MTP 的物理内存增量。RSS/HWM 不代表
+CUDA 全部占用，系统 MemAvailable 是另一种指标；秒级采样可漏瞬时峰值，
+整体物理 RAM 上限仍未知。旧基线的内存采样从中途开始，仅作历史观察。
 
-30736563 的普通 HTTP 质量 11/11、输出参考、实际路径及正常退出通过
-（`.q4t-work/evidence/quality-off-03/`）。开启 MTP 的首次正式运行
-`quality-on-03` 在发请求前被容量审计拒绝：请求 208896，实际 129753，
-退出记录中 HTTP 完成数为 0；不计为质量失败样本或已完成矩阵。
+所有本阶段本机证据根为 `.q4t-work/mtp-admission-20261007/`：
 
-定向只读核对 index 与三个 shard 的 JSON 头：MTP index 声明总量
-14,734,642,001 字节，但 31 个映射张量合计 5,214,301,696 字节。启动
-adapter 错用声明总量，造成多计 9,520,340,305 字节；现改为对已有
-`FindTensor` 元数据循环求和并检查溢出，保留实际最大 host staging。
-不修改模型文件、预算比例或正式容量，不读取张量 payload 作审计。
-证据位于外层 `mtp-weight-metadata-review.json`。
+- `source/build/`：各代构建/源码身份、直接测试与首次失败日志。
+- `source/.q4t-work/evidence/`：quality、boundaries、limits、performance、
+  cancellation 与 `mtp-fresh-control-04` 原始请求/响应/日志。
+- `candidate-01-archive/`、`candidate-03-archive/`、`repro-old/`：旧二进制、
+  库和独立反例；`linear-capture-01/`：唯一有界采集与离线分析。
+- `mtp-weight-metadata-review.json`、`mtp-weight-allocation-review.json`：
+  实际映射与加载分配核对；`stage-summary.json`：离线验收汇总。
+- `summarize-stage.py` 与 `run-mtp-fresh-control.py`：本机复核脚本；
+  后者的确切副本和输入摘要也保存在控制证据目录。
+- `protected-workspaces-check.json`、`final-runtime-check.json`：原两处
+  dirty diff/两个二进制保持、124 个运行文件身份、测试服务停止确认。
 
-此次仅 MTP 预算接入改变；直接计算/状态测试和普通模式 HTTP 的受测
-执行路径未改，按依赖身份复用 03 证据。只重验 MTP 启动与受影响 HTTP。
-
-预算补修候选 `7fe34d6ddd6bc78c4c9dea6537f72802c93fc60f09eb0b977105660480c627c7`
-零警告构建。与 03 的唯一运行源码差异是 MTP 预算 adapter，
-`libq4t_model.a` 逐字节相同，身份与复用说明见 `build/build-identity-04.json`。
-独立审查确认 31 张量合计等于当前 BF16/FP8-off 的实际独立权重分配；
-main embedding/lm_head 为借用，不重复计入。无需将此结论扩展到其他
-checkpoint 或 FP8 shadows。
-
-`quality-on-04` 已通过：实际 max_len=208896、max_prefill=8192、S=1、
-MTP=1；11/11 固定质量题、输出参考及正常退出通过，逐 ID 均为
-`mtp_multi_b1`（各 2 步），没有静默回退。单次完整配置预算估算为
-113,469,410,520 字节；这不是物理 RAM 实测上限。
-
-后续固定检查：上下文尾部/故障回退、off/on 输出上限、取消恢复。
-普通模式补一轮五档用于记录修复代价和提供修复版取消对照；不将旧
-错误 RoPE 的输出作为正确性门槛，先保存全部同输入记录，再离线列出
-相对旧版的文本差异与性能。MTP 五档收益验收仍以跨路径准入闭合为前提。
+旧主线五档位于 `.q4t-work/main-wrapup-20261007/source/build/` 下的
+`mtp-admission-baseline-off-20261007/`。main 保持 `8cd297b`，原目录
+7 项修改和 wt-c1 的 2 项修改未纳入，模型和 reference/ 未改动。
+后续可独立审查本阶段修复；MTP 启用需要另行闭合实际路径数值合同。
