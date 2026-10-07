@@ -55,7 +55,9 @@ class WeightIndex {
 
 // Reads tensors from the shards referenced by a WeightIndex. Shard files are
 // resolved relative to `model_dir` and opened lazily (mmap). A small LRU cache
-// keeps recently used shards open.
+// keeps recently used shards open. Each read retains its shard independently
+// of LRU eviction, without holding the cache lock during file reads. The index
+// must outlive the loader, and callers must finish before destroying it.
 class WeightLoader {
  public:
   static Status Create(const std::string& model_dir, const WeightIndex& index,
@@ -65,6 +67,8 @@ class WeightLoader {
   WeightLoader& operator=(const WeightLoader&) = delete;
 
   // Metadata for `name` (from the shard's header); nullptr if absent.
+  // The returned immutable metadata belongs to the loader and remains valid
+  // until its destruction, including across shard evictions and other calls.
   const TensorInfo* FindTensor(const std::string& name) const;
   // Read `name`'s bytes into `dst` (>= byte_size).
   Status ReadTensor(const std::string& name, void* dst) const;
@@ -72,15 +76,16 @@ class WeightLoader {
   Status ReadTensorToDevice(const std::string& name, void* dst,
                             void* device_dst, cudaStream_t stream) const;
 
-  // Number of shards currently open (for diagnostics).
+  // Number of cached shard handles (for diagnostics). Evicted shards can
+  // remain open until their in-progress readers finish.
   size_t open_shards() const;
 
  private:
   struct Impl;
   explicit WeightLoader(Impl* impl);
   Impl* impl_;
-  // Guards impl_->open/impl_->lru (the shard LRU cache). Required for the
-  // parallel MoE expert load, which reads from multiple shards concurrently.
+  // Guards the shard LRU cache and immutable metadata insertion. Required
+  // for the parallel MoE load, which reads multiple shards concurrently.
   mutable std::mutex mu_;
 };
 

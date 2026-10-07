@@ -1,0 +1,118 @@
+{
+  "binary": "build/q4t",
+  "checker": ".q4t-work/releases/text-v1-moe-trace-20260928/q4t_router_trace_check",
+  "sources": [
+    {
+      "name": "moe-evalscope-scenarios-20260928__trace",
+      "path": ".q4t-work/moe-evalscope-scenarios-20260928/trace",
+      "family": "authored"
+    },
+    {
+      "name": "moe-router-study-20260928__chat__trace",
+      "path": ".q4t-work/moe-router-study-20260928/chat/trace",
+      "family": "authored"
+    },
+    {
+      "name": "moe-router-study-20260928__trace",
+      "path": ".q4t-work/moe-router-study-20260928/trace",
+      "family": "pilot"
+    },
+    {
+      "name": "moe-shadow-20260928__study__trace",
+      "path": ".q4t-work/moe-shadow-20260928/study/trace",
+      "family": "authored"
+    },
+    {
+      "name": "moe-shadow-20260928__trace-performance-control",
+      "path": ".q4t-work/moe-shadow-20260928/trace-performance-control",
+      "family": "performance"
+    },
+    {
+      "name": "moe-shadow-20260928__trace-performance-shadow",
+      "path": ".q4t-work/moe-shadow-20260928/trace-performance-shadow",
+      "family": "performance"
+    },
+    {
+      "name": "moe-shadow-20260928__trace-quality-shadow",
+      "path": ".q4t-work/moe-shadow-20260928/trace-quality-shadow",
+      "family": "quality"
+    },
+    {
+      "name": "moe-trace-runtime-20260928__trace-performance-on",
+      "path": ".q4t-work/moe-trace-runtime-20260928/trace-performance-on",
+      "family": "performance"
+    },
+    {
+      "name": "moe-trace-runtime-20260928__trace-quality-on-v3",
+      "path": ".q4t-work/moe-trace-runtime-20260928/trace-quality-on-v3",
+      "family": "quality"
+    }
+  ],
+  "excluded": [
+    {
+      "path": ".q4t-work/moe-trace-runtime-20260928/capture-checks/manifest-close/trace",
+      "reason": "fault/lifecycle diagnostic"
+    },
+    {
+      "path": ".q4t-work/moe-trace-runtime-20260928/capture-checks/pool-device/trace",
+      "reason": "fault/lifecycle diagnostic"
+    },
+    {
+      "path": ".q4t-work/moe-trace-runtime-20260928/capture-checks/pool-pinned/trace",
+      "reason": "fault/lifecycle diagnostic"
+    },
+    {
+      "path": ".q4t-work/moe-trace-runtime-20260928/capture-checks-v2/crash/trace",
+      "reason": "fault/lifecycle diagnostic"
+    },
+    {
+      "path": ".q4t-work/moe-trace-runtime-20260928/capture-checks-v2/fallback/trace",
+      "reason": "fault/lifecycle diagnostic"
+    },
+    {
+      "path": ".q4t-work/moe-trace-runtime-20260928/capture-checks-v2/inline/trace",
+      "reason": "fault/lifecycle diagnostic"
+    },
+    {
+      "path": ".q4t-work/moe-trace-runtime-20260928/capture-checks-v2/lifecycle/trace",
+      "reason": "fault/lifecycle diagnostic"
+    },
+    {
+      "path": ".q4t-work/moe-trace-runtime-20260928/capture-checks-v2/queue-full/trace",
+      "reason": "fault/lifecycle diagnostic"
+    },
+    {
+      "path": ".q4t-work/moe-trace-runtime-20260928/capture-checks-v2/quota/trace",
+      "reason": "fault/lifecycle diagnostic"
+    },
+    {
+      "path": ".q4t-work/moe-trace-runtime-20260928/capture-checks-v2/shutdown/trace",
+      "reason": "fault/lifecycle diagnostic"
+    },
+    {
+      "path": ".q4t-work/moe-trace-runtime-20260928/capture-checks-v2/trace-copy/trace",
+      "reason": "fault/lifecycle diagnostic"
+    },
+    {
+      "path": ".q4t-work/moe-trace-runtime-20260928/capture-checks-v2/trace-d2d/trace",
+      "reason": "fault/lifecycle diagnostic"
+    },
+    {
+      "path": ".q4t-work/moe-trace-runtime-20260928/capture-checks-v2/trace-sync/trace",
+      "reason": "fault/lifecycle diagnostic"
+    },
+    {
+      "path": ".q4t-work/moe-trace-runtime-20260928/capture-checks-v2/writer-error/trace",
+      "reason": "fault/lifecycle diagnostic"
+    },
+    {
+      "path": ".q4t-work/moe-trace-runtime-20260928/trace-quality-on",
+      "reason": "different binary"
+    },
+    {
+      "path": ".q4t-work/moe-trace-runtime-20260928/trace-quality-on-final",
+      "reason": "different binary"
+    }
+  ],
+  "scope": "all discovered complete same-binary regular MoE captures; families separate; no cache claim"
+}

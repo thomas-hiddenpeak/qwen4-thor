@@ -95,6 +95,30 @@ Q4T_TEST(serve_validates_before_load_and_preserves_failed_parse) {
   return true;
 }
 
+Q4T_TEST(serve_prefill_bound_precedes_workspace_sizing) {
+  for (const auto value : {"0", "8192"}) {
+    auto options = Defaults();
+    Q4T_CHECK(Parse({"--max-prefill", value}, &options));
+    Q4T_CHECK(q4t::server::ValidateServerOptions(options).ok());
+  }
+  for (const auto value : {"8193", "214748365", "2147483647"}) {
+    auto options = Defaults();
+    options.max_prefill = 8192;
+    Q4T_CHECK(!Parse({"--mtp", "--max-prefill", value}, &options));
+    Q4T_CHECK(options.max_prefill == 8192 && options.no_mtp);
+  }
+  // ChatServer::Start also calls validation for programmatic options before
+  // loading the tokenizer or invoking any workspace sizing function.
+  for (int value : {8193, 214748365, std::numeric_limits<int>::max()}) {
+    auto options = Defaults();
+    options.max_prefill = value;
+    Q4T_CHECK(!q4t::server::ValidateServerOptions(options).ok());
+    options.no_budget = true;
+    Q4T_CHECK(!q4t::server::ValidateServerOptions(options).ok());
+  }
+  return true;
+}
+
 Q4T_TEST(serve_trace_options_are_explicit_and_bounded) {
   auto options = Defaults();
   Q4T_CHECK(options.moe_trace_dir.empty());

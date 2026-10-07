@@ -71,10 +71,210 @@ CUDA错误仍进入原服务失败/不健康路径。关闭态不建池、不启
 ## 验证入口
 
 `ctest --test-dir build/public-host --no-tests=error --output-on-failure`
-检查host合同与49项独立格式/CLI样例；`test_analyze.py --checker ... --output ...`
-检查来源绑定和不完整样本反例。`run_capture_checks.py`接受候选binary/checker、
+运行host、格式/CLI、来源绑定、回放/影子/分布/混合，以及下述离线研究
+合同（distribution合同需要numpy）。所有合成测试产物写入配置的构建目录。`run_capture_checks.py`接受候选binary/checker、
 既有quality/performance证据和全新output，实际运行取消、inline/fallback、
 不支持模式、配额、写盘/关闭失败、队列压力、池分配失败、停止/崩溃及
 采集CUDA故障；测试shim不会链接进runner。`--case NAME`可重复选择受影响
 用例，未知、重复或空名称退出非0；不传则执行全部15项。
 这些检查与HTTP质量、五档性能分别记录，不将合成数据当作真实采集验收。
+
+## 固定容量离线缓存回放
+
+`replay.py --plan PLAN.json --checker CHECKER --binary BINARY --output OUTPUT`
+只读完整采集包；复用analyze与C++检查器，拒绝损坏、空集、失败请求、
+校准/评估重叠、未知来源与不足64次decode。输出不能覆盖，限build/.q4t-work。
+计划schema及本轮固定划分见 `replay-plan-20260928.json`；输入路径相对仓库根。
+公开仓无私有轨迹时明确失败。`test_replay.py`是无GPU合同入口；
+`verify_replay.py --results OUTPUT`从原始轨迹独立重算全部冷decode静态/LRU。
+
+合同：48层各自固定32/64/128/256槽、512专家、top-10；当前模型以外拒绝。
+静态排名仅用校准请求前64次decode，频次降序、ID升序破同分，启动一次
+填满并计费；LRU从空开始、按组时间戳更新、同时间戳按ID升序淘汰。
+所有命中先用组前状态计算；decode整组保护到消费结束，不把组内加载算命中。
+需求路由已出现时才允许补载，本工具没有预取，也不把host采集延迟视为零。
+
+prefill保留实际forward块边界，按同层块内专家并集一次消费；每个缺失
+专家只计一次加载。并集能放入缓存时LRU整组接纳；超容量时保留原缓存，
+按专家组流过staging，不接纳、不刷新LRU。静态所有miss均流过staging。
+这是未来执行器的显式假设，不是现有grouped kernel支持分批换权重的证明。
+预留跨层串行共用10个staging槽：decode可同时放10个miss；prefill逐专家
+完成该块全部相关token的gate/up/down后再复用，不在中途淘汰组内在用权重。
+
+三种模式：cold_decode每请求重置并跳过prefill（隔离实验）；prefill_reset
+每请求重置、真实prefill后保留；continuous按计划顺序跨请求保留，cohort
+之间重置。每个请求仅回放前64次decode，64之后是**反事实截断请求**，
+不把未回放的后63/191次decode充当历史。冷LRU的窗口前部就是有费预热；
+静态初始填充单列，比较总量必须加回。没有免费预热、校准状态移植或未来路由。
+
+每专家payload按moe_weights.h/swizzle.h为2,764,816字节，含packed、
+atom padding、四个FP32 scale；假设256字节对齐slot为2,765,056字节。
+逻辑加载按整个slot计，包含240字节padding，不等于磁盘文件读取字节。
+总路由预算=(48×容量+10)×slot，两策略完全相同；共享专家与其他常驻
+权重在路由预算外，硬件可用性还必须扣除这些与KV/状态/workspace/IO/系统余量。
+结果不声称硬件容量认证；旧122/59 GB不能当缓存容量，详见分析报告。
+输出逐请求/层/阶段的选择命中、并集命中、整组全命中、缺失直方图、逻辑
+加载和峰值驻留槽字节；所有组/字节是逻辑值，不折算吞吐或NVMe物理读取。
+
+## 请求完成边界的在线影子统计
+
+`shadow.py`是独立观察进程，只消费采集器原子发布的request-N.bin，服务继续
+运行时按请求序号处理。没有runner接入、逐层及时可见性或权重控制；晚一个
+请求看到路由，不能据此证明补载能够及时完成。记录处理耗时、积压峰值和RSS。
+完整decode不再截64步；32/64槽、静态/LRU、prefill_reset/continuous并行统计，
+沿用上述prefill bypass与付费填充合同。取消/失败请求的已提交前缀仍算历史，
+未提交forward不更新状态，请求终态单列；不得悄悄跳过失败后继续当完整流。
+
+```bash
+python3 -B tools/trace/shadow.py --directory .q4t-work/NEW-capture \
+  --binary build/q4t --checker /path/to/q4t_router_trace_check \
+  --calibration .q4t-work/frozen-calibration.json --output .q4t-work/NEW-shadow
+```
+
+在服务采集开始前启动，服务正常停止后才输出complete。已完成的旧run拒绝称为
+在线观测。校准文件为不超过1MiB的JSON，含48×512完整rankings及
+model_index_sha256；须从已验证校准集导出并保存原来源摘要，不能从新评估
+请求反向训练。默认最多64请求、每bin最多256MiB、请求统计输出最多128MiB（另有status/校准元数据）、
+等待最长7200秒、轮询250ms；显式参数只能缩小请求数/期限。解析器自身的
+frame上限16MiB。单个受限文件的解析/IO不可抢占，deadline非故障文件系统硬超时。
+源失败/缺口、损坏、超限或超时会非0停收并保留status.complete=false；不发
+服务信号、不等待服务配合。已发布输入应保持只读；需要新观察时用新输出目录。
+
+`test_shadow.py --checker ... --output build/shadow-contracts`运行直接合同；
+`verify_shadow.py --directory CAPTURE --output SHADOW --checker ... --binary ...`
+正常停机后重新验证完整来源，再用独立有序列表算法重算全部prefill/decode、
+静态/LRU及两种保留模式。`run_shadow_study.py`运行固定编写材料、任务切换
+和三个多轮对话对，保存全部HTTP请求/响应；不把它称作生产样本或语义质量基准。
+影子开启的质量与五档成本由tools/evalscope另行验收，不能从本工具逻辑字节推吞吐。
+
+## EvalScope 多场景初步采样
+
+`run_evalscope_scenarios.py --output NEW --model-dir MODEL --checker CHECKER
+--calibration FROZEN`使用现有EvalScope发送24条编写请求：六类任务各四种
+材料规模，按规模轮换场景，单流、greedy、关闭思考/MTP、输出上限128。
+冻结requests.jsonl后再启动服务，保存EvalScope数据库、输出全文、命令、
+来源身份及逐请求路由/影子JSON；每次独立目录，不覆盖、不续写旧run。
+默认binary为build/q4t，端口18085，可显式指定。材料是合成订单与日志，
+不是生产流量；HTTP成功不等于答案正确，截断输出不按完整答案计分。
+
+采样结束后运行`analyze_evalscope_scenarios.py --directory NEW --checker CHECKER
+--binary BINARY`，完整验证来源并独立重算所有层/阶段/策略，再核对HTTP ID，
+输出analysis/requests.csv、summary.json和文件摘要。分析目录不能覆盖。
+连续模式沿全run实际顺序保留；按场景汇总是该顺序的切片，并非各场景独立
+冷启动。校准始终使用旧冻结排名，不用新请求训练。命中率先求和再相除。
+这轮仅扩展路由材料，不替代正式质量基准或五档同输入性能接受结论。
+
+已封存的24条多场景轨迹还可用`replay_scenario_capacities.py --directory RUN
+--output NEW --checker CHECKER --binary BINARY`做离线32/64/128/256槽扩展。
+它校验原analysis/bindings.json、完整来源与冻结校准，逐需求组用独立有序
+列表算法核对Cache，再要求32/64逐请求计数与原影子结果完全一致。输出
+逐请求CSV、容量汇总与核验JSON，不改变在线观察器的32/64容量或其成本。
+所有容量保持相同完整请求顺序与prefill合同，不重新发送HTTP。
+
+`replay_hybrid.py --directory RUN --baseline CAPACITY_RUN --output NEW
+--checker CHECKER --binary BINARY`比较64/128/256槽、固定区占0/25/50/75/100%，
+余下LRU；排名只用原冻结校准。prefill扣除固定命中后，剩余并集放不入动态
+区则bypass，不污染动态顺序。初始化固定区计费；同时比较每请求重置和连续
+保留。逐组独立列表核对，0/100端点匹配原纯LRU/静态；test_hybrid.py提供
+直接合同。结果仅离线，见[收尾研究结论与历史报告入口](../../docs/MAIN_WRAPUP_2026-10-07.md)。
+
+## 专家ID分布（不做缓存回放）
+
+`distribution.py --plan tools/trace/distribution-plan-20260928.json --output NEW`
+核验固定计划的常规完整轨迹，分别统计prefill/decode、48层全部512专家。
+依赖NumPy；输出逐请求NPZ、逐批/类别/场景/长度分组NPZ、主聊天样本密集
+experts.csv、逐层layers.csv、完整身份和重复标记。只消费已提交forward；
+非成功请求保留在逐请求数据，聚合排除。相同输入token在同类别/模型身份
+下按首次成功记录生成unique_input视图，all和原批次仍保留；不同路由的
+重复会显式标记，不隐去差异。模型/类别不能凭专家编号混合解释。
+
+频次为选择次数，block_presence为块内出现一次，request_presence为阶段内
+出现一次；等权先逐请求归一化，无阶段的请求不进入该阶段分母。Top-N仅
+为同样本描述性集中度，排序相同计数时ID升序；零频不补入稳定性名单。
+半段按阶段实际行数二分，名单不足64活跃专家的层不参与Top64重合均值。
+未观察到不能称死专家，场景相关不等于因果语义分工。
+
+`summarize_distribution.py --directory NEW`重算分组并生成readout/汇总、
+场景表和跨请求名单重合；输出不能覆盖。`test_distribution.py --checker
+CHECKER`运行直接合同，也可在末尾指定unittest用例名称只重验受影响项。
+本轮来源、排除项、口径及结论见[收尾研究结论与历史报告入口](../../docs/MAIN_WRAPUP_2026-10-07.md)。
+公开仓不包含私有轨迹；缺源即失败。没有发送模型HTTP或评价缓存策略。
+
+`expert_probabilities.py --directory DISTRIBUTION_RESULTS --output NEW
+--population authored:unique_input`以token路由次数为分母导出每个专家进入
+同层top-10的边际经验概率（全512及最高10位、CSV/Markdown）。每层总和10，
+不是全部选择份额的总和1；不等于固定十位同时出现的概率。默认聊天去重
+组，可选择populations.json中的其他组；输出不覆盖原数据。
+
+`top_expert_sets.py --directory DISTRIBUTION_RESULTS --output NEW --top-n 30`
+将每层同样本Top-N名单与每个token实际top10比较，输出各专家入选概率、
+选择覆盖率、平均重合个数、至少一个/全部十个概率和0–10个重合计数。
+后两概率从原始轨迹直接计算，不假设专家独立；prefill这里按token而非块。
+可用--population选择分组。全部属于同样本描述统计，不是缓存预测。
+
+`layer_topn.py --directory DISTRIBUTION_RESULTS --output NEW`扫描每层每阶段
+N=1..512，给出选择覆盖80/90/95/99%与整组概率50/80/90/95%目标的最小N。
+最小性限于同样本频率排名路径，不是所有专家组合或运行时缓存的最优解。
+prefill仍按token。输出完整曲线、目标表和最大/最小名次直方图；无模型执行。
+见[收尾研究结论与历史报告入口](../../docs/MAIN_WRAPUP_2026-10-07.md)。
+
+## 主试验原始路由分析（2026-09-29 入库）
+
+以下脚本只读受控采集的 `request-*.bin`，依赖NumPy；输出不得覆盖封存
+证据。专家身份为 `(layer_id, expert_id)`，逐层独立，跨层不共享。
+
+`export_raw_routing.py --directory RUN --output NEW`把轨迹导出为可读文本：
+`routing.csv`（逐 request/forward/layer 的 top-k 专家 ID，按 [row, top-k]
+顺序展开）、每请求 `request-N.tokens.txt`、`requests.json` 与
+`manifest.json`。不新增聚合或缓存/吞吐结论。主试验导出证据见
+.q4t-work/moe-raw-export-20260929/。
+
+`layer_topn_heldout.py TRACE_DIR OUT_DIR`把同样本事后Top-N升级为
+校准→留出：16唯一请求按(领域,长度)分层8/8，每(阶段,层)按校准频次排名、
+留出定最小N，输出 `per_layer_topn.csv`、`expert_lists_90.json`（每层具体
+专家ID，可直接驻留）与 `results.json`。主试验为
+.q4t-work/moe-router-study-20260928/trace/（20请求，含4条精确重复；
+请求7无decode）。结果是容量画像，非运行时收益证明；封存结果与本报告
+见 .q4t-work/moe-topn-90-20260929/REPORT.md。
+
+`analyze_locality.py TRACE_DIR OUT_DIR`做独立局部性分析：确定性重复、
+逐层集中度、时间局部性衰减（lag 1..64 vs 随机基线）、跨层local-ID
+独立性、prefill/decode分歧、位置漂移、领域分离、逐层工作集。v1曾把48层
+bitmask跨层OR造成专家ID碰撞，其跨层工作集结论作废；现行口径逐层计算、
+跨层求和实例数（总空间48×512=24576）。报告见
+.q4t-work/moe-locality-20260929/REPORT.md（v2）。
+
+## 2026-10-07 精选研究工具
+
+下列工具分析已经封存的历史研究输入，不启动模型或接入 main 的运行时：
+
+| 入口 | 合同与边界 |
+|---|---|
+| `gpu_cache_replay.py` / `run_gpu_cache_study.py` | 从实际 GPU 状态重放固定请求链；先闭合记录计数与 checkpoint，才比较冻结反事实 |
+| `gpu_cache_schedule.cpp` / `offload_sort.cpp` | 原 C++ 排序、legacy/min-new 分块；算法副本来源见 [research](research/README.md) |
+| `analyze_decode_supply.py` / `decode_supply_bounds.py` | 区分真实 decode 的 GPU 缺失与下级软件供给，并计算同计划直接丢失上界 |
+| `analyze_mirror_retention.py` / `mirror_retention.py` | 逐计划统计可能保留机会、复用距离和可行区间；不插值实际下级缓存历史 |
+| `offload_trace.py` / `analyze_offload_log.py` | 完整来源绑定的逐层路由输入与历史日志转换下界 |
+
+`run_gpu_cache_study.py`、`analyze_decode_supply.py`、
+`analyze_mirror_retention.py` 通过 `--runtime-source-root ARCHIVE` 显式指定
+只读历史运行时源码。工具依赖始终绑定本 checkout，历史 `src/`/`include/`
+依赖绑定 ARCHIVE；每个依赖仍须在 execution/source ledger 中提供精确
+SHA256，并在处理前后核对。省略参数只接受当前 checkout 的来源路径，
+不会寻找或猜测历史源码。研究算法 header 绑定当前 `tools/trace/research/`
+副本。输出限当前 checkout 的 `build/` 或 `.q4t-work/`，不得覆盖旧证据。
+
+移植改变了工具源码与依赖位置，旧冻结 scope/manifest/execution plan 的
+身份不能当作新验收身份。复现需要原始轨迹、sidecar、记录时二进制、
+状态快照、计数与校验收据，以及新建的来源绑定计划；缺少任一项明确失败。
+公共仓不含这些私有 raw。旧结果保留为历史研究，合成合同通过不代表旧
+真实回放重跑，也不代表运行时质量、性能、SSD物理IO或缓存策略验收。
+三个研究入口均提供 `--help` 列出必需计划、SHA256 和输出参数。
+
+`run_shadow_study.py --corpus-file FILE` 可重复指定明确的文档语料；
+不传时使用当前仓库中已有的文档。当前默认语料不同于历史研究所用的
+完整文档集合，因此不能据此宣称逐字重建旧请求。
+
+独立 `../evalscope/physical_ram.py` 是只读内存观察工具；Linux全局内存、
+进程RSS、memcg与驱动观测是不同视图，不能直接相加求服务物理并集。
+公共合成测试覆盖解析、身份、失败与缺失观测，不执行真实RAM采样。

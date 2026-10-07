@@ -112,19 +112,20 @@ struct WeightLoader::Impl {
   size_t max_open = 8;
   std::mutex* owner_mu = nullptr;  // the loader's mutex (set in Create)
 
-  struct Shard {
-    std::unique_ptr<SafetensorsFile> file;
-  };
   // Mutable: EnsureOpen is logically const (no observable change to the
   // loader's contract) but manages the open-shard cache.
-  mutable std::unordered_map<std::string, Shard> open;
+  using ShardHandle = std::shared_ptr<SafetensorsFile>;
+  mutable std::unordered_map<std::string, ShardHandle> open;
   mutable std::deque<std::string> lru;  // most-recent at back
+  // FindTensor returns a stable pointer. Entries are immutable and never
+  // erased; unordered_map rehash also preserves pointers to these values.
+  mutable std::unordered_map<std::string, TensorInfo> metadata;
 
-  Status EnsureOpen(const std::string& shard, Shard** out) const;
+  Status EnsureOpen(const std::string& shard, ShardHandle* out) const;
 };
 
 Status WeightLoader::Impl::EnsureOpen(const std::string& shard,
-                                      Shard** out) const {
+                                     ShardHandle* out) const {
   // Called concurrently by the parallel MoE expert load; guard the LRU cache.
   std::lock_guard<std::mutex> lock(*owner_mu);
   auto it = open.find(shard);
@@ -137,7 +138,7 @@ Status WeightLoader::Impl::EnsureOpen(const std::string& shard,
       }
     }
     lru.push_back(shard);
-    *out = &it->second;
+    *out = it->second;
     return Status();
   }
 
@@ -152,11 +153,9 @@ Status WeightLoader::Impl::EnsureOpen(const std::string& shard,
   SafetensorsFile* f = nullptr;
   Status s = SafetensorsFile::Open(path, &f);
   if (!s.ok()) return s;
-  Shard sh;
-  sh.file.reset(f);
-  auto inserted = open.emplace(shard, std::move(sh));
+  auto inserted = open.emplace(shard, ShardHandle(f));
   lru.push_back(shard);
-  *out = &inserted.first->second;
+  *out = inserted.first->second;
   return Status();
 }
 
@@ -183,22 +182,30 @@ Status WeightLoader::Create(const std::string& model_dir,
 }
 
 const TensorInfo* WeightLoader::FindTensor(const std::string& name) const {
+  {
+    std::lock_guard<std::mutex> lock(mu_);
+    auto it = impl_->metadata.find(name);
+    if (it != impl_->metadata.end()) return &it->second;
+  }
   const std::string* shard = impl_->index->ShardOf(name);
   if (!shard) return nullptr;
-  Impl::Shard* sh = nullptr;
+  Impl::ShardHandle sh;
   if (!impl_->EnsureOpen(*shard, &sh).ok()) return nullptr;
-  return sh->file->Find(name);
+  const TensorInfo* info = sh->Find(name);
+  if (!info) return nullptr;
+  std::lock_guard<std::mutex> lock(mu_);
+  return &impl_->metadata.emplace(name, *info).first->second;
 }
 
 Status WeightLoader::ReadTensor(const std::string& name, void* dst) const {
   const std::string* shard = impl_->index->ShardOf(name);
   if (!shard) return Status::Fail("tensor not in index: " + name);
-  Impl::Shard* sh = nullptr;
+  Impl::ShardHandle sh;
   Status s = impl_->EnsureOpen(*shard, &sh);
   if (!s.ok()) return s;
-  const TensorInfo* info = sh->file->Find(name);
+  const TensorInfo* info = sh->Find(name);
   if (!info) return Status::Fail("tensor not in shard " + *shard + ": " + name);
-  return sh->file->ReadTensor(*info, dst);
+  return sh->ReadTensor(*info, dst);
 }
 
 Status WeightLoader::ReadTensorToDevice(const std::string& name, void* dst,
@@ -206,15 +213,18 @@ Status WeightLoader::ReadTensorToDevice(const std::string& name, void* dst,
                                         cudaStream_t stream) const {
   const std::string* shard = impl_->index->ShardOf(name);
   if (!shard) return Status::Fail("tensor not in index: " + name);
-  Impl::Shard* sh = nullptr;
+  Impl::ShardHandle sh;
   Status s = impl_->EnsureOpen(*shard, &sh);
   if (!s.ok()) return s;
-  const TensorInfo* info = sh->file->Find(name);
+  const TensorInfo* info = sh->Find(name);
   if (!info) return Status::Fail("tensor not in shard " + *shard + ": " + name);
-  return sh->file->ReadTensorToDevice(*info, dst, device_dst, stream);
+  return sh->ReadTensorToDevice(*info, dst, device_dst, stream);
 }
 
-size_t WeightLoader::open_shards() const { return impl_->open.size(); }
+size_t WeightLoader::open_shards() const {
+  std::lock_guard<std::mutex> lock(mu_);
+  return impl_->open.size();
+}
 
 }  // namespace io
 }  // namespace q4t

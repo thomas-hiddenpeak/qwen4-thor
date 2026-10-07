@@ -101,59 +101,93 @@ Status ChatServer::Start(const ServerOptions& opts) {
   }
   Status s;
 
-  // OOM-safe memory budget (vllm-style gpu_memory_utilization). Compute the
-  // maximum (max_len, max_seq) that fits within mem_fraction x MemTotal BEFORE
-  // any allocation, and cap the user's request to it. This is what makes an
-  // over-aggressive config (e.g. --max-len 262144 --max-seq 8) safe instead of
-  // OOM-rebooting the unified-memory box. Skipped when opts.no_budget is set.
-  {
-    PhaseTimer pt("budget");
-    if (!opts.no_budget) {
-    const size_t mem_total = runtime::ReadMemTotal();
-    if (mem_total == 0) {
-      return Status::Fail("could not read MemTotal from /proc/meminfo");
-    }
-    // Weights: the index's total_size is the exact GPU weight byte count
-    // (main + MTP + vision). Open the index read-only just to read it.
-    size_t weights = 0;
-    {
-      io::WeightIndex* idx = nullptr;
-      if (io::WeightIndex::Open(
-               opts.model_dir + "/model.safetensors.index.json", &idx)
-              .ok()) {
-        weights = idx->total_size();
-        delete idx;
-      }
-    }
-    if (weights == 0) {
-      return Status::Fail(
-          "could not read weight total_size from model index (budget)");
-    }
-    runtime::BudgetRequest breq;
-    breq.mem_fraction = opts.mem_fraction;
-    breq.max_len = opts.max_len;
-    breq.max_seq = opts.max_seq;
-    breq.max_prefill =
-        opts.max_prefill > 0 ? opts.max_prefill : 8192;
-    budget_ = runtime::ComputeMemoryBudget(runtime::BudgetModelParams{},
-                                           breq, weights, mem_total);
-    budget_valid_ = true;
-    std::fputs(budget_.report.c_str(), stderr);
-    }
-  }  // budget phase
-
-  // Effective (possibly budget-capped) max_len / max_seq.
-  const int eff_max_len =
-      budget_valid_ && budget_.max_len > 0 ? budget_.max_len : opts.max_len;
-  const int eff_max_seq =
-      budget_valid_ && budget_.max_seq > 0 ? budget_.max_seq : opts.max_seq;
-
   model::ModelConfig cfg;
   cfg.model_dir = opts.model_dir;
   cfg.index_path = opts.model_dir + "/model.safetensors.index.json";
   cfg.ple_sidecar = opts.model_dir + "/ple/qwen3.8-flash-next-ple-fp8.bin";
   if (opts.max_prefill > 0) cfg.max_prefill = opts.max_prefill;
+
+  // Estimate allocation capacity before model load. This is not a physical
+  // RAM limit: file cache, driver ownership and other processes need separate
+  // accounting. An infeasible estimate must stop startup.
+  budget_valid_ = false;
+  {
+    PhaseTimer pt("budget");
+    if (!opts.no_budget) {
+      const size_t mem_total = runtime::ReadMemTotal();
+      if (mem_total == 0) {
+        return Status::Fail("could not read MemTotal from /proc/meminfo");
+      }
+      // Keep the whole index estimate, including optional tensors. This is
+      // not an exact count of the weights loaded by the enabled capabilities.
+      size_t weights = 0;
+      {
+        io::WeightIndex* idx = nullptr;
+        if (io::WeightIndex::Open(cfg.index_path, &idx).ok()) {
+          weights = idx->total_size();
+          delete idx;
+        }
+      }
+      if (weights == 0) {
+        return Status::Fail("could not read weight total_size (budget)");
+      }
+      runtime::BudgetRequest breq;
+      breq.mem_fraction = opts.mem_fraction;
+      breq.max_len = opts.max_len;
+      breq.max_seq = opts.max_seq;
+      breq.max_prefill = cfg.max_prefill;
+      // Mirror LoadModel's allocation sizing. Small-T attention workspace
+      // depends on max_len, so use the requested upper bound before capping.
+      model::FullAttentionWeights full;
+      full.max_len = opts.max_len > 0 ? std::min(opts.max_len, 262144) : 262144;
+      breq.main_workspace_bytes =
+          model::ModelHeadWorkspaceBytes(cfg.max_prefill, cfg.hs);
+      for (int layer = 0; layer < cfg.num_layers; ++layer) {
+        breq.main_workspace_bytes = std::max(
+            breq.main_workspace_bytes,
+            model::DecoderLayerWorkspaceBytes(
+                cfg.max_prefill, layer % 4 == 3, layer == 1, cfg.hs, cfg.E,
+                cfg.moe_is, cfg.shared_is, cfg.topk, &full, cfg.lowrank));
+      }
+      if (capabilities.mtp) {
+        mtp::MtpConfig mcfg;
+        mcfg.max_prefill = cfg.max_prefill;
+        mcfg.max_len = full.max_len;
+        breq.mtp_workspace_bytes =
+            mtp::MtpWorkspaceBytes(mcfg, cfg.max_prefill, full);
+      }
+      runtime::BudgetModelParams params;
+      params.num_layers = cfg.num_layers;
+      params.hs = cfg.hs;
+      params.hc = cfg.hc;
+      params.vocab = cfg.vocab;
+      params.has_mtp = capabilities.mtp;
+      params.has_ple = cfg.num_layers > 1;
+      params.ple_capacity_tokens = cfg.ple_capacity_tokens;
+      params.ple_row_bytes = static_cast<int>(cfg.ple_row_bytes);
+      params.ple_heads = (cfg.ple_ngram_size - 1) * cfg.ple_heads_per_ngram;
+      budget_ = runtime::ComputeMemoryBudget(params, breq, weights, mem_total);
+      budget_valid_ = true;
+      std::fputs(budget_.report.c_str(), stderr);
+      if (!budget_.feasible) {
+        return Status::Fail("no feasible allocation budget: " + budget_.reason);
+      }
+    }
+  }  // budget phase
+
+  // A computed budget is always feasible here. Never substitute the original
+  // request for a zero-capacity result. --no-budget is an explicit bypass.
+  const int eff_max_len = budget_valid_ ? budget_.max_len : opts.max_len;
+  const int eff_max_seq = budget_valid_ ? budget_.max_seq : opts.max_seq;
   if (eff_max_len > 0) cfg.max_len = eff_max_len;
+  std::fprintf(stderr,
+               "[q4t][capacity] requested_max_len=%d requested_max_seq=%d "
+               "requested_max_prefill=%d effective_max_len=%d "
+               "effective_max_seq=%d effective_max_prefill=%d "
+               "budget_enabled=%d budget_feasible=%s\n",
+               opts.max_len, opts.max_seq, opts.max_prefill, cfg.max_len,
+               eff_max_seq, cfg.max_prefill, budget_valid_,
+               budget_valid_ ? "true" : "not_evaluated");
   // B1: pool the per-sequence recurrent state for up to max_seq concurrent
   // requests. Each in-flight request owns one seq_id.
   max_seq_ = eff_max_seq;

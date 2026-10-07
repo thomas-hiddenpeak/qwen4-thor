@@ -23,6 +23,11 @@ Status ValidateServerOptions(const ServerOptions& options) {
     return Status::Fail("max-tokens must be positive");
   if (options.max_prefill < 0 || options.max_len < 0)
     return Status::Fail("max-prefill and max-len must be nonnegative");
+  // FullAttentionForward supports at most 8192 tokens per call. Enforce its
+  // bound before workspace sizing, whose dimensions include int products.
+  // Zero retains ModelConfig's default prefill size.
+  if (options.max_prefill > 8192)
+    return Status::Fail("max-prefill must be in [0,8192]");
   // The connection cap uses max_seq * 8 in the existing server.
   if (options.max_seq < 1 ||
       options.max_seq > std::numeric_limits<int>::max() / 8)

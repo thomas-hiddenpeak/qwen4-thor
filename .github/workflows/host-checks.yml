@@ -19,7 +19,7 @@ jobs:
       - name: Install host compiler
         run: |
           sudo apt-get update
-          sudo apt-get install -y g++-14 cmake
+          sudo apt-get install -y g++-14 cmake python3-numpy
       - name: Configure without CUDA or model fixtures
         run: >-
           cmake -S tests/host -B build/public-host
@@ -36,8 +36,3 @@ jobs:
           --output build/public-host/test-gate
       - name: Check frozen host evidence audit
         run: python3 -B tools/release/test_host_gate_audit.py
-      - name: Check trace package identities and incomplete captures
-        run: >-
-          python3 -B tools/trace/test_analyze.py
-          --checker build/public-host/q4t_router_trace_check
-          --output build/public-host/trace-analysis-tests

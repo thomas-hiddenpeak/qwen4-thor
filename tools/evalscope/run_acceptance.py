@@ -15,6 +15,8 @@ import sqlite3
 import subprocess
 import time
 
+from response_identity import response_identity
+
 ROOT = Path(__file__).resolve().parents[2]
 LENGTHS = [1024, 4096, 8192, 45056, 204800]
 
@@ -60,6 +62,8 @@ def main():
     (out / 'commit.txt').write_bytes(subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT))
     (out / 'worktree.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=ROOT))
     shutil.copyfile(__file__, out / 'run_acceptance.py')
+    shutil.copyfile(Path(__file__).with_name('response_identity.py'),
+                    out / 'response_identity.py')
     cache = binary.parent / 'CMakeCache.txt'
     deployment = binary.with_name(binary.name + '.release.json')
     if deployment.is_file():
@@ -166,12 +170,15 @@ def main():
                                    'actual_output': row[2], 'text': text, 'finish': finish,
                                    'prompt_sha256': hashlib.sha256(prompt.encode()).hexdigest(),
                                    'ttft': row[4], 'latency': row[5],
-                                   'request_stream': wire_request.get('stream')})
+                                   'request_stream': wire_request.get('stream'),
+                                   **response_identity(messages)})
                     (case / f'output-{i}.txt').write_text(text)
                 # Preserve failure evidence before checking acceptance.
                 save(case / 'responses.json', parsed)
                 if len(rows) != count or not all(r['success'] for r in parsed):
                     raise RuntimeError('request count or HTTP success mismatch')
+                if not all(r['response_id_valid'] for r in parsed):
+                    raise RuntimeError('missing, malformed or mixed response IDs')
                 if args.mode == 'quality':
                     expected = {r['prompt_sha256']: r for r in manifest}
                     for row in parsed:
