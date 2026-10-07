@@ -190,25 +190,45 @@ int main(int argc, char** argv) {
         "initial checkpoints reserve");
   Check(allocations == 3, "checkpoint fixture must exercise all pools");
   for (int failure : {1, 2, 3}) {
+    // Seed a formerly valid checkpoint record; a failed allocation growth
+    // must invalidate it together with the buffers that it described.
+    checkpoints.verify_ckpt_rows = 1;
+    checkpoints.verify_ckpt_slots = {0};
     ResetCounters(failure);
     Check(!q4t::model::ModelReserveVerifyCheckpoints(checkpoints, 3).ok(),
           "injected checkpoint grow unexpectedly succeeded");
-    Check(checkpoints.verify_ckpt_cap == 0 && live == borrowed &&
-              !checkpoints.d_verify_ssm_ckpt &&
-              !checkpoints.d_verify_conv_ckpt &&
-              !checkpoints.d_verify_ple_conv_ckpt,
-          "checkpoint grow left partial ownership/capacity");
+    Check(
+        checkpoints.verify_ckpt_cap == 0 && checkpoints.verify_ckpt_rows == 0 &&
+            checkpoints.verify_ckpt_slots.empty() && live == borrowed &&
+            !checkpoints.d_verify_ssm_ckpt && !checkpoints.d_verify_conv_ckpt &&
+            !checkpoints.d_verify_ple_conv_ckpt,
+        "checkpoint grow left partial ownership/capacity/validity");
     ResetCounters();
     Check(q4t::model::ModelReserveVerifyCheckpoints(checkpoints, 1).ok(),
           "checkpoint retry failed");
   }
   ResetCounters();
+  checkpoints.verify_ckpt_rows = 1;
+  checkpoints.verify_ckpt_slots = {0};
+  Check(q4t::model::ModelReserveVerifyCheckpoints(checkpoints, 1).ok() &&
+            checkpoints.verify_ckpt_rows == 1 &&
+            checkpoints.verify_ckpt_slots == std::vector<int>{0},
+        "no-op reserve invalidated current checkpoints");
   Check(q4t::model::ModelReserveVerifyCheckpoints(checkpoints, 3).ok(),
         "checkpoint grow failed");
+  Check(checkpoints.verify_ckpt_rows == 0 &&
+            checkpoints.verify_ckpt_slots.empty(),
+        "checkpoint grow preserved stale validity");
   Check(live.size() == borrowed.size() + 3, "checkpoint grow leaked");
+  checkpoints.verify_ckpt_rows = 1;
+  checkpoints.verify_ckpt_slots = {0};
   checkpoints.Free();
+  Check(checkpoints.verify_ckpt_cap == 0 && checkpoints.verify_ckpt_rows == 0 &&
+            checkpoints.verify_ckpt_slots.empty(),
+        "checkpoint destruction preserved stale validity");
   Check(live == borrowed, "checkpoint destruction leaked");
-  std::puts("checkpoints: failures 1..3, capacity reset, retry/grow: PASS");
+  std::puts(
+      "checkpoints: failures 1..3, capacity/validity reset, retry/grow: PASS");
 
   // Real nested loaders: an early HC allocation failure and a failure at the
   // final LoadMtp allocation exercise ownership beyond the four projections.

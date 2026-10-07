@@ -87,3 +87,54 @@ NO_GO；本 Goal 不改变默认部署，不自动合并未经接受的 MTP 能�
 本阶段外层目录的 `baseline-summary.json` 保存实际绝对路径和摘要。
 内存采样从运行中途开始，仅覆盖部分后续请求，不覆盖完整启动峰值。
 这些是本轮新测基线，尚无候选加速/持平接受结论。
+
+## 首次失败后的有界补修
+
+候选 b839a674 的普通模式 HTTP 质量 11/11、真实路径审计和退出通过，
+证据 `.q4t-work/evidence/quality-off-01/`。这不能排除计算合同缺陷。
+
+代码审查定位两项具体问题，限定本轮补修范围：
+
+- 实际 scheduler 使用的 `ModelDecodeBatchMulti` 未更新当前 token 的
+  三行 RoPE 坐标。prefill 只填输入范围，后续位置仍为 0；其他 decode
+  及 verify 入口写 logical position + rope delta。先保存真实调用反例，
+  再补齐写入，检查槽位和邻位隔离。旧普通模式只作兼容对照。
+- checkpoint 写入以当前 `num_ckpt` 排布，恢复以分配容量定位。预留
+  3 后使用 1 时步长不一致；原 same-path rollback 对照共享恢复逻辑，
+  不能证明状态正确。增加独立容量布局反例再修，不用原通过掩盖缺陷。
+
+唯一一轮现有 hook 采集保留于外层 `linear-capture-01/`：492 文件、
+31,343,616 字节；重复 prefill 逐位相同，固定 token 首个观测差异在
+layer 0 的 qkv_raw（首行 19/10240 元素不同），自然首 bonus 则更早在
+输入 x（4/2560）。这支持投影算术路径也存在差异，不构成完整归因或
+新的误差门槛；hook 改变同步，数据不作性能依据。不追加大规模抓取。
+
+两项旧版反例已实际失败并保存于外层 `repro-old/`（含测试源码和库）：
+RoPE 两步三行均为 0，期望分别为 13 和 19；checkpoint 两种容量的
+prefill/verify 状态和 logits 逐字节相同，但恢复后 layer 1 SSM 有
+3,136,146/3,145,728 字节不同，后续 logits 有 343,074/496,640 字节不同。
+
+补丁按当前 verify 的实际行数定位，记录有效槽位，在新 forward、
+reset、增长/失败与销毁时失效；拒绝未写行、无效槽和不足容量。
+旧 `ModelDecodeBatch(save_checkpoints=true)` 的单序列 PLE kernel
+没有保存 PLE checkpoint，本轮在提交 GPU 工作前明确拒绝并指向
+`ModelVerifyMulti`。不宣称旧 standalone MTP 已获准入。
+
+修复前后分开保存身份；统一重验这两项、受影响生命周期与原数值对照。
+跨路径 `numeric_equal=0` 只表示逐位不同，不单独证明算法错误；同输入
+同算术容量变化必须逐位相同。修复后的 HTTP 质量、生成边界和收益仍
+分别判定，旧错误 plain 输出仅作兼容/修复代价对照。
+
+修复候选 `3073656388802257502946503f413ae0a83fdb6bb00f08f32da0e066184d2cf3`
+已零警告构建；两项独立反例均由 FAIL 转 PASS，容量变化后的恢复状态
+与后续 logits 逐字节相同，所有有效性边界及加载/扩容失败清理通过。
+原四层诊断仍为 `numeric_equal=0, rollback_exact=1, greedy_equal=0`；
+固定后续 token 首行 logits 最大绝对差 0.203125、相对 L2 0.0400214922，
+自然首步 correction 仍为 MTP 359 / plain 220。保留在
+`build/*-03.log` 与 `build/direct-results-03.json`。这些有限观察尚未闭合
+跨路径生成/数值接入；完成冻结的 HTTP 合同后若仍未闭合，按 NO_GO
+出口停止 MTP 五档收益验收，不以未准入能力的局部速度声称加速。
+
+兼容范围：非 serve 的旧 CLI 仍使用 `MtpSpeculativeStep`，会遇到
+上述 legacy PLE checkpoint 错误；本轮未将它迁移到 Multi，也不将
+它列入可用入口。当前分支是阶段候选，并非默认部署或全入口发布。
