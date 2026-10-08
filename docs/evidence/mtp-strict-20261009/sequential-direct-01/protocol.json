@@ -1,0 +1,32 @@
+{
+  "time": 1791479742.622532,
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t_mtp_sequential_admission",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-direct-01/required-tests.txt"
+  ],
+  "environment_additions": {
+    "Q4T_MTP_SEQUENTIAL_PROMPT": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-batch-gather-20261008/direct-01/prompt.txt",
+    "Q4T_MTP_SEQUENTIAL_LONG_PROMPT": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-batch-gather-20261008/direct-01/prompt-8192.txt",
+    "Q4T_MTP_SEQUENTIAL_DIR": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-direct-01/raw"
+  },
+  "binary_sha256": "395764df3e8048ed268a114fd9f0a2f1cd56ef7d9435c46aa7499be349c56565",
+  "source_protocol_sha256": "55c620881a09a017bb24b764a8ad8b98854b4a1d950172b9eccd07587c7850c3",
+  "http_protocol_sha256": "949ec20df4a4fd7e35e8da61723b72190f2367baf2c6753960ac1c5bd21ad32f",
+  "fixtures": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-batch-gather-20261008/direct-01/prompt.txt",
+      "sha256": "a72fade2611451e1f33ca088f0554474ec9d9032efccf04cc5581a2c25be2d98"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-batch-gather-20261008/direct-01/prompt-8192.txt",
+      "sha256": "e4c57e9fca8d72d694b167a2f56f8527a51e5ab84830983e47ed434d0708e39a"
+    }
+  ],
+  "deadline_seconds": 600,
+  "raw_limit_bytes": 100663296,
+  "max_target_calls": 92,
+  "max_draft_calls": 35,
+  "retries": 0,
+  "script_sha256": "1d1b67b759572f26e67b7b283716ed022d9ba7f79dd870f7c8f373b0ecbc3f9d"
+}

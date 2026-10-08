@@ -1,0 +1,101 @@
+{
+  "scope": "local historical source-contract reuse, separate from unexecuted logical HTTP reserve-failure supplement",
+  "source_audit": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/b-final-gate-audit-01.json",
+    "sha256": "78c9eb010bb533085895019a73dd791dfb97ce8852a949c509bc3d3f095e62ad"
+  },
+  "reuse": {
+    "base_commit": "ec0ae6f",
+    "function_bodies": [
+      {
+        "signature_prefix": "void FreeScratch(",
+        "source": "src/mtp/mtp.cu",
+        "base_commit": "ec0ae6f",
+        "base_sha256": "66bbfb3e729f5a85430b87b2469e527cf674477c46926369e248994e6db78aac",
+        "current_sha256": "66bbfb3e729f5a85430b87b2469e527cf674477c46926369e248994e6db78aac",
+        "body_byte_identical": true
+      },
+      {
+        "signature_prefix": "void MtpModel::Free(",
+        "source": "src/mtp/mtp.cu",
+        "base_commit": "ec0ae6f",
+        "base_sha256": "717a0ecb7aaea7e79a76f8713003ae4ed9573a2f8beda910a9a6d90079a0644d",
+        "current_sha256": "717a0ecb7aaea7e79a76f8713003ae4ed9573a2f8beda910a9a6d90079a0644d",
+        "body_byte_identical": true
+      },
+      {
+        "signature_prefix": "Status LoadMtp(",
+        "source": "src/mtp/mtp.cu",
+        "base_commit": "ec0ae6f",
+        "base_sha256": "5cfeef9b7d0f76b2d37daf633f51bc54bf304793abbfd690a6675b3095ad6fae",
+        "current_sha256": "5cfeef9b7d0f76b2d37daf633f51bc54bf304793abbfd690a6675b3095ad6fae",
+        "body_byte_identical": true
+      },
+      {
+        "signature_prefix": "Status MtpResetState(",
+        "source": "src/mtp/mtp.cu",
+        "base_commit": "ec0ae6f",
+        "base_sha256": "60c8f777cc27408fcf1be26c9cdd9ed5e6143ea3f79fb66f89bd92eeb991871b",
+        "current_sha256": "60c8f777cc27408fcf1be26c9cdd9ed5e6143ea3f79fb66f89bd92eeb991871b",
+        "body_byte_identical": true
+      },
+      {
+        "signature_prefix": "Status MtpReserveScratch(",
+        "source": "src/mtp/mtp.cu",
+        "base_commit": "ec0ae6f",
+        "base_sha256": "13e8c6ca5dab6322e1d47735374a2fe2b42ba5801295d292a3780e9611c4d29a",
+        "current_sha256": "13e8c6ca5dab6322e1d47735374a2fe2b42ba5801295d292a3780e9611c4d29a",
+        "body_byte_identical": true
+      },
+      {
+        "signature_prefix": "Status MtpDraftExtend(",
+        "source": "src/mtp/mtp.cu",
+        "base_commit": "ec0ae6f",
+        "base_sha256": "4595bae712561a8e73623df8057a2c91ee78e3bd16aa6666ac0445cdb3a3623c",
+        "current_sha256": "74d6cc6f6c4bdec3ad1fe6b853a9fcc35fafb8e0213871842ec83f2c049a5a21",
+        "body_byte_identical": false
+      }
+    ],
+    "lifecycle_test_source_byte_identical": true,
+    "evidence": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/lifecycle-tests-03.log",
+      "sha256": "91cce59ee2bf7a1dd7ad19e9fe394d712d378c793a073058c98b9e4a038d28e6",
+      "bytes": 329
+    },
+    "coverage": [
+      "Missing tensor and allocation1..4 failures on default/explicit streams with cleanup/drain and borrowed ownership",
+      "22 scratch allocation boundaries, retry/grow/idempotence",
+      "3 checkpoint allocation boundaries and validity reset",
+      "Real LoadMtp success, reload refusal and allocation failure8/39 with nested cleanup"
+    ],
+    "does_not_cover": [
+      "Request trunk or rolling-trunk allocation fallback HTTP",
+      "Changed MtpDraftExtend initialization failure and main untouched in generation",
+      "Strict same-scheduler B1 resource fallback"
+    ],
+    "reuse_decision": "Retain/reuse these historical local ownership contracts for byte-identical function bodies. This is source-contract reuse, not whole-current-binary execution identity or new current lifecycle run. No need to repeat all local CUDA allocation boundaries merely for label delivery.",
+    "old_http_boundary_scope": "boundaries-04 real injected scheduler logits allocation failure led to scheduler not starting and legacy standalone plain decode; cannot satisfy strict fallback because strict refuses that algorithm."
+  },
+  "http_supplement": {
+    "status": "root_authorized_implementation_only_no_build_or_run",
+    "generation_requests": 3,
+    "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/resource-fallback-03",
+    "fixed_order": [
+      "fresh sequential 1K/256",
+      "same prompt: real MtpReserveScratch success then injected logical StatusFail at end of initialization; ordinary scheduler B1 fallback",
+      "same prompt: sequential recovery"
+    ],
+    "not_part_of_original_110": true,
+    "injection_is_physical_oom": false,
+    "minimum_required_proof": [
+      "actual initialization fallback and same scheduler B1; no legacy ModelDecodeStepSeq",
+      "no strict main calls before/after injection in second request; zero sequential counters",
+      "exact fulltext/usage/finish to fresh control for all3",
+      "0 error/abort,3success, all slots reclaimed; next Begin/draft Reset and sequential recovery",
+      "variant marker and bound candidate main.o/libs; no production flags or modified candidate"
+    ],
+    "existing_cuda_allocation_failures_reused_separately": true
+  },
+  "new_tests_executed": false,
+  "new_http_passed": false
+}

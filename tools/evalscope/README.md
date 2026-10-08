@@ -34,6 +34,21 @@ build/ 或 .q4t-work/。没有 --fixtures 时按固定算法生成语料；使�
 被测二进制以 `binary.sha256`、命令绝对路径和对应构建缓存为准，不能
 把脚本所在提交自动当成外部旧二进制的构建提交。现有参考不会被重写。
 
+研究分支新增 `--mtp --mtp-verifier sequential` 正确性基线。未指定
+verifier仍为旧实验T4；显式verifier不能自行启用MTP。sequential
+要求实际 `mtp_sequential_b1` 路径与调用/输出计数相符，正常短输出
+尾部可为 `plain_tail_b1`，尾部与fallback分别记录。指定参数/候选已完成
+[有限范围验收](../../docs/MTP_STRICT_RESULT_2026-10-09.md)，实测
+慢于普通decode，不能使用旧T4性能作为其性能结论。
+
+`sustained-quality` 使用事前冻结的中英持续生成题面，数值配对、
+长度覆盖和人工语义检查分别记录。`admission-limits` 使用每模式
+14项输出/context边界；默认要求普通参考先通过。其可选
+`--allow-reference-early-eos` 只用于显式sequential配对：严格核验
+原14项响应/身份/路径，仅允许末项208892/nonstream/max8合法
+提前EOS的失败参考被采集，保留原coverage FAIL，并且不放宽
+strict自身输出或路径门槛。不能用于其他模式或豁免任意失败。
+
 ```bash
 python3 tools/evalscope/run_acceptance.py --mode quality --mtp \
   --binary build/runtime/q4t --model-dir "$Q4T_MODEL_DIR" \

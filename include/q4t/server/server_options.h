@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <span>
 #include <string>
 #include <string_view>
@@ -7,6 +8,12 @@
 #include "q4t/status.h"
 
 namespace q4t::server {
+
+enum class MtpVerifier { kT4, kSequential };
+
+constexpr const char* MtpVerifierName(MtpVerifier verifier) {
+  return verifier == MtpVerifier::kSequential ? "sequential" : "t4";
+}
 
 struct ServerOptions {
   // Numeric IPv4 only. Remote access requires an explicit address.
@@ -25,6 +32,8 @@ struct ServerOptions {
   int max_seq = 1;
   // Plain greedy decode is the default; MTP requires explicit opt-in.
   bool no_mtp = true;
+  // Absence retains the historical T4 verifier. Selection never enables MTP.
+  std::optional<MtpVerifier> mtp_verifier;
   // Experimental media path; default service contract is text-only.
   bool allow_media = false;
   // Startup memory budget (vllm-style gpu_memory_utilization). The server

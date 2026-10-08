@@ -32,7 +32,9 @@
 
 #include <cuda_runtime.h>
 
+#include <array>
 #include <cstdint>
+#include <span>
 #include <string>
 
 #include "q4t/io/weight_loader.h"
@@ -399,6 +401,60 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                                uint16_t** next_g, cudaStream_t stream,
                                trace::MtpCycleStep* cycle_timing = nullptr,
                                trace::MtpVerifyMoeStep* verify_moe = nullptr);
+
+// Strict S1/slot0/k3 result. Accepted tokens are consumed, non-stop inputs;
+// next_b is the pending prediction and has NOT been consumed by the main model.
+// Counts are forward call attempts, including a call that returns an error.
+// On failure only these counts are valid; all other fields are reset.
+struct MtpSequentialResult {
+  std::array<int32_t, 4> accepted_tokens{};
+  int accepted_count = 0;
+  int32_t next_b = -1;
+  int32_t next_d0 = -1;
+  bool terminal = false;
+  bool next_seed_valid = false;
+  int draft_forward_calls = 0;
+  int target_forward_calls = 0;
+  int extend_forward_calls = 0;
+};
+
+// Verify an actual three-token proposal using the ordinary scheduler's
+// ModelDecodeBatchMulti(B=1) and model::ArgmaxBf16Rows. This helper is also the
+// production verifier used by MtpSpeculativeStepSequentialTarget below.
+// seq must be slot0/decode, have no pending work, and have history.size()==P.
+// Both output_remaining and main/draft context remaining must exceed four.
+// b must be non-stop; all configured stop IDs are supplied in stop_tokens.
+// The caller exclusively owns main/MTP scratch and the stream until return.
+// Caller position/history are never changed. Only bonus and accepted drafts
+// reach the main model; a predicted stop is returned as terminal next_b.
+// Success leaves the target logits/trunks in the first target_forward_calls
+// rows of d_ms_vlogits/d_ms_vtrunk. There is no extend here, so next_seed_valid
+// stays false. Success and failure drain the submitted stream before return.
+// Failure can leave device state partially advanced: terminate the request,
+// never resume plain decode or reuse the sequence without resetting it.
+Status MtpSequentialVerify(
+    const model::Model& main, const MtpModel& mtp,
+    const model::ModelSequence& seq, int32_t b,
+    std::span<const int32_t, 3> drafts, int output_remaining,
+    std::span<const int32_t> stop_tokens, MtpSequentialResult* result,
+    cudaStream_t stream);
+
+// Generate real d0/d1/d2 (d0 is the previous extend's seed), verify with the
+// helper above, then extend the accepted prefix using its captured trunks.
+// Reuses MtpReserveScratch(k_max>=4); there are no strict-specific GPU buffers.
+// The ordinary target argmax can still allocate its existing shared scratch.
+// g_in and next_g are device [hc*hs] and may alias. next_g/next_d0 are usable
+// only on successful next_seed_valid=true. A terminal result skips extend,
+// has next_seed_valid=false, and returns its stop token only in next_b.
+// On success the request owner publishes exactly accepted_count tokens into
+// position/history, then handles next_b before submitting another step.
+// The same ownership, strict range, stop, drain and failure rules apply.
+Status MtpSpeculativeStepSequentialTarget(
+    const model::Model& main, const MtpModel& mtp,
+    const model::ModelSequence& seq, int32_t b, int32_t d0,
+    const uint16_t* g_in, int output_remaining,
+    std::span<const int32_t> stop_tokens, MtpSequentialResult* result,
+    uint16_t* next_g, cudaStream_t stream);
 
 }  // namespace mtp
 }  // namespace q4t

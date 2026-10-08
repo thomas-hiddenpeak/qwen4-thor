@@ -1,0 +1,208 @@
+{
+  "requested_decode_mode": "mtp",
+  "requested_verifier": "sequential",
+  "bindings": [
+    {
+      "response_id": "chatcmpl-auto-0",
+      "records": [
+        {
+          "fields": {
+            "id": "chatcmpl-auto-0",
+            "requested_mtp": "1",
+            "path": "mtp_sequential_b1",
+            "mtp_steps": "98",
+            "fallback": "none",
+            "plain_tail_tokens": "0",
+            "verifier": "sequential",
+            "tail_reason": "none",
+            "draft_forward_calls": "196",
+            "target_t1_calls": "382",
+            "target_t4_calls": "0",
+            "extend_forward_calls": "97",
+            "forward_count_scope": "sequential_attempts"
+          },
+          "raw": "[q4t][decode_path] id=chatcmpl-auto-0 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=98 fallback=none plain_tail_tokens=0 verifier=sequential tail_reason=none draft_forward_calls=196 target_t1_calls=382 target_t4_calls=0 extend_forward_calls=97 forward_count_scope=sequential_attempts"
+        }
+      ],
+      "actual_output": 383,
+      "coverage": "terminal_request_path"
+    },
+    {
+      "response_id": "chatcmpl-auto-1",
+      "records": [
+        {
+          "fields": {
+            "id": "chatcmpl-auto-1",
+            "requested_mtp": "1",
+            "path": "mtp_sequential_b1",
+            "mtp_steps": "113",
+            "fallback": "none",
+            "plain_tail_tokens": "0",
+            "verifier": "sequential",
+            "tail_reason": "none",
+            "draft_forward_calls": "226",
+            "target_t1_calls": "423",
+            "target_t4_calls": "0",
+            "extend_forward_calls": "112",
+            "forward_count_scope": "sequential_attempts"
+          },
+          "raw": "[q4t][decode_path] id=chatcmpl-auto-1 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=113 fallback=none plain_tail_tokens=0 verifier=sequential tail_reason=none draft_forward_calls=226 target_t1_calls=423 target_t4_calls=0 extend_forward_calls=112 forward_count_scope=sequential_attempts"
+        }
+      ],
+      "actual_output": 424,
+      "coverage": "terminal_request_path"
+    },
+    {
+      "response_id": "chatcmpl-auto-2",
+      "records": [
+        {
+          "fields": {
+            "id": "chatcmpl-auto-2",
+            "requested_mtp": "1",
+            "path": "mtp_sequential_b1",
+            "mtp_steps": "82",
+            "fallback": "none",
+            "plain_tail_tokens": "0",
+            "verifier": "sequential",
+            "tail_reason": "none",
+            "draft_forward_calls": "164",
+            "target_t1_calls": "314",
+            "target_t4_calls": "0",
+            "extend_forward_calls": "81",
+            "forward_count_scope": "sequential_attempts"
+          },
+          "raw": "[q4t][decode_path] id=chatcmpl-auto-2 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=82 fallback=none plain_tail_tokens=0 verifier=sequential tail_reason=none draft_forward_calls=164 target_t1_calls=314 target_t4_calls=0 extend_forward_calls=81 forward_count_scope=sequential_attempts"
+        }
+      ],
+      "actual_output": 315,
+      "coverage": "terminal_request_path"
+    },
+    {
+      "response_id": "chatcmpl-auto-3",
+      "records": [
+        {
+          "fields": {
+            "id": "chatcmpl-auto-3",
+            "requested_mtp": "1",
+            "path": "mtp_sequential_b1",
+            "mtp_steps": "152",
+            "fallback": "none",
+            "plain_tail_tokens": "1",
+            "verifier": "sequential",
+            "tail_reason": "output_limit",
+            "draft_forward_calls": "304",
+            "target_t1_calls": "511",
+            "target_t4_calls": "0",
+            "extend_forward_calls": "152",
+            "forward_count_scope": "sequential_attempts"
+          },
+          "raw": "[q4t][decode_path] id=chatcmpl-auto-3 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=152 fallback=none plain_tail_tokens=1 verifier=sequential tail_reason=output_limit draft_forward_calls=304 target_t1_calls=511 target_t4_calls=0 extend_forward_calls=152 forward_count_scope=sequential_attempts"
+        }
+      ],
+      "actual_output": 512,
+      "coverage": "terminal_request_path"
+    },
+    {
+      "response_id": "chatcmpl-auto-4",
+      "records": [
+        {
+          "fields": {
+            "id": "chatcmpl-auto-4",
+            "requested_mtp": "1",
+            "path": "mtp_sequential_b1",
+            "mtp_steps": "77",
+            "fallback": "none",
+            "plain_tail_tokens": "0",
+            "verifier": "sequential",
+            "tail_reason": "none",
+            "draft_forward_calls": "154",
+            "target_t1_calls": "257",
+            "target_t4_calls": "0",
+            "extend_forward_calls": "76",
+            "forward_count_scope": "sequential_attempts"
+          },
+          "raw": "[q4t][decode_path] id=chatcmpl-auto-4 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=77 fallback=none plain_tail_tokens=0 verifier=sequential tail_reason=none draft_forward_calls=154 target_t1_calls=257 target_t4_calls=0 extend_forward_calls=76 forward_count_scope=sequential_attempts"
+        }
+      ],
+      "actual_output": 258,
+      "coverage": "terminal_request_path"
+    },
+    {
+      "response_id": "chatcmpl-auto-5",
+      "records": [
+        {
+          "fields": {
+            "id": "chatcmpl-auto-5",
+            "requested_mtp": "1",
+            "path": "mtp_sequential_b1",
+            "mtp_steps": "181",
+            "fallback": "none",
+            "plain_tail_tokens": "1",
+            "verifier": "sequential",
+            "tail_reason": "output_limit",
+            "draft_forward_calls": "362",
+            "target_t1_calls": "511",
+            "target_t4_calls": "0",
+            "extend_forward_calls": "181",
+            "forward_count_scope": "sequential_attempts"
+          },
+          "raw": "[q4t][decode_path] id=chatcmpl-auto-5 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=181 fallback=none plain_tail_tokens=1 verifier=sequential tail_reason=output_limit draft_forward_calls=362 target_t1_calls=511 target_t4_calls=0 extend_forward_calls=181 forward_count_scope=sequential_attempts"
+        }
+      ],
+      "actual_output": 512,
+      "coverage": "terminal_request_path"
+    },
+    {
+      "response_id": "chatcmpl-auto-6",
+      "records": [
+        {
+          "fields": {
+            "id": "chatcmpl-auto-6",
+            "requested_mtp": "1",
+            "path": "mtp_sequential_b1",
+            "mtp_steps": "45",
+            "fallback": "none",
+            "plain_tail_tokens": "0",
+            "verifier": "sequential",
+            "tail_reason": "none",
+            "draft_forward_calls": "90",
+            "target_t1_calls": "177",
+            "target_t4_calls": "0",
+            "extend_forward_calls": "44",
+            "forward_count_scope": "sequential_attempts"
+          },
+          "raw": "[q4t][decode_path] id=chatcmpl-auto-6 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=45 fallback=none plain_tail_tokens=0 verifier=sequential tail_reason=none draft_forward_calls=90 target_t1_calls=177 target_t4_calls=0 extend_forward_calls=44 forward_count_scope=sequential_attempts"
+        }
+      ],
+      "actual_output": 178,
+      "coverage": "terminal_request_path"
+    },
+    {
+      "response_id": "chatcmpl-auto-7",
+      "records": [
+        {
+          "fields": {
+            "id": "chatcmpl-auto-7",
+            "requested_mtp": "1",
+            "path": "mtp_sequential_b1",
+            "mtp_steps": "54",
+            "fallback": "none",
+            "plain_tail_tokens": "0",
+            "verifier": "sequential",
+            "tail_reason": "none",
+            "draft_forward_calls": "108",
+            "target_t1_calls": "215",
+            "target_t4_calls": "0",
+            "extend_forward_calls": "53",
+            "forward_count_scope": "sequential_attempts"
+          },
+          "raw": "[q4t][decode_path] id=chatcmpl-auto-7 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=54 fallback=none plain_tail_tokens=0 verifier=sequential tail_reason=none draft_forward_calls=108 target_t1_calls=215 target_t4_calls=0 extend_forward_calls=53 forward_count_scope=sequential_attempts"
+        }
+      ],
+      "actual_output": 216,
+      "coverage": "terminal_request_path"
+    }
+  ],
+  "passed": true,
+  "errors": []
+}

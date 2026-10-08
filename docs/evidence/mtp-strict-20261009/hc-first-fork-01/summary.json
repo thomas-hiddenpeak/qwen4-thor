@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "name": "host",
+      "exit_code": 0,
+      "seconds": 0.06380391120910645,
+      "passed": true,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "2308eea31a3586efd627d3c8170067f7584ad9d2543e79dd095affab729a188a"
+    },
+    {
+      "name": "capture",
+      "exit_code": 0,
+      "seconds": 1.0149550437927246,
+      "passed": true,
+      "stdout_sha256": "aac70461e5d4c4404feeec5f395ed435a222c1ee30464c7fe8526ebde7258d97",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "analysis",
+      "exit_code": 0,
+      "seconds": 8.773844480514526,
+      "passed": true,
+      "stdout_sha256": "e3b72fe998bbf578feb3754ca383c41c8a5982e91bfc5d6d3d77dd8d259da8c1",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

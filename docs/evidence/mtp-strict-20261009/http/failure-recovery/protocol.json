@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "variant": "link-wrapped test server",
+  "production_binary_http": false,
+  "generation_requests": 5,
+  "plan": [
+    [
+      "failure-control",
+      "success"
+    ],
+    [
+      "failure-target2",
+      "target_call_2_in_request"
+    ],
+    [
+      "failure-target2-recovery",
+      "success"
+    ],
+    [
+      "failure-extend",
+      "first_extend"
+    ],
+    [
+      "failure-extend-recovery",
+      "success"
+    ]
+  ],
+  "fixture": {
+    "length": 1024,
+    "prompt_sha256": "a72fade2611451e1f33ca088f0554474ec9d9032efccf04cc5581a2c25be2d98"
+  },
+  "max_tokens": 256,
+  "seed": 20260920,
+  "temperature": 0,
+  "stream": true,
+  "request_timeout_seconds": 120,
+  "cleanup_timeout_seconds": 120,
+  "startup_timeout_seconds": 600,
+  "body_limit_bytes": 4194304,
+  "expected_counter_delta": {
+    "q4t_requests_total": 5,
+    "q4t_requests_success_total": 3,
+    "q4t_requests_error_total": 2,
+    "q4t_requests_aborted_total": 0
+  },
+  "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t_mtp_sequential_fault_server",
+  "binary_sha256": "f8b8bb0ccc2714bd6d3d913a6478001eec42135cb46db129c7cc0f1fb9059012",
+  "source_sha256": {
+    "run_mtp_failure_recovery.py": "e02906b7b2f5a80824ff2b2ff659a2aab96a958881500f0da5cdaa34891f91e8",
+    "mtp_failure_recovery_contract.py": "b843da5b404bc58acea422f78d3355f2654cb3e252eae1cd84421039fae130fd",
+    "request_cancellation_contract.py": "4bc92a648bd80715c7507d84982b0e2700f9b12c0afab5fb24f2c3a3fa9f36df",
+    "acceptance_mode.py": "a086011e094ed0d371a4b4301f8b5f61f828eb2d7a7afbf4436359fc2bab89a3",
+    "response_identity.py": "2102fb7a401786a55dba5b8845985b69a36b4279c52a6e4d1610a11ccd1b6e7a",
+    "mtp_sequential_fault_server.cpp": "135a6fdf12a5d7d2e7594cc31f74ed21993581f4512f1a429bead09ea6ace027"
+  },
+  "scope": "logical real-forward Status failure, not CUDA fatal/OOM; same-process observable HTTP recovery, not full state proof"
+}

@@ -1,0 +1,21 @@
+{
+  "scope": "Preserve exact reviewed criteria before final documentation edits; no verdict change or test rerun.",
+  "opinion_sha256": "81607429cd4d0fa5f796f5067b39f0ef6d5b3b1499fee01e4ffd1a75a49beea2",
+  "sources": [
+    {
+      "original_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/docs/EVALUATION.md",
+      "preserved_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/b-support-gate-sources-01/EVALUATION.md",
+      "sha256": "33b84bdb28f4ac3dc9f76fc592524a1f08c3ba63b3de5f339f6c29aa1eef32a8"
+    },
+    {
+      "original_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/docs/MTP_RELEASE_PLAN_2026-10-08.md",
+      "preserved_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/b-support-gate-sources-01/MTP_RELEASE_PLAN_2026-10-08.md",
+      "sha256": "844809897eb40d3a755c536f6dbe3eb40649e290afdf8215fbf1451da4f46064"
+    },
+    {
+      "original_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/docs/MTP_STRICT_BASELINE_2026-10-09.md",
+      "preserved_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/b-support-gate-sources-01/MTP_STRICT_BASELINE_2026-10-09.md",
+      "sha256": "eaa9baca5931942ca2c5b3e05fddcbf262f7e5d0874a3bbe365bb48a07cf4aa7"
+    }
+  ]
+}

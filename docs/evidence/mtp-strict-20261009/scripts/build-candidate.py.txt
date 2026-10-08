@@ -1,0 +1,80 @@
+"""Build only; no test or model execution. Preserve every first outcome."""
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import shutil
+import subprocess
+import time
+
+STAGE = Path(__file__).resolve().parent
+ROOT = STAGE.parents[1]
+BUILD = ROOT / 'build/mtp-strict-20261009'
+assert not BUILD.exists(), 'new isolated build required'
+
+def sha(path):
+    with Path(path).open('rb') as stream:
+        return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+def save(name, value):
+    with (STAGE / name).open('x') as stream:
+        json.dump(value, stream, indent=2)
+        stream.write('\n')
+
+paths = subprocess.check_output(['git', 'ls-files', '--cached', '--others',
+    '--exclude-standard', 'include', 'src', 'cmake', 'CMakeLists.txt', 'tests',
+    'tools/evalscope'], cwd=ROOT, text=True).splitlines()
+paths = sorted(set(paths))
+snapshot = STAGE / 'source-build-01'
+snapshot.mkdir()
+rows = []
+for name in paths:
+    source = ROOT / name
+    if not source.is_file():
+        continue
+    target = snapshot / name
+    target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(source, target)
+    rows.append(dict(path=name, sha256=sha(source), bytes=source.stat().st_size))
+configure = ['cmake', '-S', str(ROOT), '-B', str(BUILD),
+    '-DCMAKE_BUILD_TYPE=Release', '-DCMAKE_CXX_COMPILER=/usr/bin/g++-14',
+    '-DCMAKE_CUDA_COMPILER=/usr/local/cuda-13.3/bin/nvcc',
+    '-DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-14',
+    '-DQ4T_CUDA_ARCHITECTURES=110a', '-DQ4T_BUILD_TESTS=ON']
+build = ['cmake', '--build', str(BUILD), '--target', 'q4t', 'q4t_host_tests',
+    'q4t_mtp_sequential_control', 'q4t_mtp_sequential_admission',
+    'q4t_mtp_sequential_fault_server', 'q4t_mtp_hc_first_fork', '--parallel', '6']
+env = {key: value for key, value in os.environ.items()
+       if not key.startswith('Q4T_') and key != 'LD_PRELOAD'}
+save('build-protocol-01.json', dict(created_unix=time.time(),
+    head=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT,
+                                 text=True).strip(),
+    source_files=rows, configure=configure, build=build,
+    script_sha256=sha(__file__),
+    plan_sha256=sha(ROOT/'docs/MTP_STRICT_BASELINE_2026-10-09.md'),
+    no_tests=True, no_model=True))
+for label, command in [('configure', configure), ('build', build)]:
+    log = STAGE / (label + '-01.log')
+    start = time.time()
+    with log.open('x') as stream:
+        completed = subprocess.run(command, cwd=ROOT, env=env, stdout=stream,
+                                   stderr=subprocess.STDOUT)
+    warnings = [line for line in log.read_text().splitlines()
+                if re.search(r'\bwarning\b', line, re.I)]
+    record = dict(command=command, started_unix=start,
+        seconds=time.time()-start, exit_code=completed.returncode,
+        warnings=warnings, log_sha256=sha(log),
+        passed=completed.returncode == 0 and not warnings)
+    save(label+'-01.json', record)
+    print(json.dumps(dict(label=label, **record)), flush=True)
+    if not record['passed']:
+        raise SystemExit(1)
+assert all(sha(ROOT/row['path']) == row['sha256'] for row in rows)
+outputs = [BUILD/name for name in ('q4t', 'q4t_host_tests',
+    'q4t_mtp_sequential_control', 'q4t_mtp_sequential_admission',
+    'q4t_mtp_sequential_fault_server', 'q4t_mtp_hc_first_fork', 'CMakeCache.txt')]
+save('build-identity-01.json', dict(created_unix=time.time(),
+    source_protocol_sha256=sha(STAGE/'build-protocol-01.json'),
+    files=[dict(path=str(path), sha256=sha(path), bytes=path.stat().st_size)
+           for path in outputs]))

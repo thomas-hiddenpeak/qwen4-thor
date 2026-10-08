@@ -18,6 +18,8 @@ import time
 from response_identity import response_identity
 from acceptance_mode import (performance_metrics, request_mode_evidence,
                              startup_evidence)
+from admission_limits_reference import (validate_admission_reference,
+                                        validate_early_eos_option)
 
 ROOT = Path(__file__).resolve().parents[2]
 LENGTHS = [1024, 4096, 8192, 45056, 204800]
@@ -27,13 +29,44 @@ def save(path, value):
     path.write_text(json.dumps(value, indent=2, ensure_ascii=False))
 
 
+def admission_limit_cases(output, targets):
+    cases = [(output / f'{"stream" if streaming else "nonstream"}-{limit}',
+              targets[1024], 1, 1024, 1024, limit, streaming)
+             for streaming in [True, False] for limit in [1, 2, 3, 4, 5, 8]]
+    cases.extend((output / f'context-{length}-{"stream" if streaming else "nonstream"}-8',
+                  targets[length], 1, length, length, 8, streaming)
+                 for length, streaming in [(208891, True), (208892, False)])
+    return cases
+
+
+def admission_limit_path_errors(paths, results):
+    errors = []
+    by_id = {b['response_id']: b['records'] for b in paths['bindings']}
+    for row in results:
+        found = by_id.get(row['response_id'], [])
+        if len(found) != 1:
+            continue  # The common path contract records this failure.
+        fields = found[0]['fields']
+        output = row['expected_output']
+        expected_path = ('prefill_only' if output == 1 else
+                         'plain_tail_b1' if output <= 4 else 'mtp_sequential_b1')
+        expected_reason = ('none' if output == 1 else
+                           'context_limit' if row['length'] > 1024 else 'output_limit')
+        if fields.get('path') != expected_path or fields.get('tail_reason') != expected_reason:
+            errors.append(f'{row["id"]}: frozen admission path/tail reason differs')
+    return errors
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--mode', choices=['quality', 'performance', 'limits'], required=True)
+    parser.add_argument('--mode', choices=['quality', 'performance', 'limits',
+                                          'sustained-quality', 'admission-limits'],
+                        required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--binary', type=Path, default=ROOT / 'build/q4t')
     parser.add_argument('--mtp', action='store_true',
                         help='Require actual single-stream MTP execution; default is ordinary decode')
+    parser.add_argument('--mtp-verifier', choices=['t4', 'sequential'])
     parser.add_argument('--model-dir', type=Path, required=True)
     parser.add_argument('--port', type=int, default=8000)
     parser.add_argument('--startup-timeout', type=int, default=180,
@@ -42,10 +75,36 @@ def main():
                         help='Existing quality-inputs or performance matrix root')
     parser.add_argument('--reference', type=Path,
                         help='Prior results.json: require identical prompts and outputs')
+    parser.add_argument('--allow-reference-early-eos', action='store_true',
+                        help='Admit only the frozen final plain limits early-EOS reference; '
+                             'strict output/path coverage still must pass')
+    parser.add_argument('--sustained-pair-root', type=Path,
+                        help='Shared bounded evidence directory; outputs are plain/ and sequential/')
     parser.add_argument('--moe-trace-dir', type=Path)
     parser.add_argument('--moe-trace-workload', type=Path)
     parser.add_argument('--moe-trace-max-mib', type=int, default=1024)
     args = parser.parse_args()
+    if args.mtp_verifier is not None and not args.mtp:
+        parser.error('--mtp-verifier requires --mtp')
+    verifier = args.mtp_verifier or 't4'
+    sustained = args.mode == 'sustained-quality'
+    admission_limits = args.mode == 'admission-limits'
+    try:
+        validate_early_eos_option(args.mode, args.mtp, verifier, args.reference,
+                                  args.allow_reference_early_eos)
+    except ValueError as error:
+        parser.error(str(error))
+    if args.sustained_pair_root is not None and not sustained:
+        parser.error('--sustained-pair-root requires sustained-quality')
+    if sustained and (args.fixtures is None or args.sustained_pair_root is None):
+        parser.error('sustained-quality requires prepared --fixtures and --sustained-pair-root')
+    if sustained or admission_limits:
+        if args.mtp and (verifier != 'sequential' or args.reference is None):
+            parser.error('admission MTP requires sequential verifier and plain --reference')
+        if not args.mtp and args.reference is not None:
+            parser.error('admission plain must establish a fresh reference')
+        if args.moe_trace_dir or args.moe_trace_workload:
+            parser.error('admission modes do not enable MoE tracing')
     if bool(args.moe_trace_dir) != bool(args.moe_trace_workload):
         parser.error('trace directory and workload must be supplied together')
     if args.mtp and args.moe_trace_dir:
@@ -59,9 +118,27 @@ def main():
     binary = args.binary.resolve()
     model = args.model_dir.resolve()
     decode_mode = 'mtp' if args.mtp else 'plain'
+    sustained_budget = None
+    sustained_binding = None
+    if sustained or admission_limits:
+        from sustained_quality import (CAPACITY, PairBudget, analyze_responses,
+                                       compare_pair, file_sha256, model_identity,
+                                       validate_inputs, validate_reference)
+        if sustained:
+            manifest, sustained_binding = validate_inputs(args.fixtures, binary, model)
+            sustained_budget = PairBudget(args.sustained_pair_root, out,
+                                           sustained_binding, args.mtp)
+            save(out / 'sustained-identity.json',
+                 {'binding': sustained_binding, 'decode_mode': decode_mode,
+                  'verifier': verifier if args.mtp else 'none'})
+        else:
+            limits_binding = {'binary_sha256': file_sha256(binary),
+                              'model': model_identity(model), 'capacity': CAPACITY}
+            save(out / 'admission-identity.json', limits_binding)
     save(out / 'run-mode.json', {'schema_version': 1,
                                 'acceptance_mode': args.mode,
                                 'decode_mode': decode_mode,
+                                'verifier': verifier if args.mtp else 'none',
                                 'binary': str(binary),
                                 'capacity': {'max_seq': 1, 'max_prefill': 8192,
                                              'max_len': 208896},
@@ -78,8 +155,10 @@ def main():
     env = os.environ.copy()
     removed = {}
     for key in list(env):
-        if key.startswith(('Q4T_FP8', 'Q4T_PROFILE', 'Q4T_MTP_TIMING',
-                           'Q4T_SCHED_DEBUG', 'Q4T_ACCESS_LOG')):
+        if ((sustained or admission_limits) and
+                (key.startswith('Q4T_') or key == 'LD_PRELOAD')) or key.startswith(
+                    ('Q4T_FP8', 'Q4T_PROFILE', 'Q4T_MTP_TIMING',
+                     'Q4T_SCHED_DEBUG', 'Q4T_ACCESS_LOG')):
             removed[key] = env.pop(key)
     (out / 'binary.sha256').write_text(hashlib.sha256(binary.read_bytes()).hexdigest())
     (out / 'commit.txt').write_bytes(subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT))
@@ -89,6 +168,15 @@ def main():
                     out / 'response_identity.py')
     shutil.copyfile(Path(__file__).with_name('acceptance_mode.py'),
                     out / 'acceptance_mode.py')
+    shutil.copyfile(Path(__file__).with_name('admission_limits_reference.py'),
+                    out / 'admission_limits_reference.py')
+    if sustained or admission_limits:
+        shutil.copyfile(Path(__file__).with_name('sustained_quality.py'),
+                        out / 'sustained_quality.py')
+        if sustained:
+            (out / 'fixtures').mkdir()
+            shutil.copyfile(Path(__file__).with_name('fixtures') / 'mtp_sustained_v1.json',
+                            out / 'fixtures/mtp_sustained_v1.json')
     cache = binary.parent / 'CMakeCache.txt'
     deployment = binary.with_name(binary.name + '.release.json')
     if deployment.is_file():
@@ -103,10 +191,21 @@ def main():
     shutil.copyfile(cache, out / 'CMakeCache.txt')
     evalscope = ROOT / 'tools/evalscope/.venv/bin/evalscope'
     python = evalscope.with_name('python')
-    (out / 'evalscope-version.txt').write_bytes(subprocess.check_output(
-        [str(python), '-c', 'from importlib.metadata import version; print(version("evalscope"))']))
+    version_command = [str(python), '-c',
+                       'from importlib.metadata import version; print(version("evalscope"))']
+    if sustained_budget:
+        with (out / 'evalscope-version.txt').open('wb') as version_output:
+            sustained_budget.run(version_command, stdout=version_output,
+                                 stderr=subprocess.STDOUT)
+    else:
+        (out / 'evalscope-version.txt').write_bytes(subprocess.check_output(version_command))
     prepared = out / 'inputs'
-    if args.mode == 'quality':
+    if sustained:
+        shutil.copytree(args.fixtures, prepared)
+        cases = [(out / 'sustained-quality', prepared / 'requests.jsonl',
+                  8, 1, 208896, 512, True)]
+        sustained_budget.check()
+    elif args.mode == 'quality':
         if args.fixtures:
             shutil.copytree(args.fixtures, prepared)
         else:
@@ -128,6 +227,24 @@ def main():
                 first = target.read_text().splitlines()[0]
             target.write_text((first + '\n') * 3)
             cases.append((out / f'context-{length}', target, 3, length, length, 256, True))
+    elif admission_limits:
+        prepared.mkdir()
+        fixture_root = args.fixtures
+        if args.mtp and fixture_root is None:
+            fixture_root = args.reference.resolve().parent / 'inputs'
+        targets = {}
+        for length in [1024, 208891, 208892]:
+            target = prepared / f'context-{length}/requests.jsonl'
+            target.parent.mkdir()
+            if fixture_root:
+                first = (fixture_root / f'context-{length}/requests.jsonl').read_text().splitlines()[0]
+                target.write_text(first + '\n')
+            else:
+                subprocess.run([str(python), str(ROOT / 'tools/evalscope/prepare_inputs.py'),
+                                '--model-dir', str(model), '--length', str(length),
+                                '--number', '1', '--output', str(target)], check=True)
+            targets[length] = target
+        cases = admission_limit_cases(out, targets)
     else:
         prepared.mkdir()
         target = prepared / 'context-1024.jsonl'
@@ -138,9 +255,20 @@ def main():
                   target, 1, 1024, 1024, limit, streaming)
                  for streaming in [True, False] for limit in [1, 2, 8]]
     reference = json.loads(args.reference.read_text()) if args.reference else None
+    if sustained and args.mtp:
+        reference = validate_reference(args.reference, sustained_binding,
+                                       args.sustained_pair_root)
+    if admission_limits and args.mtp:
+        reference, reference_admission = validate_admission_reference(
+            args.reference, limits_binding, prepared, args.allow_reference_early_eos)
+        if [row['id'] for row in reference] != [case[0].name for case in cases]:
+            raise ValueError('admission limits reference matrix/order differs')
+        save(out / 'reference-admission.json', reference_admission)
     command = [str(binary), 'serve', '--model-dir', str(model), '--port', str(args.port),
                '--max-seq', '1', '--max-prefill', '8192', '--max-len', '208896',
                '--max-tokens', '256', '--mtp' if args.mtp else '--no-mtp']
+    if args.mtp_verifier is not None:
+        command += ['--mtp-verifier', verifier]
     if args.moe_trace_dir:
         command += ['--moe-trace-dir', str(args.moe_trace_dir.resolve()),
                     '--moe-trace-workload', str(args.moe_trace_workload.resolve()),
@@ -157,6 +285,8 @@ def main():
         server = subprocess.Popen(command, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT)
         try:
             for _ in range(args.startup_timeout):
+                if sustained_budget:
+                    sustained_budget.check()
                 if server.poll() is not None:
                     raise RuntimeError('server exited during startup')
                 if 'serving on port' in (out / 'server.log').read_text():
@@ -164,7 +294,7 @@ def main():
                 time.sleep(1)
             else:
                 raise RuntimeError(f'server startup timeout after {args.startup_timeout}s')
-            startup = startup_evidence((out / 'server.log').read_text(), args.mtp)
+            startup = startup_evidence((out / 'server.log').read_text(), args.mtp, verifier)
             save(out / 'startup-mode.json', startup)
             if not startup['passed']:
                 raise RuntimeError('actual startup mode/capacity mismatch: ' +
@@ -185,8 +315,12 @@ def main():
                 cmd.append('--stream' if streaming else '--no-stream')
                 save(case / 'command.json', cmd)
                 with (case / 'client.log').open('w') as client:
-                    subprocess.run(cmd, cwd=ROOT, env=env, stdout=client,
-                                   stderr=subprocess.STDOUT, check=True)
+                    if sustained_budget:
+                        sustained_budget.run(cmd, cwd=ROOT, env=env, stdout=client,
+                                             stderr=subprocess.STDOUT)
+                    else:
+                        subprocess.run(cmd, cwd=ROOT, env=env, stdout=client,
+                                       stderr=subprocess.STDOUT, check=True)
                 with sqlite3.connect(next(case.rglob('benchmark_data.db'))) as db:
                     rows = db.execute('select success,prompt_tokens,completion_tokens,'
                                       'response_messages,first_chunk_latency,latency,request '
@@ -214,7 +348,24 @@ def main():
                     raise RuntimeError('request count or HTTP success mismatch')
                 if not all(r['response_id_valid'] for r in parsed):
                     raise RuntimeError('missing, malformed or mixed response IDs')
-                if args.mode == 'quality':
+                if sustained:
+                    results = analyze_responses(parsed, manifest)
+                    save(out / 'results.json', results)
+                    report = {'request_count': len(results),
+                              'observed_output_tokens': sum(r['actual_output'] for r in results),
+                              'sustained_coverage_passed': all(r['coverage_met'] for r in results),
+                              'missing_coverage': [r['id'] for r in results if not r['coverage_met']],
+                              'semantic_results_are_independent': True,
+                              'manual_semantic_review_pending': [r['id'] for r in results
+                                  if r['semantic']['manual_review_required']],
+                              'compared_token_ids': False}
+                    if reference is not None:
+                        report['pair'] = compare_pair(reference, results)
+                    save(out / 'sustained-report.json', report)
+                    save(out / 'budget-observed.json', sustained_budget.check())
+                    if reference is not None and not report['pair']['exact_http_pair_passed']:
+                        raise RuntimeError('sustained exact HTTP pairing failed')
+                elif args.mode == 'quality':
                     expected = {r['prompt_sha256']: r for r in manifest}
                     for row in parsed:
                         row.update(expected[row['prompt_sha256']])
@@ -230,13 +381,17 @@ def main():
                         if any(r['text'] != old[r['id']]['text'] or
                                r['prompt_sha256'] != old[r['id']]['prompt_sha256'] for r in parsed):
                             raise RuntimeError('quality output/prompt differs from reference')
-                elif args.mode == 'limits':
+                elif args.mode == 'limits' or admission_limits:
                     row = parsed[0]
                     row.update({'id': case.name, 'streaming': streaming,
                                 'max_tokens': tokens})
+                    if admission_limits:
+                        row['length'] = minimum
+                        row['expected_output'] = min(tokens, 208896 - minimum)
                     results.append(row)
                     save(out / 'results.json', results)
-                    if (row['actual_input'] != 1024 or row['actual_output'] != tokens or
+                    expected_output = min(tokens, 208896 - minimum) if admission_limits else tokens
+                    if (row['actual_input'] != minimum or row['actual_output'] != expected_output or
                             row['finish'] != ['length'] or row['request_stream'] != streaming):
                         raise RuntimeError('output-limit/finish/stream acceptance failed')
                     if reference:
@@ -244,6 +399,9 @@ def main():
                         if (row['text'] != old['text'] or
                                 row['prompt_sha256'] != old['prompt_sha256']):
                             raise RuntimeError('output-limit prompt/text differs from reference')
+                        if admission_limits and any(row[key] != old[key] for key in
+                                ['actual_input', 'actual_output', 'finish', 'streaming', 'max_tokens']):
+                            raise RuntimeError('admission limits usage/finish/stream differs from reference')
                 else:
                     hashes = [hashlib.sha256(r['text'].encode()).hexdigest() for r in parsed]
                     item = {'length': minimum, 'outputs': hashes,
@@ -275,22 +433,46 @@ def main():
         finally:
             server.terminate()
             try:
-                server.wait(timeout=25)
+                shutdown_timeout = (max(0.001, min(25, sustained_budget.deadline - time.monotonic()))
+                                    if sustained_budget else 25)
+                server.wait(timeout=shutdown_timeout)
             except subprocess.TimeoutExpired:
                 server.kill()
                 server.wait()
             # The terminal path line may follow the final SSE write. Audit only
             # after the owned process exits, when server.log is complete.
-            paths = request_mode_evidence((out / 'server.log').read_text(), responses, args.mtp)
+            paths = request_mode_evidence((out / 'server.log').read_text(), responses,
+                                          args.mtp, verifier)
+            if admission_limits and args.mtp:
+                paths['errors'].extend(admission_limit_path_errors(paths, results))
+                paths['passed'] = not paths['errors']
             save(out / 'request-modes.json', paths)
             mode_passed = bool(startup and startup['passed'] and paths['passed'])
             if not mode_passed and failure is None:
                 failure = 'actual execution mode not accepted: ' + '; '.join(paths['errors'])
+            if sustained_budget:
+                try:
+                    save(out / 'budget-observed.json', sustained_budget.check())
+                except ValueError as error:
+                    passed = False
+                    if failure is None:
+                        failure = str(error)
+                    save(out / 'budget-observed.json',
+                         {**sustained_budget.snapshot(), 'budget_error': str(error),
+                          'first_failure': failure})
+            quality_status = {}
+            if sustained:
+                quality_status = {
+                    'sustained_coverage_passed': len(results) == 8 and
+                        all(row['coverage_met'] for row in results),
+                    'manual_semantic_review_pending': [row['id'] for row in results
+                        if row['semantic']['manual_review_required']],
+                    'http_checks_are_not_full_quality_acceptance': True}
             save(out / 'exit.json', {'server': server.returncode, 'completed': len(results),
                                       'decode_mode': decode_mode,
                                       'actual_mode_checks_passed': mode_passed,
                                       'http_output_checks_passed': passed and mode_passed and server.returncode == 0,
-                                      'failure': failure})
+                                      'failure': failure, **quality_status})
         if failure:
             raise RuntimeError(failure)
         if server.returncode != 0:

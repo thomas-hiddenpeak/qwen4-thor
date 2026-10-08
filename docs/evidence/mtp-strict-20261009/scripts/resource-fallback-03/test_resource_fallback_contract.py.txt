@@ -1,0 +1,191 @@
+"""Offline fixtures for resource fallback; no model, network or subprocess."""
+import json
+import unittest
+
+import resource_fallback_contract as contract
+
+
+def log_fixture():
+    lines = [contract.VARIANT]
+    for ordinal, (label, _) in enumerate(contract.PLAN, 1):
+        fallback = ordinal == 2
+        target, draft, extend, tail, steps, ordinary = (
+            (0, 0, 0, 0, 0, 255) if fallback else (252, 200, 100, 4, 100, 3))
+        lines += [
+            f'[q4t][resource_begin] ordinal={ordinal} real_ok=1 slot=0 '
+            'stage=prefill position=0 history=0 pending=0',
+            f'[q4t][resource_reset] ordinal={ordinal} real_ok=1 slot=0 '
+            'completion=stream_ordered',
+            f'[q4t][resource_reserve] ordinal={ordinal} real_ok=1 '
+            'position=1024 history=1024 pending=0 requested_k=4 capacity=4 '
+            'target_calls=0 ordinary_calls=0',
+        ]
+        if fallback:
+            lines += [
+                f'[q4t][resource_injection] ordinal={ordinal} real_ok=1 '
+                'kind=logical_reserve_after_success physical_oom=0 '
+                'position=1024 history=1024 pending=0',
+                contract.INIT_FAILURE,
+            ]
+        path = 'plain' if fallback else 'mtp_sequential_b1'
+        reason = 'none' if fallback else 'output_limit'
+        fallback_reason = 'initialization' if fallback else 'none'
+        lines += [
+            f'[q4t][decode_path] id={label} requested_mtp=1 path={path} '
+            f'mtp_steps={steps} fallback={fallback_reason} '
+            f'plain_tail_tokens={tail} verifier=sequential tail_reason={reason} '
+            f'draft_forward_calls={draft} target_t1_calls={target} '
+            f'target_t4_calls=0 extend_forward_calls={extend} '
+            'forward_count_scope=sequential_attempts',
+            f'[q4t][resource_end] ordinal={ordinal} real_ok=1 '
+            'stage=idle position=0 history=0 pending=0 resets=1 reserve_calls=1 '
+            f'legacy_calls=0 injected={int(fallback)} target_calls={target} '
+            f'ordinary_calls={ordinary} ordinary_scheduler_calls={ordinary}',
+        ]
+    return '\n'.join(lines) + '\n'
+
+
+def response(label, text='Same complete answer.', finish='length', error=False,
+             usage=None):
+    if usage is None:
+        usage = {'prompt_tokens': 1024, 'completion_tokens': 256,
+                 'total_tokens': 1280}
+    events = [
+        {'id': label, 'choices': [{'delta': {'role': 'assistant'}}]},
+        {'id': label, 'choices': [{'delta': {'content': text}}]},
+        {'id': label, 'choices': [{'finish_reason': finish}]},
+        {'id': label, 'choices': [], 'usage': usage},
+    ]
+    if error:
+        events.append({'error': {'message': 'generation failed'}})
+    body = ''.join('data: ' + json.dumps(event) + '\n\n' for event in events)
+    return {'status': 200, 'body': body + 'data: [DONE]\n\n'}
+
+
+class ResourceFallbackContractTest(unittest.TestCase):
+    def assert_bad_log(self, value):
+        self.assertNotEqual(value, log_fixture(), 'negative fixture was unchanged')
+        with self.assertRaises(ValueError):
+            contract.validate_log(value)
+
+    def test_three_real_reserves_and_one_logical_fallback(self):
+        result = contract.validate_log(log_fixture())
+        self.assertEqual([x['response_id'] for x in result['groups']],
+                         [x[0] for x in contract.PLAN])
+        paths = result['terminal_paths']
+        self.assertEqual(paths['resource-reserve']['fallback'], 'initialization')
+        self.assertEqual(paths['resource-control']['target_t1_calls'], '252')
+        self.assertEqual(result['groups'][1]['events'][-1]['ordinary_calls'],
+                         '255')
+
+    def test_three_success_responses_metrics_and_same_mode_recovery(self):
+        control = None
+        for index, (label, _) in enumerate(contract.PLAN):
+            value = contract.completed_result(response(label), label)
+            if control is None:
+                control = value
+            else:
+                contract.require_recovery(value, control)
+            contract.require_counter_delta((index, index, 0, 0),
+                                           (index + 1, index + 1, 0, 0))
+
+    def test_rejects_wrong_variant_duplicate_marker_and_response_id(self):
+        for value in (log_fixture().replace(contract.VARIANT, ''),
+                      log_fixture() + contract.VARIANT + '\n',
+                      log_fixture().replace('id=resource-reserve ',
+                                            'id=other-request ')):
+            with self.subTest(value=value):
+                self.assert_bad_log(value)
+        with self.assertRaises(ValueError):
+            contract.completed_result(response('other'), 'resource-reserve')
+
+    def test_requires_injection_after_real_success_and_matching_failure(self):
+        original = log_fixture()
+        without_injection = '\n'.join(
+            line for line in original.splitlines()
+            if not line.startswith('[q4t][resource_injection]'))
+        wrong_real = original.replace(
+            '[q4t][resource_reserve] ordinal=2 real_ok=1',
+            '[q4t][resource_reserve] ordinal=2 real_ok=0')
+        for value in (without_injection, wrong_real,
+                      original.replace(contract.INIT_FAILURE, ''),
+                      original.replace('physical_oom=0 position=1024',
+                                       'physical_oom=1 position=1024')):
+            with self.subTest(value=value):
+                self.assert_bad_log(value)
+
+    def test_requires_reset_cleanup_and_serial_lifetime(self):
+        original = log_fixture()
+        no_reset = '\n'.join(line for line in original.splitlines()
+                             if not line.startswith(
+                                 '[q4t][resource_reset] ordinal=3'))
+        no_end = '\n'.join(line for line in original.splitlines()
+                           if not line.startswith(
+                               '[q4t][resource_end] ordinal=2'))
+        for value in (no_reset, no_end,
+                      original.replace('stage=idle position=0 history=0',
+                                       'stage=idle position=0 history=1', 1),
+                      original.replace('[q4t][resource_reset] ordinal=2',
+                                       '[q4t][resource_reset] ordinal=3', 1)):
+            with self.subTest(value=value):
+                self.assert_bad_log(value)
+
+    def test_reserve_must_precede_decode_at_exact_initialized_position(self):
+        for old, new in (
+                ('requested_k=4 capacity=4', 'requested_k=3 capacity=4'),
+                ('position=1024 history=1024', 'position=1023 history=1023'),
+                ('target_calls=0 ordinary_calls=0',
+                 'target_calls=1 ordinary_calls=0')):
+            with self.subTest(field=old):
+                self.assert_bad_log(log_fixture().replace(old, new, 1))
+
+    def test_fallback_requires_scheduler_b1_and_zero_speculative_legacy_work(self):
+        for old, new in (
+                ('fallback=initialization', 'fallback=load_failed'),
+                ('ordinary_calls=255 ordinary_scheduler_calls=255',
+                 'ordinary_calls=255 ordinary_scheduler_calls=0'),
+                ('ordinary_calls=255 ordinary_scheduler_calls=255',
+                 'ordinary_calls=254 ordinary_scheduler_calls=254'),
+                ('legacy_calls=0 injected=1', 'legacy_calls=1 injected=1'),
+                ('draft_forward_calls=0 target_t1_calls=0',
+                 'draft_forward_calls=2 target_t1_calls=0')):
+            with self.subTest(field=old):
+                self.assert_bad_log(log_fixture().replace(old, new, 1))
+
+    def test_recovery_requires_matching_core_counters_and_path(self):
+        original = log_fixture()
+        for old, new in (
+                ('target_t1_calls=252', 'target_t1_calls=251'),
+                ('ordinary_calls=3 ordinary_scheduler_calls=3',
+                 'ordinary_calls=4 ordinary_scheduler_calls=4'),
+                ('id=resource-recovery requested_mtp=1',
+                 'id=resource-recovery requested_mtp=0')):
+            with self.subTest(field=old):
+                self.assert_bad_log(original.replace(old, new, 1))
+
+    def test_metrics_reject_errors_aborts_extra_requests_and_bad_types(self):
+        for after in ((1, 0, 1, 0), (1, 0, 0, 1), (2, 2, 0, 0),
+                      (1, 1, 0), (True, 1, 0, 0), (-1, 1, 0, 0)):
+            with self.subTest(after=after), self.assertRaises(ValueError):
+                contract.require_counter_delta((0, 0, 0, 0), after)
+
+    def test_rejects_fake_normal_finish_wrong_usage_and_changed_output(self):
+        label = 'resource-reserve'
+        for value in (response(label, finish='stop'),
+                      response(label, error=True),
+                      response(label, usage={'prompt_tokens': 1024,
+                                            'completion_tokens': 255,
+                                            'total_tokens': 1279})):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                contract.completed_result(value, label)
+        control = contract.completed_result(response('resource-control'),
+                                            'resource-control')
+        changed = contract.completed_result(
+            response('resource-recovery', text='Different answer.'),
+            'resource-recovery')
+        with self.assertRaises(ValueError):
+            contract.require_recovery(changed, control)
+
+
+if __name__ == '__main__':
+    unittest.main()

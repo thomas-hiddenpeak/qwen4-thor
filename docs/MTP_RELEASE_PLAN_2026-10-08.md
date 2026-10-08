@@ -6,7 +6,9 @@
 提交 `c18f4b5` 启动新 Goal。暂停新增性能候选，以两个独立出口
 推进：A 基础正确性修复可合入；B 有限范围 MTP 获得正式支持。
 默认启用是另一个决策，不随合入或修改 experimental 标签自动批准。
-Goal 当前 active；A 已形成可审查修复 PR，B 尚未通过。既有 NO_GO
+2026-10-09：A已形成可审查修复PR，B以指定sequential profile达到
+有限正确性准入，见[最终结果](MTP_STRICT_RESULT_2026-10-09.md)。
+下文保留阶段冻结范围与执行补记；默认启用和快速T4既有 NO_GO
 和失败原件保留。
 
 保护起点见 `.q4t-work/mtp-release-20261008/starting-identities.json`：

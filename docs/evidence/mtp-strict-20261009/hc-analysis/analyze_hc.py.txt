@@ -1,0 +1,379 @@
+"""Independent first-row HC nonlinear screening; no CUDA or weight reads.
+
+Fixed before capture: Decimal exp precision 100, maximum-spacing observed ULP
+enclosure, endpoint RN32 arithmetic, branchwise hull of FMA/non-FMA, BF16 RNE.
+Only normal finite arithmetic and exact positive zero are supported. A range
+containing potentially subnormal intermediates is INDETERMINATE, never PASS.
+NVIDIA's exp intrinsic bounds are observed bounds, not all-input guarantees.
+
+Sources:
+https://docs.python.org/3.12/library/decimal.html#decimal.Decimal.exp
+https://docs.python.org/3.12/library/decimal.html#decimal.Decimal.next_minus
+https://docs.python.org/3.12/library/decimal.html#decimal.Decimal.as_integer_ratio
+https://docs.nvidia.com/cuda/archive/13.3.0/cuda-programming-guide/05-appendices/mathematical-functions.html
+"""
+import argparse
+from decimal import Context, Decimal, ROUND_HALF_EVEN, localcontext
+from fractions import Fraction
+import hashlib
+import json
+from pathlib import Path
+import re
+import struct
+import sys
+
+
+PATHS = {'m1': 1, 'm4a': 4, 'm4b': 4}
+WIDTHS = {'normed': 10240, 'down_raw': 320, 'silu': 320,
+          'up': 10240, 'mixed': 2560}
+PRECISION = 100
+MIN_NORMAL = Fraction(1, 1 << 126)
+
+
+class Indeterminate(Exception):
+    pass
+
+
+def need(condition, reason):
+    if not condition:
+        raise Indeterminate(reason)
+
+
+def power2(exponent):
+    return Fraction(1 << exponent, 1) if exponent >= 0 else Fraction(1, 1 << -exponent)
+
+
+def binary_value(bits, precision=24):
+    """Exact finite IEEE value; precision 24 = FP32, 8 = BF16."""
+    need(precision in (8, 24), 'unsupported_binary_format')
+    fraction_bits = precision - 1
+    sign_shift = fraction_bits + 8
+    need(isinstance(bits, int) and 0 <= bits < 1 << (sign_shift + 1),
+         'invalid_bit_pattern')
+    exponent = (bits >> fraction_bits) & 255
+    mantissa = bits & ((1 << fraction_bits) - 1)
+    need(exponent != 255, 'nonfinite_bit_pattern')
+    significand = mantissa if exponent == 0 else (1 << fraction_bits) + mantissa
+    scale = -126 - fraction_bits if exponent == 0 else exponent - 127 - fraction_bits
+    result = significand * power2(scale)
+    return -result if bits >> sign_shift else result
+
+
+def round_bits(value, precision=24, direction='nearest'):
+    """Integer quotient/remainder rounding; no host floating-point arithmetic."""
+    value = Fraction(value)
+    need(precision in (8, 24) and direction in ('nearest', 'floor', 'ceil'),
+         'invalid_rounding_contract')
+    sign = value < 0
+    if not value:
+        return 0  # Negative-zero inputs are rejected separately.
+    if sign:
+        value = -value
+        if direction != 'nearest':
+            direction = 'ceil' if direction == 'floor' else 'floor'
+    exponent = value.numerator.bit_length() - value.denominator.bit_length()
+    if value < power2(exponent):
+        exponent -= 1
+    scale = max(exponent, -126) - (precision - 1)
+    scaled = value / power2(scale)
+    quotient, remainder = divmod(scaled.numerator, scaled.denominator)
+    if direction == 'ceil' and remainder:
+        quotient += 1
+    elif direction == 'nearest' and (2 * remainder > scaled.denominator or
+            (2 * remainder == scaled.denominator and quotient & 1)):
+        quotient += 1
+    if exponent < -126:
+        encoded = quotient  # Includes rounding into the smallest normal value.
+    else:
+        if quotient == 1 << precision:
+            quotient >>= 1
+            exponent += 1
+        need(exponent <= 127, 'binary_rounding_overflow')
+        encoded = ((exponent + 127) << (precision - 1)) + quotient - (1 << (precision - 1))
+    need((encoded >> (precision - 1)) < 255, 'binary_rounding_overflow')
+    return encoded | (int(sign) << (precision + 7))
+
+
+def normal_or_zero(value):
+    value = Fraction(value)
+    maximum = binary_value(0x7f7fffff)
+    return not value or MIN_NORMAL <= abs(value) <= maximum
+
+
+def supported_interval(interval, label):
+    low, high = interval
+    need(low <= high, label + ':reversed_interval')
+    need(normal_or_zero(low) and normal_or_zero(high),
+         label + ':subnormal_or_overflow')
+    need((low == high == 0) or low >= MIN_NORMAL or high <= -MIN_NORMAL,
+         label + ':interval_can_include_subnormal_or_signed_zero')
+    return interval
+
+
+def captured_value(bits):
+    need(bits != 0x8000, 'negative_zero_sign_not_modeled')
+    value = binary_value(bits, 8)
+    need(normal_or_zero(value), 'subnormal_capture')
+    return value
+
+
+def rn_interval(interval):
+    # RN is monotone. Exact endpoint rounding encloses all RN32 values from
+    # the closed real interval without adding a fitted epsilon.
+    return tuple(binary_value(round_bits(value)) for value in interval)
+
+
+def plus(left, right):
+    return left[0] + right[0], left[1] + right[1]
+
+
+def times(left, right):
+    corners = [a * b for a in left for b in right]
+    return min(corners), max(corners)
+
+
+def divide(left, right):
+    need(not right[0] <= 0 <= right[1], 'divisor_interval_contains_zero')
+    corners = [a / b for a in left for b in right]
+    return min(corners), max(corners)
+
+
+def exact_decimal(value):
+    """Construct a dyadic Decimal exactly, without a precision-limited divide."""
+    value = Fraction(value)
+    denominator = value.denominator
+    need(denominator & (denominator - 1) == 0, 'exp_input_not_dyadic')
+    scale = denominator.bit_length() - 1
+    digits = tuple(int(c) for c in str(abs(value.numerator) * 5 ** scale))
+    return Decimal((int(value < 0), digits, -scale))
+
+
+def fraction_decimal(value):
+    numerator, denominator = value.as_integer_ratio()
+    return Fraction(numerator, denominator)
+
+
+def correctly_rounded_exp32(argument):
+    # Every input with a normal finite exp is inside this conservative resource
+    # guard. Outside it, the exp result cannot be a normal finite FP32 value.
+    need(-100 <= argument <= 100, 'exp_argument_outside_normal_resource_guard')
+    with localcontext(Context(prec=PRECISION, rounding=ROUND_HALF_EVEN)) as context:
+        result = exact_decimal(argument).exp(context=context)
+        need(result.is_finite() and result > 0, 'decimal_exp_nonfinite')
+        low = fraction_decimal(result.next_minus(context=context))
+        high = fraction_decimal(result.next_plus(context=context))
+    lower_bits, upper_bits = round_bits(low), round_bits(high)
+    need(lower_bits == upper_bits, 'decimal_100_digits_do_not_decide_exp32_rounding')
+    need(0 < ((lower_bits >> 23) & 255) < 255, 'exp32_not_normal_finite')
+    return lower_bits
+
+
+def local_spacing(value):
+    lower = round_bits(value, direction='floor')
+    upper = round_bits(value, direction='ceil')
+    need(0 < ((lower >> 23) & 255) < 255 and upper < 0x7f7fffff,
+         'exp_spacing_outside_supported_domain')
+    return max(binary_value(upper + 1) - binary_value(upper),
+               binary_value(lower) - binary_value(lower - 1))
+
+
+def exp_enclosure(argument):
+    """A priori conservative enclosure of the documented observed ULP range.
+
+    The reference is RN32(exp(x)), as specified by CUDA 13.3. Largest adjacent
+    spacing over the enclosure handles the two sides of a binade boundary;
+    treating K as an unsigned bit-distance would narrow one side incorrectly.
+    """
+    argument = Fraction(argument)
+    reference = binary_value(correctly_rounded_exp32(argument))
+    scaled = abs(Fraction(1173, 1000) * argument)
+    error_ulps = 2 + scaled.numerator // scaled.denominator
+    spacing = local_spacing(reference)
+    for _ in range(8):
+        low = reference - error_ulps * spacing
+        high = reference + error_ulps * spacing
+        supported_interval((low, high), 'exp_observed_enclosure')
+        wider = max(spacing, local_spacing(low), local_spacing(high))
+        if wider == spacing:
+            bounds = (binary_value(round_bits(low, direction='floor')),
+                      binary_value(round_bits(high, direction='ceil')))
+            return supported_interval(bounds, 'exp_rounded_enclosure')
+        spacing = wider
+    raise Indeterminate('exp_binade_enclosure_did_not_stabilize')
+
+
+def silu_interval(down):
+    value = binary_value(round_bits(down * Fraction(1, 4)))
+    supported_interval((value, value), 'silu_scaled_input')
+    denominator = supported_interval(rn_interval(plus((Fraction(1), Fraction(1)),
+                                                      exp_enclosure(-value))),
+                                     'silu_denominator')
+    quotient = supported_interval(divide((value, value), denominator), 'silu_real_quotient')
+    return supported_interval(rn_interval(quotient), 'silu_fp32')
+
+
+def accumulate_interval(accumulator, gate, normed):
+    product = times(gate, (normed, normed))
+    non_fma = rn_interval(plus(accumulator, rn_interval(product)))
+    fma = rn_interval(plus(accumulator, product))
+    return min(non_fma[0], fma[0]), max(non_fma[1], fma[1])
+
+
+def gate_interval(up, normed):
+    need(len(up) == len(normed) == 4, 'requires_four_branches')
+    accumulator = (Fraction(0), Fraction(0))
+    for value, normalized in zip(up, normed):
+        denominator = supported_interval(rn_interval(plus(
+            (Fraction(1), Fraction(1)), exp_enclosure(-value))), 'gate_denominator')
+        gate = supported_interval(rn_interval(divide((Fraction(1), Fraction(1)),
+                                                    denominator)), 'gate_reciprocal')
+        # Reject unsupported intermediate products even if an FMA could avoid
+        # underflow: the frozen union permits either contraction policy.
+        supported_interval(times(gate, (normalized, normalized)), 'gate_product')
+        accumulator = supported_interval(accumulate_interval(accumulator, gate, normalized),
+                                          'gate_accumulator')
+    quotient = supported_interval(divide(accumulator, (Fraction(4), Fraction(4))),
+                                    'mixed_real_mean')
+    return supported_interval(rn_interval(quotient), 'mixed_fp32_mean')
+
+
+def classify(observed_bits, interval):
+    actual = captured_value(observed_bits)
+    low_bits, high_bits = (round_bits(value, 8) for value in interval)
+    low, high = binary_value(low_bits, 8), binary_value(high_bits, 8)
+    supported_interval((low, high), 'final_bf16')
+    return {'status': 'PASS' if low <= actual <= high else 'FAIL',
+            'observed_bf16_u16': observed_bits,
+            'lower_bf16_u16': low_bits, 'upper_bf16_u16': high_bits}
+
+
+def sha256(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def parse_fields(line):
+    fields = [item.split('=', 1) for item in line.split()[1:]]
+    need(all(len(item) == 2 for item in fields), 'malformed_capture_log_fields')
+    result = dict(fields)
+    need(len(result) == len(fields), 'duplicate_capture_log_fields')
+    return result
+
+
+def verify_sources(log, flags):
+    flag_lines = re.findall(r'^CUDA_FLAGS\s*=\s*(.*)$', flags, re.M)
+    need(len(flag_lines) == 1, 'expected_one_CUDA_FLAGS_record')
+    cuda_flags = flag_lines[0]
+    forbidden = [r'--?use_fast_math', r'--?prec-div(?:=|\s+)false',
+                 r'--?ftz(?:=|\s+)true', r'-ffast-math',
+                 r'-fassociative-math', r'-funsafe-math-optimizations']
+    need(not any(re.search(pattern, cuda_flags) for pattern in forbidden),
+         'unsupported_compiler_arithmetic_flags')
+    scope_lines = [line for line in log.splitlines() if line.startswith('HC_SCOPE ')]
+    need(len(scope_lines) == 1, 'expected_one_HC_SCOPE')
+    scope = parse_fields(scope_lines[0])
+    expected = {'byte_order': 'little', 'encoding': 'BF16', 'rows': '1,4,4',
+                'widths': '10240,320,320,10240,2560', 'hc_count': '4',
+                'hidden_size': '2560', 'lowrank': '320', 'cudart_header': '13030',
+                'eps_f32_bits': f'{round_bits(Fraction(1, 1000000)):08x}',
+                'FP8_PROJ': 'unset', 'FP8_HC': 'unset', 'FP8_ALL': 'unset',
+                'projection_first_row_only': '1', 'nonlinear_contract': 'NOT_EVALUATED'}
+    need(all(scope.get(key) == value for key, value in expected.items()),
+         'capture_scope_differs_from_frozen_contract')
+    calls = [parse_fields(line) for line in log.splitlines() if line.startswith('HC_CALL ')]
+    need([row.get('path') for row in calls] == list(PATHS), 'capture_call_order_differs')
+    for row, (name, count) in zip(calls, PATHS.items()):
+        need(row.get('T') == str(count) and row.get('hc_workspace') == '33554432',
+             'capture_call_shape_or_workspace_differs:' + name)
+    return {'scope': scope, 'calls': calls, 'cuda_flags': cuda_flags,
+            'operator_rounding': 'default_cuda_13.3_rn_precise_division',
+            'fma_policy': 'union_of_per_branch_fused_and_nonfused'}
+
+
+def analyze(capture_dir, capture_log, flags_file):
+    capture_dir, capture_log, flags_file = map(Path, (capture_dir, capture_log, flags_file))
+    report = {'schema_version': 1, 'protocol': 'hc_first_row_nonlinear_v1',
+              'observed_intrinsic_screen': True,
+              'mathematical_all_inputs_guarantee': False,
+              'independent_rms_correctness_proven': False,
+              'full_t4_generation_divergence_explained': False,
+              'projection_contract_evaluated_here': False,
+              'decimal_precision': PRECISION, 'expected_cells': 8640,
+              'arithmetic_enclosure': 'endpoint_RN32; exp_max_adjacent_spacing; FMA_union; BF16_RNE',
+              'source_hashes': {'analyzer': sha256(__file__),
+                                'capture_log': sha256(capture_log),
+                                'flags_file': sha256(flags_file)},
+              'source_paths': {'capture_dir': str(capture_dir.resolve()),
+                               'capture_log': str(capture_log.resolve()),
+                               'flags_file': str(flags_file.resolve())},
+              'captures': {}, 'cells': []}
+    report['compile_and_capture_scope'] = verify_sources(capture_log.read_text(),
+                                                        flags_file.read_text())
+    values = {}
+    for name, count in PATHS.items():
+        values[name] = {}
+        for stage, width in WIDTHS.items():
+            path = capture_dir / f'{name}.{stage}.bf16'
+            need(path.stat().st_size == count * width * 2, 'wrong_capture_size:' + path.name)
+            data = path.read_bytes()
+            report['captures'][path.name] = {'sha256': hashlib.sha256(data).hexdigest(),
+                                             'bytes': len(data), 'analyzed_rows': [0]}
+            values[name][stage] = struct.unpack('<' + 'H' * width, data[:width * 2])
+    reference = values['m1']['normed']
+    report['normed_cross_shape_exact'] = {
+        name: values[name]['normed'] == reference for name in ('m4a', 'm4b')}
+    for name in PATHS:
+        captured = values[name]
+        for stage, count in [('silu', 320), ('mixed', 2560)]:
+            for index in range(count):
+                cell = {'path': name, 'stage': stage, 'index': index,
+                        'observed_bf16_u16': captured[stage][index]}
+                try:
+                    if stage == 'silu':
+                        down = captured_value(captured['down_raw'][index])
+                        interval = silu_interval(down)
+                    else:
+                        offsets = [branch * 2560 + index for branch in range(4)]
+                        up = [captured_value(captured['up'][offset]) for offset in offsets]
+                        normed = [captured_value(captured['normed'][offset]) for offset in offsets]
+                        interval = gate_interval(up, normed)
+                    cell.update(classify(captured[stage][index], interval))
+                except Indeterminate as error:
+                    cell.update(status='INDETERMINATE', reason=str(error))
+                report['cells'].append(cell)
+    counts = {status: sum(c['status'] == status for c in report['cells'])
+              for status in ('PASS', 'FAIL', 'INDETERMINATE')}
+    report['counts'] = counts
+    report['status'] = ('FAIL' if counts['FAIL'] or
+                        not all(report['normed_cross_shape_exact'].values()) else
+                        'INDETERMINATE' if counts['INDETERMINATE'] else 'PASS')
+    return report
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--capture-dir', type=Path, required=True)
+    parser.add_argument('--capture-log', type=Path, required=True)
+    parser.add_argument('--flags-file', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    args = parser.parse_args()
+    need(args.output.resolve().is_relative_to(Path(__file__).resolve().parent),
+         'output_must_be_inside_hc_analysis_directory')
+    # Reserve the new evidence path first; never overwrite an earlier result.
+    with args.output.open('x', encoding='utf-8') as output:
+        try:
+            report = analyze(args.capture_dir, args.capture_log, args.flags_file)
+        except (Indeterminate, OSError, ValueError) as error:
+            report = {'status': 'INDETERMINATE', 'reason': str(error),
+                      'observed_intrinsic_screen': True,
+                      'mathematical_all_inputs_guarantee': False,
+                      'analyzer_sha256': sha256(__file__),
+                      'expected_cells': 8640, 'cells_evaluated': 0}
+        json.dump(report, output, ensure_ascii=False, indent=2)
+        output.write('\n')
+    print(json.dumps({key: report[key] for key in
+                      ('status', 'observed_intrinsic_screen', 'mathematical_all_inputs_guarantee')}))
+    return {'PASS': 0, 'FAIL': 1, 'INDETERMINATE': 2}[report['status']]
+
+
+if __name__ == '__main__':
+    sys.exit(main())

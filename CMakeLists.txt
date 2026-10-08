@@ -184,6 +184,7 @@ add_library(q4t_model STATIC
   src/model/gemv_hc_inject.cu
   src/mtp/moe_bf16.cu
   src/mtp/mtp.cu
+  src/mtp/mtp_sequential.cpp
   src/mtp/init_timing.cpp
   src/vision/vision.cu
   src/vision/processor.cpp)
@@ -337,6 +338,50 @@ if(Q4T_BUILD_TESTS)
   target_link_libraries(q4t_mtp_lifecycle PRIVATE ${Q4T_TEST_LIBS})
   target_link_options(q4t_mtp_lifecycle PRIVATE
     LINKER:--wrap=cudaMalloc LINKER:--wrap=cudaFree
+    LINKER:--wrap=cudaStreamSynchronize)
+
+  # Explicit correctness admission targets. The host control target links
+  # the production driver with dependency stubs and never loads CUDA/models.
+  add_executable(q4t_mtp_sequential_control EXCLUDE_FROM_ALL
+    tests/test_main.cpp tests/mtp_sequential_control_test.cpp
+    src/mtp/mtp_sequential.cpp)
+  target_include_directories(q4t_mtp_sequential_control PRIVATE
+    include ${CUDAToolkit_INCLUDE_DIRS})
+  add_executable(q4t_mtp_sequential_admission EXCLUDE_FROM_ALL
+    tests/test_main.cpp tests/mtp_sequential_admission_test.cpp)
+  target_include_directories(q4t_mtp_sequential_admission PRIVATE include)
+  target_link_libraries(q4t_mtp_sequential_admission PRIVATE ${Q4T_TEST_LIBS})
+
+  # Bounded long-only supplement for the original terminal shape fixture.
+  add_executable(q4t_mtp_sequential_long_admission EXCLUDE_FROM_ALL
+    tests/test_main.cpp tests/mtp_sequential_admission_test.cpp)
+  target_include_directories(q4t_mtp_sequential_long_admission PRIVATE include)
+  target_link_libraries(q4t_mtp_sequential_long_admission PRIVATE
+    ${Q4T_TEST_LIBS})
+
+  # Three frozen HC replays explain the old first cross-shape fork. Captures
+  # wrap real projection imports only in this explicit diagnostic executable.
+  add_executable(q4t_mtp_hc_first_fork EXCLUDE_FROM_ALL
+    tests/test_main.cpp tests/mtp_hc_first_fork_test.cpp)
+  target_include_directories(q4t_mtp_hc_first_fork PRIVATE include)
+  target_link_libraries(q4t_mtp_hc_first_fork PRIVATE ${Q4T_TEST_LIBS})
+  target_link_options(q4t_mtp_hc_first_fork PRIVATE
+    LINKER:--wrap=_ZN3q4t5model7Bf16GevEPKtS2_PtiifP11CUstream_st
+    LINKER:--wrap=cublasLtMatmul)
+
+  # Logical forward failure after a real forward submission. Production q4t has
+  # no injection hook; only this explicit test executable wraps its imports.
+  add_executable(q4t_mtp_sequential_fault_server EXCLUDE_FROM_ALL
+    src/main.cpp tests/mtp_sequential_fault_server.cpp)
+  target_include_directories(q4t_mtp_sequential_fault_server PRIVATE include)
+  target_link_libraries(q4t_mtp_sequential_fault_server PRIVATE
+    q4t_model q4t_text q4t_ple q4t_quant q4t_server CUDA::cudart)
+  target_link_options(q4t_mtp_sequential_fault_server PRIVATE
+    LINKER:--wrap=_ZN3q4t5model21ModelDecodeBatchMultiERKNS0_5ModelEPKiS5_S5_S5_iPtP11CUstream_stS6_
+    LINKER:--wrap=_ZN3q4t3mtp10MtpForwardERKNS0_8MtpModelEPKiS5_PKtPtS8_S8_iP11CUstream_stS5_bNS_5model10LogitsRowsEPNS0_13MtpInitTimingEiNS0_14MtpForwardModeE
+    LINKER:--wrap=_ZN3q4t5model18ModelBeginSequenceERKNS0_5ModelEPNS0_13ModelSequenceEP11CUstream_sti
+    LINKER:--wrap=_ZN3q4t5model16ModelEndSequenceEPNS0_13ModelSequenceE
+    LINKER:--wrap=_ZN3q4t3mtp13MtpResetStateERKNS0_8MtpModelEP11CUstream_sti
     LINKER:--wrap=cudaStreamSynchronize)
 endif()
 

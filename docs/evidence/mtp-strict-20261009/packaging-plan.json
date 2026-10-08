@@ -1,0 +1,1027 @@
+{
+  "schema_version": 1,
+  "kind": "read_only_minimal_reviewable_evidence_pack_plan",
+  "created_unix": 1791482373.2493145,
+  "status": "PLAN_ONLY_NO_ARCHIVE_COPIES_NO_COMMIT_NO_PUSH",
+  "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source",
+  "stage": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009",
+  "destination": "docs/evidence/mtp-strict-20261009",
+  "branch": "codex/mtp-admission-20261007",
+  "head": "2ca0986c6e3690b8d3dab2c2c4b0ff40edefe17d",
+  "scope_audit": {
+    "changed_paths": [
+      {
+        "status": " M",
+        "path": "CMakeLists.txt",
+        "classification": "implementation",
+        "sha256": "83b39645fa4ab51d74e129f903f8894b09745e85ecce7c953c6576d1834b527b",
+        "bytes": 18098
+      },
+      {
+        "status": " M",
+        "path": "docs/README.md",
+        "classification": "goal_documentation",
+        "sha256": "8924e741511611d640e467136cf44227eec01ef3b5004b8546d129d70e3a1d01",
+        "bytes": 9179
+      },
+      {
+        "status": " M",
+        "path": "docs/STATUS.md",
+        "classification": "goal_documentation",
+        "sha256": "2a96419e1443df29df2c2e1185acda3feb8aa001127e41dbf4c1583af3c57a90",
+        "bytes": 53966
+      },
+      {
+        "status": " M",
+        "path": "docs/log/README.md",
+        "classification": "goal_documentation",
+        "sha256": "7610771124f6f95b189bdf26aed5a467f6d6e2d11938cd8a5b58d73a139b0c1f",
+        "bytes": 3202
+      },
+      {
+        "status": " M",
+        "path": "include/q4t/mtp/mtp.h",
+        "classification": "implementation",
+        "sha256": "af53694285eb07d338527ad8599a200b0af81af8724f08b189be1e8293154f82",
+        "bytes": 26547
+      },
+      {
+        "status": " M",
+        "path": "include/q4t/server/chat_server.h",
+        "classification": "implementation",
+        "sha256": "26537fd55336bba3bb2c272382af99cd4326f64c0a1977740ebba355e168714d",
+        "bytes": 15296
+      },
+      {
+        "status": " M",
+        "path": "include/q4t/server/mtp_policy.h",
+        "classification": "implementation",
+        "sha256": "b0db4f6505cbed10c9f5d7d5236bffd5ce1524497578d9f4538a7751da770c4e",
+        "bytes": 860
+      },
+      {
+        "status": " M",
+        "path": "include/q4t/server/server_options.h",
+        "classification": "implementation",
+        "sha256": "97a68ab2dc2cf64a1d2c997c2722dd59cc42c953bd39d1b7d176dc9a3831b202",
+        "bytes": 2733
+      },
+      {
+        "status": " M",
+        "path": "src/main.cpp",
+        "classification": "implementation",
+        "sha256": "a16c6d1692483913b0c4ae4ede457cf7622c7e52dcaefa33d650f0319eb7ab9f",
+        "bytes": 32861
+      },
+      {
+        "status": " M",
+        "path": "src/server/chat_generation.cpp",
+        "classification": "implementation",
+        "sha256": "e3bb5863dae1030950bf79a159d2c1953eed54c348f88481ba3376b125ebce98",
+        "bytes": 51822
+      },
+      {
+        "status": " M",
+        "path": "src/server/chat_scheduler.cpp",
+        "classification": "implementation",
+        "sha256": "cccb1053ffa1fb11bcecd748d8e95bd22954228f7f2954df9270ac135075a504",
+        "bytes": 20992
+      },
+      {
+        "status": " M",
+        "path": "src/server/chat_server.cpp",
+        "classification": "implementation",
+        "sha256": "ffcb68b2fbefb9e9c44ba46dd7c2c540b09bb525080c2f3ad7ba7db22c3c2220",
+        "bytes": 19186
+      },
+      {
+        "status": " M",
+        "path": "src/server/server_options.cpp",
+        "classification": "implementation",
+        "sha256": "5504a6cc54d50e2adfc6682709b08bb97f51096600a06533e0b2c5c49352b464",
+        "bytes": 5046
+      },
+      {
+        "status": " M",
+        "path": "tests/host/CMakeLists.txt",
+        "classification": "host_and_direct_or_fault_diagnostics",
+        "sha256": "7dd445cd3299a92bfbf8c6d35d6f7ced78b99c4c8572060efe1fb404fe3c3999",
+        "bytes": 5028
+      },
+      {
+        "status": " M",
+        "path": "tests/server_mtp_policy_test.cpp",
+        "classification": "host_and_direct_or_fault_diagnostics",
+        "sha256": "6cf56f9dbcd26466ec571370764df769a68130a60cf58718c96e912add9610d3",
+        "bytes": 2287
+      },
+      {
+        "status": " M",
+        "path": "tests/server_options_test.cpp",
+        "classification": "host_and_direct_or_fault_diagnostics",
+        "sha256": "5e27cc122e15255aaf96ca2c56c2901d8522dbacb3a3e965f552f25c504e03d0",
+        "bytes": 7612
+      },
+      {
+        "status": " M",
+        "path": "tools/evalscope/README.md",
+        "classification": "evalscope_frozen_tools_and_contracts",
+        "sha256": "9c82eae5ab75232915cdaabfa98e951b16abdd6e4f81dfafd505ab722b2dbc30",
+        "bytes": 12305
+      },
+      {
+        "status": " M",
+        "path": "tools/evalscope/acceptance_mode.py",
+        "classification": "evalscope_frozen_tools_and_contracts",
+        "sha256": "a086011e094ed0d371a4b4301f8b5f61f828eb2d7a7afbf4436359fc2bab89a3",
+        "bytes": 10458
+      },
+      {
+        "status": " M",
+        "path": "tools/evalscope/request_cancellation_contract.py",
+        "classification": "evalscope_frozen_tools_and_contracts",
+        "sha256": "4bc92a648bd80715c7507d84982b0e2700f9b12c0afab5fb24f2c3a3fa9f36df",
+        "bytes": 12260
+      },
+      {
+        "status": " M",
+        "path": "tools/evalscope/run_acceptance.py",
+        "classification": "evalscope_frozen_tools_and_contracts",
+        "sha256": "ec05fac45e7c0b6998e88e3b0ed46ef602a80dd9ab298ac8e66a6ada7b0dae5d",
+        "bytes": 29325
+      },
+      {
+        "status": " M",
+        "path": "tools/evalscope/run_request_cancellation.py",
+        "classification": "evalscope_frozen_tools_and_contracts",
+        "sha256": "453c4cc5049d78a58fad39ce48bf50df4360f9d0a0abbcbeff979165b0e18dda",
+        "bytes": 38043
+      },
+      {
+        "status": " M",
+        "path": "tools/evalscope/test_acceptance_mode.py",
+        "classification": "evalscope_frozen_tools_and_contracts",
+        "sha256": "8f75550ea6f4a6fd2ea58651a430f5a196bf6cc0d3dc1c5ca4bbc9f3a724994c",
+        "bytes": 12374
+      },
+      {
+        "status": " M",
+        "path": "tools/evalscope/test_request_cancellation.py",
+        "classification": "evalscope_frozen_tools_and_contracts",
+        "sha256": "af1bab8cdcff80e048a52d9c8ac89b263c53ceca9a148347cd3600dc72a955c5",
+        "bytes": 18321
+      },
+      {
+        "status": "??",
+        "path": "docs/MTP_STRICT_BASELINE_2026-10-09.md",
+        "classification": "goal_documentation",
+        "sha256": "eaa9baca5931942ca2c5b3e05fddcbf262f7e5d0874a3bbe365bb48a07cf4aa7",
+        "bytes": 15706
+      },
+      {
+        "status": "??",
+        "path": "docs/log/2026-10-09.md",
+        "classification": "goal_documentation",
+        "sha256": "c7ba054f66b50208ceb3e03f63274cc2e2704af105b1ea22e528ae29ebfa2985",
+        "bytes": 3608
+      },
+      {
+        "status": "??",
+        "path": "src/mtp/mtp_sequential.cpp",
+        "classification": "implementation",
+        "sha256": "61039578215269fb68dd9ad24e29783241fef8a9566349b182ea61a6d70a1aa0",
+        "bytes": 13261
+      },
+      {
+        "status": "??",
+        "path": "tests/mtp_hc_first_fork_test.cpp",
+        "classification": "host_and_direct_or_fault_diagnostics",
+        "sha256": "06dae9c8ebf8ceb177fd6cbbb2a5053d1594baf8da20313a1ee267daac9b5d77",
+        "bytes": 23758
+      },
+      {
+        "status": "??",
+        "path": "tests/mtp_sequential_admission_test.cpp",
+        "classification": "host_and_direct_or_fault_diagnostics",
+        "sha256": "72f10f2b99d89ccd8372b209ec94cc65c14576fad16206d3b387a846481cdbd1",
+        "bytes": 34456
+      },
+      {
+        "status": "??",
+        "path": "tests/mtp_sequential_control_test.cpp",
+        "classification": "host_and_direct_or_fault_diagnostics",
+        "sha256": "04ec4aa58aa468f9477af1a1345d3b520c54a22cb7e4c3c7bb19fcfc26246ffe",
+        "bytes": 14046
+      },
+      {
+        "status": "??",
+        "path": "tests/mtp_sequential_fault_server.cpp",
+        "classification": "host_and_direct_or_fault_diagnostics",
+        "sha256": "135a6fdf12a5d7d2e7594cc31f74ed21993581f4512f1a429bead09ea6ace027",
+        "bytes": 11849
+      },
+      {
+        "status": "??",
+        "path": "tests/support/mtp_hc_dot_envelope.h",
+        "classification": "host_and_direct_or_fault_diagnostics",
+        "sha256": "7521cd0ce12d2fae122a3b644d411f7a05581e90e6c20dc11a94b5072ef50bef",
+        "bytes": 4332
+      },
+      {
+        "status": "??",
+        "path": "tests/support/mtp_sequential_state.h",
+        "classification": "host_and_direct_or_fault_diagnostics",
+        "sha256": "f435a6c849ab7e078ae16ffd629e351a07a6dfa77cdb4764b0f3018b0c7867d0",
+        "bytes": 12050
+      },
+      {
+        "status": "??",
+        "path": "tools/evalscope/fixtures/mtp_sustained_v1.json",
+        "classification": "evalscope_frozen_tools_and_contracts",
+        "sha256": "8de952c2389a4c391c99f0dcb6a2cb7c6ec6c7b3bcff8171fa1be787843cadcf",
+        "bytes": 15113
+      },
+      {
+        "status": "??",
+        "path": "tools/evalscope/mtp_failure_recovery_contract.py",
+        "classification": "evalscope_frozen_tools_and_contracts",
+        "sha256": "b843da5b404bc58acea422f78d3355f2654cb3e252eae1cd84421039fae130fd",
+        "bytes": 9037
+      },
+      {
+        "status": "??",
+        "path": "tools/evalscope/prepare_sustained_quality.py",
+        "classification": "evalscope_frozen_tools_and_contracts",
+        "sha256": "815a2a9596aa5c5665bab20945115f7af0d412f297e16c80ccbe554a0bec81d5",
+        "bytes": 4155
+      },
+      {
+        "status": "??",
+        "path": "tools/evalscope/run_mtp_failure_recovery.py",
+        "classification": "evalscope_frozen_tools_and_contracts",
+        "sha256": "e02906b7b2f5a80824ff2b2ff659a2aab96a958881500f0da5cdaa34891f91e8",
+        "bytes": 14245
+      },
+      {
+        "status": "??",
+        "path": "tools/evalscope/sustained_quality.py",
+        "classification": "evalscope_frozen_tools_and_contracts",
+        "sha256": "fc7ffabbc9501064a099b6bd99a1809f69a418401a01acbba8a81c357bd634b1",
+        "bytes": 19155
+      },
+      {
+        "status": "??",
+        "path": "tools/evalscope/test_mtp_failure_recovery.py",
+        "classification": "evalscope_frozen_tools_and_contracts",
+        "sha256": "e817154cb4bd1bb186448bb04b3f318d5126c8fc2efa9a35350d6f4a1b1b8ff7",
+        "bytes": 7330
+      },
+      {
+        "status": "??",
+        "path": "tools/evalscope/test_sustained_quality.py",
+        "classification": "evalscope_frozen_tools_and_contracts",
+        "sha256": "24a19f924c72cbd8bfedc9cf6c0d1ebf0936a70e5c58b9e5b1bd4447050dbec3",
+        "bytes": 18777
+      }
+    ],
+    "changed_path_count": 39,
+    "unclassified": [],
+    "all_current_paths_belong_to_goal": true,
+    "starting_snapshot_sha256": "19f1b4d40fde97d86da29080b82c6e667551d514ab57e0a89ca9ffbc447853a7",
+    "baseline_source_checks": 258,
+    "baseline_snapshot_mismatches": [],
+    "baseline_vs_git_mismatches": [],
+    "protected_root": {
+      "path": "/home/rm01/models/dev/qwen4-thor",
+      "branch": "codex/moe-residency-20260930",
+      "head": "f15190ff9447079f9557469ed5aff0b525197821",
+      "status": " M docs/STATUS.md\n M docs/log/2026-10-02.md\n M include/q4t/model/model.h\n M include/q4t/quant/moe_residency.h\n M src/model/moe.cu\n M src/quant/moe_residency.cpp\n M src/server/chat_generation.cpp\n",
+      "dirty_diff_sha256_observed": "33375caff6dcb3e638e2d2f001428883cbc0e400c5f1b7403a081826e9cd6947",
+      "separate_worktree_index": true,
+      "unchanged_since_task_start_not_independently_claimed": true
+    },
+    "staging_rule": "Stage explicit W-relative allowlist, then git diff --cached --name-only/check. Never git add from protected root and never force-add ignored .q4t-work/build. Resource variant not yet present must receive a separate path classification before staging."
+  },
+  "package_structure": {
+    "README.md": "Human index with delivery status, source/binary identities, acceptance matrix, original failures and later supplements, evidence reuse, known gaps, local-manifest semantics and reproducibility commands.",
+    "pack-manifest.json": "Every committed package file path/bytes/SHA, exact or compact provenance, linked local raw manifests/hash/size and final source/target identities. Generate only after all named groups end.",
+    "local-evidence-manifests/": "Per finalized group flat relative raw-file SHA/bytes manifests when compact; bind original fully local large manifest if too large. Already complete direct summary files contain raw manifests and need not be duplicated.",
+    "results-compact.json": "One source-bound final matrix with statuses for each fixed group, target/draft/request counts, original FAIL and distinct supplementPASS, numerical/content/performance conclusions kept separate."
+  },
+  "verbatim_existing_evidence": [
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/build-protocol-01.json",
+      "destination": "docs/evidence/mtp-strict-20261009/build-protocol-01.json",
+      "exists": true,
+      "bytes": 46759,
+      "sha256": "55c620881a09a017bb24b764a8ad8b98854b4a1d950172b9eccd07587c7850c3"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/build-identity-01.json",
+      "destination": "docs/evidence/mtp-strict-20261009/build-identity-01.json",
+      "exists": true,
+      "bytes": 1945,
+      "sha256": "4b817bf5978005aec2302e91fe7357639372ceb13e211f24eb2b6dc0bf1e0f2a"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/configure-01.json",
+      "destination": "docs/evidence/mtp-strict-20261009/configure-01.json",
+      "exists": true,
+      "bytes": 702,
+      "sha256": "e26a3e7dd95c7dade0ccc2a566d5376aeebff297b9581392408107c15921d0b0"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/build-01.json",
+      "destination": "docs/evidence/mtp-strict-20261009/build-01.json",
+      "exists": true,
+      "bytes": 577,
+      "sha256": "d220ec22b642ac53d3fb5b8d2e9270fb138ec1522d8c0b90352c2f653df50bb0"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/configure-01.log",
+      "destination": "docs/evidence/mtp-strict-20261009/configure-01.log",
+      "exists": true,
+      "bytes": 1104,
+      "sha256": "ec288de124aed02e9bd6eb5171978307dd516ab2b492803d2ac5bba60d7aead4"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/build-01.log",
+      "destination": "docs/evidence/mtp-strict-20261009/build-01.log",
+      "exists": true,
+      "bytes": 8389,
+      "sha256": "e60c8953453bc0d74eff0c20bd998c5a60af4b0bba78b6bf3eab941dad5e927e"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/host-protocol-01.json",
+      "destination": "docs/evidence/mtp-strict-20261009/host-protocol-01.json",
+      "exists": true,
+      "bytes": 12226,
+      "sha256": "210119751efbb09baa59383c2f7cfbe40bbfbe88cb91e4d9dd3f7c1912508f70"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/host-summary-01.json",
+      "destination": "docs/evidence/mtp-strict-20261009/host-summary-01.json",
+      "exists": true,
+      "bytes": 3825,
+      "sha256": "e214a99b0ef54f231364e68511601f60ab4e3acfcdbcad6ac811f9a527aafdbe"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/required-host-01.txt",
+      "destination": "docs/evidence/mtp-strict-20261009/required-host-01.txt",
+      "exists": true,
+      "bytes": 788,
+      "sha256": "e6f714780406aab2e645e134946c7c4dab4071771c50e545d95ddb685d208dd4"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/required-control-01.txt",
+      "destination": "docs/evidence/mtp-strict-20261009/required-control-01.txt",
+      "exists": true,
+      "bytes": 101,
+      "sha256": "7236f6bc1c8e0e102abd073d3bd7c311f76feaf80f1c357674c5c116c19a0e1e"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/host-01.stdout",
+      "destination": "docs/evidence/mtp-strict-20261009/host-01.stdout",
+      "exists": true,
+      "bytes": 948,
+      "sha256": "2261dc62f4cc191f21aeda1657c2d2bc174923ebab28e026b84e7c0ccc650c9c"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/control-01.stdout",
+      "destination": "docs/evidence/mtp-strict-20261009/control-01.stdout",
+      "exists": true,
+      "bytes": 161,
+      "sha256": "947ce56ab4c54b03bc9fcf2fba374caf9072d289e6b98ff8e8a53e1f11f037f3"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/python-01.stderr",
+      "destination": "docs/evidence/mtp-strict-20261009/python-01.stderr",
+      "exists": true,
+      "bytes": 15745,
+      "sha256": "7ed8e4793176fdf00a257f47644bf7df0c734135a4d231eb948832b0b3eed9e1"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/host-artifact-location-deviation.json",
+      "destination": "docs/evidence/mtp-strict-20261009/host-artifact-location-deviation.json",
+      "exists": true,
+      "bytes": 4697,
+      "sha256": "f786973bbb667754df8e2bbda251ad185d9e1880cd9da2f275036aa85994d834"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/fixture-preparation-protocol-01.json",
+      "destination": "docs/evidence/mtp-strict-20261009/fixture-preparation-protocol-01.json",
+      "exists": true,
+      "bytes": 2584,
+      "sha256": "140f396a155973ebedfde0045e70037cc1eb435f823791ad9a68522bbdb9e361"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/prepared-fixtures-identity-01.json",
+      "destination": "docs/evidence/mtp-strict-20261009/prepared-fixtures-identity-01.json",
+      "exists": true,
+      "bytes": 1876,
+      "sha256": "092c8586c1d7f94b103d437b0eaf9de9ba6e0e5b8a299ba8979a1586339eaf7f"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-protocol-01.json",
+      "destination": "docs/evidence/mtp-strict-20261009/http-protocol-01.json",
+      "exists": true,
+      "bytes": 20470,
+      "sha256": "949ec20df4a4fd7e35e8da61723b72190f2367baf2c6753960ac1c5bd21ad32f"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-direct-01/protocol.json",
+      "destination": "docs/evidence/mtp-strict-20261009/sequential-direct-01/protocol.json",
+      "exists": true,
+      "bytes": 1893,
+      "sha256": "3a7d5b8e6aa396b59d40a72d2a7cd8b5ac33a0c4dfd3ece8235c2c5c771d29f3"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-direct-01/summary.json",
+      "destination": "docs/evidence/mtp-strict-20261009/sequential-direct-01/summary.json",
+      "exists": true,
+      "bytes": 47588,
+      "sha256": "64617ae4df19589991c49db7798f1ce0363bcdd806cee70817866ea9e636aff1"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-direct-01/stdout.log",
+      "destination": "docs/evidence/mtp-strict-20261009/sequential-direct-01/stdout.log",
+      "exists": true,
+      "bytes": 2611,
+      "sha256": "f40b58c0f5d6403335a98bef642cfec26a62bb7c1f6ed988470db6604e3d8b5c"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-direct-01/stderr.log",
+      "destination": "docs/evidence/mtp-strict-20261009/sequential-direct-01/stderr.log",
+      "exists": true,
+      "bytes": 173,
+      "sha256": "89b8779b2164c697bca6fbfbdd95533eb3c925e94ebc033306b27e51dd519e1a"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-direct-01/required-tests.txt",
+      "destination": "docs/evidence/mtp-strict-20261009/sequential-direct-01/required-tests.txt",
+      "exists": true,
+      "bytes": 36,
+      "sha256": "0f94760d60d1219c4082d1ac9592dcf84cdcee8663d0c1cd5d50b421ff8e10cc"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-long-02/implementation-protocol.json",
+      "destination": "docs/evidence/mtp-strict-20261009/sequential-long-02/implementation-protocol.json",
+      "exists": true,
+      "bytes": 7768,
+      "sha256": "c40939e22cb93a2bb319d701c7ab0e6ed63a0b06a731347048846ce9f92c4c6b"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-long-02/execution-protocol.json",
+      "destination": "docs/evidence/mtp-strict-20261009/sequential-long-02/execution-protocol.json",
+      "exists": true,
+      "bytes": 850,
+      "sha256": "75b96a2b108928972e1fc0219467e395a42325c1db6cfc34cb1654c26fe0fb69"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-long-02/build-identity.json",
+      "destination": "docs/evidence/mtp-strict-20261009/sequential-long-02/build-identity.json",
+      "exists": true,
+      "bytes": 2513,
+      "sha256": "0bde9c6a59394c055e9b137fcfcd86951f74d7a1f3309719100388a292c54c68"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-long-02/configure.json",
+      "destination": "docs/evidence/mtp-strict-20261009/sequential-long-02/configure.json",
+      "exists": true,
+      "bytes": 173,
+      "sha256": "1097125774512436ddf364459fa0e1aba12fc348816dd4f057be39d52da7a7b9"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-long-02/build.json",
+      "destination": "docs/evidence/mtp-strict-20261009/sequential-long-02/build.json",
+      "exists": true,
+      "bytes": 173,
+      "sha256": "ab0d3b5045ecdd6917cdec0730e78a8e13b016725960b2e8c13b5c86f87d4d48"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-long-02/summary.json",
+      "destination": "docs/evidence/mtp-strict-20261009/sequential-long-02/summary.json",
+      "exists": true,
+      "bytes": 28821,
+      "sha256": "3d6ceabf28e5c195203485c90cea8a87cf02cfc985c702b7de4537b81ab21ea9"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-long-02/failure-diagnosis.json",
+      "destination": "docs/evidence/mtp-strict-20261009/sequential-long-02/failure-diagnosis.json",
+      "exists": true,
+      "bytes": 6439,
+      "sha256": "f5167e8be1ce28216d8e53640001f04efb20eb0d6d20356899b2745acc95557f"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-long-02/stdout.log",
+      "destination": "docs/evidence/mtp-strict-20261009/sequential-long-02/stdout.log",
+      "exists": true,
+      "bytes": 2452,
+      "sha256": "bd8dceb9fc61e0c391773726c01bc2dd1a8ed8ad3e5d9cfdecf4f88fe511758e"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-long-02/stderr.log",
+      "destination": "docs/evidence/mtp-strict-20261009/sequential-long-02/stderr.log",
+      "exists": true,
+      "bytes": 173,
+      "sha256": "89b8779b2164c697bca6fbfbdd95533eb3c925e94ebc033306b27e51dd519e1a"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-long-02/required-tests.txt",
+      "destination": "docs/evidence/mtp-strict-20261009/sequential-long-02/required-tests.txt",
+      "exists": true,
+      "bytes": 41,
+      "sha256": "e7415445467e892f5772f5cba8944c07e32f6dd4ee300676a38a318e6735025e"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-first-fork-01/protocol.json",
+      "destination": "docs/evidence/mtp-strict-20261009/hc-first-fork-01/protocol.json",
+      "exists": true,
+      "bytes": 5045,
+      "sha256": "85098f1019f3f6cb92d23d3d21d7b42cec958db9b0eddd18437aab5b3926abcf"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-first-fork-01/summary.json",
+      "destination": "docs/evidence/mtp-strict-20261009/hc-first-fork-01/summary.json",
+      "exists": true,
+      "bytes": 938,
+      "sha256": "7657591dd1662137ccb0eb5b777ba5a129da66e36cf6e685284f3d216ac40c57"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-first-fork-01/capture.json",
+      "destination": "docs/evidence/mtp-strict-20261009/hc-first-fork-01/capture.json",
+      "exists": true,
+      "bytes": 267,
+      "sha256": "00b4ab47ed05cf48bc00ac4f39a9584114df1a1bab7af1aea8f6a55873a4223c"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-first-fork-01/host.json",
+      "destination": "docs/evidence/mtp-strict-20261009/hc-first-fork-01/host.json",
+      "exists": true,
+      "bytes": 265,
+      "sha256": "6b102d00fadd6178450fe492a5ce7735de82f3009af4c5a141e845a21dd85fa0"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-first-fork-01/analysis.json",
+      "destination": "docs/evidence/mtp-strict-20261009/hc-first-fork-01/analysis.json",
+      "exists": true,
+      "bytes": 267,
+      "sha256": "660b04d991de53794083498144211b7bd75f932d5f08ff5252c791165d9a3e22"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-first-fork-01/capture.stdout",
+      "destination": "docs/evidence/mtp-strict-20261009/hc-first-fork-01/capture.stdout",
+      "exists": true,
+      "bytes": 4028,
+      "sha256": "aac70461e5d4c4404feeec5f395ed435a222c1ee30464c7fe8526ebde7258d97"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-first-fork-01/host.stderr",
+      "destination": "docs/evidence/mtp-strict-20261009/hc-first-fork-01/host.stderr",
+      "exists": true,
+      "bytes": 1515,
+      "sha256": "2308eea31a3586efd627d3c8170067f7584ad9d2543e79dd095affab729a188a"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-analysis/independent-review-01.json",
+      "destination": "docs/evidence/mtp-strict-20261009/hc-analysis/independent-review-01.json",
+      "exists": true,
+      "bytes": 18246,
+      "sha256": "94c1d8426beea836748503b433449d71f9a1fd09aada455d9c6b55c94b6f8033"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-analysis/independent-review-02.json",
+      "destination": "docs/evidence/mtp-strict-20261009/hc-analysis/independent-review-02.json",
+      "exists": true,
+      "bytes": 20481,
+      "sha256": "7ac771e6491a27698ab8fead4f1ffce065329bb47048a74d304dcbaa6adddba2"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/t4-first-fork-offline-review-01.json",
+      "destination": "docs/evidence/mtp-strict-20261009/t4-first-fork-offline-review-01.json",
+      "exists": true,
+      "bytes": 9028,
+      "sha256": "cdd121d0bcb367072e7cd9c86587148f3a96dba06e4f87e3c2503fc0215af87b"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/inputs/questionnaire.json",
+      "destination": "docs/evidence/mtp-strict-20261009/sustained-pair/inputs/questionnaire.json",
+      "exists": true,
+      "bytes": 15113,
+      "sha256": "8de952c2389a4c391c99f0dcb6a2cb7c6ec6c7b3bcff8171fa1be787843cadcf"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/inputs/manifest.json",
+      "destination": "docs/evidence/mtp-strict-20261009/sustained-pair/inputs/manifest.json",
+      "exists": true,
+      "bytes": 1521,
+      "sha256": "9b2e03cb558efc6c2a20e9707b41ca5195b3e04309d2989ea4c55eac853916b9"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/inputs/identity.json",
+      "destination": "docs/evidence/mtp-strict-20261009/sustained-pair/inputs/identity.json",
+      "exists": true,
+      "bytes": 1175,
+      "sha256": "e3a8ebe644c0a33c9bc5ca117cdb9dcf67ceddb6d957ace6e90f7cf862d06332"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/pair-budget.json",
+      "destination": "docs/evidence/mtp-strict-20261009/sustained-pair/pair-budget.json",
+      "exists": true,
+      "bytes": 1271,
+      "sha256": "bca377233f33a82cf686d7c8c891706c0ec690a60d9ce38158aad8586d40e200"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/plain/sustained-report.json",
+      "destination": "docs/evidence/mtp-strict-20261009/sustained-pair/plain/sustained-report.json",
+      "exists": true,
+      "bytes": 344,
+      "sha256": "7df03b924b3fac5edd55bf2f46e615468380709f95653a4b0eaedc37d51f89d5"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/sequential/sustained-report.json",
+      "destination": "docs/evidence/mtp-strict-20261009/sustained-pair/sequential/sustained-report.json",
+      "exists": true,
+      "bytes": 3509,
+      "sha256": "dffb3074ff554f9c62f6c3ed74443e0aeb3a4275f37233773105d3eb511628ae"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/semantic-zh-review-01.json",
+      "destination": "docs/evidence/mtp-strict-20261009/semantic-zh-review-01.json",
+      "exists": true,
+      "bytes": 22161,
+      "sha256": "586eb2fda71a843f71e9cb4378494ced5f5d1e14022709f2190ab76719b3926b"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/semantic-en-review-01.json",
+      "destination": "docs/evidence/mtp-strict-20261009/semantic-en-review-01.json",
+      "exists": true,
+      "bytes": 20000,
+      "sha256": "006523a8eeeeed00f3a5a642e2c1ae10eb80dd5fd59cafb703869be7f019e9b6"
+    }
+  ],
+  "verbatim_script_archives": [
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/build-candidate.py",
+      "destination": "docs/evidence/mtp-strict-20261009/scripts/build-candidate.py.txt",
+      "bytes": 3561,
+      "sha256": "478bb6ef40b64216d428a15755b874948cce3dca9e2490426dde14f65b856631",
+      "archive_verbatim": true,
+      "historic_paths": true
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/run-host-01.py",
+      "destination": "docs/evidence/mtp-strict-20261009/scripts/run-host-01.py.txt",
+      "bytes": 4928,
+      "sha256": "e5f5bd43b74e9d0fcd51e6bb363c35baf632a644414b6be7d7121895a3cf8899",
+      "archive_verbatim": true,
+      "historic_paths": true
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/run-direct-01.py",
+      "destination": "docs/evidence/mtp-strict-20261009/scripts/run-direct-01.py.txt",
+      "bytes": 2963,
+      "sha256": "1d1b67b759572f26e67b7b283716ed022d9ba7f79dd870f7c8f373b0ecbc3f9d",
+      "archive_verbatim": true,
+      "historic_paths": true
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/build-long-02.py",
+      "destination": "docs/evidence/mtp-strict-20261009/scripts/build-long-02.py.txt",
+      "bytes": 2870,
+      "sha256": "eaeb15049823d2b320d47aa5075a9be16eff4cef8c5286f2777f0149210624a7",
+      "archive_verbatim": true,
+      "historic_paths": true
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/run-long-02.py",
+      "destination": "docs/evidence/mtp-strict-20261009/scripts/run-long-02.py.txt",
+      "bytes": 2733,
+      "sha256": "1f1f183859ae9dd3c53cdc743faa0bf611988239887e880a2fbbd17623f76a28",
+      "archive_verbatim": true,
+      "historic_paths": true
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/run-hc-01.py",
+      "destination": "docs/evidence/mtp-strict-20261009/scripts/run-hc-01.py.txt",
+      "bytes": 3048,
+      "sha256": "7bb70288c3cd5fbd7c76ab95dc414d68da549e7da0f9c633ca3da75ddaa0d29e",
+      "archive_verbatim": true,
+      "historic_paths": true
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/freeze-http-01.py",
+      "destination": "docs/evidence/mtp-strict-20261009/scripts/freeze-http-01.py.txt",
+      "bytes": 4380,
+      "sha256": "a70613fa32d295ae985194abd77996dde65de9667c92e07f2f4dad257af2c7cd",
+      "archive_verbatim": true,
+      "historic_paths": true
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/run-http-01.py",
+      "destination": "docs/evidence/mtp-strict-20261009/scripts/run-http-01.py.txt",
+      "bytes": 3803,
+      "sha256": "59a3f3e37c36dcb7c0e6debe4a1dd69dc2c491e3744d6aa2cf7894dc187ab40b",
+      "archive_verbatim": true,
+      "historic_paths": true
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-analysis/analyze_hc.py",
+      "destination": "docs/evidence/mtp-strict-20261009/hc-analysis/analyze_hc.py.txt",
+      "bytes": 17666,
+      "sha256": "1bb9c9f38a2d235d45b9df045826bfd3e4005218b5d509df991b9e3a273baa82",
+      "archive_verbatim": true,
+      "cpu_only": true
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-analysis/test_analyze_hc.py",
+      "destination": "docs/evidence/mtp-strict-20261009/hc-analysis/test_analyze_hc.py.txt",
+      "bytes": 5076,
+      "sha256": "6c134441f1a8c2d51a1c7ceb8c0c65b111020edcf1e9bc8f45cc130708d90c34",
+      "archive_verbatim": true,
+      "cpu_only": true
+    }
+  ],
+  "compact_derivations": [
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/host-direct-freeze-review.json",
+      "destination": "docs/evidence/mtp-strict-20261009/host-direct-freeze-review-compact.json",
+      "bytes": 17687,
+      "sha256": "311e7736953f28382615299c5756333e3e323f83db1e48e3c4c6c08ff3b5a2ad",
+      "retain_fields": [
+        "inputs",
+        "build_protocol_sha256",
+        "source_snapshot_mismatches",
+        "host",
+        "fixtures",
+        "direct_gpu",
+        "must_fix",
+        "verdict"
+      ],
+      "rule": "Keep counts and name lists, trim per-method Python name duplication only if original hash/size is explicit. Resolve TMPDIR caveat via separate deviation record; do not rewrite history.",
+      "required_derivation_metadata": [
+        "derived_from_path",
+        "derived_from_sha256",
+        "derived_from_bytes",
+        "retained_fields",
+        "omitted_fields"
+      ],
+      "new_file_do_not_mutate_original": true
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-long-02/independent-review.json",
+      "destination": "docs/evidence/mtp-strict-20261009/sequential-long-02/independent-review-compact.json",
+      "bytes": 150940,
+      "sha256": "24bac59b0fbe39fbc631cf4ef6a05a860a15f9c90e7e6fb91161695dd923f7f1",
+      "retain_fields": [
+        "passed",
+        "checks_passed",
+        "method",
+        "provenance",
+        "raw",
+        "valid_state",
+        "fixture",
+        "preserved",
+        "runtime_origin"
+      ],
+      "rule": "Omit repeated checks array only; retain runtime byte-identity limitation and real extend gaps2/3.",
+      "required_derivation_metadata": [
+        "derived_from_path",
+        "derived_from_sha256",
+        "derived_from_bytes",
+        "retained_fields",
+        "omitted_fields"
+      ],
+      "new_file_do_not_mutate_original": true
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-long-02/build-protocol.json",
+      "destination": "docs/evidence/mtp-strict-20261009/sequential-long-02/build-protocol-compact.json",
+      "bytes": 29381,
+      "sha256": "30f6b51729e645adef32912ab125844ba58ad910c701a6574c48ae60a929aaa6",
+      "retain_fields": [
+        "time",
+        "configure",
+        "build",
+        "implementation_protocol_sha256",
+        "script_sha256",
+        "only_diagnostic_target",
+        "no_test"
+      ],
+      "rule": "Runtime131 source inventory equals first build; retain two changed path+SHA rows, plus full original SHA and row count.",
+      "required_derivation_metadata": [
+        "derived_from_path",
+        "derived_from_sha256",
+        "derived_from_bytes",
+        "retained_fields",
+        "omitted_fields"
+      ],
+      "new_file_do_not_mutate_original": true
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-analysis/result-01.json",
+      "destination": "docs/evidence/mtp-strict-20261009/hc-analysis/result-compact.json",
+      "bytes": 1708197,
+      "sha256": "3a6c3552c83c2747e893d4fd53de187a3b302e9ffb8c05ed247e33b1bd940e7a",
+      "retain_fields": [
+        "schema_version",
+        "protocol",
+        "observed_intrinsic_screen",
+        "mathematical_all_inputs_guarantee",
+        "independent_rms_correctness_proven",
+        "full_t4_generation_divergence_explained",
+        "projection_contract_evaluated_here",
+        "decimal_precision",
+        "expected_cells",
+        "arithmetic_enclosure",
+        "source_hashes",
+        "source_paths",
+        "captures",
+        "compile_and_capture_scope",
+        "normed_cross_shape_exact",
+        "counts",
+        "status"
+      ],
+      "rule": "Omit8640 cells, preserve full original size/SHA and capture15 manifest. No all-input guarantee.",
+      "required_derivation_metadata": [
+        "derived_from_path",
+        "derived_from_sha256",
+        "derived_from_bytes",
+        "retained_fields",
+        "omitted_fields"
+      ],
+      "new_file_do_not_mutate_original": true
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-quality-independent-review-01.json",
+      "destination": "docs/evidence/mtp-strict-20261009/http-quality-independent-review-compact.json",
+      "bytes": 84829,
+      "sha256": "b735b7f7c7bef6c63facbb5ccd133cb9209849695ec1723dc3a7868e46a3931c",
+      "retain_fields": null,
+      "rule": "Keep summary/verdict, source bindings and limitations; repeated per-check rows local.",
+      "required_derivation_metadata": [
+        "derived_from_path",
+        "derived_from_sha256",
+        "derived_from_bytes",
+        "retained_fields",
+        "omitted_fields"
+      ],
+      "new_file_do_not_mutate_original": true
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-execution-review.json",
+      "destination": "docs/evidence/mtp-strict-20261009/http-execution-review-compact.json",
+      "bytes": 52078,
+      "sha256": "6f7e567ea6e42e0e1c9f54eb2838ef3dbb0dbd12f27675b530a72eb568692400",
+      "retain_fields": null,
+      "rule": "Retain frozen110 request matrix/order/deadlines and tool/fixture identity; not a completed HTTP verdict.",
+      "required_derivation_metadata": [
+        "derived_from_path",
+        "derived_from_sha256",
+        "derived_from_bytes",
+        "retained_fields",
+        "omitted_fields"
+      ],
+      "new_file_do_not_mutate_original": true
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/protected-http-runner-review-01.json",
+      "destination": "docs/evidence/mtp-strict-20261009/protected-http-runner-review-compact.json",
+      "bytes": 249735,
+      "sha256": "db4dee300cb382bdda63f140ad094f0333245a5dfb7b1873b55b2630bf0825b3",
+      "retain_fields": null,
+      "rule": "Retain protection checks/results and bound original manifest; repeated path rows remain local.",
+      "required_derivation_metadata": [
+        "derived_from_path",
+        "derived_from_sha256",
+        "derived_from_bytes",
+        "retained_fields",
+        "omitted_fields"
+      ],
+      "new_file_do_not_mutate_original": true
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/b-final-gate-audit-01.json",
+      "destination": "docs/evidence/mtp-strict-20261009/b-final-gate-before-resource-compact.json",
+      "bytes": 25311,
+      "sha256": "78c9eb010bb533085895019a73dd791dfb97ce8852a949c509bc3d3f095e62ad",
+      "retain_fields": null,
+      "rule": "Mark pre-resource audit unresolved, never reword into final gate. Final after all110+3 is separate.",
+      "required_derivation_metadata": [
+        "derived_from_path",
+        "derived_from_sha256",
+        "derived_from_bytes",
+        "retained_fields",
+        "omitted_fields"
+      ],
+      "new_file_do_not_mutate_original": true
+    }
+  ],
+  "hc_reproducibility": {
+    "source_archive_required": true,
+    "analyzer_bytes_sha256": "1bb9c9f38a2d235d45b9df045826bfd3e4005218b5d509df991b9e3a273baa82",
+    "test_bytes_sha256": "6c134441f1a8c2d51a1c7ceb8c0c65b111020edcf1e9bc8f45cc130708d90c34",
+    "add_original_flags_file": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/CMakeFiles/q4t_model.dir/flags.make",
+      "destination": "docs/evidence/mtp-strict-20261009/hc-analysis/model-flags.make.txt",
+      "sha256": "1562db668310633267c5220745acbb0f226927a92114a43b8189e1d8b2d38e33"
+    },
+    "capture_arrays_local_only": {
+      "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-first-fork-01/raw",
+      "files": 15,
+      "bytes": 426240
+    },
+    "offline_reproduction_description": "Restore the verbatim .py.txt files to a fresh .q4t-work/<review>/hc-analysis as analyze_hc.py and test_analyze_hc.py, preserving SHA. Use original capture directory, capture.stdout and archived flags file. Analyzer --output must be a new file inside its own restored directory. Run only pure CPU analyzer if independently authorized; no recapture required.",
+    "analyzer_argv_template": [
+      "python3",
+      "<new-artifact>/hc-analysis/analyze_hc.py",
+      "--capture-dir",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-first-fork-01/raw",
+      "--capture-log",
+      "<archive>/hc-first-fork-01/capture.stdout",
+      "--flags-file",
+      "<archive>/hc-analysis/model-flags.make.txt",
+      "--output",
+      "<new-artifact>/hc-analysis/reproduced.json"
+    ],
+    "limits": [
+      "observed CUDA13.3 intrinsic screen, not mathematical all-input guarantee",
+      "first-row projection/nonlinear finite observations only",
+      "no independent RMS proof or full T4 numerical admission",
+      "keep initial independent-review-01 path error and review-02 correction"
+    ]
+  },
+  "http_to_add_when_finalized": {
+    "existing_quality": "Two eleven-request results+actual-mode audits/exit+independent compact review; preserve actual binary a566... identity and exact prompt/output SHA.",
+    "sustained": "Archive full8 plain texts once without repetitive response_ids_observed arrays, frozen questionnaire and each per-row textSHA/count/finish/automatic score. Strict pair report binds8 exact texts to plain; retain both unmodified local results withSHA. Keep manualZH/EN separately; do not rewriteautomatic grades.",
+    "limits": "Per-mode14 exact response/usage/finish/mode/tail observations and paired verdict, not only top-levelpassed.",
+    "cancel": "Nine-request same-mode fresh/control/recovery schedule, interruption and slot/state evidence, parser results and rawSSEmanifest.",
+    "forward_failure": "Five-request actual link-wrapper source identity, injected target/extend attempts, checked drains/recovery/end-slot evidence.",
+    "performance": "Plain/strict five lengths*3, preserve every TTFT/decode/E2E value, text/count/path identity and fixed-order limits; reportcost not infercausalacceleration.",
+    "resource_supplement_pending": "Three separately frozen variant requests, new source/target/binary/source snapshots, pretarget failure points and strict ordinaryschedulerB1 fallback observability. Preserve 110 originalrequestcap and additional3 separately, never retroactively claim original110 coveredthem.",
+    "expected_new_summaries": [
+      "final HTTP independent review",
+      "resource-variant protocol/build/result/review",
+      "final GoalB gate audit",
+      "final protected-workspace/build/evidence audit"
+    ]
+  },
+  "local_only": [
+    "all BF16/bin/i32 raw arrays including tinyHC captures (manifest-bound)",
+    "SQLite/DB, fullSSE/responsebody directories and large generatedcontext fixtures",
+    "HC result-01.json8640 cell details1.7MB",
+    "complete source-before/source-build snapshots and compiled binaries/staticlibs/CMakeCache",
+    "full repeated per-check audits, long sampledproc/memory traces",
+    "model weights/PLE payload never copied or hashed; existing metadata identities retained only"
+  ],
+  "mandatory_nonpass_retention": [
+    "original sequential-direct-01 FAIL at longprefill terminal",
+    "long-only supplement distinct withsame-source/config runtimebutnotbyte-identicalCUDAarchives",
+    "real naturalextend only1/4, no claimed2/3 GPUcoverage",
+    "host artifactlocation deviation + preservation/remediation record",
+    "HC independent first-review mistake and correctedreview without recomputingcapture",
+    "sustained code512-token truncation and reasoning completeness gaps, summaryChinese-number grader mismatch",
+    "pending resource fallback and any actualHTTPfirst failures; no fail-to-pass relabel",
+    "T4 remains experimental/defaultMTPoff and strictcost disclosed"
+  ],
+  "size_plan": {
+    "existing_verbatim_evidence_bytes": 349775,
+    "script_archive_bytes": 51028,
+    "target_total_bytes": 700000,
+    "soft_not_acceptance_limit": true,
+    "rationale": "Approximately0.5–0.7MiB plus final smallHTTP/resource summaries; avoid1.7MBcells, repeated1394checks and duplicatedgeneratedsources. Do not discard essential failed evidence merely to hit size estimate."
+  },
+  "commit_and_pr_boundary": {
+    "new_branches": 0,
+    "keep_branch": "codex/mtp-admission-20261007",
+    "recommended_commits": [
+      {
+        "name": "Implementation and bounded diagnostic/tooling stage",
+        "when": "After resourcevariant implementation stabilizes and its source identity is frozen; final-status prose must honestly reflect verified versuspending/failed. No performance or support claims beyond evidence.",
+        "paths": "Current39 explicit implementation/test/tool/docs paths plus reviewed resourcevariant paths; ordinaryrelease default remainsoff."
+      },
+      {
+        "name": "Freeze stage evidence and final support decision",
+        "when": "After original110 and separate3 resource requests finish and independentgates arecomplete. Archive compactpackage, finalSTATUS and append-onlylog; include all firstfailures.",
+        "paths": [
+          "docs/evidence/mtp-strict-20261009",
+          "docs/MTP_STRICT_BASELINE_2026-10-09.md",
+          "docs/STATUS.md",
+          "docs/log/2026-10-09.md",
+          "docs/log/README.md",
+          "docs/README.md"
+        ]
+      }
+    ],
+    "pr_strategy": "Create/update one reviewable draftPR from the existing researchbranch; explicitly cite foundationPR#2 dependency and inheritedaccepted/performance/researchprefix. BranchHEAD2ca0986 already contains substantial unmergedhistoryrelative tomain8cd297b, so do not describe wholePR as justcurrent39paths. Review final base/head diff and resolveAdependency without copyingcontent toanotherbranch. No merge/deploy/defaultenable in this task.",
+    "alternative": "If final groups conclude before firstcommit, a single coherent implementation+evidence stagecommit is simpler; keep samebranch either way."
+  },
+  "execution_performed": {
+    "build": false,
+    "tests": false,
+    "model_or_http": false,
+    "archive_materialization": false,
+    "commit": false,
+    "push": false
+  }
+}

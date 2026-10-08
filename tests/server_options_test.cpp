@@ -145,3 +145,45 @@ Q4T_TEST(serve_trace_options_are_explicit_and_bounded) {
   }
   return true;
 }
+
+Q4T_TEST(serve_mtp_verifier_selection_preserves_t4_default) {
+  using q4t::server::MtpVerifier;
+  auto options = Defaults();
+  Q4T_CHECK(!options.mtp_verifier);
+  Q4T_CHECK(Parse({"--mtp"}, &options));
+  Q4T_CHECK(options.mtp_verifier.value_or(MtpVerifier::kT4) ==
+            MtpVerifier::kT4);
+  Q4T_CHECK(Parse({"--mtp-verifier", "sequential", "--mtp"}, &options));
+  Q4T_CHECK(options.mtp_verifier == MtpVerifier::kSequential);
+  Q4T_CHECK(CapabilitiesFor(options).Experimental());
+  Q4T_CHECK(Parse({"--max-prefill", "4"}, &options));
+  Q4T_CHECK(Parse({"--mtp", "--mtp-verifier", "t4"}, &options));
+  Q4T_CHECK(options.mtp_verifier == MtpVerifier::kT4);
+  Q4T_CHECK(CapabilitiesFor(options).Experimental());
+  return true;
+}
+
+Q4T_TEST(serve_mtp_verifier_invalid_parse_is_transactional) {
+  for (const auto args : {
+           std::initializer_list<std::string_view>{"--mtp-verifier", "t4"},
+           {"--mtp-verifier", "sequential"},
+           {"--mtp", "--mtp-verifier", "t4", "--no-mtp"},
+           {"--mtp", "--mtp-verifier", "sequential", "--no-mtp"},
+           {"--mtp", "--mtp-verifier"},
+           {"--mtp", "--mtp-verifier", ""},
+           {"--mtp", "--mtp-verifier", "--no-mtp"},
+           {"--mtp", "--mtp-verifier", "T4"},
+           {"--mtp", "--mtp-verifier", "fast"},
+           {"--mtp", "--mtp-verifier", "sequential", "--max-prefill", "3"}}) {
+    auto options = Defaults();
+    Q4T_CHECK(!Parse(args, &options));
+    Q4T_CHECK(options.no_mtp && !options.mtp_verifier);
+  }
+  auto options = Defaults();
+  options.mtp_verifier = q4t::server::MtpVerifier::kT4;
+  Q4T_CHECK(!q4t::server::ValidateServerOptions(options).ok());
+  options.no_mtp = false;
+  options.mtp_verifier = static_cast<q4t::server::MtpVerifier>(-1);
+  Q4T_CHECK(!q4t::server::ValidateServerOptions(options).ok());
+  return true;
+}

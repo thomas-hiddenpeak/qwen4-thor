@@ -5,6 +5,8 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [MTP sequential有限正确性验收](MTP_STRICT_RESULT_2026-10-09.md) | 独立正确性证据、原失败与五档成本 | 本阶段 |
+| [MTP严格greedy基线](MTP_STRICT_BASELINE_2026-10-09.md) | 显式sequential target接口、状态与验收边界 | 本阶段 |
 | [MTP阶段性转正计划](MTP_RELEASE_PLAN_2026-10-08.md) | 基础修复PR、有限支持准入与冻结验收清单 | 本阶段 |
 | [MTP数值准入设计](MTP_NUMERICAL_ADMISSION_DESIGN_2026-10-08.md) | 快速T4与严格普通greedy合同、状态所有权和代价 | 合同明确时 |
 | [主线存储准备](STORAGE_READY_2026-10-07.md) | 可再生成缓存清理、原始证据保护与可用容量 | 本轮整理 |

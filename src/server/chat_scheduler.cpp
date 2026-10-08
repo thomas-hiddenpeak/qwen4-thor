@@ -182,10 +182,18 @@ void ChatServer::SchedulerLoop() {
       if (scheduler_stop_) {
         // Drain: wake any request that is still waiting so it can exit.
         for (ActiveRequest* r : active_) {
-          if (r->pending && r->seq) r->seq->Fail();
-          r->pending = false;
-          r->done = true;
-          r->next_token = -1;  // sentinel: scheduler is shutting down
+          // Completed results belong to their request thread. Do not race
+          // its readback or erase completed forward-attempt diagnostics.
+          if (r->pending) {
+            if (r->seq) r->seq->Fail();
+            r->pending = false;
+            r->done = true;
+            r->next_token = -1;
+            r->mtp_accepted_count = 0;
+            r->mtp_next_b = -1;
+            r->mtp_next_d0 = -1;
+            r->mtp_sequential_result = {};
+          }
           r->cv.notify_one();
         }
         for (PrefillReq* p : prefill_pending_) {
@@ -351,16 +359,37 @@ void ChatServer::SchedulerLoop() {
       std::vector<int32_t> accepted(static_cast<size_t>(B) * (mtp_k_ + 1));
       std::vector<int> acc_count(B, 0);
       std::vector<int32_t> next_b(B, 0), next_d0(B, 0);
+      mtp::MtpSequentialResult sequential_result;
       Status s;
       {
         const std::lock_guard<std::mutex> lock(model_mu_);
         if (cycle_step) cycle_step->Mark("model_lock_acquired");
-        s = mtp::MtpSpeculativeStepMulti(model_.Get(), mtp_, seqs.data(),
-                                         b_tok.data(), d0.data(), g_in.data(),
-                                         B, mtp_k_, accepted.data(),
-                                         acc_count.data(), next_b.data(),
-                                         next_d0.data(), next_g.data(),
-                                         nullptr, cycle_step, verify_moe_step);
+        if (mtp_verifier_ == MtpVerifier::kSequential) {
+          if (B != 1 || mtp_k_ != 3 || seqs[0]->seq_id != 0) {
+            s = Status::Fail("sequential MTP requires S1/slot0/k3");
+          } else {
+            s = mtp::MtpSpeculativeStepSequentialTarget(
+                model_.Get(), mtp_, *seqs[0], b_tok[0], d0[0], g_in[0],
+                mtp_reqs[0]->mtp_output_remaining, stop_token_ids_,
+                &sequential_result, next_g[0], nullptr);
+            if (s.ok() && (sequential_result.accepted_count < 1 ||
+                           sequential_result.accepted_count > mtp_k_ + 1))
+              s = Status::Fail("sequential MTP returned an invalid prefix");
+            if (s.ok()) {
+              acc_count[0] = sequential_result.accepted_count;
+              for (int t = 0; t < acc_count[0]; ++t)
+                accepted[t] = sequential_result.accepted_tokens[t];
+              next_b[0] = sequential_result.next_b;
+              next_d0[0] = sequential_result.next_d0;
+            }
+          }
+        } else {
+          s = mtp::MtpSpeculativeStepMulti(
+              model_.Get(), mtp_, seqs.data(), b_tok.data(), d0.data(),
+              g_in.data(), B, mtp_k_, accepted.data(), acc_count.data(),
+              next_b.data(), next_d0.data(), next_g.data(), nullptr,
+              cycle_step, verify_moe_step);
+        }
         if (!s.ok() && cudaPeekAtLastError() != cudaSuccess)
           gpu_healthy_.store(false, std::memory_order_relaxed);
       }
@@ -370,6 +399,7 @@ void ChatServer::SchedulerLoop() {
           ActiveRequest* r = mtp_reqs[i];
           r->pending = false;
           r->done = true;
+          r->mtp_sequential_result = sequential_result;
           if (s.ok()) {
             r->mtp_accepted_count = acc_count[i];
             for (int t = 0; t < acc_count[i]; ++t)

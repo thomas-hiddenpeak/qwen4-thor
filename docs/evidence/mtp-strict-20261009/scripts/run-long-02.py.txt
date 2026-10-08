@@ -1,0 +1,31 @@
+"""One targeted long-state supplement, preserving the initial terminal fixture."""
+import hashlib,json,os,signal,subprocess,time
+from pathlib import Path
+S=Path(__file__).resolve().parent;W=S.parents[1];D=S/'sequential-long-02';B=W/'build/mtp-sequential-long-20261009'
+def sha(p):
+    with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def save(p,v):
+    with p.open('x') as f:json.dump(v,f,indent=2);f.write('\n')
+for n in ['quality-plain','quality-sequential']:
+    assert json.loads((S/f'http-{n}-execution-01.json').read_text())['passed']
+identity=json.loads((D/'build-identity.json').read_text());assert all(sha(r['path'])==r['sha256'] for r in identity['files'])
+impl=json.loads((D/'implementation-protocol.json').read_text())
+assert all(sha(r['path'])==r['sha256'] for r in impl['source_bindings'])
+fixture=impl['fixture_selection'];assert sha(fixture['prompt']['path'])==fixture['prompt']['sha256']
+assert all(sha(r['path'])==r['sha256'] for r in fixture['source_bindings']+fixture['pre_model_freeze_bindings'])
+argv=[str(B/'q4t_mtp_sequential_long_admission'),'--required-list',str(D/'required-tests.txt')]
+env={k:v for k,v in os.environ.items() if not k.startswith('Q4T_') and k!='LD_PRELOAD'};env.update(impl['environment_additions']);env.update(PYTHONDONTWRITEBYTECODE='1',TMPDIR=str(S/'tmp'))
+save(D/'execution-protocol.json',dict(created_unix=time.time(),argv=argv,binary_sha256=sha(argv[0]),implementation_protocol_sha256=sha(D/'implementation-protocol.json'),build_identity_sha256=sha(D/'build-identity.json'),script_sha256=sha(__file__),timeout_seconds=600,attempts=1,short_rerun=False,old_failure_replaced=False))
+start=time.time();timed_out=False
+with (D/'stdout.log').open('x') as out,(D/'stderr.log').open('x') as err:
+    p=subprocess.Popen(argv,cwd=W,env=env,stdout=out,stderr=err,start_new_session=True)
+    try:rc=p.wait(timeout=600)
+    except subprocess.TimeoutExpired:
+        timed_out=True;os.killpg(p.pid,signal.SIGTERM)
+        try:rc=p.wait(timeout=30)
+        except subprocess.TimeoutExpired:os.killpg(p.pid,signal.SIGKILL);rc=p.wait()
+stdout=(D/'stdout.log').read_text();passed=rc==0 and not timed_out and 'all_required=PASS' in stdout and '1 tests, 1 passed, 0 failed, 0 skipped' in stdout
+rows=[dict(path=str(p.relative_to(D)),bytes=p.stat().st_size,sha256=sha(p)) for p in sorted((D/'raw').glob('*')) if p.is_file()]
+summary=dict(exit_code=rc,timeout=timed_out,seconds=time.time()-start,passed=passed,raw_files=rows,stdout_sha256=sha(D/'stdout.log'),stderr_sha256=sha(D/'stderr.log'),original_failure_retained=True)
+save(D/'summary.json',summary);print(json.dumps({k:v for k,v in summary.items() if k!='raw_files'}),flush=True)
+raise SystemExit(0 if passed else 1)

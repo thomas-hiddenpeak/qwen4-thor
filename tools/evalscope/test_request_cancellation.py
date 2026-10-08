@@ -46,6 +46,60 @@ def log():
     return '\n'.join(lines) + '\n'
 
 
+def sequential_log():
+    lines = []
+    for line in log().splitlines():
+        if line.startswith('[q4t][decode_path] '):
+            steps = int(line.split('mtp_steps=')[1].split()[0])
+            tail = 2 if steps == 74 else 0
+            targets = 254 if steps == 74 else 3 * steps
+            line = line.replace('path=mtp_multi_b1', 'path=mtp_sequential_b1')
+            line = line.replace('plain_tail_tokens=0', f'plain_tail_tokens={tail}')
+            line += (f' verifier=sequential tail_reason={"output_limit" if tail else "none"}'
+                     f' draft_forward_calls={2 * steps} target_t1_calls={targets}'
+                     f' target_t4_calls=0 extend_forward_calls={steps}'
+                     ' forward_count_scope=sequential_attempts')
+        lines.append(line)
+    return '\n'.join(lines) + '\n'
+
+
+class SequentialRecoveryTest(unittest.TestCase):
+    def test_same_mode_control_and_recoveries_include_tail(self):
+        result = contract.validate_same_mode_paths(sequential_log(), 'sequential')
+        self.assertEqual(result['verifier'], 'sequential')
+        self.assertEqual(result['terminal_paths'][contract.CONTROL]['plain_tail_tokens'], '2')
+
+    def test_legacy_and_wrong_requested_verifier_rejected(self):
+        for evidence, verifier in [(log(), 'sequential'), (sequential_log(), 't4')]:
+            with self.assertRaises(ValueError):
+                contract.validate_same_mode_paths(evidence, verifier)
+
+    def test_recovery_accounting_must_equal_fresh_control(self):
+        for old, new in [('target_t1_calls=254', 'target_t1_calls=253'),
+                         ('tail_reason=output_limit', 'tail_reason=context_limit'),
+                         ('plain_tail_tokens=2', 'plain_tail_tokens=3')]:
+            # Change the first (fresh-control) row, keeping valid per-row counts.
+            with self.subTest(new=new), self.assertRaises(ValueError):
+                contract.validate_same_mode_paths(
+                    sequential_log().replace(old, new, 1), 'sequential')
+
+    def test_consistent_but_wrong_completed_counts_rejected(self):
+        with self.assertRaises(ValueError):
+            contract.validate_same_mode_paths(sequential_log().replace(
+                'target_t1_calls=254', 'target_t1_calls=222'), 'sequential')
+        with self.assertRaises(ValueError):
+            contract.validate_same_mode_paths(sequential_log().replace(
+                'tail_reason=output_limit', 'tail_reason=context_limit'), 'sequential')
+
+    def test_invalid_attempt_counts_are_not_recovery_success(self):
+        for old, new in [('draft_forward_calls=148', 'draft_forward_calls=149'),
+                         ('target_t4_calls=0', 'target_t4_calls=1'),
+                         ('forward_count_scope=sequential_attempts', '')]:
+            with self.subTest(new=new), self.assertRaises(ValueError):
+                contract.validate_same_mode_paths(
+                    sequential_log().replace(old, new, 1), 'sequential')
+
+
 class PlanAndFixtureTest(unittest.TestCase):
     def test_exact_nine_request_order_keeps_prefill(self):
         plan = contract.recovery_plan()

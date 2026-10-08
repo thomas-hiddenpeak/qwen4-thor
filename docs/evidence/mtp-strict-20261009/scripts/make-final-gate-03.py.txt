@@ -1,0 +1,46 @@
+"""Bind final finite-profile decision after all original requests/supplements."""
+import hashlib,json,time
+from pathlib import Path
+S=Path(__file__).resolve().parent
+sources={}
+def read(name):
+    p=S/name;b=p.read_bytes();sources[name]=dict(path=str(p),bytes=len(b),sha256=hashlib.sha256(b).hexdigest());return json.loads(b)
+required=['host-summary-01.json','sequential-long-02/summary.json','http-quality-independent-review-01.json','http-limits-independent-review-03.json','cancellation-independent-review-01.json','http-failure-recovery-independent-review-01.json','resource-independent-review-01.json','context-tail-independent-review-01.json','http-performance-independent-review-03.json','hc-analysis/independent-review-02.json','final-protection-03.json']
+records={name:read(name) for name in required}
+assert all(value['passed'] is True for value in records.values())
+sustained=read('sustained-independent-review-01.json');assert sustained['independent_http_pair_and_coverage_passed'] is True and not sustained['failed_checks']
+original=read('sequential-direct-01/summary.json');assert original['passed'] is False and original['exit_code']==1
+short_log=(S/'sequential-direct-01/stdout.log').read_bytes();sources['sequential-direct-01/stdout.log']=dict(path=str(S/'sequential-direct-01/stdout.log'),bytes=len(short_log),sha256=hashlib.sha256(short_log).hexdigest());assert b'MTP_SEQUENTIAL_NATURAL context=short steps=4 extend_rows1=1 rows2=0 rows3=0 rows4=3' in short_log
+assert b'long: prefill already terminal' in short_log
+limits=[]
+for mode in ('plain','sequential'):
+    ex=read(f'http/limits-{mode}/exit.json');rows=read(f'http/limits-{mode}/results.json')
+    assert ex['server']==0 and ex['completed']==14 and ex['http_output_checks_passed'] is False
+    assert ex['failure']=='RuntimeError: output-limit/finish/stream acceptance failed'
+    assert rows[-1]['id']=='context-208892-nonstream-8' and rows[-1]['actual_output']==1 and rows[-1]['finish']==['stop']
+    limits.append(dict(mode=mode,original_coverage_passed=False,original_actual_mode_checks_passed=ex['actual_mode_checks_passed'],missing_case=rows[-1]['id'],observed_output=1,observed_finish='stop'))
+executions=[]
+for name in ('quality-plain','quality-sequential','sustained-plain','sustained-sequential','limits-plain','limits-sequential','cancellation','failure-recovery','performance-plain','performance-sequential'):
+    e=read(f'http-{name}-execution-01.json');assert not e['timeout'] and not e['residual_process_group']
+    assert e['exit_code']==(1 if name.startswith('limits-') else 0)
+    executions.append(dict(group=name,original_exit_code=e['exit_code'],original_passed=e['passed']))
+quality=records['http-quality-independent-review-01.json'];paired_limits=records['http-limits-independent-review-03.json'];perf=records['http-performance-independent-review-03.json']
+assert quality['pair_count']==11 and len(sustained['cases'])==8 and len(paired_limits['pairs'])==14 and len(perf['pairs'])==15
+assert len(perf['costs'])==5
+zh=read('semantic-zh-review-01.json');en=read('semantic-en-review-01.json')
+read('b-support-gate-independent-opinion-01.json');read('build-protocol-01.json');identity=read('build-identity-01.json')
+assert len([r for r in identity['files'] if Path(r['path']).name=='q4t' and r['sha256']=='a566faf51975291ec8fcd1fe75d7ddff07760fe13c138f85a066aeffad729563'])==1
+read('http-protocol-01.json');read('http-protocol-amendment-02.json');read('resource-fallback-03/protocol-01.json');read('context-tail-control-03/protocol-01.json');assert read('sequential-long-02/independent-review.json')['passed'] is True
+read('host-artifact-location-deviation.json');reference_host=read('reference-eos-amendment-02/host-result.json');assert reference_host['exit_code']==0 and reference_host['sources_unchanged'] is True
+read('host-direct-freeze-review.json')
+report=dict(schema_version=1,created_unix=time.time(),decision='QUALIFIED_FINITE_SEQUENTIAL_CORRECTNESS_PROFILE',finite_sequential_profile_admitted=True,original_coverage_all_passed=False,http_exact_pairing_passed=True,http_exact_pairs=48,full_model_task_quality_passed=False,performance_improvement_claim=False,performance_nonregression_claim=False,fast_t4_admitted=False,default_mtp_enabled=False,main_merged=False,deployed=False,
+ profile=dict(hardware='Jetson AGX Thor SM110a',toolchain='CUDA13.3 / local frozen build flags',checkpoint='Qwen3.8-Flash-Next-NVFP4-SSD-Stream; metadata identities in build/HTTP protocols; no new payload hashing',interface='HTTP serve text',max_seq=1,slot=0,max_prefill=8192,max_len=208896,sampling='greedy; frozen requests use temperature0 seed20260920',k=3,arguments=['--mtp','--mtp-verifier','sequential'],production_binary_sha256='a566faf51975291ec8fcd1fe75d7ddff07760fe13c138f85a066aeffad729563',generic_requested_capability_log='experimental: category covers all MTP and is not a checkpoint qualification registry'),
+ requests=dict(original_matrix=110,extra_resource_variant=3,extra_controlled_tail_variant=2,total=115,production_candidate=105,test_variants=10,production_groups=dict(quality=22,sustained=16,limits=28,cancellation=9,performance=30),test_variant_groups=dict(mid_forward_failure=5,resource_fallback=3,controlled_tail=2)),
+ original_nonpasses=dict(direct_combined_long_prefill_eos='FAIL retained; fixed long-only natural supplement passed without rerunning short half',http_limit_groups=limits,original_group_failures_retained=3),
+ coverage_decision=dict(long_main_state='original short direct domain plus separately built long-only supplement; exact runtime source/config, not byte-identical CUDA archives',natural_gpu_full_extend_shapes=[1,4],shapes_2_3='production TU full-control tests and real controlled verify; no claim of natural/full GPU extend coverage',normal_context_tail='original last pair legally stops at prefill; fixed selection-control supplement executes same real production scheduler and checks terminal consumption; not greedy/quality/performance evidence',resource='local unchanged lifecycle function contracts reused; current HTTP logical Reserve failure uses ordinary scheduler B1 and same-mode recovery; not actual OOM',forward_failures='actual target/extend submission then logical Status failure, production drains and request terminates; not hardware-fatal CUDA recovery',cancellation='same-mode fresh plus four recoveries; RST after nonempty content was two newlines',quality='11 short pairs pass; eight sustained pairs meet output coverage; independent task rubrics have four satisfactory and four partial/failed answers, not overall model quality acceptance',t4='HC first difference compatible with finite observed arithmetic screen; entire fast T4 trajectory remains unqualified'),
+ semantic_results=dict(satisfactory=['en-reasoning','zh-summary','zh-excerpt','en-excerpt'],insufficient=['zh-reasoning incomplete predicates','zh-code truncated','en-code forbidden attribute calls','en-summary length/truncation/unsupported content'],automatic_scores_unchanged=True,generated_code_executed=False,posthoc_semantic_veto=False),
+ cost_scope='Five lengths, every original three samples retained; ordinary first then sequential. Descriptive E2E cost, no favorable resampling, causal significance or nonregression claim.',cost_mean_all_three=[dict(length=r['length'],plain=r['plain']['mean_all_three'],sequential=r['sequential']['mean_all_three'],percent_change=r['all_three_percent_change']) for r in perf['costs']],
+ phase_a=dict(status='independently reviewable foundation fixes',pull_request='https://github.com/thomas-hiddenpeak/qwen4-thor/pull/2',merged=False,phase_b_not_implied_by_phase_a=True),
+ qualification_basis='Original frozen finite-profile contract plus explicitly bounded supplements for actual coverage gaps. Original FAILs remain FAIL; arbitrary prompts/checkpoints/capacities, complete GPU shape coverage and full task quality are not claimed.',executions=executions,sources=sources,script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),new_model_or_test_execution=False)
+with (S/'final-gate-03.json').open('x') as f:json.dump(report,f,ensure_ascii=False,indent=2);f.write('\n')
+print(json.dumps(dict(decision=report['decision'],original_nonpasses=3,exact_pairs=48,http_requests=115,source_count=len(sources))))

@@ -1,0 +1,87 @@
+"""Read-only raw evidence audit; no model/test/tool application imports."""
+import hashlib,json,math,re,struct,time
+from pathlib import Path
+S=Path(__file__).resolve().parent; C=S/'context-tail-control-03'; W=S.parents[1]
+checks=[]; sources={}
+def check(name, ok): checks.append({'name':name,'passed':bool(ok)})
+def raw(p):
+ p=Path(p); b=p.read_bytes(); sources[str(p)]={'sha256':hashlib.sha256(b).hexdigest(),'bytes':len(b)};return b
+def js(p):return json.loads(raw(p))
+def sha(p):raw(p);return sources[str(p)]['sha256']
+proto=js(C/'protocol-01.json'); build=js(C/'build-result-01.json'); summary=js(C/'http-01/summary.json')
+check('frozen two-request distinct diagnostic protocol',proto['generation_requests']==2 and proto['wrap_symbol_count']==11 and not proto['retries_or_replacement_inputs'])
+check('build protocol binding',build['protocol_sha256']==sha(C/'protocol-01.json') and build['passed'] and not build['old_objects_rebuilt'])
+check('variant executable hash',sha(C/'q4t_context_tail')==build['binary_sha256'])
+for name in ['context_tail_server.cpp','context_tail_contract.py','test_context_tail_contract.py','run_context_tail.py','build_variant.py']:
+ check('source frozen '+name,sha(C/name)==proto['frozen_files'][str(C/name)])
+ if (C/'http-01'/name).exists():check('executed source snapshot '+name,sha(C/'http-01'/name)==sha(C/name))
+for phase in ['build','host','http']:
+ v=js(C/(phase+'-execution-01.json'))
+ check(phase+' clean first execution',v['passed'] and v['exit_code']==0 and not v['timeout'] and not v['residual_process_group'])
+ for stream in ['stdout','stderr']:check(phase+' '+stream+' bound',sha(C/(phase+'-execution-01.'+stream))==v[stream+'_sha256'])
+check('zero compile/link diagnostics',raw(C/'compile-01.stderr')==raw(C/'link-01.stderr')==b'')
+host=raw(C/'host-execution-01.stderr').decode();check('six first host tests passed',host.count(' ... ok')==6 and 'Ran 6 tests' in host and host.rstrip().endswith('OK'))
+syms=raw(C/'symbols-01.txt').decode()
+for symbol in proto['wrap_symbols']:check('defined wrapper '+symbol,any(line.split()[-1]=='__wrap_'+symbol and line.split()[-2].upper()=='T' for line in syms.splitlines() if len(line.split())>=3))
+check('two controlled outcomes and bounded duration',summary['passed'] and summary['failure'] is None and len(summary['records'])==2 and summary['max_generation_requests']==2 and 0<summary['seconds']<1800)
+check('non-greedy limits explicit',all(summary[k] is False for k in ['production_binary_http','greedy_numeric_evidence','quality_evidence','performance_evidence']) and summary['original_natural_EOS_failure_preserved'])
+bind=js(C/'http-01/input-binding.json');old=S/'http/limits-plain'; oldrows=js(old/'results.json');oldexit=js(old/'exit.json')
+check('original failure still FAIL',len(oldrows)==14 and oldrows[-1]['actual_output']==1 and oldrows[-1]['finish']==['stop'] and oldexit['failure']=='RuntimeError: output-limit/finish/stream acceptance failed' and not oldexit['http_output_checks_passed'])
+check('original reference hashes retained',sha(old/'results.json')==bind['original_results_sha256'] and sha(old/'exit.json')==bind['original_exit_sha256'])
+fixture=old/'context-208892-nonstream-8/requests.jsonl'; fixture_rows=[json.loads(line) for line in raw(fixture).decode().splitlines()];prompt=fixture_rows[0]['prompt']
+check('only original fixed fixture',len(fixture_rows)==1 and sha(fixture)==bind['fixture_sha256'] and hashlib.sha256(prompt.encode()).hexdigest()==proto['prompt_sha256']==bind['prompt_sha256']==oldrows[-1]['prompt_sha256'] and not bind['new_prompt_search_or_replacement'])
+results=[]; captures=[]; details=[]
+for mode in ['plain','sequential']:
+ d=C/'http-01'/mode; label='tail-'+mode
+ cmd=js(d/'server-command.json'); argv=cmd['argv']; ex=js(d/'exit.json'); startup=js(d/'startup-mode.json')
+ check(mode+' same isolated variant command',argv[0]==str(C/'q4t_context_tail') and argv[1]=='serve' and cmd['removed_environment']=={})
+ for flag,value in [('--max-seq','1'),('--max-prefill','8192'),('--max-len','208896')]:check(mode+' '+flag,argv.count(flag)==1 and argv[argv.index(flag)+1]==value)
+ check(mode+' exact verifier selection',('--no-mtp' in argv and '--mtp' not in argv and '--mtp-verifier' not in argv) if mode=='plain' else ('--no-mtp' not in argv and argv.count('--mtp')==1 and argv[argv.index('--mtp-verifier')+1]=='sequential'))
+ check(mode+' startup validated',startup['passed'] and startup['requested_verifier']==('none' if mode=='plain' else 'sequential'))
+ request=js(d/(label+'-request.json')); check(mode+' request binding',request['prompt']==prompt and request['request_id']==label and request['stream'] is False and request['max_tokens']==8 and request['temperature']==0 and request['seed']==20260920)
+ resp=js(d/(label+'-response.json'));transport=js(d/(label+'-transport.json'));body=json.loads(resp['body'])
+ check(mode+' actual HTTP 200 body transport',resp['status']==200 and transport['status']==200 and transport['failure'] is None and transport['received_bytes']==len(resp['body'].encode()) and resp['headers']==transport['headers'])
+ check(mode+' correct response identity',body['id']==label and body['object']=='chat.completion' and body['model']=='qwen3.8-flash-next' and 'error' not in body)
+ check(mode+' exact output4/length',body['choices']==[{'index':0,'message':{'role':'assistant','content':'AAAA'},'finish_reason':'length'}] and body['usage']=={'prompt_tokens':208892,'completion_tokens':4,'total_tokens':208896})
+ result=js(d/'result.json'); results.append(result);check(mode+' stored result derives raw response',result['text']==body['choices'][0]['message']['content'] and result['finish']=='length' and result['usage']==body['usage'] and result['text_utf8_sha256']==hashlib.sha256(b'AAAA').hexdigest())
+ log=raw(d/'server.log').decode();events=[]
+ for line in log.splitlines():
+  match=re.fullmatch(r'\[q4t\]\[tail_(\w+)\] (.*)',line)
+  if match and match[1]!='control_variant':events.append((match[1],dict(part.split('=',1) for part in match[2].split())))
+ names=[x[0] for x in events]
+ check(mode+' exactly one active marker',log.count('[q4t][tail_control_variant]')==1 and 'protocol=context_tail_v1 production_binary=0 requests=1 prompt_tokens=208892 token=32 greedy_numeric_evidence=0 quality_evidence=0 performance_evidence=0' in log and '[q4t][tail_control_contract]' not in log)
+ check(mode+' exact observer chronology',names==['scheduler','begin']+['prefill']*26+['override']+['b1','argmax']*3+['before_end','end','scheduler'])
+ check(mode+' actual scheduler lifetime',events[0][1]=={'entered':'1','real_call':'1'} and events[-1][1]=={'exited':'1','real_return':'1'})
+ check(mode+' clean initial slot',events[1][1]=={'real_ok':'1','slot':'0','position':'0','history':'0','pending':'0'})
+ for i,(_,row) in enumerate(events[2:28]):
+  n=4092 if i==25 else 8192;check(mode+' real prefill '+str(i+1),row=={'ordinal':str(i+1),'real_ok':'1','base':str(i*8192),'count':str(n),'submitted':str(i*8192+n),'pending':'1','final':str(int(i==25))})
+ override=events[28][1]
+ check(mode+' precise real D2H hook',all(override.get(k)==v for k,v in {'real_copy':'1','checked_sync':'1','source_bound':'1','thread_match':'1','stream_match':'1','vocab':'248320','bytes':'496640','forced_token':'32','forced_bits':'7f7f','modified_host_words':'1','device_logits_modified':'0'}.items()))
+ for i in range(3):
+  b1=events[29+2*i][1];arg=events[30+2*i][1]
+  check(mode+' real scheduler B1 '+str(i+1),b1=={'ordinal':str(i+1),'real_ok':'1','scheduler_thread':'1','batch':'1','position':str(208892+i),'token':'32','pending':'1','submitted':str(208893+i),'trunk_null':'1'})
+  check(mode+' real scheduler argmax '+str(i+1),arg=={'ordinal':str(i+1),'real_ok':'1','scheduler_thread':'1','forced_token':'32','same_stream_override':'1'})
+ check(mode+' final emitted token unconsumed',events[-3][1]=={'position':'208895','history':'208895','pending':'0','consumed':'3','unconsumed_final_output':'1'})
+ check(mode+' complete End and zero request MTP/legacy',events[-2][1]=={'real_ok':'1','position':'0','history':'0','pending':'0','chunks':'26','host_overrides':'1','main_calls':'3','argmax_calls':'3','mtp_init_calls':'0','strict_step_calls':'0','fast_step_calls':'0','legacy_calls':'0'})
+ pathlines=[l for l in log.splitlines() if l.startswith('[q4t][decode_path]')]; check(mode+' single real path',len(pathlines)==1)
+ path=dict(kv.split('=',1) for kv in pathlines[0].split()[1:]);expected={'id':label,'requested_mtp':str(int(mode=='sequential')),'path':'plain' if mode=='plain' else 'plain_tail_b1','mtp_steps':'0','fallback':'none','plain_tail_tokens':'0' if mode=='plain' else '4','verifier':'none' if mode=='plain' else 'sequential'}
+ if mode=='sequential':expected.update(tail_reason='context_limit',draft_forward_calls='0',target_t1_calls='0',target_t4_calls='0',extend_forward_calls='0',forward_count_scope='sequential_attempts')
+ check(mode+' exact terminal path',path==expected and log.index('[q4t][tail_argmax] ordinal=3')<log.index(pathlines[0])<log.index('[q4t][tail_before_end]'))
+ evidence=js(d/'control-evidence.json');check(mode+' stored log evidence bound',evidence['path']==path and evidence['override']==override and evidence['real_b1_positions']==[208892,208893,208894])
+ capture=raw(d/'original-prefill-logits.bf16');capture_id=js(d/'capture-identity.json');words=struct.unpack('<248320H',capture);values=[struct.unpack('<f',struct.pack('<I',x<<16))[0] for x in words];best=max(range(len(values)),key=values.__getitem__)
+ check(mode+' finite original BF16 row',len(capture)==496640 and all(math.isfinite(x) and x<struct.unpack('<f',struct.pack('<I',0x7f7f0000))[0] for x in values))
+ check(mode+' original argmax independently EOS',best==248046 and words[best]==0x41aa and words[32]==0x4086 and int(override['original_argmax'])==best and override['original_argmax_bits']==format(words[best],'04x') and override['old_token_bits']==format(words[32],'04x'))
+ check(mode+' original logits source SHA',hashlib.sha256(capture).hexdigest()==capture_id['sha256'] and capture_id['bytes']==len(capture) and capture_id['original_argmax']==best and capture_id['modified_host_words']==1 and capture_id['device_prefill_logits_modified'] is False)
+ captures.append(capture)
+ for stage,n in [('before',0),('after',1)]:
+  snap=js(d/(stage+'-snapshot.json'));health=js(d/(stage+'-0000-health-response.json'));met=js(d/(stage+'-0000-metrics-response.json'))
+  check(mode+' '+stage+' raw health bound',health['status']==200 and json.loads(health['body'])==snap['health'] and snap['health']['gpu_healthy'] is True and snap['health']['seq_slots_free']==snap['health']['seq_slots_total']==1)
+  metrics=dict((line.split()[0],float(line.split()[1])) for line in met['body'].splitlines() if line and not line.startswith('#') and len(line.split())==2)
+  want={'q4t_requests_total':n,'q4t_requests_success_total':n,'q4t_requests_error_total':0,'q4t_requests_aborted_total':0,'q4t_active_chats':0,'q4t_request_body_bytes':0,'q4t_seq_slots_free':1,'q4t_gpu_healthy':1}
+  check(mode+' '+stage+' raw metrics and snapshots bound',met['status']==200 and all(metrics[k]==v for k,v in want.items()) and all(metrics[k]==v for k,v in (snap['gauges']|snap['counters']).items()))
+ check(mode+' normal exit with one success',ex['passed'] and ex['failure'] is None and ex['server_exit']==0 and ex['generation_requests_authorized']==1 and ex['before_counters']==[0,0,0,0] and ex['after_counters']==[1,1,0,0] and log.count('shutdown complete (0 in-flight remaining)')==1)
+ details.append({'mode':mode,'original_argmax':best,'original_argmax_bf16_bits':format(words[best],'04x'),'original_argmax_value':values[best],'token32_original_value':values[32],'capture_sha256':capture_id['sha256'],'path':path,'prefill_chunks':26,'b1_positions':[208892,208893,208894],'before_end_position':208895,'end_position':0})
+check('plain/sequential original full BF16 rows exact',captures[0]==captures[1]);check('plain/sequential controlled full response result exact',results[0]==results[1])
+out={'schema_version':1,'kind':'independent raw context-tail controlled supplement audit','created_unix':time.time(),'passed':all(x['passed'] for x in checks),'checks_passed':sum(x['passed'] for x in checks),'checks_total':len(checks),'failed_checks':[x for x in checks if not x['passed']],'generation_requests':2,'new_model_or_http_or_test_execution':False,'model_payload_read':False,'library_rehash_performed':False,'library_origin':'Frozen build protocol / build result reused; existing archives not rehashed in this read-only audit. Diagnostic executable and five small source files independently bound.','original_eos_coverage_failures_preserved':True,'details':details,'controlled_output':results[0],'claim_limits':['Forced selection observes production context-tail control, not actual greedy generated output, quality or performance.','Both original prefill logits rows are byte-identical and choose original EOS 248046. The original fixed natural-EOS limit case remains failed coverage.','Within active request only: zero MTP init/reset/full-step and legacy calls; startup MTP loading/reset is allowed.','Observed HTTP text/usage/finish plus native hook state, not HTTP raw generated token IDs or complete GPU-state identity.'],'source_files':[{'path':p,**v} for p,v in sorted(sources.items())],'checks':checks}
+with (S/'context-tail-independent-review-01.json').open('x') as f:json.dump(out,f,ensure_ascii=False,indent=2);f.write('\n')
+print(json.dumps({'passed':out['passed'],'checks_passed':out['checks_passed'],'checks_total':out['checks_total'],'failed_checks':out['failed_checks'],'source_count':len(sources),'sha256':hashlib.sha256((S/'context-tail-independent-review-01.json').read_bytes()).hexdigest()}))

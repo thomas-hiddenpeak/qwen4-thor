@@ -98,3 +98,7 @@ q4t_add_python_contract(q4t_acceptance_mode_contracts
   tools/evalscope/test_acceptance_mode.py)
 q4t_add_python_contract(q4t_request_cancellation_contracts
   tools/evalscope/test_request_cancellation.py)
+q4t_add_python_contract(q4t_sustained_quality_contracts
+  tools/evalscope/test_sustained_quality.py)
+q4t_add_python_contract(q4t_mtp_failure_recovery_contracts
+  tools/evalscope/test_mtp_failure_recovery.py)

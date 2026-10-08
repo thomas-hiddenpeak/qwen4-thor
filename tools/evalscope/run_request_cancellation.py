@@ -36,11 +36,15 @@ def main():
     p.add_argument('--reference-run', type=Path,
                    help='Completed ordinary-decode run with fixed 1K performance evidence')
     p.add_argument('--mtp', action='store_true')
+    p.add_argument('--mtp-verifier', choices=['t4', 'sequential'])
     p.add_argument('--port', type=int)
     p.add_argument('--startup-timeout', type=int, default=180)
     args = p.parse_args()
     narrow = args.scope == 'decode-recovery'
     same_mode = args.scope == 'same-mode-recovery'
+    if args.mtp_verifier is not None and not (args.mtp and same_mode):
+        p.error('--mtp-verifier requires --mtp --scope same-mode-recovery')
+    verifier = args.mtp_verifier or 't4'
     if same_mode:
         import request_cancellation_contract as recovery_contract
     if args.startup_timeout <= 0:
@@ -129,6 +133,14 @@ def main():
         assert cmd.count('--no-mtp') + cmd.count('--mtp') == 1, 'ambiguous source mode'
         if '--no-mtp' in cmd:
             cmd[cmd.index('--no-mtp')] = '--mtp'
+        # A source run supplies fixtures/capacity, never the verifier choice.
+        assert cmd.count('--mtp-verifier') <= 1, 'ambiguous source verifier'
+        if '--mtp-verifier' in cmd:
+            index = cmd.index('--mtp-verifier')
+            assert index + 1 < len(cmd), 'missing source verifier value'
+            del cmd[index:index + 2]
+        if args.mtp_verifier is not None:
+            cmd += ['--mtp-verifier', verifier]
         cmd[0] = str(args.binary.resolve())
         save(out / 'input-bindings.json', {
             'oracle': 'fresh control in this process and mode; no historical output',
@@ -168,7 +180,9 @@ def main():
         'binary_sha256': hashlib.sha256(args.binary.read_bytes()).hexdigest(),
         **({'generation_requests': 9, 'decode_paths': 8,
             'expected_counter_delta': [9, 4, 5], 'deadline_ms': 3000,
-            'prefill_cancel_delay_ms': 500, 'expected_path': 'mtp_multi_b1',
+            'prefill_cancel_delay_ms': 500, 'verifier': verifier,
+            'expected_path': ('mtp_sequential_b1' if verifier == 'sequential'
+                              else 'mtp_multi_b1'),
             'http_total_timeout_seconds': 120, 'http_control_timeout_seconds': 10,
             'http_response_byte_limit': 4 * 1024 * 1024,
             'limits': 'HTTP same-mode recovery, not full internal state equality; FIN not exercised'}
@@ -564,7 +578,8 @@ def main():
             else:
                 raise RuntimeError('startup timeout')
             if narrow or same_mode:
-                startup = startup_evidence((out / 'server.log').read_text(), True)
+                startup = startup_evidence((out / 'server.log').read_text(), True,
+                                           verifier)
                 save(out / 'startup-mode.json', startup)
                 assert startup['passed'], startup['errors']
                 if same_mode:
@@ -685,7 +700,7 @@ def main():
                     assert server.returncode == 0, 'server did not stop normally'
                     if same_mode:
                         paths = recovery_contract.validate_same_mode_paths(
-                            (out / 'server.log').read_text())
+                            (out / 'server.log').read_text(), verifier)
                         save(out / 'request-modes.json', paths)
                     else:
                         check_narrow_paths()

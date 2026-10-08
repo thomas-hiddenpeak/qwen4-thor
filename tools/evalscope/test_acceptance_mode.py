@@ -23,7 +23,93 @@ def terminal(request_id='r1', mtp=True, path='mtp_multi_b1', steps=2,
 
 
 def response(request_id='r1', output=8):
-    return {'response_id': request_id, 'actual_output': output}
+    return {'response_id': request_id, 'actual_output': output, 'finish': ['length']}
+
+
+def sequential_terminal(path='mtp_sequential_b1', steps=2, tail=2,
+                        reason='output_limit', targets=6, extends=2):
+    return terminal(path=path, steps=steps, tail=tail).rstrip() + (
+        f' verifier=sequential tail_reason={reason} '
+        f'draft_forward_calls={steps * 2} target_t1_calls={targets} '
+        f'target_t4_calls=0 extend_forward_calls={extends} '
+        'forward_count_scope=sequential_attempts\n')
+
+
+class SequentialModeTest(unittest.TestCase):
+    def check(self, log, output=8, finish='length'):
+        row = response(output=output)
+        row['finish'] = [finish]
+        return request_mode_evidence(log, [row], True,
+                                     'sequential')['passed']
+
+    def test_startup_requires_actual_sequential_verifier(self):
+        legacy = startup_log(True)
+        strict = legacy.replace('max_seq=1\n', 'max_seq=1 verifier=sequential\n')
+        self.assertTrue(startup_evidence(strict, True, 'sequential')['passed'])
+        self.assertFalse(startup_evidence(legacy, True, 'sequential')['passed'])
+        self.assertFalse(startup_evidence(strict, True)['passed'])
+        self.assertFalse(startup_evidence(strict, False, 'sequential')['passed'])
+
+    def test_actual_sequential_with_output_tail(self):
+        self.assertTrue(self.check(sequential_terminal()))
+        self.assertFalse(request_mode_evidence(sequential_terminal(),
+                                              [response()], True)['passed'])
+
+    def test_legacy_and_mislabelled_paths_rejected(self):
+        for log in (terminal(), sequential_terminal(path='mtp_multi_b1'),
+                    sequential_terminal().replace('verifier=sequential', ''),
+                    sequential_terminal().replace('fallback=none',
+                                                  'fallback=init_failed')):
+            self.assertFalse(self.check(log))
+
+    def test_pure_tail_and_prefill_have_no_speculative_work(self):
+        for output in (1, 2, 3, 4):
+            self.assertTrue(self.check(sequential_terminal(
+                path='plain_tail_b1', steps=0, tail=output,
+                reason='context_limit', targets=0, extends=0), output))
+        prefill = sequential_terminal(path='prefill_only', steps=0, tail=0,
+                                      reason='none', targets=0, extends=0)
+        self.assertTrue(self.check(prefill, 1))
+        self.assertFalse(self.check(prefill, 2))
+        self.assertFalse(self.check(prefill.replace('tail_reason=none',
+                                                    'tail_reason=output_limit'), 1))
+        self.assertFalse(self.check(sequential_terminal(
+            path='plain_tail_b1', steps=0, tail=2, targets=1, extends=0), 2))
+
+    def test_terminal_step_skips_exactly_one_extend(self):
+        self.assertTrue(self.check(sequential_terminal(tail=0, reason='none',
+                                                       extends=1), 7, 'stop'))
+        self.assertFalse(self.check(sequential_terminal(tail=0, reason='none',
+                                                        extends=1), 8, 'stop'))
+        self.assertFalse(self.check(sequential_terminal(tail=0, reason='none',
+                                                        extends=1), 7, 'length'))
+        self.assertFalse(self.check(sequential_terminal(extends=1)))
+        self.assertFalse(self.check(sequential_terminal(tail=0, reason='none',
+                                                        extends=0)))
+
+    def test_invalid_or_missing_forward_counts_rejected(self):
+        log = sequential_terminal()
+        for old, new in [('draft_forward_calls=4', 'draft_forward_calls=3'),
+                         ('target_t1_calls=6', 'target_t1_calls=9'),
+                         ('target_t1_calls=6', 'target_t1_calls=1'),
+                         ('target_t4_calls=0', 'target_t4_calls=1'),
+                         ('extend_forward_calls=2', 'extend_forward_calls=3'),
+                         ('target_t1_calls=6', 'target_t1_calls=-1'),
+                         ('target_t1_calls=6', ''),
+                         ('forward_count_scope=sequential_attempts', '')]:
+            with self.subTest(new=new):
+                self.assertFalse(self.check(log.replace(old, new)))
+
+    def test_tail_reason_and_count_must_agree(self):
+        for log in (sequential_terminal(reason='none'),
+                    sequential_terminal(reason='context_tail'),
+                    sequential_terminal(tail=5)):
+            self.assertFalse(self.check(log))
+
+    def test_completed_output_binds_actual_target_consumption(self):
+        self.assertFalse(self.check(sequential_terminal(targets=5)))
+        self.assertFalse(self.check(sequential_terminal(), 256))
+        self.assertFalse(self.check(sequential_terminal(tail=0, reason='none'), 6))
 
 
 class StartupModeTest(unittest.TestCase):

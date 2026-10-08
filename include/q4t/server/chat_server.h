@@ -166,6 +166,10 @@ class ChatServer {
     int32_t mtp_next_d0 = 0;    // next first draft (step output)
     int mtp_accepted_count = 0;  // accepted tokens this step (step output)
     int32_t mtp_accepted[64];   // accepted tokens (bonus + drafts, step output)
+    // Sequential verifier shares the pending/done handshake. Its count is
+    // both the emitted non-stop prefix and the main model's consumed prefix.
+    int mtp_output_remaining = 0;
+    mtp::MtpSequentialResult mtp_sequential_result;
     // Request-owned, S1 diagnostic only. Publication follows pending/done.
     trace::MtpCycleStep* mtp_cycle_step = nullptr;
     trace::MtpVerifyMoeStep* mtp_verify_moe_step = nullptr;
@@ -287,6 +291,7 @@ class ChatServer {
   // declaration order, so mtp_ is destroyed before model_).
   mtp::MtpModel mtp_;
   bool mtp_requested_ = false;
+  MtpVerifier mtp_verifier_ = MtpVerifier::kT4;
   bool mtp_loaded_ = false;
   int mtp_k_ = 3;  // Fixed draft length for the single-stream admission scope.
   // NOTE (Stage 2c): the legacy shared rolling draft-trunk buffers d_g_/

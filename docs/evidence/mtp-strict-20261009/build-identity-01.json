@@ -1,0 +1,41 @@
+{
+  "created_unix": 1791479443.3497732,
+  "source_protocol_sha256": "55c620881a09a017bb24b764a8ad8b98854b4a1d950172b9eccd07587c7850c3",
+  "files": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t",
+      "sha256": "a566faf51975291ec8fcd1fe75d7ddff07760fe13c138f85a066aeffad729563",
+      "bytes": 3953096
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t_host_tests",
+      "sha256": "d1bb18d1779177c9b496c8335b752d95847fe2a3a7c10f1a9d935b8c23218c29",
+      "bytes": 371008
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t_mtp_sequential_control",
+      "sha256": "3daf9f44cf4b43267a752970078fbec134d354dddc24a14042703e8bcbd764be",
+      "bytes": 80144
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t_mtp_sequential_admission",
+      "sha256": "395764df3e8048ed268a114fd9f0a2f1cd56ef7d9435c46aa7499be349c56565",
+      "bytes": 3463880
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t_mtp_sequential_fault_server",
+      "sha256": "f8b8bb0ccc2714bd6d3d913a6478001eec42135cb46db129c7cc0f1fb9059012",
+      "bytes": 4019704
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t_mtp_hc_first_fork",
+      "sha256": "5b5683d879fba1c8c70eb3da45e9cac5569159e73b2f4f9ddb5e5232d93ffed7",
+      "bytes": 2961952
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/CMakeCache.txt",
+      "sha256": "f520207f57f6a74e71ffd73807c0371d5be6d7d9b9d3ae96af130a016c2cb883",
+      "bytes": 37446
+    }
+  ]
+}

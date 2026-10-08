@@ -223,25 +223,46 @@ def terminal_paths(log):
     return rows
 
 
-def validate_same_mode_paths(log):
+def validate_same_mode_paths(log, verifier='t4'):
+    from acceptance_mode import sequential_fields_errors, sequential_success_errors
+    require(verifier in ('t4', 'sequential'), 'invalid requested verifier')
     rows = terminal_paths(log)
     expected = {label for label, kind, _ in recovery_plan()
                 if kind != 'prefill_cancel'}
     require(set(rows) == expected, 'expected exactly eight decode paths')
     for label, row in rows.items():
         require(row.get('requested_mtp') == '1' and
-                row.get('path') == 'mtp_multi_b1' and
+                row.get('path') == ('mtp_sequential_b1' if verifier == 'sequential'
+                                    else 'mtp_multi_b1') and
                 re.fullmatch(r'[1-9][0-9]*', row.get('mtp_steps', '')) and
-                row.get('fallback') == 'none' and
-                row.get('plain_tail_tokens') == '0',
+                row.get('fallback') == 'none',
                 'not the frozen MTP path: ' + label)
+        if verifier == 'sequential':
+            require(not sequential_fields_errors(row),
+                    'invalid sequential accounting: ' + label)
+        else:
+            require(row.get('plain_tail_tokens') == '0' and
+                    row.get('verifier', 't4') == 't4',
+                    'not the frozen T4 path: ' + label)
     steps = rows[CONTROL]['mtp_steps']
     require(all(rows[label]['mtp_steps'] == steps for label in RECOVERIES),
             'recovery MTP steps differ from fresh control')
+    if verifier == 'sequential':
+        for label in (CONTROL, *RECOVERIES):
+            require(not sequential_success_errors(rows[label], 256, ['length']),
+                    'completed output differs from target/tail accounting: ' + label)
+            require(rows[label]['tail_reason'] == 'output_limit',
+                    '1K/256 control or recovery has a non-output tail: ' + label)
+        for key in ('plain_tail_tokens', 'tail_reason', 'draft_forward_calls',
+                    'target_t1_calls', 'target_t4_calls', 'extend_forward_calls'):
+            require(all(rows[label][key] == rows[CONTROL][key]
+                        for label in RECOVERIES),
+                    'recovery differs from fresh control: ' + key)
     for label, reason in INTERRUPTS.items():
         found = re.findall(r'^\[q4t\] request cancelled id=' + re.escape(label) +
                            r' reason=([^\s]+)$', log, re.MULTILINE)
         require(found == [reason], 'missing or wrong cancellation reason: ' + label)
     position = require_prefill_cancel(log)
     return {'terminal_paths': rows, 'prefill_cancel_position': position,
+            'verifier': verifier,
             'control_mtp_steps': int(steps)}

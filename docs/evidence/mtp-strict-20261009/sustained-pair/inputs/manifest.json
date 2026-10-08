@@ -1,0 +1,58 @@
+[
+  {
+    "id": "zh-reasoning",
+    "language": "zh",
+    "category": "reasoning",
+    "length": 1024,
+    "prompt_sha256": "ff72e340a4f74589335696e236e56d5ecec0742413537e59a9bf12fdd791a90d"
+  },
+  {
+    "id": "en-code",
+    "language": "en",
+    "category": "code",
+    "length": 1024,
+    "prompt_sha256": "78648b4374b53ffbbcd769224dc204eb67a59f8315b8213ce38de062cd89087a"
+  },
+  {
+    "id": "en-reasoning",
+    "language": "en",
+    "category": "reasoning",
+    "length": 4096,
+    "prompt_sha256": "8bfaa682009f730593b1c4da670fedaea799c7afb755dd4aed7d30a267af4f4f"
+  },
+  {
+    "id": "zh-code",
+    "language": "zh",
+    "category": "code",
+    "length": 4096,
+    "prompt_sha256": "c6e9cf616a564c38e5911c3037795463f972d7a41506a939b41726068feb2fb9"
+  },
+  {
+    "id": "zh-summary",
+    "language": "zh",
+    "category": "summary",
+    "length": 8196,
+    "prompt_sha256": "d9a2bc519332525d5c6f1e9d96b638faa76078a9c584c11e185ebefb47a20360"
+  },
+  {
+    "id": "en-summary",
+    "language": "en",
+    "category": "summary",
+    "length": 8196,
+    "prompt_sha256": "502fd3fdddddf5d81af9aaca9ee4c329c11148279ebd4e6bd9fe66b785fa134b"
+  },
+  {
+    "id": "zh-excerpt",
+    "language": "zh",
+    "category": "excerpt",
+    "length": 45056,
+    "prompt_sha256": "61cef6448294a261eebf40c03a2a42e6a7fee9c51c0308484c74b3b73eb68a43"
+  },
+  {
+    "id": "en-excerpt",
+    "language": "en",
+    "category": "excerpt",
+    "length": 204800,
+    "prompt_sha256": "c99b9599b6af754c9d7de2762b925b6f8476953aa1eae98f825755083a587095"
+  }
+]

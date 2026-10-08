@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "id": "mtp-sustained-v1",
+  "frozen_before_outputs": true,
+  "max_tokens": 512,
+  "minimum_completion_tokens": 128,
+  "budget": {"generation_requests": 16, "output_tokens": 8192, "wall_seconds": 1800, "evidence_bytes": 67108864},
+  "scoring_policy": "Numerical pairing, sustained completion coverage, and semantic rubric results are separate. Never replace a question or retry to repair early EOS. Code is AST checked only; functionality requires manual review. Summary anchor checks do not prove unsupported-claim absence.",
+  "cases": [
+    {
+      "id": "zh-reasoning", "language": "zh", "category": "reasoning", "length": 1024,
+      "blocks": [{"depth": 0.5, "text": "唯一正式工程账本（日期均为十月）：\nA01 项目=松 状态=已批准 日期=03 金额=120\nA02 项目=松 状态=草稿 日期=04 金额=90\nA03 项目=杉 状态=已批准 日期=05 金额=140\nA04 项目=松 状态=已批准 日期=11 金额=210\nA05 项目=松 状态=已撤销 日期=06 金额=80\nA06 项目=松 状态=已批准 日期=07 金额=160\nA07 项目=松 状态=已批准 日期=01 金额=70\nA08 项目=杉 状态=草稿 日期=08 金额=130\nA09 项目=松 状态=已批准 日期=10 金额=190\nA10 项目=松 状态=已批准 日期=09 金额=150\nA11 项目=松 状态=已撤销 日期=02 金额=60\nA12 项目=松 状态=已批准 日期=05 金额=110"}],
+      "question": "仅依据正式账本，选项目松、已批准且日期在03至10之间（含边界）的记录。逐行解释全部12条，每行格式为‘记录编号 纳入或排除 金额=原金额；原因：完整说明’，指出实际不满足的条件，不要省略金额。按A01至A12排序，每条给出完整原因。最后单独写‘合计：条数=你核算的条数，金额=你核算的总额’。输出只有12条分析和结论，不复述题目。",
+      "rubric": {"kind": "ledger", "project": "松", "status": "已批准", "first_day": 3, "last_day": 10, "manual": ["Each explanation names the actual failed predicate; automatic scoring checks classifications, amounts and totals only."]}
+    },
+    {
+      "id": "en-code", "language": "en", "category": "code", "length": 1024,
+      "blocks": [{"depth": 0.5, "text": "Specification: select_latest(rows) takes a list of tuples (key, revision, status, value). Keys and status are strings; revision and value are integers. Only status == 'approved' is eligible. For each key choose the eligible row with greatest revision; tied revision uses the smaller value. Return a list of (key, value) sorted by key. A key without an approved row is omitted. Do not mutate rows. Empty input returns []. Status comparisons are case sensitive. No imports are needed."}],
+      "question": "Write a readable, complete Python implementation of select_latest(rows). Then supply at least six top-level assert examples covering empty input, one key, newer unapproved rows, revision ties, multiple keys in sorted order, and case-sensitive status. Include one or two concise explanatory comments for the selection rules and label each test with a comment. Use explicit loops and comparisons; avoid imports, attributes, decorators, classes, comprehensions and I/O. Allowed calls are select_latest, sorted, len, min and max. Output one Python code block only, with the function and all six tests; do not use ellipses or replace examples with prose.",
+      "rubric": {"kind": "code_ast", "function": "select_latest", "arguments": ["rows"], "minimum_asserts": 6, "allowed_calls": ["select_latest", "sorted", "len", "min", "max"], "manual": ["Functionality against all selection, tie, sorting and nonmutation requirements must be reviewed manually; no generated code is executed."]}
+    },
+    {
+      "id": "en-reasoning", "language": "en", "category": "reasoning", "length": 4096,
+      "blocks": [
+        {"depth": 0.15, "text": "AUTHORITATIVE SERVICES\nservice=amber owner=team1\nservice=birch owner=team2\nservice=cedar owner=team3\nservice=dune owner=team4\nservice=elm owner=team1\nservice=fern owner=team3\nservice=gale owner=team2\nservice=heath owner=team4"},
+        {"depth": 0.5, "text": "AUTHORITATIVE OWNERS\nowner=team1 zone=north\nowner=team2 zone=south\nowner=team3 zone=east\nowner=team4 zone=west"},
+        {"depth": 0.85, "text": "AUTHORITATIVE ZONE REVISIONS\nzone=north revision=2 status=approved code=N22\nzone=north revision=6 status=approved code=N66\nzone=north revision=9 status=proposed code=N99\nzone=south revision=3 status=approved code=S33\nzone=south revision=7 status=revoked code=S77\nzone=east revision=1 status=approved code=E11\nzone=east revision=4 status=approved code=E44\nzone=east revision=8 status=proposed code=E88\nzone=west revision=5 status=approved code=W55\nzone=west revision=10 status=revoked code=W10"}
+      ],
+      "question": "For each of the eight services in alphabetical order, follow service to owner to zone, then choose the highest approved revision for that zone. Write exactly eight lines. Use this prefix format (example for amber): 'amber | team1 | north | 6 | N66 |'. Replace every field with the correct value for that line's service. After the final separator, explain in a full English sentence why that approved revision wins and explicitly name the excluded newer proposed or revoked revision. Do not use a table header, omit services, abbreviate the explanations to fragments, or treat a proposed/revoked row as approved. Use only the authoritative records.",
+      "rubric": {"kind": "join", "manual": ["Automatic scoring checks all joined prefix fields and the excluded newer revision; review the explanatory prose for unsupported claims."]}
+    },
+    {
+      "id": "zh-code", "language": "zh", "category": "code", "length": 4096,
+      "blocks": [{"depth": 0.5, "text": "函数合同：approved_totals(rows, cutoff) 接收记录列表，每条为 (project, revision, status, amount)。project/status 为字符串，revision/amount/cutoff 为整数；amount 非负。只考虑 status == 'approved' 且 revision <= cutoff。按项目取最大合格 revision；同一 revision 重复时取最小 amount。返回按项目字典序排列的 (project, amount) 列表；无合格记录的项目省略，空输入返回 []，不得修改输入。例：[(\"p\",1,\"approved\",8),(\"p\",3,\"draft\",99),(\"p\",2,\"approved\",7)]，cutoff=2 时应返回 [(\"p\",7)]。"}],
+      "question": "给出完整可读的 Python 函数 approved_totals(rows, cutoff)，以及至少六个顶层 assert 示例，分别覆盖空输入、截止日期之前无记录、较新草稿、修订号相同取小金额、多项目排序和给定例子。用中文注释解释筛选顺序、同版本规则与每个测试目的。使用显式循环/比较，不用导入、属性访问、装饰器、类、推导式或输入输出；只允许调用 approved_totals、sorted、len、min、max。只输出一个 Python 代码块，包含函数和全部六个实际测试，不能用省略号。",
+      "rubric": {"kind": "code_ast", "function": "approved_totals", "arguments": ["rows", "cutoff"], "minimum_asserts": 6, "allowed_calls": ["approved_totals", "sorted", "len", "min", "max"], "manual": ["Functionality against cutoff, approval, tie, sorting and nonmutation rules must be reviewed manually; generated code is not executed."]}
+    },
+    {
+      "id": "zh-summary", "language": "zh", "category": "summary", "length": 8196,
+      "blocks": [
+        {"depth": 0.1, "text": "正式事件记录甲：模拟文档服务代号纸鹤。09:10 发布索引配置 R17；09:14 监控首先发现检索延迟上升。影响窗口为09:14至09:32，共18分钟。该窗口共有240次检索，其中36次超时；写入服务始终可用。"},
+        {"depth": 0.5, "text": "正式事件记录乙：值班员林澄在09:20开始回滚，并于09:25完成回滚到R16；缓存预热后09:32指标恢复。抽查120份文档未发现内容丢失，但本次抽查不能证明全量文档零丢失。根因尚未确认，索引配置与延迟的关联仍是待验证假设。"},
+        {"depth": 0.9, "text": "正式事件记录丙：10月12日由陈桥补充配置校验测试，10月13日由许禾验证告警阈值。后续禁止在根因结论中把相关性写成因果性；需要另做受控复现。没有决定永久停用该服务，也没有宣布全量数据已完成核验。"}
+      ],
+      "question": "仅根据三个正式事件记录写中文交接报告，使用六个编号段落，依次为时间线、影响范围、恢复过程、证据边界、待办与负责人、尚未解决的问题。每段用至少两句完整短句，整篇约260至340个汉字。保留所有关键时间、计数、版本、姓名和日期；明确根因未确认以及抽样不代表全量。不要引入材料没有的责任判断、措施或成功结论，不要只输出提纲。",
+      "rubric": {"kind": "anchors", "required": ["09:10", "R17", "09:14", "09:32", "18", "240", "36", "写入", "林澄", "09:20", "09:25", "R16", "120", "陈桥", "10月12日", "许禾", "10月13日"], "alternatives": [["根因尚未确认", "根因未确认", "根因仍未确认"], ["不代表全量", "不能证明全量", "并非全量"]], "minimum_numbered_sections": 6, "manual": ["Confirm all six requested topics, evidence limits, and absence of unsupported claims; automatic anchor presence alone is not full semantic acceptance."]}
+    },
+    {
+      "id": "en-summary", "language": "en", "category": "summary", "length": 8196,
+      "blocks": [
+        {"depth": 0.1, "text": "OFFICIAL NOTE A: The simulated archive service is named Lantern. Configuration C24 was released at 14:02. Read latency rose at 14:07 and returned to normal at 14:26, an affected interval of 19 minutes. Of 350 reads, 42 timed out. The write endpoint remained available."},
+        {"depth": 0.5, "text": "OFFICIAL NOTE B: Mira began rollback at 14:12 and completed rollback to C23 at 14:18. Cache warming preceded recovery at 14:26. An inspection of 150 documents found no lost content. This sample does not establish absence of loss across the full archive. The cause remains unconfirmed; the relationship with C24 is an observation, not a causal finding."},
+        {"depth": 0.9, "text": "OFFICIAL NOTE C: Owen will add configuration validation tests by October 14. Sana will check alert thresholds by October 15. A controlled reproduction is still needed. The team has neither decided to permanently disable Lantern nor completed a full-archive audit."}
+      ],
+      "question": "Using only the three official notes, write an English handover report with exactly six numbered paragraphs: timeline, user impact, recovery, evidence limits, actions and owners, unresolved questions. Write 200 to 260 words in full sentences, not an outline. Preserve the significant times, counts, configuration versions, owners and dates. Explicitly distinguish sampled evidence from an archive-wide claim and observation from an established cause. Do not invent repairs, blame, or a final root cause.",
+      "rubric": {"kind": "anchors", "required": ["Lantern", "C24", "14:02", "14:07", "14:26", "19", "350", "42", "write", "Mira", "14:12", "14:18", "C23", "150", "Owen", "October 14", "Sana", "October 15"], "alternatives": [["unconfirmed", "not confirmed", "not established"], ["sample", "sampled"], ["controlled reproduction", "controlled test"]], "minimum_numbered_sections": 6, "manual": ["Confirm six topics, sampling/causality limits, and absence of unsupported claims; anchor presence is only a bounded automatic rubric."]}
+    },
+    {
+      "id": "zh-excerpt", "language": "zh", "category": "excerpt", "length": 45056,
+      "blocks": [
+        {"depth": 0.1, "text": "[正式摘录甲]\n清晨的保管员先打开东侧窗户，再把昨日归还的地图平放在长桌上。他逐一核对封套编号，将边角卷起的三张地图移到修复架，随后在蓝色登记册中写明位置与日期。尚未核对的材料仍留在原箱，不能提前标记为完成。\n[/正式摘录甲]"},
+        {"depth": 0.5, "text": "[正式摘录乙]\n午后的整理工作从第二排书架开始。两名志愿者按照书脊上的编号逐册检查，并把缺少封面的册子单独登记。负责人要求先记录观察到的事实，再讨论修补方案；无法确认的年份保留问号，不凭相邻册子的年代补写。\n[/正式摘录乙]"},
+        {"depth": 0.9, "text": "[正式摘录丙]\n闭馆前，值班员检查门窗与工作灯，确认登记册已经放回抽屉。他将待处理材料的清单交给下一班同事，清楚注明已核对与未核对的部分。最后一次巡查只覆盖开放阅览区，因此记录中没有声称全部库房都已检查。\n[/正式摘录丙]"}
+      ],
+      "question": "找到正式摘录甲、乙、丙，按甲乙丙顺序逐字抄写三个完整正文段落。去掉方括号标签，每段之间仅留一个空行。不要改字、删句、添加标题、解释、引号或代码块；最后一段之后不要加额外内容。",
+      "rubric": {"kind": "excerpt_exact", "manual": []}
+    },
+    {
+      "id": "en-excerpt", "language": "en", "category": "excerpt", "length": 204800,
+      "blocks": [
+        {"depth": 0.1, "text": "[OFFICIAL EXCERPT A]\nAt opening time, the keeper placed the returned maps on the long table beside the east window. She checked each folder number against the blue register and moved three curled sheets to the repair shelf. Materials that had not yet been checked remained in their original box. The register described only the work actually completed that morning, with a separate note for every unresolved label.\n[/OFFICIAL EXCERPT A]"},
+        {"depth": 0.5, "text": "[OFFICIAL EXCERPT B]\nThe afternoon team began with the second row of shelves. Two volunteers compared the numbers on the book spines and recorded missing covers on a separate sheet. Their supervisor asked them to write down observations before proposing repairs. If a publication year could not be established from the volume itself, they kept a question mark rather than copying a date from the neighboring book.\n[/OFFICIAL EXCERPT B]"},
+        {"depth": 0.9, "text": "[OFFICIAL EXCERPT C]\nBefore closing, the attendant checked the windows and work lamps, then returned the register to its drawer. He handed the next shift a list distinguishing verified materials from items still awaiting inspection. The final walk covered the public reading room only. Accordingly, his note did not claim that every storage room had been inspected, and it preserved the remaining checks for the following morning.\n[/OFFICIAL EXCERPT C]"}
+      ],
+      "question": "Locate official excerpts A, B, and C and copy their complete paragraph bodies verbatim in A/B/C order. Remove the bracketed labels. Separate paragraphs with exactly one blank line. Add no title, quotation marks, explanation or code fence; do not omit sentences or change punctuation. End immediately after the final paragraph.",
+      "rubric": {"kind": "excerpt_exact", "manual": []}
+    }
+  ]
+}

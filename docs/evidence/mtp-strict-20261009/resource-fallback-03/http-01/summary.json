@@ -1,0 +1,26 @@
+{
+  "records": [
+    {
+      "request_id": "resource-control",
+      "kind": "strict",
+      "passed": true
+    },
+    {
+      "request_id": "resource-reserve",
+      "kind": "logical_reserve_failure",
+      "passed": true
+    },
+    {
+      "request_id": "resource-recovery",
+      "kind": "strict",
+      "passed": true
+    }
+  ],
+  "failure": null,
+  "server_exit": 0,
+  "server_pid": 41115,
+  "variant": "link-wrapped isolated test server",
+  "production_binary_http": false,
+  "physical_oom_test": false,
+  "passed": true
+}

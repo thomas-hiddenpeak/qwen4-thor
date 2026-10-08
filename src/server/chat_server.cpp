@@ -85,6 +85,18 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // Validate before loading the tokenizer or allocating model resources.
   const Status validated = ValidateServerOptions(opts);
   if (!validated.ok()) return validated;
+  mtp_verifier_ = opts.mtp_verifier.value_or(MtpVerifier::kT4);
+  const bool sequential_mtp =
+      !opts.no_mtp && mtp_verifier_ == MtpVerifier::kSequential;
+  if (sequential_mtp) {
+    for (const char* name : {"Q4T_MTP_CYCLE_TIMING",
+                             "Q4T_MTP_VERIFY_MOE_TIMING"}) {
+      const char* value = std::getenv(name);
+      if (value && std::strcmp(value, "1") == 0)
+        return Status::Fail(std::string("sequential MTP does not support ") +
+                            name);
+    }
+  }
   const char* verify_moe_env = std::getenv("Q4T_MTP_VERIFY_MOE_TIMING");
   if (quant::MoEBatchGatherEnabled() && verify_moe_env &&
       std::strcmp(verify_moe_env, "1") == 0) {
@@ -94,9 +106,11 @@ Status ChatServer::Start(const ServerOptions& opts) {
   const ServerCapabilities capabilities = CapabilitiesFor(opts);
   mtp_requested_ = capabilities.mtp;
   std::fprintf(stderr,
-               "[q4t][capabilities] requested=%s mtp=%d media=%d max_seq=%d\n",
+               "[q4t][capabilities] requested=%s mtp=%d media=%d max_seq=%d "
+               "verifier=%s\n",
                capabilities.Experimental() ? "experimental" : "text-greedy",
-               capabilities.mtp, capabilities.media, opts.max_seq);
+               capabilities.mtp, capabilities.media, opts.max_seq,
+               capabilities.mtp ? MtpVerifierName(mtp_verifier_) : "none");
   host_ = opts.host;
   allow_media_ = opts.allow_media;
   PhaseTimer total("startup_total");
@@ -356,8 +370,9 @@ Status ChatServer::Start(const ServerOptions& opts) {
   }
   std::fprintf(stderr,
                "[q4t][capabilities] effective mtp=%d media_allowed=%d "
-               "vision_loaded=%d max_seq=%d\n",
-               mtp_loaded_, allow_media_, vision_tower_ != nullptr, max_seq_);
+               "vision_loaded=%d max_seq=%d verifier=%s\n",
+               mtp_loaded_, allow_media_, vision_tower_ != nullptr, max_seq_,
+               mtp_loaded_ ? MtpVerifierName(mtp_verifier_) : "none");
 
   port_ = opts.port;
   max_tokens_default_ = opts.max_tokens;
@@ -413,6 +428,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
                          "(max_seq=%d)\n",
                  max_seq_);
   }
+  if (sequential_mtp && !scheduler_active_)
+    return Status::Fail("sequential MTP requires the ordinary B1 scheduler");
   // Every serve prefill consumes one row per sequence. The shared buffer
   // holds at most max_seq rows, and all accesses are under model_mu_.
   if (cudaMalloc(reinterpret_cast<void**>(&d_prefill_logits_),

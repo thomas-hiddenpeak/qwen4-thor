@@ -1,0 +1,9 @@
+{
+  "prompt_sha256": "4412836850f04b7985fc0d6b41d0f4ca0b297e4819dc6188d48f1e76abc9ee95",
+  "fixture_sha256": "0036e896648688e4b07ea135761037c61878ad5db6dfb955fba913d404e02157",
+  "original_results_sha256": "a9c8e162d7fc1e298609384dd3563ea3a7dbcb170ca3e3387dae6368185ce66e",
+  "original_exit_sha256": "dba53c229cc2aac8790f350c8783745ea269d0ad3d0ab3bd22ea1aadfb4424e7",
+  "original_failure_preserved": true,
+  "selected_ordinal": 14,
+  "new_prompt_search_or_replacement": false
+}

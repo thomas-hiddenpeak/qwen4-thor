@@ -1,0 +1,296 @@
+{
+  "groups": [
+    {
+      "ordinal": 1,
+      "response_id": "failure-control",
+      "binding": "five serial HTTP responses and path order",
+      "events": [
+        {
+          "ordinal": "1",
+          "real_ok": "1",
+          "slot": "0",
+          "stage": "prefill",
+          "position": "0",
+          "history": "0",
+          "pending": "0"
+        },
+        {
+          "ordinal": "1",
+          "real_ok": "1",
+          "slot": "0",
+          "completion": "stream_ordered"
+        },
+        {
+          "ordinal": "1",
+          "real_ok": "1",
+          "injected": "0",
+          "drained": "0",
+          "stage": "idle",
+          "position": "0",
+          "history": "0",
+          "pending": "0",
+          "target_calls": "255",
+          "draft_calls": "142",
+          "extend_calls": "71",
+          "tail_calls": "0"
+        }
+      ]
+    },
+    {
+      "ordinal": 2,
+      "response_id": "failure-target2",
+      "binding": "five serial HTTP responses and path order",
+      "events": [
+        {
+          "ordinal": "2",
+          "real_ok": "1",
+          "slot": "0",
+          "stage": "prefill",
+          "position": "0",
+          "history": "0",
+          "pending": "0"
+        },
+        {
+          "ordinal": "2",
+          "real_ok": "1",
+          "slot": "0",
+          "completion": "stream_ordered"
+        },
+        {
+          "ordinal": "2",
+          "kind": "target_call_2_in_request",
+          "real_ok": "1",
+          "target_calls": "2",
+          "draft_calls": "4",
+          "extend_calls": "1",
+          "position": "1025",
+          "history": "1025",
+          "pending": "0"
+        },
+        {
+          "ordinal": "2",
+          "real_ok": "1",
+          "stream_match": "1",
+          "thread_match": "1"
+        },
+        {
+          "ordinal": "2",
+          "real_ok": "1",
+          "injected": "1",
+          "drained": "1",
+          "stage": "idle",
+          "position": "0",
+          "history": "0",
+          "pending": "0",
+          "target_calls": "2",
+          "draft_calls": "4",
+          "extend_calls": "1",
+          "tail_calls": "0"
+        }
+      ]
+    },
+    {
+      "ordinal": 3,
+      "response_id": "failure-target2-recovery",
+      "binding": "five serial HTTP responses and path order",
+      "events": [
+        {
+          "ordinal": "3",
+          "real_ok": "1",
+          "slot": "0",
+          "stage": "prefill",
+          "position": "0",
+          "history": "0",
+          "pending": "0"
+        },
+        {
+          "ordinal": "3",
+          "real_ok": "1",
+          "slot": "0",
+          "completion": "stream_ordered"
+        },
+        {
+          "ordinal": "3",
+          "real_ok": "1",
+          "injected": "0",
+          "drained": "0",
+          "stage": "idle",
+          "position": "0",
+          "history": "0",
+          "pending": "0",
+          "target_calls": "255",
+          "draft_calls": "142",
+          "extend_calls": "71",
+          "tail_calls": "0"
+        }
+      ]
+    },
+    {
+      "ordinal": 4,
+      "response_id": "failure-extend",
+      "binding": "five serial HTTP responses and path order",
+      "events": [
+        {
+          "ordinal": "4",
+          "real_ok": "1",
+          "slot": "0",
+          "stage": "prefill",
+          "position": "0",
+          "history": "0",
+          "pending": "0"
+        },
+        {
+          "ordinal": "4",
+          "real_ok": "1",
+          "slot": "0",
+          "completion": "stream_ordered"
+        },
+        {
+          "ordinal": "4",
+          "kind": "first_extend",
+          "real_ok": "1",
+          "target_calls": "1",
+          "draft_calls": "2",
+          "extend_calls": "1",
+          "position": "1024",
+          "history": "1024",
+          "pending": "0"
+        },
+        {
+          "ordinal": "4",
+          "real_ok": "1",
+          "stream_match": "1",
+          "thread_match": "1"
+        },
+        {
+          "ordinal": "4",
+          "real_ok": "1",
+          "injected": "1",
+          "drained": "1",
+          "stage": "idle",
+          "position": "0",
+          "history": "0",
+          "pending": "0",
+          "target_calls": "1",
+          "draft_calls": "2",
+          "extend_calls": "1",
+          "tail_calls": "0"
+        }
+      ]
+    },
+    {
+      "ordinal": 5,
+      "response_id": "failure-extend-recovery",
+      "binding": "five serial HTTP responses and path order",
+      "events": [
+        {
+          "ordinal": "5",
+          "real_ok": "1",
+          "slot": "0",
+          "stage": "prefill",
+          "position": "0",
+          "history": "0",
+          "pending": "0"
+        },
+        {
+          "ordinal": "5",
+          "real_ok": "1",
+          "slot": "0",
+          "completion": "stream_ordered"
+        },
+        {
+          "ordinal": "5",
+          "real_ok": "1",
+          "injected": "0",
+          "drained": "0",
+          "stage": "idle",
+          "position": "0",
+          "history": "0",
+          "pending": "0",
+          "target_calls": "255",
+          "draft_calls": "142",
+          "extend_calls": "71",
+          "tail_calls": "0"
+        }
+      ]
+    }
+  ],
+  "terminal_paths": {
+    "failure-control": {
+      "id": "failure-control",
+      "requested_mtp": "1",
+      "path": "mtp_sequential_b1",
+      "mtp_steps": "71",
+      "fallback": "none",
+      "plain_tail_tokens": "1",
+      "verifier": "sequential",
+      "tail_reason": "output_limit",
+      "draft_forward_calls": "142",
+      "target_t1_calls": "255",
+      "target_t4_calls": "0",
+      "extend_forward_calls": "71",
+      "forward_count_scope": "sequential_attempts"
+    },
+    "failure-target2": {
+      "id": "failure-target2",
+      "requested_mtp": "1",
+      "path": "mtp_sequential_b1",
+      "mtp_steps": "1",
+      "fallback": "none",
+      "plain_tail_tokens": "0",
+      "verifier": "sequential",
+      "tail_reason": "none",
+      "draft_forward_calls": "4",
+      "target_t1_calls": "2",
+      "target_t4_calls": "0",
+      "extend_forward_calls": "1",
+      "forward_count_scope": "sequential_attempts"
+    },
+    "failure-target2-recovery": {
+      "id": "failure-target2-recovery",
+      "requested_mtp": "1",
+      "path": "mtp_sequential_b1",
+      "mtp_steps": "71",
+      "fallback": "none",
+      "plain_tail_tokens": "1",
+      "verifier": "sequential",
+      "tail_reason": "output_limit",
+      "draft_forward_calls": "142",
+      "target_t1_calls": "255",
+      "target_t4_calls": "0",
+      "extend_forward_calls": "71",
+      "forward_count_scope": "sequential_attempts"
+    },
+    "failure-extend": {
+      "id": "failure-extend",
+      "requested_mtp": "1",
+      "path": "plain",
+      "mtp_steps": "0",
+      "fallback": "none",
+      "plain_tail_tokens": "0",
+      "verifier": "sequential",
+      "tail_reason": "none",
+      "draft_forward_calls": "2",
+      "target_t1_calls": "1",
+      "target_t4_calls": "0",
+      "extend_forward_calls": "1",
+      "forward_count_scope": "sequential_attempts"
+    },
+    "failure-extend-recovery": {
+      "id": "failure-extend-recovery",
+      "requested_mtp": "1",
+      "path": "mtp_sequential_b1",
+      "mtp_steps": "71",
+      "fallback": "none",
+      "plain_tail_tokens": "1",
+      "verifier": "sequential",
+      "tail_reason": "output_limit",
+      "draft_forward_calls": "142",
+      "target_t1_calls": "255",
+      "target_t4_calls": "0",
+      "extend_forward_calls": "71",
+      "forward_count_scope": "sequential_attempts"
+    }
+  },
+  "scope": "logical forward Status failure; not CUDA fatal/OOM"
+}

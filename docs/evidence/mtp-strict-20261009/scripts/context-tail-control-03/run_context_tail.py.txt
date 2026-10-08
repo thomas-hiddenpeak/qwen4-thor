@@ -1,0 +1,213 @@
+"""Exactly two isolated forced-selection HTTP requests, plain then sequential.
+
+Reuses existing bounded HTTP/health/metrics transport, never its generation plan.
+The original last-limit natural EOS failure remains a separate failed result.
+"""
+import argparse
+import hashlib
+import json
+import os
+import resource
+from pathlib import Path
+import secrets
+import shutil
+import subprocess
+import sys
+import time
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[2]
+TOOLS = ROOT / 'tools/evalscope'
+sys.path.insert(0, str(TOOLS))
+sys.path.insert(0, str(HERE))
+from acceptance_mode import startup_evidence
+import context_tail_contract as contract
+from request_cancellation_contract import require
+from run_mtp_failure_recovery import request, read_log, snapshot
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def save(path, value):
+    with path.open('x') as file:
+        json.dump(value, file, ensure_ascii=False, indent=2)
+        file.write('\n')
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--port', type=int, required=True)
+    args = parser.parse_args()
+    if not 1 <= args.port <= 65535:
+        parser.error('invalid port')
+    resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+    protocol_path = HERE / 'protocol-01.json'
+    protocol = json.loads(protocol_path.read_text())
+    for path, expected in protocol['frozen_files'].items():
+        require(sha(Path(path)) == expected, 'frozen file changed: ' + path)
+    build = json.loads((HERE / 'build-result-01.json').read_text())
+    binary = HERE / 'q4t_context_tail'
+    require(build['passed'] and build['protocol_sha256'] == sha(protocol_path) and
+            sha(binary) == build['binary_sha256'], 'unbound or failed variant build')
+    prior = Path(protocol['original_run'])
+    rows = json.loads((prior / 'results.json').read_text())
+    last = rows[-1]
+    require(len(rows) == 14 and last['id'] == 'context-208892-nonstream-8' and
+            last['actual_input'] == 208892 and last['actual_output'] == 1 and
+            last['finish'] == ['stop'] and last['streaming'] is False and
+            last['max_tokens'] == 8, 'original fixed EOS failure changed')
+    fixture_path = prior / 'context-208892-nonstream-8/requests.jsonl'
+    fixtures = [json.loads(line) for line in fixture_path.read_text().splitlines()]
+    require(len(fixtures) == 1, 'fixed request must have exactly one fixture')
+    prompt = fixtures[0]['prompt']
+    require(hashlib.sha256(prompt.encode()).hexdigest() == last['prompt_sha256'] ==
+            protocol['prompt_sha256'], 'fixed prompt identity changed')
+    command = json.loads((prior / 'server-command.json').read_text())['argv']
+    require(command[1] == 'serve' and command.count('--no-mtp') == 1 and
+            '--mtp' not in command and '--mtp-verifier' not in command,
+            'ambiguous original ordinary server command')
+    for flag, value in (('--max-seq', '1'), ('--max-prefill', '8192'),
+                        ('--max-len', '208896')):
+        require(command.count(flag) == 1 and
+                command[command.index(flag) + 1] == value, 'wrong base capacity')
+    command[0] = str(binary)
+    command[command.index('--port') + 1] = str(args.port)
+    environment = {key: value for key, value in os.environ.items()
+                   if not key.startswith('Q4T_') and key != 'LD_PRELOAD'}
+    removed = {key: value for key, value in os.environ.items()
+               if key.startswith('Q4T_') or key == 'LD_PRELOAD'}
+    environment['PYTHONDONTWRITEBYTECODE'] = '1'
+    out = HERE / 'http-01'
+    out.mkdir(exist_ok=False)
+    for name in ('protocol-01.json', 'build-result-01.json',
+                 'context_tail_server.cpp', 'context_tail_contract.py',
+                 'test_context_tail_contract.py', 'run_context_tail.py'):
+        shutil.copy2(HERE / name, out / name)
+    for name in ('run_mtp_failure_recovery.py', 'mtp_failure_recovery_contract.py',
+                 'request_cancellation_contract.py', 'response_identity.py',
+                 'acceptance_mode.py'):
+        shutil.copy2(TOOLS / name, out / name)
+    save(out / 'input-binding.json', {
+        'prompt_sha256': last['prompt_sha256'], 'fixture_sha256': sha(fixture_path),
+        'original_results_sha256': sha(prior / 'results.json'),
+        'original_exit_sha256': sha(prior / 'exit.json'),
+        'original_failure_preserved': True, 'selected_ordinal': 14,
+        'new_prompt_search_or_replacement': False})
+    save(HERE / 'execution-claim-01.json', {
+        'generation_requests': 2, 'plan': contract.PLAN,
+        'protocol_sha256': sha(protocol_path), 'binary_sha256': sha(binary),
+        'claimed_unix': time.time(), 'retries_authorized': False})
+    began = time.monotonic()
+    deadline = began + 1800
+    records, failure = [], None
+
+    def budget(reserve=0):
+        remaining = deadline - time.monotonic()
+        require(remaining > reserve, 'shared control wall budget exhausted')
+        size = sum(path.stat().st_size for path in out.rglob('*') if path.is_file())
+        require(size <= 32 * 1024 * 1024, 'control evidence budget exceeded')
+        return remaining
+
+    try:
+        for mode, label in contract.PLAN:
+            d = out / mode
+            d.mkdir()
+            cmd = list(command)
+            if mode == 'sequential':
+                cmd[cmd.index('--no-mtp')] = '--mtp'
+                cmd += ['--mtp-verifier', 'sequential']
+            save(d / 'server-command.json', {'argv': cmd,
+                                            'removed_environment': removed})
+            server, local_failure, evidence, capture, result = None, None, None, None, None
+            before = after = None
+            log_path = d / 'server.log'
+            try:
+                budget()
+                with log_path.open('x') as log:
+                    server = subprocess.Popen(cmd, cwd=d, env=environment,
+                                              stdout=log, stderr=subprocess.STDOUT)
+                    save(d / 'server-process.json', {'pid': server.pid})
+                    startup_deadline = min(deadline, time.monotonic() + 600)
+                    while True:
+                        budget()
+                        require(server.poll() is None, 'server exited at startup')
+                        trace = read_log(log_path)
+                        if 'serving on port' in trace:
+                            break
+                        require(time.monotonic() < startup_deadline, 'startup timeout')
+                        time.sleep(.25)
+                    contract.require_variant(trace)
+                    startup = startup_evidence(trace, mode == 'sequential',
+                                               'sequential' if mode == 'sequential' else 't4')
+                    save(d / 'startup-mode.json', startup)
+                    require(startup['passed'], 'wrong actual startup/capacity')
+                    budget(120)
+                    before = snapshot(args.port, d, 'before')
+                    body = {'model': 'qwen3.8-flash-next', 'prompt': prompt,
+                            'max_tokens': 8, 'temperature': 0, 'seed': 20260920,
+                            'stream': False, 'request_id': label,
+                            'cancel_token': secrets.token_hex(32)}
+                    response = request(args.port, d, label, '/v1/chat/completions',
+                                       body, timeout=min(600, budget()))
+                    result = contract.completed_result(response, label)
+                    save(d / 'result.json', result)
+                    budget(120)
+                    after = snapshot(args.port, d, 'after')
+                    contract.counter_delta(before, after)
+            except BaseException as error:
+                local_failure = repr(error)
+            finally:
+                if server is not None and server.poll() is None:
+                    server.terminate()
+                    try:
+                        server.wait(timeout=60)
+                    except subprocess.TimeoutExpired:
+                        server.kill()
+                        server.wait(timeout=10)
+                        local_failure = local_failure or 'server forced termination'
+                if server is not None and server.returncode != 0:
+                    local_failure = local_failure or f'server exit {server.returncode}'
+                if local_failure is None:
+                    try:
+                        evidence = contract.validate_log(read_log(log_path), mode)
+                        capture = contract.validate_capture(
+                            (d / 'original-prefill-logits.bf16').read_bytes(),
+                            evidence['override'])
+                        save(d / 'control-evidence.json', evidence)
+                        save(d / 'capture-identity.json', capture)
+                        budget()
+                    except Exception as error:
+                        local_failure = repr(error)
+                save(d / 'exit.json', {
+                    'failure': local_failure, 'server_exit':
+                    None if server is None else server.returncode,
+                    'generation_requests_authorized': 1,
+                    'completed_control_request': result is not None,
+                    'before_counters': before, 'after_counters': after,
+                    'passed': local_failure is None and evidence is not None and
+                    capture is not None})
+            if local_failure is not None:
+                raise RuntimeError(mode + ': ' + local_failure)
+            records.append({'mode': mode, 'response_id': label, 'result': result,
+                            'capture': capture, 'path': evidence['path']})
+        require(records[0]['result'] == records[1]['result'],
+                'controlled ordinary/sequential outputs differ')
+    except BaseException as error:
+        failure = repr(error)
+    finally:
+        save(out / 'summary.json', {
+            'passed': failure is None and len(records) == 2, 'failure': failure,
+            'records': records, 'seconds': time.monotonic() - began,
+            'max_generation_requests': 2, 'original_natural_EOS_failure_preserved': True,
+            'production_binary_http': False, 'greedy_numeric_evidence': False,
+            'quality_evidence': False, 'performance_evidence': False,
+            'scope': 'production context-tail control exercised with forced selections'})
+    if failure is not None:
+        raise RuntimeError(failure)
+    print(json.dumps({'passed': True, 'requests': 2, 'output': str(out)}))
+
+
+if __name__ == '__main__':
+    main()

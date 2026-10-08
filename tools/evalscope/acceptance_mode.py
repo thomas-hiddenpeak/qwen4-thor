@@ -20,11 +20,20 @@ def _records(log, prefix):
     return records, errors
 
 
-def startup_evidence(log, mtp):
+def startup_evidence(log, mtp, verifier='t4'):
     """Require the requested mode and unchanged fixed acceptance capacity."""
     effective, errors = _records(log, '[q4t][capabilities] effective ')
     capacity, capacity_errors = _records(log, '[q4t][capacity] ')
     errors.extend(capacity_errors)
+    if verifier not in ('t4', 'sequential') or (not mtp and verifier != 't4'):
+        errors.append('invalid requested verifier/mode')
+    if len(effective) == 1:
+        expected = verifier if mtp else 'none'
+        # Missing fields are compatible only with the historical paths.
+        actual = effective[0]['fields'].get('verifier',
+                                           't4' if mtp else 'none')
+        if actual != expected:
+            errors.append(f'effective verifier={actual!r}, expected {expected!r}')
     checks = [
         ('effective capabilities', effective,
          {'mtp': str(int(mtp)), 'media_allowed': '0', 'vision_loaded': '0',
@@ -44,17 +53,83 @@ def startup_evidence(log, mtp):
             if actual != value:
                 errors.append(f'{label}: {key}={actual!r}, expected {value!r}')
     return {'requested_decode_mode': 'mtp' if mtp else 'plain',
+            'requested_verifier': verifier if mtp else 'none',
             'effective_capabilities': effective, 'capacity': capacity,
             'passed': not errors, 'errors': errors}
 
 
-def request_mode_evidence(log, responses, mtp):
+def sequential_fields_errors(fields):
+    """Successful step accounting, also used for boundary cancellations.
+
+    Mid-forward failures are not accepted by these HTTP success contracts.
+    The runtime still logs their attempted forwards for diagnosis.
+    """
+    errors, counts = [], {}
+    for key in ('mtp_steps', 'plain_tail_tokens', 'draft_forward_calls',
+                'target_t1_calls', 'target_t4_calls', 'extend_forward_calls'):
+        value = fields.get(key, '')
+        if not re.fullmatch(r'[0-9]+', value):
+            errors.append(f'invalid {key}')
+        else:
+            counts[key] = int(value)
+    if fields.get('verifier') != 'sequential':
+        errors.append('missing or wrong sequential verifier')
+    if fields.get('forward_count_scope') != 'sequential_attempts':
+        errors.append('missing or wrong forward count scope')
+    reason = fields.get('tail_reason')
+    if reason not in ('none', 'output_limit', 'context_limit'):
+        errors.append('invalid tail reason')
+    if len(counts) != 6:
+        return errors
+    steps, tail = counts['mtp_steps'], counts['plain_tail_tokens']
+    if counts['draft_forward_calls'] != 2 * steps:
+        errors.append('draft attempts differ from successful steps')
+    if not steps <= counts['target_t1_calls'] <= 4 * steps:
+        errors.append('target B1 attempts outside successful step bounds')
+    if counts['target_t4_calls'] != 0:
+        errors.append('sequential verifier performed T4 work')
+    if not max(0, steps - 1) <= counts['extend_forward_calls'] <= steps:
+        errors.append('invalid extend attempts for successful steps')
+    if tail > 4 or (tail and reason == 'none'):
+        errors.append('invalid sequential output tail')
+    if tail and counts['extend_forward_calls'] != steps:
+        errors.append('tail after a terminal step')
+    return errors
+
+
+def sequential_success_errors(fields, output, finish):
+    """Bind completed HTTP output to consumed target inputs and pending stop."""
+    errors = sequential_fields_errors(fields)
+    if errors:
+        return errors
+    steps = int(fields['mtp_steps'])
+    target = int(fields['target_t1_calls'])
+    tail = int(fields['plain_tail_tokens'])
+    extend = int(fields['extend_forward_calls'])
+    if finish not in (['stop'], ['length']):
+        errors.append('invalid successful finish reason')
+    if steps and extend == steps - 1:
+        if (tail != 0 or fields['tail_reason'] != 'none' or
+                output != target + 1 or finish != ['stop']):
+            errors.append('terminal target prefix/stop differs from HTTP output')
+    elif fields.get('path') == 'prefill_only':
+        if fields['tail_reason'] != 'none':
+            errors.append('prefill-only request has a decode tail reason')
+    else:
+        if not tail or output != target + tail:
+            errors.append('target prefix and ordinary tail differ from HTTP output')
+    return errors
+
+
+def request_mode_evidence(log, responses, mtp, verifier='t4'):
     """Bind terminal execution paths to real response IDs after server exit.
 
     Older plain baselines have no decode_path records. They remain usable when
     startup proves MTP is disabled. MTP runs must account for every response.
     """
     records, errors = _records(log, '[q4t][decode_path] ')
+    if verifier not in ('t4', 'sequential') or (not mtp and verifier != 't4'):
+        errors.append('invalid requested verifier/mode')
     by_id = {}
     for record in records:
         by_id.setdefault(record['fields'].get('id'), []).append(record)
@@ -84,6 +159,13 @@ def request_mode_evidence(log, responses, mtp):
         fields = found[0]['fields']
         if fields.get('requested_mtp') != str(int(mtp)):
             errors.append(f'{response_id}: requested_mtp disagrees with runner')
+        if mtp and verifier == 'sequential':
+            errors.extend(f'{response_id}: {error}'
+                          for error in sequential_success_errors(
+                              fields, output, response.get('finish')))
+        elif fields.get('verifier', 't4' if mtp else 'none') != (
+                verifier if mtp else 'none'):
+            errors.append(f'{response_id}: verifier disagrees with runner')
         counts = {}
         for key in ['mtp_steps', 'plain_tail_tokens']:
             value = fields.get(key, '')
@@ -103,7 +185,11 @@ def request_mode_evidence(log, responses, mtp):
             if steps != 0 or tail != 0 or not 0 < output <= 1:
                 errors.append(f'{response_id}: prefill_only has decode work')
         elif mtp:
-            if path != 'mtp_multi_b1' or steps <= 0:
+            if verifier == 'sequential' and path == 'plain_tail_b1':
+                if steps != 0 or tail != output or not 0 < output <= 4:
+                    errors.append(f'{response_id}: invalid pure ordinary B1 tail')
+            elif path != ('mtp_sequential_b1' if verifier == 'sequential'
+                          else 'mtp_multi_b1') or steps <= 0:
                 errors.append(f'{response_id}: no confirmed B=1 MTP execution')
         elif path != 'plain' or steps != 0 or tail != 0:
             errors.append(f'{response_id}: ordinary decode has unexpected MTP path')
@@ -111,6 +197,7 @@ def request_mode_evidence(log, responses, mtp):
     if mtp and not responses:
         errors.append('no MTP responses to bind')
     return {'requested_decode_mode': 'mtp' if mtp else 'plain',
+            'requested_verifier': verifier if mtp else 'none',
             'bindings': bindings, 'passed': not errors, 'errors': errors}
 
 

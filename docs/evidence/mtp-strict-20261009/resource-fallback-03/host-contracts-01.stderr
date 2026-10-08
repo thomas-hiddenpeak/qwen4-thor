@@ -1,0 +1,15 @@
+test_fallback_requires_scheduler_b1_and_zero_speculative_legacy_work (test_resource_fallback_contract.ResourceFallbackContractTest.test_fallback_requires_scheduler_b1_and_zero_speculative_legacy_work) ... ok
+test_metrics_reject_errors_aborts_extra_requests_and_bad_types (test_resource_fallback_contract.ResourceFallbackContractTest.test_metrics_reject_errors_aborts_extra_requests_and_bad_types) ... ok
+test_recovery_requires_matching_core_counters_and_path (test_resource_fallback_contract.ResourceFallbackContractTest.test_recovery_requires_matching_core_counters_and_path) ... ok
+test_rejects_fake_normal_finish_wrong_usage_and_changed_output (test_resource_fallback_contract.ResourceFallbackContractTest.test_rejects_fake_normal_finish_wrong_usage_and_changed_output) ... ok
+test_rejects_wrong_variant_duplicate_marker_and_response_id (test_resource_fallback_contract.ResourceFallbackContractTest.test_rejects_wrong_variant_duplicate_marker_and_response_id) ... ok
+test_requires_injection_after_real_success_and_matching_failure (test_resource_fallback_contract.ResourceFallbackContractTest.test_requires_injection_after_real_success_and_matching_failure) ... ok
+test_requires_reset_cleanup_and_serial_lifetime (test_resource_fallback_contract.ResourceFallbackContractTest.test_requires_reset_cleanup_and_serial_lifetime) ... ok
+test_reserve_must_precede_decode_at_exact_initialized_position (test_resource_fallback_contract.ResourceFallbackContractTest.test_reserve_must_precede_decode_at_exact_initialized_position) ... ok
+test_three_real_reserves_and_one_logical_fallback (test_resource_fallback_contract.ResourceFallbackContractTest.test_three_real_reserves_and_one_logical_fallback) ... ok
+test_three_success_responses_metrics_and_same_mode_recovery (test_resource_fallback_contract.ResourceFallbackContractTest.test_three_success_responses_metrics_and_same_mode_recovery) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.004s
+
+OK

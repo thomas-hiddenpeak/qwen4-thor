@@ -309,6 +309,12 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           : 0;
   const char* mtp_fallback =
       !mtp_loaded_ && mtp_requested_ ? "load_failed" : "none";
+  const bool sequential_mtp =
+      mtp_requested_ && mtp_verifier_ == MtpVerifier::kSequential;
+  const char* tail_reason = "none";
+  uint64_t draft_forward_calls = 0;
+  uint64_t target_t1_calls = 0;
+  uint64_t extend_forward_calls = 0;
   // Snapshot after acquiring the sequence slot, before any main forward.
   // With one slot the process-counter delta belongs to this request. With
   // concurrent slots it is only a process window, never per-request routing.
@@ -640,7 +646,14 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   int plain_tail_tokens = 0;
   bool plain_tail = false;
   bool use_mtp = mtp_loaded_ && d_trunk_full != nullptr && !prefill_only;
-  if (use_mtp && !MtpStepFits(seq.position, max_len_, max_prefill_, mtp_k_)) {
+  if (use_mtp && sequential_mtp &&
+      !MtpSequentialStepFits(seq.position, max_len_, max_prefill_, mtp_k_,
+                            max_tokens)) {
+    use_mtp = false;
+    plain_tail = true;
+    tail_reason = max_tokens <= mtp_k_ + 1 ? "output_limit" : "context_limit";
+  } else if (use_mtp &&
+             !MtpStepFits(seq.position, max_len_, max_prefill_, mtp_k_)) {
     use_mtp = false;
     mtp_fallback = "context_tail";
   }
@@ -696,7 +709,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         if (init_timing) init_timing->MarkHost("extend_end");
         if (s.ok()) {
           if (init_timing) init_timing->MarkHost("checkpoint_reserve_begin");
-          s = model::ModelReserveVerifyCheckpoints(model_.Get(), mtp_k_);
+          if (!sequential_mtp)
+            s = model::ModelReserveVerifyCheckpoints(model_.Get(), mtp_k_);
           if (init_timing) init_timing->MarkHost("checkpoint_reserve_end");
           if (s.ok()) {
             if (init_timing) init_timing->MarkHost("scratch_reserve_begin");
@@ -761,17 +775,26 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         finish_reason = "stop";
         break;
       }
-      if (!MtpStepFits(seq.position, max_len_, max_prefill_, mtp_k_)) {
-        // The verifier cannot write k+1 rows at the context tail. The prior
-        // accepted state is valid; continue from its pending correction token.
+      const int output_remaining =
+          max_tokens - static_cast<int>(generated.size());
+      if ((sequential_mtp &&
+           !MtpSequentialStepFits(seq.position, max_len_, max_prefill_, mtp_k_,
+                                  output_remaining)) ||
+          !MtpStepFits(seq.position, max_len_, max_prefill_, mtp_k_)) {
+        // Keep the final allowed output unconsumed in strict mode. Both
+        // verifiers continue from the valid pending correction at a tail.
         next_token = mtp_b;
         use_mtp = false;
         plain_tail = true;
+        if (sequential_mtp)
+          tail_reason = output_remaining <= mtp_k_ + 1 ? "output_limit"
+                                                       : "context_limit";
         break;
       }
       // Register this step's input with the scheduler.
       mtp_ar.mtp_b = mtp_b;
       mtp_ar.mtp_d0 = mtp_d0;
+      mtp_ar.mtp_output_remaining = output_remaining;
       trace::MtpCycleStep* cycle_step =
           cycle_timing ? cycle_timing->BeginStep(seq.position, mtp_k_)
                        : nullptr;
@@ -786,8 +809,13 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         init_timing->MarkHost("first_step_submit");
       {
         const std::lock_guard<std::mutex> lock(sched_mu_);
-        mtp_ar.pending = true;
-        mtp_ar.done = false;
+        mtp_ar.mtp_accepted_count = 0;
+        mtp_ar.mtp_next_b = -1;
+        mtp_ar.mtp_next_d0 = -1;
+        mtp_ar.mtp_sequential_result = {};
+        mtp_ar.pending = !scheduler_stop_;
+        mtp_ar.done = scheduler_stop_;
+        if (scheduler_stop_) seq.Fail();
       }
       sched_cv_.notify_one();
       // Block until the scheduler's batched step yields this step's output.
@@ -800,6 +828,23 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       if (cycle_step) cycle_step->Mark("request_wake");
       if (init_timing && mtp_steps == 0)
         init_timing->MarkHost("first_step_wait_end");
+      if (sequential_mtp) {
+        const auto& result = mtp_ar.mtp_sequential_result;
+        draft_forward_calls += result.draft_forward_calls;
+        target_t1_calls += result.target_forward_calls;
+        extend_forward_calls += result.extend_forward_calls;
+        if (mtp_ar.mtp_accepted_count > 0 &&
+            (mtp_ar.mtp_accepted_count > mtp_k_ + 1 ||
+             result.terminal != is_stop_token(result.next_b) ||
+             result.next_seed_valid == result.terminal ||
+             result.next_b < 0 ||
+             std::any_of(result.accepted_tokens.begin(),
+                         result.accepted_tokens.begin() + result.accepted_count,
+                         is_stop_token))) {
+          generation_failed = true;
+          break;
+        }
+      }
       if (mtp_ar.mtp_accepted_count <= 0) {
         // Scheduler failed the step or is shutting down.
         generation_failed = true;
@@ -915,7 +960,13 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         active_.push_back(&ar);
       }
     }
-    for (int step = static_cast<int>(generated.size()); step < max_tokens;
+    if (sequential_mtp && !use_sched) {
+      // Strict mode cannot substitute the numerically different standalone
+      // ModelDecodeStepSeq implementation, even for a resource fallback.
+      generation_failed = true;
+    }
+    for (int step = static_cast<int>(generated.size());
+         !generation_failed && step < max_tokens;
          ++step) {
       if (cancelled()) break;
       generated.push_back(next_token);
@@ -952,8 +1003,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         ar.token = tok_id;
         {
           const std::lock_guard<std::mutex> lock(sched_mu_);
-          ar.pending = true;
-          ar.done = false;
+          ar.next_token = -1;
+          ar.pending = !scheduler_stop_;
+          ar.done = scheduler_stop_;
+          if (scheduler_stop_) seq.Fail();
         }
         sched_cv_.notify_one();
         // Block until the scheduler's packed forward yields this step's token.
@@ -1002,15 +1055,38 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     }
   }
   trace_output_tokens = generated.size();
-  const char* decode_path =
-      mtp_steps > 0 ? (max_seq_ == 1 ? "mtp_multi_b1" : "mtp_multi")
-      : plain_steps == 0 && prefill_only ? "prefill_only"
-                                       : "plain";
-  std::fprintf(stderr,
-               "[q4t][decode_path] id=%s requested_mtp=%d path=%s "
-               "mtp_steps=%d fallback=%s plain_tail_tokens=%d\n",
-               id.c_str(), mtp_requested_, decode_path, mtp_steps,
-               prefill_only ? "none" : mtp_fallback, plain_tail_tokens);
+  const char* decode_path = "plain";
+  if (mtp_steps > 0) {
+    decode_path = sequential_mtp
+                      ? "mtp_sequential_b1"
+                      : (max_seq_ == 1 ? "mtp_multi_b1" : "mtp_multi");
+  } else if (plain_steps == 0 && prefill_only) {
+    decode_path = "prefill_only";
+  } else if (sequential_mtp && plain_tail) {
+    decode_path = "plain_tail_b1";
+  }
+  if (sequential_mtp) {
+    std::fprintf(stderr,
+                 "[q4t][decode_path] id=%s requested_mtp=%d path=%s "
+                 "mtp_steps=%d fallback=%s plain_tail_tokens=%d "
+                 "verifier=sequential tail_reason=%s "
+                 "draft_forward_calls=%llu target_t1_calls=%llu"
+                 " target_t4_calls=0 extend_forward_calls=%llu "
+                 "forward_count_scope=sequential_attempts\n",
+                 id.c_str(), mtp_requested_, decode_path, mtp_steps,
+                 prefill_only ? "none" : mtp_fallback, plain_tail_tokens,
+                 tail_reason,
+                 static_cast<unsigned long long>(draft_forward_calls),
+                 static_cast<unsigned long long>(target_t1_calls),
+                 static_cast<unsigned long long>(extend_forward_calls));
+  } else {
+    std::fprintf(stderr,
+                 "[q4t][decode_path] id=%s requested_mtp=%d path=%s "
+                 "mtp_steps=%d fallback=%s plain_tail_tokens=%d verifier=%s\n",
+                 id.c_str(), mtp_requested_, decode_path, mtp_steps,
+                 prefill_only ? "none" : mtp_fallback, plain_tail_tokens,
+                 mtp_requested_ ? MtpVerifierName(mtp_verifier_) : "none");
+  }
   if (batch_gather_enabled) {
     const auto end = quant::GetMoEBatchGatherStats();
     std::fprintf(

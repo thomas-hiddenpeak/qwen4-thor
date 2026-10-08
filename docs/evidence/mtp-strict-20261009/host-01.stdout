@@ -1,0 +1,18 @@
+[PASS] serve_default_is_single_text_greedy
+[PASS] serve_capabilities_allow_explicit_combinations
+[PASS] serve_rejects_malformed_numeric_options
+[PASS] serve_validates_before_load_and_preserves_failed_parse
+[PASS] serve_prefill_bound_precedes_workspace_sizing
+[PASS] serve_trace_options_are_explicit_and_bounded
+[PASS] serve_mtp_verifier_selection_preserves_t4_default
+[PASS] serve_mtp_verifier_invalid_parse_is_transactional
+[PASS] mtp_step_preserves_context_tail
+[PASS] mtp_step_rejects_invalid_or_overflowing_ranges
+[PASS] mtp_sequential_step_preserves_output_and_context_tail
+[PASS] mtp_sequential_step_rejects_invalid_or_overflowing_ranges
+[PASS] chat_contract_greedy_neutral_options
+[PASS] chat_contract_rejects_unimplemented_constraints
+[PASS] chat_contract_rejects_wrong_types_and_ambiguous_input
+[PASS] chat_contract_template_options_are_explicit
+[PASS] chat_contract_media_rejected_before_decoding
+17 tests, 17 passed, 0 failed, 0 skipped
