@@ -32,6 +32,8 @@ Status ValidateServerOptions(const ServerOptions& options) {
   if (options.max_seq < 1 ||
       options.max_seq > std::numeric_limits<int>::max() / 8)
     return Status::Fail("max-seq must be in [1,268435455]");
+  if (!options.no_mtp && (options.max_seq != 1 || options.allow_media))
+    return Status::Fail("MTP requires --max-seq 1 and text-only input");
   if (!std::isfinite(options.mem_fraction) || options.mem_fraction <= 0 ||
       options.mem_fraction > 1)
     return Status::Fail("mem-fraction must be finite and in (0,1]");

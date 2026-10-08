@@ -101,3 +101,22 @@ greedy、S1、k3，正式容量 208896/8192；默认仍关闭。实际入口须
 证据按身份复用。阶段提交和推送已获授权，PR 可独立审查，main
 及部署原件保持。最终分别报告 A 可合入、B 正式支持及默认启用
 三个状态，并保留所有首次失败、未运行项和资源/数值覆盖边界。
+
+## B1 支持入口子清单（模型测试前冻结）
+
+此子清单不依赖 strict/fast 数值合同选择，可以与 A 并行准备。
+只改 `src/server/server_options.cpp`、`src/main.cpp` 和现有 options
+合同测试：MTP 与 `max_seq!=1` 或 `allow_media` 组合在统一
+`ValidateServerOptions` 拒绝，解析失败保持原 options 不变。
+普通模式的多流/媒体实验入口不变，k3/greedy 及 MTP 默认关闭保持。
+非 serve 的 `generate --mtp` 和 `--mtp-k` 在 tokenizer/model 加载
+前退出 2，提示使用 HTTP serve；不把旧入口失败留到加载后。
+正式支持标签保持 experimental，直到 B 的其他验收全部通过。
+
+本组不改变模型算术或执行 kernel，不在当前阶段单独启动 HTTP。
+代码与后续 B 计算变更成组后构建，先执行现有 13 个具名 host
+options/chat-contract/MTP-policy 合同，再执行六个进程拒绝检查：
+CLI 两项、serve MTP+多流、MTP+媒体、两者同时及未知 `--mtp-k`。
+所有进程使用预定不存在的 model-dir，要求明确非零与预期拒绝
+原因、没有 tokenizer/model 加载；正常启动由后续质量组覆盖。
+默认服务质量和正式五档合并到 B 最终验收，不逐文件反复推理。

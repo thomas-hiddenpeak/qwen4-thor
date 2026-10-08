@@ -34,14 +34,25 @@ Q4T_TEST(serve_default_is_single_text_greedy) {
 Q4T_TEST(serve_capabilities_allow_explicit_combinations) {
   for (int mask = 0; mask < 8; ++mask) {
     auto options = Defaults();
-    if (mask & 1) Q4T_CHECK(Parse({"--mtp"}, &options));
-    if (mask & 2) Q4T_CHECK(Parse({"--allow-media"}, &options));
-    if (mask & 4) Q4T_CHECK(Parse({"--max-seq", "2"}, &options));
+    options.no_mtp = !(mask & 1);
+    options.allow_media = bool(mask & 2);
+    options.max_seq = (mask & 4) ? 2 : 1;
+    const bool supported = !(mask & 1) || !(mask & 6);
+    Q4T_CHECK(q4t::server::ValidateServerOptions(options).ok() == supported);
+    if (!supported) continue;
     const auto c = CapabilitiesFor(options);
     Q4T_CHECK(c.mtp == bool(mask & 1));
     Q4T_CHECK(c.media == bool(mask & 2));
     Q4T_CHECK(c.multiple_sequences == bool(mask & 4));
     Q4T_CHECK(c.Experimental() == (mask != 0));
+  }
+  for (const auto args : {
+           std::initializer_list<std::string_view>{"--mtp", "--max-seq", "2"},
+           {"--mtp", "--allow-media"},
+           {"--max-seq", "2", "--allow-media", "--mtp"}}) {
+    auto options = Defaults();
+    Q4T_CHECK(!Parse(args, &options));
+    Q4T_CHECK(options.no_mtp && options.max_seq == 1 && !options.allow_media);
   }
   auto options = Defaults();
   Q4T_CHECK(Parse({"--mtp", "--no-mtp"}, &options));

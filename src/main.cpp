@@ -125,10 +125,11 @@ int RunGenerate(int argc, char** argv) {
       model_dir = argv[++i];
     } else if (a == "--max-tokens" && i + 1 < argc) {
       max_tokens = std::atoi(argv[++i]);
-    } else if (a == "--mtp") {
-      use_mtp = true;
-    } else if (a == "--mtp-k" && i + 1 < argc) {
-      mtp_k = std::atoi(argv[++i]);
+    } else if (a == "--mtp" || a == "--mtp-k") {
+      std::fprintf(stderr,
+                   "MTP is unavailable in generate; use serve --mtp "
+                   "--max-seq 1 with text requests\n");
+      return 2;
     } else if (a == "--max-prefill" && i + 1 < argc) {
       max_prefill = std::atoi(argv[++i]);
     } else if (!a.empty() && a[0] == '-') {
