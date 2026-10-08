@@ -33,7 +33,10 @@ GPU extend只观察1/4，2/3的生产TU控制和受控verify不能冒称全GPU
 
 最终558文件、130运行源码、4受保护工作区与12执行组清理检查通过；
 main、两个原dirty工作区、foundation与旧构建/证据保持，无遗留服务。
-同一研究分支`codex/mtp-admission-20261007`收尾，未自动合并/部署。
+阶段代码与证据已在`863fc35`提交并推送，同一研究分支
+`codex/mtp-admission-20261007`对应[审查草案PR #3](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/3)。
+该PR包含此前未合并研究历史；优先独立审查A基础修复PR #2，
+B按有限profile及成本单独审查。本Goal交付已收尾，未自动合并/部署。
 
 ## 上一阶段完成：MTP批量GatherQuant通过冻结性能门禁
 

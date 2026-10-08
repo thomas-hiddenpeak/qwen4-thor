@@ -10,7 +10,7 @@ MTP 或完整模型质量通过。实现和事前范围见
 | 事项 | 当前结论 |
 |---|---|
 | A 基础正确性修复 | [PR #2](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/2)已可独立审查，未合并 |
-| B 显式 sequential 有限 profile | 正确性资格通过，可审查；成本更高，未合并/部署 |
+| B 显式 sequential 有限 profile | 正确性资格通过，[审查草案 PR #3](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/3)、阶段提交 `863fc35`；成本更高，未合并/部署 |
 | MTP 默认启用、快速 T4 正式支持 | 均未批准；默认关闭，T4 保留实验 |
 
 本轮目标是交付具有明确数值合同的 MTP 正确性基线。sequential
