@@ -240,13 +240,15 @@ Status MtpReserveScratch(MtpModel& m, int k_max);
 //                  KV computation still cover all T rows. kLastRow projects
 //                  sample_hidden[T-1] with M=1; its GEMV rounding need not be
 //                  bit-identical to the final row of the M=T GEMM.
+//   max_position: exact maximum logical position, or -1 to read it back.
 Status MtpForward(const MtpModel& m, const int32_t* input_ids, const int* positions,
                   const uint16_t* hidden_states, uint16_t* sample_hidden,
                   uint16_t* multi_hidden, uint16_t* logits, int T,
                   cudaStream_t stream, const int* d_seq_id = nullptr,
                   bool compute_logits = true,
                   model::LogitsRows logits_rows = model::LogitsRows::kAllRows,
-                  MtpInitTiming* init_timing = nullptr);
+                  MtpInitTiming* init_timing = nullptr,
+                  int max_position = -1);
 
 // Device bytes for the MtpForward `workspace` (the GEMM scratch plus the
 // forward intermediates for `T` tokens, the full-attention scratch, and the

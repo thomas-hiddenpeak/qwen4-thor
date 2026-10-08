@@ -1287,8 +1287,11 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
       return cleanup(Status::Fail("MtpSpeculativeStepMulti: H2D draft pos"));
     // d_seq_id = seq_of (token b = sequence b -> pooled slice seq_of[b]),
     // H2D'd into d_ms_ext_seq above (before the loop).
+    const int draft_max_position = B == 1 ? h_pos[0] : -1;
     Status s = MtpForward(mtp, d_ids, d_pos, d_g_pool, d_sample, d_multi,
-                          d_vlogits, B, stream, mtp.d_ms_ext_seq);
+                          d_vlogits, B, stream, mtp.d_ms_ext_seq, true,
+                          model::LogitsRows::kAllRows, nullptr,
+                          draft_max_position);
     if (!s.ok()) return cleanup(s);
     // Argmax over the B rows -> d_ext_ids (kept separate from d_ids so the
     // gather input is not clobbered; d_ext_ids is reused by the extend phase).
@@ -1455,8 +1458,11 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
       cudaMemcpyAsync(d_ext_pos, ext_pos.data(), T_ext * sizeof(int),
                       cudaMemcpyHostToDevice, stream) != cudaSuccess)
     return cleanup(Status::Fail("MtpSpeculativeStepMulti: H2D extend"));
+  // B1 extend positions increase from P through P+a in this host array.
+  const int extend_max_position = B == 1 ? ext_pos.back() : -1;
   s = MtpForward(mtp, d_ext_ids, d_ext_pos, d_gather, d_ext_sample, d_ext_multi,
-                 d_ext_logits, T_ext, stream, mtp.d_ms_ext_seq);
+                 d_ext_logits, T_ext, stream, mtp.d_ms_ext_seq, true,
+                 model::LogitsRows::kAllRows, nullptr, extend_max_position);
   if (cycle_timing) cycle_timing->Mark("extend_model_end");
   if (!s.ok()) return cleanup(s);
   // Per-seq outputs: next_d0 = argmax of the sequence's last extend row;
@@ -1516,7 +1522,8 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
                   uint16_t* sample_hidden, uint16_t* multi_hidden,
                   uint16_t* logits, int T, cudaStream_t stream,
                   const int* d_seq_id, bool compute_logits,
-                  model::LogitsRows logits_rows, MtpInitTiming* init_timing) {
+                  model::LogitsRows logits_rows, MtpInitTiming* init_timing,
+                  int max_position) {
   trace::MtpCycleSpan cycle_forward(trace::CycleDetail::kMtpForward);
   const int hs = m.cfg.hs, hc = m.cfg.hc, hc_dim = hc * hs;
   if (T <= 0) return Status();
@@ -1620,7 +1627,8 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
     s = model::FullAttentionForward(m.full_attn, d_mixed_attn, d_attn_out,
                                     d_positions, m.d_rope_pos, m.kv_cache,
                                     m.page_table, m.idx_raw, m.idx_comp, T,
-                                    d_attn_ws, attn_ws, stream, d_seq_id);
+                                    d_attn_ws, attn_ws, stream, d_seq_id,
+                                    max_position);
   }
   if (!s.ok()) return s;
   // 4d. attn_hc.combine: trunk_a = attn_out + trunk (learned injection).
