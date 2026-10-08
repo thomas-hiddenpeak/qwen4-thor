@@ -70,6 +70,9 @@ struct BudgetRequest {
   // workspace and independent index/staging sizes. MTP fields are ignored
   // when has_mtp is false.
   size_t main_workspace_bytes = 0;
+  // Serialized main-forward transient outside the workspace, charged once
+  // conservatively in fixed allocations (also when MTP is disabled).
+  size_t main_forward_extra_bytes = 0;
   size_t mtp_workspace_bytes = 0;
   size_t mtp_weights_bytes =
       0;  // independent MTP index, excluding main weights
@@ -88,6 +91,7 @@ struct MemoryBudget {
   size_t per_request = 0;  // MTP prompt trunk, extend buffers and host scratch
   size_t available_for_state = 0;  // budget - fixed - max(request, loading)
   size_t main_workspace = 0;
+  size_t main_forward_extra = 0;
   size_t mtp_workspace = 0;
   size_t mtp_weights = 0;
   size_t mtp_buffers = 0;  // LoadMtp single-step sample/trunk/logits

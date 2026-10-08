@@ -288,6 +288,7 @@ if(Q4T_BUILD_TESTS)
     tests/quant_fp4_test.cpp
     tests/quant_moe_load_test.cpp
     tests/quant_moe_gemm_test.cpp
+    tests/quant_moe_batch_gather_test.cpp
     tests/model_hyperconnection_test.cpp
     tests/model_linear_attention_test.cpp
     tests/model_full_attention_test.cpp

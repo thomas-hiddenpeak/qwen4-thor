@@ -7,6 +7,7 @@
 // directly, independently of the production checkpoint reader.
 #include "q4t/model/model_owner.h"
 #include "q4t/mtp/mtp.h"
+#include "q4t/quant/moe_gemm.h"
 #include "q4t/test.h"
 #include "q4t/text/tokenizer.h"
 
@@ -264,6 +265,8 @@ void Verify(const Model& model, const ModelSequence& seq,
 }  // namespace
 
 Q4T_TEST(mtp_k3_full_model_replay) {
+  const bool batch_requested = q4t::quant::MoEBatchGatherEnabled();
+  const auto batch_before = q4t::quant::GetMoEBatchGatherStats();
   const char* prompt_path = std::getenv("Q4T_MTP_REPLAY_PROMPT");
   const char* evidence_path = std::getenv("Q4T_MTP_REPLAY_DIR");
   Require(prompt_path && *prompt_path && evidence_path && *evidence_path,
@@ -538,12 +541,54 @@ Q4T_TEST(mtp_k3_full_model_replay) {
       contracts, all_rows_checked, natural_counts[1], natural_counts[2],
       natural_counts[3], natural_counts[4], forced_reject, coverage,
       emitted.size(), evidence.bytes());
+  if (batch_requested) {
+    const auto after = q4t::quant::GetMoEBatchGatherStats();
+    // 17 actual + 17 same-T replay + one predetermined force probe, 48
+    // routed layers each. The initial 1024-token prefill is not eligible.
+    Require(after.applied_calls == batch_before.applied_calls + 1680 &&
+                after.batch_launches == batch_before.batch_launches + 6720 &&
+                after.bad_counts_fallback == batch_before.bad_counts_fallback,
+            "short replay actual batch path counts");
+    std::printf(
+        "MOE_BATCH_GATHER_SHORT_SUMMARY applied_calls=1680 "
+        "batch_launches=6720 bad_counts_fallback=0 passed=1\n");
+  }
   return contracts && all_rows_checked && coverage;
 }
 
 // Independent long-initialization regression. The preceding fixed 17-step
-// test is unchanged. Each policy starts with a fresh full-model prefill.
+// trajectory is unchanged. Each policy starts with a fresh full-model prefill.
 namespace {
+// Only the explicit batch-comparison mode changes the process environment.
+// Restores both presence and value on normal return and C++ error unwinding.
+class TailBatchEnvironment {
+ public:
+  explicit TailBatchEnvironment(bool active) : active_(active) {
+    if (!active_) return;
+    const char* value = std::getenv("Q4T_MOE_BATCH_GATHER");
+    present_ = value != nullptr;
+    if (value) value_ = value;
+  }
+  ~TailBatchEnvironment() {
+    if (!active_) return;
+    const int result = present_
+                           ? setenv("Q4T_MOE_BATCH_GATHER", value_.c_str(), 1)
+                           : unsetenv("Q4T_MOE_BATCH_GATHER");
+    if (result != 0) std::abort();
+  }
+  void Set(bool enabled) {
+    if (!active_) return;
+    Require(setenv("Q4T_MOE_BATCH_GATHER", enabled ? "1" : "0", 1) == 0,
+            "set long comparison batch environment");
+    Require(q4t::quant::MoEBatchGatherEnabled() == enabled,
+            "long batch environment gate");
+  }
+
+ private:
+  bool active_ = false, present_ = false;
+  std::string value_;
+};
+
 struct TailCache {
   std::vector<uint16_t> kv, raw, comp;
   std::vector<int> page, rope;
@@ -615,6 +660,13 @@ void TailSaveStep(Evidence& evidence, const std::string& label,
 Q4T_TEST(mtp_init_tail_long_k3) {
   constexpr int kBaseTokens = 8192, kPromptTokens = 8196;
   constexpr int kNatural = 4, kSteps = 5;
+  const char* compare_value = std::getenv("Q4T_MTP_INIT_TAIL_BATCH_COMPARE");
+  const bool batch_compare =
+      compare_value && std::strcmp(compare_value, "1") == 0;
+  TailBatchEnvironment batch_environment(batch_compare);
+  if (batch_compare)
+    Require(std::getenv("Q4T_MTP_VERIFY_MOE_TIMING") == nullptr,
+            "batch comparison requires MoE diagnostic off");
   const char* prompt_path = std::getenv("Q4T_MTP_INIT_TAIL_LONG_PROMPT");
   const char* evidence_path = std::getenv("Q4T_MTP_INIT_TAIL_LONG_DIR");
   Require(prompt_path && *prompt_path && evidence_path && *evidence_path,
@@ -700,6 +752,11 @@ Q4T_TEST(mtp_init_tail_long_k3) {
   for (int branch = 0; branch < 2; ++branch) {
     const bool skip = branch == 1;
     const std::string policy = skip ? "skip" : "full";
+    // C2 already established Full/Skip draft initialization equivalence.
+    // This explicit mode reuses those same two trajectories to compare
+    // batch off/on, including full recurrent/cache host bytes not in raw.
+    batch_environment.Set(skip);
+    const auto batch_before = q4t::quant::GetMoEBatchGatherStats();
     ModelSequence seq;
     RequireStatus(q4t::model::ModelBeginSequence(model, &seq, nullptr, 0),
                   "independent main begin");
@@ -912,10 +969,29 @@ Q4T_TEST(mtp_init_tail_long_k3) {
         "natural_steps=4 forced_steps=1 force_probes=1 actual_steps=5 "
         "forced_reject0=1 contracts=1\n",
         policy.c_str());
+    if (batch_compare) {
+      const auto after = q4t::quant::GetMoEBatchGatherStats();
+      // One T4 prefill remainder + five actual steps + one fixed probe.
+      const uint64_t expected = skip ? 336 : 0;
+      Require(after.applied_calls == batch_before.applied_calls + expected &&
+                  after.batch_launches ==
+                      batch_before.batch_launches + 4 * expected &&
+                  after.bad_counts_fallback == batch_before.bad_counts_fallback,
+              "long branch actual batch path counts");
+      std::printf(
+          "MOE_BATCH_GATHER_LONG_BRANCH policy=%s requested=%d "
+          "applied_calls=%llu batch_launches=%llu bad_counts_fallback=0\n",
+          policy.c_str(), skip, static_cast<unsigned long long>(expected),
+          static_cast<unsigned long long>(4 * expected));
+    }
   }
   std::printf(
       "MTP_INIT_TAIL_LONG_SUMMARY prompt_tokens=8196 branches=2 "
       "prefill_chunks=4 natural_steps=8 forced_steps=2 force_probes=2 "
       "actual_steps=10 init_exact=1 steps_exact=1 passed=1\n");
+  if (batch_compare)
+    std::printf(
+        "MOE_BATCH_GATHER_LONG_SUMMARY branches=2 applied_calls=336 "
+        "state_exact=1 passed=1\n");
   return true;
 }

@@ -70,12 +70,16 @@ GU 与 DN 的 BF16 输出、SwiGLU、最终 slot 累加顺序或 MTP 状态。
 3. 开启候选，运行既有完整模型短 k3：16 自然+1 强制步骤，接受
    0/1/2/3 draft 全覆盖；123 个冻结 raw 文件逐字节对照。该旧
    raw 没有完整跨版本 recurrent/KV，不能扩为全状态 oracle。
-4. 开启候选，运行既有 8196 长初始化 Full/Skip：两次独立主
-   prefill(8192+4)，共 10 actual k3 steps 和两个固定 probe。
-   新两分支内部 exact 之外，再对 C2 封存的 90 个 raw 文件
-   （42,733,425 B）逐字节比较，含完整已保存 recurrent 与 MTP
-   KV/indexer/位置状态。Full/Skip 是初始化策略，并非 batch 的
-   off/on 对照。中间 draft head logits 未保存仍属观察限制。
+4. 8196 长初始化保留两次独立主 prefill(8192+4)、共10 actual
+   k3 steps 和两个固定 probe，不增加轨迹。新增显式测试模式
+   `Q4T_MTP_INIT_TAIL_BATCH_COMPARE=1`：原 Full 分支关闭 batch，
+   原 Skip 分支开启 batch，借既有内存比较核实完整 recurrent、
+   MTP KV/indexer/位置状态、初始化及各步输出 exact。Full/Skip
+   初始化策略的旧等价证据已在 C2 通过，其 BF16 计算本次未改。
+   记录两分支实际 batch 次数分别0/336，测试退出恢复原环境。
+   两分支90个 raw（42,733,425 B）仍逐名逐字节对照C2；旧raw
+   仅存result/draft IDs/logits/trunk等，不含完整recurrent/cache，
+   不能称跨历史二进制全状态对照。中间draft head logits仍未观察。
 5. 有限 host 合同验证开关/shape/counts门禁、固定布局/descriptor
    容量、预算新增费用（普通与 MTP）及饱和边界；专用失败注入
    固定一次，在 mixed 新路径正常 forward 之前、首个 extra batch
@@ -111,3 +115,12 @@ latency 分别不超过原后两次最大值，共15格，无新容忍、无档�
 最终报告沿用已完成诊断中的 draft/verify 成本；本候选五档诊断
 关闭，不伪造其新的绝对内部计时。整体decode/TTFT/latency由新
 E2E直接观察，阶段提交推送同一工作分支，不自动合并或部署。
+
+## 首测前 oracle 澄清
+
+首次协议把长k3的内存内完整状态比较误写成旧raw已保存完整状态。
+按 `TailSaveStep` 与实际90文件核实后修正：历史raw只承担其保存的
+输出范围；完整状态由上述现有两分支batch off/on直接比较。
+这项澄清发生于实现阶段，尚未构建或运行候选测试，HTTP26条、
+正常六次direct、一次失败注入、短17与长10步均不增加，数值和
+性能门槛不变。初版协议副本保留，修订另存 `protocol-refinement-01.md`。

@@ -13,6 +13,7 @@
 #include <vector>
 #include <cuda_runtime.h>
 #include "q4t/mtp/init_timing.h"
+#include "q4t/quant/moe_gemm.h"
 #include "q4t/trace/mtp_cycle_timing.h"
 #include "q4t/trace/mtp_verify_moe_timing.h"
 #include "q4t/server/chat_contract.h"
@@ -308,6 +309,13 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           : 0;
   const char* mtp_fallback =
       !mtp_loaded_ && mtp_requested_ ? "load_failed" : "none";
+  // Snapshot after acquiring the sequence slot, before any main forward.
+  // With one slot the process-counter delta belongs to this request. With
+  // concurrent slots it is only a process window, never per-request routing.
+  const bool batch_gather_enabled = quant::MoEBatchGatherEnabled();
+  const quant::MoEBatchGatherStats batch_gather_begin =
+      batch_gather_enabled ? quant::GetMoEBatchGatherStats()
+                           : quant::MoEBatchGatherStats{};
   std::unique_ptr<trace::MtpVerifyMoeTiming> verify_moe_timing;
   const char* verify_moe_env = getenv("Q4T_MTP_VERIFY_MOE_TIMING");
   if (verify_moe_env && std::strcmp(verify_moe_env, "1") == 0) {
@@ -1003,6 +1011,28 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                "mtp_steps=%d fallback=%s plain_tail_tokens=%d\n",
                id.c_str(), mtp_requested_, decode_path, mtp_steps,
                prefill_only ? "none" : mtp_fallback, plain_tail_tokens);
+  if (batch_gather_enabled) {
+    const auto end = quant::GetMoEBatchGatherStats();
+    std::fprintf(
+        stderr,
+        "[q4t][moe_batch_gather] id=%s scope=%s applied_calls=%llu "
+        "legacy_calls=%llu bad_counts_fallback=%llu batch_launches=%llu "
+        "legacy_gather_launches=%llu replaced_gather_launches=%llu\n",
+        id.c_str(), max_seq_ == 1 ? "single_sequence_window" : "process_window",
+        static_cast<unsigned long long>(end.applied_calls -
+                                        batch_gather_begin.applied_calls),
+        static_cast<unsigned long long>(end.legacy_calls -
+                                        batch_gather_begin.legacy_calls),
+        static_cast<unsigned long long>(end.bad_counts_fallback -
+                                        batch_gather_begin.bad_counts_fallback),
+        static_cast<unsigned long long>(end.batch_launches -
+                                        batch_gather_begin.batch_launches),
+        static_cast<unsigned long long>(end.legacy_gather_launches -
+                                        batch_gather_begin.legacy_gather_launches),
+        static_cast<unsigned long long>(
+            end.replaced_gather_launches -
+            batch_gather_begin.replaced_gather_launches));
+  }
   if (generation_failed) seq.Fail();
   model::ModelEndSequence(&seq);
 

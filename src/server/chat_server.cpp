@@ -7,6 +7,7 @@
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <fstream>
 #include <iterator>
 #include <limits>
@@ -16,6 +17,7 @@
 #include <cuda_runtime.h>
 #include "q4t/io/json.h"
 #include "q4t/io/weight_loader.h"
+#include "q4t/quant/moe_gemm.h"
 #include "q4t/runtime/memory_budget.h"
 #include "q4t/vision/vision.h"
 
@@ -83,6 +85,12 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // Validate before loading the tokenizer or allocating model resources.
   const Status validated = ValidateServerOptions(opts);
   if (!validated.ok()) return validated;
+  const char* verify_moe_env = std::getenv("Q4T_MTP_VERIFY_MOE_TIMING");
+  if (quant::MoEBatchGatherEnabled() && verify_moe_env &&
+      std::strcmp(verify_moe_env, "1") == 0) {
+    return Status::Fail("batch_gather_unsupported_v1: disable "
+                        "Q4T_MTP_VERIFY_MOE_TIMING with batch gather");
+  }
   const ServerCapabilities capabilities = CapabilitiesFor(opts);
   mtp_requested_ = capabilities.mtp;
   std::fprintf(stderr,
@@ -138,6 +146,9 @@ Status ChatServer::Start(const ServerOptions& opts) {
       breq.max_len = opts.max_len;
       breq.max_seq = opts.max_seq;
       breq.max_prefill = cfg.max_prefill;
+      if (quant::MoEBatchGatherEnabled()) {
+        breq.main_forward_extra_bytes = quant::MoEBatchGatherExtraBytes();
+      }
       // Mirror LoadModel's allocation sizing. Small-T attention workspace
       // depends on max_len, so use the requested upper bound before capping.
       model::FullAttentionWeights full;

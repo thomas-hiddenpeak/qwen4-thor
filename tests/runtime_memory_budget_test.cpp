@@ -35,6 +35,60 @@ BudgetModelParams MtpParams() {
 }
 }  // namespace
 
+Q4T_TEST(budget_batch_gather_extra_is_charged_once) {
+  constexpr size_t kExtra = 1024000;
+  for (bool mtp : {false, true}) {
+    BudgetModelParams params;
+    params.has_mtp = mtp;
+    auto request = mtp ? MtpRequest() : Request(262144, 4);
+    const auto old = ComputeMemoryBudget(params, request, kWeights, kRoom);
+    request.main_forward_extra_bytes = kExtra;
+    const auto batch = ComputeMemoryBudget(params, request, kWeights, kRoom);
+    Q4T_CHECK(old.feasible && batch.feasible && !batch.capped);
+    Q4T_CHECK(old.main_forward_extra == 0);
+    Q4T_CHECK(batch.main_forward_extra == kExtra);
+    Q4T_CHECK(batch.fixed == old.fixed + kExtra);
+    Q4T_CHECK(batch.runtime_peak == old.runtime_peak + kExtra);
+    Q4T_CHECK(batch.startup_peak == old.startup_peak + kExtra);
+    Q4T_CHECK(batch.estimated_total == old.estimated_total + kExtra);
+    Q4T_CHECK(batch.main_workspace == old.main_workspace);
+    Q4T_CHECK(batch.per_request == old.per_request);
+    Q4T_CHECK(batch.state_pool == old.state_pool);
+    Q4T_CHECK(batch.report.find("main_forward_extra=1024000") !=
+              std::string::npos);
+  }
+  return true;
+}
+
+Q4T_TEST(budget_batch_gather_extra_exact_fit_boundary) {
+  for (bool mtp : {false, true}) {
+    BudgetModelParams params;
+    params.has_mtp = mtp;
+    auto request = mtp ? MtpRequest() : Request();
+    request.main_forward_extra_bytes = 1024000;
+    const auto roomy = ComputeMemoryBudget(params, request, kWeights, kRoom);
+    const auto exact =
+        ComputeMemoryBudget(params, request, kWeights, roomy.estimated_total);
+    const auto short_one = ComputeMemoryBudget(
+        params, request, kWeights, roomy.estimated_total - 1);
+    Q4T_CHECK(exact.feasible && !exact.capped);
+    Q4T_CHECK(exact.max_len == request.max_len);
+    Q4T_CHECK(short_one.feasible && short_one.capped);
+    Q4T_CHECK(short_one.max_len < request.max_len);
+    Q4T_CHECK(short_one.estimated_total <= short_one.budget);
+  }
+  return true;
+}
+
+Q4T_TEST(budget_batch_gather_extra_saturates) {
+  auto request = Request();
+  request.main_forward_extra_bytes = std::numeric_limits<size_t>::max();
+  const auto budget = ComputeMemoryBudget({}, request, kWeights, kRoom);
+  Q4T_CHECK(budget.fixed == std::numeric_limits<size_t>::max());
+  Q4T_CHECK(!budget.feasible && budget.max_len == 0 && budget.max_seq == 0);
+  return true;
+}
+
 Q4T_TEST(budget_infeasible_capacity_never_becomes_a_minimum) {
   for (int length : {0, 1024, 262144}) {
     const auto budget = ComputeMemoryBudget({}, Request(length), kWeights, 1);

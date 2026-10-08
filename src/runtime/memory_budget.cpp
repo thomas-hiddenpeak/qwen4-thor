@@ -225,6 +225,7 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
         req.main_workspace_bytes > 0
             ? req.main_workspace_bytes
             : ReferenceWorkspace(kMainWorkspaceBytes, p.max_prefill);
+    b.main_forward_extra = req.main_forward_extra_bytes;
     if (p.has_mtp) {
       b.mtp_workspace = req.mtp_workspace_bytes;
       b.mtp_weights = req.mtp_weights_bytes;
@@ -239,7 +240,7 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
     b.fixed =
         Sum({weights_bytes, b.main_workspace, b.mtp_workspace, b.mtp_weights,
              b.mtp_buffers, b.mtp_scratch, b.mtp_checkpoints, b.forward_buffers,
-             b.ple_working, kContextMarginBytes});
+             b.ple_working, b.main_forward_extra, kContextMarginBytes});
     const auto peak_extra = [&](int len) {
       return std::max(PerRequestBytes(p, len, b.mtp_forward_temp),
                       MtpLoadingHostBytes(p, req, len));
@@ -330,6 +331,7 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
      << "[q4t][budget]   weights=" << b.weights / 1e9
      << " GB  fixed=" << b.fixed / 1e9 << " GB (estimated allocations+margin)\n"
      << "[q4t][budget]   main_workspace=" << b.main_workspace
+     << " main_forward_extra=" << b.main_forward_extra
      << " mtp_workspace=" << b.mtp_workspace
      << " forward_buffers=" << b.forward_buffers
      << " ple_working=" << b.ple_working << " mtp=" << p.has_mtp << "\n"
