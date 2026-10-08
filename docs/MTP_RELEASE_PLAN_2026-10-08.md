@@ -6,7 +6,8 @@
 提交 `c18f4b5` 启动新 Goal。暂停新增性能候选，以两个独立出口
 推进：A 基础正确性修复可合入；B 有限范围 MTP 获得正式支持。
 默认启用是另一个决策，不随合入或修改 experimental 标签自动批准。
-Goal 当前 active，A/B 均未标为通过；既有 NO_GO 和失败原件保留。
+Goal 当前 active；A 已形成可审查修复 PR，B 尚未通过。既有 NO_GO
+和失败原件保留。
 
 保护起点见 `.q4t-work/mtp-release-20261008/starting-identities.json`：
 464 项通过，包括两个原 dirty 工作区、main、历史构建及上一候选
@@ -124,3 +125,67 @@ CLI 两项、serve MTP+多流、MTP+媒体、两者同时及未知 `--mtp-k`。
 所有进程使用预定不存在的 model-dir，要求明确非零与预期拒绝
 原因、没有 tokenizer/model 加载；正常启动由后续质量组覆盖。
 默认服务质量和正式五档合并到 B 最终验收，不逐文件反复推理。
+
+## 阶段 A 交付与 B1 验证安排补记
+
+阶段 A 已提交 `92d1d95` 并推送，形成
+[PR #2](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/2)。
+原始证据独立审计 3201 项通过；新旧执行内容、fatbin 容器、
+提取来源分别 292/1418/503 项通过并经独立复核。HTTP 仍引用
+旧原件实际运行，不称新构建重新实测。独立修复包已可审查，
+main 未合并，MTP 默认关闭，B 与默认启用没有随之获得通过。
+PR的[公共host合同](https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/37798926553)
+已通过，只作本机证据之外的辅助检查。
+
+B 的数值合同仍待明确，root 将无此依赖的 B1 拒绝入口验收
+独立安排，避免其长期与尚未选定的计算模式绑定。原 13 组 host
+与六项进程拒绝清单不变；使用全新 `build/release-b1-20261008`，
+证据写入 `.q4t-work/mtp-release-20261008/b1-local/`。
+
+实际顺序：root 先授权 agent 执行该有界组，后要求构建后稍等
+以补充独立验收安排；追加消息到达时 13+6 已运行完成。命令、
+范围与原协议在运行前保存，但拆组安排的文字是测试后补记，
+不能写成事前已更新。`pretest-hold.json` 与全部时间原样保留，
+不重跑取得更整齐记录。仅本机 host/加载前拒绝，无模型/HTTP。
+正常 HTTP 和五档仍与 B 最终验收统一完成；后续只在相关身份
+改变或具体失败修复时重验受影响项。
+
+## B2a 取消恢复工具修正范围（实现与host测试前冻结）
+
+现有 `decode-recovery` 将普通参考切换为MTP后再比较文本，混入
+跨模式差异。保留其历史行为与失败证据；在同一脚本增加
+`same-mode-recovery`，禁止使用 `--reference-run` 的普通输出
+作为恢复oracle。只修工具，不据此宣布运行时缺陷或取消已通过。
+
+新scope使用候选新服务S1/208896/8192、显式MTP、greedy和固定
+seed20260920，从既有quality/performance输入提取45056/1024
+fixture，仅作为输入。实际9个生成请求按固定顺序：1K fresh
+control；44K prefill显式取消及1K恢复；1K首个非空内容后显式
+取消及恢复；同条件TCP RST及恢复；固定3000ms deadline及恢复。
+Prefill占槽后等500ms取消，必须在日志证明0<position<45056；
+deadline必须先见内容再中断，否则报覆盖失败，不能改时间重采样。
+FIN已有host TCP合同，本组不把它冒称真实decode覆盖。
+
+每次恢复的文本/usage/finish、实际模式与MTP步数等于fresh
+control；这不是完整内部状态逐位证明。4次中断后均要求健康、
+唯一槽回收、aborted+1/success不增；恢复success+1，最终9/4/5。
+显式decode/deadline只允许一次error/DONE且无正常finish/usage；
+RST保留收到的原始部分响应、真实ID及服务路径，不要求完整终态。
+要求8条decode路径（prefill取消尚未进入decode），prefill通过
+请求ID、取消响应及日志进度另行绑定。当前实际路径只接受
+mtp_multi_b1；未来其他verifier须连同实现更新路径合同。
+
+只扩展 `tools/evalscope/run_request_cancellation.py`，必要的纯
+解析/规划helper与 `test_request_cancellation.py`、host CMake
+注册。保留旧scope的输入和语义，复用现有HTTP/身份/连接工具，
+不另建运行框架。host验证固定为新scope规划/解析反例及原有
+response_identity、acceptance_mode两组：覆盖缺control、跨模式、
+正常完成误当取消、计数漂移、缺prefill进度、RST部分ID与缺失路径。
+不为此重复13+6或模型测试。本轮只完成工具实现和host验收；
+上述9请求尚未执行，最终输入/二进制/数值合同明确后另冻执行身份。
+
+B1结果：本机Release构建零警告，13/13具名host、6/6进程拒绝
+首次通过；q4t为`3ab3654c`。独立656项只读复核通过，六项
+stderr为确切入口诊断而非不存在模型目录错误；无模型/HTTP。
+[证据摘要](evidence/mtp-release-20261008/README.md)保留实际顺序，
+不将此有限结果扩大为正常启动或B正式支持。
