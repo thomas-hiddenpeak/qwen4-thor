@@ -38,6 +38,9 @@
 #include "q4t/vision/vision.h"
 
 namespace q4t {
+namespace trace {
+class MtpCycleStep;
+}
 namespace server {
 
 // One multimodal content part: a single image (1 frame) or a video (N frames).
@@ -162,6 +165,8 @@ class ChatServer {
     int32_t mtp_next_d0 = 0;    // next first draft (step output)
     int mtp_accepted_count = 0;  // accepted tokens this step (step output)
     int32_t mtp_accepted[64];   // accepted tokens (bonus + drafts, step output)
+    // Request-owned, S1 diagnostic only. Publication follows pending/done.
+    trace::MtpCycleStep* mtp_cycle_step = nullptr;
     std::condition_variable cv;  // request thread waits here for `done`
   };
   // Batched prefill (Phase 2, plain path). Concurrent requests that need a

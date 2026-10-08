@@ -10,6 +10,7 @@
 #include <vector>
 #include <cuda_profiler_api.h>
 #include <cuda_runtime.h>
+#include "q4t/trace/mtp_cycle_timing.h"
 
 namespace q4t::server {
 using detail::RequestCancelled;
@@ -79,8 +80,7 @@ void ChatServer::FreeSeqId(int seq_id) {
 // scratch); the D2H + argmax run under model_mu_ too (they must be ordered
 // after the forward on the default stream and before the next forward's H2D).
 //
-// MTP requests are NOT batched (their draft KV is a single shared buffer);
-// they keep the single-sequence path in HandleChat.
+// MTP requests use the separate batched speculative path below, including B=1.
 void ChatServer::RunOnePrefillChunk() {
   ChunkPrefillReq* req = nullptr;
   {
@@ -325,6 +325,9 @@ void ChatServer::SchedulerLoop() {
 
     if (!mtp_reqs.empty()) {
       const int B = static_cast<int>(mtp_reqs.size());
+      trace::MtpCycleStep* cycle_step =
+          B == 1 ? mtp_reqs[0]->mtp_cycle_step : nullptr;
+      if (cycle_step) cycle_step->Mark("scheduler_pick");
       if (getenv("Q4T_SCHED_DEBUG") != nullptr)
         std::fprintf(stderr, "[q4t][sched] MTP step B=%d\n", B);
       std::vector<model::ModelSequence*> seqs(B);
@@ -344,12 +347,13 @@ void ChatServer::SchedulerLoop() {
       Status s;
       {
         const std::lock_guard<std::mutex> lock(model_mu_);
+        if (cycle_step) cycle_step->Mark("model_lock_acquired");
         s = mtp::MtpSpeculativeStepMulti(model_.Get(), mtp_, seqs.data(),
                                          b_tok.data(), d0.data(), g_in.data(),
                                          B, mtp_k_, accepted.data(),
                                          acc_count.data(), next_b.data(),
                                          next_d0.data(), next_g.data(),
-                                         nullptr);
+                                         nullptr, cycle_step);
         if (!s.ok() && cudaPeekAtLastError() != cudaSuccess)
           gpu_healthy_.store(false, std::memory_order_relaxed);
       }
@@ -369,6 +373,7 @@ void ChatServer::SchedulerLoop() {
           } else {
             r->mtp_accepted_count = 0;  // sentinel: step failed
           }
+          if (cycle_step) cycle_step->Mark("scheduler_finish");
           r->cv.notify_one();
         }
       }

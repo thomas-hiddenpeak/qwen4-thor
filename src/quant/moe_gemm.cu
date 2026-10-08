@@ -22,6 +22,7 @@
 #include "q4t/quant/moe_decode.h"
 #include "q4t/quant/format.h"
 #include "q4t/quant/swizzle.h"
+#include "q4t/trace/mtp_cycle_timing.h"
 
 namespace q4t {
 namespace quant {
@@ -367,14 +368,18 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
   }
 
   // 2. Read counts to host (one sync). Token lists stay on device.
-  if (cudaMemcpyAsync(counts_h.data(), d_counts, E * sizeof(int32_t),
-                      cudaMemcpyDeviceToHost, stream) != cudaSuccess) {
-    free_all();
-    return Status::Fail("cudaMemcpy counts");
-  }
-  if (cudaStreamSynchronize(stream) != cudaSuccess) {
-    free_all();
-    return Status::Fail("stream sync");
+  {
+    // Includes the existing GPU wait; this is not GPU active time.
+    trace::MtpCycleSpan timing(trace::CycleDetail::kVerifyMoeCounts);
+    if (cudaMemcpyAsync(counts_h.data(), d_counts, E * sizeof(int32_t),
+                        cudaMemcpyDeviceToHost, stream) != cudaSuccess) {
+      free_all();
+      return Status::Fail("cudaMemcpy counts");
+    }
+    if (cudaStreamSynchronize(stream) != cudaSuccess) {
+      free_all();
+      return Status::Fail("stream sync");
+    }
   }
 
   // Clamp per-expert counts to M. An expert can be selected by at most M

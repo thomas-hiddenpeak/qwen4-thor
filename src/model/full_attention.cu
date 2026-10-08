@@ -33,6 +33,7 @@
 #include "q4t/model/short_topk.h"
 #include "q4t/model/streaming_topk.h"
 #include "q4t/status.h"
+#include "q4t/trace/mtp_cycle_timing.h"
 
 namespace q4t {
 namespace model {
@@ -1616,12 +1617,16 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   if (max_pos < 0) {
     max_pos = 0;
     std::vector<int> hp(static_cast<size_t>(T));
-    if (cudaMemcpyAsync(hp.data(), d_positions,
-                        static_cast<size_t>(T) * sizeof(int),
-                        cudaMemcpyDeviceToHost, stream) != cudaSuccess)
-      return Status::Fail("cudaMemcpyAsync positions failed");
-    if (cudaStreamSynchronize(stream) != cudaSuccess)
-      return Status::Fail("cudaStreamSynchronize positions failed");
+    {
+      // Includes the existing GPU wait; this is not GPU active time.
+      trace::MtpCycleSpan timing(trace::CycleDetail::kPositionsReadback);
+      if (cudaMemcpyAsync(hp.data(), d_positions,
+                          static_cast<size_t>(T) * sizeof(int),
+                          cudaMemcpyDeviceToHost, stream) != cudaSuccess)
+        return Status::Fail("cudaMemcpyAsync positions failed");
+      if (cudaStreamSynchronize(stream) != cudaSuccess)
+        return Status::Fail("cudaStreamSynchronize positions failed");
+    }
     for (int i = 0; i < T; ++i) max_pos = std::max(max_pos, hp[i]);
   }
   const int n_groups_max = (max_pos + 1) / w.idx_compress;

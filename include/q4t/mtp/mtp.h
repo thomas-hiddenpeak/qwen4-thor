@@ -44,6 +44,9 @@
 #include "q4t/status.h"
 
 namespace q4t {
+namespace trace {
+class MtpCycleStep;
+}  // namespace trace
 namespace mtp {
 
 // Optional request-local HTTP initialization diagnostics. Decode/scheduler
@@ -363,14 +366,16 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
 //
 // 正确性: draft 循环与 extend 复用 Stage 1 已验证的多序列 MtpForward
 // (per-seq KV 隔离); 验证复用 Stage 2a 已 bit-exact 验证的 ModelVerifyMulti。
-// 单序列 (B=1) 不走本函数 (用 MtpSpeculativeStep, 路径更省)。
+// The HTTP scheduler also uses this entrypoint for B=1. Optional cycle timing
+// is request-owned and supported only for that single-sequence diagnostic.
 Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                                const model::ModelSequence* const* seqs,
                                const int32_t* b_tok, const int32_t* d0,
                                const uint16_t* const* g_in, int B, int k,
                                int32_t* accepted_tokens, int* accepted_count,
                                int32_t* next_b, int32_t* next_d0,
-                               uint16_t** next_g, cudaStream_t stream);
+                               uint16_t** next_g, cudaStream_t stream,
+                               trace::MtpCycleStep* cycle_timing = nullptr);
 
 }  // namespace mtp
 }  // namespace q4t

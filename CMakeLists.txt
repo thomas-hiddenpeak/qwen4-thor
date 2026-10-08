@@ -154,10 +154,12 @@ target_link_libraries(q4t_quant PUBLIC q4t_io CUDA::cudart CUDA::cublasLt)
 # ---------------------------------------------------------------------------
 # q4t_model — model layer (hyper-connection backbone, attention, MoE)
 # ---------------------------------------------------------------------------
-add_library(q4t_trace STATIC src/trace/router_trace.cpp
+add_library(q4t_trace STATIC src/trace/mtp_cycle_timing.cpp
+  src/trace/router_trace.cpp
   src/trace/router_collector.cpp src/trace/sha256.cpp)
 target_include_directories(q4t_trace PUBLIC include)
 target_link_libraries(q4t_trace PUBLIC CUDA::cudart)
+target_link_libraries(q4t_quant PUBLIC q4t_trace)
 add_executable(q4t_router_trace_check tools/trace/router_trace_check.cpp
   src/trace/router_trace.cpp)
 target_include_directories(q4t_router_trace_check PRIVATE include)

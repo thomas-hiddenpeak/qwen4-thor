@@ -13,6 +13,7 @@
 #include <vector>
 #include <cuda_runtime.h>
 #include "q4t/mtp/init_timing.h"
+#include "q4t/trace/mtp_cycle_timing.h"
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/mtp_policy.h"
 #include "q4t/server/request_json.h"
@@ -306,6 +307,21 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           : 0;
   const char* mtp_fallback =
       !mtp_loaded_ && mtp_requested_ ? "load_failed" : "none";
+  std::unique_ptr<trace::MtpCycleTiming> cycle_timing;
+  const char* cycle_env = getenv("Q4T_MTP_CYCLE_TIMING");
+  if (cycle_env && std::strcmp(cycle_env, "1") == 0 && mtp_loaded_ &&
+      max_seq_ == 1 && items.empty()) {
+    try {
+      cycle_timing = std::make_unique<trace::MtpCycleTiming>(
+          request_id, T, max_tokens, mtp_k_, t_arrive);
+    } catch (...) {
+      std::fprintf(stderr,
+                   "[q4t][mtp_cycle_timing] {\"schema_version\":1,"
+                   "\"response_id\":\"%s\",\"valid\":false,"
+                   "\"complete\":false,\"error\":\"setup_exception\"}\n",
+                   request_id.c_str());
+    }
+  }
   std::unique_ptr<mtp::MtpInitTiming> init_timing;
   const char* timing_env = getenv("Q4T_MTP_INIT_TIMING");
   if (timing_env && std::strcmp(timing_env, "1") == 0 && mtp_loaded_ &&
@@ -593,6 +609,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // trunk is one of the per-request costs. Exact equivalence to plain greedy
   // also depends on the verifier's numerical/state contract, tested separately.
   const bool prefill_only = max_tokens == 1 || is_stop_token(next_token);
+  if (cycle_timing) cycle_timing->MarkRequest("main_prefill_finished");
   int mtp_steps = 0;
   int plain_steps = 0;
   int plain_tail_tokens = 0;
@@ -676,6 +693,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     d_trunk_full = nullptr;
     if (init_timing) init_timing->MarkHost("trunk_free_end");
   }
+  if (cycle_timing) cycle_timing->MarkRequest("init_finished");
   // Stage 2c (4b): the speculative steps are driven by the central scheduler,
   // which batches all concurrent MTP requests into ONE MtpSpeculativeStepMulti
   // (weights read once). This thread registers each step's input (mtp_b/d0/g),
@@ -722,6 +740,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       // Register this step's input with the scheduler.
       mtp_ar.mtp_b = mtp_b;
       mtp_ar.mtp_d0 = mtp_d0;
+      trace::MtpCycleStep* cycle_step =
+          cycle_timing ? cycle_timing->BeginStep(seq.position, mtp_k_)
+                       : nullptr;
+      mtp_ar.mtp_cycle_step = cycle_step;
+      if (cycle_step) cycle_step->Mark("submit");
       if (init_timing && mtp_steps == 0)
         init_timing->MarkHost("first_step_submit");
       {
@@ -737,6 +760,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         std::unique_lock<std::mutex> lock(sched_mu_);
         mtp_ar.cv.wait(lock, [&mtp_ar] { return mtp_ar.done; });
       }
+      if (cycle_step) cycle_step->Mark("request_wake");
       if (init_timing && mtp_steps == 0)
         init_timing->MarkHost("first_step_wait_end");
       if (mtp_ar.mtp_accepted_count <= 0) {
@@ -745,6 +769,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         break;
       }
       ++mtp_steps;
+      const size_t generated_before_step = generated.size();
+      int token_piece_writes = 0;
+      int nonempty_writes = 0;
+      if (cycle_step) cycle_step->Mark("emit_begin");
       for (int i = 0; i < mtp_ar.mtp_accepted_count &&
                           static_cast<int>(generated.size()) < max_tokens;
            ++i) {
@@ -766,8 +794,19 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                                          !init_timing->FirstContentWritten();
               if (first_content)
                 init_timing->MarkHost("first_content_write_begin");
+              const bool first_cycle_content =
+                  cycle_timing && !piece.empty() &&
+                  !cycle_timing->FirstContentWritten();
+              if (first_cycle_content)
+                cycle_timing->MarkRequest("first_content_write_begin");
               wrote = write_stream(SseChunk(id, model_field, "", piece, "", 0));
               if (first_content && wrote) init_timing->FinishFirstContent();
+              if (first_cycle_content && wrote)
+                cycle_timing->FinishFirstContent();
+              if (cycle_step && wrote) {
+                ++token_piece_writes;
+                if (!piece.empty()) ++nonempty_writes;
+              }
             }
           }
           if (!wrote) {  // client disconnected: stop, free the slot
@@ -777,11 +816,18 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           }
         }
       }
+      if (cycle_step) {
+        cycle_step->Mark("emit_end");
+        cycle_step->SetDelivery(
+            static_cast<int>(generated.size() - generated_before_step),
+            token_piece_writes, nonempty_writes);
+      }
       // Advance the main seq over the accepted prefix [b, d_0..d_{a-1}] (the
       // multi step does not touch seqs[b]).
       seq.position += mtp_ar.mtp_accepted_count;
       for (int i = 0; i < mtp_ar.mtp_accepted_count; ++i)
         seq.history.push_back(mtp_ar.mtp_accepted[i]);
+      if (cycle_step) cycle_step->Mark("advance_end");
       if (done) break;  // EOS wins over a coincident output/context limit.
       if (static_cast<int>(generated.size()) >= max_tokens) {
         finish_reason = "length";
@@ -1023,6 +1069,12 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
   }
   cleanup();
+  if (cycle_timing) {
+    cycle_timing->MarkRequest("request_end");
+    cycle_timing->Finish(static_cast<int>(generated.size()), mtp_steps,
+                         plain_tail, finish_reason, mtp_fallback,
+                         !generation_failed && !client_disconnected);
+  }
 }
 
 }  // namespace q4t::server
