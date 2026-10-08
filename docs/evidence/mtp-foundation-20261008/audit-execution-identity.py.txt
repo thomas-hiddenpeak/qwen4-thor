@@ -1,0 +1,440 @@
+#!/usr/bin/env python3
+"""CPU-only exhaustive linked ELF and CUDA image comparison.
+
+Only NVCC generated identifiers are alpha-renamed. Exception metadata addresses
+are decoded, then compared as section+offset; no executable is run.
+"""
+import collections
+import hashlib
+import json
+import pathlib
+import re
+import struct
+import subprocess
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+OUT = pathlib.Path(__file__).resolve().parent
+NEW = ROOT / 'build/foundation-20261008'
+OLD = ROOT.parent.parent / 'mtp-admission-20261007/source/build/runtime'
+PATTERN = re.compile(rb'(?:_GLOBAL__N__|_INTERNAL_)[0-9a-f]{8}(?=_)')
+TMP = re.compile(rb'tmpxft_[0-9a-f]{8}_[0-9a-f]{8}-[0-9]+_[A-Za-z0-9_]+\.cudafe1\.cpp')
+forward = {}
+reverse = {}
+temporary_forward = {}
+temporary_reverse = {}
+checks = []
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def check(name, passed, detail=None):
+    checks.append(dict(name=name, passed=bool(passed), detail=detail))
+    return bool(passed)
+
+
+def bind(a, b, pattern, mapping, inverse):
+    aa = pattern.findall(a)
+    bb = pattern.findall(b)
+    if len(aa) != len(bb):
+        return False
+    for x, y in zip(aa, bb):
+        if len(x) != len(y) or mapping.get(x, y) != y or inverse.get(y, x) != x:
+            return False
+        mapping[x] = y
+        inverse[y] = x
+    return True
+
+
+def renamed(data, metadata=False):
+    result = PATTERN.sub(lambda m: forward.get(m[0], m[0]), data)
+    if metadata:
+        result = TMP.sub(lambda m: temporary_forward.get(m[0], m[0]), result)
+    return result
+
+
+class Elf:
+    def __init__(self, path):
+        self.path = pathlib.Path(path)
+        self.data = self.path.read_bytes()
+        self.header = struct.unpack_from('<16sHHIQQQIHHHHHH', self.data)
+        assert self.header[0][:6] == b'\x7fELF\x02\x01'
+        h = self.header
+        rows = [struct.unpack_from('<IIQQQQIIQQ', self.data, h[6] + i*h[11])
+                for i in range(h[12])]
+        names = self.data[rows[h[13]][4]:rows[h[13]][4] + rows[h[13]][5]]
+        self.sections = []
+        for i, row in enumerate(rows):
+            name = names[row[0]:].split(b'\0', 1)[0].decode()
+            data = self.data[row[4]:row[4] + row[5]] if row[1] != 8 else b''
+            self.sections.append(dict(index=i, name=name, type=row[1], flags=row[2],
+                address=row[3], offset=row[4], size=row[5], link=row[6], info=row[7],
+                align=row[8], entsize=row[9], data=data))
+        self.by_name = {x['name']: x for x in self.sections}
+        self.programs = [struct.unpack_from('<IIQQQQQQ', self.data, h[5] + i*h[9])
+                         for i in range(h[10])]
+
+    def canonical(self, address):
+        if address == 0:
+            return ['null', 0]
+        for sec in self.sections:
+            if sec['flags'] & 2 and sec['size'] and sec['address'] <= address < sec['address'] + sec['size']:
+                return [sec['name'], address - sec['address']]
+        for sec in self.sections:
+            if sec['flags'] & 2 and sec['size'] and address == sec['address'] + sec['size']:
+                return [sec['name'], sec['size']]
+        return ['absolute', address]
+
+    def symbols(self, section):
+        out = []
+        strings = self.sections[section['link']]['data']
+        for at in range(0, len(section['data']), section['entsize']):
+            name, info, other, index, value, size = struct.unpack_from('<IBBHQQ', section['data'], at)
+            text = strings[name:].split(b'\0', 1)[0]
+            canon = self.canonical(value) if 0 < index < len(self.sections) else ['special', value]
+            out.append([text, info, other, index, canon, size])
+        return out
+
+
+def leb(data, at, signed=False):
+    value = 0
+    shift = 0
+    while True:
+        byte = data[at]
+        at += 1
+        value |= (byte & 127) << shift
+        shift += 7
+        if not byte & 128:
+            break
+    if signed and byte & 64:
+        value -= 1 << shift
+    return value, at
+
+
+def value(data, at, encoding, address, data_base=0):
+    fmt = encoding & 15
+    start = at
+    if fmt == 0:
+        number = struct.unpack_from('<Q', data, at)[0]; at += 8
+    elif fmt in (1, 9):
+        number, at = leb(data, at, fmt == 9)
+    elif fmt in (2, 3, 4, 10, 11, 12):
+        form = {2:'H', 3:'I', 4:'Q', 10:'h', 11:'i', 12:'q'}[fmt]
+        number = struct.unpack_from('<' + form, data, at)[0]
+        at += struct.calcsize(form)
+    else:
+        raise AssertionError('unsupported encoding ' + hex(encoding))
+    if number:
+        application = encoding & 0x70
+        if application == 0x10:
+            number += address + start
+        elif application == 0x30:
+            number += data_base
+        else:
+            assert application == 0
+    return number, at
+
+
+def pointer(data, at, encoding, section, elf, masked, records, label):
+    start = at
+    number, at = value(data, at, encoding, section['address'], section['address'])
+    masked[start:at] = bytes(at-start)
+    records.append(dict(label=label, offset=start, encoding=encoding,
+                        indirect=bool(encoding & 0x80), target=elf.canonical(number)))
+    return number, at
+
+
+def frames(elf):
+    sec = elf.by_name['.eh_frame']
+    data = sec['data']; masked = bytearray(data); records = []; cies = {}; lsdas = set(); at = 0
+    while at < len(data):
+        begin = at
+        length = struct.unpack_from('<I', data, at)[0]; at += 4
+        if length == 0:
+            assert at == len(data)
+            break
+        assert length != 0xffffffff
+        end = begin + 4 + length
+        cie_ref = struct.unpack_from('<I', data, at)[0]; at += 4
+        if cie_ref == 0:
+            version = data[at]; at += 1
+            assert version in (1, 3)
+            aug_end = data.index(0, at); augment = data[at:aug_end].decode(); at = aug_end + 1
+            _, at = leb(data, at); _, at = leb(data, at, True)
+            if version == 1:
+                at += 1
+            else:
+                _, at = leb(data, at)
+            enc = dict(fde=0, lsda=255, z=augment.startswith('z'))
+            if enc['z']:
+                size, at = leb(data, at); aug_limit = at + size
+                for letter in augment[1:]:
+                    if letter == 'L':
+                        enc['lsda'] = data[at]; at += 1
+                    elif letter == 'R':
+                        enc['fde'] = data[at]; at += 1
+                    elif letter == 'P':
+                        mode = data[at]; at += 1
+                        _, at = pointer(data, at, mode, sec, elf, masked, records, 'personality')
+                    else:
+                        assert letter == 'S'
+                assert at == aug_limit
+            else:
+                assert augment == ''
+            cies[begin] = enc
+        else:
+            enc = cies[begin + 4 - cie_ref]
+            _, at = pointer(data, at, enc['fde'], sec, elf, masked, records, 'function_start')
+            _, at = value(data, at, enc['fde'] & 15, 0)
+            if enc['z']:
+                size, at = leb(data, at); aug_limit = at + size
+                if enc['lsda'] != 255:
+                    target, at = pointer(data, at, enc['lsda'], sec, elf, masked, records, 'lsda')
+                    if target:
+                        lsdas.add(target)
+                assert at == aug_limit
+        assert at <= end
+        at = end
+    return dict(masked_sha256=sha(masked), pointers=records, cie_count=len(cies)), lsdas
+
+
+def frame_header(elf):
+    sec = elf.by_name['.eh_frame_hdr']; data = sec['data']; masked = bytearray(data); records = []
+    assert data[0] == 1
+    _, at = pointer(data, 4, data[1], sec, elf, masked, records, 'eh_frame')
+    count, at = value(data, at, data[2], sec['address'], sec['address'])
+    for i in range(count):
+        _, at = pointer(data, at, data[3], sec, elf, masked, records, 'function:' + str(i))
+        _, at = pointer(data, at, data[3], sec, elf, masked, records, 'fde:' + str(i))
+    assert at == len(data)
+    return dict(masked_sha256=sha(masked), entries=count, pointers=records)
+
+
+def except_table(elf, lsdas):
+    sec = elf.by_name['.gcc_except_table']; data = sec['data']; masked = bytearray(data); records = []
+    action_total = 0
+    for address in sorted(lsdas):
+        at = address - sec['address']; assert 0 <= at < len(data)
+        lp = data[at]; at += 1
+        if lp != 255:
+            _, at = pointer(data, at, lp, sec, elf, masked, records, 'landing_pad_start')
+        typ = data[at]; at += 1
+        type_base = None
+        if typ != 255:
+            skip, at = leb(data, at); type_base = at + skip
+        call = data[at]; at += 1
+        size, at = leb(data, at); call_end = at + size
+        actions = []
+        while at < call_end:
+            for _ in range(3):
+                _, at = value(data, at, call, 0)
+            action, at = leb(data, at)
+            if action:
+                actions.append(call_end + action - 1)
+        assert at == call_end
+        types = set(); visited = set()
+        for action in actions:
+            while action not in visited:
+                visited.add(action); filter_value, next_at = leb(data, action, True)
+                displacement_begin = next_at
+                displacement, next_at = leb(data, next_at, True)
+                assert filter_value >= 0, 'negative exception specification not handled'
+                if filter_value:
+                    types.add(filter_value)
+                if not displacement:
+                    break
+                action = displacement_begin + displacement
+        action_total += len(visited)
+        for index in sorted(types):
+            width = {0:8, 2:2, 3:4, 4:8, 10:2, 11:4, 12:8}[typ & 15]
+            where = type_base - index * width
+            _, end = pointer(data, where, typ, sec, elf, masked, records, 'typeinfo')
+            assert end == where + width
+    return dict(masked_sha256=sha(masked), lsda_count=len(lsdas),
+                action_records=action_total, pointers=records)
+
+
+# Freeze correspondence only from actual decompressed CUDA images and symbol
+# tables. Mappings must be length preserving, injective and reversible.
+image_root = OUT / 'elf-identity'
+old_images = sorted(p.name for p in (image_root / 'old').iterdir())
+new_images = sorted(p.name for p in (image_root / 'new').iterdir())
+check('same_cuda_image_inventory', old_images == new_images,
+      dict(old=old_images, new=new_images))
+for name in old_images:
+    a = (image_root / 'old' / name).read_bytes(); b = (image_root / 'new' / name).read_bytes()
+    check('generated_identifier_bijection:' + name, bind(a, b, PATTERN, forward, reverse))
+
+old_elf = Elf(OLD / 'q4t'); new_elf = Elf(NEW / 'q4t')
+check('temporary_file_metadata_bijection', bind(old_elf.by_name['.strtab']['data'],
+      new_elf.by_name['.strtab']['data'], TMP, temporary_forward, temporary_reverse))
+image_checks = []
+for name in old_images:
+    a = (image_root / 'old' / name).read_bytes(); b = (image_root / 'new' / name).read_bytes()
+    row = dict(name=name, old_sha256=sha(a), new_sha256=sha(b), bytes_old=len(a), bytes_new=len(b),
+               alpha_equivalent=renamed(a) == b)
+    if name.endswith('.cubin'):
+        x = Elf(image_root / 'old' / name); y = Elf(image_root / 'new' / name)
+        code = [(s, t) for s, t in zip(x.sections, y.sections) if s['flags'] & 4]
+        row['instruction_sections'] = len(code)
+        row['raw_instruction_sections_equal'] = all(s['data'] == t['data'] for s, t in code)
+    image_checks.append(row)
+    check('cuda_image_alpha_equivalence:' + name, row['alpha_equivalent'])
+
+# Verify all actual runtime object sections and relocations. Relocatable
+# section file offsets are storage layout, not execution identities.
+object_checks = []
+for target in ['q4t','q4t_model','q4t_io','q4t_ple','q4t_quant','q4t_text','q4t_server','q4t_runtime','q4t_trace']:
+    for path in sorted((NEW / 'CMakeFiles' / (target + '.dir')).rglob('*.o')):
+        relative = path.relative_to(NEW); prior = OLD / relative
+        x = Elf(prior); y = Elf(path)
+        check('object_temporary_names:' + str(relative), bind(x.by_name['.strtab']['data'],
+              y.by_name['.strtab']['data'], TMP, temporary_forward, temporary_reverse))
+        # Some host-only CUDA objects contain no device image; their anonymous
+        # names are still constrained by paired strings and complete sections.
+        check('object_generated_names:' + str(relative), bind(x.by_name['.strtab']['data'],
+              y.by_name['.strtab']['data'], PATTERN, forward, reverse))
+        rows = []
+        for s, t in zip(x.sections, y.sections):
+            name_ok = renamed(s['name'].encode()).decode() == t['name']
+            keys = ['type','flags','address','size','link','info','align','entsize']
+            meta_ok = all(s[k] == t[k] for k in keys if not (s['name'] == '.nv_fatbin' and k == 'size'))
+            if s['name'] == '.nv_fatbin':
+                equal = None
+            else:
+                equal = renamed(s['data'], metadata=s['name'] in ('.strtab','.shstrtab')) == t['data']
+            rows.append(dict(name=s['name'], new_name=t['name'], name_equal=name_ok,
+                             metadata_equal=meta_ok, content_equal=equal,
+                             old_sha256=sha(s['data']), new_sha256=sha(t['data'])))
+        passed = len(x.sections) == len(y.sections) and all(r['name_equal'] and r['metadata_equal'] and r['content_equal'] is not False for r in rows)
+        object_checks.append(dict(path=str(relative), old_sha256=sha(x.data), new_sha256=sha(y.data),
+                                  passed=passed, sections=rows))
+        check('runtime_object:' + str(relative), passed)
+
+# Repeat linked image alpha comparisons after all object bindings, ensuring
+# no later binding weakens the earlier constraints.
+check('cuda_bindings_still_hold', all(renamed((image_root/'old'/n).read_bytes()) == (image_root/'new'/n).read_bytes() for n in old_images))
+old_frames, old_lsdas = frames(old_elf); new_frames, new_lsdas = frames(new_elf)
+old_hdr = frame_header(old_elf); new_hdr = frame_header(new_elf)
+old_lsda = except_table(old_elf, old_lsdas); new_lsda = except_table(new_elf, new_lsdas)
+check('eh_frame_decoded_equivalent', old_frames == new_frames)
+check('eh_frame_hdr_decoded_equivalent', old_hdr == new_hdr)
+check('gcc_except_table_decoded_equivalent', old_lsda == new_lsda)
+
+section_checks = []
+for a, b in zip(old_elf.sections, new_elf.sections):
+    name = a['name']; assert name == b['name']
+    method = 'raw_bytes'
+    equal = a['data'] == b['data']
+    if name == '.note.gnu.build-id':
+        method = 'GNU build-id metadata, explicitly different'
+        equal = (a['data'][:16] == b['data'][:16] and a['data'][:12] == struct.pack('<III',4,20,3)
+                 and a['size'] == b['size'] == 36)
+    elif name in ('.rodata','.strtab'):
+        method = 'bijective NVCC generated identifier renaming'
+        equal = renamed(a['data'], metadata=name == '.strtab') == b['data']
+        if name == '.strtab':
+            # The final linker reorders local symbol names. This table is not
+            # ALLOC, no final relocation uses .symtab, and all resolved symbol
+            # records are checked below, including value/type/binding/section.
+            method += '; unordered non-ALLOC string-table entries'
+            equal = collections.Counter(renamed(a['data'], metadata=True).split(b'\0')) == collections.Counter(b['data'].split(b'\0'))
+    elif name == '.nv_fatbin':
+        method = 'all embedded cubin/PTX images, complete bytes after identifier renaming'
+        equal = all(x['alpha_equivalent'] for x in image_checks)
+    elif name == '.eh_frame':
+        method = 'decoded CIE/FDE pointers; exact remaining bytes'
+        equal = old_frames == new_frames
+    elif name == '.eh_frame_hdr':
+        method = 'decoded PC/FDE address table; exact remaining bytes'
+        equal = old_hdr == new_hdr
+    elif name == '.gcc_except_table':
+        method = 'FDE-referenced LSDA action/typeinfo pointers; exact remaining bytes'
+        equal = old_lsda == new_lsda
+    elif name == '.symtab':
+        method = 'full ELF symbol entries; generated identifiers and section-relative addresses'
+        aa = old_elf.symbols(a); bb = new_elf.symbols(b)
+        for row in aa:
+            row[0] = renamed(row[0], metadata=True)
+        equal = sorted(aa) == sorted(bb)
+    metadata_ok = all(a[k] == b[k] for k in ['type','flags','link','info','align','entsize'])
+    if name != '.nv_fatbin':
+        metadata_ok &= a['size'] == b['size']
+    row = dict(name=name, alloc=bool(a['flags'] & 2), old_address=a['address'],new_address=b['address'],
+               old_offset=a['offset'],new_offset=b['offset'],old_size=a['size'],new_size=b['size'],
+               raw_equal=a['data'] == b['data'],method=method,content_equivalent=equal,
+               metadata_equal=metadata_ok,old_sha256=sha(a['data']),new_sha256=sha(b['data']))
+    section_checks.append(row)
+    check('linked_section:' + name, equal and metadata_ok)
+
+program_checks = []
+for a,b in zip(old_elf.programs,new_elf.programs):
+    # (type, flags, offset, vaddr, paddr, filesz, memsz, align)
+    equal = a == b
+    method = 'raw_header'
+    if not equal:
+        method = 'same section-relative mapped ranges'
+        equal = (a[0:2] == b[0:2] and a[7] == b[7]
+            and old_elf.canonical(a[3]) == new_elf.canonical(b[3])
+            and old_elf.canonical(a[4]) == new_elf.canonical(b[4])
+            and old_elf.canonical(a[3]+a[5]) == new_elf.canonical(b[3]+b[5])
+            and old_elf.canonical(a[3]+a[6]) == new_elf.canonical(b[3]+b[6])
+            and (a[3]-a[2]) == (b[3]-b[2]))
+    program_checks.append(dict(old=a,new=b,equivalent=equal,method=method))
+    check('program_header:' + str(len(program_checks)),equal)
+check('same_ELF_entry_and_target',old_elf.header[1:5] == new_elf.header[1:5])
+check('same_program_and_section_counts',len(old_elf.programs)==len(new_elf.programs) and len(old_elf.sections)==len(new_elf.sections))
+
+for elf in [old_elf, new_elf]:
+    sym = elf.by_name['.symtab']
+    check('static_symbol_table_is_nonalloc:' + str(elf.path),
+          not sym['flags'] & 2 and not elf.by_name['.strtab']['flags'] & 2
+          and not any(x['type'] in (4,9) and x['link'] == sym['index'] for x in elf.sections))
+
+# Read-only dynamic/relocation disassembly is also retained for independent
+# review; no ldd or executable invocation is used.
+for label,binary in [('old',OLD/'q4t'),('new',NEW/'q4t')]:
+    for name,args in [('dynamic',['-dW']),('relocations',['-rW']),('programs',['-lW']),('frames',['--debug-dump=frames'])]:
+        result=subprocess.run(['readelf',*args,str(binary)],capture_output=True,text=True)
+        assert result.returncode==0
+        path=OUT/'elf-identity'/(label+'-'+name+'.txt')
+        if path.exists():
+            assert path.read_text()==result.stdout+result.stderr
+        else:
+            path.write_text(result.stdout+result.stderr)
+check('dynamic_dependencies_and_tags_raw_equal',(OUT/'elf-identity/old-dynamic.txt').read_bytes()==(OUT/'elf-identity/new-dynamic.txt').read_bytes())
+check('dynamic_relocations_raw_equal',(OUT/'elf-identity/old-relocations.txt').read_bytes()==(OUT/'elf-identity/new-relocations.txt').read_bytes())
+report=dict(schema_version=1,source_root=str(ROOT),old_binary=str(OLD/'q4t'),new_binary=str(NEW/'q4t'),
+    old_sha256=sha(old_elf.data),new_sha256=sha(new_elf.data),whole_binary_byte_identical=False,
+    passed=all(x['passed'] for x in checks),checks=checks,
+    generated_identifier_mapping=[dict(old=k.decode(),new=v.decode()) for k,v in sorted(forward.items())],
+    metadata_temporary_filename_mapping=[dict(old=k.decode(),new=v.decode()) for k,v in sorted(temporary_forward.items())],
+    cuda_images=image_checks,runtime_objects=object_checks,linked_sections=section_checks,program_headers=program_checks,
+    decoded_exception_metadata=dict(eh_frame_old=old_frames,eh_frame_new=new_frames,
+        eh_frame_header_old=old_hdr,eh_frame_header_new=new_hdr,gcc_except_table_old=old_lsda,gcc_except_table_new=new_lsda),
+    provenance=dict(script_sha256=sha(pathlib.Path(__file__).read_bytes()),
+        source_audit_sha256=sha((OUT/'source-target-audit-01.json').read_bytes()),
+        build_identity_sha256=sha((OUT/'build-identity-audit-01.json').read_bytes())),
+    scope='CPU execution-content identity audit; HTTP evidence remains actual historical runs of original binary; no new HTTP or CUDA test body was executed')
+report['prior_attempt'] = dict(path=str(OUT/'execution-identity-audit-01.json'),
+    sha256=sha((OUT/'execution-identity-audit-01.json').read_bytes()),
+    classification='CPU audit comparator corrected for non-ALLOC static symbol/string table ordering; original results retained; no runtime change or new inference')
+report['repeat_guard_correction'] = dict(
+    prior_passed_report=str(OUT/'execution-identity-audit-02.json'),
+    prior_passed_report_sha256=sha((OUT/'execution-identity-audit-02.json').read_bytes()),
+    wrapper_first_failure=str(OUT/'cpu-binding-review-01/review.json'),
+    wrapper_first_failure_sha256=sha((OUT/'cpu-binding-review-01/review.json').read_bytes()),
+    detail='JSON tuple/list representation in repeated-report comparison corrected; all 292 execution checks and 502 binding checks had passed')
+path=OUT/'execution-identity-audit-03.json'
+if path.exists():
+    assert json.loads(path.read_text())==json.loads(json.dumps(report)),'audit changed; preserve old report and select a new filename'
+else:
+    path.write_text(json.dumps(report,indent=2)+'\n')
+print(json.dumps(dict(passed=report['passed'],checks=len(checks),failures=[x for x in checks if not x['passed']],
+    cuda_images=len(image_checks),runtime_objects=len(object_checks),generated_identifiers=len(forward),
+    temporary_filenames=len(temporary_forward),alloc_sections=sum(x['alloc'] for x in section_checks),
+    cie_count=old_frames['cie_count'],fde_count=old_hdr['entries'],lsda_count=old_lsda['lsda_count'],
+    typeinfo_pointers=old_lsda['pointers'])))
+sys.exit(0 if report['passed'] else 1)
