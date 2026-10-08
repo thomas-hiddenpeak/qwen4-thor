@@ -211,6 +211,13 @@ Status MtpResetState(const MtpModel& m, cudaStream_t stream, int seq_id = -1);
 // per-step cudaMalloc/cudaFree (each cudaFree is an implicit device sync).
 Status MtpReserveScratch(MtpModel& m, int k_max);
 
+// Skip only the unused tail of one complete, nonfinal initialization chunk.
+// The entire attention call and its persistent cache writes still execute.
+enum class MtpForwardMode { kFull, kSkipUnusedTail };
+
+// Opt-in initialization policy; the last chunk always produces full outputs.
+enum class MtpInitPolicy { kFull, kSkipUnusedTail };
+
 // Run one MTP draft step.
 //
 //   input_ids   : device int32 [T] — the new token(s) to embed (step 0: the
@@ -241,6 +248,12 @@ Status MtpReserveScratch(MtpModel& m, int k_max);
 //                  sample_hidden[T-1] with M=1; its GEMV rounding need not be
 //                  bit-identical to the final row of the M=T GEMM.
 //   max_position: exact maximum logical position, or -1 to read it back.
+//   mode        : kFull preserves the output contracts above, including when
+//                 compute_logits=false. kSkipUnusedTail is only for a complete
+//                 nonfinal initialization chunk: max_seq=1, d_seq_id=null,
+//                 T=max_prefill>0, compute_logits=false. It returns after full
+//                 attention; sample_hidden/multi_hidden/logits are not written
+//                 and may be null. Invalid combinations fail before GPU work.
 Status MtpForward(const MtpModel& m, const int32_t* input_ids, const int* positions,
                   const uint16_t* hidden_states, uint16_t* sample_hidden,
                   uint16_t* multi_hidden, uint16_t* logits, int T,
@@ -248,7 +261,8 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids, const int* positi
                   bool compute_logits = true,
                   model::LogitsRows logits_rows = model::LogitsRows::kAllRows,
                   MtpInitTiming* init_timing = nullptr,
-                  int max_position = -1);
+                  int max_position = -1,
+                  MtpForwardMode mode = MtpForwardMode::kFull);
 
 // Device bytes for the MtpForward `workspace` (the GEMM scratch plus the
 // forward intermediates for `T` tokens, the full-attention scratch, and the
@@ -290,13 +304,18 @@ size_t MtpWorkspaceBytes(const MtpConfig& cfg, int T,
 //                 projection can change rounding and out_d0 versus kAllRows.
 //                 Persistent scratch always keeps the all-row path, even if
 //                 kLastRow is requested. All trunk and KV rows remain intact.
+//   init_policy : kSkipUnusedTail skips the unused post-attention tail only
+//                 for nonfinal chunks when T>max_prefill, max_seq=1, seq_id=0.
+//                 Other cases remain full. The last chunk's shape, g/d0 and
+//                 all cache writes are unchanged; temporary sizing is kept.
 Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
                       const uint16_t* main_trunk, const int* positions, int T,
                       int32_t* out_d0, uint16_t* out_g, cudaStream_t stream,
                       int seq_id = 0,
                       model::LogitsRows logits_rows =
                           model::LogitsRows::kAllRows,
-                      MtpInitTiming* init_timing = nullptr);
+                      MtpInitTiming* init_timing = nullptr,
+                      MtpInitPolicy init_policy = MtpInitPolicy::kFull);
 
 // 推测解码一步 (scheme A, 见本文件顶部 + reference/.../nvidia/mtp.py)。
 //

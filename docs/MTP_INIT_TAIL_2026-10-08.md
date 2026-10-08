@@ -53,8 +53,8 @@ stream_ms=null。实际marker物理间隔计入skipped_marker_gap_ms，
    从ModelBeginSequence独立prefill（共享只读加载权重），各固定
    4个自然k3步骤加1个预定forced-d0拒绝，共10步，禁止追求接受
    分布追加步骤。比较初始化g/d0及draft完整KV/raw/comp，随后
-   每步draft/verify原始logits、trunk、接受/token、recurrent及draft
-   状态exact；长初始化激活新分支。旧短17步证据按身份复用，不
+   每步draft IDs、完整verify logits/trunk、完整extend logits/
+   multi/sample、接受/token、g/d0、recurrent及draft状态exact；长初始化激活新分支。旧短17步证据按身份复用，不
    再跑旧矩阵，不声称有限输入等同所有跨模式数值证明。
 5. 全部前置通过后唯一关闭所有诊断的正式五档各3次（15条）：
    1024/4096/8192/45056/204800输入，256输出；文本、usage、
@@ -76,3 +76,24 @@ stream_ms=null。实际marker物理间隔计入skipped_marker_gap_ms，
 不能承诺等量TTFT改善或主验证提速。验证约八成循环的主要工作
 仍是主模型计算，其同步窗口含前序GPU工作，不当可删除纯开销。
 本候选完成后统一封存完整成本账与剩余优先级，不扩第三候选。
+
+## 实现前观察边界勘误
+
+在任何候选测试前确认：Multi会覆盖中间草稿head logits，现有
+接口只能取draft IDs及完整extend logits；冻结清单原“draft/verify
+原始logits”措辞过宽。本页改为实际可读观察量，不加runtime插桩，
+不改输入、调用数、exact条件或性能规则；原冻结文本保留在证据目录。
+
+## 实现与必要构建快照（尚未验收）
+
+服务962b5632、模型库cdc93096、测试96dc3188独立零警告构建。
+生产范围为两个显式policy及server S1/seq0/text/8192分块入口，
+计时增tail标记并保持10markers；28项parser合同、五T/30forward
+直接三路径及长10步/2probe测试已编写但尚未执行。
+128运行来源、独立测试/工具身份及56项HTTP来源绑定已封存。
+
+首测前静态审查补齐工具身份与8192原始输入派生链；协议早期
+两个prebuild版本保留，最终请求数、输入、数值/性能条件未变。
+长测试完整draft缓存及recurrent在RAM逐字节比较，额外host约
+5GiB；原始小输出受64MiB限制。中间草稿head logits不在观察量内。
+下一项quality-on-01 HTTP11，构建和提交不代表验收通过。

@@ -658,9 +658,16 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           init_timing->MarkHost("shift_end");
           init_timing->MarkHost("extend_begin");
         }
+        const bool skip_unused_tail =
+            max_seq_ == 1 && seq_id == 0 && items.empty() &&
+            mtp_.cfg.max_prefill == 8192 && T > mtp_.cfg.max_prefill;
+        const auto init_policy = skip_unused_tail
+                                     ? mtp::MtpInitPolicy::kSkipUnusedTail
+                                     : mtp::MtpInitPolicy::kFull;
         s = mtp::MtpDraftExtend(mtp_, shifted.data(), d_trunk_full, pos.data(),
                                 T, &mtp_d0, d_mtp_g, nullptr, seq_id,
-                                model::LogitsRows::kLastRow, init_timing.get());
+                                model::LogitsRows::kLastRow, init_timing.get(),
+                                init_policy);
         if (init_timing) init_timing->MarkHost("extend_end");
         if (s.ok()) {
           if (init_timing) init_timing->MarkHost("checkpoint_reserve_begin");

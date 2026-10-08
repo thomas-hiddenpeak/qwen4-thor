@@ -1,13 +1,14 @@
 """Synthetic offline timing-parser contracts. No files, model or CUDA calls."""
 import copy
 import json
+import math
 import struct
 import unittest
 
 from analyze_mtp_init_timing import (HOST_AFTER, HOST_BEFORE, HOST_CHUNK,
                                      LENGTHS, PREFIX, STAGES, audit_traces,
                                      compare_runs, trace_records, ulp32,
-                                     validate_trace)
+                                     ulp32_at_magnitude, validate_trace)
 
 
 def response(tokens=1024, rid='r1'):
@@ -59,6 +60,19 @@ def fixture(tokens=1024, rid='r1'):
 
 def logged(trace):
     return PREFIX + json.dumps(trace) + '\n'
+
+
+def tail_fixture(tokens=45056, rid='r1'):
+    trace = fixture(tokens, rid)
+    for chunk in trace['chunks']:
+        chunk['tail_skipped'] = not chunk['compute_logits']
+        if chunk['tail_skipped']:
+            for stage in chunk['stages'][5:]:
+                stage.update(skipped=True, stream_ms=None)
+            # Four distinct physical marker gaps are not executed module work.
+            chunk['skipped_marker_gap_ms'] = sum((0.03125, 0.0625, 0.125, 0.25))
+            chunk['stream_total_ms'] = 1.25 + chunk['skipped_marker_gap_ms']
+    return trace
 
 
 def run_fixture(label):
@@ -257,6 +271,119 @@ class TimingSchemaTest(unittest.TestCase):
         trace = fixture(45056)
         trace['chunks'][0]['skipped_marker_gap_ms'] = 0.0
         self.assert_invalid(trace, 45056)
+
+    def test_tail_false_and_legacy_missing_flag_preserve_results(self):
+        for tokens in LENGTHS:
+            legacy = fixture(tokens)
+            explicit = copy.deepcopy(legacy)
+            for chunk in explicit['chunks']:
+                chunk['tail_skipped'] = False
+            with self.subTest(tokens=tokens):
+                self.assertEqual(validate_trace(legacy, response(tokens)),
+                                 validate_trace(explicit, response(tokens)))
+
+    def test_tail_skipped_long_topologies_keep_final_modules(self):
+        for tokens in LENGTHS:
+            result = validate_trace(tail_fixture(tokens), response(tokens))
+            chunks = result['draft_chunks']
+            with self.subTest(tokens=tokens):
+                self.assertEqual(sum(c['tail_skipped'] for c in chunks),
+                                 (tokens - 1) // 8192)
+                for name in ('mlp_hc', 'moe', 'mixer', 'head'):
+                    self.assertEqual(result['draft_module_stream_ms'][name], 0.25)
+                    for chunk in chunks[:-1]:
+                        self.assertIsNone(chunk['stream_stage_ms'][name])
+                self.assertFalse(chunks[-1]['tail_skipped'])
+                for chunk in chunks[:-1]:
+                    self.assertEqual(chunk['covered_leaf_stream_ms'], 1.25)
+                    self.assertEqual(chunk['skipped_marker_gap_ms'], 0.46875)
+                    self.assertEqual(chunk['stream_total_ms'], 1.71875)
+
+    def test_tail_flag_type_and_final_scope_rejected(self):
+        for value in (None, 0, 1, 'true'):
+            trace = tail_fixture()
+            trace['chunks'][0]['tail_skipped'] = value
+            with self.subTest(value=value):
+                self.assert_invalid(trace, 45056)
+        for tokens in (1024, 45056):
+            trace = tail_fixture(tokens)
+            trace['chunks'][-1]['tail_skipped'] = True
+            self.assert_invalid(trace, tokens)
+
+    def test_tail_requires_all_four_null_skipped_intervals(self):
+        for index in range(5, 9):
+            for key, value in (('skipped', False), ('stream_ms', 0.0)):
+                trace = tail_fixture()
+                trace['chunks'][0]['stages'][index][key] = value
+                with self.subTest(index=index, key=key):
+                    self.assert_invalid(trace, 45056)
+        trace = tail_fixture()
+        trace['chunks'][0]['stages'][4].update(skipped=True, stream_ms=None)
+        self.assert_invalid(trace, 45056)
+
+    def test_tail_skipped_intervals_keep_ready_shared_boundary_contract(self):
+        for key in ('recorded', 'ready'):
+            trace = tail_fixture()
+            trace['chunks'][0]['stages'][6][key] = False
+            self.assert_invalid(trace, 45056)
+        trace = tail_fixture()
+        trace['chunks'][0]['stages'][6]['begin_host_ms'] += 0.01
+        self.assert_invalid(trace, 45056)
+        trace = tail_fixture()
+        trace['chunks'][0]['stages'].pop()
+        self.assert_invalid(trace, 45056)
+
+    def test_tail_accumulated_gap_accepts_non_binary32_sum(self):
+        trace = tail_fixture()
+        chunk = trace['chunks'][0]
+        # Each term is binary32, but its double sum need not be binary32.
+        gap = sum((0.125, 0.0625, 0.03125, 2 ** -30))
+        self.assertNotEqual(struct.unpack('<f', struct.pack('<f', gap))[0], gap)
+        chunk['skipped_marker_gap_ms'] = gap
+        chunk['stream_total_ms'] = struct.unpack('<f', struct.pack('<f', 1.25 + gap))[0]
+        result = validate_trace(trace, response(45056))['draft_chunks'][0]
+        expected = math.fsum([5 * ulp32(0.25), ulp32(chunk['stream_total_ms']),
+                              4 * ulp32_at_magnitude(gap), 3 * math.ulp(gap)])
+        self.assertEqual(result['stream_closure_ulp_budget_ms'], expected)
+        self.assertLess(abs(result['stream_closure_residual_ms']), expected)
+        with self.assertRaises(ValueError):
+            ulp32(gap)  # Single elapsed results retain their old strict type.
+
+    def test_tail_gap_fixed_budget_inside_outside_and_missing(self):
+        # This screens serialization/event arithmetic, not model outputs or a
+        # performance tolerance. Three total-interval ULPs fit the frozen sum;
+        # four do not. No threshold is fitted to collected timing samples.
+        for increment, valid in ((3, True), (4, False)):
+            trace = tail_fixture()
+            chunk = trace['chunks'][0]
+            bits = struct.unpack('<I', struct.pack('<f', chunk['stream_total_ms']))[0]
+            chunk['stream_total_ms'] = struct.unpack('<f', struct.pack('<I', bits + increment))[0]
+            if valid:
+                validate_trace(trace, response(45056))
+            else:
+                self.assert_invalid(trace, 45056)
+        for value in (None, -1.0, float('nan'), float('inf')):
+            trace = tail_fixture()
+            trace['chunks'][0]['skipped_marker_gap_ms'] = value
+            self.assert_invalid(trace, 45056)
+        trace = tail_fixture()
+        del trace['chunks'][0]['skipped_marker_gap_ms']
+        self.assert_invalid(trace, 45056)
+
+    def test_quality_eleven_traces_cover_all_tail_chunks(self):
+        tokens = (1024,) * 3 + (4096,) * 3 + (8192,) * 3 + (45056, 204800)
+        responses = [{**response(length, f'quality-{index}'), 'actual_output': 7,
+                      'finish': ['stop']} for index, length in enumerate(tokens)]
+        traces = [tail_fixture(row['actual_input'], row['response_id']) for row in responses]
+        parsed = audit_traces(''.join(logged(trace) for trace in reversed(traces)),
+                              responses, True)
+        self.assertEqual(len(parsed), 11)
+        self.assertEqual(sum(len(row['draft_chunks']) for row in parsed), 40)
+        self.assertEqual(sum(chunk['tail_skipped'] for row in parsed
+                             for chunk in row['draft_chunks']), 29)
+        self.assertEqual(sum(chunk['tail_skipped'] for chunk in parsed[-1]['draft_chunks']), 24)
+        self.assertEqual([row['response_id'] for row in parsed],
+                         [row['response_id'] for row in responses])
 
     def test_outputs_compare_across_distinct_process_ids(self):
         result = compare_runs(run_fixture('old'), run_fixture('new'), 'pair')

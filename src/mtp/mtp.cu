@@ -683,7 +683,10 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
                       const uint16_t* main_trunk, const int* positions, int T,
                       int32_t* out_d0, uint16_t* out_g, cudaStream_t stream,
                       int seq_id, model::LogitsRows logits_rows,
-                      MtpInitTiming* init_timing) {
+                      MtpInitTiming* init_timing, MtpInitPolicy init_policy) {
+  if (init_policy != MtpInitPolicy::kFull &&
+      init_policy != MtpInitPolicy::kSkipUnusedTail)
+    return Status::Fail("MtpDraftExtend: invalid initialization policy");
   if (T <= 0) return Status::Fail("MtpDraftExtend: T must be > 0");
   if (seq_id < 0 || seq_id >= m.max_seq)
     return Status::Fail("MtpDraftExtend: seq_id out of range");
@@ -701,6 +704,8 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
   // forward. Only the LAST chunk computes logits; logits_rows selects all
   // of that chunk or its final row. Intermediate chunks skip the lm_head
   // GEMM (a full-prompt [T, vocab] buffer would be ~22 GB at 44K).
+  // The opt-in S1 policy also skips their unused post-attention outputs;
+  // each next chunk reads its own main_trunk rows, not the prior draft output.
   if (T > m.cfg.max_prefill) {
     const int chunk = m.cfg.max_prefill;
     const int last_c = (T % chunk == 0) ? chunk : (T % chunk);
@@ -754,10 +759,14 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
     for (int base = 0; base < T; base += chunk) {
       const int c = (T - base < chunk) ? (T - base) : chunk;
       const bool last = (base + c >= T);
+      const bool skip_tail = init_policy == MtpInitPolicy::kSkipUnusedTail &&
+                             m.max_seq == 1 && seq_id == 0 && !last;
+      const MtpForwardMode mode =
+          skip_tail ? MtpForwardMode::kSkipUnusedTail : MtpForwardMode::kFull;
       if (init_timing)
         init_timing->BeginChunk(base, c, last,
                                logits_rows == model::LogitsRows::kLastRow,
-                               stream);
+                               stream, skip_tail);
       if (cudaMemcpyAsync(d_ids, shifted_ids + base,
                           static_cast<size_t>(c) * sizeof(int32_t),
                           cudaMemcpyHostToDevice, stream) != cudaSuccess)
@@ -777,7 +786,7 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
       s = MtpForward(m, d_ids, d_pos,
                      main_trunk + static_cast<size_t>(base) * hc_dim, d_sample,
                      d_multi, last ? d_logits : nullptr, c, stream, d_seqid,
-                     last, logits_rows, init_timing);
+                     last, logits_rows, init_timing, -1, mode);
       if (!s.ok()) return cleanup(s);
     }
     if (init_timing) init_timing->MarkHost("extend_finalize_begin");
@@ -1523,8 +1532,14 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
                   uint16_t* logits, int T, cudaStream_t stream,
                   const int* d_seq_id, bool compute_logits,
                   model::LogitsRows logits_rows, MtpInitTiming* init_timing,
-                  int max_position) {
+                  int max_position, MtpForwardMode mode) {
   trace::MtpCycleSpan cycle_forward(trace::CycleDetail::kMtpForward);
+  if (mode != MtpForwardMode::kFull && mode != MtpForwardMode::kSkipUnusedTail)
+    return Status::Fail("MtpForward: invalid forward mode");
+  const bool skip_tail = mode == MtpForwardMode::kSkipUnusedTail;
+  if (skip_tail && (compute_logits || m.max_seq != 1 || d_seq_id != nullptr ||
+                    T <= 0 || T != m.cfg.max_prefill))
+    return Status::Fail("MtpForward: invalid unused-tail skip combination");
   const int hs = m.cfg.hs, hc = m.cfg.hc, hc_dim = hc * hs;
   if (T <= 0) return Status();
   const auto& cfg = m.cfg;
@@ -1631,6 +1646,27 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
                                     max_position);
   }
   if (!s.ok()) return s;
+  if (skip_tail) {
+    // HyperConnectionCombine normally checks this pending launch error before
+    // allocating its inject buffer. Preserve that check when its work is
+    // omitted. Cache writes and subsequent chunks stay ordered on this stream;
+    // this return does not imply GPU completion or add a synchronization.
+    const cudaError_t pending = cudaGetLastError();
+    if (pending != cudaSuccess)
+      return Status::Fail(
+          std::string("pending CUDA error after MTP attention: ") +
+          cudaGetErrorString(pending));
+    if (init_timing) {
+      // BeginChunk recorded the selected mode. Keep every shared boundary;
+      // the collector labels these four physical gaps as skipped work.
+      init_timing->MarkGpu(InitGpuPoint::kMlpHcBegin, stream);
+      init_timing->MarkGpu(InitGpuPoint::kMoeBegin, stream);
+      init_timing->MarkGpu(InitGpuPoint::kMixerBegin, stream);
+      init_timing->MarkGpu(InitGpuPoint::kHeadBegin, stream);
+      init_timing->MarkGpu(InitGpuPoint::kEnd, stream);
+    }
+    return Status();
+  }
   // 4d. attn_hc.combine: trunk_a = attn_out + trunk (learned injection).
   if (init_timing) init_timing->MarkGpu(InitGpuPoint::kMlpHcBegin, stream);
   s = model::HyperConnectionCombine(m.attn_hc, d_attn_out, d_trunk,

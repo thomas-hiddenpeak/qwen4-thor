@@ -88,6 +88,18 @@ def ulp32(value):
     return math.ldexp(1.0, max(-149, math.frexp(value)[1] - 24)) if value else math.ldexp(1.0, -149)
 
 
+def ulp32_at_magnitude(value):
+    """FP32 spacing bound at a nonnegative binary64 accumulated gap.
+
+    A sum of four recovered FP32 intervals need not itself be FP32. Every
+    nonnegative summand is <= the sum, so its FP32 ULP is bounded by this
+    spacing. Unlike ulp32(), this does not claim a recovered CUDA float.
+    """
+    number(value, 'accumulated skipped marker milliseconds')
+    require(value <= float.fromhex('0x1.fffffep+127'), 'skipped marker gap overflow')
+    return math.ldexp(1.0, max(-149, math.frexp(value)[1] - 24)) if value else math.ldexp(1.0, -149)
+
+
 def unique_object(pairs):
     result = {}
     for key, value in pairs:
@@ -201,6 +213,11 @@ def validate_trace(trace, response):
                 type(chunk.get('base')) is int and type(chunk.get('rows')) is int,
                 f'{rid}: draft chunk coverage mismatch at {index}')
         final = index == len(chunks) - 1
+        # Schema v1 records from before the tail optimization omit this field.
+        # Their head-only skipping policy and closure budget remain unchanged.
+        tail_skipped = chunk.get('tail_skipped', False)
+        require(type(tail_skipped) is bool and not (tail_skipped and final),
+                f'{rid}: invalid tail-skipped policy at chunk {index}')
         require(chunk.get('compute_logits') is final and
                 chunk.get('logits_rows') == 'last',
                 f'{rid}: head policy/last-chunk mismatch at {index}')
@@ -210,7 +227,8 @@ def validate_trace(trace, response):
         previous_end = None
         durations = {}
         for stage, name in zip(stages, STAGES):
-            skipped = name == 'head' and not final
+            skipped = ((tail_skipped and name in ('mlp_hc', 'moe', 'mixer', 'head')) or
+                       (name == 'head' and not final))
             begin, end = validate_stage(stage, name, skipped,
                                         f'{rid}/chunk{index}')
             require(singles['extend_alloc_end'] <= begin <= end <= singles['extend_finalize_begin'],
@@ -235,11 +253,22 @@ def validate_trace(trace, response):
         # Shared event endpoints telescope before float conversion. Budget one
         # full float32 ULP per CUDA elapsed result (more than 0.5 ULP RNE),
         # including independent whole-chunk and skipped-gap measurements.
-        tolerance = math.fsum(ulp32(value) for value in leaves + [gap, total])
+        if tail_skipped:
+            # Frozen before C2 measurements: four hidden FP32 elapsed terms
+            # each have ULP <= ULP32(gap). Three binary64 additions accumulate
+            # them; their absolute rounding error is <= 3*ULP64(gap).
+            # This is shared-event timing arithmetic, not a model numerical
+            # tolerance, a fitted performance allowance, or GPU clock accuracy.
+            tolerance = math.fsum([*(ulp32(value) for value in leaves),
+                                   ulp32(total), 4 * ulp32_at_magnitude(gap),
+                                   3 * math.ulp(gap)])
+        else:
+            tolerance = math.fsum(ulp32(value) for value in leaves + [gap, total])
         require(abs(residual) <= tolerance,
                 f'{rid}/chunk{index}: stream sum does not close within frozen ULP budget')
         chunk_results.append({'base': shape[0], 'rows': shape[1],
                               'compute_logits': final,
+                              'tail_skipped': tail_skipped,
                               'stream_stage_ms': durations,
                               'covered_leaf_stream_ms': leaf_total,
                               'stream_total_ms': total,

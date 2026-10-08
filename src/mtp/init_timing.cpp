@@ -111,7 +111,8 @@ void MtpInitTiming::MarkOuter(InitOuterPoint point,
   Record(outer_[static_cast<size_t>(point)], stream);
 }
 void MtpInitTiming::BeginChunk(int base, int rows, bool compute_logits,
-                               bool last_row, cudaStream_t stream) noexcept {
+                               bool last_row, cudaStream_t stream,
+                               bool tail_skipped) noexcept {
   if (chunk_count_ == chunks_.size()) {
     Fail("chunk_capacity");
     return;
@@ -121,6 +122,11 @@ void MtpInitTiming::BeginChunk(int base, int rows, bool compute_logits,
   chunk.rows = rows;
   chunk.compute_logits = compute_logits;
   chunk.last_row = last_row;
+  chunk.tail_skipped = tail_skipped;
+  if (tail_skipped &&
+      (compute_logits || base < 0 || rows != chunk_size_ || rows >= rows_ ||
+       base >= rows_ - rows))
+    Fail("tail_skip_scope");
   MarkGpu(InitGpuPoint::kInputBegin, stream);
 }
 void MtpInitTiming::MarkGpu(InitGpuPoint point, cudaStream_t stream) noexcept {
@@ -228,9 +234,13 @@ void MtpInitTiming::Report() {
     covered += chunk.rows;
     if (chunk.compute_logits != (i + 1 == chunks_.size()))
       Fail("head_coverage");
+    if (chunk.tail_skipped &&
+        (chunk.compute_logits || i + 1 == chunks_.size()))
+      Fail("tail_skip_scope");
     const auto total = measure(chunk.events.front(), chunk.events.back());
     body << "{\"base\":" << chunk.base << ",\"rows\":" << chunk.rows
          << ",\"compute_logits\":" << chunk.compute_logits
+         << ",\"tail_skipped\":" << chunk.tail_skipped
          << ",\"logits_rows\":\"" << (chunk.last_row ? "last" : "all")
          << "\",\"stream_total_ms\":";
     if (total.ready)
@@ -238,18 +248,27 @@ void MtpInitTiming::Report() {
     else
       body << "null";
     body << ",\"stages\":[";
-    Measurement head = {false, false, 0};
+    double skipped_gap_ms = 0;
+    bool skipped_gap_ready = true;
     for (size_t j = 0; j + 1 < kPoints; ++j) {
       if (j) body << ',';
+      const bool skipped =
+          (chunk.tail_skipped &&
+           j >= static_cast<size_t>(InitGpuPoint::kMlpHcBegin)) ||
+          (j == kPoints - 2 && !chunk.compute_logits);
       const auto result = span(kNames[j], chunk.events[j], chunk.events[j + 1],
-                               j == kPoints - 2 && !chunk.compute_logits);
-      if (j == kPoints - 2) head = result;
+                               skipped);
+      if (skipped) {
+        // Keep physical marker gaps even when no module was submitted. Each
+        // elapsed value is binary32; accumulating at most four in binary64 is
+        // covered by the parser's predeclared timing-arithmetic budget.
+        skipped_gap_ready = skipped_gap_ready && result.ready;
+        if (result.ready) skipped_gap_ms += result.elapsed;
+      }
     }
     body << "],\"skipped_marker_gap_ms\":";
-    if (chunk.compute_logits)
-      body << 0;
-    else if (head.ready)
-      body << head.elapsed;
+    if (skipped_gap_ready)
+      body << skipped_gap_ms;
     else
       body << "null";
     body << '}';

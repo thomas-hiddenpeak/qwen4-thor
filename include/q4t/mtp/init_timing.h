@@ -44,7 +44,7 @@ class MtpInitTiming {
   void MarkHost(const char* name, int base = -1, int rows = 0) noexcept;
   void MarkOuter(InitOuterPoint point, cudaStream_t stream) noexcept;
   void BeginChunk(int base, int rows, bool compute_logits, bool last_row,
-                  cudaStream_t stream) noexcept;
+                  cudaStream_t stream, bool tail_skipped = false) noexcept;
   void MarkGpu(InitGpuPoint point, cudaStream_t stream) noexcept;
   void FinishInit(bool success) noexcept { init_completed_ = success; }
   bool FirstContentWritten() const noexcept { return first_content_written_; }
@@ -64,6 +64,7 @@ class MtpInitTiming {
     int rows = 0;
     bool compute_logits = false;
     bool last_row = false;
+    bool tail_skipped = false;
     size_t next_point = 0;
     std::array<Event, kPoints> events;
   };

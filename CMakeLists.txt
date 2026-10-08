@@ -312,6 +312,7 @@ if(Q4T_BUILD_TESTS)
     tests/mtp_k3_replay_test.cpp
     tests/mtp_init_last_row_test.cpp
     tests/mtp_known_position_test.cpp
+    tests/mtp_init_tail_test.cpp
     tests/vision_forward_test.cpp
     tests/model_vision_inject_test.cpp
     tests/vision_processor_test.cpp

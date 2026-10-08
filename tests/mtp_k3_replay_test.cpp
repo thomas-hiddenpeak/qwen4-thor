@@ -26,6 +26,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace {
@@ -538,4 +539,383 @@ Q4T_TEST(mtp_k3_full_model_replay) {
       natural_counts[3], natural_counts[4], forced_reject, coverage,
       emitted.size(), evidence.bytes());
   return contracts && all_rows_checked && coverage;
+}
+
+// Independent long-initialization regression. The preceding fixed 17-step
+// test is unchanged. Each policy starts with a fresh full-model prefill.
+namespace {
+struct TailCache {
+  std::vector<uint16_t> kv, raw, comp;
+  std::vector<int> page, rope;
+};
+template <typename T>
+void TailExact(const std::string& label, const std::vector<T>& actual,
+               const std::vector<T>& expected) {
+  Require(actual.size() == expected.size(), label + " shape mismatch");
+  Require(std::memcmp(actual.data(), expected.data(),
+                      actual.size() * sizeof(T)) == 0,
+          label + " byte mismatch");
+}
+TailCache TailCaptureCache(const q4t::mtp::MtpModel& mtp) {
+  Require(mtp.max_seq == 1, "long tail cache requires S1");
+  TailCache result{Read(mtp.kv_cache, mtp.kv_bytes / 2),
+                   Read(mtp.idx_raw, mtp.idx_bytes / 2),
+                   Read(mtp.idx_comp, mtp.idx_bytes / 2),
+                   Read(mtp.page_table, mtp.cfg.max_len),
+                   Read(mtp.d_rope_pos, 3u * mtp.cfg.max_len)};
+  Finite(result.kv, "long tail KV");
+  Finite(result.raw, "long tail raw index");
+  Finite(result.comp, "long tail compressed index");
+  return result;
+}
+void TailExactCache(const TailCache& actual, const TailCache& expected) {
+  TailExact("long full KV", actual.kv, expected.kv);
+  TailExact("long full raw index", actual.raw, expected.raw);
+  TailExact("long full compressed index", actual.comp, expected.comp);
+  TailExact("long full page table", actual.page, expected.page);
+  TailExact("long full RoPE table", actual.rope, expected.rope);
+}
+struct TailStep {
+  std::vector<int32_t> result, drafts;
+  std::vector<uint16_t> verify_logits, verify_trunk;
+  std::vector<uint16_t> extend_logits, extend_multi, extend_sample, next_g;
+  ModelStateSnapshot recurrent;
+  TailCache cache;
+};
+void TailExactStep(const TailStep& actual, const TailStep& expected) {
+  TailExact("long result", actual.result, expected.result);
+  TailExact("long draft ids", actual.drafts, expected.drafts);
+  TailExact("long verify logits", actual.verify_logits, expected.verify_logits);
+  TailExact("long verify trunk", actual.verify_trunk, expected.verify_trunk);
+  TailExact("long all extend logits", actual.extend_logits,
+            expected.extend_logits);
+  TailExact("long all extend multi", actual.extend_multi,
+            expected.extend_multi);
+  TailExact("long all extend sample", actual.extend_sample,
+            expected.extend_sample);
+  TailExact("long next g", actual.next_g, expected.next_g);
+  TailExact("long recurrent", actual.recurrent.data, expected.recurrent.data);
+  TailExactCache(actual.cache, expected.cache);
+}
+void TailSaveStep(Evidence& evidence, const std::string& label,
+                  const TailStep& result) {
+  // Complete cache/state comparisons use retained host bytes, never digest
+  // equality. Only small outputs are persisted; no weight payload is saved.
+  evidence.Save(label + ".result.i32", result.result);
+  evidence.Save(label + ".drafts.i32", result.drafts);
+  evidence.Save(label + ".verify_logits.bf16", result.verify_logits);
+  evidence.Save(label + ".verify_trunk.bf16", result.verify_trunk);
+  evidence.Save(label + ".extend_logits.bf16", result.extend_logits);
+  evidence.Save(label + ".extend_multi.bf16", result.extend_multi);
+  evidence.Save(label + ".extend_sample.bf16", result.extend_sample);
+  evidence.Save(label + ".next_g.bf16", result.next_g);
+}
+}  // namespace
+
+Q4T_TEST(mtp_init_tail_long_k3) {
+  constexpr int kBaseTokens = 8192, kPromptTokens = 8196;
+  constexpr int kNatural = 4, kSteps = 5;
+  const char* prompt_path = std::getenv("Q4T_MTP_INIT_TAIL_LONG_PROMPT");
+  const char* evidence_path = std::getenv("Q4T_MTP_INIT_TAIL_LONG_DIR");
+  Require(prompt_path && *prompt_path && evidence_path && *evidence_path,
+          "set long tail prompt and new evidence directory");
+  for (const char* name :
+       {"Q4T_GDN_REG", "Q4T_GDN_CHUNKED", "Q4T_GDN_SPLIT", "Q4T_FP8_PROJ",
+        "Q4T_FP8_HC", "Q4T_FP8_ALL", "Q4T_MOE_STREAMS", "Q4T_LIN_DUMP",
+        "Q4T_MLP_DUMP", "Q4T_MTP_INIT_TIMING", "Q4T_MTP_CYCLE_TIMING"})
+    Require(std::getenv(name) == nullptr, std::string("unset ") + name);
+  Evidence evidence(evidence_path);
+  std::ifstream file(prompt_path, std::ios::binary);
+  Require(file.good(), "cannot read frozen 8192-token base prompt");
+  const std::string text((std::istreambuf_iterator<char>(file)),
+                         std::istreambuf_iterator<char>());
+  Require(!file.bad(), "long base prompt read failed");
+  RequireCuda(cudaSetDevice(0), "CUDA required; no SKIP");
+  q4t::model::ModelConfig cfg;
+  cfg.model_dir =
+      "/home/rm01/models/dev/llm/garnermccloud/"
+      "Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
+  cfg.index_path = cfg.model_dir + "/model.safetensors.index.json";
+  cfg.ple_sidecar = cfg.model_dir + "/ple/qwen3.8-flash-next-ple-fp8.bin";
+  cfg.num_layers = 48;
+  cfg.max_len = 208896;
+  cfg.max_prefill = kBaseTokens;
+  cfg.max_seq = 1;
+  cfg.ple_capacity_tokens = kBaseTokens;
+  std::unique_ptr<q4t::text::Tokenizer> tokenizer;
+  RequireStatus(
+      q4t::text::Tokenizer::Load(cfg.model_dir + "/tokenizer.json",
+                                 q4t::text::TokenizerLimits{}, &tokenizer),
+      "load tokenizer");
+  std::vector<uint32_t> encoded;
+  RequireStatus(tokenizer->Encode(text, &encoded), "encode long base prompt");
+  Require(encoded.size() == kBaseTokens,
+          "raw base prompt must encode to exactly 8192 tokens");
+  std::vector<int32_t> prompt(encoded.begin(), encoded.end());
+  prompt.insert(prompt.end(), {97, 131, 211, 313});
+  evidence.Save("base_prompt.txt", std::vector<char>(text.begin(), text.end()));
+  evidence.Save("prompt.i32", prompt);
+  std::printf(
+      "MTP_INIT_TAIL_LONG_SCOPE layers=48 max_len=208896 C=8192 S1=1 "
+      "slot=0 k=3 base_tokens=8192 appended=97,131,211,313 "
+      "prompt_tokens=8196 same_candidate_full_control=1 "
+      "independent_prefills=2 recurrent_snapshot_only=1 "
+      "full_draft_cache_compared=1 draft_ids_not_ephemeral_logits=1 "
+      "checkpoint_oracle_for_partial_accepts=1 "
+      "full_cross_flag_establishes_reference=1 performance_evidence=0\n");
+  std::fflush(stdout);
+
+  q4t::model::ModelOwner owner;
+  RequireStatus(owner.Load(cfg, nullptr), "load full model once");
+  Model& model = owner.Get();
+  MtpOwner draft;
+  q4t::mtp::MtpConfig mcfg;
+  mcfg.mtp_dir = cfg.model_dir + "/mtp";
+  mcfg.max_len = cfg.max_len;
+  mcfg.max_prefill = cfg.max_prefill;
+  mcfg.max_seq = 1;
+  RequireStatus(q4t::mtp::LoadMtp(mcfg, model.head.embed_tokens,
+                                  model.head.lm_head, &draft.model, nullptr),
+                "load actual draft once");
+  auto& mtp = draft.model;
+  RequireStatus(q4t::model::ModelReserveVerifyCheckpoints(model, kDrafts),
+                "reserve k3 checkpoints");
+  RequireStatus(q4t::mtp::MtpReserveScratch(mtp, kRows), "reserve k3 scratch");
+  DeviceBuffer logits(static_cast<size_t>(kRows) * cfg.vocab);
+  DeviceBuffer trunk(static_cast<size_t>(kPromptTokens) * model.hc_dim());
+  DeviceBuffer probe_trunk(static_cast<size_t>(kRows) * model.hc_dim());
+  DeviceBuffer g(model.hc_dim());
+  std::vector<int> positions(kPromptTokens);
+  for (int i = 0; i < kPromptTokens; ++i) positions[i] = i;
+  const auto original_positions = positions;
+  const auto original_prompt = prompt;
+  std::array<TailStep, kSteps> baseline_steps;
+  std::vector<uint16_t> baseline_trunk, baseline_logits, baseline_g;
+  std::vector<uint16_t> baseline_probe;
+  ModelStateSnapshot baseline_prefill_state;
+  TailCache baseline_init_cache;
+  int32_t baseline_bonus = -1, baseline_d0 = -1;
+  std::vector<int32_t> baseline_emitted;
+
+  for (int branch = 0; branch < 2; ++branch) {
+    const bool skip = branch == 1;
+    const std::string policy = skip ? "skip" : "full";
+    ModelSequence seq;
+    RequireStatus(q4t::model::ModelBeginSequence(model, &seq, nullptr, 0),
+                  "independent main begin");
+    int prefill_chunks = 0;
+    while (seq.position < kPromptTokens) {
+      const int base = seq.position;
+      const int count = std::min(kBaseTokens, kPromptTokens - base);
+      const bool last = base + count == kPromptTokens;
+      RequireStatus(
+          q4t::model::ModelPrefillTextChunk(
+              model, &seq, prompt.data(), kPromptTokens, count,
+              last ? logits.data() : nullptr, nullptr,
+              trunk.data() + static_cast<size_t>(base) * model.hc_dim(),
+              q4t::model::LogitsRows::kLastRow),
+          "long prefill chunk");
+      ++prefill_chunks;
+    }
+    Require(prefill_chunks == 2 && seq.position == kPromptTokens &&
+                seq.history == prompt && !seq.HasPending() &&
+                seq.stage == ModelSequence::Stage::kDecode,
+            "two-chunk committed prefill contract");
+    const auto prefill_logits = Read(logits.data(), cfg.vocab);
+    auto prefill_trunk =
+        Read(trunk.data(), static_cast<size_t>(kPromptTokens) * model.hc_dim());
+    Finite(prefill_logits, "long prefill logits");
+    Finite(prefill_trunk, "long actual main trunk");
+    auto prefill_state = Snapshot(model, policy + ".prefill");
+    int32_t bonus = Argmax(prefill_logits.data(), cfg.vocab), d0 = -1;
+    if (skip) {
+      TailExact("independent prefill logits", prefill_logits, baseline_logits);
+      TailExact("independent prefill trunk", prefill_trunk, baseline_trunk);
+      TailExact("independent prefill recurrent", prefill_state.data,
+                baseline_prefill_state.data);
+      Require(bonus == baseline_bonus, "independent prefill bonus");
+    } else {
+      baseline_logits = prefill_logits;
+      baseline_trunk = std::move(prefill_trunk);
+      baseline_prefill_state = std::move(prefill_state);
+      baseline_bonus = bonus;
+    }
+    std::vector<int32_t> shifted(prompt.begin() + 1, prompt.end());
+    shifted.push_back(bonus);
+    const auto original_shifted = shifted;
+    RequireStatus(q4t::mtp::MtpResetState(mtp, nullptr, 0),
+                  "independent draft reset");
+    RequireStatus(q4t::mtp::MtpDraftExtend(
+                      mtp, shifted.data(), trunk.data(), positions.data(),
+                      kPromptTokens, &d0, g.data(), nullptr, 0,
+                      q4t::model::LogitsRows::kLastRow, nullptr,
+                      skip ? q4t::mtp::MtpInitPolicy::kSkipUnusedTail
+                           : q4t::mtp::MtpInitPolicy::kFull),
+                  "long Full/Skip initialization");
+    RequireCuda(cudaStreamSynchronize(nullptr), "long init completion");
+    TailExact(
+        "long init borrowed trunk",
+        Read(trunk.data(), static_cast<size_t>(kPromptTokens) * model.hc_dim()),
+        baseline_trunk);
+    TailExact("long init host positions", positions, original_positions);
+    TailExact("long init shifted ids", shifted, original_shifted);
+    TailExact("long init prompt", prompt, original_prompt);
+    auto init_g = Read(g.data(), model.hc_dim());
+    Finite(init_g, "long init g");
+    Require(d0 >= 0 && d0 < cfg.vocab, "long init seed range");
+    auto init_cache = TailCaptureCache(mtp);
+    const auto after_init = Snapshot(model, policy + ".after_init");
+    TailExact("draft init leaves main recurrent unchanged", after_init.data,
+              baseline_prefill_state.data);
+    if (skip) {
+      TailExact("initial g", init_g, baseline_g);
+      TailExactCache(init_cache, baseline_init_cache);
+      Require(d0 == baseline_d0, "initial d0 changed");
+    } else {
+      baseline_g = init_g;
+      baseline_d0 = d0;
+      baseline_init_cache = std::move(init_cache);
+    }
+    evidence.Save(policy + ".init_g.bf16", init_g);
+    evidence.Save(policy + ".init_result.i32", std::vector<int32_t>{bonus, d0});
+
+    std::vector<int32_t> emitted;
+    for (int step = 0; step < kSteps; ++step) {
+      const bool forced = step == kNatural;
+      const std::string label = policy + ".step" + std::to_string(step);
+      const ModelSequence previous = seq;
+      Require(seq.seq_id == 0 && seq.stage == ModelSequence::Stage::kDecode &&
+                  !seq.HasPending() &&
+                  seq.history.size() == static_cast<size_t>(seq.position),
+              "long step host prefix contract");
+      int32_t seed = d0;
+      if (forced) {
+        const auto before = Snapshot(model, label + ".before_probe");
+        Verify(model, seq, {bonus, 97, 131, 211}, logits.data(),
+               probe_trunk.data());
+        auto probe =
+            Read(logits.data(), static_cast<size_t>(kRows) * cfg.vocab);
+        Finite(probe, "long force-probe logits");
+        evidence.Save(policy + ".force_probe_logits.bf16", probe);
+        seed = (Argmax(probe.data(), cfg.vocab) + 1) % cfg.vocab;
+        if (skip)
+          TailExact("long fixed force probe", probe, baseline_probe);
+        else
+          baseline_probe = std::move(probe);
+        // Reuse the fixed same-T4 replay premise: the next verify overwrites
+        // these four KV/index positions, and causal masks exclude later
+        // writes. No host history or draft state was changed by the probe.
+        Restore(model, before);
+      }
+      std::array<int32_t, kRows> accepted;
+      accepted.fill(-1);
+      int count = -1;
+      int32_t next = -1, next_d0 = -1;
+      ModelSequence* sequences[] = {&seq};
+      const uint16_t* input_g[] = {g.data()};
+      uint16_t* output_g[] = {g.data()};
+      RequireStatus(
+          q4t::mtp::MtpSpeculativeStepMulti(
+              model, mtp, sequences, &bonus, &seed, input_g, 1, kDrafts,
+              accepted.data(), &count, &next, &next_d0, output_g, nullptr),
+          "long actual k3 step");
+      RequireCuda(cudaStreamSynchronize(nullptr), "long step completion");
+      TailStep observed;
+      observed.result = {accepted[0], accepted[1], accepted[2],
+                         accepted[3], count,       next,
+                         next_d0,     bonus,       seed};
+      observed.drafts = Read(mtp.d_ms_drafts, kDrafts);
+      observed.verify_logits =
+          Read(mtp.d_ms_vlogits, static_cast<size_t>(kRows) * cfg.vocab);
+      observed.verify_trunk =
+          Read(mtp.d_ms_vtrunk, static_cast<size_t>(kRows) * model.hc_dim());
+      Require(count >= 1 && count <= kRows, "long accepted count range");
+      observed.extend_logits =
+          Read(mtp.d_ms_ext_logits, static_cast<size_t>(count) * cfg.vocab);
+      observed.extend_multi =
+          Read(mtp.d_ms_ext_multi, static_cast<size_t>(count) * model.hc_dim());
+      observed.extend_sample =
+          Read(mtp.d_ms_ext_sample, static_cast<size_t>(count) * cfg.hs);
+      observed.next_g = Read(g.data(), model.hc_dim());
+      TailSaveStep(evidence, label, observed);
+      Finite(observed.verify_logits, "long verify logits");
+      Finite(observed.verify_trunk, "long verify trunk");
+      Finite(observed.extend_logits, "long complete extend logits");
+      Finite(observed.extend_multi, "long complete extend multi");
+      Finite(observed.extend_sample, "long complete extend sample");
+      Finite(observed.next_g, "long next g");
+      for (int32_t token : observed.drafts)
+        Require(token >= 0 && token < cfg.vocab, "long draft token range");
+      std::array<int32_t, kRows> predictions;
+      for (int row = 0; row < kRows; ++row)
+        predictions[row] = Argmax(observed.verify_logits.data() +
+                                      static_cast<size_t>(row) * cfg.vocab,
+                                  cfg.vocab);
+      const auto mismatch = std::mismatch(
+          observed.drafts.begin(), observed.drafts.end(), predictions.begin());
+      const int accepted_drafts = static_cast<int>(
+          std::distance(observed.drafts.begin(), mismatch.first));
+      const std::array<int32_t, kRows> inputs{
+          bonus, observed.drafts[0], observed.drafts[1], observed.drafts[2]};
+      const bool selection = count == accepted_drafts + 1 &&
+                             next == predictions[accepted_drafts] &&
+                             std::equal(inputs.begin(), inputs.begin() + count,
+                                        accepted.begin()) &&
+                             observed.drafts[0] == seed;
+      const bool unchanged =
+          seq.stage == previous.stage && seq.position == previous.position &&
+          seq.seq_id == previous.seq_id && seq.history == previous.history &&
+          !seq.HasPending();
+      Require(selection && unchanged, "long selection/host ownership");
+      const bool next_seed =
+          next_d0 == Argmax(observed.extend_logits.data() +
+                                static_cast<size_t>(count - 1) * cfg.vocab,
+                            cfg.vocab);
+      Require(next_seed, "long independent next seed");
+      TailExact(
+          "long next g is last extend row", observed.next_g,
+          std::vector<uint16_t>(observed.extend_multi.end() - model.hc_dim(),
+                                observed.extend_multi.end()));
+      if (forced) Require(count == 1, "fixed long force probe did not reject");
+      observed.recurrent = Snapshot(model, label + ".accepted");
+      if (accepted_drafts < kDrafts) {
+        const auto raw = RawCheckpoint(model, accepted_drafts);
+        TailExact("long independent accepted checkpoint",
+                  observed.recurrent.data, raw.data);
+      }
+      observed.cache = TailCaptureCache(mtp);
+      if (skip)
+        TailExactStep(observed, baseline_steps[step]);
+      else
+        baseline_steps[step] = std::move(observed);
+      std::printf(
+          "MTP_INIT_TAIL_LONG_STEP policy=%s step=%d mode=%s count=%d "
+          "accepted_drafts=%d selection_exact=1 caller_unchanged=1 "
+          "next_seed_exact=1 checkpoint_exact=1 cross_policy_exact=1\n",
+          policy.c_str(), step, forced ? "forced_d0" : "natural", count,
+          accepted_drafts);
+      std::fflush(stdout);
+      seq.position += count;
+      seq.history.insert(seq.history.end(), accepted.begin(),
+                         accepted.begin() + count);
+      emitted.insert(emitted.end(), accepted.begin(), accepted.begin() + count);
+      bonus = next;
+      d0 = next_d0;
+    }
+    evidence.Save(policy + ".accepted_tokens.i32", emitted);
+    if (skip)
+      TailExact("long emitted tokens", emitted, baseline_emitted);
+    else
+      baseline_emitted = emitted;
+    std::printf(
+        "MTP_INIT_TAIL_LONG_BRANCH policy=%s prefill_chunks=2 "
+        "natural_steps=4 forced_steps=1 force_probes=1 actual_steps=5 "
+        "forced_reject0=1 contracts=1\n",
+        policy.c_str());
+  }
+  std::printf(
+      "MTP_INIT_TAIL_LONG_SUMMARY prompt_tokens=8196 branches=2 "
+      "prefill_chunks=4 natural_steps=8 forced_steps=2 force_probes=2 "
+      "actual_steps=10 init_exact=1 steps_exact=1 passed=1\n");
+  return true;
 }
