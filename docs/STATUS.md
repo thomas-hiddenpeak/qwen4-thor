@@ -10,7 +10,7 @@
 分两步：A整理main到`c365b9b`的基础正确性修复；B完成HTTP
 纯文本、greedy、S1/k3的数值/状态/质量与支持边界验收。
 
-A已交付`92d1d95`和[PR #2](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/2)，
+A已交付修复包（当前文档头`5aacc9f`）及[PR #2](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/2)，
 达到可独立审查条件，未合并或部署。旧证据3201项、新旧执行
 内容/容器/提取来源292/1418/503项核验与独立审查通过；HTTP
 引用旧原件实际运行，不称新构建重新实测。A通过不等于MTP转正，
@@ -26,8 +26,10 @@ B1入口改动已形成aece17d：MTP多流/媒体组合由统一options
 只读核验通过，二进制3ab3654c。未加载模型，正常HTTP留给B最终组。
 拆组验收安排晚于实际测试补记，顺序偏差保留在计划与原件中；
 [原始摘要与身份](evidence/mtp-release-20261008/README.md)可审查。
-B2a正在同一取消工具补充同模式fresh control，先验host合同，
-保留旧跨模式取消结果；尚未执行其9条真实请求。
+B2a已在同一取消工具实现同模式fresh control，27/8/18共53项
+纯host合同首次通过，独立静态问题已修正，旧跨模式取消结果保留。
+尚未执行其9条真实请求，不等于取消恢复或数值/质量已验收。
+README同步取消旧CLI MTP推荐，并说明研究分支的加载前拒绝。
 
 跨模式[数值准入设计](MTP_NUMERICAL_ADMISSION_DESIGN_2026-10-08.md)
 已完成只读审查：快速T4尚需实际算术/可见状态合同；严格一致可

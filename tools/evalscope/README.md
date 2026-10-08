@@ -182,3 +182,20 @@ build/verify_chat_template tools/evalscope/fixtures/chat_template_cases.jsonl
 
 字节参考由模型自带Jinja模板生成并冻结，来源与摘要见同目录metadata。
 字节检查通过不替代HTTP或性能接受，测试失败不得重写参考迎合实现。
+
+## MTP 同模式取消恢复
+
+`run_request_cancellation.py --scope same-mode-recovery --mtp` 使用同一
+新服务的 fresh control，依次验证 prefill 显式取消、decode 显式取消、
+TCP RST 和固定 deadline 后的恢复。范围为 S1、208896/8192、纯文本
+和当前 `mtp_multi_b1` 路径，共 9 个生成请求；逐次核对文本、usage、
+finish、实际路径、请求计数和槽位回收，不声称完整内部状态逐位相等。
+
+输入由 `--quality-run` 的 44K fixture 与 `--performance-run` 的 1K
+fixture 提取，历史生成输出不作为恢复参考；禁止 `--reference-run`。
+还需指定 `--binary` 和新的 `--output`（位于 `build/` 或 `.q4t-work/`）。
+首次执行前须冻结实际输入与二进制身份，规则见
+[转正计划](../../docs/MTP_RELEASE_PLAN_2026-10-08.md)。当前尚未执行这组真实 HTTP。
+
+旧 `full` 与 `decode-recovery` scope 保留；后者仍包含普通/MTP 的
+跨模式文本比较，其整体失败不能单独用于认定取消造成了状态残留。

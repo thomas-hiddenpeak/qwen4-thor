@@ -1,0 +1,39 @@
+{
+  "results": [
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/test_request_cancellation.py",
+        "-v"
+      ],
+      "start": "2026-10-08T15:47:32.282604+00:00",
+      "end": "2026-10-08T15:47:32.596665+00:00",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/test_response_identity.py",
+        "-v"
+      ],
+      "start": "2026-10-08T15:47:32.596878+00:00",
+      "end": "2026-10-08T15:47:32.810904+00:00",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/test_acceptance_mode.py",
+        "-v"
+      ],
+      "start": "2026-10-08T15:47:32.811120+00:00",
+      "end": "2026-10-08T15:47:33.025105+00:00",
+      "exit_code": 0
+    }
+  ],
+  "passed": true,
+  "source_identity_unchanged": true
+}

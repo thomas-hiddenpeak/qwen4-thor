@@ -74,9 +74,9 @@ ctest --test-dir build --output-on-failure
 ./build/q4t version
 ./build/q4t probe
 
-# 单次生成 (greedy; --mtp 开启推测解码, --mtp-k 设 draft 步数, 默认 3)
+# 单次普通 greedy 生成
 ./build/q4t generate "用一句话解释统一内存。" \
-  [--model-dir DIR] [--max-tokens 32] [--max-prefill N] [--mtp] [--mtp-k 3]
+  [--model-dir DIR] [--max-tokens 32] [--max-prefill N]
 
 # OpenAI 兼容 API 服务
 ./build/q4t serve \
@@ -85,6 +85,11 @@ ctest --test-dir build --output-on-failure
   [--mtp] [--allow-media] [--mem-fraction 0.90]
 
 ```
+
+generate 的 `--mtp` / `--mtp-k` 在模型加载前明确拒绝。serve 的
+`--mtp` 限单流 `--max-seq 1`、纯文本，不能与 `--allow-media`
+组合；目前仍为实验功能，正式支持进度见
+[阶段性转正计划](docs/MTP_RELEASE_PLAN_2026-10-08.md)。
 
 serve 默认监听 127.0.0.1，MTP 默认关闭。性能评估使用
 [tools/evalscope](tools/evalscope/README.md) 的真实 HTTP E2E；bench 不作为
