@@ -11,6 +11,7 @@
 #include <cuda_profiler_api.h>
 #include <cuda_runtime.h>
 #include "q4t/trace/mtp_cycle_timing.h"
+#include "q4t/trace/mtp_verify_moe_timing.h"
 
 namespace q4t::server {
 using detail::RequestCancelled;
@@ -327,6 +328,12 @@ void ChatServer::SchedulerLoop() {
       const int B = static_cast<int>(mtp_reqs.size());
       trace::MtpCycleStep* cycle_step =
           B == 1 ? mtp_reqs[0]->mtp_cycle_step : nullptr;
+      trace::MtpVerifyMoeStep* verify_moe_step =
+          B == 1 ? mtp_reqs[0]->mtp_verify_moe_step : nullptr;
+      if (B != 1)
+        for (ActiveRequest* r : mtp_reqs)
+          if (r->mtp_verify_moe_step)
+            r->mtp_verify_moe_step->Invalidate("unsupported_batch");
       if (cycle_step) cycle_step->Mark("scheduler_pick");
       if (getenv("Q4T_SCHED_DEBUG") != nullptr)
         std::fprintf(stderr, "[q4t][sched] MTP step B=%d\n", B);
@@ -353,7 +360,7 @@ void ChatServer::SchedulerLoop() {
                                          B, mtp_k_, accepted.data(),
                                          acc_count.data(), next_b.data(),
                                          next_d0.data(), next_g.data(),
-                                         nullptr, cycle_step);
+                                         nullptr, cycle_step, verify_moe_step);
         if (!s.ok() && cudaPeekAtLastError() != cudaSuccess)
           gpu_healthy_.store(false, std::memory_order_relaxed);
       }

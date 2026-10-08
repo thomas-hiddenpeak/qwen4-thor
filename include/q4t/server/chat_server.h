@@ -40,6 +40,7 @@
 namespace q4t {
 namespace trace {
 class MtpCycleStep;
+class MtpVerifyMoeStep;
 }
 namespace server {
 
@@ -167,6 +168,7 @@ class ChatServer {
     int32_t mtp_accepted[64];   // accepted tokens (bonus + drafts, step output)
     // Request-owned, S1 diagnostic only. Publication follows pending/done.
     trace::MtpCycleStep* mtp_cycle_step = nullptr;
+    trace::MtpVerifyMoeStep* mtp_verify_moe_step = nullptr;
     std::condition_variable cv;  // request thread waits here for `done`
   };
   // Batched prefill (Phase 2, plain path). Concurrent requests that need a

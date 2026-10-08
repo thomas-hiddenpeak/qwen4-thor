@@ -14,6 +14,7 @@
 #include <cuda_runtime.h>
 #include "q4t/mtp/init_timing.h"
 #include "q4t/trace/mtp_cycle_timing.h"
+#include "q4t/trace/mtp_verify_moe_timing.h"
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/mtp_policy.h"
 #include "q4t/server/request_json.h"
@@ -307,6 +308,22 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           : 0;
   const char* mtp_fallback =
       !mtp_loaded_ && mtp_requested_ ? "load_failed" : "none";
+  std::unique_ptr<trace::MtpVerifyMoeTiming> verify_moe_timing;
+  const char* verify_moe_env = getenv("Q4T_MTP_VERIFY_MOE_TIMING");
+  if (verify_moe_env && std::strcmp(verify_moe_env, "1") == 0) {
+    const bool supported =
+        mtp_loaded_ && max_seq_ == 1 && items.empty() && mtp_k_ == 3;
+    try {
+      verify_moe_timing = std::make_unique<trace::MtpVerifyMoeTiming>(
+          request_id, T, max_tokens, mtp_k_, supported);
+    } catch (...) {
+      std::fprintf(stderr,
+                   "[q4t][mtp_verify_moe_timing] {\"schema_version\":1,"
+                   "\"response_id\":\"%s\",\"valid\":false,"
+                   "\"complete\":false,\"error\":\"setup_exception\"}\n",
+                   request_id.c_str());
+    }
+  }
   std::unique_ptr<trace::MtpCycleTiming> cycle_timing;
   const char* cycle_env = getenv("Q4T_MTP_CYCLE_TIMING");
   if (cycle_env && std::strcmp(cycle_env, "1") == 0 && mtp_loaded_ &&
@@ -750,7 +767,12 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       trace::MtpCycleStep* cycle_step =
           cycle_timing ? cycle_timing->BeginStep(seq.position, mtp_k_)
                        : nullptr;
+      trace::MtpVerifyMoeStep* verify_moe_step =
+          verify_moe_timing
+              ? verify_moe_timing->BeginStep(seq.position, mtp_k_)
+              : nullptr;
       mtp_ar.mtp_cycle_step = cycle_step;
+      mtp_ar.mtp_verify_moe_step = verify_moe_step;
       if (cycle_step) cycle_step->Mark("submit");
       if (init_timing && mtp_steps == 0)
         init_timing->MarkHost("first_step_submit");
@@ -829,6 +851,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
             static_cast<int>(generated.size() - generated_before_step),
             token_piece_writes, nonempty_writes);
       }
+      if (verify_moe_step)
+        verify_moe_step->SetDelivery(
+            static_cast<int>(generated.size() - generated_before_step));
       // Advance the main seq over the accepted prefix [b, d_0..d_{a-1}] (the
       // multi step does not touch seqs[b]).
       seq.position += mtp_ar.mtp_accepted_count;
@@ -1076,6 +1101,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
   }
   cleanup();
+  if (verify_moe_timing)
+    verify_moe_timing->Finish(
+        static_cast<int>(generated.size()), mtp_steps, plain_tail,
+        finish_reason, mtp_fallback,
+        !generation_failed && !client_disconnected);
   if (cycle_timing) {
     cycle_timing->MarkRequest("request_end");
     cycle_timing->Finish(static_cast<int>(generated.size()), mtp_steps,

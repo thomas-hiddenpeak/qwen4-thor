@@ -155,6 +155,7 @@ target_link_libraries(q4t_quant PUBLIC q4t_io CUDA::cudart CUDA::cublasLt)
 # q4t_model — model layer (hyper-connection backbone, attention, MoE)
 # ---------------------------------------------------------------------------
 add_library(q4t_trace STATIC src/trace/mtp_cycle_timing.cpp
+  src/trace/mtp_verify_moe_timing.cpp
   src/trace/router_trace.cpp
   src/trace/router_collector.cpp src/trace/sha256.cpp)
 target_include_directories(q4t_trace PUBLIC include)

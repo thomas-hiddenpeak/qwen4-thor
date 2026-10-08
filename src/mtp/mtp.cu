@@ -45,6 +45,7 @@
 #include "q4t/model/model_head.h"
 #include "q4t/model/moe.h"
 #include "q4t/trace/mtp_cycle_timing.h"
+#include "q4t/trace/mtp_verify_moe_timing.h"
 
 namespace q4t {
 namespace mtp {
@@ -1187,11 +1188,16 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                                int32_t* next_b, int32_t* next_d0,
                                uint16_t** next_g,
                                cudaStream_t stream,
-                               trace::MtpCycleStep* cycle_timing) {
+                               trace::MtpCycleStep* cycle_timing,
+                               trace::MtpVerifyMoeStep* verify_moe) {
   trace::MtpCycleScope cycle_scope(B == 1 ? cycle_timing : nullptr);
   if (cycle_timing) {
     if (B != 1) cycle_timing->Invalidate("unsupported_batch");
     cycle_timing->Mark("engine_begin");
+  }
+  if (verify_moe) {
+    if (B != 1 || k != 3) verify_moe->Invalidate("unsupported_batch_or_k");
+    verify_moe->Mark(trace::VerifyMoeStepPoint::kEngineBegin);
   }
   if (!seqs || !b_tok || !d0 || !g_in || !accepted_tokens || !accepted_count ||
       !next_b || !next_d0 || !next_g)
@@ -1332,6 +1338,7 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     return cleanup(Status::Fail("MtpSpeculativeStepMulti: D2H draft matrix"));
   t_draft1 = std::chrono::steady_clock::now();
   if (cycle_timing) cycle_timing->Mark("draft_end");
+  if (verify_moe) verify_moe->Mark(trace::VerifyMoeStepPoint::kDraftEnd);
   cycle_scope.SetPhase(trace::CyclePhase::kVerify);
 
   // 2. Multi-seq verify: pack [b_b, d_0..d_{k-1}] per sequence (k+1 tokens,
@@ -1361,9 +1368,14 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
       vhist[static_cast<size_t>(b) * hist_len + i] = h[i];
   }
   if (cycle_timing) cycle_timing->Mark("verify_pack_end");
-  Status s = model::ModelVerifyMulti(main, vtok.data(), vbase.data(),
-                                     vseq.data(), vhist.data(), hist_len, B,
-                                     k + 1, d_vlogits, stream, d_vtrunk);
+  Status s;
+  {
+    trace::MtpVerifyMoeScope verify_scope(
+        B == 1 && k == 3 ? verify_moe : nullptr);
+    s = model::ModelVerifyMulti(main, vtok.data(), vbase.data(),
+                                vseq.data(), vhist.data(), hist_len, B,
+                                k + 1, d_vlogits, stream, d_vtrunk);
+  }
   if (cycle_timing) cycle_timing->Mark("verify_model_end");
   if (!s.ok()) return cleanup(s);
   // Argmax over the B*(k+1) rows -> main predictions m_{b,i}.
@@ -1376,6 +1388,8 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     return cleanup(Status::Fail("MtpSpeculativeStepMulti: D2H verify argmax"));
   t_verify1 = std::chrono::steady_clock::now();
   if (cycle_timing) cycle_timing->Mark("verify_readback_end");
+  if (verify_moe)
+    verify_moe->Mark(trace::VerifyMoeStepPoint::kVerifyReadbackEnd);
   cycle_scope.SetPhase(trace::CyclePhase::kAccept);
   // Accept per sequence + roll back the recurrent state to the accepted
   // prefix (checkpoint[a_b]; a_b == k needs no restore).
@@ -1395,6 +1409,7 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
   }
 
   if (cycle_timing) cycle_timing->Mark("accept_end");
+  if (verify_moe) verify_moe->Mark(trace::VerifyMoeStepPoint::kAcceptEnd);
   cycle_scope.SetPhase(trace::CyclePhase::kExtend);
 
   // 3. Batched extend: pack each sequence's accepted prefix
@@ -1493,6 +1508,8 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     r += a[b] + 1;
   }
   if (cycle_timing) cycle_timing->Mark("extend_readback_end");
+  if (verify_moe)
+    verify_moe->Mark(trace::VerifyMoeStepPoint::kExtendReadbackEnd);
 
   // 4. Emit accepted tokens. The caller advances each sequence's state
   //    machine (position += 1 + a_b; history += [b_b, d_0..d_{a_b-1}]) —
@@ -1511,6 +1528,11 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     if (B == 1) cycle_timing->SetEngineResult(a[0], accepted_count[0], k + 1,
                                              T_ext);
     cycle_timing->Mark("engine_end");
+  }
+  if (verify_moe) {
+    if (B == 1)
+      verify_moe->SetEngineResult(a[0], accepted_count[0], k + 1, T_ext);
+    verify_moe->Mark(trace::VerifyMoeStepPoint::kEngineEnd);
   }
   if (timing) {
     const auto t_end = std::chrono::steady_clock::now();

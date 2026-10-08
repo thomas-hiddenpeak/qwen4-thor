@@ -46,6 +46,7 @@
 namespace q4t {
 namespace trace {
 class MtpCycleStep;
+class MtpVerifyMoeStep;
 }  // namespace trace
 namespace mtp {
 
@@ -396,7 +397,8 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                                int32_t* accepted_tokens, int* accepted_count,
                                int32_t* next_b, int32_t* next_d0,
                                uint16_t** next_g, cudaStream_t stream,
-                               trace::MtpCycleStep* cycle_timing = nullptr);
+                               trace::MtpCycleStep* cycle_timing = nullptr,
+                               trace::MtpVerifyMoeStep* verify_moe = nullptr);
 
 }  // namespace mtp
 }  // namespace q4t

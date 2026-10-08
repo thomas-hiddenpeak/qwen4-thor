@@ -23,6 +23,7 @@
 #include "q4t/quant/format.h"
 #include "q4t/quant/swizzle.h"
 #include "q4t/trace/mtp_cycle_timing.h"
+#include "q4t/trace/mtp_verify_moe_timing.h"
 
 namespace q4t {
 namespace quant {
@@ -302,7 +303,10 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
                         const float* router_w, float* y,
                         const MoEWeightLayout& weights, void* workspace,
                         void* gemm_ws, size_t gemm_ws_bytes, int M, int k,
-                        cudaStream_t stream) {
+                        cudaStream_t stream,
+                        trace::MtpVerifyMoeCall* verify_moe) {
+  if (verify_moe)
+    verify_moe->MarkHost(trace::VerifyMoeHostPoint::kRoutedBegin);
   const int E = weights.E;
   const int hs = weights.hs;
   const int moe_is = weights.moe_is;
@@ -366,21 +370,30 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
     free_all();
     return Status::Fail("kernel launch error");
   }
+  if (verify_moe)
+    verify_moe->MarkGpu(trace::VerifyMoeGpuPoint::kListEnd, stream);
 
   // 2. Read counts to host (one sync). Token lists stay on device.
   {
     // Includes the existing GPU wait; this is not GPU active time.
     trace::MtpCycleSpan timing(trace::CycleDetail::kVerifyMoeCounts);
+    if (verify_moe)
+      verify_moe->MarkHost(trace::VerifyMoeHostPoint::kCountsWaitBegin);
     if (cudaMemcpyAsync(counts_h.data(), d_counts, E * sizeof(int32_t),
                         cudaMemcpyDeviceToHost, stream) != cudaSuccess) {
       free_all();
       return Status::Fail("cudaMemcpy counts");
     }
+    if (verify_moe)
+      verify_moe->MarkGpu(trace::VerifyMoeGpuPoint::kCountsCopyEnd, stream);
     if (cudaStreamSynchronize(stream) != cudaSuccess) {
       free_all();
       return Status::Fail("stream sync");
     }
+    if (verify_moe)
+      verify_moe->MarkHost(trace::VerifyMoeHostPoint::kCountsWaitEnd);
   }
+  if (verify_moe) verify_moe->SetCounts(counts_h.data(), E, M, k);
 
   // Clamp per-expert counts to M. An expert can be selected by at most M
   // distinct tokens, so count > M can only arise from a degenerate router top-k
@@ -425,6 +438,8 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
     free_all();
     return Status::Fail("build row_of_flat failed");
   }
+  if (verify_moe)
+    verify_moe->MarkHost(trace::VerifyMoeHostPoint::kOffsetsEnd);
 
   // Per-stream scratch. Stream 0 is the caller's stream (reuses ws + gemm_ws);
   // streams 1..n-1 get their own a_packed/a_sf/gu_out (M rows suffice since
@@ -439,6 +454,7 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
     cudaStream_t stream;
   };
   const int n_streams = MoeStreamCount();
+  if (verify_moe) verify_moe->SetStreams(n_streams);
   SScratch sc[kMaxMoeStreams];
   sc[0] = {reinterpret_cast<uint8_t*>(ws.a_packed),
            reinterpret_cast<uint8_t*>(ws.a_sf), ws.gu_out, gemm_ws, stream};
@@ -461,6 +477,8 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
   }
 
   // 4. Per-expert GEMM chain.
+  if (verify_moe)
+    verify_moe->MarkHost(trace::VerifyMoeHostPoint::kExpertLoopBegin);
   int active_idx = 0;
   for (int e = 0; e < E; ++e) {
     const int M_e = counts_h[e];
@@ -477,6 +495,11 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
     const float gu_alpha = weights.gu_w_scale2_h[e] * gu_in_scale;
     const float dn_alpha = weights.dn_w_scale2_h[e] * dn_in_scale;
 
+    if (verify_moe)
+      verify_moe->MarkExpert(active_idx - 1,
+                             trace::VerifyMoeExpertPoint::kGatherBegin,
+                             ss.stream);
+
     // Gather + quantize this expert's M_e token rows into the start of the
     // compact / a_packed / a_sf buffers (rows 0..M_e-1).
     {
@@ -490,6 +513,10 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
       free_all();
       return Status::Fail("gather quant failed");
     }
+    if (verify_moe)
+      verify_moe->MarkExpert(active_idx - 1,
+                             trace::VerifyMoeExpertPoint::kGatherEnd,
+                             ss.stream);
 
     // gate/up GEMM: [M_e, 2*moe_is] = act [M_e, hs] * W_gu [2*moe_is, hs]^T.
     // cuBLASLt nvjet for all M_e. Three hand-written W4A4 GEMV designs
@@ -506,6 +533,9 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
       free_all();
       return Status::Fail("gate/up GEMM failed");
     }
+    if (verify_moe)
+      verify_moe->MarkExpert(active_idx - 1,
+                             trace::VerifyMoeExpertPoint::kGuEnd, ss.stream);
 
     // SwiGLU + quantize inter -> NVFP4 (fused, one launch; reuses a_packed /
     // a_sf, now [M_e, moe_is]).
@@ -521,6 +551,10 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
       free_all();
       return Status::Fail("inter quant failed");
     }
+    if (verify_moe)
+      verify_moe->MarkExpert(active_idx - 1,
+                             trace::VerifyMoeExpertPoint::kActivationEnd,
+                             ss.stream);
 
     // down GEMM: [M_e, hs] = inter [M_e, moe_is] * W_dn [hs, moe_is]^T.
     // (Same nvjet rationale as gate/up above.) Write into this expert's slice
@@ -535,7 +569,12 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
       free_all();
       return Status::Fail("down GEMM failed");
     }
+    if (verify_moe)
+      verify_moe->MarkExpert(active_idx - 1,
+                             trace::VerifyMoeExpertPoint::kDnEnd, ss.stream);
   }
+  if (verify_moe)
+    verify_moe->MarkHost(trace::VerifyMoeHostPoint::kExpertLoopEnd);
 
   // Rejoin the extra streams: the combine (on the caller's stream) must not
   // read dn_out until every stream's down GEMM has landed.
@@ -543,6 +582,8 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
     cudaEventRecord(g_moe_events[si - 1], g_moe_streams[si - 1]);
     cudaStreamWaitEvent(stream, g_moe_events[si - 1], 0);
   }
+  if (verify_moe)
+    verify_moe->MarkGpu(trace::VerifyMoeGpuPoint::kExpertsJoined, stream);
 
   // 5. Single deterministic combine over all experts' grouped rows.
   {

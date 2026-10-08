@@ -24,6 +24,7 @@
 
 #include "q4t/model/linear.h"
 #include "q4t/quant/moe_gemm.h"
+#include "q4t/trace/mtp_verify_moe_timing.h"
 
 namespace q4t {
 namespace model {
@@ -328,6 +329,13 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
                   void* workspace, size_t workspace_bytes, void* gemm_ws,
                   size_t gemm_ws_bytes, cudaStream_t stream,
                   trace::RouterCollector* trace, int layer_id) {
+  auto* verify_step = q4t::trace::ActiveMtpVerifyMoeStep();
+  auto* verify_moe =
+      verify_step ? verify_step->BeginLayer(layer_id, T) : nullptr;
+  if (verify_moe) {
+    verify_moe->MarkHost(q4t::trace::VerifyMoeHostPoint::kMoeBegin);
+    verify_moe->MarkGpu(q4t::trace::VerifyMoeGpuPoint::kMoeBegin, stream);
+  }
   const int hs = extra.hs;
   const int E = extra.E;
   const int shared_is = extra.shared_is;
@@ -365,6 +373,8 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
   s = CheckGemm(Bf16Gemm(x, extra.gate, d_logits, T, E, hs, 1.0f, 0.0f,
                          gemm_ws, gemm_ws_bytes, stream));
   if (!s.ok()) return s;
+  if (verify_moe)
+    verify_moe->MarkGpu(q4t::trace::VerifyMoeGpuPoint::kRouterEnd, stream);
   // 2. top-k + softmax.
   RouterTopkKernel<<<T, kBlock, 0, stream>>>(d_logits, d_eid, d_rw, T, E, k);
   if (cudaGetLastError() != cudaSuccess) return Status::Fail("topk launch");
@@ -377,30 +387,46 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
   if (cudaMemsetAsync(d_routed, 0, static_cast<size_t>(T) * hs * sizeof(float),
                       stream) != cudaSuccess)
     return Status::Fail("memset routed");
+  if (verify_moe)
+    verify_moe->MarkGpu(q4t::trace::VerifyMoeGpuPoint::kTopkZeroEnd, stream);
   s = quant::MoERoutedForward(x, d_eid, d_rw, d_routed, routed, routed_ws,
-                              gemm_ws, gemm_ws_bytes, T, k, stream);
+                              gemm_ws, gemm_ws_bytes, T, k, stream, verify_moe);
   if (!s.ok()) return s;
+  if (verify_moe) {
+    verify_moe->MarkGpu(q4t::trace::VerifyMoeGpuPoint::kRoutedEnd, stream);
+    verify_moe->MarkHost(q4t::trace::VerifyMoeHostPoint::kRoutedEnd);
+  }
   // 4. shared gate/up.
   s = CheckGemm(ProjGemm(x, extra.shared_gu, &extra.shared_gu_fp8, d_gu, T,
                          2 * shared_is, hs, 1.0f, 0.0f, gemm_ws, gemm_ws_bytes,
                          stream));
   if (!s.ok()) return s;
+  if (verify_moe)
+    verify_moe->MarkGpu(q4t::trace::VerifyMoeGpuPoint::kSharedGuEnd, stream);
   // 5. SwiGLU.
   {
     const int total = T * shared_is;
     SwiGLUKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
         d_gu, d_swiglu, T, shared_is);
   }
+  if (verify_moe)
+    verify_moe->MarkGpu(q4t::trace::VerifyMoeGpuPoint::kSharedActEnd, stream);
   // 6. shared down.
   s = CheckGemm(ProjGemm(d_swiglu, extra.shared_down, &extra.shared_down_fp8,
                          d_shared_down, T, hs, shared_is, 1.0f, 0.0f, gemm_ws,
                          gemm_ws_bytes, stream));
   if (!s.ok()) return s;
+  if (verify_moe)
+    verify_moe->MarkGpu(q4t::trace::VerifyMoeGpuPoint::kSharedDnEnd, stream);
   // 7. combine.
   MoECombineKernel<<<T, kBlock, 0, stream>>>(d_routed, d_shared_down, x,
                                              extra.shared_gate_scalar, y, T,
                                              hs);
   if (cudaGetLastError() != cudaSuccess) return Status::Fail("combine launch");
+  if (verify_moe) {
+    verify_moe->MarkGpu(q4t::trace::VerifyMoeGpuPoint::kMoeEnd, stream);
+    verify_moe->MarkHost(q4t::trace::VerifyMoeHostPoint::kMoeEnd);
+  }
   return Status();
 }
 

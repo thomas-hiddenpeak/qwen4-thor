@@ -27,6 +27,9 @@
 #include "q4t/status.h"
 
 namespace q4t {
+namespace trace {
+class MtpVerifyMoeCall;
+}  // namespace trace
 namespace quant {
 
 // Device workspace layout for MoERoutedForward. All regions are carved from a
@@ -71,7 +74,8 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
                         const float* router_w, float* y,
                         const MoEWeightLayout& weights, void* workspace,
                         void* gemm_ws, size_t gemm_ws_bytes, int M, int k,
-                        cudaStream_t stream);
+                        cudaStream_t stream,
+                        trace::MtpVerifyMoeCall* verify_moe = nullptr);
 
 }  // namespace quant
 }  // namespace q4t
