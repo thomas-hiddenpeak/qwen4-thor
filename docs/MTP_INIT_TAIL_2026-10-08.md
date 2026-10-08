@@ -97,3 +97,23 @@ stream_ms=null。实际marker物理间隔计入skipped_marker_gap_ms，
 长测试完整draft缓存及recurrent在RAM逐字节比较，额外host约
 5GiB；原始小输出受64MiB限制。中间草稿head logits不在观察量内。
 下一项quality-on-01 HTTP11，构建和提交不代表验收通过。
+
+## 质量、计时合同与有限数值结果
+
+运行提交2d232a5。quality11/11首次通过，实际MTP及正式容量保持、
+无fallback；服务/runner/采样器均自然0退出。28项parser首次通过，
+真实质量11trace/40chunks/29tail skip逐条符合只跳非末块；旧15trace/
+102chunks兼容只读复核通过，不追加HTTP。
+
+五长度手工Full/Skip及wrapper共30forward首次全部exact；末块
+sample/multi/logits、g/d0、完整KV/raw/comp/只读元数据、输入及
+guards通过，Skip哨兵不写，六项非法调用在GPU提交前拒绝。
+长8196初始化两次独立main prefill、Full/Skip各4自然+1强制，
+共10步及2固定probe首次通过。两分支自然4次均接受3draft，
+强制1次接受0draft；不追求其它分布追加步骤。初始化和每步约定
+输出、完整draft缓存及recurrent逐字节相同，旧短17步覆盖1/2draft
+的证据按旧身份/未改引擎复用，不将长测试声明为自然分布全覆盖。
+
+`parser-contract-01.json`和`group.json`绑定来源/二进制/夹具/顺序。
+当前满足五档性能前置，接下来唯一performance-on-01共15条；
+不因有限exact通过宣称跨模式等价或默认启用。

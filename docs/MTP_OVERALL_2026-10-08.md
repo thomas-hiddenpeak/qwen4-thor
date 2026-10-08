@@ -168,3 +168,28 @@ stream及额外scratch已经缓存，没有证据支持再做重复缓存优化�
 需要权衡。GPU常驻M4 MoE调度仍是更大研究方向，但若更改expert
 分组/矩阵形状/舍入不能借旧M1合同宣称等价。第一候选结果出来
 后再决定是否有证据支持第二候选；上限仍为两个。
+
+## 本Goal之后的验证主路优先级（尚未实施）
+
+主验证占循环80%–81%，应优先于只占约0.4%的临时分配整理。
+`src/quant/moe_gemm.cu`的T4路由/counts/offset往返及逐expert
+GU/量化/DN链是具体入口。现counts测量窗口4.68–6.51秒/请求
+包含前层GPU工作，不能称纯同步开销或直接当可删除上限。
+
+1. 先用有界诊断量清active experts、每expert实际M_e=1..4分布，
+   以及gather/量化/GU/DN的stream区间；再研究批量gather/quant、
+   SwiGLU/quant，保持每expert行映射、M_e、FP4 scale布局和
+   原Fp4Gemm算法。当前没有这些局部区间的直接计时或收益结论。
+2. 有证据后研究设备驻留的T4 grouped调度，可参考
+   `src/quant/moe_decode.cu`的device dimension/pointer arrays。
+   更换grouped算法、padding或scale stride需要新的数值合同；
+   不能将现有实际M_e组拆成40个M1调用后声称逐位等价。
+3. 接受率与k作为独立算法方向：当前每请求70–96步，44K的
+   a0/a1/a2/a3为27/17/13/39，宜先看按草稿深度的首个reject、
+   target argmax margin和草稿输入状态。不同档位文本不同，不能
+   将这个差异归因于长度；改变k也改变verify/MoE/checkpoint/
+   extend形状，不可复用现有同形数值接受。
+
+以上只是剩余工作排序，不在本Goal实施第三候选；未来需另冻结
+有界范围与HTTP/数值/五档验收。当前跨模式整模型数值缺口仍在，
+有限exact和质量样本均不批准默认启用。
