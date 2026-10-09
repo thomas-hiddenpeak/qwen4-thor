@@ -36,6 +36,8 @@ sequential控制、18例CUDA复制与54项Python首次通过。19条故障/
 [转正Goal](MTP_RELEASE_PLAN_2026-10-08.md)已完成验收与交付整理。
 A基础修复包`5aacc9f`及[PR #2](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/2)
 可独立审查，未合并；其证据复用范围不变，不称新binary重新跑过HTTP。
+基础分支的独有[报告与证据](MTP_FOUNDATION_2026-10-08.md)已并入
+当前研究分支，保留原身份和两父历史；main及PR #2尚未合并。
 
 B新增显式`serve --mtp --mtp-verifier sequential`，指定Thor/checkpoint、
 纯文本、greedy、S1/k3、208896/8192容量达到有限正确性profile准入。

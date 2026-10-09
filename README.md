@@ -98,6 +98,7 @@ B1 target 算术以保持 greedy 输出一致；此前五档 decode 慢约
 9.9%–12.3%，不能引用快速 T4 的速度宣传此模式。
 [已有验收](docs/MTP_STRICT_RESULT_2026-10-09.md)与
 [当前主线交付进度](docs/MTP_MAINLINE_READINESS_2026-10-09.md)分开记录。
+基础修复历史及独立证据见[MTP基础修复交付](docs/MTP_FOUNDATION_2026-10-08.md)。
 
 启动后的 `mtp-support` 记录使用预算后的实际容量、加载与调度器
 状态。`reference_configuration=matched` 只表示配置与受测范围匹配，
