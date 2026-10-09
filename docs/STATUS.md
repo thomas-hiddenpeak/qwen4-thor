@@ -3,6 +3,21 @@
 更新：2026-10-09。代码是实现事实来源；验收规则见 [EVALUATION.md](EVALUATION.md)。
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
+## MTP性能阶段：方向确认、协议冻结、归因在途（2026-10-09 19:27）
+
+用户确认MTP性能改善方向并批准磁盘删除。删除已执行并实测：
+.q4t-work 318.72G→47G，卷余3.7G→276G（46个e2e 09-23/24原始
+dump子目录＋business-routing系列＋moe-shadow/moe-trace-runtime/
+moe-business-set＋cute-venv＋__pycache__；mtp-*/offload-*/
+worktree/releases/refenv保留）。阶段协议冻结于
+[MTP_PERF_2026-10-09.md](MTP_PERF_2026-10-09.md)：目标为降低
+sequential相对普通decode的10%–12%开销，顺序为归因→有界候选→
+五档E2E＋质量11题；GEMM冻结、MTP默认关闭不变。
+bench_full_attn.cu:333干净构建警告已修（q4t binary身份
+476743f6不变，全量重建零警告）。首个plain归因会话因启动未脱离
+shell会话而首败（环境性，首败保留），已脱离会话重跑：
+plain/sequential各1K/4K×3，同binary同固定输入。
+
 ## MTP性能阶段前置完成，方向待确认（2026-10-09 18:55）
 
 main（7f6a69c）干净全量构建通过，q4t

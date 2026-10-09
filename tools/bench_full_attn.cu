@@ -330,7 +330,7 @@ int main(int argc, char** argv) {
       // in FullAttentionWorkspaceBytes; T > kOnePassT so no one-pass buffers).
       const int nq = kNq, nkv = kNkv, hd = kHd;
       const int idx_hd = 128, n_iq = kIdxN, n_ik = kIdxKv;
-      const int max_blocks = 2048, max_topk = 2052, block_topk = 512;
+      const int max_blocks = 2048, max_topk = 2052;
       size_t off = 0;
       auto al = [&](size_t b) { off += (b + 255) & ~size_t(255); };
       al(size_t(T) * (nq * 2 * hd) * 2);
