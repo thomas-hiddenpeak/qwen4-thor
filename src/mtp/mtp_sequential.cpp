@@ -5,8 +5,11 @@
 
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
+#include <cstdio>
+#include <cstdlib>
 #include <span>
 #include <string>
 #include <vector>
@@ -174,6 +177,26 @@ Status MtpSpeculativeStepSequentialTarget(
       !mtp.d_ms_ext_sample)
     return Status::Fail("MTP sequential: incomplete draft/extend scratch");
 
+  // Phase timing (Q4T_MTP_TIMING): draft / verify / extend+accept wall
+  // clock, same convention as MtpSpeculativeStep and
+  // MtpSpeculativeStepMulti. Diagnostic only; off by default and never
+  // changes numerics.
+  const bool timing = getenv("Q4T_MTP_TIMING") != nullptr;
+  const auto t_draft0 = std::chrono::steady_clock::now();
+  auto t_draft1 = t_draft0;
+  auto t_verify1 = t_draft0;
+  const auto emit_timing = [&](const auto& t_end) {
+    if (!timing) return;
+    auto ms = [](const auto& lo, const auto& hi) {
+      return std::chrono::duration<double, std::milli>(hi - lo).count();
+    };
+    std::fprintf(stderr,
+                 "[mtp-timing] draft=%.1f verify=%.1f extend+accept=%.1f "
+                 "ms (a=%d k=%d)\n",
+                 ms(t_draft0, t_draft1), ms(t_draft1, t_verify1),
+                 ms(t_verify1, t_end), result->accepted_count, 3);
+  };
+
   const int vocab = mtp.cfg.vocab;
   const size_t hc_dim = static_cast<size_t>(mtp.hc_dim());
   const size_t trunk_bytes = hc_dim * sizeof(uint16_t);
@@ -221,6 +244,7 @@ Status MtpSpeculativeStepSequentialTarget(
           : Status::Fail("MTP sequential: draft tokens readback"),
       result, stream);
   if (!status.ok()) return status;
+  t_draft1 = std::chrono::steady_clock::now();
 
   MtpSequentialResult verified;
   status = MtpSequentialVerify(main, mtp, seq, b, drafts, output_remaining,
@@ -228,7 +252,11 @@ Status MtpSpeculativeStepSequentialTarget(
   verified.draft_forward_calls = result->draft_forward_calls;
   *result = verified;
   if (!status.ok()) return FinishSequential(status, result, stream);
-  if (result->terminal) return Status();
+  t_verify1 = std::chrono::steady_clock::now();
+  if (result->terminal) {
+    emit_timing(t_verify1);
+    return Status();
+  }
 
   // EAGLE shift: target consumed [b, accepted drafts]; extend inputs are
   // [accepted drafts, correction] at those same positions, paired with the
@@ -269,6 +297,7 @@ Status MtpSpeculativeStepSequentialTarget(
                             result, stream);
   status = FinishSequential(Status(), result, stream);
   if (!status.ok()) return status;
+  emit_timing(std::chrono::steady_clock::now());
   if (next_d0 < 0 || next_d0 >= vocab)
     return FinishSequential(Status::Fail("MTP sequential: invalid next draft"),
                             result, stream);

@@ -3,6 +3,31 @@
 更新：2026-10-09。代码是实现事实来源；验收规则见 [EVALUATION.md](EVALUATION.md)。
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
+## MTP性能阶段：归因完成，T1合同NO_GO，启动T4数值准入（2026-10-09 20:55）
+
+归因（协议第2步）完成，报告见
+[MTP_PERF_ATTRIBUTION_2026-10-09.md](MTP_PERF_ATTRIBUTION_2026-10-09.md)。
+同binary cce55e9d（476743f6＋sequential路径Q4T_MTP_TIMING插桩，默认
+关闭、仅stderr、不改数值；与冻结binary首跑在运行间波动内一致）
+plain/sequential各1K/4K×3：decode 1K −10.85%、4K −10.43%，与冻结
+基线（−10.594%/−10.206%）波动内一致。420步分段归属（每输出token）：
+verify 53.80/55.98ms≈普通decode成本（T1合同每接受token一次target
+B=1前向，不可约），draft 4.16/4.17ms（每步2次MtpForward），
+extend+accept 2.69/2.71ms（每步1次）；开销主体draft+extend
+6.85/6.88ms/tok（plain的12.3%–12.8%）。接受率a=4占82%，k=3接近
+上限。T1合同下成本下界≈54–55ms/tok（约3%慢于普通），冻结目标
+"decode不低于普通"不可达；T1侧有界候选至多省约2ms/tok，不能压入
+基线重复波动（0.1%–0.3%）。结论NO_GO_FOR_FURTHER_MTP_PERF，
+不放宽门槛、不反复采样。
+
+用户指示继续推进MTP性能改善；唯一快于普通decode的路径是T4批量
+验证（10-07五档实测decode +18.7%–61.4%，但TTFT各档增加、200K整
+请求+1.69%）。T4准入协议冻结于
+[MTP_T4_ADMISSION_2026-10-09.md](MTP_T4_ADMISSION_2026-10-09.md)：
+第一项为T1/T4固定输入数值分叉界定（同binary、同固定输入、token级
+对比），其后依次生命周期缺口、长档TTFT/整请求重验、质量11题。
+GEMM冻结、MTP默认关闭不变、不改数值合同。
+
 ## MTP性能阶段：方向确认、协议冻结、归因在途（2026-10-09 19:27）
 
 用户确认MTP性能改善方向并批准磁盘删除。删除已执行并实测：
