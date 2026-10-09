@@ -388,7 +388,11 @@ void ChatServer::SchedulerLoop() {
               model_.Get(), mtp_, seqs.data(), b_tok.data(), d0.data(),
               g_in.data(), B, mtp_k_, accepted.data(), acc_count.data(),
               next_b.data(), next_d0.data(), next_g.data(), nullptr,
-              cycle_step, verify_moe_step);
+              cycle_step, verify_moe_step, stop_token_ids_);
+          // The core has completed its stream before returning. Publish the
+          // failure under model ownership, before waking request threads.
+          if (!s.ok())
+            for (auto* seq : seqs) seq->Fail();
         }
         if (!s.ok() && cudaPeekAtLastError() != cudaSuccess)
           gpu_healthy_.store(false, std::memory_order_relaxed);

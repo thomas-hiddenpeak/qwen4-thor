@@ -182,6 +182,37 @@ class RequestModeTest(unittest.TestCase):
         self.assertTrue(result['passed'], result['errors'])
         self.assertEqual(result['bindings'][0]['records'][0]['fields']['plain_tail_tokens'], '2')
 
+    def test_new_t4_pure_tail_requires_explicit_mode_and_reason(self):
+        for output in (1, 2, 3, 4):
+            for reason in ('output_limit', 'context_limit'):
+                log = terminal(path='plain_tail_b1', steps=0,
+                               tail=output).rstrip() + (
+                    f' verifier=t4 tail_reason={reason}\n')
+                result = request_mode_evidence(
+                    log, [response(output=output)], True, 't4')
+                self.assertTrue(result['passed'], result['errors'])
+
+    def test_t4_tail_does_not_accept_legacy_or_inconsistent_evidence(self):
+        log = terminal(path='plain_tail_b1', steps=0, tail=3).rstrip() + (
+            ' verifier=t4 tail_reason=output_limit\n')
+        for before, after in (
+                (' verifier=t4', ''), ('verifier=t4', 'verifier=sequential'),
+                (' tail_reason=output_limit', ''),
+                ('tail_reason=output_limit', 'tail_reason=none'),
+                ('tail_reason=output_limit', 'tail_reason=context_tail'),
+                ('mtp_steps=0', 'mtp_steps=1'),
+                ('plain_tail_tokens=3', 'plain_tail_tokens=2'),
+                ('fallback=none', 'fallback=initialization')):
+            with self.subTest(before=before, after=after):
+                self.assertFalse(request_mode_evidence(
+                    log.replace(before, after), [response(output=3)],
+                    True, 't4')['passed'])
+        for output in (0, 5):
+            self.assertFalse(request_mode_evidence(
+                log.replace('plain_tail_tokens=3',
+                            f'plain_tail_tokens={output}'),
+                [response(output=output)], True, 't4')['passed'])
+
     def test_invalid_work_counts(self):
         for log in [terminal(steps=-1), terminal(steps='bad'),
                     terminal(tail=-1), terminal(tail=9),

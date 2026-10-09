@@ -185,9 +185,16 @@ def request_mode_evidence(log, responses, mtp, verifier='t4'):
             if steps != 0 or tail != 0 or not 0 < output <= 1:
                 errors.append(f'{response_id}: prefill_only has decode work')
         elif mtp:
-            if verifier == 'sequential' and path == 'plain_tail_b1':
+            if path == 'plain_tail_b1':
                 if steps != 0 or tail != output or not 0 < output <= 4:
                     errors.append(f'{response_id}: invalid pure ordinary B1 tail')
+                # The new T4 tail contract must identify itself explicitly.
+                # Missing-verifier historical T4 logs keep their old meaning.
+                if verifier == 't4' and (
+                        fields.get('verifier') != 't4' or
+                        fields.get('tail_reason') not in (
+                            'output_limit', 'context_limit')):
+                    errors.append(f'{response_id}: unbound T4 ordinary tail')
             elif path != ('mtp_sequential_b1' if verifier == 'sequential'
                           else 'mtp_multi_b1') or steps <= 0:
                 errors.append(f'{response_id}: no confirmed B=1 MTP execution')

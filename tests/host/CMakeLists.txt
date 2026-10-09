@@ -104,3 +104,7 @@ q4t_add_python_contract(q4t_sustained_quality_contracts
   tools/evalscope/test_sustained_quality.py)
 q4t_add_python_contract(q4t_mtp_failure_recovery_contracts
   tools/evalscope/test_mtp_failure_recovery.py)
+q4t_add_python_contract(q4t_mtp_t4_completion_contracts
+  tools/evalscope/test_t4_completion_contract.py)
+q4t_add_python_contract(q4t_mtp_t4_terminal_contracts
+  tools/evalscope/test_t4_terminal_contract.py)

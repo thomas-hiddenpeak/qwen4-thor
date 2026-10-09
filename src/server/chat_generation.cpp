@@ -643,16 +643,12 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   int plain_tail_tokens = 0;
   bool plain_tail = false;
   bool use_mtp = mtp_loaded_ && d_trunk_full != nullptr && !prefill_only;
-  if (use_mtp && sequential_mtp &&
-      !MtpSequentialStepFits(seq.position, max_len_, max_prefill_, mtp_k_,
+  if (use_mtp &&
+      !MtpGenerationStepFits(seq.position, max_len_, max_prefill_, mtp_k_,
                             max_tokens)) {
     use_mtp = false;
     plain_tail = true;
     tail_reason = max_tokens <= mtp_k_ + 1 ? "output_limit" : "context_limit";
-  } else if (use_mtp &&
-             !MtpStepFits(seq.position, max_len_, max_prefill_, mtp_k_)) {
-    use_mtp = false;
-    mtp_fallback = "context_tail";
   }
   int32_t mtp_b = -1, mtp_d0 = -1;
   if (use_mtp) {
@@ -774,18 +770,15 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       }
       const int output_remaining =
           max_tokens - static_cast<int>(generated.size());
-      if ((sequential_mtp &&
-           !MtpSequentialStepFits(seq.position, max_len_, max_prefill_, mtp_k_,
-                                  output_remaining)) ||
-          !MtpStepFits(seq.position, max_len_, max_prefill_, mtp_k_)) {
-        // Keep the final allowed output unconsumed in strict mode. Both
-        // verifiers continue from the valid pending correction at a tail.
+      if (!MtpGenerationStepFits(seq.position, max_len_, max_prefill_, mtp_k_,
+                                 output_remaining)) {
+        // Both verifiers leave the last allowed output unconsumed and
+        // continue from the valid pending correction through ordinary B1.
         next_token = mtp_b;
         use_mtp = false;
         plain_tail = true;
-        if (sequential_mtp)
-          tail_reason = output_remaining <= mtp_k_ + 1 ? "output_limit"
-                                                       : "context_limit";
+        tail_reason = output_remaining <= mtp_k_ + 1 ? "output_limit"
+                                                     : "context_limit";
         break;
       }
       // Register this step's input with the scheduler.
@@ -830,38 +823,51 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         draft_forward_calls += result.draft_forward_calls;
         target_t1_calls += result.target_forward_calls;
         extend_forward_calls += result.extend_forward_calls;
-        if (mtp_ar.mtp_accepted_count > 0 &&
-            (mtp_ar.mtp_accepted_count > mtp_k_ + 1 ||
-             result.terminal != is_stop_token(result.next_b) ||
-             result.next_seed_valid == result.terminal ||
-             result.next_b < 0 ||
-             std::any_of(result.accepted_tokens.begin(),
-                         result.accepted_tokens.begin() + result.accepted_count,
-                         is_stop_token))) {
+      }
+      const int consumed = mtp_ar.mtp_accepted_count;
+      const bool terminal = is_stop_token(mtp_ar.mtp_next_b);
+      const auto valid_token = [vocab](int32_t token) {
+        return token >= 0 && token < vocab;
+      };
+      // Reject failed or inconsistent results before publishing any token or
+      // host state. A correction must remain pending after the whole prefix.
+      if (consumed < 1 || consumed > mtp_k_ + 1 ||
+          consumed >= output_remaining ||
+          consumed >= max_len_ - seq.position ||
+          !valid_token(mtp_ar.mtp_next_b) ||
+          (terminal ? mtp_ar.mtp_next_d0 != -1
+                    : !valid_token(mtp_ar.mtp_next_d0)) ||
+          mtp_ar.mtp_accepted[0] != mtp_b ||
+          std::any_of(mtp_ar.mtp_accepted,
+                      mtp_ar.mtp_accepted + consumed,
+                      [&](int32_t token) {
+                        return !valid_token(token) || is_stop_token(token);
+                      })) {
+        generation_failed = true;
+        break;
+      }
+      if (sequential_mtp) {
+        const auto& result = mtp_ar.mtp_sequential_result;
+        if (result.accepted_count != consumed ||
+            result.next_b != mtp_ar.mtp_next_b ||
+            result.next_d0 != mtp_ar.mtp_next_d0 ||
+            result.terminal != terminal ||
+            result.next_seed_valid == terminal ||
+            !std::equal(mtp_ar.mtp_accepted,
+                        mtp_ar.mtp_accepted + consumed,
+                        result.accepted_tokens.begin())) {
           generation_failed = true;
           break;
         }
-      }
-      if (mtp_ar.mtp_accepted_count <= 0) {
-        // Scheduler failed the step or is shutting down.
-        generation_failed = true;
-        break;
       }
       ++mtp_steps;
       const size_t generated_before_step = generated.size();
       int token_piece_writes = 0;
       int nonempty_writes = 0;
       if (cycle_step) cycle_step->Mark("emit_begin");
-      for (int i = 0; i < mtp_ar.mtp_accepted_count &&
-                          static_cast<int>(generated.size()) < max_tokens;
-           ++i) {
+      for (int i = 0; i < consumed; ++i) {
         const int32_t tok_id = mtp_ar.mtp_accepted[i];
         generated.push_back(tok_id);
-        if (is_stop_token(tok_id)) {
-          done = true;
-          finish_reason = "stop";
-          break;
-        }
         if (stream) {
           std::vector<std::uint32_t> one(1, static_cast<std::uint32_t>(tok_id));
           std::string piece;
@@ -906,11 +912,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
             static_cast<int>(generated.size() - generated_before_step));
       // Advance the main seq over the accepted prefix [b, d_0..d_{a-1}] (the
       // multi step does not touch seqs[b]).
-      seq.position += mtp_ar.mtp_accepted_count;
-      for (int i = 0; i < mtp_ar.mtp_accepted_count; ++i)
+      seq.position += consumed;
+      for (int i = 0; i < consumed; ++i)
         seq.history.push_back(mtp_ar.mtp_accepted[i]);
       if (cycle_step) cycle_step->Mark("advance_end");
-      if (done) break;  // EOS wins over a coincident output/context limit.
+      if (done) break;  // Client cancellation ends delivery of the prefix.
       if (static_cast<int>(generated.size()) >= max_tokens) {
         finish_reason = "length";
         break;
@@ -957,9 +963,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         active_.push_back(&ar);
       }
     }
-    if (sequential_mtp && !use_sched) {
-      // Strict mode cannot substitute the numerically different standalone
-      // ModelDecodeStepSeq implementation, even for a resource fallback.
+    if ((sequential_mtp || plain_tail) && !use_sched) {
+      // A normal MTP tail preserves the ordinary scheduler's B1 arithmetic.
+      // Strict mode also requires it for a pre-step resource fallback.
       generation_failed = true;
     }
     for (int step = static_cast<int>(generated.size());
@@ -1059,7 +1065,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                       : (max_seq_ == 1 ? "mtp_multi_b1" : "mtp_multi");
   } else if (plain_steps == 0 && prefill_only) {
     decode_path = "prefill_only";
-  } else if (sequential_mtp && plain_tail) {
+  } else if (plain_tail) {
     decode_path = "plain_tail_b1";
   }
   if (sequential_mtp) {
@@ -1079,10 +1085,12 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   } else {
     std::fprintf(stderr,
                  "[q4t][decode_path] id=%s requested_mtp=%d path=%s "
-                 "mtp_steps=%d fallback=%s plain_tail_tokens=%d verifier=%s\n",
+                 "mtp_steps=%d fallback=%s plain_tail_tokens=%d verifier=%s "
+                 "tail_reason=%s\n",
                  id.c_str(), mtp_requested_, decode_path, mtp_steps,
                  prefill_only ? "none" : mtp_fallback, plain_tail_tokens,
-                 mtp_requested_ ? MtpVerifierName(mtp_verifier_) : "none");
+                 mtp_requested_ ? MtpVerifierName(mtp_verifier_) : "none",
+                 tail_reason);
   }
   if (batch_gather_enabled) {
     const auto end = quant::GetMoEBatchGatherStats();

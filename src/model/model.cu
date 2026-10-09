@@ -1044,41 +1044,17 @@ Status ModelVerifyMulti(const Model& m, const int32_t* tokens,
     }
   }
 
-  // 1. H2D the packed tokens / positions / per-token seq ids (sequence-major).
-  if (cudaMemcpyAsync(m.d_ids, tokens, Ttot * sizeof(int32_t),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
-    return Status::Fail("H2D tokens");
+  // Own every upload source until checked completion, including RoPE
+  // entries that previously borrowed a reused loop-local scalar.
   std::vector<int> positions(Ttot);
   std::vector<int> token_seq(Ttot);
+  std::vector<int> rope_positions(Ttot);
   for (int b = 0; b < B; ++b) {
     for (int t = 0; t < T; ++t) {
-      positions[static_cast<size_t>(b) * T + t] = base_positions[b] + t;
-      token_seq[static_cast<size_t>(b) * T + t] = seq_ids[b];
-    }
-  }
-  if (cudaMemcpyAsync(m.d_positions, positions.data(), Ttot * sizeof(int),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
-    return Status::Fail("H2D positions");
-  if (cudaMemcpyAsync(m.d_token_seq_id, token_seq.data(), Ttot * sizeof(int),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
-    return Status::Fail("H2D token_seq");
-
-  // 3D MRoPE per sequence (all text tokens): each row = logical + delta,
-  // written at the strided [3, max_len] offsets for that sequence's slice.
-  {
-    const size_t ml = static_cast<size_t>(cfg.max_len);
-    for (int b = 0; b < B; ++b) {
-      int* seq_rope = m.d_rope_pos + static_cast<size_t>(seq_ids[b]) * 3 * ml;
-      for (int t = 0; t < T; ++t) {
-        const int p = base_positions[b] + t;
-        const int rp = p + m.rope_delta[seq_ids[b]];
-        for (int r = 0; r < 3; ++r) {
-          if (cudaMemcpyAsync(seq_rope + r * ml + p, &rp, sizeof(int),
-                              cudaMemcpyHostToDevice, stream) !=
-              cudaSuccess)
-            return Status::Fail("H2D rope_pos");
-        }
-      }
+      const size_t row = static_cast<size_t>(b) * T + t;
+      positions[row] = base_positions[b] + t;
+      token_seq[row] = seq_ids[b];
+      rope_positions[row] = positions[row] + m.rope_delta[seq_ids[b]];
     }
   }
 
@@ -1113,11 +1089,46 @@ Status ModelVerifyMulti(const Model& m, const int32_t* tokens,
     }
   }
 
+  // No host source is released before this boundary. Do not publish
+  // checkpoint validity for an incomplete or failed forward.
+  const auto finish = [&](Status status) -> Status {
+    const cudaError_t error = cudaStreamSynchronize(stream);
+    if (error != cudaSuccess) {
+      status = Status::Fail(
+          std::string("ModelVerifyMulti: completion failed: ") +
+          cudaGetErrorString(error));
+    }
+    if (!status.ok()) InvalidateVerifyCheckpoints(m);
+    return status;
+  };
+  if (cudaMemcpyAsync(m.d_ids, tokens, Ttot * sizeof(int32_t),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return finish(Status::Fail("H2D tokens"));
+  if (cudaMemcpyAsync(m.d_positions, positions.data(), Ttot * sizeof(int),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return finish(Status::Fail("H2D positions"));
+  if (cudaMemcpyAsync(m.d_token_seq_id, token_seq.data(), Ttot * sizeof(int),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return finish(Status::Fail("H2D token_seq"));
+  const size_t ml = static_cast<size_t>(cfg.max_len);
+  for (int b = 0; b < B; ++b) {
+    int* seq_rope = m.d_rope_pos + static_cast<size_t>(seq_ids[b]) * 3 * ml;
+    for (int t = 0; t < T; ++t) {
+      const size_t row = static_cast<size_t>(b) * T + t;
+      for (int r = 0; r < 3; ++r) {
+        if (cudaMemcpyAsync(seq_rope + r * ml + positions[row],
+                            &rope_positions[row], sizeof(int),
+                            cudaMemcpyHostToDevice, stream) != cudaSuccess)
+          return finish(Status::Fail("H2D rope_pos"));
+      }
+    }
+  }
+
   // emb + trunk (packed [B*T, ...]).
   Status s = EmbedLookup(m.head, m.d_ids, m.d_emb, Ttot, stream);
-  if (!s.ok()) return s;
+  if (!s.ok()) return finish(s);
   s = ExpandTrunk(m.head, m.d_emb, m.d_trunk, Ttot, stream);
-  if (!s.ok()) return s;
+  if (!s.ok()) return finish(s);
 
   // Layer loop + head — NO reset; per-token state via d_token_seq_id, and
   // per-sequence per-token SSM/conv/PLE-conv checkpoints for the first T-1
@@ -1127,6 +1138,7 @@ Status ModelVerifyMulti(const Model& m, const int32_t* tokens,
                 positions.data(), Ttot, logits, stream, trunk_out,
                 m.d_verify_ssm_ckpt, m.d_verify_conv_ckpt, num_ckpt, 0,
                 m.d_token_seq_id, T, m.d_verify_ple_conv_ckpt);
+  s = finish(s);
   if (s.ok() && num_ckpt > 0) {
     m.verify_ckpt_rows = num_ckpt;
     m.verify_ckpt_slots.assign(seq_ids, seq_ids + B);

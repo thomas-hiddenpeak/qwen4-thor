@@ -398,6 +398,49 @@ if(Q4T_BUILD_TESTS)
     LINKER:--wrap=_ZN3q4t5model16ModelEndSequenceEPNS0_13ModelSequenceE
     LINKER:--wrap=_ZN3q4t3mtp13MtpResetStateERKNS0_8MtpModelEP11CUstream_sti
     LINKER:--wrap=cudaStreamSynchronize)
+
+  # Repeatable real-CUDA copy contract; no checkpoint or private input.
+  add_executable(q4t_mtp_position_copy
+    tests/mtp_position_copy_test.cpp)
+  target_include_directories(q4t_mtp_position_copy PRIVATE include)
+  target_link_libraries(q4t_mtp_position_copy PRIVATE CUDA::cudart)
+  add_test(NAME q4t_mtp_position_copy COMMAND q4t_mtp_position_copy)
+  set_tests_properties(q4t_mtp_position_copy PROPERTIES
+    TIMEOUT 180 LABELS cuda RESOURCE_LOCK q4t_cuda)
+
+  add_executable(q4t_mtp_t4_completion_fault_server EXCLUDE_FROM_ALL
+    src/main.cpp tests/mtp_t4_completion_fault_server.cpp)
+  target_include_directories(q4t_mtp_t4_completion_fault_server PRIVATE include)
+  target_link_libraries(q4t_mtp_t4_completion_fault_server PRIVATE
+    q4t_model q4t_text q4t_ple q4t_quant q4t_server CUDA::cudart)
+  target_link_options(q4t_mtp_t4_completion_fault_server PRIVATE
+    LINKER:--wrap=_ZN3q4t3mtp23MtpSpeculativeStepMultiERKNS_5model5ModelERKNS0_8MtpModelEPKPKNS1_13ModelSequenceEPKiSE_PKPKtiiPiSJ_SJ_SJ_PPtP11CUstream_stPNS_5trace12MtpCycleStepEPNSO_16MtpVerifyMoeStepESt4spanISD_Lm18446744073709551615EE
+    LINKER:--wrap=_ZN3q4t5model16ModelVerifyMultiERKNS0_5ModelEPKiS5_S5_S5_iiiPtP11CUstream_stS6_
+    LINKER:--wrap=_ZN3q4t5model22ModelRestoreCheckpointERKNS0_5ModelEiP11CUstream_sti
+    LINKER:--wrap=_ZN3q4t5model20FullAttentionForwardERKNS0_20FullAttentionWeightsEPKtPtPKiS8_S6_S8_S6_S6_iPvmP11CUstream_stS8_i
+    LINKER:--wrap=_ZN3q4t5model21ModelDecodeBatchMultiERKNS0_5ModelEPKiS5_S5_S5_iPtP11CUstream_stS6_
+    LINKER:--wrap=_ZN3q4t5model18ModelBeginSequenceERKNS0_5ModelEPNS0_13ModelSequenceEP11CUstream_sti
+    LINKER:--wrap=_ZN3q4t5model16ModelEndSequenceEPNS0_13ModelSequenceE
+    LINKER:--wrap=_ZN3q4t3mtp13MtpResetStateERKNS0_8MtpModelEP11CUstream_sti
+    LINKER:--wrap=cudaMemcpyAsync
+    LINKER:--wrap=cudaStreamSynchronize)
+  # Explicit real-model terminal selection control; never production.
+  add_executable(q4t_mtp_t4_terminal_server EXCLUDE_FROM_ALL
+    src/main.cpp tests/mtp_t4_terminal_server.cpp)
+  target_include_directories(q4t_mtp_t4_terminal_server PRIVATE include)
+  target_link_libraries(q4t_mtp_t4_terminal_server PRIVATE
+    q4t_model q4t_text q4t_ple q4t_quant q4t_server CUDA::cudart)
+  target_link_options(q4t_mtp_t4_terminal_server PRIVATE
+    LINKER:--wrap=_ZN3q4t3mtp23MtpSpeculativeStepMultiERKNS_5model5ModelERKNS0_8MtpModelEPKPKNS1_13ModelSequenceEPKiSE_PKPKtiiPiSJ_SJ_SJ_PPtP11CUstream_stPNS_5trace12MtpCycleStepEPNSO_16MtpVerifyMoeStepESt4spanISD_Lm18446744073709551615EE
+    LINKER:--wrap=_ZN3q4t5model16ModelVerifyMultiERKNS0_5ModelEPKiS5_S5_S5_iiiPtP11CUstream_stS6_
+    LINKER:--wrap=_ZN3q4t5model22ModelRestoreCheckpointERKNS0_5ModelEiP11CUstream_sti
+    LINKER:--wrap=_ZN3q4t5model20FullAttentionForwardERKNS0_20FullAttentionWeightsEPKtPtPKiS8_S6_S8_S6_S6_iPvmP11CUstream_stS8_i
+    LINKER:--wrap=_ZN3q4t5model21ModelDecodeBatchMultiERKNS0_5ModelEPKiS5_S5_S5_iPtP11CUstream_stS6_
+    LINKER:--wrap=_ZN3q4t5model18ModelBeginSequenceERKNS0_5ModelEPNS0_13ModelSequenceEP11CUstream_sti
+    LINKER:--wrap=_ZN3q4t5model16ModelEndSequenceEPNS0_13ModelSequenceE
+    LINKER:--wrap=_ZN3q4t5model12ModelPrefillERKNS0_5ModelEPNS0_13ModelSequenceEPKiiPtP11CUstream_stS8_PKNS0_14VisionFeaturesEiNS0_10LogitsRowsENS0_18SequenceCompletionE
+    LINKER:--wrap=cudaMemcpy)
+
 endif()
 
 # Host-only release-contract slice; the exact required list rejects absent

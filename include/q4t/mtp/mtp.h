@@ -225,7 +225,11 @@ enum class MtpInitPolicy { kFull, kSkipUnusedTail };
 //
 //   input_ids   : device int32 [T] — the new token(s) to embed (step 0: the
 //                 last main-model token; later steps: the prior draft token).
-//   positions   : host int [T] — absolute positions for the full attention.
+//   positions   : host or device int [T] under UVA; absolute positions for
+//                 full attention. Copy direction is inferred by CUDA. Keep
+//                 the source alive and unchanged until stream completion.
+//                 This forward does not itself establish a completion
+//                 boundary on success or failure; its caller owns that wait.
 //   hidden_states: device BF16 [T, hc*hs] — the pre-final-mixer multi stream
 //                 (step 0: from the main model's trunk_out; later steps: the
 //                 prior draft step's multi_hidden).
@@ -392,6 +396,17 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
 // (per-seq KV 隔离); 验证复用 Stage 2a 已 bit-exact 验证的 ModelVerifyMulti。
 // The HTTP scheduler also uses this entrypoint for B=1. Optional cycle timing
 // is request-owned and supported only for that single-sequence diagnostic.
+// Once submission begins, every Status return checks stream completion.
+// On failure accepted_count is zero and next_b/next_d0 are -1 for each valid
+// output row. accepted_tokens and next_g contents are invalid; they must not
+// be consumed. Device state may have advanced, so fail/end the request rather
+// than falling back from that state. Host position/history remain unchanged.
+// stop_tokens contains every configured terminal ID for HTTP generation. A
+// reachable stop is returned as the unconsumed next_b; accepted tokens exclude
+// it, next_d0 is -1, and next_g is unchanged and invalid as a next-step seed.
+// Terminal rows are excluded from draft extend. T4 may physically compute
+// speculative rows after stop, but restores the committed recurrent prefix.
+// An empty stop set preserves legacy mathematical/shape diagnostic semantics.
 Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                                const model::ModelSequence* const* seqs,
                                const int32_t* b_tok, const int32_t* d0,
@@ -400,7 +415,8 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                                int32_t* next_b, int32_t* next_d0,
                                uint16_t** next_g, cudaStream_t stream,
                                trace::MtpCycleStep* cycle_timing = nullptr,
-                               trace::MtpVerifyMoeStep* verify_moe = nullptr);
+                               trace::MtpVerifyMoeStep* verify_moe = nullptr,
+                               std::span<const int32_t> stop_tokens = {});
 
 // Strict S1/slot0/k3 result. Accepted tokens are consumed, non-stop inputs;
 // next_b is the pending prediction and has NOT been consumed by the main model.

@@ -344,6 +344,9 @@ Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx, cudaStream_t stream,
 // checkpoints are saved so a partial accept can restore each sequence's state
 // to its accepted-prefix boundary via ModelRestoreCheckpoint(m, a_i, stream,
 // seq_id).
+// ModelVerifyMulti owns its upload sources through checked stream completion.
+// After submission, all Status exits wait before local host buffers expire;
+// checkpoint rows become valid only after a successfully completed forward.
 //
 //   tokens        : host int32 [B * T] — sequence-major (seq 0's T tokens,
 //                   then seq 1's, ...). Row b*T+t is sequence b's (t+1)-th

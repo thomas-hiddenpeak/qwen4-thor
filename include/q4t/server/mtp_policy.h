@@ -10,12 +10,19 @@ inline bool MtpStepFits(int position, int max_len, int max_prefill, int k) {
 }
 
 // Ordinary decode emits its last allowed token without consuming it. A full
-// sequential step needs room for its pending correction after k+1 inputs.
-inline bool MtpSequentialStepFits(int position, int max_len, int max_prefill,
+// generation step needs room for its pending correction after k+1 inputs.
+inline bool MtpGenerationStepFits(int position, int max_len, int max_prefill,
                                   int k, int output_remaining) {
   return MtpStepFits(position, max_len, max_prefill, k) &&
          output_remaining > 0 && k < output_remaining - 1 &&
          k < max_len - position - 1;
+}
+
+// Compatibility name for existing sequential callers and diagnostics.
+inline bool MtpSequentialStepFits(int position, int max_len, int max_prefill,
+                                  int k, int output_remaining) {
+  return MtpGenerationStepFits(position, max_len, max_prefill, k,
+                               output_remaining);
 }
 
 }  // namespace q4t::server
