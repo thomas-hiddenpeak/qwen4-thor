@@ -1,0 +1,261 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-10-08T14:37:11.665533+00:00",
+  "scope": "independent preserved foundation evidence audit; no new execution",
+  "audit_passed": true,
+  "checks_total": 3201,
+  "checks_passed": 3201,
+  "sections": {
+    "source_manifest": {
+      "audit_passed": true,
+      "original_sources_checked": 111,
+      "summary_used_only_for_source_bindings": true
+    },
+    "identities": {
+      "audit_passed": true,
+      "runtime_source_bindings": {
+        "01": 124,
+        "03": 124,
+        "04": 124
+      },
+      "service_03": "3073656388802257502946503f413ae0a83fdb6bb00f08f32da0e066184d2cf3",
+      "direct_test_03": "f3c70327a4d70da1506c40ef76d700e40033ac2d5c62fb06dce68dac31dd48ba",
+      "service_04": "7fe34d6ddd6bc78c4c9dea6537f72802c93fc60f09eb0b977105660480c627c7",
+      "adapter_diff": "diff --git a/src/server/chat_server.cpp b/src/server/chat_server.cpp\nindex 9f3e3bb..c29900a 100644\n--- a/src/server/chat_server.cpp\n+++ b/src/server/chat_server.cpp\n@@ -9,6 +9,7 @@\n #include <cstdlib>\n #include <fstream>\n #include <iterator>\n+#include <limits>\n #include <string>\n #include <thread>\n #include <vector>\n@@ -163,20 +164,25 @@ Status ChatServer::Start(const ServerOptions& opts) {\n             mcfg.mtp_dir + \"/model.safetensors.index.json\", &raw_index);\n         if (!s.ok()) return Status::Fail(\"MTP budget index: \" + s.message());\n         const std::unique_ptr<io::WeightIndex> mtp_index(raw_index);\n-        breq.mtp_weights_bytes = mtp_index->total_size();\n         io::WeightLoader* raw_loader = nullptr;\n         s = io::WeightLoader::Create(mcfg.mtp_dir, *mtp_index, 1, &raw_loader);\n         if (!s.ok()) return Status::Fail(\"MTP budget loader: \" + s.message());\n         const std::unique_ptr<io::WeightLoader> mtp_loader(raw_loader);\n-        // Header metadata only. The loader reads each weight through one host\n-        // vector; gate_up retains its capacity while loading down_proj.\n+        // Sum mapped tensor bytes from shard headers: the exported index's\n+        // total_size does not match the tensors listed in its MTP weight_map.\n+        // The loader reads each weight through one host vector; gate_up\n+        // retains its capacity while loading down_proj. No payload is read.\n         for (const auto& group : mtp_index->ShardGroups()) {\n           for (const auto& name : group.second) {\n             const io::TensorInfo* tensor = mtp_loader->FindTensor(name);\n             if (!tensor) return Status::Fail(\"MTP budget tensor: \" + name);\n+            const size_t bytes = static_cast<size_t>(tensor->byte_size());\n+            if (bytes > std::numeric_limits<size_t>::max() -\n+                            breq.mtp_weights_bytes)\n+              return Status::Fail(\"MTP budget weight bytes overflow\");\n+            breq.mtp_weights_bytes += bytes;\n             breq.mtp_load_host_bytes =\n-                std::max(breq.mtp_load_host_bytes,\n-                         static_cast<size_t>(tensor->byte_size()));\n+                std::max(breq.mtp_load_host_bytes, bytes);\n           }\n         }\n       }\n",
+      "reuse_scope": "03 direct model tests and ordinary HTTP quality; 04 MTP/full capacity newly measured",
+      "current_runtime_test_binary_is_not_used_as_03_identity": true
+    },
+    "direct": {
+      "audit_passed": true,
+      "budget": 22,
+      "policy": 2,
+      "runner": 18,
+      "direct_fix_groups_passed": [
+        "RoPE independent counterexample",
+        "checkpoint capacity/validity independent counterexample",
+        "CUDA lifecycle"
+      ],
+      "checkpoint_exact_comparisons": 22,
+      "checkpoint_rejections": 15,
+      "known_cross_mode": "FAIL, numeric_equal=0/greedy_equal=0; rollback_exact=1 is local only"
+    },
+    "quality_limits": {
+      "audit_passed": true,
+      "quality_off_03": 11,
+      "quality_on_04": 11,
+      "limits_off_04": 6,
+      "limits_on_04": 6,
+      "first_mtp_startup_03": "FAIL at capacity audit, zero HTTP; corrected 04 retains full requested capacity"
+    },
+    "boundaries": {
+      "audit_passed": true,
+      "raw_requests": 12,
+      "groups": 3,
+      "scope": "max_len32/max_prefill16: mixed MTP/plain tail, initial context tail, scheduler allocation fallback; stream and nonstream"
+    },
+    "performance": {
+      "audit_passed": true,
+      "corrected": [
+        {
+          "length": 1024,
+          "ttft_seconds": [
+            0.8702504329849035,
+            0.7635576080065221,
+            0.7628518091514707
+          ],
+          "latency_seconds": [
+            14.658174983924255,
+            14.491507611935958,
+            14.483695564093068
+          ],
+          "decode_tps": 18.55142774098984,
+          "ttft_mean": 0.7988866167142987,
+          "latency_mean": 14.544459386651093,
+          "output_sha256": "0e1e7da55f600ba0bf8d5eb598b33eec8fab3dc134b41ff482dab803a5562d15"
+        },
+        {
+          "length": 4096,
+          "ttft_seconds": [
+            2.6344852540642023,
+            2.628800411010161,
+            2.6288606838788837
+          ],
+          "latency_seconds": [
+            16.915561717003584,
+            16.844870429020375,
+            16.889969603857026
+          ],
+          "decode_tps": 17.891281878245238,
+          "ttft_mean": 2.6307154496510825,
+          "latency_mean": 16.88346724996033,
+          "output_sha256": "541b0b8f2b1e9140f1f15ec5b57cb7b3cc5e9a22c5ab1ffb70451578a5623828"
+        },
+        {
+          "length": 8192,
+          "ttft_seconds": [
+            5.175392208155245,
+            5.169419263955206,
+            5.171957652084529
+          ],
+          "latency_seconds": [
+            19.322558196960017,
+            19.183462797896937,
+            19.193706174148247
+          ],
+          "decode_tps": 18.135285799240393,
+          "ttft_mean": 5.17225637473166,
+          "latency_mean": 19.2332423896684,
+          "output_sha256": "3171cac48aedfa9db651009dc7c5aa54a7e59bcd0c856ebaafe26c70013f2a1f"
+        },
+        {
+          "length": 45056,
+          "ttft_seconds": [
+            30.44199363118969,
+            30.45232421788387,
+            30.455262932926416
+          ],
+          "latency_seconds": [
+            44.721751142060384,
+            44.73051878786646,
+            44.73502737097442
+          ],
+          "decode_tps": 17.85809473907086,
+          "ttft_mean": 30.449860260666657,
+          "latency_mean": 44.729099100300424,
+          "output_sha256": "0e59305d32f2895cdf1cb1c61a38ece56702dfe329b3d357a76bdbf4f7ad7dae"
+        },
+        {
+          "length": 204800,
+          "ttft_seconds": [
+            159.0046765950974,
+            159.04509742907248,
+            159.41357873892412
+          ],
+          "latency_seconds": [
+            173.9645972151775,
+            174.00327803799883,
+            174.308169323951
+          ],
+          "decode_tps": 17.071056636692298,
+          "ttft_mean": 159.15445092103133,
+          "latency_mean": 174.09201485904245,
+          "output_sha256": "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+        }
+      ],
+      "historical": [
+        {
+          "length": 1024,
+          "ttft_seconds": [
+            0.9307604311034083,
+            0.7665318129584193,
+            0.7633848541881889
+          ],
+          "latency_seconds": [
+            14.734573415946215,
+            14.501973056001589,
+            14.536480484064668
+          ],
+          "decode_tps": 18.517465180118748,
+          "ttft_mean": 0.8202256994166722,
+          "latency_mean": 14.59100898533749,
+          "output_sha256": "cfeb8ed6c17d58f471e072e7b14b589eed3889ca4100f6bbed2324677898441a"
+        },
+        {
+          "length": 4096,
+          "ttft_seconds": [
+            2.6451161259319633,
+            2.615347462007776,
+            2.6170022210571915
+          ],
+          "latency_seconds": [
+            16.924748318037018,
+            16.89521520701237,
+            16.85507246409543
+          ],
+          "decode_tps": 17.87484655740698,
+          "ttft_mean": 2.62582193633231,
+          "latency_mean": 16.89167866304827,
+          "output_sha256": "c361b0115ac2e1155e37a6f0f382ba1f6b5277a78ee6ea385bbeeaece58b82e4"
+        },
+        {
+          "length": 8192,
+          "ttft_seconds": [
+            5.173495901050046,
+            5.1543945032171905,
+            5.1564532809425145
+          ],
+          "latency_seconds": [
+            19.294491642853245,
+            19.21542635001242,
+            19.20905306492932
+          ],
+          "decode_tps": 18.1130993118828,
+          "ttft_mean": 5.161447895069917,
+          "latency_mean": 19.239657019264996,
+          "output_sha256": "a9766e59ba94a029bc48df2251ff5900bec51e9676be9db8d964a24fab08e228"
+        },
+        {
+          "length": 45056,
+          "ttft_seconds": [
+            30.38494868716225,
+            30.41362205008045,
+            30.415483110118657
+          ],
+          "latency_seconds": [
+            44.66474801697768,
+            44.69489588099532,
+            44.72291254508309
+          ],
+          "decode_tps": 17.84526992265012,
+          "ttft_mean": 30.40468461578712,
+          "latency_mean": 44.6941854810187,
+          "output_sha256": "8046d87817dbb21764a99ce3c9b16539f41478e564303c17d20a4c6e14ddf66e"
+        },
+        {
+          "length": 204800,
+          "ttft_seconds": [
+            158.71344266808592,
+            159.43427437194623,
+            159.2873825051356
+          ],
+          "latency_seconds": [
+            173.6728644699324,
+            174.25113691505976,
+            174.1829886471387
+          ],
+          "decode_tps": 17.124862898364583,
+          "ttft_mean": 159.1450331817226,
+          "latency_mean": 174.03566334404363,
+          "output_sha256": "2e528c864ddd1a349f14b5170296ea5bf62832ca0c971861f295c2903c6fc31c"
+        }
+      ],
+      "scope": "15 corrected and 15 historical plain requests; descriptive only, no strict nonregression/performance acceptance claim",
+      "strict_performance_accepted": false
+    },
+    "cancellation": {
+      "audit_passed": true,
+      "overall_historical_result": "FAIL (preserved)",
+      "explicit_cancel_protocol_and_slot_recovery": "PASS",
+      "one_fresh_same_mode_control_matches_recovery": true,
+      "ordinary_mode_generation_differs": true,
+      "scope": "one fixed input; does not establish general cancellation safety or cross-mode numerical admission"
+    }
+  },
+  "errors": [],
+  "pending_files": [],
+  "limitations": [
+    "No model payload accessed.",
+    "Foundation evidence does not approve MTP enablement or default-on.",
+    "New foundation build identity is reviewed separately.",
+    "Historical failures are verified as retained failures, not converted to passes."
+  ],
+  "source_bindings_count": 619,
+  "complete_audit": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-release-20261008/foundation-evidence-review-01.json",
+    "sha256": "3cebdc6543e17a77476c898c9d839cea4db4068de7f63daac5f8e7e000e3784e"
+  },
+  "audit_script": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-release-20261008/foundation-evidence-review.py",
+    "sha256": "ffecd136f58a4f5ea4c8719c81e8175e3d851bdeb06b9379a94262f8d606d551"
+  }
+}

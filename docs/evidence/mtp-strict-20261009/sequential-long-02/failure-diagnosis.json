@@ -1,0 +1,163 @@
+{
+  "kind": "read_only_original_long_terminal_diagnosis",
+  "created_unix": 1791480336.5864782,
+  "model_execution": false,
+  "model_payload_read": false,
+  "metadata_read_only": [
+    "generation_config.json",
+    "tokenizer.json"
+  ],
+  "original_result": {
+    "exit_code": 1,
+    "failure": "long: prefill already terminal",
+    "raw_stop_ids": [
+      248046,
+      248044
+    ],
+    "predicted_stop": 248046,
+    "predicted_token": "<|im_end|>",
+    "top_logits": [
+      [
+        248046,
+        16.5
+      ],
+      [
+        188,
+        12.6875
+      ],
+      [
+        271,
+        12.625
+      ],
+      [
+        198,
+        12.375
+      ],
+      [
+        328,
+        12.3125
+      ]
+    ],
+    "plain_capture_logits_byte_exact": true,
+    "valid_state_log": "long.prefill_valid_state bytes=358665264 regions=124 exact=1 finite=1",
+    "no_tie": true
+  },
+  "historical_source": {
+    "test": "mtp_init_tail_long_k3",
+    "purpose": "8192+4 shape activates nonfinal skip-unused-tail policy and compares full/skip initialization and replay mechanics",
+    "base_source": "mtp-overall-20261008/control-off-01/context-8192/requests.jsonl, identical first prompt copied by batch-gather run-numeric-01.py",
+    "appended_token_ids": [
+      97,
+      131,
+      211,
+      313
+    ],
+    "tokenizer_vocab_spellings": [
+      "\u00a4",
+      "\u00c7",
+      "\u0117",
+      "\u0120{"
+    ],
+    "semantic_warning": "These are fixed raw vocabulary IDs for a shape fixture, not a chat-formatted continuation guarantee. No causal inference that the suffix alone caused EOS has been tested.",
+    "old_full_init_bonus_d0": [
+      248046,
+      198
+    ],
+    "old_skip_init_bonus_d0": [
+      248046,
+      198
+    ],
+    "old_prompt_tokens_exact_current": true,
+    "old_stop_behavior": "Old test computes prefill argmax and continues to initialize/consume it without consulting generation_config stop list. Therefore its natural label describes unforced proposals only, not valid serving continuation past EOS."
+  },
+  "evidence": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-direct-01/protocol.json",
+      "sha256": "3a7d5b8e6aa396b59d40a72d2a7cd8b5ac33a0c4dfd3ece8235c2c5c771d29f3",
+      "bytes": 1893
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-direct-01/stdout.log",
+      "sha256": "f40b58c0f5d6403335a98bef642cfec26a62bb7c1f6ed988470db6604e3d8b5c",
+      "bytes": 2611
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-direct-01/raw/generation_stop_ids.i32",
+      "sha256": "926ffeee53b2688fb545700a4bfa6347735a73ef7836146b5717dbd4f760a9ea",
+      "bytes": 8
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-direct-01/raw/long.prompt.i32",
+      "sha256": "882c193ad51d0b9adcedd9a9b2f00fdcaa6e96d0eb03e6e1c779533311ee8772",
+      "bytes": 32784
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-direct-01/raw/long.prefill_plain.bf16",
+      "sha256": "e540c4b749f1bcb2279a3b6e139537e7f2cedee27378698bd445a6c6d564c6cd",
+      "bytes": 496640
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-direct-01/raw/long.prefill_capture.bf16",
+      "sha256": "e540c4b749f1bcb2279a3b6e139537e7f2cedee27378698bd445a6c6d564c6cd",
+      "bytes": 496640
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-batch-gather-20261008/direct-01/long-data/prompt.i32",
+      "sha256": "882c193ad51d0b9adcedd9a9b2f00fdcaa6e96d0eb03e6e1c779533311ee8772",
+      "bytes": 32784
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-batch-gather-20261008/direct-01/long-data/full.init_result.i32",
+      "sha256": "8837d6d62e3094fb7c1f220c609590b51824648d12b5942cd92311a61dfea7c6",
+      "bytes": 8
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-batch-gather-20261008/direct-01/long-data/skip.init_result.i32",
+      "sha256": "8837d6d62e3094fb7c1f220c609590b51824648d12b5942cd92311a61dfea7c6",
+      "bytes": 8
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/docs/MTP_INIT_TAIL_2026-10-08.md",
+      "sha256": "20e9ba83972424e287b2e5ee363c56ba6eb95c747d0ea53ae9951afecaf7333b",
+      "bytes": 10110
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tests/mtp_k3_replay_test.cpp",
+      "sha256": "f4d0a9ae21dad6f9625c0cd599f1ee5ba87017a34deeee77a229cf021ed1f06b",
+      "bytes": 46435
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-batch-gather-20261008/run-numeric-01.py",
+      "sha256": "add8ef918dc97bf1d2aa3eea8dbd2942d13ecf59548f47224d25f0ac07908d3f",
+      "bytes": 21109
+    }
+  ],
+  "supplement": {
+    "frozen_implementation_protocol": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-long-02/implementation-protocol.json",
+      "sha256": "c40939e22cb93a2bb319d701c7ab0e6ed63a0b06a731347048846ce9f92c4c6b",
+      "bytes": 7768
+    },
+    "fixture_identity_chain_direct_protocol_to_http_to_inputs_verified": true,
+    "selected_prompt_sha256": "d9a2bc519332525d5c6f1e9d96b638faa76078a9c584c11e185ebefb47a20360",
+    "selection": "preexisting row4 zh-summary, first8196 by frozen index; no output inspection to pick a different item",
+    "bound": {
+      "target": 34,
+      "draft": 18,
+      "prefill_chunks": 4,
+      "raw_bytes": 100663296,
+      "seconds": 600,
+      "attempts": 1
+    },
+    "existing_short_evidence_reused": true,
+    "original_fail_preserved": true,
+    "terminal_again_must_fail": true
+  },
+  "static_implementation": {
+    "git_diff_check": "pass",
+    "original_full_entry_body": "unchanged from source-build-01",
+    "production_files_changed_by_this_task": [],
+    "built": false,
+    "run": false
+  }
+}

@@ -1,0 +1,36 @@
+// Test-only preload shim. Never linked into the production binary.
+#include <cuda_runtime_api.h>
+#include <dlfcn.h>
+
+#include <atomic>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+
+namespace {
+constexpr size_t kLogitsBytes = 248320u * sizeof(uint16_t);
+std::atomic<unsigned> matches{0};
+}  // namespace
+
+extern "C" cudaError_t CUDARTAPI cudaMalloc(void** pointer, size_t bytes) {
+  static const auto real =
+      reinterpret_cast<decltype(&cudaMalloc)>(dlsym(RTLD_NEXT, "cudaMalloc"));
+  if (!real) std::_Exit(127);
+  const unsigned ordinal = bytes == kLogitsBytes ? ++matches : 0;
+  if (ordinal == 2) {
+    *pointer = nullptr;
+    std::fprintf(stderr,
+                 "[mtp-scheduler-fault] ordinal=%u bytes=%zu action=inject "
+                 "result=%d\n",
+                 ordinal, bytes, static_cast<int>(cudaErrorMemoryAllocation));
+    return cudaErrorMemoryAllocation;
+  }
+  const cudaError_t result = real(pointer, bytes);
+  if (ordinal != 0) {
+    std::fprintf(stderr,
+                 "[mtp-scheduler-fault] ordinal=%u bytes=%zu action=pass "
+                 "result=%d\n",
+                 ordinal, bytes, static_cast<int>(result));
+  }
+  return result;
+}

@@ -1,0 +1,27 @@
+"""Describe all frozen current-binary costs, without historical speed claims."""
+from pathlib import Path
+import hashlib,json,statistics,time
+M=Path(__file__).resolve().parent
+assert json.loads((M/'final-cost-matrix/summary.json').read_text())['passed']
+def read(p):return json.loads(p.read_text())
+def bind(p):
+ with p.open('rb') as f:s=hashlib.file_digest(f,'sha256').hexdigest()
+ return {'path':str(p),'sha256':s,'bytes':p.stat().st_size}
+files=[M/'final-cost-matrix'/x/'results.json' for x in ('plain','sequential')]
+a,b=map(read,files);assert [x['length'] for x in a]==[1024,4096,8192,45056,204800]==[x['length'] for x in b]
+rows=[]
+for p,s in zip(a,b):
+ assert p['prompt_sha256']==s['prompt_sha256'] and p['outputs']==s['outputs'] and len(set(p['outputs']))==1
+ assert len(p['metrics'])==len(s['metrics'])==3
+ row={'length':p['length'],'prompt_sha256':p['prompt_sha256'],'output_sha256':p['outputs'][0]}
+ for name,record in (('plain',p),('sequential',s)):
+  assert all(x['actual_output']==256 and abs(x['decode_tps']-255/x['decode_seconds'])<1e-9 for x in record['metrics'])
+  row[name]={'all_three':record['metrics'],'mean':{k:statistics.mean(x[k] for x in record['metrics']) for k in ('ttft','latency','decode_seconds','decode_tps','overall_tps')},'first':record['metrics'][0],'later_two_mean':{k:statistics.mean(x[k] for x in record['metrics'][1:]) for k in ('ttft','latency','decode_tps')}}
+ row['sequential_vs_plain_percent']={k:(row['sequential']['mean'][k]/row['plain']['mean'][k]-1)*100 for k in ('ttft','latency','decode_tps','overall_tps')};rows.append(row)
+result={'passed':True,'created_unix':time.time(),'generation_requests':30,'requests_per_mode_context':3,'source_results':[bind(p) for p in files],'script':bind(Path(__file__)),'rows':rows,'limits':['Fixed order plain then sequential; 3 samples do not establish causal historical nonregression.','Client database counts; original usage-only messages are not separately retained by evalscope.','No discarded first samples, warmup, retries or additional generations.','These output matches are not complete model task quality or T4 numerical admission.']}
+with (M/'final-cost-results-01.json').open('x') as f:json.dump(result,f,indent=2);f.write('\n')
+lines=['| 上下文 | 普通decode tok/s | sequential decode tok/s | decode变化 | 整请求耗时变化 |','|---|---:|---:|---:|---:|']
+for r,label in zip(rows,('1K','4K','8K','44K','200K')):
+ lines.append(f"| {label} | {r['plain']['mean']['decode_tps']:.3f} | {r['sequential']['mean']['decode_tps']:.3f} | {r['sequential_vs_plain_percent']['decode_tps']:+.3f}% | {r['sequential_vs_plain_percent']['latency']:+.3f}% |")
+with (M/'final-cost-table-01.md').open('x') as f:f.write('\n'.join(lines)+'\n')
+print('\n'.join(lines))

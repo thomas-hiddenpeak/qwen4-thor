@@ -38,6 +38,10 @@
 #include "q4t/vision/vision.h"
 
 namespace q4t {
+namespace trace {
+class MtpCycleStep;
+class MtpVerifyMoeStep;
+}
 namespace server {
 
 // One multimodal content part: a single image (1 frame) or a video (N frames).
@@ -162,6 +166,13 @@ class ChatServer {
     int32_t mtp_next_d0 = 0;    // next first draft (step output)
     int mtp_accepted_count = 0;  // accepted tokens this step (step output)
     int32_t mtp_accepted[64];   // accepted tokens (bonus + drafts, step output)
+    // Sequential verifier shares the pending/done handshake. Its count is
+    // both the emitted non-stop prefix and the main model's consumed prefix.
+    int mtp_output_remaining = 0;
+    mtp::MtpSequentialResult mtp_sequential_result;
+    // Request-owned, S1 diagnostic only. Publication follows pending/done.
+    trace::MtpCycleStep* mtp_cycle_step = nullptr;
+    trace::MtpVerifyMoeStep* mtp_verify_moe_step = nullptr;
     std::condition_variable cv;  // request thread waits here for `done`
   };
   // Batched prefill (Phase 2, plain path). Concurrent requests that need a
@@ -268,9 +279,8 @@ class ChatServer {
   std::vector<int32_t> stop_token_ids_;  // generation_config, not PLE padding
   int max_prefill_ = 2048;
   int max_len_ = 2048;
-  // OOM-safe memory budget computed at Start() (vllm-style). max_len/max_seq
-  // are capped to what fits in mem_fraction x MemTotal so the engine can never
-  // OOM the unified-memory box. budget_valid_ is false when --no-budget.
+  // Allocation estimate computed at Start(). Capacity fits the modeled
+  // terms, not a physical RAM/OOM guarantee. False when --no-budget.
   runtime::MemoryBudget budget_;
   bool budget_valid_ = false;
   std::unique_ptr<text::Tokenizer> tok_;
@@ -280,8 +290,10 @@ class ChatServer {
   // freed before model_ (destructor order: members destruct in reverse
   // declaration order, so mtp_ is destroyed before model_).
   mtp::MtpModel mtp_;
+  bool mtp_requested_ = false;
+  MtpVerifier mtp_verifier_ = MtpVerifier::kSequential;
   bool mtp_loaded_ = false;
-  int mtp_k_ = 3;  // matches the CLI default (实测最优, 见 docs/LOG.md)
+  int mtp_k_ = 3;  // Fixed draft length for the single-stream admission scope.
   // NOTE (Stage 2c): the legacy shared rolling draft-trunk buffers d_g_/
   // d_g_next_ are gone — concurrent MTP requests would corrupt each other's
   // trunk. Each MTP request now owns a per-request d_mtp_g (HandleChat local,

@@ -1,0 +1,20 @@
+{
+  "command": [
+    "cmake",
+    "-S",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DCMAKE_CXX_COMPILER=/usr/bin/g++-14",
+    "-DCMAKE_CUDA_COMPILER=/usr/local/cuda-13.3/bin/nvcc",
+    "-DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-14",
+    "-DQ4T_CUDA_ARCHITECTURES=110a",
+    "-DQ4T_BUILD_TESTS=ON"
+  ],
+  "seconds": 2.0747663974761963,
+  "exit_code": 0,
+  "warnings": [],
+  "passed": true,
+  "log_sha256": "85f743218312dfc5fd937093992322856da2d6989163ab3e42b435316b3341e4"
+}

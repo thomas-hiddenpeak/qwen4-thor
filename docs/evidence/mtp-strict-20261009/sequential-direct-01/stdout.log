@@ -1,0 +1,28 @@
+MTP_SEQUENTIAL_SCOPE layers=48 S1=1 slot=0 max_len=208896 max_prefill=8192 prompts=1024,8196 natural_steps=4,4 forced_verify=0,1,2,3 independent_plain_trunk_capture=0 complete_valid_state=1 page_map=checked_identity future_patterns=3f,bf performance_evidence=0 retries=0
+  sequential_state=short.prefill_valid_state bytes=154779648 regions=124 exact=1 finite=1
+  sequential_state=short.init_main_unchanged bytes=154779648 regions=124 exact=1 finite=1
+  sequential_state=short.forced0.valid_state bytes=154807308 regions=124 exact=1 finite=1
+  sequential_state=short.forced1.valid_state bytes=154834968 regions=124 exact=1 finite=1
+  sequential_state=short.forced2.valid_state bytes=154862628 regions=124 exact=1 finite=1
+  sequential_state=short.forced3.valid_state bytes=154893360 regions=124 exact=1 finite=1
+  sequential_state=short.future_valid_state bytes=154807308 regions=124 exact=1 finite=1
+  sequential_actual=short.natural0 status=OK target=1 draft=2 extend=1
+  sequential_state=short.natural0.valid_state bytes=154807308 regions=124 exact=1 finite=1
+  sequential_state=short.natural0.draft_valid_state bytes=3275020 regions=7 exact=1 finite=1
+  sequential_state=short.natural0.extend_main_unchanged bytes=154807308 regions=124 exact=1 finite=1
+  sequential_actual=short.natural1 status=OK target=4 draft=2 extend=1
+  sequential_state=short.natural1.valid_state bytes=154921020 regions=124 exact=1 finite=1
+  sequential_state=short.natural1.draft_valid_state bytes=3284540 regions=7 exact=1 finite=1
+  sequential_state=short.natural1.extend_main_unchanged bytes=154921020 regions=124 exact=1 finite=1
+  sequential_actual=short.natural2 status=OK target=4 draft=2 extend=1
+  sequential_state=short.natural2.valid_state bytes=155034732 regions=124 exact=1 finite=1
+  sequential_state=short.natural2.draft_valid_state bytes=3294060 regions=7 exact=1 finite=1
+  sequential_state=short.natural2.extend_main_unchanged bytes=155034732 regions=124 exact=1 finite=1
+  sequential_actual=short.natural3 status=OK target=4 draft=2 extend=1
+  sequential_state=short.natural3.valid_state bytes=155148444 regions=124 exact=1 finite=1
+  sequential_state=short.natural3.draft_valid_state bytes=3303580 regions=7 exact=1 finite=1
+  sequential_state=short.natural3.extend_main_unchanged bytes=155148444 regions=124 exact=1 finite=1
+MTP_SEQUENTIAL_NATURAL context=short steps=4 extend_rows1=1 rows2=0 rows3=0 rows4=3
+  sequential_state=long.prefill_valid_state bytes=358665264 regions=124 exact=1 finite=1
+[FAIL] mtp_sequential_full_model_admission: long: prefill already terminal
+1 tests, 0 passed, 1 failed, 0 skipped

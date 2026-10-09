@@ -3,18 +3,22 @@
 
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <unistd.h>
 #include <algorithm>
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <fstream>
 #include <iterator>
+#include <limits>
 #include <string>
 #include <thread>
 #include <vector>
 #include <cuda_runtime.h>
 #include "q4t/io/json.h"
 #include "q4t/io/weight_loader.h"
+#include "q4t/quant/moe_gemm.h"
 #include "q4t/runtime/memory_budget.h"
 #include "q4t/vision/vision.h"
 
@@ -82,11 +86,35 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // Validate before loading the tokenizer or allocating model resources.
   const Status validated = ValidateServerOptions(opts);
   if (!validated.ok()) return validated;
+  mtp_verifier_ = EffectiveMtpVerifier(opts);
+  const bool sequential_mtp =
+      !opts.no_mtp && mtp_verifier_ == MtpVerifier::kSequential;
+  if (sequential_mtp) {
+    for (const char* name : {"Q4T_MTP_CYCLE_TIMING",
+                             "Q4T_MTP_VERIFY_MOE_TIMING"}) {
+      const char* value = std::getenv(name);
+      if (value && std::strcmp(value, "1") == 0)
+        return Status::Fail(std::string("sequential MTP does not support ") +
+                            name);
+    }
+  }
+  const char* verify_moe_env = std::getenv("Q4T_MTP_VERIFY_MOE_TIMING");
+  if (quant::MoEBatchGatherEnabled() && verify_moe_env &&
+      std::strcmp(verify_moe_env, "1") == 0) {
+    return Status::Fail("batch_gather_unsupported_v1: disable "
+                        "Q4T_MTP_VERIFY_MOE_TIMING with batch gather");
+  }
   const ServerCapabilities capabilities = CapabilitiesFor(opts);
+  mtp_requested_ = capabilities.mtp;
   std::fprintf(stderr,
-               "[q4t][capabilities] requested=%s mtp=%d media=%d max_seq=%d\n",
-               capabilities.Experimental() ? "experimental" : "text-greedy",
-               capabilities.mtp, capabilities.media, opts.max_seq);
+               "[q4t][capabilities] requested=%s mtp=%d media=%d max_seq=%d "
+               "verifier=%s\n",
+               capabilities.Experimental()
+                   ? "experimental"
+                   : (capabilities.mtp ? "text-greedy-mtp-sequential"
+                                       : "text-greedy"),
+               capabilities.mtp, capabilities.media, opts.max_seq,
+               capabilities.mtp ? MtpVerifierName(mtp_verifier_) : "none");
   host_ = opts.host;
   allow_media_ = opts.allow_media;
   PhaseTimer total("startup_total");
@@ -136,6 +164,9 @@ Status ChatServer::Start(const ServerOptions& opts) {
       breq.max_len = opts.max_len;
       breq.max_seq = opts.max_seq;
       breq.max_prefill = cfg.max_prefill;
+      if (quant::MoEBatchGatherEnabled()) {
+        breq.main_forward_extra_bytes = quant::MoEBatchGatherExtraBytes();
+      }
       // Mirror LoadModel's allocation sizing. Small-T attention workspace
       // depends on max_len, so use the requested upper bound before capping.
       model::FullAttentionWeights full;
@@ -151,10 +182,38 @@ Status ChatServer::Start(const ServerOptions& opts) {
       }
       if (capabilities.mtp) {
         mtp::MtpConfig mcfg;
+        mcfg.mtp_dir = opts.model_dir + "/mtp";
         mcfg.max_prefill = cfg.max_prefill;
         mcfg.max_len = full.max_len;
         breq.mtp_workspace_bytes =
             mtp::MtpWorkspaceBytes(mcfg, cfg.max_prefill, full);
+        breq.mtp_k = mtp_k_;
+        io::WeightIndex* raw_index = nullptr;
+        s = io::WeightIndex::Open(
+            mcfg.mtp_dir + "/model.safetensors.index.json", &raw_index);
+        if (!s.ok()) return Status::Fail("MTP budget index: " + s.message());
+        const std::unique_ptr<io::WeightIndex> mtp_index(raw_index);
+        io::WeightLoader* raw_loader = nullptr;
+        s = io::WeightLoader::Create(mcfg.mtp_dir, *mtp_index, 1, &raw_loader);
+        if (!s.ok()) return Status::Fail("MTP budget loader: " + s.message());
+        const std::unique_ptr<io::WeightLoader> mtp_loader(raw_loader);
+        // Sum mapped tensor bytes from shard headers: the exported index's
+        // total_size does not match the tensors listed in its MTP weight_map.
+        // The loader reads each weight through one host vector; gate_up
+        // retains its capacity while loading down_proj. No payload is read.
+        for (const auto& group : mtp_index->ShardGroups()) {
+          for (const auto& name : group.second) {
+            const io::TensorInfo* tensor = mtp_loader->FindTensor(name);
+            if (!tensor) return Status::Fail("MTP budget tensor: " + name);
+            const size_t bytes = static_cast<size_t>(tensor->byte_size());
+            if (bytes > std::numeric_limits<size_t>::max() -
+                            breq.mtp_weights_bytes)
+              return Status::Fail("MTP budget weight bytes overflow");
+            breq.mtp_weights_bytes += bytes;
+            breq.mtp_load_host_bytes =
+                std::max(breq.mtp_load_host_bytes, bytes);
+          }
+        }
       }
       runtime::BudgetModelParams params;
       params.num_layers = cfg.num_layers;
@@ -162,6 +221,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
       params.hc = cfg.hc;
       params.vocab = cfg.vocab;
       params.has_mtp = capabilities.mtp;
+      params.mtp_experts = cfg.E;
+      params.mtp_moe_is = cfg.moe_is;
       params.has_ple = cfg.num_layers > 1;
       params.ple_capacity_tokens = cfg.ple_capacity_tokens;
       params.ple_row_bytes = static_cast<int>(cfg.ple_row_bytes);
@@ -313,8 +374,9 @@ Status ChatServer::Start(const ServerOptions& opts) {
   }
   std::fprintf(stderr,
                "[q4t][capabilities] effective mtp=%d media_allowed=%d "
-               "vision_loaded=%d max_seq=%d\n",
-               mtp_loaded_, allow_media_, vision_tower_ != nullptr, max_seq_);
+               "vision_loaded=%d max_seq=%d verifier=%s\n",
+               mtp_loaded_, allow_media_, vision_tower_ != nullptr, max_seq_,
+               mtp_loaded_ ? MtpVerifierName(mtp_verifier_) : "none");
 
   port_ = opts.port;
   max_tokens_default_ = opts.max_tokens;
@@ -370,6 +432,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
                          "(max_seq=%d)\n",
                  max_seq_);
   }
+  if (sequential_mtp && !scheduler_active_)
+    return Status::Fail("sequential MTP requires the ordinary B1 scheduler");
   // Every serve prefill consumes one row per sequence. The shared buffer
   // holds at most max_seq rows, and all accesses are under model_mu_.
   if (cudaMalloc(reinterpret_cast<void**>(&d_prefill_logits_),
@@ -377,6 +441,29 @@ Status ChatServer::Start(const ServerOptions& opts) {
       cudaSuccess) {
     return Status::Fail("prefill logits buffer alloc failed (out of memory)");
   }
+  // A configuration match does not attest model payload contents. The
+  // supported artifact/hardware and inherited evidence remain documented.
+  ServerOptions effective = opts;
+  effective.max_len = max_len_;
+  effective.max_prefill = max_prefill_;
+  effective.max_seq = max_seq_;
+  bool experimental_overrides = false;
+  for (char** entry = environ; entry && *entry; ++entry) {
+    const std::string_view setting(*entry);
+    const auto name = setting.substr(0, setting.find('='));
+    experimental_overrides |= IsMtpReferenceEnvironmentOverride(name);
+  }
+  const bool reference_configuration = MatchesMtpReferenceConfiguration(
+      effective, mtp_loaded_, scheduler_active_, mtp_k_,
+      experimental_overrides);
+  std::fprintf(stderr,
+               "[q4t][mtp-support] mode=%s reference_configuration=%s "
+               "profile=thor-sequential-20261009 "
+               "checkpoint_identity=not_attested max_len=%d max_prefill=%d "
+               "max_seq=%d k=%d experimental_overrides=%d\n",
+               mtp_loaded_ ? MtpVerifierName(mtp_verifier_) : "disabled",
+               reference_configuration ? "matched" : "unmatched", max_len_,
+               max_prefill_, max_seq_, mtp_k_, experimental_overrides);
   return Status();
 }
 

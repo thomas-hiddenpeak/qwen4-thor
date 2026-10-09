@@ -1,0 +1,33 @@
+{
+  "requested_decode_mode": "mtp",
+  "requested_verifier": "t4",
+  "effective_capabilities": [
+    {
+      "fields": {
+        "mtp": "1",
+        "media_allowed": "0",
+        "vision_loaded": "0",
+        "max_seq": "1",
+        "verifier": "t4"
+      },
+      "raw": "[q4t][capabilities] effective mtp=1 media_allowed=0 vision_loaded=0 max_seq=1 verifier=t4"
+    }
+  ],
+  "capacity": [
+    {
+      "fields": {
+        "requested_max_len": "208896",
+        "requested_max_seq": "1",
+        "requested_max_prefill": "8192",
+        "effective_max_len": "208896",
+        "effective_max_seq": "1",
+        "effective_max_prefill": "8192",
+        "budget_enabled": "1",
+        "budget_feasible": "true"
+      },
+      "raw": "[q4t][capacity] requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true"
+    }
+  ],
+  "passed": true,
+  "errors": []
+}

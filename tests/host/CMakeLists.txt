@@ -94,3 +94,17 @@ q4t_add_python_contract(q4t_physical_ram_contracts
   tools/evalscope/test_physical_ram.py)
 q4t_add_python_contract(q4t_response_identity_contracts
   tools/evalscope/test_response_identity.py)
+q4t_add_python_contract(q4t_mtp_mode_contracts
+  tools/evalscope/test_mtp_mode.py)
+q4t_add_python_contract(q4t_acceptance_mode_contracts
+  tools/evalscope/test_acceptance_mode.py)
+q4t_add_python_contract(q4t_request_cancellation_contracts
+  tools/evalscope/test_request_cancellation.py)
+q4t_add_python_contract(q4t_sustained_quality_contracts
+  tools/evalscope/test_sustained_quality.py)
+q4t_add_python_contract(q4t_mtp_failure_recovery_contracts
+  tools/evalscope/test_mtp_failure_recovery.py)
+q4t_add_python_contract(q4t_mtp_t4_completion_contracts
+  tools/evalscope/test_t4_completion_contract.py)
+q4t_add_python_contract(q4t_mtp_t4_terminal_contracts
+  tools/evalscope/test_t4_terminal_contract.py)

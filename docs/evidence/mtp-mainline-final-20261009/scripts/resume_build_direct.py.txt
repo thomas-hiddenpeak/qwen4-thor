@@ -1,0 +1,33 @@
+"""Targeted repair of failed wrapper link, preserving initial build failure."""
+import hashlib,json,os,re,subprocess,time
+from pathlib import Path
+M=Path(__file__).resolve().parent; W=M.parents[1]; O=M/'completion-terminal-02'; B=W/'build/mtp-mainline-final-20261009'
+def sha(p):
+ with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def save(p,obj):
+ with p.open('x') as f:json.dump(obj,f,indent=2);f.write('\n')
+p=json.loads((O/'build-direct-protocol-01.json').read_text()); a=json.loads((O/'build-amendment-02.json').read_text()); rows=p['source_files']; amendments={r['path']:r for r in a['files']}
+for r in rows:
+ if r['path'] in amendments:
+  n=amendments[r['path']];assert r['sha256']==n['before_sha256'];r.update(sha256=n['sha256'],bytes=n['bytes'])
+ assert sha(W/r['path'])==r['sha256'],r['path']
+env={k:v for k,v in os.environ.items() if not k.startswith('Q4T_') and k!='LD_PRELOAD'};env.update(PYTHONDONTWRITEBYTECODE='1',TMPDIR=str(O/'tmp'))
+results=[]
+def run(label,cmd,cwd,timeout,warnings=False):
+ log=O/(label+'.log'); start=time.monotonic(); record={'label':label,'argv':cmd,'cwd':str(cwd),'passed':False}
+ try:
+  with log.open('x') as f:r=subprocess.run(cmd,cwd=cwd,env=env,stdout=f,stderr=subprocess.STDOUT,timeout=timeout)
+  record.update(exit_code=r.returncode,warnings=[l for l in log.read_text().splitlines() if re.search(r'\bwarning\b',l,re.I)] if warnings else [])
+  record['passed']=r.returncode==0 and not record['warnings']
+ except BaseException as e:record['failure']=repr(e)
+ record.update(seconds=time.monotonic()-start,log_sha256=sha(log));save(O/(label+'.json'),record);results.append(record);print(json.dumps(record),flush=True)
+ if not record['passed']:raise RuntimeError(label+' failed; preserved')
+binaries_before=[{'path':str(B/n),'sha256':sha(B/n)} for n in p['targets'] if (B/n).exists()]
+save(O/'resume-protocol-02.json',{'script_sha256':sha(__file__),'unchanged_production_binaries_before':binaries_before,'checks':p['checks'],'amendment_sha256':sha(O/'build-amendment-02.json')})
+try:
+ run('build-02',['cmake','--build',str(B),'--target','q4t_mtp_t4_completion_fault_server','q4t_mtp_t4_terminal_server','--parallel','6'],W,1200,True)
+ for r in rows:assert sha(W/r['path'])==r['sha256'],r['path']
+ for r in binaries_before:assert sha(r['path'])==r['sha256'],r['path']
+ save(O/'build-identity-01.json',{'files':[{'path':str(B/n),'bytes':(B/n).stat().st_size,'sha256':sha(B/n)} for n in p['targets']+['CMakeCache.txt']],'source_files':rows,'first_build_failure_preserved':str(O/'build-01.json'),'link_amendment':str(O/'build-amendment-02.json')})
+ for label,cmd,cwd in p['checks']:run(label+'-01',cmd,cwd,180)
+finally:save(O/'summary-02.json',{'passed':len(results)==6 and all(r['passed'] for r in results),'results':results,'first_build_failure_preserved':True,'model_or_http_requests':0})

@@ -1,0 +1,30 @@
+"""Frozen 11 host cases, three real HC calls, then independent offline analysis."""
+import hashlib,json,os,subprocess,time
+from pathlib import Path
+S=Path(__file__).resolve().parent;W=S.parents[1];B=W/'build/mtp-strict-20261009';D=S/'hc-first-fork-01';A=S/'hc-analysis';F=W/'.q4t-work/mtp-continuation-20261007/direct-01/triangle-capture'
+def sha(p):
+    with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def save(p,v):
+    with p.open('x') as f:json.dump(v,f,indent=2);f.write('\n')
+assert sha(A/'analyze_hc.py')=='1bb9c9f38a2d235d45b9df045826bfd3e4005218b5d509df991b9e3a273baa82'
+assert sha(A/'test_analyze_hc.py')=='6c134441f1a8c2d51a1c7ceb8c0c65b111020edcf1e9bc8f45cc130708d90c34'
+D.mkdir();required=D/'required-tests.txt';required.write_text('mtp_hc_first_fork\n')
+commands=[('host',['python3','-m','unittest','discover','-s',str(A),'-p','test_analyze_hc.py','-v'],120),('capture',[str(B/'q4t_mtp_hc_first_fork'),'--required-list',str(required)],300),('analysis',['python3',str(A/'analyze_hc.py'),'--capture-dir',str(D/'raw'),'--capture-log',str(D/'capture.stdout'),'--flags-file',str(B/'CMakeFiles/q4t_model.dir/flags.make'),'--output',str(A/'result-01.json')],300)]
+inputs=[F/name for name in ['layer_m36.trunk_in.bin','layer_m52.trunk_in.bin','layer_m60.trunk_in.bin','lin_m27.x.bin','lin_m39.x.bin','lin_m45.x.bin']]
+inputs += [A/'analyze_hc.py',A/'test_analyze_hc.py',B/'q4t_mtp_hc_first_fork',B/'CMakeFiles/q4t_model.dir/flags.make']
+save(D/'protocol.json',dict(created_unix=time.time(),commands=[dict(name=n,argv=c,timeout=t) for n,c,t in commands],identities=[dict(path=str(p),bytes=p.stat().st_size,sha256=sha(p)) for p in inputs],source_build_protocol_sha256=sha(S/'build-protocol-01.json'),build_identity_sha256=sha(S/'build-identity-01.json'),script_sha256=sha(__file__),hc_calls=3,full_model_calls=0,raw_bytes=426240,observed_intrinsic_screen=True,mathematical_all_inputs_guarantee=False,scope='first-row HC arithmetic screen; not full T4 admission',no_retry=True))
+env={k:v for k,v in os.environ.items() if not k.startswith('Q4T_') and k!='LD_PRELOAD'}
+env.update(PYTHONDONTWRITEBYTECODE='1',TMPDIR=str(S/'tmp'),PYTHONPATH=str(A))
+results=[]
+for name,argv,timeout in commands:
+    local={**env}
+    if name=='capture':local.update(Q4T_MTP_HC_CAPTURE=str(F),Q4T_MTP_HC_DIR=str(D/'raw'))
+    start=time.time()
+    with (D/(name+'.stdout')).open('x') as out,(D/(name+'.stderr')).open('x') as err:
+        try:p=subprocess.run(argv,cwd=W,env=local,stdout=out,stderr=err,timeout=timeout);rc=p.returncode
+        except subprocess.TimeoutExpired:rc='timeout'
+    row=dict(name=name,exit_code=rc,seconds=time.time()-start,passed=rc==0,stdout_sha256=sha(D/(name+'.stdout')),stderr_sha256=sha(D/(name+'.stderr')))
+    save(D/(name+'.json'),row);results.append(row);print(json.dumps(row),flush=True)
+    if rc!=0:break
+save(D/'summary.json',dict(passed=len(results)==3 and all(r['passed'] for r in results),results=results))
+raise SystemExit(0 if len(results)==3 and all(r['passed'] for r in results) else 1)

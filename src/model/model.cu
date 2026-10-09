@@ -54,6 +54,23 @@ namespace {
 
 constexpr int kBlock = 256;
 
+void InvalidateVerifyCheckpoints(const Model& m) {
+  m.verify_ckpt_rows = 0;
+  m.verify_ckpt_slots.clear();
+}
+
+Status CheckVerifyCheckpointCapacity(const Model& m, int rows) {
+  if (rows == 0) return Status();
+  if (rows < 0 || rows > m.verify_ckpt_cap || !m.d_verify_ssm_ckpt ||
+      !m.d_verify_conv_ckpt)
+    return Status::Fail("verify checkpoints: reserve at least T-1 rows first");
+  for (const auto& layer : m.layers) {
+    if (layer.has_ple && !m.d_verify_ple_conv_ckpt)
+      return Status::Fail("verify checkpoints: missing PLE checkpoint buffer");
+  }
+  return Status();
+}
+
 // The inactive trunk buffer is dead after the decoder loop. Pack each
 // sequence's final row there before the head, without another allocation.
 __global__ void GatherSequenceLastRowsKernel(
@@ -142,6 +159,7 @@ void Model::Free() {
   d_verify_conv_ckpt = nullptr;
   d_verify_ple_conv_ckpt = nullptr;
   verify_ckpt_cap = 0;
+  InvalidateVerifyCheckpoints(*this);
   ws_bytes = 0;
 }
 
@@ -385,6 +403,9 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                  const RaggedBatch* ragged = nullptr,
                  LogitsRows logits_rows = LogitsRows::kAllRows,
                  bool sequence_last_rows = false) {
+  // Checkpoints describe the most recent successful verify only. Invalidate
+  // before any layer mutates recurrent state, including failed forwards.
+  InvalidateVerifyCheckpoints(m);
   const ModelConfig& cfg = m.cfg;
   // Every model entry point already owns the logical positions copied to
   // m.d_positions. Reduce once on host, not once per full-attention layer.
@@ -456,7 +477,7 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
     // PLE conv checkpoint slice (the PLE short-conv is an in-place recurrence
     // too; a partial accept must restore it — see ModelRestoreCheckpoint).
     // Uses the SEPARATE d_verify_ple_conv_ckpt buffer ([num_ple, max_seq,
-    // cap, ple_elems]), not the linear conv buffer.
+    // num_ckpt, ple_elems]), not the linear conv buffer.
     if (ple_conv_ckpt && m.layers[l].has_ple) {
       const size_t ple_elems = static_cast<size_t>(m.layers[l].hc_dim) *
                                (m.layers[l].ple.conv_kernel - 1) *
@@ -524,8 +545,9 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
 
 // Reset all per-layer persistent state (linear SSM/conv, full KV/indexer)
 // to zero — prepare to process a fresh sequence from the start.
-// const: ResetState only touches device memory, not the object.
+// Invalidates the mutable checkpoint record as well as device state.
 Status ResetAllLayers(const Model& m, cudaStream_t stream, int seq_id = 0) {
+  InvalidateVerifyCheckpoints(m);
   for (const auto& l : m.layers) l.ResetState(seq_id, stream);
   return Status();
 }
@@ -811,12 +833,26 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
                         int history_len, uint16_t* logits, cudaStream_t stream,
                         uint16_t* trunk_out, bool save_checkpoints,
                         int seq_id, LogitsRows logits_rows) {
+  InvalidateVerifyCheckpoints(m);
   const ModelConfig& cfg = m.cfg;
   if (T <= 0) return Status::Fail("ModelDecodeBatch: T must be > 0");
   if (T > cfg.max_prefill)
     return Status::Fail("ModelDecodeBatch: T exceeds max_prefill");
-  if (base_position < 0 || base_position + T > cfg.max_len)
+  if (base_position < 0 || T > cfg.max_len || base_position > cfg.max_len - T)
     return Status::Fail("ModelDecodeBatch: position range exceeds max_len");
+  if (seq_id < 0 || seq_id >= cfg.max_seq)
+    return Status::Fail("ModelDecodeBatch: seq_id exceeds max_seq");
+  if (save_checkpoints) {
+    // The legacy single-sequence PLE kernel never writes PLE checkpoints.
+    // Reject before submitting work instead of exposing a partial rollback.
+    for (const auto& layer : m.layers) {
+      if (layer.has_ple)
+        return Status::Fail("ModelDecodeBatch: PLE checkpoints require "
+                            "ModelVerifyMulti");
+    }
+    Status capacity = CheckVerifyCheckpointCapacity(m, T - 1);
+    if (!capacity.ok()) return capacity;
+  }
 
   if (cudaMemcpyAsync(m.d_ids, input_ids, T * sizeof(int32_t),
                       cudaMemcpyHostToDevice, stream) != cudaSuccess)
@@ -887,10 +923,15 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
   float* ssm_ckpt = save_checkpoints ? m.d_verify_ssm_ckpt : nullptr;
   uint16_t* conv_ckpt = save_checkpoints ? m.d_verify_conv_ckpt : nullptr;
   const int num_ckpt = save_checkpoints ? (T - 1) : 0;
-  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(),
-                   positions.data(), T, logits, stream, trunk_out, ssm_ckpt,
-                   conv_ckpt, num_ckpt, seq_id, nullptr, 0, nullptr,
-                   nullptr, logits_rows);
+  s = RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(),
+                positions.data(), T, logits, stream, trunk_out, ssm_ckpt,
+                conv_ckpt, num_ckpt, seq_id, nullptr, 0, nullptr, nullptr,
+                logits_rows);
+  if (s.ok() && num_ckpt > 0) {
+    m.verify_ckpt_rows = num_ckpt;
+    m.verify_ckpt_slots.assign(1, seq_id);
+  }
+  return s;
 }
 
 // B2 continuous batching: decode ONE token for each of B sequences in a single
@@ -923,6 +964,21 @@ Status ModelDecodeBatchMulti(const Model& m, const int32_t* tokens,
   if (cudaMemcpyAsync(m.d_seq_id, seq_ids, B * sizeof(int),
                       cudaMemcpyHostToDevice, stream) != cudaSuccess)
     return Status::Fail("H2D seq_ids");
+
+  // Full attention reads the pooled MRoPE table, not d_positions directly.
+  // Prefill initializes only its input range; publish this decode position
+  // for each selected slot before any layer consumes it.
+  const size_t ml = static_cast<size_t>(cfg.max_len);
+  for (int t = 0; t < B; ++t) {
+    int* seq_rope = m.d_rope_pos + static_cast<size_t>(seq_ids[t]) * 3 * ml;
+    const int rope_position = positions[t] + m.rope_delta[seq_ids[t]];
+    for (int row = 0; row < 3; ++row) {
+      if (cudaMemcpyAsync(seq_rope + row * ml + positions[t], &rope_position,
+                          sizeof(int), cudaMemcpyHostToDevice, stream) !=
+          cudaSuccess)
+        return Status::Fail("H2D rope_pos");
+    }
+  }
 
   std::vector<int64_t> ids64(tokens, tokens + B);
 
@@ -964,57 +1020,41 @@ Status ModelVerifyMulti(const Model& m, const int32_t* tokens,
                         const int32_t* history, int history_len, int B,
                         int tokens_per_seq, uint16_t* logits,
                         cudaStream_t stream, uint16_t* trunk_out) {
+  InvalidateVerifyCheckpoints(m);
   const ModelConfig& cfg = m.cfg;
   const int T = tokens_per_seq;
-  const int Ttot = B * T;
   if (B <= 0 || T <= 0)
     return Status::Fail("ModelVerifyMulti: B and T must be > 0");
   if (B > cfg.max_seq)
     return Status::Fail("ModelVerifyMulti: B exceeds max_seq");
-  if (Ttot > cfg.max_prefill)
+  if (T > cfg.max_prefill / B)
     return Status::Fail("ModelVerifyMulti: B*T exceeds max_prefill");
+  const int Ttot = B * T;
+  Status capacity = CheckVerifyCheckpointCapacity(m, T - 1);
+  if (!capacity.ok()) return capacity;
   for (int b = 0; b < B; ++b) {
-    if (base_positions[b] < 0 || base_positions[b] + T > cfg.max_len)
+    if (base_positions[b] < 0 || T > cfg.max_len ||
+        base_positions[b] > cfg.max_len - T)
       return Status::Fail("ModelVerifyMulti: position range exceeds max_len");
     if (seq_ids[b] < 0 || seq_ids[b] >= cfg.max_seq)
       return Status::Fail("ModelVerifyMulti: seq_id exceeds max_seq");
-  }
-
-  // 1. H2D the packed tokens / positions / per-token seq ids (sequence-major).
-  if (cudaMemcpyAsync(m.d_ids, tokens, Ttot * sizeof(int32_t),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
-    return Status::Fail("H2D tokens");
-  std::vector<int> positions(Ttot);
-  std::vector<int> token_seq(Ttot);
-  for (int b = 0; b < B; ++b) {
-    for (int t = 0; t < T; ++t) {
-      positions[static_cast<size_t>(b) * T + t] = base_positions[b] + t;
-      token_seq[static_cast<size_t>(b) * T + t] = seq_ids[b];
+    for (int prior = 0; prior < b; ++prior) {
+      if (seq_ids[prior] == seq_ids[b])
+        return Status::Fail("ModelVerifyMulti: duplicate seq_id");
     }
   }
-  if (cudaMemcpyAsync(m.d_positions, positions.data(), Ttot * sizeof(int),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
-    return Status::Fail("H2D positions");
-  if (cudaMemcpyAsync(m.d_token_seq_id, token_seq.data(), Ttot * sizeof(int),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
-    return Status::Fail("H2D token_seq");
 
-  // 3D MRoPE per sequence (all text tokens): each row = logical + delta,
-  // written at the strided [3, max_len] offsets for that sequence's slice.
-  {
-    const size_t ml = static_cast<size_t>(cfg.max_len);
-    for (int b = 0; b < B; ++b) {
-      int* seq_rope = m.d_rope_pos + static_cast<size_t>(seq_ids[b]) * 3 * ml;
-      for (int t = 0; t < T; ++t) {
-        const int p = base_positions[b] + t;
-        const int rp = p + m.rope_delta[seq_ids[b]];
-        for (int r = 0; r < 3; ++r) {
-          if (cudaMemcpyAsync(seq_rope + r * ml + p, &rp, sizeof(int),
-                              cudaMemcpyHostToDevice, stream) !=
-              cudaSuccess)
-            return Status::Fail("H2D rope_pos");
-        }
-      }
+  // Own every upload source until checked completion, including RoPE
+  // entries that previously borrowed a reused loop-local scalar.
+  std::vector<int> positions(Ttot);
+  std::vector<int> token_seq(Ttot);
+  std::vector<int> rope_positions(Ttot);
+  for (int b = 0; b < B; ++b) {
+    for (int t = 0; t < T; ++t) {
+      const size_t row = static_cast<size_t>(b) * T + t;
+      positions[row] = base_positions[b] + t;
+      token_seq[row] = seq_ids[b];
+      rope_positions[row] = positions[row] + m.rope_delta[seq_ids[b]];
     }
   }
 
@@ -1049,21 +1089,61 @@ Status ModelVerifyMulti(const Model& m, const int32_t* tokens,
     }
   }
 
+  // No host source is released before this boundary. Do not publish
+  // checkpoint validity for an incomplete or failed forward.
+  const auto finish = [&](Status status) -> Status {
+    const cudaError_t error = cudaStreamSynchronize(stream);
+    if (error != cudaSuccess) {
+      status = Status::Fail(
+          std::string("ModelVerifyMulti: completion failed: ") +
+          cudaGetErrorString(error));
+    }
+    if (!status.ok()) InvalidateVerifyCheckpoints(m);
+    return status;
+  };
+  if (cudaMemcpyAsync(m.d_ids, tokens, Ttot * sizeof(int32_t),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return finish(Status::Fail("H2D tokens"));
+  if (cudaMemcpyAsync(m.d_positions, positions.data(), Ttot * sizeof(int),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return finish(Status::Fail("H2D positions"));
+  if (cudaMemcpyAsync(m.d_token_seq_id, token_seq.data(), Ttot * sizeof(int),
+                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
+    return finish(Status::Fail("H2D token_seq"));
+  const size_t ml = static_cast<size_t>(cfg.max_len);
+  for (int b = 0; b < B; ++b) {
+    int* seq_rope = m.d_rope_pos + static_cast<size_t>(seq_ids[b]) * 3 * ml;
+    for (int t = 0; t < T; ++t) {
+      const size_t row = static_cast<size_t>(b) * T + t;
+      for (int r = 0; r < 3; ++r) {
+        if (cudaMemcpyAsync(seq_rope + r * ml + positions[row],
+                            &rope_positions[row], sizeof(int),
+                            cudaMemcpyHostToDevice, stream) != cudaSuccess)
+          return finish(Status::Fail("H2D rope_pos"));
+      }
+    }
+  }
+
   // emb + trunk (packed [B*T, ...]).
   Status s = EmbedLookup(m.head, m.d_ids, m.d_emb, Ttot, stream);
-  if (!s.ok()) return s;
+  if (!s.ok()) return finish(s);
   s = ExpandTrunk(m.head, m.d_emb, m.d_trunk, Ttot, stream);
-  if (!s.ok()) return s;
+  if (!s.ok()) return finish(s);
 
   // Layer loop + head — NO reset; per-token state via d_token_seq_id, and
   // per-sequence per-token SSM/conv/PLE-conv checkpoints for the first T-1
   // tokens so each sequence rolls back to its own accepted prefix.
   const int num_ckpt = T - 1;
-  return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(),
-                   positions.data(), Ttot, logits, stream, trunk_out,
-                   m.d_verify_ssm_ckpt, m.d_verify_conv_ckpt, num_ckpt, 0,
-                   m.d_token_seq_id, T,
-                   m.d_verify_ple_conv_ckpt);
+  s = RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(),
+                positions.data(), Ttot, logits, stream, trunk_out,
+                m.d_verify_ssm_ckpt, m.d_verify_conv_ckpt, num_ckpt, 0,
+                m.d_token_seq_id, T, m.d_verify_ple_conv_ckpt);
+  s = finish(s);
+  if (s.ok() && num_ckpt > 0) {
+    m.verify_ckpt_rows = num_ckpt;
+    m.verify_ckpt_slots.assign(seq_ids, seq_ids + B);
+  }
+  return s;
 }
 
 // Ragged batched prefill (Phase 2): prefill B FRESH sequences of variable
@@ -1354,7 +1434,10 @@ LinCkptDims CollectLinCkptDims(const Model& m) {
 }  // namespace
 
 Status ModelReserveVerifyCheckpoints(Model& m, int num_ckpt) {
+  if (num_ckpt < 0 || m.cfg.max_seq <= 0)
+    return Status::Fail("ModelReserveVerifyCheckpoints: invalid capacity");
   if (num_ckpt <= m.verify_ckpt_cap) return Status();
+  InvalidateVerifyCheckpoints(m);
   const LinCkptDims d = CollectLinCkptDims(m);
   if (d.num_lin == 0) return Status();  // no linear layers (nothing to save)
   if (m.d_verify_ssm_ckpt) cudaFree(m.d_verify_ssm_ckpt);
@@ -1363,6 +1446,22 @@ Status ModelReserveVerifyCheckpoints(Model& m, int num_ckpt) {
   m.d_verify_ssm_ckpt = nullptr;
   m.d_verify_conv_ckpt = nullptr;
   m.d_verify_ple_conv_ckpt = nullptr;
+  m.verify_ckpt_cap = 0;
+  // Publish capacity only after all three allocations succeed. A failed grow
+  // leaves no partial checkpoint owner and remains safe to retry.
+  struct PendingCheckpoints {
+    Model* model;
+    ~PendingCheckpoints() {
+      if (!model) return;
+      if (model->d_verify_ssm_ckpt) cudaFree(model->d_verify_ssm_ckpt);
+      if (model->d_verify_conv_ckpt) cudaFree(model->d_verify_conv_ckpt);
+      if (model->d_verify_ple_conv_ckpt)
+        cudaFree(model->d_verify_ple_conv_ckpt);
+      model->d_verify_ssm_ckpt = nullptr;
+      model->d_verify_conv_ckpt = nullptr;
+      model->d_verify_ple_conv_ckpt = nullptr;
+    }
+  } pending{&m};
   // Pooled over max_seq (Phase 2 MTP multi-seq verify): [num_layers, max_seq,
   // cap, elems]. max_seq == 1 degenerates to the legacy [num_layers, cap,
   // elems] layout (bit-identical single-seq path).
@@ -1384,19 +1483,27 @@ Status ModelReserveVerifyCheckpoints(Model& m, int num_ckpt) {
                  ple_bytes) != cudaSuccess)
     return Status::Fail("ModelReserveVerifyCheckpoints: cudaMalloc ple_conv");
   m.verify_ckpt_cap = num_ckpt;
+  pending.model = nullptr;
   return Status();
 }
 
 Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx,
                               cudaStream_t stream, int seq_id) {
-  if (!m.d_verify_ssm_ckpt || ckpt_idx < 0 || ckpt_idx >= m.verify_ckpt_cap)
-    return Status::Fail("ModelRestoreCheckpoint: invalid ckpt");
+  if (seq_id < 0 || seq_id >= m.cfg.max_seq || ckpt_idx < 0 ||
+      ckpt_idx >= m.verify_ckpt_rows ||
+      m.verify_ckpt_rows > m.verify_ckpt_cap ||
+      std::find(m.verify_ckpt_slots.begin(), m.verify_ckpt_slots.end(),
+                seq_id) == m.verify_ckpt_slots.end())
+    return Status::Fail("ModelRestoreCheckpoint: unwritten or stale row/slot");
+  Status capacity = CheckVerifyCheckpointCapacity(m, m.verify_ckpt_rows);
+  if (!capacity.ok()) return capacity;
   const LinCkptDims d = CollectLinCkptDims(m);
-  const int cap = m.verify_ckpt_cap;
+  const int rows = m.verify_ckpt_rows;
   const size_t max_seq = static_cast<size_t>(m.cfg.max_seq);
   const size_t seq = static_cast<size_t>(seq_id);
-  // Checkpoint source: pooled layout [num_layers, max_seq, cap, elems]; the
-  // slice for (layer, sequence) starts at (layer_idx * max_seq + seq) * cap.
+  // The kernels pack the current verify's rows, independently of allocation
+  // capacity: [num_layers, max_seq, rows, elems]. Reader and writer must use
+  // the same actual stride even when the last reserve was larger.
   // Restored into the same sequence's pooled recurrent-state slice. (The PLE
   // conv restore fixes the pre-existing single-seq gap: the PLE short-conv is
   // an in-place recurrence and must roll back on a partial accept too.)
@@ -1405,7 +1512,7 @@ Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx,
   for (const auto& l : m.layers) {
     if (l.is_full_attention) continue;
     const size_t lin_slice =
-        (static_cast<size_t>(lin_idx) * max_seq + seq) * cap;
+        (static_cast<size_t>(lin_idx) * max_seq + seq) * rows;
     const float* ssm_src = m.d_verify_ssm_ckpt + lin_slice * d.ssm_elems +
                            static_cast<size_t>(ckpt_idx) * d.ssm_elems;
     const uint16_t* conv_src = m.d_verify_conv_ckpt + lin_slice * d.conv_elems +
@@ -1421,7 +1528,7 @@ Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx,
     lin_idx++;
     if (l.has_ple) {
       const size_t ple_slice =
-          (static_cast<size_t>(ple_idx) * max_seq + seq) * cap;
+          (static_cast<size_t>(ple_idx) * max_seq + seq) * rows;
       const uint16_t* ple_src =
           m.d_verify_ple_conv_ckpt + ple_slice * d.ple_conv_elems +
           static_cast<size_t>(ckpt_idx) * d.ple_conv_elems;
@@ -1630,6 +1737,7 @@ Status ModelSnapshotState(const Model& m, ModelStateSnapshot* snap,
 Status ModelRestoreState(const Model& m, const ModelStateSnapshot& snap,
                          cudaStream_t stream) {
   if (!snap.valid) return Status::Fail("ModelRestoreState: invalid snapshot");
+  InvalidateVerifyCheckpoints(m);
   const auto refs = CollectRecurrentState(m);
   size_t off = 0;
   for (const auto& r : refs) {

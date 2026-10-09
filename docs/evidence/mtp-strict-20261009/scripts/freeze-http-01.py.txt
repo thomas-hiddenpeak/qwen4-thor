@@ -1,0 +1,40 @@
+"""Freeze commands/fixture identities only; no model or HTTP execution."""
+import hashlib,json,time
+from pathlib import Path
+S=Path(__file__).resolve().parent; W=S.parents[1]; B=W/'build/mtp-strict-20261009'
+M=Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream')
+P=W/'tools/evalscope/.venv/bin/python'; E=W/'.q4t-work/evidence'; O=S/'http'; Q=E/'quality-off-03'; F=E/'performance-off-04'
+def sha(p):
+    with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+commands=[]
+def accept(label,mode,output,fixture,strict=False,reference=None,seconds=1800):
+    args=[str(P),str(W/'tools/evalscope/run_acceptance.py'),'--mode',mode,'--output',str(output),'--binary',str(B/'q4t'),'--model-dir',str(M),'--port','18109','--startup-timeout','600','--fixtures',str(fixture)]
+    if strict:args+=['--mtp','--mtp-verifier','sequential']
+    if reference:args+=['--reference',str(reference)]
+    if mode=='sustained-quality':args+=['--sustained-pair-root',str(S/'sustained-pair')]
+    count={'quality':11,'sustained-quality':8,'admission-limits':14,'performance':15}[mode]
+    commands.append(dict(name=label,argv=args,output=str(output),max_generation_requests=count,group_timeout_seconds=seconds))
+accept('quality-plain','quality',O/'quality-plain',Q/'inputs')
+accept('quality-sequential','quality',O/'quality-sequential',Q/'inputs',True,O/'quality-plain/results.json')
+accept('sustained-plain','sustained-quality',S/'sustained-pair/plain',S/'sustained-pair/inputs')
+accept('sustained-sequential','sustained-quality',S/'sustained-pair/sequential',S/'sustained-pair/inputs',True,S/'sustained-pair/plain/results.json')
+accept('limits-plain','admission-limits',O/'limits-plain',S/'limit-inputs')
+accept('limits-sequential','admission-limits',O/'limits-sequential',S/'limit-inputs',True,O/'limits-plain/results.json')
+for name,tool,binary,count,extra in [
+    ('cancellation','run_request_cancellation.py','q4t',9,['--scope','same-mode-recovery','--mtp','--mtp-verifier','sequential']),
+    ('failure-recovery','run_mtp_failure_recovery.py','q4t_mtp_sequential_fault_server',5,[])]:
+    args=[str(P),str(W/'tools/evalscope'/tool),'--binary',str(B/binary),'--output',str(O/name),'--quality-run',str(Q),'--performance-run',str(F),'--port','18109','--startup-timeout','600',*extra]
+    commands.append(dict(name=name,argv=args,output=str(O/name),max_generation_requests=count,group_timeout_seconds=1800))
+accept('performance-plain','performance',O/'performance-plain',F,seconds=2400)
+accept('performance-sequential','performance',O/'performance-sequential',F,True,O/'performance-plain/results.json',seconds=2400)
+assert sum(c['max_generation_requests'] for c in commands)==110
+paths=[Q/'inputs/requests.jsonl',Q/'inputs/manifest.json',Q/'server-command.json',F/'inputs/context-1024.jsonl',F/'results.json']
+paths += [F/f'context-{n}/requests.jsonl' for n in [1024,4096,8192,45056,204800]]
+paths += [M/n for n in ['config.json','generation_config.json','tokenizer.json','tokenizer_config.json','model.safetensors.index.json']]
+paths += [M/'mtp/config.json']
+for r in [S/'sustained-pair/inputs',S/'limit-inputs']:
+    paths += [p for p in r.rglob('*') if p.is_file()]
+rows=[dict(path=str(p),bytes=p.stat().st_size,sha256=sha(p)) for p in sorted(set(paths)) if p.is_file()]
+proto=dict(created_unix=time.time(),commands=commands,max_generation_requests=110,source_build_identity_sha256=sha(S/'build-identity-01.json'),fixture_preparation_identity_sha256=sha(S/'prepared-fixtures-identity-01.json'),fixtures_and_metadata=rows,remove_environment_prefix='Q4T_',remove_environment_keys=['LD_PRELOAD'],sustained_pair_shared_deadline_seconds=1800,sustained_pair_evidence_budget_bytes=64*1024*1024,stop_on_failed_group=True,no_extra_generation_probes=True,no_generation_retry=True,no_bench=True,cost_measurement_only=True,performance_nonregression_claim=False,semantic_manual_rubrics='frozen questionnaire, independent of plain output; manual review remains required',startup_timeout_seconds=600,outer_timeout_cleanup='SIGTERM entire owned process group; grace 30s then SIGKILL only that group; preserve artifacts',script_sha256=sha(__file__))
+with (S/'http-protocol-01.json').open('x') as f:json.dump(proto,f,indent=2);f.write('\n')
+print(json.dumps(dict(protocol=str(S/'http-protocol-01.json'),groups=len(commands),requests=110,bound_files=len(rows))))

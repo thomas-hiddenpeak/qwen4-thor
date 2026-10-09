@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "q4t/model/linear.h"
+#include "q4t/trace/mtp_cycle_timing.h"
 
 namespace q4t {
 namespace model {
@@ -31,12 +32,31 @@ struct LinearAttentionScratch {
   LinearAttentionScratch(const LinearAttentionScratch&) = delete;
   LinearAttentionScratch& operator=(const LinearAttentionScratch&) = delete;
   ~LinearAttentionScratch() {
-    cudaFreeAsync(qkv_raw, stream_);
-    cudaFreeAsync(qkv, stream_);
-    cudaFreeAsync(z, stream_);
-    cudaFreeAsync(a, stream_);
-    cudaFreeAsync(beta, stream_);
-    cudaFreeAsync(y_ssm, stream_);
+    // Each span measures the host API window, not device execution time.
+    {
+      trace::MtpCycleSpan timing(trace::CycleDetail::kLinearFree);
+      cudaFreeAsync(qkv_raw, stream_);
+    }
+    {
+      trace::MtpCycleSpan timing(trace::CycleDetail::kLinearFree);
+      cudaFreeAsync(qkv, stream_);
+    }
+    {
+      trace::MtpCycleSpan timing(trace::CycleDetail::kLinearFree);
+      cudaFreeAsync(z, stream_);
+    }
+    {
+      trace::MtpCycleSpan timing(trace::CycleDetail::kLinearFree);
+      cudaFreeAsync(a, stream_);
+    }
+    {
+      trace::MtpCycleSpan timing(trace::CycleDetail::kLinearFree);
+      cudaFreeAsync(beta, stream_);
+    }
+    {
+      trace::MtpCycleSpan timing(trace::CycleDetail::kLinearFree);
+      cudaFreeAsync(y_ssm, stream_);
+    }
   }
 
   uint16_t* qkv_raw = nullptr;
@@ -1349,9 +1369,12 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
   // Async frees stay ordered on the caller stream, including partial
   // allocation failures and every early return below.
   auto alloc = [&](uint16_t** p, size_t elems) -> Status {
-    if (cudaMallocAsync(reinterpret_cast<void**>(p),
-                        elems * sizeof(uint16_t), stream) != cudaSuccess) {
-      return Status::Fail("cudaMallocAsync failed");
+    {
+      trace::MtpCycleSpan timing(trace::CycleDetail::kLinearAlloc);
+      if (cudaMallocAsync(reinterpret_cast<void**>(p),
+                          elems * sizeof(uint16_t), stream) != cudaSuccess) {
+        return Status::Fail("cudaMallocAsync failed");
+      }
     }
     return Status();
   };

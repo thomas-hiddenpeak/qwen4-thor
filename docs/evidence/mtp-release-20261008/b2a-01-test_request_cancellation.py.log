@@ -1,0 +1,32 @@
+test_all_paths_and_prefill_progress (__main__.AccountingAndPathTest.test_all_paths_and_prefill_progress) ... ok
+test_changed_recovery_step_count_rejected (__main__.AccountingAndPathTest.test_changed_recovery_step_count_rejected) ... ok
+test_cross_mode_or_fallback_rejected (__main__.AccountingAndPathTest.test_cross_mode_or_fallback_rejected) ... ok
+test_frozen_nine_four_five_counters (__main__.AccountingAndPathTest.test_frozen_nine_four_five_counters) ... ok
+test_missing_duplicate_metric_rejected (__main__.AccountingAndPathTest.test_missing_duplicate_metric_rejected) ... ok
+test_missing_extra_duplicate_paths_rejected (__main__.AccountingAndPathTest.test_missing_extra_duplicate_paths_rejected) ... ok
+test_missing_or_unbounded_prefill_progress_rejected (__main__.AccountingAndPathTest.test_missing_or_unbounded_prefill_progress_rejected) ... ok
+test_missing_or_wrong_interrupt_reason_rejected (__main__.AccountingAndPathTest.test_missing_or_wrong_interrupt_reason_rejected) ... ok
+test_prefill_progress_must_be_adjacent_to_actual_request_id (__main__.AccountingAndPathTest.test_prefill_progress_must_be_adjacent_to_actual_request_id) ... ok
+test_chunked_sse_and_utf8_split_across_chunks (__main__.HttpBodyContractTest.test_chunked_sse_and_utf8_split_across_chunks) ... ok
+test_empty_eof_is_not_decode_content (__main__.HttpBodyContractTest.test_empty_eof_is_not_decode_content) ... ok
+test_response_byte_limit_and_total_deadline_rejected (__main__.HttpBodyContractTest.test_response_byte_limit_and_total_deadline_rejected) ... ok
+test_rst_content_and_completion_in_one_read_is_rejected (__main__.HttpBodyContractTest.test_rst_content_and_completion_in_one_read_is_rejected) ... ok
+test_rst_keeps_incomplete_sse_utf8_tail_unparsed (__main__.HttpBodyContractTest.test_rst_keeps_incomplete_sse_utf8_tail_unparsed) ... ok
+test_truncated_content_length_rejected (__main__.HttpBodyContractTest.test_truncated_content_length_rejected) ... ok
+test_exact_nine_request_order_keeps_prefill (__main__.PlanAndFixtureTest.test_exact_nine_request_order_keeps_prefill) ... ok
+test_input_metadata_bound_without_historical_output_oracle (__main__.PlanAndFixtureTest.test_input_metadata_bound_without_historical_output_oracle) ... ok
+test_missing_ambiguous_or_changed_fixture_rejected (__main__.PlanAndFixtureTest.test_missing_ambiguous_or_changed_fixture_rejected) ... ok
+test_cancellation_rejects_usage_finish_duplicate_error_done (__main__.ResponseContractTest.test_cancellation_rejects_usage_finish_duplicate_error_done) ... ok
+test_error_before_content_is_not_a_decode_interruption (__main__.ResponseContractTest.test_error_before_content_is_not_a_decode_interruption) ... ok
+test_explicit_and_deadline_require_content_and_error (__main__.ResponseContractTest.test_explicit_and_deadline_require_content_and_error) ... ok
+test_fresh_control_and_same_response_recovery (__main__.ResponseContractTest.test_fresh_control_and_same_response_recovery) ... ok
+test_missing_control_and_changed_recovery_rejected (__main__.ResponseContractTest.test_missing_control_and_changed_recovery_rejected) ... ok
+test_missing_or_duplicate_usage_is_not_success (__main__.ResponseContractTest.test_missing_or_duplicate_usage_is_not_success) ... ok
+test_normal_completion_cannot_be_cancellation (__main__.ResponseContractTest.test_normal_completion_cannot_be_cancellation) ... ok
+test_partial_rst_requires_actual_id_and_nonempty_content (__main__.ResponseContractTest.test_partial_rst_requires_actual_id_and_nonempty_content) ... ok
+test_prefill_has_its_own_nonstreaming_error (__main__.ResponseContractTest.test_prefill_has_its_own_nonstreaming_error) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 0.004s
+
+OK

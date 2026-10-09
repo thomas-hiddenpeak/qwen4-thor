@@ -1,0 +1,130 @@
+"""One grouped build and affected direct contracts, after source review."""
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import shutil
+import subprocess
+import time
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+OUT = HERE / 'completion-terminal-02'
+BUILD = ROOT / 'build/mtp-mainline-final-20261009'
+
+
+def sha(path):
+    with Path(path).open('rb') as handle:
+        return hashlib.file_digest(handle, 'sha256').hexdigest()
+
+
+def save(path, data):
+    with path.open('x') as handle:
+        json.dump(data, handle, indent=2, ensure_ascii=False)
+        handle.write('\n')
+
+
+def main():
+    assert not BUILD.exists() and not OUT.exists()
+    OUT.mkdir()
+    environment = {k: v for k, v in os.environ.items()
+                   if not k.startswith('Q4T_') and k != 'LD_PRELOAD'}
+    temporary = OUT / 'tmp'
+    temporary.mkdir()
+    environment.update(PYTHONDONTWRITEBYTECODE='1', TMPDIR=str(temporary))
+    files = subprocess.check_output(['git', 'ls-files', '--cached', '--others',
+        '--exclude-standard', 'src', 'include', 'cmake', 'CMakeLists.txt',
+        'tests', 'tools/evalscope'], cwd=ROOT, text=True).splitlines()
+    rows = []
+    for name in sorted(set(files)):
+        source = ROOT / name
+        if not source.is_file():
+            continue
+        target = OUT / 'source-start' / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source, target)
+        rows.append({'path': name, 'bytes': source.stat().st_size,
+                     'sha256': sha(source)})
+    configure = ['cmake', '-S', str(ROOT), '-B', str(BUILD),
+        '-DCMAKE_BUILD_TYPE=Release', '-DCMAKE_CXX_COMPILER=/usr/bin/g++-14',
+        '-DCMAKE_CUDA_COMPILER=/usr/local/cuda-13.3/bin/nvcc',
+        '-DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-14',
+        '-DQ4T_CUDA_ARCHITECTURES=110a', '-DQ4T_BUILD_TESTS=ON']
+    targets = ['q4t', 'q4t_tests', 'q4t_host_tests',
+               'q4t_mtp_sequential_control', 'q4t_mtp_position_copy',
+               'q4t_mtp_t4_completion_fault_server',
+               'q4t_mtp_t4_terminal_server']
+    build = ['cmake', '--build', str(BUILD), '--target', *targets, '--parallel', '6']
+    names = re.findall(r'^Q4T_TEST\(([^)]+)\)',
+                       (ROOT / 'tests/server_mtp_policy_test.cpp').read_text(), re.M)
+    assert len(names) == 5
+    (OUT / 'required-policy.txt').write_text('\n'.join(names) + '\n')
+    python = str(ROOT / 'tools/evalscope/.venv/bin/python')
+    checks = [
+        ('policy', [str(BUILD / 'q4t_host_tests'), '--required-list',
+                    str(OUT / 'required-policy.txt')], ROOT),
+        ('sequential-control', ['ctest', '--test-dir', str(BUILD), '-R',
+             '^q4t_mtp_sequential_control$', '--no-tests=error',
+             '--output-on-failure'], ROOT),
+        ('cuda-position', [str(BUILD / 'q4t_mtp_position_copy')], ROOT),
+        ('python-completion', [python, '-B', '-m', 'unittest', '-v',
+             'test_acceptance_mode', 'test_t4_completion_contract'],
+             ROOT / 'tools/evalscope'),
+    ]
+    # Terminal parser tests live with the bounded control variant, not the
+    # production server. Their exact file/module name is frozen here.
+    checks += [('python-terminal', [python, '-B', '-m', 'unittest', '-v',
+                                  'test_t4_terminal_contract'],
+                ROOT / 'tools/evalscope')]
+    save(OUT / 'build-direct-protocol-01.json', {
+        'created_unix': time.time(), 'source_head': subprocess.check_output(
+            ['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
+        'source_files': rows, 'configure': configure, 'build': build,
+        'targets': targets, 'checks': [(label, argv, str(cwd))
+                                     for label, argv, cwd in checks],
+        'policy_tests': names, 'script_sha256': sha(__file__),
+        'model_or_http_requests': 0, 'cuda_position_cases': 18,
+        'whole_q4t_tests_built_but_not_run': True})
+    results = []
+    def run(label, argv, cwd, seconds, warnings=False):
+        start = time.monotonic()
+        log = OUT / (label + '-01.log')
+        record = {'label': label, 'argv': argv, 'cwd': str(cwd), 'passed': False}
+        try:
+            with log.open('x') as output:
+                proc = subprocess.run(argv, cwd=cwd, env=environment,
+                    stdout=output, stderr=subprocess.STDOUT, timeout=seconds)
+            record['exit_code'] = proc.returncode
+            record['warnings'] = [line for line in log.read_text().splitlines()
+                if re.search(r'\bwarning\b', line, re.I)] if warnings else []
+            record['passed'] = proc.returncode == 0 and not record['warnings']
+        except BaseException as error:
+            record['failure'] = repr(error)
+        record['seconds'] = time.monotonic() - start
+        record['log_sha256'] = sha(log) if log.exists() else None
+        results.append(record)
+        save(OUT / (label + '-01.json'), record)
+        print(json.dumps(record), flush=True)
+        if not record['passed']:
+            raise RuntimeError(label + ' failed; preserve initial record')
+    try:
+        run('configure', configure, ROOT, 180, True)
+        run('build', build, ROOT, 1200, True)
+        assert all(sha(ROOT / r['path']) == r['sha256'] for r in rows)
+        identities = [{'path': str(BUILD / name), 'bytes': (BUILD / name).stat().st_size,
+                       'sha256': sha(BUILD / name)}
+                      for name in targets + ['CMakeCache.txt']]
+        save(OUT / 'build-identity-01.json', {'files': identities,
+                                           'source_files': rows})
+        for label, command, cwd in checks:
+            run(label, command, cwd, 180)
+    finally:
+        save(OUT / 'summary-01.json', {'passed': len(results) == 7 and
+             all(r['passed'] for r in results), 'results': results,
+             'model_or_http_requests': 0})
+    print('Grouped build and direct contracts completed.', flush=True)
+
+
+if __name__ == '__main__':
+    main()

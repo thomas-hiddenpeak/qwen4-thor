@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_mtp_mode",
+    "test_acceptance_mode",
+    "test_request_cancellation"
+  ],
+  "seconds": 0.11374545097351074,
+  "exit_code": 0,
+  "warnings": [],
+  "passed": true,
+  "log_sha256": "985ceed2c4fd7f7ca0e74637f00336e3f1f5a264dc8a1d1a1fd44cc21c5d8437"
+}

@@ -1,0 +1,57 @@
+{
+  "time": 1791479548.843739,
+  "commands": [
+    [
+      "sustained",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/prepare_sustained_quality.py",
+      "--model-dir",
+      "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+      "--binary",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t",
+      "--output",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/inputs"
+    ],
+    [
+      "limits-1024",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/prepare_inputs.py",
+      "--model-dir",
+      "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+      "--length",
+      "1024",
+      "--number",
+      "1",
+      "--output",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/limit-inputs/context-1024/requests.jsonl"
+    ],
+    [
+      "limits-208891",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/prepare_inputs.py",
+      "--model-dir",
+      "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+      "--length",
+      "208891",
+      "--number",
+      "1",
+      "--output",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/limit-inputs/context-208891/requests.jsonl"
+    ],
+    [
+      "limits-208892",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/prepare_inputs.py",
+      "--model-dir",
+      "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+      "--length",
+      "208892",
+      "--number",
+      "1",
+      "--output",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/limit-inputs/context-208892/requests.jsonl"
+    ]
+  ],
+  "no_inference": true,
+  "per_command_timeout": 120
+}

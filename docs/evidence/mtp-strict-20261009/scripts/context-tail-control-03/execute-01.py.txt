@@ -1,0 +1,44 @@
+"""Execute frozen isolated context-tail phases once with owned process groups."""
+import argparse,hashlib,json,os,signal,subprocess,time
+from pathlib import Path
+C=Path(__file__).resolve().parent;W=C.parents[2]
+def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+def save(p,v):
+    with p.open('x') as f:json.dump(v,f,indent=2);f.write('\n')
+p=argparse.ArgumentParser();p.add_argument('--phases',nargs='+',choices=['build','host','http'],required=True);args=p.parse_args()
+protocol=json.loads((C/'protocol-01.json').read_text());assert len(set(args.phases))==len(args.phases)
+assert all(sha(k)==v for k,v in protocol['frozen_files'].items())
+env={k:v for k,v in os.environ.items() if not k.startswith('Q4T_') and k!='LD_PRELOAD'}
+(C/'tmp').mkdir(exist_ok=True)
+env.update(PYTHONDONTWRITEBYTECODE='1',TMPDIR=str(C/'tmp'),PYTHONPATH=str(C)+':'+str(W/'tools/evalscope'))
+for phase in args.phases:
+    if phase=='http':
+        assert json.loads((C/'host-execution-01.json').read_text())['passed']
+        assert json.loads((C/'build-result-01.json').read_text())['passed']
+    command=protocol['commands'][phase];timeout=dict(build=400,host=60,http=1900)[phase]
+    save(C/f'{phase}-launch-01.json',dict(argv=command,cwd=str(C),timeout_seconds=timeout,protocol_sha256=sha(C/'protocol-01.json'),runner_sha256=sha(__file__),started_unix=time.time()))
+    start=time.time();timed_out=False
+    with (C/f'{phase}-execution-01.stdout').open('x') as o,(C/f'{phase}-execution-01.stderr').open('x') as e:
+        proc=subprocess.Popen(command,cwd=C,env=env,stdout=o,stderr=e,start_new_session=True)
+        try:rc=proc.wait(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            timed_out=True;os.killpg(proc.pid,signal.SIGTERM)
+            try:rc=proc.wait(timeout=30)
+            except subprocess.TimeoutExpired:os.killpg(proc.pid,signal.SIGKILL);rc=proc.wait()
+        try:os.killpg(proc.pid,0)
+        except ProcessLookupError:remaining=False
+        else:
+            remaining=True
+            try:os.killpg(proc.pid,signal.SIGTERM)
+            except ProcessLookupError:pass
+            until=time.monotonic()+30
+            while time.monotonic()<until:
+                try:os.killpg(proc.pid,0)
+                except ProcessLookupError:break
+                time.sleep(.25)
+            else:
+                try:os.killpg(proc.pid,signal.SIGKILL)
+                except ProcessLookupError:pass
+    result=dict(phase=phase,exit_code=rc,timeout=timed_out,residual_process_group=remaining,passed=rc==0 and not timed_out and not remaining,seconds=time.time()-start,stdout_sha256=sha(C/f'{phase}-execution-01.stdout'),stderr_sha256=sha(C/f'{phase}-execution-01.stderr'))
+    save(C/f'{phase}-execution-01.json',result);print(json.dumps(result),flush=True)
+    if not result['passed']:raise SystemExit(1)

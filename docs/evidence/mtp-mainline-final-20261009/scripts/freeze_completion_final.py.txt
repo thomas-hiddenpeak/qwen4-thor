@@ -1,0 +1,95 @@
+"""Bind the reviewed completion variants to the final grouped build."""
+import hashlib
+import json
+from pathlib import Path
+import time
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+BUILD = ROOT / 'build/mtp-mainline-final-20261009'
+MODEL = Path('/home/rm01/models/dev/llm/garnermccloud/'
+             'Qwen3.8-Flash-Next-NVFP4-SSD-Stream')
+TOOLS = ROOT / 'tools/evalscope'
+
+
+def bind(path):
+    path = path.resolve()
+    with path.open('rb') as source:
+        digest = hashlib.file_digest(source, 'sha256').hexdigest()
+    return {'path': str(path), 'bytes': path.stat().st_size, 'sha256': digest}
+
+
+def main():
+    out = HERE / 'completion-http-02'
+    manifest = HERE / 'completion-http-manifest-02.json'
+    assert not out.exists() and not manifest.exists()
+    named = {
+        'driver': TOOLS / 'run_mtp_t4_completion.py',
+        'fault_contract': TOOLS / 'mtp_t4_completion_contract.py',
+        'contract_test': TOOLS / 'test_t4_completion_contract.py',
+        'wrapper': ROOT / 'tests/mtp_t4_completion_fault_server.cpp',
+        'position_test': ROOT / 'tests/mtp_position_copy_test.cpp',
+        'link_config': ROOT / 'CMakeLists.txt',
+        'transport': TOOLS / 'run_mtp_failure_recovery.py',
+        'failure_contract': TOOLS / 'mtp_failure_recovery_contract.py',
+        'recovery_contract': TOOLS / 'request_cancellation_contract.py',
+        'acceptance_mode': TOOLS / 'acceptance_mode.py',
+        'response_identity': TOOLS / 'response_identity.py',
+        'variant_binary': BUILD / 'q4t_mtp_t4_completion_fault_server',
+        'production_binary': BUILD / 'q4t',
+        'fixture': HERE / 'http-mainline-inputs-01/context-1024.jsonl',
+        'sequential_reference': HERE /
+            'http-mainline-01/explicit/stream-1024-256/responses.json',
+        'source_command': HERE / 'http-mainline-01/explicit/server-command.json',
+        'checkpoint_metadata': MODEL / 'config.json',
+        'checkpoint_generation': MODEL / 'generation_config.json',
+        'checkpoint_tokenizer': MODEL / 'tokenizer.json',
+        'checkpoint_index': MODEL / 'model.safetensors.index.json',
+        'checkpoint_draft_config': MODEL / 'mtp/config.json',
+        'build_manifest': HERE / 'completion-terminal-02/build-identity-01.json',
+        'build_cache': BUILD / 'CMakeCache.txt',
+        'variant_link_command': BUILD /
+            'CMakeFiles/q4t_mtp_t4_completion_fault_server.dir/link.txt',
+        'production_link_command': BUILD / 'CMakeFiles/q4t.dir/link.txt',
+        'position_helper': ROOT / 'include/q4t/mtp/position_copy.h',
+        'mtp_header': ROOT / 'include/q4t/mtp/mtp.h',
+        'mtp_source': ROOT / 'src/mtp/mtp.cu',
+        'model_header': ROOT / 'include/q4t/model/model.h',
+        'model_source': ROOT / 'src/model/model.cu',
+        'scheduler_source': ROOT / 'src/server/chat_scheduler.cpp',
+        'generation_source': ROOT / 'src/server/chat_generation.cpp',
+        'policy_header': ROOT / 'include/q4t/server/mtp_policy.h',
+        'freezer': Path(__file__)}
+    plan = [('t4-control', 'success'),
+            ('t4-upload', 'verify_sequence_upload'),
+            ('t4-upload-recovery', 'success'), ('t4-verify', 'verify_return'),
+            ('t4-verify-recovery', 'success'), ('t4-restore', 'natural_restore'),
+            ('t4-restore-recovery', 'success'), ('t4-extend', 'extend_attention'),
+            ('t4-extend-recovery', 'success')]
+    def command(binary, verifier, port):
+        return [str(binary), 'serve', '--host', '127.0.0.1', '--port', str(port),
+                '--model-dir', str(MODEL), '--max-seq', '1', '--max-prefill',
+                '8192', '--max-len', '208896', '--max-tokens', '256', '--mtp',
+                '--mtp-verifier', verifier]
+    data = {'created_unix': time.time(), 'protocol': 't4_completion_v1',
+            'status': 'frozen', 'root': str(ROOT), 'output': str(out),
+            'generation_requests': 10, 'plan': plan, 'startup_seconds': 300,
+            'checkpoint_directory': str(MODEL),
+            'variant_argv': command(named['variant_binary'], 't4', 28941),
+            'sequential_argv': command(named['production_binary'],
+                                       'sequential', 28942),
+            'bindings': {key: bind(path) for key, path in named.items()},
+            'retry': False, 'extra_generation_probes': False,
+            'historical_counts': 'M1 client DB counts, not retained raw usage',
+            'scope': '18 direct copies separately; 9 logical fault/recovery '
+                     'T4 HTTP and 1 production strict shared-path request'}
+    with manifest.open('x') as file:
+        json.dump(data, file, indent=2)
+        file.write('\n')
+    print(json.dumps({'manifest': str(manifest), 'requests': 10,
+                      'bound_files': len(named)}))
+
+
+if __name__ == '__main__':
+    main()
+

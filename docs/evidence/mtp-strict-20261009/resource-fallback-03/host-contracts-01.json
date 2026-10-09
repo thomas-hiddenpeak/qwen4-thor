@@ -1,0 +1,10 @@
+{
+  "name": "host-contracts",
+  "exit_code": 0,
+  "timeout": false,
+  "residual_process_group": false,
+  "seconds": 0.06386780738830566,
+  "passed": true,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "3dbb7fb70ae3beda2074395f96061b86b6167176c1c3788b86ec665700879aff"
+}

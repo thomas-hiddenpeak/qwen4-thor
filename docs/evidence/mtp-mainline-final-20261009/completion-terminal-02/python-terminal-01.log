@@ -1,0 +1,16 @@
+test_all_nine_http_cases (test_t4_terminal_contract.TerminalContractTest.test_all_nine_http_cases) ... ok
+test_all_nine_log_cases (test_t4_terminal_contract.TerminalContractTest.test_all_nine_log_cases) ... ok
+test_duplicate_field_and_unknown_event (test_t4_terminal_contract.TerminalContractTest.test_duplicate_field_and_unknown_event) ... ok
+test_illegal_terminal_extend (test_t4_terminal_contract.TerminalContractTest.test_illegal_terminal_extend) ... ok
+test_missing_and_extra_request (test_t4_terminal_contract.TerminalContractTest.test_missing_and_extra_request) ... ok
+test_missing_real_verify (test_t4_terminal_contract.TerminalContractTest.test_missing_real_verify) ... ok
+test_only_reachable_draft_stop_prevents_coverage (test_t4_terminal_contract.TerminalContractTest.test_only_reachable_draft_stop_prevents_coverage) ... ok
+test_response_wrong_id_count_finish_and_status (test_t4_terminal_contract.TerminalContractTest.test_response_wrong_id_count_finish_and_status) ... ok
+test_stream_requires_one_done (test_t4_terminal_contract.TerminalContractTest.test_stream_requires_one_done) ... ok
+test_tail_natural_early_eos_is_coverage_failure (test_t4_terminal_contract.TerminalContractTest.test_tail_natural_early_eos_is_coverage_failure) ... ok
+test_terminal_and_tail_counterexamples (test_t4_terminal_contract.TerminalContractTest.test_terminal_and_tail_counterexamples) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.011s
+
+OK

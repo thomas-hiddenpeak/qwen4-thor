@@ -1,0 +1,17 @@
+{
+  "label": "python-terminal-01",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_t4_terminal_contract"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope",
+  "passed": true,
+  "exit_code": 0,
+  "warnings": [],
+  "seconds": 0.06373514304868877,
+  "log_sha256": "d8c442277ae72ed991872c5b3ec0ab51bc7a998364efa018fee3a2dd2273ae27"
+}

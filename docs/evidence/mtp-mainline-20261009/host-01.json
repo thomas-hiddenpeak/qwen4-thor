@@ -1,0 +1,12 @@
+{
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t_host_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/required-host.txt"
+  ],
+  "seconds": 0.0035173892974853516,
+  "exit_code": 0,
+  "warnings": [],
+  "passed": true,
+  "log_sha256": "010dff33bbfad9bd5657687af05478d6ad467c0bc686fbc2623a9796c1703c59"
+}

@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "paths": {
+    "completion-sequential": {
+      "id": "completion-sequential",
+      "requested_mtp": "1",
+      "path": "mtp_sequential_b1",
+      "mtp_steps": "71",
+      "fallback": "none",
+      "plain_tail_tokens": "1",
+      "verifier": "sequential",
+      "tail_reason": "output_limit",
+      "draft_forward_calls": "142",
+      "target_t1_calls": "255",
+      "target_t4_calls": "0",
+      "extend_forward_calls": "71",
+      "forward_count_scope": "sequential_attempts"
+    }
+  }
+}

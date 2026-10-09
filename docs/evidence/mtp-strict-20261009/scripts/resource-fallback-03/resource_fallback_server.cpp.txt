@@ -1,0 +1,233 @@
+// Standalone link-only admission observer. Never part of production q4t.
+// Three requests: strict control, logical reserve failure, strict recovery.
+// The real reserve succeeds first (idempotent on request 2); this is NOT OOM.
+#include "q4t/mtp/mtp.h"
+
+#include <cstdio>
+#include <cstdlib>
+#include <mutex>
+#include <thread>
+
+#define Q4T_RESERVE \
+  "_ZN3q4t3mtp17MtpReserveScratchERNS0_8MtpModelEi"
+#define Q4T_MAIN \
+  "_ZN3q4t5model21ModelDecodeBatchMultiERKNS0_5ModelEPKiS5_S5_S5_iPt" \
+  "P11CUstream_stS6_"
+#define Q4T_LEGACY \
+  "_ZN3q4t5model18ModelDecodeStepSeqERKNS0_5ModelEPNS0_13ModelSequenceE" \
+  "iPtP11CUstream_stS6_iNS0_18SequenceCompletionE"
+#define Q4T_BEGIN \
+  "_ZN3q4t5model18ModelBeginSequenceERKNS0_5ModelEPNS0_13ModelSequenceE" \
+  "P11CUstream_sti"
+#define Q4T_END "_ZN3q4t5model16ModelEndSequenceEPNS0_13ModelSequenceE"
+#define Q4T_RESET \
+  "_ZN3q4t3mtp13MtpResetStateERKNS0_8MtpModelEP11CUstream_sti"
+
+using q4t::Status;
+using q4t::model::Model;
+using q4t::model::ModelSequence;
+using q4t::mtp::MtpModel;
+
+Status RealReserve(MtpModel&, int) asm("__real_" Q4T_RESERVE);
+Status WrapReserve(MtpModel&, int) asm("__wrap_" Q4T_RESERVE);
+Status RealMain(const Model&, const int32_t*, const int*, const int*,
+                const int32_t*, int, uint16_t*, cudaStream_t, uint16_t*)
+    asm("__real_" Q4T_MAIN);
+Status WrapMain(const Model&, const int32_t*, const int*, const int*,
+                const int32_t*, int, uint16_t*, cudaStream_t, uint16_t*)
+    asm("__wrap_" Q4T_MAIN);
+Status WrapLegacy(const Model&, ModelSequence*, int32_t, uint16_t*,
+                  cudaStream_t, uint16_t*, int,
+                  q4t::model::SequenceCompletion) asm("__wrap_" Q4T_LEGACY);
+Status RealBegin(const Model&, ModelSequence*, cudaStream_t, int)
+    asm("__real_" Q4T_BEGIN);
+Status WrapBegin(const Model&, ModelSequence*, cudaStream_t, int)
+    asm("__wrap_" Q4T_BEGIN);
+Status RealEnd(ModelSequence*) asm("__real_" Q4T_END);
+Status WrapEnd(ModelSequence*) asm("__wrap_" Q4T_END);
+Status RealReset(const MtpModel&, cudaStream_t, int)
+    asm("__real_" Q4T_RESET);
+Status WrapReset(const MtpModel&, cudaStream_t, int)
+    asm("__wrap_" Q4T_RESET);
+
+namespace {
+struct Observation {
+  int ordinal = 0;
+  ModelSequence* seq = nullptr;
+  const Model* main = nullptr;
+  const MtpModel* mtp = nullptr;
+  std::thread::id request_thread;
+  int resets = 0;
+  int reserve_calls = 0;
+  int target_calls = 0;
+  int ordinary_calls = 0;
+  int ordinary_scheduler_calls = 0;
+  int legacy_calls = 0;
+  bool injected = false;
+};
+std::mutex observer_mu;
+Observation observed;
+
+struct AnnounceVariant {
+  AnnounceVariant() {
+    std::fprintf(stderr,
+                 "[q4t][resource_variant] protocol=resource_fallback_v1 "
+                 "production_binary=0 requests=3 logical_error=1 "
+                 "physical_oom=0\n");
+  }
+} announce_variant;
+
+void Require(bool ok, const char* reason) {
+  if (!ok) {
+    std::fprintf(stderr,
+                 "[q4t][resource_contract] ordinal=%d failure=%s\n",
+                 observed.ordinal, reason);
+    std::abort();
+  }
+}
+}  // namespace
+
+Status WrapBegin(const Model& model, ModelSequence* seq, cudaStream_t stream,
+                 int slot) {
+  {
+    const std::lock_guard<std::mutex> lock(observer_mu);
+    Require(!observed.seq && observed.ordinal < 3 && slot == 0 &&
+                model.cfg.max_seq == 1,
+            "unexpected_begin");
+    const int ordinal = observed.ordinal + 1;
+    observed = Observation{};
+    observed.ordinal = ordinal;
+    observed.seq = seq;
+    observed.main = &model;
+    observed.request_thread = std::this_thread::get_id();
+  }
+  Status status = RealBegin(model, seq, stream, slot);
+  const std::lock_guard<std::mutex> lock(observer_mu);
+  Require(status.ok() && seq && !seq->HasPending() && seq->position == 0 &&
+              seq->history.empty() &&
+              seq->stage == ModelSequence::Stage::kPrefill,
+          "main_reset_failed");
+  std::fprintf(stderr,
+               "[q4t][resource_begin] ordinal=%d real_ok=1 slot=0 "
+               "stage=prefill position=0 history=0 pending=0\n",
+               observed.ordinal);
+  return status;
+}
+
+Status WrapReset(const MtpModel& model, cudaStream_t stream, int slot) {
+  Status status = RealReset(model, stream, slot);
+  const std::lock_guard<std::mutex> lock(observer_mu);
+  Require(observed.seq && slot == 0 && status.ok() && ++observed.resets == 1,
+          "draft_reset_failed");
+  observed.mtp = &model;
+  std::fprintf(stderr,
+               "[q4t][resource_reset] ordinal=%d real_ok=1 slot=0 "
+               "completion=stream_ordered\n", observed.ordinal);
+  return status;
+}
+
+Status WrapReserve(MtpModel& model, int k_max) {
+  Status status = RealReserve(model, k_max);
+  const std::lock_guard<std::mutex> lock(observer_mu);
+  Require(observed.seq && observed.mtp == &model && observed.resets == 1 &&
+              ++observed.reserve_calls == 1 && status.ok() && k_max == 4 &&
+              model.k_max == 4 && !observed.seq->HasPending() &&
+              observed.seq->position == 1024 &&
+              observed.seq->history.size() == 1024 &&
+              observed.target_calls == 0 && observed.ordinary_calls == 0 &&
+              std::this_thread::get_id() == observed.request_thread,
+          "reserve_not_after_successful_initialization");
+  std::fprintf(stderr,
+               "[q4t][resource_reserve] ordinal=%d real_ok=1 "
+               "requested_k=4 capacity=4 position=1024 history=1024 "
+               "pending=0 target_calls=0 ordinary_calls=0\n",
+               observed.ordinal);
+  if (observed.ordinal == 2) {
+    observed.injected = true;
+    std::fprintf(stderr,
+                 "[q4t][resource_injection] ordinal=2 real_ok=1 "
+                 "kind=logical_reserve_after_success physical_oom=0 "
+                 "position=1024 history=1024 pending=0\n");
+    return Status::Fail(
+        "HTTP admission: logical reserve failure after real success");
+  }
+  return status;
+}
+
+Status WrapMain(const Model& model, const int32_t* tokens,
+                const int* positions, const int* slots, const int32_t* history,
+                int batch, uint16_t* logits, cudaStream_t stream,
+                uint16_t* trunk) {
+  {
+    const std::lock_guard<std::mutex> lock(observer_mu);
+    Require(observed.seq && observed.main == &model && batch == 1 &&
+                slots && slots[0] == 0 && observed.reserve_calls == 1 &&
+                positions && positions[0] >= 1024,
+            "main_outside_initialized_request");
+    bool target = false;
+    const auto* mtp = observed.mtp;
+    for (int row = 0; mtp && mtp->d_ms_vtrunk && mtp->d_ms_vlogits && row < 4;
+         ++row) {
+      target |= trunk == mtp->d_ms_vtrunk +
+                             static_cast<size_t>(row) * mtp->hc_dim() &&
+                logits == mtp->d_ms_vlogits +
+                              static_cast<size_t>(row) * mtp->cfg.vocab;
+    }
+    Require(target || trunk == nullptr, "unclassified_main_forward");
+    if (target) {
+      Require(!observed.injected && !observed.seq->HasPending(),
+              "speculative_forward_after_reserve_failure");
+      ++observed.target_calls;
+    } else {
+      Require(std::this_thread::get_id() != observed.request_thread &&
+                  observed.seq->HasPending() &&
+                  positions[0] == observed.seq->position,
+              "ordinary_forward_not_scheduler_owned");
+      ++observed.ordinary_calls;
+      ++observed.ordinary_scheduler_calls;
+    }
+  }
+  Status status = RealMain(model, tokens, positions, slots, history, batch,
+                           logits, stream, trunk);
+  const std::lock_guard<std::mutex> lock(observer_mu);
+  Require(status.ok(), "real_main_forward_failed");
+  return status;
+}
+
+Status WrapLegacy(const Model&, ModelSequence*, int32_t, uint16_t*,
+                  cudaStream_t, uint16_t*, int,
+                  q4t::model::SequenceCompletion) {
+  const std::lock_guard<std::mutex> lock(observer_mu);
+  ++observed.legacy_calls;
+  Require(false, "legacy_decode_called");
+  std::abort();
+}
+
+Status WrapEnd(ModelSequence* seq) {
+  const std::lock_guard<std::mutex> lock(observer_mu);
+  Require(seq && observed.seq == seq && !seq->HasPending() &&
+              seq->stage == ModelSequence::Stage::kDecode &&
+              seq->position == 1279 && seq->history.size() == 1279 &&
+              observed.resets == 1 && observed.reserve_calls == 1 &&
+              observed.injected == (observed.ordinal == 2) &&
+              observed.target_calls + observed.ordinary_calls == 255 &&
+              observed.legacy_calls == 0 &&
+              (!observed.injected || (observed.target_calls == 0 &&
+                                      observed.ordinary_calls == 255)),
+          "end_incomplete_or_wrong_consumed_prefix");
+  Status status = RealEnd(seq);
+  Require(status.ok() && seq->stage == ModelSequence::Stage::kIdle &&
+              !seq->HasPending() && seq->position == 0 && seq->history.empty(),
+          "host_sequence_not_cleared");
+  std::fprintf(stderr,
+               "[q4t][resource_end] ordinal=%d real_ok=1 injected=%d "
+               "stage=idle position=0 history=0 pending=0 resets=%d "
+               "reserve_calls=%d target_calls=%d ordinary_calls=%d "
+               "ordinary_scheduler_calls=%d legacy_calls=%d\n",
+               observed.ordinal, observed.injected, observed.resets,
+               observed.reserve_calls, observed.target_calls,
+               observed.ordinary_calls, observed.ordinary_scheduler_calls,
+               observed.legacy_calls);
+  observed.seq = nullptr;
+  return status;
+}

@@ -1,0 +1,107 @@
+{
+  "created_unix": 1791480056.6805596,
+  "commands": [
+    {
+      "name": "host",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-analysis",
+        "-p",
+        "test_analyze_hc.py",
+        "-v"
+      ],
+      "timeout": 120
+    },
+    {
+      "name": "capture",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t_mtp_hc_first_fork",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-first-fork-01/required-tests.txt"
+      ],
+      "timeout": 300
+    },
+    {
+      "name": "analysis",
+      "argv": [
+        "python3",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-analysis/analyze_hc.py",
+        "--capture-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-first-fork-01/raw",
+        "--capture-log",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-first-fork-01/capture.stdout",
+        "--flags-file",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/CMakeFiles/q4t_model.dir/flags.make",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-analysis/result-01.json"
+      ],
+      "timeout": 300
+    }
+  ],
+  "identities": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-continuation-20261007/direct-01/triangle-capture/layer_m36.trunk_in.bin",
+      "bytes": 20480,
+      "sha256": "bbe498a2dc16c450f0d4b4ecc4ead019bc45db8b4ce4ec6ce60bef552099f021"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-continuation-20261007/direct-01/triangle-capture/layer_m52.trunk_in.bin",
+      "bytes": 81920,
+      "sha256": "6dc586dcc6a0689451961ce4804d8d6d54b70e3ccdf2c80926207f8f9c8fbac3"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-continuation-20261007/direct-01/triangle-capture/layer_m60.trunk_in.bin",
+      "bytes": 81920,
+      "sha256": "03a9d650b99075b310a4c11113aca094d38344c9d61802fcd7c62650f8b480f8"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-continuation-20261007/direct-01/triangle-capture/lin_m27.x.bin",
+      "bytes": 5120,
+      "sha256": "47976b1a36bf29b2cf6013c191a4471d3fd27ec53f51b9f9cda21baa6df2997e"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-continuation-20261007/direct-01/triangle-capture/lin_m39.x.bin",
+      "bytes": 20480,
+      "sha256": "da68d550dcccddd31e0bfd14e67ca0c28a2b91022e935042ac7d46e935b53532"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-continuation-20261007/direct-01/triangle-capture/lin_m45.x.bin",
+      "bytes": 20480,
+      "sha256": "042910c8604a0b7dbf56b32a12266ae421d8fb893626058a496adbd4e94046b7"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-analysis/analyze_hc.py",
+      "bytes": 17666,
+      "sha256": "1bb9c9f38a2d235d45b9df045826bfd3e4005218b5d509df991b9e3a273baa82"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-analysis/test_analyze_hc.py",
+      "bytes": 5076,
+      "sha256": "6c134441f1a8c2d51a1c7ceb8c0c65b111020edcf1e9bc8f45cc130708d90c34"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t_mtp_hc_first_fork",
+      "bytes": 2961952,
+      "sha256": "5b5683d879fba1c8c70eb3da45e9cac5569159e73b2f4f9ddb5e5232d93ffed7"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/CMakeFiles/q4t_model.dir/flags.make",
+      "bytes": 794,
+      "sha256": "1562db668310633267c5220745acbb0f226927a92114a43b8189e1d8b2d38e33"
+    }
+  ],
+  "source_build_protocol_sha256": "55c620881a09a017bb24b764a8ad8b98854b4a1d950172b9eccd07587c7850c3",
+  "build_identity_sha256": "4b817bf5978005aec2302e91fe7357639372ceb13e211f24eb2b6dc0bf1e0f2a",
+  "script_sha256": "7bb70288c3cd5fbd7c76ab95dc414d68da549e7da0f9c633ca3da75ddaa0d29e",
+  "hc_calls": 3,
+  "full_model_calls": 0,
+  "raw_bytes": 426240,
+  "observed_intrinsic_screen": true,
+  "mathematical_all_inputs_guarantee": false,
+  "scope": "first-row HC arithmetic screen; not full T4 admission",
+  "no_retry": true
+}

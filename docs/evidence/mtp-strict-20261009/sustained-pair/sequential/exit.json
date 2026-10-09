@@ -1,0 +1,18 @@
+{
+  "server": 0,
+  "completed": 8,
+  "decode_mode": "mtp",
+  "actual_mode_checks_passed": true,
+  "http_output_checks_passed": true,
+  "failure": null,
+  "sustained_coverage_passed": true,
+  "manual_semantic_review_pending": [
+    "zh-reasoning",
+    "en-code",
+    "en-reasoning",
+    "zh-code",
+    "zh-summary",
+    "en-summary"
+  ],
+  "http_checks_are_not_full_quality_acceptance": true
+}

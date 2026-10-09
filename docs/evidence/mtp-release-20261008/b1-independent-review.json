@@ -1,0 +1,14 @@
+{
+  "record_kind": "root transcription of independent agent read-only review",
+  "reviewer": "/root/admission_support_contract",
+  "checks": 656,
+  "passed": true,
+  "source_files": 135,
+  "protected_old_artifacts": 87,
+  "new_artifacts": 11,
+  "summary_sha256": "e9e644e0eae9af5d4f1765d7bf4e23190852661753e8adbef59f0912ffd6bec9",
+  "scope": "13 named host groups and 6 pre-load process rejection cases only",
+  "method": "Read raw outputs, source order, Git blobs and artifact hashes; no filesystem syscall trace and no model/HTTP execution",
+  "timing": "Pretest-hold check occurred 2.597 seconds after final test. Commands frozen beforehand; independent grouping documentation appended afterward. No rerun.",
+  "admission_limit": "No normal server startup, numerical, quality, performance or Stage B acceptance"
+}

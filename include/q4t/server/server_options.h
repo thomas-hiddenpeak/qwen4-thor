@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <span>
 #include <string>
 #include <string_view>
@@ -7,6 +8,12 @@
 #include "q4t/status.h"
 
 namespace q4t::server {
+
+enum class MtpVerifier { kT4, kSequential };
+
+constexpr const char* MtpVerifierName(MtpVerifier verifier) {
+  return verifier == MtpVerifier::kSequential ? "sequential" : "t4";
+}
 
 struct ServerOptions {
   // Numeric IPv4 only. Remote access requires an explicit address.
@@ -25,6 +32,8 @@ struct ServerOptions {
   int max_seq = 1;
   // Plain greedy decode is the default; MTP requires explicit opt-in.
   bool no_mtp = true;
+  // Explicit MTP defaults to sequential. Selection never enables MTP.
+  std::optional<MtpVerifier> mtp_verifier;
   // Experimental media path; default service contract is text-only.
   bool allow_media = false;
   // Startup memory budget (vllm-style gpu_memory_utilization). The server
@@ -41,12 +50,29 @@ struct ServerOptions {
   int moe_trace_max_mib = 1024;
 };
 
+inline MtpVerifier EffectiveMtpVerifier(const ServerOptions& options) {
+  return options.mtp_verifier.value_or(MtpVerifier::kSequential);
+}
+
+// Conservative name-based exclusion from the frozen reference environment.
+// Presence counts as an override, even when a value repeats a current default.
+bool IsMtpReferenceEnvironmentOverride(std::string_view name);
+
+// Configuration match only, not certification of checkpoint contents. Pass
+// effective capacities after budgeting and actual load/scheduler outcomes.
+bool MatchesMtpReferenceConfiguration(const ServerOptions& effective,
+                                      bool mtp_loaded, bool scheduler_ready,
+                                      int k, bool experimental_overrides);
+
 // Derived once from validated options, never a second configuration source.
 struct ServerCapabilities {
   bool mtp;
   bool media;
   bool multiple_sequences;
-  bool Experimental() const { return mtp || media || multiple_sequences; }
+  MtpVerifier verifier;
+  bool Experimental() const {
+    return (mtp && verifier == MtpVerifier::kT4) || media || multiple_sequences;
+  }
 };
 
 ServerCapabilities CapabilitiesFor(const ServerOptions& options);

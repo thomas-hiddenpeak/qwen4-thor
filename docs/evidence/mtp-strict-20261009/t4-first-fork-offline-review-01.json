@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "audit_kind": "read-only offline review",
+  "new_gpu_or_model_tests": 0,
+  "builds_or_tests_run": 0,
+  "model_payload_accessed_copied_or_hashed": false,
+  "source_manifest": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-continuation-20261007/direct-01/capture-manifest.json",
+    "bytes": 42679,
+    "sha256": "f7d031dee1daa491e4fabc547cfe9db6a411b772b145fd62e3df62daef5a9b52"
+  },
+  "binary_and_test_manifest": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-continuation-20261007/direct-01/manifest.json",
+    "bytes": 579,
+    "sha256": "bcf77e0cc5885f4becf0731942de809513bc86570eef9cc1f3ed04615dfde923"
+  },
+  "triangle_log": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-continuation-20261007/direct-01/mtp_path_triangle_single_stream.log",
+    "bytes": 44784,
+    "sha256": "61aa9184b2186ff1b6e121f5de80998f0f1a6e82755bc2720c604d97af3b9d04"
+  },
+  "archived_test_binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-continuation-20261007/direct-01/q4t_tests",
+    "bytes": 4358968,
+    "sha256": "8a372182675c263de1d30a3614547d579abe538e69b0fc479dee0939bc06c0f6"
+  },
+  "archived_test_sources": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-continuation-20261007/direct-01/mtp_path_triangle_test.cpp",
+      "bytes": 16433,
+      "sha256": "7a680534dd65da95a8a39d5f0b522a9ee5d9e3146ba26ee552128dddd270a63e"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-continuation-20261007/direct-01/mtp_projection_path_test.cpp",
+      "bytes": 13681,
+      "sha256": "5b565055218bdb0c9f07f729dc4f4df4b44051a6850ff328b58ec8922a3e5ece"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-continuation-20261007/direct-01/mtp_moe_path_test.cpp",
+      "bytes": 12749,
+      "sha256": "500ac26c5b662107e17380d2e3940f5d38e4e255ee59ec57bf663cddb6ce0656"
+    }
+  ],
+  "checks_already_performed_in_readonly_review": {
+    "manifest_capture_files": 451,
+    "manifest_capture_bytes": 47292416,
+    "all_capture_hashes_match": true,
+    "missing_or_unlisted_capture_files": [],
+    "non_self_prefill_boundary_comparisons": 196,
+    "prefill_comparison_definition": "7 later prefills x 28 indexed full-tensor boundaries against first prefill",
+    "prefill_all_exact": true,
+    "first_row_control_comparisons": 112,
+    "first_row_control_definition": "fixed97 and natural287: plainT1/verifyT1 and T4A/T4B each x 28 indexed boundaries",
+    "first_row_controls_all_exact": true,
+    "old_candidate_to_triangle_natural_boundary_pairs": 8,
+    "old_candidate_pairs_all_exact": true,
+    "old_candidate_pair_definition": "old lin_m72 versus triangle lin_m27 and old lin_m114 versus triangle lin_m39, first-row x/qkv_raw/qkv/y_ssm",
+    "fixed97_projection_input_equals_triangle_x": {
+      "plain_t1": true,
+      "verify_t1": true,
+      "verify_t4_a_first_row": true
+    }
+  },
+  "natural_first_fork": {
+    "token": 287,
+    "layer": 0,
+    "ple": false,
+    "trunk_elements": 10240,
+    "trunk_exact": true,
+    "x_elements": 2560,
+    "x_unequal": 4,
+    "max_abs": 0.0078125,
+    "differences": [
+      {
+        "index": 676,
+        "plain_bits": "bf2d",
+        "t4_bits": "bf2e",
+        "plain": -0.67578125,
+        "t4": -0.6796875
+      },
+      {
+        "index": 730,
+        "plain_bits": "3de0",
+        "t4_bits": "3de1",
+        "plain": 0.109375,
+        "t4": 0.10986328125
+      },
+      {
+        "index": 743,
+        "plain_bits": "bca3",
+        "t4_bits": "bca4",
+        "plain": -0.0198974609375,
+        "t4": -0.02001953125
+      },
+      {
+        "index": 1432,
+        "plain_bits": "bfab",
+        "t4_bits": "bfac",
+        "plain": -1.3359375,
+        "t4": -1.34375
+      }
+    ],
+    "downstream_unequal": {
+      "qkv_raw": 1021,
+      "qkv": 485,
+      "y_ssm": 497
+    },
+    "t4_suffix_change_first_row_exact": true,
+    "t4_suffix_trunk_unequal_by_row": [
+      0,
+      10228,
+      10240,
+      10236
+    ]
+  },
+  "hc_anchors": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-continuation-20261007/direct-01/triangle-capture/layer_m36.trunk_in.bin",
+      "trunk_shape": [
+        1,
+        10240
+      ],
+      "mixed": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-continuation-20261007/direct-01/triangle-capture/lin_m27.x.bin",
+      "mixed_shape": [
+        1,
+        2560
+      ],
+      "input_tokens": [
+        287
+      ],
+      "forward_index": 9
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-continuation-20261007/direct-01/triangle-capture/layer_m52.trunk_in.bin",
+      "trunk_shape": [
+        4,
+        10240
+      ],
+      "mixed": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-continuation-20261007/direct-01/triangle-capture/lin_m39.x.bin",
+      "mixed_shape": [
+        4,
+        2560
+      ],
+      "input_tokens": [
+        287,
+        131,
+        211,
+        307
+      ],
+      "forward_index": 13
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-continuation-20261007/direct-01/triangle-capture/layer_m60.trunk_in.bin",
+      "trunk_shape": [
+        4,
+        10240
+      ],
+      "mixed": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-continuation-20261007/direct-01/triangle-capture/lin_m45.x.bin",
+      "mixed_shape": [
+        4,
+        2560
+      ],
+      "input_tokens": [
+        287,
+        503,
+        701,
+        907
+      ],
+      "forward_index": 15
+    }
+  ],
+  "final_decision_from_original_log_only": {
+    "plain_top_values": {
+      "220": 5.1875,
+      "359": 5.1875
+    },
+    "t4_top_values": {
+      "359": 5.125,
+      "220": 4.96875
+    },
+    "t4_margin": 0.15625,
+    "whole_vocab_raw_logits_present": false,
+    "independent_whole_vocab_argmax_recomputed": false,
+    "interpretation": "unequal logit shifts plus lowest-ID tie policy change winner; tie-breaking alone does not explain the arithmetic difference"
+  },
+  "source_contract": {
+    "comparison_commit": "7c929cdd8580e445951ce6f5cbf318026be8ea35",
+    "whole_files_exact": [
+      "src/model/hyperconnection.cu",
+      "src/model/decoder_layer.cu",
+      "include/q4t/model/linear.h",
+      "src/model/gemv.cu"
+    ],
+    "function_bodies_exact_only": [
+      "src/model/moe.cu:RouterTopkKernel",
+      "src/mtp/mtp.cu:ArgmaxBf16RowsKernel"
+    ],
+    "hc_entry": "src/model/decoder_layer.cu:559-564",
+    "normed": "src/model/hyperconnection.cu:52-119",
+    "down": "src/model/hyperconnection.cu:469-471",
+    "silu": "src/model/hyperconnection.cu:214-218 (divide hc before SiLU)",
+    "up": "src/model/hyperconnection.cu:483-484",
+    "mixed": "src/model/hyperconnection.cu:243-266 (sigmoid, fixed branch order, mean, BF16 RNE)",
+    "dispatch": "include/q4t/model/linear.h:101-164 (old runner cleared Q4T env; M1 BF16 GEMV, M4 BF16 cuBLASLt)",
+    "lowrank": 320,
+    "hc": 4,
+    "hs": 2560
+  },
+  "next_frozen_scope_proposal": {
+    "production_hc_calls": 3,
+    "prefills": 0,
+    "whole_model_forwards": 0,
+    "http_requests": 0,
+    "arrays": [
+      "normed",
+      "down_raw",
+      "silu",
+      "up",
+      "mixed"
+    ],
+    "array_files": 15,
+    "array_bytes": 426240,
+    "must_exact_reproduce": "old per-path mixed raw arrays; otherwise cannot explain old fork",
+    "arithmetic_contract": "freeze independent FP32 dot-product plus BF16 RNE bounds separately for K=10240 and K=320 using actual inputs; separately justify rsqrtf/__expf nonlinear bounds before execution",
+    "suffix_contract": "first-row equality at every recorded HC stage for the two frozen T4 suffixes",
+    "not_completed_by_this_proposal": [
+      "whole-model cross-shape equivalence",
+      "actual router decisions",
+      "recurrence writer and effective cache correctness",
+      "full T4 admission"
+    ]
+  },
+  "limitations": [
+    "Current raw captures have no HC normed/down/SiLU/up; adjacent BF16 outputs do not prove acceptable arithmetic.",
+    "Existing independent fixed97 qkv projection envelope does not explain natural287 HC outputs.",
+    "No actual natural router logits/ids/weights were captured, so MoE L2 growth is not evidence of expert-selection flips.",
+    "Old derived report counted 224 prefill boundaries including 28 self-comparisons; this review reports only 196 non-self comparisons.",
+    "Suffix equality is a fixed-example observation, not general causality proof.",
+    "HC-only explanation and strict-path success do not close the original independent T4 explanation gate."
+  ]
+}

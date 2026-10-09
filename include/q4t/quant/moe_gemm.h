@@ -27,7 +27,25 @@
 #include "q4t/status.h"
 
 namespace q4t {
+namespace trace {
+class MtpVerifyMoeCall;
+}  // namespace trace
 namespace quant {
+
+// Experimental T4 gather batching. The environment gate accepts only "1".
+// Statistics describe process-wide calls made while the gate is enabled;
+// request attribution is valid only for a serialized request window.
+bool MoEBatchGatherEnabled();
+constexpr size_t MoEBatchGatherExtraBytes() { return 1024000; }
+struct MoEBatchGatherStats {
+  uint64_t applied_calls = 0;
+  uint64_t legacy_calls = 0;
+  uint64_t bad_counts_fallback = 0;
+  uint64_t batch_launches = 0;
+  uint64_t legacy_gather_launches = 0;
+  uint64_t replaced_gather_launches = 0;
+};
+MoEBatchGatherStats GetMoEBatchGatherStats();
 
 // Device workspace layout for MoERoutedForward. All regions are carved from a
 // single cudaMalloc'd buffer; sizes depend on (M, E, hs, moe_is).
@@ -71,7 +89,8 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
                         const float* router_w, float* y,
                         const MoEWeightLayout& weights, void* workspace,
                         void* gemm_ws, size_t gemm_ws_bytes, int M, int k,
-                        cudaStream_t stream);
+                        cudaStream_t stream,
+                        trace::MtpVerifyMoeCall* verify_moe = nullptr);
 
 }  // namespace quant
 }  // namespace q4t

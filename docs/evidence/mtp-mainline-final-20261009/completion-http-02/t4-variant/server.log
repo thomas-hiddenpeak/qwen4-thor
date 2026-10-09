@@ -1,0 +1,83 @@
+[q4t][t4_fault_variant] protocol=t4_completion_v1 production_binary=0 requests=9
+[q4t][capabilities] requested=experimental mtp=1 media=0 max_seq=1 verifier=t4
+[q4t][startup] tokenizer 305 ms
+[q4t][budget] mem_total=131.92 GB fraction=0.90 budget=118.73 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=208896 max_seq=1 max_prefill=8192 feasible=1 reason=estimate_fits
+[q4t][budget]   weights=84.00 GB  fixed=97.81 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=2348023808 main_forward_extra=0 mtp_workspace=3402434560 forward_buffers=419594244 ple_working=76571648 mtp=1
+[q4t][budget]   per_request=8.57 GB (MTP request allocations)  state_pool=7.08 GB
+[q4t][budget]   => max_len=208896 max_seq=1
+[q4t][budget]   MTP admission scope: text max_seq=1 k=3; allocation estimate, not a physical RAM guarantee
+[q4t][budget]   mtp_weights=5214301696 mtp_buffers=522240 mtp_scratch=6476904 mtp_checkpoints=346927104 mtp_forward_temp=16814240
+[q4t][budget]   loading_host_peak=3355443200 startup_envelope=108249902136 runtime_peak=113469410520 estimated_total=113469410520
+[q4t][startup] budget 421 ms
+[q4t][capacity] requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true
+[q4t][startup] model_load 26842 ms
+[q4t] generation stop token ids: 248046 248044
+[q4t] MTP loaded (k=3 max_seq=1)
+[q4t][startup] mtp_load 2977 ms
+[q4t] media disabled; vision tower not loaded
+[q4t][capabilities] effective mtp=1 media_allowed=0 vision_loaded=0 max_seq=1 verifier=t4
+[q4t] continuous-batching scheduler started (max_seq=1)
+[q4t][mtp-support] mode=t4 reference_configuration=unmatched profile=thor-sequential-20261009 checkpoint_identity=not_attested max_len=208896 max_prefill=8192 max_seq=1 k=3 experimental_overrides=0
+[q4t][startup] startup_total 30545 ms
+[q4t] serving on port 28941 (host 127.0.0.1, model qwen3.8-flash-next)
+[q4t][t4_fault_begin] ordinal=1 real_ok=1 slot=0 stage=prefill position=0 history=0 pending=0
+[q4t][t4_fault_reset] ordinal=1 real_ok=1 slot=0 completion=stream_ordered
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 cuBLASLt=130501
+[q4t][decode_path] id=t4-control requested_mtp=1 path=mtp_multi_b1 mtp_steps=73 fallback=none plain_tail_tokens=4 verifier=t4 tail_reason=output_limit
+[q4t][t4_fault_end] ordinal=1 real_ok=1 injected=0 outputs_checked=0 failed_before_end=0 stage=idle position=0 history=0 pending=0 steps=73 verifies=73 restores=19 extends=73 ordinary_calls=3
+[q4t][t4_fault_begin] ordinal=2 real_ok=1 slot=0 stage=prefill position=0 history=0 pending=0
+[q4t][t4_fault_reset] ordinal=2 real_ok=1 slot=0 completion=stream_ordered
+[q4t][t4_fault_injection] ordinal=2 kind=verify_sequence_upload real_ok=1 position=1024 history=1024 pending=0 step=1
+[q4t][t4_fault_drain] ordinal=2 real_ok=1 scope=verify after_injection=1 stream_match=1 thread_match=1
+[q4t][t4_fault_verify_return] ordinal=2 real_ok=1 status=failed inner_drained=1 checkpoint_rows=0 checkpoint_slots=0 observer_cuda_calls=0
+[q4t][t4_fault_drain] ordinal=2 real_ok=1 scope=step after_injection=1 stream_match=1 thread_match=1
+[q4t][t4_fault_return] ordinal=2 real_ok=1 status=failed counts=0 next_b=-1 next_d0=-1 caller_unchanged=1 pending=0 observer_cuda_calls=0 inner_drains=1 outer_drains=1 next_g=invalid_not_read
+[q4t][decode_path] id=t4-upload requested_mtp=1 path=plain mtp_steps=0 fallback=none plain_tail_tokens=0 verifier=t4 tail_reason=none
+[q4t][t4_fault_end] ordinal=2 real_ok=1 injected=1 outputs_checked=1 failed_before_end=1 stage=idle position=0 history=0 pending=0 steps=1 verifies=1 restores=0 extends=0 ordinary_calls=0
+[q4t] generation failed id=t4-upload
+[q4t][t4_fault_begin] ordinal=3 real_ok=1 slot=0 stage=prefill position=0 history=0 pending=0
+[q4t][t4_fault_reset] ordinal=3 real_ok=1 slot=0 completion=stream_ordered
+[q4t][decode_path] id=t4-upload-recovery requested_mtp=1 path=mtp_multi_b1 mtp_steps=73 fallback=none plain_tail_tokens=4 verifier=t4 tail_reason=output_limit
+[q4t][t4_fault_end] ordinal=3 real_ok=1 injected=0 outputs_checked=0 failed_before_end=0 stage=idle position=0 history=0 pending=0 steps=73 verifies=73 restores=19 extends=73 ordinary_calls=3
+[q4t][t4_fault_begin] ordinal=4 real_ok=1 slot=0 stage=prefill position=0 history=0 pending=0
+[q4t][t4_fault_reset] ordinal=4 real_ok=1 slot=0 completion=stream_ordered
+[q4t][t4_fault_injection] ordinal=4 kind=verify_return real_ok=1 position=1024 history=1024 pending=0 step=1
+[q4t][t4_fault_drain] ordinal=4 real_ok=1 scope=step after_injection=1 stream_match=1 thread_match=1
+[q4t][t4_fault_return] ordinal=4 real_ok=1 status=failed counts=0 next_b=-1 next_d0=-1 caller_unchanged=1 pending=0 observer_cuda_calls=0 inner_drains=0 outer_drains=1 next_g=invalid_not_read
+[q4t][decode_path] id=t4-verify requested_mtp=1 path=plain mtp_steps=0 fallback=none plain_tail_tokens=0 verifier=t4 tail_reason=none
+[q4t][t4_fault_end] ordinal=4 real_ok=1 injected=1 outputs_checked=1 failed_before_end=1 stage=idle position=0 history=0 pending=0 steps=1 verifies=1 restores=0 extends=0 ordinary_calls=0
+[q4t] generation failed id=t4-verify
+[q4t][t4_fault_begin] ordinal=5 real_ok=1 slot=0 stage=prefill position=0 history=0 pending=0
+[q4t][t4_fault_reset] ordinal=5 real_ok=1 slot=0 completion=stream_ordered
+[q4t][decode_path] id=t4-verify-recovery requested_mtp=1 path=mtp_multi_b1 mtp_steps=73 fallback=none plain_tail_tokens=4 verifier=t4 tail_reason=output_limit
+[q4t][t4_fault_end] ordinal=5 real_ok=1 injected=0 outputs_checked=0 failed_before_end=0 stage=idle position=0 history=0 pending=0 steps=73 verifies=73 restores=19 extends=73 ordinary_calls=3
+[q4t][t4_fault_begin] ordinal=6 real_ok=1 slot=0 stage=prefill position=0 history=0 pending=0
+[q4t][t4_fault_reset] ordinal=6 real_ok=1 slot=0 completion=stream_ordered
+[q4t][t4_fault_injection] ordinal=6 kind=natural_restore real_ok=1 position=1024 history=1024 pending=0 step=1
+[q4t][t4_fault_drain] ordinal=6 real_ok=1 scope=step after_injection=1 stream_match=1 thread_match=1
+[q4t][t4_fault_return] ordinal=6 real_ok=1 status=failed counts=0 next_b=-1 next_d0=-1 caller_unchanged=1 pending=0 observer_cuda_calls=0 inner_drains=0 outer_drains=1 next_g=invalid_not_read
+[q4t][decode_path] id=t4-restore requested_mtp=1 path=plain mtp_steps=0 fallback=none plain_tail_tokens=0 verifier=t4 tail_reason=none
+[q4t][t4_fault_end] ordinal=6 real_ok=1 injected=1 outputs_checked=1 failed_before_end=1 stage=idle position=0 history=0 pending=0 steps=1 verifies=1 restores=1 extends=0 ordinary_calls=0
+[q4t] generation failed id=t4-restore
+[q4t][t4_fault_begin] ordinal=7 real_ok=1 slot=0 stage=prefill position=0 history=0 pending=0
+[q4t][t4_fault_reset] ordinal=7 real_ok=1 slot=0 completion=stream_ordered
+[q4t][decode_path] id=t4-restore-recovery requested_mtp=1 path=mtp_multi_b1 mtp_steps=73 fallback=none plain_tail_tokens=4 verifier=t4 tail_reason=output_limit
+[q4t][t4_fault_end] ordinal=7 real_ok=1 injected=0 outputs_checked=0 failed_before_end=0 stage=idle position=0 history=0 pending=0 steps=73 verifies=73 restores=19 extends=73 ordinary_calls=3
+[q4t][t4_fault_begin] ordinal=8 real_ok=1 slot=0 stage=prefill position=0 history=0 pending=0
+[q4t][t4_fault_reset] ordinal=8 real_ok=1 slot=0 completion=stream_ordered
+[q4t][t4_fault_injection] ordinal=8 kind=extend_attention real_ok=1 position=1024 history=1024 pending=0 step=1
+[q4t][t4_fault_drain] ordinal=8 real_ok=1 scope=step after_injection=1 stream_match=1 thread_match=1
+[q4t][t4_fault_return] ordinal=8 real_ok=1 status=failed counts=0 next_b=-1 next_d0=-1 caller_unchanged=1 pending=0 observer_cuda_calls=0 inner_drains=0 outer_drains=1 next_g=invalid_not_read
+[q4t][decode_path] id=t4-extend requested_mtp=1 path=plain mtp_steps=0 fallback=none plain_tail_tokens=0 verifier=t4 tail_reason=none
+[q4t][t4_fault_end] ordinal=8 real_ok=1 injected=1 outputs_checked=1 failed_before_end=1 stage=idle position=0 history=0 pending=0 steps=1 verifies=1 restores=1 extends=1 ordinary_calls=0
+[q4t] generation failed id=t4-extend
+[q4t][t4_fault_begin] ordinal=9 real_ok=1 slot=0 stage=prefill position=0 history=0 pending=0
+[q4t][t4_fault_reset] ordinal=9 real_ok=1 slot=0 completion=stream_ordered
+[q4t][decode_path] id=t4-extend-recovery requested_mtp=1 path=mtp_multi_b1 mtp_steps=73 fallback=none plain_tail_tokens=4 verifier=t4 tail_reason=output_limit
+[q4t][t4_fault_end] ordinal=9 real_ok=1 injected=0 outputs_checked=0 failed_before_end=0 stage=idle position=0 history=0 pending=0 steps=73 verifies=73 restores=19 extends=73 ordinary_calls=3
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)

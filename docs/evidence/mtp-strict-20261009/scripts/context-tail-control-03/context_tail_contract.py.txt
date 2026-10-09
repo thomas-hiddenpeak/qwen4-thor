@@ -1,0 +1,167 @@
+"""Pure contracts for forced-selection context-tail control, never quality."""
+import hashlib
+import json
+import re
+import struct
+
+from request_cancellation_contract import require, terminal_paths
+
+VARIANT = ('[q4t][tail_control_variant] protocol=context_tail_v1 '
+           'production_binary=0 requests=1 prompt_tokens=208892 token=32 '
+           'greedy_numeric_evidence=0 quality_evidence=0 performance_evidence=0')
+VOCAB = 248320
+PLAN = (('plain', 'tail-plain'), ('sequential', 'tail-sequential'))
+
+
+def require_variant(log):
+    require([line for line in log.splitlines()
+             if line.startswith('[q4t][tail_control_variant]')] == [VARIANT],
+            'wrong or duplicate forced-selection variant')
+    require('[q4t][tail_control_contract]' not in log,
+            'native observer rejected its scope')
+
+
+def completed_result(response, label):
+    require(response['status'] == 200, 'nonstream HTTP did not succeed')
+    value = json.loads(response['body'])
+    require(isinstance(value, dict) and 'error' not in value and
+            value.get('id') == label, 'wrong actual response identity/error')
+    choices = value.get('choices')
+    require(isinstance(choices, list) and len(choices) == 1 and
+            choices[0].get('index') == 0 and
+            choices[0].get('finish_reason') == 'length' and
+            choices[0].get('message') == {'role': 'assistant', 'content': 'AAAA'},
+            'forced context-tail output or finish differs')
+    usage = value.get('usage')
+    expected = {'prompt_tokens': 208892, 'completion_tokens': 4,
+                'total_tokens': 208896}
+    require(usage == expected and all(type(usage[k]) is int for k in expected),
+            'wrong actual usage')
+    return {'text': 'AAAA', 'text_utf8_sha256': hashlib.sha256(b'AAAA').hexdigest(),
+            'finish': 'length', 'usage': usage,
+            'scope': 'forced-selection control; not greedy/quality evidence'}
+
+
+def counter_delta(before, after):
+    require(len(before) == len(after) == 4 and
+            all(type(v) is int and v >= 0 for v in (*before, *after)) and
+            tuple(b - a for a, b in zip(before, after)) == (1, 1, 0, 0),
+            'wrong success/error/abort accounting')
+
+
+def _events(log):
+    values = []
+    for line in log.splitlines():
+        match = re.fullmatch(r'\[q4t\]\[tail_(\w+)\] (.*)', line)
+        if not match or match[1] == 'control_variant':
+            continue
+        pairs = [part.split('=', 1) for part in match[2].split()]
+        require(all(len(pair) == 2 and all(pair) for pair in pairs),
+                'malformed observer fields')
+        fields = dict(pairs)
+        require(len(fields) == len(pairs), 'duplicate observer field')
+        values.append((match[1], fields))
+    return values
+
+
+def validate_log(log, mode):
+    require(mode in dict(PLAN), 'unsupported mode')
+    require_variant(log)
+    events = _events(log)
+    expected_order = (['scheduler', 'begin'] + ['prefill'] * 26 + ['override'] +
+                      ['b1', 'argmax'] * 3 + ['before_end', 'end', 'scheduler'])
+    require([name for name, _ in events] == expected_order,
+            'missing, extra or reordered observed operation')
+    require(events[0][1] == {'entered': '1', 'real_call': '1'} and
+            events[-1][1] == {'exited': '1', 'real_return': '1'},
+            'missing real scheduler lifetime')
+    require(events[1][1] == {'real_ok': '1', 'slot': '0', 'position': '0',
+                            'history': '0', 'pending': '0'}, 'bad initial state')
+    for i, (_, row) in enumerate(events[2:28]):
+        base, count = i * 8192, 4092 if i == 25 else 8192
+        require(row == {'ordinal': str(i + 1), 'real_ok': '1', 'base': str(base),
+                        'count': str(count), 'submitted': str(base + count),
+                        'pending': '1', 'final': str(int(i == 25))},
+                'real prefill chunk coverage differs')
+    override = events[28][1]
+    for key, expected in {
+            'real_copy': '1', 'checked_sync': '1', 'source_bound': '1',
+            'thread_match': '1', 'stream_match': '1', 'vocab': str(VOCAB),
+            'bytes': str(VOCAB * 2), 'forced_token': '32', 'forced_bits': '7f7f',
+            'modified_host_words': '1', 'device_logits_modified': '0'}.items():
+        require(override.get(key) == expected, 'wrong readback control: ' + key)
+    require(re.fullmatch(r'[0-9]+', override.get('original_argmax', '')) and
+            int(override['original_argmax']) < VOCAB and
+            all(re.fullmatch(r'[0-9a-f]{4}', override.get(key, ''))
+                for key in ('original_argmax_bits', 'old_token_bits')),
+            'invalid original logit observation')
+    for i in range(3):
+        _, b1 = events[29 + 2 * i]
+        _, argmax = events[30 + 2 * i]
+        require(b1 == {'ordinal': str(i + 1), 'real_ok': '1',
+                       'scheduler_thread': '1', 'batch': '1',
+                       'position': str(208892 + i), 'token': '32', 'pending': '1',
+                       'submitted': str(208893 + i), 'trunk_null': '1'},
+                'not the three real ordinary scheduler B1 calls')
+        require(argmax == {'ordinal': str(i + 1), 'real_ok': '1',
+                           'scheduler_thread': '1', 'forced_token': '32',
+                           'same_stream_override': '1'},
+                'missing real argmax plus controlled device selection')
+    require(events[-3][1] == {'position': '208895', 'history': '208895',
+                             'pending': '0', 'consumed': '3',
+                             'unconsumed_final_output': '1'},
+            'last emitted token was consumed or work remains pending')
+    require(events[-2][1] == {'real_ok': '1', 'position': '0', 'history': '0',
+                             'pending': '0', 'chunks': '26',
+                             'host_overrides': '1', 'main_calls': '3',
+                             'argmax_calls': '3', 'mtp_init_calls': '0',
+                             'strict_step_calls': '0', 'fast_step_calls': '0',
+                             'legacy_calls': '0'}, 'bad cleanup or extra work')
+    paths = terminal_paths(log)
+    label = dict(PLAN)[mode]
+    require(list(paths) == [label], 'wrong actual response path count/identity')
+    path = paths[label]
+    expected = {'requested_mtp': '0', 'path': 'plain', 'mtp_steps': '0',
+                'fallback': 'none', 'plain_tail_tokens': '0', 'verifier': 'none'}
+    if mode == 'sequential':
+        expected.update(requested_mtp='1', path='plain_tail_b1',
+                        plain_tail_tokens='4', verifier='sequential',
+                        tail_reason='context_limit', draft_forward_calls='0',
+                        target_t1_calls='0', target_t4_calls='0',
+                        extend_forward_calls='0',
+                        forward_count_scope='sequential_attempts')
+    require(path == dict(expected, id=label), 'wrong production path/tail/fallback')
+    lines = log.splitlines()
+    path_index = next(i for i, line in enumerate(lines)
+                      if line.startswith('[q4t][decode_path]'))
+    require(next(i for i, line in enumerate(lines)
+                 if line.startswith('[q4t][tail_argmax] ordinal=3 ')) <
+            path_index < next(i for i, line in enumerate(lines)
+                              if line.startswith('[q4t][tail_before_end]')),
+            'response path is outside observed request lifetime')
+    return {'mode': mode, 'response_id': label, 'path': path,
+            'override': override, 'real_prefill_chunks': 26,
+            'real_b1_positions': [208892, 208893, 208894],
+            'consumed_output_tokens': 3, 'emitted_output_tokens': 4,
+            'production_binary_http': False, 'greedy_numeric_evidence': False}
+
+
+def validate_capture(data, override):
+    require(len(data) == 2 * VOCAB, 'wrong original logits capture length')
+    bits = [item[0] for item in struct.iter_unpack('<H', data)]
+    best, value = 0, -1e30
+    for i, word in enumerate(bits):
+        require((word & 0x7fff) < 0x7f80 and word != 0x7f7f,
+                'unsupported original logit domain')
+        number = struct.unpack('<f', struct.pack('<I', word << 16))[0]
+        if number > value:
+            best, value = i, number
+    require(override['original_argmax'] == str(best) and
+            override['original_argmax_bits'] == f'{bits[best]:04x}' and
+            override['old_token_bits'] == f'{bits[32]:04x}',
+            'saved original logits do not match observer')
+    return {'sha256': hashlib.sha256(data).hexdigest(), 'bytes': len(data),
+            'encoding': 'little-endian BF16 final prefill row before host control',
+            'original_argmax': best, 'original_argmax_bits': f'{bits[best]:04x}',
+            'forced_token': 32, 'forced_host_logit_bits': '7f7f',
+            'modified_host_words': 1, 'device_prefill_logits_modified': False}

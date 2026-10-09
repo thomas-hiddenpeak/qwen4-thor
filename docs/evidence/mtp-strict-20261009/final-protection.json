@@ -1,0 +1,213 @@
+{
+  "schema_version": 1,
+  "created_unix": 1791486412.515377,
+  "passed": true,
+  "workspaces": [
+    {
+      "label": "root",
+      "path": "/home/rm01/models/dev/qwen4-thor",
+      "expected": {
+        "head": "f15190ff9447079f9557469ed5aff0b525197821",
+        "status": " M docs/STATUS.md\n M docs/log/2026-10-02.md\n M include/q4t/model/model.h\n M include/q4t/quant/moe_residency.h\n M src/model/moe.cu\n M src/quant/moe_residency.cpp\n M src/server/chat_generation.cpp\n",
+        "diff_sha256": "33375caff6dcb3e638e2d2f001428883cbc0e400c5f1b7403a081826e9cd6947"
+      },
+      "actual": {
+        "head": "f15190ff9447079f9557469ed5aff0b525197821",
+        "status": " M docs/STATUS.md\n M docs/log/2026-10-02.md\n M include/q4t/model/model.h\n M include/q4t/quant/moe_residency.h\n M src/model/moe.cu\n M src/quant/moe_residency.cpp\n M src/server/chat_generation.cpp\n",
+        "diff_sha256": "33375caff6dcb3e638e2d2f001428883cbc0e400c5f1b7403a081826e9cd6947"
+      },
+      "passed": true
+    },
+    {
+      "label": "path_c",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/wt-c1",
+      "expected": {
+        "head": "887a3fec1af02f95209dac198681f66bdd9b82aa",
+        "status": " M include/q4t/model/model.h\n M src/server/chat_generation.cpp\n",
+        "diff_sha256": "7d504f9b43e7fa73e1e4c1d8032667c9a80bd4980e514d644881b6c52edbc9fd"
+      },
+      "actual": {
+        "head": "887a3fec1af02f95209dac198681f66bdd9b82aa",
+        "status": " M include/q4t/model/model.h\n M src/server/chat_generation.cpp\n",
+        "diff_sha256": "7d504f9b43e7fa73e1e4c1d8032667c9a80bd4980e514d644881b6c52edbc9fd"
+      },
+      "passed": true
+    },
+    {
+      "label": "main",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source",
+      "expected": {
+        "head": "8cd297b8af62701b00831ac44704e6b0691753d9",
+        "status": "",
+        "diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "actual": {
+        "head": "8cd297b8af62701b00831ac44704e6b0691753d9",
+        "status": "",
+        "diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "passed": true
+    },
+    {
+      "label": "F",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source",
+      "expected": {
+        "head": "5aacc9f225056b47fca766dcf9d49a170e60978f",
+        "status": ""
+      },
+      "actual": {
+        "head": "5aacc9f225056b47fca766dcf9d49a170e60978f",
+        "status": ""
+      },
+      "passed": true
+    }
+  ],
+  "executions": [
+    {
+      "name": "quality-plain",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-quality-plain-execution-01.json",
+      "sha256": "48952696eec573c94e3595cb63b4eeeb019fe69e222e478ff0587a0ad8df0882",
+      "original_exit_code": 0,
+      "original_passed": true,
+      "timed_out": false,
+      "residual_process_group": false,
+      "cleanup_passed": true
+    },
+    {
+      "name": "quality-sequential",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-quality-sequential-execution-01.json",
+      "sha256": "f4e7a07111c5d6f0d6859f01410313d273fd914983690f735125089f359718bf",
+      "original_exit_code": 0,
+      "original_passed": true,
+      "timed_out": false,
+      "residual_process_group": false,
+      "cleanup_passed": true
+    },
+    {
+      "name": "sustained-plain",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-sustained-plain-execution-01.json",
+      "sha256": "0ba10e2e0b549976e76e1707840ded34f6c33ca28e89cdb9dabf3165c32c32f8",
+      "original_exit_code": 0,
+      "original_passed": true,
+      "timed_out": false,
+      "residual_process_group": false,
+      "cleanup_passed": true
+    },
+    {
+      "name": "sustained-sequential",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-sustained-sequential-execution-01.json",
+      "sha256": "96a0f952d6ce1e51c34245c3b754d88ae2a06f58ddeaccde5443ebadb98ad49d",
+      "original_exit_code": 0,
+      "original_passed": true,
+      "timed_out": false,
+      "residual_process_group": false,
+      "cleanup_passed": true
+    },
+    {
+      "name": "limits-plain",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-limits-plain-execution-01.json",
+      "sha256": "a97867ddd3ed59dce65480c49e6c336c0ba2b5785d6545710d483c8050eef71b",
+      "original_exit_code": 1,
+      "original_passed": false,
+      "timed_out": false,
+      "residual_process_group": false,
+      "cleanup_passed": true
+    },
+    {
+      "name": "limits-sequential",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-limits-sequential-execution-01.json",
+      "sha256": "392ad4c49732e81e5c69e311ca6fbefa9f6c6ddc82370342b165d26f8c59edf0",
+      "original_exit_code": 1,
+      "original_passed": false,
+      "timed_out": false,
+      "residual_process_group": false,
+      "cleanup_passed": true
+    },
+    {
+      "name": "cancellation",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-cancellation-execution-01.json",
+      "sha256": "e8938aa4b5e6d5df57888e7c642c192c81c05f11e75017594cf98c95d2a5cdcf",
+      "original_exit_code": 0,
+      "original_passed": true,
+      "timed_out": false,
+      "residual_process_group": false,
+      "cleanup_passed": true
+    },
+    {
+      "name": "failure-recovery",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-failure-recovery-execution-01.json",
+      "sha256": "55d5ee38b9ae17617b7c559cc62bc25e577508e940f4361dd2019c19f80de7db",
+      "original_exit_code": 0,
+      "original_passed": true,
+      "timed_out": false,
+      "residual_process_group": false,
+      "cleanup_passed": true
+    },
+    {
+      "name": "performance-plain",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-performance-plain-execution-01.json",
+      "sha256": "1617670e8ad48569ec141563d2c59744194b7aa0018cc9623f439106380530dc",
+      "original_exit_code": 0,
+      "original_passed": true,
+      "timed_out": false,
+      "residual_process_group": false,
+      "cleanup_passed": true
+    },
+    {
+      "name": "performance-sequential",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-performance-sequential-execution-01.json",
+      "sha256": "bb314c493fb2f9a482735274f86e58b0b99dcdfe6b59b6f183a5783bf80c3b6e",
+      "original_exit_code": 0,
+      "original_passed": true,
+      "timed_out": false,
+      "residual_process_group": false,
+      "cleanup_passed": true
+    },
+    {
+      "name": "resource-fallback-03",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/resource-fallback-03/execution-summary-01.json",
+      "sha256": "2fbf136c3ac5f7e90a7d1e3e871b61d3107ebe33689210589297429cc3d44665",
+      "original_passed": true,
+      "cleanup_passed": true
+    },
+    {
+      "name": "context-tail-control-03",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/context-tail-control-03/http-execution-01.json",
+      "sha256": "1631b2dae3d90885d1ca0be39423180290452ebc5d9bbb04837535b599c9697e",
+      "original_passed": true,
+      "cleanup_passed": true
+    }
+  ],
+  "owned_live_processes": [],
+  "sources": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/protected-http-runner-review-01.json",
+      "sha256": "db4dee300cb382bdda63f140ad094f0333245a5dfb7b1873b55b2630bf0825b3"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/resource-fallback-03/protocol-01.json",
+      "sha256": "5a7d5a7650ff82006a3521ee9fc0b64863127839d9b88e918b0e89dc9738c5b9"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/context-tail-control-03/protocol-01.json",
+      "sha256": "481d59811a2d26a868cbb8bc878ecb858f96c43dca23d0530df82dcc5e422988"
+    }
+  ],
+  "script_sha256": "e617258253e1410848d204561eae2f68c125242b5e1c6695467ac691163348fb",
+  "model_payload_hashed": false,
+  "no_build_test_http_or_inference": true,
+  "scope": "Fresh file/dirty-worktree/source preservation audit and owned execution cleanup; not another model test.",
+  "file_checks": 558,
+  "runtime_source_checks": 130,
+  "failed_files": [],
+  "failed_runtime_source": [],
+  "full_report": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/final-protection-full-03.json",
+    "bytes": 255452,
+    "sha256": "5b0712017b931e4dbd342685d20f0127f4a393e246e658496342df00af839f54"
+  },
+  "omitted_fields": [
+    "files",
+    "runtime_source"
+  ]
+}

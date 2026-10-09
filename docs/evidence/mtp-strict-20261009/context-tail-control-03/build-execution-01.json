@@ -1,0 +1,10 @@
+{
+  "phase": "build",
+  "exit_code": 0,
+  "timeout": false,
+  "residual_process_group": false,
+  "passed": true,
+  "seconds": 1.4655535221099854,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

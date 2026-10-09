@@ -1,0 +1,22 @@
+{
+  "command": [
+    "cmake",
+    "--build",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009",
+    "--target",
+    "q4t",
+    "q4t_host_tests",
+    "q4t_mtp_sequential_control",
+    "q4t_mtp_sequential_admission",
+    "q4t_mtp_sequential_fault_server",
+    "q4t_mtp_hc_first_fork",
+    "--parallel",
+    "6"
+  ],
+  "started_unix": 1791479397.687598,
+  "seconds": 45.65399885177612,
+  "exit_code": 0,
+  "warnings": [],
+  "log_sha256": "e60c8953453bc0d74eff0c20bd998c5a60af4b0bba78b6bf3eab941dad5e927e",
+  "passed": true
+}

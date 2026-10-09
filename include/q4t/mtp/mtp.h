@@ -32,7 +32,9 @@
 
 #include <cuda_runtime.h>
 
+#include <array>
 #include <cstdint>
+#include <span>
 #include <string>
 
 #include "q4t/io/weight_loader.h"
@@ -44,7 +46,15 @@
 #include "q4t/status.h"
 
 namespace q4t {
+namespace trace {
+class MtpCycleStep;
+class MtpVerifyMoeStep;
+}  // namespace trace
 namespace mtp {
+
+// Optional request-local HTTP initialization diagnostics. Decode/scheduler
+// callers keep the default null pointer and do not create or record events.
+class MtpInitTiming;
 
 // Static configuration of the MTP draft model.
 struct MtpConfig {
@@ -176,7 +186,9 @@ struct MtpModel {
 // Load the MTP draft model from `cfg.mtp_dir` (its own index + shards). The
 // `main_embed` / `main_lm_head` device pointers are borrowed from the main
 // model (see MtpModel). On success the caller owns the device memory (free
-// with MtpModel::Free).
+// with MtpModel::Free). A failed load drains its stream and releases partial
+// owned allocations; borrowed embedding/head weights are never released.
+// out must be empty. Reloading a live model is rejected without changing it.
 Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
                const uint16_t* main_lm_head, MtpModel* out, cudaStream_t stream);
 
@@ -195,23 +207,37 @@ Status MtpResetState(const MtpModel& m, cudaStream_t stream, int seq_id = -1);
 // Reserve the per-step speculative scratch buffers (ids/positions, verify
 // logits+trunk, extend logits+trunk+sample, rolling draft trunk) sized for a
 // speculative `k` up to `k_max`. Idempotent: grows only if `k_max` exceeds the
-// current capacity. Call once after LoadMtp, before the decode loop, so
+// current capacity. A failed grow releases all scratch and resets k_max to
+// zero, preserving model weights so the caller can retry or decode plainly.
+// Call once after LoadMtp, before the decode loop, so
 // MtpSpeculativeStep / MtpDraftExtend can use the persistent buffers instead of
 // per-step cudaMalloc/cudaFree (each cudaFree is an implicit device sync).
 Status MtpReserveScratch(MtpModel& m, int k_max);
+
+// Skip only the unused tail of one complete, nonfinal initialization chunk.
+// The entire attention call and its persistent cache writes still execute.
+enum class MtpForwardMode { kFull, kSkipUnusedTail };
+
+// Opt-in initialization policy; the last chunk always produces full outputs.
+enum class MtpInitPolicy { kFull, kSkipUnusedTail };
 
 // Run one MTP draft step.
 //
 //   input_ids   : device int32 [T] — the new token(s) to embed (step 0: the
 //                 last main-model token; later steps: the prior draft token).
-//   positions   : host int [T] — absolute positions for the full attention.
+//   positions   : host or device int [T] under UVA; absolute positions for
+//                 full attention. Copy direction is inferred by CUDA. Keep
+//                 the source alive and unchanged until stream completion.
+//                 This forward does not itself establish a completion
+//                 boundary on success or failure; its caller owns that wait.
 //   hidden_states: device BF16 [T, hc*hs] — the pre-final-mixer multi stream
 //                 (step 0: from the main model's trunk_out; later steps: the
 //                 prior draft step's multi_hidden).
 //   sample_hidden: device BF16 [T, hs] (out) — single stream for the lm_head.
 //   multi_hidden : device BF16 [T, hc*hs] (out) — pre-final-mixer multi stream
 //                 for the next draft step.
-//   logits       : device BF16 [T, vocab] (out) — lm_head(sample_hidden).
+//   logits       : device BF16 [T, vocab] (out) for kAllRows, or compact
+//                  [1, vocab] at the output base for kLastRow.
 //   stream       : CUDA stream.
 //   d_seq_id     : device int[T] (Phase 2 MTP multi-seq draft). When non-null,
 //                  the draft full-attention KV/indexer buffers (m.kv_cache /
@@ -223,11 +249,27 @@ Status MtpReserveScratch(MtpModel& m, int k_max);
 //                  (bit-identical to the prior behavior). The projection/MoE/
 //                  lm_head GEMMs are stateless and operate on the packed [T,...]
 //                  rows (weights read once).
+//   compute_logits: when false, skip lm_head; logits may be null.
+//   logits_rows  : selects lm_head rows only; sample_hidden, multi_hidden and
+//                  KV computation still cover all T rows. kLastRow projects
+//                  sample_hidden[T-1] with M=1; its GEMV rounding need not be
+//                  bit-identical to the final row of the M=T GEMM.
+//   max_position: exact maximum logical position, or -1 to read it back.
+//   mode        : kFull preserves the output contracts above, including when
+//                 compute_logits=false. kSkipUnusedTail is only for a complete
+//                 nonfinal initialization chunk: max_seq=1, d_seq_id=null,
+//                 T=max_prefill>0, compute_logits=false. It returns after full
+//                 attention; sample_hidden/multi_hidden/logits are not written
+//                 and may be null. Invalid combinations fail before GPU work.
 Status MtpForward(const MtpModel& m, const int32_t* input_ids, const int* positions,
                   const uint16_t* hidden_states, uint16_t* sample_hidden,
                   uint16_t* multi_hidden, uint16_t* logits, int T,
                   cudaStream_t stream, const int* d_seq_id = nullptr,
-                  bool compute_logits = true);
+                  bool compute_logits = true,
+                  model::LogitsRows logits_rows = model::LogitsRows::kAllRows,
+                  MtpInitTiming* init_timing = nullptr,
+                  int max_position = -1,
+                  MtpForwardMode mode = MtpForwardMode::kFull);
 
 // Device bytes for the MtpForward `workspace` (the GEMM scratch plus the
 // forward intermediates for `T` tokens, the full-attention scratch, and the
@@ -264,10 +306,23 @@ size_t MtpWorkspaceBytes(const MtpConfig& cfg, int T,
 //                 right slice. The internal extend inside
 //                 MtpSpeculativeStepMulti uses MtpForward + d_seq_id directly
 //                 (per-token seq ids), not this helper.
+//   logits_rows : kLastRow uses a compact [1, vocab] temporary without scratch
+//                 (only the final chunk projects logits). Its M=1
+//                 projection can change rounding and out_d0 versus kAllRows.
+//                 Persistent scratch always keeps the all-row path, even if
+//                 kLastRow is requested. All trunk and KV rows remain intact.
+//   init_policy : kSkipUnusedTail skips the unused post-attention tail only
+//                 for nonfinal chunks when T>max_prefill, max_seq=1, seq_id=0.
+//                 Other cases remain full. The last chunk's shape, g/d0 and
+//                 all cache writes are unchanged; temporary sizing is kept.
 Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
                       const uint16_t* main_trunk, const int* positions, int T,
                       int32_t* out_d0, uint16_t* out_g, cudaStream_t stream,
-                      int seq_id = 0);
+                      int seq_id = 0,
+                      model::LogitsRows logits_rows =
+                          model::LogitsRows::kAllRows,
+                      MtpInitTiming* init_timing = nullptr,
+                      MtpInitPolicy init_policy = MtpInitPolicy::kFull);
 
 // 推测解码一步 (scheme A, 见本文件顶部 + reference/.../nvidia/mtp.py)。
 //
@@ -339,14 +394,83 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
 //
 // 正确性: draft 循环与 extend 复用 Stage 1 已验证的多序列 MtpForward
 // (per-seq KV 隔离); 验证复用 Stage 2a 已 bit-exact 验证的 ModelVerifyMulti。
-// 单序列 (B=1) 不走本函数 (用 MtpSpeculativeStep, 路径更省)。
+// The HTTP scheduler also uses this entrypoint for B=1. Optional cycle timing
+// is request-owned and supported only for that single-sequence diagnostic.
+// Once submission begins, every Status return checks stream completion.
+// On failure accepted_count is zero and next_b/next_d0 are -1 for each valid
+// output row. accepted_tokens and next_g contents are invalid; they must not
+// be consumed. Device state may have advanced, so fail/end the request rather
+// than falling back from that state. Host position/history remain unchanged.
+// stop_tokens contains every configured terminal ID for HTTP generation. A
+// reachable stop is returned as the unconsumed next_b; accepted tokens exclude
+// it, next_d0 is -1, and next_g is unchanged and invalid as a next-step seed.
+// Terminal rows are excluded from draft extend. T4 may physically compute
+// speculative rows after stop, but restores the committed recurrent prefix.
+// An empty stop set preserves legacy mathematical/shape diagnostic semantics.
 Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                                const model::ModelSequence* const* seqs,
                                const int32_t* b_tok, const int32_t* d0,
                                const uint16_t* const* g_in, int B, int k,
                                int32_t* accepted_tokens, int* accepted_count,
                                int32_t* next_b, int32_t* next_d0,
-                               uint16_t** next_g, cudaStream_t stream);
+                               uint16_t** next_g, cudaStream_t stream,
+                               trace::MtpCycleStep* cycle_timing = nullptr,
+                               trace::MtpVerifyMoeStep* verify_moe = nullptr,
+                               std::span<const int32_t> stop_tokens = {});
+
+// Strict S1/slot0/k3 result. Accepted tokens are consumed, non-stop inputs;
+// next_b is the pending prediction and has NOT been consumed by the main model.
+// Counts are forward call attempts, including a call that returns an error.
+// On failure only these counts are valid; all other fields are reset.
+struct MtpSequentialResult {
+  std::array<int32_t, 4> accepted_tokens{};
+  int accepted_count = 0;
+  int32_t next_b = -1;
+  int32_t next_d0 = -1;
+  bool terminal = false;
+  bool next_seed_valid = false;
+  int draft_forward_calls = 0;
+  int target_forward_calls = 0;
+  int extend_forward_calls = 0;
+};
+
+// Verify an actual three-token proposal using the ordinary scheduler's
+// ModelDecodeBatchMulti(B=1) and model::ArgmaxBf16Rows. This helper is also the
+// production verifier used by MtpSpeculativeStepSequentialTarget below.
+// seq must be slot0/decode, have no pending work, and have history.size()==P.
+// Both output_remaining and main/draft context remaining must exceed four.
+// b must be non-stop; all configured stop IDs are supplied in stop_tokens.
+// The caller exclusively owns main/MTP scratch and the stream until return.
+// Caller position/history are never changed. Only bonus and accepted drafts
+// reach the main model; a predicted stop is returned as terminal next_b.
+// Success leaves the target logits/trunks in the first target_forward_calls
+// rows of d_ms_vlogits/d_ms_vtrunk. There is no extend here, so next_seed_valid
+// stays false. Success and failure drain the submitted stream before return.
+// Failure can leave device state partially advanced: terminate the request,
+// never resume plain decode or reuse the sequence without resetting it.
+Status MtpSequentialVerify(
+    const model::Model& main, const MtpModel& mtp,
+    const model::ModelSequence& seq, int32_t b,
+    std::span<const int32_t, 3> drafts, int output_remaining,
+    std::span<const int32_t> stop_tokens, MtpSequentialResult* result,
+    cudaStream_t stream);
+
+// Generate real d0/d1/d2 (d0 is the previous extend's seed), verify with the
+// helper above, then extend the accepted prefix using its captured trunks.
+// Reuses MtpReserveScratch(k_max>=4); there are no strict-specific GPU buffers.
+// The ordinary target argmax can still allocate its existing shared scratch.
+// g_in and next_g are device [hc*hs] and may alias. next_g/next_d0 are usable
+// only on successful next_seed_valid=true. A terminal result skips extend,
+// has next_seed_valid=false, and returns its stop token only in next_b.
+// On success the request owner publishes exactly accepted_count tokens into
+// position/history, then handles next_b before submitting another step.
+// The same ownership, strict range, stop, drain and failure rules apply.
+Status MtpSpeculativeStepSequentialTarget(
+    const model::Model& main, const MtpModel& mtp,
+    const model::ModelSequence& seq, int32_t b, int32_t d0,
+    const uint16_t* g_in, int output_remaining,
+    std::span<const int32_t> stop_tokens, MtpSequentialResult* result,
+    uint16_t* next_g, cudaStream_t stream);
 
 }  // namespace mtp
 }  // namespace q4t

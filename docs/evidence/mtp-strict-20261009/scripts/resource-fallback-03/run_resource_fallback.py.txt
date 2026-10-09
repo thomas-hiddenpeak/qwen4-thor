@@ -1,0 +1,196 @@
+"""Three bounded HTTP requests against a separate resource-fallback test server.
+
+The existing failure runner supplies only transport/snapshot functions. Its
+five-request main is never called. This group injects a logical reserve Status
+after real success; it neither forces an allocation failure nor measures speed.
+"""
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import secrets
+import shutil
+import subprocess
+import sys
+import time
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[2]
+TOOLS = ROOT / 'tools/evalscope'
+sys.path.insert(0, str(TOOLS))
+sys.path.insert(0, str(HERE))
+
+from acceptance_mode import startup_evidence
+import resource_fallback_contract as contract
+import request_cancellation_contract as recovery
+from run_mtp_failure_recovery import request, read_log, snapshot
+
+
+def save(path, value):
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--binary', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--quality-run', type=Path, required=True)
+    parser.add_argument('--performance-run', type=Path, required=True)
+    parser.add_argument('--port', type=int, required=True)
+    parser.add_argument('--startup-timeout', type=int, default=600)
+    args = parser.parse_args()
+    if args.startup_timeout <= 0 or not 1 <= args.port <= 65535:
+        parser.error('invalid startup timeout or port')
+    out = args.output.resolve()
+    recovery.require(out.is_relative_to(HERE) and out != HERE,
+                     'output must be a new subdirectory of this test group')
+    binary = args.binary.resolve()
+    recovery.require(binary.parent == HERE, 'binary must be the isolated variant')
+    out.mkdir(parents=True, exist_ok=False)
+    paths = {
+        'quality_inputs': args.quality_run / 'inputs/requests.jsonl',
+        'quality_manifest': args.quality_run / 'inputs/manifest.json',
+        'performance_inputs': args.performance_run / 'inputs/context-1024.jsonl',
+        'performance_metadata': args.performance_run / 'results.json',
+        'server_command': args.quality_run / 'server-command.json'}
+    fixtures, metadata = recovery.select_fixtures(
+        [json.loads(line) for line in paths['quality_inputs'].read_text().splitlines()],
+        json.loads(paths['quality_manifest'].read_text()),
+        [json.loads(line) for line in paths['performance_inputs'].read_text().splitlines()],
+        json.loads(paths['performance_metadata'].read_text()))
+    command = json.loads(paths['server_command'].read_text())['argv']
+    recovery.require(len(command) > 1 and command[1] == 'serve',
+                     'source must be a serve command')
+    for flag, value in (('--max-seq', '1'), ('--max-len', '208896'),
+                        ('--max-prefill', '8192')):
+        recovery.require(command.count(flag) == 1 and
+                         command.index(flag) + 1 < len(command) and
+                         command[command.index(flag) + 1] == value,
+                         'source capacity differs from frozen configuration')
+    recovery.require(command.count('--mtp') + command.count('--no-mtp') == 1,
+                     'ambiguous source MTP mode')
+    if '--no-mtp' in command:
+        command[command.index('--no-mtp')] = '--mtp'
+    recovery.require(command.count('--mtp-verifier') <= 1 and
+                     not any(arg.startswith('--mtp-verifier=') for arg in command),
+                     'ambiguous source verifier')
+    if '--mtp-verifier' in command:
+        index = command.index('--mtp-verifier')
+        recovery.require(index + 1 < len(command), 'missing source verifier')
+        del command[index:index + 2]
+    recovery.require(command.count('--port') == 1 and
+                     command.index('--port') + 1 < len(command),
+                     'source must contain one port')
+    command[command.index('--port') + 1] = str(args.port)
+    command[0] = str(binary)
+    command += ['--mtp-verifier', 'sequential']
+    source_files = [HERE / name for name in (
+        'run_resource_fallback.py', 'resource_fallback_contract.py',
+        'resource_fallback_server.cpp', 'test_resource_fallback_contract.py')]
+    source_files += [TOOLS / name for name in (
+        'run_mtp_failure_recovery.py', 'mtp_failure_recovery_contract.py',
+        'request_cancellation_contract.py', 'acceptance_mode.py',
+        'response_identity.py')]
+    for path in source_files:
+        shutil.copy2(path, out / path.name)
+    save(out / 'input-bindings.json', {
+        'oracle': 'fresh strict control in this process',
+        'historical_output_reused': False, 'selected': metadata['decode'],
+        'files': {key: {'path': str(path.resolve()),
+                        'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
+                  for key, path in paths.items()}})
+    save(out / 'server-command.json', {'argv': command})
+    save(out / 'protocol.json', {
+        'schema_version': 1, 'variant': 'link-wrapped isolated test server',
+        'production_binary_http': False, 'generation_requests': 3,
+        'plan': contract.PLAN, 'fixture': metadata['decode'], 'max_tokens': 256,
+        'seed': 20260920, 'temperature': 0, 'stream': True,
+        'request_timeout_seconds': 120, 'cleanup_timeout_seconds': 120,
+        'startup_timeout_seconds': args.startup_timeout,
+        'body_limit_bytes': 4 * 1024 * 1024, 'log_limit_bytes': 16 * 1024 * 1024,
+        'expected_counter_delta': dict(zip(contract.COUNTERS, (3, 3, 0, 0))),
+        'binary': str(binary),
+        'binary_sha256': hashlib.sha256(binary.read_bytes()).hexdigest(),
+        'source_sha256': {str(path): hashlib.sha256(path.read_bytes()).hexdigest()
+                          for path in source_files},
+        'scope': 'logical real-reserve Status failure; not physical OOM or CUDA '
+                 'fatal; observable HTTP recovery, not complete device-state proof'})
+    environment = {key: value for key, value in os.environ.items()
+                   if not key.startswith('Q4T_') and key != 'LD_PRELOAD'}
+    environment['PYTHONDONTWRITEBYTECODE'] = '1'
+    records, failure, validation = [], None, None
+    server = None
+    log_path = out / 'server.log'
+    try:
+        with log_path.open('w') as log:
+            server = subprocess.Popen(command, cwd=ROOT, env=environment,
+                                      stdout=log, stderr=subprocess.STDOUT)
+            save(out / 'server-process.json', {'pid': server.pid})
+            deadline = time.monotonic() + args.startup_timeout
+            while True:
+                recovery.require(server.poll() is None, 'server exited at startup')
+                trace = read_log(log_path)
+                if 'serving on port' in trace:
+                    break
+                recovery.require(time.monotonic() < deadline, 'startup timeout')
+                time.sleep(min(.25, max(0, deadline - time.monotonic())))
+            contract.require_variant(trace)  # Reject ordinary q4t before generation.
+            startup = startup_evidence(trace, True, 'sequential')
+            save(out / 'startup-mode.json', startup)
+            recovery.require(startup['passed'], 'wrong startup mode/capacity')
+            before = previous = snapshot(args.port, out, 'before')
+            control = None
+            for label, kind in contract.PLAN:
+                recovery.require(server.poll() is None, 'server exited between requests')
+                body = {'model': 'qwen3.8-flash-next', 'prompt': fixtures['decode'],
+                        'max_tokens': 256, 'temperature': 0, 'seed': 20260920,
+                        'stream': True, 'stream_options': {'include_usage': True},
+                        'request_id': label, 'cancel_token': secrets.token_hex(32)}
+                response = request(args.port, out, label,
+                                   '/v1/chat/completions', body, timeout=120)
+                result = contract.completed_result(response, label)
+                if control is None:
+                    control = result
+                else:
+                    contract.require_recovery(result, control)
+                save(out / (label + '-result.json'), result)
+                current = snapshot(args.port, out, label + '-after')
+                contract.require_counter_delta(previous, current)
+                records.append({'request_id': label, 'kind': kind, 'passed': True})
+                previous = current
+            recovery.require(tuple(b - a for a, b in zip(before, previous)) ==
+                             (3, 3, 0, 0), 'wrong total request counters')
+    except BaseException as error:
+        failure = repr(error)
+    finally:
+        if server is not None and server.poll() is None:
+            server.terminate()
+            try:
+                server.wait(timeout=60)
+            except subprocess.TimeoutExpired:
+                server.kill()
+                server.wait(timeout=10)
+                failure = failure or 'server required forced termination'
+        if server is not None and server.returncode != 0:
+            failure = failure or f'server exit {server.returncode}'
+        if failure is None:
+            try:
+                validation = contract.validate_log(read_log(log_path))
+                save(out / 'request-evidence.json', validation)
+            except Exception as error:
+                failure = repr(error)
+        save(out / 'summary.json', {
+            'records': records, 'failure': failure,
+            'server_exit': None if server is None else server.returncode,
+            'server_pid': None if server is None else server.pid,
+            'variant': 'link-wrapped isolated test server',
+            'production_binary_http': False, 'physical_oom_test': False,
+            'passed': failure is None and len(records) == 3 and validation is not None})
+    if failure is not None:
+        raise RuntimeError(failure)
+    print(json.dumps({'passed': True, 'requests': 3, 'output': str(out)}))
+
+
+if __name__ == '__main__':
+    main()

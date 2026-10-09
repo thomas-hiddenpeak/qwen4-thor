@@ -1,0 +1,7 @@
+Test project /home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009
+    Start 2: q4t_mtp_sequential_control
+1/1 Test #2: q4t_mtp_sequential_control .......   Passed    0.00 sec
+
+100% tests passed out of 1
+
+Total Test time (real) =   0.00 sec

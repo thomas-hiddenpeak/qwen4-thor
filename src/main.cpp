@@ -55,10 +55,12 @@ void PrintUsage(const char* prog) {
       "  serve     OpenAI-compatible HTTP API server\n"
       "            (q4t serve [--host IPv4] [--port N] [--model-dir DIR] "
       "[--max-tokens N] [--max-prefill N] [--max-len N] [--max-seq N] "
-      "[--mtp | --no-mtp] [--allow-media]\n"
+      "[--mtp | --no-mtp] [--mtp-verifier sequential|t4] [--allow-media]\n"
       "       [--moe-trace-dir DIR --moe-trace-workload FILE] "
       "[--moe-trace-max-mib N])\n"
       "            MTP is disabled by default.\n"
+      "            --mtp uses sequential verification; --mtp-verifier t4 "
+      "selects the experimental fast path.\n"
       "  bench-decode  Batched-decode throughput vs batch size\n"
       "            (q4t bench-decode [--batch B] [--steps N] [--prompt P] "
       "[--max-len L])\n"
@@ -125,10 +127,11 @@ int RunGenerate(int argc, char** argv) {
       model_dir = argv[++i];
     } else if (a == "--max-tokens" && i + 1 < argc) {
       max_tokens = std::atoi(argv[++i]);
-    } else if (a == "--mtp") {
-      use_mtp = true;
-    } else if (a == "--mtp-k" && i + 1 < argc) {
-      mtp_k = std::atoi(argv[++i]);
+    } else if (a == "--mtp" || a == "--mtp-k" || a == "--mtp-verifier") {
+      std::fprintf(stderr,
+                   "MTP is unavailable in generate; use serve --mtp "
+                   "--max-seq 1 with text requests\n");
+      return 2;
     } else if (a == "--max-prefill" && i + 1 < argc) {
       max_prefill = std::atoi(argv[++i]);
     } else if (!a.empty() && a[0] == '-') {

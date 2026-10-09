@@ -1,0 +1,40 @@
+HC_SCOPE byte_order=little encoding=BF16 rows=1,4,4 widths=10240,320,320,10240,2560 hc_count=4 hidden_size=2560 lowrank=320 eps_f32_bits=358637bd cudart_header=13030 FP8_PROJ=unset FP8_HC=unset FP8_ALL=unset projection_first_row_only=1 nonlinear_contract=NOT_EVALUATED
+HC_CALL path=m1 T=1 source=layer_m36.trunk_in.bin old_output=lin_m27.x.bin workspace=100824832 hc_workspace=33554432 normed_offset=33554432 down_offset=33574912 up_offset=33575680 mixed_offset=100793856
+HC_PROJECTION path=m1 stage=down_raw checked_rows=1 N=320 K=10240 gamma32=0.00061084367399865964 gamma64=1.136868377217453e-12 outside=0 a_priori=1
+HC_PROJECTION path=m1 stage=up checked_rows=1 N=10240 K=320 gamma32=1.9193063984310808e-05 gamma64=3.5527136788006278e-14 outside=0 a_priori=1
+HC_COMPARE label=m1.historical_mixed elements=2560 unequal=0 first=2560 max_abs=0
+HC_CALL path=m4a T=4 source=layer_m52.trunk_in.bin old_output=lin_m39.x.bin workspace=101246720 hc_workspace=33554432 normed_offset=33554432 down_offset=33636352 up_offset=33638912 mixed_offset=101123584
+HC_PROJECTION path=m4a stage=down_raw checked_rows=1 N=320 K=10240 gamma32=0.00061084367399865964 gamma64=1.136868377217453e-12 outside=0 a_priori=1
+HC_PROJECTION path=m4a stage=up checked_rows=1 N=10240 K=320 gamma32=1.9193063984310808e-05 gamma64=3.5527136788006278e-14 outside=0 a_priori=1
+HC_COMPARE label=m4a.historical_mixed elements=10240 unequal=0 first=10240 max_abs=0
+HC_CALL path=m4b T=4 source=layer_m60.trunk_in.bin old_output=lin_m45.x.bin workspace=101246720 hc_workspace=33554432 normed_offset=33554432 down_offset=33636352 up_offset=33638912 mixed_offset=101123584
+HC_PROJECTION path=m4b stage=down_raw checked_rows=1 N=320 K=10240 gamma32=0.00061084367399865964 gamma64=1.136868377217453e-12 outside=0 a_priori=1
+HC_PROJECTION path=m4b stage=up checked_rows=1 N=10240 K=320 gamma32=1.9193063984310808e-05 gamma64=3.5527136788006278e-14 outside=0 a_priori=1
+HC_COMPARE label=m4b.historical_mixed elements=10240 unequal=0 first=10240 max_abs=0
+HC_COMPARE label=normed.M1_M4A elements=10240 unequal=0 first=10240 max_abs=0
+HC_COMPARE label=normed.M4A_M4B elements=10240 unequal=0 first=10240 max_abs=0
+HC_DIFFERENCE label=down_raw.M1_M4A index=81 a=-12.3125 b=-12.25
+HC_COMPARE label=down_raw.M1_M4A elements=320 unequal=1 first=81 max_abs=0.0625
+HC_COMPARE label=down_raw.M4A_M4B elements=320 unequal=0 first=320 max_abs=0
+HC_DIFFERENCE label=silu.M1_M4A index=81 a=-0.1357421875 b=-0.13671875
+HC_COMPARE label=silu.M1_M4A elements=320 unequal=1 first=81 max_abs=0.0009765625
+HC_COMPARE label=silu.M4A_M4B elements=320 unequal=0 first=320 max_abs=0
+HC_DIFFERENCE label=up.M1_M4A index=83 a=5.4375 b=5.40625
+HC_DIFFERENCE label=up.M1_M4A index=145 a=0.00799560546875 b=0.0079345703125
+HC_DIFFERENCE label=up.M1_M4A index=162 a=-0.58984375 b=-0.5859375
+HC_DIFFERENCE label=up.M1_M4A index=169 a=2.609375 b=2.625
+HC_DIFFERENCE label=up.M1_M4A index=360 a=5.78125 b=5.8125
+HC_DIFFERENCE label=up.M1_M4A index=434 a=4.625 b=4.65625
+HC_DIFFERENCE label=up.M1_M4A index=509 a=0.23046875 b=0.2314453125
+HC_DIFFERENCE label=up.M1_M4A index=531 a=-0.10595703125 b=-0.1064453125
+HC_COMPARE label=up.M1_M4A elements=10240 unequal=141 first=83 max_abs=0.03125
+HC_COMPARE label=up.M4A_M4B elements=10240 unequal=0 first=10240 max_abs=0
+HC_DIFFERENCE label=mixed.M1_M4A index=676 a=-0.67578125 b=-0.6796875
+HC_DIFFERENCE label=mixed.M1_M4A index=730 a=0.109375 b=0.10986328125
+HC_DIFFERENCE label=mixed.M1_M4A index=743 a=-0.0198974609375 b=-0.02001953125
+HC_DIFFERENCE label=mixed.M1_M4A index=1432 a=-1.3359375 b=-1.34375
+HC_COMPARE label=mixed.M1_M4A elements=2560 unequal=4 first=676 max_abs=0.0078125
+HC_COMPARE label=mixed.M4A_M4B elements=2560 unequal=0 first=2560 max_abs=0
+HC_FIRST_FORK_SUMMARY hc_calls=3 prefill=0 full_model=0 captured_arrays=15 captured_bytes=426240 first_row_projection=PASS historical_mixed_exact=PASS suffix_first_row_exact=PASS nonlinear_contract=NOT_EVALUATED full_t4_admission=0
+[PASS] mtp_hc_first_fork
+1 tests, 1 passed, 0 failed, 0 skipped

@@ -1,0 +1,6 @@
+[PASS] mtp_step_preserves_context_tail
+[PASS] mtp_step_rejects_invalid_or_overflowing_ranges
+[PASS] mtp_generation_step_preserves_output_and_context_tail
+[PASS] mtp_generation_step_rejects_invalid_or_overflowing_ranges
+[PASS] mtp_sequential_step_compatibility_name
+5 tests, 5 passed, 0 failed, 0 skipped

@@ -5,6 +5,13 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [MTP基础修复交付](MTP_FOUNDATION_2026-10-08.md) | 基础修复、原跨模式失败与证据复用边界 | 2026-10-08历史交付 |
+| [MTP最终主线候选](MTP_MAINLINE_RESULT_2026-10-09.md) | 当前入口、修复、验证归属与剩余合入条件 | 当前Goal |
+| [MTP主线交付继续推进](MTP_MAINLINE_READINESS_2026-10-09.md) | 纠正收尾判断、入口与集成阻碍清单 | 当前Goal |
+| [MTP sequential有限正确性验收](MTP_STRICT_RESULT_2026-10-09.md) | 独立正确性证据、原失败与五档成本 | 本阶段 |
+| [MTP严格greedy基线](MTP_STRICT_BASELINE_2026-10-09.md) | 显式sequential target接口、状态与验收边界 | 本阶段 |
+| [MTP阶段性转正计划](MTP_RELEASE_PLAN_2026-10-08.md) | 基础修复PR、有限支持准入与冻结验收清单 | 本阶段 |
+| [MTP数值准入设计](MTP_NUMERICAL_ADMISSION_DESIGN_2026-10-08.md) | 快速T4与严格普通greedy合同、状态所有权和代价 | 合同明确时 |
 | [主线存储准备](STORAGE_READY_2026-10-07.md) | 可再生成缓存清理、原始证据保护与可用容量 | 本轮整理 |
 | [主线收尾与分支交接](MAIN_WRAPUP_2026-10-07.md) | 精选研究工具、公共 I/O/预算修复、历史 NO_GO 索引与验证边界 | 本轮收尾 |
 | [GDN_VECTOR_LOAD_2026-09-21.md](GDN_VECTOR_LOAD_2026-09-21.md) | GDN 连续读取、完整 E2E 与状态等价证据 | 本轮验证更新 |

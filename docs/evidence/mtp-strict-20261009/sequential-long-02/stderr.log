@@ -1,0 +1,2 @@
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 cuBLASLt=130501

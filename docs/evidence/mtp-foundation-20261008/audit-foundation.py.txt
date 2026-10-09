@@ -1,0 +1,197 @@
+#!/usr/bin/env python3
+"""CPU-only source/build identity audit; never reads model payloads."""
+import argparse
+import hashlib
+import json
+import pathlib
+import subprocess
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+WORK = ROOT.parent.parent / 'mtp-admission-20261007' / 'source'
+OUT = pathlib.Path(__file__).resolve().parent
+BUILD = ROOT / 'build/foundation-20261008'
+BASE = 'c365b9b247c93571bda1f95551a9424dce15f99b'
+
+
+def sha(path):
+    h = hashlib.sha256()
+    with pathlib.Path(path).open('rb') as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b''):
+            h.update(block)
+    return h.hexdigest()
+
+
+def git(*args):
+    return subprocess.check_output(['git', *args], cwd=ROOT)
+
+
+def save(name, value):
+    path = OUT / name
+    if path.exists():
+        raise RuntimeError('refusing to replace evidence: ' + str(path))
+    path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + '\n')
+
+
+def source():
+    manifest_path = WORK / 'build/runtime-source-identity-04.json'
+    manifest = json.loads(manifest_path.read_text())
+    checks = []
+    for rel, expected in manifest.items():
+        baseline = hashlib.sha256(git('show', BASE + ':' + rel)).hexdigest()
+        actual = sha(ROOT / rel)
+        checks.append(dict(path=rel, historical_sha256=expected,
+                           foundation_base_sha256=baseline,
+                           working_sha256=actual,
+                           historical_matches_base=baseline == expected,
+                           current_matches=actual == expected))
+    before = git('show', BASE + ':CMakeLists.txt').decode()
+    after = (ROOT / 'CMakeLists.txt').read_text()
+    marker = '# ---------------------------------------------------------------------------\n# Tests\n'
+    runtime_cmake_unchanged = before.split(marker)[0] == after.split(marker)[0]
+    removed = '    tests/mtp_admission_test.cpp\n'
+    anchor = '  add_test(NAME q4t_tests COMMAND q4t_tests)\n'
+    added = '''  # This cross-mode diagnostic retains a known numerical mismatch. Keep its
+  # original assertions available explicitly, outside the release test set.
+  add_executable(q4t_mtp_cross_mode_diagnostic EXCLUDE_FROM_ALL
+    tests/test_main.cpp tests/mtp_admission_test.cpp)
+  target_include_directories(q4t_mtp_cross_mode_diagnostic PRIVATE include)
+  target_link_libraries(q4t_mtp_cross_mode_diagnostic PRIVATE ${Q4T_TEST_LIBS})
+'''
+    expected_after = before.replace(removed, '', 1).replace(anchor, anchor + added, 1)
+    exact_cmake_change = after == expected_after
+    tracked = git('ls-tree', '-r', '--name-only', BASE, '--',
+                  'src', 'include', 'third_party', 'cmake', 'tests',
+                  'tools/evalscope', 'tools/verify/mtp_scheduler_fault.cpp.in').decode().splitlines()
+    dependencies = []
+    for rel in tracked:
+        expected = hashlib.sha256(git('show', BASE + ':' + rel)).hexdigest()
+        actual = sha(ROOT / rel)
+        dependencies.append(dict(path=rel, base_sha256=expected,
+                                 current_sha256=actual, equal=actual == expected))
+    archive = WORK.parent / 'candidate-03-archive'
+    archive_manifest = json.loads((archive / 'manifest.json').read_text())
+    protected = []
+    for rel, expected in archive_manifest.items():
+        path = archive / rel
+        actual = sha(path)
+        protected.append(dict(path=str(path), expected=expected, actual=actual,
+                              equal=actual == expected))
+    for path, expected in [
+        (WORK / 'build/runtime/q4t', '7fe34d6ddd6bc78c4c9dea6537f72802c93fc60f09eb0b977105660480c627c7'),
+        (WORK / 'build/runtime/libq4t_model.a', '473aa4212c3de1838939d839d304f01fb26a87577b9d729948bb2e0334701b71'),
+    ]:
+        actual = sha(path)
+        protected.append(dict(path=str(path), expected=expected, actual=actual,
+                              equal=actual == expected))
+    passed = (all(x['historical_matches_base'] for x in checks)
+              and all(x['current_matches'] for x in checks if x['path'] != 'CMakeLists.txt')
+              and exact_cmake_change and runtime_cmake_unchanged
+              and all(x['equal'] for x in dependencies + protected))
+    result = dict(schema_version=1, phase='source_before_build', passed=passed,
+                  base_commit=BASE, source_root=str(ROOT),
+                  original_source_manifest=str(manifest_path),
+                  original_source_manifest_sha256=sha(manifest_path),
+                  historical_source_checks=checks,
+                  current_runtime_matches=sum(x['current_matches'] for x in checks),
+                  intentional_changed_manifest_file='CMakeLists.txt',
+                  exact_test_only_cmake_change=exact_cmake_change,
+                  runtime_target_definitions_unchanged=runtime_cmake_unchanged,
+                  source_and_test_dependencies=dependencies,
+                  protected_original_artifacts=protected,
+                  known_failure=dict(name='mtp_admission_single_stream',
+                                     original_assertions_preserved=True,
+                                     new_target='q4t_mtp_cross_mode_diagnostic',
+                                     exclude_from_all=True, registered_with_ctest=False),
+                  scope='source and target dependency identity only; no HTTP or CUDA execution')
+    save('source-target-audit-01.json', result)
+    print(json.dumps(dict(passed=passed, source_bindings=len(checks),
+                          current_runtime_matches=result['current_runtime_matches'],
+                          dependency_files=len(dependencies),
+                          protected_original_artifacts=len(protected))))
+    return 0 if passed else 1
+
+
+def build():
+    before = json.loads((OUT / 'source-target-audit-01.json').read_text())
+    checks = []
+    originals = WORK / 'build/runtime'
+    paths = [BUILD / 'q4t', BUILD / 'q4t_tests',
+             BUILD / 'q4t_mtp_cross_mode_diagnostic'] + sorted(BUILD.glob('libq4t_*.a'))
+    for path in paths:
+        prior = originals / path.name
+        actual = sha(path)
+        expected = sha(prior) if prior.is_file() else None
+        checks.append(dict(path=str(path), sha256=actual, bytes=path.stat().st_size,
+                           historical_path=str(prior) if expected else None,
+                           historical_sha256=expected,
+                           byte_identical_to_historical=actual == expected if expected else None))
+    current_sources_unchanged = all(
+        sha(ROOT / row['path']) == row['working_sha256']
+        for row in before['historical_source_checks'])
+    all_dependencies_unchanged = all(
+        sha(ROOT / row['path']) == row['current_sha256']
+        for row in before['source_and_test_dependencies'])
+    graph_checks = []
+    targets = ['q4t', 'q4t_model', 'q4t_io', 'q4t_ple', 'q4t_quant',
+               'q4t_text', 'q4t_server', 'q4t_runtime', 'q4t_trace']
+    for target in targets:
+        for rel in ['link.txt', 'flags.make', 'DependInfo.cmake']:
+            a = BUILD / 'CMakeFiles' / (target + '.dir') / rel
+            b = originals / 'CMakeFiles' / (target + '.dir') / rel
+            if not a.exists() or not b.exists():
+                graph_checks.append(dict(target=target, file=rel, present=False, equal=False))
+                continue
+            def normalized(path):
+                text = path.read_text().replace(str(ROOT), '<SOURCE>').replace(str(WORK), '<SOURCE>')
+                return text.replace('<SOURCE>/build/foundation-20261008', '<BUILD>').replace('<SOURCE>/build/runtime', '<BUILD>')
+            graph_checks.append(dict(target=target, file=rel, present=True,
+                                     current_sha256=sha(a), historical_sha256=sha(b),
+                                     equal=normalized(a) == normalized(b)))
+    command = [str(BUILD / 'q4t_tests'), '--list']
+    ordinary = subprocess.run(command, capture_output=True, text=True, check=False)
+    diagnostic_command = [str(BUILD / 'q4t_mtp_cross_mode_diagnostic'), '--list']
+    diagnostic = subprocess.run(diagnostic_command, capture_output=True, text=True, check=False)
+    (OUT / 'test-registry-01.log').write_text(ordinary.stdout + ordinary.stderr)
+    (OUT / 'diagnostic-registry-01.log').write_text(diagnostic.stdout + diagnostic.stderr)
+    names = ordinary.stdout.splitlines()
+    diag_names = diagnostic.stdout.splitlines()
+    registration_passed = (ordinary.returncode == diagnostic.returncode == 0
+        and 'mtp_admission_single_stream' not in names
+        and 'model_decode_batch_multi_rope_position' in names
+        and 'mtp_checkpoint_capacity_layout' in names
+        and diag_names == ['mtp_admission_single_stream'])
+    ctest = (BUILD / 'CTestTestfile.cmake').read_text()
+    no_diagnostic_ctest = 'q4t_mtp_cross_mode_diagnostic' not in ctest
+    q4t = next(x for x in checks if pathlib.Path(x['path']).name == 'q4t')
+    result = dict(schema_version=1, phase='post_build_cpu_identity',
+                  source_target_audit_sha256=sha(OUT / 'source-target-audit-01.json'),
+                  current_sources_unchanged=current_sources_unchanged,
+                  source_dependencies_unchanged=all_dependencies_unchanged,
+                  binaries_and_libraries=checks, runtime_target_graph=graph_checks,
+                  normalized_runtime_graph_equal=all(x['equal'] for x in graph_checks),
+                  registration=dict(passed=registration_passed and no_diagnostic_ctest,
+                                    q4t_tests_command=command, q4t_tests_exit=ordinary.returncode,
+                                    ordinary_test_count=len(names), diagnostic_command=diagnostic_command,
+                                    diagnostic_exit=diagnostic.returncode, diagnostic_names=diag_names,
+                                    diagnostic_not_registered_with_ctest=no_diagnostic_ctest),
+                  original_q4t_byte_identical=q4t['byte_identical_to_historical'],
+                  http_reuse_status=('EXACT_BINARY_IDENTITY' if q4t['byte_identical_to_historical']
+                                     else 'NEW_BINARY_DIFFERS_REQUIRES_ANALYSIS_OR_NEW_VALIDATION'),
+                  limit='--list enumerates registrations only; no model/CUDA test body or HTTP was run')
+    save('build-identity-audit-01.json', result)
+    print(json.dumps(dict(source_identity_passed=current_sources_unchanged and all_dependencies_unchanged,
+                          registration=result['registration'],
+                          graph_equal=result['normalized_runtime_graph_equal'],
+                          q4t_sha256=q4t['sha256'],
+                          http_reuse_status=result['http_reuse_status'],
+                          differing_libraries=[pathlib.Path(x['path']).name for x in checks
+                              if x['byte_identical_to_historical'] is False])))
+    return 0 if current_sources_unchanged and all_dependencies_unchanged and registration_passed and no_diagnostic_ctest else 1
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('phase', choices=['source', 'build'])
+    args = parser.parse_args()
+    sys.exit(source() if args.phase == 'source' else build())

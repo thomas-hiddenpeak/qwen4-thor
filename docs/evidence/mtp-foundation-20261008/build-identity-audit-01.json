@@ -1,0 +1,337 @@
+{
+  "schema_version": 1,
+  "phase": "post_build_cpu_identity",
+  "source_target_audit_sha256": "42d65a5d343f6f053c5a506d247c243c6ba4e815191ddfeff14b05f5747f5121",
+  "current_sources_unchanged": true,
+  "source_dependencies_unchanged": true,
+  "binaries_and_libraries": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/build/foundation-20261008/q4t",
+      "sha256": "a9d9f5d5ae94892233ccac2ba46508e182601474bf5960e6b2e7d3dc274df689",
+      "bytes": 3873888,
+      "historical_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/runtime/q4t",
+      "historical_sha256": "7fe34d6ddd6bc78c4c9dea6537f72802c93fc60f09eb0b977105660480c627c7",
+      "byte_identical_to_historical": false
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/build/foundation-20261008/q4t_tests",
+      "sha256": "beb26b0dad757afa663118d6451e8b4e0606f065028c59da2719b2228f05d26f",
+      "bytes": 4221480,
+      "historical_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/runtime/q4t_tests",
+      "historical_sha256": "aea26ebc8dfb9db1126371042ab015d6389c349ff930891d52c0465d1853e891",
+      "byte_identical_to_historical": false
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/build/foundation-20261008/q4t_mtp_cross_mode_diagnostic",
+      "sha256": "2a7d1303bc6c691343601d244c515461683176835b7e137d4e5134d8f1748991",
+      "bytes": 3242288,
+      "historical_path": null,
+      "historical_sha256": null,
+      "byte_identical_to_historical": null
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/build/foundation-20261008/libq4t_io.a",
+      "sha256": "a284806131dfedee792a876daeb286cb2bd7e6e24b2bdb633e0fac8c019b4596",
+      "bytes": 249322,
+      "historical_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/runtime/libq4t_io.a",
+      "historical_sha256": "a284806131dfedee792a876daeb286cb2bd7e6e24b2bdb633e0fac8c019b4596",
+      "byte_identical_to_historical": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/build/foundation-20261008/libq4t_model.a",
+      "sha256": "dd31d419b8c6bf685c6867c51c9573cf6ff50c7ed487e47f7eb33f381d196d40",
+      "bytes": 3535146,
+      "historical_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/runtime/libq4t_model.a",
+      "historical_sha256": "473aa4212c3de1838939d839d304f01fb26a87577b9d729948bb2e0334701b71",
+      "byte_identical_to_historical": false
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/build/foundation-20261008/libq4t_ple.a",
+      "sha256": "5498a95ff23ca562b1698d0a2356923368c856209bcd88bb765057b47ab1068f",
+      "bytes": 68688,
+      "historical_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/runtime/libq4t_ple.a",
+      "historical_sha256": "9e967f964c82d08dcf860affceb10ddb3dbcf0b2a6ec00bfe45e09c74e30309f",
+      "byte_identical_to_historical": false
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/build/foundation-20261008/libq4t_quant.a",
+      "sha256": "33ab7c306d904623a0eb5e1ad862f4916824b21301996dfcce3082e9abf22349",
+      "bytes": 369306,
+      "historical_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/runtime/libq4t_quant.a",
+      "historical_sha256": "69d375ed06574ae3efe655a6b0b5e666ed23b5d9b60b62ff117cae47d8cfdd1a",
+      "byte_identical_to_historical": false
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/build/foundation-20261008/libq4t_runtime.a",
+      "sha256": "36b658c8cba68684b23ffb9ea46e724ded6d5c12170dd6dd8434dfc236517b0a",
+      "bytes": 33424,
+      "historical_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/runtime/libq4t_runtime.a",
+      "historical_sha256": "36b658c8cba68684b23ffb9ea46e724ded6d5c12170dd6dd8434dfc236517b0a",
+      "byte_identical_to_historical": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/build/foundation-20261008/libq4t_server.a",
+      "sha256": "db22c3a3602f7190fe8fd43b2609bd966eda8077c58bb855c1648fc31628a6b0",
+      "bytes": 605964,
+      "historical_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/runtime/libq4t_server.a",
+      "historical_sha256": "db22c3a3602f7190fe8fd43b2609bd966eda8077c58bb855c1648fc31628a6b0",
+      "byte_identical_to_historical": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/build/foundation-20261008/libq4t_text.a",
+      "sha256": "b5d23197e94116477b82f28547f4842a5033dacabd74976b513ad20ae81c3859",
+      "bytes": 121240,
+      "historical_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/runtime/libq4t_text.a",
+      "historical_sha256": "b5d23197e94116477b82f28547f4842a5033dacabd74976b513ad20ae81c3859",
+      "byte_identical_to_historical": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/build/foundation-20261008/libq4t_trace.a",
+      "sha256": "e143c35afd516e3eb95e90e46bbfd0e4d337493851668d8b8e3f8fa9aa824275",
+      "bytes": 163422,
+      "historical_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/runtime/libq4t_trace.a",
+      "historical_sha256": "e143c35afd516e3eb95e90e46bbfd0e4d337493851668d8b8e3f8fa9aa824275",
+      "byte_identical_to_historical": true
+    }
+  ],
+  "runtime_target_graph": [
+    {
+      "target": "q4t",
+      "file": "link.txt",
+      "present": true,
+      "current_sha256": "a5aaa0a746a7039a08260d151ae9c778005be965ab99d8802779b46ecfbcd5f4",
+      "historical_sha256": "a5aaa0a746a7039a08260d151ae9c778005be965ab99d8802779b46ecfbcd5f4",
+      "equal": true
+    },
+    {
+      "target": "q4t",
+      "file": "flags.make",
+      "present": true,
+      "current_sha256": "249b5a5742669ab548a3ead2b7fef0c12158dcfdf9220df56f16125a1d27aea8",
+      "historical_sha256": "1a73ca7b5f2379783244f74060ef73068aaf12121c3fa03dfeebc4b6ba592a4d",
+      "equal": true
+    },
+    {
+      "target": "q4t",
+      "file": "DependInfo.cmake",
+      "present": true,
+      "current_sha256": "59b2742f65d2bf558df869b4ceae98176621817354aca12c9e67c4ca16fb1ea2",
+      "historical_sha256": "b29f2faade6bf120e53af6a7d3ec5e27cec7c219a09cbb3c8c3cd6cab7f7b0f3",
+      "equal": true
+    },
+    {
+      "target": "q4t_model",
+      "file": "link.txt",
+      "present": true,
+      "current_sha256": "c6258bef8da940eb737ac2742619303d4cb38979620fafa54d1d23d1c397b1b2",
+      "historical_sha256": "c6258bef8da940eb737ac2742619303d4cb38979620fafa54d1d23d1c397b1b2",
+      "equal": true
+    },
+    {
+      "target": "q4t_model",
+      "file": "flags.make",
+      "present": true,
+      "current_sha256": "209cd6ea9da1d92499fd339ac3849705c8779b68474f086bdd1f1fd8b0c689eb",
+      "historical_sha256": "1562db668310633267c5220745acbb0f226927a92114a43b8189e1d8b2d38e33",
+      "equal": true
+    },
+    {
+      "target": "q4t_model",
+      "file": "DependInfo.cmake",
+      "present": true,
+      "current_sha256": "62f60f503aaac35ce04ae6b7ca644e4c4b418eb89380b99e6d34823ac96354f0",
+      "historical_sha256": "b447e4fae27779d11bb50a713450fab8034940de9a509cf5488d65e31d2a8e9f",
+      "equal": true
+    },
+    {
+      "target": "q4t_io",
+      "file": "link.txt",
+      "present": true,
+      "current_sha256": "07b87521a7cafa21dcdb796582ba5d234dabb1e4f03ab45b1fad57ef11bebee0",
+      "historical_sha256": "07b87521a7cafa21dcdb796582ba5d234dabb1e4f03ab45b1fad57ef11bebee0",
+      "equal": true
+    },
+    {
+      "target": "q4t_io",
+      "file": "flags.make",
+      "present": true,
+      "current_sha256": "53394605ea612fe0312d0a2177d3d92078465209a806f6ba34d649489928b794",
+      "historical_sha256": "87bdf61a1cc67edc1d9e4d369f40de48712b8bf7a0ff3f568084221d3c7dc668",
+      "equal": true
+    },
+    {
+      "target": "q4t_io",
+      "file": "DependInfo.cmake",
+      "present": true,
+      "current_sha256": "f20bdec7057246d923626e8629dd5e96fdbe2c44e9a2ca6124122d5252b448a2",
+      "historical_sha256": "d8866523e0c31b1c2eab96b5dfd9db90eac7e0076196d5131964394ab8bc00b0",
+      "equal": true
+    },
+    {
+      "target": "q4t_ple",
+      "file": "link.txt",
+      "present": true,
+      "current_sha256": "0a08efb8c8e5a31653a1a2f754e852c372dc914922c26b070b5ed34836bf8cb0",
+      "historical_sha256": "0a08efb8c8e5a31653a1a2f754e852c372dc914922c26b070b5ed34836bf8cb0",
+      "equal": true
+    },
+    {
+      "target": "q4t_ple",
+      "file": "flags.make",
+      "present": true,
+      "current_sha256": "deeea7f4ff50e4f1188769e456979d451a6895dc068523513636e7467376e8fd",
+      "historical_sha256": "25e5527b0bc5d81215521de63014f255847262a47066da142d10f87465f7c964",
+      "equal": true
+    },
+    {
+      "target": "q4t_ple",
+      "file": "DependInfo.cmake",
+      "present": true,
+      "current_sha256": "7d7cc64a966ad5263e30de0b0c5c155b1185792cf85cce14459c7f0b8356418d",
+      "historical_sha256": "b797fd40f057bdd01e15e502aabff1274966559406557dd8e88654f58e1cfbdb",
+      "equal": true
+    },
+    {
+      "target": "q4t_quant",
+      "file": "link.txt",
+      "present": true,
+      "current_sha256": "b8635da5232eb2eec03c59a7a51ab561470e9646f2097c701812032f36d53d40",
+      "historical_sha256": "b8635da5232eb2eec03c59a7a51ab561470e9646f2097c701812032f36d53d40",
+      "equal": true
+    },
+    {
+      "target": "q4t_quant",
+      "file": "flags.make",
+      "present": true,
+      "current_sha256": "3d9d7d7537a22b68d177150b2b30ccbe64e2472d6d45f85469257afa86f2cf52",
+      "historical_sha256": "cbde6b2e02584873ce4785482385d9a94185eab9d3fa44b3af083945bca268f7",
+      "equal": true
+    },
+    {
+      "target": "q4t_quant",
+      "file": "DependInfo.cmake",
+      "present": true,
+      "current_sha256": "23c08ee30227e9b962a72a13c5539d71433aab5df439654a324408839cd5a5a5",
+      "historical_sha256": "707b257b1111955e9c4d0c22ceb04701f6651e440dead3133598dbf2d514e470",
+      "equal": true
+    },
+    {
+      "target": "q4t_text",
+      "file": "link.txt",
+      "present": true,
+      "current_sha256": "91879b01621a10a6346f07f92799b1b1d8a0b7c145c06b5f0404c1f7b4a8c1ce",
+      "historical_sha256": "91879b01621a10a6346f07f92799b1b1d8a0b7c145c06b5f0404c1f7b4a8c1ce",
+      "equal": true
+    },
+    {
+      "target": "q4t_text",
+      "file": "flags.make",
+      "present": true,
+      "current_sha256": "53394605ea612fe0312d0a2177d3d92078465209a806f6ba34d649489928b794",
+      "historical_sha256": "87bdf61a1cc67edc1d9e4d369f40de48712b8bf7a0ff3f568084221d3c7dc668",
+      "equal": true
+    },
+    {
+      "target": "q4t_text",
+      "file": "DependInfo.cmake",
+      "present": true,
+      "current_sha256": "687ed1bbbed7d33a669f66146c337faf76bc82c08bf440118f9d7f8990e09f03",
+      "historical_sha256": "344a1c7a19befa73454adca50c263edfea4a1fb5bef08bd7b7fc243e643c5e5c",
+      "equal": true
+    },
+    {
+      "target": "q4t_server",
+      "file": "link.txt",
+      "present": true,
+      "current_sha256": "4324a1269228123c8e4aa4e1846733b189b174087d402efafd74d564d00dbf3c",
+      "historical_sha256": "4324a1269228123c8e4aa4e1846733b189b174087d402efafd74d564d00dbf3c",
+      "equal": true
+    },
+    {
+      "target": "q4t_server",
+      "file": "flags.make",
+      "present": true,
+      "current_sha256": "249b5a5742669ab548a3ead2b7fef0c12158dcfdf9220df56f16125a1d27aea8",
+      "historical_sha256": "1a73ca7b5f2379783244f74060ef73068aaf12121c3fa03dfeebc4b6ba592a4d",
+      "equal": true
+    },
+    {
+      "target": "q4t_server",
+      "file": "DependInfo.cmake",
+      "present": true,
+      "current_sha256": "38d60adf58373228cd3a73cfcccd0cf9cc90e354945021d004329ba81402e96a",
+      "historical_sha256": "e7a314dd00514253e90333231ae8a6495aaf39e727e47a1c30b16348d24babfd",
+      "equal": true
+    },
+    {
+      "target": "q4t_runtime",
+      "file": "link.txt",
+      "present": true,
+      "current_sha256": "fb2876920249abb36b5a1009ff473be8c2beb700f04efce8aa84c4400d1ace07",
+      "historical_sha256": "fb2876920249abb36b5a1009ff473be8c2beb700f04efce8aa84c4400d1ace07",
+      "equal": true
+    },
+    {
+      "target": "q4t_runtime",
+      "file": "flags.make",
+      "present": true,
+      "current_sha256": "12fc96169e6be924bcdf94b6e84b9e0b88f15534b2afb57b10536cad39577ab9",
+      "historical_sha256": "0bbda953d1cb9dc6a9f0cf6070bc4163d1ed6c7cf7bfd1b867ee35106717a6be",
+      "equal": true
+    },
+    {
+      "target": "q4t_runtime",
+      "file": "DependInfo.cmake",
+      "present": true,
+      "current_sha256": "d6cbd0b72797f262df3fc5aaad4b6af5abfe450aad55f4e293435a08f94150a2",
+      "historical_sha256": "c21b4c77de070ccc1b73edbc59898f4b0ab10022270fe0b770fcd2890f8d9b23",
+      "equal": true
+    },
+    {
+      "target": "q4t_trace",
+      "file": "link.txt",
+      "present": true,
+      "current_sha256": "87f068900f67fd5e238b916a25997c4dfa81a8a74f98f43ac0724ea427661734",
+      "historical_sha256": "87f068900f67fd5e238b916a25997c4dfa81a8a74f98f43ac0724ea427661734",
+      "equal": true
+    },
+    {
+      "target": "q4t_trace",
+      "file": "flags.make",
+      "present": true,
+      "current_sha256": "53394605ea612fe0312d0a2177d3d92078465209a806f6ba34d649489928b794",
+      "historical_sha256": "87bdf61a1cc67edc1d9e4d369f40de48712b8bf7a0ff3f568084221d3c7dc668",
+      "equal": true
+    },
+    {
+      "target": "q4t_trace",
+      "file": "DependInfo.cmake",
+      "present": true,
+      "current_sha256": "7e72496fedc690865cc5c8509ed54bed5d33040afb929949ed35634a7b9c4246",
+      "historical_sha256": "60f76d644e6baf9fda5ee60698b5593f6e3d4c8e89ff2e25574c6edf7557e3c6",
+      "equal": true
+    }
+  ],
+  "normalized_runtime_graph_equal": true,
+  "registration": {
+    "passed": true,
+    "q4t_tests_command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/build/foundation-20261008/q4t_tests",
+      "--list"
+    ],
+    "q4t_tests_exit": 0,
+    "ordinary_test_count": 101,
+    "diagnostic_command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/build/foundation-20261008/q4t_mtp_cross_mode_diagnostic",
+      "--list"
+    ],
+    "diagnostic_exit": 0,
+    "diagnostic_names": [
+      "mtp_admission_single_stream"
+    ],
+    "diagnostic_not_registered_with_ctest": true
+  },
+  "original_q4t_byte_identical": false,
+  "http_reuse_status": "NEW_BINARY_DIFFERS_REQUIRES_ANALYSIS_OR_NEW_VALIDATION",
+  "limit": "--list enumerates registrations only; no model/CUDA test body or HTTP was run"
+}

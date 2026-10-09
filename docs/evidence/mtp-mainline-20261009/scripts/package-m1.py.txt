@@ -1,0 +1,57 @@
+"""Archive bounded M1 evidence without copying models, binaries or raw DBs."""
+from pathlib import Path
+import hashlib,json,shutil
+S=Path(__file__).resolve().parent; W=S.parents[1]
+D=W/'docs/evidence/mtp-mainline-20261009'
+def ident(p):
+ with p.open('rb') as f:h=hashlib.file_digest(f,'sha256').hexdigest()
+ return {'path':str(p),'bytes':p.stat().st_size,'sha256':h}
+assert not D.exists()
+assert json.loads((S/'http-mainline-01/summary.json').read_text())['passed']
+assert json.loads((S/'http-independent-review-01.json').read_text())['passed']
+D.mkdir(parents=True)
+paths=['starting-identities.json','build-host-protocol-01.json','build-identity-01.json','configure-01.json','build-01.json','host-01.json','host-01.log','required-host.txt','sequential-control-01.json','sequential-control-01.log','python-01.json','python-01.log','preload-rejections-01.json','reuse-map-01.json','reuse-independent-review-01.json','m1-protection-01.json','http-mainline-protocol-01.json','http-independent-review-01.json','http-driver-01.stdout','http-driver-01.stderr','http-mainline-01/summary.json','http-mainline-01/results.json','http-mainline-01/pairs.json','http-mainline-01/launch.json']
+for m in ('plain','default','explicit'):
+ for n in ('server-command.json','startup-mode.json','support-mode.json','request-modes.json','responses.json','exit.json'):
+  paths.append(f'http-mainline-01/{m}/{n}')
+ for d in (S/'http-mainline-01'/m).iterdir():
+  if d.is_dir():
+   for n in ('command.json','client-exit.json','database-identity.json','responses.json'):
+    if (d/n).exists():paths.append(str((d/n).relative_to(S)))
+rows=[]
+for name in paths:
+ src=S/name;dest=D/name;dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(src,dest)
+ rows.append({'path':name,'source':ident(src),**{k:v for k,v in ident(dest).items() if k!='path'}})
+for name in ('build_and_host.py','freeze-http-mainline-01.py','run-http-mainline-01.py','package-m1.py'):
+ src=S/name;dest=D/'scripts'/(name+'.txt');dest.parent.mkdir(exist_ok=True);shutil.copyfile(src,dest)
+ rows.append({'path':str(dest.relative_to(D)),'source':ident(src),**{k:v for k,v in ident(dest).items() if k!='path'}})
+readme='''# MTP 主线集成首组证据（2026-10-09）
+
+本组修复默认MTP入口、prefill停机准入与诊断编组。整体Goal继续，
+不据本包或PR状态宣布MTP整体转正完成。范围/后续缺口见
+[主线推进记录](../../MTP_MAINLINE_READINESS_2026-10-09.md)。
+
+- 新构建零警告；23项host、3项生产控制、75项Python、12项加载前
+  拒绝通过。六个历史研究诊断只构建，未执行或修改原失败断言。
+- 新候选8条HTTP、7对输出比较通过；普通/默认MTP/显式sequential
+  的实际路径、短长prefill、支持配置日志与退出均已核对。
+- 旧115请求及五档成本仍归原strict候选。130→131个运行来源中
+  124不变、6个入口/服务文件变更、新增1个入队helper；18项编译/
+  链接配置仅规范化构建目录后相同。CUDA archive并非字节相同，
+  未称机器码完全等价或旧HTTP由新binary重新执行。
+- `reference_configuration=matched`仅匹配配置，不认证权重内容；
+  默认MTP仍关闭，显式T4继续实验。主线尚未合并。
+
+本包保留协议、结果、实际计数/全文/路径及来源SHA。大题面、原始
+SQLite、完整响应和服务日志留在本地原目录，由manifest绑定。
+模型payload、二进制、CUDA archive不复制入仓库。manifest不自哈希，
+由Git提交绑定；原失败证据继续在既有strict证据包及研究提交中保留。
+'''
+(D/'README.md').write_text(readme)
+rows.append({'path':'README.md',**{k:v for k,v in ident(D/'README.md').items() if k!='path'},'source':'package-m1.py generated description'})
+raw=[]
+for p in sorted((S/'http-mainline-01').rglob('*')):
+ if p.is_file():raw.append(ident(p))
+manifest={'schema_version':1,'files':rows,'raw_local_bindings':raw,'script':ident(Path(__file__)),'whole_goal_complete':False,'model_payload_copied':False,'binary_copied':False}
+(D/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
+print(json.dumps({'files':len(rows)+1,'bytes':sum(p.stat().st_size for p in D.rglob('*') if p.is_file()),'destination':str(D)}))

@@ -1,0 +1,387 @@
+{
+  "schema_version": 1,
+  "reviewer": "admission_numerical_contract",
+  "scope": "Frozen English sustained-quality plain outputs only; no generated code execution, no new model requests, no scoring or questionnaire changes.",
+  "frozen_source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/inputs/questionnaire.json",
+  "source_files": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/inputs/questionnaire.json",
+      "sha256": "8de952c2389a4c391c99f0dcb6a2cb7c6ec6c7b3bcff8171fa1be787843cadcf"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/inputs/manifest.json",
+      "sha256": "9b2e03cb558efc6c2a20e9707b41ca5195b3e04309d2989ea4c55eac853916b9"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/inputs/identity.json",
+      "sha256": "e3a8ebe644c0a33c9bc5ca117cdb9dcf67ceddb6d957ace6e90f7cf862d06332"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/plain/results.json",
+      "sha256": "a5dee4de2412be20f06dc4d43fdb44bbc81dbd22b8382ae3b51426f45f26f8b6"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/plain/sustained-quality/responses.json",
+      "sha256": "54b1bf296a03c2794db8f54353c10d622f8c6405049e34a1c3b487892a766c7f"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/plain/run-mode.json",
+      "sha256": "e7b525081310066cbea291255852fa6000acd48d17220c7414e7982549d17d79"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/plain/sustained-identity.json",
+      "sha256": "9f76c7d33f96b8f73c8f5cb13fd57701d2879a2dbd89837d356f2ce9851c7b74"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/plain/exit.json",
+      "sha256": "5a5e816501707388225471353d17bb739e8032a0ea78b7da62cc3799b1c4fc61"
+    }
+  ],
+  "source_output_bindings_passed": true,
+  "cases": [
+    {
+      "id": "en-code",
+      "decode_mode_reviewed": "plain",
+      "source_case_sha256": "da4e5ba74d59a51440a14652a26f9006867e260e96dbcdc195576c81d80a7ea9",
+      "source_case_hash_encoding": "canonical JSON UTF-8, sort_keys=true, compact separators",
+      "prompt_sha256": "78648b4374b53ffbbcd769224dc204eb67a59f8315b8213ce38de062cd89087a",
+      "output_utf8_sha256": "e8af3ff81f6d3e4aa861d5faea3a454a13c79fbf2cd909f866cb8fd1dea111fb",
+      "output_file": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/plain/sustained-quality/output-1.txt",
+      "output_file_sha256": "e8af3ff81f6d3e4aa861d5faea3a454a13c79fbf2cd909f866cb8fd1dea111fb",
+      "output_matches_saved_text": true,
+      "observed_input_tokens": 1024,
+      "observed_completion_tokens": 424,
+      "finish": [
+        "stop"
+      ],
+      "sustained_coverage_met": true,
+      "early_eos": false,
+      "original_automatic_rubric_passed": false,
+      "automatic_score_modified": false,
+      "generated_code_executed": false,
+      "task_verdict": "FAIL_INSTRUCTION_CONSTRAINTS",
+      "functional_logic_verdict": "PASS_BY_STATIC_INSPECTION_ONLY",
+      "format_verdict": "PASS_SINGLE_COMPLETE_PYTHON_BLOCK",
+      "truncated": false,
+      "issues": [
+        {
+          "category": "explicit task constraint violation",
+          "evidence": "for key in sorted(best.keys()):",
+          "output_line": 19,
+          "frozen_requirement": "Avoid attributes; only calls select_latest, sorted, len, min and max are allowed."
+        },
+        {
+          "category": "explicit task constraint violation",
+          "evidence": "result.append((key, best[key][1]))",
+          "output_line": 20,
+          "frozen_requirement": "Avoid attributes; only calls select_latest, sorted, len, min and max are allowed."
+        }
+      ],
+      "functional_review": [
+        {
+          "requirement": "Only exactly approved rows participate; status is case sensitive.",
+          "finding": "The status == approved guard surrounds every best-map insertion/update; Approved and all other statuses are excluded.",
+          "verdict": "PASS"
+        },
+        {
+          "requirement": "Choose largest approved revision; on ties choose smaller value.",
+          "finding": "Per-key best stores (revision,value). Greater revisions replace it; equal revisions replace only when the value is smaller. This preserves the requested per-key invariant as rows are scanned.",
+          "verdict": "PASS"
+        },
+        {
+          "requirement": "Return sorted (key,value), omit keys with no eligible row, empty input returns [].",
+          "finding": "Only eligible keys enter best. Iterating sorted(best.keys()) builds result in key order; initially empty best produces empty result.",
+          "verdict": "PASS"
+        },
+        {
+          "requirement": "Do not mutate rows.",
+          "finding": "The code reads/unpacks input rows and mutates only newly-created best and result containers.",
+          "verdict": "PASS"
+        },
+        {
+          "requirement": "Six labelled top-level assert examples cover the six requested scenarios.",
+          "finding": "Tests 1 through 6 respectively cover empty, one approved key, a newer pending row, revision tie, sorted multiple keys and Approved case sensitivity. Their expected values agree with the specification by inspection.",
+          "verdict": "PASS"
+        }
+      ],
+      "scorer_limitations": "The AST gate correctly rejects attributes and non-whitelisted calls here. Its syntax/shape checks alone do not establish functionality; this separate static human review supplies the functional assessment without executing generated code.",
+      "manual_review_complete": true
+    },
+    {
+      "id": "en-reasoning",
+      "decode_mode_reviewed": "plain",
+      "source_case_sha256": "e36baffa51ff3f15f0df541c1c1d01b2cbeb9e44d3500c104eaf1244e0f4917d",
+      "source_case_hash_encoding": "canonical JSON UTF-8, sort_keys=true, compact separators",
+      "prompt_sha256": "8bfaa682009f730593b1c4da670fedaea799c7afb755dd4aed7d30a267af4f4f",
+      "output_utf8_sha256": "969638d28236d56de6afcfbabc664af8dd519d13434539255f6b45cca2f58685",
+      "output_file": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/plain/sustained-quality/output-2.txt",
+      "output_file_sha256": "969638d28236d56de6afcfbabc664af8dd519d13434539255f6b45cca2f58685",
+      "output_matches_saved_text": true,
+      "observed_input_tokens": 4096,
+      "observed_completion_tokens": 315,
+      "finish": [
+        "stop"
+      ],
+      "sustained_coverage_met": true,
+      "early_eos": false,
+      "original_automatic_rubric_passed": true,
+      "automatic_score_modified": false,
+      "generated_code_executed": false,
+      "task_verdict": "PASS",
+      "format_verdict": "PASS_EIGHT_ORDERED_LINES",
+      "truncated": false,
+      "unsupported_claims": [],
+      "evidence": [
+        {
+          "service": "amber",
+          "source_owner": "team1",
+          "source_zone": "north",
+          "highest_approved_revision": 6,
+          "source_code": "N66",
+          "excluded_newer_revision": 9,
+          "excluded_status": "proposed",
+          "output_line": "amber | team1 | north | 6 | N66 | Revision 6 is the highest approved revision for the north zone because revision 9 is excluded as it is only proposed.",
+          "review": "Joined prefix and full-sentence exclusion explanation agree with the three authoritative blocks."
+        },
+        {
+          "service": "birch",
+          "source_owner": "team2",
+          "source_zone": "south",
+          "highest_approved_revision": 3,
+          "source_code": "S33",
+          "excluded_newer_revision": 7,
+          "excluded_status": "revoked",
+          "output_line": "birch | team2 | south | 3 | S33 | Revision 3 is the highest approved revision for the south zone because revision 7 is excluded as it is revoked.",
+          "review": "Joined prefix and full-sentence exclusion explanation agree with the three authoritative blocks."
+        },
+        {
+          "service": "cedar",
+          "source_owner": "team3",
+          "source_zone": "east",
+          "highest_approved_revision": 4,
+          "source_code": "E44",
+          "excluded_newer_revision": 8,
+          "excluded_status": "proposed",
+          "output_line": "cedar | team3 | east | 4 | E44 | Revision 4 is the highest approved revision for the east zone because revision 8 is excluded as it is only proposed.",
+          "review": "Joined prefix and full-sentence exclusion explanation agree with the three authoritative blocks."
+        },
+        {
+          "service": "dune",
+          "source_owner": "team4",
+          "source_zone": "west",
+          "highest_approved_revision": 5,
+          "source_code": "W55",
+          "excluded_newer_revision": 10,
+          "excluded_status": "revoked",
+          "output_line": "dune | team4 | west | 5 | W55 | Revision 5 is the highest approved revision for the west zone because revision 10 is excluded as it is revoked.",
+          "review": "Joined prefix and full-sentence exclusion explanation agree with the three authoritative blocks."
+        },
+        {
+          "service": "elm",
+          "source_owner": "team1",
+          "source_zone": "north",
+          "highest_approved_revision": 6,
+          "source_code": "N66",
+          "excluded_newer_revision": 9,
+          "excluded_status": "proposed",
+          "output_line": "elm | team1 | north | 6 | N66 | Revision 6 is the highest approved revision for the north zone because revision 9 is excluded as it is only proposed.",
+          "review": "Joined prefix and full-sentence exclusion explanation agree with the three authoritative blocks."
+        },
+        {
+          "service": "fern",
+          "source_owner": "team3",
+          "source_zone": "east",
+          "highest_approved_revision": 4,
+          "source_code": "E44",
+          "excluded_newer_revision": 8,
+          "excluded_status": "proposed",
+          "output_line": "fern | team3 | east | 4 | E44 | Revision 4 is the highest approved revision for the east zone because revision 8 is excluded as it is only proposed.",
+          "review": "Joined prefix and full-sentence exclusion explanation agree with the three authoritative blocks."
+        },
+        {
+          "service": "gale",
+          "source_owner": "team2",
+          "source_zone": "south",
+          "highest_approved_revision": 3,
+          "source_code": "S33",
+          "excluded_newer_revision": 7,
+          "excluded_status": "revoked",
+          "output_line": "gale | team2 | south | 3 | S33 | Revision 3 is the highest approved revision for the south zone because revision 7 is excluded as it is revoked.",
+          "review": "Joined prefix and full-sentence exclusion explanation agree with the three authoritative blocks."
+        },
+        {
+          "service": "heath",
+          "source_owner": "team4",
+          "source_zone": "west",
+          "highest_approved_revision": 5,
+          "source_code": "W55",
+          "excluded_newer_revision": 10,
+          "excluded_status": "revoked",
+          "output_line": "heath | team4 | west | 5 | W55 | Revision 5 is the highest approved revision for the west zone because revision 10 is excluded as it is revoked.",
+          "review": "Joined prefix and full-sentence exclusion explanation agree with the three authoritative blocks."
+        }
+      ],
+      "scorer_limitations": "The automatic prefix/revision-presence check is incomplete for prose truthfulness in general; manual reading confirms the explanation and proposed/revoked distinction on each of these eight lines.",
+      "manual_review_complete": true
+    },
+    {
+      "id": "en-summary",
+      "decode_mode_reviewed": "plain",
+      "source_case_sha256": "83eb1246cce0be3a17d8a2650ea55ae734f19df4be680ff5f2f9eb8ca5f9aced",
+      "source_case_hash_encoding": "canonical JSON UTF-8, sort_keys=true, compact separators",
+      "prompt_sha256": "502fd3fdddddf5d81af9aaca9ee4c329c11148279ebd4e6bd9fe66b785fa134b",
+      "output_utf8_sha256": "3df5edf91c8296b9bcee372d7e9b54b17c324e5d00ad7d04dbf293dad443290d",
+      "output_file": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/plain/sustained-quality/output-5.txt",
+      "output_file_sha256": "3df5edf91c8296b9bcee372d7e9b54b17c324e5d00ad7d04dbf293dad443290d",
+      "output_matches_saved_text": true,
+      "observed_input_tokens": 8196,
+      "observed_completion_tokens": 512,
+      "finish": [
+        "length"
+      ],
+      "sustained_coverage_met": true,
+      "early_eos": false,
+      "original_automatic_rubric_passed": false,
+      "automatic_score_modified": false,
+      "generated_code_executed": false,
+      "task_verdict": "FAIL_LENGTH_COMPLETENESS_AND_UNSUPPORTED_INFERENCE",
+      "format_verdict": "SIX_PARAGRAPHS_PRESENT_BUT_WORD_LIMIT_EXCEEDED",
+      "truncated": true,
+      "truncation_evidence": {
+        "observed_completion_tokens": 512,
+        "finish": [
+          "length"
+        ],
+        "last_fragment": "These gaps prevent a definitive conclusion and"
+      },
+      "word_count": {
+        "method": "whitespace-separated tokens after removing each numbered paragraph marker",
+        "body_words": 390,
+        "including_number_markers": 396,
+        "requested_minimum": 200,
+        "requested_maximum": 260
+      },
+      "factual_coverage": {
+        "verdict": "KEY_GIVEN_FACTS_AND_LIMITS_PRESENT",
+        "evidence": [
+          {
+            "topic": "Timeline",
+            "paragraph": 1,
+            "observed": "Lantern / C24 / 14:02 release / 14:07 rise / 14:26 recovery",
+            "source": "Official note A"
+          },
+          {
+            "topic": "Impact",
+            "paragraph": 2,
+            "observed": "nineteen minutes / 350 reads / 42 timeouts / write endpoint available",
+            "source": "Official note A"
+          },
+          {
+            "topic": "Recovery",
+            "paragraph": 3,
+            "observed": "Mira / rollback start 14:12 / C23 completion 14:18 / cache warming before 14:26",
+            "source": "Official note B"
+          },
+          {
+            "topic": "Evidence limits",
+            "paragraph": 4,
+            "observed": "150 sampled documents; no lost content in sample; no full-archive no-loss claim; observation not causal finding; cause unconfirmed",
+            "source": "Official note B"
+          },
+          {
+            "topic": "Actions",
+            "paragraph": 5,
+            "observed": "Owen configuration validation by October 14; Sana alert thresholds by October 15",
+            "source": "Official note C"
+          },
+          {
+            "topic": "Unresolved",
+            "paragraph": 6,
+            "observed": "controlled reproduction needed; no permanent disable decision; full archive audit incomplete",
+            "source": "Official note C"
+          }
+        ]
+      },
+      "issues": [
+        {
+          "category": "instruction/format",
+          "evidence": "390 whitespace-separated body words, above the frozen 200–260-word request.",
+          "severity": "task_failure"
+        },
+        {
+          "category": "output-limit truncation",
+          "evidence": "These gaps prevent a definitive conclusion and",
+          "severity": "task_failure",
+          "reason": "The last sentence is unfinished; the observed 512-token length finish confirms the fixed output cap was reached, not early EOS."
+        },
+        {
+          "category": "unsupported inference",
+          "paragraph": 5,
+          "evidence": "indicating that current measures are temporary and investigative rather than final structural changes",
+          "severity": "source_faithfulness_failure",
+          "reason": "No permanent-disable decision and no completed full-archive audit do not establish that all current measures are temporary. The source does not characterize the measures this way."
+        }
+      ],
+      "scorer_limitations": [
+        {
+          "automatic_check": "anchor:19",
+          "recorded_result": false,
+          "manual_finding": "The output says nineteen minutes in paragraph 2, preserving the source duration. This is a literal numeric-spelling limitation, not missing duration or an incorrect number.",
+          "automatic_record_retained": true
+        },
+        {
+          "finding": "Anchor presence and six numbering markers do not validate the 200–260 word limit, complete final sentence or unsupported-claim absence. The independent failures above remain even if the duration word-form limitation is understood."
+        }
+      ],
+      "manual_review_complete": true
+    },
+    {
+      "id": "en-excerpt",
+      "decode_mode_reviewed": "plain",
+      "source_case_sha256": "480273a3ee28ac7b97a4d7e1c2e10679b0565bf9bde6ecb20aa23cf51d9b8a7d",
+      "source_case_hash_encoding": "canonical JSON UTF-8, sort_keys=true, compact separators",
+      "prompt_sha256": "c99b9599b6af754c9d7de2762b925b6f8476953aa1eae98f825755083a587095",
+      "output_utf8_sha256": "4c0d532073c6800236e55771c5623703205b777249d7bc204d5680eec0038cb7",
+      "output_file": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/plain/sustained-quality/output-7.txt",
+      "output_file_sha256": "4c0d532073c6800236e55771c5623703205b777249d7bc204d5680eec0038cb7",
+      "output_matches_saved_text": true,
+      "observed_input_tokens": 204800,
+      "observed_completion_tokens": 216,
+      "finish": [
+        "stop"
+      ],
+      "sustained_coverage_met": true,
+      "early_eos": false,
+      "original_automatic_rubric_passed": true,
+      "automatic_score_modified": false,
+      "generated_code_executed": false,
+      "task_verdict": "PASS",
+      "format_verdict": "PASS_SOURCE_PARAGRAPHS_ONLY",
+      "truncated": false,
+      "source_derived_exact": {
+        "passed": true,
+        "derivation": "Remove only the first/last bracket-label lines from each frozen block; join A/B/C paragraph bodies by two LF characters; compare UTF-8 bytes without strip/normalization.",
+        "expected_utf8_sha256": "4c0d532073c6800236e55771c5623703205b777249d7bc204d5680eec0038cb7",
+        "actual_utf8_sha256": "4c0d532073c6800236e55771c5623703205b777249d7bc204d5680eec0038cb7",
+        "expected_bytes": 1198,
+        "actual_bytes": 1198,
+        "paragraph_count": 3,
+        "trailing_newline": false
+      },
+      "scorer_limitations": "No semantic paraphrase substitution used. This independent byte comparison agrees with the existing automatic exact-excerpt result.",
+      "manual_review_complete": true
+    }
+  ],
+  "task_verdict_counts": {
+    "PASS": 2,
+    "FAIL": 2
+  },
+  "automatic_results_unchanged": true,
+  "strict_reviewed": false,
+  "strict_reuse_condition": "Reuse these plain-text judgments only after the separate runner proves identical prompt hash, complete UTF-8 output bytes, observed input/output counts and finish for each strict counterpart using the same candidate/capacity/model fixture. Pair equality is not a semantic-quality pass.",
+  "minimum_completion_coverage": {
+    "all_four_met": true,
+    "minimum_tokens": 128
+  },
+  "numerical_equivalence_verdict": "NOT_EVALUATED_BY_THIS_MANUAL_REVIEW"
+}

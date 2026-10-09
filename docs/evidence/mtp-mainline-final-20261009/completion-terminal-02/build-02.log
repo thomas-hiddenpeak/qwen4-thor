@@ -1,0 +1,28 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Configuring done (0.0s)
+-- Generating done (0.1s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009
+[  2%] Built target q4t_runtime
+[ 11%] Built target q4t_io
+[ 19%] Built target q4t_ple
+[ 30%] Built target q4t_trace
+[ 33%] Built target q4t_text
+[ 44%] Built target q4t_quant
+[ 77%] Built target q4t_model
+[ 94%] Built target q4t_server
+[ 97%] Building CXX object CMakeFiles/q4t_mtp_t4_completion_fault_server.dir/tests/mtp_t4_completion_fault_server.cpp.o
+[ 97%] Linking CXX executable q4t_mtp_t4_completion_fault_server
+[100%] Built target q4t_mtp_t4_completion_fault_server
+[  2%] Built target q4t_runtime
+[ 16%] Built target q4t_io
+[ 22%] Built target q4t_ple
+[ 30%] Built target q4t_trace
+[ 33%] Built target q4t_text
+[ 44%] Built target q4t_quant
+[ 77%] Built target q4t_model
+[ 94%] Built target q4t_server
+[ 97%] Building CXX object CMakeFiles/q4t_mtp_t4_terminal_server.dir/src/main.cpp.o
+[ 97%] Building CXX object CMakeFiles/q4t_mtp_t4_terminal_server.dir/tests/mtp_t4_terminal_server.cpp.o
+[100%] Linking CXX executable q4t_mtp_t4_terminal_server
+[100%] Built target q4t_mtp_t4_terminal_server
