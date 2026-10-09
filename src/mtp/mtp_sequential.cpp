@@ -141,6 +141,13 @@ Status MtpSequentialVerify(
       return FinishSequential(
           Status::Fail("MTP sequential: invalid target prediction"), result,
           stream);
+    // Read-only verify-logits dump (Q4T_MTP_LOGITS_DUMP): this row, before
+    // the next row/step reuses the buffer. Off by default; never changes
+    // numerics. Only executed rows are recorded (unexecuted rows hold stale
+    // data). Rows align with T4 by absolute position (position + row).
+    if (mtp.logits_dump)
+      mtp.logits_dump->Record(seq.position, row, token, prediction, logits,
+                              stream);
 
     result->accepted_tokens[row] = token;
     result->accepted_count = row + 1;

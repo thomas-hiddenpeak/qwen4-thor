@@ -211,6 +211,7 @@ void FreeScratch(MtpModel& m) {
 }  // namespace
 
 void MtpModel::Free() {
+  logits_dump.reset();
   if (fc_embedding) cudaFree(fc_embedding);
   if (fc_hidden) cudaFree(fc_hidden);
   if (pre_fc_norm_embedding) cudaFree(pre_fc_norm_embedding);
@@ -451,6 +452,7 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
   if (cudaStreamSynchronize(stream) != cudaSuccess) {
     return Status::Fail("stream sync failed");
   }
+  out->logits_dump = std::make_unique<MtpLogitsDump>(cfg.vocab);
   pending.model = nullptr;
   return Status();
 }
@@ -1066,6 +1068,17 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
   }
   const int32_t correction = m_argmax[a];
 
+  // Read-only verify-logits dump (Q4T_MTP_LOGITS_DUMP): all k+1 rows of the
+  // batched verify forward, before any buffer reuse. Off by default; never
+  // changes numerics. Mirrors the T4 (fast multi) dump so T1/T4 rows align
+  // by absolute position (P + row) for divergence analysis.
+  if (mtp.logits_dump) {
+    for (int i = 0; i < k + 1; ++i)
+      mtp.logits_dump->Record(P, i, verify_ids[i], m_argmax[i],
+                              d_vlogits + static_cast<size_t>(i) * vocab,
+                              stream);
+  }
+
   // 3. Reconcile the main recurrent state to P+1+a. The batch advanced it to
   //    P+k+1; on full accept (a==k) that is already correct, else restore the
   //    per-token checkpoint[a] (= state after accepting [b, d_0..d_{a-1}]) via
@@ -1424,6 +1437,14 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
   if (cudaMemcpy(m_argmax.data(), d_ext_ids, Tvm * sizeof(int32_t),
                  cudaMemcpyDeviceToHost) != cudaSuccess)
     return cleanup(Status::Fail("MtpSpeculativeStepMulti: D2H verify argmax"));
+  // Read-only verify-logits dump (Q4T_MTP_LOGITS_DUMP): all k+1 rows of the
+  // packed forward, before any buffer reuse. Off by default; never changes
+  // numerics. B=1 only (the S1 divergence-analysis case).
+  if (mtp.logits_dump && B == 1) {
+    for (size_t i = 0; i < Tvm; ++i)
+      mtp.logits_dump->Record(P[0], static_cast<int>(i), vtok[i],
+                              m_argmax[i], d_vlogits + i * vocab, stream);
+  }
   t_verify1 = std::chrono::steady_clock::now();
   if (cycle_timing) cycle_timing->Mark("verify_readback_end");
   if (verify_moe)

@@ -34,6 +34,7 @@
 
 #include <array>
 #include <cstdint>
+#include <memory>
 #include <span>
 #include <string>
 
@@ -42,6 +43,7 @@
 #include "q4t/model/hyperconnection.h"
 #include "q4t/model/model.h"
 #include "q4t/model/moe.h"
+#include "q4t/mtp/logits_dump.h"
 #include "q4t/mtp/moe_bf16.h"
 #include "q4t/status.h"
 
@@ -178,6 +180,10 @@ struct MtpModel {
   // A single D2H of the [B, k] sub-matrix happens after the loop.
   int32_t* d_ms_drafts = nullptr;       // [max_seq*k_max] draft tokens
   int k_max = 0;  // capacity of the above (0 = not allocated)
+
+  // Read-only verify-logits dump (Q4T_MTP_LOGITS_DUMP). Off by default;
+  // created in LoadMtp, never changes numerics.
+  std::unique_ptr<MtpLogitsDump> logits_dump;
 
   int hc_dim() const { return cfg.hc * cfg.hs; }
   void Free();
