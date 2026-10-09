@@ -1,0 +1,87 @@
+"""Seal final bounded MTP evidence after checks, preserving original failures."""
+from pathlib import Path
+import hashlib,json,shutil,time
+M=Path(__file__).resolve().parent; W=M.parents[1]
+D=W/'docs/evidence/mtp-mainline-final-20261009'
+def ident(p):
+ p=Path(p)
+ with p.open('rb') as f:h=hashlib.file_digest(f,'sha256').hexdigest()
+ return {'path':str(p),'bytes':p.stat().st_size,'sha256':h}
+def load(n):return json.loads((M/n).read_text())
+def save(p,j):
+ with p.open('x') as f:json.dump(j,f,indent=2,ensure_ascii=False);f.write('\n')
+assert not D.exists()
+for n in ('completion-terminal-02/summary-02.json','completion-http-02/summary.json','terminal-http-02/summary.json','completion-http-independent-review-02.json','terminal-independent-review-02.json','foundation-merge-verification-01.json','final-cost-matrix/summary.json','final-protection-02.json','final-cost-results-01.json','final-cost-independent-review-02.json','foundation-merge-independent-review-02.json'):
+ assert load(n)['passed'],n
+assert load('final-reuse-independent-review-02.json')['identity_checks_passed']
+D.mkdir(parents=True)
+paths=[
+ 'completion-http-manifest-02.json','terminal-http-manifest-02.json','final-cost-protocol-01.json',
+ 'foundation-merge-protocol-01.json','foundation-merge-verification-01.json',
+ 'm2-precommit-identity-01.json','final-protection-02.json',
+ 'completion-http-02/summary.json','completion-http-02/launch.json',
+ 'terminal-http-02/summary.json','terminal-http-02/launch.json',
+ 'terminal-http-02/startup-evidence.json','terminal-http-02/request-evidence.json',
+ 'terminal-http-02/server-command.json','terminal-http-02/server.log',
+ 'final-cost-matrix/summary.json','final-cost-matrix/plain-execution.json',
+ 'final-cost-matrix/sequential-execution.json','final-cost-matrix/execution-claim.json',
+ 'final-cost-results-01.json']
+o=M/'completion-terminal-02'
+for p in o.iterdir():
+ if p.is_file() and p.suffix in ('.json','.log','.txt'):paths.append(str(p.relative_to(M)))
+for mode in ('t4-variant','sequential'):
+ for n in ('summary.json','request-evidence.json','startup-evidence.json','server-command.json','server.log','cleanup.json'):
+  paths.append('completion-http-02/'+mode+'/'+n)
+ paths.extend(str(p.relative_to(M)) for p in (M/'completion-http-02'/mode).glob('*-result.json'))
+paths.extend(str(p.relative_to(M)) for p in (M/'terminal-http-02').glob('*-result.json'))
+for mode in ('plain','sequential'):
+ for n in ('results.json','server-command.json','server.log','binary.sha256','startup-mode.json','request-modes.json','exit.json'):
+  paths.append('final-cost-matrix/'+mode+'/'+n)
+for pattern in ('*independent-review*.md','*static-review*.md','final-technical-review*.md','foundation-integration-review-01.md','final-mainline-scope-review.md','wrapper-symbol-defined-01.txt'):
+ paths.extend(str(p.relative_to(M)) for p in M.glob(pattern))
+rows=[]
+for n in sorted(set(paths)):
+ src=M/n;dst=D/n;dst.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(src,dst)
+ rows.append({'path':n,'source':ident(src),'sha256':ident(dst)['sha256'],'bytes':dst.stat().st_size})
+# Audit originals remain local and bound. Compact derivatives retain every
+# failed assertion, all identity/cost/scope fields, and counts for pass lists.
+for pattern in ('*independent-review*.json','*static-review*.json','foundation-integration-review-01.json'):
+ for src in sorted(M.glob(pattern)):
+  j=json.loads(src.read_text());source=ident(src)
+  for key in ('checks','source_bindings','bindings','raw_bindings','input_bindings','source_files','manifest_bindings'):
+   value=j.get(key)
+   if isinstance(value,list):
+    j[key+'_count']=len(value)
+    if key=='checks':j['failed_checks']=[r for r in value if isinstance(r,dict) and r.get('passed') is False]
+    del j[key]
+  j['complete_original_binding']=source
+  dst=D/'reviews'/(src.stem+'-compact.json');dst.parent.mkdir(exist_ok=True);save(dst,j)
+  rows.append({'path':str(dst.relative_to(D)),'source':source,'sha256':ident(dst)['sha256'],'bytes':dst.stat().st_size,'transform':'compact lists; original retained and bound'})
+for n in ('build_direct_final.py','resume_build_direct.py','freeze_completion_final.py','final_cost_matrix.py','package_final.py','final_protection.py','final_cost_results.py','t4-terminal-control/freeze_mtp_t4_terminal.py'):
+ src=M/n;dst=D/'scripts'/(src.name+'.txt');dst.parent.mkdir(exist_ok=True);shutil.copyfile(src,dst)
+ rows.append({'path':str(dst.relative_to(D)),'source':ident(src),'sha256':ident(dst)['sha256'],'bytes':dst.stat().st_size})
+readme='''# MTP最终运行时修复与成本证据（2026-10-09）
+
+最终生产候选eae6949b：直接5 policy/3控制/18 CUDA/54 Python；
+19修复HTTP（1生产sequential、18独立T4变体）与30生产五档均通过。
+实际成本、支持边界和未覆盖项见[交付报告](../../MTP_MAINLINE_RESULT_2026-10-09.md)。
+
+首次wrapper链接失败、独立审计两处工具断言/格式误判原件均保留绑定；
+修正后只补受影响构建/离线审计，没有重跑模型寻找有利结果。旧strict
+115请求仍属旧binary，M1入口8条也单列，不改写为最终候选实测。
+foundation历史合并未改变受测运行来源；原main/dirty工作区受保护。
+
+本包保存协议、构建结果、完整结果/服务观察、三次成本及审查摘要。
+原DB、HTTP传输、完整source快照与审计JSON保存在本地，由manifest
+绑定；不复制模型payload、二进制、CUDA库或巨大重复输入。压缩审查
+保留失败项及所有限制，成功逐项清单可由绑定原件审计。manifest不
+自哈希，由Git提交绑定。证据通过不等于main已合并或服务已部署。
+'''
+(D/'README.md').write_text(readme)
+rows.append({'path':'README.md','sha256':ident(D/'README.md')['sha256'],'bytes':(D/'README.md').stat().st_size,'source':'package script'})
+raw=[]
+for n in ('completion-http-02','terminal-http-02','final-cost-matrix'):
+ for p in sorted((M/n).rglob('*')):
+  if p.is_file():raw.append(ident(p))
+save(D/'manifest.json',{'created_unix':time.time(),'files':rows,'raw_local_bindings':raw,'complete_audit_originals':[ident(p) for p in sorted(M.glob('*independent-review*.json'))],'model_payload_copied':False,'binary_copied':False,'main_merged':False,'whole_goal_complete':False,'script':ident(__file__)})
+print(json.dumps({'files':len(rows)+1,'bytes':sum(p.stat().st_size for p in D.rglob('*') if p.is_file()),'raw_bindings':len(raw),'output':str(D)}))

@@ -3,32 +3,33 @@
 更新：2026-10-09。代码是实现事实来源；验收规则见 [EVALUATION.md](EVALUATION.md)。
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
-## 当前 Goal 持续：完成 MTP 主线交付
+## 当前 Goal：MTP阶段性合入条件已闭合，尚未合入main
 
-2026-10-09 用户指出原目标未完成：有限正确性参考与草案PR不能
-代表MTP已具备主线交付条件。已恢复Goal，原完成判断纠正；下节
-保留此前已验收证据，其有限结论不撤销、不扩大为整体完成。
+2026-10-09纠正之前过早结束Goal的判断，已继续完成主线入口、
+prefill停机准入、共享位置复制、GPU完成/失败状态、T4 stop与
+输出尾部修复，并将foundation独有历史并入原research分支。
+实现`74893ff`、历史合并`d621d00`沿用PR #3，未新建重复分支。
+当前[最终交付报告](MTP_MAINLINE_RESULT_2026-10-09.md)与
+[最终证据包](evidence/mtp-mainline-final-20261009/README.md)
+记录支持边界、实际成本和未覆盖项；main尚未修改，Goal保持进行中。
 
-本轮[主线收敛清单](MTP_MAINLINE_READINESS_2026-10-09.md)先修
-prefill停机入队死锁，统一MTP支持入口/工具默认值，并隔离研究
-诊断与常规测试。沿用PR #3和原分支，复用身份未变的115请求
-证据；快速T4的完成边界与数值准入仍列待办，默认MTP关闭。
-首组构建零警告，23项host、3项生产控制、75项Python和12项
-加载前拒绝首次通过；8条固定HTTP入口/短长prefill补验及7对输出
-比较通过，三服务退出0且无残留。新CUDA archive身份另列，不把
-旧证据标成新binary实测。总Goal继续：下一组处理共享草稿位置
-指针合同和T4/嵌套verify失败完成边界，正式主线交付尚未完成。
+默认MTP关闭，显式`serve --mtp`选择sequential；指定Thor/checkpoint、
+文本greedy、S1/slot0/k3、208896/8192具备有限代码合入条件。
+快速T4继续实验，本轮恢复/终止修复不代表全链路数值准入。
+不是所有模型任务质量通过，原8题中4项双方语义不足仍保留。
 
-第二组[位置与完成边界修复](MTP_COMPLETION_FIX_2026-10-09.md)
-已成组落地：位置UVA复制、嵌套verify与T4完成边界、stop裁剪及
-最后输出保留；独立静态审查完成。首次构建生产程序成功、零警告；测试变体因
-链接别名拼写失败，原记录保留，仅修正两个wrapper与构建链接名。
-冻结真实CUDA 18例、T4故障/
-恢复9条、生产strict1条、终止控制9条；其后最终生产候选普通/
-strict五档共30条统一披露成本。补构建零警告；5项policy、3项
-sequential控制、18例CUDA复制与54项Python首次通过。19条故障/
-共享路径/terminal HTTP全部首次通过，三个服务退出0无残留。
-最终30条普通/sequential五档正在执行，当前成本尚未结论。
+最终候选eae6949b：5 policy/3生产控制/18真实CUDA/54 Python通过；
+19修复HTTP（1生产、18变体）及30生产五档均首次通过，15对跨模式
+全文/计数/finish一致。初次wrapper链接失败及两处离线审计工具
+误判均保留，修复后仅重验受影响构建/离线审计。独立成本822项
+复核通过，5组服务正常退出0无残留，保护工作区与旧构建保持。
+旧115请求与M1入口8条按原身份复用，未标成最终候选重新运行。
+
+sequential五档decode为16.599/16.030/15.894/16.059/15.303 tok/s，
+比同版本普通低10.057%–12.032%，整请求耗时增加4.472%–12.163%。
+当前接受范围为可显式启用的正确性实现；没有提速/性能持平结论。
+最终代码和证据可审；只剩最终头检查与实际main合入决策/记录，
+不把PR ready或这次阶段提交当作总Goal完成。
 
 ## 上一阶段证据：基础修复可审，MTP sequential 有限正确性资格通过
 
@@ -42,7 +43,7 @@ A基础修复包`5aacc9f`及[PR #2](https://github.com/thomas-hiddenpeak/qwen4-t
 B新增显式`serve --mtp --mtp-verifier sequential`，指定Thor/checkpoint、
 纯文本、greedy、S1/k3、208896/8192容量达到有限正确性profile准入。
 实际生成草稿并接受/拒绝，target复用普通scheduler B1算术；默认
-MTP仍关闭，省略verifier的快速T4仍实验。泛能力日志仍将所有MTP
+MTP仍关闭；该旧候选省略verifier时选择实验T4（M1已改为sequential）。泛能力日志仍将所有MTP
 归为experimental，有限资格以参数、候选身份与实际verifier/path为准。
 详见[验收结果](MTP_STRICT_RESULT_2026-10-09.md)与
 [证据包](evidence/mtp-strict-20261009/README.md)。
@@ -65,7 +66,7 @@ main、两个原dirty工作区、foundation与旧构建/证据保持，无遗留
 阶段代码与证据已在`863fc35`提交并推送，同一研究分支
 `codex/mtp-admission-20261007`对应[审查草案PR #3](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/3)。
 该PR包含此前未合并研究历史；优先独立审查A基础修复PR #2，
-B按有限profile及成本单独审查。本Goal交付已收尾，未自动合并/部署。
+B按有限profile及成本单独审查。此处为当时的阶段收尾记录，整体完成判断已在本页顶部纠正；未合并/部署。
 
 ## 上一阶段完成：MTP批量GatherQuant通过冻结性能门禁
 

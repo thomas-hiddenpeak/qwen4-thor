@@ -1,0 +1,15 @@
+{
+  "text": "\n\n<think>",
+  "finish": [
+    "length"
+  ],
+  "usage": [
+    {
+      "prompt_tokens": 1024,
+      "completion_tokens": 2,
+      "total_tokens": 1026
+    }
+  ],
+  "errors": [],
+  "output_sha256": "a13b425e76759d7b611dd3d4ce5e072db18233faf91c97f2652f7e3e43565262"
+}

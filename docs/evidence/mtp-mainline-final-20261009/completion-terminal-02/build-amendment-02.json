@@ -1,0 +1,26 @@
+{
+  "reason": "First build fault wrapper link failed: equivalent demangling does not imply raw linker identity. Use exact nm production Step span substitution. No production source changed. No tests or HTTP executed before this amendment.",
+  "time": 1791531476.2194514,
+  "old": "St4spanIKiLm18446744073709551615EE",
+  "new": "St4spanISD_Lm18446744073709551615EE",
+  "files": [
+    {
+      "path": "CMakeLists.txt",
+      "before_sha256": "b723e3f9ee003aed0e09423c78204ddf377c903e86b7c0b5fb91c074596bc886",
+      "sha256": "c145006aa8841f9f29187da8a26a2ada7a44c30a9b433161d6b9791e25fc37d9",
+      "bytes": 22639
+    },
+    {
+      "path": "tests/mtp_t4_completion_fault_server.cpp",
+      "before_sha256": "53542fcc3ee2942087273d9eec908ea352f621bbf358c89b5dafda2b028a9266",
+      "sha256": "9bf62b32b35b72196c496500bf53adcba4b84d1a768c54cfaa540a56f46e3b98",
+      "bytes": 18537
+    },
+    {
+      "path": "tests/mtp_t4_terminal_server.cpp",
+      "before_sha256": "b5ffe36151dfae3bf1cfe677de7cd443d2240f025e211dbf53fb5f17e405bcf4",
+      "sha256": "6bf514bf4d3247b7cfe321b04ae4cd8685ed0a9efb098015483b611be1d8191b",
+      "bytes": 21885
+    }
+  ]
+}

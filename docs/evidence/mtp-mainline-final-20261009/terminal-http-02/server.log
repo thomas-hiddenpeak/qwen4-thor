@@ -1,0 +1,84 @@
+[q4t][t4_terminal_variant] protocol=t4_terminal_v1 production_binary=0 requests=9 selection_control=1
+[q4t][capabilities] requested=experimental mtp=1 media=0 max_seq=1 verifier=t4
+[q4t][startup] tokenizer 298 ms
+[q4t][budget] mem_total=131.92 GB fraction=0.90 budget=118.73 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=208896 max_seq=1 max_prefill=8192 feasible=1 reason=estimate_fits
+[q4t][budget]   weights=84.00 GB  fixed=97.81 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=2348023808 main_forward_extra=0 mtp_workspace=3402434560 forward_buffers=419594244 ple_working=76571648 mtp=1
+[q4t][budget]   per_request=8.57 GB (MTP request allocations)  state_pool=7.08 GB
+[q4t][budget]   => max_len=208896 max_seq=1
+[q4t][budget]   MTP admission scope: text max_seq=1 k=3; allocation estimate, not a physical RAM guarantee
+[q4t][budget]   mtp_weights=5214301696 mtp_buffers=522240 mtp_scratch=6476904 mtp_checkpoints=346927104 mtp_forward_temp=16814240
+[q4t][budget]   loading_host_peak=3355443200 startup_envelope=108249902136 runtime_peak=113469410520 estimated_total=113469410520
+[q4t][startup] budget 417 ms
+[q4t][capacity] requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true
+[q4t][startup] model_load 26390 ms
+[q4t] generation stop token ids: 248046 248044
+[q4t] MTP loaded (k=3 max_seq=1)
+[q4t][startup] mtp_load 3344 ms
+[q4t] media disabled; vision tower not loaded
+[q4t][capabilities] effective mtp=1 media_allowed=0 vision_loaded=0 max_seq=1 verifier=t4
+[q4t] continuous-batching scheduler started (max_seq=1)
+[q4t][mtp-support] mode=t4 reference_configuration=unmatched profile=thor-sequential-20261009 checkpoint_identity=not_attested max_len=208896 max_prefill=8192 max_seq=1 k=3 experimental_overrides=0
+[q4t][startup] startup_total 30449 ms
+[q4t] serving on port 28943 (host 127.0.0.1, model qwen3.8-flash-next)
+[q4t][t4_terminal_begin] ordinal=1 real_ok=1 slot=0 stage=prefill position=0 history=0 pending=0
+[q4t][t4_terminal_prefill] ordinal=1 real_ok=1 rows=1024 prompt_captured=1 completion=caller_owned
+[q4t][t4_terminal_verify] ordinal=1 real_ok=1 batch=1 rows=4 position=1024 selected=0
+[q4t][t4_terminal_select] ordinal=1 real_ok=1 stop_row=0 stop_id=248046 stop_count=2 bonus=271 draft=760,7189,513 original=248068,10597,3766,264 selected=248046,10597,3766,264 changed_after_real_d2h=1
+[q4t][t4_terminal_restore] ordinal=1 real_ok=1 checkpoint=0 slot=0
+[q4t][t4_terminal_return] ordinal=1 real_ok=1 counts=1 next_b=248046 next_d0=-1 terminal=1 caller_unchanged=1 prefix_nonstop=1 pending=0 restores=1 extends=0 observer_cuda_calls=0 next_g=invalid_not_read
+[q4t][decode_path] id=t4-stop-0 requested_mtp=1 path=mtp_multi_b1 mtp_steps=1 fallback=none plain_tail_tokens=0 verifier=t4 tail_reason=none
+[q4t][t4_terminal_end] ordinal=1 real_ok=1 committed_position=1025 committed_history=1025 history_exact=1 steps=1 restores=1 extends=0 ordinary_calls=0 stage=idle position=0 history=0 pending=0
+[q4t][t4_terminal_begin] ordinal=2 real_ok=1 slot=0 stage=prefill position=0 history=0 pending=0
+[q4t][t4_terminal_prefill] ordinal=2 real_ok=1 rows=1024 prompt_captured=1 completion=caller_owned
+[q4t][t4_terminal_verify] ordinal=2 real_ok=1 batch=1 rows=4 position=1024 selected=0
+[q4t][t4_terminal_select] ordinal=2 real_ok=1 stop_row=1 stop_id=248046 stop_count=2 bonus=271 draft=760,7189,513 original=248068,10597,3766,264 selected=760,248046,3766,264 changed_after_real_d2h=1
+[q4t][t4_terminal_restore] ordinal=2 real_ok=1 checkpoint=1 slot=0
+[q4t][t4_terminal_return] ordinal=2 real_ok=1 counts=2 next_b=248046 next_d0=-1 terminal=1 caller_unchanged=1 prefix_nonstop=1 pending=0 restores=1 extends=0 observer_cuda_calls=0 next_g=invalid_not_read
+[q4t][decode_path] id=t4-stop-1 requested_mtp=1 path=mtp_multi_b1 mtp_steps=1 fallback=none plain_tail_tokens=0 verifier=t4 tail_reason=none
+[q4t][t4_terminal_end] ordinal=2 real_ok=1 committed_position=1026 committed_history=1026 history_exact=1 steps=1 restores=1 extends=0 ordinary_calls=0 stage=idle position=0 history=0 pending=0
+[q4t][t4_terminal_begin] ordinal=3 real_ok=1 slot=0 stage=prefill position=0 history=0 pending=0
+[q4t][t4_terminal_prefill] ordinal=3 real_ok=1 rows=1024 prompt_captured=1 completion=caller_owned
+[q4t][t4_terminal_verify] ordinal=3 real_ok=1 batch=1 rows=4 position=1024 selected=0
+[q4t][t4_terminal_select] ordinal=3 real_ok=1 stop_row=2 stop_id=248046 stop_count=2 bonus=271 draft=760,7189,513 original=248068,10597,3766,264 selected=760,7189,248046,264 changed_after_real_d2h=1
+[q4t][t4_terminal_restore] ordinal=3 real_ok=1 checkpoint=2 slot=0
+[q4t][t4_terminal_return] ordinal=3 real_ok=1 counts=3 next_b=248046 next_d0=-1 terminal=1 caller_unchanged=1 prefix_nonstop=1 pending=0 restores=1 extends=0 observer_cuda_calls=0 next_g=invalid_not_read
+[q4t][decode_path] id=t4-stop-2 requested_mtp=1 path=mtp_multi_b1 mtp_steps=1 fallback=none plain_tail_tokens=0 verifier=t4 tail_reason=none
+[q4t][t4_terminal_end] ordinal=3 real_ok=1 committed_position=1027 committed_history=1027 history_exact=1 steps=1 restores=1 extends=0 ordinary_calls=0 stage=idle position=0 history=0 pending=0
+[q4t][t4_terminal_begin] ordinal=4 real_ok=1 slot=0 stage=prefill position=0 history=0 pending=0
+[q4t][t4_terminal_prefill] ordinal=4 real_ok=1 rows=1024 prompt_captured=1 completion=caller_owned
+[q4t][t4_terminal_verify] ordinal=4 real_ok=1 batch=1 rows=4 position=1024 selected=0
+[q4t][t4_terminal_select] ordinal=4 real_ok=1 stop_row=3 stop_id=248046 stop_count=2 bonus=271 draft=760,7189,513 original=248068,10597,3766,264 selected=760,7189,513,248046 changed_after_real_d2h=1
+[q4t][t4_terminal_return] ordinal=4 real_ok=1 counts=4 next_b=248046 next_d0=-1 terminal=1 caller_unchanged=1 prefix_nonstop=1 pending=0 restores=0 extends=0 observer_cuda_calls=0 next_g=invalid_not_read
+[q4t][decode_path] id=t4-stop-3 requested_mtp=1 path=mtp_multi_b1 mtp_steps=1 fallback=none plain_tail_tokens=0 verifier=t4 tail_reason=none
+[q4t][t4_terminal_end] ordinal=4 real_ok=1 committed_position=1028 committed_history=1028 history_exact=1 steps=1 restores=0 extends=0 ordinary_calls=0 stage=idle position=0 history=0 pending=0
+[q4t][t4_terminal_begin] ordinal=5 real_ok=1 slot=0 stage=prefill position=0 history=0 pending=0
+[q4t][t4_terminal_prefill] ordinal=5 real_ok=1 rows=1024 prompt_captured=1 completion=caller_owned
+[q4t][decode_path] id=t4-cap-1 requested_mtp=1 path=prefill_only mtp_steps=0 fallback=none plain_tail_tokens=0 verifier=t4 tail_reason=none
+[q4t][t4_terminal_end] ordinal=5 real_ok=1 committed_position=1024 committed_history=1024 history_exact=1 steps=0 restores=0 extends=0 ordinary_calls=0 stage=idle position=0 history=0 pending=0
+[q4t][t4_terminal_begin] ordinal=6 real_ok=1 slot=0 stage=prefill position=0 history=0 pending=0
+[q4t][t4_terminal_prefill] ordinal=6 real_ok=1 rows=1024 prompt_captured=1 completion=caller_owned
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 cuBLASLt=130501
+[q4t][decode_path] id=t4-cap-2 requested_mtp=1 path=plain_tail_b1 mtp_steps=0 fallback=none plain_tail_tokens=2 verifier=t4 tail_reason=output_limit
+[q4t][t4_terminal_end] ordinal=6 real_ok=1 committed_position=1025 committed_history=1025 history_exact=1 steps=0 restores=0 extends=0 ordinary_calls=1 stage=idle position=0 history=0 pending=0
+[q4t][t4_terminal_begin] ordinal=7 real_ok=1 slot=0 stage=prefill position=0 history=0 pending=0
+[q4t][t4_terminal_prefill] ordinal=7 real_ok=1 rows=1024 prompt_captured=1 completion=caller_owned
+[q4t][decode_path] id=t4-cap-3 requested_mtp=1 path=plain_tail_b1 mtp_steps=0 fallback=none plain_tail_tokens=3 verifier=t4 tail_reason=output_limit
+[q4t][t4_terminal_end] ordinal=7 real_ok=1 committed_position=1026 committed_history=1026 history_exact=1 steps=0 restores=0 extends=0 ordinary_calls=2 stage=idle position=0 history=0 pending=0
+[q4t][t4_terminal_begin] ordinal=8 real_ok=1 slot=0 stage=prefill position=0 history=0 pending=0
+[q4t][t4_terminal_prefill] ordinal=8 real_ok=1 rows=1024 prompt_captured=1 completion=caller_owned
+[q4t][decode_path] id=t4-cap-4 requested_mtp=1 path=plain_tail_b1 mtp_steps=0 fallback=none plain_tail_tokens=4 verifier=t4 tail_reason=output_limit
+[q4t][t4_terminal_end] ordinal=8 real_ok=1 committed_position=1027 committed_history=1027 history_exact=1 steps=0 restores=0 extends=0 ordinary_calls=3 stage=idle position=0 history=0 pending=0
+[q4t][t4_terminal_begin] ordinal=9 real_ok=1 slot=0 stage=prefill position=0 history=0 pending=0
+[q4t][t4_terminal_prefill] ordinal=9 real_ok=1 rows=1024 prompt_captured=1 completion=caller_owned
+[q4t][t4_terminal_verify] ordinal=9 real_ok=1 batch=1 rows=4 position=1024 selected=0
+[q4t][t4_terminal_select] ordinal=9 real_ok=1 stop_row=-1 stop_id=248046 stop_count=2 bonus=271 draft=760,7189,513 original=248068,10597,3766,264 selected=760,7189,513,271 changed_after_real_d2h=1
+[q4t][t4_terminal_extend] ordinal=9 real_ok=1 rows=4
+[q4t][t4_terminal_return] ordinal=9 real_ok=1 counts=4 next_b=271 next_d0=332 terminal=0 caller_unchanged=1 prefix_nonstop=1 pending=0 restores=0 extends=1 observer_cuda_calls=0 next_g=valid_not_inspected
+[q4t][decode_path] id=t4-cap-5 requested_mtp=1 path=mtp_multi_b1 mtp_steps=1 fallback=none plain_tail_tokens=1 verifier=t4 tail_reason=output_limit
+[q4t][t4_terminal_end] ordinal=9 real_ok=1 committed_position=1028 committed_history=1028 history_exact=1 steps=1 restores=0 extends=1 ordinary_calls=0 stage=idle position=0 history=0 pending=0
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)

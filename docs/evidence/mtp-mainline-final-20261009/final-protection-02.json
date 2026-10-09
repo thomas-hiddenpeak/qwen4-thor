@@ -1,0 +1,61 @@
+{
+  "passed": true,
+  "created_unix": 1791533567.6024191,
+  "protected_worktrees": [
+    {
+      "label": "root",
+      "passed": true,
+      "actual": {
+        "head": "f15190ff9447079f9557469ed5aff0b525197821",
+        "branch": "codex/moe-residency-20260930",
+        "status": " M docs/STATUS.md\n M docs/log/2026-10-02.md\n M include/q4t/model/model.h\n M include/q4t/quant/moe_residency.h\n M src/model/moe.cu\n M src/quant/moe_residency.cpp\n M src/server/chat_generation.cpp\n",
+        "diff_sha256": "33375caff6dcb3e638e2d2f001428883cbc0e400c5f1b7403a081826e9cd6947"
+      }
+    },
+    {
+      "label": "main",
+      "passed": true,
+      "actual": {
+        "head": "8cd297b8af62701b00831ac44704e6b0691753d9",
+        "branch": "main",
+        "status": "",
+        "diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "C1",
+      "passed": true,
+      "actual": {
+        "head": "887a3fec1af02f95209dac198681f66bdd9b82aa",
+        "branch": "codex/moe-residency-path-c-20261001",
+        "status": " M include/q4t/model/model.h\n M src/server/chat_generation.cpp\n",
+        "diff_sha256": "7d504f9b43e7fa73e1e4c1d8032667c9a80bd4980e514d644881b6c52edbc9fd"
+      }
+    },
+    {
+      "label": "foundation",
+      "passed": true,
+      "actual": {
+        "head": "5aacc9f225056b47fca766dcf9d49a170e60978f",
+        "branch": "codex/mtp-foundation-20261008",
+        "status": "",
+        "diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "final_source_files": 288,
+  "final_build_files": 8,
+  "M1_build_files": 11,
+  "old_strict_build_files": 7,
+  "frozen_cost_files": 69,
+  "ended_process_groups": [
+    127651,
+    129732,
+    131105,
+    132703,
+    136016
+  ],
+  "foundation_and_M2_ancestors": true,
+  "runtime_test_tools_cmake_unchanged_since_M2": true,
+  "model_payload_hashed_or_written": false
+}

@@ -1,0 +1,43 @@
+[q4t][capabilities] requested=text-greedy-mtp-sequential mtp=1 media=0 max_seq=1 verifier=sequential
+[q4t][startup] tokenizer 441 ms
+[q4t][budget] mem_total=131.92 GB fraction=0.90 budget=118.73 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=208896 max_seq=1 max_prefill=8192 feasible=1 reason=estimate_fits
+[q4t][budget]   weights=84.00 GB  fixed=97.81 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=2348023808 main_forward_extra=0 mtp_workspace=3402434560 forward_buffers=419594244 ple_working=76571648 mtp=1
+[q4t][budget]   per_request=8.57 GB (MTP request allocations)  state_pool=7.08 GB
+[q4t][budget]   => max_len=208896 max_seq=1
+[q4t][budget]   MTP admission scope: text max_seq=1 k=3; allocation estimate, not a physical RAM guarantee
+[q4t][budget]   mtp_weights=5214301696 mtp_buffers=522240 mtp_scratch=6476904 mtp_checkpoints=346927104 mtp_forward_temp=16814240
+[q4t][budget]   loading_host_peak=3355443200 startup_envelope=108249902136 runtime_peak=113469410520 estimated_total=113469410520
+[q4t][startup] budget 417 ms
+[q4t][capacity] requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true
+[q4t][startup] model_load 24761 ms
+[q4t] generation stop token ids: 248046 248044
+[q4t] MTP loaded (k=3 max_seq=1)
+[q4t][startup] mtp_load 2702 ms
+[q4t] media disabled; vision tower not loaded
+[q4t][capabilities] effective mtp=1 media_allowed=0 vision_loaded=0 max_seq=1 verifier=sequential
+[q4t] continuous-batching scheduler started (max_seq=1)
+[q4t][mtp-support] mode=sequential reference_configuration=matched profile=thor-sequential-20261009 checkpoint_identity=not_attested max_len=208896 max_prefill=8192 max_seq=1 k=3 experimental_overrides=0
+[q4t][startup] startup_total 28323 ms
+[q4t] serving on port 28945 (host 127.0.0.1, model qwen3.8-flash-next)
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 cuBLASLt=130501
+[q4t][decode_path] id=chatcmpl-auto-0 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=71 fallback=none plain_tail_tokens=1 verifier=sequential tail_reason=output_limit draft_forward_calls=142 target_t1_calls=255 target_t4_calls=0 extend_forward_calls=71 forward_count_scope=sequential_attempts
+[q4t][decode_path] id=chatcmpl-auto-1 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=71 fallback=none plain_tail_tokens=1 verifier=sequential tail_reason=output_limit draft_forward_calls=142 target_t1_calls=255 target_t4_calls=0 extend_forward_calls=71 forward_count_scope=sequential_attempts
+[q4t][decode_path] id=chatcmpl-auto-2 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=71 fallback=none plain_tail_tokens=1 verifier=sequential tail_reason=output_limit draft_forward_calls=142 target_t1_calls=255 target_t4_calls=0 extend_forward_calls=71 forward_count_scope=sequential_attempts
+[q4t][decode_path] id=chatcmpl-auto-3 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=69 fallback=none plain_tail_tokens=3 verifier=sequential tail_reason=output_limit draft_forward_calls=138 target_t1_calls=253 target_t4_calls=0 extend_forward_calls=69 forward_count_scope=sequential_attempts
+[q4t][decode_path] id=chatcmpl-auto-4 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=69 fallback=none plain_tail_tokens=3 verifier=sequential tail_reason=output_limit draft_forward_calls=138 target_t1_calls=253 target_t4_calls=0 extend_forward_calls=69 forward_count_scope=sequential_attempts
+[q4t][decode_path] id=chatcmpl-auto-5 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=69 fallback=none plain_tail_tokens=3 verifier=sequential tail_reason=output_limit draft_forward_calls=138 target_t1_calls=253 target_t4_calls=0 extend_forward_calls=69 forward_count_scope=sequential_attempts
+[q4t][decode_path] id=chatcmpl-auto-6 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=83 fallback=none plain_tail_tokens=1 verifier=sequential tail_reason=output_limit draft_forward_calls=166 target_t1_calls=255 target_t4_calls=0 extend_forward_calls=83 forward_count_scope=sequential_attempts
+[q4t][decode_path] id=chatcmpl-auto-7 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=83 fallback=none plain_tail_tokens=1 verifier=sequential tail_reason=output_limit draft_forward_calls=166 target_t1_calls=255 target_t4_calls=0 extend_forward_calls=83 forward_count_scope=sequential_attempts
+[q4t][decode_path] id=chatcmpl-auto-8 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=83 fallback=none plain_tail_tokens=1 verifier=sequential tail_reason=output_limit draft_forward_calls=166 target_t1_calls=255 target_t4_calls=0 extend_forward_calls=83 forward_count_scope=sequential_attempts
+[q4t][decode_path] id=chatcmpl-auto-9 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=68 fallback=none plain_tail_tokens=1 verifier=sequential tail_reason=output_limit draft_forward_calls=136 target_t1_calls=255 target_t4_calls=0 extend_forward_calls=68 forward_count_scope=sequential_attempts
+[q4t][decode_path] id=chatcmpl-auto-10 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=68 fallback=none plain_tail_tokens=1 verifier=sequential tail_reason=output_limit draft_forward_calls=136 target_t1_calls=255 target_t4_calls=0 extend_forward_calls=68 forward_count_scope=sequential_attempts
+[q4t][decode_path] id=chatcmpl-auto-11 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=68 fallback=none plain_tail_tokens=1 verifier=sequential tail_reason=output_limit draft_forward_calls=136 target_t1_calls=255 target_t4_calls=0 extend_forward_calls=68 forward_count_scope=sequential_attempts
+[q4t][decode_path] id=chatcmpl-auto-12 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=68 fallback=none plain_tail_tokens=4 verifier=sequential tail_reason=output_limit draft_forward_calls=136 target_t1_calls=252 target_t4_calls=0 extend_forward_calls=68 forward_count_scope=sequential_attempts
+[q4t][decode_path] id=chatcmpl-auto-13 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=68 fallback=none plain_tail_tokens=4 verifier=sequential tail_reason=output_limit draft_forward_calls=136 target_t1_calls=252 target_t4_calls=0 extend_forward_calls=68 forward_count_scope=sequential_attempts
+[q4t][decode_path] id=chatcmpl-auto-14 requested_mtp=1 path=mtp_sequential_b1 mtp_steps=68 fallback=none plain_tail_tokens=4 verifier=sequential tail_reason=output_limit draft_forward_calls=136 target_t1_calls=252 target_t4_calls=0 extend_forward_calls=68 forward_count_scope=sequential_attempts
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)

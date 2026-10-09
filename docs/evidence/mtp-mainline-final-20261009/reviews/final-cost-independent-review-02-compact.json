@@ -1,0 +1,1926 @@
+{
+  "passed": true,
+  "created_unix": 1791533596.416863,
+  "check_count": 822,
+  "input_binding_count": 69,
+  "raw_binding_count": 212,
+  "requests": [
+    {
+      "mode": "plain",
+      "context": 1024,
+      "sample": 0,
+      "response_id": "chatcmpl-auto-0",
+      "prompt_sha256": "a72fade2611451e1f33ca088f0554474ec9d9032efccf04cc5581a2c25be2d98",
+      "output_sha256": "0e1e7da55f600ba0bf8d5eb598b33eec8fab3dc134b41ff482dab803a5562d15",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of the records provided, covering measurement, storage, scheduling, and correctness, in at least 500 words. Let me analyze the records carefully.\n\nFirst, let me identify the unique records (many are duplicated):\n\n1. Cache reuse / bytes estimate vs physical memory traffic (Records 1, 11, 17)\n2. Storage worker reads selected rows from lookup table, table larger than buffer (Records 2, 10, 19)\n3. Evaluation stores complete request/response with build identifier, next run uses same data for comparability (Records 3, 7, 12, 21, 22, 25, 27)\n4. Useful change reduces complexity while keeping accuracy/speed; faster on one input doesn't justify regression on another (Records 4, 13, 18, 20, 29)\n5. Scheduler tracks each request separately, preserves correct state on finish/arrival (Records 5, 8, 24, 26)\n6. Short vs long request follow different paths; report distinguishes time-to-first-answer from generation",
+      "actual_input": 1024,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1753530.147976303,
+      "completed_time": 1753544.808071521,
+      "metrics": {
+        "ttft": 0.8679790610913187,
+        "latency": 14.660095218103379,
+        "decode_seconds": 13.79211615701206,
+        "decode_tps": 18.48882340440232,
+        "overall_tps": 17.462369527032273,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-0",
+        "requested_mtp": "0",
+        "path": "plain",
+        "mtp_steps": "0",
+        "fallback": "none",
+        "plain_tail_tokens": "0",
+        "verifier": "none",
+        "tail_reason": "none"
+      }
+    },
+    {
+      "mode": "plain",
+      "context": 1024,
+      "sample": 1,
+      "response_id": "chatcmpl-auto-1",
+      "prompt_sha256": "a72fade2611451e1f33ca088f0554474ec9d9032efccf04cc5581a2c25be2d98",
+      "output_sha256": "0e1e7da55f600ba0bf8d5eb598b33eec8fab3dc134b41ff482dab803a5562d15",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of the records provided, covering measurement, storage, scheduling, and correctness, in at least 500 words. Let me analyze the records carefully.\n\nFirst, let me identify the unique records (many are duplicated):\n\n1. Cache reuse / bytes estimate vs physical memory traffic (Records 1, 11, 17)\n2. Storage worker reads selected rows from lookup table, table larger than buffer (Records 2, 10, 19)\n3. Evaluation stores complete request/response with build identifier, next run uses same data for comparability (Records 3, 7, 12, 21, 22, 25, 27)\n4. Useful change reduces complexity while keeping accuracy/speed; faster on one input doesn't justify regression on another (Records 4, 13, 18, 20, 29)\n5. Scheduler tracks each request separately, preserves correct state on finish/arrival (Records 5, 8, 24, 26)\n6. Short vs long request follow different paths; report distinguishes time-to-first-answer from generation",
+      "actual_input": 1024,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1753544.808442207,
+      "completed_time": 1753559.27934868,
+      "metrics": {
+        "ttft": 0.7660732788499445,
+        "latency": 14.47090647299774,
+        "decode_seconds": 13.704833194147795,
+        "decode_tps": 18.606574511894788,
+        "overall_tps": 17.690667856757145,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-1",
+        "requested_mtp": "0",
+        "path": "plain",
+        "mtp_steps": "0",
+        "fallback": "none",
+        "plain_tail_tokens": "0",
+        "verifier": "none",
+        "tail_reason": "none"
+      }
+    },
+    {
+      "mode": "plain",
+      "context": 1024,
+      "sample": 2,
+      "response_id": "chatcmpl-auto-2",
+      "prompt_sha256": "a72fade2611451e1f33ca088f0554474ec9d9032efccf04cc5581a2c25be2d98",
+      "output_sha256": "0e1e7da55f600ba0bf8d5eb598b33eec8fab3dc134b41ff482dab803a5562d15",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of the records provided, covering measurement, storage, scheduling, and correctness, in at least 500 words. Let me analyze the records carefully.\n\nFirst, let me identify the unique records (many are duplicated):\n\n1. Cache reuse / bytes estimate vs physical memory traffic (Records 1, 11, 17)\n2. Storage worker reads selected rows from lookup table, table larger than buffer (Records 2, 10, 19)\n3. Evaluation stores complete request/response with build identifier, next run uses same data for comparability (Records 3, 7, 12, 21, 22, 25, 27)\n4. Useful change reduces complexity while keeping accuracy/speed; faster on one input doesn't justify regression on another (Records 4, 13, 18, 20, 29)\n5. Scheduler tracks each request separately, preserves correct state on finish/arrival (Records 5, 8, 24, 26)\n6. Short vs long request follow different paths; report distinguishes time-to-first-answer from generation",
+      "actual_input": 1024,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1753559.279742133,
+      "completed_time": 1753573.75150811,
+      "metrics": {
+        "ttft": 0.7634202579502016,
+        "latency": 14.471765976864845,
+        "decode_seconds": 13.708345718914643,
+        "decode_tps": 18.601806901335546,
+        "overall_tps": 17.689617176594208,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-2",
+        "requested_mtp": "0",
+        "path": "plain",
+        "mtp_steps": "0",
+        "fallback": "none",
+        "plain_tail_tokens": "0",
+        "verifier": "none",
+        "tail_reason": "none"
+      }
+    },
+    {
+      "mode": "plain",
+      "context": 4096,
+      "sample": 0,
+      "response_id": "chatcmpl-auto-3",
+      "prompt_sha256": "0cb9f47cdf9ea33d5fe3f4267bcfd347494b3883770c8b293bb5aacf9bb2602d",
+      "output_sha256": "541b0b8f2b1e9140f1f15ec5b57cb7b3cc5e9a22c5ab1ffb70451578a5623828",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of the records provided, covering measurement, storage, scheduling, and correctness. The review must be at least 500 words. Let me analyze the records and identify the recurring themes, then write a comprehensive technical review.\n\nLet me identify the distinct record types:\n1. Cache/memory traffic records (Records 1, 11, 17, 36, 37, 41, 46, 52, 58, 62, 68, 71, 74, 76, 81, 86, 89, 99, 109, 116, 123, 124)\n2. Storage worker/lookup table records (Records 2, 10, 19, 32, 38, 64, 66, 75, 87, 91)\n3. Evaluation/build identifier records (Records 3, 7, 12, 21, 22, 25, 27, 34,",
+      "actual_input": 4096,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1753579.172025305,
+      "completed_time": 1753596.1104978,
+      "metrics": {
+        "ttft": 2.650861636037007,
+        "latency": 16.938472494948655,
+        "decode_seconds": 14.287610858911648,
+        "decode_tps": 17.847630546358854,
+        "overall_tps": 15.113523375637538,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-3",
+        "requested_mtp": "0",
+        "path": "plain",
+        "mtp_steps": "0",
+        "fallback": "none",
+        "plain_tail_tokens": "0",
+        "verifier": "none",
+        "tail_reason": "none"
+      }
+    },
+    {
+      "mode": "plain",
+      "context": 4096,
+      "sample": 1,
+      "response_id": "chatcmpl-auto-4",
+      "prompt_sha256": "0cb9f47cdf9ea33d5fe3f4267bcfd347494b3883770c8b293bb5aacf9bb2602d",
+      "output_sha256": "541b0b8f2b1e9140f1f15ec5b57cb7b3cc5e9a22c5ab1ffb70451578a5623828",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of the records provided, covering measurement, storage, scheduling, and correctness. The review must be at least 500 words. Let me analyze the records and identify the recurring themes, then write a comprehensive technical review.\n\nLet me identify the distinct record types:\n1. Cache/memory traffic records (Records 1, 11, 17, 36, 37, 41, 46, 52, 58, 62, 68, 71, 74, 76, 81, 86, 89, 99, 109, 116, 123, 124)\n2. Storage worker/lookup table records (Records 2, 10, 19, 32, 38, 64, 66, 75, 87, 91)\n3. Evaluation/build identifier records (Records 3, 7, 12, 21, 22, 25, 27, 34,",
+      "actual_input": 4096,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1753596.110958253,
+      "completed_time": 1753613.030458914,
+      "metrics": {
+        "ttft": 2.635858217952773,
+        "latency": 16.919500661082566,
+        "decode_seconds": 14.283642443129793,
+        "decode_tps": 17.852589142810068,
+        "overall_tps": 15.130470167410973,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-4",
+        "requested_mtp": "0",
+        "path": "plain",
+        "mtp_steps": "0",
+        "fallback": "none",
+        "plain_tail_tokens": "0",
+        "verifier": "none",
+        "tail_reason": "none"
+      }
+    },
+    {
+      "mode": "plain",
+      "context": 4096,
+      "sample": 2,
+      "response_id": "chatcmpl-auto-5",
+      "prompt_sha256": "0cb9f47cdf9ea33d5fe3f4267bcfd347494b3883770c8b293bb5aacf9bb2602d",
+      "output_sha256": "541b0b8f2b1e9140f1f15ec5b57cb7b3cc5e9a22c5ab1ffb70451578a5623828",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of the records provided, covering measurement, storage, scheduling, and correctness. The review must be at least 500 words. Let me analyze the records and identify the recurring themes, then write a comprehensive technical review.\n\nLet me identify the distinct record types:\n1. Cache/memory traffic records (Records 1, 11, 17, 36, 37, 41, 46, 52, 58, 62, 68, 71, 74, 76, 81, 86, 89, 99, 109, 116, 123, 124)\n2. Storage worker/lookup table records (Records 2, 10, 19, 32, 38, 64, 66, 75, 87, 91)\n3. Evaluation/build identifier records (Records 3, 7, 12, 21, 22, 25, 27, 34,",
+      "actual_input": 4096,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1753613.030886943,
+      "completed_time": 1753629.950176486,
+      "metrics": {
+        "ttft": 2.6381239991169423,
+        "latency": 16.919289543060586,
+        "decode_seconds": 14.281165543943644,
+        "decode_tps": 17.85568546316168,
+        "overall_tps": 15.130658964637076,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-5",
+        "requested_mtp": "0",
+        "path": "plain",
+        "mtp_steps": "0",
+        "fallback": "none",
+        "plain_tail_tokens": "0",
+        "verifier": "none",
+        "tail_reason": "none"
+      }
+    },
+    {
+      "mode": "plain",
+      "context": 8192,
+      "sample": 0,
+      "response_id": "chatcmpl-auto-6",
+      "prompt_sha256": "e4c57e9fca8d72d694b167a2f56f8527a51e5ab84830983e47ed434d0708e39a",
+      "output_sha256": "3171cac48aedfa9db651009dc7c5aa54a7e59bcd0c856ebaafe26c70013f2a1f",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of the records provided, covering measurement, storage, scheduling, and correctness. The records are repetitive - they contain the same set of technical notes repeated many times across 252 records. Let me identify the unique records:\n\n1. Cache reuse / memory traffic estimation vs measurement\n2. Storage worker / lookup table / buffer size\n3. Evaluation stores request/response with build identifier for comparability\n4. Useful change reduces complexity while keeping accuracy/speed; no regression on other inputs\n5. Scheduler tracks requests separately; preserves state on finish/arrival\n6. Short vs long request execution paths; time to first answer vs generation rate\n7. Service reads model weights, updates sequence state; records latency, checks generated answer\n8. Request contains technical notes; input length, output length, concurrency fixed when comparing\n\nThese 8 unique themes are repeated across 252 records. I need to write a detailed technical review of at least 500 words covering measurement, storage, scheduling, and correctness.\n\nLet me structure my review around these four themes and weave in the specific technical content from the records.\n</think>\n\n# Technical Review of Experimental Records\n\n## Overview\n\nThe 2",
+      "actual_input": 8192,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1753635.345888215,
+      "completed_time": 1753654.669200535,
+      "metrics": {
+        "ttft": 5.180229286197573,
+        "latency": 19.32331232004799,
+        "decode_seconds": 14.143083033850417,
+        "decode_tps": 18.03001505327208,
+        "overall_tps": 13.248246250949393,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-6",
+        "requested_mtp": "0",
+        "path": "plain",
+        "mtp_steps": "0",
+        "fallback": "none",
+        "plain_tail_tokens": "0",
+        "verifier": "none",
+        "tail_reason": "none"
+      }
+    },
+    {
+      "mode": "plain",
+      "context": 8192,
+      "sample": 1,
+      "response_id": "chatcmpl-auto-7",
+      "prompt_sha256": "e4c57e9fca8d72d694b167a2f56f8527a51e5ab84830983e47ed434d0708e39a",
+      "output_sha256": "3171cac48aedfa9db651009dc7c5aa54a7e59bcd0c856ebaafe26c70013f2a1f",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of the records provided, covering measurement, storage, scheduling, and correctness. The records are repetitive - they contain the same set of technical notes repeated many times across 252 records. Let me identify the unique records:\n\n1. Cache reuse / memory traffic estimation vs measurement\n2. Storage worker / lookup table / buffer size\n3. Evaluation stores request/response with build identifier for comparability\n4. Useful change reduces complexity while keeping accuracy/speed; no regression on other inputs\n5. Scheduler tracks requests separately; preserves state on finish/arrival\n6. Short vs long request execution paths; time to first answer vs generation rate\n7. Service reads model weights, updates sequence state; records latency, checks generated answer\n8. Request contains technical notes; input length, output length, concurrency fixed when comparing\n\nThese 8 unique themes are repeated across 252 records. I need to write a detailed technical review of at least 500 words covering measurement, storage, scheduling, and correctness.\n\nLet me structure my review around these four themes and weave in the specific technical content from the records.\n</think>\n\n# Technical Review of Experimental Records\n\n## Overview\n\nThe 2",
+      "actual_input": 8192,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1753654.669717593,
+      "completed_time": 1753673.949492146,
+      "metrics": {
+        "ttft": 5.170277374098077,
+        "latency": 19.279774553142488,
+        "decode_seconds": 14.10949717904441,
+        "decode_tps": 18.072933199825787,
+        "overall_tps": 13.278163564328274,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-7",
+        "requested_mtp": "0",
+        "path": "plain",
+        "mtp_steps": "0",
+        "fallback": "none",
+        "plain_tail_tokens": "0",
+        "verifier": "none",
+        "tail_reason": "none"
+      }
+    },
+    {
+      "mode": "plain",
+      "context": 8192,
+      "sample": 2,
+      "response_id": "chatcmpl-auto-8",
+      "prompt_sha256": "e4c57e9fca8d72d694b167a2f56f8527a51e5ab84830983e47ed434d0708e39a",
+      "output_sha256": "3171cac48aedfa9db651009dc7c5aa54a7e59bcd0c856ebaafe26c70013f2a1f",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of the records provided, covering measurement, storage, scheduling, and correctness. The records are repetitive - they contain the same set of technical notes repeated many times across 252 records. Let me identify the unique records:\n\n1. Cache reuse / memory traffic estimation vs measurement\n2. Storage worker / lookup table / buffer size\n3. Evaluation stores request/response with build identifier for comparability\n4. Useful change reduces complexity while keeping accuracy/speed; no regression on other inputs\n5. Scheduler tracks requests separately; preserves state on finish/arrival\n6. Short vs long request execution paths; time to first answer vs generation rate\n7. Service reads model weights, updates sequence state; records latency, checks generated answer\n8. Request contains technical notes; input length, output length, concurrency fixed when comparing\n\nThese 8 unique themes are repeated across 252 records. I need to write a detailed technical review of at least 500 words covering measurement, storage, scheduling, and correctness.\n\nLet me structure my review around these four themes and weave in the specific technical content from the records.\n</think>\n\n# Technical Review of Experimental Records\n\n## Overview\n\nThe 2",
+      "actual_input": 8192,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1753673.949941399,
+      "completed_time": 1753693.198515389,
+      "metrics": {
+        "ttft": 5.160413957899436,
+        "latency": 19.248573990073055,
+        "decode_seconds": 14.088160032173619,
+        "decode_tps": 18.10030546342799,
+        "overall_tps": 13.299686518701346,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-8",
+        "requested_mtp": "0",
+        "path": "plain",
+        "mtp_steps": "0",
+        "fallback": "none",
+        "plain_tail_tokens": "0",
+        "verifier": "none",
+        "tail_reason": "none"
+      }
+    },
+    {
+      "mode": "plain",
+      "context": 45056,
+      "sample": 0,
+      "response_id": "chatcmpl-auto-9",
+      "prompt_sha256": "82da2659b9ef07afac3ef134b735ff8d2ce9c6a37f4565a777f9d76a05d7f478",
+      "output_sha256": "0e59305d32f2895cdf1cb1c61a38ece56702dfe329b3d357a76bdbf4f7ad7dae",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of these records in at least 500 words, explaining measurement, storage, scheduling, and correctness. Let me analyze the records carefully.\n\nLooking at the records, I can identify several recurring themes:\n\n1. **Cache/Memory**: \"A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic.\" (Records 1, 11, 17, 36, 37, 41, 46, 52, 58, 62, 68, 71, 74, 76, 81, 86, 89, 99, 109, 116, 123, 124, 132, 136, 143, 145, 152, 155, 163, 165, 166, 171, 172, 188, 195, 229, 241, ",
+      "actual_input": 45056,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1753698.627191342,
+      "completed_time": 1753743.359229959,
+      "metrics": {
+        "ttft": 30.447419196134433,
+        "latency": 44.732038617134094,
+        "decode_seconds": 14.284619420999661,
+        "decode_tps": 17.85136813831577,
+        "overall_tps": 5.722967428136444,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-9",
+        "requested_mtp": "0",
+        "path": "plain",
+        "mtp_steps": "0",
+        "fallback": "none",
+        "plain_tail_tokens": "0",
+        "verifier": "none",
+        "tail_reason": "none"
+      }
+    },
+    {
+      "mode": "plain",
+      "context": 45056,
+      "sample": 1,
+      "response_id": "chatcmpl-auto-10",
+      "prompt_sha256": "82da2659b9ef07afac3ef134b735ff8d2ce9c6a37f4565a777f9d76a05d7f478",
+      "output_sha256": "0e59305d32f2895cdf1cb1c61a38ece56702dfe329b3d357a76bdbf4f7ad7dae",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of these records in at least 500 words, explaining measurement, storage, scheduling, and correctness. Let me analyze the records carefully.\n\nLooking at the records, I can identify several recurring themes:\n\n1. **Cache/Memory**: \"A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic.\" (Records 1, 11, 17, 36, 37, 41, 46, 52, 58, 62, 68, 71, 74, 76, 81, 86, 89, 99, 109, 116, 123, 124, 132, 136, 143, 145, 152, 155, 163, 165, 166, 171, 172, 188, 195, 229, 241, ",
+      "actual_input": 45056,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1753743.360271205,
+      "completed_time": 1753788.114485408,
+      "metrics": {
+        "ttft": 30.474079492036253,
+        "latency": 44.75421420298517,
+        "decode_seconds": 14.280134710948914,
+        "decode_tps": 17.856974402663408,
+        "overall_tps": 5.720131714052628,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-10",
+        "requested_mtp": "0",
+        "path": "plain",
+        "mtp_steps": "0",
+        "fallback": "none",
+        "plain_tail_tokens": "0",
+        "verifier": "none",
+        "tail_reason": "none"
+      }
+    },
+    {
+      "mode": "plain",
+      "context": 45056,
+      "sample": 2,
+      "response_id": "chatcmpl-auto-11",
+      "prompt_sha256": "82da2659b9ef07afac3ef134b735ff8d2ce9c6a37f4565a777f9d76a05d7f478",
+      "output_sha256": "0e59305d32f2895cdf1cb1c61a38ece56702dfe329b3d357a76bdbf4f7ad7dae",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of these records in at least 500 words, explaining measurement, storage, scheduling, and correctness. Let me analyze the records carefully.\n\nLooking at the records, I can identify several recurring themes:\n\n1. **Cache/Memory**: \"A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic.\" (Records 1, 11, 17, 36, 37, 41, 46, 52, 58, 62, 68, 71, 74, 76, 81, 86, 89, 99, 109, 116, 123, 124, 132, 136, 143, 145, 152, 155, 163, 165, 166, 171, 172, 188, 195, 229, 241, ",
+      "actual_input": 45056,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1753788.115509876,
+      "completed_time": 1753832.902302973,
+      "metrics": {
+        "ttft": 30.505526046967134,
+        "latency": 44.78679309692234,
+        "decode_seconds": 14.281267049955204,
+        "decode_tps": 17.8555585514942,
+        "overall_tps": 5.715970764997501,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-11",
+        "requested_mtp": "0",
+        "path": "plain",
+        "mtp_steps": "0",
+        "fallback": "none",
+        "plain_tail_tokens": "0",
+        "verifier": "none",
+        "tail_reason": "none"
+      }
+    },
+    {
+      "mode": "plain",
+      "context": 204800,
+      "sample": 0,
+      "response_id": "chatcmpl-auto-12",
+      "prompt_sha256": "959679d2f533ca72d15a5ed3f3a2e2361f63dbf3a88384ab8ec2d750d5e34bf5",
+      "output_sha256": "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of these records in at least 500 words, explaining measurement, storage, scheduling, and correctness. Let me analyze the records to identify the distinct themes and write a comprehensive technical review.\n\nLooking at the records, I can identify several recurring themes:\n\n1. **Cache/Memory**: \"A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic.\"\n\n2. **Storage Worker/Lookup Table**: \"The storage worker reads selected rows from the lookup table. The table is much larger than the small buffer used by one request.\"\n\n3. **Evaluation/Reproducibility**: \"The evaluation stores the complete request and response with the build identifier. The next run uses the same data so that the results remain comparable.\"\n\n4. **Code Quality/Regression**: \"A useful change can reduce code complexity while keeping the same accuracy and speed. A faster result on one input does not justify a regression on another input.\"\n\n5. **Scheduler/State Management**: \"The scheduler tracks each request separately. It must preserve the correct state when a request finishes or another request arrives.\"\n\n6. **Latency/Generation Rate**: \"A",
+      "actual_input": 204800,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1753838.321513325,
+      "completed_time": 1754012.387365404,
+      "metrics": {
+        "ttft": 159.0967187259812,
+        "latency": 174.06585207907483,
+        "decode_seconds": 14.969133353093639,
+        "decode_tps": 17.03505433381016,
+        "overall_tps": 1.470707763425672,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-12",
+        "requested_mtp": "0",
+        "path": "plain",
+        "mtp_steps": "0",
+        "fallback": "none",
+        "plain_tail_tokens": "0",
+        "verifier": "none",
+        "tail_reason": "none"
+      }
+    },
+    {
+      "mode": "plain",
+      "context": 204800,
+      "sample": 1,
+      "response_id": "chatcmpl-auto-13",
+      "prompt_sha256": "959679d2f533ca72d15a5ed3f3a2e2361f63dbf3a88384ab8ec2d750d5e34bf5",
+      "output_sha256": "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of these records in at least 500 words, explaining measurement, storage, scheduling, and correctness. Let me analyze the records to identify the distinct themes and write a comprehensive technical review.\n\nLooking at the records, I can identify several recurring themes:\n\n1. **Cache/Memory**: \"A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic.\"\n\n2. **Storage Worker/Lookup Table**: \"The storage worker reads selected rows from the lookup table. The table is much larger than the small buffer used by one request.\"\n\n3. **Evaluation/Reproducibility**: \"The evaluation stores the complete request and response with the build identifier. The next run uses the same data so that the results remain comparable.\"\n\n4. **Code Quality/Regression**: \"A useful change can reduce code complexity while keeping the same accuracy and speed. A faster result on one input does not justify a regression on another input.\"\n\n5. **Scheduler/State Management**: \"The scheduler tracks each request separately. It must preserve the correct state when a request finishes or another request arrives.\"\n\n6. **Latency/Generation Rate**: \"A",
+      "actual_input": 204800,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1754012.390651757,
+      "completed_time": 1754186.476910201,
+      "metrics": {
+        "ttft": 159.11597526818514,
+        "latency": 174.08625844400376,
+        "decode_seconds": 14.970283175818622,
+        "decode_tps": 17.033745922181314,
+        "overall_tps": 1.4705353672837105,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-13",
+        "requested_mtp": "0",
+        "path": "plain",
+        "mtp_steps": "0",
+        "fallback": "none",
+        "plain_tail_tokens": "0",
+        "verifier": "none",
+        "tail_reason": "none"
+      }
+    },
+    {
+      "mode": "plain",
+      "context": 204800,
+      "sample": 2,
+      "response_id": "chatcmpl-auto-14",
+      "prompt_sha256": "959679d2f533ca72d15a5ed3f3a2e2361f63dbf3a88384ab8ec2d750d5e34bf5",
+      "output_sha256": "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of these records in at least 500 words, explaining measurement, storage, scheduling, and correctness. Let me analyze the records to identify the distinct themes and write a comprehensive technical review.\n\nLooking at the records, I can identify several recurring themes:\n\n1. **Cache/Memory**: \"A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic.\"\n\n2. **Storage Worker/Lookup Table**: \"The storage worker reads selected rows from the lookup table. The table is much larger than the small buffer used by one request.\"\n\n3. **Evaluation/Reproducibility**: \"The evaluation stores the complete request and response with the build identifier. The next run uses the same data so that the results remain comparable.\"\n\n4. **Code Quality/Regression**: \"A useful change can reduce code complexity while keeping the same accuracy and speed. A faster result on one input does not justify a regression on another input.\"\n\n5. **Scheduler/State Management**: \"The scheduler tracks each request separately. It must preserve the correct state when a request finishes or another request arrives.\"\n\n6. **Latency/Generation Rate**: \"A",
+      "actual_input": 204800,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1754186.480441742,
+      "completed_time": 1754361.066028172,
+      "metrics": {
+        "ttft": 159.6694938337896,
+        "latency": 174.58558642980643,
+        "decode_seconds": 14.916092596016824,
+        "decode_tps": 17.095629995491908,
+        "overall_tps": 1.4663295248770545,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-14",
+        "requested_mtp": "0",
+        "path": "plain",
+        "mtp_steps": "0",
+        "fallback": "none",
+        "plain_tail_tokens": "0",
+        "verifier": "none",
+        "tail_reason": "none"
+      }
+    },
+    {
+      "mode": "sequential",
+      "context": 1024,
+      "sample": 0,
+      "response_id": "chatcmpl-auto-0",
+      "prompt_sha256": "a72fade2611451e1f33ca088f0554474ec9d9032efccf04cc5581a2c25be2d98",
+      "output_sha256": "0e1e7da55f600ba0bf8d5eb598b33eec8fab3dc134b41ff482dab803a5562d15",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of the records provided, covering measurement, storage, scheduling, and correctness, in at least 500 words. Let me analyze the records carefully.\n\nFirst, let me identify the unique records (many are duplicated):\n\n1. Cache reuse / bytes estimate vs physical memory traffic (Records 1, 11, 17)\n2. Storage worker reads selected rows from lookup table, table larger than buffer (Records 2, 10, 19)\n3. Evaluation stores complete request/response with build identifier, next run uses same data for comparability (Records 3, 7, 12, 21, 22, 25, 27)\n4. Useful change reduces complexity while keeping accuracy/speed; faster on one input doesn't justify regression on another (Records 4, 13, 18, 20, 29)\n5. Scheduler tracks each request separately, preserves correct state on finish/arrival (Records 5, 8, 24, 26)\n6. Short vs long request follow different paths; report distinguishes time-to-first-answer from generation",
+      "actual_input": 1024,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1754396.29418614,
+      "completed_time": 1754412.762397486,
+      "metrics": {
+        "ttft": 1.0626033609732985,
+        "latency": 16.468211346073076,
+        "decode_seconds": 15.405607985099778,
+        "decode_tps": 16.552413916194325,
+        "overall_tps": 15.545100473892353,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-0",
+        "requested_mtp": "1",
+        "path": "mtp_sequential_b1",
+        "mtp_steps": "71",
+        "fallback": "none",
+        "plain_tail_tokens": "1",
+        "verifier": "sequential",
+        "tail_reason": "output_limit",
+        "draft_forward_calls": "142",
+        "target_t1_calls": "255",
+        "target_t4_calls": "0",
+        "extend_forward_calls": "71",
+        "forward_count_scope": "sequential_attempts"
+      }
+    },
+    {
+      "mode": "sequential",
+      "context": 1024,
+      "sample": 1,
+      "response_id": "chatcmpl-auto-1",
+      "prompt_sha256": "a72fade2611451e1f33ca088f0554474ec9d9032efccf04cc5581a2c25be2d98",
+      "output_sha256": "0e1e7da55f600ba0bf8d5eb598b33eec8fab3dc134b41ff482dab803a5562d15",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of the records provided, covering measurement, storage, scheduling, and correctness, in at least 500 words. Let me analyze the records carefully.\n\nFirst, let me identify the unique records (many are duplicated):\n\n1. Cache reuse / bytes estimate vs physical memory traffic (Records 1, 11, 17)\n2. Storage worker reads selected rows from lookup table, table larger than buffer (Records 2, 10, 19)\n3. Evaluation stores complete request/response with build identifier, next run uses same data for comparability (Records 3, 7, 12, 21, 22, 25, 27)\n4. Useful change reduces complexity while keeping accuracy/speed; faster on one input doesn't justify regression on another (Records 4, 13, 18, 20, 29)\n5. Scheduler tracks each request separately, preserves correct state on finish/arrival (Records 5, 8, 24, 26)\n6. Short vs long request follow different paths; report distinguishes time-to-first-answer from generation",
+      "actual_input": 1024,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1754412.762799041,
+      "completed_time": 1754428.979981277,
+      "metrics": {
+        "ttft": 0.876650707796216,
+        "latency": 16.21718223579228,
+        "decode_seconds": 15.340531527996063,
+        "decode_tps": 16.622631330252915,
+        "overall_tps": 15.78572629189508,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-1",
+        "requested_mtp": "1",
+        "path": "mtp_sequential_b1",
+        "mtp_steps": "71",
+        "fallback": "none",
+        "plain_tail_tokens": "1",
+        "verifier": "sequential",
+        "tail_reason": "output_limit",
+        "draft_forward_calls": "142",
+        "target_t1_calls": "255",
+        "target_t4_calls": "0",
+        "extend_forward_calls": "71",
+        "forward_count_scope": "sequential_attempts"
+      }
+    },
+    {
+      "mode": "sequential",
+      "context": 1024,
+      "sample": 2,
+      "response_id": "chatcmpl-auto-2",
+      "prompt_sha256": "a72fade2611451e1f33ca088f0554474ec9d9032efccf04cc5581a2c25be2d98",
+      "output_sha256": "0e1e7da55f600ba0bf8d5eb598b33eec8fab3dc134b41ff482dab803a5562d15",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of the records provided, covering measurement, storage, scheduling, and correctness, in at least 500 words. Let me analyze the records carefully.\n\nFirst, let me identify the unique records (many are duplicated):\n\n1. Cache reuse / bytes estimate vs physical memory traffic (Records 1, 11, 17)\n2. Storage worker reads selected rows from lookup table, table larger than buffer (Records 2, 10, 19)\n3. Evaluation stores complete request/response with build identifier, next run uses same data for comparability (Records 3, 7, 12, 21, 22, 25, 27)\n4. Useful change reduces complexity while keeping accuracy/speed; faster on one input doesn't justify regression on another (Records 4, 13, 18, 20, 29)\n5. Scheduler tracks each request separately, preserves correct state on finish/arrival (Records 5, 8, 24, 26)\n6. Short vs long request follow different paths; report distinguishes time-to-first-answer from generation",
+      "actual_input": 1024,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1754428.98039972,
+      "completed_time": 1754445.201063869,
+      "metrics": {
+        "ttft": 0.8789533372037113,
+        "latency": 16.220664149150252,
+        "decode_seconds": 15.341710811946541,
+        "decode_tps": 16.62135358472748,
+        "overall_tps": 15.782337741911203,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-2",
+        "requested_mtp": "1",
+        "path": "mtp_sequential_b1",
+        "mtp_steps": "71",
+        "fallback": "none",
+        "plain_tail_tokens": "1",
+        "verifier": "sequential",
+        "tail_reason": "output_limit",
+        "draft_forward_calls": "142",
+        "target_t1_calls": "255",
+        "target_t4_calls": "0",
+        "extend_forward_calls": "71",
+        "forward_count_scope": "sequential_attempts"
+      }
+    },
+    {
+      "mode": "sequential",
+      "context": 4096,
+      "sample": 0,
+      "response_id": "chatcmpl-auto-3",
+      "prompt_sha256": "0cb9f47cdf9ea33d5fe3f4267bcfd347494b3883770c8b293bb5aacf9bb2602d",
+      "output_sha256": "541b0b8f2b1e9140f1f15ec5b57cb7b3cc5e9a22c5ab1ffb70451578a5623828",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of the records provided, covering measurement, storage, scheduling, and correctness. The review must be at least 500 words. Let me analyze the records and identify the recurring themes, then write a comprehensive technical review.\n\nLet me identify the distinct record types:\n1. Cache/memory traffic records (Records 1, 11, 17, 36, 37, 41, 46, 52, 58, 62, 68, 71, 74, 76, 81, 86, 89, 99, 109, 116, 123, 124)\n2. Storage worker/lookup table records (Records 2, 10, 19, 32, 38, 64, 66, 75, 87, 91)\n3. Evaluation/build identifier records (Records 3, 7, 12, 21, 22, 25, 27, 34,",
+      "actual_input": 4096,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1754450.607820815,
+      "completed_time": 1754469.454320337,
+      "metrics": {
+        "ttft": 2.874683741014451,
+        "latency": 18.846499521983787,
+        "decode_seconds": 15.971815780969337,
+        "decode_tps": 15.965623664645344,
+        "overall_tps": 13.583424322452288,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-3",
+        "requested_mtp": "1",
+        "path": "mtp_sequential_b1",
+        "mtp_steps": "69",
+        "fallback": "none",
+        "plain_tail_tokens": "3",
+        "verifier": "sequential",
+        "tail_reason": "output_limit",
+        "draft_forward_calls": "138",
+        "target_t1_calls": "253",
+        "target_t4_calls": "0",
+        "extend_forward_calls": "69",
+        "forward_count_scope": "sequential_attempts"
+      }
+    },
+    {
+      "mode": "sequential",
+      "context": 4096,
+      "sample": 1,
+      "response_id": "chatcmpl-auto-4",
+      "prompt_sha256": "0cb9f47cdf9ea33d5fe3f4267bcfd347494b3883770c8b293bb5aacf9bb2602d",
+      "output_sha256": "541b0b8f2b1e9140f1f15ec5b57cb7b3cc5e9a22c5ab1ffb70451578a5623828",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of the records provided, covering measurement, storage, scheduling, and correctness. The review must be at least 500 words. Let me analyze the records and identify the recurring themes, then write a comprehensive technical review.\n\nLet me identify the distinct record types:\n1. Cache/memory traffic records (Records 1, 11, 17, 36, 37, 41, 46, 52, 58, 62, 68, 71, 74, 76, 81, 86, 89, 99, 109, 116, 123, 124)\n2. Storage worker/lookup table records (Records 2, 10, 19, 32, 38, 64, 66, 75, 87, 91)\n3. Evaluation/build identifier records (Records 3, 7, 12, 21, 22, 25, 27, 34,",
+      "actual_input": 4096,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1754469.454802076,
+      "completed_time": 1754488.144009922,
+      "metrics": {
+        "ttft": 2.818301698891446,
+        "latency": 18.689207845833153,
+        "decode_seconds": 15.870906146941707,
+        "decode_tps": 16.06713552704979,
+        "overall_tps": 13.697744822131474,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-4",
+        "requested_mtp": "1",
+        "path": "mtp_sequential_b1",
+        "mtp_steps": "69",
+        "fallback": "none",
+        "plain_tail_tokens": "3",
+        "verifier": "sequential",
+        "tail_reason": "output_limit",
+        "draft_forward_calls": "138",
+        "target_t1_calls": "253",
+        "target_t4_calls": "0",
+        "extend_forward_calls": "69",
+        "forward_count_scope": "sequential_attempts"
+      }
+    },
+    {
+      "mode": "sequential",
+      "context": 4096,
+      "sample": 2,
+      "response_id": "chatcmpl-auto-5",
+      "prompt_sha256": "0cb9f47cdf9ea33d5fe3f4267bcfd347494b3883770c8b293bb5aacf9bb2602d",
+      "output_sha256": "541b0b8f2b1e9140f1f15ec5b57cb7b3cc5e9a22c5ab1ffb70451578a5623828",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of the records provided, covering measurement, storage, scheduling, and correctness. The review must be at least 500 words. Let me analyze the records and identify the recurring themes, then write a comprehensive technical review.\n\nLet me identify the distinct record types:\n1. Cache/memory traffic records (Records 1, 11, 17, 36, 37, 41, 46, 52, 58, 62, 68, 71, 74, 76, 81, 86, 89, 99, 109, 116, 123, 124)\n2. Storage worker/lookup table records (Records 2, 10, 19, 32, 38, 64, 66, 75, 87, 91)\n3. Evaluation/build identifier records (Records 3, 7, 12, 21, 22, 25, 27, 34,",
+      "actual_input": 4096,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1754488.145224982,
+      "completed_time": 1754506.847503062,
+      "metrics": {
+        "ttft": 2.821716057136655,
+        "latency": 18.702278080163524,
+        "decode_seconds": 15.880562023026869,
+        "decode_tps": 16.057366208465993,
+        "overall_tps": 13.68817204528282,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-5",
+        "requested_mtp": "1",
+        "path": "mtp_sequential_b1",
+        "mtp_steps": "69",
+        "fallback": "none",
+        "plain_tail_tokens": "3",
+        "verifier": "sequential",
+        "tail_reason": "output_limit",
+        "draft_forward_calls": "138",
+        "target_t1_calls": "253",
+        "target_t4_calls": "0",
+        "extend_forward_calls": "69",
+        "forward_count_scope": "sequential_attempts"
+      }
+    },
+    {
+      "mode": "sequential",
+      "context": 8192,
+      "sample": 0,
+      "response_id": "chatcmpl-auto-6",
+      "prompt_sha256": "e4c57e9fca8d72d694b167a2f56f8527a51e5ab84830983e47ed434d0708e39a",
+      "output_sha256": "3171cac48aedfa9db651009dc7c5aa54a7e59bcd0c856ebaafe26c70013f2a1f",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of the records provided, covering measurement, storage, scheduling, and correctness. The records are repetitive - they contain the same set of technical notes repeated many times across 252 records. Let me identify the unique records:\n\n1. Cache reuse / memory traffic estimation vs measurement\n2. Storage worker / lookup table / buffer size\n3. Evaluation stores request/response with build identifier for comparability\n4. Useful change reduces complexity while keeping accuracy/speed; no regression on other inputs\n5. Scheduler tracks requests separately; preserves state on finish/arrival\n6. Short vs long request execution paths; time to first answer vs generation rate\n7. Service reads model weights, updates sequence state; records latency, checks generated answer\n8. Request contains technical notes; input length, output length, concurrency fixed when comparing\n\nThese 8 unique themes are repeated across 252 records. I need to write a detailed technical review of at least 500 words covering measurement, storage, scheduling, and correctness.\n\nLet me structure my review around these four themes and weave in the specific technical content from the records.\n</think>\n\n# Technical Review of Experimental Records\n\n## Overview\n\nThe 2",
+      "actual_input": 8192,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1754512.254210295,
+      "completed_time": 1754533.859876933,
+      "metrics": {
+        "ttft": 5.493070420110598,
+        "latency": 21.605666638119146,
+        "decode_seconds": 16.112596218008548,
+        "decode_tps": 15.826127369529338,
+        "overall_tps": 11.848743400878732,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-6",
+        "requested_mtp": "1",
+        "path": "mtp_sequential_b1",
+        "mtp_steps": "83",
+        "fallback": "none",
+        "plain_tail_tokens": "1",
+        "verifier": "sequential",
+        "tail_reason": "output_limit",
+        "draft_forward_calls": "166",
+        "target_t1_calls": "255",
+        "target_t4_calls": "0",
+        "extend_forward_calls": "83",
+        "forward_count_scope": "sequential_attempts"
+      }
+    },
+    {
+      "mode": "sequential",
+      "context": 8192,
+      "sample": 1,
+      "response_id": "chatcmpl-auto-7",
+      "prompt_sha256": "e4c57e9fca8d72d694b167a2f56f8527a51e5ab84830983e47ed434d0708e39a",
+      "output_sha256": "3171cac48aedfa9db651009dc7c5aa54a7e59bcd0c856ebaafe26c70013f2a1f",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of the records provided, covering measurement, storage, scheduling, and correctness. The records are repetitive - they contain the same set of technical notes repeated many times across 252 records. Let me identify the unique records:\n\n1. Cache reuse / memory traffic estimation vs measurement\n2. Storage worker / lookup table / buffer size\n3. Evaluation stores request/response with build identifier for comparability\n4. Useful change reduces complexity while keeping accuracy/speed; no regression on other inputs\n5. Scheduler tracks requests separately; preserves state on finish/arrival\n6. Short vs long request execution paths; time to first answer vs generation rate\n7. Service reads model weights, updates sequence state; records latency, checks generated answer\n8. Request contains technical notes; input length, output length, concurrency fixed when comparing\n\nThese 8 unique themes are repeated across 252 records. I need to write a detailed technical review of at least 500 words covering measurement, storage, scheduling, and correctness.\n\nLet me structure my review around these four themes and weave in the specific technical content from the records.\n</think>\n\n# Technical Review of Experimental Records\n\n## Overview\n\nThe 2",
+      "actual_input": 8192,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1754533.860407496,
+      "completed_time": 1754555.32801923,
+      "metrics": {
+        "ttft": 5.461289297789335,
+        "latency": 21.467611733824015,
+        "decode_seconds": 16.00632243603468,
+        "decode_tps": 15.931204748563864,
+        "overall_tps": 11.924940844567756,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-7",
+        "requested_mtp": "1",
+        "path": "mtp_sequential_b1",
+        "mtp_steps": "83",
+        "fallback": "none",
+        "plain_tail_tokens": "1",
+        "verifier": "sequential",
+        "tail_reason": "output_limit",
+        "draft_forward_calls": "166",
+        "target_t1_calls": "255",
+        "target_t4_calls": "0",
+        "extend_forward_calls": "83",
+        "forward_count_scope": "sequential_attempts"
+      }
+    },
+    {
+      "mode": "sequential",
+      "context": 8192,
+      "sample": 2,
+      "response_id": "chatcmpl-auto-8",
+      "prompt_sha256": "e4c57e9fca8d72d694b167a2f56f8527a51e5ab84830983e47ed434d0708e39a",
+      "output_sha256": "3171cac48aedfa9db651009dc7c5aa54a7e59bcd0c856ebaafe26c70013f2a1f",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of the records provided, covering measurement, storage, scheduling, and correctness. The records are repetitive - they contain the same set of technical notes repeated many times across 252 records. Let me identify the unique records:\n\n1. Cache reuse / memory traffic estimation vs measurement\n2. Storage worker / lookup table / buffer size\n3. Evaluation stores request/response with build identifier for comparability\n4. Useful change reduces complexity while keeping accuracy/speed; no regression on other inputs\n5. Scheduler tracks requests separately; preserves state on finish/arrival\n6. Short vs long request execution paths; time to first answer vs generation rate\n7. Service reads model weights, updates sequence state; records latency, checks generated answer\n8. Request contains technical notes; input length, output length, concurrency fixed when comparing\n\nThese 8 unique themes are repeated across 252 records. I need to write a detailed technical review of at least 500 words covering measurement, storage, scheduling, and correctness.\n\nLet me structure my review around these four themes and weave in the specific technical content from the records.\n</think>\n\n# Technical Review of Experimental Records\n\n## Overview\n\nThe 2",
+      "actual_input": 8192,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1754555.328546108,
+      "completed_time": 1754576.791898405,
+      "metrics": {
+        "ttft": 5.450184955028817,
+        "latency": 21.46335229696706,
+        "decode_seconds": 16.013167341938242,
+        "decode_tps": 15.924394877967638,
+        "overall_tps": 11.927307368298418,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-8",
+        "requested_mtp": "1",
+        "path": "mtp_sequential_b1",
+        "mtp_steps": "83",
+        "fallback": "none",
+        "plain_tail_tokens": "1",
+        "verifier": "sequential",
+        "tail_reason": "output_limit",
+        "draft_forward_calls": "166",
+        "target_t1_calls": "255",
+        "target_t4_calls": "0",
+        "extend_forward_calls": "83",
+        "forward_count_scope": "sequential_attempts"
+      }
+    },
+    {
+      "mode": "sequential",
+      "context": 45056,
+      "sample": 0,
+      "response_id": "chatcmpl-auto-9",
+      "prompt_sha256": "82da2659b9ef07afac3ef134b735ff8d2ce9c6a37f4565a777f9d76a05d7f478",
+      "output_sha256": "0e59305d32f2895cdf1cb1c61a38ece56702dfe329b3d357a76bdbf4f7ad7dae",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of these records in at least 500 words, explaining measurement, storage, scheduling, and correctness. Let me analyze the records carefully.\n\nLooking at the records, I can identify several recurring themes:\n\n1. **Cache/Memory**: \"A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic.\" (Records 1, 11, 17, 36, 37, 41, 46, 52, 58, 62, 68, 71, 74, 76, 81, 86, 89, 99, 109, 116, 123, 124, 132, 136, 143, 145, 152, 155, 163, 165, 166, 171, 172, 188, 195, 229, 241, ",
+      "actual_input": 45056,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1754582.234867251,
+      "completed_time": 1754629.661056681,
+      "metrics": {
+        "ttft": 31.49149665888399,
+        "latency": 47.426189430058,
+        "decode_seconds": 15.934692771174014,
+        "decode_tps": 16.00281873405787,
+        "overall_tps": 5.397861457487265,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-9",
+        "requested_mtp": "1",
+        "path": "mtp_sequential_b1",
+        "mtp_steps": "68",
+        "fallback": "none",
+        "plain_tail_tokens": "1",
+        "verifier": "sequential",
+        "tail_reason": "output_limit",
+        "draft_forward_calls": "136",
+        "target_t1_calls": "255",
+        "target_t4_calls": "0",
+        "extend_forward_calls": "68",
+        "forward_count_scope": "sequential_attempts"
+      }
+    },
+    {
+      "mode": "sequential",
+      "context": 45056,
+      "sample": 1,
+      "response_id": "chatcmpl-auto-10",
+      "prompt_sha256": "82da2659b9ef07afac3ef134b735ff8d2ce9c6a37f4565a777f9d76a05d7f478",
+      "output_sha256": "0e59305d32f2895cdf1cb1c61a38ece56702dfe329b3d357a76bdbf4f7ad7dae",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of these records in at least 500 words, explaining measurement, storage, scheduling, and correctness. Let me analyze the records carefully.\n\nLooking at the records, I can identify several recurring themes:\n\n1. **Cache/Memory**: \"A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic.\" (Records 1, 11, 17, 36, 37, 41, 46, 52, 58, 62, 68, 71, 74, 76, 81, 86, 89, 99, 109, 116, 123, 124, 132, 136, 143, 145, 152, 155, 163, 165, 166, 171, 172, 188, 195, 229, 241, ",
+      "actual_input": 45056,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1754629.662101973,
+      "completed_time": 1754677.035646353,
+      "metrics": {
+        "ttft": 31.51304685184732,
+        "latency": 47.37354437983595,
+        "decode_seconds": 15.860497527988628,
+        "decode_tps": 16.077679754371374,
+        "overall_tps": 5.403859967652403,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-10",
+        "requested_mtp": "1",
+        "path": "mtp_sequential_b1",
+        "mtp_steps": "68",
+        "fallback": "none",
+        "plain_tail_tokens": "1",
+        "verifier": "sequential",
+        "tail_reason": "output_limit",
+        "draft_forward_calls": "136",
+        "target_t1_calls": "255",
+        "target_t4_calls": "0",
+        "extend_forward_calls": "68",
+        "forward_count_scope": "sequential_attempts"
+      }
+    },
+    {
+      "mode": "sequential",
+      "context": 45056,
+      "sample": 2,
+      "response_id": "chatcmpl-auto-11",
+      "prompt_sha256": "82da2659b9ef07afac3ef134b735ff8d2ce9c6a37f4565a777f9d76a05d7f478",
+      "output_sha256": "0e59305d32f2895cdf1cb1c61a38ece56702dfe329b3d357a76bdbf4f7ad7dae",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of these records in at least 500 words, explaining measurement, storage, scheduling, and correctness. Let me analyze the records carefully.\n\nLooking at the records, I can identify several recurring themes:\n\n1. **Cache/Memory**: \"A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic.\" (Records 1, 11, 17, 36, 37, 41, 46, 52, 58, 62, 68, 71, 74, 76, 81, 86, 89, 99, 109, 116, 123, 124, 132, 136, 143, 145, 152, 155, 163, 165, 166, 171, 172, 188, 195, 229, 241, ",
+      "actual_input": 45056,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1754677.036724238,
+      "completed_time": 1754724.399777551,
+      "metrics": {
+        "ttft": 31.520972999045625,
+        "latency": 47.363053312990814,
+        "decode_seconds": 15.84208031394519,
+        "decode_tps": 16.09637086459744,
+        "overall_tps": 5.405056939810591,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-11",
+        "requested_mtp": "1",
+        "path": "mtp_sequential_b1",
+        "mtp_steps": "68",
+        "fallback": "none",
+        "plain_tail_tokens": "1",
+        "verifier": "sequential",
+        "tail_reason": "output_limit",
+        "draft_forward_calls": "136",
+        "target_t1_calls": "255",
+        "target_t4_calls": "0",
+        "extend_forward_calls": "68",
+        "forward_count_scope": "sequential_attempts"
+      }
+    },
+    {
+      "mode": "sequential",
+      "context": 204800,
+      "sample": 0,
+      "response_id": "chatcmpl-auto-12",
+      "prompt_sha256": "959679d2f533ca72d15a5ed3f3a2e2361f63dbf3a88384ab8ec2d750d5e34bf5",
+      "output_sha256": "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of these records in at least 500 words, explaining measurement, storage, scheduling, and correctness. Let me analyze the records to identify the distinct themes and write a comprehensive technical review.\n\nLooking at the records, I can identify several recurring themes:\n\n1. **Cache/Memory**: \"A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic.\"\n\n2. **Storage Worker/Lookup Table**: \"The storage worker reads selected rows from the lookup table. The table is much larger than the small buffer used by one request.\"\n\n3. **Evaluation/Reproducibility**: \"The evaluation stores the complete request and response with the build identifier. The next run uses the same data so that the results remain comparable.\"\n\n4. **Code Quality/Regression**: \"A useful change can reduce code complexity while keeping the same accuracy and speed. A faster result on one input does not justify a regression on another input.\"\n\n5. **Scheduler/State Management**: \"The scheduler tracks each request separately. It must preserve the correct state when a request finishes or another request arrives.\"\n\n6. **Latency/Generation Rate**: \"A",
+      "actual_input": 204800,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1754729.868367661,
+      "completed_time": 1754911.799446528,
+      "metrics": {
+        "ttft": 165.254395237891,
+        "latency": 181.93107886705548,
+        "decode_seconds": 16.676683629164472,
+        "decode_tps": 15.290809951809099,
+        "overall_tps": 1.4071262677833607,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-12",
+        "requested_mtp": "1",
+        "path": "mtp_sequential_b1",
+        "mtp_steps": "68",
+        "fallback": "none",
+        "plain_tail_tokens": "4",
+        "verifier": "sequential",
+        "tail_reason": "output_limit",
+        "draft_forward_calls": "136",
+        "target_t1_calls": "252",
+        "target_t4_calls": "0",
+        "extend_forward_calls": "68",
+        "forward_count_scope": "sequential_attempts"
+      }
+    },
+    {
+      "mode": "sequential",
+      "context": 204800,
+      "sample": 1,
+      "response_id": "chatcmpl-auto-13",
+      "prompt_sha256": "959679d2f533ca72d15a5ed3f3a2e2361f63dbf3a88384ab8ec2d750d5e34bf5",
+      "output_sha256": "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of these records in at least 500 words, explaining measurement, storage, scheduling, and correctness. Let me analyze the records to identify the distinct themes and write a comprehensive technical review.\n\nLooking at the records, I can identify several recurring themes:\n\n1. **Cache/Memory**: \"A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic.\"\n\n2. **Storage Worker/Lookup Table**: \"The storage worker reads selected rows from the lookup table. The table is much larger than the small buffer used by one request.\"\n\n3. **Evaluation/Reproducibility**: \"The evaluation stores the complete request and response with the build identifier. The next run uses the same data so that the results remain comparable.\"\n\n4. **Code Quality/Regression**: \"A useful change can reduce code complexity while keeping the same accuracy and speed. A faster result on one input does not justify a regression on another input.\"\n\n5. **Scheduler/State Management**: \"The scheduler tracks each request separately. It must preserve the correct state when a request finishes or another request arrives.\"\n\n6. **Latency/Generation Rate**: \"A",
+      "actual_input": 204800,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1754911.802765139,
+      "completed_time": 1755093.696138079,
+      "metrics": {
+        "ttft": 165.23879234609194,
+        "latency": 181.8933729401324,
+        "decode_seconds": 16.654580594040453,
+        "decode_tps": 15.311103066218745,
+        "overall_tps": 1.4074179606546675,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-13",
+        "requested_mtp": "1",
+        "path": "mtp_sequential_b1",
+        "mtp_steps": "68",
+        "fallback": "none",
+        "plain_tail_tokens": "4",
+        "verifier": "sequential",
+        "tail_reason": "output_limit",
+        "draft_forward_calls": "136",
+        "target_t1_calls": "252",
+        "target_t4_calls": "0",
+        "extend_forward_calls": "68",
+        "forward_count_scope": "sequential_attempts"
+      }
+    },
+    {
+      "mode": "sequential",
+      "context": 204800,
+      "sample": 2,
+      "response_id": "chatcmpl-auto-14",
+      "prompt_sha256": "959679d2f533ca72d15a5ed3f3a2e2361f63dbf3a88384ab8ec2d750d5e34bf5",
+      "output_sha256": "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
+      "text": "\n\n<think>\nThe user wants me to write a detailed technical review of these records in at least 500 words, explaining measurement, storage, scheduling, and correctness. Let me analyze the records to identify the distinct themes and write a comprehensive technical review.\n\nLooking at the records, I can identify several recurring themes:\n\n1. **Cache/Memory**: \"A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic.\"\n\n2. **Storage Worker/Lookup Table**: \"The storage worker reads selected rows from the lookup table. The table is much larger than the small buffer used by one request.\"\n\n3. **Evaluation/Reproducibility**: \"The evaluation stores the complete request and response with the build identifier. The next run uses the same data so that the results remain comparable.\"\n\n4. **Code Quality/Regression**: \"A useful change can reduce code complexity while keeping the same accuracy and speed. A faster result on one input does not justify a regression on another input.\"\n\n5. **Scheduler/State Management**: \"The scheduler tracks each request separately. It must preserve the correct state when a request finishes or another request arrives.\"\n\n6. **Latency/Generation Rate**: \"A",
+      "actual_input": 204800,
+      "actual_output": 256,
+      "finish": [
+        "length"
+      ],
+      "observed_usage_messages": [],
+      "counts_source": "evalscope DB; serializer may omit usage-only messages",
+      "start_time": 1755093.699468571,
+      "completed_time": 1755275.987868642,
+      "metrics": {
+        "ttft": 165.62972780806012,
+        "latency": 182.2884000709746,
+        "decode_seconds": 16.65867226291448,
+        "decode_tps": 15.307342384523691,
+        "overall_tps": 1.4043680228710413,
+        "actual_output": 256
+      },
+      "path": {
+        "id": "chatcmpl-auto-14",
+        "requested_mtp": "1",
+        "path": "mtp_sequential_b1",
+        "mtp_steps": "68",
+        "fallback": "none",
+        "plain_tail_tokens": "4",
+        "verifier": "sequential",
+        "tail_reason": "output_limit",
+        "draft_forward_calls": "136",
+        "target_t1_calls": "252",
+        "target_t4_calls": "0",
+        "extend_forward_calls": "68",
+        "forward_count_scope": "sequential_attempts"
+      }
+    }
+  ],
+  "request_count": 30,
+  "comparisons": [
+    {
+      "context": 1024,
+      "plain_all_three_mean": {
+        "ttft": 0.7991575326304883,
+        "latency": 14.534255889321988,
+        "decode_seconds": 13.7350983566915,
+        "decode_tps": 18.565734939210884,
+        "overall_tps": 17.61421818679454
+      },
+      "sequential_all_three_mean": {
+        "ttft": 0.9394024686577419,
+        "latency": 16.302019243671868,
+        "decode_seconds": 15.362616775014127,
+        "decode_tps": 16.598799610391573,
+        "overall_tps": 15.704388169232878
+      },
+      "sequential_percent_change": {
+        "ttft": 17.549097681107597,
+        "latency": 12.16273724510808,
+        "decode_seconds": 11.849339378991264,
+        "decode_tps": -10.594438277071049,
+        "overall_tps": -10.84254774925788
+      }
+    },
+    {
+      "context": 4096,
+      "plain_all_three_mean": {
+        "ttft": 2.6416146177022406,
+        "latency": 16.925754233030602,
+        "decode_seconds": 14.284139615328362,
+        "decode_tps": 17.8519683841102,
+        "overall_tps": 15.12488416922853
+      },
+      "sequential_all_three_mean": {
+        "ttft": 2.8382338323475174,
+        "latency": 18.74599514932682,
+        "decode_seconds": 15.907761316979304,
+        "decode_tps": 16.03004180005371,
+        "overall_tps": 13.65644706328886
+      },
+      "sequential_percent_change": {
+        "ttft": 7.44314531452368,
+        "latency": 10.754267675374951,
+        "decode_seconds": 11.366604817476222,
+        "decode_tps": -10.205746194790288,
+        "overall_tps": -9.708749432456443
+      }
+    },
+    {
+      "context": 8192,
+      "plain_all_three_mean": {
+        "ttft": 5.170306872731696,
+        "latency": 19.283886954421178,
+        "decode_seconds": 14.113580081689483,
+        "decode_tps": 18.067751238841954,
+        "overall_tps": 13.275365444659672
+      },
+      "sequential_all_three_mean": {
+        "ttft": 5.468181557642917,
+        "latency": 21.512210222970072,
+        "decode_seconds": 16.044028665327158,
+        "decode_tps": 15.893908998686946,
+        "overall_tps": 11.900330537914968
+      },
+      "sequential_percent_change": {
+        "ttft": 5.7612573536441,
+        "latency": 11.555363676502006,
+        "decode_seconds": 13.677951111370955,
+        "decode_tps": -12.031614844694637,
+        "overall_tps": -10.357793256063196
+      }
+    },
+    {
+      "context": 45056,
+      "plain_all_three_mean": {
+        "ttft": 30.475674911712606,
+        "latency": 44.7576819723472,
+        "decode_seconds": 14.282007060634593,
+        "decode_tps": 17.854633697491128,
+        "overall_tps": 5.719689969062191
+      },
+      "sequential_all_three_mean": {
+        "ttft": 31.508505503258977,
+        "latency": 47.38759570762826,
+        "decode_seconds": 15.879090204369277,
+        "decode_tps": 16.058956451008893,
+        "overall_tps": 5.40225945498342
+      },
+      "sequential_percent_change": {
+        "ttft": 3.389032710640416,
+        "latency": 5.87589352126392,
+        "decode_seconds": 11.182483925083009,
+        "decode_tps": -10.057205747853326,
+        "overall_tps": -5.549785316962163
+      }
+    },
+    {
+      "context": 204800,
+      "plain_all_three_mean": {
+        "ttft": 159.29406260931864,
+        "latency": 174.245898984295,
+        "decode_seconds": 14.951836374976361,
+        "decode_tps": 17.054810083827793,
+        "overall_tps": 1.469190885195479
+      },
+      "sequential_all_three_mean": {
+        "ttft": 165.37430513068102,
+        "latency": 182.03761729272082,
+        "decode_seconds": 16.6633121620398,
+        "decode_tps": 15.303085134183846,
+        "overall_tps": 1.4063040837696898
+      },
+      "sequential_percent_change": {
+        "ttft": 3.8169925619102596,
+        "latency": 4.4716795940936915,
+        "decode_seconds": 11.446592539815349,
+        "decode_tps": -10.271148966384668,
+        "overall_tps": -4.280369695965125
+      }
+    }
+  ],
+  "cost_groups": [
+    {
+      "mode": "plain",
+      "context": 1024,
+      "samples": [
+        {
+          "ttft": 0.8679790610913187,
+          "latency": 14.660095218103379,
+          "decode_seconds": 13.79211615701206,
+          "decode_tps": 18.48882340440232,
+          "overall_tps": 17.462369527032273,
+          "actual_output": 256
+        },
+        {
+          "ttft": 0.7660732788499445,
+          "latency": 14.47090647299774,
+          "decode_seconds": 13.704833194147795,
+          "decode_tps": 18.606574511894788,
+          "overall_tps": 17.690667856757145,
+          "actual_output": 256
+        },
+        {
+          "ttft": 0.7634202579502016,
+          "latency": 14.471765976864845,
+          "decode_seconds": 13.708345718914643,
+          "decode_tps": 18.601806901335546,
+          "overall_tps": 17.689617176594208,
+          "actual_output": 256
+        }
+      ],
+      "all_three_mean": {
+        "ttft": 0.7991575326304883,
+        "latency": 14.534255889321988,
+        "decode_seconds": 13.7350983566915,
+        "decode_tps": 18.565734939210884,
+        "overall_tps": 17.61421818679454
+      },
+      "first_sample": {
+        "ttft": 0.8679790610913187,
+        "latency": 14.660095218103379,
+        "decode_seconds": 13.79211615701206,
+        "decode_tps": 18.48882340440232,
+        "overall_tps": 17.462369527032273,
+        "actual_output": 256
+      },
+      "later_two_mean": {
+        "ttft": 0.764746768400073,
+        "latency": 14.471336224931292,
+        "decode_seconds": 13.70658945653122,
+        "decode_tps": 18.604190706615167,
+        "overall_tps": 17.690142516675678
+      }
+    },
+    {
+      "mode": "plain",
+      "context": 4096,
+      "samples": [
+        {
+          "ttft": 2.650861636037007,
+          "latency": 16.938472494948655,
+          "decode_seconds": 14.287610858911648,
+          "decode_tps": 17.847630546358854,
+          "overall_tps": 15.113523375637538,
+          "actual_output": 256
+        },
+        {
+          "ttft": 2.635858217952773,
+          "latency": 16.919500661082566,
+          "decode_seconds": 14.283642443129793,
+          "decode_tps": 17.852589142810068,
+          "overall_tps": 15.130470167410973,
+          "actual_output": 256
+        },
+        {
+          "ttft": 2.6381239991169423,
+          "latency": 16.919289543060586,
+          "decode_seconds": 14.281165543943644,
+          "decode_tps": 17.85568546316168,
+          "overall_tps": 15.130658964637076,
+          "actual_output": 256
+        }
+      ],
+      "all_three_mean": {
+        "ttft": 2.6416146177022406,
+        "latency": 16.925754233030602,
+        "decode_seconds": 14.284139615328362,
+        "decode_tps": 17.8519683841102,
+        "overall_tps": 15.12488416922853
+      },
+      "first_sample": {
+        "ttft": 2.650861636037007,
+        "latency": 16.938472494948655,
+        "decode_seconds": 14.287610858911648,
+        "decode_tps": 17.847630546358854,
+        "overall_tps": 15.113523375637538,
+        "actual_output": 256
+      },
+      "later_two_mean": {
+        "ttft": 2.6369911085348576,
+        "latency": 16.919395102071576,
+        "decode_seconds": 14.282403993536718,
+        "decode_tps": 17.854137302985876,
+        "overall_tps": 15.130564566024024
+      }
+    },
+    {
+      "mode": "plain",
+      "context": 8192,
+      "samples": [
+        {
+          "ttft": 5.180229286197573,
+          "latency": 19.32331232004799,
+          "decode_seconds": 14.143083033850417,
+          "decode_tps": 18.03001505327208,
+          "overall_tps": 13.248246250949393,
+          "actual_output": 256
+        },
+        {
+          "ttft": 5.170277374098077,
+          "latency": 19.279774553142488,
+          "decode_seconds": 14.10949717904441,
+          "decode_tps": 18.072933199825787,
+          "overall_tps": 13.278163564328274,
+          "actual_output": 256
+        },
+        {
+          "ttft": 5.160413957899436,
+          "latency": 19.248573990073055,
+          "decode_seconds": 14.088160032173619,
+          "decode_tps": 18.10030546342799,
+          "overall_tps": 13.299686518701346,
+          "actual_output": 256
+        }
+      ],
+      "all_three_mean": {
+        "ttft": 5.170306872731696,
+        "latency": 19.283886954421178,
+        "decode_seconds": 14.113580081689483,
+        "decode_tps": 18.067751238841954,
+        "overall_tps": 13.275365444659672
+      },
+      "first_sample": {
+        "ttft": 5.180229286197573,
+        "latency": 19.32331232004799,
+        "decode_seconds": 14.143083033850417,
+        "decode_tps": 18.03001505327208,
+        "overall_tps": 13.248246250949393,
+        "actual_output": 256
+      },
+      "later_two_mean": {
+        "ttft": 5.165345665998757,
+        "latency": 19.26417427160777,
+        "decode_seconds": 14.098828605609015,
+        "decode_tps": 18.08661933162689,
+        "overall_tps": 13.28892504151481
+      }
+    },
+    {
+      "mode": "plain",
+      "context": 45056,
+      "samples": [
+        {
+          "ttft": 30.447419196134433,
+          "latency": 44.732038617134094,
+          "decode_seconds": 14.284619420999661,
+          "decode_tps": 17.85136813831577,
+          "overall_tps": 5.722967428136444,
+          "actual_output": 256
+        },
+        {
+          "ttft": 30.474079492036253,
+          "latency": 44.75421420298517,
+          "decode_seconds": 14.280134710948914,
+          "decode_tps": 17.856974402663408,
+          "overall_tps": 5.720131714052628,
+          "actual_output": 256
+        },
+        {
+          "ttft": 30.505526046967134,
+          "latency": 44.78679309692234,
+          "decode_seconds": 14.281267049955204,
+          "decode_tps": 17.8555585514942,
+          "overall_tps": 5.715970764997501,
+          "actual_output": 256
+        }
+      ],
+      "all_three_mean": {
+        "ttft": 30.475674911712606,
+        "latency": 44.7576819723472,
+        "decode_seconds": 14.282007060634593,
+        "decode_tps": 17.854633697491128,
+        "overall_tps": 5.719689969062191
+      },
+      "first_sample": {
+        "ttft": 30.447419196134433,
+        "latency": 44.732038617134094,
+        "decode_seconds": 14.284619420999661,
+        "decode_tps": 17.85136813831577,
+        "overall_tps": 5.722967428136444,
+        "actual_output": 256
+      },
+      "later_two_mean": {
+        "ttft": 30.489802769501694,
+        "latency": 44.77050364995375,
+        "decode_seconds": 14.28070088045206,
+        "decode_tps": 17.856266477078805,
+        "overall_tps": 5.718051239525065
+      }
+    },
+    {
+      "mode": "plain",
+      "context": 204800,
+      "samples": [
+        {
+          "ttft": 159.0967187259812,
+          "latency": 174.06585207907483,
+          "decode_seconds": 14.969133353093639,
+          "decode_tps": 17.03505433381016,
+          "overall_tps": 1.470707763425672,
+          "actual_output": 256
+        },
+        {
+          "ttft": 159.11597526818514,
+          "latency": 174.08625844400376,
+          "decode_seconds": 14.970283175818622,
+          "decode_tps": 17.033745922181314,
+          "overall_tps": 1.4705353672837105,
+          "actual_output": 256
+        },
+        {
+          "ttft": 159.6694938337896,
+          "latency": 174.58558642980643,
+          "decode_seconds": 14.916092596016824,
+          "decode_tps": 17.095629995491908,
+          "overall_tps": 1.4663295248770545,
+          "actual_output": 256
+        }
+      ],
+      "all_three_mean": {
+        "ttft": 159.29406260931864,
+        "latency": 174.245898984295,
+        "decode_seconds": 14.951836374976361,
+        "decode_tps": 17.054810083827793,
+        "overall_tps": 1.469190885195479
+      },
+      "first_sample": {
+        "ttft": 159.0967187259812,
+        "latency": 174.06585207907483,
+        "decode_seconds": 14.969133353093639,
+        "decode_tps": 17.03505433381016,
+        "overall_tps": 1.470707763425672,
+        "actual_output": 256
+      },
+      "later_two_mean": {
+        "ttft": 159.39273455098737,
+        "latency": 174.3359224369051,
+        "decode_seconds": 14.943187885917723,
+        "decode_tps": 17.06468795883661,
+        "overall_tps": 1.4684324460803824
+      }
+    },
+    {
+      "mode": "sequential",
+      "context": 1024,
+      "samples": [
+        {
+          "ttft": 1.0626033609732985,
+          "latency": 16.468211346073076,
+          "decode_seconds": 15.405607985099778,
+          "decode_tps": 16.552413916194325,
+          "overall_tps": 15.545100473892353,
+          "actual_output": 256
+        },
+        {
+          "ttft": 0.876650707796216,
+          "latency": 16.21718223579228,
+          "decode_seconds": 15.340531527996063,
+          "decode_tps": 16.622631330252915,
+          "overall_tps": 15.78572629189508,
+          "actual_output": 256
+        },
+        {
+          "ttft": 0.8789533372037113,
+          "latency": 16.220664149150252,
+          "decode_seconds": 15.341710811946541,
+          "decode_tps": 16.62135358472748,
+          "overall_tps": 15.782337741911203,
+          "actual_output": 256
+        }
+      ],
+      "all_three_mean": {
+        "ttft": 0.9394024686577419,
+        "latency": 16.302019243671868,
+        "decode_seconds": 15.362616775014127,
+        "decode_tps": 16.598799610391573,
+        "overall_tps": 15.704388169232878
+      },
+      "first_sample": {
+        "ttft": 1.0626033609732985,
+        "latency": 16.468211346073076,
+        "decode_seconds": 15.405607985099778,
+        "decode_tps": 16.552413916194325,
+        "overall_tps": 15.545100473892353,
+        "actual_output": 256
+      },
+      "later_two_mean": {
+        "ttft": 0.8778020224999636,
+        "latency": 16.218923192471266,
+        "decode_seconds": 15.341121169971302,
+        "decode_tps": 16.621992457490197,
+        "overall_tps": 15.78403201690314
+      }
+    },
+    {
+      "mode": "sequential",
+      "context": 4096,
+      "samples": [
+        {
+          "ttft": 2.874683741014451,
+          "latency": 18.846499521983787,
+          "decode_seconds": 15.971815780969337,
+          "decode_tps": 15.965623664645344,
+          "overall_tps": 13.583424322452288,
+          "actual_output": 256
+        },
+        {
+          "ttft": 2.818301698891446,
+          "latency": 18.689207845833153,
+          "decode_seconds": 15.870906146941707,
+          "decode_tps": 16.06713552704979,
+          "overall_tps": 13.697744822131474,
+          "actual_output": 256
+        },
+        {
+          "ttft": 2.821716057136655,
+          "latency": 18.702278080163524,
+          "decode_seconds": 15.880562023026869,
+          "decode_tps": 16.057366208465993,
+          "overall_tps": 13.68817204528282,
+          "actual_output": 256
+        }
+      ],
+      "all_three_mean": {
+        "ttft": 2.8382338323475174,
+        "latency": 18.74599514932682,
+        "decode_seconds": 15.907761316979304,
+        "decode_tps": 16.03004180005371,
+        "overall_tps": 13.65644706328886
+      },
+      "first_sample": {
+        "ttft": 2.874683741014451,
+        "latency": 18.846499521983787,
+        "decode_seconds": 15.971815780969337,
+        "decode_tps": 15.965623664645344,
+        "overall_tps": 13.583424322452288,
+        "actual_output": 256
+      },
+      "later_two_mean": {
+        "ttft": 2.8200088780140504,
+        "latency": 18.695742962998338,
+        "decode_seconds": 15.875734084984288,
+        "decode_tps": 16.06225086775789,
+        "overall_tps": 13.692958433707147
+      }
+    },
+    {
+      "mode": "sequential",
+      "context": 8192,
+      "samples": [
+        {
+          "ttft": 5.493070420110598,
+          "latency": 21.605666638119146,
+          "decode_seconds": 16.112596218008548,
+          "decode_tps": 15.826127369529338,
+          "overall_tps": 11.848743400878732,
+          "actual_output": 256
+        },
+        {
+          "ttft": 5.461289297789335,
+          "latency": 21.467611733824015,
+          "decode_seconds": 16.00632243603468,
+          "decode_tps": 15.931204748563864,
+          "overall_tps": 11.924940844567756,
+          "actual_output": 256
+        },
+        {
+          "ttft": 5.450184955028817,
+          "latency": 21.46335229696706,
+          "decode_seconds": 16.013167341938242,
+          "decode_tps": 15.924394877967638,
+          "overall_tps": 11.927307368298418,
+          "actual_output": 256
+        }
+      ],
+      "all_three_mean": {
+        "ttft": 5.468181557642917,
+        "latency": 21.512210222970072,
+        "decode_seconds": 16.044028665327158,
+        "decode_tps": 15.893908998686946,
+        "overall_tps": 11.900330537914968
+      },
+      "first_sample": {
+        "ttft": 5.493070420110598,
+        "latency": 21.605666638119146,
+        "decode_seconds": 16.112596218008548,
+        "decode_tps": 15.826127369529338,
+        "overall_tps": 11.848743400878732,
+        "actual_output": 256
+      },
+      "later_two_mean": {
+        "ttft": 5.455737126409076,
+        "latency": 21.465482015395537,
+        "decode_seconds": 16.00974488898646,
+        "decode_tps": 15.92779981326575,
+        "overall_tps": 11.926124106433086
+      }
+    },
+    {
+      "mode": "sequential",
+      "context": 45056,
+      "samples": [
+        {
+          "ttft": 31.49149665888399,
+          "latency": 47.426189430058,
+          "decode_seconds": 15.934692771174014,
+          "decode_tps": 16.00281873405787,
+          "overall_tps": 5.397861457487265,
+          "actual_output": 256
+        },
+        {
+          "ttft": 31.51304685184732,
+          "latency": 47.37354437983595,
+          "decode_seconds": 15.860497527988628,
+          "decode_tps": 16.077679754371374,
+          "overall_tps": 5.403859967652403,
+          "actual_output": 256
+        },
+        {
+          "ttft": 31.520972999045625,
+          "latency": 47.363053312990814,
+          "decode_seconds": 15.84208031394519,
+          "decode_tps": 16.09637086459744,
+          "overall_tps": 5.405056939810591,
+          "actual_output": 256
+        }
+      ],
+      "all_three_mean": {
+        "ttft": 31.508505503258977,
+        "latency": 47.38759570762826,
+        "decode_seconds": 15.879090204369277,
+        "decode_tps": 16.058956451008893,
+        "overall_tps": 5.40225945498342
+      },
+      "first_sample": {
+        "ttft": 31.49149665888399,
+        "latency": 47.426189430058,
+        "decode_seconds": 15.934692771174014,
+        "decode_tps": 16.00281873405787,
+        "overall_tps": 5.397861457487265,
+        "actual_output": 256
+      },
+      "later_two_mean": {
+        "ttft": 31.517009925446473,
+        "latency": 47.36829884641338,
+        "decode_seconds": 15.851288920966908,
+        "decode_tps": 16.087025309484407,
+        "overall_tps": 5.404458453731497
+      }
+    },
+    {
+      "mode": "sequential",
+      "context": 204800,
+      "samples": [
+        {
+          "ttft": 165.254395237891,
+          "latency": 181.93107886705548,
+          "decode_seconds": 16.676683629164472,
+          "decode_tps": 15.290809951809099,
+          "overall_tps": 1.4071262677833607,
+          "actual_output": 256
+        },
+        {
+          "ttft": 165.23879234609194,
+          "latency": 181.8933729401324,
+          "decode_seconds": 16.654580594040453,
+          "decode_tps": 15.311103066218745,
+          "overall_tps": 1.4074179606546675,
+          "actual_output": 256
+        },
+        {
+          "ttft": 165.62972780806012,
+          "latency": 182.2884000709746,
+          "decode_seconds": 16.65867226291448,
+          "decode_tps": 15.307342384523691,
+          "overall_tps": 1.4043680228710413,
+          "actual_output": 256
+        }
+      ],
+      "all_three_mean": {
+        "ttft": 165.37430513068102,
+        "latency": 182.03761729272082,
+        "decode_seconds": 16.6633121620398,
+        "decode_tps": 15.303085134183846,
+        "overall_tps": 1.4063040837696898
+      },
+      "first_sample": {
+        "ttft": 165.254395237891,
+        "latency": 181.93107886705548,
+        "decode_seconds": 16.676683629164472,
+        "decode_tps": 15.290809951809099,
+        "overall_tps": 1.4071262677833607,
+        "actual_output": 256
+      },
+      "later_two_mean": {
+        "ttft": 165.43426007707603,
+        "latency": 182.0908865055535,
+        "decode_seconds": 16.656626428477466,
+        "decode_tps": 15.309222725371217,
+        "overall_tps": 1.4058929917628544
+      }
+    }
+  ],
+  "mode_details": [
+    {
+      "mode": "plain",
+      "execution": {
+        "mode": "plain",
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/run_acceptance.py",
+          "--mode",
+          "performance",
+          "--output",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/final-cost-matrix/plain",
+          "--binary",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/q4t",
+          "--model-dir",
+          "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+          "--port",
+          "28945",
+          "--startup-timeout",
+          "600",
+          "--fixtures",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/performance-off-04"
+        ],
+        "passed": true,
+        "cleanup_errors": [],
+        "process_group": 132703,
+        "exit_code": 0,
+        "remaining_process_group": false,
+        "seconds": 864.1465918570757
+      },
+      "exit": {
+        "server": 0,
+        "completed": 5,
+        "decode_mode": "plain",
+        "actual_mode_checks_passed": true,
+        "http_output_checks_passed": true,
+        "failure": null
+      },
+      "commit_at_launch": "90d5f539a77b6ab2d6c5bc5fbaa2cadfced778d1",
+      "worktree_patch_sha256": "1aa33692c771e4251a142109d4221741526b6fe0a173afc1e2344e19179179c1",
+      "binary_sha256": "eae6949bb275e9c97c3e37c505eddc0988f585daaab01ec3b587c02b80cf5872",
+      "evalscope_version": "1.12.0"
+    },
+    {
+      "mode": "sequential",
+      "execution": {
+        "mode": "sequential",
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/run_acceptance.py",
+          "--mode",
+          "performance",
+          "--output",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/final-cost-matrix/sequential",
+          "--binary",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/q4t",
+          "--model-dir",
+          "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+          "--port",
+          "28945",
+          "--startup-timeout",
+          "600",
+          "--fixtures",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/performance-off-04",
+          "--mtp",
+          "--mtp-verifier",
+          "sequential",
+          "--reference",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/final-cost-matrix/plain/results.json"
+        ],
+        "passed": true,
+        "cleanup_errors": [],
+        "process_group": 136016,
+        "exit_code": 0,
+        "remaining_process_group": false,
+        "seconds": 915.0847001778893
+      },
+      "exit": {
+        "server": 0,
+        "completed": 5,
+        "decode_mode": "mtp",
+        "actual_mode_checks_passed": true,
+        "http_output_checks_passed": true,
+        "failure": null
+      },
+      "commit_at_launch": "d621d00b311effd83088b5ea6322553e0f94550a",
+      "worktree_patch_sha256": "10eaed5cf759a05308114a6f01f92b3142904d0461e747f5f02f8f153cd9b105",
+      "binary_sha256": "eae6949bb275e9c97c3e37c505eddc0988f585daaab01ec3b587c02b80cf5872",
+      "evalscope_version": "1.12.0"
+    }
+  ],
+  "root_derived_cost_binding": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/final-cost-results-01.json",
+    "sha256": "a812fcdc20333754337e695d6c6f4005cc4c88d9d3cf6c8f105aec47c5ae2881"
+  },
+  "process_groups": [
+    132703,
+    136016
+  ],
+  "remaining_process_group_members": [],
+  "method": "Independent read-only SQLite queries, restricted primitive unpickling, own message/text/identity/path/fixture comparisons and arithmetic; no project parser imported; no test or model request rerun.",
+  "limits": [
+    "DB usage counts are checked; raw usage-only SSE is absent from stored messages and fallback-branch provenance is not independently attested.",
+    "TTFT and latency are evalscope client fields; decode=(output-1)/(latency-TTFT), not GPU timing or exact token ITL.",
+    "Every context retains all three requests; first listed separately and never discarded. Only first 1K request follows server load.",
+    "Same-mode order and matching text do not prove causal no-regression versus historical main. No new performance nonregression conclusion.",
+    "Fixed technical prompt output conformity is not full semantic task quality or T4 numerical admission."
+  ],
+  "checks_count": 822,
+  "failed_checks": [],
+  "raw_bindings_count": 212,
+  "input_bindings_count": 69,
+  "complete_original_binding": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/final-cost-independent-review-02.json",
+    "bytes": 224607,
+    "sha256": "bbfb6b47014b5c3a7fd31bdf9edd27c371b901b080135d8fec0c6d353c7c0221"
+  }
+}
