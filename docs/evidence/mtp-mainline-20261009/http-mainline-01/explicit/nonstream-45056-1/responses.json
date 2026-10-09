@@ -1,0 +1,33 @@
+[
+  {
+    "case": "nonstream-45056-1",
+    "success": 1,
+    "actual_input": 45056,
+    "actual_output": 1,
+    "text": "\n\n",
+    "finish": [
+      "length"
+    ],
+    "prompt_sha256": "82da2659b9ef07afac3ef134b735ff8d2ce9c6a37f4565a777f9d76a05d7f478",
+    "request_stream": false,
+    "ttft_observed": 30.53441621386446,
+    "latency_observed": 30.53441621386446,
+    "mode": "explicit",
+    "observed_usage_messages": [
+      {
+        "prompt_tokens": 45056,
+        "completion_tokens": 1,
+        "total_tokens": 45057
+      }
+    ],
+    "usage_source": "evalscope database prompt/completion columns",
+    "total_tokens_derived": 45057,
+    "total_tokens_derived_not_raw_observation": true,
+    "response_id": "chatcmpl-auto-2",
+    "response_id_valid": true,
+    "response_ids_observed": [
+      "chatcmpl-auto-2"
+    ],
+    "response_id_source": "actual HTTP/SSE response id fields"
+  }
+]

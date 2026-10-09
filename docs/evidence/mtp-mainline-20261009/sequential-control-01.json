@@ -1,0 +1,16 @@
+{
+  "command": [
+    "ctest",
+    "--test-dir",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009",
+    "-R",
+    "^q4t_mtp_sequential_control$",
+    "--no-tests=error",
+    "--output-on-failure"
+  ],
+  "seconds": 0.11375713348388672,
+  "exit_code": 0,
+  "warnings": [],
+  "passed": true,
+  "log_sha256": "660290d39b9adc02024c1ed965254f4e2ed091383fffa94d7a84e7690f0ad9d7"
+}

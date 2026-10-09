@@ -1,0 +1,192 @@
+[
+  {
+    "name": "cli-mtp",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t",
+      "generate",
+      "hello",
+      "--mtp",
+      "--model-dir",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/intentionally-absent-model"
+    ],
+    "environment_additions": {},
+    "exit_code": 2,
+    "diagnostic": "--mtp",
+    "passed": true
+  },
+  {
+    "name": "cli-k",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t",
+      "generate",
+      "hello",
+      "--mtp-k",
+      "3",
+      "--model-dir",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/intentionally-absent-model"
+    ],
+    "environment_additions": {},
+    "exit_code": 2,
+    "diagnostic": "--mtp",
+    "passed": true
+  },
+  {
+    "name": "multi",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t",
+      "serve",
+      "--mtp",
+      "--max-seq",
+      "2",
+      "--model-dir",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/intentionally-absent-model"
+    ],
+    "environment_additions": {},
+    "exit_code": 2,
+    "diagnostic": "MTP requires",
+    "passed": true
+  },
+  {
+    "name": "media",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t",
+      "serve",
+      "--mtp",
+      "--allow-media",
+      "--model-dir",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/intentionally-absent-model"
+    ],
+    "environment_additions": {},
+    "exit_code": 2,
+    "diagnostic": "MTP requires",
+    "passed": true
+  },
+  {
+    "name": "unknown-k",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t",
+      "serve",
+      "--mtp-k",
+      "3",
+      "--model-dir",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/intentionally-absent-model"
+    ],
+    "environment_additions": {},
+    "exit_code": 2,
+    "diagnostic": "unknown serve option",
+    "passed": true
+  },
+  {
+    "name": "default-prefill-1",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t",
+      "serve",
+      "--mtp",
+      "--max-prefill",
+      "1",
+      "--model-dir",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/intentionally-absent-model"
+    ],
+    "environment_additions": {},
+    "exit_code": 2,
+    "diagnostic": "sequential MTP requires",
+    "passed": true
+  },
+  {
+    "name": "default-prefill-2",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t",
+      "serve",
+      "--mtp",
+      "--max-prefill",
+      "2",
+      "--model-dir",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/intentionally-absent-model"
+    ],
+    "environment_additions": {},
+    "exit_code": 2,
+    "diagnostic": "sequential MTP requires",
+    "passed": true
+  },
+  {
+    "name": "default-prefill-3",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t",
+      "serve",
+      "--mtp",
+      "--max-prefill",
+      "3",
+      "--model-dir",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/intentionally-absent-model"
+    ],
+    "environment_additions": {},
+    "exit_code": 2,
+    "diagnostic": "sequential MTP requires",
+    "passed": true
+  },
+  {
+    "name": "explicit-prefill",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t",
+      "serve",
+      "--mtp",
+      "--mtp-verifier",
+      "sequential",
+      "--max-prefill",
+      "1",
+      "--model-dir",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/intentionally-absent-model"
+    ],
+    "environment_additions": {},
+    "exit_code": 2,
+    "diagnostic": "sequential MTP requires",
+    "passed": true
+  },
+  {
+    "name": "verifier-alone",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t",
+      "serve",
+      "--mtp-verifier",
+      "sequential",
+      "--model-dir",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/intentionally-absent-model"
+    ],
+    "environment_additions": {},
+    "exit_code": 2,
+    "diagnostic": "requires --mtp",
+    "passed": true
+  },
+  {
+    "name": "cycle-default",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t",
+      "serve",
+      "--mtp",
+      "--model-dir",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/intentionally-absent-model"
+    ],
+    "environment_additions": {
+      "Q4T_MTP_CYCLE_TIMING": "1"
+    },
+    "exit_code": 1,
+    "diagnostic": "sequential MTP does not support",
+    "passed": true
+  },
+  {
+    "name": "moe-timing-default",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t",
+      "serve",
+      "--mtp",
+      "--model-dir",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/intentionally-absent-model"
+    ],
+    "environment_additions": {
+      "Q4T_MTP_VERIFY_MOE_TIMING": "1"
+    },
+    "exit_code": 1,
+    "diagnostic": "sequential MTP does not support",
+    "passed": true
+  }
+]

@@ -16,6 +16,7 @@ import threading
 import time
 
 from acceptance_mode import startup_evidence
+from mtp_mode import cancellation_server_mode
 from response_identity import response_identity
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -36,7 +37,8 @@ def main():
     p.add_argument('--reference-run', type=Path,
                    help='Completed ordinary-decode run with fixed 1K performance evidence')
     p.add_argument('--mtp', action='store_true')
-    p.add_argument('--mtp-verifier', choices=['t4', 'sequential'])
+    p.add_argument('--mtp-verifier', choices=['t4', 'sequential'],
+                   help='same-mode-recovery verifier; defaults to sequential')
     p.add_argument('--port', type=int)
     p.add_argument('--startup-timeout', type=int, default=180)
     args = p.parse_args()
@@ -44,7 +46,6 @@ def main():
     same_mode = args.scope == 'same-mode-recovery'
     if args.mtp_verifier is not None and not (args.mtp and same_mode):
         p.error('--mtp-verifier requires --mtp --scope same-mode-recovery')
-    verifier = args.mtp_verifier or 't4'
     if same_mode:
         import request_cancellation_contract as recovery_contract
     if args.startup_timeout <= 0:
@@ -61,6 +62,7 @@ def main():
     assert any(out.is_relative_to(ROOT / x) for x in ['build', '.q4t-work'])
     out.mkdir(parents=True, exist_ok=False)
     shutil.copy2(__file__, out)
+    shutil.copy2(Path(__file__).with_name('mtp_mode.py'), out / 'mtp_mode.py')
     reference = None
     if narrow:
         prior = args.reference_run.resolve()
@@ -103,7 +105,6 @@ def main():
             assert row['prompt_sha256'] == prompt_hash
             assert hashlib.sha256(row['text'].encode()).hexdigest() == output_hash
         fixtures, expected = {'decode': fixture}, {}
-        cmd[cmd.index('--no-mtp')] = '--mtp'
         cmd[0] = str(args.binary.resolve())
         save(out / 'reference.json', {
             'run': str(prior), 'group': reference,
@@ -130,17 +131,6 @@ def main():
         for flag, value in [('--max-seq', '1'), ('--max-len', '208896'),
                             ('--max-prefill', '8192')]:
             assert cmd.count(flag) == 1 and cmd[cmd.index(flag) + 1] == value, 'fixture capacity mismatch'
-        assert cmd.count('--no-mtp') + cmd.count('--mtp') == 1, 'ambiguous source mode'
-        if '--no-mtp' in cmd:
-            cmd[cmd.index('--no-mtp')] = '--mtp'
-        # A source run supplies fixtures/capacity, never the verifier choice.
-        assert cmd.count('--mtp-verifier') <= 1, 'ambiguous source verifier'
-        if '--mtp-verifier' in cmd:
-            index = cmd.index('--mtp-verifier')
-            assert index + 1 < len(cmd), 'missing source verifier value'
-            del cmd[index:index + 2]
-        if args.mtp_verifier is not None:
-            cmd += ['--mtp-verifier', verifier]
         cmd[0] = str(args.binary.resolve())
         save(out / 'input-bindings.json', {
             'oracle': 'fresh control in this process and mode; no historical output',
@@ -171,16 +161,18 @@ def main():
         cases = ['queued explicit/FIN/RST/deadline', 'duplicate/wrong key',
                  'prefill explicit/FIN/RST', 'surviving request',
                  'decode explicit/deadline', 'ID reuse', 'shutdown with stalled reader']
+    cmd, verifier = cancellation_server_mode(cmd, args.scope, args.mtp_verifier)
     if args.port is not None:
         cmd[cmd.index('--port') + 1] = str(args.port)
     port = int(cmd[cmd.index('--port') + 1])
     save(out / 'plan.json', {
         'command': cmd, 'cases': cases, 'scope': args.scope,
+        'verifier': verifier if '--mtp' in cmd else 'none',
         'startup_timeout_seconds': args.startup_timeout,
         'binary_sha256': hashlib.sha256(args.binary.read_bytes()).hexdigest(),
         **({'generation_requests': 9, 'decode_paths': 8,
             'expected_counter_delta': [9, 4, 5], 'deadline_ms': 3000,
-            'prefill_cancel_delay_ms': 500, 'verifier': verifier,
+            'prefill_cancel_delay_ms': 500,
             'expected_path': ('mtp_sequential_b1' if verifier == 'sequential'
                               else 'mtp_multi_b1'),
             'http_total_timeout_seconds': 120, 'http_control_timeout_seconds': 10,

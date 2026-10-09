@@ -9,7 +9,24 @@
 namespace q4t::server {
 
 ServerCapabilities CapabilitiesFor(const ServerOptions& options) {
-  return {!options.no_mtp, options.allow_media, options.max_seq > 1};
+  return {!options.no_mtp, options.allow_media, options.max_seq > 1,
+          EffectiveMtpVerifier(options)};
+}
+
+bool IsMtpReferenceEnvironmentOverride(std::string_view name) {
+  return name.starts_with("Q4T_FP8") || name == "Q4T_GDN_REG" ||
+         name == "Q4T_GDN_CHUNKED" || name == "Q4T_GDN_SPLIT" ||
+         name == "Q4T_MOE_BATCH_GATHER" || name == "Q4T_MOE_STREAMS";
+}
+
+bool MatchesMtpReferenceConfiguration(const ServerOptions& effective,
+                                      bool mtp_loaded, bool scheduler_ready,
+                                      int k, bool experimental_overrides) {
+  return !effective.no_mtp && mtp_loaded && scheduler_ready && k == 3 &&
+         EffectiveMtpVerifier(effective) == MtpVerifier::kSequential &&
+         !effective.allow_media && effective.max_seq == 1 &&
+         effective.max_len == 208896 && effective.max_prefill == 8192 &&
+         !effective.no_budget && !experimental_overrides;
 }
 
 Status ValidateServerOptions(const ServerOptions& options) {
@@ -33,7 +50,8 @@ Status ValidateServerOptions(const ServerOptions& options) {
   // Zero retains ModelConfig's default prefill size.
   if (options.max_prefill > 8192)
     return Status::Fail("max-prefill must be in [0,8192]");
-  if (options.mtp_verifier == MtpVerifier::kSequential &&
+  if (!options.no_mtp &&
+      EffectiveMtpVerifier(options) == MtpVerifier::kSequential &&
       options.max_prefill > 0 && options.max_prefill < 4)
     return Status::Fail("sequential MTP requires max-prefill >= 4");
   // The connection cap uses max_seq * 8 in the existing server.

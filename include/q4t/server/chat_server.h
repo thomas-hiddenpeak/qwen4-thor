@@ -291,7 +291,7 @@ class ChatServer {
   // declaration order, so mtp_ is destroyed before model_).
   mtp::MtpModel mtp_;
   bool mtp_requested_ = false;
-  MtpVerifier mtp_verifier_ = MtpVerifier::kT4;
+  MtpVerifier mtp_verifier_ = MtpVerifier::kSequential;
   bool mtp_loaded_ = false;
   int mtp_k_ = 3;  // Fixed draft length for the single-stream admission scope.
   // NOTE (Stage 2c): the legacy shared rolling draft-trunk buffers d_g_/

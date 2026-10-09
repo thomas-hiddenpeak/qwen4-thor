@@ -1,0 +1,51 @@
+[
+  {
+    "case": "stream-1024-256",
+    "left": "plain",
+    "right": "default",
+    "different_fields": [],
+    "passed": true
+  },
+  {
+    "case": "stream-1024-256",
+    "left": "plain",
+    "right": "explicit",
+    "different_fields": [],
+    "passed": true
+  },
+  {
+    "case": "nonstream-1024-1",
+    "left": "plain",
+    "right": "default",
+    "different_fields": [],
+    "passed": true
+  },
+  {
+    "case": "nonstream-1024-1",
+    "left": "plain",
+    "right": "explicit",
+    "different_fields": [],
+    "passed": true
+  },
+  {
+    "case": "nonstream-45056-1",
+    "left": "plain",
+    "right": "explicit",
+    "different_fields": [],
+    "passed": true
+  },
+  {
+    "case": "stream-1024-256",
+    "left": "default",
+    "right": "explicit",
+    "different_fields": [],
+    "passed": true
+  },
+  {
+    "case": "nonstream-1024-1",
+    "left": "default",
+    "right": "explicit",
+    "different_fields": [],
+    "passed": true
+  }
+]

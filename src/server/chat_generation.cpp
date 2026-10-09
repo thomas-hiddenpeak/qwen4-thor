@@ -19,6 +19,7 @@
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/mtp_policy.h"
 #include "q4t/server/request_json.h"
+#include "q4t/server/scheduler_submission.h"
 
 namespace q4t::server {
 using detail::RequestCancelled;
@@ -447,14 +448,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     pr.ids = ids.data();
     pr.len = T;
     pr.h_logits = h_logits.data();
-    {
-      std::unique_lock<std::mutex> lock(sched_mu_);
-      if (!scheduler_stop_) {
-        chunk_prefill_pending_.push_back(&pr);
-        sched_cv_.notify_one();
-        pr.cv.wait(lock, [&] { return pr.done; });
-      }
-    }
+    SubmitSchedulerRequestAndWait(
+        sched_mu_, scheduler_stop_, sched_cv_, pr.cv,
+        [&] { chunk_prefill_pending_.push_back(&pr); },
+        [&] { return pr.done; });
     prefill_cancelled = pr.cancelled;
     s = pr.ok ? Status() : Status::Fail("scheduled chunk prefill failed");
   } else if (batched_prefill) {
@@ -466,13 +463,13 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     pr.ids = ids.data();
     pr.len = T;
     pr.h_logits = h_logits.data();
-    {
-      std::unique_lock<std::mutex> lock(sched_mu_);
-      pr.pending = true;
-      prefill_pending_.push_back(&pr);
-      sched_cv_.notify_one();
-      pr.cv.wait(lock, [&] { return pr.done; });
-    }
+    SubmitSchedulerRequestAndWait(
+        sched_mu_, scheduler_stop_, sched_cv_, pr.cv,
+        [&] {
+          pr.pending = true;
+          prefill_pending_.push_back(&pr);
+        },
+        [&] { return pr.done; });
     s = pr.ok ? Status() : Status::Fail("batched prefill failed");
   } else {
     if (init_timing) init_timing->MarkHost("main_lock_wait_begin");

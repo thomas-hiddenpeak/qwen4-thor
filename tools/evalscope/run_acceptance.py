@@ -20,6 +20,7 @@ from acceptance_mode import (performance_metrics, request_mode_evidence,
                              startup_evidence)
 from admission_limits_reference import (validate_admission_reference,
                                         validate_early_eos_option)
+from mtp_mode import resolve_new_run_verifier, server_mtp_args
 
 ROOT = Path(__file__).resolve().parents[2]
 LENGTHS = [1024, 4096, 8192, 45056, 204800]
@@ -66,7 +67,8 @@ def main():
     parser.add_argument('--binary', type=Path, default=ROOT / 'build/q4t')
     parser.add_argument('--mtp', action='store_true',
                         help='Require actual single-stream MTP execution; default is ordinary decode')
-    parser.add_argument('--mtp-verifier', choices=['t4', 'sequential'])
+    parser.add_argument('--mtp-verifier', choices=['t4', 'sequential'],
+                        help='MTP verifier; new MTP runs default to sequential')
     parser.add_argument('--model-dir', type=Path, required=True)
     parser.add_argument('--port', type=int, default=8000)
     parser.add_argument('--startup-timeout', type=int, default=180,
@@ -84,9 +86,10 @@ def main():
     parser.add_argument('--moe-trace-workload', type=Path)
     parser.add_argument('--moe-trace-max-mib', type=int, default=1024)
     args = parser.parse_args()
-    if args.mtp_verifier is not None and not args.mtp:
-        parser.error('--mtp-verifier requires --mtp')
-    verifier = args.mtp_verifier or 't4'
+    try:
+        verifier = resolve_new_run_verifier(args.mtp, args.mtp_verifier)
+    except ValueError as error:
+        parser.error(str(error))
     sustained = args.mode == 'sustained-quality'
     admission_limits = args.mode == 'admission-limits'
     try:
@@ -170,6 +173,7 @@ def main():
                     out / 'acceptance_mode.py')
     shutil.copyfile(Path(__file__).with_name('admission_limits_reference.py'),
                     out / 'admission_limits_reference.py')
+    shutil.copyfile(Path(__file__).with_name('mtp_mode.py'), out / 'mtp_mode.py')
     if sustained or admission_limits:
         shutil.copyfile(Path(__file__).with_name('sustained_quality.py'),
                         out / 'sustained_quality.py')
@@ -266,16 +270,16 @@ def main():
         save(out / 'reference-admission.json', reference_admission)
     command = [str(binary), 'serve', '--model-dir', str(model), '--port', str(args.port),
                '--max-seq', '1', '--max-prefill', '8192', '--max-len', '208896',
-               '--max-tokens', '256', '--mtp' if args.mtp else '--no-mtp']
-    if args.mtp_verifier is not None:
-        command += ['--mtp-verifier', verifier]
+               '--max-tokens', '256']
+    command += server_mtp_args(args.mtp, verifier)
     if args.moe_trace_dir:
         command += ['--moe-trace-dir', str(args.moe_trace_dir.resolve()),
                     '--moe-trace-workload', str(args.moe_trace_workload.resolve()),
                     '--moe-trace-max-mib', str(args.moe_trace_max_mib)]
     save(out / 'server-command.json', {'argv': command, 'removed_environment': removed,
                                        'startup_timeout_seconds': args.startup_timeout,
-                                       'decode_mode': decode_mode})
+                                       'decode_mode': decode_mode,
+                                       'verifier': verifier if args.mtp else 'none'})
     results = []
     responses = []
     startup = None

@@ -1,0 +1,25 @@
+{
+  "command": [
+    "cmake",
+    "--build",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009",
+    "--target",
+    "q4t",
+    "q4t_host_tests",
+    "q4t_tests",
+    "q4t_mtp_sequential_control",
+    "q4t_mtp_cross_mode_diagnostic",
+    "q4t_mtp_projection_path_diagnostic",
+    "q4t_mtp_moe_path_diagnostic",
+    "q4t_mtp_k3_replay_diagnostic",
+    "q4t_mtp_init_last_row_diagnostic",
+    "q4t_quant_moe_batch_gather_diagnostic",
+    "--parallel",
+    "6"
+  ],
+  "seconds": 66.05509805679321,
+  "exit_code": 0,
+  "warnings": [],
+  "passed": true,
+  "log_sha256": "67a2d68edf8fad94f982df57fee7dae0533a485b67ec4c7e9dd5244770e84aad"
+}

@@ -1,0 +1,11 @@
+{
+  "created_unix": 1791510041.7137809,
+  "protocol_sha256": "086a1dd8216e4f9f93aeffce0d7362a4d762b886f7e69503e81dfb25847caa75",
+  "driver_sha256": "1391c455271dc456a9c22299e909a66d8f6b67dc2ccb157b1ad27bc9ba1c961b",
+  "removed_environment_names": [],
+  "environment_additions": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "TMPDIR": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/http-mainline-01/tmp"
+  },
+  "generation_requests_frozen": 8
+}

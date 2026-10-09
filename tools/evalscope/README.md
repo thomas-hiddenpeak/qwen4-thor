@@ -34,8 +34,10 @@ build/ 或 .q4t-work/。没有 --fixtures 时按固定算法生成语料；使�
 被测二进制以 `binary.sha256`、命令绝对路径和对应构建缓存为准，不能
 把脚本所在提交自动当成外部旧二进制的构建提交。现有参考不会被重写。
 
-研究分支新增 `--mtp --mtp-verifier sequential` 正确性基线。未指定
-verifier仍为旧实验T4；显式verifier不能自行启用MTP。sequential
+新运行的 `--mtp` 默认选择 sequential，工具显式记录并向服务传入
+解析后的 verifier；也可写 `--mtp --mtp-verifier sequential`。
+实验 T4 必须显式选择 `--mtp --mtp-verifier t4`。显式 verifier
+不能自行启用 MTP；旧日志缺少该字段仍按历史 T4 解释。sequential
 要求实际 `mtp_sequential_b1` 路径与调用/输出计数相符，正常短输出
 尾部可为 `plain_tail_b1`，尾部与fallback分别记录。指定参数/候选已完成
 [有限范围验收](../../docs/MTP_STRICT_RESULT_2026-10-09.md)，实测
@@ -60,7 +62,8 @@ python3 tools/evalscope/run_acceptance.py --mode quality --mtp \
 实际 capabilities 与 capacity：MTP 开关必须符合请求，媒体关闭，
 预算启用且可行，实际容量保持 1/8192/208896；预算缩小容量会直接拒绝。
 启动通过只证明加载状态，每个 MTP 响应还必须有实际 HTTP ID 对应的
-`[q4t][decode_path]` 终态日志，明确 `mtp_multi_b1`、正数 `mtp_steps`
+`[q4t][decode_path]` 终态日志，明确所选 verifier 对应的
+`mtp_sequential_b1` 或实验 `mtp_multi_b1`、正数 `mtp_steps`
 与 `fallback=none`。服务停止后统一核对终态日志，防止最后一个 SSE
 先于日志写入导致误判；证据保存到 startup-mode.json/request-modes.json。
 旧主线普通 decode 可以没有新终态日志，但仍须证明启动时 MTP 关闭；
@@ -203,7 +206,9 @@ build/verify_chat_template tools/evalscope/fixtures/chat_template_cases.jsonl
 `run_request_cancellation.py --scope same-mode-recovery --mtp` 使用同一
 新服务的 fresh control，依次验证 prefill 显式取消、decode 显式取消、
 TCP RST 和固定 deadline 后的恢复。范围为 S1、208896/8192、纯文本
-和当前 `mtp_multi_b1` 路径，共 9 个生成请求；逐次核对文本、usage、
+和所选 verifier 的实际路径，共 9 个生成请求；默认 sequential，
+也可显式选择实验 T4。旧 `decode-recovery` 范围仍显式保留其历史
+T4 合同，不随新服务默认值改变。逐次核对文本、usage、
 finish、实际路径、请求计数和槽位回收，不声称完整内部状态逐位相等。
 
 输入由 `--quality-run` 的 44K fixture 与 `--performance-run` 的 1K

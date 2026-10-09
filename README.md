@@ -82,14 +82,27 @@ ctest --test-dir build --output-on-failure
 ./build/q4t serve \
   [--model-dir DIR] [--host 127.0.0.1] [--port 8080] \
   [--max-len N] [--max-seq N] [--max-prefill N] [--max-tokens N] \
-  [--mtp] [--allow-media] [--mem-fraction 0.90]
+  [--mtp] [--mtp-verifier sequential|t4] [--allow-media] [--mem-fraction 0.90]
 
 ```
 
 generate 的 `--mtp` / `--mtp-k` 在模型加载前明确拒绝。serve 的
-`--mtp` 限单流 `--max-seq 1`、纯文本，不能与 `--allow-media`
-组合；目前仍为实验功能，正式支持进度见
-[阶段性转正计划](docs/MTP_RELEASE_PLAN_2026-10-08.md)。
+`--mtp` 现在默认选择 sequential 验证，限单流 `--max-seq 1`、
+纯文本 greedy/k3，不能与 `--allow-media` 组合；普通服务默认仍
+关闭 MTP。显式 `--mtp --mtp-verifier t4` 保留快速实验路径。
+
+sequential 的已验收范围为本机 Thor SM110a/CUDA 13.3、项目记录的
+Qwen3.8-Flash-Next-NVFP4-SSD-Stream checkpoint、
+`--max-seq 1 --max-prefill 8192 --max-len 208896`。它复用普通
+B1 target 算术以保持 greedy 输出一致；此前五档 decode 慢约
+9.9%–12.3%，不能引用快速 T4 的速度宣传此模式。
+[已有验收](docs/MTP_STRICT_RESULT_2026-10-09.md)与
+[当前主线交付进度](docs/MTP_MAINLINE_READINESS_2026-10-09.md)分开记录。
+
+启动后的 `mtp-support` 记录使用预算后的实际容量、加载与调度器
+状态。`reference_configuration=matched` 只表示配置与受测范围匹配，
+不认证模型权重内容；checkpoint 范围仍以验收身份记录为准。其他
+容量或实验算术环境覆盖不随该模式获得验收资格；T4 继续实验。
 
 serve 默认监听 127.0.0.1，MTP 默认关闭。性能评估使用
 [tools/evalscope](tools/evalscope/README.md) 的真实 HTTP E2E；bench 不作为

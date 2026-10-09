@@ -7,6 +7,7 @@
 
 namespace {
 using q4t::server::CapabilitiesFor;
+using q4t::server::EffectiveMtpVerifier;
 using q4t::server::ServerOptions;
 ServerOptions Defaults() {
   ServerOptions options;
@@ -44,7 +45,7 @@ Q4T_TEST(serve_capabilities_allow_explicit_combinations) {
     Q4T_CHECK(c.mtp == bool(mask & 1));
     Q4T_CHECK(c.media == bool(mask & 2));
     Q4T_CHECK(c.multiple_sequences == bool(mask & 4));
-    Q4T_CHECK(c.Experimental() == (mask != 0));
+    Q4T_CHECK(c.Experimental() == ((mask & 6) != 0));
   }
   for (const auto args : {
            std::initializer_list<std::string_view>{"--mtp", "--max-seq", "2"},
@@ -146,16 +147,15 @@ Q4T_TEST(serve_trace_options_are_explicit_and_bounded) {
   return true;
 }
 
-Q4T_TEST(serve_mtp_verifier_selection_preserves_t4_default) {
+Q4T_TEST(serve_mtp_verifier_defaults_to_sequential) {
   using q4t::server::MtpVerifier;
   auto options = Defaults();
   Q4T_CHECK(!options.mtp_verifier);
   Q4T_CHECK(Parse({"--mtp"}, &options));
-  Q4T_CHECK(options.mtp_verifier.value_or(MtpVerifier::kT4) ==
-            MtpVerifier::kT4);
+  Q4T_CHECK(EffectiveMtpVerifier(options) == MtpVerifier::kSequential);
   Q4T_CHECK(Parse({"--mtp-verifier", "sequential", "--mtp"}, &options));
   Q4T_CHECK(options.mtp_verifier == MtpVerifier::kSequential);
-  Q4T_CHECK(CapabilitiesFor(options).Experimental());
+  Q4T_CHECK(!CapabilitiesFor(options).Experimental());
   Q4T_CHECK(Parse({"--max-prefill", "4"}, &options));
   Q4T_CHECK(Parse({"--mtp", "--mtp-verifier", "t4"}, &options));
   Q4T_CHECK(options.mtp_verifier == MtpVerifier::kT4);
@@ -185,5 +185,66 @@ Q4T_TEST(serve_mtp_verifier_invalid_parse_is_transactional) {
   options.no_mtp = false;
   options.mtp_verifier = static_cast<q4t::server::MtpVerifier>(-1);
   Q4T_CHECK(!q4t::server::ValidateServerOptions(options).ok());
+  return true;
+}
+
+Q4T_TEST(serve_mtp_default_cannot_bypass_sequential_capacity_checks) {
+  for (const auto value : {"1", "2", "3"}) {
+    auto options = Defaults();
+    Q4T_CHECK(!Parse({"--mtp", "--max-prefill", value}, &options));
+    Q4T_CHECK(options.no_mtp && !options.mtp_verifier);
+    Q4T_CHECK(!Parse({"--mtp", "--mtp-verifier", "sequential",
+                      "--max-prefill", value}, &options));
+    // Plain mode and explicitly experimental T4 keep their prior contract.
+    Q4T_CHECK(Parse({"--max-prefill", value}, &options));
+    Q4T_CHECK(Parse({"--mtp", "--mtp-verifier", "t4"}, &options));
+  }
+  return true;
+}
+
+Q4T_TEST(serve_mtp_reference_configuration_uses_effective_state) {
+  using q4t::server::MatchesMtpReferenceConfiguration;
+  auto requested = Defaults();
+  Q4T_CHECK(Parse({"--mtp", "--max-len", "208896", "--max-prefill", "8192"},
+                  &requested));
+  Q4T_CHECK(MatchesMtpReferenceConfiguration(requested, true, true, 3, false));
+  auto effective = requested;
+  effective.max_len = 65536;  // A successful budget may still reduce capacity.
+  Q4T_CHECK(!MatchesMtpReferenceConfiguration(effective, true, true, 3, false));
+  effective = requested;
+  effective.max_prefill = 2048;
+  Q4T_CHECK(!MatchesMtpReferenceConfiguration(effective, true, true, 3, false));
+  Q4T_CHECK(!MatchesMtpReferenceConfiguration(
+      requested, false, true, 3, false));
+  Q4T_CHECK(!MatchesMtpReferenceConfiguration(
+      requested, true, false, 3, false));
+  Q4T_CHECK(!MatchesMtpReferenceConfiguration(requested, true, true, 2, false));
+  Q4T_CHECK(!MatchesMtpReferenceConfiguration(requested, true, true, 3, true));
+  for (int mutation = 0; mutation < 5; ++mutation) {
+    effective = requested;
+    if (mutation == 0) effective.mtp_verifier = q4t::server::MtpVerifier::kT4;
+    if (mutation == 1) effective.no_mtp = true;
+    if (mutation == 2) effective.allow_media = true;
+    if (mutation == 3) effective.max_seq = 2;
+    if (mutation == 4) effective.no_budget = true;
+    Q4T_CHECK(!MatchesMtpReferenceConfiguration(effective, true, true, 3,
+                                               false));
+  }
+  return true;
+}
+
+Q4T_TEST(serve_mtp_reference_environment_excludes_arithmetic_overrides) {
+  using q4t::server::IsMtpReferenceEnvironmentOverride;
+  for (const auto name : {"Q4T_FP8_PROJ", "Q4T_FP8_HC", "Q4T_FP8_ATTN",
+                          "Q4T_FP8_GDN", "Q4T_FP8_SHARED", "Q4T_FP8_LMHEAD",
+                          "Q4T_FP8_FUTURE", "Q4T_GDN_REG", "Q4T_GDN_CHUNKED",
+                          "Q4T_GDN_SPLIT", "Q4T_MOE_STREAMS",
+                          "Q4T_MOE_BATCH_GATHER"}) {
+    Q4T_CHECK(IsMtpReferenceEnvironmentOverride(name));
+  }
+  for (const auto name : {"PATH", "CUDA_VISIBLE_DEVICES", "Q4T_LOAD_TIMING",
+                          "Q4T_MTP_INIT_TIMING", "Q4T_GDN_DIAGNOSTIC"}) {
+    Q4T_CHECK(!IsMtpReferenceEnvironmentOverride(name));
+  }
   return true;
 }

@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "reviewer": "/root/mainline_integration_audit",
+  "created_utc": "2026-10-09T01:39:47.651097+00:00",
+  "review_kind": "read-only source/configuration evidence reuse review; no model execution or fatbin equivalence audit",
+  "old_protocol": {
+    "path": ".q4t-work/mtp-strict-20261009/build-protocol-01.json",
+    "sha256": "55c620881a09a017bb24b764a8ad8b98854b4a1d950172b9eccd07587c7850c3"
+  },
+  "new_protocol": {
+    "path": ".q4t-work/mtp-mainline-20261009/build-host-protocol-01.json",
+    "sha256": "ae1088731d41823e8a1365307fd9584d0a39d86af77d2eb4e3b10bf87442cb96"
+  },
+  "runtime_manifest_comparison": {
+    "old_path_count": 130,
+    "new_path_count": 131,
+    "unchanged_common_path_count": 124,
+    "changed_common_paths": [
+      "include/q4t/server/chat_server.h",
+      "include/q4t/server/server_options.h",
+      "src/main.cpp",
+      "src/server/chat_generation.cpp",
+      "src/server/chat_server.cpp",
+      "src/server/server_options.cpp"
+    ],
+    "added_paths": [
+      "include/q4t/server/scheduler_submission.h"
+    ],
+    "removed_paths": [],
+    "current_new_protocol_sha256_mismatches": [],
+    "count_scope": "src/ and include/ entries in frozen manifests, including tracked placeholders; not a claim of 131 compiled translation units"
+  },
+  "compile_and_link_comparison": {
+    "targets": [
+      "q4t",
+      "q4t_model",
+      "q4t_ple",
+      "q4t_quant",
+      "q4t_runtime",
+      "q4t_io",
+      "q4t_text",
+      "q4t_trace",
+      "q4t_server"
+    ],
+    "files_per_target": [
+      "flags.make",
+      "link.txt"
+    ],
+    "comparison_count": 18,
+    "identical_normalized_count": 18,
+    "normalization": "Only replace each absolute build directory with <BUILD>; preserve all other flags, paths, definitions, link order and inputs.",
+    "compiler_metadata_byte_identical": [
+      "CMakeCXXCompiler.cmake",
+      "CMakeCUDACompiler.cmake",
+      "CMakeSystem.cmake"
+    ]
+  },
+  "runtime_diff_assessment": {
+    "unchanged_implementation": [
+      "main-model kernels and model state",
+      "sequential target/draft/extend arithmetic",
+      "scheduler forward and completion/state handling",
+      "resource/fault recovery and terminal generation functions"
+    ],
+    "changed_behavior": [
+      "MTP verifier default/resolver and effective option validation",
+      "support/override classification and startup logging",
+      "plain batch/chunk prefill queue admission through a shared mutex-protected helper"
+    ],
+    "prefill_change_boundary": "Admission now rejects after scheduler stop. Accepted work still waits exclusively for completion before releasing borrowed request storage; normal forward selection, arithmetic and buffers are unchanged.",
+    "additional_model_arithmetic_or_recovery_change_found": false
+  },
+  "artifact_equivalence_limit": {
+    "old_production_binary_sha256": "a566faf51975291ec8fcd1fe75d7ddff07760fe13c138f85a066aeffad729563",
+    "new_production_binary_sha256": "a2ba1bd210c0094b4973decee43e374e955cd46853cfcffb0bface484bcad267",
+    "same_executable_bytes_claimed": false,
+    "cuda_archive_byte_identity_claimed": false,
+    "cuda_machine_code_equivalence_claimed": false,
+    "note": "CUDA static archives differ as recorded in reuse-map-01.json. This review does not attribute every differing byte or prove identical generated machine code."
+  },
+  "reuse_decision": {
+    "result": "PASS_FOR_FINITE_SOURCE_AND_CONFIGURATION_BASED_REUSE",
+    "reusable_scope": "Prior direct numerical/state, strict target/draft/extend, failure/resource/terminal and five-tier cost evidence remains evidence for the unchanged implementation under its original environment and limits.",
+    "historical_http_attribution": "The prior 115 HTTP requests, 48 response pairs, retained failures, semantic insufficiencies and costs remain attributed to the old candidate or their explicitly identified variants. They are not a rerun of the new binary.",
+    "new_http_attribution": "The planned 8 new HTTP requests are separate endpoint/default/prefill-admission integration evidence and must retain their own binary identity and results.",
+    "new_performance_acceptance_claimed": false,
+    "extra_model_validation_required_beyond_planned_affected_integration": false,
+    "reason": "No additional arithmetic, state restoration or fault-recovery implementation change was found. The changed entry/default/logging and prefill admission paths are covered by the new direct contracts and separately planned affected HTTP integration.",
+    "conditional_boundary": "Reassess only if source, flags, dependencies or tested mode change, or the new affected checks reveal a concrete failure."
+  },
+  "metadata_note": {
+    "issue": "reuse-map-01 runtime_changed_paths omitted the newly added production scheduler_submission.h; the frozen build protocol did include it.",
+    "severity": "recording completeness, not an untested arithmetic change",
+    "suggested_action": "Add runtime_added_paths with include/q4t/server/scheduler_submission.h."
+  },
+  "actions_not_performed": [
+    "No model/GPU/HTTP execution",
+    "No repeated fatbin extraction",
+    "No old artifact modification",
+    "No source or documentation changes"
+  ]
+}

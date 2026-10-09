@@ -1,0 +1,327 @@
+"""Execute the frozen eight HTTP requests once, retaining every failure."""
+import base64
+import hashlib
+import itertools
+import json
+import os
+from pathlib import Path
+import pickle
+import signal
+import sqlite3
+import subprocess
+import sys
+import time
+
+S = Path(__file__).resolve().parent
+W = S.parents[1]
+PROTOCOL = S / 'http-mainline-protocol-01.json'
+
+
+def sha(path):
+    with Path(path).open('rb') as source:
+        return hashlib.file_digest(source, 'sha256').hexdigest()
+
+
+def save(path, value):
+    with Path(path).open('x', encoding='utf-8') as output:
+        json.dump(value, output, indent=2, ensure_ascii=False)
+        output.write('\n')
+
+
+def require(condition, message):
+    if not condition:
+        raise RuntimeError(message)
+
+
+def group_alive(pid):
+    try:
+        os.killpg(pid, 0)
+        return True
+    except ProcessLookupError:
+        return False
+
+
+def finish_owned(proc, deadline, shutdown_seconds, terminate):
+    """Only signal a process group created by this driver (session leader PID)."""
+    forced = False
+    sent_term = False
+    if terminate and group_alive(proc.pid):
+        os.killpg(proc.pid, signal.SIGTERM)
+        sent_term = True
+    try:
+        proc.wait(timeout=max(0.001, min(shutdown_seconds,
+                                      deadline - time.monotonic())))
+    except subprocess.TimeoutExpired:
+        forced = True
+        if group_alive(proc.pid):
+            os.killpg(proc.pid, signal.SIGKILL)
+        proc.wait(timeout=5)
+    remaining = group_alive(proc.pid)
+    if remaining:
+        forced = True
+        try:
+            os.killpg(proc.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        until = min(deadline, time.monotonic() + 2)
+        while group_alive(proc.pid) and time.monotonic() < until:
+            time.sleep(0.05)
+    return {'pid': proc.pid, 'process_group': proc.pid,
+            'exit_code': proc.returncode, 'sigterm_sent': sent_term,
+            'forced_cleanup': forced, 'remaining_process_group': group_alive(proc.pid),
+            'passed': proc.returncode == 0 and not forced and not group_alive(proc.pid)}
+
+
+def support_evidence(log, mode):
+    rows, errors = [], []
+    prefix = '[q4t][mtp-support] '
+    for line in log.splitlines():
+        if line.startswith(prefix):
+            pairs = [item.split('=', 1) for item in line[len(prefix):].split()]
+            if any(len(pair) != 2 for pair in pairs):
+                errors.append('malformed support record')
+                continue
+            fields = dict(pairs)
+            if len(fields) != len(pairs):
+                errors.append('duplicate support field')
+            rows.append(fields)
+    expected = {'mode': 'sequential' if mode['mtp'] else 'disabled',
+                'reference_configuration': 'matched' if mode['mtp'] else 'unmatched',
+                'profile': 'thor-sequential-20261009',
+                'checkpoint_identity': 'not_attested', 'max_len': '208896',
+                'max_prefill': '8192', 'max_seq': '1', 'k': '3',
+                'experimental_overrides': '0'}
+    if len(rows) != 1:
+        errors.append(f'expected one support record, got {len(rows)}')
+    elif any(rows[0].get(key) != value for key, value in expected.items()):
+        errors.append('support fields differ from frozen expected values')
+    return {'records': rows, 'expected': expected, 'errors': errors,
+            'passed': not errors, 'checkpoint_payload_attested': False}
+
+
+def parse_client(case, mode, identity_reader):
+    directory = Path(case['output'])
+    databases = list(directory.rglob('benchmark_data.db'))
+    require(len(databases) == 1, f'expected one fresh database: {databases}')
+    database = databases[0]
+    with sqlite3.connect(database.as_uri() + '?mode=ro', uri=True) as db:
+        rows = db.execute('select success,prompt_tokens,completion_tokens,'
+                          'response_messages,first_chunk_latency,latency,request '
+                          'from result order by start_time').fetchall()
+    save(directory / 'database-rows.json', rows)
+    responses, raw, requests = [], [], []
+    for index, row in enumerate(rows):
+        # Only deserialize the local database just produced by this client.
+        messages = pickle.loads(base64.b64decode(row[3]))
+        request = json.loads(row[6])
+        raw.append(messages)
+        requests.append(request)
+        choices = [choice for message in messages
+                   for choice in message.get('choices', [])]
+        text = ''.join(choice.get('delta', choice.get('message', {})).get(
+            'content', '') for choice in choices)
+        response = {'case': case['name'], 'success': row[0],
+                    'actual_input': row[1], 'actual_output': row[2],
+                    'text': text,
+                    'finish': [choice['finish_reason'] for choice in choices
+                               if choice.get('finish_reason')],
+                    'prompt_sha256': hashlib.sha256(request['prompt'].encode()).hexdigest(),
+                    'request_stream': request.get('stream'),
+                    'ttft_observed': row[4], 'latency_observed': row[5],
+                    'mode': mode['name'],
+                    'observed_usage_messages': [message['usage'] for message in messages
+                                                if 'usage' in message],
+                    'usage_source': 'evalscope database prompt/completion columns',
+                    'total_tokens_derived': (row[1] + row[2]
+                        if isinstance(row[1], int) and isinstance(row[2], int)
+                        else None),
+                    'total_tokens_derived_not_raw_observation': True,
+                    **identity_reader(messages)}
+        responses.append(response)
+        with (directory / f'output-{index}.txt').open('x', encoding='utf-8') as out:
+            out.write(text)
+    save(directory / 'raw-responses.json', raw)
+    save(directory / 'wire-requests.json', requests)
+    save(directory / 'responses.json', responses)
+    save(directory / 'database-identity.json',
+         {'path': str(database), 'sha256': sha(database), 'rows': len(rows)})
+    require(len(responses) == 1, 'request budget exceeded or result missing')
+    response = responses[0]
+    require(response['success'] and response['response_id_valid'],
+            'HTTP failure or invalid actual response identity')
+    for field, expected in [('actual_input', case['length']),
+                            ('actual_output', case['output_tokens']),
+                            ('finish', case['finish']),
+                            ('request_stream', case['streaming']),
+                            ('prompt_sha256', case['prompt_sha256'])]:
+        require(response[field] == expected, f'{field} differs from frozen expectation')
+    if case['expected_old_output_sha256']:
+        require(hashlib.sha256(response['text'].encode()).hexdigest() ==
+                case['expected_old_output_sha256'],
+                '1K full output differs from original ordinary candidate')
+    return response
+
+
+def main():
+    protocol = json.loads(PROTOCOL.read_text())
+    require(protocol['generation_requests'] == 8, 'unexpected frozen request budget')
+    require([mode['name'] for mode in protocol['modes']] ==
+            ['plain', 'default', 'explicit'], 'mode order changed')
+    for binding in protocol['bindings']:
+        path = Path(binding['path'])
+        require(path.stat().st_size == binding['bytes'] and
+                sha(path) == binding['sha256'], f'identity changed: {path}')
+    output = Path(protocol['output'])
+    output.mkdir(exist_ok=False)
+    sys.path.insert(0, str(W / 'tools/evalscope'))
+    from acceptance_mode import request_mode_evidence, startup_evidence
+    from response_identity import response_identity
+    env = {key: value for key, value in os.environ.items()
+           if not key.startswith('Q4T_') and key != 'LD_PRELOAD'}
+    temp = output / 'tmp'
+    temp.mkdir()
+    env.update(PYTHONDONTWRITEBYTECODE='1', TMPDIR=str(temp))
+    started = time.monotonic()
+    deadline = started + protocol['overall_seconds']
+    save(output / 'launch.json', {'created_unix': time.time(),
+         'protocol_sha256': sha(PROTOCOL), 'driver_sha256': sha(__file__),
+         'removed_environment_names': sorted(set(os.environ) - set(env)),
+         'environment_additions': {'PYTHONDONTWRITEBYTECODE': '1', 'TMPDIR': str(temp)},
+         'generation_requests_frozen': 8})
+    results, executions, owned = [], [], []
+    failure = None
+    try:
+        for mode in protocol['modes']:
+            mode_output = Path(mode['output'])
+            mode_output.mkdir()
+            save(mode_output / 'server-command.json', {'argv': mode['argv'],
+                 'resolved_verifier': 'sequential' if mode['mtp'] else 'none',
+                 'expected_mode': mode['name']})
+            server = None
+            responses = []
+            mode_failure = None
+            lifecycle = None
+            try:
+                with (mode_output / 'server.log').open('x') as log:
+                    require(time.monotonic() < deadline, 'overall deadline reached')
+                    server = subprocess.Popen(mode['argv'], cwd=W, env=env,
+                        stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
+                    owned.append(server.pid)
+                    save(mode_output / 'server-process.json',
+                         {'pid': server.pid, 'process_group': server.pid})
+                    startup_deadline = min(deadline, time.monotonic() +
+                                           protocol['startup_seconds'])
+                    while True:
+                        require(server.poll() is None, 'server exited during startup')
+                        text = (mode_output / 'server.log').read_text()
+                        if 'serving on port' in text:
+                            break
+                        require(time.monotonic() < startup_deadline, 'startup deadline reached')
+                        time.sleep(min(0.25, max(0.001, startup_deadline - time.monotonic())))
+                    startup = startup_evidence(text, mode['mtp'], mode['verifier'])
+                    support = support_evidence(text, mode)
+                    save(mode_output / 'startup-mode.json', startup)
+                    save(mode_output / 'support-mode.json', support)
+                    require(startup['passed'] and support['passed'], 'startup/support mismatch')
+                    for case in mode['cases']:
+                        require(server.poll() is None, 'server exited before request')
+                        require(time.monotonic() < deadline, 'overall deadline reached')
+                        directory = Path(case['output'])
+                        directory.mkdir()
+                        (directory / 'requests.jsonl').write_bytes(
+                            Path(case['input']['path']).read_bytes())
+                        save(directory / 'command.json', case['argv'])
+                        client_start = time.monotonic()
+                        with (directory / 'client.log').open('x') as client_log:
+                            client = subprocess.Popen(case['argv'], cwd=W, env=env,
+                                stdout=client_log, stderr=subprocess.STDOUT,
+                                start_new_session=True)
+                            owned.append(client.pid)
+                            timeout = False
+                            try:
+                                client.wait(timeout=max(0.001, min(
+                                    protocol['client_seconds'], deadline - time.monotonic())))
+                            except subprocess.TimeoutExpired:
+                                timeout = True
+                            finally:
+                                client_exit = finish_owned(client, deadline,
+                                    protocol['shutdown_seconds'], terminate=timeout)
+                        client_exit.update(timeout=timeout,
+                                           seconds=time.monotonic() - client_start)
+                        save(directory / 'client-exit.json', client_exit)
+                        try:
+                            response = parse_client(case, mode, response_identity)
+                            responses.append(response)
+                            results.append(response)
+                        except Exception as error:
+                            save(directory / 'parse-or-check-failure.json',
+                                 {'error': f'{type(error).__name__}: {error}'})
+                            raise
+                        require(client_exit['passed'] and not timeout,
+                                'client exit/timeout/process-group failure')
+                        print(json.dumps({'mode': mode['name'], 'case': case['name'],
+                                          'http_output_passed': True}), flush=True)
+            except BaseException as error:
+                mode_failure = f'{type(error).__name__}: {error}'
+            finally:
+                if server is not None:
+                    lifecycle = finish_owned(server, deadline,
+                        protocol['shutdown_seconds'], terminate=True)
+                log_text = ((mode_output / 'server.log').read_text()
+                            if (mode_output / 'server.log').exists() else '')
+                paths = request_mode_evidence(log_text, responses,
+                                              mode['mtp'], mode['verifier'])
+                save(mode_output / 'request-modes.json', paths)
+                save(mode_output / 'responses.json', responses)
+                mode_passed = (mode_failure is None and lifecycle is not None and
+                               lifecycle['passed'] and paths['passed'] and
+                               len(responses) == len(mode['cases']))
+                execution = {'mode': mode['name'], 'failure': mode_failure,
+                             'lifecycle': lifecycle, 'passed': mode_passed,
+                             'completed_responses': len(responses)}
+                save(mode_output / 'exit.json', execution)
+                executions.append(execution)
+            require(mode_passed, f'mode {mode["name"]} failed; stopping subsequent work')
+        pairs = []
+        compare = ('text', 'prompt_sha256', 'actual_input', 'actual_output',
+                   'finish', 'request_stream')
+        for left, right in itertools.combinations(results, 2):
+            if left['case'] != right['case']:
+                continue
+            different = [key for key in compare if left[key] != right[key]]
+            pairs.append({'case': left['case'], 'left': left['mode'],
+                          'right': right['mode'], 'different_fields': different,
+                          'passed': not different})
+        save(output / 'pairs.json', pairs)
+        require(len(results) == 8 and len(pairs) == 7 and
+                all(pair['passed'] for pair in pairs), 'HTTP pair/count failure')
+        require(time.monotonic() <= deadline, 'overall deadline exceeded')
+    except BaseException as error:
+        failure = f'{type(error).__name__}: {error}'
+    finally:
+        # Emergency cleanup after an exception in a normal cleanup path.
+        # Presence here is itself a failure, even if the owned group is killed.
+        emergency = [pid for pid in owned if group_alive(pid)]
+        for pid in emergency:
+            try:
+                os.killpg(pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+        if emergency and failure is None:
+            failure = 'owned process group needed emergency cleanup'
+        remaining = [pid for pid in owned if group_alive(pid)]
+        save(output / 'results.json', results)
+        save(output / 'summary.json', {
+            'passed': failure is None and not remaining and len(results) == 8,
+            'failure': failure, 'seconds': time.monotonic() - started,
+            'request_budget': 8, 'completed_responses': len(results),
+            'executions': executions, 'owned_process_groups': owned,
+            'emergency_cleanup_process_groups': emergency,
+            'remaining_process_groups': remaining,
+            'performance_acceptance': False, 'old_five_tier_evidence_reused': True,
+            'checkpoint_payload_attested': False})
+    return 0 if failure is None and not remaining and len(results) == 8 else 1
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

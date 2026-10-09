@@ -3,6 +3,7 @@
 
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <unistd.h>
 #include <algorithm>
 #include <chrono>
 #include <cstdio>
@@ -85,7 +86,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // Validate before loading the tokenizer or allocating model resources.
   const Status validated = ValidateServerOptions(opts);
   if (!validated.ok()) return validated;
-  mtp_verifier_ = opts.mtp_verifier.value_or(MtpVerifier::kT4);
+  mtp_verifier_ = EffectiveMtpVerifier(opts);
   const bool sequential_mtp =
       !opts.no_mtp && mtp_verifier_ == MtpVerifier::kSequential;
   if (sequential_mtp) {
@@ -108,7 +109,10 @@ Status ChatServer::Start(const ServerOptions& opts) {
   std::fprintf(stderr,
                "[q4t][capabilities] requested=%s mtp=%d media=%d max_seq=%d "
                "verifier=%s\n",
-               capabilities.Experimental() ? "experimental" : "text-greedy",
+               capabilities.Experimental()
+                   ? "experimental"
+                   : (capabilities.mtp ? "text-greedy-mtp-sequential"
+                                       : "text-greedy"),
                capabilities.mtp, capabilities.media, opts.max_seq,
                capabilities.mtp ? MtpVerifierName(mtp_verifier_) : "none");
   host_ = opts.host;
@@ -437,6 +441,29 @@ Status ChatServer::Start(const ServerOptions& opts) {
       cudaSuccess) {
     return Status::Fail("prefill logits buffer alloc failed (out of memory)");
   }
+  // A configuration match does not attest model payload contents. The
+  // supported artifact/hardware and inherited evidence remain documented.
+  ServerOptions effective = opts;
+  effective.max_len = max_len_;
+  effective.max_prefill = max_prefill_;
+  effective.max_seq = max_seq_;
+  bool experimental_overrides = false;
+  for (char** entry = environ; entry && *entry; ++entry) {
+    const std::string_view setting(*entry);
+    const auto name = setting.substr(0, setting.find('='));
+    experimental_overrides |= IsMtpReferenceEnvironmentOverride(name);
+  }
+  const bool reference_configuration = MatchesMtpReferenceConfiguration(
+      effective, mtp_loaded_, scheduler_active_, mtp_k_,
+      experimental_overrides);
+  std::fprintf(stderr,
+               "[q4t][mtp-support] mode=%s reference_configuration=%s "
+               "profile=thor-sequential-20261009 "
+               "checkpoint_identity=not_attested max_len=%d max_prefill=%d "
+               "max_seq=%d k=%d experimental_overrides=%d\n",
+               mtp_loaded_ ? MtpVerifierName(mtp_verifier_) : "disabled",
+               reference_configuration ? "matched" : "unmatched", max_len_,
+               max_prefill_, max_seq_, mtp_k_, experimental_overrides);
   return Status();
 }
 
