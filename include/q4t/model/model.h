@@ -557,6 +557,8 @@ inline quant::MoEResidency::Stats SumResidencyStats(const Model& m) {
     total.mirror_hits += s.mirror_hits;
     total.mirror_writebacks += s.mirror_writebacks;
     total.mirror_skips += s.mirror_skips;
+    total.pread_merge_runs += s.pread_merge_runs;
+    total.pread_merge_experts += s.pread_merge_experts;
     total.nvme_read_bytes += s.nvme_read_bytes;
   }
   return total;
@@ -576,6 +578,9 @@ struct ResidencyTimingSnapshot {
   uint64_t dstage_count = 0, dstage_ns = 0, dstage_max_ns = 0;
   uint64_t dpread_count = 0, dpread_ns = 0, dpread_max_ns = 0;
   uint64_t dphase1_count = 0, dphase1_ns = 0, dphase1_max_ns = 0;
+  // Item 3b: one event per batched preadv run (total ns across the run).
+  uint64_t pread_merge_count = 0, pread_merge_ns = 0,
+      pread_merge_max_ns = 0;
   bool enabled = false;
 };
 
@@ -617,6 +622,13 @@ inline ResidencyTimingSnapshot SumResidencyTiming(const Model& m) {
     total.dphase1_ns += t.dphase1_ns.load(std::memory_order_relaxed);
     total.dphase1_max_ns =
         std::max(total.dphase1_max_ns, t.dphase1_max_ns.load(std::memory_order_relaxed));
+    total.pread_merge_count +=
+        t.pread_merge_count.load(std::memory_order_relaxed);
+    total.pread_merge_ns +=
+        t.pread_merge_ns.load(std::memory_order_relaxed);
+    total.pread_merge_max_ns = std::max(
+        total.pread_merge_max_ns,
+        t.pread_merge_max_ns.load(std::memory_order_relaxed));
   }
   return total;
 }

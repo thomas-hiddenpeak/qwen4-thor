@@ -854,7 +854,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                  "evictions=%llu dmiss=%llu dlook=%llu pmiss=%llu "
                  "plook=%llu l2h=%llu l2m=%llu l2ev=%llu nvme_mb=%.1f "
                  "mh=%llu mw=%llu msk=%llu ld2h=%llu ld2m=%llu "
-                 "ld2ev=%llu lp2h=%llu lp2m=%llu lp2ev=%llu\n",
+                 "ld2ev=%llu lp2h=%llu lp2m=%llu lp2ev=%llu "
+                 "pmr=%llu pme=%llu\n",
                  id.c_str(), finish_reason.c_str(), T, generated.size(),
                  static_cast<unsigned long long>(now.loads - prev.loads),
                  (now.load_bytes - prev.load_bytes) / 1e6,
@@ -893,7 +894,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                  static_cast<unsigned long long>(
                      now.l2_prefill_misses - prev.l2_prefill_misses),
                  static_cast<unsigned long long>(
-                     now.l2_prefill_evictions - prev.l2_prefill_evictions));
+                     now.l2_prefill_evictions - prev.l2_prefill_evictions),
+                 static_cast<unsigned long long>(
+                     now.pread_merge_runs - prev.pread_merge_runs),
+                 static_cast<unsigned long long>(
+                     now.pread_merge_experts - prev.pread_merge_experts));
     residency_stats_prev_ = now;
     // Optional per-miss pipeline timing (Q4T_RESIDENCY_TIMING=1). Per-request
     // deltas of count/ns; max is cumulative (upper bound). Diagnostic only.
@@ -912,7 +917,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                    "dstage_n=%llu dstage_avg_us=%.1f dstage_max_us=%.1f "
                    "dpread_n=%llu dpread_avg_us=%.1f dpread_max_us=%.1f "
                    "dphase1_n=%llu dphase1_avg_us=%.1f dphase1_max_us=%.1f "
-                   "d2h_n=%llu d2h_avg_us=%.1f d2h_max_us=%.1f\n",
+                   "d2h_n=%llu d2h_avg_us=%.1f d2h_max_us=%.1f "
+                   "pmrun_n=%llu pmrun_avg_us=%.1f pmrun_max_us=%.1f\n",
                    id.c_str(),
                    static_cast<unsigned long long>(
                        tim_now.stage_count - tp.stage_count),
@@ -953,7 +959,12 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                        tim_now.d2h_count - tp.d2h_count),
                    avg_us(tim_now.d2h_ns - tp.d2h_ns,
                           tim_now.d2h_count - tp.d2h_count),
-                   tim_now.d2h_max_ns / 1e3);
+                   tim_now.d2h_max_ns / 1e3,
+                   static_cast<unsigned long long>(
+                       tim_now.pread_merge_count - tp.pread_merge_count),
+                   avg_us(tim_now.pread_merge_ns - tp.pread_merge_ns,
+                          tim_now.pread_merge_count - tp.pread_merge_count),
+                   tim_now.pread_merge_max_ns / 1e3);
       residency_timing_prev_ = tim_now;
     }
   }
