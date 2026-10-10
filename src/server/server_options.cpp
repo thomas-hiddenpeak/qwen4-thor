@@ -44,6 +44,10 @@ Status ValidateServerOptions(const ServerOptions& options) {
   }
   if (options.request_deadline_ms < 1000 || options.request_deadline_ms > 10800000)
     return Status::Fail("request-deadline-ms must be in [1000,10800000]");
+  // k=3 is the measured optimum; the verify forward and MTP scratch scale
+  // linearly with k+1, so cap experimentation well below kMaxT.
+  if (options.mtp_k < 1 || options.mtp_k > 16)
+    return Status::Fail("mtp-k must be in [1,16]");
   return Status();
 }
 
@@ -81,6 +85,7 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--moe-trace-max-mib") integer = &parsed.moe_trace_max_mib;
     if (key == "--moe-resident-slots") integer = &parsed.moe_resident_slots;
     if (key == "--request-deadline-ms") integer = &parsed.request_deadline_ms;
+    if (key == "--mtp-k") integer = &parsed.mtp_k;
     if (!integer && key != "--host" && key != "--model-dir" &&
         key != "--mem-fraction" && key != "--moe-trace-dir" &&
         key != "--moe-trace-workload" && key != "--moe-hot-list")

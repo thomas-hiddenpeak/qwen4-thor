@@ -898,12 +898,28 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
   uint16_t* d_vlogits = use_scratch ? mtp.d_spec_logits : nullptr;
   uint16_t* d_vtrunk = use_scratch ? mtp.d_spec_trunk : nullptr;
   uint16_t* d_g = use_scratch ? mtp.d_g : nullptr;
+  // GPU-side phase spans (cudaEvent): wall-clock timing also includes host
+  // sync stalls; the event deltas show how much of each phase the GPU
+  // actually spent (busy + stream idle) between the recorded markers.
+  cudaEvent_t ev_d0 = nullptr, ev_d1 = nullptr, ev_d2 = nullptr, ev_d3 = nullptr;
+  if (getenv("Q4T_MTP_TIMING") != nullptr) {
+    if (cudaEventCreate(&ev_d0) != cudaSuccess ||
+        cudaEventCreate(&ev_d1) != cudaSuccess ||
+        cudaEventCreate(&ev_d2) != cudaSuccess ||
+        cudaEventCreate(&ev_d3) != cudaSuccess) {
+      return Status::Fail("MtpSpeculativeStep: cudaEventCreate");
+    }
+  }
   auto cleanup = [&](Status s) -> Status {
     if (!use_scratch) {
       if (d_vlogits) cudaFree(d_vlogits);
       if (d_vtrunk) cudaFree(d_vtrunk);
       if (d_g) cudaFree(d_g);
     }
+    if (ev_d0) cudaEventDestroy(ev_d0);
+    if (ev_d1) cudaEventDestroy(ev_d1);
+    if (ev_d2) cudaEventDestroy(ev_d2);
+    if (ev_d3) cudaEventDestroy(ev_d3);
     return s;
   };
   if (!use_scratch) {
@@ -921,6 +937,7 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
 
   const bool timing = getenv("Q4T_MTP_TIMING") != nullptr;
   const auto t_draft0 = std::chrono::steady_clock::now();
+  if (timing) cudaEventRecord(ev_d0, stream);
   // 1. Draft loop: drafts[0] = d0 (given); generate drafts[1..k-1].
   std::vector<int32_t> drafts(k);
   drafts[0] = d0;
@@ -964,6 +981,7 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
       return cleanup(Status::Fail("MtpSpeculativeStep: D2D roll g"));
   }
 
+  if (timing) cudaEventRecord(ev_d1, stream);
   const auto t_draft1 = std::chrono::steady_clock::now();
   const bool dbg = getenv("Q4T_MTP_DEBUG") != nullptr;
 
@@ -997,6 +1015,7 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
     Status s = ArgmaxBf16Rows(d_vlogits, k + 1, vocab, d_argmax, stream);
     if (!s.ok()) return cleanup(s);
   }
+  if (timing) cudaEventRecord(ev_d2, stream);
   const auto t_verify1 = std::chrono::steady_clock::now();
   std::vector<int32_t> m_argmax(k + 1);
   if (cudaMemcpy(m_argmax.data(), d_argmax,
@@ -1052,6 +1071,7 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
                               a + 1, next_d0, next_g, stream);
     if (!s.ok()) return cleanup(s);
   }
+  if (timing) cudaEventRecord(ev_d3, stream);
   if (timing) {
     const auto t_end = std::chrono::steady_clock::now();
     auto ms = [](auto lo, auto hi) {
@@ -1059,9 +1079,23 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
     };
     std::fprintf(stderr,
                  "[mtp-timing] draft=%.1f verify=%.1f extend+accept=%.1f ms "
-                 "(a=%d k=%d)\n",
+                 "(a=%d k=%d)",
                  ms(t_draft0, t_draft1), ms(t_draft1, t_verify1),
                  ms(t_verify1, t_end), a, k);
+    if (cudaEventSynchronize(ev_d3) == cudaSuccess) {
+      float gd = 0.f, gv = 0.f, ge = 0.f;
+      cudaEventElapsedTime(&gd, ev_d0, ev_d1);
+      cudaEventElapsedTime(&gv, ev_d1, ev_d2);
+      cudaEventElapsedTime(&ge, ev_d2, ev_d3);
+      std::fprintf(stderr,
+                   " gpu[ draft=%.1f verify=%.1f extend=%.1f ]\n", gd, gv, ge);
+    }
+    std::fprintf(stderr, "\n");
+    cudaEventDestroy(ev_d0);
+    cudaEventDestroy(ev_d1);
+    cudaEventDestroy(ev_d2);
+    cudaEventDestroy(ev_d3);
+    ev_d0 = ev_d1 = ev_d2 = ev_d3 = nullptr;
   }
   return cleanup(Status());
 }
@@ -1180,6 +1214,7 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
   // Phase timing (Q4T_MTP_TIMING): draft / verify / extend+accept, same
   // format as the single-seq MtpSpeculativeStep. Wall-clock around each
   // phase's GPU work (the D2H at the end of each phase forces the sync).
+  const bool dbg = getenv("Q4T_MTP_DEBUG") != nullptr;
   const bool timing = getenv("Q4T_MTP_TIMING") != nullptr;
   const auto t_draft0 = std::chrono::steady_clock::now();
   auto t_draft1 = t_draft0;
@@ -1328,6 +1363,20 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     if (acc < k) {
       s = model::ModelRestoreCheckpoint(main, acc, stream, seq_of[b]);
       if (!s.ok()) return cleanup(s);
+    }
+  }
+  if (dbg) {
+    for (int b = 0; b < B; ++b) {
+      std::fprintf(stderr, "[mtp-debug2] P=%d a=%d k=%d draft=", P[b], a[b], k);
+      for (int i = 0; i < k; ++i)
+        std::fprintf(stderr, "%d ",
+                     drafts_host[static_cast<size_t>(b) * k + i]);
+      std::fprintf(stderr, "main=");
+      for (int i = 0; i < k; ++i)
+        std::fprintf(stderr, "%d ",
+                     m_argmax[static_cast<size_t>(b) * (k + 1) + i]);
+      std::fprintf(stderr, "corr=%d\n",
+                   m_argmax[static_cast<size_t>(b) * (k + 1) + a[b]]);
     }
   }
 

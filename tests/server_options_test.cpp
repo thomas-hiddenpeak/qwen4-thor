@@ -74,6 +74,24 @@ Q4T_TEST(serve_rejects_malformed_numeric_options) {
   return true;
 }
 
+Q4T_TEST(serve_mtp_k_is_explicit_and_bounded) {
+  auto options = Defaults();
+  Q4T_CHECK(Parse({}, &options));
+  Q4T_CHECK(options.mtp_k == 3);  // serve default (measured optimum)
+  Q4T_CHECK(Parse({"--mtp", "--mtp-k", "4"}, &options));
+  Q4T_CHECK(options.mtp_k == 4);
+  Q4T_CHECK(Parse({"--mtp-k", "1"}, &options));
+  Q4T_CHECK(options.mtp_k == 1);
+  Q4T_CHECK(Parse({"--mtp-k", "16"}, &options));
+  Q4T_CHECK(options.mtp_k == 16);
+  for (const auto value : {"0", "-1", "17", "1.5", "junk"}) {
+    auto rejected = Defaults();
+    Q4T_CHECK(!Parse({"--mtp-k", value}, &rejected));
+    Q4T_CHECK(rejected.mtp_k == 3);
+  }
+  return true;
+}
+
 Q4T_TEST(serve_validates_before_load_and_preserves_failed_parse) {
   auto options = Defaults();
   Q4T_CHECK(!Parse({"--mtp", "--port", "65536"}, &options));

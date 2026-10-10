@@ -91,6 +91,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
                capabilities.mtp, capabilities.media, opts.max_seq);
   host_ = opts.host;
   allow_media_ = opts.allow_media;
+  mtp_k_ = opts.mtp_k;
   PhaseTimer total("startup_total");
   {
     PhaseTimer pt("tokenizer");

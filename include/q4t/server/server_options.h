@@ -25,6 +25,9 @@ struct ServerOptions {
   int max_seq = 1;
   // Plain greedy decode is the default; MTP requires explicit opt-in.
   bool no_mtp = true;
+  // MTP speculative steps k (draft tokens per step); only meaningful when
+  // MTP is enabled. Serve default 3 (measured optimum, see docs/LOG.md).
+  int mtp_k = 3;
   // Experimental media path; default service contract is text-only.
   bool allow_media = false;
   // Startup memory budget (vllm-style gpu_memory_utilization). The server

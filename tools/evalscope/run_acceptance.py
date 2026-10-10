@@ -287,6 +287,12 @@ def main():
     parser.add_argument('--request-deadline-ms', type=int, default=0,
                         help='serve --request-deadline-ms (0 = server '
                              'default 1200000; must be in [1000,10800000])')
+    parser.add_argument('--mtp', action='store_true',
+                        help='serve --mtp (MTP speculative decode; default '
+                             'off). MTP results form an independent group and '
+                             'must not be mixed with plain-decode baselines.')
+    parser.add_argument('--mtp-k', type=int, default=3,
+                        help='MTP speculative steps k (serve default 3)')
     args = parser.parse_args()
     if args.perf_repeats <= 0:
         parser.error('--perf-repeats must be positive')
@@ -308,6 +314,8 @@ def main():
     if args.request_deadline_ms and not (
             1000 <= args.request_deadline_ms <= 10800000):
         parser.error('request-deadline-ms must be in [1000,10800000]')
+    if args.mtp_k <= 0:
+        parser.error('mtp-k must be positive')
     if args.max_len <= 0:
         parser.error('max-len must be positive')
     try:
@@ -417,7 +425,11 @@ def main():
     reference = json.loads(args.reference.read_text()) if args.reference else None
     command = [str(binary), 'serve', '--model-dir', str(model), '--port', str(args.port),
                '--max-seq', '1', '--max-prefill', '8192', '--max-len',
-               str(args.max_len), '--max-tokens', '256', '--no-mtp']
+               str(args.max_len), '--max-tokens', '256']
+    if args.mtp:
+        command += ['--mtp', '--mtp-k', str(args.mtp_k)]
+    else:
+        command += ['--no-mtp']
     if args.moe_trace_dir:
         command += ['--moe-trace-dir', str(args.moe_trace_dir.resolve()),
                     '--moe-trace-workload', str(args.moe_trace_workload.resolve()),
