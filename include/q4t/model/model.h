@@ -320,6 +320,13 @@ Status ModelDecodeBatchMulti(const Model& m, const int32_t* tokens,
 // sequence PLE kernel does not save that recurrent state. Use ModelVerifyMulti.
 Status ModelReserveVerifyCheckpoints(Model& m, int num_ckpt);
 
+// Bookkeeping-only reset of the active verify-checkpoint validity
+// (verify_ckpt_rows/slots). The checkpoint buffers are per-verify scratch:
+// every forward entry point invalidates them before a new verify writes rows,
+// so a committed sequence state never carries a valid speculative checkpoint.
+// Exposed for valid-state capture tests; no device work, no numerics change.
+void InvalidateVerifyCheckpoints(const Model& m);
+
 // Restore every linear layer's SSM/conv state AND the PLE layer's conv state
 // from checkpoint `ckpt_idx` for sequence `seq_id` (D2D). Used after a
 // partial-accept MTP verify to roll the recurrent state back to the

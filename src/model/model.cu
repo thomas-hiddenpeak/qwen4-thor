@@ -50,14 +50,17 @@ inline double NowMs() {
 namespace q4t {
 namespace model {
 
-namespace {
-
-constexpr int kBlock = 256;
-
+// Bookkeeping-only reset; declared in model.h (used by valid-state capture
+// tests). Kept outside the anonymous namespace so the header declaration and
+// this definition are the same function.
 void InvalidateVerifyCheckpoints(const Model& m) {
   m.verify_ckpt_rows = 0;
   m.verify_ckpt_slots.clear();
 }
+
+namespace {
+
+constexpr int kBlock = 256;
 
 Status CheckVerifyCheckpointCapacity(const Model& m, int rows) {
   if (rows == 0) return Status();

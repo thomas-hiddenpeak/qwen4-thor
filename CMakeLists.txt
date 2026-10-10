@@ -408,6 +408,13 @@ if(Q4T_BUILD_TESTS)
   set_tests_properties(q4t_mtp_position_copy PROPERTIES
     TIMEOUT 180 LABELS cuda RESOURCE_LOCK q4t_cuda)
 
+  # Explicit real-model T4 state comparison (step 3 of T4 admission). Loads
+  # the full 48-layer model; never part of the default test registry.
+  add_executable(q4t_mtp_t4_state EXCLUDE_FROM_ALL
+    tests/test_main.cpp tests/mtp_t4_state_test.cpp)
+  target_include_directories(q4t_mtp_t4_state PRIVATE include)
+  target_link_libraries(q4t_mtp_t4_state PRIVATE ${Q4T_TEST_LIBS})
+
   add_executable(q4t_mtp_t4_completion_fault_server EXCLUDE_FROM_ALL
     src/main.cpp tests/mtp_t4_completion_fault_server.cpp)
   target_include_directories(q4t_mtp_t4_completion_fault_server PRIVATE include)

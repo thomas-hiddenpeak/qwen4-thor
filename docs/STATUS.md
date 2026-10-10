@@ -3,6 +3,23 @@
 更新：2026-10-09。代码是实现事实来源；验收规则见 [EVALUATION.md](EVALUATION.md)。
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
+## MTP性能阶段：T4第3步子项1独立状态对照PASS（2026-10-10 11:37）
+
+T4准入第3步子项1（独立状态证据）完成：新增
+q4t_mtp_t4_state（EXCLUDE_FROM_ALL，binary cd7ddb31728e145f零警告）。
+固定1024前态、T4自然step×4（累计接受13）vs独立构造同fed token
+普通B1轨迹oracle：host history/position/seq_id/stage与整数区
+（page map/RoPE）结构精确；recurrent/PLE/KV/indexer/conv有限且
+有界（rel_bf16=0.25/rel_fp32=0.50，按run5-dist实测最劣相对差
+0.122/0.271校准约2倍）。4步全PASS（最劣相对0.060/0.065，
+mean_abs≤0.0009），1 tests 1 passed；首败（reserve缺失、界过严、
+host对照缺陷）与诊断run原样保留，最终run一次通过。只证状态管理
+正确（结构精确+浮点有界），不称整模型数值等价，http_tested=0。
+证据t4-admission-20261009/step3-state/run6b-calibrated-113711/。
+下一步：子项2 target前失败排空（draft前向失败link-only变体+约3
+HTTP）、子项3上下文限制尾部（208892/max_tokens=8/nonstream）。
+GEMM冻结、MTP默认关闭不变。
+
 ## MTP性能阶段：T4第2步首分叉logits证据完成，机制判定可解释（2026-10-09 22:50）
 
 T4准入第2步（首分叉数值证据）完成，报告见
