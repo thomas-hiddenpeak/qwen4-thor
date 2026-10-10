@@ -1210,13 +1210,33 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
   int32_t* d_ext_ids = mtp.d_ms_ext_ids;         // [T_ext]
   int* d_ext_pos = mtp.d_ms_ext_pos;             // [T_ext]
   const size_t Tvm = static_cast<size_t>(B) * (k + 1);
-  auto cleanup = [](Status s) -> Status { return s; };
+  // GPU-side phase spans (cudaEvent): wall-clock timing also includes host
+  // sync stalls; the event deltas show how much of each phase the GPU
+  // actually spent (busy + stream idle) between the recorded markers.
+  cudaEvent_t ev_d0 = nullptr, ev_d1 = nullptr, ev_d2 = nullptr,
+      ev_d3 = nullptr;
+  const bool timing = getenv("Q4T_MTP_TIMING") != nullptr;
+  if (timing) {
+    if (cudaEventCreate(&ev_d0) != cudaSuccess ||
+        cudaEventCreate(&ev_d1) != cudaSuccess ||
+        cudaEventCreate(&ev_d2) != cudaSuccess ||
+        cudaEventCreate(&ev_d3) != cudaSuccess) {
+      return Status::Fail("MtpSpeculativeStepMulti: cudaEventCreate");
+    }
+  }
+  auto cleanup = [&](Status st) -> Status {
+    if (ev_d0) cudaEventDestroy(ev_d0);
+    if (ev_d1) cudaEventDestroy(ev_d1);
+    if (ev_d2) cudaEventDestroy(ev_d2);
+    if (ev_d3) cudaEventDestroy(ev_d3);
+    return st;
+  };
   // Phase timing (Q4T_MTP_TIMING): draft / verify / extend+accept, same
   // format as the single-seq MtpSpeculativeStep. Wall-clock around each
   // phase's GPU work (the D2H at the end of each phase forces the sync).
   const bool dbg = getenv("Q4T_MTP_DEBUG") != nullptr;
-  const bool timing = getenv("Q4T_MTP_TIMING") != nullptr;
   const auto t_draft0 = std::chrono::steady_clock::now();
+  if (timing) cudaEventRecord(ev_d0, stream);
   auto t_draft1 = t_draft0;
   auto t_verify1 = t_draft0;
 
@@ -1308,6 +1328,7 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                  static_cast<size_t>(B) * k * sizeof(int32_t),
                  cudaMemcpyDeviceToHost) != cudaSuccess)
     return cleanup(Status::Fail("MtpSpeculativeStepMulti: D2H draft matrix"));
+  if (timing) cudaEventRecord(ev_d1, stream);
   t_draft1 = std::chrono::steady_clock::now();
 
   // 2. Multi-seq verify: pack [b_b, d_0..d_{k-1}] per sequence (k+1 tokens,
@@ -1348,6 +1369,7 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
   if (cudaMemcpy(m_argmax.data(), d_ext_ids, Tvm * sizeof(int32_t),
                  cudaMemcpyDeviceToHost) != cudaSuccess)
     return cleanup(Status::Fail("MtpSpeculativeStepMulti: D2H verify argmax"));
+  if (timing) cudaEventRecord(ev_d2, stream);
   t_verify1 = std::chrono::steady_clock::now();
   // Accept per sequence + roll back the recurrent state to the accepted
   // prefix (checkpoint[a_b]; a_b == k needs no restore).
@@ -1474,6 +1496,7 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     accepted_count[b] = 1 + a[b];
     next_b[b] = corr[b];
   }
+  if (timing) cudaEventRecord(ev_d3, stream);
   if (timing) {
     const auto t_end = std::chrono::steady_clock::now();
     auto ms = [](auto lo, auto hi) {
@@ -1481,9 +1504,25 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     };
     std::fprintf(stderr,
                  "[mtp-timing] B=%d draft=%.1f verify=%.1f extend+accept=%.1f "
-                 "ms (k=%d)\n",
+                 "ms (k=%d)",
                  B, ms(t_draft0, t_draft1), ms(t_draft1, t_verify1),
                  ms(t_verify1, t_end), k);
+    if (cudaEventSynchronize(ev_d3) == cudaSuccess) {
+      float gd = 0.f, gv = 0.f, ge = 0.f;
+      cudaEventElapsedTime(&gd, ev_d0, ev_d1);
+      cudaEventElapsedTime(&gv, ev_d1, ev_d2);
+      cudaEventElapsedTime(&ge, ev_d2, ev_d3);
+      std::fprintf(stderr,
+                   " gpu[ draft=%.1f verify=%.1f extend=%.1f ]\n", gd, gv,
+                   ge);
+    } else {
+      std::fprintf(stderr, "\n");
+    }
+    cudaEventDestroy(ev_d0);
+    cudaEventDestroy(ev_d1);
+    cudaEventDestroy(ev_d2);
+    cudaEventDestroy(ev_d3);
+    ev_d0 = ev_d1 = ev_d2 = ev_d3 = nullptr;
   }
   return cleanup(Status());
 }
