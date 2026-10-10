@@ -1,10 +1,15 @@
 # 当前状态
 
-更新：2026-10-04。代码是实现事实来源；验收规则见 [EVALUATION.md](EVALUATION.md)。
+更新：2026-10-09。代码是实现事实来源；验收规则见 [EVALUATION.md](EVALUATION.md)。
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
 ## 当前结论
 
+Phase D（router 权重优先驱逐）代码已按用户批准删除（2026-10-09）：
+定向终判确认 decode 回退（204800 −5.6%、261887 −13.6% 跌破 50% 门槛），
+纯 tick-LRU 为已验收行为，删除后与 Phase D 前 bit-identical。重建零警告、
+单测 123/123（验收环境）。3b pread 合并统计接线保留为未提交工作树内容。
+下一步转入 MTP 性能改善。
 
 ## Offload分区运行时：完整性能NO_GO（2026-10-04）
 
@@ -163,6 +168,46 @@ ASan/UBSan各7/7；验收工具30/30、内存工具9/9。
   分区与跨阶段缓存的离线模拟 → 选一个有收益上界的 prefill 改动。
   当前镜像写回的低复用值得优先检验；Phase D 维持 off、GEMM 冻结。
 
+## Phase D 定向终判：decode 回退确认，默认回退 off；3b-only 定向在途（2026-10-02 15:35）
+
+Phase D（项 4）定向干净重跑完成（binary 456e2117，3b+Phase D on，
+204800×3 + 261887×3，C3 协议，无并发干扰），vs ed68cd3d 基线
+（3b off/Phase D off，final-acceptance 矩阵，hmean）：
+
+- 204800：TTFT 690.00 s（−4.1% vs 719.63）；decode 9.4344 tps
+  （−5.6% vs 9.9901）；重读因子 90.98（vs 90.82，不变）
+- 261887：TTFT 900.48 s（−3.9% vs 937.01）；decode 7.9751 tps
+  （−13.6% vs 9.2313；=46.9% C=0 基线，低于 50% 门槛）；重读因子
+  118.0（vs 117.63，不变）
+- 机制：router 权重 EMA 被 prefill 观测主导，逐出 decode 实际需要的
+  专家 → decode GPU miss ×3.4（204800 18.4k vs 5.3k；261887 29.2k vs
+  8.7k），L2 接住 ~60%/24%，净 NVMe decode 加载 +30%/+143%；
+  prefill L2 命中率仍≈0
+- 决策：Phase D 默认 off（MoEResidencyEvictWeight 1→0；=1 重新启用
+  实验，0=纯 tick-LRU bit-identical）；代码与开关保留。TTFT −4% 归因
+  3b（Phase D 不改 prefill 加载量）。重建 e5b7c782 零警告 + 单测
+  108/108。
+- 在途：targeted-phased-d0.sh（3b only，同协议，15:34 启动，~17:00
+  完成）取 3b-only 干净 TTFT/decode。
+- 下一步：d0 定向 → 符合预期（TTFT ≈690/900 s、decode ≈9.99/9.23）
+  则冻结 3b-only 候选并 commit → TTFT 主攻 prefill 侧（3a 分区 /
+  prefill L2 驱逐）。GEMM 冻结不变。
+
+## Phase D（项 4 驱逐权重优先）实现 + bitexact；定向干净重跑准备（2026-10-02 14:04）
+
+
+Phase D（项 4）router 权重优先驱逐已实现（PlanResolve victim 引入 router
+权重 EMA 时间衰减，最低期望未来需求优先、tie-break LRU；未观测专家 demand=0
+回退纯 LRU；Q4T_MOE_EVICT_WEIGHT=0 回退纯 tick-LRU；ObserveRouterWeights
+接线 moe.cu:446）。默认 on。bitexact-final 12288（base C=0 vs candfinal
+C=256/Phase D on，1024/8192）BIT-EXACT=True 双档 → 不改输出（纯重排）。
+文档缺口更正：Phase D 此前已实现但日志/STATUS 标"未开始"，现已补齐。
+此前 targeted-c3b（13:13 二进制，仅 3b）因并发 q4t_tests 争 GPU/CPU 触发
+deadline_exceeded（默认 20 min）失败作废；已 kill 冗余 q4t_tests（单测
+108/108 已过）。下一步：targeted-phased.sh 干净重跑（Phase D on，
+--request-deadline-ms 1800000）→ 对比 ed68cd3d 基线（Phase D off）的
+重读因子/TTFT/decode → 依数据决定是否加 3a（分区）或调 Phase D decay。
+GEMM 冻结不变。
 ## 新目标：四项内存中性 decode/TTFT 优化；Phase A/B 完成，Phase C 在途（2026-10-02 13:00）
 
 用户设定新目标（2026-10-02）：在已验收最终候选（ed68cd3d，B=12288，
