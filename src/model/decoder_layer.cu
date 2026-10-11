@@ -98,6 +98,34 @@ void DumpLayerOut(const uint16_t* out, int T, int hc_dim) {
   }
 }
 
+// Debug: when Q4T_MLP_DUMP=<tag>, copy this layer's attention output
+// (d_block right after the attention block, [T, hs] BF16) to
+// <tag>_m<idx>.attn_out.bin. idx is the layer (0-based, reset when the tag
+// changes). Used to attribute the first T-path divergence: if attn_out
+// diverges while the layer's trunk_in (and the GRRead mixed input) are
+// identical, the attention kernel is the first diverging operator.
+void DumpAttnOut(const uint16_t* attn_out, int T, int hs) {
+  const char* e = std::getenv("Q4T_MLP_DUMP");
+  if (!e || !*e) return;
+  static std::string last_tag_attn;
+  static int idx_attn = 0;
+  if (std::string(e) != last_tag_attn) {
+    last_tag_attn = e;
+    idx_attn = 0;
+  }
+  const int li = idx_attn++;
+  const std::string p =
+      std::string(e) + "_m" + std::to_string(li) + ".attn_out.bin";
+  std::vector<uint16_t> h(static_cast<size_t>(T) * hs);
+  cudaMemcpy(h.data(), attn_out, h.size() * sizeof(uint16_t),
+             cudaMemcpyDeviceToHost);
+  FILE* f = std::fopen(p.c_str(), "wb");
+  if (f) {
+    std::fwrite(h.data(), sizeof(uint16_t), h.size(), f);
+    std::fclose(f);
+  }
+}
+
 // Debug: when Q4T_MLP_DUMP=<tag>, copy this layer's trunk BEFORE attn_hc.mix
 // (the input to the HC mix GEMM) to <tag>_m<idx>.trunk_in.bin (BF16, [T,
 // hc_dim]). For PLE layers this is the PLE-corrected trunk (hyper_input +
@@ -479,7 +507,10 @@ Status DecoderLayerForward(const DecoderLayer& layer,
                            const int* d_seq_id, const int* d_rope_pos,
                            int tokens_per_seq, uint16_t* ple_conv_ckpt,
                            const RaggedBatch* ragged, int max_position,
-                           trace::RouterCollector* trace, int layer_id) {
+                           trace::RouterCollector* trace, int layer_id,
+                           int ckpt_stride, float* ssm_capture,
+                           uint16_t* qkv_raw_capture,
+                           uint16_t* gated_n_capture) {
   const int hs = layer.hs, hc_dim = layer.hc_dim, hc = layer.hc;
   if (T <= 0) return Status();
   // Pooled recurrent-state slices for this sequence (seq_id selects the
@@ -571,7 +602,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     s = PleLayerForward(layer.ple, ple_embeddings, hyper_input, d_ple_trunk, T,
                         ple_conv_state, d_ple_ws, layout.ple_bytes, stream,
                         hyper_input, d_seq_id, tokens_per_seq, ple_conv_ckpt,
-                        num_ckpt, ragged);
+                        num_ckpt, ragged, ckpt_stride, gated_n_capture);
     if (!s.ok()) {
       return s;
     }
@@ -600,11 +631,14 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     s = LinearAttentionForward(layer.linear, d_mixed, d_block, ssm_state,
                                conv_state, T, d_attn_ws, layout.attention_bytes,
                                stream, ssm_ckpt, conv_ckpt, num_ckpt, d_seq_id,
-                               tokens_per_seq, ragged);
+                               tokens_per_seq, ragged, ckpt_stride,
+                               ssm_capture,
+                               /*conv_capture=*/nullptr, qkv_raw_capture);
   }
   if (!s.ok()) {
     return s;
   }
+  DumpAttnOut(d_block, T, hs);
   // Combined is still materialized for the MLP residual. The next norm can
   // consume the BF16-rounded Write result before it leaves shared staging.
   GatedResidualFrame mlp_frame;

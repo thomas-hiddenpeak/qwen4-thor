@@ -295,14 +295,20 @@ if(Q4T_BUILD_TESTS)
     tests/model_ple_layer_test.cpp
     tests/model_head_test.cpp
     tests/gemv_fp8_test.cpp
+    tests/gemm_t1_vs_tk1_test.cpp
     tests/model_forward_test.cpp
     tests/model_moe_test.cpp
     tests/model_verify_multi_test.cpp
+    tests/model_verify_ckpt_test.cpp
+    tests/model_verify_ckpt_samepath_test.cpp
     tests/model_prefill_batch_test.cpp
     tests/model_mixed_batch_test.cpp
     tests/mtp_draft_test.cpp
     tests/mtp_speculative_test.cpp
     tests/mtp_spec_multi_test.cpp
+    tests/mtp_spec_accept_states_test.cpp
+    tests/mtp_writer_row0_test.cpp
+    tests/mem_alloc_probe_test.cpp
     tests/vision_forward_test.cpp
     tests/model_vision_inject_test.cpp
     tests/vision_processor_test.cpp
@@ -311,7 +317,9 @@ if(Q4T_BUILD_TESTS)
     tests/test_main.cpp)
   set(Q4T_TEST_LIBS q4t_ple q4t_io q4t_quant q4t_model q4t_runtime)
   if(Q4T_HAS_ICU)
-    list(APPEND Q4T_TEST_SOURCES tests/text_tokenizer_test.cpp)
+    list(APPEND Q4T_TEST_SOURCES tests/text_tokenizer_test.cpp
+                                 tests/mtp_verify_numerics_test.cpp
+                                 tests/mtp_sixcell_test.cpp)
     list(APPEND Q4T_TEST_LIBS q4t_text)
   endif()
   add_executable(q4t_tests ${Q4T_TEST_SOURCES})

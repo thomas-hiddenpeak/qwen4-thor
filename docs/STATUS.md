@@ -1,15 +1,354 @@
 # 当前状态
 
-更新：2026-10-09。代码是实现事实来源；验收规则见 [EVALUATION.md](EVALUATION.md)。
+更新：2026-10-11。代码是实现事实来源；验收规则见 [EVALUATION.md](EVALUATION.md)。
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
+## 当前阶段
+
+**step26 writer-row0 独立捕获 + 同次 production restore 对照完成
+（2026-10-11 本轮，取代下方六格描述为最新状态；本轮已收口）**：
+mtp_writer_row0（binary e7d4d176490754391022c6e72993729c2992064dad6b167d898bd252e7bd3c2f，
+fixture 91ad320d…，两候选 env unset）ON/OFF 均真实 rc=0、diff_count=0；
+476 个共享文件 ON/OFF 逐位一致（非干扰负控成立）。
+- writer_check ssm（36 线性层）：kernel 内 t==0 独立 S_smem 捕获（不经
+  ckpt 写路径）== ckpt SSM row-0 逐位一致；writer_check conv（36）/
+  ple（1）：宿主重建 [old_state[1..hist-1], 原始输入 row0] == ckpt
+  row-0 逐位一致（同时确认 checkpoint 语义：row t = batch token t 之后
+  的窗口）；restore_check ssm/conv/ple：ckpt row-0 == restore 后 live
+  态逐位一致；restore_xcheck ssm：独立捕获 == restore 后 live 态逐位
+  一致；restore_check kv（12 全注意力层）：restore 前后 KV 有效区
+  [0..P=1050] 逐位一致（production restore 为 recurrent-only，未扰动
+  有效分页区）；row0 argmax=13 val=23.375 与六格 cell1（step-26 batch
+  侧）一致。
+- 结论（限定）：step 26（真实分歧步）上 checkpoint writer/restore
+  机制忠实——row-0 checkpoint 与 kernel 内部态（SSM）及原始输入重建
+  （conv/PLE）逐位一致，production restore 精确恢复 row-0。六格中
+  S_B1 vs S_T4 的 25 组件状态差不是 save/restore 损坏，而是 T 路径
+  算术本身（T=4 batch 前向在 pos 1050 算出的 recurrent 态与 4 次顺序
+  B1 不同）——与已知 T 路径残差（GEMM tiling/GEMV/mix-down 舍入差）
+  同类。限制：S_smem 捕获独立于 ckpt 写路径但不独立于 kernel 算术；
+  conv/PLE 重建依赖文档化滑窗语义（由逐位一致确认）；旧前缀 KV 参照
+  为 T4 后 live cache（未独立重推）；host position/history 回滚与 KV
+  失效由 MTP 流程调用方负责，本测试不覆盖。
+- 过程记录：ON 曾在 binary 9a3875af 上以 sticky illegal memory access
+  失败；两处修复（decoder_layer.cu + 测试 conv/PLE 宿主重建，均在未
+  提交工作树）由 verify2（binary 16f50299，ON diff_count=37 全为
+  conv/ple recon）/verify3（binary e7d4d176，ON/OFF 均 0）记录；本轮
+  用当前 binary 独立重跑确认。证据 .q4t-work/mtp-writer-row0-20261011/
+  （on_diag1/、off_diag1/、final_evidence_header.txt、两目录全量哈希
+  清单）。本轮结束：不对齐 main、不 push/部署、不改 kernel 产品行为/
+  阈值/性能；两候选保持默认关闭；checkpoint 机制排除后剩余根因=T 依赖
+  算术（算子级已特征化），近 tie 分歧契约容差在 EVALUATION.md 仍未
+  定义，由协调线程决策。详见 2026-10-11 日志与断点文件顶部。
+
+**新一轮有界复现 + 六格诊断完成（2026-10-11 本轮，取代下方 in_proj_qkv
+描述为最新状态；本轮已收口）**：三项测试均完成（binary
+e95d560069a842e4d1de91cf27a857e5e06a471a697744a7652d5012f4517b76，模型
+哈希 11:06 冻结 229 文件 err 空，两候选 env unset）；repro256/sixcell
+独立 wrapper rc=0 已核实，roundtrip 为日志 PASS、真实进程 rc 未记录。
+- mtp_fullstate_roundtrip：完整模型完整有效状态（host
+  position/history/seq_id/stage + rope_delta/rope_pos + recurrent + 有效
+  区 [0..P-1] page_table/KV slot/idx_raw/idx_comp）save/restore 逐位精确
+  往返，日志 PASS（有限扰动/functional re-decode 核验；不能证明所有恢复
+  机制无误，不能排除最初 checkpoint writer 写错行或分量）。
+- mtp_repro_256（Part A）：首个分歧 step 26（pos=1050, input=55404）：
+  plain=11 batch=13，gap_plain=0.0（完全 tie），gap_batch=0.125，
+  l2_rel=0.0533445；fixture v1（fixture.txt）。非旧 step217（新基线）。
+- mtp_sixcell（Part B）：S_B1（B1 replay）vs S_T4（prefill + B1
+  replay[plen,P-1) + T4[last,42,42,42] + restore ckpt[0]）交叉核对 25 个
+  组件差（recurrent first_off=0 + 每层末位 KV/idx_raw；host/history/
+  rope/page_table/idx_comp 全 identical）；六格 row-0：cell0 argmax=11
+  （23.25/23.25 tie→最低 id）、cell1/2 argmax=13（23.375 vs 23.25）、
+  cell3 argmax=13（23.5 vs 23.25）、cell4/5 argmax=11（23.375/23.375
+  tie→最低 id）；cell1==cell2、cell4==cell5 逐位一致（filler 独立）。
+- 三类因果对照（离线，重跑逐字节一致）：state（cell3 vs cell0）
+  l2_rel=0.055385、path（cell1 vs cell0）l2_rel=0.0543482、causality
+  逐位一致。扩展：T4 续接下 state 对照 0.055851、S_T4 下 path 对照
+  0.047751。
+- 结论（限定）：本新 fixture 中初态与路径都能改变 greedy（path 对照单独
+  复现 step-26 分歧；state 对照同样翻到 13，gap 0.25；S_T4+T4 下 tie 在
+  23.375 重现→11）；两个预先固定后缀的 row0 逐位相同。S_T4 由不同 T4
+  算术构造（含 checkpoint 保存/恢复），两初态差异不能直接归因于
+  restore，也不能直接归因于 T 路径状态更新算术单独（两来源本轮未分离）。
+  cell0/cell1 即真实 step-26 分歧的两侧（同一状态/输入/filler/
+  save_checkpoints=1）。与旧 step217 事件同型（plain 侧完全 tie、batch
+  侧破 tie）。仅测量，未用 0.02 验收；近 tie 分歧的契约容差在
+  EVALUATION.md 仍未定义。
+- 证据收口：evidence/ 102 文件（f_B1/f_T4 有效组件 + 元数据）sha256sum -c
+  全 OK；env 清单确认两候选 env unset；binary/模型/fixture/退出码可互相关联
+  （.q4t-work/mtp-repro-20261011/）。
+- 本轮结束：不对齐 main、不 push/部署、不改 kernel/产品阈值/跑性能；候选
+  保持默认关闭。独立审查正在据此选择一个最小恢复机制对照，待审查完成及新
+  授权后才推进下一实验。详见 2026-10-11 日志与断点文件顶部。
+
+**in_proj_qkv 单算子参考核验 + 唯一 QKV 局部候选（2026-10-11 本轮，
+取代下方 cap8 描述为最新状态）**：首个分歧算子（L0 in_proj_qkv，同
+输入 15/10240 差）完成单算子参考核验：Q4T_INPROJ_CAPTURE 采集 layer0
+参考 T=8 的 x/weight/qkv_raw（cap8 ON，真实 EXIT=1，
+/tmp/o2g_inproj_cap.log；该次运行于加 QKV 候选前的构建，binary
+sha256 当时未记录——标未记录，不倒填 cd4ac50d；其后 cd4ac50d 的
+OFF 负控日志与 o2g 日志 hash 相同、两轮 weight/x 采集逐位一致，
+交叉核对成立），x row7 与 on4 probe x 逐位一致（同输入成立）、
+qkv row7 与 on4 ref8 逐位一致（hook 与层 dump 一致）、权重与候选
+ON 轮采集逐位相同。FP64 参考（BF16
+解码操作数）：15/15 差异元素均更近 GEMV（T=1）侧（14×1-ULP +
+1×5-ULP idx9835：ref 距 GEMV 0.347ulp、距 GEMM 5.347ulp；全行最近
+BF16 ref==GEMV 10239/10240 vs ref==GEMM 10224/10240）——T=1 GEMV
+为正确舍入值，T=8 cuBLASLt 在 bin 边界差 1–5 ULP，与 mix-down O2
+同型。唯一 QKV 局部候选（src/model/linear_attention.cu，
+Q4T_INPROJ_ROWWISE_GEMV，默认关闭、可回退；2<=T<=8 且无 FP8 shadow
+且 hs%8==0 时逐行 Bf16Gev，仅 in_proj_qkv）：算子级复验同 x row7 下
+T=8 qkv row7 与 probe 逐位一致（对齐成立）；最小 S7 on/off（cap8
+保持 ON）：OFF 负控 a=0 .01684 / a=1 .01918 / a=2 .03300（与基线
+逐位一致，日志 hash 相同）；ON a=0 .00871 / a=1 .01772 / a=2
+.03471（均真实 EXIT=1）——混合效应：a=0/a=1 改善、a=2 纯路径差略升，
+候选单独不能修复 S7；Part D 状态级仍无差。S8 超出本轮计划（边界指令前已启动跑完，
+out-of-bound 参考：OFF .02534/.02692/.06625、ON .02050/.04271/
+.06757），cap8/QKV S8 按协调口径标未测。候选保持默认关闭、不提升为
+正式修复、不扩 z、不做第二候选；剩余 a=2 路径差（.03471）来自其它
+T 依赖算子（in_proj_z 6 处暂不修等），未特征化，由协调线程下一小轮
+决定。hash 清单 /tmp/q4t_inproj_cap_20261011/hash_manifest.txt。详见
+2026-10-11 日志与断点文件顶部。
+
+**mix-down 候选 cap8 实验（2026-10-11 本轮，取代下方 cap4 描述为最新状态）**：
+Q4T_HC_MIX_ROWWISE_GEMV 候选 T 上限由 4 扩到 8（仍 env 门控、默认关闭、默认
+行为不变）。同一已捕获输入算子对照（binary q4t_tests sha256 ced007de…，真实
+EXIT=0，/tmp/o2e_cap8_op.log）：T=4 与 T=8 的 ON row0 均与 T=1 GEMV 逐位一致
+（各 5/5），OFF 负控均与 Bf16Gemm M=4/M=8 逐位一致（各 5/5，旧行为保留），
+残差为已知单 ULP 类（idx12 l2rel 7.599e-05，T=4/T=8 相同）。最小 S7：OFF 基线
+a=0 .00977 / a=1 .01731 / a=2 .08069（与上一轮逐位一致，EXIT=1）；ON cap8
+a=0 .01684 / a=1 .01918 / a=2 .03300（EXIT=1）——cap8 把 a=2 纯路径差由
+.08069 降到 .03300（59%），证实 mix-down（含 T=7/8 prefill 路径）是重要来源；
+但 a=2 仍超 0.02 阈值，剩余 .03300 为其它 T 依赖算子的纯路径差（Part D：
+batch-final==pref7 全组件逐位一致、无状态差；Part E：batch-final==pref7
+path-only .03300、seq T1x3 .07174、argmax 全一致）。表述区分：本轮 T4/T8 算子
+均运行于 cap8 binary；cap4 的 S7 对照来自上一轮 /tmp/o2c_s7_cand_on.log，非本轮
+同 binary 实验。候选保持默认关闭、可回退、不提升为正式修复、单独不能修复
+S7/S8；不扩到其它算子。本轮用新输出目录（/tmp/q4t_cand_cap8_20261011_*）与
+日志名（/tmp/o2e_*），上一轮证据完好、原始捕获只读复用。详见 2026-10-11 日志。
+
+**算子级对照（2026-10-11 修订，取代“4 源统一修复”框架）**：默认
+S7/S8 仍 EXIT=1，MTP 正确性总体未通过。旧 A→B→C 消融与 161 翻转
+分解测于带 checkpoint stride 缺陷的轨迹，不作默认路径无缺陷或
+因果归因证据；消融钩子下 0.00000 只说明该钩子在该测试配置下消除
+翻转，不等于默认路径逐位一致。当前任务收窄为具体算子对照：固定
+相同算子输入，检查首个 GEMV/GEMM 或 HC 差异及其累加/舍入行为；
+证据充分后才做最小修复，暂不做 4 路统一改写。已完成 S7 状态级/
+路径级/消融结果直接复用（见下），不重跑。断点：
+`.q4t-work/mtp-correctness-contract.md`（顶部算子对照节）。
+O0–O1 已完成、O2 最小修复进行中（2026-10-11，binary 46ebc519，
+证据 /tmp/o0_*.log + /tmp/q4t_op_capture_s7_v2/，测试真实退出码
+已用直接重定向核验：5 算子用例 EXIT=0、S7/S8 EXIT=1）。**撤回
+（2026-10-11）**：①“GEMV vs GEMM(M=1) 逐位一致”不是跨算法对照
+——Bf16Gemm(M=1, beta=0) 默认 dispatch Bf16Gev（GEMV，linear.h:
+143-144），该对照实为 GEMV vs GEMV，不能称独立 cuBLASLt M1；
+②“剩余 T 依赖源为 GDN 寄存器 kernel”撤回——S7 为 GdnRegOff 且
+batch-final 与 pref7 预 probe 态逐位一致（A2/A3 证据），旧 161
+翻转日志测于 stride 缺陷轨迹，不得据此改查 GDN。当前实际证据：
+同一 mix-down 输入下 GEMV（M=1 SIMT，T=1 生产路径）vs cuBLASLt
+M=4（T=4 verify row 0）至多 2/320 元素差、l2rel ≤ 7.6e-05、单
+ULP（idx12 elem127：-7.5625 vs -7.59375 相邻 BF16，FP64 参考
+-7.577701 非中点 -7.578125）；HC inject gate 生产算子 pre-gate/
+post-gate 均逐位一致（仅覆盖真实 S7 4 次调用）。S7 仍 EXIT=1/
+.08069、S8 仍失败。O2 进行中：test-only FP32 捕获（Bf16GevKernel
+fp32_out，生产 nullptr、默认行为不变；Bf16GevFp32）+ 新测试
+mix_down_fp32_s7，对已捕获 S7 mix-down 输入输出 GEMV 舍入前
+FP32 累加、两侧 BF16 结果、FP64 参考与两侧 BF16 舍入 bin，把
+差异特征化为累加顺序 vs 系统性偏移。**定位完成（2026-10-11，
+/tmp/o2_fp32_run1.log，真实 EXIT=0）**：5 个差异元素
+（idx12/13/14）全部满足 |GEMV FP32−FP64 参考| ≤ 9.2e-07，且
+FP64 参考全部落在 GEMV 的 BF16 舍入 bin、全部不落在 cuBLASLt
+bin——GEMV 为正确舍入值，cuBLASLt M=4 在 bin 边界元素差 1 ULP；
+差异=累加顺序/舍入差，非系统性偏移、非算子缺陷。O2 方向待决策：
+(A) verify 小 M 走 GEMV 逐行（对齐 GEMM 路径、保留基线，但
+verify 权重流量 ×4、性能代价显著，且不含 GDN 状态路径）；或
+(B) 按精度契约（EVALUATION.md：不要求所有路径逐位相同；差异须
+有事先定义合同和证据）把 T 路径残差特征化为契约允许，并验证
+用户可见 token 行为。O2 目标=保留既定精度、让
+正常 MTP 正确的最小调整；不得仅开全局消融宣称修好，须相同已
+捕获输入复验算子及 S7/S8 并保留旧行为负控；若主张路径差异可
+接受须从原项目精度契约得出并验证用户可见 token 行为。旧消融
+归因（GEMV 32 / GEMM_TILE 58 / HC 56）不被固定输入对照支持。
+详见 2026-10-11 日志。
+
+补测修订完成并 PASS（2026-10-11，binary q4t_tests sha256
+bd5d6d6e1d33ca74c0ad5de0bbe4888e065e8043da29a8b6bd6382ea125124b2）：
+mix-down 生产分支原样提取为共用 helper MixDownStep（生产与测试共用；
+rmsnorm launch 失败现报告实际 CUDA 错误码）。补测
+mix_down_candidate_s7 以已捕获 normed（RMSNorm 后生产输入）+ 已捕获
+mix_down 权重直接驱动 MixDownStep——无再归一化、无整层 dummy 权重（旧
+整层版对已捕获 normed 重跑 RMSNorm，同一算子输入主张无效）。相同已
+捕获输入 on/off 对照（5 个 T=1 调用，真实 EXIT=0，/tmp/o2d_cand_op.
+log）：候选 ON T=4 row0 与 T=1 GEMV 逐位一致（5/5）；候选 OFF 负控
+与 Bf16Gemm M=4 逐位一致（5/5，旧行为保留）；输入交叉核对 10 次全逐
+位一致。既有 6 算子用例全 RC=0；最小 S7（候选 OFF）打印关键指标与重构
+前基线一致（l2_rel/argmax 行；a=2 .08069 MISMATCH，真实 EXIT=1）
+——仅打印指标一致，S7 全输出/全状态 bit-identical 未验证。
+候选保持默认关闭、可回退；S7/S8 on/off 混合效应不变（S7 a=0/a=1 升、
+a=2 超阈值；S8 边界超阈值、full a=3 候选 ON 回退 .06625），候选单独
+不能修复 S7/S8。O2 方向决策（A：row-wise GEMV 扩到其它 GEMM vs B：
+契约接受，B 已否决）待协调线程/用户决策；下一小轮由协调线程决定。
+
+S7/S8 可复用证据（2026-10-11，A0–A5；仅测试配置，非默认路径
+结论）：S7 Part C 全接受（a=2，batch 末态、无 restore、decode
+probe l2_rel=0.08069 > 0.02）2 层最小案例（binary sha256
+0a71677189971b61e32cf8f8f7d052202f452ce5b4ae70887c367cebca42a47e，
+证据 .q4t-work/mtp-fullaccept-isolate-20261011/）：
+- 状态级（Part D）：batch 末态 vs prefill(7) 态，5 组件（L0
+  ssm/conv、L1 ssm/conv/ple_conv）全部 diff_bytes=0 逐位一致——
+  全接受无状态差；vs 顺序 T=1×3 态 relL2 2.9e-4–9.5e-3。
+- 路径级（Part E）：同一 probe（position 7）从三态解码 vs
+  prefill(8) row 7：batch-final 0.08069 / 纯路径差（restore
+  prefill(7) 态）0.08069 / seq 态 0.06804；argmax=39535 三态均
+  与参考一致——0.08069 为纯 decode(T=1)-vs-prefill(T=8) 路径差。
+- 消融（A1，仅测试配置证据）：GEMM_TILE 单独 → 0.00000；group B
+  （GEMV_T1+GEMM_TILE+HC_T1）→ 0.00000；HC_T1 单独无变化。
+- S8 decode 边界（7 组消融）：baseline 0.02649/0.02146/0.02605；
+  GEMM_TILE 单独 reject/partial → 0.00000、full 0.02448；
+  GEMM_TILE+HC_T1 → 全 0.00000。
+
+## MTP 正确性契约核验（2026-10-11，修订：已观察事实与未排除项）
+
+本节初版（"有界结论"）超出证据，按 2026-10-11 审阅修订：结论只保留
+已观察事实，未验证项明确标未排除。证据 binary fe80f004，
+.q4t-work/mtp-contract-20261011/（256 步差分，1K 同 prompt）。
+
+已观察事实：
+1. **翻转（step 217，1/256）是近 tie 事件**。plain 侧 token 14 与 466
+   在 BF16 下完全 tie（均 25.25），argmax 取最低索引 14；batch 侧
+   token 466=25.375（高 0.125）打破 tie。l2_rel=0.069757，
+   confident_both_sides=0。
+   未排除：正式契约（EVALUATION.md）未定义近 tie 分歧的容差；"v1
+   判据"是诊断判据而非项目契约，不能引为"契约允许"；若契约要求
+   greedy 输出一致，本例不满足。
+2. **状态差异：尺寸契约 + 有限采样**。快照尺寸与逐层 ssm+conv+
+   ple_conv 期望总和一致（115642368B，读写契约有效）；末步采样
+   （每分量类型 3 实例）全部 finite，reldiff ssm~1e-4–3e-4、conv
+   ~4e-3–7e-3、ple_conv~6e-3–1e-2；差异步数 ssm/conv 256/256、
+   layer1 ple_conv 251/256，自 step 0 起。
+   未排除：全范围 maxabs/相对范数未测（初版日志声称已算，不成立）；
+   "小数值差异、非缺陷"仅由采样实例支持；"非真实恢复错误"未证明
+   （同数值路径 save/restore 往返核验待做，S7）。
+3. **接受/拒绝：代码审查 + 2 层回归**。接受规则=与主模型逐位置
+   argmax 连续匹配的最长 draft 前缀，correction=m_argmax[a]；
+   accept=0（全拒）路径恢复 checkpoint[0]、仅发 [b]、
+   next_b=m_argmax[0]（代码审查 MtpSpeculativeStep）；2 层模型
+   checkpoint 回归 a=0/1 正验 PASS、负向 FAIL（可抓旧缺陷）。
+   未排除：完整模型无最小复现；2 层回归不证明完整 MTP；强制
+   accept 0/部分/全的输出口径未核验（S8）。
+4. **RNG/采样：代码审查**。MTP draft/verify 与 serve 均纯 greedy
+   （argmax；serve 默认 temperature=0，非 greedy 值被拒），无
+   curand/采样。
+   更正：两条路径各自确定，观察到的差异是确定性数值路径差异；
+   初版"唯一非确定性来源是数值路径 T 依赖"表述不成立（不同确定性
+   路径 ≠ 非确定性）；运行间可复现性未验证。
+5. **多序列：2 层模型证据**。packed verify logits 逐位一致、accept
+   recovery PASS、负向可抓缺陷。边界：完整模型多序列数值未单独
+   验收。
+
+**总体（final，2026-10-11 收口）**：MTP 正确性**未通过**。最小核验
+S7/S8 已完成（binary sha256
+1c73498393b0c10efeda9003a3fec0aa0c17dc67aba5063b4ca5741eb3b2f5aa，
+证据 .q4t-work/mtp-contract-20261011/：run_s7_final.log sha
+c9daaafb1dc93a84…、run_s8_final.log sha b0f95b15a11ae308…，均真实
+EXIT=1 保留）：
+- S7（model_verify_ckpt_samepath，2 层受控模型，GdnRegOff）：Part A
+  恢复往返 a=0/1 逐位一致（6598656B）；Part B 保存数值惰性 + 同路径
+  确定性逐位一致；Part C accept=0/1（restore 路径）l2_rel=0.00977/
+  0.01731 < 0.02 OK，accept=2（全接受，batch 末态、无 restore）
+  l2_rel=0.08069 超阈值——**原因已隔离**（2026-10-11 A2–A4：已知
+  T 路径残差，状态逐位一致、纯路径差，见当前阶段节）。
+- S8（mtp_spec_accept_states，2 层受控模型 + Q4T_MTP_TEST_DRAFTS
+  钩子）：reject a=0 / partial a=1 / full a=3 的 accepted_count/
+  accepted_tokens/next_b/position/history 语义全部正确；decode 边界
+  l2_rel=0.02649/0.02146/0.02605 均略超 0.02——**原因已隔离**
+  （2026-10-11：GEMM tiling/GEMV + HC inject gate，见当前阶段节）。
+未排除项：契约容差定义（1）、全范围状态统计（2）、完整模型接受/拒绝
+复现（3）、运行间可复现性（4）。全接受/decode 边界超阈值原因隔离
+（S7 C / S8）已完成（2026-10-11）：均为已知 T 路径残差，非路径
+缺陷，见当前阶段节。不改变默认部署（MTP 关闭），不部署服务。
+
 ## 当前结论
+
+MTP 输出与 plain greedy 不逐位一致：真实 T 依赖回归，且为多源叠加
+（2026-10-11 消融修订）。MTP k=3 基线（2026-10-10）：五档 MTP on
+（binary c29d3340/696d8f1）全过；MTP off 以 on 组为参考交叉核对在
+1K 档失败。差分测试（mtp_verify_numerics，1K 同 prompt，256 步）：
+因果守卫通过（verify row 0 不依赖后续 batch token），161/256 位置
+argmax 翻转（63%）、157 个两侧都自信（gap>0.05 双侧），max
+l2_rel=1.056——非近 tie 噪声。09-19 MTP 逐位一致（QSA decode 优化
+前），属回归。
+
+消融实验（2026-10-11，同工作树 binary 逐步对齐 T=1 路径；基线数字
+与 10-10 c29d3340 完全一致，佐证默认路径未变）：
+- 稀疏注意力对齐（Q4T_ABLATE_QSA_T1）：零变化——QSA 稀疏注意力确认
+  零贡献，10-10 的 QSA 根因定位被数据否定。
+- GDN 寄存器 kernel 关闭（Q4T_GDN_REG=0）：161→146 翻转、157→135
+  自信（15 翻转）——GatedDeltaNetRegKernel（仅 ssm_ckpt==nullptr
+  启用：T=1 走、T=4 verify 退回逐 token 串行 kernel）数值不等价。
+- 再加 GEMV 对齐（Q4T_ABLATE_GEMV_T1，M=1 专用 GEMV vs cuBLASLt
+  GEMM）：146→114 翻转、135→106 自信（32 翻转）——GEMV 是另一来源。
+- 再加 Bf16Gemm tiling 对齐（Q4T_ABLATE_GEMM_TILE，M=1 pad 到 M=4
+  走同一 cuBLASLt 算法族）：114→56 翻转、106→52 自信（58 翻转，
+  max l2 0.888）——cuBLASLt 对 M=1 与 M=4 选不同算法，是第三大来源；
+  叠加 QSA 消融仍 56/52，QSA 零贡献再确认。
+- A→B→C 收尾（2026-10-11）：A=GDN_REG=0+GEMV_T1+GEMM_TILE（含
+  Fp4Gemm tiling 扩展）仍 56/52、max l2 0.888——Fp4Gemm tiling 零
+  贡献；B=A+HC_T1 后 flips 56→0、双侧自信 52→0、max l2 0.000000
+  ——HC inject gate 融合路径是最后一个翻转源；C=B+MOE_DECODE_T1 与
+  B 相同——MoE M=1 device decode 零贡献。全部 161 翻转归因：GDN
+  寄存器 kernel（15）+ M=1 GEMV（32）+ Bf16Gemm tiling（58）+ HC
+  inject gate（56）= 161/161，消融可归零。代码核查已排除 indexer
+  （单序列 T=1/T>1 同走 tensor-core Bf16Gemm+IndexerReduceKernel）
+  与 conv（单序列同 kernel）。
+- 状态分歧已定位并修复（2026-10-11）：双源——(1) checkpoint 保存/恢复
+  stride 契约错位（RunLayers 按 num_ckpt 保存、恢复/直读按 cap；统一按
+  cap，含三个多序列 kernel 的 seq stride）；(2) 单序列 verify 的 PLE conv
+  checkpoint 缺口（新增 PleConvCheckpointSingleSeqKernel，且
+  ModelDecodeBatch 原先漏传 d_verify_ple_conv_ckpt，生产单流 MTP verify
+  同路径，已补）。修复后 group B 与默认配置 256 步：checkpoint 直读
+  与 T=1 状态在 group B 下 0 差异；默认配置下状态仍 256/256 步差异
+  （max≈84MB）——该残留是状态更新计算本身的 T 依赖（GDN 寄存器 kernel
+  vs 串行 kernel 等，即翻转同源），属阶段 2 统一修复范围，非
+  checkpoint 保存/恢复缺陷。
+- 翻转计数口径标记（2026-10-11）：修复前基线 161/256 翻转（max
+  l2_rel=1.056）测于 stride bug 下（reserve=4 时保存 stride=3、恢复
+  stride=4，每步恢复错层/错 token 状态）；修复后同测试默认配置仅
+  1/256 近 tie 翻转（max_flip_l2=0.069757）。旧翻转计数可能受错误
+  checkpoint 污染，既有消融归因（15/32/58/56）需复核，暂不作为
+  默认路径 T 依赖幅度的定论。max_flip_l2 仅指翻转位置的 logit
+  l2_rel，不代表全部 logit 逐位一致。
+
+修订后的计划（2026-10-11，四阶段）——**历史，不作当前行动依据**
+（2026-10-11 修订：当前任务收窄为算子级对照，见“当前阶段”节；逐位一致确认前暂停 MTP 性能阶段分解与定向优化）：
+1. 定位全部 T 依赖源：已完成。翻转部分——A→B→C 消融把 161/161 翻转
+   全部归因并归零（GDN 寄存器 kernel 15、M=1 GEMV 32、Bf16Gemm
+   tiling 58、HC inject gate 56；Fp4Gemm tiling 与 MoE M=1 device
+   decode 零贡献；QSA/indexer/conv 已排除）；计数口径见上条标记。
+   状态部分——checkpoint 保存/恢复路径的 T 依赖源已定位并修复
+   （stride 契约 + 单序列 PLE conv checkpoint + 指针传递）；候选
+   钩子均 env 门控、默认关闭、默认行为不变，ProjGemm FP8 路径仅在
+   Q4T_FP8_PROJ 实验开关启用时激活（评估契约禁用，不在当前差分
+   测试配置内）。离线 a/beta 比较（旧 groupB dump）72/72 逐位一致，
+   支持修复前状态分歧来自 checkpoint 保存/恢复而非 GEMM。
+2. 统一修复：使 verify（T=k+1）与 greedy（T=1）数值等价（含
+   recurrent 状态），保留批处理带宽收益（不整体回退逐 token）；
+   消融钩子收敛为正式修复或移除。前置澄清：已完成（2026-10-11，
+   两者均为已知 T 路径残差，非路径缺陷，见当前阶段节）。
+3. 重验：差分测试 0 双侧自信翻转且 recurrent 状态 T 独立；k=3 基线
+   五档 MTP on/off 逐位一致；五档 E2E 性能无回退。
+4. 恢复 MTP 性能阶段：Q4T_MTP_TIMING 阶段分解 + 定向优化（计划 B：
+   draft 步 QSA top-k 索引复用，见 REFERENCE_MTP.md）。
+验证（2026-10-11，修复后同 binary）：group B reserve=4/3 steps=1
+状态/直读/flips 全 0；256 步 RUN1（group B，reserve=4）flips 0/256、
+状态 0/256、直读 0/256；RUN2（默认，reserve=4）flips 1/256（近
+tie）、状态 256/256（max≈84MB，属阶段 2 范围）。详见 2026-10-11
+日志与 /tmp/mtp_256_runs.log。Checkpoint 回归测试（2026-10-11，2 层模型）：单序列 model_verify_ckpt（cap=4>T-1=2，a=0/1 恢复）与多序列 model_verify_multi_ckpt（cap=4>T-1=2、seq_ids {1,2}、a=0/1 恢复）正验 PASS（恢复后 decode l2_rel 0.00977/0.01731<0.02）；负向验证（回退旧 stride/旧 PLE 空指针）FAIL——测试可抓住两个旧缺陷。多序列测试初稿顺序 bug（re-prefill 先于 decode 覆盖已恢复状态）已修正。证据 .q4t-work/ckpt-regression-20261011/。
 
 Phase D（router 权重优先驱逐）代码已按用户批准删除（2026-10-09）：
 定向终判确认 decode 回退（204800 −5.6%、261887 −13.6% 跌破 50% 门槛），
 纯 tick-LRU 为已验收行为，删除后与 Phase D 前 bit-identical。重建零警告、
-单测 123/123（验收环境）。3b pread 合并统计接线保留为未提交工作树内容。
-下一步转入 MTP 性能改善。
+单测 123/123（验收环境）。3b pread 合并统计接线已随 6e5befd 提交。MTP T 依赖统一修复（四阶段计划之阶段 2）不再是当前阶段（2026-10-11 修订：当前为算子级对照，见“当前阶段”节）。
 
 ## Offload分区运行时：完整性能NO_GO（2026-10-04）
 

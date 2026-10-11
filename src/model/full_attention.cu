@@ -21,6 +21,7 @@
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <string>
 #include <vector>
@@ -1774,7 +1775,14 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   // Tensor-core GQA-packed: grid (T, nkv), each block reads its KV chunk once
   // and feeds all 12 q-heads via mma.sync (12x KV read reduction vs the old
   // per-q-head SIMT kernel).
-  if (T == 1 && nq == 24 && nkv == 2 && hd == 256) {
+  // ABLATION (test-only, off by default): force the T=1 sparse attention to
+  // use the generic SparseAttentionKernel (the same kernel as T>1), so the
+  // sparse attention is no longer a T-dependence source. Used to confirm
+  // whether QSA is the only T-dependence source in the MTP vs plain-greedy
+  // divergence (see docs/log/2026-10-10.md). Default runtime behavior is
+  // unchanged when the env var is unset.
+  const bool ablate_qsa_t1 = std::getenv("Q4T_ABLATE_QSA_T1") != nullptr;
+  if (!ablate_qsa_t1 && T == 1 && nq == 24 && nkv == 2 && hd == 256) {
     s = QsaDecodeSplit(d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn,
                        d_gate, max_topk, d_seq_id, kv_seq_stride,
                        pt_seq_stride, stream);

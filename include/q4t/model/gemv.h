@@ -24,6 +24,13 @@ namespace model {
 bool Bf16Gev(const uint16_t* x, const uint16_t* w, uint16_t* y, int N, int K,
              float alpha, cudaStream_t stream);
 
+// Test-only: same arithmetic as Bf16Gev but also returns the pre-rounding
+// FP32 accumulation (fp32_sum[n] = alpha * sum_k x[k]*W[n,k] in FP32) for
+// operator-level diagnostics (docs/STATUS.md 当前阶段 O1).
+bool Bf16GevFp32(const uint16_t* x, const uint16_t* w, uint16_t* y,
+                 float* fp32_sum, int N, int K, float alpha,
+                 cudaStream_t stream);
+
 // FP8 (e4m3) shadow of a BF16 [N, K] projection weight, for the M=1 decode
 // GEMV. W8A16: the weight is stored e4m3 (1 byte) with a per-output-channel
 // (row) absmax scale; the activation stays BF16. Halves the weight bytes read

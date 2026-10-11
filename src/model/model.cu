@@ -471,7 +471,10 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                  int tokens_per_seq = 0, uint16_t* ple_conv_ckpt = nullptr,
                  const RaggedBatch* ragged = nullptr,
                  LogitsRows logits_rows = LogitsRows::kAllRows,
-                 bool sequence_last_rows = false) {
+                 bool sequence_last_rows = false,
+                 float** ssm_captures = nullptr,
+                 uint16_t** qkv_raw_captures = nullptr,
+                 uint16_t** gated_n_captures = nullptr) {
   const ModelConfig& cfg = m.cfg;
   // Every model entry point already owns the logical positions copied to
   // m.d_positions. Reduce once on host, not once per full-attention layer.
@@ -489,13 +492,24 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
   const bool diag = std::getenv("Q4T_DIAG") != nullptr;
   int lin_idx = 0;   // running linear-layer index (for checkpoint offsets)
   int ple_idx = 0;   // running PLE-layer index (for checkpoint offsets)
-  // Checkpoint layout is pooled over max_seq: [num_layers, max_seq, num_ckpt,
-  // elems]. The kernels index the per-layer slice by the POOLED seq id (multi
-  // seq, d_seq_id != null: pass the layer base, seq_off = 0) or by the single
-  // sequence's slice (single seq: seq_off = seq_id). With max_seq == 1 this
-  // degenerates to the legacy [num_layers, num_ckpt, elems] layout.
+  // Checkpoint layout is pooled over max_seq: [num_layers, max_seq, cap,
+  // elems] (cap = verify_ckpt_cap, the reserved stride). The kernels index the
+  // per-layer slice by the POOLED seq id (multi seq, d_seq_id != null: pass
+  // the layer base, seq_off = 0) or by the single sequence's slice (single
+  // seq: seq_off = seq_id). With max_seq == 1 this degenerates to the legacy
+  // [num_layers, cap, elems] layout.
   const size_t max_seq = static_cast<size_t>(cfg.max_seq);
   const size_t seq_off = d_seq_id ? 0 : static_cast<size_t>(seq_id);
+  // The checkpoint buffer is allocated with stride cap = verify_ckpt_cap
+  // (ModelReserveVerifyCheckpoints). The save MUST use the same stride so
+  // restore/direct-read (which index by cap) find the data, regardless of how
+  // many checkpoints (num_ckpt) this call writes. num_ckpt <= cap.
+  const size_t ckpt_stride = static_cast<size_t>(m.verify_ckpt_cap);
+  if (ssm_ckpt && (ckpt_stride == 0 ||
+                   static_cast<size_t>(num_ckpt) > ckpt_stride)) {
+    return Status::Fail("RunLayers: checkpoint stride mismatch (num_ckpt > "
+                        "verify_ckpt_cap)");
+  }
   for (int l = 0; l < cfg.num_layers; ++l) {
     if (diag) {
       const cudaError_t e = cudaGetLastError();
@@ -522,8 +536,8 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
       ple_emb = m.d_ple_emb;
     }
     // Per-linear-layer checkpoint slices (only when saving for MTP verify).
-    // Pooled layout [num_lin, max_seq, num_ckpt, elems]: the per-layer slice
-    // starts at (lin_idx * max_seq + seq_off) * num_ckpt * elems.
+    // Pooled layout [num_lin, max_seq, cap, elems]: the per-layer slice starts
+    // at (lin_idx * max_seq + seq_off) * cap * elems (cap = ckpt_stride).
     float* layer_ssm_ckpt = nullptr;
     uint16_t* layer_conv_ckpt = nullptr;
     uint16_t* layer_ple_conv_ckpt = nullptr;
@@ -535,10 +549,10 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
           static_cast<size_t>(lin.in_qkv()) * (lin.conv_k - 1);
       layer_ssm_ckpt = ssm_ckpt +
                        (static_cast<size_t>(lin_idx) * max_seq + seq_off) *
-                           num_ckpt * ssm_elems;
+                           ckpt_stride * ssm_elems;
       layer_conv_ckpt = conv_ckpt +
                         (static_cast<size_t>(lin_idx) * max_seq + seq_off) *
-                            num_ckpt * conv_elems;
+                            ckpt_stride * conv_elems;
     }
     // PLE conv checkpoint slice (the PLE short-conv is an in-place recurrence
     // too; a partial accept must restore it — see ModelRestoreCheckpoint).
@@ -550,7 +564,7 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                                m.layers[l].ple.conv_dilation;
       layer_ple_conv_ckpt = ple_conv_ckpt +
                             (static_cast<size_t>(ple_idx) * max_seq + seq_off) *
-                                num_ckpt * ple_elems;
+                                ckpt_stride * ple_elems;
     }
     Status s = DecoderLayerForward(m.layers[l], trunk, ple_emb, next,
                                    m.d_positions, seq_rope_pos, T, m.d_ws,
@@ -558,7 +572,19 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                                    layer_conv_ckpt, num_ckpt, seq_id, d_seq_id,
                                    m.d_rope_pos, tokens_per_seq,
                                    layer_ple_conv_ckpt, ragged, max_position,
-                                   m.router_trace, l);
+                                   m.router_trace, l,
+                                   static_cast<int>(ckpt_stride),
+                                   (!m.layers[l].is_full_attention &&
+                                    ssm_captures)
+                                       ? ssm_captures[lin_idx]
+                                       : nullptr,
+                                   (!m.layers[l].is_full_attention &&
+                                    qkv_raw_captures)
+                                       ? qkv_raw_captures[lin_idx]
+                                       : nullptr,
+                                   (m.layers[l].has_ple && gated_n_captures)
+                                       ? gated_n_captures[ple_idx]
+                                       : nullptr);
     if (!s.ok()) return s;
     if (!m.layers[l].is_full_attention) lin_idx++;
     if (m.layers[l].has_ple) ple_idx++;
@@ -897,7 +923,10 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
                         int base_position, const int32_t* history,
                         int history_len, uint16_t* logits, cudaStream_t stream,
                         uint16_t* trunk_out, bool save_checkpoints,
-                        int seq_id, LogitsRows logits_rows) {
+                        int seq_id, LogitsRows logits_rows,
+                        float** ssm_captures,
+                        uint16_t** qkv_raw_captures,
+                        uint16_t** gated_n_captures) {
   const ModelConfig& cfg = m.cfg;
   if (T <= 0) return Status::Fail("ModelDecodeBatch: T must be > 0");
   if (T > cfg.max_prefill)
@@ -968,16 +997,23 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
   }
 
   // Layer loop + head — NO reset, continues from the current per-layer state.
-  // When save_checkpoints, capture per-token SSM/conv state for the first T-1
-  // tokens (checkpoint[t] = state after token t) so an MTP partial accept can
-  // restore checkpoint[accept_count] via D2D instead of re-running the forward.
+  // When save_checkpoints, capture per-token SSM/conv/PLE-conv state for the
+  // first T-1 tokens (checkpoint[t] = state after token t) so an MTP partial
+  // accept can restore checkpoint[accept_count] via D2D instead of re-running
+  // the forward. The PLE conv slice MUST be passed too: the single-sequence
+  // verify path is the only checkpoint saver that reaches
+  // PleLayerForward's single-seq branch, and a partial accept restores the
+  // PLE conv state from this buffer (ModelRestoreCheckpoint).
   float* ssm_ckpt = save_checkpoints ? m.d_verify_ssm_ckpt : nullptr;
   uint16_t* conv_ckpt = save_checkpoints ? m.d_verify_conv_ckpt : nullptr;
+  uint16_t* ple_conv_ckpt =
+      save_checkpoints ? m.d_verify_ple_conv_ckpt : nullptr;
   const int num_ckpt = save_checkpoints ? (T - 1) : 0;
   return RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(),
                    positions.data(), T, logits, stream, trunk_out, ssm_ckpt,
-                   conv_ckpt, num_ckpt, seq_id, nullptr, 0, nullptr,
-                   nullptr, logits_rows);
+                   conv_ckpt, num_ckpt, seq_id, nullptr, 0, ple_conv_ckpt,
+                   nullptr, logits_rows, false, ssm_captures,
+                   qkv_raw_captures, gated_n_captures);
 }
 
 // B2 continuous batching: decode ONE token for each of B sequences in a single
@@ -1670,7 +1706,92 @@ std::vector<RecurrentStateRef> CollectRecurrentState(const Model& m) {
   return refs;
 }
 
+
 }  // namespace
+
+// Test-only: read the verify checkpoint buffers (ssm/conv/ple_conv) for a
+// given ckpt_idx into a host snapshot, in the SAME order as
+// CollectRecurrentState (per layer: ssm, conv, then ple_conv if present).
+// Lets a test directly compare checkpoint-N against the T=1 recurrent state
+// WITHOUT going through ModelRestoreCheckpoint (which overwrites the live
+// state). Fails if no checkpoints are reserved. Lives in the q4t::model
+// namespace (not the anonymous one) so tests can link it; computes the
+// element counts directly instead of reusing the anonymous-namespace helper.
+Status ModelSnapshotCheckpoint(const Model& m, int ckpt_idx,
+                               ModelStateSnapshot* snap, cudaStream_t stream,
+                               int seq_id) {
+  if (!snap) return Status::Fail("ModelSnapshotCheckpoint: null");
+  if (!m.d_verify_ssm_ckpt || ckpt_idx < 0 ||
+      ckpt_idx >= m.verify_ckpt_cap)
+    return Status::Fail("ModelSnapshotCheckpoint: no/invalid ckpt");
+  size_t ssm_elems = 0, conv_elems = 0, ple_elems = 0;
+  for (const auto& l : m.layers) {
+    if (l.ssm_state && ssm_elems == 0) {
+      ssm_elems =
+          static_cast<size_t>(l.linear.nv) * l.linear.kd * l.linear.vd;
+      conv_elems = static_cast<size_t>(l.linear.in_qkv()) *
+                   (l.linear.conv_k - 1);
+    }
+    if (l.ple_conv_state && ple_elems == 0) {
+      ple_elems = static_cast<size_t>(l.hc_dim) *
+                  (l.ple.conv_kernel - 1) * l.ple.conv_dilation;
+    }
+  }
+  const size_t max_seq = static_cast<size_t>(m.cfg.max_seq);
+  const size_t cap = static_cast<size_t>(m.verify_ckpt_cap);
+  const size_t seq = static_cast<size_t>(seq_id);
+  const size_t ci = static_cast<size_t>(ckpt_idx);
+  struct Ref {
+    void* dev;
+    size_t bytes;
+  };
+  std::vector<Ref> refs;
+  int lin_idx = 0;
+  int ple_idx = 0;
+  for (const auto& l : m.layers) {
+    if (l.ssm_state) {
+      const size_t lin_slice =
+          (static_cast<size_t>(lin_idx) * max_seq + seq) * cap;
+      refs.push_back(
+          {m.d_verify_ssm_ckpt + (lin_slice + ci) * ssm_elems,
+           ssm_elems * sizeof(float)});
+      refs.push_back(
+          {m.d_verify_conv_ckpt + (lin_slice + ci) * conv_elems,
+           conv_elems * sizeof(uint16_t)});
+      lin_idx++;
+    }
+    if (l.ple_conv_state) {
+      const size_t ple_slice =
+          (static_cast<size_t>(ple_idx) * max_seq + seq) * cap;
+      refs.push_back(
+          {m.d_verify_ple_conv_ckpt + (ple_slice + ci) * ple_elems,
+           ple_elems * sizeof(uint16_t)});
+      ple_idx++;
+    }
+  }
+  size_t total = 0;
+  for (const auto& r : refs) total += r.bytes;
+  if (total == 0) {
+    snap->Free();
+    return Status();
+  }
+  snap->data.resize(total);
+  size_t off = 0;
+  for (const auto& r : refs) {
+    if (cudaMemcpyAsync(snap->data.data() + off, r.dev, r.bytes,
+                        cudaMemcpyDeviceToHost, stream) != cudaSuccess) {
+      return Status::Fail("ModelSnapshotCheckpoint: D2H copy");
+    }
+    off += r.bytes;
+  }
+  if (cudaStreamSynchronize(stream) != cudaSuccess) {
+    return Status::Fail("ModelSnapshotCheckpoint: sync");
+  }
+  snap->bytes = total;
+  snap->valid = true;
+  return Status();
+}
+
 
 void ModelStateSnapshot::Free() {
   data.clear();

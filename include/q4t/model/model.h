@@ -295,7 +295,10 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
                         int history_len, uint16_t* logits, cudaStream_t stream,
                         uint16_t* trunk_out = nullptr,
                         bool save_checkpoints = false, int seq_id = 0,
-                        LogitsRows logits_rows = LogitsRows::kAllRows);
+                        LogitsRows logits_rows = LogitsRows::kAllRows,
+                        float** ssm_captures = nullptr,
+                        uint16_t** qkv_raw_captures = nullptr,
+                        uint16_t** gated_n_captures = nullptr);
 
 // B2 continuous batching: decode ONE token for each of B sequences in a SINGLE
 // packed forward (T = B). This is the bandwidth win — the 84 GB of weights is
@@ -527,6 +530,14 @@ Status ModelSnapshotState(const Model& m, ModelStateSnapshot* snap,
 // 恢复 recurrent 状态 (host -> device)。验证后回滚调用。
 Status ModelRestoreState(const Model& m, const ModelStateSnapshot& snap,
                          cudaStream_t stream);
+
+// Test-only: read the verify checkpoint buffers (ssm/conv/ple_conv) for a
+// given ckpt_idx into a host snapshot, in the same order as
+// ModelSnapshotState. Lets a test directly compare checkpoint-N against the
+// T=1 recurrent state without going through ModelRestoreCheckpoint.
+Status ModelSnapshotCheckpoint(const Model& m, int ckpt_idx,
+                               ModelStateSnapshot* snap, cudaStream_t stream,
+                               int seq_id = 0);
 
 // Aggregate per-layer MoE residency counters (all-zero when tiered
 // residency is disabled, i.e. every layer has Slots() == 0).

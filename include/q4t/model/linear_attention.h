@@ -137,7 +137,11 @@ Status LinearAttentionForward(const LinearAttentionWeights& w, const uint16_t* x
                               uint16_t* conv_ckpt = nullptr, int num_ckpt = 0,
                               const int* d_seq_id = nullptr,
                               int tokens_per_seq = 0,
-                              const RaggedBatch* ragged = nullptr);
+                              const RaggedBatch* ragged = nullptr,
+                              int ckpt_stride = 0,
+                              float* ssm_capture = nullptr,
+                              uint16_t* conv_capture = nullptr,
+                              uint16_t* qkv_raw_capture = nullptr);
 
 }  // namespace model
 }  // namespace q4t

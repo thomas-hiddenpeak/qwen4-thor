@@ -55,7 +55,7 @@ constexpr int kGevThreads = 256;  // 8 warps per block
 __global__ void Bf16GevKernel(const uint16_t* __restrict__ w,
                               const uint16_t* __restrict__ x,
                               uint16_t* __restrict__ y, int N, int K,
-                              float alpha) {
+                              float alpha, float* __restrict__ fp32_out) {
   constexpr int kWarp = 32;
   constexpr int kWarps = kGevThreads / kWarp;  // 8
 
@@ -108,8 +108,14 @@ __global__ void Bf16GevKernel(const uint16_t* __restrict__ w,
 #pragma unroll
   for (int off = kWarp / 2; off > 0; off >>= 1)
     sum += __shfl_down_sync(0xffffffff, sum, off);
-  if (lane == 0)
-    y[out_idx] = __bfloat16_as_ushort(__float2bfloat16_rn(alpha * sum));
+  if (lane == 0) {
+    const float v = alpha * sum;
+    y[out_idx] = __bfloat16_as_ushort(__float2bfloat16_rn(v));
+    // Test-only FP32 capture (docs/STATUS.md 当前阶段 O1): the pre-rounding
+    // FP32 accumulation, so the M=1 vs M=4 difference can be characterized
+    // as accumulation-order vs rounding with real evidence.
+    if (fp32_out != nullptr) fp32_out[out_idx] = v;
+  }
 }
 
 // FP8 weight quantization: one block per output row n. Computes the per-row
@@ -272,7 +278,23 @@ bool Bf16Gev(const uint16_t* x, const uint16_t* w, uint16_t* y, int N, int K,
   constexpr int kWarps = kGevThreads / 32;
   const int blocks = (N + kWarps - 1) / kWarps;
   const size_t smem = static_cast<size_t>(K) * sizeof(uint16_t);
-  Bf16GevKernel<<<blocks, kGevThreads, smem, stream>>>(w, x, y, N, K, alpha);
+  Bf16GevKernel<<<blocks, kGevThreads, smem, stream>>>(w, x, y, N, K, alpha,
+                                                       nullptr);
+  return cudaGetLastError() == cudaSuccess;
+}
+
+// Test-only: same arithmetic as Bf16Gev but also returns the pre-rounding
+// FP32 accumulation for each output (operator-level diagnostics; see
+// docs/STATUS.md 当前阶段 O1). Production Bf16Gev is unchanged.
+bool Bf16GevFp32(const uint16_t* x, const uint16_t* w, uint16_t* y,
+                 float* fp32_sum, int N, int K, float alpha,
+                 cudaStream_t stream) {
+  if (N <= 0 || K <= 0 || (K & 7) != 0) return false;
+  constexpr int kWarps = kGevThreads / 32;
+  const int blocks = (N + kWarps - 1) / kWarps;
+  const size_t smem = static_cast<size_t>(K) * sizeof(uint16_t);
+  Bf16GevKernel<<<blocks, kGevThreads, smem, stream>>>(w, x, y, N, K, alpha,
+                                                       fp32_sum);
   return cudaGetLastError() == cudaSuccess;
 }
 

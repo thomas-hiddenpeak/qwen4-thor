@@ -186,19 +186,32 @@ Status CheckGemm(const Bf16GemmResult& r) {
 }
 
 // Debug: when Q4T_LIN_DUMP=<tag>, copy the linear-attention intermediates of
-// this call to <tag>_m<idx>.{x,qkv_raw,qkv,y_ssm}.bin (BF16, row-major) so a
-// prefill vs decode comparison can find the first diverging stage. No-op
-// unless the env var is set.
+// this call to <tag>_m<idx>.{x,qkv_raw,qkv,z,a,beta,y_ssm}.bin (BF16,
+// row-major) so a prefill vs decode comparison can find the first diverging
+// stage (projections -> conv -> GDN recurrence). No-op unless the env var is
+// set.
 //
 // Each forward calls LinearAttentionForward once per linear layer, in layer
 // order, so idx (0-based, reset when the tag changes) is the linear-layer
 // index. Without this, every layer overwrote the same <tag>.{...}.bin and the
 // LAST linear layer won — which silently mislabeled layer-0 intermediates as
 // the final layer's (a real artifact that corrupted an earlier localization).
+namespace {
+// Base name of the most recent DumpLinearIntermediates call in the current
+// tag; lets the post-NormGate dump (DumpLinearGatedYssm) write into the same
+// <tag>_m<idx> without re-advancing the layer index.
+std::string& LinDumpCurrentBase() {
+  static std::string base;
+  return base;
+}
+}  // namespace
+
 void DumpLinearIntermediates(const char* tag, const uint16_t* x, int T,
                              int hs, const uint16_t* qkv_raw,
                              const uint16_t* qkv, const uint16_t* y_ssm,
-                             int in_qkv, int v_dim) {
+                             const uint16_t* z, const uint16_t* a,
+                             const uint16_t* beta, int in_qkv, int v_dim,
+                             int nv) {
   const char* e = std::getenv("Q4T_LIN_DUMP");
   if (!e || !*e) return;
   static std::string last_tag;
@@ -209,6 +222,7 @@ void DumpLinearIntermediates(const char* tag, const uint16_t* x, int T,
   }
   const int li = idx++;
   const std::string base = std::string(e) + "_m" + std::to_string(li);
+  LinDumpCurrentBase() = base;
   auto w = [&](const char* name, const uint16_t* src, size_t n) {
     std::string p = base + "." + name + ".bin";
     std::vector<uint16_t> h(n);
@@ -222,8 +236,32 @@ void DumpLinearIntermediates(const char* tag, const uint16_t* x, int T,
   w("x", x, static_cast<size_t>(T) * hs);
   w("qkv_raw", qkv_raw, static_cast<size_t>(T) * in_qkv);
   w("qkv", qkv, static_cast<size_t>(T) * in_qkv);
+  w("z", z, static_cast<size_t>(T) * v_dim);
+  w("a", a, static_cast<size_t>(T) * nv);
+  w("beta", beta, static_cast<size_t>(T) * nv);
   w("y_ssm", y_ssm, static_cast<size_t>(T) * v_dim);
   (void)tag;
+}
+
+// Debug: when Q4T_LIN_DUMP=<tag>, copy the gated y_ssm (after the in-place
+// NormGate, before out_proj) to <tag>_m<idx>.y_ssm_gated.bin using the base
+// set by the same layer's DumpLinearIntermediates call. Discriminates a
+// NormGate divergence from an out_proj divergence when the raw y_ssm is
+// identical.
+void DumpLinearGatedYssm(const uint16_t* y_ssm_gated, int T, int v_dim) {
+  const char* e = std::getenv("Q4T_LIN_DUMP");
+  if (!e || !*e) return;
+  const std::string base = LinDumpCurrentBase();
+  if (base.empty()) return;
+  std::string p = base + ".y_ssm_gated.bin";
+  std::vector<uint16_t> h(static_cast<size_t>(T) * v_dim);
+  cudaMemcpy(h.data(), y_ssm_gated, h.size() * sizeof(uint16_t),
+             cudaMemcpyDeviceToHost);
+  FILE* f = std::fopen(p.c_str(), "wb");
+  if (f) {
+    std::fwrite(h.data(), sizeof(uint16_t), h.size(), f);
+    std::fclose(f);
+  }
 }
 
 // Fused causal conv1d (SiLU) + per-token conv checkpoints.
@@ -243,7 +281,7 @@ __global__ void CausalConv1dWithCkptKernel(
     const uint16_t* __restrict__ input, uint16_t* __restrict__ output,
     const uint16_t* __restrict__ old_state, uint16_t* __restrict__ ckpt,
     const uint16_t* __restrict__ w, int T, int channels, int conv_k,
-    int num_ckpt) {
+    int num_ckpt, uint16_t* __restrict__ capture) {
   const int ch = blockIdx.x * blockDim.x + threadIdx.x;
   if (ch >= channels) return;
   const int z = blockIdx.y;
@@ -273,6 +311,12 @@ __global__ void CausalConv1dWithCkptKernel(
       const int s = t - hist + 1 + k;  // batch-relative token index
       dst[k] = (s >= 0) ? input[static_cast<size_t>(s) * channels + ch]
                         : old_state[ch * hist + (s + hist)];
+    }
+    // Independent writer-row0 capture (test-only, default null): copy the
+    // t==0 row to a separate buffer, NOT via ckpt, so a test can compare the
+    // writer's row-0 against the checkpoint buffer independently.
+    if (t == 0 && capture) {
+      for (int k = 0; k < hist; ++k) capture[ch * hist + k] = dst[k];
     }
   }
 }
@@ -475,7 +519,8 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetKernel(
     const uint16_t* __restrict__ dt_bias, const uint16_t* __restrict__ A_log,
     const uint16_t* __restrict__ beta_raw, float* __restrict__ ssm,
     uint16_t* __restrict__ y, int T, int nkh, int kd, int nv_per_kh, int vd,
-    int token_stride, int nv, float* __restrict__ ssm_ckpt, int num_ckpt) {
+    int token_stride, int nv, float* __restrict__ ssm_ckpt, int num_ckpt,
+    float* __restrict__ ssm_capture) {
   const int h_v = blockIdx.x;
   const int h_k = h_v / nv_per_kh;
   const int j = threadIdx.x;  // vd index
@@ -551,6 +596,12 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetKernel(
       const size_t ck_off = static_cast<size_t>(t) * nv * kd * vd + ss_base;
       for (int i = 0; i < kd; ++i)
         ssm_ckpt[ck_off + i * vd + j] = S_smem[i * vd_pad + j];
+    }
+    // Independent writer-row0 capture: copy the t==0 post-update S_smem
+    // directly (not via ssm_ckpt) to the per-layer capture buffer.
+    if (ssm_capture && t == 0) {
+      for (int i = 0; i < kd; ++i)
+        ssm_capture[ss_base + i * vd + j] = S_smem[i * vd_pad + j];
     }
     __syncthreads();
   }
@@ -1010,7 +1061,7 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetDecodeKernel(
 __global__ void Conv1dCheckpointMultiSeqKernel(
     const uint16_t* __restrict__ input, const uint16_t* __restrict__ old_state,
     uint16_t* __restrict__ ckpt, const int* __restrict__ d_seq_id,
-    int channels, int conv_k, int T, int num_ckpt) {
+    int channels, int conv_k, int T, int num_ckpt, int ckpt_stride) {
   const int ch = blockIdx.x * blockDim.x + threadIdx.x;
   if (ch >= channels) return;
   const int z = blockIdx.y;  // = b * num_ckpt + tt
@@ -1021,7 +1072,8 @@ __global__ void Conv1dCheckpointMultiSeqKernel(
   const uint16_t* seq_state =
       old_state + static_cast<size_t>(seq) * channels * hist;
   uint16_t* dst = ckpt +
-                  ((static_cast<size_t>(seq) * num_ckpt + tt) * channels + ch) *
+                  ((static_cast<size_t>(seq) * ckpt_stride + tt) * channels +
+                       ch) *
                       hist;
   for (int k = 0; k < hist; ++k) {
     const int s = tt - hist + 1 + k;  // local token index (can be negative)
@@ -1055,7 +1107,7 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetMultiSeqCausalKernel(
     const uint16_t* __restrict__ beta_raw, float* __restrict__ ssm,
     uint16_t* __restrict__ y, int T, int nkh, int kd, int nv_per_kh, int vd,
     int in_qkv, int nv, const int* __restrict__ d_seq_id,
-    float* __restrict__ ssm_ckpt, int num_ckpt,
+    float* __restrict__ ssm_ckpt, int num_ckpt, int ckpt_stride,
     const int* __restrict__ seq_offset) {
   const int h_v = blockIdx.x;
   const int b = blockIdx.y;  // sequence index
@@ -1128,7 +1180,8 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetMultiSeqCausalKernel(
     // accepted-prefix boundary via D2D.
     if (ssm_ckpt && tt < num_ckpt) {
       const size_t ck_off =
-          ((static_cast<size_t>(seq) * num_ckpt + tt) * nv + h_v) * kd * vd;
+          ((static_cast<size_t>(seq) * ckpt_stride + tt) * nv + h_v) * kd *
+              vd;
       for (int i = 0; i < kd; ++i)
         ssm_ckpt[ck_off + i * vd + j] = S_smem[i * vd_pad + j];
     }
@@ -1308,7 +1361,10 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
                               cudaStream_t stream, float* ssm_ckpt,
                               uint16_t* conv_ckpt, int num_ckpt,
                               const int* d_seq_id, int tokens_per_seq,
-                              const RaggedBatch* ragged) {
+                              const RaggedBatch* ragged, int ckpt_stride,
+                              float* ssm_capture,
+                              uint16_t* conv_capture,
+                              uint16_t* qkv_raw_capture) {
   const int hs = w.hidden_size;
   const int nkh = w.nkh, nv = w.nv, kd = w.kd, vd = w.vd, conv_k = w.conv_k;
   const int qk = nkh * kd;
@@ -1376,11 +1432,69 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
   }
 
   // 1. Projections (all BF16 GEMMs; large ones use the FP8 decode shadow).
-  s = CheckGemm(ProjGemm(x, w.in_proj_qkv, &w.in_proj_qkv_fp8, d_qkv_raw, T,
-                         in_qkv, hs, 1.0f, 0.0f, workspace, workspace_bytes,
-                         stream));
-  if (!s.ok()) {
-    return s;
+  // CANDIDATE (revertible, off by default; O2 minimal fix, see
+  // docs/STATUS.md 当前阶段): for small verify/prefill batches (2 <= T <= 8)
+  // without an FP8 shadow, compute in_proj_qkv row-wise with the same M=1
+  // GEMV kernel the T=1 decode path uses, so small-batch prefill/verify
+  // follows the same accumulation/rounding semantics as single-step decode.
+  // Fixed-input FP64 reference (2026-10-11, /tmp/q4t_inproj_cap_20261011):
+  // the T=1 GEMV row is the correctly-rounded value for 15/15 differing
+  // elements vs the T=8 cuBLASLt row (14x1-ULP + 1x5-ULP). Scoped to
+  // in_proj_qkv only; the FP8 shadow path and all other GEMMs are
+  // untouched. Default runtime behavior is unchanged (env var unset).
+  const bool rowwise_inproj =
+      std::getenv("Q4T_INPROJ_ROWWISE_GEMV") != nullptr && T >= 2 && T <= 8 &&
+      w.in_proj_qkv_fp8.w == nullptr && (hs % 8) == 0;
+  if (rowwise_inproj) {
+    bool ok = true;
+    for (int t = 0; t < T && ok; ++t)
+      ok = Bf16Gev(x + static_cast<size_t>(t) * hs, w.in_proj_qkv,
+                   d_qkv_raw + static_cast<size_t>(t) * in_qkv, in_qkv, hs,
+                   1.0f, stream);
+    if (!ok) return Status::Fail("in_proj_qkv rowwise GEMV failed");
+  } else {
+    s = CheckGemm(ProjGemm(x, w.in_proj_qkv, &w.in_proj_qkv_fp8, d_qkv_raw, T,
+                           in_qkv, hs, 1.0f, 0.0f, workspace, workspace_bytes,
+                           stream));
+    if (!s.ok()) {
+      return s;
+    }
+  }
+  // Debug: capture the in_proj_qkv (first GEMM) x / weight / qkv_raw for the
+  // FIRST linear-attention call only (layer 0 of the first forward), gated by
+  // Q4T_INPROJ_CAPTURE=<dir>. Self-contained minimal evidence for the
+  // T=1-GEMV vs T>1-GEMM first-divergence localization.
+  if (const char* cap = std::getenv("Q4T_INPROJ_CAPTURE")) {
+    static bool inproj_captured = false;
+    if (!inproj_captured && cap[0]) {
+      inproj_captured = true;
+      std::string base = std::string(cap) + "/inproj_qkv";
+      auto wcap = [&](const char* nm, const uint16_t* src, size_t n) {
+        std::string fp = base + "." + nm + ".bin";
+        std::vector<uint16_t> h(n);
+        cudaMemcpy(h.data(), src, n * sizeof(uint16_t), cudaMemcpyDeviceToHost);
+        FILE* f = std::fopen(fp.c_str(), "wb");
+        if (f) {
+          std::fwrite(h.data(), sizeof(uint16_t), n, f);
+          std::fclose(f);
+        }
+      };
+      wcap("x", x, static_cast<size_t>(T) * hs);
+      wcap("weight", w.in_proj_qkv, static_cast<size_t>(in_qkv) * hs);
+      wcap("qkv_raw", d_qkv_raw, static_cast<size_t>(T) * in_qkv);
+    }
+  }
+  // Test-only writer-row0 capture: copy row 0 of the RAW in_proj_qkv output
+  // (the conv input + conv_state source) to the caller-owned buffer. This is
+  // the independent reference for the conv checkpoint row-0 window (host-side
+  // reconstruction), separate from the checkpoint write path. nullptr in
+  // production; the D2D copy does not alter the forward.
+  if (qkv_raw_capture) {
+    if (cudaMemcpyAsync(qkv_raw_capture, d_qkv_raw,
+                        static_cast<size_t>(in_qkv) * sizeof(uint16_t),
+                        cudaMemcpyDeviceToDevice, stream) != cudaSuccess) {
+      return Status::Fail("qkv_raw_capture D2D");
+    }
   }
   s = CheckGemm(ProjGemm(x, w.in_proj_z, &w.in_proj_z_fp8, d_z, T, v_dim, hs,
                          1.0f, 0.0f, workspace, workspace_bytes, stream));
@@ -1420,7 +1534,7 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
         Conv1dCheckpointMultiSeqKernel<<<dim3(ch_blocks, B * num_ckpt), kBlock,
                                          0, stream>>>(
             d_qkv_raw, conv_state, conv_ckpt, d_seq_id, in_qkv, conv_k,
-            tokens_per_seq, num_ckpt);
+            tokens_per_seq, num_ckpt, ckpt_stride);
         if (cudaGetLastError() != cudaSuccess) {
           return Status::Fail("conv1d multi-seq ckpt launch");
         }
@@ -1449,7 +1563,7 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
       const int z_blocks = T + (conv_ckpt ? num_ckpt : 0);
       CausalConv1dWithCkptKernel<<<dim3(ch_blocks, z_blocks), kBlock, 0, stream>>>(
           d_qkv_raw, d_qkv, conv_state, conv_ckpt, w.conv1d, T, in_qkv, conv_k,
-          conv_ckpt ? num_ckpt : 0);
+          conv_ckpt ? num_ckpt : 0, conv_capture);
       if (cudaGetLastError() != cudaSuccess) {
         return Status::Fail("conv1d launch");
       }
@@ -1482,7 +1596,7 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
                                            stream>>>(
           d_qkv, d_a, w.dt_bias, w.A_log, d_beta, ssm_state, d_y_ssm,
           tokens_per_seq, nkh, kd, nv / nkh, vd, in_qkv, nv, d_seq_id,
-          ssm_ckpt, num_ckpt, rag_offset);
+          ssm_ckpt, num_ckpt, ckpt_stride, rag_offset);
       if (cudaGetLastError() != cudaSuccess) {
         return Status::Fail("gdn multi-seq causal launch");
       }
@@ -1591,7 +1705,7 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
         }
         GatedDeltaNetKernel<<<nv, threads, smem_bytes, stream>>>(
             d_qkv, d_a, w.dt_bias, w.A_log, d_beta, ssm_state, d_y_ssm, T, nkh,
-            kd, nv / nkh, vd, in_qkv, nv, ssm_ckpt, num_ckpt);
+            kd, nv / nkh, vd, in_qkv, nv, ssm_ckpt, num_ckpt, ssm_capture);
         if (cudaGetLastError() != cudaSuccess) {
           return Status::Fail("gdn launch");
         }
@@ -1599,10 +1713,10 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
     }
   }
 
-  // Debug dump (before the in-place gate): x, qkv_raw, qkv, y_ssm (raw SSM
-  // output). Gated by Q4T_LIN_DUMP.
-  DumpLinearIntermediates("lin", x, T, hs, d_qkv_raw, d_qkv, d_y_ssm, in_qkv,
-                          v_dim);
+  // Debug dump (before the in-place gate): x, qkv_raw, qkv, z, a, beta,
+  // y_ssm (raw SSM output). Gated by Q4T_LIN_DUMP.
+  DumpLinearIntermediates("lin", x, T, hs, d_qkv_raw, d_qkv, d_y_ssm, d_z,
+                          d_a, d_beta, in_qkv, v_dim, nv);
 
   // 4. Fused per-head RMSNorm * sigmoid(z) gate (in-place on d_y_ssm).
   {
@@ -1612,6 +1726,8 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
     if (cudaGetLastError() != cudaSuccess) {
       return Status::Fail("norm gate launch");
     }
+    // Debug dump (after the in-place gate, before out_proj).
+    DumpLinearGatedYssm(d_y_ssm, T, v_dim);
   }
 
   // 5. Output projection.

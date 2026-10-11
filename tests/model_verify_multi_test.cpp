@@ -312,3 +312,250 @@ Q4T_TEST(model_verify_multi) {
   m.Free();
   return ok;
 }
+
+// Targeted regression for the multi-seq checkpoint stride fix (2026-10-11):
+// the three multi-seq checkpoint kernels (Conv1dCheckpointMultiSeqKernel,
+// GatedDeltaNetMultiSeqCausalKernel, PleConvCheckpointMultiSeqKernel) index
+// the per-seq slice by (seq * cap + t). This test exercises:
+//   (1) cap > count: reserve cap=4 while the verify batch is T=3 (num_ckpt=2),
+//       so the old num_ckpt stride would misplace the per-seq checkpoint rows.
+//   (2) non-zero seq_id / isolation: seq_ids {1, 2} (not {0, 1}), so the seq
+//       stride (seq * cap) is non-trivial and cross-seq contamination would
+//       show up as a large l2_rel against the wrong reference.
+//   (3) accept recovery at a=0 AND a=1: restore checkpoint[a] for each and
+//       decode verify[a+1]; both must match the per-seq prefill reference.
+// Method mirrors model_verify_multi (shared-state GDN via GdnRegOff, 2-layer
+// model with PLE on layer 1, threshold 0.02 for the post-rollback decode).
+Q4T_TEST(model_verify_multi_ckpt) {
+  q4t::test::GdnRegOff gdn_reg_off;
+  if (!CudaAvailable()) {
+    Q4T_SKIP("(skipped: no CUDA device)");
+  }
+  if (!FileExists(kIndex) || !FileExists(kPleSidecar)) {
+    Q4T_SKIP("(skipped: model not found)");
+  }
+
+  ModelConfig cfg;
+  cfg.model_dir = kModelDir;
+  cfg.index_path = kIndex;
+  cfg.num_layers = 2;
+  cfg.max_prefill = 8;
+  cfg.max_seq = 3;  // allow non-zero seq_ids {1, 2}
+  cfg.ple_sidecar = kPleSidecar;
+  Model m;
+  Status s = LoadModel(cfg, &m, nullptr);
+  if (!s.ok()) {
+    std::printf("  main model load failed: %s\n", s.message().c_str());
+    return false;
+  }
+  const int vocab = m.cfg.vocab;
+
+  // cap > count (defect 1): reserve cap=4 while T=3 (num_ckpt = T-1 = 2).
+  const int cap = 4;
+  s = ModelReserveVerifyCheckpoints(m, cap);
+  if (!s.ok()) {
+    std::printf("  reserve checkpoints (cap=%d) failed: %s\n", cap,
+                s.message().c_str());
+    m.Free();
+    return false;
+  }
+  std::printf("  reserve_cap=%d (T-1=2, cap > count)\n", cap);
+
+  const int B = 2;
+  const int T = 3;
+  const int Ttot = B * T;
+  const int Tprompt = 4;
+  const int32_t prompt0[] = {846, 25, 1203, 321};
+  const int32_t prompt1[] = {1024, 55, 9001, 77};
+  const int32_t verify0[] = {236644, 11, 22};
+  const int32_t verify1[] = {50000, 33, 44};
+  const int32_t* prompts[2] = {prompt0, prompt1};
+  // Non-zero seq_ids (defect 2): the seq stride (seq * cap) is non-trivial.
+  const int seq_ids[2] = {1, 2};
+
+  uint16_t* d_mlogits = nullptr;
+  uint16_t* d_plogits = nullptr;
+  uint16_t* d_step_logits = nullptr;
+  auto mal = [&](void** p, size_t bytes) {
+    return cudaMalloc(p, bytes) == cudaSuccess;
+  };
+  if (!mal(reinterpret_cast<void**>(&d_mlogits),
+           static_cast<size_t>(Ttot) * vocab * 2) ||
+      !mal(reinterpret_cast<void**>(&d_plogits),
+           static_cast<size_t>(Tprompt + T) * vocab * 2) ||
+      !mal(reinterpret_cast<void**>(&d_step_logits),
+           static_cast<size_t>(vocab) * 2)) {
+    std::printf("  cudaMalloc failed\n");
+    m.Free();
+    return false;
+  }
+
+  // ---- Per-seq prefill reference (using the same non-zero seq_ids) -------
+  std::vector<std::vector<uint16_t>> ref(B);
+  for (int b = 0; b < B; ++b) {
+    std::vector<int32_t> full(Tprompt + T);
+    for (int t = 0; t < Tprompt; ++t) full[t] = prompts[b][t];
+    for (int t = 0; t < T; ++t)
+      full[Tprompt + t] = (b == 0 ? verify0[t] : verify1[t]);
+    ModelSequence rseq;
+    s = ModelBeginSequence(m, &rseq, nullptr, seq_ids[b]);
+    if (!s.ok()) {
+      std::printf("  ref begin seq %d failed: %s\n", seq_ids[b],
+                  s.message().c_str());
+      m.Free();
+      return false;
+    }
+    s = ModelPrefill(m, &rseq, full.data(), Tprompt + T, d_plogits, nullptr,
+                     nullptr, nullptr, seq_ids[b]);
+    if (!s.ok()) {
+      std::printf("  ref prefill seq %d failed: %s\n", seq_ids[b],
+                  s.message().c_str());
+      m.Free();
+      return false;
+    }
+    std::vector<uint16_t> plogits(static_cast<size_t>(Tprompt + T) * vocab);
+    cudaMemcpy(plogits.data(), d_plogits,
+               static_cast<size_t>(Tprompt + T) * vocab * 2,
+               cudaMemcpyDeviceToHost);
+    ref[b].resize(static_cast<size_t>(T) * vocab);
+    for (int t = 0; t < T; ++t)
+      std::memcpy(ref[b].data() + static_cast<size_t>(t) * vocab,
+                  plogits.data() + static_cast<size_t>(Tprompt + t) * vocab,
+                  static_cast<size_t>(vocab) * 2);
+    ModelEndSequence(&rseq);
+  }
+
+  // ---- Multi-seq verify path (non-zero seq_ids, cap > count) -------------
+  ModelSequence seq[2];
+  for (int b = 0; b < B; ++b) {
+    s = ModelBeginSequence(m, &seq[b], nullptr, seq_ids[b]);
+    if (!s.ok()) {
+      std::printf("  begin seq %d failed: %s\n", seq_ids[b],
+                  s.message().c_str());
+      m.Free();
+      return false;
+    }
+    s = ModelPrefill(m, &seq[b], prompts[b], Tprompt, d_plogits, nullptr,
+                     nullptr, nullptr, seq_ids[b]);
+    if (!s.ok()) {
+      std::printf("  prefill seq %d failed: %s\n", seq_ids[b],
+                  s.message().c_str());
+      m.Free();
+      return false;
+    }
+  }
+  std::vector<int32_t> tokens(Ttot);
+  for (int b = 0; b < B; ++b)
+    for (int t = 0; t < T; ++t)
+      tokens[static_cast<size_t>(b) * T + t] =
+          (b == 0 ? verify0[t] : verify1[t]);
+  const int base_positions[2] = {Tprompt, Tprompt};
+  const int history_len = Tprompt;
+  std::vector<int32_t> history(static_cast<size_t>(B) * history_len);
+  for (int b = 0; b < B; ++b)
+    for (int t = 0; t < history_len; ++t)
+      history[static_cast<size_t>(b) * history_len + t] = prompts[b][t];
+
+  s = ModelVerifyMulti(m, tokens.data(), base_positions, seq_ids, history.data(),
+                       history_len, B, T, d_mlogits, nullptr);
+  if (!s.ok()) {
+    std::printf("  ModelVerifyMulti failed: %s\n", s.message().c_str());
+    m.Free();
+    return false;
+  }
+
+  // ---- Verify logits match the per-seq prefill reference -----------------
+  std::vector<uint16_t> mlogits(static_cast<size_t>(Ttot) * vocab);
+  cudaMemcpy(mlogits.data(), d_mlogits,
+             static_cast<size_t>(Ttot) * vocab * 2, cudaMemcpyDeviceToHost);
+  bool ok = true;
+  for (int b = 0; b < B; ++b) {
+    for (int t = 0; t < T; ++t) {
+      std::vector<uint16_t> row_a(mlogits.begin() +
+                                      (static_cast<size_t>(b) * T + t) * vocab,
+                                  mlogits.begin() +
+                                      (static_cast<size_t>(b) * T + t + 1) *
+                                          vocab);
+      std::vector<uint16_t> row_b(ref[b].begin() + t * vocab,
+                                  ref[b].begin() + (t + 1) * vocab);
+      const float rel = L2Rel(row_a, row_b);
+      std::printf("  seq %d tok %d: l2_rel=%.5f %s\n", seq_ids[b], t, rel,
+                  rel < 0.01f ? "OK" : "MISMATCH");
+      if (rel >= 0.01f) ok = false;
+    }
+  }
+
+  // ---- Accept recovery at a=0 and a=1 (sequence 0) -----------------------
+  // checkpoint[a] = state after verify0[a]. Restore it, align seq[0] to the
+  // accepted boundary, decode verify0[a+1]; it must match the reference at
+  // position Tprompt+a+1. (ModelRestoreCheckpoint does not advance the
+  // ModelSequence state machine; the caller aligns it, as in the real MTP
+  // flow.) The decode step uses the decode kernel, so the match carries the
+  // known batch-vs-decode residual (threshold 0.02).
+  for (int a = 0; a < T - 1; ++a) {
+    s = ModelRestoreCheckpoint(m, a, nullptr, seq_ids[0]);
+    if (!s.ok()) {
+      std::printf("  restore checkpoint %d failed: %s\n", a,
+                  s.message().c_str());
+      m.Free();
+      return false;
+    }
+    // Align seq[0] to the "accepted verify0[0..a]" boundary: position =
+    // Tprompt+a+1, history = prompt0 + verify0[0..a]. The decode MUST run
+    // before any end/begin/re-prefill: ModelBeginSequence calls
+    // ResetAllLayers, which would wipe the just-restored checkpoint.
+    for (int k = 0; k <= a; ++k) seq[0].history.push_back(verify0[k]);
+    seq[0].position = Tprompt + a + 1;
+    s = ModelDecodeStepSeq(m, &seq[0], verify0[a + 1], d_step_logits, nullptr,
+                           nullptr, seq_ids[0]);
+    if (!s.ok()) {
+      std::printf("  post-rollback decode (a=%d) failed: %s\n", a,
+                  s.message().c_str());
+      m.Free();
+      return false;
+    }
+    std::vector<uint16_t> rb(vocab);
+    cudaMemcpy(rb.data(), d_step_logits, static_cast<size_t>(vocab) * 2,
+               cudaMemcpyDeviceToHost);
+    std::vector<uint16_t> rb_ref(
+        ref[0].begin() + static_cast<size_t>(a + 1) * vocab,
+        ref[0].begin() + static_cast<size_t>(a + 2) * vocab);
+    const float rb_rel = L2Rel(rb, rb_ref);
+    std::printf("  accept seq %d (a=%d) then decode verify0[%d]: l2_rel="
+                "%.5f %s\n",
+                seq_ids[0], a, a + 1, rb_rel, rb_rel < 0.02f ? "OK" :
+                                                          "MISMATCH");
+    if (rb_rel >= 0.02f) ok = false;
+    // Reset the sequence state machine for the next iteration (the restore
+    // does not touch it; re-align to the prompt boundary). The re-prefill
+    // rebuilds history = prompt0; its live state is overwritten by the next
+    // iteration's restore.
+    s = ModelEndSequence(&seq[0]);
+    if (!s.ok()) {
+      std::printf("  end seq 0 (a=%d) failed: %s\n", a, s.message().c_str());
+      m.Free();
+      return false;
+    }
+    s = ModelBeginSequence(m, &seq[0], nullptr, seq_ids[0]);
+    if (!s.ok()) {
+      std::printf("  re-begin seq 0 (a=%d) failed: %s\n", a,
+                  s.message().c_str());
+      m.Free();
+      return false;
+    }
+    s = ModelPrefill(m, &seq[0], prompts[0], Tprompt, d_plogits, nullptr,
+                     nullptr, nullptr, seq_ids[0]);
+    if (!s.ok()) {
+      std::printf("  re-prefill seq 0 (a=%d) failed: %s\n", a,
+                  s.message().c_str());
+      m.Free();
+      return false;
+    }
+  }
+
+  cudaFree(d_mlogits);
+  cudaFree(d_plogits);
+  cudaFree(d_step_logits);
+  m.Free();
+  return ok;
+}

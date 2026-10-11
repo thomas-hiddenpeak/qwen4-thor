@@ -980,6 +980,27 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
                    cudaMemcpyDeviceToDevice) != cudaSuccess)
       return cleanup(Status::Fail("MtpSpeculativeStep: D2D roll g"));
   }
+  // Test-only: Q4T_MTP_TEST_DRAFTS="t1,t2,..." overrides the generated
+  // draft tokens drafts[1..k-1] (drafts[0] stays d0). The draft loop still
+  // ran, so all draft-KV side effects are unchanged; only the token values
+  // fed to the verify batch are replaced. Default off (no behavior change);
+  // fails loudly if set but malformed (exactly k-1 tokens required).
+  if (const char* env_drafts = std::getenv("Q4T_MTP_TEST_DRAFTS")) {
+    std::vector<int32_t> forced;
+    const char* rest = env_drafts;
+    while (*rest) {
+      char* end = nullptr;
+      const long v = std::strtol(rest, &end, 10);
+      if (end == rest) break;
+      forced.push_back(static_cast<int32_t>(v));
+      rest = (*end == ',') ? end + 1 : (*end == '\0' ? end : nullptr);
+    }
+    if (forced.size() != static_cast<size_t>(k - 1))
+      return cleanup(Status::Fail(
+          "Q4T_MTP_TEST_DRAFTS: expected exactly k-1 comma-separated "
+          "tokens"));
+    for (int j = 1; j < k; ++j) drafts[j] = forced[j - 1];
+  }
 
   if (timing) cudaEventRecord(ev_d1, stream);
   const auto t_draft1 = std::chrono::steady_clock::now();

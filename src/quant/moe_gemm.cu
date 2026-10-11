@@ -317,7 +317,17 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
   ws.dn_out_bytes = static_cast<size_t>(R) * hs * sizeof(uint16_t);
   ws.Init(static_cast<uint8_t*>(workspace));
 
-  if (M == 1 && k == 10 && E == 512 && hs == 2560 && moe_is == 640) {
+  // ABLATION (test-only, off by default): skip the dedicated M=1 device
+  // decode path so the single-token MoE forward uses the same per-expert
+  // Fp4Gemm chain as T>1, removing the MoEDeviceDecode implementation
+  // difference as a T-dependence source. Used to confirm whether the M=1 MoE
+  // decode path is a source of the MTP vs plain-greedy divergence (see
+  // docs/log/2026-10-11.md). Default runtime behavior is unchanged when the
+  // env var is unset.
+  const bool ablate_moe_decode_t1 =
+      std::getenv("Q4T_ABLATE_MOE_DECODE_T1") != nullptr;
+  if (!ablate_moe_decode_t1 && M == 1 && k == 10 && E == 512 && hs == 2560 &&
+      moe_is == 640) {
     return MoEDeviceDecode(x, expert_ids, router_w, y, weights, ws, gemm_ws,
                            gemm_ws_bytes, stream);
   }

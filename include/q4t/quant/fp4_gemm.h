@@ -21,6 +21,7 @@
 #include <cublasLt.h>
 
 #include <cstdint>
+#include <cstdlib>
 #include <type_traits>
 
 #include "q4t/quant/lt_cache.h"
@@ -68,6 +69,38 @@ inline Fp4GemmResult Fp4Gemm(const uint8_t* w_packed, const uint8_t* w_sf,
       std::is_same<OutT, uint16_t>::value ? CUDA_R_16BF : CUDA_R_32F;
   constexpr int kOutBits = std::is_same<OutT, uint16_t>::value ? 16 : 32;
   Fp4GemmResult res;
+  // ABLATION (test-only, off by default): force the M=1 path to use the M=4
+  // cuBLASLt plan (the same algorithm family the T=4 verify GEMM gets) by
+  // padding M=1 to M=4, so the cuBLASLt algorithm selection is no longer a
+  // T-dependence source. Used to confirm whether the M=1 vs M=4 Fp4Gemm
+  // (NVFP4) tiling is a source of the MTP vs plain-greedy divergence (see
+  // docs/log/2026-10-11.md). Default runtime behavior is unchanged when the
+  // env var is unset. The swizzled activation-scale buffer is the same size
+  // for M=1 and M=4 (both < 128 rows -> one 128-row atom) and the M=1 buffer
+  // already zeroes rows 1..127, so it is reused as-is.
+  const bool ablate_gemm_tile = std::getenv("Q4T_ABLATE_GEMM_TILE") != nullptr;
+  if (M == 1 && ablate_gemm_tile) {
+    uint8_t* a4 = nullptr;
+    OutT* out4 = nullptr;
+    if (cudaMalloc(&a4, sizeof(uint8_t) * 4 * (K / 2)) != cudaSuccess)
+      return res;
+    if (cudaMalloc(&out4, sizeof(OutT) * 4 * N) != cudaSuccess) {
+      cudaFree(a4);
+      return res;
+    }
+    cudaMemcpyAsync(a4, a_packed, sizeof(uint8_t) * (K / 2),
+                    cudaMemcpyDeviceToDevice, stream);
+    cudaMemsetAsync(a4 + (K / 2), 0, sizeof(uint8_t) * 3 * (K / 2), stream);
+    Fp4GemmResult r4 = Fp4Gemm(w_packed, w_sf, a4, a_sf, out4, 4, N, K,
+                               inv_w_global, inv_a_global, workspace,
+                               workspace_bytes, stream);
+    cudaMemcpyAsync(out, out4, sizeof(OutT) * N, cudaMemcpyDeviceToDevice,
+                    stream);
+    cudaStreamSynchronize(stream);
+    cudaFree(a4);
+    cudaFree(out4);
+    return r4;
+  }
   std::lock_guard<std::mutex> lock(LtCacheMutex());
   LtPlanKey key{M, N, K, workspace_bytes, kOutBits};
   LtPlanMap& cache = Fp4PlanCache();

@@ -17,6 +17,8 @@
 
 #include <cmath>
 #include <cstdint>
+#include <cstdlib>
+#include <cstdio>
 #include <cstring>
 #include <string>
 #include <vector>
@@ -309,12 +311,117 @@ Status CheckGemm(const Bf16GemmResult& r) {
   return Status();
 }
 
+// Generic (T>1) HC inject path: cuBLASLt GEMM followed by the per-(t,b)
+// gated sigmoid. Production code reaches it through PrepareInjectGate; the
+// exported HcInjectGateGeneric (below the anonymous namespace) wraps this so
+// the operator-level comparison test can run the exact T>1 path on fixed
+// inputs (docs/STATUS.md 当前阶段 O0/O1).
+Status HcInjectGateGenericImpl(const uint16_t* normed,
+                               const uint16_t* block_inject,
+                               uint16_t* inject, int T, int hc, int hs,
+                               void* workspace, size_t workspace_bytes,
+                               cudaStream_t stream) {
+  Status s = CheckGemm(Bf16Gemm(normed, block_inject, inject, T, hc, hc * hs,
+                                1.0f, 0.0f, workspace, workspace_bytes, stream));
+  if (!s) return s;
+  const int total = T * hc;
+  ApplyInjectGateKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
+      inject, total, 1.0f / hc);
+  const cudaError_t error = cudaGetLastError();
+  if (error != cudaSuccess) return Status::Fail(cudaGetErrorString(error));
+  return {};
+}
+
+// Test-only operator capture (off by default): when Q4T_OP_CAPTURE is set to
+// a directory, dump the HC inject gate operator's input, weight and output
+// for operator-level comparison (docs/STATUS.md 当前阶段 O0/O1). The
+// comparison test pairs the T=1 capture with the T>1 capture whose normed
+// row matches, so every call is dumped (weights included; ~100 KB per call).
+void MaybeCaptureHcInject(const uint16_t* normed, const uint16_t* block_inject,
+                          const uint16_t* inject, int T, int hc, int hs,
+                          bool fused_gate) {
+  const char* dir = std::getenv("Q4T_OP_CAPTURE");
+  if (dir == nullptr || *dir == '\0') return;
+  static int call = 0;
+  const int idx = call++;
+  const std::string base = std::string(dir) + "/hc_" + std::to_string(idx) +
+                           "_T" + std::to_string(T);
+  auto write = [&base](const uint16_t* d, const char* name, size_t n) {
+    std::vector<uint16_t> h(n);
+    if (cudaMemcpy(h.data(), d, n * sizeof(uint16_t),
+                   cudaMemcpyDeviceToHost) != cudaSuccess)
+      return;
+    FILE* f = std::fopen((std::string(base) + "_" + name + ".bin").c_str(),
+                         "wb");
+    if (f != nullptr) {
+      std::fwrite(h.data(), 1, n * sizeof(uint16_t), f);
+      std::fclose(f);
+    }
+  };
+  // Truncate the meta on the first call so a stale capture directory does not
+  // accumulate duplicate entries across runs.
+  const char* meta_mode = idx == 0 ? "w" : "a";
+  FILE* meta = std::fopen((std::string(dir) + "/hc_meta.txt").c_str(),
+                          meta_mode);
+  if (meta != nullptr) {
+    std::fprintf(meta, "idx=%d T=%d hc=%d hs=%d fused=%d\n", idx, T, hc, hs,
+                 fused_gate ? 1 : 0);
+    std::fclose(meta);
+  }
+  write(normed, "normed", static_cast<size_t>(T) * hc * hs);
+  write(block_inject, "block_inject", static_cast<size_t>(hc) * hc * hs);
+  write(inject, "inject", static_cast<size_t>(T) * hc);
+}
+
+// Test-only capture of the mix down GEMM (the first GEMM in the layer), the
+// candidate first-divergence operator (docs/STATUS.md 当前阶段 O0/O1). Gated
+// on the same Q4T_OP_CAPTURE dir; dumps normed (input), mix_down (weight) and
+// d_down (pre-silu output).
+void MaybeCaptureMixDown(const uint16_t* normed, const uint16_t* mix_down,
+                         const uint16_t* d_down, int T, int lr, int hc_dim) {
+  const char* dir = std::getenv("Q4T_OP_CAPTURE");
+  if (dir == nullptr || *dir == '\0') return;
+  static int call = 0;
+  const int idx = call++;
+  const std::string base = std::string(dir) + "/mix_" + std::to_string(idx) +
+                           "_T" + std::to_string(T);
+  auto write = [&base](const uint16_t* d, const char* name, size_t n) {
+    std::vector<uint16_t> h(n);
+    if (cudaMemcpy(h.data(), d, n * sizeof(uint16_t),
+                   cudaMemcpyDeviceToHost) != cudaSuccess)
+      return;
+    FILE* f = std::fopen((std::string(base) + "_" + name + ".bin").c_str(),
+                         "wb");
+    if (f != nullptr) {
+      std::fwrite(h.data(), 1, n * sizeof(uint16_t), f);
+      std::fclose(f);
+    }
+  };
+  const char* meta_mode = idx == 0 ? "w" : "a";
+  FILE* meta = std::fopen((std::string(dir) + "/mix_meta.txt").c_str(),
+                          meta_mode);
+  if (meta != nullptr) {
+    std::fprintf(meta, "idx=%d T=%d lr=%d hc_dim=%d\n", idx, T, lr, hc_dim);
+    std::fclose(meta);
+  }
+  write(normed, "normed", static_cast<size_t>(T) * hc_dim);
+  write(mix_down, "mix_down", static_cast<size_t>(lr) * hc_dim);
+  write(d_down, "down", static_cast<size_t>(T) * lr);
+}
+
 Status PrepareInjectGate(const HyperConnectionWeights& w,
                          const uint16_t* normed, uint16_t* inject, int T,
                          void* workspace, size_t workspace_bytes,
                          cudaStream_t stream) {
   const int hc = w.hc_count, hs = w.hidden_size;
-  const bool fused_gate = T == 1 && hc == 4 && hs == 2560 &&
+  // ABLATION (test-only, off by default): force the T=1 HC inject to use the
+  // generic Bf16Gemm + ApplyInjectGateKernel path (the same as T>1), so the HC
+  // inject gate is no longer a T-dependence source. Used to confirm whether QSA
+  // is the only T-dependence source in the MTP vs plain-greedy divergence (see
+  // docs/log/2026-10-10.md). Default runtime behavior is unchanged when the
+  // env var is unset.
+  const bool ablate_hc_t1 = std::getenv("Q4T_ABLATE_HC_T1") != nullptr;
+  const bool fused_gate = !ablate_hc_t1 && T == 1 && hc == 4 && hs == 2560 &&
                           ((reinterpret_cast<uintptr_t>(normed) |
                             reinterpret_cast<uintptr_t>(w.block_inject)) &
                            15u) == 0;
@@ -322,16 +429,11 @@ Status PrepareInjectGate(const HyperConnectionWeights& w,
     if (!HcInjectGevGated(normed, w.block_inject, inject, stream))
       return Status::Fail("HC gated projection launch failed");
   } else {
-    Status s =
-        CheckGemm(Bf16Gemm(normed, w.block_inject, inject, T, hc, hc * hs, 1.0f,
-                           0.0f, workspace, workspace_bytes, stream));
+    Status s = HcInjectGateGenericImpl(normed, w.block_inject, inject, T, hc,
+                                       hs, workspace, workspace_bytes, stream);
     if (!s) return s;
-    const int total = T * hc;
-    ApplyInjectGateKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
-        inject, total, 1.0f / hc);
   }
-  const cudaError_t error = cudaGetLastError();
-  if (error != cudaSuccess) return Status::Fail(cudaGetErrorString(error));
+  MaybeCaptureHcInject(normed, w.block_inject, inject, T, hc, hs, fused_gate);
   return {};
 }
 }  // namespace
@@ -423,6 +525,76 @@ Status LoadHyperConnection(const io::WeightLoader& loader,
   return Status();
 }
 
+// mix-down step (the first GEMM in the HC mix): down = normed @ W_down^T
+// ([T, hc_dim] x [lr, hc_dim]^T -> [T, lr]). Extracted as-is from
+// HyperConnectionMixImpl so the operator-level test (tests/
+// gemm_t1_vs_tk1_test.cpp; docs/STATUS.md 当前阶段 O2) can drive the exact
+// Debug: when Q4T_MLP_DUMP=<tag>, copy the GRRead `mixed` output (the
+// attention input for the first GRRead of a layer, the MoE input for the
+// second) to <tag>_mix_<idx>.bin (BF16, [T, hs]). idx is a per-tag counter
+// (0-based, reset when the tag changes), so within one forward of a 2-layer
+// model: layer0 GRRead#1=idx0, layer0 GRRead#2=idx1, layer1 GRRead#1=idx2,
+// layer1 GRRead#2=idx3. Used to attribute the first T-path divergence inside
+// the attention path (before the layer-boundary moe_in dump).
+void DumpHcMixed(const uint16_t* mixed, int T, int hs) {
+  const char* e = std::getenv("Q4T_MLP_DUMP");
+  if (!e || !*e) return;
+  static std::string last_tag_mix;
+  static int idx_mix = 0;
+  if (std::string(e) != last_tag_mix) {
+    last_tag_mix = e;
+    idx_mix = 0;
+  }
+  const int li = idx_mix++;
+  const std::string p =
+      std::string(e) + "_mix_" + std::to_string(li) + ".bin";
+  std::vector<uint16_t> h(static_cast<size_t>(T) * hs);
+  cudaMemcpy(h.data(), mixed, h.size() * sizeof(uint16_t),
+             cudaMemcpyDeviceToHost);
+  FILE* f = std::fopen(p.c_str(), "wb");
+  if (f) {
+    std::fwrite(h.data(), sizeof(uint16_t), h.size(), f);
+    std::fclose(f);
+  }
+}
+
+// production branch — row-wise candidate gate, ProjGemm fallback, capture
+// hook — on fixed captured inputs, without re-running the layer norm. The
+// caller owns d_down and any scratch cleanup.
+Status MixDownStep(const HyperConnectionWeights& w, const uint16_t* normed,
+                   uint16_t* d_down, int T, void* workspace,
+                   size_t workspace_bytes, cudaStream_t stream) {
+  const int lr = w.lowrank, hc_dim = w.hc_count * w.hidden_size;
+  // CANDIDATE (revertible, off by default; O2 minimal fix, see
+  // docs/STATUS.md 当前阶段): for small verify/prefill batches
+  // (2 <= T <= 8, cap8 experiment; cap4 was the original bound) without an
+  // FP8 shadow, compute mix-down row-wise with the same M=1 GEMV kernel the
+  // T=1 decode path uses, so small-batch verify follows the same
+  // accumulation/rounding semantics as single-step decode. Scoped to the
+  // mix-down path only (where the T=1-vs-T=4 difference was located with
+  // fixed inputs); the FP8 shadow path and all other GEMMs are untouched.
+  // Default runtime behavior is unchanged (env var unset).
+  const bool rowwise_mix =
+      std::getenv("Q4T_HC_MIX_ROWWISE_GEMV") != nullptr && T >= 2 && T <= 8 &&
+      w.mix_down_fp8.w == nullptr && (hc_dim % 8) == 0;
+  Status s;
+  if (rowwise_mix) {
+    bool ok = true;
+    for (int t = 0; t < T && ok; ++t)
+      ok = Bf16Gev(normed + static_cast<size_t>(t) * hc_dim, w.mix_down,
+                   d_down + static_cast<size_t>(t) * lr, lr, hc_dim, 1.0f,
+                   stream);
+    if (!ok) return Status::Fail("mix-down rowwise GEMV failed");
+  } else {
+    s = CheckGemm(ProjGemm(normed, w.mix_down, &w.mix_down_fp8, d_down, T,
+                           lr, hc_dim, 1.0f, 0.0f, workspace,
+                           workspace_bytes, stream));
+  }
+  if (!s.ok()) return s;
+  MaybeCaptureMixDown(normed, w.mix_down, d_down, T, lr, hc_dim);
+  return s;
+}
+
 static Status HyperConnectionMixImpl(
     const HyperConnectionWeights& w, const uint16_t* hyper_input,
     uint16_t* mixed, uint16_t* normed, int T, void* workspace,
@@ -444,8 +616,10 @@ static Status HyperConnectionMixImpl(
     // 1. Grouped RMSNorm (warp-per-branch: blockDim = 32*hc).
     GroupedRmsNormKernel<<<T, 32 * hc, 0, stream>>>(hyper_input, w.hc_norm,
                                                     normed, T, hc, hs, w.eps);
-    if (cudaGetLastError() != cudaSuccess)
-      return Status::Fail("rmsnorm launch");
+    const cudaError_t norm_error = cudaGetLastError();
+    if (norm_error != cudaSuccess)
+      return Status::Fail(std::string("rmsnorm launch: ") +
+                          cudaGetErrorString(norm_error));
   }
 
   uint16_t* d_down = mix_scratch ? mix_scratch->down : nullptr;
@@ -466,9 +640,8 @@ static Status HyperConnectionMixImpl(
   };
 
   // 2. down = normed @ W_down^T  ([T, hc_dim] x [lr, hc_dim]^T -> [T, lr]).
-  Status s = CheckGemm(ProjGemm(normed, w.mix_down, &w.mix_down_fp8, d_down, T,
-                                lr, hc_dim, 1.0f, 0.0f, workspace,
-                                workspace_bytes, stream));
+  Status s = MixDownStep(w, normed, d_down, T, workspace, workspace_bytes,
+                         stream);
   if (!s.ok()) {
     release_owned();
     return s;
@@ -502,6 +675,7 @@ static Status HyperConnectionMixImpl(
           d_up, normed, mixed, T, hc, hs);
     }
   }
+  DumpHcMixed(mixed, T, hs);
   release_owned();
   return Status();
 }
@@ -701,6 +875,16 @@ Status HyperConnectionCombine(const HyperConnectionWeights& w,
       block_output, hyper_input, d_inject, out, T, hc, hs);
   cudaFreeAsync(d_inject, stream);
   return Status();
+}
+
+// Exported wrapper for the operator-level comparison test
+// (tests/gemm_t1_vs_tk1_test.cpp). See HcInjectGateGenericImpl above.
+Status HcInjectGateGeneric(const uint16_t* normed, const uint16_t* block_inject,
+                           uint16_t* inject, int T, int hc, int hs,
+                           void* workspace, size_t workspace_bytes,
+                           cudaStream_t stream) {
+  return HcInjectGateGenericImpl(normed, block_inject, inject, T, hc, hs,
+                                 workspace, workspace_bytes, stream);
 }
 
 }  // namespace model
