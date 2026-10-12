@@ -157,3 +157,25 @@ Runner必须忠实执行模型计算合同，不能用实现错误补偿模型�
 不以错误实现更快为理由拒绝必要的正确性修复。性能优化自身仍须遵守
 E2E前置及五档无回退要求。具体重验结论见
 [近期工作验收](NUMERICAL_ACCEPTANCE_2026-09-27.md)。
+
+## MTP vs plain 近 tie 合同（2026-10-12）
+
+MTP 开启时 verify 用一次 T=k+1（默认 k=3 → T=4）batch 前向计算 k+1 个
+token 的 logits，plain greedy 用 T=1 顺序 decode。两条路径在精确算术下
+逐 token 相同，但 BF16 下 GEMM/GEMV tiling 不同，logits 存在累积舍入差。
+合同如下：
+
+1. **允许分歧的唯一来源**：某 decode 位 top-2 logits 相距 ≤ N ULP（N=4，
+   ULP 取该侧 top-1 量级处的 BF16 单 ULP，量级 ~24 处为 0.125）。此类
+   近 tie 分歧是舍入级，允许 MTP 与 plain 选不同 token。
+2. **不可解释分歧（缺陷）**：top-2 相距 > N ULP 且两侧均 confident 的
+   argmax 翻转，或 causality 负控失败（row0 跨 filler 非逐位一致），或
+   状态差无界增长。此类必须定位修复，不得以近 tie 泛化解释。
+3. **验收测试**：`mtp_verify_numerics`（全模型、1K prompt、256 步、plain
+   T=1 vs batch T=4 差分，判据 ULP 感知）。PASS 条件：causality 负控通过
+   且无 > N ULP 双侧 confident 翻转。2026-10-12 结果：flips=4/256 全部
+   1–2 ULP 近 tie、confident_both_sides=0、PASS（证据
+   .q4t-work/verify-nums-ulp-rerun2/run.log）。
+4. **边界**：本合同界定 MTP 与 plain 的 token 级分歧来源，不替代五档 E2E
+   的质量与性能验收；MTP 默认部署前仍须完成五档 E2E（质量不回退 +
+   decode 提速 50–200%）。局部 PASS 不等于整模型质量通过。

@@ -31,9 +31,13 @@
 // tokens (row 0 cannot read positions after it). Checked at step 0 with
 // f=42 vs f=43. A violation is a real bug, not FP noise.
 //
-// Pass criterion (v1): execution completes; the causality guard holds;
-// every argmax flip is a near-tie on at least one side (top-2 gap <=
-// kConfidentGap on that side). A flip confident on both sides fails.
+// Pass criterion (v2, ULP-aware): execution completes; the causality
+// guard holds; every argmax flip is a near-tie on at least one side
+// (top-2 gap <= kConfidentUlps ULP at that side's top-1 magnitude). A
+// flip confident on both sides (gap > kConfidentUlps ULP on both) fails.
+// v1 used an absolute 0.05 threshold, which is below one BF16 ULP at the
+// observed logit magnitudes (~0.125) and so misclassified 1-2 ULP rounding
+// flips as "confident".
 //
 // Environment:
 //   Q4T_VERIFY_NUMERICS_PROMPT  path to a prompt text file (default:
@@ -89,7 +93,13 @@ const char* kDefaultPromptPath =
 
 // A flip is "confident on both sides" when neither path's top-2 gap is
 // near-tie; that cannot be explained by BF16 rounding of the same math.
-constexpr float kConfidentGap = 0.05f;
+// The threshold is ULP-aware: a T=1 (GEMV) vs T=4 (small-M GEMM) logit
+// difference of a few ULP is the expected accumulated rounding across 48
+// layers of differently-tiled GEMMs (the observed minimum non-flip top-2
+// gap is exactly 1 ULP at logit magnitude ~24). A flip is only "confident"
+// when the top-2 gap on BOTH sides exceeds kConfidentUlps ULP at that
+// side's top-1 magnitude; 1-3 ULP is within the measured rounding.
+constexpr int kConfidentUlps = 4;
 
 bool FileExists(const char* path) {
   int fd = open(path, O_RDONLY);
@@ -108,6 +118,17 @@ float Bf16ToFloat(uint16_t b) {
   float f;
   std::memcpy(&f, &bits, sizeof(f));
   return f;
+}
+
+// BF16 ULP (unit in the last place) at magnitude |v|. BF16 stores a 7-bit
+// mantissa, so for |v| in [2^e, 2^(e+1)) the spacing is 2^(e-7). Used to
+// express the near-tie threshold in ULP units (see kConfidentUlps).
+float Bf16Ulp(float v) {
+  const float a = std::fabs(v);
+  if (a < 1e-30f) return 0.0f;
+  int exp = 0;
+  std::frexp(a, &exp);  // a in [2^(exp-1), 2^exp)
+  return std::ldexp(1.0f, exp - 8);  // 2^(e-7) with e = exp-1
 }
 
 struct Top2 {
@@ -611,13 +632,19 @@ Q4T_TEST(mtp_verify_numerics) {
     const float l2 = L2RelBf16(h_plain.data(), h_batch.data(), vocab);
     if (tp.id != tb.id) {
       ++flips;
+      const float ulp_p = Bf16Ulp(tp.value);
+      const float ulp_b = Bf16Ulp(tb.value);
       const bool near_tie =
-          tp.gap() <= kConfidentGap || tb.gap() <= kConfidentGap;
+          tp.gap() <= kConfidentUlps * ulp_p ||
+          tb.gap() <= kConfidentUlps * ulp_b;
       if (!near_tie) ++confident_flips;
       max_flip_l2 = std::max(max_flip_l2, l2);
       std::printf("  step=%d FLIP plain=%d batch=%d gap_plain=%.6f "
-                  "gap_batch=%.6f l2_rel=%.6f near_tie=%d\n",
-                  i, tp.id, tb.id, tp.gap(), tb.gap(), l2,
+                  "(%.1f ulp) gap_batch=%.6f (%.1f ulp) l2_rel=%.6f "
+                  "near_tie=%d\n",
+                  i, tp.id, tb.id, tp.gap(),
+                  ulp_p > 0 ? tp.gap() / ulp_p : 0.0f, tb.gap(),
+                  ulp_b > 0 ? tb.gap() / ulp_b : 0.0f, l2,
                   near_tie ? 1 : 0);
       // Top-logit capture from the existing h_plain/h_batch (no re-run, so
       // seq.position/history/KV are untouched): the actual values at each
@@ -732,9 +759,10 @@ Q4T_TEST(mtp_verify_numerics) {
   ModelEndSequence(&seq);
   m.Free();
   if (confident_flips > 0) {
-    std::printf("  FAIL: %d flip(s) confident on both sides (gap > %.2f "
-                "in both paths) — not explainable by BF16 rounding\n",
-                confident_flips, kConfidentGap);
+    std::printf("  FAIL: %d flip(s) confident on both sides (top-2 gap "
+                "> %d ULP in both paths) — not explainable by BF16 "
+                "rounding\n",
+                confident_flips, kConfidentUlps);
     return false;
   }
   return true;
