@@ -157,7 +157,7 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                             uint16_t* idx_raw, uint16_t* idx_comp, int T,
                             void* workspace, size_t workspace_bytes,
                             cudaStream_t stream, const int* d_seq_id = nullptr,
-                            int max_position = -1);
+                            int max_position = -1, int layer_id = -1);
 
 // Exact workspace bytes FullAttentionForward carves for `T` tokens: the
 // projection/logits/topk intermediates (256-byte aligned each, sized from the

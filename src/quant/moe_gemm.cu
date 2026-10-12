@@ -331,6 +331,18 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
     return MoEDeviceDecode(x, expert_ids, router_w, y, weights, ws, gemm_ws,
                            gemm_ws_bytes, stream);
   }
+  // 2 <= M <= 8 (batched decode / MTP verify): the fixed-shape device decode
+  // path with R = M*k independent M=1 rows. No host routing readback and no
+  // per-expert GEMM loop (the T>1 path below syncs the stream for expert
+  // counts and launches up to E x 5 kernels per layer, which dominates the
+  // verify step). Each (token, slot) row keeps the identical per-row
+  // arithmetic as the T=1 decode path, so per-token MoE output is
+  // bit-consistent with single-token decode.
+  if (!ablate_moe_decode_t1 && M >= 2 && M <= 8 && k == 10 && E == 512 &&
+      hs == 2560 && moe_is == 640) {
+    return MoEDeviceDecodeMulti(x, expert_ids, router_w, y, weights, ws,
+                                gemm_ws, gemm_ws_bytes, M, k, stream);
+  }
 
   // Host-side scratch for per-expert counts (the token lists stay on device;
   // the gather/scatter kernels read d_token_list directly).

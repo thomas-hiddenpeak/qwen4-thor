@@ -939,47 +939,68 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
   const auto t_draft0 = std::chrono::steady_clock::now();
   if (timing) cudaEventRecord(ev_d0, stream);
   // 1. Draft loop: drafts[0] = d0 (given); generate drafts[1..k-1].
+  // Device-side loop: the draft tokens stay on the device. d_drafts[j] is
+  // the argmax output of iteration j and is fed directly as iteration
+  // j+1's input, so the GPU pipeline never drains for a host round trip
+  // (the old per-iteration D2H argmax + H2D id fully serialized each draft
+  // step on a host sync). One D2H of all k-1 generated drafts happens after
+  // the loop (the accept loop / extend / history need them on the host).
   std::vector<int32_t> drafts(k);
   drafts[0] = d0;
   if (cudaMemcpy(d_g, g_in, static_cast<size_t>(hc_dim) * sizeof(uint16_t),
                  cudaMemcpyDeviceToDevice) != cudaSuccess)
     return cleanup(Status::Fail("MtpSpeculativeStep: D2D g_in"));
-  for (int j = 1; j < k; ++j) {
-    const int pos = P + j - 1;  // EAGLE shift: token t_{P+j} fed at P+j-1.
-    int32_t h_ids[1] = {drafts[j - 1]};
-    int h_pos[1] = {pos};
-    // Reuse the persistent scratch's first element (no per-iteration malloc).
-    int32_t* d_ids = use_scratch ? mtp.d_ids_scratch : nullptr;
-    int* d_pos = use_scratch ? mtp.d_pos_scratch : nullptr;
-    if (!use_scratch) {
-      if (cudaMalloc(reinterpret_cast<void**>(&d_ids), sizeof(int32_t)) !=
-              cudaSuccess ||
-          cudaMalloc(reinterpret_cast<void**>(&d_pos), sizeof(int)) !=
-              cudaSuccess) {
-        if (d_ids) cudaFree(d_ids);
-        if (d_pos) cudaFree(d_pos);
-        return cleanup(Status::Fail("MtpSpeculativeStep: cudaMalloc draft"));
-      }
+  // d_drafts: device array holding drafts[0..k-1] (k ints; d_ids_scratch is
+  // sized k_max >= k). d_pos: the k-1 draft positions (d_pos_scratch is
+  // sized k_max >= k). Both are reused by the verify argmax below only
+  // AFTER the final D2H, so the reuse is safe.
+  int32_t* d_drafts = use_scratch ? mtp.d_ids_scratch : nullptr;
+  int* d_pos = use_scratch ? mtp.d_pos_scratch : nullptr;
+  if (!use_scratch) {
+    if (cudaMalloc(reinterpret_cast<void**>(&d_drafts),
+                   static_cast<size_t>(k) * sizeof(int32_t)) != cudaSuccess ||
+        cudaMalloc(reinterpret_cast<void**>(&d_pos),
+                   static_cast<size_t>(k) * sizeof(int)) != cudaSuccess) {
+      if (d_drafts) cudaFree(d_drafts);
+      if (d_pos) cudaFree(d_pos);
+      return cleanup(
+          Status::Fail("MtpSpeculativeStep: cudaMalloc draft"));
     }
-    cudaMemcpy(d_ids, h_ids, sizeof(int32_t), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_pos, h_pos, sizeof(int), cudaMemcpyHostToDevice);
-    Status s = MtpForward(mtp, d_ids, d_pos, d_g, mtp.d_sample, mtp.d_trunk,
-                          mtp.d_logits, 1, stream);
-    if (!use_scratch) cudaFree(d_pos);
+  }
+  if (cudaMemcpy(d_drafts, &d0, sizeof(int32_t), cudaMemcpyHostToDevice) !=
+      cudaSuccess)
+    return cleanup(Status::Fail("MtpSpeculativeStep: H2D draft0"));
+  std::vector<int> pos_h(k > 1 ? k - 1 : 1);
+  for (int j = 1; j < k; ++j) pos_h[j - 1] = P + j - 1;  // EAGLE shift.
+  if (k > 1 &&
+      cudaMemcpy(d_pos, pos_h.data(),
+                 static_cast<size_t>(k - 1) * sizeof(int),
+                 cudaMemcpyHostToDevice) != cudaSuccess)
+    return cleanup(Status::Fail("MtpSpeculativeStep: H2D draft positions"));
+  for (int j = 1; j < k; ++j) {
+    Status s = MtpForward(mtp, d_drafts + (j - 1), d_pos + (j - 1), d_g,
+                          mtp.d_sample, mtp.d_trunk, mtp.d_logits, 1, stream);
     if (!s.ok()) return cleanup(s);
-    // GPU argmax (1 kernel + 4-byte D2H) instead of 500 KB D2H + host scan.
-    // Reuses d_ids as the 1-int output (input ids are no longer needed).
-    s = ArgmaxBf16Rows(mtp.d_logits, 1, vocab, d_ids, stream);
+    // GPU argmax (1 kernel) writes drafts[j] into the device array; the
+    // next iteration reads it directly (no host round trip).
+    s = ArgmaxBf16Rows(mtp.d_logits, 1, vocab, d_drafts + j, stream);
     if (!s.ok()) return cleanup(s);
-    if (cudaMemcpy(&drafts[j], d_ids, sizeof(int32_t),
-                   cudaMemcpyDeviceToHost) != cudaSuccess)
-      return cleanup(Status::Fail("MtpSpeculativeStep: D2H draft argmax"));
-    if (!use_scratch) cudaFree(d_ids);
     if (cudaMemcpy(d_g, mtp.d_trunk,
                    static_cast<size_t>(hc_dim) * sizeof(uint16_t),
                    cudaMemcpyDeviceToDevice) != cudaSuccess)
       return cleanup(Status::Fail("MtpSpeculativeStep: D2D roll g"));
   }
+  // Single D2H for all generated drafts.
+  if (k > 1 &&
+      cudaMemcpy(drafts.data() + 1, d_drafts + 1,
+                 static_cast<size_t>(k - 1) * sizeof(int32_t),
+                 cudaMemcpyDeviceToHost) != cudaSuccess)
+    return cleanup(Status::Fail("MtpSpeculativeStep: D2H drafts"));
+  if (!use_scratch) {
+    cudaFree(d_drafts);
+    cudaFree(d_pos);
+  }
+
   // Test-only: Q4T_MTP_TEST_DRAFTS="t1,t2,..." overrides the generated
   // draft tokens drafts[1..k-1] (drafts[0] stays d0). The draft loop still
   // ran, so all draft-KV side effects are unchanged; only the token values
@@ -1523,11 +1544,16 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     auto ms = [](auto lo, auto hi) {
       return std::chrono::duration<double, std::milli>(hi - lo).count();
     };
+    std::string a_str;
+    for (int b = 0; b < B; ++b) {
+      if (b) a_str += ",";
+      a_str += std::to_string(a[b]);
+    }
     std::fprintf(stderr,
                  "[mtp-timing] B=%d draft=%.1f verify=%.1f extend+accept=%.1f "
-                 "ms (k=%d)",
+                 "ms (k=%d a=[%s])",
                  B, ms(t_draft0, t_draft1), ms(t_draft1, t_verify1),
-                 ms(t_verify1, t_end), k);
+                 ms(t_verify1, t_end), k, a_str.c_str());
     if (cudaEventSynchronize(ev_d3) == cudaSuccess) {
       float gd = 0.f, gv = 0.f, ge = 0.f;
       cudaEventElapsedTime(&gd, ev_d0, ev_d1);

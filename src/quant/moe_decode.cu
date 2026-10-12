@@ -1,4 +1,10 @@
 // Device-selected expert matrices, two grouped GEMMs, fixed-slot combine.
+//
+// Supports 1 <= T <= 8 tokens (R = T*k rows). Each (token, slot) pair is one
+// independent M=1 NVFP4 GEMM row, so every token's expert output uses the
+// same per-row arithmetic as the T=1 decode path (no per-expert M_e grouping,
+// no host routing readback, no stream sync). T=1 keeps the original 10-group
+// path bit-identically.
 #include "q4t/quant/moe_decode.h"
 
 #include <cublasLt.h>
@@ -11,12 +17,16 @@
 
 #include "q4t/quant/format.h"
 #include "q4t/quant/lt_cache.h"
+#include "q4t/quant/moe_subtiming.h"
 
 namespace q4t::quant {
 namespace {
 
 constexpr int kSlots = 10;
-constexpr int kArraySize = 12;  // Every pointer/shape array is 16-byte aligned.
+constexpr int kMaxT = 8;
+constexpr int kMaxRows = kMaxT * kSlots;  // 80
+constexpr int kArraySize = kMaxRows;  // Every pointer/shape array is
+                                      // 16-byte aligned (80 * 8 = 640 B).
 constexpr int kHidden = 2560;
 constexpr int kIntermediate = 640;
 constexpr int kPackedStride = kHidden / 2;
@@ -52,19 +62,20 @@ __device__ float Bf16ToFloat(uint16_t bits) {
 }
 
 // Expressions and BF16 boundary match GatherQuantKernel/SwiGLUQuantKernel.
-// Only the placement of each independent expert row changes.
+// Only the placement of each independent row changes. Row r = token t = r/k,
+// slot r%k; its expert is expert_ids[r].
 template <bool Down>
 __global__ void PrepareMoEDecodeKernel(const uint16_t* input,
                                        const int32_t* expert_ids,
                                        StageWeights weights, DeviceBatch* batch,
                                        uint8_t* packed, uint8_t* scales,
-                                       uint16_t* output) {
-  constexpr int k = Down ? kIntermediate : kHidden;
+                                       uint16_t* output, int R, int k) {
+  constexpr int kdim = Down ? kIntermediate : kHidden;
   constexpr int n = Down ? kHidden : 2 * kIntermediate;
-  constexpr int groups = k / 16;
+  constexpr int groups = kdim / 16;
   constexpr int g_tiles = (groups + 3) / 4;
   const int idx = blockIdx.x * blockDim.x + threadIdx.x;
-  if (idx < kSlots) {
+  if (idx < R) {
     const int e = expert_ids[idx];
     batch->weights[idx] = weights.packed + e * weights.packed_stride;
     batch->weight_scales[idx] = weights.scales + e * weights.scale_stride;
@@ -75,27 +86,33 @@ __global__ void PrepareMoEDecodeKernel(const uint16_t* input,
     batch->beta[idx] = 0.0f;
     batch->alpha_ptrs[idx] = &batch->alpha[idx];
     batch->beta_ptrs[idx] = &batch->beta[idx];
-    batch->dim_k[idx] = k;
+    batch->dim_k[idx] = kdim;
     batch->dim_n[idx] = n;
     batch->dim_one[idx] = 1;
   }
-  if (idx >= kSlots * groups) return;
-  const int slot = idx / groups;
+  if (idx >= R * groups) return;
+  const int r = idx / groups;
   const int g = idx % groups;
-  const int e = expert_ids[slot];
+  const int e = expert_ids[r];
+  const int t = r / k;
   const float inv_scale = weights.input_scale[e];
+  // Down reads the gate/up GEMM output, laid out row-major over the R
+  // independent rows (row r at r * 2 * kIntermediate); Up reads the hidden
+  // state, laid out per token (token t at t * kHidden).
+  const uint16_t* row = Down
+                            ? input + static_cast<size_t>(r) * 2 * kIntermediate
+                            : input + static_cast<size_t>(t) * kHidden;
   float a[16];
   float gmax = 0.0f;
 #pragma unroll
   for (int j = 0; j < 16; ++j) {
     if constexpr (Down) {
-      const uint16_t* gu = input + slot * 2 * kIntermediate;
-      const float gv = Bf16ToFloat(gu[g * 16 + j]);
-      const float uv = Bf16ToFloat(gu[kIntermediate + g * 16 + j]);
+      const float gv = Bf16ToFloat(row[g * 16 + j]);
+      const float uv = Bf16ToFloat(row[kIntermediate + g * 16 + j]);
       const float s = 1.0f / (1.0f + __expf(-gv));
       a[j] = gv * s * uv;
     } else {
-      a[j] = Bf16ToFloat(input[g * 16 + j]);
+      a[j] = Bf16ToFloat(row[g * 16 + j]);
     }
     gmax = fmaxf(gmax, fabsf(a[j]));
   }
@@ -103,27 +120,30 @@ __global__ void PrepareMoEDecodeKernel(const uint16_t* input,
   const uint8_t sf_code = FloatToE4m3(block_scale / inv_scale);
   const float eff = E4m3ToFloat(sf_code) * inv_scale;
   const float inv = eff > 0.0f ? 1.0f / eff : 0.0f;
-  uint8_t* dst = packed + slot * kPackedStride + g * 8;
+  uint8_t* dst = packed + r * kPackedStride + g * 8;
 #pragma unroll
   for (int j = 0; j < 8; ++j) {
     const int c0 = FloatToE2m1Code(a[2 * j] * inv);
     const int c1 = FloatToE2m1Code(a[2 * j + 1] * inv);
     dst[j] = static_cast<uint8_t>((c1 << 4) | (c0 & 0xF));
   }
-  // Row zero of a separate full swizzle atom for each slot.
+  // Row zero of a separate full swizzle atom for each row.
   static_assert(g_tiles * 512 <= kScaleStride);
-  scales[slot * kScaleStride + (g / 4) * 512 + g % 4] = sf_code;
+  scales[r * kScaleStride + (g / 4) * 512 + g % 4] = sf_code;
 }
 
 __global__ void CombineMoEDecodeKernel(const uint16_t* down,
-                                       const float* router_w, float* y) {
+                                       const float* router_w, float* y,
+                                       int T, int k) {
+  const int t = blockIdx.y;
   const int c = blockIdx.x * blockDim.x + threadIdx.x;
   if (c >= kHidden) return;
   float acc = 0.0f;
-  for (int slot = 0; slot < kSlots; ++slot) {
-    acc += router_w[slot] * Bf16ToFloat(down[slot * kHidden + c]);
+  for (int slot = 0; slot < k; ++slot) {
+    const int r = t * k + slot;
+    acc += router_w[r] * Bf16ToFloat(down[r * kHidden + c]);
   }
-  y[c] += acc;
+  y[static_cast<size_t>(t) * kHidden + c] += acc;
 }
 
 struct GroupedPlan {
@@ -147,13 +167,15 @@ Status LtError(cublasStatus_t result, const char* operation) {
 
 // Descriptors are host-side cached plans, not owners of the device batch.
 // Every invocation rebinds all dynamic pointers before enqueueing matmul.
-Status GroupedProjection(DeviceBatch* batch, int n, int k, void* workspace,
-                         size_t workspace_bytes, cudaStream_t stream) {
+// R = number of groups (one M=1 row per group); the plan is cached per R.
+Status GroupedProjection(DeviceBatch* batch, int R, int n, int k,
+                         void* workspace, size_t workspace_bytes,
+                         cudaStream_t stream) {
   std::lock_guard<std::mutex> lock(LtCacheMutex());
   using Cache = std::unordered_map<LtPlanKey, std::unique_ptr<GroupedPlan>,
                                    LtPlanKeyHash>;
   static Cache cache;
-  const LtPlanKey key{kSlots, n, k, workspace_bytes, 16};
+  const LtPlanKey key{R, n, k, workspace_bytes, 16};
   auto it = cache.find(key);
   std::unique_ptr<GroupedPlan> created;
   GroupedPlan* plan;
@@ -191,13 +213,13 @@ Status GroupedProjection(DeviceBatch* batch, int n, int k, void* workspace,
     LT_TRY(cublasLtMatmulDescSetAttribute(plan->op,
                                           CUBLASLT_MATMUL_DESC_B_SCALE_MODE,
                                           &sf_mode, sizeof(sf_mode)));
-    LT_TRY(cublasLtGroupedMatrixLayoutCreate(&plan->w, CUDA_R_4F_E2M1, kSlots,
+    LT_TRY(cublasLtGroupedMatrixLayoutCreate(&plan->w, CUDA_R_4F_E2M1, R,
                                              batch->dim_k, batch->dim_n,
                                              batch->dim_k));
-    LT_TRY(cublasLtGroupedMatrixLayoutCreate(&plan->a, CUDA_R_4F_E2M1, kSlots,
+    LT_TRY(cublasLtGroupedMatrixLayoutCreate(&plan->a, CUDA_R_4F_E2M1, R,
                                              batch->dim_k, batch->dim_one,
                                              batch->dim_k));
-    LT_TRY(cublasLtGroupedMatrixLayoutCreate(&plan->out, CUDA_R_16BF, kSlots,
+    LT_TRY(cublasLtGroupedMatrixLayoutCreate(&plan->out, CUDA_R_16BF, R,
                                              batch->dim_n, batch->dim_one,
                                              batch->dim_n));
   }
@@ -260,8 +282,8 @@ Status GroupedProjection(DeviceBatch* batch, int n, int k, void* workspace,
     plan->algo = heur.algo;
     std::fprintf(stderr,
                  "[q4t] MoE device decode grouped NVFP4 enabled: "
-                 "groups=10 N=%d K=%d cuBLASLt=%zu\n",
-                 n, k, cublasLtGetVersion());
+                 "groups=%d N=%d K=%d cuBLASLt=%zu\n",
+                 R, n, k, cublasLtGetVersion());
     cache.emplace(key, std::move(created));
   }
   LT_TRY(cublasLtMatmul(GlobalLtHandle(), plan->op, batch->alpha_ptrs,
@@ -275,14 +297,24 @@ Status GroupedProjection(DeviceBatch* batch, int n, int k, void* workspace,
 
 }  // namespace
 
-Status MoEDeviceDecode(const uint16_t* x, const int32_t* expert_ids,
-                       const float* router_w, float* y,
-                       const MoEWeightLayout& weights, const MoEWorkspace& ws,
-                       void* gemm_ws, size_t gemm_ws_bytes,
-                       cudaStream_t stream) {
+Status MoEDeviceDecodeMulti(const uint16_t* x, const int32_t* expert_ids,
+                            const float* router_w, float* y,
+                            const MoEWeightLayout& weights,
+                            const MoEWorkspace& ws, void* gemm_ws,
+                            size_t gemm_ws_bytes, int T, int k,
+                            cudaStream_t stream) {
+  // The kernels are generic in E (per-expert strides are the fixed
+  // kHidden/kIntermediate constants, not derived from weights.E), so the
+  // residency C-slot layout (E == C) can use this path too.
+  if (T < 1 || T > kMaxT || k != kSlots || weights.hs != kHidden ||
+      weights.moe_is != kIntermediate) {
+    return Status::Fail("MoE device decode multi: unsupported shape");
+  }
+  const int R = T * k;
   uint8_t* scratch = nullptr;
-  if (cudaMallocAsync(&scratch, kBatchBytes + kSlots * kScaleStride, stream) !=
-      cudaSuccess) {
+  if (cudaMallocAsync(
+          &scratch, kBatchBytes + static_cast<size_t>(R) * kScaleStride,
+          stream) != cudaSuccess) {
     return Status::Fail("MoE device decode scratch allocation");
   }
   struct Release {
@@ -305,30 +337,50 @@ Status MoEDeviceDecode(const uint16_t* x, const int32_t* expert_ids,
                         weights.dn_input_scale,
                         static_cast<size_t>(kHidden) * (kIntermediate / 2),
                         weights.dn_sf_block()};
+  const bool st = MoESubTiming::Instance().active();
+  if (st) MoESubTiming::Instance().Start(0, stream);
   PrepareMoEDecodeKernel<false>
-      <<<(kSlots * (kHidden / 16) + 255) / 256, 256, 0, stream>>>(
-          x, expert_ids, gu, batch, packed, scales, ws.gu_out);
+      <<<(R * (kHidden / 16) + 255) / 256, 256, 0, stream>>>(
+          x, expert_ids, gu, batch, packed, scales, ws.gu_out, R, k);
   if (cudaGetLastError() != cudaSuccess) {
     return Status::Fail("MoE device decode GU preparation");
   }
-  Status s = GroupedProjection(batch, 2 * kIntermediate, kHidden, gemm_ws,
+  if (st) MoESubTiming::Instance().Stop(0, stream);
+  if (st) MoESubTiming::Instance().Start(1, stream);
+  Status s = GroupedProjection(batch, R, 2 * kIntermediate, kHidden, gemm_ws,
                                gemm_ws_bytes, stream);
   if (!s) return s;
+  if (st) MoESubTiming::Instance().Stop(1, stream);
+  if (st) MoESubTiming::Instance().Start(2, stream);
   PrepareMoEDecodeKernel<true>
-      <<<(kSlots * (kIntermediate / 16) + 255) / 256, 256, 0, stream>>>(
-          ws.gu_out, expert_ids, dn, batch, packed, scales, ws.dn_out);
+      <<<(R * (kIntermediate / 16) + 255) / 256, 256, 0, stream>>>(
+          ws.gu_out, expert_ids, dn, batch, packed, scales, ws.dn_out, R, k);
   if (cudaGetLastError() != cudaSuccess) {
     return Status::Fail("MoE device decode DN preparation");
   }
-  s = GroupedProjection(batch, kHidden, kIntermediate, gemm_ws, gemm_ws_bytes,
-                        stream);
+  if (st) MoESubTiming::Instance().Stop(2, stream);
+  if (st) MoESubTiming::Instance().Start(3, stream);
+  s = GroupedProjection(batch, R, kHidden, kIntermediate, gemm_ws,
+                        gemm_ws_bytes, stream);
   if (!s) return s;
-  CombineMoEDecodeKernel<<<(kHidden + 255) / 256, 256, 0, stream>>>(
-      ws.dn_out, router_w, y);
+  if (st) MoESubTiming::Instance().Stop(3, stream);
+  if (st) MoESubTiming::Instance().Start(4, stream);
+  CombineMoEDecodeKernel<<<dim3((kHidden + 255) / 256, T), 256, 0, stream>>>(
+      ws.dn_out, router_w, y, T, k);
   if (cudaGetLastError() != cudaSuccess) {
     return Status::Fail("MoE device decode combine");
   }
+  if (st) MoESubTiming::Instance().Stop(4, stream);
   return {};
+}
+
+Status MoEDeviceDecode(const uint16_t* x, const int32_t* expert_ids,
+                       const float* router_w, float* y,
+                       const MoEWeightLayout& weights, const MoEWorkspace& ws,
+                       void* gemm_ws, size_t gemm_ws_bytes,
+                       cudaStream_t stream) {
+  return MoEDeviceDecodeMulti(x, expert_ids, router_w, y, weights, ws,
+                              gemm_ws, gemm_ws_bytes, 1, kSlots, stream);
 }
 
 }  // namespace q4t::quant

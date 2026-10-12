@@ -1,0 +1,99 @@
+// Observation-only per-MoE-kernel GPU timing for the device decode path.
+// Gated by Q4T_LAYER_SUBTIMING (shared with the layer sub-timing). Accumulates
+// each of the five MoE decode kernels across all layers and reports once per
+// forward. Never touches compute; off by default.
+#pragma once
+
+#include <cuda_runtime.h>
+
+#include <cstdio>
+#include <vector>
+
+namespace q4t::quant {
+
+class MoESubTiming {
+ public:
+  // 0=prep_gu, 1=gemm_gu, 2=prep_dn, 3=gemm_dn, 4=combine
+  static constexpr int kOps = 5;
+  static MoESubTiming& Instance() {
+    static MoESubTiming inst;
+    return inst;
+  }
+  void Begin() {
+    if (active_) return;
+    active_ = true;
+    pairs_.clear();
+    last_recorded_ = nullptr;
+  }
+  bool active() const { return active_; }
+  void Start(int op, cudaStream_t stream) {
+    if (!active_ || op < 0 || op >= kOps) return;
+    cudaEvent_t a = nullptr, b = nullptr;
+    if (cudaEventCreate(&a) != cudaSuccess ||
+        cudaEventCreate(&b) != cudaSuccess) {
+      if (a) cudaEventDestroy(a);
+      if (b) cudaEventDestroy(b);
+      return;
+    }
+    cudaEventRecord(a, stream);
+    last_recorded_ = a;
+    pairs_.push_back(Pair{a, b, op});
+  }
+  void Stop(int op, cudaStream_t stream) {
+    if (!active_) return;
+    // Find the most recent Start for this op and record its end event.
+    for (auto it = pairs_.rbegin(); it != pairs_.rend(); ++it) {
+      if (it->op == op && !it->stopped) {
+        cudaEventRecord(it->b, stream);
+        last_recorded_ = it->b;
+        it->stopped = true;
+        return;
+      }
+    }
+  }
+  void Report(int T) {
+    if (!active_) return;
+    active_ = false;
+    if (!pairs_.empty()) {
+      // Sync the last event RECORDED on the stream (not the last pair's end
+      // event): with interleaved ops the last pair's end may still be pending
+      // behind later work, and destroying pending events is UB.
+      const cudaError_t se = cudaEventSynchronize(last_recorded_);
+      if (se != cudaSuccess) {
+        std::fprintf(stderr, "[moe-subtiming] sync failed: %s\n",
+                     cudaGetErrorString(se));
+        cudaGetLastError();
+      } else {
+        double sum[kOps] = {0};
+        for (const auto& p : pairs_) {
+          float ms = 0.0f;
+          cudaEventElapsedTime(&ms, p.a, p.b);
+          sum[p.op] += ms;
+        }
+        std::fprintf(stderr,
+                     "[moe-subtiming] T=%d prep_gu=%.2f gemm_gu=%.2f "
+                     "prep_dn=%.2f gemm_dn=%.2f combine=%.2f total=%.2f ms\n",
+                     T, sum[0], sum[1], sum[2], sum[3], sum[4],
+                     sum[0] + sum[1] + sum[2] + sum[3] + sum[4]);
+      }
+    }
+    for (auto& p : pairs_) {
+      cudaEventDestroy(p.a);
+      cudaEventDestroy(p.b);
+    }
+    pairs_.clear();
+  }
+
+ private:
+  struct Pair {
+    cudaEvent_t a, b;
+    int op;
+    bool stopped = false;
+  };
+  std::vector<Pair> pairs_;
+  bool active_ = false;
+  // Most recently recorded event (Start or Stop); Report syncs this.
+  cudaEvent_t last_recorded_ = nullptr;
+};
+
+}  // namespace q4t::quant

@@ -44,6 +44,7 @@ namespace {
 using q4t::model::Bf16Gemm;
 using q4t::model::Bf16Gev;
 using q4t::model::Bf16GevFp32;
+using q4t::model::Bf16SmallMShapeRouted;
 using q4t::model::HyperConnectionMix;
 using q4t::Status;
 
@@ -995,5 +996,266 @@ Q4T_TEST(mix_down_candidate_s7) {
   std::printf("  candidate production-branch calls: on=%d off=%d "
               "(T=4 cap4 + T=8 cap8, no FP8 shadow, hc_dim%%8==0)\n",
               on_calls, off_calls);
+  return ok;
+}
+
+// Wiring check for Bf16SmallMGemm (src/model/small_m_gemm.cu): Bf16Gemm
+// with 2 <= M <= 8 routes every dense shape (K % 8 == 0) to the
+// hand-written small-M kernel (all-dense policy, see
+// Bf16SmallMShapeRouted). The Scattered kernel reproduces Bf16GevKernel's
+// per-lane accumulation order exactly, so every routed row is bit-identical
+// to the M=1 GEMV — the T-path GEMV-alignment contract that keeps the MTP
+// verify step (T=k+1) from flipping near-tie argmaxes vs plain greedy.
+// Asserts:
+//   (a) policy — Bf16SmallMShapeRouted routes all dense 2 <= M <= 8 shapes
+//       with K % 8 == 0 and rejects M out of range / K % 8 != 0;
+//   (b) determinism — repeated routed M=4 calls (HC down) are bit-stable;
+//   (c) correctness — row-0 l2rel to an FP64 reference within the BF16
+//       accumulation tolerance (same class as Bf16Gev);
+//   (d) row-0 bit-identical to the M=1 GEMV path (GEMV-alignment contract);
+//   (e) routing proof — under Q4T_ABLATE_GEMM_TILE the M=1 entry pads to
+//       M=4 and forces the cuBLASLt plan (the small-M path is skipped for
+//       that ablation); if the default M=4 path were still cuBLASLt, the
+//       two row-0 results would be bit-identical;
+//   (f) a second routed shape (HC up N=10240 K=320): row-0 bit-identical
+//       to the M=1 GEMV, default differs from the ablation-forced cuBLASLt
+//       M=4 row-0 (single-ULP class, routing proof), deterministic +
+//       correct.
+Q4T_TEST(smallm_gemm_wiring) {
+  // (a) policy unit checks (no GPU needed).
+  const auto R = Bf16SmallMShapeRouted;
+  bool ok = true;
+  ok = ok && R(2, 320, 10240) && R(4, 320, 10240) && R(8, 320, 10240);
+  ok = ok && R(2, 248320, 2560) && R(4, 248320, 2560);
+  // K=2560 large-N shapes are routed for ALL M=2..8 (verify T=4 and the
+  // chunked-prefill last chunk T=8 must share the GEMV-aligned Scattered
+  // arithmetic; see Bf16SmallMShapeRouted).
+  ok = ok && R(5, 248320, 2560) && R(8, 248320, 2560);
+  ok = ok && R(5, 10240, 2560) && R(8, 10240, 2560);
+  // All-dense policy: every dense projection shape with K % 8 == 0 is
+  // routed for all M=2..8 (incl. the former "measured losers" at M=4,
+  // which the v2 bench shows are cuBLASLt ties or wins on the decode/
+  // verify hot path; the M=8 prefill-only losers never touch it).
+  ok = ok && R(4, 10240, 320) && R(4, 10240, 2560) && R(4, 2560, 6144);
+  ok = ok && R(4, 6144, 2560) && R(4, 7168, 2560) && R(8, 7168, 2560);
+  ok = ok && !R(1, 320, 10240) && !R(9, 320, 10240) && !R(4, 320, 10241);
+  if (!CudaAvailable()) {
+    if (!ok) return false;
+    Q4T_SKIP("no CUDA (policy checks passed)");
+  }
+  // Routed shape: HC down (N=320, K=10240), Scattered variant.
+  const int M = 4, N = 320, K = 10240;
+  std::mt19937 rng(20261012u);
+  std::normal_distribution<double> dist(0.0, 0.1);
+  std::vector<uint16_t> xh(static_cast<size_t>(M) * K),
+      wh(static_cast<size_t>(N) * K);
+  for (auto& v : xh) v = F2B(static_cast<float>(dist(rng)));
+  for (auto& v : wh) v = F2B(static_cast<float>(dist(rng)));
+
+  uint16_t *d_x = nullptr, *d_w = nullptr, *d_y = nullptr, *d_y1 = nullptr;
+  void* ws = nullptr;
+  if (cudaMalloc(&d_x, static_cast<size_t>(M) * K * 2) != cudaSuccess ||
+      cudaMalloc(&d_w, static_cast<size_t>(N) * K * 2) != cudaSuccess ||
+      cudaMalloc(&d_y, static_cast<size_t>(M) * N * 2) != cudaSuccess ||
+      cudaMalloc(&d_y1, static_cast<size_t>(N) * 2) != cudaSuccess ||
+      cudaMalloc(&ws, 32u << 20) != cudaSuccess) {
+    return false;
+  }
+  cudaMemcpy(d_x, xh.data(), static_cast<size_t>(M) * K * 2,
+             cudaMemcpyHostToDevice);
+  cudaMemcpy(d_w, wh.data(), static_cast<size_t>(N) * K * 2,
+             cudaMemcpyHostToDevice);
+
+  // (b) determinism: two M=4 runs bit-identical.
+  const auto r1 = Bf16Gemm(d_x, d_w, d_y, M, N, K, 1.0f, 0.0f, ws, 32u << 20,
+                           nullptr);
+  Q4T_CHECK(r1.has_algo);
+  std::vector<uint16_t> y1(static_cast<size_t>(M) * N),
+      y2(static_cast<size_t>(M) * N);
+  cudaMemcpy(y1.data(), d_y, static_cast<size_t>(M) * N * 2,
+             cudaMemcpyDeviceToHost);
+  const auto r2 = Bf16Gemm(d_x, d_w, d_y, M, N, K, 1.0f, 0.0f, ws, 32u << 20,
+                           nullptr);
+  Q4T_CHECK(r2.has_algo);
+  cudaMemcpy(y2.data(), d_y, static_cast<size_t>(M) * N * 2,
+             cudaMemcpyDeviceToHost);
+  cudaDeviceSynchronize();
+  const DiffStats det = CompareBf16(y1, y2);
+  Report("HCdown M4 run1 vs run2", det, y1.size());
+  ok = ok && det.count == 0;
+
+  // (c) correctness vs FP64 reference (row 0).
+  std::vector<uint16_t> x0(K);
+  std::memcpy(x0.data(), xh.data(), K * 2);
+  const std::vector<double> ref = RefGemv(x0, wh, N, K);
+  std::vector<uint16_t> row0(y1.begin(), y1.begin() + N);
+  const double l2ref = L2RelToRef(row0, ref);
+  std::printf("  l2rel-to-FP64ref: HCdown M4 row0 = %.3e\n", l2ref);
+  ok = ok && l2ref < 2e-3;
+
+  // (d) row-0 vs M=1 GEMV: must be bit-identical (GEMV-alignment
+  // contract of the Scattered kernel).
+  Q4T_CHECK(Bf16Gev(d_x, d_w, d_y1, N, K, 1.0f, nullptr));
+  std::vector<uint16_t> y_gemv(N);
+  cudaMemcpy(y_gemv.data(), d_y1, N * 2, cudaMemcpyDeviceToHost);
+  const DiffStats g4 = CompareBf16(row0, y_gemv);
+  Report("HCdown M4 row0 vs M1 GEMV (must be identical)", g4, N);
+  ok = ok && g4.count == 0;
+
+  // (e) routing proof: ablation-forced cuBLASLt M=4 row 0 must differ from
+  // the default M=4 row 0 (different summation order).
+  setenv("Q4T_ABLATE_GEMM_TILE", "1", 1);
+  const auto ra = Bf16Gemm(d_x, d_w, d_y1, 1, N, K, 1.0f, 0.0f, ws, 32u << 20,
+                           nullptr);
+  Q4T_CHECK(ra.has_algo);
+  unsetenv("Q4T_ABLATE_GEMM_TILE");
+  std::vector<uint16_t> y_cub(N);
+  cudaMemcpy(y_cub.data(), d_y1, N * 2, cudaMemcpyDeviceToHost);
+  const DiffStats route = CompareBf16(row0, y_cub);
+  Report("HCdown M4 default vs M4 cuBLASLt", route, N);
+  ok = ok && route.count > 0;
+
+  // (f) routed shape (HC up N=10240 K=320): the all-dense shape policy
+  // (Bf16SmallMShapeRouted) routes it to the Scattered kernel, so the
+  // default M=4 row-0 must be bit-identical to the M=1 GEMV (T-path
+  // GEMV-alignment contract) and must differ from the ablation-forced
+  // cuBLASLt M=4 row-0 (routing proof, single-ULP class); also
+  // deterministic + correct.
+  {
+    const int N2 = 10240, K2 = 320;
+    std::vector<uint16_t> x2h(static_cast<size_t>(M) * K2),
+        w2h(static_cast<size_t>(N2) * K2);
+    for (auto& v : x2h) v = F2B(static_cast<float>(dist(rng)));
+    for (auto& v : w2h) v = F2B(static_cast<float>(dist(rng)));
+    uint16_t *d_x2 = nullptr, *d_w2 = nullptr, *d_y2 = nullptr;
+    if (cudaMalloc(&d_x2, static_cast<size_t>(M) * K2 * 2) != cudaSuccess ||
+        cudaMalloc(&d_w2, static_cast<size_t>(N2) * K2 * 2) != cudaSuccess ||
+        cudaMalloc(&d_y2, static_cast<size_t>(M) * N2 * 2) != cudaSuccess) {
+      return false;
+    }
+    cudaMemcpy(d_x2, x2h.data(), static_cast<size_t>(M) * K2 * 2,
+               cudaMemcpyHostToDevice);
+    cudaMemcpy(d_w2, w2h.data(), static_cast<size_t>(N2) * K2 * 2,
+               cudaMemcpyHostToDevice);
+    const auto s1 = Bf16Gemm(d_x2, d_w2, d_y2, M, N2, K2, 1.0f, 0.0f, ws,
+                             32u << 20, nullptr);
+    Q4T_CHECK(s1.has_algo);
+    std::vector<uint16_t> z1(static_cast<size_t>(M) * N2),
+        z2(static_cast<size_t>(M) * N2);
+    cudaMemcpy(z1.data(), d_y2, static_cast<size_t>(M) * N2 * 2,
+               cudaMemcpyDeviceToHost);
+    const auto s2 = Bf16Gemm(d_x2, d_w2, d_y2, M, N2, K2, 1.0f, 0.0f, ws,
+                             32u << 20, nullptr);
+    Q4T_CHECK(s2.has_algo);
+    cudaMemcpy(z2.data(), d_y2, static_cast<size_t>(M) * N2 * 2,
+               cudaMemcpyDeviceToHost);
+    const DiffStats det2 = CompareBf16(z1, z2);
+    Report("HCup M4 run1 vs run2", det2, z1.size());
+    // GEMV alignment: M=4 row0 vs M=1 GEMV (must be bit-identical).
+    Q4T_CHECK(Bf16Gev(d_x2, d_w2, d_y2, N2, K2, 1.0f, nullptr));
+    std::vector<uint16_t> z_gemv(N2);
+    cudaMemcpy(z_gemv.data(), d_y2, N2 * 2, cudaMemcpyDeviceToHost);
+    const DiffStats zalign = CompareBf16(std::vector<uint16_t>(z1.begin(),
+                                                               z1.begin() + N2),
+                                         z_gemv);
+    Report("HCup M4 row0 vs M1 GEMV (must be identical)", zalign, N2);
+    // Routing proof: ablation-forced cuBLASLt M=4 row 0 must differ from
+    // the default (hand-written) M=4 row 0.
+    setenv("Q4T_ABLATE_GEMM_TILE", "1", 1);
+    const auto sa = Bf16Gemm(d_x2, d_w2, d_y2, 1, N2, K2, 1.0f, 0.0f, ws,
+                             32u << 20, nullptr);
+    Q4T_CHECK(sa.has_algo);
+    unsetenv("Q4T_ABLATE_GEMM_TILE");
+    std::vector<uint16_t> z_cub(N2);
+    cudaMemcpy(z_cub.data(), d_y2, N2 * 2, cudaMemcpyDeviceToHost);
+    const DiffStats nroute = CompareBf16(std::vector<uint16_t>(z1.begin(),
+                                                               z1.begin() + N2),
+                                         z_cub);
+    Report("HCup M4 default vs M4 cuBLASLt (must differ, ULP class)",
+           nroute, N2);
+    std::vector<uint16_t> x20(K2);
+    std::memcpy(x20.data(), x2h.data(), K2 * 2);
+    const std::vector<double> ref2 = RefGemv(x20, w2h, N2, K2);
+    const double l2ref2 =
+        L2RelToRef(std::vector<uint16_t>(z1.begin(), z1.begin() + N2), ref2);
+    std::printf("  l2rel-to-FP64ref: HCup M4 row0 = %.3e\n", l2ref2);
+    ok = ok && det2.count == 0 && zalign.count == 0 && nroute.count > 0 &&
+         nroute.l2rel < 2e-3 && l2ref2 < 2e-3;
+    cudaFree(d_x2);
+    cudaFree(d_w2);
+    cudaFree(d_y2);
+  }
+
+  // (g) Scattered routed shapes: row-0 must be bit-identical to M=1 GEMV.
+  // The Scattered kernel reproduces Bf16GevKernel's per-lane K accumulation
+  // order exactly (same lane stride, same float4 inner order, same
+  // shfl_down tree; FMA operands commute), so the T=4 verify path aligns
+  // with the T=1 decode path on these projections — eliminating the GEMM
+  // source of the T-path residual.
+  {
+    const int Sc[][2] = {{10240, 2560}, {248320, 2560}};
+    for (const auto& sc : Sc) {
+      const int Ns = sc[0], Ks = sc[1];
+      std::vector<uint16_t> xsh(static_cast<size_t>(M) * Ks),
+          wsh(static_cast<size_t>(Ns) * Ks);
+      for (auto& v : xsh) v = F2B(static_cast<float>(dist(rng)));
+      for (auto& v : wsh) v = F2B(static_cast<float>(dist(rng)));
+      uint16_t *d_xs = nullptr, *d_ws = nullptr, *d_ys = nullptr,
+               *d_ys1 = nullptr;
+      // x/y sized for M=8 (the larger of the M=4 and M=8 checks below).
+      if (cudaMalloc(&d_xs, static_cast<size_t>(8) * Ks * 2) != cudaSuccess ||
+          cudaMalloc(&d_ws, static_cast<size_t>(Ns) * Ks * 2) != cudaSuccess ||
+          cudaMalloc(&d_ys, static_cast<size_t>(8) * Ns * 2) != cudaSuccess ||
+          cudaMalloc(&d_ys1, Ns * 2) != cudaSuccess) {
+        return false;
+      }
+      cudaMemcpy(d_xs, xsh.data(), static_cast<size_t>(M) * Ks * 2,
+                 cudaMemcpyHostToDevice);
+      cudaMemcpy(d_ws, wsh.data(), static_cast<size_t>(Ns) * Ks * 2,
+                 cudaMemcpyHostToDevice);
+      const auto sg = Bf16Gemm(d_xs, d_ws, d_ys, M, Ns, Ks, 1.0f, 0.0f, ws,
+                               32u << 20, nullptr);
+      Q4T_CHECK(sg.has_algo);
+      Q4T_CHECK(Bf16Gev(d_xs, d_ws, d_ys1, Ns, Ks, 1.0f, nullptr));
+      std::vector<uint16_t> row_s(Ns), gemv_s(Ns);
+      cudaMemcpy(row_s.data(), d_ys, Ns * 2, cudaMemcpyDeviceToHost);
+      cudaMemcpy(gemv_s.data(), d_ys1, Ns * 2, cudaMemcpyDeviceToHost);
+      cudaDeviceSynchronize();
+      const DiffStats sg4 = CompareBf16(row_s, gemv_s);
+      std::printf("[scattered N=%d K=%d] M4 row0 vs M1 GEMV\n", Ns, Ks);
+      Report("row0 vs GEMV (must be identical)", sg4, Ns);
+      ok = ok && sg4.count == 0;
+      // M=8 (chunked-prefill last chunk): same Scattered kernel (MAXM=8
+      // template) must stay bit-identical to GEMV per row, keeping the
+      // T=8 prefill path on the same arithmetic as T=1 decode.
+      if (Ns == 10240) {
+        const int M8 = 8;
+        std::vector<uint16_t> x8h(static_cast<size_t>(M8) * Ks);
+        for (auto& v : x8h) v = F2B(static_cast<float>(dist(rng)));
+        cudaMemcpy(d_xs, x8h.data(), static_cast<size_t>(M8) * Ks * 2,
+                   cudaMemcpyHostToDevice);
+        const auto sg8 = Bf16Gemm(d_xs, d_ws, d_ys, M8, Ns, Ks, 1.0f, 0.0f,
+                                  ws, 32u << 20, nullptr);
+        Q4T_CHECK(sg8.has_algo);
+        Q4T_CHECK(Bf16Gev(d_xs, d_ws, d_ys1, Ns, Ks, 1.0f, nullptr));
+        cudaMemcpy(gemv_s.data(), d_ys1, Ns * 2, cudaMemcpyDeviceToHost);
+        cudaMemcpy(row_s.data(), d_ys, Ns * 2, cudaMemcpyDeviceToHost);
+        const DiffStats sg8d = CompareBf16(row_s, gemv_s);
+        std::printf("[scattered N=%d K=%d] M8 row0 vs M1 GEMV\n", Ns, Ks);
+        Report("row0 vs GEMV M8 (must be identical)", sg8d, Ns);
+        ok = ok && sg8d.count == 0;
+      }
+      cudaFree(d_xs);
+      cudaFree(d_ws);
+      cudaFree(d_ys);
+      cudaFree(d_ys1);
+    }
+  }
+
+  cudaFree(d_x);
+  cudaFree(d_w);
+  cudaFree(d_y);
+  cudaFree(d_y1);
+  cudaFree(ws);
   return ok;
 }

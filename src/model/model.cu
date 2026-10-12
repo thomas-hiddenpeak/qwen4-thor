@@ -16,6 +16,8 @@
 // buffer and writes the other. The forward workspace d_ws is reused across
 // layers (they run sequentially); its size is the max over all layers.
 #include "q4t/model/model.h"
+#include "q4t/model/layer_subtiming.h"
+#include "q4t/quant/moe_subtiming.h"
 
 #include "q4t/runtime/residency_config.h"
 
@@ -29,6 +31,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <memory>
+#include <numeric>
 #include <string>
 #include <utility>
 #include <vector>
@@ -453,6 +456,51 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   return Status();
 }
 
+// Q4T_LAYER_TIMING report: sync the last event, print per-group totals
+// (embedding / linear-attention layers / full-attention layers / head) plus
+// the five slowest layers, and destroy the events. `hs` is the head status
+// when the head ran (null when skipped). Observation-only.
+Status FinishLayerTiming(const Model& m, bool layer_timing,
+                         std::vector<cudaEvent_t>& lt_ev, int T,
+                         Status* hs = nullptr) {
+  if (!layer_timing) return hs ? *hs : Status();
+  const int nl = m.cfg.num_layers;
+  const cudaError_t se = cudaEventSynchronize(lt_ev[2 * (nl + 1) + 1]);
+  if (se != cudaSuccess) {
+    // Observation-only: report, then clear the sticky error so it cannot
+    // poison the caller's next cudaGetLastError() check.
+    std::fprintf(stderr, "[layer-timing] sync failed: %s\n",
+                 cudaGetErrorString(se));
+    cudaGetLastError();
+  } else {
+    std::vector<float> seg(nl + 2, 0.0f);
+    float embed = 0.0f, lin = 0.0f, full = 0.0f, head = 0.0f;
+    cudaEventElapsedTime(&embed, lt_ev[0], lt_ev[2]);
+    for (int l = 0; l < nl; ++l) {
+      cudaEventElapsedTime(&seg[l + 1], lt_ev[2 * (l + 1)],
+                           lt_ev[2 * (l + 2)]);
+      if (m.layers[l].is_full_attention) full += seg[l + 1];
+      else lin += seg[l + 1];
+    }
+    cudaEventElapsedTime(&head, lt_ev[2 * (nl + 1)], lt_ev[2 * (nl + 1) + 1]);
+    std::vector<int> order(nl);
+    std::iota(order.begin(), order.end(), 0);
+    std::partial_sort(order.begin(), order.begin() + std::min(5, nl),
+                      order.end(),
+                      [&](int a, int b) { return seg[a + 1] > seg[b + 1]; });
+    std::fprintf(stderr,
+                 "[layer-timing] T=%d embed=%.2fms lin=%.2fms full=%.2fms "
+                 "head=%.2fms total=%.2fms top5=",
+                 T, embed, lin, full, head, embed + lin + full + head);
+    for (int i = 0; i < std::min(5, nl); ++i)
+      std::fprintf(stderr, " L%d(%.2f)", order[i], seg[order[i] + 1]);
+    std::fprintf(stderr, "\n");
+  }
+  for (auto& e : lt_ev) cudaEventDestroy(e);
+  lt_ev.clear();
+  return hs ? *hs : Status();
+}
+
 // Shared layer loop over [0, num_layers), reading `trunk`/`next` (ping-pong)
 // and the per-token PLE embeddings `ple_emb` (null when no PLE layer in range).
 // `ids64` / `hist` are the host int64 token ids and ngram history used to
@@ -510,6 +558,25 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
     return Status::Fail("RunLayers: checkpoint stride mismatch (num_ckpt > "
                         "verify_ckpt_cap)");
   }
+  // Q4T_LAYER_TIMING: observation-only per-layer GPU timing. Records
+  // cudaEvents around embedding, each decoder layer, and the head, then
+  // syncs and prints per-group totals. Never touches compute; off by
+  // default.
+  const bool layer_timing = std::getenv("Q4T_LAYER_TIMING") != nullptr;
+  std::vector<cudaEvent_t> lt_ev;
+  if (layer_timing) {
+    lt_ev.resize(2 * (static_cast<size_t>(cfg.num_layers) + 2));
+    for (auto& e : lt_ev)
+      if (cudaEventCreate(&e) != cudaSuccess) {
+        for (auto& f : lt_ev)
+          if (f) cudaEventDestroy(f);
+        return Status::Fail("Q4T_LAYER_TIMING: cudaEventCreate");
+      }
+  }
+  const bool layer_subtiming = std::getenv("Q4T_LAYER_SUBTIMING") != nullptr;
+  if (layer_subtiming) LayerSubTiming::Instance().Begin(cfg.num_layers);
+  // if (layer_subtiming) quant::MoESubTiming::Instance().Begin();
+  if (layer_timing) cudaEventRecord(lt_ev[0], stream);
   for (int l = 0; l < cfg.num_layers; ++l) {
     if (diag) {
       const cudaError_t e = cudaGetLastError();
@@ -566,6 +633,7 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                             (static_cast<size_t>(ple_idx) * max_seq + seq_off) *
                                 ckpt_stride * ple_elems;
     }
+    if (layer_timing) cudaEventRecord(lt_ev[2 * (l + 1)], stream);
     Status s = DecoderLayerForward(m.layers[l], trunk, ple_emb, next,
                                    m.d_positions, seq_rope_pos, T, m.d_ws,
                                    m.ws_bytes, stream, layer_ssm_ckpt,
@@ -586,6 +654,7 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                                        ? gated_n_captures[ple_idx]
                                        : nullptr);
     if (!s.ok()) return s;
+    if (layer_timing) cudaEventRecord(lt_ev[2 * (l + 2)], stream);
     if (!m.layers[l].is_full_attention) lin_idx++;
     if (m.layers[l].has_ple) ple_idx++;
     if (diag) {
@@ -603,6 +672,8 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
     trunk = next;
     next = const_cast<uint16_t*>(t);
   }
+  if (layer_subtiming) LayerSubTiming::Instance().Report(T);
+  // if (layer_subtiming) quant::MoESubTiming::Instance().Report(T);
   // MTP scheme A hook: expose the pre-final-mixer multi stream [T, hc*hs]
   // (the trunk after the last decoder layer, before hyper_connection_mixer).
   // Device-to-device copy; the caller owns `trunk_out` (>= T * hc_dim bytes).
@@ -617,7 +688,12 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
   // extend's hidden gather) and skips the lm_head GEMM. HeadForward would
   // otherwise pass a null output pointer to Bf16Gemm (CUBLAS_STATUS_INVALID_
   // VALUE).
-  if (!logits) return Status();
+  if (!logits) {
+    if (layer_timing)
+      cudaEventRecord(lt_ev[2 * (cfg.num_layers + 1) + 1], stream);
+    return FinishLayerTiming(m, layer_timing, lt_ev, T);
+  }
+  Status hs;
   if (sequence_last_rows) {
     const int width = m.hc_dim();
     const dim3 grid((width + kBlock - 1) / kBlock, ragged->B);
@@ -625,14 +701,17 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
         trunk, next, ragged->seq_offset, width);
     if (cudaGetLastError() != cudaSuccess)
       return Status::Fail("RunLayers: gather sequence last rows");
-    return HeadForward(m.head, next, logits, ragged->B, m.d_ws, m.ws_bytes,
-                       stream);
+    hs = HeadForward(m.head, next, logits, ragged->B, m.d_ws, m.ws_bytes,
+                     stream);
+  } else if (logits_rows == LogitsRows::kLastRow) {
+    hs = HeadForward(m.head, trunk + static_cast<size_t>(T - 1) * m.hc_dim(),
+                     logits, 1, m.d_ws, m.ws_bytes, stream);
+  } else {
+    hs = HeadForward(m.head, trunk, logits, T, m.d_ws, m.ws_bytes, stream);
   }
-  if (logits_rows == LogitsRows::kLastRow) {
-    return HeadForward(m.head, trunk + static_cast<size_t>(T - 1) * m.hc_dim(),
-                       logits, 1, m.d_ws, m.ws_bytes, stream);
-  }
-  return HeadForward(m.head, trunk, logits, T, m.d_ws, m.ws_bytes, stream);
+  if (layer_timing)
+    cudaEventRecord(lt_ev[2 * (cfg.num_layers + 1) + 1], stream);
+  return FinishLayerTiming(m, layer_timing, lt_ev, T, &hs);
 }
 
 // Reset all per-layer persistent state (linear SSM/conv, full KV/indexer)

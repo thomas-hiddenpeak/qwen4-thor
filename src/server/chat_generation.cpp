@@ -33,22 +33,25 @@ void LogMemorySnapshot(const char* phase, const std::string& id) {
     }
     std::fclose(st);
   }
-  long mem_free_kb = 0, cached_kb = 0;
+  long mem_free_kb = 0, cached_kb = 0, mem_avail_kb = 0;
   if (FILE* mi = std::fopen("/proc/meminfo", "r")) {
     char line[256];
     while (std::fgets(line, sizeof line, mi)) {
       if (std::strncmp(line, "MemFree:", 8) == 0) mem_free_kb = std::atol(line + 8);
       if (std::strncmp(line, "Cached:", 7) == 0) cached_kb = std::atol(line + 7);
-      if (mem_free_kb != 0 && cached_kb != 0) break;
+      if (std::strncmp(line, "MemAvailable:", 13) == 0)
+        mem_avail_kb = std::atol(line + 13);
+      if (mem_free_kb != 0 && cached_kb != 0 && mem_avail_kb != 0) break;
     }
     std::fclose(mi);
   }
   std::fprintf(stderr,
                "[q4t][mem] phase=%s id=%s dev_used_gb=%.3f dev_total_gb=%.3f "
-               "rss_mb=%.1f mem_free_gb=%.3f cached_gb=%.3f\n",
+               "rss_mb=%.1f mem_free_gb=%.3f mem_avail_gb=%.3f cached_gb=%.3f\n",
                phase, id.c_str(), (total_bytes - free_bytes) / 1e9,
                total_bytes / 1e9, rss_kb / 1024.0,
-               mem_free_kb * 1024.0 / 1e9, cached_kb * 1024.0 / 1e9);
+               mem_free_kb * 1024.0 / 1e9, mem_avail_kb * 1024.0 / 1e9,
+               cached_kb * 1024.0 / 1e9);
 }
 
 }  // namespace
@@ -488,6 +491,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
             model::ModelSequence* sequence = &seq;
             s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {&sequence, 1},
                                    s, router_trace_.get());
+            // Diagnostic: memory trajectory across chunked prefill (the
+            // 204800-tier OOM investigation). Never touches compute.
+            LogMemorySnapshot("prefill_chunk",
+                              "seq" + std::to_string(seq_id) +
+                                  "@pos" + std::to_string(seq.position));
           }
           if (last || !s.ok()) break;
         }

@@ -87,5 +87,20 @@ constexpr int kFp8SmallMMax = 4;
 bool Fp8SmallMGemm(const uint16_t* x, const Fp8Shadow& w, uint16_t* y, int M,
                    int N, int K, float alpha, cudaStream_t stream);
 
+// 2 <= M <= 8 BF16 small-M GEMM (y = alpha * x * W^T) for batched decode /
+// MTP verify. Hand-written SM110a-tuned kernel (x staged in shared memory
+// once per block, f32x2 SIMD FMA) that beats cuBLASLt on the tall-skinny
+// shapes measured in tools/small_m_gemm_v2_bench; the shape policy inside
+// routes only those winners. Deterministic (fixed reduction order, no
+// atomics) like Bf16Gev, so repeated steps are bit-stable. Returns false if
+// the shape is not routed or on launch failure; the caller must fall back to
+// the cuBLASLt path in Bf16Gemm.
+bool Bf16SmallMGemm(const uint16_t* x, const uint16_t* w, uint16_t* y, int M,
+                    int N, int K, float alpha, cudaStream_t stream);
+
+// Pure shape policy of Bf16SmallMGemm (exposed for wiring tests): true iff
+// the (M, N, K) shape is routed to the hand-written small-M kernel.
+bool Bf16SmallMShapeRouted(int M, int N, int K);
+
 }  // namespace model
 }  // namespace q4t

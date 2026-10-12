@@ -180,6 +180,7 @@ add_library(q4t_model STATIC
   src/model/model_owner.cpp
   src/model/gemv.cu
   src/model/gemv_hc_inject.cu
+  src/model/small_m_gemm.cu
   src/mtp/moe_bf16.cu
   src/mtp/mtp.cu
   src/vision/vision.cu
@@ -249,6 +250,12 @@ target_link_libraries(q4t_fp8_gemv_proto PRIVATE CUDA::cudart)
 # (extends FP8 to batched decode M=2..16; measures the crossover).
 add_executable(q4t_small_m_gemm_bench tools/small_m_gemm_bench.cu)
 target_link_libraries(q4t_small_m_gemm_bench PRIVATE CUDA::cudart CUDA::cublasLt)
+
+# q4t_small_m_gemm_v2_bench — SM110a-tuned hand-written BF16 small-M GEMM
+# (smem-staged x, f32x2 FMA, MAXM templated) vs cuBLASLt on the model's real
+# dense projection shapes; L2-defeated weight pool (DRAM regime).
+add_executable(q4t_small_m_gemm_v2_bench tools/small_m_gemm_v2_bench.cu)
+target_link_libraries(q4t_small_m_gemm_v2_bench PRIVATE CUDA::cudart CUDA::cublasLt)
 
 # q4t_moe_grouped_bench — grouped FP4 MoE GEMM benefit probe (per-expert
 # cuBLASLt vs weight-streaming floor; no model load)

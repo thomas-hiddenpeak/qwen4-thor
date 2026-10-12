@@ -11,6 +11,7 @@
 // 2048 tokens. The indexer is still run (to match the reference) but its
 // selection is a no-op in the dense regime; the sparse attention kernel
 // handles both regimes via the topk index list.
+#include "q4t/model/layer_subtiming.h"
 #include "q4t/model/full_attention.h"
 
 #include <cublasLt.h>
@@ -1449,7 +1450,7 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                             uint16_t* idx_raw, uint16_t* idx_comp, int T,
                             void* workspace, size_t workspace_bytes,
                             cudaStream_t stream, const int* d_seq_id,
-                            int max_position) {
+                            int max_position, int layer_id) {
   if (T <= 0 || T > kMaxT)
     return Status::Fail("FullAttentionForward: T out of range [1, " +
                         std::to_string(kMaxT) + "]");
@@ -1526,6 +1527,9 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   if (off > workspace_bytes)
     return Status::Fail("FullAttentionForward: workspace too small for GEMM");
 
+  auto mt = [stream, layer_id](int op, int which) {
+    LayerSubTiming::Instance().Mark(layer_id, op, which, stream);
+  };
   // `positions` is a DEVICE int[T] (absolute token positions), the same
   // contract as `rope_pos`. It is read directly by the kernels below; no
   // host->device copy is performed here. (An earlier version treated it as a
@@ -1546,6 +1550,7 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
 
   Status s;
   // 1. qg = x @ W_q^T ; k = x @ W_k^T ; v = x @ W_v^T
+  mt(9, 0);  // full_qkv start
   s = CheckGemm(ProjGemm(x, w.q_proj, &w.q_proj_fp8, d_qg, T, qg_dim, hs, 1.f,
                          0.f, d_gemm_ws, gemm_ws, stream));
   if (!s.ok()) return s;
@@ -1556,6 +1561,8 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                          0.f, d_gemm_ws, gemm_ws, stream));
   if (!s.ok()) return s;
 
+  mt(9, 1);  // full_qkv end
+  mt(10, 0);  // full_core start
   // 2. Fused q/k preprocessing: deinterleave qg -> q + gate + centered
   //    RMSNorm(q) AND centered RMSNorm(k) in one launch (disjoint heads).
   QKDeinterleaveNormKernel<<<T * (nq + nkv), hd, 0, stream>>>(
@@ -1792,9 +1799,12 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
         d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn, d_gate, nq, nkv,
         hd, max_topk, d_seq_id, kv_seq_stride, pt_seq_stride);
   }
+  mt(10, 1);  // full_core end
   // 12. out = attn @ W_o^T
+  mt(11, 0);  // full_oproj start
   s = CheckGemm(ProjGemm(d_attn, w.o_proj, &w.o_proj_fp8, out, T, hs, nq * hd,
                          1.f, 0.f, d_gemm_ws, gemm_ws, stream));
+  mt(11, 1);  // full_oproj end
   return s;
 }
 

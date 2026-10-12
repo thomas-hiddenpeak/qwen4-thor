@@ -4,6 +4,7 @@
 // the in_qkv channels, the Gated DeltaNet recurrence (S held in shared memory,
 // one block per value head), a fused per-head RMSNorm * sigmoid(z) gate
 // (output_gate_type), and the output projection.
+#include "q4t/model/layer_subtiming.h"
 #include "q4t/model/linear_attention.h"
 
 #include <cuda_bf16.h>
@@ -1364,7 +1365,7 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
                               const RaggedBatch* ragged, int ckpt_stride,
                               float* ssm_capture,
                               uint16_t* conv_capture,
-                              uint16_t* qkv_raw_capture) {
+                              uint16_t* qkv_raw_capture, int layer_id) {
   const int hs = w.hidden_size;
   const int nkh = w.nkh, nv = w.nv, kd = w.kd, vd = w.vd, conv_k = w.conv_k;
   const int qk = nkh * kd;
@@ -1412,6 +1413,9 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
     return Status();
   };
   Status s;
+  auto mt = [stream, layer_id](int op, int which) {
+    LayerSubTiming::Instance().Mark(layer_id, op, which, stream);
+  };
   if (!(s = alloc(&d_qkv_raw, static_cast<size_t>(T) * in_qkv))) {
     return s;
   }
@@ -1431,6 +1435,7 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
     return s;
   }
 
+  mt(6, 0);  // lin_inproj start
   // 1. Projections (all BF16 GEMMs; large ones use the FP8 decode shadow).
   // CANDIDATE (revertible, off by default; O2 minimal fix, see
   // docs/STATUS.md 当前阶段): for small verify/prefill batches (2 <= T <= 8)
@@ -1512,6 +1517,8 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
     return s;
   }
 
+  mt(6, 1);  // lin_inproj end
+  mt(7, 0);  // lin_state start
   // 2. Causal conv1d (SiLU) over in_qkv channels: d_qkv = SiLU(conv(d_qkv_raw)),
   // conv_state updated from the RAW projection output (d_qkv_raw). The conv
   // output + per-token MTP checkpoints are computed in ONE fused kernel (the
@@ -1730,10 +1737,13 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
     DumpLinearGatedYssm(d_y_ssm, T, v_dim);
   }
 
+  mt(7, 1);  // lin_state end
   // 5. Output projection.
+  mt(8, 0);  // lin_outproj start
   s = CheckGemm(ProjGemm(d_y_ssm, w.out_proj, &w.out_proj_fp8, out, T, hs,
                          v_dim, 1.0f, 0.0f, workspace, workspace_bytes,
                          stream));
+  mt(8, 1);  // lin_outproj end
   if (!s.ok()) return s;
   return Status();
 }

@@ -149,6 +149,19 @@ inline Bf16GemmResult Bf16Gemm(const uint16_t* x, const uint16_t* w,
     // Unsupported shape (K % 8 != 0) or launch failure: fall through to
     // the cuBLASLt path.
   }
+  // 2 <= M <= 8 (batched decode / MTP verify): hand-written small-M GEMM
+  // for the shapes measured to beat cuBLASLt on SM110a (src/model/
+  // small_m_gemm.cu, tools/small_m_gemm_v2_bench). beta must be 0 (all call
+  // sites use 0). Skipped under the M=1->M=4 cuBLASLt ablation so that
+  // ablation keeps forcing the cuBLASLt algorithm family. Unsupported
+  // shapes return false and fall through to cuBLASLt below.
+  if (M >= 2 && M <= 8 && beta == 0.0f && !ablate_gemm_tile) {
+    if (Bf16SmallMGemm(x, w, y, M, N, K, alpha, stream)) {
+      res.status = CUBLAS_STATUS_SUCCESS;
+      res.has_algo = true;
+      return res;
+    }
+  }
   std::lock_guard<std::mutex> lock(quant::LtCacheMutex());
   quant::LtPlan* plan = GetBf16Plan(M, N, K, workspace_bytes);
   if (plan == nullptr || !plan->has_algo) {

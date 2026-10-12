@@ -141,7 +141,8 @@ Status LinearAttentionForward(const LinearAttentionWeights& w, const uint16_t* x
                               int ckpt_stride = 0,
                               float* ssm_capture = nullptr,
                               uint16_t* conv_capture = nullptr,
-                              uint16_t* qkv_raw_capture = nullptr);
+                              uint16_t* qkv_raw_capture = nullptr,
+                              int layer_id = -1);
 
 }  // namespace model
 }  // namespace q4t

@@ -27,6 +27,7 @@
 #include <vector>
 
 #include "q4t/model/decoder_workspace.h"
+#include "q4t/model/layer_subtiming.h"
 #include "q4t/status.h"
 
 namespace q4t {
@@ -586,6 +587,10 @@ Status DecoderLayerForward(const DecoderLayer& layer,
       reinterpret_cast<uint16_t*>(base + layout.gate), layout.gate_bytes};
 
   Status s;
+  auto mt = [stream, layer_id](int op, int which) {
+    LayerSubTiming::Instance().Mark(layer_id, op, which, stream);
+  };
+  mt(0, 0);  // ple start
 
   // The trunk residual the rest of the layer reads. For the PLE layer this is
   // a scratch copy (hyper_input is const); otherwise it aliases hyper_input.
@@ -610,6 +615,8 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   }
   DumpTrunkBeforeMix(d_trunk, T, hc_dim);
 
+  mt(0, 1);  // ple end
+  mt(1, 0);  // gr_read start
   // GRRead prepares inject before the sublayer; normed is now temporary.
   GatedResidualFrame attn_frame;
   s = attn_frame.Read(layer.attn_hc, d_trunk, d_mixed, d_normed, T, d_hc_ws,
@@ -617,6 +624,8 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   if (!s.ok()) {
     return s;
   }
+  mt(1, 1);  // gr_read end
+  mt(2, 0);  // attention start
   // 2. attention block.
   if (layer.is_full_attention) {
     // B2 multi-seq: the full-attention kernels select the per-token rope slice
@@ -626,14 +635,15 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     s = FullAttentionForward(layer.full, d_mixed, d_block, positions, fa_rope,
                              kv_cache, page_table, idx_raw, idx_comp, T,
                              d_attn_ws, layout.attention_bytes, stream,
-                             d_seq_id, max_position);
+                             d_seq_id, max_position, layer_id);
   } else {
     s = LinearAttentionForward(layer.linear, d_mixed, d_block, ssm_state,
                                conv_state, T, d_attn_ws, layout.attention_bytes,
                                stream, ssm_ckpt, conv_ckpt, num_ckpt, d_seq_id,
                                tokens_per_seq, ragged, ckpt_stride,
                                ssm_capture,
-                               /*conv_capture=*/nullptr, qkv_raw_capture);
+                               /*conv_capture=*/nullptr, qkv_raw_capture,
+                               layer_id);
   }
   if (!s.ok()) {
     return s;
@@ -641,6 +651,8 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   DumpAttnOut(d_block, T, hs);
   // Combined is still materialized for the MLP residual. The next norm can
   // consume the BF16-rounded Write result before it leaves shared staging.
+  mt(2, 1);  // attention end
+  mt(3, 0);  // write_and_read start
   GatedResidualFrame mlp_frame;
   s = attn_frame.WriteAndRead(d_block, d_combined, layer.mlp_hc, mlp_frame,
                               d_mixed, d_normed, d_hc_ws, kGemmWs,
@@ -654,6 +666,8 @@ Status DecoderLayerForward(const DecoderLayer& layer,
                                       : layer.routed;
   const quant::MoEResidency* residency =
       layer.moe_residency.Slots() > 0 ? &layer.moe_residency : nullptr;
+  mt(3, 1);  // write_and_read end
+  mt(4, 0);  // moe start
   s = MoEForward(d_mixed, routed_layout, layer.mlp, d_block, T, layer.topk,
                  d_moe_ws, layout.moe_bytes, d_moe_gemm, kGemmWs, stream,
                  trace, layer_id, residency);
@@ -661,7 +675,10 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     return s;
   }
   DumpMoeBoundary(d_mixed, d_block, T, hs);
+  mt(4, 1);  // moe end
+  mt(5, 0);  // write start
   s = mlp_frame.Write(d_block, out);
+  mt(5, 1);  // write end
   DumpLayerOut(out, T, hc_dim);
   return s;
 }
