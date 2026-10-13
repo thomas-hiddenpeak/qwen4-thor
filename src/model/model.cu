@@ -575,7 +575,7 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
   }
   const bool layer_subtiming = std::getenv("Q4T_LAYER_SUBTIMING") != nullptr;
   if (layer_subtiming) LayerSubTiming::Instance().Begin(cfg.num_layers);
-  // if (layer_subtiming) quant::MoESubTiming::Instance().Begin();
+  if (layer_subtiming) quant::MoESubTiming::Instance().Begin();
   if (layer_timing) cudaEventRecord(lt_ev[0], stream);
   for (int l = 0; l < cfg.num_layers; ++l) {
     if (diag) {
@@ -673,7 +673,7 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
     next = const_cast<uint16_t*>(t);
   }
   if (layer_subtiming) LayerSubTiming::Instance().Report(T);
-  // if (layer_subtiming) quant::MoESubTiming::Instance().Report(T);
+  if (layer_subtiming) quant::MoESubTiming::Instance().Report(T);
   // MTP scheme A hook: expose the pre-final-mixer multi stream [T, hc*hs]
   // (the trunk after the last decoder layer, before hyper_connection_mixer).
   // Device-to-device copy; the caller owns `trunk_out` (>= T * hc_dim bytes).
