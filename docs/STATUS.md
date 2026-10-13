@@ -1,10 +1,42 @@
 # 当前状态
 
-更新：2026-10-11。代码是实现事实来源；验收规则见 [EVALUATION.md](EVALUATION.md)。
+更新：2026-10-13。代码是实现事实来源；验收规则见 [EVALUATION.md](EVALUATION.md)。
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
 ## 当前阶段
 
+**MTP verify 阶段两项 HC 优化落地（2026-10-13 本轮，已提交；取代下方各节为最新状态）**：
+verify（T=4）细分计时定位后落地两项算子级优化，均恢复 T 路径与 T=1 GEMV 的
+逐位对齐（非 cuBLASLt 过渡）：
+1. HC down（N=320, K=10240）重新路由到手写 Scattered small-M kernel
+   （small_m_gemm.cu 形状策略 N<512→N<320）。依据 v3 bench
+   （tools/small_m_gemm_v3_bench，L2-defeated，M=4）：Scattered 50.9us vs
+   cuBLASLt 151.3us（3.0x）；此前 v2 bench 对 N<512 误测 KSplit 变体导致
+   误判回退。生产实测 down_gemm 14.0ms→4.1ms/verify forward（96 次调用）。
+2. HC inject（N=4, K=10240）T=2..8 走新增多行 GEMV
+   （HcInjectGevGatedMultirow，gemv_hc_inject.cu），每行与 T=1 融合 GEMV
+   逐位一致；替代 cuBLASLt（~129us/次）。生产实测 inject 12.3ms→1.7ms。
+- 验证：gemm_t1_vs_tk1_general/hc_inject + smallm_gemm_wiring 全 PASS
+  （HC down/up 路由形状 T=4 行 vs T=1 GEMV 逐位一致 count=0；多行 vs
+  单行 GEMV count=0）；mtp_verify_numerics 256 步 PASS（binary
+  253502cf…，证据 .q4t-work/verify-nums-smalln320-145652/）：flips=4/256
+  全部近 tie（1–2 ULP，≤4 ULP 契约）、confident_both_sides=0、causality
+  负控通过。
+- 生产计时（Q4T_LAYER_SUBTIMING，4K 上下文，证据
+  .q4t-work/verify-subdetail-smalln320-150302/）：verify 101ms→~80ms
+  （-21%）；wall_s 8.6→7.25（128 token）。当前 verify 构成：
+  moe 22–25ms（gemm_gu ~12 + gemm_dn ~6，专家权重流式、近 DRAM 下限）/
+  lin_inproj 15.5ms（78–82% 峰值带宽）/ full_core 11.2ms（12 层，
+  SparseAttentionKernel grid=(T,nkv)=8 block，欠并行）/ lin_outproj 6.8ms /
+  HC up 4.7ms（K=320 延迟受限，38–40% 峰值）/ 其余 <3ms。
+- 边界：MTP 仍默认关闭；两候选 env unset；未做五档 E2E 正式验收。
+- 下一步：(a) full_core——T>1 稀疏注意力按 KV 分段并行（仿 T=1
+  QsaDecodeSplit 的 split 思路），把 8 block 扩到占满 20 SM；(b) MoE
+  专家权重流量（24ms 近 DRAM 下限，需专家缓存/驻留，独立工作流）；
+  (c) 优化后做 MTP on 五档 E2E 性能+质量正式验收。
+
+**step26 writer-row0 独立捕获 + 同次 production restore 对照完成
+（2026-10-11 本轮，取代下方六格描述为最新状态；本轮已收口）**：
 **step26 writer-row0 独立捕获 + 同次 production restore 对照完成
 （2026-10-11 本轮，取代下方六格描述为最新状态；本轮已收口）**：
 mtp_writer_row0（binary e7d4d176490754391022c6e72993729c2992064dad6b167d898bd252e7bd3c2f，

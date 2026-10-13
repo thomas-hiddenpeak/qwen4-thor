@@ -208,8 +208,8 @@ bool LaunchKSplit(const uint16_t* w, const uint16_t* x, uint16_t* y, int M,
 
 }  // namespace
 
-// Shape policy: route 2 <= M <= 8 dense GEMMs (K % 8 == 0, N >= 512) to the
-// hand-written small-M kernel; small-N (N < 512) falls back to cuBLASLt.
+// Shape policy: route 2 <= M <= 8 dense GEMMs (K % 8 == 0, N >= 320) to the
+// hand-written small-M kernel; small-N (N < 320) falls back to cuBLASLt.
 // Rationale (MTP correctness, 2026-10-12; small-N carve-out 2026-10-13):
 // the MTP verify step (T = k+1, e.g. T=4) must compute per-token logits
 // bit-identical to the sequential decode (T=1) path, or the speculative
@@ -231,20 +231,23 @@ bool LaunchKSplit(const uint16_t* w, const uint16_t* x, uint16_t* y, int M,
 //   PLE value (K=2560), lm_head (K=2560).
 bool Bf16SmallMShapeRouted(int M, int N, int K) {
   if (M < 2 || M > 8 || K % 8 != 0) return false;
-  // Small-N / large-K shapes are NOT routed: the Scattered kernel launches
-  // ceil(N/16) blocks, so N=320 (HC down, K=10240) uses only 20 blocks and
-  // leaves most SMs idle. Measured (tools/small_m_gemm_v2_bench, M=4, DRAM
-  // regime): HC down hand-written 68.8 GB/s (95 us) vs cuBLASLt 157 GB/s
-  // (42 us) -- a 2.29x loss. The KSplit variant ties the Scattered one there,
-  // so no hand-written variant wins; fall back to cuBLASLt, which tiles the
-  // small N efficiently. This weakens the GEMV-alignment premise for exactly
-  // the mix-down GEMM (the T=k+1 row now differs from the T=1 Bf16Gev row by
-  // the cuBLASLt-vs-GEMV accumulation delta, ~1-2 ULP, absorbed by the
-  // downstream silu/mix-up/gate); the near-tie contract (EVALUATION.md,
-  // <=4 ULP) is re-validated by mtp_verify_numerics. All large-N shapes
-  // (N>=512: in_proj_qkv/z, qg, out_proj, o_proj, HC up/inject) keep the
-  // bit-identical Scattered path (bench: cuBLASLt tie or win).
-  if (N < 512) return false;
+  // Small-N carve-out (N < 320): the Scattered kernel launches ceil(N/16)
+  // blocks, so very small N (HC inject N=4, in_proj_a/b N=48) would use 1-3
+  // blocks and starve the 20 SMs; those fall back to cuBLASLt.
+  //
+  // N=320 (HC down, K=10240) IS routed to Scattered. The earlier carve-out
+  // (N<512) was based on tools/small_m_gemm_v2_bench, which for N<512 shapes
+  // measured the KSplit variant (not Scattered) and reported a cuBLASLt time
+  // (42 us) that does not reproduce in production or in
+  // tools/small_m_gemm_v3_bench. Direct evidence (2026-10-13, Thor 20 SMs /
+  // 32 MB L2): production sub-timing measures the cuBLASLt HC-down at
+  // ~146 us/call (14.0 ms / 96 calls per verify forward); the v3 bench
+  // (SCAT512 == production Bf16SmallMScatteredKernel, L2-defeated) measures
+  // Scattered 59.5 us vs cuBLASLt 157 us on the same shape. So Scattered is
+  // ~2.6x faster here AND restores the bit-identical-to-GEMV accumulation the
+  // T-path MTP contract prefers (the mix-down GEMM no longer carries the
+  // cuBLASLt-vs-GEMV 1-2 ULP delta). Re-validated by mtp_verify_numerics.
+  if (N < 320) return false;
   return true;
 }
 

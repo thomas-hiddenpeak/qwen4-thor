@@ -257,6 +257,11 @@ target_link_libraries(q4t_small_m_gemm_bench PRIVATE CUDA::cudart CUDA::cublasLt
 add_executable(q4t_small_m_gemm_v2_bench tools/small_m_gemm_v2_bench.cu)
 target_link_libraries(q4t_small_m_gemm_v2_bench PRIVATE CUDA::cudart CUDA::cublasLt)
 
+# q4t_small_m_gemm_v3_bench — contiguous-vs-scattered column mapping variants
+# (bit-identical to production scattered) on the real verify (T=4) shapes.
+add_executable(q4t_small_m_gemm_v3_bench tools/small_m_gemm_v3_bench.cu)
+target_link_libraries(q4t_small_m_gemm_v3_bench PRIVATE CUDA::cudart CUDA::cublasLt)
+
 # q4t_moe_grouped_bench — grouped FP4 MoE GEMM benefit probe (per-expert
 # cuBLASLt vs weight-streaming floor; no model load)
 add_executable(q4t_moe_grouped_bench tools/moe_grouped_bench.cu)

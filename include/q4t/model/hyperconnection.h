@@ -71,6 +71,10 @@ bool HcInjectGev(const uint16_t* x, const uint16_t* w, uint16_t* y,
                  float alpha, cudaStream_t stream);
 bool HcInjectGevGated(const uint16_t* x, const uint16_t* w, uint16_t* y,
                       cudaStream_t stream);
+// Multi-row (2 <= T <= 8) fused HC inject gate: one warp per (t, b) output,
+// each row bit-identical to HcInjectGevGated on the same input row.
+bool HcInjectGevGatedMultirow(const uint16_t* x, const uint16_t* w,
+                              uint16_t* y, int T, cudaStream_t stream);
 Status HcInjectGateGeneric(const uint16_t* normed, const uint16_t* block_inject,
                            uint16_t* inject, int T, int hc, int hs,
                            void* workspace, size_t workspace_bytes,

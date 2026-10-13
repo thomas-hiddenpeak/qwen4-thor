@@ -243,6 +243,7 @@ namespace {
 
 using q4t::model::HcInjectGev;
 using q4t::model::HcInjectGevGated;
+using q4t::model::HcInjectGevGatedMultirow;
 using q4t::model::HcInjectGateGeneric;
 
 bool ReadBf16(const std::string& path, std::vector<uint16_t>* out) {
@@ -266,7 +267,7 @@ bool RunHcProdCase(const std::vector<uint16_t>& x,
   const int dim = hc * hs;
   uint16_t *d_x = nullptr, *d_w = nullptr, *d_x4 = nullptr, *d_pA = nullptr,
            *d_pB = nullptr, *d_pC = nullptr, *d_yA = nullptr, *d_yB = nullptr,
-           *d_yC = nullptr;
+           *d_yC = nullptr, *d_yM = nullptr;
   void* ws = nullptr;
   cudaMalloc(&d_w, static_cast<size_t>(hc) * dim * 2);
   cudaMalloc(&d_x, static_cast<size_t>(dim) * 2);
@@ -277,6 +278,7 @@ bool RunHcProdCase(const std::vector<uint16_t>& x,
   cudaMalloc(&d_yA, hc * 2);
   cudaMalloc(&d_yB, hc * 2);
   cudaMalloc(&d_yC, static_cast<size_t>(4) * hc * 2);
+  cudaMalloc(&d_yM, static_cast<size_t>(4) * hc * 2);
   cudaMalloc(&ws, 32u << 20);
   bool ok = true;
 
@@ -300,18 +302,22 @@ bool RunHcProdCase(const std::vector<uint16_t>& x,
             .ok();
   ok &= HcInjectGateGeneric(d_x4, d_w, d_yC, 4, hc, hs, ws, 32u << 20, nullptr)
             .ok();
+  ok &= HcInjectGevGatedMultirow(d_x4, d_w, d_yM, 4, nullptr);
   cudaDeviceSynchronize();
 
-  std::vector<uint16_t> pA(hc), pB(hc), pC(4 * hc), yA(hc), yB(hc), yC(4 * hc);
+  std::vector<uint16_t> pA(hc), pB(hc), pC(4 * hc), yA(hc), yB(hc), yC(4 * hc),
+      yM(4 * hc);
   cudaMemcpy(pA.data(), d_pA, hc * 2, cudaMemcpyDeviceToHost);
   cudaMemcpy(pB.data(), d_pB, hc * 2, cudaMemcpyDeviceToHost);
   cudaMemcpy(pC.data(), d_pC, 4 * hc * 2, cudaMemcpyDeviceToHost);
   cudaMemcpy(yA.data(), d_yA, hc * 2, cudaMemcpyDeviceToHost);
   cudaMemcpy(yB.data(), d_yB, hc * 2, cudaMemcpyDeviceToHost);
   cudaMemcpy(yC.data(), d_yC, 4 * hc * 2, cudaMemcpyDeviceToHost);
+  cudaMemcpy(yM.data(), d_yM, 4 * hc * 2, cudaMemcpyDeviceToHost);
 
   const std::vector<uint16_t> pC0(pC.begin(), pC.begin() + hc);
   const std::vector<uint16_t> yC0(yC.begin(), yC.begin() + hc);
+  const std::vector<uint16_t> yM0(yM.begin(), yM.begin() + hc);
   std::printf("[hc-prod %s] hc=%d hs=%d dim=%d\n", tag, hc, hs, dim);
   const DiffStats pp = CompareBf16(pA, pB);
   const DiffStats pm = CompareBf16(pB, pC0);
@@ -325,6 +331,11 @@ bool RunHcProdCase(const std::vector<uint16_t>& x,
   Report("gate fused vs gemm1", gg, hc);
   Report("gate gemm1 vs gemm4", gm, hc);
   Report("gate fused vs gemm4", g4, hc);
+  const DiffStats gM = CompareBf16(yA, yM0);
+  Report("gate fused1 vs multirow4", gM, hc);
+  // Contract: the multi-row GEMV must be bit-identical to the T=1 fused
+  // GEMV on the same row (that is the MTP alignment premise).
+  ok &= (gM.first < 0);
   // FP64 reference of the projection: shows whether both are valid roundings.
   std::vector<double> ref(hc, 0.0);
   for (int b = 0; b < hc; ++b)
@@ -350,6 +361,7 @@ bool RunHcProdCase(const std::vector<uint16_t>& x,
   cudaFree(d_yA);
   cudaFree(d_yB);
   cudaFree(d_yC);
+  cudaFree(d_yM);
   cudaFree(ws);
   return ok;
 }

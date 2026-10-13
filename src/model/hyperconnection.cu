@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 
+#include "q4t/model/hc_mix_subtiming.h"
 #include "q4t/model/linear.h"
 
 namespace q4t {
@@ -421,12 +422,28 @@ Status PrepareInjectGate(const HyperConnectionWeights& w,
   // docs/log/2026-10-10.md). Default runtime behavior is unchanged when the
   // env var is unset.
   const bool ablate_hc_t1 = std::getenv("Q4T_ABLATE_HC_T1") != nullptr;
-  const bool fused_gate = !ablate_hc_t1 && T == 1 && hc == 4 && hs == 2560 &&
-                          ((reinterpret_cast<uintptr_t>(normed) |
-                            reinterpret_cast<uintptr_t>(w.block_inject)) &
-                           15u) == 0;
-  if (fused_gate) {
-    if (!HcInjectGevGated(normed, w.block_inject, inject, stream))
+  const bool aligned =
+      ((reinterpret_cast<uintptr_t>(normed) |
+        reinterpret_cast<uintptr_t>(w.block_inject)) &
+       15u) == 0;
+  // GEMV-aligned routing: T=1 uses the fused single-row GEMV; small T (2..8,
+  // the MTP verify shape T=k+1) uses the multi-row GEMV whose per-row
+  // accumulation is bit-identical to the T=1 GEMV. The cuBLASLt GEMM is
+  // ~129 us/call on this degenerate 4x4x10240 shape (measured 12.4 ms per
+  // verify forward, 2026-10-13) versus ~5 us for the GEMV stream, and it
+  // carries a 1-2 ULP accumulation delta vs the T=1 path that the GEMV
+  // routing removes. Large T keeps cuBLASLt.
+  const bool gemv_aligned =
+      !ablate_hc_t1 && hc == 4 && hs == 2560 && aligned && T <= 8;
+  bool fused_gate = false;
+  if (gemv_aligned) {
+    if (T == 1) {
+      fused_gate = HcInjectGevGated(normed, w.block_inject, inject, stream);
+    } else {
+      fused_gate = HcInjectGevGatedMultirow(normed, w.block_inject, inject,
+                                            T, stream);
+    }
+    if (!fused_gate)
       return Status::Fail("HC gated projection launch failed");
   } else {
     Status s = HcInjectGateGenericImpl(normed, w.block_inject, inject, T, hc,
@@ -561,6 +578,14 @@ void DumpHcMixed(const uint16_t* mixed, int T, int hs) {
 // production branch — row-wise candidate gate, ProjGemm fallback, capture
 // hook — on fixed captured inputs, without re-running the layer norm. The
 // caller owns d_down and any scratch cleanup.
+
+// Observation-only HC mix step timing (gated by Q4T_LAYER_SUBTIMING).
+inline void HcT(int op, cudaStream_t stream, bool start) {
+  auto& t = HcMixSubTiming::Instance();
+  if (!t.active()) return;
+  if (start) t.Start(op, stream); else t.Stop(op, stream);
+}
+
 Status MixDownStep(const HyperConnectionWeights& w, const uint16_t* normed,
                    uint16_t* d_down, int T, void* workspace,
                    size_t workspace_bytes, cudaStream_t stream) {
@@ -614,8 +639,10 @@ static Status HyperConnectionMixImpl(
 
   if (!normed_ready) {
     // 1. Grouped RMSNorm (warp-per-branch: blockDim = 32*hc).
+    HcT(0, stream, true);
     GroupedRmsNormKernel<<<T, 32 * hc, 0, stream>>>(hyper_input, w.hc_norm,
                                                     normed, T, hc, hs, w.eps);
+    HcT(0, stream, false);
     const cudaError_t norm_error = cudaGetLastError();
     if (norm_error != cudaSuccess)
       return Status::Fail(std::string("rmsnorm launch: ") +
@@ -640,8 +667,10 @@ static Status HyperConnectionMixImpl(
   };
 
   // 2. down = normed @ W_down^T  ([T, hc_dim] x [lr, hc_dim]^T -> [T, lr]).
+  HcT(1, stream, true);
   Status s = MixDownStep(w, normed, d_down, T, workspace, workspace_bytes,
                          stream);
+  HcT(1, stream, false);
   if (!s.ok()) {
     release_owned();
     return s;
@@ -649,18 +678,23 @@ static Status HyperConnectionMixImpl(
   // 3. silu(down/hc) in place, with BF16 output.
   {
     const int total = T * lr;
+    HcT(2, stream, true);
     SiluDivKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
         d_down, total, inv_hc);
+    HcT(2, stream, false);
   }
   // 4. up = silu_down @ W_up^T  ([T, lr] x [hc_dim, lr]^T -> [T, hc_dim]).
+  HcT(3, stream, true);
   s = CheckGemm(ProjGemm(d_down, w.mix_up, &w.mix_up_fp8, d_up, T, hc_dim, lr,
                          1.0f, 0.0f, workspace, workspace_bytes, stream));
+  HcT(3, stream, false);
   if (!s.ok()) {
     release_owned();
     return s;
   }
   // 5. gate + mean.
   {
+    HcT(4, stream, true);
     const int total = T * hs;
     const bool paired = hc == 4 && hs == 2560 &&
         ((reinterpret_cast<uintptr_t>(d_up) |
@@ -674,6 +708,7 @@ static Status HyperConnectionMixImpl(
       MixGateKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
           d_up, normed, mixed, T, hc, hs);
     }
+    HcT(4, stream, false);
   }
   DumpHcMixed(mixed, T, hs);
   release_owned();
@@ -755,8 +790,10 @@ Status GatedResidualFrame::ReadImpl(
       }
       owns_gate_ = true;
     }
+    HcT(5, stream_, true);
     s = PrepareInjectGate(w, normed_scratch, inject_gate_, tokens, workspace,
                           workspace_bytes, stream_);
+    HcT(5, stream_, false);
     if (!s) {
       Release();
       return s;
@@ -773,9 +810,11 @@ Status GatedResidualFrame::Write(const uint16_t* block_output,
   if (tokens_ > 0) {
     if (inject_gate_) {
       const int total = tokens_ * hc_ * hs_;
+      HcT(6, stream_, true);
       CombineWithGateKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0,
                               stream_>>>(block_output, residual_, inject_gate_,
                                          output, tokens_, hc_, hs_);
+      HcT(6, stream_, false);
       error = cudaGetLastError();
     } else {
       error = cudaMemcpyAsync(output, residual_,
@@ -814,9 +853,11 @@ Status GatedResidualFrame::WriteAndRead(
                            workspace, workspace_bytes, stream, mix_scratch,
                            gate_storage);
   }
+  HcT(6, stream, true);
   CombineAndGroupedNormKernel<<<tokens, 128, 0, stream>>>(
       block_output, residual_, inject_gate_, next_weights.hc_norm, combined,
       normed, tokens, hc_, hs_, next_weights.eps);
+  HcT(6, stream, false);
   const cudaError_t launch_error = cudaGetLastError();
   const cudaError_t release_error = Release();
   if (launch_error != cudaSuccess)
@@ -864,15 +905,19 @@ Status HyperConnectionCombine(const HyperConnectionWeights& w,
     return Status::Fail(std::string("cudaMallocAsync inject: ") +
                         cudaGetErrorString(merr));
   }
+  HcT(5, stream, true);
   Status s = PrepareInjectGate(w, normed, d_inject, T, workspace,
                                workspace_bytes, stream);
+  HcT(5, stream, false);
   if (!s) {
     cudaFreeAsync(d_inject, stream);
     return s;
   }
   const int total = T * hc_dim;
+  HcT(6, stream, true);
   CombineWithGateKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
       block_output, hyper_input, d_inject, out, T, hc, hs);
+  HcT(6, stream, false);
   cudaFreeAsync(d_inject, stream);
   return Status();
 }

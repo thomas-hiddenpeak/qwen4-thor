@@ -17,6 +17,7 @@
 // layers (they run sequentially); its size is the max over all layers.
 #include "q4t/model/model.h"
 #include "q4t/model/layer_subtiming.h"
+#include "q4t/model/hc_mix_subtiming.h"
 #include "q4t/quant/moe_subtiming.h"
 
 #include "q4t/runtime/residency_config.h"
@@ -576,6 +577,7 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
   const bool layer_subtiming = std::getenv("Q4T_LAYER_SUBTIMING") != nullptr;
   if (layer_subtiming) LayerSubTiming::Instance().Begin(cfg.num_layers);
   if (layer_subtiming) quant::MoESubTiming::Instance().Begin();
+  if (layer_subtiming) HcMixSubTiming::Instance().Begin();
   if (layer_timing) cudaEventRecord(lt_ev[0], stream);
   for (int l = 0; l < cfg.num_layers; ++l) {
     if (diag) {
@@ -674,6 +676,7 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
   }
   if (layer_subtiming) LayerSubTiming::Instance().Report(T);
   if (layer_subtiming) quant::MoESubTiming::Instance().Report(T);
+  if (layer_subtiming) HcMixSubTiming::Instance().Report(T);
   // MTP scheme A hook: expose the pre-final-mixer multi stream [T, hc*hs]
   // (the trunk after the last decoder layer, before hyper_connection_mixer).
   // Device-to-device copy; the caller owns `trunk_out` (>= T * hc_dim bytes).
