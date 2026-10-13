@@ -16,11 +16,19 @@ Status MoEDeviceDecode(const uint16_t* x, const int32_t* expert_ids,
 
 // 2 <= T <= 8 batched device decode (MTP verify / batched decode). Same
 // fixed shapes as MoEDeviceDecode (E=512, k=10, hs=2560, moe_is=640) and the
-// same unique-router-ID requirement. R = T*k rows, each (token, slot) an
-// independent M=1 NVFP4 GEMM row, so every token's expert output uses the
-// identical per-row arithmetic as the T=1 decode path. No host routing
-// readback, no per-expert GEMM loop. ws follows
-// MoEWorkspace::RequiredBytes(T, 10, 2560, 640).
+// same unique-router-ID requirement. No host routing readback, no per-expert
+// GEMM loop.
+//
+// T=1 keeps the per-row path bit-identically (R = T*k independent M=1 rows,
+// identical per-row arithmetic as the T=1 decode path). T>1 also defaults to
+// the per-row path: production sub-timing + moe_gemm_grouped_bench show the
+// per-row grouped GEMM already reuses duplicate-expert weights from L2, so
+// expert grouping (one M=M_e GEMM per active expert, opt-in via
+// Q4T_MOE_DECODE_GROUPED) buys only 3-7% on the GEMM in the production
+// unique/rows ~= 0.687 distribution. Per-row quantization is unchanged in
+// both paths; the grouped path's M_e tiling stays within the near-tie ULP
+// contract (moe_decode_grouped_vs_perrow: bit-exact).
+// ws follows MoEWorkspace::RequiredBytes(T, 10, 2560, 640).
 Status MoEDeviceDecodeMulti(const uint16_t* x, const int32_t* expert_ids,
                             const float* router_w, float* y,
                             const MoEWeightLayout& weights,

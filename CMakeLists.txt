@@ -262,6 +262,11 @@ target_link_libraries(q4t_small_m_gemm_v2_bench PRIVATE CUDA::cudart CUDA::cubla
 add_executable(q4t_small_m_gemm_v3_bench tools/small_m_gemm_v3_bench.cu)
 target_link_libraries(q4t_small_m_gemm_v3_bench PRIVATE CUDA::cudart CUDA::cublasLt)
 
+# q4t_hc_inject_bench — HC inject GEMV variants (T=4 multi-row / T=1 decode),
+# L2-defeated per-call timing.
+add_executable(q4t_hc_inject_bench tools/hc_inject_bench.cu)
+target_link_libraries(q4t_hc_inject_bench PRIVATE CUDA::cudart)
+
 # q4t_moe_grouped_bench — grouped FP4 MoE GEMM benefit probe (per-expert
 # cuBLASLt vs weight-streaming floor; no model load)
 add_executable(q4t_moe_grouped_bench tools/moe_grouped_bench.cu)
@@ -299,6 +304,7 @@ if(Q4T_BUILD_TESTS)
     tests/quant_moe_load_test.cpp
     tests/quant_moe_gemm_test.cpp
     tests/quant_moe_residency_test.cpp
+    tests/moe_decode_grouped_test.cpp
     tests/model_hyperconnection_test.cpp
     tests/model_linear_attention_test.cpp
     tests/model_full_attention_test.cpp
@@ -354,3 +360,16 @@ if(Q4T_BUILD_TESTS)
   add_test(NAME q4t_host_contracts COMMAND q4t_host_tests --required-list
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/release/required_host_tests.txt)
 endif()
+
+# q4t_moe_gemm_bench — per-row grouped NVFP4 GEMM (verify T=4 shapes) vs
+# DRAM floor; characterizes the moe_decode.cu grouped path per call.
+add_executable(q4t_moe_gemm_bench tools/moe_gemm_bench.cu)
+target_include_directories(q4t_moe_gemm_bench PRIVATE include)
+target_link_libraries(q4t_moe_gemm_bench PRIVATE q4t_quant CUDA::cudart CUDA::cublasLt)
+
+# q4t_moe_gemm_grouped_bench — expert-grouped vs per-row grouped NVFP4 GEMM
+# (verify T=4 shapes); characterizes the weight-traffic headroom of grouping
+# (token,slot) rows by expert before the grouped GEMM.
+add_executable(q4t_moe_gemm_grouped_bench tools/moe_gemm_grouped_bench.cu)
+target_include_directories(q4t_moe_gemm_grouped_bench PRIVATE include)
+target_link_libraries(q4t_moe_gemm_grouped_bench PRIVATE q4t_quant CUDA::cudart CUDA::cublasLt)

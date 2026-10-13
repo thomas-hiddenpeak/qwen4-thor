@@ -5,6 +5,44 @@
 
 ## 当前阶段
 
+**MoE 按专家分组 decode（T>1）实现 + 有效 A/B（2026-10-13 深夜，已提交；取代下方各节为最新状态）**：
+T>1 按专家分组 MoE decode 落地（moe_decode.cu，opt-in Q4T_MOE_DECODE_GROUPED，
+默认仍 per-row）：device 端 R=T*k 行按命中专家 compact，每活跃专家一次
+M=M_e grouped GEMM（权重只读一次），fixed-R cols=0 跳过未命中组，U 不回
+host。数值：moe_decode_grouped_vs_perrow PASS（routingA/B exact=10240/
+10240，max_ulp=0.00 逐位一致）；moe_decode_t1_dispatch_bitexact PASS。
+有效 A/B（.q4t-work/moe-ab2-1013/，4K 128 token 同 binary）：grouped 省
+~1.7ms/verify forward（verify total 78.0→76.3ms，moe-subtotal 18.7→16.9ms）。
+此前 moe-ab-1013 A/B 无效（grouped 侧未设 env 实为 per-row）已作废。
+判定：真实小赢但小于 unique/rows≈0.687 估算的 ~4.6ms（per-row 重复专家
+权重已部分命中 L2）。45K 档过 +50% 仍需再省 ~2.9ms（grouped 后 per-step
+93.6ms，目标 ≤90.7ms）。
+边界：MTP 仍默认关闭；Q4T_MOE_DECODE_GROUPED 默认 unset；未做五档 E2E
+正式验收。
+下一步：(a) 再找 ~2.9ms（draft 15.5ms / HC up_gemm 4.78ms 38–40% 峰值 /
+full_core 10.5ms 候选）；(b) 45K 档带 MTP 计时复跑确认过 +50%；(c) 达标
+后 MTP 默认开启五档正式验收。
+
+**五档 E2E MTP off/on 首次完整对照 + MoE GEMM 定性（2026-10-13 本轮，取代下方各节为最新状态）**：
+在 5330e50（含本日全部算子优化：HC down Scattered 3x、HC inject 多行
+GEMV、small-T 列分裂注意力）上完成首次完整五档 evalscope HTTP E2E
+off/on 对照（.q4t-work/mtp-e2e-20261013/，两侧同 binary，env unset）：
+decode_tps off→on：1024: 18.5→35.7（+93%）/ 4096: 17.86→36.3（+103%）/
+8192: 18.1→37.4（+107%）/ 45056: 17.86→25.5（+43%）/ 204800:
+17.05→32.3（+90%）。五档确定性、HTTP 输出检查通过；4/5 档达 +50%
+目标，45K 档 +43% 略低于下限（唯一未达标档，原因未定位——该 E2E 未开
+MTP 计时，无 45K 分步/接受率数据）。
+MoE GEMM 定性（tools/moe_gemm_bench 新增 + nsys 实采
+.q4t-work/moe-nsys-171608/）：grouped NVFP4 GEMM 每层 gemm_gu ~229us /
+gemm_dn ~118us，与 bench prod 模式（512 专家分散指针 + L2 flush）
+0.30/0.16ms 一致，均 ~1.2x HBM 读下限（~246 GB/s）。生产 sub-timing
+gemm_gu ~11ms 为 36 层每 forward 之和，非单次调用；grouped GEMM 无
+结构性低效，MoE 剩余空间只在专家权重 L2 驻留（独立工作流）。
+边界：MTP 仍默认关闭；两候选 env unset；bench 工具未提交。
+下一步：(a) 45K 档定位（带 MTP 计时+子计时跑 45K，取分步与接受率，
+区分客观接受率条件与长上下文 verify 成本）；(b) 专家权重 L2 驻留；
+(c) 达标后 MTP 默认开启的五档正式验收。
+
 **small-T 稀疏注意力改走列分裂 kernel（T<=8，2026-10-13 本轮，已提交；取代下方各节为最新状态）**：
 QsaDecodeSplit 泛化到 T（grid=(T,2,4)），full_attention 派发 T<=8 走列分裂
 kernel（原仅 T==1），T>8 prefill 仍走通用 SparseAttentionKernel。逐 token 注意力
