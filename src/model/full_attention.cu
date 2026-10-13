@@ -1782,16 +1782,24 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   // Tensor-core GQA-packed: grid (T, nkv), each block reads its KV chunk once
   // and feeds all 12 q-heads via mma.sync (12x KV read reduction vs the old
   // per-q-head SIMT kernel).
-  // ABLATION (test-only, off by default): force the T=1 sparse attention to
-  // use the generic SparseAttentionKernel (the same kernel as T>1), so the
-  // sparse attention is no longer a T-dependence source. Used to confirm
-  // whether QSA is the only T-dependence source in the MTP vs plain-greedy
-  // divergence (see docs/log/2026-10-10.md). Default runtime behavior is
-  // unchanged when the env var is unset.
+  // Small-T (decode / MTP verify) uses the column-split kernel
+  // (grid=(T, nkv, 4)): each block owns one (token, kv-head) and one 64-column
+  // output partition, so (a) the per-token math is bit-identical to the T=1
+  // decode — sparse attention is no longer a T-dependence source — and (b) the
+  // 8 blocks of the generic kernel (T=4) become 32, filling the 20 SMs. The
+  // split re-reads K once per column partition (4x K traffic), which only pays
+  // off while the generic kernel is under-parallelized; for prefill (large T)
+  // the generic kernel already saturates the SMs and wins on K traffic.
+  constexpr int kSplitMaxT = 8;
+  // ABLATION (test-only, off by default): force the small-T sparse attention
+  // to use the generic SparseAttentionKernel, re-introducing the QSA
+  // T-dependence, to confirm whether QSA is the only T-dependence source in
+  // the MTP vs plain-greedy divergence (see docs/log/2026-10-10.md). Default
+  // runtime behavior is unchanged when the env var is unset.
   const bool ablate_qsa_t1 = std::getenv("Q4T_ABLATE_QSA_T1") != nullptr;
-  if (!ablate_qsa_t1 && T == 1 && nq == 24 && nkv == 2 && hd == 256) {
+  if (!ablate_qsa_t1 && T <= kSplitMaxT && nq == 24 && nkv == 2 && hd == 256) {
     s = QsaDecodeSplit(d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn,
-                       d_gate, max_topk, d_seq_id, kv_seq_stride,
+                       d_gate, max_topk, T, d_seq_id, kv_seq_stride,
                        pt_seq_stride, stream);
     if (!s) return s;
   } else {

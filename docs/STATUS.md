@@ -5,7 +5,17 @@
 
 ## 当前阶段
 
-**MTP verify 阶段两项 HC 优化落地（2026-10-13 本轮，已提交；取代下方各节为最新状态）**：
+**small-T 稀疏注意力改走列分裂 kernel（T<=8，2026-10-13 本轮，已提交；取代下方各节为最新状态）**：
+QsaDecodeSplit 泛化到 T（grid=(T,2,4)），full_attention 派发 T<=8 走列分裂
+kernel（原仅 T==1），T>8 prefill 仍走通用 SparseAttentionKernel。逐 token 注意力
+与 T=1 decode 逐位一致，消除 QSA 这一 T 依赖源；T=4 时 8 block→32 block 占满
+20 SM。mtp_verify_numerics 256 步 PASS（flips=4/256 与改前一致，≤4 ULP 契约）；
+生产 4K：full_core 11.0→10.3ms（-6%），verify total 76-78ms 持平，wall_s 7.2。
+边界：MTP 仍默认关闭；两候选 env unset；未做五档 E2E 正式验收。
+下一步：(a) MoE 专家权重流量（verify 最大单项 21-37ms，专家缓存/驻留，独立
+工作流）；(b) 优化后 MTP on 五档 E2E 性能+质量正式验收。
+
+**MTP verify 阶段两项 HC 优化落地（2026-10-13 本轮，已提交）**：
 verify（T=4）细分计时定位后落地两项算子级优化，均恢复 T 路径与 T=1 GEMV 的
 逐位对齐（非 cuBLASLt 过渡）：
 1. HC down（N=320, K=10240）重新路由到手写 Scattered small-M kernel
