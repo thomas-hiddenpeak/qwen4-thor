@@ -58,9 +58,10 @@ Bug修复应选择适合缺陷的验证方式。代码决定行为，测试结�
 
 ## 基线配置
 
-- 单请求并发 1、服务 max_seq=1，普通 greedy decode，MTP 关闭。
-- serve 默认关闭 MTP；--mtp 显式开启，--no-mtp 明确关闭。MTP 使用独立
-  结果组，不与普通 decode 混算。启动日志必须确认实际模式。
+- 单请求并发 1、服务 max_seq=1，greedy decode；MTP 自 2026-10-14 起默认
+  开启（k=3），--no-mtp 回退普通 greedy decode（性能基线侧）。
+- serve 默认开启 MTP；--mtp 显式开启（与默认相同），--no-mtp 明确关闭。
+  MTP 使用独立结果组，不与普通 decode 混算。启动日志必须确认实际模式。
 - 保持 checkpoint 和当前精度；禁用 Q4T_FP8_* 实验开关，记录实际环境。
 - 服务容量必须容纳 prompt 加输出；max_prefill 是分块大小，**不是最大上下文**。
   固定分块策略。容量被预算器缩减、输入截断或退化路径变化必须报告。

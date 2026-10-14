@@ -288,9 +288,13 @@ def main():
                         help='serve --request-deadline-ms (0 = server '
                              'default 1200000; must be in [1000,10800000])')
     parser.add_argument('--mtp', action='store_true',
-                        help='serve --mtp (MTP speculative decode; default '
-                             'off). MTP results form an independent group and '
-                             'must not be mixed with plain-decode baselines.')
+                        help='serve --mtp (explicit MTP opt-in). MTP results '
+                             'form an independent group and must not be mixed '
+                             'with plain-decode baselines.')
+    parser.add_argument('--mtp-default', action='store_true',
+                        help='serve with no MTP flag: exercise the serve '
+                             'default (MTP on since 2026-10-14) for default-'
+                             'deployment acceptance.')
     parser.add_argument('--mtp-k', type=int, default=3,
                         help='MTP speculative steps k (serve default 3)')
     args = parser.parse_args()
@@ -426,7 +430,9 @@ def main():
     command = [str(binary), 'serve', '--model-dir', str(model), '--port', str(args.port),
                '--max-seq', '1', '--max-prefill', '8192', '--max-len',
                str(args.max_len), '--max-tokens', '256']
-    if args.mtp:
+    if args.mtp_default:
+        pass  # no MTP flag: the serve default is under test
+    elif args.mtp:
         command += ['--mtp', '--mtp-k', str(args.mtp_k)]
     else:
         command += ['--no-mtp']

@@ -114,7 +114,7 @@ int RunGenerate(int argc, char** argv) {
       "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
   std::string model_dir = kDefaultModelDir;
   int max_tokens = 64;
-  bool use_mtp = false;
+  bool use_mtp = true;  // MTP is the default; --no-mtp opts out
   int mtp_k = 3;  // 实测最优 (k=3 1.46x; 见 docs/LOG.md 2026-09-10)
   int max_prefill = 0;  // 0 = use ModelConfig default (2048)
   std::string prompt;

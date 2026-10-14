@@ -49,7 +49,8 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
   -DQ4T_CUDA_ARCHITECTURES=110a
 cmake --build build --parallel
 
-# 运行（默认关闭 MTP；评估参数与顺序见 docs/EVALUATION.md）
+# 运行（默认开启 MTP k=3；--no-mtp 回退普通 decode；评估参数与顺序见
+# docs/EVALUATION.md）
 ./build/q4t serve --max-seq 1 --max-prefill 8192 --max-len 208896
 ```
 
