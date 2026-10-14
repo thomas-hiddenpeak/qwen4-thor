@@ -675,6 +675,69 @@ Status ArgmaxBf16Rows(const uint16_t* logits, int rows, int vocab, int32_t* out,
 }
 
 // ---------------------------------------------------------------------------
+// Diagnostic (Q4T_MTP_GAP_DEBUG): per-row top-1/top-2 logit values + top-1
+// index. Used to classify MTP rejections as "main confident" (large gap,
+// draft wrong) vs "near-tie" (small gap, verify numerically borderline).
+// Pure observation; never affects the accept decision.
+__global__ void Top2GapBf16RowsKernel(const uint16_t* __restrict__ logits,
+                                      int vocab, float* __restrict__ out) {
+  const int row = blockIdx.y;
+  const uint16_t* lg = logits + static_cast<size_t>(row) * vocab;
+  float bestv = -1e30f, secondv = -1e30f;
+  int besti = 0;
+  for (int v = threadIdx.x; v < vocab; v += kArgmaxBlock) {
+    const float x = Bf16ToFloat(lg[v]);
+    if (x > bestv) {
+      secondv = bestv;
+      bestv = x;
+      besti = v;
+    } else if (x > secondv) {
+      secondv = x;
+    }
+  }
+  __shared__ float s_bv[kArgmaxBlock];
+  __shared__ float s_sv[kArgmaxBlock];
+  __shared__ int s_bi[kArgmaxBlock];
+  s_bv[threadIdx.x] = bestv;
+  s_sv[threadIdx.x] = secondv;
+  s_bi[threadIdx.x] = besti;
+  __syncthreads();
+  for (int s = kArgmaxBlock / 2; s > 0; s >>= 1) {
+    if (threadIdx.x < s) {
+      const float a_bv = s_bv[threadIdx.x];
+      const float a_sv = s_sv[threadIdx.x];
+      const int a_bi = s_bi[threadIdx.x];
+      const float b_bv = s_bv[threadIdx.x + s];
+      const float b_sv = s_sv[threadIdx.x + s];
+      const int b_bi = s_bi[threadIdx.x + s];
+      if (b_bv > a_bv || (b_bv == a_bv && b_bi < a_bi)) {
+        s_sv[threadIdx.x] = (a_bv > b_sv) ? a_bv : b_sv;
+        s_bv[threadIdx.x] = b_bv;
+        s_bi[threadIdx.x] = b_bi;
+      } else {
+        s_sv[threadIdx.x] = (b_bv > a_sv) ? b_bv : a_sv;
+      }
+    }
+    __syncthreads();
+  }
+  // out layout per row: [v1, v2, i1]
+  out[static_cast<size_t>(row) * 3 + 0] = s_bv[0];
+  out[static_cast<size_t>(row) * 3 + 1] = s_sv[0];
+  out[static_cast<size_t>(row) * 3 + 2] = static_cast<float>(s_bi[0]);
+}
+
+Status Top2GapBf16Rows(const uint16_t* logits, int rows, int vocab, float* out,
+                       cudaStream_t stream) {
+  if (rows <= 0) return Status();
+  const dim3 block(kArgmaxBlock);
+  const dim3 grid(1, rows);
+  Top2GapBf16RowsKernel<<<grid, block, 0, stream>>>(logits, vocab, out);
+  return cudaGetLastError() == cudaSuccess
+             ? Status()
+             : Status::Fail("Top2GapBf16Rows: kernel launch");
+}
+
+// ---------------------------------------------------------------------------
 // Draft-extend (see mtp.h): run the draft model over T tokens to build its
 // full-attention KV, returning the last row's first-draft argmax + trunk.
 // ---------------------------------------------------------------------------
@@ -1065,6 +1128,33 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
                  cudaMemcpyDeviceToHost) != cudaSuccess)
     return cleanup(Status::Fail("MtpSpeculativeStep: D2H verify argmax"));
   if (!use_scratch) cudaFree(d_argmax);
+  // Diagnostic (Q4T_MTP_GAP_DEBUG): top-2 gap per verify row, logged with the
+  // accept decision. Pure observation; does not affect a/correction.
+  if (const char* gap_env = std::getenv("Q4T_MTP_GAP_DEBUG")) {
+    float* d_gap = nullptr;
+    if (cudaMalloc(reinterpret_cast<void**>(&d_gap),
+                   static_cast<size_t>(k + 1) * 3 * sizeof(float)) ==
+        cudaSuccess) {
+      if (Top2GapBf16Rows(d_vlogits, k + 1, vocab, d_gap, stream).ok()) {
+        float gap_h[(k + 1) * 3];
+        if (cudaMemcpy(gap_h, d_gap, static_cast<size_t>(k + 1) * 3 * sizeof(float),
+                       cudaMemcpyDeviceToHost) == cudaSuccess) {
+          std::fprintf(stderr,
+                       "[mtp-gap] P=%d a_pending: ", P);
+          for (int i = 0; i < k; ++i) {
+            const float v1 = gap_h[i * 3 + 0];
+            const float v2 = gap_h[i * 3 + 1];
+            const int i1 = static_cast<int>(gap_h[i * 3 + 2]);
+            std::fprintf(stderr,
+                         "i%d{draft=%d main=%d gap=%.4f v1=%.3f v2=%.3f top1=%d}%s",
+                         i, drafts[i], m_argmax[i], v1 - v2, v1, v2, i1,
+                         i + 1 < k ? " " : "\n");
+          }
+        }
+      }
+      cudaFree(d_gap);
+    }
+  }
   int a = 0;
   for (int i = 0; i < k; ++i) {
     const int mi = m_argmax[i];
@@ -1411,6 +1501,39 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
   if (cudaMemcpy(m_argmax.data(), d_ext_ids, Tvm * sizeof(int32_t),
                  cudaMemcpyDeviceToHost) != cudaSuccess)
     return cleanup(Status::Fail("MtpSpeculativeStepMulti: D2H verify argmax"));
+  // Diagnostic (Q4T_MTP_GAP_DEBUG): top-2 gap per verify row, logged per
+  // sequence with the draft/main tokens. Pure observation; no behavior change.
+  if (std::getenv("Q4T_MTP_GAP_DEBUG") != nullptr) {
+    float* d_gap = nullptr;
+    if (cudaMalloc(reinterpret_cast<void**>(&d_gap),
+                   static_cast<size_t>(Tvm) * 3 * sizeof(float)) ==
+        cudaSuccess) {
+      if (Top2GapBf16Rows(d_vlogits, static_cast<int>(Tvm), vocab, d_gap,
+                          stream).ok()) {
+        std::vector<float> gap_h(static_cast<size_t>(Tvm) * 3);
+        if (cudaMemcpy(gap_h.data(), d_gap,
+                       static_cast<size_t>(Tvm) * 3 * sizeof(float),
+                       cudaMemcpyDeviceToHost) == cudaSuccess) {
+          for (int b = 0; b < B; ++b) {
+            std::fprintf(stderr, "[mtp-gap] P=%d: ", P[b]);
+            for (int i = 0; i < k; ++i) {
+              const size_t row = static_cast<size_t>(b) * (k + 1) + i;
+              const float v1 = gap_h[row * 3 + 0];
+              const float v2 = gap_h[row * 3 + 1];
+              const int i1 = static_cast<int>(gap_h[row * 3 + 2]);
+              std::fprintf(
+                  stderr,
+                  "i%d{d=%d m=%d gap=%.4f v1=%.3f v2=%.3f top1=%d}%s", i,
+                  drafts_host[static_cast<size_t>(b) * k + i],
+                  m_argmax[static_cast<size_t>(b) * (k + 1) + i], v1 - v2, v1,
+                  v2, i1, i + 1 < k ? " " : "\n");
+            }
+          }
+        }
+      }
+      cudaFree(d_gap);
+    }
+  }
   if (timing) cudaEventRecord(ev_d2, stream);
   t_verify1 = std::chrono::steady_clock::now();
   // Accept per sequence + roll back the recurrent state to the accepted

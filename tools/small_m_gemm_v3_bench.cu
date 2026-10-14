@@ -264,6 +264,94 @@ __global__ void KUnroll(const uint16_t* __restrict__ w,
 }
 
 
+
+// Multi-column per warp: each warp owns C contiguous (in slot order) columns
+// and issues ALL C*K8 weight float4 loads up front (fully unrolled) for max
+// memory-level parallelism. Targets the large-N / short-K shape (HC up:
+// N=10240 K=320) where one-column-per-warp has only ~2 loads in flight.
+// Requires N % (C*16) == 0. Bit-diff vs SCAT is expected nonzero (different
+// per-column accumulation is unchanged, but this is a NEW mapping; we check
+// against a reference GEMM for correctness separately).
+template <int MAXM, int C, int K8>
+__global__ void KMulti(const uint16_t* __restrict__ w,
+                       const uint16_t* __restrict__ x,
+                       uint16_t* __restrict__ y, int M, int N, int K,
+                       float alpha) {
+  constexpr int T = 512;
+  constexpr int kWarps = T / kWarp;  // 16
+  constexpr int PER_LANE = C * K8 / kWarp;  // float4 per lane
+  extern __shared__ __align__(16) uint16_t s_x[];
+  const int lane = threadIdx.x & (kWarp - 1);
+  const int warp_id = threadIdx.x / kWarp;
+  const int slot0 = (blockIdx.x * kWarps + warp_id) * C;
+  const int total_v4 = M * K / 8;
+  auto* sv = reinterpret_cast<float4*>(s_x);
+  const auto* xv = reinterpret_cast<const float4*>(x);
+  for (int i = threadIdx.x; i < total_v4; i += T) sv[i] = xv[i];
+  __syncthreads();
+  // Issue all C columns' weight loads up front.
+  float4 wr[PER_LANE];
+#pragma unroll
+  for (int p = 0; p < PER_LANE; ++p) {
+    const int f = p * kWarp + lane;  // 0 .. C*K8-1
+    const int c = f / K8;
+    const int i = f - c * K8;
+    const int n = slot0 + c;
+    wr[p] = reinterpret_cast<const float4*>(w + static_cast<size_t>(n) * K)[i];
+  }
+  uint64_t acc[C][MAXM];
+#pragma unroll
+  for (int c = 0; c < C; ++c)
+#pragma unroll
+    for (int m = 0; m < MAXM; ++m) acc[c][m] = 0;
+#pragma unroll
+  for (int p = 0; p < PER_LANE; ++p) {
+    const int f = p * kWarp + lane;
+    const int c = f / K8;
+    const int i = f - c * K8;
+    const __nv_bfloat162* w2 = reinterpret_cast<const __nv_bfloat162*>(&wr[p]);
+    float2 wf[4];
+#pragma unroll
+    for (int j = 0; j < 4; ++j) wf[j] = __bfloat1622float2(w2[j]);
+#pragma unroll
+    for (int m = 0; m < MAXM; ++m) {
+      const float4 xr = sv[m * K8 + i];
+      const __nv_bfloat162* x2 = reinterpret_cast<const __nv_bfloat162*>(&xr);
+#pragma unroll
+      for (int j = 0; j < 4; ++j)
+        F32x2Fma(acc[c][m], wf[j], __bfloat1622float2(x2[j]));
+    }
+  }
+#pragma unroll
+  for (int c = 0; c < C; ++c) {
+    const int n = slot0 + c;
+    if (n < N) {
+#pragma unroll
+      for (int m = 0; m < MAXM; ++m) {
+        float s = F32x2Reduce(acc[c][m]);
+#pragma unroll
+        for (int off = 16; off > 0; off >>= 1)
+          s += __shfl_down_sync(0xffffffff, s, off);
+        if (lane == 0 && m < M)
+          y[static_cast<size_t>(m) * N + n] =
+              __bfloat16_as_ushort(__float2bfloat16_rn(s * alpha));
+      }
+    }
+  }
+}
+
+template <int C, int K8>
+void LaunchMulti(const uint16_t* w, const uint16_t* x, uint16_t* y, int M,
+                 int N, int K, float alpha, cudaStream_t s) {
+  const size_t smem = static_cast<size_t>(4) * K * 2;
+  auto kfn = KMulti<4, C, K8>;
+  if (cudaFuncSetAttribute(kfn, cudaFuncAttributeMaxDynamicSharedMemorySize,
+                           static_cast<int>(smem)) != cudaSuccess) return;
+  const int blocks = N / (C * 16);
+  kfn<<<blocks, 512, smem, s>>>(w, x, y, M, N, K, alpha);
+}
+
+
 // REF (reference-project style, qwen35-thor gemv_multirow_kernel_scattered):
 // NO shared memory; x rows read from global (L2-hot) inside the K loop.
 // Same per-column accumulation as Bf16Gev/Scattered (bit-identical):
@@ -561,6 +649,15 @@ int main(int argc, char** argv) {
                                                             a);
                      },
                      d_x, d_w, d_y, M, N, K, stream) * 1000});
+    // Multi-column-per-warp variants (max MLP) for the short-K HC up shape.
+    if (K / 8 == 40 && N % 64 == 0)
+      res.push_back({"MULTI4",
+                     TimeKernel(LaunchMulti<4, 40>, d_x, d_w, d_y, M, N, K,
+                                stream) * 1000});
+    if (K / 8 == 40 && N % 128 == 0)
+      res.push_back({"MULTI8",
+                     TimeKernel(LaunchMulti<8, 40>, d_x, d_w, d_y, M, N, K,
+                                stream) * 1000});
     res.push_back({"REF8",
                    TimeKernel(LaunchRef<4, 256>, d_x, d_w, d_y, M, N, K,
                               stream) * 1000});

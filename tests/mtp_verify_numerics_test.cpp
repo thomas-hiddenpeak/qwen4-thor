@@ -71,6 +71,9 @@ using q4t::model::ModelConfig;
 using q4t::model::ModelSequence;
 using q4t::model::ModelBeginSequence;
 using q4t::model::ModelPrefill;
+using q4t::model::ModelPrefillTextChunk;
+using q4t::model::LogitsRows;
+using q4t::model::SequenceCompletion;
 using q4t::model::ModelDecodeStepSeq;
 using q4t::model::ModelDecodeBatch;
 using q4t::model::ModelEndSequence;
@@ -222,7 +225,8 @@ Q4T_TEST(mtp_verify_numerics) {
   cfg.index_path = kIndex;
   cfg.ple_sidecar = kPleSidecar;
   cfg.max_prefill = 8192;
-  cfg.max_len = 8192;
+  const char* maxlen_env = std::getenv("Q4T_VERIFY_NUMERICS_MAX_LEN");
+  cfg.max_len = maxlen_env ? std::max(std::atoi(maxlen_env), 8192) : 8192;
   cfg.max_seq = 1;
   if (P + steps + 4 > cfg.max_len) {
     std::printf("  prompt+steps exceed max_len; not a valid test setup\n");
@@ -300,21 +304,35 @@ Q4T_TEST(mtp_verify_numerics) {
   }
   uint16_t* d_prefill_logits = nullptr;
   if (cudaMalloc(reinterpret_cast<void**>(&d_prefill_logits),
-                 static_cast<size_t>(P) * vocab * 2) != cudaSuccess) {
+                 static_cast<size_t>(vocab) * 2) != cudaSuccess) {
     std::printf("  cudaMalloc prefill logits failed\n");
     m.Free();
     return false;
   }
-  s = ModelPrefill(m, &seq, prompt.data(), P, d_prefill_logits, stream);
-  if (!s.ok()) {
-    std::printf("  prefill failed: %s\n", s.message().c_str());
-    m.Free();
-    return false;
+  // Chunked prefill (mirrors the scheduler): ModelPrefill only accepts a
+  // single chunk (T <= max_prefill); long prompts must be prefilled in
+  // max_prefill-sized chunks via ModelPrefillTextChunk.
+  {
+    int base = 0;
+    while (base < P) {
+      const int count = std::min(m.cfg.max_prefill, P - base);
+      const bool last = (base + count == P);
+      s = ModelPrefillTextChunk(
+          m, &seq, prompt.data(), P, count,
+          last ? d_prefill_logits : nullptr, stream, nullptr,
+          LogitsRows::kLastRow, SequenceCompletion::kWait);
+      if (!s.ok()) {
+        std::printf("  prefill chunk failed at base=%d: %s\n", base,
+                    s.message().c_str());
+        m.Free();
+        return false;
+      }
+      base += count;
+    }
   }
   std::vector<uint16_t> h_last(vocab);
-  cudaMemcpy(h_last.data(),
-             d_prefill_logits + (P - 1) * static_cast<size_t>(vocab),
-             vocab * 2, cudaMemcpyDeviceToHost);
+  cudaMemcpy(h_last.data(), d_prefill_logits, vocab * 2,
+             cudaMemcpyDeviceToHost);
   const int32_t t0 = Top2Bf16(h_last.data(), vocab).id;
 
   // Reserve count is normally T-1 (== verify_ckpt_cap in production, where

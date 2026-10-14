@@ -309,6 +309,7 @@ if(Q4T_BUILD_TESTS)
     tests/model_linear_attention_test.cpp
     tests/model_full_attention_test.cpp
     tests/streaming_topk_test.cpp
+    tests/decode_topk_test.cpp
     tests/model_decoder_layer_test.cpp
     tests/model_ple_layer_test.cpp
     tests/model_head_test.cpp
