@@ -1,9 +1,36 @@
 # 当前状态
 
-更新：2026-10-14。代码是实现事实来源；验收规则见 [EVALUATION.md](EVALUATION.md)。
+更新：2026-10-15。代码是实现事实来源；验收规则见 [EVALUATION.md](EVALUATION.md)。
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
 ## 当前阶段
+**新 Goal：MTP 性能成果推进到可合入主线 main（2026-10-15；取代下方各节为最新状态）**：
+以当前工作分支 `codex/moe-residency-20260930`（HEAD `03339bf`）为后续性能基础，分三步：
+(1) 决策两套 MTP 实现归并边界；(2) 复确认五档 E2E 性能基础；(3) 近 tie 合同与主流引擎
+对照补进 EVALUATION.md。
+**Step 1 完成**：两套 MTP 归并边界已决策，见 [MTP_MERGE_BOUNDARY_2026-10-15.md](MTP_MERGE_BOUNDARY_2026-10-15.md)。
+核心结论：两分支自 merge-base `8ea85b1` 各自独立演化，对同一 8 文件分叉。main sequential
+verifier 用普通 scheduler **B1** 算术（与 plain 逐位一致、无数值分岔、慢 10–12%、默认关）；
+当前分支 T>1 用 **T=k+1** batch 算术（近 tie 分岔、快 +85%~+107%、默认开、近 tie 合同
+N=4 ULP PASS）。**推荐归并策略 A（替换）**：归并后默认 MTP=T>1；sequential 不并入当前
+分支（与普通 B1 算术强耦合，并入需重写 mtp.cu 双路径），其正确性参考价值保留在 main 历史。
+近 tie 合同与主流引擎（vLLM 默认非 batch-不变、NeurIPS 2025/LLM-42 浮点非结合性）行为
+一致且更严。
+**Step 2 完成**：五档 E2E 复确认通过（同 binary d4a223df，证据
+.q4t-work/mtp-merge-e2e-20261015/，off=`--no-mtp` port 8730 vs on=serve 默认 T>1
+port 8731，各 3 次，--fixtures 复用 2026-10-14 记录边界提示）：decode_tps
+off→on 1024: 18.63→34.51（+85.2%）/ 4096: 17.86→35.36（+98.0%）/ 8192:
+18.11→37.61（+107.6%）/ 45056: 17.86→36.61（+105.0%）/ 204800: 17.11→33.11
+（+93.5%），全部在 +50%~+200% 目标区间；两侧 3 次逐字节确定性、输入/输出/
+finish 合同全过（http_output_checks_passed=true）；off 侧与 2026-10-14 五档
+验收 ±0.5% 内。
+**Step 3 完成**：近 tie 合同与主流引擎对照已补进 EVALUATION.md「近 tie 合同
+与主流引擎对照（2026-10-15）」。
+边界：未改产品代码；归并前 main 保持不动（回退点 `7f6a69c`）。
+下一步：按 MTP_MERGE_BOUNDARY §8.4 执行归并（git merge main，27 冲突文件按
+§8.1–8.3 裁决，删 sequential 专属工件，构建零警告，归并树五档 E2E 复确认，
+阶段快照 commit+推送）。
+
 **MTP 默认开启五档正式验收通过：五档全部 +50%~+200%（2026-10-14 晚；取代下方各节为最新状态）**：
 执行 45K 口径决策 (b)：性能档提示改为以完整记录为边界收尾（prepare_inputs.py
 --snap-records；45K 档不再携带 "Record 136" 构造残片；实际输入至多比名义档长短

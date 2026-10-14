@@ -184,3 +184,28 @@ token 的 logits，plain greedy 用 T=1 顺序 decode。两条路径在精确算
 4. **边界**：本合同界定 MTP 与 plain 的 token 级分歧来源，不替代五档 E2E
    的质量与性能验收；MTP 默认部署前仍须完成五档 E2E（质量不回退 +
    decode 提速 50–200%）。局部 PASS 不等于整模型质量通过。
+
+### 近 tie 合同与主流引擎对照（2026-10-15）
+
+上述合同界定的是**同一模型两条算术路径**（MTP T=k+1 batch verify vs plain
+T=1 顺序 decode）的 token 级分歧。这一现象在主流推理引擎中是**普遍接受且
+明确文档化**的，本项目合同比主流实践更严格，而非偏离：
+
+- **vLLM 官方文档**（speculative_decoding 多版本 + FAQ）：默认**非 batch-不变**，
+  「Changes in batch size may cause variations in logprobs and output
+  probabilities」「vLLM does not guarantee stable log probabilities」；需 opt-in
+  `batch_invariance` 才消除该差异。即主流默认就接受不同 batch/算术路径产生
+  不同 logit。
+- **NeurIPS 2025《Understanding and Mitigating Numerical Sources of
+  Nondeterminism in LLM Inference》**：BF16+greedy 下仅因 GPU 数/类型/评测
+  batch size 不同，DeepSeek-R1-Distill-Qwen-7B 可出现最高 9% 准确率波动、
+  9000 token 响应长度差，根因为浮点非结合性。
+- **Microsoft LLM-42**：非确定性源于浮点非结合性 + 动态 batching + 随 batch
+  变化的 kernel 归约顺序。
+
+对照：主流引擎**隐式接受**近 tie 翻转（不量化、不设边界、不做负控）；本项目
+合同**量化容差（N=4 ULP）、限定近 tie 为唯一允许分歧来源、>N ULP 双侧
+confident 翻转判缺陷、带 causality 负控**。因此本合同是主流已接受现象的
+**更严正式化**，不构成「主流不允许」的合规风险。方向与主流一致，边界比主流
+更紧。
+
