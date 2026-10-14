@@ -18,10 +18,16 @@
 非 runner 缺陷（与下方六轮 45K 路径 bit-exact 核验一致）。
 边界：五档矩阵提示身份已改为记录边界版，历史参考数字仅 off 侧可比（±0.5%）；
 on 侧 1024/4096/8192 较旧矩阵低约 1-5%（末条记录内容变化所致），仍远高于
-+50%；近 tie 契约容差仍为 EVALUATION.md 遗留项，45K off/on 输出分歧属已知
-近 tie 翻转类。
-下一步：(a) 阶段快照 commit 并推送；(b) 近 tie 契约容差决策；(c) 如需进一步
-提速可继续每步优化（目标已达成，不再阻塞）。
++50%；近 tie 契约容差已决策（N=4 ULP，EVALUATION.md「MTP vs plain 近 tie
+合同（2026-10-12）」，mtp_verify_numerics 256 步 PASS：flips=4/256 全部 1–2 ULP
+近 tie、confident_both_sides=0、causality 负控通过、min_nonflip_gap=0.125=1 ULP，
+证据 .q4t-work/verify-nums-ulp-rerun2/run.log），45K off/on 输出分歧属已知近 tie
+翻转类（合同内）。
+**目标达成**：MTP 正确性达可默认部署状态（默认开启 use_mtp=true + 五档 E2E 通过
++ 近 tie 数值合同通过 + 45K 路径六轮 bit-exact 干净）；decode 提速 50–200% 目标
+达成（五档 +85.0%/+97.5%/+107.4%/+104.7%/+92.9%）。
+下一步：(a) 阶段快照已 commit 并推送（c741d06）；(b) 近 tie 契约容差已决策（N=4）；
+(c) 如需进一步提速可继续每步优化（可选，不阻塞）。无遗留项。
 
 **45K 档 draft-model 分块 draft-extend 直接核验：逐位正确，45K 路径第六轮闭合（2026-10-14 晚；已被上方节取代）**：
 补上前五轮未覆盖的 45K 特有路径——draft 模型的分块 draft-extend（mtp.cu
