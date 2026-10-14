@@ -409,14 +409,19 @@ def main():
             else:
                 subprocess.run([str(python), str(ROOT / 'tools/evalscope/prepare_inputs.py'),
                                 '--model-dir', str(model), '--length', str(length),
-                                '--number', '1', '--output', str(target)], check=True)
+                                '--number', '1', '--snap-records',
+                                '--output', str(target)], check=True)
                 first = target.read_text().splitlines()[0]
             target.write_text((first + '\n') * args.perf_repeats)
             tokens = 256
             if args.target_total and length in extra_lengths:
                 tokens = args.target_total - length
-            cases.append((out / f'context-{length}', target, args.perf_repeats, length, length,
-                          tokens, True))
+            # The generator targets exactly `length` tokens but ends the
+            # record body on a record boundary, so the actual input may fall
+            # short by up to one record (<=48 tokens). The nominal length
+            # remains the tier identity.
+            cases.append((out / f'context-{length}', target, args.perf_repeats,
+                          length - 48, length, tokens, True))
     else:
         prepared.mkdir()
         target = prepared / 'context-1024.jsonl'
@@ -534,7 +539,7 @@ def main():
                             raise RuntimeError('output-limit prompt/text differs from reference')
                 else:
                     hashes = [hashlib.sha256(r['text'].encode()).hexdigest() for r in parsed]
-                    item = {'length': minimum, 'outputs': hashes,
+                    item = {'length': maximum, 'outputs': hashes,
                             'prompt_sha256': parsed[0]['prompt_sha256'],
                             'deterministic': len(set(hashes)) == 1,
                             'performance_scope': plan['scope'],
@@ -544,18 +549,18 @@ def main():
                     results.append(item)
                     save(out / 'results.json', results)
                     expected_output = 256
-                    if args.target_total and minimum in extra_lengths:
-                        expected_output = args.target_total - minimum
+                    if args.target_total and maximum in extra_lengths:
+                        expected_output = args.target_total - maximum
                     if not item['deterministic'] or len({r['prompt_sha256'] for r in parsed}) != 1 or not all(
-                            r['actual_input'] == minimum and
+                            minimum <= r['actual_input'] <= maximum and
                             r['actual_output'] == expected_output and
                             r['finish'] == ['length'] for r in parsed):
                         raise RuntimeError('performance request/determinism acceptance failed')
                     if reference:
-                        old = next(r for r in reference if r['length'] == minimum)
+                        old = next(r for r in reference if r['length'] == maximum)
                         expected_prompt = old.get('prompt_sha256')
                         if expected_prompt is None:
-                            old_prompt = json.loads((args.reference.parent / f'context-{minimum}/requests.jsonl')
+                            old_prompt = json.loads((args.reference.parent / f'context-{maximum}/requests.jsonl')
                                                     .read_text().splitlines()[0])['prompt']
                             expected_prompt = hashlib.sha256(old_prompt.encode()).hexdigest()
                         reference_outputs = old['outputs']

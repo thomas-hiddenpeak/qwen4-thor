@@ -15,6 +15,10 @@ parser.add_argument('--model-dir', required=True)
 parser.add_argument('--length', type=int, required=True)
 parser.add_argument('--number', type=int, default=3)
 parser.add_argument('--output', type=Path, required=True)
+parser.add_argument('--snap-records', action='store_true',
+                    help='End the record body on a complete record boundary '
+                         'instead of mid-record; the actual token count then '
+                         'falls short of --length by at most one record')
 args = parser.parse_args()
 tokenizer = AutoTokenizer.from_pretrained(args.model_dir, local_files_only=True)
 notes = [
@@ -48,12 +52,24 @@ with args.output.open('w') as output:
             records.append(f'Record {len(records) + 1}: {rng.choice(notes)}\n')
         body_ids = tokenizer.encode(''.join(records), add_special_tokens=False)
         budget = args.length - len(tokenizer.encode(prefix + suffix, add_special_tokens=False))
+        body = None
         for _ in range(16):
-            prompt = prefix + tokenizer.decode(body_ids[:budget]) + suffix
-            count = len(tokenizer.encode(prompt, add_special_tokens=False))
+            body = tokenizer.decode(body_ids[:budget])
+            count = len(tokenizer.encode(prefix + body + suffix, add_special_tokens=False))
             if count == args.length:
                 break
             budget += args.length - count
         else:
             raise SystemExit('Could not prepare the requested local token length')
+        if args.snap_records:
+            # End on a complete record boundary: a trailing partial record
+            # (e.g. a bare "Record 136" label cut from "Record 1361:") is a
+            # harness artifact, not a workload. The actual token count then
+            # falls short of the target by at most one record; server usage,
+            # not this local count, is the acceptance authority.
+            cut = body.rfind('\n')
+            if cut <= 0:
+                raise SystemExit('Could not prepare the requested local token length')
+            body = body[:cut + 1]
+        prompt = prefix + body + suffix
         output.write(json.dumps({'prompt': prompt}, ensure_ascii=False) + '\n')

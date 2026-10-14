@@ -99,8 +99,7 @@ class RunnerContractTest(unittest.TestCase):
                        'start_time real,completed_time real)')
             for i in range(number):
                 prompt = json.loads(inputs[i])['prompt']
-                if self.quality:
-                    length = int(prompt.split('-')[-1])
+                length = int(prompt.split('-')[-1])
                 messages = [{'choices': [{'delta': {'content': 'ok'},
                                            'finish_reason': 'stop' if self.quality else 'length'}]}]
                 request = {'prompt': prompt, 'stream': '--stream' in command, 'max_tokens': tokens}
