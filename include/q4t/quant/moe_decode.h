@@ -20,14 +20,13 @@ Status MoEDeviceDecode(const uint16_t* x, const int32_t* expert_ids,
 // GEMM loop.
 //
 // T=1 keeps the per-row path bit-identically (R = T*k independent M=1 rows,
-// identical per-row arithmetic as the T=1 decode path). T>1 also defaults to
-// the per-row path: production sub-timing + moe_gemm_grouped_bench show the
-// per-row grouped GEMM already reuses duplicate-expert weights from L2, so
-// expert grouping (one M=M_e GEMM per active expert, opt-in via
-// Q4T_MOE_DECODE_GROUPED) buys only 3-7% on the GEMM in the production
-// unique/rows ~= 0.687 distribution. Per-row quantization is unchanged in
-// both paths; the grouped path's M_e tiling stays within the near-tie ULP
-// contract (moe_decode_grouped_vs_perrow: bit-exact).
+// identical per-row arithmetic as the T=1 decode path). T>1 defaults to the
+// expert-grouped path (one M=M_e GEMM per active expert): in the production
+// unique/rows ~= 0.687 distribution this reads each expert's weights once
+// instead of M_e times and saves ~1.7-2 ms per verify forward (moe-ab2-1013).
+// Q4T_MOE_DECODE_PERROW opts back to the per-row path (reference/debug).
+// Per-row quantization is unchanged in both paths; the grouped path is
+// bit-exact vs per-row (moe_decode_grouped_vs_perrow: max_ulp=0.00).
 // ws follows MoEWorkspace::RequiredBytes(T, 10, 2560, 640).
 Status MoEDeviceDecodeMulti(const uint16_t* x, const int32_t* expert_ids,
                             const float* router_w, float* y,

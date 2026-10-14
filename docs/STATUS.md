@@ -5,6 +5,16 @@
 
 ## 当前阶段
 
+**T>1 MoE decode 默认切换为按专家分组（2026-10-14；取代下方各节为最新状态）**：
+T>1 verify 的 MoE decode 默认路径由 per-row 切换为按专家分组（moe_decode.cu；
+T==1 仍 per-row 逐位不变；Q4T_MOE_DECODE_PERROW 回退 per-row 作参考/调试）。
+依据：grouped 对 per-row 逐位一致（moe_decode_grouped_vs_perrow max_ulp=0.00、
+routingA/B exact=10240/10240；moe_decode_t1_dispatch_bitexact PASS）；有效 A/B
+（.q4t-work/moe-ab2-1013/，4K 128 token 同 binary）grouped 省 ~1.7ms/verify
+forward（verify total 78.0→76.3ms，moe-subtotal 18.7→16.9ms）。
+边界：未做五档 E2E 正式验收（随 MTP 默认开启统一验收）。
+下一步：MTP 默认开启 + 五档 E2E 正式验收（off 基线 + on 默认，各 3 次）。
+
 **45K 档定向路径分析（第二轮）完成：路径核验正常，异常归因内容/输出形态；off/on 分歧属已知近 tie 类（2026-10-14 下午；取代下方各节为最新状态）**：
 按用户要求对 45K 档（唯一未达 +50%，200K 档 +90%）做定向路径分析，
 核查"出问题的上下文长度的路径"是否异常。证据 .q4t-work/（同 binary、

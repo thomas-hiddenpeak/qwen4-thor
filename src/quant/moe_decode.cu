@@ -13,8 +13,8 @@
 // for T=4, i.e. ~1.46x redundant weight traffic in the per-row path.
 // Inactive groups (fixed-R plan, cols=0) are skipped by cuBLASLt, so the
 // active-expert count U never needs to reach the host. The grouped path is
-// opt-in via Q4T_MOE_DECODE_GROUPED (per-row is the default; production
-// sub-timing shows per-row is already L2-optimal).
+// the T>1 default (bit-exact vs per-row); Q4T_MOE_DECODE_PERROW opts back
+// to the per-row path for reference/debug.
 #include "q4t/quant/moe_decode.h"
 
 #include <cublasLt.h>
@@ -798,12 +798,14 @@ Status MoEDeviceDecodeMulti(const uint16_t* x, const int32_t* expert_ids,
       }
     }
   }
-  // T=1 keeps the per-row path bit-identically. T>1 defaults to the per-row
-  // path (validated reference; production sub-timing shows it is already
-  // L2-optimal, so expert grouping buys only 3-7% on the GEMM, see
-  // moe_gemm_grouped_bench + subdetail-grouped-211310). Q4T_MOE_DECODE_GROUPED
-  // switches T>1 to the expert-grouped path (A/B, future use).
-  if (T == 1 || std::getenv("Q4T_MOE_DECODE_GROUPED") == nullptr) {
+  // T=1 keeps the per-row path bit-identically. T>1 defaults to the
+  // expert-grouped path: each active expert runs one M=M_e grouped GEMM so
+  // its weights are read once instead of M_e times (unique/rows ~= 0.687 for
+  // T=4, i.e. ~1.46x redundant weight traffic in per-row). The grouped path
+  // is bit-exact vs per-row (moe_decode_grouped_vs_perrow, max_ulp=0.00) and
+  // saves ~1.7-2 ms per verify forward in production (moe-ab2-1013).
+  // Q4T_MOE_DECODE_PERROW opts back to the per-row path (reference/debug).
+  if (T == 1 || std::getenv("Q4T_MOE_DECODE_PERROW") != nullptr) {
     return MoEDecodePerRow(x, expert_ids, router_w, y, weights, ws, gemm_ws,
                            gemm_ws_bytes, T, k, stream);
   }

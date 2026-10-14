@@ -274,15 +274,14 @@ bool CheckRouting(const char* name, const std::vector<int32_t>& ids,
     return true;  // skip, not fail
   }
 
-  // Per-row reference (default for T>1).
-  unsetenv("Q4T_MOE_DECODE_GROUPED");
+  // Per-row reference (opt-out via Q4T_MOE_DECODE_PERROW).
+  setenv("Q4T_MOE_DECODE_PERROW", "1", 1);
   std::vector<uint16_t> y_ref;
   const bool ok_ref = RunMulti(f, &y_ref);
-  // Grouped (env-forced).
-  setenv("Q4T_MOE_DECODE_GROUPED", "1", 1);
+  unsetenv("Q4T_MOE_DECODE_PERROW");
+  // Grouped (default for T>1).
   std::vector<uint16_t> y_grp;
   const bool ok_grp = RunMulti(f, &y_grp);
-  unsetenv("Q4T_MOE_DECODE_GROUPED");
   if (!ok_ref || !ok_grp) {
     FreeFixture(f);
     return false;
@@ -395,17 +394,18 @@ Q4T_TEST(moe_decode_t1_dispatch_bitexact) {
     cudaFree(d_y);
     return true;
   };
-  unsetenv("Q4T_MOE_DECODE_GROUPED");
+  // T=1 always uses the per-row path regardless of the PERROW env; verify
+  // the default (grouped-for-T>1) and PERROW opt-out are bit-exact for T=1.
   std::vector<uint16_t> y_a;
   const bool ok_a = run(&y_a);
-  setenv("Q4T_MOE_DECODE_GROUPED", "1", 1);
+  setenv("Q4T_MOE_DECODE_PERROW", "1", 1);
   std::vector<uint16_t> y_b;
   const bool ok_b = run(&y_b);
-  unsetenv("Q4T_MOE_DECODE_GROUPED");
+  unsetenv("Q4T_MOE_DECODE_PERROW");
   FreeFixture(f);
   if (!ok_a || !ok_b) return false;
   const bool bitexact = std::equal(y_a.begin(), y_a.end(), y_b.begin());
-  std::printf("  T=1 default-vs-grouped-env bit-exact: %s\n",
+  std::printf("  T=1 default-vs-perrow-env bit-exact: %s\n",
               bitexact ? "yes" : "NO");
   return bitexact;
 }
