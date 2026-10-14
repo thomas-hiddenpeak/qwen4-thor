@@ -1776,6 +1776,41 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
         d_run_idx, d_run_val, d_positions, T, w.idx_compress, block_topk,
         d_topk, d_topk_len, max_topk);
   }
+  // DEBUG (test-only, off by default): dump the one-pass block scores and the
+  // selected top-block_topk token list for token 0 at a long-context small-T
+  // (decode / MTP verify) step, for ground-truth verification of the top-k
+  // selection at long context (e.g. the 45K tier). Runtime behavior is
+  // unchanged when Q4T_DUMP_TOPK is unset.
+  //   Q4T_DUMP_TOPK=<n>      dump on the nth long-context small-T attention call
+  //   Q4T_DUMP_TOPK_FILE=<p> output path (default /tmp/q4t_topk_dump.bin)
+  if (T <= kOnePassT && d_op_logits != nullptr && n_groups_max > kMaxBlocks) {
+    static int dump_calls = 0;
+    const char* want = std::getenv("Q4T_DUMP_TOPK");
+    if (want != nullptr && dump_calls == std::atoi(want)) {
+      const char* path = std::getenv("Q4T_DUMP_TOPK_FILE");
+      if (path == nullptr) path = "/tmp/q4t_topk_dump.bin";
+      std::vector<f32> h_scores(static_cast<size_t>(n_groups_max));
+      std::vector<int> h_topk(static_cast<size_t>(max_topk));
+      int h_len = 0;
+      int h_pos = 0;
+      cudaMemcpy(h_scores.data(), d_op_logits,
+                 static_cast<size_t>(n_groups_max) * 4,
+                 cudaMemcpyDeviceToHost);
+      cudaMemcpy(h_topk.data(), d_topk, static_cast<size_t>(max_topk) * 4,
+                 cudaMemcpyDeviceToHost);
+      cudaMemcpy(&h_len, d_topk_len, 4, cudaMemcpyDeviceToHost);
+      cudaMemcpy(&h_pos, d_positions, 4, cudaMemcpyDeviceToHost);
+      FILE* f = std::fopen(path, "wb");
+      if (f != nullptr) {
+        int header[4] = {n_groups_max, max_topk, h_len, h_pos};
+        std::fwrite(header, 4, sizeof(int), f);
+        std::fwrite(h_scores.data(), 4, h_scores.size(), f);
+        std::fwrite(h_topk.data(), 4, h_topk.size(), f);
+        std::fclose(f);
+      }
+    }
+    dump_calls++;
+  }
   // 11. sparse GQA attention over the selected positions (valid only, via
   //     topk_len — the -1 tail is not iterated). The sigmoid gate is applied
   //     in-kernel (fused), so no separate GateMulKernel pass is needed.
