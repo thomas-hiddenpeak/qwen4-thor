@@ -1,62 +1,16 @@
-// S7 minimal same-path checkpoint verification (2026-10-11 contract review):
-// rule out that checkpoint recovery errors are INDEPENDENT of the T-path
-// numerical difference, on a controlled 2-layer model.
-//
-// The full-model 256-step diff test shows T=1 vs T=4 state divergence
-// (256/256 steps). Two candidate causes: (a) the T-path compute difference
-// (different kernels for T=1 vs T>1, known sources), or (b) an independent
-// checkpoint save/restore defect. This test isolates (b) by exercising the
-// checkpoint mechanism on ONE fixed numerical path only:
-//
-//   Part A (round-trip losslessness, bit-exact, no kernel re-run):
-//     - ModelDecodeBatch(T=3, save_checkpoints=true) -> checkpoint[0..1].
-//     - C_a = ModelSnapshotCheckpoint(a)  (direct ckpt-buffer read).
-//     - ModelRestoreCheckpoint(a)         (D2D ckpt -> live state).
-//     - S_a = ModelSnapshotState()        (live-state read, same layout).
-//     - Assert S_a == C_a bit-exact for a in {0, 1}.
-//   If the restore is a bit-exact copy of what the save wrote, the
-//   save/restore mechanism cannot introduce state error on a fixed
-//   path. This does NOT by itself establish that full-model divergence
-//   comes from the T-path compute (inference not proven; see the
-//   2026-10-11 contract log and docs/STATUS.md).
-//
-//   Part B (save is numerically inert + deterministic on the same path):
-//     - batch(T=3, save=false) logits vs batch(T=3, save=true) logits:
-//       bit-exact (the ckpt save is an in-kernel pure copy; with GdnRegOff
-//       both runs use the same shared-state GDN kernel, so any mismatch
-//       would be a real save defect, not the register-vs-shared switch).
-//     - two identical same-path runs: checkpoint[1] bit-exact (determinism).
-//
-//   Part C (accept 0 / partial / full output boundary vs non-speculative
-//     prefill reference, threshold 0.02 = batch-vs-decode residual; the
-//     recovery-bug magnitude is ~0.18-0.54 in the negative controls):
-//     - a=0 (full reject): restore ckpt[0], decode verify[1].
-//     - a=1 (partial):     restore ckpt[1], decode verify[2].
-//     - a=2 (full accept): fresh batch final state (no restore), decode a
-//       probe token at position Tprompt+3.
-//
-//   Part D (A2 state-level decomposition, diagnostic only, 2026-10-11):
-//     three runs ending at the SAME logical position (after Tprompt+T
-//     tokens), compared component by component (ssm FP32 / conv BF16 /
-//     ple_conv BF16, CollectRecurrentState order):
-//       S_batch = prefill(4) + DecodeBatch(T=3)   (full-accept state)
-//       S_pref7 = prefill(7)                      (non-spec reference)
-//       S_seq   = prefill(4) + 3x DecodeStepSeq   (greedy T=1 path)
-//     Per component: diff bytes, first diff element, max abs diff,
-//     relative L2. No new pass/fail criterion; the Part C a=2 failure is
-//     preserved.
-//
-//   Part E (A3 decode-path decomposition, diagnostic only): decode the
-//     SAME probe token at position Tprompt+T from each of the three states
-//     (restored via ModelRestoreState) and compare logits l2_rel + argmax
-//     against the prefill(8) reference row. The S_pref7 case carries NO
-//     state difference, isolating the pure decode(T=1)-vs-prefill(T=8)
-//     path difference from the state difference measured in Part D.
-//
-// Boundary: 2-layer controlled model; this verifies the mechanism and the
-// accept-state output boundary, NOT full-model MTP numerics.
-//
-// Skipped when CUDA or the model is absent.
+// Checkpoint contracts on a controlled 2-layer model (linear + linear/PLE).
+// A/B: saved-row copy round trips, save/no-save logits, and repeated saves
+// must be bit-exact. Capacity exceeds the number of written rows.
+// C/D/E: retain the historical cross-shape logits/state observations. Different
+// projection reductions can cross a BF16 rounding midpoint and change routed
+// experts; a fixed final-logit L2 threshold is not a checkpoint oracle.
+// F: independently execute just the accepted prefix, without saving/restoring
+// checkpoints. Its recurrent state and subsequent decode output must exactly
+// match rollback (reject/partial) or the full batch-final state (full accept).
+// Restoring a deliberately wrong row must change the output in each case.
+// See docs/evidence/mtp-numerical-closure-20261016 for the original failures,
+// projection-level high-precision reference and PLE upload race regression.
+// This does not replace the full-model N=4 ULP/causality contract.
 #include "q4t/model/model.h"
 #include "q4t/test.h"
 
@@ -456,7 +410,7 @@ Q4T_TEST(model_verify_ckpt_samepath) {
       std::printf("  [C] accept=0 (full reject): restore ckpt[0], decode "
                   "verify[1]: l2_rel=%.5f %s\n",
                   l2a0, l2a0 < 0.02f ? "OK" : "MISMATCH");
-      if (l2a0 >= 0.02f) ok = false;
+      // Cross-shape observation; Part F enforces exact independent boundaries.
     } else {
       std::printf("  [C] accept=0 path failed\n");
       ok = false;
@@ -465,7 +419,7 @@ Q4T_TEST(model_verify_ckpt_samepath) {
       std::printf("  [C] accept=1 (partial): restore ckpt[1], decode "
                   "verify[2]: l2_rel=%.5f %s\n",
                   l2a1, l2a1 < 0.02f ? "OK" : "MISMATCH");
-      if (l2a1 >= 0.02f) ok = false;
+      // Cross-shape observation; Part F enforces exact independent boundaries.
     } else {
       std::printf("  [C] accept=1 path failed\n");
       ok = false;
@@ -519,7 +473,7 @@ Q4T_TEST(model_verify_ckpt_samepath) {
             std::printf("  [C] accept=2 (full): batch final state, decode "
                         "probe: l2_rel=%.5f %s\n",
                         l2a2, l2a2 < 0.02f ? "OK" : "MISMATCH");
-            if (l2a2 >= 0.02f) ok = false;
+            // Cross-shape observation; Part F enforces exact independent boundaries.
           } else {
             std::printf("  [C] accept=2 D2H failed\n");
             ok = false;
@@ -754,10 +708,10 @@ Q4T_TEST(model_verify_ckpt_samepath) {
 
   // Independent prefix oracle: execute only the accepted tokens, without
   // saving/restoring checkpoints, then compare its state with the saved row.
-  // This deliberately retains the existing Part C failure while diagnosing
+  // Part C retains the original cross-shape observations while diagnosing
   // whether the rollback boundary itself differs from prefix execution.
   stage = "F independent prefix";
-  for (int a = 0; a < T - 1; ++a) {
+  for (int a = 0; a < T; ++a) {
     ModelSequence seq;
     s = ModelBeginSequence(m, &seq, nullptr, 0);
     if (s.ok()) {
@@ -781,8 +735,9 @@ Q4T_TEST(model_verify_ckpt_samepath) {
       continue;
     }
     size_t first = 0;
-    const bool equal = SnapEqual(prefix, a == 0 ? c0 : c1, &first);
-    std::printf("  [F] independent prefix a=%d vs checkpoint: %s "
+    const bool equal = a == T - 1 ||
+                       SnapEqual(prefix, a == 0 ? c0 : c1, &first);
+    if (a < T - 1) std::printf("  [F] independent prefix a=%d vs checkpoint: %s "
                 "first_diff=%zu\n", a, equal ? "BIT-EXACT" : "MISMATCH", first);
     if (!equal) ok = false;
     auto decode_boundary = [&](ModelSequence* current,
@@ -790,7 +745,8 @@ Q4T_TEST(model_verify_ckpt_samepath) {
       current->position = Tprompt + a + 1;
       current->history.assign(prompt, prompt + Tprompt);
       current->history.insert(current->history.end(), verify, verify + a + 1);
-      Status result = ModelDecodeStepSeq(m, current, verify[a + 1],
+      const int32_t next = a + 1 < T ? verify[a + 1] : probe;
+      Status result = ModelDecodeStepSeq(m, current, next,
                                          d_step_logits, nullptr, nullptr, 0);
       output->resize(vocab);
       return result.ok() &&
@@ -802,10 +758,20 @@ Q4T_TEST(model_verify_ckpt_samepath) {
     ModelEndSequence(&seq);
     for (bool wrong_row : {false, true}) {
       std::vector<uint16_t> restored_logits;
-      const int row = wrong_row ? 1 - a : a;
-      const bool ran = run_batch(true, nullptr, &seq).ok() &&
-                       ModelRestoreCheckpoint(m, row, nullptr, 0).ok() &&
-                       decode_boundary(&seq, &restored_logits);
+      const int row = a == T - 1 ? (wrong_row ? 0 : -1)
+                                 : (wrong_row ? 1 - a : a);
+      bool ran = run_batch(true, nullptr, &seq).ok();
+      if (ran && row >= 0) {
+        ran = ModelRestoreCheckpoint(m, row, nullptr, 0).ok();
+      }
+      if (ran && row == -1) {
+        ModelStateSnapshot full;
+        ran = ModelSnapshotState(m, &full, nullptr).ok() &&
+              SnapEqual(prefix, full);
+        std::printf("  [F] independent full-prefix state: %s\n",
+                    ran ? "BIT-EXACT" : "MISMATCH");
+      }
+      ran = ran && decode_boundary(&seq, &restored_logits);
       const bool logits_equal = ran && prefix_logits == restored_logits;
       const bool passed = ran && logits_equal != wrong_row;
       std::printf("  [F] prefix output a=%d row=%d wrong=%d: %s\n", a,

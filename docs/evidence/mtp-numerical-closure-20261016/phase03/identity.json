@@ -1,0 +1,8 @@
+{
+  "sha256": {
+    "build/q4t": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "build/q4t_tests": "1c27a4aa0276e6ae65aa8ad7504cc25568f007a15a29045f7c8eb379276bb0f1"
+  },
+  "test_log": "five-contracts.log",
+  "post_test_changes": "comments and diagnostic printing only; runtime unchanged"
+}

@@ -17,18 +17,17 @@
 //      (this also exercises the PLE conv restore, which the single-seq path
 //      previously skipped).
 //
-// NOTE on the reference: the multi-seq causal kernel (GatedDeltaNetMultiSeq
-// CausalKernel) uses PREFILL math (it serializes each sequence's tokens with
-// the in-place S recurrence), so the reference is a single-seq PREFILL
-// (GatedDeltaNetKernel), NOT the incremental decode path. The decode kernel
-// (GatedDeltaNetDecodeKernel) has slightly different per-token math, and the
-// batch-vs-decode residual is a known MoE-routing-boundary sensitivity (not a
-// state bug) — see docs/LOG.md. The recurrent state is chunk-invariant, so
-// prefill([prompt]) + continue([verify]) == prefill([prompt+verify]).
+// Forward comparisons retain their existing 0.01 tolerance. Rollback uses an
+// independent accepted-prefix execution without checkpoint save/restore and
+// requires bit-exact subsequent logits. The old full-prefill L2 comparison is
+// retained as a cross-shape diagnostic, not a chunk-invariance assumption.
+// Projection reduction order can differ with shape before recurrent updates.
+// See docs/evidence/mtp-numerical-closure-20261016/phase01 and phase02.
 //
 // Skipped when CUDA or the model is absent.
 #include "q4t/model/model.h"
 #include "q4t/test.h"
+#include "model_prefix_reference.h"
 
 #include <cuda_bf16.h>
 #include <cuda_runtime.h>
@@ -525,7 +524,15 @@ Q4T_TEST(model_verify_multi_ckpt) {
                 "%.5f %s\n",
                 seq_ids[0], a, a + 1, rb_rel, rb_rel < 0.02f ? "OK" :
                                                           "MISMATCH");
-    if (rb_rel >= 0.02f) ok = false;
+    // Cross-shape L2 above remains a diagnostic, not a rollback oracle.
+    std::vector<uint16_t> independent;
+    s = q4t::test::PrefixBoundaryReference(
+        m, {prompts[0], Tprompt}, {verify0, static_cast<size_t>(a + 1)},
+        verify0[a + 1], seq_ids[0], &independent);
+    const bool boundary_ok = s.ok() && rb == independent;
+    std::printf("  independent prefix slot=%d a=%d: %s\n", seq_ids[0], a,
+                boundary_ok ? "BIT-EXACT" : "MISMATCH");
+    if (!boundary_ok) ok = false;
     if (a + 1 < T - 1) {
       // A new sequence invalidates saved rows. Rebuild both inputs and
       // publish fresh checkpoints for the next independent rollback case.

@@ -1,37 +1,15 @@
-// Targeted regression for the two MTP verify checkpoint defects fixed on
-// 2026-10-11 (single-sequence path, ModelDecodeBatch save_checkpoints=true):
-//
-//   (1) stride-contract mismatch: RunLayers saved per-token checkpoints with
-//       layer stride num_ckpt (= T-1) while ModelRestoreCheckpoint /
-//       ModelSnapshotCheckpoint read them with layer stride verify_ckpt_cap.
-//       The two agree only when cap == T-1. Fixed by unifying the save to cap.
-//       This test reserves cap > T-1 so the old layout would misplace every
-//       layer >= 1 checkpoint and the post-rollback decode would diverge from
-//       the single-seq prefill reference.
-//
-//   (2) single-seq PLE conv checkpoint gap: the single-seq verify path never
-//       saved the PLE short-conv checkpoint (ModelDecodeBatch passed nullptr
-//       for d_verify_ple_conv_ckpt), so a partial accept restored a stale PLE
-//       conv state. Fixed by adding PleConvCheckpointSingleSeqKernel and
-//       passing the buffer. This test uses a 2-layer model whose layer 1 has
-//       PLE, so the post-rollback decode exercises the PLE conv restore.
-//
-// Method (single sequence, seq_id 0, same as serve):
-//   - 2-layer model (layer 0 linear, layer 1 linear+PLE), cap=4, T=3 (T-1=2).
-//   - prefill the prompt; run ModelDecodeBatch(verify, T=3,
-//     save_checkpoints=true) -> checkpoint[a] = state after verify[a].
-//   - for a in {0,1}: ModelRestoreCheckpoint(a), align the sequence to the
-//     accepted boundary, decode verify[a+1]; the logits must match the
-//     single-seq PREFILL reference at that position (the verify path uses the
-//     shared-state GDN kernel, so the reference is a prefill with GdnRegOff).
-//
-// With either defect present the restored recurrent state is wrong, so the
-// post-rollback decode diverges from the reference by far more than the
-// batch-vs-decode residual (threshold 0.02, matching model_verify_multi).
-//
-// Skipped when CUDA or the model is absent.
+// Regression for checkpoint capacity stride and PLE conv saved-row layout.
+// A 2-layer model reserves cap=4 for T=3 (two saved rows). Every rollback
+// boundary must exactly match an independent execution of only the accepted
+// prefix, followed by the same next-token decode. The oracle never saves or
+// restores checkpoints. This legacy low-level API differs from HTTP's
+// ModelVerifyMulti path; both retain coverage.
+// The historical prefill L2 comparison is printed as a diagnostic. Its old
+// threshold assumed shape-invariant projections, disproved by the independent
+// BF16 midpoint analysis in docs/evidence/mtp-numerical-closure-20261016.
 #include "q4t/model/model.h"
 #include "q4t/test.h"
+#include "model_prefix_reference.h"
 
 #include <cuda_bf16.h>
 #include <cuda_runtime.h>
@@ -261,7 +239,15 @@ Q4T_TEST(model_verify_ckpt) {
     std::printf("  cap>T-1 rollback (a=%d) then decode verify[%d]: l2_rel="
                 "%.5f %s\n",
                 a, a + 1, rel, rel < 0.02f ? "OK" : "MISMATCH");
-    if (rel >= 0.02f) ok = false;
+    // Cross-shape L2 above remains a diagnostic, not a rollback oracle.
+    std::vector<uint16_t> independent;
+    s = q4t::test::PrefixBoundaryReference(
+        m, {prompt, Tprompt}, {verify, static_cast<size_t>(a + 1)},
+        verify[a + 1], 0, &independent);
+    const bool boundary_ok = s.ok() && rb == independent;
+    std::printf("  independent prefix boundary a=%d: %s\n", a,
+                boundary_ok ? "BIT-EXACT" : "MISMATCH");
+    if (!boundary_ok) ok = false;
     // Reset the sequence state machine for the next iteration (the restore
     // does not touch it; re-align to the prompt boundary).
     s = ModelEndSequence(&seq);

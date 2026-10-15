@@ -1,3 +1,6 @@
+// Contract update 2026-10-16: accepted-state outputs use independent prefix
+// execution with exact equality. Historical cross-shape L2 remains reported;
+// it cannot serve as a state-recovery oracle (projection rounding differs).
 // S8: forced accept 0/partial/full output semantics for MtpSpeculativeStep
 // (2026-10-11 contract review), on a controlled 2-layer model using the
 // test-only Q4T_MTP_TEST_DRAFTS hook (overrides drafts[1..k-1]; drafts[0]
@@ -20,9 +23,8 @@
 //   - seq advanced by exactly 1 + a* (position + history content)
 //   - decode boundary: decode R[5+a*] at position 5+a* (R = the
 //     non-speculative reference sequence [prompt, b, d0, f1, f2, probe])
-//     vs the prefill reference row at that position, l2_rel < 0.02 (T-path
-//     residual; the recovery-bug magnitude is ~0.18-0.54 in the checkpoint
-//     negative controls, so a broken restore fails loudly).
+//     vs independent accepted-prefix execution, bit-exact. Cross-shape
+//     prefill L2 remains diagnostic, with its original threshold displayed.
 //
 // Realizing each accept state: d0 is a CALL PARAMETER of MtpSpeculativeStep,
 // so it is CONSTRUCTED directly from the same-path verify reference (no bonus
@@ -42,8 +44,8 @@
 //
 // GdnRegOff: the post-step state is verify-batch (shared-state GDN) derived;
 // forcing the shared kernel on the reference prefill and the decode step
-// keeps the comparison on one GDN kernel (same convention as
-// model_verify_ckpt, whose 0.02 threshold this reuses).
+// keeps the comparison on one GDN kernel. Different projection shapes are
+// still distinct arithmetic paths; they do not share a fixed L2 guarantee.
 //
 // Boundary: 2-layer controlled model; verifies the accept-state output
 // boundary of MtpSpeculativeStep, NOT full-model MTP numerics and NOT
@@ -541,11 +543,12 @@ Q4T_TEST(mtp_spec_accept_states) {
     std::vector<uint16_t> rb_ref(ref.begin() + ref_off,
                                  ref.begin() + ref_off + vocab);
     const float l2 = L2Rel(rb, rb_ref);
-    if (l2 >= 0.02f) c = false;
+    // Cross-shape diagnostic only; exact accepted-prefix oracle follows.
     std::printf("  [%s] a=%d accepted_count=%d next_b=%d pos=%d l2_rel="
-                "%.5f %s\n",
+                "%.5f old_0.02=%s semantics=%s\n",
                 name, expect_a, acount, next_b, seq.position, l2,
-                c ? "OK" : "MISMATCH");
+                l2 < 0.02f ? "WITHIN" : "EXCEEDED",
+                c ? "PASS" : "FAIL");
     ModelEndSequence(&seq);
     // Independent reference: execute only the accepted prefix, with no
     // draft model, speculative step, or checkpoint restore.
