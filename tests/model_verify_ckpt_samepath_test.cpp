@@ -300,6 +300,10 @@ Q4T_TEST(model_verify_ckpt_samepath) {
                          history.size(), d_blogits, nullptr, nullptr, save,
                          /*seq_id=*/0);
     if (!s.ok()) return s;
+    // Complete the low-level batch before inspecting or reusing its scratch.
+    if (cudaStreamSynchronize(nullptr) != cudaSuccess) {
+      return Status::Fail("batch completion");
+    }
     if (out_logits) {
       out_logits->resize(static_cast<size_t>(T) * vocab);
       if (cudaMemcpy(out_logits->data(), d_blogits,

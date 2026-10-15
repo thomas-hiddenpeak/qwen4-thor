@@ -1,0 +1,74 @@
+-- Configuring done (0.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/build/public-host
+[  4%] Building CXX object CMakeFiles/q4t_router_trace_check.dir/home/rm01/models/dev/qwen4-thor/src/trace/router_trace.cpp.o
+[  8%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[ 12%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_contract.cpp.o
+[ 16%] Building CXX object CMakeFiles/q4t_router_trace_check.dir/home/rm01/models/dev/qwen4-thor/tools/trace/router_trace_check.cpp.o
+[ 20%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/http_request.cpp.o
+[ 25%] Linking CXX executable q4t_router_trace_check
+[ 25%] Built target q4t_router_trace_check
+[ 29%] Building CXX object CMakeFiles/q4t_gpu_cache_schedule.dir/home/rm01/models/dev/qwen4-thor/tools/trace/gpu_cache_schedule.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/server_options.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/trace/router_trace.cpp.o
+[ 41%] Linking CXX executable q4t_gpu_cache_schedule
+[ 41%] Built target q4t_gpu_cache_schedule
+[ 45%] Building CXX object CMakeFiles/q4t_offload_sort.dir/home/rm01/models/dev/qwen4-thor/tools/trace/offload_sort.cpp.o
+[ 50%] Linking CXX executable q4t_offload_sort
+[ 50%] Built target q4t_offload_sort
+[ 54%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/trace/sha256.cpp.o
+[ 58%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/io_json_test.cpp.o
+[ 62%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/model_sequence_test.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/router_trace_hash_test.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/router_trace_test.cpp.o
+[ 75%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_contract_test.cpp.o
+[ 79%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_http_request_test.cpp.o
+[ 83%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_options_test.cpp.o
+[ 87%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/test_main.cpp.o
+[ 91%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mtp_policy_test.cpp.o
+[ 95%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_scheduler_submission_test.cpp.o
+[100%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests
+Test project /home/rm01/models/dev/qwen4-thor/build/public-host
+      Start  1: q4t_public_host_contracts
+ 1/19 Test  #1: q4t_public_host_contracts ................   Passed    0.22 sec
+      Start  2: q4t_router_trace_wire_contracts
+ 2/19 Test  #2: q4t_router_trace_wire_contracts ..........   Passed    0.11 sec
+      Start  3: q4t_router_trace_source_contracts
+ 3/19 Test  #3: q4t_router_trace_source_contracts ........   Passed    0.07 sec
+      Start  4: q4t_router_cache_replay_contracts
+ 4/19 Test  #4: q4t_router_cache_replay_contracts ........   Passed    0.07 sec
+      Start  5: q4t_router_shadow_contracts
+ 5/19 Test  #5: q4t_router_shadow_contracts ..............   Passed   10.33 sec
+      Start  6: q4t_router_distribution_contracts
+ 6/19 Test  #6: q4t_router_distribution_contracts ........   Passed    0.33 sec
+      Start  7: q4t_router_hybrid_contracts
+ 7/19 Test  #7: q4t_router_hybrid_contracts ..............   Passed    0.09 sec
+      Start  8: q4t_offload_trace_contracts
+ 8/19 Test  #8: q4t_offload_trace_contracts ..............   Passed    0.10 sec
+      Start  9: q4t_offload_log_contracts
+ 9/19 Test  #9: q4t_offload_log_contracts ................   Passed    0.05 sec
+      Start 10: q4t_gpu_cache_schedule_contracts
+10/19 Test #10: q4t_gpu_cache_schedule_contracts .........   Passed    0.15 sec
+      Start 11: q4t_gpu_cache_replay_contracts
+11/19 Test #11: q4t_gpu_cache_replay_contracts ...........   Passed    0.09 sec
+      Start 12: q4t_gpu_cache_study_contracts
+12/19 Test #12: q4t_gpu_cache_study_contracts ............   Passed    7.72 sec
+      Start 13: q4t_decode_supply_bounds_contracts
+13/19 Test #13: q4t_decode_supply_bounds_contracts .......   Passed    0.07 sec
+      Start 14: q4t_analyze_decode_supply_contracts
+14/19 Test #14: q4t_analyze_decode_supply_contracts ......   Passed    1.99 sec
+      Start 15: q4t_mirror_retention_contracts
+15/19 Test #15: q4t_mirror_retention_contracts ...........   Passed    0.06 sec
+      Start 16: q4t_analyze_mirror_retention_contracts
+16/19 Test #16: q4t_analyze_mirror_retention_contracts ...   Passed    2.53 sec
+      Start 17: q4t_physical_ram_contracts
+17/19 Test #17: q4t_physical_ram_contracts ...............   Passed    0.14 sec
+      Start 18: q4t_response_identity_contracts
+18/19 Test #18: q4t_response_identity_contracts ..........   Passed    0.05 sec
+      Start 19: q4t_request_cancellation_contracts
+19/19 Test #19: q4t_request_cancellation_contracts .......   Passed    0.08 sec
+
+100% tests passed out of 19
+
+Total Test time (real) =  24.28 sec

@@ -229,6 +229,11 @@ Q4T_TEST(model_verify_ckpt) {
   // state machine; the caller aligns it, as in the real MTP flow.)
   bool ok = true;
   for (int a = 0; a < T - 1; ++a) {
+    // Finish the low-level batch before checkpoint inspection/scratch reuse.
+    if (cudaStreamSynchronize(nullptr) != cudaSuccess) {
+      m.Free();
+      return false;
+    }
     s = ModelRestoreCheckpoint(m, a, nullptr, /*seq_id=*/0);
     if (!s.ok()) {
       std::printf("  restore checkpoint %d failed: %s\n", a,
@@ -281,6 +286,17 @@ Q4T_TEST(model_verify_ckpt) {
       std::printf("  re-prefill (a=%d) failed: %s\n", a, s.message().c_str());
       m.Free();
       return false;
+    }
+    if (a + 1 < T - 1) {
+      // Begin/prefill invalidates saved rows. Publish fresh checkpoints for
+      // the next independent rollback case; never restore a stale row.
+      s = ModelDecodeBatch(m, verify, T, base, history.data(), history.size(),
+                           d_blogits, nullptr, nullptr, true, 0);
+      if (!s.ok()) {
+        std::printf("  re-verify failed: %s\n", s.message().c_str());
+        m.Free();
+        return false;
+      }
     }
   }
 

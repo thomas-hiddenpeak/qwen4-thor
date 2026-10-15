@@ -1,0 +1,131 @@
+..usage: run_acceptance.py [-h] --mode {quality,performance,limits} --output
+                         OUTPUT [--binary BINARY] --model-dir MODEL_DIR
+                         [--port PORT] [--startup-timeout STARTUP_TIMEOUT]
+                         [--max-len MAX_LEN] [--extra-lengths EXTRA_LENGTHS]
+                         [--perf-lengths PERF_LENGTHS]
+                         [--perf-repeats PERF_REPEATS]
+                         [--systemd-unit SYSTEMD_UNIT]
+                         [--host-cache-max-bytes HOST_CACHE_MAX_BYTES]
+                         [--target-total TARGET_TOTAL] [--fixtures FIXTURES]
+                         [--allow-unqualified-binary] [--reference REFERENCE]
+                         [--moe-trace-dir MOE_TRACE_DIR]
+                         [--moe-trace-workload MOE_TRACE_WORKLOAD]
+                         [--moe-trace-max-mib MOE_TRACE_MAX_MIB]
+                         [--moe-resident-slots MOE_RESIDENT_SLOTS]
+                         [--moe-hot-list MOE_HOT_LIST]
+                         [--request-deadline-ms REQUEST_DEADLINE_MS] [--mtp]
+                         [--mtp-default] [--mtp-k MTP_K]
+run_acceptance.py: error: --perf-lengths contains duplicate tiers
+usage: run_acceptance.py [-h] --mode {quality,performance,limits} --output
+                         OUTPUT [--binary BINARY] --model-dir MODEL_DIR
+                         [--port PORT] [--startup-timeout STARTUP_TIMEOUT]
+                         [--max-len MAX_LEN] [--extra-lengths EXTRA_LENGTHS]
+                         [--perf-lengths PERF_LENGTHS]
+                         [--perf-repeats PERF_REPEATS]
+                         [--systemd-unit SYSTEMD_UNIT]
+                         [--host-cache-max-bytes HOST_CACHE_MAX_BYTES]
+                         [--target-total TARGET_TOTAL] [--fixtures FIXTURES]
+                         [--allow-unqualified-binary] [--reference REFERENCE]
+                         [--moe-trace-dir MOE_TRACE_DIR]
+                         [--moe-trace-workload MOE_TRACE_WORKLOAD]
+                         [--moe-trace-max-mib MOE_TRACE_MAX_MIB]
+                         [--moe-resident-slots MOE_RESIDENT_SLOTS]
+                         [--moe-hot-list MOE_HOT_LIST]
+                         [--request-deadline-ms REQUEST_DEADLINE_MS] [--mtp]
+                         [--mtp-default] [--mtp-k MTP_K]
+run_acceptance.py: error: --perf-lengths requires comma-separated positive integers
+usage: run_acceptance.py [-h] --mode {quality,performance,limits} --output
+                         OUTPUT [--binary BINARY] --model-dir MODEL_DIR
+                         [--port PORT] [--startup-timeout STARTUP_TIMEOUT]
+                         [--max-len MAX_LEN] [--extra-lengths EXTRA_LENGTHS]
+                         [--perf-lengths PERF_LENGTHS]
+                         [--perf-repeats PERF_REPEATS]
+                         [--systemd-unit SYSTEMD_UNIT]
+                         [--host-cache-max-bytes HOST_CACHE_MAX_BYTES]
+                         [--target-total TARGET_TOTAL] [--fixtures FIXTURES]
+                         [--allow-unqualified-binary] [--reference REFERENCE]
+                         [--moe-trace-dir MOE_TRACE_DIR]
+                         [--moe-trace-workload MOE_TRACE_WORKLOAD]
+                         [--moe-trace-max-mib MOE_TRACE_MAX_MIB]
+                         [--moe-resident-slots MOE_RESIDENT_SLOTS]
+                         [--moe-hot-list MOE_HOT_LIST]
+                         [--request-deadline-ms REQUEST_DEADLINE_MS] [--mtp]
+                         [--mtp-default] [--mtp-k MTP_K]
+run_acceptance.py: error: --perf-lengths requires positive lengths
+usage: run_acceptance.py [-h] --mode {quality,performance,limits} --output
+                         OUTPUT [--binary BINARY] --model-dir MODEL_DIR
+                         [--port PORT] [--startup-timeout STARTUP_TIMEOUT]
+                         [--max-len MAX_LEN] [--extra-lengths EXTRA_LENGTHS]
+                         [--perf-lengths PERF_LENGTHS]
+                         [--perf-repeats PERF_REPEATS]
+                         [--systemd-unit SYSTEMD_UNIT]
+                         [--host-cache-max-bytes HOST_CACHE_MAX_BYTES]
+                         [--target-total TARGET_TOTAL] [--fixtures FIXTURES]
+                         [--allow-unqualified-binary] [--reference REFERENCE]
+                         [--moe-trace-dir MOE_TRACE_DIR]
+                         [--moe-trace-workload MOE_TRACE_WORKLOAD]
+                         [--moe-trace-max-mib MOE_TRACE_MAX_MIB]
+                         [--moe-resident-slots MOE_RESIDENT_SLOTS]
+                         [--moe-hot-list MOE_HOT_LIST]
+                         [--request-deadline-ms REQUEST_DEADLINE_MS] [--mtp]
+                         [--mtp-default] [--mtp-k MTP_K]
+run_acceptance.py: error: --perf-repeats must be positive
+usage: run_acceptance.py [-h] --mode {quality,performance,limits} --output
+                         OUTPUT [--binary BINARY] --model-dir MODEL_DIR
+                         [--port PORT] [--startup-timeout STARTUP_TIMEOUT]
+                         [--max-len MAX_LEN] [--extra-lengths EXTRA_LENGTHS]
+                         [--perf-lengths PERF_LENGTHS]
+                         [--perf-repeats PERF_REPEATS]
+                         [--systemd-unit SYSTEMD_UNIT]
+                         [--host-cache-max-bytes HOST_CACHE_MAX_BYTES]
+                         [--target-total TARGET_TOTAL] [--fixtures FIXTURES]
+                         [--allow-unqualified-binary] [--reference REFERENCE]
+                         [--moe-trace-dir MOE_TRACE_DIR]
+                         [--moe-trace-workload MOE_TRACE_WORKLOAD]
+                         [--moe-trace-max-mib MOE_TRACE_MAX_MIB]
+                         [--moe-resident-slots MOE_RESIDENT_SLOTS]
+                         [--moe-hot-list MOE_HOT_LIST]
+                         [--request-deadline-ms REQUEST_DEADLINE_MS] [--mtp]
+                         [--mtp-default] [--mtp-k MTP_K]
+run_acceptance.py: error: input 45056 + output 256 exceeds requested max_len 45100
+usage: run_acceptance.py [-h] --mode {quality,performance,limits} --output
+                         OUTPUT [--binary BINARY] --model-dir MODEL_DIR
+                         [--port PORT] [--startup-timeout STARTUP_TIMEOUT]
+                         [--max-len MAX_LEN] [--extra-lengths EXTRA_LENGTHS]
+                         [--perf-lengths PERF_LENGTHS]
+                         [--perf-repeats PERF_REPEATS]
+                         [--systemd-unit SYSTEMD_UNIT]
+                         [--host-cache-max-bytes HOST_CACHE_MAX_BYTES]
+                         [--target-total TARGET_TOTAL] [--fixtures FIXTURES]
+                         [--allow-unqualified-binary] [--reference REFERENCE]
+                         [--moe-trace-dir MOE_TRACE_DIR]
+                         [--moe-trace-workload MOE_TRACE_WORKLOAD]
+                         [--moe-trace-max-mib MOE_TRACE_MAX_MIB]
+                         [--moe-resident-slots MOE_RESIDENT_SLOTS]
+                         [--moe-hot-list MOE_HOT_LIST]
+                         [--request-deadline-ms REQUEST_DEADLINE_MS] [--mtp]
+                         [--mtp-default] [--mtp-k MTP_K]
+run_acceptance.py: error: performance tiers overlap
+usage: run_acceptance.py [-h] --mode {quality,performance,limits} --output
+                         OUTPUT [--binary BINARY] --model-dir MODEL_DIR
+                         [--port PORT] [--startup-timeout STARTUP_TIMEOUT]
+                         [--max-len MAX_LEN] [--extra-lengths EXTRA_LENGTHS]
+                         [--perf-lengths PERF_LENGTHS]
+                         [--perf-repeats PERF_REPEATS]
+                         [--systemd-unit SYSTEMD_UNIT]
+                         [--host-cache-max-bytes HOST_CACHE_MAX_BYTES]
+                         [--target-total TARGET_TOTAL] [--fixtures FIXTURES]
+                         [--allow-unqualified-binary] [--reference REFERENCE]
+                         [--moe-trace-dir MOE_TRACE_DIR]
+                         [--moe-trace-workload MOE_TRACE_WORKLOAD]
+                         [--moe-trace-max-mib MOE_TRACE_MAX_MIB]
+                         [--moe-resident-slots MOE_RESIDENT_SLOTS]
+                         [--moe-hot-list MOE_HOT_LIST]
+                         [--request-deadline-ms REQUEST_DEADLINE_MS] [--mtp]
+                         [--mtp-default] [--mtp-k MTP_K]
+run_acceptance.py: error: --host-cache-max-bytes must be positive and requires --systemd-unit
+................
+----------------------------------------------------------------------
+Ran 18 tests in 0.177s
+
+OK

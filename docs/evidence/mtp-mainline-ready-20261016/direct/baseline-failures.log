@@ -1,0 +1,55 @@
+=== [04:17:57] BASELINE model_sequence_api ===
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+  prefill legacy-vs-seq: identical
+  decode legacy-vs-seq: identical
+[PASS] model_sequence_api
+1 tests, 1 passed, 0 failed, 0 skipped
+=== [04:18:00] BASELINE model_verify_multi_ckpt ===
+  seq 2 tok 1: l2_rel=0.00000 OK
+  seq 2 tok 2: l2_rel=0.00000 OK
+  accept seq 1 (a=0) then decode verify0[1]: l2_rel=0.00000 OK
+  accept seq 1 (a=1) then decode verify0[2]: l2_rel=0.02632 MISMATCH
+[FAIL] model_verify_multi_ckpt
+1 tests, 0 passed, 1 failed, 0 skipped
+=== [04:18:04] BASELINE model_verify_ckpt ===
+  [E] batch-final (=C a=2): probe l2_rel=0.00000 argmax=39535 (ref argmax=39535) ARGMAX-MATCH
+  [E] pref7 state (path-only): probe l2_rel=0.00000 argmax=39535 (ref argmax=39535) ARGMAX-MATCH
+  [E] seq T1x3 state: probe l2_rel=0.07151 argmax=39535 (ref argmax=39535) ARGMAX-MATCH
+  stage=E probe path (last)
+[FAIL] model_verify_ckpt_samepath
+2 tests, 0 passed, 2 failed, 0 skipped
+=== [04:18:11] BASELINE model_verify_ckpt_samepath ===
+  [E] batch-final (=C a=2): probe l2_rel=0.00000 argmax=39535 (ref argmax=39535) ARGMAX-MATCH
+  [E] pref7 state (path-only): probe l2_rel=0.00000 argmax=39535 (ref argmax=39535) ARGMAX-MATCH
+  [E] seq T1x3 state: probe l2_rel=0.07151 argmax=39535 (ref argmax=39535) ARGMAX-MATCH
+  stage=E probe path (last)
+[FAIL] model_verify_ckpt_samepath
+1 tests, 0 passed, 1 failed, 0 skipped
+=== [04:18:14] BASELINE model_prefill_batch ===
+  seq 0 (len=5): worst l2_rel=0.09737  argmax batch=82116 ref=163130 MISMATCH
+  seq 1 (len=3): worst l2_rel=0.05924  argmax batch=3965 ref=3965 MISMATCH
+  seq 2 (len=7): worst l2_rel=0.16509  argmax batch=168589 ref=168589 MISMATCH
+  FAIL: batched prefill diverged from single-seq reference
+[FAIL] model_prefill_batch
+1 tests, 0 passed, 1 failed, 0 skipped
+=== [04:18:18] BASELINE mtp_spec_accept_states ===
+  constructed: m[0]=3901 m[1]=87048 m[2]=5277 d0_reject=3902 d0_accept=3901 f1_partial=87049 f2_full=5277
+  [reject] a=0 accepted_count=1 next_b=3901 pos=6 l2_rel=0.01702 OK
+  [partial] a=1 accepted_count=2 next_b=87048 pos=7 l2_rel=0.04154 MISMATCH
+  [full] a=3 accepted_count=4 next_b=1076 pos=9 l2_rel=0.07696 MISMATCH
+[FAIL] mtp_spec_accept_states
+1 tests, 0 passed, 1 failed, 0 skipped
+=== [04:18:26] BASELINE mtp_checkpoint_capacity_layout ===
+No tests selected
+=== [04:18:26] BASELINE mtp_verify_numerics ===
+  prompt_tokens=1024 steps=256
+  model load failed: cudaMalloc failed
+[FAIL] mtp_verify_numerics
+1 tests, 0 passed, 1 failed, 0 skipped
+=== [04:33:01] BASELINE moe_partition_runtime_numerical_contract (Q4T_MOE_PARTITION=1) ===
+  required environment: Q4T_MOE_CHUNK_ORDER=0
+  CHECK failed: PartitionEnvironmentMatches() (line 807)
+[FAIL] moe_partition_runtime_numerical_contract
+1 tests, 0 passed, 1 failed, 0 skipped
+BASELINE_DONE

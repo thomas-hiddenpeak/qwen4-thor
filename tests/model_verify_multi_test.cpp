@@ -526,30 +526,33 @@ Q4T_TEST(model_verify_multi_ckpt) {
                 seq_ids[0], a, a + 1, rb_rel, rb_rel < 0.02f ? "OK" :
                                                           "MISMATCH");
     if (rb_rel >= 0.02f) ok = false;
-    // Reset the sequence state machine for the next iteration (the restore
-    // does not touch it; re-align to the prompt boundary). The re-prefill
-    // rebuilds history = prompt0; its live state is overwritten by the next
-    // iteration's restore.
-    s = ModelEndSequence(&seq[0]);
-    if (!s.ok()) {
-      std::printf("  end seq 0 (a=%d) failed: %s\n", a, s.message().c_str());
-      m.Free();
-      return false;
-    }
-    s = ModelBeginSequence(m, &seq[0], nullptr, seq_ids[0]);
-    if (!s.ok()) {
-      std::printf("  re-begin seq 0 (a=%d) failed: %s\n", a,
-                  s.message().c_str());
-      m.Free();
-      return false;
-    }
-    s = ModelPrefill(m, &seq[0], prompts[0], Tprompt, d_plogits, nullptr,
-                     nullptr, nullptr, seq_ids[0]);
-    if (!s.ok()) {
-      std::printf("  re-prefill seq 0 (a=%d) failed: %s\n", a,
-                  s.message().c_str());
-      m.Free();
-      return false;
+    if (a + 1 < T - 1) {
+      // A new sequence invalidates saved rows. Rebuild both inputs and
+      // publish fresh checkpoints for the next independent rollback case.
+      for (int b = 0; b < B; ++b) {
+        s = ModelEndSequence(&seq[b]);
+        if (s.ok()) {
+          s = ModelBeginSequence(m, &seq[b], nullptr, seq_ids[b]);
+        }
+        if (s.ok()) {
+          s = ModelPrefill(m, &seq[b], prompts[b], Tprompt, d_plogits,
+                           nullptr, nullptr, nullptr, seq_ids[b]);
+        }
+        if (!s.ok()) {
+          std::printf("  rebuild seq %d failed: %s\n", seq_ids[b],
+                      s.message().c_str());
+          m.Free();
+          return false;
+        }
+      }
+      s = ModelVerifyMulti(m, tokens.data(), base_positions, seq_ids,
+                           history.data(), history_len, B, T, d_mlogits,
+                           nullptr);
+      if (!s.ok()) {
+        std::printf("  re-verify failed: %s\n", s.message().c_str());
+        m.Free();
+        return false;
+      }
     }
   }
 

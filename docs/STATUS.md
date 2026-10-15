@@ -4,26 +4,38 @@
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
 ## 当前阶段
-**MTP 归并最终候选验证中（2026-10-16）**：
-当前 HEAD `577dac0`、MERGE_HEAD `7f6a69c`，合并尚未提交，main 未动。
-已修复归并产生的 checkpoint capacity/saved-row stride 冲突：布局合同与
-256 步近 tie 合同通过（4 flips、0 双侧 confident、causality PASS）。
-归并前五档证据保留，但不充当当前候选验收。
+**MTP 归并候选：指定五档目标通过，仍有5项GPU诊断未闭合（2026-10-16）**。
+工作分支 `codex/moe-residency-20260930` 已合入main历史，合并提交
+`fe44c56`（父577dac0/7f6a69c），通用取消合同修复 `a3f90a6`。
+[PR #4](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/4)；main仍为
+`7f6a69c`。采用T>1默认k3替换sequential，保留main共用正确性保护及历史回退。
 
-本次恢复确认两项裁决遗漏：普通 batch decode 的 RoPE 位置修复会改变旧 off
-输出（仅撤掉该修复的 1K HTTP 对照恢复旧输出，直接位置合同通过）；main 的
-关停入队保护、MTP load/scratch 所有权、位置复制、完成/失败及终止/尾部
-修复是两种 verifier 共用合同，不能随 sequential 整文件删除。已恢复这些
-保护，保留 T>1 kernel 与默认 k=3。具体边界见归并方案 §9。
+冻结binary `26639190711e…`：五档off/on各3次，提速
+**+84.6%/+97.8%/+105.4%/+100.4%/+93.1%**，全部满足+50%～+200%；
+确定性、HTTP输入/输出/finish全部通过，MTP五档文本与归并前一致。
+45K on绝对速度较旧测量低约2.1%，不称逐项无回退。普通decode保留RoPE修复，
+五档旧输出不同；单变量消融已确认1K差异来源，不恢复错误计算。
 
-最终候选冻结在 `.q4t-work/mtp-mainline-ready-20261016/freeze.json`；
-已通过 host 56/56、位置复制 18 例、checkpoint 布局、multi-step 与非法结果
-合同。生命周期及最终同 binary 五档 off/on 各三次、固定检索 HTTP 待收口。
-原全量 150/159 与中间 HTTP 失败原样保留；不宣称全量测试通过。
-代码快照 `fe44c56` 已推送，草稿 PR #4 已建立，main 未动。
-CI 首败为 CMake 引用被删的取消合同测试；恢复 21 项通用 HTTP/SSE/计数
-合同，本机 21/21 通过，旧 verifier 专属路径断言仍留历史。二进制不变。
-下一步：完成冻结矩阵、公共 host 与遗留失败分类，回填 PR 验收状态。
+固定检索off/on各11/11通过；六项尾部请求、流式取消与后继恢复通过。
+checkpoint容量、256步N=4合同（4 flips、0双侧confident、causality）通过；
+host56、位置复制18、生命周期失败注入、multi-step及非法输出合同通过。
+本机公共CTest19/19、runner16、证据审计4及GitHub push/PR CI通过。
+partition按完整专用环境通过；历史sequence API失败独立复验通过。
+
+**未通过项不隐藏**：model_verify_ckpt、model_verify_multi_ckpt、
+model_verify_ckpt_samepath、model_prefill_batch、mtp_spec_accept_states仍FAIL。
+已修正过期checkpoint夹具和低层batch完成边界，剩余数值差异不能仅凭
+历史存在或N=4全模型通过判为正常。没有放宽阈值/删除测试；不宣称全量GPU
+通过或无条件main就绪；交付可审查候选。生产源码/二进制未因夹具修正变化。
+
+报告与精确结果：[归并验收](MTP_MAINLINE_READY_2026-10-16.md)；
+[证据索引](evidence/mtp-mainline-ready-20261016/README.md)。来源对照明确
+仅比vLLM默认模式有更明确边界，不声称强于其确定性模式或LLM-42。
+本轮单流完整模型HTTP的指定验收完成；5项诊断覆盖2层低层/多序列/旧API，
+后续针对它们建立独立数值参考，不将有限域通过扩大为全量保证。
+下一步：审查归并候选；不重复已通过且身份未变的五档证据，不自动合入main。
+
+## 历史阶段记录（以前述当前阶段为准）
 
 **新 Goal：MTP 性能成果推进到可合入主线 main（2026-10-15；取代下方各节为最新状态）**：
 以当前工作分支 `codex/moe-residency-20260930`（HEAD `03339bf`）为后续性能基础，分三步：

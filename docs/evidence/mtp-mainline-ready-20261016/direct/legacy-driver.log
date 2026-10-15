@@ -1,0 +1,6 @@
+model_verify_multi_ckpt 1
+model_verify_ckpt 1
+model_verify_ckpt_samepath 1
+model_prefill_batch 1
+mtp_spec_accept_states 1
+moe_partition_runtime_numerical_contract 0

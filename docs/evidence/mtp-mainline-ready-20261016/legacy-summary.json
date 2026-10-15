@@ -1,0 +1,37 @@
+[
+  {
+    "test": "model_verify_multi_ckpt",
+    "returncode": 1,
+    "environment": {}
+  },
+  {
+    "test": "model_verify_ckpt",
+    "returncode": 1,
+    "environment": {}
+  },
+  {
+    "test": "model_verify_ckpt_samepath",
+    "returncode": 1,
+    "environment": {}
+  },
+  {
+    "test": "model_prefill_batch",
+    "returncode": 1,
+    "environment": {}
+  },
+  {
+    "test": "mtp_spec_accept_states",
+    "returncode": 1,
+    "environment": {}
+  },
+  {
+    "test": "moe_partition_runtime_numerical_contract",
+    "returncode": 0,
+    "environment": {
+      "Q4T_MOE_PARTITION": "1",
+      "Q4T_MOE_CHUNK_ORDER": "0",
+      "Q4T_MOE_STREAMS": "1",
+      "Q4T_MOE_EVICT_WEIGHT": "0"
+    }
+  }
+]

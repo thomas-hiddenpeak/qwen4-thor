@@ -1,0 +1,702 @@
+host-contracts	Set up job	﻿2026-10-15T16:42:00.7888961Z Current runner version: '2.337.0'
+host-contracts	Set up job	2026-10-15T16:42:00.7915574Z ##[group]Runner Image Provisioner
+host-contracts	Set up job	2026-10-15T16:42:00.7916783Z Hosted Compute Agent
+host-contracts	Set up job	2026-10-15T16:42:00.7917401Z Version: 20261012.601
+host-contracts	Set up job	2026-10-15T16:42:00.7918104Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+host-contracts	Set up job	2026-10-15T16:42:00.7918919Z Build Date: 2026-10-12T17:48:21Z
+host-contracts	Set up job	2026-10-15T16:42:00.7919621Z Worker ID: {7cbe0816-c3e6-4834-a4c6-e628017b0e81}
+host-contracts	Set up job	2026-10-15T16:42:00.7920475Z Region: westus2
+host-contracts	Set up job	2026-10-15T16:42:00.7921053Z Cloud: Azure
+host-contracts	Set up job	2026-10-15T16:42:00.7921602Z ##[endgroup]
+host-contracts	Set up job	2026-10-15T16:42:00.7923109Z ##[group]Operating System
+host-contracts	Set up job	2026-10-15T16:42:00.7923818Z Ubuntu
+host-contracts	Set up job	2026-10-15T16:42:00.7924449Z 24.04.5
+host-contracts	Set up job	2026-10-15T16:42:00.7924992Z LTS
+host-contracts	Set up job	2026-10-15T16:42:00.7925519Z ##[endgroup]
+host-contracts	Set up job	2026-10-15T16:42:00.7926341Z ##[group]Runner Image
+host-contracts	Set up job	2026-10-15T16:42:00.7926995Z Image: ubuntu-24.04
+host-contracts	Set up job	2026-10-15T16:42:00.7927632Z Version: 20261012.334.1
+host-contracts	Set up job	2026-10-15T16:42:00.7928742Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+host-contracts	Set up job	2026-10-15T16:42:00.7930617Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+host-contracts	Set up job	2026-10-15T16:42:00.7931605Z ##[endgroup]
+host-contracts	Set up job	2026-10-15T16:42:00.7932803Z ##[group]GITHUB_TOKEN Permissions
+host-contracts	Set up job	2026-10-15T16:42:00.7934685Z Contents: read
+host-contracts	Set up job	2026-10-15T16:42:00.7935414Z Metadata: read
+host-contracts	Set up job	2026-10-15T16:42:00.7936309Z ##[endgroup]
+host-contracts	Set up job	2026-10-15T16:42:00.7938429Z Secret source: Actions
+host-contracts	Set up job	2026-10-15T16:42:00.7939532Z Cache mode: write
+host-contracts	Set up job	2026-10-15T16:42:00.7940238Z Prepare workflow directory
+host-contracts	Set up job	2026-10-15T16:42:00.8275256Z Prepare all required actions
+host-contracts	Set up job	2026-10-15T16:42:00.8324470Z Getting action download info
+host-contracts	Set up job	2026-10-15T16:42:01.1821648Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+host-contracts	Set up job	2026-10-15T16:42:01.3691862Z Complete job name: host-contracts
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	﻿2026-10-15T16:42:01.4491997Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.4493180Z with:
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.4493674Z   persist-credentials: false
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.4494236Z   repository: thomas-hiddenpeak/qwen4-thor
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.4498565Z   token: ***
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.4499031Z   ssh-strict: true
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.4499483Z   ssh-user: git
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.4499908Z   clean: true
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.4500366Z   sparse-checkout-cone-mode: true
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.4500902Z   fetch-depth: 1
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.4501342Z   fetch-tags: false
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.4501796Z   show-progress: true
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.4502249Z   lfs: false
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.4502668Z   submodules: false
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.4503122Z   set-safe-directory: true
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.4503638Z   allow-unsafe-pr-checkout: false
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.4504389Z ##[endgroup]
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5560146Z Syncing repository: thomas-hiddenpeak/qwen4-thor
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5561975Z ##[group]Getting Git version info
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5562797Z Working directory is '/home/runner/work/qwen4-thor/qwen4-thor'
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5563874Z [command]/usr/bin/git version
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5618839Z git version 2.55.0
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5639178Z ##[endgroup]
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5651571Z Temporarily overriding HOME='/home/runner/work/_temp/70120e21-fbb1-46c2-8095-3576d90f552b' before making global git config changes
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5652996Z Adding repository directory to the temporary git global config as a safe directory
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5657145Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/qwen4-thor/qwen4-thor
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5701676Z Deleting the contents of '/home/runner/work/qwen4-thor/qwen4-thor'
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5705098Z ##[group]Determining repository object format
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5706705Z ##[endgroup]
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5707800Z ##[group]Initializing the repository
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5710802Z [command]/usr/bin/git init /home/runner/work/qwen4-thor/qwen4-thor
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5812632Z hint: Using 'master' as the name for the initial branch. This default branch name
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5814085Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5815361Z hint: to use in all of your new repositories, which will suppress this warning,
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5816319Z hint: call:
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5816740Z hint:
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5817260Z hint: 	git config --global init.defaultBranch <name>
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5818236Z hint:
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5819106Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5820318Z hint: 'development'. The just-created branch can be renamed via this command:
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5821072Z hint:
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5821503Z hint: 	git branch -m <name>
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5821991Z hint:
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5822625Z hint: Disable this message with "git config set advice.defaultBranchName false"
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5824300Z Initialized empty Git repository in /home/runner/work/qwen4-thor/qwen4-thor/.git/
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5826602Z [command]/usr/bin/git remote add origin https://github.com/thomas-hiddenpeak/qwen4-thor
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5873871Z ##[endgroup]
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5874698Z ##[group]Disabling automatic garbage collection
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5877107Z [command]/usr/bin/git config --local gc.auto 0
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5908735Z ##[endgroup]
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5909745Z ##[group]Setting up auth
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5910618Z Removing SSH command configuration
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5914134Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.5945708Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.6282461Z Removing HTTP extra header
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.6287942Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.6318513Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.6543545Z Removing includeIf entries pointing to credentials config files
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.6549185Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.6580571Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.6817644Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-d4921934-2cb5-4001-944a-8ded67aa42b0.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.6854287Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/qwen4-thor/qwen4-thor/.git.path /home/runner/work/_temp/git-credentials-d4921934-2cb5-4001-944a-8ded67aa42b0.config
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.6885396Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/qwen4-thor/qwen4-thor/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-d4921934-2cb5-4001-944a-8ded67aa42b0.config
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.6919648Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-d4921934-2cb5-4001-944a-8ded67aa42b0.config
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.6954447Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-d4921934-2cb5-4001-944a-8ded67aa42b0.config
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.6982932Z ##[endgroup]
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.6984076Z ##[group]Fetching the repository
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:01.6990949Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +0ab3ac1f972a9ccdae78064bb861b630ae6653bb:refs/remotes/pull/4/merge
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:02.8398142Z From https://github.com/thomas-hiddenpeak/qwen4-thor
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:02.8401021Z  * [new ref]         0ab3ac1f972a9ccdae78064bb861b630ae6653bb -> pull/4/merge
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:02.8407136Z ##[endgroup]
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:02.8408911Z ##[group]Determining the checkout info
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:02.8410815Z ##[endgroup]
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:02.8411654Z [command]/usr/bin/git sparse-checkout disable
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:02.8459982Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:02.8490989Z ##[group]Checking out the ref
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:02.8494766Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/4/merge
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0007441Z Note: switching to 'refs/remotes/pull/4/merge'.
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0008784Z 
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0009740Z You are in 'detached HEAD' state. You can look around, make experimental
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0011543Z changes and commit them, and you can discard any commits you make in this
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0013250Z state without impacting any branches by switching back to a branch.
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0014301Z 
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0014988Z If you want to create a new branch to retain commits you create, you may
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0016688Z do so (now or later) by using -c with the switch command. Example:
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0017565Z 
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0017953Z   git switch -c <new-branch-name>
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0018646Z 
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0019176Z Or undo this operation with:
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0019963Z 
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0020449Z   git switch -
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0021070Z 
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0022071Z Turn off this advice by setting config variable advice.detachedHead to false
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0023372Z 
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0024905Z HEAD is now at 0ab3ac1 Merge a3f90a65198960cbe54425f54a8e84be4d36287d into 7f6a69c0c8af3919ada8a3359575e049e485e878
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0035217Z ##[endgroup]
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0080107Z [command]/usr/bin/git log -1 --format=%H
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0106692Z 0ab3ac1f972a9ccdae78064bb861b630ae6653bb
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0118960Z ##[group]Removing auth
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0121065Z Removing SSH command configuration
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0123137Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0160927Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0397879Z Removing HTTP extra header
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0401408Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0447235Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0703455Z Removing includeIf entries pointing to credentials config files
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0707328Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0736869Z includeif.gitdir:/home/runner/work/qwen4-thor/qwen4-thor/.git.path
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0738371Z includeif.gitdir:/home/runner/work/qwen4-thor/qwen4-thor/.git/worktrees/*.path
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0739825Z includeif.gitdir:/github/workspace/.git.path
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0740951Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0748067Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/qwen4-thor/qwen4-thor/.git.path
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0772411Z /home/runner/work/_temp/git-credentials-d4921934-2cb5-4001-944a-8ded67aa42b0.config
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0783350Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/qwen4-thor/qwen4-thor/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-d4921934\-2cb5\-4001\-944a\-8ded67aa42b0\.config
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0817298Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/qwen4-thor/qwen4-thor/.git/worktrees/*.path
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0841099Z /home/runner/work/_temp/git-credentials-d4921934-2cb5-4001-944a-8ded67aa42b0.config
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0848632Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/qwen4-thor/qwen4-thor/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-d4921934\-2cb5\-4001\-944a\-8ded67aa42b0\.config
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0882215Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0905830Z /github/runner_temp/git-credentials-d4921934-2cb5-4001-944a-8ded67aa42b0.config
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0914167Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-d4921934\-2cb5\-4001\-944a\-8ded67aa42b0\.config
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0950259Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.0973367Z /github/runner_temp/git-credentials-d4921934-2cb5-4001-944a-8ded67aa42b0.config
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.1039237Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-d4921934\-2cb5\-4001\-944a\-8ded67aa42b0\.config
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.1074484Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.1310185Z Removing credentials config '/home/runner/work/_temp/git-credentials-d4921934-2cb5-4001-944a-8ded67aa42b0.config'
+host-contracts	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:42:03.1319023Z ##[endgroup]
+host-contracts	Install host compiler	﻿2026-10-15T16:42:03.1525603Z ##[group]Run sudo apt-get update
+host-contracts	Install host compiler	2026-10-15T16:42:03.1526418Z ^[[36;1msudo apt-get update^[[0m
+host-contracts	Install host compiler	2026-10-15T16:42:03.1526870Z ^[[36;1msudo apt-get install -y g++-14 cmake python3-numpy^[[0m
+host-contracts	Install host compiler	2026-10-15T16:42:03.1771581Z shell: /usr/bin/bash -e {0}
+host-contracts	Install host compiler	2026-10-15T16:42:03.1771984Z ##[endgroup]
+host-contracts	Install host compiler	2026-10-15T16:42:03.2578722Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+host-contracts	Install host compiler	2026-10-15T16:42:03.3015495Z Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+host-contracts	Install host compiler	2026-10-15T16:42:03.3755229Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [523 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:03.3936739Z Get:8 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [581 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:03.4019635Z Get:9 https://packages.microsoft.com/ubuntu/24.04/prod noble/main armhf Packages [12.4 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:03.4212403Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+host-contracts	Install host compiler	2026-10-15T16:42:03.4227580Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:03.4271352Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:03.4293963Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:03.5327088Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1397 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:03.5405283Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [308 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:03.5433284Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1702 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:03.5547380Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1805 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:03.5642010Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [411 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:03.6454784Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1144 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:03.6523078Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [231 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:03.6546502Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1221 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:03.6754371Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [246 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:03.6773471Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1713 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:03.7285243Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [392 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:08.1016527Z Fetched 12.1 MB in 1s (8878 kB/s)
+host-contracts	Install host compiler	2026-10-15T16:42:08.9591947Z Reading package lists...
+host-contracts	Install host compiler	2026-10-15T16:42:08.9909204Z Reading package lists...
+host-contracts	Install host compiler	2026-10-15T16:42:09.2088971Z Building dependency tree...
+host-contracts	Install host compiler	2026-10-15T16:42:09.2096298Z Reading state information...
+host-contracts	Install host compiler	2026-10-15T16:42:09.3696618Z g++-14 is already the newest version (14.2.0-4ubuntu2~24.04.1).
+host-contracts	Install host compiler	2026-10-15T16:42:09.3702996Z The following additional packages will be installed:
+host-contracts	Install host compiler	2026-10-15T16:42:09.3703803Z   cmake-data libblas3 libjsoncpp25 liblapack3 librhash0
+host-contracts	Install host compiler	2026-10-15T16:42:09.3708932Z Suggested packages:
+host-contracts	Install host compiler	2026-10-15T16:42:09.3709523Z   cmake-doc cmake-format elpa-cmake-mode ninja-build python3-pytest
+host-contracts	Install host compiler	2026-10-15T16:42:09.3890686Z The following NEW packages will be installed:
+host-contracts	Install host compiler	2026-10-15T16:42:09.3897162Z   cmake cmake-data libblas3 libjsoncpp25 liblapack3 librhash0 python3-numpy
+host-contracts	Install host compiler	2026-10-15T16:42:09.4077503Z 0 upgraded, 7 newly installed, 0 to remove and 43 not upgraded.
+host-contracts	Install host compiler	2026-10-15T16:42:09.4078193Z Need to get 20.9 MB of archives.
+host-contracts	Install host compiler	2026-10-15T16:42:09.4078830Z After this operation, 81.0 MB of additional disk space will be used.
+host-contracts	Install host compiler	2026-10-15T16:42:09.4079598Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+host-contracts	Install host compiler	2026-10-15T16:42:09.4987479Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libjsoncpp25 amd64 1.9.5-6build1 [82.8 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:09.5721104Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 librhash0 amd64 1.4.3-3build1 [129 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:09.6541021Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 cmake-data all 3.28.3-1build7 [2155 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:09.7614449Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 cmake amd64 3.28.3-1build7 [11.2 MB]
+host-contracts	Install host compiler	2026-10-15T16:42:10.0796414Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libblas3 amd64 3.12.0-3build1.1 [238 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:10.1543525Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 liblapack3 amd64 3.12.0-3build1.1 [2646 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:10.2821413Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 python3-numpy amd64 1:1.26.4+ds-6ubuntu1 [4437 kB]
+host-contracts	Install host compiler	2026-10-15T16:42:10.6437898Z Fetched 20.9 MB in 1s (21.2 MB/s)
+host-contracts	Install host compiler	2026-10-15T16:42:10.6698824Z Selecting previously unselected package libjsoncpp25:amd64.
+host-contracts	Install host compiler	2026-10-15T16:42:10.6950249Z (Reading database ... 
+host-contracts	Install host compiler	2026-10-15T16:42:10.6950861Z (Reading database ... 5%
+host-contracts	Install host compiler	2026-10-15T16:42:10.6951575Z (Reading database ... 10%
+host-contracts	Install host compiler	2026-10-15T16:42:10.6952045Z (Reading database ... 15%
+host-contracts	Install host compiler	2026-10-15T16:42:10.6952587Z (Reading database ... 20%
+host-contracts	Install host compiler	2026-10-15T16:42:10.6953040Z (Reading database ... 25%
+host-contracts	Install host compiler	2026-10-15T16:42:10.6953426Z (Reading database ... 30%
+host-contracts	Install host compiler	2026-10-15T16:42:10.6953823Z (Reading database ... 35%
+host-contracts	Install host compiler	2026-10-15T16:42:10.6954182Z (Reading database ... 40%
+host-contracts	Install host compiler	2026-10-15T16:42:10.6954547Z (Reading database ... 45%
+host-contracts	Install host compiler	2026-10-15T16:42:10.6954919Z (Reading database ... 50%
+host-contracts	Install host compiler	2026-10-15T16:42:10.7011925Z (Reading database ... 55%
+host-contracts	Install host compiler	2026-10-15T16:42:10.8042204Z (Reading database ... 60%
+host-contracts	Install host compiler	2026-10-15T16:42:11.0105693Z (Reading database ... 65%
+host-contracts	Install host compiler	2026-10-15T16:42:11.2012903Z (Reading database ... 70%
+host-contracts	Install host compiler	2026-10-15T16:42:11.4037277Z (Reading database ... 75%
+host-contracts	Install host compiler	2026-10-15T16:42:11.5472862Z (Reading database ... 80%
+host-contracts	Install host compiler	2026-10-15T16:42:11.7527450Z (Reading database ... 85%
+host-contracts	Install host compiler	2026-10-15T16:42:11.9191630Z (Reading database ... 90%
+host-contracts	Install host compiler	2026-10-15T16:42:12.1098778Z (Reading database ... 95%
+host-contracts	Install host compiler	2026-10-15T16:42:12.1099288Z (Reading database ... 100%
+host-contracts	Install host compiler	2026-10-15T16:42:12.1099665Z (Reading database ... 203540 files and directories currently installed.)
+host-contracts	Install host compiler	2026-10-15T16:42:12.1145520Z Preparing to unpack .../0-libjsoncpp25_1.9.5-6build1_amd64.deb ...
+host-contracts	Install host compiler	2026-10-15T16:42:12.1181458Z Unpacking libjsoncpp25:amd64 (1.9.5-6build1) ...
+host-contracts	Install host compiler	2026-10-15T16:42:12.1405292Z Selecting previously unselected package librhash0:amd64.
+host-contracts	Install host compiler	2026-10-15T16:42:12.1538578Z Preparing to unpack .../1-librhash0_1.4.3-3build1_amd64.deb ...
+host-contracts	Install host compiler	2026-10-15T16:42:12.1546340Z Unpacking librhash0:amd64 (1.4.3-3build1) ...
+host-contracts	Install host compiler	2026-10-15T16:42:12.1782820Z Selecting previously unselected package cmake-data.
+host-contracts	Install host compiler	2026-10-15T16:42:12.1915012Z Preparing to unpack .../2-cmake-data_3.28.3-1build7_all.deb ...
+host-contracts	Install host compiler	2026-10-15T16:42:12.1985103Z Unpacking cmake-data (3.28.3-1build7) ...
+host-contracts	Install host compiler	2026-10-15T16:42:12.6970030Z Selecting previously unselected package cmake.
+host-contracts	Install host compiler	2026-10-15T16:42:12.7117845Z Preparing to unpack .../3-cmake_3.28.3-1build7_amd64.deb ...
+host-contracts	Install host compiler	2026-10-15T16:42:12.7125834Z Unpacking cmake (3.28.3-1build7) ...
+host-contracts	Install host compiler	2026-10-15T16:42:12.8726941Z Selecting previously unselected package libblas3:amd64.
+host-contracts	Install host compiler	2026-10-15T16:42:12.8859253Z Preparing to unpack .../4-libblas3_3.12.0-3build1.1_amd64.deb ...
+host-contracts	Install host compiler	2026-10-15T16:42:12.8888755Z Unpacking libblas3:amd64 (3.12.0-3build1.1) ...
+host-contracts	Install host compiler	2026-10-15T16:42:12.9120519Z Selecting previously unselected package liblapack3:amd64.
+host-contracts	Install host compiler	2026-10-15T16:42:12.9249966Z Preparing to unpack .../5-liblapack3_3.12.0-3build1.1_amd64.deb ...
+host-contracts	Install host compiler	2026-10-15T16:42:12.9279291Z Unpacking liblapack3:amd64 (3.12.0-3build1.1) ...
+host-contracts	Install host compiler	2026-10-15T16:42:12.9765344Z Selecting previously unselected package python3-numpy.
+host-contracts	Install host compiler	2026-10-15T16:42:12.9898673Z Preparing to unpack .../6-python3-numpy_1%3a1.26.4+ds-6ubuntu1_amd64.deb ...
+host-contracts	Install host compiler	2026-10-15T16:42:12.9905399Z Unpacking python3-numpy (1:1.26.4+ds-6ubuntu1) ...
+host-contracts	Install host compiler	2026-10-15T16:42:13.2017388Z Setting up libblas3:amd64 (3.12.0-3build1.1) ...
+host-contracts	Install host compiler	2026-10-15T16:42:13.2087873Z update-alternatives: using /usr/lib/x86_64-linux-gnu/blas/libblas.so.3 to provide /usr/lib/x86_64-linux-gnu/libblas.so.3 (libblas.so.3-x86_64-linux-gnu) in auto mode
+host-contracts	Install host compiler	2026-10-15T16:42:13.2103290Z Setting up libjsoncpp25:amd64 (1.9.5-6build1) ...
+host-contracts	Install host compiler	2026-10-15T16:42:13.2119004Z Setting up librhash0:amd64 (1.4.3-3build1) ...
+host-contracts	Install host compiler	2026-10-15T16:42:13.2133810Z Setting up cmake-data (3.28.3-1build7) ...
+host-contracts	Install host compiler	2026-10-15T16:42:13.2195132Z Setting up liblapack3:amd64 (3.12.0-3build1.1) ...
+host-contracts	Install host compiler	2026-10-15T16:42:13.2253990Z update-alternatives: using /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3 to provide /usr/lib/x86_64-linux-gnu/liblapack.so.3 (liblapack.so.3-x86_64-linux-gnu) in auto mode
+host-contracts	Install host compiler	2026-10-15T16:42:13.2268220Z Setting up python3-numpy (1:1.26.4+ds-6ubuntu1) ...
+host-contracts	Install host compiler	2026-10-15T16:42:14.7512014Z Setting up cmake (3.28.3-1build7) ...
+host-contracts	Install host compiler	2026-10-15T16:42:14.7535832Z Processing triggers for man-db (2.12.0-4build2) ...
+host-contracts	Install host compiler	2026-10-15T16:42:14.7557371Z Not building database; man-db/auto-update is not 'true'.
+host-contracts	Install host compiler	2026-10-15T16:42:14.7569211Z Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
+host-contracts	Install host compiler	2026-10-15T16:42:15.4035163Z 
+host-contracts	Install host compiler	2026-10-15T16:42:15.4035850Z Running kernel seems to be up-to-date.
+host-contracts	Install host compiler	2026-10-15T16:42:15.4036311Z 
+host-contracts	Install host compiler	2026-10-15T16:42:15.4036437Z No services need to be restarted.
+host-contracts	Install host compiler	2026-10-15T16:42:15.4036663Z 
+host-contracts	Install host compiler	2026-10-15T16:42:15.4036763Z No containers need to be restarted.
+host-contracts	Install host compiler	2026-10-15T16:42:15.4036954Z 
+host-contracts	Install host compiler	2026-10-15T16:42:15.4037076Z No user sessions are running outdated binaries.
+host-contracts	Install host compiler	2026-10-15T16:42:15.4037300Z 
+host-contracts	Install host compiler	2026-10-15T16:42:15.4037493Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+host-contracts	Configure without CUDA or model fixtures	﻿2026-10-15T16:42:16.3608164Z ##[group]Run cmake -S tests/host -B build/public-host -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-14
+host-contracts	Configure without CUDA or model fixtures	2026-10-15T16:42:16.3608966Z ^[[36;1mcmake -S tests/host -B build/public-host -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-14^[[0m
+host-contracts	Configure without CUDA or model fixtures	2026-10-15T16:42:16.3678282Z shell: /usr/bin/bash -e {0}
+host-contracts	Configure without CUDA or model fixtures	2026-10-15T16:42:16.3678562Z ##[endgroup]
+host-contracts	Configure without CUDA or model fixtures	2026-10-15T16:42:17.6590921Z -- The CXX compiler identification is GNU 14.2.0
+host-contracts	Configure without CUDA or model fixtures	2026-10-15T16:42:17.6755650Z -- Detecting CXX compiler ABI info
+host-contracts	Configure without CUDA or model fixtures	2026-10-15T16:42:17.8963888Z -- Detecting CXX compiler ABI info - done
+host-contracts	Configure without CUDA or model fixtures	2026-10-15T16:42:17.9148315Z -- Check for working CXX compiler: /usr/bin/g++-14 - skipped
+host-contracts	Configure without CUDA or model fixtures	2026-10-15T16:42:17.9154283Z -- Detecting CXX compile features
+host-contracts	Configure without CUDA or model fixtures	2026-10-15T16:42:17.9163587Z -- Detecting CXX compile features - done
+host-contracts	Configure without CUDA or model fixtures	2026-10-15T16:42:17.9309021Z -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+host-contracts	Configure without CUDA or model fixtures	2026-10-15T16:42:18.2081592Z -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+host-contracts	Configure without CUDA or model fixtures	2026-10-15T16:42:18.2096755Z -- Found Threads: TRUE
+host-contracts	Configure without CUDA or model fixtures	2026-10-15T16:42:18.3653854Z -- Found Python3: /usr/bin/python3.12 (found version "3.12.3") found components: Interpreter
+host-contracts	Configure without CUDA or model fixtures	2026-10-15T16:42:18.3675565Z -- Configuring done (2.0s)
+host-contracts	Configure without CUDA or model fixtures	2026-10-15T16:42:18.3783257Z -- Generating done (0.0s)
+host-contracts	Configure without CUDA or model fixtures	2026-10-15T16:42:18.3786546Z -- Build files have been written to: /home/runner/work/qwen4-thor/qwen4-thor/build/public-host
+host-contracts	Build with warnings as errors	﻿2026-10-15T16:42:18.3852713Z ##[group]Run cmake --build build/public-host --parallel 2
+host-contracts	Build with warnings as errors	2026-10-15T16:42:18.3853156Z ^[[36;1mcmake --build build/public-host --parallel 2^[[0m
+host-contracts	Build with warnings as errors	2026-10-15T16:42:18.3920072Z shell: /usr/bin/bash -e {0}
+host-contracts	Build with warnings as errors	2026-10-15T16:42:18.3920336Z ##[endgroup]
+host-contracts	Build with warnings as errors	2026-10-15T16:42:18.4174453Z [  4%] Building CXX object CMakeFiles/q4t_router_trace_check.dir/home/runner/work/qwen4-thor/qwen4-thor/tools/trace/router_trace_check.cpp.o
+host-contracts	Build with warnings as errors	2026-10-15T16:42:18.4178921Z [  8%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/runner/work/qwen4-thor/qwen4-thor/src/trace/sha256.cpp.o
+host-contracts	Build with warnings as errors	2026-10-15T16:42:19.5592417Z [ 12%] Building CXX object CMakeFiles/q4t_router_trace_check.dir/home/runner/work/qwen4-thor/qwen4-thor/src/trace/router_trace.cpp.o
+host-contracts	Build with warnings as errors	2026-10-15T16:42:19.8633870Z [ 16%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/runner/work/qwen4-thor/qwen4-thor/tests/router_trace_hash_test.cpp.o
+host-contracts	Build with warnings as errors	2026-10-15T16:42:20.3954253Z [ 20%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/runner/work/qwen4-thor/qwen4-thor/tests/router_trace_test.cpp.o
+host-contracts	Build with warnings as errors	2026-10-15T16:42:21.1493485Z [ 25%] Linking CXX executable q4t_router_trace_check
+host-contracts	Build with warnings as errors	2026-10-15T16:42:21.2006602Z [ 25%] Built target q4t_router_trace_check
+host-contracts	Build with warnings as errors	2026-10-15T16:42:21.2082694Z [ 29%] Building CXX object CMakeFiles/q4t_gpu_cache_schedule.dir/home/runner/work/qwen4-thor/qwen4-thor/tools/trace/gpu_cache_schedule.cpp.o
+host-contracts	Build with warnings as errors	2026-10-15T16:42:21.8916629Z [ 33%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/runner/work/qwen4-thor/qwen4-thor/src/trace/router_trace.cpp.o
+host-contracts	Build with warnings as errors	2026-10-15T16:42:23.2977177Z [ 37%] Linking CXX executable q4t_gpu_cache_schedule
+host-contracts	Build with warnings as errors	2026-10-15T16:42:23.3552315Z [ 37%] Built target q4t_gpu_cache_schedule
+host-contracts	Build with warnings as errors	2026-10-15T16:42:23.3630182Z [ 41%] Building CXX object CMakeFiles/q4t_offload_sort.dir/home/runner/work/qwen4-thor/qwen4-thor/tools/trace/offload_sort.cpp.o
+host-contracts	Build with warnings as errors	2026-10-15T16:42:23.4598889Z [ 45%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/runner/work/qwen4-thor/qwen4-thor/tests/test_main.cpp.o
+host-contracts	Build with warnings as errors	2026-10-15T16:42:24.4301587Z [ 50%] Linking CXX executable q4t_offload_sort
+host-contracts	Build with warnings as errors	2026-10-15T16:42:24.4844169Z [ 50%] Built target q4t_offload_sort
+host-contracts	Build with warnings as errors	2026-10-15T16:42:24.4868318Z [ 54%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/runner/work/qwen4-thor/qwen4-thor/tests/server_options_test.cpp.o
+host-contracts	Build with warnings as errors	2026-10-15T16:42:24.6190856Z [ 58%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/runner/work/qwen4-thor/qwen4-thor/tests/server_mtp_policy_test.cpp.o
+host-contracts	Build with warnings as errors	2026-10-15T16:42:25.1291240Z [ 62%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/runner/work/qwen4-thor/qwen4-thor/tests/server_scheduler_submission_test.cpp.o
+host-contracts	Build with warnings as errors	2026-10-15T16:42:25.3379825Z [ 66%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/runner/work/qwen4-thor/qwen4-thor/src/server/server_options.cpp.o
+host-contracts	Build with warnings as errors	2026-10-15T16:42:26.1086566Z [ 70%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/runner/work/qwen4-thor/qwen4-thor/tests/io_json_test.cpp.o
+host-contracts	Build with warnings as errors	2026-10-15T16:42:26.3762375Z [ 75%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/runner/work/qwen4-thor/qwen4-thor/tests/model_sequence_test.cpp.o
+host-contracts	Build with warnings as errors	2026-10-15T16:42:27.1146695Z [ 79%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/runner/work/qwen4-thor/qwen4-thor/tests/server_http_request_test.cpp.o
+host-contracts	Build with warnings as errors	2026-10-15T16:42:27.5220394Z [ 83%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/runner/work/qwen4-thor/qwen4-thor/tests/server_chat_contract_test.cpp.o
+host-contracts	Build with warnings as errors	2026-10-15T16:42:28.2267304Z [ 87%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/runner/work/qwen4-thor/qwen4-thor/src/server/http_request.cpp.o
+host-contracts	Build with warnings as errors	2026-10-15T16:42:28.7064491Z [ 91%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/runner/work/qwen4-thor/qwen4-thor/src/server/chat_contract.cpp.o
+host-contracts	Build with warnings as errors	2026-10-15T16:42:29.4378767Z [ 95%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/runner/work/qwen4-thor/qwen4-thor/src/io/json.cpp.o
+host-contracts	Build with warnings as errors	2026-10-15T16:42:30.7574208Z [100%] Linking CXX executable q4t_host_tests
+host-contracts	Build with warnings as errors	2026-10-15T16:42:30.8183759Z [100%] Built target q4t_host_tests
+host-contracts	Run all public host contracts	﻿2026-10-15T16:42:30.8269099Z ##[group]Run ctest --test-dir build/public-host --no-tests=error --output-on-failure --verbose
+host-contracts	Run all public host contracts	2026-10-15T16:42:30.8269825Z ^[[36;1mctest --test-dir build/public-host --no-tests=error --output-on-failure --verbose^[[0m
+host-contracts	Run all public host contracts	2026-10-15T16:42:30.8338108Z shell: /usr/bin/bash -e {0}
+host-contracts	Run all public host contracts	2026-10-15T16:42:30.8338379Z ##[endgroup]
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.3629941Z Internal ctest changing into directory: /home/runner/work/qwen4-thor/qwen4-thor/build/public-host
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.3631186Z UpdateCTestConfiguration  from :/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/DartConfiguration.tcl
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.4381996Z UpdateCTestConfiguration  from :/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/DartConfiguration.tcl
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.4426384Z Test project /home/runner/work/qwen4-thor/qwen4-thor/build/public-host
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.4431237Z Constructing a list of tests
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.4773308Z Done constructing a list of tests
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.4773809Z Updating test list for fixtures
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.4774320Z Added 0 tests to meet fixture requirements
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.5056971Z Checking test dependency graph...
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.5057391Z Checking test dependency graph end
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.5230509Z test 1
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.5230913Z       Start  1: q4t_public_host_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.5231242Z 
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.5231646Z 1: Test command: /home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_host_tests
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.5232291Z 1: Working Directory: /home/runner/work/qwen4-thor/qwen4-thor/build/public-host
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.5319513Z 1: Test timeout computed to be: 180
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7473034Z 1: [PASS] router_trace_hash_known_vectors
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7473496Z 1: [PASS] router_trace_chunked_prefill_and_decode
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7473862Z 1: [PASS] router_trace_commit_requires_all_evidence
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7474242Z 1: [PASS] router_trace_rejects_layer_and_id_corruption
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7474624Z 1: [PASS] router_trace_positions_and_request_identity
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7474976Z 1: [PASS] router_trace_failed_forward_is_diagnostic
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7475286Z 1: [PASS] router_trace_bounds_and_empty_run
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7475602Z 1: [PASS] router_trace_wire_roundtrip_and_truncation
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7476157Z 1: [PASS] router_trace_write_failure_cannot_finish
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7476646Z 1: [PASS] router_trace_undrained_work_prevents_reuse
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7477147Z 1: [PASS] router_trace_counters_and_flush_failure
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7477651Z 1: [PASS] serve_default_is_single_text_greedy
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7478161Z 1: [PASS] serve_capabilities_allow_explicit_combinations
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7478639Z 1: [PASS] serve_rejects_malformed_numeric_options
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7478962Z 1: [PASS] serve_mtp_k_is_explicit_and_bounded
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7479317Z 1: [PASS] serve_validates_before_load_and_preserves_failed_parse
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7479700Z 1: [PASS] serve_prefill_bound_precedes_workspace_sizing
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7480054Z 1: [PASS] serve_trace_options_are_explicit_and_bounded
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7480374Z 1: [PASS] mtp_step_preserves_context_tail
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7480692Z 1: [PASS] mtp_step_rejects_invalid_or_overflowing_ranges
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7481058Z 1: [PASS] mtp_generation_step_preserves_output_and_context_tail
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7481462Z 1: [PASS] mtp_generation_step_rejects_invalid_or_overflowing_ranges
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7481837Z 1: [PASS] mtp_sequential_step_compatibility_name
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7482156Z 1: [PASS] scheduler_submission_rejects_after_stop
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7482485Z 1: [PASS] scheduler_submission_drains_before_shutdown
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7482860Z 1: [PASS] scheduler_submission_keeps_borrowed_buffer_until_done
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7483199Z 1: [PASS] json_parse_object_scalars
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7483463Z 1: [PASS] json_parse_nested_arrays
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7483720Z 1: [PASS] json_parse_string_escapes
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7484277Z 1: [PASS] json_parse_errors
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7484557Z 1: [PASS] json_rejects_deep_input_before_recursing
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7485103Z 1: [PASS] json_resource_limits_and_duplicate_keys
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7485455Z 1: [PASS] json_strict_numbers_and_safe_integer_conversion
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7485779Z 1: [PASS] json_strict_unicode_and_controls
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7486241Z 1: [PASS] sequence_commit_requires_completion
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7486571Z 1: [PASS] sequence_rejects_reentry_and_early_recycle
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7486905Z 1: [PASS] sequence_failed_submission_still_drains
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7487243Z 1: [PASS] sequence_completion_failure_preserves_prefix
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7487592Z 1: [PASS] sequence_invalid_input_does_not_poison_prefix
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7487920Z 1: [PASS] sequence_chunk_and_decode_share_commit
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7488248Z 1: [PASS] sequence_batch_failure_is_atomic
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7488571Z 1: [PASS] sequence_rejects_duplicate_completion
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7488919Z 1: [PASS] http_valid_length_and_header_names
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7489221Z 1: [PASS] http_rejects_ambiguous_framing
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7489515Z 1: [PASS] http_request_line_and_header_budget
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7489812Z 1: [PASS] http_body_capacity_and_trailing_bytes
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7490128Z 1: [PASS] http_absolute_deadline_and_body_budget
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7490442Z 1: [PASS] chat_contract_greedy_neutral_options
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7490778Z 1: [PASS] chat_contract_rejects_unimplemented_constraints
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7491168Z 1: [PASS] chat_contract_rejects_wrong_types_and_ambiguous_input
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7491537Z 1: [PASS] chat_contract_template_options_are_explicit
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7491871Z 1: [PASS] chat_contract_media_rejected_before_decoding
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7492186Z 1: 52 tests, 52 passed, 0 failed, 0 skipped
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7492595Z  1/19 Test  #1: q4t_public_host_contracts ................   Passed    0.22 sec
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7718524Z test 2
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7718899Z       Start  2: q4t_router_trace_wire_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7719241Z 
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7720309Z 2: Test command: /usr/bin/python3.12 "-B" "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace/test_wire.py" "--checker" "/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_router_trace_check" "--output" "/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/trace-wire-tests"
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7721599Z 2: Working Directory: /home/runner/work/qwen4-thor/qwen4-thor/build/public-host
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.7722021Z 2: Test timeout computed to be: 180
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.8724866Z 2: 49 independent wire/CLI cases passed; evidence: /home/runner/work/qwen4-thor/qwen4-thor/build/public-host/trace-wire-tests/run-oqudzyb9
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.8788742Z  2/19 Test  #2: q4t_router_trace_wire_contracts ..........   Passed    0.11 sec
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.8790977Z test 3
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.8791349Z       Start  3: q4t_router_trace_source_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.8791604Z 
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.8792601Z 3: Test command: /usr/bin/python3.12 "-B" "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace/test_analyze.py" "--checker" "/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_router_trace_check" "--output" "/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/trace-analysis-tests"
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.8793965Z 3: Working Directory: /home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.8794438Z 3: Environment variables: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.8795050Z 3:  Q4T_TEST_OUTPUT_DIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_router_trace_source_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.8795744Z 3:  TMPDIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_router_trace_source_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.8796416Z 3:  PYTHONDONTWRITEBYTECODE=1
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.8796697Z 3: Test timeout computed to be: 180
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.9464813Z 3: 15 capture analysis checks passed; evidence: /home/runner/work/qwen4-thor/qwen4-thor/build/public-host/trace-analysis-tests/run-flbyyl_k
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.9531697Z  3/19 Test  #3: q4t_router_trace_source_contracts ........   Passed    0.07 sec
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.9533835Z test 4
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.9534286Z       Start  4: q4t_router_cache_replay_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.9534551Z 
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.9534931Z 4: Test command: /usr/bin/python3.12 "-B" "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace/test_replay.py"
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.9535641Z 4: Working Directory: /home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.9536265Z 4: Environment variables: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.9536753Z 4:  Q4T_TEST_OUTPUT_DIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_router_cache_replay_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.9537439Z 4:  TMPDIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_router_cache_replay_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.9537929Z 4:  PYTHONDONTWRITEBYTECODE=1
+host-contracts	Run all public host contracts	2026-10-15T16:42:31.9538420Z 4: Test timeout computed to be: 180
+host-contracts	Run all public host contracts	2026-10-15T16:42:32.0212175Z 4: .............
+host-contracts	Run all public host contracts	2026-10-15T16:42:32.0212700Z 4: ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-10-15T16:42:32.0213271Z 4: Ran 13 tests in 0.009s
+host-contracts	Run all public host contracts	2026-10-15T16:42:32.0213590Z 4: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:32.0213827Z 4: OK
+host-contracts	Run all public host contracts	2026-10-15T16:42:32.0301025Z  4/19 Test  #4: q4t_router_cache_replay_contracts ........   Passed    0.08 sec
+host-contracts	Run all public host contracts	2026-10-15T16:42:32.0302682Z test 5
+host-contracts	Run all public host contracts	2026-10-15T16:42:32.0303044Z       Start  5: q4t_router_shadow_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:32.0303305Z 
+host-contracts	Run all public host contracts	2026-10-15T16:42:32.0304386Z 5: Test command: /usr/bin/python3.12 "-B" "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace/test_shadow.py" "--checker" "/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_router_trace_check" "--output" "/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/shadow-contracts"
+host-contracts	Run all public host contracts	2026-10-15T16:42:32.0306593Z 5: Working Directory: /home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace
+host-contracts	Run all public host contracts	2026-10-15T16:42:32.0307271Z 5: Environment variables: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:32.0308004Z 5:  Q4T_TEST_OUTPUT_DIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_router_shadow_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:32.0309000Z 5:  TMPDIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_router_shadow_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:32.0309703Z 5:  PYTHONDONTWRITEBYTECODE=1
+host-contracts	Run all public host contracts	2026-10-15T16:42:32.0310128Z 5: Test timeout computed to be: 180
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.3867651Z 5: .............
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.3868204Z 5: ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.3868720Z 5: Ran 13 tests in 10.295s
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.3869045Z 5: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.3869277Z 5: OK
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.3964411Z  5/19 Test  #5: q4t_router_shadow_contracts ..............   Passed   10.37 sec
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.3966303Z test 6
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.3966693Z       Start  6: q4t_router_distribution_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.3966998Z 
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.3967961Z 6: Test command: /usr/bin/python3.12 "-B" "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace/test_distribution.py" "--checker" "/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_router_trace_check"
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.3971132Z 6: Working Directory: /home/runner/work/qwen4-thor/qwen4-thor/build/public-host
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.3971819Z 6: Test timeout computed to be: 180
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.6510919Z 6: ........
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.6511438Z 6: ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.6511965Z 6: Ran 8 tests in 0.086s
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.6512275Z 6: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.6512509Z 6: OK
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.6739558Z  6/19 Test  #6: q4t_router_distribution_contracts ........   Passed    0.28 sec
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.6741618Z test 7
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.6741938Z       Start  7: q4t_router_hybrid_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.6742251Z 
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.6742841Z 7: Test command: /usr/bin/python3.12 "-B" "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace/test_hybrid.py"
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.6743918Z 7: Working Directory: /home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.6744579Z 7: Environment variables: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.6745042Z 7:  Q4T_TEST_OUTPUT_DIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_router_hybrid_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.6745687Z 7:  TMPDIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_router_hybrid_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.6746435Z 7:  PYTHONDONTWRITEBYTECODE=1
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.6746702Z 7: Test timeout computed to be: 180
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.7482519Z 7: ......
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.7482974Z 7: ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.7483504Z 7: Ran 6 tests in 0.000s
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.7483829Z 7: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.7484073Z 7: OK
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.7577908Z  7/19 Test  #7: q4t_router_hybrid_contracts ..............   Passed    0.08 sec
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.7579812Z test 8
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.7580170Z       Start  8: q4t_offload_trace_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.7580474Z 
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.7581516Z 8: Test command: /usr/bin/python3.12 "-B" "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace/test_offload_trace.py" "--checker" "/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_router_trace_check" "--output" "/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/offload-trace-contracts"
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.7582881Z 8: Working Directory: /home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.7583313Z 8: Environment variables: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.7583783Z 8:  Q4T_TEST_OUTPUT_DIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_offload_trace_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.7584441Z 8:  TMPDIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_offload_trace_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.7584901Z 8:  PYTHONDONTWRITEBYTECODE=1
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.7585182Z 8: Test timeout computed to be: 180
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.8726771Z 8: .................
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.8727349Z 8: ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.8727874Z 8: Ran 17 tests in 0.059s
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.8728197Z 8: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.8728429Z 8: OK
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.8813567Z  8/19 Test  #8: q4t_offload_trace_contracts ..............   Passed    0.12 sec
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.8815569Z test 9
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.8816066Z       Start  9: q4t_offload_log_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.8816365Z 
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.8816786Z 9: Test command: /usr/bin/python3.12 "-B" "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace/test_offload_log.py"
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.8817524Z 9: Working Directory: /home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.8817963Z 9: Environment variables: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.8818423Z 9:  Q4T_TEST_OUTPUT_DIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_offload_log_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.8819070Z 9:  TMPDIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_offload_log_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.8819529Z 9:  PYTHONDONTWRITEBYTECODE=1
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.8819805Z 9: Test timeout computed to be: 180
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.9370141Z 9: ...
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.9370525Z 9: ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.9370910Z 9: Ran 3 tests in 0.003s
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.9371140Z 9: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.9371320Z 9: OK
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.9447506Z  9/19 Test  #9: q4t_offload_log_contracts ................   Passed    0.06 sec
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.9449325Z test 10
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.9449722Z       Start 10: q4t_gpu_cache_schedule_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.9449956Z 
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.9450999Z 10: Test command: /usr/bin/python3.12 "-B" "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace/test_gpu_cache_schedule.py" "--helper" "/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_gpu_cache_schedule" "--sort-helper" "/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_offload_sort"
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.9452632Z 10: Working Directory: /home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.9453339Z 10: Environment variables: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.9453822Z 10:  Q4T_TEST_OUTPUT_DIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_gpu_cache_schedule_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.9454508Z 10:  TMPDIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_gpu_cache_schedule_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.9454975Z 10:  PYTHONDONTWRITEBYTECODE=1
+host-contracts	Run all public host contracts	2026-10-15T16:42:42.9455246Z 10: Test timeout computed to be: 180
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.0971804Z 10: ...........
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.0972362Z 10: ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.0972874Z 10: Ran 11 tests in 0.103s
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.0973193Z 10: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.0973426Z 10: OK
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.1063378Z 10/19 Test #10: q4t_gpu_cache_schedule_contracts .........   Passed    0.16 sec
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.1065273Z test 11
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.1065697Z       Start 11: q4t_gpu_cache_replay_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.1066149Z 
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.1066602Z 11: Test command: /usr/bin/python3.12 "-B" "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace/test_gpu_cache_replay.py"
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.1067335Z 11: Working Directory: /home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.1067788Z 11: Environment variables: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.1068277Z 11:  Q4T_TEST_OUTPUT_DIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_gpu_cache_replay_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.1068967Z 11:  TMPDIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_gpu_cache_replay_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.1069432Z 11:  PYTHONDONTWRITEBYTECODE=1
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.1069709Z 11: Test timeout computed to be: 180
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.2208097Z 11: ...........................
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.2208673Z 11: ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.2209051Z 11: Ran 27 tests in 0.070s
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.2209317Z 11: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.2209502Z 11: OK
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.2284513Z 11/19 Test #11: q4t_gpu_cache_replay_contracts ...........   Passed    0.12 sec
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.2286899Z test 12
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.2287268Z       Start 12: q4t_gpu_cache_study_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.2287584Z 
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.2288202Z 12: Test command: /usr/bin/python3.12 "-B" "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace/test_gpu_cache_study.py"
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.2289329Z 12: Working Directory: /home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.2289925Z 12: Environment variables: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.2290687Z 12:  Q4T_TEST_OUTPUT_DIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_gpu_cache_study_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.2311332Z 12:  TMPDIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_gpu_cache_study_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.2312034Z 12:  PYTHONDONTWRITEBYTECODE=1
+host-contracts	Run all public host contracts	2026-10-15T16:42:43.2312436Z 12: Test timeout computed to be: 180
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.0776208Z 12: ...................
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.0776854Z 12: ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.0777412Z 12: Ran 19 tests in 10.746s
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.0777757Z 12: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.0778021Z 12: OK
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.0968208Z 12/19 Test #12: q4t_gpu_cache_study_contracts ............   Passed   10.87 sec
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.0969648Z test 13
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.0970000Z       Start 13: q4t_decode_supply_bounds_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.0970362Z 
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.0970874Z 13: Test command: /usr/bin/python3.12 "-B" "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace/test_decode_supply_bounds.py"
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.0971669Z 13: Working Directory: /home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.0972160Z 13: Environment variables: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.0972997Z 13:  Q4T_TEST_OUTPUT_DIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_decode_supply_bounds_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.0974509Z 13:  TMPDIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_decode_supply_bounds_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.0975286Z 13:  PYTHONDONTWRITEBYTECODE=1
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.0975558Z 13: Test timeout computed to be: 180
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.1760658Z 13: ......................
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.1761114Z 13: ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.1761492Z 13: Ran 22 tests in 0.035s
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.1761728Z 13: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.1761908Z 13: OK
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.1847600Z 13/19 Test #13: q4t_decode_supply_bounds_contracts .......   Passed    0.09 sec
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.1849584Z test 14
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.1849954Z       Start 14: q4t_analyze_decode_supply_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.1850307Z 
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.1850755Z 14: Test command: /usr/bin/python3.12 "-B" "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace/test_analyze_decode_supply.py"
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.1851556Z 14: Working Directory: /home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.1852210Z 14: Environment variables: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.1852980Z 14:  Q4T_TEST_OUTPUT_DIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_analyze_decode_supply_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.1854146Z 14:  TMPDIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_analyze_decode_supply_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.1854759Z 14:  PYTHONDONTWRITEBYTECODE=1
+host-contracts	Run all public host contracts	2026-10-15T16:42:54.1855035Z 14: Test timeout computed to be: 180
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.7782101Z 14: ...................
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.7782695Z 14: ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.7783222Z 14: Ran 19 tests in 2.502s
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.7783539Z 14: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.7783772Z 14: OK
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.7947201Z 14/19 Test #14: q4t_analyze_decode_supply_contracts ......   Passed    2.61 sec
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.7948584Z test 15
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.7949265Z       Start 15: q4t_mirror_retention_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.7949613Z 
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.7950290Z 15: Test command: /usr/bin/python3.12 "-B" "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace/test_mirror_retention.py"
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.7951498Z 15: Working Directory: /home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.7952200Z 15: Environment variables: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.7952932Z 15:  Q4T_TEST_OUTPUT_DIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_mirror_retention_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.7953622Z 15:  TMPDIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_mirror_retention_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.7954110Z 15:  PYTHONDONTWRITEBYTECODE=1
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.7954386Z 15: Test timeout computed to be: 180
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.8498471Z 15: ..........................
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.8499095Z 15: ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.8499669Z 15: Ran 26 tests in 0.006s
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.8499910Z 15: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.8500114Z 15: OK
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.8573687Z 15/19 Test #15: q4t_mirror_retention_contracts ...........   Passed    0.06 sec
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.8576611Z test 16
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.8576982Z       Start 16: q4t_analyze_mirror_retention_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.8577291Z 
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.8577910Z 16: Test command: /usr/bin/python3.12 "-B" "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace/test_analyze_mirror_retention.py"
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.8578802Z 16: Working Directory: /home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/trace
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.8579261Z 16: Environment variables: 
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.8579779Z 16:  Q4T_TEST_OUTPUT_DIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_analyze_mirror_retention_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.8580523Z 16:  TMPDIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_analyze_mirror_retention_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.8581349Z 16:  PYTHONDONTWRITEBYTECODE=1
+host-contracts	Run all public host contracts	2026-10-15T16:42:56.8581623Z 16: Test timeout computed to be: 180
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.0540999Z 16: ....................
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.0541605Z 16: ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.0542108Z 16: Ran 20 tests in 3.093s
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.0542349Z 16: 
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.0542536Z 16: OK
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.0713928Z 16/19 Test #16: q4t_analyze_mirror_retention_contracts ...   Passed    3.21 sec
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.0715679Z test 17
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.0716146Z       Start 17: q4t_physical_ram_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.0716460Z 
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.0716969Z 17: Test command: /usr/bin/python3.12 "-B" "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/evalscope/test_physical_ram.py"
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.0717758Z 17: Working Directory: /home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/evalscope
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.0718250Z 17: Environment variables: 
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.0719029Z 17:  Q4T_TEST_OUTPUT_DIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_physical_ram_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.0720066Z 17:  TMPDIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_physical_ram_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.0720818Z 17:  PYTHONDONTWRITEBYTECODE=1
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.0721085Z 17: Test timeout computed to be: 180
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.1996545Z 17: ............
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.1997009Z 17: ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.1997384Z 17: Ran 12 tests in 0.051s
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.1997619Z 17: 
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.1997799Z 17: OK
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.1998516Z 17: {"gate": "INDETERMINATE", "sample_count": 2, "stop_reason": "STOP_FILE", "summary": "/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_physical_ram_contracts/tmpncebsoj4/out/summary.json"}
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2130101Z 17/19 Test #17: q4t_physical_ram_contracts ...............   Passed    0.14 sec
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2132375Z test 18
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2132722Z       Start 18: q4t_response_identity_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2133073Z 
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2133524Z 18: Test command: /usr/bin/python3.12 "-B" "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/evalscope/test_response_identity.py"
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2134288Z 18: Working Directory: /home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/evalscope
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2134760Z 18: Environment variables: 
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2135278Z 18:  Q4T_TEST_OUTPUT_DIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_response_identity_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2136790Z 18:  TMPDIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_response_identity_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2137280Z 18:  PYTHONDONTWRITEBYTECODE=1
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2137546Z 18: Test timeout computed to be: 180
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2536998Z 18: ........
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2537454Z 18: ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2537843Z 18: Ran 8 tests in 0.001s
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2538078Z 18: 
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2538272Z 18: OK
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2599875Z 18/19 Test #18: q4t_response_identity_contracts ..........   Passed    0.05 sec
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2601579Z test 19
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2601928Z       Start 19: q4t_request_cancellation_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2602265Z 
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2602719Z 19: Test command: /usr/bin/python3.12 "-B" "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/evalscope/test_request_cancellation.py"
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2603583Z 19: Working Directory: /home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/evalscope
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2604053Z 19: Environment variables: 
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2604545Z 19:  Q4T_TEST_OUTPUT_DIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_request_cancellation_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2605254Z 19:  TMPDIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_request_cancellation_contracts
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2606171Z 19:  PYTHONDONTWRITEBYTECODE=1
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.2606437Z 19: Test timeout computed to be: 180
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.3291214Z 19: .....................
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.3291659Z 19: ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.3292031Z 19: Ran 21 tests in 0.003s
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.3292272Z 19: 
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.3292451Z 19: OK
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.3399580Z 19/19 Test #19: q4t_request_cancellation_contracts .......   Passed    0.08 sec
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.3403232Z 
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.3403414Z 100% tests passed, 0 tests failed out of 19
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.3403709Z 
+host-contracts	Run all public host contracts	2026-10-15T16:43:00.3403865Z Total Test time (real) =  28.90 sec
+host-contracts	Verify strict test-runner failures	﻿2026-10-15T16:43:00.4539149Z ##[group]Run python3 tools/verify/test_gate/run.py --cxx g++-14 --output build/public-host/test-gate
+host-contracts	Verify strict test-runner failures	2026-10-15T16:43:00.4539850Z ^[[36;1mpython3 tools/verify/test_gate/run.py --cxx g++-14 --output build/public-host/test-gate^[[0m
+host-contracts	Verify strict test-runner failures	2026-10-15T16:43:00.4606251Z shell: /usr/bin/bash -e {0}
+host-contracts	Verify strict test-runner failures	2026-10-15T16:43:00.4606546Z ##[endgroup]
+host-contracts	Verify strict test-runner failures	2026-10-15T16:43:03.0925786Z 16 runner contract cases passed
+host-contracts	Check frozen host evidence audit	﻿2026-10-15T16:43:03.1034953Z ##[group]Run python3 -B tools/release/test_host_gate_audit.py
+host-contracts	Check frozen host evidence audit	2026-10-15T16:43:03.1035705Z ^[[36;1mpython3 -B tools/release/test_host_gate_audit.py^[[0m
+host-contracts	Check frozen host evidence audit	2026-10-15T16:43:03.1128828Z shell: /usr/bin/bash -e {0}
+host-contracts	Check frozen host evidence audit	2026-10-15T16:43:03.1129129Z ##[endgroup]
+host-contracts	Check frozen host evidence audit	2026-10-15T16:43:03.1802126Z ....
+host-contracts	Check frozen host evidence audit	2026-10-15T16:43:03.1802626Z ----------------------------------------------------------------------
+host-contracts	Check frozen host evidence audit	2026-10-15T16:43:03.1803157Z Ran 4 tests in 0.005s
+host-contracts	Check frozen host evidence audit	2026-10-15T16:43:03.1803364Z 
+host-contracts	Check frozen host evidence audit	2026-10-15T16:43:03.1803541Z OK
+host-contracts	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	﻿2026-10-15T16:43:03.2001149Z Post job cleanup.
+host-contracts	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:43:03.2857260Z [command]/usr/bin/git version
+host-contracts	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:43:03.2893880Z git version 2.55.0
+host-contracts	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:43:03.2927023Z Temporarily overriding HOME='/home/runner/work/_temp/5db55778-b016-4e4f-aba2-f2aff46d6cf3' before making global git config changes
+host-contracts	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:43:03.2928321Z Adding repository directory to the temporary git global config as a safe directory
+host-contracts	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:43:03.2932791Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/qwen4-thor/qwen4-thor
+host-contracts	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:43:03.2963329Z Removing SSH command configuration
+host-contracts	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:43:03.2969678Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+host-contracts	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:43:03.3004590Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+host-contracts	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:43:03.3237236Z Removing HTTP extra header
+host-contracts	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:43:03.3241977Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+host-contracts	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:43:03.3274658Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+host-contracts	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:43:03.3503018Z Removing includeIf entries pointing to credentials config files
+host-contracts	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:43:03.3508869Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+host-contracts	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-10-15T16:43:03.3542128Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+host-contracts	Complete job	﻿2026-10-15T16:43:03.3919034Z Cleaning up orphan processes

@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-16",
+  "scope": "T>1 replacement plus shared main correctness fixes; single-stream k3; five tiers off/on three repeats; 11 retrieval tasks per mode; explicit legacy diagnostic failures retained",
+  "head": "577dac0444a49b723282f2b90816807650273f2d",
+  "main": "7f6a69c0c8af3919ada8a3359575e049e485e878",
+  "sha256": {
+    "build/q4t": "26639190711e0a2179e3695e33f10ad5fd055578b3f6d38adcc7f955df6557b7",
+    "build/q4t_tests": "992c89d7431bba6a70a64ea2d374687edb1aa39226d24788ef1ebce5abc6abd4",
+    "build/CMakeCache.txt": "ca2e60a10bb4c6c3d653a73437283e543797d119b5fbd7e9cdc82835af549e06",
+    "src/model/model.cu": "b87696cefcd3c1d6c4da39cca0fd7794688392516387841bf6d9c3dd19595302",
+    "src/mtp/mtp.cu": "07442692334bd1493708467f13c25b36aa4530c41b66c510883011e80553c8aa",
+    "src/server/chat_generation.cpp": "c4f86ac5e17cda97db3a83a7fa2e310b8a928be1421564221e9875563e1a154a",
+    "src/server/chat_scheduler.cpp": "209ced41298444ee3219341ff5a17b46bce70f3d37ef720b868f6ea85af722f1",
+    "include/q4t/mtp/mtp.h": "014977446eb7ea08709d0219a1d92aa53289056fe3f7484a7e26f8bb7ad91534",
+    "tools/evalscope/run_acceptance.py": "43a30bb7605af0659e7d960400efaea8182e97dcf5afa4c8b52159349f44427b"
+  }
+}

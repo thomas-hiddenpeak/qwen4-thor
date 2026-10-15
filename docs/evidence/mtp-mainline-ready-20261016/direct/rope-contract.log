@@ -1,0 +1,6 @@
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+  position=13 delta=0 rope=[13,13,13] expected=13 target_mismatches=0 other_writes=0 nonfinite_logits=0
+  position=14 delta=5 rope=[19,19,19] expected=19 target_mismatches=0 other_writes=0 nonfinite_logits=0
+[PASS] model_decode_batch_multi_rope_position
+1 tests, 1 passed, 0 failed, 0 skipped

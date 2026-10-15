@@ -1,0 +1,18 @@
+
+
+<think>
+The user wants me to write a detailed technical review of these records in at least 500 words, explaining measurement, storage, scheduling, and correctness. Let me analyze the records to identify the distinct themes and write a comprehensive technical review.
+
+Looking at the records, I can identify several distinct categories of technical notes that repeat throughout:
+
+1. **Cache/Memory**: "A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic."
+
+2. **Storage Worker/Lookup Table**: "The storage worker reads selected rows from the lookup table. The table is much larger than the small buffer used by one request."
+
+3. **Evaluation/Reproducibility**: "The evaluation stores the complete request and response with the build identifier. The next run uses the same data so that the results remain comparable."
+
+4. **Code Quality/Regression**: "A useful change can reduce code complexity while keeping the same accuracy and speed. A faster result on one input does not justify a regression on another input."
+
+5. **Scheduler/State Management**: "The scheduler tracks each request separately. It must preserve the correct state when a request finishes or another request arrives."
+
+6. **Latency

@@ -238,3 +238,11 @@ merge-base 的 52 提交几乎全部是 MTP 主线交付（sequential verifier +
 与 test_request_cancellation.py 的21项通用格式/计数/fixture/HTTP读取合同，
 删除依赖旧 decode_path/verifier 会计及 acceptance_mode 的11项专属测试。
 CMake 的公共合同入口继续保留，本机21项通过；不等同于新增真实取消场景验收。
+
+### §9 最终验收与未闭合边界（2026-10-16）
+
+冻结矩阵五档、两侧检索、尾部/取消及公共CI通过，精确证据见
+[MTP_MAINLINE_READY_2026-10-16](MTP_MAINLINE_READY_2026-10-16.md)。
+5项GPU诊断仍失败，测试夹具修正未放宽阈值；不能把历史失败或性能达标
+当成它们通过。本轮指定HTTP验收完成，PR转待审查、main不移动；
+§8.4第6步尚未执行。
