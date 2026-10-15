@@ -1,0 +1,12 @@
+[  1%] Built target q4t_runtime
+[  6%] Built target q4t_trace
+[ 14%] Built target q4t_ple
+[ 18%] Built target q4t_io
+[ 19%] Built target q4t_text
+[ 26%] Built target q4t_quant
+[ 47%] Built target q4t_model
+[ 47%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_verify_ckpt_samepath_test.cpp.o
+[ 49%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_verify_multi_test.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mtp_spec_accept_states_test.cpp.o
+[ 50%] Linking CXX executable q4t_tests
+[100%] Built target q4t_tests

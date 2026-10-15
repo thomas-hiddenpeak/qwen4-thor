@@ -1,0 +1,9 @@
+{
+  "sha256": {
+    "build/q4t": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "build/q4t_tests": "8a0da6f8252752191ca5a7d13f5166f3fc6a422a83ffcf7538e68eb433cd0f18"
+  },
+  "five_local_contracts": "phase03/five-contracts.log: 5/5 PASS, no skips; subsequent test changes only comments/diagnostic printing, rebuilt here",
+  "numerics_256": "reuse phase02: identical runtime binary",
+  "ple_contracts": "reuse phase02: identical runtime implementation"
+}

@@ -1,0 +1,109 @@
+{
+  "binary_sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+  "tiers": [
+    {
+      "length": 1024,
+      "off_decode_tps": 18.638741799384682,
+      "on_decode_tps": 34.52290939011425,
+      "gain_percent": 85.22124380334486,
+      "target_pass": true,
+      "off_ttft": 0.7851482353483638,
+      "on_ttft": 0.9549070290134599,
+      "off_old_decode_tps": 18.706289168013893,
+      "off_change_percent": -0.3610944320518117,
+      "off_old_text_equal": true,
+      "off_common_prefix_characters": 889,
+      "on_old_decode_tps": 34.535402658563804,
+      "on_change_percent": -0.036175250577119566,
+      "on_old_text_equal": true,
+      "on_common_prefix_characters": 897
+    },
+    {
+      "length": 4096,
+      "off_decode_tps": 17.878401195383915,
+      "on_decode_tps": 35.46352318754112,
+      "gain_percent": 98.35958931661948,
+      "target_pass": true,
+      "off_ttft": 2.610504198994022,
+      "on_ttft": 2.9288574466481805,
+      "off_old_decode_tps": 17.941718861175303,
+      "off_change_percent": -0.35290746823819497,
+      "off_old_text_equal": true,
+      "off_common_prefix_characters": 634,
+      "on_old_decode_tps": 35.47992952188554,
+      "on_change_percent": -0.04624116948793722,
+      "on_old_text_equal": true,
+      "on_common_prefix_characters": 749
+    },
+    {
+      "length": 8192,
+      "off_decode_tps": 18.141387414763102,
+      "on_decode_tps": 37.384643648883745,
+      "gain_percent": 106.07378473413154,
+      "target_pass": true,
+      "off_ttft": 5.064953156999157,
+      "on_ttft": 5.618609219653687,
+      "off_old_decode_tps": 18.174806031275015,
+      "off_change_percent": -0.18387330491673737,
+      "off_old_text_equal": true,
+      "off_common_prefix_characters": 591,
+      "on_old_decode_tps": 37.329760938388766,
+      "on_change_percent": 0.14702132860042738,
+      "on_old_text_equal": true,
+      "on_common_prefix_characters": 578
+    },
+    {
+      "length": 45056,
+      "off_decode_tps": 17.87367269497393,
+      "on_decode_tps": 35.88748464133265,
+      "gain_percent": 100.78405403173906,
+      "target_pass": true,
+      "off_ttft": 30.31090835132636,
+      "on_ttft": 31.898413046690013,
+      "off_old_decode_tps": 17.888914186888424,
+      "off_change_percent": -0.08520076598984572,
+      "off_old_text_equal": true,
+      "off_common_prefix_characters": 1280,
+      "on_old_decode_tps": 35.85540562352383,
+      "on_change_percent": 0.08946773087896709,
+      "on_old_text_equal": true,
+      "on_common_prefix_characters": 1277
+    },
+    {
+      "length": 204800,
+      "off_decode_tps": 17.145105079754572,
+      "on_decode_tps": 33.16788021401782,
+      "gain_percent": 93.45393370136527,
+      "target_pass": true,
+      "off_ttft": 158.89032303066537,
+      "on_ttft": 166.96847433631774,
+      "off_old_decode_tps": 17.162793449955934,
+      "off_change_percent": -0.10306230307403075,
+      "off_old_text_equal": true,
+      "off_common_prefix_characters": 1257,
+      "on_old_decode_tps": 33.13577743625864,
+      "on_change_percent": 0.09688252469988168,
+      "on_old_text_equal": true,
+      "on_common_prefix_characters": 1280
+    }
+  ],
+  "quality": {
+    "off": {
+      "count": 11,
+      "exact_match": 11,
+      "length_match": 11,
+      "failures": []
+    },
+    "on": {
+      "count": 11,
+      "exact_match": 11,
+      "length_match": 11,
+      "failures": []
+    }
+  },
+  "limits": {
+    "server_returncode": 0,
+    "passed": true
+  },
+  "performance_target_pass": true
+}

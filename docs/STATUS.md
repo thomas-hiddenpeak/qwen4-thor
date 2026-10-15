@@ -4,62 +4,35 @@
 本入口仅维护当前决策，过程记录见当天日志与专题报告。
 
 ## 当前阶段
-**阶段3（最新）**：五项局部诊断已按独立前缀/同形状因果参考收口，5/5 PASS，
-0 skipped；原跨形状L2/argmax观察及失败证据保留，没有提高阈值。
-运行时`be74946d8159…`的HTTP质量与五档off/on各3次正在执行，尚未宣称
-整模型验收通过。PR #4保持草稿，main不动。
-见[数值收口报告](MTP_NUMERICAL_CLOSURE_2026-10-16.md)。
-下列阶段1/2及旧冻结binary结论保留作为时间顺序记录。
 
+**MTP数值收口及新运行时验收完成（2026-10-16）**。工作分支
+`codex/moe-residency-20260930`继续作为后续性能基础，可进入合入审查；
+[PR #4](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/4)，main保持`7f6a69c`。
 
-**新目标启动（2026-10-16，用户授权）**：收口剩余5项数值诊断再决定main合入。
-先对三个checkpoint的partial差异建立同路径与独立参考，再查批量prefill和
-旧MTP API；不抬阈值、不删除失败。仅重验受影响项，运行时代码变化后按
-影响完成HTTP质量/五档性能；身份不变的证据复用。当前从6c7d721干净树开始，
-GPU空闲；第一轮已有结果：独立执行接受前缀的状态与checkpoint0/1逐位
-一致；首个已采样差异为layer0 beta的1 ULP，高精度点积位于BF16中点附近，
-partial结果更接近精确值。尚未将原失败改为通过，继续输出边界因果验证。
-阶段2新增真实缺陷：PLE pinned staging在先前H2D完成前可被CPU重写，
-受控双gather复现首输出160/160错误。已修复对象持有的上传完成事件，
-跨调用/跨stream/析构及CPU参考4项通过；完整256步复验通过（4 flips、
-0双侧confident、causality PASS）。取消调用方人工等待后原大差异消失，
-剩余0.02632保持；影响生产共用路径，HTTP质量/五档仍待重新验收。
-PR #4在新运行时候选验收期间保持草稿，不合入main。
-阶段2证据：[上传缺陷与独立参考](evidence/mtp-numerical-closure-20261016/phase02/README.md)。
-独立前缀输出和错误row负控已通过；same-M padded prefill三个前缀、旧MTP
-三种接受状态也逐位匹配独立执行，原跨形状失败目前仍保留。
-证据：[诊断阶段1](evidence/mtp-numerical-closure-20261016/phase01/README.md)。
+五项诊断`model_verify_ckpt`、`model_verify_multi_ckpt`、
+`model_verify_ckpt_samepath`、`model_prefill_batch`、`mtp_spec_accept_states`
+均通过（5/5、0 skipped）。以独立已接受前缀/同M因果前缀作逐位门禁，
+包含partial/full状态、输出与错row负控；原跨形状L2/argmax差异及失败证据
+保留，不提高阈值，不声称任意计算形状逐位不变。
 
-**MTP 归并候选：指定五档目标通过，仍有5项GPU诊断未闭合（2026-10-16）**。
-工作分支 `codex/moe-residency-20260930` 已合入main历史，合并提交
-`fe44c56`（父577dac0/7f6a69c），通用取消合同修复 `a3f90a6`。
-[PR #4](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/4)；main仍为
-`7f6a69c`。采用T>1默认k3替换sequential，保留main共用正确性保护及历史回退。
+实际修复PLE pinned staging异步复用：受控首输出160/160错误归零；
+同stream、跨stream、析构及CPU参考四项通过。完整256步N=4近tie通过：
+4 flips、0双侧confident、causality PASS。两项按未变化的运行时身份复用。
 
-冻结binary `26639190711e…`：五档off/on各3次，提速
-**+84.6%/+97.8%/+105.4%/+100.4%/+93.1%**，全部满足+50%～+200%；
-确定性、HTTP输入/输出/finish全部通过，MTP五档文本与归并前一致。
-45K on绝对速度较旧测量低约2.1%，不称逐项无回退。普通decode保留RoPE修复，
-五档旧输出不同；单变量消融已确认1K差异来源，不恢复错误计算。
+新binary `be74946d8159…`：off=`--no-mtp`、on=默认k3，五档各3次，
+decode增益 **+85.2%/+98.4%/+106.1%/+100.8%/+93.5%**，全部在+50%～+200%；
+确定性、HTTP输入/输出/finish合同全过，十组文本与修复前一致。off绝对
+吞吐较前次测量变化−0.36%～−0.09%，on为−0.05%～+0.15%。
 
-固定检索off/on各11/11通过；六项尾部请求、流式取消与后继恢复通过。
-checkpoint容量、256步N=4合同（4 flips、0双侧confident、causality）通过；
-host56、位置复制18、生命周期失败注入、multi-step及非法输出合同通过。
-本机公共CTest19/19、runner16、证据审计4及GitHub push/PR CI通过。
-partition按完整专用环境通过；历史sequence API失败独立复验通过。
+HTTP固定检索两侧各11/11；六项尾部请求、流式取消及后继恢复通过；
+服务退出正常，最终测试构建零警告。质量数据库没有保存HTTP状态码，
+按其成功标志与明确来源验收；尾部脚本保留直接HTTP状态。最终CI见PR检查。
 
-**未通过项不隐藏**：model_verify_ckpt、model_verify_multi_ckpt、
-model_verify_ckpt_samepath、model_prefill_batch、mtp_spec_accept_states仍FAIL。
-已修正过期checkpoint夹具和低层batch完成边界，剩余数值差异不能仅凭
-历史存在或N=4全模型通过判为正常。没有放宽阈值/删除测试；不宣称全量GPU
-通过或无条件main就绪；交付可审查候选。生产源码/二进制未因夹具修正变化。
-
-报告与精确结果：[归并验收](MTP_MAINLINE_READY_2026-10-16.md)；
-[证据索引](evidence/mtp-mainline-ready-20261016/README.md)。来源对照明确
-仅比vLLM默认模式有更明确边界，不声称强于其确定性模式或LLM-42。
-本轮单流完整模型HTTP的指定验收完成；5项诊断覆盖2层低层/多序列/旧API，
-后续针对它们建立独立数值参考，不将有限域通过扩大为全量保证。
-下一步：审查归并候选；不重复已通过且身份未变的五档证据，不自动合入main。
+报告：[数值收口与影响范围](MTP_NUMERICAL_CLOSURE_2026-10-16.md)；
+[最终证据](evidence/mtp-numerical-closure-20261016/phase04/README.md)。
+`9be8478`/`9879cda`/`21226b2`划分诊断、运行时修复及正式合同阶段。
+运行回退使用`--no-mtp`并保留PLE修复。本目标不自动合入main，不将有限
+单流/受控小模型结果扩大为全量GPU测试、任意批量不变或模型任务能力保证。
 
 ## 历史阶段记录（以前述当前阶段为准）
 

@@ -1,0 +1,12 @@
+{
+  "returncode": 0,
+  "command": [
+    "cmake",
+    "--build",
+    "build",
+    "--target",
+    "q4t_tests",
+    "--parallel",
+    "4"
+  ]
+}

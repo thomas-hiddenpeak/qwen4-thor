@@ -137,10 +137,9 @@ Q4T_TEST(model_verify_ckpt_samepath) {
   // Force the shared-state GDN kernel everywhere (Q4T_GDN_REG=0): the
   // verify-batch path (ssm_ckpt present) always uses it, while the
   // no-checkpoint prefill/decode paths use the register-state kernel by
-  // default. Part B's save-inertness check and Part C's 0.02 threshold
-  // (calibrated by model_verify_ckpt) require both sides on ONE GDN kernel;
-  // otherwise the register-vs-shared difference (a known T-path source)
-  // pollutes the comparison.
+  // default. Save-inertness and independent-prefix comparisons require
+  // both sides on one GDN kernel. Cross-shape Part C remains diagnostic;
+  // its old 0.02 observation line does not establish chunk invariance.
   q4t::test::GdnRegOff gdn_reg_off;
   if (!CudaAvailable()) {
     Q4T_SKIP("(skipped: no CUDA device)");
@@ -427,16 +426,9 @@ Q4T_TEST(model_verify_ckpt_samepath) {
     // Full accept (a=2): fresh batch final state (NO restore), decode the
     // probe at position Tprompt+3 vs the prefill reference row.
     //
-    // COMPARISON PREMISE (different shape from a=0/1): this case does NOT
-    // call ModelRestoreCheckpoint; it decodes directly from the T=3
-    // batch-final state. That rules out the restore OPERATION for this case,
-    // but it does NOT by itself prove the divergence is a normal T-path
-    // residual (Parts A/B prove save/restore is bit-exact on the restore
-    // path, which this case does not exercise). The 0.02 threshold has no
-    // pre-calibration for the full-accept shape, so a MISMATCH here is
-    // reported as: observed to exceed threshold; no restore call; cause not
-    // yet fully isolated. The failure is preserved (not masked by loosening
-    // the threshold); see the 2026-10-11 contract log for the status.
+    // No restore operation participates in this cross-shape diagnostic.
+    // Preserve its original 0.02 observation line. Part F independently
+    // checks the full accepted-prefix state/output with exact equality.
     float l2a2 = 1e9f;
     {
       // O0/O1 operator capture (opt-in via Q4T_S7_CAPTURE=<dir>): dump the
@@ -737,8 +729,11 @@ Q4T_TEST(model_verify_ckpt_samepath) {
     size_t first = 0;
     const bool equal = a == T - 1 ||
                        SnapEqual(prefix, a == 0 ? c0 : c1, &first);
-    if (a < T - 1) std::printf("  [F] independent prefix a=%d vs checkpoint: %s "
-                "first_diff=%zu\n", a, equal ? "BIT-EXACT" : "MISMATCH", first);
+    if (a < T - 1) {
+      std::printf("  [F] independent prefix a=%d vs checkpoint: %s "
+                  "first_diff=%zu\n", a,
+                  equal ? "BIT-EXACT" : "MISMATCH", first);
+    }
     if (!equal) ok = false;
     auto decode_boundary = [&](ModelSequence* current,
                                std::vector<uint16_t>* output) {
