@@ -11,6 +11,15 @@
 GPU空闲；第一轮已有结果：独立执行接受前缀的状态与checkpoint0/1逐位
 一致；首个已采样差异为layer0 beta的1 ULP，高精度点积位于BF16中点附近，
 partial结果更接近精确值。尚未将原失败改为通过，继续输出边界因果验证。
+阶段2新增真实缺陷：PLE pinned staging在先前H2D完成前可被CPU重写，
+受控双gather复现首输出160/160错误。已修复对象持有的上传完成事件，
+跨调用/跨stream/析构及CPU参考4项通过；完整256步复验通过（4 flips、
+0双侧confident、causality PASS）。取消调用方人工等待后原大差异消失，
+剩余0.02632保持；影响生产共用路径，HTTP质量/五档仍待重新验收。
+PR #4在新运行时候选验收期间保持草稿，不合入main。
+阶段2证据：[上传缺陷与独立参考](evidence/mtp-numerical-closure-20261016/phase02/README.md)。
+独立前缀输出和错误row负控已通过；same-M padded prefill三个前缀、旧MTP
+三种接受状态也逐位匹配独立执行，原跨形状失败目前仍保留。
 证据：[诊断阶段1](evidence/mtp-numerical-closure-20261016/phase01/README.md)。
 
 **MTP 归并候选：指定五档目标通过，仍有5项GPU诊断未闭合（2026-10-16）**。

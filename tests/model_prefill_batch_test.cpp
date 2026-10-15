@@ -26,6 +26,7 @@
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <fcntl.h>
 #include <string>
@@ -146,6 +147,19 @@ Q4T_TEST(model_prefill_batch) {
     return false;
   }
 
+  auto capture = [](const std::string& suffix) {
+    const char* directory = std::getenv("Q4T_PREFILL_CAPTURE");
+    if (!directory) return;
+    for (const char* name : {"Q4T_MLP_DUMP", "Q4T_LIN_DUMP", "Q4T_MOE_DUMP"}) {
+      if (suffix.empty()) {
+        unsetenv(name);
+      } else {
+        const std::string tag = std::string(directory) + "/" + suffix;
+        setenv(name, tag.c_str(), 1);
+      }
+    }
+  };
+
   // ---- Reference: B independent single-sequence prefills ------------------
   std::vector<std::vector<uint16_t>> ref(B);  // [B][len_b * vocab]
   for (int b = 0; b < B; ++b) {
@@ -157,6 +171,7 @@ Q4T_TEST(model_prefill_batch) {
       m.Free();
       return false;
     }
+    capture("ref" + std::to_string(b));
     s = ModelPrefill(m, &rseq, prompts[b].data(), lens[b], d_logits, nullptr,
                      nullptr, nullptr, seq_ids[b]);
     if (!s.ok()) {
@@ -178,6 +193,7 @@ Q4T_TEST(model_prefill_batch) {
   for (int b = 0; b < B; ++b)
     tokens.insert(tokens.end(), prompts[b].begin(), prompts[b].end());
 
+  capture("packed");
   s = ModelPrefillBatch(m, tokens.data(), lens.data(), seq_ids.data(), B,
                         d_logits, nullptr);
   if (!s.ok()) {
@@ -189,6 +205,44 @@ Q4T_TEST(model_prefill_batch) {
   std::vector<uint16_t> batched(static_cast<size_t>(Ttot) * vocab);
   cudaMemcpy(batched.data(), d_logits,
              static_cast<size_t>(Ttot) * vocab * 2, cudaMemcpyDeviceToHost);
+
+  // Same total projection shape, but one independent causal sequence. The
+  // target prompt is first; suffix padding cannot affect its prefix.
+  int packed_offset = 0;
+  for (int b = 0; b < B; ++b) {
+    std::vector<int32_t> padded = prompts[b];
+    padded.resize(Ttot, prompts[b].back());
+    ModelSequence rseq;
+    s = ModelBeginSequence(m, &rseq, nullptr, seq_ids[b]);
+    capture("padded" + std::to_string(b));
+    if (s.ok()) {
+      s = ModelPrefill(m, &rseq, padded.data(), Ttot, d_logits, nullptr,
+                       nullptr, nullptr, seq_ids[b]);
+    }
+    if (!s.ok()) {
+      cudaFree(d_logits);
+      m.Free();
+      return false;
+    }
+    std::vector<uint16_t> padded_logits(static_cast<size_t>(Ttot) * vocab);
+    cudaMemcpy(padded_logits.data(), d_logits, padded_logits.size() * 2,
+               cudaMemcpyDeviceToHost);
+    float worst = 0.0f;
+    int mismatches = 0;
+    for (int t = 0; t < lens[b]; ++t) {
+      const uint16_t* actual = batched.data() +
+          static_cast<size_t>(packed_offset + t) * vocab;
+      const uint16_t* expected = padded_logits.data() +
+          static_cast<size_t>(t) * vocab;
+      worst = std::max(worst, L2Rel(actual, expected, vocab));
+      for (int v = 0; v < vocab; ++v) mismatches += actual[v] != expected[v];
+    }
+    std::printf("  same-M padded prefix seq=%d differences=%d l2=%.8f\n",
+                b, mismatches, worst);
+    packed_offset += lens[b];
+    ModelEndSequence(&rseq);
+  }
+  capture("");
 
   // ---- Compare per token + last-token argmax ------------------------------
   bool ok = true;

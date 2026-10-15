@@ -1,0 +1,16 @@
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=20 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=20 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+  b0=236644 d0(b0)=13 m[0]=3901
+  constructed: m[0]=3901 m[1]=87048 m[2]=5277 d0_reject=3902 d0_accept=3901 f1_partial=87049 f2_full=5277
+  [reject] a=0 accepted_count=1 next_b=3901 pos=6 l2_rel=0.01702 OK
+  [reject] independent accepted-prefix output: BIT-EXACT
+  [partial] a=1 accepted_count=2 next_b=87048 pos=7 l2_rel=0.04154 MISMATCH
+  [partial] independent accepted-prefix output: BIT-EXACT
+  [full] a=3 accepted_count=4 next_b=1076 pos=9 l2_rel=0.07696 MISMATCH
+  [full] independent accepted-prefix output: BIT-EXACT
+[FAIL] mtp_spec_accept_states
+1 tests, 0 passed, 1 failed, 0 skipped

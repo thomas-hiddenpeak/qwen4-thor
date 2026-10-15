@@ -1,0 +1,14 @@
+[
+  {
+    "name": "ple_e2e_",
+    "returncode": 0
+  },
+  {
+    "name": "model_verify_ckpt_samepath",
+    "returncode": 1
+  },
+  {
+    "name": "model_verify_ckpt",
+    "returncode": 1
+  }
+]

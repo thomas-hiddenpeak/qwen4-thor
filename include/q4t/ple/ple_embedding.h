@@ -59,7 +59,10 @@ class PleEmbedding {
 
   // (2) Read + convert: gather `n_rows` table rows into `out_bf16` (GPU),
   //   which must hold n_rows * row_bytes BF16 values (2 bytes each). The read
-  //   and conversion are enqueued on `stream`.
+  //   and conversion are enqueued on `stream`. A subsequent call waits for
+  //   the previous upload/conversion before reusing internal staging, even
+  //   on a different stream. Destruction also waits for owned pending work.
+  //   Concurrent host calls on one embedding are not supported.
   Status GatherRows(const int64_t* row_ids, size_t n_rows, uint16_t* out_bf16,
                     cudaStream_t stream) const;
 

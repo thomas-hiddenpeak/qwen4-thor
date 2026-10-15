@@ -547,6 +547,35 @@ Q4T_TEST(mtp_spec_accept_states) {
                 name, expect_a, acount, next_b, seq.position, l2,
                 c ? "OK" : "MISMATCH");
     ModelEndSequence(&seq);
+    // Independent reference: execute only the accepted prefix, with no
+    // draft model, speculative step, or checkpoint restore.
+    ModelSequence prefix_seq;
+    st = ModelBeginSequence(m, &prefix_seq, nullptr, 0);
+    if (st.ok()) {
+      st = ModelPrefill(m, &prefix_seq, prompt, T, d_reflogits, nullptr,
+                       nullptr, nullptr, 0);
+    }
+    if (st.ok()) {
+      st = ModelDecodeBatch(m, R + T, 1 + expect_a, T, prompt, T,
+                           d_blogits, nullptr, nullptr, false, 0);
+    }
+    if (!st.ok() || cudaStreamSynchronize(nullptr) != cudaSuccess) {
+      ModelEndSequence(&prefix_seq);
+      return false;
+    }
+    prefix_seq.position = dec_pos;
+    prefix_seq.history.assign(R, R + dec_pos);
+    st = ModelDecodeStepSeq(m, &prefix_seq, R[dec_pos], d_step_logits,
+                           nullptr, nullptr, 0);
+    std::vector<uint16_t> independent(vocab);
+    const bool read = st.ok() &&
+        cudaMemcpy(independent.data(), d_step_logits, vocab * 2,
+                   cudaMemcpyDeviceToHost) == cudaSuccess;
+    const bool prefix_equal = read && rb == independent;
+    std::printf("  [%s] independent accepted-prefix output: %s\n", name,
+                prefix_equal ? "BIT-EXACT" : "MISMATCH");
+    if (!prefix_equal) c = false;
+    ModelEndSequence(&prefix_seq);
     return c;
   };
 

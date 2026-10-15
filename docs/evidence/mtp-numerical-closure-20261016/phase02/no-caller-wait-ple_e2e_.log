@@ -1,0 +1,7 @@
+[PASS] ple_e2e_gather_matches_cpu_reference
+[PASS] ple_e2e_capacity_guard
+  pending uploads: wrong_first=0 wrong_second=0
+[PASS] ple_e2e_pending_upload_owns_staging
+  pending uploads: wrong_first=0 wrong_second=0
+[PASS] ple_e2e_cross_stream_upload_owns_scratch
+4 tests, 4 passed, 0 failed, 0 skipped

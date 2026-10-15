@@ -229,11 +229,7 @@ Q4T_TEST(model_verify_ckpt) {
   // state machine; the caller aligns it, as in the real MTP flow.)
   bool ok = true;
   for (int a = 0; a < T - 1; ++a) {
-    // Finish the low-level batch before checkpoint inspection/scratch reuse.
-    if (cudaStreamSynchronize(nullptr) != cudaSuccess) {
-      m.Free();
-      return false;
-    }
+    // Restore stays on the batch stream; no caller wait should be needed.
     s = ModelRestoreCheckpoint(m, a, nullptr, /*seq_id=*/0);
     if (!s.ok()) {
       std::printf("  restore checkpoint %d failed: %s\n", a,

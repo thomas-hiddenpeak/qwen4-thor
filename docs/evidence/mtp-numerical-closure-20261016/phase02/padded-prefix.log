@@ -1,0 +1,15 @@
+[q4t] MoE device decode grouped NVFP4 enabled: groups=50 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=50 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=30 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=30 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=70 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=70 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+  same-M padded prefix seq=0 differences=0 l2=0.00000000
+  same-M padded prefix seq=1 differences=0 l2=0.00000000
+  same-M padded prefix seq=2 differences=0 l2=0.00000000
+  seq 0 (len=5): worst l2_rel=0.09737  argmax batch=82116 ref=163130 MISMATCH
+  seq 1 (len=3): worst l2_rel=0.05924  argmax batch=3965 ref=3965 MISMATCH
+  seq 2 (len=7): worst l2_rel=0.16509  argmax batch=168589 ref=168589 MISMATCH
+  FAIL: batched prefill diverged from single-seq reference
+[FAIL] model_prefill_batch
+1 tests, 0 passed, 1 failed, 0 skipped

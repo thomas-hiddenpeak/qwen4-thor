@@ -300,10 +300,8 @@ Q4T_TEST(model_verify_ckpt_samepath) {
                          history.size(), d_blogits, nullptr, nullptr, save,
                          /*seq_id=*/0);
     if (!s.ok()) return s;
-    // Complete the low-level batch before inspecting or reusing its scratch.
-    if (cudaStreamSynchronize(nullptr) != cudaSuccess) {
-      return Status::Fail("batch completion");
-    }
+    // Keep the normal asynchronous boundary: PLE owns its upload staging,
+    // and subsequent device work on this stream must not corrupt it.
     if (out_logits) {
       out_logits->resize(static_cast<size_t>(T) * vocab);
       if (cudaMemcpy(out_logits->data(), d_blogits,
@@ -787,7 +785,34 @@ Q4T_TEST(model_verify_ckpt_samepath) {
     std::printf("  [F] independent prefix a=%d vs checkpoint: %s "
                 "first_diff=%zu\n", a, equal ? "BIT-EXACT" : "MISMATCH", first);
     if (!equal) ok = false;
+    auto decode_boundary = [&](ModelSequence* current,
+                               std::vector<uint16_t>* output) {
+      current->position = Tprompt + a + 1;
+      current->history.assign(prompt, prompt + Tprompt);
+      current->history.insert(current->history.end(), verify, verify + a + 1);
+      Status result = ModelDecodeStepSeq(m, current, verify[a + 1],
+                                         d_step_logits, nullptr, nullptr, 0);
+      output->resize(vocab);
+      return result.ok() &&
+             cudaMemcpy(output->data(), d_step_logits, vocab * 2,
+                        cudaMemcpyDeviceToHost) == cudaSuccess;
+    };
+    std::vector<uint16_t> prefix_logits;
+    if (!decode_boundary(&seq, &prefix_logits)) ok = false;
     ModelEndSequence(&seq);
+    for (bool wrong_row : {false, true}) {
+      std::vector<uint16_t> restored_logits;
+      const int row = wrong_row ? 1 - a : a;
+      const bool ran = run_batch(true, nullptr, &seq).ok() &&
+                       ModelRestoreCheckpoint(m, row, nullptr, 0).ok() &&
+                       decode_boundary(&seq, &restored_logits);
+      const bool logits_equal = ran && prefix_logits == restored_logits;
+      const bool passed = ran && logits_equal != wrong_row;
+      std::printf("  [F] prefix output a=%d row=%d wrong=%d: %s\n", a,
+                  row, wrong_row, passed ? "PASS" : "FAIL");
+      if (!passed) ok = false;
+      ModelEndSequence(&seq);
+    }
   }
 
   cudaFree(d_blogits);
