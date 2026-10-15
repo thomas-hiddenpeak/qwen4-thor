@@ -1,0 +1,682 @@
+[
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0.ple_conv_out.bin",
+    "bytes": 20480,
+    "sha256": "a34b8dfdc5177e39cab12418e86615d5dcda71d41aa47668a3b538c6c02c5d7f"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0.ple_emb.bin",
+    "bytes": 5120,
+    "sha256": "9da89363eba54e15acdb4fafda6d4d73964aebe9c01c7262a3f5af2736404c86"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0.ple_gated_n.bin",
+    "bytes": 20480,
+    "sha256": "1240648c365cc7545050488218d40af67c602e3d1f4861620e58b75abcda0d27"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m0.a.bin",
+    "bytes": 96,
+    "sha256": "15f61f53da2ddcc944c5f01cdc7d6605b1b0cd6ea026e8290c04c7d3fec77cbf"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m0.attn_out.bin",
+    "bytes": 5120,
+    "sha256": "168f0c8d6b5ec266fc4376066b41ec9beca75e106781b1217dcda715c5e03e34"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m0.beta.bin",
+    "bytes": 96,
+    "sha256": "5520577f17331dde29162cb49587dd3b15a88685086e68dd4caf36aa1642001e"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m0.moe_in.bin",
+    "bytes": 5120,
+    "sha256": "25473b59db96038a82f63384c9c7b3ad4341638d1f0b3c51b5652bf10bcb7438"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m0.moe_out.bin",
+    "bytes": 5120,
+    "sha256": "f12afb1c33f00538e8e052f182f5c88cda4b40ff5f38476bd0dfda5f45dd81ab"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m0.out.bin",
+    "bytes": 20480,
+    "sha256": "4f8f01206d60f87017dcfa39259afa750d20e5cdf66564db7841cfe9c946ec0a"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m0.qkv.bin",
+    "bytes": 20480,
+    "sha256": "155d5fe541f12a03b1d707743d8c52560bda7220a18ed126cd5dc8285860ea50"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m0.qkv_raw.bin",
+    "bytes": 20480,
+    "sha256": "89184bad8fa8feec1e861ed5ed9970a79c806f3c7dd003d780dc7f64f6da6eed"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m0.trunk_in.bin",
+    "bytes": 20480,
+    "sha256": "930f3d178e110ba3af6acf0209aee2066d409fe615bfd730a2f0f591f3137c1d"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m0.x.bin",
+    "bytes": 5120,
+    "sha256": "d832da70e43e5331fe2cc1986b49524a7006b4ae36e96a24951605fe53de93bd"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m0.y_ssm.bin",
+    "bytes": 12288,
+    "sha256": "e40d8eeed04d9505c1e2f58d62af8a9bebd5cb8f18ac85e840f604fdc48162e3"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m0.y_ssm_gated.bin",
+    "bytes": 12288,
+    "sha256": "0eed9f94f52fafeb6831422c4fc21862693c90d08f47515ab9a959944c751bde"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m0.z.bin",
+    "bytes": 12288,
+    "sha256": "46d4895820d088c83fe036ba424972c7b099829d85416e51c4309b4155a6682c"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m1.a.bin",
+    "bytes": 96,
+    "sha256": "3911bf42dbffeef471ff02258f751e3191e6022f7fde86738eef7cf15d39d503"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m1.attn_out.bin",
+    "bytes": 5120,
+    "sha256": "5af12ec134acaa7a2d4178975caae3ea4f7e8a5aef69f16e57772f8ea0272c9e"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m1.beta.bin",
+    "bytes": 96,
+    "sha256": "7b9c030a95676a305d541cf540f9fed33f6879016640e97ed3c287dd9d248dc0"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m1.moe_in.bin",
+    "bytes": 5120,
+    "sha256": "fc35b63f1ec6e555904e6dde5c2d6c69a93b2c7ccaf1afb9dc1851dc0b3d161e"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m1.moe_out.bin",
+    "bytes": 5120,
+    "sha256": "050f54d0e09218fe5c7cad1872801b72fd3d9c727091300e7d5904c024136589"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m1.out.bin",
+    "bytes": 20480,
+    "sha256": "373b64a1f556587a57abbc083feb7d6180ca538eb2d3c43d68f86863e3f3dbf4"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m1.qkv.bin",
+    "bytes": 20480,
+    "sha256": "5d08b0492fbc4e7de83a37fefd5881712de46860ca5f992caca4074c755b84e7"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m1.qkv_raw.bin",
+    "bytes": 20480,
+    "sha256": "67b92d3906dfcfb7611caadf37438d2f5b0c131b39fc9a7e0dab5e464c6f3853"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m1.trunk_in.bin",
+    "bytes": 20480,
+    "sha256": "a34b8dfdc5177e39cab12418e86615d5dcda71d41aa47668a3b538c6c02c5d7f"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m1.x.bin",
+    "bytes": 5120,
+    "sha256": "bd292fa6b2c12509524bf1f416187377d4e01ee652b2b3270e8d706565e4e41f"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m1.y_ssm.bin",
+    "bytes": 12288,
+    "sha256": "5731bbbe7e8512c544775d695c98861725bea01fcc30ef6de8257640ebda56ce"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m1.y_ssm_gated.bin",
+    "bytes": 12288,
+    "sha256": "17705d03f445a0e092ba2741026e66d76ba12d1ba422de2b5bb29e426fe38e02"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_m1.z.bin",
+    "bytes": 12288,
+    "sha256": "ebf7f4c238c3727944d03fb11be81f319ae6144510632eb4c3aab40677b5516e"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_mix_0.bin",
+    "bytes": 5120,
+    "sha256": "d832da70e43e5331fe2cc1986b49524a7006b4ae36e96a24951605fe53de93bd"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_mix_1.bin",
+    "bytes": 5120,
+    "sha256": "25473b59db96038a82f63384c9c7b3ad4341638d1f0b3c51b5652bf10bcb7438"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_mix_2.bin",
+    "bytes": 5120,
+    "sha256": "bd292fa6b2c12509524bf1f416187377d4e01ee652b2b3270e8d706565e4e41f"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_mix_3.bin",
+    "bytes": 5120,
+    "sha256": "fc35b63f1ec6e555904e6dde5c2d6c69a93b2c7ccaf1afb9dc1851dc0b3d161e"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial0_mix_4.bin",
+    "bytes": 5120,
+    "sha256": "9bee39db5ef92f3d3d9ace4d720b445fd359cd87c93872406a7a012fdf962550"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1.ple_conv_out.bin",
+    "bytes": 20480,
+    "sha256": "5a232d7be5a2347def9109626a824cec121f95e79295b02d665d27ddb4700dbb"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1.ple_emb.bin",
+    "bytes": 5120,
+    "sha256": "20d5894840d9db59c424702124e73bbd30b9d329a480a1d1ee331f01c82df5f8"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1.ple_gated_n.bin",
+    "bytes": 20480,
+    "sha256": "7eb0426632fc40bb93f0da7081c03d4e58e4ad4e2293f1ec35ccfdd52ec826d1"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m0.a.bin",
+    "bytes": 96,
+    "sha256": "47c8279741fd591a524b2f8e5685a6c46938778df9a4433dfed08360ca40e4cd"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m0.attn_out.bin",
+    "bytes": 5120,
+    "sha256": "101251a5e68aa41f5520b7a3ea67d7300f416e905a41ef1c67152d08a805a380"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m0.beta.bin",
+    "bytes": 96,
+    "sha256": "46e296033ffbe93d507fb2f1e9c71a22a3124b9bf6da645507588ea4619572f0"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m0.moe_in.bin",
+    "bytes": 5120,
+    "sha256": "cfe87ce6e50cc95e6f7e14a701a0c6d8e2b1184ae3f1bbf68191d752894ab282"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m0.moe_out.bin",
+    "bytes": 5120,
+    "sha256": "2dbd6bfd0d0c5cc2b765e150009d3e1300602e08fe42e621cfc1550695ad4373"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m0.out.bin",
+    "bytes": 20480,
+    "sha256": "822fa84f948ce9e99e137a5562363133971607699df468a46b38bdfc50449ad4"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m0.qkv.bin",
+    "bytes": 20480,
+    "sha256": "61483f579c07f00733e7264def131839a40d5f41c35264163b14428d6b353e12"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m0.qkv_raw.bin",
+    "bytes": 20480,
+    "sha256": "e5570b1359d4fc6e907fec0ebaa097ddfa37570dce6ffe28f5e38f99e9e455dd"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m0.trunk_in.bin",
+    "bytes": 20480,
+    "sha256": "73fb5022b4b538109d241dbde1af9baccb3e53b4e4eaa73784b888751b00d3b0"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m0.x.bin",
+    "bytes": 5120,
+    "sha256": "8e55d2097709c7b9fd150bf443cf98731b816073ffed230908f4e58619fc3c52"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m0.y_ssm.bin",
+    "bytes": 12288,
+    "sha256": "edaab40d58672bdef9a6a967690a1b0d460beae94d91d0e84fa379c8f0149ee7"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m0.y_ssm_gated.bin",
+    "bytes": 12288,
+    "sha256": "8a0a581291ded72bac857ba0934781e6fb228b4ad4cfbb417c224c996c126404"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m0.z.bin",
+    "bytes": 12288,
+    "sha256": "d58ee524864aadc6ac4be6d0df127a6dbdb3d8dfea70f1abecbf4186378769b0"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m1.a.bin",
+    "bytes": 96,
+    "sha256": "5ef0c6232c912fe576927e932f9dcd1744a5aabc5e90fd8e80e3e0cb7c175438"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m1.attn_out.bin",
+    "bytes": 5120,
+    "sha256": "299c13fb94f674c4916107eb49cf533661b6834a3717fa8a380a4a35fbc45aba"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m1.beta.bin",
+    "bytes": 96,
+    "sha256": "107fd102edbb5a396e99a1a4496d6f8106956676ddeaafa8ac456289d84f313f"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m1.moe_in.bin",
+    "bytes": 5120,
+    "sha256": "84adf0adbba9025365ac169cec6cb78c6a1bdaa096473b429033ad0251741ae3"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m1.moe_out.bin",
+    "bytes": 5120,
+    "sha256": "2cf48b913ea5818bb59e7034df7945855bceded52938941928884bf0c9c92a0c"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m1.out.bin",
+    "bytes": 20480,
+    "sha256": "6557fcaff38bf5e29a6adbb2fc4a973833ae0aaee02af4434d0014d44eb6eceb"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m1.qkv.bin",
+    "bytes": 20480,
+    "sha256": "2a88ca0b21fb6e38c78779b9d94954296efa17fa0a5b955c0f61d1fed2bba032"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m1.qkv_raw.bin",
+    "bytes": 20480,
+    "sha256": "48f568868cebc445da9fa03ec5347b356eff926456c0dab36d397b13e379f0f1"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m1.trunk_in.bin",
+    "bytes": 20480,
+    "sha256": "5a232d7be5a2347def9109626a824cec121f95e79295b02d665d27ddb4700dbb"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m1.x.bin",
+    "bytes": 5120,
+    "sha256": "dda9753dda291430bb37c8fd05591ee039c83a4712265927bc4a733c9d9ec5a8"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m1.y_ssm.bin",
+    "bytes": 12288,
+    "sha256": "a4a2016a5137e9ee0313dcce09dba5fece0eede42c0a36bc78db7736be687bd9"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m1.y_ssm_gated.bin",
+    "bytes": 12288,
+    "sha256": "d392fb5482bd94a2451d6277cc5c16d0110a6a27ccb36c31d3d89363b3ba97af"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_m1.z.bin",
+    "bytes": 12288,
+    "sha256": "7155825fece8a8573774f461f50ea956517c3a8bbca87e0742cc8369ef7fd1d7"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_mix_0.bin",
+    "bytes": 5120,
+    "sha256": "8e55d2097709c7b9fd150bf443cf98731b816073ffed230908f4e58619fc3c52"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_mix_1.bin",
+    "bytes": 5120,
+    "sha256": "cfe87ce6e50cc95e6f7e14a701a0c6d8e2b1184ae3f1bbf68191d752894ab282"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_mix_2.bin",
+    "bytes": 5120,
+    "sha256": "dda9753dda291430bb37c8fd05591ee039c83a4712265927bc4a733c9d9ec5a8"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_mix_3.bin",
+    "bytes": 5120,
+    "sha256": "84adf0adbba9025365ac169cec6cb78c6a1bdaa096473b429033ad0251741ae3"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/partial1_mix_4.bin",
+    "bytes": 5120,
+    "sha256": "fc662c6677ff8093f9eb37e5c3d10fe20a94a9e2beeacbf85f369a4944cfcfad"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1.ple_conv_out.bin",
+    "bytes": 20480,
+    "sha256": "804ebf5e6e3342cc7666feae76c914026cf65207e4ee8f51af1368bd90431c3f"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1.ple_emb.bin",
+    "bytes": 5120,
+    "sha256": "d5f992c4102fe5ff36888bb9d5098a041cb3522a91fcb6a391d92de2d4198721"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1.ple_gated_n.bin",
+    "bytes": 20480,
+    "sha256": "697086825131c73983e2673587d05f7261908d53fbce55d5434b42eced831f81"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m0.a.bin",
+    "bytes": 96,
+    "sha256": "218f1977d50a455d519516f1627c6eb49b477324fa4d7a8b029269c5e1e3dd06"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m0.attn_out.bin",
+    "bytes": 5120,
+    "sha256": "0042bce14543327d758bbc03d8b2eac8249b9b230bbbbd12245ce4505d71524b"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m0.beta.bin",
+    "bytes": 96,
+    "sha256": "648ca47e5a4dacb0a404fe76bf8bca2b1df2de193470c90b15aad15e629bbb09"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m0.moe_in.bin",
+    "bytes": 5120,
+    "sha256": "4ce9e5cbf70fb3fec93e9311e481fd53795a0bf795d2b28c3cd3a92f48ce1d90"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m0.moe_out.bin",
+    "bytes": 5120,
+    "sha256": "7df59b3b59dfff504eac5cfd7b7ff48e4bcf700cc954f663ba169c497d1d4fa8"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m0.out.bin",
+    "bytes": 20480,
+    "sha256": "ebc88f07adb71eefb7497fe3fa3eb7d91a192aa4c0ebe7aebfb79227b1b4c7db"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m0.qkv.bin",
+    "bytes": 20480,
+    "sha256": "364b04a591d5648add4e224e22bab82c05f3bd4f4fe9ef6843941641a3d0e1a2"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m0.qkv_raw.bin",
+    "bytes": 20480,
+    "sha256": "991064d1f8fb3580c216890d4b99d0fd4a78df625193c9e14f0d105abf225983"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m0.trunk_in.bin",
+    "bytes": 20480,
+    "sha256": "003189e63fa7bfb58cf529f327c6351af92ac576f801e45810687e7fdbe2f52f"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m0.x.bin",
+    "bytes": 5120,
+    "sha256": "5d76b0e76fe649825392b7d495297493003f496017cacd71d379d2e6bb05b82a"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m0.y_ssm.bin",
+    "bytes": 12288,
+    "sha256": "37461aee101be11696d08289c09d1bac40988e019ae09e22fd7c478c7051739c"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m0.y_ssm_gated.bin",
+    "bytes": 12288,
+    "sha256": "fca727dd062fc9db7291d2f04e97c4733a85045cca5d622b1d93d0cc3ea8f9b2"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m0.z.bin",
+    "bytes": 12288,
+    "sha256": "f59b6af34f9acd15fbfd2c4c92d3039a8f8da6f616c4062983eb5a505790b7da"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m1.a.bin",
+    "bytes": 96,
+    "sha256": "f30eea84fb9587150418bacc539b60274e170709b688afc7bf188bac68addab0"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m1.attn_out.bin",
+    "bytes": 5120,
+    "sha256": "e5ec2c5b30afbaf293b5161bbbd918da30d0323f3d4c830afb613f3f34c4688c"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m1.beta.bin",
+    "bytes": 96,
+    "sha256": "46b7193e926827c94943bd0c744da62da0f70a813d6b5b7692c910de05ab75ad"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m1.moe_in.bin",
+    "bytes": 5120,
+    "sha256": "8ce4c573064e3da80e4c13f3d4c757ee01cf368af0f7c03c9358d6d30d1ecc79"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m1.moe_out.bin",
+    "bytes": 5120,
+    "sha256": "cc54c9f66e0aa39b13f9c349a9868242ebe3823b43ea34faebed4ab34ef89517"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m1.out.bin",
+    "bytes": 20480,
+    "sha256": "ffec66a7261e3225c21ce7bfc29b63f6ce57115ca4352c3284b0616717127a36"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m1.qkv.bin",
+    "bytes": 20480,
+    "sha256": "5cad90b825ed484e5622e14e9aaafddeb95b84ac54fe24ba1587868d80087ac2"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m1.qkv_raw.bin",
+    "bytes": 20480,
+    "sha256": "c9b77e8997ea134e9b1f78a7214d89d2ceed2d3406a7f7713b966cfebc015ba5"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m1.trunk_in.bin",
+    "bytes": 20480,
+    "sha256": "804ebf5e6e3342cc7666feae76c914026cf65207e4ee8f51af1368bd90431c3f"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m1.x.bin",
+    "bytes": 5120,
+    "sha256": "8ae67b4834efb7af800066adf90ceda324215ab3e1ff654b69456a4d29e44c3d"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m1.y_ssm.bin",
+    "bytes": 12288,
+    "sha256": "00220cbb4d5e8577f4f93cb2927e070864ac2435e500ee3eafd012b9a35527fe"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m1.y_ssm_gated.bin",
+    "bytes": 12288,
+    "sha256": "22a8d9a4a2258ccb7a1fc14a103966da2bce4a800a2567ac147aa4c89fecc918"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_m1.z.bin",
+    "bytes": 12288,
+    "sha256": "dff81cadc42f443351f8c0d6ff77ad51c2ec239ea833880a1075277bd566f8ea"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_mix_0.bin",
+    "bytes": 5120,
+    "sha256": "5d76b0e76fe649825392b7d495297493003f496017cacd71d379d2e6bb05b82a"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_mix_1.bin",
+    "bytes": 5120,
+    "sha256": "4ce9e5cbf70fb3fec93e9311e481fd53795a0bf795d2b28c3cd3a92f48ce1d90"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_mix_2.bin",
+    "bytes": 5120,
+    "sha256": "8ae67b4834efb7af800066adf90ceda324215ab3e1ff654b69456a4d29e44c3d"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_mix_3.bin",
+    "bytes": 5120,
+    "sha256": "8ce4c573064e3da80e4c13f3d4c757ee01cf368af0f7c03c9358d6d30d1ecc79"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/probe1_mix_4.bin",
+    "bytes": 5120,
+    "sha256": "ac7448ae4636c0ea59584ddfaa3f3826b14eaa8208d790ab74bcd8b4ccdc4681"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8.ple_conv_out.bin",
+    "bytes": 163840,
+    "sha256": "71a346b09d4dc00769f0f06c6ceead0f1e440b48dd4a82b9f880196770e17304"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8.ple_emb.bin",
+    "bytes": 40960,
+    "sha256": "91b2614250302bd23528c3b84d757c72c123261dbf9a731e123e6d9dc44a8299"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8.ple_gated_n.bin",
+    "bytes": 163840,
+    "sha256": "10fbc5066c78066dba9f8b99bd5b71295ecadf8c66a321f443bf5d12d1ef8d24"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m0.a.bin",
+    "bytes": 768,
+    "sha256": "6256ed32b6724cbdbf3c42be30f33d9f08fe3ecdde9554be849d975329f13d21"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m0.attn_out.bin",
+    "bytes": 40960,
+    "sha256": "d12d77fec3d6d57bb1325a56510f976742ef54bfc0ec61efe29a2fbce96f0423"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m0.beta.bin",
+    "bytes": 768,
+    "sha256": "e8d62212cf09d57daecb38286ec5f3ab37dae94d320efcdecd280bdffa352937"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m0.moe_in.bin",
+    "bytes": 40960,
+    "sha256": "28cccd066d77a342de3e92ac48487ce005d0f286c339a60a40b8e7eef51ca70b"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m0.moe_out.bin",
+    "bytes": 40960,
+    "sha256": "fe9e9c688a94c843e45f0253336acb6ac6a1cff12023afc3c75706399da3bb33"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m0.out.bin",
+    "bytes": 163840,
+    "sha256": "473355939c646649d9a53b8c013ff14494b42b1b8070ea9e654d701f5a250cec"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m0.qkv.bin",
+    "bytes": 163840,
+    "sha256": "f35d13455379f96cbdf00c313c44964b3286688433bec8e54a193c7d74d78f95"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m0.qkv_raw.bin",
+    "bytes": 163840,
+    "sha256": "967f52629cd162b70d509a1156c03745064c383b4b705521c24c12a1147debb8"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m0.trunk_in.bin",
+    "bytes": 163840,
+    "sha256": "c226261f2c224efbd8069a4e70ca7218de0f6dbb7a42f987836a75b155d35c5c"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m0.x.bin",
+    "bytes": 40960,
+    "sha256": "30cf4818eecea2b94ab0fbc3873f88b48b46232ddc89d2684159c7e75cbd3a59"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m0.y_ssm.bin",
+    "bytes": 98304,
+    "sha256": "95dcc32ee1ea201af61493b849091b619900f58f452c6cdb7dc430ab2bf1f4f9"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m0.y_ssm_gated.bin",
+    "bytes": 98304,
+    "sha256": "dca9d59fa8b8ac049a4f729f6791f63d12c20f7c2f73efecaf3762142934bac9"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m0.z.bin",
+    "bytes": 98304,
+    "sha256": "a769cb86c8ab5ff3c234ad333190cd3ee9ed6477e7bf703c28b78e3b8bb4d872"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m1.a.bin",
+    "bytes": 768,
+    "sha256": "364050d79ce64423e11a4a376e5ce1b9cb6e826397faaf96a9180fc453bd2943"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m1.attn_out.bin",
+    "bytes": 40960,
+    "sha256": "ccb39913003be16c81f215f822f5d2d7d1c0d058def625ec98288c0e250a6cef"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m1.beta.bin",
+    "bytes": 768,
+    "sha256": "f722922473fb295647773a1abb12fcf22f2fb032d0c3dd29de085c22b7f131fe"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m1.moe_in.bin",
+    "bytes": 40960,
+    "sha256": "e91388e90c13efbc5ffa3e2678df9dbf2e81934fcec1cf87628c3b770e7d8519"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m1.moe_out.bin",
+    "bytes": 40960,
+    "sha256": "0801899154c204dfca5535491d92841ca0bb0718f6070500ce39c3c4df39b25b"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m1.out.bin",
+    "bytes": 163840,
+    "sha256": "bc498b590e91098e131b458715d9b6c513199aaf61e26ce5ac0124576561c37f"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m1.qkv.bin",
+    "bytes": 163840,
+    "sha256": "5458bff9b311e9f33f39eff7c19d6865c1c9f65b4618172734b7a161a8615a54"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m1.qkv_raw.bin",
+    "bytes": 163840,
+    "sha256": "b5739271d622bf2a19a0e3807d65afee7021e7b73d93c60482fc6c576f534f58"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m1.trunk_in.bin",
+    "bytes": 163840,
+    "sha256": "71a346b09d4dc00769f0f06c6ceead0f1e440b48dd4a82b9f880196770e17304"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m1.x.bin",
+    "bytes": 40960,
+    "sha256": "da21fa4526c51d8964ded70c11e6017f1021127e44afa1a6718105e3b7a22cb3"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m1.y_ssm.bin",
+    "bytes": 98304,
+    "sha256": "78bd5e8f05ec8a40d2bce90517edcefce530449d32adc14fa7a635113d7008f4"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m1.y_ssm_gated.bin",
+    "bytes": 98304,
+    "sha256": "8bbc42197a6ca6d42c1456cc17cbff65cdf1fec429d748b4841d3388105dd949"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_m1.z.bin",
+    "bytes": 98304,
+    "sha256": "7c5869c849d0cb6d303addba43d7175cd78ecb9bfe5d05eb6dbd57c19c7e3c2a"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_mix_0.bin",
+    "bytes": 40960,
+    "sha256": "30cf4818eecea2b94ab0fbc3873f88b48b46232ddc89d2684159c7e75cbd3a59"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_mix_1.bin",
+    "bytes": 40960,
+    "sha256": "28cccd066d77a342de3e92ac48487ce005d0f286c339a60a40b8e7eef51ca70b"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_mix_2.bin",
+    "bytes": 40960,
+    "sha256": "da21fa4526c51d8964ded70c11e6017f1021127e44afa1a6718105e3b7a22cb3"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_mix_3.bin",
+    "bytes": 40960,
+    "sha256": "e91388e90c13efbc5ffa3e2678df9dbf2e81934fcec1cf87628c3b770e7d8519"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/layers/ref8_mix_4.bin",
+    "bytes": 40960,
+    "sha256": "f2863fc67ef872f11d42c761ed700eab1108abef4d4e5bb325550dd3931d5f00"
+  }
+]

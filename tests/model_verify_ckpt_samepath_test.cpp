@@ -431,6 +431,11 @@ Q4T_TEST(model_verify_ckpt_samepath) {
     // Tprompt+a+1, history += verify[0..a].
     seq.position = Tprompt + a + 1;
     for (int k = 0; k <= a; ++k) seq.history.push_back(verify[k]);
+    std::unique_ptr<MlpDumpScope> dump_partial;
+    if (!ld_dir.empty()) {
+      dump_partial.reset(new MlpDumpScope(ld_dir + "/partial" +
+                                         std::to_string(a)));
+    }
     s = ModelDecodeStepSeq(m, &seq, token, d_step_logits, nullptr, nullptr,
                            /*seq_id=*/0);
     if (!s.ok()) return false;
@@ -747,6 +752,42 @@ Q4T_TEST(model_verify_ckpt_samepath) {
     if (S_batch.valid) probe_from_state("batch-final (=C a=2)", S_batch);
     if (S_pref7.valid) probe_from_state("pref7 state (path-only)", S_pref7);
     if (S_seq.valid) probe_from_state("seq T1x3 state", S_seq);
+  }
+
+  // Independent prefix oracle: execute only the accepted tokens, without
+  // saving/restoring checkpoints, then compare its state with the saved row.
+  // This deliberately retains the existing Part C failure while diagnosing
+  // whether the rollback boundary itself differs from prefix execution.
+  stage = "F independent prefix";
+  for (int a = 0; a < T - 1; ++a) {
+    ModelSequence seq;
+    s = ModelBeginSequence(m, &seq, nullptr, 0);
+    if (s.ok()) {
+      s = ModelPrefill(m, &seq, prompt, Tprompt, d_reflogits, nullptr,
+                       nullptr, nullptr, 0);
+    }
+    if (s.ok()) {
+      s = ModelDecodeBatch(m, verify, a + 1, Tprompt, prompt, Tprompt,
+                           d_blogits, nullptr, nullptr, false, 0);
+    }
+    if (!s.ok() || cudaStreamSynchronize(nullptr) != cudaSuccess) {
+      std::printf("  [F] prefix execution failed (a=%d)\n", a);
+      ok = false;
+      ModelEndSequence(&seq);
+      continue;
+    }
+    ModelStateSnapshot prefix;
+    if (!ModelSnapshotState(m, &prefix, nullptr).ok()) {
+      ok = false;
+      ModelEndSequence(&seq);
+      continue;
+    }
+    size_t first = 0;
+    const bool equal = SnapEqual(prefix, a == 0 ? c0 : c1, &first);
+    std::printf("  [F] independent prefix a=%d vs checkpoint: %s "
+                "first_diff=%zu\n", a, equal ? "BIT-EXACT" : "MISMATCH", first);
+    if (!equal) ok = false;
+    ModelEndSequence(&seq);
   }
 
   cudaFree(d_blogits);
