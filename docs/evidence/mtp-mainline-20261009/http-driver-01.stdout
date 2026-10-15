@@ -1,0 +1,8 @@
+{"mode": "plain", "case": "stream-1024-256", "http_output_passed": true}
+{"mode": "plain", "case": "nonstream-1024-1", "http_output_passed": true}
+{"mode": "plain", "case": "nonstream-45056-1", "http_output_passed": true}
+{"mode": "default", "case": "stream-1024-256", "http_output_passed": true}
+{"mode": "default", "case": "nonstream-1024-1", "http_output_passed": true}
+{"mode": "explicit", "case": "stream-1024-256", "http_output_passed": true}
+{"mode": "explicit", "case": "nonstream-1024-1", "http_output_passed": true}
+{"mode": "explicit", "case": "nonstream-45056-1", "http_output_passed": true}

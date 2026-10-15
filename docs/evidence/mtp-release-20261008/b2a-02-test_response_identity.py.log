@@ -1,0 +1,13 @@
+test_invalid_type_and_token_rejected_without_throwing (__main__.ResponseIdentityTest.test_invalid_type_and_token_rejected_without_throwing) ... ok
+test_maximum_length_id (__main__.ResponseIdentityTest.test_maximum_length_id) ... ok
+test_missing_id_on_content_or_finish_rejected (__main__.ResponseIdentityTest.test_missing_id_on_content_or_finish_rejected) ... ok
+test_mixed_ids_rejected_including_usage (__main__.ResponseIdentityTest.test_mixed_ids_rejected_including_usage) ... ok
+test_no_recorded_identity_rejected (__main__.ResponseIdentityTest.test_no_recorded_identity_rejected) ... ok
+test_nonstream_response (__main__.ResponseIdentityTest.test_nonstream_response) ... ok
+test_stream_chunks_share_actual_id (__main__.ResponseIdentityTest.test_stream_chunks_share_actual_id) ... ok
+test_usage_only_without_id_is_not_a_fabricated_id (__main__.ResponseIdentityTest.test_usage_only_without_id_is_not_a_fabricated_id) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.000s
+
+OK

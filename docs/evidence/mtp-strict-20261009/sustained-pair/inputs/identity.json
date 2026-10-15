@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "binary_sha256": "a566faf51975291ec8fcd1fe75d7ddff07760fe13c138f85a066aeffad729563",
+  "model": {
+    "directory": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "metadata_sha256": {
+      "config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+      "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+      "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+      "generation_config.json": "e70c136c1b78ddc1fb0905bac8e733a4dc448d4f852a5dd75143fffc70be550e"
+    }
+  },
+  "capacity": {
+    "max_seq": 1,
+    "max_prefill": 8192,
+    "max_len": 208896
+  },
+  "sampling": {
+    "max_tokens": 512,
+    "temperature": 0,
+    "seed": 20260920,
+    "stream": true,
+    "parallel": 1
+  },
+  "questionnaire_sha256": "8de952c2389a4c391c99f0dcb6a2cb7c6ec6c7b3bcff8171fa1be787843cadcf",
+  "manifest_sha256": "9b2e03cb558efc6c2a20e9707b41ca5195b3e04309d2989ea4c55eac853916b9",
+  "requests_sha256": "9bb9647e60f28372117c39dc808f659ef105302f441c9c293467be713a5de0b9",
+  "local_tokenizer_counts_are_not_server_usage": true
+}

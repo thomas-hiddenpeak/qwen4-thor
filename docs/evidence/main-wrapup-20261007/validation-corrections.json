@@ -1,0 +1,22 @@
+{
+  "recorded_t": 1791344539.1919749,
+  "corrections": [
+    {
+      "kind": "harness_expected_message",
+      "first_result": "startup-contracts.json",
+      "actual": "max-prefill must be in [0,8192]",
+      "first_expected": "max-prefill must be at most 8192",
+      "runtime_change": false,
+      "action": "preserve first failure; rerun only startup assertions with exact implemented diagnostic"
+    },
+    {
+      "kind": "static_count_correction",
+      "first_plan": "freeze.json",
+      "stated_public_ctest_groups": 19,
+      "actual_public_ctest_groups": 18,
+      "tests_removed": false,
+      "expected_individual_cases": 331,
+      "basis": "final CMake and first CTest registry; all 18 groups were executed"
+    }
+  ]
+}

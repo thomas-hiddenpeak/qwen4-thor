@@ -1,0 +1,20 @@
+{
+  "label": "test-supply-repair-02",
+  "argv": [
+    "ctest",
+    "--test-dir",
+    "build/public-host",
+    "-R",
+    "^q4t_analyze_decode_supply_contracts$",
+    "--no-tests=error",
+    "--verbose",
+    "--output-on-failure",
+    "--output-junit",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/build/public-host/results-supply-02.xml"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source",
+  "started": 1791344585.526117,
+  "pid": 3940540,
+  "exit_code": 0,
+  "ended": 1791344587.692341
+}

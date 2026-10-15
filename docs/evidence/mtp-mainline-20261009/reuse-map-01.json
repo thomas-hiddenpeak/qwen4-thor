@@ -1,0 +1,66 @@
+{
+  "created_unix": 1791509790.1934555,
+  "runtime_changed_paths": [
+    "include/q4t/server/chat_server.h",
+    "include/q4t/server/server_options.h",
+    "src/main.cpp",
+    "src/server/chat_generation.cpp",
+    "src/server/chat_server.cpp",
+    "src/server/server_options.cpp"
+  ],
+  "libraries": [
+    {
+      "name": "libq4t_io.a",
+      "old_sha256": "a284806131dfedee792a876daeb286cb2bd7e6e24b2bdb633e0fac8c019b4596",
+      "new_sha256": "a284806131dfedee792a876daeb286cb2bd7e6e24b2bdb633e0fac8c019b4596",
+      "byte_identical": true
+    },
+    {
+      "name": "libq4t_model.a",
+      "old_sha256": "e88f115fcf008dd4b9f5ba89b928ee49543e8565c4dc23c44c9a5b889b7f6f49",
+      "new_sha256": "0e455ea788adb974111a1b4c5f3f92207e143e506486c39c35997e2e6c1a1dfc",
+      "byte_identical": false
+    },
+    {
+      "name": "libq4t_ple.a",
+      "old_sha256": "f78cf66bb5729a9a1a8c8a590d9ed37882bff44f606153cd83207b7511fdfe39",
+      "new_sha256": "a507b01a9fd5b25951ad54d48474a1d204407354ff57fe1eca99a775ade8918a",
+      "byte_identical": false
+    },
+    {
+      "name": "libq4t_quant.a",
+      "old_sha256": "feb0ec9a225a632c77b57fe0783f0f0809fb14549e088c15b1b1592874a4ca42",
+      "new_sha256": "afe7f2763d7f1acc41d0a3fd6f3f483da54df89eae1af038876b526c388b7a69",
+      "byte_identical": false
+    },
+    {
+      "name": "libq4t_runtime.a",
+      "old_sha256": "2bb9c21482f6f78c3a14531b4e872aeebfd85ab7e0243447c66b72bc163ca81e",
+      "new_sha256": "2bb9c21482f6f78c3a14531b4e872aeebfd85ab7e0243447c66b72bc163ca81e",
+      "byte_identical": true
+    },
+    {
+      "name": "libq4t_server.a",
+      "old_sha256": "3efada510a6b40a2529ae31258806dea1b010d699e9d23069742c0341366609e",
+      "new_sha256": "8c9e3e2df9775912354a5a54816cf263d97fbc19a6a6aa72f55c12cdff8d24ae",
+      "byte_identical": false
+    },
+    {
+      "name": "libq4t_text.a",
+      "old_sha256": "b5d23197e94116477b82f28547f4842a5033dacabd74976b513ad20ae81c3859",
+      "new_sha256": "b5d23197e94116477b82f28547f4842a5033dacabd74976b513ad20ae81c3859",
+      "byte_identical": true
+    },
+    {
+      "name": "libq4t_trace.a",
+      "old_sha256": "0848c46af127e060c5e34340ab81dcb7f21f07531e157421831472ae5f4bc303",
+      "new_sha256": "0848c46af127e060c5e34340ab81dcb7f21f07531e157421831472ae5f4bc303",
+      "byte_identical": true
+    }
+  ],
+  "reuse_scope": "Unchanged model, sequential target/draft/extend, scheduler forward and state/terminal functions; new endpoint/default/logging and prefill queue admission checked separately. Old 115 requests and costs remain attributed to original binary, never relabeled as rerun.",
+  "exact_new_binary_claim": false,
+  "runtime_added_paths": [
+    "include/q4t/server/scheduler_submission.h"
+  ]
+}

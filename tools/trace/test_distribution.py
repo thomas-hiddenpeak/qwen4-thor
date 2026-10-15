@@ -2,6 +2,7 @@
 import argparse
 from collections import Counter
 import json
+import os
 from pathlib import Path
 import struct
 import tempfile
@@ -47,7 +48,9 @@ class Contracts(unittest.TestCase):
             histogram(struct.pack('<10H', *([512]*10)))
 
     def read_fixture(self, failed):
-        parent=ROOT/'build/distribution-contracts';parent.mkdir(exist_ok=True,parents=True)
+        parent = Path(os.environ.get(
+            'Q4T_TEST_OUTPUT_DIR', ROOT / 'build/distribution-contracts'))
+        parent.mkdir(exist_ok=True, parents=True)
         with tempfile.TemporaryDirectory(dir=parent) as tmp:
             p=Path(tmp)/'source';m=fixture(p,outcome=3 if failed else 1,failed_forward=failed)
             (p/'request-1.partial').rename(p/'request-1.bin')

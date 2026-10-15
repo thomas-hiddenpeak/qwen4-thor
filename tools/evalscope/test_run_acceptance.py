@@ -43,6 +43,7 @@ class RunnerContractTest(unittest.TestCase):
         self.latency = 1.0
         self.quality = False
         self.cleanup_error = False
+        self.response_id = "chatcmpl-synthetic"
 
     def tearDown(self):
         self.temp.cleanup()
@@ -100,7 +101,7 @@ class RunnerContractTest(unittest.TestCase):
             for i in range(number):
                 prompt = json.loads(inputs[i])['prompt']
                 length = int(prompt.split('-')[-1])
-                messages = [{'choices': [{'delta': {'content': 'ok'},
+                messages = [{'id': self.response_id, 'choices': [{'delta': {'content': 'ok'},
                                            'finish_reason': 'stop' if self.quality else 'length'}]}]
                 request = {'prompt': prompt, 'stream': '--stream' in command, 'max_tokens': tokens}
                 encoded = base64.b64encode(pickle.dumps(messages)).decode()
@@ -217,6 +218,12 @@ class RunnerContractTest(unittest.TestCase):
             self.invoke('--perf-lengths', '45056')
         self.assertEqual(self.read('context-45056/responses.json')[0]['success'], 0)
         self.assertEqual(len(self.clients), 1)
+
+    def test_missing_response_id_rejects_before_output_acceptance(self):
+        self.response_id = None
+        with self.assertRaisesRegex(RuntimeError, 'response IDs'):
+            self.invoke('--perf-lengths', '45056')
+        self.assertFalse(self.read('exit.json')['http_output_checks_passed'])
 
     def test_wrong_output_count_fails(self):
         self.output_delta = -1

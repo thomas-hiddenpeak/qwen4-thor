@@ -1,0 +1,16 @@
+{
+  "request_count": 8,
+  "observed_output_tokens": 2798,
+  "sustained_coverage_passed": true,
+  "missing_coverage": [],
+  "semantic_results_are_independent": true,
+  "manual_semantic_review_pending": [
+    "zh-reasoning",
+    "en-code",
+    "en-reasoning",
+    "zh-code",
+    "zh-summary",
+    "en-summary"
+  ],
+  "compared_token_ids": false
+}

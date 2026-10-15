@@ -1,0 +1,9 @@
+{
+  "time": 1791531866.455305,
+  "research_head": "74893ffca1ab59cc8112bfaea094ea40583e24f3",
+  "foundation_head": "5aacc9f225056b47fca766dcf9d49a170e60978f",
+  "mode": "merge --no-commit --no-ff into research; main untouched",
+  "allowed_runtime_changes": 0,
+  "review": "foundation-integration-review-01.md",
+  "binary_sha256": "eae6949bb275e9c97c3e37c505eddc0988f585daaab01ec3b587c02b80cf5872"
+}

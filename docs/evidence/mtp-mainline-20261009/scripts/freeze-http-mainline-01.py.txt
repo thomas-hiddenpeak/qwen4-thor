@@ -1,0 +1,171 @@
+"""Freeze the fixed eight-request mainline integration run; never run a model."""
+import hashlib
+import json
+from pathlib import Path
+import shutil
+import time
+
+S = Path(__file__).resolve().parent
+W = S.parents[1]
+OUTPUT = S / 'http-mainline-01'
+MODEL = Path('/home/rm01/models/dev/llm/garnermccloud/'
+             'Qwen3.8-Flash-Next-NVFP4-SSD-Stream')
+OLD = W / '.q4t-work/mtp-strict-20261009/http/performance-plain'
+
+
+def identity(path):
+    path = Path(path).resolve()
+    with path.open('rb') as source:
+        digest = hashlib.file_digest(source, 'sha256').hexdigest()
+    return {'path': str(path), 'bytes': path.stat().st_size, 'sha256': digest}
+
+
+def save(path, value):
+    with path.open('x', encoding='utf-8') as output:
+        json.dump(value, output, indent=2, ensure_ascii=False)
+        output.write('\n')
+
+
+def main():
+    protocol_path = S / 'http-mainline-protocol-01.json'
+    if protocol_path.exists() or OUTPUT.exists():
+        raise RuntimeError('first-run protocol/output already exists; no overwrite')
+    binary = W / 'build/mtp-mainline-20261009/q4t'
+    evalscope = W / 'tools/evalscope/.venv/bin/evalscope'
+    driver = S / 'run-http-mainline-01.py'
+    build_identity = S / 'build-identity-01.json'
+    for path in (binary, evalscope, driver, build_identity,
+                 S / 'build-host-protocol-01.json'):
+        if not path.is_file():
+            raise RuntimeError(f'missing frozen prerequisite: {path}')
+    built = json.loads(build_identity.read_text())
+    binary_rows = [row for row in built['files']
+                   if Path(row['path']).resolve() == binary.resolve()]
+    current_binary = identity(binary)
+    if (len(binary_rows) != 1 or
+            binary_rows[0]['sha256'] != current_binary['sha256'] or
+            binary_rows[0]['bytes'] != current_binary['bytes']):
+        raise RuntimeError('candidate differs from the completed build identity')
+    inputs = S / 'http-mainline-inputs-01'
+    inputs.mkdir(exist_ok=False)
+    prior_results = json.loads((OLD / 'results.json').read_text())
+    fixtures = {}
+    for length in (1024, 45056):
+        source = OLD / f'inputs/context-{length}.jsonl'
+        lines = source.read_bytes().splitlines()
+        rows = [json.loads(line) for line in lines]
+        if len(rows) != 3 or any(row != rows[0] for row in rows):
+            raise RuntimeError('original performance input is not three identical rows')
+        prompt_sha = hashlib.sha256(rows[0]['prompt'].encode()).hexdigest()
+        groups = [row for row in prior_results if row['length'] == length]
+        if (len(groups) != 1 or groups[0]['prompt_sha256'] != prompt_sha or
+                not groups[0]['deterministic'] or
+                len(groups[0]['outputs']) != 3 or
+                len(set(groups[0]['outputs'])) != 1):
+            raise RuntimeError('input and original ordinary evidence disagree')
+        original_copy = inputs / f'context-{length}-source.jsonl'
+        shutil.copyfile(source, original_copy)
+        request = inputs / f'context-{length}.jsonl'
+        with request.open('xb') as output:
+            output.write(lines[0] + b'\n')
+        fixtures[str(length)] = {
+            'original': identity(source), 'original_copy': identity(original_copy),
+            'request': identity(request), 'prompt_sha256': prompt_sha,
+            'original_256_output_sha256': groups[0]['outputs'][0],
+            'selection': 'first existing identical row; no generated fixture',
+        }
+    dependencies = [Path(__file__), driver, binary, evalscope,
+                    W / 'build/mtp-mainline-20261009/CMakeCache.txt',
+                    build_identity, S / 'build-host-protocol-01.json',
+                    OLD / 'results.json']
+    dependencies.extend(sorted((W / 'tools/evalscope').glob('*.py')))
+    # Pin the installed evaluator's Python sources and distribution metadata.
+    # This reads tool code/metadata, never model tensor payloads.
+    package_root = evalscope.parent.parent / 'lib/python3.12/site-packages'
+    dependencies.extend(sorted((package_root / 'evalscope').rglob('*.py')))
+    dependencies.extend(sorted(package_root.glob('*.dist-info/METADATA')))
+    dependencies.append(evalscope.parent / 'python')
+    for fixture in fixtures.values():
+        dependencies += [Path(fixture[key]['path']) for key in
+                         ('original', 'original_copy', 'request')]
+    metadata = []
+    for name in ('config.json', 'tokenizer_config.json', 'tokenizer.json',
+                 'generation_config.json'):
+        path = MODEL / name
+        if path.is_file():
+            metadata.append(identity(path))
+    dependencies += [Path(row['path']) for row in metadata]
+    unique = {str(path.resolve()): path for path in dependencies}
+    bindings = [identity(path) for _, path in sorted(unique.items())]
+    modes = []
+    cases = [('stream-1024-256', 1024, 256, True),
+             ('nonstream-1024-1', 1024, 1, False),
+             ('nonstream-45056-1', 45056, 1, False)]
+    for index, (name, flags, mtp) in enumerate([
+            ('plain', ['--no-mtp'], False),
+            ('default', ['--mtp'], True),
+            ('explicit', ['--mtp', '--mtp-verifier', 'sequential'], True)]):
+        port = 28931 + index
+        mode_output = OUTPUT / name
+        server = [str(binary), 'serve', '--host', '127.0.0.1',
+                  '--model-dir', str(MODEL), '--port', str(port),
+                  '--max-seq', '1', '--max-prefill', '8192',
+                  '--max-len', '208896', '--max-tokens', '256', *flags]
+        selected = cases[:2] if name == 'default' else cases
+        frozen_cases = []
+        for case_name, length, count, streaming in selected:
+            case_output = mode_output / case_name
+            request = case_output / 'requests.jsonl'
+            command = [str(evalscope), 'perf', '--model', 'qwen3.8-flash-next',
+                       '--url', f'http://127.0.0.1:{port}/v1/chat/completions',
+                       '--api', 'openai', '--tokenizer-path', str(MODEL),
+                       '--dataset', 'line_by_line', '--dataset-path', str(request),
+                       '--min-prompt-length', str(length),
+                       '--max-prompt-length', str(length),
+                       '--no-apply-chat-template', '--max-tokens', str(count),
+                       '--temperature', '0', '--seed', '20260920',
+                       '--parallel', '1', '--number', '1', '--warmup-num', '0',
+                       '--connect-timeout', '30', '--read-timeout', '300',
+                       '--total-timeout', '300', '--no-test-connection',
+                       '--outputs-dir', str(case_output),
+                       '--stream' if streaming else '--no-stream']
+            frozen_cases.append({
+                'name': case_name, 'length': length, 'output_tokens': count,
+                'streaming': streaming, 'finish': ['length'],
+                'input': fixtures[str(length)]['request'],
+                'prompt_sha256': fixtures[str(length)]['prompt_sha256'],
+                'expected_old_output_sha256': (
+                    fixtures[str(length)]['original_256_output_sha256']
+                    if count == 256 else None),
+                'output': str(case_output), 'argv': command,
+            })
+        modes.append({'name': name, 'mtp': mtp,
+                      'verifier': 'sequential' if mtp else 't4',
+                      'output': str(mode_output), 'argv': server,
+                      'cases': frozen_cases})
+    save(protocol_path, {
+        'schema_version': 1, 'created_unix': time.time(),
+        'purpose': 'mainline entry/chunk integration; no performance acceptance',
+        'root': str(W), 'output': str(OUTPUT), 'modes': modes,
+        'generation_requests': 8, 'pair_comparisons': 7,
+        'overall_seconds': 1500, 'startup_seconds': 600,
+        'client_seconds': 300, 'shutdown_seconds': 25,
+        'no_probe_generation': True, 'warmup_requests': 0,
+        'no_automatic_retry_or_favorable_resampling': True,
+        'first_failure_stops_later_cases_and_modes': True,
+        'environment_remove': ['Q4T_*', 'LD_PRELOAD'],
+        'fixtures': fixtures, 'bindings': bindings,
+        'model': {'directory': str(MODEL), 'metadata': metadata,
+                  'payload_hashed': False, 'payload_attested': False},
+        'candidate_binary': current_binary,
+        'limits': ['Reuse original five-tier costs, no new performance claim.',
+                   'Raw usage messages may be absent in evalscope DB; observed '
+                   'prompt/completion columns and derived total are distinct.',
+                   'HTTP token IDs are not captured.',
+                   'Runtime support log matches configuration, not checkpoint content.'],
+    })
+    print(json.dumps({'protocol': identity(protocol_path), 'requests': 8}))
+
+
+if __name__ == '__main__':
+    main()

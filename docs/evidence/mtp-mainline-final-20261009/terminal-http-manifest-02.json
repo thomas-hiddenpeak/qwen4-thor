@@ -1,0 +1,206 @@
+{
+  "protocol": "t4_terminal_v1",
+  "status": "frozen",
+  "root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source",
+  "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/terminal-http-02",
+  "checkpoint_directory": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "checkpoint_payload_attested": false,
+  "startup_seconds": 300,
+  "request_group_seconds": 1500,
+  "generation_requests": 9,
+  "plan": [
+    [
+      "t4-stop-0",
+      0,
+      256,
+      true
+    ],
+    [
+      "t4-stop-1",
+      1,
+      256,
+      false
+    ],
+    [
+      "t4-stop-2",
+      2,
+      256,
+      true
+    ],
+    [
+      "t4-stop-3",
+      3,
+      256,
+      false
+    ],
+    [
+      "t4-cap-1",
+      -1,
+      1,
+      true
+    ],
+    [
+      "t4-cap-2",
+      -1,
+      2,
+      false
+    ],
+    [
+      "t4-cap-3",
+      -1,
+      3,
+      true
+    ],
+    [
+      "t4-cap-4",
+      -1,
+      4,
+      false
+    ],
+    [
+      "t4-cap-5",
+      -1,
+      5,
+      true
+    ]
+  ],
+  "variant_argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/q4t_mtp_t4_terminal_server",
+    "serve",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "28943",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--max-seq",
+    "1",
+    "--max-len",
+    "208896",
+    "--max-prefill",
+    "8192",
+    "--max-tokens",
+    "256",
+    "--mtp",
+    "--mtp-verifier",
+    "t4"
+  ],
+  "bindings": {
+    "driver": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/run_mtp_t4_terminal.py",
+      "bytes": 16029,
+      "sha256": "8957aa1f7c3c55640ae77b3694f2c84647c8b335a9237b979a435d5ad94012cf"
+    },
+    "terminal_contract": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/mtp_t4_terminal_contract.py",
+      "bytes": 11191,
+      "sha256": "23facf809e32670981eedc919afe4b814163bebfcc77b8455a39c315ff078dc2"
+    },
+    "contract_test": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/test_t4_terminal_contract.py",
+      "bytes": 9637,
+      "sha256": "933bfc8e5be2f8f8878adac6aaf2b5af17dedae5a189982abce3dcbbb3577be3"
+    },
+    "wrapper": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tests/mtp_t4_terminal_server.cpp",
+      "bytes": 21885,
+      "sha256": "6bf514bf4d3247b7cfe321b04ae4cd8685ed0a9efb098015483b611be1d8191b"
+    },
+    "link_config": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/CMakeLists.txt",
+      "bytes": 22639,
+      "sha256": "c145006aa8841f9f29187da8a26a2ada7a44c30a9b433161d6b9791e25fc37d9"
+    },
+    "transport": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/run_mtp_failure_recovery.py",
+      "bytes": 14245,
+      "sha256": "e02906b7b2f5a80824ff2b2ff659a2aab96a958881500f0da5cdaa34891f91e8"
+    },
+    "failure_contract": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/mtp_failure_recovery_contract.py",
+      "bytes": 9037,
+      "sha256": "b843da5b404bc58acea422f78d3355f2654cb3e252eae1cd84421039fae130fd"
+    },
+    "recovery_contract": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/request_cancellation_contract.py",
+      "bytes": 12260,
+      "sha256": "4bc92a648bd80715c7507d84982b0e2700f9b12c0afab5fb24f2c3a3fa9f36df"
+    },
+    "acceptance_mode": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/acceptance_mode.py",
+      "bytes": 10883,
+      "sha256": "4e99e92616880d5017cc1d04f968c505b7e7bc9e6b2d06f417b6dd9d2f1bf44a"
+    },
+    "response_identity": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/response_identity.py",
+      "bytes": 916,
+      "sha256": "2102fb7a401786a55dba5b8845985b69a36b4279c52a6e4d1610a11ccd1b6e7a"
+    },
+    "variant_binary": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/q4t_mtp_t4_terminal_server",
+      "bytes": 4021264,
+      "sha256": "96b8797c0c9c2f48a534262c098617fb8c4427306b134f5c7c20ca59c4b2aeae"
+    },
+    "fixture": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/http-mainline-inputs-01/context-1024.jsonl",
+      "bytes": 5135,
+      "sha256": "e13b22cf2685e6b5878f5bb31c7d5013b37c9453feb72860d67ee22d98a91012"
+    },
+    "build_manifest": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/completion-terminal-02/build-identity-01.json",
+      "bytes": 50865,
+      "sha256": "b9426621968e5f4d55eae9fdba1383e7a01103fdc9a96509f76b2dc5a50ca8a7"
+    },
+    "mtp_header": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/include/q4t/mtp/mtp.h",
+      "bytes": 27770,
+      "sha256": "fc8fc26b3f0ab36e810696e79a53c9608e6d23adb86a8d5fdef751ca9a2b72be"
+    },
+    "mtp_source": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/src/mtp/mtp.cu",
+      "bytes": 86202,
+      "sha256": "2859dab04b705025b428b6fb5d601ce4062e7eb11a55fb2ff4f5c7b9eaec6434"
+    },
+    "model_header": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/include/q4t/model/model.h",
+      "bytes": 29213,
+      "sha256": "4930cefd5318f854189a093709c9a2cca97658cf935ea349e3fae212de9e8f21"
+    },
+    "model_source": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/src/model/model.cu",
+      "bytes": 77793,
+      "sha256": "6775ad3c8ffb459a8a5ae84f20a4d62eef335cc59ee99bba9af4188f364d49ee"
+    },
+    "scheduler_source": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/src/server/chat_scheduler.cpp",
+      "bytes": 21232,
+      "sha256": "5863b1b15355b5e597bb0d8458b24f351a78265b770d1a1ee20b115c004a01dc"
+    },
+    "generation_source": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/src/server/chat_generation.cpp",
+      "bytes": 52240,
+      "sha256": "242adfec6208e1f1e28deb17e98a1c6bbe97a13cb8acfdd313a7d7b822cb725e"
+    },
+    "policy_header": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/include/q4t/server/mtp_policy.h",
+      "bytes": 1193,
+      "sha256": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285"
+    },
+    "checkpoint_config": {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/config.json",
+      "bytes": 4983,
+      "sha256": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624"
+    },
+    "checkpoint_generation_config": {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/generation_config.json",
+      "bytes": 202,
+      "sha256": "e70c136c1b78ddc1fb0905bac8e733a4dc448d4f852a5dd75143fffc70be550e"
+    },
+    "freezer": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/t4-terminal-control/freeze_mtp_t4_terminal.py",
+      "bytes": 4458,
+      "sha256": "424fab84ef49817a93aaf67812e0d86ab32934bd21302cf61966cc3ab1c7bdcb"
+    }
+  },
+  "scope": "controlled T4 terminal selection and actual ordinary tail; not natural quality or whole-model numerical admission"
+}

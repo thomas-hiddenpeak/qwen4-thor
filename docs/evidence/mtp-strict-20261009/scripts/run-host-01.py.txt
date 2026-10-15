@@ -1,0 +1,67 @@
+"""Frozen host and preload boundary group; no model or generation requests."""
+import hashlib, json, os, re, subprocess, time
+from pathlib import Path
+S=Path(__file__).resolve().parent
+W=S.parents[1]
+B=W/'build/mtp-strict-20261009'
+def sha(p):
+    with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def save(n,v):
+    with (S/n).open('x') as f:json.dump(v,f,indent=2);f.write('\n')
+names=(W/'.q4t-work/mtp-release-20261008/b1-local/required-host-contracts.txt').read_text().splitlines()+[
+'serve_mtp_verifier_selection_preserves_t4_default',
+'serve_mtp_verifier_invalid_parse_is_transactional',
+'mtp_sequential_step_preserves_output_and_context_tail',
+'mtp_sequential_step_rejects_invalid_or_overflowing_ranges']
+controls=['mtp_sequential_control_acceptance','mtp_sequential_control_stop','mtp_sequential_control_partial_failure']
+for n,ls in [('required-host-01.txt',names),('required-control-01.txt',controls)]:
+    with (S/n).open('x') as f:f.write('\n'.join(ls)+'\n')
+modules=['test_acceptance_mode','test_request_cancellation','test_response_identity','test_sustained_quality','test_mtp_failure_recovery']
+python_names=[]
+for m in modules:
+    source=(W/'tools/evalscope'/f'{m}.py').read_text()
+    python_names+=re.findall(r'^    def (test_\w+)\(',source,re.M)
+assert len(python_names)==108
+missing=S/'never-created-model'
+assert not missing.exists()
+serve=['serve','--model-dir',str(missing)]
+generate=['generate','strict admission boundary','--model-dir',str(missing)]
+cases=[
+('seq_without_mtp',serve+['--mtp-verifier','sequential'],2,'serve options: --mtp-verifier requires --mtp\n',{}),
+('t4_without_mtp',serve+['--mtp-verifier','t4'],2,'serve options: --mtp-verifier requires --mtp\n',{}),
+('invalid_verifier',serve+['--mtp','--mtp-verifier','bad'],2,'serve options: --mtp-verifier must be sequential or t4\n',{}),
+('seq_disabled',serve+['--mtp','--mtp-verifier','sequential','--no-mtp'],2,'serve options: --mtp-verifier requires --mtp\n',{}),
+('seq_prefill3',serve+['--mtp','--mtp-verifier','sequential','--max-prefill','3'],2,'serve options: sequential MTP requires max-prefill >= 4\n',{}),
+('generate_verifier',generate+['--mtp-verifier','sequential'],2,'MTP is unavailable in generate; use serve --mtp --max-seq 1 with text requests\n',{}),
+]
+for variable in ['Q4T_MTP_CYCLE_TIMING','Q4T_MTP_VERIFY_MOE_TIMING']:
+    cases.append((variable,serve+['--mtp','--mtp-verifier','sequential'],1,'serve start failed: sequential MTP does not support '+variable+'\n',{variable:'1'}))
+commands=[('host',[str(B/'q4t_host_tests'),'--required-list',str(S/'required-host-01.txt')],W,60),
+('control',[str(B/'q4t_mtp_sequential_control'),'--required-list',str(S/'required-control-01.txt')],W,60),
+('python',[str(W/'tools/evalscope/.venv/bin/python'),'-m','unittest','-v',*modules],W/'tools/evalscope',120)]
+env={k:v for k,v in os.environ.items() if not k.startswith('Q4T_') and k!='LD_PRELOAD'}
+save('host-protocol-01.json',dict(time=time.time(),build_identity_sha256=sha(S/'build-identity-01.json'),script_sha256=sha(__file__),host_names=names,control_names=controls,python_test_names=python_names,commands=[dict(name=n,argv=a,cwd=str(c),timeout=t) for n,a,c,t in commands],cases=[dict(name=n,args=a,expected_exit=rc,expected_stderr=err,extra_env=e) for n,a,rc,err,e in cases],no_model=True,no_http=True,no_retry=True))
+results=[]
+def run(n,args,cwd,timeout,extra=None):
+    started=time.time()
+    with (S/(n+'-01.stdout')).open('x') as out,(S/(n+'-01.stderr')).open('x') as err:
+        try:
+            p=subprocess.run(args,cwd=cwd,env={**env,**(extra or {})},stdout=out,stderr=err,timeout=timeout)
+            rc=p.returncode
+        except subprocess.TimeoutExpired:rc='timeout'
+    stdout=(S/(n+'-01.stdout')).read_text();stderr=(S/(n+'-01.stderr')).read_text()
+    return dict(name=n,exit_code=rc,started=started,seconds=time.time()-started,stdout_sha256=sha(S/(n+'-01.stdout')),stderr_sha256=sha(S/(n+'-01.stderr'))),stdout,stderr
+for n,a,c,t in commands:
+    row,out,err=run(n,a,c,t)
+    if n=='python':ok=row['exit_code']==0 and 'Ran 108 tests' in err and err.rstrip().endswith('OK')
+    else:
+        want=names if n=='host' else controls
+        found=re.findall(r'^\[PASS\] (\S+)$',out,re.M)
+        ok=row['exit_code']==0 and len(found)==len(want) and set(found)==set(want) and f'{len(want)} tests, {len(want)} passed, 0 failed, 0 skipped' in out
+    row['passed']=ok;results.append(row);save(n+'-01.json',row);print(json.dumps(row),flush=True)
+for n,a,expected,expected_err,extra in cases:
+    row,out,err=run(n,[str(B/'q4t'),*a],W,15,extra)
+    row['passed']=row['exit_code']==expected and out=='' and err==expected_err and not missing.exists()
+    results.append(row);save(n+'-01.json',row);print(json.dumps(row),flush=True)
+save('host-summary-01.json',dict(passed=all(r['passed'] for r in results),results=results))
+raise SystemExit(0 if all(r['passed'] for r in results) else 1)

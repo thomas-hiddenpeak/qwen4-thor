@@ -16,8 +16,8 @@ Linux `io_uring` 从本地 NVMe 异步流式读取,与 GPU 计算重叠,释放�
 - **多模态**: 27 层 ViT, 图像 + 视频输入 (OpenAI `image_url` / `video_frames`
   base64 接入), 3D MRoPE；当前版本默认拒绝媒体，须显式
   `serve --allow-media`进入未验收实验路径（部署身份见STATUS）
-- **MTP 推测解码**: draft、主模型验证与多序列调度已实现；默认关闭，
-  不属于当前文本基线的完整验收范围
+- **MTP 推测解码**: 默认开启 T>1 batch verifier（k=3），`--no-mtp` 回退；
+  当前单流近 tie 合同、质量与性能验收状态见 STATUS
 - **连续批处理**: token 级打包、多请求调度；已完成有界槽位和生命周期
   验证，不能据此保证所有路径均不存在状态污染
 - **长上下文**: 流式 top-k QSA；当前正式单流评估覆盖 1K、4K、8K、44K、
@@ -74,21 +74,30 @@ ctest --test-dir build --output-on-failure
 ./build/q4t version
 ./build/q4t probe
 
-# 单次生成 (greedy; --mtp 开启推测解码, --mtp-k 设 draft 步数, 默认 3)
+# 单次生成（独立 CLI 路径；不属于下述 HTTP MTP 验收范围）
 ./build/q4t generate "用一句话解释统一内存。" \
-  [--model-dir DIR] [--max-tokens 32] [--max-prefill N] [--mtp] [--mtp-k 3]
+  [--model-dir DIR] [--max-tokens 32] [--max-prefill N] [--mtp-k 3]
 
-# OpenAI 兼容 API 服务
+# OpenAI 兼容 API 服务，默认 T>1 MTP，k=3
 ./build/q4t serve \
   [--model-dir DIR] [--host 127.0.0.1] [--port 8080] \
   [--max-len N] [--max-seq N] [--max-prefill N] [--max-tokens N] \
-  [--mtp] [--allow-media] [--mem-fraction 0.90]
-
+  [--mtp | --no-mtp] [--mtp-k 3] [--allow-media] [--mem-fraction 0.90]
 ```
 
-serve 默认监听 127.0.0.1，MTP 默认关闭。性能评估使用
-[tools/evalscope](tools/evalscope/README.md) 的真实 HTTP E2E；bench 不作为
-性能验收依据。Bug 修复按 [EVALUATION](docs/EVALUATION.md) 选择直接测试。
+当前工作分支使用 T>1 batch verifier；`--mtp` 显式开启，`--no-mtp` 回退
+普通 decode。`--mtp-verifier` 不再提供，sequential 实现保留于 main 历史
+`7f6a69c`。归并状态与验收结果以 [STATUS](docs/STATUS.md) 为准。
+
+冻结验收范围为本机 Thor、既定 checkpoint、纯文本 greedy、单流 k=3、
+`--max-seq 1 --max-prefill 8192 --max-len 208896`。其他 CLI、媒体、并发
+或 k 值不随此矩阵取得验收。T>1 与普通 decode 的舍入路径不同，遵守
+[EVALUATION](docs/EVALUATION.md) 的 N=4 ULP 近 tie 合同；不承诺跨路径
+逐位一致。默认监听 127.0.0.1。
+
+性能评估使用 [tools/evalscope](tools/evalscope/README.md) 的真实 HTTP E2E；
+bench 不作为性能验收依据。归并方案、共用正确性修复与回退点见
+[MTP 归并边界](docs/MTP_MERGE_BOUNDARY_2026-10-15.md)。
 
 serve 请求体使用 OpenAI chat/completions 风格, content 可为字符串或
 parts 数组; 图像用 `image_url` (base64 data URL), 视频用 `video_frames`

@@ -1,0 +1,8 @@
+{
+  "path": "tests/server_options_test.cpp",
+  "before_sha256": "0e2c238bf6d07ff53ddf16c87a90f77b7e2abf42baeb555c2848c350bffe1097",
+  "after_sha256": "60cd5a6dc04586a3f655813219364ed57783a0c3b96b5c97930bb22e700377da",
+  "change": "wrap two 81-column assertions to <=80 columns; tokens and runtime source unchanged",
+  "model_retest_required": false,
+  "compiled_tests_source_retained_in": "source-start/tests/server_options_test.cpp"
+}

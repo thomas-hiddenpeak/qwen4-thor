@@ -1,0 +1,15 @@
+{
+  "label": "test-io-sanitized-01",
+  "argv": [
+    "ctest",
+    "--test-dir",
+    "build/io-sanitized",
+    "--no-tests=error",
+    "--output-on-failure",
+    "--verbose",
+    "--output-junit",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/build/io-sanitized/results-01.xml"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source",
+  "started": 1791344467.4009302
+}

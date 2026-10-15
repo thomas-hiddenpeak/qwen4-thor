@@ -1,0 +1,52 @@
+"""Frozen mainline integration build and affected host contracts; no model."""
+import hashlib, json, os, pathlib, re, shutil, subprocess, time
+S=pathlib.Path(__file__).resolve().parent; W=S.parents[1]
+B=W/'build/mtp-mainline-20261009'
+def sha(p):
+ with pathlib.Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def save(name,data):
+ with (S/name).open('x') as f:json.dump(data,f,indent=2);f.write('\n')
+assert not B.exists()
+env={k:v for k,v in os.environ.items() if not k.startswith('Q4T_') and k!='LD_PRELOAD'}
+(S/'tmp').mkdir(exist_ok=True);env.update(PYTHONDONTWRITEBYTECODE='1',TMPDIR=str(S/'tmp'))
+files=sorted(set(subprocess.check_output(['git','ls-files','--cached','--others','--exclude-standard','src','include','cmake','CMakeLists.txt','tests','tools/evalscope'],cwd=W,text=True).splitlines()))
+rows=[]
+for name in files:
+ p=W/name
+ if not p.is_file():continue
+ dest=S/'source-start'/name;dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,dest)
+ rows.append({'path':name,'sha256':sha(p),'bytes':p.stat().st_size})
+names=[]
+for name in ['server_options','server_mtp_policy','server_chat_contract','server_scheduler_submission']:
+ names+=re.findall(r'^Q4T_TEST\(([^)]+)\)',(W/f'tests/{name}_test.cpp').read_text(),re.M)
+assert len(names)==23
+(S/'required-host.txt').write_text('\n'.join(names)+'\n')
+configure=['cmake','-S',str(W),'-B',str(B),'-DCMAKE_BUILD_TYPE=Release','-DCMAKE_CXX_COMPILER=/usr/bin/g++-14','-DCMAKE_CUDA_COMPILER=/usr/local/cuda-13.3/bin/nvcc','-DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-14','-DQ4T_CUDA_ARCHITECTURES=110a','-DQ4T_BUILD_TESTS=ON']
+targets=['q4t','q4t_host_tests','q4t_tests','q4t_mtp_sequential_control','q4t_mtp_cross_mode_diagnostic','q4t_mtp_projection_path_diagnostic','q4t_mtp_moe_path_diagnostic','q4t_mtp_k3_replay_diagnostic','q4t_mtp_init_last_row_diagnostic','q4t_quant_moe_batch_gather_diagnostic']
+build=['cmake','--build',str(B),'--target',*targets,'--parallel','6']
+checks=[('host',[str(B/'q4t_host_tests'),'--required-list',str(S/'required-host.txt')],W),('sequential-control',['ctest','--test-dir',str(B),'-R','^q4t_mtp_sequential_control$','--no-tests=error','--output-on-failure'],W),('python',[str(W/'tools/evalscope/.venv/bin/python'),'-B','-m','unittest','-v','test_mtp_mode','test_acceptance_mode','test_request_cancellation'],W/'tools/evalscope')]
+rejects=[('cli-mtp',['generate','hello','--mtp'],'--mtp',{}),('cli-k',['generate','hello','--mtp-k','3'],'--mtp',{}),('multi',['serve','--mtp','--max-seq','2'],'MTP requires',{}),('media',['serve','--mtp','--allow-media'],'MTP requires',{}),('unknown-k',['serve','--mtp-k','3'],'unknown serve option',{}),*[(f'default-prefill-{n}',['serve','--mtp','--max-prefill',str(n)],'sequential MTP requires',{}) for n in [1,2,3]],('explicit-prefill',['serve','--mtp','--mtp-verifier','sequential','--max-prefill','1'],'sequential MTP requires',{}),('verifier-alone',['serve','--mtp-verifier','sequential'],'requires --mtp',{}),('cycle-default',['serve','--mtp'],'sequential MTP does not support',{'Q4T_MTP_CYCLE_TIMING':'1'}),('moe-timing-default',['serve','--mtp'],'sequential MTP does not support',{'Q4T_MTP_VERIFY_MOE_TIMING':'1'})]
+save('build-host-protocol-01.json',{'created_unix':time.time(),'head':subprocess.check_output(['git','rev-parse','HEAD'],cwd=W,text=True).strip(),'source_files':rows,'configure':configure,'build':build,'host_names':names,'checks':[(n,c,str(d)) for n,c,d in checks],'preload_rejections':rejects,'no_model':True,'research_diagnostics_built_but_not_executed':True,'script_sha256':sha(__file__)})
+def run(label,command,cwd,timeout,warning_gate=False):
+ started=time.time()
+ with (S/f'{label}-01.log').open('x') as f:
+  p=subprocess.run(command,cwd=cwd,env=env,stdout=f,stderr=subprocess.STDOUT,timeout=timeout)
+ warnings=[l for l in (S/f'{label}-01.log').read_text().splitlines() if re.search(r'\bwarning\b',l,re.I)] if warning_gate else []
+ r={'command':command,'seconds':time.time()-started,'exit_code':p.returncode,'warnings':warnings,'passed':p.returncode==0 and not warnings,'log_sha256':sha(S/f'{label}-01.log')}
+ save(f'{label}-01.json',r);print(json.dumps({'label':label,**r}),flush=True)
+ if not r['passed']:raise SystemExit(1)
+run('configure',configure,W,180,True);run('build',build,W,1200,True)
+assert all(sha(W/r['path'])==r['sha256'] for r in rows)
+save('build-identity-01.json',{'files':[{'path':str(B/n),'sha256':sha(B/n),'bytes':(B/n).stat().st_size} for n in targets+['CMakeCache.txt']]})
+for label,command,cwd in checks:run(label,command,cwd,180)
+results=[]
+for name,args,diagnostic,extra in rejects:
+ command=[str(B/'q4t'),*args,'--model-dir',str(S/'intentionally-absent-model')]
+ p=subprocess.run(command,cwd=W,env=env|extra,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,timeout=20)
+ (S/f'reject-{name}-01.log').write_text(p.stdout)
+ passed=p.returncode!=0 and diagnostic in p.stdout and 'tokenizer load failed' not in p.stdout and '[q4t][startup]' not in p.stdout
+ results.append({'name':name,'command':command,'environment_additions':extra,'exit_code':p.returncode,'diagnostic':diagnostic,'passed':passed})
+ save('preload-rejections-01.json',results) if len(results)==len(rejects) else None
+ if not passed:
+  save('preload-rejections-first-failure-01.json',results);raise SystemExit(name+' failed')
+print(json.dumps({'preload_rejections':len(results),'passed':all(r['passed'] for r in results)}),flush=True)

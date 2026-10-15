@@ -1,0 +1,21 @@
+-- The CXX compiler identification is GNU 14.2.0
+-- The CUDA compiler identification is NVIDIA 13.3.33 with host compiler GNU 14.2.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/g++-14 - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Detecting CUDA compiler ABI info
+-- Detecting CUDA compiler ABI info - done
+-- Check for working CUDA compiler: /usr/local/cuda-13.3/bin/nvcc - skipped
+-- Detecting CUDA compile features
+-- Detecting CUDA compile features - done
+-- Found CUDAToolkit: /usr/local/cuda-13.3/targets/sbsa-linux/include;/usr/local/cuda-13.3/targets/sbsa-linux/include/cccl (found version "13.3.33")
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Configuring done (2.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/build/runtime

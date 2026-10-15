@@ -1,0 +1,55 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "name": "compile-wrapper",
+      "exit_code": 0,
+      "timeout": false,
+      "residual_process_group": false,
+      "seconds": 0.9650063514709473,
+      "passed": true,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "link-variant",
+      "exit_code": 0,
+      "timeout": false,
+      "residual_process_group": false,
+      "seconds": 0.11396145820617676,
+      "passed": true,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "host-contracts",
+      "exit_code": 0,
+      "timeout": false,
+      "residual_process_group": false,
+      "seconds": 0.06386780738830566,
+      "passed": true,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "3dbb7fb70ae3beda2074395f96061b86b6167176c1c3788b86ec665700879aff"
+    },
+    {
+      "name": "variant-symbols",
+      "exit_code": 0,
+      "timeout": false,
+      "residual_process_group": false,
+      "seconds": 0.015700578689575195,
+      "passed": true,
+      "stdout_sha256": "c503cd1067e53eace76f98fee1fe10095b68f6d4aee9314465da00be48064e39",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "http-resource-fallback",
+      "exit_code": 0,
+      "timeout": false,
+      "residual_process_group": false,
+      "seconds": 77.69124102592468,
+      "passed": true,
+      "stdout_sha256": "6323270a23759bd327acf81f8f5d90187ec3c52c4a473baee320582c84c06c77",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

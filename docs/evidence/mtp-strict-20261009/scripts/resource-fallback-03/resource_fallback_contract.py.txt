@@ -1,0 +1,150 @@
+"""Pure contract for three serial requests with one logical reserve failure."""
+import re
+
+from acceptance_mode import sequential_success_errors
+from request_cancellation_contract import (completed_result, require,
+                                           require_recovery, terminal_paths)
+
+PLAN = (('resource-control', 'strict'),
+        ('resource-reserve', 'logical_reserve_failure'),
+        ('resource-recovery', 'strict'))
+VARIANT = ('[q4t][resource_variant] protocol=resource_fallback_v1 '
+           'production_binary=0 requests=3 logical_error=1 physical_oom=0')
+INIT_FAILURE = ('[q4t] MTP init failed (HTTP admission: logical reserve failure '
+                'after real success); plain decode for this request')
+COUNTERS = ('q4t_requests_total', 'q4t_requests_success_total',
+            'q4t_requests_error_total', 'q4t_requests_aborted_total')
+
+
+def require_variant(log):
+    require([line for line in log.splitlines()
+             if line.startswith('[q4t][resource_variant]')] == [VARIANT],
+            'missing or wrong resource test variant')
+    require('[q4t][resource_contract]' not in log,
+            'resource observer contract failed')
+
+
+def require_counter_delta(before, after):
+    require(len(before) == len(after) == 4 and
+            all(type(v) is int and v >= 0 for v in (*before, *after)),
+            'invalid counters')
+    require(tuple(b - a for a, b in zip(before, after)) == (1, 1, 0, 0),
+            'resource fallback request did not complete successfully')
+
+
+def _events(log):
+    found = []
+    pattern = re.compile(
+        r'^\[q4t\]\[resource_(begin|reset|reserve|injection|end)\] (.*)$')
+    for index, line in enumerate(log.splitlines()):
+        match = pattern.fullmatch(line)
+        if not match:
+            continue
+        pairs = [item.split('=', 1) for item in match[2].split()]
+        require(all(len(pair) == 2 and all(pair) for pair in pairs),
+                'malformed resource observer fields')
+        row = dict(pairs)
+        require(len(row) == len(pairs), 'duplicate resource observer fields')
+        require(re.fullmatch(r'[1-3]', row.get('ordinal', '')),
+                'invalid request ordinal')
+        found.append((match[1], row, index))
+    return found
+
+
+def validate_log(log):
+    require_variant(log)
+    paths = terminal_paths(log)
+    require(list(paths) == [label for label, _ in PLAN],
+            'expected exactly three actual response paths in serial order')
+    events = _events(log)
+    require([int(row['ordinal']) for _, row, _ in events] ==
+            sorted(int(row['ordinal']) for _, row, _ in events),
+            'observer request lifetimes overlap')
+    failures = [i for i, line in enumerate(log.splitlines())
+                if 'MTP init failed' in line]
+    require(len(failures) == 1 and log.splitlines()[failures[0]] == INIT_FAILURE,
+            'missing or extra initialization failure')
+    require(not re.search(r'^\[q4t\] generation failed id=', log, re.MULTILINE),
+            'unexpected generation failure')
+    groups = []
+    for ordinal, (label, kind) in enumerate(PLAN, 1):
+        injected = ordinal == 2
+        rows = [(event, row, line) for event, row, line in events
+                if row['ordinal'] == str(ordinal)]
+        expected = ['begin', 'reset', 'reserve'] + (
+            ['injection'] if injected else []) + ['end']
+        require([event for event, _, _ in rows] == expected,
+                'missing or unordered resource events: ' + label)
+        require(all(row.get('real_ok') == '1' for _, row, _ in rows),
+                'wrapped real operation did not succeed')
+        begin, reset, reserve, end = (rows[0][1], rows[1][1],
+                                      rows[2][1], rows[-1][1])
+        for row, stage in ((begin, 'prefill'), (end, 'idle')):
+            require(all(row.get(key) == value for key, value in
+                        {'stage': stage, 'position': '0', 'history': '0',
+                         'pending': '0'}.items()), 'host state not cleared')
+        require(begin.get('slot') == reset.get('slot') == '0' and
+                reset.get('completion') == 'stream_ordered',
+                'missing owned draft reset')
+        require(all(reserve.get(key) == value for key, value in
+                    {'position': '1024', 'history': '1024', 'pending': '0',
+                     'requested_k': '4', 'capacity': '4',
+                     'target_calls': '0', 'ordinary_calls': '0'}.items()),
+                'reserve was not after initialization and before decode')
+        require(end.get('resets') == end.get('reserve_calls') == '1' and
+                end.get('legacy_calls') == '0' and
+                end.get('injected') == str(int(injected)),
+                'wrong reset/reserve/injection/legacy accounting')
+        path_lines = [i for i, line in enumerate(log.splitlines())
+                      if line.startswith('[q4t][decode_path] id=' + label + ' ')]
+        require(len(path_lines) == 1 and
+                rows[-2][2] < path_lines[0] < rows[-1][2],
+                'actual response path is outside observed lifetime')
+        path = paths[label]
+        require(path.get('requested_mtp') == '1' and
+                path.get('verifier') == 'sequential' and
+                path.get('target_t4_calls') == '0' and
+                path.get('forward_count_scope') == 'sequential_attempts',
+                'wrong effective verifier')
+        require(re.fullmatch(r'[0-9]+', end.get('target_calls', '')) and
+                end['target_calls'] == path.get('target_t1_calls') and
+                re.fullmatch(r'[0-9]+', end.get('ordinary_calls', '')),
+                'observed/core target accounting differs')
+        if injected:
+            injection = rows[3][1]
+            require(all(injection.get(key) == value for key, value in
+                        {'kind': 'logical_reserve_after_success',
+                         'physical_oom': '0', 'position': '1024',
+                         'history': '1024', 'pending': '0'}.items()),
+                    'wrong injection scope')
+            require(rows[3][2] < failures[0] < path_lines[0],
+                    'initialization fallback not bound to injected request')
+            require(all(path.get(key) == value for key, value in
+                        {'path': 'plain', 'fallback': 'initialization',
+                         'mtp_steps': '0', 'plain_tail_tokens': '0',
+                         'tail_reason': 'none', 'target_t1_calls': '0',
+                         'draft_forward_calls': '0',
+                         'extend_forward_calls': '0'}.items()),
+                    'resource failure entered speculative work or wrong fallback')
+            require(end['ordinary_calls'] == '255' and
+                    end.get('ordinary_scheduler_calls') == '255',
+                    'fallback did not consume 255 ordinary scheduler B1 inputs')
+        else:
+            require(path.get('path') == 'mtp_sequential_b1' and
+                    path.get('fallback') == 'none' and
+                    path.get('tail_reason') == 'output_limit' and
+                    not sequential_success_errors(path, 256, ['length']) and
+                    int(path['mtp_steps']) > 0,
+                    'strict request lacks successful output accounting')
+            require(int(end['ordinary_calls']) ==
+                    int(path['plain_tail_tokens']) - 1 and
+                    end.get('ordinary_scheduler_calls') == end['ordinary_calls'],
+                    'ordinary tail consumption/scheduler accounting differs')
+        groups.append({'ordinal': ordinal, 'response_id': label, 'kind': kind,
+                       'events': [row for _, row, _ in rows]})
+    require({k: v for k, v in paths[PLAN[0][0]].items() if k != 'id'} ==
+            {k: v for k, v in paths[PLAN[2][0]].items() if k != 'id'},
+            'recovery path differs from fresh strict control')
+    return {'groups': groups, 'terminal_paths': paths,
+            'scope': 'logical reserve Status failure after successful real reserve; '
+                     'not physical allocation failure, CUDA fatal or full state proof'}

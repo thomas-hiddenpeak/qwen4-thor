@@ -1,0 +1,10 @@
+{
+  "phase": "http",
+  "exit_code": 0,
+  "timeout": false,
+  "residual_process_group": false,
+  "passed": true,
+  "seconds": 383.7114531993866,
+  "stdout_sha256": "3da4197dc8cbb8e0e76cb2e78dc1b263fa4580fd9ae1e179999e960787d2f9cf",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

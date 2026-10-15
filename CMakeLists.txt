@@ -155,10 +155,12 @@ target_link_libraries(q4t_quant PUBLIC q4t_io CUDA::cudart CUDA::cublasLt)
 # ---------------------------------------------------------------------------
 # q4t_model — model layer (hyper-connection backbone, attention, MoE)
 # ---------------------------------------------------------------------------
-add_library(q4t_trace STATIC src/trace/router_trace.cpp
+add_library(q4t_trace STATIC
+  src/trace/router_trace.cpp
   src/trace/router_collector.cpp src/trace/sha256.cpp)
 target_include_directories(q4t_trace PUBLIC include)
 target_link_libraries(q4t_trace PUBLIC CUDA::cudart)
+target_link_libraries(q4t_quant PUBLIC q4t_trace)
 add_executable(q4t_router_trace_check tools/trace/router_trace_check.cpp
   src/trace/router_trace.cpp)
 target_include_directories(q4t_router_trace_check PRIVATE include)
@@ -328,6 +330,9 @@ if(Q4T_BUILD_TESTS)
     tests/mtp_spec_accept_states_test.cpp
     tests/mtp_writer_row0_test.cpp
     tests/mem_alloc_probe_test.cpp
+    tests/model_decode_rope_test.cpp
+    tests/mtp_checkpoint_layout_test.cpp
+    tests/mtp_path_triangle_test.cpp
     tests/vision_forward_test.cpp
     tests/model_vision_inject_test.cpp
     tests/vision_processor_test.cpp
@@ -345,21 +350,66 @@ if(Q4T_BUILD_TESTS)
   target_include_directories(q4t_tests PRIVATE include)
   target_link_libraries(q4t_tests PRIVATE ${Q4T_TEST_LIBS})
   add_test(NAME q4t_tests COMMAND q4t_tests)
+
+  # These research replays require retained private raw input or a caller-
+  # supplied new evidence directory. Keep their original assertions and run
+  # them only through an explicit target with the recorded fixture protocol.
+  foreach(fixture IN ITEMS mtp_projection_path mtp_moe_path)
+    add_executable(q4t_${fixture}_diagnostic EXCLUDE_FROM_ALL
+      tests/test_main.cpp tests/${fixture}_test.cpp)
+    target_include_directories(q4t_${fixture}_diagnostic PRIVATE include)
+    target_link_libraries(q4t_${fixture}_diagnostic PRIVATE ${Q4T_TEST_LIBS})
+  endforeach()
+
+  # Three frozen HC replays explain the old first cross-shape fork. Captures
+  # wrap real projection imports only in this explicit diagnostic executable.
+  add_executable(q4t_mtp_hc_first_fork EXCLUDE_FROM_ALL
+    tests/test_main.cpp tests/mtp_hc_first_fork_test.cpp)
+  target_include_directories(q4t_mtp_hc_first_fork PRIVATE include)
+  target_link_libraries(q4t_mtp_hc_first_fork PRIVATE ${Q4T_TEST_LIBS})
+  target_link_options(q4t_mtp_hc_first_fork PRIVATE
+    LINKER:--wrap=_ZN3q4t5model7Bf16GevEPKtS2_PtiifP11CUstream_st
+    LINKER:--wrap=cublasLtMatmul)
+
+
+  # Shared MTP ownership contract retained across verifier replacement.
+  add_executable(q4t_mtp_lifecycle tests/mtp_lifecycle_test.cpp)
+  target_include_directories(q4t_mtp_lifecycle PRIVATE include)
+  target_link_libraries(q4t_mtp_lifecycle PRIVATE ${Q4T_TEST_LIBS})
+  target_link_options(q4t_mtp_lifecycle PRIVATE
+    LINKER:--wrap=cudaMalloc LINKER:--wrap=cudaFree
+    LINKER:--wrap=cudaStreamSynchronize)
+
+  # Repeatable real-CUDA copy contract; no checkpoint or private input.
+  add_executable(q4t_mtp_position_copy
+    tests/mtp_position_copy_test.cpp)
+  target_include_directories(q4t_mtp_position_copy PRIVATE include)
+  target_link_libraries(q4t_mtp_position_copy PRIVATE CUDA::cudart)
+  add_test(NAME q4t_mtp_position_copy COMMAND q4t_mtp_position_copy)
+  set_tests_properties(q4t_mtp_position_copy PROPERTIES
+    TIMEOUT 180 LABELS cuda RESOURCE_LOCK q4t_cuda)
+
+
 endif()
 
 # Host-only release-contract slice; the exact required list rejects absent
 # tokenizer registration when ICU is unavailable. No CUDA/model GPU tests run.
 if(Q4T_BUILD_TESTS)
   include(cmake/HostTestSources.cmake)
+  find_package(Threads REQUIRED)
   add_executable(q4t_host_tests ${Q4T_HOST_TEST_SOURCES})
   target_include_directories(q4t_host_tests PRIVATE include)
-  target_link_libraries(q4t_host_tests PRIVATE q4t_io)
+  target_link_libraries(q4t_host_tests PRIVATE q4t_io Threads::Threads)
   if(Q4T_HAS_ICU)
     target_sources(q4t_host_tests PRIVATE tests/text_tokenizer_test.cpp)
     target_link_libraries(q4t_host_tests PRIVATE q4t_text)
   endif()
   add_test(NAME q4t_host_contracts COMMAND q4t_host_tests --required-list
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/release/required_host_tests.txt)
+  add_test(NAME q4t_scheduler_submission_contracts
+    COMMAND q4t_host_tests scheduler_submission_)
+  set_tests_properties(q4t_scheduler_submission_contracts PROPERTIES
+    TIMEOUT 180)
 endif()
 
 # q4t_moe_gemm_bench — per-row grouped NVFP4 GEMM (verify T=4 shapes) vs

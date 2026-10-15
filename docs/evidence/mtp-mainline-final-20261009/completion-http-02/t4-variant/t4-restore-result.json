@@ -1,0 +1,12 @@
+{
+  "text": "",
+  "finish": [],
+  "usage": [],
+  "errors": [
+    {
+      "message": "generation failed",
+      "type": "server_error",
+      "code": "generation_failed"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+"""Single frozen 48-layer correctness run; never retry or search inputs."""
+import hashlib,json,os,signal,subprocess,time
+from pathlib import Path
+S=Path(__file__).resolve().parent;W=S.parents[1];B=W/'build/mtp-strict-20261009';D=S/'sequential-direct-01'
+def sha(p):
+    with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def save(p,v):
+    with p.open('x') as f:json.dump(v,f,indent=2);f.write('\n')
+assert json.loads((S/'host-summary-01.json').read_text())['passed']
+http=json.loads((S/'http-protocol-01.json').read_text())
+assert all(sha(r['path'])==r['sha256'] for r in http['fixtures_and_metadata'])
+source=json.loads((S/'build-protocol-01.json').read_text())
+assert all(sha(W/r['path'])==r['sha256'] for r in source['source_files'])
+identity=json.loads((S/'build-identity-01.json').read_text())
+assert all(sha(r['path'])==r['sha256'] for r in identity['files'])
+D.mkdir()
+required=D/'required-tests.txt';required.write_text('mtp_sequential_full_model_admission\n')
+F=W/'.q4t-work/mtp-batch-gather-20261008/direct-01'
+fixtures=[(F/'prompt.txt','a72fade2611451e1f33ca088f0554474ec9d9032efccf04cc5581a2c25be2d98'),(F/'prompt-8192.txt','e4c57e9fca8d72d694b167a2f56f8527a51e5ab84830983e47ed434d0708e39a')]
+assert all(sha(p)==digest for p,digest in fixtures)
+env={k:v for k,v in os.environ.items() if not k.startswith('Q4T_') and k!='LD_PRELOAD'}
+extra={'Q4T_MTP_SEQUENTIAL_PROMPT':str(fixtures[0][0]),'Q4T_MTP_SEQUENTIAL_LONG_PROMPT':str(fixtures[1][0]),'Q4T_MTP_SEQUENTIAL_DIR':str(D/'raw')};env.update(extra)
+argv=[str(B/'q4t_mtp_sequential_admission'),'--required-list',str(required)]
+save(D/'protocol.json',dict(time=time.time(),argv=argv,environment_additions=extra,binary_sha256=sha(argv[0]),source_protocol_sha256=sha(S/'build-protocol-01.json'),http_protocol_sha256=sha(S/'http-protocol-01.json'),fixtures=[dict(path=str(p),sha256=s) for p,s in fixtures],deadline_seconds=600,raw_limit_bytes=96*1024*1024,max_target_calls=92,max_draft_calls=35,retries=0,script_sha256=sha(__file__)))
+start=time.time();timed_out=False
+with (D/'stdout.log').open('x') as out,(D/'stderr.log').open('x') as err:
+    p=subprocess.Popen(argv,cwd=W,env=env,stdout=out,stderr=err,start_new_session=True)
+    try:rc=p.wait(timeout=600)
+    except subprocess.TimeoutExpired:
+        timed_out=True;os.killpg(p.pid,signal.SIGTERM)
+        try:rc=p.wait(timeout=30)
+        except subprocess.TimeoutExpired:os.killpg(p.pid,signal.SIGKILL);rc=p.wait()
+stdout=(D/'stdout.log').read_text();passed=rc==0 and not timed_out and 'all_required=PASS' in stdout and '1 tests, 1 passed, 0 failed, 0 skipped' in stdout
+rows=[dict(path=str(p.relative_to(D)),bytes=p.stat().st_size,sha256=sha(p)) for p in sorted(D.rglob('*')) if p.is_file()]
+summary=dict(exit_code=rc,timeout=timed_out,seconds=time.time()-start,passed=passed,files=rows,no_http_executed=True)
+save(D/'summary.json',summary);print(json.dumps(summary),flush=True)
+raise SystemExit(0 if passed else 1)

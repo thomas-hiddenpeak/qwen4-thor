@@ -1,0 +1,222 @@
+{
+  "schema_version": 1,
+  "passed": true,
+  "protocol_sha256": "6f9887ee68dce5e9d3e6fbf1081664f7065b17f9ca22445f6f778c2c4f882f25",
+  "results": [
+    {
+      "name": "configure",
+      "argv": [
+        "cmake",
+        "-S",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/release-b1-20261008",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_CXX_COMPILER=/usr/bin/g++-14",
+        "-DCMAKE_CUDA_COMPILER=/usr/local/cuda-13.3/bin/nvcc",
+        "-DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-14",
+        "-DQ4T_CUDA_ARCHITECTURES=110a",
+        "-DQ4T_BUILD_TESTS=ON"
+      ],
+      "started_unix": 1791472534.1458979,
+      "seconds": 2.0162863731384277,
+      "exit_code": 0,
+      "warnings": [],
+      "log": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-release-20261008/b1-local/configure-01.log",
+      "log_sha256": "4a7fbb34148aee1c2bf4706c69c8a5dded0262a05c0df768e83d6b54de990186",
+      "passed": true
+    },
+    {
+      "name": "build",
+      "argv": [
+        "cmake",
+        "--build",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/release-b1-20261008",
+        "--target",
+        "q4t",
+        "q4t_host_tests",
+        "--parallel",
+        "6"
+      ],
+      "started_unix": 1791472536.1624699,
+      "seconds": 35.099141359329224,
+      "exit_code": 0,
+      "warnings": [],
+      "log": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-release-20261008/b1-local/build-01.log",
+      "log_sha256": "3d76f5309da14f402c134bf4452e427b88cf65efddbcf94be5ea2646cf53c737",
+      "passed": true
+    },
+    {
+      "name": "host_contracts",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/release-b1-20261008/q4t_host_tests",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-release-20261008/b1-local/required-host-contracts.txt"
+      ],
+      "started_unix": 1791472571.27212,
+      "seconds": 0.0025081634521484375,
+      "exit_code": 0,
+      "actual_pass_names": [
+        "serve_default_is_single_text_greedy",
+        "serve_capabilities_allow_explicit_combinations",
+        "serve_rejects_malformed_numeric_options",
+        "serve_validates_before_load_and_preserves_failed_parse",
+        "serve_prefill_bound_precedes_workspace_sizing",
+        "serve_trace_options_are_explicit_and_bounded",
+        "mtp_step_preserves_context_tail",
+        "mtp_step_rejects_invalid_or_overflowing_ranges",
+        "chat_contract_greedy_neutral_options",
+        "chat_contract_rejects_unimplemented_constraints",
+        "chat_contract_rejects_wrong_types_and_ambiguous_input",
+        "chat_contract_template_options_are_explicit",
+        "chat_contract_media_rejected_before_decoding"
+      ],
+      "stdout_sha256": "722cada43731037784391a6bc13ce55d9b689e1075ab8d4abc323f52f6f8b9a9",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "name": "generate_mtp",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/release-b1-20261008/q4t",
+        "generate",
+        "MTP admission boundary",
+        "--model-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-release-20261008/b1-local/never-created-model",
+        "--mtp"
+      ],
+      "started_unix": 1791472571.2747996,
+      "seconds": 0.03417491912841797,
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "MTP is unavailable in generate; use serve --mtp --max-seq 1 with text requests\n",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "8a502d919a87b3aba0a55773be9236013dc08b5fcd77c952c9d3d2dbb46bec01",
+      "passed": true
+    },
+    {
+      "name": "generate_mtp_k",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/release-b1-20261008/q4t",
+        "generate",
+        "MTP admission boundary",
+        "--model-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-release-20261008/b1-local/never-created-model",
+        "--mtp-k",
+        "3"
+      ],
+      "started_unix": 1791472571.3091679,
+      "seconds": 0.033766984939575195,
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "MTP is unavailable in generate; use serve --mtp --max-seq 1 with text requests\n",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "8a502d919a87b3aba0a55773be9236013dc08b5fcd77c952c9d3d2dbb46bec01",
+      "passed": true
+    },
+    {
+      "name": "serve_mtp_multistream",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/release-b1-20261008/q4t",
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-release-20261008/b1-local/never-created-model",
+        "--mtp",
+        "--max-seq",
+        "2"
+      ],
+      "started_unix": 1791472571.3431056,
+      "seconds": 0.03387880325317383,
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "serve options: MTP requires --max-seq 1 and text-only input\n",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "ba46dbabb9718fd1b37d3d26110b90cee6862708a64b5b5fff24ec76c52a82e3",
+      "passed": true
+    },
+    {
+      "name": "serve_mtp_media",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/release-b1-20261008/q4t",
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-release-20261008/b1-local/never-created-model",
+        "--mtp",
+        "--max-seq",
+        "1",
+        "--allow-media"
+      ],
+      "started_unix": 1791472571.377166,
+      "seconds": 0.0337681770324707,
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "serve options: MTP requires --max-seq 1 and text-only input\n",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "ba46dbabb9718fd1b37d3d26110b90cee6862708a64b5b5fff24ec76c52a82e3",
+      "passed": true
+    },
+    {
+      "name": "serve_mtp_multistream_media",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/release-b1-20261008/q4t",
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-release-20261008/b1-local/never-created-model",
+        "--mtp",
+        "--max-seq",
+        "2",
+        "--allow-media"
+      ],
+      "started_unix": 1791472571.4110897,
+      "seconds": 0.033284902572631836,
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "serve options: MTP requires --max-seq 1 and text-only input\n",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "ba46dbabb9718fd1b37d3d26110b90cee6862708a64b5b5fff24ec76c52a82e3",
+      "passed": true
+    },
+    {
+      "name": "serve_unknown_mtp_k",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/release-b1-20261008/q4t",
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-release-20261008/b1-local/never-created-model",
+        "--mtp-k",
+        "3"
+      ],
+      "started_unix": 1791472571.4445152,
+      "seconds": 0.03889608383178711,
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "serve options: unknown serve option: --mtp-k\n",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e814cab9d83d9a94d9c17a5b8bf7a57119f68f2a9065f6338268aa8a44bf13af",
+      "passed": true
+    }
+  ],
+  "runtime_source_count": 135,
+  "source_unchanged": true,
+  "protected_old_artifact_count": 87,
+  "protected_old_artifacts_unchanged": true,
+  "build_artifacts_unchanged": true,
+  "artifact_sha256": {
+    "build/release-b1-20261008/q4t": "3ab3654c6d3c38d9b520730d7a1fadc6867b1f56240711769a49efec5b43209e",
+    "build/release-b1-20261008/q4t_host_tests": "49ae23caf118ea717897196e6fac5ad0cf2a57738c8697c7085b3e4d055881e3",
+    "build/release-b1-20261008/CMakeCache.txt": "dff49cff50a76de5da94c6636992fce9c143ec35f7140b9b5b3e1b1d5ac5d853",
+    "build/release-b1-20261008/libq4t_io.a": "a284806131dfedee792a876daeb286cb2bd7e6e24b2bdb633e0fac8c019b4596",
+    "build/release-b1-20261008/libq4t_model.a": "4bc640fda6b032a497fe149cfd8273c823e07005c0892ad59a5ea7de2e590761",
+    "build/release-b1-20261008/libq4t_ple.a": "8028ed165d8d10efc40a1f81c4830ca11fbfad2f011021ca0410216671a20f96",
+    "build/release-b1-20261008/libq4t_quant.a": "601600fac84034ebf17fe6a14321d0899952ceb8018fff431cd9ce9748067332",
+    "build/release-b1-20261008/libq4t_runtime.a": "2bb9c21482f6f78c3a14531b4e872aeebfd85ab7e0243447c66b72bc163ca81e",
+    "build/release-b1-20261008/libq4t_server.a": "5eec3afef4d419a75027332dc91726281f414431560d5d84a7a18ae19a8e1559",
+    "build/release-b1-20261008/libq4t_text.a": "b5d23197e94116477b82f28547f4842a5033dacabd74976b513ad20ae81c3859",
+    "build/release-b1-20261008/libq4t_trace.a": "0848c46af127e060c5e34340ab81dcb7f21f07531e157421831472ae5f4bc303"
+  },
+  "host_contract_groups": 13,
+  "actual_entry_rejections": 6,
+  "model_loaded": false,
+  "new_http_requests": 0,
+  "statement": "B1 support boundary validation only; no numerical/quality/performance admission inferred"
+}

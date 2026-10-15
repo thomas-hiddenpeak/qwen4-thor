@@ -1,0 +1,299 @@
+{
+  "time": 1791479499.6863902,
+  "build_identity_sha256": "4b817bf5978005aec2302e91fe7357639372ceb13e211f24eb2b6dc0bf1e0f2a",
+  "script_sha256": "e5f5bd43b74e9d0fcd51e6bb363c35baf632a644414b6be7d7121895a3cf8899",
+  "host_names": [
+    "serve_default_is_single_text_greedy",
+    "serve_capabilities_allow_explicit_combinations",
+    "serve_rejects_malformed_numeric_options",
+    "serve_validates_before_load_and_preserves_failed_parse",
+    "serve_prefill_bound_precedes_workspace_sizing",
+    "serve_trace_options_are_explicit_and_bounded",
+    "chat_contract_greedy_neutral_options",
+    "chat_contract_rejects_unimplemented_constraints",
+    "chat_contract_rejects_wrong_types_and_ambiguous_input",
+    "chat_contract_template_options_are_explicit",
+    "chat_contract_media_rejected_before_decoding",
+    "mtp_step_preserves_context_tail",
+    "mtp_step_rejects_invalid_or_overflowing_ranges",
+    "serve_mtp_verifier_selection_preserves_t4_default",
+    "serve_mtp_verifier_invalid_parse_is_transactional",
+    "mtp_sequential_step_preserves_output_and_context_tail",
+    "mtp_sequential_step_rejects_invalid_or_overflowing_ranges"
+  ],
+  "control_names": [
+    "mtp_sequential_control_acceptance",
+    "mtp_sequential_control_stop",
+    "mtp_sequential_control_partial_failure"
+  ],
+  "python_test_names": [
+    "test_startup_requires_actual_sequential_verifier",
+    "test_actual_sequential_with_output_tail",
+    "test_legacy_and_mislabelled_paths_rejected",
+    "test_pure_tail_and_prefill_have_no_speculative_work",
+    "test_terminal_step_skips_exactly_one_extend",
+    "test_invalid_or_missing_forward_counts_rejected",
+    "test_tail_reason_and_count_must_agree",
+    "test_completed_output_binds_actual_target_consumption",
+    "test_explicit_plain_and_mtp",
+    "test_actual_mode_mismatch",
+    "test_missing_startup_evidence",
+    "test_changed_capacity_or_media_is_not_the_matrix",
+    "test_duplicate_records_fields_or_malformed_tokens",
+    "test_actual_mtp_bound_by_response_id_not_order",
+    "test_mtp_startup_alone_is_insufficient",
+    "test_mtp_plain_fallback_rejected",
+    "test_mtp_requires_actual_steps_and_expected_path",
+    "test_prefill_only_short_terminal_is_separate",
+    "test_valid_mtp_with_explicit_bounded_context_tail",
+    "test_invalid_work_counts",
+    "test_wrong_missing_and_duplicate_identity_rejected",
+    "test_old_plain_baseline_compatible_without_new_log",
+    "test_new_plain_path_must_be_consistent_when_present",
+    "test_failed_http_counts_do_not_crash_mode_audit",
+    "test_keeps_ttft_request_latency_and_distinct_throughputs",
+    "test_invalid_or_nonfinite_timing_rejected",
+    "test_same_mode_control_and_recoveries_include_tail",
+    "test_legacy_and_wrong_requested_verifier_rejected",
+    "test_recovery_accounting_must_equal_fresh_control",
+    "test_consistent_but_wrong_completed_counts_rejected",
+    "test_invalid_attempt_counts_are_not_recovery_success",
+    "test_exact_nine_request_order_keeps_prefill",
+    "test_input_metadata_bound_without_historical_output_oracle",
+    "test_missing_ambiguous_or_changed_fixture_rejected",
+    "test_fresh_control_and_same_response_recovery",
+    "test_missing_control_and_changed_recovery_rejected",
+    "test_normal_completion_cannot_be_cancellation",
+    "test_explicit_and_deadline_require_content_and_error",
+    "test_error_before_content_is_not_a_decode_interruption",
+    "test_prefill_has_its_own_nonstreaming_error",
+    "test_cancellation_rejects_usage_finish_duplicate_error_done",
+    "test_partial_rst_requires_actual_id_and_nonempty_content",
+    "test_missing_or_duplicate_usage_is_not_success",
+    "test_chunked_sse_and_utf8_split_across_chunks",
+    "test_rst_keeps_incomplete_sse_utf8_tail_unparsed",
+    "test_rst_content_and_completion_in_one_read_is_rejected",
+    "test_empty_eof_is_not_decode_content",
+    "test_truncated_content_length_rejected",
+    "test_response_byte_limit_and_total_deadline_rejected",
+    "test_frozen_nine_four_five_counters",
+    "test_missing_duplicate_metric_rejected",
+    "test_all_paths_and_prefill_progress",
+    "test_cross_mode_or_fallback_rejected",
+    "test_missing_extra_duplicate_paths_rejected",
+    "test_changed_recovery_step_count_rejected",
+    "test_missing_or_wrong_interrupt_reason_rejected",
+    "test_missing_or_unbounded_prefill_progress_rejected",
+    "test_prefill_progress_must_be_adjacent_to_actual_request_id",
+    "test_stream_chunks_share_actual_id",
+    "test_nonstream_response",
+    "test_usage_only_without_id_is_not_a_fabricated_id",
+    "test_missing_id_on_content_or_finish_rejected",
+    "test_mixed_ids_rejected_including_usage",
+    "test_no_recorded_identity_rejected",
+    "test_invalid_type_and_token_rejected_without_throwing",
+    "test_maximum_length_id",
+    "test_frozen_matrix_and_budget",
+    "test_exact_pair_ids_are_not_compared",
+    "test_whitespace_difference_fails_exact_pair",
+    "test_prompt_usage_finish_each_bound",
+    "test_mode_order_and_missing_cases_rejected",
+    "test_early_eos_is_separate_missing_coverage",
+    "test_exact_128_and_512_length_coverage",
+    "test_invalid_observations_rejected",
+    "test_semantic_failure_does_not_mask_numerical_pass",
+    "test_ledger_oracle_derived_from_supplied_rows",
+    "test_join_oracle_uses_approved_revision_and_actual_chain",
+    "test_excerpt_is_exact_complete_source_not_plain_answer",
+    "test_summary_checks_explicitly_need_manual_review",
+    "test_code_ast_is_not_functional_pass",
+    "test_code_unsafe_or_unrequested_constructs_rejected_without_execution",
+    "test_incomplete_code_is_preserved_as_failed_semantics",
+    "test_shared_budget_prevents_phase_retry_and_wrong_binding",
+    "test_shared_deadline_and_byte_cap_rejected",
+    "test_output_must_belong_to_pair",
+    "test_reference_must_be_current_pair_plain",
+    "test_reference_reextracts_observations_and_requires_actual_mode_audit",
+    "test_fixture_binary_and_model_binding",
+    "test_production_admission_limits_matrix",
+    "test_production_context_path_and_tail_reason",
+    "test_five_request_log_binds_counts_resets_and_drains",
+    "test_logical_error_allows_no_content_before_failure",
+    "test_fault_response_rejects_normal_finish",
+    "test_fault_response_rejects_usage",
+    "test_fault_response_rejects_wrong_actual_identity",
+    "test_fault_response_requires_error_last",
+    "test_normal_production_binary_is_rejected",
+    "test_failure_requires_real_forward",
+    "test_failure_requires_production_drain",
+    "test_recovery_requires_fresh_draft_reset",
+    "test_failure_rejects_fallback_even_with_error_response",
+    "test_failure_rejects_plain_work_after_fault",
+    "test_failure_rejects_forged_core_attempt_counts",
+    "test_recovery_rejects_stale_host_history",
+    "test_log_rejects_duplicate_observer_fields",
+    "test_log_rejects_changed_recovery_accounting",
+    "test_metrics_distinguish_generation_failure_from_cancel",
+    "test_metrics_reject_missing_or_duplicate_errors"
+  ],
+  "commands": [
+    {
+      "name": "host",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t_host_tests",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/required-host-01.txt"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source",
+      "timeout": 60
+    },
+    {
+      "name": "control",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t_mtp_sequential_control",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/required-control-01.txt"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source",
+      "timeout": 60
+    },
+    {
+      "name": "python",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+        "-m",
+        "unittest",
+        "-v",
+        "test_acceptance_mode",
+        "test_request_cancellation",
+        "test_response_identity",
+        "test_sustained_quality",
+        "test_mtp_failure_recovery"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope",
+      "timeout": 120
+    }
+  ],
+  "cases": [
+    {
+      "name": "seq_without_mtp",
+      "args": [
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/never-created-model",
+        "--mtp-verifier",
+        "sequential"
+      ],
+      "expected_exit": 2,
+      "expected_stderr": "serve options: --mtp-verifier requires --mtp\n",
+      "extra_env": {}
+    },
+    {
+      "name": "t4_without_mtp",
+      "args": [
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/never-created-model",
+        "--mtp-verifier",
+        "t4"
+      ],
+      "expected_exit": 2,
+      "expected_stderr": "serve options: --mtp-verifier requires --mtp\n",
+      "extra_env": {}
+    },
+    {
+      "name": "invalid_verifier",
+      "args": [
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/never-created-model",
+        "--mtp",
+        "--mtp-verifier",
+        "bad"
+      ],
+      "expected_exit": 2,
+      "expected_stderr": "serve options: --mtp-verifier must be sequential or t4\n",
+      "extra_env": {}
+    },
+    {
+      "name": "seq_disabled",
+      "args": [
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/never-created-model",
+        "--mtp",
+        "--mtp-verifier",
+        "sequential",
+        "--no-mtp"
+      ],
+      "expected_exit": 2,
+      "expected_stderr": "serve options: --mtp-verifier requires --mtp\n",
+      "extra_env": {}
+    },
+    {
+      "name": "seq_prefill3",
+      "args": [
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/never-created-model",
+        "--mtp",
+        "--mtp-verifier",
+        "sequential",
+        "--max-prefill",
+        "3"
+      ],
+      "expected_exit": 2,
+      "expected_stderr": "serve options: sequential MTP requires max-prefill >= 4\n",
+      "extra_env": {}
+    },
+    {
+      "name": "generate_verifier",
+      "args": [
+        "generate",
+        "strict admission boundary",
+        "--model-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/never-created-model",
+        "--mtp-verifier",
+        "sequential"
+      ],
+      "expected_exit": 2,
+      "expected_stderr": "MTP is unavailable in generate; use serve --mtp --max-seq 1 with text requests\n",
+      "extra_env": {}
+    },
+    {
+      "name": "Q4T_MTP_CYCLE_TIMING",
+      "args": [
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/never-created-model",
+        "--mtp",
+        "--mtp-verifier",
+        "sequential"
+      ],
+      "expected_exit": 1,
+      "expected_stderr": "serve start failed: sequential MTP does not support Q4T_MTP_CYCLE_TIMING\n",
+      "extra_env": {
+        "Q4T_MTP_CYCLE_TIMING": "1"
+      }
+    },
+    {
+      "name": "Q4T_MTP_VERIFY_MOE_TIMING",
+      "args": [
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/never-created-model",
+        "--mtp",
+        "--mtp-verifier",
+        "sequential"
+      ],
+      "expected_exit": 1,
+      "expected_stderr": "serve start failed: sequential MTP does not support Q4T_MTP_VERIFY_MOE_TIMING\n",
+      "extra_env": {
+        "Q4T_MTP_VERIFY_MOE_TIMING": "1"
+      }
+    }
+  ],
+  "no_model": true,
+  "no_http": true,
+  "no_retry": true
+}

@@ -11,7 +11,7 @@ import zlib
 from offload_trace import iter_layers, validate_request
 
 ROOT = Path(__file__).resolve().parents[2]
-CHECKER = ROOT / '.q4t-work/releases/text-v1-moe-trace-20260928/q4t_router_trace_check'
+CHECKER = None
 OUTPUT = ROOT / 'build/offload-trace-contracts'
 
 
@@ -183,7 +183,7 @@ class OffloadTraceContracts(unittest.TestCase):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--checker', type=Path, default=CHECKER)
+    parser.add_argument('--checker', type=Path, required=True)
     parser.add_argument('--output', type=Path, default=OUTPUT)
     args, rest = parser.parse_known_args()
     CHECKER, OUTPUT = args.checker.resolve(), args.output.resolve()

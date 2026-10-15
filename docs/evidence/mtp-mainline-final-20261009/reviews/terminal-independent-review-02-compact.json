@@ -1,0 +1,133 @@
+{
+  "passed": true,
+  "audit": "independent raw parsing without importing project contracts",
+  "check_count": 240,
+  "input_binding_count": 23,
+  "raw_binding_count": 133,
+  "requests": [
+    {
+      "label": "t4-stop-0",
+      "stream": true,
+      "actual_output_tokens": 2,
+      "finish": "stop",
+      "committed_position": 1025,
+      "path": "mtp_multi_b1",
+      "steps": 1,
+      "restores": 1,
+      "extends": 0,
+      "ordinary_calls": 0
+    },
+    {
+      "label": "t4-stop-1",
+      "stream": false,
+      "actual_output_tokens": 3,
+      "finish": "stop",
+      "committed_position": 1026,
+      "path": "mtp_multi_b1",
+      "steps": 1,
+      "restores": 1,
+      "extends": 0,
+      "ordinary_calls": 0
+    },
+    {
+      "label": "t4-stop-2",
+      "stream": true,
+      "actual_output_tokens": 4,
+      "finish": "stop",
+      "committed_position": 1027,
+      "path": "mtp_multi_b1",
+      "steps": 1,
+      "restores": 1,
+      "extends": 0,
+      "ordinary_calls": 0
+    },
+    {
+      "label": "t4-stop-3",
+      "stream": false,
+      "actual_output_tokens": 5,
+      "finish": "stop",
+      "committed_position": 1028,
+      "path": "mtp_multi_b1",
+      "steps": 1,
+      "restores": 0,
+      "extends": 0,
+      "ordinary_calls": 0
+    },
+    {
+      "label": "t4-cap-1",
+      "stream": true,
+      "actual_output_tokens": 1,
+      "finish": "length",
+      "committed_position": 1024,
+      "path": "prefill_only",
+      "steps": 0,
+      "restores": 0,
+      "extends": 0,
+      "ordinary_calls": 0
+    },
+    {
+      "label": "t4-cap-2",
+      "stream": false,
+      "actual_output_tokens": 2,
+      "finish": "length",
+      "committed_position": 1025,
+      "path": "plain_tail_b1",
+      "steps": 0,
+      "restores": 0,
+      "extends": 0,
+      "ordinary_calls": 1
+    },
+    {
+      "label": "t4-cap-3",
+      "stream": true,
+      "actual_output_tokens": 3,
+      "finish": "length",
+      "committed_position": 1026,
+      "path": "plain_tail_b1",
+      "steps": 0,
+      "restores": 0,
+      "extends": 0,
+      "ordinary_calls": 2
+    },
+    {
+      "label": "t4-cap-4",
+      "stream": false,
+      "actual_output_tokens": 4,
+      "finish": "length",
+      "committed_position": 1027,
+      "path": "plain_tail_b1",
+      "steps": 0,
+      "restores": 0,
+      "extends": 0,
+      "ordinary_calls": 3
+    },
+    {
+      "label": "t4-cap-5",
+      "stream": true,
+      "actual_output_tokens": 5,
+      "finish": "length",
+      "committed_position": 1028,
+      "path": "mtp_multi_b1",
+      "steps": 1,
+      "restores": 0,
+      "extends": 1,
+      "ordinary_calls": 0
+    }
+  ],
+  "actual_stop_tokens": [
+    248046,
+    248044
+  ],
+  "server_process_group_members_at_audit": [],
+  "audit_script_sha256": "f04638e52e91864af6f2516b4273f39a69b70560dc33cb54a8bac0d36e1dc7ab",
+  "scope": "actual T4 selection-controlled terminal wiring and ordinary output tail; HTTP per-token identities, natural task quality, full numerical/cache writer admission and speed not proved",
+  "checks_count": 240,
+  "failed_checks": [],
+  "raw_bindings_count": 133,
+  "input_bindings_count": 23,
+  "complete_original_binding": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/terminal-independent-review-02.json",
+    "bytes": 49366,
+    "sha256": "7a326577095211bbca9c4f7b0b8b267c6787e5ac0faefae2eca33cc1ab8ec885"
+  }
+}

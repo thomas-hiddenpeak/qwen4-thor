@@ -1,0 +1,24 @@
+MTP_SEQUENTIAL_LONG_SCOPE layers=48 S1=1 slot=0 max_len=208896 max_prefill=8192 prompt_tokens=8196 appended_tokens=0 natural_steps=4 forced_verify=0 short_rerun=0 independent_plain_trunk_capture=0 complete_valid_state=1 page_map=checked_identity future_patterns=3f,bf max_target_calls=34 max_draft_calls=18 performance_evidence=0 retries=0
+  sequential_state=long.prefill_valid_state bytes=358665264 regions=124 exact=1 finite=1
+  sequential_state=long.init_main_unchanged bytes=358665264 regions=124 exact=1 finite=1
+  sequential_state=long.future_valid_state bytes=358692924 regions=124 exact=1 finite=1
+  sequential_actual=long.natural0 status=OK target=4 draft=2 extend=1
+  sequential_state=long.natural0.valid_state bytes=358778976 regions=124 exact=1 finite=1
+  sequential_state=long.natural0.draft_valid_state bytes=20351584 regions=7 exact=1 finite=1
+  sequential_state=long.natural0.extend_main_unchanged bytes=358778976 regions=124 exact=1 finite=1
+  sequential_actual=long.natural1 status=OK target=1 draft=2 extend=1
+  sequential_state=long.natural1.valid_state bytes=358806636 regions=124 exact=1 finite=1
+  sequential_state=long.natural1.draft_valid_state bytes=20353900 regions=7 exact=1 finite=1
+  sequential_state=long.natural1.extend_main_unchanged bytes=358806636 regions=124 exact=1 finite=1
+  sequential_actual=long.natural2 status=OK target=4 draft=2 extend=1
+  sequential_state=long.natural2.valid_state bytes=358920348 regions=124 exact=1 finite=1
+  sequential_state=long.natural2.draft_valid_state bytes=20363420 regions=7 exact=1 finite=1
+  sequential_state=long.natural2.extend_main_unchanged bytes=358920348 regions=124 exact=1 finite=1
+  sequential_actual=long.natural3 status=OK target=4 draft=2 extend=1
+  sequential_state=long.natural3.valid_state bytes=359034060 regions=124 exact=1 finite=1
+  sequential_state=long.natural3.draft_valid_state bytes=20372940 regions=7 exact=1 finite=1
+  sequential_state=long.natural3.extend_main_unchanged bytes=359034060 regions=124 exact=1 finite=1
+MTP_SEQUENTIAL_NATURAL context=long steps=4 extend_rows1=1 rows2=0 rows3=0 rows4=3
+MTP_SEQUENTIAL_LONG_SUMMARY natural_steps=4 forced_verify_steps=0 short_rerun=0 poison_targets=2 prefill_chunks=4 target_calls=28 draft_calls_including_init=18 artifact_bytes=29315533 all_required=PASS old_fixture_still_failed=1 cross_t4_explained=0 http_tested=0
+[PASS] mtp_sequential_long_full_model_admission
+1 tests, 1 passed, 0 failed, 0 skipped

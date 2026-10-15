@@ -1,0 +1,74 @@
+{
+  "kind": "independent static review; no execution",
+  "reviewer": "/root/admission_foundation_plan",
+  "protocol": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/resource-fallback-03/protocol-01.json",
+    "sha256": "5a7d5a7650ff82006a3521ee9fc0b64863127839d9b88e918b0e89dc9738c5b9"
+  },
+  "source_bindings": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/resource-fallback-03/resource_fallback_server.cpp",
+      "sha256": "0b50cf1aeb1a898985023e37642b6facd0a9f372f94ee4a50cf83aab1a31881d",
+      "bytes": 9580
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/resource-fallback-03/resource_fallback_contract.py",
+      "sha256": "bf3f581df2ba1eeb3376bd61c8fe7fce05e2c6830fa39a05284ea0e709d43e05",
+      "bytes": 8118
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/resource-fallback-03/run_resource_fallback.py",
+      "sha256": "492e8cf76cc2c7ca0650e984fa89aa94e92cebf7a9a4a699ce58a231fc7f14fe",
+      "bytes": 10128
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/resource-fallback-03/test_resource_fallback_contract.py",
+      "sha256": "ea65de6d795fef74cda357c2381f64e38a5376f47496190476406f5bea4bb351",
+      "bytes": 9566
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/run_mtp_failure_recovery.py",
+      "sha256": "e02906b7b2f5a80824ff2b2ff659a2aab96a958881500f0da5cdaa34891f91e8",
+      "bytes": 14245
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/mtp_failure_recovery_contract.py",
+      "sha256": "b843da5b404bc58acea422f78d3355f2654cb3e252eae1cd84421039fae130fd",
+      "bytes": 9037
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/request_cancellation_contract.py",
+      "sha256": "4bc92a648bd80715c7507d84982b0e2700f9b12c0afab5fb24f2c3a3fa9f36df",
+      "bytes": 12260
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/acceptance_mode.py",
+      "sha256": "a086011e094ed0d371a4b4301f8b5f61f828eb2d7a7afbf4436359fc2bab89a3",
+      "bytes": 10458
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/response_identity.py",
+      "sha256": "2102fb7a401786a55dba5b8845985b69a36b4279c52a6e4d1610a11ccd1b6e7a",
+      "bytes": 916
+    }
+  ],
+  "result": "ACCEPT_FOR_FIRST_BUILD_AND_TEST",
+  "must_fix_findings": [],
+  "reviewed": [
+    "Six wrap symbols match existing archive; prefill thread ownership and ordinary scheduler thread/pending/position match current source.",
+    "RealReserve succeeds first, ordinal2 alone receives logical StatusFail, no mutation of production API or source.",
+    "End expects255 consumed inputs/1279 position, final emitted output remains unconsumed.",
+    "Observer mutex excludes real GPU forwards/reserve/reset; RealEnd only host sequence End.",
+    "Runner has three POST only; GET snapshot cannot generate; exact variant marker required before first POST.",
+    "Complete SSE text/usage/finish is compared against fresh same-process control; recovery strict path counters match."
+  ],
+  "limitations": [
+    "Logical Status after successful idempotent reserve, not actual allocation failure or physical OOM.",
+    "Reset evidence is production stream-ordered reset invocation, not independent full device-state equality.",
+    "Requires root-owned process-group supervision from frozen protocol.",
+    "No builds, host tests, model calls or HTTP executed by authors/reviewer."
+  ],
+  "named_host_tests_planned": 10,
+  "http_requests_planned": 3,
+  "previous_originals_modified": false
+}

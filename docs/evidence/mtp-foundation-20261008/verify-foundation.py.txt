@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+"""Repeatable CPU-only binding review. Each run gets a new evidence directory."""
+import argparse
+import hashlib
+import json
+import pathlib
+import subprocess
+import sys
+
+OUT = pathlib.Path(__file__).resolve().parent
+ROOT = OUT.parents[1]
+
+
+def sha(path):
+    value = hashlib.sha256()
+    with pathlib.Path(path).open('rb') as stream:
+        for block in iter(lambda: stream.read(1024*1024), b''):
+            value.update(block)
+    return value.hexdigest()
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--run-name', required=True)
+args = parser.parse_args()
+assert pathlib.Path(args.run_name).name == args.run_name
+run = OUT / args.run_name
+run.mkdir(exist_ok=False)
+source = json.loads((OUT/'source-target-audit-01.json').read_text())
+build = json.loads((OUT/'build-identity-audit-01.json').read_text())
+execution = json.loads((OUT/'execution-identity-audit-03.json').read_text())
+checks = []
+
+def binding(path, expected, group):
+    path = pathlib.Path(path)
+    actual = sha(path)
+    checks.append(dict(path=str(path), group=group, expected_sha256=expected,
+                       actual_sha256=actual, passed=actual == expected))
+
+for row in source['historical_source_checks']:
+    binding(ROOT/row['path'], row['working_sha256'], 'runtime_source')
+for row in source['source_and_test_dependencies']:
+    binding(ROOT/row['path'], row['current_sha256'], 'source_and_test_dependency')
+for row in source['protected_original_artifacts']:
+    binding(row['path'], row['expected'], 'protected_original')
+for row in build['binaries_and_libraries']:
+    binding(row['path'], row['sha256'], 'new_build_artifact')
+    if row['historical_sha256']:
+        binding(row['historical_path'], row['historical_sha256'], 'historical_build_artifact')
+for row in build['runtime_target_graph']:
+    binding(ROOT/'build/foundation-20261008/CMakeFiles'/
+            (row['target']+'.dir')/row['file'], row['current_sha256'], 'runtime_target_graph')
+for key, name in [('script_sha256','audit-execution-identity.py'),
+                  ('source_audit_sha256','source-target-audit-01.json'),
+                  ('build_identity_sha256','build-identity-audit-01.json')]:
+    binding(OUT/name, execution['provenance'][key], 'execution_audit_provenance')
+commands = []
+cuobjdump = pathlib.Path('/usr/local/cuda-13.3/bin/cuobjdump')
+for label, key in [('old','old_binary'),('new','new_binary')]:
+    directory = run/label
+    directory.mkdir()
+    for flag in ['--extract-elf','--extract-ptx']:
+        argv = [str(cuobjdump), flag, 'all', execution[key]]
+        result = subprocess.run(argv, cwd=directory, capture_output=True, text=True)
+        log = run/(label+flag+'.log')
+        log.write_text(result.stdout+result.stderr)
+        commands.append(dict(argv=argv,cwd=str(directory),exit_code=result.returncode,
+                             log=str(log),log_sha256=sha(log)))
+        assert result.returncode == 0
+    expected = {x['name']:x[label+'_sha256'] for x in execution['cuda_images']}
+    actual_names = sorted(p.name for p in directory.iterdir())
+    checks.append(dict(group='extraction_inventory',label=label,
+                       passed=actual_names == sorted(expected)))
+    for name, digest in expected.items():
+        binding(directory/name,digest,'fresh_cuda_image_from_actual_binary')
+# Re-run the executable-content audit with its exact script and frozen report.
+# The script independently parses object sections, CIE/FDE/LSDA, final ALLOC
+# sections, relocation tables and every decompressed image; it runs no q4t.
+result = subprocess.run([sys.executable,'-B',str(OUT/'audit-execution-identity.py')],
+                        capture_output=True,text=True)
+(run/'execution-audit-repeat.log').write_text(result.stdout+result.stderr)
+checks.append(dict(group='execution_audit_rerun',passed=result.returncode == 0,
+                   exit_code=result.returncode))
+report = dict(schema_version=1,passed=all(x['passed'] for x in checks),
+    run_name=args.run_name,checks=checks,commands=commands,
+    cuobjdump=dict(path=str(cuobjdump),sha256=sha(cuobjdump)),
+    script_sha256=sha(__file__),
+    execution_audit_sha256=sha(OUT/'execution-identity-audit-03.json'),
+    first_cpu_audit_failure_preserved=sha(OUT/'execution-identity-audit-01.json'),
+    statement='CPU content/identity review only; historical HTTP remains bound to the old binary; no new inference or CUDA test body')
+(run/'review.json').write_text(json.dumps(report,indent=2)+'\n')
+print(json.dumps(dict(passed=report['passed'],checks=len(checks),
+    failures=[x for x in checks if not x['passed']],report=str(run/'review.json'))))
+sys.exit(0 if report['passed'] else 1)

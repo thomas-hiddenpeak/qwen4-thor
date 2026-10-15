@@ -1,0 +1,172 @@
+"""Freeze/run the final 30-request cost matrix; never add retries or probes."""
+import hashlib
+import json
+import os
+from pathlib import Path
+import signal
+import subprocess
+import sys
+import time
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+BUILD = ROOT / 'build/mtp-mainline-final-20261009'
+OUT = HERE / 'final-cost-matrix'
+PROTOCOL = HERE / 'final-cost-protocol-01.json'
+LENGTHS = (1024, 4096, 8192, 45056, 204800)
+
+
+def sha(path):
+    with Path(path).open('rb') as handle:
+        return hashlib.file_digest(handle, 'sha256').hexdigest()
+
+
+def save(path, data):
+    with path.open('x') as handle:
+        json.dump(data, handle, indent=2, ensure_ascii=False)
+        handle.write('\n')
+
+
+def require(ok, reason):
+    if not ok:
+        raise RuntimeError(reason)
+
+
+def alive(pid):
+    try:
+        os.killpg(pid, 0)
+        return True
+    except ProcessLookupError:
+        return False
+
+
+def freeze():
+    require(not OUT.exists(), 'matrix output already exists')
+    fixture = ROOT / '.q4t-work/evidence/performance-off-04'
+    model = Path('/home/rm01/models/dev/llm/garnermccloud/'
+                 'Qwen3.8-Flash-Next-NVFP4-SSD-Stream')
+    python = ROOT / 'tools/evalscope/.venv/bin/python'
+    tool = ROOT / 'tools/evalscope/run_acceptance.py'
+    paths = [BUILD / 'q4t', BUILD / 'CMakeCache.txt', Path(__file__)]
+    paths += sorted((ROOT / 'tools/evalscope').glob('*.py'))
+    paths += [fixture / f'context-{n}/requests.jsonl' for n in LENGTHS]
+    paths += [model / name for name in ('config.json', 'generation_config.json',
+              'tokenizer.json', 'tokenizer_config.json',
+              'model.safetensors.index.json', 'mtp/config.json')]
+    commands = []
+    for mode in ('plain', 'sequential'):
+        command = [str(python), str(tool), '--mode', 'performance',
+                   '--output', str(OUT / mode), '--binary', str(BUILD / 'q4t'),
+                   '--model-dir', str(model), '--port', '28945',
+                   '--startup-timeout', '600', '--fixtures', str(fixture)]
+        if mode == 'sequential':
+            command += ['--mtp', '--mtp-verifier', 'sequential',
+                        '--reference', str(OUT / 'plain/results.json')]
+        commands.append({'mode': mode, 'argv': command,
+                         'generation_requests': 15, 'timeout_seconds': 2400})
+    rows = [{'path': str(p.resolve()), 'bytes': p.stat().st_size,
+             'sha256': sha(p)} for p in sorted(set(paths))]
+    inputs = []
+    for length in LENGTHS:
+        path = fixture / f'context-{length}/requests.jsonl'
+        lines = path.read_text().splitlines()
+        require(len(lines) == 3 and len(set(lines)) == 1,
+                'original fixed three-request fixture changed')
+        prompt = json.loads(lines[0])['prompt']
+        inputs.append({'length': length, 'selected': 'first of 3 identical rows',
+                       'prompt_sha256': hashlib.sha256(prompt.encode()).hexdigest()})
+    save(PROTOCOL, {'created_unix': time.time(), 'commands': commands,
+         'generation_requests': 30, 'lengths': LENGTHS, 'per_context': 3,
+         'max_tokens': 256, 'seed': 20260920, 'greedy': True,
+         'max_seq': 1, 'max_prefill': 8192, 'max_len': 208896,
+         'order': 'plain then sequential; increasing context; retain all 3',
+         'performance_nonregression_claim': False,
+         'purpose': 'current production binary HTTP conformity and cost',
+         'new_generation_probes': False, 'warmup': 0, 'retries': 0,
+         'frozen_files': rows, 'input_bindings': inputs,
+         'counts_provenance': 'evalscope client DB; raw usage-only SSE is not '
+                              'retained by that client serializer; no claim '
+                              'of independent fallback-branch observation',
+         'environment': 'remove all Q4T_* and LD_PRELOAD',
+         'source_revision': subprocess.check_output(
+             ['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()})
+    print(json.dumps({'frozen': str(PROTOCOL), 'requests': 30,
+                      'bound_files': len(rows)}), flush=True)
+
+
+def run():
+    protocol = json.loads(PROTOCOL.read_text())
+    require(protocol['generation_requests'] == 30, 'wrong matrix scope')
+    for row in protocol['frozen_files']:
+        require(sha(row['path']) == row['sha256'], 'identity changed: ' + row['path'])
+    OUT.mkdir(exist_ok=False)
+    save(OUT / 'execution-claim.json', {'created_unix': time.time(),
+         'protocol_sha256': sha(PROTOCOL), 'requests_maximum': 30,
+         'retries_authorized': False})
+    environment = {k: v for k, v in os.environ.items()
+                   if not k.startswith('Q4T_') and k != 'LD_PRELOAD'}
+    temporary = OUT / 'tmp'
+    temporary.mkdir()
+    environment.update(PYTHONDONTWRITEBYTECODE='1', TMPDIR=str(temporary))
+    results = []
+    failure = None
+    for spec in protocol['commands']:
+        start = time.monotonic()
+        proc = None
+        record = {'mode': spec['mode'], 'argv': spec['argv'],
+                  'passed': False, 'cleanup_errors': []}
+        try:
+            with (OUT / (spec['mode'] + '-driver.log')).open('x') as log:
+                proc = subprocess.Popen(spec['argv'], cwd=ROOT, env=environment,
+                        stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
+                record['process_group'] = proc.pid
+                save(OUT / (spec['mode'] + '-launch.json'),
+                     {'pid': proc.pid, 'process_group': proc.pid,
+                      'started_unix': time.time(), 'argv': spec['argv']})
+                record['exit_code'] = proc.wait(timeout=spec['timeout_seconds'])
+            require(record['exit_code'] == 0, 'matrix runner returned nonzero')
+            require(not alive(proc.pid), 'matrix runner left owned descendants')
+            rows = json.loads((OUT / spec['mode'] / 'results.json').read_text())
+            require([r['length'] for r in rows] == list(LENGTHS),
+                    'final context matrix incomplete or changed')
+            require(all(len(r['metrics']) == len(r['outputs']) == 3 for r in rows),
+                    'missing retained cost samples')
+            record['passed'] = True
+        except BaseException as error:
+            failure = record['failure'] = repr(error)
+        finally:
+            if proc is not None and alive(proc.pid):
+                record['forced_cleanup'] = True
+                try:
+                    os.killpg(proc.pid, signal.SIGTERM)
+                    until = time.monotonic() + 30
+                    while alive(proc.pid) and time.monotonic() < until:
+                        proc.poll()
+                        time.sleep(.1)
+                    if alive(proc.pid):
+                        os.killpg(proc.pid, signal.SIGKILL)
+                    proc.wait(timeout=10)
+                except BaseException as error:
+                    record['cleanup_errors'].append(repr(error))
+                record['passed'] = False
+            if proc is not None:
+                record['remaining_process_group'] = alive(proc.pid)
+                record['exit_code'] = proc.returncode
+            record['seconds'] = time.monotonic() - start
+            results.append(record)
+            save(OUT / (spec['mode'] + '-execution.json'), record)
+            print(json.dumps(record), flush=True)
+        if not record['passed']:
+            break
+    passed = len(results) == 2 and all(r['passed'] for r in results)
+    save(OUT / 'summary.json', {'passed': passed, 'groups': results,
+         'failure': failure, 'maximum_generation_requests': 30,
+         'performance_nonregression_claim': False})
+    require(passed, 'final matrix failed; retain all outputs')
+
+
+if __name__ == '__main__':
+    require(len(sys.argv) == 2 and sys.argv[1] in ('freeze', 'run'),
+            'expected freeze or run')
+    freeze() if sys.argv[1] == 'freeze' else run()
+

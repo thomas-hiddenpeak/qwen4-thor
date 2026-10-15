@@ -16,6 +16,7 @@
 
 #include <cstdint>
 #include <cstdlib>
+#include <string>
 #include <vector>
 
 #include "q4t/quant/fp4_gemm.h"
@@ -50,13 +51,24 @@ int MoeStreamCount() {
   return n;
 }
 
-void EnsureMoeStreams() {
-  if (g_moe_streams_init) return;
+bool EnsureMoeStreams() {
+  if (g_moe_streams_init) return true;
   for (int i = 0; i < kMaxMoeStreams - 1; ++i) {
-    cudaStreamCreateWithFlags(&g_moe_streams[i], cudaStreamNonBlocking);
-    cudaEventCreateWithFlags(&g_moe_events[i], cudaEventDisableTiming);
+    if (cudaStreamCreateWithFlags(&g_moe_streams[i], cudaStreamNonBlocking) !=
+            cudaSuccess ||
+        cudaEventCreateWithFlags(&g_moe_events[i], cudaEventDisableTiming) !=
+            cudaSuccess) {
+      for (int j = 0; j <= i; ++j) {
+        if (g_moe_events[j]) cudaEventDestroy(g_moe_events[j]);
+        if (g_moe_streams[j]) cudaStreamDestroy(g_moe_streams[j]);
+        g_moe_events[j] = nullptr;
+        g_moe_streams[j] = nullptr;
+      }
+      return false;
+    }
   }
   g_moe_streams_init = true;
+  return true;
 }
 
 // Persistent per-stream scratch (a_packed+a_sf+gu_out carved from one buffer,
@@ -356,10 +368,10 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
   const size_t offset_bytes =
       AlignUp256(static_cast<size_t>(E + 1) * sizeof(int32_t));
   const size_t rows_bytes = AlignUp256(static_cast<size_t>(R) * sizeof(int32_t));
+  const size_t metadata_bytes =
+      counts_bytes + list_bytes + offset_bytes + rows_bytes;
   uint8_t* routing = nullptr;
-  if (cudaMallocAsync(&routing,
-                      counts_bytes + list_bytes + offset_bytes + rows_bytes,
-                      stream) != cudaSuccess) {
+  if (cudaMallocAsync(&routing, metadata_bytes, stream) != cudaSuccess) {
     return Status::Fail("cudaMallocAsync routing metadata");
   }
   int32_t* d_counts = reinterpret_cast<int32_t*>(routing);
@@ -368,10 +380,38 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
       reinterpret_cast<int32_t*>(routing + counts_bytes + list_bytes);
   int32_t* d_row_of_flat = reinterpret_cast<int32_t*>(
       routing + counts_bytes + list_bytes + offset_bytes);
-  auto free_all = [&]() { cudaFreeAsync(routing, stream); };
+  const int n_streams = MoeStreamCount();
+  bool submitted_extras[kMaxMoeStreams] = {};
+  bool extras_joined = false;
+  // Failure cleanup must establish an ordering edge before the allocation
+  // is returned to the pool. A CUDA error that also prevents synchronization
+  // leaves the allocation live and is reported explicitly.
+  auto free_all = [&]() -> bool {
+    bool safe = true;
+    if (!extras_joined) {
+      for (int si = 1; si < n_streams; ++si) {
+        if (!submitted_extras[si]) continue;
+        const cudaError_t recorded =
+            cudaEventRecord(g_moe_events[si - 1], g_moe_streams[si - 1]);
+        const cudaError_t waited = recorded == cudaSuccess
+            ? cudaStreamWaitEvent(stream, g_moe_events[si - 1], 0)
+            : recorded;
+        if (waited != cudaSuccess &&
+            cudaStreamSynchronize(g_moe_streams[si - 1]) != cudaSuccess)
+          safe = false;
+      }
+    }
+    if (!safe) return false;
+    return cudaFreeAsync(routing, stream) == cudaSuccess;
+  };
+  auto fail = [&](const char* message) -> Status {
+    if (!free_all())
+      return Status::Fail(std::string(message) +
+                          "; routing cleanup failed; memory may remain live");
+    return Status::Fail(message);
+  };
   if (cudaMemsetAsync(d_counts, 0, E * sizeof(int32_t), stream) != cudaSuccess) {
-    free_all();
-    return Status::Fail("memset counts");
+    return fail("memset counts");
   }
 
   const int num_g_tiles = SfNumGtiles(hs);
@@ -384,19 +424,16 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
         expert_ids, M, k, E, d_counts, d_token_list);
   }
   if (cudaGetLastError() != cudaSuccess) {
-    free_all();
-    return Status::Fail("kernel launch error");
+    return fail("kernel launch error");
   }
 
   // 2. Read counts to host (one sync). Token lists stay on device.
   if (cudaMemcpyAsync(counts_h.data(), d_counts, E * sizeof(int32_t),
                       cudaMemcpyDeviceToHost, stream) != cudaSuccess) {
-    free_all();
-    return Status::Fail("cudaMemcpy counts");
+    return fail("cudaMemcpy counts");
   }
   if (cudaStreamSynchronize(stream) != cudaSuccess) {
-    free_all();
-    return Status::Fail("stream sync");
+    return fail("stream sync");
   }
 
   // Clamp per-expert counts to M. An expert can be selected by at most M
@@ -421,8 +458,7 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
   if (cudaMemcpyAsync(d_offset, offset_h.data(),
                       static_cast<size_t>(E + 1) * sizeof(int32_t),
                       cudaMemcpyHostToDevice, stream) != cudaSuccess) {
-    free_all();
-    return Status::Fail("cudaMemcpy offset");
+    return fail("cudaMemcpy offset");
   }
   // Zero row_of_flat only when a count was clamped: then some (token,slot) flat
   // is dropped and left uncovered by BuildRowOfFlatKernel, so it must map to
@@ -432,15 +468,13 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
   if (clamped &&
       cudaMemsetAsync(d_row_of_flat, 0, static_cast<size_t>(R) * sizeof(int32_t),
                       stream) != cudaSuccess) {
-    free_all();
-    return Status::Fail("memset row_of_flat");
+    return fail("memset row_of_flat");
   }
   // Build the flat (token,slot) -> grouped-row inverse map for the combine.
   BuildRowOfFlatKernel<<<E, kBlock, 0, stream>>>(d_token_list, d_offset, M,
                                                  d_row_of_flat);
   if (cudaGetLastError() != cudaSuccess) {
-    free_all();
-    return Status::Fail("build row_of_flat failed");
+    return fail("build row_of_flat failed");
   }
 
   // Per-stream scratch. Stream 0 is the caller's stream (reuses ws + gemm_ws);
@@ -455,20 +489,19 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
     void* gemm_ws;
     cudaStream_t stream;
   };
-  const int n_streams = MoeStreamCount();
   SScratch sc[kMaxMoeStreams];
   sc[0] = {reinterpret_cast<uint8_t*>(ws.a_packed),
            reinterpret_cast<uint8_t*>(ws.a_sf), ws.gu_out, gemm_ws, stream};
   if (n_streams > 1) {
-    EnsureMoeStreams();
+    if (!EnsureMoeStreams())
+      return fail("moe streams initialization failed");
     const size_t ap_b = AlignUp256(static_cast<size_t>(M) * (hs / 2));
     const size_t asf_b = AlignUp256(SfBufferSize(M, hs));
     const size_t gu_b =
         AlignUp256(static_cast<size_t>(M) * (2 * moe_is) * sizeof(uint16_t));
     for (int si = 1; si < n_streams; ++si) {
       if (!EnsureMoeScratch(si - 1, ap_b + asf_b + gu_b, gemm_ws_bytes)) {
-        free_all();
-        return Status::Fail("moe stream scratch alloc");
+        return fail("moe stream scratch alloc");
       }
       uint8_t* base = static_cast<uint8_t*>(g_moe_scratch[si - 1].buf);
       sc[si] = {base, base + ap_b,
@@ -482,7 +515,9 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
   for (int e = 0; e < E; ++e) {
     const int M_e = counts_h[e];
     if (M_e <= 0) continue;
-    const SScratch& ss = sc[active_idx % n_streams];
+    const int stream_index = active_idx % n_streams;
+    const SScratch& ss = sc[stream_index];
+    if (stream_index > 0) submitted_extras[stream_index] = true;
     ++active_idx;
 
     // gate/up input = token activation (calibrated by gu_input_scale); the
@@ -504,8 +539,7 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
           num_g_tiles, weights.gu_input_scale, ss.a_packed, ss.a_sf);
     }
     if (cudaGetLastError() != cudaSuccess) {
-      free_all();
-      return Status::Fail("gather quant failed");
+      return fail("gather quant failed");
     }
 
     // gate/up GEMM: [M_e, 2*moe_is] = act [M_e, hs] * W_gu [2*moe_is, hs]^T.
@@ -520,8 +554,7 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
                       ss.a_packed, ss.a_sf, ss.gu_out, M_e, 2 * moe_is, hs,
                       gu_alpha, 1.0f, ss.gemm_ws, gemm_ws_bytes, ss.stream);
     if (r1.status != CUBLAS_STATUS_SUCCESS || !r1.has_algo) {
-      free_all();
-      return Status::Fail("gate/up GEMM failed");
+      return fail("gate/up GEMM failed");
     }
 
     // SwiGLU + quantize inter -> NVFP4 (fused, one launch; reuses a_packed /
@@ -535,8 +568,7 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
           dn_in_scale);
     }
     if (cudaGetLastError() != cudaSuccess) {
-      free_all();
-      return Status::Fail("inter quant failed");
+      return fail("inter quant failed");
     }
 
     // down GEMM: [M_e, hs] = inter [M_e, moe_is] * W_dn [hs, moe_is]^T.
@@ -549,17 +581,19 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
                       moe_is, dn_alpha, 1.0f, ss.gemm_ws, gemm_ws_bytes,
                       ss.stream);
     if (r2.status != CUBLAS_STATUS_SUCCESS || !r2.has_algo) {
-      free_all();
-      return Status::Fail("down GEMM failed");
+      return fail("down GEMM failed");
     }
   }
 
   // Rejoin the extra streams: the combine (on the caller's stream) must not
   // read dn_out until every stream's down GEMM has landed.
   for (int si = 1; si < n_streams; ++si) {
-    cudaEventRecord(g_moe_events[si - 1], g_moe_streams[si - 1]);
-    cudaStreamWaitEvent(stream, g_moe_events[si - 1], 0);
+    if (cudaEventRecord(g_moe_events[si - 1], g_moe_streams[si - 1]) !=
+            cudaSuccess ||
+        cudaStreamWaitEvent(stream, g_moe_events[si - 1], 0) != cudaSuccess)
+      return fail("join MoE expert streams failed");
   }
+  extras_joined = true;
 
   // 5. Single deterministic combine over all experts' grouped rows.
   {
@@ -569,11 +603,10 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
         ws.dn_out, d_row_of_flat, router_w, k, hs, M, y);
   }
   if (cudaGetLastError() != cudaSuccess) {
-    free_all();
-    return Status::Fail("combine failed");
+    return fail("combine failed");
   }
 
-  free_all();
+  if (!free_all()) return Status::Fail("routing cleanup failed");
   return Status();
 }
 

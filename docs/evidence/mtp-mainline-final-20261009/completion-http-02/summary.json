@@ -1,0 +1,95 @@
+{
+  "passed": true,
+  "groups": [
+    {
+      "passed": true,
+      "records": [
+        {
+          "request_id": "t4-control",
+          "kind": "success",
+          "passed": true
+        },
+        {
+          "request_id": "t4-upload",
+          "kind": "verify_sequence_upload",
+          "passed": true
+        },
+        {
+          "request_id": "t4-upload-recovery",
+          "kind": "success",
+          "passed": true
+        },
+        {
+          "request_id": "t4-verify",
+          "kind": "verify_return",
+          "passed": true
+        },
+        {
+          "request_id": "t4-verify-recovery",
+          "kind": "success",
+          "passed": true
+        },
+        {
+          "request_id": "t4-restore",
+          "kind": "natural_restore",
+          "passed": true
+        },
+        {
+          "request_id": "t4-restore-recovery",
+          "kind": "success",
+          "passed": true
+        },
+        {
+          "request_id": "t4-extend",
+          "kind": "extend_attention",
+          "passed": true
+        },
+        {
+          "request_id": "t4-extend-recovery",
+          "kind": "success",
+          "passed": true
+        }
+      ],
+      "failure": null,
+      "server_exit": 0,
+      "forced_cleanup": false,
+      "cleanup": {
+        "pid": 127651,
+        "process_group": 127651,
+        "forced": false,
+        "errors": [],
+        "remaining": [],
+        "exit": 0,
+        "passed": true
+      },
+      "verifier": "t4",
+      "production_binary_http": false
+    },
+    {
+      "passed": true,
+      "records": [
+        {
+          "request_id": "completion-sequential",
+          "kind": "success",
+          "passed": true
+        }
+      ],
+      "failure": null,
+      "server_exit": 0,
+      "forced_cleanup": false,
+      "cleanup": {
+        "pid": 129732,
+        "process_group": 129732,
+        "forced": false,
+        "errors": [],
+        "remaining": [],
+        "exit": 0,
+        "passed": true
+      },
+      "verifier": "sequential",
+      "production_binary_http": true
+    }
+  ],
+  "generation_requests_maximum": 10,
+  "scope": "completion/position integration and logical T4 failure recovery; not full T4 numerical admission or performance"
+}

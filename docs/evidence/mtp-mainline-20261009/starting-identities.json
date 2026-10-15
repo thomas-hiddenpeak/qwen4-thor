@@ -1,0 +1,47 @@
+{
+  "created_utc": "2026-10-09T01:25:40.416324+00:00",
+  "worktrees": [
+    {
+      "label": "research",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source",
+      "head": "9cb99a7f13fd288b9dd617e407ef1fc4d2b6ff82",
+      "branch": "codex/mtp-admission-20261007",
+      "status": "",
+      "diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "root",
+      "path": "/home/rm01/models/dev/qwen4-thor",
+      "head": "f15190ff9447079f9557469ed5aff0b525197821",
+      "branch": "codex/moe-residency-20260930",
+      "status": " M docs/STATUS.md\n M docs/log/2026-10-02.md\n M include/q4t/model/model.h\n M include/q4t/quant/moe_residency.h\n M src/model/moe.cu\n M src/quant/moe_residency.cpp\n M src/server/chat_generation.cpp\n",
+      "diff_sha256": "33375caff6dcb3e638e2d2f001428883cbc0e400c5f1b7403a081826e9cd6947"
+    },
+    {
+      "label": "main",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source",
+      "head": "8cd297b8af62701b00831ac44704e6b0691753d9",
+      "branch": "main",
+      "status": "",
+      "diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "C1",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/wt-c1",
+      "head": "887a3fec1af02f95209dac198681f66bdd9b82aa",
+      "branch": "codex/moe-residency-path-c-20261001",
+      "status": " M include/q4t/model/model.h\n M src/server/chat_generation.cpp\n",
+      "diff_sha256": "7d504f9b43e7fa73e1e4c1d8032667c9a80bd4980e514d644881b6c52edbc9fd"
+    },
+    {
+      "label": "foundation",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source",
+      "head": "5aacc9f225056b47fca766dcf9d49a170e60978f",
+      "branch": "codex/mtp-foundation-20261008",
+      "status": "",
+      "diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "evidence_anchor_commit": "863fc350eb3491f8d55e5f304a5cee933939658a",
+  "original_goal_completion_corrected": true
+}

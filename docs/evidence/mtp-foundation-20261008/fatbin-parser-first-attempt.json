@@ -1,0 +1,8 @@
+{
+  "status": "CPU_PARSER_FAILURE",
+  "failure": "old:2:outer_header_contract",
+  "reason": "first parser read zero inter-container alignment padding as next header",
+  "runtime_change": false,
+  "inference_run": false,
+  "script_sha256": "cfec27464a841abdd1907d064e59e0dae981bbfa5f90e2919b52f184da832969"
+}

@@ -1,0 +1,66 @@
+"""Final CPU-only preservation/source audit. Run only after cost groups exit."""
+import hashlib,json,re,subprocess,time
+from pathlib import Path
+S=Path(__file__).resolve().parent;W=S.parents[1]
+def sha(p):
+    with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def git(root,*args):return subprocess.check_output(['git','-C',str(root),*args])
+def read(p):return json.loads(Path(p).read_text())
+previous=S/'protected-http-runner-review-01.json';old=read(previous);sources=[{'path':str(previous),'sha256':sha(previous)}]
+expected={}
+for r in old['files']:
+    assert r['passed'] and r['actual_sha256']==r['expected_sha256']
+    existing=expected.setdefault(r['path'],r['expected_sha256']);assert existing==r['expected_sha256']
+# Resource and context controls link to these old inputs; retain their identity.
+for group in ('resource-fallback-03','context-tail-control-03'):
+    proto=S/group/'protocol-01.json';p=read(proto);sources.append({'path':str(proto),'sha256':sha(proto)})
+    if group=='resource-fallback-03':
+        before=p['candidate_before_identity'];assert sha(before['path'])==before['sha256']
+        expected.setdefault(before['path'],before['sha256'])
+        inventory=read(before['path'])
+        for key in ('candidate_link_inputs','protected_six_binaries_and_cache','recipe_sources'):
+            for item in inventory[key]:
+                previous_hash=expected.setdefault(item['path'],item['sha256']);assert previous_hash==item['sha256']
+    if group=='context-tail-control-03':
+        for path,hash_value in p['frozen_files'].items():
+            if str(W/'build/mtp-strict-20261009')+'/' in path:
+                existing=expected.setdefault(path,hash_value);assert existing==hash_value
+for source in old['source_manifests']:
+    previous_hash=expected.setdefault(source['path'],source['sha256']);assert previous_hash==source['sha256']
+files=[]
+for path,hash_value in sorted(expected.items()):
+    p=Path(path)
+    if '/llm/' in path:
+        assert p.name in ('config.json','generation_config.json','model.safetensors.index.json','tokenizer.json','tokenizer_config.json')
+    now=sha(path);files.append(dict(path=path,expected_sha256=hash_value,actual_sha256=now,passed=now==hash_value))
+workspaces=[]
+for record in old['workspaces']:
+    root=record['path'];wanted=record.get('expected',record['actual'])
+    actual={'head':git(root,'rev-parse','HEAD').decode().strip(),'status':git(root,'status','--short').decode()}
+    if 'diff_sha256' in wanted:
+        actual['diff_sha256']=hashlib.sha256(git(root,'diff','--binary','HEAD')).hexdigest()
+    workspaces.append(dict(label=record['label'],path=root,expected=wanted,actual=actual,passed=actual==wanted))
+build=read(S/'build-protocol-01.json');runtime=[]
+for r in build['source_files']:
+    if r['path'].startswith(('src/','include/')):
+        now=sha(W/r['path']);runtime.append(dict(path=r['path'],compiled_source_sha256=r['sha256'],current_sha256=now,passed=now==r['sha256']))
+executions=[]
+for name in ('quality-plain','quality-sequential','sustained-plain','sustained-sequential','limits-plain','limits-sequential','cancellation','failure-recovery','performance-plain','performance-sequential'):
+    path=S/f'http-{name}-execution-01.json';r=read(path)
+    executions.append(dict(name=name,path=str(path),sha256=sha(path),original_exit_code=r['exit_code'],original_passed=r['passed'],timed_out=r['timeout'],residual_process_group=r['residual_process_group'],cleanup_passed=not r['timeout'] and not r['residual_process_group']))
+for path in (S/'resource-fallback-03/execution-summary-01.json',S/'context-tail-control-03/http-execution-01.json'):
+    r=read(path);rows=r.get('results',[r])
+    executions.append(dict(name=str(path.parent.name),path=str(path),sha256=sha(path),original_passed=r['passed'],cleanup_passed=all(not x['timeout'] and not x['residual_process_group'] for x in rows)))
+ps=subprocess.check_output(['ps','-eo','pid,ppid,args']).decode();owned_live=[]
+for line in ps.splitlines():
+    if str(W) in line and (re.search(r'/q4t\S* serve(?: |$)',line) or str(S/'run-http-amendment-02.py')+' --groups' in line):
+        owned_live.append(line)
+passed=all(r['passed'] for r in files+workspaces+runtime) and all(r['cleanup_passed'] for r in executions) and not owned_live
+full=dict(schema_version=1,created_unix=time.time(),passed=passed,files=files,workspaces=workspaces,runtime_source=runtime,executions=executions,owned_live_processes=owned_live,sources=sources,script_sha256=sha(__file__),model_payload_hashed=False,no_build_test_http_or_inference=True,scope='Fresh file/dirty-worktree/source preservation audit and owned execution cleanup; not another model test.')
+raw=S/'final-protection-full-03.json'
+with raw.open('x') as f:json.dump(full,f,indent=2);f.write('\n')
+compact={k:v for k,v in full.items() if k not in ['files','runtime_source']}
+compact.update(file_checks=len(files),runtime_source_checks=len(runtime),failed_files=[r for r in files if not r['passed']],failed_runtime_source=[r for r in runtime if not r['passed']],full_report=dict(path=str(raw),bytes=raw.stat().st_size,sha256=sha(raw)),omitted_fields=['files','runtime_source'])
+with (S/'final-protection-03.json').open('x') as f:json.dump(compact,f,indent=2);f.write('\n')
+print(json.dumps(dict(passed=passed,file_checks=len(files),runtime_source_checks=len(runtime),workspaces=len(workspaces),execution_groups=len(executions),owned_live=owned_live)))
+if not passed:raise SystemExit(1)

@@ -1,0 +1,89 @@
+"""Bind an already-built terminal variant; never starts a model or a test."""
+import argparse
+import hashlib
+import json
+from pathlib import Path
+
+
+def binding(path):
+    path = path.resolve()
+    with path.open('rb') as source:
+        digest = hashlib.file_digest(source, 'sha256').hexdigest()
+    return {'path': str(path), 'bytes': path.stat().st_size, 'sha256': digest}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--root', type=Path, required=True)
+    parser.add_argument('--binary', type=Path, required=True)
+    parser.add_argument('--build-manifest', type=Path, required=True)
+    parser.add_argument('--manifest', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--port', type=int, required=True)
+    parser.add_argument('--checkpoint', type=Path, required=True)
+    parser.add_argument('--wrapper', type=Path, required=True)
+    parser.add_argument('--link-config', type=Path, required=True)
+    parser.add_argument('--tool-directory', type=Path, required=True)
+    args = parser.parse_args()
+    root = args.root.resolve()
+    checkpoint = args.checkpoint.resolve()
+    folder = args.tool_directory.resolve()
+    if not 1 <= args.port <= 65535:
+        parser.error('invalid port')
+    for path in (args.manifest.resolve(), args.output.resolve()):
+        if not any(path.is_relative_to(root / name)
+                   for name in ('build', '.q4t-work')):
+            parser.error('manifest/output must be in worktree build/work')
+    if args.output.exists():
+        parser.error('output already exists; preserve prior evidence')
+    named = {
+        'driver': folder / 'run_mtp_t4_terminal.py',
+        'terminal_contract': folder / 'mtp_t4_terminal_contract.py',
+        'contract_test': folder / 'test_t4_terminal_contract.py',
+        'wrapper': args.wrapper,
+        'link_config': args.link_config,
+        'transport': root / 'tools/evalscope/run_mtp_failure_recovery.py',
+        'failure_contract': root /
+                            'tools/evalscope/mtp_failure_recovery_contract.py',
+        'recovery_contract': root /
+                             'tools/evalscope/request_cancellation_contract.py',
+        'acceptance_mode': root / 'tools/evalscope/acceptance_mode.py',
+        'response_identity': root / 'tools/evalscope/response_identity.py',
+        'variant_binary': args.binary,
+        'fixture': root / '.q4t-work/mtp-mainline-20261009/'
+                          'http-mainline-inputs-01/context-1024.jsonl',
+        'build_manifest': args.build_manifest,
+        'mtp_header': root / 'include/q4t/mtp/mtp.h',
+        'mtp_source': root / 'src/mtp/mtp.cu',
+        'model_header': root / 'include/q4t/model/model.h',
+        'model_source': root / 'src/model/model.cu',
+        'scheduler_source': root / 'src/server/chat_scheduler.cpp',
+        'generation_source': root / 'src/server/chat_generation.cpp',
+        'policy_header': root / 'include/q4t/server/mtp_policy.h',
+        'checkpoint_config': checkpoint / 'config.json',
+        'checkpoint_generation_config': checkpoint / 'generation_config.json',
+        'freezer': Path(__file__)}
+    plan = [(f't4-stop-{row}', row, 256, row % 2 == 0) for row in range(4)]
+    plan += [(f't4-cap-{cap}', -1, cap, cap % 2 == 1)
+             for cap in range(1, 6)]
+    command = [str(args.binary.resolve()), 'serve', '--host', '127.0.0.1',
+               '--port', str(args.port), '--model-dir', str(checkpoint),
+               '--max-seq', '1', '--max-len', '208896', '--max-prefill', '8192',
+               '--max-tokens', '256', '--mtp', '--mtp-verifier', 't4']
+    result = {
+        'protocol': 't4_terminal_v1', 'status': 'frozen',
+        'root': str(root), 'output': str(args.output.resolve()),
+        'checkpoint_directory': str(checkpoint),
+        'checkpoint_payload_attested': False,
+        'startup_seconds': 300, 'request_group_seconds': 1500,
+        'generation_requests': 9, 'plan': plan, 'variant_argv': command,
+        'bindings': {name: binding(path) for name, path in named.items()},
+        'scope': 'controlled T4 terminal selection and actual ordinary tail; '
+                 'not natural quality or whole-model numerical admission'}
+    with args.manifest.open('x', encoding='utf-8') as output:
+        json.dump(result, output, indent=2, ensure_ascii=False)
+        output.write('\n')
+
+
+if __name__ == '__main__':
+    main()

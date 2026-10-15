@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="1"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="0"
+	timestamp="2026-10-07T11:41:07"
+	>
+	<testcase name="q4t_io_contracts" classname="q4t_io_contracts" time="0.0275434" status="run">
+		<properties/>
+		<system-out>[PASS] weight_loader_metadata_survives_eviction
+[PASS] weight_loader_read_survives_eviction
+[PASS] weight_loader_device_read_survives_eviction
+[PASS] weight_loader_device_enqueue_survives_eviction
+[PASS] weight_loader_missing_tensor_and_shard
+[PASS] weight_loader_concurrent_small_cache
+6 tests, 6 passed, 0 failed, 0 skipped
+</system-out>
+	</testcase>
+</testsuite>

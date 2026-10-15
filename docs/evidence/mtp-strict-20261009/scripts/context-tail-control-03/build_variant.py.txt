@@ -1,0 +1,84 @@
+"""Build only a new host wrapper and link old candidate objects; no test/run."""
+import hashlib
+import json
+import os
+from pathlib import Path
+import shlex
+import subprocess
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[2]
+BUILD = ROOT / 'build/mtp-strict-20261009'
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def main():
+    protocol_path = HERE / 'protocol-01.json'
+    protocol = json.loads(protocol_path.read_text())
+    for path, expected in protocol['frozen_files'].items():
+        if sha(Path(path)) != expected:
+            raise ValueError('frozen file changed: ' + path)
+    output = HERE / 'q4t_context_tail'
+    obj = HERE / 'context_tail_server.o'
+    for name in (output, obj, HERE / 'build-result-01.json'):
+        if name.exists():
+            raise ValueError('refusing to overwrite prior build: ' + str(name))
+    compile_command = ['/usr/bin/g++-14', '-O3', '-DNDEBUG', '-std=c++23',
+                       '-Wall', '-Wextra', '-I' + str(ROOT / 'include'),
+                       '-I' + str(ROOT / 'third_party'), '-isystem',
+                       '/usr/local/cuda-13.3/targets/sbsa-linux/include',
+                       '-isystem', '/usr/local/cuda-13.3/targets/sbsa-linux/include/cccl',
+                       '-MMD', '-MF', str(HERE / 'context_tail_server.d'),
+                       '-c', str(HERE / 'context_tail_server.cpp'), '-o', str(obj)]
+    link = shlex.split((BUILD / 'CMakeFiles/q4t.dir/link.txt').read_text())
+    link[link.index('-o') + 1] = str(output)
+    link = [('-Wl,--dependency-file=' + str(HERE / 'variant-link.d'))
+            if part.startswith('-Wl,--dependency-file=') else part for part in link]
+    link[1:1] = [str(obj)] + ['-Wl,--wrap=' + symbol
+                             for symbol in protocol['wrap_symbols']]
+    records, failure = [], None
+    temporary = HERE / 'tmp'
+    temporary.mkdir(exist_ok=True)
+    environment = dict(os.environ, TMPDIR=str(temporary))
+    try:
+        for name, command in (('compile', compile_command), ('link', link)):
+            with (HERE / (name + '-01.stdout')).open('xb') as stdout, \
+                 (HERE / (name + '-01.stderr')).open('xb') as stderr:
+                result = subprocess.run(command, cwd=BUILD, stdout=stdout,
+                                        stderr=stderr, timeout=180,
+                                        env=environment)
+            record = {'name': name, 'argv': command, 'exit_code': result.returncode}
+            records.append(record)
+            if result.returncode != 0:
+                raise RuntimeError(name + ' failed')
+            if b'warning:' in (HERE / (name + '-01.stderr')).read_bytes():
+                raise RuntimeError(name + ' emitted warnings')
+        nm = subprocess.run(['nm', '-g', str(output)], capture_output=True,
+                            check=True, timeout=30)
+        (HERE / 'symbols-01.txt').write_bytes(nm.stdout)
+        defined = {line.split()[-1] for line in nm.stdout.decode().splitlines()
+                   if len(line.split()) >= 3 and line.split()[-2] == 'T'}
+        if not all('__wrap_' + symbol in defined for symbol in protocol['wrap_symbols']):
+            raise RuntimeError('wrapper symbols missing from variant')
+        for path, expected in protocol['frozen_files'].items():
+            if sha(Path(path)) != expected:
+                raise ValueError('input changed during isolated link: ' + path)
+    except BaseException as error:
+        failure = repr(error)
+    finally:
+        with (HERE / 'build-result-01.json').open('x') as file:
+            json.dump({'passed': failure is None, 'failure': failure,
+                       'protocol_sha256': sha(protocol_path), 'commands': records,
+                       'binary_sha256': sha(output) if output.exists() else None,
+                       'old_objects_rebuilt': False, 'model_or_http_run': False},
+                      file, indent=2)
+            file.write('\n')
+    if failure is not None:
+        raise RuntimeError(failure)
+
+
+if __name__ == '__main__':
+    main()

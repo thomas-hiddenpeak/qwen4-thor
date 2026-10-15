@@ -1,0 +1,102 @@
+"""Independent DB/response/log review; no model, HTTP, or production imports."""
+import argparse,base64,hashlib,json,math,pickle,re,sqlite3,statistics,sys,time
+from pathlib import Path
+S=Path(__file__).resolve().parent;W=S.parents[1]
+p=argparse.ArgumentParser();p.add_argument('--kind',choices=['limits','performance'],required=True);a=p.parse_args()
+checks=[];sources={};pairs=[];costs=[]
+def exception_record(kind,value,traceback):
+    report=dict(passed=False,error=repr(value),checks=checks,sources=sources,script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
+    with (S/f'http-{a.kind}-independent-review-03-failure.json').open('x') as f:json.dump(report,f,indent=2);f.write('\n')
+    sys.__excepthook__(kind,value,traceback)
+sys.excepthook=exception_record
+def check(name,value):
+    checks.append({'name':name,'passed':bool(value)})
+    if not value:raise AssertionError(name)
+def bind(path):
+    path=Path(path);b=path.read_bytes();sources[str(path)]=dict(bytes=len(b),sha256=hashlib.sha256(b).hexdigest());return b
+def read(path):return json.loads(bind(path))
+def text(path):return bind(path).decode()
+def metric(r):
+    d=r['latency']-r['ttft'];return dict(ttft=r['ttft'],latency=r['latency'],decode_seconds=d,decode_tps=(r['actual_output']-1)/d,overall_tps=r['actual_output']/r['latency'],actual_output=r['actual_output'])
+def fields(line):
+    words=line.split('] ',1)[1].split()
+    if words and words[0]=='effective':words=words[1:]
+    v=dict(w.split('=',1) for w in words);check('unique log fields',len(v)==len(words));return v
+modes={}
+if a.kind=='limits':
+    matrix=[(f'{"stream" if st else "nonstream"}-{n}',1024,n,st) for st in (True,False) for n in (1,2,3,4,5,8)]+[('context-208891-stream-8',208891,8,True),('context-208892-nonstream-8',208892,8,False)]
+else:matrix=[(f'context-{n}',n,256,True) for n in (1024,4096,8192,45056,204800)]
+for mode in ('plain','sequential'):
+    D=S/'http'/f'{a.kind}-{mode}';result=read(D/'results.json');ex=read(D/'exit.json');log=text(D/'server.log');cmd=read(D/'server-command.json')['argv']
+    check(mode+' binary',text(D/'binary.sha256').strip()=='a566faf51975291ec8fcd1fe75d7ddff07760fe13c138f85a066aeffad729563')
+    check(mode+' actual binary bytes',hashlib.sha256(bind(cmd[0])).hexdigest()=='a566faf51975291ec8fcd1fe75d7ddff07760fe13c138f85a066aeffad729563')
+    check(mode+' own server exit',ex['server']==0)
+    check(mode+' mode',('--mtp' in cmd)==(mode=='sequential') and ('--no-mtp' in cmd)==(mode=='plain'))
+    if mode=='sequential':check('actual verifier argument',cmd[cmd.index('--mtp-verifier')+1]=='sequential')
+    for flag,value in [('--max-seq','1'),('--max-len','208896'),('--max-prefill','8192')]:check(mode+flag,cmd[cmd.index(flag)+1]==value)
+    cap=[fields(l) for l in log.splitlines() if l.startswith('[q4t][capabilities] effective ')]
+    # The effective marker is not a key=value token, remove it for this record.
+    check(mode+' effective',len(cap)==1 and all(cap[0].get(k)==v for k,v in dict(mtp='1' if mode=='sequential' else '0',media_allowed='0',vision_loaded='0',max_seq='1',verifier='sequential' if mode=='sequential' else 'none').items()))
+    capacities=[fields(l) for l in log.splitlines() if l.startswith('[q4t][capacity] ')]
+    check(mode+' effective capacity',len(capacities)==1 and all(capacities[0].get(k)==v for k,v in dict(requested_max_len='208896',requested_max_seq='1',requested_max_prefill='8192',effective_max_len='208896',effective_max_seq='1',effective_max_prefill='8192',budget_enabled='1',budget_feasible='true').items()))
+    paths=[fields(l) for l in log.splitlines() if l.startswith('[q4t][decode_path] ')]
+    check(mode+' distinct path IDs',len({r['id'] for r in paths})==len(paths))
+    path_by_id={r['id']:r for r in paths};all_rows=[]
+    check(mode+' result matrix length',len(result)==len(matrix))
+    for index,(name,length,limit,stream) in enumerate(matrix):
+        case=D/name;raw=read(case/'responses.json');dbs=list(case.rglob('benchmark_data.db'));check(name+' one database',len(dbs)==1);bind(dbs[0])
+        with sqlite3.connect('file:'+str(dbs[0])+'?mode=ro',uri=True) as db:
+            rows=db.execute('select success,prompt_tokens,completion_tokens,response_messages,first_chunk_latency,latency,request from result order by start_time').fetchall()
+        count=1 if a.kind=='limits' else 3
+        check(name+' response count',len(rows)==len(raw)==count)
+        inputs=[json.loads(l) for l in text(case/'requests.jsonl').splitlines()];check(name+' fixture count',len(inputs)==count)
+        for j,(row,saved) in enumerate(zip(rows,raw)):
+            label=f'{mode}:{name}:{j}';messages=pickle.loads(base64.b64decode(row[3]));request=json.loads(row[6]);choices=[c for m in messages for c in m.get('choices',[])]
+            content=''.join(c.get('delta',c.get('message',{})).get('content','') for c in choices);finish=[c['finish_reason'] for c in choices if c.get('finish_reason')];ids=[m['id'] for m in messages if 'id' in m]
+            ph=hashlib.sha256(request['prompt'].encode()).hexdigest();check(label+' input source',request['prompt']==inputs[j]['prompt'])
+            observed=dict(success=row[0],actual_input=row[1],actual_output=row[2],text=content,finish=finish,prompt_sha256=ph,ttft=row[4],latency=row[5],request_stream=request.get('stream'))
+            check(label+' DB to saved observations',all(saved.get(k)==v for k,v in observed.items()))
+            check(label+' output file',text(case/f'output-{j}.txt')==content)
+            check(label+' valid ID',ids and len(set(ids))==1 and bool(re.fullmatch(r'[A-Za-z0-9_-]{1,128}',ids[0])) and ids==saved['response_ids_observed'] and ids[0]==saved['response_id'] and saved['response_id_valid'] is True)
+            check(label+' actual request sampling',request.get('stream') is stream and request.get('temperature')==0 and request.get('max_tokens')==limit and request.get('seed')==20260920)
+            expected=min(limit,208896-length);terminal=a.kind=='limits' and index==13
+            check(label+' successful response',row[0]==1 and row[1]==length and row[2]==(1 if terminal else expected) and finish==(['stop'] if terminal else ['length']))
+            check(label+' finite latency',all(math.isfinite(v) and v>=0 for v in (row[4],row[5])) and row[5]>=row[4])
+            path=path_by_id.get(ids[0]);check(label+' actual bound path',path is not None and path['requested_mtp']==str(int(mode=='sequential')) and path['fallback']=='none')
+            if mode=='sequential':
+                k=int(path['mtp_steps']);t=int(path['target_t1_calls']);tail=int(path['plain_tail_tokens']);ext=int(path['extend_forward_calls'])
+                check(label+' sequential accounting',path['verifier']=='sequential' and path['forward_count_scope']=='sequential_attempts' and path['target_t4_calls']=='0' and int(path['draft_forward_calls'])==2*k and ext==k and k<=t<=4*k and 0<=tail<=4 and t+tail+(1 if terminal or row[2]==1 else 0)==row[2])
+                expected_path='prefill_only' if row[2]==1 else ('plain_tail_b1' if a.kind=='limits' and limit<=4 else 'mtp_sequential_b1')
+                check(label+' actual path',path['path']==expected_path)
+                expected_reason='none' if row[2]==1 else ('context_limit' if length==208891 else 'output_limit')
+                check(label+' actual tail reason',path['tail_reason']==expected_reason)
+            else:check(label+' plain path',path['path']==('prefill_only' if row[2]==1 else 'plain') and path['mtp_steps']=='0' and path['verifier']=='none')
+            observed.update(response_id=ids[0],path=path,case=name,index=j,text_utf8_sha256=hashlib.sha256(content.encode()).hexdigest())
+            all_rows.append(observed)
+        if a.kind=='performance':
+            check(name+' positive decode interval',all(r['latency']>r['ttft'] for r in raw))
+            check(name+' three identical prompts',len({r['prompt_sha256'] for r in raw})==1)
+            metrics=[metric(r) for r in raw];item=result[index]
+            check(name+' metrics and hashes',item['length']==length and item['outputs']==[hashlib.sha256(r['text'].encode()).hexdigest() for r in raw] and item['metrics']==metrics and item['prompt_sha256']==raw[0]['prompt_sha256'] and item['deterministic'] is True and len(set(item['outputs']))==1)
+        else:
+            check(name+' frozen metadata',all(result[index].get(k)==v for k,v in dict(id=name,streaming=stream,max_tokens=limit,length=length,expected_output=min(limit,208896-length)).items()))
+            check(name+' complete stored row',{k:v for k,v in result[index].items() if k not in ['id','streaming','max_tokens','length','expected_output']}==raw[0])
+    check(mode+' exact path count',len(paths)==len(all_rows))
+    if a.kind=='performance':check(mode+' full group PASS',ex['completed']==5 and ex['failure'] is None and ex['actual_mode_checks_passed'] and ex['http_output_checks_passed'])
+    else:check(mode+' original failure retained',ex['completed']==14 and not ex['http_output_checks_passed'] and ex['failure']=='RuntimeError: output-limit/finish/stream acceptance failed')
+    modes[mode]=all_rows
+check('same total responses',len(modes['plain'])==len(modes['sequential']))
+for x,y in zip(modes['plain'],modes['sequential']):
+    label=f"{x['case']}:{x['index']}";keys=['text','prompt_sha256','actual_input','actual_output','finish','case','index','request_stream']
+    check(label+' exact across mode',all(x[k]==y[k] for k in keys))
+    pairs.append({k:x[k] for k in ['case','index','prompt_sha256','text_utf8_sha256','actual_input','actual_output','finish']}|{'exact_full_text':True,'plain_path':x['path'],'sequential_path':y['path']})
+if a.kind=='performance':
+    for name,length,_,_ in matrix:
+        r={'length':length}
+        for mode in modes:
+            ms=[metric(x) for x in modes[mode] if x['case']==name]
+            r[mode]={'samples':ms,'mean_all_three':{k:statistics.mean(x[k] for x in ms) for k in ['ttft','decode_tps','latency']},'mean_last_two':{k:statistics.mean(x[k] for x in ms[1:]) for k in ['ttft','decode_tps','latency']}}
+        r['all_three_percent_change']={k:100*(r['sequential']['mean_all_three'][k]/r['plain']['mean_all_three'][k]-1) for k in ['ttft','decode_tps','latency']};costs.append(r)
+report=dict(schema_version=1,kind=a.kind,created_unix=time.time(),passed=True,checks_passed=len(checks),pairs=pairs,costs=costs,checks=checks,sources=sources,script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),limits_original_coverage_passed=False if a.kind=='limits' else None,scope='Exact observed HTTP pairing. Cost descriptive only, fixed order, no causal/nonregression claim. Limits final natural EOS retains coverage FAIL; supplementary control reported separately.',token_ids_observed=False,raw_total_usage_observed=False)
+with (S/f'http-{a.kind}-independent-review-03.json').open('x') as f:json.dump(report,f,ensure_ascii=False,indent=2);f.write('\n')
+print(json.dumps(dict(passed=True,checks=len(checks),sources=len(sources),pairs=len(pairs),costs=costs)))

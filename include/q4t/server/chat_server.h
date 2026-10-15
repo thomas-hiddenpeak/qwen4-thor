@@ -271,9 +271,8 @@ class ChatServer {
   std::vector<int32_t> stop_token_ids_;  // generation_config, not PLE padding
   int max_prefill_ = 2048;
   int max_len_ = 2048;
-  // OOM-safe memory budget computed at Start() (vllm-style). max_len/max_seq
-  // are capped to what fits in mem_fraction x MemTotal so the engine can never
-  // OOM the unified-memory box. budget_valid_ is false when --no-budget.
+  // Allocation estimate computed at Start(). Capacity fits the modeled
+  // terms, not a physical RAM/OOM guarantee. False when --no-budget.
   runtime::MemoryBudget budget_;
   bool budget_valid_ = false;
   std::unique_ptr<text::Tokenizer> tok_;

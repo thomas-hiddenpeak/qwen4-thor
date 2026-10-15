@@ -1,0 +1,56 @@
+"""Execute only frozen HTTP groups, sequentially, with process-group deadlines."""
+import argparse,hashlib,json,os,signal,subprocess,time
+from pathlib import Path
+S=Path(__file__).resolve().parent;W=S.parents[1]
+def sha(p):
+    with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def save(p,v):
+    with p.open('x') as f:json.dump(v,f,indent=2);f.write('\n')
+p=argparse.ArgumentParser();p.add_argument('--groups',nargs='+',required=True);a=p.parse_args()
+protocol=json.loads((S/'http-protocol-01.json').read_text())
+assert all(sha(r['path'])==r['sha256'] for r in protocol['fixtures_and_metadata'])
+source=json.loads((S/'build-protocol-01.json').read_text())
+# Production runtime and tools remain exactly the built candidate. Only the
+# explicitly authorized long diagnostic source/target may change after the
+# first coverage failure; original binaries and source snapshot stay intact.
+diag_allowed={'CMakeLists.txt','tests/mtp_sequential_admission_test.cpp'}
+source_changes=[dict(path=r['path'],before_sha256=r['sha256'],now_sha256=sha(W/r['path'])) for r in source['source_files'] if sha(W/r['path'])!=r['sha256']]
+assert all(r['path'] in diag_allowed for r in source_changes)
+identity=json.loads((S/'build-identity-01.json').read_text())
+assert all(sha(r['path'])==r['sha256'] for r in identity['files'])
+commands=protocol['commands'];wanted=a.groups
+assert len(set(wanted))==len(wanted) and all(n in {c['name'] for c in commands} for n in wanted)
+if any(n.startswith('sustained') for n in wanted):
+    i=wanted.index('sustained-plain');assert wanted[i:i+2]==['sustained-plain','sustained-sequential']
+commands=[next(c for c in commands if c['name']==n) for n in wanted]
+env={k:v for k,v in os.environ.items() if not k.startswith('Q4T_') and k!='LD_PRELOAD'}
+env.update(PYTHONDONTWRITEBYTECODE='1',TMPDIR=str(S/'tmp'))
+for c in commands:
+    name=c['name'];dest=S/f'http-{name}-execution-01.json'
+    assert not dest.exists() and not Path(c['output']).exists()
+    save(S/f'http-{name}-launch-01.json',dict(started_unix=time.time(),command=c,diagnostic_only_source_changes=source_changes,protocol_sha256=sha(S/'http-protocol-01.json'),runner_sha256=sha(__file__),environment_additions={k:env[k] for k in ['PYTHONDONTWRITEBYTECODE','TMPDIR']}))
+    start=time.time();timed_out=False
+    with (S/f'http-{name}-01.stdout').open('x') as out,(S/f'http-{name}-01.stderr').open('x') as err:
+        proc=subprocess.Popen(c['argv'],cwd=W,env=env,stdout=out,stderr=err,start_new_session=True)
+        try:rc=proc.wait(timeout=c['group_timeout_seconds'])
+        except subprocess.TimeoutExpired:
+            timed_out=True;os.killpg(proc.pid,signal.SIGTERM)
+            try:rc=proc.wait(timeout=30)
+            except subprocess.TimeoutExpired:os.killpg(proc.pid,signal.SIGKILL);rc=proc.wait()
+        # A runner may fail before its own cleanup block. Remove only this
+        # invocation's surviving process group and retain failure evidence.
+        try:os.killpg(proc.pid,0)
+        except ProcessLookupError:remaining=False
+        else:
+            remaining=True;os.killpg(proc.pid,signal.SIGTERM)
+            until=time.monotonic()+30
+            while time.monotonic()<until:
+                try:os.killpg(proc.pid,0)
+                except ProcessLookupError:break
+                time.sleep(.25)
+            else:
+                try:os.killpg(proc.pid,signal.SIGKILL)
+                except ProcessLookupError:pass
+    row=dict(name=name,exit_code=rc,timeout=timed_out,seconds=time.time()-start,residual_process_group=remaining,passed=rc==0 and not timed_out and not remaining,stdout_sha256=sha(S/f'http-{name}-01.stdout'),stderr_sha256=sha(S/f'http-{name}-01.stderr'))
+    save(dest,row);print(json.dumps(row),flush=True)
+    if not row['passed']:raise SystemExit(1)

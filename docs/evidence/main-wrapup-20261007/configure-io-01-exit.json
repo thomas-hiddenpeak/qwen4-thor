@@ -1,0 +1,17 @@
+{
+  "label": "configure-io-01",
+  "argv": [
+    "cmake",
+    "-S",
+    "tests/io_host",
+    "-B",
+    "build/io-host",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DCMAKE_CXX_COMPILER=g++-14"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source",
+  "started": 1791344407.8843896,
+  "pid": 3937050,
+  "exit_code": 0,
+  "ended": 1791344408.2518497
+}

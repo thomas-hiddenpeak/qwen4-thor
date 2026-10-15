@@ -31,21 +31,14 @@ MTP 性能成果推进到可合入主线 `main` 的归并边界决策。代码�
 
 即 **正确性（bit-identical）vs 速度（near-tie 分岔）** 的权衡。
 
-## 3. 主流引擎对照（近 tie 是否被允许）
+## 3. 主流引擎对照（2026-10-16 来源复核）
 
-近 tie 分岔（不同算术路径产生不同 logit/token）在主流引擎中**普遍接受且明确文档化**：
-- **vLLM 官方文档**（speculative_decoding 多版本 + FAQ）：默认**非 batch-不变**，
-  batch size 变化会导致 logprobs/输出概率变化；需 opt-in `batch_invariance` 才消除。
-- **NeurIPS 2025《Understanding and Mitigating Numerical Sources of Nondeterminism
-  in LLM Inference》**：BF16+greedy 下仅因 GPU 数/类型/评测 batch size 不同，
-  DeepSeek-R1-Distill-Qwen-7B 可出现最高 9% 准确率波动、9000 token 长度差，
-  根因为浮点非结合性。
-- **Microsoft LLM-42**：非确定性源于浮点非结合性 + 动态 batching + 随 batch 变化的
-  kernel 归约顺序。
-
-本项目近 tie 合同**比主流更严**：量化容差 N=4 ULP、限定近 tie 为唯一允许分岔来源、
->N ULP 双侧 confident 翻转判缺陷、带 causality 负控。主流引擎仅隐式接受该现象，
-未量化、未设边界。详见 [EVALUATION.md「MTP vs plain 近 tie 合同」](EVALUATION.md)。
+vLLM 默认模式明确记录 batch 变化可能引起数值差异。本项目额外规定
+N=4 ULP、双侧 confident 拒绝和 causality 负控，在这个意义上边界更严。
+NeurIPS 2025 与 LLM-42 解释浮点非结合性机制；LLM-42 本身追求确定性，
+不能作为“所有主流实现都允许近 tie 翻转”的依据。本合同也不比显式
+batch-invariant/确定性模式更强。来源链接与比较范围见
+[EVALUATION.md](EVALUATION.md#近-tie-合同与主流引擎对照2026-10-16-来源复核)。
 
 ## 4. 归并策略（推荐 A）
 
@@ -106,11 +99,11 @@ MTP 性能成果推进到可合入主线 `main` 的归并边界决策。代码�
 5. 阶段快照 commit + 推送 GitHub 工作分支，明确标记未通过项。
 6. 归并失败可回退到归并前状态（main 未动）。
 
-## 7. 待决策
+## 7. 已采用的边界
 
-- 归并策略选 A/B/C（**推荐 A**）。
-- 归并后默认 MTP 的 k 值（当前 k=3）。
-- 是否需要在归并后补一次 sequential 与 T>1 的跨模式对照（可选，不阻塞）。
+归并树采用 A，默认 T>1、k=3；sequential 保留于历史提交 7f6a69c。
+不新增双路径产品入口。A 与 C 在当前运行树的删除结果相同，A 明确保留
+历史回退/参考入口。main 保持不动，先交付工作分支的可审查合并提交。
 
 ## 8. 逐文件归并裁决（2026-10-15，Step 2 复确认期间完成分析）
 
@@ -141,7 +134,7 @@ merge-base 的 52 提交几乎全部是 MTP 主线交付（sequential verifier +
 |---|---|
 | src/quant/moe_gemm.cu | cur 的 `MoEDeviceDecodeMulti`（M=2..8，T>1 性能基础）+ ablation env 保留；取 main 的错误处理加固（fail() 清理语义）；删 main 的 M=4 batch gather（sequential T4 专属、env 门控）、replay capture、verify MoE timing 钩子 |
 | src/model/moe.cu | cur（main 变更纯 verify MoE timing 测量，随 sequential 删除） |
-| src/model/model.cu | cur 的 residency 保留；取 main 的 checkpoint 加固（save_checkpoints 校验/容量检查/越界安全比较/seq_id 校验）——cur 的 T>1 路径同样调用 save_checkpoints=true；RoPE 修复 cur 已有（6 处 H2D rope_pos） |
+| src/model/model.cu | cur 的 residency 保留；取 main 的 checkpoint 加固（save_checkpoints 校验/容量检查/越界安全比较/seq_id 校验）——cur 的 T>1 路径同样调用 save_checkpoints=true；RoPE 多数修复 cur 已有，但 ModelDecodeBatchMulti 写位置缺失须保留 main 修复（2026-10-16 核实） |
 | src/runtime/memory_budget.cpp | 两侧并：overflow 安全算术（Add/Mul 两侧独立新增，去重取一份）+ main 的 MTP 预算函数（按 T>1 适配）+ cur 的 residency 感知预算（KV 16 对齐、MTP rope 翻倍、has_ple 守卫） |
 | include/q4t/runtime/memory_budget.h | 两侧并 |
 | src/io/weight_loader.cpp | cur（main 变更的超集：相同 ShardHandle/metadata 重构 + num_shards + SetKeepPageCache） |
@@ -183,10 +176,15 @@ merge-base 的 52 提交几乎全部是 MTP 主线交付（sequential verifier +
   mtp_projection_path_test、mtp_path_triangle_test、mtp_position_copy_test、
   mtp_spec_multi_test、mtp_hc_first_fork_test、server_mtp_policy_test、
   server_scheduler_submission_test、support/mtp_hc_dot_envelope.h
+- 执行修正（2026-10-15 验证期）：request_cancellation_contract.py 与
+  test_request_cancellation.py 原判"保留"有误——合同模块 import 已删除的
+  acceptance_mode.py，且 32 项合成测试中 15 项为 MTP 路径/sequential 恢复
+  会计（依赖 mtp_sequential_b1/mtp_multi_b1 路径名），归并树无法通过，
+  随 sequential 工件删除；非 MTP 部分（run_request_cancellation.py 及其
+  自包含合同）保留。
 - 保留（main-only 非 MTP）：physical_ram.py、test_physical_ram.py、
   response_identity.py、test_response_identity.py、
-  request_cancellation_contract.py、run_request_cancellation.py、
-  test_request_cancellation.py、model_decode_rope_test.cpp、
+  run_request_cancellation.py、model_decode_rope_test.cpp、
   weight_loader_contract_test.cpp、tools/trace 的 gpu_cache_replay/
   decode_supply/mirror_retention 研究工具及其测试
 
@@ -199,3 +197,37 @@ merge-base 的 52 提交几乎全部是 MTP 主线交付（sequential verifier +
 5. 阶段快照 commit + 推送工作分支；main 不动（回退点 `7f6a69c`）。
 6. 归并树验收通过后，main 快进/合并到归并状态（sequential 工件随归并树
    删除，历史保留于 `7f6a69c`）。
+
+## 9. 2026-10-16 恢复与裁决修正
+
+上次解冲突已完成但合并未提交，不能称为验收完成。归并前 HEAD 实际为
+577dac0（03339bf 之后的方案/证据提交），MERGE_HEAD 为 7f6a69c。
+
+- 当前分支 checkpoint 写端已使用 reserved capacity stride；main 的
+  restore saved-row stride 不能直接保留。统一写/读/快照 capacity stride，
+  同时保留 main 的有效行/slot、过期/越界拒绝检查。
+- 当前 T>1 支持单序列 PLE checkpoint。main 专属拒绝预期改为成功与
+  有效行检查；保留独立 capacity=1 vs 3、saved_rows=1 状态/探针比对。
+- 不按“失败就删除”清理共享合同测试：记录基线失败、语义不适用与新回归
+  的区别，只有明确专属 sequential 的预期随实现边界适配。
+- 最终结果见 STATUS 与当天日志；上次失败证据原样保留。
+
+### §9 补充：共用正确性边界（最终候选冻结）
+
+策略 A 替换的是 verifier 算术，不删除共用正确性保护。§8 中“核心整文件
+取 cur”及 lifecycle 专属判定由本节修正：
+
+- 保留 main 的 load/scratch 失败清理、容量发布、借用权重不释放；恢复
+  `mtp_lifecycle_test.cpp` 与显式 target，覆盖实际 CUDA 分配失败注入。
+- MtpForward 使用共用 UVA position-copy helper；multi step 每个已提交
+  Status 出口完成 stream 后返回，失败清空输出，scheduler 标记 Failed。
+  draft 位置上传源为不可变逐步切片；不改变 T>1 kernel 或精度阈值。
+- 保留首可达 stop 的前缀恢复与禁止 terminal extend；server 在 pending
+  stop 处结束，输出/上下文尾部转 ordinary decode，保留已输出前缀。
+- 保留 prefill 关停入队原子性与普通/MTP decode 的关停判断和结果清空；
+  不把仅测试共用 helper 误写为运行时已接入。
+- 原 off 的普通 scheduler B1 缺 RoPE 当前位置写入；修复后的 off 输出
+  有意区别于旧错误版。1K 消融只删此写入即恢复旧摘要，旧版只作兼容对照。
+  最终性能必须重新以同一修复后 binary 的 off/on 五档三次比较。
+- 旧 cross-shape 固定 L2 阈值失败不自动按 near-tie 免检，也不改阈值；
+  与本轮直接布局/ULP/HTTP 合同分栏报告，保留原始失败与其基线证据。

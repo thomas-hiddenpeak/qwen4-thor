@@ -1,0 +1,370 @@
+"""Package completed evidence only; never execute builds, tests, HTTP or inference.
+
+Default is a read-only preparation report. --write materializes the new package
+only after all required sources and frozen identities have been read successfully.
+Final narrative/gate/protection files must be supplied explicitly by the owner.
+No raw model payload, capture arrays, DBs, long fixtures or executables are copied.
+"""
+import argparse
+import hashlib
+import json
+from pathlib import Path
+
+S = Path(__file__).resolve().parent
+W = S.parents[1]
+DEST = 'docs/evidence/mtp-strict-20261009'
+
+
+def digest(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def encoded(value):
+    return (json.dumps(value, ensure_ascii=False, separators=(',', ':')) + '\n').encode()
+
+
+class Package:
+    def __init__(self):
+        self.files = {}
+        self.provenance = {}
+        self.sources = {}
+
+    def read(self, source, expected=None):
+        source = Path(source).resolve()
+        data = source.read_bytes()
+        identity = dict(path=str(source), bytes=len(data), sha256=digest(data))
+        if expected:
+            for key in ('bytes', 'sha256'):
+                if key in expected and identity[key] != expected[key]:
+                    raise ValueError(f'frozen {key} changed: {source}')
+        old = self.sources.setdefault(str(source), identity)
+        if old != identity:
+            raise ValueError(f'source changed during packaging: {source}')
+        return data, identity
+
+    def put(self, destination, data, provenance):
+        name = str(Path(destination))
+        if Path(name).is_absolute() or '..' in Path(name).parts:
+            raise ValueError('unsafe package path: ' + name)
+        if name in self.files:
+            raise ValueError('duplicate package path: ' + name)
+        self.files[name] = data
+        self.provenance[name] = provenance
+
+    def exact(self, source, destination, expected=None):
+        data, identity = self.read(source, expected)
+        self.put(destination, data, dict(kind='verbatim', source=identity))
+        return identity
+
+    def value(self, destination, value, provenance):
+        self.put(destination, encoded(value), provenance)
+
+    def compact(self, source, destination, retain=None, omit=(), expected=None):
+        raw, identity = self.read(source, expected)
+        value = json.loads(raw)
+        if not isinstance(value, dict):
+            raise ValueError('compact object expected: ' + str(source))
+        selected = set(value) if retain is None else set(retain)
+        if not selected <= set(value):
+            raise ValueError('missing retained fields: ' + str(source))
+        selected -= set(omit)
+        data = {key: value[key] for key in value if key in selected}
+        omitted = [key for key in value if key not in selected]
+        # Always preserve any failed check; omit only repetitive full check arrays.
+        failures = [row for row in value.get('checks', [])
+                    if isinstance(row, dict) and row.get('passed') is False]
+        derivation = dict(
+            derived_from_path=identity['path'],
+            derived_from_sha256=identity['sha256'],
+            derived_from_bytes=identity['bytes'],
+            retained_fields=list(data), omitted_fields=omitted)
+        output = dict(derivation=derivation, data=data)
+        if 'checks' in omitted:
+            output['omitted_checks_count'] = len(value['checks'])
+            output['failed_check_rows_preserved'] = failures
+        self.value(destination, output, dict(kind='compact', source=identity,
+                                            retained_fields=list(data),
+                                            omitted_fields=omitted))
+        return value
+
+    def audit(self, source, destination):
+        raw, identity = self.read(source)
+        value = json.loads(raw)
+        fields = [key for key in ('source_files', 'sources', 'bound_originals',
+                                 'source_bindings', 'source_and_original_bindings')
+                  if key in value]
+        manifest = None
+        if fields:
+            manifest = 'local-evidence-manifests/' + Path(destination).stem + '.json'
+            # Prefix substitution is reversible, including dictionary path keys.
+            # These are recorded historical bindings, not current-file rehashes.
+            prefixes = {'$STAGE/': str(S) + '/', '$WORKTREE/': str(W) + '/'}
+
+            def abbreviate(item):
+                if isinstance(item, str):
+                    for short, long in prefixes.items():
+                        if item.startswith(long):
+                            return short + item[len(long):]
+                    return item
+                if isinstance(item, list):
+                    return [abbreviate(x) for x in item]
+                if isinstance(item, dict):
+                    return {abbreviate(k): abbreviate(v) for k, v in item.items()}
+                return item
+
+            self.value(manifest, {
+                'derived_from': identity, 'path_prefixes': prefixes,
+                'encoding': 'reversible string-prefix substitution only',
+                'historical_recorded_bindings': True,
+                'current_bound_files_rehashed': False,
+                'original_fields': abbreviate({key: value[key] for key in fields}),
+            }, dict(kind='historical_source_manifest', source=identity))
+        self.compact(source, destination, omit=['checks', *fields])
+        if manifest:
+            output = json.loads(self.files[destination])
+            output['source_bindings_manifest'] = manifest
+            output['derivation']['moved_fields_without_loss'] = fields
+            self.files[destination] = encoded(output)
+        return value
+
+    def result_rows(self, source, destination, reference=None):
+        raw, identity = self.read(source)
+        rows = json.loads(raw)
+        if not isinstance(rows, list):
+            raise ValueError('expected result array: ' + str(source))
+        result = []
+        omitted = ['[*].response_ids_observed']
+        for index, original in enumerate(rows):
+            row = {key: value for key, value in original.items()
+                   if key != 'response_ids_observed'}
+            if 'response_ids_observed' in original:
+                row['response_ids_observed_count'] = len(original['response_ids_observed'])
+            if 'text' in row:
+                text = row['text'].encode()
+                row['text_utf8_sha256'] = digest(text)
+                row['text_utf8_bytes'] = len(text)
+                if reference is not None:
+                    if row['id'] != reference[index]['id'] or row['text'] != reference[index]['text']:
+                        raise ValueError('sustained exact text pair changed')
+                    del row['text']
+                    row['text_reference'] = {
+                        'package_file': 'sustained-pair/plain/results-compact.json',
+                        'row_index': index, 'id': row['id'],
+                        'text_utf8_sha256': digest(text)}
+            result.append(row)
+        if reference is not None:
+            if len(rows) != len(reference):
+                raise ValueError('sustained reference row count differs')
+            omitted += ['[*].text (lossless reference to paired plain text)']
+        self.value(destination, {
+            'derivation': dict(derived_from_path=identity['path'],
+                               derived_from_sha256=identity['sha256'],
+                               derived_from_bytes=identity['bytes'],
+                               retained_fields='all row fields except explicit omitted fields',
+                               omitted_fields=omitted),
+            'rows': result,
+            'token_ids_observed': False,
+            'scope': 'Actual UTF8 text / observed counts / finish; derived totals are labelled in source.',
+        }, dict(kind='compact_result_rows', source=identity, omitted_fields=omitted))
+        return rows
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--final-gate', type=Path, required=True)
+    parser.add_argument('--final-protection', type=Path, required=True)
+    parser.add_argument('--readme', type=Path, required=True)
+    parser.add_argument('--write', action='store_true', help='create new planned docs package')
+    args = parser.parse_args()
+    package = Package()
+    plan_bytes, plan_identity = package.read(S / 'packaging-plan.json')
+    plan = json.loads(plan_bytes)
+    if plan['destination'] != DEST or Path(plan['workspace']).resolve() != W:
+        raise ValueError('unexpected packaging scope')
+    if len(plan['verbatim_existing_evidence']) != 50:
+        raise ValueError('original 50-file list changed')
+    package.exact(S / 'packaging-plan.json', 'packaging-plan.json')
+    package.exact(Path(__file__), 'scripts/package-evidence-03.py.txt')
+    for spec in [*plan['verbatim_existing_evidence'],
+                 *plan['verbatim_script_archives'],
+                 plan['hc_reproducibility']['add_original_flags_file']]:
+        destination = Path(spec['destination']).relative_to(DEST)
+        package.exact(spec['source'], destination, spec)
+    for spec in plan['compact_derivations']:
+        destination = str(Path(spec['destination']).relative_to(DEST))
+        omit = ['checks']
+        if Path(spec['source']).name == 'protected-http-runner-review-01.json':
+            omit += ['files']
+        original = package.compact(spec['source'], destination,
+                                   spec['retain_fields'], omit, spec)
+        if Path(spec['source']).name == 'protected-http-runner-review-01.json':
+            output = json.loads(package.files[destination])
+            output['omitted_file_rows_count'] = len(original['files'])
+            output['failed_file_rows_preserved'] = [r for r in original['files']
+                                                   if r.get('passed') is not True]
+            package.files[destination] = encoded(output)
+        if str(spec['source']).endswith('sequential-long-02/build-protocol.json'):
+            first = json.loads(package.read(S / 'build-protocol-01.json')[0])
+            old = {row['path']: row for row in first['source_files']}
+            changed = [row for row in original['source_files']
+                       if old.get(row['path'], {}).get('sha256') != row['sha256']]
+            if {r['path'] for r in changed} != {'CMakeLists.txt', 'tests/mtp_sequential_admission_test.cpp'}:
+                raise ValueError('unexpected diagnostic source delta')
+            output = json.loads(package.files[destination])
+            output['source_inventory_summary'] = {
+                'full_row_count': len(original['source_files']),
+                'changed_rows_vs_first_build': changed,
+                'first_build_protocol': 'build-protocol-01.json',
+                'first_build_protocol_sha256': digest(package.read(S / 'build-protocol-01.json')[0]),
+                'runtime_byte_identity_claim': False}
+            package.files[destination] = encoded(output)
+
+    # Each required completed audit has its own original source binding. The
+    # earlier unresolved gate opinion is explicitly separate from the final gate.
+    audits = [
+        'sustained-independent-review-01.json',
+        'http-limits-independent-review-03.json',
+        'cancellation-independent-review-01.json',
+        'http-failure-recovery-independent-review-01.json',
+        'resource-independent-review-01.json',
+        'context-tail-independent-review-01.json',
+        'http-performance-independent-review-03.json',
+        'b-support-gate-independent-opinion-01.json',
+        'final-gate-independent-review-03.json',
+    ]
+    matrix = {}
+    for name in audits:
+        destination = name.removesuffix('.json') + '-compact.json'
+        original = package.audit(S / name, destination)
+        matrix[name] = {
+            'package_file': destination,
+            'reported_fields': {key: original[key] for key in (
+                'passed', 'checks_passed', 'checks_total', 'checks_count',
+                'independent_http_pair_and_coverage_passed',
+                'limits_original_coverage_passed', 'generation_requests',
+                'request_count', 'status', 'costs', 'claim_limits',
+                'claim_boundaries', 'semantic_conclusion') if key in original}}
+    for source, destination in [(args.final_gate, 'final-gate.json'),
+                                (args.final_protection, 'final-protection.json'),
+                                (args.readme, 'README.md')]:
+        if source.resolve().is_relative_to((W / DEST).resolve()):
+            raise ValueError('final inputs must exist outside destination')
+        package.exact(source, destination)
+
+    exact_new = [
+        'http-protocol-amendment-02.json',
+        'reference-eos-amendment-02/host-protocol.json',
+        'reference-eos-amendment-02/host-result.json',
+        'reference-eos-amendment-02/host.stdout',
+        'reference-eos-amendment-02/host.stderr',
+        'resource-fallback-03/protocol-01.json',
+        'resource-fallback-03/execution-summary-01.json',
+        'resource-fallback-03/variant-identity-01.json',
+        'resource-fallback-03/lifecycle-reuse-01.json',
+        'resource-fallback-03/static-review-01.json',
+        'resource-fallback-03/host-contracts-01.json',
+        'resource-fallback-03/host-contracts-01.stderr',
+        'resource-fallback-03/candidate-inputs-current-check-01.json',
+        'resource-fallback-03/http-01/summary.json',
+        'resource-fallback-03/http-01/request-evidence.json',
+        'context-tail-control-03/protocol-01.json',
+        'context-tail-control-03/build-result-01.json',
+        'context-tail-control-03/build-execution-01.json',
+        'context-tail-control-03/host-execution-01.json',
+        'context-tail-control-03/host-execution-01.stderr',
+        'context-tail-control-03/http-execution-01.json',
+        'context-tail-control-03/http-01/summary.json',
+        'context-tail-control-03/http-01/input-binding.json',
+        'http/cancellation/plan.json', 'http/cancellation/input-bindings.json',
+        'http/cancellation/summary.json',
+        'http/failure-recovery/protocol.json',
+        'http/failure-recovery/summary.json',
+        'http/failure-recovery/request-evidence.json',
+        'b-support-gate-sources-01/index.json',
+    ]
+    for mode in ('plain', 'sequential'):
+        for name in ('result.json', 'capture-identity.json', 'control-evidence.json', 'exit.json', 'server.log'):
+            exact_new.append(f'context-tail-control-03/http-01/{mode}/{name}')
+    for name in exact_new:
+        package.exact(S / name, name)
+    archives = [
+        'run-http-amendment-02.py', 'review-paired-http-03.py', 'audit-context-tail-01.py',
+        'protect-final-03.py', 'make-final-gate-03.py',
+        'review-final-gate-03.py',
+        'resource-fallback-03/resource_fallback_server.cpp',
+        'resource-fallback-03/resource_fallback_contract.py',
+        'resource-fallback-03/test_resource_fallback_contract.py',
+        'resource-fallback-03/run_resource_fallback.py',
+        'resource-fallback-03/execute-01.py',
+        'context-tail-control-03/context_tail_server.cpp',
+        'context-tail-control-03/context_tail_contract.py',
+        'context-tail-control-03/test_context_tail_contract.py',
+        'context-tail-control-03/run_context_tail.py',
+        'context-tail-control-03/build_variant.py',
+        'context-tail-control-03/execute-01.py',
+    ]
+    for name in archives:
+        package.exact(S / name, 'scripts/' + name + '.txt')
+
+    # Full sustained texts are archived once; strict entries have lossless links.
+    plain = package.result_rows(S / 'sustained-pair/plain/results.json',
+                                'sustained-pair/plain/results-compact.json')
+    package.result_rows(S / 'sustained-pair/sequential/results.json',
+                        'sustained-pair/sequential/results-compact.json', plain)
+    for mode in ('plain', 'sequential'):
+        for name in ('exit.json', 'request-modes.json', 'sustained-identity.json', 'budget-observed.json'):
+            source = f'sustained-pair/{mode}/{name}'
+            package.exact(S / source, source)
+        for kind in ('quality', 'limits', 'performance'):
+            source = f'http/{kind}-{mode}'
+            package.result_rows(S / source / 'results.json', source + '/results-compact.json')
+            for name in ('exit.json', 'request-modes.json', 'server-command.json', 'binary.sha256'):
+                package.exact(S / source / name, source + '/' + name)
+
+    package.value('results-compact.json', {
+        'schema_version': 1,
+        'kind': 'source-bound evidence index; no acceptance threshold recomputation',
+        'final_gate': 'final-gate.json', 'final_protection': 'final-protection.json',
+        'groups': matrix,
+        'request_budgets_kept_separate': {'original_http': 110, 'resource_supplement': 3,
+                                          'controlled_context_tail_supplement': 2},
+        'original_nonpasses_and_limits': plan['mandatory_nonpass_retention'] + [
+            'Both original fixed limits final rows retain coverage FAIL after natural EOS; paired equality PASS is a separate fact.',
+            'Controlled context-tail supplement overrides selection and supplies control-path evidence only.',
+            'The pre-resource gate opinion is historical/conditional; final gate is a separate source.',
+            'T4/general MTP remains experimental; strict profile does not assert acceleration.',
+        ],
+        'http_observations': 'UTF8 text / counts / finish; not raw token IDs',
+        'source_plan': plan_identity,
+    }, dict(kind='evidence_index', plan=plan_identity))
+    entries = [dict(path=name, bytes=len(data), sha256=digest(data),
+                    provenance=package.provenance[name])
+               for name, data in sorted(package.files.items())]
+    manifest = dict(schema_version=1, package_directory=DEST,
+                    script_sha256=digest(Path(__file__).read_bytes()),
+                    files=entries, file_count_excluding_this_manifest=len(entries),
+                    source_count=len(package.sources),
+                    self_hash_excluded=True,
+                    self_hash_reason='Git/tree or external archive binds this manifest.',
+                    sources_checked_by_packaging='Copied/derived sources only; historical raw bindings are not rehashed.',
+                    no_model_payload_access=True, no_build_test_http_or_inference=True,
+                    soft_size_target_bytes=1024*1024,
+                    soft_size_is_not_acceptance_gate=True)
+    package.value('pack-manifest.json', manifest, dict(kind='package_manifest'))
+    total = sum(map(len, package.files.values()))
+    if args.write:
+        out = W / DEST
+        out.mkdir(parents=True, exist_ok=False)
+        for name, data in sorted(package.files.items()):
+            target = out / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            with target.open('xb') as stream:
+                stream.write(data)
+    print(json.dumps(dict(written=args.write, destination=str(W / DEST),
+                          files=len(package.files), bytes=total,
+                          above_soft_target=total > 1024*1024,
+                          manifest_sha256=digest(package.files['pack-manifest.json']))))
+
+
+if __name__ == '__main__':
+    main()

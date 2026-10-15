@@ -1,0 +1,11 @@
+{
+  "pid": 93580,
+  "process_group": 93580,
+  "exit_code": 0,
+  "sigterm_sent": false,
+  "forced_cleanup": false,
+  "remaining_process_group": false,
+  "passed": true,
+  "timeout": false,
+  "seconds": 6.229129185900092
+}

@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/build/runtime/q4t",
+    "serve",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--port",
+    "18271",
+    "--max-seq",
+    "1",
+    "--max-prefill",
+    "8192",
+    "--max-len",
+    "208896",
+    "--max-tokens",
+    "256",
+    "--no-mtp"
+  ],
+  "removed_environment": {},
+  "startup_timeout_seconds": 900
+}

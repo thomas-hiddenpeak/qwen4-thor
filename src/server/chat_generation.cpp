@@ -13,6 +13,8 @@
 #include <cuda_runtime.h>
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/request_json.h"
+#include "q4t/server/mtp_policy.h"
+#include "q4t/server/scheduler_submission.h"
 
 namespace q4t::server {
 namespace {
@@ -421,14 +423,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     pr.ids = ids.data();
     pr.len = T;
     pr.h_logits = h_logits.data();
-    {
-      std::unique_lock<std::mutex> lock(sched_mu_);
-      if (!scheduler_stop_) {
-        chunk_prefill_pending_.push_back(&pr);
-        sched_cv_.notify_one();
-        pr.cv.wait(lock, [&] { return pr.done; });
-      }
-    }
+    SubmitSchedulerRequestAndWait(
+        sched_mu_, scheduler_stop_, sched_cv_, pr.cv,
+        [&] { chunk_prefill_pending_.push_back(&pr); },
+        [&] { return pr.done; });
     prefill_cancelled = pr.cancelled;
     s = pr.ok ? Status()
               : Status::Fail("scheduled chunk prefill failed" +
@@ -444,13 +442,13 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     pr.ids = ids.data();
     pr.len = T;
     pr.h_logits = h_logits.data();
-    {
-      std::unique_lock<std::mutex> lock(sched_mu_);
-      pr.pending = true;
-      prefill_pending_.push_back(&pr);
-      sched_cv_.notify_one();
-      pr.cv.wait(lock, [&] { return pr.done; });
-    }
+    SubmitSchedulerRequestAndWait(
+        sched_mu_, scheduler_stop_, sched_cv_, pr.cv,
+        [&] {
+          pr.pending = true;
+          prefill_pending_.push_back(&pr);
+        },
+        [&] { return pr.done; });
     s = pr.ok ? Status() : Status::Fail("batched prefill failed");
   } else {
     const std::lock_guard<std::mutex> lock(model_mu_);
@@ -595,8 +593,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // KV/indexer is allocated at MTP load time (not per-request), so the only
   // per-request cost is the trunk buffer; if its allocation failed, d_trunk_full
   // is null and we fall back to plain decode. MTP is precision-safe: the main
-  // model verifies every draft token, so the output is identical to pure
-  // greedy (only the throughput changes).
+  // model verifies every draft token under the documented T>1 near-tie
+  // contract; it need not be bit-identical to the T=1 arithmetic path.
   bool use_mtp = mtp_loaded_ && d_trunk_full != nullptr;
   int32_t mtp_b = -1, mtp_d0 = -1;
   if (use_mtp) {
@@ -653,15 +651,17 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   ActiveRequest mtp_ar;
   bool mtp_sched = false;
   if (use_mtp) {
-    mtp_sched = scheduler_active_ && d_sched_logits_ &&
+    const std::lock_guard<std::mutex> lock(sched_mu_);
+    mtp_sched = scheduler_active_ && !scheduler_stop_ && d_sched_logits_ &&
                 static_cast<int>(active_.size()) < max_seq_;
     if (mtp_sched) {
       mtp_ar.is_mtp = true;
       mtp_ar.seq = &seq;
       mtp_ar.mtp_g = d_mtp_g;
 
-      const std::lock_guard<std::mutex> lock(sched_mu_);
       active_.push_back(&mtp_ar);
+    } else {
+      use_mtp = false;
     }
   }
   if (use_mtp) {
@@ -669,13 +669,32 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     while (!done && static_cast<int>(generated.size()) < max_tokens) {
       if (cancelled()) break;
       if (!mtp_sched) break;
+      if (is_stop_token(mtp_b)) {
+        generated.push_back(mtp_b);
+        finish_reason = "stop";
+        break;
+      }
+      const int remaining = max_tokens - static_cast<int>(generated.size());
+      if (!MtpGenerationStepFits(seq.position, max_len_,
+                                 model_.Get().cfg.max_prefill, mtp_k_,
+                                 remaining)) {
+        // No speculative work has started. Finish with ordinary decode,
+        // preserving the pending token and the already emitted prefix.
+        next_token = mtp_b;
+        use_mtp = false;
+        break;
+      }
       // Register this step's input with the scheduler.
       mtp_ar.mtp_b = mtp_b;
       mtp_ar.mtp_d0 = mtp_d0;
       {
         const std::lock_guard<std::mutex> lock(sched_mu_);
-        mtp_ar.pending = true;
-        mtp_ar.done = false;
+        mtp_ar.mtp_accepted_count = 0;
+        mtp_ar.mtp_next_b = -1;
+        mtp_ar.mtp_next_d0 = -1;
+        mtp_ar.pending = !scheduler_stop_;
+        mtp_ar.done = scheduler_stop_;
+        if (scheduler_stop_) seq.Fail();
       }
       sched_cv_.notify_one();
       // Block until the scheduler's batched step yields this step's output.
@@ -683,7 +702,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         std::unique_lock<std::mutex> lock(sched_mu_);
         mtp_ar.cv.wait(lock, [&mtp_ar] { return mtp_ar.done; });
       }
-      if (mtp_ar.mtp_accepted_count <= 0) {
+      if (mtp_ar.mtp_accepted_count <= 0 ||
+          mtp_ar.mtp_accepted_count > mtp_k_ + 1) {
         // Scheduler failed the step or is shutting down.
         generation_failed = true;
         break;
@@ -722,7 +742,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         finish_reason = "length";
         break;
       }
-      if (seq.position + 1 >= max_len_) {
+      if (seq.position >= max_len_) {
         finish_reason = "length";
         break;  // cannot decode further without exceeding the KV cache
       }
@@ -753,18 +773,19 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     // Fallback: if the scheduler is unavailable (buffer alloc failed) or the
     // active pool is full, this request decodes on its own via
     // ModelDecodeStepSeq (the B1 single-sequence path).
-    const bool use_sched =
-        scheduler_active_ && d_sched_logits_ &&
-        static_cast<int>(active_.size()) < max_seq_;
+    bool use_sched = false;
     ActiveRequest ar;
-    if (use_sched) {
-      ar.seq = &seq;
-      {
-        const std::lock_guard<std::mutex> lock(sched_mu_);
+    {
+      const std::lock_guard<std::mutex> lock(sched_mu_);
+      use_sched = scheduler_active_ && !scheduler_stop_ && d_sched_logits_ &&
+                  static_cast<int>(active_.size()) < max_seq_;
+      if (use_sched) {
+        ar.seq = &seq;
         active_.push_back(&ar);
       }
     }
-    for (int step = 0; step < max_tokens; ++step) {
+    for (int step = static_cast<int>(generated.size());
+         step < max_tokens; ++step) {
       if (cancelled()) break;
       generated.push_back(next_token);
       if (is_stop_token(next_token)) {
@@ -799,8 +820,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         ar.token = tok_id;
         {
           const std::lock_guard<std::mutex> lock(sched_mu_);
-          ar.pending = true;
-          ar.done = false;
+          ar.next_token = -1;
+          ar.pending = !scheduler_stop_;
+          ar.done = scheduler_stop_;
+          if (scheduler_stop_) seq.Fail();
         }
         sched_cv_.notify_one();
         // Block until the scheduler's packed forward yields this step's token.

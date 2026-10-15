@@ -25,6 +25,9 @@
 // The only new kernel vs the main model is the unit-weight combine (step 4a);
 // everything else reuses model:: primitives.
 #include "q4t/mtp/mtp.h"
+#include "q4t/mtp/position_copy.h"
+
+#include <algorithm>
 
 #include <cuda_bf16.h>
 #include <cuda_runtime.h>
@@ -155,6 +158,54 @@ Status CheckGemm(const model::Bf16GemmResult& r) {
   return Status();
 }
 
+void FreeScratch(MtpModel& m) {
+  if (m.d_ids_scratch) cudaFree(m.d_ids_scratch);
+  if (m.d_pos_scratch) cudaFree(m.d_pos_scratch);
+  if (m.d_spec_logits) cudaFree(m.d_spec_logits);
+  if (m.d_spec_trunk) cudaFree(m.d_spec_trunk);
+  if (m.d_spec_multi) cudaFree(m.d_spec_multi);
+  if (m.d_spec_sample) cudaFree(m.d_spec_sample);
+  if (m.d_g) cudaFree(m.d_g);
+  if (m.d_ms_ids) cudaFree(m.d_ms_ids);
+  if (m.d_ms_pos) cudaFree(m.d_ms_pos);
+  if (m.d_ms_sample) cudaFree(m.d_ms_sample);
+  if (m.d_ms_multi) cudaFree(m.d_ms_multi);
+  if (m.d_ms_gather) cudaFree(m.d_ms_gather);
+  if (m.d_ms_g_pool) cudaFree(m.d_ms_g_pool);
+  if (m.d_ms_ext_seq) cudaFree(m.d_ms_ext_seq);
+  if (m.d_ms_vlogits) cudaFree(m.d_ms_vlogits);
+  if (m.d_ms_vtrunk) cudaFree(m.d_ms_vtrunk);
+  if (m.d_ms_ext_logits) cudaFree(m.d_ms_ext_logits);
+  if (m.d_ms_ext_multi) cudaFree(m.d_ms_ext_multi);
+  if (m.d_ms_ext_sample) cudaFree(m.d_ms_ext_sample);
+  if (m.d_ms_ext_ids) cudaFree(m.d_ms_ext_ids);
+  if (m.d_ms_ext_pos) cudaFree(m.d_ms_ext_pos);
+  if (m.d_ms_drafts) cudaFree(m.d_ms_drafts);
+  m.d_ids_scratch = nullptr;
+  m.d_pos_scratch = nullptr;
+  m.d_spec_logits = nullptr;
+  m.d_spec_trunk = nullptr;
+  m.d_spec_multi = nullptr;
+  m.d_spec_sample = nullptr;
+  m.d_g = nullptr;
+  m.d_ms_ids = nullptr;
+  m.d_ms_pos = nullptr;
+  m.d_ms_sample = nullptr;
+  m.d_ms_multi = nullptr;
+  m.d_ms_gather = nullptr;
+  m.d_ms_g_pool = nullptr;
+  m.d_ms_ext_seq = nullptr;
+  m.d_ms_vlogits = nullptr;
+  m.d_ms_vtrunk = nullptr;
+  m.d_ms_ext_logits = nullptr;
+  m.d_ms_ext_multi = nullptr;
+  m.d_ms_ext_sample = nullptr;
+  m.d_ms_ext_ids = nullptr;
+  m.d_ms_ext_pos = nullptr;
+  m.d_ms_drafts = nullptr;
+  m.k_max = 0;
+}
+
 }  // namespace
 
 void MtpModel::Free() {
@@ -177,28 +228,6 @@ void MtpModel::Free() {
   if (d_sample) cudaFree(d_sample);
   if (d_trunk) cudaFree(d_trunk);
   if (d_logits) cudaFree(d_logits);
-  if (d_ids_scratch) cudaFree(d_ids_scratch);
-  if (d_pos_scratch) cudaFree(d_pos_scratch);
-  if (d_spec_logits) cudaFree(d_spec_logits);
-  if (d_spec_trunk) cudaFree(d_spec_trunk);
-  if (d_spec_multi) cudaFree(d_spec_multi);
-  if (d_spec_sample) cudaFree(d_spec_sample);
-  if (d_g) cudaFree(d_g);
-  if (d_ms_ids) cudaFree(d_ms_ids);
-  if (d_ms_pos) cudaFree(d_ms_pos);
-  if (d_ms_sample) cudaFree(d_ms_sample);
-  if (d_ms_multi) cudaFree(d_ms_multi);
-  if (d_ms_gather) cudaFree(d_ms_gather);
-  if (d_ms_g_pool) cudaFree(d_ms_g_pool);
-  if (d_ms_ext_seq) cudaFree(d_ms_ext_seq);
-  if (d_ms_vlogits) cudaFree(d_ms_vlogits);
-  if (d_ms_vtrunk) cudaFree(d_ms_vtrunk);
-  if (d_ms_ext_logits) cudaFree(d_ms_ext_logits);
-  if (d_ms_ext_multi) cudaFree(d_ms_ext_multi);
-  if (d_ms_ext_sample) cudaFree(d_ms_ext_sample);
-  if (d_ms_ext_ids) cudaFree(d_ms_ext_ids);
-  if (d_ms_ext_pos) cudaFree(d_ms_ext_pos);
-  if (d_ms_drafts) cudaFree(d_ms_drafts);
   fc_embedding = nullptr;
   fc_hidden = nullptr;
   pre_fc_norm_embedding = nullptr;
@@ -212,34 +241,38 @@ void MtpModel::Free() {
   d_sample = nullptr;
   d_trunk = nullptr;
   d_logits = nullptr;
-  d_ids_scratch = nullptr;
-  d_pos_scratch = nullptr;
-  d_spec_logits = nullptr;
-  d_spec_trunk = nullptr;
-  d_spec_multi = nullptr;
-  d_spec_sample = nullptr;
-  d_g = nullptr;
-  d_ms_ids = nullptr;
-  d_ms_pos = nullptr;
-  d_ms_sample = nullptr;
-  d_ms_multi = nullptr;
-  d_ms_gather = nullptr;
-  d_ms_g_pool = nullptr;
-  d_ms_ext_seq = nullptr;
-  d_ms_vlogits = nullptr;
-  d_ms_vtrunk = nullptr;
-  d_ms_ext_logits = nullptr;
-  d_ms_ext_multi = nullptr;
-  d_ms_ext_sample = nullptr;
-  d_ms_ext_ids = nullptr;
-  d_ms_ext_pos = nullptr;
-  d_ms_drafts = nullptr;
-  k_max = 0;
+  FreeScratch(*this);
+  embed_tokens = nullptr;
+  lm_head = nullptr;
+  ws_bytes = 0;
+  kv_bytes = 0;
+  idx_bytes = 0;
+  max_seq = 1;
 }
 
 Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
                const uint16_t* main_lm_head, MtpModel* out,
                cudaStream_t stream) {
+  if (!out || !main_embed || !main_lm_head)
+    return Status::Fail("LoadMtp: model and borrowed weights are required");
+  if (out->embed_tokens || out->lm_head || out->fc_embedding ||
+      out->d_ids_scratch || out->k_max > 0)
+    return Status::Fail("LoadMtp: output already owns resources");
+  // Sub-loaders attach allocations to out as they proceed. Keep one failure
+  // owner until every load and copy has completed, including the null stream.
+  struct PendingLoad {
+    MtpModel* model;
+    cudaStream_t stream;
+    ~PendingLoad() {
+      if (!model) return;
+      const cudaError_t error = cudaStreamSynchronize(stream);
+      if (error != cudaSuccess) {
+        std::fprintf(stderr, "[q4t] MTP failed-load drain: %s\n",
+                     cudaGetErrorString(error));
+      }
+      model->Free();
+    }
+  } pending{out, stream};
   out->cfg = cfg;
   out->embed_tokens = main_embed;
   out->lm_head = main_lm_head;
@@ -413,9 +446,10 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
       cudaSuccess)
     return Status::Fail("cudaMalloc d_logits");
 
-  if (stream != nullptr && cudaStreamSynchronize(stream) != cudaSuccess) {
+  if (cudaStreamSynchronize(stream) != cudaSuccess) {
     return Status::Fail("stream sync failed");
   }
+  pending.model = nullptr;
   return Status();
 }
 
@@ -458,48 +492,13 @@ Status MtpReserveScratch(MtpModel& m, int k_max) {
   if (k_max <= 0) return Status::Fail("MtpReserveScratch: k_max must be > 0");
   if (k_max <= m.k_max) return Status();  // already sized for this k
   const int hs = m.cfg.hs, hc_dim = m.hc_dim(), vocab = m.cfg.vocab;
-  if (m.d_ids_scratch) cudaFree(m.d_ids_scratch);
-  if (m.d_pos_scratch) cudaFree(m.d_pos_scratch);
-  if (m.d_spec_logits) cudaFree(m.d_spec_logits);
-  if (m.d_spec_trunk) cudaFree(m.d_spec_trunk);
-  if (m.d_spec_multi) cudaFree(m.d_spec_multi);
-  if (m.d_spec_sample) cudaFree(m.d_spec_sample);
-  if (m.d_g) cudaFree(m.d_g);
-  if (m.d_ms_ids) cudaFree(m.d_ms_ids);
-  if (m.d_ms_pos) cudaFree(m.d_ms_pos);
-  if (m.d_ms_sample) cudaFree(m.d_ms_sample);
-  if (m.d_ms_multi) cudaFree(m.d_ms_multi);
-  if (m.d_ms_gather) cudaFree(m.d_ms_gather);
-  if (m.d_ms_g_pool) cudaFree(m.d_ms_g_pool);
-  if (m.d_ms_ext_seq) cudaFree(m.d_ms_ext_seq);
-  if (m.d_ms_vlogits) cudaFree(m.d_ms_vlogits);
-  if (m.d_ms_vtrunk) cudaFree(m.d_ms_vtrunk);
-  if (m.d_ms_ext_logits) cudaFree(m.d_ms_ext_logits);
-  if (m.d_ms_ext_multi) cudaFree(m.d_ms_ext_multi);
-  if (m.d_ms_ext_sample) cudaFree(m.d_ms_ext_sample);
-  if (m.d_ms_ext_ids) cudaFree(m.d_ms_ext_ids);
-  if (m.d_ms_ext_pos) cudaFree(m.d_ms_ext_pos);
-  m.d_ids_scratch = nullptr;
-  m.d_pos_scratch = nullptr;
-  m.d_spec_logits = nullptr;
-  m.d_spec_trunk = nullptr;
-  m.d_spec_multi = nullptr;
-  m.d_spec_sample = nullptr;
-  m.d_g = nullptr;
-  m.d_ms_ids = nullptr;
-  m.d_ms_pos = nullptr;
-  m.d_ms_sample = nullptr;
-  m.d_ms_multi = nullptr;
-  m.d_ms_gather = nullptr;
-  m.d_ms_g_pool = nullptr;
-  m.d_ms_ext_seq = nullptr;
-  m.d_ms_vlogits = nullptr;
-  m.d_ms_vtrunk = nullptr;
-  m.d_ms_ext_logits = nullptr;
-  m.d_ms_ext_multi = nullptr;
-  m.d_ms_ext_sample = nullptr;
-  m.d_ms_ext_ids = nullptr;
-  m.d_ms_ext_pos = nullptr;
+  FreeScratch(m);
+  struct PendingScratch {
+    MtpModel* model;
+    ~PendingScratch() {
+      if (model) FreeScratch(*model);
+    }
+  } pending{&m};
   // k_max rows: verify uses k+1 tokens, extend uses a+1 <= k+1 tokens.
   if (cudaMalloc(reinterpret_cast<void**>(&m.d_ids_scratch),
                  static_cast<size_t>(k_max) * sizeof(int32_t)) != cudaSuccess)
@@ -589,6 +588,7 @@ Status MtpReserveScratch(MtpModel& m, int k_max) {
       return Status::Fail("MtpReserveScratch: d_ms_drafts");
   }
   m.k_max = k_max;
+  pending.model = nullptr;
   return Status();
 }
 
@@ -1304,19 +1304,35 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                                int32_t* accepted_tokens, int* accepted_count,
                                int32_t* next_b, int32_t* next_d0,
                                uint16_t** next_g,
-                               cudaStream_t stream) {
+                               cudaStream_t stream,
+                               std::span<const int32_t> stop_tokens) {
   if (!seqs || !b_tok || !d0 || !g_in || !accepted_tokens || !accepted_count ||
       !next_b || !next_d0 || !next_g)
     return Status::Fail("MtpSpeculativeStepMulti: null arg");
-  if (B <= 0 || k <= 0)
-    return Status::Fail("MtpSpeculativeStepMulti: B and k must be > 0");
-  if (B > mtp.max_seq)
-    return Status::Fail("MtpSpeculativeStepMulti: B exceeds max_seq");
-  if (mtp.k_max <= 0 || k + 1 > mtp.k_max)
+  if (B <= 0 || B > mtp.max_seq)
+    return Status::Fail("MtpSpeculativeStepMulti: B out of range");
+  const auto invalidate_outputs = [&] {
+    for (int b = 0; b < B; ++b) {
+      accepted_count[b] = 0;
+      next_b[b] = -1;
+      next_d0[b] = -1;
+    }
+  };
+  invalidate_outputs();
+  if (k <= 0 || mtp.k_max <= 0 || k >= mtp.k_max)
     return Status::Fail("MtpSpeculativeStepMulti: scratch not reserved for k");
   const int vocab = mtp.cfg.vocab;
   const int hc_dim = mtp.hc_dim();
+  const auto is_stop = [stop_tokens](int32_t token) {
+    return std::find(stop_tokens.begin(), stop_tokens.end(), token) !=
+           stop_tokens.end();
+  };
   for (int b = 0; b < B; ++b) {
+    if (!seqs[b] || !g_in[b] || !next_g[b])
+      return Status::Fail("MtpSpeculativeStepMulti: null sequence buffer");
+    if (b_tok[b] < 0 || b_tok[b] >= vocab || is_stop(b_tok[b]) ||
+        d0[b] < 0 || d0[b] >= vocab)
+      return Status::Fail("MtpSpeculativeStepMulti: invalid pending token");
     if (seqs[b]->stage != model::ModelSequence::Stage::kDecode)
       return Status::Fail("MtpSpeculativeStepMulti: seq not in decode stage");
   }
@@ -1357,6 +1373,12 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     }
   }
   auto cleanup = [&](Status st) -> Status {
+    // Complete before step-owned upload sources are destroyed, on every exit.
+    const cudaError_t error = cudaStreamSynchronize(stream);
+    if (error != cudaSuccess)
+      st = Status::Fail(std::string("MtpSpeculativeStepMulti: completion: ") +
+                        cudaGetErrorString(error));
+    if (!st.ok()) invalidate_outputs();
     if (ev_d0) cudaEventDestroy(ev_d0);
     if (ev_d1) cudaEventDestroy(ev_d1);
     if (ev_d2) cudaEventDestroy(ev_d2);
@@ -1415,16 +1437,18 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                                            mtp.d_ms_ext_seq, B);
   if (cudaGetLastError() != cudaSuccess)
     return cleanup(Status::Fail("MtpSpeculativeStepMulti: scatter draft seed"));
-  std::vector<int> h_pos(B);
+  std::vector<int> h_pos(static_cast<size_t>(B) * k);
+  for (int j = 1; j < k; ++j)
+    for (int b = 0; b < B; ++b)
+      h_pos[static_cast<size_t>(j) * B + b] = P[b] + j - 1;
   for (int j = 1; j < k; ++j) {
     // Gather the previous column (device): d_ids[b] = drafts[seq_of[b], j-1].
     GatherDraftKernel<<<B, 32, 0, stream>>>(d_drafts, k_stride, j - 1, d_ids,
                                             mtp.d_ms_ext_seq, B);
     if (cudaGetLastError() != cudaSuccess)
       return cleanup(Status::Fail("MtpSpeculativeStepMulti: gather draft"));
-    for (int b = 0; b < B; ++b)
-      h_pos[b] = P[b] + j - 1;  // EAGLE shift: t_{P+j} fed at P+j-1.
-    if (cudaMemcpyAsync(d_pos, h_pos.data(), B * sizeof(int),
+    if (cudaMemcpyAsync(d_pos, h_pos.data() + static_cast<size_t>(j) * B,
+                        B * sizeof(int),
                         cudaMemcpyHostToDevice, stream) != cudaSuccess)
       return cleanup(Status::Fail("MtpSpeculativeStepMulti: H2D draft pos"));
     // d_seq_id = seq_of (token b = sequence b -> pooled slice seq_of[b]),
@@ -1543,7 +1567,8 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     int acc = 0;
     for (int i = 0; i < k; ++i) {
       const int mi = m_argmax[static_cast<size_t>(b) * (k + 1) + i];
-      if (drafts_host[static_cast<size_t>(b) * k + i] != mi) break;
+      if (is_stop(mi) || drafts_host[static_cast<size_t>(b) * k + i] != mi)
+        break;
       acc = i + 1;
     }
     a[b] = acc;
@@ -1571,16 +1596,20 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
   //    [d_0..d_{a_b-1}, next_b] contiguously (T_ext = sum(a_b+1)) and run ONE
   //    MtpForward to rebuild the draft KV + produce next_d0/next_g per seq.
   std::vector<int32_t> corr(B);
-  for (int b = 0; b < B; ++b)
-    corr[b] = m_argmax[static_cast<size_t>(b) * (k + 1) + a[b]];
+  std::vector<bool> terminal(B, false);
   int T_ext = 0;
-  for (int b = 0; b < B; ++b) T_ext += a[b] + 1;
+  for (int b = 0; b < B; ++b) {
+    corr[b] = m_argmax[static_cast<size_t>(b) * (k + 1) + a[b]];
+    terminal[b] = is_stop(corr[b]);
+    if (!terminal[b]) T_ext += a[b] + 1;
+  }
   std::vector<int32_t> ext_ids(T_ext);
   std::vector<int> ext_pos(T_ext);
   std::vector<int> ext_seq(T_ext);
   std::vector<int> gather_off(T_ext);
   int r = 0;
   for (int b = 0; b < B; ++b) {
+    if (terminal[b]) continue;
     const int base = static_cast<int>(static_cast<size_t>(b) * (k + 1));
     for (int i = 0; i < a[b]; ++i) {
       ext_ids[r] = drafts_host[static_cast<size_t>(b) * k + i];
@@ -1595,57 +1624,60 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     gather_off[r] = base + a[b];  // verify-trunk row h_{P_b+a_b}
     ++r;
   }
-  // Gather the per-seq verify-trunk rows contiguous (the extend hidden).
-  {
-    int* d_off = nullptr;
-    if (cudaMalloc(reinterpret_cast<void**>(&d_off), T_ext * sizeof(int)) !=
-        cudaSuccess)
-      return cleanup(Status::Fail("MtpSpeculativeStepMulti: cudaMalloc off"));
-    if (cudaMemcpyAsync(d_off, gather_off.data(), T_ext * sizeof(int),
-                        cudaMemcpyHostToDevice, stream) != cudaSuccess) {
+  if (T_ext > 0) {
+    // Gather the per-seq verify-trunk rows contiguous (the extend hidden).
+    {
+      int* d_off = nullptr;
+      if (cudaMalloc(reinterpret_cast<void**>(&d_off), T_ext * sizeof(int)) !=
+          cudaSuccess)
+        return cleanup(Status::Fail("MtpSpeculativeStepMulti: cudaMalloc off"));
+      if (cudaMemcpyAsync(d_off, gather_off.data(), T_ext * sizeof(int),
+                          cudaMemcpyHostToDevice, stream) != cudaSuccess) {
+        cudaFree(d_off);
+        return cleanup(Status::Fail("MtpSpeculativeStepMulti: H2D off"));
+      }
+      GatherTrunkRowsKernel<<<T_ext, 256, 0, stream>>>(d_vtrunk, d_off, d_gather,
+                                                       hc_dim, T_ext);
       cudaFree(d_off);
-      return cleanup(Status::Fail("MtpSpeculativeStepMulti: H2D off"));
+      if (cudaGetLastError() != cudaSuccess)
+        return cleanup(Status::Fail("MtpSpeculativeStepMulti: gather launch"));
     }
-    GatherTrunkRowsKernel<<<T_ext, 256, 0, stream>>>(d_vtrunk, d_off, d_gather,
-                                                     hc_dim, T_ext);
-    cudaFree(d_off);
-    if (cudaGetLastError() != cudaSuccess)
-      return cleanup(Status::Fail("MtpSpeculativeStepMulti: gather launch"));
-  }
-  // Per-token d_seq_id for the packed extend rows (each row's sequence). Use
-  // the persistent d_ms_ext_seq buffer (sized max_seq*k_max >= T_ext).
-  if (T_ext > mtp.max_seq * mtp.k_max) {
-    return cleanup(
-        Status::Fail("MtpSpeculativeStepMulti: T_ext exceeds ext_seq cap"));
-  }
-  if (cudaMemcpyAsync(mtp.d_ms_ext_seq, ext_seq.data(), T_ext * sizeof(int),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
-    return cleanup(Status::Fail("MtpSpeculativeStepMulti: H2D ext seq"));
-  if (cudaMemcpyAsync(d_ext_ids, ext_ids.data(), T_ext * sizeof(int32_t),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess ||
-      cudaMemcpyAsync(d_ext_pos, ext_pos.data(), T_ext * sizeof(int),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
-    return cleanup(Status::Fail("MtpSpeculativeStepMulti: H2D extend"));
-  s = MtpForward(mtp, d_ext_ids, d_ext_pos, d_gather, d_ext_sample, d_ext_multi,
-                 d_ext_logits, T_ext, stream, mtp.d_ms_ext_seq);
-  if (!s.ok()) return cleanup(s);
-  // Per-seq outputs: next_d0 = argmax of the sequence's last extend row;
-  // next_g = that row's multi_hidden.
-  r = 0;
-  for (int b = 0; b < B; ++b) {
-    const int last = r + a[b];  // the correction row (0-indexed) of seq b.
-    s = ArgmaxBf16Rows(d_ext_logits + static_cast<size_t>(last) * vocab, 1,
-                       vocab, d_ext_ids, stream);
+    // Per-token d_seq_id for the packed extend rows (each row's sequence). Use
+    // the persistent d_ms_ext_seq buffer (sized max_seq*k_max >= T_ext).
+    if (T_ext > mtp.max_seq * mtp.k_max) {
+      return cleanup(
+          Status::Fail("MtpSpeculativeStepMulti: T_ext exceeds ext_seq cap"));
+    }
+    if (cudaMemcpyAsync(mtp.d_ms_ext_seq, ext_seq.data(), T_ext * sizeof(int),
+                        cudaMemcpyHostToDevice, stream) != cudaSuccess)
+      return cleanup(Status::Fail("MtpSpeculativeStepMulti: H2D ext seq"));
+    if (cudaMemcpyAsync(d_ext_ids, ext_ids.data(), T_ext * sizeof(int32_t),
+                        cudaMemcpyHostToDevice, stream) != cudaSuccess ||
+        cudaMemcpyAsync(d_ext_pos, ext_pos.data(), T_ext * sizeof(int),
+                        cudaMemcpyHostToDevice, stream) != cudaSuccess)
+      return cleanup(Status::Fail("MtpSpeculativeStepMulti: H2D extend"));
+    s = MtpForward(mtp, d_ext_ids, d_ext_pos, d_gather, d_ext_sample, d_ext_multi,
+                   d_ext_logits, T_ext, stream, mtp.d_ms_ext_seq);
     if (!s.ok()) return cleanup(s);
-    if (cudaMemcpy(&next_d0[b], d_ext_ids, sizeof(int32_t),
-                   cudaMemcpyDeviceToHost) != cudaSuccess)
-      return cleanup(Status::Fail("MtpSpeculativeStepMulti: D2H next_d0"));
-    if (cudaMemcpy(next_g[b],
-                   d_ext_multi + static_cast<size_t>(last) * hc_dim,
-                   static_cast<size_t>(hc_dim) * 2, cudaMemcpyDeviceToDevice) !=
-        cudaSuccess)
-      return cleanup(Status::Fail("MtpSpeculativeStepMulti: D2D next_g"));
-    r += a[b] + 1;
+    // Per-seq outputs: next_d0 = argmax of the sequence's last extend row;
+    // next_g = that row's multi_hidden.
+    r = 0;
+    for (int b = 0; b < B; ++b) {
+      if (terminal[b]) continue;
+      const int last = r + a[b];  // the correction row (0-indexed) of seq b.
+      s = ArgmaxBf16Rows(d_ext_logits + static_cast<size_t>(last) * vocab, 1,
+                         vocab, d_ext_ids, stream);
+      if (!s.ok()) return cleanup(s);
+      if (cudaMemcpy(&next_d0[b], d_ext_ids, sizeof(int32_t),
+                     cudaMemcpyDeviceToHost) != cudaSuccess)
+        return cleanup(Status::Fail("MtpSpeculativeStepMulti: D2H next_d0"));
+      if (cudaMemcpy(next_g[b],
+                     d_ext_multi + static_cast<size_t>(last) * hc_dim,
+                     static_cast<size_t>(hc_dim) * 2, cudaMemcpyDeviceToDevice) !=
+          cudaSuccess)
+        return cleanup(Status::Fail("MtpSpeculativeStepMulti: D2D next_g"));
+      r += a[b] + 1;
+    }
   }
 
   // 4. Emit accepted tokens. The caller advances each sequence's state
@@ -1728,12 +1760,11 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
   void* d_moe_ws = carve(moe_carve);
   void* d_moe_gemm = carve(kGemmWs);
   void* d_hc_gemm = carve(kGemmWs);
-  // Device copy of the host `positions` (FullAttentionForward now takes a
-  // device positions pointer, same contract as d_rope_pos).
+  // Positions may originate on host or device; preserve stream ordering.
   int* d_positions = static_cast<int*>(carve(static_cast<size_t>(T) * sizeof(int)));
-  if (cudaMemcpyAsync(d_positions, positions, static_cast<size_t>(T) * sizeof(int),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
-    return Status::Fail("MtpForward: H2D positions failed");
+  if (detail::CopyPositionsForForward(d_positions, positions, T, stream) !=
+      cudaSuccess)
+    return Status::Fail("MtpForward: positions copy failed");
 
   uint16_t* d_emb = static_cast<uint16_t*>(carve(static_cast<size_t>(T) * hs * sizeof(uint16_t)));
   uint16_t* d_normed_emb = static_cast<uint16_t*>(carve(static_cast<size_t>(T) * hs * sizeof(uint16_t)));

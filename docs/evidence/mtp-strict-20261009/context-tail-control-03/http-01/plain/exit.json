@@ -1,0 +1,19 @@
+{
+  "failure": null,
+  "server_exit": 0,
+  "generation_requests_authorized": 1,
+  "completed_control_request": true,
+  "before_counters": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "after_counters": [
+    1,
+    1,
+    0,
+    0
+  ],
+  "passed": true
+}

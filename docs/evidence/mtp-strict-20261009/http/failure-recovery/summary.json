@@ -1,0 +1,35 @@
+{
+  "records": [
+    {
+      "request_id": "failure-control",
+      "kind": "success",
+      "passed": true
+    },
+    {
+      "request_id": "failure-target2",
+      "kind": "target_call_2_in_request",
+      "passed": true
+    },
+    {
+      "request_id": "failure-target2-recovery",
+      "kind": "success",
+      "passed": true
+    },
+    {
+      "request_id": "failure-extend",
+      "kind": "first_extend",
+      "passed": true
+    },
+    {
+      "request_id": "failure-extend-recovery",
+      "kind": "success",
+      "passed": true
+    }
+  ],
+  "failure": null,
+  "server_exit": 0,
+  "server_pid": 40128,
+  "variant": "link-wrapped test server",
+  "production_binary_http": false,
+  "passed": true
+}

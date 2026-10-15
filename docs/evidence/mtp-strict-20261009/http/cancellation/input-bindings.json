@@ -1,0 +1,36 @@
+{
+  "oracle": "fresh control in this process and mode; no historical output",
+  "selected": {
+    "long": {
+      "length": 45056,
+      "manifest_id": "45056-50",
+      "prompt_sha256": "8e7d6e535925c3552adaf57319be27d987365520fa852409366c05cf32b6c423"
+    },
+    "decode": {
+      "length": 1024,
+      "prompt_sha256": "a72fade2611451e1f33ca088f0554474ec9d9032efccf04cc5581a2c25be2d98"
+    }
+  },
+  "files": {
+    "quality_inputs": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/quality-off-03/inputs/requests.jsonl",
+      "sha256": "22cce46de658df1988cacbe311bc74a7d6f1e7125c48e11e1cd9a0dd97ab4c42"
+    },
+    "quality_manifest": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/quality-off-03/inputs/manifest.json",
+      "sha256": "e2a542bf2c27b4404844b2e60e861c80e6c670d32bcd78685ad053f7fb833ae1"
+    },
+    "performance_inputs": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/performance-off-04/inputs/context-1024.jsonl",
+      "sha256": "7f4994034f3e7461f3dcde7324f5b3850fc82691a085f33ec57708903a67aa5a"
+    },
+    "performance_metadata": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/performance-off-04/results.json",
+      "sha256": "1602afdb441c24c2d1ec37fca2d5f783455289ffb30391c6bdf547491e58d513"
+    },
+    "server_command": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/quality-off-03/server-command.json",
+      "sha256": "fb6d3fb8cd1f0f171b1a51e279598c5e285137baa555ace4ac5384d3cd2bff7f"
+    }
+  }
+}

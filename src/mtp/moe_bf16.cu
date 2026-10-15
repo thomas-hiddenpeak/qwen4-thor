@@ -333,16 +333,18 @@ Status MoeBf16RoutedForward(const uint16_t* x, const int32_t* expert_ids,
   }
 
   // 2. Read counts to host (one sync). Token lists stay on device.
-  if (cudaMemcpyAsync(counts_h.data(), d_counts, E * sizeof(int32_t),
-                      cudaMemcpyDeviceToHost, stream) != cudaSuccess) {
-    cudaFreeAsync(d_counts, stream);
-    cudaFreeAsync(d_token_list, stream);
-    return Status::Fail("memcpy counts");
-  }
-  if (cudaStreamSynchronize(stream) != cudaSuccess) {
-    cudaFreeAsync(d_counts, stream);
-    cudaFreeAsync(d_token_list, stream);
-    return Status::Fail("stream sync");
+  {
+    if (cudaMemcpyAsync(counts_h.data(), d_counts, E * sizeof(int32_t),
+                        cudaMemcpyDeviceToHost, stream) != cudaSuccess) {
+      cudaFreeAsync(d_counts, stream);
+      cudaFreeAsync(d_token_list, stream);
+      return Status::Fail("memcpy counts");
+    }
+    if (cudaStreamSynchronize(stream) != cudaSuccess) {
+      cudaFreeAsync(d_counts, stream);
+      cudaFreeAsync(d_token_list, stream);
+      return Status::Fail("stream sync");
+    }
   }
 
   // 3. Per-expert BF16 GEMM chain.

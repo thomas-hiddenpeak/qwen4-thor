@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iterator>
+#include <limits>
 #include <string>
 #include <thread>
 #include <vector>
@@ -118,8 +119,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
   if (!s.ok()) return s;
 
   // Estimate allocation capacity before model load. This is not a physical
-  // RAM limit: model cache, allocator retention and driver ownership remain
-  // separately measured. An infeasible estimate must stop startup.
+  // RAM limit: file cache, driver ownership and other processes need separate
+  // accounting. An infeasible estimate must stop startup.
   {
     PhaseTimer pt("budget");
     if (!opts.no_budget) {
@@ -127,8 +128,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
       if (mem_total == 0) {
         return Status::Fail("could not read MemTotal from /proc/meminfo");
       }
-      // The index includes optional MTP/vision tensors, so this remains a
-      // weight estimate rather than the enabled device-allocation total.
+      // Keep the whole index estimate, including optional tensors. This is
+      // not an exact count of the weights loaded by the enabled capabilities.
       size_t weights = 0;
       {
         io::WeightIndex* idx = nullptr;
@@ -178,10 +179,38 @@ Status ChatServer::Start(const ServerOptions& opts) {
       }
       if (capabilities.mtp) {
         mtp::MtpConfig mcfg;
+        mcfg.mtp_dir = opts.model_dir + "/mtp";
         mcfg.max_prefill = cfg.max_prefill;
         mcfg.max_len = full.max_len;
         breq.mtp_workspace_bytes =
             mtp::MtpWorkspaceBytes(mcfg, cfg.max_prefill, full);
+        breq.mtp_k = mtp_k_;
+        io::WeightIndex* raw_index = nullptr;
+        s = io::WeightIndex::Open(
+            mcfg.mtp_dir + "/model.safetensors.index.json", &raw_index);
+        if (!s.ok()) return Status::Fail("MTP budget index: " + s.message());
+        const std::unique_ptr<io::WeightIndex> mtp_index(raw_index);
+        io::WeightLoader* raw_loader = nullptr;
+        s = io::WeightLoader::Create(mcfg.mtp_dir, *mtp_index, 1, &raw_loader);
+        if (!s.ok()) return Status::Fail("MTP budget loader: " + s.message());
+        const std::unique_ptr<io::WeightLoader> mtp_loader(raw_loader);
+        // Sum mapped tensor bytes from shard headers: the exported index's
+        // total_size does not match the tensors listed in its MTP weight_map.
+        // The loader reads each weight through one host vector; gate_up
+        // retains its capacity while loading down_proj. No payload is read.
+        for (const auto& group : mtp_index->ShardGroups()) {
+          for (const auto& name : group.second) {
+            const io::TensorInfo* tensor = mtp_loader->FindTensor(name);
+            if (!tensor) return Status::Fail("MTP budget tensor: " + name);
+            const size_t bytes = static_cast<size_t>(tensor->byte_size());
+            if (bytes > std::numeric_limits<size_t>::max() -
+                            breq.mtp_weights_bytes)
+              return Status::Fail("MTP budget weight bytes overflow");
+            breq.mtp_weights_bytes += bytes;
+            breq.mtp_load_host_bytes =
+                std::max(breq.mtp_load_host_bytes, bytes);
+          }
+        }
       }
       runtime::BudgetModelParams params;
       params.num_layers = cfg.num_layers;
@@ -189,6 +218,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
       params.hc = cfg.hc;
       params.vocab = cfg.vocab;
       params.has_mtp = capabilities.mtp;
+      params.mtp_experts = cfg.E;
+      params.mtp_moe_is = cfg.moe_is;
       params.has_ple = cfg.num_layers > 1;
       params.ple_capacity_tokens = cfg.ple_capacity_tokens;
       params.ple_row_bytes = static_cast<int>(cfg.ple_row_bytes);
@@ -202,7 +233,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
     }
   }
 
-  // A valid budget is always feasible here. Never substitute the original
+  // A computed budget is always feasible here. Never substitute the original
   // request for a zero-capacity result. --no-budget is an explicit bypass.
   const int eff_max_len = budget_valid_ ? budget_.max_len : opts.max_len;
   const int eff_max_seq = budget_valid_ ? budget_.max_seq : opts.max_seq;

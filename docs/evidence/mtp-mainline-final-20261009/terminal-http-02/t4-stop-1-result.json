@@ -1,0 +1,15 @@
+{
+  "text": "\n\nThe",
+  "finish": [
+    "stop"
+  ],
+  "usage": [
+    {
+      "prompt_tokens": 1024,
+      "completion_tokens": 3,
+      "total_tokens": 1027
+    }
+  ],
+  "errors": [],
+  "output_sha256": "5bc2925281ed10f866f7f1132080fa0bb8182980de0fd491b61baf2025136b19"
+}

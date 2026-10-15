@@ -18,6 +18,8 @@ import sqlite3
 import subprocess
 import time
 
+from response_identity import response_identity
+
 ROOT = Path(__file__).resolve().parents[2]
 LENGTHS = [1024, 4096, 8192, 45056, 204800]
 
@@ -199,7 +201,8 @@ def run_case(out, case, inputs, count, minimum, maximum, tokens, streaming,
                       'request_stream': wire_request.get('stream'),
                       'requested_max_tokens': wire_request.get('max_tokens'),
                       'requested_capacity': capacity['requested'],
-                      'effective_capacity': capacity['effective'], 'timing': timing}
+                      'effective_capacity': capacity['effective'], 'timing': timing,
+                      **response_identity(messages)}
             parsed.append(result)
             (case / f'output-{number - 1}.txt').write_text(text)
             boundaries.append({'request_index': number, 'request_group': label,
@@ -217,6 +220,8 @@ def run_case(out, case, inputs, count, minimum, maximum, tokens, streaming,
         if not all(r['success'] and r['timing']['within_client_boundaries'] and
                    r['requested_max_tokens'] == tokens for r in parsed):
             raise RuntimeError(f'{label}: HTTP/timing/requested output contract failed')
+        if not all(r['response_id_valid'] for r in parsed):
+            raise RuntimeError(f'{label}: missing, malformed or mixed response IDs')
         if not all(isinstance(r['actual_input'], int) and
                    isinstance(r['actual_output'], int) and
                    minimum <= r['actual_input'] <= maximum and
@@ -372,6 +377,8 @@ def main():
     (out / 'commit.txt').write_bytes(subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT))
     (out / 'worktree.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=ROOT))
     shutil.copyfile(__file__, out / 'run_acceptance.py')
+    shutil.copyfile(Path(__file__).with_name('response_identity.py'),
+                    out / 'response_identity.py')
     cache = binary.parent / 'CMakeCache.txt'
     deployment = binary.with_name(binary.name + '.release.json')
     if deployment.is_file() and not args.allow_unqualified_binary:

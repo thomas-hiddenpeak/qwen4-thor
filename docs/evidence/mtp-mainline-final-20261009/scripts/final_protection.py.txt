@@ -1,0 +1,39 @@
+"""Verify protected worktrees, historical identities, final source and cleanup."""
+from pathlib import Path
+import hashlib,json,os,subprocess,time
+M=Path(__file__).resolve().parent;W=M.parents[1]
+def sha(p):
+ with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def get(args,cwd):return subprocess.check_output(args,cwd=cwd)
+rows=[]
+for r in json.loads((M/'starting-identities.json').read_text())['worktrees']:
+ if r['label']=='research':continue
+ cwd=r['path'];actual={'head':get(['git','rev-parse','HEAD'],cwd).decode().strip(),'branch':get(['git','branch','--show-current'],cwd).decode().strip(),'status':get(['git','status','--porcelain'],cwd).decode(),'diff_sha256':hashlib.sha256(get(['git','diff','--binary','HEAD'],cwd)).hexdigest()}
+ ok=all(actual[k]==r[k] for k in actual);rows.append({'label':r['label'],'passed':ok,'actual':actual});assert ok,r['label']
+source=json.loads((M/'completion-terminal-02/build-identity-01.json').read_text())
+for r in source['source_files']:assert sha(W/r['path'])==r['sha256'],r['path']
+for r in source['files']:assert sha(r['path'])==r['sha256'],r['path']
+for r in json.loads((M/'final-cost-protocol-01.json').read_text())['frozen_files']:assert sha(r['path'])==r['sha256'],r['path']
+old=json.loads((M/'build-identity-01.json').read_text());oldfiles=old['files']
+for r in oldfiles:assert sha(r['path'])==r['sha256'],r['path']
+strictfiles=json.loads((M/'final-reuse-independent-review-02.json').read_text())['historical_and_final_build_identity_checks'][0]['files']
+assert len(strictfiles)==7
+for r in strictfiles:assert sha(r['path'])==r['sha256'],r['path']
+# Group results must establish orderly shutdown; verify no PID/PG survives.
+groups=[]
+for name in ('completion-http-02/t4-variant/cleanup.json','completion-http-02/sequential/cleanup.json'):
+ j=json.loads((M/name).read_text());assert j['passed'] and j['exit']==0 and not j['forced'];groups.append(j['process_group'])
+j=json.loads((M/'terminal-http-02/summary.json').read_text());assert j['passed'] and j['server_exit']==0 and not j['forced_cleanup']
+process=json.loads((M/'terminal-http-02/server-process.json').read_text());groups.append(process['pgid'])
+for mode in ('plain','sequential'):
+ j=json.loads((M/f'final-cost-matrix/{mode}-execution.json').read_text());assert j['passed'] and j['exit_code']==0 and not j['remaining_process_group'];groups.append(j['process_group'])
+for pg in groups:
+ try:os.killpg(pg,0)
+ except ProcessLookupError:continue
+ raise AssertionError('owned process group remains: '+str(pg))
+assert subprocess.run(['git','merge-base','--is-ancestor','5aacc9f','HEAD'],cwd=W).returncode==0
+assert subprocess.run(['git','merge-base','--is-ancestor','74893ff','HEAD'],cwd=W).returncode==0
+assert not get(['git','diff','74893ff','HEAD','--','src','include','tests','tools','cmake','CMakeLists.txt'],W)
+result={'passed':True,'created_unix':time.time(),'protected_worktrees':rows,'final_source_files':len(source['source_files']),'final_build_files':len(source['files']),'M1_build_files':len(oldfiles),'old_strict_build_files':len(strictfiles),'frozen_cost_files':69,'ended_process_groups':groups,'foundation_and_M2_ancestors':True,'runtime_test_tools_cmake_unchanged_since_M2':True,'model_payload_hashed_or_written':False}
+with (M/'final-protection-02.json').open('x') as f:json.dump(result,f,indent=2);f.write('\n')
+print(json.dumps(result))

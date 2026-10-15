@@ -1,0 +1,59 @@
+{
+  "files": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t",
+      "sha256": "a2ba1bd210c0094b4973decee43e374e955cd46853cfcffb0bface484bcad267",
+      "bytes": 3953240
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t_host_tests",
+      "sha256": "28568ecae8ba3507084aec01a128e61babb0f704b45fca6f185f5762f781b0a4",
+      "bytes": 440640
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t_tests",
+      "sha256": "2739bf7927331760695d76db17be0592d5b9e098c5cc2b579f00618cb56a6270",
+      "bytes": 4436456
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t_mtp_sequential_control",
+      "sha256": "3daf9f44cf4b43267a752970078fbec134d354dddc24a14042703e8bcbd764be",
+      "bytes": 80144
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t_mtp_cross_mode_diagnostic",
+      "sha256": "df84d7c75270c7f7c36efddb24e813eb5608ae500996b5f5649b6a3773e5ba69",
+      "bytes": 3320168
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t_mtp_projection_path_diagnostic",
+      "sha256": "a556a5a14b84b1e26eeba2f2c38e6fb0ffeb36e570f0122be7060058ce9e6b54",
+      "bytes": 299184
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t_mtp_moe_path_diagnostic",
+      "sha256": "ec59f183252155ae6e31f95dd7821df7c316d264091397d9cc557dbeac3e9dd6",
+      "bytes": 516840
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t_mtp_k3_replay_diagnostic",
+      "sha256": "b20d8f1234fa402ddf3ccc1fc4fb8efe02216498a147ab21b02dfa725444f122",
+      "bytes": 3460464
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t_mtp_init_last_row_diagnostic",
+      "sha256": "6574a15f9bd1f9d5f68e8c03c9a9caedafbb4247bbf789e031d157fa18429514",
+      "bytes": 3387240
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/q4t_quant_moe_batch_gather_diagnostic",
+      "sha256": "f84c6ce6fb410dc703e13ef8588efde3ccb61273168a6508bb7df8075a55f3aa",
+      "bytes": 586192
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-20261009/CMakeCache.txt",
+      "sha256": "351466a40805c4d77abfa799f7e5e7d019a7b72d3fcfd65c21d35578af9cc4c4",
+      "bytes": 37454
+    }
+  ]
+}

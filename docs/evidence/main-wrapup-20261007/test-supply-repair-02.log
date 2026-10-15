@@ -1,0 +1,31 @@
+UpdateCTestConfiguration  from :/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/build/public-host/DartConfiguration.tcl
+Test project /home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/build/public-host
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 14
+    Start 14: q4t_analyze_decode_supply_contracts
+
+14: Test command: /usr/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/tests/host/../../tools/trace/test_analyze_decode_supply.py"
+14: Working Directory: /home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/tests/host/../../tools/trace
+14: Environment variables: 
+14:  Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/build/public-host/q4t_analyze_decode_supply_contracts
+14:  TMPDIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/build/public-host/q4t_analyze_decode_supply_contracts
+14:  PYTHONDONTWRITEBYTECODE=1
+14: Test timeout computed to be: 180
+14: ...................
+14: ----------------------------------------------------------------------
+14: Ran 19 tests in 1.932s
+14: 
+14: OK
+1/1 Test #14: q4t_analyze_decode_supply_contracts ...   Passed    2.02 sec
+
+The following tests passed:
+	q4t_analyze_decode_supply_contracts
+
+100% tests passed out of 1
+
+Total Test time (real) =   2.03 sec

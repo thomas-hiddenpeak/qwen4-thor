@@ -1,4 +1,5 @@
-# Pure host allocation-estimate and shared residency-configuration contracts.
+# Pure host startup allocation-estimate and shared residency-configuration
+# contracts; no CUDA or model files.
 cmake_minimum_required(VERSION 3.25)
 project(q4t_budget_contracts LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 23)

@@ -1,0 +1,87 @@
+{
+  "time": 1791483001.4340336,
+  "source_sha256": "245f272303a91cd4c1f947a439c96e439d7bf2b2537109e3bb615c4f98f82699",
+  "checks": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/CMakeFiles/q4t.dir/src/main.cpp.o",
+      "passed": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/libq4t_model.a",
+      "passed": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/libq4t_text.a",
+      "passed": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/libq4t_ple.a",
+      "passed": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/libq4t_quant.a",
+      "passed": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/libq4t_server.a",
+      "passed": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/libq4t_trace.a",
+      "passed": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/libq4t_io.a",
+      "passed": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/libq4t_runtime.a",
+      "passed": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t",
+      "passed": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t_host_tests",
+      "passed": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t_mtp_sequential_control",
+      "passed": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t_mtp_sequential_admission",
+      "passed": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t_mtp_sequential_fault_server",
+      "passed": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t_mtp_hc_first_fork",
+      "passed": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/CMakeCache.txt",
+      "passed": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/CMakeFiles/q4t.dir/link.txt",
+      "passed": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/CMakeFiles/q4t.dir/flags.make",
+      "passed": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/build-identity-01.json",
+      "passed": true
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/resource-fallback-03/candidate-symbols-before-01.txt",
+      "passed": true
+    }
+  ],
+  "passed": true
+}

@@ -1,0 +1,406 @@
+{
+  "created_unix": 1791479689.5598004,
+  "commands": [
+    {
+      "name": "quality-plain",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/run_acceptance.py",
+        "--mode",
+        "quality",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/quality-plain",
+        "--binary",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--port",
+        "18109",
+        "--startup-timeout",
+        "600",
+        "--fixtures",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/quality-off-03/inputs"
+      ],
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/quality-plain",
+      "max_generation_requests": 11,
+      "group_timeout_seconds": 1800
+    },
+    {
+      "name": "quality-sequential",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/run_acceptance.py",
+        "--mode",
+        "quality",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/quality-sequential",
+        "--binary",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--port",
+        "18109",
+        "--startup-timeout",
+        "600",
+        "--fixtures",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/quality-off-03/inputs",
+        "--mtp",
+        "--mtp-verifier",
+        "sequential",
+        "--reference",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/quality-plain/results.json"
+      ],
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/quality-sequential",
+      "max_generation_requests": 11,
+      "group_timeout_seconds": 1800
+    },
+    {
+      "name": "sustained-plain",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/run_acceptance.py",
+        "--mode",
+        "sustained-quality",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/plain",
+        "--binary",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--port",
+        "18109",
+        "--startup-timeout",
+        "600",
+        "--fixtures",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/inputs",
+        "--sustained-pair-root",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair"
+      ],
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/plain",
+      "max_generation_requests": 8,
+      "group_timeout_seconds": 1800
+    },
+    {
+      "name": "sustained-sequential",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/run_acceptance.py",
+        "--mode",
+        "sustained-quality",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/sequential",
+        "--binary",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--port",
+        "18109",
+        "--startup-timeout",
+        "600",
+        "--fixtures",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/inputs",
+        "--mtp",
+        "--mtp-verifier",
+        "sequential",
+        "--reference",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/plain/results.json",
+        "--sustained-pair-root",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair"
+      ],
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/sequential",
+      "max_generation_requests": 8,
+      "group_timeout_seconds": 1800
+    },
+    {
+      "name": "limits-plain",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/run_acceptance.py",
+        "--mode",
+        "admission-limits",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/limits-plain",
+        "--binary",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--port",
+        "18109",
+        "--startup-timeout",
+        "600",
+        "--fixtures",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/limit-inputs"
+      ],
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/limits-plain",
+      "max_generation_requests": 14,
+      "group_timeout_seconds": 1800
+    },
+    {
+      "name": "limits-sequential",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/run_acceptance.py",
+        "--mode",
+        "admission-limits",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/limits-sequential",
+        "--binary",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--port",
+        "18109",
+        "--startup-timeout",
+        "600",
+        "--fixtures",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/limit-inputs",
+        "--mtp",
+        "--mtp-verifier",
+        "sequential",
+        "--reference",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/limits-plain/results.json"
+      ],
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/limits-sequential",
+      "max_generation_requests": 14,
+      "group_timeout_seconds": 1800
+    },
+    {
+      "name": "cancellation",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/run_request_cancellation.py",
+        "--binary",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/cancellation",
+        "--quality-run",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/quality-off-03",
+        "--performance-run",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/performance-off-04",
+        "--port",
+        "18109",
+        "--startup-timeout",
+        "600",
+        "--scope",
+        "same-mode-recovery",
+        "--mtp",
+        "--mtp-verifier",
+        "sequential"
+      ],
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/cancellation",
+      "max_generation_requests": 9,
+      "group_timeout_seconds": 1800
+    },
+    {
+      "name": "failure-recovery",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/run_mtp_failure_recovery.py",
+        "--binary",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t_mtp_sequential_fault_server",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/failure-recovery",
+        "--quality-run",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/quality-off-03",
+        "--performance-run",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/performance-off-04",
+        "--port",
+        "18109",
+        "--startup-timeout",
+        "600"
+      ],
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/failure-recovery",
+      "max_generation_requests": 5,
+      "group_timeout_seconds": 1800
+    },
+    {
+      "name": "performance-plain",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/run_acceptance.py",
+        "--mode",
+        "performance",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/performance-plain",
+        "--binary",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--port",
+        "18109",
+        "--startup-timeout",
+        "600",
+        "--fixtures",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/performance-off-04"
+      ],
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/performance-plain",
+      "max_generation_requests": 15,
+      "group_timeout_seconds": 2400
+    },
+    {
+      "name": "performance-sequential",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/run_acceptance.py",
+        "--mode",
+        "performance",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/performance-sequential",
+        "--binary",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--port",
+        "18109",
+        "--startup-timeout",
+        "600",
+        "--fixtures",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/performance-off-04",
+        "--mtp",
+        "--mtp-verifier",
+        "sequential",
+        "--reference",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/performance-plain/results.json"
+      ],
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/performance-sequential",
+      "max_generation_requests": 15,
+      "group_timeout_seconds": 2400
+    }
+  ],
+  "max_generation_requests": 110,
+  "source_build_identity_sha256": "4b817bf5978005aec2302e91fe7357639372ceb13e211f24eb2b6dc0bf1e0f2a",
+  "fixture_preparation_identity_sha256": "092c8586c1d7f94b103d437b0eaf9de9ba6e0e5b8a299ba8979a1586339eaf7f",
+  "fixtures_and_metadata": [
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/config.json",
+      "bytes": 4983,
+      "sha256": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624"
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/generation_config.json",
+      "bytes": 202,
+      "sha256": "e70c136c1b78ddc1fb0905bac8e733a4dc448d4f852a5dd75143fffc70be550e"
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model.safetensors.index.json",
+      "bytes": 35429343,
+      "sha256": "aa702aa8cadb463b728cfd6829e172b1124114080231c75712155e2490f8c607"
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/mtp/config.json",
+      "bytes": 4983,
+      "sha256": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624"
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/tokenizer.json",
+      "bytes": 12809320,
+      "sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/tokenizer_config.json",
+      "bytes": 17928,
+      "sha256": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/performance-off-04/context-1024/requests.jsonl",
+      "bytes": 15405,
+      "sha256": "7f4994034f3e7461f3dcde7324f5b3850fc82691a085f33ec57708903a67aa5a"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/performance-off-04/context-204800/requests.jsonl",
+      "bytes": 2933931,
+      "sha256": "f2816035b1b6671289ce6bd6317569a2adb697c49fce83ff18644db8e28a7f60"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/performance-off-04/context-4096/requests.jsonl",
+      "bytes": 61401,
+      "sha256": "7a238b2c1e7430ec8feb605aa0074ac019740c3652595829c33c3d63227b94f8"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/performance-off-04/context-45056/requests.jsonl",
+      "bytes": 655194,
+      "sha256": "7e993e1bba5512f3d6af11af4472b1d032b68bc38475b6730e8fc9f3ae31f83b"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/performance-off-04/context-8192/requests.jsonl",
+      "bytes": 121314,
+      "sha256": "94fdbf700124a464643dc61aedffb033751f360e154e1d757e06bf15c4f3fef0"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/performance-off-04/inputs/context-1024.jsonl",
+      "bytes": 15405,
+      "sha256": "7f4994034f3e7461f3dcde7324f5b3850fc82691a085f33ec57708903a67aa5a"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/performance-off-04/results.json",
+      "bytes": 5956,
+      "sha256": "1602afdb441c24c2d1ec37fca2d5f783455289ffb30391c6bdf547491e58d513"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/quality-off-03/inputs/manifest.json",
+      "bytes": 2010,
+      "sha256": "e2a542bf2c27b4404844b2e60e861c80e6c670d32bcd78685ad053f7fb833ae1"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/quality-off-03/inputs/requests.jsonl",
+      "bytes": 1215224,
+      "sha256": "22cce46de658df1988cacbe311bc74a7d6f1e7125c48e11e1cd9a0dd97ab4c42"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/evidence/quality-off-03/server-command.json",
+      "bytes": 483,
+      "sha256": "fb6d3fb8cd1f0f171b1a51e279598c5e285137baa555ace4ac5384d3cd2bff7f"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/limit-inputs/context-1024/requests.jsonl",
+      "bytes": 5135,
+      "sha256": "e13b22cf2685e6b5878f5bb31c7d5013b37c9453feb72860d67ee22d98a91012"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/limit-inputs/context-208891/requests.jsonl",
+      "bytes": 997318,
+      "sha256": "ee5521d5affdd00660b1ed69a942e402b73107bf5c62355476fe475140c0a5c6"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/limit-inputs/context-208892/requests.jsonl",
+      "bytes": 997321,
+      "sha256": "0036e896648688e4b07ea135761037c61878ad5db6dfb955fba913d404e02157"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/inputs/identity.json",
+      "bytes": 1175,
+      "sha256": "e3a8ebe644c0a33c9bc5ca117cdb9dcf67ceddb6d957ace6e90f7cf862d06332"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/inputs/manifest.json",
+      "bytes": 1521,
+      "sha256": "9b2e03cb558efc6c2a20e9707b41ca5195b3e04309d2989ea4c55eac853916b9"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/inputs/questionnaire.json",
+      "bytes": 15113,
+      "sha256": "8de952c2389a4c391c99f0dcb6a2cb7c6ec6c7b3bcff8171fa1be787843cadcf"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/inputs/requests.jsonl",
+      "bytes": 1598604,
+      "sha256": "9bb9647e60f28372117c39dc808f659ef105302f441c9c293467be713a5de0b9"
+    }
+  ],
+  "remove_environment_prefix": "Q4T_",
+  "remove_environment_keys": [
+    "LD_PRELOAD"
+  ],
+  "sustained_pair_shared_deadline_seconds": 1800,
+  "sustained_pair_evidence_budget_bytes": 67108864,
+  "stop_on_failed_group": true,
+  "no_extra_generation_probes": true,
+  "no_generation_retry": true,
+  "no_bench": true,
+  "cost_measurement_only": true,
+  "performance_nonregression_claim": false,
+  "semantic_manual_rubrics": "frozen questionnaire, independent of plain output; manual review remains required",
+  "startup_timeout_seconds": 600,
+  "outer_timeout_cleanup": "SIGTERM entire owned process group; grace 30s then SIGKILL only that group; preserve artifacts",
+  "script_sha256": "a70613fa32d295ae985194abd77996dde65de9667c92e07f2f4dad257af2c7cd"
+}

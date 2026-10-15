@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "time": 1791531906.9503627,
+  "resolved_conflicts": [
+    "CMakeLists.txt",
+    "README.md",
+    "docs/README.md",
+    "docs/STATUS.md",
+    "docs/log/2026-10-08.md",
+    "docs/log/README.md"
+  ],
+  "unique_files_kept": [
+    "docs/MTP_FOUNDATION_2026-10-08.md",
+    "docs/evidence/mtp-foundation-20261008/README.md",
+    "docs/evidence/mtp-foundation-20261008/audit-execution-identity.py.txt",
+    "docs/evidence/mtp-foundation-20261008/audit-fatbin-container.py.txt",
+    "docs/evidence/mtp-foundation-20261008/audit-foundation.py.txt",
+    "docs/evidence/mtp-foundation-20261008/build-foundation.py.txt",
+    "docs/evidence/mtp-foundation-20261008/build-identity-audit-01.json",
+    "docs/evidence/mtp-foundation-20261008/build-result-01.json",
+    "docs/evidence/mtp-foundation-20261008/cpu-binding-review.json",
+    "docs/evidence/mtp-foundation-20261008/execution-identity-review.json",
+    "docs/evidence/mtp-foundation-20261008/fatbin-container-audit-01.json",
+    "docs/evidence/mtp-foundation-20261008/fatbin-parser-first-attempt.json",
+    "docs/evidence/mtp-foundation-20261008/independent-method-review.json",
+    "docs/evidence/mtp-foundation-20261008/preserved-evidence-review.json",
+    "docs/evidence/mtp-foundation-20261008/source-target-audit-01.json",
+    "docs/evidence/mtp-foundation-20261008/verify-foundation.py.txt"
+  ],
+  "runtime_test_tools_cmake_changed": false,
+  "both_log_bodies_preserved": true,
+  "candidate_unchanged": true
+}

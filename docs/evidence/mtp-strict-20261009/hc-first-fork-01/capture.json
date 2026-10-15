@@ -1,0 +1,8 @@
+{
+  "name": "capture",
+  "exit_code": 0,
+  "seconds": 1.0149550437927246,
+  "passed": true,
+  "stdout_sha256": "aac70461e5d4c4404feeec5f395ed435a222c1ee30464c7fe8526ebde7258d97",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

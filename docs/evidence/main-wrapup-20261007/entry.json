@@ -1,0 +1,19 @@
+{
+  "recorded_t": 1791343850.9104645,
+  "main_tip": "8ea85b1b0cdf0f026247bf185bddbd536f916c82",
+  "workspace_head": "f15190ff9447079f9557469ed5aff0b525197821",
+  "workspace_branch": "codex/moe-residency-20260930",
+  "workspace_status": [
+    " M docs/STATUS.md",
+    " M docs/log/2026-10-02.md",
+    " M include/q4t/model/model.h",
+    " M include/q4t/quant/moe_residency.h",
+    " M src/model/moe.cu",
+    " M src/quant/moe_residency.cpp",
+    " M src/server/chat_generation.cpp"
+  ],
+  "workspace_diff_sha256": "33375caff6dcb3e638e2d2f001428883cbc0e400c5f1b7403a081826e9cd6947",
+  "workspace_binary_sha256": "46b3f977b0653c2f317c63df5b9f6669d1f3bb1de17892970b605676dd5434bc",
+  "worktrees": "worktree /home/rm01/models/dev/qwen4-thor\nHEAD f15190ff9447079f9557469ed5aff0b525197821\nbranch refs/heads/codex/moe-residency-20260930\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source\nHEAD d8482e46d904b3d43cb0f59b9766e064898b25c0\nbranch refs/heads/codex/offload-causality-recovery-20261005\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source\nHEAD c46721cfdbce3fd264d4c5187a9f78bbe0a08991\nbranch refs/heads/codex/offload-causality-20261005\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source\nHEAD 5539184610ea674b377426896a2385bf2ffc053f\nbranch refs/heads/codex/offload-decode-log-20261005\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-diagnostics-20261004/source\nHEAD f3e3d21a4bbb06a3fb0a86dc1b72361454e83e87\nbranch refs/heads/codex/offload-diagnostics-20261004\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/source\nHEAD 39b879d86124b0340749a83236d94cc8b9e6afb7\nbranch refs/heads/codex/offload-gpu-replay-20261006\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/source\nHEAD 16be72c9d08d61986bcc2ab233df55bb64c42439\nbranch refs/heads/codex/offload-mechanism-20261006\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source\nHEAD 7672b591644add0bbc05b8782da3127c80edc04d\nbranch refs/heads/codex/offload-mirror-recycle-20261006\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source\nHEAD 3a838473a7fa9ebefba9356266d4e1c8946cf7d9\nbranch refs/heads/codex/offload-mirror-retention-20261006\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source\nHEAD ed75d60193439cbb9020977033304d773f9bb6b0\nbranch refs/heads/codex/offload-request-policy-20261004\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source\nHEAD 69e2d0432b8f00317fbb07b1f286b25d2bd09d17\nbranch refs/heads/codex/offload-supply-observer-20261006\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/source\nHEAD 8ea3d329a236e35dd0aba35ad619912e3e76cc28\nbranch refs/heads/codex/offload-supply-20261006\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/wt-c1\nHEAD 887a3fec1af02f95209dac198681f66bdd9b82aa\nbranch refs/heads/codex/moe-residency-path-c-20261001\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/wt-oldbin\nHEAD c0f5fa3568f58eb58d5e3c5783dee4af3d5cc6d2\ndetached\n\n",
+  "research_tip": "7672b591644add0bbc05b8782da3127c80edc04d"
+}

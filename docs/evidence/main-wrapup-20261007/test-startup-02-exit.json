@@ -1,0 +1,12 @@
+{
+  "label": "test-startup-02",
+  "argv": [
+    "python3",
+    ".q4t-work/main-wrapup-20261007/startup_contracts.py"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor",
+  "started": 1791344539.220245,
+  "pid": 3940025,
+  "exit_code": 0,
+  "ended": 1791344540.1850932
+}

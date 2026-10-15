@@ -1,0 +1,8 @@
+{
+  "name": "host",
+  "exit_code": 0,
+  "seconds": 0.06380391120910645,
+  "passed": true,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "2308eea31a3586efd627d3c8170067f7584ad9d2543e79dd095affab729a188a"
+}

@@ -1,0 +1,15 @@
+{
+  "mode": "explicit",
+  "failure": null,
+  "lifecycle": {
+    "pid": 92837,
+    "process_group": 92837,
+    "exit_code": 0,
+    "sigterm_sent": true,
+    "forced_cleanup": false,
+    "remaining_process_group": false,
+    "passed": true
+  },
+  "passed": true,
+  "completed_responses": 3
+}

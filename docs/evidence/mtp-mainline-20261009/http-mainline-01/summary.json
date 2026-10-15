@@ -1,0 +1,72 @@
+{
+  "passed": true,
+  "failure": null,
+  "seconds": 251.34982874291018,
+  "request_budget": 8,
+  "completed_responses": 8,
+  "executions": [
+    {
+      "mode": "plain",
+      "failure": null,
+      "lifecycle": {
+        "pid": 89990,
+        "process_group": 89990,
+        "exit_code": 0,
+        "sigterm_sent": true,
+        "forced_cleanup": false,
+        "remaining_process_group": false,
+        "passed": true
+      },
+      "passed": true,
+      "completed_responses": 3
+    },
+    {
+      "mode": "default",
+      "failure": null,
+      "lifecycle": {
+        "pid": 91669,
+        "process_group": 91669,
+        "exit_code": 0,
+        "sigterm_sent": true,
+        "forced_cleanup": false,
+        "remaining_process_group": false,
+        "passed": true
+      },
+      "passed": true,
+      "completed_responses": 2
+    },
+    {
+      "mode": "explicit",
+      "failure": null,
+      "lifecycle": {
+        "pid": 92837,
+        "process_group": 92837,
+        "exit_code": 0,
+        "sigterm_sent": true,
+        "forced_cleanup": false,
+        "remaining_process_group": false,
+        "passed": true
+      },
+      "passed": true,
+      "completed_responses": 3
+    }
+  ],
+  "owned_process_groups": [
+    89990,
+    90927,
+    91162,
+    91282,
+    91669,
+    92630,
+    92801,
+    92837,
+    93520,
+    93580,
+    93645
+  ],
+  "emergency_cleanup_process_groups": [],
+  "remaining_process_groups": [],
+  "performance_acceptance": false,
+  "old_five_tier_evidence_reused": true,
+  "checkpoint_payload_attested": false
+}

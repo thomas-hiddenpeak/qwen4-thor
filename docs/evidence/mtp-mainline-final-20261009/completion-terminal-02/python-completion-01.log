@@ -1,0 +1,48 @@
+test_invalid_or_nonfinite_timing_rejected (test_acceptance_mode.ClientTimingTest.test_invalid_or_nonfinite_timing_rejected) ... ok
+test_keeps_ttft_request_latency_and_distinct_throughputs (test_acceptance_mode.ClientTimingTest.test_keeps_ttft_request_latency_and_distinct_throughputs) ... ok
+test_actual_mtp_bound_by_response_id_not_order (test_acceptance_mode.RequestModeTest.test_actual_mtp_bound_by_response_id_not_order) ... ok
+test_failed_http_counts_do_not_crash_mode_audit (test_acceptance_mode.RequestModeTest.test_failed_http_counts_do_not_crash_mode_audit) ... ok
+test_invalid_work_counts (test_acceptance_mode.RequestModeTest.test_invalid_work_counts) ... ok
+test_mtp_plain_fallback_rejected (test_acceptance_mode.RequestModeTest.test_mtp_plain_fallback_rejected) ... ok
+test_mtp_requires_actual_steps_and_expected_path (test_acceptance_mode.RequestModeTest.test_mtp_requires_actual_steps_and_expected_path) ... ok
+test_mtp_startup_alone_is_insufficient (test_acceptance_mode.RequestModeTest.test_mtp_startup_alone_is_insufficient) ... ok
+test_new_plain_path_must_be_consistent_when_present (test_acceptance_mode.RequestModeTest.test_new_plain_path_must_be_consistent_when_present) ... ok
+test_new_t4_pure_tail_requires_explicit_mode_and_reason (test_acceptance_mode.RequestModeTest.test_new_t4_pure_tail_requires_explicit_mode_and_reason) ... ok
+test_old_plain_baseline_compatible_without_new_log (test_acceptance_mode.RequestModeTest.test_old_plain_baseline_compatible_without_new_log) ... ok
+test_prefill_only_short_terminal_is_separate (test_acceptance_mode.RequestModeTest.test_prefill_only_short_terminal_is_separate) ... ok
+test_t4_tail_does_not_accept_legacy_or_inconsistent_evidence (test_acceptance_mode.RequestModeTest.test_t4_tail_does_not_accept_legacy_or_inconsistent_evidence) ... ok
+test_valid_mtp_with_explicit_bounded_context_tail (test_acceptance_mode.RequestModeTest.test_valid_mtp_with_explicit_bounded_context_tail) ... ok
+test_wrong_missing_and_duplicate_identity_rejected (test_acceptance_mode.RequestModeTest.test_wrong_missing_and_duplicate_identity_rejected) ... ok
+test_actual_sequential_with_output_tail (test_acceptance_mode.SequentialModeTest.test_actual_sequential_with_output_tail) ... ok
+test_completed_output_binds_actual_target_consumption (test_acceptance_mode.SequentialModeTest.test_completed_output_binds_actual_target_consumption) ... ok
+test_invalid_or_missing_forward_counts_rejected (test_acceptance_mode.SequentialModeTest.test_invalid_or_missing_forward_counts_rejected) ... ok
+test_legacy_and_mislabelled_paths_rejected (test_acceptance_mode.SequentialModeTest.test_legacy_and_mislabelled_paths_rejected) ... ok
+test_pure_tail_and_prefill_have_no_speculative_work (test_acceptance_mode.SequentialModeTest.test_pure_tail_and_prefill_have_no_speculative_work) ... ok
+test_startup_requires_actual_sequential_verifier (test_acceptance_mode.SequentialModeTest.test_startup_requires_actual_sequential_verifier) ... ok
+test_tail_reason_and_count_must_agree (test_acceptance_mode.SequentialModeTest.test_tail_reason_and_count_must_agree) ... ok
+test_terminal_step_skips_exactly_one_extend (test_acceptance_mode.SequentialModeTest.test_terminal_step_skips_exactly_one_extend) ... ok
+test_actual_mode_mismatch (test_acceptance_mode.StartupModeTest.test_actual_mode_mismatch) ... ok
+test_changed_capacity_or_media_is_not_the_matrix (test_acceptance_mode.StartupModeTest.test_changed_capacity_or_media_is_not_the_matrix) ... ok
+test_duplicate_records_fields_or_malformed_tokens (test_acceptance_mode.StartupModeTest.test_duplicate_records_fields_or_malformed_tokens) ... ok
+test_explicit_plain_and_mtp (test_acceptance_mode.StartupModeTest.test_explicit_plain_and_mtp) ... ok
+test_missing_startup_evidence (test_acceptance_mode.StartupModeTest.test_missing_startup_evidence) ... ok
+test_checkpoint_still_published_on_upload_failure (test_t4_completion_contract.CompletionParserTest.test_checkpoint_still_published_on_upload_failure) ... ok
+test_completion_before_injection_does_not_count (test_t4_completion_contract.CompletionParserTest.test_completion_before_injection_does_not_count) ... ok
+test_failed_step_must_not_call_ordinary_decode (test_t4_completion_contract.CompletionParserTest.test_failed_step_must_not_call_ordinary_decode) ... ok
+test_failure_not_marked_failed (test_t4_completion_contract.CompletionParserTest.test_failure_not_marked_failed) ... ok
+test_malformed_observer_event (test_t4_completion_contract.CompletionParserTest.test_malformed_observer_event) ... ok
+test_missing_inner_completion (test_t4_completion_contract.CompletionParserTest.test_missing_inner_completion) ... ok
+test_natural_restore_must_be_observed (test_t4_completion_contract.CompletionParserTest.test_natural_restore_must_be_observed) ... ok
+test_outer_completion_cannot_replace_inner (test_t4_completion_contract.CompletionParserTest.test_outer_completion_cannot_replace_inner) ... ok
+test_recovery_path_must_match_fresh (test_t4_completion_contract.CompletionParserTest.test_recovery_path_must_match_fresh) ... ok
+test_stale_outputs (test_t4_completion_contract.CompletionParserTest.test_stale_outputs) ... ok
+test_synthetic_valid_shape (test_t4_completion_contract.CompletionParserTest.test_synthetic_valid_shape) ... ok
+test_test_side_wait_cannot_repair_production (test_t4_completion_contract.CompletionParserTest.test_test_side_wait_cannot_repair_production) ... ok
+test_unrecognised_observer_event (test_t4_completion_contract.CompletionParserTest.test_unrecognised_observer_event) ... ok
+test_wrong_stream (test_t4_completion_contract.CompletionParserTest.test_wrong_stream) ... ok
+test_wrong_thread (test_t4_completion_contract.CompletionParserTest.test_wrong_thread) ... ok
+
+----------------------------------------------------------------------
+Ran 43 tests in 0.007s
+
+OK

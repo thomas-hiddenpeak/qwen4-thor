@@ -1,0 +1,52 @@
+{
+  "kind": "root read-only identity and raw-result review",
+  "passed": true,
+  "checked_sources": [
+    {
+      "source": "tools/evalscope/run_request_cancellation.py",
+      "passed": true
+    },
+    {
+      "source": "tools/evalscope/request_cancellation_contract.py",
+      "passed": true
+    },
+    {
+      "source": "tools/evalscope/test_request_cancellation.py",
+      "passed": true
+    },
+    {
+      "source": "tools/evalscope/response_identity.py",
+      "passed": true
+    },
+    {
+      "source": "tools/evalscope/test_response_identity.py",
+      "passed": true
+    },
+    {
+      "source": "tools/evalscope/acceptance_mode.py",
+      "passed": true
+    },
+    {
+      "source": "tools/evalscope/test_acceptance_mode.py",
+      "passed": true
+    },
+    {
+      "source": "tests/host/CMakeLists.txt",
+      "passed": true
+    },
+    {
+      "source": "docs/MTP_RELEASE_PLAN_2026-10-08.md",
+      "passed": true
+    }
+  ],
+  "test_counts": [
+    27,
+    8,
+    18
+  ],
+  "test_count_total": 53,
+  "original_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-release-20261008/b2a-tool",
+  "scope": "pure host only; no service/model/GPU/HTTP; nine real requests not executed",
+  "independent_static_review": "/root/admission_support_contract accepted main contract and network bounds; final received-byte retention race fixed before first test",
+  "binary_unchanged": "No runtime source changed after B1; no model tests repeated"
+}

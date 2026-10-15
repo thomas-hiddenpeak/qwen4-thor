@@ -110,8 +110,8 @@ class WeightLoader {
   struct Impl;
   explicit WeightLoader(Impl* impl);
   Impl* impl_;
-  // Guards impl_->open/impl_->lru (the shard LRU cache). Required for the
-  // parallel MoE expert load, which reads from multiple shards concurrently.
+  // Guards the shard LRU cache and immutable metadata insertion. Required
+  // for the parallel MoE load, which reads multiple shards concurrently.
   mutable std::mutex mu_;
 };
 

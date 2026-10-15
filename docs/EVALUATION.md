@@ -185,27 +185,25 @@ token 的 logits，plain greedy 用 T=1 顺序 decode。两条路径在精确算
    的质量与性能验收；MTP 默认部署前仍须完成五档 E2E（质量不回退 +
    decode 提速 50–200%）。局部 PASS 不等于整模型质量通过。
 
-### 近 tie 合同与主流引擎对照（2026-10-15）
+### 近 tie 合同与主流引擎对照（2026-10-16 来源复核）
 
-上述合同界定的是**同一模型两条算术路径**（MTP T=k+1 batch verify vs plain
-T=1 顺序 decode）的 token 级分歧。这一现象在主流推理引擎中是**普遍接受且
-明确文档化**的，本项目合同比主流实践更严格，而非偏离：
+对照对象是同一逻辑输入在不同 batch/算术路径下的差异，不是任意错误的豁免。
 
-- **vLLM 官方文档**（speculative_decoding 多版本 + FAQ）：默认**非 batch-不变**，
-  「Changes in batch size may cause variations in logprobs and output
-  probabilities」「vLLM does not guarantee stable log probabilities」；需 opt-in
-  `batch_invariance` 才消除该差异。即主流默认就接受不同 batch/算术路径产生
-  不同 logit。
-- **NeurIPS 2025《Understanding and Mitigating Numerical Sources of
-  Nondeterminism in LLM Inference》**：BF16+greedy 下仅因 GPU 数/类型/评测
-  batch size 不同，DeepSeek-R1-Distill-Qwen-7B 可出现最高 9% 准确率波动、
-  9000 token 响应长度差，根因为浮点非结合性。
-- **Microsoft LLM-42**：非确定性源于浮点非结合性 + 动态 batching + 随 batch
-  变化的 kernel 归约顺序。
+- [vLLM speculative decoding 文档（v0.7.1）](https://docs.vllm.ai/en/v0.7.1/features/spec_decode.html)
+  区分算法无损与浮点数值稳定性，明确 batch 大小变化可能改变 logprobs。
+  [当前 batch invariance 文档](https://docs.vllm.ai/en/latest/features/batch_invariance/)
+  提供 `VLLM_BATCH_INVARIANT=1` 显式启用方式；默认模式不能据此宣称 batch 不变。
+- [NeurIPS 2025 论文](https://proceedings.neurips.cc/paper_files/paper/2025/file/f80094a824ba5912d4a2de169c404a40-Paper-Conference.pdf)
+  研究有限精度、浮点非结合性导致的系统配置敏感性；BF16 greedy 的
+  DeepSeek-R1-Distill-Qwen-7B 在不同 GPU 数/类型及 batch size 下，报告最高
+  9% 准确率与 9000 token 响应长度差。这是特定实验结果，不是本模型的容差。
+- [Microsoft LLM-42（2026，v2）](https://arxiv.org/abs/2601.17768v2)
+  同样指出浮点非结合性、动态 batching 和归约顺序的作用，但它通过固定形状
+  verifier 与 rollback **强制确定性**，并非提倡无限制接受 token 翻转。
 
-对照：主流引擎**隐式接受**近 tie 翻转（不量化、不设边界、不做负控）；本项目
-合同**量化容差（N=4 ULP）、限定近 tie 为唯一允许分歧来源、>N ULP 双侧
-confident 翻转判缺陷、带 causality 负控**。因此本合同是主流已接受现象的
-**更严正式化**，不构成「主流不允许」的合规风险。方向与主流一致，边界比主流
-更紧。
-
+据此，本项目合同**比 vLLM 默认非 batch-不变模式有更严格、可检验的显式边界**：
+N=4 BF16 ULP、双侧 confident 翻转拒绝、causality 负控；每个数值 PASS
+仍限于实际测过的输入与步数。不能推导为所有输入上的误差上界，也不能声称
+比 vLLM 的 batch-invariant 模式或 LLM-42 的确定性保证更强。
+来源解释了差异机制，不替本项目证明正确，更不授权放宽 N=4 或忽略状态缺陷。
+五档 HTTP 的重复确定性、输出合同、任务质量与性能分别记录。

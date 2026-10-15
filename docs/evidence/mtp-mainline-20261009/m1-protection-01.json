@@ -1,0 +1,24 @@
+{
+  "created_unix": 1791510336.3007998,
+  "protected_worktrees": [
+    {
+      "label": "root",
+      "passed": true
+    },
+    {
+      "label": "main",
+      "passed": true
+    },
+    {
+      "label": "C1",
+      "passed": true
+    },
+    {
+      "label": "foundation",
+      "passed": true
+    }
+  ],
+  "new_candidate_source_bindings": 278,
+  "old_build_files_preserved": 7,
+  "passed": true
+}

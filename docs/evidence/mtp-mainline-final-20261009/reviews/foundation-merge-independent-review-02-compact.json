@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "created_unix": 1791532140.9048746,
+  "merge_commit": "d621d00b311effd83088b5ea6322553e0f94550a",
+  "source_review": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/foundation-merge-independent-review-01.json",
+  "source_review_sha256": "b28d7c4ad9ed43864d56130b3f829ffabd6b63181375d138d3c294b3b21eb575",
+  "initial_review_preserved": true,
+  "initial_noncontract_assertion": {
+    "name": "research_clean",
+    "passed": false,
+    "explanation": "The separate active worktree received root-authored documentation updates during read-only audit. A clean research worktree was an added auditor assumption, not the frozen merge requirement. No required merge, runtime, protected-worktree or build identity check failed."
+  },
+  "required_checks_passed": 1121,
+  "required_checks": 1121,
+  "additional_check": {
+    "name": "concurrent_work_is_documentation_only",
+    "passed": true,
+    "actual_status": " M docs/README.md\n?? docs/MTP_MAINLINE_RESULT_2026-10-09.md\n",
+    "runtime_diff": ""
+  },
+  "source_files_exact_M2": 1028,
+  "unique_foundation_files_exact": 16,
+  "protected_worktrees_unchanged": 4,
+  "build_files_unchanged": 8,
+  "scope": "The d621d00 merge itself satisfies its frozen history-only contract; concurrent documentation drafting is retained and is not treated as a runtime change or a reason for more model tests.",
+  "complete_original_binding": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/foundation-merge-independent-review-02.json",
+    "bytes": 1421,
+    "sha256": "2ad80a08fd21389315e4e7a5d38ebf8ff783c26a13dbae3cfd0286099ce5b0e7"
+  }
+}

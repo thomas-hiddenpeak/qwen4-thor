@@ -1,0 +1,16 @@
+{
+  "created_unix": 1791480692.5340028,
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-sequential-long-20261009/q4t_mtp_sequential_long_admission",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-long-02/required-tests.txt"
+  ],
+  "binary_sha256": "cd83456380db2482bb2f481b7585519081ab0ced890ec681dce3f1ab7c7e9af6",
+  "implementation_protocol_sha256": "c40939e22cb93a2bb319d701c7ab0e6ed63a0b06a731347048846ce9f92c4c6b",
+  "build_identity_sha256": "0bde9c6a59394c055e9b137fcfcd86951f74d7a1f3309719100388a292c54c68",
+  "script_sha256": "1f1f183859ae9dd3c53cdc743faa0bf611988239887e880a2fbbd17623f76a28",
+  "timeout_seconds": 600,
+  "attempts": 1,
+  "short_rerun": false,
+  "old_failure_replaced": false
+}

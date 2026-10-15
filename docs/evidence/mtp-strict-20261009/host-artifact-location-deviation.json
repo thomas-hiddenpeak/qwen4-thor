@@ -1,0 +1,60 @@
+{
+  "recorded_unix": 1791479827.7218742,
+  "deviation": "first host tests used default TemporaryDirectory and __pycache__; temporary files auto-cleaned, newly written project pyc relocated without changing source or rerunning",
+  "relocated": [
+    {
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/__pycache__/acceptance_mode.cpython-312.pyc",
+      "relocated": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/relocated-python-artifacts/tools/evalscope/__pycache__/acceptance_mode.cpython-312.pyc",
+      "mtime": 1791479499.7327874
+    },
+    {
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/__pycache__/mtp_failure_recovery_contract.cpython-312.pyc",
+      "relocated": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/relocated-python-artifacts/tools/evalscope/__pycache__/mtp_failure_recovery_contract.cpython-312.pyc",
+      "mtime": 1791479499.7887874
+    },
+    {
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/__pycache__/request_cancellation_contract.cpython-312.pyc",
+      "relocated": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/relocated-python-artifacts/tools/evalscope/__pycache__/request_cancellation_contract.cpython-312.pyc",
+      "mtime": 1791479499.7567873
+    },
+    {
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/__pycache__/run_acceptance.cpython-312.pyc",
+      "relocated": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/relocated-python-artifacts/tools/evalscope/__pycache__/run_acceptance.cpython-312.pyc",
+      "mtime": 1791479499.8127873
+    },
+    {
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/__pycache__/sustained_quality.cpython-312.pyc",
+      "relocated": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/relocated-python-artifacts/tools/evalscope/__pycache__/sustained_quality.cpython-312.pyc",
+      "mtime": 1791479499.7847874
+    },
+    {
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/__pycache__/test_acceptance_mode.cpython-312.pyc",
+      "relocated": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/relocated-python-artifacts/tools/evalscope/__pycache__/test_acceptance_mode.cpython-312.pyc",
+      "mtime": 1791479499.7287874
+    },
+    {
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/__pycache__/test_mtp_failure_recovery.cpython-312.pyc",
+      "relocated": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/relocated-python-artifacts/tools/evalscope/__pycache__/test_mtp_failure_recovery.cpython-312.pyc",
+      "mtime": 1791479499.7847874
+    },
+    {
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/__pycache__/test_request_cancellation.cpython-312.pyc",
+      "relocated": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/relocated-python-artifacts/tools/evalscope/__pycache__/test_request_cancellation.cpython-312.pyc",
+      "mtime": 1791479499.7367873
+    },
+    {
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/__pycache__/test_response_identity.cpython-312.pyc",
+      "relocated": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/relocated-python-artifacts/tools/evalscope/__pycache__/test_response_identity.cpython-312.pyc",
+      "mtime": 1791479499.7607872
+    },
+    {
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/__pycache__/test_sustained_quality.cpython-312.pyc",
+      "relocated": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/relocated-python-artifacts/tools/evalscope/__pycache__/test_sustained_quality.cpython-312.pyc",
+      "mtime": 1791479499.7647874
+    }
+  ],
+  "future_env": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "TMPDIR": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/tmp"
+  }
+}

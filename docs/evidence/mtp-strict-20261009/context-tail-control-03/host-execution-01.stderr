@@ -1,0 +1,11 @@
+test_capture_requires_original_row_size_domain_and_argmax (test_context_tail_contract.ContextTailContractTest.test_capture_requires_original_row_size_domain_and_argmax) ... ok
+test_natural_eos_wrong_identity_usage_and_failed_metrics_are_rejected (test_context_tail_contract.ContextTailContractTest.test_natural_eos_wrong_identity_usage_and_failed_metrics_are_rejected) ... ok
+test_prefill_binding_and_exact_chunk_coverage_are_required (test_context_tail_contract.ContextTailContractTest.test_prefill_binding_and_exact_chunk_coverage_are_required) ... ok
+test_real_scheduler_three_consumed_tokens_and_clean_end_required (test_context_tail_contract.ContextTailContractTest.test_real_scheduler_three_consumed_tokens_and_clean_end_required) ... ok
+test_valid_plain_and_sequential_control_capture_and_output (test_context_tail_contract.ContextTailContractTest.test_valid_plain_and_sequential_control_capture_and_output) ... ok
+test_variant_identity_and_context_tail_path_cannot_be_forged (test_context_tail_contract.ContextTailContractTest.test_variant_identity_and_context_tail_path_cannot_be_forged) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.189s
+
+OK

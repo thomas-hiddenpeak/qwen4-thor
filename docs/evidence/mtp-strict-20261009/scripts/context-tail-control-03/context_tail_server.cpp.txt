@@ -1,0 +1,372 @@
+// Link-only selection control for one fixed 208892-token request per process.
+// Real prefill/B1 arithmetic executes; changed selections are NOT greedy proof.
+#include "q4t/model/model_head.h"
+#include "q4t/mtp/mtp.h"
+
+#include <bit>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <mutex>
+#include <thread>
+
+#define Q4T_BEGIN \
+  "_ZN3q4t5model18ModelBeginSequenceERKNS0_5ModelEPNS0_13ModelSequenceE" \
+  "P11CUstream_sti"
+#define Q4T_END "_ZN3q4t5model16ModelEndSequenceEPNS0_13ModelSequenceE"
+#define Q4T_PREFILL \
+  "_ZN3q4t5model21ModelPrefillTextChunkERKNS0_5ModelEPNS0_13ModelSequenceE" \
+  "PKiiiPtP11CUstream_stS8_NS0_10LogitsRowsENS0_18SequenceCompletionE"
+#define Q4T_MAIN \
+  "_ZN3q4t5model21ModelDecodeBatchMultiERKNS0_5ModelEPKiS5_S5_S5_iPt" \
+  "P11CUstream_stS6_"
+#define Q4T_ARGMAX "_ZN3q4t5model14ArgmaxBf16RowsEPKtiiPiP11CUstream_st"
+#define Q4T_LEGACY \
+  "_ZN3q4t5model18ModelDecodeStepSeqERKNS0_5ModelEPNS0_13ModelSequenceE" \
+  "iPtP11CUstream_stS6_iNS0_18SequenceCompletionE"
+#define Q4T_SCHEDULER "_ZN3q4t6server10ChatServer13SchedulerLoopEv"
+#define Q4T_RESET \
+  "_ZN3q4t3mtp13MtpResetStateERKNS0_8MtpModelEP11CUstream_sti"
+#define Q4T_STRICT \
+  "_ZN3q4t3mtp34MtpSpeculativeStepSequentialTargetERKNS_5model5ModelE" \
+  "RKNS0_8MtpModelERKNS1_13ModelSequenceEiiPKtiSt4spanIKiLm18446744073709551615EE" \
+  "PNS0_19MtpSequentialResultEPtP11CUstream_st"
+#define Q4T_FAST \
+  "_ZN3q4t3mtp23MtpSpeculativeStepMultiERKNS_5model5ModelERKNS0_8MtpModelE" \
+  "PKPKNS1_13ModelSequenceEPKiSE_PKPKtiiPiSJ_SJ_SJ_PPtP11CUstream_st" \
+  "PNS_5trace12MtpCycleStepEPNSO_16MtpVerifyMoeStepE"
+
+using q4t::Status;
+using q4t::model::Model;
+using q4t::model::ModelSequence;
+using q4t::model::LogitsRows;
+using q4t::model::SequenceCompletion;
+using q4t::mtp::MtpModel;
+
+Status RealBegin(const Model&, ModelSequence*, cudaStream_t, int)
+    asm("__real_" Q4T_BEGIN);
+Status WrapBegin(const Model&, ModelSequence*, cudaStream_t, int)
+    asm("__wrap_" Q4T_BEGIN);
+Status RealEnd(ModelSequence*) asm("__real_" Q4T_END);
+Status WrapEnd(ModelSequence*) asm("__wrap_" Q4T_END);
+Status RealPrefill(const Model&, ModelSequence*, const int32_t*, int, int,
+                   uint16_t*, cudaStream_t, uint16_t*, LogitsRows,
+                   SequenceCompletion) asm("__real_" Q4T_PREFILL);
+Status WrapPrefill(const Model&, ModelSequence*, const int32_t*, int, int,
+                   uint16_t*, cudaStream_t, uint16_t*, LogitsRows,
+                   SequenceCompletion) asm("__wrap_" Q4T_PREFILL);
+Status RealMain(const Model&, const int32_t*, const int*, const int*,
+                const int32_t*, int, uint16_t*, cudaStream_t, uint16_t*)
+    asm("__real_" Q4T_MAIN);
+Status WrapMain(const Model&, const int32_t*, const int*, const int*,
+                const int32_t*, int, uint16_t*, cudaStream_t, uint16_t*)
+    asm("__wrap_" Q4T_MAIN);
+Status RealArgmax(const uint16_t*, int, int, int32_t*, cudaStream_t)
+    asm("__real_" Q4T_ARGMAX);
+Status WrapArgmax(const uint16_t*, int, int, int32_t*, cudaStream_t)
+    asm("__wrap_" Q4T_ARGMAX);
+Status WrapLegacy(const Model&, ModelSequence*, int32_t, uint16_t*,
+                  cudaStream_t, uint16_t*, int, SequenceCompletion)
+    asm("__wrap_" Q4T_LEGACY);
+void RealScheduler(void*) asm("__real_" Q4T_SCHEDULER);
+void WrapScheduler(void*) asm("__wrap_" Q4T_SCHEDULER);
+Status RealReset(const MtpModel&, cudaStream_t, int) asm("__real_" Q4T_RESET);
+Status WrapReset(const MtpModel&, cudaStream_t, int) asm("__wrap_" Q4T_RESET);
+decltype(q4t::mtp::MtpSpeculativeStepSequentialTarget) WrapStrict
+    asm("__wrap_" Q4T_STRICT);
+decltype(q4t::mtp::MtpSpeculativeStepMulti) WrapFast
+    asm("__wrap_" Q4T_FAST);
+extern "C" cudaError_t __real_cudaMemcpyAsync(
+    void*, const void*, size_t, cudaMemcpyKind, cudaStream_t);
+
+namespace {
+constexpr int kPrompt = 208892;
+constexpr int32_t kToken = 32;
+constexpr uint16_t kMaximumFinite = 0x7f7f;
+static_assert(std::endian::native == std::endian::little);
+std::mutex observer_mu;
+struct Observation {
+  ModelSequence* seq = nullptr;
+  const Model* model = nullptr;
+  int begins = 0;
+  int chunks = 0;
+  int copied = 0;
+  int main_calls = 0;
+  int argmax_calls = 0;
+  bool ended = false;
+  const uint16_t* final_logits = nullptr;
+  const uint16_t* decode_logits = nullptr;
+  cudaStream_t final_stream = nullptr;
+  std::thread::id final_thread;
+  std::thread::id scheduler_thread;
+};
+Observation observed;
+
+void Require(bool ok, const char* reason) {
+  if (!ok) {
+    std::fprintf(stderr, "[q4t][tail_control_contract] failure=%s\n", reason);
+    std::fflush(stderr);
+    std::abort();
+  }
+}
+struct Announce {
+  Announce() {
+    std::fprintf(stderr,
+        "[q4t][tail_control_variant] protocol=context_tail_v1 "
+        "production_binary=0 requests=1 prompt_tokens=208892 token=32 "
+        "greedy_numeric_evidence=0 quality_evidence=0 performance_evidence=0\n");
+  }
+} announce;
+}  // namespace
+
+void WrapScheduler(void* server) {
+  {
+    const std::lock_guard<std::mutex> lock(observer_mu);
+    Require(observed.scheduler_thread == std::thread::id{}, "extra_scheduler");
+    observed.scheduler_thread = std::this_thread::get_id();
+    std::fprintf(stderr, "[q4t][tail_scheduler] entered=1 real_call=1\n");
+  }
+  RealScheduler(server);
+  const std::lock_guard<std::mutex> lock(observer_mu);
+  std::fprintf(stderr, "[q4t][tail_scheduler] exited=1 real_return=1\n");
+}
+
+Status WrapBegin(const Model& model, ModelSequence* seq, cudaStream_t stream,
+                 int slot) {
+  {
+    const std::lock_guard<std::mutex> lock(observer_mu);
+    Require(!observed.seq && observed.begins++ == 0 && slot == 0 &&
+                model.cfg.max_seq == 1 && model.cfg.max_len == 208896 &&
+                model.cfg.max_prefill == 8192 && model.cfg.vocab > kToken,
+            "unexpected_request_or_capacity");
+    observed.seq = seq;
+    observed.model = &model;
+  }
+  Status s = RealBegin(model, seq, stream, slot);
+  const std::lock_guard<std::mutex> lock(observer_mu);
+  Require(s.ok() && seq->stage == ModelSequence::Stage::kPrefill &&
+              seq->position == 0 && seq->history.empty() && !seq->HasPending(),
+          "begin_failed");
+  std::fprintf(stderr,
+      "[q4t][tail_begin] real_ok=1 slot=0 position=0 history=0 pending=0\n");
+  return s;
+}
+
+Status WrapPrefill(const Model& model, ModelSequence* seq, const int32_t* prompt,
+                   int length, int chunk, uint16_t* logits, cudaStream_t stream,
+                   uint16_t* trunk, LogitsRows rows, SequenceCompletion complete) {
+  int base = 0;
+  {
+    const std::lock_guard<std::mutex> lock(observer_mu);
+    base = seq->position;
+    const int expected_base = observed.chunks * 8192;
+    const int expected_chunk = observed.chunks == 25 ? 4092 : 8192;
+    Require(seq == observed.seq && &model == observed.model && prompt &&
+                length == kPrompt && observed.chunks < 26 &&
+                base == expected_base && chunk == expected_chunk &&
+                seq->history.size() == static_cast<size_t>(base) &&
+                seq->stage == ModelSequence::Stage::kPrefill &&
+                !seq->HasPending() && stream == nullptr &&
+                rows == LogitsRows::kLastRow &&
+                complete == SequenceCompletion::kDeferred &&
+                ((observed.chunks == 25) == (logits != nullptr)),
+            "wrong_real_prefill_chunk");
+  }
+  Status s = RealPrefill(model, seq, prompt, length, chunk, logits, stream,
+                         trunk, rows, complete);
+  const std::lock_guard<std::mutex> lock(observer_mu);
+  Require(s.ok() && seq->position == base && seq->HasPending() &&
+              seq->SubmittedPosition() == base + chunk,
+          "real_prefill_submission_failed");
+  ++observed.chunks;
+  if (logits) {
+    Require(!observed.final_logits, "duplicate_final_logits");
+    observed.final_logits = logits;
+    observed.final_stream = stream;
+    observed.final_thread = std::this_thread::get_id();
+  }
+  std::fprintf(stderr,
+      "[q4t][tail_prefill] ordinal=%d real_ok=1 base=%d count=%d "
+      "submitted=%d pending=1 final=%d\n",
+      observed.chunks, base, chunk, seq->SubmittedPosition(), logits != nullptr);
+  return s;
+}
+
+extern "C" cudaError_t __wrap_cudaMemcpyAsync(
+    void* destination, const void* source, size_t bytes, cudaMemcpyKind kind,
+    cudaStream_t stream) {
+  bool intercept = false;
+  int vocab = 0;
+  {
+    const std::lock_guard<std::mutex> lock(observer_mu);
+    if (observed.seq && observed.final_logits == source &&
+        kind == cudaMemcpyDeviceToHost) {
+      vocab = observed.model->cfg.vocab;
+      Require(observed.copied == 0 && observed.chunks == 26 &&
+                  observed.main_calls == 0 &&
+                  bytes == static_cast<size_t>(vocab) * sizeof(uint16_t) &&
+                  stream == observed.final_stream &&
+                  std::this_thread::get_id() == observed.final_thread &&
+                  observed.seq->HasPending() &&
+                  observed.seq->SubmittedPosition() == kPrompt,
+              "unbound_or_repeated_final_readback");
+      intercept = true;
+    }
+  }
+  cudaError_t error = __real_cudaMemcpyAsync(destination, source, bytes, kind,
+                                             stream);
+  if (!intercept || error != cudaSuccess) return error;
+  error = cudaStreamSynchronize(stream);
+  if (error != cudaSuccess) return error;
+  const std::lock_guard<std::mutex> lock(observer_mu);
+  auto* host = static_cast<uint16_t*>(destination);
+  int best = 0;
+  float best_value = -1e30f;
+  for (int i = 0; i < vocab; ++i) {
+    const float value = std::bit_cast<float>(static_cast<uint32_t>(host[i]) << 16);
+    Require(std::isfinite(value) &&
+                value < std::bit_cast<float>(uint32_t{kMaximumFinite} << 16),
+            "unsupported_original_logit_domain");
+    if (value > best_value) {
+      best = i;
+      best_value = value;
+    }
+  }
+  FILE* file = std::fopen("original-prefill-logits.bf16", "wbx");
+  Require(file != nullptr, "capture_open_failed");
+  const size_t written = std::fwrite(host, 1, bytes, file);
+  const int closed = std::fclose(file);
+  Require(written == bytes && closed == 0, "capture_write_failed");
+  const uint16_t old = host[kToken];
+  const uint16_t best_bits = host[best];
+  host[kToken] = kMaximumFinite;
+  ++observed.copied;
+  std::fprintf(stderr,
+      "[q4t][tail_override] real_copy=1 checked_sync=1 source_bound=1 "
+      "thread_match=1 stream_match=1 vocab=%d bytes=%zu original_argmax=%d "
+      "original_argmax_bits=%04x old_token_bits=%04x forced_token=32 "
+      "forced_bits=7f7f modified_host_words=1 device_logits_modified=0\n",
+      vocab, bytes, best, static_cast<unsigned>(best_bits),
+      static_cast<unsigned>(old));
+  return cudaSuccess;
+}
+
+Status WrapMain(const Model& model, const int32_t* tokens, const int* positions,
+                const int* slots, const int32_t* history, int batch,
+                uint16_t* logits, cudaStream_t stream, uint16_t* trunk) {
+  int ordinal = 0;
+  {
+    const std::lock_guard<std::mutex> lock(observer_mu);
+    Require(observed.seq && observed.model == &model && observed.copied == 1 &&
+                observed.main_calls < 3 &&
+                observed.argmax_calls == observed.main_calls && batch == 1 &&
+                tokens && tokens[0] == kToken && positions && slots &&
+                slots[0] == 0 && positions[0] == kPrompt + observed.main_calls &&
+                observed.seq->stage == ModelSequence::Stage::kDecode &&
+                observed.seq->position == positions[0] &&
+                observed.seq->history.size() == static_cast<size_t>(positions[0]) &&
+                observed.seq->HasPending() &&
+                observed.seq->SubmittedPosition() == positions[0] + 1 &&
+                stream == nullptr && trunk == nullptr && logits && history &&
+                std::this_thread::get_id() == observed.scheduler_thread,
+            "not_expected_real_scheduler_b1");
+    const int width = model.ple_hash.ngram_size - 1;
+    for (int j = 0; j < width; ++j)
+      Require(history[j] == observed.seq->history[positions[0] - width + j],
+              "wrong_ple_history");
+    for (int j = 0; j < observed.main_calls; ++j)
+      Require(observed.seq->history[kPrompt + j] == kToken,
+              "wrong_consumed_prefix");
+    ordinal = ++observed.main_calls;
+    observed.decode_logits = logits;
+  }
+  Status s = RealMain(model, tokens, positions, slots, history, batch, logits,
+                      stream, trunk);
+  const std::lock_guard<std::mutex> lock(observer_mu);
+  Require(s.ok(), "real_b1_failed");
+  std::fprintf(stderr,
+      "[q4t][tail_b1] ordinal=%d real_ok=1 scheduler_thread=1 batch=1 "
+      "position=%d token=32 pending=1 submitted=%d trunk_null=1\n",
+      ordinal, positions[0], observed.seq->SubmittedPosition());
+  return s;
+}
+
+Status WrapArgmax(const uint16_t* logits, int batch, int vocab, int32_t* output,
+                  cudaStream_t stream) {
+  {
+    const std::lock_guard<std::mutex> lock(observer_mu);
+    Require(observed.seq && observed.copied == 1 &&
+                observed.main_calls == observed.argmax_calls + 1 &&
+                logits == observed.decode_logits && batch == 1 && output &&
+                vocab == observed.model->cfg.vocab && stream == nullptr &&
+                std::this_thread::get_id() == observed.scheduler_thread,
+            "unbound_scheduler_argmax");
+  }
+  Status s = RealArgmax(logits, batch, vocab, output, stream);
+  if (!s.ok()) return s;
+  // Static host storage outlives the async copy; production checked completion
+  // drains both real argmax and this override before committing the sequence.
+  const cudaError_t error = __real_cudaMemcpyAsync(
+      output, &kToken, sizeof(kToken), cudaMemcpyHostToDevice, stream);
+  if (error != cudaSuccess) return Status::Fail("tail control token override");
+  const std::lock_guard<std::mutex> lock(observer_mu);
+  ++observed.argmax_calls;
+  std::fprintf(stderr,
+      "[q4t][tail_argmax] ordinal=%d real_ok=1 scheduler_thread=1 "
+      "forced_token=32 same_stream_override=1\n", observed.argmax_calls);
+  return s;
+}
+
+Status WrapLegacy(const Model&, ModelSequence*, int32_t, uint16_t*,
+                  cudaStream_t, uint16_t*, int, SequenceCompletion) {
+  Require(false, "legacy_decode_called");
+  return Status::Fail("forbidden legacy decode");
+}
+Status WrapReset(const MtpModel& model, cudaStream_t stream, int slot) {
+  {
+    const std::lock_guard<std::mutex> lock(observer_mu);
+    Require(!observed.seq, "mtp_initialization_entered");
+  }
+  return RealReset(model, stream, slot);
+}
+Status WrapStrict(const Model&, const MtpModel&, const ModelSequence&, int32_t,
+                  int32_t, const uint16_t*, int, std::span<const int32_t>,
+                  q4t::mtp::MtpSequentialResult*, uint16_t*, cudaStream_t) {
+  Require(false, "strict_full_step_entered");
+  return Status::Fail("forbidden full step");
+}
+Status WrapFast(const Model&, const MtpModel&, const ModelSequence* const*,
+                const int32_t*, const int32_t*, const uint16_t* const*, int, int,
+                int32_t*, int*, int32_t*, int32_t*, uint16_t**, cudaStream_t,
+                q4t::trace::MtpCycleStep*, q4t::trace::MtpVerifyMoeStep*) {
+  Require(false, "fast_full_step_entered");
+  return Status::Fail("forbidden full step");
+}
+
+Status WrapEnd(ModelSequence* seq) {
+  const std::lock_guard<std::mutex> lock(observer_mu);
+  Require(seq && seq == observed.seq && observed.begins == 1 &&
+              observed.chunks == 26 && observed.copied == 1 &&
+              observed.main_calls == 3 && observed.argmax_calls == 3 &&
+              !observed.ended && !seq->HasPending() &&
+              seq->stage == ModelSequence::Stage::kDecode &&
+              seq->position == kPrompt + 3 &&
+              seq->history.size() == static_cast<size_t>(kPrompt + 3),
+          "wrong_terminal_consumption");
+  for (int j = 0; j < 3; ++j)
+    Require(seq->history[kPrompt + j] == kToken, "terminal_prefix_changed");
+  std::fprintf(stderr,
+      "[q4t][tail_before_end] position=208895 history=208895 pending=0 "
+      "consumed=3 unconsumed_final_output=1\n");
+  Status s = RealEnd(seq);
+  Require(s.ok() && !seq->HasPending() && seq->position == 0 &&
+              seq->history.empty() && seq->stage == ModelSequence::Stage::kIdle,
+          "end_not_cleared");
+  observed.seq = nullptr;
+  observed.ended = true;
+  std::fprintf(stderr,
+      "[q4t][tail_end] real_ok=1 position=0 history=0 pending=0 "
+      "chunks=26 host_overrides=1 main_calls=3 argmax_calls=3 "
+      "mtp_init_calls=0 strict_step_calls=0 fast_step_calls=0 legacy_calls=0\n");
+  return s;
+}

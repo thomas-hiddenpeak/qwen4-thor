@@ -5,6 +5,17 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [MTP归并候选结果](MTP_MAINLINE_READY_2026-10-16.md) | 恢复修复、最终同身份验收、历史失败与回退 | 当前候选 |
+| [MTP归并边界决策](MTP_MERGE_BOUNDARY_2026-10-15.md) | 两套MTP实现归并边界、策略A裁决与逐文件归并计划 | 2026-10-16恢复与共用合同补正 |
+| [MTP基础修复交付](MTP_FOUNDATION_2026-10-08.md) | 基础修复、原跨模式失败与证据复用边界 | 2026-10-08历史交付 |
+| [MTP主线交付结果](MTP_MAINLINE_RESULT_2026-10-09.md) | 已合入main的有限能力、验证归属、成本与回退点 | 2026-10-09交付完成 |
+| [MTP主线交付条件](MTP_MAINLINE_READINESS_2026-10-09.md) | 入口与集成阻碍清单、修复及实际合入 | 2026-10-09交付完成 |
+| [MTP sequential有限正确性验收](MTP_STRICT_RESULT_2026-10-09.md) | 独立正确性证据、原失败与五档成本 | 2026-10-09历史阶段 |
+| [MTP严格greedy基线](MTP_STRICT_BASELINE_2026-10-09.md) | 显式sequential target接口、状态与验收边界 | 2026-10-09历史阶段 |
+| [MTP阶段性转正计划](MTP_RELEASE_PLAN_2026-10-08.md) | 基础修复PR、有限支持准入与冻结验收清单 | 2026-10-09历史阶段 |
+| [MTP数值准入设计](MTP_NUMERICAL_ADMISSION_DESIGN_2026-10-08.md) | 快速T4与严格普通greedy合同、状态所有权和代价 | 合同明确时 |
+| [主线存储准备](STORAGE_READY_2026-10-07.md) | 可再生成缓存清理、原始证据保护与可用容量 | 本轮整理 |
+| [主线收尾与分支交接](MAIN_WRAPUP_2026-10-07.md) | 精选研究工具、公共 I/O/预算修复、历史 NO_GO 索引与验证边界 | 本轮收尾 |
 | [OFFLOAD_AUTONOMOUS_2026-10-03.md](OFFLOAD_AUTONOMOUS_2026-10-03.md) | 十小时自主队列、在线候选与冻结HTTP决定门槛 | Goal进行中，当前尚无新验收结论 |
 | [OFFLOAD_REPLAY_2026-10-02.md](OFFLOAD_REPLAY_2026-10-02.md) | 实际分块/驻留离线回放与候选收益边界 | Goal完成：重排减少约6%–7% GPU补载，未接受性能 |
 | [OFFLOAD_RAM_PROTOCOL_2026-10-02.md](OFFLOAD_RAM_PROTOCOL_2026-10-02.md) | RAM预算修复、缓存/实际IO协议与有界对照 | Goal完成；完整物理RAM及受限cg IO归属仍未闭合 |
@@ -69,11 +80,13 @@
 | [MOE_RESIDENCY_L2_PREDICTION_2026-10-01.md](MOE_RESIDENCY_L2_PREDICTION_2026-10-01.md) | L2 命中率离线预测与 C 容量扫描（第二轮预判/第三轮决策输入） | 已完成（离线分析） |
 | [MOE_RESIDENCY_MEMORY_LEDGER_2026-10-01.md](MOE_RESIDENCY_MEMORY_LEDGER_2026-10-01.md) | 262144容量完整内存账（预算侧+实测侧） | 已建立，第二轮峰值待实测 |
 
-## 现行入口（2026-09-28）
+## 现行入口（2026-10-07）
 
 先读 [STATUS.md](STATUS.md) 与 [EVALUATION.md](EVALUATION.md)。
-当前已交付基线为[首版私有文本版本](RELEASE_TEXT_V1_2026-09-28.md)，
-阶段切换复核见[基线交接](BASELINE_HANDOFF_2026-09-28.md)。
+当前主线整合见[Offload 分支收尾](MAIN_WRAPUP_2026-10-07.md)。
+运行时部署与旧基线保留[首版私有文本版本](RELEASE_TEXT_V1_2026-09-28.md)
+及[基线交接](BASELINE_HANDOFF_2026-09-28.md)的历史记录；源码合并不等于
+覆盖原开发目录的默认二进制。
 [收敛清单](CONVERGENCE_2026-09-28.md)已完成；上表专题中的
 “候选”“进行中”是当时记录，不能作为当前待办或发布结论。
 

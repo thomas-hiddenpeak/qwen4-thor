@@ -329,12 +329,14 @@ Q4T_TEST(mtp_spec_multi_step) {
   // The step does NOT advance the sequences (Stage 2c contract); the caller
   // does. Advance each seq over its accepted prefix [b_b, d_0..d_{a_b-1}].
   for (int b = 0; b < B; ++b) {
-    const int a = accepted_count[b];
-    seqs[b].position += 1 + a;
-    seqs[b].history.push_back(b_tok[b]);
-    for (int i = 0; i < a; ++i)
+    const int count = accepted_count[b];
+    Q4T_CHECK(count >= 1 && count <= k + 1);
+    seqs[b].position += count;
+    for (int i = 0; i < count; ++i)
       seqs[b].history.push_back(
-          accepted[static_cast<size_t>(b) * (k + 1) + 1 + i]);
+          accepted[static_cast<size_t>(b) * (k + 1) + i]);
+    Q4T_CHECK(seqs[b].position == (b == 0 ? T0 : T1) + count);
+    Q4T_CHECK(static_cast<int>(seqs[b].history.size()) == seqs[b].position);
   }
 
   bool ok = true;
@@ -377,4 +379,41 @@ Q4T_TEST(mtp_spec_multi_step) {
   mtp.Free();
   m.Free();
   return ok;
+}
+
+// Pre-submission failures must never expose stale consumable results. These
+// checks use no model allocation or GPU submission.
+Q4T_TEST(mtp_spec_multi_rejects_invalid_outputs) {
+  Model main;
+  q4t::mtp::MtpModel draft;
+  draft.max_seq = 1;
+  draft.k_max = 4;
+  ModelSequence sequence;
+  sequence.stage = ModelSequence::Stage::kDecode;
+  const ModelSequence* sequences[] = {&sequence};
+  int32_t token = 1;
+  uint16_t hidden = 0;
+  const uint16_t* input[] = {&hidden};
+  uint16_t* output[] = {&hidden};
+  int32_t accepted[4] = {};
+  int count = 99;
+  int32_t next = 99, next_draft = 99;
+  auto call = [&](int k) {
+    count = next = next_draft = 99;
+    return MtpSpeculativeStepMulti(
+        main, draft, sequences, &token, &token, input, 1, k, accepted,
+        &count, &next, &next_draft, output, nullptr);
+  };
+  Q4T_CHECK(!call(0).ok());
+  Q4T_CHECK(count == 0 && next == -1 && next_draft == -1);
+  Q4T_CHECK(!call(4).ok());
+  Q4T_CHECK(count == 0 && next == -1 && next_draft == -1);
+  sequences[0] = nullptr;
+  Q4T_CHECK(!call(3).ok());
+  Q4T_CHECK(count == 0 && next == -1 && next_draft == -1);
+  sequences[0] = &sequence;
+  sequence.stage = ModelSequence::Stage::kIdle;
+  Q4T_CHECK(!call(3).ok());
+  Q4T_CHECK(count == 0 && next == -1 && next_draft == -1);
+  return true;
 }

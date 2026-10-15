@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "source_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source",
+  "build_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/build/foundation-20261008",
+  "source_audit_sha256": "42d65a5d343f6f053c5a506d247c243c6ba4e815191ddfeff14b05f5747f5121",
+  "removed_environment": [],
+  "steps": [
+    {
+      "name": "configure",
+      "argv": [
+        "cmake",
+        "-S",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/build/foundation-20261008",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_CXX_COMPILER=/usr/bin/g++-14",
+        "-DCMAKE_CUDA_COMPILER=/usr/local/cuda-13.3/bin/nvcc",
+        "-DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-14",
+        "-DQ4T_CUDA_ARCHITECTURES=110a",
+        "-DQ4T_BUILD_TESTS=ON"
+      ],
+      "started_unix": 1791470020.8524587,
+      "seconds": 2.0685930252075195,
+      "exit_code": 0,
+      "warning_lines": [],
+      "log": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/.q4t-work/foundation-20261008/configure-01.log",
+      "log_sha256": "b1514cef319d9172594201c59b2a63b39deec075f8134e1f9be93f096b882550"
+    },
+    {
+      "name": "build",
+      "argv": [
+        "cmake",
+        "--build",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/build/foundation-20261008",
+        "--target",
+        "q4t",
+        "q4t_tests",
+        "q4t_mtp_cross_mode_diagnostic",
+        "--parallel",
+        "6"
+      ],
+      "started_unix": 1791470022.9211743,
+      "seconds": 42.35956907272339,
+      "exit_code": 0,
+      "warning_lines": [],
+      "log": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/.q4t-work/foundation-20261008/build-01.log",
+      "log_sha256": "500c91ca7d1a8b6401f126f626a484ec057c51ac4d19cb596b3b017f354cfc97"
+    }
+  ],
+  "no_inference": true,
+  "passed": true
+}

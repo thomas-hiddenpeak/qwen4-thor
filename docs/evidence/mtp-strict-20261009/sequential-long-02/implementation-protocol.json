@@ -1,0 +1,160 @@
+{
+  "kind": "fixed_targeted_long_supplement_execution_freeze",
+  "created_unix": 1791480257.7154732,
+  "status": "IMPLEMENTED_NOT_BUILT_NOT_RUN",
+  "failure_preserved": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-direct-01/summary.json",
+    "bytes": 47588,
+    "sha256": "64617ae4df19589991c49db7798f1ce0363bcdd806cee70817866ea9e636aff1"
+  },
+  "failure_protocol": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-direct-01/protocol.json",
+    "bytes": 1893,
+    "sha256": "3a7d5b8e6aa396b59d40a72d2a7cd8b5ac33a0c4dfd3ece8235c2c5c771d29f3"
+  },
+  "old_original_binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-strict-20261009/q4t_mtp_sequential_admission",
+    "sha256": "395764df3e8048ed268a114fd9f0a2f1cd56ef7d9435c46aa7499be349c56565",
+    "currently_matches": true
+  },
+  "reason": "Original shape fixture predicts configured stop 248046 before decoding; original first FAIL is retained. Short completed checks will not repeat. This supplement only fills the missing long state/poison/natural/extend domain.",
+  "fixture_selection": {
+    "selection_rule": "First 8196 item in pre-model frozen sustained questionnaire/manifest, index 4, zh-summary. Chosen by existing index/length, not model output. One attempt; no sample or seed search.",
+    "row_index": 4,
+    "id": "zh-summary",
+    "expected_tokens": 8196,
+    "prompt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-long-02/prompt.txt",
+      "bytes": 46625,
+      "sha256": "d9a2bc519332525d5c6f1e9d96b638faa76078a9c584c11e185ebefb47a20360"
+    },
+    "append_tokens": [],
+    "source_bindings": [
+      {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/inputs/identity.json",
+        "bytes": 1175,
+        "sha256": "e3a8ebe644c0a33c9bc5ca117cdb9dcf67ceddb6d957ace6e90f7cf862d06332"
+      },
+      {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/inputs/manifest.json",
+        "bytes": 1521,
+        "sha256": "9b2e03cb558efc6c2a20e9707b41ca5195b3e04309d2989ea4c55eac853916b9"
+      },
+      {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/inputs/requests.jsonl",
+        "bytes": 1598604,
+        "sha256": "9bb9647e60f28372117c39dc808f659ef105302f441c9c293467be713a5de0b9"
+      },
+      {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-pair/inputs/questionnaire.json",
+        "bytes": 15113,
+        "sha256": "8de952c2389a4c391c99f0dcb6a2cb7c6ec6c7b3bcff8171fa1be787843cadcf"
+      }
+    ],
+    "pre_model_freeze_bindings": [
+      {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/prepared-fixtures-identity-01.json",
+        "bytes": 1876,
+        "sha256": "092c8586c1d7f94b103d437b0eaf9de9ba6e0e5b8a299ba8979a1586339eaf7f"
+      },
+      {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-protocol-01.json",
+        "bytes": 20470,
+        "sha256": "949ec20df4a4fd7e35e8da61723b72190f2367baf2c6753960ac1c5bd21ad32f"
+      }
+    ],
+    "direct_first_start_unix": 1791479742.622532,
+    "input_mtimes_precede_direct_first_start": true,
+    "token_count_runtime_checked": true
+  },
+  "target": "q4t_mtp_sequential_long_admission",
+  "required_tests": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-long-02/required-tests.txt",
+    "bytes": 41,
+    "sha256": "e7415445467e892f5772f5cba8944c07e32f6dd4ee300676a38a318e6735025e"
+  },
+  "source_bindings": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tests/mtp_sequential_admission_test.cpp",
+      "bytes": 34456,
+      "sha256": "72f10f2b99d89ccd8372b209ec94cc65c14576fad16206d3b387a846481cdbd1"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tests/support/mtp_sequential_state.h",
+      "bytes": 12050,
+      "sha256": "f435a6c849ab7e078ae16ffd629e351a07a6dfa77cdb4764b0f3018b0c7867d0"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/CMakeLists.txt",
+      "bytes": 18098,
+      "sha256": "83b39645fa4ab51d74e129f903f8894b09745e85ecce7c953c6576d1834b527b"
+    }
+  ],
+  "original_full_entry_body_unchanged_from_build_snapshot": true,
+  "shared_helper_change": "Counts gains per-entry caps, default96/40 preserved for original entry; long-only caps34/18. No production source modified.",
+  "build_requirement": "Root uses a fresh diagnostic build only; preserve original six binary identities and original direct evidence. Bind new binary/CMake/flags and source identities before execution.",
+  "runtime_identity_pending": true,
+  "command_template": [
+    "<fresh-diagnostic-build>/q4t_mtp_sequential_long_admission",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-long-02/required-tests.txt"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source",
+  "environment_remove_prefixes": [
+    "Q4T_"
+  ],
+  "environment_remove_names": [
+    "LD_PRELOAD"
+  ],
+  "environment_additions": {
+    "Q4T_MTP_SEQUENTIAL_LONG_PROMPT": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-long-02/prompt.txt",
+    "Q4T_MTP_SEQUENTIAL_DIR": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-long-02/raw"
+  },
+  "deadline_seconds": 600,
+  "raw_limit_bytes": 100663296,
+  "attempts": 1,
+  "retries": 0,
+  "short_rerun": false,
+  "actual_model_loads": 1,
+  "draft_model_loads": 1,
+  "prefill_chunks": 4,
+  "max_target_b1_calls": 34,
+  "target_breakdown": {
+    "poison": 2,
+    "natural_actual_and_plain": 32
+  },
+  "max_draft_forward_calls": 18,
+  "draft_breakdown": {
+    "init_8192_plus4": 2,
+    "natural_actual_proposal_and_extend": 12,
+    "independent_reference_extend": 4
+  },
+  "matrix": {
+    "context": 8196,
+    "prefill_plain_vs_capture": true,
+    "future_patterns": [
+      "3f",
+      "bf"
+    ],
+    "natural_steps": 4,
+    "independent_plain_trajectory": true,
+    "independent_natural_extend": true,
+    "complete_valid_state": true,
+    "page_map": "fully checked identity only",
+    "forced_verify_steps": 0
+  },
+  "success_requirements": [
+    "only named long test runs, exit0, one PASS, zero failed/skipped",
+    "exact frozen input token count8196 with no appended IDs",
+    "MTP_SEQUENTIAL_LONG_SUMMARY all_required=PASS; natural_steps4, poison_targets2, prefill_chunks4, target<=34, draft<=18, artifact_bytes<=96MiB",
+    "four natural nonterminal steps; prefill or intermediate EOS remains FAIL and no replacement",
+    "every valid state and ordinary/actual target and independent extend comparison exact and finite",
+    "observed real extend lengths reported; no invented missing length coverage"
+  ],
+  "nonclaims": [
+    "original combined test is not changed to PASS",
+    "does not rerun or replace completed short evidence",
+    "does not explain all T4 trajectory forks",
+    "does not imply HTTP acceptance or performance"
+  ]
+}

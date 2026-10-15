@@ -1,0 +1,4 @@
+[PASS] mtp_sequential_control_acceptance
+[PASS] mtp_sequential_control_stop
+[PASS] mtp_sequential_control_partial_failure
+3 tests, 3 passed, 0 failed, 0 skipped

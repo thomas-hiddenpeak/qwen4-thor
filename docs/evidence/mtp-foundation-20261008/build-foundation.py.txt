@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+"""Build only the frozen foundation service/test targets; no inference."""
+import hashlib
+import json
+import os
+import pathlib
+import re
+import subprocess
+import sys
+import time
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+OUT = pathlib.Path(__file__).resolve().parent
+BUILD = ROOT / 'build/foundation-20261008'
+assert not BUILD.exists(), 'build directory must be new'
+assert json.loads((OUT / 'source-target-audit-01.json').read_text())['passed']
+env = {k: v for k, v in os.environ.items() if not k.startswith('Q4T_') and k != 'LD_PRELOAD'}
+commands = [
+    ['cmake', '-S', str(ROOT), '-B', str(BUILD),
+     '-DCMAKE_BUILD_TYPE=Release', '-DCMAKE_CXX_COMPILER=/usr/bin/g++-14',
+     '-DCMAKE_CUDA_COMPILER=/usr/local/cuda-13.3/bin/nvcc',
+     '-DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-14',
+     '-DQ4T_CUDA_ARCHITECTURES=110a', '-DQ4T_BUILD_TESTS=ON'],
+    ['cmake', '--build', str(BUILD), '--target', 'q4t', 'q4t_tests',
+     'q4t_mtp_cross_mode_diagnostic', '--parallel', '6'],
+]
+report = dict(schema_version=1, source_root=str(ROOT), build_root=str(BUILD),
+              source_audit_sha256=hashlib.sha256((OUT / 'source-target-audit-01.json').read_bytes()).hexdigest(),
+              removed_environment=sorted(k for k in os.environ if k.startswith('Q4T_') or k == 'LD_PRELOAD'),
+              steps=[], no_inference=True)
+for name, command in zip(['configure', 'build'], commands):
+    log = OUT / (name + '-01.log')
+    begin = time.time()
+    with log.open('x') as stream:
+        completed = subprocess.run(command, cwd=ROOT, env=env, stdout=stream, stderr=subprocess.STDOUT)
+    text = log.read_text()
+    warnings = [line for line in text.splitlines() if re.search(r'\bwarning\b', line, re.I)]
+    report['steps'].append(dict(name=name, argv=command, started_unix=begin,
+                               seconds=time.time()-begin, exit_code=completed.returncode,
+                               warning_lines=warnings, log=str(log),
+                               log_sha256=hashlib.sha256(log.read_bytes()).hexdigest()))
+    print(json.dumps(dict(name=name, exit_code=completed.returncode,
+                          seconds=report['steps'][-1]['seconds'], warnings=len(warnings))), flush=True)
+    if completed.returncode:
+        break
+report['passed'] = len(report['steps']) == 2 and all(x['exit_code'] == 0 and not x['warning_lines'] for x in report['steps'])
+(OUT / 'build-result-01.json').write_text(json.dumps(report, indent=2) + '\n')
+sys.exit(0 if report['passed'] else 1)

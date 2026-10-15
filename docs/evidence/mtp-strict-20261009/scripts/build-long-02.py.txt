@@ -1,0 +1,31 @@
+"""Targeted diagnostic build; production candidate and original tests untouched."""
+import hashlib,json,os,re,shutil,subprocess,time
+from pathlib import Path
+S=Path(__file__).resolve().parent;W=S.parents[1];D=S/'sequential-long-02';B=W/'build/mtp-sequential-long-20261009'
+def sha(p):
+    with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def save(p,v):
+    with p.open('x') as f:json.dump(v,f,indent=2);f.write('\n')
+assert not B.exists()
+old=json.loads((S/'build-identity-01.json').read_text());assert all(sha(r['path'])==r['sha256'] for r in old['files'])
+implementation=json.loads((D/'implementation-protocol.json').read_text());assert all(sha(r['path'])==r['sha256'] for r in implementation['source_bindings'])
+paths=subprocess.check_output(['git','ls-files','--cached','--others','--exclude-standard','include','src','cmake','CMakeLists.txt','tests'],cwd=W,text=True).splitlines()
+snapshot=D/'source-build';snapshot.mkdir();rows=[]
+for n in sorted(set(paths)):
+    p=W/n
+    if p.is_file():
+        target=snapshot/n;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,target);rows.append(dict(path=n,sha256=sha(p)))
+configure=['cmake','-S',str(W),'-B',str(B),'-DCMAKE_BUILD_TYPE=Release','-DCMAKE_CXX_COMPILER=/usr/bin/g++-14','-DCMAKE_CUDA_COMPILER=/usr/local/cuda-13.3/bin/nvcc','-DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-14','-DQ4T_CUDA_ARCHITECTURES=110a','-DQ4T_BUILD_TESTS=ON']
+build=['cmake','--build',str(B),'--target','q4t_mtp_sequential_long_admission','--parallel','6']
+save(D/'build-protocol.json',dict(time=time.time(),source_files=rows,configure=configure,build=build,implementation_protocol_sha256=sha(D/'implementation-protocol.json'),script_sha256=sha(__file__),only_diagnostic_target=True,no_test=True))
+env={k:v for k,v in os.environ.items() if not k.startswith('Q4T_') and k!='LD_PRELOAD'}
+for n,argv in [('configure',configure),('build',build)]:
+    start=time.time()
+    with (D/(n+'.log')).open('x') as f:r=subprocess.run(argv,cwd=W,env=env,stdout=f,stderr=subprocess.STDOUT)
+    warnings=[x for x in (D/(n+'.log')).read_text().splitlines() if re.search(r'\bwarning\b',x,re.I)]
+    row=dict(exit_code=r.returncode,seconds=time.time()-start,warnings=warnings,passed=r.returncode==0 and not warnings,log_sha256=sha(D/(n+'.log')));save(D/(n+'.json'),row);print(json.dumps(dict(name=n,**row)),flush=True)
+    if not row['passed']:raise SystemExit(1)
+assert all(sha(W/r['path'])==r['sha256'] for r in rows)
+assert all(sha(r['path'])==r['sha256'] for r in old['files'])
+outputs=[B/'q4t_mtp_sequential_long_admission',B/'CMakeCache.txt',B/'CMakeFiles/q4t_model.dir/flags.make',*sorted(B.glob('libq4t_*.a'))]
+save(D/'build-identity.json',dict(files=[dict(path=str(p),sha256=sha(p),bytes=p.stat().st_size) for p in outputs],source_protocol_sha256=sha(D/'build-protocol.json'),old_candidate_unchanged=True))

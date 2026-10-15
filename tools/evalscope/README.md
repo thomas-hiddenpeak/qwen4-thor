@@ -27,11 +27,52 @@ build/ 或 .q4t-work/。没有 --fixtures 时按固定算法生成语料；使�
 可重放已有 quality-inputs/ 或含 context-N/requests.jsonl 的性能结果目录。
 --binary 可选择保存的旧二进制；--port 可选择服务端口。
 
+serve 默认开启 MTP 投机解码（k=3），`--no-mtp` 回退普通
+greedy decode（性能基线侧）。run_acceptance.py 用 `--mtp` 显式
+开启、`--mtp-default` 不带旗标（验证 serve 默认路径）、`--mtp-k`
+指定 k；两者都不带时传 `--no-mtp`。两组使用不同
+输出目录，`run-mode.json`、`server-command.json` 和结果中的
+`decode_mode` 区分普通 decode 与 MTP。可分别用 `--binary` 指定旧版
+和候选；`commit.txt`/`worktree.patch` 记录执行脚本所在源码树，实际
+被测二进制以 `binary.sha256`、命令绝对路径和对应构建缓存为准，不能
+把脚本所在提交自动当成外部旧二进制的构建提交。现有参考不会被重写。
+
+```bash
+python3 tools/evalscope/run_acceptance.py --mode quality --mtp \
+  --binary build/runtime/q4t --model-dir "$Q4T_MODEL_DIR" \
+  --output .q4t-work/e2e/my-change-mtp-quality \
+  --reference tools/evalscope/fixtures/quality_reference.json
+```
+
+`--mtp`/`--mtp-default` 同样适用于 performance 和 limits 模式。
+启动后记录并验证实际 capacity（`[q4t][capacity]`）：实际容量保持
+1/8192/208896；预算缩小容量会直接拒绝。启动通过只证明加载状态。
+数值验收合同为 [EVALUATION.md](../../docs/EVALUATION.md)「MTP vs
+plain 近 tie 合同」（N=4 ULP、限定近 tie 为唯一分岔来源、causality
+负控）；主线 sequential verifier 与 `[q4t][decode_path]` 终态日志
+核验随 sequential 专属工件从归并树删除，其正确性参考价值保留在
+main 提交历史。MoE trace 与 MTP 组合不在本入口接受范围。
+
 质量模式包含 11 条原生模板检索题，要求明确答案精确匹配、实际输入计数
 匹配并正常 stop。性能模式每档使用同一输入重复三次，要求实际五档长度、
 256 输出、length 结束及重复文本一致。--reference 另外要求请求 prompt
 摘要和生成文本/摘要与参考一致。失败返回非零并保留响应、数据库、服务日志；
 运行中断保留退出信息，缺少结果不能视为通过。
+
+每条响应还记录实际 HTTP/SSE `id`，要求有 choices 的消息均有合法且
+一致的 ID；缺失、混合 ID 在保存 responses.json 后拒绝。不会以请求
+序号推造 ID。evalscope 未保存的 usage-only SSE 不属于此项覆盖范围。
+该合同和 physical_ram.py 的合成检查不需要模型，已注册公共 host CTest。
+物理 RAM 工具只汇总提供的采样；证据不足返回 unknown，不以进程 RSS
+替代整机使用量，也不把算法预算可行当作实际内存目标已满足。
+
+性能结果同时保存 evalscope 数据库原值 `first_chunk_latency`（ttft）
+与 `latency`（整请求耗时），并分别记录 `(输出数−1)/(latency−ttft)`
+和 `输出数/latency`。前者是客户端 decode 估计，后者是全请求吞吐；
+TTFT 包含接入、prefill 和 MTP 初始化，整请求耗时还含 HTTP 收尾。
+MTP 可能成组输出 token，本工具不把 SSE chunk 间隔当成精确 token ITL，
+也不据此提供 ITL 分位数或纯 GPU 阶段时间。非有限计时、非正 decode
+区间在原响应记录保存后拒绝；原始数据库、逐请求响应及服务日志保留。
 
 **脚本退出 0 不等于性能无回退已接受**：脚本验证 HTTP、长度、质量或输出
 一致性并采集计时，性能仍需按总 decode token/总 decode 时间、每档重复

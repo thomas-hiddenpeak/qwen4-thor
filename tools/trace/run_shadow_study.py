@@ -24,12 +24,14 @@ def main():
     for key in ['binary', 'checker', 'model-dir', 'calibration', 'output']:
         ap.add_argument('--' + key, type=Path, required=True)
     ap.add_argument('--port', type=int, default=18084)
+    ap.add_argument('--corpus-file', type=Path, action='append',
+                    help='explicit document corpus; repeat to preserve old inputs')
     args = ap.parse_args()
     out = args.output.resolve()
     if not any(out.is_relative_to(ROOT / p) for p in ('build', '.q4t-work')):
         ap.error('output must be under build/ or .q4t-work/')
     out.mkdir(parents=True, exist_ok=False)
-    paths = [ROOT / 'docs' / name for name in ['MODEL.md', 'ARCHITECTURE.md',
+    paths = args.corpus_file or [ROOT / 'docs' / name for name in ['MODEL.md', 'ARCHITECTURE.md',
               'PHASES.md', 'EVALUATION.md', 'MOE_ROUTING_TRACE.md',
               'MOE_CACHE_REPLAY_2026-09-28.md', 'RELEASE_TEXT_V1_2026-09-28.md']]
     corpus = '\n\n'.join(p.name + '\n' + p.read_text() for p in paths)

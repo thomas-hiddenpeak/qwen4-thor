@@ -1,0 +1,11 @@
+{
+  "pid": 93520,
+  "process_group": 93520,
+  "exit_code": 0,
+  "sigterm_sent": false,
+  "forced_cleanup": false,
+  "remaining_process_group": false,
+  "passed": true,
+  "timeout": false,
+  "seconds": 21.846843738108873
+}

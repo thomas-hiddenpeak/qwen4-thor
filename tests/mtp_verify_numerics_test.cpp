@@ -337,8 +337,8 @@ Q4T_TEST(mtp_verify_numerics) {
 
   // Reserve count is normally T-1 (== verify_ckpt_cap in production, where
   // cap == mtp_k == tokens_per_seq-1). The env override exists to exercise
-  // cap != T-1 (the save uses num_ckpt=T-1 as the layer stride while the
-  // restore/snapshot use cap), which exposes the layout-contract mismatch.
+  // cap != T-1: save, restore and snapshot must all use the reserved cap
+  // stride even though only T-1 rows are valid.
   const char* reserve_env = std::getenv("Q4T_VERIFY_NUMERICS_RESERVE");
   const int reserve = reserve_env ? std::atoi(reserve_env) : 4;
   s = ModelReserveVerifyCheckpoints(m, reserve);

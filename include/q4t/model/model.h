@@ -141,16 +141,19 @@ struct Model {
   // ModelReserveVerifyCheckpoints): per-linear-layer per-token SSM/conv state,
   // so a partial accept restores the accepted-prefix boundary via D2D instead
   // of re-running the forward. POOLED over max_seq sequences (Phase 2 MTP
-  // multi-seq verify): ssm = [num_lin, max_seq, cap, ssm_elems] f32, conv =
-  // [num_lin, max_seq, cap, conv_elems] bf16, ple_conv = [num_ple, max_seq,
-  // cap, ple_conv_elems] bf16. With max_seq == 1 the layout degenerates to the
-  // legacy [num_lin, cap, elems] (bit-identical single-seq path). The PLE
+  // multi-seq verify). Writers and readers use the reserved cap as stride:
+  // [num_layers, max_seq, cap, elems]. verify_ckpt_rows bounds valid rows
+  // without changing that physical layout. The PLE
   // conv state is an in-place recurrence too, so a partial accept must restore
   // it (the single-seq path historically missed this — see LOG 2026-09-13).
   float* d_verify_ssm_ckpt = nullptr;
   uint16_t* d_verify_conv_ckpt = nullptr;
   uint16_t* d_verify_ple_conv_ckpt = nullptr;
   int verify_ckpt_cap = 0;
+  // Only slots written by the most recent successful checkpointed forward
+  // are restorable. Any new layer forward/reset invalidates these records.
+  mutable int verify_ckpt_rows = 0;
+  mutable std::vector<int> verify_ckpt_slots;
 
   int hc_dim() const { return cfg.hc * cfg.hs; }
   void Free();
@@ -290,6 +293,8 @@ Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
 // positions before `base_position`; the in-batch prefix supplies the rest.
 // The caller owns logits (T*vocab, or vocab for kLastRow) and
 // trunk_out (T*hc*hs); selecting logits rows never shortens trunk_out.
+// save_checkpoints requires at least T-1 reserved rows and saves complete
+// SSM/conv/PLE state for the selected sequence.
 Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
                         int base_position, const int32_t* history,
                         int history_len, uint16_t* logits, cudaStream_t stream,
@@ -327,9 +332,10 @@ Status ModelDecodeBatchMulti(const Model& m, const int32_t* tokens,
 
 // Reserve per-linear-layer per-token SSM/conv/PLE-conv checkpoint buffers for
 // MTP verify (idempotent; grows if num_ckpt exceeds the current capacity).
-// Layout is pooled over m.cfg.max_seq: [num_lin, max_seq, cap, elems]. Must be
-// called before ModelDecodeBatch(save_checkpoints=true) / ModelVerifyMulti /
-// ModelRestoreCheckpoint.
+// Allocation is pooled over m.cfg.max_seq with reserved capacity as stride.
+// Only rows/slots written by the last successful verify are restorable.
+// Call before ModelVerifyMulti or ModelDecodeBatch(save_checkpoints=true).
+// Both paths save PLE recurrent state for partial acceptance.
 Status ModelReserveVerifyCheckpoints(Model& m, int num_ckpt);
 
 // Restore every linear layer's SSM/conv state AND the PLE layer's conv state
@@ -339,6 +345,9 @@ Status ModelReserveVerifyCheckpoints(Model& m, int num_ckpt);
 // restore fixes a pre-existing gap: the single-seq path only restored the
 // linear layers, leaving the PLE short-conv window polluted with rejected
 // tokens after a partial accept.)
+// Rejects unwritten rows/slots and checkpoints invalidated by another model
+// forward, state reset, or allocation growth. Repeated restores are allowed
+// while that checkpoint set remains current.
 Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx, cudaStream_t stream,
                               int seq_id = 0);
 
@@ -353,6 +362,9 @@ Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx, cudaStream_t stream,
 // checkpoints are saved so a partial accept can restore each sequence's state
 // to its accepted-prefix boundary via ModelRestoreCheckpoint(m, a_i, stream,
 // seq_id).
+// ModelVerifyMulti owns its upload sources through checked stream completion.
+// After submission, all Status exits wait before local host buffers expire;
+// checkpoint rows become valid only after a successfully completed forward.
 //
 //   tokens        : host int32 [B * T] — sequence-major (seq 0's T tokens,
 //                   then seq 1's, ...). Row b*T+t is sequence b's (t+1)-th

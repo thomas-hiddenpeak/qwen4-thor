@@ -1,0 +1,28 @@
+{
+  "created_unix": 1791483402.6479292,
+  "scope": "Only reference admission for original final early EOS; strict coverage requirements unchanged",
+  "files": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/run_acceptance.py",
+      "sha256": "68429c02c9931ce825d2120a0f8891e92109d3caaa509606d368673cfe58a834"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/admission_limits_reference.py",
+      "sha256": "ac19794e2bc953bdca1e207cc93f1ff6da8b0208092217d0439913c117f039ce"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/test_admission_limits_reference.py",
+      "sha256": "7342d71e83ad84ca39781d9666298e29a559ff1baf874b88db780865b8110540"
+    }
+  ],
+  "host_command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_admission_limits_reference"
+  ],
+  "expected_tests": 5,
+  "no_gpu": true
+}

@@ -1,0 +1,172 @@
+#!/usr/bin/env python3
+"""Bind every fatbin header and payload directly to the two linked ELF files.
+
+This extension is CPU-only. PTX zstd bytes are decoded directly from q4t with
+libzstd; no CUDA API or subprocess extractor is needed for the proof.
+"""
+import ctypes
+import ctypes.util
+import hashlib
+import json
+import pathlib
+import re
+import struct
+import sys
+
+OUT = pathlib.Path(__file__).resolve().parent
+identity_path = OUT/'execution-identity-audit-03.json'
+identity = json.loads(identity_path.read_text())
+pattern = re.compile(rb'(?:_GLOBAL__N__|_INTERNAL_)[0-9a-f]{8}(?=_)')
+mapping = {x['old'].encode():x['new'].encode() for x in identity['generated_identifier_mapping']}
+checks=[]
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def check(name, condition, detail=None):
+    checks.append(dict(name=name,passed=bool(condition),detail=detail))
+    assert condition,name
+
+
+def section(binary,name):
+    blob=pathlib.Path(binary).read_bytes()
+    header=struct.unpack_from('<16sHHIQQQIHHHHHH',blob)
+    check('ELF64_little_endian:'+binary,header[0][:6]==b'\x7fELF\x02\x01')
+    entries=[struct.unpack_from('<IIQQQQIIQQ',blob,header[6]+i*header[11]) for i in range(header[12])]
+    string_header=entries[header[13]]
+    names=blob[string_header[4]:string_header[4]+string_header[5]]
+    selected=[r for r in entries if names[r[0]:].split(b'\0',1)[0].decode()==name]
+    check('one_section:'+binary+':'+name,len(selected)==1)
+    row=selected[0]
+    return blob,dict(address=row[3],offset=row[4],size=row[5],data=blob[row[4]:row[4]+row[5]])
+
+
+library=ctypes.util.find_library('zstd')
+check('zstd_library_available',library is not None)
+zstd=ctypes.CDLL(library)
+zstd.ZSTD_versionString.restype=ctypes.c_char_p
+zstd.ZSTD_isError.argtypes=[ctypes.c_size_t];zstd.ZSTD_isError.restype=ctypes.c_uint
+zstd.ZSTD_getFrameContentSize.argtypes=[ctypes.c_void_p,ctypes.c_size_t];zstd.ZSTD_getFrameContentSize.restype=ctypes.c_ulonglong
+zstd.ZSTD_findFrameCompressedSize.argtypes=[ctypes.c_void_p,ctypes.c_size_t];zstd.ZSTD_findFrameCompressedSize.restype=ctypes.c_size_t
+zstd.ZSTD_decompress.argtypes=[ctypes.c_void_p,ctypes.c_size_t,ctypes.c_void_p,ctypes.c_size_t];zstd.ZSTD_decompress.restype=ctypes.c_size_t
+all_containers={}
+for label in ['old','new']:
+    binary=identity[label+'_binary']
+    blob,sec=section(binary,'.nv_fatbin')
+    check('actual_binary_identity:'+label,sha(blob)==identity[label+'_sha256'])
+    data=sec['data'];at=0;containers=[]
+    while at<len(data):
+        ordinal=len(containers)+1;start=at
+        magic,version,header_size,payload_size=struct.unpack_from('<IHHQ',data,at)
+        check(f'{label}:{ordinal}:outer_header_contract',magic==0xba55ed50 and version==1 and header_size==16)
+        end=start+header_size+payload_size
+        check(f'{label}:{ordinal}:outer_bounds',end<=len(data) and end>start+header_size)
+        at+=header_size;records=[]
+        while at<end:
+            record_start=at
+            kind,record_version,record_header,padded=struct.unpack_from('<HHIQ',data,at)
+            check(f'{label}:{ordinal}:{len(records)}:record_version',record_version==257)
+            check(f'{label}:{ordinal}:{len(records)}:record_kind',kind in (1,2))
+            check(f'{label}:{ordinal}:{kind}:record_header_size',record_header==(80 if kind==1 else 104))
+            header=data[at:at+record_header]
+            compressed=struct.unpack_from('<I',header,16)[0]
+            arch=struct.unpack_from('<I',header,28)[0]
+            flags=struct.unpack_from('<Q',header,40)[0]
+            uncompressed=struct.unpack_from('<Q',header,56)[0]
+            check(f'{label}:{ordinal}:{kind}:target_unchanged_contract',arch==110)
+            check(f'{label}:{ordinal}:{kind}:target_flags_contract',flags==(0x108011 if kind==1 else 0x1100011))
+            begin=at+record_header;record_end=begin+padded
+            check(f'{label}:{ordinal}:{kind}:payload_bounds',record_end<=end and padded%8==0)
+            payload=data[begin:record_end]
+            suffix='ptx' if kind==1 else 'cubin'
+            extract_name=f'q4t.{ordinal}.sm_110a.{suffix}'
+            existing=(OUT/'elf-identity'/label/extract_name).read_bytes()
+            if kind==1:
+                check(f'{label}:{ordinal}:compressed_length',0<compressed<=padded and padded-compressed<8)
+                encoded=payload[:compressed]
+                check(f'{label}:{ordinal}:compressed_padding_zero',payload[compressed:]==bytes(padded-compressed))
+                check(f'{label}:{ordinal}:zstd_magic',encoded[:4]==b'\x28\xb5\x2f\xfd')
+                frame_size=zstd.ZSTD_findFrameCompressedSize(encoded,len(encoded))
+                check(f'{label}:{ordinal}:one_exact_zstd_frame',not zstd.ZSTD_isError(frame_size) and frame_size==compressed)
+                content_size=zstd.ZSTD_getFrameContentSize(encoded,len(encoded))
+                check(f'{label}:{ordinal}:content_size',content_size==uncompressed and 0<uncompressed<16*1024*1024)
+                output=ctypes.create_string_buffer(uncompressed)
+                actual=zstd.ZSTD_decompress(output,uncompressed,encoded,len(encoded))
+                check(f'{label}:{ordinal}:decompression_size',not zstd.ZSTD_isError(actual) and actual==uncompressed)
+                decoded=output.raw[:actual]
+                check(f'{label}:{ordinal}:single_terminal_NUL',decoded.endswith(b'\0') and b'\0' not in decoded[:-1])
+                check(f'{label}:{ordinal}:direct_PTX_equals_extraction',decoded[:-1]==existing)
+                check(f'{label}:{ordinal}:actual_PTX_target',re.findall(rb'^\.target\s+([^\n]+)',decoded,re.M)==[b'sm_110a'])
+            else:
+                check(f'{label}:{ordinal}:ELF_uncompressed_header',compressed==0 and uncompressed==0)
+                check(f'{label}:{ordinal}:ELF_magic',payload[:6]==b'\x7fELF\x02\x01')
+                check(f'{label}:{ordinal}:direct_ELF_equals_extraction',payload==existing)
+                decoded=payload
+            frozen=next(x for x in identity['cuda_images'] if x['name']==extract_name)
+            check(f'{label}:{ordinal}:{kind}:frozen_extraction_binding',sha(existing)==frozen[label+'_sha256'])
+            records.append(dict(kind=kind,record_version=record_version,header_size=record_header,
+                record_offset=record_start,payload_offset=begin,padded_size=padded,
+                compressed_size=compressed,uncompressed_size=uncompressed,
+                arch=arch,flags=flags,header_hex=header.hex(),payload_sha256=sha(payload),
+                direct_decoded_sha256=sha(decoded),extracted_sha256=sha(existing),
+                extraction_path=str(OUT/'elf-identity'/label/extract_name),decoded=decoded))
+            at=record_end
+        check(f'{label}:{ordinal}:exact_record_coverage',at==end)
+        check(f'{label}:{ordinal}:selection_inventory',[r['kind'] for r in records]==[1,2])
+        containers.append(dict(ordinal=ordinal,offset=start,header_hex=data[start:start+16].hex(),
+                               payload_size=payload_size,end=end,records=records))
+        if at<len(data):
+            next_at=min((at+255)//256*256,len(data))
+            check(f'{label}:{ordinal}:inter_container_zero_padding',
+                  next_at>at and data[at:next_at]==bytes(next_at-at))
+            containers[-1]['zero_padding_after']=next_at-at
+            at=next_at
+        else:
+            containers[-1]['zero_padding_after']=0
+    check('full_fatbin_byte_coverage:'+label,at==len(data))
+    check('exact_container_count:'+label,len(containers)==21)
+    all_containers[label]=dict(section_address=sec['address'],section_offset=sec['offset'],
+        section_size=sec['size'],section_sha256=sha(data),containers=containers)
+
+old=all_containers['old'];new=all_containers['new']
+check('outer_container_start_offsets',[x['offset'] for x in old['containers']]==[x['offset'] for x in new['containers']])
+check('fatbin_registration_addresses',old['section_address']==new['section_address'])
+for a,b in zip(old['containers'],new['containers']):
+    ordinal=a['ordinal']
+    old_header=bytearray.fromhex(a['header_hex']);new_header=bytearray.fromhex(b['header_hex'])
+    old_header[8:16]=new_header[8:16]=bytes(8)
+    check(f'{ordinal}:outer_header_whitelist',old_header==new_header)
+    for x,y in zip(a['records'],b['records']):
+        kind=x['kind'];old_header=bytearray.fromhex(x['header_hex']);new_header=bytearray.fromhex(y['header_hex'])
+        if kind==1:
+            # These are the ONLY mutable record-header fields: padded payload
+            # bytes and compressed bytes. All selection/architecture/flags,
+            # uncompressed length, versions and every opaque byte stay exact.
+            old_header[8:16]=new_header[8:16]=bytes(8)
+            old_header[16:20]=new_header[16:20]=bytes(4)
+        check(f'{ordinal}:{kind}:complete_record_header_whitelist',old_header==new_header)
+        check(f'{ordinal}:{kind}:direct_payload_alpha_equivalence',
+              pattern.sub(lambda m:mapping.get(m[0],m[0]),x['decoded'])==y['decoded'])
+        del x['decoded'];del y['decoded']
+report=dict(schema_version=1,passed=all(x['passed'] for x in checks),checks=checks,
+    binaries={label:dict(path=identity[label+'_binary'],sha256=identity[label+'_sha256']) for label in ['old','new']},
+    identity_report=str(identity_path),identity_report_sha256=sha(identity_path.read_bytes()),
+    zstd_library=library,zstd_version=zstd.ZSTD_versionString().decode(),
+    container_identity=all_containers,
+    allowed_header_changes={'outer':[{'offset':8,'bytes':8,'meaning':'size equals sum of complete record sizes'}],
+        'PTX':[{'offset':8,'bytes':8,'meaning':'padded payload size'},
+               {'offset':16,'bytes':4,'meaning':'one complete zstd frame length'}],
+        'ELF':[]},
+    script_sha256=sha(pathlib.Path(__file__).read_bytes()),
+    prior_parser_attempt=dict(path=str(OUT/'fatbin-parser-first-attempt.json'),
+        sha256=sha((OUT/'fatbin-parser-first-attempt.json').read_bytes())),
+    scope='Direct original-ELF container/selection/header/payload proof; zstd decompressed in CPU memory; no model/GPU/HTTP execution')
+path=OUT/'fatbin-container-audit-01.json'
+if path.exists():
+    assert json.loads(path.read_text())==report
+else:
+    path.write_text(json.dumps(report,indent=2)+'\n')
+print(json.dumps(dict(passed=report['passed'],checks=len(checks),containers_per_binary=21,
+                     records_per_binary=42,compressed_PTX_per_binary=21,uncompressed_ELF_per_binary=21,
+                     report=str(path))))

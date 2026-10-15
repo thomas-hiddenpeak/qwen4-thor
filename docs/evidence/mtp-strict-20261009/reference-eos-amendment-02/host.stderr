@@ -1,0 +1,10 @@
+test_complete_response_binding_and_http_observations (test_admission_limits_reference.AdmissionLimitsReferenceTest.test_complete_response_binding_and_http_observations) ... ok
+test_default_rejects_eos_explicit_admits_without_rewriting_failure (test_admission_limits_reference.AdmissionLimitsReferenceTest.test_default_rejects_eos_explicit_admits_without_rewriting_failure) ... ok
+test_explicit_flag_scope (test_admission_limits_reference.AdmissionLimitsReferenceTest.test_explicit_flag_scope) ... ok
+test_identity_server_mode_order_and_path_failures_never_exempt (test_admission_limits_reference.AdmissionLimitsReferenceTest.test_identity_server_mode_order_and_path_failures_never_exempt) ... ok
+test_only_final_legal_early_stop_may_lack_coverage (test_admission_limits_reference.AdmissionLimitsReferenceTest.test_only_final_legal_early_stop_may_lack_coverage) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.249s
+
+OK

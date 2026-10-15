@@ -1,0 +1,90 @@
+{
+  "passed": true,
+  "failure": null,
+  "records": [
+    {
+      "mode": "plain",
+      "response_id": "tail-plain",
+      "result": {
+        "text": "AAAA",
+        "text_utf8_sha256": "63c1dd951ffedf6f7fd968ad4efa39b8ed584f162f46e715114ee184f8de9201",
+        "finish": "length",
+        "usage": {
+          "prompt_tokens": 208892,
+          "completion_tokens": 4,
+          "total_tokens": 208896
+        },
+        "scope": "forced-selection control; not greedy/quality evidence"
+      },
+      "capture": {
+        "sha256": "2ee87ddb4d66a66974a2afcb7087252b23d51bee566319e0c352a4ba428efdcd",
+        "bytes": 496640,
+        "encoding": "little-endian BF16 final prefill row before host control",
+        "original_argmax": 248046,
+        "original_argmax_bits": "41aa",
+        "forced_token": 32,
+        "forced_host_logit_bits": "7f7f",
+        "modified_host_words": 1,
+        "device_prefill_logits_modified": false
+      },
+      "path": {
+        "id": "tail-plain",
+        "requested_mtp": "0",
+        "path": "plain",
+        "mtp_steps": "0",
+        "fallback": "none",
+        "plain_tail_tokens": "0",
+        "verifier": "none"
+      }
+    },
+    {
+      "mode": "sequential",
+      "response_id": "tail-sequential",
+      "result": {
+        "text": "AAAA",
+        "text_utf8_sha256": "63c1dd951ffedf6f7fd968ad4efa39b8ed584f162f46e715114ee184f8de9201",
+        "finish": "length",
+        "usage": {
+          "prompt_tokens": 208892,
+          "completion_tokens": 4,
+          "total_tokens": 208896
+        },
+        "scope": "forced-selection control; not greedy/quality evidence"
+      },
+      "capture": {
+        "sha256": "2ee87ddb4d66a66974a2afcb7087252b23d51bee566319e0c352a4ba428efdcd",
+        "bytes": 496640,
+        "encoding": "little-endian BF16 final prefill row before host control",
+        "original_argmax": 248046,
+        "original_argmax_bits": "41aa",
+        "forced_token": 32,
+        "forced_host_logit_bits": "7f7f",
+        "modified_host_words": 1,
+        "device_prefill_logits_modified": false
+      },
+      "path": {
+        "id": "tail-sequential",
+        "requested_mtp": "1",
+        "path": "plain_tail_b1",
+        "mtp_steps": "0",
+        "fallback": "none",
+        "plain_tail_tokens": "4",
+        "verifier": "sequential",
+        "tail_reason": "context_limit",
+        "draft_forward_calls": "0",
+        "target_t1_calls": "0",
+        "target_t4_calls": "0",
+        "extend_forward_calls": "0",
+        "forward_count_scope": "sequential_attempts"
+      }
+    }
+  ],
+  "seconds": 383.5990347522311,
+  "max_generation_requests": 2,
+  "original_natural_EOS_failure_preserved": true,
+  "production_binary_http": false,
+  "greedy_numeric_evidence": false,
+  "quality_evidence": false,
+  "performance_evidence": false,
+  "scope": "production context-tail control exercised with forced selections"
+}

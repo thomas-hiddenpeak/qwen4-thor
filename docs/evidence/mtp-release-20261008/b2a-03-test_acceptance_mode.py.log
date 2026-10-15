@@ -1,0 +1,23 @@
+test_invalid_or_nonfinite_timing_rejected (__main__.ClientTimingTest.test_invalid_or_nonfinite_timing_rejected) ... ok
+test_keeps_ttft_request_latency_and_distinct_throughputs (__main__.ClientTimingTest.test_keeps_ttft_request_latency_and_distinct_throughputs) ... ok
+test_actual_mtp_bound_by_response_id_not_order (__main__.RequestModeTest.test_actual_mtp_bound_by_response_id_not_order) ... ok
+test_failed_http_counts_do_not_crash_mode_audit (__main__.RequestModeTest.test_failed_http_counts_do_not_crash_mode_audit) ... ok
+test_invalid_work_counts (__main__.RequestModeTest.test_invalid_work_counts) ... ok
+test_mtp_plain_fallback_rejected (__main__.RequestModeTest.test_mtp_plain_fallback_rejected) ... ok
+test_mtp_requires_actual_steps_and_expected_path (__main__.RequestModeTest.test_mtp_requires_actual_steps_and_expected_path) ... ok
+test_mtp_startup_alone_is_insufficient (__main__.RequestModeTest.test_mtp_startup_alone_is_insufficient) ... ok
+test_new_plain_path_must_be_consistent_when_present (__main__.RequestModeTest.test_new_plain_path_must_be_consistent_when_present) ... ok
+test_old_plain_baseline_compatible_without_new_log (__main__.RequestModeTest.test_old_plain_baseline_compatible_without_new_log) ... ok
+test_prefill_only_short_terminal_is_separate (__main__.RequestModeTest.test_prefill_only_short_terminal_is_separate) ... ok
+test_valid_mtp_with_explicit_bounded_context_tail (__main__.RequestModeTest.test_valid_mtp_with_explicit_bounded_context_tail) ... ok
+test_wrong_missing_and_duplicate_identity_rejected (__main__.RequestModeTest.test_wrong_missing_and_duplicate_identity_rejected) ... ok
+test_actual_mode_mismatch (__main__.StartupModeTest.test_actual_mode_mismatch) ... ok
+test_changed_capacity_or_media_is_not_the_matrix (__main__.StartupModeTest.test_changed_capacity_or_media_is_not_the_matrix) ... ok
+test_duplicate_records_fields_or_malformed_tokens (__main__.StartupModeTest.test_duplicate_records_fields_or_malformed_tokens) ... ok
+test_explicit_plain_and_mtp (__main__.StartupModeTest.test_explicit_plain_and_mtp) ... ok
+test_missing_startup_evidence (__main__.StartupModeTest.test_missing_startup_evidence) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.001s
+
+OK

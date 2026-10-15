@@ -1,0 +1,98 @@
+{
+  "records": [
+    {
+      "case": "same-control",
+      "kind": "control",
+      "passed": true,
+      "counter_delta": [
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "case": "same-prefill-cancel",
+      "kind": "prefill_cancel",
+      "passed": true,
+      "counter_delta": [
+        1,
+        1,
+        0
+      ]
+    },
+    {
+      "case": "same-prefill-recovery",
+      "kind": "recovery",
+      "passed": true,
+      "counter_delta": [
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "case": "same-decode-cancel",
+      "kind": "explicit",
+      "passed": true,
+      "counter_delta": [
+        1,
+        1,
+        0
+      ]
+    },
+    {
+      "case": "same-decode-recovery",
+      "kind": "recovery",
+      "passed": true,
+      "counter_delta": [
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "case": "same-decode-rst",
+      "kind": "rst",
+      "passed": true,
+      "counter_delta": [
+        1,
+        1,
+        0
+      ]
+    },
+    {
+      "case": "same-rst-recovery",
+      "kind": "recovery",
+      "passed": true,
+      "counter_delta": [
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "case": "same-decode-deadline",
+      "kind": "deadline",
+      "passed": true,
+      "counter_delta": [
+        1,
+        1,
+        0
+      ]
+    },
+    {
+      "case": "same-deadline-recovery",
+      "kind": "recovery",
+      "passed": true,
+      "counter_delta": [
+        1,
+        0,
+        1
+      ]
+    }
+  ],
+  "failure": null,
+  "server_exit": 0,
+  "scope": "same-mode-recovery",
+  "passed": true
+}

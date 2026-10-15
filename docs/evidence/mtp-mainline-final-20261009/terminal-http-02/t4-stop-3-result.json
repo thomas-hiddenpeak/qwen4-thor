@@ -1,0 +1,15 @@
+{
+  "text": "\n\nThe records are",
+  "finish": [
+    "stop"
+  ],
+  "usage": [
+    {
+      "prompt_tokens": 1024,
+      "completion_tokens": 5,
+      "total_tokens": 1029
+    }
+  ],
+  "errors": [],
+  "output_sha256": "9d4ee529fccc2b7d7da78d5cb8dbc348c8cbbd3887e3c569bfb7626fa042cbbc"
+}

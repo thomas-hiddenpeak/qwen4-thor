@@ -1,0 +1,42 @@
+{
+  "created_unix": 1791471698.0891116,
+  "reviewer": "independent admission_support_contract agent",
+  "method": "Independent CPU parse and static review; no model/GPU/HTTP execution",
+  "source_scope_passed": true,
+  "test_assertions_preserved": true,
+  "original_fatbin_proof_gap": "02 did not bind extracted CUDA images to container selection/header/payload; original result retained",
+  "resolved_by": "03 plus direct fatbin container and current-binary extraction binding reviews",
+  "method_review_passed": true,
+  "independent_observations": {
+    "runtime_objects": 51,
+    "cuda_executable_sections": 106,
+    "cuda_images_per_binary": 42,
+    "containers_per_binary": 21,
+    "records_per_binary": 42,
+    "ptx_decompressed_per_binary": 21,
+    "elf_payloads_per_binary": 21
+  },
+  "accepted_conclusion": "Execution content equivalent; HTTP acceptance cites actual historical 7fe34d6 runs. New a9d9f5d binary was not rerun through HTTP.",
+  "bindings": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/.q4t-work/foundation-20261008/execution-identity-audit-03.json",
+      "sha256": "da217d3cc2f4dec2de6c41ba4e75f979ff952f118606f7bf38f0a0436926a766"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/.q4t-work/foundation-20261008/fatbin-container-audit-01.json",
+      "sha256": "c61a0892fff85e2cae2053d59335596e1bbae6f46051ec22e3190b1b64386436"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/.q4t-work/foundation-20261008/cpu-binding-review-02/review.json",
+      "sha256": "5e02c700068ed39c6bac850f608081ba9e9af49b418e4a810d9e6745d2f4b597"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/.q4t-work/foundation-20261008/audit-execution-identity.py",
+      "sha256": "80367b6b32b46673208c05563e973d292a00c0472ac453074a857c6ac65364d3"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source/.q4t-work/foundation-20261008/audit-fatbin-container.py",
+      "sha256": "17704d5af07d391f8b5e161105cc1a5294b5c88e941559ad9c28903dbd71b83d"
+    }
+  ]
+}

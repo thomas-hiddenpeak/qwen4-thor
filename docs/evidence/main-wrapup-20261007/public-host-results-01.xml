@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="18"
+	failures="1"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="24"
+	timestamp="2026-10-07T11:41:07"
+	>
+	<testcase name="q4t_public_host_contracts" classname="q4t_public_host_contracts" time="0.212541" status="run">
+		<properties/>
+		<system-out>[PASS] router_trace_hash_known_vectors
+[PASS] router_trace_chunked_prefill_and_decode
+[PASS] router_trace_commit_requires_all_evidence
+[PASS] router_trace_rejects_layer_and_id_corruption
+[PASS] router_trace_positions_and_request_identity
+[PASS] router_trace_failed_forward_is_diagnostic
+[PASS] router_trace_bounds_and_empty_run
+[PASS] router_trace_wire_roundtrip_and_truncation
+[PASS] router_trace_write_failure_cannot_finish
+[PASS] router_trace_undrained_work_prevents_reuse
+[PASS] router_trace_counters_and_flush_failure
+[PASS] serve_default_is_single_text_greedy
+[PASS] serve_capabilities_allow_explicit_combinations
+[PASS] serve_rejects_malformed_numeric_options
+[PASS] serve_validates_before_load_and_preserves_failed_parse
+[PASS] serve_prefill_bound_precedes_workspace_sizing
+[PASS] serve_trace_options_are_explicit_and_bounded
+[PASS] json_parse_object_scalars
+[PASS] json_parse_nested_arrays
+[PASS] json_parse_string_escapes
+[PASS] json_parse_errors
+[PASS] json_rejects_deep_input_before_recursing
+[PASS] json_resourc...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="q4t_router_trace_wire_contracts" classname="q4t_router_trace_wire_contracts" time="0.0966094" status="run">
+		<properties/>
+		<system-out>49 independent wire/CLI cases passed; evidence: /home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/build/public-host/trace-wire-tests/run-sa5nh1bu
+</system-out>
+	</testcase>
+	<testcase name="q4t_router_trace_source_contracts" classname="q4t_router_trace_source_contracts" time="0.0579181" status="run">
+		<properties/>
+		<system-out>15 capture analysis checks passed; evidence: /home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/build/public-host/trace-analysis-tests/run-34j214y2
+</system-out>
+	</testcase>
+	<testcase name="q4t_router_cache_replay_contracts" classname="q4t_router_cache_replay_contracts" time="0.0677634" status="run">
+		<properties/>
+		<system-out>.............
+----------------------------------------------------------------------
+Ran 13 tests in 0.008s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="q4t_router_shadow_contracts" classname="q4t_router_shadow_contracts" time="10.3344" status="run">
+		<properties/>
+		<system-out>.............
+----------------------------------------------------------------------
+Ran 13 tests in 10.270s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="q4t_router_distribution_contracts" classname="q4t_router_distribution_contracts" time="0.197667" status="run">
+		<properties/>
+		<system-out>........
+----------------------------------------------------------------------
+Ran 8 tests in 0.079s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="q4t_router_hybrid_contracts" classname="q4t_router_hybrid_contracts" time="0.0717657" status="run">
+		<properties/>
+		<system-out>......
+----------------------------------------------------------------------
+Ran 6 tests in 0.000s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="q4t_offload_trace_contracts" classname="q4t_offload_trace_contracts" time="0.0992261" status="run">
+		<properties/>
+		<system-out>.................
+----------------------------------------------------------------------
+Ran 17 tests in 0.044s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="q4t_offload_log_contracts" classname="q4t_offload_log_contracts" time="0.0549857" status="run">
+		<properties/>
+		<system-out>...
+----------------------------------------------------------------------
+Ran 3 tests in 0.002s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="q4t_gpu_cache_schedule_contracts" classname="q4t_gpu_cache_schedule_contracts" time="0.14017" status="run">
+		<properties/>
+		<system-out>...........
+----------------------------------------------------------------------
+Ran 11 tests in 0.090s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="q4t_gpu_cache_replay_contracts" classname="q4t_gpu_cache_replay_contracts" time="0.0979099" status="run">
+		<properties/>
+		<system-out>...........................
+----------------------------------------------------------------------
+Ran 27 tests in 0.053s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="q4t_gpu_cache_study_contracts" classname="q4t_gpu_cache_study_contracts" time="8.34231" status="run">
+		<properties/>
+		<system-out>...................
+----------------------------------------------------------------------
+Ran 19 tests in 8.246s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="q4t_decode_supply_bounds_contracts" classname="q4t_decode_supply_bounds_contracts" time="0.0730112" status="run">
+		<properties/>
+		<system-out>......................
+----------------------------------------------------------------------
+Ran 22 tests in 0.028s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="q4t_analyze_decode_supply_contracts" classname="q4t_analyze_decode_supply_contracts" time="2.00721" status="fail">
+		<failure message="Failed"/>
+		<properties/>
+		<system-out>....E..............
+======================================================================
+ERROR: test_output_is_exclusive_and_failed_input_is_retained (__main__.SupplyDecisionContracts.test_output_is_exclusive_and_failed_input_is_retained)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/tests/host/../../tools/trace/test_analyze_decode_supply.py", line 320, in test_output_is_exclusive_and_failed_input_is_retained
+    execute(args)
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/tools/trace/analyze_decode_supply.py", line 307, in execute
+    require(any(output.is_relative_to(workspace / name)
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/tools/trace/run_gpu_cache_study.py", line 49, in require
+    raise ValueError(message)
+ValueError: output outside artifact roots
+
+----------------------------------------------------------------------
+Ran 19 tests in 1.916s
+
+FAILED (errors=1)
+</system-out>
+	</testcase>
+	<testcase name="q4t_mirror_retention_contracts" classname="q4t_mirror_retention_contracts" time="0.050204" status="run">
+		<properties/>
+		<system-out>..........................
+----------------------------------------------------------------------
+Ran 26 tests in 0.004s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="q4t_analyze_mirror_retention_contracts" classname="q4t_analyze_mirror_retention_contracts" time="2.52508" status="run">
+		<properties/>
+		<system-out>....................
+----------------------------------------------------------------------
+Ran 20 tests in 2.423s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="q4t_physical_ram_contracts" classname="q4t_physical_ram_contracts" time="0.12131" status="run">
+		<properties/>
+		<system-out>............
+----------------------------------------------------------------------
+Ran 12 tests in 0.042s
+
+OK
+{"gate": "INDETERMINATE", "sample_count": 2, "stop_reason": "STOP_FILE", "summary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/build/public-host/q4t_physical_ram_contracts/tmp_pdlntja/out/summary.json"}
+</system-out>
+	</testcase>
+	<testcase name="q4t_response_identity_contracts" classname="q4t_response_identity_contracts" time="0.0395968" status="run">
+		<properties/>
+		<system-out>........
+----------------------------------------------------------------------
+Ran 8 tests in 0.000s
+
+OK
+</system-out>
+	</testcase>
+</testsuite>

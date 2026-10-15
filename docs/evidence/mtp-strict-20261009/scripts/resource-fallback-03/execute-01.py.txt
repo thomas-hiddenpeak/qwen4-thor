@@ -1,0 +1,52 @@
+"""Execute the frozen resource-fallback protocol once; preserve every outcome."""
+import hashlib,json,os,re,signal,subprocess,time
+from pathlib import Path
+R=Path(__file__).resolve().parent
+P=R/'protocol-01.json';protocol=json.loads(P.read_text())
+def sha(p):
+    with Path(p).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def save(p,v):
+    with p.open('x') as f:json.dump(v,f,indent=2);f.write('\n')
+for group in ['source_files','project_header_superset','fixtures_and_metadata']:
+    assert all(sha(r['path'])==r['sha256'] for r in protocol[group])
+(R/'tmp').mkdir(exist_ok=False)
+env={k:v for k,v in os.environ.items() if not k.startswith('Q4T_') and k!='LD_PRELOAD'};env.update(protocol['environment']['set'])
+save(R/'execution-start-01.json',dict(time=time.time(),protocol_sha256=sha(P),script_sha256=sha(__file__),generation_request_limit=3))
+rows=[]
+for command in protocol['commands']:
+    name=command['name'];start=time.time();timed_out=False;remaining=False
+    with (R/(name+'-01.stdout')).open('x') as out,(R/(name+'-01.stderr')).open('x') as err:
+        proc=subprocess.Popen(command['argv'],cwd=command['cwd'],env=env,stdout=out,stderr=err,start_new_session=True)
+        try:rc=proc.wait(timeout=command.get('timeout_seconds',command.get('group_timeout_seconds')))
+        except subprocess.TimeoutExpired:
+            timed_out=True
+            try:os.killpg(proc.pid,signal.SIGTERM)
+            except ProcessLookupError:pass
+            try:rc=proc.wait(timeout=30)
+            except subprocess.TimeoutExpired:
+                try:os.killpg(proc.pid,signal.SIGKILL)
+                except ProcessLookupError:pass
+                rc=proc.wait()
+        try:os.killpg(proc.pid,0)
+        except ProcessLookupError:pass
+        else:
+            remaining=True;os.killpg(proc.pid,signal.SIGTERM);until=time.monotonic()+30
+            while time.monotonic()<until:
+                try:os.killpg(proc.pid,0)
+                except ProcessLookupError:break
+                time.sleep(.25)
+            else:
+                try:os.killpg(proc.pid,signal.SIGKILL)
+                except ProcessLookupError:pass
+    out=(R/(name+'-01.stdout')).read_text();err=(R/(name+'-01.stderr')).read_text()
+    passed=rc==0 and not timed_out and not remaining
+    if name in ['compile-wrapper','link-variant']:passed=passed and not re.search(r'\bwarning\b',out+err,re.I)
+    if name=='host-contracts':passed=passed and 'Ran 10 tests' in err and err.rstrip().endswith('OK')
+    if name=='variant-symbols':passed=passed and all(symbol in out for symbol in protocol['expected_wrap_symbols'])
+    row=dict(name=name,exit_code=rc,timeout=timed_out,residual_process_group=remaining,seconds=time.time()-start,passed=bool(passed),stdout_sha256=sha(R/(name+'-01.stdout')),stderr_sha256=sha(R/(name+'-01.stderr')))
+    rows.append(row);save(R/(name+'-01.json'),row);print(json.dumps(row),flush=True)
+    if name=='link-variant' and passed:
+        binary=R/'q4t_mtp_resource_fallback';save(R/'variant-identity-01.json',dict(path=str(binary),sha256=sha(binary),bytes=binary.stat().st_size,protocol_sha256=sha(P)))
+    if not passed:break
+save(R/'execution-summary-01.json',dict(passed=len(rows)==len(protocol['commands']) and all(r['passed'] for r in rows),results=rows))
+raise SystemExit(0 if len(rows)==len(protocol['commands']) and all(r['passed'] for r in rows) else 1)

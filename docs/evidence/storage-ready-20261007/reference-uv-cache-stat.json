@@ -1,0 +1,927 @@
+{
+  "root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache",
+  "totals": {
+    "files": 65718,
+    "logical_bytes": 7772701363,
+    "allocated_bytes_sum": 7927377920,
+    "single_link_allocated_bytes": 117501952,
+    "hardlinked_files": 64504,
+    "unique_inode_allocated_bytes": 7927377920
+  },
+  "top_level": {
+    ".lock": {
+      "files": 1,
+      "logical_bytes": 0,
+      "allocated_bytes_sum": 0,
+      "single_link_allocated_bytes": 0,
+      "hardlinked_files": 0,
+      "unique_inode_allocated_bytes": 0
+    },
+    "CACHEDIR.TAG": {
+      "files": 1,
+      "logical_bytes": 43,
+      "allocated_bytes_sum": 4096,
+      "single_link_allocated_bytes": 4096,
+      "hardlinked_files": 0,
+      "unique_inode_allocated_bytes": 4096
+    },
+    ".gitignore": {
+      "files": 1,
+      "logical_bytes": 1,
+      "allocated_bytes_sum": 4096,
+      "single_link_allocated_bytes": 4096,
+      "hardlinked_files": 0,
+      "unique_inode_allocated_bytes": 4096
+    },
+    "archive-v0": {
+      "files": 64915,
+      "logical_bytes": 7667128598,
+      "allocated_bytes_sum": 7819468800,
+      "single_link_allocated_bytes": 9592832,
+      "hardlinked_files": 64504,
+      "unique_inode_allocated_bytes": 7819468800
+    },
+    "interpreter-v4": {
+      "files": 2,
+      "logical_bytes": 3000,
+      "allocated_bytes_sum": 8192,
+      "single_link_allocated_bytes": 8192,
+      "hardlinked_files": 0,
+      "unique_inode_allocated_bytes": 8192
+    },
+    "simple-v21": {
+      "files": 212,
+      "logical_bytes": 91174768,
+      "allocated_bytes_sum": 91607040,
+      "single_link_allocated_bytes": 91607040,
+      "hardlinked_files": 0,
+      "unique_inode_allocated_bytes": 91607040
+    },
+    "wheels-v6": {
+      "files": 572,
+      "logical_bytes": 968884,
+      "allocated_bytes_sum": 2838528,
+      "single_link_allocated_bytes": 2838528,
+      "hardlinked_files": 0,
+      "unique_inode_allocated_bytes": 2838528
+    },
+    "sdists-v9": {
+      "files": 14,
+      "logical_bytes": 13426069,
+      "allocated_bytes_sum": 13447168,
+      "single_link_allocated_bytes": 13447168,
+      "hardlinked_files": 0,
+      "unique_inode_allocated_bytes": 13447168
+    }
+  },
+  "symlinks": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/pyyaml/6.0.3-fb72352ea2004da4",
+      "target": "../../../archive-v0/CEXJ8QAtRopqNZX1"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/compressed-tensors/0.19.0-py3-none-any",
+      "target": "../../../archive-v0/v0ihQFmwJbfB2Wmj"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/cloudpickle/3.1.2-py3-none-any",
+      "target": "../../../archive-v0/yQmX1Hsx7wKj3taD"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/flash-attn-4/4.0.0b19-py3-none-any",
+      "target": "../../../archive-v0/TCL-6IHISij5n7P4"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/pillow/12.3.0-cp312-cp312-manylinux_2_27_aarch64.manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/TX-NCH0-O6WREd62"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/shellingham/1.5.4-py2.py3-none-any",
+      "target": "../../../archive-v0/fGs5ye1tQq2MXQhc"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/decord2/3.4.0-cp312-cp312-manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/MRKoQ3GaGLGTlnyL"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/xxhash/4.0.1-fb72352ea2004da4",
+      "target": "../../../archive-v0/wRWOiBKsPK2eMsJT"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/cuda-core/1.2.0-cp312-cp312-manylinux_2_24_aarch64.manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/Pzlc8kKGD7XLJize"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/dill/0.4.1-py3-none-any",
+      "target": "../../../archive-v0/LiAzebTC6gh35RGa"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/tilelang/0.1.11-cp38-abi3-manylinux_2_34_aarch64",
+      "target": "../../../archive-v0/ddwJE5EAv7U9_wqt"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/httpcore/1.0.9-py3-none-any",
+      "target": "../../../archive-v0/FWPp-KW9BX3WBAT7"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/outlines-core/0.1.26-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64",
+      "target": "../../../archive-v0/Otn-XglueyczowKD"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/filelock/4.0.1-py3-none-any",
+      "target": "../../../archive-v0/mhCqugTcSEwTHPGt"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/flashinfer-python/0.6.17-py3-none-any",
+      "target": "../../../archive-v0/zudoIi9XL8nGdISI"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/prompt-toolkit/3.0.53-py3-none-any",
+      "target": "../../../archive-v0/HH1-oHS9B3eZCTNT"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/airportsdata/20260905-py3-none-any",
+      "target": "../../../archive-v0/cHVMv8ZheCGVDQnl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nccl4py/0.5.0-cp312-cp312-manylinux_2_24_aarch64.manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/sEU0byrt1yWfI8Or"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/setuptools-scm/10.2.3-py3-none-any",
+      "target": "../../../archive-v0/qRRh7cZgimr-Xpd4"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/jiter/0.17.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64",
+      "target": "../../../archive-v0/Q4NC3XsjgynyodIm"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-cudnn-frontend/1.29.0-cp312-cp312-manylinux_2_27_aarch64.manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/VHG9kMZdVy8DwwYJ"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/wheel/0.48.0-py3-none-any",
+      "target": "../../../archive-v0/ZJpBR6nzzxgPiuGf"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/tomlkit/0.15.1-py3-none-any",
+      "target": "../../../archive-v0/8L3R89cQ38t_s6N6"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/executing/2.2.1-py2.py3-none-any",
+      "target": "../../../archive-v0/Z1oTjByaibL9USxz"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-cuda-cupti/13.0.85-py3-none-manylinux_2_25_aarch64",
+      "target": "../../../archive-v0/LYaYJ385UhfPZAMv"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/numba/0.65.1-cp312-cp312-manylinux_2_27_aarch64.manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/k7HOBNopQgVGkVdy"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/semantic-version/2.10.0-py2.py3-none-any",
+      "target": "../../../archive-v0/zIjY6rSRb3JN3bSt"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/pycryptodomex/3.23.0-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64",
+      "target": "../../../archive-v0/zJgPdiAfANgLRr_A"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/sentencepiece/0.2.2-cp312-cp312-manylinux_2_27_aarch64.manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/BZocSncEU3xZzd6Y"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/rpds-py/2026.6.3-0840c1007aff1b5e",
+      "target": "../../../archive-v0/iQP8p-pYogKnBbyT"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/propcache/0.5.4-fb72352ea2004da4",
+      "target": "../../../archive-v0/E1HMj6eag1Voxity"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/msgspec/0.21.1-fb72352ea2004da4",
+      "target": "../../../archive-v0/Vb8u1O83UHQzG2jf"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/pydantic-extra-types/2.11.1-py3-none-any",
+      "target": "../../../archive-v0/cuzBbi6NiQxTEZcP"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/anthropic/1.8.0-py3-none-any",
+      "target": "../../../archive-v0/PpSyus3BLAVy8DWj"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/watchfiles/1.3.0-cp310-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64",
+      "target": "../../../archive-v0/rYC20KoEk9RVb1S2"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/ninja/1.13.2-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64",
+      "target": "../../../archive-v0/NVyc8NLuBAMB2f0K"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/aiohttp/3.14.3-fb72352ea2004da4",
+      "target": "../../../archive-v0/EbiQ-APaGxiTVxOD"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/packaging/26.3-py3-none-any",
+      "target": "../../../archive-v0/87N8tb8F3yt8pfqr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/loguru/0.7.3-py3-none-any",
+      "target": "../../../archive-v0/OPqY_97m2WnuSvwX"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/aiosignal/1.4.0-py3-none-any",
+      "target": "../../../archive-v0/SyFVUUHyjQ5zxX5R"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/pybase64/1.5.0-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64",
+      "target": "../../../archive-v0/SvmHD4l9-hDtUENt"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/pycparser/3.0-py3-none-any",
+      "target": "../../../archive-v0/q0iyp3gvx1bycmwG"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-cuda-nvrtc/13.0.88-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64",
+      "target": "../../../archive-v0/OnYXNnDF944wuHVQ"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/jsonschema-specifications/2025.9.1-py3-none-any",
+      "target": "../../../archive-v0/X-SUKQHk07lz0PL3"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/urllib3/2.8.0-py3-none-any",
+      "target": "../../../archive-v0/J3pE8_2V9CsUUAa2"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/multidict/6.9.1-fb72352ea2004da4",
+      "target": "../../../archive-v0/0RLq2ou0LOc6hvPY"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/safetensors/0.8.0-cp310-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64",
+      "target": "../../../archive-v0/p29pUFbbEsJ9HGwz"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/idna/3.20-py3-none-any",
+      "target": "../../../archive-v0/nIVuBnjgVXCwWQNI"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/modelscope/1.40.1-py3-none-any",
+      "target": "../../../archive-v0/4dyEBd7IdCKi9GuS"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/mistral-common/1.12.0-py3-none-any",
+      "target": "../../../archive-v0/NbDiHpymD59G2Mrm"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-cutlass-dsl-libs-core/4.6.2-py3-none-any",
+      "target": "../../../archive-v0/Bx5YKsO4u_dmoEL7"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/vcs-versioning/2.4.1-py3-none-any",
+      "target": "../../../archive-v0/BRRwguJkFMsvvqg_"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/pyelftools/0.33-py3-none-any",
+      "target": "../../../archive-v0/PlwtChXnt7kcfWjn"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/python-multipart/0.0.32-py3-none-any",
+      "target": "../../../archive-v0/4w4RDBrHIbdqjTT-"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/markdown-it-py/4.2.0-py3-none-any",
+      "target": "../../../archive-v0/BXBXNtyGdRsv2fls"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/torchvision/0.28.0-cp312-cp312-manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/pICw-6jFQ6hK_4jC"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/referencing/0.37.0-py3-none-any",
+      "target": "../../../archive-v0/4sRiRBGniAeM6WvH"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/cffi/2.1.1-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64",
+      "target": "../../../archive-v0/NJNmMvh3Qho0SH03"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/llvmlite/0.47.0-cp312-cp312-manylinux_2_27_aarch64.manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/4TxMgCsCMgg_8t7k"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/cuda-toolkit/13.0.3.0-py2.py3-none-any",
+      "target": "../../../archive-v0/nZPXnT53A4lQC4qJ"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/humming-kernels/0.1.10-py3-none-any",
+      "target": "../../../archive-v0/rga2IKem9TMQSCft"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/grpcio-health-checking/1.81.1-py3-none-any",
+      "target": "../../../archive-v0/eLh_AvDbkwC5G5b_"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/tokenizers/0.22.2-cp39-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64",
+      "target": "../../../archive-v0/c_j7hs_afryiNTnw"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/pandas/3.0.6-cp312-cp312-manylinux_2_24_aarch64.manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/YNvo_dwPAxJ7EnNw"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/requests/2.34.2-py3-none-any",
+      "target": "../../../archive-v0/iqrOELG4G5XCDnL5"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-cutlass-dsl-libs-base/4.6.2-cp312-cp312-manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/Qxg0h_9nYh2pH-Nu"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-nvshmem-cu13/3.4.5-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64",
+      "target": "../../../archive-v0/lzHCLPx7tkUZmkAs"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/sgl-deep-gemm/0.1.5.post3-py3-none-manylinux2014_aarch64",
+      "target": "../../../archive-v0/7tFqIU-j9id8o09R"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-nvvm/13.4.92-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64",
+      "target": "../../../archive-v0/Niwx012U_tf4jWp1"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/hf-xet/1.6.0-cp38-abi3-manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/JrsYOjYk62WGTBhE"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/gguf/0.19.0-py3-none-any",
+      "target": "../../../archive-v0/kfYsZ_6QTWpTWQGL"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/torchaudio/2.11.0-cp312-cp312-manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/QE_W3XdEkKbyhFEX"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-mathdx/25.6.0-py3-none-any",
+      "target": "../../../archive-v0/EyptGIby2ba2_-81"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/certifi/2026.7.22-py3-none-any",
+      "target": "../../../archive-v0/hkc-Ddogix1nc_L1"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/pure-eval/0.2.4-py3-none-any",
+      "target": "../../../archive-v0/gTzz9-Q1skEPzno8"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/scipy/1.18.1-cp312-cp312-manylinux_2_27_aarch64.manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/1M42fTFLSiWS_BX_"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/modelscope-hub/0.4.5-py3-none-any",
+      "target": "../../../archive-v0/llo8bKENnoU3Ytef"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-cuda-nvdisasm/13.4.92-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64",
+      "target": "../../../archive-v0/jLIj-iGR91D1KScP"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-cuda-crt/13.4.92-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64",
+      "target": "../../../archive-v0/dz3UUUhtvCy9lulg"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/transformers/5.12.1-py3-none-any",
+      "target": "../../../archive-v0/v66N7IeK5jguTdjx"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/partial-json-parser/0.2.1.1.post7-py3-none-any",
+      "target": "../../../archive-v0/mVCn7wG4CrnWfFrW"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/diskcache/5.6.3-py3-none-any",
+      "target": "../../../archive-v0/Ap8Ndc6VgkqsXAU2"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/pexpect/4.9.0-py2.py3-none-any",
+      "target": "../../../archive-v0/WN7oR0qywc4OPcxt"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-nccl-cu13/2.29.7-py3-none-manylinux_2_18_aarch64",
+      "target": "../../../archive-v0/Ymz_W0cYz1__91wx"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-nvjitlink/13.4.92-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64",
+      "target": "../../../archive-v0/JExqoV9CEGxx6sWy"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/typing-inspection/0.4.4-py3-none-any",
+      "target": "../../../archive-v0/HStB9XKxUUxHsSwU"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/orjson/3.12.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64",
+      "target": "../../../archive-v0/FWBimSttZhowFW9J"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/outlines/0.1.11-py3-none-any",
+      "target": "../../../archive-v0/CqPc8t0yvkiqG4oy"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/charset-normalizer/3.5.1-fb72352ea2004da4",
+      "target": "../../../archive-v0/gZ-ijd9K6BZyudnJ"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/smg-grpc-servicer/0.12.0-py3-none-any",
+      "target": "../../../archive-v0/-0alYMcNWWK1RxcO"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/click/8.5.0-py3-none-any",
+      "target": "../../../archive-v0/-np79TzQA7JrVhkl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/grpcio-reflection/1.81.1-py3-none-any",
+      "target": "../../../archive-v0/TrZoSNMZOJvtnGVz"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/stack-data/0.6.3-py3-none-any",
+      "target": "../../../archive-v0/Ww7F--NSl_e3E5JW"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/triton/3.7.1-cp312-cp312-manylinux_2_27_aarch64.manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/lsBgILCbeIi4S4kb"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/build/1.6.1-py3-none-any",
+      "target": "../../../archive-v0/WqnZWPuWrRgqCypp"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/tqdm/4.70.1-py3-none-any",
+      "target": "../../../archive-v0/ZKDvbSO1__gzD7gm"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/soundfile/0.13.1-py2.py3-none-manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/kb_CfniEE54MGc0f"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/networkx/3.7-py3-none-any",
+      "target": "../../../archive-v0/mQQES0-3_E7CWjbk"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/setuptools/84.0.0-py3-none-any",
+      "target": "../../../archive-v0/E_OxXw4ExNmkgI_p"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/cuda-pathfinder/1.8.2-py3-none-any",
+      "target": "../../../archive-v0/23rVThmby5yLrvCf"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/blobfile/3.0.0-py3-none-any",
+      "target": "../../../archive-v0/g68KKjYfOIKnOaoF"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-cuda-cccl/13.3.4.3.1-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64",
+      "target": "../../../archive-v0/u3ZuegYwMzeu3hpY"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-nvtx/13.0.85-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64",
+      "target": "../../../archive-v0/P0Q3Ai-M2MxcRNlO"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-cufft/12.0.0.61-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64",
+      "target": "../../../archive-v0/TeH7jyOBjLNArooa"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/aiohappyeyeballs/2.7.1-py3-none-any",
+      "target": "../../../archive-v0/V8HzAlrOH6YnKuek"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/psutil/7.2.2-c34d1b3a4594d1c9",
+      "target": "../../../archive-v0/OrweTmSHmGJiQJJ2"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/tiktoken/0.14.0-cp312-cp312-manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/nGwCKM6Le_2wzazo"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/quack-kernels/0.6.4-py3-none-any",
+      "target": "../../../archive-v0/e_qXb9bk1PMkN23L"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/sglang-kernel/0.4.6.post1-cp310-abi3-manylinux2014_aarch64",
+      "target": "../../../archive-v0/Zb1F_BNrEofX-wCR"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/yarl/1.25.1-fb72352ea2004da4",
+      "target": "../../../archive-v0/ftj03gDIe7NUwCt5"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/pycountry/26.2.16-py3-none-any",
+      "target": "../../../archive-v0/EKRGx1dy6GcMN4rb"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/ptyprocess/0.7.0-py2.py3-none-any",
+      "target": "../../../archive-v0/9JhZJsmrjkAU9auS"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/jsonschema/4.26.0-py3-none-any",
+      "target": "../../../archive-v0/6PMAuwlcpTpl1dHK"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/traitlets/5.16.1-py3-none-any",
+      "target": "../../../archive-v0/EvorKdVOrYpaaBu_"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/cuda-python/13.4.1-py3-none-any",
+      "target": "../../../archive-v0/YNNAO3Jv8e3tQIJI"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/numpy/2.3.5-cp312-cp312-manylinux_2_27_aarch64.manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/2sJIhOnGiIAdNQIC"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/frozenlist/1.8.0-fb72352ea2004da4",
+      "target": "../../../archive-v0/PHgYrZ9JJXqGXz0P"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/datasets/5.0.1-py3-none-any",
+      "target": "../../../archive-v0/1dNVQydF2SeBaJjj"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/torch/2.13.0-cp312-cp312-manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/ymNuwoQ_H3AprZUC"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/docstring-parser/0.18.0-py3-none-any",
+      "target": "../../../archive-v0/Wy8Ogv23AUuZjOx6"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/pydantic-core/2.46.5-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64",
+      "target": "../../../archive-v0/3YuJrNedlvk6UQvN"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/asttokens/3.0.2-py3-none-any",
+      "target": "../../../archive-v0/PdQusUfdGgEuKge6"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/av/16.1.0-cp312-cp312-manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/Z6yOK0bbxnb6CbF7"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nest-asyncio/1.6.0-py3-none-any",
+      "target": "../../../archive-v0/fvL3uNjIoXVzgsah"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/uvicorn/0.53.0-py3-none-any",
+      "target": "../../../archive-v0/sxw_BMvrvOdxS-rE"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/distro/1.9.0-py3-none-any",
+      "target": "../../../archive-v0/MufGRaX070pA-VdR"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/setproctitle/1.3.7-fb72352ea2004da4",
+      "target": "../../../archive-v0/wAVkz0iQv5-VoroX"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/jedi/0.20.0-py2.py3-none-any",
+      "target": "../../../archive-v0/7rRVCaviqrmcsZDb"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/uvloop/0.22.1-fb72352ea2004da4",
+      "target": "../../../archive-v0/HIbOshT6tWfYe8Iz"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-cusparselt-cu13/0.8.1-py3-none-manylinux2014_aarch64",
+      "target": "../../../archive-v0/Bbs9wrOeIazH1rt7"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/huggingface-hub/1.32.0-py3-none-any",
+      "target": "../../../archive-v0/K4TsTLE3bA638Y8d"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/truststore/0.10.4-py3-none-any",
+      "target": "../../../archive-v0/jZF5vrqcQeudWa8Y"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/annotated-doc/0.0.5-py3-none-any",
+      "target": "../../../archive-v0/1X8n8C5_OEo0STnd"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/pygments/2.21.0-py3-none-any",
+      "target": "../../../archive-v0/UClfsbP3TGNX3f4r"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/cuda-bindings/13.4.2-cp312-cp312-manylinux_2_24_aarch64.manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/-qWLZLs7ypSVbhbc"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/httpx2/2.13.0-py3-none-any",
+      "target": "../../../archive-v0/g7ba9FuLn1_4GK8S"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/fastapi/0.141.1-py3-none-any",
+      "target": "../../../archive-v0/pgELljloa7uI0sEs"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-curand/10.4.0.35-py3-none-manylinux_2_27_aarch64",
+      "target": "../../../archive-v0/UfmukZjCp_L8BsA5"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/six/1.17.0-py2.py3-none-any",
+      "target": "../../../archive-v0/ZPFS0E3SWdH8t0Ci"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/matplotlib-inline/0.2.2-py3-none-any",
+      "target": "../../../archive-v0/E4TGBaP5EQmoqY2D"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/pyproject-hooks/1.3.3-py3-none-any",
+      "target": "../../../archive-v0/p1e9iNoFOImI0fUr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/timm/1.0.16-py3-none-any",
+      "target": "../../../archive-v0/CjbwB6Pt_j08Kync"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/easydict/1.13-py3-none-any",
+      "target": "../../../archive-v0/2J_-OSz_fFKhQsKj"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/ipython-pygments-lexers/1.1.1-py3-none-any",
+      "target": "../../../archive-v0/OWRSkA_fnjsqV8nT"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/annotated-types/0.8.0-py3-none-any",
+      "target": "../../../archive-v0/8K59ErYFBfQ0Po_m"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/tokenspeed-mla/0.1.8-py3-none-manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/Y0zMwDMe8Lxrg6L4"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/pydantic/2.13.5-py3-none-any",
+      "target": "../../../archive-v0/PJATB5BzQQJyM8Ey"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/openai-harmony/0.0.4-cp38-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64",
+      "target": "../../../archive-v0/WTDsKfkSfMvxxlZ0"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-cutlass-dsl-libs-cu12/4.6.2-cp312-cp312-manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/Ux8MMsCxIPAIzRS6"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/attrs/26.1.0-py3-none-any",
+      "target": "../../../archive-v0/NvbUvjV9TxIKRcGH"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/parso/0.8.7-py2.py3-none-any",
+      "target": "../../../archive-v0/56XV2SUOIN_f-_z3"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/lark/1.3.1-py3-none-any",
+      "target": "../../../archive-v0/jOwS2bw1kIc924u-"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/sgl-deep-ep/0.1.0-cp312-cp312-manylinux_2_26_aarch64.manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/M7ePinhpW_7kXg7x"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/jinja2/3.1.6-py3-none-any",
+      "target": "../../../archive-v0/AWYIY8hXChR4i66L"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/typer/0.27.2-py3-none-any",
+      "target": "../../../archive-v0/ZuivKi65ZfX9qJxK"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-cuda-nvcc/13.4.92-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64",
+      "target": "../../../archive-v0/PetpKwUTt_gRirMF"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/ipython/9.17.1-py3-none-any",
+      "target": "../../../archive-v0/G5f82JyTPEQXFwjf"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/python-dateutil/2.9.0.post0-py2.py3-none-any",
+      "target": "../../../archive-v0/sie6XRNCIzFGjukz"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/lxml/6.1.3-cp312-cp312-manylinux_2_26_aarch64.manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/Dh2b49YltsIWQRIR"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/mpmath/1.3.0-py3-none-any",
+      "target": "../../../archive-v0/MASnjseoJlqq5mOm"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/h11/0.16.0-py3-none-any",
+      "target": "../../../archive-v0/tZVfyIYYSwapOwdf"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/tabulate/0.10.0-py3-none-any",
+      "target": "../../../archive-v0/_HAKHZONJdf5dKXn"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-cutlass-dsl-libs-cu13/4.6.2-cp312-cp312-manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/GcpfzG9UGw5wvFpM"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/ml-dtypes/0.6.0-cp312-cp312-manylinux_2_27_aarch64.manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/ZaJ6USW7lBIsPUcS"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-cusparse/12.6.3.3-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64",
+      "target": "../../../archive-v0/-wEIw99Fx3VBBaBJ"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/einops/0.8.2-py3-none-any",
+      "target": "../../../archive-v0/w4-I2eK1Qw0syONW"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/multiprocess/0.70.19-py312-none-any",
+      "target": "../../../archive-v0/9yHNvAQEaUYZiDRQ"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/pyzmq/27.2.0-cp312-abi3-manylinux_2_26_aarch64.manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/myXOZOtiRyl-RIFu"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/sympy/1.14.0-py3-none-any",
+      "target": "../../../archive-v0/Tg4a7LmA0yXs0hPv"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/pyarrow/25.0.1-cp312-cp312-manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/BfRnMBMGLtT-EB8Q"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/llguidance/1.8.0-cp39-abi3-manylinux_2_31_aarch64",
+      "target": "../../../archive-v0/yoGJs4EUe3B344tA"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/kernels-data/0.16.2-cp38-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64",
+      "target": "../../../archive-v0/lSuu-ttT1akhffQc"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/sniffio/1.3.1-py3-none-any",
+      "target": "../../../archive-v0/zILptDbC9EAZtRuk"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-ml-py/13.610.43-py3-none-any",
+      "target": "../../../archive-v0/bnJ7TncqwRbLxtiP"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-cudnn-cu13/9.20.0.48-py3-none-manylinux_2_27_aarch64",
+      "target": "../../../archive-v0/YY4-0_7HTb_jMLL-"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/httpx/0.28.1-py3-none-any",
+      "target": "../../../archive-v0/DOOGvGMbZV24DBFM"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-cublas/13.1.1.3-py3-none-manylinux_2_27_aarch64",
+      "target": "../../../archive-v0/jsWRldAqF4FVacks"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/tokenspeed-triton/3.8.10.post20260920-1a862b49a75ce017",
+      "target": "../../../archive-v0/PtPX84L7Ktn77l9P"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/anyio/4.15.1-py3-none-any",
+      "target": "../../../archive-v0/evuA3QKSW2jeH5x7"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/httpcore2/2.13.0-py3-none-any",
+      "target": "../../../archive-v0/3tNJMX7apbcQgwVL"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/wcwidth/0.8.4-py3-none-any",
+      "target": "../../../archive-v0/55Aiyhp_2sDUBWD_"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/z3-solver/4.15.4.0-py3-none-manylinux_2_34_aarch64",
+      "target": "../../../archive-v0/MbNrex-gShCC55zA"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/regex/2026.9.10-fb72352ea2004da4",
+      "target": "../../../archive-v0/20z0EXY-gjmpen_C"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/mdurl/0.1.2-py3-none-any",
+      "target": "../../../archive-v0/b5dwc2-dD9OFD5i8"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/setuptools-rust/1.13.0-py3-none-any",
+      "target": "../../../archive-v0/ehYYxnVSt8Ax3LTb"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-cutlass-dsl/4.6.2-py3-none-any",
+      "target": "../../../archive-v0/I47gWtICNLvPWtd7"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/protobuf/6.33.6-cp39-abi3-manylinux2014_aarch64",
+      "target": "../../../archive-v0/u7vzwe4-vO8QnMsS"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/apache-tvm-ffi/0.1.11-cp312-abi3-manylinux_2_24_aarch64.manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/2bTDyzrmHtaLkhxL"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/wheel-stub/0.5.0-py3-none-any",
+      "target": "../../../archive-v0/QcCNOpOjQrYl69jB"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/prometheus-client/0.26.0-py3-none-any",
+      "target": "../../../archive-v0/ZJkVFifX_daZkR25"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/interegular/0.3.3-py37-none-any",
+      "target": "../../../archive-v0/vmRuXmOzQbKhhkWp"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/grpcio/1.84.0-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64",
+      "target": "../../../archive-v0/haADST8ekMhnEYQ-"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/xgrammar/0.2.1-cp312-cp312-manylinux_2_26_aarch64.manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/Nb-V30YHpaq-GEZA"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-cuda-runtime/13.0.96-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64",
+      "target": "../../../archive-v0/7BvN714TTySgAsc2"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/smg-grpc-proto/0.4.21-py3-none-any",
+      "target": "../../../archive-v0/xAYS1XDMzRE_kGUd"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/fsspec/2026.6.0-py3-none-any",
+      "target": "../../../archive-v0/3SCx2oXPK5CdqneL"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/zstandard/0.25.0-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64",
+      "target": "../../../archive-v0/adr507JBAZWBsovh"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/torch-memory-saver/0.0.10-cp39-abi3-manylinux2014_aarch64",
+      "target": "../../../archive-v0/xR8mfy2jVGNaKxvT"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/cryptography/50.0.1-cp311-abi3-manylinux_2_34_aarch64",
+      "target": "../../../archive-v0/0xK_BW48ji_fMlEs"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/py-spy/0.4.2-py2.py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64",
+      "target": "../../../archive-v0/3VBFBdrpeN4Pm4ZG"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/starlette/1.6.0-py3-none-any",
+      "target": "../../../archive-v0/X6IurYaKNyFEgzt4"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/kernels/0.14.1-py3-none-any",
+      "target": "../../../archive-v0/11m18EJslGycNxJS"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-cufile/1.15.1.6-py3-none-manylinux_2_27_aarch64",
+      "target": "../../../archive-v0/sJGMjdAh4bo_pdVh"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/rich/15.0.0-py3-none-any",
+      "target": "../../../archive-v0/F_Df5d4GbjKeSroF"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/typing-extensions/4.16.0-py3-none-any",
+      "target": "../../../archive-v0/x-XSesqwzxjXPKtK"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/torch-c-dlpack-ext/0.1.5-cp312-cp312-manylinux_2_24_aarch64.manylinux_2_28_aarch64",
+      "target": "../../../archive-v0/3yG4aiLkVWv64jDi"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/markupsafe/3.0.3-fb72352ea2004da4",
+      "target": "../../../archive-v0/TcQ9dEGictFT-3rA"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/openai/2.6.1-py3-none-any",
+      "target": "../../../archive-v0/Ge7Owv6mikectSS6"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/pypi/nvidia-cusolver/12.0.4.66-py3-none-manylinux_2_27_aarch64",
+      "target": "../../../archive-v0/QaiciM0DMCf7wEF0"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/wheels-v6/url/6881d446599fe897/sglang-ssd-stream/0.3.0-cp312-cp312-manylinux_2_28_aarch64",
+      "target": "../../../../archive-v0/GRFSWfMOvXpaL1au"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/sdists-v9/path/abe6784a5d79a2ae/7zZ5OTqBI3w9euSt/sglang-0.0.0.dev0-py3-none-any",
+      "target": "../../../../archive-v0/ZMLZGAg9WEDXxg0Y"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prepared/independent-http-reference-20260923/uv-cache/sdists-v9/pypi/cuda-tile/1.6.0rc5/4IHvv5McBLGFztuj/cuda_tile-1.6.0rc5-cp312-cp312-manylinux2014_aarch64",
+      "target": "../../../../../archive-v0/bONAUcLYmVbmo36Y"
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "label": "build-02",
+      "argv": [
+        "cmake",
+        "--build",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009",
+        "--target",
+        "q4t_mtp_t4_completion_fault_server",
+        "q4t_mtp_t4_terminal_server",
+        "--parallel",
+        "6"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source",
+      "passed": true,
+      "exit_code": 0,
+      "warnings": [],
+      "seconds": 3.8194555891677737,
+      "log_sha256": "6be41f98aa9d018cf5a0d24e367f569a52bc0ae57dd51bc4b942595913a88f87"
+    },
+    {
+      "label": "policy-01",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/q4t_host_tests",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/completion-terminal-02/required-policy.txt"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source",
+      "passed": true,
+      "exit_code": 0,
+      "warnings": [],
+      "seconds": 0.003513677977025509,
+      "log_sha256": "34dd271f70499f910ea04ccf70cd794ff90530c809dc6e05109d7995065b3ade"
+    },
+    {
+      "label": "sequential-control-01",
+      "argv": [
+        "ctest",
+        "--test-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009",
+        "-R",
+        "^q4t_mtp_sequential_control$",
+        "--no-tests=error",
+        "--output-on-failure"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source",
+      "passed": true,
+      "exit_code": 0,
+      "warnings": [],
+      "seconds": 0.16383830807171762,
+      "log_sha256": "587ad0df784a79cdb80383fa9b10ec79fc74f6d2ccdc74153bbddb65ffb49d75"
+    },
+    {
+      "label": "cuda-position-01",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/q4t_mtp_position_copy"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source",
+      "passed": true,
+      "exit_code": 0,
+      "warnings": [],
+      "seconds": 0.2638748830650002,
+      "log_sha256": "c67bfca02de475bf32916d00f37ef723bdaa7d7eb5dbdcc6c4a24278b8204c1f"
+    },
+    {
+      "label": "python-completion-01",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_acceptance_mode",
+        "test_t4_completion_contract"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope",
+      "passed": true,
+      "exit_code": 0,
+      "warnings": [],
+      "seconds": 0.06374420807696879,
+      "log_sha256": "f28fcab2fb321ce7c82b6c8348960b9a349610ce73fd02e9d1065c0d8989713e"
+    },
+    {
+      "label": "python-terminal-01",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope/.venv/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_t4_terminal_contract"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/tools/evalscope",
+      "passed": true,
+      "exit_code": 0,
+      "warnings": [],
+      "seconds": 0.06373514304868877,
+      "log_sha256": "d8c442277ae72ed991872c5b3ec0ab51bc7a998364efa018fee3a2dd2273ae27"
+    }
+  ],
+  "first_build_failure_preserved": true,
+  "model_or_http_requests": 0
+}

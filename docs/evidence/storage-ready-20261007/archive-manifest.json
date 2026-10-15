@@ -1,0 +1,42 @@
+{
+  "cleanup_cpptools.py.txt": {
+    "sha256": "3eaf74f994bd8b0ac197fb587ba6e82a1e3db0690d0e9bd986da9e4845af3e8c",
+    "bytes": 4065
+  },
+  "cpptools-cleanup-evidence-review.json": {
+    "sha256": "84c276fc46301939332e536fd454b5149ebdb587d1066f9c476440ca9f50b14d",
+    "bytes": 2590
+  },
+  "cpptools-cleanup-journal.jsonl": {
+    "sha256": "c802b6031765d47fea42ad2fe410916c3f8cc8f6410e4ab394c1984f47378cb8",
+    "bytes": 26864
+  },
+  "cpptools-cleanup-plan.json": {
+    "sha256": "d72b7c69fed5745cca6d01a5a91cc80ccda879def6f60f81b8014ca9f17ccafa",
+    "bytes": 33578
+  },
+  "cpptools-cleanup-result.json": {
+    "sha256": "6f56d8ff94e1983e1de7a789f69109e53867bf39cbcd290a5444740a53b27650",
+    "bytes": 558
+  },
+  "evidence-storage-readonly-review.json": {
+    "sha256": "666f9bb51ea67d1dfadbe8c7355a44e42f806f05c26354cc746bf010b365a9af",
+    "bytes": 4163
+  },
+  "protection-and-storage-audit.json": {
+    "sha256": "a68bd2ee240f71b18c4b62a02c1ba7c0661ecdbe3556cda48b5cab3fa478f896",
+    "bytes": 1352
+  },
+  "reference-uv-cache-dependencies.json": {
+    "sha256": "aad17379a820ca38587fe77a73068bff563f0d5c04edcba44b1ef3d387532498",
+    "bytes": 3443
+  },
+  "reference-uv-cache-stat.json": {
+    "sha256": "f656374af0c947314af65a24b158b1df2ed72e28ee93302310789f979d21cbf7",
+    "bytes": 53604
+  },
+  "storage-final-review.json": {
+    "sha256": "65df6b6197799e270ff68804ba9486ce29b56c9f694fe65ac3a8a7a6389de78a",
+    "bytes": 1706
+  }
+}

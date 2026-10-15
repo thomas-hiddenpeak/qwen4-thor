@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="1"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="2"
+	timestamp="2026-10-07T11:43:05"
+	>
+	<testcase name="q4t_analyze_decode_supply_contracts" classname="q4t_analyze_decode_supply_contracts" time="2.02453" status="run">
+		<properties/>
+		<system-out>...................
+----------------------------------------------------------------------
+Ran 19 tests in 1.932s
+
+OK
+</system-out>
+	</testcase>
+</testsuite>

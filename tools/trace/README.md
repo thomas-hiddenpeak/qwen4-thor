@@ -115,9 +115,10 @@ CUDA错误仍进入原服务失败/不健康路径。关闭态不建池、不启
 ## 验证入口
 
 `ctest --test-dir build/public-host --no-tests=error --output-on-failure`
-检查host合同、49项独立格式/CLI样例及回放/影子/分布/混合合同
-（distribution合同需要numpy）；`test_analyze.py --checker ... --output ...`
-检查来源绑定和不完整样本反例。`run_capture_checks.py`接受候选binary/checker、
+运行host、格式/CLI、来源绑定、回放/影子/分布/混合，以及下述离线研究
+合同（distribution合同需要numpy）。所有合成测试产物写入配置的构建目录。
+`test_analyze.py --checker ... --output ...`检查来源绑定和不完整样本反例。
+`run_capture_checks.py`接受候选binary/checker、
 既有quality/performance证据和全新output，实际运行取消、inline/fallback、
 不支持模式、配额、写盘/关闭失败、队列压力、池分配失败、停止/崩溃及
 采集CUDA故障；测试shim不会链接进runner。`--case NAME`可重复选择受影响
@@ -221,7 +222,8 @@ frame上限16MiB。单个受限文件的解析/IO不可抢占，deadline非故�
 余下LRU；排名只用原冻结校准。prefill扣除固定命中后，剩余并集放不入动态
 区则bypass，不污染动态顺序。初始化固定区计费；同时比较每请求重置和连续
 保留。逐组独立列表核对，0/100端点匹配原纯LRU/静态；test_hybrid.py提供
-直接合同。结果仅离线，见docs/MOE_HYBRID_2026-09-28.md。
+直接合同。结果仅离线，见docs/MOE_HYBRID_2026-09-28.md与
+[收尾研究结论与历史报告入口](../../docs/MAIN_WRAPUP_2026-10-07.md)。
 
 ## 专家ID分布（不做缓存回放）
 
@@ -242,7 +244,8 @@ experts.csv、逐层layers.csv、完整身份和重复标记。只消费已提�
 `summarize_distribution.py --directory NEW`重算分组并生成readout/汇总、
 场景表和跨请求名单重合；输出不能覆盖。`test_distribution.py --checker
 CHECKER`运行直接合同，也可在末尾指定unittest用例名称只重验受影响项。
-本轮来源、排除项、口径及结论见docs/MOE_DISTRIBUTION_2026-09-28.md。
+本轮来源、排除项、口径及结论见docs/MOE_DISTRIBUTION_2026-09-28.md与
+[收尾研究结论与历史报告入口](../../docs/MAIN_WRAPUP_2026-10-07.md)。
 公开仓不包含私有轨迹；缺源即失败。没有发送模型HTTP或评价缓存策略。
 
 `expert_probabilities.py --directory DISTRIBUTION_RESULTS --output NEW
@@ -261,7 +264,8 @@ CHECKER`运行直接合同，也可在末尾指定unittest用例名称只重验�
 N=1..512，给出选择覆盖80/90/95/99%与整组概率50/80/90/95%目标的最小N。
 最小性限于同样本频率排名路径，不是所有专家组合或运行时缓存的最优解。
 prefill仍按token。输出完整曲线、目标表和最大/最小名次直方图；无模型执行。
-见docs/MOE_LAYER_TOPN_2026-09-28.md。
+见docs/MOE_LAYER_TOPN_2026-09-28.md与
+[收尾研究结论与历史报告入口](../../docs/MAIN_WRAPUP_2026-10-07.md)。
 
 ## 主试验原始路由分析（2026-09-29 入库）
 
@@ -288,3 +292,38 @@ prefill仍按token。输出完整曲线、目标表和最大/最小名次直方�
 bitmask跨层OR造成专家ID碰撞，其跨层工作集结论作废；现行口径逐层计算、
 跨层求和实例数（总空间48×512=24576）。报告见
 .q4t-work/moe-locality-20260929/REPORT.md（v2）。
+
+## 2026-10-07 精选研究工具
+
+下列工具分析已经封存的历史研究输入，不启动模型或接入 main 的运行时：
+
+| 入口 | 合同与边界 |
+|---|---|
+| `gpu_cache_replay.py` / `run_gpu_cache_study.py` | 从实际 GPU 状态重放固定请求链；先闭合记录计数与 checkpoint，才比较冻结反事实 |
+| `gpu_cache_schedule.cpp` / `offload_sort.cpp` | 原 C++ 排序、legacy/min-new 分块；算法副本来源见 [research](research/README.md) |
+| `analyze_decode_supply.py` / `decode_supply_bounds.py` | 区分真实 decode 的 GPU 缺失与下级软件供给，并计算同计划直接丢失上界 |
+| `analyze_mirror_retention.py` / `mirror_retention.py` | 逐计划统计可能保留机会、复用距离和可行区间；不插值实际下级缓存历史 |
+| `offload_trace.py` / `analyze_offload_log.py` | 完整来源绑定的逐层路由输入与历史日志转换下界 |
+
+`run_gpu_cache_study.py`、`analyze_decode_supply.py`、
+`analyze_mirror_retention.py` 通过 `--runtime-source-root ARCHIVE` 显式指定
+只读历史运行时源码。工具依赖始终绑定本 checkout，历史 `src/`/`include/`
+依赖绑定 ARCHIVE；每个依赖仍须在 execution/source ledger 中提供精确
+SHA256，并在处理前后核对。省略参数只接受当前 checkout 的来源路径，
+不会寻找或猜测历史源码。研究算法 header 绑定当前 `tools/trace/research/`
+副本。输出限当前 checkout 的 `build/` 或 `.q4t-work/`，不得覆盖旧证据。
+
+移植改变了工具源码与依赖位置，旧冻结 scope/manifest/execution plan 的
+身份不能当作新验收身份。复现需要原始轨迹、sidecar、记录时二进制、
+状态快照、计数与校验收据，以及新建的来源绑定计划；缺少任一项明确失败。
+公共仓不含这些私有 raw。旧结果保留为历史研究，合成合同通过不代表旧
+真实回放重跑，也不代表运行时质量、性能、SSD物理IO或缓存策略验收。
+三个研究入口均提供 `--help` 列出必需计划、SHA256 和输出参数。
+
+`run_shadow_study.py --corpus-file FILE` 可重复指定明确的文档语料；
+不传时使用当前仓库中已有的文档。当前默认语料不同于历史研究所用的
+完整文档集合，因此不能据此宣称逐字重建旧请求。
+
+独立 `../evalscope/physical_ram.py` 是只读内存观察工具；Linux全局内存、
+进程RSS、memcg与驱动观测是不同视图，不能直接相加求服务物理并集。
+公共合成测试覆盖解析、身份、失败与缺失观测，不执行真实RAM采样。

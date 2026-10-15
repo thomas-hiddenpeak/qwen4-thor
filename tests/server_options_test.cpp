@@ -22,8 +22,8 @@ Q4T_TEST(serve_default_is_single_text_greedy) {
   auto options = Defaults();
   Q4T_CHECK(Parse({}, &options));
   const auto capabilities = CapabilitiesFor(options);
-  Q4T_CHECK(options.max_seq == 1 && options.no_mtp && !options.allow_media);
-  Q4T_CHECK(!capabilities.Experimental());
+  Q4T_CHECK(options.max_seq == 1 && !options.no_mtp && !options.allow_media);
+  Q4T_CHECK(capabilities.Experimental());
   Q4T_CHECK(Parse({"--max-seq", "1", "--max-prefill", "8192", "--max-len",
                    "208896", "--no-mtp"},
                   &options));
@@ -34,14 +34,14 @@ Q4T_TEST(serve_default_is_single_text_greedy) {
 Q4T_TEST(serve_capabilities_allow_explicit_combinations) {
   for (int mask = 0; mask < 8; ++mask) {
     auto options = Defaults();
-    if (mask & 1) Q4T_CHECK(Parse({"--mtp"}, &options));
+    if (mask & 1) Q4T_CHECK(Parse({"--no-mtp"}, &options));
     if (mask & 2) Q4T_CHECK(Parse({"--allow-media"}, &options));
     if (mask & 4) Q4T_CHECK(Parse({"--max-seq", "2"}, &options));
     const auto c = CapabilitiesFor(options);
-    Q4T_CHECK(c.mtp == bool(mask & 1));
+    Q4T_CHECK(c.mtp == !(mask & 1));
     Q4T_CHECK(c.media == bool(mask & 2));
     Q4T_CHECK(c.multiple_sequences == bool(mask & 4));
-    Q4T_CHECK(c.Experimental() == (mask != 0));
+    Q4T_CHECK(c.Experimental() == (c.mtp || c.media || c.multiple_sequences));
   }
   auto options = Defaults();
   Q4T_CHECK(Parse({"--mtp", "--no-mtp"}, &options));
@@ -58,7 +58,7 @@ Q4T_TEST(serve_rejects_malformed_numeric_options) {
                              "9999999999999999999999999999999999999999"}) {
       auto options = Defaults();
       Q4T_CHECK(!Parse({flag, value}, &options));
-      Q4T_CHECK(options.max_seq == 1 && options.no_mtp);
+      Q4T_CHECK(options.max_seq == 1 && !options.no_mtp);
     }
     auto options = Defaults();
     Q4T_CHECK(!Parse({flag}, &options));
@@ -95,7 +95,7 @@ Q4T_TEST(serve_mtp_k_is_explicit_and_bounded) {
 Q4T_TEST(serve_validates_before_load_and_preserves_failed_parse) {
   auto options = Defaults();
   Q4T_CHECK(!Parse({"--mtp", "--port", "65536"}, &options));
-  Q4T_CHECK(options.no_mtp && options.port == 8000);
+  Q4T_CHECK(!options.no_mtp && options.port == 8000);
   Q4T_CHECK(!Parse({"--host", "not-an-address"}, &options));
   Q4T_CHECK(!Parse({"--model-dir", ""}, &options));
   Q4T_CHECK(!Parse({"--unknown"}, &options));
@@ -110,6 +110,30 @@ Q4T_TEST(serve_validates_before_load_and_preserves_failed_parse) {
   options = Defaults();
   options.mem_fraction = std::numeric_limits<double>::quiet_NaN();
   Q4T_CHECK(!q4t::server::ValidateServerOptions(options).ok());
+  return true;
+}
+
+Q4T_TEST(serve_prefill_bound_precedes_workspace_sizing) {
+  for (const auto value : {"0", "8192"}) {
+    auto options = Defaults();
+    Q4T_CHECK(Parse({"--max-prefill", value}, &options));
+    Q4T_CHECK(q4t::server::ValidateServerOptions(options).ok());
+  }
+  for (const auto value : {"8193", "214748365", "2147483647"}) {
+    auto options = Defaults();
+    options.max_prefill = 8192;
+    Q4T_CHECK(!Parse({"--mtp", "--max-prefill", value}, &options));
+    Q4T_CHECK(options.max_prefill == 8192 && !options.no_mtp);
+  }
+  // ChatServer::Start also calls validation for programmatic options before
+  // loading the tokenizer or invoking any workspace sizing function.
+  for (int value : {8193, 214748365, std::numeric_limits<int>::max()}) {
+    auto options = Defaults();
+    options.max_prefill = value;
+    Q4T_CHECK(!q4t::server::ValidateServerOptions(options).ok());
+    options.no_budget = true;
+    Q4T_CHECK(!q4t::server::ValidateServerOptions(options).ok());
+  }
   return true;
 }
 

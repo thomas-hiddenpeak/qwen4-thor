@@ -1,0 +1,190 @@
+{
+  "foundation": "5aacc9f225056b47fca766dcf9d49a170e60978f",
+  "research_snapshot": "90d5f539a77b6ab2d6c5bc5fbaa2cadfced778d1",
+  "merge_base": "c365b9b247c93571bda1f95551a9424dce15f99b",
+  "preview_tree": "04ca76f3e059e51d22b21c1a5f0204ae5adb4a33",
+  "added_files": [
+    {
+      "path": "docs/MTP_FOUNDATION_2026-10-08.md",
+      "bytes": 6686,
+      "sha256": "df99dd1232da421e41fbe3279cb06dc9acd8fff0d5f15cdc17c31e0873b63438",
+      "blob": "fe31ffb8584fb06139f228496b6b4885213b5d00",
+      "current_worktree_exists": false,
+      "merge_tree_has_exact_foundation": true
+    },
+    {
+      "path": "docs/evidence/mtp-foundation-20261008/README.md",
+      "bytes": 1789,
+      "sha256": "a0a39226d6a56c81ed28d67a3534da6ff60fa41b25144fab36daf2922ab73a42",
+      "blob": "851d3c649b3bb3a8719d49e753c4cdb197f6f61b",
+      "current_worktree_exists": false,
+      "merge_tree_has_exact_foundation": true
+    },
+    {
+      "path": "docs/evidence/mtp-foundation-20261008/audit-execution-identity.py.txt",
+      "bytes": 22095,
+      "sha256": "80367b6b32b46673208c05563e973d292a00c0472ac453074a857c6ac65364d3",
+      "blob": "2238c249578dfbbac30c32dd88c0046035cabb28",
+      "current_worktree_exists": false,
+      "merge_tree_has_exact_foundation": true
+    },
+    {
+      "path": "docs/evidence/mtp-foundation-20261008/audit-fatbin-container.py.txt",
+      "bytes": 10504,
+      "sha256": "17704d5af07d391f8b5e161105cc1a5294b5c88e941559ad9c28903dbd71b83d",
+      "blob": "1be9060d970a85aff9b433d81f646e844c84a89c",
+      "current_worktree_exists": false,
+      "merge_tree_has_exact_foundation": true
+    },
+    {
+      "path": "docs/evidence/mtp-foundation-20261008/audit-foundation.py.txt",
+      "bytes": 11209,
+      "sha256": "e0d6a2d944ba8ab7934051f1bb3de8288d8b3ffee261089e2a61eb65b28e4e09",
+      "blob": "c8d44fec0e066411d4f4540ced6cfd8c657c45bb",
+      "current_worktree_exists": false,
+      "merge_tree_has_exact_foundation": true
+    },
+    {
+      "path": "docs/evidence/mtp-foundation-20261008/build-foundation.py.txt",
+      "bytes": 2518,
+      "sha256": "a0308a3b2dda38a067e1434409c7861f9c8adf18b90cbd2088541f40dea9c54e",
+      "blob": "b57fe60eefd7c239974e34895d685f3e29d819bd",
+      "current_worktree_exists": false,
+      "merge_tree_has_exact_foundation": true
+    },
+    {
+      "path": "docs/evidence/mtp-foundation-20261008/build-identity-audit-01.json",
+      "bytes": 14818,
+      "sha256": "6962e0f59afaaef83c7f4d62682d95bbc207286271161c83303be358f1b9a523",
+      "blob": "289de4855a366f0c4e8459a3c6438f154e8b4717",
+      "current_worktree_exists": false,
+      "merge_tree_has_exact_foundation": true
+    },
+    {
+      "path": "docs/evidence/mtp-foundation-20261008/build-result-01.json",
+      "bytes": 2039,
+      "sha256": "be915df756d76c530961049f41caac61d038e68b4c312881dc6f125a5458b532",
+      "blob": "42f5f8127dbc0763008f6288e034f8fcf2c76620",
+      "current_worktree_exists": false,
+      "merge_tree_has_exact_foundation": true
+    },
+    {
+      "path": "docs/evidence/mtp-foundation-20261008/cpu-binding-review.json",
+      "bytes": 199602,
+      "sha256": "5e02c700068ed39c6bac850f608081ba9e9af49b418e4a810d9e6745d2f4b597",
+      "blob": "f00496d436cdcf9e0d03f07f6b8182308d507a1a",
+      "current_worktree_exists": false,
+      "merge_tree_has_exact_foundation": true
+    },
+    {
+      "path": "docs/evidence/mtp-foundation-20261008/execution-identity-review.json",
+      "bytes": 900451,
+      "sha256": "c769015b4f630e43a2cc122de518f6a128760ec4c8f9f581618b551df2e873ee",
+      "blob": "51fce401e28509ea42fee42b80c007ca2c6b37b5",
+      "current_worktree_exists": false,
+      "merge_tree_has_exact_foundation": true
+    },
+    {
+      "path": "docs/evidence/mtp-foundation-20261008/fatbin-container-audit-01.json",
+      "bytes": 247146,
+      "sha256": "c61a0892fff85e2cae2053d59335596e1bbae6f46051ec22e3190b1b64386436",
+      "blob": "266e9c6326798187b03d1ee38bc2ad6dd9e5bfbb",
+      "current_worktree_exists": false,
+      "merge_tree_has_exact_foundation": true
+    },
+    {
+      "path": "docs/evidence/mtp-foundation-20261008/fatbin-parser-first-attempt.json",
+      "bytes": 308,
+      "sha256": "aeeb776b2dbcc9651d3f0b2938dc6b92da09f170c55e075884583e9f7fe273b0",
+      "blob": "1efc9e8f3fbfe68ce46853917b5c8499bfc896bf",
+      "current_worktree_exists": false,
+      "merge_tree_has_exact_foundation": true
+    },
+    {
+      "path": "docs/evidence/mtp-foundation-20261008/independent-method-review.json",
+      "bytes": 2208,
+      "sha256": "8a9900adba5247510a3b2cb3b922889bdbf9181738eb2b66db512dabc6308c02",
+      "blob": "7f1c45b537a15ee331ea0f4797050e365eaabf91",
+      "current_worktree_exists": false,
+      "merge_tree_has_exact_foundation": true
+    },
+    {
+      "path": "docs/evidence/mtp-foundation-20261008/preserved-evidence-review.json",
+      "bytes": 11317,
+      "sha256": "12a35782353a98b83960f432e722fdbcd658c2fbcc4b282b54ed118bdfcb19b5",
+      "blob": "a6585cf72733c4d6e3dd860c97cd31c1cd883280",
+      "current_worktree_exists": false,
+      "merge_tree_has_exact_foundation": true
+    },
+    {
+      "path": "docs/evidence/mtp-foundation-20261008/source-target-audit-01.json",
+      "bytes": 116218,
+      "sha256": "42d65a5d343f6f053c5a506d247c243c6ba4e815191ddfeff14b05f5747f5121",
+      "blob": "acdbda99f2a66fe2934d0441e151154d205fefc9",
+      "current_worktree_exists": false,
+      "merge_tree_has_exact_foundation": true
+    },
+    {
+      "path": "docs/evidence/mtp-foundation-20261008/verify-foundation.py.txt",
+      "bytes": 4673,
+      "sha256": "a7f18017abe25f7c35e2e664e083d9d42e226c2f61e0d14f0cfc12b68c3837e3",
+      "blob": "ca4da84493b1e176edfd00f679ae66e9e0034d3a",
+      "current_worktree_exists": false,
+      "merge_tree_has_exact_foundation": true
+    },
+    {
+      "path": "docs/log/2026-10-08.md",
+      "bytes": 1835,
+      "sha256": "dafb763eff2272dc575925e2d77063521bcc5b235fd94dc9027c35e472211fd2",
+      "blob": "ed626c6c8c8b41c6f973147c763982ede673b2b0",
+      "current_worktree_exists": true,
+      "merge_tree_has_exact_foundation": false
+    }
+  ],
+  "conflicting_paths": [
+    "CMakeLists.txt",
+    "README.md",
+    "docs/README.md",
+    "docs/STATUS.md",
+    "docs/log/2026-10-08.md",
+    "docs/log/README.md"
+  ],
+  "unchanged_runtime_proof": [],
+  "current_conflict_files": {
+    "CMakeLists.txt": {
+      "sha256": "c145006aa8841f9f29187da8a26a2ada7a44c30a9b433161d6b9791e25fc37d9",
+      "bytes": 22639
+    },
+    "README.md": {
+      "sha256": "fed9e8a0624045490698190e2fc5e7d3b96ffe918b78e5f6f0bbf9d0c25124bc",
+      "bytes": 6548
+    },
+    "docs/README.md": {
+      "sha256": "95f00db0b829993ba48fe205dbb69d8bf2a793dd13743049a59aba84d0f03118",
+      "bytes": 9453
+    },
+    "docs/STATUS.md": {
+      "sha256": "b34ff668282720e214362233854d09a91a44d562786f9b03506a22ab5ec628e6",
+      "bytes": 54793
+    },
+    "docs/log/2026-10-08.md": {
+      "sha256": "f6391188707f31050b0185a13d7a742ce35b79fa67c821992f8620aa5028047f",
+      "bytes": 30725
+    },
+    "docs/log/README.md": {
+      "sha256": "7610771124f6f95b189bdf26aed5a467f6d6e2d11938cd8a5b58d73a139b0c1f",
+      "bytes": 3202
+    }
+  },
+  "foundation_runtime_commits_already_ancestors": {
+    "f02e75e": true,
+    "0284b60": true,
+    "ec0ae6f": true,
+    "c365b9b": true
+  },
+  "complete_original_binding": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/foundation-integration-review-01.json",
+    "bytes": 7256,
+    "sha256": "6d59e10486798e7726617632d7044b4c94e6be3c52a1173c698cebafed189575"
+  }
+}

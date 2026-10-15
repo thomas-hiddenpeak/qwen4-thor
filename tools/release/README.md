@@ -17,8 +17,9 @@ python3 tools/verify/test_gate/run.py --cxx g++-14 \
   --output build/public-host/test-gate-new
 ```
 
-公共入口与Thor共享host测试源码清单，实际运行全部26项JSON/HTTP/
-请求/序列状态合同及16项测试框架反例，无CUDA、ICU、模型文件或私有证据依赖。
+公共入口与Thor共享host测试源码清单，执行JSON/HTTP/请求/序列状态
+及新增MTP入口、策略、调度合同；精确项目以注册清单和运行记录为准。
+另有16项测试框架反例，无CUDA、ICU、模型文件或私有证据依赖。
 反例输出目录每次新建。公共CI不构建runner，不覆盖真实tokenizer、
 GPU完成/状态、HTTP推理或五档性能；下面的30项发布检查保持独立且必需。
 
@@ -65,6 +66,21 @@ q4t_tests与q4t_host_tests共享以下行为：
 目前提供的是主机门禁及已有运行时验收工具的明确分工，没有一个能
 自动证明全部商用条件的“总通过”按钮。阶段提交、主机通过或HTTP200
 都不能替代未完成项；当前部署与候选结论以docs/STATUS.md为准。
+
+## MTP 主线候选的附加验收
+
+sequential MTP的主线准入清单见
+[当前交付计划](../../docs/MTP_MAINLINE_READINESS_2026-10-09.md)，
+位置、GPU完成与错误状态修复见
+[本轮修复合同](../../docs/MTP_COMPLETION_FIX_2026-10-09.md)。
+已有[严格路径证据](../../docs/MTP_STRICT_RESULT_2026-10-09.md)
+属于其原受测候选；新运行时改动须绑定自己的直接检查、HTTP与
+最终普通/sequential五档成本，不只通过host门禁就宣称MTP准入。
+
+MTP默认关闭；显式`serve --mtp`选择sequential，快速T4仍实验。
+本节跟踪代码合入条件，不改变下述text-v1发布包的`--no-mtp`
+配置，也不将旧部署资格扩展到MTP。模型/checkpoint与容量范围、
+取消/失败恢复、任务质量不足、性能成本及未覆盖项须随交付列明。
 
 ## text-v1 受控发布包（2026-09-28）
 

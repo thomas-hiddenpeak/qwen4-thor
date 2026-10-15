@@ -1,0 +1,39 @@
+{
+  "mode": "plain",
+  "response_id": "tail-plain",
+  "path": {
+    "id": "tail-plain",
+    "requested_mtp": "0",
+    "path": "plain",
+    "mtp_steps": "0",
+    "fallback": "none",
+    "plain_tail_tokens": "0",
+    "verifier": "none"
+  },
+  "override": {
+    "real_copy": "1",
+    "checked_sync": "1",
+    "source_bound": "1",
+    "thread_match": "1",
+    "stream_match": "1",
+    "vocab": "248320",
+    "bytes": "496640",
+    "original_argmax": "248046",
+    "original_argmax_bits": "41aa",
+    "old_token_bits": "4086",
+    "forced_token": "32",
+    "forced_bits": "7f7f",
+    "modified_host_words": "1",
+    "device_logits_modified": "0"
+  },
+  "real_prefill_chunks": 26,
+  "real_b1_positions": [
+    208892,
+    208893,
+    208894
+  ],
+  "consumed_output_tokens": 3,
+  "emitted_output_tokens": 4,
+  "production_binary_http": false,
+  "greedy_numeric_evidence": false
+}

@@ -1,0 +1,334 @@
+{
+  "scope": "read-only built-symbol identity review; no compilation or runtime test",
+  "libraries": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a": "3cc9a7fe09a375c7576a1e95877e662bf0f941d612afca7b66d0dd2b3272bf4b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_server.a": "dabb792a557a9d9d31463ee804ed4eb74b5473c38081406207d930025485d00a"
+  },
+  "cuda_runtime": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcudart.so.13.3.29",
+  "wrappers": {
+    "mtp_t4_completion_fault_server.cpp": {
+      "sha256": "9bf62b32b35b72196c496500bf53adcba4b84d1a768c54cfaa540a56f46e3b98",
+      "rows": [
+        {
+          "alias": "Q4T_STEP",
+          "symbol": "_ZN3q4t3mtp23MtpSpeculativeStepMultiERKNS_5model5ModelERKNS0_8MtpModelEPKPKNS1_13ModelSequenceEPKiSE_PKPKtiiPiSJ_SJ_SJ_PPtP11CUstream_stPNS_5trace12MtpCycleStepEPNSO_16MtpVerifyMoeStepESt4spanISD_Lm18446744073709551615EE",
+          "defined": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:mtp.cu.o:0000000000008f20 T _ZN3q4t3mtp23MtpSpeculativeStepMultiERKNS_5model5ModelERKNS0_8MtpModelEPKPKNS1_13ModelSequenceEPKiSE_PKPKtiiPiSJ_SJ_SJ_PPtP11CUstream_stPNS_5trace12MtpCycleStepEPNSO_16MtpVerifyMoeStepESt4spanISD_Lm18446744073709551615EE"
+          ],
+          "imported": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_server.a:chat_scheduler.cpp.o:                 U _ZN3q4t3mtp23MtpSpeculativeStepMultiERKNS_5model5ModelERKNS0_8MtpModelEPKPKNS1_13ModelSequenceEPKiSE_PKPKtiiPiSJ_SJ_SJ_PPtP11CUstream_stPNS_5trace12MtpCycleStepEPNSO_16MtpVerifyMoeStepESt4spanISD_Lm18446744073709551615EE"
+          ],
+          "cuda_export": [],
+          "exact_exists": true,
+          "actual_cross_object_import": true
+        },
+        {
+          "alias": "Q4T_VERIFY",
+          "symbol": "_ZN3q4t5model16ModelVerifyMultiERKNS0_5ModelEPKiS5_S5_S5_iiiPtP11CUstream_stS6_",
+          "defined": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:model.cu.o:00000000000070e0 T _ZN3q4t5model16ModelVerifyMultiERKNS0_5ModelEPKiS5_S5_S5_iiiPtP11CUstream_stS6_"
+          ],
+          "imported": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:mtp.cu.o:                 U _ZN3q4t5model16ModelVerifyMultiERKNS0_5ModelEPKiS5_S5_S5_iiiPtP11CUstream_stS6_"
+          ],
+          "cuda_export": [],
+          "exact_exists": true,
+          "actual_cross_object_import": true
+        },
+        {
+          "alias": "Q4T_RESTORE",
+          "symbol": "_ZN3q4t5model22ModelRestoreCheckpointERKNS0_5ModelEiP11CUstream_sti",
+          "defined": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:model.cu.o:0000000000002b80 T _ZN3q4t5model22ModelRestoreCheckpointERKNS0_5ModelEiP11CUstream_sti"
+          ],
+          "imported": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:mtp.cu.o:                 U _ZN3q4t5model22ModelRestoreCheckpointERKNS0_5ModelEiP11CUstream_sti"
+          ],
+          "cuda_export": [],
+          "exact_exists": true,
+          "actual_cross_object_import": true
+        },
+        {
+          "alias": "Q4T_ATTENTION",
+          "symbol": "_ZN3q4t5model20FullAttentionForwardERKNS0_20FullAttentionWeightsEPKtPtPKiS8_S6_S8_S6_S6_iPvmP11CUstream_stS8_i",
+          "defined": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:full_attention.cu.o:0000000000005120 T _ZN3q4t5model20FullAttentionForwardERKNS0_20FullAttentionWeightsEPKtPtPKiS8_S6_S8_S6_S6_iPvmP11CUstream_stS8_i"
+          ],
+          "imported": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:decoder_layer.cu.o:                 U _ZN3q4t5model20FullAttentionForwardERKNS0_20FullAttentionWeightsEPKtPtPKiS8_S6_S8_S6_S6_iPvmP11CUstream_stS8_i",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:mtp.cu.o:                 U _ZN3q4t5model20FullAttentionForwardERKNS0_20FullAttentionWeightsEPKtPtPKiS8_S6_S8_S6_S6_iPvmP11CUstream_stS8_i"
+          ],
+          "cuda_export": [],
+          "exact_exists": true,
+          "actual_cross_object_import": true
+        },
+        {
+          "alias": "Q4T_MAIN",
+          "symbol": "_ZN3q4t5model21ModelDecodeBatchMultiERKNS0_5ModelEPKiS5_S5_S5_iPtP11CUstream_stS6_",
+          "defined": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:model.cu.o:0000000000006a8c T _ZN3q4t5model21ModelDecodeBatchMultiERKNS0_5ModelEPKiS5_S5_S5_iPtP11CUstream_stS6_"
+          ],
+          "imported": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:mtp_sequential.cpp.o:                 U _ZN3q4t5model21ModelDecodeBatchMultiERKNS0_5ModelEPKiS5_S5_S5_iPtP11CUstream_stS6_",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_server.a:chat_scheduler.cpp.o:                 U _ZN3q4t5model21ModelDecodeBatchMultiERKNS0_5ModelEPKiS5_S5_S5_iPtP11CUstream_stS6_"
+          ],
+          "cuda_export": [],
+          "exact_exists": true,
+          "actual_cross_object_import": true
+        },
+        {
+          "alias": "Q4T_BEGIN",
+          "symbol": "_ZN3q4t5model18ModelBeginSequenceERKNS0_5ModelEPNS0_13ModelSequenceEP11CUstream_sti",
+          "defined": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:model.cu.o:0000000000004ea0 T _ZN3q4t5model18ModelBeginSequenceERKNS0_5ModelEPNS0_13ModelSequenceEP11CUstream_sti"
+          ],
+          "imported": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_server.a:chat_scheduler.cpp.o:                 U _ZN3q4t5model18ModelBeginSequenceERKNS0_5ModelEPNS0_13ModelSequenceEP11CUstream_sti",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_server.a:chat_generation.cpp.o:                 U _ZN3q4t5model18ModelBeginSequenceERKNS0_5ModelEPNS0_13ModelSequenceEP11CUstream_sti"
+          ],
+          "cuda_export": [],
+          "exact_exists": true,
+          "actual_cross_object_import": true
+        },
+        {
+          "alias": "Q4T_END",
+          "symbol": "_ZN3q4t5model16ModelEndSequenceEPNS0_13ModelSequenceE",
+          "defined": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:model.cu.o:00000000000012c4 T _ZN3q4t5model16ModelEndSequenceEPNS0_13ModelSequenceE"
+          ],
+          "imported": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_server.a:chat_generation.cpp.o:                 U _ZN3q4t5model16ModelEndSequenceEPNS0_13ModelSequenceE"
+          ],
+          "cuda_export": [],
+          "exact_exists": true,
+          "actual_cross_object_import": true
+        },
+        {
+          "alias": "Q4T_RESET",
+          "symbol": "_ZN3q4t3mtp13MtpResetStateERKNS0_8MtpModelEP11CUstream_sti",
+          "defined": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:mtp.cu.o:0000000000001590 T _ZN3q4t3mtp13MtpResetStateERKNS0_8MtpModelEP11CUstream_sti"
+          ],
+          "imported": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_server.a:chat_generation.cpp.o:                 U _ZN3q4t3mtp13MtpResetStateERKNS0_8MtpModelEP11CUstream_sti"
+          ],
+          "cuda_export": [],
+          "exact_exists": true,
+          "actual_cross_object_import": true
+        },
+        {
+          "alias": "cudaStreamSynchronize",
+          "symbol": "cudaStreamSynchronize",
+          "defined": [],
+          "imported": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:hyperconnection.cu.o:                 U cudaStreamSynchronize",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:linear_attention.cu.o:                 U cudaStreamSynchronize",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:full_attention.cu.o:                 U cudaStreamSynchronize",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:moe.cu.o:                 U cudaStreamSynchronize",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:ple_layer.cu.o:                 U cudaStreamSynchronize",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:model_head.cu.o:                 U cudaStreamSynchronize",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:model.cu.o:                 U cudaStreamSynchronize",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:model_owner.cpp.o:                 U cudaStreamSynchronize",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:moe_bf16.cu.o:                 U cudaStreamSynchronize",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:mtp.cu.o:                 U cudaStreamSynchronize",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:mtp_sequential.cpp.o:                 U cudaStreamSynchronize",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_server.a:chat_scheduler.cpp.o:                 U cudaStreamSynchronize"
+          ],
+          "cuda_export": [
+            "000000000007a308 T cudaStreamSynchronize@@libcudart.so.13"
+          ],
+          "exact_exists": true,
+          "actual_cross_object_import": true
+        },
+        {
+          "alias": "cudaMemcpyAsync",
+          "symbol": "cudaMemcpyAsync",
+          "defined": [],
+          "imported": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:hyperconnection.cu.o:                 U cudaMemcpyAsync",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:linear_attention.cu.o:                 U cudaMemcpyAsync",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:full_attention.cu.o:                 U cudaMemcpyAsync",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:moe.cu.o:                 U cudaMemcpyAsync",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:ple_layer.cu.o:                 U cudaMemcpyAsync",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:model_head.cu.o:                 U cudaMemcpyAsync",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:model.cu.o:                 U cudaMemcpyAsync",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:moe_bf16.cu.o:                 U cudaMemcpyAsync",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:mtp.cu.o:                 U cudaMemcpyAsync",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:mtp_sequential.cpp.o:                 U cudaMemcpyAsync",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:vision.cu.o:                 U cudaMemcpyAsync",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_server.a:chat_scheduler.cpp.o:                 U cudaMemcpyAsync",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_server.a:chat_generation.cpp.o:                 U cudaMemcpyAsync"
+          ],
+          "cuda_export": [
+            "0000000000077580 T cudaMemcpyAsync@@libcudart.so.13"
+          ],
+          "exact_exists": true,
+          "actual_cross_object_import": true
+        }
+      ],
+      "cmake_exact_set_matches": true,
+      "cmake_wraps": [
+        "_ZN3q4t3mtp23MtpSpeculativeStepMultiERKNS_5model5ModelERKNS0_8MtpModelEPKPKNS1_13ModelSequenceEPKiSE_PKPKtiiPiSJ_SJ_SJ_PPtP11CUstream_stPNS_5trace12MtpCycleStepEPNSO_16MtpVerifyMoeStepESt4spanISD_Lm18446744073709551615EE",
+        "_ZN3q4t5model16ModelVerifyMultiERKNS0_5ModelEPKiS5_S5_S5_iiiPtP11CUstream_stS6_",
+        "_ZN3q4t5model22ModelRestoreCheckpointERKNS0_5ModelEiP11CUstream_sti",
+        "_ZN3q4t5model20FullAttentionForwardERKNS0_20FullAttentionWeightsEPKtPtPKiS8_S6_S8_S6_S6_iPvmP11CUstream_stS8_i",
+        "_ZN3q4t5model21ModelDecodeBatchMultiERKNS0_5ModelEPKiS5_S5_S5_iPtP11CUstream_stS6_",
+        "_ZN3q4t5model18ModelBeginSequenceERKNS0_5ModelEPNS0_13ModelSequenceEP11CUstream_sti",
+        "_ZN3q4t5model16ModelEndSequenceEPNS0_13ModelSequenceE",
+        "_ZN3q4t3mtp13MtpResetStateERKNS0_8MtpModelEP11CUstream_sti",
+        "cudaMemcpyAsync",
+        "cudaStreamSynchronize"
+      ]
+    },
+    "mtp_t4_terminal_server.cpp": {
+      "sha256": "6bf514bf4d3247b7cfe321b04ae4cd8685ed0a9efb098015483b611be1d8191b",
+      "rows": [
+        {
+          "alias": "Q4T_STEP",
+          "symbol": "_ZN3q4t3mtp23MtpSpeculativeStepMultiERKNS_5model5ModelERKNS0_8MtpModelEPKPKNS1_13ModelSequenceEPKiSE_PKPKtiiPiSJ_SJ_SJ_PPtP11CUstream_stPNS_5trace12MtpCycleStepEPNSO_16MtpVerifyMoeStepESt4spanISD_Lm18446744073709551615EE",
+          "defined": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:mtp.cu.o:0000000000008f20 T _ZN3q4t3mtp23MtpSpeculativeStepMultiERKNS_5model5ModelERKNS0_8MtpModelEPKPKNS1_13ModelSequenceEPKiSE_PKPKtiiPiSJ_SJ_SJ_PPtP11CUstream_stPNS_5trace12MtpCycleStepEPNSO_16MtpVerifyMoeStepESt4spanISD_Lm18446744073709551615EE"
+          ],
+          "imported": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_server.a:chat_scheduler.cpp.o:                 U _ZN3q4t3mtp23MtpSpeculativeStepMultiERKNS_5model5ModelERKNS0_8MtpModelEPKPKNS1_13ModelSequenceEPKiSE_PKPKtiiPiSJ_SJ_SJ_PPtP11CUstream_stPNS_5trace12MtpCycleStepEPNSO_16MtpVerifyMoeStepESt4spanISD_Lm18446744073709551615EE"
+          ],
+          "cuda_export": [],
+          "exact_exists": true,
+          "actual_cross_object_import": true
+        },
+        {
+          "alias": "Q4T_VERIFY",
+          "symbol": "_ZN3q4t5model16ModelVerifyMultiERKNS0_5ModelEPKiS5_S5_S5_iiiPtP11CUstream_stS6_",
+          "defined": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:model.cu.o:00000000000070e0 T _ZN3q4t5model16ModelVerifyMultiERKNS0_5ModelEPKiS5_S5_S5_iiiPtP11CUstream_stS6_"
+          ],
+          "imported": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:mtp.cu.o:                 U _ZN3q4t5model16ModelVerifyMultiERKNS0_5ModelEPKiS5_S5_S5_iiiPtP11CUstream_stS6_"
+          ],
+          "cuda_export": [],
+          "exact_exists": true,
+          "actual_cross_object_import": true
+        },
+        {
+          "alias": "Q4T_RESTORE",
+          "symbol": "_ZN3q4t5model22ModelRestoreCheckpointERKNS0_5ModelEiP11CUstream_sti",
+          "defined": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:model.cu.o:0000000000002b80 T _ZN3q4t5model22ModelRestoreCheckpointERKNS0_5ModelEiP11CUstream_sti"
+          ],
+          "imported": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:mtp.cu.o:                 U _ZN3q4t5model22ModelRestoreCheckpointERKNS0_5ModelEiP11CUstream_sti"
+          ],
+          "cuda_export": [],
+          "exact_exists": true,
+          "actual_cross_object_import": true
+        },
+        {
+          "alias": "Q4T_ATTENTION",
+          "symbol": "_ZN3q4t5model20FullAttentionForwardERKNS0_20FullAttentionWeightsEPKtPtPKiS8_S6_S8_S6_S6_iPvmP11CUstream_stS8_i",
+          "defined": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:full_attention.cu.o:0000000000005120 T _ZN3q4t5model20FullAttentionForwardERKNS0_20FullAttentionWeightsEPKtPtPKiS8_S6_S8_S6_S6_iPvmP11CUstream_stS8_i"
+          ],
+          "imported": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:decoder_layer.cu.o:                 U _ZN3q4t5model20FullAttentionForwardERKNS0_20FullAttentionWeightsEPKtPtPKiS8_S6_S8_S6_S6_iPvmP11CUstream_stS8_i",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:mtp.cu.o:                 U _ZN3q4t5model20FullAttentionForwardERKNS0_20FullAttentionWeightsEPKtPtPKiS8_S6_S8_S6_S6_iPvmP11CUstream_stS8_i"
+          ],
+          "cuda_export": [],
+          "exact_exists": true,
+          "actual_cross_object_import": true
+        },
+        {
+          "alias": "Q4T_MAIN",
+          "symbol": "_ZN3q4t5model21ModelDecodeBatchMultiERKNS0_5ModelEPKiS5_S5_S5_iPtP11CUstream_stS6_",
+          "defined": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:model.cu.o:0000000000006a8c T _ZN3q4t5model21ModelDecodeBatchMultiERKNS0_5ModelEPKiS5_S5_S5_iPtP11CUstream_stS6_"
+          ],
+          "imported": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:mtp_sequential.cpp.o:                 U _ZN3q4t5model21ModelDecodeBatchMultiERKNS0_5ModelEPKiS5_S5_S5_iPtP11CUstream_stS6_",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_server.a:chat_scheduler.cpp.o:                 U _ZN3q4t5model21ModelDecodeBatchMultiERKNS0_5ModelEPKiS5_S5_S5_iPtP11CUstream_stS6_"
+          ],
+          "cuda_export": [],
+          "exact_exists": true,
+          "actual_cross_object_import": true
+        },
+        {
+          "alias": "Q4T_BEGIN",
+          "symbol": "_ZN3q4t5model18ModelBeginSequenceERKNS0_5ModelEPNS0_13ModelSequenceEP11CUstream_sti",
+          "defined": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:model.cu.o:0000000000004ea0 T _ZN3q4t5model18ModelBeginSequenceERKNS0_5ModelEPNS0_13ModelSequenceEP11CUstream_sti"
+          ],
+          "imported": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_server.a:chat_scheduler.cpp.o:                 U _ZN3q4t5model18ModelBeginSequenceERKNS0_5ModelEPNS0_13ModelSequenceEP11CUstream_sti",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_server.a:chat_generation.cpp.o:                 U _ZN3q4t5model18ModelBeginSequenceERKNS0_5ModelEPNS0_13ModelSequenceEP11CUstream_sti"
+          ],
+          "cuda_export": [],
+          "exact_exists": true,
+          "actual_cross_object_import": true
+        },
+        {
+          "alias": "Q4T_END",
+          "symbol": "_ZN3q4t5model16ModelEndSequenceEPNS0_13ModelSequenceE",
+          "defined": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:model.cu.o:00000000000012c4 T _ZN3q4t5model16ModelEndSequenceEPNS0_13ModelSequenceE"
+          ],
+          "imported": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_server.a:chat_generation.cpp.o:                 U _ZN3q4t5model16ModelEndSequenceEPNS0_13ModelSequenceE"
+          ],
+          "cuda_export": [],
+          "exact_exists": true,
+          "actual_cross_object_import": true
+        },
+        {
+          "alias": "Q4T_PREFILL",
+          "symbol": "_ZN3q4t5model12ModelPrefillERKNS0_5ModelEPNS0_13ModelSequenceEPKiiPtP11CUstream_stS8_PKNS0_14VisionFeaturesEiNS0_10LogitsRowsENS0_18SequenceCompletionE",
+          "defined": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:model.cu.o:000000000000c4ec T _ZN3q4t5model12ModelPrefillERKNS0_5ModelEPNS0_13ModelSequenceEPKiiPtP11CUstream_stS8_PKNS0_14VisionFeaturesEiNS0_10LogitsRowsENS0_18SequenceCompletionE"
+          ],
+          "imported": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_server.a:chat_scheduler.cpp.o:                 U _ZN3q4t5model12ModelPrefillERKNS0_5ModelEPNS0_13ModelSequenceEPKiiPtP11CUstream_stS8_PKNS0_14VisionFeaturesEiNS0_10LogitsRowsENS0_18SequenceCompletionE",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_server.a:chat_generation.cpp.o:                 U _ZN3q4t5model12ModelPrefillERKNS0_5ModelEPNS0_13ModelSequenceEPKiiPtP11CUstream_stS8_PKNS0_14VisionFeaturesEiNS0_10LogitsRowsENS0_18SequenceCompletionE"
+          ],
+          "cuda_export": [],
+          "exact_exists": true,
+          "actual_cross_object_import": true
+        },
+        {
+          "alias": "cudaMemcpy",
+          "symbol": "cudaMemcpy",
+          "defined": [],
+          "imported": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:linear_attention.cu.o:                 U cudaMemcpy",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:moe.cu.o:                 U cudaMemcpy",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:ple_layer.cu.o:                 U cudaMemcpy",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:decoder_layer.cu.o:                 U cudaMemcpy",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:mtp.cu.o:                 U cudaMemcpy",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_model.a:vision.cu.o:                 U cudaMemcpy",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/build/mtp-mainline-final-20261009/libq4t_server.a:chat_input.cpp.o:                 U cudaMemcpy"
+          ],
+          "cuda_export": [
+            "0000000000075008 T cudaMemcpy@@libcudart.so.13"
+          ],
+          "exact_exists": true,
+          "actual_cross_object_import": true
+        }
+      ],
+      "cmake_exact_set_matches": true,
+      "cmake_wraps": [
+        "_ZN3q4t3mtp23MtpSpeculativeStepMultiERKNS_5model5ModelERKNS0_8MtpModelEPKPKNS1_13ModelSequenceEPKiSE_PKPKtiiPiSJ_SJ_SJ_PPtP11CUstream_stPNS_5trace12MtpCycleStepEPNSO_16MtpVerifyMoeStepESt4spanISD_Lm18446744073709551615EE",
+        "_ZN3q4t5model16ModelVerifyMultiERKNS0_5ModelEPKiS5_S5_S5_iiiPtP11CUstream_stS6_",
+        "_ZN3q4t5model22ModelRestoreCheckpointERKNS0_5ModelEiP11CUstream_sti",
+        "_ZN3q4t5model20FullAttentionForwardERKNS0_20FullAttentionWeightsEPKtPtPKiS8_S6_S8_S6_S6_iPvmP11CUstream_stS8_i",
+        "_ZN3q4t5model21ModelDecodeBatchMultiERKNS0_5ModelEPKiS5_S5_S5_iPtP11CUstream_stS6_",
+        "_ZN3q4t5model18ModelBeginSequenceERKNS0_5ModelEPNS0_13ModelSequenceEP11CUstream_sti",
+        "_ZN3q4t5model16ModelEndSequenceEPNS0_13ModelSequenceE",
+        "_ZN3q4t5model12ModelPrefillERKNS0_5ModelEPNS0_13ModelSequenceEPKiiPtP11CUstream_stS8_PKNS0_14VisionFeaturesEiNS0_10LogitsRowsENS0_18SequenceCompletionE",
+        "cudaMemcpy"
+      ]
+    }
+  },
+  "cmake_sha256": "c145006aa8841f9f29187da8a26a2ada7a44c30a9b433161d6b9791e25fc37d9",
+  "complete_original_binding": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-mainline-20261009/wrapper-symbol-independent-review-01.json",
+    "bytes": 26403,
+    "sha256": "cca5e706cde5b6c844fc42aebedecb2f93ec2e28c4c8e74a5b446443b8ee0b23"
+  }
+}

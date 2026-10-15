@@ -1,0 +1,104 @@
+"""Small prior boundary contracts; never read model captures or weights."""
+from fractions import Fraction as F
+import unittest
+
+from analyze_hc import (Indeterminate, accumulate_interval, binary_value,
+                       classify, exp_enclosure, gate_interval, power2,
+                       round_bits, silu_interval, supported_interval,
+                       verify_sources)
+
+
+class HcArithmeticTest(unittest.TestCase):
+    @staticmethod
+    def capture_log():
+        epsilon = f'{round_bits(F(1, 1000000)):08x}'
+        return ('HC_SCOPE byte_order=little encoding=BF16 rows=1,4,4 '
+                'widths=10240,320,320,10240,2560 hc_count=4 hidden_size=2560 '
+                f'lowrank=320 eps_f32_bits={epsilon} cudart_header=13030 '
+                'FP8_PROJ=unset FP8_HC=unset FP8_ALL=unset '
+                'projection_first_row_only=1 nonlinear_contract=NOT_EVALUATED\n'
+                'HC_CALL path=m1 T=1 hc_workspace=33554432\n'
+                'HC_CALL path=m4a T=4 hc_workspace=33554432\n'
+                'HC_CALL path=m4b T=4 hc_workspace=33554432\n')
+
+    def test_fp32_even_and_odd_ties(self):
+        self.assertEqual(round_bits(1 + power2(-24)), 0x3f800000)
+        self.assertEqual(round_bits(1 + 3 * power2(-24)), 0x3f800002)
+        self.assertEqual(round_bits(-1 - power2(-24)), 0xbf800000)
+        self.assertEqual(round_bits(-1 - 3 * power2(-24)), 0xbf800002)
+
+    def test_bf16_even_and_odd_ties(self):
+        self.assertEqual(round_bits(1 + power2(-8), 8), 0x3f80)
+        self.assertEqual(round_bits(1 + 3 * power2(-8), 8), 0x3f82)
+        self.assertEqual(round_bits(-1 - power2(-8), 8), 0xbf80)
+        self.assertEqual(round_bits(-1 - 3 * power2(-8), 8), 0xbf82)
+
+    def test_negative_directed_rounding(self):
+        value = -1 - power2(-25)
+        lower = binary_value(round_bits(value, direction='floor'))
+        upper = binary_value(round_bits(value, direction='ceil'))
+        self.assertLessEqual(lower, value)
+        self.assertGreaterEqual(upper, value)
+        self.assertEqual(lower, -1 - power2(-23))
+        self.assertEqual(upper, -1)
+
+    def test_exp_enclosure_crosses_binade_without_narrowing_lower_side(self):
+        low, high = exp_enclosure(F(0))
+        self.assertEqual(low, 1 - power2(-22))
+        self.assertEqual(high, 1 + power2(-22))
+        self.assertEqual(round_bits(low), 0x3f7ffffc)
+        self.assertEqual(round_bits(high), 0x3f800002)
+
+    def test_negative_silu_and_divide_before_nonlinearity(self):
+        interval = silu_interval(F(-4))  # v = -1, not SiLU(-4)/4.
+        observed = round_bits(F(-69, 256), 8)
+        self.assertEqual(classify(observed, interval)['status'], 'PASS')
+        self.assertEqual(classify(round_bits(F(-1, 64), 8), interval)['status'], 'FAIL')
+
+    def test_four_branch_gate_mean_and_wrong_output(self):
+        interval = gate_interval([F(0)] * 4, [F(1), F(2), F(3), F(4)])
+        self.assertEqual(classify(round_bits(F(5, 4), 8), interval)['status'], 'PASS')
+        self.assertEqual(classify(round_bits(F(3, 2), 8), interval)['status'], 'FAIL')
+
+    def test_fma_and_nonfma_are_both_enclosed(self):
+        gate = F(1, 2) + power2(-24)
+        normed = 2 - power2(-22)
+        interval = accumulate_interval((F(-1), F(-1)), (gate, gate), normed)
+        self.assertLessEqual(interval[0], -power2(-46))
+        self.assertGreaterEqual(interval[1], 0)
+
+    def test_unsupported_domain_is_indeterminate(self):
+        for argument in [F(-100), F(100), F(101)]:
+            with self.subTest(argument=argument):
+                with self.assertRaises(Indeterminate):
+                    exp_enclosure(argument)
+        for interval in [(power2(-149), power2(-149)), (F(-1), F(1))]:
+            with self.assertRaises(Indeterminate):
+                supported_interval(interval, 'test')
+        with self.assertRaises(Indeterminate):
+            classify(0x8000, (F(0), F(0)))
+
+    def test_positive_zero_is_exactly_supported(self):
+        self.assertEqual(classify(0, silu_interval(F(0)))['status'], 'PASS')
+
+    def test_missing_or_unsafe_compiler_flags_are_not_passed(self):
+        for flags in ['', 'CUDA_FLAGS = --use_fast_math',
+                      'CUDA_FLAGS = --prec-div=false', 'CUDA_FLAGS = --ftz=true',
+                      'CUDA_FLAGS = -Xcompiler=-ffast-math']:
+            with self.subTest(flags=flags):
+                with self.assertRaises(Indeterminate):
+                    verify_sources(self.capture_log(), flags)
+
+    def test_source_scope_positive_and_changed_dtype_or_environment(self):
+        valid = self.capture_log()
+        flags = 'CUDA_FLAGS = -O3 -DNDEBUG -std=c++23 --fmad=true\n'
+        self.assertEqual(verify_sources(valid, flags)['scope']['hc_count'], '4')
+        for changed in [valid.replace('encoding=BF16', 'encoding=FP32'),
+                        valid.replace('FP8_HC=unset', 'FP8_HC=1'),
+                        valid.replace('path=m4b T=4', 'path=m4b T=1')]:
+            with self.assertRaises(Indeterminate):
+                verify_sources(changed, flags)
+
+
+if __name__ == '__main__':
+    unittest.main()

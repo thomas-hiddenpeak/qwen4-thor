@@ -1,0 +1,15 @@
+{
+  "label": "test-public-host-01",
+  "argv": [
+    "ctest",
+    "--test-dir",
+    "build/public-host",
+    "--no-tests=error",
+    "--output-on-failure",
+    "--verbose",
+    "--output-junit",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source/build/public-host/results-01.xml"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source",
+  "started": 1791344467.2958038
+}

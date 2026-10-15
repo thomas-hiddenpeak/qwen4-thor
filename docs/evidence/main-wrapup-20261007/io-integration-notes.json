@@ -1,0 +1,77 @@
+{
+  "task": "Bounded public WeightLoader lifetime fixes for main wrapup",
+  "base": "8ea85b1",
+  "source_of_runtime_fix": "2b0100c (selected shared ownership, stable metadata and diagnostic lock only)",
+  "status": "Implementation ready; no build, unit test, sanitizer, HTTP or model payload access performed by wrap_io agent.",
+  "files": {
+    "include/q4t/io/weight_loader.h": "5930e9244af48d578265571f71c021bafbd36e46cc85477ada19bd779b1cd49f",
+    "src/io/weight_loader.cpp": "6fa8dd924acdddf34542f8cf62bf928d128c37527234498f7079d83778a4aa31",
+    "tests/weight_loader_contract_test.cpp": "1f70f70a175d670fc263a9679899e80af8bcf55ec08ba4f49682ae7b3fd6e8bd",
+    "tests/io_host/CMakeLists.txt": "551cf1d48f3e2cf00c50d3b86f099def4617184389c16a372051b1ab1994bd79"
+  },
+  "implementation": [
+    "EnsureOpen returns a shared_ptr copied while holding the existing LRU mutex. ReadTensor, ReadTensorToDevice and FindTensor retain it until they finish using the shard.",
+    "FindTensor copies successful metadata into a loader-owned unordered_map under the same mutex. Values are immutable and never erased, so returned pointers survive LRU eviction and map rehash until loader destruction.",
+    "open_shards takes the same mutex and reports cached handles; active readers may retain additional evicted shards.",
+    "Main API signatures, file format, loading policy and H2D enqueue behavior are unchanged."
+  ],
+  "excluded": [
+    "num_shards convenience API",
+    "WeightLoader::ShardOf",
+    "ReadRange / ReadRangeShard / ReadRangevShard",
+    "SafetensorsFile changes and ReadRangev",
+    "page-cache retention modes",
+    "MoE/offload code or policy",
+    "tests/io_safetensors_test.cpp changes",
+    "root CMakeLists.txt changes",
+    "STATUS/log writes or commits"
+  ],
+  "contracts": {
+    "weight_loader_metadata_survives_eviction": "Retain a tensor pointer, visit 31 other shards at cache capacity one, then verify original complete metadata and identical pointer on lookup.",
+    "weight_loader_read_survives_eviction": "Pause actual pread before reading bytes; a concurrent second-shard read must finish while blocked; evicted descriptor must stay open until first read returns and then close exactly once; both byte sequences must match.",
+    "weight_loader_device_read_survives_eviction": "Same deterministic pread eviction through existing ReadTensorToDevice API, plus host H2D double verifies bytes, source/destination, kind and stream forwarding.",
+    "weight_loader_device_enqueue_survives_eviction": "Pause inside host cudaMemcpyAsync double; concurrent shard eviction must not close the original file until enqueue call returns.",
+    "weight_loader_missing_tensor_and_shard": "Missing index name, missing tensor in a valid shard, and missing shard fail both reads and metadata lookup without copying or touching destination buffers; valid read still succeeds afterward.",
+    "weight_loader_concurrent_small_cache": "Eight readers start at a barrier and read/check 32 shards across 1024 accesses at cache capacity one while the main thread queries open_shards; metadata, byte content and cache bound are checked."
+  },
+  "fixture_policy": "Synthetic files are created only inside CMAKE_CURRENT_BINARY_DIR/fixtures using unique mkdtemp directories and removed by RAII; configure binary directory under source/build or wrapup evidence root.",
+  "dependencies": [
+    "Linux/POSIX pread and close",
+    "GNU-compatible linker --wrap support",
+    "CMake >= 3.25",
+    "C++23 compiler (project uses g++-14)",
+    "Threads",
+    "CUDA headers only; no CUDA runtime library/device or model files"
+  ],
+  "suggested_commands_from_source": {
+    "regular": [
+      "cmake -S tests/io_host -B build/io-host -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-14",
+      "cmake --build build/io-host --parallel",
+      "ctest --test-dir build/io-host --output-on-failure"
+    ],
+    "asan_ubsan": [
+      "cmake -S tests/io_host -B build/io-host-asan -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=g++-14 \"-DCMAKE_CXX_FLAGS=-fsanitize=address,undefined -fno-omit-frame-pointer\" \"-DCMAKE_EXE_LINKER_FLAGS=-fsanitize=address,undefined\"",
+      "cmake --build build/io-host-asan --parallel",
+      "ctest --test-dir build/io-host-asan --output-on-failure"
+    ],
+    "optional_tsan": [
+      "cmake -S tests/io_host -B build/io-host-tsan -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=g++-14 \"-DCMAKE_CXX_FLAGS=-fsanitize=thread -fno-omit-frame-pointer\" \"-DCMAKE_EXE_LINKER_FLAGS=-fsanitize=thread\"",
+      "cmake --build build/io-host-tsan --parallel",
+      "ctest --test-dir build/io-host-tsan --output-on-failure"
+    ],
+    "negative_control": "In a separate evidence-root copy of this IO-only target, replace only weight_loader.h/.cpp with 8ea85b1 versions. Run selected lifetime tests in separate processes under ASan so an expected use-after-free does not prevent recording other cases. Do not overwrite the integrated source."
+  },
+  "coverage_limits": [
+    "The cudaMemcpyAsync test double copies host bytes synchronously. It proves host call/lifetime and argument forwarding only, not real GPU transfer, caller staging-buffer lifetime after enqueue or stream completion.",
+    "A clean stress result is not a proof of all thread interleavings; deterministic blocking covers actual read/eviction overlap, while optional TSan separately targets unsynchronized metadata/cache diagnostics.",
+    "Metadata storage grows with successfully queried distinct tensor names and remains until loader destruction. It retains metadata, not shard payloads.",
+    "WeightIndex must outlive WeightLoader; callers must join outstanding operations before destroying the loader. Those existing caller lifetime obligations are now documented.",
+    "This change does not establish HTTP quality, performance, model correctness or release acceptance."
+  ],
+  "static_actions_done": [
+    "Read source/selected prior commit and direct test framework",
+    "clang-format applied to new C++ test source",
+    "git diff --check on the two runtime files returned clean before final note creation"
+  ],
+  "handoff": "Root owns group freeze, normal/sanitizer validation, runtime acceptance, STATUS/log updates and authorized commit/push."
+}

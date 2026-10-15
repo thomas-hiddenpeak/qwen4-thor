@@ -1,0 +1,187 @@
+[
+  {
+    "length": 1024,
+    "outputs": [
+      "0e1e7da55f600ba0bf8d5eb598b33eec8fab3dc134b41ff482dab803a5562d15",
+      "0e1e7da55f600ba0bf8d5eb598b33eec8fab3dc134b41ff482dab803a5562d15",
+      "0e1e7da55f600ba0bf8d5eb598b33eec8fab3dc134b41ff482dab803a5562d15"
+    ],
+    "decode_mode": "plain",
+    "prompt_sha256": "a72fade2611451e1f33ca088f0554474ec9d9032efccf04cc5581a2c25be2d98",
+    "deterministic": true,
+    "metrics": [
+      {
+        "ttft": 0.8679790610913187,
+        "latency": 14.660095218103379,
+        "decode_seconds": 13.79211615701206,
+        "decode_tps": 18.48882340440232,
+        "overall_tps": 17.462369527032273,
+        "actual_output": 256
+      },
+      {
+        "ttft": 0.7660732788499445,
+        "latency": 14.47090647299774,
+        "decode_seconds": 13.704833194147795,
+        "decode_tps": 18.606574511894788,
+        "overall_tps": 17.690667856757145,
+        "actual_output": 256
+      },
+      {
+        "ttft": 0.7634202579502016,
+        "latency": 14.471765976864845,
+        "decode_seconds": 13.708345718914643,
+        "decode_tps": 18.601806901335546,
+        "overall_tps": 17.689617176594208,
+        "actual_output": 256
+      }
+    ]
+  },
+  {
+    "length": 4096,
+    "outputs": [
+      "541b0b8f2b1e9140f1f15ec5b57cb7b3cc5e9a22c5ab1ffb70451578a5623828",
+      "541b0b8f2b1e9140f1f15ec5b57cb7b3cc5e9a22c5ab1ffb70451578a5623828",
+      "541b0b8f2b1e9140f1f15ec5b57cb7b3cc5e9a22c5ab1ffb70451578a5623828"
+    ],
+    "decode_mode": "plain",
+    "prompt_sha256": "0cb9f47cdf9ea33d5fe3f4267bcfd347494b3883770c8b293bb5aacf9bb2602d",
+    "deterministic": true,
+    "metrics": [
+      {
+        "ttft": 2.650861636037007,
+        "latency": 16.938472494948655,
+        "decode_seconds": 14.287610858911648,
+        "decode_tps": 17.847630546358854,
+        "overall_tps": 15.113523375637538,
+        "actual_output": 256
+      },
+      {
+        "ttft": 2.635858217952773,
+        "latency": 16.919500661082566,
+        "decode_seconds": 14.283642443129793,
+        "decode_tps": 17.852589142810068,
+        "overall_tps": 15.130470167410973,
+        "actual_output": 256
+      },
+      {
+        "ttft": 2.6381239991169423,
+        "latency": 16.919289543060586,
+        "decode_seconds": 14.281165543943644,
+        "decode_tps": 17.85568546316168,
+        "overall_tps": 15.130658964637076,
+        "actual_output": 256
+      }
+    ]
+  },
+  {
+    "length": 8192,
+    "outputs": [
+      "3171cac48aedfa9db651009dc7c5aa54a7e59bcd0c856ebaafe26c70013f2a1f",
+      "3171cac48aedfa9db651009dc7c5aa54a7e59bcd0c856ebaafe26c70013f2a1f",
+      "3171cac48aedfa9db651009dc7c5aa54a7e59bcd0c856ebaafe26c70013f2a1f"
+    ],
+    "decode_mode": "plain",
+    "prompt_sha256": "e4c57e9fca8d72d694b167a2f56f8527a51e5ab84830983e47ed434d0708e39a",
+    "deterministic": true,
+    "metrics": [
+      {
+        "ttft": 5.180229286197573,
+        "latency": 19.32331232004799,
+        "decode_seconds": 14.143083033850417,
+        "decode_tps": 18.03001505327208,
+        "overall_tps": 13.248246250949393,
+        "actual_output": 256
+      },
+      {
+        "ttft": 5.170277374098077,
+        "latency": 19.279774553142488,
+        "decode_seconds": 14.10949717904441,
+        "decode_tps": 18.072933199825787,
+        "overall_tps": 13.278163564328274,
+        "actual_output": 256
+      },
+      {
+        "ttft": 5.160413957899436,
+        "latency": 19.248573990073055,
+        "decode_seconds": 14.088160032173619,
+        "decode_tps": 18.10030546342799,
+        "overall_tps": 13.299686518701346,
+        "actual_output": 256
+      }
+    ]
+  },
+  {
+    "length": 45056,
+    "outputs": [
+      "0e59305d32f2895cdf1cb1c61a38ece56702dfe329b3d357a76bdbf4f7ad7dae",
+      "0e59305d32f2895cdf1cb1c61a38ece56702dfe329b3d357a76bdbf4f7ad7dae",
+      "0e59305d32f2895cdf1cb1c61a38ece56702dfe329b3d357a76bdbf4f7ad7dae"
+    ],
+    "decode_mode": "plain",
+    "prompt_sha256": "82da2659b9ef07afac3ef134b735ff8d2ce9c6a37f4565a777f9d76a05d7f478",
+    "deterministic": true,
+    "metrics": [
+      {
+        "ttft": 30.447419196134433,
+        "latency": 44.732038617134094,
+        "decode_seconds": 14.284619420999661,
+        "decode_tps": 17.85136813831577,
+        "overall_tps": 5.722967428136444,
+        "actual_output": 256
+      },
+      {
+        "ttft": 30.474079492036253,
+        "latency": 44.75421420298517,
+        "decode_seconds": 14.280134710948914,
+        "decode_tps": 17.856974402663408,
+        "overall_tps": 5.720131714052628,
+        "actual_output": 256
+      },
+      {
+        "ttft": 30.505526046967134,
+        "latency": 44.78679309692234,
+        "decode_seconds": 14.281267049955204,
+        "decode_tps": 17.8555585514942,
+        "overall_tps": 5.715970764997501,
+        "actual_output": 256
+      }
+    ]
+  },
+  {
+    "length": 204800,
+    "outputs": [
+      "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
+      "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
+      "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+    ],
+    "decode_mode": "plain",
+    "prompt_sha256": "959679d2f533ca72d15a5ed3f3a2e2361f63dbf3a88384ab8ec2d750d5e34bf5",
+    "deterministic": true,
+    "metrics": [
+      {
+        "ttft": 159.0967187259812,
+        "latency": 174.06585207907483,
+        "decode_seconds": 14.969133353093639,
+        "decode_tps": 17.03505433381016,
+        "overall_tps": 1.470707763425672,
+        "actual_output": 256
+      },
+      {
+        "ttft": 159.11597526818514,
+        "latency": 174.08625844400376,
+        "decode_seconds": 14.970283175818622,
+        "decode_tps": 17.033745922181314,
+        "overall_tps": 1.4705353672837105,
+        "actual_output": 256
+      },
+      {
+        "ttft": 159.6694938337896,
+        "latency": 174.58558642980643,
+        "decode_seconds": 14.916092596016824,
+        "decode_tps": 17.095629995491908,
+        "overall_tps": 1.4663295248770545,
+        "actual_output": 256
+      }
+    ]
+  }
+]

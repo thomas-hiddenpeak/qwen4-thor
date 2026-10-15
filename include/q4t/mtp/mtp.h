@@ -30,6 +30,7 @@
 // first combine has prev_injection=None -> unit weight).
 #pragma once
 
+#include <span>
 #include <cuda_runtime.h>
 
 #include <cstdint>
@@ -346,7 +347,8 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                                const uint16_t* const* g_in, int B, int k,
                                int32_t* accepted_tokens, int* accepted_count,
                                int32_t* next_b, int32_t* next_d0,
-                               uint16_t** next_g, cudaStream_t stream);
+                               uint16_t** next_g, cudaStream_t stream,
+                               std::span<const int32_t> stop_tokens = {});
 
 }  // namespace mtp
 }  // namespace q4t

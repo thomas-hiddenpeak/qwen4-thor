@@ -1,0 +1,72 @@
+"""Independent finite gate/cost record review; reuses completed model evidence."""
+import hashlib,json,math,time
+from pathlib import Path
+S=Path(__file__).resolve().parent
+sources={};checks=[]
+def raw(p):
+ p=Path(p);b=p.read_bytes();sources[str(p)]={'sha256':hashlib.sha256(b).hexdigest(),'bytes':len(b)};return b
+def read(name):return json.loads(raw(S/name))
+def check(name,value):checks.append({'name':name,'passed':bool(value)})
+def eq(a,b):return math.isclose(a,b,rel_tol=1e-13,abs_tol=1e-12)
+gate=read('final-gate-03.json');protection=read('final-protection-03.json');perf=read('http-performance-independent-review-03.json')
+for name,record in gate['sources'].items():
+ raw(Path(record['path']));check('gate source binding '+name,sources[record['path']]=={'sha256':record['sha256'],'bytes':record['bytes']})
+for script,record in [('make-final-gate-03.py',gate),('protect-final-03.py',protection),('review-paired-http-03.py',perf)]:
+ check('executed review script binding '+script,hashlib.sha256(raw(S/script)).hexdigest()==record['script_sha256'])
+check('finite profile only',gate['decision']=='QUALIFIED_FINITE_SEQUENTIAL_CORRECTNESS_PROFILE' and gate['finite_sequential_profile_admitted'] is True and gate['http_exact_pairing_passed'] is True)
+for key in ['original_coverage_all_passed','full_model_task_quality_passed','performance_improvement_claim','performance_nonregression_claim','fast_t4_admitted','default_mtp_enabled','main_merged','deployed','new_model_or_test_execution']:
+ check('scope remains false '+key,gate[key] is False)
+profile=gate['profile'];check('exact supported profile',all(profile[k]==v for k,v in dict(max_seq=1,slot=0,max_prefill=8192,max_len=208896,k=3,arguments=['--mtp','--mtp-verifier','sequential'],production_binary_sha256='a566faf51975291ec8fcd1fe75d7ddff07760fe13c138f85a066aeffad729563').items()))
+requests=gate['requests'];check('105 production plus10 variants equals115',requests['production_groups']==dict(quality=22,sustained=16,limits=28,cancellation=9,performance=30) and requests['test_variant_groups']==dict(mid_forward_failure=5,resource_fallback=3,controlled_tail=2) and sum(requests['production_groups'].values())==requests['production_candidate']==105 and sum(requests['test_variant_groups'].values())==requests['test_variants']==10 and requests['total']==115 and requests['original_matrix']==110 and requests['extra_resource_variant']==3 and requests['extra_controlled_tail_variant']==2)
+quality=read('http-quality-independent-review-01.json');sustained=read('sustained-independent-review-01.json');limits=read('http-limits-independent-review-03.json')
+check('48 natural across-mode pairs',quality['pair_count']==11 and len(sustained['cases'])==8 and len(limits['pairs'])==14 and len(perf['pairs'])==15 and gate['http_exact_pairs']==48)
+check('three original failed coverage groups preserved',read('sequential-direct-01/summary.json')['passed'] is False and gate['original_nonpasses']['original_group_failures_retained']==3 and len(gate['original_nonpasses']['http_limit_groups'])==2 and all(x['original_coverage_passed'] is False and x['observed_output']==1 and x['observed_finish']=='stop' for x in gate['original_nonpasses']['http_limit_groups']))
+for mode in ('plain','sequential'):
+ ex=read(f'http/limits-{mode}/exit.json');entry=next(x for x in gate['original_nonpasses']['http_limit_groups'] if x['mode']==mode)
+ check(mode+' original terminal failure retained',ex['completed']==14 and ex['http_output_checks_passed'] is False and ex['failure']=='RuntimeError: output-limit/finish/stream acceptance failed' and ex['actual_mode_checks_passed']==entry['original_actual_mode_checks_passed'])
+check('natural/full GPU coverage gap explicit',gate['coverage_decision']['natural_gpu_full_extend_shapes']==[1,4] and 'no claim' in gate['coverage_decision']['shapes_2_3'])
+check('four semantic deficiencies remain independent',gate['semantic_results']['satisfactory']==['en-reasoning','zh-summary','zh-excerpt','en-excerpt'] and len(gate['semantic_results']['insufficient'])==4 and gate['semantic_results']['automatic_scores_unchanged'] and gate['semantic_results']['generated_code_executed'] is False)
+check('sustained reused coverage and manual sources',sustained['independent_http_pair_and_coverage_passed'] and sustained['checks_passed']==sustained['checks_total']==424 and not sustained['failed_checks'])
+for name,count in [('cancellation-independent-review-01.json',133),('resource-independent-review-01.json',207),('context-tail-independent-review-01.json',163)]:
+ r=read(name);check('unchanged independently reviewed '+name,r['passed'] and r['checks_passed']==r['checks_total']==count and not r['failed_checks'])
+check('all descriptive performance audit checks passed',perf['passed'] and perf['checks_passed']==len(perf['checks'])==437 and all(x['passed'] for x in perf['checks']) and len(perf['sources'])==71)
+check('HTTP IDs/totals limitation explicit',perf['token_ids_observed'] is False and perf['raw_total_usage_observed'] is False)
+lengths=[1024,4096,8192,45056,204800];all_metrics={};observed_paths=[]
+for mode in ['plain','sequential']:
+ group=f'http/performance-{mode}';rows=read(group+'/results.json');ex=read(group+'/exit.json');execution=read('http-performance-'+mode+'-execution-01.json')
+ check(mode+' completed once without residual',ex['completed']==5 and ex['failure'] is None and ex['server']==0 and ex['http_output_checks_passed'] and ex['actual_mode_checks_passed'] and execution['exit_code']==0 and execution['passed'] and not execution['timeout'] and not execution['residual_process_group'])
+ check(mode+' five frozen lengths',[x['length'] for x in rows]==lengths)
+ all_metrics[mode]={}
+ for row in rows:
+  length=row['length'];label=f'{mode}:{length}';responses=read(group+f'/context-{length}/responses.json');cost=next(x for x in perf['costs'] if x['length']==length)[mode]
+  check(label+' exactly3 original samples',len(row['metrics'])==len(responses)==len(row['outputs'])==len(cost['samples'])==3)
+  check(label+' prompt deterministic',row['deterministic'] and len({x['prompt_sha256'] for x in responses})==1 and responses[0]['prompt_sha256']==row['prompt_sha256'])
+  metrics=[]
+  for index,(response,saved,audited) in enumerate(zip(responses,row['metrics'],cost['samples'])):
+   pair=next(p for p in perf['pairs'] if p['case']==f'context-{length}' and p['index']==index)
+   outputsha=hashlib.sha256(response['text'].encode()).hexdigest()
+   check(label+f':{index} actual response count/hash/finish',response['success']==1 and response['actual_input']==length and response['actual_output']==256 and response['finish']==['length'] and outputsha==row['outputs'][index]==pair['text_utf8_sha256'] and response['prompt_sha256']==pair['prompt_sha256'] and pair['exact_full_text'] is True)
+   dt=response['latency']-response['ttft'];metric=dict(ttft=response['ttft'],latency=response['latency'],decode_tps=255/dt)
+   check(label+f':{index} finite timing and independently recalculated rates',dt>0 and all(math.isfinite(x) and x>0 for x in metric.values()) and all(eq(metric[k],saved[k]) and eq(metric[k],audited[k]) for k in metric) and eq(saved['decode_seconds'],dt) and eq(saved['overall_tps'],256/response['latency']))
+   path=pair['plain_path' if mode=='plain' else 'sequential_path'];observed_paths.append(path)
+   check(label+f':{index} bound actual terminal path',path['id']==response['response_id'] and path['fallback']=='none' and path['path']==('plain' if mode=='plain' else 'mtp_sequential_b1') and path['verifier']==('none' if mode=='plain' else 'sequential'))
+   if mode=='sequential':check(label+f':{index} sequential counters noT4',path['target_t4_calls']=='0' and path['forward_count_scope']=='sequential_attempts' and int(path['draft_forward_calls'])==2*int(path['mtp_steps']) and int(path['target_t1_calls'])+int(path['plain_tail_tokens'])-1==255 and int(path['extend_forward_calls'])==int(path['mtp_steps']) and path['tail_reason']=='output_limit')
+   metrics.append(metric)
+  means={k:math.fsum(x[k] for x in metrics)/3 for k in metrics[0]};all_metrics[mode][length]=means
+  check(label+' all3 mean retained',all(eq(v,cost['mean_all_three'][k]) for k,v in means.items()))
+changes=[]
+for length in lengths:
+ cost=next(x for x in perf['costs'] if x['length']==length);g=next(x for x in gate['cost_mean_all_three'] if x['length']==length)
+ delta={k:100*(all_metrics['sequential'][length][k]/all_metrics['plain'][length][k]-1) for k in ['ttft','decode_tps','latency']}
+ check(str(length)+' final gate means and deltas',all(eq(all_metrics[m][length][k],g[m][k]) for m in all_metrics for k in delta) and all(eq(v,cost['all_three_percent_change'][k]) and eq(v,g['percent_change'][k]) for k,v in delta.items()))
+ check(str(length)+' slower decode and higher latency disclosed',delta['decode_tps']<0 and delta['ttft']>0 and delta['latency']>0)
+ changes.append({'length':length,'plain':all_metrics['plain'][length],'sequential':all_metrics['sequential'][length],'percent_change':delta})
+full_path=Path(protection['full_report']['path']);full=json.loads(raw(full_path));check('full protection source bound',sources[str(full_path)]=={k:protection['full_report'][k] for k in ['sha256','bytes']})
+check('558 recorded fresh file checks retained',len(full['files'])==protection['file_checks']==558 and all(x['passed'] and x['actual_sha256']==x['expected_sha256'] for x in full['files']) and not protection['failed_files'])
+check('130 unchanged runtime sources recorded',len(full['runtime_source'])==protection['runtime_source_checks']==130 and all(x['passed'] and x['current_sha256']==x['compiled_source_sha256'] for x in full['runtime_source']) and not protection['failed_runtime_source'])
+check('four protected workspaces unchanged',len(protection['workspaces'])==4 and all(x['passed'] and x['actual']==x['expected'] for x in protection['workspaces']))
+check('12 groups cleaned no owned live process',protection['passed'] and len(protection['executions'])==12 and all(x['cleanup_passed'] for x in protection['executions']) and not protection['owned_live_processes'] and not full['owned_live_processes'])
+result={'schema_version':1,'kind':'independent final finite sequential profile and all-sample cost review','created_unix':time.time(),'passed':all(x['passed'] for x in checks),'checks_passed':sum(x['passed'] for x in checks),'checks_total':len(checks),'failed_checks':[x for x in checks if not x['passed']],'decision_supported':gate['decision'],'exact_across_mode_pairs':48,'requests':gate['requests'],'cost_mean_all_three':changes,'reported_delta_range_percent':{key:[min(x['percent_change'][key] for x in changes),max(x['percent_change'][key] for x in changes)] for key in ['decode_tps','ttft','latency']},'reuse_scope':'Completed source-bound build/host/direct/HTTP/state/manual reviews reused. Fresh review checked all30 saved performance responses and timing formulas plus final gate/protection records. No DB replay, live workspace/library rehash, model payload access, generated code execution, new test/build/inference/HTTP. Protection current-file claims rely on bound just-completed root preservation audit.','conclusion':'Finite explicit sequential correctness profile is supported with disclosed slower cost, original three failed coverage groups and bounded supplements, four task-quality deficiencies, and full GPU extend2/3 evidence gap retained. This is not fastT4/default-MTP promotion, full model quality acceptance, acceleration/nonregression evidence, merge or deployment.','source_files':[{'path':p,**v} for p,v in sorted(sources.items())],'checks':checks,'new_model_or_test_execution':False}
+out=S/'final-gate-independent-review-03.json'
+with out.open('x') as f:json.dump(result,f,ensure_ascii=False,indent=2);f.write('\n')
+print(json.dumps({'passed':result['passed'],'checks_passed':result['checks_passed'],'checks_total':result['checks_total'],'failed_checks':result['failed_checks'],'source_count':len(sources),'sha256':hashlib.sha256(out.read_bytes()).hexdigest(),'delta_ranges':result['reported_delta_range_percent']}))

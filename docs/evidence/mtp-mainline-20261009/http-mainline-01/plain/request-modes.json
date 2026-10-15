@@ -1,0 +1,65 @@
+{
+  "requested_decode_mode": "plain",
+  "requested_verifier": "none",
+  "bindings": [
+    {
+      "response_id": "chatcmpl-auto-0",
+      "records": [
+        {
+          "fields": {
+            "id": "chatcmpl-auto-0",
+            "requested_mtp": "0",
+            "path": "plain",
+            "mtp_steps": "0",
+            "fallback": "none",
+            "plain_tail_tokens": "0",
+            "verifier": "none"
+          },
+          "raw": "[q4t][decode_path] id=chatcmpl-auto-0 requested_mtp=0 path=plain mtp_steps=0 fallback=none plain_tail_tokens=0 verifier=none"
+        }
+      ],
+      "actual_output": 256,
+      "coverage": "terminal_request_path"
+    },
+    {
+      "response_id": "chatcmpl-auto-1",
+      "records": [
+        {
+          "fields": {
+            "id": "chatcmpl-auto-1",
+            "requested_mtp": "0",
+            "path": "prefill_only",
+            "mtp_steps": "0",
+            "fallback": "none",
+            "plain_tail_tokens": "0",
+            "verifier": "none"
+          },
+          "raw": "[q4t][decode_path] id=chatcmpl-auto-1 requested_mtp=0 path=prefill_only mtp_steps=0 fallback=none plain_tail_tokens=0 verifier=none"
+        }
+      ],
+      "actual_output": 1,
+      "coverage": "terminal_request_path"
+    },
+    {
+      "response_id": "chatcmpl-auto-2",
+      "records": [
+        {
+          "fields": {
+            "id": "chatcmpl-auto-2",
+            "requested_mtp": "0",
+            "path": "prefill_only",
+            "mtp_steps": "0",
+            "fallback": "none",
+            "plain_tail_tokens": "0",
+            "verifier": "none"
+          },
+          "raw": "[q4t][decode_path] id=chatcmpl-auto-2 requested_mtp=0 path=prefill_only mtp_steps=0 fallback=none plain_tail_tokens=0 verifier=none"
+        }
+      ],
+      "actual_output": 1,
+      "coverage": "terminal_request_path"
+    }
+  ],
+  "passed": true,
+  "errors": []
+}

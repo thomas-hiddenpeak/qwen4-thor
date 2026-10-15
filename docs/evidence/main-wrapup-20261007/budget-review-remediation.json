@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-07",
+  "task": "cross-review remediation",
+  "source": "parent /root relayed independent review findings",
+  "tests_executed_by_agent": false,
+  "validation_status": "awaiting root grouped validation",
+  "items": [
+    {
+      "finding": "Overlarge but parseable max_prefill reaches workspace int products before fail-closed budget evaluation.",
+      "status": "implementation_and_direct_contract_added_not_executed",
+      "repair": "Common ValidateServerOptions rejects max_prefill > 8192, matching FullAttentionForward hard T limit. Zero remains permitted. ParseServerOptions and ChatServer::Start both already invoke this validator before sizing.",
+      "boundary_cases": [
+        0,
+        8192,
+        8193,
+        214748365,
+        2147483647
+      ],
+      "scope": "serve CLI and programmatic ServerOptions, including no_budget=true; no alternate model API validation claimed"
+    },
+    {
+      "finding": "MTP draft weights are independently loaded and per-request trunks can overlap before model_mu_; the old one-serialized-peak description was inaccurate.",
+      "status": "description_and_runtime_report_corrected",
+      "repair": "PerRequestBytes is described as a one-request reference subtotal. Header and MTP-enabled budget report exclude independent draft weights, concurrent overlap and lazy scratch/checkpoints. A direct test checks the limitation is MTP-conditional.",
+      "scope": "No expansion to complete MTP budgeting or MTP acceptance; delivery remains MTP off."
+    }
+  ],
+  "source_sha256": {
+    "src/server/server_options.cpp": "010d1fc3119b1e162bc00bf619f185272cd5b827d10ab8f49c42ad03ec3f638f",
+    "tests/server_options_test.cpp": "3de81effc504787e344cc1547d1a421f3db6a37b14e84325fd2106a19423603a",
+    "include/q4t/runtime/memory_budget.h": "05527a9c4e4990e443648fd182fe22336a2ecb98fa913c948829bb71cd563872",
+    "src/runtime/memory_budget.cpp": "85c090d639538b15e63e300340b843273d93ce24a61e985b02d6fd829ea327c9",
+    "tests/runtime_memory_budget_test.cpp": "e61844e2eab4d6c27a883fa33029e768a166cd6bf27474c157b1287bc5804ba1",
+    "src/server/chat_server.cpp": "76b21834f37c4f6c3eff0a24aea6a13be6d7a17ce5937cd10846dfb774cc4865"
+  }
+}

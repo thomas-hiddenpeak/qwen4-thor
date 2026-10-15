@@ -1,0 +1,69 @@
+[  1%] Building CXX object CMakeFiles/q4t_runtime.dir/src/runtime/memory_budget.cpp.o
+[  3%] Building CXX object CMakeFiles/q4t_ple.dir/src/ple/ngram_hash.cpp.o
+[  5%] Building CXX object CMakeFiles/q4t_ple.dir/src/ple/ngram_hash_derive.cpp.o
+[  6%] Building CXX object CMakeFiles/q4t_ple.dir/src/ple/page_reader.cpp.o
+[  8%] Building CUDA object CMakeFiles/q4t_ple.dir/src/ple/fp8_convert.cu.o
+[ 10%] Building CXX object CMakeFiles/q4t_ple.dir/src/ple/ple_embedding.cpp.o
+[ 11%] Building CXX object CMakeFiles/q4t_io.dir/src/io/json.cpp.o
+[ 13%] Building CXX object CMakeFiles/q4t_trace.dir/src/trace/router_trace.cpp.o
+[ 15%] Building CXX object CMakeFiles/q4t_trace.dir/src/trace/router_collector.cpp.o
+[ 16%] Building CXX object CMakeFiles/q4t_trace.dir/src/trace/sha256.cpp.o
+[ 18%] Building CXX object CMakeFiles/q4t_io.dir/src/io/safetensors.cpp.o
+[ 20%] Building CXX object CMakeFiles/q4t_io.dir/src/io/model_config.cpp.o
+[ 21%] Building CXX object CMakeFiles/q4t_io.dir/src/io/weight_loader.cpp.o
+[ 23%] Linking CXX static library libq4t_runtime.a
+[ 23%] Built target q4t_runtime
+[ 25%] Linking CXX static library libq4t_ple.a
+[ 25%] Built target q4t_ple
+[ 26%] Linking CXX static library libq4t_trace.a
+[ 26%] Built target q4t_trace
+[ 28%] Linking CXX static library libq4t_io.a
+[ 28%] Built target q4t_io
+[ 31%] Building CUDA object CMakeFiles/q4t_quant.dir/src/quant/dequant.cu.o
+[ 31%] Building CUDA object CMakeFiles/q4t_quant.dir/src/quant/act_quant.cu.o
+[ 36%] Building CUDA object CMakeFiles/q4t_quant.dir/src/quant/moe_gemm.cu.o
+[ 36%] Building CXX object CMakeFiles/q4t_quant.dir/src/quant/moe_weights.cpp.o
+[ 38%] Building CUDA object CMakeFiles/q4t_quant.dir/src/quant/moe_decode.cu.o
+[ 38%] Building CXX object CMakeFiles/q4t_text.dir/src/text/tokenizer.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_quant.dir/src/quant/lt_cache.cpp.o
+[ 41%] Linking CXX static library libq4t_text.a
+[ 41%] Built target q4t_text
+[ 43%] Linking CXX static library libq4t_quant.a
+[ 43%] Built target q4t_quant
+[ 45%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/hyperconnection.cu.o
+[ 46%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/linear_attention.cu.o
+[ 48%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/full_attention.cu.o
+[ 50%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/qsa_decode.cu.o
+[ 51%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/streaming_topk.cu.o
+[ 53%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/decode_topk.cu.o
+[ 55%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/short_topk.cu.o
+[ 56%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/indexer_decode.cu.o
+[ 58%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/moe.cu.o
+[ 60%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/ple_layer.cu.o
+[ 61%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/decoder_layer.cu.o
+[ 63%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/model_head.cu.o
+[ 65%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/model.cu.o
+[ 66%] Building CXX object CMakeFiles/q4t_model.dir/src/model/model_owner.cpp.o
+[ 68%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/gemv.cu.o
+[ 70%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/gemv_hc_inject.cu.o
+[ 71%] Building CUDA object CMakeFiles/q4t_model.dir/src/mtp/moe_bf16.cu.o
+[ 73%] Building CUDA object CMakeFiles/q4t_model.dir/src/mtp/mtp.cu.o
+[ 75%] Building CUDA object CMakeFiles/q4t_model.dir/src/vision/vision.cu.o
+[ 76%] Building CXX object CMakeFiles/q4t_model.dir/src/vision/processor.cpp.o
+[ 78%] Linking CXX static library libq4t_model.a
+[ 78%] Built target q4t_model
+[ 80%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_server.cpp.o
+[ 81%] Building CXX object CMakeFiles/q4t_server.dir/src/server/server_options.cpp.o
+[ 83%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_http.cpp.o
+[ 85%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_input.cpp.o
+[ 86%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_metrics.cpp.o
+[ 88%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_scheduler.cpp.o
+[ 91%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_generation.cpp.o
+[ 91%] Building CXX object CMakeFiles/q4t_server.dir/src/server/http_request.cpp.o
+[ 93%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_contract.cpp.o
+[ 95%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_template.cpp.o
+[ 96%] Linking CXX static library libq4t_server.a
+[ 96%] Built target q4t_server
+[ 98%] Building CXX object CMakeFiles/q4t.dir/src/main.cpp.o
+[100%] Linking CXX executable q4t
+[100%] Built target q4t

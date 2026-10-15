@@ -1,0 +1,136 @@
+{
+  "request_count": 8,
+  "observed_output_tokens": 2798,
+  "sustained_coverage_passed": true,
+  "missing_coverage": [],
+  "semantic_results_are_independent": true,
+  "manual_semantic_review_pending": [
+    "zh-reasoning",
+    "en-code",
+    "en-reasoning",
+    "zh-code",
+    "zh-summary",
+    "en-summary"
+  ],
+  "compared_token_ids": false,
+  "pair": {
+    "cases": [
+      {
+        "id": "zh-reasoning",
+        "checks": {
+          "prompt_sha256": true,
+          "actual_input": true,
+          "actual_output": true,
+          "finish": true,
+          "original_utf8_text": true
+        },
+        "exact_http_pair": true,
+        "coverage_met": true,
+        "plain_early_eos": false,
+        "sequential_early_eos": false
+      },
+      {
+        "id": "en-code",
+        "checks": {
+          "prompt_sha256": true,
+          "actual_input": true,
+          "actual_output": true,
+          "finish": true,
+          "original_utf8_text": true
+        },
+        "exact_http_pair": true,
+        "coverage_met": true,
+        "plain_early_eos": false,
+        "sequential_early_eos": false
+      },
+      {
+        "id": "en-reasoning",
+        "checks": {
+          "prompt_sha256": true,
+          "actual_input": true,
+          "actual_output": true,
+          "finish": true,
+          "original_utf8_text": true
+        },
+        "exact_http_pair": true,
+        "coverage_met": true,
+        "plain_early_eos": false,
+        "sequential_early_eos": false
+      },
+      {
+        "id": "zh-code",
+        "checks": {
+          "prompt_sha256": true,
+          "actual_input": true,
+          "actual_output": true,
+          "finish": true,
+          "original_utf8_text": true
+        },
+        "exact_http_pair": true,
+        "coverage_met": true,
+        "plain_early_eos": false,
+        "sequential_early_eos": false
+      },
+      {
+        "id": "zh-summary",
+        "checks": {
+          "prompt_sha256": true,
+          "actual_input": true,
+          "actual_output": true,
+          "finish": true,
+          "original_utf8_text": true
+        },
+        "exact_http_pair": true,
+        "coverage_met": true,
+        "plain_early_eos": false,
+        "sequential_early_eos": false
+      },
+      {
+        "id": "en-summary",
+        "checks": {
+          "prompt_sha256": true,
+          "actual_input": true,
+          "actual_output": true,
+          "finish": true,
+          "original_utf8_text": true
+        },
+        "exact_http_pair": true,
+        "coverage_met": true,
+        "plain_early_eos": false,
+        "sequential_early_eos": false
+      },
+      {
+        "id": "zh-excerpt",
+        "checks": {
+          "prompt_sha256": true,
+          "actual_input": true,
+          "actual_output": true,
+          "finish": true,
+          "original_utf8_text": true
+        },
+        "exact_http_pair": true,
+        "coverage_met": true,
+        "plain_early_eos": false,
+        "sequential_early_eos": false
+      },
+      {
+        "id": "en-excerpt",
+        "checks": {
+          "prompt_sha256": true,
+          "actual_input": true,
+          "actual_output": true,
+          "finish": true,
+          "original_utf8_text": true
+        },
+        "exact_http_pair": true,
+        "coverage_met": true,
+        "plain_early_eos": false,
+        "sequential_early_eos": false
+      }
+    ],
+    "exact_http_pair_passed": true,
+    "sustained_coverage_passed": true,
+    "compared_token_ids": false,
+    "semantic_results_are_independent": true
+  }
+}

@@ -79,8 +79,7 @@ void ChatServer::FreeSeqId(int seq_id) {
 // scratch); the D2H + argmax run under model_mu_ too (they must be ordered
 // after the forward on the default stream and before the next forward's H2D).
 //
-// MTP requests are NOT batched (their draft KV is a single shared buffer);
-// they keep the single-sequence path in HandleChat.
+// MTP requests use the separate batched speculative path below, including B=1.
 void ChatServer::RunOnePrefillChunk() {
   ChunkPrefillReq* req = nullptr;
   {
@@ -182,10 +181,17 @@ void ChatServer::SchedulerLoop() {
       if (scheduler_stop_) {
         // Drain: wake any request that is still waiting so it can exit.
         for (ActiveRequest* r : active_) {
-          if (r->pending && r->seq) r->seq->Fail();
-          r->pending = false;
-          r->done = true;
-          r->next_token = -1;  // sentinel: scheduler is shutting down
+          // Completed results belong to their request thread. Do not race
+          // its readback or erase completed forward-attempt diagnostics.
+          if (r->pending) {
+            if (r->seq) r->seq->Fail();
+            r->pending = false;
+            r->done = true;
+            r->next_token = -1;
+            r->mtp_accepted_count = 0;
+            r->mtp_next_b = -1;
+            r->mtp_next_d0 = -1;
+          }
           r->cv.notify_one();
         }
         for (PrefillReq* p : prefill_pending_) {
@@ -355,7 +361,9 @@ void ChatServer::SchedulerLoop() {
                                          B, mtp_k_, accepted.data(),
                                          acc_count.data(), next_b.data(),
                                          next_d0.data(), next_g.data(),
-                                         nullptr);
+                                         nullptr, stop_token_ids_);
+        if (!s.ok())
+          for (auto* sequence : seqs) sequence->Fail();
         if (!s.ok() && cudaPeekAtLastError() != cudaSuccess)
           gpu_healthy_.store(false, std::memory_order_relaxed);
       }

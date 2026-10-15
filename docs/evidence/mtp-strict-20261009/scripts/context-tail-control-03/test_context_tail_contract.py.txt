@@ -1,0 +1,140 @@
+"""Small synthetic contract cases; no CUDA/network/subprocess/model calls."""
+import json
+import struct
+import unittest
+
+import context_tail_contract as contract
+
+
+def log_fixture(mode='sequential'):
+    lines = [contract.VARIANT,
+             '[q4t][tail_scheduler] entered=1 real_call=1',
+             '[q4t][tail_begin] real_ok=1 slot=0 position=0 history=0 pending=0']
+    for i in range(26):
+        base, count = i * 8192, 4092 if i == 25 else 8192
+        lines.append(f'[q4t][tail_prefill] ordinal={i+1} real_ok=1 base={base} '
+                     f'count={count} submitted={base+count} pending=1 '
+                     f'final={int(i == 25)}')
+    lines.append('[q4t][tail_override] real_copy=1 checked_sync=1 source_bound=1 '
+                 'thread_match=1 stream_match=1 vocab=248320 bytes=496640 '
+                 'original_argmax=248046 original_argmax_bits=3f80 '
+                 'old_token_bits=0000 forced_token=32 forced_bits=7f7f '
+                 'modified_host_words=1 device_logits_modified=0')
+    for i in range(3):
+        lines += [f'[q4t][tail_b1] ordinal={i+1} real_ok=1 scheduler_thread=1 '
+                  f'batch=1 position={208892+i} token=32 pending=1 '
+                  f'submitted={208893+i} trunk_null=1',
+                  f'[q4t][tail_argmax] ordinal={i+1} real_ok=1 scheduler_thread=1 '
+                  'forced_token=32 same_stream_override=1']
+    if mode == 'sequential':
+        lines.append('[q4t][decode_path] id=tail-sequential requested_mtp=1 '
+                     'path=plain_tail_b1 mtp_steps=0 fallback=none plain_tail_tokens=4 '
+                     'verifier=sequential tail_reason=context_limit '
+                     'draft_forward_calls=0 target_t1_calls=0 target_t4_calls=0 '
+                     'extend_forward_calls=0 forward_count_scope=sequential_attempts')
+    else:
+        lines.append('[q4t][decode_path] id=tail-plain requested_mtp=0 path=plain '
+                     'mtp_steps=0 fallback=none plain_tail_tokens=0 verifier=none')
+    lines += ['[q4t][tail_before_end] position=208895 history=208895 pending=0 '
+              'consumed=3 unconsumed_final_output=1',
+              '[q4t][tail_end] real_ok=1 position=0 history=0 pending=0 chunks=26 '
+              'host_overrides=1 main_calls=3 argmax_calls=3 mtp_init_calls=0 '
+              'strict_step_calls=0 fast_step_calls=0 legacy_calls=0',
+              '[q4t][tail_scheduler] exited=1 real_return=1']
+    return '\n'.join(lines) + '\n'
+
+
+def capture_fixture():
+    data = bytearray(2 * contract.VOCAB)
+    struct.pack_into('<H', data, 2 * 248046, 0x3f80)
+    return bytes(data)
+
+
+def response_fixture(label='tail-sequential'):
+    return {'status': 200, 'body': json.dumps({
+        'id': label, 'choices': [{'index': 0, 'finish_reason': 'length',
+                                'message': {'role': 'assistant', 'content': 'AAAA'}}],
+        'usage': {'prompt_tokens': 208892, 'completion_tokens': 4,
+                  'total_tokens': 208896}})}
+
+
+class ContextTailContractTest(unittest.TestCase):
+    def test_valid_plain_and_sequential_control_capture_and_output(self):
+        results = []
+        for mode, label in contract.PLAN:
+            evidence = contract.validate_log(log_fixture(mode), mode)
+            capture = contract.validate_capture(capture_fixture(), evidence['override'])
+            self.assertEqual(capture['original_argmax'], 248046)
+            self.assertFalse(evidence['greedy_numeric_evidence'])
+            results.append(contract.completed_result(response_fixture(label), label))
+        self.assertEqual(results[0], results[1])
+        contract.counter_delta((0, 0, 0, 0), (1, 1, 0, 0))
+
+    def test_prefill_binding_and_exact_chunk_coverage_are_required(self):
+        original = log_fixture()
+        for old, new in (('base=204800 count=4092', 'base=204800 count=4091'),
+                         ('checked_sync=1', 'checked_sync=0'),
+                         ('source_bound=1', 'source_bound=0'),
+                         ('thread_match=1', 'thread_match=0'),
+                         ('modified_host_words=1', 'modified_host_words=2')):
+            with self.subTest(field=old), self.assertRaises(ValueError):
+                contract.validate_log(original.replace(old, new, 1), 'sequential')
+        lines = [x for x in original.splitlines()
+                 if not x.startswith('[q4t][tail_prefill] ordinal=26 ')]
+        with self.assertRaises(ValueError):
+            contract.validate_log('\n'.join(lines), 'sequential')
+
+    def test_real_scheduler_three_consumed_tokens_and_clean_end_required(self):
+        for old, new in (('position=208894 token=32', 'position=208895 token=32'),
+                         ('scheduler_thread=1', 'scheduler_thread=0'),
+                         ('unconsumed_final_output=1', 'unconsumed_final_output=0'),
+                         ('mtp_init_calls=0', 'mtp_init_calls=1'),
+                         ('legacy_calls=0', 'legacy_calls=1'),
+                         ('[tail_end] real_ok=1 position=0',
+                          '[tail_end] real_ok=1 position=208895')):
+            with self.subTest(field=old), self.assertRaises(ValueError):
+                contract.validate_log(log_fixture().replace(old, new, 1), 'sequential')
+
+    def test_variant_identity_and_context_tail_path_cannot_be_forged(self):
+        for value in (log_fixture().replace(contract.VARIANT, ''),
+                      log_fixture() + contract.VARIANT + '\n',
+                      log_fixture().replace('id=tail-sequential ', 'id=other '),
+                      log_fixture().replace('tail_reason=context_limit',
+                                            'tail_reason=output_limit'),
+                      log_fixture().replace('plain_tail_tokens=4', 'plain_tail_tokens=3'),
+                      log_fixture().replace('fallback=none', 'fallback=initialization'),
+                      log_fixture() + '[q4t][tail_control_contract] failure=observed\n'):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                contract.validate_log(value, 'sequential')
+
+    def test_capture_requires_original_row_size_domain_and_argmax(self):
+        override = contract.validate_log(log_fixture(), 'sequential')['override']
+        changed = bytearray(capture_fixture())
+        struct.pack_into('<H', changed, 0, 0x7f80)
+        for data in (capture_fixture()[:-2], bytes(changed)):
+            with self.subTest(length=len(data)), self.assertRaises(ValueError):
+                contract.validate_capture(data, override)
+        bad = dict(override, original_argmax='32')
+        with self.assertRaises(ValueError):
+            contract.validate_capture(capture_fixture(), bad)
+
+    def test_natural_eos_wrong_identity_usage_and_failed_metrics_are_rejected(self):
+        original = json.loads(response_fixture()['body'])
+        for field, changed in (('id', 'other'),
+                               ('usage', {'prompt_tokens': 208892,
+                                          'completion_tokens': 1, 'total_tokens': 208893})):
+            value = dict(original, **{field: changed})
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                contract.completed_result({'status': 200, 'body': json.dumps(value)},
+                                          'tail-sequential')
+        original['choices'][0]['finish_reason'] = 'stop'
+        with self.assertRaises(ValueError):
+            contract.completed_result({'status': 200, 'body': json.dumps(original)},
+                                      'tail-sequential')
+        for after in ((1, 0, 1, 0), (1, 0, 0, 1), (2, 2, 0, 0), (True, 1, 0, 0)):
+            with self.subTest(after=after), self.assertRaises(ValueError):
+                contract.counter_delta((0, 0, 0, 0), after)
+
+
+if __name__ == '__main__':
+    unittest.main()

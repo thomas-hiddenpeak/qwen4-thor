@@ -1,0 +1,38 @@
+{
+  "timestamp": "2026-10-08T15:47:32.280744+00:00",
+  "root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source",
+  "python": "/usr/bin/python3",
+  "head": "401d5edd1026ee6c43ced33682c95a060abe5ea0",
+  "sources_sha256": {
+    "tools/evalscope/run_request_cancellation.py": "13440b3aa3ca46b33e04e99e87c3fd6dcebb63526c8b002715551c990348002f",
+    "tools/evalscope/request_cancellation_contract.py": "9bc7648ee7139a9ffd432dacc5a76986f9dca7a19046baf87026fd3c8fe8012e",
+    "tools/evalscope/test_request_cancellation.py": "2550261e05ed782023eba85e68dc3bab5b25f4ed029c1ebb197807510041174d",
+    "tools/evalscope/response_identity.py": "2102fb7a401786a55dba5b8845985b69a36b4279c52a6e4d1610a11ccd1b6e7a",
+    "tools/evalscope/test_response_identity.py": "128d7ffd040578b4506e061c1b7c7abea05f286eaf2e03e8f26c55c96023d63a",
+    "tools/evalscope/acceptance_mode.py": "b0df9d18a6c953fc0c1273f66bdce027c9e0ba8de8948b3723b44e4a20b2b429",
+    "tools/evalscope/test_acceptance_mode.py": "ceb56648c85f4a32d5c068daece65584ddf661f4f0e3ea5b63ed9e620a349319",
+    "tests/host/CMakeLists.txt": "432db2c0c818233a5ccc96b24c697740013ea0588623d842017a19726094e3c6",
+    "docs/MTP_RELEASE_PLAN_2026-10-08.md": "d589bebd1ad38dc2298d892773eb4c86a4423afc9268219332f8737e03fb18bf"
+  },
+  "test_order": [
+    "test_request_cancellation.py",
+    "test_response_identity.py",
+    "test_acceptance_mode.py"
+  ],
+  "scope": "pure host; no model/server/HTTP/GPU",
+  "environment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPYCACHEPREFIX": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-release-20261008/b2a-tool/pycache",
+    "TMPDIR": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-release-20261008/b2a-tool/tmp"
+  },
+  "static_issues_fixed_before_first_test": [
+    "prefill-specific 409 message, progress bound to its actual cancellation ID",
+    "decode content must precede the single final cancellation error",
+    "HTTPResponse chunk decoding; complete SSE line prefix and retained tail bytes",
+    "premature Content-Length EOF rejected",
+    "absolute socket deadline and response byte cap in new scope",
+    "RST emitted before any health round trip",
+    "new helper imported only by the new scope",
+    "new scope prefill also uses the frozen output limit 256"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "recorded_t": 1791349419.4051824,
+  "passed": true,
+  "protected_before_after_equal": true,
+  "protected": {
+    "original_head": "f15190ff9447079f9557469ed5aff0b525197821",
+    "original_branch": "codex/moe-residency-20260930",
+    "original_status": [
+      " M docs/STATUS.md",
+      " M docs/log/2026-10-02.md",
+      " M include/q4t/model/model.h",
+      " M include/q4t/quant/moe_residency.h",
+      " M src/model/moe.cu",
+      " M src/quant/moe_residency.cpp",
+      " M src/server/chat_generation.cpp"
+    ],
+    "original_diff_sha256": "33375caff6dcb3e638e2d2f001428883cbc0e400c5f1b7403a081826e9cd6947",
+    "original_binary_sha256": "46b3f977b0653c2f317c63df5b9f6669d1f3bb1de17892970b605676dd5434bc",
+    "main_head": "f096a78fb969cbda736c413d7e14e45dd0898f09",
+    "main_branch": "main",
+    "main_status": "",
+    "qualified_binary_sha256": "0f52e926d28f2153e63b4eb093e596448e88e36dad355fb632cf1c2da029b8bc"
+  },
+  "runtime_sources_equal": true,
+  "runtime_source_file_count": 123,
+  "exactly_allowlisted_cache_paths_deleted": true,
+  "files_deleted": 102,
+  "free_bytes": 11220242432,
+  "free_gib": 10.449665069580078,
+  "research_evidence_operation": "none; no raw compression, deletion, hardlink mutation or payload audit",
+  "validation": "filesystem/inode journal and protected source/binary identities only; no inference tests"
+}

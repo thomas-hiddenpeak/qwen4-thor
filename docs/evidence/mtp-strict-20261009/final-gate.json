@@ -1,0 +1,469 @@
+{
+  "schema_version": 1,
+  "created_unix": 1791486418.0774257,
+  "decision": "QUALIFIED_FINITE_SEQUENTIAL_CORRECTNESS_PROFILE",
+  "finite_sequential_profile_admitted": true,
+  "original_coverage_all_passed": false,
+  "http_exact_pairing_passed": true,
+  "http_exact_pairs": 48,
+  "full_model_task_quality_passed": false,
+  "performance_improvement_claim": false,
+  "performance_nonregression_claim": false,
+  "fast_t4_admitted": false,
+  "default_mtp_enabled": false,
+  "main_merged": false,
+  "deployed": false,
+  "profile": {
+    "hardware": "Jetson AGX Thor SM110a",
+    "toolchain": "CUDA13.3 / local frozen build flags",
+    "checkpoint": "Qwen3.8-Flash-Next-NVFP4-SSD-Stream; metadata identities in build/HTTP protocols; no new payload hashing",
+    "interface": "HTTP serve text",
+    "max_seq": 1,
+    "slot": 0,
+    "max_prefill": 8192,
+    "max_len": 208896,
+    "sampling": "greedy; frozen requests use temperature0 seed20260920",
+    "k": 3,
+    "arguments": [
+      "--mtp",
+      "--mtp-verifier",
+      "sequential"
+    ],
+    "production_binary_sha256": "a566faf51975291ec8fcd1fe75d7ddff07760fe13c138f85a066aeffad729563",
+    "generic_requested_capability_log": "experimental: category covers all MTP and is not a checkpoint qualification registry"
+  },
+  "requests": {
+    "original_matrix": 110,
+    "extra_resource_variant": 3,
+    "extra_controlled_tail_variant": 2,
+    "total": 115,
+    "production_candidate": 105,
+    "test_variants": 10,
+    "production_groups": {
+      "quality": 22,
+      "sustained": 16,
+      "limits": 28,
+      "cancellation": 9,
+      "performance": 30
+    },
+    "test_variant_groups": {
+      "mid_forward_failure": 5,
+      "resource_fallback": 3,
+      "controlled_tail": 2
+    }
+  },
+  "original_nonpasses": {
+    "direct_combined_long_prefill_eos": "FAIL retained; fixed long-only natural supplement passed without rerunning short half",
+    "http_limit_groups": [
+      {
+        "mode": "plain",
+        "original_coverage_passed": false,
+        "original_actual_mode_checks_passed": true,
+        "missing_case": "context-208892-nonstream-8",
+        "observed_output": 1,
+        "observed_finish": "stop"
+      },
+      {
+        "mode": "sequential",
+        "original_coverage_passed": false,
+        "original_actual_mode_checks_passed": false,
+        "missing_case": "context-208892-nonstream-8",
+        "observed_output": 1,
+        "observed_finish": "stop"
+      }
+    ],
+    "original_group_failures_retained": 3
+  },
+  "coverage_decision": {
+    "long_main_state": "original short direct domain plus separately built long-only supplement; exact runtime source/config, not byte-identical CUDA archives",
+    "natural_gpu_full_extend_shapes": [
+      1,
+      4
+    ],
+    "shapes_2_3": "production TU full-control tests and real controlled verify; no claim of natural/full GPU extend coverage",
+    "normal_context_tail": "original last pair legally stops at prefill; fixed selection-control supplement executes same real production scheduler and checks terminal consumption; not greedy/quality/performance evidence",
+    "resource": "local unchanged lifecycle function contracts reused; current HTTP logical Reserve failure uses ordinary scheduler B1 and same-mode recovery; not actual OOM",
+    "forward_failures": "actual target/extend submission then logical Status failure, production drains and request terminates; not hardware-fatal CUDA recovery",
+    "cancellation": "same-mode fresh plus four recoveries; RST after nonempty content was two newlines",
+    "quality": "11 short pairs pass; eight sustained pairs meet output coverage; independent task rubrics have four satisfactory and four partial/failed answers, not overall model quality acceptance",
+    "t4": "HC first difference compatible with finite observed arithmetic screen; entire fast T4 trajectory remains unqualified"
+  },
+  "semantic_results": {
+    "satisfactory": [
+      "en-reasoning",
+      "zh-summary",
+      "zh-excerpt",
+      "en-excerpt"
+    ],
+    "insufficient": [
+      "zh-reasoning incomplete predicates",
+      "zh-code truncated",
+      "en-code forbidden attribute calls",
+      "en-summary length/truncation/unsupported content"
+    ],
+    "automatic_scores_unchanged": true,
+    "generated_code_executed": false,
+    "posthoc_semantic_veto": false
+  },
+  "cost_scope": "Five lengths, every original three samples retained; ordinary first then sequential. Descriptive E2E cost, no favorable resampling, causal significance or nonregression claim.",
+  "cost_mean_all_three": [
+    {
+      "length": 1024,
+      "plain": {
+        "ttft": 0.7991122953438511,
+        "decode_tps": 18.583983776275293,
+        "latency": 14.520990224322304
+      },
+      "sequential": {
+        "ttft": 0.9415112774198254,
+        "decode_tps": 16.60919353702501,
+        "latency": 16.29454785344812
+      },
+      "percent_change": {
+        "ttft": 17.819645987889764,
+        "decode_tps": -10.626301997590748,
+        "latency": 12.213751278167994
+      }
+    },
+    {
+      "length": 4096,
+      "plain": {
+        "ttft": 2.6286421432935945,
+        "decode_tps": 17.874870557642502,
+        "latency": 16.89449189029013
+      },
+      "sequential": {
+        "ttft": 2.8323768551150956,
+        "decode_tps": 16.061432980103074,
+        "latency": 18.708922715081524
+      },
+      "percent_change": {
+        "ttft": 7.750568571735239,
+        "decode_tps": -10.145178795513477,
+        "latency": 10.73977741724339
+      }
+    },
+    {
+      "length": 8192,
+      "plain": {
+        "ttft": 5.175288737673934,
+        "decode_tps": 18.140348502303244,
+        "latency": 19.23264749829347
+      },
+      "sequential": {
+        "ttft": 5.465395296923816,
+        "decode_tps": 15.917055977755123,
+        "latency": 21.48612485562141
+      },
+      "percent_change": {
+        "ttft": 5.605611086740492,
+        "decode_tps": -12.25606291006942,
+        "latency": 11.716937865823684
+      }
+    },
+    {
+      "length": 45056,
+      "plain": {
+        "ttft": 30.45566268598971,
+        "decode_tps": 17.856250706959685,
+        "latency": 44.73637615633197
+      },
+      "sequential": {
+        "ttft": 31.509848607393604,
+        "decode_tps": 16.085059818340973,
+        "latency": 47.363077535682045
+      },
+      "percent_change": {
+        "ttft": 3.4613790291578184,
+        "decode_tps": -9.91916454179471,
+        "latency": 5.8715112957987925
+      }
+    },
+    {
+      "length": 204800,
+      "plain": {
+        "ttft": 159.36506540731838,
+        "decode_tps": 17.040388335999364,
+        "latency": 174.32952038602284
+      },
+      "sequential": {
+        "ttft": 165.4738574886384,
+        "decode_tps": 15.285151978430473,
+        "latency": 182.15671803204654
+      },
+      "percent_change": {
+        "ttft": 3.833206522211552,
+        "decode_tps": -10.300448105755866,
+        "latency": 4.4898865256393306
+      }
+    }
+  ],
+  "phase_a": {
+    "status": "independently reviewable foundation fixes",
+    "pull_request": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/2",
+    "merged": false,
+    "phase_b_not_implied_by_phase_a": true
+  },
+  "qualification_basis": "Original frozen finite-profile contract plus explicitly bounded supplements for actual coverage gaps. Original FAILs remain FAIL; arbitrary prompts/checkpoints/capacities, complete GPU shape coverage and full task quality are not claimed.",
+  "executions": [
+    {
+      "group": "quality-plain",
+      "original_exit_code": 0,
+      "original_passed": true
+    },
+    {
+      "group": "quality-sequential",
+      "original_exit_code": 0,
+      "original_passed": true
+    },
+    {
+      "group": "sustained-plain",
+      "original_exit_code": 0,
+      "original_passed": true
+    },
+    {
+      "group": "sustained-sequential",
+      "original_exit_code": 0,
+      "original_passed": true
+    },
+    {
+      "group": "limits-plain",
+      "original_exit_code": 1,
+      "original_passed": false
+    },
+    {
+      "group": "limits-sequential",
+      "original_exit_code": 1,
+      "original_passed": false
+    },
+    {
+      "group": "cancellation",
+      "original_exit_code": 0,
+      "original_passed": true
+    },
+    {
+      "group": "failure-recovery",
+      "original_exit_code": 0,
+      "original_passed": true
+    },
+    {
+      "group": "performance-plain",
+      "original_exit_code": 0,
+      "original_passed": true
+    },
+    {
+      "group": "performance-sequential",
+      "original_exit_code": 0,
+      "original_passed": true
+    }
+  ],
+  "sources": {
+    "host-summary-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/host-summary-01.json",
+      "bytes": 3825,
+      "sha256": "e214a99b0ef54f231364e68511601f60ab4e3acfcdbcad6ac811f9a527aafdbe"
+    },
+    "sequential-long-02/summary.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-long-02/summary.json",
+      "bytes": 28821,
+      "sha256": "3d6ceabf28e5c195203485c90cea8a87cf02cfc985c702b7de4537b81ab21ea9"
+    },
+    "http-quality-independent-review-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-quality-independent-review-01.json",
+      "bytes": 84829,
+      "sha256": "b735b7f7c7bef6c63facbb5ccd133cb9209849695ec1723dc3a7868e46a3931c"
+    },
+    "http-limits-independent-review-03.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-limits-independent-review-03.json",
+      "bytes": 92648,
+      "sha256": "8ff0b035e6d6f1551e41eb4a7e31ae3684c16052cda553e3fe8dfa3702a583f7"
+    },
+    "cancellation-independent-review-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/cancellation-independent-review-01.json",
+      "bytes": 36766,
+      "sha256": "8f871d4f9b98026090e431624777586a5f2452d062d771621141712a20a12f78"
+    },
+    "http-failure-recovery-independent-review-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-failure-recovery-independent-review-01.json",
+      "bytes": 55531,
+      "sha256": "a01e05e2a4189a4dc7a8a64bee21f1e6cb57c7bf8d500129a41625569254dfa4"
+    },
+    "resource-independent-review-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/resource-independent-review-01.json",
+      "bytes": 70785,
+      "sha256": "8b604ad259347e66564d71f92d3d98593eb69fc5d82a8fc20b41d8d7b736f3f4"
+    },
+    "context-tail-independent-review-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/context-tail-independent-review-01.json",
+      "bytes": 35701,
+      "sha256": "0bd7f125d0b5e3211e73bc76a7a41451e28d3ef7f940840c06ca47e135513292"
+    },
+    "http-performance-independent-review-03.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-performance-independent-review-03.json",
+      "bytes": 88689,
+      "sha256": "ee2d8a2bdd314bab912fb0fa657a684acf084aa005071eb23a5e5fb5f7b80a9e"
+    },
+    "hc-analysis/independent-review-02.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/hc-analysis/independent-review-02.json",
+      "bytes": 20481,
+      "sha256": "7ac771e6491a27698ab8fead4f1ffce065329bb47048a74d304dcbaa6adddba2"
+    },
+    "final-protection-03.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/final-protection-03.json",
+      "bytes": 9339,
+      "sha256": "90f7bb6ca1d21a4c00da8242ca16643216a14d9582b9a0224fd97ca504486f60"
+    },
+    "sustained-independent-review-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sustained-independent-review-01.json",
+      "bytes": 83264,
+      "sha256": "d56c44ab2bdf710cd248186d85680b85eeec3808a66641264ad20d3e760dfbaf"
+    },
+    "sequential-direct-01/summary.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-direct-01/summary.json",
+      "bytes": 47588,
+      "sha256": "64617ae4df19589991c49db7798f1ce0363bcdd806cee70817866ea9e636aff1"
+    },
+    "sequential-direct-01/stdout.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-direct-01/stdout.log",
+      "bytes": 2611,
+      "sha256": "f40b58c0f5d6403335a98bef642cfec26a62bb7c1f6ed988470db6604e3d8b5c"
+    },
+    "http/limits-plain/exit.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/limits-plain/exit.json",
+      "bytes": 212,
+      "sha256": "dba53c229cc2aac8790f350c8783745ea269d0ad3d0ab3bd22ea1aadfb4424e7"
+    },
+    "http/limits-plain/results.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/limits-plain/results.json",
+      "bytes": 10260,
+      "sha256": "a9c8e162d7fc1e298609384dd3563ea3a7dbcb170ca3e3387dae6368185ce66e"
+    },
+    "http/limits-sequential/exit.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/limits-sequential/exit.json",
+      "bytes": 211,
+      "sha256": "a1440e3dcf602c7de6e848fb96f2c9ff6fc67f81e47063713b5fa53f5d660a24"
+    },
+    "http/limits-sequential/results.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http/limits-sequential/results.json",
+      "bytes": 10225,
+      "sha256": "208eb31cfce1b6ca0d726351e043704882d419d4c5d8fa2fee547cb4d7573d74"
+    },
+    "http-quality-plain-execution-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-quality-plain-execution-01.json",
+      "bytes": 328,
+      "sha256": "48952696eec573c94e3595cb63b4eeeb019fe69e222e478ff0587a0ad8df0882"
+    },
+    "http-quality-sequential-execution-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-quality-sequential-execution-01.json",
+      "bytes": 333,
+      "sha256": "f4e7a07111c5d6f0d6859f01410313d273fd914983690f735125089f359718bf"
+    },
+    "http-sustained-plain-execution-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-sustained-plain-execution-01.json",
+      "bytes": 330,
+      "sha256": "0ba10e2e0b549976e76e1707840ded34f6c33ca28e89cdb9dabf3165c32c32f8"
+    },
+    "http-sustained-sequential-execution-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-sustained-sequential-execution-01.json",
+      "bytes": 334,
+      "sha256": "96a0f952d6ce1e51c34245c3b754d88ae2a06f58ddeaccde5443ebadb98ad49d"
+    },
+    "http-limits-plain-execution-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-limits-plain-execution-01.json",
+      "bytes": 327,
+      "sha256": "a97867ddd3ed59dce65480c49e6c336c0ba2b5785d6545710d483c8050eef71b"
+    },
+    "http-limits-sequential-execution-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-limits-sequential-execution-01.json",
+      "bytes": 333,
+      "sha256": "392ad4c49732e81e5c69e311ca6fbefa9f6c6ddc82370342b165d26f8c59edf0"
+    },
+    "http-cancellation-execution-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-cancellation-execution-01.json",
+      "bytes": 327,
+      "sha256": "e8938aa4b5e6d5df57888e7c642c192c81c05f11e75017594cf98c95d2a5cdcf"
+    },
+    "http-failure-recovery-execution-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-failure-recovery-execution-01.json",
+      "bytes": 330,
+      "sha256": "55d5ee38b9ae17617b7c559cc62bc25e577508e940f4361dd2019c19f80de7db"
+    },
+    "http-performance-plain-execution-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-performance-plain-execution-01.json",
+      "bytes": 331,
+      "sha256": "1617670e8ad48569ec141563d2c59744194b7aa0018cc9623f439106380530dc"
+    },
+    "http-performance-sequential-execution-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-performance-sequential-execution-01.json",
+      "bytes": 336,
+      "sha256": "bb314c493fb2f9a482735274f86e58b0b99dcdfe6b59b6f183a5783bf80c3b6e"
+    },
+    "semantic-zh-review-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/semantic-zh-review-01.json",
+      "bytes": 22161,
+      "sha256": "586eb2fda71a843f71e9cb4378494ced5f5d1e14022709f2190ab76719b3926b"
+    },
+    "semantic-en-review-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/semantic-en-review-01.json",
+      "bytes": 20000,
+      "sha256": "006523a8eeeeed00f3a5a642e2c1ae10eb80dd5fd59cafb703869be7f019e9b6"
+    },
+    "b-support-gate-independent-opinion-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/b-support-gate-independent-opinion-01.json",
+      "bytes": 7701,
+      "sha256": "81607429cd4d0fa5f796f5067b39f0ef6d5b3b1499fee01e4ffd1a75a49beea2"
+    },
+    "build-protocol-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/build-protocol-01.json",
+      "bytes": 46759,
+      "sha256": "55c620881a09a017bb24b764a8ad8b98854b4a1d950172b9eccd07587c7850c3"
+    },
+    "build-identity-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/build-identity-01.json",
+      "bytes": 1945,
+      "sha256": "4b817bf5978005aec2302e91fe7357639372ceb13e211f24eb2b6dc0bf1e0f2a"
+    },
+    "http-protocol-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-protocol-01.json",
+      "bytes": 20470,
+      "sha256": "949ec20df4a4fd7e35e8da61723b72190f2367baf2c6753960ac1c5bd21ad32f"
+    },
+    "http-protocol-amendment-02.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/http-protocol-amendment-02.json",
+      "bytes": 92471,
+      "sha256": "9ed187ad5dd78cc74ce9b08c5b451e61e9f09121797ba4081775867c7335a717"
+    },
+    "resource-fallback-03/protocol-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/resource-fallback-03/protocol-01.json",
+      "bytes": 30247,
+      "sha256": "5a7d5a7650ff82006a3521ee9fc0b64863127839d9b88e918b0e89dc9738c5b9"
+    },
+    "context-tail-control-03/protocol-01.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/context-tail-control-03/protocol-01.json",
+      "bytes": 25923,
+      "sha256": "481d59811a2d26a868cbb8bc878ecb858f96c43dca23d0530df82dcc5e422988"
+    },
+    "sequential-long-02/independent-review.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/sequential-long-02/independent-review.json",
+      "bytes": 150940,
+      "sha256": "24bac59b0fbe39fbc631cf4ef6a05a860a15f9c90e7e6fb91161695dd923f7f1"
+    },
+    "host-artifact-location-deviation.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/host-artifact-location-deviation.json",
+      "bytes": 4697,
+      "sha256": "f786973bbb667754df8e2bbda251ad185d9e1880cd9da2f275036aa85994d834"
+    },
+    "reference-eos-amendment-02/host-result.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/reference-eos-amendment-02/host-result.json",
+      "bytes": 258,
+      "sha256": "6c57f456c6900febea521800853072f7dd708a2ff5b2620835b606d49b1ebdb0"
+    },
+    "host-direct-freeze-review.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source/.q4t-work/mtp-strict-20261009/host-direct-freeze-review.json",
+      "bytes": 17687,
+      "sha256": "311e7736953f28382615299c5756333e3e323f83db1e48e3c4c6c08ff3b5a2ad"
+    }
+  },
+  "script_sha256": "83b6580fe49350757d003cfa112e02321dfcb8f018017054d315397e4e41ef21",
+  "new_model_or_test_execution": false
+}

@@ -1,0 +1,56 @@
+"""Remove only the frozen, inactive, regenerable C/C++ editor cache."""
+import hashlib,json,os,pathlib,stat,subprocess,time
+r=pathlib.Path(__file__).resolve().parent
+plan=json.loads((r/'cpptools-cleanup-plan.json').read_text())
+cache=pathlib.Path(plan['cache_root']); quarantine=pathlib.Path(plan['quarantine_root'])
+assert cache==pathlib.Path('/home/rm01/.cache/vscode-cpptools')
+assert quarantine==cache.with_name('vscode-cpptools.cleanup-20261007')
+assert cache.resolve()==cache and not quarantine.exists() and not quarantine.is_symlink()
+assert not any('cpptools' in line.lower() for line in subprocess.check_output(['ps','-eo','pid,comm'],text=True).splitlines())
+fields=('dev','ino','size','blocks','mtime_ns','ctime_ns','mode','uid','nlink')
+def current(path):
+    s=path.lstat();assert stat.S_ISREG(s.st_mode) and s.st_nlink==1 and s.st_uid==os.getuid()
+    return dict(dev=s.st_dev,ino=s.st_ino,size=s.st_size,blocks=s.st_blocks,mtime_ns=s.st_mtime_ns,ctime_ns=s.st_ctime_ns,mode=stat.S_IMODE(s.st_mode),uid=s.st_uid,nlink=s.st_nlink)
+def validate(root):
+    actual=set(); actual_dirs=set()
+    for parent,dirs,files in os.walk(root,followlinks=False):
+        actual_dirs.add(str(pathlib.Path(parent).relative_to(root)))
+        for name in dirs:
+            assert not (pathlib.Path(parent)/name).is_symlink()
+        for name in files:actual.add(str((pathlib.Path(parent)/name).relative_to(root)))
+    assert actual=={x['relative_path'] for x in plan['candidate_files']}
+    assert actual_dirs==set(plan['directories'])
+    for row in plan['candidate_files']:
+        p=root/row['relative_path'];assert p.resolve().is_relative_to(root)
+        assert current(p)=={key:row[key] for key in fields},str(p)
+def sync_dir(path):
+    fd=os.open(path,os.O_RDONLY|os.O_DIRECTORY)
+    try:os.fsync(fd)
+    finally:os.close(fd)
+validate(cache)
+fs=os.statvfs(cache);before=fs.f_bavail*fs.f_frsize
+with (r/'cpptools-cleanup-journal.jsonl').open('x') as journal:
+    def record(value):
+        journal.write(json.dumps(dict(t=time.time(),**value))+'\n');journal.flush();os.fsync(journal.fileno())
+    record({'operation':'begin','files':len(plan['candidate_files']),'free_bytes':before})
+    os.rename(cache,quarantine);sync_dir(cache.parent);record({'operation':'quarantine','path':str(quarantine)})
+    try:
+        validate(quarantine)
+        assert not any('cpptools' in line.lower() for line in subprocess.check_output(['ps','-eo','pid,comm'],text=True).splitlines())
+    except BaseException:
+        if not cache.exists():os.rename(quarantine,cache);sync_dir(cache.parent)
+        record({'operation':'aborted_before_delete'});raise
+    for row in plan['candidate_files']:
+        p=quarantine/row['relative_path'];assert current(p)=={key:row[key] for key in fields}
+        record({'operation':'unlink_intent','relative_path':row['relative_path'],'ino':row['ino'],'bytes':row['size']})
+        p.unlink();sync_dir(p.parent)
+        record({'operation':'unlinked','relative_path':row['relative_path']})
+    for name in sorted(plan['directories'],key=lambda x:len(pathlib.Path(x).parts),reverse=True):
+        (quarantine/name).rmdir()
+    sync_dir(cache.parent)
+    after_fs=os.statvfs(cache.parent);after=after_fs.f_bavail*after_fs.f_frsize
+    record({'operation':'complete','free_bytes':after,'free_delta_bytes':after-before})
+result={'completed_t':time.time(),'removed_cache_root':str(cache),'files_removed':len(plan['candidate_files']),'removed_allocated_bytes':sum(x['blocks']*512 for x in plan['candidate_files']),'free_bytes_before':before,'free_bytes_after':after,'free_delta_bytes':after-before,'quarantine_remaining':quarantine.exists(),'old_cache_remaining':cache.exists(),'all_frozen_evidence_untouched':True,'model_reference_untouched':True,'compiler_runtime_caches_untouched':True,'build_and_venv_untouched':True,'side_effect':'C/C++ editor may rebuild its index on demand'}
+assert not result['quarantine_remaining'] and after>before
+(r/'cpptools-cleanup-result.json').write_text(json.dumps(result,indent=2))
+print(json.dumps(result,indent=2))
