@@ -231,3 +231,10 @@ merge-base 的 52 提交几乎全部是 MTP 主线交付（sequential verifier +
   最终性能必须重新以同一修复后 binary 的 off/on 五档三次比较。
 - 旧 cross-shape 固定 L2 阈值失败不自动按 near-tie 免检，也不改阈值；
   与本轮直接布局/ULP/HTTP 合同分栏报告，保留原始失败与其基线证据。
+
+### 公共取消合同修正
+
+§8.3 的整文件删除由 CI 首败纠正：保留 request_cancellation_contract.py
+与 test_request_cancellation.py 的21项通用格式/计数/fixture/HTTP读取合同，
+删除依赖旧 decode_path/verifier 会计及 acceptance_mode 的11项专属测试。
+CMake 的公共合同入口继续保留，本机21项通过；不等同于新增真实取消场景验收。

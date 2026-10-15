@@ -62,3 +62,23 @@ main 保持 `7f6a69c`；原工作分支 `577dac0`、顺序 verifier 历史及原
 证据全部可达。当前归并提交采用两父历史，审查/提交与验收通过分开记录。
 不要为回退删除原证据或重置其他工作区。真正合入 main 时另按实际合入
 提交记录撤销方式，本轮不自动合入或部署。
+
+## 复验入口
+
+```bash
+cmake --build build --target q4t q4t_tests q4t_host_tests \
+  q4t_mtp_position_copy q4t_mtp_lifecycle --parallel
+./build/q4t_host_tests
+./build/q4t_tests mtp_checkpoint_capacity_layout
+./build/q4t_tests mtp_spec_multi_
+./build/q4t_mtp_position_copy
+# 第一参数必须是不存在的新目录；模型路径只读。
+./build/q4t_mtp_lifecycle .q4t-work/new-lifecycle-fixture \
+  /home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream
+```
+
+完整 GPU 注册表包含历史跨形状诊断和专用环境实验；不将无筛选的一次
+`q4t_tests` 输出冒充本轮正式门禁。旧失败不删除、不改阈值。五档使用
+`tools/evalscope/run_acceptance.py --mode performance`，off 不传 MTP
+参数（工具显式传 `--no-mtp`），on 传 `--mtp-default`；固定记录边界夹具、
+各三次，启动超时300秒。保存二进制与源码摘要、请求/响应、退出状态及原始 DB。
