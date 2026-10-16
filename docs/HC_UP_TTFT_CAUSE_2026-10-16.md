@@ -1088,3 +1088,25 @@ kernel序列/资源属性证据继续复用。冻结新的最小A/B各一次CUDA
 结束或首个有效性失败即停，不扩样，不用profile吞吐接受HC。当前只冻结
 协议尚未运行；原NO_GO、生产main与active目标保持。
 证据：evidence/hc-up-clean-trace-20261017/；hash修正见UCF证据目录。
+
+## 干净trace启动被guard误报中止，CPU复现定位归属缺陷（2026-10-17）
+
+执行冻结协议时，A在模型启动阶段被guard ENV_ABORT，未发HTTP、B未启动，
+没有完成新的trace或性能请求。Nsight目标q4t PID1223417、PGID1223417，
+父PID1223416；guard仅按自身PGID归属，将其判作foreign。原ENV_ABORT
+保留，不能算环境/模型验收通过。核实nsys session列表为空、目标/父PID
+均已不存在，本阶段已终止且释放锁，不以观测超时推断进程停止。
+
+在共享锁内做一次无GPU/CUDA的nsys launch --trace=none Python子进程
+复现：目标PID1223574自行setsid，PGID/SID均1223574；父nsys-launcher
+PID1223573仍在driver PGID1223542，祖先链完整。目标继承诊断环境标记，
+但无需据此放行；可用实际父子关系证明所有权。CPU复现guard COMPLETED，
+会话按唯一session关闭。该证据定位了监控兼容缺陷，不是TTFT原因。
+
+下一步修复guard仅认同PGID的问题：使用当前进程树和PID start_ticks
+识别同阶段后代，维护受控退出清理；PID复用、不可读/未知GPU进程仍失败。
+先做该缺陷的CPU/进程生命周期验证，再恢复尚未完成的trace；不放宽按名
+过滤、不复跑已成功HTTP项。本轮生产代码和数值合同不变，原HC NO_GO、
+根因未闭合及目标active保持。
+证据：evidence/hc-up-clean-trace-20261017/lease-abort、
+evidence/hc-up-nsys-ownership-20261017/。
