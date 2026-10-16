@@ -20,6 +20,16 @@
 CUDA内容不变；固定四身份各2条200K off，反向顺序与同身份负控，
 不追加样本、不修改部署。整个实验统一持GPU锁，结论不替代性能验收。
 
+**Megatron Inference补充评估完成（2026-10-16；源码研究）。**
+固定上游3e2807ce，核对路由原语、实际调用链及测试：重放固定专家IDs，
+仍计算当前gate/权重；推理链路主要RECORD与导出，不能宣称省掉router。
+优先借鉴诊断注入、默认MTP的实际计算/已提交双视图记录，随后参考
+batch-invariant负控与异步/Graph生命周期。上游也支持repeated MTP，
+但GDN明确不支持speculative、prefix cache、batch-invariant组合。
+见[评估报告](MEGATRON_INFERENCE_REVIEW_2026-10-16.md)及固定来源清单。
+仅文档与来源校验，未构建或运行GPU/HTTP；未接入候选，不改变数值/
+性能结论，不启动新的优化试验，当前HC活动目标与排程不变。
+
 **GDN Record/Fold有界研究完成（2026-10-16）：NO_GO，GPU窗口已释放。**
 隔离候选dcb2a7d/b154e4减少checkpoint写payload，分配容量不变。
 默认MTP五档各3次，decode几何平均+0.680728%，但44K/200K TTFT

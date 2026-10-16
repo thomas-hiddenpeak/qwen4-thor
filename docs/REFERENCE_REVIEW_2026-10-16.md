@@ -4,6 +4,10 @@
 本项目审阅起点：`9f288233ee78567f6dc402fbc2e1f14a6825acc7`，
 生产源码已恢复 main `28a3783`；本轮仅研究、更新文档。
 
+同日新增的[Megatron Core Inference评估](MEGATRON_INFERENCE_REVIEW_2026-10-16.md)
+单独固定源码版本，重点分析MoE路由重放、默认MTP采集、数值与调度合同。
+其主要增量是诊断和观测能力；下文四项目的范围与原结论保留。
+
 ## 结论
 
 **当前 decode 优化优先参考 NInfer 的执行组织、Strata 的同模型实现；

@@ -5,6 +5,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [Megatron Inference源码评估](MEGATRON_INFERENCE_REVIEW_2026-10-16.md) | MoE路由重放、MTP路由生命周期、数值/Graph与本项目差异 | 固定版本源码研究，未运行GPU测试 |
 | [GDN Record/Fold研究](GDN_RECORD_FOLD_2026-10-16.md) | anchor与rank-one候选实现、五档HTTP及TTFT保护门槛 | NO_GO，保留候选与证据 |
 | [外部实现源码评估](REFERENCE_REVIEW_2026-10-16.md) | KVMem、NInfer、ActKV、Strata关键代码及本项目价值 | 固定版本源码研究 |
 | [MTP数值收口](MTP_NUMERICAL_CLOSURE_2026-10-16.md) | 独立前缀合同、PLE上传修复与新运行时验收 | 当前阶段 |

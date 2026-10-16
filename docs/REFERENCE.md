@@ -12,6 +12,14 @@
 优先参考NInfer的MTP执行/状态组织、Strata的同模型QSA与草稿机制；
 KVMem用于未来会话存储事务，ActKV额外KV淘汰保留为独立近似研究。
 
+新增[Megatron Core Inference源码评估](MEGATRON_INFERENCE_REVIEW_2026-10-16.md)，
+固定NVIDIA/Megatron-LM `3e2807ce5e787f81b7275be2383092fe0c3bfc71`。
+重点核对MoE固定IDs/当前scores语义、推理RECORD导出、异步双bank和
+MTP/prefix路由生命周期；补充batch-invariant算术与负控、Graph地址
+生命周期及预测脚本的证据边界。优先用于现有数值诊断和默认MTP采集，
+不将其解释为省掉gating，也不视为GDN+MTP/QSA/PLE的现成实现。
+检出位于`.q4t-work/megatron-review-20261016/`；仅源码审阅，未运行测试。
+
 ## 目录约定
 
 ```
