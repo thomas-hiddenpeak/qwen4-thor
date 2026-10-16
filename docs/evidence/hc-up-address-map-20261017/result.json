@@ -1,0 +1,7783 @@
+{
+  "mapping": "Exact full 6600-allocation prefill sequence matches source shape/order, not just size lookup; no runtime stack capture",
+  "mapped_per_side": 6600,
+  "different_addresses": 858,
+  "by_buffer": {
+    "routing_metadata": 162,
+    "qkv_raw": 116,
+    "qkv": 116,
+    "z": 116,
+    "a": 116,
+    "beta": 116,
+    "y_ssm": 116
+  },
+  "by_chunk": {
+    "1": 58,
+    "3": 163,
+    "4": 207,
+    "7": 178,
+    "18": 236,
+    "22": 16
+  },
+  "differences": [
+    {
+      "id": 1605,
+      "chunk": 1,
+      "layer": 4,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1607,
+      "chunk": 1,
+      "layer": 5,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x3430f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1608,
+      "chunk": 1,
+      "layer": 5,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34d0f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1609,
+      "chunk": 1,
+      "layer": 5,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x3570f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1610,
+      "chunk": 1,
+      "layer": 5,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1611,
+      "chunk": 1,
+      "layer": 5,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x342162400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1612,
+      "chunk": 1,
+      "layer": 5,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35d0f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1619,
+      "chunk": 1,
+      "layer": 5,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1621,
+      "chunk": 1,
+      "layer": 6,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x3430f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1622,
+      "chunk": 1,
+      "layer": 6,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34d0f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1623,
+      "chunk": 1,
+      "layer": 6,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x3570f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1624,
+      "chunk": 1,
+      "layer": 6,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1625,
+      "chunk": 1,
+      "layer": 6,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x342162400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1626,
+      "chunk": 1,
+      "layer": 6,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35d0f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1633,
+      "chunk": 1,
+      "layer": 6,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1635,
+      "chunk": 1,
+      "layer": 7,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1637,
+      "chunk": 1,
+      "layer": 8,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x3430f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1638,
+      "chunk": 1,
+      "layer": 8,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34d0f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1639,
+      "chunk": 1,
+      "layer": 8,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x3570f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1640,
+      "chunk": 1,
+      "layer": 8,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1641,
+      "chunk": 1,
+      "layer": 8,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x342162400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1642,
+      "chunk": 1,
+      "layer": 8,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35d0f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1649,
+      "chunk": 1,
+      "layer": 8,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1651,
+      "chunk": 1,
+      "layer": 9,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x3430f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1652,
+      "chunk": 1,
+      "layer": 9,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34d0f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1653,
+      "chunk": 1,
+      "layer": 9,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x3570f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1654,
+      "chunk": 1,
+      "layer": 9,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1655,
+      "chunk": 1,
+      "layer": 9,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x342162400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1656,
+      "chunk": 1,
+      "layer": 9,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35d0f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1663,
+      "chunk": 1,
+      "layer": 9,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1665,
+      "chunk": 1,
+      "layer": 10,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x3430f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1666,
+      "chunk": 1,
+      "layer": 10,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34d0f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1667,
+      "chunk": 1,
+      "layer": 10,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x3570f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1668,
+      "chunk": 1,
+      "layer": 10,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1669,
+      "chunk": 1,
+      "layer": 10,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x342162400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1670,
+      "chunk": 1,
+      "layer": 10,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35d0f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1677,
+      "chunk": 1,
+      "layer": 10,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1679,
+      "chunk": 1,
+      "layer": 11,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1681,
+      "chunk": 1,
+      "layer": 12,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x3430f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1682,
+      "chunk": 1,
+      "layer": 12,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34d0f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1683,
+      "chunk": 1,
+      "layer": 12,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x3570f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1684,
+      "chunk": 1,
+      "layer": 12,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1685,
+      "chunk": 1,
+      "layer": 12,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x342162400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1686,
+      "chunk": 1,
+      "layer": 12,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35d0f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1693,
+      "chunk": 1,
+      "layer": 12,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1695,
+      "chunk": 1,
+      "layer": 13,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x3430f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1696,
+      "chunk": 1,
+      "layer": 13,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34d0f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1697,
+      "chunk": 1,
+      "layer": 13,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x3570f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1698,
+      "chunk": 1,
+      "layer": 13,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1699,
+      "chunk": 1,
+      "layer": 13,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x342162400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1700,
+      "chunk": 1,
+      "layer": 13,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35d0f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1707,
+      "chunk": 1,
+      "layer": 13,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1709,
+      "chunk": 1,
+      "layer": 14,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x3430f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1710,
+      "chunk": 1,
+      "layer": 14,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34d0f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1711,
+      "chunk": 1,
+      "layer": 14,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x3570f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1712,
+      "chunk": 1,
+      "layer": 14,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1713,
+      "chunk": 1,
+      "layer": 14,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x342162400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 1714,
+      "chunk": 1,
+      "layer": 14,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35d0f3600",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2807,
+      "chunk": 3,
+      "layer": 17,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2809,
+      "chunk": 3,
+      "layer": 18,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2810,
+      "chunk": 3,
+      "layer": 18,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2811,
+      "chunk": 3,
+      "layer": 18,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2812,
+      "chunk": 3,
+      "layer": 18,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2813,
+      "chunk": 3,
+      "layer": 18,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2814,
+      "chunk": 3,
+      "layer": 18,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2821,
+      "chunk": 3,
+      "layer": 18,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2823,
+      "chunk": 3,
+      "layer": 19,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2825,
+      "chunk": 3,
+      "layer": 20,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2826,
+      "chunk": 3,
+      "layer": 20,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2827,
+      "chunk": 3,
+      "layer": 20,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2828,
+      "chunk": 3,
+      "layer": 20,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2829,
+      "chunk": 3,
+      "layer": 20,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2830,
+      "chunk": 3,
+      "layer": 20,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2837,
+      "chunk": 3,
+      "layer": 20,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2839,
+      "chunk": 3,
+      "layer": 21,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2840,
+      "chunk": 3,
+      "layer": 21,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2841,
+      "chunk": 3,
+      "layer": 21,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2842,
+      "chunk": 3,
+      "layer": 21,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2843,
+      "chunk": 3,
+      "layer": 21,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2844,
+      "chunk": 3,
+      "layer": 21,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2851,
+      "chunk": 3,
+      "layer": 21,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2853,
+      "chunk": 3,
+      "layer": 22,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2854,
+      "chunk": 3,
+      "layer": 22,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2855,
+      "chunk": 3,
+      "layer": 22,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2856,
+      "chunk": 3,
+      "layer": 22,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2857,
+      "chunk": 3,
+      "layer": 22,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2858,
+      "chunk": 3,
+      "layer": 22,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2865,
+      "chunk": 3,
+      "layer": 22,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2867,
+      "chunk": 3,
+      "layer": 23,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2869,
+      "chunk": 3,
+      "layer": 24,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2870,
+      "chunk": 3,
+      "layer": 24,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2871,
+      "chunk": 3,
+      "layer": 24,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2872,
+      "chunk": 3,
+      "layer": 24,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2873,
+      "chunk": 3,
+      "layer": 24,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2874,
+      "chunk": 3,
+      "layer": 24,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2881,
+      "chunk": 3,
+      "layer": 24,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2883,
+      "chunk": 3,
+      "layer": 25,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2884,
+      "chunk": 3,
+      "layer": 25,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2885,
+      "chunk": 3,
+      "layer": 25,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2886,
+      "chunk": 3,
+      "layer": 25,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2887,
+      "chunk": 3,
+      "layer": 25,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2888,
+      "chunk": 3,
+      "layer": 25,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2895,
+      "chunk": 3,
+      "layer": 25,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2897,
+      "chunk": 3,
+      "layer": 26,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2898,
+      "chunk": 3,
+      "layer": 26,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2899,
+      "chunk": 3,
+      "layer": 26,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2900,
+      "chunk": 3,
+      "layer": 26,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2901,
+      "chunk": 3,
+      "layer": 26,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2902,
+      "chunk": 3,
+      "layer": 26,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2909,
+      "chunk": 3,
+      "layer": 26,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2911,
+      "chunk": 3,
+      "layer": 27,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2913,
+      "chunk": 3,
+      "layer": 28,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2914,
+      "chunk": 3,
+      "layer": 28,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2915,
+      "chunk": 3,
+      "layer": 28,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2916,
+      "chunk": 3,
+      "layer": 28,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2917,
+      "chunk": 3,
+      "layer": 28,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2918,
+      "chunk": 3,
+      "layer": 28,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2925,
+      "chunk": 3,
+      "layer": 28,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2927,
+      "chunk": 3,
+      "layer": 29,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2928,
+      "chunk": 3,
+      "layer": 29,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2929,
+      "chunk": 3,
+      "layer": 29,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2930,
+      "chunk": 3,
+      "layer": 29,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2931,
+      "chunk": 3,
+      "layer": 29,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2932,
+      "chunk": 3,
+      "layer": 29,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2939,
+      "chunk": 3,
+      "layer": 29,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2941,
+      "chunk": 3,
+      "layer": 30,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2942,
+      "chunk": 3,
+      "layer": 30,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2943,
+      "chunk": 3,
+      "layer": 30,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2944,
+      "chunk": 3,
+      "layer": 30,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2945,
+      "chunk": 3,
+      "layer": 30,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2946,
+      "chunk": 3,
+      "layer": 30,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2953,
+      "chunk": 3,
+      "layer": 30,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2955,
+      "chunk": 3,
+      "layer": 31,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2957,
+      "chunk": 3,
+      "layer": 32,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2958,
+      "chunk": 3,
+      "layer": 32,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2959,
+      "chunk": 3,
+      "layer": 32,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2960,
+      "chunk": 3,
+      "layer": 32,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2961,
+      "chunk": 3,
+      "layer": 32,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2962,
+      "chunk": 3,
+      "layer": 32,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2969,
+      "chunk": 3,
+      "layer": 32,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2971,
+      "chunk": 3,
+      "layer": 33,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2972,
+      "chunk": 3,
+      "layer": 33,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2973,
+      "chunk": 3,
+      "layer": 33,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2974,
+      "chunk": 3,
+      "layer": 33,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2975,
+      "chunk": 3,
+      "layer": 33,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2976,
+      "chunk": 3,
+      "layer": 33,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2983,
+      "chunk": 3,
+      "layer": 33,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2985,
+      "chunk": 3,
+      "layer": 34,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2986,
+      "chunk": 3,
+      "layer": 34,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2987,
+      "chunk": 3,
+      "layer": 34,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2988,
+      "chunk": 3,
+      "layer": 34,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2989,
+      "chunk": 3,
+      "layer": 34,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2990,
+      "chunk": 3,
+      "layer": 34,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2997,
+      "chunk": 3,
+      "layer": 34,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 2999,
+      "chunk": 3,
+      "layer": 35,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3001,
+      "chunk": 3,
+      "layer": 36,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3002,
+      "chunk": 3,
+      "layer": 36,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3003,
+      "chunk": 3,
+      "layer": 36,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3004,
+      "chunk": 3,
+      "layer": 36,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3005,
+      "chunk": 3,
+      "layer": 36,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3006,
+      "chunk": 3,
+      "layer": 36,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3013,
+      "chunk": 3,
+      "layer": 36,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3015,
+      "chunk": 3,
+      "layer": 37,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3016,
+      "chunk": 3,
+      "layer": 37,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3017,
+      "chunk": 3,
+      "layer": 37,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3018,
+      "chunk": 3,
+      "layer": 37,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3019,
+      "chunk": 3,
+      "layer": 37,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3020,
+      "chunk": 3,
+      "layer": 37,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3027,
+      "chunk": 3,
+      "layer": 37,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3029,
+      "chunk": 3,
+      "layer": 38,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3030,
+      "chunk": 3,
+      "layer": 38,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3031,
+      "chunk": 3,
+      "layer": 38,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3032,
+      "chunk": 3,
+      "layer": 38,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3033,
+      "chunk": 3,
+      "layer": 38,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3034,
+      "chunk": 3,
+      "layer": 38,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3041,
+      "chunk": 3,
+      "layer": 38,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3043,
+      "chunk": 3,
+      "layer": 39,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3045,
+      "chunk": 3,
+      "layer": 40,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3046,
+      "chunk": 3,
+      "layer": 40,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3047,
+      "chunk": 3,
+      "layer": 40,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3048,
+      "chunk": 3,
+      "layer": 40,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3049,
+      "chunk": 3,
+      "layer": 40,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3050,
+      "chunk": 3,
+      "layer": 40,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3057,
+      "chunk": 3,
+      "layer": 40,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3059,
+      "chunk": 3,
+      "layer": 41,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3060,
+      "chunk": 3,
+      "layer": 41,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3061,
+      "chunk": 3,
+      "layer": 41,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3062,
+      "chunk": 3,
+      "layer": 41,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3063,
+      "chunk": 3,
+      "layer": 41,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3064,
+      "chunk": 3,
+      "layer": 41,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3071,
+      "chunk": 3,
+      "layer": 41,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3073,
+      "chunk": 3,
+      "layer": 42,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3074,
+      "chunk": 3,
+      "layer": 42,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3075,
+      "chunk": 3,
+      "layer": 42,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3076,
+      "chunk": 3,
+      "layer": 42,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3077,
+      "chunk": 3,
+      "layer": 42,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3078,
+      "chunk": 3,
+      "layer": 42,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3085,
+      "chunk": 3,
+      "layer": 42,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3087,
+      "chunk": 3,
+      "layer": 43,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3089,
+      "chunk": 3,
+      "layer": 44,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3090,
+      "chunk": 3,
+      "layer": 44,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3091,
+      "chunk": 3,
+      "layer": 44,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3092,
+      "chunk": 3,
+      "layer": 44,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3093,
+      "chunk": 3,
+      "layer": 44,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3094,
+      "chunk": 3,
+      "layer": 44,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3101,
+      "chunk": 3,
+      "layer": 44,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3103,
+      "chunk": 3,
+      "layer": 45,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3104,
+      "chunk": 3,
+      "layer": 45,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3105,
+      "chunk": 3,
+      "layer": 45,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3106,
+      "chunk": 3,
+      "layer": 45,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3107,
+      "chunk": 3,
+      "layer": 45,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3108,
+      "chunk": 3,
+      "layer": 45,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3115,
+      "chunk": 3,
+      "layer": 45,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3117,
+      "chunk": 3,
+      "layer": 46,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3118,
+      "chunk": 3,
+      "layer": 46,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3119,
+      "chunk": 3,
+      "layer": 46,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3120,
+      "chunk": 3,
+      "layer": 46,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3121,
+      "chunk": 3,
+      "layer": 46,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3122,
+      "chunk": 3,
+      "layer": 46,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3129,
+      "chunk": 3,
+      "layer": 46,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3131,
+      "chunk": 3,
+      "layer": 47,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 3247,
+      "chunk": 4,
+      "layer": 9,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3249,
+      "chunk": 4,
+      "layer": 10,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3250,
+      "chunk": 4,
+      "layer": 10,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3251,
+      "chunk": 4,
+      "layer": 10,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3252,
+      "chunk": 4,
+      "layer": 10,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3253,
+      "chunk": 4,
+      "layer": 10,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3254,
+      "chunk": 4,
+      "layer": 10,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3261,
+      "chunk": 4,
+      "layer": 10,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3263,
+      "chunk": 4,
+      "layer": 11,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3265,
+      "chunk": 4,
+      "layer": 12,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3266,
+      "chunk": 4,
+      "layer": 12,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3267,
+      "chunk": 4,
+      "layer": 12,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3268,
+      "chunk": 4,
+      "layer": 12,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3269,
+      "chunk": 4,
+      "layer": 12,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3270,
+      "chunk": 4,
+      "layer": 12,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3277,
+      "chunk": 4,
+      "layer": 12,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3279,
+      "chunk": 4,
+      "layer": 13,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3280,
+      "chunk": 4,
+      "layer": 13,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3281,
+      "chunk": 4,
+      "layer": 13,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3282,
+      "chunk": 4,
+      "layer": 13,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3283,
+      "chunk": 4,
+      "layer": 13,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3284,
+      "chunk": 4,
+      "layer": 13,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3291,
+      "chunk": 4,
+      "layer": 13,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3293,
+      "chunk": 4,
+      "layer": 14,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3294,
+      "chunk": 4,
+      "layer": 14,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3295,
+      "chunk": 4,
+      "layer": 14,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3296,
+      "chunk": 4,
+      "layer": 14,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3297,
+      "chunk": 4,
+      "layer": 14,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3298,
+      "chunk": 4,
+      "layer": 14,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3305,
+      "chunk": 4,
+      "layer": 14,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3307,
+      "chunk": 4,
+      "layer": 15,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3309,
+      "chunk": 4,
+      "layer": 16,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3310,
+      "chunk": 4,
+      "layer": 16,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3311,
+      "chunk": 4,
+      "layer": 16,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3312,
+      "chunk": 4,
+      "layer": 16,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3313,
+      "chunk": 4,
+      "layer": 16,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3314,
+      "chunk": 4,
+      "layer": 16,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3321,
+      "chunk": 4,
+      "layer": 16,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3323,
+      "chunk": 4,
+      "layer": 17,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3324,
+      "chunk": 4,
+      "layer": 17,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3325,
+      "chunk": 4,
+      "layer": 17,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3326,
+      "chunk": 4,
+      "layer": 17,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3327,
+      "chunk": 4,
+      "layer": 17,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3328,
+      "chunk": 4,
+      "layer": 17,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3335,
+      "chunk": 4,
+      "layer": 17,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3337,
+      "chunk": 4,
+      "layer": 18,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3338,
+      "chunk": 4,
+      "layer": 18,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3339,
+      "chunk": 4,
+      "layer": 18,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3340,
+      "chunk": 4,
+      "layer": 18,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3341,
+      "chunk": 4,
+      "layer": 18,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3342,
+      "chunk": 4,
+      "layer": 18,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3349,
+      "chunk": 4,
+      "layer": 18,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3351,
+      "chunk": 4,
+      "layer": 19,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3353,
+      "chunk": 4,
+      "layer": 20,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3354,
+      "chunk": 4,
+      "layer": 20,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3355,
+      "chunk": 4,
+      "layer": 20,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3356,
+      "chunk": 4,
+      "layer": 20,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3357,
+      "chunk": 4,
+      "layer": 20,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3358,
+      "chunk": 4,
+      "layer": 20,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3365,
+      "chunk": 4,
+      "layer": 20,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3367,
+      "chunk": 4,
+      "layer": 21,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3368,
+      "chunk": 4,
+      "layer": 21,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3369,
+      "chunk": 4,
+      "layer": 21,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3370,
+      "chunk": 4,
+      "layer": 21,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3371,
+      "chunk": 4,
+      "layer": 21,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3372,
+      "chunk": 4,
+      "layer": 21,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3379,
+      "chunk": 4,
+      "layer": 21,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3381,
+      "chunk": 4,
+      "layer": 22,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3382,
+      "chunk": 4,
+      "layer": 22,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3383,
+      "chunk": 4,
+      "layer": 22,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3384,
+      "chunk": 4,
+      "layer": 22,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3385,
+      "chunk": 4,
+      "layer": 22,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3386,
+      "chunk": 4,
+      "layer": 22,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3393,
+      "chunk": 4,
+      "layer": 22,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3395,
+      "chunk": 4,
+      "layer": 23,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3397,
+      "chunk": 4,
+      "layer": 24,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3398,
+      "chunk": 4,
+      "layer": 24,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3399,
+      "chunk": 4,
+      "layer": 24,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3400,
+      "chunk": 4,
+      "layer": 24,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3401,
+      "chunk": 4,
+      "layer": 24,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3402,
+      "chunk": 4,
+      "layer": 24,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3409,
+      "chunk": 4,
+      "layer": 24,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3411,
+      "chunk": 4,
+      "layer": 25,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3412,
+      "chunk": 4,
+      "layer": 25,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3413,
+      "chunk": 4,
+      "layer": 25,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3414,
+      "chunk": 4,
+      "layer": 25,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3415,
+      "chunk": 4,
+      "layer": 25,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3416,
+      "chunk": 4,
+      "layer": 25,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3423,
+      "chunk": 4,
+      "layer": 25,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3425,
+      "chunk": 4,
+      "layer": 26,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3426,
+      "chunk": 4,
+      "layer": 26,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3427,
+      "chunk": 4,
+      "layer": 26,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3428,
+      "chunk": 4,
+      "layer": 26,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3429,
+      "chunk": 4,
+      "layer": 26,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3430,
+      "chunk": 4,
+      "layer": 26,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3437,
+      "chunk": 4,
+      "layer": 26,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3439,
+      "chunk": 4,
+      "layer": 27,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3441,
+      "chunk": 4,
+      "layer": 28,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3442,
+      "chunk": 4,
+      "layer": 28,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3443,
+      "chunk": 4,
+      "layer": 28,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3444,
+      "chunk": 4,
+      "layer": 28,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3445,
+      "chunk": 4,
+      "layer": 28,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3446,
+      "chunk": 4,
+      "layer": 28,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3453,
+      "chunk": 4,
+      "layer": 28,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3455,
+      "chunk": 4,
+      "layer": 29,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3456,
+      "chunk": 4,
+      "layer": 29,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3457,
+      "chunk": 4,
+      "layer": 29,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3458,
+      "chunk": 4,
+      "layer": 29,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3459,
+      "chunk": 4,
+      "layer": 29,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3460,
+      "chunk": 4,
+      "layer": 29,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3467,
+      "chunk": 4,
+      "layer": 29,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3469,
+      "chunk": 4,
+      "layer": 30,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3470,
+      "chunk": 4,
+      "layer": 30,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3471,
+      "chunk": 4,
+      "layer": 30,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3472,
+      "chunk": 4,
+      "layer": 30,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3473,
+      "chunk": 4,
+      "layer": 30,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3474,
+      "chunk": 4,
+      "layer": 30,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3481,
+      "chunk": 4,
+      "layer": 30,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3483,
+      "chunk": 4,
+      "layer": 31,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3485,
+      "chunk": 4,
+      "layer": 32,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3486,
+      "chunk": 4,
+      "layer": 32,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3487,
+      "chunk": 4,
+      "layer": 32,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3488,
+      "chunk": 4,
+      "layer": 32,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3489,
+      "chunk": 4,
+      "layer": 32,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3490,
+      "chunk": 4,
+      "layer": 32,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3497,
+      "chunk": 4,
+      "layer": 32,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3499,
+      "chunk": 4,
+      "layer": 33,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3500,
+      "chunk": 4,
+      "layer": 33,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3501,
+      "chunk": 4,
+      "layer": 33,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3502,
+      "chunk": 4,
+      "layer": 33,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3503,
+      "chunk": 4,
+      "layer": 33,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3504,
+      "chunk": 4,
+      "layer": 33,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3511,
+      "chunk": 4,
+      "layer": 33,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3513,
+      "chunk": 4,
+      "layer": 34,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3514,
+      "chunk": 4,
+      "layer": 34,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3515,
+      "chunk": 4,
+      "layer": 34,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3516,
+      "chunk": 4,
+      "layer": 34,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3517,
+      "chunk": 4,
+      "layer": 34,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3518,
+      "chunk": 4,
+      "layer": 34,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3525,
+      "chunk": 4,
+      "layer": 34,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3527,
+      "chunk": 4,
+      "layer": 35,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3529,
+      "chunk": 4,
+      "layer": 36,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3530,
+      "chunk": 4,
+      "layer": 36,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3531,
+      "chunk": 4,
+      "layer": 36,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3532,
+      "chunk": 4,
+      "layer": 36,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3533,
+      "chunk": 4,
+      "layer": 36,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3534,
+      "chunk": 4,
+      "layer": 36,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3541,
+      "chunk": 4,
+      "layer": 36,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3543,
+      "chunk": 4,
+      "layer": 37,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3544,
+      "chunk": 4,
+      "layer": 37,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3545,
+      "chunk": 4,
+      "layer": 37,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3546,
+      "chunk": 4,
+      "layer": 37,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3547,
+      "chunk": 4,
+      "layer": 37,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3548,
+      "chunk": 4,
+      "layer": 37,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3555,
+      "chunk": 4,
+      "layer": 37,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3557,
+      "chunk": 4,
+      "layer": 38,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3558,
+      "chunk": 4,
+      "layer": 38,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3559,
+      "chunk": 4,
+      "layer": 38,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3560,
+      "chunk": 4,
+      "layer": 38,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3561,
+      "chunk": 4,
+      "layer": 38,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3562,
+      "chunk": 4,
+      "layer": 38,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3569,
+      "chunk": 4,
+      "layer": 38,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3571,
+      "chunk": 4,
+      "layer": 39,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3573,
+      "chunk": 4,
+      "layer": 40,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3574,
+      "chunk": 4,
+      "layer": 40,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3575,
+      "chunk": 4,
+      "layer": 40,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3576,
+      "chunk": 4,
+      "layer": 40,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3577,
+      "chunk": 4,
+      "layer": 40,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3578,
+      "chunk": 4,
+      "layer": 40,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3585,
+      "chunk": 4,
+      "layer": 40,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3587,
+      "chunk": 4,
+      "layer": 41,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3588,
+      "chunk": 4,
+      "layer": 41,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3589,
+      "chunk": 4,
+      "layer": 41,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3590,
+      "chunk": 4,
+      "layer": 41,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3591,
+      "chunk": 4,
+      "layer": 41,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3592,
+      "chunk": 4,
+      "layer": 41,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3599,
+      "chunk": 4,
+      "layer": 41,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3601,
+      "chunk": 4,
+      "layer": 42,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3602,
+      "chunk": 4,
+      "layer": 42,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3603,
+      "chunk": 4,
+      "layer": 42,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3604,
+      "chunk": 4,
+      "layer": 42,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3605,
+      "chunk": 4,
+      "layer": 42,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3606,
+      "chunk": 4,
+      "layer": 42,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3613,
+      "chunk": 4,
+      "layer": 42,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3615,
+      "chunk": 4,
+      "layer": 43,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3617,
+      "chunk": 4,
+      "layer": 44,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3618,
+      "chunk": 4,
+      "layer": 44,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3619,
+      "chunk": 4,
+      "layer": 44,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3620,
+      "chunk": 4,
+      "layer": 44,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3621,
+      "chunk": 4,
+      "layer": 44,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3622,
+      "chunk": 4,
+      "layer": 44,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3629,
+      "chunk": 4,
+      "layer": 44,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3631,
+      "chunk": 4,
+      "layer": 45,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3632,
+      "chunk": 4,
+      "layer": 45,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3633,
+      "chunk": 4,
+      "layer": 45,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3634,
+      "chunk": 4,
+      "layer": 45,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3635,
+      "chunk": 4,
+      "layer": 45,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3636,
+      "chunk": 4,
+      "layer": 45,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3643,
+      "chunk": 4,
+      "layer": 45,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3645,
+      "chunk": 4,
+      "layer": 46,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3646,
+      "chunk": 4,
+      "layer": 46,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3647,
+      "chunk": 4,
+      "layer": 46,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3648,
+      "chunk": 4,
+      "layer": 46,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3649,
+      "chunk": 4,
+      "layer": 46,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3650,
+      "chunk": 4,
+      "layer": 46,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3657,
+      "chunk": 4,
+      "layer": 46,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 3659,
+      "chunk": 4,
+      "layer": 47,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4889,
+      "chunk": 7,
+      "layer": 14,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4891,
+      "chunk": 7,
+      "layer": 15,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4893,
+      "chunk": 7,
+      "layer": 16,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4894,
+      "chunk": 7,
+      "layer": 16,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4895,
+      "chunk": 7,
+      "layer": 16,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4896,
+      "chunk": 7,
+      "layer": 16,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4897,
+      "chunk": 7,
+      "layer": 16,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4898,
+      "chunk": 7,
+      "layer": 16,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4905,
+      "chunk": 7,
+      "layer": 16,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4907,
+      "chunk": 7,
+      "layer": 17,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4908,
+      "chunk": 7,
+      "layer": 17,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4909,
+      "chunk": 7,
+      "layer": 17,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4910,
+      "chunk": 7,
+      "layer": 17,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4911,
+      "chunk": 7,
+      "layer": 17,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4912,
+      "chunk": 7,
+      "layer": 17,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4919,
+      "chunk": 7,
+      "layer": 17,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4921,
+      "chunk": 7,
+      "layer": 18,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4922,
+      "chunk": 7,
+      "layer": 18,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4923,
+      "chunk": 7,
+      "layer": 18,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4924,
+      "chunk": 7,
+      "layer": 18,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4925,
+      "chunk": 7,
+      "layer": 18,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4926,
+      "chunk": 7,
+      "layer": 18,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4933,
+      "chunk": 7,
+      "layer": 18,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4935,
+      "chunk": 7,
+      "layer": 19,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4937,
+      "chunk": 7,
+      "layer": 20,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4938,
+      "chunk": 7,
+      "layer": 20,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4939,
+      "chunk": 7,
+      "layer": 20,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4940,
+      "chunk": 7,
+      "layer": 20,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4941,
+      "chunk": 7,
+      "layer": 20,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4942,
+      "chunk": 7,
+      "layer": 20,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4949,
+      "chunk": 7,
+      "layer": 20,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4951,
+      "chunk": 7,
+      "layer": 21,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4952,
+      "chunk": 7,
+      "layer": 21,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4953,
+      "chunk": 7,
+      "layer": 21,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4954,
+      "chunk": 7,
+      "layer": 21,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4955,
+      "chunk": 7,
+      "layer": 21,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4956,
+      "chunk": 7,
+      "layer": 21,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4963,
+      "chunk": 7,
+      "layer": 21,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4965,
+      "chunk": 7,
+      "layer": 22,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4966,
+      "chunk": 7,
+      "layer": 22,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4967,
+      "chunk": 7,
+      "layer": 22,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4968,
+      "chunk": 7,
+      "layer": 22,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4969,
+      "chunk": 7,
+      "layer": 22,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4970,
+      "chunk": 7,
+      "layer": 22,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4977,
+      "chunk": 7,
+      "layer": 22,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4979,
+      "chunk": 7,
+      "layer": 23,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4981,
+      "chunk": 7,
+      "layer": 24,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4982,
+      "chunk": 7,
+      "layer": 24,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4983,
+      "chunk": 7,
+      "layer": 24,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4984,
+      "chunk": 7,
+      "layer": 24,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4985,
+      "chunk": 7,
+      "layer": 24,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4986,
+      "chunk": 7,
+      "layer": 24,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4993,
+      "chunk": 7,
+      "layer": 24,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4995,
+      "chunk": 7,
+      "layer": 25,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4996,
+      "chunk": 7,
+      "layer": 25,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4997,
+      "chunk": 7,
+      "layer": 25,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4998,
+      "chunk": 7,
+      "layer": 25,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 4999,
+      "chunk": 7,
+      "layer": 25,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5000,
+      "chunk": 7,
+      "layer": 25,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5007,
+      "chunk": 7,
+      "layer": 25,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5009,
+      "chunk": 7,
+      "layer": 26,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5010,
+      "chunk": 7,
+      "layer": 26,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5011,
+      "chunk": 7,
+      "layer": 26,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5012,
+      "chunk": 7,
+      "layer": 26,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5013,
+      "chunk": 7,
+      "layer": 26,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5014,
+      "chunk": 7,
+      "layer": 26,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5021,
+      "chunk": 7,
+      "layer": 26,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5023,
+      "chunk": 7,
+      "layer": 27,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5025,
+      "chunk": 7,
+      "layer": 28,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5026,
+      "chunk": 7,
+      "layer": 28,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5027,
+      "chunk": 7,
+      "layer": 28,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5028,
+      "chunk": 7,
+      "layer": 28,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5029,
+      "chunk": 7,
+      "layer": 28,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5030,
+      "chunk": 7,
+      "layer": 28,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5037,
+      "chunk": 7,
+      "layer": 28,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5039,
+      "chunk": 7,
+      "layer": 29,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5040,
+      "chunk": 7,
+      "layer": 29,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5041,
+      "chunk": 7,
+      "layer": 29,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5042,
+      "chunk": 7,
+      "layer": 29,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5043,
+      "chunk": 7,
+      "layer": 29,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5044,
+      "chunk": 7,
+      "layer": 29,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5051,
+      "chunk": 7,
+      "layer": 29,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5053,
+      "chunk": 7,
+      "layer": 30,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5054,
+      "chunk": 7,
+      "layer": 30,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5055,
+      "chunk": 7,
+      "layer": 30,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5056,
+      "chunk": 7,
+      "layer": 30,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5057,
+      "chunk": 7,
+      "layer": 30,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5058,
+      "chunk": 7,
+      "layer": 30,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5065,
+      "chunk": 7,
+      "layer": 30,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5067,
+      "chunk": 7,
+      "layer": 31,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5069,
+      "chunk": 7,
+      "layer": 32,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5070,
+      "chunk": 7,
+      "layer": 32,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5071,
+      "chunk": 7,
+      "layer": 32,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5072,
+      "chunk": 7,
+      "layer": 32,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5073,
+      "chunk": 7,
+      "layer": 32,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5074,
+      "chunk": 7,
+      "layer": 32,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5081,
+      "chunk": 7,
+      "layer": 32,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5083,
+      "chunk": 7,
+      "layer": 33,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5084,
+      "chunk": 7,
+      "layer": 33,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5085,
+      "chunk": 7,
+      "layer": 33,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5086,
+      "chunk": 7,
+      "layer": 33,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5087,
+      "chunk": 7,
+      "layer": 33,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5088,
+      "chunk": 7,
+      "layer": 33,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5095,
+      "chunk": 7,
+      "layer": 33,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5097,
+      "chunk": 7,
+      "layer": 34,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5098,
+      "chunk": 7,
+      "layer": 34,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5099,
+      "chunk": 7,
+      "layer": 34,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5100,
+      "chunk": 7,
+      "layer": 34,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5101,
+      "chunk": 7,
+      "layer": 34,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5102,
+      "chunk": 7,
+      "layer": 34,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5109,
+      "chunk": 7,
+      "layer": 34,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5111,
+      "chunk": 7,
+      "layer": 35,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5113,
+      "chunk": 7,
+      "layer": 36,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5114,
+      "chunk": 7,
+      "layer": 36,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5115,
+      "chunk": 7,
+      "layer": 36,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5116,
+      "chunk": 7,
+      "layer": 36,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5117,
+      "chunk": 7,
+      "layer": 36,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5118,
+      "chunk": 7,
+      "layer": 36,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5125,
+      "chunk": 7,
+      "layer": 36,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5127,
+      "chunk": 7,
+      "layer": 37,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5128,
+      "chunk": 7,
+      "layer": 37,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5129,
+      "chunk": 7,
+      "layer": 37,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5130,
+      "chunk": 7,
+      "layer": 37,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5131,
+      "chunk": 7,
+      "layer": 37,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5132,
+      "chunk": 7,
+      "layer": 37,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5139,
+      "chunk": 7,
+      "layer": 37,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5141,
+      "chunk": 7,
+      "layer": 38,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5142,
+      "chunk": 7,
+      "layer": 38,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5143,
+      "chunk": 7,
+      "layer": 38,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5144,
+      "chunk": 7,
+      "layer": 38,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5145,
+      "chunk": 7,
+      "layer": 38,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5146,
+      "chunk": 7,
+      "layer": 38,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5153,
+      "chunk": 7,
+      "layer": 38,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5155,
+      "chunk": 7,
+      "layer": 39,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5157,
+      "chunk": 7,
+      "layer": 40,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5158,
+      "chunk": 7,
+      "layer": 40,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5159,
+      "chunk": 7,
+      "layer": 40,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5160,
+      "chunk": 7,
+      "layer": 40,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5161,
+      "chunk": 7,
+      "layer": 40,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5162,
+      "chunk": 7,
+      "layer": 40,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5169,
+      "chunk": 7,
+      "layer": 40,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5171,
+      "chunk": 7,
+      "layer": 41,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5172,
+      "chunk": 7,
+      "layer": 41,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5173,
+      "chunk": 7,
+      "layer": 41,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5174,
+      "chunk": 7,
+      "layer": 41,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5175,
+      "chunk": 7,
+      "layer": 41,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5176,
+      "chunk": 7,
+      "layer": 41,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5183,
+      "chunk": 7,
+      "layer": 41,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5185,
+      "chunk": 7,
+      "layer": 42,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5186,
+      "chunk": 7,
+      "layer": 42,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5187,
+      "chunk": 7,
+      "layer": 42,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5188,
+      "chunk": 7,
+      "layer": 42,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5189,
+      "chunk": 7,
+      "layer": 42,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5190,
+      "chunk": 7,
+      "layer": 42,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5197,
+      "chunk": 7,
+      "layer": 42,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5199,
+      "chunk": 7,
+      "layer": 43,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5201,
+      "chunk": 7,
+      "layer": 44,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5202,
+      "chunk": 7,
+      "layer": 44,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5203,
+      "chunk": 7,
+      "layer": 44,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5204,
+      "chunk": 7,
+      "layer": 44,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5205,
+      "chunk": 7,
+      "layer": 44,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5206,
+      "chunk": 7,
+      "layer": 44,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5213,
+      "chunk": 7,
+      "layer": 44,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5215,
+      "chunk": 7,
+      "layer": 45,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5216,
+      "chunk": 7,
+      "layer": 45,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5217,
+      "chunk": 7,
+      "layer": 45,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5218,
+      "chunk": 7,
+      "layer": 45,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5219,
+      "chunk": 7,
+      "layer": 45,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5220,
+      "chunk": 7,
+      "layer": 45,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5227,
+      "chunk": 7,
+      "layer": 45,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5229,
+      "chunk": 7,
+      "layer": 46,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5230,
+      "chunk": 7,
+      "layer": 46,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5231,
+      "chunk": 7,
+      "layer": 46,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5232,
+      "chunk": 7,
+      "layer": 46,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5233,
+      "chunk": 7,
+      "layer": 46,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5234,
+      "chunk": 7,
+      "layer": 46,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5241,
+      "chunk": 7,
+      "layer": 46,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 5243,
+      "chunk": 7,
+      "layer": 47,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 10581,
+      "chunk": 18,
+      "layer": 4,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10583,
+      "chunk": 18,
+      "layer": 5,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10584,
+      "chunk": 18,
+      "layer": 5,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10585,
+      "chunk": 18,
+      "layer": 5,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10586,
+      "chunk": 18,
+      "layer": 5,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10587,
+      "chunk": 18,
+      "layer": 5,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10588,
+      "chunk": 18,
+      "layer": 5,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10595,
+      "chunk": 18,
+      "layer": 5,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10597,
+      "chunk": 18,
+      "layer": 6,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10598,
+      "chunk": 18,
+      "layer": 6,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10599,
+      "chunk": 18,
+      "layer": 6,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10600,
+      "chunk": 18,
+      "layer": 6,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10601,
+      "chunk": 18,
+      "layer": 6,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10602,
+      "chunk": 18,
+      "layer": 6,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10609,
+      "chunk": 18,
+      "layer": 6,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10611,
+      "chunk": 18,
+      "layer": 7,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10613,
+      "chunk": 18,
+      "layer": 8,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10614,
+      "chunk": 18,
+      "layer": 8,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10615,
+      "chunk": 18,
+      "layer": 8,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10616,
+      "chunk": 18,
+      "layer": 8,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10617,
+      "chunk": 18,
+      "layer": 8,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10618,
+      "chunk": 18,
+      "layer": 8,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10625,
+      "chunk": 18,
+      "layer": 8,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10627,
+      "chunk": 18,
+      "layer": 9,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10628,
+      "chunk": 18,
+      "layer": 9,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10629,
+      "chunk": 18,
+      "layer": 9,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10630,
+      "chunk": 18,
+      "layer": 9,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10631,
+      "chunk": 18,
+      "layer": 9,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10632,
+      "chunk": 18,
+      "layer": 9,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10639,
+      "chunk": 18,
+      "layer": 9,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10641,
+      "chunk": 18,
+      "layer": 10,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10642,
+      "chunk": 18,
+      "layer": 10,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10643,
+      "chunk": 18,
+      "layer": 10,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10644,
+      "chunk": 18,
+      "layer": 10,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10645,
+      "chunk": 18,
+      "layer": 10,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10646,
+      "chunk": 18,
+      "layer": 10,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10653,
+      "chunk": 18,
+      "layer": 10,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10655,
+      "chunk": 18,
+      "layer": 11,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10657,
+      "chunk": 18,
+      "layer": 12,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10658,
+      "chunk": 18,
+      "layer": 12,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10659,
+      "chunk": 18,
+      "layer": 12,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10660,
+      "chunk": 18,
+      "layer": 12,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10661,
+      "chunk": 18,
+      "layer": 12,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10662,
+      "chunk": 18,
+      "layer": 12,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10669,
+      "chunk": 18,
+      "layer": 12,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10671,
+      "chunk": 18,
+      "layer": 13,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10672,
+      "chunk": 18,
+      "layer": 13,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10673,
+      "chunk": 18,
+      "layer": 13,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10674,
+      "chunk": 18,
+      "layer": 13,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10675,
+      "chunk": 18,
+      "layer": 13,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10676,
+      "chunk": 18,
+      "layer": 13,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10683,
+      "chunk": 18,
+      "layer": 13,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10685,
+      "chunk": 18,
+      "layer": 14,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10686,
+      "chunk": 18,
+      "layer": 14,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10687,
+      "chunk": 18,
+      "layer": 14,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10688,
+      "chunk": 18,
+      "layer": 14,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10689,
+      "chunk": 18,
+      "layer": 14,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10690,
+      "chunk": 18,
+      "layer": 14,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10697,
+      "chunk": 18,
+      "layer": 14,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10699,
+      "chunk": 18,
+      "layer": 15,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10701,
+      "chunk": 18,
+      "layer": 16,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10702,
+      "chunk": 18,
+      "layer": 16,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10703,
+      "chunk": 18,
+      "layer": 16,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10704,
+      "chunk": 18,
+      "layer": 16,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10705,
+      "chunk": 18,
+      "layer": 16,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10706,
+      "chunk": 18,
+      "layer": 16,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10713,
+      "chunk": 18,
+      "layer": 16,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10715,
+      "chunk": 18,
+      "layer": 17,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10716,
+      "chunk": 18,
+      "layer": 17,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10717,
+      "chunk": 18,
+      "layer": 17,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10718,
+      "chunk": 18,
+      "layer": 17,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10719,
+      "chunk": 18,
+      "layer": 17,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10720,
+      "chunk": 18,
+      "layer": 17,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10727,
+      "chunk": 18,
+      "layer": 17,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10729,
+      "chunk": 18,
+      "layer": 18,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10730,
+      "chunk": 18,
+      "layer": 18,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10731,
+      "chunk": 18,
+      "layer": 18,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10732,
+      "chunk": 18,
+      "layer": 18,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10733,
+      "chunk": 18,
+      "layer": 18,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10734,
+      "chunk": 18,
+      "layer": 18,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10741,
+      "chunk": 18,
+      "layer": 18,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10743,
+      "chunk": 18,
+      "layer": 19,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10745,
+      "chunk": 18,
+      "layer": 20,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10746,
+      "chunk": 18,
+      "layer": 20,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10747,
+      "chunk": 18,
+      "layer": 20,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10748,
+      "chunk": 18,
+      "layer": 20,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10749,
+      "chunk": 18,
+      "layer": 20,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10750,
+      "chunk": 18,
+      "layer": 20,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10757,
+      "chunk": 18,
+      "layer": 20,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10759,
+      "chunk": 18,
+      "layer": 21,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10760,
+      "chunk": 18,
+      "layer": 21,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10761,
+      "chunk": 18,
+      "layer": 21,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10762,
+      "chunk": 18,
+      "layer": 21,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10763,
+      "chunk": 18,
+      "layer": 21,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10764,
+      "chunk": 18,
+      "layer": 21,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10771,
+      "chunk": 18,
+      "layer": 21,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10773,
+      "chunk": 18,
+      "layer": 22,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10774,
+      "chunk": 18,
+      "layer": 22,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10775,
+      "chunk": 18,
+      "layer": 22,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10776,
+      "chunk": 18,
+      "layer": 22,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10777,
+      "chunk": 18,
+      "layer": 22,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10778,
+      "chunk": 18,
+      "layer": 22,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10785,
+      "chunk": 18,
+      "layer": 22,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10787,
+      "chunk": 18,
+      "layer": 23,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10789,
+      "chunk": 18,
+      "layer": 24,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10790,
+      "chunk": 18,
+      "layer": 24,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10791,
+      "chunk": 18,
+      "layer": 24,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10792,
+      "chunk": 18,
+      "layer": 24,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10793,
+      "chunk": 18,
+      "layer": 24,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10794,
+      "chunk": 18,
+      "layer": 24,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10801,
+      "chunk": 18,
+      "layer": 24,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10803,
+      "chunk": 18,
+      "layer": 25,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10804,
+      "chunk": 18,
+      "layer": 25,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10805,
+      "chunk": 18,
+      "layer": 25,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10806,
+      "chunk": 18,
+      "layer": 25,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10807,
+      "chunk": 18,
+      "layer": 25,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10808,
+      "chunk": 18,
+      "layer": 25,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10815,
+      "chunk": 18,
+      "layer": 25,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10817,
+      "chunk": 18,
+      "layer": 26,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10818,
+      "chunk": 18,
+      "layer": 26,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10819,
+      "chunk": 18,
+      "layer": 26,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10820,
+      "chunk": 18,
+      "layer": 26,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10821,
+      "chunk": 18,
+      "layer": 26,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10822,
+      "chunk": 18,
+      "layer": 26,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10829,
+      "chunk": 18,
+      "layer": 26,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10831,
+      "chunk": 18,
+      "layer": 27,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10833,
+      "chunk": 18,
+      "layer": 28,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10834,
+      "chunk": 18,
+      "layer": 28,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10835,
+      "chunk": 18,
+      "layer": 28,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10836,
+      "chunk": 18,
+      "layer": 28,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10837,
+      "chunk": 18,
+      "layer": 28,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10838,
+      "chunk": 18,
+      "layer": 28,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10845,
+      "chunk": 18,
+      "layer": 28,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10847,
+      "chunk": 18,
+      "layer": 29,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10848,
+      "chunk": 18,
+      "layer": 29,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10849,
+      "chunk": 18,
+      "layer": 29,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10850,
+      "chunk": 18,
+      "layer": 29,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10851,
+      "chunk": 18,
+      "layer": 29,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10852,
+      "chunk": 18,
+      "layer": 29,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10859,
+      "chunk": 18,
+      "layer": 29,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10861,
+      "chunk": 18,
+      "layer": 30,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10862,
+      "chunk": 18,
+      "layer": 30,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10863,
+      "chunk": 18,
+      "layer": 30,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10864,
+      "chunk": 18,
+      "layer": 30,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10865,
+      "chunk": 18,
+      "layer": 30,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10866,
+      "chunk": 18,
+      "layer": 30,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10873,
+      "chunk": 18,
+      "layer": 30,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10875,
+      "chunk": 18,
+      "layer": 31,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10877,
+      "chunk": 18,
+      "layer": 32,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10878,
+      "chunk": 18,
+      "layer": 32,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10879,
+      "chunk": 18,
+      "layer": 32,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10880,
+      "chunk": 18,
+      "layer": 32,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10881,
+      "chunk": 18,
+      "layer": 32,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10882,
+      "chunk": 18,
+      "layer": 32,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10889,
+      "chunk": 18,
+      "layer": 32,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10891,
+      "chunk": 18,
+      "layer": 33,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10892,
+      "chunk": 18,
+      "layer": 33,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10893,
+      "chunk": 18,
+      "layer": 33,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10894,
+      "chunk": 18,
+      "layer": 33,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10895,
+      "chunk": 18,
+      "layer": 33,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10896,
+      "chunk": 18,
+      "layer": 33,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10903,
+      "chunk": 18,
+      "layer": 33,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10905,
+      "chunk": 18,
+      "layer": 34,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10906,
+      "chunk": 18,
+      "layer": 34,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10907,
+      "chunk": 18,
+      "layer": 34,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10908,
+      "chunk": 18,
+      "layer": 34,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10909,
+      "chunk": 18,
+      "layer": 34,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10910,
+      "chunk": 18,
+      "layer": 34,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10917,
+      "chunk": 18,
+      "layer": 34,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10919,
+      "chunk": 18,
+      "layer": 35,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10921,
+      "chunk": 18,
+      "layer": 36,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10922,
+      "chunk": 18,
+      "layer": 36,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10923,
+      "chunk": 18,
+      "layer": 36,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10924,
+      "chunk": 18,
+      "layer": 36,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10925,
+      "chunk": 18,
+      "layer": 36,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10926,
+      "chunk": 18,
+      "layer": 36,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10933,
+      "chunk": 18,
+      "layer": 36,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10935,
+      "chunk": 18,
+      "layer": 37,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10936,
+      "chunk": 18,
+      "layer": 37,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10937,
+      "chunk": 18,
+      "layer": 37,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10938,
+      "chunk": 18,
+      "layer": 37,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10939,
+      "chunk": 18,
+      "layer": 37,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10940,
+      "chunk": 18,
+      "layer": 37,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10947,
+      "chunk": 18,
+      "layer": 37,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10949,
+      "chunk": 18,
+      "layer": 38,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10950,
+      "chunk": 18,
+      "layer": 38,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10951,
+      "chunk": 18,
+      "layer": 38,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10952,
+      "chunk": 18,
+      "layer": 38,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10953,
+      "chunk": 18,
+      "layer": 38,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10954,
+      "chunk": 18,
+      "layer": 38,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10961,
+      "chunk": 18,
+      "layer": 38,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10963,
+      "chunk": 18,
+      "layer": 39,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10965,
+      "chunk": 18,
+      "layer": 40,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10966,
+      "chunk": 18,
+      "layer": 40,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10967,
+      "chunk": 18,
+      "layer": 40,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10968,
+      "chunk": 18,
+      "layer": 40,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10969,
+      "chunk": 18,
+      "layer": 40,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10970,
+      "chunk": 18,
+      "layer": 40,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10977,
+      "chunk": 18,
+      "layer": 40,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10979,
+      "chunk": 18,
+      "layer": 41,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10980,
+      "chunk": 18,
+      "layer": 41,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10981,
+      "chunk": 18,
+      "layer": 41,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10982,
+      "chunk": 18,
+      "layer": 41,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10983,
+      "chunk": 18,
+      "layer": 41,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10984,
+      "chunk": 18,
+      "layer": 41,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10991,
+      "chunk": 18,
+      "layer": 41,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10993,
+      "chunk": 18,
+      "layer": 42,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10994,
+      "chunk": 18,
+      "layer": 42,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10995,
+      "chunk": 18,
+      "layer": 42,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10996,
+      "chunk": 18,
+      "layer": 42,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10997,
+      "chunk": 18,
+      "layer": 42,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 10998,
+      "chunk": 18,
+      "layer": 42,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11005,
+      "chunk": 18,
+      "layer": 42,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11007,
+      "chunk": 18,
+      "layer": 43,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11009,
+      "chunk": 18,
+      "layer": 44,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11010,
+      "chunk": 18,
+      "layer": 44,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11011,
+      "chunk": 18,
+      "layer": 44,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11012,
+      "chunk": 18,
+      "layer": 44,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11013,
+      "chunk": 18,
+      "layer": 44,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11014,
+      "chunk": 18,
+      "layer": 44,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11021,
+      "chunk": 18,
+      "layer": 44,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11023,
+      "chunk": 18,
+      "layer": 45,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11024,
+      "chunk": 18,
+      "layer": 45,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11025,
+      "chunk": 18,
+      "layer": 45,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11026,
+      "chunk": 18,
+      "layer": 45,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11027,
+      "chunk": 18,
+      "layer": 45,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11028,
+      "chunk": 18,
+      "layer": 45,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11035,
+      "chunk": 18,
+      "layer": 45,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11037,
+      "chunk": 18,
+      "layer": 46,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x3420a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11038,
+      "chunk": 18,
+      "layer": 46,
+      "buffer": "qkv",
+      "A_ptr": "0x34b051200",
+      "B_ptr": "0x34c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11039,
+      "chunk": 18,
+      "layer": 46,
+      "buffer": "z",
+      "A_ptr": "0x355051200",
+      "B_ptr": "0x3560a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11040,
+      "chunk": 18,
+      "layer": 46,
+      "buffer": "a",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11041,
+      "chunk": 18,
+      "layer": 46,
+      "buffer": "beta",
+      "A_ptr": "0x3400c0000",
+      "B_ptr": "0x341111200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11042,
+      "chunk": 18,
+      "layer": 46,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35b051200",
+      "B_ptr": "0x35c0a2400",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11049,
+      "chunk": 18,
+      "layer": 46,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 11051,
+      "chunk": 18,
+      "layer": 47,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x340000000",
+      "B_ptr": "0x341051200",
+      "delta_bytes": 17109504
+    },
+    {
+      "id": 13133,
+      "chunk": 22,
+      "layer": 44,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 13135,
+      "chunk": 22,
+      "layer": 45,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 13136,
+      "chunk": 22,
+      "layer": 45,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 13137,
+      "chunk": 22,
+      "layer": 45,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 13138,
+      "chunk": 22,
+      "layer": 45,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 13139,
+      "chunk": 22,
+      "layer": 45,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 13140,
+      "chunk": 22,
+      "layer": 45,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 13147,
+      "chunk": 22,
+      "layer": 45,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 13149,
+      "chunk": 22,
+      "layer": 46,
+      "buffer": "qkv_raw",
+      "A_ptr": "0x3420a2400",
+      "B_ptr": "0x341051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 13150,
+      "chunk": 22,
+      "layer": 46,
+      "buffer": "qkv",
+      "A_ptr": "0x34c0a2400",
+      "B_ptr": "0x34b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 13151,
+      "chunk": 22,
+      "layer": 46,
+      "buffer": "z",
+      "A_ptr": "0x3560a2400",
+      "B_ptr": "0x355051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 13152,
+      "chunk": 22,
+      "layer": 46,
+      "buffer": "a",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 13153,
+      "chunk": 22,
+      "layer": 46,
+      "buffer": "beta",
+      "A_ptr": "0x341111200",
+      "B_ptr": "0x3400c0000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 13154,
+      "chunk": 22,
+      "layer": 46,
+      "buffer": "y_ssm",
+      "A_ptr": "0x35c0a2400",
+      "B_ptr": "0x35b051200",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 13161,
+      "chunk": 22,
+      "layer": 46,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    },
+    {
+      "id": 13163,
+      "chunk": 22,
+      "layer": 47,
+      "buffer": "routing_metadata",
+      "A_ptr": "0x341051200",
+      "B_ptr": "0x340000000",
+      "delta_bytes": -17109504
+    }
+  ],
+  "first_difference": {
+    "id": 1605,
+    "chunk": 1,
+    "layer": 4,
+    "buffer": "routing_metadata",
+    "A_ptr": "0x341051200",
+    "B_ptr": "0x3420a2400",
+    "delta_bytes": 17109504
+  },
+  "last_difference": {
+    "id": 13163,
+    "chunk": 22,
+    "layer": 47,
+    "buffer": "routing_metadata",
+    "A_ptr": "0x341051200",
+    "B_ptr": "0x340000000",
+    "delta_bytes": -17109504
+  },
+  "all_async_alloc_and_free_streams": {
+    "A": {
+      "cudaMallocAsync": {
+        "0": 74432
+      },
+      "cudaFreeAsync": {
+        "0": 74432
+      }
+    },
+    "B": {
+      "cudaMallocAsync": {
+        "0": 74432
+      },
+      "cudaFreeAsync": {
+        "0": 74432
+      }
+    }
+  },
+  "causal_proof": false
+}
