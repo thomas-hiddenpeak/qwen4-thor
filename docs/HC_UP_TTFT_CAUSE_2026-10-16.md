@@ -487,3 +487,14 @@ GPU查询为空；首条无完整exit合同记录，零条完整通过，不把�
 这次修复针对诊断夹具错误，不等于TTFT回归根因闭合。原NO_GO保持。
 [中止证据](evidence/hc-up-subtiming-20261017/coverage-failure.json)、
 [修订解析器与CPU检查](evidence/hc-up-subtiming-20261017-v2/README.md)。
+
+
+## 修订版细分协议冻结（2026-10-17）
+
+v2只修复已确认的prefill报告覆盖错误：要求layer/sub/HC三家族，保留
+顶层moe，排除没有实现的prefill MoE内部细项。原A B B A四条、binary、
+输入输出、形状/字段/求和及max(R,1ms)差值规则不变。每个HTTP结束即
+校验报告覆盖，通过后才进行下一条；错误退出，不自动重试。
+v1首条没有完整合同结果可复用，原现场/协议/ENV_ABORT不改写。本次只
+重验夹具缺陷影响的细分观察，不重复其他已经完成的观测或五档数值测试。
+额外event/同步扰动边界保持，不将插桩TTFT用于验收，不宣称根因完成。
