@@ -69,8 +69,11 @@ MODULE_LOADED+cubin哈希，先确认未调用HC模块是否实际装载；该�
 MODULE_LOADED观察器已实现，4项CPU合同及一次已知CUDA模块SHA校准
 通过。原A/B各一次startup到ready均enabled=1/complete=0，无模块装载
 事件；A正常退出后driver错误非零断言导致COMMAND_FAILED，保留并复用
-A证据，仅修正校验后运行原计划B（guard COMPLETED），未重跑A。下一步
-单次B off请求观察补ready后覆盖，不作性能对照；当前不证明请求期不装载。
+A证据，仅修正校验后运行原计划B（guard COMPLETED），未重跑A。单次
+B off请求观察已完成：39次模块装载、16次匹配项目镜像，HC独有SHA未出现，
+输出/退出/guard通过。停止额外HC镜像装载解释；不使用本次计时。解析器
+不存在request_begin标记的假设已离线修正，未重跑GPU。下一步补齐按名称
+折叠同名符号造成的host指令差分覆盖，先枚举off可达真实差异。
 八份服务器日志已显式纳入证据，避免通用忽略规则漏收。
 UCF analyzer的outputs重复哈希标注已修正，原始文本hash独立核对通过，
 读流量结论不变。不得继续普通ASLR或UCF计时。

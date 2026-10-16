@@ -1409,3 +1409,28 @@ HC独有SHA亦未出现。CUDA注册不等于本回调意义下已装载；不�
 A/B性能比较、不解释观察器下的TTFT；若HC仍不出现则不再追“额外HC
 设备镜像装载”解释。原NO_GO、数值合同与active目标保持，无生产改动。
 证据：evidence/hc-up-module-startup-20261017/。
+
+## 单次B off请求模块观察：HC独有镜像未装载（2026-10-17）
+
+固定一次原B 200K off请求完成，输入/输出/容量/退出合同全过，输出仍
+57f3581d…a4c8ca，guard COMPLETED。观察器enabled/complete计数一致，
+共39次MODULE_LOADED，16次按SHA+bytes匹配B静态项目镜像；HC唯一
+新增cubin的确切SHA一次未出现。正覆盖证明不是“工具全程没有记录”。
+不使用本次TTFT作性能比较或接受。
+
+初始离线analyzer假设存在phase=request_begin而StopIteration。源码日志
+实际只有request_end；保留失败脚本/原因，修正为ready→唯一request_end
+的可观测区间，不冒充精确请求开始时间。仅重跑离线解析，未重跑GPU。
+39条记录位于该区间；完整过程也无HC独有镜像。协议/原日志/结果/文件
+SHA随阶段保存。此前startup“未发HTTP”依据driver无请求和日志无结束
+记录，不应仅凭缺少本来不存在的request_begin字段来证明。
+
+结合启动观察，当前观测off路径不支持“额外HC设备镜像装载造成回退”。
+停止该解释，不追加模块采样；CUPTI观测影响、GPU代码VA/物理页/缓存
+未观察的限制仍保留。不能从未装载HC镜像扩大成注册表完全无成本或
+所有host路径相同，更不能据此解除原NO_GO。
+
+下一步离线补齐先前按名称折叠同名符号而缺失的host指令差分覆盖，枚举
+原A/B off可达的实际代码差异，先明确可区分机制；不直接新增GPU实验。
+目标仍active，根因、对应解决及受影响验收未完成，生产计算源码未改。
+证据：evidence/hc-up-module-request-20261017/。
