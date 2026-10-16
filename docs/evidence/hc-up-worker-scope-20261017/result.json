@@ -1,0 +1,158 @@
+{
+  "A": {
+    "thread_id": 302013226331640,
+    "api_counts": {
+      "cuLaunchKernel": 110
+    },
+    "return_codes": {
+      "0": 110
+    },
+    "api_duration_sum_ns": 2682109,
+    "device_completion_bound_available_from_worker_apis": false
+  },
+  "B": {
+    "thread_id": 302042183808186,
+    "api_counts": {
+      "cuLaunchKernel": 110
+    },
+    "return_codes": {
+      "0": 110
+    },
+    "api_duration_sum_ns": 2834580,
+    "device_completion_bound_available_from_worker_apis": false
+  },
+  "unprofiled_review_commands": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-review-20261016/01-A/server-command.json",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/q4t-main",
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--port",
+        "8730",
+        "--max-seq",
+        "1",
+        "--max-prefill",
+        "8192",
+        "--max-len",
+        "208896",
+        "--max-tokens",
+        "256",
+        "--no-mtp"
+      ],
+      "effective_q4t_environment": {}
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-review-20261016/02-B/server-command.json",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/hc-up/q4t",
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--port",
+        "8730",
+        "--max-seq",
+        "1",
+        "--max-prefill",
+        "8192",
+        "--max-len",
+        "208896",
+        "--max-tokens",
+        "256",
+        "--no-mtp"
+      ],
+      "effective_q4t_environment": {}
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-review-20261016/03-B/server-command.json",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/hc-up/q4t",
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--port",
+        "8730",
+        "--max-seq",
+        "1",
+        "--max-prefill",
+        "8192",
+        "--max-len",
+        "208896",
+        "--max-tokens",
+        "256",
+        "--no-mtp"
+      ],
+      "effective_q4t_environment": {}
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-review-20261016/04-A/server-command.json",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/q4t-main",
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--port",
+        "8730",
+        "--max-seq",
+        "1",
+        "--max-prefill",
+        "8192",
+        "--max-len",
+        "208896",
+        "--max-tokens",
+        "256",
+        "--no-mtp"
+      ],
+      "effective_q4t_environment": {}
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-review-20261016/05-A/server-command.json",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/q4t-main",
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--port",
+        "8730",
+        "--max-seq",
+        "1",
+        "--max-prefill",
+        "8192",
+        "--max-len",
+        "208896",
+        "--max-tokens",
+        "256",
+        "--no-mtp"
+      ],
+      "effective_q4t_environment": {}
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-review-20261016/06-B/server-command.json",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/hc-up/q4t",
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--port",
+        "8730",
+        "--max-seq",
+        "1",
+        "--max-prefill",
+        "8192",
+        "--max-len",
+        "208896",
+        "--max-tokens",
+        "256",
+        "--no-mtp"
+      ],
+      "effective_q4t_environment": {}
+    }
+  ],
+  "limits": [
+    "Worker API return is not device completion; no device-duration estimate",
+    "No Nsight wrapper in six review commands, not a complete historical process maps audit",
+    "Internal launch implementation/purpose not established from these records",
+    "Profiler artifacts cannot by themselves explain the unprofiled regression"
+  ]
+}

@@ -1650,3 +1650,26 @@ https://forums.developer.nvidia.com/t/nsight-systems-2026-5-1-produced-112-colle
 存在可控的插桩影响机制，再决定是否需要有界诊断，避免重跑完整trace
 碰结果。本阶段新增GPU请求0，无生产修改，根因未查清，active/NO_GO保持。
 证据：evidence/hc-up-trace-counts-20261017/。
+
+## CUPTI内部调用证据边界收敛（2026-10-17）
+
+沿已确认的CUPTI worker线程检查全部已记录API：A/B各只有110条
+cuLaunchKernel，全部返回0，没有同步API可建立设备完成上界。API耗时
+总和分别2.682109/2.834580ms；差0.152471ms仅为host API时间，不能
+作为GPU成本、不能从设备活动差或原TTFT差扣除。内部kernel用途及
+持续时间仍未知，不凭线程名称推断为校时、flush或buffer处理。
+
+六条原始复核server-command均直接执行q4t-main/q4t，无nsys包装，
+effective_q4t_environment为空。这不等于完整历史maps审计，但确认
+原始接受结论并非从这对Nsight trace取得。CUPTI机制不能单独解释原始
+未插桩回归，因此停止继续追查工具私有内部实现，不为此追加模型运行。
+官方CUPTI文档说明并发kernel tracing会插桩且可能增加执行成本，仅作
+trace解释边界参考，不作为本次回归归因：
+https://docs.nvidia.com/cupti/main/main.html#cupti-overhead 。
+
+下一步回到原始未插桩运行的内存/调度身份，清点先前持久VMM干预实际
+控制与未控制的分配（不能把三个workspace控制外推为整个模型物理布局），
+只在存在可识别机制与可行干预时冻结新诊断。现有trace可用于描述已记录
+活动，不能代替该机制验证。新增GPU请求0，生产代码未改，根因/解决/
+验收仍未完成，active与原NO_GO保持。
+证据：evidence/hc-up-worker-scope-20261017/。
