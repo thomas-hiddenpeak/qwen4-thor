@@ -2,6 +2,10 @@
 
 2026-10-16；本记录描述实际并发干扰，不是候选质量/性能裁决。
 
+当前排程：HC已在9d16fca收口，明确停止本轮GPU工作；进程现场清空。
+现在进入GDN独占验收，使用http-resume新目录，其他会话的GPU工作
+等待该组结束。互斥范围覆盖不同HTTP服务之间的加载/退出空档。
+
 GDN anchor + rank-one record候选已在隔离检出完成，提交
 `dcb2a7d07c6aba1c319d2c689c5e752c5616997d`，binary SHA256
 `b154e4a7c1ccf8ccd5d83d28f8464ecc9e068b830d680aae26d2ec15117e0ac5`。
@@ -36,3 +40,12 @@ GDN anchor + rank-one record候选已在隔离检出完成，提交
 互斥监控仅停止自己持有的Popen进程，不向竞争进程发信号。
 
 后续状态和最终候选结论另更新，不以本次文档快照替代验收。
+
+## 中断结果恢复
+
+原DB和journal只复制后检查，原件不写入。恢复副本integrity_check通过，
+但result表0行：evalscope默认1000条提交，客户端中断前10条结果尚未
+持久化。0条可按响应/逐条时间合同复用，不能用服务日志补造PASS。
+因此按原字节一致的11题补采，性能仍为on/off各五档×3，最多52条正式
+请求；既有环境组单列11 attempted/10服务侧完成/1取消。恢复证据位于
+`.q4t-work/gdn-record-fold-20261016/recovered-quality/`。
