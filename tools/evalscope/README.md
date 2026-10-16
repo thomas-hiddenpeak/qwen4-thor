@@ -260,3 +260,8 @@ flock只有遵循该入口的会话才互斥；轮询补充检测非合作进程
 CPU检查：`python3 tools/evalscope/test_server_address_space.py`（需本机Linux
 允许对子进程设置personality，不假设其他CI容器支持）、
 `python3 tools/evalscope/test_run_acceptance.py`（模拟runner合同）。
+
+重复同一no-ASLR身份时，可用 `--server-map-reference <先前server-address-space.json>`
+在HTTP前要求文件支持的可执行映射与参考完全一致。参考只支持no-aslr模式；
+不匹配会保留当前/参考快照并清理服务，不会自动重试。此检查不覆盖
+就绪后的延迟映射、物理页或CUDA地址，也不能替代数值/性能验收。

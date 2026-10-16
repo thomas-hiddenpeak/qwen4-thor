@@ -6,7 +6,7 @@ import unittest
 from unittest.mock import patch
 
 from server_address_space import (ADDR_NO_RANDOMIZE, launch_command,
-                                  personality, snapshot)
+                                  personality, snapshot, require_mapping_match)
 
 
 class AddressSpaceTests(unittest.TestCase):
@@ -59,6 +59,16 @@ class AddressSpaceTests(unittest.TestCase):
         self.assertEqual(a['executable_mappings'], b['executable_mappings'])
         self.assertEqual(client['aslr_disabled'], bool(parent & ADDR_NO_RANDOMIZE))
         self.assertEqual(personality(os.getpid()), parent)
+
+    def test_mapping_reference_rejects_shifted_or_uncontrolled_code(self):
+        current = {'mode': 'no-aslr', 'aslr_disabled': True, 'exe': '/fake/q4t',
+                   'executable_mappings': [{'range': '1000-2000'}]}
+        require_mapping_match(current, dict(current))
+        for change in [{'mode': 'inherit'}, {'aslr_disabled': False},
+                       {'exe': '/other/q4t'},
+                       {'executable_mappings': [{'range': '2000-3000'}]}]:
+            with self.assertRaises(RuntimeError):
+                require_mapping_match(current, dict(current, **change))
 
     def test_wrong_personality_rejected(self):
         with patch('server_address_space.personality', return_value=0), \

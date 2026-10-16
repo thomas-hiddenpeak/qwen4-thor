@@ -154,6 +154,22 @@ class RunnerContractTest(unittest.TestCase):
         self.assertTrue(self.servers[0].terminated)
         self.assertFalse(self.read('exit.json')['http_output_checks_passed'])
 
+    def test_changed_controlled_mapping_stops_before_http(self):
+        reference = self.root / 'mapping.json'
+        reference.write_text(json.dumps({'mode': 'no-aslr', 'aslr_disabled': True,
+            'exe': str(self.binary), 'executable_mappings': [{'range': '1000-2000'}]}))
+        actual = {'mode': 'no-aslr', 'aslr_disabled': True, 'exe': str(self.binary),
+                  'executable_mappings': [{'range': '2000-3000'}]}
+        with patch('server_address_space.personality', return_value=0), \
+             patch('server_address_space.snapshot', return_value=(actual, 'raw maps')):
+            with self.assertRaisesRegex(RuntimeError, 'mappings differ'):
+                self.invoke('--server-address-space', 'no-aslr',
+                            '--server-map-reference', str(reference))
+        self.assertFalse(self.clients)
+        self.assertTrue(self.servers[0].terminated)
+        self.assertEqual(self.read('server-address-space.json'), actual)
+        self.assertTrue((self.out / 'server-map-reference.json').is_file())
+
     def test_address_space_rejects_systemd_before_start(self):
         with self.assertRaises(SystemExit):
             self.invoke('--server-address-space', 'no-aslr',

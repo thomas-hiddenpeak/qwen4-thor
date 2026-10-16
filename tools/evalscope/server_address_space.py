@@ -59,3 +59,13 @@ def snapshot(pid, binary, mode, parent_personality):
             'maps_sha256': hashlib.sha256(text.encode()).hexdigest(),
             'executable_mappings': executable,
             'scope': 'ready-time virtual maps only; not physical or CUDA placement'}, text
+
+
+def require_mapping_match(current, reference):
+    """Fail before HTTP if a repeated controlled identity did not stabilize."""
+    if (current['mode'] != 'no-aslr' or reference['mode'] != 'no-aslr' or
+            not current['aslr_disabled'] or not reference['aslr_disabled'] or
+            current['exe'] != reference['exe'] or
+            not current['executable_mappings'] or
+            current['executable_mappings'] != reference['executable_mappings']):
+        raise RuntimeError('controlled server executable mappings differ from reference')

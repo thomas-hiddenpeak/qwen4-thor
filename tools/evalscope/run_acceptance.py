@@ -300,12 +300,17 @@ def main():
                         help='serve with no MTP flag: exercise the serve '
                              'default (MTP on since 2026-10-14) for default-'
                              'deployment acceptance.')
+    parser.add_argument('--server-map-reference', type=Path,
+                        help='Require identical controlled executable mappings '
+                             'before HTTP; requires --server-address-space no-aslr')
     parser.add_argument('--server-address-space', choices=['inherit', 'no-aslr'],
                         help='Diagnostic only: snapshot server maps; no-aslr uses '
                              'setarch for the server only, not the HTTP client')
     parser.add_argument('--mtp-k', type=int, default=3,
                         help='MTP speculative steps k (serve default 3)')
     args = parser.parse_args()
+    if args.server_map_reference and args.server_address_space != 'no-aslr':
+        parser.error('--server-map-reference requires --server-address-space no-aslr')
     if args.server_address_space and args.systemd_unit:
         parser.error('--server-address-space is not supported with --systemd-unit')
     if args.perf_repeats <= 0:
@@ -518,6 +523,11 @@ def main():
                                               args.server_address_space, address_parent)
                 save(out / 'server-address-space.json', address_info)
                 (out / 'server-maps.txt').write_text(maps)
+                if args.server_map_reference:
+                    from server_address_space import require_mapping_match
+                    reference_maps = json.loads(args.server_map_reference.read_text())
+                    save(out / 'server-map-reference.json', reference_maps)
+                    require_mapping_match(address_info, reference_maps)
             event(out, 'server_ready', pid=server.pid, capacity=capacity)
             if not capacity['matches_requested']:
                 raise RuntimeError('effective server capacity is missing or differs from requested capacity')
