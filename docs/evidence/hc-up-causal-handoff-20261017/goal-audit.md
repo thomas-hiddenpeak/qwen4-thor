@@ -35,3 +35,12 @@ merge the candidate, or mark the goal complete.
 No further model requests are justified by this handoff alone. The repro has
 been prepared locally, not submitted externally. Root-cause work remains open;
 this audit does not redefine success as documentation or tooling completion.
+
+## Blocked-state audit
+
+After the handoff audit (7c8454c), the unchanged-binary initialization check
+(54e9c4b), and a third current-state review, the same missing causal-observation
+path remains. No live job is pending and no verified local workaround or
+new discriminating mechanism is available to this agent. Goal status is blocked,
+not complete. Resume requires new technical input as listed above; this is not
+a claim of theoretical impossibility or permission to relax the objective.
