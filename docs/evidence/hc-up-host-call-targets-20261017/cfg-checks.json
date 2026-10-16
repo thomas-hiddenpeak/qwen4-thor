@@ -1,0 +1,11 @@
+{
+  "passed": 5,
+  "cases": [
+    "diamond same value retains both definitions",
+    "diamond conflicting value rejected",
+    "caller-saved register clobbered",
+    "callee-saved register preserved",
+    "unknown overwrite rejected"
+  ],
+  "scope": "normal direct CFG only; no exception unwind or indirect branch target inference"
+}

@@ -1,0 +1,1501 @@
+{
+  "target_pairs": 62,
+  "direct_sites": 735,
+  "all_target_pair_differences_classified": true,
+  "literal_references": 134,
+  "nested_call_sites": 2,
+  "details": [
+    {
+      "name": "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EERKS8_PKS5_.isra.0",
+      "A": "0xb2cc",
+      "B": "0xb38c",
+      "literal_references": [
+        {
+          "index": 73,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        }
+      ],
+      "dependencies": [
+        [
+          41856,
+          42048
+        ],
+        [
+          41856,
+          42048
+        ]
+      ],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEaSEOS4_.isra.0",
+      "A": "0xa1e0",
+      "B": "0xa2a0",
+      "literal_references": [],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEPKS5_RKS8_.isra.0",
+      "A": "0x126644",
+      "B": "0x125b44",
+      "literal_references": [
+        {
+          "index": 237,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 240,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 243,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 246,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 255,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC2IS3_EEPKcRKS3_.constprop.0",
+      "A": "0x11caa0",
+      "B": "0x11bfa0",
+      "literal_references": [
+        {
+          "index": 48,
+          "A_address": "0x1319f8",
+          "B_address": "0x130ef8",
+          "text": "basic_string: construction from null is not valid",
+          "sha256_including_NUL": "728de9161012815c27782fb2d165b88a761a35085271c9c99233af4da8ba31f4"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEPKS5_RKS8_.isra.0",
+      "A": "0x122fc8",
+      "B": "0x1224c8",
+      "literal_references": [
+        {
+          "index": 237,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 240,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 243,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 246,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 255,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC2IS3_EEPKcRKS3_.constprop.0",
+      "A": "0x23e40",
+      "B": "0x23f00",
+      "literal_references": [
+        {
+          "index": 48,
+          "A_address": "0x1319f8",
+          "B_address": "0x130ef8",
+          "text": "basic_string: construction from null is not valid",
+          "sha256_including_NUL": "728de9161012815c27782fb2d165b88a761a35085271c9c99233af4da8ba31f4"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEaSEOS4_.isra.0",
+      "A": "0x23ba0",
+      "B": "0x23c60",
+      "literal_references": [],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EERKS8_PKS5_.isra.0",
+      "A": "0x66b40",
+      "B": "0x68040",
+      "literal_references": [
+        {
+          "index": 219,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 222,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 225,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 228,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 237,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC2IS3_EEPKcRKS3_.constprop.0",
+      "A": "0x63a4c",
+      "B": "0x64f4c",
+      "literal_references": [
+        {
+          "index": 48,
+          "A_address": "0x1319f8",
+          "B_address": "0x130ef8",
+          "text": "basic_string: construction from null is not valid",
+          "sha256_including_NUL": "728de9161012815c27782fb2d165b88a761a35085271c9c99233af4da8ba31f4"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE12_M_constructIPcEEvT_S7_St20forward_iterator_tag.isra.0",
+      "A": "0x23d80",
+      "B": "0x23e40",
+      "literal_references": [
+        {
+          "index": 46,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EERKS8_PKS5_.isra.0",
+      "A": "0x29ca0",
+      "B": "0x29d60",
+      "literal_references": [
+        {
+          "index": 219,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 222,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 225,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 228,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 237,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6assignEPKc.isra.0",
+      "A": "0x78488",
+      "B": "0x78988",
+      "literal_references": [],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC2IS3_EEPKcRKS3_.constprop.0",
+      "A": "0x783c0",
+      "B": "0x788c0",
+      "literal_references": [
+        {
+          "index": 48,
+          "A_address": "0x1319f8",
+          "B_address": "0x130ef8",
+          "text": "basic_string: construction from null is not valid",
+          "sha256_including_NUL": "728de9161012815c27782fb2d165b88a761a35085271c9c99233af4da8ba31f4"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC2IS3_EEPKcRKS3_.constprop.0",
+      "A": "0x49aa0",
+      "B": "0x4ab60",
+      "literal_references": [
+        {
+          "index": 48,
+          "A_address": "0x1319f8",
+          "B_address": "0x130ef8",
+          "text": "basic_string: construction from null is not valid",
+          "sha256_including_NUL": "728de9161012815c27782fb2d165b88a761a35085271c9c99233af4da8ba31f4"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEaSEOS4_.isra.0",
+      "A": "0x499a0",
+      "B": "0x4aa60",
+      "literal_references": [],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC2IS3_EEPKcRKS3_.constprop.0",
+      "A": "0x10a60",
+      "B": "0x10b20",
+      "literal_references": [
+        {
+          "index": 48,
+          "A_address": "0x1319f8",
+          "B_address": "0x130ef8",
+          "text": "basic_string: construction from null is not valid",
+          "sha256_including_NUL": "728de9161012815c27782fb2d165b88a761a35085271c9c99233af4da8ba31f4"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEaSEOS4_.isra.0",
+      "A": "0x1072c",
+      "B": "0x107ec",
+      "literal_references": [],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EERKS8_PKS5_.isra.0",
+      "A": "0x4cb08",
+      "B": "0x4dbc8",
+      "literal_references": [
+        {
+          "index": 219,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 222,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 225,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 228,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 237,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EERKS8_PKS5_.isra.0",
+      "A": "0x76f64",
+      "B": "0x77464",
+      "literal_references": [
+        {
+          "index": 219,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 222,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 225,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 228,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 237,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEaSEOS4_.isra.0",
+      "A": "0x7208c",
+      "B": "0x7258c",
+      "literal_references": [],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC2IS3_EEPKcRKS3_.constprop.0",
+      "A": "0x72188",
+      "B": "0x72688",
+      "literal_references": [
+        {
+          "index": 48,
+          "A_address": "0x1319f8",
+          "B_address": "0x130ef8",
+          "text": "basic_string: construction from null is not valid",
+          "sha256_including_NUL": "728de9161012815c27782fb2d165b88a761a35085271c9c99233af4da8ba31f4"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE12_M_constructIPcEEvT_S7_St20forward_iterator_tag.isra.0",
+      "A": "0x109a0",
+      "B": "0x10a60",
+      "literal_references": [
+        {
+          "index": 46,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EERKS8_PKS5_.isra.0",
+      "A": "0x5954c",
+      "B": "0x5a60c",
+      "literal_references": [
+        {
+          "index": 219,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 222,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 225,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 228,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 237,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EERKS8_PKS5_.isra.0",
+      "A": "0x417e0",
+      "B": "0x428a0",
+      "literal_references": [
+        {
+          "index": 219,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 222,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 225,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 228,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 237,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEaSEOS4_.isra.0",
+      "A": "0x3cde0",
+      "B": "0x3dea0",
+      "literal_references": [],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EERKS8_PKS5_.isra.0",
+      "A": "0x14c20",
+      "B": "0x14ce0",
+      "literal_references": [
+        {
+          "index": 219,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 222,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 225,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 228,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 237,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC2IS3_EEPKcRKS3_.constprop.0",
+      "A": "0x3046c",
+      "B": "0x3052c",
+      "literal_references": [
+        {
+          "index": 48,
+          "A_address": "0x1319f8",
+          "B_address": "0x130ef8",
+          "text": "basic_string: construction from null is not valid",
+          "sha256_including_NUL": "728de9161012815c27782fb2d165b88a761a35085271c9c99233af4da8ba31f4"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EERKS8_PKS5_.isra.0",
+      "A": "0x3ad48",
+      "B": "0x3ae08",
+      "literal_references": [
+        {
+          "index": 219,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 222,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 225,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 228,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 237,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEaSEOS4_.isra.0",
+      "A": "0x67d60",
+      "B": "0x69260",
+      "literal_references": [],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EERKS8_PKS5_.isra.0",
+      "A": "0x6bac8",
+      "B": "0x6cfc8",
+      "literal_references": [
+        {
+          "index": 219,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 222,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 225,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 228,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 237,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC2IS3_EEPKcRKS3_.constprop.0",
+      "A": "0x67e60",
+      "B": "0x69360",
+      "literal_references": [
+        {
+          "index": 48,
+          "A_address": "0x1319f8",
+          "B_address": "0x130ef8",
+          "text": "basic_string: construction from null is not valid",
+          "sha256_including_NUL": "728de9161012815c27782fb2d165b88a761a35085271c9c99233af4da8ba31f4"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC2IS3_EEPKcRKS3_.constprop.0",
+      "A": "0x9a720",
+      "B": "0x9ac20",
+      "literal_references": [
+        {
+          "index": 48,
+          "A_address": "0x1319f8",
+          "B_address": "0x130ef8",
+          "text": "basic_string: construction from null is not valid",
+          "sha256_including_NUL": "728de9161012815c27782fb2d165b88a761a35085271c9c99233af4da8ba31f4"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEaSEOS4_.isra.0",
+      "A": "0x9a620",
+      "B": "0x9ab20",
+      "literal_references": [],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZN3q4t5quant12_GLOBAL__N_110ExpertNameEiiPKcS3_",
+      "A": "0x9d260",
+      "B": "0x9d760",
+      "literal_references": [
+        {
+          "index": 35,
+          "A_address": "0x133988",
+          "B_address": "0x132e88",
+          "text": "model.language_model.layers.",
+          "sha256_including_NUL": "2b9846f53922f9d3436757484e81c6caa0b1979da09813e410ee7269483b9e63"
+        },
+        {
+          "index": 39,
+          "A_address": "0x133988",
+          "B_address": "0x132e88",
+          "text": "model.language_model.layers.",
+          "sha256_including_NUL": "2b9846f53922f9d3436757484e81c6caa0b1979da09813e410ee7269483b9e63"
+        },
+        {
+          "index": 67,
+          "A_address": "0x139cc0",
+          "B_address": "0x139220",
+          "text": ".mlp.experts.",
+          "sha256_including_NUL": "5dddc84aa96922eaa53d533a6199adccbc0f0797205791710c120f4a2842f6da"
+        },
+        {
+          "index": 429,
+          "A_address": "0x133988",
+          "B_address": "0x132e88",
+          "text": "model.language_model.layers.",
+          "sha256_including_NUL": "2b9846f53922f9d3436757484e81c6caa0b1979da09813e410ee7269483b9e63"
+        },
+        {
+          "index": 483,
+          "A_address": "0x139cc0",
+          "B_address": "0x139220",
+          "text": ".mlp.experts.",
+          "sha256_including_NUL": "5dddc84aa96922eaa53d533a6199adccbc0f0797205791710c120f4a2842f6da"
+        },
+        {
+          "index": 846,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 1004,
+          "A_address": "0x133b00",
+          "B_address": "0x133000",
+          "text": "basic_string::_M_replace",
+          "sha256_including_NUL": "67ffeb2be565c88746ad31c89ba9f27384112ff9659aebd8acfd16cc7bc50f4d"
+        },
+        {
+          "index": 1014,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 1024,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 1036,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 1046,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 1056,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 1091,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 1101,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 1111,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 1123,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 1133,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 1143,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 1153,
+          "A_address": "0x133b00",
+          "B_address": "0x133000",
+          "text": "basic_string::_M_replace",
+          "sha256_including_NUL": "67ffeb2be565c88746ad31c89ba9f27384112ff9659aebd8acfd16cc7bc50f4d"
+        },
+        {
+          "index": 1163,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEaSEOS4_.isra.0",
+      "A": "0x893e0",
+      "B": "0x898e0",
+      "literal_references": [],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EERKS8_PKS5_.isra.0",
+      "A": "0x10ec2c",
+      "B": "0x10e12c",
+      "literal_references": [
+        {
+          "index": 219,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 222,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 225,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 228,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 237,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC2IS3_EEPKcRKS3_.constprop.0",
+      "A": "0x118730",
+      "B": "0x117c30",
+      "literal_references": [
+        {
+          "index": 48,
+          "A_address": "0x1319f8",
+          "B_address": "0x130ef8",
+          "text": "basic_string: construction from null is not valid",
+          "sha256_including_NUL": "728de9161012815c27782fb2d165b88a761a35085271c9c99233af4da8ba31f4"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEPKS5_RKS8_.isra.0",
+      "A": "0xc8860",
+      "B": "0xc9d60",
+      "literal_references": [
+        {
+          "index": 237,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 240,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 243,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 246,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 255,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC2IS3_EEPKcRKS3_.constprop.0",
+      "A": "0xc8120",
+      "B": "0xc9620",
+      "literal_references": [
+        {
+          "index": 48,
+          "A_address": "0x1319f8",
+          "B_address": "0x130ef8",
+          "text": "basic_string: construction from null is not valid",
+          "sha256_including_NUL": "728de9161012815c27782fb2d165b88a761a35085271c9c99233af4da8ba31f4"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEaSEOS4_.isra.0",
+      "A": "0xc7f60",
+      "B": "0xc9460",
+      "literal_references": [],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE12_M_constructIPcEEvT_S7_St20forward_iterator_tag.isra.0",
+      "A": "0xc8060",
+      "B": "0xc9560",
+      "literal_references": [
+        {
+          "index": 46,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6assignEPKc.isra.0",
+      "A": "0xc8340",
+      "B": "0xc9840",
+      "literal_references": [],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEaSEOS4_.isra.0",
+      "A": "0xc3260",
+      "B": "0xc4760",
+      "literal_references": [],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EERKS8_PKS5_.isra.0",
+      "A": "0xaa5a0",
+      "B": "0xabaa0",
+      "literal_references": [
+        {
+          "index": 219,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 222,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 225,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 228,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 237,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEPKS5_RKS8_.isra.0",
+      "A": "0xaa960",
+      "B": "0xabe60",
+      "literal_references": [
+        {
+          "index": 237,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 240,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 243,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 246,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 255,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt6vectorIbSaIbEE14_M_fill_insertESt13_Bit_iteratormb.isra.0",
+      "A": "0xa9268",
+      "B": "0xaa768",
+      "literal_references": [
+        {
+          "index": 362,
+          "A_address": "0x13bac8",
+          "B_address": "0x13b028",
+          "text": "vector<bool>::_M_fill_insert",
+          "sha256_including_NUL": "b38639b79baeb09c11e9ece3c36e5ca56476cd507a26764b2ab89022f7c7321b"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEaSEOS4_.isra.0",
+      "A": "0xa8e80",
+      "B": "0xaa380",
+      "literal_references": [],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC2IS3_EEPKcRKS3_.constprop.0",
+      "A": "0xa91a0",
+      "B": "0xaa6a0",
+      "literal_references": [
+        {
+          "index": 48,
+          "A_address": "0x1319f8",
+          "B_address": "0x130ef8",
+          "text": "basic_string: construction from null is not valid",
+          "sha256_including_NUL": "728de9161012815c27782fb2d165b88a761a35085271c9c99233af4da8ba31f4"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC2IS3_EEPKcRKS3_.constprop.0",
+      "A": "0xdb900",
+      "B": "0xdbe00",
+      "literal_references": [
+        {
+          "index": 48,
+          "A_address": "0x1319f8",
+          "B_address": "0x130ef8",
+          "text": "basic_string: construction from null is not valid",
+          "sha256_including_NUL": "728de9161012815c27782fb2d165b88a761a35085271c9c99233af4da8ba31f4"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEPKS5_RKS8_.isra.0",
+      "A": "0xde8c0",
+      "B": "0xdedc0",
+      "literal_references": [
+        {
+          "index": 237,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 240,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 243,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 246,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 255,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEaSEOS4_.isra.0",
+      "A": "0xdb800",
+      "B": "0xdbd00",
+      "literal_references": [],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6appendEPKcm.isra.0",
+      "A": "0xdbb68",
+      "B": "0xdc068",
+      "literal_references": [
+        {
+          "index": 108,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 111,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6assignEPKc.isra.0",
+      "A": "0xdb9c8",
+      "B": "0xdbec8",
+      "literal_references": [],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC2IS3_EEPKcRKS3_.constprop.0",
+      "A": "0xd1bc0",
+      "B": "0xd30c0",
+      "literal_references": [
+        {
+          "index": 48,
+          "A_address": "0x1319f8",
+          "B_address": "0x130ef8",
+          "text": "basic_string: construction from null is not valid",
+          "sha256_including_NUL": "728de9161012815c27782fb2d165b88a761a35085271c9c99233af4da8ba31f4"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEaSEOS4_.isra.0",
+      "A": "0xd1ac0",
+      "B": "0xd2fc0",
+      "literal_references": [],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6assignEPKc.isra.0",
+      "A": "0xd3da0",
+      "B": "0xd52a0",
+      "literal_references": [],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC2IS3_EEPKcRKS3_.constprop.0",
+      "A": "0xe49ac",
+      "B": "0xe3eac",
+      "literal_references": [
+        {
+          "index": 48,
+          "A_address": "0x1319f8",
+          "B_address": "0x130ef8",
+          "text": "basic_string: construction from null is not valid",
+          "sha256_including_NUL": "728de9161012815c27782fb2d165b88a761a35085271c9c99233af4da8ba31f4"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6assignEPKc.isra.0",
+      "A": "0xf2dc8",
+      "B": "0xf22c8",
+      "literal_references": [],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEPKS5_RKS8_.isra.0",
+      "A": "0x157e0",
+      "B": "0x158a0",
+      "literal_references": [
+        {
+          "index": 237,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 240,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 243,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 246,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        },
+        {
+          "index": 255,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZN3q4t5quant12_GLOBAL__N_13H2DEPKvPvmP11CUstream_st",
+      "A": "0x9bfe0",
+      "B": "0x9c4e0",
+      "literal_references": [
+        {
+          "index": 43,
+          "A_address": "0x13b620",
+          "B_address": "0x13ab80",
+          "text": "residency H2D failed: ",
+          "sha256_including_NUL": "97c25e676846c7a3443bc743a6d1f5c757abd65c22be29d89fccecf3209847ae"
+        },
+        {
+          "index": 214,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 222,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt6vectorIbSaIbEE14_M_fill_insertESt13_Bit_iteratormb.isra.0",
+      "A": "0xa7b40",
+      "B": "0xa9040",
+      "literal_references": [
+        {
+          "index": 364,
+          "A_address": "0x13bac8",
+          "B_address": "0x13b028",
+          "text": "vector<bool>::_M_fill_insert",
+          "sha256_including_NUL": "b38639b79baeb09c11e9ece3c36e5ca56476cd507a26764b2ab89022f7c7321b"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    },
+    {
+      "name": "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6appendEPKcm.isra.0",
+      "A": "0xa380",
+      "B": "0xa440",
+      "literal_references": [
+        {
+          "index": 93,
+          "A_address": "0x131a48",
+          "B_address": "0x130f48",
+          "text": "basic_string::_M_create",
+          "sha256_including_NUL": "2a717f1168eed8047b6ac342c9b506e6b5cefd197dc6cb425aeb421c8b8e0046"
+        },
+        {
+          "index": 96,
+          "A_address": "0x131a30",
+          "B_address": "0x130f30",
+          "text": "basic_string::append",
+          "sha256_including_NUL": "c78e472665b7046e104961eaf169e665d5a37ee9138402f0ad89693c078e086f"
+        }
+      ],
+      "dependencies": [],
+      "all_changed_operands_classified": true
+    }
+  ],
+  "limits": [
+    "Only static function strings and literal payload identity, not address or cache equivalence",
+    "Uses direct branch sites from mnemonic-aligned unique callers; excludes indirect calls and other instruction differences",
+    "Literal references may be in error branches; no dynamic branch reachability claimed"
+  ],
+  "new_gpu_requests": 0
+}
