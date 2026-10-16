@@ -21,3 +21,6 @@
 - hc-registration-disassembly.txt：HC独立启动注册的代码证据。
 
 目标仍active、原NO_GO保持。没有部署二进制或接受新性能身份。
+
+layer-summary.json与summarize_layers.py为原8条日志的离线事件区间补核，
+未新增采样；脚本在原.q4t-work目录执行，完整逐段结果保留本机。
