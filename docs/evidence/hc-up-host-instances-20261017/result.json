@@ -1,0 +1,635 @@
+{
+  "sha256": {
+    "A": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "B": "f01a0ee63f626c352f66677952368d43db02c9231576a2b8ba1ca33a915ce573"
+  },
+  "coverage": {
+    "A": {
+      "function_rows": 1149,
+      "distinct_names": 1052,
+      "duplicate_names": {
+        "_ZL24__sti____cudaRegisterAllv": 22,
+        "_ZL26__cudaUnregisterBinaryUtilv": 22,
+        "_ZN3q4t5quant12_GLOBAL__N_110ExpertNameEiiPKcS3_": 2,
+        "_ZN3q4t5quant12_GLOBAL__N_13H2DEPKvPvmP11CUstream_st": 2,
+        "_ZNSt6vectorIbSaIbEE14_M_fill_insertESt13_Bit_iteratormb.isra.0": 2,
+        "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE12_M_constructIPcEEvT_S7_St20forward_iterator_tag.isra.0": 3,
+        "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6appendEPKcm.isra.0": 2,
+        "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6assignEPKc.isra.0": 5,
+        "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC2IS3_EEPKcRKS3_.constprop.0": 16,
+        "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEaSEOS4_.isra.0": 14,
+        "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEPKS5_RKS8_.isra.0": 7,
+        "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EERKS8_PKS5_.isra.0": 12
+      },
+      "covered_instruction_addresses": 297280,
+      "all_disassembled_addresses": 299750,
+      "uncovered_disassembly_addresses": 2470
+    },
+    "B": {
+      "function_rows": 1153,
+      "distinct_names": 1054,
+      "duplicate_names": {
+        "_ZL24__sti____cudaRegisterAllv": 23,
+        "_ZL26__cudaUnregisterBinaryUtilv": 23,
+        "_ZN3q4t5quant12_GLOBAL__N_110ExpertNameEiiPKcS3_": 2,
+        "_ZN3q4t5quant12_GLOBAL__N_13H2DEPKvPvmP11CUstream_st": 2,
+        "_ZNSt6vectorIbSaIbEE14_M_fill_insertESt13_Bit_iteratormb.isra.0": 2,
+        "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE12_M_constructIPcEEvT_S7_St20forward_iterator_tag.isra.0": 3,
+        "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6appendEPKcm.isra.0": 2,
+        "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6assignEPKc.isra.0": 5,
+        "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC2IS3_EEPKcRKS3_.constprop.0": 16,
+        "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEaSEOS4_.isra.0": 14,
+        "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEPKS5_RKS8_.isra.0": 7,
+        "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EERKS8_PKS5_.isra.0": 12
+      },
+      "covered_instruction_addresses": 297567,
+      "all_disassembled_addresses": 300050,
+      "uncovered_disassembly_addresses": 2483
+    }
+  },
+  "mnemonic_multiset_matched_instances": 1131,
+  "changed_groups": {
+    "_Z108__device_stub__ZN3q4t5model49_GLOBAL__N__a4d86fa5_16_hc_up_small_m_cu_d321225518HcUpFourRowsKernelEPKtS3_PtfPKtS0_Ptf": {
+      "A_count": 0,
+      "B_count": 1,
+      "A_unmatched": [],
+      "B_unmatched": [
+        {
+          "instance": 25,
+          "name": "_Z108__device_stub__ZN3q4t5model49_GLOBAL__N__a4d86fa5_16_hc_up_small_m_cu_d321225518HcUpFourRowsKernelEPKtS3_PtfPKtS0_Ptf",
+          "address": 412960,
+          "size": 368,
+          "binding": "t",
+          "mnemonic_sha256": "d8d948b4e73a30d9156898f8afacf621a648ceeb4c94e757ce5f7c782f1e62bc"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "_ZL24__sti____cudaRegisterAllv": {
+      "A_count": 22,
+      "B_count": 23,
+      "A_unmatched": [],
+      "B_unmatched": [
+        {
+          "instance": 168,
+          "name": "_ZL24__sti____cudaRegisterAllv",
+          "address": 34816,
+          "size": 112,
+          "binding": "t",
+          "mnemonic_sha256": "0ad3d562061da994d008b90415d7f2fe6ee4a630dc49ed1ff781de3005704a40"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "_ZL26__cudaUnregisterBinaryUtilv": {
+      "A_count": 22,
+      "B_count": 23,
+      "A_unmatched": [],
+      "B_unmatched": [
+        {
+          "instance": 190,
+          "name": "_ZL26__cudaUnregisterBinaryUtilv",
+          "address": 67552,
+          "size": 12,
+          "binding": "t",
+          "mnemonic_sha256": "8d6febfd79e17a7a675e4a00edc7a6409bc83b38646e8c1f6bbbbc0629866634"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "_ZN3q4t5model12HcUpFourRowsEPKtS2_PtfP11CUstream_st": {
+      "A_count": 0,
+      "B_count": 1,
+      "A_unmatched": [],
+      "B_unmatched": [
+        {
+          "instance": 336,
+          "name": "_ZN3q4t5model12HcUpFourRowsEPKtS2_PtfP11CUstream_st",
+          "address": 413328,
+          "size": 160,
+          "binding": "T",
+          "mnemonic_sha256": "9733b22870218fb8f9618a29eb2a9aafdafc9d50fc873f35c7c2d9222572b4e0"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "_ZN3q4t5model14Bf16SmallMGemmEPKtS2_PtiiifP11CUstream_st": {
+      "A_count": 1,
+      "B_count": 1,
+      "A_unmatched": [
+        {
+          "instance": 344,
+          "name": "_ZN3q4t5model14Bf16SmallMGemmEPKtS2_PtiiifP11CUstream_st",
+          "address": 407088,
+          "size": 1040,
+          "binding": "T",
+          "mnemonic_sha256": "627fcd0f292646542c6ddeb29b3fd41a8400513eecf89ce862447883e32eae20"
+        }
+      ],
+      "B_unmatched": [
+        {
+          "instance": 348,
+          "name": "_ZN3q4t5model14Bf16SmallMGemmEPKtS2_PtiiifP11CUstream_st",
+          "address": 411376,
+          "size": 1176,
+          "binding": "T",
+          "mnemonic_sha256": "8040c8432e6c1ffbea0a21640af3a1160da6261274e9e5266866ed509001a9bd"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "_ZN3q4t5model15SelectShortTopkEPKfPiS3_PKiiiiP11CUstream_st": {
+      "A_count": 1,
+      "B_count": 1,
+      "A_unmatched": [
+        {
+          "instance": 359,
+          "name": "_ZN3q4t5model15SelectShortTopkEPKfPiS3_PKiiiiP11CUstream_st",
+          "address": 298688,
+          "size": 672,
+          "binding": "T",
+          "mnemonic_sha256": "5eba419ed80deb4c1adf4f1b71c086e6418116be0ef4a28017f506d67626e666"
+        }
+      ],
+      "B_unmatched": [
+        {
+          "instance": 363,
+          "name": "_ZN3q4t5model15SelectShortTopkEPKfPiS3_PKiiiiP11CUstream_st",
+          "address": 298880,
+          "size": 672,
+          "binding": "T",
+          "mnemonic_sha256": "b1b7ec94ad61920b8a351c394a3e9abbdabc6046ac857a1d463023679adb9b87"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "_ZN3q4t5model22LinearAttentionForwardERKNS0_22LinearAttentionWeightsEPKtPtPfS6_iPvmP11CUstream_stS7_S6_iPKiiPKNS0_11RaggedBatchEiS7_S6_S6_i": {
+      "A_count": 1,
+      "B_count": 1,
+      "A_unmatched": [
+        {
+          "instance": 410,
+          "name": "_ZN3q4t5model22LinearAttentionForwardERKNS0_22LinearAttentionWeightsEPKtPtPfS6_iPvmP11CUstream_stS7_S6_iPKiiPKNS0_11RaggedBatchEiS7_S6_S6_i",
+          "address": 453708,
+          "size": 9164,
+          "binding": "T",
+          "mnemonic_sha256": "1af43b73dc65a66e8c205ea4d1e1349ef781a3cea2c646aa08bf071843a1eab5"
+        }
+      ],
+      "B_unmatched": [
+        {
+          "instance": 414,
+          "name": "_ZN3q4t5model22LinearAttentionForwardERKNS0_22LinearAttentionWeightsEPKtPtPfS6_iPvmP11CUstream_stS7_S6_iPKiiPKNS0_11RaggedBatchEiS7_S6_S6_i",
+          "address": 459084,
+          "size": 9164,
+          "binding": "T",
+          "mnemonic_sha256": "e788793230f56cea9c3922e65f2834642776ae9993a106b84968f294c7546618"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "_ZN3q4t5model49_GLOBAL__N__a4d86fa5_16_hc_up_small_m_cu_d321225518HcUpFourRowsKernelEPKtS3_Ptf": {
+      "A_count": 0,
+      "B_count": 1,
+      "A_unmatched": [],
+      "B_unmatched": [
+        {
+          "instance": 480,
+          "name": "_ZN3q4t5model49_GLOBAL__N__a4d86fa5_16_hc_up_small_m_cu_d321225518HcUpFourRowsKernelEPKtS3_Ptf",
+          "address": 412588,
+          "size": 368,
+          "binding": "T",
+          "mnemonic_sha256": "fc7af9d87f8a5b0a0c59a34f3e71b03d6e62f2da8b53d60a46f4993a7c9aa32f"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "_ZN3q4t5model50_GLOBAL__N__329a4654_17_full_attention_cu_b93d0e91L17PartialRopeKernelILi24EEEvPtiiiPKiS5_ifiS5_i": {
+      "A_count": 1,
+      "B_count": 1,
+      "A_unmatched": [
+        {
+          "instance": 496,
+          "name": "_ZN3q4t5model50_GLOBAL__N__329a4654_17_full_attention_cu_b93d0e91L17PartialRopeKernelILi24EEEvPtiiiPKiS5_ifiS5_i",
+          "address": 249568,
+          "size": 428,
+          "binding": "t",
+          "mnemonic_sha256": "aac8a56fee09e2dd1cb5724ea136d4481167b3eda00e2f461791bc6c12f4f160"
+        }
+      ],
+      "B_unmatched": [
+        {
+          "instance": 501,
+          "name": "_ZN3q4t5model50_GLOBAL__N__329a4654_17_full_attention_cu_b93d0e91L17PartialRopeKernelILi24EEEvPtiiiPKiS5_ifiS5_i",
+          "address": 253856,
+          "size": 428,
+          "binding": "t",
+          "mnemonic_sha256": "e4f30e2bf656dd008dbe1d7f5ba130ee96336f3908eb534800712256ba460e70"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "_ZN3q4t5quant12_GLOBAL__N_110ExpertNameEiiPKcS3_": {
+      "A_count": 2,
+      "B_count": 2,
+      "A_unmatched": [
+        {
+          "instance": 561,
+          "name": "_ZN3q4t5quant12_GLOBAL__N_110ExpertNameEiiPKcS3_",
+          "address": 563336,
+          "size": 6040,
+          "binding": "t",
+          "mnemonic_sha256": "f039ee2ec6e3a9bfe288b0979b54920edfd7405d41cc2382a58256d2cb157635"
+        }
+      ],
+      "B_unmatched": [
+        {
+          "instance": 566,
+          "name": "_ZN3q4t5quant12_GLOBAL__N_110ExpertNameEiiPKcS3_",
+          "address": 564616,
+          "size": 6040,
+          "binding": "t",
+          "mnemonic_sha256": "c3dd3238cad6725754c4c86d07e89ec2a6099f4a295c6a43c8cb4be2520d1ebb"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "_ZN3q4t6server10ChatServer17RunVisionPipelineERKSt6vectorINS0_10VisionItemESaIS3_EEPPtPiPS2_IiSaIiEEPS2_ISt5arrayIiLm3EESaISF_EEPNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE": {
+      "A_count": 1,
+      "B_count": 1,
+      "A_unmatched": [
+        {
+          "instance": 651,
+          "name": "_ZN3q4t6server10ChatServer17RunVisionPipelineERKSt6vectorINS0_10VisionItemESaIS3_EEPPtPiPS2_IiSaIiEEPS2_ISt5arrayIiLm3EESaISF_EEPNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE",
+          "address": 871272,
+          "size": 10544,
+          "binding": "T",
+          "mnemonic_sha256": "761d5392c171948d511d3b1ae25a394b0c549c6692ab151dfd46b0dcc3539e3d"
+        }
+      ],
+      "B_unmatched": [
+        {
+          "instance": 656,
+          "name": "_ZN3q4t6server10ChatServer17RunVisionPipelineERKSt6vectorINS0_10VisionItemESaIS3_EEPPtPiPS2_IiSaIiEEPS2_ISt5arrayIiLm3EESaISF_EEPNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE",
+          "address": 876648,
+          "size": 10544,
+          "binding": "T",
+          "mnemonic_sha256": "d999894cce8949f36d3cca4b84697a7dfe73f4b9863a4b9a56ab413a2b829d13"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "_ZN3q4t6server10ChatServer3RunEv": {
+      "A_count": 1,
+      "B_count": 1,
+      "A_unmatched": [
+        {
+          "instance": 653,
+          "name": "_ZN3q4t6server10ChatServer3RunEv",
+          "address": 755360,
+          "size": 4384,
+          "binding": "T",
+          "mnemonic_sha256": "3457d7808e84079ec64f2cdf6399611300c11385399937a711fcab83e8fd2426"
+        }
+      ],
+      "B_unmatched": [
+        {
+          "instance": 658,
+          "name": "_ZN3q4t6server10ChatServer3RunEv",
+          "address": 760736,
+          "size": 4384,
+          "binding": "T",
+          "mnemonic_sha256": "c773bbabc7c3d79b46fbe7860f300ffd830d33739b6c665d197b053f680e819a"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "_ZN3q4t6server12_GLOBAL__N_115AppendToolCallsERKNS_2io4JsonEbPNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE": {
+      "A_count": 1,
+      "B_count": 1,
+      "A_unmatched": [
+        {
+          "instance": 663,
+          "name": "_ZN3q4t6server12_GLOBAL__N_115AppendToolCallsERKNS_2io4JsonEbPNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE",
+          "address": 912580,
+          "size": 8012,
+          "binding": "t",
+          "mnemonic_sha256": "ca322e6036447b49232b72e42c6a4efb0082adb39f64f999e2c46c46b51911f9"
+        }
+      ],
+      "B_unmatched": [
+        {
+          "instance": 668,
+          "name": "_ZN3q4t6server12_GLOBAL__N_115AppendToolCallsERKNS_2io4JsonEbPNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE",
+          "address": 913860,
+          "size": 8012,
+          "binding": "t",
+          "mnemonic_sha256": "18015f9bcddf3b1f5becacaf33c3f198f190aff11627b3aeb0549a202f5479ce"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "_ZN3q4t6server6detail22ClientConnectionFailedEi": {
+      "A_count": 1,
+      "B_count": 1,
+      "A_unmatched": [
+        {
+          "instance": 688,
+          "name": "_ZN3q4t6server6detail22ClientConnectionFailedEi",
+          "address": 723616,
+          "size": 136,
+          "binding": "T",
+          "mnemonic_sha256": "a507a9828bff80e35dce63080def5b6bd16d73bc8fe591ebfc809c56aa77732e"
+        }
+      ],
+      "B_unmatched": [
+        {
+          "instance": 693,
+          "name": "_ZN3q4t6server6detail22ClientConnectionFailedEi",
+          "address": 728992,
+          "size": 136,
+          "binding": "T",
+          "mnemonic_sha256": "f071141d6675de6e3529da830be451bb12c48dddf331f235d2764273f1410089"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "_ZNK3q4t5quant12MoEResidency10ReadExpertEiiPNS1_10StatsDeltaEb": {
+      "A_count": 1,
+      "B_count": 1,
+      "A_unmatched": [
+        {
+          "instance": 783,
+          "name": "_ZNK3q4t5quant12MoEResidency10ReadExpertEiiPNS1_10StatsDeltaEb",
+          "address": 658400,
+          "size": 4488,
+          "binding": "T",
+          "mnemonic_sha256": "5d7689e6965b3831167ec75beb70ccdb469797e4d83f5e1c7aae62191e2d12e3"
+        }
+      ],
+      "B_unmatched": [
+        {
+          "instance": 788,
+          "name": "_ZNK3q4t5quant12MoEResidency10ReadExpertEiiPNS1_10StatsDeltaEb",
+          "address": 659680,
+          "size": 4488,
+          "binding": "T",
+          "mnemonic_sha256": "b2eda6ba12f59752f8cc292fd3b2cac28dbe963b1a697f7c9846430b80d27e1b"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "_ZZN3q4t5model51_GLOBAL__N__103f14c3_18_hyperconnection_cu_9e3d1aea20MaybeCaptureHcInjectEPKtS3_S3_iiibENKUlS3_PKcmE_clES3_S5_m": {
+      "A_count": 1,
+      "B_count": 1,
+      "A_unmatched": [
+        {
+          "instance": 1064,
+          "name": "_ZZN3q4t5model51_GLOBAL__N__103f14c3_18_hyperconnection_cu_9e3d1aea20MaybeCaptureHcInjectEPKtS3_S3_iiibENKUlS3_PKcmE_clES3_S5_m",
+          "address": 206960,
+          "size": 2284,
+          "binding": "t",
+          "mnemonic_sha256": "38c6ef49935bb77db34fb4a821ef8b1c72b0bbc8b88a487b7b41a38266154489"
+        }
+      ],
+      "B_unmatched": [
+        {
+          "instance": 1069,
+          "name": "_ZZN3q4t5model51_GLOBAL__N__103f14c3_18_hyperconnection_cu_9e3d1aea20MaybeCaptureHcInjectEPKtS3_S3_iiibENKUlS3_PKcmE_clES3_S5_m",
+          "address": 207152,
+          "size": 2284,
+          "binding": "t",
+          "mnemonic_sha256": "44187def98092e48149294f81ebab20926a0a24da811f446d9e6b01e0274b321"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "_ZZN3q4t5quant14LoadMoEWeightsERKNS_2io12WeightLoaderEiiiiPNS0_15MoEWeightLayoutEP11CUstream_stENKUlvE0_clEv": {
+      "A_count": 1,
+      "B_count": 1,
+      "A_unmatched": [
+        {
+          "instance": 1069,
+          "name": "_ZZN3q4t5quant14LoadMoEWeightsERKNS_2io12WeightLoaderEiiiiPNS0_15MoEWeightLayoutEP11CUstream_stENKUlvE0_clEv",
+          "address": 570316,
+          "size": 10236,
+          "binding": "t",
+          "mnemonic_sha256": "b2f74ecaca5253f0e11400d0f3ecd16f3e22d61c931124b0840e84ece7ad511d"
+        }
+      ],
+      "B_unmatched": [
+        {
+          "instance": 1074,
+          "name": "_ZZN3q4t5quant14LoadMoEWeightsERKNS_2io12WeightLoaderEiiiiPNS0_15MoEWeightLayoutEP11CUstream_stENKUlvE0_clEv",
+          "address": 571596,
+          "size": 10236,
+          "binding": "t",
+          "mnemonic_sha256": "6cca3db0efd04fabc667ad4337fbae35be7a988b4ce8408b63a6fa2ccdf9cf1f"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "e843419@0009_000000fb_2ae4": {
+      "A_count": 0,
+      "B_count": 1,
+      "A_unmatched": [],
+      "B_unmatched": [
+        {
+          "instance": 1103,
+          "name": "e843419@0009_000000fb_2ae4",
+          "address": 247824,
+          "size": 8,
+          "binding": "t",
+          "mnemonic_sha256": "d17f1c36386a71ae6827fd615a866b16a7b7770d91c97b4669b998081e03c4f2"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "e843419@000a_00000126_588": {
+      "A_count": 1,
+      "B_count": 0,
+      "A_unmatched": [
+        {
+          "instance": 1098,
+          "name": "e843419@000a_00000126_588",
+          "address": 286152,
+          "size": 8,
+          "binding": "t",
+          "mnemonic_sha256": "d17f1c36386a71ae6827fd615a866b16a7b7770d91c97b4669b998081e03c4f2"
+        }
+      ],
+      "B_unmatched": [],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "e843419@000e_00000177_3c8": {
+      "A_count": 0,
+      "B_count": 1,
+      "A_unmatched": [],
+      "B_unmatched": [
+        {
+          "instance": 1104,
+          "name": "e843419@000e_00000177_3c8",
+          "address": 299560,
+          "size": 8,
+          "binding": "t",
+          "mnemonic_sha256": "d17f1c36386a71ae6827fd615a866b16a7b7770d91c97b4669b998081e03c4f2"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "e843419@0017_0000026b_98a4": {
+      "A_count": 1,
+      "B_count": 0,
+      "A_unmatched": [
+        {
+          "instance": 1099,
+          "name": "e843419@0017_0000026b_98a4",
+          "address": 462880,
+          "size": 8,
+          "binding": "t",
+          "mnemonic_sha256": "d17f1c36386a71ae6827fd615a866b16a7b7770d91c97b4669b998081e03c4f2"
+        }
+      ],
+      "B_unmatched": [],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "e843419@0021_00000307_1c84": {
+      "A_count": 1,
+      "B_count": 0,
+      "A_unmatched": [
+        {
+          "instance": 1100,
+          "name": "e843419@0021_00000307_1c84",
+          "address": 586984,
+          "size": 8,
+          "binding": "t",
+          "mnemonic_sha256": "d17f1c36386a71ae6827fd615a866b16a7b7770d91c97b4669b998081e03c4f2"
+        }
+      ],
+      "B_unmatched": [],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "e843419@0022_00000316_4784": {
+      "A_count": 0,
+      "B_count": 1,
+      "A_unmatched": [],
+      "B_unmatched": [
+        {
+          "instance": 1105,
+          "name": "e843419@0022_00000316_4784",
+          "address": 588264,
+          "size": 8,
+          "binding": "t",
+          "mnemonic_sha256": "d17f1c36386a71ae6827fd615a866b16a7b7770d91c97b4669b998081e03c4f2"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "e843419@0025_00000379_7548": {
+      "A_count": 0,
+      "B_count": 1,
+      "A_unmatched": [],
+      "B_unmatched": [
+        {
+          "instance": 1106,
+          "name": "e843419@0025_00000379_7548",
+          "address": 688184,
+          "size": 8,
+          "binding": "t",
+          "mnemonic_sha256": "d17f1c36386a71ae6827fd615a866b16a7b7770d91c97b4669b998081e03c4f2"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "e843419@0029_000003f5_85c4": {
+      "A_count": 1,
+      "B_count": 0,
+      "A_unmatched": [
+        {
+          "instance": 1101,
+          "name": "e843419@0029_000003f5_85c4",
+          "address": 759752,
+          "size": 8,
+          "binding": "t",
+          "mnemonic_sha256": "d17f1c36386a71ae6827fd615a866b16a7b7770d91c97b4669b998081e03c4f2"
+        }
+      ],
+      "B_unmatched": [],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "e843419@002a_00000404_c4": {
+      "A_count": 0,
+      "B_count": 1,
+      "A_unmatched": [],
+      "B_unmatched": [
+        {
+          "instance": 1107,
+          "name": "e843419@002a_00000404_c4",
+          "address": 765128,
+          "size": 8,
+          "binding": "t",
+          "mnemonic_sha256": "d17f1c36386a71ae6827fd615a866b16a7b7770d91c97b4669b998081e03c4f2"
+        }
+      ],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "e843419@002f_000004bd_2268": {
+      "A_count": 1,
+      "B_count": 0,
+      "A_unmatched": [
+        {
+          "instance": 1102,
+          "name": "e843419@002f_000004bd_2268",
+          "address": 894200,
+          "size": 8,
+          "binding": "t",
+          "mnemonic_sha256": "d17f1c36386a71ae6827fd615a866b16a7b7770d91c97b4669b998081e03c4f2"
+        }
+      ],
+      "B_unmatched": [],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    },
+    "e843419@0030_000004d6_4808": {
+      "A_count": 1,
+      "B_count": 0,
+      "A_unmatched": [
+        {
+          "instance": 1103,
+          "name": "e843419@0030_000004d6_4808",
+          "address": 929496,
+          "size": 8,
+          "binding": "t",
+          "mnemonic_sha256": "d17f1c36386a71ae6827fd615a866b16a7b7770d91c97b4669b998081e03c4f2"
+        }
+      ],
+      "B_unmatched": [],
+      "pairing_limit": "no guessed pairing among ambiguous duplicate instances"
+    }
+  },
+  "newly_exposed_groups": [
+    "_Z108__device_stub__ZN3q4t5model49_GLOBAL__N__a4d86fa5_16_hc_up_small_m_cu_d321225518HcUpFourRowsKernelEPKtS3_PtfPKtS0_Ptf",
+    "_ZL24__sti____cudaRegisterAllv",
+    "_ZL26__cudaUnregisterBinaryUtilv",
+    "_ZN3q4t5model12HcUpFourRowsEPKtS2_PtfP11CUstream_st",
+    "_ZN3q4t5model49_GLOBAL__N__a4d86fa5_16_hc_up_small_m_cu_d321225518HcUpFourRowsKernelEPKtS3_Ptf",
+    "_ZN3q4t5quant12_GLOBAL__N_110ExpertNameEiiPKcS3_",
+    "e843419@0009_000000fb_2ae4",
+    "e843419@000a_00000126_588",
+    "e843419@000e_00000177_3c8",
+    "e843419@0017_0000026b_98a4",
+    "e843419@0021_00000307_1c84",
+    "e843419@0022_00000316_4784",
+    "e843419@0025_00000379_7548",
+    "e843419@0029_000003f5_85c4",
+    "e843419@002a_00000404_c4",
+    "e843419@002f_000004bd_2268",
+    "e843419@0030_000004d6_4808"
+  ],
+  "limits": [
+    "Mnemonic agreement ignores operands and addresses; not proof of semantic/CPU cost equality",
+    "Duplicate groups compared as multisets, without assuming ordinal pairing across added functions",
+    "Uncovered addresses include PLT, padding or zero-size symbols; not whole executable coverage",
+    "No static name-based claim of off reachability"
+  ],
+  "new_gpu_requests": 0
+}

@@ -1,0 +1,282 @@
+{
+  "new_ExpertName_difference": {
+    "A_address": "0x89888",
+    "B_address": "0x89d88",
+    "mnemonic_difference_index": 1503,
+    "old_thunk_intervention_already_covered": {
+      "symbol": "e843419@0021_00000307_1c84",
+      "thunk_va": 586984,
+      "site_va": 569348,
+      "file_offset": 569348,
+      "old_word": "0x14001139",
+      "new_word": "0xf9400381",
+      "resume_va": 569352
+    }
+  },
+  "off_Bf16SmallMGemm_paths": {
+    "A": {
+      "conditions": "all pointers non-null, M in {1,8192,8181}, valid stack canary; unsigned (M-2)>6",
+      "address": "0x63630",
+      "instructions_executed": 32,
+      "path": [
+        {
+          "address": "0x63630",
+          "assembly": "sub\tsp, sp, #0x150"
+        },
+        {
+          "address": "0x63634",
+          "assembly": "adrp\tx7, 3ef000 <__FRAME_END__+0x1f4c0>"
+        },
+        {
+          "address": "0x63638",
+          "assembly": "ldr\tx7, [x7, #3888]"
+        },
+        {
+          "address": "0x6363c",
+          "assembly": "stp\tx29, x30, [sp, #240]"
+        },
+        {
+          "address": "0x63640",
+          "assembly": "add\tx29, sp, #0xf0"
+        },
+        {
+          "address": "0x63644",
+          "assembly": "stp\tx23, x24, [sp, #288]"
+        },
+        {
+          "address": "0x63648",
+          "assembly": "mov\tx23, x0"
+        },
+        {
+          "address": "0x6364c",
+          "assembly": "cmp\tx23, #0x0"
+        },
+        {
+          "address": "0x63650",
+          "assembly": "ldr\tx0, [x7]"
+        },
+        {
+          "address": "0x63654",
+          "assembly": "str\tx0, [sp, #232]"
+        },
+        {
+          "address": "0x63658",
+          "assembly": "mov\tx0, #0x0                   \t// #0"
+        },
+        {
+          "address": "0x6365c",
+          "assembly": "ccmp\tx1, #0x0, #0x4, ne\t// ne = any"
+        },
+        {
+          "address": "0x63660",
+          "assembly": "ccmp\tx2, #0x0, #0x4, ne\t// ne = any"
+        },
+        {
+          "address": "0x63664",
+          "assembly": "b.eq\t636a0 <_ZN3q4t5model14Bf16SmallMGemmEPKtS2_PtiiifP11CUstream_st+0x70>  // b.none"
+        },
+        {
+          "address": "0x63668",
+          "assembly": "sub\tw0, w3, #0x2"
+        },
+        {
+          "address": "0x6366c",
+          "assembly": "stp\tx21, x22, [sp, #272]"
+        },
+        {
+          "address": "0x63670",
+          "assembly": "mov\tw22, w3"
+        },
+        {
+          "address": "0x63674",
+          "assembly": "cmp\tw0, #0x6"
+        },
+        {
+          "address": "0x63678",
+          "assembly": "b.hi\t6369c <_ZN3q4t5model14Bf16SmallMGemmEPKtS2_PtiiifP11CUstream_st+0x6c>  // b.pmore"
+        },
+        {
+          "address": "0x6369c",
+          "assembly": "ldp\tx21, x22, [sp, #272]"
+        },
+        {
+          "address": "0x636a0",
+          "assembly": "mov\tw0, #0x0                   \t// #0"
+        },
+        {
+          "address": "0x636a4",
+          "assembly": "adrp\tx1, 3ef000 <__FRAME_END__+0x1f4c0>"
+        },
+        {
+          "address": "0x636a8",
+          "assembly": "ldr\tx1, [x1, #3888]"
+        },
+        {
+          "address": "0x636ac",
+          "assembly": "ldr\tx3, [sp, #232]"
+        },
+        {
+          "address": "0x636b0",
+          "assembly": "ldr\tx2, [x1]"
+        },
+        {
+          "address": "0x636b4",
+          "assembly": "subs\tx3, x3, x2"
+        },
+        {
+          "address": "0x636b8",
+          "assembly": "mov\tx2, #0x0                   \t// #0"
+        },
+        {
+          "address": "0x636bc",
+          "assembly": "b.ne\t639c8 <_ZN3q4t5model14Bf16SmallMGemmEPKtS2_PtiiifP11CUstream_st+0x398>  // b.any"
+        },
+        {
+          "address": "0x636c0",
+          "assembly": "ldp\tx29, x30, [sp, #240]"
+        },
+        {
+          "address": "0x636c4",
+          "assembly": "ldp\tx23, x24, [sp, #288]"
+        },
+        {
+          "address": "0x636c8",
+          "assembly": "add\tsp, sp, #0x150"
+        },
+        {
+          "address": "0x636cc",
+          "assembly": "ret"
+        }
+      ],
+      "HC_comparison_reached": false,
+      "calls_on_path": 0
+    },
+    "B": {
+      "conditions": "all pointers non-null, M in {1,8192,8181}, valid stack canary; unsigned (M-2)>6",
+      "address": "0x646f0",
+      "instructions_executed": 29,
+      "path": [
+        {
+          "address": "0x646f0",
+          "assembly": "sub\tsp, sp, #0x150"
+        },
+        {
+          "address": "0x646f4",
+          "assembly": "cmp\tx0, #0x0"
+        },
+        {
+          "address": "0x646f8",
+          "assembly": "adrp\tx7, 3ef000 <__FRAME_END__+0x1bd50>"
+        },
+        {
+          "address": "0x646fc",
+          "assembly": "ldr\tx7, [x7, #3888]"
+        },
+        {
+          "address": "0x64700",
+          "assembly": "ccmp\tx1, #0x0, #0x4, ne\t// ne = any"
+        },
+        {
+          "address": "0x64704",
+          "assembly": "stp\tx29, x30, [sp, #240]"
+        },
+        {
+          "address": "0x64708",
+          "assembly": "add\tx29, sp, #0xf0"
+        },
+        {
+          "address": "0x6470c",
+          "assembly": "ccmp\tx2, #0x0, #0x4, ne\t// ne = any"
+        },
+        {
+          "address": "0x64710",
+          "assembly": "ldr\tx8, [x7]"
+        },
+        {
+          "address": "0x64714",
+          "assembly": "str\tx8, [sp, #232]"
+        },
+        {
+          "address": "0x64718",
+          "assembly": "mov\tx8, #0x0                   \t// #0"
+        },
+        {
+          "address": "0x6471c",
+          "assembly": "b.eq\t64758 <_ZN3q4t5model14Bf16SmallMGemmEPKtS2_PtiiifP11CUstream_st+0x68>  // b.none"
+        },
+        {
+          "address": "0x64720",
+          "assembly": "stp\tx21, x22, [sp, #272]"
+        },
+        {
+          "address": "0x64724",
+          "assembly": "mov\tw22, w3"
+        },
+        {
+          "address": "0x64728",
+          "assembly": "sub\tw3, w3, #0x2"
+        },
+        {
+          "address": "0x6472c",
+          "assembly": "cmp\tw3, #0x6"
+        },
+        {
+          "address": "0x64730",
+          "assembly": "b.hi\t64754 <_ZN3q4t5model14Bf16SmallMGemmEPKtS2_PtiiifP11CUstream_st+0x64>  // b.pmore"
+        },
+        {
+          "address": "0x64754",
+          "assembly": "ldp\tx21, x22, [sp, #272]"
+        },
+        {
+          "address": "0x64758",
+          "assembly": "mov\tw0, #0x0                   \t// #0"
+        },
+        {
+          "address": "0x6475c",
+          "assembly": "adrp\tx1, 3ef000 <__FRAME_END__+0x1bd50>"
+        },
+        {
+          "address": "0x64760",
+          "assembly": "ldr\tx1, [x1, #3888]"
+        },
+        {
+          "address": "0x64764",
+          "assembly": "ldr\tx3, [sp, #232]"
+        },
+        {
+          "address": "0x64768",
+          "assembly": "ldr\tx2, [x1]"
+        },
+        {
+          "address": "0x6476c",
+          "assembly": "subs\tx3, x3, x2"
+        },
+        {
+          "address": "0x64770",
+          "assembly": "mov\tx2, #0x0                   \t// #0"
+        },
+        {
+          "address": "0x64774",
+          "assembly": "b.ne\t64afc <_ZN3q4t5model14Bf16SmallMGemmEPKtS2_PtiiifP11CUstream_st+0x40c>  // b.any"
+        },
+        {
+          "address": "0x64778",
+          "assembly": "ldp\tx29, x30, [sp, #240]"
+        },
+        {
+          "address": "0x6477c",
+          "assembly": "add\tsp, sp, #0x150"
+        },
+        {
+          "address": "0x64780",
+          "assembly": "ret"
+        }
+      ],
+      "HC_comparison_reached": false,
+      "calls_on_path": 0
+    }
+  },
+  "interpretation": "HC is not called but compiled host early return paths differ: B executes three fewer instructions under these conditions. This is not proof of lower latency, identical cache behavior, or TTFT causality.",
+  "next": "operand-aware audit of remaining matched host instances, with address/relocation distinctions; no new GPU test from mnemonic counts alone"
+}

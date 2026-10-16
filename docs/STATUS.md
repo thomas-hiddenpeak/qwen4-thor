@@ -72,8 +72,10 @@ MODULE_LOADED观察器已实现，4项CPU合同及一次已知CUDA模块SHA校�
 A证据，仅修正校验后运行原计划B（guard COMPLETED），未重跑A。单次
 B off请求观察已完成：39次模块装载、16次匹配项目镜像，HC独有SHA未出现，
 输出/退出/guard通过。停止额外HC镜像装载解释；不使用本次计时。解析器
-不存在request_begin标记的假设已离线修正，未重跑GPU。下一步补齐按名称
-折叠同名符号造成的host指令差分覆盖，先枚举off可达真实差异。
+不存在request_begin标记的假设已离线修正，未重跑GPU。host实例审计已
+保留A1149/B1153函数行：新暴露ExpertName差异属于已测跳板。off小M
+提前返回A32/B29条指令且均不调用HC，不能据计数归因。下一步操作数
+感知差分；mnemonic多重集合匹配不等于全部host代码或缓存行为相同。
 八份服务器日志已显式纳入证据，避免通用忽略规则漏收。
 UCF analyzer的outputs重复哈希标注已修正，原始文本hash独立核对通过，
 读流量结论不变。不得继续普通ASLR或UCF计时。
