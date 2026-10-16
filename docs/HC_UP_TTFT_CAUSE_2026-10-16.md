@@ -1386,3 +1386,26 @@ libcupti与libcrypto.so.3，不要求额外安装开发包。
 不能代表请求期间从不装载，也不暴露GPU指令地址或证明TTFT因果。
 原NO_GO、数值要求与active目标保持，无生产修改或已通过测试重跑。
 证据：evidence/hc-up-module-observer-20261017/。
+
+## 原A/B启动期模块观察：均无装载事件（2026-10-17）
+
+冻结原A/B各一次到ready退出，不发送HTTP；静态cuobjdump重新提取确认
+22份公共镜像SHA完全一致，B唯一新增镜像含HcUpFourRowsKernel，匹配
+以确切SHA而非模块数量或名称猜测。原二进制/观察器身份在运行前核对。
+
+A正常到ready、容量正确、server退出0，观察器enabled=1/complete=0。
+初始driver错误地要求len(records)>0，因此阶段COMMAND_FAILED；该条件
+与“观察装载是否发生”的任务不符。保留失败协议、驱动及guard，独立复核
+A的零事件有效记录，不重跑A；后续仅移除非零假设、增加enabled唯一性
+校验，执行尚未运行的B。B同样ready/exit0、enabled=1/complete=0，单独
+guard COMPLETED。两条不伪装成连续同lease性能对照。
+
+结果限定为：在观察器启用的两次启动期间，没有MODULE_LOADED事件，
+HC独有SHA亦未出现。CUDA注册不等于本回调意义下已装载；不能从这一
+事实推断请求期间不会装载、GPU物理/虚拟代码地址相同或TTFT根因已清。
+前轮真实已知kernel校准证明该观察器能捕获模块，仍保留观察器影响边界。
+
+下一步冻结单次B off实际请求模块观察，补足ready之后的事件覆盖，不作
+A/B性能比较、不解释观察器下的TTFT；若HC仍不出现则不再追“额外HC
+设备镜像装载”解释。原NO_GO、数值合同与active目标保持，无生产改动。
+证据：evidence/hc-up-module-startup-20261017/。

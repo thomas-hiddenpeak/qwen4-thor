@@ -67,7 +67,10 @@ R238.727ms，交互+91.711/+5.350ms均低于2R477.454ms；原路径B−A
 MODULE_LOADED+cubin哈希，先确认未调用HC模块是否实际装载；该事实本身
 仍不足以归因，不重复旧注册性能对照。
 MODULE_LOADED观察器已实现，4项CPU合同及一次已知CUDA模块SHA校准
-通过；下一步原A/B各一次startup到ready观察，不发HTTP或计启动性能。
+通过。原A/B各一次startup到ready均enabled=1/complete=0，无模块装载
+事件；A正常退出后driver错误非零断言导致COMMAND_FAILED，保留并复用
+A证据，仅修正校验后运行原计划B（guard COMPLETED），未重跑A。下一步
+单次B off请求观察补ready后覆盖，不作性能对照；当前不证明请求期不装载。
 八份服务器日志已显式纳入证据，避免通用忽略规则漏收。
 UCF analyzer的outputs重复哈希标注已修正，原始文本hash独立核对通过，
 读流量结论不变。不得继续普通ASLR或UCF计时。

@@ -1,0 +1,8 @@
+{
+  "server_valid": true,
+  "modules_loaded": 0,
+  "driver_assertion_invalid": "required nonzero modules despite testing loading occurrence",
+  "original_stage_status": "COMMAND_FAILED retained",
+  "no_rerun_of_A": true,
+  "request_count": 0
+}

@@ -1,0 +1,17 @@
+{
+  "status": "COMMAND_FAILED",
+  "command": [
+    "python3",
+    ".q4t-work/hc-up-module-startup-20261017/run.py"
+  ],
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 1,
+  "finished": {
+    "utc": "2026-10-16T21:07:20.150445+00:00",
+    "monotonic": 374922.667336274,
+    "pid": 1251915
+  }
+}
