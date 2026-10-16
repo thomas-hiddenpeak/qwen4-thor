@@ -1,0 +1,57 @@
+import hashlib,json,os,subprocess
+from pathlib import Path
+from parse_reports import parse
+root=Path('/home/rm01/models/dev/qwen4-thor');out=Path(__file__).resolve().parent
+protocol=json.loads((out/'protocol.json').read_text());identity=json.loads((out/'derivation.json').read_text())
+base=root/'.q4t-work/mtp-numerical-closure-20261016/http/off'
+resume=json.loads((out/'resume-protocol.json').read_text())
+for path,expected in resume['raw_identity'].items():
+ assert hashlib.sha256((root/path).read_bytes()).hexdigest()==expected['sha256'],path
+for name in resume['reuse']:
+ d=out/'http'/name
+ ex=json.loads((d/'exit.json').read_text())
+ assert ex['server']==0 and ex['completed']==1 and ex['http_output_checks_passed'] and not ex['failure'] and not ex['cleanup_failure']
+ parse((d/'server.log').read_text())
+for name in resume['execute_once']:assert not (out/'http'/name).exists()
+env=os.environ.copy()
+# Freeze diagnostics independently from a caller's shell experiments.
+for key in list(env):
+ if key.startswith('Q4T_') or key=='LD_PRELOAD':env.pop(key)
+env['Q4T_LAYER_TIMING']='1'
+env['Q4T_LAYER_SUBTIMING']='1'
+assert json.loads((out/'environment.json').read_text())=={k:v for k,v in env.items() if k.startswith(('Q4T_','CUDA_')) or k=='LD_PRELOAD'}
+(out/'environment-resume.json').write_text(json.dumps({k:v for k,v in env.items() if k.startswith(('Q4T_','CUDA_')) or k=='LD_PRELOAD'},indent=2)+'\n')
+import threading,time
+stop=threading.Event()
+paths=[Path('/proc/meminfo'),Path('/proc/vmstat'),Path('/proc/pressure/cpu'),Path('/proc/pressure/memory'),Path('/proc/pressure/io')]
+paths+=list(Path('/sys/class/devfreq').glob('*/cur_freq'))
+paths+=list(Path('/sys/class/thermal').glob('thermal_zone*/temp'))
+paths+=list(Path('/sys/devices/system/cpu/cpufreq').glob('policy*/scaling_cur_freq'))
+def telemetry():
+ with (out/'telemetry-resume.jsonl').open('w') as f:
+  while not stop.is_set():
+   snapshot={}
+   for p in paths:
+    try:snapshot[str(p)]=p.read_text()
+    except OSError as e:snapshot[str(p)]={'error':str(e)}
+   f.write(json.dumps({'monotonic':time.monotonic(),'wall':time.time(),'values':snapshot})+'\n');f.flush();stop.wait(5)
+t=threading.Thread(target=telemetry,daemon=True);t.start()
+try:
+ rows=[]
+ for index,variant in list(enumerate(protocol['order']))[2:]:
+  binary=out/variant/'q4t';expected=identity['variants'][variant]['sha256']
+  assert hashlib.sha256(binary.read_bytes()).hexdigest()==expected
+  name=f'{index+1:02}-{variant}';dest=out/'http'/name
+  assert not dest.exists(), 'Never overwrite or repeat a completed request'
+  cmd=[str(root/'tools/evalscope/.venv/bin/python3'),'tools/evalscope/run_acceptance.py','--binary',str(binary),'--mode','performance','--perf-lengths','204800','--perf-repeats','1','--fixtures',str(base),'--reference',str(base/'results.json'),'--output',str(dest),'--model-dir','/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream','--startup-timeout','300','--allow-unqualified-binary','--port','8730']
+  with (out/(name+'-driver.log')).open('w') as f:rc=subprocess.run(cmd,cwd=root,env=env,stdout=f,stderr=subprocess.STDOUT).returncode
+  (out/(name+'-exit.json')).write_text(json.dumps({'command':cmd,'returncode':rc},indent=2)+'\n')
+  if rc:raise SystemExit(rc)
+  parse((dest/'server.log').read_text())
+  (dest/'timing-coverage.json').write_text(json.dumps({'passed':True,'families':['layer-timing','sub-timing','hc-mix-subtiming'],'prefill_chunks':25})+'\n')
+  row=json.loads((dest/'results.json').read_text())[0]
+  rows.append({'name':name,'variant':variant,'binary_sha256':expected,'metrics':row['metrics'][0],'output':row['outputs'][0],'prompt':row['prompt_sha256']})
+  (out/'observations-resumed.json').write_text(json.dumps(rows,indent=2)+'\n');print(json.dumps(rows[-1]),flush=True)
+ print('Two pending requests completed; original two preserved; run offline sub-operation interval audit.',flush=True)
+finally:
+ stop.set();t.join()
