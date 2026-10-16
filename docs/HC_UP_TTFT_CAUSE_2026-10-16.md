@@ -2261,3 +2261,22 @@ evidence/hc-up-causal-handoff-20261017/README.md、goal-audit.md。
 才有依据恢复新的机制实验；厂商反馈是可能入口而非唯一理论路径。
 不声明问题原则上不可解，也不修改目标或接受门槛。本轮仅审计/交接，
 未新增GPU/HTTP请求、未改生产代码。目标未完成，HC仍NO_GO。
+
+## 原探针main前初始化核对：未加载CUDA driver（2026-10-17）
+
+交接问题中的静态初始化假设仍可本机核实，因此没有将所有后续工作
+直接归为外部阻塞。执行前冻结一次原v2二进制GDB启动检查，SHA与
+已归档一致；ASLR保持开启，cuInit pending断点，main临时断点，
+到main后只读取共享库/进程映射，随后终止此自有诊断子进程。
+
+实际未命中cuInit，main前libcuda未加载、映射列表为空，未执行任何
+kernel/CUPTI主函数调用。guard COMPLETED，源码/二进制未修改。
+这次启动证据不支持“nvcc静态初始化使CUDA先于main启动、导致
+latency开关过晚”的解释；不证明CUPTI内部其他先决条件满足，也
+不解释submitted为0。证据evidence/hc-up-cupti-init-order-20261017/，
+最小交接README同步补充观测，未对外发送。
+
+本轮是定向初始化审计，非模型采样或时间戳采集重试；没有放宽门禁。
+剩余submitted支持/内部初始化问题仍需明确机制或支持依据，不继续
+切换参数猜测。目标active，TTFT因果解释、修复及验收仍未完成，
+HC NO_GO保持。

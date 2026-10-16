@@ -54,3 +54,12 @@ This is a diagnostic-observability question, not a claim that CUPTI caused the
 application regression. Original unprofiled HTTP comparisons did not use this
 probe. Resolving this issue would enable a possible future causal design; it
 would not itself establish the old regression's cause or accept the candidate.
+
+## Follow-up initialization observation
+
+One GDB startup of the identical binary, with ASLR retained, stopped at main
+before its first CUPTI call. A pending cuInit breakpoint was never hit and
+/proc mappings contained no libcuda; the child was killed at that point without
+kernel execution. See ../hc-up-cupti-init-order-20261017/analysis.json and raw
+output. This does not support pre-main CUDA driver initialization as the cause;
+requirements internal to CUPTI initialization remain an open support question.

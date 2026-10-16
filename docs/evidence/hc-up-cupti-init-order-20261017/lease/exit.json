@@ -1,0 +1,23 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "gdb",
+    "-q",
+    "-nx",
+    "-batch",
+    "-x",
+    ".q4t-work/hc-up-cupti-init-order-20261017/check.gdb",
+    ".q4t-work/hc-up-submit-timestamps-20261017-v2/check"
+  ],
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "external_lease": false,
+  "finished": {
+    "utc": "2026-10-16T23:40:01.761729+00:00",
+    "monotonic": 384084.278616507,
+    "pid": 1295632
+  }
+}

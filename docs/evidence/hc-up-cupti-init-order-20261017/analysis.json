@@ -1,0 +1,11 @@
+{
+  "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-submit-timestamps-20261017-v2/check",
+  "sha256": "814bb71fed5409291d3c7e5a1a6c37ffef6471dad503b2e7b9a8a7466b57ec55",
+  "unchanged_from_v2": true,
+  "stopped_at_main": true,
+  "pre_main_cuInit_breakpoint_hit": false,
+  "libcuda_mappings_at_main": [],
+  "no_kernel_execution": true,
+  "guard_status": "COMPLETED",
+  "limitation": "One debugger-observed startup; not proof of all CUPTI internal initialization requirements or submitted-field support."
+}
