@@ -29,11 +29,6 @@
 
 namespace q4t {
 namespace model {
-
-// Fixed M=4 HC up specialization; other shapes retain their original kernel.
-bool HcUpFourRows(const uint16_t* x, const uint16_t* w, uint16_t* y,
-                 float alpha, cudaStream_t stream);
-
 namespace {
 
 // f32x2 SIMD FMA: 2 FMAs per instruction on SM110a (1.97x scalar
@@ -260,8 +255,6 @@ bool Bf16SmallMGemm(const uint16_t* x, const uint16_t* w, uint16_t* y, int M,
                     int N, int K, float alpha, cudaStream_t stream) {
   if (x == nullptr || w == nullptr || y == nullptr) return false;
   if (!Bf16SmallMShapeRouted(M, N, K)) return false;
-  if (M == 4 && N == 10240 && K == 320)
-    return HcUpFourRows(x, w, y, alpha, stream);
   // Scattered variant for every routed shape: it is bit-identical to
   // Bf16Gev per row for all MAXM (the T-path GEMV-alignment contract), and
   // the v2 bench shows it ties the KSplit variant on the small-N / large-K

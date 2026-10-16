@@ -183,7 +183,6 @@ add_library(q4t_model STATIC
   src/model/gemv.cu
   src/model/gemv_hc_inject.cu
   src/model/small_m_gemm.cu
-  src/model/hc_up_small_m.cu
   src/mtp/moe_bf16.cu
   src/mtp/mtp.cu
   src/vision/vision.cu

@@ -1,0 +1,442 @@
+{
+  "baseline_commit": "28a3783350b0c4c3d73fd3d483b5eebe881d2bdb",
+  "candidate_runtime_commit": "81c3335",
+  "binary_sha256": "f01a0ee63f626c352f66677952368d43db02c9231576a2b8ba1ca33a915ce573",
+  "quality": {
+    "on": {
+      "count": 11,
+      "exact": 11,
+      "length": 11
+    }
+  },
+  "performance": {
+    "on": [
+      {
+        "length": 1024,
+        "baseline_decode_tps": 34.52289695122416,
+        "candidate_decode_tps": 34.81974576977902,
+        "gain_percent": 0.8598606860086511,
+        "baseline_ttft": 0.9549070290134599,
+        "candidate_ttft": 0.963159105333034,
+        "same_outputs": true,
+        "same_prompt": true,
+        "deterministic": true,
+        "decode_clear_regression": false,
+        "ttft_clear_regression": false,
+        "baseline_metrics": [
+          {
+            "ttft": 1.063480229000561,
+            "decode_tps": 34.52141251466303
+          },
+          {
+            "ttft": 0.9024458950152621,
+            "decode_tps": 34.498310221036974
+          },
+          {
+            "ttft": 0.8987949630245566,
+            "decode_tps": 34.549005434642744
+          }
+        ],
+        "candidate_metrics": [
+          {
+            "ttft": 1.0818084169877693,
+            "decode_tps": 34.858554289003884
+          },
+          {
+            "ttft": 0.9044139260076918,
+            "decode_tps": 34.888751019576375
+          },
+          {
+            "ttft": 0.9032549730036408,
+            "decode_tps": 34.71244338084751
+          }
+        ]
+      },
+      {
+        "length": 4096,
+        "baseline_decode_tps": 35.463520021810496,
+        "candidate_decode_tps": 35.781110072743445,
+        "gain_percent": 0.895540123308769,
+        "baseline_ttft": 2.9288574466481805,
+        "candidate_ttft": 2.931959338990661,
+        "same_outputs": true,
+        "same_prompt": true,
+        "deterministic": true,
+        "decode_clear_regression": false,
+        "ttft_clear_regression": false,
+        "baseline_metrics": [
+          {
+            "ttft": 2.9568097859737463,
+            "decode_tps": 35.467172348475266
+          },
+          {
+            "ttft": 2.912987030984368,
+            "decode_tps": 35.449113269588736
+          },
+          {
+            "ttft": 2.916775522986427,
+            "decode_tps": 35.47428394455936
+          }
+        ],
+        "candidate_metrics": [
+          {
+            "ttft": 2.960857603000477,
+            "decode_tps": 35.74357706510917
+          },
+          {
+            "ttft": 2.9191906380001456,
+            "decode_tps": 35.80180003034907
+          },
+          {
+            "ttft": 2.9158297759713605,
+            "decode_tps": 35.798012472218936
+          }
+        ]
+      },
+      {
+        "length": 8192,
+        "baseline_decode_tps": 37.38455352069662,
+        "candidate_decode_tps": 37.752366419514246,
+        "gain_percent": 0.9838632915971646,
+        "baseline_ttft": 5.618609219653687,
+        "candidate_ttft": 5.60838291667945,
+        "same_outputs": true,
+        "same_prompt": true,
+        "deterministic": true,
+        "decode_clear_regression": false,
+        "ttft_clear_regression": false,
+        "baseline_metrics": [
+          {
+            "ttft": 5.633046014991123,
+            "decode_tps": 37.3106626144541
+          },
+          {
+            "ttft": 5.610536251973826,
+            "decode_tps": 37.390845103860606
+          },
+          {
+            "ttft": 5.612245391996112,
+            "decode_tps": 37.452423228336535
+          }
+        ],
+        "candidate_metrics": [
+          {
+            "ttft": 5.616865113028325,
+            "decode_tps": 37.707630842086935
+          },
+          {
+            "ttft": 5.595829394005705,
+            "decode_tps": 37.775363562669796
+          },
+          {
+            "ttft": 5.612454243004322,
+            "decode_tps": 37.77418452952663
+          }
+        ]
+      },
+      {
+        "length": 45056,
+        "baseline_decode_tps": 35.887465267024965,
+        "candidate_decode_tps": 36.114489522523705,
+        "gain_percent": 0.6326004185849943,
+        "baseline_ttft": 31.898413046690013,
+        "candidate_ttft": 31.87533739566182,
+        "same_outputs": true,
+        "same_prompt": true,
+        "deterministic": true,
+        "decode_clear_regression": false,
+        "ttft_clear_regression": false,
+        "baseline_metrics": [
+          {
+            "ttft": 31.871076050039846,
+            "decode_tps": 35.85022563765202
+          },
+          {
+            "ttft": 31.905327940010466,
+            "decode_tps": 35.907222695070516
+          },
+          {
+            "ttft": 31.91883515001973,
+            "decode_tps": 35.90500559127542
+          }
+        ],
+        "candidate_metrics": [
+          {
+            "ttft": 31.841599821986165,
+            "decode_tps": 36.11985825091571
+          },
+          {
+            "ttft": 31.878632934007328,
+            "decode_tps": 36.11141520188387
+          },
+          {
+            "ttft": 31.90577943099197,
+            "decode_tps": 36.11219632011389
+          }
+        ]
+      },
+      {
+        "length": 204800,
+        "baseline_decode_tps": 33.16783188449248,
+        "candidate_decode_tps": 33.43918555880041,
+        "gain_percent": 0.8181230393741856,
+        "baseline_ttft": 166.96847433631774,
+        "candidate_ttft": 166.90703510531844,
+        "same_outputs": true,
+        "same_prompt": true,
+        "deterministic": true,
+        "decode_clear_regression": false,
+        "ttft_clear_regression": false,
+        "baseline_metrics": [
+          {
+            "ttft": 166.94584991398733,
+            "decode_tps": 33.11201481636023
+          },
+          {
+            "ttft": 166.9629626480164,
+            "decode_tps": 33.2036842788962
+          },
+          {
+            "ttft": 166.9966104469495,
+            "decode_tps": 33.187941546797035
+          }
+        ],
+        "candidate_metrics": [
+          {
+            "ttft": 166.79396192997228,
+            "decode_tps": 33.3974949152207
+          },
+          {
+            "ttft": 166.97436498699244,
+            "decode_tps": 33.45360709268636
+          },
+          {
+            "ttft": 166.95277839899063,
+            "decode_tps": 33.46653527950011
+          }
+        ]
+      }
+    ],
+    "off": [
+      {
+        "length": 1024,
+        "baseline_decode_tps": 18.638713451207252,
+        "candidate_decode_tps": 18.60581921660031,
+        "gain_percent": -0.17648339673794755,
+        "baseline_ttft": 0.7851482353483638,
+        "candidate_ttft": 0.7871792823037443,
+        "same_outputs": true,
+        "same_prompt": true,
+        "deterministic": true,
+        "decode_clear_regression": false,
+        "ttft_clear_regression": false,
+        "baseline_metrics": [
+          {
+            "ttft": 0.8515583330299705,
+            "decode_tps": 18.60823380695568
+          },
+          {
+            "ttft": 0.749646431999281,
+            "decode_tps": 18.663699797247983
+          },
+          {
+            "ttft": 0.7542399410158396,
+            "decode_tps": 18.644291793950387
+          }
+        ],
+        "candidate_metrics": [
+          {
+            "ttft": 0.8609505519852974,
+            "decode_tps": 18.57070855489885
+          },
+          {
+            "ttft": 0.7504233059589751,
+            "decode_tps": 18.610729206638172
+          },
+          {
+            "ttft": 0.7501639889669605,
+            "decode_tps": 18.63613688696838
+          }
+        ]
+      },
+      {
+        "length": 4096,
+        "baseline_decode_tps": 17.87838809082476,
+        "candidate_decode_tps": 17.86573398816156,
+        "gain_percent": -0.07077876707294317,
+        "baseline_ttft": 2.610504198994022,
+        "candidate_ttft": 2.608420228663211,
+        "same_outputs": true,
+        "same_prompt": true,
+        "deterministic": true,
+        "decode_clear_regression": false,
+        "ttft_clear_regression": false,
+        "baseline_metrics": [
+          {
+            "ttft": 2.611007086990867,
+            "decode_tps": 17.864970194905883
+          },
+          {
+            "ttft": 2.61026355298236,
+            "decode_tps": 17.89982491940678
+          },
+          {
+            "ttft": 2.6102419570088387,
+            "decode_tps": 17.87040847183908
+          }
+        ],
+        "candidate_metrics": [
+          {
+            "ttft": 2.609609724022448,
+            "decode_tps": 17.85746852336561
+          },
+          {
+            "ttft": 2.6042329909978434,
+            "decode_tps": 17.882933837154187
+          },
+          {
+            "ttft": 2.6114179709693417,
+            "decode_tps": 17.856824417938306
+          }
+        ]
+      },
+      {
+        "length": 8192,
+        "baseline_decode_tps": 18.14133580199842,
+        "candidate_decode_tps": 18.118912906001984,
+        "gain_percent": -0.12360112971374626,
+        "baseline_ttft": 5.064953156999157,
+        "candidate_ttft": 5.074201853014529,
+        "same_outputs": true,
+        "same_prompt": true,
+        "deterministic": true,
+        "decode_clear_regression": false,
+        "ttft_clear_regression": false,
+        "baseline_metrics": [
+          {
+            "ttft": 5.061020768014714,
+            "decode_tps": 18.112932087206897
+          },
+          {
+            "ttft": 5.073552298010327,
+            "decode_tps": 18.12735535112657
+          },
+          {
+            "ttft": 5.06028640497243,
+            "decode_tps": 18.183874805955835
+          }
+        ],
+        "candidate_metrics": [
+          {
+            "ttft": 5.077901412034407,
+            "decode_tps": 18.06563654941611
+          },
+          {
+            "ttft": 5.079805593006313,
+            "decode_tps": 18.149140635347266
+          },
+          {
+            "ttft": 5.064898554002866,
+            "decode_tps": 18.14219888054475
+          }
+        ]
+      },
+      {
+        "length": 45056,
+        "baseline_decode_tps": 17.873645826305687,
+        "candidate_decode_tps": 17.860317528168494,
+        "gain_percent": -0.07456955490063866,
+        "baseline_ttft": 30.31090835132636,
+        "candidate_ttft": 30.310061521692358,
+        "same_outputs": true,
+        "same_prompt": true,
+        "deterministic": true,
+        "decode_clear_regression": false,
+        "ttft_clear_regression": false,
+        "baseline_metrics": [
+          {
+            "ttft": 30.284467345976736,
+            "decode_tps": 17.858562830487337
+          },
+          {
+            "ttft": 30.331825264031067,
+            "decode_tps": 17.857780753839503
+          },
+          {
+            "ttft": 30.31643244397128,
+            "decode_tps": 17.90467450059495
+          }
+        ],
+        "candidate_metrics": [
+          {
+            "ttft": 30.295855064003263,
+            "decode_tps": 17.855845578675904
+          },
+          {
+            "ttft": 30.290870144031942,
+            "decode_tps": 17.85692181521817
+          },
+          {
+            "ttft": 30.343459357041866,
+            "decode_tps": 17.86819042521027
+          }
+        ]
+      },
+      {
+        "length": 204800,
+        "baseline_decode_tps": 17.14508756027426,
+        "candidate_decode_tps": 17.144909935092667,
+        "gain_percent": -0.0010360120994867827,
+        "baseline_ttft": 158.89032303066537,
+        "candidate_ttft": 159.1368785786908,
+        "same_outputs": true,
+        "same_prompt": true,
+        "deterministic": true,
+        "decode_clear_regression": false,
+        "ttft_clear_regression": true,
+        "baseline_metrics": [
+          {
+            "ttft": 158.7158447339898,
+            "decode_tps": 17.155850610468956
+          },
+          {
+            "ttft": 158.9688982630032,
+            "decode_tps": 17.158801798254053
+          },
+          {
+            "ttft": 158.98622609500308,
+            "decode_tps": 17.120662830540702
+          }
+        ],
+        "candidate_metrics": [
+          {
+            "ttft": 158.9878648740123,
+            "decode_tps": 17.132210619367907
+          },
+          {
+            "ttft": 159.20891049603233,
+            "decode_tps": 17.152591143190875
+          },
+          {
+            "ttft": 159.2138603660278,
+            "decode_tps": 17.149942372610536
+          }
+        ]
+      }
+    ]
+  },
+  "numeric": {
+    "affected": "pending",
+    "numerics": "pending",
+    "diagnostic": "pending"
+  },
+  "reused": [
+    "model_prefill_batch: M3/5/7/15, new specialization not entered",
+    "PLE independent ownership contracts: implementation unchanged"
+  ],
+  "on_geomean_gain_percent": 0.837930389737851,
+  "off_geomean_gain_percent": -0.08931091552435433,
+  "accepted": false,
+  "acceptance_note": "Frozen gate failed. Does not establish that HC up caused the TTFT difference. No extra baseline repeats, no threshold changes. Quality off, numeric tests and diagnostic were not run.",
+  "decision": "NO_GO: off 200K TTFT adverse non-overlapping range"
+}
