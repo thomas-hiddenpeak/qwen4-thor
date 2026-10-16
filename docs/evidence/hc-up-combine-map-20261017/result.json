@@ -1,0 +1,272 @@
+{
+  "source_sha256": "ff7f806f4a5b8f47524fdb2fea91c9f5685a29de7d1799aa7a2d79d2347c3c87",
+  "source_code_sha256": {
+    "src/model/model.cu": "b87696cefcd3c1d6c4da39cca0fd7794688392516387841bf6d9c3dd19595302",
+    "src/model/decoder_layer.cu": "4d8e53e7d0a031dbdba68b7a5558f3baf93061a92c11312809790ef98170b15d",
+    "src/model/hyperconnection.cu": "517e1bd367bec26227d52322cb2c37fe32034f3194d99aa3bc5b20839159661c",
+    "tools/evalscope/scratch_layout_probe.cpp": "fec4f7ed76d3db3471e3727e68cb26d40e9bde46340c7e1ae0f4976465def5d3"
+  },
+  "mapping_method": "unique complete ordered 12-allocation suffix plus following workspace allocation, matched source LoadModel order; no size-only lookup",
+  "allocations": {
+    "A": {
+      "d_ids": {
+        "id": 1527,
+        "bytes": 32768,
+        "pointer_hex": "0xffe31e3c1000",
+        "pointer": 281350929911808,
+        "mod_2MiB": 1839104
+      },
+      "d_positions": {
+        "id": 1528,
+        "bytes": 32768,
+        "pointer_hex": "0xffe31e3c9000",
+        "pointer": 281350929944576,
+        "mod_2MiB": 1871872
+      },
+      "d_seq_id": {
+        "id": 1529,
+        "bytes": 4,
+        "pointer_hex": "0xffe5199ff800",
+        "pointer": 281359442507776,
+        "mod_2MiB": 2095104
+      },
+      "d_token_seq_id": {
+        "id": 1530,
+        "bytes": 32768,
+        "pointer_hex": "0xffe31e3d1000",
+        "pointer": 281350929977344,
+        "mod_2MiB": 1904640
+      },
+      "d_ragged_seq_offset": {
+        "id": 1531,
+        "bytes": 8,
+        "pointer_hex": "0xffe5199ffa00",
+        "pointer": 281359442508288,
+        "mod_2MiB": 2095616
+      },
+      "d_ragged_token_local": {
+        "id": 1532,
+        "bytes": 32768,
+        "pointer_hex": "0xffe31e3d9000",
+        "pointer": 281350930010112,
+        "mod_2MiB": 1937408
+      },
+      "d_rope_pos": {
+        "id": 1533,
+        "bytes": 2506752,
+        "pointer_hex": "0xffe23fc00000",
+        "pointer": 281347197239296,
+        "mod_2MiB": 0
+      },
+      "d_emb": {
+        "id": 1534,
+        "bytes": 41943040,
+        "pointer_hex": "0xffe278400000",
+        "pointer": 281348145152000,
+        "mod_2MiB": 0
+      },
+      "d_img_pos": {
+        "id": 1535,
+        "bytes": 32768,
+        "pointer_hex": "0xffe31e3e1000",
+        "pointer": 281350930042880,
+        "mod_2MiB": 1970176
+      },
+      "d_trunk": {
+        "id": 1536,
+        "bytes": 167772160,
+        "pointer_hex": "0xfffd55a00000",
+        "pointer": 281463528357888,
+        "mod_2MiB": 0
+      },
+      "d_trunk2": {
+        "id": 1537,
+        "bytes": 167772160,
+        "pointer_hex": "0x32a800000",
+        "pointer": 13597933568,
+        "mod_2MiB": 0
+      },
+      "d_ple_emb": {
+        "id": 1538,
+        "bytes": 41943040,
+        "pointer_hex": "0xffe27ac00000",
+        "pointer": 281348187095040,
+        "mod_2MiB": 0
+      },
+      "d_ws": {
+        "id": 1539,
+        "bytes": 2348023808,
+        "pointer_hex": "0xffe120000000",
+        "pointer": 281342369595392,
+        "mod_2MiB": 0
+      }
+    },
+    "B": {
+      "d_ids": {
+        "id": 1527,
+        "bytes": 32768,
+        "pointer_hex": "0xffe31e3c1000",
+        "pointer": 281350929911808,
+        "mod_2MiB": 1839104
+      },
+      "d_positions": {
+        "id": 1528,
+        "bytes": 32768,
+        "pointer_hex": "0xffe31e3c9000",
+        "pointer": 281350929944576,
+        "mod_2MiB": 1871872
+      },
+      "d_seq_id": {
+        "id": 1529,
+        "bytes": 4,
+        "pointer_hex": "0xffe5199ff800",
+        "pointer": 281359442507776,
+        "mod_2MiB": 2095104
+      },
+      "d_token_seq_id": {
+        "id": 1530,
+        "bytes": 32768,
+        "pointer_hex": "0xffe31e3d1000",
+        "pointer": 281350929977344,
+        "mod_2MiB": 1904640
+      },
+      "d_ragged_seq_offset": {
+        "id": 1531,
+        "bytes": 8,
+        "pointer_hex": "0xffe5199ffa00",
+        "pointer": 281359442508288,
+        "mod_2MiB": 2095616
+      },
+      "d_ragged_token_local": {
+        "id": 1532,
+        "bytes": 32768,
+        "pointer_hex": "0xffe31e3d9000",
+        "pointer": 281350930010112,
+        "mod_2MiB": 1937408
+      },
+      "d_rope_pos": {
+        "id": 1533,
+        "bytes": 2506752,
+        "pointer_hex": "0xffe23fc00000",
+        "pointer": 281347197239296,
+        "mod_2MiB": 0
+      },
+      "d_emb": {
+        "id": 1534,
+        "bytes": 41943040,
+        "pointer_hex": "0xffe278400000",
+        "pointer": 281348145152000,
+        "mod_2MiB": 0
+      },
+      "d_img_pos": {
+        "id": 1535,
+        "bytes": 32768,
+        "pointer_hex": "0xffe31e3e1000",
+        "pointer": 281350930042880,
+        "mod_2MiB": 1970176
+      },
+      "d_trunk": {
+        "id": 1536,
+        "bytes": 167772160,
+        "pointer_hex": "0xfffd35a00000",
+        "pointer": 281462991486976,
+        "mod_2MiB": 0
+      },
+      "d_trunk2": {
+        "id": 1537,
+        "bytes": 167772160,
+        "pointer_hex": "0x32a800000",
+        "pointer": 13597933568,
+        "mod_2MiB": 0
+      },
+      "d_ple_emb": {
+        "id": 1538,
+        "bytes": 41943040,
+        "pointer_hex": "0xffe27ac00000",
+        "pointer": 281348187095040,
+        "mod_2MiB": 0
+      },
+      "d_ws": {
+        "id": 1539,
+        "bytes": 2348023808,
+        "pointer_hex": "0xffe120000000",
+        "pointer": 281342369595392,
+        "mod_2MiB": 0
+      }
+    }
+  },
+  "comparison": {
+    "d_ids": {
+      "same_virtual_pointer": true,
+      "B_minus_A_bytes": 0
+    },
+    "d_positions": {
+      "same_virtual_pointer": true,
+      "B_minus_A_bytes": 0
+    },
+    "d_seq_id": {
+      "same_virtual_pointer": true,
+      "B_minus_A_bytes": 0
+    },
+    "d_token_seq_id": {
+      "same_virtual_pointer": true,
+      "B_minus_A_bytes": 0
+    },
+    "d_ragged_seq_offset": {
+      "same_virtual_pointer": true,
+      "B_minus_A_bytes": 0
+    },
+    "d_ragged_token_local": {
+      "same_virtual_pointer": true,
+      "B_minus_A_bytes": 0
+    },
+    "d_rope_pos": {
+      "same_virtual_pointer": true,
+      "B_minus_A_bytes": 0
+    },
+    "d_emb": {
+      "same_virtual_pointer": true,
+      "B_minus_A_bytes": 0
+    },
+    "d_img_pos": {
+      "same_virtual_pointer": true,
+      "B_minus_A_bytes": 0
+    },
+    "d_trunk": {
+      "same_virtual_pointer": false,
+      "B_minus_A_bytes": -536870912
+    },
+    "d_trunk2": {
+      "same_virtual_pointer": true,
+      "B_minus_A_bytes": 0
+    },
+    "d_ple_emb": {
+      "same_virtual_pointer": true,
+      "B_minus_A_bytes": 0
+    },
+    "d_ws": {
+      "same_virtual_pointer": true,
+      "B_minus_A_bytes": 0
+    }
+  },
+  "combine_arguments": {
+    "block_output": "d_ws + MakeDecoderWorkspaceLayout(T, layer).block; MoE writes d_block",
+    "R": "d_ws + layout.combined; attn_frame.WriteAndRead materializes residual",
+    "inject_gated": "d_ws + layout.gate; persistent gate_storage passed to next_frame.ReadImpl",
+    "out": "zero-based even layer: d_trunk2; odd layer: d_trunk; RunLayers swaps after each layer"
+  },
+  "old_intervention_coverage": "fixed seven cudaMallocAsync slots: six linear attention scratch arrays plus routing metadata; neither startup d_ws nor either trunk was replaced",
+  "evidence_limits": [
+    "Addresses belong to prior preload observer epoch, not the clean trace pair",
+    "Three input addresses equal at equal T/layer layout in that epoch; out differs only for odd zero-based layers",
+    "Equal virtual addresses or 2MiB modulo does not prove equal physical placement/cache state",
+    "No proof that 512MiB trunk displacement causes the observed duration differences"
+  ],
+  "new_gpu_requests": 0,
+  "root_cause_proven": false,
+  "clean_trace_parity_delta_ns": {
+    "zero_based_even_out_trunk2": 13295424,
+    "zero_based_odd_out_trunk": 13204032
+  },
+  "parity_limit": "Trace epoch differs from address epoch; parity symmetry does not support asserting direct odd-layer output-pointer displacement as the explanation."
+}

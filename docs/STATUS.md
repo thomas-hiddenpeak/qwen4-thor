@@ -44,8 +44,11 @@ guard COMPLETED。HTTP差+55.085ms，设备区间差+52.864ms=活动并集
 +90.104ms、间隙−37.240ms。定位到设备活动增加，尚非原因；kernel
 总和受并发重叠影响。离线拆分确认独占+41.562ms、重叠+48.542ms；
 GDN/Conv/Combine各自全程独占仍变慢。Combine同48层序号累计均正，
-24个完整chunk均正、末尾8181 chunk近持平。下一步映射其缓冲区和已有
-分配证据，定位具体可控变量；不据此直接认定缓存原因，不追加trace。
+24个完整chunk均正、末尾8181 chunk近持平。Combine三个输入均在
+持久d_ws，输出ping-pong trunk；旧七scratch干预未覆盖。旧地址观察
+仅d_trunk偏移512MiB，d_ws/d_trunk2 VA相同，但不是trace同轮；新trace
+偶/奇层正差近似对称，不据此认定输出VA原因。下一步核实持久布局
+干预能控制什么，区分VA/物理页/缓存历史；不追加trace或泛化计时。
 UCF analyzer的outputs重复哈希标注已修正，原始文本hash独立核对通过，
 读流量结论不变。不得继续普通ASLR或UCF计时。
 此前scratch固定布局8条判据亦未过，诊断分配器不交付、不扩样。
