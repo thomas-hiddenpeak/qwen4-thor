@@ -81,9 +81,16 @@ Finish 用 GPU accepted_count 生成 alignment、位置、有效列及下一轮 
 [graph_profiles.cpp:9-49](https://github.com/Neroued/ninfer/blob/81c8ce093b2c1646a87566a8e59d807fcf0ec95c/src/models/qwen3_5/program/planning/graph_profiles.cpp#L9-L49)
 按 context 资源包络分桶，同精确 batch/topology 复用图。
 
-**增量：** 本地已消除逐 draft 回读，但还没把 verify/accept/extend 元数据
+**增量：** 本地已消除逐 draft token/logits 回读，但还没把 verify/accept/extend 元数据
 连成固定 device 接口；当前 `src/`、`include/` 没有 CUDA Graph capture。
 可参考这种分阶段接口，减少提交与 host 等待。
+
+2026-10-16综合计划复核：`MtpForward`下层的QSA仍会在未传精确
+max_position时回读positions；draft BF16 MoE仍回读counts再host遍历。
+extend gather offsets也有临时分配。因此“GPU驻留draft token”不表示
+整个循环没有同步；新增小步候选和验收见
+[综合实施计划](REFERENCE_INTEGRATION_PLAN_2026-10-16.md)。此处是调用链
+校正，未测得上述同步的耗时贡献，不更改已有NO_GO证据。
 
 **边界：** NInfer 并非整轮零 host。
 [decode.cpp:461-475](https://github.com/Neroued/ninfer/blob/81c8ce093b2c1646a87566a8e59d807fcf0ec95c/src/models/qwen3_5/program/decode.cpp#L461-L475)
