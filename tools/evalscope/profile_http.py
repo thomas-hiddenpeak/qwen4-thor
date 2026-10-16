@@ -1,4 +1,4 @@
-"""Profile accepted HTTP workloads; trace timings are not acceptance timings.
+"""Profile recorded HTTP workloads; trace timings are not acceptance timings.
 
 Requires a completed five-length acceptance run of the identical binary.
 Nsight starts after model loading, around one real evalscope request per length.
@@ -27,6 +27,8 @@ def save(path, obj):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--accepted-run', type=Path, required=True)
+    parser.add_argument('--diagnose-regression', action='store_true',
+                        help='Label capture as failure diagnosis, not acceptance')
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--model-dir', type=Path, required=True)
     parser.add_argument('--binary', type=Path, default=ROOT / 'build/q4t')
@@ -48,6 +50,7 @@ def main():
         parser.error('output must be under build/ or .q4t-work/')
     out.mkdir(parents=True, exist_ok=False)
     refs = {r['length']: r for r in refs}
+    expected_inputs = {}
     for length in args.lengths:
         case = out / f'context-{length}'
         case.mkdir()
@@ -55,6 +58,13 @@ def main():
         prompt = json.loads(line)['prompt']
         if hashlib.sha256(prompt.encode()).hexdigest() != refs[length]['prompt_sha256']:
             raise RuntimeError('accepted prompt hash mismatch')
+        responses = json.loads((accepted / f'context-{length}/responses.json').read_text())
+        counts = {r['actual_input'] for r in responses
+                  if r['prompt_sha256'] == refs[length]['prompt_sha256']}
+        if len(counts) != 1 or len(responses) == 0 or any(
+                r['prompt_sha256'] != refs[length]['prompt_sha256'] for r in responses):
+            raise RuntimeError('recorded input identity is inconsistent')
+        expected_inputs[length] = counts.pop()
         (case / 'requests.jsonl').write_text(line + '\n')
     env = os.environ.copy()
     removed = {}
@@ -77,6 +87,9 @@ def main():
                '--max-tokens', '256', '--no-mtp']
     save(out / 'server-command.json', {'argv': command, 'removed_environment': removed,
                                       'accepted_run': str(accepted)})
+    save(out / 'diagnostic-scope.json', {
+        'regression_diagnosis': args.diagnose_regression,
+        'performance_acceptance': False, 'expected_inputs': expected_inputs})
     results = []
     failure = None
     server = None
@@ -131,7 +144,7 @@ def main():
                 (case / 'output.txt').write_text(text)
                 results.append(item)
                 save(out / 'results.json', results)
-                if (not row[0] or row[1] != length or row[2] != 256 or finish != ['length'] or
+                if (not row[0] or row[1] != expected_inputs[length] or row[2] != 256 or finish != ['length'] or
                         item['output_sha256'] != refs[length]['outputs'][0]):
                     raise RuntimeError('profiled HTTP result differs from accepted output')
                 print(f'{length}: profiled HTTP/output passed', flush=True)

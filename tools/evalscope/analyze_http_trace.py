@@ -59,7 +59,7 @@ def main():
         boundary = pref[0][1]
         prefix = [r for r in embeds if r[0] < boundary]
         decoding = [r for r in embeds if r[0] > boundary]
-        if (sum(r[3] for r in prefix) != length or
+        if (sum(r[3] for r in prefix) != case['input_tokens'] or
                 len(decoding) != len(tokens) or any(r[3] != 1 for r in decoding) or
                 any(r[0] <= boundary for r in tokens)):
             raise RuntimeError('embedding grid/count does not match phase markers')
