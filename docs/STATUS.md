@@ -29,9 +29,10 @@ stall。外部单窗口采集器已落地，正常/错误命令/EOF三项生命�
 通过，零警告；未注入服务器。已知256MiB GPU拷贝一次/四次的读流量
 为268453376/1074083840，比例4.001，冻结校准通过；未校准outstanding
 单位。EvalScope首有效输出钩子已实现：源码SHA/AST锚点校验，四项CPU
-边界/失败测试通过；未接入CLI/runner。下一步封装collector生命周期与
-停止延迟证据，再冻结机制观察；HTTP首输出窗口可能含少量decode，
-不能冒称纯prefill。不直接全量profile、不继续普通ASLR计时。
+边界/失败测试通过。CLI封装与runner显式--ucf-probe入口已完成，6项
+collector、2项集成、2项runner合同通过；缺少计数记录不能伪装成功。
+下一步冻结有限机制观察并检查真实停表延迟；HTTP首输出窗口可能含
+少量decode，不能冒称纯prefill。不直接全量profile、不继续普通ASLR计时。
 此前scratch固定布局8条判据亦未过，诊断分配器不交付、不扩样。
 
 已完成且不重复：

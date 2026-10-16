@@ -124,6 +124,29 @@ class RunnerContractTest(unittest.TestCase):
             stack.enter_context(redirect_stdout(io.StringIO()))
             runner.main()
 
+    def test_ucf_wraps_client_and_requires_complete_evidence(self):
+        original = self.fake_client
+        def fake(command, **kwargs):
+            result = original(command, **kwargs)
+            path = Path(command[command.index('--evidence') + 1])
+            path.mkdir()
+            (path / 'counter.json').write_text(json.dumps({'complete': True,
+                                                         'error': None}))
+            return result
+        self.fake_client = fake
+        self.invoke('--perf-lengths', '45056', '--perf-repeats', '1',
+                    '--ucf-probe', str(self.binary))
+        self.assertIn('ucf_evalscope.py', self.clients[0][1])
+        self.assertNotIn('--ucf-probe', self.read('server-command.json')['argv'])
+        self.assertTrue(self.read('exit.json')['diagnostic_ucf'])
+        self.assertFalse(self.read('exit.json')['performance_acceptance'])
+
+    def test_ucf_missing_counter_fails_even_with_successful_client(self):
+        with self.assertRaises(FileNotFoundError):
+            self.invoke('--perf-lengths', '45056', '--perf-repeats', '1',
+                        '--ucf-probe', str(self.binary))
+        self.assertFalse(self.read('exit.json')['http_output_checks_passed'])
+
     def read(self, relative):
         return json.loads((self.out / relative).read_text())
 

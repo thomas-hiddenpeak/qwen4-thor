@@ -131,7 +131,8 @@ def request_timing(start, end, before, after):
 
 
 def run_case(out, case, inputs, count, minimum, maximum, tokens, streaming,
-             evalscope, model, port, env, server, bounded, capacity, mode):
+             evalscope, model, port, env, server, bounded, capacity, mode,
+             ucf_probe=None):
     """Collect all available evidence even when the client returns nonzero."""
     parsed, boundaries, commands = [], [], []
     lines = inputs.read_text().splitlines()
@@ -156,6 +157,13 @@ def run_case(out, case, inputs, count, minimum, maximum, tokens, streaming,
                '--read-timeout', '7200', '--total-timeout', '10800',
                '--no-test-connection', '--outputs-dir', str(client_dir),
                '--stream' if streaming else '--no-stream']
+        if ucf_probe:
+            if client_count != 1 or not streaming:
+                raise ValueError('UCF requires one streaming request per client')
+            cmd = [str(evalscope.parent / 'python'),
+                   str(Path(__file__).with_name('ucf_evalscope.py')),
+                   '--probe', str(ucf_probe), '--evidence', str(client_dir / 'ucf'),
+                   '--', *cmd[1:]]
         commands.append(cmd)
         save(client_dir / 'command.json', cmd)
         (out / 'memory-phase.txt').write_text(f'requests:{label}\n')
@@ -176,6 +184,10 @@ def run_case(out, case, inputs, count, minimum, maximum, tokens, streaming,
             save(client_dir / 'client-exit.json', {'returncode': code, 'before': before, 'after': after})
             if hasattr(server, 'snapshot'):
                 server.snapshot(f'after-{label}')
+        if ucf_probe:
+            counter = json.loads((client_dir / 'ucf/counter.json').read_text())
+            if counter.get('complete') is not True or counter.get('error'):
+                raise RuntimeError('UCF observation incomplete')
         databases = list(client_dir.rglob('benchmark_data.db'))
         rows = []
         if len(databases) == 1:
@@ -306,6 +318,8 @@ def main():
     parser.add_argument('--server-address-space', choices=['inherit', 'no-aslr'],
                         help='Diagnostic only: snapshot server maps; no-aslr uses '
                              'setarch for the server only, not the HTTP client')
+    parser.add_argument('--ucf-probe', type=Path,
+                        help='Diagnostic UCF executable; selected-tier single-request clients only')
     parser.add_argument('--mtp-k', type=int, default=3,
                         help='MTP speculative steps k (serve default 3)')
     args = parser.parse_args()
@@ -313,6 +327,10 @@ def main():
         parser.error('--server-map-reference requires --server-address-space no-aslr')
     if args.server_address_space and args.systemd_unit:
         parser.error('--server-address-space is not supported with --systemd-unit')
+    if args.ucf_probe and (args.mode != 'performance' or args.perf_lengths is None):
+        parser.error('--ucf-probe requires selected performance tiers')
+    if args.ucf_probe:
+        args.ucf_probe = args.ucf_probe.resolve(strict=True)
     if args.perf_repeats <= 0:
         parser.error('--perf-repeats must be positive')
     if args.mode != 'performance' and (args.perf_lengths is not None or args.perf_repeats != 3):
@@ -387,6 +405,11 @@ def main():
     (out / 'commit.txt').write_bytes(subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT))
     (out / 'worktree.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=ROOT))
     shutil.copyfile(__file__, out / 'run_acceptance.py')
+    if args.ucf_probe:
+        for name in ('ucf_evalscope.py', 'ucf_client_boundary.py', 'ucf_window_probe.cpp'):
+            shutil.copyfile(Path(__file__).with_name(name), out / name)
+        save(out / 'ucf-diagnostic.json', {'probe': str(args.ucf_probe),
+                                         'performance_acceptance': False})
     shutil.copyfile(Path(__file__).with_name('response_identity.py'),
                     out / 'response_identity.py')
     if args.server_address_space:
@@ -538,7 +561,8 @@ def main():
                 parsed = run_case(out, case, inputs, count, minimum, maximum,
                                   tokens, streaming, evalscope, model, args.port,
                                   env, server, args.mode == 'performance' and
-                                  args.perf_lengths is not None, capacity, args.mode)
+                                  args.perf_lengths is not None, capacity, args.mode,
+                                  args.ucf_probe)
                 if not all(isinstance(r['actual_input'], int) and
                            isinstance(r['actual_output'], int) and
                            0 < r['actual_input'] + r['actual_output'] <=
@@ -642,6 +666,7 @@ def main():
                                           'full_offload_matrix_completed': bool(plan and plan['full_offload_matrix_requested'] and clean),
                                           'performance_acceptance': False,
                                           'diagnostic_address_space': args.server_address_space,
+                                          'diagnostic_ucf': bool(args.ucf_probe),
                                           'failure': failure, 'cleanup_failure': cleanup_failure})
         if server.returncode != 0:
             raise RuntimeError('server did not exit normally')

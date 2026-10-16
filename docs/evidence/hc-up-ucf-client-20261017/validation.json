@@ -1,0 +1,10 @@
+{
+  "unique_collector_cases": 6,
+  "integrated_real_evalscope_fake_counter_cases": 2,
+  "runner_cases": 2,
+  "collector_runs": "6 then 14 discovered (6 inherited duplicate cases); duplicate inheritance removed without changing assertions",
+  "runner_runs": "positive passed; negative fixture assertion initially used nonexistent passed key, corrected to http_output_checks_passed and only negative rerun passed",
+  "hardware_or_model_workload": false,
+  "performance_acceptance": false,
+  "pending": "hardware HTTP boundary delay validation and frozen mechanism observation"
+}
