@@ -1,0 +1,17 @@
+{
+  "gpu_calls": 0,
+  "normal_and_failure_exit": [
+    {
+      "driver_exit": 0,
+      "shared_memfd_two_children": true,
+      "owner_cleanup": true
+    },
+    {
+      "driver_exit": 7,
+      "shared_memfd_two_children": true,
+      "owner_cleanup": true
+    }
+  ],
+  "spawn_failure_rejected": true,
+  "scope": "CPU fake driver lifecycle, not real VMM or model evidence"
+}

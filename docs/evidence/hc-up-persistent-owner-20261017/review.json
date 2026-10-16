@@ -1,0 +1,19 @@
+{
+  "sha256": {
+    "tools/evalscope/persistent_backing_owner.cpp": "b9d68ba82f4bb0afcd43c1c316322cf96c6c5bcf594beaa76aaf3adfdb54341a",
+    "tools/evalscope/test_persistent_backing_owner.py": "64dafca4c7418440b18830d4eb50d3bc3c90d588a2a1d5a6ce9da212a51a1292",
+    "tools/evalscope/run_acceptance.py": "c5e5e3c5f62c2063f68ad17fd7ae3bb7ecf2e58f34a6523932249d3db5b0818c",
+    "tools/evalscope/test_run_acceptance.py": "dc4f29792a2f3d48260fde8c340036d064676003c22383b7d8a53229fcb77756"
+  },
+  "build": "g++-14 C++23 -Wall -Wextra -Werror; real libcuda linked; PASS",
+  "runner_tests": {
+    "unique_cases": 4,
+    "initial_pass": 3,
+    "initial_failure": "positive forwarding test mocked all os.fstat and broke shutil.copyfile st_size comparison; test fixture error",
+    "repair": "delegate non-73/74/75 fstat to real function",
+    "retested": "only test_persistent_fds_only_forwarded_to_server: PASS",
+    "unchanged_three_passes_reused": true
+  },
+  "gpu_calls": 0,
+  "remaining": "real CUDA owner + full-size probe integration, frozen model protocol and causal result"
+}

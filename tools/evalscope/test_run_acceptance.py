@@ -124,6 +124,38 @@ class RunnerContractTest(unittest.TestCase):
             stack.enter_context(redirect_stdout(io.StringIO()))
             runner.main()
 
+    def test_persistent_fds_only_forwarded_to_server(self):
+        real_stat = runner.os.fstat
+        def fake_stat(fd):
+            return None if fd in (73, 74, 75) else real_stat(fd)
+        with patch.object(runner.os, 'fstat', side_effect=fake_stat) as stat:
+            self.invoke('--perf-lengths', '204800', '--perf-repeats', '1',
+                        '--persistent-backing-fds')
+        self.assertEqual([call.args for call in stat.call_args_list
+                          if call.args[0] in (73, 74, 75)],
+                         [(73,), (74,), (75,)])
+        self.assertEqual(self.servers[0].kwargs['pass_fds'], (73, 74, 75))
+        self.assertTrue(self.read('exit.json')['diagnostic_persistent_backing_fds'])
+        self.assertFalse(self.read('exit.json')['performance_acceptance'])
+
+    def test_persistent_fds_missing_rejected_before_server(self):
+        with patch.object(runner.os, 'fstat', side_effect=OSError('missing FD')):
+            with self.assertRaises(OSError):
+                self.invoke('--perf-lengths', '204800', '--perf-repeats', '1',
+                            '--persistent-backing-fds')
+        self.assertEqual(self.servers, [])
+
+    def test_persistent_fds_other_shape_rejected(self):
+        with self.assertRaises(SystemExit):
+            self.invoke('--perf-lengths', '45056', '--perf-repeats', '1',
+                        '--persistent-backing-fds')
+        self.assertEqual(self.servers, [])
+
+    def test_default_does_not_forward_persistent_fds(self):
+        self.invoke('--perf-lengths', '204800', '--perf-repeats', '1')
+        self.assertNotIn('pass_fds', self.servers[0].kwargs)
+        self.assertFalse(self.read('exit.json')['diagnostic_persistent_backing_fds'])
+
     def test_ucf_wraps_client_and_requires_complete_evidence(self):
         original = self.fake_client
         def fake(command, **kwargs):

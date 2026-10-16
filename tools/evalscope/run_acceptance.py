@@ -318,6 +318,8 @@ def main():
     parser.add_argument('--server-address-space', choices=['inherit', 'no-aslr'],
                         help='Diagnostic only: snapshot server maps; no-aslr uses '
                              'setarch for the server only, not the HTTP client')
+    parser.add_argument('--persistent-backing-fds', action='store_true',
+                        help='Diagnostic only: forward inherited VMM FDs 73..75 to server')
     parser.add_argument('--ucf-probe', type=Path,
                         help='Diagnostic UCF executable; selected-tier single-request clients only')
     parser.add_argument('--mtp-k', type=int, default=3,
@@ -327,6 +329,14 @@ def main():
         parser.error('--server-map-reference requires --server-address-space no-aslr')
     if args.server_address_space and args.systemd_unit:
         parser.error('--server-address-space is not supported with --systemd-unit')
+    if args.persistent_backing_fds:
+        if args.systemd_unit or args.mode != 'performance' or args.perf_lengths is None:
+            parser.error('--persistent-backing-fds requires selected performance tiers without systemd')
+        if (args.perf_lengths != '204800' or args.perf_repeats != 1
+                or args.max_len != 208896 or args.mtp or args.mtp_default):
+            parser.error('--persistent-backing-fds is frozen to one 200K off request')
+        for fd in (73, 74, 75):
+            os.fstat(fd)  # Fail before launching anything if owner FDs are absent.
     if args.ucf_probe and (args.mode != 'performance' or args.perf_lengths is None):
         parser.error('--ucf-probe requires selected performance tiers')
     if args.ucf_probe:
@@ -507,6 +517,7 @@ def main():
         command = launch_command(command, args.server_address_space)
     save(out / 'server-command.json', {'argv': command, 'removed_environment': removed,
                                        'diagnostic_address_space': args.server_address_space,
+                                       'diagnostic_persistent_backing_fds': args.persistent_backing_fds,
                                        'effective_q4t_environment': effective_q4t,
                                        'hot_list': hot_identity,
                                        'isolation': {'systemd_unit': args.systemd_unit,
@@ -526,7 +537,8 @@ def main():
                                      unit=args.systemd_unit, memory_max=args.host_cache_max_bytes,
                                      evidence=out / 'isolation')
         else:
-            server = subprocess.Popen(command, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT)
+            fd_options = {'pass_fds': (73, 74, 75)} if args.persistent_backing_fds else {}
+            server = subprocess.Popen(command, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT, **fd_options)
         (out / 'server.pid').write_text(f'{server.pid}\n')
         event(out, 'server_started', pid=server.pid)
         try:
@@ -666,6 +678,7 @@ def main():
                                           'full_offload_matrix_completed': bool(plan and plan['full_offload_matrix_requested'] and clean),
                                           'performance_acceptance': False,
                                           'diagnostic_address_space': args.server_address_space,
+                                          'diagnostic_persistent_backing_fds': args.persistent_backing_fds,
                                           'diagnostic_ucf': bool(args.ucf_probe),
                                           'failure': failure, 'cleanup_failure': cleanup_failure})
         if server.returncode != 0:

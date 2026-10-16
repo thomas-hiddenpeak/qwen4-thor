@@ -1273,3 +1273,27 @@ backing owner的跨子进程生命周期、二进制/输入/工具身份及完�
 并冻结分配方式/backing/VA/执行顺序的可辨识对照；不能把shared变快
 直接归因物理页或VA。未查清根因，原HC NO_GO和active目标保持。
 证据：evidence/hc-up-persistent-control-20261017/。
+
+## 持久backing owner及HTTP描述符传递（2026-10-17）
+
+新增persistent_backing_owner.cpp，持有三份VMM allocation及POSIX FD，
+通过posix_spawn启动完整阶段驱动并传入FD73–75；等驱动结束后逆序释放，
+保留驱动退出码。使用CLOEXEC、检查目标FD未占用，避免覆盖已有描述符。
+owner不映射、不清零、不提交kernel；由同一GPU guard覆盖整轮driver。
+真实CUDA链接构建零警告通过，目前尚未运行真实owner GPU集成。
+
+现有runner的Popen默认关闭继承FD，故新增显式--persistent-backing-fds：
+启动前检查三个FD存在，只向服务器传递，记录诊断身份；默认路径不传。
+该入口限单条200K off、max_len208896、无systemd，不能当完整性能验收。
+中间阶段driver仍须以pass_fds保留描述符，不能只在owner端设置继承。
+
+fake CUDA owner三项CPU检查通过：两次fresh子进程共享相同memfd且数据
+连续可见，driver退出0/7均清理并原样返回；spawn失败拒绝且无成功标记。
+runner四项检查覆盖转发、FD缺失、错误shape拒绝、默认不转发。首轮3过，
+正向用例因mock整个os.fstat破坏shutil.copyfile而失败；修正为仅mock
+73–75，其余委托真实函数，仅重验该失败项通过。未重跑未变化的3项。
+
+下一步验证真实CUDA下owner+probe三份大buffer的接入、跨进程可见性和
+释放，再冻结模型对照顺序与因果门槛；工具通过不代表TTFT归因或性能
+接受。本轮无GPU模型请求、无生产计算路径改动，原NO_GO/active保持。
+证据：evidence/hc-up-persistent-owner-20261017/。
