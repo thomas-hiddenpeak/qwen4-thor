@@ -1,0 +1,46 @@
+[
+  {
+    "name": "01-A",
+    "variant": "A",
+    "binary_sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "metrics": {
+      "ttft": 158.7587118219817,
+      "decode_tps": 16.948322740288443
+    },
+    "output": "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
+    "prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4"
+  },
+  {
+    "name": "02-B",
+    "variant": "B",
+    "binary_sha256": "f01a0ee63f626c352f66677952368d43db02c9231576a2b8ba1ca33a915ce573",
+    "metrics": {
+      "ttft": 158.87993949098745,
+      "decode_tps": 16.902866836216003
+    },
+    "output": "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
+    "prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4"
+  },
+  {
+    "name": "03-B",
+    "variant": "B",
+    "binary_sha256": "f01a0ee63f626c352f66677952368d43db02c9231576a2b8ba1ca33a915ce573",
+    "metrics": {
+      "ttft": 158.83726910100086,
+      "decode_tps": 16.99269675875374
+    },
+    "output": "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
+    "prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4"
+  },
+  {
+    "name": "04-A",
+    "variant": "A",
+    "binary_sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "metrics": {
+      "ttft": 158.73827025701758,
+      "decode_tps": 16.978971982387673
+    },
+    "output": "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
+    "prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4"
+  }
+]

@@ -38,3 +38,20 @@ chunk；第一chunk无条件排除。后24个区间均要求有效同步、成�
 跨身份相同提交等待次数及请求完成数，避免比较不同读取工作量。
 每指标均计算两组B−A与同身份R；稳定正增加仍只是观测，不自动归因。
 不把全部Gather墙钟认作设备关键路径。所有原始结果保留，不扩样。
+
+
+## 结果：Gather不能解释本轮层事件差
+
+四条HTTP合同通过，guard正常COMPLETED，804次运行轮询未检测竞争。
+25上传/报告一一匹配，后24条同步/I/O/拷贝成功、工作量逐chunk相同，
+冻结有效性全过。各指标与全部区间见gather-review，原始证据哈希见manifest。
+两组B−A层事件差+122.850/+100.690ms，超过同身份R=41.990ms；
+Gather wall差−6.271/+2.059ms，R=6.546ms，方向和量级均不足以解释。
+Gather总wall574.193–580.739ms，CPU572.888–579.377ms；uring API
+wall308.483–316.442ms，CPU307.179–315.021ms，不能归作主要阻塞SSD。
+此为本轮观测，不能追溯证明历史原因或把所有CPU余量称scatter。
+
+离线层分组显示full组差+108.440/+124.210ms，lin组+15.060/−23.780ms；
+full组仍含MoE/HC等，不是attention kernel净时间。停止Gather采样，
+下一步复用已有Q4T_LAYER_SUBTIMING的full_qkv/full_core/full_oproj及
+MoE/HC分项（先冻结协议），不新增无关优化，不用插桩TTFT接受HC。
