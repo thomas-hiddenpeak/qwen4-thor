@@ -23,8 +23,10 @@ no-ASLR差−33.800/+125.552ms；交互+360.437/+270.966ms，均低于冻结
 无SM/内存stall计数并含污染。UCF disabled事件普通用户EACCES，但已有
 sudo权限下打开成功；未启用采集或改系统配置，权限不是当前阻塞。
 Nsight默认串行化及缓存/clock/pipeline boost控制会改变观察条件。
-下一步核实外部UCF事件语义、分组计数覆盖和读取边界，再冻结可区分
-机制的方案；不直接全量profile、不继续普通ASLR计时。
+UCF四事件pinned分组200ms检查通过：ID/长度正确、enabled=running，
+无模型负载但原始流量非零。官方范围是GPU经UCF物理地址流量，非SM
+stall；下一步实现外部区间快照并校准事件响应，再冻结机制对照，
+不直接全量profile、不继续普通ASLR计时。
 此前scratch固定布局8条判据亦未过，诊断分配器不交付、不扩样。
 
 已完成且不重复：

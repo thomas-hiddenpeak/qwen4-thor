@@ -1,0 +1,9 @@
+{
+  "source": "https://docs.nvidia.com/jetson/archives/r38.2/DeveloperGuide/AT/JetsonLinuxDevelopmentTools/PerformanceMonitoring.html",
+  "source_scope": "Thor UCF-GPU integrated GPU physical-address traffic through UCF; not SM stall counters",
+  "sysfs_identifier": "10a0036b",
+  "interpretation": "4 raw events can run pinned as one group without multiplexing in the checked 200 ms interval. No submitted CUDA/model work, but raw traffic nonzero; do not assume zero background or infer per-process traffic. Event units and coverage under load require calibration.",
+  "performance_acceptance": false,
+  "root_cause_closed": false,
+  "next": "Implement externally controlled request-window snapshots with enabled/running and ID validation; calibrate counter response before any candidate causal observation. Do not interpret outstanding count directly as TTFT."
+}

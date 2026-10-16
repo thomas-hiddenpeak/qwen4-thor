@@ -918,3 +918,22 @@ pipeline-boost-state=stable。故直接全量profile会改变待解释的执行�
 家族不重启。当前没有生产修改或性能接受结论，原NO_GO与active保持。
 证据：evidence/hc-up-mechanism-audit-20261017/uncore-admin-access.json、
 capability-review.json；本轮仅能力检查，不重复已有模型验收。
+
+## UCF四事件分组能力验证（2026-10-17）
+
+冻结一次200ms、无CUDA/模型负载的检查，在GPU共享锁内运行。cycles、
+rd_bytes_loc_rem、rd_req_loc_rem、rd_cum_outs_loc_rem四事件组成pinned
+组；read长度和4个ID全部匹配，enabled=running=200111402ns，无复用。
+原始值依次300717420、5929472、93328、8884745200，guard COMPLETED。
+代码以-Wall -Wextra -Werror构建通过；没有改变生产二进制或重跑HTTP。
+
+[Thor官方文档](https://docs.nvidia.com/jetson/archives/r38.2/DeveloperGuide/AT/JetsonLinuxDevelopmentTools/PerformanceMonitoring.html)
+限定UCF-GPU统计流经UCF的集成GPU物理地址流量；不是SM stall或进程
+专属计数。未提交负载时计数仍非零，不把背景当零，也不将outstanding
+原始累计量直接换算成TTFT。Grace的同名事件和上游master驱动不能替代
+本机Thor事件单位与覆盖验证；当前仅确认分组可用，没有根因结论。
+
+下一步实现外部请求区间快照、保留ID与enabled/running检查，再校准事件
+响应后决定机制对照；不能以采集器可用直接开启更多A/B计时。已有数值/
+性能证据复用，原HC NO_GO与目标active保持。
+证据：evidence/hc-up-ucf-group-20261017/。

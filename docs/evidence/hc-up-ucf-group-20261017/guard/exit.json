@@ -1,0 +1,18 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "sudo",
+    "-n",
+    ".q4t-work/hc-up-ucf-group-20261017/check_group"
+  ],
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "finished": {
+    "utc": "2026-10-16T19:10:11.349407+00:00",
+    "monotonic": 367893.86629333,
+    "pid": 1214918
+  }
+}
