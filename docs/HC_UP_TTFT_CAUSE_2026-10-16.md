@@ -2199,3 +2199,28 @@ queued→start合计，仍无法拆开驱动提交延迟和提交后设备等待
 本轮仅针对工具缺口的最小修正验证，无HTTP重跑、生产/数值合同更改。
 下一步核对submitted字段的平台/驱动支持边界；没有明确支持或修复
 依据前不重复此采集。目标active，TTFT根因未闭合，HC NO_GO保持。
+
+## submitted字段支持边界复核：无已确认修复路径（2026-10-17）
+
+实际ldd指向CUDA13.3 libcupti.so.13，cuptiGetVersion=130300，
+cuDriverGetVersion=13020，nvidia驱动595.78。仅查询版本、未初始化
+CUDA context或执行GPU工作。不能单因版本号不同就认定不兼容：本机
+匹配版本CUPTI Usage说明支持Backward/Forward/Enhanced兼容，仍需
+满足驱动条件；探针各API返回成功，未出现NOT_INITIALIZED。
+
+核对本机13.3文档与NVIDIA官方版本化API/已知问题：明确限制为HES
+不支持queued/submitted延迟时间戳，本探针未请求HES。字段允许未能
+采集时返回UNKNOWN；已查来源未给出本机仅submitted为0的确定缺陷
+或修复。最新发布说明中的HES零时间戳、延迟采集deadlock与本例症状
+不同，不能套用为升级可解决的证明。来源及本机文件hash归档：
+evidence/hc-up-cupti-support-20261017/。
+
+本轮不升级driver/CUPTI、不换版本试跑、不重复探针或模型profile。
+目前缺失submitted不能用于模型提交/设备等待分解，也不证明平台永远
+不支持。下一步应审查是否有不依赖该缺字段的直接机制证据；若只有
+合计延迟或新一轮普通TTFT，不足以启动新实验。目标active、历史根因
+未闭合，原HC NO_GO保持。
+
+来源：[CUPTI13.3 Activity API](https://docs.nvidia.com/cupti/13.3.0/api/group__CUPTI__ACTIVITY__API.html)、
+[13.3发布说明](https://docs.nvidia.com/cupti/13.3.0/release-notes/release-notes.html)、
+[当前发布说明](https://docs.nvidia.com/cupti/release-notes/release-notes.html)。
