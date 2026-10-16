@@ -1937,3 +1937,27 @@ git diff --check通过。未执行模型HTTP、未修改真实频率或生产内
 旧数值和性能证据不重跑。此项只验证guard接口，不证明实际监管组合或
 真实配置恢复；下一步完成systemd组合与恢复失败闭锁策略再冻结实机协议。
 根因未闭合，目标active，原HC NO_GO保持。
+
+## guard与独立恢复组合、持久恢复门禁（2026-10-17）
+
+固定3个CPU组合场景已完成：实际gpu_exclusive.run_guard借用systemd保存
+的同一lease FD，只有inspect替换为空CPU监控结果；配置与锁均为模拟文件。
+正常返回、workload SIGKILL其guard父进程、模拟恢复失败等待显式修复，
+各执行一次。ExecStopPost均在持锁时恢复original，之后锁才可获取；
+失败等待时独立探针确认锁忙、SubState=stop-post。全部临时unit已collect。
+SIGKILL场景systemd-run返回255为预期，其他返回0；不将它解释为性能验收。
+证据：evidence/hc-up-guard-recovery-20261017/，冻结协议与脚本同时归档。
+
+组合使用guard提交1ef9d88身份。随后补持久恢复门禁：guard拿锁后、写入
+holder元数据及启动监控/命令前，检查同路径后缀.recovery-required；存在
+则RECOVERY_REQUIRED/75，包含悬空symlink，普通和外部lease均不能绕过。
+不删除标记、不覆盖旧holder。受影响CPU套件23项通过，含4个新门禁子场景；
+未重复前述组合或任何模型测试。标记由未来监管器在guard已启动后、真实
+配置写入前持久创建，独立恢复核实后才删除；目前尚无真实控制器创建标记。
+
+TimeoutStopSec=infinity只能保证本次模拟恢复失败等待时持锁，不能单独
+保证清理进程被杀/管理器退出后的保护。持久标记负责下一次协作guard的
+拒绝启动，但不限制绕过guard的外部程序。仍需接入持久日志与真实恢复
+控制器，验证标记创建/清除顺序及权限；本轮没有真实频率写入或GPU负载。
+根因未闭合，目标active，原NO_GO保持。下一步完成控制器事务生命周期，
+再冻结能区分时钟/功耗交互的诊断，而非追加原状态TTFT采样。

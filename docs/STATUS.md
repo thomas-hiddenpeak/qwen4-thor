@@ -39,8 +39,10 @@ OC客户端窗口工具及runner显式入口已实现，9项CPU合同/真实只�
 尚无真实写入。systemd FD store/ExecStopPost纯CPU normal/SIGKILL验证
 通过：恢复期间锁保持、恢复后才释放，临时unit已清理。guard已接入
 显式外部lease FD，22项CPU测试通过；拒绝错误/未排他持锁FD，退出
-记录external_cleanup_pending并保留外部锁。仍需监管组合与恢复失败
-闭锁验证，未改真实频率。降频直接影响速度，
+记录external_cleanup_pending并保留外部锁。监管组合3个CPU场景已通过：
+normal、guard SIGKILL、模拟恢复失败等待修复；修复期间锁保持。补持久
+.recovery-required门禁，23项CPU测试通过；仍需控制器持久日志与标记
+生命周期接入，未改真实频率。降频直接影响速度，
 即使差异收敛也不单独证明OC根因；不改生产频率/保护阈值。
 
 本轮离线核心六函数取址审计：526条变化指令中459条至少关联一处

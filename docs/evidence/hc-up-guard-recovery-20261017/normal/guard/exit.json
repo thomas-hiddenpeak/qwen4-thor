@@ -1,0 +1,19 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "/usr/bin/python3",
+    "-c",
+    "pass"
+  ],
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-guard-recovery-20261017/normal/lease",
+  "poll_interval_seconds": 0.01,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "external_lease": true,
+  "finished": {
+    "utc": "2026-10-16T22:32:11.432137+00:00",
+    "monotonic": 380013.94901894,
+    "pid": 1275317
+  }
+}

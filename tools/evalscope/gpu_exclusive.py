@@ -269,6 +269,16 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None):
                 lock.seek(0)
                 status['holder_snapshot'] = lock.read()
                 return 75
+            # A recovery supervisor creates this durable marker before any
+            # configuration write and removes it only after verified restore.
+            # Check under the lease, including externally supplied leases.
+            recovery = lock_path.with_name(lock_path.name + '.recovery-required')
+            if os.path.lexists(recovery):
+                status['status'] = 'RECOVERY_REQUIRED'
+                status['reason'] = 'unfinished configuration recovery'
+                status['recovery_marker'] = str(recovery)
+                record('recovery_required', marker=str(recovery))
+                return 75
             acquired = True
             lease = dict(stamp(), command=command, output=str(out), state='held')
             lock.seek(0)

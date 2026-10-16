@@ -28,6 +28,32 @@ class ExclusiveTests(unittest.TestCase):
     def outcome(self):
         return json.loads((self.out / 'exit.json').read_text())
 
+    def test_recovery_marker_blocks_owned_and_external_lease(self):
+        marker = self.lock.with_name(self.lock.name + '.recovery-required')
+        for external in (False, True):
+            for dangling in (False, True):
+                with self.subTest(external=external, dangling=dangling):
+                    self.out = self.root / f'marked-{external}-{dangling}'
+                    if dangling:
+                        marker.symlink_to(self.root / 'missing-journal')
+                    else:
+                        marker.write_text('unrestored configuration')
+                    with self.lock.open('w+') as held:
+                        held.write('preserve previous holder')
+                        held.flush()
+                        if external:
+                            fcntl.flock(held, fcntl.LOCK_EX)
+                        with patch.object(guard, 'inspect') as scan:
+                            code = guard.run_guard(
+                                ['must-not-run'], self.out, self.lock,
+                                lease_fd=held.fileno() if external else None)
+                            scan.assert_not_called()
+                        self.assertEqual(code, 75)
+                        self.assertEqual(self.outcome()['status'], 'RECOVERY_REQUIRED')
+                        self.assertEqual(self.lock.read_text(), 'preserve previous holder')
+                        self.assertTrue(os.path.lexists(marker))
+                    marker.unlink()
+
     def test_external_lease_survives_guard_success_and_failure(self):
         for exit_code in (0, 7):
             with self.subTest(exit_code=exit_code), self.lock.open('w+') as held:
