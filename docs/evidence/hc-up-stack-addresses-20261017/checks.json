@@ -1,0 +1,26 @@
+[
+  {
+    "name": "spill_reload",
+    "passed": true
+  },
+  {
+    "name": "disjoint_store",
+    "passed": true
+  },
+  {
+    "name": "overlap_store",
+    "passed": true
+  },
+  {
+    "name": "call_kills",
+    "passed": true
+  },
+  {
+    "name": "unknown_store",
+    "passed": true
+  },
+  {
+    "name": "sp_change",
+    "passed": true
+  }
+]
