@@ -1,0 +1,133 @@
+{
+  "cases": [
+    {
+      "label": "OA1",
+      "server_start": 380592.59331292904,
+      "server_ready": 380622.604806039,
+      "request_start": 380626.824310309,
+      "first_output": 380785.618558368,
+      "end": 380802.1660481565
+    },
+    {
+      "label": "OB1",
+      "server_start": 380802.3248426025,
+      "server_ready": 380830.3365791085,
+      "request_start": 380834.540654372,
+      "first_output": 380993.486955073,
+      "end": 381010.02780789696
+    },
+    {
+      "label": "LB1",
+      "server_start": 381010.3062485215,
+      "server_ready": 381037.31520351453,
+      "request_start": 381041.502161916,
+      "first_output": 381222.673756554,
+      "end": 381240.06062087603
+    },
+    {
+      "label": "LA1",
+      "server_start": 381240.448580533,
+      "server_ready": 381267.457264015,
+      "request_start": 381271.657393986,
+      "first_output": 381453.041979166,
+      "end": 381470.4046382725
+    },
+    {
+      "label": "LA2",
+      "server_start": 381470.7475586855,
+      "server_ready": 381498.758222769,
+      "request_start": 381502.953648182,
+      "first_output": 381684.044089613,
+      "end": 381701.44681826746
+    },
+    {
+      "label": "LB2",
+      "server_start": 381701.828629242,
+      "server_ready": 381728.838208069,
+      "request_start": 381733.01899348,
+      "first_output": 381914.11241879,
+      "end": 381931.41287303146
+    },
+    {
+      "label": "OB2",
+      "server_start": 381931.6415876975,
+      "server_ready": 381958.6494788535,
+      "request_start": 381962.846257905,
+      "first_output": 382121.495704323,
+      "end": 382138.0587143535
+    },
+    {
+      "label": "OA2",
+      "server_start": 382138.206429157,
+      "server_ready": 382164.2178405915,
+      "request_start": 382168.414757674,
+      "first_output": 382327.401425792,
+      "end": 382343.948261217
+    }
+  ],
+  "kernel_messages": [
+    {
+      "label": "OA1",
+      "time": 380635.816021,
+      "since_server_start": 43.222708070941735,
+      "since_ready": 13.211214960960206,
+      "since_request_start": 8.991710690956097,
+      "before_first_output": true,
+      "within_service_lifetime": true
+    },
+    {
+      "label": "OB1",
+      "time": 380845.028041,
+      "since_server_start": 42.703198397532105,
+      "since_ready": 14.691461891517974,
+      "since_request_start": 10.487386627995875,
+      "before_first_output": true,
+      "within_service_lifetime": true
+    },
+    {
+      "label": "LB1",
+      "time": 381053.224019,
+      "since_server_start": 42.9177704785252,
+      "since_ready": 15.908815485483501,
+      "since_request_start": 11.721857084019575,
+      "before_first_output": true,
+      "within_service_lifetime": true
+    },
+    {
+      "label": "LA1",
+      "time": 381265.552032,
+      "since_server_start": 25.103451467002742,
+      "since_ready": -1.9052320150076412,
+      "since_request_start": -6.1053619860322215,
+      "before_first_output": true,
+      "within_service_lifetime": true
+    },
+    {
+      "label": "LA2",
+      "time": 381537.268026,
+      "since_server_start": 66.52046731451992,
+      "since_ready": 38.509803230990656,
+      "since_request_start": 34.314377818023786,
+      "before_first_output": true,
+      "within_service_lifetime": true
+    },
+    {
+      "label": "LB2",
+      "time": 381746.904033,
+      "since_server_start": 45.07540375797544,
+      "since_ready": 18.06582493102178,
+      "since_request_start": 13.885039519984275,
+      "before_first_output": true,
+      "within_service_lifetime": true
+    },
+    {
+      "label": "OB2",
+      "time": 381957.432029,
+      "since_server_start": 25.790441302524414,
+      "since_ready": -1.2174498534877785,
+      "since_request_start": -5.414228904992342,
+      "before_first_output": true,
+      "within_service_lifetime": true
+    }
+  ]
+}
