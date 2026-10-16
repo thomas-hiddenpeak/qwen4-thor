@@ -22,3 +22,20 @@ parse_reports.py保留字段、形状、同步错误和顶层求和检查，错�
 run.py每个HTTP结束立即调用已校验parse_reports，成功才启动下一条；
 失败保留现场并退出，不自动重试。full_core仍不是单kernel，HC/top moe
 仍跨所有层。此阶段只定位，不使用插桩TTFT接受候选。
+
+
+## v2第二条退出时监控缺陷（2026-10-17）
+
+01-A与02-B均有完整HTTP结果、合同全过、服务退出0；02-B在HTTP结束后
+清理期间，guard把自身PID1169273报为竞争。原ENV_ABORT不改写，03/04
+未执行。partial-audit锁定两条结果及原日志SHA；02-B三家族覆盖离线通过。
+不重跑这两条、不把部分AB当成完整ABBA或性能接受。
+
+进一步工具缺陷：processes原先把stat/cmdline/exe放在同一个try中，
+exe消失会丢弃仍存在的stat/进程组。现在保留stat身份，独立标记metadata
+缺失/不可读；NVML中的未知/非自有PID仍检测为冲突。真实CPU zombie
+夹具复现exe缺失而stat存在并验证归属，合计14项CPU合同及host CTest过。
+历史现场没有保存当时stat，不能断言一定是zombie；修复覆盖该已证实
+扫描缺陷，原事件身份与时序只证明自有服务退出窗口被误报。
+后续只考虑补未执行03-B/04-A，先记录阶段中断与证据复用边界，禁止
+把中断的lease伪称全阶段连续。尚未启动补跑。

@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from unittest.mock import patch
 
@@ -92,6 +93,40 @@ class ExclusiveTests(unittest.TestCase):
                 patch.object(guard, 'nvidia_pids', side_effect=[{10}, RuntimeError('query')]):
             with self.assertRaises(RuntimeError):
                 guard.inspect(5, history)
+
+    def test_stat_identity_survives_missing_executable(self):
+        proc = self.root / 'proc'
+        task = proc / '10'
+        task.mkdir(parents=True)
+        # Fields after comm: state, ppid, pgrp, ... starttime (index 19).
+        fields = ['Z', '1', '5'] + ['0'] * 16 + ['123']
+        (task / 'stat').write_text('10 (exiting worker) ' + ' '.join(fields))
+        records = guard.processes(proc)
+        self.assertEqual(records[10]['pgid'], 5)
+        self.assertEqual(records[10]['start_ticks'], 123)
+        self.assertTrue(records[10]['metadata_missing'])
+        with patch.object(guard, 'processes', return_value=records), \
+                patch.object(guard, 'nvidia_pids', return_value={10}):
+            self.assertEqual(guard.inspect(5)['conflicts'], [])
+            self.assertEqual(guard.inspect(6)['conflicts'][0]['pid'], 10)
+
+    def test_real_owned_zombie_not_misclassified_as_foreign(self):
+        child = subprocess.Popen([sys.executable, '-c', 'pass'],
+                                 start_new_session=True)
+        self.addCleanup(child.wait)
+        deadline = time.monotonic() + 3
+        while True:
+            stat = Path(f'/proc/{child.pid}/stat').read_text()
+            if stat.rsplit(')', 1)[1].split()[0] == 'Z':
+                break
+            if time.monotonic() >= deadline:
+                self.fail('child did not become zombie')
+            time.sleep(0.005)
+        # Do not poll/wait before inspection: these would reap the zombie.
+        self.assertFalse(Path(f'/proc/{child.pid}/exe').exists())
+        with patch.object(guard, 'nvidia_pids', return_value={child.pid}):
+            self.assertEqual(guard.inspect(child.pid)['conflicts'], [])
+        self.assertEqual(guard.processes()[child.pid]['state'], 'Z')
 
     def test_argument_text_is_not_an_executable(self):
         self.assertFalse(guard.gpu_command(

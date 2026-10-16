@@ -1,0 +1,280 @@
+{
+  "original_lease_exit": {
+    "status": "ENV_ABORT",
+    "command": [
+      "python3",
+      ".q4t-work/hc-up-subtiming-20261017-v2/run.py"
+    ],
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": -2,
+    "reason": "competing workload during lease",
+    "finished": {
+      "utc": "2026-10-16T17:01:58.501824+00:00",
+      "monotonic": 360201.0187202,
+      "pid": 1167948
+    }
+  },
+  "conflict": [
+    {
+      "utc": "2026-10-16T17:01:58.320267+00:00",
+      "monotonic": 360200.837163223,
+      "pid": 1167948,
+      "event": "monitor",
+      "conflicts": [
+        {
+          "pid": 1169273,
+          "nvidia_compute_context": true
+        }
+      ],
+      "retired_owned_contexts": [],
+      "unreadable_processes": 414
+    }
+  ],
+  "last_request_events": {
+    "runner_start": {
+      "event": "runner_start",
+      "monotonic_seconds": 359991.589282026,
+      "unix_seconds": 1792169909.072408,
+      "utc": "2026-10-16T16:58:29.072408+00:00",
+      "clock_pair_uncertainty_seconds": 8.610077202320099e-07,
+      "mode": "performance"
+    },
+    "server_before_start": {
+      "event": "server_before_start",
+      "monotonic_seconds": 359991.7011872185,
+      "unix_seconds": 1792169909.1843133,
+      "utc": "2026-10-16T16:58:29.184313+00:00",
+      "clock_pair_uncertainty_seconds": 8.195056580007076e-07
+    },
+    "server_started": {
+      "event": "server_started",
+      "monotonic_seconds": 359991.7016993825,
+      "unix_seconds": 1792169909.1848254,
+      "utc": "2026-10-16T16:58:29.184825+00:00",
+      "clock_pair_uncertainty_seconds": 5.094916559755802e-07,
+      "pid": 1169273
+    },
+    "server_ready": {
+      "event": "server_ready",
+      "monotonic_seconds": 360018.710085742,
+      "unix_seconds": 1792169936.1932116,
+      "utc": "2026-10-16T16:58:56.193212+00:00",
+      "clock_pair_uncertainty_seconds": 8.980277925729752e-07,
+      "pid": 1169273,
+      "capacity": {
+        "requested": {
+          "max_len": 208896,
+          "max_seq": 1,
+          "max_prefill": 8192
+        },
+        "effective": {
+          "max_len": 208896,
+          "max_seq": 1,
+          "max_prefill": 8192
+        },
+        "reported_requested": {
+          "max_len": 208896,
+          "max_seq": 1,
+          "max_prefill": 8192
+        },
+        "source": "server effective capacity report",
+        "matches_requested": true,
+        "budget_enabled": "1",
+        "budget_feasible": "true",
+        "raw_lines": [
+          "requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true"
+        ]
+      }
+    },
+    "client_before": {
+      "event": "client_before",
+      "monotonic_seconds": 360018.713503208,
+      "unix_seconds": 1792169936.196629,
+      "utc": "2026-10-16T16:58:56.196629+00:00",
+      "clock_pair_uncertainty_seconds": 5.369947757571936e-07,
+      "case": "context-204800",
+      "request_group": "context-204800:run1",
+      "expected_requests": 1,
+      "requested_output": 256,
+      "expected_input_min": 204752,
+      "expected_input_max": 204800,
+      "capacity": {
+        "requested": {
+          "max_len": 208896,
+          "max_seq": 1,
+          "max_prefill": 8192
+        },
+        "effective": {
+          "max_len": 208896,
+          "max_seq": 1,
+          "max_prefill": 8192
+        },
+        "reported_requested": {
+          "max_len": 208896,
+          "max_seq": 1,
+          "max_prefill": 8192
+        },
+        "source": "server effective capacity report",
+        "matches_requested": true,
+        "budget_enabled": "1",
+        "budget_feasible": "true",
+        "raw_lines": [
+          "requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true"
+        ]
+      }
+    },
+    "client_after": {
+      "event": "client_after",
+      "monotonic_seconds": 360200.4318182785,
+      "unix_seconds": 1792170117.9149444,
+      "utc": "2026-10-16T17:01:57.914944+00:00",
+      "clock_pair_uncertainty_seconds": 9.025097824633121e-07,
+      "case": "context-204800",
+      "request_group": "context-204800:run1",
+      "client_returncode": 0
+    },
+    "case_completed": {
+      "event": "case_completed",
+      "monotonic_seconds": 360200.4385216355,
+      "unix_seconds": 1792170117.9216475,
+      "utc": "2026-10-16T17:01:57.921648+00:00",
+      "clock_pair_uncertainty_seconds": 5.185138434171677e-07,
+      "case": "context-204800",
+      "requests": 1
+    },
+    "server_before_shutdown": {
+      "event": "server_before_shutdown",
+      "monotonic_seconds": 360200.4386742935,
+      "unix_seconds": 1792170117.9218,
+      "utc": "2026-10-16T17:01:57.921800+00:00",
+      "clock_pair_uncertainty_seconds": 3.144959919154644e-07,
+      "pid": 1169273
+    },
+    "server_after_shutdown": {
+      "event": "server_after_shutdown",
+      "monotonic_seconds": 360200.9091419605,
+      "unix_seconds": 1792170118.3922677,
+      "utc": "2026-10-16T17:01:58.392268+00:00",
+      "clock_pair_uncertainty_seconds": 8.654897101223469e-07,
+      "pid": 1169273,
+      "server_returncode": 0,
+      "cleanup_failure": null
+    }
+  },
+  "completed_cases": [
+    {
+      "name": "01-A",
+      "exit": {
+        "server": 0,
+        "completed": 1,
+        "http_output_checks_passed": true,
+        "performance_scope": "partial",
+        "partial_performance_matrix": true,
+        "full_five_tier_completed": false,
+        "full_offload_matrix_completed": false,
+        "performance_acceptance": false,
+        "failure": null,
+        "cleanup_failure": null
+      },
+      "result": [
+        {
+          "length": 204800,
+          "outputs": [
+            "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+          ],
+          "prompt_sha256": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4",
+          "deterministic": true,
+          "performance_scope": "partial",
+          "partial_performance_matrix": true,
+          "metrics": [
+            {
+              "ttft": 159.00113996001892,
+              "decode_tps": 14.864595136178005
+            }
+          ]
+        }
+      ],
+      "timing_coverage": "three families validated; 02-B checked offline after guard abort"
+    },
+    {
+      "name": "02-B",
+      "exit": {
+        "server": 0,
+        "completed": 1,
+        "http_output_checks_passed": true,
+        "performance_scope": "partial",
+        "partial_performance_matrix": true,
+        "full_five_tier_completed": false,
+        "full_offload_matrix_completed": false,
+        "performance_acceptance": false,
+        "failure": null,
+        "cleanup_failure": null
+      },
+      "result": [
+        {
+          "length": 204800,
+          "outputs": [
+            "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+          ],
+          "prompt_sha256": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4",
+          "deterministic": true,
+          "performance_scope": "partial",
+          "partial_performance_matrix": true,
+          "metrics": [
+            {
+              "ttft": 159.05767109902808,
+              "decode_tps": 14.736121791815734
+            }
+          ]
+        }
+      ],
+      "timing_coverage": "three families validated; 02-B checked offline after guard abort"
+    }
+  ],
+  "raw_identity": {
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/01-A/server.log": {
+      "bytes": 156484,
+      "sha256": "b0cf3608fd88007186538d7d6cd9d27aa4de50d7254c5a39c4f0393cde69fd1a"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/01-A/results.json": {
+      "bytes": 438,
+      "sha256": "f980b820657ff131924d5341ce9fda6bfda803535df47bdc4f1f13e66f0e36eb"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/01-A/exit.json": {
+      "bytes": 304,
+      "sha256": "82b0849fc727290fff051bca4c97db37ae2b799289d65b308891aee156c848a0"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/01-A/events.jsonl": {
+      "bytes": 3401,
+      "sha256": "a96db4455b351ab57ecd751d8ae944e97f18f3674ef0f57a765199166d23416a"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/02-B/server.log": {
+      "bytes": 156478,
+      "sha256": "3ca6ead678ac839a169bc79aa61cda466a2cfad17a5a74062ebb72658bb2da8c"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/02-B/results.json": {
+      "bytes": 438,
+      "sha256": "df4af78860a75441af6e9b326cc299a55598d694e298c4fcbda8a0d35a469cb4"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/02-B/exit.json": {
+      "bytes": 304,
+      "sha256": "82b0849fc727290fff051bca4c97db37ae2b799289d65b308891aee156c848a0"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/02-B/events.jsonl": {
+      "bytes": 3389,
+      "sha256": "5ebef289280902ff47782f800e657649893a02759f78bdf36907e6822f74bc65"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/lease/events.jsonl": {
+      "bytes": 76333,
+      "sha256": "76f186a15266b4154fcd3b6901aa41b889bb52746159394879149036da38cc1c"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/driver.log": {
+      "bytes": 1492,
+      "sha256": "90157c001eba72631637e18c2b9a1e90a247d98c7a0764110e7a7f11a43619cf"
+    }
+  },
+  "status": "Two complete HTTP cases preserved; phase aborted at own service shutdown; no full ABBA conclusion"
+}

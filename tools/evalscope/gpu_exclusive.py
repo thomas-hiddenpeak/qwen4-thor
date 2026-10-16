@@ -34,11 +34,21 @@ def processes(proc=Path('/proc')):
         try:
             # comm may itself contain spaces and parentheses.
             fields = (directory / 'stat').read_text().rsplit(')', 1)[1].split()
-            argv = (directory / 'cmdline').read_bytes().split(b'\0')
-            argv = [v.decode(errors='replace') for v in argv if v]
-            result[int(directory.name)] = dict(
-                ppid=int(fields[1]), pgid=int(fields[2]), start_ticks=int(fields[19]),
-                argv=argv, executable=os.readlink(directory / 'exe'))
+            record = dict(state=fields[0], ppid=int(fields[1]),
+                          pgid=int(fields[2]), start_ticks=int(fields[19]),
+                          argv=[], executable='')
+            # Exiting/zombie tasks retain stat (including ownership) after
+            # exe/cmdline disappear. Do not discard that identity as if the
+            # whole PID vanished between the driver and proc snapshots.
+            result[int(directory.name)] = record
+            try:
+                argv = (directory / 'cmdline').read_bytes().split(b'\0')
+                record['argv'] = [v.decode(errors='replace') for v in argv if v]
+                record['executable'] = os.readlink(directory / 'exe')
+            except (FileNotFoundError, ProcessLookupError):
+                record['metadata_missing'] = True
+            except PermissionError:
+                record['metadata_unreadable'] = True
         except (FileNotFoundError, ProcessLookupError):
             continue
         except PermissionError:
@@ -134,7 +144,7 @@ def stop_owned(child, grace):
     deadline = time.monotonic() + grace
     while True:
         remaining = [pid for pid, r in processes().items()
-                     if r.get('pgid') == child.pid]
+                     if r.get('pgid') == child.pid and r.get('state') != 'Z']
         if not remaining:
             return
         if time.monotonic() >= deadline:
