@@ -1,0 +1,13 @@
+{
+  "actual_source_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/source",
+  "candidate_source_commit": "dcb2a7d07c6aba1c319d2c689c5e752c5616997d",
+  "candidate_source_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "candidate_source_manifest_sha256": "9aaa996ee20ada9ff7714accbb3ad7e106e3b0139d8bb6644eca01a467ef6a09",
+  "candidate_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/q4t",
+  "candidate_binary_sha256": "b154e4a7c1ccf8ccd5d83d28f8464ecc9e068b830d680aae26d2ec15117e0ac5",
+  "candidate_build_cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/CMakeCache.txt",
+  "candidate_build_cache_sha256": "78ebff4ae7770eb54be505f9386182538804d9f0fe1eb4b1a8e7e7861a01eafd",
+  "runner": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py",
+  "runner_sha256": "43a30bb7605af0659e7d960400efaea8182e97dcf5afa4c8b52159349f44427b",
+  "harness_identity_note": "Each runner commit.txt/worktree.patch belongs to the main harness workspace, not the isolated candidate source. Candidate identity is recorded here before and after each collection."
+}

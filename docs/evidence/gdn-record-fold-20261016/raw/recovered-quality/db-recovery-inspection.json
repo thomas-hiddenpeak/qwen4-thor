@@ -1,0 +1,17 @@
+{
+  "integrity": [
+    [
+      "ok"
+    ]
+  ],
+  "schema": [
+    [
+      "table",
+      "result",
+      "CREATE TABLE result(\n                      request TEXT,\n                      start_time REAL,\n                      inter_token_latencies TEXT,\n                      success INTEGER,\n                      response_messages TEXT,\n                      completed_time REAL,\n                      latency REAL,\n                      first_chunk_latency REAL,\n                      prompt_tokens INTEGER,\n                      completion_tokens INTEGER,\n                      max_gpu_memory_cost REAL,\n                      time_per_output_token REAL,\n                      request_id TEXT,\n                      is_stream INTEGER\n                   )"
+    ]
+  ],
+  "row_count": 0,
+  "copied_journal_after_recovery_exists": true,
+  "note": "SQLite connected only to copied DB plus same-name copied journal; originals never opened writable."
+}

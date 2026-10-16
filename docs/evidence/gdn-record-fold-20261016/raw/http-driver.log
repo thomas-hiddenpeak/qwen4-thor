@@ -1,0 +1,9 @@
+Starting quality-on
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-driver.py.txt", line 228, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-driver.py.txt", line 201, in main
+    require(rc == 0, name + ' HTTP runner failed')
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-driver.py.txt", line 38, in require
+    raise RuntimeError(message)
+RuntimeError: quality-on HTTP runner failed

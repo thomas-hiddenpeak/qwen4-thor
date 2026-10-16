@@ -1,0 +1,8 @@
+{
+  "time_unix": 1792124268.8671157,
+  "readiness_evidence": "HC closure commit 9d16fca explicitly states this GPU phase stopped; no q4t serve/nsys collection processes at launch",
+  "ui_turn_status": "App status tools did not return within bounded waits; no claim that UI final status was observed",
+  "gpu_window_reservation_commit": "df182c5",
+  "decision": "Use committed phase closure plus empty process snapshot, reserve entire GDN group across service gaps, retain runtime competitor monitor",
+  "candidate_source_unchanged": true
+}

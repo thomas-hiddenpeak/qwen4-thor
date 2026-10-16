@@ -1,0 +1,106 @@
+2026-10-16 11:56:08 - evalscope - INFO: Save the result to: /home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-clean/quality-on/quality/20261016_115608/qwen3.8-flash-next
+Running[perf]:   0%|          | 0/1 [00:00<?, ?it/s]                                                    2026-10-16 11:56:08 - evalscope - INFO: Starting benchmark with args: 
+Running[perf]:   0%|          | 0/1 [00:00<?, ?it/s]                                                    2026-10-16 11:56:08 - evalscope - INFO: {
+    "model": "qwen3.8-flash-next",
+    "model_id": "qwen3.8-flash-next",
+    "attn_implementation": null,
+    "api": "openai",
+    "tokenizer_path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "port": 8877,
+    "url": "http://127.0.0.1:8741/v1/chat/completions",
+    "headers": {},
+    "connect_timeout": 30,
+    "read_timeout": 7200,
+    "total_timeout": 10800,
+    "api_key": null,
+    "no_test_connection": true,
+    "scenario": null,
+    "number": 11,
+    "parallel": 1,
+    "rate": -1.0,
+    "warmup_num": 0.0,
+    "enable_pd_metrics": false,
+    "open_loop": false,
+    "sleep_interval": 5,
+    "duration": null,
+    "sla_auto_tune": false,
+    "sla_variable": "parallel",
+    "sla_params": null,
+    "sla_num_runs": 3,
+    "sla_upper_bound": 65536,
+    "sla_lower_bound": 1,
+    "sla_fixed_parallel": null,
+    "sla_number_multiplier": null,
+    "db_commit_interval": 1000,
+    "queue_size_multiplier": 5,
+    "in_flight_task_multiplier": 2,
+    "num_workers": 0,
+    "log_every_n_query": 100,
+    "debug": false,
+    "enable_progress_tracker": false,
+    "visualizer": null,
+    "wandb_api_key": null,
+    "swanlab_api_key": null,
+    "swanlab_host": null,
+    "name": null,
+    "outputs_dir": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-clean/quality-on/quality/20261016_115608/qwen3.8-flash-next",
+    "no_timestamp": false,
+    "max_prompt_length": 208896,
+    "min_prompt_length": 1,
+    "prefix_length": 0,
+    "prompt": null,
+    "query_template": null,
+    "apply_chat_template": false,
+    "image_width": 224,
+    "image_height": 224,
+    "image_format": "RGB",
+    "image_num": 1,
+    "image_patch_size": 28,
+    "dataset": "line_by_line",
+    "dataset_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-clean/quality-on/inputs/requests.jsonl",
+    "data_source": null,
+    "dataset_offset": 0,
+    "dataset_args": null,
+    "frequency_penalty": null,
+    "repetition_penalty": null,
+    "logprobs": null,
+    "max_tokens": 32,
+    "min_tokens": null,
+    "n_choices": null,
+    "seed": 20260920,
+    "stop": null,
+    "stop_token_ids": null,
+    "stream": true,
+    "temperature": 0.0,
+    "top_p": null,
+    "top_k": null,
+    "extra_args": {},
+    "tokenize_prompt": false,
+    "multi_turn": false,
+    "min_turns": 1,
+    "max_turns": null,
+    "multi_turn_args": null
+}
+Running[perf]:   0%|          | 0/1 [00:00<?, ?it/s]                                                    2026-10-16 11:56:08 - evalscope - INFO: uvloop event loop policy installed (asyncio.sleep precision improved)
+Running[perf]:   0%|          | 0/1 [00:00<?, ?it/s][transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+
+Generating[requests]:   0%|          | 0/11 [00:00<?, ?it/s][A                                                    
+                                                            [A2026-10-16 11:56:10 - evalscope - INFO: Generating[requests]  91%| 10/11 [Elapsed: 00:00 < Remaining: 00:00, 5181.99it/s]
+Running[perf]:   0%|          | 0/1 [00:01<?, ?it/s]
+Generating[requests]:  91%|█████████ | 10/11 [00:00<00:00, 4364.07it/s][AGenerating[requests]:  91%|█████████ | 10/11 [00:00<00:00, 4210.73it/s]
+                                                    2026-10-16 11:56:10 - evalscope - INFO: Save the data base to: /home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-clean/quality-on/quality/20261016_115608/qwen3.8-flash-next/parallel_1_number_11/benchmark_data.db
+Running[perf]:   0%|          | 0/1 [00:01<?, ?it/s]
+Processing[parallel_1_number_11]:   0%|          | 0/11 [00:00<?, ?it/s][A
+Processing[parallel_1_number_11]:   9%|▉         | 1/11 [00:01<00:12,  1.22s/it][A
+Processing[parallel_1_number_11]:  18%|█▊        | 2/11 [00:02<00:09,  1.10s/it][A
+Processing[parallel_1_number_11]:  27%|██▋       | 3/11 [00:03<00:08,  1.06s/it][A
+Processing[parallel_1_number_11]:  36%|███▋      | 4/11 [00:06<00:12,  1.84s/it][A
+Processing[parallel_1_number_11]:  45%|████▌     | 5/11 [00:09<00:13,  2.27s/it][A
+Processing[parallel_1_number_11]:  55%|█████▍    | 6/11 [00:12<00:12,  2.53s/it][A
+Processing[parallel_1_number_11]:  64%|██████▎   | 7/11 [00:18<00:14,  3.58s/it][A
+Processing[parallel_1_number_11]:  73%|███████▎  | 8/11 [00:23<00:12,  4.27s/it][A
+Processing[parallel_1_number_11]:  82%|████████▏ | 9/11 [00:29<00:09,  4.74s/it][A
+Processing[parallel_1_number_11]:  91%|█████████ | 10/11 [01:01<00:13, 13.09s/it][A                                                    
+                                                                                 [A2026-10-16 11:57:11 - evalscope - INFO: Processing[parallel_1_number_11]  91%| 10/11 [Elapsed: 01:01 < Remaining: 00:13, 13.09s/it]
+Running[perf]:   0%|          | 0/1 [01:03<?, ?it/s]
+Processing[parallel_1_number_11]:  91%|█████████ | 10/11 [01:01<00:13, 13.09s/it][A

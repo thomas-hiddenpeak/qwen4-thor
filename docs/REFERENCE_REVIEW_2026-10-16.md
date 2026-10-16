@@ -320,3 +320,14 @@ KVMem主仓tracked tree未找到LICENSE/COPYING/NOTICE；README仅说backend
 本轮完成：身份冻结、关键实现与调用链审阅、本地差异分析、候选排序。
 未完成也未声称完成：Thor移植、第三方单测复现、整模型数值/HTTP质量/性能验收。
 本项目运行时身份、已接受MTP成果和两候选NO_GO结论均保持。
+
+## 后续实证：GDN anchor＋rank-one候选
+
+用户授权继续后，已将Record/Fold方向收窄为一个原生候选并实际完成
+Thor HTTP筛选。默认MTP decode五档几何平均+0.680728%，但44K/200K
+TTFT触发预定保护门槛，结论NO_GO；质量11/11、性能15/15输出合同
+通过，后续数值与off验收未运行，生产未接入。
+减少的是checkpoint写payload，分配容量未减少。这只覆盖本次变体，
+不否定NInfer的全部Record/Fold设计，也不将源码分析升级为已接受收益。
+实现、关键代码链接和完整证据见
+[有界研究报告](GDN_RECORD_FOLD_2026-10-16.md)。

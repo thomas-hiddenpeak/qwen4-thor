@@ -1,0 +1,565 @@
+{
+  "schema_version": 1,
+  "archive_time_unix": 1792125372.688852,
+  "raw_work_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016",
+  "archive_status": "EVIDENCE_ARCHIVED_NOT_ACCEPTANCE",
+  "original_attempt_status": "ENV_ABORT",
+  "second_attempt_status": "ENV_ABORT",
+  "formal_http_directory": "http-resume",
+  "formal_http_status": "HTTP_GATE_STOP",
+  "candidate_acceptance": "NOT_GRANTED_BY_THIS_ARCHIVE",
+  "numeric_contracts": "NOT_ADJUDICATED_BY_THIS_ARCHIVER",
+  "http_attempts": {
+    "http": {
+      "status": "ENV_ABORT",
+      "raw_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http",
+      "reason": "Concurrent unrelated HC up Nsight diagnosis restarted after idle observation; abort this candidate before any HTTP request",
+      "terminal_markers": {
+        "environment-abort.json": {
+          "time_unix": 1792122330.2530937,
+          "reason": "Concurrent unrelated HC up Nsight diagnosis restarted after idle observation; abort this candidate before any HTTP request",
+          "candidate_server_pid": 1027603,
+          "candidate_runner_pid": 1027595,
+          "other_server_pid": 1026739,
+          "other_driver_pid": 1026690,
+          "http_requests_sent": 0,
+          "candidate_process_interval_utc": [
+            "2026-10-16T03:43:43.884471+00:00",
+            "2026-10-16T03:45:30.519356+00:00"
+          ],
+          "other_trace_interpretation": "Concurrent candidate loading may affect the other trace during this interval; no conclusion about its magnitude or cause is drawn here."
+        },
+        "gate-stop.json": {
+          "reason": "quality-on HTTP runner failed",
+          "no_retry": true
+        }
+      },
+      "groups": {
+        "quality-on": {
+          "status": "RECORDED",
+          "raw_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http/quality-on",
+          "runner_exit": {
+            "returncode": -2,
+            "command": [
+              "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python3",
+              "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py",
+              "--binary",
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/q4t",
+              "--model-dir",
+              "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+              "--startup-timeout",
+              "300",
+              "--max-len",
+              "208896",
+              "--allow-unqualified-binary",
+              "--mode",
+              "quality",
+              "--output",
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http/quality-on",
+              "--fixtures",
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http/quality-on/inputs",
+              "--reference",
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http/quality-on/results.json",
+              "--port",
+              "8741",
+              "--mtp-default"
+            ]
+          },
+          "server_exit": {
+            "server": -15,
+            "completed": 0,
+            "http_output_checks_passed": false,
+            "performance_scope": null,
+            "partial_performance_matrix": null,
+            "full_five_tier_completed": false,
+            "full_offload_matrix_completed": false,
+            "performance_acceptance": false,
+            "failure": null,
+            "cleanup_failure": null
+          },
+          "results_path": null,
+          "completed_cases_or_tiers": 0
+        },
+        "on": {
+          "status": "NOT_RUN",
+          "raw_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http/on",
+          "runner_exit": null,
+          "server_exit": null,
+          "results_path": null
+        },
+        "quality-off": {
+          "status": "NOT_RUN",
+          "raw_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http/quality-off",
+          "runner_exit": null,
+          "server_exit": null,
+          "results_path": null
+        },
+        "off": {
+          "status": "NOT_RUN",
+          "raw_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http/off",
+          "runner_exit": null,
+          "server_exit": null,
+          "results_path": null
+        }
+      },
+      "http_requests_sent_recorded": 0,
+      "request_count_note": "Recorded by the environment-abort marker"
+    },
+    "http-clean": {
+      "status": "ENV_ABORT",
+      "raw_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-clean",
+      "reason": "Concurrent unrelated GPU workload; formal attempt excluded",
+      "terminal_markers": {
+        "environment-abort.json": {
+          "status": "ENV_ABORT",
+          "time_unix": 1792123083.4957929,
+          "phase": "quality-on-running",
+          "reason": "Concurrent unrelated GPU workload; formal attempt excluded",
+          "competing_processes": [
+            {
+              "pid": 1031522,
+              "ppid": 1031514,
+              "start_time_ticks": 31316426,
+              "argv": [
+                "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/q4t-main",
+                "serve",
+                "--model-dir",
+                "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+                "--port",
+                "8730",
+                "--max-seq",
+                "1",
+                "--max-prefill",
+                "8192",
+                "--max-len",
+                "208896",
+                "--max-tokens",
+                "256",
+                "--no-mtp"
+              ],
+              "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/q4t-main",
+              "reason": "other q4t serve"
+            }
+          ],
+          "own_runner_pid": 1030311,
+          "own_runner_confirmed_exited": true,
+          "http_requests_sent": null,
+          "request_count_note": "Unknown during interrupted client run",
+          "action": "SIGINT only the owned runner; leave unrelated processes untouched",
+          "candidate_performance_verdict": null
+        },
+        "gate-stop.json": {
+          "reason": "ENV_ABORT: concurrent unrelated workload observed",
+          "no_retry": true
+        }
+      },
+      "groups": {
+        "quality-on": {
+          "status": "RECORDED",
+          "raw_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-clean/quality-on",
+          "runner_exit": {
+            "returncode": -2,
+            "command": [
+              "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python3",
+              "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py",
+              "--binary",
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/q4t",
+              "--model-dir",
+              "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+              "--startup-timeout",
+              "300",
+              "--max-len",
+              "208896",
+              "--allow-unqualified-binary",
+              "--mode",
+              "quality",
+              "--output",
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-clean/quality-on",
+              "--fixtures",
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http/quality-on/inputs",
+              "--reference",
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http/quality-on/results.json",
+              "--port",
+              "8741",
+              "--mtp-default"
+            ],
+            "environment_abort": true
+          },
+          "server_exit": {
+            "server": 0,
+            "completed": 0,
+            "http_output_checks_passed": false,
+            "performance_scope": null,
+            "partial_performance_matrix": null,
+            "full_five_tier_completed": false,
+            "full_offload_matrix_completed": false,
+            "performance_acceptance": false,
+            "failure": null,
+            "cleanup_failure": null
+          },
+          "results_path": null,
+          "completed_cases_or_tiers": 0
+        },
+        "on": {
+          "status": "NOT_RUN",
+          "raw_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-clean/on",
+          "runner_exit": null,
+          "server_exit": null,
+          "results_path": null
+        },
+        "quality-off": {
+          "status": "NOT_RUN",
+          "raw_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-clean/quality-off",
+          "runner_exit": null,
+          "server_exit": null,
+          "results_path": null
+        },
+        "off": {
+          "status": "NOT_RUN",
+          "raw_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-clean/off",
+          "runner_exit": null,
+          "server_exit": null,
+          "results_path": null
+        }
+      },
+      "http_requests_sent_recorded": null,
+      "request_count_note": "Unknown during interrupted client run"
+    },
+    "http-resume": {
+      "status": "HTTP_GATE_STOP",
+      "raw_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-resume",
+      "reason": "on: NO_GO adverse performance separation; no extra samples",
+      "terminal_markers": {
+        "gate-stop.json": {
+          "reason": "on: NO_GO adverse performance separation; no extra samples",
+          "no_retry": true
+        }
+      },
+      "groups": {
+        "quality-on": {
+          "status": "RECORDED",
+          "raw_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-resume/quality-on",
+          "runner_exit": {
+            "returncode": 0,
+            "command": [
+              "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python3",
+              "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py",
+              "--binary",
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/q4t",
+              "--model-dir",
+              "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+              "--startup-timeout",
+              "300",
+              "--max-len",
+              "208896",
+              "--allow-unqualified-binary",
+              "--mode",
+              "quality",
+              "--output",
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-resume/quality-on",
+              "--fixtures",
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/recovered-quality/inputs",
+              "--reference",
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http/quality-on/results.json",
+              "--port",
+              "8741",
+              "--mtp-default"
+            ],
+            "environment_abort": false
+          },
+          "server_exit": {
+            "server": 0,
+            "completed": 11,
+            "http_output_checks_passed": true,
+            "performance_scope": null,
+            "partial_performance_matrix": null,
+            "full_five_tier_completed": false,
+            "full_offload_matrix_completed": false,
+            "performance_acceptance": false,
+            "failure": null,
+            "cleanup_failure": null
+          },
+          "results_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-resume/quality-on/results.json",
+          "completed_cases_or_tiers": 11
+        },
+        "on": {
+          "status": "RECORDED",
+          "raw_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-resume/on",
+          "runner_exit": {
+            "returncode": 0,
+            "command": [
+              "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python3",
+              "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py",
+              "--binary",
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/q4t",
+              "--model-dir",
+              "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+              "--startup-timeout",
+              "300",
+              "--max-len",
+              "208896",
+              "--allow-unqualified-binary",
+              "--mode",
+              "performance",
+              "--output",
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-resume/on",
+              "--fixtures",
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http/on",
+              "--reference",
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http/on/results.json",
+              "--port",
+              "8741",
+              "--mtp-default",
+              "--perf-repeats",
+              "3"
+            ],
+            "environment_abort": false
+          },
+          "server_exit": {
+            "server": 0,
+            "completed": 5,
+            "http_output_checks_passed": true,
+            "performance_scope": "five_tier",
+            "partial_performance_matrix": false,
+            "full_five_tier_completed": true,
+            "full_offload_matrix_completed": false,
+            "performance_acceptance": false,
+            "failure": null,
+            "cleanup_failure": null
+          },
+          "results_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-resume/on/results.json",
+          "completed_cases_or_tiers": 5
+        },
+        "quality-off": {
+          "status": "NOT_RUN",
+          "raw_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-resume/quality-off",
+          "runner_exit": null,
+          "server_exit": null,
+          "results_path": null
+        },
+        "off": {
+          "status": "NOT_RUN",
+          "raw_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-resume/off",
+          "runner_exit": null,
+          "server_exit": null,
+          "results_path": null
+        }
+      },
+      "http_requests_sent_recorded": null,
+      "request_count_note": "Not inferred from incomplete runner/tier counts"
+    }
+  },
+  "interrupted_attempts": [
+    "http",
+    "http-clean"
+  ],
+  "quality_recovery": {
+    "raw_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/recovered-quality",
+    "validation": {
+      "status": "NO_REUSABLE_PERSISTED_REQUEST_ROWS",
+      "database_row_count_after_copy_recovery": 0,
+      "expected_quality_cases": 11,
+      "reused_quality_cases": 0,
+      "missing_quality_cases": 11,
+      "checks": {
+        "response_identity": "NOT_RUN_NO_ROWS",
+        "request_timing": "NOT_RUN_NO_ROWS",
+        "quality_expected_length_finish": "NOT_RUN_NO_ROWS",
+        "quality_reference_text_and_prompt": "NOT_RUN_NO_ROWS",
+        "completion_before_competitor": "UNPROVABLE_NO_COMPLETION_TIMESTAMPS",
+        "input_manifest_requests_reference_identity": "PASS_IDENTICAL_BYTES_AND_PROMPT_HASHES"
+      },
+      "missing_input_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/recovered-quality/inputs",
+      "missing_inputs_are_exact_original_eleven_case_fixture": true,
+      "missing_fixture_sha256": {
+        "manifest.json": "e2a542bf2c27b4404844b2e60e861c80e6c670d32bcd78685ad053f7fb833ae1",
+        "requests.jsonl": "22cce46de658df1988cacbe311bc74a7d6f1e7125c48e11e1cd9a0dd97ab4c42"
+      },
+      "original_driver_exit": -2,
+      "original_client_returncode": null,
+      "original_run_status": "ENV_ABORT_NOT_CANDIDATE_NO_GO",
+      "source_identity": {
+        "actual_source_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/source",
+        "candidate_source_commit": "dcb2a7d07c6aba1c319d2c689c5e752c5616997d",
+        "candidate_source_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "candidate_source_manifest_sha256": "9aaa996ee20ada9ff7714accbb3ad7e106e3b0139d8bb6644eca01a467ef6a09",
+        "candidate_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/q4t",
+        "candidate_binary_sha256": "b154e4a7c1ccf8ccd5d83d28f8464ecc9e068b830d680aae26d2ec15117e0ac5",
+        "candidate_build_cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/CMakeCache.txt",
+        "candidate_build_cache_sha256": "78ebff4ae7770eb54be505f9386182538804d9f0fe1eb4b1a8e7e7861a01eafd",
+        "runner": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py",
+        "runner_sha256": "43a30bb7605af0659e7d960400efaea8182e97dcf5afa4c8b52159349f44427b",
+        "harness_identity_note": "Each runner commit.txt/worktree.patch belongs to the main harness workspace, not the isolated candidate source. Candidate identity is recorded here before and after each collection."
+      },
+      "evalscope_commit_interval": 1000,
+      "persistence_code": "evalscope/perf/core/metrics_consumer.py:58,119-123,159",
+      "interpretation": "Ten service-side completions were observed, but no durable per-request response/timing row survives; none can be accepted from logs alone. All eleven remain missing evidence."
+    },
+    "service_observations": {
+      "server_log_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-clean/quality-on/server.log",
+      "server_log_sha256": "97d0b3d669b0a5c64110d52464a73d6216cc6b12313b45d83f8e7bca940a870c",
+      "observed_request_end_ids": [
+        "chatcmpl-auto-0",
+        "chatcmpl-auto-1",
+        "chatcmpl-auto-2",
+        "chatcmpl-auto-3",
+        "chatcmpl-auto-4",
+        "chatcmpl-auto-5",
+        "chatcmpl-auto-6",
+        "chatcmpl-auto-7",
+        "chatcmpl-auto-8",
+        "chatcmpl-auto-9"
+      ],
+      "observed_cancelled": [
+        {
+          "response_id": "chatcmpl-auto-10",
+          "reason": "server_shutdown"
+        }
+      ],
+      "attempted_service_requests": 11,
+      "service_observed_completed": 10,
+      "service_observed_cancelled": 1,
+      "quality_validated": 0,
+      "scope": "Service log observations only; not HTTP response/quality acceptance",
+      "no_performance_requests": true
+    },
+    "note": "Recovered DB has zero persisted request rows; service-side completions do not establish HTTP/quality acceptance. Preserve validation, clock evidence, notes and original identity manifests; DB/journal copies are hash-only."
+  },
+  "recorded_frozen_identities": {
+    "http": {
+      "recorded_identity": {
+        "actual_source_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/source",
+        "candidate_source_commit": "dcb2a7d07c6aba1c319d2c689c5e752c5616997d",
+        "candidate_source_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "candidate_source_manifest_sha256": "9aaa996ee20ada9ff7714accbb3ad7e106e3b0139d8bb6644eca01a467ef6a09",
+        "candidate_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/q4t",
+        "candidate_binary_sha256": "b154e4a7c1ccf8ccd5d83d28f8464ecc9e068b830d680aae26d2ec15117e0ac5",
+        "candidate_build_cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/CMakeCache.txt",
+        "candidate_build_cache_sha256": "78ebff4ae7770eb54be505f9386182538804d9f0fe1eb4b1a8e7e7861a01eafd",
+        "runner": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py",
+        "runner_sha256": "43a30bb7605af0659e7d960400efaea8182e97dcf5afa4c8b52159349f44427b",
+        "harness_identity_note": "Each runner commit.txt/worktree.patch belongs to the main harness workspace, not the isolated candidate source. Candidate identity is recorded here before and after each collection."
+      },
+      "per_group_identity_equals_frozen": {
+        "identity/frozen/identity.json": true,
+        "identity/quality-on-after/identity.json": true,
+        "identity/quality-on-before/identity.json": true
+      },
+      "identity_is_from_recorded_run_not_current_HEAD": true,
+      "current_build_q4t_equals_recorded": true,
+      "current_CMakeCache_equals_recorded": true
+    },
+    "http-clean": {
+      "recorded_identity": {
+        "actual_source_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/source",
+        "candidate_source_commit": "dcb2a7d07c6aba1c319d2c689c5e752c5616997d",
+        "candidate_source_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "candidate_source_manifest_sha256": "9aaa996ee20ada9ff7714accbb3ad7e106e3b0139d8bb6644eca01a467ef6a09",
+        "candidate_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/q4t",
+        "candidate_binary_sha256": "b154e4a7c1ccf8ccd5d83d28f8464ecc9e068b830d680aae26d2ec15117e0ac5",
+        "candidate_build_cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/CMakeCache.txt",
+        "candidate_build_cache_sha256": "78ebff4ae7770eb54be505f9386182538804d9f0fe1eb4b1a8e7e7861a01eafd",
+        "runner": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py",
+        "runner_sha256": "43a30bb7605af0659e7d960400efaea8182e97dcf5afa4c8b52159349f44427b",
+        "harness_identity_note": "Each runner commit.txt/worktree.patch belongs to the main harness workspace, not the isolated candidate source. Candidate identity is recorded here before and after each collection."
+      },
+      "per_group_identity_equals_frozen": {
+        "identity/frozen/identity.json": true,
+        "identity/quality-on-after/identity.json": true,
+        "identity/quality-on-before/identity.json": true
+      },
+      "identity_is_from_recorded_run_not_current_HEAD": true,
+      "current_build_q4t_equals_recorded": true,
+      "current_CMakeCache_equals_recorded": true
+    },
+    "http-resume": {
+      "recorded_identity": {
+        "actual_source_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/source",
+        "candidate_source_commit": "dcb2a7d07c6aba1c319d2c689c5e752c5616997d",
+        "candidate_source_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "candidate_source_manifest_sha256": "9aaa996ee20ada9ff7714accbb3ad7e106e3b0139d8bb6644eca01a467ef6a09",
+        "candidate_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/q4t",
+        "candidate_binary_sha256": "b154e4a7c1ccf8ccd5d83d28f8464ecc9e068b830d680aae26d2ec15117e0ac5",
+        "candidate_build_cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/CMakeCache.txt",
+        "candidate_build_cache_sha256": "78ebff4ae7770eb54be505f9386182538804d9f0fe1eb4b1a8e7e7861a01eafd",
+        "runner": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py",
+        "runner_sha256": "43a30bb7605af0659e7d960400efaea8182e97dcf5afa4c8b52159349f44427b",
+        "harness_identity_note": "Each runner commit.txt/worktree.patch belongs to the main harness workspace, not the isolated candidate source. Candidate identity is recorded here before and after each collection."
+      },
+      "per_group_identity_equals_frozen": {
+        "identity/frozen/identity.json": true,
+        "identity/on-after/identity.json": true,
+        "identity/on-before/identity.json": true,
+        "identity/quality-on-after/identity.json": true,
+        "identity/quality-on-before/identity.json": true
+      },
+      "identity_is_from_recorded_run_not_current_HEAD": true,
+      "current_build_q4t_equals_recorded": true,
+      "current_CMakeCache_equals_recorded": true
+    }
+  },
+  "build_files_observed_at_archive": {
+    "q4t": {
+      "raw_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/q4t",
+      "bytes": 4433160,
+      "sha256": "b154e4a7c1ccf8ccd5d83d28f8464ecc9e068b830d680aae26d2ec15117e0ac5",
+      "mtime_ns": 1792121962048206741,
+      "scope": "build_observed_at_archive",
+      "copied_to": null
+    },
+    "q4t_tests": {
+      "raw_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/q4t_tests",
+      "bytes": 5399712,
+      "sha256": "3eeea0c796b8cc7e9c591f4ae67d2b96e6ab7d5efdfd16321b1a65d05a7794f0",
+      "mtime_ns": 1792122102544411967,
+      "scope": "build_observed_at_archive",
+      "copied_to": null
+    },
+    "q4t_mtp_lifecycle": {
+      "raw_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/q4t_mtp_lifecycle",
+      "bytes": 3734016,
+      "sha256": "707301a4bce45859146be2c34bcfe5cd702887270f39f02788666f2aea86b2b8",
+      "mtime_ns": 1792122104356414901,
+      "scope": "build_observed_at_archive",
+      "copied_to": null
+    },
+    "CMakeCache.txt": {
+      "raw_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/CMakeCache.txt",
+      "bytes": 37352,
+      "sha256": "78ebff4ae7770eb54be505f9386182538804d9f0fe1eb4b1a8e7e7861a01eafd",
+      "mtime_ns": 1792121815064049086,
+      "scope": "build_observed_at_archive",
+      "copied_to": "build-identity/CMakeCache.txt"
+    }
+  },
+  "baseline": {
+    "expected_binary_sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "raw_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http",
+    "selected_metadata": "baseline/selected",
+    "historical_raw_manifest": "baseline/historical-raw-manifest.json",
+    "historical_manifest_note": "Copied prior archive inventory. It describes historical raw baseline files; those large baseline files were not freshly rehashed here. Copied baseline metadata was freshly hashed."
+  },
+  "manifest_scope": {
+    "complete_current_work_evidence_except": [
+      "build",
+      "source",
+      "staging-evidence"
+    ],
+    "build_exceptions": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/q4t",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/q4t_tests",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/q4t_mtp_lifecycle",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/CMakeCache.txt"
+    ],
+    "raw_files": 380,
+    "copied_files": 339,
+    "large_files": "Retained at raw_path with byte count and SHA-256"
+  },
+  "frozen_source_export": {
+    "recorded_commit": "dcb2a7d07c6aba1c319d2c689c5e752c5616997d",
+    "commit_patch": "frozen-source/dcb2a7d07c6aba1c319d2c689c5e752c5616997d.patch",
+    "frozen_plan": "frozen-source/GDN_RECORD_FOLD_2026-10-16.md",
+    "note": "Run source manifests and patches remain under raw/http*/identity. Current source HEAD is not used as run identity."
+  },
+  "interpretation": "ENV_ABORT is an interrupted environment, not candidate NO_GO. NOT_RUN means formal http-resume has not run. HTTP_GATE_STOP preserves its reason without guessing a numeric verdict. HTTP_SCREEN_PASS_NUMERICS_PENDING is only an HTTP screen; archiving or HTTP completion does not establish overall PASS."
+}

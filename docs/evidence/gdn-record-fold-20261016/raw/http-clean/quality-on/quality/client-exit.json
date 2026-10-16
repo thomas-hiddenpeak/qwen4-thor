@@ -1,0 +1,50 @@
+{
+  "returncode": null,
+  "before": {
+    "event": "client_before",
+    "monotonic_seconds": 313048.63472976896,
+    "unix_seconds": 1792122966.1178553,
+    "utc": "2026-10-16T03:56:06.117855+00:00",
+    "clock_pair_uncertainty_seconds": 3.099848981946707e-07,
+    "case": "quality",
+    "request_group": "quality",
+    "expected_requests": 11,
+    "requested_output": 32,
+    "expected_input_min": 1,
+    "expected_input_max": 208896,
+    "capacity": {
+      "requested": {
+        "max_len": 208896,
+        "max_seq": 1,
+        "max_prefill": 8192
+      },
+      "effective": {
+        "max_len": 208896,
+        "max_seq": 1,
+        "max_prefill": 8192
+      },
+      "reported_requested": {
+        "max_len": 208896,
+        "max_seq": 1,
+        "max_prefill": 8192
+      },
+      "source": "server effective capacity report",
+      "matches_requested": true,
+      "budget_enabled": "1",
+      "budget_feasible": "true",
+      "raw_lines": [
+        "requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true"
+      ]
+    }
+  },
+  "after": {
+    "event": "client_after",
+    "monotonic_seconds": 313164.597197744,
+    "unix_seconds": 1792123082.0803237,
+    "utc": "2026-10-16T03:58:02.080324+00:00",
+    "clock_pair_uncertainty_seconds": 6.019836291670799e-07,
+    "case": "quality",
+    "request_group": "quality",
+    "client_returncode": null
+  }
+}

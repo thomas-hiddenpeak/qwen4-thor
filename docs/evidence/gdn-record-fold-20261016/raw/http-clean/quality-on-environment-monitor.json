@@ -1,0 +1,38 @@
+{
+  "own_runner_pid": 1030311,
+  "start_time_unix": 1792122936.9956849,
+  "end_time_unix": 1792123083.49606,
+  "scan_count": 73,
+  "poll_seconds": 2,
+  "conflicts": [
+    {
+      "pid": 1031522,
+      "ppid": 1031514,
+      "start_time_ticks": 31316426,
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/q4t-main",
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--port",
+        "8730",
+        "--max-seq",
+        "1",
+        "--max-prefill",
+        "8192",
+        "--max-len",
+        "208896",
+        "--max-tokens",
+        "256",
+        "--no-mtp"
+      ],
+      "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/q4t-main",
+      "reason": "other q4t serve"
+    }
+  ],
+  "sigint_sent_to_own_runner": true,
+  "own_runner_confirmed_exited": true,
+  "cleanup_error": null,
+  "owned_descendants_excluded_by_pid_and_start_time": 3,
+  "limitation": "Best-effort /proc polling, not an atomic GPU reservation"
+}

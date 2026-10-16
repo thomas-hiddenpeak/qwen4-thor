@@ -1,0 +1,74 @@
+[  1%] Built target q4t_runtime
+[  6%] Built target q4t_trace
+[ 11%] Built target q4t_io
+[ 18%] Built target q4t_ple
+[ 19%] Built target q4t_text
+[ 26%] Built target q4t_quant
+[ 47%] Built target q4t_model
+[ 49%] Building CXX object CMakeFiles/q4t_tests.dir/tests/ple_ngram_hash_test.cpp.o
+[ 49%] Building CXX object CMakeFiles/q4t_tests.dir/tests/ple_page_reader_test.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_tests.dir/tests/ple_fp8_convert_test.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_tests.dir/tests/ple_e2e_gather_test.cpp.o
+[ 52%] Building CXX object CMakeFiles/q4t_tests.dir/tests/ple_working_memory_test.cpp.o
+[ 54%] Building CXX object CMakeFiles/q4t_tests.dir/tests/io_json_test.cpp.o
+[ 54%] Building CXX object CMakeFiles/q4t_tests.dir/tests/runtime_memory_budget_test.cpp.o
+[ 55%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_sequence_test.cpp.o
+[ 55%] Building CXX object CMakeFiles/q4t_tests.dir/tests/server_http_request_test.cpp.o
+[ 57%] Building CXX object CMakeFiles/q4t_tests.dir/tests/server_chat_contract_test.cpp.o
+[ 57%] Building CXX object CMakeFiles/q4t_tests.dir/src/server/chat_contract.cpp.o
+[ 59%] Building CXX object CMakeFiles/q4t_tests.dir/src/server/http_request.cpp.o
+[ 60%] Building CXX object CMakeFiles/q4t_tests.dir/tests/io_safetensors_test.cpp.o
+[ 60%] Building CXX object CMakeFiles/q4t_tests.dir/tests/io_model_config_test.cpp.o
+[ 62%] Building CXX object CMakeFiles/q4t_tests.dir/tests/io_weight_loader_test.cpp.o
+[ 62%] Building CXX object CMakeFiles/q4t_tests.dir/tests/quant_fp4_test.cpp.o
+[ 63%] Building CXX object CMakeFiles/q4t_tests.dir/tests/quant_moe_load_test.cpp.o
+[ 63%] Building CXX object CMakeFiles/q4t_tests.dir/tests/quant_moe_gemm_test.cpp.o
+[ 65%] Building CXX object CMakeFiles/q4t_tests.dir/tests/quant_moe_residency_test.cpp.o
+[ 67%] Building CXX object CMakeFiles/q4t_tests.dir/tests/moe_decode_grouped_test.cpp.o
+[ 67%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_hyperconnection_test.cpp.o
+[ 68%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_linear_attention_test.cpp.o
+[ 68%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_full_attention_test.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_tests.dir/tests/streaming_topk_test.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_tests.dir/tests/decode_topk_test.cpp.o
+[ 72%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_decoder_layer_test.cpp.o
+[ 73%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_ple_layer_test.cpp.o
+[ 73%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_head_test.cpp.o
+[ 75%] Building CXX object CMakeFiles/q4t_tests.dir/tests/gemv_fp8_test.cpp.o
+[ 75%] Building CXX object CMakeFiles/q4t_tests.dir/tests/gemm_t1_vs_tk1_test.cpp.o
+[ 77%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_forward_test.cpp.o
+[ 77%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_moe_test.cpp.o
+[ 78%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_verify_multi_test.cpp.o
+[ 80%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_verify_ckpt_test.cpp.o
+[ 80%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_verify_ckpt_samepath_test.cpp.o
+[ 81%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_prefill_batch_test.cpp.o
+[ 81%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_mixed_batch_test.cpp.o
+[ 83%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mtp_draft_test.cpp.o
+[ 83%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mtp_speculative_test.cpp.o
+[ 85%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mtp_spec_multi_test.cpp.o
+[ 86%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mtp_spec_accept_states_test.cpp.o
+[ 86%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mtp_writer_row0_test.cpp.o
+[ 88%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mem_alloc_probe_test.cpp.o
+[ 88%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_decode_rope_test.cpp.o
+[ 90%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mtp_checkpoint_layout_test.cpp.o
+[ 90%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mtp_path_triangle_test.cpp.o
+[ 91%] Building CXX object CMakeFiles/q4t_tests.dir/tests/vision_forward_test.cpp.o
+[ 93%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_vision_inject_test.cpp.o
+[ 93%] Building CXX object CMakeFiles/q4t_tests.dir/tests/vision_processor_test.cpp.o
+[ 95%] Building CXX object CMakeFiles/q4t_tests.dir/tests/video_processor_test.cpp.o
+[ 95%] Building CXX object CMakeFiles/q4t_tests.dir/tests/vision_e2e_test.cpp.o
+[ 96%] Building CXX object CMakeFiles/q4t_tests.dir/tests/test_main.cpp.o
+[ 96%] Building CXX object CMakeFiles/q4t_tests.dir/tests/text_tokenizer_test.cpp.o
+[ 98%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mtp_verify_numerics_test.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mtp_sixcell_test.cpp.o
+[100%] Linking CXX executable q4t_tests
+[100%] Built target q4t_tests
+[  3%] Built target q4t_runtime
+[ 13%] Built target q4t_trace
+[ 23%] Built target q4t_io
+[ 36%] Built target q4t_ple
+[ 40%] Built target q4t_text
+[ 53%] Built target q4t_quant
+[ 96%] Built target q4t_model
+[ 96%] Building CXX object CMakeFiles/q4t_mtp_lifecycle.dir/tests/mtp_lifecycle_test.cpp.o
+[100%] Linking CXX executable q4t_mtp_lifecycle
+[100%] Built target q4t_mtp_lifecycle

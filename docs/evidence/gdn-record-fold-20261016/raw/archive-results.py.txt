@@ -1,0 +1,518 @@
+"""Prepare an immutable evidence archive; this file was written, not executed.
+
+Run only after the relevant HTTP driver has stopped. This uses no GPU and runs
+no tests. It writes only the fixed sibling staging-evidence directory and
+refuses to overwrite it. A terminal marker is required for every existing HTTP
+directory. Archiving does not accept the candidate or adjudicate numerics.
+
+  python3 /home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/archive-results.py.txt
+"""
+
+import hashlib
+import json
+import os
+import shutil
+import subprocess
+import time
+from pathlib import Path
+
+
+ROOT = Path('/home/rm01/models/dev/qwen4-thor')
+WORK = ROOT / '.q4t-work/gdn-record-fold-20261016'
+SOURCE = WORK / 'source'
+BUILD = WORK / 'build'
+OUT = WORK / 'staging-evidence'
+PRIOR = ROOT / '.q4t-work/mtp-numerical-closure-20261016/http'
+HISTORICAL = ROOT / 'docs/evidence/mtp-numerical-closure-20261016/phase04'
+BASE_SHA = 'be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072'
+FROZEN_COMMIT = 'dcb2a7d07c6aba1c319d2c689c5e752c5616997d'
+FROZEN_DOC = 'docs/GDN_RECORD_FOLD_2026-10-16.md'
+GROUPS = ('quality-on', 'on', 'quality-off', 'off')
+TERMINALS = ('environment-abort.json', 'gate-stop.json',
+             'http-screen-pass.json')
+SMALL = 8 * 1024 * 1024
+SMALL_LOG = 256 * 1024
+EXCLUDED_ROOTS = {'source', 'build', 'staging-evidence'}
+OWN_OUT = False
+
+
+def require(condition, message):
+    if not condition:
+        raise RuntimeError(message)
+
+
+def load_json(path):
+    return json.loads(path.read_text())
+
+
+def save(path, value):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + '\n')
+
+
+def fingerprint(path):
+    require(not path.is_symlink(), 'refuse symlink evidence: ' + str(path))
+    stat = path.stat()
+    return (stat.st_dev, stat.st_ino, stat.st_size, stat.st_mtime_ns)
+
+
+def file_record(path):
+    before = fingerprint(path)
+    digest = hashlib.sha256()
+    with path.open('rb') as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b''):
+            digest.update(block)
+    require(fingerprint(path) == before,
+            'evidence changed while hashing: ' + str(path))
+    return {
+        'raw_path': str(path),
+        'bytes': before[2],
+        'sha256': digest.hexdigest(),
+        'mtime_ns': before[3],
+    }, before
+
+
+def parent_files():
+    """List all raw work evidence, never entering the checkout or build tree."""
+    found = []
+    for current, directories, names in os.walk(WORK, followlinks=False):
+        current = Path(current)
+        if current == WORK:
+            directories[:] = [name for name in directories
+                               if name not in EXCLUDED_ROOTS]
+        for name in directories:
+            require(not (current / name).is_symlink(),
+                    'refuse symlink directory: ' + str(current / name))
+        for name in names:
+            path = current / name
+            require(path.is_file() and not path.is_symlink(),
+                    'refuse non-regular evidence: ' + str(path))
+            found.append(path)
+    return sorted(found)
+
+
+def copy_policy(path, size):
+    relative = path.relative_to(WORK)
+    name = path.name
+    # Keep both forensic DB copies byte-for-byte in the raw workspace only.
+    # Their paths, sizes and hashes remain in the complete raw manifest.
+    if (len(relative.parts) >= 2 and relative.parts[0] == 'recovered-quality' and
+            relative.parts[1] in {'db-pristine', 'db-recovery'}):
+        return False
+    # Keep the original large inputs/databases in place, with complete hashes.
+    if (path.suffix.lower() in {'.db', '.sqlite', '.sqlite3'} or
+            name.startswith('requests') or
+            ('inputs' in relative.parts and name != 'manifest.json')):
+        return False
+    if name == 'CMakeCache.txt':
+        return True
+    if (len(relative.parts) == 1 and path.suffix == '.log' and
+            name.startswith(('configure', 'build'))):
+        return True
+    if name.startswith('output-') and path.suffix == '.txt':
+        return size <= SMALL
+    if 'identity' in relative.parts:
+        return size <= SMALL
+    if path.suffix in {'.json', '.jsonl', '.py', '.sh', '.patch', '.md',
+                       '.txt', '.sha256'}:
+        return size <= SMALL
+    if path.suffix == '.log':
+        return size <= SMALL_LOG
+    return len(relative.parts) == 1 and size <= SMALL_LOG
+
+
+def classify_http(name):
+    directory = WORK / name
+    if not directory.exists():
+        return {'status': 'NOT_RUN', 'raw_path': str(directory),
+                'reason': 'HTTP evidence directory does not exist',
+                'terminal_markers': {}, 'groups': {}}
+    require(directory.is_dir() and not directory.is_symlink(),
+            'invalid HTTP evidence directory: ' + str(directory))
+    terminals = {filename: load_json(directory / filename)
+                 for filename in TERMINALS if (directory / filename).is_file()}
+    require(terminals, 'refuse active/incomplete HTTP archive: ' +
+            str(directory) + ' has no terminal marker')
+    # The interrupted original attempt has both markers. Environmental abort
+    # takes precedence; a generic runner failure must not turn it into NO_GO.
+    if 'environment-abort.json' in terminals:
+        require(terminals['environment-abort.json'].get(
+                    'own_runner_confirmed_exited') is not False,
+                'refuse provisional environment abort while own runner '
+                'has not confirmed exit: ' + name)
+        status = 'ENV_ABORT'
+        reason = terminals['environment-abort.json'].get('reason')
+    elif 'gate-stop.json' in terminals:
+        status = 'HTTP_GATE_STOP'
+        reason = terminals['gate-stop.json'].get('reason')
+    else:
+        status = 'HTTP_SCREEN_PASS_NUMERICS_PENDING'
+        reason = 'HTTP driver finished its screen; numeric acceptance is separate'
+    groups = {}
+    for group in GROUPS:
+        runner_exit = directory / (group + '-exit.json')
+        server_exit = directory / group / 'exit.json'
+        results = directory / group / 'results.json'
+        item = {
+            'status': ('RECORDED' if (directory / group).exists() or
+                       runner_exit.exists() else 'NOT_RUN'),
+            'raw_path': str(directory / group),
+            'runner_exit': load_json(runner_exit) if runner_exit.exists() else None,
+            'server_exit': load_json(server_exit) if server_exit.exists() else None,
+            'results_path': str(results) if results.exists() else None,
+        }
+        # completed counts quality cases or performance tiers, not necessarily
+        # HTTP requests; do not relabel a partial run's tier count as requests.
+        if item['server_exit'] is not None:
+            item['completed_cases_or_tiers'] = item['server_exit'].get('completed')
+        groups[group] = item
+    if status == 'ENV_ABORT':
+        abort = terminals['environment-abort.json']
+        requests = abort.get('http_requests_sent')
+        request_note = abort.get('request_count_note',
+                                'Recorded by the environment-abort marker')
+    elif status == 'HTTP_SCREEN_PASS_NUMERICS_PENDING':
+        requests = terminals['http-screen-pass.json'].get('requests')
+        request_note = 'Recorded by the HTTP screen terminal; validated below'
+        require(requests == 52, 'unexpected HTTP screen request count: ' + name)
+        require((directory / 'identity/frozen/identity.json').is_file(),
+                'HTTP screen has no frozen candidate identity: ' + name)
+        for group, item in groups.items():
+            runner = item['runner_exit']
+            server = item['server_exit']
+            require(runner and runner.get('returncode') == 0,
+                    'screen marker conflicts with runner exit: ' + name + '/' + group)
+            require(server and server.get('server') == 0 and
+                    server.get('http_output_checks_passed') is True and
+                    server.get('failure') is None and
+                    server.get('cleanup_failure') is None,
+                    'screen marker conflicts with HTTP exit: ' + name + '/' + group)
+            expected = 11 if group.startswith('quality-') else 5
+            require(server.get('completed') == expected and item['results_path'],
+                    'screen marker has incomplete results: ' + name + '/' + group)
+            if not group.startswith('quality-'):
+                require(server.get('full_five_tier_completed') is True and
+                        not server.get('partial_performance_matrix'),
+                        'screen marker lacks full five tiers: ' + name + '/' + group)
+    else:
+        requests = None
+        request_note = 'Not inferred from incomplete runner/tier counts'
+    return {'status': status, 'raw_path': str(directory), 'reason': reason,
+            'terminal_markers': terminals, 'groups': groups,
+            'http_requests_sent_recorded': requests,
+            'request_count_note': request_note}
+
+
+def frozen_identities(http_runs):
+    result = {}
+    for name, run in http_runs.items():
+        directory = WORK / name / 'identity/frozen'
+        identity_path = directory / 'identity.json'
+        if not identity_path.exists():
+            run['frozen_identity_note'] = (
+                'No frozen identity recorded for this attempt; do not substitute '
+                'the current checkout HEAD or another attempt as its identity')
+            continue
+        identity = load_json(identity_path)
+        commit = identity.get('candidate_source_commit')
+        require(commit == FROZEN_COMMIT,
+                'unexpected frozen source commit in ' + str(identity_path))
+        require((directory / 'candidate-source-commit.txt').read_text().strip() ==
+                commit, 'frozen source commit records disagree: ' + name)
+        patch_hash = file_record(directory / 'source.patch')[0]['sha256']
+        require(patch_hash == identity['candidate_source_patch_sha256'],
+                'frozen source patch hash differs: ' + name)
+        manifest = load_json(directory / 'source-manifest.json')
+        manifest_hash = hashlib.sha256(
+            json.dumps(manifest, sort_keys=True).encode()).hexdigest()
+        require(manifest_hash == identity['candidate_source_manifest_sha256'],
+                'frozen source manifest hash differs: ' + name)
+        comparisons = {}
+        for path in sorted((WORK / name / 'identity').glob('*/identity.json')):
+            comparisons[str(path.relative_to(WORK / name))] = (
+                load_json(path) == identity)
+        # Report identity mismatches as evidence instead of losing an aborted
+        # run's artifacts. A purported screen pass cannot have a mismatch.
+        if run['status'] == 'HTTP_SCREEN_PASS_NUMERICS_PENDING':
+            require(all(comparisons.values()),
+                    'screen marker has changed candidate identity: ' + name)
+            for group in GROUPS:
+                runner_hash = WORK / name / group / 'binary.sha256'
+                require(runner_hash.read_text().strip() ==
+                        identity['candidate_binary_sha256'],
+                        'screen runner binary identity mismatch: ' + name + '/' + group)
+        result[name] = {'recorded_identity': identity,
+                        'per_group_identity_equals_frozen': comparisons,
+                        'identity_is_from_recorded_run_not_current_HEAD': True}
+    return result
+
+
+def selected_baseline_files():
+    names = {'results.json', 'exit.json', 'binary.sha256', 'commit.txt',
+             'identity.json', 'final-identity.json', 'freeze.json',
+             'summary.json', 'server-command.json', 'capacity.json',
+             'CMakeCache.txt', 'evalscope-version.txt', 'protocol.json'}
+    return sorted(path for path in PRIOR.rglob('*')
+                  if path.is_file() and path.name in names and
+                  path.stat().st_size <= SMALL)
+
+
+def git_frozen(*args):
+    return subprocess.check_output(['git', '-C', str(SOURCE), *args])
+
+
+def archive():
+    global OWN_OUT
+    require(Path(__file__).resolve() == WORK / 'archive-results.py.txt',
+            'run this prepared script from its fixed evidence location')
+    require(WORK.is_dir() and SOURCE.is_dir() and BUILD.is_dir(),
+            'missing candidate workspace/source/build')
+    require(not OUT.exists(), 'refuse to overwrite existing staging-evidence')
+    runs = {name: classify_http(name)
+            for name in ('http', 'http-clean', 'http-resume')}
+    frozen = frozen_identities(runs)
+    require(frozen, 'no recorded frozen candidate identity is available')
+    if runs['http']['status'] == 'ENV_ABORT':
+        require(runs['http']['http_requests_sent_recorded'] == 0,
+                'original environment abort no longer records zero requests')
+        old_exit = runs['http']['groups']['quality-on']['server_exit']
+        require(old_exit is None or old_exit.get('completed') == 0,
+                'original environment abort conflicts with completed requests')
+    require(PRIOR.is_dir(), 'missing accepted baseline raw evidence')
+    for group in GROUPS:
+        require((PRIOR / group / 'binary.sha256').read_text().strip() == BASE_SHA,
+                'baseline binary identity differs: ' + group)
+
+    # Freeze the file list before creating output. Any concurrent evidence
+    # mutation detected during hashing/copying or at the final check aborts.
+    files = parent_files()
+    before = {path: fingerprint(path) for path in files}
+    baseline_files = selected_baseline_files()
+    special_files = [BUILD / name for name in
+                     ('q4t', 'q4t_tests', 'q4t_mtp_lifecycle', 'CMakeCache.txt')]
+    historical_manifest = HISTORICAL / 'raw-manifest.json'
+    require(historical_manifest.is_file(), 'missing historical baseline manifest')
+    special_files += [historical_manifest, HISTORICAL / 'final-identity.json']
+    for path in special_files:
+        require(path.is_file(), 'missing archive prerequisite: ' + str(path))
+    before.update({path: fingerprint(path)
+                   for path in baseline_files + special_files})
+
+    # Export only the recorded commit, never git show HEAD. Dirty source.patch
+    # (if any) remains separately preserved under the original identity folder.
+    commit_patch = git_frozen('show', '--format=fuller', '--binary',
+                              '--no-ext-diff', FROZEN_COMMIT)
+    frozen_doc = git_frozen('show', FROZEN_COMMIT + ':' + FROZEN_DOC)
+    commit_metadata = git_frozen('show', '-s', '--format=fuller', FROZEN_COMMIT)
+    OUT.mkdir()
+    OWN_OUT = True
+    raw_manifest = {}
+
+    def add(path, destination=None, scope='candidate_work_evidence'):
+        record, observed = file_record(path)
+        require(observed == before[path],
+                'evidence changed since inventory: ' + str(path))
+        record['scope'] = scope
+        record['copied_to'] = None
+        if destination is not None:
+            target = OUT / destination
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(path, target)
+            require(file_record(target)[0]['sha256'] == record['sha256'],
+                    'copied evidence differs: ' + str(path))
+            record['copied_to'] = str(destination)
+        raw_manifest[str(path)] = record
+        return record
+
+    for path in files:
+        relative = path.relative_to(WORK)
+        target = Path('raw') / relative if copy_policy(path, before[path][2]) else None
+        add(path, target)
+    build_records = {}
+    for path in special_files[:4]:
+        destination = (Path('build-identity') / path.name
+                       if path.name == 'CMakeCache.txt' else None)
+        build_records[path.name] = add(path, destination, 'build_observed_at_archive')
+    for path in baseline_files:
+        add(path, Path('baseline/selected') / path.relative_to(PRIOR),
+            'accepted_baseline_selected_metadata')
+    add(historical_manifest, Path('baseline/historical-raw-manifest.json'),
+        'historical_baseline_manifest_not_freshly_rehashed_raw_files')
+    add(HISTORICAL / 'final-identity.json',
+        Path('baseline/historical-final-identity.json'),
+        'historical_baseline_identity')
+
+    source_out = OUT / 'frozen-source'
+    source_out.mkdir()
+    (source_out / (FROZEN_COMMIT + '.patch')).write_bytes(commit_patch)
+    (source_out / 'commit.txt').write_bytes(commit_metadata)
+    (source_out / 'GDN_RECORD_FOLD_2026-10-16.md').write_bytes(frozen_doc)
+    for name, identity in frozen.items():
+        identity['current_build_q4t_equals_recorded'] = (
+            build_records['q4t']['sha256'] ==
+            identity['recorded_identity']['candidate_binary_sha256'])
+        identity['current_CMakeCache_equals_recorded'] = (
+            build_records['CMakeCache.txt']['sha256'] ==
+            identity['recorded_identity']['candidate_build_cache_sha256'])
+    formal = runs['http-resume']['status']
+    recovery_path = WORK / 'recovered-quality/validation.json'
+    recovery_validation = load_json(recovery_path) if recovery_path.is_file() else None
+    observations_path = WORK / 'recovered-quality/service-observations.json'
+    recovery_observations = (load_json(observations_path)
+                             if observations_path.is_file() else None)
+    summary = {
+        'schema_version': 1,
+        'archive_time_unix': time.time(),
+        'raw_work_root': str(WORK),
+        'archive_status': 'EVIDENCE_ARCHIVED_NOT_ACCEPTANCE',
+        'original_attempt_status': runs['http']['status'],
+        'second_attempt_status': runs['http-clean']['status'],
+        'formal_http_directory': 'http-resume',
+        'formal_http_status': formal,
+        'candidate_acceptance': 'NOT_GRANTED_BY_THIS_ARCHIVE',
+        'numeric_contracts': 'NOT_ADJUDICATED_BY_THIS_ARCHIVER',
+        'http_attempts': runs,
+        'interrupted_attempts': ['http', 'http-clean'],
+        'quality_recovery': {
+            'raw_path': str(WORK / 'recovered-quality'),
+            'validation': recovery_validation,
+            'service_observations': recovery_observations,
+            'note': ('Recovered DB has zero persisted request rows; service-side '
+                     'completions do not establish HTTP/quality acceptance. '
+                     'Preserve validation, clock evidence, notes and original '
+                     'identity manifests; DB/journal copies are hash-only.'),
+        },
+        'recorded_frozen_identities': frozen,
+        'build_files_observed_at_archive': build_records,
+        'baseline': {
+            'expected_binary_sha256': BASE_SHA,
+            'raw_root': str(PRIOR),
+            'selected_metadata': 'baseline/selected',
+            'historical_raw_manifest': 'baseline/historical-raw-manifest.json',
+            'historical_manifest_note': (
+                'Copied prior archive inventory. It describes historical raw '
+                'baseline files; those large baseline files were not freshly '
+                'rehashed here. Copied baseline metadata was freshly hashed.'),
+        },
+        'manifest_scope': {
+            'complete_current_work_evidence_except': sorted(EXCLUDED_ROOTS),
+            'build_exceptions': [str(path) for path in special_files[:4]],
+            'raw_files': len(raw_manifest),
+            'copied_files': sum(item['copied_to'] is not None
+                                for item in raw_manifest.values()),
+            'large_files': 'Retained at raw_path with byte count and SHA-256',
+        },
+        'frozen_source_export': {
+            'recorded_commit': FROZEN_COMMIT,
+            'commit_patch': 'frozen-source/' + FROZEN_COMMIT + '.patch',
+            'frozen_plan': 'frozen-source/GDN_RECORD_FOLD_2026-10-16.md',
+            'note': ('Run source manifests and patches remain under raw/http*/'
+                     'identity. Current source HEAD is not used as run identity.'),
+        },
+        'interpretation': (
+            'ENV_ABORT is an interrupted environment, not candidate NO_GO. '
+            'NOT_RUN means formal http-resume has not run. HTTP_GATE_STOP '
+            'preserves its reason without guessing a numeric verdict. '
+            'HTTP_SCREEN_PASS_NUMERICS_PENDING is only an HTTP screen; '
+            'archiving or HTTP completion does not establish overall PASS.'),
+    }
+    save(OUT / 'summary.json', summary)
+    save(OUT / 'raw-manifest.json', raw_manifest)
+    readme = f'''# GDN record/fold candidate evidence
+
+This directory is an evidence archive, not an acceptance result.
+
+- Original `http/`: **{runs['http']['status']}**.
+- Second interrupted `http-clean/`: **{runs['http-clean']['status']}**.
+- Formal `http-resume/`: **{formal}**.
+- Overall candidate acceptance: **not granted by this archive**.
+- Numerical contracts: not adjudicated by this archiver.
+
+The original attempt's `environment-abort.json` takes precedence over its
+generic `gate-stop.json`; both are retained. It records zero HTTP requests
+before interruption by unrelated concurrent HC diagnosis. An environment
+abort is not a candidate NO_GO. The second `http-clean/` environment abort is
+retained separately, including its generic gate-stop and request observations.
+If `http-resume/` is absent, formal HTTP remains
+NOT_RUN. An existing HTTP directory without a terminal marker is rejected.
+
+`raw/recovered-quality/` preserves the recovery validation, clock evidence,
+explanation and original DB identity inventory. Its empty recovered result set
+does not turn the ten observed service-side completions into accepted quality
+results: eleven quality cases still lacked durable HTTP evidence. The second
+attempt records eleven service-side attempted requests, ten observed completed
+and one cancelled; it is not described as a zero-request attempt. Files under
+`recovered-quality/db-pristine/` and `db-recovery/`, including DB and journal,
+are never copied into this archive. Their absolute paths, sizes and SHA-256
+remain in `raw-manifest.json` for the raw workspace evidence.
+
+HTTP_SCREEN_PASS_NUMERICS_PENDING means only that the HTTP driver finished
+its frozen screen. It does not mean numeric contracts, full-model partial
+fold, release acceptance, or overall PASS. HTTP_GATE_STOP keeps the original
+failure reason and incomplete groups; no missing case is filled in.
+
+Candidate source identity is the recorded `{FROZEN_COMMIT}`, its per-run
+manifest and patch under `raw/http*/identity/`. `frozen-source/` exports that
+commit's patch and frozen plan. Current checkout HEAD is not substituted.
+Per-group `commit.txt`/`worktree.patch` may identify the main HTTP harness,
+not the isolated candidate source; use the explicit candidate identities.
+
+`build_files_observed_at_archive` records size, SHA-256 and raw paths for
+q4t, q4t_tests and q4t_mtp_lifecycle, plus CMakeCache. Binaries are not copied.
+The equality fields distinguish current build observations from recorded run
+identity; a current artifact is not automatically treated as the tested one.
+
+`raw-manifest.json` freshly hashes all parent work evidence except the source
+checkout, build intermediates and this output directory. Large databases,
+requests and logs stay at their absolute raw paths. Small JSON, results,
+responses, generated output text, drivers, identities, configure/build logs
+and CMakeCache are copied when selected by the script's documented policy.
+The manifest states exactly which files were copied.
+
+Accepted baseline: `{BASE_SHA}` at
+`{PRIOR}`. `baseline/selected/` retains small result/identity metadata.
+`baseline/historical-raw-manifest.json` is explicitly a historical inventory;
+large baseline raw files were not freshly rehashed by this archive.
+
+No builds, tests, HTTP requests, GPU work or acceptance decisions are performed
+by the archiver. See `summary.json` and the original terminal/exit/comparison
+files for the evidence actually recorded. `archive-results.py.txt` is copied
+under `raw/` for reproducibility. Existing staging output is never overwritten.
+'''
+    (OUT / 'README.md').write_text(readme)
+
+    require(parent_files() == files, 'work evidence file set changed during archive')
+    for path, initial in before.items():
+        require(fingerprint(path) == initial,
+                'raw evidence changed during archive: ' + str(path))
+    # Generated exports have their own hashes; the index deliberately excludes
+    # itself, as a file cannot contain its own stable SHA-256.
+    exports = {}
+    for path in sorted(OUT.rglob('*')):
+        if path.is_file():
+            record = file_record(path)[0]
+            exports[str(path.relative_to(OUT))] = {
+                'bytes': record['bytes'], 'sha256': record['sha256']}
+    save(OUT / 'archive-manifest.json', exports)
+    print(json.dumps({'output': str(OUT),
+                      'original_attempt_status': runs['http']['status'],
+                      'second_attempt_status': runs['http-clean']['status'],
+                      'formal_http_directory': 'http-resume',
+                      'formal_http_status': formal,
+                      'acceptance': 'NOT_GRANTED_BY_THIS_ARCHIVE'},
+                     ensure_ascii=False))
+
+
+if __name__ == '__main__':
+    try:
+        archive()
+    except Exception as error:
+        # Preserve a partial archive for inspection instead of deleting or
+        # overwriting evidence. A subsequent invocation still refuses OUT.
+        if OWN_OUT and not (OUT / 'archive-manifest.json').exists():
+            failure = OUT / 'ARCHIVE_INCOMPLETE.json'
+            if not failure.exists():
+                save(failure, {'status': 'ARCHIVE_INCOMPLETE',
+                               'error': str(error),
+                               'acceptance': 'NOT_GRANTED'})
+        raise

@@ -1,0 +1,40 @@
+{
+  "status": "NO_REUSABLE_PERSISTED_REQUEST_ROWS",
+  "database_row_count_after_copy_recovery": 0,
+  "expected_quality_cases": 11,
+  "reused_quality_cases": 0,
+  "missing_quality_cases": 11,
+  "checks": {
+    "response_identity": "NOT_RUN_NO_ROWS",
+    "request_timing": "NOT_RUN_NO_ROWS",
+    "quality_expected_length_finish": "NOT_RUN_NO_ROWS",
+    "quality_reference_text_and_prompt": "NOT_RUN_NO_ROWS",
+    "completion_before_competitor": "UNPROVABLE_NO_COMPLETION_TIMESTAMPS",
+    "input_manifest_requests_reference_identity": "PASS_IDENTICAL_BYTES_AND_PROMPT_HASHES"
+  },
+  "missing_input_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/recovered-quality/inputs",
+  "missing_inputs_are_exact_original_eleven_case_fixture": true,
+  "missing_fixture_sha256": {
+    "manifest.json": "e2a542bf2c27b4404844b2e60e861c80e6c670d32bcd78685ad053f7fb833ae1",
+    "requests.jsonl": "22cce46de658df1988cacbe311bc74a7d6f1e7125c48e11e1cd9a0dd97ab4c42"
+  },
+  "original_driver_exit": -2,
+  "original_client_returncode": null,
+  "original_run_status": "ENV_ABORT_NOT_CANDIDATE_NO_GO",
+  "source_identity": {
+    "actual_source_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/source",
+    "candidate_source_commit": "dcb2a7d07c6aba1c319d2c689c5e752c5616997d",
+    "candidate_source_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "candidate_source_manifest_sha256": "9aaa996ee20ada9ff7714accbb3ad7e106e3b0139d8bb6644eca01a467ef6a09",
+    "candidate_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/q4t",
+    "candidate_binary_sha256": "b154e4a7c1ccf8ccd5d83d28f8464ecc9e068b830d680aae26d2ec15117e0ac5",
+    "candidate_build_cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/build/CMakeCache.txt",
+    "candidate_build_cache_sha256": "78ebff4ae7770eb54be505f9386182538804d9f0fe1eb4b1a8e7e7861a01eafd",
+    "runner": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py",
+    "runner_sha256": "43a30bb7605af0659e7d960400efaea8182e97dcf5afa4c8b52159349f44427b",
+    "harness_identity_note": "Each runner commit.txt/worktree.patch belongs to the main harness workspace, not the isolated candidate source. Candidate identity is recorded here before and after each collection."
+  },
+  "evalscope_commit_interval": 1000,
+  "persistence_code": "evalscope/perf/core/metrics_consumer.py:58,119-123,159",
+  "interpretation": "Ten service-side completions were observed, but no durable per-request response/timing row survives; none can be accepted from logs alone. All eleven remain missing evidence."
+}

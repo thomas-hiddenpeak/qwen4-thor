@@ -1,0 +1,6 @@
+Performance scope: five_tier; performance acceptance is not implied
+context-1024: HTTP/output checks passed
+context-4096: HTTP/output checks passed
+context-8192: HTTP/output checks passed
+context-45056: HTTP/output checks passed
+context-204800: HTTP/output checks passed

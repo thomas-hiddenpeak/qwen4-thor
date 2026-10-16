@@ -1,0 +1,14 @@
+{
+  "time_unix": 1792122330.2530937,
+  "reason": "Concurrent unrelated HC up Nsight diagnosis restarted after idle observation; abort this candidate before any HTTP request",
+  "candidate_server_pid": 1027603,
+  "candidate_runner_pid": 1027595,
+  "other_server_pid": 1026739,
+  "other_driver_pid": 1026690,
+  "http_requests_sent": 0,
+  "candidate_process_interval_utc": [
+    "2026-10-16T03:43:43.884471+00:00",
+    "2026-10-16T03:45:30.519356+00:00"
+  ],
+  "other_trace_interpretation": "Concurrent candidate loading may affect the other trace during this interval; no conclusion about its magnitude or cause is drawn here."
+}

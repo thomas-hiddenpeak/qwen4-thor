@@ -5,6 +5,8 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [GDN Record/Fold研究](GDN_RECORD_FOLD_2026-10-16.md) | anchor与rank-one候选实现、五档HTTP及TTFT保护门槛 | NO_GO，保留候选与证据 |
+| [外部实现源码评估](REFERENCE_REVIEW_2026-10-16.md) | KVMem、NInfer、ActKV、Strata关键代码及本项目价值 | 固定版本源码研究 |
 | [MTP数值收口](MTP_NUMERICAL_CLOSURE_2026-10-16.md) | 独立前缀合同、PLE上传修复与新运行时验收 | 当前阶段 |
 | [MTP归并候选结果](MTP_MAINLINE_READY_2026-10-16.md) | 原冻结binary验收、五项历史失败与回退 | PLE修复前历史 |
 | [MTP归并边界决策](MTP_MERGE_BOUNDARY_2026-10-15.md) | 两套MTP实现归并边界、策略A裁决与逐文件归并计划 | 2026-10-16恢复与共用合同补正 |

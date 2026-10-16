@@ -1,0 +1,418 @@
+"""Prepared only; not executed by the reviewer. Python accepts this .txt file.
+
+Run after root confirms the candidate build, frozen source, and exclusive GPU:
+  /home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python3 /home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-driver-clean.py.txt
+
+First GPU work is HTTP. No retries, warmups, selected-tier mode, or benchmarks.
+"""
+import hashlib
+import json
+import math
+import os
+import shutil
+import signal
+import statistics
+import subprocess
+import time
+from pathlib import Path
+
+ROOT = Path('/home/rm01/models/dev/qwen4-thor')
+WORK = ROOT / '.q4t-work/gdn-record-fold-20261016'
+SOURCE = WORK / 'source'
+BINARY = WORK / 'build/q4t'
+CACHE = BINARY.parent / 'CMakeCache.txt'
+PRIOR = ROOT / '.q4t-work/mtp-numerical-closure-20261016/http'
+OUT = WORK / 'http-clean'
+RUNNER = ROOT / 'tools/evalscope/run_acceptance.py'
+PYTHON = ROOT / 'tools/evalscope/.venv/bin/python3'
+MODEL = Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream')
+BASE_SHA = 'be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072'
+LENGTHS = [1024, 4096, 8192, 45056, 204800]
+OWN_OUT = False
+
+
+def save(path, value):
+    path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + '\n')
+
+
+def require(condition, message):
+    if not condition:
+        raise RuntimeError(message)
+
+
+def digest(path):
+    value = hashlib.sha256()
+    with path.open('rb') as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b''):
+            value.update(block)
+    return value.hexdigest()
+
+
+def git(*args):
+    return subprocess.check_output(['git', *args], cwd=SOURCE)
+
+
+def identity(label):
+    dest = OUT / 'identity' / label
+    dest.mkdir(parents=True)
+    commit = git('rev-parse', 'HEAD').decode().strip()
+    patch = git('diff', '--binary', 'HEAD')
+    status = git('status', '--porcelain=v1').decode()
+    files = git('ls-files', '--cached', '--others', '--exclude-standard', '-z')
+    manifest = {}
+    for raw_name in sorted(set(files.split(b'\0')) - {b''}):
+        name = os.fsdecode(raw_name)
+        path = SOURCE / name
+        if path.is_file():
+            manifest[name] = digest(path)
+    result = {
+        'actual_source_path': str(SOURCE),
+        'candidate_source_commit': commit,
+        'candidate_source_patch_sha256': hashlib.sha256(patch).hexdigest(),
+        'candidate_source_manifest_sha256': hashlib.sha256(
+            json.dumps(manifest, sort_keys=True).encode()).hexdigest(),
+        'candidate_binary': str(BINARY),
+        'candidate_binary_sha256': digest(BINARY),
+        'candidate_build_cache': str(CACHE),
+        'candidate_build_cache_sha256': digest(CACHE),
+        'runner': str(RUNNER),
+        'runner_sha256': digest(RUNNER),
+        'harness_identity_note': (
+            'Each runner commit.txt/worktree.patch belongs to the main harness '
+            'workspace, not the isolated candidate source. Candidate identity '
+            'is recorded here before and after each collection.'),
+    }
+    (dest / 'candidate-source-commit.txt').write_text(commit + '\n')
+    (dest / 'source.patch').write_bytes(patch)
+    (dest / 'source-status.txt').write_text(status)
+    (dest / 'actual-source-path.txt').write_text(str(SOURCE) + '\n')
+    (dest / 'binary.sha256').write_text(result['candidate_binary_sha256'] + '\n')
+    save(dest / 'source-manifest.json', manifest)
+    save(dest / 'identity.json', result)
+    return result
+
+
+def compare(name):
+    before = json.loads((PRIOR / name / 'results.json').read_text())
+    after = json.loads((OUT / name / 'results.json').read_text())
+    require([r['length'] for r in before] == LENGTHS, 'baseline tiers differ')
+    require([r['length'] for r in after] == LENGTHS, 'candidate tiers differ')
+    rows = []
+    for b, a in zip(before, after):
+        require(a['outputs'] == b['outputs'] and
+                a['prompt_sha256'] == b['prompt_sha256'] and
+                a['deterministic'], 'prompt/output/determinism differs')
+        bt = [m['decode_tps'] for m in b['metrics']]
+        at = [m['decode_tps'] for m in a['metrics']]
+        bf = [m['ttft'] for m in b['metrics']]
+        af = [m['ttft'] for m in a['metrics']]
+        require(all(len(values) == 3 for values in [bt, at, bf, af]),
+                'expected exactly three samples per tier')
+        require(all(math.isfinite(v) and v > 0 for values in [bt, at, bf, af]
+                    for v in values), 'invalid metrics')
+        ratio = statistics.harmonic_mean(at) / statistics.harmonic_mean(bt)
+        rows.append({
+            'length': a['length'],
+            'baseline_decode_tps_samples': bt, 'candidate_decode_tps_samples': at,
+            'baseline_ttft_samples': bf, 'candidate_ttft_samples': af,
+            'baseline_decode_tps_harmonic': statistics.harmonic_mean(bt),
+            'candidate_decode_tps_harmonic': statistics.harmonic_mean(at),
+            'decode_ratio': ratio, 'decode_gain': ratio - 1,
+            'decode_adverse_separation': max(at) < min(bt),
+            'ttft_adverse_separation': min(af) > max(bf),
+            'decode_favorable_separation': min(at) > max(bt),
+        })
+    geomean = math.exp(sum(math.log(r['decode_ratio']) for r in rows) / 5)
+    result = {
+        'rows': rows, 'decode_ratio_geomean': geomean,
+        'decode_gain_geomean': geomean - 1,
+        'adverse_separation': any(r['decode_adverse_separation'] or
+                                  r['ttft_adverse_separation'] for r in rows),
+        'identifiable_on_benefit': (any(r['decode_favorable_separation']
+                                      for r in rows) and geomean > 1),
+        'interpretation': ('Frozen operational screen using three samples; '
+                           'not a confidence interval, statistical equivalence, '
+                           'stable tail latency, or general workload claim.'),
+    }
+    save(OUT / (name + '-comparison.json'), result)
+    return result
+
+
+
+def process_snapshot():
+    """Read-only /proc snapshot; exited or inaccessible processes are skipped."""
+    found = {}
+    for directory in Path('/proc').iterdir():
+        if not directory.name.isdecimal():
+            continue
+        try:
+            argv = [os.fsdecode(value) for value in
+                    (directory / 'cmdline').read_bytes().split(b'\0') if value]
+            if not argv:
+                continue
+            fields = (directory / 'stat').read_text().rsplit(')', 1)[1].split()
+            try:
+                executable = os.readlink(directory / 'exe').removesuffix(' (deleted)')
+            except OSError:
+                executable = argv[0]
+            pid = int(directory.name)
+            found[pid] = {'pid': pid, 'ppid': int(fields[1]),
+                          'start_time_ticks': int(fields[19]),
+                          'argv': argv, 'executable': executable}
+        except (OSError, ValueError, IndexError):
+            continue
+    return found
+
+
+def competitors(own_runner_pid=None, known_owned=None):
+    processes = process_snapshot()
+    owned = set()
+    if own_runner_pid is not None:
+        owned.add(own_runner_pid)
+        changed = True
+        while changed:
+            changed = False
+            for pid, row in processes.items():
+                if row['ppid'] in owned and pid not in owned:
+                    owned.add(pid)
+                    changed = True
+    if known_owned is not None:
+        for pid in owned:
+            if pid in processes:
+                known_owned.add((pid, processes[pid]['start_time_ticks']))
+        owned.update(pid for pid, row in processes.items()
+                     if (pid, row['start_time_ticks']) in known_owned)
+    conflicts = []
+    for pid, row in processes.items():
+        if pid in owned or pid == os.getpid():
+            continue
+        names = {Path(row['executable']).name, Path(row['argv'][0]).name}
+        q4t_serve = any(name.startswith('q4t') for name in names) and \
+            'serve' in row['argv'][1:]
+        q4t_test = any(name.startswith(('q4t_tests', 'q4t_mtp_lifecycle'))
+                        for name in names)
+        nsys_profile = any(name in {'nsys', 'nsys.bin'} for name in names) and \
+            'profile' in row['argv'][1:]
+        if q4t_serve or q4t_test or nsys_profile:
+            row['reason'] = ('other q4t serve' if q4t_serve else
+                             'other q4t GPU test' if q4t_test else
+                             'other nsys profile')
+            conflicts.append(row)
+    return sorted(conflicts, key=lambda row: row['pid'])
+
+
+def environment_abort(phase, conflicts, own_runner_pid=None,
+                      runner_exited=False, reason=None):
+    # No client_before event means no evalscope client was launched. Once a
+    # client started, an interrupted request count is unknown, never assumed 0.
+    client_started = False
+    for event_file in OUT.glob('*/events.jsonl'):
+        for line in event_file.read_text().splitlines():
+            try:
+                client_started |= json.loads(line).get('event') == 'client_before'
+            except json.JSONDecodeError:
+                client_started = True
+    provisional = own_runner_pid is not None and not runner_exited
+    record = {
+        'status': 'ENV_ABORT', 'time_unix': time.time(), 'phase': phase,
+        'reason': reason or 'Concurrent unrelated GPU workload; formal attempt excluded',
+        'competing_processes': conflicts, 'own_runner_pid': own_runner_pid,
+        'own_runner_confirmed_exited': runner_exited if own_runner_pid else None,
+        'http_requests_sent': None if provisional or client_started else 0,
+        'request_count_note': ('Provisional: own runner has not confirmed exit' if provisional
+                              else 'Unknown during interrupted client run' if client_started
+                               else 'No client_before event; no HTTP client launched'),
+        'action': ('SIGINT only the owned runner; leave unrelated processes untouched'
+                   if own_runner_pid is not None else
+                   'Refuse to launch candidate; leave unrelated processes untouched'),
+        'candidate_performance_verdict': None,
+    }
+    save(OUT / 'environment-abort.json', record)
+    return record
+
+
+def guard_environment(phase):
+    conflicts = competitors()
+    save(OUT / (phase + '-environment-check.json'), {
+        'time_unix': time.time(), 'conflicts': conflicts,
+        'scan': '/proc cmdline/exe/stat; no GPU command and no probe request',
+    })
+    if conflicts:
+        environment_abort(phase, conflicts)
+        raise RuntimeError('ENV_ABORT: other GPU workload present before launch')
+
+
+def monitored_run(name, cmd, env, log):
+    # Polling guards a cooperative idle window; it is not an atomic host-wide
+    # GPU lock. Preserve any observed overlap, even if an HTTP result exists.
+    guard_environment(name + '-immediately-before-launch')
+    process = subprocess.Popen(cmd, cwd=ROOT, env=env, stdout=log,
+                               stderr=subprocess.STDOUT)
+    known_owned = set()
+    observed = []
+    interrupted = False
+    aborted = False
+    caught = None
+    cleanup_error = None
+    abort_reason = None
+    polls = 0
+    begin = time.time()
+    try:
+        while True:
+            conflicts = competitors(process.pid, known_owned)
+            polls += 1
+            if conflicts:
+                observed = conflicts
+                aborted = True
+                # This first record is provisional: HTTP could start before
+                # the SIGINT below. Re-read events only after confirmed exit.
+                environment_abort(name + '-running', conflicts, process.pid)
+                break
+            if process.poll() is None:
+                time.sleep(2)
+            else:
+                break
+    except BaseException as error:
+        aborted = True
+        caught = error
+        abort_reason = ('Environment monitor interrupted or failed: ' +
+                        type(error).__name__ + ': ' + str(error))
+    finally:
+        if aborted:
+            try:
+                if process.poll() is None:
+                    # Only the owned Popen PID, never a competitor scan PID.
+                    process.send_signal(signal.SIGINT)
+                    interrupted = True
+                process.wait(timeout=60)
+            except BaseException as error:
+                cleanup_error = type(error).__name__ + ': ' + str(error)
+            # Cleanup runs before writes, so a write failure cannot strand a
+            # healthy own runner merely because an evidence file cannot save.
+            environment_abort(name + '-running', observed, process.pid,
+                              runner_exited=process.poll() is not None,
+                              reason=abort_reason)
+        save(OUT / (name + '-environment-monitor.json'), {
+            'own_runner_pid': process.pid, 'start_time_unix': begin,
+            'end_time_unix': time.time(), 'scan_count': polls, 'poll_seconds': 2,
+            'conflicts': observed, 'sigint_sent_to_own_runner': interrupted,
+            'own_runner_confirmed_exited': process.poll() is not None,
+            'cleanup_error': cleanup_error,
+            'owned_descendants_excluded_by_pid_and_start_time': len(known_owned),
+            'limitation': 'Best-effort /proc polling, not an atomic GPU reservation',
+        })
+    if caught is not None:
+        raise caught
+    require(cleanup_error is None, 'ENV_ABORT: own runner cleanup failed: ' +
+            str(cleanup_error))
+    return process.returncode, aborted
+
+def main():
+    global OWN_OUT
+    for path in [SOURCE, BINARY, CACHE, RUNNER, PYTHON, MODEL]:
+        require(path.exists(), 'missing prerequisite: ' + str(path))
+    require(not OUT.exists(), 'evidence output already exists; do not overwrite')
+    prior_abort = json.loads((WORK / 'http/environment-abort.json').read_text())
+    require(prior_abort.get('http_requests_sent') == 0,
+            'clean attempt requires the recorded zero-request environment abort')
+    original_frozen = json.loads(
+        (WORK / 'http/identity/frozen/identity.json').read_text())
+    for name in ['quality-on', 'on', 'quality-off', 'off']:
+        require((PRIOR / name / 'binary.sha256').read_text().strip() == BASE_SHA,
+                'wrong accepted baseline identity: ' + name)
+        old_exit = json.loads((PRIOR / name / 'exit.json').read_text())
+        require(old_exit['server'] == 0 and old_exit['http_output_checks_passed'],
+                'baseline run did not pass: ' + name)
+    OUT.mkdir()
+    OWN_OUT = True
+    shutil.copyfile(__file__, OUT / 'driver-used.txt')
+    env = os.environ.copy()
+    removed_names = sorted(key for key in env if key.startswith('Q4T_'))
+    for key in removed_names:
+        del env[key]
+    require(env.get('CUDA_LAUNCH_BLOCKING', '0') == '0',
+            'CUDA_LAUNCH_BLOCKING changes official performance conditions')
+    save(OUT / 'protocol.json', {
+        'baseline_binary_sha256': BASE_SHA, 'baseline_raw_root': str(PRIOR),
+        'order': ['quality-on', 'on', 'quality-off', 'off'],
+        'performance_lengths': LENGTHS, 'performance_repeats': 3,
+        'max_requests_if_all_pass': 52, 'extra_warmup_requests': 0,
+        'prior_attempt': {'path': str(WORK / 'http'), 'status': 'ENV_ABORT',
+                          'http_requests_sent': 0, 'candidate_unchanged_required': True},
+        'cleared_q4t_environment_names': removed_names,
+        'effective_q4t_environment': {},
+        'cuda_environment': {key: value for key, value in env.items()
+                             if key.startswith(('CUDA_', 'NVIDIA_'))},
+        'on_benefit_gate': ('at least one min(candidate tps)>max(baseline tps) '
+                           'and geometric mean of five harmonic-mean ratios>1'),
+        'regression_gate': ('any tier max(candidate tps)<min(baseline tps) '
+                            'or min(candidate TTFT)>max(baseline TTFT)'),
+        'no_retries_or_added_samples': True,
+        'qualification': 'HTTP screen only; required numeric contracts still pending',
+        'environment_guard': {'poll_seconds': 2, 'own_descendants_excluded': True,
+                              'on_conflict': 'SIGINT own runner only; ENV_ABORT',
+                              'limitation': 'best-effort polling, not atomic GPU reservation'},
+    })
+    guard_environment('startup')
+    frozen = identity('frozen')
+    require(frozen == original_frozen,
+            'candidate/runner identity differs from the interrupted frozen attempt')
+    common = [str(PYTHON), str(RUNNER), '--binary', str(BINARY),
+              '--model-dir', str(MODEL), '--startup-timeout', '300',
+              '--max-len', '208896', '--allow-unqualified-binary']
+    for name, mode, mtp in [('quality-on', 'quality', True),
+                            ('on', 'performance', True),
+                            ('quality-off', 'quality', False),
+                            ('off', 'performance', False)]:
+        guard_environment(name + '-before-group')
+        require(identity(name + '-before') == frozen, 'candidate identity changed')
+        fixture = PRIOR / name / ('inputs' if mode == 'quality' else '')
+        cmd = common + ['--mode', mode, '--output', str(OUT / name),
+                        '--fixtures', str(fixture),
+                        '--reference', str(PRIOR / name / 'results.json'),
+                        '--port', '8741' if mtp else '8740']
+        if mtp:
+            cmd += ['--mtp-default']
+        if mode == 'performance':
+            cmd += ['--perf-repeats', '3']
+        # Deliberately omit --perf-lengths: preserve baseline client protocol.
+        save(OUT / (name + '-command.json'), cmd)
+        print('Starting ' + name, flush=True)
+        with (OUT / (name + '-driver.log')).open('w') as log:
+            rc, environment_failed = monitored_run(name, cmd, env, log)
+        save(OUT / (name + '-exit.json'), {
+            'returncode': rc, 'command': cmd, 'environment_abort': environment_failed})
+        require(identity(name + '-after') == frozen, 'candidate identity changed')
+        require(not environment_failed, 'ENV_ABORT: concurrent unrelated workload observed')
+        require(rc == 0, name + ' HTTP runner failed')
+        exit_info = json.loads((OUT / name / 'exit.json').read_text())
+        require(exit_info['server'] == 0 and exit_info['http_output_checks_passed']
+                and exit_info['failure'] is None and
+                exit_info['cleanup_failure'] is None, name + ' cleanup/output failed')
+        require((OUT / name / 'binary.sha256').read_text().strip() ==
+                frozen['candidate_binary_sha256'], 'runner binary identity differs')
+        if mode == 'quality':
+            require(exit_info['completed'] == 11, 'quality matrix incomplete')
+            continue
+        require(exit_info['completed'] == 5 and
+                exit_info['full_five_tier_completed'] and
+                not exit_info['partial_performance_matrix'], 'five-tier matrix incomplete')
+        comparison = compare(name)
+        require(not comparison['adverse_separation'],
+                name + ': NO_GO adverse performance separation; no extra samples')
+        if name == 'on':
+            require(comparison['identifiable_on_benefit'],
+                    'NO_GO no identifiable on benefit; added logic is not justified')
+    save(OUT / 'http-screen-pass.json', {
+        'status': 'HTTP_SCREEN_PASS_NUMERICAL_ACCEPTANCE_PENDING',
+        'requests': 52, 'candidate': frozen,
+        'next': 'Run frozen affected contracts and numeric/causality checks; no auto-accept',
+    })
+
+
+try:
+    main()
+except Exception as error:
+    if OWN_OUT and not (OUT / 'gate-stop.json').exists():
+        save(OUT / 'gate-stop.json', {'reason': str(error), 'no_retry': True})
+    raise

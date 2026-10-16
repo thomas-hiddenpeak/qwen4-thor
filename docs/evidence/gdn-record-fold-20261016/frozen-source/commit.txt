@@ -1,0 +1,7 @@
+commit dcb2a7d07c6aba1c319d2c689c5e752c5616997d
+Author:     Thomas <thomashiddenpeak@gmail.com>
+AuthorDate: Fri Oct 16 11:43:30 2026 +0800
+Commit:     Thomas <thomashiddenpeak@gmail.com>
+CommitDate: Fri Oct 16 11:43:30 2026 +0800
+
+    perf: stage GDN anchor and rank-one checkpoint candidate

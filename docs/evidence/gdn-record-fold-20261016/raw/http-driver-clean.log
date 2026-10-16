@@ -1,0 +1,9 @@
+Starting quality-on
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-driver-clean.py.txt", line 414, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-driver-clean.py.txt", line 386, in main
+    require(not environment_failed, 'ENV_ABORT: concurrent unrelated workload observed')
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-driver-clean.py.txt", line 40, in require
+    raise RuntimeError(message)
+RuntimeError: ENV_ABORT: concurrent unrelated workload observed

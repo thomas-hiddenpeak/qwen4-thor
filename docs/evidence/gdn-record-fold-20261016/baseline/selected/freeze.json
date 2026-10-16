@@ -1,0 +1,7 @@
+{
+  "sha256": {
+    "build/q4t": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072"
+  },
+  "runtime_commit": "9879cda",
+  "contract_commit": "21226b2"
+}

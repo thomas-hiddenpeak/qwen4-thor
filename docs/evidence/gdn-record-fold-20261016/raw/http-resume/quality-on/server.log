@@ -1,0 +1,67 @@
+[q4t][capabilities] requested=experimental mtp=1 media=0 max_seq=1
+[q4t][startup] tokenizer 294 ms
+[q4t][budget] mem_total=131.92 GB fraction=0.90 budget=118.73 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=208896 max_seq=1 max_prefill=8192 feasible=1 reason=estimate_fits
+[q4t][budget]   weights=84.00 GB  fixed=97.81 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=2348023808 mtp_workspace=3402434560 forward_buffers=419594244 ple_working=76571648 mtp=1
+[q4t][budget]   per_request=8.57 GB (MTP request allocations)  state_pool=7.08 GB
+[q4t][budget]   => max_len=208896 max_seq=1
+[q4t][budget]   MTP allocation scope: text max_seq=1, k in [1,16]; allocation estimate, not a physical RAM guarantee
+[q4t][budget]   mtp_weights=5214301696 mtp_buffers=522240 mtp_scratch=6476904 mtp_checkpoints=346927104 mtp_forward_temp=16814240
+[q4t][budget]   loading_host_peak=3355443200 startup_envelope=108249902136 runtime_peak=113469410520 estimated_total=113469410520
+[q4t][startup] budget 419 ms
+[q4t][capacity] requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true
+[q4t][startup] model_load 27318 ms
+[q4t] generation stop token ids: 248046 248044
+[q4t] MTP loaded (k=3 max_seq=1)
+[q4t][startup] mtp_load 3108 ms
+[q4t] media disabled; vision tower not loaded
+[q4t][capabilities] effective mtp=1 media_allowed=0 vision_loaded=0 max_seq=1
+[q4t] continuous-batching scheduler started (max_seq=1)
+[q4t][startup] startup_total 31140 ms
+[q4t] serving on port 8741 (host 127.0.0.1, model qwen3.8-flash-next)
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t][mem] phase=request_end id=chatcmpl-auto-0 dev_used_gb=107.984 dev_total_gb=131.921 rss_mb=869.6 mem_free_gb=18.690 mem_avail_gb=26.577 cached_gb=3.629
+[q4t][mem] phase=request_end id=chatcmpl-auto-1 dev_used_gb=107.977 dev_total_gb=131.921 rss_mb=871.9 mem_free_gb=18.697 mem_avail_gb=26.585 cached_gb=3.629
+[q4t][mem] phase=request_end id=chatcmpl-auto-2 dev_used_gb=107.959 dev_total_gb=131.921 rss_mb=872.4 mem_free_gb=18.715 mem_avail_gb=26.604 cached_gb=3.630
+[q4t][mem] phase=request_end id=chatcmpl-auto-3 dev_used_gb=107.956 dev_total_gb=131.921 rss_mb=880.1 mem_free_gb=18.757 mem_avail_gb=26.606 cached_gb=3.630
+[q4t][mem] phase=request_end id=chatcmpl-auto-4 dev_used_gb=107.976 dev_total_gb=131.921 rss_mb=881.2 mem_free_gb=18.738 mem_avail_gb=26.629 cached_gb=3.673
+[q4t][mem] phase=request_end id=chatcmpl-auto-5 dev_used_gb=107.972 dev_total_gb=131.921 rss_mb=881.2 mem_free_gb=18.742 mem_avail_gb=26.634 cached_gb=3.673
+[q4t][mem] phase=request_end id=chatcmpl-auto-6 dev_used_gb=107.081 dev_total_gb=131.921 rss_mb=885.7 mem_free_gb=19.976 mem_avail_gb=27.496 cached_gb=3.657
+[q4t][mem] phase=request_end id=chatcmpl-auto-7 dev_used_gb=107.224 dev_total_gb=131.921 rss_mb=887.4 mem_free_gb=19.834 mem_avail_gb=27.363 cached_gb=3.664
+[q4t][mem] phase=request_end id=chatcmpl-auto-8 dev_used_gb=107.323 dev_total_gb=131.921 rss_mb=887.6 mem_free_gb=19.735 mem_avail_gb=27.267 cached_gb=3.667
+[q4t][mem] phase=prefill_chunk id=seq0@pos8192 dev_used_gb=108.262 dev_total_gb=131.921 rss_mb=889.7 mem_free_gb=19.718 mem_avail_gb=26.328 cached_gb=3.667
+[q4t][mem] phase=prefill_chunk id=seq0@pos16384 dev_used_gb=108.256 dev_total_gb=131.921 rss_mb=889.8 mem_free_gb=19.724 mem_avail_gb=26.334 cached_gb=3.667
+[q4t][mem] phase=prefill_chunk id=seq0@pos24576 dev_used_gb=108.245 dev_total_gb=131.921 rss_mb=889.8 mem_free_gb=19.735 mem_avail_gb=26.345 cached_gb=3.667
+[q4t][mem] phase=prefill_chunk id=seq0@pos32768 dev_used_gb=108.248 dev_total_gb=131.921 rss_mb=889.8 mem_free_gb=19.733 mem_avail_gb=26.343 cached_gb=3.667
+[q4t][mem] phase=prefill_chunk id=seq0@pos40960 dev_used_gb=108.277 dev_total_gb=131.921 rss_mb=889.8 mem_free_gb=19.704 mem_avail_gb=26.315 cached_gb=3.668
+[q4t][mem] phase=request_end id=chatcmpl-auto-9 dev_used_gb=107.343 dev_total_gb=131.921 rss_mb=889.9 mem_free_gb=19.714 mem_avail_gb=27.248 cached_gb=3.668
+[q4t][mem] phase=prefill_chunk id=seq0@pos8192 dev_used_gb=111.563 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.689 mem_avail_gb=23.029 cached_gb=3.668
+[q4t][mem] phase=prefill_chunk id=seq0@pos16384 dev_used_gb=111.562 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.690 mem_avail_gb=23.030 cached_gb=3.668
+[q4t][mem] phase=prefill_chunk id=seq0@pos24576 dev_used_gb=111.552 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.700 mem_avail_gb=23.041 cached_gb=3.670
+[q4t][mem] phase=prefill_chunk id=seq0@pos32768 dev_used_gb=111.544 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.708 mem_avail_gb=23.051 cached_gb=3.671
+[q4t][mem] phase=prefill_chunk id=seq0@pos40960 dev_used_gb=111.526 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.726 mem_avail_gb=23.069 cached_gb=3.671
+[q4t][mem] phase=prefill_chunk id=seq0@pos49152 dev_used_gb=111.527 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.725 mem_avail_gb=23.068 cached_gb=3.671
+[q4t][mem] phase=prefill_chunk id=seq0@pos57344 dev_used_gb=111.529 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.723 mem_avail_gb=23.066 cached_gb=3.671
+[q4t][mem] phase=prefill_chunk id=seq0@pos65536 dev_used_gb=111.530 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.722 mem_avail_gb=23.066 cached_gb=3.671
+[q4t][mem] phase=prefill_chunk id=seq0@pos73728 dev_used_gb=111.535 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.717 mem_avail_gb=23.061 cached_gb=3.672
+[q4t][mem] phase=prefill_chunk id=seq0@pos81920 dev_used_gb=111.533 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.719 mem_avail_gb=23.063 cached_gb=3.672
+[q4t][mem] phase=prefill_chunk id=seq0@pos90112 dev_used_gb=111.545 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.707 mem_avail_gb=23.052 cached_gb=3.672
+[q4t][mem] phase=prefill_chunk id=seq0@pos98304 dev_used_gb=111.545 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.707 mem_avail_gb=23.052 cached_gb=3.673
+[q4t][mem] phase=prefill_chunk id=seq0@pos106496 dev_used_gb=111.549 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.703 mem_avail_gb=23.049 cached_gb=3.674
+[q4t][mem] phase=prefill_chunk id=seq0@pos114688 dev_used_gb=111.553 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.699 mem_avail_gb=23.047 cached_gb=3.675
+[q4t][mem] phase=prefill_chunk id=seq0@pos122880 dev_used_gb=111.546 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.706 mem_avail_gb=23.054 cached_gb=3.675
+[q4t][mem] phase=prefill_chunk id=seq0@pos131072 dev_used_gb=111.547 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.705 mem_avail_gb=23.053 cached_gb=3.675
+[q4t][mem] phase=prefill_chunk id=seq0@pos139264 dev_used_gb=111.555 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.697 mem_avail_gb=23.045 cached_gb=3.675
+[q4t][mem] phase=prefill_chunk id=seq0@pos147456 dev_used_gb=111.563 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.689 mem_avail_gb=23.037 cached_gb=3.675
+[q4t][mem] phase=prefill_chunk id=seq0@pos155648 dev_used_gb=111.613 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.639 mem_avail_gb=22.988 cached_gb=3.677
+[q4t][mem] phase=prefill_chunk id=seq0@pos163840 dev_used_gb=111.595 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.657 mem_avail_gb=23.009 cached_gb=3.679
+[q4t][mem] phase=prefill_chunk id=seq0@pos172032 dev_used_gb=111.577 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.675 mem_avail_gb=23.027 cached_gb=3.679
+[q4t][mem] phase=prefill_chunk id=seq0@pos180224 dev_used_gb=111.580 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.672 mem_avail_gb=23.025 cached_gb=3.679
+[q4t][mem] phase=prefill_chunk id=seq0@pos188416 dev_used_gb=111.566 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.686 mem_avail_gb=23.039 cached_gb=3.679
+[q4t][mem] phase=prefill_chunk id=seq0@pos196608 dev_used_gb=111.566 dev_total_gb=131.921 rss_mb=895.9 mem_free_gb=19.686 mem_avail_gb=23.039 cached_gb=3.679
+[q4t][mem] phase=request_end id=chatcmpl-auto-10 dev_used_gb=107.158 dev_total_gb=131.921 rss_mb=899.0 mem_free_gb=16.018 mem_avail_gb=27.391 cached_gb=3.629
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
