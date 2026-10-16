@@ -1,0 +1,9 @@
+{"phase":"normal_flush","callbacks":0,"total":0,"targets":0}
+{"record_kind":10}
+{"queued":1792193410520584539,"submitted":0,"start":1792193410520601764,"end":1792193410520603396,"ordered":false}
+{"record_kind":10}
+{"queued":1792193410520891809,"submitted":0,"start":1792193410520896230,"end":1792193410520897286,"ordered":false}
+{"record_kind":10}
+{"queued":1792193410520921985,"submitted":0,"start":1792193410520925446,"end":1792193410520926502,"ordered":false}
+{"phase":"forced_flush","callbacks":1,"total":3,"targets":3}
+{"records":3,"invalid":3,"dropped":0,"value":3}

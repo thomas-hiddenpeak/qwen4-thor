@@ -1,0 +1,17 @@
+{
+  "status": "COMMAND_FAILED",
+  "command": [
+    ".q4t-work/hc-up-submit-timestamps-20261017-v2/check"
+  ],
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 1,
+  "external_lease": false,
+  "finished": {
+    "utc": "2026-10-16T23:30:11.443277+00:00",
+    "monotonic": 383493.960167248,
+    "pid": 1294047
+  }
+}

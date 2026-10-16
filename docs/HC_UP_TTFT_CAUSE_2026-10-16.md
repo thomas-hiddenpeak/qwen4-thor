@@ -2176,3 +2176,26 @@ dropped=0，验证返回1、guard COMMAND_FAILED，非竞争ENV_ABORT。
 下一步先离线审查采集器记录覆盖和生命周期；只有确认具体工具缺陷
 后才针对性修正重验，不把零记录当成排队为零。本轮未改生产实现、
 模型/数值合同，无HTTP重复采样。根因未闭合，目标active，NO_GO保持。
+
+## CUPTI采集器flush缺口定位：记录交付恢复，submitted仍未知（2026-10-17）
+
+针对上一条具体失败检查本机CUDA13.3头文件：普通FlushAll(0)不会
+交付包含未完成记录的buffer；文档建议退出前forced flush。原采集器
+遗漏最终强制刷新。执行前另冻结一次修正验证，保留相同3个同步递增
+kernel及kind10筛选；同一次执行先普通flush记录计数，再对相同buffer
+强制flush，不追加kernel。补全部kind和回调计数，避免把筛选错误与
+未交付混淆。原失败保留，不覆盖或当作通过。
+
+零警告构建，独占guard下实际结果：普通flush回调0/记录0；随后forced
+flush回调1/记录3，全部kind10、目标3，value3、dropped0。三条queued、
+start、end均非零，但submitted全部为CUPTI_TIMESTAMP_UNKNOWN(0)，
+故invalid3、退出1，guard COMMAND_FAILED而非环境竞争。由同次buffer
+交付差明确原“零记录”有flush生命周期原因；不能据此说完整采集通过，
+也不能仅凭submitted未知断言平台永远不支持该字段。
+
+证据evidence/hc-up-submit-timestamps-20261017-v2/。当前最多可取得
+queued→start合计，仍无法拆开驱动提交延迟和提交后设备等待；不能用
+此未通过探针启动整模型profile，更不能拿其kernel时间解释原TTFT。
+本轮仅针对工具缺口的最小修正验证，无HTTP重跑、生产/数值合同更改。
+下一步核对submitted字段的平台/驱动支持边界；没有明确支持或修复
+依据前不重复此采集。目标active，TTFT根因未闭合，HC NO_GO保持。
