@@ -452,3 +452,20 @@ uring API wall308.483–316.442ms，CPU307.179–315.021ms，主要不是本线�
 main二进制具备开关；下一步复用它冻结有界细分观测，明确额外events
 和同步的扰动，不重新链接模型、不扩展为prefill优化。目标仍active。
 [完整结果及退出审计](evidence/hc-up-gather-observer-20261017/README.md)。
+
+
+## 细分事件观测冻结（2026-10-17）
+
+原binary具备Q4T_LAYER_SUBTIMING，无需重新链接。相关历史目录未找到
+200K细分日志可复用。固定A B B A四条原200K off，原输入/256输出，单
+GPU lease；只开layer与subtiming，不叠加其他preload/PMU/Nsight。
+保留所有25chunk，比较2–25，四类报告逐条检查形状、字段、有限非负、
+同步错误和顶层求和。每指标两对B−A均需>max(同身份R,1ms)才作为
+可辨识正差；1ms覆盖打印舍入，不构成因果或接受门槛。
+
+源码边界：full_qkv=QKV投影，full_core包含QSA indexer/sparse attention
+及相关操作，full_oproj为输出投影；MoE/HC细节跨所有层，不能隔离full
+层的MoE/HC。PLE top slot在Gather之后。嵌套detail与顶层不能重复相加。
+额外CUDA events和同步影响调度，不用插桩TTFT验收，不把区间等同GPU
+kernel净时间；负结果停止此类别，不扩样。目标及原NO_GO保持。
+[协议和已冻结分析脚本](evidence/hc-up-subtiming-20261017/README.md)。
