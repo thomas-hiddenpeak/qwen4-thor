@@ -1,0 +1,231 @@
+{
+  "runs": [
+    {
+      "name": "01-A-control",
+      "variant": "A",
+      "mode": "control",
+      "coverage": {
+        "passed": true,
+        "mode": "control",
+        "arena": "0xfffca0000000",
+        "aligned": "0xfffca0000000",
+        "bytes": 562036736,
+        "allocations": 6600,
+        "frees": 6600
+      },
+      "ttft": 158.83712319401093,
+      "decode_tps": 17.043833957148664,
+      "output": [
+        "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+      ],
+      "prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4"
+    },
+    {
+      "name": "02-B-fixed",
+      "variant": "B",
+      "mode": "fixed",
+      "coverage": {
+        "passed": true,
+        "mode": "fixed",
+        "arena": "0xfffca0000000",
+        "aligned": "0xfffca0000000",
+        "bytes": 562036736,
+        "allocations": 6600,
+        "frees": 6600
+      },
+      "ttft": 159.21050903300056,
+      "decode_tps": 17.063363683986072,
+      "output": [
+        "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+      ],
+      "prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4"
+    },
+    {
+      "name": "03-B-control",
+      "variant": "B",
+      "mode": "control",
+      "coverage": {
+        "passed": true,
+        "mode": "control",
+        "arena": "0xfffca0000000",
+        "aligned": "0xfffca0000000",
+        "bytes": 562036736,
+        "allocations": 6600,
+        "frees": 6600
+      },
+      "ttft": 158.83231261902256,
+      "decode_tps": 17.04678951764828,
+      "output": [
+        "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+      ],
+      "prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4"
+    },
+    {
+      "name": "04-A-fixed",
+      "variant": "A",
+      "mode": "fixed",
+      "coverage": {
+        "passed": true,
+        "mode": "fixed",
+        "arena": "0xfffca0000000",
+        "aligned": "0xfffca0000000",
+        "bytes": 562036736,
+        "allocations": 6600,
+        "frees": 6600
+      },
+      "ttft": 158.9103170360322,
+      "decode_tps": 17.07123698136416,
+      "output": [
+        "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+      ],
+      "prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4"
+    },
+    {
+      "name": "05-A-fixed",
+      "variant": "A",
+      "mode": "fixed",
+      "coverage": {
+        "passed": true,
+        "mode": "fixed",
+        "arena": "0xfffcc0000000",
+        "aligned": "0xfffcc0000000",
+        "bytes": 562036736,
+        "allocations": 6600,
+        "frees": 6600
+      },
+      "ttft": 159.03132100298535,
+      "decode_tps": 17.044938110038295,
+      "output": [
+        "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+      ],
+      "prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4"
+    },
+    {
+      "name": "06-B-control",
+      "variant": "B",
+      "mode": "control",
+      "coverage": {
+        "passed": true,
+        "mode": "control",
+        "arena": "0xfffcc0000000",
+        "aligned": "0xfffcc0000000",
+        "bytes": 562036736,
+        "allocations": 6600,
+        "frees": 6600
+      },
+      "ttft": 158.77169949398376,
+      "decode_tps": 16.992274833802682,
+      "output": [
+        "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+      ],
+      "prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4"
+    },
+    {
+      "name": "07-B-fixed",
+      "variant": "B",
+      "mode": "fixed",
+      "coverage": {
+        "passed": true,
+        "mode": "fixed",
+        "arena": "0xfffca0000000",
+        "aligned": "0xfffca0000000",
+        "bytes": 562036736,
+        "allocations": 6600,
+        "frees": 6600
+      },
+      "ttft": 158.838815391995,
+      "decode_tps": 17.03037186641751,
+      "output": [
+        "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+      ],
+      "prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4"
+    },
+    {
+      "name": "08-A-control",
+      "variant": "A",
+      "mode": "control",
+      "coverage": {
+        "passed": true,
+        "mode": "control",
+        "arena": "0xfffca0000000",
+        "aligned": "0xfffca0000000",
+        "bytes": 562036736,
+        "allocations": 6600,
+        "frees": 6600
+      },
+      "ttft": 158.8541806199937,
+      "decode_tps": 16.991811596103744,
+      "output": [
+        "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+      ],
+      "prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4"
+    }
+  ],
+  "R_s": 0.3716936410055496,
+  "pairs": [
+    {
+      "control_B_minus_A_s": -0.004810574988368899,
+      "fixed_B_minus_A_s": 0.3001919969683513,
+      "interaction_s": -0.3050025719567202
+    },
+    {
+      "control_B_minus_A_s": -0.08248112600995228,
+      "fixed_B_minus_A_s": -0.19250561099033803,
+      "interaction_s": 0.11002448498038575
+    }
+  ],
+  "frozen_interaction_gate_passed": false,
+  "lease": {
+    "status": "COMPLETED",
+    "command": [
+      "python3",
+      ".q4t-work/hc-up-layout-intervention-20261017/run.py"
+    ],
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 0,
+    "finished": {
+      "utc": "2026-10-16T18:15:40.011386+00:00",
+      "monotonic": 364622.528276017,
+      "pid": 1181770
+    }
+  },
+  "historical_causation_proven": false,
+  "performance_acceptance": false,
+  "sources": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/01-A-control/server.log": "43659417be69ebf178a06549dcc3aa87d701c71f79008889e861a9130feec6d8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/01-A-control/exit.json": "82b0849fc727290fff051bca4c97db37ae2b799289d65b308891aee156c848a0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/01-A-control/results.json": "44e188cc24469744aa197dc115222a160fb559664f536c6ee24e1e755e08cb4d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/01-A-control/events.jsonl": "0092240d3a0336206ff36842f53df1a23867558f0b930f1085c7f401de9071df",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/02-B-fixed/server.log": "39d641cfc2851b9e3032e84b6a48d70b1fc043c2d31284926fca97ed5d4d9b00",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/02-B-fixed/exit.json": "82b0849fc727290fff051bca4c97db37ae2b799289d65b308891aee156c848a0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/02-B-fixed/results.json": "129b37ac0e2ffa5baa071a6ad7aba94ebbca2cdf932a345051a8d0a727da3485",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/02-B-fixed/events.jsonl": "c9a2cdb8de58fc5348ebd01d052069b13242e545bb030a490cd5f3bcd8d0aca3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/03-B-control/server.log": "90f7eda0098865e9d65a93a1756be77bfd4d72b7b203e869581d78447ebde17e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/03-B-control/exit.json": "82b0849fc727290fff051bca4c97db37ae2b799289d65b308891aee156c848a0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/03-B-control/results.json": "7298850340cdb87fb7aff6213663e0c1fc6c26c3547d2fe54ea8261b5b3fdc76",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/03-B-control/events.jsonl": "a438a6aa8eb61491e30e7045d0789b699d59bb2f78e0d84b9e7ffa042a14d13f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/04-A-fixed/server.log": "257e585149fd3c85389a1ba49ab048b2a661ee270be8500e1260fdfb1453fe3b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/04-A-fixed/exit.json": "82b0849fc727290fff051bca4c97db37ae2b799289d65b308891aee156c848a0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/04-A-fixed/results.json": "0719ec16e5a2502e1772948531ab22d53efbf9558b12a54fc61e1e60f1ac19c2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/04-A-fixed/events.jsonl": "5652180a44bb60072bd4dc6c5955397e38af85ed2a8aefd7cfdb257d896008a9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/05-A-fixed/server.log": "e686101170f324230d68fdcb9fba2a45722911a731792a0b592967306f798fc0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/05-A-fixed/exit.json": "82b0849fc727290fff051bca4c97db37ae2b799289d65b308891aee156c848a0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/05-A-fixed/results.json": "055a9e7f7e72d7cfd4d44603873efa5f34776adb34e63778a923ffc3b6a5c569",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/05-A-fixed/events.jsonl": "65eaab774a53496646a2d70105a777bf8687cd09d7bd2273372fda0b8dfe539c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/06-B-control/server.log": "c4e23671928fe7460d978f6c06cc1c375552e03d0d6fd843c3182bc7ece89fa2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/06-B-control/exit.json": "82b0849fc727290fff051bca4c97db37ae2b799289d65b308891aee156c848a0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/06-B-control/results.json": "791aa6d07aa527c49ff4270382021dd716a2e749282aecce618577e9fff6df7c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/06-B-control/events.jsonl": "4f131962f3d1eaa5507645af2b93765fb73cec03e86b3fa0f449aa44f953627f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/07-B-fixed/server.log": "246955de51cbb283ee1e1740e7c999917f2d3823334304596df9b04f195b3937",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/07-B-fixed/exit.json": "82b0849fc727290fff051bca4c97db37ae2b799289d65b308891aee156c848a0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/07-B-fixed/results.json": "b93dce3a9255cd1d9afe684fc9f07d87092b89fe294d59d90887aacfc6a40c31",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/07-B-fixed/events.jsonl": "17cfb4121dbd2e7cc3a5ff34da4606581c8afe2cdf718e73b048a8650803e145",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/08-A-control/server.log": "4faec5f222fc31b1057402f4bb75579e52791e534cf544ed2d47012f87ada323",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/08-A-control/exit.json": "82b0849fc727290fff051bca4c97db37ae2b799289d65b308891aee156c848a0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/08-A-control/results.json": "1787aa318ebdfd1e572d6dbe3990755402df5643d0a7d383c86604f09f051aa4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-layout-intervention-20261017/http/08-A-control/events.jsonl": "1447e94d6f53bef2c49a55a8d73264116d34f40374c121b1d9836e1bdcb606a4"
+  }
+}

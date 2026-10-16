@@ -1,0 +1,43 @@
+{
+  "guard": {
+    "status": "COMPLETED",
+    "command": [
+      "python3",
+      ".q4t-work/hc-up-layout-intervention-20261017/run.py"
+    ],
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 0,
+    "finished": {
+      "utc": "2026-10-16T18:15:40.011386+00:00",
+      "monotonic": 364622.528276017,
+      "pid": 1181770
+    }
+  },
+  "monitor_events": 1600,
+  "conflicts": [],
+  "arena_aligned_by_run": {
+    "01-A-control": "0xfffca0000000",
+    "02-B-fixed": "0xfffca0000000",
+    "03-B-control": "0xfffca0000000",
+    "04-A-fixed": "0xfffca0000000",
+    "05-A-fixed": "0xfffcc0000000",
+    "06-B-control": "0xfffcc0000000",
+    "07-B-fixed": "0xfffca0000000",
+    "08-A-control": "0xfffca0000000"
+  },
+  "artifact_sha256": {
+    ".q4t-work/hc-up-layout-intervention-20261017/protocol.json": "29d7f9e4b395820b8affe38f47d9fadf8cf413c694ccb6ce65c228075ad4d692",
+    ".q4t-work/hc-up-layout-intervention-20261017/run.py": "65d7cbc7b656d18de7663da221277200f0dfed53b5be87b7959e469c1c9fd831",
+    ".q4t-work/hc-up-layout-intervention-20261017/analyze.py": "10951b562305a8a8d7514311851bc0fee3a58534065d5724f18918d4b8669309",
+    ".q4t-work/hc-up-layout-intervention-20261017/validate_layout.py": "dcd3c9bee350f378aadbf42eff7612cdee2e581386aa0d3f98f546a70ae61391",
+    ".q4t-work/hc-up-layout-intervention-20261017/probe.so": "32a6584163e09a56fca987a9a40609ed6696a52d5bd508fba94503df3bc0562d",
+    ".q4t-work/hc-up-layout-intervention-20261017/driver.log": "1c15b5838d47df116ad81ac77a396d928ffbe402c80143b0eaf54c6172f6bf24",
+    ".q4t-work/hc-up-layout-intervention-20261017/environment.json": "48730b131f8b2e6854eaca1b3274e01eefa312b370019021f8b4d8dfc3437abe",
+    ".q4t-work/hc-up-layout-intervention-20261017/telemetry.jsonl": "65be1a7d27d8742422c4670eceb7523255e49bc9c92fb204a70943b45d3cff4a",
+    ".q4t-work/hc-up-layout-intervention-20261017/lease/events.jsonl": "642acbb025b8a129f8eeb2fe86b065891fa5cef13c7bd37d0533dac1118ff27a",
+    ".q4t-work/hc-up-layout-intervention-20261017/lease/exit.json": "8b6721998fce69701070de0c615631546ad8ce888b598be3173d8ef38a1136ae"
+  }
+}
