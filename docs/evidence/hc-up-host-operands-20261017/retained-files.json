@@ -1,0 +1,22 @@
+{
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-host-operands-20261017/aligned-differences.json": {
+    "bytes": 1677138,
+    "sha256": "2de759e65ce4d78eb686aa4cdb9c94154b8fe2b1afea69b77a794967fc4ba3e5"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-host-operands-20261017/result.json": {
+    "bytes": 106654,
+    "sha256": "7a104a9bf80d247e0f9bb90a6fe860b5157e70e714ca32e5c327ab15dcd47a26"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-host-operands-20261017/data-references.json": {
+    "bytes": 799902,
+    "sha256": "3f72ca0c00a5ce1f84ef857807b3f6d9ac0ce7c4ca9e182f48ab05df8e51975d"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-host-operands-20261017/data_refs.py": {
+    "bytes": 2535,
+    "sha256": "dcc7aae979ebbe9e9caaff8b6b005bf6ee9b5732f9f69434a694225483cf9c68"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-host-operands-20261017/audit.py": {
+    "bytes": 4131,
+    "sha256": "3ab62e776de3b9b5ea49323491b29fe86ab7b5598956e155179b0547cc3dc4a8"
+  }
+}
