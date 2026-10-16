@@ -1,0 +1,1709 @@
+{
+  "sides": {
+    "A": {
+      "records": 151958,
+      "api_counts": {
+        "cudaMalloc": 1549,
+        "cudaHostAlloc": 2,
+        "cudaMallocAsync": 74432,
+        "cudaFreeAsync": 74432,
+        "cudaFree": 1541,
+        "cudaFreeHost": 2
+      },
+      "phase_counts": {
+        "startup": 1543,
+        "request": 148872,
+        "shutdown": 1543
+      },
+      "unmatched_free_ids": [],
+      "live_at_end": 8,
+      "overlapping_live_allocations": [],
+      "allocation_count": 75983,
+      "reused_address_allocations": 74394,
+      "normalized_sha256": "c04a179596e958f02c058e9966d13c76ec7c5ba18942790c7cbcc2aff1ff4b88"
+    },
+    "B": {
+      "records": 151958,
+      "api_counts": {
+        "cudaMalloc": 1549,
+        "cudaHostAlloc": 2,
+        "cudaMallocAsync": 74432,
+        "cudaFreeAsync": 74432,
+        "cudaFree": 1541,
+        "cudaFreeHost": 2
+      },
+      "phase_counts": {
+        "startup": 1543,
+        "request": 148872,
+        "shutdown": 1543
+      },
+      "unmatched_free_ids": [],
+      "live_at_end": 8,
+      "overlapping_live_allocations": [],
+      "allocation_count": 75983,
+      "reused_address_allocations": 74394,
+      "normalized_sha256": "c04a179596e958f02c058e9966d13c76ec7c5ba18942790c7cbcc2aff1ff4b88"
+    }
+  },
+  "normalized_sequence_equal": true,
+  "aligned_address_comparisons": {
+    "ptr": {
+      "differing_allocations": 977,
+      "first_10": [
+        {
+          "A": {
+            "id": 0,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              1271398400,
+              0,
+              0
+            ],
+            "ptr": 281462091808768,
+            "relative_to_first_domain": 0,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          },
+          "B": {
+            "id": 0,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              1271398400,
+              0,
+              0
+            ],
+            "ptr": 281461554937856,
+            "relative_to_first_domain": 0,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 1,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              1271398400,
+              0,
+              0
+            ],
+            "ptr": 281460481196032,
+            "relative_to_first_domain": -1610612736,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          },
+          "B": {
+            "id": 1,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              1271398400,
+              0,
+              0
+            ],
+            "ptr": 281459944325120,
+            "relative_to_first_domain": -1610612736,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 2,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              20480,
+              0,
+              0
+            ],
+            "ptr": 281461754167296,
+            "relative_to_first_domain": -337641472,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          },
+          "B": {
+            "id": 2,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              20480,
+              0,
+              0
+            ],
+            "ptr": 281461217296384,
+            "relative_to_first_domain": -337641472,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 3,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              6553600,
+              0,
+              0
+            ],
+            "ptr": 281461756264448,
+            "relative_to_first_domain": -335544320,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          },
+          "B": {
+            "id": 3,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              6553600,
+              0,
+              0
+            ],
+            "ptr": 281461219393536,
+            "relative_to_first_domain": -335544320,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 4,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              6553600,
+              0,
+              0
+            ],
+            "ptr": 281461764653056,
+            "relative_to_first_domain": -327155712,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          },
+          "B": {
+            "id": 4,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              6553600,
+              0,
+              0
+            ],
+            "ptr": 281461227782144,
+            "relative_to_first_domain": -327155712,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 5,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              20480,
+              0,
+              0
+            ],
+            "ptr": 281461754187776,
+            "relative_to_first_domain": -337620992,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 20480,
+              "2097152": 20480
+            }
+          },
+          "B": {
+            "id": 5,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              20480,
+              0,
+              0
+            ],
+            "ptr": 281461217316864,
+            "relative_to_first_domain": -337620992,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 20480,
+              "2097152": 20480
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 6,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              6553600,
+              0,
+              0
+            ],
+            "ptr": 281461773041664,
+            "relative_to_first_domain": -318767104,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          },
+          "B": {
+            "id": 6,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              6553600,
+              0,
+              0
+            ],
+            "ptr": 281461236170752,
+            "relative_to_first_domain": -318767104,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 7,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              6553600,
+              0,
+              0
+            ],
+            "ptr": 281461781430272,
+            "relative_to_first_domain": -310378496,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          },
+          "B": {
+            "id": 7,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              6553600,
+              0,
+              0
+            ],
+            "ptr": 281461244559360,
+            "relative_to_first_domain": -310378496,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 8,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              81920,
+              0,
+              0
+            ],
+            "ptr": 281461754208256,
+            "relative_to_first_domain": -337600512,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 40960,
+              "2097152": 40960
+            }
+          },
+          "B": {
+            "id": 8,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              81920,
+              0,
+              0
+            ],
+            "ptr": 281461217337344,
+            "relative_to_first_domain": -337600512,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 40960,
+              "2097152": 40960
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 9,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              20480,
+              0,
+              0
+            ],
+            "ptr": 281461754290176,
+            "relative_to_first_domain": -337518592,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 57344,
+              "2097152": 122880
+            }
+          },
+          "B": {
+            "id": 9,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              20480,
+              0,
+              0
+            ],
+            "ptr": 281461217419264,
+            "relative_to_first_domain": -337518592,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 57344,
+              "2097152": 122880
+            }
+          }
+        }
+      ]
+    },
+    "relative_to_first_domain": {
+      "differing_allocations": 75862,
+      "first_10": [
+        {
+          "A": {
+            "id": 56,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              838860800,
+              0,
+              0
+            ],
+            "ptr": 281449743777792,
+            "relative_to_first_domain": -12348030976,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          },
+          "B": {
+            "id": 56,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              838860800,
+              0,
+              0
+            ],
+            "ptr": 281449743777792,
+            "relative_to_first_domain": -11811160064,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 57,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              104857600,
+              0,
+              0
+            ],
+            "ptr": 281450582638592,
+            "relative_to_first_domain": -11509170176,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          },
+          "B": {
+            "id": 57,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              104857600,
+              0,
+              0
+            ],
+            "ptr": 281450582638592,
+            "relative_to_first_domain": -10972299264,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 58,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              419430400,
+              0,
+              0
+            ],
+            "ptr": 281449206906880,
+            "relative_to_first_domain": -12884901888,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          },
+          "B": {
+            "id": 58,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              419430400,
+              0,
+              0
+            ],
+            "ptr": 281449206906880,
+            "relative_to_first_domain": -12348030976,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 59,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              52428800,
+              0,
+              0
+            ],
+            "ptr": 281449626337280,
+            "relative_to_first_domain": -12465471488,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          },
+          "B": {
+            "id": 59,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              52428800,
+              0,
+              0
+            ],
+            "ptr": 281449626337280,
+            "relative_to_first_domain": -11928600576,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 64,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              2621440,
+              0,
+              0
+            ],
+            "ptr": 281449678766080,
+            "relative_to_first_domain": -12413042688,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          },
+          "B": {
+            "id": 64,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              2621440,
+              0,
+              0
+            ],
+            "ptr": 281449678766080,
+            "relative_to_first_domain": -11876171776,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 65,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              6553600,
+              0,
+              0
+            ],
+            "ptr": 281449682960384,
+            "relative_to_first_domain": -12408848384,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          },
+          "B": {
+            "id": 65,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              6553600,
+              0,
+              0
+            ],
+            "ptr": 281449682960384,
+            "relative_to_first_domain": -11871977472,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 66,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              3276800,
+              0,
+              0
+            ],
+            "ptr": 281449691348992,
+            "relative_to_first_domain": -12400459776,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          },
+          "B": {
+            "id": 66,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              3276800,
+              0,
+              0
+            ],
+            "ptr": 281449691348992,
+            "relative_to_first_domain": -11863588864,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 68,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              52428800,
+              0,
+              0
+            ],
+            "ptr": 281450687496192,
+            "relative_to_first_domain": -11404312576,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          },
+          "B": {
+            "id": 68,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              52428800,
+              0,
+              0
+            ],
+            "ptr": 281450687496192,
+            "relative_to_first_domain": -10867441664,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 69,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              13107200,
+              0,
+              0
+            ],
+            "ptr": 281449695543296,
+            "relative_to_first_domain": -12396265472,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          },
+          "B": {
+            "id": 69,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              13107200,
+              0,
+              0
+            ],
+            "ptr": 281449695543296,
+            "relative_to_first_domain": -11859394560,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 75,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              6553600,
+              0,
+              0
+            ],
+            "ptr": 281449710223360,
+            "relative_to_first_domain": -12381585408,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          },
+          "B": {
+            "id": 75,
+            "signature": [
+              "startup",
+              "cudaMalloc",
+              6553600,
+              0,
+              0
+            ],
+            "ptr": 281449710223360,
+            "relative_to_first_domain": -11844714496,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 0,
+              "65536": 0,
+              "2097152": 0
+            }
+          }
+        }
+      ]
+    },
+    "alignment_mod": {
+      "differing_allocations": 858,
+      "first_10": [
+        {
+          "A": {
+            "id": 1605,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              17109248,
+              0,
+              0
+            ],
+            "ptr": 13975753216,
+            "relative_to_first_domain": -281448116055552,
+            "address_generation": 5,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 512,
+              "65536": 4608,
+              "2097152": 332288
+            }
+          },
+          "B": {
+            "id": 1605,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              17109248,
+              0,
+              0
+            ],
+            "ptr": 13992862720,
+            "relative_to_first_domain": -281447562075136,
+            "address_generation": 2,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1024,
+              "65536": 9216,
+              "2097152": 664576
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 1607,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              167772160,
+              0,
+              0
+            ],
+            "ptr": 13992862720,
+            "relative_to_first_domain": -281448098946048,
+            "address_generation": 2,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1024,
+              "65536": 9216,
+              "2097152": 664576
+            }
+          },
+          "B": {
+            "id": 1607,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              167772160,
+              0,
+              0
+            ],
+            "ptr": 14009972224,
+            "relative_to_first_domain": -281447544965632,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1536,
+              "65536": 13824,
+              "2097152": 996864
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 1608,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              167772160,
+              0,
+              0
+            ],
+            "ptr": 14160634880,
+            "relative_to_first_domain": -281447931173888,
+            "address_generation": 2,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1024,
+              "65536": 9216,
+              "2097152": 664576
+            }
+          },
+          "B": {
+            "id": 1608,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              167772160,
+              0,
+              0
+            ],
+            "ptr": 14177744384,
+            "relative_to_first_domain": -281447377193472,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1536,
+              "65536": 13824,
+              "2097152": 996864
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 1609,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              100663296,
+              0,
+              0
+            ],
+            "ptr": 14328407040,
+            "relative_to_first_domain": -281447763401728,
+            "address_generation": 2,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1024,
+              "65536": 9216,
+              "2097152": 664576
+            }
+          },
+          "B": {
+            "id": 1609,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              100663296,
+              0,
+              0
+            ],
+            "ptr": 14345516544,
+            "relative_to_first_domain": -281447209421312,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1536,
+              "65536": 13824,
+              "2097152": 996864
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 1610,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              786432,
+              0,
+              0
+            ],
+            "ptr": 13975753216,
+            "relative_to_first_domain": -281448116055552,
+            "address_generation": 6,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 512,
+              "65536": 4608,
+              "2097152": 332288
+            }
+          },
+          "B": {
+            "id": 1610,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              786432,
+              0,
+              0
+            ],
+            "ptr": 13992862720,
+            "relative_to_first_domain": -281447562075136,
+            "address_generation": 3,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1024,
+              "65536": 9216,
+              "2097152": 664576
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 1611,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              786432,
+              0,
+              0
+            ],
+            "ptr": 13976539648,
+            "relative_to_first_domain": -281448115269120,
+            "address_generation": 2,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 512,
+              "65536": 4608,
+              "2097152": 1118720
+            }
+          },
+          "B": {
+            "id": 1611,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              786432,
+              0,
+              0
+            ],
+            "ptr": 13993649152,
+            "relative_to_first_domain": -281447561288704,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1024,
+              "65536": 9216,
+              "2097152": 1451008
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 1612,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              100663296,
+              0,
+              0
+            ],
+            "ptr": 14429070336,
+            "relative_to_first_domain": -281447662738432,
+            "address_generation": 2,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1024,
+              "65536": 9216,
+              "2097152": 664576
+            }
+          },
+          "B": {
+            "id": 1612,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              100663296,
+              0,
+              0
+            ],
+            "ptr": 14446179840,
+            "relative_to_first_domain": -281447108758016,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1536,
+              "65536": 13824,
+              "2097152": 996864
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 1619,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              17109248,
+              0,
+              0
+            ],
+            "ptr": 13975753216,
+            "relative_to_first_domain": -281448116055552,
+            "address_generation": 7,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 512,
+              "65536": 4608,
+              "2097152": 332288
+            }
+          },
+          "B": {
+            "id": 1619,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              17109248,
+              0,
+              0
+            ],
+            "ptr": 13992862720,
+            "relative_to_first_domain": -281447562075136,
+            "address_generation": 4,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1024,
+              "65536": 9216,
+              "2097152": 664576
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 1621,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              167772160,
+              0,
+              0
+            ],
+            "ptr": 13992862720,
+            "relative_to_first_domain": -281448098946048,
+            "address_generation": 3,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1024,
+              "65536": 9216,
+              "2097152": 664576
+            }
+          },
+          "B": {
+            "id": 1621,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              167772160,
+              0,
+              0
+            ],
+            "ptr": 14009972224,
+            "relative_to_first_domain": -281447544965632,
+            "address_generation": 2,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1536,
+              "65536": 13824,
+              "2097152": 996864
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 1622,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              167772160,
+              0,
+              0
+            ],
+            "ptr": 14160634880,
+            "relative_to_first_domain": -281447931173888,
+            "address_generation": 3,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1024,
+              "65536": 9216,
+              "2097152": 664576
+            }
+          },
+          "B": {
+            "id": 1622,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              167772160,
+              0,
+              0
+            ],
+            "ptr": 14177744384,
+            "relative_to_first_domain": -281447377193472,
+            "address_generation": 2,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1536,
+              "65536": 13824,
+              "2097152": 996864
+            }
+          }
+        }
+      ]
+    },
+    "address_generation": {
+      "differing_allocations": 27012,
+      "first_10": [
+        {
+          "A": {
+            "id": 1605,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              17109248,
+              0,
+              0
+            ],
+            "ptr": 13975753216,
+            "relative_to_first_domain": -281448116055552,
+            "address_generation": 5,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 512,
+              "65536": 4608,
+              "2097152": 332288
+            }
+          },
+          "B": {
+            "id": 1605,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              17109248,
+              0,
+              0
+            ],
+            "ptr": 13992862720,
+            "relative_to_first_domain": -281447562075136,
+            "address_generation": 2,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1024,
+              "65536": 9216,
+              "2097152": 664576
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 1607,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              167772160,
+              0,
+              0
+            ],
+            "ptr": 13992862720,
+            "relative_to_first_domain": -281448098946048,
+            "address_generation": 2,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1024,
+              "65536": 9216,
+              "2097152": 664576
+            }
+          },
+          "B": {
+            "id": 1607,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              167772160,
+              0,
+              0
+            ],
+            "ptr": 14009972224,
+            "relative_to_first_domain": -281447544965632,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1536,
+              "65536": 13824,
+              "2097152": 996864
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 1608,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              167772160,
+              0,
+              0
+            ],
+            "ptr": 14160634880,
+            "relative_to_first_domain": -281447931173888,
+            "address_generation": 2,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1024,
+              "65536": 9216,
+              "2097152": 664576
+            }
+          },
+          "B": {
+            "id": 1608,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              167772160,
+              0,
+              0
+            ],
+            "ptr": 14177744384,
+            "relative_to_first_domain": -281447377193472,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1536,
+              "65536": 13824,
+              "2097152": 996864
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 1609,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              100663296,
+              0,
+              0
+            ],
+            "ptr": 14328407040,
+            "relative_to_first_domain": -281447763401728,
+            "address_generation": 2,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1024,
+              "65536": 9216,
+              "2097152": 664576
+            }
+          },
+          "B": {
+            "id": 1609,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              100663296,
+              0,
+              0
+            ],
+            "ptr": 14345516544,
+            "relative_to_first_domain": -281447209421312,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1536,
+              "65536": 13824,
+              "2097152": 996864
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 1610,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              786432,
+              0,
+              0
+            ],
+            "ptr": 13975753216,
+            "relative_to_first_domain": -281448116055552,
+            "address_generation": 6,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 512,
+              "65536": 4608,
+              "2097152": 332288
+            }
+          },
+          "B": {
+            "id": 1610,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              786432,
+              0,
+              0
+            ],
+            "ptr": 13992862720,
+            "relative_to_first_domain": -281447562075136,
+            "address_generation": 3,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1024,
+              "65536": 9216,
+              "2097152": 664576
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 1611,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              786432,
+              0,
+              0
+            ],
+            "ptr": 13976539648,
+            "relative_to_first_domain": -281448115269120,
+            "address_generation": 2,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 512,
+              "65536": 4608,
+              "2097152": 1118720
+            }
+          },
+          "B": {
+            "id": 1611,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              786432,
+              0,
+              0
+            ],
+            "ptr": 13993649152,
+            "relative_to_first_domain": -281447561288704,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1024,
+              "65536": 9216,
+              "2097152": 1451008
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 1612,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              100663296,
+              0,
+              0
+            ],
+            "ptr": 14429070336,
+            "relative_to_first_domain": -281447662738432,
+            "address_generation": 2,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1024,
+              "65536": 9216,
+              "2097152": 664576
+            }
+          },
+          "B": {
+            "id": 1612,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              100663296,
+              0,
+              0
+            ],
+            "ptr": 14446179840,
+            "relative_to_first_domain": -281447108758016,
+            "address_generation": 1,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1536,
+              "65536": 13824,
+              "2097152": 996864
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 1619,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              17109248,
+              0,
+              0
+            ],
+            "ptr": 13975753216,
+            "relative_to_first_domain": -281448116055552,
+            "address_generation": 7,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 512,
+              "65536": 4608,
+              "2097152": 332288
+            }
+          },
+          "B": {
+            "id": 1619,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              17109248,
+              0,
+              0
+            ],
+            "ptr": 13992862720,
+            "relative_to_first_domain": -281447562075136,
+            "address_generation": 4,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1024,
+              "65536": 9216,
+              "2097152": 664576
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 1621,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              167772160,
+              0,
+              0
+            ],
+            "ptr": 13992862720,
+            "relative_to_first_domain": -281448098946048,
+            "address_generation": 3,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1024,
+              "65536": 9216,
+              "2097152": 664576
+            }
+          },
+          "B": {
+            "id": 1621,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              167772160,
+              0,
+              0
+            ],
+            "ptr": 14009972224,
+            "relative_to_first_domain": -281447544965632,
+            "address_generation": 2,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1536,
+              "65536": 13824,
+              "2097152": 996864
+            }
+          }
+        },
+        {
+          "A": {
+            "id": 1622,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              167772160,
+              0,
+              0
+            ],
+            "ptr": 14160634880,
+            "relative_to_first_domain": -281447931173888,
+            "address_generation": 3,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1024,
+              "65536": 9216,
+              "2097152": 664576
+            }
+          },
+          "B": {
+            "id": 1622,
+            "signature": [
+              "request",
+              "cudaMallocAsync",
+              167772160,
+              0,
+              0
+            ],
+            "ptr": 14177744384,
+            "relative_to_first_domain": -281447377193472,
+            "address_generation": 2,
+            "alignment_mod": {
+              "256": 0,
+              "4096": 1536,
+              "65536": 13824,
+              "2097152": 996864
+            }
+          }
+        }
+      ]
+    }
+  },
+  "lease": {
+    "status": "COMPLETED",
+    "command": [
+      "python3",
+      ".q4t-work/hc-up-address-observer-20261017/run.py"
+    ],
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 0,
+    "finished": {
+      "utc": "2026-10-16T17:34:01.348171+00:00",
+      "monotonic": 362123.865054781,
+      "pid": 1177681
+    }
+  },
+  "source_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-address-observer-20261017/http/01-A/server.log": "7036474be2624be5bd531bec3c8550dbf365ca1c67a31a0c86ff75a9d59a9255",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-address-observer-20261017/http/01-A/exit.json": "82b0849fc727290fff051bca4c97db37ae2b799289d65b308891aee156c848a0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-address-observer-20261017/http/01-A/results.json": "091a13b5cd9c0a4850bcb990e2a0edbe4213ba295de090f5bcf2f2a7da06c3be",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-address-observer-20261017/http/01-A/events.jsonl": "9232c9fb51fbfe74a48664f26d942690af67c15ad1a63b3a9dbd480de883261c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-address-observer-20261017/http/01-A/address-coverage.json": "5d82a53ca99121cf5b7be62368971214314ddd99d2ed8492b99e0521807d269b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-address-observer-20261017/http/02-B/server.log": "ae053d13763fa246f82fe603de711739e4cd16cd3ad485597387ba9226aeac7d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-address-observer-20261017/http/02-B/exit.json": "82b0849fc727290fff051bca4c97db37ae2b799289d65b308891aee156c848a0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-address-observer-20261017/http/02-B/results.json": "fece3e31f684bb9171f97bb3f156bdd79b3e2519375e57aaef4a4c679f893c7b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-address-observer-20261017/http/02-B/events.jsonl": "7c451c636e48e7ceb1b2ee12d42160740ef628444dda943afbaa0e31791495b0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-address-observer-20261017/http/02-B/address-coverage.json": "5d82a53ca99121cf5b7be62368971214314ddd99d2ed8492b99e0521807d269b"
+  },
+  "limitations": [
+    "request includes decode",
+    "async free matches enqueue not GPU release",
+    "virtual addresses are not physical placements",
+    "cross-thread entry order can differ without different work",
+    "logging perturbs timing; no performance or causal acceptance"
+  ],
+  "performance_acceptance": false,
+  "causal_proof": false
+}
