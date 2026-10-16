@@ -1,0 +1,196 @@
+{
+  "fields": [
+    "launchType",
+    "cacheConfig",
+    "registersPerThread",
+    "gridX",
+    "gridY",
+    "gridZ",
+    "blockX",
+    "blockY",
+    "blockZ",
+    "staticSharedMemory",
+    "dynamicSharedMemory",
+    "localMemoryPerThread",
+    "localMemoryTotal",
+    "sharedMemoryExecuted",
+    "sharedMemoryLimitConfig",
+    "clusterX",
+    "clusterY",
+    "clusterZ",
+    "clusterSchedulingPolicy",
+    "maxPotentialClusterSize",
+    "maxActiveClusters",
+    "sharedMemoryRequestedPercentage",
+    "tensorSizeMinusOneElements"
+  ],
+  "sides": {
+    "A": {
+      "rows": 2264679,
+      "streams": {
+        "7": "89da9c62f59102e7e053b7cd96b7deecc52d3c8c0ec58d29e1353004ebc0ce28",
+        "13": "19c212d6edc3dd8f1d0b326b5dbca13798c1ac7a0c0c966d01b539d9260f63fa",
+        "14": "1c302d84d10d0033b1f9a1f1176906168f0fef49514b5faa5c91ef9f90e3f16a",
+        "15": "3025b518cd6bed3453b03d4bd91f255ae0728014d6baf34ca2fc295f0de70921"
+      },
+      "stream_metadata": [
+        [
+          19,
+          0,
+          2
+        ],
+        [
+          12,
+          4294967291,
+          1
+        ],
+        [
+          10,
+          0,
+          2
+        ],
+        [
+          18,
+          0,
+          2
+        ],
+        [
+          11,
+          0,
+          2
+        ],
+        [
+          6,
+          0,
+          1
+        ],
+        [
+          15,
+          0,
+          2
+        ],
+        [
+          17,
+          0,
+          2
+        ],
+        [
+          9,
+          0,
+          2
+        ],
+        [
+          8,
+          0,
+          2
+        ],
+        [
+          14,
+          0,
+          2
+        ],
+        [
+          7,
+          0,
+          3
+        ],
+        [
+          13,
+          0,
+          2
+        ],
+        [
+          16,
+          0,
+          2
+        ]
+      ],
+      "missing_address_data": true
+    },
+    "B": {
+      "rows": 2264679,
+      "streams": {
+        "7": "89da9c62f59102e7e053b7cd96b7deecc52d3c8c0ec58d29e1353004ebc0ce28",
+        "13": "19c212d6edc3dd8f1d0b326b5dbca13798c1ac7a0c0c966d01b539d9260f63fa",
+        "14": "1c302d84d10d0033b1f9a1f1176906168f0fef49514b5faa5c91ef9f90e3f16a",
+        "15": "3025b518cd6bed3453b03d4bd91f255ae0728014d6baf34ca2fc295f0de70921"
+      },
+      "stream_metadata": [
+        [
+          9,
+          0,
+          2
+        ],
+        [
+          8,
+          0,
+          2
+        ],
+        [
+          12,
+          4294967291,
+          1
+        ],
+        [
+          11,
+          0,
+          2
+        ],
+        [
+          10,
+          0,
+          2
+        ],
+        [
+          13,
+          0,
+          2
+        ],
+        [
+          15,
+          0,
+          2
+        ],
+        [
+          7,
+          0,
+          3
+        ],
+        [
+          14,
+          0,
+          2
+        ],
+        [
+          17,
+          0,
+          2
+        ],
+        [
+          16,
+          0,
+          2
+        ],
+        [
+          19,
+          0,
+          2
+        ],
+        [
+          6,
+          0,
+          1
+        ],
+        [
+          18,
+          0,
+          2
+        ]
+      ],
+      "missing_address_data": true
+    }
+  },
+  "resource_count_differences": [],
+  "stream_sequence_hash_multiset_equal": true,
+  "limitation": "A timing contaminated; only immutable launch configurations audited; no kernel parameters, allocation addresses, physical placement or executed instruction counts recorded"
+}
