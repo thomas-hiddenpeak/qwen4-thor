@@ -61,8 +61,11 @@ backing owner及runner显式FD传递已实现，3项owner/4项runner CPU合同
 8条original/shared对照已完成，完整guard+同一owner，输出/容量/退出全过。
 R238.727ms，交互+91.711/+5.350ms均低于2R477.454ms；原路径B−A
 +99.116/−173.023ms后半反向，冻结因果门槛未过。停止placement家族、
-不扩样、不交付诊断allocator。下一步离线复核旧registration干预的device
-模块装载/地址覆盖，未建立具体机制前不追加模型实验或trace。
+不扩样、不交付诊断allocator。旧registration覆盖已离线复核：B→C仅
+构造入口4字节RET，嵌入fatbin未变；旧/干净trace都缺启动模块装载及GPU
+指令地址，不能据失败注册实验排除全部指令侧因素。下一步有界观察启动期
+MODULE_LOADED+cubin哈希，先确认未调用HC模块是否实际装载；该事实本身
+仍不足以归因，不重复旧注册性能对照。
 八份服务器日志已显式纳入证据，避免通用忽略规则漏收。
 UCF analyzer的outputs重复哈希标注已修正，原始文本hash独立核对通过，
 读流量结论不变。不得继续普通ASLR或UCF计时。

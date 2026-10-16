@@ -1344,3 +1344,25 @@ B−A=+99.116/−173.023ms，共享路径=+7.405/−178.373ms，交互分别
 没有具体可辨识机制前不启动新模型实验。根因仍未闭合，无生产解决或
 性能接受，原HC NO_GO及active目标保持。
 证据：evidence/hc-up-persistent-interaction-20261017/。
+
+## 注册干预与device模块证据覆盖复核（2026-10-17）
+
+只读核对原A/B/C完整SHA和实际文件差分：B→C仅文件offset36896–36899
+四字节改变，即VA0x9020入口RET；所有非.text有文件内容的section一致，
+包括嵌入fatbin。没有重链接，也没有移除磁盘里的HC设备代码。该干预改变
+运行时注册状态，不能由host布局不变推导GPU装载地址不变。旧guard仍为
+ENV_ABORT，数值门槛未过；此次审计不改写或重跑旧实验。
+
+分别查询干净A/B trace的实际SQLite schema：只有kernel/runtime/copy/
+memset/event/synchronization/overhead活动，没有module/function表，
+kernel记录没有module或address列；trace从ready后才开始。旧注册实验
+环境只记录CUDA_HOME与Q4T_LAYER_TIMING，没有显式CUDA_MODULE_LOADING，
+不能根据变量缺失判断实际LAZY/EAGER行为。因此现有证据没有回答“未调用
+的HC模块是否实际装载”，更不能排除所有指令侧状态。
+
+本机CUDA13.3 CUPTI头文件提供MODULE_LOADED资源回调及moduleId、
+cubinSize、pCubin；pCubin是回调期间有效的host镜像指针，不是GPU指令
+地址。下一步可做有界启动期模块观察并对cubin哈希，先确认装载是否发生，
+而非直接新增性能对照。该观察只能补装载事实，不能单独证明TTFT原因。
+本轮无GPU请求、无生产改动；根因与解决仍未闭合，NO_GO/active保持。
+证据：evidence/hc-up-module-coverage-20261017/。
