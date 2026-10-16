@@ -50,8 +50,10 @@ GDN/Conv/Combine各自全程独占仍变慢。Combine同48层序号累计均正�
 偶/奇层正差近似对称，不据此认定输出VA原因。下一步核实持久布局
 干预可控性：小内存检查确认VMM同backing双VA读写通过（2MiB粒度），
 legacy cudaMalloc retain返回INVALID_VALUE，不能直接保原页改VA。
-下一步核实跨顺序进程共享backing，分开VA/物理分配变量；分配方式变化
-仍是独立变量，不改生产allocator、不追加trace或泛化计时。
+跨顺序进程共享backing能力已通过：同一2MiB VMM分配经POSIX FD导入，
+两个fresh exec子进程映射相差512MiB的指定VA，三方全量读写与清理通过，
+guard COMPLETED。下一步设计d_ws/双trunk对照并冻结因果判据；分配方式
+和缓存历史仍是独立变量，不改生产allocator、不追加trace或泛化计时。
 UCF analyzer的outputs重复哈希标注已修正，原始文本hash独立核对通过，
 读流量结论不变。不得继续普通ASLR或UCF计时。
 此前scratch固定布局8条判据亦未过，诊断分配器不交付、不扩样。

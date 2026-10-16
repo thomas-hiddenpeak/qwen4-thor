@@ -1229,3 +1229,20 @@ alias读取；同grid/并发grid不能无条件混用。当前检查在操作间
 只重复随机layout。尚未冻结任何模型实验或修改生产allocator。原NO_GO、
 active目标与数值要求保持，根因仍未闭合。
 证据：evidence/hc-up-vmm-capability-20261017/。
+
+## VMM跨进程共享backing能力验证（2026-10-17）
+
+为区分持久buffer的VA与实际分配，固定一次2MiB POSIX FD共享检查。
+owner保留同一cuMemCreate handle，两个fresh exec子进程顺序导入，分别
+精确映射0x4000000000和0x4020000000（相差512MiB）。owner写0x11，
+child1全量读后写0x22，owner全量确认，再由child2全量读后写0x33，owner
+再次全量确认；跨进程交接前均同步。两个子进程、owner清理均成功，
+shared guard COMPLETED，-Wall -Wextra -Werror构建通过。
+
+这证明当前设备能跨顺序进程保持同一VMM backing并改变VA，不证明
+legacy cudaMalloc布局导致TTFT差异，也不控制缓存历史或其他模型分配。
+本轮没有模型请求、没有重跑已通过性能/数值项，没有生产代码改动。
+下一步设计覆盖d_ws及双trunk的诊断对照，须同时控制分配方式、backing、
+VA及执行顺序，先冻结可区分假设的判据，再决定是否开展模型实验。
+当前仍无根因闭合或生产修复，原HC NO_GO和active目标保持。
+证据：evidence/hc-up-vmm-ipc-20261017/。

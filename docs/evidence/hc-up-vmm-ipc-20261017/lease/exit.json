@@ -1,0 +1,16 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    ".q4t-work/hc-up-vmm-ipc-20261017/check"
+  ],
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "finished": {
+    "utc": "2026-10-16T20:17:19.454675+00:00",
+    "monotonic": 371921.97155755,
+    "pid": 1232336
+  }
+}
