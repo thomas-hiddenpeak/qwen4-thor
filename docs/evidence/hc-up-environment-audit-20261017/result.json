@@ -1,0 +1,1019 @@
+{
+  "scope": "Existing 5-second system telemetry within full HTTP request (prefill+decode), not per-process attribution or causal evidence; edges excluded; no interpolation",
+  "runs": [
+    {
+      "phase": "hc-up-host-observer-20261016",
+      "case": "01-A",
+      "samples": 36,
+      "window_s": 179.28325430949917,
+      "unobserved_edges_s": [
+        0.8801428404985927,
+        3.3489313879981637
+      ],
+      "system_vmstat_delta": {
+        "pgmajfault": 3,
+        "pswpin": 7,
+        "pswpout": 0,
+        "pgscan_direct": 0,
+        "pgscan_kswapd": 0,
+        "compact_stall": 0,
+        "compact_success": 0,
+        "workingset_refault_file": 353,
+        "pgpgin": 6504
+      },
+      "frequency_values": {
+        "/sys/class/devfreq/gpu-gpc-0/cur_freq": [
+          1575000000
+        ],
+        "/sys/class/devfreq/8188050000.vic/cur_freq": [
+          54000000
+        ],
+        "/sys/class/devfreq/gpu-nvd-0/cur_freq": [
+          1692000000
+        ],
+        "/sys/class/devfreq/bwmgr/cur_freq": [
+          4266000000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy8/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy6/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy4/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy2/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy12/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy10/scaling_cur_freq": [
+          2601000
+        ]
+      },
+      "temperature_millidegree_range": {
+        "/sys/class/thermal/thermal_zone2/temp": [
+          45000,
+          60687
+        ],
+        "/sys/class/thermal/thermal_zone0/temp": [
+          45000,
+          69781
+        ],
+        "/sys/class/thermal/thermal_zone3/temp": [
+          44406,
+          61343
+        ],
+        "/sys/class/thermal/thermal_zone1/temp": [
+          44937,
+          69781
+        ],
+        "/sys/class/thermal/thermal_zone4/temp": [
+          42656,
+          63718
+        ]
+      },
+      "missing_observations": [
+        "/proc/pressure/cpu",
+        "/proc/pressure/memory",
+        "/proc/pressure/io"
+      ]
+    },
+    {
+      "phase": "hc-up-host-observer-20261016",
+      "case": "02-B",
+      "samples": 36,
+      "window_s": 179.47393398708664,
+      "unobserved_edges_s": [
+        3.992307440028526,
+        0.42601611104328185
+      ],
+      "system_vmstat_delta": {
+        "pgmajfault": 6,
+        "pswpin": 42,
+        "pswpout": 0,
+        "pgscan_direct": 0,
+        "pgscan_kswapd": 0,
+        "compact_stall": 0,
+        "compact_success": 0,
+        "workingset_refault_file": 78,
+        "pgpgin": 204
+      },
+      "frequency_values": {
+        "/sys/class/devfreq/gpu-gpc-0/cur_freq": [
+          1575000000
+        ],
+        "/sys/class/devfreq/8188050000.vic/cur_freq": [
+          54000000
+        ],
+        "/sys/class/devfreq/gpu-nvd-0/cur_freq": [
+          1692000000
+        ],
+        "/sys/class/devfreq/bwmgr/cur_freq": [
+          4266000000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy8/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy6/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy4/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy2/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy12/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy10/scaling_cur_freq": [
+          2601000
+        ]
+      },
+      "temperature_millidegree_range": {
+        "/sys/class/thermal/thermal_zone2/temp": [
+          53437,
+          65312
+        ],
+        "/sys/class/thermal/thermal_zone0/temp": [
+          53437,
+          76031
+        ],
+        "/sys/class/thermal/thermal_zone3/temp": [
+          52500,
+          63093
+        ],
+        "/sys/class/thermal/thermal_zone1/temp": [
+          53218,
+          76031
+        ],
+        "/sys/class/thermal/thermal_zone4/temp": [
+          50781,
+          67562
+        ]
+      },
+      "missing_observations": [
+        "/proc/pressure/cpu",
+        "/proc/pressure/memory",
+        "/proc/pressure/io"
+      ]
+    },
+    {
+      "phase": "hc-up-host-observer-20261016",
+      "case": "03-B",
+      "samples": 36,
+      "window_s": 179.18325931101572,
+      "unobserved_edges_s": [
+        1.9653401189716533,
+        2.169318563013803
+      ],
+      "system_vmstat_delta": {
+        "pgmajfault": 28,
+        "pswpin": 9,
+        "pswpout": 0,
+        "pgscan_direct": 0,
+        "pgscan_kswapd": 0,
+        "compact_stall": 0,
+        "compact_success": 0,
+        "workingset_refault_file": 1124,
+        "pgpgin": 4384
+      },
+      "frequency_values": {
+        "/sys/class/devfreq/gpu-gpc-0/cur_freq": [
+          1575000000
+        ],
+        "/sys/class/devfreq/8188050000.vic/cur_freq": [
+          54000000
+        ],
+        "/sys/class/devfreq/gpu-nvd-0/cur_freq": [
+          1692000000
+        ],
+        "/sys/class/devfreq/bwmgr/cur_freq": [
+          4266000000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy8/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy6/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy4/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy2/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy12/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy10/scaling_cur_freq": [
+          2601000
+        ]
+      },
+      "temperature_millidegree_range": {
+        "/sys/class/thermal/thermal_zone2/temp": [
+          57968,
+          67343
+        ],
+        "/sys/class/thermal/thermal_zone0/temp": [
+          57968,
+          76375
+        ],
+        "/sys/class/thermal/thermal_zone3/temp": [
+          57250,
+          65968
+        ],
+        "/sys/class/thermal/thermal_zone1/temp": [
+          57000,
+          76375
+        ],
+        "/sys/class/thermal/thermal_zone4/temp": [
+          54437,
+          70062
+        ]
+      },
+      "missing_observations": [
+        "/proc/pressure/cpu",
+        "/proc/pressure/memory",
+        "/proc/pressure/io"
+      ]
+    },
+    {
+      "phase": "hc-up-host-observer-20261016",
+      "case": "04-A",
+      "samples": 35,
+      "window_s": 179.26194317196496,
+      "unobserved_edges_s": [
+        4.269301022985019,
+        4.937430716003291
+      ],
+      "system_vmstat_delta": {
+        "pgmajfault": 1,
+        "pswpin": 4,
+        "pswpout": 0,
+        "pgscan_direct": 0,
+        "pgscan_kswapd": 0,
+        "compact_stall": 0,
+        "compact_success": 0,
+        "workingset_refault_file": 54,
+        "pgpgin": 32
+      },
+      "frequency_values": {
+        "/sys/class/devfreq/gpu-gpc-0/cur_freq": [
+          1575000000
+        ],
+        "/sys/class/devfreq/8188050000.vic/cur_freq": [
+          54000000
+        ],
+        "/sys/class/devfreq/gpu-nvd-0/cur_freq": [
+          1692000000
+        ],
+        "/sys/class/devfreq/bwmgr/cur_freq": [
+          4266000000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy8/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy6/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy4/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy2/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy12/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy10/scaling_cur_freq": [
+          2601000
+        ]
+      },
+      "temperature_millidegree_range": {
+        "/sys/class/thermal/thermal_zone2/temp": [
+          58125,
+          68812
+        ],
+        "/sys/class/thermal/thermal_zone0/temp": [
+          58343,
+          77000
+        ],
+        "/sys/class/thermal/thermal_zone3/temp": [
+          57625,
+          68218
+        ],
+        "/sys/class/thermal/thermal_zone1/temp": [
+          58343,
+          77000
+        ],
+        "/sys/class/thermal/thermal_zone4/temp": [
+          55656,
+          70562
+        ]
+      },
+      "missing_observations": [
+        "/proc/pressure/cpu",
+        "/proc/pressure/memory",
+        "/proc/pressure/io"
+      ]
+    },
+    {
+      "phase": "hc-up-gather-observer-20261017",
+      "case": "01-A",
+      "samples": 36,
+      "window_s": 179.27007603499806,
+      "unobserved_edges_s": [
+        0.8727071745088324,
+        3.339517499494832
+      ],
+      "system_vmstat_delta": {
+        "pgmajfault": 1,
+        "pswpin": 1,
+        "pswpout": 0,
+        "pgscan_direct": 0,
+        "pgscan_kswapd": 0,
+        "compact_stall": 0,
+        "compact_success": 0,
+        "workingset_refault_file": 1151,
+        "pgpgin": 4124
+      },
+      "frequency_values": {
+        "/sys/class/devfreq/gpu-gpc-0/cur_freq": [
+          1575000000
+        ],
+        "/sys/class/devfreq/8188050000.vic/cur_freq": [
+          54000000
+        ],
+        "/sys/class/devfreq/gpu-nvd-0/cur_freq": [
+          1692000000
+        ],
+        "/sys/class/devfreq/bwmgr/cur_freq": [
+          4266000000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy8/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy6/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy4/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy2/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy12/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy10/scaling_cur_freq": [
+          2601000
+        ]
+      },
+      "temperature_millidegree_range": {
+        "/sys/class/thermal/thermal_zone2/temp": [
+          44343,
+          60500
+        ],
+        "/sys/class/thermal/thermal_zone0/temp": [
+          44343,
+          70437
+        ],
+        "/sys/class/thermal/thermal_zone3/temp": [
+          44218,
+          57781
+        ],
+        "/sys/class/thermal/thermal_zone1/temp": [
+          43812,
+          70437
+        ],
+        "/sys/class/thermal/thermal_zone4/temp": [
+          41375,
+          62656
+        ]
+      },
+      "missing_observations": [
+        "/proc/pressure/cpu",
+        "/proc/pressure/memory",
+        "/proc/pressure/io"
+      ]
+    },
+    {
+      "phase": "hc-up-gather-observer-20261017",
+      "case": "02-B",
+      "samples": 36,
+      "window_s": 179.37096349103376,
+      "unobserved_edges_s": [
+        2.992821382533293,
+        1.3270425944938324
+      ],
+      "system_vmstat_delta": {
+        "pgmajfault": 7,
+        "pswpin": 2,
+        "pswpout": 0,
+        "pgscan_direct": 0,
+        "pgscan_kswapd": 0,
+        "compact_stall": 0,
+        "compact_success": 0,
+        "workingset_refault_file": 59,
+        "pgpgin": 44
+      },
+      "frequency_values": {
+        "/sys/class/devfreq/gpu-gpc-0/cur_freq": [
+          1575000000
+        ],
+        "/sys/class/devfreq/8188050000.vic/cur_freq": [
+          54000000
+        ],
+        "/sys/class/devfreq/gpu-nvd-0/cur_freq": [
+          1692000000
+        ],
+        "/sys/class/devfreq/bwmgr/cur_freq": [
+          4266000000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy8/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy6/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy4/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy2/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy12/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy10/scaling_cur_freq": [
+          2601000
+        ]
+      },
+      "temperature_millidegree_range": {
+        "/sys/class/thermal/thermal_zone2/temp": [
+          54218,
+          64125
+        ],
+        "/sys/class/thermal/thermal_zone0/temp": [
+          54218,
+          73000
+        ],
+        "/sys/class/thermal/thermal_zone3/temp": [
+          51625,
+          62437
+        ],
+        "/sys/class/thermal/thermal_zone1/temp": [
+          52625,
+          73000
+        ],
+        "/sys/class/thermal/thermal_zone4/temp": [
+          50031,
+          67125
+        ]
+      },
+      "missing_observations": [
+        "/proc/pressure/cpu",
+        "/proc/pressure/memory",
+        "/proc/pressure/io"
+      ]
+    },
+    {
+      "phase": "hc-up-gather-observer-20261017",
+      "case": "03-B",
+      "samples": 36,
+      "window_s": 179.20459219848271,
+      "unobserved_edges_s": [
+        1.0263801785185933,
+        3.11853809497552
+      ],
+      "system_vmstat_delta": {
+        "pgmajfault": 5,
+        "pswpin": 22,
+        "pswpout": 0,
+        "pgscan_direct": 0,
+        "pgscan_kswapd": 0,
+        "compact_stall": 0,
+        "compact_success": 0,
+        "workingset_refault_file": 64,
+        "pgpgin": 768
+      },
+      "frequency_values": {
+        "/sys/class/devfreq/gpu-gpc-0/cur_freq": [
+          1575000000
+        ],
+        "/sys/class/devfreq/8188050000.vic/cur_freq": [
+          54000000
+        ],
+        "/sys/class/devfreq/gpu-nvd-0/cur_freq": [
+          1692000000
+        ],
+        "/sys/class/devfreq/bwmgr/cur_freq": [
+          4266000000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy8/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy6/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy4/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy2/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy12/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy10/scaling_cur_freq": [
+          2601000
+        ]
+      },
+      "temperature_millidegree_range": {
+        "/sys/class/thermal/thermal_zone2/temp": [
+          57906,
+          66437
+        ],
+        "/sys/class/thermal/thermal_zone0/temp": [
+          57906,
+          77750
+        ],
+        "/sys/class/thermal/thermal_zone3/temp": [
+          56250,
+          64687
+        ],
+        "/sys/class/thermal/thermal_zone1/temp": [
+          56406,
+          77750
+        ],
+        "/sys/class/thermal/thermal_zone4/temp": [
+          53968,
+          69312
+        ]
+      },
+      "missing_observations": [
+        "/proc/pressure/cpu",
+        "/proc/pressure/memory",
+        "/proc/pressure/io"
+      ]
+    },
+    {
+      "phase": "hc-up-gather-observer-20261017",
+      "case": "04-A",
+      "samples": 36,
+      "window_s": 179.11076127644628,
+      "unobserved_edges_s": [
+        3.2668164689675905,
+        0.790903149463702
+      ],
+      "system_vmstat_delta": {
+        "pgmajfault": 5,
+        "pswpin": 16,
+        "pswpout": 0,
+        "pgscan_direct": 0,
+        "pgscan_kswapd": 0,
+        "compact_stall": 0,
+        "compact_success": 0,
+        "workingset_refault_file": 108,
+        "pgpgin": 708
+      },
+      "frequency_values": {
+        "/sys/class/devfreq/gpu-gpc-0/cur_freq": [
+          1575000000
+        ],
+        "/sys/class/devfreq/8188050000.vic/cur_freq": [
+          54000000
+        ],
+        "/sys/class/devfreq/gpu-nvd-0/cur_freq": [
+          1692000000
+        ],
+        "/sys/class/devfreq/bwmgr/cur_freq": [
+          4266000000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy8/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy6/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy4/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy2/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy12/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy10/scaling_cur_freq": [
+          2601000
+        ]
+      },
+      "temperature_millidegree_range": {
+        "/sys/class/thermal/thermal_zone2/temp": [
+          58437,
+          67312
+        ],
+        "/sys/class/thermal/thermal_zone0/temp": [
+          58437,
+          77468
+        ],
+        "/sys/class/thermal/thermal_zone3/temp": [
+          57250,
+          67406
+        ],
+        "/sys/class/thermal/thermal_zone1/temp": [
+          58000,
+          77468
+        ],
+        "/sys/class/thermal/thermal_zone4/temp": [
+          55500,
+          70343
+        ]
+      },
+      "missing_observations": [
+        "/proc/pressure/cpu",
+        "/proc/pressure/memory",
+        "/proc/pressure/io"
+      ]
+    },
+    {
+      "phase": "hc-up-subtiming-20261017-v2",
+      "case": "01-A",
+      "samples": 36,
+      "window_s": 181.64149106497644,
+      "unobserved_edges_s": [
+        2.887267494457774,
+        3.7042930074967444
+      ],
+      "system_vmstat_delta": {
+        "pgmajfault": 0,
+        "pswpin": 0,
+        "pswpout": 0,
+        "pgscan_direct": 0,
+        "pgscan_kswapd": 0,
+        "compact_stall": 0,
+        "compact_success": 0,
+        "workingset_refault_file": 63,
+        "pgpgin": 12
+      },
+      "frequency_values": {
+        "/sys/class/devfreq/gpu-gpc-0/cur_freq": [
+          1575000000
+        ],
+        "/sys/class/devfreq/8188050000.vic/cur_freq": [
+          54000000
+        ],
+        "/sys/class/devfreq/gpu-nvd-0/cur_freq": [
+          1692000000
+        ],
+        "/sys/class/devfreq/bwmgr/cur_freq": [
+          4266000000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy8/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy6/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy4/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy2/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy12/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy10/scaling_cur_freq": [
+          2601000
+        ]
+      },
+      "temperature_millidegree_range": {
+        "/sys/class/thermal/thermal_zone2/temp": [
+          47937,
+          61906
+        ],
+        "/sys/class/thermal/thermal_zone0/temp": [
+          47937,
+          70875
+        ],
+        "/sys/class/thermal/thermal_zone3/temp": [
+          46218,
+          59937
+        ],
+        "/sys/class/thermal/thermal_zone1/temp": [
+          47031,
+          70875
+        ],
+        "/sys/class/thermal/thermal_zone4/temp": [
+          44406,
+          64812
+        ]
+      },
+      "missing_observations": [
+        "/proc/pressure/cpu",
+        "/proc/pressure/memory",
+        "/proc/pressure/io"
+      ]
+    },
+    {
+      "phase": "hc-up-subtiming-20261017-v2",
+      "case": "02-B",
+      "samples": 36,
+      "window_s": 181.72501842747442,
+      "unobserved_edges_s": [
+        3.6572865630150773,
+        3.014163205458317
+      ],
+      "system_vmstat_delta": {
+        "pgmajfault": 16,
+        "pswpin": 0,
+        "pswpout": 0,
+        "pgscan_direct": 0,
+        "pgscan_kswapd": 0,
+        "compact_stall": 0,
+        "compact_success": 0,
+        "workingset_refault_file": 679,
+        "pgpgin": 2940
+      },
+      "frequency_values": {
+        "/sys/class/devfreq/gpu-gpc-0/cur_freq": [
+          1575000000
+        ],
+        "/sys/class/devfreq/8188050000.vic/cur_freq": [
+          54000000
+        ],
+        "/sys/class/devfreq/gpu-nvd-0/cur_freq": [
+          1692000000
+        ],
+        "/sys/class/devfreq/bwmgr/cur_freq": [
+          4266000000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy8/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy6/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy4/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy2/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy12/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy10/scaling_cur_freq": [
+          2601000
+        ]
+      },
+      "temperature_millidegree_range": {
+        "/sys/class/thermal/thermal_zone2/temp": [
+          55250,
+          65187
+        ],
+        "/sys/class/thermal/thermal_zone0/temp": [
+          55250,
+          74906
+        ],
+        "/sys/class/thermal/thermal_zone3/temp": [
+          53468,
+          63875
+        ],
+        "/sys/class/thermal/thermal_zone1/temp": [
+          54281,
+          74906
+        ],
+        "/sys/class/thermal/thermal_zone4/temp": [
+          51750,
+          68468
+        ]
+      },
+      "missing_observations": [
+        "/proc/pressure/cpu",
+        "/proc/pressure/memory",
+        "/proc/pressure/io"
+      ]
+    },
+    {
+      "phase": "hc-up-subtiming-20261017-v2",
+      "case": "03-B",
+      "samples": 36,
+      "window_s": 181.80372793599963,
+      "unobserved_edges_s": [
+        1.8821714635123499,
+        4.868431660463102
+      ],
+      "system_vmstat_delta": {
+        "pgmajfault": 2,
+        "pswpin": 12,
+        "pswpout": 0,
+        "pgscan_direct": 0,
+        "pgscan_kswapd": 0,
+        "compact_stall": 0,
+        "compact_success": 0,
+        "workingset_refault_file": 49,
+        "pgpgin": 56
+      },
+      "frequency_values": {
+        "/sys/class/devfreq/gpu-gpc-0/cur_freq": [
+          1575000000
+        ],
+        "/sys/class/devfreq/8188050000.vic/cur_freq": [
+          54000000
+        ],
+        "/sys/class/devfreq/gpu-nvd-0/cur_freq": [
+          1692000000
+        ],
+        "/sys/class/devfreq/bwmgr/cur_freq": [
+          4266000000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy8/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy6/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy4/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy2/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy12/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy10/scaling_cur_freq": [
+          2601000
+        ]
+      },
+      "temperature_millidegree_range": {
+        "/sys/class/thermal/thermal_zone2/temp": [
+          47718,
+          61062
+        ],
+        "/sys/class/thermal/thermal_zone0/temp": [
+          47718,
+          70312
+        ],
+        "/sys/class/thermal/thermal_zone3/temp": [
+          45031,
+          59406
+        ],
+        "/sys/class/thermal/thermal_zone1/temp": [
+          45781,
+          70312
+        ],
+        "/sys/class/thermal/thermal_zone4/temp": [
+          43343,
+          64187
+        ]
+      },
+      "missing_observations": [
+        "/proc/pressure/cpu",
+        "/proc/pressure/memory",
+        "/proc/pressure/io"
+      ]
+    },
+    {
+      "phase": "hc-up-subtiming-20261017-v2",
+      "case": "04-A",
+      "samples": 36,
+      "window_s": 181.9212879940169,
+      "unobserved_edges_s": [
+        2.5192682795459405,
+        4.3485842475201935
+      ],
+      "system_vmstat_delta": {
+        "pgmajfault": 1,
+        "pswpin": 8,
+        "pswpout": 0,
+        "pgscan_direct": 0,
+        "pgscan_kswapd": 0,
+        "compact_stall": 0,
+        "compact_success": 0,
+        "workingset_refault_file": 54,
+        "pgpgin": 68
+      },
+      "frequency_values": {
+        "/sys/class/devfreq/gpu-gpc-0/cur_freq": [
+          1575000000
+        ],
+        "/sys/class/devfreq/8188050000.vic/cur_freq": [
+          54000000
+        ],
+        "/sys/class/devfreq/gpu-nvd-0/cur_freq": [
+          1692000000
+        ],
+        "/sys/class/devfreq/bwmgr/cur_freq": [
+          4266000000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy8/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy6/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy4/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy2/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy12/scaling_cur_freq": [
+          2601000
+        ],
+        "/sys/devices/system/cpu/cpufreq/policy10/scaling_cur_freq": [
+          2601000
+        ]
+      },
+      "temperature_millidegree_range": {
+        "/sys/class/thermal/thermal_zone2/temp": [
+          54718,
+          64593
+        ],
+        "/sys/class/thermal/thermal_zone0/temp": [
+          54718,
+          74812
+        ],
+        "/sys/class/thermal/thermal_zone3/temp": [
+          52937,
+          63437
+        ],
+        "/sys/class/thermal/thermal_zone1/temp": [
+          53687,
+          74812
+        ],
+        "/sys/class/thermal/thermal_zone4/temp": [
+          51125,
+          68250
+        ]
+      },
+      "missing_observations": [
+        "/proc/pressure/cpu",
+        "/proc/pressure/memory",
+        "/proc/pressure/io"
+      ]
+    }
+  ],
+  "source_sha256": {
+    ".q4t-work/hc-up-host-observer-20261016/telemetry.jsonl": "4ae02da2b77120efa81cbe37327642961b9ab3e9abee459d966d7a887b2f3fe1",
+    ".q4t-work/hc-up-host-observer-20261016/http/01-A/events.jsonl": "f92c0d26658f1f4c3064eacc5190d5e5a802d03bcdb45b2fb59439bdfec0c9ce",
+    ".q4t-work/hc-up-host-observer-20261016/http/02-B/events.jsonl": "613cf5b4c82fb7fe4d612fdcd3ccc8231ce445a1c850e4cc353c4184a3497dc5",
+    ".q4t-work/hc-up-host-observer-20261016/http/03-B/events.jsonl": "c415a8cfc7353c72adb9e6ed81f58198715663e7d5ccdd9183fb348fb9ecf8b3",
+    ".q4t-work/hc-up-host-observer-20261016/http/04-A/events.jsonl": "29459155d0ef526fcea99913f5bed8b6dffd89510730ad3dc7a9c1b20458b3af",
+    ".q4t-work/hc-up-gather-observer-20261017/telemetry.jsonl": "6d3b64a6597d017c1a844127769f21d4a7b993ae1512e8ad280cf277cfba9083",
+    ".q4t-work/hc-up-gather-observer-20261017/http/01-A/events.jsonl": "d0c247a5ce346a104e7863ea42e67e642dff6909c39045e88e9194ce97175d2a",
+    ".q4t-work/hc-up-gather-observer-20261017/http/02-B/events.jsonl": "dfc64d522dceb6c6bc32aef2e2e6c221df02291802c7ae994cfebbe79e57e2bc",
+    ".q4t-work/hc-up-gather-observer-20261017/http/03-B/events.jsonl": "beee098f239ded1013b1a8d5b13728025fc648eb879928e4ebc381f291ae1ee5",
+    ".q4t-work/hc-up-gather-observer-20261017/http/04-A/events.jsonl": "19363a0bf21dad4fcd275e79f7d0b89b2772780f6d1442cc8aa99a1f246b71bf",
+    ".q4t-work/hc-up-subtiming-20261017-v2/telemetry-resume.jsonl": "f83e49f544810a056a79d81bedf1b95dbe1b18288a6109e12a5416bf0ab6b590",
+    ".q4t-work/hc-up-subtiming-20261017-v2/telemetry.jsonl": "d429d063983d4025a1f1530ecc679044da2b87e09bc1adb4bfb5a1dd88416954",
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/01-A/events.jsonl": "a96db4455b351ab57ecd751d8ae944e97f18f3674ef0f57a765199166d23416a",
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/02-B/events.jsonl": "5ebef289280902ff47782f800e657649893a02759f78bdf36907e6822f74bc65",
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/03-B/events.jsonl": "7ef3a36b7dd269f6811fceadec30d7666d3299f8fd92b95d13af68437f42687c",
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/04-A/events.jsonl": "f7e7b6813f2ef5ed040bf4d7eac12411a189860fb3458e4efd490895f1fe0fe8"
+  }
+}

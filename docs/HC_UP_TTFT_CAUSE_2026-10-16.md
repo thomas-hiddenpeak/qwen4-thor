@@ -548,3 +548,27 @@ PID1169273，正是该服务；case_completed=360200.438522，报告=
 
 证据：evidence/hc-up-subtiming-20261017-v2/subtiming-resumed-review.json、
 resume-audit.json；原始结果与监控分别保留在原lease和lease-resume。
+
+## 已有环境遥测与TTFT定义离线审计（2026-10-17）
+
+- 范围：host、Gather、subtiming v2共12条完整请求，读取已有5秒系统遥测，
+  仅选client_before至case_completed内部采样；含decode，端点未插值。
+  所有来源SHA与未覆盖端点时长保存在environment-audit证据，不新增GPU请求。
+- 所有采样CPU 2601000kHz，GPU GPC 1575000000Hz，NVD1692000000Hz，
+  bwmgr4266000000Hz。各请求采样区间pgscan_direct/kswapd、compact_stall/
+  success、pswpout增量为0。不能排除采样间短暂变动、启动阶段影响。
+  温度跨阶段范围41.375–77.750°C，不以固定采样频率证明无热/功耗影响。
+- pgmajfault增量0–28、pswpin0–42，是系统级计数，不归因模型，也不足以
+  解释历史差异；/proc/pressure不存在，不能误记为压力零。缺少进程级
+  缺页、GPU实际执行周期与启动后物理布局证据，不能断言环境相同。
+- 计时源码：run_acceptance.py读取数据库first_chunk_latency；本地evalscope
+  default_api.py在序列化后perf_counter起表，首个非空SSE内容止表。
+  chat_generation.cpp:570在首token argmax后记录服务端TTFT，早于内容发送。
+  空assistant header不算客户端首token；off不做MTP初始化。两种TTFT边界
+  不同但当前没有发现实现错误，不混用。此前层事件差仍不能由网络定义解释。
+- 决策：现有证据不支持以稳定降频或请求内内存回收作为已确认根因，
+  不启动相关盲目调参。继续优先核对启动/分配地址与实际kernel提交身份，
+  明确剩余可干预因素后冻结下一实验；不恢复已停止的观测家族，不改门槛。
+  原NO_GO、main生产身份与活动目标保持，根因仍未闭合。
+
+证据：evidence/hc-up-environment-audit-20261017/{audit.py,result.json}。
