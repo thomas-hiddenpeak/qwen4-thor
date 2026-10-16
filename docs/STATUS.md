@@ -58,9 +58,11 @@ guard COMPLETED。独立persistent_layout_probe已实现：校验1541次startup
 backing owner及runner显式FD传递已实现，3项owner/4项runner CPU合同
 通过（runner一次mock缺陷修正后仅重验失败项）。真实VMM三份buffer
 共2.68GB有效区域跨两个进程全量验证/清理通过（legacy分配mock，非模型）。
-已冻结8条original/shared HTTP交互对照：完整guard+同一owner；两半原差
-须为正、交互均>2R、shared残差绝对值<=R，失败不扩样。下一步执行；
-分配方式和缓存历史仍需区分，不改生产allocator、不追加trace。
+8条original/shared对照已完成，完整guard+同一owner，输出/容量/退出全过。
+R238.727ms，交互+91.711/+5.350ms均低于2R477.454ms；原路径B−A
++99.116/−173.023ms后半反向，冻结因果门槛未过。停止placement家族、
+不扩样、不交付诊断allocator。下一步离线复核旧registration干预的device
+模块装载/地址覆盖，未建立具体机制前不追加模型实验或trace。
 UCF analyzer的outputs重复哈希标注已修正，原始文本hash独立核对通过，
 读流量结论不变。不得继续普通ASLR或UCF计时。
 此前scratch固定布局8条判据亦未过，诊断分配器不交付、不扩样。

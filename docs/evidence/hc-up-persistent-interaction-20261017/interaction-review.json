@@ -1,0 +1,29 @@
+{
+  "R_ms": 238.72679198393598,
+  "threshold_2R_ms": 477.45358396787196,
+  "halves": [
+    {
+      "D_original_ms": 99.11634196760133,
+      "D_shared_ms": 7.405268959701061,
+      "interaction_ms": 91.71107300790027,
+      "positive_control": true,
+      "interaction_exceeds_2R": false,
+      "shared_residual_within_R": true
+    },
+    {
+      "D_original_ms": -173.0231629917398,
+      "D_shared_ms": -178.37298999074847,
+      "interaction_ms": 5.3498269990086555,
+      "positive_control": false,
+      "interaction_exceeds_2R": false,
+      "shared_residual_within_R": true
+    }
+  ],
+  "frozen_interaction_gate_passed": false,
+  "validity_passed": true,
+  "guard_monitor_records": 1601,
+  "scope": "joint persistent placement under this diagnostic allocation regime",
+  "production_acceptance": false,
+  "root_cause_proven": false,
+  "next_action": "stop this placement family; no extra requests or threshold changes"
+}

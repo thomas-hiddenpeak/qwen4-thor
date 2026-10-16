@@ -1320,3 +1320,27 @@ cleanup标记、owner释放、退出、guard COMPLETED均通过。legacy runtime
 有界对照，按结果决定是否有依据进一步分解placement因素。
 证据：evidence/hc-up-persistent-integration-20261017/及
  evidence/hc-up-persistent-interaction-20261017/。
+
+## 持久placement八条完成：有效性通过，因果判据未过（2026-10-17）
+
+冻结8条全部完成；同一owner贯穿，guard COMPLETED、1601次monitor未检出
+竞争/读取失败，各请求输入/输出/容量/退出及三slot cleanup均过，输出
+仍为57f3581d…a4c8ca。全程使用原A/B二进制，生产计算源码未改变。
+
+同cell最大重复差R=238.727ms，冻结2R=477.454ms。前/后半原路径
+B−A=+99.116/−173.023ms，共享路径=+7.405/−178.373ms，交互分别
++91.711/+5.350ms，均未超过2R；后半正控制也失败。不能挑前半“差异
+缩小”归因，不能把共享残差在R内当成根因闭合。停止该placement家族，
+不追加请求、不降低门槛，不将诊断分配器用于生产。
+
+该干预覆盖此前七scratch未覆盖的d_ws和双trunk，但仅检验当前新增VMM
+资源条件下的联合placement影响；失败不是证明所有地址/物理页/缓存因素
+绝对无关，也不推翻原候选NO_GO。CPU分析脚本四项算术/部分行拒绝用例
+通过，最终只在完整八条和终态guard齐备后运行。原始HTTP保留本地并记录
+逐文件SHA，关键结果/服务器日志/监控/协议随版本保存。
+
+下一步先离线复核旧registration干预实际覆盖的device模块装载与地址
+边界，区分已经否定的注册成本解释和是否尚有指令侧变量未被控制；
+没有具体可辨识机制前不启动新模型实验。根因仍未闭合，无生产解决或
+性能接受，原HC NO_GO及active目标保持。
+证据：evidence/hc-up-persistent-interaction-20261017/。

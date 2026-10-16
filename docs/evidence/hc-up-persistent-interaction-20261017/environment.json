@@ -1,0 +1,6 @@
+{
+  "CUDA_HOME": "/usr/local/cuda-13.3",
+  "LD_PRELOAD": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-persistent-control-20261017/probe.so",
+  "Q4T_DIAG_PERSISTENT_MANIFEST": "/home/rm01/models/dev/qwen4-thor/docs/evidence/hc-up-persistent-control-20261017/sizes.txt",
+  "Q4T_DIAG_PERSISTENT_SHIFT": "0"
+}

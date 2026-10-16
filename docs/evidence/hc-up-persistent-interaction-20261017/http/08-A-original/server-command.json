@@ -1,0 +1,35 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/q4t-main",
+    "serve",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--port",
+    "8730",
+    "--max-seq",
+    "1",
+    "--max-prefill",
+    "8192",
+    "--max-len",
+    "208896",
+    "--max-tokens",
+    "256",
+    "--no-mtp"
+  ],
+  "removed_environment": {},
+  "diagnostic_address_space": null,
+  "diagnostic_persistent_backing_fds": true,
+  "effective_q4t_environment": {
+    "Q4T_DIAG_PERSISTENT_MANIFEST": "/home/rm01/models/dev/qwen4-thor/docs/evidence/hc-up-persistent-control-20261017/sizes.txt",
+    "Q4T_DIAG_PERSISTENT_SHIFT": "0",
+    "Q4T_DIAG_PERSISTENT_MODE": "original"
+  },
+  "hot_list": null,
+  "isolation": {
+    "systemd_unit": null,
+    "host_cache_max_bytes": null,
+    "swap_max_bytes": null,
+    "is_total_physical_ram_limit": false
+  },
+  "startup_timeout_seconds": 300
+}
