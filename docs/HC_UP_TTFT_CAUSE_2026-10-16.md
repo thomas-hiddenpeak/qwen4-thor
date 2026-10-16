@@ -710,3 +710,21 @@ CPU通过不证明GPU生命周期/数值合同或性能；尚未冻结/运行真
 fixed更快宣布原因，也不能将两模式一起变化的allocator成本归于使用地址。
 生产main及候选原件未改，原NO_GO和活动目标保持。
 证据：evidence/hc-up-layout-intervention-20261017/；工具及CPU夹具在tools/evalscope。
+
+## 固定布局交互实验冻结（2026-10-17）
+
+固定8条顺序：Acontrol/Bfixed/Bcontrol/Afixed / Afixed/Bcontrol/Bfixed/Acontrol。
+每条件两次用于同身份负控R，不补样；原始200K off完整HTTP，各输出256。
+整个驱动同一guard，只有scratch_layout_probe，无逐分配日志或事件插桩。
+每条必须输出合同、容量、server退出和6600映射完成；首失败停止。
+
+每四条一组计算control差D0=Bcontrol−Acontrol、fixed差D1=Bfixed−Afixed、
+交互I=D0−D1。R为各同binary+mode两次差的最大绝对值。仅全部有效且
+两组D0>max(R,1ms)、I>max(2R,2ms)才支持本干预下布局敏感交互；不将
+D1小于R称等价、不以fixed绝对更快判因果。未达判据则停止此家族，
+不扩样、不改门槛。即便达标，也不能直接证明历史因果/纯VA因素或接受HC。
+
+协议、驱动、报告校验和分析已冻结到evidence/hc-up-layout-intervention-20261017。
+CPU工具身份核对通过，旧CPU合同复用；新报告解析器接受原CPU日志并拒绝
+计数不足、重复、arena尺寸错误和INVALID。生产main未改。下一步启动
+固定序列；期间监控与结果持续保留，活动目标/原NO_GO保持。

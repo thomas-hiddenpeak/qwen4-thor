@@ -1,0 +1,73 @@
+{
+  "hypothesis": "The original HC/main off TTFT difference may interact with the used placement of seven prefill scratch buffers. Keep original allocation/free calls, compare returned-original-address control against fixed-used-layout treatment.",
+  "order": [
+    [
+      "A",
+      "control"
+    ],
+    [
+      "B",
+      "fixed"
+    ],
+    [
+      "B",
+      "control"
+    ],
+    [
+      "A",
+      "fixed"
+    ],
+    [
+      "A",
+      "fixed"
+    ],
+    [
+      "B",
+      "control"
+    ],
+    [
+      "B",
+      "fixed"
+    ],
+    [
+      "A",
+      "control"
+    ]
+  ],
+  "requests": 8,
+  "repeats_per_condition": 2,
+  "fresh_process_each": true,
+  "instrumentation": "scratch_layout_probe only; no event timers, per-allocation logging, PMU or Nsight",
+  "mode": "--no-mtp",
+  "input_tokens": 204789,
+  "output_tokens": 256,
+  "capacity": {
+    "max_len": 208896,
+    "max_prefill": 8192,
+    "max_seq": 1
+  },
+  "arena_bytes": 562036736,
+  "validity": [
+    "Whole uninterrupted guard COMPLETED; no conflict/monitor error",
+    "All eight HTTP input/output/capacity/exit contracts pass",
+    "Exactly one arena report with expected mode/size/alignment and one complete allocations=6600 frees=6600 per server; no INVALID",
+    "Original binary/probe SHA match; sanitized environments differ only prescribed mode/variant"
+  ],
+  "metric": "HTTP TTFT for causal contrast only; decode saved as descriptive, not performance acceptance",
+  "comparison": {
+    "pairing": "Each four-request block contains all four conditions; use each block independently",
+    "R": "max absolute difference between the two observations of each identical binary+mode condition",
+    "control_gap": "Bcontrol-Acontrol in each block",
+    "fixed_gap": "Bfixed-Afixed in each block",
+    "interaction": "control_gap-fixed_gap in each block",
+    "gate": "All validity checks pass; both control gaps > max(R,0.001s); both interactions > max(2*R,0.002s). Otherwise unresolved and stop. Fixed gaps reported without equivalence claim.",
+    "interpretation": "Gate supports layout-sensitive interaction under this arena intervention, not proof of historical causation, pure virtual-address effect, or HC merge acceptance. Both modes share additional reservation and bookkeeping; used physical pages/cache locality differ."
+  },
+  "stop": [
+    "One fixed eight-request sequence; no warmup, automatic retries or additional samples",
+    "First guard/HTTP/coverage failure stops and preserves artifacts",
+    "Negative/unresolved result stops this intervention family",
+    "Never relax numerical N=4/output contract or accept performance using these diagnostics"
+  ],
+  "probe_sha256": "32a6584163e09a56fca987a9a40609ed6696a52d5bd508fba94503df3bc0562d"
+}
