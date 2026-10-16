@@ -1,0 +1,4 @@
+START A
+COMPLETE A OC delta {'oc1': 0, 'oc2': 100, 'oc3': 301}
+START B
+COMPLETE B OC delta {'oc1': 0, 'oc2': 76, 'oc3': 1020}

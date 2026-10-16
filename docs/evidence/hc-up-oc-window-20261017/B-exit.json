@@ -1,0 +1,29 @@
+{
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python3",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py",
+    "--binary",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/hc-up/q4t",
+    "--mode",
+    "performance",
+    "--perf-lengths",
+    "204800",
+    "--perf-repeats",
+    "1",
+    "--fixtures",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http/off",
+    "--reference",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http/off/results.json",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-oc-window-20261017/http/B",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--startup-timeout",
+    "300",
+    "--allow-unqualified-binary",
+    "--port",
+    "8730",
+    "--oc-observer"
+  ],
+  "returncode": 0
+}

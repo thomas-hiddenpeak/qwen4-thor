@@ -1,0 +1,50 @@
+{
+  "rows": [
+    {
+      "begin_ns": 379015565974966,
+      "end_ns": 379015567024048,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+      "device": "/sys/devices/platform/nvtherm-oc-event/hwmon/hwmon4",
+      "values": {
+        "oc1_event_cnt": 0,
+        "oc1_throt_en": 0,
+        "oc2_event_cnt": 19412,
+        "oc2_throt_en": 1,
+        "oc3_event_cnt": 109393,
+        "oc3_throt_en": 1
+      }
+    },
+    {
+      "begin_ns": 379174428467058,
+      "end_ns": 379174430719846,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+      "device": "/sys/devices/platform/nvtherm-oc-event/hwmon/hwmon4",
+      "values": {
+        "oc1_event_cnt": 0,
+        "oc1_throt_en": 0,
+        "oc2_event_cnt": 19488,
+        "oc2_throt_en": 1,
+        "oc3_event_cnt": 110413,
+        "oc3_throt_en": 1
+      }
+    }
+  ],
+  "complete": true,
+  "error": null,
+  "boundary": {
+    "request_start_ns": 379015567257270,
+    "first_output_ns": 379174428449808,
+    "callback_ns": 379174428465614,
+    "leading_slack_ns": 1282304,
+    "trailing_slack_ns": 2270038,
+    "start_read_ns": 1049082,
+    "first_read_ns": 2252788
+  },
+  "delta": {
+    "oc1": 0,
+    "oc2": 76,
+    "oc3": 1020
+  },
+  "performance_acceptance": false,
+  "scope": "System-wide sequential reads; HTTP first output may include early decode. Counts are not throttle duration."
+}

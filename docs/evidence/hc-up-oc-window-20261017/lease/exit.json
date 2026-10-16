@@ -1,0 +1,17 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "python",
+    ".q4t-work/hc-up-oc-window-20261017/run.py"
+  ],
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "finished": {
+    "utc": "2026-10-16T22:18:28.677901+00:00",
+    "monotonic": 379191.194789972,
+    "pid": 1270255
+  }
+}
