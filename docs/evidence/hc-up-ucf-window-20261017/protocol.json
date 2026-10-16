@@ -1,0 +1,1 @@
+{"runs":3,"cases":["single window with 2 snapshots, 20 ms between commands","invalid repeated start","EOF while enabled"],"purpose":"collector lifecycle and timing coverage only","model_workload":false,"gate":"normal exit0 and valid monotonic snapshots, invalid input/EOF exit2; all preserve raw output","failure_action":"preserve; fix concrete collector defect only"}

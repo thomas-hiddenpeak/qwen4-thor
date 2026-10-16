@@ -937,3 +937,23 @@ rd_bytes_loc_rem、rd_req_loc_rem、rd_cum_outs_loc_rem四事件组成pinned
 响应后决定机制对照；不能以采集器可用直接开启更多A/B计时。已有数值/
 性能证据复用，原HC NO_GO与目标active保持。
 证据：evidence/hc-up-ucf-group-20261017/。
+
+## 外部UCF请求窗口采集器落地（2026-10-17）
+
+新增tools/evalscope/ucf_window_probe.cpp，独立构建，不链接或注入服务器。
+读取实际PMU type并验证CPU0 mask，以pinned四事件组提供单次start/read/
+stop协议。记录CLOCK_MONOTONIC操作边界、原始值、事件ID与enabled/running；
+校验完整read、ID和无复用覆盖。只允许单窗口，避免reset计数却未reset
+累计时间造成错误覆盖率；EOF/错误命令退出失败并关闭所有事件fd。
+
+在共享GPU锁下固定验证3种生命周期：正常窗口两次快照、重复start、
+采集中EOF，均符合预期；guard COMPLETED。两快照enabled=running分别
+20126341/40224443ns，read边界宽10537/1703ns；仅代表本次工具调用开销，
+不证明HTTP集成后的整体扰动。初次-Werror发现time_t窄化，修为显式转换后
+-Wall -Wextra -Werror零警告。没有CUDA/模型负载，没有重跑性能或数值验收。
+
+该工具补齐外部区间观察能力，尚未接入HTTP；UCF事件负载响应与单位仍
+须校准。下一步用有明确读写量的有限诊断验证计数覆盖，再决定是否值得
+冻结原二进制的机制观察。不得把采集器通过当根因成立或HC可合入。
+原NO_GO及活动目标保持；生产源码/二进制不变。
+证据：evidence/hc-up-ucf-window-20261017/。
