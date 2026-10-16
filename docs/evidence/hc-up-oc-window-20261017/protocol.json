@@ -1,0 +1,44 @@
+{
+  "binaries": {
+    "A": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/q4t-main",
+    "B": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/hc-up/q4t"
+  },
+  "fixture": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http/off",
+  "reference": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http/off/results.json",
+  "model": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "expected_output": "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
+  "expected_prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4",
+  "hypothesis": "Actual OC hardware throttle events may occur inside the broad HTTP TTFT window despite unchanged sampled frequencies. Determine presence before proposing any power intervention; not causal attribution.",
+  "order": [
+    "A",
+    "B"
+  ],
+  "requests": 2,
+  "retries": 0,
+  "max_each_slack_ns": 20000000,
+  "validity": [
+    "continuous exclusive guard COMPLETED",
+    "original binary and fixture hashes unchanged; no Nsight/preload/router capture",
+    "HTTP prompt/output/capacity and normal exits match",
+    "counter complete; same boot/device/enable; no count decrease; each endpoint slack <=20ms",
+    "primary result is OC event deltas, not timing acceptance"
+  ],
+  "decision": {
+    "positive": "At least one enabled alarm increases: evidence of events in expanded HTTP window; cannot locate within slack, assign duration, prove B-specific mechanism or historical cause. Freeze any subsequent causal intervention separately.",
+    "zero": "Both valid windows all zero: stop this event-observation family; no repeats or causal power fix based only on old cumulative counts. Historical events not retrospectively excluded.",
+    "invalid": "Preserve failure and stop; no automatic repeat."
+  },
+  "scope": "System-wide count reads bracket first HTTP output with recorded slack; may include early decode; not pure GPU prefill.",
+  "no_config_writes": true,
+  "sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/q4t-main": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/hc-up/q4t": "f01a0ee63f626c352f66677952368d43db02c9231576a2b8ba1ca33a915ce573",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http/off/inputs/context-204800.jsonl": "d80c69b853d708c8be0ab85b492dab4a749f5d5e470f45d4d73dddc2f611e0c7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http/off/results.json": "5c34c3a03975c7d7969736f1909f26b45433891f467867d17d45cdb33e38a0c8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-oc-window-20261017/run.py": "e77fa3c70b1e1399afedf36531ed80e0d3b65f2d384a2a49d784c8252d2a2f8e",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py": "f0bfa30aa89dee7b0fc4e9071940cf460c26a1f7ea7be134274f29981721a603",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/oc_evalscope.py": "0210e6747e898b0a35c64b696d8e5317b49f6f47d96e4a8c4cef5a243c44941e",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/ucf_client_boundary.py": "73033d3b15d4d2f0e45fb546e71f43cb6d783ad0af58b80300545435825686d3",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/gpu_exclusive.py": "6bbbfb1c719e3af25b4b6cdb823cdae23adc7377947a37dc07ff07c52c466654"
+  }
+}
