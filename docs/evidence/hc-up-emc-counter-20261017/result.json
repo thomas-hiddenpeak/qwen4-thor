@@ -1,0 +1,59 @@
+{
+  "protocol": {
+    "reads": 3,
+    "interval_seconds": 1,
+    "gpu_requests": 0,
+    "writes": false,
+    "purpose": "Check whether currently active EMC residency count advances without switching; units remain unproven"
+  },
+  "samples": [
+    {
+      "before_monotonic_ns": 378379166014543,
+      "after_monotonic_ns": 378379199305734,
+      "rates": {
+        "665600": 58422,
+        "2750000": 964,
+        "3200000": 496,
+        "4266000": 16470
+      },
+      "meta": {
+        "transitions": 14,
+        "time-stamp": 378398844
+      },
+      "raw": "rate kHz   time      \n665600     58422     \n2750000    964       \n3200000    496       \n4266000    16470     \ntransitions:    14\ntime-stamp:     378398844\n",
+      "sysfs_cur_freq": "4266000000"
+    },
+    {
+      "before_monotonic_ns": 378380199545750,
+      "after_monotonic_ns": 378380230646722,
+      "rates": {
+        "665600": 58422,
+        "2750000": 964,
+        "3200000": 496,
+        "4266000": 16470
+      },
+      "meta": {
+        "transitions": 14,
+        "time-stamp": 378399875
+      },
+      "raw": "rate kHz   time      \n665600     58422     \n2750000    964       \n3200000    496       \n4266000    16470     \ntransitions:    14\ntime-stamp:     378399875\n",
+      "sysfs_cur_freq": "4266000000"
+    },
+    {
+      "before_monotonic_ns": 378381230874360,
+      "after_monotonic_ns": 378381262884736,
+      "rates": {
+        "665600": 58422,
+        "2750000": 964,
+        "3200000": 496,
+        "4266000": 16470
+      },
+      "meta": {
+        "transitions": 14,
+        "time-stamp": 378400907
+      },
+      "raw": "rate kHz   time      \n665600     58422     \n2750000    964       \n3200000    496       \n4266000    16470     \ntransitions:    14\ntime-stamp:     378400907\n",
+      "sysfs_cur_freq": "4266000000"
+    }
+  ]
+}
