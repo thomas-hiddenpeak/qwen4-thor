@@ -1,0 +1,131 @@
+[
+  {
+    "case": "idle",
+    "start": {
+      "event": "started",
+      "begin_ns": 368121845602631,
+      "end_ns": 368121845674818
+    },
+    "stop": {
+      "event": "stopped",
+      "begin_ns": 368121865802743,
+      "end_ns": 368121865826401
+    },
+    "snapshot": {
+      "event": "snapshot",
+      "begin_ns": 368121865827743,
+      "end_ns": 368121865829355,
+      "enabled_ns": 20175334,
+      "running_ns": 20175334,
+      "events": [
+        {
+          "config": 4294967296,
+          "value": 30274186,
+          "id": 86473
+        },
+        {
+          "config": 0,
+          "value": 705024,
+          "id": 86474
+        },
+        {
+          "config": 6,
+          "value": 11088,
+          "id": 86475
+        },
+        {
+          "config": 12,
+          "value": 1021616336,
+          "id": 86476
+        }
+      ],
+      "valid": true
+    }
+  },
+  {
+    "case": "one",
+    "start": {
+      "event": "started",
+      "begin_ns": 368121897181013,
+      "end_ns": 368121897252829
+    },
+    "stop": {
+      "event": "stopped",
+      "begin_ns": 368121899502051,
+      "end_ns": 368121899525737
+    },
+    "snapshot": {
+      "event": "snapshot",
+      "begin_ns": 368121899527543,
+      "end_ns": 368121899528774,
+      "enabled_ns": 2296853,
+      "running_ns": 2296853,
+      "events": [
+        {
+          "config": 4294967296,
+          "value": 3401975,
+          "id": 86477
+        },
+        {
+          "config": 0,
+          "value": 268453376,
+          "id": 86478
+        },
+        {
+          "config": 6,
+          "value": 4194816,
+          "id": 86479
+        },
+        {
+          "config": 12,
+          "value": 561750666512,
+          "id": 86480
+        }
+      ],
+      "valid": true
+    }
+  },
+  {
+    "case": "four",
+    "start": {
+      "event": "started",
+      "begin_ns": 368123194382905,
+      "end_ns": 368123194453314
+    },
+    "stop": {
+      "event": "stopped",
+      "begin_ns": 368123203505241,
+      "end_ns": 368123203527936
+    },
+    "snapshot": {
+      "event": "snapshot",
+      "begin_ns": 368123203529936,
+      "end_ns": 368123203531251,
+      "enabled_ns": 9098158,
+      "running_ns": 9098158,
+      "events": [
+        {
+          "config": 4294967296,
+          "value": 13624170,
+          "id": 86481
+        },
+        {
+          "config": 0,
+          "value": 1074083840,
+          "id": 86482
+        },
+        {
+          "config": 6,
+          "value": 16784064,
+          "id": 86483
+        },
+        {
+          "config": 12,
+          "value": 2267735431248,
+          "id": 86484
+        }
+      ],
+      "valid": true
+    }
+  }
+]
