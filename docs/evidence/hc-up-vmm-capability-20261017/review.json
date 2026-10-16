@@ -1,0 +1,17 @@
+{
+  "binary_sha256": "d26eb44932d937c56583fd6961cd39db0a909e1ec269a03baf34a308e5bb6bc8",
+  "cuda_header_sha256": "31df84e16179b6d97db4b3c0bae7697392a370b41983f4a8962f0e5a8069b577",
+  "vmm_supported": true,
+  "legacy_retain_result": 1,
+  "legacy_retain_name": "CUDA_ERROR_INVALID_VALUE",
+  "minimum_granularity_bytes": 2097152,
+  "one_handle_two_va_bidirectional_full_byte_check": true,
+  "new_model_requests": 0,
+  "performance_acceptance": false,
+  "root_cause_proven": false,
+  "sources": [
+    "https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/virtual-memory-management.html",
+    "/usr/local/cuda-13.3/include/cuda.h:13562"
+  ],
+  "next": "Assess exporting a new VMM backing across sequential processes to control backing and VA independently. Legacy cudaMalloc pages cannot be reused by this tested route. Keep allocation-method change separate; no production allocator change or E2E frozen yet."
+}

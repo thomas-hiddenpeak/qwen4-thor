@@ -1,0 +1,3 @@
+{"vmm_supported":1}
+{"legacy_cudaMalloc_retain_result":1}
+{"granularity":2097152,"bytes":2097152,"a":13597933568,"b":13600030720,"same_retained_handle":true,"forward":true,"reverse":true}

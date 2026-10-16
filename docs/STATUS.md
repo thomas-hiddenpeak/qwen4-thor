@@ -48,7 +48,10 @@ GDN/Conv/Combine各自全程独占仍变慢。Combine同48层序号累计均正�
 持久d_ws，输出ping-pong trunk；旧七scratch干预未覆盖。旧地址观察
 仅d_trunk偏移512MiB，d_ws/d_trunk2 VA相同，但不是trace同轮；新trace
 偶/奇层正差近似对称，不据此认定输出VA原因。下一步核实持久布局
-干预能控制什么，区分VA/物理页/缓存历史；不追加trace或泛化计时。
+干预可控性：小内存检查确认VMM同backing双VA读写通过（2MiB粒度），
+legacy cudaMalloc retain返回INVALID_VALUE，不能直接保原页改VA。
+下一步核实跨顺序进程共享backing，分开VA/物理分配变量；分配方式变化
+仍是独立变量，不改生产allocator、不追加trace或泛化计时。
 UCF analyzer的outputs重复哈希标注已修正，原始文本hash独立核对通过，
 读流量结论不变。不得继续普通ASLR或UCF计时。
 此前scratch固定布局8条判据亦未过，诊断分配器不交付、不扩样。
