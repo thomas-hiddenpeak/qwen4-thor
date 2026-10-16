@@ -20,9 +20,11 @@ no-ASLR差−33.800/+125.552ms；交互+360.437/+270.966ms，均低于冻结
 不把no-ASLR当部署修复。原NO_GO、生产main身份与活动目标保持。
 已审计旧host PMU：user cycles候选两对均少，branch misses方向不一致；
 缺cache/TLB/stall且不是ASLR同轮，不能拼接成机制证明。旧GPU trace
-无SM/内存stall计数并含污染。UCF disabled事件打开返回EACCES，未改权限。
-下一步仅核对Nsight Compute有限单pass计数器方案的权限、重放及缓存/
-时钟扰动边界；有可区分机制的方案才另冻结，不继续普通ASLR计时。
+无SM/内存stall计数并含污染。UCF disabled事件普通用户EACCES，但已有
+sudo权限下打开成功；未启用采集或改系统配置，权限不是当前阻塞。
+Nsight默认串行化及缓存/clock/pipeline boost控制会改变观察条件。
+下一步核实外部UCF事件语义、分组计数覆盖和读取边界，再冻结可区分
+机制的方案；不直接全量profile、不继续普通ASLR计时。
 此前scratch固定布局8条判据亦未过，诊断分配器不交付、不扩样。
 
 已完成且不重复：

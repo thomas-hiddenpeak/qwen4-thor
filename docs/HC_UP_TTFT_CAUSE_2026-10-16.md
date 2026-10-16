@@ -899,3 +899,22 @@ kernel/区间、single-pass与cache/clock控制，以及它能区分的假设；
 本轮无模型/GPU请求、无生产代码变更；stage-audit仅能力与证据边界，
 根因仍未闭合，原NO_GO与目标active保持。
 证据：evidence/hc-up-mechanism-audit-20261017/。
+
+## 计数器权限与采集扰动边界核实（2026-10-17）
+
+在已有NOPASSWD sudo授权下，复用已审阅的check_uncore，仅以disabled=1
+打开type12/config0x100000000事件后立即关闭：成功，errno=0。普通用户
+EACCES历史证据保留；不能再把权限描述为整个诊断的阻塞。未启用计数、
+未启动模型或GPU工作、未改perf_event_paranoid=2或RmProfilingAdminOnly=1。
+
+本机Nsight Compute文档确认普通kernel profiling会串行化launch；range
+模式需另行验证。CLI默认cache-control=all、clock-control=boost，另有
+pipeline-boost-state=stable。故直接全量profile会改变待解释的执行条件；
+该选项存在不等于基线Tensor Core状态已知，也不是TTFT根因证据。
+
+下一步优先核实外部UCF采集的事件语义、分组计数覆盖与读取边界，避免
+先启动模型再找解释。UCF为system-wide，不能直接当每kernel的stall或
+进程专属流量。具备可区分假设的方案后再冻结诊断；停止的ASLR等计时
+家族不重启。当前没有生产修改或性能接受结论，原NO_GO与active保持。
+证据：evidence/hc-up-mechanism-audit-20261017/uncore-admin-access.json、
+capability-review.json；本轮仅能力检查，不重复已有模型验收。
