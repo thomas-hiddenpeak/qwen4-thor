@@ -63,6 +63,23 @@ constexpr int kBlock = 256;
 void InvalidateVerifyCheckpoints(const Model& m) {
   m.verify_ckpt_rows = 0;
   m.verify_ckpt_slots.clear();
+  m.verify_ssm_record_fold = false;
+}
+
+bool UseVerifySsmRecordFold(const Model& m, int rows) {
+  if (!m.enable_verify_ssm_record_fold || rows < 2) return false;
+  bool has_linear = false;
+  for (const auto& layer : m.layers) {
+    if (layer.is_full_attention) continue;
+    has_linear = true;
+    const auto& w = layer.linear;
+    // Each record must fit within one old checkpoint row. Allocation and
+    // per-slot capacity remain unchanged in this write-traffic experiment.
+    if (static_cast<size_t>(w.kd) * w.vd <
+        static_cast<size_t>(w.kd) + w.vd + 2)
+      return false;
+  }
+  return has_linear;
 }
 
 Status CheckVerifyCheckpointCapacity(const Model& m, int rows) {
@@ -546,6 +563,8 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
   // before any layer mutates recurrent state, including failed forwards.
   InvalidateVerifyCheckpoints(m);
   const ModelConfig& cfg = m.cfg;
+  const bool record_rank1 =
+      ssm_ckpt && UseVerifySsmRecordFold(m, num_ckpt);
   // Every model entry point already owns the logical positions copied to
   // m.d_positions. Reduce once on host, not once per full-attention layer.
   // Packed/ragged batches need the maximum over all rows, not the last row.
@@ -675,7 +694,7 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                                        : nullptr,
                                    (m.layers[l].has_ple && gated_n_captures)
                                        ? gated_n_captures[ple_idx]
-                                       : nullptr);
+                                       : nullptr, record_rank1);
     if (!s.ok()) return s;
     if (layer_timing) cudaEventRecord(lt_ev[2 * (l + 2)], stream);
     if (!m.layers[l].is_full_attention) lin_idx++;
@@ -1132,6 +1151,7 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
   if (s.ok() && num_ckpt > 0) {
     m.verify_ckpt_rows = num_ckpt;
     m.verify_ckpt_slots.assign(1, seq_id);
+    m.verify_ssm_record_fold = UseVerifySsmRecordFold(m, num_ckpt);
   }
   return s;
 }
@@ -1344,6 +1364,7 @@ Status ModelVerifyMulti(const Model& m, const int32_t* tokens,
   if (s.ok() && num_ckpt > 0) {
     m.verify_ckpt_rows = num_ckpt;
     m.verify_ckpt_slots.assign(seq_ids, seq_ids + B);
+    m.verify_ssm_record_fold = UseVerifySsmRecordFold(m, num_ckpt);
   }
   return s;
 }
@@ -1715,15 +1736,23 @@ Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx,
     if (l.is_full_attention) continue;
     const size_t lin_slice =
         (static_cast<size_t>(lin_idx) * max_seq + seq) * cap;
-    const float* ssm_src = m.d_verify_ssm_ckpt + lin_slice * d.ssm_elems +
-                           static_cast<size_t>(ckpt_idx) * d.ssm_elems;
+    const float* ssm_base = m.d_verify_ssm_ckpt + lin_slice * d.ssm_elems;
+    const float* ssm_src =
+        ssm_base + static_cast<size_t>(ckpt_idx) * d.ssm_elems;
     const uint16_t* conv_src = m.d_verify_conv_ckpt + lin_slice * d.conv_elems +
                                static_cast<size_t>(ckpt_idx) * d.conv_elems;
     float* ssm_dst = l.ssm_state + seq * d.ssm_elems;
     uint16_t* conv_dst = l.conv_state + seq * d.conv_elems;
-    if (cudaMemcpyAsync(ssm_dst, ssm_src, d.ssm_elems * sizeof(float),
-                        cudaMemcpyDeviceToDevice, stream) != cudaSuccess)
+    if (m.verify_ssm_record_fold) {
+      Status s = GdnRestoreRecordCheckpoint(
+          ssm_base, ssm_dst, ckpt_idx, l.linear.nv, l.linear.kd,
+          l.linear.vd, stream);
+      if (!s.ok()) return s;
+    } else if (cudaMemcpyAsync(ssm_dst, ssm_src, d.ssm_elems * sizeof(float),
+                               cudaMemcpyDeviceToDevice, stream) !=
+               cudaSuccess) {
       return Status::Fail("ModelRestoreCheckpoint: D2D ssm");
+    }
     if (cudaMemcpyAsync(conv_dst, conv_src, d.conv_elems * sizeof(uint16_t),
                         cudaMemcpyDeviceToDevice, stream) != cudaSuccess)
       return Status::Fail("ModelRestoreCheckpoint: D2D conv");
@@ -1898,18 +1927,19 @@ std::vector<RecurrentStateRef> CollectRecurrentState(const Model& m) {
 // Test-only: read the verify checkpoint buffers (ssm/conv/ple_conv) for a
 // given ckpt_idx into a host snapshot, in the SAME order as
 // CollectRecurrentState (per layer: ssm, conv, then ple_conv if present).
-// Lets a test directly compare checkpoint-N against the T=1 recurrent state
-// WITHOUT going through ModelRestoreCheckpoint (which overwrites the live
-// state). Fails if no checkpoints are reserved. Lives in the q4t::model
-// namespace (not the anonymous one) so tests can link it; computes the
-// element counts directly instead of reusing the anonymous-namespace helper.
+// Live state is never overwritten. Compact rows share the restore kernel
+// and materialize into scratch, so this is not an independent fold oracle.
+// Only the current successful verify's published rows/slots may be read.
 Status ModelSnapshotCheckpoint(const Model& m, int ckpt_idx,
                                ModelStateSnapshot* snap, cudaStream_t stream,
                                int seq_id) {
   if (!snap) return Status::Fail("ModelSnapshotCheckpoint: null");
-  if (!m.d_verify_ssm_ckpt || ckpt_idx < 0 ||
-      ckpt_idx >= m.verify_ckpt_cap)
-    return Status::Fail("ModelSnapshotCheckpoint: no/invalid ckpt");
+  if (!m.d_verify_ssm_ckpt || seq_id < 0 || seq_id >= m.cfg.max_seq ||
+      ckpt_idx < 0 || ckpt_idx >= m.verify_ckpt_rows ||
+      m.verify_ckpt_rows > m.verify_ckpt_cap ||
+      std::find(m.verify_ckpt_slots.begin(), m.verify_ckpt_slots.end(),
+                seq_id) == m.verify_ckpt_slots.end())
+    return Status::Fail("ModelSnapshotCheckpoint: unwritten or stale row/slot");
   size_t ssm_elems = 0, conv_elems = 0, ple_elems = 0;
   for (const auto& l : m.layers) {
     if (l.ssm_state && ssm_elems == 0) {
@@ -1932,15 +1962,30 @@ Status ModelSnapshotCheckpoint(const Model& m, int ckpt_idx,
     size_t bytes;
   };
   std::vector<Ref> refs;
+  // Diagnostic-only scratch, never a mirror retained by the runtime. Keep
+  // every source alive until D2H completes without altering live state.
+  using DeviceScratch = std::unique_ptr<float, decltype(&cudaFree)>;
+  std::vector<DeviceScratch> scratch;
   int lin_idx = 0;
   int ple_idx = 0;
   for (const auto& l : m.layers) {
     if (l.ssm_state) {
       const size_t lin_slice =
           (static_cast<size_t>(lin_idx) * max_seq + seq) * cap;
-      refs.push_back(
-          {m.d_verify_ssm_ckpt + (lin_slice + ci) * ssm_elems,
-           ssm_elems * sizeof(float)});
+      float* ssm_src =
+          m.d_verify_ssm_ckpt + (lin_slice + ci) * ssm_elems;
+      if (m.verify_ssm_record_fold && ckpt_idx > 0) {
+        float* materialized = nullptr;
+        if (cudaMalloc(&materialized, ssm_elems * sizeof(float)) != cudaSuccess)
+          return Status::Fail("ModelSnapshotCheckpoint: scratch allocation");
+        scratch.emplace_back(materialized, &cudaFree);
+        Status s = GdnRestoreRecordCheckpoint(
+            m.d_verify_ssm_ckpt + lin_slice * ssm_elems, materialized,
+            ckpt_idx, l.linear.nv, l.linear.kd, l.linear.vd, stream);
+        if (!s.ok()) return s;
+        ssm_src = materialized;
+      }
+      refs.push_back({ssm_src, ssm_elems * sizeof(float)});
       refs.push_back(
           {m.d_verify_conv_ckpt + (lin_slice + ci) * conv_elems,
            conv_elems * sizeof(uint16_t)});

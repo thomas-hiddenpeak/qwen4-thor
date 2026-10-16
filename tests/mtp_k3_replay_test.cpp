@@ -212,6 +212,7 @@ void Restore(const Model& model, const ModelStateSnapshot& state) {
 // production restore reader. Host concatenation matches Snapshot.
 ModelStateSnapshot RawCheckpoint(const Model& model, int row) {
   Require(model.cfg.max_seq == 1 && model.verify_ckpt_rows == kDrafts &&
+              !model.verify_ssm_record_fold &&
               model.verify_ckpt_slots == std::vector<int>{0} && row >= 0 &&
               row < kDrafts,
           "raw checkpoint layout precondition");
@@ -314,6 +315,10 @@ Q4T_TEST(mtp_k3_full_model_replay) {
   q4t::model::ModelOwner owner;
   RequireStatus(owner.Load(cfg, nullptr), "load full main model");
   Model& model = owner.Get();
+  // This historical oracle independently reads full raw SSM checkpoint rows.
+  // Compact replay is covered by the same-shape record/fold boundary test.
+  model.enable_verify_ssm_record_fold = false;
+  std::puts("  checkpoint_oracle_layout=legacy_full_ssm");
   MtpOwner draft;
   q4t::mtp::MtpConfig mcfg;
   mcfg.mtp_dir = cfg.model_dir + "/mtp";
@@ -720,6 +725,9 @@ Q4T_TEST(mtp_init_tail_long_k3) {
   q4t::model::ModelOwner owner;
   RequireStatus(owner.Load(cfg, nullptr), "load full model once");
   Model& model = owner.Get();
+  // Keep RawCheckpoint independent of the production replay reader.
+  model.enable_verify_ssm_record_fold = false;
+  std::puts("  checkpoint_oracle_layout=legacy_full_ssm");
   MtpOwner draft;
   q4t::mtp::MtpConfig mcfg;
   mcfg.mtp_dir = cfg.model_dir + "/mtp";

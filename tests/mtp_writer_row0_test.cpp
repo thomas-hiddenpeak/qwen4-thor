@@ -283,6 +283,10 @@ Status SetupModel(Setup* st) {
   cfg.max_seq = 1;
   Status s = LoadModel(cfg, &st->m, nullptr);
   if (!s.ok()) return s;
+  // These diagnostics export full raw checkpoint rows, including rows 1/2.
+  // Retain their independent writer oracle under the explicit legacy layout.
+  st->m.enable_verify_ssm_record_fold = false;
+  std::puts("  checkpoint_writer_layout=legacy_full_ssm");
   st->vocab = st->m.cfg.vocab;
   st->stream = nullptr;
   if (cudaMalloc(reinterpret_cast<void**>(&st->d_plain),

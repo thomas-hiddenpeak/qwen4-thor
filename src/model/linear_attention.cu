@@ -15,6 +15,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <limits>
 #include <string>
 #include <vector>
 
@@ -611,6 +612,117 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetKernel(
   for (int i = 0; i < kd; ++i) ssm[ss_base + i * vd + j] = S_smem[i * vd_pad + j];
 }
 
+// Record-mode clone: keep the original kernel and its arithmetic unchanged.
+// The allocation retains full checkpoint capacity, but only row 0 is a full
+// state; its remaining space holds [num_ckpt-1, nv, kd+vd+2] FP32 records.
+__global__ void __launch_bounds__(128, 2) GatedDeltaNetRecordKernel(
+    const uint16_t* __restrict__ qkv, const uint16_t* __restrict__ a_raw,
+    const uint16_t* __restrict__ dt_bias, const uint16_t* __restrict__ A_log,
+    const uint16_t* __restrict__ beta_raw, float* __restrict__ ssm,
+    uint16_t* __restrict__ y, int T, int nkh, int kd, int nv_per_kh, int vd,
+    int token_stride, int nv, float* __restrict__ ssm_ckpt, int num_ckpt,
+    float* __restrict__ ssm_capture) {
+  const int h_v = blockIdx.x;
+  const int h_k = h_v / nv_per_kh;
+  const int j = threadIdx.x;  // vd index
+  extern __shared__ float smem[];
+  const int vd_pad = vd + 1;
+  float* S_smem = smem;
+  float* k_hat_s = S_smem + kd * vd_pad;
+  float* q_hat_s = k_hat_s + kd;
+  float* s_part = q_hat_s + kd;  // reduction scratch (warp-partial sums)
+
+  const int ss_base = h_v * kd * vd;
+  const float q_scale = rsqrtf(static_cast<float>(kd));
+  const int kd4 = kd & ~3;  // 4-way unroll bound for the inner kd reductions
+  // Load initial state S[kd, vd] -> S_smem (FP32 GMEM -> FP32 SMEM). The
+  // persistent state is FP32 to match the reference (transformers keeps the
+  // GatedDeltaNet recurrent state in float32 end-to-end); a BF16 state
+  // quantized at every chunk boundary drifts measurably from the reference.
+  for (int i = 0; i < kd; ++i) S_smem[i * vd_pad + j] = ssm[ss_base + i * vd + j];
+  __syncthreads();
+
+  for (int t = 0; t < T; ++t) {
+    const int q_base = t * token_stride + h_k * kd;
+    const int k_base = t * token_stride + nkh * kd + h_k * kd;
+
+    float local_k_sq = 0.0f;
+    float local_q_sq = 0.0f;
+    for (int i = threadIdx.x; i < kd; i += blockDim.x) {
+      const float kv = Bf16ToFloat(qkv[k_base + i]);
+      local_k_sq += kv * kv;
+      const float qv = Bf16ToFloat(qkv[q_base + i]);
+      local_q_sq += qv * qv;
+    }
+    // One warp-shuffle reduction for both norms (one barrier vs ~14).
+    const float2 sq =
+        BlockReduceSum2Warp(make_float2(local_k_sq, local_q_sq), s_part);
+
+    // L2-style normalization (NOT RMSNorm): 1/sqrt(sum(x^2) + eps). The
+    // reference (qwen35-thor gated_delta_net_*_kernel) does not divide by kd;
+    // q additionally carries a 1/sqrt(kd) scale.
+    const float k_norm = rsqrtf(sq.x + 1e-6f);
+    const float q_norm = rsqrtf(sq.y + 1e-6f) * q_scale;
+    for (int i = threadIdx.x; i < kd; i += blockDim.x) {
+      k_hat_s[i] = Bf16ToFloat(qkv[k_base + i]) * k_norm;
+      q_hat_s[i] = Bf16ToFloat(qkv[q_base + i]) * q_norm;
+    }
+    __syncthreads();
+
+    const float a_val = Bf16ToFloat(a_raw[t * nv + h_v]);
+    const float bias = Bf16ToFloat(dt_bias[h_v]);
+    const float a_l = Bf16ToFloat(A_log[h_v]);
+    const float ab = a_val + bias;
+    // softplus(ab) = log(1 + e^ab); exp2f(ab*LOG2E) == expf(ab). (The reference
+    // writes exp2f(x*LOG2E); using expf(x) directly is identical and avoids the
+    // common expf(x*LOG2E) == e^(LOG2E*x) mistake.)
+    const float dt_v = (ab > 20.0f) ? ab : log1pf(expf(ab));
+    const float alpha_v = expf(-dt_v * expf(a_l));
+    const float beta_v =
+        1.0f / (1.0f + expf(-Bf16ToFloat(beta_raw[t * nv + h_v])));
+
+    const int v_base = t * token_stride + 2 * nkh * kd + h_v * vd;
+    const float kS_j = GdnKSum(k_hat_s, S_smem, vd_pad, j, kd, kd4);
+    const float v_j = Bf16ToFloat(qkv[v_base + j]);
+    const float delta_j = v_j - alpha_v * kS_j;
+    const float y_j = GdnUpdateY(S_smem, k_hat_s, q_hat_s, vd_pad, j, kd, kd4,
+                                 alpha_v, beta_v, delta_j);
+
+    const int y_base = (t * nv + h_v) * vd;
+    y[y_base + j] = FloatToBf16(y_j);
+    // Keep the mandatory first token's full state. Later rows record the
+    // exact FP32 operands used above, without recomputing delta during restore.
+    if (ssm_ckpt && t < num_ckpt) {
+      if (t == 0) {
+        for (int i = 0; i < kd; ++i)
+          ssm_ckpt[ss_base + i * vd + j] = S_smem[i * vd_pad + j];
+      } else {
+        const size_t state_elems = static_cast<size_t>(nv) * kd * vd;
+        const size_t record_stride = static_cast<size_t>(kd) + vd + 2;
+        float* record = ssm_ckpt + state_elems +
+            (static_cast<size_t>(t - 1) * nv + h_v) * record_stride;
+        for (int i = threadIdx.x; i < kd; i += blockDim.x)
+          record[i] = k_hat_s[i];
+        record[kd + j] = delta_j;
+        if (j == 0) {
+          record[kd + vd] = alpha_v;
+          record[kd + vd + 1] = beta_v;
+        }
+      }
+    }
+    // Independent writer-row0 capture: copy the t==0 post-update S_smem
+    // directly (not via ssm_ckpt) to the per-layer capture buffer.
+    if (ssm_capture && t == 0) {
+      for (int i = 0; i < kd; ++i)
+        ssm_capture[ss_base + i * vd + j] = S_smem[i * vd_pad + j];
+    }
+    __syncthreads();
+  }
+
+  // Write final state (FP32 SMEM -> FP32 GMEM).
+  for (int i = 0; i < kd; ++i) ssm[ss_base + i * vd + j] = S_smem[i * vd_pad + j];
+}
+
 // ---- Register-state Gated DeltaNet prefill (Q4T_GDN_REG) ----
 // The default GatedDeltaNetKernel launches only nv (=48) blocks — one per value
 // head — on 20 SMs, and holds the FP32 state S[kd,vd] (66 KB) in shared, so it
@@ -1193,6 +1305,141 @@ __global__ void __launch_bounds__(128, 2) GatedDeltaNetMultiSeqCausalKernel(
   for (int i = 0; i < kd; ++i) ssm[ss_base + i * vd + j] = S_smem[i * vd_pad + j];
 }
 
+// Record-mode counterpart of the pooled causal path used by MTP verify.
+// Arithmetic and synchronization match GatedDeltaNetMultiSeqCausalKernel.
+__global__ void __launch_bounds__(128, 2)
+GatedDeltaNetMultiSeqCausalRecordKernel(
+    const uint16_t* __restrict__ qkv, const uint16_t* __restrict__ a_raw,
+    const uint16_t* __restrict__ dt_bias, const uint16_t* __restrict__ A_log,
+    const uint16_t* __restrict__ beta_raw, float* __restrict__ ssm,
+    uint16_t* __restrict__ y, int T, int nkh, int kd, int nv_per_kh, int vd,
+    int in_qkv, int nv, const int* __restrict__ d_seq_id,
+    float* __restrict__ ssm_ckpt, int num_ckpt, int ckpt_stride,
+    const int* __restrict__ seq_offset) {
+  const int h_v = blockIdx.x;
+  const int b = blockIdx.y;  // sequence index
+  const int j = threadIdx.x;  // vd index
+  extern __shared__ float smem[];
+  const int vd_pad = vd + 1;
+  float* S_smem = smem;
+  float* k_hat_s = S_smem + kd * vd_pad;
+  float* q_hat_s = k_hat_s + kd;
+  float* s_part = q_hat_s + kd;  // reduction scratch (warp-partial sums)
+
+  // Sequence b's packed [off, off+len) rows. Uniform (MTP): off=b*T, len=T.
+  // Ragged (batched prefill): cu_seqlens seq_offset[b..b+1].
+  const int off = seq_offset ? seq_offset[b] : b * T;
+  const int len = seq_offset ? (seq_offset[b + 1] - off) : T;
+  const int seq = d_seq_id[off];
+  const int ss_base = seq * nv * kd * vd + h_v * kd * vd;
+  const float q_scale = rsqrtf(static_cast<float>(kd));
+  const int kd4 = kd & ~3;  // 4-way unroll bound (matches GatedDeltaNetKernel)
+  // Load initial state S[kd, vd] for this sequence's value head.
+  for (int i = 0; i < kd; ++i) S_smem[i * vd_pad + j] = ssm[ss_base + i * vd + j];
+  __syncthreads();
+
+  for (int tt = 0; tt < len; ++tt) {
+    const int t = off + tt;  // packed token index
+    const int h_k = h_v / nv_per_kh;
+    const int q_base = t * in_qkv + h_k * kd;
+    const int k_base = t * in_qkv + nkh * kd + h_k * kd;
+
+    float local_k_sq = 0.0f;
+    float local_q_sq = 0.0f;
+    for (int i = threadIdx.x; i < kd; i += blockDim.x) {
+      const float kv = Bf16ToFloat(qkv[k_base + i]);
+      local_k_sq += kv * kv;
+      const float qv = Bf16ToFloat(qkv[q_base + i]);
+      local_q_sq += qv * qv;
+    }
+    // One warp-shuffle reduction for both norms (one barrier vs ~14).
+    const float2 sq =
+        BlockReduceSum2Warp(make_float2(local_k_sq, local_q_sq), s_part);
+    const float k_norm = rsqrtf(sq.x + 1e-6f);
+    const float q_norm = rsqrtf(sq.y + 1e-6f) * q_scale;
+    for (int i = threadIdx.x; i < kd; i += blockDim.x) {
+      k_hat_s[i] = Bf16ToFloat(qkv[k_base + i]) * k_norm;
+      q_hat_s[i] = Bf16ToFloat(qkv[q_base + i]) * q_norm;
+    }
+    __syncthreads();
+
+    const float a_val = Bf16ToFloat(a_raw[t * nv + h_v]);
+    const float bias = Bf16ToFloat(dt_bias[h_v]);
+    const float a_l = Bf16ToFloat(A_log[h_v]);
+    const float ab = a_val + bias;
+    const float dt_v = (ab > 20.0f) ? ab : log1pf(expf(ab));
+    const float alpha_v = expf(-dt_v * expf(a_l));
+    const float beta_v =
+        1.0f / (1.0f + expf(-Bf16ToFloat(beta_raw[t * nv + h_v])));
+
+    const int v_base = t * in_qkv + 2 * nkh * kd + h_v * vd;
+    const float kS_j = GdnKSum(k_hat_s, S_smem, vd_pad, j, kd, kd4);
+    const float v_j = Bf16ToFloat(qkv[v_base + j]);
+    const float delta_j = v_j - alpha_v * kS_j;
+    const float y_j = GdnUpdateY(S_smem, k_hat_s, q_hat_s, vd_pad, j, kd, kd4,
+                                 alpha_v, beta_v, delta_j);
+
+    const int y_base = (t * nv + h_v) * vd;
+    y[y_base + j] = FloatToBf16(y_j);
+    // Sequence slots keep their original full-capacity stride. Within each
+    // slot, row 0 is a full state followed by packed FP32 rank-1 records.
+    if (ssm_ckpt && tt < num_ckpt) {
+      const size_t state_elems = static_cast<size_t>(nv) * kd * vd;
+      float* seq_ckpt = ssm_ckpt +
+          static_cast<size_t>(seq) * ckpt_stride * state_elems;
+      if (tt == 0) {
+        const size_t head_off = static_cast<size_t>(h_v) * kd * vd;
+        for (int i = 0; i < kd; ++i)
+          seq_ckpt[head_off + i * vd + j] = S_smem[i * vd_pad + j];
+      } else {
+        const size_t record_stride = static_cast<size_t>(kd) + vd + 2;
+        float* record = seq_ckpt + state_elems +
+            (static_cast<size_t>(tt - 1) * nv + h_v) * record_stride;
+        for (int i = threadIdx.x; i < kd; i += blockDim.x)
+          record[i] = k_hat_s[i];
+        record[kd + j] = delta_j;
+        if (j == 0) {
+          record[kd + vd] = alpha_v;
+          record[kd + vd + 1] = beta_v;
+        }
+      }
+    }
+    __syncthreads();
+  }
+
+  // Write final state (FP32 SMEM -> FP32 GMEM) for this sequence's head.
+  for (int i = 0; i < kd; ++i) ssm[ss_base + i * vd + j] = S_smem[i * vd_pad + j];
+}
+
+// Restore from the immutable first-token state and only the accepted records.
+// Every thread owns independent state elements; no dot product or reduction is
+// repeated. Keep the expression identical to GdnUpdateY, including beta*k.
+__global__ void GdnRestoreRecordCheckpointKernel(
+    const float* __restrict__ checkpoint, float* __restrict__ state,
+    size_t state_elems, int checkpoint_idx, int nv, int kd, int vd) {
+  const size_t head_elems = static_cast<size_t>(kd) * vd;
+  const size_t record_stride = static_cast<size_t>(kd) + vd + 2;
+  const size_t token_stride = static_cast<size_t>(nv) * record_stride;
+  const size_t grid_stride = static_cast<size_t>(blockDim.x) * gridDim.x;
+  for (size_t idx = static_cast<size_t>(blockIdx.x) * blockDim.x + threadIdx.x;
+       idx < state_elems; idx += grid_stride) {
+    const size_t head = idx / head_elems;
+    const size_t key = (idx % head_elems) / vd;
+    const size_t value = idx % vd;
+    float restored = checkpoint[idx];
+    for (int t = 0; t < checkpoint_idx; ++t) {
+      const float* record = checkpoint + state_elems +
+          static_cast<size_t>(t) * token_stride + head * record_stride;
+      const float alpha_v = record[kd + vd];
+      const float beta_v = record[kd + vd + 1];
+      const float k_hat = record[key];
+      const float delta_j = record[kd + value];
+      restored = alpha_v * restored + (beta_v * k_hat) * delta_j;
+    }
+    state[idx] = restored;
+  }
+}
+
 // Fused per-head RMSNorm * gate(z) gate. One block per (token, value head),
 // 128 threads (one per vd). The gate activation is `output_gate_type` from the
 // config (sigmoid for qwen4_exp), NOT the conv1d activation (silu). Mirrors
@@ -1355,6 +1602,44 @@ Status LoadLinearAttention(const io::WeightLoader& loader,
   return Status();
 }
 
+Status GdnRestoreRecordCheckpoint(const float* checkpoint, float* state,
+                                  int checkpoint_idx, int nv, int kd, int vd,
+                                  cudaStream_t stream) {
+  if (!checkpoint || !state || checkpoint == state || checkpoint_idx < 0 ||
+      nv <= 0 || kd <= 0 || vd <= 0) {
+    return Status::Fail("gdn record restore invalid argument");
+  }
+  const size_t head_elems = static_cast<size_t>(kd) * vd;
+  const size_t record_stride = static_cast<size_t>(kd) + vd + 2;
+  const size_t max_elems = std::numeric_limits<size_t>::max() / sizeof(float);
+  if (head_elems < record_stride || head_elems > max_elems / nv) {
+    return Status::Fail("gdn record restore unsupported shape");
+  }
+  const size_t state_elems = static_cast<size_t>(nv) * head_elems;
+  const size_t record_elems = static_cast<size_t>(nv) * record_stride;
+  if (static_cast<size_t>(checkpoint_idx) >
+      (max_elems - state_elems) / record_elems) {
+    return Status::Fail("gdn record restore size overflow");
+  }
+  if (checkpoint_idx == 0) {
+    if (cudaMemcpyAsync(state, checkpoint, state_elems * sizeof(float),
+                        cudaMemcpyDeviceToDevice, stream) != cudaSuccess) {
+      return Status::Fail("gdn record row0 copy");
+    }
+    return Status();
+  }
+  constexpr int kThreads = 256;
+  const size_t needed_blocks = (state_elems + kThreads - 1) / kThreads;
+  const int blocks = static_cast<int>(needed_blocks < 65535 ? needed_blocks
+                                                         : 65535);
+  GdnRestoreRecordCheckpointKernel<<<blocks, kThreads, 0, stream>>>(
+      checkpoint, state, state_elems, checkpoint_idx, nv, kd, vd);
+  if (cudaGetLastError() != cudaSuccess) {
+    return Status::Fail("gdn record restore launch");
+  }
+  return Status();
+}
+
 Status LinearAttentionForward(const LinearAttentionWeights& w,
                               const uint16_t* x, uint16_t* out,
                               float* ssm_state, uint16_t* conv_state, int T,
@@ -1365,7 +1650,8 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
                               const RaggedBatch* ragged, int ckpt_stride,
                               float* ssm_capture,
                               uint16_t* conv_capture,
-                              uint16_t* qkv_raw_capture, int layer_id) {
+                              uint16_t* qkv_raw_capture, int layer_id,
+                              bool record_rank1) {
   const int hs = w.hidden_size;
   const int nkh = w.nkh, nv = w.nv, kd = w.kd, vd = w.vd, conv_k = w.conv_k;
   const int qk = nkh * kd;
@@ -1380,6 +1666,12 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
   // is the B2 multi-sequence DECODE path (one token per sequence, no in-batch
   // chain); d_seq_id == null is the single-sequence path (bit-identical).
   const bool multi_seq_causal = d_seq_id && (tokens_per_seq > 1 || ragged);
+  if (record_rank1 &&
+      (!ssm_ckpt || num_ckpt <= 0 || kd <= 0 || vd <= 0 ||
+       static_cast<size_t>(kd) * vd < static_cast<size_t>(kd) + vd + 2 ||
+       (d_seq_id && !multi_seq_causal))) {
+    return Status::Fail("gdn record checkpoint invalid argument");
+  }
   const int B = ragged ? ragged->B
                        : (multi_seq_causal ? (T / tokens_per_seq) : T);
   // Ragged (batched-prefill) packing: per-token local position + per-sequence
@@ -1588,7 +1880,37 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
     const int vd_pad = vd + 1;
     const size_t smem_bytes =
         static_cast<size_t>(kd * vd_pad + 2 * kd + 128 + 2) * sizeof(float);
-    if (multi_seq_causal) {
+    if (multi_seq_causal && record_rank1) {
+      cudaError_t smem_err = cudaFuncSetAttribute(
+          GatedDeltaNetMultiSeqCausalRecordKernel,
+          cudaFuncAttributeMaxDynamicSharedMemorySize,
+          static_cast<int>(smem_bytes));
+      if (smem_err != cudaSuccess) {
+        return Status::Fail("gdn multi-seq record smem attr");
+      }
+      GatedDeltaNetMultiSeqCausalRecordKernel<<<dim3(nv, B), threads,
+                                              smem_bytes, stream>>>(
+          d_qkv, d_a, w.dt_bias, w.A_log, d_beta, ssm_state, d_y_ssm,
+          tokens_per_seq, nkh, kd, nv / nkh, vd, in_qkv, nv, d_seq_id,
+          ssm_ckpt, num_ckpt, ckpt_stride, rag_offset);
+      if (cudaGetLastError() != cudaSuccess) {
+        return Status::Fail("gdn multi-seq record launch");
+      }
+    } else if (record_rank1) {
+      cudaError_t smem_err = cudaFuncSetAttribute(
+          GatedDeltaNetRecordKernel,
+          cudaFuncAttributeMaxDynamicSharedMemorySize,
+          static_cast<int>(smem_bytes));
+      if (smem_err != cudaSuccess) {
+        return Status::Fail("gdn record smem attr");
+      }
+      GatedDeltaNetRecordKernel<<<nv, threads, smem_bytes, stream>>>(
+          d_qkv, d_a, w.dt_bias, w.A_log, d_beta, ssm_state, d_y_ssm, T, nkh,
+          kd, nv / nkh, vd, in_qkv, nv, ssm_ckpt, num_ckpt, ssm_capture);
+      if (cudaGetLastError() != cudaSuccess) {
+        return Status::Fail("gdn record launch");
+      }
+    } else if (multi_seq_causal) {
       // MTP multi-sequence verify: grid (nv, B), each block one value head for
       // one sequence, serializing the sequence's tokens_per_seq tokens with
       // the in-place S recurrence; ssm_state is the pooled [max_seq, ...] base.

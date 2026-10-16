@@ -242,6 +242,8 @@ Q4T_TEST(model_verify_multi) {
 
   s = ModelVerifyMulti(m, tokens.data(), base_positions, seq_ids, history.data(),
                        history_len, B, T, d_mlogits, nullptr);
+  if (s.ok() && !m.verify_ssm_record_fold)
+    s = Status::Fail("B=2 T=3 missed SSM record/fold");
   if (!s.ok()) {
     std::printf("  ModelVerifyMulti failed: %s\n", s.message().c_str());
     m.Free();
@@ -457,6 +459,8 @@ Q4T_TEST(model_verify_multi_ckpt) {
 
   s = ModelVerifyMulti(m, tokens.data(), base_positions, seq_ids, history.data(),
                        history_len, B, T, d_mlogits, nullptr);
+  if (s.ok() && !m.verify_ssm_record_fold)
+    s = Status::Fail("B=2 T=3 checkpoint verify missed SSM record/fold");
   if (!s.ok()) {
     std::printf("  ModelVerifyMulti failed: %s\n", s.message().c_str());
     m.Free();
@@ -555,6 +559,8 @@ Q4T_TEST(model_verify_multi_ckpt) {
       s = ModelVerifyMulti(m, tokens.data(), base_positions, seq_ids,
                            history.data(), history_len, B, T, d_mlogits,
                            nullptr);
+      if (s.ok() && !m.verify_ssm_record_fold)
+        s = Status::Fail("B=2 T=3 checkpoint re-verify missed SSM record/fold");
       if (!s.ok()) {
         std::printf("  re-verify failed: %s\n", s.message().c_str());
         m.Free();

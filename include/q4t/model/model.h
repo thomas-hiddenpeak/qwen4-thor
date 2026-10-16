@@ -154,6 +154,11 @@ struct Model {
   // are restorable. Any new layer forward/reset invalidates these records.
   mutable int verify_ckpt_rows = 0;
   mutable std::vector<int> verify_ckpt_slots;
+  // Preserve the allocation/slot stride, but store row0 plus FP32 rank-one
+  // records when eligible. The enable flag supports diagnostic A/B runs;
+  // the published flag describes only the most recent valid checkpoint.
+  bool enable_verify_ssm_record_fold = true;
+  mutable bool verify_ssm_record_fold = false;
 
   int hc_dim() const { return cfg.hc * cfg.hs; }
   void Free();
@@ -545,8 +550,9 @@ Status ModelRestoreState(const Model& m, const ModelStateSnapshot& snap,
 
 // Test-only: read the verify checkpoint buffers (ssm/conv/ple_conv) for a
 // given ckpt_idx into a host snapshot, in the same order as
-// ModelSnapshotState. Lets a test directly compare checkpoint-N against the
-// T=1 recurrent state without going through ModelRestoreCheckpoint.
+// ModelSnapshotState, without overwriting live state. Record-format rows are
+// reconstructed with the same restore kernel into temporary scratch; this
+// export is not an independent oracle for that kernel.
 Status ModelSnapshotCheckpoint(const Model& m, int ckpt_idx,
                                ModelStateSnapshot* snap, cudaStream_t stream,
                                int seq_id = 0);

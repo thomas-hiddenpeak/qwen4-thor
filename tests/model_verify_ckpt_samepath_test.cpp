@@ -253,6 +253,8 @@ Q4T_TEST(model_verify_ckpt_samepath) {
                          history.size(), d_blogits, nullptr, nullptr, save,
                          /*seq_id=*/0);
     if (!s.ok()) return s;
+    if (m.verify_ssm_record_fold != save)
+      return Status::Fail("T=3 checkpoint record/fold dispatch mismatch");
     // Keep the normal asynchronous boundary: PLE owns its upload staging,
     // and subsequent device work on this stream must not corrupt it.
     if (out_logits) {

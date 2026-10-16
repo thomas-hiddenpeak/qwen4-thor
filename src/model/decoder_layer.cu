@@ -511,7 +511,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
                            trace::RouterCollector* trace, int layer_id,
                            int ckpt_stride, float* ssm_capture,
                            uint16_t* qkv_raw_capture,
-                           uint16_t* gated_n_capture) {
+                           uint16_t* gated_n_capture, bool record_rank1) {
   const int hs = layer.hs, hc_dim = layer.hc_dim, hc = layer.hc;
   if (T <= 0) return Status();
   // Pooled recurrent-state slices for this sequence (seq_id selects the
@@ -643,7 +643,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
                                tokens_per_seq, ragged, ckpt_stride,
                                ssm_capture,
                                /*conv_capture=*/nullptr, qkv_raw_capture,
-                               layer_id);
+                               layer_id, record_rank1);
   }
   if (!s.ok()) {
     return s;

@@ -385,6 +385,8 @@ Q4T_TEST(mtp_verify_numerics) {
     int32_t ids_a[4] = {t0, kFillerA, kFillerA, kFillerA};
     s = ModelDecodeBatch(m, ids_a, 4, base, hist_copy.data(), hist_len,
                          d_batch, stream, nullptr, true, 0);
+    if (s.ok() && !m.verify_ssm_record_fold)
+      s = Status::Fail("T=4 causality A missed SSM record/fold");
     if (!s.ok()) {
       std::printf("  batch(f=42) failed: %s\n", s.message().c_str());
       m.Free();
@@ -401,6 +403,8 @@ Q4T_TEST(mtp_verify_numerics) {
     int32_t ids_b[4] = {t0, kFillerB, kFillerB, kFillerB};
     s = ModelDecodeBatch(m, ids_b, 4, base, hist_copy.data(), hist_len,
                          d_batch, stream, nullptr, true, 0);
+    if (s.ok() && !m.verify_ssm_record_fold)
+      s = Status::Fail("T=4 causality B missed SSM record/fold");
     if (!s.ok()) {
       std::printf("  batch(f=43) failed: %s\n", s.message().c_str());
       m.Free();
@@ -481,6 +485,8 @@ Q4T_TEST(mtp_verify_numerics) {
     }
     s = ModelDecodeBatch(m, ids, 4, base, hist_copy.data(), hist_len,
                          d_batch, stream, nullptr, true, 0);
+    if (s.ok() && !m.verify_ssm_record_fold)
+      s = Status::Fail("T=4 numeric contract missed SSM record/fold");
     if (i == 0) {
       unsetenv("Q4T_LIN_DUMP");
       unsetenv("Q4T_MLP_DUMP");
@@ -711,6 +717,8 @@ Q4T_TEST(mtp_verify_numerics) {
         setenv("Q4T_MLP_DUMP", "q4t_mtp_batch", 1);
         s = ModelDecodeBatch(m, ids, 4, base, hist_copy.data(), hist_len,
                              d_batch, stream, nullptr, true, 0);
+        if (s.ok() && !m.verify_ssm_record_fold)
+          s = Status::Fail("T=4 diagnostic rerun missed SSM record/fold");
         unsetenv("Q4T_MLP_DUMP");
         if (!s.ok()) {
           std::printf("  step %d dump batch failed: %s\n", i,

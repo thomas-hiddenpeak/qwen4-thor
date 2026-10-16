@@ -129,6 +129,13 @@ Status LoadLinearAttention(const io::WeightLoader& loader, const std::string& pr
 //                (cu_seqlens) + ragged->token_local instead of the uniform
 //                tokens_per_seq stride, so B sequences of unequal length pack
 //                into one forward. Null = uniform tokens_per_seq (legacy).
+//   record_rank1 : causal verify only, with non-null ssm_ckpt and num_ckpt>0.
+//                Keep full checkpoint allocation/sequence strides. Each slot
+//                stores row0 [nv,kd,vd], then packed FP32 records
+//                [num_ckpt-1,nv,kd+vd+2] = (k_hat,delta,alpha,beta). Requires
+//                kd*vd >= kd+vd+2. Conv checkpoints keep their usual layout.
+//                Caller tracks this format and restores with the API below;
+//                full acceptance keeps the already-written final live state.
 Status LinearAttentionForward(const LinearAttentionWeights& w, const uint16_t* x,
                               uint16_t* out, float* ssm_state,
                               uint16_t* conv_state, int T, void* workspace,
@@ -142,7 +149,17 @@ Status LinearAttentionForward(const LinearAttentionWeights& w, const uint16_t* x
                               float* ssm_capture = nullptr,
                               uint16_t* conv_capture = nullptr,
                               uint16_t* qkv_raw_capture = nullptr,
-                              int layer_id = -1);
+                              int layer_id = -1,
+                              bool record_rank1 = false);
+
+// Restore one sequence/layer's record-format checkpoint into disjoint live or
+// scratch state [nv,kd,vd]. checkpoint points to that slot's immutable row0;
+// checkpoint_idx is the zero-based post-token checkpoint (0 copies row0,
+// N replays records 1..N). The caller owns index/extent validity and stream
+// ordering. This never reads rejected records or changes the checkpoint.
+Status GdnRestoreRecordCheckpoint(const float* checkpoint, float* state,
+                                  int checkpoint_idx, int nv, int kd, int vd,
+                                  cudaStream_t stream);
 
 }  // namespace model
 }  // namespace q4t
