@@ -1,0 +1,31 @@
+{
+  "instance": "/sys/kernel/tracing/instances/q4t_i2c_1291978",
+  "duration_seconds": 300,
+  "events": [
+    "i2c_read",
+    "i2c_write",
+    "i2c_result"
+  ],
+  "filter": "adapter_nr == 0",
+  "clock": "mono",
+  "complete": true,
+  "start_ns": 382741412539508,
+  "end_ns": 383041724648622,
+  "cpu_stats": {
+    "cpu13": "entries: 0\noverrun: 0\ncommit overrun: 0\nbytes: 0\noldest event ts:  1089.403331\nnow ts: 383041.724999\ndropped events: 0\nread events: 0\n",
+    "cpu12": "entries: 0\noverrun: 0\ncommit overrun: 0\nbytes: 0\noldest event ts:    53.361840\nnow ts: 383041.725047\ndropped events: 0\nread events: 0\n",
+    "cpu11": "entries: 0\noverrun: 0\ncommit overrun: 0\nbytes: 0\noldest event ts: 18446739676.134474\nnow ts: 383041.725074\ndropped events: 0\nread events: 0\n",
+    "cpu10": "entries: 0\noverrun: 0\ncommit overrun: 0\nbytes: 0\noldest event ts:    48.762786\nnow ts: 383041.725099\ndropped events: 0\nread events: 0\n",
+    "cpu9": "entries: 0\noverrun: 0\ncommit overrun: 0\nbytes: 0\noldest event ts:  1085.622166\nnow ts: 383041.725124\ndropped events: 0\nread events: 0\n",
+    "cpu8": "entries: 0\noverrun: 0\ncommit overrun: 0\nbytes: 0\noldest event ts:    63.126180\nnow ts: 383041.725152\ndropped events: 0\nread events: 0\n",
+    "cpu7": "entries: 0\noverrun: 0\ncommit overrun: 0\nbytes: 0\noldest event ts:  1063.092462\nnow ts: 383041.725177\ndropped events: 0\nread events: 0\n",
+    "cpu6": "entries: 0\noverrun: 0\ncommit overrun: 0\nbytes: 0\noldest event ts:    81.549660\nnow ts: 383041.725201\ndropped events: 0\nread events: 0\n",
+    "cpu5": "entries: 0\noverrun: 0\ncommit overrun: 0\nbytes: 0\noldest event ts:     0.000000\nnow ts: 383041.725226\ndropped events: 0\nread events: 0\n",
+    "cpu4": "entries: 0\noverrun: 0\ncommit overrun: 0\nbytes: 0\noldest event ts:  1097.888408\nnow ts: 383041.725250\ndropped events: 0\nread events: 0\n",
+    "cpu3": "entries: 0\noverrun: 0\ncommit overrun: 0\nbytes: 0\noldest event ts: 8666368441.818827\nnow ts: 383041.725273\ndropped events: 0\nread events: 0\n",
+    "cpu2": "entries: 0\noverrun: 0\ncommit overrun: 0\nbytes: 0\noldest event ts:     0.000000\nnow ts: 383041.725298\ndropped events: 0\nread events: 0\n",
+    "cpu1": "entries: 0\noverrun: 0\ncommit overrun: 0\nbytes: 0\noldest event ts:    50.115449\nnow ts: 383041.725323\ndropped events: 0\nread events: 0\n",
+    "cpu0": "entries: 0\noverrun: 0\ncommit overrun: 0\nbytes: 0\noldest event ts: 18446739676.428566\nnow ts: 383041.725347\ndropped events: 0\nread events: 0\n"
+  },
+  "instance_removed": true
+}

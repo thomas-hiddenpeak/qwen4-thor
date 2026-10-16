@@ -2101,3 +2101,31 @@ jtop.service journal无条目。当前FD持有者及源码不是历史调用归�
 阻塞路径，才考虑冻结进一步机制诊断。不要直接停jtop后重复TTFT，
 也不重启已停止的频率、布局、路由或计数实验。根因尚未闭合，目标
 active，原NO_GO保持；生产实现、数值合同与已通过模型证据不变。
+
+## I2C调用归属被动观测结束：未获得事件，不扩样（2026-10-17）
+
+本机没有bpftrace/trace-cmd可执行文件，但tracefs已有i2c_read/write/
+result tracepoint和adapter_nr过滤。执行前冻结一次300秒无模型被动
+观测：私有instance、mono时钟、64KiB/CPU、仅adapter0；完整GPU
+lease与真实监控，未停止jtop或主动发起I2C读取。诊断guard自己的
+nvidia-smi活动包含在环境中，不假设观察器绝对无扰动。
+
+固定窗口结束，trace为空、callers为空；各CPU overrun/dropped为0，
+guard COMPLETED、无冲突，私有instance已禁用并删除。包围该窗口的
+23:17:30–23:23:00 UTC kernel journal也无条目。这未获得调用归属或
+持续时间证据；空trace不等于所有相关路径均被验证覆盖，更不能排除
+历史I2C影响。按预定规则停止本被动采集家族，不延长、不重试、不跑
+模型诱发事件。归档evidence/hc-up-i2c-caller-20261017/含执行前协议、
+源脚本/hash、事件格式、损失统计、空trace、退出及lease完整记录。
+
+另核对前轮7条kernel JSON的两个时间字段：_SOURCE_MONOTONIC_TIMESTAMP
+比__MONOTONIC_TIMESTAMP大430.803–431.550ms。先前对齐使用后者，
+其偏移不能当内核调用的精确时间。两字段分别重新分类，8个TTFT窗口
+的消息数量全部一致，原计数结论不变；此核对未证明两字段的时钟转换
+语义，也未取得开始/结束阻塞区间。原始日志及原报告保留，修正边界
+由journal-time-fields.json明确记录。
+
+本轮没有生产改动、模型采样、设备写入或后台服务变更。jtop仍不能
+被认定为根因，不据FD持有或空trace实施停服务修复。下一步重审剩余
+机制证据的可识别性，不沿该线索继续盲目采样。目标active，TTFT根因
+及对应解决尚未闭合，原HC NO_GO保持。

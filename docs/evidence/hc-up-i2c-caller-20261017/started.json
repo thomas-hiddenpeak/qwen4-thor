@@ -1,0 +1,13 @@
+{
+  "instance": "/sys/kernel/tracing/instances/q4t_i2c_1291978",
+  "duration_seconds": 300,
+  "events": [
+    "i2c_read",
+    "i2c_write",
+    "i2c_result"
+  ],
+  "filter": "adapter_nr == 0",
+  "clock": "mono",
+  "complete": false,
+  "start_ns": 382741412539508
+}
