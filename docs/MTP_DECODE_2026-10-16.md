@@ -90,3 +90,25 @@ on质量11/11，on/off五档各3次文本与main一致；off吞吐变化
 [归档证据](evidence/mtp-decode-20261016/hc-up/README.md)。
 下一步：首候选不足以达标且保护未过，审查并冻结独立T4 attention候选；
 从main生产代码出发，不与失败HC up叠加，最多再一候选。
+
+## 候选2冻结：T4 softmax独立指数并行，归约顺序不变
+
+HC up收益不足且保护未过，因此第二候选从main生产代码出发，不叠加HC。
+本轮最后一个候选，不做参数扫描；若无可接受收益，保留NO_GO有界收尾。
+源码依据：QSA split每个16-token块仅12线程工作，每线程串行计算16个
+指数并累加；每个指数互不依赖，串行求和则是数值合同的一部分。
+只在T=4使用每warp负责一条query的映射，lane计算独立pr，lane0按原
+p=0..15顺序读取pr并累加；max及alpha仍按原顺序计算。其它T保持原分派。
+不改top-k/可见性、16-token分块、四个输出列分片、MMA、KV搬运或门控。
+不改变expf实现、不用树形sum、不改精度；即使重复QK未消除也不扩大范围。
+风险：warp间不均衡、shuffle/共享内存访问可能抵消指数并行收益。
+历史full_core约10ms只作候选线索；没有将其作为当前瓶颈或收益保证。
+
+沿用上述冻结的质量/五档/TTFT保护门禁，复用main原始基线，不重跑main。
+构建后首测quality on，再on/off各五档3次和quality off，具体失败即停。
+E2E通过后对实际旧/新QSA实现做逐位差分，覆盖T4、多序列、非连续页、
+0/部分/满tile及buffer交换、极端有限输入；核对T1/T2等未选中形状。
+随后完整256步近tie合同及受影响的full-attention因果/状态路径；不重验
+未进入full attention的两层linear/PLE模型合同，不重验独立PLE合同。
+数值精确且E2E有收益才接受；与main及候选1结果分别报告，不拼接收益。
+源码/运行证据 .q4t-work/mtp-decode-20261016/attention/。
