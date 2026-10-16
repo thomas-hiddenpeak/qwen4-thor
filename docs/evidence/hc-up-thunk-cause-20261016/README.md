@@ -8,3 +8,16 @@
 实验目的、固定8条顺序与停止条件见protocol.json；同身份两次是
 负控/漂移界限，第二组反转顺序。不是五档验收，不自动接受性能。
 详见[专题报告](../../HC_UP_TTFT_CAUSE_2026-10-16.md)。
+
+
+## 执行结果
+
+- observations.json、review.json：完整8条与冻结判据计算，两组均未满足。
+- completion-audit.json、lease-exit.json：8个HTTP退出/合同及全阶段监控。
+- raw-manifest.json：本机保留的遥测、监控、服务日志与结果的SHA256。
+- environment.json：诊断环境；遥测缺少三个/proc/pressure文件，不能证明
+  无系统压力；监控只覆盖轮询可见进程。
+- symbol-duplicate-audit.json：旧按名称比较的范围限制。
+- hc-registration-disassembly.txt：HC独立启动注册的代码证据。
+
+目标仍active、原NO_GO保持。没有部署二进制或接受新性能身份。

@@ -1,0 +1,38 @@
+{
+  "A": {
+    "symbol_rows": 1149,
+    "distinct_names": 1052,
+    "duplicates": {
+      "_ZL24__sti____cudaRegisterAllv": 22,
+      "_ZL26__cudaUnregisterBinaryUtilv": 22,
+      "_ZN3q4t5quant12_GLOBAL__N_110ExpertNameEiiPKcS3_": 2,
+      "_ZN3q4t5quant12_GLOBAL__N_13H2DEPKvPvmP11CUstream_st": 2,
+      "_ZNSt6vectorIbSaIbEE14_M_fill_insertESt13_Bit_iteratormb.isra.0": 2,
+      "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE12_M_constructIPcEEvT_S7_St20forward_iterator_tag.isra.0": 3,
+      "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6appendEPKcm.isra.0": 2,
+      "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6assignEPKc.isra.0": 5,
+      "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC2IS3_EEPKcRKS3_.constprop.0": 16,
+      "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEaSEOS4_.isra.0": 14,
+      "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEPKS5_RKS8_.isra.0": 7,
+      "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EERKS8_PKS5_.isra.0": 12
+    }
+  },
+  "B": {
+    "symbol_rows": 1153,
+    "distinct_names": 1054,
+    "duplicates": {
+      "_ZL24__sti____cudaRegisterAllv": 23,
+      "_ZL26__cudaUnregisterBinaryUtilv": 23,
+      "_ZN3q4t5quant12_GLOBAL__N_110ExpertNameEiiPKcS3_": 2,
+      "_ZN3q4t5quant12_GLOBAL__N_13H2DEPKvPvmP11CUstream_st": 2,
+      "_ZNSt6vectorIbSaIbEE14_M_fill_insertESt13_Bit_iteratormb.isra.0": 2,
+      "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE12_M_constructIPcEEvT_S7_St20forward_iterator_tag.isra.0": 3,
+      "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6appendEPKcm.isra.0": 2,
+      "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6assignEPKc.isra.0": 5,
+      "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC2IS3_EEPKcRKS3_.constprop.0": 16,
+      "_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEaSEOS4_.isra.0": 14,
+      "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEPKS5_RKS8_.isra.0": 7,
+      "_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EERKS8_PKS5_.isra.0": 12
+    }
+  }
+}

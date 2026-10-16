@@ -1,0 +1,35 @@
+
+.q4t-work/mtp-decode-20261016/hc-up/q4t:     file format elf64-littleaarch64
+
+
+Disassembly of section .text:
+
+0000000000009020 <_ZL24__sti____cudaRegisterAllv>:
+    9020:	d100c3ff 	sub	sp, sp, #0x30
+    9024:	f0001f20 	adrp	x0, 3f0000 <__data_start>
+    9028:	910da000 	add	x0, x0, #0x368
+    902c:	a9017bfd 	stp	x29, x30, [sp, #16]
+    9030:	910043fd 	add	x29, sp, #0x10
+    9034:	f90013f3 	str	x19, [sp, #32]
+    9038:	97fff956 	bl	7590 <__cudaRegisterFatBinary@plt>
+    903c:	f0001f33 	adrp	x19, 3f0000 <__data_start>
+    9040:	a9007fff 	stp	xzr, xzr, [sp]
+    9044:	b0000963 	adrp	x3, 136000 <_IO_stdin_used+0x5260>
+    9048:	9135e063 	add	x3, x3, #0xd78
+    904c:	f9062260 	str	x0, [x19, #3136]
+    9050:	aa0303e2 	mov	x2, x3
+    9054:	d2800007 	mov	x7, #0x0                   	// #0
+    9058:	d2800006 	mov	x6, #0x0                   	// #0
+    905c:	d2800005 	mov	x5, #0x0                   	// #0
+    9060:	12800004 	mov	w4, #0xffffffff            	// #-1
+    9064:	f00002c1 	adrp	x1, 64000 <_ZN3q4t5model11HcInjectGevEPKtS2_PtfP11CUstream_st>
+    9068:	912eb021 	add	x1, x1, #0xbac
+    906c:	97fff965 	bl	7600 <__cudaRegisterFunction@plt>
+    9070:	f9462260 	ldr	x0, [x19, #3136]
+    9074:	97fff923 	bl	7500 <__cudaRegisterFatBinaryEnd@plt>
+    9078:	a9417bfd 	ldp	x29, x30, [sp, #16]
+    907c:	f00002c0 	adrp	x0, 64000 <_ZN3q4t5model11HcInjectGevEPKtS2_PtfP11CUstream_st>
+    9080:	f94013f3 	ldr	x19, [sp, #32]
+    9084:	912e8000 	add	x0, x0, #0xba0
+    9088:	9100c3ff 	add	sp, sp, #0x30
+    908c:	14049f39 	b	130d70 <atexit>

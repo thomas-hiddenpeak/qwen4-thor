@@ -1,0 +1,4 @@
+{
+  "CUDA_HOME": "/usr/local/cuda-13.3",
+  "Q4T_LAYER_TIMING": "1"
+}
