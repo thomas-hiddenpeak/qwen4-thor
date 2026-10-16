@@ -1,0 +1,28 @@
+[
+  {
+    "mode": "normal",
+    "returncode": 0,
+    "cleanup": {
+      "lease_still_held": true,
+      "before": "lower\n",
+      "after": "original\n",
+      "service_result": "success",
+      "exit_code": "exited",
+      "exit_status": "0"
+    },
+    "lease_released_after_cleanup": true
+  },
+  {
+    "mode": "kill",
+    "returncode": 255,
+    "cleanup": {
+      "lease_still_held": true,
+      "before": "lower\n",
+      "after": "original\n",
+      "service_result": "signal",
+      "exit_code": "killed",
+      "exit_status": "KILL"
+    },
+    "lease_released_after_cleanup": true
+  }
+]
