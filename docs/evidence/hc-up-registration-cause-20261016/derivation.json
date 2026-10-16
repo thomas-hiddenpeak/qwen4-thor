@@ -1,0 +1,36 @@
+{
+  "scope": "OFF-only diagnostic, never deploy or execute MTP; HC kernel unregistered",
+  "variants": {
+    "A": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/q4t-main",
+      "source_sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+      "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+      "deployable": false,
+      "patched": false,
+      "patch": null,
+      "relative_layout_unchanged": true
+    },
+    "B": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/hc-up/q4t",
+      "source_sha256": "f01a0ee63f626c352f66677952368d43db02c9231576a2b8ba1ca33a915ce573",
+      "sha256": "f01a0ee63f626c352f66677952368d43db02c9231576a2b8ba1ca33a915ce573",
+      "deployable": false,
+      "patched": false,
+      "patch": null,
+      "relative_layout_unchanged": true
+    },
+    "C": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/hc-up/q4t",
+      "source_sha256": "f01a0ee63f626c352f66677952368d43db02c9231576a2b8ba1ca33a915ce573",
+      "sha256": "723889699ee0fa4c5e992cc4a7f21c4e111d2fdfe1661ee1ce67d15506a29024",
+      "deployable": false,
+      "patched": true,
+      "patch": {
+        "va": "0x9020",
+        "old": "0xd100c3ff",
+        "new": "0xd65f03c0"
+      },
+      "relative_layout_unchanged": true
+    }
+  }
+}

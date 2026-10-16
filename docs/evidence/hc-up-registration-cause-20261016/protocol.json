@@ -1,0 +1,38 @@
+{
+  "hypothesis": "Registration of the otherwise unused HC CUDA module contributes the off TTFT regression through persistent runtime state.",
+  "scope": "OFF-only mechanism diagnosis, not deployment or performance acceptance",
+  "variants": {
+    "A": "original main",
+    "B": "original HC",
+    "C": "HC with its unique constructor entry replaced by RET; four bytes only"
+  },
+  "order": [
+    "A",
+    "B",
+    "C",
+    "C",
+    "B",
+    "A"
+  ],
+  "requests_per_process": 1,
+  "total_requests": 6,
+  "fresh_server_each_request": true,
+  "actual_input_tokens": 204789,
+  "output_tokens": 256,
+  "decode_mode": "--no-mtp",
+  "instrumentation": "Q4T_LAYER_TIMING=1; no Nsight or LD_PRELOAD",
+  "lease": "one lease for all six requests including loading and gaps",
+  "negative_control": "two identical runs per variant, second block reverse order",
+  "support_rule": "R=max within-identity absolute difference. Both blocks require B-A>0, B-C>R and abs(C-A)<=R. Supports registration-state contribution, not a specific CUDA internal mechanism. Not a significance test.",
+  "otherwise": "Unresolved at this resolution; no claim of noise, equivalence or zero effect; retain NO_GO.",
+  "limitations": [
+    "ELF-relative layout fixed; process ASLR and physical mappings not controlled",
+    "No /proc/pressure files on this host; record telemetry errors; cannot exclude all system pressure",
+    "Registration starts before HTTP; this intervention tests persistent state, not charging startup time to TTFT"
+  ],
+  "stop_rules": [
+    "ENV_ABORT or HTTP contract failure stops, no auto retry",
+    "No extra probes, warmups, samples or changed criterion",
+    "Never run C with MTP; missing HC registration is intentionally incompatible"
+  ]
+}

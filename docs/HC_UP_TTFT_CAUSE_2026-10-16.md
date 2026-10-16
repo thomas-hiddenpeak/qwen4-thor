@@ -237,3 +237,19 @@ __cudaRegisterFatBinary、__cudaRegisterFunction及FatBinaryEnd，并登记
 不直接以重新链接或重复原TTFT采样替代机制检验。
 
 [完整结果、退出审计、重复符号与注册反汇编](evidence/hc-up-thunk-cause-20261016/README.md)。
+
+
+## 因果实验2冻结：仅取消新增 HC 模块注册
+
+原 A/B 不变，C 从 B 原位仅替换9020处入口为RET，不重链接。校验原SHA、
+init-array项、注册名称与host stub指令，所有非.text内容与相对地址不变。
+C 的SHA为72388969…，仅用于off；因HC未注册，绝不能执行MTP或部署。
+
+固定 A B C / C B A 六个新鲜服务，各一条原200K off输入与256输出。
+全阶段同一GPU lease，事件诊断与上轮相同，无额外请求或自动重试。
+同身份差最大值定义R；两组均需原差B−A>0、注册效应B−C>R、
+残差abs(C−A)<=R，才支持可辨识的注册状态贡献。否则继续未决，不能
+归为噪声或解除NO_GO；即使支持，也不能直接指定CUDA内部实现根因。
+注册发生在HTTP前，此干预检验其留下的运行时状态，不把启动耗时计入
+TTFT。ASLR/物理映射未固定，系统pressure接口缺失，边界明确保留。
+[协议、派生身份与脚本](evidence/hc-up-registration-cause-20261016/README.md)。
