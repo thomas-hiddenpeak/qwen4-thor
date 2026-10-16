@@ -1,0 +1,150 @@
+{
+  "source_sha256": {
+    ".q4t-work/hc-up-host-observer-20261016/host-review.json": "a98dc1740f15724d53b3642e4c9aef1ef12eef1f13f76edb9d84020dddddf139"
+  },
+  "host_derived": {
+    "01-A": {
+      "thread_cpu_s": 17.401549788,
+      "user_cycles": 28435011002,
+      "user_instructions": 54397302010,
+      "user_ipc": 1.9130395977752188,
+      "user_branch_misses_per_1000_instructions": 1.2484948607839972,
+      "layer_event_s": 153.28991
+    },
+    "02-B": {
+      "thread_cpu_s": 17.089822416,
+      "user_cycles": 27661150706,
+      "user_instructions": 54415492897,
+      "user_ipc": 1.9672172526501834,
+      "user_branch_misses_per_1000_instructions": 1.255383997518952,
+      "layer_event_s": 153.59291000000002
+    },
+    "03-B": {
+      "thread_cpu_s": 16.943559341,
+      "user_cycles": 27553432414,
+      "user_instructions": 54399277889,
+      "user_ipc": 1.9743194630575147,
+      "user_branch_misses_per_1000_instructions": 1.243924636979109,
+      "layer_event_s": 153.33159
+    },
+    "04-A": {
+      "thread_cpu_s": 17.165927386,
+      "user_cycles": 27841859564,
+      "user_instructions": 54393489546,
+      "user_ipc": 1.953658641979924,
+      "user_branch_misses_per_1000_instructions": 1.2584079743976204,
+      "layer_event_s": 153.46302
+    }
+  },
+  "existing_comparisons": {
+    "cycles": {
+      "same_identity_R": 593151438,
+      "paired_B_minus_A": [
+        -773860296,
+        -288427150
+      ],
+      "resolved_positive_observable": false
+    },
+    "instructions": {
+      "same_identity_R": 16215008,
+      "paired_B_minus_A": [
+        18190887,
+        5788343
+      ],
+      "resolved_positive_observable": false
+    },
+    "branch_misses": {
+      "same_identity_R": 643737,
+      "paired_B_minus_A": [
+        397587,
+        -780599
+      ],
+      "resolved_positive_observable": false
+    }
+  },
+  "scope": [
+    "Historical instrumented host stage only; not paired with ASLR stage",
+    "Counters cover current thread/user mode only; no cache, TLB, memory stall, kernel-mode or GPU PMU counters",
+    "CPU time includes user and kernel, so user cycles/thread CPU time is not a clock-frequency measurement",
+    "Old Nsight activity union does not report SM-active cycles or DRAM/L2 stalls and A timing was contaminated",
+    "Cannot subtract host-stage PMU and ASLR-stage TTFT to claim a mechanism"
+  ],
+  "uncore_sysfs": {
+    "nvidia_ucf_gpu_pmu_0": {
+      "type": "12",
+      "cpumask": "0",
+      "format": {
+        "event": "config:0-32"
+      },
+      "events": {
+        "cycles": "event=0x100000000",
+        "rd_req_loc_rem": "event=0x6",
+        "wr_req_rem": "event=0x9",
+        "wr_bytes_rem": "event=0x3",
+        "wr_req_loc": "event=0x8",
+        "rd_cum_outs_loc_rem": "event=0xc",
+        "wr_bytes_loc": "event=0x2",
+        "rd_bytes_loc_rem": "event=0x0"
+      }
+    },
+    "nvidia_ucf_pmu_0": {
+      "type": "10",
+      "cpumask": "0",
+      "format": {
+        "src_loc_noncpu": "config1:0",
+        "event": "config:0-32",
+        "src_rem": "config1:2",
+        "dst_rem": "config1:4",
+        "dst_loc": "config1:3",
+        "src_loc_cpu": "config1:1"
+      },
+      "events": {
+        "slc_refill_rd": "event=0x109",
+        "mmio_byte_wr": "event=0x134",
+        "local_dram_access_wr": "event=0x122",
+        "slc_hit_rd": "event=0x119",
+        "mmio_access_rd": "event=0x131",
+        "ucf_bus_cycles": "event=0x1d",
+        "local_snoop": "event=0x180",
+        "cycles": "event=0x100000000",
+        "any_access_wr": "event=0x112",
+        "any_outstanding_rd": "event=0x115",
+        "slc_access_wr": "event=0x112",
+        "slc_allocate": "event=0xf0",
+        "any_byte_rd": "event=0x113",
+        "mmio_byte_rd": "event=0x133",
+        "local_dram_byte_wr": "event=0x124",
+        "ext_snp_evict": "event=0x182",
+        "local_dram_access_rd": "event=0x121",
+        "ext_snp_access": "event=0x181",
+        "slc_wb": "event=0xf3",
+        "slc_refill_wr": "event=0x10a",
+        "slc_access_dataless": "event=0x183",
+        "any_access_rd": "event=0x111",
+        "mmio_outstanding_rd": "event=0x135",
+        "slc_hit_wr": "event=0x11a",
+        "slc_access_rd": "event=0x111",
+        "mmio_access_wr": "event=0x132",
+        "slc_refill": "event=0xf1",
+        "slc_access": "event=0xf2",
+        "local_dram_byte_rd": "event=0x123",
+        "slc_hit": "event=0x118",
+        "slc_access_atomic": "event=0x184",
+        "any_byte_wr": "event=0x114"
+      }
+    }
+  },
+  "uncore_access": {
+    "type": 12,
+    "config": 4294967296,
+    "pid_scope": -1,
+    "cpu": 0,
+    "disabled": true,
+    "opened": false,
+    "errno": 13
+  },
+  "perf_event_paranoid": "2",
+  "ncu_version": "2026.2.0.0 build 37790515",
+  "new_model_requests": 0,
+  "causal_proof": false
+}
