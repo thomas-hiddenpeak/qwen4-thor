@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "A": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/q4t-main",
+      "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072"
+    },
+    "B": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/hc-up/q4t",
+      "sha256": "f01a0ee63f626c352f66677952368d43db02c9231576a2b8ba1ca33a915ce573"
+    }
+  },
+  "probe_sha256": "9144f00447ef54ea64c3f01470aa517d3fd38ec20e43e4ff7ffb5c8cbe616c08"
+}

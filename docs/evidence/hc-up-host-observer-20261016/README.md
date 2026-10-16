@@ -27,3 +27,14 @@ CLOCK_THREAD_CPUTIME_ID含内核线程CPU时间；PMU明确排除kernel/hypervis
 其他线程、GPU内部执行和依赖等待不由本工具直接测量。
 
 本轮尚未冻结或执行新的HTTP。未来仅用于机理诊断，禁止用插桩TTFT验收。
+
+
+## 执行前冻结的四条观测
+
+protocol.json固定A B B A，新鲜服务各一条原200K off；两身份均未改二进制。
+run.py全阶段由单一GPU lease保护。analyze.py在四条结束后只分析chunk2–25，
+校验单TID/25报告、计数单调、错误码、每区间PMU覆盖>=99%、每次capture
+<=1ms且累计<=5ms。日志写出和初始化不包含在capture界限内。
+每指标同时给出两对B−A及同身份R；仅两对均正且>R才称版本相关可辨识
+观测，仍不能认定因果。CPU可能含CUDA自旋，残差不能称为GPU busy。
+任何运行错误保留并停止，不自动重试；全部结果保留，不扩样。

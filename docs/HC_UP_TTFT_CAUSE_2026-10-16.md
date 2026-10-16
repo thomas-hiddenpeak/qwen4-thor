@@ -318,3 +318,18 @@ user-only PMU cycles/instructions/branch misses及enabled/running。
 解释时必须区分；工具观察当前线程，不能直接证明GPU busy或其他线程等待。
 下一步先冻结观测范围与有效性门槛，再进行必要机理对照；尚无新增HTTP。
 [CPU夹具、身份与结果](evidence/hc-up-host-observer-20261016/README.md)。
+
+
+## Host观测协议冻结
+
+固定A B B A四条200K off，新鲜服务原输入/256输出、原binary，无额外
+请求。全阶段持同一GPU lease，Q4T_LAYER_TIMING与host probe保持相同。
+有效性要求单线程25报告/原chunk形状，错误码为0，计数单调，每区间
+PMU running/enabled>=99%，单次capture<=1ms且累计<=5ms。初始化与
+日志写出另论，插桩TTFT禁止验收。第一chunk排除，仅分析2–25区间。
+每个指标独立报告两对B−A与同身份R，两对均正且>R只支持版本相关观测，
+不是显著性检验或因果证明。CPU时间可含CUDA忙等，PMU仅user态，不能
+将CPU增加直接判为提交变慢，也不能把剩余时间判作GPU净耗时。
+如观测无效不扩样；如host指标可辨识，下一步归因执行/自旋；如仅事件
+指标可辨识则进一步区分设备/driver依赖。无可辨识差异则保留未决，
+不把噪声当根因。不重复跳板或注册干预，原NO_GO与生产main不变。
