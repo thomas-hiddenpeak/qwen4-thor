@@ -1,0 +1,162 @@
+[
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/OA1/results.json",
+    "archived": "http/OA1/results.json",
+    "sha256": "2ec31d19b282185de40dc9d6c5260217081e212c239ee66c2e087c7be746cf01"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/OA1/exit.json",
+    "archived": "http/OA1/exit.json",
+    "sha256": "0407ff7888c6d6b29f92f40c8a61616ea5163fc42116a3556569497524e52ba2"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/OA1/server.log",
+    "archived": "http/OA1/server.log",
+    "sha256": "7240461cf73fe0ecd95de8f0a9ee82fd868b3b7010de2b8f01ac55210e7db5c3"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/OA1/context-204800/run-1/oc/counter.json",
+    "archived": "http/OA1/context-204800/run-1/oc/counter.json",
+    "sha256": "f499fa023922bd84f6ef475cde9921f792b4300590215613f6d827a70160d52f"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/OB1/results.json",
+    "archived": "http/OB1/results.json",
+    "sha256": "40f8140178e66fe19c496ed234f73778fde11e39d89f21407495a223ca8f9153"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/OB1/exit.json",
+    "archived": "http/OB1/exit.json",
+    "sha256": "0407ff7888c6d6b29f92f40c8a61616ea5163fc42116a3556569497524e52ba2"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/OB1/server.log",
+    "archived": "http/OB1/server.log",
+    "sha256": "52274e6f1a743db5f93d77e718b023f9d0f213894b36753d50c7b821a7dccd38"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/OB1/context-204800/run-1/oc/counter.json",
+    "archived": "http/OB1/context-204800/run-1/oc/counter.json",
+    "sha256": "1e39cc75a1f56e57447bc5f87c42f9fc8e1b51dcc5d56a4fe27f9543a1db7464"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/LB1/results.json",
+    "archived": "http/LB1/results.json",
+    "sha256": "0af15305154d6c574a29904dd5ab9e8d412e0bc48a0668404976e34876704c7e"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/LB1/exit.json",
+    "archived": "http/LB1/exit.json",
+    "sha256": "0407ff7888c6d6b29f92f40c8a61616ea5163fc42116a3556569497524e52ba2"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/LB1/server.log",
+    "archived": "http/LB1/server.log",
+    "sha256": "c2eb48efd5c82bee4888883746086489cb1ab89433398147a5ba5df2efcbd7d0"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/LB1/context-204800/run-1/oc/counter.json",
+    "archived": "http/LB1/context-204800/run-1/oc/counter.json",
+    "sha256": "0d54c22445511b84de6b42916b4251fd97f133a734e5f610616e40c223ea9636"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/LA1/results.json",
+    "archived": "http/LA1/results.json",
+    "sha256": "728e33c01926630a10ef5a8f7c341159eb9d86f9264e37504112740859d783ae"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/LA1/exit.json",
+    "archived": "http/LA1/exit.json",
+    "sha256": "0407ff7888c6d6b29f92f40c8a61616ea5163fc42116a3556569497524e52ba2"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/LA1/server.log",
+    "archived": "http/LA1/server.log",
+    "sha256": "a9bcaa07c25c9a599fa3b33716a4e63313dce540fc2ec2ee6a9904b2c9f88748"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/LA1/context-204800/run-1/oc/counter.json",
+    "archived": "http/LA1/context-204800/run-1/oc/counter.json",
+    "sha256": "2e27965e139560d7e1f993555a7740d01a0f8f567b3b3662ac6695226a03e6d1"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/LA2/results.json",
+    "archived": "http/LA2/results.json",
+    "sha256": "489cda31a2f3399c534e6be01354476643ef563e37ff0da9bb80b55ca31c64cf"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/LA2/exit.json",
+    "archived": "http/LA2/exit.json",
+    "sha256": "0407ff7888c6d6b29f92f40c8a61616ea5163fc42116a3556569497524e52ba2"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/LA2/server.log",
+    "archived": "http/LA2/server.log",
+    "sha256": "9babda766e4e6d7969f1cc23405b0b00efbcd982e7ddf29da831fe362d1e2578"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/LA2/context-204800/run-1/oc/counter.json",
+    "archived": "http/LA2/context-204800/run-1/oc/counter.json",
+    "sha256": "50d059b39019ba3e3584b9172735015af8b512b6b526eed0871fd6754d21d446"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/LB2/results.json",
+    "archived": "http/LB2/results.json",
+    "sha256": "e6e8a6375cfcb0a7c84dcae371984f0eeb94296edc078981c418e1fd5a9b0cb3"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/LB2/exit.json",
+    "archived": "http/LB2/exit.json",
+    "sha256": "0407ff7888c6d6b29f92f40c8a61616ea5163fc42116a3556569497524e52ba2"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/LB2/server.log",
+    "archived": "http/LB2/server.log",
+    "sha256": "0a72ee08b31c81d2438443e9162c6d3d80e50f5ef37cdd38df6184964bdec3ef"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/LB2/context-204800/run-1/oc/counter.json",
+    "archived": "http/LB2/context-204800/run-1/oc/counter.json",
+    "sha256": "33b30e0900d148b178795460953c4e2815c38de017a95b33f2b47a1ad1532fb7"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/OB2/results.json",
+    "archived": "http/OB2/results.json",
+    "sha256": "9bd749f55e31323df99246eda754ec51e13b907707270e1a05baec5204d6c7aa"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/OB2/exit.json",
+    "archived": "http/OB2/exit.json",
+    "sha256": "0407ff7888c6d6b29f92f40c8a61616ea5163fc42116a3556569497524e52ba2"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/OB2/server.log",
+    "archived": "http/OB2/server.log",
+    "sha256": "3e9f0b205e239f0d158dd5d9a35c824370978f0f5b5828b70c84e3be3a13321f"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/OB2/context-204800/run-1/oc/counter.json",
+    "archived": "http/OB2/context-204800/run-1/oc/counter.json",
+    "sha256": "327d20b213bbb3f3e5b7a47a26a425e0d4ff1ef6a15864d862aab6232d306550"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/OA2/results.json",
+    "archived": "http/OA2/results.json",
+    "sha256": "bfa24861a6685f7f736f340c07629710a1e74210ec8a96921ae98ec6cb46559f"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/OA2/exit.json",
+    "archived": "http/OA2/exit.json",
+    "sha256": "0407ff7888c6d6b29f92f40c8a61616ea5163fc42116a3556569497524e52ba2"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/OA2/server.log",
+    "archived": "http/OA2/server.log",
+    "sha256": "fd613be83ef8d3db35f4ec8a8b0a40759701642e71aa92bc4c2e4a61f114b7fa"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-cross-20261017/http/OA2/context-204800/run-1/oc/counter.json",
+    "archived": "http/OA2/context-204800/run-1/oc/counter.json",
+    "sha256": "6311f17dc8679599e95d0a3c37d226be98e6bc041298d10258d0fd31be63761a"
+  }
+]

@@ -1,0 +1,5 @@
+{
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: q4t-clock-cross-1276703.service; invocation ID: 1183a2e0116347c79faef7c44461940f\nFinished with result: success\nMain processes terminated with: code=exited/status=0\nService runtime: 29min 11.824s\nCPU time consumed: 12min 13.580s\nMemory peak: 15.9G\nMemory swap peak: 0B\n"
+}
