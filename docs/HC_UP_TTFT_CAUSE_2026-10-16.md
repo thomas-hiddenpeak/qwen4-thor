@@ -390,3 +390,22 @@ reader->Gather，再H2D并转换，吻合PLE staging路径。B例空隙约11.575
 解释稳定HC版本回归。下一步限定Gather阶段观测，补齐CPU/等待分界；
 不删除同步或修改数值，不启动无关PLE/prefill优化，不重复原TTFT采样。
 [完整离线脚本、区间与拷贝证据](evidence/hc-up-device-audit-20261017/README.md)。
+
+
+## Gather观测边界准备（2026-10-17，仅CPU夹具）
+
+PageReader已有io/scatter/total统计但未对外输出；重新链接加日志会改变
+本次关注的host布局，故选择原动态API边界。新gather_interval_probe转发
+cudaEventSynchronize、目标H2D与io_uring_submit_and_wait，记录成功同步
+返回到目标拷贝入口的线程CPU/墙钟，以及其中uring API的CPU/墙钟。
+这覆盖reader->Gather附近区间，不含之前ComputeRowIds或同步等待，
+不能称整个Gather。原trace目标拷贝为24×20,971,520+1×20,943,360，
+每chunk一次；实际新观测仍须验证形状、线程、顺序与错误码。
+
+CPU假库夹具验证20ms同步被排除，20msCPU与30ms假uring等待分开；
+两线程、无同步、同步失败、I/O错误、普通形状过滤和原参数/返回/errno
+均检查通过。零警告编译；格式化后二进制SHA不变，复用已通过证据。
+未调用真实CUDA/uring或运行新HTTP。PageReader只读普通文件，page cache
+可能服务读取；uring API时间并不等于SSD时延，剩余CPU区间不是纯scatter。
+下一步冻结有限真实边界观测，保持生产main与数值/同步语义不变。
+[工具身份与CPU校验](evidence/hc-up-gather-observer-20261017/README.md)。
