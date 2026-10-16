@@ -1989,3 +1989,31 @@ guard SIGKILL、恢复写失败等待修复、cleanup SIGKILL。前3个在持锁
 下一步是受限实机IO及身份/权限接入，再冻结有区分力的时钟/功耗干预
 判据；降频后OC减少本身仍不足以解释原始A/B差异。目标active，根因
 未闭合，HC候选NO_GO保持。
+
+## 实机GPC受限读写与单次空闲恢复验证（2026-10-17）
+
+新增gpu_clock_io.py：仅允许两个固定GPC min/max路径，频率必须来自
+冻结available列表且不超过原max；必须匹配持久journal.pending才调用
+sudo -n /usr/bin/tee，以整数stdin写入。普通用户监管/driver不升权；
+不提供任意路径、shell字符串、governor或OC保护阈值写入口。每次写前
+核对boot ID、设备真实路径、governor、available列表及NVD/EMC范围。
+4项mock CPU限制检查通过；不存在默认自动调整频率行为。
+
+随后冻结并执行一次实机空闲能力验证，无模型/GPU计算负载：GPC
+min=max 1575000000 → 1260000000，idle 0.3秒，由ExecStopPost从持久
+日志恢复1575000000。common GPU lease由PID1 FD store持有，真实guard
+全程5次monitor无冲突、COMPLETED。其他冻结身份字段全部不变；
+cur_freq也读到1575/1260/1575MHz，但它不是瞬态实际硬件时钟证明。
+最终范围恢复、marker清除、锁可重新获取、临时unit收集均核实。
+服务返回0，runtime842ms。没有HTTP、bench或性能接受结论。
+
+这是本调查首次真实频率写入，已完成恢复；不能再沿用“从未修改真实
+频率”的旧状态表述。归档evidence/hc-up-clock-idle-20261017/含执行前
+协议、完整冻结配置、代码hash、命令、guard日志与前/中/后快照。
+之前CPU故障注入证据复用，不在实机重复SIGKILL场景。生产模型实现、
+N=4合同及默认配置不变，原已通过模型证据不重跑。
+
+下一步冻结原频率/降低频率与原A/B二进制的有界交叉诊断，分别设置
+OC抑制、重复性及交互作用判据。降频直接改变执行速度，因此OC减少
+甚至A/B差异改变只能支持时钟/功耗交互，不能单独证明OC是全部根因；
+不得用有利单次结果撤销原NO_GO。目标active、根因尚未闭合。

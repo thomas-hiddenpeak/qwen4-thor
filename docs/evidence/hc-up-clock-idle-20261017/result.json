@@ -1,0 +1,27 @@
+{
+  "status": "PASS_IDLE_CAPABILITY_ONLY",
+  "before": [
+    1575000000,
+    1575000000
+  ],
+  "lowered": [
+    1260000000,
+    1260000000
+  ],
+  "restored": [
+    1575000000,
+    1575000000
+  ],
+  "requested_cur_freq": [
+    1575000000,
+    1260000000,
+    1575000000
+  ],
+  "guard_status": "COMPLETED",
+  "monitor_count": 5,
+  "other_identity_unchanged": true,
+  "marker_absent": true,
+  "lease_available_after_cleanup": true,
+  "unit_load_state": "not-found",
+  "performance_acceptance": false
+}

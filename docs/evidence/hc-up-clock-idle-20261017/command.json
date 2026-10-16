@@ -1,0 +1,25 @@
+{
+  "unit": "q4t-clock-idle-1276219.service",
+  "command": [
+    "sudo",
+    "-n",
+    "systemd-run",
+    "--unit=q4t-clock-idle-1276219.service",
+    "--wait",
+    "--collect",
+    "--property=User=2002",
+    "--property=Group=2002",
+    "--property=Type=exec",
+    "--property=NotifyAccess=main",
+    "--property=FileDescriptorStoreMax=1",
+    "--property=FileDescriptorStorePreserve=restart",
+    "--property=RuntimeMaxSec=60",
+    "--property=TimeoutStopSec=infinity",
+    "--property=KillMode=control-group",
+    "--property=ExecStopPost=/usr/bin/python3 /home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-idle-20261017/control.py cleanup q4t-clock-idle-1276219.service",
+    "/usr/bin/python3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-clock-idle-20261017/control.py",
+    "main",
+    "q4t-clock-idle-1276219.service"
+  ]
+}
