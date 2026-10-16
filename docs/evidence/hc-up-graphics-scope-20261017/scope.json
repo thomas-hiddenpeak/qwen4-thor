@@ -1,0 +1,7 @@
+{
+  "guard_sha256": "b2e63e764992185ef28e6cf99a3d4b9d5375847d5267fbf6e4f85c2198ab5197",
+  "driver_query_scope": "compute apps only; process-name checks additionally recognize q4t and nsys",
+  "current_readonly_observation": "No running NVIDIA process and no holders of checked DRM/NVIDIA nodes",
+  "limitation": "Current snapshot cannot establish historical graphics-context absence. No graphics-specific historical telemetry in guard records.",
+  "decision": "No observed competing graphics workload; no desktop shutdown, guard behavior change or GPU experiment justified by this snapshot."
+}

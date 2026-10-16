@@ -1,0 +1,32 @@
+[
+  {
+    "name": "card0",
+    "device": "/sys/devices/platform/bus@0/8181200000.host1x/8181200000.host1x.drm",
+    "driver": "/sys/bus/host1x/drivers/drm"
+  },
+  {
+    "name": "card1",
+    "device": "/sys/devices/platform/bus@0/d0b0000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0",
+    "driver": "/sys/bus/pci/drivers/nvidia"
+  },
+  {
+    "name": "card2",
+    "device": "/sys/devices/platform/8808c00000.display",
+    "driver": "/sys/bus/platform/drivers/nv_platform"
+  },
+  {
+    "name": "renderD128",
+    "device": "/sys/devices/platform/bus@0/8181200000.host1x/8181200000.host1x.drm",
+    "driver": "/sys/bus/host1x/drivers/drm"
+  },
+  {
+    "name": "renderD129",
+    "device": "/sys/devices/platform/bus@0/d0b0000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0",
+    "driver": "/sys/bus/pci/drivers/nvidia"
+  },
+  {
+    "name": "renderD130",
+    "device": "/sys/devices/platform/8808c00000.display",
+    "driver": "/sys/bus/platform/drivers/nv_platform"
+  }
+]

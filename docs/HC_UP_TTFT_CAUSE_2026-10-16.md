@@ -2224,3 +2224,22 @@ evidence/hc-up-cupti-support-20261017/。
 来源：[CUPTI13.3 Activity API](https://docs.nvidia.com/cupti/13.3.0/api/group__CUPTI__ACTIVITY__API.html)、
 [13.3发布说明](https://docs.nvidia.com/cupti/13.3.0/release-notes/release-notes.html)、
 [当前发布说明](https://docs.nvidia.com/cupti/release-notes/release-notes.html)。
+
+## GPU独占观测范围核对：当前无图形竞争证据（2026-10-17）
+
+针对未追踪GPU活动的具体可能性，只读检查guard范围及本机设备持有者。
+现guard使用query-compute-apps，并按/proc识别q4t/nsys；因此历史“无
+冲突”指已覆盖的计算上下文/进程，不能扩大为已证明所有图形上下文
+或亚采样周期活动均不存在。此前trace完整性限制仍保持。
+
+当前nvidia-smi完整进程表无运行进程，Display Active Off；root fuser
+核对card0/1/2、renderD128/129/130、nvidia0/nvidiactl无持有者（退出1、
+空输出）。sysfs映射card1/renderD129到NVIDIA PCI设备，另外两组为
+host1x DRM和nv_platform显示控制器。此为当前快照，不是历史请求
+同期证据，不将节点存在等同实际负载。归档evidence/hc-up-graphics-scope-20261017/。
+
+没有观察到可供归因或干预的图形竞争，因此不停止桌面服务、不改guard
+行为、不新增图形隔离或模型采样。此项只收紧既有独占声明的证据范围，
+不是TTFT根因发现，也不否定已有监控在其范围内的有效性。
+下一步仍需能分离二进制效应与设备执行变化的直接证据；不以新增无
+阳性机制线索的环境消融替代定位。目标active，HC原NO_GO保持。
