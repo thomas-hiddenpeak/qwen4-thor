@@ -1,0 +1,1680 @@
+{
+  "allocation_source_sha256": "ff7f806f4a5b8f47524fdb2fea91c9f5685a29de7d1799aa7a2d79d2347c3c87",
+  "source_hashes": {
+    "src/model/linear_attention.cu": "521ec8eda2c1f36f1556d0ce72ae79f3da455e5e6d62218f7677c88a72790b08",
+    "src/model/decoder_layer.cu": "4d8e53e7d0a031dbdba68b7a5558f3baf93061a92c11312809790ef98170b15d"
+  },
+  "matching_method": "Unique full contiguous eleven-allocation source size pattern, in linear-layer order; inferred roles, no runtime role labels",
+  "summary": {
+    "conv1d": {
+      "count": 36,
+      "changed_ordinals": [
+        0,
+        1
+      ],
+      "bytes_per_layer": 81920
+    },
+    "A_log": {
+      "count": 36,
+      "changed_ordinals": [
+        0,
+        1,
+        2
+      ],
+      "bytes_per_layer": 96
+    },
+    "dt_bias": {
+      "count": 36,
+      "changed_ordinals": [
+        0,
+        1,
+        2
+      ],
+      "bytes_per_layer": 96
+    },
+    "ssm_state": {
+      "count": 36,
+      "changed_ordinals": [
+        0,
+        1
+      ],
+      "bytes_per_layer": 3145728
+    },
+    "conv_state": {
+      "count": 36,
+      "changed_ordinals": [
+        0,
+        1
+      ],
+      "bytes_per_layer": 61440
+    }
+  },
+  "items": [
+    {
+      "linear_layer_ordinal": 0,
+      "role": "conv1d",
+      "cudaMalloc_index": 17,
+      "requested_bytes": 81920,
+      "A_va": 281461754884096,
+      "B_va": 281461218013184,
+      "VA_equal": false
+    },
+    {
+      "linear_layer_ordinal": 0,
+      "role": "A_log",
+      "cudaMalloc_index": 20,
+      "requested_bytes": 96,
+      "A_va": 281461754966528,
+      "B_va": 281461218095616,
+      "VA_equal": false
+    },
+    {
+      "linear_layer_ordinal": 0,
+      "role": "dt_bias",
+      "cudaMalloc_index": 21,
+      "requested_bytes": 96,
+      "A_va": 281461754967040,
+      "B_va": 281461218096128,
+      "VA_equal": false
+    },
+    {
+      "linear_layer_ordinal": 0,
+      "role": "ssm_state",
+      "cudaMalloc_index": 22,
+      "requested_bytes": 3145728,
+      "A_va": 281461921939456,
+      "B_va": 281461385068544,
+      "VA_equal": false
+    },
+    {
+      "linear_layer_ordinal": 0,
+      "role": "conv_state",
+      "cudaMalloc_index": 23,
+      "requested_bytes": 61440,
+      "A_va": 281461754967552,
+      "B_va": 281461218096640,
+      "VA_equal": false
+    },
+    {
+      "linear_layer_ordinal": 1,
+      "role": "conv1d",
+      "cudaMalloc_index": 48,
+      "requested_bytes": 81920,
+      "A_va": 281461755738624,
+      "B_va": 281461218867712,
+      "VA_equal": false
+    },
+    {
+      "linear_layer_ordinal": 1,
+      "role": "A_log",
+      "cudaMalloc_index": 51,
+      "requested_bytes": 96,
+      "A_va": 281461755821056,
+      "B_va": 281461218950144,
+      "VA_equal": false
+    },
+    {
+      "linear_layer_ordinal": 1,
+      "role": "dt_bias",
+      "cudaMalloc_index": 52,
+      "requested_bytes": 96,
+      "A_va": 281461755821568,
+      "B_va": 281461218950656,
+      "VA_equal": false
+    },
+    {
+      "linear_layer_ordinal": 1,
+      "role": "ssm_state",
+      "cudaMalloc_index": 53,
+      "requested_bytes": 3145728,
+      "A_va": 281460466515968,
+      "B_va": 281459929645056,
+      "VA_equal": false
+    },
+    {
+      "linear_layer_ordinal": 1,
+      "role": "conv_state",
+      "cudaMalloc_index": 54,
+      "requested_bytes": 61440,
+      "A_va": 281461755822080,
+      "B_va": 281461218951168,
+      "VA_equal": false
+    },
+    {
+      "linear_layer_ordinal": 2,
+      "role": "conv1d",
+      "cudaMalloc_index": 86,
+      "requested_bytes": 81920,
+      "A_va": 281449727676416,
+      "B_va": 281449727676416,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 2,
+      "role": "A_log",
+      "cudaMalloc_index": 89,
+      "requested_bytes": 96,
+      "A_va": 281461756245504,
+      "B_va": 281461219374592,
+      "VA_equal": false
+    },
+    {
+      "linear_layer_ordinal": 2,
+      "role": "dt_bias",
+      "cudaMalloc_index": 90,
+      "requested_bytes": 96,
+      "A_va": 281461756246016,
+      "B_va": 281461219375104,
+      "VA_equal": false
+    },
+    {
+      "linear_layer_ordinal": 2,
+      "role": "ssm_state",
+      "cudaMalloc_index": 91,
+      "requested_bytes": 3145728,
+      "A_va": 281449737486336,
+      "B_va": 281449737486336,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 2,
+      "role": "conv_state",
+      "cudaMalloc_index": 92,
+      "requested_bytes": 61440,
+      "A_va": 281449727758336,
+      "B_va": 281449727758336,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 3,
+      "role": "conv1d",
+      "cudaMalloc_index": 150,
+      "requested_bytes": 81920,
+      "A_va": 281432012849152,
+      "B_va": 281432012849152,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 3,
+      "role": "A_log",
+      "cudaMalloc_index": 153,
+      "requested_bytes": 96,
+      "A_va": 281449729076224,
+      "B_va": 281449729076224,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 3,
+      "role": "dt_bias",
+      "cudaMalloc_index": 154,
+      "requested_bytes": 96,
+      "A_va": 281449729076736,
+      "B_va": 281449729076736,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 3,
+      "role": "ssm_state",
+      "cudaMalloc_index": 155,
+      "requested_bytes": 3145728,
+      "A_va": 281432014454784,
+      "B_va": 281432014454784,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 3,
+      "role": "conv_state",
+      "cudaMalloc_index": 156,
+      "requested_bytes": 61440,
+      "A_va": 281432012931072,
+      "B_va": 281432012931072,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 4,
+      "role": "conv1d",
+      "cudaMalloc_index": 181,
+      "requested_bytes": 81920,
+      "A_va": 281432013688832,
+      "B_va": 281432013688832,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 4,
+      "role": "A_log",
+      "cudaMalloc_index": 184,
+      "requested_bytes": 96,
+      "A_va": 281449729091072,
+      "B_va": 281449729091072,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 4,
+      "role": "dt_bias",
+      "cudaMalloc_index": 185,
+      "requested_bytes": 96,
+      "A_va": 281449729091584,
+      "B_va": 281449729091584,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 4,
+      "role": "ssm_state",
+      "cudaMalloc_index": 186,
+      "requested_bytes": 3145728,
+      "A_va": 281428791132160,
+      "B_va": 281428791132160,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 4,
+      "role": "conv_state",
+      "cudaMalloc_index": 187,
+      "requested_bytes": 61440,
+      "A_va": 281432013770752,
+      "B_va": 281432013770752,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 5,
+      "role": "conv1d",
+      "cudaMalloc_index": 212,
+      "requested_bytes": 81920,
+      "A_va": 281432014291968,
+      "B_va": 281432014291968,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 5,
+      "role": "A_log",
+      "cudaMalloc_index": 215,
+      "requested_bytes": 96,
+      "A_va": 281449729096704,
+      "B_va": 281449729096704,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 5,
+      "role": "dt_bias",
+      "cudaMalloc_index": 216,
+      "requested_bytes": 96,
+      "A_va": 281449729097216,
+      "B_va": 281449729097216,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 5,
+      "role": "ssm_state",
+      "cudaMalloc_index": 217,
+      "requested_bytes": 3145728,
+      "A_va": 281425572003840,
+      "B_va": 281425572003840,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 5,
+      "role": "conv_state",
+      "cudaMalloc_index": 218,
+      "requested_bytes": 61440,
+      "A_va": 281432014373888,
+      "B_va": 281432014373888,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 6,
+      "role": "conv1d",
+      "cudaMalloc_index": 276,
+      "requested_bytes": 81920,
+      "A_va": 281425571898368,
+      "B_va": 281425571898368,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 6,
+      "role": "A_log",
+      "cudaMalloc_index": 279,
+      "requested_bytes": 96,
+      "A_va": 281425571980800,
+      "B_va": 281425571980800,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 6,
+      "role": "dt_bias",
+      "cudaMalloc_index": 280,
+      "requested_bytes": 96,
+      "A_va": 281425571981312,
+      "B_va": 281425571981312,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 6,
+      "role": "ssm_state",
+      "cudaMalloc_index": 281,
+      "requested_bytes": 3145728,
+      "A_va": 281418590584832,
+      "B_va": 281418590584832,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 6,
+      "role": "conv_state",
+      "cudaMalloc_index": 282,
+      "requested_bytes": 61440,
+      "A_va": 281418594779136,
+      "B_va": 281418594779136,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 7,
+      "role": "conv1d",
+      "cudaMalloc_index": 307,
+      "requested_bytes": 81920,
+      "A_va": 281418595536896,
+      "B_va": 281418595536896,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 7,
+      "role": "A_log",
+      "cudaMalloc_index": 310,
+      "requested_bytes": 96,
+      "A_va": 281425571995648,
+      "B_va": 281425571995648,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 7,
+      "role": "dt_bias",
+      "cudaMalloc_index": 311,
+      "requested_bytes": 96,
+      "A_va": 281425571996160,
+      "B_va": 281425571996160,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 7,
+      "role": "ssm_state",
+      "cudaMalloc_index": 312,
+      "requested_bytes": 3145728,
+      "A_va": 281416443101184,
+      "B_va": 281416443101184,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 7,
+      "role": "conv_state",
+      "cudaMalloc_index": 313,
+      "requested_bytes": 61440,
+      "A_va": 281418595618816,
+      "B_va": 281418595618816,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 8,
+      "role": "conv1d",
+      "cudaMalloc_index": 338,
+      "requested_bytes": 81920,
+      "A_va": 281418596383744,
+      "B_va": 281418596383744,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 8,
+      "role": "A_log",
+      "cudaMalloc_index": 341,
+      "requested_bytes": 96,
+      "A_va": 281425572003328,
+      "B_va": 281425572003328,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 8,
+      "role": "dt_bias",
+      "cudaMalloc_index": 342,
+      "requested_bytes": 96,
+      "A_va": 281418596465664,
+      "B_va": 281418596465664,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 8,
+      "role": "ssm_state",
+      "cudaMalloc_index": 343,
+      "requested_bytes": 3145728,
+      "A_va": 281414832488448,
+      "B_va": 281414832488448,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 8,
+      "role": "conv_state",
+      "cudaMalloc_index": 344,
+      "requested_bytes": 61440,
+      "A_va": 281418596466176,
+      "B_va": 281418596466176,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 9,
+      "role": "conv1d",
+      "cudaMalloc_index": 402,
+      "requested_bytes": 81920,
+      "A_va": 281412592062464,
+      "B_va": 281412592062464,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 9,
+      "role": "A_log",
+      "cudaMalloc_index": 405,
+      "requested_bytes": 96,
+      "A_va": 281418596864000,
+      "B_va": 281418596864000,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 9,
+      "role": "dt_bias",
+      "cudaMalloc_index": 406,
+      "requested_bytes": 96,
+      "A_va": 281418596864512,
+      "B_va": 281418596864512,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 9,
+      "role": "ssm_state",
+      "cudaMalloc_index": 407,
+      "requested_bytes": 3145728,
+      "A_va": 281411074392064,
+      "B_va": 281411074392064,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 9,
+      "role": "conv_state",
+      "cudaMalloc_index": 408,
+      "requested_bytes": 61440,
+      "A_va": 281412592144384,
+      "B_va": 281412592144384,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 10,
+      "role": "conv1d",
+      "cudaMalloc_index": 433,
+      "requested_bytes": 81920,
+      "A_va": 281409464025088,
+      "B_va": 281409464025088,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 10,
+      "role": "A_log",
+      "cudaMalloc_index": 436,
+      "requested_bytes": 96,
+      "A_va": 281418596873728,
+      "B_va": 281418596873728,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 10,
+      "role": "dt_bias",
+      "cudaMalloc_index": 437,
+      "requested_bytes": 96,
+      "A_va": 281418596874240,
+      "B_va": 281418596874240,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 10,
+      "role": "ssm_state",
+      "cudaMalloc_index": 438,
+      "requested_bytes": 3145728,
+      "A_va": 281409465876480,
+      "B_va": 281409465876480,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 10,
+      "role": "conv_state",
+      "cudaMalloc_index": 439,
+      "requested_bytes": 61440,
+      "A_va": 281412592661504,
+      "B_va": 281412592661504,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 11,
+      "role": "conv1d",
+      "cudaMalloc_index": 464,
+      "requested_bytes": 81920,
+      "A_va": 281409464810496,
+      "B_va": 281409464810496,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 11,
+      "role": "A_log",
+      "cudaMalloc_index": 467,
+      "requested_bytes": 96,
+      "A_va": 281412592729600,
+      "B_va": 281412592729600,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 11,
+      "role": "dt_bias",
+      "cudaMalloc_index": 468,
+      "requested_bytes": 96,
+      "A_va": 281418596874752,
+      "B_va": 281418596874752,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 11,
+      "role": "ssm_state",
+      "cudaMalloc_index": 469,
+      "requested_bytes": 3145728,
+      "A_va": 281407853166592,
+      "B_va": 281407853166592,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 11,
+      "role": "conv_state",
+      "cudaMalloc_index": 470,
+      "requested_bytes": 61440,
+      "A_va": 281409464892416,
+      "B_va": 281409464892416,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 12,
+      "role": "conv1d",
+      "cudaMalloc_index": 528,
+      "requested_bytes": 81920,
+      "A_va": 281409465636864,
+      "B_va": 281409465636864,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 12,
+      "role": "A_log",
+      "cudaMalloc_index": 531,
+      "requested_bytes": 96,
+      "A_va": 281409465719296,
+      "B_va": 281409465719296,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 12,
+      "role": "dt_bias",
+      "cudaMalloc_index": 532,
+      "requested_bytes": 96,
+      "A_va": 281409465719808,
+      "B_va": 281409465719808,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 12,
+      "role": "ssm_state",
+      "cudaMalloc_index": 533,
+      "requested_bytes": 3145728,
+      "A_va": 281404095070208,
+      "B_va": 281404095070208,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 12,
+      "role": "conv_state",
+      "cudaMalloc_index": 534,
+      "requested_bytes": 61440,
+      "A_va": 281409465720320,
+      "B_va": 281409465720320,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 13,
+      "role": "conv1d",
+      "cudaMalloc_index": 559,
+      "requested_bytes": 81920,
+      "A_va": 281405613047808,
+      "B_va": 281405613047808,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 13,
+      "role": "A_log",
+      "cudaMalloc_index": 562,
+      "requested_bytes": 96,
+      "A_va": 281409465836544,
+      "B_va": 281409465836544,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 13,
+      "role": "dt_bias",
+      "cudaMalloc_index": 563,
+      "requested_bytes": 96,
+      "A_va": 281409465837056,
+      "B_va": 281409465837056,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 13,
+      "role": "ssm_state",
+      "cudaMalloc_index": 564,
+      "requested_bytes": 3145728,
+      "A_va": 281402484457472,
+      "B_va": 281402484457472,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 13,
+      "role": "conv_state",
+      "cudaMalloc_index": 565,
+      "requested_bytes": 61440,
+      "A_va": 281405613129728,
+      "B_va": 281405613129728,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 14,
+      "role": "conv1d",
+      "cudaMalloc_index": 590,
+      "requested_bytes": 81920,
+      "A_va": 281400874336256,
+      "B_va": 281400874336256,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 14,
+      "role": "A_log",
+      "cudaMalloc_index": 593,
+      "requested_bytes": 96,
+      "A_va": 281409465871872,
+      "B_va": 281409465871872,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 14,
+      "role": "dt_bias",
+      "cudaMalloc_index": 594,
+      "requested_bytes": 96,
+      "A_va": 281409465872384,
+      "B_va": 281409465872384,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 14,
+      "role": "ssm_state",
+      "cudaMalloc_index": 595,
+      "requested_bytes": 3145728,
+      "A_va": 281400875941888,
+      "B_va": 281400875941888,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 14,
+      "role": "conv_state",
+      "cudaMalloc_index": 596,
+      "requested_bytes": 61440,
+      "A_va": 281400874418176,
+      "B_va": 281400874418176,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 15,
+      "role": "conv1d",
+      "cudaMalloc_index": 654,
+      "requested_bytes": 81920,
+      "A_va": 281400875717632,
+      "B_va": 281400875717632,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 15,
+      "role": "A_log",
+      "cudaMalloc_index": 657,
+      "requested_bytes": 96,
+      "A_va": 281400875799552,
+      "B_va": 281400875799552,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 15,
+      "role": "dt_bias",
+      "cudaMalloc_index": 658,
+      "requested_bytes": 96,
+      "A_va": 281400875800064,
+      "B_va": 281400875800064,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 15,
+      "role": "ssm_state",
+      "cudaMalloc_index": 659,
+      "requested_bytes": 3145728,
+      "A_va": 281399265329152,
+      "B_va": 281399265329152,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 15,
+      "role": "conv_state",
+      "cudaMalloc_index": 660,
+      "requested_bytes": 61440,
+      "A_va": 281400875800576,
+      "B_va": 281400875800576,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 16,
+      "role": "conv1d",
+      "cudaMalloc_index": 685,
+      "requested_bytes": 81920,
+      "A_va": 281399264378880,
+      "B_va": 281399264378880,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 16,
+      "role": "A_log",
+      "cudaMalloc_index": 688,
+      "requested_bytes": 96,
+      "A_va": 281400875916800,
+      "B_va": 281400875916800,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 16,
+      "role": "dt_bias",
+      "cudaMalloc_index": 689,
+      "requested_bytes": 96,
+      "A_va": 281400875917312,
+      "B_va": 281400875917312,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 16,
+      "role": "ssm_state",
+      "cudaMalloc_index": 690,
+      "requested_bytes": 3145728,
+      "A_va": 281397652619264,
+      "B_va": 281397652619264,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 16,
+      "role": "conv_state",
+      "cudaMalloc_index": 691,
+      "requested_bytes": 61440,
+      "A_va": 281399264460800,
+      "B_va": 281399264460800,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 17,
+      "role": "conv1d",
+      "cudaMalloc_index": 716,
+      "requested_bytes": 81920,
+      "A_va": 281399265218560,
+      "B_va": 281399265218560,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 17,
+      "role": "A_log",
+      "cudaMalloc_index": 719,
+      "requested_bytes": 96,
+      "A_va": 281400875931648,
+      "B_va": 281400875931648,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 17,
+      "role": "dt_bias",
+      "cudaMalloc_index": 720,
+      "requested_bytes": 96,
+      "A_va": 281400875932160,
+      "B_va": 281400875932160,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 17,
+      "role": "ssm_state",
+      "cudaMalloc_index": 721,
+      "requested_bytes": 3145728,
+      "A_va": 281396042006528,
+      "B_va": 281396042006528,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 17,
+      "role": "conv_state",
+      "cudaMalloc_index": 722,
+      "requested_bytes": 61440,
+      "A_va": 281396046200832,
+      "B_va": 281396046200832,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 18,
+      "role": "conv1d",
+      "cudaMalloc_index": 780,
+      "requested_bytes": 81920,
+      "A_va": 281396047989760,
+      "B_va": 281396047989760,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 18,
+      "role": "A_log",
+      "cudaMalloc_index": 783,
+      "requested_bytes": 96,
+      "A_va": 281396048072192,
+      "B_va": 281396048072192,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 18,
+      "role": "dt_bias",
+      "cudaMalloc_index": 784,
+      "requested_bytes": 96,
+      "A_va": 281396048072704,
+      "B_va": 281396048072704,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 18,
+      "role": "ssm_state",
+      "cudaMalloc_index": 785,
+      "requested_bytes": 3145728,
+      "A_va": 281392283910144,
+      "B_va": 281392283910144,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 18,
+      "role": "conv_state",
+      "cudaMalloc_index": 786,
+      "requested_bytes": 61440,
+      "A_va": 281396048073216,
+      "B_va": 281396048073216,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 19,
+      "role": "conv1d",
+      "cudaMalloc_index": 811,
+      "requested_bytes": 81920,
+      "A_va": 281390673870848,
+      "B_va": 281390673870848,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 19,
+      "role": "A_log",
+      "cudaMalloc_index": 814,
+      "requested_bytes": 96,
+      "A_va": 281396048271360,
+      "B_va": 281396048271360,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 19,
+      "role": "dt_bias",
+      "cudaMalloc_index": 815,
+      "requested_bytes": 96,
+      "A_va": 281396048271872,
+      "B_va": 281396048271872,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 19,
+      "role": "ssm_state",
+      "cudaMalloc_index": 816,
+      "requested_bytes": 3145728,
+      "A_va": 281390675394560,
+      "B_va": 281390675394560,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 19,
+      "role": "conv_state",
+      "cudaMalloc_index": 817,
+      "requested_bytes": 61440,
+      "A_va": 281390673952768,
+      "B_va": 281390673952768,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 20,
+      "role": "conv1d",
+      "cudaMalloc_index": 842,
+      "requested_bytes": 81920,
+      "A_va": 281390674710528,
+      "B_va": 281390674710528,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 20,
+      "role": "A_log",
+      "cudaMalloc_index": 845,
+      "requested_bytes": 96,
+      "A_va": 281396048286208,
+      "B_va": 281396048286208,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 20,
+      "role": "dt_bias",
+      "cudaMalloc_index": 846,
+      "requested_bytes": 96,
+      "A_va": 281396048286720,
+      "B_va": 281396048286720,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 20,
+      "role": "ssm_state",
+      "cudaMalloc_index": 847,
+      "requested_bytes": 3145728,
+      "A_va": 281389062684672,
+      "B_va": 281389062684672,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 20,
+      "role": "conv_state",
+      "cudaMalloc_index": 848,
+      "requested_bytes": 61440,
+      "A_va": 281390674792448,
+      "B_va": 281390674792448,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 21,
+      "role": "conv1d",
+      "cudaMalloc_index": 906,
+      "requested_bytes": 81920,
+      "A_va": 281390675281920,
+      "B_va": 281390675281920,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 21,
+      "role": "A_log",
+      "cudaMalloc_index": 909,
+      "requested_bytes": 96,
+      "A_va": 281390675363840,
+      "B_va": 281390675363840,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 21,
+      "role": "dt_bias",
+      "cudaMalloc_index": 910,
+      "requested_bytes": 96,
+      "A_va": 281390675364352,
+      "B_va": 281390675364352,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 21,
+      "role": "ssm_state",
+      "cudaMalloc_index": 911,
+      "requested_bytes": 3145728,
+      "A_va": 281385304588288,
+      "B_va": 281385304588288,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 21,
+      "role": "conv_state",
+      "cudaMalloc_index": 912,
+      "requested_bytes": 61440,
+      "A_va": 281386822156288,
+      "B_va": 281386822156288,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 22,
+      "role": "conv1d",
+      "cudaMalloc_index": 937,
+      "requested_bytes": 81920,
+      "A_va": 281383693975552,
+      "B_va": 281383693975552,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 22,
+      "role": "A_log",
+      "cudaMalloc_index": 940,
+      "requested_bytes": 96,
+      "A_va": 281386822914560,
+      "B_va": 281386822914560,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 22,
+      "role": "dt_bias",
+      "cudaMalloc_index": 941,
+      "requested_bytes": 96,
+      "A_va": 281386822915072,
+      "B_va": 281386822915072,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 22,
+      "role": "ssm_state",
+      "cudaMalloc_index": 942,
+      "requested_bytes": 3145728,
+      "A_va": 281383696072704,
+      "B_va": 281383696072704,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 22,
+      "role": "conv_state",
+      "cudaMalloc_index": 943,
+      "requested_bytes": 61440,
+      "A_va": 281383694057472,
+      "B_va": 281383694057472,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 23,
+      "role": "conv1d",
+      "cudaMalloc_index": 968,
+      "requested_bytes": 81920,
+      "A_va": 281383694815232,
+      "B_va": 281383694815232,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 23,
+      "role": "A_log",
+      "cudaMalloc_index": 971,
+      "requested_bytes": 96,
+      "A_va": 281386822924288,
+      "B_va": 281386822924288,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 23,
+      "role": "dt_bias",
+      "cudaMalloc_index": 972,
+      "requested_bytes": 96,
+      "A_va": 281386822924800,
+      "B_va": 281386822924800,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 23,
+      "role": "ssm_state",
+      "cudaMalloc_index": 973,
+      "requested_bytes": 3145728,
+      "A_va": 281382083362816,
+      "B_va": 281382083362816,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 23,
+      "role": "conv_state",
+      "cudaMalloc_index": 974,
+      "requested_bytes": 61440,
+      "A_va": 281383694897152,
+      "B_va": 281383694897152,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 24,
+      "role": "conv1d",
+      "cudaMalloc_index": 1032,
+      "requested_bytes": 81920,
+      "A_va": 281378309144576,
+      "B_va": 281378309144576,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 24,
+      "role": "A_log",
+      "cudaMalloc_index": 1035,
+      "requested_bytes": 96,
+      "A_va": 281383696056832,
+      "B_va": 281383696056832,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 24,
+      "role": "dt_bias",
+      "cudaMalloc_index": 1036,
+      "requested_bytes": 96,
+      "A_va": 281383696057344,
+      "B_va": 281383696057344,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 24,
+      "role": "ssm_state",
+      "cudaMalloc_index": 1037,
+      "requested_bytes": 3145728,
+      "A_va": 281378327363584,
+      "B_va": 281378327363584,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 24,
+      "role": "conv_state",
+      "cudaMalloc_index": 1038,
+      "requested_bytes": 61440,
+      "A_va": 281378309226496,
+      "B_va": 281378309226496,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 25,
+      "role": "conv1d",
+      "cudaMalloc_index": 1063,
+      "requested_bytes": 81920,
+      "A_va": 281378309984256,
+      "B_va": 281378309984256,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 25,
+      "role": "A_log",
+      "cudaMalloc_index": 1066,
+      "requested_bytes": 96,
+      "A_va": 281383696071680,
+      "B_va": 281383696071680,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 25,
+      "role": "dt_bias",
+      "cudaMalloc_index": 1067,
+      "requested_bytes": 96,
+      "A_va": 281383696072192,
+      "B_va": 281383696072192,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 25,
+      "role": "ssm_state",
+      "cudaMalloc_index": 1068,
+      "requested_bytes": 3145728,
+      "A_va": 281376714653696,
+      "B_va": 281376714653696,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 25,
+      "role": "conv_state",
+      "cudaMalloc_index": 1069,
+      "requested_bytes": 61440,
+      "A_va": 281378310066176,
+      "B_va": 281378310066176,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 26,
+      "role": "conv1d",
+      "cudaMalloc_index": 1094,
+      "requested_bytes": 81920,
+      "A_va": 281378310345728,
+      "B_va": 281378310345728,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 26,
+      "role": "A_log",
+      "cudaMalloc_index": 1097,
+      "requested_bytes": 96,
+      "A_va": 281378310428160,
+      "B_va": 281378310428160,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 26,
+      "role": "dt_bias",
+      "cudaMalloc_index": 1098,
+      "requested_bytes": 96,
+      "A_va": 281378310428672,
+      "B_va": 281378310428672,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 26,
+      "role": "ssm_state",
+      "cudaMalloc_index": 1099,
+      "requested_bytes": 3145728,
+      "A_va": 281375106138112,
+      "B_va": 281375106138112,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 26,
+      "role": "conv_state",
+      "cudaMalloc_index": 1100,
+      "requested_bytes": 61440,
+      "A_va": 281378310429184,
+      "B_va": 281378310429184,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 27,
+      "role": "conv1d",
+      "cudaMalloc_index": 1158,
+      "requested_bytes": 81920,
+      "A_va": 281375105961984,
+      "B_va": 281375105961984,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 27,
+      "role": "A_log",
+      "cudaMalloc_index": 1161,
+      "requested_bytes": 96,
+      "A_va": 281378310581248,
+      "B_va": 281378310581248,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 27,
+      "role": "dt_bias",
+      "cudaMalloc_index": 1162,
+      "requested_bytes": 96,
+      "A_va": 281378310581760,
+      "B_va": 281378310581760,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 27,
+      "role": "ssm_state",
+      "cudaMalloc_index": 1163,
+      "requested_bytes": 3145728,
+      "A_va": 281371884912640,
+      "B_va": 281371884912640,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 27,
+      "role": "conv_state",
+      "cudaMalloc_index": 1164,
+      "requested_bytes": 61440,
+      "A_va": 281375106043904,
+      "B_va": 281375106043904,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 28,
+      "role": "conv1d",
+      "cudaMalloc_index": 1189,
+      "requested_bytes": 81920,
+      "A_va": 281371883737088,
+      "B_va": 281371883737088,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 28,
+      "role": "A_log",
+      "cudaMalloc_index": 1192,
+      "requested_bytes": 96,
+      "A_va": 281375106135552,
+      "B_va": 281375106135552,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 28,
+      "role": "dt_bias",
+      "cudaMalloc_index": 1193,
+      "requested_bytes": 96,
+      "A_va": 281375106136064,
+      "B_va": 281375106136064,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 28,
+      "role": "ssm_state",
+      "cudaMalloc_index": 1194,
+      "requested_bytes": 3145728,
+      "A_va": 281370272202752,
+      "B_va": 281370272202752,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 28,
+      "role": "conv_state",
+      "cudaMalloc_index": 1195,
+      "requested_bytes": 61440,
+      "A_va": 281371883819008,
+      "B_va": 281371883819008,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 29,
+      "role": "conv1d",
+      "cudaMalloc_index": 1220,
+      "requested_bytes": 81920,
+      "A_va": 281371884590080,
+      "B_va": 281371884590080,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 29,
+      "role": "A_log",
+      "cudaMalloc_index": 1223,
+      "requested_bytes": 96,
+      "A_va": 281375106137088,
+      "B_va": 281375106137088,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 29,
+      "role": "dt_bias",
+      "cudaMalloc_index": 1224,
+      "requested_bytes": 96,
+      "A_va": 281375106137600,
+      "B_va": 281375106137600,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 29,
+      "role": "ssm_state",
+      "cudaMalloc_index": 1225,
+      "requested_bytes": 3145728,
+      "A_va": 281368661590016,
+      "B_va": 281368661590016,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 29,
+      "role": "conv_state",
+      "cudaMalloc_index": 1226,
+      "requested_bytes": 61440,
+      "A_va": 281371884672000,
+      "B_va": 281371884672000,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 30,
+      "role": "conv1d",
+      "cudaMalloc_index": 1284,
+      "requested_bytes": 81920,
+      "A_va": 281367052570624,
+      "B_va": 281367052570624,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 30,
+      "role": "A_log",
+      "cudaMalloc_index": 1287,
+      "requested_bytes": 96,
+      "A_va": 281371884905984,
+      "B_va": 281371884905984,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 30,
+      "role": "dt_bias",
+      "cudaMalloc_index": 1288,
+      "requested_bytes": 96,
+      "A_va": 281371884906496,
+      "B_va": 281371884906496,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 30,
+      "role": "ssm_state",
+      "cudaMalloc_index": 1289,
+      "requested_bytes": 3145728,
+      "A_va": 281364903493632,
+      "B_va": 281364903493632,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 30,
+      "role": "conv_state",
+      "cudaMalloc_index": 1290,
+      "requested_bytes": 61440,
+      "A_va": 281367052652544,
+      "B_va": 281367052652544,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 31,
+      "role": "conv1d",
+      "cudaMalloc_index": 1315,
+      "requested_bytes": 81920,
+      "A_va": 281367052928000,
+      "B_va": 281367052928000,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 31,
+      "role": "A_log",
+      "cudaMalloc_index": 1318,
+      "requested_bytes": 96,
+      "A_va": 281371884911616,
+      "B_va": 281371884911616,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 31,
+      "role": "dt_bias",
+      "cudaMalloc_index": 1319,
+      "requested_bytes": 96,
+      "A_va": 281371884912128,
+      "B_va": 281371884912128,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 31,
+      "role": "ssm_state",
+      "cudaMalloc_index": 1320,
+      "requested_bytes": 3145728,
+      "A_va": 281363294978048,
+      "B_va": 281363294978048,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 31,
+      "role": "conv_state",
+      "cudaMalloc_index": 1321,
+      "requested_bytes": 61440,
+      "A_va": 281367053009920,
+      "B_va": 281367053009920,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 32,
+      "role": "conv1d",
+      "cudaMalloc_index": 1346,
+      "requested_bytes": 81920,
+      "A_va": 281363294080000,
+      "B_va": 281363294080000,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 32,
+      "role": "A_log",
+      "cudaMalloc_index": 1349,
+      "requested_bytes": 96,
+      "A_va": 281367053073920,
+      "B_va": 281367053073920,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 32,
+      "role": "dt_bias",
+      "cudaMalloc_index": 1350,
+      "requested_bytes": 96,
+      "A_va": 281363294161920,
+      "B_va": 281363294161920,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 32,
+      "role": "ssm_state",
+      "cudaMalloc_index": 1351,
+      "requested_bytes": 3145728,
+      "A_va": 281361682268160,
+      "B_va": 281361682268160,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 32,
+      "role": "conv_state",
+      "cudaMalloc_index": 1352,
+      "requested_bytes": 61440,
+      "A_va": 281363294162432,
+      "B_va": 281363294162432,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 33,
+      "role": "conv1d",
+      "cudaMalloc_index": 1410,
+      "requested_bytes": 81920,
+      "A_va": 281359441494016,
+      "B_va": 281359441494016,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 33,
+      "role": "A_log",
+      "cudaMalloc_index": 1413,
+      "requested_bytes": 96,
+      "A_va": 281363294908416,
+      "B_va": 281363294908416,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 33,
+      "role": "dt_bias",
+      "cudaMalloc_index": 1414,
+      "requested_bytes": 96,
+      "A_va": 281363294908928,
+      "B_va": 281363294908928,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 33,
+      "role": "ssm_state",
+      "cudaMalloc_index": 1415,
+      "requested_bytes": 3145728,
+      "A_va": 281357924171776,
+      "B_va": 281357924171776,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 33,
+      "role": "conv_state",
+      "cudaMalloc_index": 1416,
+      "requested_bytes": 61440,
+      "A_va": 281363294909440,
+      "B_va": 281363294909440,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 34,
+      "role": "conv1d",
+      "cudaMalloc_index": 1441,
+      "requested_bytes": 81920,
+      "A_va": 281359442279424,
+      "B_va": 281359442279424,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 34,
+      "role": "A_log",
+      "cudaMalloc_index": 1444,
+      "requested_bytes": 96,
+      "A_va": 281363294977536,
+      "B_va": 281363294977536,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 34,
+      "role": "dt_bias",
+      "cudaMalloc_index": 1445,
+      "requested_bytes": 96,
+      "A_va": 281359442361344,
+      "B_va": 281359442361344,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 34,
+      "role": "ssm_state",
+      "cudaMalloc_index": 1446,
+      "requested_bytes": 3145728,
+      "A_va": 281356313559040,
+      "B_va": 281356313559040,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 34,
+      "role": "conv_state",
+      "cudaMalloc_index": 1447,
+      "requested_bytes": 61440,
+      "A_va": 281359442361856,
+      "B_va": 281359442361856,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 35,
+      "role": "conv1d",
+      "cudaMalloc_index": 1472,
+      "requested_bytes": 81920,
+      "A_va": 281350928728064,
+      "B_va": 281350928728064,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 35,
+      "role": "A_log",
+      "cudaMalloc_index": 1475,
+      "requested_bytes": 96,
+      "A_va": 281359442478080,
+      "B_va": 281359442478080,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 35,
+      "role": "dt_bias",
+      "cudaMalloc_index": 1476,
+      "requested_bytes": 96,
+      "A_va": 281359442478592,
+      "B_va": 281359442478592,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 35,
+      "role": "ssm_state",
+      "cudaMalloc_index": 1477,
+      "requested_bytes": 3145728,
+      "A_va": 281350946947072,
+      "B_va": 281350946947072,
+      "VA_equal": true
+    },
+    {
+      "linear_layer_ordinal": 35,
+      "role": "conv_state",
+      "cudaMalloc_index": 1478,
+      "requested_bytes": 61440,
+      "A_va": 281350928809984,
+      "B_va": 281350928809984,
+      "VA_equal": true
+    }
+  ],
+  "limits": [
+    "Old address observer epoch, not clean-trace or VMM epoch",
+    "VA equality not physical/backing/cache identity",
+    "Source access pattern not a device stall or byte-traffic measurement",
+    "No causal exclusion or new GPU request"
+  ]
+}

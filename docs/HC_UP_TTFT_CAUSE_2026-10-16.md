@@ -1696,3 +1696,26 @@ Conv launch另有conv_state/w.conv1d；不能把workspace控制当成全部输�
 足以区分原因的机制，避免扩大成全模型allocator改造或重复布局实验。
 本轮离线核查，新增GPU请求0、生产未改；根因/解决未闭合，active与
 原NO_GO保持。证据：evidence/hc-up-allocation-coverage-20261017/。
+
+## GDN/Conv独立输入映射与访问范围（2026-10-17）
+
+按源码连续九次权重分配加两次max_seq=1状态分配的完整11项size模式，
+旧地址记录唯一得到36组，顺序对应线性层ordinal。角色由源码/完整模式
+推断，不伪称运行时记录带角色标签。每层SSM3145728、Conv状态61440、
+Conv权重81920、A_log/dt_bias各96字节。旧A/B中状态/Conv权重仅ordinal
+0/1地址不同，A_log/dt_bias仅0/1/2不同；其余同VA不证明物理/缓存相同。
+
+源码GatedDeltaNetRegKernel在token循环外加载SSM及bias/A_log，循环后
+写回SSM；token循环读qkv/a/beta并写y。CausalConv1dWithCkptKernel的
+普通输出分支仅src_t<0读取旧状态，conv_k=4时限于前3个token；权重则
+每个输出token读取。以上是访问代码事实，不等于实际DRAM流量、cache命中
+或耗时上界，不能凭占比宣称排除原因。数据来自旧观察epoch，不与另一轮
+trace层耗时拼成因果证明。当前没有支持新布局干预的充分机制，暂不追加。
+
+另一项实际证据缺口：launch签名相同、最终HTTP文本相同，不证明每层
+MoE路由ID相同；不同ID可能改变权重访问而保持launch形状。现有报告未
+找到A/B路由内容对照。仓库已有RouterCollector受控off单序列采集入口，
+但本轮未启动。下一步先核对既有路由证据身份、捕获实现及扰动范围，若
+确实缺失才冻结一次有界结构对照；不以其耗时作性能验收、不修改计算。
+本轮新增GPU请求0，生产未改，根因仍未建立，active与原NO_GO保持。
+证据：evidence/hc-up-linear-inputs-20261017/。
