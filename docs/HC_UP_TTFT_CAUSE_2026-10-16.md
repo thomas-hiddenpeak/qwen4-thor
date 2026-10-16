@@ -612,3 +612,18 @@ resume-audit.json；原始结果与监控分别保留在原lease和lease-resume�
 
 工具：tools/evalscope/allocation_address_probe.cpp、test_allocation_address_probe.py；
 证据：evidence/hc-up-address-observer-20261017/。
+
+## 地址调查执行范围冻结（2026-10-17）
+
+A/B各一次原始200K off HTTP、输出256，只有地址探针preload，无事件/PMU/
+Nsight。整阶段共用guard，无预热/自动重试；遇输出/退出/覆盖失败停止。
+按API/size/flags/归一化stream对齐，记录相对地址、对齐和free复用代次；
+启动/完整请求/退出分段。异步free不等于GPU完成，跨线程进入顺序不等于
+因果执行顺序。不同地址只是候选变量，相同地址也不证明物理布局相同；
+不使用本轮TTFT更新性能门禁，不追加此家族样本。
+
+执行前源码核对：cudaMallocHost仅router tracing路径使用，本请求关闭；
+故要求其余六个普通路径API出现，不错误要求全部导入函数必然调用。
+解析器接受560条CPU夹具，拒绝重复/缺失ID及畸形字段。既有CPU工具合同
+身份未变直接复用。协议/驱动/解析器保存在evidence/hc-up-address-observer-20261017。
+下一步执行固定两条并分析；生产main、原NO_GO和活动目标保持。
