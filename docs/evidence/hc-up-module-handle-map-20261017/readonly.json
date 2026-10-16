@@ -1,0 +1,202 @@
+{
+  "references": [
+    {
+      "function": "_ZL16stbi__gif_headerP13stbi__contextP9stbi__gifPii",
+      "index": 83,
+      "A": "0x13d8f8",
+      "B": "0x13ce58",
+      "bytes": 1,
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "basis": "empty NUL string; equality claim limited to NUL byte"
+    },
+    {
+      "function": "_ZL20stbi__convert_formatPhiijj.part.0",
+      "index": 55,
+      "A": "0x1424f4",
+      "B": "0x141a54",
+      "bytes": 52,
+      "sha256": "5230646f000271a7dcebcfe1014c766a8f19956e9858ff606d1ba796a04571ce",
+      "basis": "stbi format: unsigned index <=0x19, halfword table"
+    },
+    {
+      "function": "_ZL22stbi__convert_format16Ptiijj.part.0",
+      "index": 43,
+      "A": "0x1424c0",
+      "B": "0x141a20",
+      "bytes": 52,
+      "sha256": "597ada915b66dcb0a18924c28695ca4e2474719cccc38eead02273649d9e4a92",
+      "basis": "stbi format16: unsigned index <=0x19, halfword table"
+    },
+    {
+      "function": "_ZN12_GLOBAL__N_111RunGenerateEiPPc",
+      "index": 164,
+      "A": "0x141df0",
+      "B": "0x141350",
+      "bytes": 48,
+      "sha256": "2ce49551924fdb5daa2f96a43fbf2e3c58b1fafca48e956a6c8004324299277f",
+      "basis": "RunGenerate: LDP Q30/Q29 at base and LDR Q31 at +32"
+    },
+    {
+      "function": "_ZN12_GLOBAL__N_111RunGenerateEiPPc",
+      "index": 1522,
+      "A": "0x13d8f8",
+      "B": "0x13ce58",
+      "bytes": 1,
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "basis": "empty NUL string; equality claim limited to NUL byte"
+    },
+    {
+      "function": "_ZN3q4t3mtp10MtpForwardERKNS0_8MtpModelEPKiS5_PKtPtS8_S8_iP11CUstream_stS5_b",
+      "index": 121,
+      "A": "0x141e40",
+      "B": "0x1413a0",
+      "bytes": 32,
+      "sha256": "1c38438609ee3130cd946138e37962605b55255ec021544b0763ba9c7fa0eace",
+      "basis": "MtpForward: LDP Q30/Q31 at base"
+    },
+    {
+      "function": "_ZN3q4t4text12_GLOBAL__N_114ValidateSchemaERKNS_2io4JsonEPNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE.constprop.0",
+      "index": 469,
+      "A": "0x13d8f8",
+      "B": "0x13ce58",
+      "bytes": 1,
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "basis": "empty NUL string; equality claim limited to NUL byte"
+    },
+    {
+      "function": "_ZN3q4t4text12_GLOBAL__N_114ValidateSchemaERKNS_2io4JsonEPNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE.constprop.0",
+      "index": 566,
+      "A": "0x13d8f8",
+      "B": "0x13ce58",
+      "bytes": 1,
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "basis": "empty NUL string; equality claim limited to NUL byte"
+    },
+    {
+      "function": "_ZN3q4t4text12_GLOBAL__N_114ValidateSchemaERKNS_2io4JsonEPNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE.constprop.0",
+      "index": 640,
+      "A": "0x13d8f8",
+      "B": "0x13ce58",
+      "bytes": 1,
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "basis": "empty NUL string; equality claim limited to NUL byte"
+    },
+    {
+      "function": "_ZN3q4t4text12_GLOBAL__N_114ValidateSchemaERKNS_2io4JsonEPNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE.constprop.0",
+      "index": 690,
+      "A": "0x13d8f8",
+      "B": "0x13ce58",
+      "bytes": 1,
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "basis": "empty NUL string; equality claim limited to NUL byte"
+    },
+    {
+      "function": "_ZN3q4t4text12_GLOBAL__N_114ValidateSchemaERKNS_2io4JsonEPNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE.constprop.0",
+      "index": 735,
+      "A": "0x13d8f8",
+      "B": "0x13ce58",
+      "bytes": 1,
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "basis": "empty NUL string; equality claim limited to NUL byte"
+    },
+    {
+      "function": "_ZN3q4t4text12_GLOBAL__N_114ValidateSchemaERKNS_2io4JsonEPNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE.constprop.0",
+      "index": 804,
+      "A": "0x13d8f8",
+      "B": "0x13ce58",
+      "bytes": 1,
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "basis": "empty NUL string; equality claim limited to NUL byte"
+    },
+    {
+      "function": "_ZN3q4t6server10ChatServer10HandleChatEiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE",
+      "index": 2937,
+      "A": "0x13d8f8",
+      "B": "0x13ce58",
+      "bytes": 1,
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "basis": "empty NUL string; equality claim limited to NUL byte"
+    },
+    {
+      "function": "_ZN3q4t6server10ChatServer10HandleChatEiRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE",
+      "index": 4618,
+      "A": "0x13d8f8",
+      "B": "0x13ce58",
+      "bytes": 1,
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "basis": "empty NUL string; equality claim limited to NUL byte"
+    },
+    {
+      "function": "_ZN3q4t6server16RenderChatPromptERKNS_2io4JsonERKSt6vectorINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESaISB_EEPSB_",
+      "index": 383,
+      "A": "0x13d8f8",
+      "B": "0x13ce58",
+      "bytes": 1,
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "basis": "empty NUL string; equality claim limited to NUL byte"
+    },
+    {
+      "function": "_ZN3q4t6server16RenderChatPromptERKNS_2io4JsonERKSt6vectorINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESaISB_EEPSB_",
+      "index": 1179,
+      "A": "0x13d8f8",
+      "B": "0x13ce58",
+      "bytes": 1,
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "basis": "empty NUL string; equality claim limited to NUL byte"
+    },
+    {
+      "function": "_ZN3q4t6server16RenderChatPromptERKNS_2io4JsonERKSt6vectorINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESaISB_EEPSB_",
+      "index": 1347,
+      "A": "0x13d8f8",
+      "B": "0x13ce58",
+      "bytes": 1,
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "basis": "empty NUL string; equality claim limited to NUL byte"
+    },
+    {
+      "function": "_ZN3q4t6server16RenderChatPromptERKNS_2io4JsonERKSt6vectorINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESaISB_EEPSB_",
+      "index": 1430,
+      "A": "0x13d8f8",
+      "B": "0x13ce58",
+      "bytes": 1,
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "basis": "empty NUL string; equality claim limited to NUL byte"
+    },
+    {
+      "function": "_ZN3q4t7runtime19ComputeMemoryBudgetERKNS0_17BudgetModelParamsERKNS0_13BudgetRequestEmm",
+      "index": 501,
+      "A": "0x13d8f8",
+      "B": "0x13ce58",
+      "bytes": 1,
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "basis": "empty NUL string; equality claim limited to NUL byte"
+    },
+    {
+      "function": "_ZN3q4t7runtime19ComputeMemoryBudgetERKNS0_17BudgetModelParamsERKNS0_13BudgetRequestEmm",
+      "index": 2093,
+      "A": "0x142d40",
+      "B": "0x1422a0",
+      "bytes": 32,
+      "sha256": "66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925",
+      "basis": "ComputeMemoryBudget: LD1 {V30.16B-V31.16B}"
+    },
+    {
+      "function": "_ZN3q4t7runtime19ComputeMemoryBudgetERKNS0_17BudgetModelParamsERKNS0_13BudgetRequestEmm",
+      "index": 2179,
+      "A": "0x142d40",
+      "B": "0x1422a0",
+      "bytes": 32,
+      "sha256": "66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925",
+      "basis": "ComputeMemoryBudget: LD1 {V30.16B-V31.16B}"
+    }
+  ],
+  "reference_count": 21,
+  "unique_target_pairs": 6,
+  "limits": [
+    "Empty-string equality covers one NUL, not any wider unrelated memory read",
+    "Table byte equality does not imply equal code addresses or timing",
+    "CLI generate, MTP and media functions are not asserted reached by off serve fixture",
+    "This closes only the previously selected adjacent reference batch"
+  ],
+  "new_gpu_requests": 0
+}

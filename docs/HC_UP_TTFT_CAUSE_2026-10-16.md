@@ -1510,3 +1510,28 @@ HyperConnectionMixImpl、PleLayerForward的130处引用，86处相同字符串�
 没有支持新GPU干预的机制，不新增采样。原NO_GO、数值要求与active
 保持，根因及解决未闭合，生产代码未修改。
 证据：evidence/hc-up-host-reference-content-20261017/。
+
+## CUDA句柄实例与剩余只读跨度核对完成（2026-10-17）
+
+沿原A22/B23个注册构造函数解析ADRP/ADD/MOV、RegisterFatBinary返回值
+存储及RegisterFunction名称参数，用wrapper/fatbin头确认完整镜像边界。
+22份公共fatbin逐字节SHA一致且注册函数列表一致；B独有模块为HC。
+171处同名__cudaFatCubinHandle引用均对应同一具体模块，未按名称猜配。
+初始断言误要求每份fatbin有host函数，A的0x8be0是合法空列表；保留该
+离线问题说明，修正为必须有fatbin及handle、允许空列表，未运行GPU。
+
+余下21处.rodata引用只有六组目标：空NUL字符串、stbi两张索引<=0x19
+的26-entry半字跳转表、RunGenerate的48-byte Q寄存器常量、MtpForward
+的32-byte常量、ComputeMemoryBudget的32-byte LD1常量。按对应指令
+跨度逐字节一致；空字符串只声称一个NUL字节一致。不把CLI/MTP/media
+中的静态引用误称为当前off serve请求实测可达。
+
+至此该批2472个相邻ADRP地址变化引用，先前114个具名对象加后续2358个
+均已作内容/符号/模块身份对应；这是有界取址审计完成，不是全部host
+程序等价，也不证明地址布局、runtime handle值、cache行为或耗时相同。
+没有发现该批引用中的新计算内容差异，不能因此撤销原性能NO_GO。
+
+下一步离线核对尚未唯一配对的同名函数调用目标，保持每个实例身份，
+检查是否还存在off可达而未解释的操作数差异；当前不新增GPU干预。
+目标仍active，根因、对应解决与受影响验收未完成，生产计算代码未改。
+证据：evidence/hc-up-module-handle-map-20261017/。

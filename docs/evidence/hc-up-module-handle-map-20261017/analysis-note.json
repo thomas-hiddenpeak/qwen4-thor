@@ -1,0 +1,5 @@
+{
+  "initial_assertion_failure": "required every fatbin constructor to register host functions; A ctor 0x8be0 has valid fatbin and handle with empty function list",
+  "repair": "require fatbin and handle; permit empty function lists; compare full blob and function list between A/B",
+  "gpu_repeated": false
+}
