@@ -1,0 +1,547 @@
+{
+  "A": {
+    "window_ns": [
+      4412532637,
+      165049567421
+    ],
+    "activities": {
+      "KERNEL": {
+        "cross_start": 0,
+        "cross_end": 0,
+        "nonpositive": 0,
+        "identities": [
+          [
+            302013225107456,
+            0,
+            1
+          ]
+        ]
+      },
+      "MEMCPY": {
+        "cross_start": 0,
+        "cross_end": 0,
+        "nonpositive": 0,
+        "identities": [
+          [
+            302013225107456,
+            0,
+            1
+          ]
+        ]
+      },
+      "MEMSET": {
+        "cross_start": 0,
+        "cross_end": 0,
+        "nonpositive": 0,
+        "identities": [
+          [
+            302013225107456,
+            0,
+            1
+          ]
+        ]
+      }
+    },
+    "overhead": {
+      "PROFILER_OVERHEAD": {
+        "count": 306,
+        "by_type": {
+          "0": {
+            "count": 15,
+            "sum_ns": 239915,
+            "union_ns": 239915
+          },
+          "1": {
+            "count": 91,
+            "sum_ns": 1231920,
+            "union_ns": 1231920
+          },
+          "3": {
+            "count": 200,
+            "sum_ns": 107046324,
+            "union_ns": 107046324
+          }
+        }
+      },
+      "CUPTI_ACTIVITY_KIND_OVERHEAD": {
+        "count": 62,
+        "by_type": {
+          "6": {
+            "count": 2,
+            "sum_ns": 124407,
+            "union_ns": 124407
+          },
+          "7": {
+            "count": 60,
+            "sum_ns": 1634733,
+            "union_ns": 1634733
+          }
+        }
+      }
+    },
+    "recorded_overhead_union_ns": 110031356,
+    "families": {
+      "GatedDeltaNetRegKernel<": {
+        "count": 900,
+        "recorded_overhead_intersecting_calls": 0,
+        "intersection_ns": 0,
+        "kernel_duration_sum_ns": 31392464096
+      },
+      "CausalConv1dWithCkptKernel(": {
+        "count": 900,
+        "recorded_overhead_intersecting_calls": 1,
+        "intersection_ns": 88991,
+        "kernel_duration_sum_ns": 4813821568
+      },
+      "CombineWithGateKernel(": {
+        "count": 1200,
+        "recorded_overhead_intersecting_calls": 0,
+        "intersection_ns": 0,
+        "kernel_duration_sum_ns": 4208707968
+      }
+    },
+    "diagnostics": [
+      [
+        -29038691578,
+        1,
+        1,
+        "Process was launched by the profiler, see /tmp/nvidia/nsight_systems/quadd_session_101224161/streams/pid_1224175_stdout.log and stderr.log for program output"
+      ],
+      [
+        -28002459456,
+        1,
+        1,
+        "Common injection library initialized successfully."
+      ],
+      [
+        -28002196530,
+        1,
+        1,
+        "Buffers holding CUDA trace data will be flushed on CudaProfilerStop() call. See --flush-on-cudaprofilerstop to control this behavior."
+      ],
+      [
+        -27991038205,
+        1,
+        1,
+        "Loaded CUPTI library: /opt/nvidia/nsight-systems/2026.1.3/target-linux-sbsa-armv8/libcupti-sbsa.so.13.3"
+      ],
+      [
+        -27975123381,
+        1,
+        1,
+        "Enabling trace for device graph launch"
+      ],
+      [
+        -27975116928,
+        1,
+        1,
+        "CUDA injection initialized successfully."
+      ],
+      [
+        -27953748409,
+        1,
+        3,
+        "CUDA device 0: Unified Memory trace is not supported by the current driver version or configuration."
+      ],
+      [
+        0,
+        1,
+        1,
+        "Profiling has started."
+      ],
+      [
+        10297731222,
+        2,
+        2,
+        "Not all CUDA events might have been collected."
+      ],
+      [
+        10297739296,
+        2,
+        1,
+        "Number of CUDA events collected: \t10619252."
+      ],
+      [
+        181421474610,
+        1,
+        1,
+        "Profiling has stopped."
+      ],
+      [
+        181421684841,
+        1,
+        1,
+        "CUDA hardware tracing is not supported on this system. A legacy (software instrumented) trace was collected instead."
+      ],
+      [
+        181425925480,
+        1,
+        1,
+        "Number of CUPTI events produced: \t10711617, CUPTI buffers: 50."
+      ],
+      [
+        210117409403,
+        1,
+        1,
+        "S3EventHandler: S3 trace events were not found, not creating counters"
+      ],
+      [
+        211227534189,
+        1,
+        1,
+        "Number of Debuginfod queries: 0 (successful queries: 0, timed out queries: 0)."
+      ],
+      [
+        211227547041,
+        1,
+        1,
+        "Number of used Debuginfod cached files: 0."
+      ],
+      [
+        211227548605,
+        1,
+        1,
+        "Total time spent on all Debuginfod queries: 0 sec (successful queries: 0 sec)."
+      ]
+    ],
+    "timestamp_sources": [
+      [
+        0,
+        "UnknownTimestamp",
+        "Unknown timestamp"
+      ],
+      [
+        1,
+        "TargetTimestamp",
+        "Target timestamp"
+      ],
+      [
+        2,
+        "HostTimestamp",
+        "Host timestamp"
+      ]
+    ],
+    "overhead_types": [
+      [
+        0,
+        "OVERHEAD_UNDEFINED",
+        "Undefined"
+      ],
+      [
+        1,
+        "OVERHEAD_UNKNOWN",
+        "Unknown"
+      ],
+      [
+        2,
+        "OVERHEAD_DRIVER_COMPILER",
+        "Driver JIT compiler (CUDA)"
+      ],
+      [
+        3,
+        "OVERHEAD_CUPTI_BUFFER_FLUSH",
+        "Buffer flush (Profiler)"
+      ],
+      [
+        4,
+        "OVERHEAD_CUPTI_INSTRUMENTATION",
+        "Instrumentation (Profiler)"
+      ],
+      [
+        5,
+        "OVERHEAD_CUPTI_RESOURCE",
+        "Resource creation/destruction (Profiler)"
+      ],
+      [
+        6,
+        "OVERHEAD_RUNTIME_TRIGGERED_MODULE_LOADING",
+        "Runtime module loading (CUDA)"
+      ],
+      [
+        7,
+        "OVERHEAD_LAZY_FUNCTION_LOADING",
+        "Lazy function loading (CUDA)"
+      ],
+      [
+        8,
+        "OVERHEAD_COMMAND_BUFFER_FULL",
+        "Command buffer full (CUDA)"
+      ]
+    ]
+  },
+  "B": {
+    "window_ns": [
+      4430840766,
+      165120739358
+    ],
+    "activities": {
+      "KERNEL": {
+        "cross_start": 0,
+        "cross_end": 0,
+        "nonpositive": 0,
+        "identities": [
+          [
+            302042182582272,
+            0,
+            1
+          ]
+        ]
+      },
+      "MEMCPY": {
+        "cross_start": 0,
+        "cross_end": 0,
+        "nonpositive": 0,
+        "identities": [
+          [
+            302042182582272,
+            0,
+            1
+          ]
+        ]
+      },
+      "MEMSET": {
+        "cross_start": 0,
+        "cross_end": 0,
+        "nonpositive": 0,
+        "identities": [
+          [
+            302042182582272,
+            0,
+            1
+          ]
+        ]
+      }
+    },
+    "overhead": {
+      "PROFILER_OVERHEAD": {
+        "count": 305,
+        "by_type": {
+          "0": {
+            "count": 14,
+            "sum_ns": 241379,
+            "union_ns": 241379
+          },
+          "1": {
+            "count": 91,
+            "sum_ns": 1243136,
+            "union_ns": 1243136
+          },
+          "3": {
+            "count": 200,
+            "sum_ns": 124450483,
+            "union_ns": 124450483
+          }
+        }
+      },
+      "CUPTI_ACTIVITY_KIND_OVERHEAD": {
+        "count": 62,
+        "by_type": {
+          "6": {
+            "count": 2,
+            "sum_ns": 112056,
+            "union_ns": 112056
+          },
+          "7": {
+            "count": 60,
+            "sum_ns": 1578109,
+            "union_ns": 1578109
+          }
+        }
+      }
+    },
+    "recorded_overhead_union_ns": 127377182,
+    "families": {
+      "GatedDeltaNetRegKernel<": {
+        "count": 900,
+        "recorded_overhead_intersecting_calls": 0,
+        "intersection_ns": 0,
+        "kernel_duration_sum_ns": 31434155392
+      },
+      "CausalConv1dWithCkptKernel(": {
+        "count": 900,
+        "recorded_overhead_intersecting_calls": 1,
+        "intersection_ns": 34658,
+        "kernel_duration_sum_ns": 4837782624
+      },
+      "CombineWithGateKernel(": {
+        "count": 1200,
+        "recorded_overhead_intersecting_calls": 0,
+        "intersection_ns": 0,
+        "kernel_duration_sum_ns": 4235207424
+      }
+    },
+    "diagnostics": [
+      [
+        -27053340640,
+        1,
+        1,
+        "Process was launched by the profiler, see /tmp/nvidia/nsight_systems/quadd_session_101225887/streams/pid_1225901_stdout.log and stderr.log for program output"
+      ],
+      [
+        -26036128484,
+        1,
+        1,
+        "Common injection library initialized successfully."
+      ],
+      [
+        -26035869697,
+        1,
+        1,
+        "Buffers holding CUDA trace data will be flushed on CudaProfilerStop() call. See --flush-on-cudaprofilerstop to control this behavior."
+      ],
+      [
+        -26027470503,
+        1,
+        1,
+        "Loaded CUPTI library: /opt/nvidia/nsight-systems/2026.1.3/target-linux-sbsa-armv8/libcupti-sbsa.so.13.3"
+      ],
+      [
+        -26011911698,
+        1,
+        1,
+        "Enabling trace for device graph launch"
+      ],
+      [
+        -26011905337,
+        1,
+        1,
+        "CUDA injection initialized successfully."
+      ],
+      [
+        -25991343273,
+        1,
+        3,
+        "CUDA device 0: Unified Memory trace is not supported by the current driver version or configuration."
+      ],
+      [
+        0,
+        1,
+        1,
+        "Profiling has started."
+      ],
+      [
+        10345178333,
+        2,
+        2,
+        "Not all CUDA events might have been collected."
+      ],
+      [
+        10345187175,
+        2,
+        1,
+        "Number of CUDA events collected: \t10619252."
+      ],
+      [
+        181522773895,
+        1,
+        1,
+        "Profiling has stopped."
+      ],
+      [
+        181522904599,
+        1,
+        1,
+        "CUDA hardware tracing is not supported on this system. A legacy (software instrumented) trace was collected instead."
+      ],
+      [
+        181527088618,
+        1,
+        1,
+        "Number of CUPTI events produced: \t10711193, CUPTI buffers: 50."
+      ],
+      [
+        210161914591,
+        1,
+        1,
+        "S3EventHandler: S3 trace events were not found, not creating counters"
+      ],
+      [
+        211211360618,
+        1,
+        1,
+        "Number of Debuginfod queries: 0 (successful queries: 0, timed out queries: 0)."
+      ],
+      [
+        211211374646,
+        1,
+        1,
+        "Number of used Debuginfod cached files: 0."
+      ],
+      [
+        211211376433,
+        1,
+        1,
+        "Total time spent on all Debuginfod queries: 0 sec (successful queries: 0 sec)."
+      ]
+    ],
+    "timestamp_sources": [
+      [
+        0,
+        "UnknownTimestamp",
+        "Unknown timestamp"
+      ],
+      [
+        1,
+        "TargetTimestamp",
+        "Target timestamp"
+      ],
+      [
+        2,
+        "HostTimestamp",
+        "Host timestamp"
+      ]
+    ],
+    "overhead_types": [
+      [
+        0,
+        "OVERHEAD_UNDEFINED",
+        "Undefined"
+      ],
+      [
+        1,
+        "OVERHEAD_UNKNOWN",
+        "Unknown"
+      ],
+      [
+        2,
+        "OVERHEAD_DRIVER_COMPILER",
+        "Driver JIT compiler (CUDA)"
+      ],
+      [
+        3,
+        "OVERHEAD_CUPTI_BUFFER_FLUSH",
+        "Buffer flush (Profiler)"
+      ],
+      [
+        4,
+        "OVERHEAD_CUPTI_INSTRUMENTATION",
+        "Instrumentation (Profiler)"
+      ],
+      [
+        5,
+        "OVERHEAD_CUPTI_RESOURCE",
+        "Resource creation/destruction (Profiler)"
+      ],
+      [
+        6,
+        "OVERHEAD_RUNTIME_TRIGGERED_MODULE_LOADING",
+        "Runtime module loading (CUDA)"
+      ],
+      [
+        7,
+        "OVERHEAD_LAZY_FUNCTION_LOADING",
+        "Lazy function loading (CUDA)"
+      ],
+      [
+        8,
+        "OVERHEAD_COMMAND_BUFFER_FULL",
+        "Command buffer full (CUDA)"
+      ]
+    ]
+  },
+  "limits": [
+    "Recorded profiler host intervals only; temporal overlap is not proof of device contention",
+    "No overhead subtraction from kernel durations or unprofiled TTFT",
+    "No new GPU requests; one existing instrumented A/B pair cannot establish uninstrumented causality"
+  ]
+}
