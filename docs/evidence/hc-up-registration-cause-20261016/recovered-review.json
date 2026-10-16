@@ -1,0 +1,26 @@
+{
+  "same_identity_ranges_s": {
+    "A": 0.061016727006062865,
+    "B": 0.20482015202287585,
+    "C": 0.07390187098644674
+  },
+  "R_s": 0.20482015202287585,
+  "blocks": [
+    {
+      "original_gap_s": 0.05444342503324151,
+      "registration_effect_s": -0.07886890298686922,
+      "residual_s": 0.13331232802011073,
+      "support_rule": false
+    },
+    {
+      "original_gap_s": 0.3202803040621802,
+      "registration_effect_s": 0.05204937804955989,
+      "residual_s": 0.26823092601262033,
+      "support_rule": false
+    }
+  ],
+  "mechanistic_support": false,
+  "performance_acceptance": false,
+  "phase_status": "ENV_ABORT preserved; offline reconstruction of six completed HTTP files",
+  "scope": "No completed-phase claim, no retry. Frozen numerical criterion also fails independently of guard failure."
+}

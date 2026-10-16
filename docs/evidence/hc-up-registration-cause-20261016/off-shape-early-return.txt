@@ -1,0 +1,56 @@
+
+.q4t-work/mtp-decode-20261016/hc-up/q4t:     file format elf64-littleaarch64
+
+
+Disassembly of section .text:
+
+00000000000646f0 <_ZN3q4t5model14Bf16SmallMGemmEPKtS2_PtiiifP11CUstream_st>:
+   646f0:	d10543ff 	sub	sp, sp, #0x150
+   646f4:	f100001f 	cmp	x0, #0x0
+   646f8:	f0001c47 	adrp	x7, 3ef000 <__FRAME_END__+0x1bd50>
+   646fc:	f94798e7 	ldr	x7, [x7, #3888]
+   64700:	fa401824 	ccmp	x1, #0x0, #0x4, ne	// ne = any
+   64704:	a90f7bfd 	stp	x29, x30, [sp, #240]
+   64708:	9103c3fd 	add	x29, sp, #0xf0
+   6470c:	fa401844 	ccmp	x2, #0x0, #0x4, ne	// ne = any
+   64710:	f94000e8 	ldr	x8, [x7]
+   64714:	f90077e8 	str	x8, [sp, #232]
+   64718:	d2800008 	mov	x8, #0x0                   	// #0
+   6471c:	540001e0 	b.eq	64758 <_ZN3q4t5model14Bf16SmallMGemmEPKtS2_PtiiifP11CUstream_st+0x68>  // b.none
+   64720:	a9115bf5 	stp	x21, x22, [sp, #272]
+   64724:	2a0303f6 	mov	w22, w3
+   64728:	51000863 	sub	w3, w3, #0x2
+   6472c:	7100187f 	cmp	w3, #0x6
+   64730:	54000128 	b.hi	64754 <_ZN3q4t5model14Bf16SmallMGemmEPKtS2_PtiiifP11CUstream_st+0x64>  // b.pmore
+   64734:	a91053f3 	stp	x19, x20, [sp, #256]
+   64738:	7104fc9f 	cmp	w4, #0x13f
+   6473c:	120008a3 	and	w3, w5, #0x7
+   64740:	2a0403f5 	mov	w21, w4
+   64744:	2a0503f4 	mov	w20, w5
+   64748:	7a40c860 	ccmp	w3, #0x0, #0x0, gt
+   6474c:	540001c0 	b.eq	64784 <_ZN3q4t5model14Bf16SmallMGemmEPKtS2_PtiiifP11CUstream_st+0x94>  // b.none
+   64750:	a95053f3 	ldp	x19, x20, [sp, #256]
+   64754:	a9515bf5 	ldp	x21, x22, [sp, #272]
+   64758:	52800000 	mov	w0, #0x0                   	// #0
+   6475c:	f0001c41 	adrp	x1, 3ef000 <__FRAME_END__+0x1bd50>
+   64760:	f9479821 	ldr	x1, [x1, #3888]
+   64764:	f94077e3 	ldr	x3, [sp, #232]
+   64768:	f9400022 	ldr	x2, [x1]
+   6476c:	eb020063 	subs	x3, x3, x2
+   64770:	d2800002 	mov	x2, #0x0                   	// #0
+   64774:	54001c41 	b.ne	64afc <_ZN3q4t5model14Bf16SmallMGemmEPKtS2_PtiiifP11CUstream_st+0x40c>  // b.any
+   64778:	a94f7bfd 	ldp	x29, x30, [sp, #240]
+   6477c:	910543ff 	add	sp, sp, #0x150
+   64780:	d65f03c0 	ret
+   64784:	a91263f7 	stp	x23, x24, [sp, #288]
+   64788:	710012df 	cmp	w22, #0x4
+   6478c:	52850003 	mov	w3, #0x2800                	// #10240
+   64790:	fd00a7ef 	str	d15, [sp, #328]
+   64794:	aa0003f7 	mov	x23, x0
+   64798:	1e20400f 	fmov	s15, s0
+   6479c:	aa0103f8 	mov	x24, x1
+   647a0:	aa0203f3 	mov	x19, x2
+   647a4:	7a430080 	ccmp	w4, w3, #0x0, eq	// eq = none
+   647a8:	54000261 	b.ne	647f4 <_ZN3q4t5model14Bf16SmallMGemmEPKtS2_PtiiifP11CUstream_st+0x104>  // b.any
+   647ac:	710500bf 	cmp	w5, #0x140
+   647b0:	54001080 	b.eq	649c0 <_ZN3q4t5model14Bf16SmallMGemmEPKtS2_PtiiifP11CUstream_st+0x2d0>  // b.none

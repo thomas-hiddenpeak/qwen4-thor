@@ -1,0 +1,247 @@
+{
+  "http_exits": {
+    "01-A": {
+      "server": 0,
+      "completed": 1,
+      "http_output_checks_passed": true,
+      "performance_scope": "partial",
+      "partial_performance_matrix": true,
+      "full_five_tier_completed": false,
+      "full_offload_matrix_completed": false,
+      "performance_acceptance": false,
+      "failure": null,
+      "cleanup_failure": null
+    },
+    "02-B": {
+      "server": 0,
+      "completed": 1,
+      "http_output_checks_passed": true,
+      "performance_scope": "partial",
+      "partial_performance_matrix": true,
+      "full_five_tier_completed": false,
+      "full_offload_matrix_completed": false,
+      "performance_acceptance": false,
+      "failure": null,
+      "cleanup_failure": null
+    },
+    "03-C": {
+      "server": 0,
+      "completed": 1,
+      "http_output_checks_passed": true,
+      "performance_scope": "partial",
+      "partial_performance_matrix": true,
+      "full_five_tier_completed": false,
+      "full_offload_matrix_completed": false,
+      "performance_acceptance": false,
+      "failure": null,
+      "cleanup_failure": null
+    },
+    "04-C": {
+      "server": 0,
+      "completed": 1,
+      "http_output_checks_passed": true,
+      "performance_scope": "partial",
+      "partial_performance_matrix": true,
+      "full_five_tier_completed": false,
+      "full_offload_matrix_completed": false,
+      "performance_acceptance": false,
+      "failure": null,
+      "cleanup_failure": null
+    },
+    "05-B": {
+      "server": 0,
+      "completed": 1,
+      "http_output_checks_passed": true,
+      "performance_scope": "partial",
+      "partial_performance_matrix": true,
+      "full_five_tier_completed": false,
+      "full_offload_matrix_completed": false,
+      "performance_acceptance": false,
+      "failure": null,
+      "cleanup_failure": null
+    },
+    "06-A": {
+      "server": 0,
+      "completed": 1,
+      "http_output_checks_passed": true,
+      "performance_scope": "partial",
+      "partial_performance_matrix": true,
+      "full_five_tier_completed": false,
+      "full_offload_matrix_completed": false,
+      "performance_acceptance": false,
+      "failure": null,
+      "cleanup_failure": null
+    }
+  },
+  "guard_status": {
+    "status": "ENV_ABORT",
+    "command": [
+      "python3",
+      ".q4t-work/hc-up-registration-cause-20261016/run.py"
+    ],
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": -2,
+    "reason": "competing workload during lease",
+    "finished": {
+      "utc": "2026-10-16T15:47:36.660102+00:00",
+      "monotonic": 355739.176993707,
+      "pid": 1142878
+    }
+  },
+  "reported_conflict": [
+    {
+      "utc": "2026-10-16T15:47:36.478262+00:00",
+      "monotonic": 355738.995154956,
+      "pid": 1142878,
+      "event": "monitor",
+      "conflicts": [
+        {
+          "pid": 1149505,
+          "nvidia_compute_context": true
+        }
+      ],
+      "unreadable_processes": 419
+    }
+  ],
+  "last_request_events": {
+    "runner_start": {
+      "event": "runner_start",
+      "monotonic_seconds": 355532.42144957697,
+      "unix_seconds": 1792165449.9045756,
+      "utc": "2026-10-16T15:44:09.904576+00:00",
+      "clock_pair_uncertainty_seconds": 8.010247256606817e-07,
+      "mode": "performance"
+    },
+    "server_before_start": {
+      "event": "server_before_start",
+      "monotonic_seconds": 355532.501013738,
+      "unix_seconds": 1792165449.98414,
+      "utc": "2026-10-16T15:44:09.984140+00:00",
+      "clock_pair_uncertainty_seconds": 1.0090006981045008e-06
+    },
+    "server_started": {
+      "event": "server_started",
+      "monotonic_seconds": 355532.5015317175,
+      "unix_seconds": 1792165449.9846575,
+      "utc": "2026-10-16T15:44:09.984658+00:00",
+      "clock_pair_uncertainty_seconds": 2.0349398255348206e-07,
+      "pid": 1149505
+    },
+    "server_ready": {
+      "event": "server_ready",
+      "monotonic_seconds": 355559.510267526,
+      "unix_seconds": 1792165476.9933937,
+      "utc": "2026-10-16T15:44:36.993394+00:00",
+      "clock_pair_uncertainty_seconds": 8.520146366208792e-07,
+      "pid": 1149505,
+      "capacity": {
+        "requested": {
+          "max_len": 208896,
+          "max_seq": 1,
+          "max_prefill": 8192
+        },
+        "effective": {
+          "max_len": 208896,
+          "max_seq": 1,
+          "max_prefill": 8192
+        },
+        "reported_requested": {
+          "max_len": 208896,
+          "max_seq": 1,
+          "max_prefill": 8192
+        },
+        "source": "server effective capacity report",
+        "matches_requested": true,
+        "budget_enabled": "1",
+        "budget_feasible": "true",
+        "raw_lines": [
+          "requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true"
+        ]
+      }
+    },
+    "client_before": {
+      "event": "client_before",
+      "monotonic_seconds": 355559.51298031653,
+      "unix_seconds": 1792165476.996106,
+      "utc": "2026-10-16T15:44:36.996106+00:00",
+      "clock_pair_uncertainty_seconds": 3.935128916054964e-07,
+      "case": "context-204800",
+      "request_group": "context-204800:run1",
+      "expected_requests": 1,
+      "requested_output": 256,
+      "expected_input_min": 204752,
+      "expected_input_max": 204800,
+      "capacity": {
+        "requested": {
+          "max_len": 208896,
+          "max_seq": 1,
+          "max_prefill": 8192
+        },
+        "effective": {
+          "max_len": 208896,
+          "max_seq": 1,
+          "max_prefill": 8192
+        },
+        "reported_requested": {
+          "max_len": 208896,
+          "max_seq": 1,
+          "max_prefill": 8192
+        },
+        "source": "server effective capacity report",
+        "matches_requested": true,
+        "budget_enabled": "1",
+        "budget_feasible": "true",
+        "raw_lines": [
+          "requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true"
+        ]
+      }
+    },
+    "client_after": {
+      "event": "client_after",
+      "monotonic_seconds": 355738.616868717,
+      "unix_seconds": 1792165656.0999951,
+      "utc": "2026-10-16T15:47:36.099995+00:00",
+      "clock_pair_uncertainty_seconds": 9.720097295939922e-07,
+      "case": "context-204800",
+      "request_group": "context-204800:run1",
+      "client_returncode": 0
+    },
+    "case_completed": {
+      "event": "case_completed",
+      "monotonic_seconds": 355738.6223827605,
+      "unix_seconds": 1792165656.1055086,
+      "utc": "2026-10-16T15:47:36.105509+00:00",
+      "clock_pair_uncertainty_seconds": 5.094916559755802e-07,
+      "case": "context-204800",
+      "requests": 1
+    },
+    "server_before_shutdown": {
+      "event": "server_before_shutdown",
+      "monotonic_seconds": 355738.6225240705,
+      "unix_seconds": 1792165656.1056497,
+      "utc": "2026-10-16T15:47:36.105650+00:00",
+      "clock_pair_uncertainty_seconds": 2.175220288336277e-07,
+      "pid": 1149505
+    },
+    "server_after_shutdown": {
+      "event": "server_after_shutdown",
+      "monotonic_seconds": 355739.08674990246,
+      "unix_seconds": 1792165656.5698757,
+      "utc": "2026-10-16T15:47:36.569876+00:00",
+      "clock_pair_uncertainty_seconds": 6.435147952288389e-07,
+      "pid": 1149505,
+      "server_returncode": 0,
+      "cleanup_failure": null
+    }
+  },
+  "lease_event_counts": {
+    "lease_acquired": 1,
+    "preflight": 1,
+    "child_started": 1,
+    "monitor": 1202,
+    "lease_released": 1
+  }
+}

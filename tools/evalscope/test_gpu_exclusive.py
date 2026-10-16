@@ -57,6 +57,42 @@ class ExclusiveTests(unittest.TestCase):
                 patch.object(guard, 'nvidia_pids', return_value={10, 20}):
             self.assertEqual([x['pid'] for x in guard.inspect(5)['conflicts']], [20])
 
+    def test_owned_exit_between_driver_and_proc_queries(self):
+        history = {}
+        owned = {10: {'pgid': 5, 'start_ticks': 100}}
+        with patch.object(guard, 'processes', side_effect=[owned, {}, {}]), \
+                patch.object(guard, 'nvidia_pids', side_effect=[{10}, {10}, set()]):
+            self.assertEqual(guard.inspect(5, history)['conflicts'], [])
+            result = guard.inspect(5, history)
+        self.assertEqual(result['conflicts'], [])
+        self.assertEqual(result['retired_owned_contexts'][0]['identity']['start_ticks'], 100)
+
+    def test_exit_recheck_does_not_hide_reused_pid_or_other_context(self):
+        history = {10: {'pgid': 5, 'start_ticks': 100}}
+        reused = {10: {'pgid': 20, 'start_ticks': 200}}
+        with patch.object(guard, 'processes', side_effect=[{}, reused]), \
+                patch.object(guard, 'nvidia_pids', side_effect=[{10}, {10, 30}]):
+            result = guard.inspect(5, history)
+        self.assertEqual({r['pid'] for r in result['conflicts']}, {10, 30})
+        self.assertEqual(result['retired_owned_contexts'], [])
+
+    def test_unknown_missing_pid_and_unreadable_owned_history_fail_closed(self):
+        for records, history in [({}, {}), ({10: {'unreadable': True}},
+                                           {10: {'pgid': 5, 'start_ticks': 100}})]:
+            with patch.object(guard, 'processes', return_value=records), \
+                    patch.object(guard, 'nvidia_pids', return_value={10}):
+                self.assertEqual(guard.inspect(5, history)['conflicts'][0]['pid'], 10)
+
+    def test_owned_stale_context_still_present_or_requery_error_fails_closed(self):
+        history = {10: {'pgid': 5, 'start_ticks': 100}}
+        with patch.object(guard, 'processes', return_value={}), \
+                patch.object(guard, 'nvidia_pids', return_value={10}):
+            self.assertEqual(guard.inspect(5, history)['conflicts'][0]['pid'], 10)
+        with patch.object(guard, 'processes', return_value={}), \
+                patch.object(guard, 'nvidia_pids', side_effect=[{10}, RuntimeError('query')]):
+            with self.assertRaises(RuntimeError):
+                guard.inspect(5, history)
+
     def test_argument_text_is_not_an_executable(self):
         self.assertFalse(guard.gpu_command(
             {'executable': '/bin/bash', 'argv': ['bash', '-c', 'q4t serve']}))

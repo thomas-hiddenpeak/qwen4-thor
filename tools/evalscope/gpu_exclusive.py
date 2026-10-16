@@ -66,20 +66,44 @@ def gpu_command(record):
         (name == 'nsys' and any(v in argv[1:3] for v in ('launch', 'profile'))))
 
 
-def inspect(owner_pgid=None):
+def inspect(owner_pgid=None, owned_history=None):
     compute = nvidia_pids()  # Errors fail closed; never interpreted as idle.
     # Read process groups after the driver query so newly created owned GPU
     # children are not mistaken for unrelated processes from a stale snapshot.
     records = processes()
+    # Keep observed process identities, not a PID-only allowlist. A live,
+    # reused or unreadable PID is never exempted based on history.
+    history = owned_history if owned_history is not None else {}
+    for pid, record in records.items():
+        if owner_pgid is not None and record.get('pgid') == owner_pgid:
+            history[pid] = record.copy()
+    candidates = {pid for pid in compute if pid not in records and pid in history}
+    retired = []
+    if candidates:
+        # NVIDIA may report a context whose owned process exited before /proc
+        # was read. Require a fresh query AND /proc snapshot to confirm exit.
+        refreshed_compute = nvidia_pids()
+        refreshed_records = processes()
+        for pid in candidates:
+            if pid not in refreshed_compute and pid not in refreshed_records:
+                retired.append(dict(pid=pid, identity=history[pid],
+                                    reason='owned exit confirmed by fresh queries'))
+            elif pid in refreshed_records:
+                records[pid] = refreshed_records[pid]
+        compute |= refreshed_compute
+        records.update(refreshed_records)
+    retired_pids = {r['pid'] for r in retired}
     conflicts = []
     for pid in records.keys() | compute:
+        if pid in retired_pids:
+            continue
         record = records.get(pid, {})
         if owner_pgid is not None and record.get('pgid') == owner_pgid:
             continue
         if pid in compute or gpu_command(record):
             conflicts.append(dict(pid=pid, **record,
                                   nvidia_compute_context=pid in compute))
-    return {'conflicts': conflicts,
+    return {'conflicts': conflicts, 'retired_owned_contexts': retired,
             'unreadable_processes': sum(r.get('unreadable', False)
                                         for r in records.values())}
 
@@ -158,8 +182,9 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0):
                 return 75
             child = subprocess.Popen(command, cwd=ROOT, start_new_session=True)
             record('child_started', child_pid=child.pid)
+            owned_history = {}
             while True:
-                snapshot = inspect(child.pid)
+                snapshot = inspect(child.pid, owned_history)
                 record('monitor', **snapshot)
                 if snapshot['conflicts']:
                     status['status'] = 'ENV_ABORT'
