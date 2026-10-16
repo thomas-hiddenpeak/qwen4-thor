@@ -1,0 +1,7 @@
+Test project /home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-isolation-20261016/host-cmake
+    Start 19: q4t_gpu_exclusive_contracts
+1/1 Test #19: q4t_gpu_exclusive_contracts ......   Passed    0.18 sec
+
+100% tests passed out of 1
+
+Total Test time (real) =   0.19 sec

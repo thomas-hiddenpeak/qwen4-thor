@@ -1,0 +1,5 @@
+{"utc": "2026-10-16T14:34:38.868322+00:00", "monotonic": 351361.385200338, "pid": 1124356, "event": "lease_acquired"}
+{"utc": "2026-10-16T14:34:38.901122+00:00", "monotonic": 351361.418009712, "pid": 1124356, "event": "preflight", "conflicts": [], "unreadable_processes": 423}
+{"utc": "2026-10-16T14:34:38.901475+00:00", "monotonic": 351361.41835461, "pid": 1124356, "event": "child_started", "child_pid": 1124360}
+{"utc": "2026-10-16T14:34:38.935064+00:00", "monotonic": 351361.45195065, "pid": 1124356, "event": "monitor", "conflicts": [], "unreadable_processes": 423}
+{"utc": "2026-10-16T14:34:38.951653+00:00", "monotonic": 351361.468529714, "pid": 1124356, "event": "lease_released", "status": "COMPLETED"}

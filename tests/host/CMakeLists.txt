@@ -108,5 +108,7 @@ q4t_add_python_contract(q4t_physical_ram_contracts
   tools/evalscope/test_physical_ram.py)
 q4t_add_python_contract(q4t_response_identity_contracts
   tools/evalscope/test_response_identity.py)
+q4t_add_python_contract(q4t_gpu_exclusive_contracts
+  tools/evalscope/test_gpu_exclusive.py)
 q4t_add_python_contract(q4t_request_cancellation_contracts
   tools/evalscope/test_request_cancellation.py)

@@ -218,3 +218,29 @@ build/verify_chat_template tools/evalscope/fixtures/chat_template_cases.jsonl
 
 字节参考由模型自带Jinja模板生成并冻结，来源与摘要见同目录metadata。
 字节检查通过不替代HTTP或性能接受，测试失败不得重写参考迎合实现。
+
+## 跨会话 GPU 独占（2026-10-16）
+
+开发验证的整个阶段驱动经共享入口运行，例如：
+
+```bash
+python3 tools/evalscope/gpu_exclusive.py \
+  --output .q4t-work/my-phase/lease -- \
+  python3 .q4t-work/my-phase/run_phase.py
+```
+
+锁位于 git common-dir 所属仓库的 `.q4t-work/gpu-exclusive.lock`，因此本仓库
+不同 worktree 共用，不在子测试间释放。另一持锁会话存在则返回75且不启动
+命令；不能根据锁文件内容判断占用或手动删锁，内核flock才是占用事实。
+退出时文件保留released记录，进程死亡自动释放flock。
+
+启动前及运行中每秒检查 `/proc` 中的模型服务/测试/Nsight命令和
+`nvidia-smi`计算进程；查询失败或检测到非自有GPU负载时记ENV_ABORT、
+返回75，仅清理本入口创建的进程组，不停止冲突方。命令本身失败单列
+COMMAND_FAILED，不混同环境失败。exit.json、events.jsonl保留监控与退出。
+成功仅证明命令成功且监控未检测到冲突，不表示性能或数值验收通过。
+
+flock只有遵循该入口的会话才互斥；轮询补充检测非合作进程，无法排除
+短于实际采样间隔、驱动未列出或不可见的GPU负载。事件记录真实单调
+时钟，查询耗时可能拉长间隔。需要跨会话安排，不把轮询无冲突扩大为
+绝对无干扰证明。环境中断时保留全部原始证据，不自动重跑或接受结果。
