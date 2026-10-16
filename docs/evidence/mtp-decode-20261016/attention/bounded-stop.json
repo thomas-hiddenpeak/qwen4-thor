@@ -1,0 +1,7 @@
+{
+  "reason": "completed on matrix: no discernible gain; off/quality-off/numerics/diagnostic omitted for rejected candidate",
+  "http_server_exit": 0,
+  "http_runner_exit": 0,
+  "coordinator": "intentionally terminated after child completed, before off launch",
+  "pending_helper": "cancelled before any tests"
+}

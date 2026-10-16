@@ -50,7 +50,6 @@ __device__ __forceinline__ void CpAsyncWait() {
   asm volatile("cp.async.wait_group %0;\n" ::"n"(N));
 }
 
-template <bool kParallelExp>
 __global__ void SparseAttentionDecodeSplitKernel(
     const u16* __restrict__ q, const u16* __restrict__ kv_cache,
     const int* __restrict__ page_table, const int* __restrict__ topk,
@@ -182,40 +181,7 @@ __global__ void SparseAttentionDecodeSplitKernel(
       sS[(group + 8) * 16 + nb + col + 1] = c3;
     }
     __syncthreads();
-    if constexpr (kParallelExp) {
-      // Exponentials are independent; the max and sum retain their original
-      // per-query order. All lanes participate in each shuffle, including
-      // lanes outside the 16-column tile. Only T=4 selects this mapping.
-      for (int qrow = warp_id; qrow < kG; qrow += 8) {
-        float mx = 0.f;
-        float alpha = 0.f;
-        if (lane == 0) {
-          const float m_old = sMax[qrow];
-          mx = m_old;
-          for (int p = 0; p < chunk; ++p)
-            mx = fmaxf(mx, sS[qrow * 16 + p] * scale);
-          alpha = expf(m_old - mx);
-          sAlpha[qrow] = alpha;
-        }
-        mx = __shfl_sync(0xffffffff, mx, 0);
-        alpha = __shfl_sync(0xffffffff, alpha, 0);
-        const float pr = (lane < chunk)
-                             ? expf(sS[qrow * 16 + lane] * scale - mx)
-                             : 0.f;
-        if (lane < kChunk) sP[lane * 16 + qrow] = FloatToBf16(pr);
-        float sum = 0.f;
-        if (lane == 0) sum = sSum[qrow] * alpha;
-        // A shuffle gathers one scalar at a time, not a tree reduction.
-        for (int p = 0; p < kChunk; ++p) {
-          const float value = __shfl_sync(0xffffffff, pr, p);
-          if (lane == 0) sum += value;
-        }
-        if (lane == 0) {
-          sSum[qrow] = sum;
-          sMax[qrow] = mx;
-        }
-      }
-    } else if (threadIdx.x < kG) {
+    if (threadIdx.x < kG) {
       const int qrow = threadIdx.x;
       const float m_old = sMax[qrow];
       float mx = m_old;
@@ -309,17 +275,9 @@ Status QsaDecodeSplit(const uint16_t* q, const uint16_t* kv_cache,
   // grid=(T, nkv, 4): x=token, y=kv-head, z=64-column output partition. The
   // kernel body is T-general (t=blockIdx.x), so each token's attention is
   // computed exactly as in the T=1 decode — bit-identical per token.
-  if (T == 4) {
-    SparseAttentionDecodeSplitKernel<true>
-        <<<dim3(T, 2, 4), 256, 0, stream>>>(
-            q, kv_cache, page_table, topk, topk_len, out, gate, 24, 2, 256,
-            max_topk, seq_id, kv_seq_stride, pt_seq_stride);
-  } else {
-    SparseAttentionDecodeSplitKernel<false>
-        <<<dim3(T, 2, 4), 256, 0, stream>>>(
-            q, kv_cache, page_table, topk, topk_len, out, gate, 24, 2, 256,
-            max_topk, seq_id, kv_seq_stride, pt_seq_stride);
-  }
+  SparseAttentionDecodeSplitKernel<<<dim3(T, 2, 4), 256, 0, stream>>>(
+      q, kv_cache, page_table, topk, topk_len, out, gate, 24, 2, 256, max_topk,
+      seq_id, kv_seq_stride, pt_seq_stride);
   const cudaError_t error = cudaGetLastError();
   if (error != cudaSuccess) return Status::Fail(cudaGetErrorString(error));
   return {};
