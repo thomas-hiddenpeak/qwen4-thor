@@ -1719,3 +1719,18 @@ MoE路由ID相同；不同ID可能改变权重访问而保持launch形状。现�
 确实缺失才冻结一次有界结构对照；不以其耗时作性能验收、不修改计算。
 本轮新增GPU请求0，生产未改，根因仍未建立，active与原NO_GO保持。
 证据：evidence/hc-up-linear-inputs-20261017/。
+
+## 路由内容对照协议冻结（2026-10-17）
+
+扫描当前.q4t-work manifest得到4份full-controlled采集，均属于旧二进制
+3b414633…，不满足原A/B身份。复核现有RouterCollector仅复制选中ID，
+每层D2D、每forward D2H及后台写盘，增加15MiB device/60MiB pinned，
+不修改Router计算；仍会扰动运行，不用采集耗时接受/解释原TTFT差。
+
+冻结原A/B各一次200K off HTTP，单一GPU lease，输入204789/output256，
+原二进制、夹具、工具SHA绑定。完整manifest/HTTP输出/输入token字节/
+C++ checker/独立parser全过后，逐forward/layer/token/slot比较完整ID。
+相同只停止本观察条件下ID分歧假设；不同记录第一差异与分布后再定位，
+不直接认定性能原因；无效保留、不自动重采。既有采集工具通过项复用，
+未改生产计算，无需重复工具/数值全套。协议执行前已保存，尚未有结果。
+目标active、原HC NO_GO保持。证据：evidence/hc-up-route-identity-20261017/。

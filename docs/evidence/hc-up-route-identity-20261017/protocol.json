@@ -1,0 +1,45 @@
+{
+  "hypothesis": "Identical launch signatures and final text may mask differing expert-ID choices; directly compare all captured off prefill/decode IDs. Structural diagnostic only, not timing attribution.",
+  "order": [
+    "A",
+    "B"
+  ],
+  "requests": 2,
+  "retries": 0,
+  "binaries": {
+    "A": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/q4t-main",
+    "B": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/hc-up/q4t"
+  },
+  "fixture": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http/off",
+  "reference": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http/off/results.json",
+  "workload": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http/off/inputs/context-204800.jsonl",
+  "model": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "expected_output": "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
+  "expected_prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4",
+  "validity": [
+    "one continuous GPU lease COMPLETED",
+    "original A/B binary SHA exact",
+    "same 204789 input tokens and 256 output tokens, HTTP output hash exact",
+    "trace manifest complete failure none requests 1; checker and independent parser full-request success",
+    "same prompt token bytes; 25 prefill forwards, 48 layers, top10; compare all IDs including ordered slots",
+    "no Nsight/preload/new numerical code"
+  ],
+  "decision": {
+    "equal": "stop route-ID-divergence hypothesis in this observed capture; no claim uninstrumented original routes or routing scores identical",
+    "different": "retain first position/layer and count/rank details; investigate numerical origin, not immediate performance cause",
+    "invalid": "preserve artifacts and stop; no automatic resampling"
+  },
+  "observer_cost": "Existing device copy per layer plus host copy per forward, 15MiB device and 60MiB pinned plus worker IO; timings excluded; scores/physical accesses not captured",
+  "sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/q4t-main": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/hc-up/q4t": "f01a0ee63f626c352f66677952368d43db02c9231576a2b8ba1ca33a915ce573",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http/off/inputs/context-204800.jsonl": "d80c69b853d708c8be0ab85b492dab4a749f5d5e470f45d4d73dddc2f611e0c7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http/off/results.json": "5c34c3a03975c7d7969736f1909f26b45433891f467867d17d45cdb33e38a0c8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-route-identity-20261017/run.py": "214dd745f0fa4eb9f9bc3cfc8835666be651207ae14bedc783406da5619e05cf",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py": "c5e5e3c5f62c2063f68ad17fd7ae3bb7ecf2e58f34a6523932249d3db5b0818c",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/gpu_exclusive.py": "6bbbfb1c719e3af25b4b6cdb823cdae23adc7377947a37dc07ff07c52c466654",
+    "/home/rm01/models/dev/qwen4-thor/tools/trace/offload_trace.py": "0a425cb3c01cd627dba883c7404b39702ac3d6bbea1b37507f349840e6c89127",
+    "/home/rm01/models/dev/qwen4-thor/tools/trace/analyze.py": "21e459143f6c1518d202323ef1fd7f6be48f66a25ce1ec5cbd7b1720cfe260e4",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t_router_trace_check": "d8abd4fa80b28b5d187d785969a7a12d75c541a40368961761e6e4498c5305bb"
+  }
+}
