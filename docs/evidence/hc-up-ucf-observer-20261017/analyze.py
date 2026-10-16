@@ -28,19 +28,21 @@ for index, variant in enumerate(protocol['order']):
     assert snap['valid'] and snap['enabled_ns'] == snap['running_ns'] > 0
     assert [x['config'] for x in snap['events']] == [4294967296, 0, 6, 12]
     assert len({x['id'] for x in snap['events']}) == 4
-    output = result['outputs'][0]
+    output_hash = result['outputs'][0]
+    actual_output = (folder / 'context-204800/output-0.txt').read_bytes()
+    assert hashlib.sha256(actual_output).hexdigest() == output_hash
     rows.append({'name': name, 'variant': variant,
                  'metrics': result['metrics'][0], 'boundary': b,
                  'raw': {str(x['config']): x['value'] for x in snap['events']},
                  'enabled_ns': snap['enabled_ns'],
                  'prompt': result['prompt_sha256'],
-                 'output_sha256': hashlib.sha256(output.encode()).hexdigest()})
+                 'output_sha256': output_hash})
 assert len({r['output_sha256'] for r in rows}) == 1
 reference = json.loads((Path('/home/rm01/models/dev/qwen4-thor') /
                         protocol['fixture'] / 'results.json').read_text())
 reference_row = next(r for r in reference if r['length'] == 204800)
-assert all(hashlib.sha256(text.encode()).hexdigest() == rows[0]['output_sha256']
-           for text in reference_row['outputs'])
+assert all(value == rows[0]['output_sha256']
+           for value in reference_row['outputs'])
 assert all(r['prompt'] == rows[0]['prompt'] for r in rows)
 values = [r['raw']['0'] for r in rows]
 r = max(abs(values[3]-values[0]), abs(values[2]-values[1]))

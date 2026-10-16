@@ -1066,3 +1066,25 @@ outstanding累计值直接当stall时间。所有原始counter保留，不挑选
 干净设备活动/提交间隙区分证据：先核对旧trace污染边界和最小采集方案，
 不把已有污染trace的耗时当对照，也不继续普通TTFT或UCF重复采样。
 证据：evidence/hc-up-ucf-observer-20261017/review.json、各请求counter及lease。
+
+## 输出hash记录纠正与干净trace协议冻结（2026-10-17）
+
+源码复核纠正上一条analyzer说明：不是写错参考hash，而是把results.outputs
+已经存储的SHA256再次哈希，错误标成output_sha256。现直接比较参考hash，
+并独立读取四条原始output-0.txt计算验证，实际均为57f3581d…8a4c8ca。
+runner本身一直正确验证输出；UCF门槛和结论不变。原错误说明保留历史，
+修正review和analyze.py，并新增output-hash-correction.json；没有GPU重跑。
+
+旧Nsight A为254.629s、B160.412s，A首chunk约93.662s空隙与其他模型
+加载重叠，后续残留未量化；旧耗时比较从未通过干净环境验收。静态
+kernel序列/资源属性证据继续复用。冻结新的最小A/B各一次CUDA trace，
+两条同一GPU独占阶段，模型就绪后采集，sample/CPU context-switch关闭，
+不启用UCF、层计时或NCU重放/缓存/时钟控制，原服务器二进制不变。
+
+分析从首EmbedLookup到首496640B D2H结束，按25chunk划分进程活动并集
+及补集，校验2264679prefill kernels和输出/退出/导出。只用于区分设备
+活动与提交间隙线索；若profile差异方向与原回归相反，不用于原回归归因。
+这是补齐旧污染导致缺失的同阶段时序证据，不是重做已有静态合同。两条
+结束或首个有效性失败即停，不扩样，不用profile吞吐接受HC。当前只冻结
+协议尚未运行；原NO_GO、生产main与active目标保持。
+证据：evidence/hc-up-clean-trace-20261017/；hash修正见UCF证据目录。

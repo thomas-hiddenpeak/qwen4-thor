@@ -35,8 +35,10 @@ UCF固定ABBA已完成：输出/计数/边界全过，guard COMPLETED。读字�
 B−A为−198.65/+11.94GB，同身份R197.77GB，冻结判据未过；TTFT虽
 两对+68.070/+77.039ms，不能据此归因额外读流量。停止该家族、不扩样。
 HTTP首输出窗口可能含少量decode，非纯prefill；原始outstanding不当stall。
-下一步核对旧trace污染边界与最小采集方案，补齐干净设备活动/提交间隙
-区分证据；不直接全量profile、不继续普通ASLR或UCF计时。
+已冻结原binary A/B各一次、同独占阶段的CUDA-only trace，补齐旧A被
+加载污染而缺失的设备活动/提交间隙证据；两条即停、不作性能接受。
+UCF analyzer的outputs重复哈希标注已修正，原始文本hash独立核对通过，
+读流量结论不变。不得继续普通ASLR或UCF计时。
 此前scratch固定布局8条判据亦未过，诊断分配器不交付、不扩样。
 
 已完成且不重复：
