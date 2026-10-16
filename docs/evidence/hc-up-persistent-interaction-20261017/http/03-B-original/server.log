@@ -1,0 +1,29 @@
+[q4t][capabilities] requested=text-greedy mtp=0 media=0 max_seq=1
+[q4t][startup] tokenizer 444 ms
+[q4t][budget] mem_total=131.92 GB fraction=0.90 budget=118.73 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=208896 max_seq=1 max_prefill=8192 feasible=1 reason=estimate_fits
+[q4t][budget]   weights=84.00 GB  fixed=88.84 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=2348023808 mtp_workspace=0 forward_buffers=419594244 ple_working=76571648 mtp=0
+[q4t][budget]   per_request=0.00 GB (MTP request allocations)  state_pool=6.55 GB
+[q4t][budget]   => max_len=208896 max_seq=1
+[q4t][startup] budget 416 ms
+[q4t][capacity] requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true
+[persistent-layout] slot=0 original=0xfffd15a00000 va=274877906944 exposed=0xfffd15a00000 bytes=167772160 mode=original
+[persistent-layout] slot=1 original=0x428c000000 va=279172874240 exposed=0x428c000000 bytes=167772160 mode=original
+[persistent-layout] slot=2 original=0xffe100000000 va=283467841536 exposed=0xffe100000000 bytes=2348023808 mode=original
+[q4t][startup] model_load 25265 ms
+[q4t] generation stop token ids: 248046 248044
+[q4t] MTP disabled; plain decode
+[q4t] media disabled; vision tower not loaded
+[q4t][capabilities] effective mtp=0 media_allowed=0 vision_loaded=0 max_seq=1
+[q4t] continuous-batching scheduler started (max_seq=1)
+[persistent-layout] startup_complete=1541
+[q4t][startup] startup_total 26126 ms
+[q4t] serving on port 8730 (host 127.0.0.1, model qwen3.8-flash-next)
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+[q4t][mem] phase=request_end id=chatcmpl-auto-0 dev_used_gb=104.936 dev_total_gb=131.921 rss_mb=876.7 mem_free_gb=18.535 mem_avail_gb=33.781 cached_gb=7.217
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[persistent-layout] cleanup_complete=3
