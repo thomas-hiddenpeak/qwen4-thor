@@ -76,17 +76,59 @@ def gpu_command(record):
         (name == 'nsys' and any(v in argv[1:3] for v in ('launch', 'profile'))))
 
 
+def owned_processes(records, owner_pgid, history):
+    """Prove ownership by current ancestry or a previously observed identity."""
+    if owner_pgid is None:
+        return set()
+    owned = {pid for pid, r in records.items()
+             if r.get('pgid') == owner_pgid or
+             (r.get('start_ticks') is not None and pid in history and
+              r['start_ticks'] == history[pid].get('start_ticks'))}
+    changed = True
+    while changed:
+        changed = False
+        for pid, r in records.items():
+            parent = r.get('ppid')
+            if pid in owned or parent not in owned:
+                continue
+            parent_start = records[parent].get('start_ticks')
+            if (parent_start is not None and r.get('start_ticks') is not None
+                    and r['start_ticks'] >= parent_start):
+                owned.add(pid)
+                changed = True
+    for pid in owned:
+        history[pid] = records[pid].copy()
+    return owned
+
+
+def signal_identity(pid, identity, signum):
+    """Signal a pidfd only after rechecking the observed start time."""
+    try:
+        fd = os.pidfd_open(pid)
+    except ProcessLookupError:
+        return
+    try:
+        try:
+            fields = Path(f'/proc/{pid}/stat').read_text().rsplit(')', 1)[1].split()
+        except FileNotFoundError:
+            return
+        if int(fields[19]) == identity['start_ticks']:
+            signal.pidfd_send_signal(fd, signum)
+    except ProcessLookupError:
+        pass
+    finally:
+        os.close(fd)
+
+
 def inspect(owner_pgid=None, owned_history=None):
     compute = nvidia_pids()  # Errors fail closed; never interpreted as idle.
     # Read process groups after the driver query so newly created owned GPU
     # children are not mistaken for unrelated processes from a stale snapshot.
     records = processes()
-    # Keep observed process identities, not a PID-only allowlist. A live,
-    # reused or unreadable PID is never exempted based on history.
+    # Keep PID/start-time identities, not a PID-only allowlist. Reused or
+    # unreadable PIDs never inherit a previous process ownership proof.
     history = owned_history if owned_history is not None else {}
-    for pid, record in records.items():
-        if owner_pgid is not None and record.get('pgid') == owner_pgid:
-            history[pid] = record.copy()
+    owned = owned_processes(records, owner_pgid, history)
     candidates = {pid for pid in compute if pid not in records and pid in history}
     retired = []
     if candidates:
@@ -102,13 +144,14 @@ def inspect(owner_pgid=None, owned_history=None):
                 records[pid] = refreshed_records[pid]
         compute |= refreshed_compute
         records.update(refreshed_records)
+    owned = owned_processes(records, owner_pgid, history)
     retired_pids = {r['pid'] for r in retired}
     conflicts = []
     for pid in records.keys() | compute:
         if pid in retired_pids:
             continue
         record = records.get(pid, {})
-        if owner_pgid is not None and record.get('pgid') == owner_pgid:
+        if pid in owned:
             continue
         if pid in compute or gpu_command(record):
             conflicts.append(dict(pid=pid, **record,
@@ -123,7 +166,9 @@ def stamp():
             'monotonic': time.monotonic(), 'pid': os.getpid()}
 
 
-def stop_owned(child, grace):
+def stop_owned(child, grace, history=None):
+    history = history if history is not None else {}
+    owned_processes(processes(), child.pid, history)
     # A private process group was created by us. Never signal a conflict PID.
     if child.poll() is None:
         child.send_signal(signal.SIGINT)
@@ -140,19 +185,31 @@ def stop_owned(child, grace):
     except subprocess.TimeoutExpired:
         os.killpg(child.pid, signal.SIGKILL)
         child.wait()
-    # Reparented descendants may outlive the runner; retain the lease until gone.
+    # Detached descendants (e.g. Nsight setsid targets) may outlive the
+    # original group. Keep the lease while draining identities we proved.
     deadline = time.monotonic() + grace
+    killed = False
+    signaled = set()
     while True:
-        remaining = [pid for pid, r in processes().items()
-                     if r.get('pgid') == child.pid and r.get('state') != 'Z']
+        records = processes()
+        owned = owned_processes(records, child.pid, history)
+        unreadable = [pid for pid in history if records.get(pid, {}).get('unreadable')]
+        if unreadable:
+            raise RuntimeError(f'cannot verify owned cleanup identities: {unreadable}')
+        remaining = [pid for pid in owned if records[pid].get('state') != 'Z']
         if not remaining:
             return
+        for pid in remaining:
+            identity = history[pid]
+            key = (pid, identity['start_ticks'], killed)
+            if key not in signaled:
+                signal_identity(pid, identity, signal.SIGKILL if killed else signal.SIGTERM)
+                signaled.add(key)
         if time.monotonic() >= deadline:
-            try:
-                os.killpg(child.pid, signal.SIGKILL)
-            except ProcessLookupError:
-                pass
-            raise RuntimeError(f'owned process group did not drain: {remaining}')
+            if killed:
+                raise RuntimeError(f'owned descendants did not drain: {remaining}')
+            killed = True
+            deadline = time.monotonic() + grace
         time.sleep(0.1)
 
 
@@ -163,6 +220,7 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0):
               'poll_scope': 'cooperative flock plus /proc and NVIDIA compute polling',
               'performance_acceptance': False, 'child_returncode': None}
     child = None
+    owned_history = {}
     acquired = False
     lock_path.parent.mkdir(parents=True, exist_ok=True)
     with lock_path.open('a+') as lock, (out / 'events.jsonl').open('w') as events:
@@ -211,12 +269,14 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0):
             status['reason'] = repr(error)
             return 75
         finally:
+            cleanup_failed = False
             if child is not None:
                 try:
-                    stop_owned(child, grace)
+                    stop_owned(child, grace, owned_history)
                 except Exception as error:
                     status['status'] = 'ENV_ABORT'
                     status['cleanup_error'] = repr(error)
+                    cleanup_failed = True
                 status['child_returncode'] = child.returncode
             status['finished'] = stamp()
             (out / 'exit.json').write_text(json.dumps(status, indent=2) + '\n')
@@ -227,6 +287,8 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0):
                                            output=str(out))) + '\n')
                 lock.flush()
                 record('lease_released', status=status['status'])
+            if cleanup_failed:
+                return 75
 
 
 def main():

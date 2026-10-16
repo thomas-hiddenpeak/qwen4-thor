@@ -1,0 +1,14 @@
+{
+  "initial_guard_suite": {
+    "tests": 18,
+    "passed": true
+  },
+  "after_cleanup_exit_fix": {
+    "targeted_tests": 3,
+    "passed": true
+  },
+  "unique_cases_total": 19,
+  "real_detached_cleanup": "SIGTERM-ignoring owned child killed via pidfd; unrelated process survives",
+  "real_nsys_cpu_target": "ownership pass, synthetic foreign PID remains conflict",
+  "model_requests": 0
+}

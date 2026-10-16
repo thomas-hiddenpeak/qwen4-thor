@@ -37,8 +37,9 @@ B−A为−198.65/+11.94GB，同身份R197.77GB，冻结判据未过；TTFT虽
 HTTP首输出窗口可能含少量decode，非纯prefill；原始outstanding不当stall。
 干净A/B CUDA-only trace在A启动阶段ENV_ABORT，尚未HTTP。CPU-only
 复现确认Nsight目标setsid但祖先属于driver；guard仅认PGID造成自有
-后代误报。会话与目标已退出，原失败保留。下一步以父子链/start_ticks
-修复归属与清理并验证，再恢复缺失的trace，不改变两条上限或模型代码。
+后代误报。已以父子链/start_ticks修复归属，用pidfd清理独立session，
+清理异常返回75。19个独立CPU用例与真实Nsight CPU归属验证通过。
+原失败保留；冻结v2恢复两条尚未执行的HTTP trace，模型/判据不变。
 UCF analyzer的outputs重复哈希标注已修正，原始文本hash独立核对通过，
 读流量结论不变。不得继续普通ASLR或UCF计时。
 此前scratch固定布局8条判据亦未过，诊断分配器不交付、不扩样。

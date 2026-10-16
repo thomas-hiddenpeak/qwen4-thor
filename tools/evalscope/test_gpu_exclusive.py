@@ -1,6 +1,7 @@
 """CPU-only lease, fail-closed monitoring, and ownership contracts."""
 import fcntl
 import json
+import signal
 import os
 from pathlib import Path
 import subprocess
@@ -128,6 +129,69 @@ class ExclusiveTests(unittest.TestCase):
             self.assertEqual(guard.inspect(child.pid)['conflicts'], [])
         self.assertEqual(guard.processes()[child.pid]['state'], 'Z')
 
+    def test_detached_descendant_and_reparented_identity_are_owned(self):
+        history = {}
+        records = {10: {'pgid': 10, 'ppid': 1, 'start_ticks': 100},
+                   11: {'pgid': 10, 'ppid': 10, 'start_ticks': 101},
+                   12: {'pgid': 12, 'ppid': 11, 'start_ticks': 102}}
+        with patch.object(guard, 'processes', return_value=records), \
+                patch.object(guard, 'nvidia_pids', return_value={12}):
+            self.assertEqual(guard.inspect(10, history)['conflicts'], [])
+        records = {12: {'pgid': 12, 'ppid': 1, 'start_ticks': 102},
+                   99: {'pgid': 99, 'ppid': 1, 'start_ticks': 90}}
+        with patch.object(guard, 'processes', return_value=records), \
+                patch.object(guard, 'nvidia_pids', return_value={12, 99}):
+            self.assertEqual([r['pid'] for r in guard.inspect(10, history)['conflicts']], [99])
+
+    def test_reused_detached_pid_is_not_owned(self):
+        history = {12: {'pgid': 12, 'ppid': 11, 'start_ticks': 102}}
+        with patch.object(guard, 'processes', return_value={
+                12: {'pgid': 12, 'ppid': 1, 'start_ticks': 200}}), \
+                patch.object(guard, 'nvidia_pids', return_value={12}):
+            self.assertEqual(guard.inspect(10, history)['conflicts'][0]['pid'], 12)
+
+    def test_child_older_than_parent_cannot_prove_ancestry(self):
+        records = {10: {'pgid': 10, 'ppid': 1, 'start_ticks': 100},
+                   12: {'pgid': 12, 'ppid': 10, 'start_ticks': 90}}
+        with patch.object(guard, 'processes', return_value=records), \
+                patch.object(guard, 'nvidia_pids', return_value={12}):
+            self.assertEqual(guard.inspect(10)['conflicts'][0]['pid'], 12)
+
+    def test_real_detached_child_cleanup_preserves_unrelated_process(self):
+        ready = self.root / 'detached-pid'
+        target = ("import os,signal,time; from pathlib import Path; "
+                  "signal.signal(signal.SIGTERM,signal.SIG_IGN); "
+                  f"Path({str(ready)!r}).write_text(str(os.getpid())); time.sleep(30)")
+        parent_code = ("import subprocess,sys,time; "
+                       f"subprocess.Popen([sys.executable,'-c',{target!r}],start_new_session=True); "
+                       "time.sleep(30)")
+        parent = subprocess.Popen([sys.executable, '-c', parent_code],
+                                  start_new_session=True,
+                                  stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        unrelated = subprocess.Popen([sys.executable, '-c', 'import time;time.sleep(30)'])
+        history = {}
+        try:
+            deadline = time.monotonic() + 3
+            while not ready.exists():
+                if time.monotonic() > deadline:
+                    self.fail('detached child did not become ready')
+                time.sleep(.01)
+            pid = int(ready.read_text())
+            with patch.object(guard, 'nvidia_pids', return_value={pid}):
+                self.assertEqual(guard.inspect(parent.pid, history)['conflicts'], [])
+            self.assertIn(pid, history)
+            self.assertNotEqual(history[pid]['pgid'], parent.pid)
+            guard.stop_owned(parent, .3, history)
+            record = guard.processes().get(pid)
+            self.assertTrue(record is None or record['state'] == 'Z')
+            self.assertIsNone(unrelated.poll())
+        finally:
+            if parent.poll() is None:
+                parent.kill(); parent.wait()
+            for pid, identity in history.items():
+                guard.signal_identity(pid, identity, signal.SIGKILL)
+            unrelated.terminate(); unrelated.wait()
+
     def test_argument_text_is_not_an_executable(self):
         self.assertFalse(guard.gpu_command(
             {'executable': '/bin/bash', 'argv': ['bash', '-c', 'q4t serve']}))
@@ -155,6 +219,15 @@ class ExclusiveTests(unittest.TestCase):
         self.assertIsNone(unrelated.poll())
         self.assertEqual(self.outcome()['status'], 'ENV_ABORT')
         self.assertIsNotNone(self.outcome()['child_returncode'])
+
+    def test_cleanup_failure_propagates_nonzero_exit(self):
+        with patch.object(guard, 'inspect', return_value={'conflicts': []}), \
+                patch.object(guard, 'stop_owned', side_effect=RuntimeError('cleanup failed')):
+            result = guard.run_guard([sys.executable, '-c', 'pass'],
+                                     self.out, self.lock, interval=.01, grace=1)
+        self.assertEqual(result, 75)
+        self.assertEqual(self.outcome()['status'], 'ENV_ABORT')
+        self.assertIn('cleanup failed', self.outcome()['cleanup_error'])
 
     def test_command_failure_is_not_environment_failure(self):
         with patch.object(guard, 'inspect', return_value={'conflicts': []}):

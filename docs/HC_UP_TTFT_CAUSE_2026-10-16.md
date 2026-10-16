@@ -1110,3 +1110,24 @@ PID1223573仍在driver PGID1223542，祖先链完整。目标继承诊断环境�
 根因未闭合及目标active保持。
 证据：evidence/hc-up-clean-trace-20261017/lease-abort、
 evidence/hc-up-nsys-ownership-20261017/。
+
+## Guard独立session后代归属/清理修复及trace恢复协议（2026-10-17）
+
+gpu_exclusive用当前进程树证明自有后代归属，记录PID+start_ticks；已证明
+身份reparent后仍可跟踪，复用PID或缺少启动时间不继承所有权。新子节点
+必须不早于当前父节点启动，不能因复用父PID而误放行。没有进程名白名单。
+退出前再次收集后代，独立session使用pidfd并复核start_ticks后发信号，
+保留锁等待退出；无法验证清理身份仍失败。另修复清理异常仅改状态却
+可能返回0的缺陷，现在明确返回75 ENV_ABORT。
+
+18项CPU guard合同通过，包含真实setsid/拒绝SIGTERM子进程清理、PID
+复用/父时序负控和无关进程保留；清理退出码修复后针对3项重验通过，
+共19个独立用例。真实nsys --trace=none CPU子进程复现归属通过，模拟
+外部GPU PID仍产生conflict；全程无CUDA/模型请求。guard COMPLETED。
+
+恢复干净trace使用新v2目录，保留旧ENV_ABORT。只更新已修复guard SHA，
+仍原A/B各一次、相同binary/fixture/profile工具/判据；原阶段没有成功
+HTTP，不构成重复已通过请求。先提交冻结恢复协议，再在共享锁内执行。
+监控修复不是TTFT根因修复；原NO_GO和active目标保持。
+证据：evidence/hc-up-nsys-ownership-fixed-20261017/、
+evidence/hc-up-clean-trace-v2-20261017/。
