@@ -1,0 +1,149 @@
+{
+  "cpu_parts": [
+    "0xd83"
+  ],
+  "scope": "diagnostic only; no deployable artifact",
+  "variants": {
+    "A0": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/q4t-main",
+      "source_sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+      "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+      "patched": false,
+      "patches": [],
+      "layout_unchanged": true,
+      "non_text_sections_byte_identical": true,
+      "deployable": false
+    },
+    "A1": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/q4t-main",
+      "source_sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+      "sha256": "5d6dac19fcc9c97536dd3ee76a546c75ee7e433ee85e86a3c01badd6fcbd3bd7",
+      "patched": true,
+      "patches": [
+        {
+          "symbol": "e843419@000a_00000126_588",
+          "thunk_va": 286152,
+          "site_va": 249864,
+          "file_offset": 249864,
+          "old_word": "0x14002370",
+          "new_word": "0xf9400001",
+          "resume_va": 249868
+        },
+        {
+          "symbol": "e843419@0017_0000026b_98a4",
+          "thunk_va": 462880,
+          "site_va": 462852,
+          "file_offset": 462852,
+          "old_word": "0x14000007",
+          "new_word": "0xf9400022",
+          "resume_va": 462856
+        },
+        {
+          "symbol": "e843419@0021_00000307_1c84",
+          "thunk_va": 586984,
+          "site_va": 569348,
+          "file_offset": 569348,
+          "old_word": "0x14001139",
+          "new_word": "0xf9400381",
+          "resume_va": 569352
+        },
+        {
+          "symbol": "e843419@0029_000003f5_85c4",
+          "thunk_va": 759752,
+          "site_va": 757764,
+          "file_offset": 757764,
+          "old_word": "0x140001f1",
+          "new_word": "0xf94002c1",
+          "resume_va": 757768
+        },
+        {
+          "symbol": "e843419@002f_000004bd_2268",
+          "thunk_va": 894200,
+          "site_va": 876552,
+          "file_offset": 876552,
+          "old_word": "0x1400113c",
+          "new_word": "0xf9400001",
+          "resume_va": 876556
+        },
+        {
+          "symbol": "e843419@0030_000004d6_4808",
+          "thunk_va": 929496,
+          "site_va": 917512,
+          "file_offset": 917512,
+          "old_word": "0x14000bb4",
+          "new_word": "0xf9400381",
+          "resume_va": 917516
+        }
+      ],
+      "layout_unchanged": true,
+      "non_text_sections_byte_identical": true,
+      "deployable": false
+    },
+    "B0": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/hc-up/q4t",
+      "source_sha256": "f01a0ee63f626c352f66677952368d43db02c9231576a2b8ba1ca33a915ce573",
+      "sha256": "f01a0ee63f626c352f66677952368d43db02c9231576a2b8ba1ca33a915ce573",
+      "patched": false,
+      "patches": [],
+      "layout_unchanged": true,
+      "non_text_sections_byte_identical": true,
+      "deployable": false
+    },
+    "B1": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/hc-up/q4t",
+      "source_sha256": "f01a0ee63f626c352f66677952368d43db02c9231576a2b8ba1ca33a915ce573",
+      "sha256": "3a0252f40b891629b83287afba008f0d5c823f0eaf5b5de2f95dacf5cd58b4ba",
+      "patched": true,
+      "patches": [
+        {
+          "symbol": "e843419@0009_000000fb_2ae4",
+          "thunk_va": 247824,
+          "site_va": 208900,
+          "file_offset": 208900,
+          "old_word": "0x14002603",
+          "new_word": "0xf9400341",
+          "resume_va": 208904
+        },
+        {
+          "symbol": "e843419@000e_00000177_3c8",
+          "thunk_va": 299560,
+          "site_va": 299016,
+          "file_offset": 299016,
+          "old_word": "0x14000088",
+          "new_word": "0xf9400001",
+          "resume_va": 299020
+        },
+        {
+          "symbol": "e843419@0022_00000316_4784",
+          "thunk_va": 588264,
+          "site_va": 581636,
+          "file_offset": 581636,
+          "old_word": "0x14000679",
+          "new_word": "0xf9400261",
+          "resume_va": 581640
+        },
+        {
+          "symbol": "e843419@0025_00000379_7548",
+          "thunk_va": 688184,
+          "site_va": 663560,
+          "file_offset": 663560,
+          "old_word": "0x1400180c",
+          "new_word": "0xf9400341",
+          "resume_va": 663564
+        },
+        {
+          "symbol": "e843419@002a_00000404_c4",
+          "thunk_va": 765128,
+          "site_va": 729092,
+          "file_offset": 729092,
+          "old_word": "0x14002331",
+          "new_word": "0xf9400002",
+          "resume_va": 729096
+        }
+      ],
+      "layout_unchanged": true,
+      "non_text_sections_byte_identical": true,
+      "deployable": false
+    }
+  }
+}

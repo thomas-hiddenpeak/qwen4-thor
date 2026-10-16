@@ -1,0 +1,20 @@
+{
+  "hypothesis": "The differing e843419 load veneers contribute the observed B-minus-A TTFT increase, independently of host address layout.",
+  "scope": "diagnosis only; no performance acceptance or deployment",
+  "variants": {"A0": "main sham copy, original SHA", "A1": "main with six proven load veneers inlined at original sites", "B0": "HC sham copy, original SHA", "B1": "HC with five proven load veneers inlined at original sites"},
+  "order": ["A0", "B1", "B0", "A1", "A1", "B0", "B1", "A0"],
+  "requests_per_process": 1,
+  "total_requests": 8,
+  "fresh_server_each_request": true,
+  "input_fixture": ".q4t-work/mtp-numerical-closure-20261016/http/off/context-204800/requests.jsonl",
+  "actual_input_tokens": 204789,
+  "output_tokens": 256,
+  "decode_mode": "--no-mtp",
+  "instrumentation": "Q4T_LAYER_TIMING=1 only; no Nsight, no LD_PRELOAD probe",
+  "lease": "one gpu_exclusive invocation holds the lease across all eight requests",
+  "negative_control": "Within each variant, the two runs have identical executable/input identities; the second four-run block reverses order.",
+  "report": ["all raw observations", "within-variant range R=max(abs(second-first))", "for each block g0=B0-A0, g1=B1-A1, dA=A0-A1, dB=B0-B1, interaction=dB-dA=g0-g1", "prefill event group deltas, not interpreted as pure GPU busy"],
+  "mechanistic_support_rule": "Both blocks must have g0>0, interaction>R and abs(g1)<=R to support a repeatable, resolved veneer contribution. This is a conservative diagnostic criterion, not a significance or performance acceptance test.",
+  "otherwise": "Mark veneer causality unresolved at this resolution; do not declare noise, equivalence, a proven no-effect, or permission to accept HC.",
+  "stop_rules": ["Any guard ENV_ABORT: stop and retain all evidence, no automatic retry", "Any input/output/capacity/error mismatch: stop and retain evidence", "No extra warmup, connection probe, alternate link layout, or added samples"]
+}

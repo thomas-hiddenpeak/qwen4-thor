@@ -1,0 +1,48 @@
+import hashlib,json,os,subprocess
+from pathlib import Path
+root=Path('/home/rm01/models/dev/qwen4-thor');out=Path(__file__).resolve().parent
+protocol=json.loads((out/'protocol.json').read_text());identity=json.loads((out/'derivation.json').read_text())
+base=root/'.q4t-work/mtp-numerical-closure-20261016/http/off'
+env=os.environ.copy()
+# Freeze diagnostics independently from a caller's shell experiments.
+for key in list(env):
+ if key.startswith('Q4T_') or key=='LD_PRELOAD':env.pop(key)
+env['Q4T_LAYER_TIMING']='1'
+(out/'environment.json').write_text(json.dumps({k:v for k,v in env.items() if k.startswith(('Q4T_','CUDA_')) or k=='LD_PRELOAD'},indent=2)+'\n')
+import threading,time
+stop=threading.Event()
+paths=[Path('/proc/meminfo'),Path('/proc/vmstat'),Path('/proc/pressure/cpu'),Path('/proc/pressure/memory'),Path('/proc/pressure/io')]
+paths+=list(Path('/sys/class/devfreq').glob('*/cur_freq'))
+paths+=list(Path('/sys/class/thermal').glob('thermal_zone*/temp'))
+paths+=list(Path('/sys/devices/system/cpu/cpufreq').glob('policy*/scaling_cur_freq'))
+def telemetry():
+ with (out/'telemetry.jsonl').open('w') as f:
+  while not stop.is_set():
+   snapshot={}
+   for p in paths:
+    try:snapshot[str(p)]=p.read_text()
+    except OSError as e:snapshot[str(p)]={'error':str(e)}
+   f.write(json.dumps({'monotonic':time.monotonic(),'wall':time.time(),'values':snapshot})+'\n');f.flush();stop.wait(5)
+t=threading.Thread(target=telemetry,daemon=True);t.start()
+try:
+ rows=[]
+ for index,variant in enumerate(protocol['order']):
+  binary=out/variant/'q4t';expected=identity['variants'][variant]['sha256']
+  assert hashlib.sha256(binary.read_bytes()).hexdigest()==expected
+  name=f'{index+1:02}-{variant}';dest=out/'http'/name
+  cmd=[str(root/'tools/evalscope/.venv/bin/python3'),'tools/evalscope/run_acceptance.py','--binary',str(binary),'--mode','performance','--perf-lengths','204800','--perf-repeats','1','--fixtures',str(base),'--reference',str(base/'results.json'),'--output',str(dest),'--model-dir','/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream','--startup-timeout','300','--allow-unqualified-binary','--port','8730']
+  with (out/(name+'-driver.log')).open('w') as f:rc=subprocess.run(cmd,cwd=root,env=env,stdout=f,stderr=subprocess.STDOUT).returncode
+  (out/(name+'-exit.json')).write_text(json.dumps({'command':cmd,'returncode':rc},indent=2)+'\n')
+  if rc:raise SystemExit(rc)
+  row=json.loads((dest/'results.json').read_text())[0]
+  rows.append({'name':name,'variant':variant,'binary_sha256':expected,'metrics':row['metrics'][0],'output':row['outputs'][0],'prompt':row['prompt_sha256']})
+  (out/'observations.json').write_text(json.dumps(rows,indent=2)+'\n');print(json.dumps(rows[-1]),flush=True)
+ values={v:[r['metrics']['ttft'] for r in rows if r['variant']==v] for v in protocol['variants']}
+ ranges={v:abs(times[1]-times[0]) for v,times in values.items()};R=max(ranges.values());blocks=[]
+ for k in range(2):
+  v={x:values[x][k] for x in values};g0=v['B0']-v['A0'];g1=v['B1']-v['A1']
+  blocks.append({'g0_s':g0,'g1_s':g1,'dA_s':v['A0']-v['A1'],'dB_s':v['B0']-v['B1'],'interaction_s':g0-g1,'support_rule':g0>0 and g0-g1>R and abs(g1)<=R})
+ review={'same_identity_ranges_s':ranges,'R_s':R,'blocks':blocks,'mechanistic_support':all(v['support_rule'] for v in blocks),'performance_acceptance':False}
+ (out/'review.json').write_text(json.dumps(review,indent=2)+'\n');print(json.dumps(review,indent=2),flush=True)
+finally:
+ stop.set();t.join()
