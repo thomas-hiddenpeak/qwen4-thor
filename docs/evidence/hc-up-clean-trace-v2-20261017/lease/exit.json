@@ -1,0 +1,17 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "python3",
+    ".q4t-work/hc-up-clean-trace-v2-20261017/run.py"
+  ],
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "finished": {
+    "utc": "2026-10-16T19:56:31.663017+00:00",
+    "monotonic": 370674.179900122,
+    "pid": 1224123
+  }
+}

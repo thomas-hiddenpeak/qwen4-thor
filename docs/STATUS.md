@@ -39,7 +39,10 @@ HTTP首输出窗口可能含少量decode，非纯prefill；原始outstanding不�
 复现确认Nsight目标setsid但祖先属于driver；guard仅认PGID造成自有
 后代误报。已以父子链/start_ticks修复归属，用pidfd清理独立session，
 清理异常返回75。19个独立CPU用例与真实Nsight CPU归属验证通过。
-原失败保留；冻结v2恢复两条尚未执行的HTTP trace，模型/判据不变。
+原失败保留；v2两条trace已完成，输出/退出/导出与launch身份均过，
+guard COMPLETED。HTTP差+55.085ms，设备区间差+52.864ms=活动并集
++90.104ms、间隙−37.240ms。定位到设备活动增加，尚非原因；kernel
+总和受并发重叠影响。下一步只离线拆分并发/独占活动，不追加trace。
 UCF analyzer的outputs重复哈希标注已修正，原始文本hash独立核对通过，
 读流量结论不变。不得继续普通ASLR或UCF计时。
 此前scratch固定布局8条判据亦未过，诊断分配器不交付、不扩样。

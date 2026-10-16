@@ -1131,3 +1131,28 @@ HTTP，不构成重复已通过请求。先提交冻结恢复协议，再在共�
 监控修复不是TTFT根因修复；原NO_GO和active目标保持。
 证据：evidence/hc-up-nsys-ownership-fixed-20261017/、
 evidence/hc-up-clean-trace-v2-20261017/。
+
+## 干净trace完成：差异落在设备活动并集（2026-10-17）
+
+冻结A/B两条均完成，输出一致且匹配既有参考，退出/导出通过；guard
+COMPLETED，532次monitor无已检测竞争，自有Nsight后代归属修复有效。
+两个trace各2264679次prefill kernel，23项资源属性计数及四stream内序列
+一致；25chunk覆盖通过。保存原始trace位置/SHA，不覆盖旧污染trace。
+
+HTTP TTFT A160.793368123s、B160.848453478s，B−A+55.085ms。
+首EmbedLookup至首496640B D2H设备区间B−A+52.864ms，其中活动并集
++90.104ms，间隙−37.240ms；下一API进入前间隙−38.286ms。此干净profile
+方向与普通运行回归相同，额外时间位于进程GPU活动并集，而非更长空隙。
+仍不能排除host提交节奏影响并发中的设备执行，也不是整卡idle测量。
+
+kernel耗时总和B−A+227.373ms，因并发重叠不能当wall。主要正差分散于
+两类nvjet OOTST(+56.776/+53.151ms)、GDN(+41.691ms)、SwiGLU量化
+(+41.621ms)、CombineWithGate(+26.499ms)、CausalConv(+23.961ms)；
+另一些GEMM/attention反向。不能只挑正差kernel或把总和当根因。
+
+两条采集家族按协议结束，不追加。下一步仅离线复用这两个trace拆分
+并发与独占活动，区分重叠变化及独占执行变长，再设计有针对性的因果
+干预。当前仅定位到设备活动时间，尚未解释为什么变慢；原NO_GO、
+生产main身份与active目标保持，不宣布根因闭合或性能接受。
+证据：evidence/hc-up-clean-trace-v2-20261017/review.json、device-audit.json、
+launch-audit.json、kernel-sums.json及retained-traces.json。

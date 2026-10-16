@@ -1,0 +1,7 @@
+{
+  "sources": {
+    "docs/evidence/hc-up-device-audit-20261017/analyze.py": "42c487f8c0ba58d1dcdd3fb121e2f8c5abbfeee94f54b41ce55a21b285a3f1bb",
+    "docs/evidence/hc-up-launch-audit-20261017/audit.py": "02bde06453340c4a5d39d23eebc1ebb73cb27ad4660296ec80bb7f2a4ccd4428"
+  },
+  "changes": "input/output paths and scope labels only; add terminal lease gate to activity analysis; no changes to interval union arithmetic or launch signature fields"
+}
