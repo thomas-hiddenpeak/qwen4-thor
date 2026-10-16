@@ -1,0 +1,21 @@
+{
+  "A_ttft": [
+    158.6205323190079,
+    158.7246605300461,
+    158.8105223029852
+  ],
+  "B_ttft": [
+    158.75541268999223,
+    158.82935541996267,
+    158.83894374902593
+  ],
+  "paired_B_minus_A": [
+    0.1348803709843196,
+    0.10469488991657272,
+    0.028421446040738374
+  ],
+  "consistent_positive": true,
+  "B_range_entirely_slower": false,
+  "original_regression_reproduced_or_unresolved": true,
+  "scope": "six fixed selected-tier requests, not a replacement full baseline"
+}

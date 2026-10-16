@@ -1,0 +1,17 @@
+
+Symbol table '.symtab' contains 14 entries:
+   Num:    Value          Size Type    Bind   Vis      Ndx Name
+     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: 0000000000000000     0 SECTION LOCAL  DEFAULT    5 .note.nv.tkinfo
+     2: 0000000000000000     0 SECTION LOCAL  DEFAULT    6 .note.nv.cuinfo
+     3: 0000000000000000  5248 FUNC    LOCAL  DEFAULT [<other>: 10]    13 _ZN3q4t5model49_GLOBAL__N__a4d86fa5_16_hc_up_small_m_cu_d321225518HcUpFourRowsKernelEPKtS3_Ptf
+     4: 0000000000000000     0 SECTION LOCAL  DEFAULT   13 .text._ZN3q4t5model49_GLOBAL__N__a4d86fa5_16_hc_up_small_m_cu_d321225518HcUpFourRowsKernelEPKtS3_Ptf
+     5: 0000000000000000     0 SECTION LOCAL  DEFAULT   14 .nv.shared._ZN3q4t5model49_GLOBAL__N__a4d86fa5_16_hc_up_small_m_cu_d321225518HcUpFourRowsKernelEPKtS3_Ptf
+     6: 0000000000000040     4 OBJECT  WEAK   DEFAULT  UND .nv.reservedSmem.offset0
+     7: 0000000000000000     0 SECTION LOCAL  DEFAULT   15 .nv.shared.reserved.0
+     8: 0000000000000040     0 NOTYPE  WEAK   DEFAULT [<other>: a0]    15 __nv_reservedSMEM_offset_0_alias
+     9: 0000000000000040   128 OBJECT  WEAK   DEFAULT   15 __nv_reservedSMEM_gb10b_war_var
+    10: 0000000000000400     4 OBJECT  WEAK   DEFAULT  UND .nv.reservedSmem.cap
+    11: 0000000000000000     0 SECTION LOCAL  DEFAULT    4 .debug_frame
+    12: 0000000000000000     0 SECTION LOCAL  DEFAULT   10 .nv.callgraph
+    13: 0000000000000000     0 SECTION LOCAL  DEFAULT   16 .nv.constant0._ZN3q4t5model49_GLOBAL__N__a4d86fa5_16_hc_up_small_m_cu_d321225518HcUpFourRowsKernelEPKtS3_Ptf

@@ -1,0 +1,5 @@
+{
+  "failure": "saved binary had no adjacent actual CMakeCache.txt; runner rejected before launching server/HTTP",
+  "repair": "copied each original archived HTTP CMakeCache alongside the identical saved binary",
+  "extra_http_requests": 0
+}

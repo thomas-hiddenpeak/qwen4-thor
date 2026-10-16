@@ -1,0 +1,22 @@
+{
+  "mode": "performance",
+  "lengths": [
+    204800
+  ],
+  "repeats": 1,
+  "requests": [
+    {
+      "input_tokens": 204800,
+      "max_tokens": 256,
+      "total_tokens": 205056,
+      "repeats": 1
+    }
+  ],
+  "partial": true,
+  "scope": "partial",
+  "full_five_tier_requested": false,
+  "full_offload_matrix_requested": false,
+  "performance_acceptance": false,
+  "client_protocol": "one_evalscope_process_per_request",
+  "client_protocol_note": "Explicit selected-tier runs restart the evalscope client/tokenizer for each request; inter-request idle gaps differ from the historical batched matrix."
+}

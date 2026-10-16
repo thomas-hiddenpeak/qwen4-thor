@@ -1,0 +1,7 @@
+Performance scope: partial; performance acceptance is not implied
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py", line 620, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py", line 392, in main
+    raise RuntimeError('binary must have its actual CMakeCache.txt alongside')
+RuntimeError: binary must have its actual CMakeCache.txt alongside
