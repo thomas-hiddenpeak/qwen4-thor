@@ -28,8 +28,10 @@ UCF四事件pinned分组200ms检查通过：ID/长度正确、enabled=running，
 stall。外部单窗口采集器已落地，正常/错误命令/EOF三项生命周期验证
 通过，零警告；未注入服务器。已知256MiB GPU拷贝一次/四次的读流量
 为268453376/1074083840，比例4.001，冻结校准通过；未校准outstanding
-单位。下一步对齐请求前/首token计数边界后另冻结机制观察，不把全部
-decode混入prefill；不直接全量profile、不继续普通ASLR计时。
+单位。EvalScope首有效输出钩子已实现：源码SHA/AST锚点校验，四项CPU
+边界/失败测试通过；未接入CLI/runner。下一步封装collector生命周期与
+停止延迟证据，再冻结机制观察；HTTP首输出窗口可能含少量decode，
+不能冒称纯prefill。不直接全量profile、不继续普通ASLR计时。
 此前scratch固定布局8条判据亦未过，诊断分配器不交付、不扩样。
 
 已完成且不重复：
