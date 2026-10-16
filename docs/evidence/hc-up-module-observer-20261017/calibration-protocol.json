@@ -1,0 +1,22 @@
+{
+  "runs": 1,
+  "scope": "observer calibration, not throughput/model test",
+  "images": {
+    ".q4t-work/hc-up-module-observer-20261017/elf/check.1.sm_110a.cubin": {
+      "sha256": "5ebaed4bb937dd2bb13735bb463e817627b95fb54af1502f1af080f71d50ce4f",
+      "bytes": 1632,
+      "calibration_symbol": false
+    },
+    ".q4t-work/hc-up-module-observer-20261017/elf/check.2.sm_110a.cubin": {
+      "sha256": "5f3e830a0350f99b56982a3c6b22101e49a49587db3a55f522c3dea93f0d8520",
+      "bytes": 5680,
+      "calibration_symbol": true
+    }
+  },
+  "gate": "calibration=42; known calibration cubin SHA appears in MODULE_LOADED; observer complete count matches records; guard COMPLETED and exit zero",
+  "failure": "retain and fix specific tool failure before any repeat",
+  "sha256": {
+    "probe.so": "069d4bb22ec8e23e21c04dc2116c7a6da1a7487921f03e922aba762732169715",
+    "check": "a95f10f28cdbc0d0db70c921d9795e491478c4fcf89c73178d56dd7531320d1c"
+  }
+}

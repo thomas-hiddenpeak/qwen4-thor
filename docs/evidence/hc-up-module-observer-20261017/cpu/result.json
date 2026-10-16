@@ -1,0 +1,26 @@
+{
+  "gpu_calls": 0,
+  "cases": [
+    {
+      "case": "valid",
+      "passed": true,
+      "exit": 0
+    },
+    {
+      "case": "descriptor",
+      "passed": true,
+      "exit": -6
+    },
+    {
+      "case": "subscribe",
+      "passed": true,
+      "exit": -6
+    },
+    {
+      "case": "enable",
+      "passed": true,
+      "exit": -6
+    }
+  ],
+  "scope": "fake callback ABI, real hash, concurrent IDs, fail-closed paths; no actual CUPTI module capture yet"
+}

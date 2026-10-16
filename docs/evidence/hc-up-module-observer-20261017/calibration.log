@@ -1,0 +1,4 @@
+[module-load] enabled=1
+[module-load] sequence=0 module_id=20 context=0xaaaaf6df2d90 bytes=5680 sha256=5f3e830a0350f99b56982a3c6b22101e49a49587db3a55f522c3dea93f0d8520
+[module-load] complete=1
+calibration_result=42

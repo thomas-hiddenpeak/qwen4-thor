@@ -1366,3 +1366,23 @@ cubinSize、pCubin；pCubin是回调期间有效的host镜像指针，不是GPU�
 而非直接新增性能对照。该观察只能补装载事实，不能单独证明TTFT原因。
 本轮无GPU请求、无生产改动；根因与解决仍未闭合，NO_GO/active保持。
 证据：evidence/hc-up-module-coverage-20261017/。
+
+## 启动模块观察器实现与真实CUPTI校准（2026-10-17）
+
+新增module_load_probe.cpp，仅订阅MODULE_LOADED资源回调，回调内同步
+计算host cubin的SHA256并记录moduleId/context/size；不调用CUDA、不采
+性能计数、不做replay或时钟控制。显式启用、空descriptor、非法cubin、
+CUPTI错误均fail closed；退出unsubscribe并输出完整记录数。链接本机
+libcupti与libcrypto.so.3，不要求额外安装开发包。
+
+-Wall -Wextra -Werror构建通过；fake CUPTI+真实SHA四项CPU检查通过，
+覆盖两线程16条唯一序号/正确哈希、缺descriptor、订阅失败、未显式启用。
+固定一次真实GPU校准：已知kernel写42并读回，MODULE_LOADED记录1条，
+5680-byte镜像SHA与cuobjdump提取的目标cubin完全一致，complete=1、
+退出0、guard COMPLETED。仅工具校准，不是模型/吞吐验收。
+
+下一步冻结原A/B各启动一次到ready后退出的观察，记录启动模块哈希及
+是否出现HC独有镜像；不发HTTP或计启动性能。它仅补启动期装载证据，
+不能代表请求期间从不装载，也不暴露GPU指令地址或证明TTFT因果。
+原NO_GO、数值要求与active目标保持，无生产修改或已通过测试重跑。
+证据：evidence/hc-up-module-observer-20261017/。
