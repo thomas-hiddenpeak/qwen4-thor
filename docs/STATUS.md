@@ -38,9 +38,11 @@ Gather固定四条已完成，合同/边界/读取工作量检查全过，guard�
 本轮层事件B−A为+122.850/+100.690ms（R41.990），Gather仅−6.271/
 +2.059ms，无法解释本轮差；停止Gather采样，不修改PLE算法或同步。
 离线分组差主要在full层组，但该组仍含MoE/HC，不能指认attention内核。
-已冻结原二进制subtiming四条A B B A，细分full_qkv/core/oproj及其他
-分项，明确嵌套、全层汇总与events扰动边界；负结果不扩样，禁止插桩
-TTFT验收。原NO_GO、main与未完成的活动目标保持。
+Subtiming首条因诊断协议覆盖错误主动中止：MoE内部细项仅支持小T
+而非prefill，原四家族要求无效。GPU已释放，零条完整HTTP通过，原
+ENV_ABORT及协议保留，不作性能结论。三家族解析修复通过5项CPU检查；
+下一版需先冻结修订协议并每条请求后立即验覆盖，尚未重启模型。
+原NO_GO、main与未完成的活动目标保持。
 
 **五项目综合实施计划已制定（2026-10-16；尚未实施）。**
 见[分阶段计划](REFERENCE_INTEGRATION_PLAN_2026-10-16.md)：近期先复用现有

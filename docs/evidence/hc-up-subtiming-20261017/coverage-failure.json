@@ -1,0 +1,36 @@
+{
+  "reason": "Protocol coverage defect: moe-subtiming details are only instrumented in small-T decode, not T=8192/8181 prefill. Explicitly stopped by agent, not detected GPU contention.",
+  "phase_status": "ENV_ABORT",
+  "completed_http_contracts": 0,
+  "gpu_released": true,
+  "timing_report_counts": {
+    "layer-timing": 14,
+    "sub-timing": 14,
+    "moe-subtiming": 0,
+    "hc-mix-subtiming": 14
+  },
+  "lease_events": {
+    "lease_acquired": 1,
+    "preflight": 1,
+    "child_started": 1,
+    "monitor": 107,
+    "lease_released": 1
+  },
+  "reported_conflicts": [],
+  "source_identity": {
+    ".q4t-work/hc-up-subtiming-20261017/http/01-A/server.log": {
+      "bytes": 8776,
+      "sha256": "bee5193964ce51e0b77a6d0b057874d724309ee0e2a611f4d9fcd823a55cf9b1"
+    },
+    ".q4t-work/hc-up-subtiming-20261017/driver.log": {
+      "bytes": 1140,
+      "sha256": "67b3f376b9e70de863ac459da4b5a40b9700d86969e13f7621fc47dd2a0da1b2"
+    },
+    ".q4t-work/hc-up-subtiming-20261017/lease/events.jsonl": {
+      "bytes": 20587,
+      "sha256": "ca06f4675d6d6e3fbdcedd074373b3972bbc3015f590fd8a382e9912f28183f2"
+    }
+  },
+  "performance_acceptance": false,
+  "causal_proof": false
+}

@@ -469,3 +469,21 @@ GPU lease；只开layer与subtiming，不叠加其他preload/PMU/Nsight。
 额外CUDA events和同步影响调度，不用插桩TTFT验收，不把区间等同GPU
 kernel净时间；负结果停止此类别，不扩样。目标及原NO_GO保持。
 [协议和已冻结分析脚本](evidence/hc-up-subtiming-20261017/README.md)。
+
+
+## 细分协议覆盖错误与主动中止（2026-10-17）
+
+首条运行发现预期四类报告中的moe-subtiming始终缺失。源码复核：其
+Start/Stop只在moe_decode.cu的小T decode路径，大T prefill不走该分支。
+此前对覆盖范围的判断有误。顶层sub-timing仍包含完整moe区间，但不能
+分成内部prep/gemm/combine。不是模型数值失败，不得伪造缺失计时。
+
+主动终止自有guard，状态ENV_ABORT（guard interrupted），清理完成，
+GPU查询为空；首条无完整exit合同记录，零条完整通过，不把部分计时
+用于A/B结论。剩余三条未运行，原协议/中止/日志SHA均保留。
+修订解析器只要求实际支持的三家族，保留形状/字段/同步错误/顶层求和
+要求，5项CPU回归通过；没有根据耗时结果更改差值门槛，也没有新推理。
+下一版先冻结修订协议，并每个HTTP结束就校验覆盖，再继续下一条。
+这次修复针对诊断夹具错误，不等于TTFT回归根因闭合。原NO_GO保持。
+[中止证据](evidence/hc-up-subtiming-20261017/coverage-failure.json)、
+[修订解析器与CPU检查](evidence/hc-up-subtiming-20261017-v2/README.md)。
