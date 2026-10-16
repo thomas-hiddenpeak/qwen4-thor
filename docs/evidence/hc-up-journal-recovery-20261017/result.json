@@ -1,0 +1,84 @@
+[
+  {
+    "mode": "normal",
+    "returncode": 0,
+    "cleanup": {
+      "lease_still_held": true,
+      "before": [
+        1260,
+        1260
+      ],
+      "after": [
+        1575,
+        1575
+      ],
+      "service_result": "success",
+      "exit_code": "exited",
+      "exit_status": "0"
+    },
+    "failed_restore_held": null,
+    "released_after_restore": true,
+    "unit_load_state": "not-found",
+    "fallback_marker_required": false
+  },
+  {
+    "mode": "kill",
+    "returncode": 255,
+    "cleanup": {
+      "lease_still_held": true,
+      "before": [
+        1260,
+        1260
+      ],
+      "after": [
+        1575,
+        1575
+      ],
+      "service_result": "signal",
+      "exit_code": "killed",
+      "exit_status": "KILL"
+    },
+    "failed_restore_held": null,
+    "released_after_restore": true,
+    "unit_load_state": "not-found",
+    "fallback_marker_required": false
+  },
+  {
+    "mode": "restore_failure",
+    "returncode": 0,
+    "cleanup": {
+      "lease_still_held": true,
+      "before": [
+        1260,
+        1260
+      ],
+      "after": [
+        1575,
+        1575
+      ],
+      "service_result": "success",
+      "exit_code": "exited",
+      "exit_status": "0"
+    },
+    "failed_restore_held": true,
+    "released_after_restore": true,
+    "unit_load_state": "not-found",
+    "fallback_marker_required": false
+  },
+  {
+    "mode": "cleanup_kill",
+    "returncode": 255,
+    "cleanup": {
+      "after": [
+        1575,
+        1575
+      ],
+      "lease_still_held": true,
+      "manual_recovery": true
+    },
+    "failed_restore_held": null,
+    "released_after_restore": false,
+    "unit_load_state": "not-found",
+    "fallback_marker_required": true
+  }
+]

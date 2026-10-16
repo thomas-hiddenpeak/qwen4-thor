@@ -1961,3 +1961,31 @@ TimeoutStopSec=infinity只能保证本次模拟恢复失败等待时持锁，不
 控制器，验证标记创建/清除顺序及权限；本轮没有真实频率写入或GPU负载。
 根因未闭合，目标active，原NO_GO保持。下一步完成控制器事务生命周期，
 再冻结能区分时钟/功耗交互的诊断，而非追加原状态TTFT采样。
+
+## 持久时钟事务与独立恢复生命周期（2026-10-17）
+
+新增gpu_clock_journal.py，只有注入式IO，没有默认sysfs入口。创建恢复
+标记前核实原范围及可用频率；写前用fsync+原子替换持久保存current与
+pending预测值。独立进程根据当前值属于写前/写后哪一种恢复，恢复完成
+且最终读回原范围后才删除标记并fsync目录。拒绝覆盖已有标记；身份、
+可用频率变化、不可读日志或记录外范围变化均保留标记并拒绝写入。
+调用者仍负责GPU lease、独立恢复及权限边界，模块本身不获取GPU锁。
+
+9项CPU测试通过，包含apply/restore各两次写入的生效前后中断共8个
+子场景，以及写入生效后完成记录持久化失败的恢复；无真实硬件访问。
+随后固定4个实际systemd+guard+ClockJournal组合场景各一次：normal、
+guard SIGKILL、恢复写失败等待修复、cleanup SIGKILL。前3个在持锁
+清理期间从持久日志恢复；最后一个管理器释放锁后，残留标记使后续
+实际guard返回RECOVERY_REQUIRED且不启动监控/命令，再由显式模拟
+修复持锁恢复。全部模拟范围回到1575/1575、标记清除、临时unit收集。
+不能说cleanup被杀后flock一直连续保持；此时由持久标记阻止协作任务。
+
+证据：evidence/hc-up-journal-recovery-20261017/。归档包含协议、源脚本、
+身份和退出记录。初始结果生成器把released_after_restore固定写成true；
+已保留raw-result并修正cleanup_kill字段与生成脚本，未重复执行实验，
+详见analysis-note.md。实现模块及guard身份见identity.json。
+
+没有真实sysfs写入、GPU负载或模型重复采样，生产代码与数值合同不变。
+下一步是受限实机IO及身份/权限接入，再冻结有区分力的时钟/功耗干预
+判据；降频后OC减少本身仍不足以解释原始A/B差异。目标active，根因
+未闭合，HC候选NO_GO保持。

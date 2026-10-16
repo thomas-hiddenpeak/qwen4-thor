@@ -1,0 +1,14 @@
+{
+  "lease_still_held": true,
+  "before": [
+    1260,
+    1260
+  ],
+  "after": [
+    1575,
+    1575
+  ],
+  "service_result": "signal",
+  "exit_code": "killed",
+  "exit_status": "KILL"
+}

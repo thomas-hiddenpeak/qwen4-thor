@@ -1,0 +1,29 @@
+{
+  "command": [
+    "sudo",
+    "-n",
+    "systemd-run",
+    "--unit=q4t-guard-recovery-1275742-restore_failure.service",
+    "--wait",
+    "--collect",
+    "--property=User=2002",
+    "--property=Group=2002",
+    "--property=Type=exec",
+    "--property=NotifyAccess=main",
+    "--property=FileDescriptorStoreMax=1",
+    "--property=FileDescriptorStorePreserve=restart",
+    "--property=RuntimeMaxSec=15",
+    "--property=TimeoutStopSec=infinity",
+    "--property=KillMode=control-group",
+    "--property=ExecStopPost=/usr/bin/python3 /home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-journal-recovery-20261017/probe.py cleanup restore_failure /home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-journal-recovery-20261017/restore_failure q4t-guard-recovery-1275742-restore_failure.service",
+    "/usr/bin/python3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-journal-recovery-20261017/probe.py",
+    "main",
+    "restore_failure",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-journal-recovery-20261017/restore_failure",
+    "q4t-guard-recovery-1275742-restore_failure.service"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: q4t-guard-recovery-1275742-restore_failure.service; invocation ID: bff31e752f4c4866bb920da6364a98f0\nFinished with result: success\nMain processes terminated with: code=exited/status=0\nService runtime: 276ms\nCPU time consumed: 168ms\nMemory peak: 15.0M\nMemory swap peak: 0B\n"
+}
