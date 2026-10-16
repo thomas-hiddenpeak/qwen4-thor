@@ -1,0 +1,26 @@
+{
+  "unresolved_input_references": 2358,
+  "categories": {
+    "unresolved": 192,
+    "same_ascii_bytes_through_NUL": 2025,
+    "same_unique_symbol_or_alias_set": 102,
+    "same_exact_readonly_load_bytes": 39
+  },
+  "section_pairs": {
+    "('.bss', '.bss')": 209,
+    "('.rodata', '.rodata')": 2087,
+    "('.text', '.text')": 62
+  },
+  "forward_function_reference_categories": {
+    "same_ascii_bytes_through_NUL": 86,
+    "same_exact_readonly_load_bytes": 1,
+    "same_unique_symbol_or_alias_set": 43
+  },
+  "different_content_or_relocation": [],
+  "limits": [
+    "ASCII equality is exact only through first NUL, not a proof of load width or branch reachability",
+    "Dynamic relocation equality identifies imported symbol/addend, not runtime pointer or cache equality",
+    "Only previously extracted adjacent ADRP references; not all memory references or host functions"
+  ],
+  "new_gpu_requests": 0
+}
