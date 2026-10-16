@@ -1558,3 +1558,23 @@ HyperConnectionMixImpl、PleLayerForward的130处引用，86处相同字符串�
 控制流工具核对，不扩展成无关CLI/media全程序证明，也不据静态相同
 新增GPU干预。原HC NO_GO及active目标保持，根因/解决/验收仍未完成。
 本轮无生产修改、无GPU采样。证据：evidence/hc-up-host-call-targets-20261017/。
+
+## 六个核心函数非相邻取址审计（2026-10-17）
+
+对原A/B身份的MoEForward、FullAttentionForward、DecoderLayerForward、
+RunLayers、HyperConnectionMixImpl、PleLayerForward作正常直接CFG取址
+核对，六者无间接tail BR。得到126处相同NUL前缀、67处相同加载字节、
+268处相同具名对象身份引用。526条变化取址指令中459条至少关联一处
+已分类引用；这不表示该定义的全部用途均已证明，更不是运行时间等价。
+ADD产生的指针不推断访问宽度，具名对象身份不证明运行时内容相同。
+
+67条仍未关联：MoE 1、FullAttention 25、HyperConnectionMix 41。
+抽查MoE index3219位于异常catch入口；FullAttention index287和HC
+index109的基址从栈槽恢复。当前工具不传播栈保存/恢复，也不建异常
+unwind边，因此保持未决，不能将分析器未知当作计算错误或性能根因。
+其他三函数零剩余也只表示本批指令关联范围，不表示整个函数等价。
+
+本阶段仅离线分析，新增GPU请求0，无生产修改、不重复已通过测试。
+下一步先对剩余项区分工具覆盖缺口与实际内容差异；只有形成可区分
+机制的具体假设才冻结新干预。根因、解决、受影响验收均未闭合，原HC
+NO_GO及active目标保持。证据：evidence/hc-up-core-addresses-20261017/。
