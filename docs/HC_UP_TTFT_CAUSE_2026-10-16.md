@@ -409,3 +409,17 @@ CPU假库夹具验证20ms同步被排除，20msCPU与30ms假uring等待分开；
 可能服务读取；uring API时间并不等于SSD时延，剩余CPU区间不是纯scatter。
 下一步冻结有限真实边界观测，保持生产main与数值/同步语义不变。
 [工具身份与CPU校验](evidence/hc-up-gather-observer-20261017/README.md)。
+
+
+## Gather真实观测冻结（2026-10-17）
+
+固定A B B A四条原200K off，新鲜服务，同一GPU lease，layer timing+
+Gather probe，不叠加PMU/Nsight。用HTTP事件单调时钟窗口筛选并记录
+窗口外加载拷贝；必须一一对应25次T×2560上传与25个chunk报告。
+第一chunk无条件排除，后24条要求成功同步、I/O/拷贝无错误、提交等待
+次数与requested_completions跨身份逐chunk相同；检查区间包含关系与
+CPU端点偏差。分析各区间CPU/wall、uring API CPU/wall及剩余区间，
+每指标报告同身份R与两组B−A；两组均正且>R只是可辨识观测，不是因果。
+比较Gather变化与层事件变化的方向/量级，但不假定Gather全部位于GPU
+关键路径，不把API等待当SSD时延，不拿插桩TTFT接受候选。
+失败停止留证，负结果停止该测量类别，不扩样凑结果。原NO_GO保持。

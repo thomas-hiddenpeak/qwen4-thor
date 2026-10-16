@@ -27,3 +27,14 @@ g++-14 -std=c++23 -O2 -Wall -Wextra -Werror -fPIC -shared -I/usr/local/cuda-13.3
 
 fixture与fake源和原始输出一并保留。实际模型观测必须另行冻结协议、
 检查25条映射/请求合同与全阶段独占，不将此工具通过当作TTFT根因结论。
+
+
+## 真实观测执行前冻结
+
+protocol.json固定A B B A四条原200K off，每条新鲜服务、同输入输出合同，
+全阶段单一GPU lease。仅启用layer timing和Gather probe，无PMU/Nsight。
+用客户端事件的monotonic窗排除加载，必须准确对应25次目标上传与25个
+chunk；第一chunk无条件排除。后24个区间均要求有效同步、成功I/O、
+跨身份相同提交等待次数及请求完成数，避免比较不同读取工作量。
+每指标均计算两组B−A与同身份R；稳定正增加仍只是观测，不自动归因。
+不把全部Gather墙钟认作设备关键路径。所有原始结果保留，不扩样。

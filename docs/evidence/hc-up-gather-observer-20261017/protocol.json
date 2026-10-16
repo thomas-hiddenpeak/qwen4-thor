@@ -1,0 +1,47 @@
+{
+  "scope": "Gather boundary mechanism observation; no performance acceptance or automatic causal claim",
+  "variants": {
+    "A": "original main",
+    "B": "original HC"
+  },
+  "order": [
+    "A",
+    "B",
+    "B",
+    "A"
+  ],
+  "total_requests": 4,
+  "requests_per_process": 1,
+  "fresh_server": true,
+  "input_tokens": 204789,
+  "output_tokens": 256,
+  "mode": "--no-mtp",
+  "instrumentation": "Q4T_LAYER_TIMING=1 plus gather_interval_probe.so only; no PMU or Nsight",
+  "analyzed_chunks": "2..25; first upload excluded unconditionally",
+  "validity": [
+    "Guard COMPLETED and HTTP output/capacity/exit contracts pass",
+    "Within client_before/client_after, exactly 25 target copies from one TID, 24*20971520+20943360 bytes",
+    "Exactly one target gather row before each matching T>1 layer report; no inferred matching by sorted duration",
+    "Chunks2..25 prior_sync=1, io_calls>0, io_errors=0, copy_rc=0",
+    "Per-chunk wait_nr sums and io call counts match across versions; otherwise comparison scope invalid",
+    "IO wall <= region wall; CPU clocks nonnegative; IO CPU <= region CPU +10us for endpoint skew"
+  ],
+  "report": [
+    "All four raw observations retained",
+    "Per chunk and sums of region CPU/wall, IO API CPU/wall, remainder wall/CPU, layer-event interval",
+    "Each metric paired B-A and same-identity R=max(abs(A2-A1),abs(B2-B1))",
+    "Only both positive B-A > R is a resolved positive observable, not causality",
+    "Compare whether measured Gather change has same sign and magnitude as event change; do not force attribution or assume all Gather lies on device critical path"
+  ],
+  "limitations": [
+    "No SSD service time claim; ordinary buffered reads and page cache",
+    "Region excludes earlier hash and upload synchronization; remainder includes sorting, scatter, scheduling and observer overhead",
+    "First chunk not analyzed; injected logging perturbs execution; TTFT not accepted",
+    "Frozen negative result stops this measurement family; no added sampling to force a result"
+  ],
+  "stop_rules": [
+    "Any guard or HTTP error stops, no automatic retry",
+    "No changed thresholds, extra probes or warmups",
+    "Keep NO_GO until causal resolution and affected acceptance"
+  ]
+}
