@@ -5,9 +5,12 @@
 
 ## 当前阶段
 
-**MTP数值收口及新运行时验收完成（2026-10-16）**。工作分支
-`codex/moe-residency-20260930`继续作为后续性能基础，可进入合入审查；
-[PR #4](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/4)，main保持`7f6a69c`。
+**MTP主线交付版本（2026-10-16；本节随PR #4合入main生效）**。
+用户已授权将验收成果以合并提交进入main，保留完整阶段历史；
+[PR #4](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/4)记录实际合并SHA与状态。
+合并前main为`7f6a69c`，验收成果提交为`2631d8d`；本轮仅补充文档，
+生产代码与验收身份不变。工作分支`codex/moe-residency-20260930`保留，
+继续作为后续性能基础；不删除研究分支、工作区或本机证据。
 
 五项诊断`model_verify_ckpt`、`model_verify_multi_ckpt`、
 `model_verify_ckpt_samepath`、`model_prefill_batch`、`mtp_spec_accept_states`
@@ -31,7 +34,9 @@ HTTP固定检索两侧各11/11；六项尾部请求、流式取消及后继恢�
 报告：[数值收口与影响范围](MTP_NUMERICAL_CLOSURE_2026-10-16.md)；
 [最终证据](evidence/mtp-numerical-closure-20261016/phase04/README.md)。
 `9be8478`/`9879cda`/`21226b2`划分诊断、运行时修复及正式合同阶段。
-运行回退使用`--no-mtp`并保留PLE修复。本目标不自动合入main，不将有限
+运行回退使用`--no-mtp`并保留PLE修复。源码归并边界由PR的合并提交及其
+第1父提交`7f6a69c`标识；旧实现含已知PLE缺陷，不作为新的正确性基线。
+合入后核验main包含验收提交、树身份及主线CI；不将有限
 单流/受控小模型结果扩大为全量GPU测试、任意批量不变或模型任务能力保证。
 
 ## 历史阶段记录（以前述当前阶段为准）
