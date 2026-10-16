@@ -1,0 +1,2264 @@
+{
+  "mapping_issues": [],
+  "runs": [
+    {
+      "name": "01-A-inherit",
+      "variant": "A",
+      "mode": "inherit",
+      "coverage": {
+        "pid": 1197385,
+        "start_ticks": "36527357",
+        "exe": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/A/q4t",
+        "mode": "inherit",
+        "personality": 0,
+        "parent_personality": 0,
+        "aslr_disabled": false,
+        "maps_sha256": "252303528eaa481e7c6219f5ea8c77c356c308112b4a6e1090403d961741bcc3",
+        "executable_mappings": [
+          {
+            "range": "00400000-057c1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "393237",
+            "path": "/opt/nvidia/l4t-gpu-libs/openrm/libcuda.so.1.1"
+          },
+          {
+            "range": "aaaac7e80000-aaaac8258000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "4344493",
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/A/q4t"
+          },
+          {
+            "range": "fffd4a3e0000-fffd4ede8000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6076",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-gpucomp.so.595.78"
+          },
+          {
+            "range": "fffd4fa00000-fffd50b64000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6078",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-nvvm70.so.595.78"
+          },
+          {
+            "range": "fffd50ee0000-fffd529a1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6079",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-ptxjitcompiler.so.595.78"
+          },
+          {
+            "range": "ffff5cbb0000-ffff5cbd7000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9443",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvcuextend.so"
+          },
+          {
+            "range": "ffff5cc20000-ffff5cc3d000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9659",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvsciipc.so"
+          },
+          {
+            "range": "ffff5cc70000-ffff5cc73000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9652",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_chip.so"
+          },
+          {
+            "range": "ffff5cca0000-ffff5cca2000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9661",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvtegrahv.so"
+          },
+          {
+            "range": "ffff5ccd0000-ffff5ccd4000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9660",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvsocsys.so"
+          },
+          {
+            "range": "ffff5cd00000-ffff5cd13000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9646",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvos.so"
+          },
+          {
+            "range": "ffff5cd40000-ffff5cd54000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9654",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_host1x.so"
+          },
+          {
+            "range": "ffff5cd80000-ffff5cd89000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9655",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_mem.so"
+          },
+          {
+            "range": "ffff5cdb0000-ffff5cdb6000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9658",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_sync.so"
+          },
+          {
+            "range": "ffff5cde0000-ffff5ce48000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9653",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_gpu.so"
+          },
+          {
+            "range": "ffff5ce70000-ffff5ce81000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9441",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvcucompat.so"
+          },
+          {
+            "range": "ffff5d6f0000-ffff5f44c000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "64880",
+            "path": "/usr/lib/aarch64-linux-gnu/libicudata.so.74.2"
+          },
+          {
+            "range": "ffff5f470000-ffff5f471000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5061",
+            "path": "/usr/lib/aarch64-linux-gnu/librt.so.1"
+          },
+          {
+            "range": "ffff5f4a0000-ffff5f4a1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5059",
+            "path": "/usr/lib/aarch64-linux-gnu/libpthread.so.0"
+          },
+          {
+            "range": "ffff5f4d0000-ffff5f4d1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5049",
+            "path": "/usr/lib/aarch64-linux-gnu/libdl.so.2"
+          },
+          {
+            "range": "ffff5f500000-ffff5f69a000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5047",
+            "path": "/usr/lib/aarch64-linux-gnu/libc.so.6"
+          },
+          {
+            "range": "ffff5f6c0000-ffff5f6df000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "63093",
+            "path": "/usr/lib/aarch64-linux-gnu/libgcc_s.so.1"
+          },
+          {
+            "range": "ffff5f700000-ffff5f785000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5050",
+            "path": "/usr/lib/aarch64-linux-gnu/libm.so.6"
+          },
+          {
+            "range": "ffff5f7b0000-ffff5fa1d000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "66240",
+            "path": "/usr/lib/aarch64-linux-gnu/libstdc++.so.6.0.33"
+          },
+          {
+            "range": "ffff5fa40000-ffff5fc48000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "63435",
+            "path": "/usr/lib/aarch64-linux-gnu/libicuuc.so.74.2"
+          },
+          {
+            "range": "ffff5fc80000-ffff5ffce000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "71182",
+            "path": "/usr/lib/aarch64-linux-gnu/libicui18n.so.74.2"
+          },
+          {
+            "range": "ffff60000000-ffff7b46b000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "1055397",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcublasLt.so.13.5.1.27"
+          },
+          {
+            "range": "ffff89000000-ffff8a30f000",
+            "permissions": "r-xp",
+            "offset": "23200000",
+            "device": "103:01",
+            "inode": "1055397",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcublasLt.so.13.5.1.27"
+          },
+          {
+            "range": "ffff8a320000-ffff8a325000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "21201",
+            "path": "/usr/lib/aarch64-linux-gnu/liburing.so.2.5"
+          },
+          {
+            "range": "ffff8a370000-ffff8a429000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "1055173",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcudart.so.13.3.29"
+          },
+          {
+            "range": "ffff8a451000-ffff8a478000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5044",
+            "path": "/usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1"
+          }
+        ],
+        "scope": "ready-time virtual maps only; not physical or CUDA placement"
+      },
+      "ttft": 158.6110025709495,
+      "decode_tps": 17.095333755004816,
+      "output": [
+        "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+      ],
+      "prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4"
+    },
+    {
+      "name": "02-B-no-aslr",
+      "variant": "B",
+      "mode": "no-aslr",
+      "coverage": {
+        "pid": 1198705,
+        "start_ticks": "36548108",
+        "exe": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/B/q4t",
+        "mode": "no-aslr",
+        "personality": 262144,
+        "parent_personality": 0,
+        "aslr_disabled": true,
+        "maps_sha256": "585a981fdf264c4878ebb9de144bdabfc6ca65a3e6e4fd0221628abb03ac71a2",
+        "executable_mappings": [
+          {
+            "range": "00400000-057c1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "393237",
+            "path": "/opt/nvidia/l4t-gpu-libs/openrm/libcuda.so.1.1"
+          },
+          {
+            "range": "aaaaaaaa0000-aaaaaae7c000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "4344496",
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/B/q4t"
+          },
+          {
+            "range": "fffdb8af0000-fffdbd4f8000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6076",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-gpucomp.so.595.78"
+          },
+          {
+            "range": "fffdbe110000-fffdbfbd1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6079",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-ptxjitcompiler.so.595.78"
+          },
+          {
+            "range": "ffffc8030000-ffffc9194000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6078",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-nvvm70.so.595.78"
+          },
+          {
+            "range": "ffffc9510000-ffffc9537000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9443",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvcuextend.so"
+          },
+          {
+            "range": "ffffca7a0000-ffffca7bd000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9659",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvsciipc.so"
+          },
+          {
+            "range": "ffffca7f0000-ffffca7f3000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9652",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_chip.so"
+          },
+          {
+            "range": "ffffca820000-ffffca822000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9661",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvtegrahv.so"
+          },
+          {
+            "range": "ffffca850000-ffffca854000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9660",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvsocsys.so"
+          },
+          {
+            "range": "ffffca880000-ffffca893000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9646",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvos.so"
+          },
+          {
+            "range": "ffffca8c0000-ffffca8d4000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9654",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_host1x.so"
+          },
+          {
+            "range": "ffffca900000-ffffca909000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9655",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_mem.so"
+          },
+          {
+            "range": "ffffca930000-ffffca936000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9658",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_sync.so"
+          },
+          {
+            "range": "ffffca960000-ffffca9c8000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9653",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_gpu.so"
+          },
+          {
+            "range": "ffffca9f0000-ffffcaa01000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9441",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvcucompat.so"
+          },
+          {
+            "range": "ffffcb270000-ffffccfcc000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "64880",
+            "path": "/usr/lib/aarch64-linux-gnu/libicudata.so.74.2"
+          },
+          {
+            "range": "ffffccff0000-ffffcd18a000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5047",
+            "path": "/usr/lib/aarch64-linux-gnu/libc.so.6"
+          },
+          {
+            "range": "ffffcd1b0000-ffffcd41d000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "66240",
+            "path": "/usr/lib/aarch64-linux-gnu/libstdc++.so.6.0.33"
+          },
+          {
+            "range": "ffffcd440000-ffffcd648000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "63435",
+            "path": "/usr/lib/aarch64-linux-gnu/libicuuc.so.74.2"
+          },
+          {
+            "range": "ffffcd680000-ffffcd9ce000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "71182",
+            "path": "/usr/lib/aarch64-linux-gnu/libicui18n.so.74.2"
+          },
+          {
+            "range": "ffffcda00000-ffffe8e6b000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "1055397",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcublasLt.so.13.5.1.27"
+          },
+          {
+            "range": "fffff6a00000-fffff7d0f000",
+            "permissions": "r-xp",
+            "offset": "23200000",
+            "device": "103:01",
+            "inode": "1055397",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcublasLt.so.13.5.1.27"
+          },
+          {
+            "range": "fffff7d10000-fffff7d11000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5061",
+            "path": "/usr/lib/aarch64-linux-gnu/librt.so.1"
+          },
+          {
+            "range": "fffff7d40000-fffff7d41000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5059",
+            "path": "/usr/lib/aarch64-linux-gnu/libpthread.so.0"
+          },
+          {
+            "range": "fffff7d70000-fffff7d71000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5049",
+            "path": "/usr/lib/aarch64-linux-gnu/libdl.so.2"
+          },
+          {
+            "range": "fffff7da0000-fffff7dbf000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "63093",
+            "path": "/usr/lib/aarch64-linux-gnu/libgcc_s.so.1"
+          },
+          {
+            "range": "fffff7de0000-fffff7e65000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5050",
+            "path": "/usr/lib/aarch64-linux-gnu/libm.so.6"
+          },
+          {
+            "range": "fffff7e90000-fffff7e95000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "21201",
+            "path": "/usr/lib/aarch64-linux-gnu/liburing.so.2.5"
+          },
+          {
+            "range": "fffff7ee0000-fffff7f99000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "1055173",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcudart.so.13.3.29"
+          },
+          {
+            "range": "fffff7fbe000-fffff7fe5000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5044",
+            "path": "/usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1"
+          }
+        ],
+        "scope": "ready-time virtual maps only; not physical or CUDA placement"
+      },
+      "ttft": 158.92456120200222,
+      "decode_tps": 17.052384176115105,
+      "output": [
+        "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+      ],
+      "prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4"
+    },
+    {
+      "name": "03-B-inherit",
+      "variant": "B",
+      "mode": "inherit",
+      "coverage": {
+        "pid": 1200004,
+        "start_ticks": "36568800",
+        "exe": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/B/q4t",
+        "mode": "inherit",
+        "personality": 0,
+        "parent_personality": 0,
+        "aslr_disabled": false,
+        "maps_sha256": "c2f75446c344b327011a850be56290a698c010247370e4409c36714a3d30d076",
+        "executable_mappings": [
+          {
+            "range": "00400000-057c1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "393237",
+            "path": "/opt/nvidia/l4t-gpu-libs/openrm/libcuda.so.1.1"
+          },
+          {
+            "range": "aaaac4380000-aaaac475c000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "4344496",
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/B/q4t"
+          },
+          {
+            "range": "fffd67610000-fffd6c018000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6076",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-gpucomp.so.595.78"
+          },
+          {
+            "range": "fffd6cc30000-fffd6dd94000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6078",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-nvvm70.so.595.78"
+          },
+          {
+            "range": "fffd6e110000-fffd6fbd1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6079",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-ptxjitcompiler.so.595.78"
+          },
+          {
+            "range": "ffff793c0000-ffff793e7000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9443",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvcuextend.so"
+          },
+          {
+            "range": "ffff7a650000-ffff7a66d000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9659",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvsciipc.so"
+          },
+          {
+            "range": "ffff7a6a0000-ffff7a6a3000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9652",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_chip.so"
+          },
+          {
+            "range": "ffff7a6d0000-ffff7a6d2000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9661",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvtegrahv.so"
+          },
+          {
+            "range": "ffff7a700000-ffff7a704000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9660",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvsocsys.so"
+          },
+          {
+            "range": "ffff7a730000-ffff7a743000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9646",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvos.so"
+          },
+          {
+            "range": "ffff7a770000-ffff7a784000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9654",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_host1x.so"
+          },
+          {
+            "range": "ffff7a7b0000-ffff7a7b9000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9655",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_mem.so"
+          },
+          {
+            "range": "ffff7a7e0000-ffff7a7e6000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9658",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_sync.so"
+          },
+          {
+            "range": "ffff7a810000-ffff7a878000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9653",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_gpu.so"
+          },
+          {
+            "range": "ffff7a8a0000-ffff7a8b1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9441",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvcucompat.so"
+          },
+          {
+            "range": "ffff7b120000-ffff7ce7c000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "64880",
+            "path": "/usr/lib/aarch64-linux-gnu/libicudata.so.74.2"
+          },
+          {
+            "range": "ffff7cea0000-ffff7cea1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5061",
+            "path": "/usr/lib/aarch64-linux-gnu/librt.so.1"
+          },
+          {
+            "range": "ffff7ced0000-ffff7ced1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5059",
+            "path": "/usr/lib/aarch64-linux-gnu/libpthread.so.0"
+          },
+          {
+            "range": "ffff7cf00000-ffff7d09a000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5047",
+            "path": "/usr/lib/aarch64-linux-gnu/libc.so.6"
+          },
+          {
+            "range": "ffff7d0c0000-ffff7d0df000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "63093",
+            "path": "/usr/lib/aarch64-linux-gnu/libgcc_s.so.1"
+          },
+          {
+            "range": "ffff7d100000-ffff7d185000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5050",
+            "path": "/usr/lib/aarch64-linux-gnu/libm.so.6"
+          },
+          {
+            "range": "ffff7d1b0000-ffff7d41d000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "66240",
+            "path": "/usr/lib/aarch64-linux-gnu/libstdc++.so.6.0.33"
+          },
+          {
+            "range": "ffff7d440000-ffff7d648000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "63435",
+            "path": "/usr/lib/aarch64-linux-gnu/libicuuc.so.74.2"
+          },
+          {
+            "range": "ffff7d680000-ffff7d9ce000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "71182",
+            "path": "/usr/lib/aarch64-linux-gnu/libicui18n.so.74.2"
+          },
+          {
+            "range": "ffff7da00000-ffff98e6b000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "1055397",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcublasLt.so.13.5.1.27"
+          },
+          {
+            "range": "ffffa6a00000-ffffa7d0f000",
+            "permissions": "r-xp",
+            "offset": "23200000",
+            "device": "103:01",
+            "inode": "1055397",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcublasLt.so.13.5.1.27"
+          },
+          {
+            "range": "ffffa7d10000-ffffa7d11000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5049",
+            "path": "/usr/lib/aarch64-linux-gnu/libdl.so.2"
+          },
+          {
+            "range": "ffffa7d40000-ffffa7d45000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "21201",
+            "path": "/usr/lib/aarch64-linux-gnu/liburing.so.2.5"
+          },
+          {
+            "range": "ffffa7d90000-ffffa7e49000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "1055173",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcudart.so.13.3.29"
+          },
+          {
+            "range": "ffffa7e6d000-ffffa7e94000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5044",
+            "path": "/usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1"
+          }
+        ],
+        "scope": "ready-time virtual maps only; not physical or CUDA placement"
+      },
+      "ttft": 158.93763935897732,
+      "decode_tps": 17.050812929820655,
+      "output": [
+        "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+      ],
+      "prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4"
+    },
+    {
+      "name": "04-A-no-aslr",
+      "variant": "A",
+      "mode": "no-aslr",
+      "coverage": {
+        "pid": 1201685,
+        "start_ticks": "36589506",
+        "exe": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/A/q4t",
+        "mode": "no-aslr",
+        "personality": 262144,
+        "parent_personality": 0,
+        "aslr_disabled": true,
+        "maps_sha256": "706e1cd471cfb9587c3d4324123c4ebc967027905f64771f732a3e80062a328e",
+        "executable_mappings": [
+          {
+            "range": "00400000-057c1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "393237",
+            "path": "/opt/nvidia/l4t-gpu-libs/openrm/libcuda.so.1.1"
+          },
+          {
+            "range": "aaaaaaaa0000-aaaaaae78000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "4344493",
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/A/q4t"
+          },
+          {
+            "range": "fffdb8af0000-fffdbd4f8000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6076",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-gpucomp.so.595.78"
+          },
+          {
+            "range": "fffdbe110000-fffdbfbd1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6079",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-ptxjitcompiler.so.595.78"
+          },
+          {
+            "range": "ffffc8030000-ffffc9194000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6078",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-nvvm70.so.595.78"
+          },
+          {
+            "range": "ffffc9510000-ffffc9537000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9443",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvcuextend.so"
+          },
+          {
+            "range": "ffffca7a0000-ffffca7bd000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9659",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvsciipc.so"
+          },
+          {
+            "range": "ffffca7f0000-ffffca7f3000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9652",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_chip.so"
+          },
+          {
+            "range": "ffffca820000-ffffca822000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9661",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvtegrahv.so"
+          },
+          {
+            "range": "ffffca850000-ffffca854000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9660",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvsocsys.so"
+          },
+          {
+            "range": "ffffca880000-ffffca893000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9646",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvos.so"
+          },
+          {
+            "range": "ffffca8c0000-ffffca8d4000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9654",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_host1x.so"
+          },
+          {
+            "range": "ffffca900000-ffffca909000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9655",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_mem.so"
+          },
+          {
+            "range": "ffffca930000-ffffca936000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9658",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_sync.so"
+          },
+          {
+            "range": "ffffca960000-ffffca9c8000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9653",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_gpu.so"
+          },
+          {
+            "range": "ffffca9f0000-ffffcaa01000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9441",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvcucompat.so"
+          },
+          {
+            "range": "ffffcb270000-ffffccfcc000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "64880",
+            "path": "/usr/lib/aarch64-linux-gnu/libicudata.so.74.2"
+          },
+          {
+            "range": "ffffccff0000-ffffcd18a000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5047",
+            "path": "/usr/lib/aarch64-linux-gnu/libc.so.6"
+          },
+          {
+            "range": "ffffcd1b0000-ffffcd41d000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "66240",
+            "path": "/usr/lib/aarch64-linux-gnu/libstdc++.so.6.0.33"
+          },
+          {
+            "range": "ffffcd440000-ffffcd648000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "63435",
+            "path": "/usr/lib/aarch64-linux-gnu/libicuuc.so.74.2"
+          },
+          {
+            "range": "ffffcd680000-ffffcd9ce000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "71182",
+            "path": "/usr/lib/aarch64-linux-gnu/libicui18n.so.74.2"
+          },
+          {
+            "range": "ffffcda00000-ffffe8e6b000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "1055397",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcublasLt.so.13.5.1.27"
+          },
+          {
+            "range": "fffff6a00000-fffff7d0f000",
+            "permissions": "r-xp",
+            "offset": "23200000",
+            "device": "103:01",
+            "inode": "1055397",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcublasLt.so.13.5.1.27"
+          },
+          {
+            "range": "fffff7d10000-fffff7d11000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5061",
+            "path": "/usr/lib/aarch64-linux-gnu/librt.so.1"
+          },
+          {
+            "range": "fffff7d40000-fffff7d41000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5059",
+            "path": "/usr/lib/aarch64-linux-gnu/libpthread.so.0"
+          },
+          {
+            "range": "fffff7d70000-fffff7d71000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5049",
+            "path": "/usr/lib/aarch64-linux-gnu/libdl.so.2"
+          },
+          {
+            "range": "fffff7da0000-fffff7dbf000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "63093",
+            "path": "/usr/lib/aarch64-linux-gnu/libgcc_s.so.1"
+          },
+          {
+            "range": "fffff7de0000-fffff7e65000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5050",
+            "path": "/usr/lib/aarch64-linux-gnu/libm.so.6"
+          },
+          {
+            "range": "fffff7e90000-fffff7e95000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "21201",
+            "path": "/usr/lib/aarch64-linux-gnu/liburing.so.2.5"
+          },
+          {
+            "range": "fffff7ee0000-fffff7f99000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "1055173",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcudart.so.13.3.29"
+          },
+          {
+            "range": "fffff7fbe000-fffff7fe5000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5044",
+            "path": "/usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1"
+          }
+        ],
+        "scope": "ready-time virtual maps only; not physical or CUDA placement"
+      },
+      "ttft": 158.9583610050031,
+      "decode_tps": 17.063442800627314,
+      "output": [
+        "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+      ],
+      "prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4"
+    },
+    {
+      "name": "05-A-no-aslr",
+      "variant": "A",
+      "mode": "no-aslr",
+      "coverage": {
+        "pid": 1202994,
+        "start_ticks": "36610297",
+        "exe": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/A/q4t",
+        "mode": "no-aslr",
+        "personality": 262144,
+        "parent_personality": 0,
+        "aslr_disabled": true,
+        "maps_sha256": "45526188066011df081dfd04eb57ab55b22e6321cc898654ccb7c54fea8129a7",
+        "executable_mappings": [
+          {
+            "range": "00400000-057c1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "393237",
+            "path": "/opt/nvidia/l4t-gpu-libs/openrm/libcuda.so.1.1"
+          },
+          {
+            "range": "aaaaaaaa0000-aaaaaae78000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "4344493",
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/A/q4t"
+          },
+          {
+            "range": "fffdb8af0000-fffdbd4f8000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6076",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-gpucomp.so.595.78"
+          },
+          {
+            "range": "fffdbe110000-fffdbfbd1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6079",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-ptxjitcompiler.so.595.78"
+          },
+          {
+            "range": "ffffc8030000-ffffc9194000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6078",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-nvvm70.so.595.78"
+          },
+          {
+            "range": "ffffc9510000-ffffc9537000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9443",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvcuextend.so"
+          },
+          {
+            "range": "ffffca7a0000-ffffca7bd000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9659",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvsciipc.so"
+          },
+          {
+            "range": "ffffca7f0000-ffffca7f3000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9652",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_chip.so"
+          },
+          {
+            "range": "ffffca820000-ffffca822000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9661",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvtegrahv.so"
+          },
+          {
+            "range": "ffffca850000-ffffca854000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9660",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvsocsys.so"
+          },
+          {
+            "range": "ffffca880000-ffffca893000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9646",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvos.so"
+          },
+          {
+            "range": "ffffca8c0000-ffffca8d4000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9654",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_host1x.so"
+          },
+          {
+            "range": "ffffca900000-ffffca909000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9655",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_mem.so"
+          },
+          {
+            "range": "ffffca930000-ffffca936000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9658",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_sync.so"
+          },
+          {
+            "range": "ffffca960000-ffffca9c8000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9653",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_gpu.so"
+          },
+          {
+            "range": "ffffca9f0000-ffffcaa01000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9441",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvcucompat.so"
+          },
+          {
+            "range": "ffffcb270000-ffffccfcc000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "64880",
+            "path": "/usr/lib/aarch64-linux-gnu/libicudata.so.74.2"
+          },
+          {
+            "range": "ffffccff0000-ffffcd18a000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5047",
+            "path": "/usr/lib/aarch64-linux-gnu/libc.so.6"
+          },
+          {
+            "range": "ffffcd1b0000-ffffcd41d000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "66240",
+            "path": "/usr/lib/aarch64-linux-gnu/libstdc++.so.6.0.33"
+          },
+          {
+            "range": "ffffcd440000-ffffcd648000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "63435",
+            "path": "/usr/lib/aarch64-linux-gnu/libicuuc.so.74.2"
+          },
+          {
+            "range": "ffffcd680000-ffffcd9ce000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "71182",
+            "path": "/usr/lib/aarch64-linux-gnu/libicui18n.so.74.2"
+          },
+          {
+            "range": "ffffcda00000-ffffe8e6b000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "1055397",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcublasLt.so.13.5.1.27"
+          },
+          {
+            "range": "fffff6a00000-fffff7d0f000",
+            "permissions": "r-xp",
+            "offset": "23200000",
+            "device": "103:01",
+            "inode": "1055397",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcublasLt.so.13.5.1.27"
+          },
+          {
+            "range": "fffff7d10000-fffff7d11000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5061",
+            "path": "/usr/lib/aarch64-linux-gnu/librt.so.1"
+          },
+          {
+            "range": "fffff7d40000-fffff7d41000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5059",
+            "path": "/usr/lib/aarch64-linux-gnu/libpthread.so.0"
+          },
+          {
+            "range": "fffff7d70000-fffff7d71000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5049",
+            "path": "/usr/lib/aarch64-linux-gnu/libdl.so.2"
+          },
+          {
+            "range": "fffff7da0000-fffff7dbf000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "63093",
+            "path": "/usr/lib/aarch64-linux-gnu/libgcc_s.so.1"
+          },
+          {
+            "range": "fffff7de0000-fffff7e65000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5050",
+            "path": "/usr/lib/aarch64-linux-gnu/libm.so.6"
+          },
+          {
+            "range": "fffff7e90000-fffff7e95000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "21201",
+            "path": "/usr/lib/aarch64-linux-gnu/liburing.so.2.5"
+          },
+          {
+            "range": "fffff7ee0000-fffff7f99000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "1055173",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcudart.so.13.3.29"
+          },
+          {
+            "range": "fffff7fbe000-fffff7fe5000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5044",
+            "path": "/usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1"
+          }
+        ],
+        "scope": "ready-time virtual maps only; not physical or CUDA placement"
+      },
+      "ttft": 158.97242638398893,
+      "decode_tps": 17.060767215787113,
+      "output": [
+        "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+      ],
+      "prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4"
+    },
+    {
+      "name": "06-B-inherit",
+      "variant": "B",
+      "mode": "inherit",
+      "coverage": {
+        "pid": 1205360,
+        "start_ticks": "36630990",
+        "exe": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/B/q4t",
+        "mode": "inherit",
+        "personality": 0,
+        "parent_personality": 0,
+        "aslr_disabled": false,
+        "maps_sha256": "9d83e8d0b334f53368dfa63b5bf8a3c9ae545ca3a1283be6e83580e13acfcb81",
+        "executable_mappings": [
+          {
+            "range": "00400000-057c1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "393237",
+            "path": "/opt/nvidia/l4t-gpu-libs/openrm/libcuda.so.1.1"
+          },
+          {
+            "range": "aaaac52d0000-aaaac56ac000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "4344496",
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/B/q4t"
+          },
+          {
+            "range": "fffd53610000-fffd58018000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6076",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-gpucomp.so.595.78"
+          },
+          {
+            "range": "fffd58c30000-fffd59d94000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6078",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-nvvm70.so.595.78"
+          },
+          {
+            "range": "fffd5a110000-fffd5bbd1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6079",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-ptxjitcompiler.so.595.78"
+          },
+          {
+            "range": "ffff65440000-ffff65467000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9443",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvcuextend.so"
+          },
+          {
+            "range": "ffff666d0000-ffff666ed000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9659",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvsciipc.so"
+          },
+          {
+            "range": "ffff66720000-ffff66723000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9652",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_chip.so"
+          },
+          {
+            "range": "ffff66750000-ffff66752000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9661",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvtegrahv.so"
+          },
+          {
+            "range": "ffff66780000-ffff66784000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9660",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvsocsys.so"
+          },
+          {
+            "range": "ffff667b0000-ffff667c3000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9646",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvos.so"
+          },
+          {
+            "range": "ffff667f0000-ffff66804000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9654",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_host1x.so"
+          },
+          {
+            "range": "ffff66830000-ffff66839000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9655",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_mem.so"
+          },
+          {
+            "range": "ffff66860000-ffff66866000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9658",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_sync.so"
+          },
+          {
+            "range": "ffff66890000-ffff668f8000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9653",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_gpu.so"
+          },
+          {
+            "range": "ffff66920000-ffff66931000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9441",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvcucompat.so"
+          },
+          {
+            "range": "ffff671a0000-ffff68efc000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "64880",
+            "path": "/usr/lib/aarch64-linux-gnu/libicudata.so.74.2"
+          },
+          {
+            "range": "ffff68f20000-ffff68f21000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5061",
+            "path": "/usr/lib/aarch64-linux-gnu/librt.so.1"
+          },
+          {
+            "range": "ffff68f50000-ffff68f51000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5059",
+            "path": "/usr/lib/aarch64-linux-gnu/libpthread.so.0"
+          },
+          {
+            "range": "ffff68f80000-ffff68f81000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5049",
+            "path": "/usr/lib/aarch64-linux-gnu/libdl.so.2"
+          },
+          {
+            "range": "ffff68fb0000-ffff6914a000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5047",
+            "path": "/usr/lib/aarch64-linux-gnu/libc.so.6"
+          },
+          {
+            "range": "ffff69170000-ffff6918f000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "63093",
+            "path": "/usr/lib/aarch64-linux-gnu/libgcc_s.so.1"
+          },
+          {
+            "range": "ffff691b0000-ffff6941d000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "66240",
+            "path": "/usr/lib/aarch64-linux-gnu/libstdc++.so.6.0.33"
+          },
+          {
+            "range": "ffff69440000-ffff69648000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "63435",
+            "path": "/usr/lib/aarch64-linux-gnu/libicuuc.so.74.2"
+          },
+          {
+            "range": "ffff69680000-ffff699ce000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "71182",
+            "path": "/usr/lib/aarch64-linux-gnu/libicui18n.so.74.2"
+          },
+          {
+            "range": "ffff69a00000-ffff84e6b000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "1055397",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcublasLt.so.13.5.1.27"
+          },
+          {
+            "range": "ffff92a00000-ffff93d0f000",
+            "permissions": "r-xp",
+            "offset": "23200000",
+            "device": "103:01",
+            "inode": "1055397",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcublasLt.so.13.5.1.27"
+          },
+          {
+            "range": "ffff93d20000-ffff93da5000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5050",
+            "path": "/usr/lib/aarch64-linux-gnu/libm.so.6"
+          },
+          {
+            "range": "ffff93dd0000-ffff93dd5000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "21201",
+            "path": "/usr/lib/aarch64-linux-gnu/liburing.so.2.5"
+          },
+          {
+            "range": "ffff93e20000-ffff93ed9000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "1055173",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcudart.so.13.3.29"
+          },
+          {
+            "range": "ffff93efa000-ffff93f21000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5044",
+            "path": "/usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1"
+          }
+        ],
+        "scope": "ready-time virtual maps only; not physical or CUDA placement"
+      },
+      "ttft": 159.1637839669711,
+      "decode_tps": 17.055662968550205,
+      "output": [
+        "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+      ],
+      "prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4"
+    },
+    {
+      "name": "07-B-no-aslr",
+      "variant": "B",
+      "mode": "no-aslr",
+      "coverage": {
+        "pid": 1206989,
+        "start_ticks": "36651705",
+        "exe": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/B/q4t",
+        "mode": "no-aslr",
+        "personality": 262144,
+        "parent_personality": 0,
+        "aslr_disabled": true,
+        "maps_sha256": "3071685bcc62ff2fbac74bdd5dd27098a34e981db58ae4ae8b735ab84a32300b",
+        "executable_mappings": [
+          {
+            "range": "00400000-057c1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "393237",
+            "path": "/opt/nvidia/l4t-gpu-libs/openrm/libcuda.so.1.1"
+          },
+          {
+            "range": "aaaaaaaa0000-aaaaaae7c000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "4344496",
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/B/q4t"
+          },
+          {
+            "range": "fffdb8af0000-fffdbd4f8000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6076",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-gpucomp.so.595.78"
+          },
+          {
+            "range": "fffdbe110000-fffdbfbd1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6079",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-ptxjitcompiler.so.595.78"
+          },
+          {
+            "range": "ffffc8030000-ffffc9194000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6078",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-nvvm70.so.595.78"
+          },
+          {
+            "range": "ffffc9510000-ffffc9537000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9443",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvcuextend.so"
+          },
+          {
+            "range": "ffffca7a0000-ffffca7bd000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9659",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvsciipc.so"
+          },
+          {
+            "range": "ffffca7f0000-ffffca7f3000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9652",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_chip.so"
+          },
+          {
+            "range": "ffffca820000-ffffca822000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9661",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvtegrahv.so"
+          },
+          {
+            "range": "ffffca850000-ffffca854000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9660",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvsocsys.so"
+          },
+          {
+            "range": "ffffca880000-ffffca893000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9646",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvos.so"
+          },
+          {
+            "range": "ffffca8c0000-ffffca8d4000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9654",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_host1x.so"
+          },
+          {
+            "range": "ffffca900000-ffffca909000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9655",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_mem.so"
+          },
+          {
+            "range": "ffffca930000-ffffca936000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9658",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_sync.so"
+          },
+          {
+            "range": "ffffca960000-ffffca9c8000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9653",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_gpu.so"
+          },
+          {
+            "range": "ffffca9f0000-ffffcaa01000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9441",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvcucompat.so"
+          },
+          {
+            "range": "ffffcb270000-ffffccfcc000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "64880",
+            "path": "/usr/lib/aarch64-linux-gnu/libicudata.so.74.2"
+          },
+          {
+            "range": "ffffccff0000-ffffcd18a000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5047",
+            "path": "/usr/lib/aarch64-linux-gnu/libc.so.6"
+          },
+          {
+            "range": "ffffcd1b0000-ffffcd41d000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "66240",
+            "path": "/usr/lib/aarch64-linux-gnu/libstdc++.so.6.0.33"
+          },
+          {
+            "range": "ffffcd440000-ffffcd648000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "63435",
+            "path": "/usr/lib/aarch64-linux-gnu/libicuuc.so.74.2"
+          },
+          {
+            "range": "ffffcd680000-ffffcd9ce000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "71182",
+            "path": "/usr/lib/aarch64-linux-gnu/libicui18n.so.74.2"
+          },
+          {
+            "range": "ffffcda00000-ffffe8e6b000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "1055397",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcublasLt.so.13.5.1.27"
+          },
+          {
+            "range": "fffff6a00000-fffff7d0f000",
+            "permissions": "r-xp",
+            "offset": "23200000",
+            "device": "103:01",
+            "inode": "1055397",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcublasLt.so.13.5.1.27"
+          },
+          {
+            "range": "fffff7d10000-fffff7d11000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5061",
+            "path": "/usr/lib/aarch64-linux-gnu/librt.so.1"
+          },
+          {
+            "range": "fffff7d40000-fffff7d41000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5059",
+            "path": "/usr/lib/aarch64-linux-gnu/libpthread.so.0"
+          },
+          {
+            "range": "fffff7d70000-fffff7d71000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5049",
+            "path": "/usr/lib/aarch64-linux-gnu/libdl.so.2"
+          },
+          {
+            "range": "fffff7da0000-fffff7dbf000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "63093",
+            "path": "/usr/lib/aarch64-linux-gnu/libgcc_s.so.1"
+          },
+          {
+            "range": "fffff7de0000-fffff7e65000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5050",
+            "path": "/usr/lib/aarch64-linux-gnu/libm.so.6"
+          },
+          {
+            "range": "fffff7e90000-fffff7e95000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "21201",
+            "path": "/usr/lib/aarch64-linux-gnu/liburing.so.2.5"
+          },
+          {
+            "range": "fffff7ee0000-fffff7f99000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "1055173",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcudart.so.13.3.29"
+          },
+          {
+            "range": "fffff7fbe000-fffff7fe5000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5044",
+            "path": "/usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1"
+          }
+        ],
+        "scope": "ready-time virtual maps only; not physical or CUDA placement"
+      },
+      "ttft": 159.09797823097324,
+      "decode_tps": 17.062036313984336,
+      "output": [
+        "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+      ],
+      "prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4"
+    },
+    {
+      "name": "08-A-inherit",
+      "variant": "A",
+      "mode": "inherit",
+      "coverage": {
+        "pid": 1208645,
+        "start_ticks": "36672413",
+        "exe": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/A/q4t",
+        "mode": "inherit",
+        "personality": 0,
+        "parent_personality": 0,
+        "aslr_disabled": false,
+        "maps_sha256": "3a55e12f09dcc723d9f26d074ff65c6033fb55a4d9ab4313052c03a1a0ec9dc6",
+        "executable_mappings": [
+          {
+            "range": "00400000-057c1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "393237",
+            "path": "/opt/nvidia/l4t-gpu-libs/openrm/libcuda.so.1.1"
+          },
+          {
+            "range": "aaaab94a0000-aaaab9878000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "4344493",
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/A/q4t"
+          },
+          {
+            "range": "fffd75500000-fffd79f08000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6076",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-gpucomp.so.595.78"
+          },
+          {
+            "range": "fffd7ab20000-fffd7bc84000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6078",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-nvvm70.so.595.78"
+          },
+          {
+            "range": "ffff84530000-ffff85ff1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "6079",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-ptxjitcompiler.so.595.78"
+          },
+          {
+            "range": "ffff86420000-ffff86447000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9443",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvcuextend.so"
+          },
+          {
+            "range": "ffff876b0000-ffff876cd000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9659",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvsciipc.so"
+          },
+          {
+            "range": "ffff87700000-ffff87703000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9652",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_chip.so"
+          },
+          {
+            "range": "ffff87730000-ffff87732000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9661",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvtegrahv.so"
+          },
+          {
+            "range": "ffff87760000-ffff87764000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9660",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvsocsys.so"
+          },
+          {
+            "range": "ffff87790000-ffff877a3000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9646",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvos.so"
+          },
+          {
+            "range": "ffff877d0000-ffff877e4000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9654",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_host1x.so"
+          },
+          {
+            "range": "ffff87810000-ffff87819000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9655",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_mem.so"
+          },
+          {
+            "range": "ffff87840000-ffff87846000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9658",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_sync.so"
+          },
+          {
+            "range": "ffff87870000-ffff878d8000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9653",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvrm_gpu.so"
+          },
+          {
+            "range": "ffff87900000-ffff87911000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "9441",
+            "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvcucompat.so"
+          },
+          {
+            "range": "ffff88160000-ffff89ebc000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "64880",
+            "path": "/usr/lib/aarch64-linux-gnu/libicudata.so.74.2"
+          },
+          {
+            "range": "ffff89ee0000-ffff89ee1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5061",
+            "path": "/usr/lib/aarch64-linux-gnu/librt.so.1"
+          },
+          {
+            "range": "ffff89f10000-ffff89f11000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5059",
+            "path": "/usr/lib/aarch64-linux-gnu/libpthread.so.0"
+          },
+          {
+            "range": "ffff89f40000-ffff8a0da000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5047",
+            "path": "/usr/lib/aarch64-linux-gnu/libc.so.6"
+          },
+          {
+            "range": "ffff8a100000-ffff8a185000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5050",
+            "path": "/usr/lib/aarch64-linux-gnu/libm.so.6"
+          },
+          {
+            "range": "ffff8a1b0000-ffff8a41d000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "66240",
+            "path": "/usr/lib/aarch64-linux-gnu/libstdc++.so.6.0.33"
+          },
+          {
+            "range": "ffff8a440000-ffff8a648000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "63435",
+            "path": "/usr/lib/aarch64-linux-gnu/libicuuc.so.74.2"
+          },
+          {
+            "range": "ffff8a680000-ffff8a9ce000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "71182",
+            "path": "/usr/lib/aarch64-linux-gnu/libicui18n.so.74.2"
+          },
+          {
+            "range": "ffff8aa00000-ffffa5e6b000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "1055397",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcublasLt.so.13.5.1.27"
+          },
+          {
+            "range": "ffffb3a00000-ffffb4d0f000",
+            "permissions": "r-xp",
+            "offset": "23200000",
+            "device": "103:01",
+            "inode": "1055397",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcublasLt.so.13.5.1.27"
+          },
+          {
+            "range": "ffffb4d30000-ffffb4d31000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5049",
+            "path": "/usr/lib/aarch64-linux-gnu/libdl.so.2"
+          },
+          {
+            "range": "ffffb4d60000-ffffb4d7f000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "63093",
+            "path": "/usr/lib/aarch64-linux-gnu/libgcc_s.so.1"
+          },
+          {
+            "range": "ffffb4da0000-ffffb4da5000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "21201",
+            "path": "/usr/lib/aarch64-linux-gnu/liburing.so.2.5"
+          },
+          {
+            "range": "ffffb4df0000-ffffb4ea9000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "1055173",
+            "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcudart.so.13.3.29"
+          },
+          {
+            "range": "ffffb4eca000-ffffb4ef1000",
+            "permissions": "r-xp",
+            "offset": "00000000",
+            "device": "103:01",
+            "inode": "5044",
+            "path": "/usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1"
+          }
+        ],
+        "scope": "ready-time virtual maps only; not physical or CUDA placement"
+      },
+      "ttft": 158.76726625999436,
+      "decode_tps": 17.01767119629943,
+      "output": [
+        "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+      ],
+      "prompt": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4"
+    }
+  ],
+  "R_s": 0.22614460799377412,
+  "pairs": [
+    {
+      "control_B_minus_A_s": 0.3266367880278267,
+      "fixed_B_minus_A_s": -0.03379980300087482,
+      "interaction_s": 0.3604365910287015
+    },
+    {
+      "control_B_minus_A_s": 0.3965177069767378,
+      "fixed_B_minus_A_s": 0.1255518469843082,
+      "interaction_s": 0.2709658599924296
+    }
+  ],
+  "frozen_interaction_gate_passed": false,
+  "lease": {
+    "status": "COMPLETED",
+    "command": [
+      "python3",
+      ".q4t-work/hc-up-aslr-20261017/run.py"
+    ],
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 0,
+    "finished": {
+      "utc": "2026-10-16T18:54:08.944436+00:00",
+      "monotonic": 366931.461320676,
+      "pid": 1197368
+    }
+  },
+  "historical_causation_proven": false,
+  "performance_acceptance": false,
+  "sources": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/01-A-inherit/server.log": "1b34ff6693d7a7a598dec35da41b356cee11e5af5548a34d250e4da439c6df20",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/01-A-inherit/exit.json": "13e99c08c11d4a5a68c0f3064c25004085225ce46f8af208f7ee00b703cc4739",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/01-A-inherit/results.json": "e80913a417393cd739c7636a025e8eda5e0c14a2e49d06f34b01698d0d4bc0e1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/01-A-inherit/events.jsonl": "7447c68ab6e3eb4f19ac620a1fb147d77ea4e2b5aae2dfc26cc07cbcd007e5a0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/01-A-inherit/server-address-space.json": "151249fefa1a69f1aa316108a33845f238abe9e2256525b34234ff158b264e27",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/01-A-inherit/server-maps.txt": "252303528eaa481e7c6219f5ea8c77c356c308112b4a6e1090403d961741bcc3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/02-B-no-aslr/server.log": "8547e54478229222f1d14bddf9b1ff5931bb854ce5673d9d0f27506767f928d5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/02-B-no-aslr/exit.json": "0d0516c2346a31e84aa87a7686e27637e55ab343247e6c7b2d256ce762b06919",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/02-B-no-aslr/results.json": "545c843e821646aafe17591cd9122a5dd9aa059bcbefc1b80ce3b4194348c8ec",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/02-B-no-aslr/events.jsonl": "0662af223e6e06b7a3d580977a591a86a27b6f9b71a26b69e9734b050472d9f6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/02-B-no-aslr/server-address-space.json": "e0eedf4fd6e4ee27aa4977e325a9c1ba40fe4d6d3ddd7f598264562417d0a060",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/02-B-no-aslr/server-maps.txt": "585a981fdf264c4878ebb9de144bdabfc6ca65a3e6e4fd0221628abb03ac71a2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/03-B-inherit/server.log": "7cc097e27b04f75232e0b0d9aa8b5ee2c58f989af5b519abac09b210ef9099a6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/03-B-inherit/exit.json": "13e99c08c11d4a5a68c0f3064c25004085225ce46f8af208f7ee00b703cc4739",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/03-B-inherit/results.json": "f5a15170f991d8bc9662ebb5c6f815e66376a31756bdbbe03c0a568d86855999",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/03-B-inherit/events.jsonl": "da7850589fc3fd6fa3af1e5a8da7ef50404ccb1061c1a83864e65c91d8c49319",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/03-B-inherit/server-address-space.json": "be2c390e206d105ce0a3db76a29f75415bf36b42d178acf5d20ecb60c500181d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/03-B-inherit/server-maps.txt": "c2f75446c344b327011a850be56290a698c010247370e4409c36714a3d30d076",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/04-A-no-aslr/server.log": "b3923e52db9b7277605ef31953fa76f1a855a0538da2647ec05b82932aab7bc4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/04-A-no-aslr/exit.json": "0d0516c2346a31e84aa87a7686e27637e55ab343247e6c7b2d256ce762b06919",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/04-A-no-aslr/results.json": "068363dbec47f40321fff0e8411fbc49f708491a8ce9e28b9ec0ed6a506fe9e2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/04-A-no-aslr/events.jsonl": "62fec3de1e2f71b67069bdeaa921bb6beea7eea905d6f8ce80f9fb9914ae3855",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/04-A-no-aslr/server-address-space.json": "61ee560b943aab6e3d3e5c3fadf48eabf0098cce46f22bea620a6f67543964df",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/04-A-no-aslr/server-maps.txt": "706e1cd471cfb9587c3d4324123c4ebc967027905f64771f732a3e80062a328e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/05-A-no-aslr/server.log": "2b987d41ee7c25ab7a96d264569e72d02f8386990bb3e059ed1ed92a897fd1dc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/05-A-no-aslr/exit.json": "0d0516c2346a31e84aa87a7686e27637e55ab343247e6c7b2d256ce762b06919",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/05-A-no-aslr/results.json": "5d0c83ecb8f5db54a8fa972f2ee45a1c0a0d233e3798b8b87517565e9708583f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/05-A-no-aslr/events.jsonl": "a8da8fd57ea3ed9982dc05625951c4a59ab162dc58444f4134c08fbeb275c815",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/05-A-no-aslr/server-address-space.json": "f60c0884718c161cdd8b2f4cb6d2d71ac2fc12d12a076a57c035be043ad4eb0c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/05-A-no-aslr/server-maps.txt": "45526188066011df081dfd04eb57ab55b22e6321cc898654ccb7c54fea8129a7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/06-B-inherit/server.log": "9e703dacdcb2e9d4be8d75ba8c2f0dc0595ed3c84663539cd8f17b3b73b42d17",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/06-B-inherit/exit.json": "13e99c08c11d4a5a68c0f3064c25004085225ce46f8af208f7ee00b703cc4739",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/06-B-inherit/results.json": "09f355f440ea8aaceb97f92aac6a89349559fab45d76a8d011dccee5777c8618",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/06-B-inherit/events.jsonl": "41941074e40536067d2561dc257ae71316c8b8581643aca08278a2e597417f03",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/06-B-inherit/server-address-space.json": "7ddcac306f8a89467dbb6a0415b55f4b955179342bb07e5b4c55cf585f178350",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/06-B-inherit/server-maps.txt": "9d83e8d0b334f53368dfa63b5bf8a3c9ae545ca3a1283be6e83580e13acfcb81",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/07-B-no-aslr/server.log": "d2257d29527712513fff1f2e406c84ec55769067c19db5718bdd8f2178a5a765",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/07-B-no-aslr/exit.json": "0d0516c2346a31e84aa87a7686e27637e55ab343247e6c7b2d256ce762b06919",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/07-B-no-aslr/results.json": "8648249e3ae6bc2c66f2085416b152bc463a8290792e813b20f6bd93ef15ecb5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/07-B-no-aslr/events.jsonl": "11ff4a339a13d83fa33e50820726727b0ac49548becef8ecb35419ba8eae708d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/07-B-no-aslr/server-address-space.json": "7343c522288254e66b5a817967f61b2ba2f647ef6088910d79d5c53ad62227bb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/07-B-no-aslr/server-maps.txt": "3071685bcc62ff2fbac74bdd5dd27098a34e981db58ae4ae8b735ab84a32300b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/08-A-inherit/server.log": "b2053309290dd34f6641b4dbbcd0265296e1604c7a265a056a024565fc438a92",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/08-A-inherit/exit.json": "13e99c08c11d4a5a68c0f3064c25004085225ce46f8af208f7ee00b703cc4739",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/08-A-inherit/results.json": "c6270a62eb4e498130297eeb2343485f9b93061266e49b605b5a3fab74b23b17",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/08-A-inherit/events.jsonl": "f933ebcf7fa483ed012d6b43aa5c69e8da19ffa67763f9223830f423a4feea7a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/08-A-inherit/server-address-space.json": "e79301032db40cbc45566c5ddab2bb37d6c33632605a247ff5e324bf6468bf22",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/http/08-A-inherit/server-maps.txt": "3a55e12f09dcc723d9f26d074ff65c6033fb55a4d9ab4313052c03a1a0ec9dc6"
+  }
+}
