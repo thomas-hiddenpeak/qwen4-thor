@@ -1,0 +1,42 @@
+{
+  "purpose": "test whether candidate adds GPU/UCF read traffic; mechanism observation, not performance acceptance",
+  "order": [
+    "A",
+    "B",
+    "B",
+    "A"
+  ],
+  "requests": 4,
+  "fixture": ".q4t-work/mtp-numerical-closure-20261016/http/off",
+  "actual_input": 204789,
+  "output": 256,
+  "mtp": false,
+  "binary_paths": {
+    "A": ".q4t-work/hc-up-aslr-20261017/A/q4t",
+    "B": ".q4t-work/hc-up-aslr-20261017/B/q4t"
+  },
+  "sha256": {
+    "A": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "B": "f01a0ee63f626c352f66677952368d43db02c9231576a2b8ba1ca33a915ce573"
+  },
+  "probe": ".q4t-work/hc-up-ucf-window-20261017/probe",
+  "probe_sha256": "fbe263e46022f20205e0be321c145f2b36f406e07ae7bf2ce6bc04177792a140",
+  "tool_sha256": {
+    "tools/evalscope/run_acceptance.py": "770d61923465d29705c7019d5c2280ba24a3a8a840b74a3cd50ecf408ecdd246",
+    "tools/evalscope/ucf_evalscope.py": "e6a7496008c3d0594d6abb94841c7c4d3b0ef6302cf49ec322d4a61f6301f513",
+    "tools/evalscope/ucf_client_boundary.py": "73033d3b15d4d2f0e45fb546e71f43cb6d783ad0af58b80300545435825686d3",
+    "tools/evalscope/ucf_window_probe.cpp": "647a1745992110e032d213fffa5098a88850d999c86c725476f6e5f2b4676d58",
+    "tools/evalscope/gpu_exclusive.py": "f31fb1410ee2840750994e74b8baae6539650ba42330d0e119365d87c60f506a"
+  },
+  "validity": [
+    "shared lease entire stage with monitoring",
+    "all output/prompt/capacity/normal exit contracts",
+    "all counter snapshots complete and enabled==running",
+    "pre-request count and first-output-to-stop each in [0,1000000] ns",
+    "server no preload/timing/profile/ASLR override"
+  ],
+  "primary_gate": "Both paired B-A read-byte counts exceed max(R_bytes, 1GiB), where R_bytes is max within-variant absolute repeat difference. This permits targeted follow-up, not causality or acceptance.",
+  "secondary": "report raw cycles, request count, outstanding; no stall/latency conversion or post-hoc gate",
+  "failure_action": "stop on validity failure; preserve outputs; do not rerun successful requests. After four requests stop family regardless of direction. No sampling until favorable timing.",
+  "limits": "HTTP first-output window can include early decode and system-wide background; changed byte counts alone do not prove causal TTFT contribution"
+}
