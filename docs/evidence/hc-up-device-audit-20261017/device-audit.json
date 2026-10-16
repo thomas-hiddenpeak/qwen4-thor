@@ -1,0 +1,3255 @@
+{
+  "A": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-cause-20261016/A/context-204800/trace.sqlite",
+    "origin_utc_ns": 1792122231383946280,
+    "chunks": [
+      {
+        "chunk": 1,
+        "start_ns": 5075097158,
+        "end_ns": 103946847494,
+        "busy_ns": 5209437265,
+        "gaps_ns": 93662313071,
+        "kernels": 91221,
+        "kernel_sum_ns": 6123584780,
+        "kernel_family_sum_ns": {
+          "q4t": 4526774316,
+          "nvjet": 1517854592,
+          "cutlass": 78955872
+        },
+        "largest_gaps": [
+          {
+            "chunk": 1,
+            "start_ns": 5343736838,
+            "end_ns": 52221629958,
+            "duration_ns": 46877893120,
+            "next_correlation": 223245,
+            "next_kind": 0,
+            "next_name": "nvjet_sm110_tst_256x256_64x4_2x1_2cta_v_bz_TNT",
+            "next_api": {
+              "start_ns": 52221577473,
+              "end_ns": 52221630214,
+              "name": "cuLaunchKernelEx"
+            },
+            "before_next_api_entry_ns": 46877840635
+          },
+          {
+            "chunk": 1,
+            "start_ns": 52842269958,
+            "end_ns": 85809852070,
+            "duration_ns": 32967582112,
+            "next_correlation": 231136,
+            "next_kind": 0,
+            "next_name": "nvjet_sm110_tst_256x256_64x4_2x1_2cta_v_bz_TNT",
+            "next_api": {
+              "start_ns": 85809686929,
+              "end_ns": 85809745253,
+              "name": "cuLaunchKernelEx"
+            },
+            "before_next_api_entry_ns": 32967416971
+          },
+          {
+            "chunk": 1,
+            "start_ns": 87309885030,
+            "end_ns": 98905812678,
+            "duration_ns": 11595927648,
+            "next_correlation": 238264,
+            "next_kind": 0,
+            "next_name": "nvjet_sm110_tst_256x256_64x4_2x1_2cta_v_bz_TNT",
+            "next_api": {
+              "start_ns": 98905646795,
+              "end_ns": 98905702416,
+              "name": "cuLaunchKernelEx"
+            },
+            "before_next_api_entry_ns": 11595761765
+          }
+        ],
+        "gap_count": 2836,
+        "before_next_api_entry_ns": 93201168501,
+        "unmatched_gap_ns": 16992
+      },
+      {
+        "chunk": 2,
+        "start_ns": 103946847494,
+        "end_ns": 109501883110,
+        "busy_ns": 5437840058,
+        "gaps_ns": 117195558,
+        "kernels": 87861,
+        "kernel_sum_ns": 6333915707,
+        "kernel_family_sum_ns": {
+          "q4t": 4786382811,
+          "nvjet": 1468903808,
+          "cutlass": 78629088
+        },
+        "largest_gaps": [
+          {
+            "chunk": 2,
+            "start_ns": 104044569542,
+            "end_ns": 104101115494,
+            "duration_ns": 56545952,
+            "next_correlation": 646419,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 104101052921,
+              "end_ns": 104101119837,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 56483379
+          },
+          {
+            "chunk": 2,
+            "start_ns": 104016409094,
+            "end_ns": 104021346438,
+            "duration_ns": 4937344,
+            "next_correlation": 639990,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 104021313595,
+              "end_ns": 104021339419,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 4904501
+          },
+          {
+            "chunk": 2,
+            "start_ns": 109205724966,
+            "end_ns": 109208474086,
+            "duration_ns": 2749120,
+            "next_correlation": 1013455,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 109208429396,
+              "end_ns": 109208467535,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2704430
+          }
+        ],
+        "gap_count": 1919,
+        "before_next_api_entry_ns": 113368077,
+        "unmatched_gap_ns": 18880
+      },
+      {
+        "chunk": 3,
+        "start_ns": 109501883110,
+        "end_ns": 115094284934,
+        "busy_ns": 5500462392,
+        "gaps_ns": 91939432,
+        "kernels": 88881,
+        "kernel_sum_ns": 6399423177,
+        "kernel_family_sum_ns": {
+          "q4t": 4844555689,
+          "nvjet": 1478213408,
+          "cutlass": 76654080
+        },
+        "largest_gaps": [
+          {
+            "chunk": 3,
+            "start_ns": 109594354182,
+            "end_ns": 109619952838,
+            "duration_ns": 25598656,
+            "next_correlation": 1043547,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 109619901652,
+              "end_ns": 109619956513,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 25547470
+          },
+          {
+            "chunk": 3,
+            "start_ns": 112390292166,
+            "end_ns": 112395524998,
+            "duration_ns": 5232832,
+            "next_correlation": 1235776,
+            "next_kind": 0,
+            "next_name": "q4t::quant::<unnamed>::GatherQuantKernel(const unsigned short *, const int *, int, int, int, int, int, int, const float *, unsigned char *, unsigned char *)",
+            "next_api": {
+              "start_ns": 112388009865,
+              "end_ns": 112395523791,
+              "name": "cudaLaunchKernel_v7000"
+            },
+            "before_next_api_entry_ns": 0
+          },
+          {
+            "chunk": 3,
+            "start_ns": 110992368518,
+            "end_ns": 110995114758,
+            "duration_ns": 2746240,
+            "next_correlation": 1126126,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 110995064504,
+              "end_ns": 110995108143,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2695986
+          }
+        ],
+        "gap_count": 1978,
+        "before_next_api_entry_ns": 82327600,
+        "unmatched_gap_ns": 21920
+      },
+      {
+        "chunk": 4,
+        "start_ns": 115094284934,
+        "end_ns": 120774558918,
+        "busy_ns": 5594989659,
+        "gaps_ns": 85284325,
+        "kernels": 89529,
+        "kernel_sum_ns": 6502374337,
+        "kernel_family_sum_ns": {
+          "q4t": 4932753889,
+          "nvjet": 1493109536,
+          "cutlass": 76510912
+        },
+        "largest_gaps": [
+          {
+            "chunk": 4,
+            "start_ns": 115186951302,
+            "end_ns": 115212733670,
+            "duration_ns": 25782368,
+            "next_correlation": 1444900,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 115212679650,
+              "end_ns": 115212736835,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 25728348
+          },
+          {
+            "chunk": 4,
+            "start_ns": 117261524518,
+            "end_ns": 117264363910,
+            "duration_ns": 2839392,
+            "next_correlation": 1579859,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 117264317601,
+              "end_ns": 117264359842,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2793083
+          },
+          {
+            "chunk": 4,
+            "start_ns": 115676032998,
+            "end_ns": 115678807718,
+            "duration_ns": 2774720,
+            "next_correlation": 1464587,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 115678762225,
+              "end_ns": 115678801002,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2729227
+          }
+        ],
+        "gap_count": 1980,
+        "before_next_api_entry_ns": 81021982,
+        "unmatched_gap_ns": 23296
+      },
+      {
+        "chunk": 5,
+        "start_ns": 120774558918,
+        "end_ns": 126546012710,
+        "busy_ns": 5688456729,
+        "gaps_ns": 82997063,
+        "kernels": 90749,
+        "kernel_sum_ns": 6609923099,
+        "kernel_family_sum_ns": {
+          "q4t": 5019203163,
+          "nvjet": 1513319872,
+          "cutlass": 77400064
+        },
+        "largest_gaps": [
+          {
+            "chunk": 5,
+            "start_ns": 120867435686,
+            "end_ns": 120893135302,
+            "duration_ns": 25699616,
+            "next_correlation": 1848816,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 120893086332,
+              "end_ns": 120893138943,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 25650646
+          },
+          {
+            "chunk": 5,
+            "start_ns": 123453806054,
+            "end_ns": 123457463910,
+            "duration_ns": 3657856,
+            "next_correlation": 2022072,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 123457418038,
+              "end_ns": 123457460547,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3611984
+          },
+          {
+            "chunk": 5,
+            "start_ns": 122020193638,
+            "end_ns": 122023196262,
+            "duration_ns": 3002624,
+            "next_correlation": 1915322,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 122023152430,
+              "end_ns": 122023191430,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2958792
+          }
+        ],
+        "gap_count": 1968,
+        "before_next_api_entry_ns": 79028057,
+        "unmatched_gap_ns": 23520
+      },
+      {
+        "chunk": 6,
+        "start_ns": 126546012710,
+        "end_ns": 132393485478,
+        "busy_ns": 5773062844,
+        "gaps_ns": 74409924,
+        "kernels": 89925,
+        "kernel_sum_ns": 6686049045,
+        "kernel_family_sum_ns": {
+          "q4t": 5097454133,
+          "nvjet": 1511354144,
+          "cutlass": 77240768
+        },
+        "largest_gaps": [
+          {
+            "chunk": 6,
+            "start_ns": 126641929190,
+            "end_ns": 126659661478,
+            "duration_ns": 17732288,
+            "next_correlation": 2258042,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 126659612386,
+              "end_ns": 126659664507,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 17683196
+          },
+          {
+            "chunk": 6,
+            "start_ns": 131491050534,
+            "end_ns": 131493992646,
+            "duration_ns": 2942112,
+            "next_correlation": 2588802,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 131493944924,
+              "end_ns": 131493987322,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2894390
+          },
+          {
+            "chunk": 6,
+            "start_ns": 127226628774,
+            "end_ns": 127228642086,
+            "duration_ns": 2013312,
+            "next_correlation": 2284360,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 127228608260,
+              "end_ns": 127228635409,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 1979486
+          }
+        ],
+        "gap_count": 2068,
+        "before_next_api_entry_ns": 69876440,
+        "unmatched_gap_ns": 26240
+      },
+      {
+        "chunk": 7,
+        "start_ns": 132393485478,
+        "end_ns": 138331665830,
+        "busy_ns": 5859942364,
+        "gaps_ns": 78237988,
+        "kernels": 90325,
+        "kernel_sum_ns": 6772999010,
+        "kernel_family_sum_ns": {
+          "q4t": 5177529282,
+          "nvjet": 1519404704,
+          "cutlass": 76065024
+        },
+        "largest_gaps": [
+          {
+            "chunk": 7,
+            "start_ns": 132487039558,
+            "end_ns": 132501058022,
+            "duration_ns": 14018464,
+            "next_correlation": 2663499,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 132501005086,
+              "end_ns": 132501061975,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 13965528
+          },
+          {
+            "chunk": 7,
+            "start_ns": 136425809030,
+            "end_ns": 136429422022,
+            "duration_ns": 3612992,
+            "next_correlation": 2925091,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 136429378046,
+              "end_ns": 136429416740,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3569016
+          },
+          {
+            "chunk": 7,
+            "start_ns": 133167773158,
+            "end_ns": 133170995206,
+            "duration_ns": 3222048,
+            "next_correlation": 2696784,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 133170935623,
+              "end_ns": 133170988789,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3162465
+          }
+        ],
+        "gap_count": 2081,
+        "before_next_api_entry_ns": 73576327,
+        "unmatched_gap_ns": 22816
+      },
+      {
+        "chunk": 8,
+        "start_ns": 138331665830,
+        "end_ns": 144343519142,
+        "busy_ns": 5938786491,
+        "gaps_ns": 73066821,
+        "kernels": 90389,
+        "kernel_sum_ns": 6853703766,
+        "kernel_family_sum_ns": {
+          "q4t": 5255540118,
+          "nvjet": 1521493344,
+          "cutlass": 76670304
+        },
+        "largest_gaps": [
+          {
+            "chunk": 8,
+            "start_ns": 138424268550,
+            "end_ns": 138438483302,
+            "duration_ns": 14214752,
+            "next_correlation": 3070623,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 138438432592,
+              "end_ns": 138438485842,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 14164042
+          },
+          {
+            "chunk": 8,
+            "start_ns": 143006008198,
+            "end_ns": 143009496102,
+            "duration_ns": 3487904,
+            "next_correlation": 3376296,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 143009455166,
+              "end_ns": 143009489361,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3446968
+          },
+          {
+            "chunk": 8,
+            "start_ns": 141416020774,
+            "end_ns": 141418326182,
+            "duration_ns": 2305408,
+            "next_correlation": 3260052,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 141418282434,
+              "end_ns": 141418318277,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2261660
+          }
+        ],
+        "gap_count": 2035,
+        "before_next_api_entry_ns": 68947360,
+        "unmatched_gap_ns": 20480
+      },
+      {
+        "chunk": 9,
+        "start_ns": 144343519142,
+        "end_ns": 150445032486,
+        "busy_ns": 6030727230,
+        "gaps_ns": 70786114,
+        "kernels": 90909,
+        "kernel_sum_ns": 6948912061,
+        "kernel_family_sum_ns": {
+          "q4t": 5336234557,
+          "nvjet": 1535592544,
+          "cutlass": 77084960
+        },
+        "largest_gaps": [
+          {
+            "chunk": 9,
+            "start_ns": 144435361734,
+            "end_ns": 144448483622,
+            "duration_ns": 13121888,
+            "next_correlation": 3478114,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 144448428639,
+              "end_ns": 144448490714,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 13066905
+          },
+          {
+            "chunk": 9,
+            "start_ns": 146463387526,
+            "end_ns": 146466571686,
+            "duration_ns": 3184160,
+            "next_correlation": 3597627,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 146466529972,
+              "end_ns": 146466565093,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3142446
+          },
+          {
+            "chunk": 9,
+            "start_ns": 148076025958,
+            "end_ns": 148079067622,
+            "duration_ns": 3041664,
+            "next_correlation": 3714417,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 148079013707,
+              "end_ns": 148079061504,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2987749
+          }
+        ],
+        "gap_count": 2070,
+        "before_next_api_entry_ns": 66663240,
+        "unmatched_gap_ns": 19328
+      },
+      {
+        "chunk": 10,
+        "start_ns": 150445032486,
+        "end_ns": 156636062662,
+        "busy_ns": 6116001596,
+        "gaps_ns": 75028580,
+        "kernels": 90245,
+        "kernel_sum_ns": 7027565836,
+        "kernel_family_sum_ns": {
+          "q4t": 5411096748,
+          "nvjet": 1538896832,
+          "cutlass": 77572256
+        },
+        "largest_gaps": [
+          {
+            "chunk": 10,
+            "start_ns": 150538100166,
+            "end_ns": 150551591942,
+            "duration_ns": 13491776,
+            "next_correlation": 3887672,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 150551545333,
+              "end_ns": 150551595925,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 13445167
+          },
+          {
+            "chunk": 10,
+            "start_ns": 154738259270,
+            "end_ns": 154742159430,
+            "duration_ns": 3900160,
+            "next_correlation": 4157546,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 154742114834,
+              "end_ns": 154742153547,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3855564
+          },
+          {
+            "chunk": 10,
+            "start_ns": 156373845254,
+            "end_ns": 156377509542,
+            "duration_ns": 3664288,
+            "next_correlation": 4272886,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 156377470161,
+              "end_ns": 156377501245,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3624907
+          }
+        ],
+        "gap_count": 2143,
+        "before_next_api_entry_ns": 70622153,
+        "unmatched_gap_ns": 17120
+      },
+      {
+        "chunk": 11,
+        "start_ns": 156636062662,
+        "end_ns": 162905129702,
+        "busy_ns": 6202786905,
+        "gaps_ns": 66280135,
+        "kernels": 90613,
+        "kernel_sum_ns": 7123804298,
+        "kernel_family_sum_ns": {
+          "q4t": 5498927210,
+          "nvjet": 1547131200,
+          "cutlass": 77745888
+        },
+        "largest_gaps": [
+          {
+            "chunk": 11,
+            "start_ns": 156730142342,
+            "end_ns": 156741583654,
+            "duration_ns": 11441312,
+            "next_correlation": 4294178,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 156741538490,
+              "end_ns": 156741587750,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11396148
+          },
+          {
+            "chunk": 11,
+            "start_ns": 158382494630,
+            "end_ns": 158386002342,
+            "duration_ns": 3507712,
+            "next_correlation": 4386059,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 158385963318,
+              "end_ns": 158385995299,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3468688
+          },
+          {
+            "chunk": 11,
+            "start_ns": 159944354086,
+            "end_ns": 159947253318,
+            "duration_ns": 2899232,
+            "next_correlation": 4493285,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 159947215998,
+              "end_ns": 159947249794,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2861912
+          }
+        ],
+        "gap_count": 2068,
+        "before_next_api_entry_ns": 62650619,
+        "unmatched_gap_ns": 16544
+      },
+      {
+        "chunk": 12,
+        "start_ns": 162905129702,
+        "end_ns": 169267450054,
+        "busy_ns": 6289191163,
+        "gaps_ns": 73129189,
+        "kernels": 90505,
+        "kernel_sum_ns": 7203725458,
+        "kernel_family_sum_ns": {
+          "q4t": 5573133106,
+          "nvjet": 1554192480,
+          "cutlass": 76399872
+        },
+        "largest_gaps": [
+          {
+            "chunk": 12,
+            "start_ns": 162997092550,
+            "end_ns": 163008352134,
+            "duration_ns": 11259584,
+            "next_correlation": 4702349,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 163008298112,
+              "end_ns": 163008355640,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11205562
+          },
+          {
+            "chunk": 12,
+            "start_ns": 166882249638,
+            "end_ns": 166886007590,
+            "duration_ns": 3757952,
+            "next_correlation": 4946634,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 166885963891,
+              "end_ns": 166886000419,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3714253
+          },
+          {
+            "chunk": 12,
+            "start_ns": 165203010726,
+            "end_ns": 165206616582,
+            "duration_ns": 3605856,
+            "next_correlation": 4829232,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 165206570151,
+              "end_ns": 165206610003,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3559425
+          }
+        ],
+        "gap_count": 2130,
+        "before_next_api_entry_ns": 69175796,
+        "unmatched_gap_ns": 16064
+      },
+      {
+        "chunk": 13,
+        "start_ns": 169267450054,
+        "end_ns": 175710808230,
+        "busy_ns": 6372349755,
+        "gaps_ns": 71008421,
+        "kernels": 91253,
+        "kernel_sum_ns": 7296395917,
+        "kernel_family_sum_ns": {
+          "q4t": 5657531277,
+          "nvjet": 1560879456,
+          "cutlass": 77985184
+        },
+        "largest_gaps": [
+          {
+            "chunk": 13,
+            "start_ns": 169359178950,
+            "end_ns": 169370584486,
+            "duration_ns": 11405536,
+            "next_correlation": 5110019,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 169370531499,
+              "end_ns": 169370589795,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11352549
+          },
+          {
+            "chunk": 13,
+            "start_ns": 174794460166,
+            "end_ns": 174799372422,
+            "duration_ns": 4912256,
+            "next_correlation": 5455101,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 174799336581,
+              "end_ns": 174799366201,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 4876415
+          },
+          {
+            "chunk": 13,
+            "start_ns": 172215340454,
+            "end_ns": 172218696582,
+            "duration_ns": 3356128,
+            "next_correlation": 5284067,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 172218639065,
+              "end_ns": 172218690769,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3298611
+          }
+        ],
+        "gap_count": 2151,
+        "before_next_api_entry_ns": 67002536,
+        "unmatched_gap_ns": 21504
+      },
+      {
+        "chunk": 14,
+        "start_ns": 175710808230,
+        "end_ns": 182246204870,
+        "busy_ns": 6464368316,
+        "gaps_ns": 71028324,
+        "kernels": 90769,
+        "kernel_sum_ns": 7381253725,
+        "kernel_family_sum_ns": {
+          "q4t": 5735702365,
+          "nvjet": 1569538464,
+          "cutlass": 76012896
+        },
+        "largest_gaps": [
+          {
+            "chunk": 14,
+            "start_ns": 175804494918,
+            "end_ns": 175816260326,
+            "duration_ns": 11765408,
+            "next_correlation": 5520869,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 175816213299,
+              "end_ns": 175816262873,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11718381
+          },
+          {
+            "chunk": 14,
+            "start_ns": 177618904198,
+            "end_ns": 177621993894,
+            "duration_ns": 3089696,
+            "next_correlation": 5622290,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 177621943147,
+              "end_ns": 177621990212,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3038949
+          },
+          {
+            "chunk": 14,
+            "start_ns": 175718357158,
+            "end_ns": 175720561446,
+            "duration_ns": 2204288,
+            "next_correlation": 5514313,
+            "next_kind": 0,
+            "next_name": "nvjet_sm110_tst_256x256_64x4_2x1_2cta_v_bz_TNT",
+            "next_api": {
+              "start_ns": 175720531936,
+              "end_ns": 175720557696,
+              "name": "cuLaunchKernelEx"
+            },
+            "before_next_api_entry_ns": 2174778
+          }
+        ],
+        "gap_count": 2237,
+        "before_next_api_entry_ns": 66667902,
+        "unmatched_gap_ns": 15808
+      },
+      {
+        "chunk": 15,
+        "start_ns": 182246204870,
+        "end_ns": 188859100486,
+        "busy_ns": 6538696349,
+        "gaps_ns": 74199267,
+        "kernels": 90837,
+        "kernel_sum_ns": 7452263186,
+        "kernel_family_sum_ns": {
+          "q4t": 5806401138,
+          "nvjet": 1569785568,
+          "cutlass": 76076480
+        },
+        "largest_gaps": [
+          {
+            "chunk": 15,
+            "start_ns": 182339038918,
+            "end_ns": 182350540870,
+            "duration_ns": 11501952,
+            "next_correlation": 5929534,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 182350496262,
+              "end_ns": 182350544429,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11457344
+          },
+          {
+            "chunk": 15,
+            "start_ns": 186366653574,
+            "end_ns": 186369956454,
+            "duration_ns": 3302880,
+            "next_correlation": 6175077,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 186369891972,
+              "end_ns": 186369951759,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3238398
+          },
+          {
+            "chunk": 15,
+            "start_ns": 184717943398,
+            "end_ns": 184720083782,
+            "duration_ns": 2140384,
+            "next_correlation": 6066579,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 184720043751,
+              "end_ns": 184720077501,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2100353
+          }
+        ],
+        "gap_count": 2230,
+        "before_next_api_entry_ns": 69830674,
+        "unmatched_gap_ns": 22144
+      },
+      {
+        "chunk": 16,
+        "start_ns": 188859100486,
+        "end_ns": 195560495846,
+        "busy_ns": 6627089947,
+        "gaps_ns": 74305413,
+        "kernels": 91437,
+        "kernel_sum_ns": 7549649387,
+        "kernel_family_sum_ns": {
+          "q4t": 5887627659,
+          "nvjet": 1586530848,
+          "cutlass": 75490880
+        },
+        "largest_gaps": [
+          {
+            "chunk": 16,
+            "start_ns": 188950327526,
+            "end_ns": 188962209286,
+            "duration_ns": 11881760,
+            "next_correlation": 6338470,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 188962162383,
+              "end_ns": 188962211725,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11834857
+          },
+          {
+            "chunk": 16,
+            "start_ns": 190252338310,
+            "end_ns": 190255297382,
+            "duration_ns": 2959072,
+            "next_correlation": 6406302,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 190255243298,
+              "end_ns": 190255292613,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2904988
+          },
+          {
+            "chunk": 16,
+            "start_ns": 191918346918,
+            "end_ns": 191920483686,
+            "duration_ns": 2136768,
+            "next_correlation": 6514098,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 191920443721,
+              "end_ns": 191920476693,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2096803
+          }
+        ],
+        "gap_count": 2385,
+        "before_next_api_entry_ns": 69211932,
+        "unmatched_gap_ns": 23584
+      },
+      {
+        "chunk": 17,
+        "start_ns": 195560495846,
+        "end_ns": 202343363238,
+        "busy_ns": 6707406681,
+        "gaps_ns": 75460711,
+        "kernels": 91801,
+        "kernel_sum_ns": 7631125526,
+        "kernel_family_sum_ns": {
+          "q4t": 5962847126,
+          "nvjet": 1591093344,
+          "cutlass": 77185056
+        },
+        "largest_gaps": [
+          {
+            "chunk": 17,
+            "start_ns": 195653920230,
+            "end_ns": 195666254950,
+            "duration_ns": 12334720,
+            "next_correlation": 6750166,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 195666203480,
+              "end_ns": 195666259082,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 12283250
+          },
+          {
+            "chunk": 17,
+            "start_ns": 197528132294,
+            "end_ns": 197531292678,
+            "duration_ns": 3160384,
+            "next_correlation": 6853571,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 197531246253,
+              "end_ns": 197531287318,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3113959
+          },
+          {
+            "chunk": 17,
+            "start_ns": 199217186598,
+            "end_ns": 199220342662,
+            "duration_ns": 3156064,
+            "next_correlation": 6962129,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 199220288137,
+              "end_ns": 199220340758,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3101539
+          }
+        ],
+        "gap_count": 2339,
+        "before_next_api_entry_ns": 69991474,
+        "unmatched_gap_ns": 19488
+      },
+      {
+        "chunk": 18,
+        "start_ns": 202343363238,
+        "end_ns": 209211971718,
+        "busy_ns": 6788701910,
+        "gaps_ns": 79906570,
+        "kernels": 90649,
+        "kernel_sum_ns": 7698239100,
+        "kernel_family_sum_ns": {
+          "q4t": 6029382076,
+          "nvjet": 1591629120,
+          "cutlass": 77227904
+        },
+        "largest_gaps": [
+          {
+            "chunk": 18,
+            "start_ns": 202436664646,
+            "end_ns": 202448140102,
+            "duration_ns": 11475456,
+            "next_correlation": 7163223,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 202448086881,
+              "end_ns": 202448146112,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11422235
+          },
+          {
+            "chunk": 18,
+            "start_ns": 206613251270,
+            "end_ns": 206616584454,
+            "duration_ns": 3333184,
+            "next_correlation": 7408632,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 206616522065,
+              "end_ns": 206616579093,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3270795
+          },
+          {
+            "chunk": 18,
+            "start_ns": 203104362310,
+            "end_ns": 203107650470,
+            "duration_ns": 3288160,
+            "next_correlation": 7190096,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 203107599477,
+              "end_ns": 203107645745,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3237167
+          }
+        ],
+        "gap_count": 2387,
+        "before_next_api_entry_ns": 72432997,
+        "unmatched_gap_ns": 15072
+      },
+      {
+        "chunk": 19,
+        "start_ns": 209211971718,
+        "end_ns": 216165791430,
+        "busy_ns": 6880445306,
+        "gaps_ns": 73374406,
+        "kernels": 91009,
+        "kernel_sum_ns": 7796667450,
+        "kernel_family_sum_ns": {
+          "q4t": 6114840379,
+          "nvjet": 1605606623,
+          "cutlass": 76220448
+        },
+        "largest_gaps": [
+          {
+            "chunk": 19,
+            "start_ns": 209304329990,
+            "end_ns": 209315413318,
+            "duration_ns": 11083328,
+            "next_correlation": 7571209,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 209315361120,
+              "end_ns": 209315418722,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11031130
+          },
+          {
+            "chunk": 19,
+            "start_ns": 210649543238,
+            "end_ns": 210653641926,
+            "duration_ns": 4098688,
+            "next_correlation": 7637779,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 210653583914,
+              "end_ns": 210653636636,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 4040676
+          },
+          {
+            "chunk": 19,
+            "start_ns": 212379431014,
+            "end_ns": 212382948102,
+            "duration_ns": 3517088,
+            "next_correlation": 7745463,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 212382897114,
+              "end_ns": 212382943762,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3466100
+          }
+        ],
+        "gap_count": 2421,
+        "before_next_api_entry_ns": 68104558,
+        "unmatched_gap_ns": 23968
+      },
+      {
+        "chunk": 20,
+        "start_ns": 216165791430,
+        "end_ns": 223195421670,
+        "busy_ns": 6952782175,
+        "gaps_ns": 76848065,
+        "kernels": 90737,
+        "kernel_sum_ns": 7864032740,
+        "kernel_family_sum_ns": {
+          "q4t": 6183732196,
+          "nvjet": 1601860864,
+          "cutlass": 78439680
+        },
+        "largest_gaps": [
+          {
+            "chunk": 20,
+            "start_ns": 216260891654,
+            "end_ns": 216272588390,
+            "duration_ns": 11696736,
+            "next_correlation": 7980705,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 216272537708,
+              "end_ns": 216272592698,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11646054
+          },
+          {
+            "chunk": 20,
+            "start_ns": 216235720454,
+            "end_ns": 216239189222,
+            "duration_ns": 3468768,
+            "next_correlation": 7974244,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 216239133633,
+              "end_ns": 216239185207,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3413179
+          },
+          {
+            "chunk": 20,
+            "start_ns": 218194368166,
+            "end_ns": 218197195558,
+            "duration_ns": 2827392,
+            "next_correlation": 8082246,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 218197150583,
+              "end_ns": 218197189592,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2782417
+          }
+        ],
+        "gap_count": 2456,
+        "before_next_api_entry_ns": 71099431,
+        "unmatched_gap_ns": 23008
+      },
+      {
+        "chunk": 21,
+        "start_ns": 223195421670,
+        "end_ns": 230311557926,
+        "busy_ns": 7043569117,
+        "gaps_ns": 72567139,
+        "kernels": 91317,
+        "kernel_sum_ns": 7966024088,
+        "kernel_family_sum_ns": {
+          "q4t": 6266358104,
+          "nvjet": 1623786304,
+          "cutlass": 75879680
+        },
+        "largest_gaps": [
+          {
+            "chunk": 21,
+            "start_ns": 223289872806,
+            "end_ns": 223301312166,
+            "duration_ns": 11439360,
+            "next_correlation": 8388930,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 223301257177,
+              "end_ns": 223301316399,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11384371
+          },
+          {
+            "chunk": 21,
+            "start_ns": 224068318598,
+            "end_ns": 224071628870,
+            "duration_ns": 3310272,
+            "next_correlation": 8422659,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 224071588168,
+              "end_ns": 224071624705,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3269570
+          },
+          {
+            "chunk": 21,
+            "start_ns": 229787599782,
+            "end_ns": 229790318982,
+            "duration_ns": 2719200,
+            "next_correlation": 8761164,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 229790278058,
+              "end_ns": 229790312632,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2678276
+          }
+        ],
+        "gap_count": 2382,
+        "before_next_api_entry_ns": 67541990,
+        "unmatched_gap_ns": 12352
+      },
+      {
+        "chunk": 22,
+        "start_ns": 230311557926,
+        "end_ns": 237499149798,
+        "busy_ns": 7116904726,
+        "gaps_ns": 70687146,
+        "kernels": 90589,
+        "kernel_sum_ns": 8028699968,
+        "kernel_family_sum_ns": {
+          "q4t": 6333963616,
+          "nvjet": 1619295104,
+          "cutlass": 75441248
+        },
+        "largest_gaps": [
+          {
+            "chunk": 22,
+            "start_ns": 230404005190,
+            "end_ns": 230415441382,
+            "duration_ns": 11436192,
+            "next_correlation": 8799692,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 230415382797,
+              "end_ns": 230415447307,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11377607
+          },
+          {
+            "chunk": 22,
+            "start_ns": 232194665702,
+            "end_ns": 232196783750,
+            "duration_ns": 2118048,
+            "next_correlation": 8883541,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 232196744286,
+              "end_ns": 232196776443,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2078584
+          },
+          {
+            "chunk": 22,
+            "start_ns": 232881851238,
+            "end_ns": 232883886694,
+            "duration_ns": 2035456,
+            "next_correlation": 8927910,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 232883845071,
+              "end_ns": 232883879015,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 1993833
+          }
+        ],
+        "gap_count": 2451,
+        "before_next_api_entry_ns": 65712993,
+        "unmatched_gap_ns": 15392
+      },
+      {
+        "chunk": 23,
+        "start_ns": 237499149798,
+        "end_ns": 244773395942,
+        "busy_ns": 7204541882,
+        "gaps_ns": 69704262,
+        "kernels": 90677,
+        "kernel_sum_ns": 8118368106,
+        "kernel_family_sum_ns": {
+          "q4t": 6414092810,
+          "nvjet": 1627940640,
+          "cutlass": 76334656
+        },
+        "largest_gaps": [
+          {
+            "chunk": 23,
+            "start_ns": 237591295750,
+            "end_ns": 237603206246,
+            "duration_ns": 11910496,
+            "next_correlation": 9207208,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 237603150881,
+              "end_ns": 237603207649,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11855131
+          },
+          {
+            "chunk": 23,
+            "start_ns": 241821215206,
+            "end_ns": 241824580454,
+            "duration_ns": 3365248,
+            "next_correlation": 9435174,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 241824533684,
+              "end_ns": 241824575110,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3318478
+          },
+          {
+            "chunk": 23,
+            "start_ns": 238293839078,
+            "end_ns": 238295893510,
+            "duration_ns": 2054432,
+            "next_correlation": 9234206,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 238295857600,
+              "end_ns": 238295887647,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2018522
+          }
+        ],
+        "gap_count": 2462,
+        "before_next_api_entry_ns": 65068359,
+        "unmatched_gap_ns": 15456
+      },
+      {
+        "chunk": 24,
+        "start_ns": 244773395942,
+        "end_ns": 252132483110,
+        "busy_ns": 7283047518,
+        "gaps_ns": 76039650,
+        "kernels": 90577,
+        "kernel_sum_ns": 8194889226,
+        "kernel_family_sum_ns": {
+          "q4t": 6487825802,
+          "nvjet": 1630359872,
+          "cutlass": 76703552
+        },
+        "largest_gaps": [
+          {
+            "chunk": 24,
+            "start_ns": 244866185638,
+            "end_ns": 244877420262,
+            "duration_ns": 11234624,
+            "next_correlation": 9614973,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 244877370428,
+              "end_ns": 244877425465,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11184790
+          },
+          {
+            "chunk": 24,
+            "start_ns": 250361192294,
+            "end_ns": 250366006246,
+            "duration_ns": 4813952,
+            "next_correlation": 9914762,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 250365976900,
+              "end_ns": 250365998622,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 4784606
+          },
+          {
+            "chunk": 24,
+            "start_ns": 247918496230,
+            "end_ns": 247922580038,
+            "duration_ns": 4083808,
+            "next_correlation": 9770473,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 247922540425,
+              "end_ns": 247922574777,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 4044195
+          }
+        ],
+        "gap_count": 2486,
+        "before_next_api_entry_ns": 71342494,
+        "unmatched_gap_ns": 18080
+      },
+      {
+        "chunk": 25,
+        "start_ns": 252132483110,
+        "end_ns": 259539643974,
+        "busy_ns": 7318781980,
+        "gaps_ns": 88378884,
+        "kernels": 91875,
+        "kernel_sum_ns": 8234352820,
+        "kernel_family_sum_ns": {
+          "q4t": 6591768628,
+          "nvjet": 1565872992,
+          "cutlass": 76711200
+        },
+        "largest_gaps": [
+          {
+            "chunk": 25,
+            "start_ns": 252228876966,
+            "end_ns": 252250165478,
+            "duration_ns": 21288512,
+            "next_correlation": 10022526,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 252250104702,
+              "end_ns": 252250177026,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 21227736
+          },
+          {
+            "chunk": 25,
+            "start_ns": 252140613382,
+            "end_ns": 252145175974,
+            "duration_ns": 4562592,
+            "next_correlation": 10015752,
+            "next_kind": 0,
+            "next_name": "nvjet_sm110_tst_256x256_64x4_2x1_2cta_v_bz_TNT",
+            "next_api": {
+              "start_ns": 252145152223,
+              "end_ns": 252145171241,
+              "name": "cuLaunchKernelEx"
+            },
+            "before_next_api_entry_ns": 4538841
+          },
+          {
+            "chunk": 25,
+            "start_ns": 255917679910,
+            "end_ns": 255921709606,
+            "duration_ns": 4029696,
+            "next_correlation": 10217387,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 255921660400,
+              "end_ns": 255921704446,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3980490
+          }
+        ],
+        "gap_count": 2544,
+        "before_next_api_entry_ns": 83347113,
+        "unmatched_gap_ns": 0
+      }
+    ],
+    "summary": {
+      "all": {
+        "busy_ns": 158940370358,
+        "gaps_ns": 95524176458,
+        "kernels": 2264679,
+        "kernel_sum_ns": 181797941813,
+        "before_next_api_entry_ns": 94945780605,
+        "unmatched_gap_ns": 469056,
+        "wall_ns": 254464546816
+      },
+      "chunks2_25": {
+        "busy_ns": 153730933093,
+        "gaps_ns": 1861863387,
+        "kernels": 2173458,
+        "kernel_sum_ns": 175674357033,
+        "before_next_api_entry_ns": 1744612104,
+        "unmatched_gap_ns": 452064,
+        "wall_ns": 155592796480
+      }
+    }
+  },
+  "B": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-cause-20261016/B/context-204800/trace.sqlite",
+    "origin_utc_ns": 1792122602344871224,
+    "chunks": [
+      {
+        "chunk": 1,
+        "start_ns": 5425058829,
+        "end_ns": 10706843277,
+        "busy_ns": 5106786799,
+        "gaps_ns": 174997649,
+        "kernels": 91221,
+        "kernel_sum_ns": 5983330187,
+        "kernel_family_sum_ns": {
+          "q4t": 4453868619,
+          "nvjet": 1456241376,
+          "cutlass": 73220192
+        },
+        "largest_gaps": [
+          {
+            "chunk": 1,
+            "start_ns": 5427643405,
+            "end_ns": 5487519565,
+            "duration_ns": 59876160,
+            "next_correlation": 223192,
+            "next_kind": 0,
+            "next_name": "nvjet_sm110_tst_128x256_64x4_1x2_h_bz_TNT",
+            "next_api": {
+              "start_ns": 5487488981,
+              "end_ns": 5487522647,
+              "name": "cuLaunchKernelEx"
+            },
+            "before_next_api_entry_ns": 59845576
+          },
+          {
+            "chunk": 1,
+            "start_ns": 5617609165,
+            "end_ns": 5642600173,
+            "duration_ns": 24991008,
+            "next_correlation": 231044,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 5642538652,
+              "end_ns": 5642605643,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 24929487
+          },
+          {
+            "chunk": 1,
+            "start_ns": 5493665261,
+            "end_ns": 5506957325,
+            "duration_ns": 13292064,
+            "next_correlation": 223245,
+            "next_kind": 0,
+            "next_name": "nvjet_sm110_tst_256x256_64x4_2x1_2cta_v_bz_TNT",
+            "next_api": {
+              "start_ns": 5506936026,
+              "end_ns": 5506957526,
+              "name": "cuLaunchKernelEx"
+            },
+            "before_next_api_entry_ns": 13270765
+          }
+        ],
+        "gap_count": 3213,
+        "before_next_api_entry_ns": 164609934,
+        "unmatched_gap_ns": 13888
+      },
+      {
+        "chunk": 2,
+        "start_ns": 10706843277,
+        "end_ns": 16167012589,
+        "busy_ns": 5393885213,
+        "gaps_ns": 66284099,
+        "kernels": 87861,
+        "kernel_sum_ns": 6265034058,
+        "kernel_family_sum_ns": {
+          "q4t": 4743675690,
+          "nvjet": 1447700800,
+          "cutlass": 73657568
+        },
+        "largest_gaps": [
+          {
+            "chunk": 2,
+            "start_ns": 10799901421,
+            "end_ns": 10811476173,
+            "duration_ns": 11574752,
+            "next_correlation": 646419,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 10811419019,
+              "end_ns": 10811480556,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11517598
+          },
+          {
+            "chunk": 2,
+            "start_ns": 15873074925,
+            "end_ns": 15875378861,
+            "duration_ns": 2303936,
+            "next_correlation": 1013455,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 15875344008,
+              "end_ns": 15875372101,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2269083
+          },
+          {
+            "chunk": 2,
+            "start_ns": 11437911789,
+            "end_ns": 11440144269,
+            "duration_ns": 2232480,
+            "next_correlation": 679440,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 11440107305,
+              "end_ns": 11440136323,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2195516
+          }
+        ],
+        "gap_count": 1979,
+        "before_next_api_entry_ns": 62669386,
+        "unmatched_gap_ns": 13440
+      },
+      {
+        "chunk": 3,
+        "start_ns": 16167012589,
+        "end_ns": 21721268685,
+        "busy_ns": 5490685596,
+        "gaps_ns": 63570500,
+        "kernels": 88881,
+        "kernel_sum_ns": 6377798340,
+        "kernel_family_sum_ns": {
+          "q4t": 4839701348,
+          "nvjet": 1464166624,
+          "cutlass": 73930368
+        },
+        "largest_gaps": [
+          {
+            "chunk": 3,
+            "start_ns": 16258873421,
+            "end_ns": 16270406925,
+            "duration_ns": 11533504,
+            "next_correlation": 1043547,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 16270355060,
+              "end_ns": 16270413810,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11481639
+          },
+          {
+            "chunk": 3,
+            "start_ns": 20587323149,
+            "end_ns": 20589685901,
+            "duration_ns": 2362752,
+            "next_correlation": 1352638,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 20589647831,
+              "end_ns": 20589678812,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2324682
+          },
+          {
+            "chunk": 3,
+            "start_ns": 19109199405,
+            "end_ns": 19111546765,
+            "duration_ns": 2347360,
+            "next_correlation": 1238270,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 19111510940,
+              "end_ns": 19111539385,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2311535
+          }
+        ],
+        "gap_count": 1953,
+        "before_next_api_entry_ns": 60160347,
+        "unmatched_gap_ns": 13952
+      },
+      {
+        "chunk": 4,
+        "start_ns": 21721268685,
+        "end_ns": 27380000557,
+        "busy_ns": 5591768508,
+        "gaps_ns": 66963364,
+        "kernels": 89529,
+        "kernel_sum_ns": 6483921923,
+        "kernel_family_sum_ns": {
+          "q4t": 4934050275,
+          "nvjet": 1475731104,
+          "cutlass": 74140544
+        },
+        "largest_gaps": [
+          {
+            "chunk": 4,
+            "start_ns": 21816954733,
+            "end_ns": 21828514253,
+            "duration_ns": 11559520,
+            "next_correlation": 1444900,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 21828460782,
+              "end_ns": 21828517097,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11506049
+          },
+          {
+            "chunk": 4,
+            "start_ns": 25284509773,
+            "end_ns": 25287141741,
+            "duration_ns": 2631968,
+            "next_correlation": 1685453,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 25287089570,
+              "end_ns": 25287131487,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2579797
+          },
+          {
+            "chunk": 4,
+            "start_ns": 23876603597,
+            "end_ns": 23879023277,
+            "duration_ns": 2419680,
+            "next_correlation": 1579859,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 23878982311,
+              "end_ns": 23879017357,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2378714
+          }
+        ],
+        "gap_count": 1953,
+        "before_next_api_entry_ns": 63388543,
+        "unmatched_gap_ns": 21952
+      },
+      {
+        "chunk": 5,
+        "start_ns": 27380000557,
+        "end_ns": 33118039693,
+        "busy_ns": 5670183550,
+        "gaps_ns": 67855586,
+        "kernels": 90749,
+        "kernel_sum_ns": 6575823881,
+        "kernel_family_sum_ns": {
+          "q4t": 5010045353,
+          "nvjet": 1491812224,
+          "cutlass": 73966304
+        },
+        "largest_gaps": [
+          {
+            "chunk": 5,
+            "start_ns": 27473124493,
+            "end_ns": 27484748685,
+            "duration_ns": 11624192,
+            "next_correlation": 1848816,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 27484703229,
+              "end_ns": 27484752016,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11578736
+          },
+          {
+            "chunk": 5,
+            "start_ns": 30036709933,
+            "end_ns": 30039548749,
+            "duration_ns": 2838816,
+            "next_correlation": 2022072,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 30039501615,
+              "end_ns": 30039544847,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2791682
+          },
+          {
+            "chunk": 5,
+            "start_ns": 28607574861,
+            "end_ns": 28610042509,
+            "duration_ns": 2467648,
+            "next_correlation": 1915322,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 28610008366,
+              "end_ns": 28610035190,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2433505
+          }
+        ],
+        "gap_count": 2011,
+        "before_next_api_entry_ns": 63677651,
+        "unmatched_gap_ns": 18624
+      },
+      {
+        "chunk": 6,
+        "start_ns": 33118039693,
+        "end_ns": 38941446989,
+        "busy_ns": 5752001950,
+        "gaps_ns": 71405346,
+        "kernels": 89925,
+        "kernel_sum_ns": 6646271246,
+        "kernel_family_sum_ns": {
+          "q4t": 5084809134,
+          "nvjet": 1487835136,
+          "cutlass": 73626976
+        },
+        "largest_gaps": [
+          {
+            "chunk": 6,
+            "start_ns": 33211916109,
+            "end_ns": 33223945997,
+            "duration_ns": 12029888,
+            "next_correlation": 2258042,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 33223903564,
+              "end_ns": 33223949091,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11987455
+          },
+          {
+            "chunk": 6,
+            "start_ns": 35139791277,
+            "end_ns": 35143455053,
+            "duration_ns": 3663776,
+            "next_correlation": 2375914,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 35143416217,
+              "end_ns": 35143448171,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3624940
+          },
+          {
+            "chunk": 6,
+            "start_ns": 38041927021,
+            "end_ns": 38045216813,
+            "duration_ns": 3289792,
+            "next_correlation": 2588802,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 38045179349,
+              "end_ns": 38045209950,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3252328
+          }
+        ],
+        "gap_count": 2011,
+        "before_next_api_entry_ns": 67628103,
+        "unmatched_gap_ns": 11712
+      },
+      {
+        "chunk": 7,
+        "start_ns": 38941446989,
+        "end_ns": 44855987277,
+        "busy_ns": 5843596535,
+        "gaps_ns": 70943753,
+        "kernels": 90325,
+        "kernel_sum_ns": 6741492183,
+        "kernel_family_sum_ns": {
+          "q4t": 5167829112,
+          "nvjet": 1500163071,
+          "cutlass": 73500000
+        },
+        "largest_gaps": [
+          {
+            "chunk": 7,
+            "start_ns": 39034078445,
+            "end_ns": 39045615661,
+            "duration_ns": 11537216,
+            "next_correlation": 2663499,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 39045559593,
+              "end_ns": 39045620408,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11481148
+          },
+          {
+            "chunk": 7,
+            "start_ns": 42958433549,
+            "end_ns": 42961899213,
+            "duration_ns": 3465664,
+            "next_correlation": 2925091,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 42961853082,
+              "end_ns": 42961893656,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3419533
+          },
+          {
+            "chunk": 7,
+            "start_ns": 44523343085,
+            "end_ns": 44526262381,
+            "duration_ns": 2919296,
+            "next_correlation": 3040737,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 44526217057,
+              "end_ns": 44526258816,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2873972
+          }
+        ],
+        "gap_count": 2141,
+        "before_next_api_entry_ns": 66731968,
+        "unmatched_gap_ns": 24256
+      },
+      {
+        "chunk": 8,
+        "start_ns": 44855987277,
+        "end_ns": 50849307949,
+        "busy_ns": 5924246712,
+        "gaps_ns": 69073960,
+        "kernels": 90389,
+        "kernel_sum_ns": 6824889457,
+        "kernel_family_sum_ns": {
+          "q4t": 5248545393,
+          "nvjet": 1502395136,
+          "cutlass": 73948928
+        },
+        "largest_gaps": [
+          {
+            "chunk": 8,
+            "start_ns": 44948991949,
+            "end_ns": 44961131181,
+            "duration_ns": 12139232,
+            "next_correlation": 3070623,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 44961079627,
+              "end_ns": 44961136525,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 12087678
+          },
+          {
+            "chunk": 8,
+            "start_ns": 47931182189,
+            "end_ns": 47934143181,
+            "duration_ns": 2960992,
+            "next_correlation": 3260052,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 47934094953,
+              "end_ns": 47934138972,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2912764
+          },
+          {
+            "chunk": 8,
+            "start_ns": 49515904493,
+            "end_ns": 49518857357,
+            "duration_ns": 2952864,
+            "next_correlation": 3376296,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 49518811526,
+              "end_ns": 49518852924,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2907033
+          }
+        ],
+        "gap_count": 2153,
+        "before_next_api_entry_ns": 64704705,
+        "unmatched_gap_ns": 23936
+      },
+      {
+        "chunk": 9,
+        "start_ns": 50849307949,
+        "end_ns": 56937821837,
+        "busy_ns": 6015357944,
+        "gaps_ns": 73155944,
+        "kernels": 90909,
+        "kernel_sum_ns": 6917464667,
+        "kernel_family_sum_ns": {
+          "q4t": 5329626715,
+          "nvjet": 1512957824,
+          "cutlass": 74880128
+        },
+        "largest_gaps": [
+          {
+            "chunk": 9,
+            "start_ns": 50942975597,
+            "end_ns": 50954762829,
+            "duration_ns": 11787232,
+            "next_correlation": 3478114,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 50954700700,
+              "end_ns": 50954761839,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11725103
+          },
+          {
+            "chunk": 9,
+            "start_ns": 54574183501,
+            "end_ns": 54577753901,
+            "duration_ns": 3570400,
+            "next_correlation": 3714417,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 54577705497,
+              "end_ns": 54577748913,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3521996
+          },
+          {
+            "chunk": 9,
+            "start_ns": 52963646221,
+            "end_ns": 52966698957,
+            "duration_ns": 3052736,
+            "next_correlation": 3597627,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 52966640297,
+              "end_ns": 52966694140,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2994076
+          }
+        ],
+        "gap_count": 2257,
+        "before_next_api_entry_ns": 68128048,
+        "unmatched_gap_ns": 18720
+      },
+      {
+        "chunk": 10,
+        "start_ns": 56937821837,
+        "end_ns": 63105253133,
+        "busy_ns": 6093759387,
+        "gaps_ns": 73671909,
+        "kernels": 90245,
+        "kernel_sum_ns": 6988779774,
+        "kernel_family_sum_ns": {
+          "q4t": 5399412190,
+          "nvjet": 1515921472,
+          "cutlass": 73446112
+        },
+        "largest_gaps": [
+          {
+            "chunk": 10,
+            "start_ns": 57030622669,
+            "end_ns": 57041518989,
+            "duration_ns": 10896320,
+            "next_correlation": 3887672,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 57041464104,
+              "end_ns": 57041524224,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 10841435
+          },
+          {
+            "chunk": 10,
+            "start_ns": 59681950157,
+            "end_ns": 59685779981,
+            "duration_ns": 3829824,
+            "next_correlation": 4049500,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 59685725922,
+              "end_ns": 59685774079,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3775765
+          },
+          {
+            "chunk": 10,
+            "start_ns": 61217980333,
+            "end_ns": 61221633869,
+            "duration_ns": 3653536,
+            "next_correlation": 4157546,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 61221591674,
+              "end_ns": 61221627795,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3611341
+          }
+        ],
+        "gap_count": 2175,
+        "before_next_api_entry_ns": 68746734,
+        "unmatched_gap_ns": 20288
+      },
+      {
+        "chunk": 11,
+        "start_ns": 63105253133,
+        "end_ns": 69355519725,
+        "busy_ns": 6179771097,
+        "gaps_ns": 70495495,
+        "kernels": 90613,
+        "kernel_sum_ns": 7081388170,
+        "kernel_family_sum_ns": {
+          "q4t": 5485058538,
+          "nvjet": 1522350880,
+          "cutlass": 73978752
+        },
+        "largest_gaps": [
+          {
+            "chunk": 11,
+            "start_ns": 63199675853,
+            "end_ns": 63211809997,
+            "duration_ns": 12134144,
+            "next_correlation": 4294178,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 63211762099,
+              "end_ns": 63211814090,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 12086246
+          },
+          {
+            "chunk": 11,
+            "start_ns": 66403521581,
+            "end_ns": 66406541901,
+            "duration_ns": 3020320,
+            "next_correlation": 4493285,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 66406495054,
+              "end_ns": 66406537517,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2973473
+          },
+          {
+            "chunk": 11,
+            "start_ns": 68050842125,
+            "end_ns": 68053798125,
+            "duration_ns": 2956000,
+            "next_correlation": 4610211,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 68053749165,
+              "end_ns": 68053794202,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2907040
+          }
+        ],
+        "gap_count": 2153,
+        "before_next_api_entry_ns": 66164840,
+        "unmatched_gap_ns": 24416
+      },
+      {
+        "chunk": 12,
+        "start_ns": 69355519725,
+        "end_ns": 75700493517,
+        "busy_ns": 6269168634,
+        "gaps_ns": 75805158,
+        "kernels": 90505,
+        "kernel_sum_ns": 7167959255,
+        "kernel_family_sum_ns": {
+          "q4t": 5561312599,
+          "nvjet": 1533263424,
+          "cutlass": 73383232
+        },
+        "largest_gaps": [
+          {
+            "chunk": 12,
+            "start_ns": 69448994701,
+            "end_ns": 69461196237,
+            "duration_ns": 12201536,
+            "next_correlation": 4702349,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 69461145508,
+              "end_ns": 69461199832,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 12150807
+          },
+          {
+            "chunk": 12,
+            "start_ns": 74898023469,
+            "end_ns": 74901576973,
+            "duration_ns": 3553504,
+            "next_correlation": 5053376,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 74901527368,
+              "end_ns": 74901571877,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3503899
+          },
+          {
+            "chunk": 12,
+            "start_ns": 69983994829,
+            "end_ns": 69986956781,
+            "duration_ns": 2961952,
+            "next_correlation": 4722158,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 69986899450,
+              "end_ns": 69986951052,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2904621
+          }
+        ],
+        "gap_count": 2219,
+        "before_next_api_entry_ns": 71062963,
+        "unmatched_gap_ns": 23808
+      },
+      {
+        "chunk": 13,
+        "start_ns": 75700493517,
+        "end_ns": 82139648141,
+        "busy_ns": 6360064990,
+        "gaps_ns": 79089634,
+        "kernels": 91253,
+        "kernel_sum_ns": 7266094589,
+        "kernel_family_sum_ns": {
+          "q4t": 5647236541,
+          "nvjet": 1544729472,
+          "cutlass": 74128576
+        },
+        "largest_gaps": [
+          {
+            "chunk": 13,
+            "start_ns": 75793912685,
+            "end_ns": 75806233453,
+            "duration_ns": 12320768,
+            "next_correlation": 5110019,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 75806181167,
+              "end_ns": 75806236361,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 12268482
+          },
+          {
+            "chunk": 13,
+            "start_ns": 76960914925,
+            "end_ns": 76964697549,
+            "duration_ns": 3782624,
+            "next_correlation": 5167825,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 76964645473,
+              "end_ns": 76964692075,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3730548
+          },
+          {
+            "chunk": 13,
+            "start_ns": 80254275757,
+            "end_ns": 80257729837,
+            "duration_ns": 3454080,
+            "next_correlation": 5392961,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 80257682353,
+              "end_ns": 80257724269,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3406596
+          }
+        ],
+        "gap_count": 2291,
+        "before_next_api_entry_ns": 73426024,
+        "unmatched_gap_ns": 21920
+      },
+      {
+        "chunk": 14,
+        "start_ns": 82139648141,
+        "end_ns": 88653982893,
+        "busy_ns": 6440862846,
+        "gaps_ns": 73471906,
+        "kernels": 90769,
+        "kernel_sum_ns": 7343954469,
+        "kernel_family_sum_ns": {
+          "q4t": 5723724837,
+          "nvjet": 1546688672,
+          "cutlass": 73540960
+        },
+        "largest_gaps": [
+          {
+            "chunk": 14,
+            "start_ns": 82233292365,
+            "end_ns": 82245292589,
+            "duration_ns": 12000224,
+            "next_correlation": 5520869,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 82245241444,
+              "end_ns": 82245296352,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11949079
+          },
+          {
+            "chunk": 14,
+            "start_ns": 84038505997,
+            "end_ns": 84041471469,
+            "duration_ns": 2965472,
+            "next_correlation": 5622290,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 84041434449,
+              "end_ns": 84041465968,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2928452
+          },
+          {
+            "chunk": 14,
+            "start_ns": 87636705421,
+            "end_ns": 87638782413,
+            "duration_ns": 2076992,
+            "next_correlation": 5855193,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 87638743294,
+              "end_ns": 87638775100,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2037873
+          }
+        ],
+        "gap_count": 2251,
+        "before_next_api_entry_ns": 69022536,
+        "unmatched_gap_ns": 16160
+      },
+      {
+        "chunk": 15,
+        "start_ns": 88653982893,
+        "end_ns": 95253722221,
+        "busy_ns": 6531372026,
+        "gaps_ns": 68367302,
+        "kernels": 90837,
+        "kernel_sum_ns": 7437432191,
+        "kernel_family_sum_ns": {
+          "q4t": 5801350303,
+          "nvjet": 1562449344,
+          "cutlass": 73632544
+        },
+        "largest_gaps": [
+          {
+            "chunk": 15,
+            "start_ns": 88749883981,
+            "end_ns": 88761245133,
+            "duration_ns": 11361152,
+            "next_correlation": 5929534,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 88761192434,
+              "end_ns": 88761249415,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11308453
+          },
+          {
+            "chunk": 15,
+            "start_ns": 92768505581,
+            "end_ns": 92771780909,
+            "duration_ns": 3275328,
+            "next_correlation": 6175077,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 92771737923,
+              "end_ns": 92771775756,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3232342
+          },
+          {
+            "chunk": 15,
+            "start_ns": 88661294157,
+            "end_ns": 88664088045,
+            "duration_ns": 2793888,
+            "next_correlation": 5922996,
+            "next_kind": 0,
+            "next_name": "nvjet_sm110_tst_256x256_64x4_2x1_2cta_v_bz_TNT",
+            "next_api": {
+              "start_ns": 88664063377,
+              "end_ns": 88664082469,
+              "name": "cuLaunchKernelEx"
+            },
+            "before_next_api_entry_ns": 2769220
+          }
+        ],
+        "gap_count": 2319,
+        "before_next_api_entry_ns": 63570478,
+        "unmatched_gap_ns": 14144
+      },
+      {
+        "chunk": 16,
+        "start_ns": 95253722221,
+        "end_ns": 101939223405,
+        "busy_ns": 6612027099,
+        "gaps_ns": 73474085,
+        "kernels": 91437,
+        "kernel_sum_ns": 7519460998,
+        "kernel_family_sum_ns": {
+          "q4t": 5878260806,
+          "nvjet": 1567488032,
+          "cutlass": 73712160
+        },
+        "largest_gaps": [
+          {
+            "chunk": 16,
+            "start_ns": 95346694061,
+            "end_ns": 95358087245,
+            "duration_ns": 11393184,
+            "next_correlation": 6338470,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 95358032654,
+              "end_ns": 95358092543,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11338593
+          },
+          {
+            "chunk": 16,
+            "start_ns": 96643362637,
+            "end_ns": 96647215917,
+            "duration_ns": 3853280,
+            "next_correlation": 6406302,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 96647158582,
+              "end_ns": 96647211286,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3795945
+          },
+          {
+            "chunk": 16,
+            "start_ns": 98125527597,
+            "end_ns": 98127668525,
+            "duration_ns": 2140928,
+            "next_correlation": 6495861,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 98127617348,
+              "end_ns": 98127662311,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2089751
+          }
+        ],
+        "gap_count": 2392,
+        "before_next_api_entry_ns": 68135869,
+        "unmatched_gap_ns": 27200
+      },
+      {
+        "chunk": 17,
+        "start_ns": 101939223405,
+        "end_ns": 108699833261,
+        "busy_ns": 6682891830,
+        "gaps_ns": 77718026,
+        "kernels": 91801,
+        "kernel_sum_ns": 7590029587,
+        "kernel_family_sum_ns": {
+          "q4t": 5946279475,
+          "nvjet": 1569866688,
+          "cutlass": 73883424
+        },
+        "largest_gaps": [
+          {
+            "chunk": 17,
+            "start_ns": 102034152333,
+            "end_ns": 102046413997,
+            "duration_ns": 12261664,
+            "next_correlation": 6750166,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 102046363965,
+              "end_ns": 102046417548,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 12211632
+          },
+          {
+            "chunk": 17,
+            "start_ns": 101946793965,
+            "end_ns": 101950318957,
+            "duration_ns": 3524992,
+            "next_correlation": 6743538,
+            "next_kind": 0,
+            "next_name": "nvjet_sm110_tst_256x256_64x4_2x1_2cta_v_bz_TNT",
+            "next_api": {
+              "start_ns": 101950280630,
+              "end_ns": 101950317575,
+              "name": "cuLaunchKernelEx"
+            },
+            "before_next_api_entry_ns": 3486665
+          },
+          {
+            "chunk": 17,
+            "start_ns": 105583334413,
+            "end_ns": 105586795757,
+            "duration_ns": 3461344,
+            "next_correlation": 6962129,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 105586729441,
+              "end_ns": 105586790774,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3395028
+          }
+        ],
+        "gap_count": 2385,
+        "before_next_api_entry_ns": 72483194,
+        "unmatched_gap_ns": 21344
+      },
+      {
+        "chunk": 18,
+        "start_ns": 108699833261,
+        "end_ns": 115535987117,
+        "busy_ns": 6760285747,
+        "gaps_ns": 75868109,
+        "kernels": 90649,
+        "kernel_sum_ns": 7659156219,
+        "kernel_family_sum_ns": {
+          "q4t": 6014180699,
+          "nvjet": 1570188736,
+          "cutlass": 74786784
+        },
+        "largest_gaps": [
+          {
+            "chunk": 18,
+            "start_ns": 108791668077,
+            "end_ns": 108803973101,
+            "duration_ns": 12305024,
+            "next_correlation": 7163223,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 108803924760,
+              "end_ns": 108803977075,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 12256683
+          },
+          {
+            "chunk": 18,
+            "start_ns": 109456884109,
+            "end_ns": 109460801357,
+            "duration_ns": 3917248,
+            "next_correlation": 7190096,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 109460758417,
+              "end_ns": 109460795204,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3874308
+          },
+          {
+            "chunk": 18,
+            "start_ns": 112950715885,
+            "end_ns": 112953849869,
+            "duration_ns": 3133984,
+            "next_correlation": 7408632,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 112953800899,
+              "end_ns": 112953844779,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3085014
+          }
+        ],
+        "gap_count": 2303,
+        "before_next_api_entry_ns": 71686202,
+        "unmatched_gap_ns": 19360
+      },
+      {
+        "chunk": 19,
+        "start_ns": 115535987117,
+        "end_ns": 122453521517,
+        "busy_ns": 6846318367,
+        "gaps_ns": 71216033,
+        "kernels": 91009,
+        "kernel_sum_ns": 7751371269,
+        "kernel_family_sum_ns": {
+          "q4t": 6094817221,
+          "nvjet": 1582501184,
+          "cutlass": 74052864
+        },
+        "largest_gaps": [
+          {
+            "chunk": 19,
+            "start_ns": 115629045357,
+            "end_ns": 115640749773,
+            "duration_ns": 11704416,
+            "next_correlation": 7571209,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 115640704269,
+              "end_ns": 115640752324,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11658912
+          },
+          {
+            "chunk": 19,
+            "start_ns": 116965201549,
+            "end_ns": 116969101645,
+            "duration_ns": 3900096,
+            "next_correlation": 7637779,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 116969051064,
+              "end_ns": 116969096407,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3849515
+          },
+          {
+            "chunk": 19,
+            "start_ns": 118685832301,
+            "end_ns": 118688889037,
+            "duration_ns": 3056736,
+            "next_correlation": 7745463,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 118688842074,
+              "end_ns": 118688882963,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3009773
+          }
+        ],
+        "gap_count": 2316,
+        "before_next_api_entry_ns": 66681415,
+        "unmatched_gap_ns": 22944
+      },
+      {
+        "chunk": 20,
+        "start_ns": 122453521517,
+        "end_ns": 129454258637,
+        "busy_ns": 6927401754,
+        "gaps_ns": 73335366,
+        "kernels": 90737,
+        "kernel_sum_ns": 7826568576,
+        "kernel_family_sum_ns": {
+          "q4t": 6164204352,
+          "nvjet": 1588613120,
+          "cutlass": 73751104
+        },
+        "largest_gaps": [
+          {
+            "chunk": 20,
+            "start_ns": 122547709837,
+            "end_ns": 122559916653,
+            "duration_ns": 12206816,
+            "next_correlation": 7980705,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 122559867440,
+              "end_ns": 122559920144,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 12157603
+          },
+          {
+            "chunk": 20,
+            "start_ns": 124475758477,
+            "end_ns": 124478892397,
+            "duration_ns": 3133920,
+            "next_correlation": 8082246,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 124478850737,
+              "end_ns": 124478888589,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3092260
+          },
+          {
+            "chunk": 20,
+            "start_ns": 122461379725,
+            "end_ns": 122463889197,
+            "duration_ns": 2509472,
+            "next_correlation": 7974149,
+            "next_kind": 0,
+            "next_name": "nvjet_sm110_tst_256x256_64x4_2x1_2cta_v_bz_TNT",
+            "next_api": {
+              "start_ns": 122463855099,
+              "end_ns": 122463887599,
+              "name": "cuLaunchKernelEx"
+            },
+            "before_next_api_entry_ns": 2475374
+          }
+        ],
+        "gap_count": 2367,
+        "before_next_api_entry_ns": 68907234,
+        "unmatched_gap_ns": 19040
+      },
+      {
+        "chunk": 21,
+        "start_ns": 129454258637,
+        "end_ns": 136545753421,
+        "busy_ns": 7016830461,
+        "gaps_ns": 74664323,
+        "kernels": 91317,
+        "kernel_sum_ns": 7922941636,
+        "kernel_family_sum_ns": {
+          "q4t": 6250977412,
+          "nvjet": 1597570368,
+          "cutlass": 74393856
+        },
+        "largest_gaps": [
+          {
+            "chunk": 21,
+            "start_ns": 129548965517,
+            "end_ns": 129560516589,
+            "duration_ns": 11551072,
+            "next_correlation": 8388930,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 129560461330,
+              "end_ns": 129560521423,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11495813
+          },
+          {
+            "chunk": 21,
+            "start_ns": 130327975181,
+            "end_ns": 130331229197,
+            "duration_ns": 3254016,
+            "next_correlation": 8422659,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 130331179637,
+              "end_ns": 130331226081,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3204456
+          },
+          {
+            "chunk": 21,
+            "start_ns": 136022624717,
+            "end_ns": 136025850349,
+            "duration_ns": 3225632,
+            "next_correlation": 8761164,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 136025807659,
+              "end_ns": 136025844760,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3182942
+          }
+        ],
+        "gap_count": 2408,
+        "before_next_api_entry_ns": 70171421,
+        "unmatched_gap_ns": 21952
+      },
+      {
+        "chunk": 22,
+        "start_ns": 136545753421,
+        "end_ns": 143700113421,
+        "busy_ns": 7084703993,
+        "gaps_ns": 69656007,
+        "kernels": 90589,
+        "kernel_sum_ns": 7985238590,
+        "kernel_family_sum_ns": {
+          "q4t": 6317831422,
+          "nvjet": 1593521856,
+          "cutlass": 73885312
+        },
+        "largest_gaps": [
+          {
+            "chunk": 22,
+            "start_ns": 136639467373,
+            "end_ns": 136651302861,
+            "duration_ns": 11835488,
+            "next_correlation": 8799692,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 136651255417,
+              "end_ns": 136651305778,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11788044
+          },
+          {
+            "chunk": 22,
+            "start_ns": 136553106893,
+            "end_ns": 136556031565,
+            "duration_ns": 2924672,
+            "next_correlation": 8793172,
+            "next_kind": 0,
+            "next_name": "nvjet_sm110_tst_256x256_64x4_2x1_2cta_v_bz_TNT",
+            "next_api": {
+              "start_ns": 136556002286,
+              "end_ns": 136556027490,
+              "name": "cuLaunchKernelEx"
+            },
+            "before_next_api_entry_ns": 2895393
+          },
+          {
+            "chunk": 22,
+            "start_ns": 138513083597,
+            "end_ns": 138515097293,
+            "duration_ns": 2013696,
+            "next_correlation": 8892299,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 138515064831,
+              "end_ns": 138515091386,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 1981234
+          }
+        ],
+        "gap_count": 2360,
+        "before_next_api_entry_ns": 65622662,
+        "unmatched_gap_ns": 19552
+      },
+      {
+        "chunk": 23,
+        "start_ns": 143700113421,
+        "end_ns": 150956698381,
+        "busy_ns": 7186358812,
+        "gaps_ns": 70226148,
+        "kernels": 90677,
+        "kernel_sum_ns": 8086420400,
+        "kernel_family_sum_ns": {
+          "q4t": 6406336656,
+          "nvjet": 1606234560,
+          "cutlass": 73849184
+        },
+        "largest_gaps": [
+          {
+            "chunk": 23,
+            "start_ns": 143793836749,
+            "end_ns": 143806041677,
+            "duration_ns": 12204928,
+            "next_correlation": 9207208,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 143805983250,
+              "end_ns": 143806042453,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 12146501
+          },
+          {
+            "chunk": 23,
+            "start_ns": 148013691757,
+            "end_ns": 148016569773,
+            "duration_ns": 2878016,
+            "next_correlation": 9435174,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 148016521825,
+              "end_ns": 148016564251,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 2830068
+          },
+          {
+            "chunk": 23,
+            "start_ns": 143897520557,
+            "end_ns": 143899489645,
+            "duration_ns": 1969088,
+            "next_correlation": 9207383,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 143899454334,
+              "end_ns": 143899483992,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 1933777
+          }
+        ],
+        "gap_count": 2402,
+        "before_next_api_entry_ns": 66131419,
+        "unmatched_gap_ns": 14624
+      },
+      {
+        "chunk": 24,
+        "start_ns": 150956698381,
+        "end_ns": 158292530925,
+        "busy_ns": 7265773239,
+        "gaps_ns": 70059305,
+        "kernels": 90577,
+        "kernel_sum_ns": 8166414150,
+        "kernel_family_sum_ns": {
+          "q4t": 6477028678,
+          "nvjet": 1615449408,
+          "cutlass": 73936064
+        },
+        "largest_gaps": [
+          {
+            "chunk": 24,
+            "start_ns": 151048342157,
+            "end_ns": 151059782765,
+            "duration_ns": 11440608,
+            "next_correlation": 9614973,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 151059724930,
+              "end_ns": 151059788773,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 11382773
+          },
+          {
+            "chunk": 24,
+            "start_ns": 155926229229,
+            "end_ns": 155929604749,
+            "duration_ns": 3375520,
+            "next_correlation": 9878971,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 155929566737,
+              "end_ns": 155929597996,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3337508
+          },
+          {
+            "chunk": 24,
+            "start_ns": 154099435309,
+            "end_ns": 154102763085,
+            "duration_ns": 3327776,
+            "next_correlation": 9770473,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 154102715046,
+              "end_ns": 154102757500,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3279737
+          }
+        ],
+        "gap_count": 2425,
+        "before_next_api_entry_ns": 66035790,
+        "unmatched_gap_ns": 17888
+      },
+      {
+        "chunk": 25,
+        "start_ns": 158292530925,
+        "end_ns": 165664082221,
+        "busy_ns": 7297112059,
+        "gaps_ns": 74439237,
+        "kernels": 91875,
+        "kernel_sum_ns": 8207752997,
+        "kernel_family_sum_ns": {
+          "q4t": 6581884805,
+          "nvjet": 1552075968,
+          "cutlass": 73792224
+        },
+        "largest_gaps": [
+          {
+            "chunk": 25,
+            "start_ns": 158389397645,
+            "end_ns": 158401746477,
+            "duration_ns": 12348832,
+            "next_correlation": 10022526,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 158401689863,
+              "end_ns": 158401757187,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 12292218
+          },
+          {
+            "chunk": 25,
+            "start_ns": 158300270189,
+            "end_ns": 158305188493,
+            "duration_ns": 4918304,
+            "next_correlation": 10015752,
+            "next_kind": 0,
+            "next_name": "nvjet_sm110_tst_256x256_64x4_2x1_2cta_v_bz_TNT",
+            "next_api": {
+              "start_ns": 158305163936,
+              "end_ns": 158305183288,
+              "name": "cuLaunchKernelEx"
+            },
+            "before_next_api_entry_ns": 4893747
+          },
+          {
+            "chunk": 25,
+            "start_ns": 163890711949,
+            "end_ns": 163893971981,
+            "duration_ns": 3260032,
+            "next_correlation": 10326815,
+            "next_kind": 1,
+            "next_name": "1",
+            "next_api": {
+              "start_ns": 163893928932,
+              "end_ns": 163893967784,
+              "name": "cudaMemcpyAsync_v3020"
+            },
+            "before_next_api_entry_ns": 3216983
+          }
+        ],
+        "gap_count": 2463,
+        "before_next_api_entry_ns": 70155978,
+        "unmatched_gap_ns": 0
+      }
+    ],
+    "summary": {
+      "all": {
+        "busy_ns": 158343215148,
+        "gaps_ns": 1895808244,
+        "kernels": 2264679,
+        "kernel_sum_ns": 180816988812,
+        "before_next_api_entry_ns": 1779703444,
+        "unmatched_gap_ns": 465120,
+        "wall_ns": 160239023392
+      },
+      "chunks2_25": {
+        "busy_ns": 153236428349,
+        "gaps_ns": 1720810595,
+        "kernels": 2173458,
+        "kernel_sum_ns": 174833658625,
+        "before_next_api_entry_ns": 1615093510,
+        "unmatched_gap_ns": 451232,
+        "wall_ns": 154957238944
+      }
+    }
+  },
+  "scope": "Process-scoped kernel/copy/set interval union, not device-wide idle. Chunks2..25 follow known competitor exit but residual effects remain unquantified. Kernel sums double-count concurrency. Before-next-API-entry is chronology, not causal attribution. No new inference."
+}

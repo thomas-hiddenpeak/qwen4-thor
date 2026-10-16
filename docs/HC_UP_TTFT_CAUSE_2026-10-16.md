@@ -361,3 +361,32 @@ PMU running/enabled>=99%，单次capture<=1ms且累计<=5ms。初始化与
 离线依赖/空隙审计，分清已证实的污染区间及可用范围，避免将全部A/B
 trace总量直接归因；只有明确测量缺口后再冻结必要定向设备观测。
 [全部结果与完整退出审计](evidence/hc-up-host-observer-20261016/README.md)。
+
+
+## 旧device trace离线审计（2026-10-17）
+
+按25次EmbedLookupKernel对齐chunk，用kernel/copy/memset区间并集
+和补集分解跨度，逐chunk验证恒等式，不新增推理。已知竞争加载结束
+为A相对99.135秒，chunk2起点103.947秒，直接时间重叠集中于第一chunk；
+后续残留效应未量化，不能称隔离对照。
+
+| chunk2–25（秒） | A/main | B/HC | A−B |
+|---|---:|---:|---:|
+| 起点到首logits D2H截止跨度 | 155.592796 | 154.957239 | 0.635558 |
+| 该进程设备活动区间并集 | 153.730933 | 153.236428 | 0.494505 |
+| 区间空隙 | 1.861863 | 1.720811 | 0.141053 |
+
+旧trace中A更慢，与原HC小回归相反，不能直接归因历史结果。A首chunk
+空隙93.662秒，B0.175秒；必须保留原污染记录，不用切片掩盖污染。
+活动并集不是整卡busy，空隙也不一定整卡idle；跨stream kernel时长之和
+会重复计数。next关联API尚未进入的时间只说明时序，不能单独叫CPU慢。
+
+进一步核对chunk2/13/25的最大空隙：结束于20,971,520字节（8192×2560）
+或20,943,360字节（8181×2560）的H2D，其后是Fp8ToBf16Kernel；之前API
+为短cudaEventSynchronize。源码GatherRows在upload_complete同步后调用
+reader->Gather，再H2D并转换，吻合PLE staging路径。B例空隙约11.575/
+12.321/12.349ms，A对应56.546/11.406/21.289ms。此确认PLE读取/整理可以
+产生所见空隙，但没有区分SSD等待、CPU scatter、缓存与内存压力，也不
+解释稳定HC版本回归。下一步限定Gather阶段观测，补齐CPU/等待分界；
+不删除同步或修改数值，不启动无关PLE/prefill优化，不重复原TTFT采样。
+[完整离线脚本、区间与拷贝证据](evidence/hc-up-device-audit-20261017/README.md)。
