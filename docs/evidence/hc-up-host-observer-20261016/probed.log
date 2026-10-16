@@ -1,0 +1,15 @@
+ordinary format intact 7 1.5
+[host-interval] tid=1151319 seq=0 T=8192 wall_ns=356171928050103 cpu_ns=1497482 sched_ns=1497482 runqueue_ns=0 slices=2 voluntary=1 involuntary=0 minflt=159 majflt=0 pmu_error=0 pmu_nr=3 enabled_ns=17341 running_ns=17341 cycles=7888 instructions=2865 branch_misses=76 sched_error=0 usage_rc=0 init_ns=34874371 capture_ns=48836
+[layer-timing] T=8192 embed=0.00ms lin=1.00ms full=2.00ms head=0.00ms total=3.00ms top5= L1(3.00)
+[host-interval] tid=1151319 seq=1 T=8192 wall_ns=356172028267635 cpu_ns=101554145 sched_ns=101554145 runqueue_ns=0 slices=2 voluntary=1 involuntary=0 minflt=161 majflt=0 pmu_error=0 pmu_nr=3 enabled_ns=100230608 running_ns=100230608 cycles=16209098 instructions=13334422 branch_misses=452 sched_error=0 usage_rc=0 init_ns=84 capture_ns=11120
+[layer-timing] T=8192 embed=0.00ms lin=1.00ms full=2.00ms head=0.00ms total=3.00ms top5= L1(3.00)
+[host-interval] tid=1151319 seq=2 T=8181 wall_ns=356172128346465 cpu_ns=101576690 sched_ns=101576690 runqueue_ns=0 slices=3 voluntary=2 involuntary=0 minflt=162 majflt=0 pmu_error=0 pmu_nr=3 enabled_ns=100254025 running_ns=100254025 cycles=16222964 instructions=13349919 branch_misses=609 sched_error=0 usage_rc=0 init_ns=65 capture_ns=7167
+[layer-timing] T=8181 embed=0.00ms lin=1.00ms full=2.00ms head=0.00ms total=3.00ms top5= L1(3.00)
+[layer-timing] T=1 embed=0.00ms lin=1.00ms full=2.00ms head=0.00ms total=3.00ms top5= L1(3.00)
+[host-interval] tid=1151320 seq=0 T=8192 wall_ns=356172128463858 cpu_ns=75223 sched_ns=75223 runqueue_ns=0 slices=1 voluntary=0 involuntary=0 minflt=2 majflt=0 pmu_error=0 pmu_nr=3 enabled_ns=33103 running_ns=33103 cycles=11271 instructions=1821 branch_misses=68 sched_error=0 usage_rc=0 init_ns=46187 capture_ns=39696
+[layer-timing] T=8192 embed=0.00ms lin=1.00ms full=2.00ms head=0.00ms total=3.00ms top5= L1(3.00)
+[host-interval] tid=1151320 seq=1 T=8192 wall_ns=356172229196710 cpu_ns=100126220 sched_ns=100126220 runqueue_ns=0 slices=1 voluntary=0 involuntary=0 minflt=4 majflt=0 pmu_error=0 pmu_nr=3 enabled_ns=100761759 running_ns=100761759 cycles=16026638 instructions=13175446 branch_misses=422 sched_error=0 usage_rc=0 init_ns=74 capture_ns=9851
+[layer-timing] T=8192 embed=0.00ms lin=1.00ms full=2.00ms head=0.00ms total=3.00ms top5= L1(3.00)
+[host-interval] tid=1151320 seq=2 T=8181 wall_ns=356172329276591 cpu_ns=100148082 sched_ns=100148082 runqueue_ns=0 slices=2 voluntary=1 involuntary=0 minflt=4 majflt=0 pmu_error=0 pmu_nr=3 enabled_ns=100784943 running_ns=100784943 cycles=16039300 instructions=13191708 branch_misses=550 sched_error=0 usage_rc=0 init_ns=74 capture_ns=8037
+[layer-timing] T=8181 embed=0.00ms lin=1.00ms full=2.00ms head=0.00ms total=3.00ms top5= L1(3.00)
+[layer-timing] T=1 embed=0.00ms lin=1.00ms full=2.00ms head=0.00ms total=3.00ms top5= L1(3.00)

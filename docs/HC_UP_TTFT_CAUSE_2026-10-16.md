@@ -300,3 +300,21 @@ build/public-host查找CTest时无测试，不计为通过；实际通过目录�
 比较。这不等于整个host函数相同，前后序、相对地址与CPU缓存仍可能不同。
 后续应补能区分host提交停顿与GPU工作/等待的低扰动观测；两次干预均
 未形成根因证据，不再重复相同TTFT实验或跳到候选验收。目标继续active。
+
+
+## Host区间观测准备（CPU校验，尚未启动模型对照）
+
+新增host_interval_probe.cpp，用LD_PRELOAD拦截既有T>1层计时报告，
+保留原格式/参数，按线程记录单调时钟、线程CPU、schedstat、切换/缺页、
+user-only PMU cycles/instructions/branch misses及enabled/running。
+不拦截每个CUDA launch、不调用CUDA、不重编译模型。第一报告建立基线，
+只分析后续相邻报告；不能覆盖第一chunk或代表GPU净执行时间。
+
+本机双线程CPU夹具确认忙100ms与睡眠100ms可区分、线程计数独立、T=1
+不采集、原输出逐字节不变，三PMU事件可用，零警告编译。发现首次PMU
+初始化34.874ms，已独立记录并把基线移至其后；后续捕获数十微秒但日志
+写出尚不含在capture内。插桩总TTFT不能用于性能接受，也不能无证据
+宣称低扰动到足以解释原0.1秒差异。PMU排除kernel，线程CPU包含kernel，
+解释时必须区分；工具观察当前线程，不能直接证明GPU busy或其他线程等待。
+下一步先冻结观测范围与有效性门槛，再进行必要机理对照；尚无新增HTTP。
+[CPU夹具、身份与结果](evidence/hc-up-host-observer-20261016/README.md)。
