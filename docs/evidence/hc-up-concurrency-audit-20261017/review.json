@@ -1,0 +1,29 @@
+{
+  "exclusive_activity_delta_ns": 41562476,
+  "overlapped_activity_delta_ns": 48541786,
+  "sum_matches_previous_busy_delta_ns": 90104262,
+  "checks": "manual synthetic overlapping/nested/touching/duplicate intervals passed; activity/gap sums exactly match previous independent union analysis",
+  "fully_solo_families": {
+    "GDN": {
+      "count_each": 900,
+      "delta_ns": 41691296
+    },
+    "CausalConv": {
+      "count_each": 900,
+      "delta_ns": 23961056
+    },
+    "CombineWithGate": {
+      "count_each": 1200,
+      "delta_ns": 26499456,
+      "positive_paired_calls": 1004,
+      "negative_paired_calls": 196,
+      "positive_layer_ordinal_totals": 48,
+      "positive_full_chunks": 24,
+      "last_8181_chunk_delta_ns": -10400
+    }
+  },
+  "limits": "process-local traced activity; all-solo does not exclude history-dependent cache effects, clocks, hidden hardware activity or profiler distortion; partial-exclusive time cannot be equated with a complete-kernel duration; kernel parameter/physical addresses not captured",
+  "next": "map CombineWithGate inputs/output to allocation sites and existing address evidence before choosing targeted intervention",
+  "new_gpu_work": false,
+  "root_cause_proven": false
+}

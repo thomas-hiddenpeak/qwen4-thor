@@ -42,7 +42,10 @@ HTTP首输出窗口可能含少量decode，非纯prefill；原始outstanding不�
 原失败保留；v2两条trace已完成，输出/退出/导出与launch身份均过，
 guard COMPLETED。HTTP差+55.085ms，设备区间差+52.864ms=活动并集
 +90.104ms、间隙−37.240ms。定位到设备活动增加，尚非原因；kernel
-总和受并发重叠影响。下一步只离线拆分并发/独占活动，不追加trace。
+总和受并发重叠影响。离线拆分确认独占+41.562ms、重叠+48.542ms；
+GDN/Conv/Combine各自全程独占仍变慢。Combine同48层序号累计均正，
+24个完整chunk均正、末尾8181 chunk近持平。下一步映射其缓冲区和已有
+分配证据，定位具体可控变量；不据此直接认定缓存原因，不追加trace。
 UCF analyzer的outputs重复哈希标注已修正，原始文本hash独立核对通过，
 读流量结论不变。不得继续普通ASLR或UCF计时。
 此前scratch固定布局8条判据亦未过，诊断分配器不交付、不扩样。
