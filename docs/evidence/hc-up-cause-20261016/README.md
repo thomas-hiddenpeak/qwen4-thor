@@ -18,3 +18,7 @@ light/review逐块记录事件时间及分配size序列；事件区间包含host
 探针编译（零警告）：g++-14 -std=c++23 -O2 -Wall -Wextra -fPIC -shared
 -I/usr/local/cuda-13.3/include alloc_probe.cpp -ldl -o alloc_probe.so。
 .so产物仅保存在.q4t-work；日志完整记录所有分配，不按耗时筛选。
+
+后到并发证据：environment/保留另一会话退出/中断记录及双方events。
+A trace长停顿与并发加载重叠；light A仅启动重叠，HTTP前29.558秒
+竞争服务退出，残留效应未排除。不得将这些运行当作隔离性能验收。
