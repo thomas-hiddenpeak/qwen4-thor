@@ -112,3 +112,5 @@ E2E通过后对实际旧/新QSA实现做逐位差分，覆盖T4、多序列、�
 未进入full attention的两层linear/PLE模型合同，不重验独立PLE合同。
 数值精确且E2E有收益才接受；与main及候选1结果分别报告，不拼接收益。
 源码/运行证据 .q4t-work/mtp-decode-20261016/attention/。
+
+候选2已实现并零警告构建，尚未HTTP验收；生产变更仅qsa_decode.cu。
