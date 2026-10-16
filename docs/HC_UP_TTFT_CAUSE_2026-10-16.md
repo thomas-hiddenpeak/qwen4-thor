@@ -682,3 +682,31 @@ buffer的使用地址，同时尽量保留原分配/free调用与同步关系，
 
 本轮仅离线映射，无GPU请求、无生产变更。原NO_GO与活动目标保持。
 证据：evidence/hc-up-address-map-20261017/{map.py,result.json}。
+
+## 固定scratch布局诊断工具完成CPU验证（2026-10-17）
+
+新增scratch_layout_probe.cpp，仅接受显式control/fixed。两模式在首次成功
+cudaMalloc后都保留562036736字节arena，直到进程退出；原cudaMallocAsync
+与cudaFreeAsync均调用，参数/返回/errno转发。fixed将前6600次已验证
+prefill分配的返回值改为7个独立2MiB对齐slot，free翻译回原allocation；
+control返回原地址但执行相同跟踪与arena预留。decode前缀之后直通。
+不改kernel或数学，不插入额外同步。它不是生产分配器，不可用于任意请求。
+
+生命周期依据：linear六项在caller stream析构；routing在额外MoE streams
+join后再free；观测所有async alloc/free均stream0。因此同slot下一次使用
+仍在前次使用之后的stream顺序内。未知尺寸/顺序、slot仍live、非零stream、
+外来线程直接INVALID中止；失败分配不读输出，失败free保留对应关系。
+固定使用地址也改变承载数据的物理页与缓存局部性，不能称纯VA位实验；
+两模式额外预留也可能改变驱动状态，必须使用直通control作负控。
+
+CPU假CUDA：两模式完整6600分配/free、末chunk8181、分配失败无效输出、
+free失败后重试、errno保持、固定slot稳定/独立、decode直通通过；每模式
+shape/stream/foreign三项负控正确abort，共8个进程结果。零警告构建，
+未加载CUDA驱动。夹具路径归档后未为路径移动重复运行同身份逻辑。
+CPU通过不证明GPU生命周期/数值合同或性能；尚未冻结/运行真实实验。
+
+下一步冻结A/B×control/fixed的交互判据与有限顺序，先满足整阶段guard、
+输出合同和完整6600映射，再判断布局干预是否改变候选差异。不得只凭
+fixed更快宣布原因，也不能将两模式一起变化的allocator成本归于使用地址。
+生产main及候选原件未改，原NO_GO和活动目标保持。
+证据：evidence/hc-up-layout-intervention-20261017/；工具及CPU夹具在tools/evalscope。

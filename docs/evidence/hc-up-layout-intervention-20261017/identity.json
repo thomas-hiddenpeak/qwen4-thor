@@ -1,0 +1,7 @@
+{
+  "tools/evalscope/scratch_layout_probe.cpp": "fec4f7ed76d3db3471e3727e68cb26d40e9bde46340c7e1ae0f4976465def5d3",
+  "tools/evalscope/test_scratch_layout_probe.py": "f3b671c25b1f9d5e1b3cc7625a698be27c6c2a5885dc67db0f115b997110c4a0",
+  "tools/evalscope/fixtures/scratch_layout/fake.cpp": "86251ee0193fcf338e04b5d60055845264530c87dbfcf4a6e5dac710151246d3",
+  "tools/evalscope/fixtures/scratch_layout/driver.cpp": "e063580b5a1231abb57d6f1487fc3bccf66d691dec914af9e0a028ae33cf5d64",
+  ".q4t-work/hc-up-layout-intervention-20261017/probe.so": "32a6584163e09a56fca987a9a40609ed6696a52d5bd508fba94503df3bc0562d"
+}
