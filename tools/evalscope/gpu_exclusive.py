@@ -6,6 +6,7 @@ An environment abort never kills an unrelated process or implies a model failure
 """
 import argparse
 import csv
+import contextlib
 import datetime
 import fcntl
 import io
@@ -13,6 +14,7 @@ import json
 import os
 from pathlib import Path
 import signal
+import stat
 import subprocess
 import time
 
@@ -213,21 +215,53 @@ def stop_owned(child, grace, history=None):
         time.sleep(0.1)
 
 
-def run_guard(command, out, lock_path, interval=1.0, grace=30.0):
+def borrowed_lock(fd, lock_path):
+    """Duplicate an already exclusive lease; caller owns lifetime and recovery.
+
+    Never unlock this open-file-description. A manager must retain another
+    reference until its independent cleanup has completed.
+    """
+    if fd <= 2:
+        raise ValueError('lease fd must not be a standard stream')
+    supplied = os.fstat(fd)
+    expected = lock_path.stat()
+    if (supplied.st_dev, supplied.st_ino) != (expected.st_dev, expected.st_ino):
+        raise ValueError('lease fd does not identify the repository lock')
+    if not stat.S_ISREG(supplied.st_mode):
+        raise ValueError('lease fd must identify a regular file')
+    if fcntl.fcntl(fd, fcntl.F_GETFL) & os.O_ACCMODE != os.O_RDWR:
+        raise ValueError('lease fd must be read/write')
+    with lock_path.open('r+') as probe:
+        try:
+            fcntl.flock(probe, fcntl.LOCK_SH | fcntl.LOCK_NB)
+        except BlockingIOError:
+            pass
+        else:
+            raise ValueError('lease must already be exclusively locked')
+    # An independent FD for an inode held by someone else cannot acquire EX.
+    fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    return os.fdopen(os.dup(fd), 'r+')
+
+
+def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None):
     out.mkdir(parents=True, exist_ok=False)
     status = {'status': 'INITIALIZING', 'command': command,
               'lock_path': str(lock_path), 'poll_interval_seconds': interval,
               'poll_scope': 'cooperative flock plus /proc and NVIDIA compute polling',
-              'performance_acceptance': False, 'child_returncode': None}
+              'performance_acceptance': False, 'child_returncode': None,
+              'external_lease': lease_fd is not None}
     child = None
     owned_history = {}
     acquired = False
     lock_path.parent.mkdir(parents=True, exist_ok=True)
-    with lock_path.open('a+') as lock, (out / 'events.jsonl').open('w') as events:
+    with contextlib.ExitStack() as stack, (out / 'events.jsonl').open('w') as events:
         def record(event, **values):
             events.write(json.dumps(dict(stamp(), event=event, **values)) + '\n')
             events.flush()
         try:
+            lock = stack.enter_context(
+                lock_path.open('a+') if lease_fd is None else
+                borrowed_lock(lease_fd, lock_path))
             try:
                 fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError:
@@ -283,10 +317,12 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0):
             if acquired:
                 lock.seek(0)
                 lock.truncate()
-                lock.write(json.dumps(dict(stamp(), state='released',
+                state = 'external_cleanup_pending' if lease_fd is not None else 'released'
+                lock.write(json.dumps(dict(stamp(), state=state,
                                            output=str(out))) + '\n')
                 lock.flush()
-                record('lease_released', status=status['status'])
+                record('lease_guard_finished' if lease_fd is not None else
+                       'lease_released', status=status['status'])
             if cleanup_failed:
                 return 75
 
@@ -298,6 +334,8 @@ def main():
     signal.signal(signal.SIGTERM, interrupted)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--lease-fd', type=int,
+                        help='inherited exclusive lease; external owner handles recovery')
     parser.add_argument('command', nargs=argparse.REMAINDER)
     args = parser.parse_args()
     command = args.command[1:] if args.command[:1] == ['--'] else args.command
@@ -306,7 +344,7 @@ def main():
     out = args.output.resolve()
     if not any(out.is_relative_to(ROOT / p) for p in ('build', '.q4t-work')):
         parser.error('output must be under build/ or .q4t-work/')
-    result = run_guard(command, out, common_lock())
+    result = run_guard(command, out, common_lock(), lease_fd=args.lease_fd)
     # A cleanup failure in finally must override an otherwise successful return.
     if json.loads((out / 'exit.json').read_text())['status'] == 'ENV_ABORT':
         result = 75

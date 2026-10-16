@@ -28,6 +28,62 @@ class ExclusiveTests(unittest.TestCase):
     def outcome(self):
         return json.loads((self.out / 'exit.json').read_text())
 
+    def test_external_lease_survives_guard_success_and_failure(self):
+        for exit_code in (0, 7):
+            with self.subTest(exit_code=exit_code), self.lock.open('w+') as held:
+                self.out = self.root / f'run-{exit_code}'
+                fcntl.flock(held, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                with patch.object(guard, 'inspect', return_value={'conflicts': []}):
+                    code = guard.run_guard(
+                        [sys.executable, '-c', f'exit({exit_code})'],
+                        self.out, self.lock, interval=0.01, grace=1,
+                        lease_fd=held.fileno())
+                self.assertEqual(code, 0 if exit_code == 0 else 1)
+                self.assertTrue(self.outcome()['external_lease'])
+                self.assertEqual(json.loads(self.lock.read_text())['state'],
+                                 'external_cleanup_pending')
+                with self.lock.open('r+') as probe:
+                    with self.assertRaises(BlockingIOError):
+                        fcntl.flock(probe, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                events = (self.out / 'events.jsonl').read_text()
+                self.assertIn('lease_guard_finished', events)
+                self.assertNotIn('lease_released', events)
+            with self.lock.open('r+') as probe:
+                fcntl.flock(probe, fcntl.LOCK_EX | fcntl.LOCK_NB)
+
+    def test_external_invalid_leases_never_start(self):
+        for mode in ('unlocked', 'shared', 'wrong_inode', 'different_fd'):
+            with self.subTest(mode=mode), self.lock.open('w+') as held:
+                self.out = self.root / mode
+                held.write('original holder')
+                held.flush()
+                if mode != 'unlocked':
+                    fcntl.flock(held, fcntl.LOCK_SH if mode == 'shared' else
+                                fcntl.LOCK_EX)
+                path = self.root / 'other' if mode == 'wrong_inode' else self.lock
+                with path.open('a+') as other:
+                    fd = other.fileno() if mode in ('wrong_inode', 'different_fd') else held.fileno()
+                    with patch.object(guard, 'inspect') as scan:
+                        self.assertEqual(guard.run_guard(
+                            ['must-not-run'], self.out, self.lock, lease_fd=fd), 75)
+                        scan.assert_not_called()
+                self.assertEqual(self.outcome()['status'], 'ENV_ABORT')
+                self.assertEqual(self.lock.read_text(), 'original holder')
+
+    def test_external_lease_survives_cleanup_error(self):
+        with self.lock.open('w+') as held:
+            fcntl.flock(held, fcntl.LOCK_EX)
+            with patch.object(guard, 'inspect', return_value={'conflicts': []}), \
+                    patch.object(guard, 'stop_owned', side_effect=RuntimeError('cleanup')):
+                code = guard.run_guard([sys.executable, '-c', 'exit(0)'],
+                                       self.out, self.lock, interval=0.01,
+                                       lease_fd=held.fileno())
+            self.assertEqual(code, 75)
+            self.assertEqual(self.outcome()['status'], 'ENV_ABORT')
+            with self.lock.open('r+') as probe:
+                with self.assertRaises(BlockingIOError):
+                    fcntl.flock(probe, fcntl.LOCK_EX | fcntl.LOCK_NB)
+
     def test_busy_lease_does_not_start_command_or_rewrite_holder(self):
         with self.lock.open('w+') as held:
             held.write('held by another session')

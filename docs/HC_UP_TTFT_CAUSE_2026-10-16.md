@@ -1921,3 +1921,20 @@ FD接入guard、独立恢复记录/失败闭锁、权限分离及不可控外部
 混杂限制保持，不能仅以降低频率后OC减少宣布根因。
 目标active、原NO_GO保持。证据：evidence/hc-up-clock-recovery-20261017/。
 参考管理器FD生命周期：https://systemd.io/FILE_DESCRIPTOR_STORE/ 。
+
+## GPU guard接入外部租约FD（2026-10-17）
+
+为后续独立恢复接入显式--lease-fd：要求FD为正确inode、普通文件、
+可读写且已持有排他flock。独立shared探针确认现有排他锁，再在传入FD
+重申EX以拒绝同inode的其他open-file-description；只dup/close，不解锁。
+正常入口保持原有获取/释放行为。外部模式退出写external_cleanup_pending
+及lease_guard_finished，不能提前标成released；外部监管者负责持锁至恢复完成。
+
+本次修改直接重验受影响的gpu_exclusive CPU测试：22项通过（包含新场景
+成功/命令失败保持锁、错误inode/未锁/shared/独立FD拒绝、清理异常保持锁），
+命令：python3 -m unittest discover -s tools/evalscope -p test_gpu_exclusive.py。
+git diff --check通过。未执行模型HTTP、未修改真实频率或生产内核；
+旧数值和性能证据不重跑。此项只验证guard接口，不证明实际监管组合或
+真实配置恢复；下一步完成systemd组合与恢复失败闭锁策略再冻结实机协议。
+根因未闭合，目标active，原HC NO_GO保持。
+
