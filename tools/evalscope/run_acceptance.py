@@ -300,9 +300,14 @@ def main():
                         help='serve with no MTP flag: exercise the serve '
                              'default (MTP on since 2026-10-14) for default-'
                              'deployment acceptance.')
+    parser.add_argument('--server-address-space', choices=['inherit', 'no-aslr'],
+                        help='Diagnostic only: snapshot server maps; no-aslr uses '
+                             'setarch for the server only, not the HTTP client')
     parser.add_argument('--mtp-k', type=int, default=3,
                         help='MTP speculative steps k (serve default 3)')
     args = parser.parse_args()
+    if args.server_address_space and args.systemd_unit:
+        parser.error('--server-address-space is not supported with --systemd-unit')
     if args.perf_repeats <= 0:
         parser.error('--perf-repeats must be positive')
     if args.mode != 'performance' and (args.perf_lengths is not None or args.perf_repeats != 3):
@@ -379,6 +384,9 @@ def main():
     shutil.copyfile(__file__, out / 'run_acceptance.py')
     shutil.copyfile(Path(__file__).with_name('response_identity.py'),
                     out / 'response_identity.py')
+    if args.server_address_space:
+        shutil.copyfile(Path(__file__).with_name('server_address_space.py'),
+                        out / 'server_address_space.py')
     cache = binary.parent / 'CMakeCache.txt'
     deployment = binary.with_name(binary.name + '.release.json')
     if deployment.is_file() and not args.allow_unqualified_binary:
@@ -464,7 +472,13 @@ def main():
     if args.moe_hot_list:
         hot_identity = {'path': str(args.moe_hot_list.resolve()),
                         'sha256': hashlib.sha256(args.moe_hot_list.read_bytes()).hexdigest()}
+    address_parent = None
+    if args.server_address_space:
+        from server_address_space import launch_command, personality
+        address_parent = personality(os.getpid())
+        command = launch_command(command, args.server_address_space)
     save(out / 'server-command.json', {'argv': command, 'removed_environment': removed,
+                                       'diagnostic_address_space': args.server_address_space,
                                        'effective_q4t_environment': effective_q4t,
                                        'hot_list': hot_identity,
                                        'isolation': {'systemd_unit': args.systemd_unit,
@@ -498,6 +512,12 @@ def main():
                 raise RuntimeError(f'server startup timeout after {args.startup_timeout}s')
             capacity = capacity_evidence((out / 'server.log').read_text(), args.max_len)
             save(out / 'capacity.json', capacity)
+            if args.server_address_space:
+                from server_address_space import snapshot
+                address_info, maps = snapshot(server.pid, binary,
+                                              args.server_address_space, address_parent)
+                save(out / 'server-address-space.json', address_info)
+                (out / 'server-maps.txt').write_text(maps)
             event(out, 'server_ready', pid=server.pid, capacity=capacity)
             if not capacity['matches_requested']:
                 raise RuntimeError('effective server capacity is missing or differs from requested capacity')
@@ -611,6 +631,7 @@ def main():
                                           'full_five_tier_completed': bool(plan and plan['full_five_tier_requested'] and clean),
                                           'full_offload_matrix_completed': bool(plan and plan['full_offload_matrix_requested'] and clean),
                                           'performance_acceptance': False,
+                                          'diagnostic_address_space': args.server_address_space,
                                           'failure': failure, 'cleanup_failure': cleanup_failure})
         if server.returncode != 0:
             raise RuntimeError('server did not exit normally')

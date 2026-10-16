@@ -244,3 +244,19 @@ flock只有遵循该入口的会话才互斥；轮询补充检测非合作进程
 短于实际采样间隔、驱动未列出或不可见的GPU负载。事件记录真实单调
 时钟，查询耗时可能拉长间隔。需要跨会话安排，不把轮询无冲突扩大为
 绝对无干扰证明。环境中断时保留全部原始证据，不自动重跑或接受结果。
+
+
+## 服务进程地址空间诊断（2026-10-17）
+
+`run_acceptance.py --server-address-space inherit|no-aslr` 为显式诊断选项。
+默认省略时保持原启动路径。`no-aslr` 仅以 `setarch <架构> -R` 启动服务，
+`inherit` 不加前缀；两者均在服务就绪后保存实际 personality 与完整 maps。
+父进程、HTTP客户端不修改；不支持与 `--systemd-unit` 同用。
+快照失败或实际personality不符时在HTTP前停止并清理服务。
+
+证据包括 `server-address-space.json`、`server-maps.txt`，命令和退出记录
+标记诊断模式。maps只描述该时点的虚拟映射，不证明物理/CUDA布局相同。
+这些诊断结果不能直接替代默认部署性能验收；GPU运行仍需完整阶段guard。
+CPU检查：`python3 tools/evalscope/test_server_address_space.py`（需本机Linux
+允许对子进程设置personality，不假设其他CI容器支持）、
+`python3 tools/evalscope/test_run_acceptance.py`（模拟runner合同）。

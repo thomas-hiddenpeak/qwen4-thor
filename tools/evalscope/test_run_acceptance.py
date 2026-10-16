@@ -127,6 +127,39 @@ class RunnerContractTest(unittest.TestCase):
     def read(self, relative):
         return json.loads((self.out / relative).read_text())
 
+    def test_address_space_wraps_only_server_and_records_snapshot(self):
+        with patch('server_address_space.personality', return_value=0), \
+             patch('server_address_space.shutil.which', return_value='/usr/bin/setarch'), \
+             patch('server_address_space.snapshot', return_value=({'checked': True}, 'maps\n')) as snap:
+            self.invoke('--perf-lengths', '45056', '--perf-repeats', '1',
+                        '--server-address-space', 'no-aslr')
+        command = self.read('server-command.json')['argv']
+        self.assertEqual(command[0], '/usr/bin/setarch')
+        self.assertEqual(command[2], '-R')
+        self.assertEqual(command[3], str(self.binary))
+        self.assertTrue(all('setarch' not in ' '.join(c) for c in self.clients))
+        snap.assert_called_once_with(424242, self.binary, 'no-aslr', 0)
+        self.assertEqual(self.read('server-address-space.json'), {'checked': True})
+        self.assertEqual((self.out / 'server-maps.txt').read_text(), 'maps\n')
+        self.assertEqual(self.read('exit.json')['diagnostic_address_space'], 'no-aslr')
+        self.assertFalse(self.read('exit.json')['performance_acceptance'])
+        self.assertTrue((self.out / 'server_address_space.py').is_file())
+
+    def test_address_snapshot_failure_stops_before_http_and_cleans_server(self):
+        with patch('server_address_space.personality', return_value=0), \
+             patch('server_address_space.snapshot', side_effect=RuntimeError('unverified maps')):
+            with self.assertRaisesRegex(RuntimeError, 'unverified maps'):
+                self.invoke('--server-address-space', 'inherit')
+        self.assertFalse(self.clients)
+        self.assertTrue(self.servers[0].terminated)
+        self.assertFalse(self.read('exit.json')['http_output_checks_passed'])
+
+    def test_address_space_rejects_systemd_before_start(self):
+        with self.assertRaises(SystemExit):
+            self.invoke('--server-address-space', 'no-aslr',
+                        '--systemd-unit', 'q4t-diagnostic.service')
+        self.assertFalse(self.servers)
+
     def test_default_five_tiers_keep_batched_three(self):
         self.invoke()
         self.assertEqual(len(self.clients), 5)
