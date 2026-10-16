@@ -31,10 +31,12 @@ stall。外部单窗口采集器已落地，正常/错误命令/EOF三项生命�
 单位。EvalScope首有效输出钩子已实现：源码SHA/AST锚点校验，四项CPU
 边界/失败测试通过。CLI封装与runner显式--ucf-probe入口已完成，6项
 collector、2项集成、2项runner合同通过；缺少计数记录不能伪装成功。
-已冻结4条ABBA读流量机制观察，停表及请求前边界各≤1ms，失败停止，
-读字节两对差须>max(同身份R,1GiB)，不扩样、不作为性能接受；待执行。
-HTTP首输出窗口可能含
-少量decode，不能冒称纯prefill。不直接全量profile、不继续普通ASLR计时。
+UCF固定ABBA已完成：输出/计数/边界全过，guard COMPLETED。读字节
+B−A为−198.65/+11.94GB，同身份R197.77GB，冻结判据未过；TTFT虽
+两对+68.070/+77.039ms，不能据此归因额外读流量。停止该家族、不扩样。
+HTTP首输出窗口可能含少量decode，非纯prefill；原始outstanding不当stall。
+下一步核对旧trace污染边界与最小采集方案，补齐干净设备活动/提交间隙
+区分证据；不直接全量profile、不继续普通ASLR或UCF计时。
 此前scratch固定布局8条判据亦未过，诊断分配器不交付、不扩样。
 
 已完成且不重复：

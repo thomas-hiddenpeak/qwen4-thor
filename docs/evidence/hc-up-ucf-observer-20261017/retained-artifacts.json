@@ -1,0 +1,58 @@
+{
+  ".q4t-work/hc-up-ucf-observer-20261017/http/01-A/results.json": {
+    "sha256": "cc1fde04c7f9ed1d8c276cbcdd1cf84b3419ec1b46197ddde0b2510aa847898f",
+    "bytes": 438
+  },
+  ".q4t-work/hc-up-ucf-observer-20261017/http/01-A/server.log": {
+    "sha256": "aac4675c9b04e70c4aa11ec55cd3e1b742787c222045d79aed5f818579a9f1a8",
+    "bytes": 1790
+  },
+  ".q4t-work/hc-up-ucf-observer-20261017/http/01-A/context-204800/responses.json": {
+    "sha256": "7f46a3649e7d80a8582dcd73ba70c33936010f35dfa4646ca6f1d719f2da91fa",
+    "bytes": 9159
+  },
+  ".q4t-work/hc-up-ucf-observer-20261017/http/02-B/results.json": {
+    "sha256": "1563931b529831b9b016b405e5e73648290fb5e60da04439a84b2465525ff4a2",
+    "bytes": 437
+  },
+  ".q4t-work/hc-up-ucf-observer-20261017/http/02-B/server.log": {
+    "sha256": "44914f6216d3338b529d37024e0b8dd7b4b7f9b8d7b71b917116b0bd142f8c35",
+    "bytes": 1790
+  },
+  ".q4t-work/hc-up-ucf-observer-20261017/http/02-B/context-204800/responses.json": {
+    "sha256": "8fae091be9482243229bc61e275cecfc4fbeb5d134b0be944b42094bf0cc888b",
+    "bytes": 9157
+  },
+  ".q4t-work/hc-up-ucf-observer-20261017/http/03-B/results.json": {
+    "sha256": "37d50b429652e977bd815a7fe36a4e98e422d325fcab984358745b4ff2da1c5b",
+    "bytes": 436
+  },
+  ".q4t-work/hc-up-ucf-observer-20261017/http/03-B/server.log": {
+    "sha256": "64e8f5c2ece7dfc1701bc5191e3e386e781dd13b8d6de5d5ae07e9760fdab23b",
+    "bytes": 1790
+  },
+  ".q4t-work/hc-up-ucf-observer-20261017/http/03-B/context-204800/responses.json": {
+    "sha256": "d90c881681f251adccfddf9fd2c3c02f4e424b1d1dee4eb5907d5818adbf69e8",
+    "bytes": 9156
+  },
+  ".q4t-work/hc-up-ucf-observer-20261017/http/04-A/results.json": {
+    "sha256": "ce712f5faa4ffeb961f75faf3147c6a9c9e71773f80d13990b41a31ec73b19c6",
+    "bytes": 438
+  },
+  ".q4t-work/hc-up-ucf-observer-20261017/http/04-A/server.log": {
+    "sha256": "d854810d845c1c5a956029312fa39cef48248fbbfd18a2ea1f5b6d4b12653ce6",
+    "bytes": 1790
+  },
+  ".q4t-work/hc-up-ucf-observer-20261017/http/04-A/context-204800/responses.json": {
+    "sha256": "05b4dc4fc61d56c04e0ad4e674985d2722c00c6298157e7026e2c6040dd5fc70",
+    "bytes": 9157
+  },
+  ".q4t-work/hc-up-ucf-observer-20261017/telemetry.jsonl": {
+    "sha256": "bf37ff1b4c311c1c0195425d75f82daf34359e3a16c5d5b8254dfab480cff4d1",
+    "bytes": 1163556
+  },
+  ".q4t-work/hc-up-ucf-observer-20261017/observations.json": {
+    "sha256": "d2442bba2bff013bfc236af0776ce0c3ca1ee21ec77f683c91865d53ff326495",
+    "bytes": 7641
+  }
+}

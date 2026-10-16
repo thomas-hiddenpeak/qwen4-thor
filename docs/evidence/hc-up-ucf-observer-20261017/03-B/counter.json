@@ -1,0 +1,67 @@
+{
+  "command": [
+    "sudo",
+    "-n",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-ucf-window-20261017/probe"
+  ],
+  "rows": [
+    {
+      "event": "ready",
+      "type": 12,
+      "cpu": 0
+    },
+    {
+      "event": "started",
+      "begin_ns": 369108259126803,
+      "end_ns": 369108259198286
+    },
+    {
+      "event": "stopped",
+      "begin_ns": 369267231710397,
+      "end_ns": 369267231740935
+    },
+    {
+      "event": "snapshot",
+      "begin_ns": 369267231749380,
+      "end_ns": 369267231752056,
+      "enabled_ns": 158971204459,
+      "running_ns": 158971204459,
+      "events": [
+        {
+          "config": 4294967296,
+          "value": 238894681484,
+          "id": 86493
+        },
+        {
+          "config": 0,
+          "value": 10852745123328,
+          "id": 86494
+        },
+        {
+          "config": 6,
+          "value": 176806663216,
+          "id": 86495
+        },
+        {
+          "config": 12,
+          "value": 122335931496070528,
+          "id": 86496
+        }
+      ],
+      "valid": true
+    }
+  ],
+  "complete": true,
+  "error": null,
+  "boundary": {
+    "request_start_ns": 369108259383944,
+    "first_output_ns": 369267231633333,
+    "callback_ns": 369267231647286,
+    "stop_begin_ns": 369267231710397,
+    "stop_end_ns": 369267231740935,
+    "pre_request_count_ns": 185658,
+    "first_to_stop_ns": 107602,
+    "scope": "HTTP first output, may include early decode before receipt"
+  },
+  "performance_acceptance": false
+}

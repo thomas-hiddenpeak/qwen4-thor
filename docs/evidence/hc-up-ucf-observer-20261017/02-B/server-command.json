@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-aslr-20261017/B/q4t",
+    "serve",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--port",
+    "8730",
+    "--max-seq",
+    "1",
+    "--max-prefill",
+    "8192",
+    "--max-len",
+    "208896",
+    "--max-tokens",
+    "256",
+    "--no-mtp"
+  ],
+  "removed_environment": {},
+  "diagnostic_address_space": null,
+  "effective_q4t_environment": {},
+  "hot_list": null,
+  "isolation": {
+    "systemd_unit": null,
+    "host_cache_max_bytes": null,
+    "swap_max_bytes": null,
+    "is_total_physical_ram_limit": false
+  },
+  "startup_timeout_seconds": 300
+}
