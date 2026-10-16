@@ -1,0 +1,94 @@
+{
+  ".q4t-work/hc-up-host-observer-20261016/http/01-A/server.log": {
+    "bytes": 50263,
+    "sha256": "7949c25da54b6bcf3341c3e88762fccb15509c565fa123f9713460efc5eeef91"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/http/01-A/results.json": {
+    "bytes": 437,
+    "sha256": "72899287dd18e95c12358cb79ff8af8e653c5ad79b9b3b9049dc078d34c73fd1"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/http/01-A/exit.json": {
+    "bytes": 304,
+    "sha256": "82b0849fc727290fff051bca4c97db37ae2b799289d65b308891aee156c848a0"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/http/01-A/events.jsonl": {
+    "bytes": 3394,
+    "sha256": "f92c0d26658f1f4c3064eacc5190d5e5a802d03bcdb45b2fb59439bdfec0c9ce"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/http/01-A/server-command.json": {
+    "bytes": 681,
+    "sha256": "ec0b54cef32ca7bcec936ac713e8c29f51f9b1325a3d7c2b12e2702a2a78d652"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/http/02-B/server.log": {
+    "bytes": 50255,
+    "sha256": "ac0193b65f641573013902d7f20aedddad531695f6c686ff69c1c6c4d2bede1e"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/http/02-B/results.json": {
+    "bytes": 438,
+    "sha256": "3dae5bd35e50e5295decb33344f521417559eadf6c55403c1214c9c6736117e5"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/http/02-B/exit.json": {
+    "bytes": 304,
+    "sha256": "82b0849fc727290fff051bca4c97db37ae2b799289d65b308891aee156c848a0"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/http/02-B/events.jsonl": {
+    "bytes": 3398,
+    "sha256": "613cf5b4c82fb7fe4d612fdcd3ccc8231ce445a1c850e4cc353c4184a3497dc5"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/http/02-B/server-command.json": {
+    "bytes": 681,
+    "sha256": "f986049c578645ad35e2c0dbbd178f2669b80a7ad3343dc0575836ac1e648b4a"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/http/03-B/server.log": {
+    "bytes": 50239,
+    "sha256": "b89bfff2fbd87ad2725df4d40598acacd846afa583d607cc86a0b8bdf151f385"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/http/03-B/results.json": {
+    "bytes": 438,
+    "sha256": "a90e3ff8a13d6ba9a3d37d03017ca8389ac3c485d4b5855bf0d67236129f3a46"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/http/03-B/exit.json": {
+    "bytes": 304,
+    "sha256": "82b0849fc727290fff051bca4c97db37ae2b799289d65b308891aee156c848a0"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/http/03-B/events.jsonl": {
+    "bytes": 3401,
+    "sha256": "c415a8cfc7353c72adb9e6ed81f58198715663e7d5ccdd9183fb348fb9ecf8b3"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/http/03-B/server-command.json": {
+    "bytes": 681,
+    "sha256": "f986049c578645ad35e2c0dbbd178f2669b80a7ad3343dc0575836ac1e648b4a"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/http/04-A/server.log": {
+    "bytes": 50300,
+    "sha256": "4194f3270efbac983b8837ea8d73fff02f3448e5db8884661f483de48bbebebe"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/http/04-A/results.json": {
+    "bytes": 438,
+    "sha256": "dfdca4015a676608de986d27b2390af00daa28e9c8f49e010a72c69c0ea2bb7b"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/http/04-A/exit.json": {
+    "bytes": 304,
+    "sha256": "82b0849fc727290fff051bca4c97db37ae2b799289d65b308891aee156c848a0"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/http/04-A/events.jsonl": {
+    "bytes": 3394,
+    "sha256": "29459155d0ef526fcea99913f5bed8b6dffd89510730ad3dc7a9c1b20458b3af"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/http/04-A/server-command.json": {
+    "bytes": 681,
+    "sha256": "ec0b54cef32ca7bcec936ac713e8c29f51f9b1325a3d7c2b12e2702a2a78d652"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/telemetry.jsonl": {
+    "bytes": 1163349,
+    "sha256": "4ae02da2b77120efa81cbe37327642961b9ab3e9abee459d966d7a887b2f3fe1"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/lease/events.jsonl": {
+    "bytes": 150651,
+    "sha256": "20ef3183118880f0891a83159d90da8113cf51a5be80a29da0506b19a0dcac3e"
+  },
+  ".q4t-work/hc-up-host-observer-20261016/driver.log": {
+    "bytes": 1459,
+    "sha256": "ca1c726fdaec3b2324bc8d4adeddf4a8603d1ff1fb3ac5fee88728d8a7e8175c"
+  }
+}

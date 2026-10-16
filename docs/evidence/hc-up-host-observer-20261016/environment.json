@@ -1,0 +1,5 @@
+{
+  "CUDA_HOME": "/usr/local/cuda-13.3",
+  "Q4T_LAYER_TIMING": "1",
+  "LD_PRELOAD": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-host-observer-20261016/host_interval_probe.so"
+}
