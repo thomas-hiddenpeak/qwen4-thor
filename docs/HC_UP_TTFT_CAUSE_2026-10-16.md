@@ -1734,3 +1734,28 @@ C++ checker/独立parser全过后，逐forward/layer/token/slot比较完整ID。
 不直接认定性能原因；无效保留、不自动重采。既有采集工具通过项复用，
 未改生产计算，无需重复工具/数值全套。协议执行前已保存，尚未有结果。
 目标active、原HC NO_GO保持。证据：evidence/hc-up-route-identity-20261017/。
+
+## 原A/B完整路由内容相同，停止路由分歧假设（2026-10-17）
+
+冻结A/B各一次200K off请求完成，原二进制/夹具身份通过，两侧输出与
+基线SHA一致，输入token字节完全一致，manifest complete/failure none，
+requests_started=published=1；同一lease COMPLETED，退出0，无重试。
+既有C++ checker与独立Python完整请求parser均通过，比较器完整耗尽两侧
+迭代器，核对forward/stage/position/rows/layer/topk及所有有序专家ID。
+
+25个prefill forward/1200层帧共98298720个ID，255个decode forward/
+12240层帧共122400个ID，全部逐位相同，包括每token top10顺序。
+拼接ID SHA两侧同为ee3918be70cd04af58ae93179f2eced57035bfc7c97193e69eb825899f8cde56。
+不比较含二进制身份的trace整文件SHA来判断内容，也不只比专家直方图。
+
+按冻结判据停止本捕获条件下路由ID分歧假设，不追加采样。采集有D2D/
+D2H/后台IO扰动，耗时不进入性能接受，不能反推原始未插桩路由、分数、
+物理访问或缓存状态；相同选择也不是中间浮点状态逐bit一致的证明。
+原HC NO_GO保持，根因/对应解决/最终验收尚未完成，目标active。
+
+下一步回顾原未插桩效应与已完成受控对照的可辨识范围，明确尚未获得
+证据的机制；不因路由相同就追加完整性能采样或将小差异归为随机噪声。
+生产代码未改；本阶段仅冻结的2条诊断，旧通过工具/数值证据直接复用。
+完整原始trace留在.q4t-work/hc-up-route-identity-20261017/routes/，
+SHA/大小/路径记录于raw-artifacts.json；检查结果、命令、输出/lease/
+server日志封存docs/evidence/hc-up-route-identity-20261017/。

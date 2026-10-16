@@ -1,0 +1,26 @@
+{
+  "valid": true,
+  "complete_request_compared": true,
+  "equal_all_ordered_ids": true,
+  "counts": {
+    "prefill_ids": 98298720,
+    "prefill_layer_frames": 1200,
+    "decode_ids": 122400,
+    "decode_layer_frames": 12240
+  },
+  "forwards": {
+    "prefill": 25,
+    "decode": 255
+  },
+  "ordered_ID_sha256": {
+    "A": "ee3918be70cd04af58ae93179f2eced57035bfc7c97193e69eb825899f8cde56",
+    "B": "ee3918be70cd04af58ae93179f2eced57035bfc7c97193e69eb825899f8cde56"
+  },
+  "first_difference": null,
+  "changed_layer_frames": [],
+  "limits": [
+    "Capture adds copies and worker IO; no original uninstrumented route proof",
+    "No routing scores or physical weight access measurements",
+    "Capture TTFT excluded from performance acceptance and causal attribution"
+  ]
+}
