@@ -1,0 +1,80 @@
+{
+  "resume_lease": {
+    "status": "COMPLETED",
+    "command": [
+      "python3",
+      ".q4t-work/hc-up-subtiming-20261017-v2/run_resume.py"
+    ],
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 0,
+    "finished": {
+      "utc": "2026-10-16T17:16:54.525331+00:00",
+      "monotonic": 361097.042215329,
+      "pid": 1173979
+    }
+  },
+  "monitor_events": 407,
+  "files": {
+    ".q4t-work/hc-up-subtiming-20261017-v2/lease-resume/exit.json": {
+      "bytes": 490,
+      "sha256": "117086f6638fc96a6838addaa121811c1fdbff85336c562b714f2eca94998625"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/lease-resume/events.jsonl": {
+      "bytes": 75829,
+      "sha256": "f34f549c702b745cf3e66845d42b2a0cddb155f3192bfd9ea98350f69b85146d"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/environment-resume.json": {
+      "bytes": 99,
+      "sha256": "a286efbfeecf7a2170b17d37f5fd34373966968f52c3f58035b001d855bcca0c"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/telemetry-resume.jsonl": {
+      "bytes": 585131,
+      "sha256": "f83e49f544810a056a79d81bedf1b95dbe1b18288a6109e12a5416bf0ab6b590"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/03-B/server.log": {
+      "bytes": 156479,
+      "sha256": "0e5bc95159b45546d3c42edd35eb9c14b2cf5fb32f2030232785fde8b17aca64"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/03-B/results.json": {
+      "bytes": 438,
+      "sha256": "0a6fd9905a3703e6b9518075c2ba14a8a742b0e87ed53436f283f7bcaad51caa"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/03-B/exit.json": {
+      "bytes": 304,
+      "sha256": "82b0849fc727290fff051bca4c97db37ae2b799289d65b308891aee156c848a0"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/03-B/events.jsonl": {
+      "bytes": 3402,
+      "sha256": "7ef3a36b7dd269f6811fceadec30d7666d3299f8fd92b95d13af68437f42687c"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/03-B/timing-coverage.json": {
+      "bytes": 103,
+      "sha256": "b5561a4e76aa801612f7bd44204a818f28c5d185898b2b90f65f919a85a397e3"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/04-A/server.log": {
+      "bytes": 156442,
+      "sha256": "d026d7133711f980e473352cb2d3c5be3848962bf3fefa504756b0ec467d7851"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/04-A/results.json": {
+      "bytes": 437,
+      "sha256": "f72d7dcd2772f0e98590ca9972cbe6782e6bbf8642b17cb385895a7e3fcb12d9"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/04-A/exit.json": {
+      "bytes": 304,
+      "sha256": "82b0849fc727290fff051bca4c97db37ae2b799289d65b308891aee156c848a0"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/04-A/events.jsonl": {
+      "bytes": 3394,
+      "sha256": "f7e7b6813f2ef5ed040bf4d7eac12411a189860fb3458e4efd490895f1fe0fe8"
+    },
+    ".q4t-work/hc-up-subtiming-20261017-v2/http/04-A/timing-coverage.json": {
+      "bytes": 103,
+      "sha256": "b5561a4e76aa801612f7bd44204a818f28c5d185898b2b90f65f919a85a397e3"
+    }
+  },
+  "continuous_four_request_lease": false,
+  "performance_acceptance": false
+}

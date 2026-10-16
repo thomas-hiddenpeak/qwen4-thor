@@ -529,3 +529,22 @@ PID1169273，正是该服务；case_completed=360200.438522，报告=
 完成或失败后停止该观测家族，不追加样本。生产与数值合同无修改。
 冻结协议与恢复脚本见evidence/hc-up-subtiming-20261017-v2/resume-protocol.json。
 下一步执行两条并离线检查子操作区间；活动目标和原NO_GO保持。
+
+## Subtiming分段结果：停止该观测家族（2026-10-17）
+
+- 03-B/04-A各一次完成，输出与固定基线一致，三家族25chunk覆盖通过，
+  服务退出0，恢复guard COMPLETED。原01/02直接复用，原ENV_ABORT保留。
+- chunks2–25两对B−A：总层事件+55.350/−50.150ms（R174.420）；
+  full_core −67.920/+32.840ms（R73.110），full_qkv +14.360/−9.030；
+  MoE +74.770/−19.000；HC up −9.160/−12.470ms。
+  未支持固定在full core或HC up的增加，不能将先前full层组差归因该内核。
+- 仅PLE顶层区间+2.180/+2.090ms超过算术阈值1ms，量级无法解释历史
+  89–247ms，且跨中断对照不具备原连续协议有效性；不据此优化PLE。
+- 全部比较保留分段限制，full_protocol_passed=false，非因果证明、非性能
+  验收；插桩decode吞吐不作为普通decode回归。停止该观测家族、不扩样。
+- 下一步先离线核对环境遥测、测量定义和启动状态的共同变动，选择能区分
+  环境与身份效应的因果干预，执行前另冻结；不能将未定位解释为纯噪声。
+  本轮未修改生产代码/二进制，main数值证据复用；原NO_GO、目标active。
+
+证据：evidence/hc-up-subtiming-20261017-v2/subtiming-resumed-review.json、
+resume-audit.json；原始结果与监控分别保留在原lease和lease-resume。
