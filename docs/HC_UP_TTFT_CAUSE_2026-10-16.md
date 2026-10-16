@@ -1297,3 +1297,26 @@ runner四项检查覆盖转发、FD缺失、错误shape拒绝、默认不转发�
 释放，再冻结模型对照顺序与因果门槛；工具通过不代表TTFT归因或性能
 接受。本轮无GPU模型请求、无生产计算路径改动，原NO_GO/active保持。
 证据：evidence/hc-up-persistent-owner-20261017/。
+
+## 真实VMM全尺寸接入通过，持久placement对照冻结（2026-10-17）
+
+owner+probe在真实CUDA下固定一次、两个fresh子进程顺序接入通过。
+三份有效buffer共2683568128 bytes，各进程全量写后读回；第二进程在
+改写前还全量确认第一进程pattern，VA整体偏移512MiB。两个startup/
+cleanup标记、owner释放、退出、guard COMPLETED均通过。legacy runtime
+分配使用fake地址，故该检查只验证真实VMM数据/生命周期及probe转译，
+不覆盖模型实际allocator压力，也不是性能测试。无模型/吞吐采样。
+
+冻结下一阶段8条HTTP：A-original、B-shared、B-original、A-shared，
+再反序四条。每条fresh服务器，同一owner保留三份backing及完整guard。
+两臂均保留legacy分配、导入相同backing和固定VA；仅返回目标指针不同。
+没有PMU/Nsight/事件计时。全部输出、输入、容量、退出、身份及工具标记
+需通过。R取四个cell各两次TTFT差的最大绝对值；两半均要求原臂B−A>0、
+交互(D_original−D_shared)>2R、abs(D_shared)<=R。失败即停止该家族，
+不增样或降门槛；通过也仅支持此分配条件下的联合placement贡献，仍不能
+把VA/物理页/缓存历史细分或宣称生产可接受。协议在运行前保存。
+
+当前根因尚未查清、生产未改，原HC NO_GO/active保持。下一步执行这组
+有界对照，按结果决定是否有依据进一步分解placement因素。
+证据：evidence/hc-up-persistent-integration-20261017/及
+ evidence/hc-up-persistent-interaction-20261017/。

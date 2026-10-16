@@ -1,0 +1,23 @@
+{
+  "scope": "real VMM owner/probe integration; legacy runtime mocked; no model or performance evidence",
+  "runs": 1,
+  "sequential_children": 2,
+  "shifts_MiB": [
+    0,
+    512
+  ],
+  "bytes": [
+    167772160,
+    167772160,
+    2348023808
+  ],
+  "gate": "all target bytes read back; second child sees first child patterns before overwrite; both probe cleanup markers; owner cleanup; guard COMPLETED; all exit zero",
+  "failure": "stop and retain, no repeat without specific fix",
+  "sha256": {
+    ".q4t-work/hc-up-persistent-integration-20261017/check": "43f66c10d859b75151b3fe720626a73856d0366573b201e9d527b9526716f621",
+    ".q4t-work/hc-up-persistent-integration-20261017/legacy.so": "a56e12cfd32e74771cc9c9e39fe2d1627bc38021b7934b134ad90dbda7dc0a47",
+    ".q4t-work/hc-up-persistent-integration-20261017/run.py": "3bbf9fefd04d74c7be42e2ccbfac18df66ea07e8e6841ff24d4ef735aff08e3c",
+    ".q4t-work/hc-up-persistent-control-20261017/owner": "9c35a2b1257556a1549de0c0826313c3ce68b4c47c62b185e6ffc2f688ab1d5e",
+    ".q4t-work/hc-up-persistent-control-20261017/probe.so": "002203f24a1fa2488fcc09c4846cd5f066df8df9f753760f428c6f71609a45e8"
+  }
+}

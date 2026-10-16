@@ -1,0 +1,7 @@
+[persistent-owner] slot=0 handle=187651238666304 bytes=167772160 child_fd=73
+[persistent-owner] slot=1 handle=187651238667536 bytes=167772160 child_fd=74
+[persistent-owner] slot=2 handle=187651238668800 bytes=2348810240 child_fd=75
+[persistent-owner] driver_pid=1233628
+{"child": 0, "full_bytes_verified": 2683568128, "cleanup": true}
+{"child": 1, "full_bytes_verified": 2683568128, "cleanup": true}
+[persistent-owner] cleanup_complete=3 driver_exit=0

@@ -1,0 +1,8 @@
+[persistent-layout] slot=0 original=0x60e000 va=275414777856 exposed=0x4020000000 bytes=167772160 mode=shared
+[persistent-layout] slot=1 original=0x60f000 va=279709745152 exposed=0x4120000000 bytes=167772160 mode=shared
+[persistent-layout] slot=2 original=0x611000 va=284004712448 exposed=0x4220000000 bytes=2348023808 mode=shared
+[persistent-layout] startup_complete=1541
+[persistent-layout] cleanup_complete=3
+{"step":1,"slot":0,"va":275414777856,"verified_bytes":167772160,"cross_process_verified":true}
+{"step":1,"slot":1,"va":279709745152,"verified_bytes":167772160,"cross_process_verified":true}
+{"step":1,"slot":2,"va":284004712448,"verified_bytes":2348023808,"cross_process_verified":true}

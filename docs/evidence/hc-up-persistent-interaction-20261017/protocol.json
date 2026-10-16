@@ -1,0 +1,75 @@
+{
+  "hypothesis": "A/B off TTFT difference interacts with used placement of d_ws and both trunks; identical backing and fixed VA treatment versus retained original placement, with equal owner/import/mapping resources in both arms. This cannot separate VA from physical allocation or cache history.",
+  "order": [
+    [
+      "A",
+      "original"
+    ],
+    [
+      "B",
+      "shared"
+    ],
+    [
+      "B",
+      "original"
+    ],
+    [
+      "A",
+      "shared"
+    ],
+    [
+      "A",
+      "shared"
+    ],
+    [
+      "B",
+      "original"
+    ],
+    [
+      "B",
+      "shared"
+    ],
+    [
+      "A",
+      "original"
+    ]
+  ],
+  "requests": 8,
+  "repeats_per_cell": 2,
+  "one_owner_lifetime": true,
+  "shift_MiB": 0,
+  "mode": "--no-mtp",
+  "input_tokens": 204789,
+  "output_tokens": 256,
+  "validity": [
+    "one uninterrupted GPU guard COMPLETED",
+    "owner cleanup=3 exit=0; all startup/cleanup markers exact",
+    "all input/output/capacity/HTTP and server exits pass",
+    "all executable/tool/fixture hashes match",
+    "no overlap of model processes; owner submits no device work while driver runs"
+  ],
+  "analysis": {
+    "R": "max absolute repeat difference over four variant/mode cells",
+    "D_original": "B original minus A original in each of two halves",
+    "D_shared": "B shared minus A shared in each half",
+    "interaction": "D_original - D_shared for each half",
+    "causal_gate": "both D_original > 0; both interaction > 2*R; both abs(D_shared) <= R; all validity gates pass",
+    "interpretation": "passing supports joint persistent-placement contribution under this controlled allocation regime, not a final legacy physical/VA mechanism or production acceptance",
+    "failure": "stop this family without increasing sample count, relaxing threshold, or claiming equal shared timing proves root cause"
+  },
+  "expected_output": "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
+  "binaries": {
+    "A": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/q4t-main",
+    "B": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/hc-up/q4t"
+  },
+  "sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/q4t-main": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-decode-20261016/hc-up/q4t": "f01a0ee63f626c352f66677952368d43db02c9231576a2b8ba1ca33a915ce573",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-persistent-control-20261017/owner": "9c35a2b1257556a1549de0c0826313c3ce68b4c47c62b185e6ffc2f688ab1d5e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-persistent-control-20261017/probe.so": "002203f24a1fa2488fcc09c4846cd5f066df8df9f753760f428c6f71609a45e8",
+    "/home/rm01/models/dev/qwen4-thor/docs/evidence/hc-up-persistent-control-20261017/sizes.txt": "cbb3f0e95114f7a85912c8991ef1ec6332e6159571a907479940ed5be63b3995",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py": "c5e5e3c5f62c2063f68ad17fd7ae3bb7ecf2e58f34a6523932249d3db5b0818c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http/off/results.json": "5c34c3a03975c7d7969736f1909f26b45433891f467867d17d45cdb33e38a0c8"
+  },
+  "driver_sha256": "48173de008f5fa20c0e3e6cc39a8745a65f542f6eee5fc15c95a9c3665762b1f"
+}
