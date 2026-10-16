@@ -1,0 +1,6 @@
+{"utc": "2026-10-16T23:28:24.016845+00:00", "monotonic": 383386.53372388, "pid": 1293677, "event": "lease_acquired"}
+{"utc": "2026-10-16T23:28:24.050429+00:00", "monotonic": 383386.567314567, "pid": 1293677, "event": "preflight", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-10-16T23:28:24.050720+00:00", "monotonic": 383386.567599364, "pid": 1293677, "event": "child_started", "child_pid": 1293681}
+{"utc": "2026-10-16T23:28:24.085609+00:00", "monotonic": 383386.60249106, "pid": 1293677, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-10-16T23:28:25.119071+00:00", "monotonic": 383387.63596028, "pid": 1293677, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-10-16T23:28:25.151149+00:00", "monotonic": 383387.668027133, "pid": 1293677, "event": "lease_released", "status": "COMMAND_FAILED"}

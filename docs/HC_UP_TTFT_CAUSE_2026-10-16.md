@@ -2156,3 +2156,23 @@ jtop、不改I2C设备、不重新跑HTTP来诱发事件。不把线索未证实
 可审查的证据缺口与下一步可识别条件，只有出现能分离具体机制的
 新设计才启动GPU诊断；不能继续按环境日志逐项猜测并扩样。
 目标active，HC仍NO_GO，尚无根因修复或可合入结论。
+
+## 提交时间戳证据缺口与最小能力验证未通过（2026-10-17）
+
+只读干净A/B SQLite发现kernel表没有queued/submitted列；两侧各
+2704554条kernel的qmdBulkReleaseDone/qmdPreexitDone/qmdLastCtaDone
+全部NULL。不能将API→kernel start间隔直接解释为驱动未提交或设备
+排队。CUDA13.3本机cupti_activity.h提供显式LatencyTimestamps接口，
+要求CUDA初始化前开启，与HW trace不兼容；默认不采集这两个字段。
+
+执行前冻结一次最小能力验证：单GPU独占guard、3个单线程递增kernel，
+每次同步，验证queued≤submitted≤start<end及非零字段；非模型、非bench
+验收。nvcc/g++14零警告构建。真实执行结果value=3，但目标记录数0、
+dropped=0，验证返回1、guard COMMAND_FAILED，非竞争ENV_ABORT。
+此结果不能证明平台不支持：当前采集器未保存所有记录kind/回调计数，
+仍需检查筛选及flush结束行为。保留失败，不直接重跑或启动模型profile。
+协议、代码、二进制hash及退出记录归档evidence/hc-up-submit-timestamps-20261017/。
+
+下一步先离线审查采集器记录覆盖和生命周期；只有确认具体工具缺陷
+后才针对性修正重验，不把零记录当成排队为零。本轮未改生产实现、
+模型/数值合同，无HTTP重复采样。根因未闭合，目标active，NO_GO保持。
